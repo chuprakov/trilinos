@@ -30,6 +30,7 @@
 #define TSFLOADABLEMATRIX_HPP
 
 #include "TSFConfigDefs.hpp"
+#include <set>
 
 namespace TSFExtended
 {
@@ -43,6 +44,10 @@ namespace TSFExtended
   public:
     /** Virtual dtor */
     virtual ~LoadableMatrix(){;}
+
+    /** */
+    virtual void configure(int lowestRow,
+                           const std::vector<std::set<int> >& nonzeros);
 
     /** 
      * Set the locations of all my nonzero elements. 
@@ -90,6 +95,19 @@ namespace TSFExtended
                           const int* globalColumnIndices,
                           const Scalar* elementValues) = 0 ;
 
+
+    /** 
+     *
+     */
+    virtual void addElementBatch(int numRows, 
+                                 int rowBlockSize,
+                                 const int* globalRowIndices,
+                                 int numColumnsPerRow,
+                                 const int* globalColumnIndices,
+                                 const Scalar* values,
+                                 const int* skipRow);
+                                 
+
     /** Set all elements to zero, preserving the existing structure */
     virtual void zero() = 0 ;
     
@@ -103,6 +121,62 @@ namespace TSFExtended
     
     
   };
+
+
+  /* Default implementation of addElementBatch */
+  template <class Scalar>
+  void LoadableMatrix<Scalar>::addElementBatch(int numRows, 
+                                               int rowBlockSize,
+                                               const int* globalRowIndices,
+                                               int numColumnsPerRow,
+                                               const int* globalColumnIndices,
+                                               const Scalar* values,
+                                               const int* skipRow)
+  {
+    int numRowBlocks = numRows/rowBlockSize;
+    int row = 0;
+
+    for (int rb=0; rb<numRowBlocks; rb++)
+      {
+        const int* cols = globalColumnIndices + rb*numColumnsPerRow;
+        for (int r=0; r<rowBlockSize; r++, row++)
+          {
+            if (skipRow[row]) continue;
+            const double* rowVals = values + row*numColumnsPerRow;
+            addToRow(globalRowIndices[row], numColumnsPerRow,
+                     cols, rowVals);
+          }
+      }
+  }
+
+  /* Default implementation of configure */
+  template <class Scalar>
+  void LoadableMatrix<Scalar>::configure(int lowestRow,
+                                         const std::vector<std::set<int> >& nonzeros)
+  {
+    std::vector<double> zeros;
+    std::vector<int> colIndices;
+    int maxSize = 0;
+
+    for (int i=0; i<nonzeros.size(); i++)
+      {
+        std::set<int>::const_iterator iter;
+        const std::set<int>& s = nonzeros[i];
+        colIndices.resize(0);
+        for (iter=s.begin(); iter != s.end(); iter++) 
+          {
+            colIndices.push_back(*iter);
+          }
+        if (colIndices.size() > maxSize) 
+          {
+            zeros.resize(colIndices.size());
+            for (int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
+            maxSize = zeros.size();
+          }
+        setRowValues(lowestRow + i, colIndices.size(),
+                     &(colIndices[0]), &(zeros[0]));
+      }
+  }
 }
 
 #endif

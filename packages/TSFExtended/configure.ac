@@ -328,6 +328,22 @@ AC_F77_LIBRARY_LDFLAGS
 
 #AC_SUBST(TRILINOS_TEMPLATE_OBJS)
 
+
+# ------------------------------------------------------------------------
+# Checks if ML is enabled
+# ------------------------------------------------------------------------
+
+TAC_ARG_ENABLE_FEATURE(ml, [Enable the ML multilevel solvers and preconditioners in TSF], ML, yes)
+AM_CONDITIONAL(HAVE_TSF_ML, test "X$ac_cv_use_ml" != "Xno")
+
+# ------------------------------------------------------------------------
+# Checks if NOX is enabled
+# ------------------------------------------------------------------------
+
+TAC_ARG_ENABLE_FEATURE(nox, [Enable the NOX nonlinear solvers in TSF], NOX, yes)
+AM_CONDITIONAL(HAVE_TSF_NOX, test "X$ac_cv_use_nox" != "Xno")
+
+
 # ------------------------------------------------------------------------
 # Checks for library functions
 # ------------------------------------------------------------------------

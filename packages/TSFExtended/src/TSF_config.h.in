@@ -59,6 +59,9 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
+/* Define if want to build ml */
+#undef HAVE_ML
+
 /* define if we want to use MPI */
 #undef HAVE_MPI
 
@@ -70,6 +73,9 @@
 
 /* define if the compiler accepts the new for scoping rules */
 #undef HAVE_NEW_FOR_SCOPING
+
+/* Define if want to build nox */
+#undef HAVE_NOX
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H

@@ -61,6 +61,10 @@ namespace TSFExtended
     /** Virtual dtor */
     virtual ~EpetraMatrix(){;}
 
+    /** */
+    virtual void configure(int lowestRow,
+                           const std::vector<std::set<int> >& nonzeros);
+
     /** 
      * Set the locations of all my nonzero elements. 
      * @param nLocalRows number of locally-owned rows
@@ -104,6 +108,18 @@ namespace TSFExtended
                           int nElemsToInsert,
                           const int* globalColumnIndices,
                           const double* elementValues) ;
+
+
+    /** 
+     *
+     */
+    virtual void addElementBatch(int numRows, 
+                                 int rowBlockSize,
+                                 const int* globalRowIndices,
+                                 int numColumnsPerRow,
+                                 const int* globalColumnIndices,
+                                 const Scalar* values,
+                                 const int* skipRow);
 
     /** Set all elements to zero, preserving the existing structure */
     virtual void zero() ;

@@ -98,6 +98,74 @@ void EpetraMatrix::addToRow(int globalRowIndex,
                      << ". Error code was " << ierr);
 }
 
+void EpetraMatrix::addElementBatch(int numRows, 
+                                   int rowBlockSize,
+                                   const int* globalRowIndices,
+                                   int numColumnsPerRow,
+                                   const int* globalColumnIndices,
+                                   const Scalar* values,
+                                   const int* skipRow)
+{
+  Epetra_CrsMatrix* crs = crsMatrix();
+
+  int numRowBlocks = numRows/rowBlockSize;
+  int row = 0;
+
+  for (int rb=0; rb<numRowBlocks; rb++)
+    {
+      const int* cols = globalColumnIndices + rb*numColumnsPerRow;
+      for (int r=0; r<rowBlockSize; r++, row++)
+        {
+          if (skipRow[row]) continue;
+          const double* rowVals = values + row*numColumnsPerRow;
+          int ierr=crs->SumIntoGlobalValues(globalRowIndices[row], 
+                                            numColumnsPerRow,
+                                            (double*) rowVals,
+                                            (int*) cols);
+          TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+                             "failed to add to row " << globalRowIndices[row]
+                             << " in EpetraMatrix::addToRow() with nnz="
+                             << numColumnsPerRow
+                             << ". Error code was " << ierr);
+        }
+    }
+}
+
+void EpetraMatrix::configure(int lowestRow,
+                             const std::vector<std::set<int> >& nonzeros)
+{
+  Epetra_CrsMatrix* crs = crsMatrix();
+  std::vector<double> zeros;
+  std::vector<int> colIndices;
+  int maxSize = 0;
+  
+  for (int i=0; i<nonzeros.size(); i++)
+    {
+      std::set<int>::const_iterator iter;
+      const std::set<int>& s = nonzeros[i];
+      colIndices.resize(0);
+      for (iter=s.begin(); iter != s.end(); iter++) 
+        {
+          colIndices.push_back(*iter);
+        }
+      if (colIndices.size() > maxSize) 
+        {
+          zeros.resize(colIndices.size());
+          for (int j=maxSize; j<zeros.size(); j++) zeros[j] = 0.0;
+          maxSize = zeros.size();
+        }
+      int ierr = crs->InsertGlobalValues(lowestRow + i, colIndices.size(),
+                                         &(zeros[0]), &(colIndices[0]));
+      TEST_FOR_EXCEPTION(ierr < 0, runtime_error, 
+                         "failed to add to row " << lowestRow+i
+                         << " in EpetraMatrix::setRowValues() with nnz="
+                         << colIndices.size() 
+                         << ". Error code was " << ierr);
+    }
+}
+
+
+
 void EpetraMatrix::setRowValues(int globalRowIndex,
                                 int nElemsToInsert,
                                 const int* globalColumnIndices,

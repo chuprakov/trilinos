@@ -56,6 +56,33 @@ TSFCORE_INCLUDES =  \
 -I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps \
 -I$(top_builddir)/../TSFCoreUtils/src
 
+
+ML_INCLUDES = \
+-I$(top_builddir)/../ml/src/Include\
+-I$(top_builddir)/../ml/src\
+-I$(top_builddir)/../ml/src/Coarsen\
+-I$(top_builddir)/../ml/src/Comm\
+-I$(top_builddir)/../ml/src/FEGrid\
+-I$(top_builddir)/../ml/src/Krylov\
+-I$(top_builddir)/../ml/src/Main\
+-I$(top_builddir)/../ml/src/Old\
+-I$(top_builddir)/../ml/src/Operator\
+-I$(top_builddir)/../ml/src/Runtime\
+-I$(top_builddir)/../ml/src/Smoother\
+-I$(top_builddir)/../ml/src/Utils\
+-I$(top_srcdir)/../ml/src/Include\
+-I$(top_srcdir)/../ml/src\
+-I$(top_srcdir)/../ml/src/Coarsen\
+-I$(top_srcdir)/../ml/src/Comm\
+-I$(top_srcdir)/../ml/src/FEGrid\
+-I$(top_srcdir)/../ml/src/Krylov\
+-I$(top_srcdir)/../ml/src/Main\
+-I$(top_srcdir)/../ml/src/Old\
+-I$(top_srcdir)/../ml/src/Operator\
+-I$(top_srcdir)/../ml/src/Runtime\
+-I$(top_srcdir)/../ml/src/Smoother\
+-I$(top_srcdir)/../ml/src/Utils
+
 EPETRA_INCLUDES = \
 -I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src
 
@@ -81,3 +108,9 @@ EPETRA_LIBS = \
 
 AZTECOO_LIBS = \
 	$(top_builddir)/../aztecoo/src/libaztecoo.a
+
+if HAVE_TSF_ML
+ML_LIB = -lml
+else
+ML_LIB = 
+endif
