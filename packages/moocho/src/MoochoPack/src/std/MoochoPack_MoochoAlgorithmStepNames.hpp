@@ -25,18 +25,19 @@ namespace ReducedSpaceSQPPack {
 /** @name Names for rSQP++ steps */
 //@{
 
-const std::string EvalNewPoint_name					= "EvalNewPoint";
-const std::string ReducedGradient_name				= "ReducedGradient";
-const std::string ReducedHessian_name				= "ReducedHessian";
-const std::string DepDirec_name						= "DepDirec";
-const std::string IndepDirec_name					= "IndepDirec";
-const std::string SearchDirec_name					= "SearchDirec";
-const std::string LineSearch_name					= "LineSearch";
-const std::string CheckConvergence_name				= "CheckConvergence";
+const std::string EvalNewPoint_name                 = "EvalNewPoint";
+const std::string ReducedGradient_name              = "ReducedGradient";
+const std::string ReducedHessian_name               = "ReducedHessian";
+const std::string RangeSpaceStep_name               = "RangeSpaceStep";
+const std::string NullSpaceStep_name                = "NullSpaceStep";
+const std::string SearchDirec_name                  = "SearchDirec";
+const std::string LineSearch_name                   = "LineSearch";
+const std::string CheckConvergence_name             = "CheckConvergence";
 
-const std::string CalcLambdaIndep_name				= "CalcLambdaIndep";
-const std::string CalcReducedGradLagrangian_name	= "CalcReducedGradLagrangian";
-const std::string CheckSkipBFGSUpdate_name			= "CheckSkipBFGSUpdate";
+const std::string CalcLambdaIndep_name              = "CalcLambdaIndep";
+const std::string CalcReducedGradLagrangian_name    = "CalcReducedGradLagrangian";
+const std::string CheckSkipBFGSUpdate_name          = "CheckSkipBFGSUpdate";
+const std::string CalcDFromYPYZPZ_name				= "CalcDFromYPYZPZ";
 
 //@}
 }	// end namespace ReducedSpaceSQPPack
