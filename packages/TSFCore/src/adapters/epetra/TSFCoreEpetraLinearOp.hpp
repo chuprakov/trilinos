@@ -33,7 +33,7 @@
 #define TSFCORE_EPETRA_LINEAR_OP_HPP
 
 #include "TSFCoreEpetraTypes.hpp"
-#include "TSFCoreLinearOpDecl.hpp"
+#include "TSFCoreEuclideanLinearOpBaseDecl.hpp"
 
 namespace TSFCore {
 
@@ -50,7 +50,7 @@ namespace TSFCore {
  *
  * \ingroup TSFCore_adapters_Epetra_grp
  */
-class EpetraLinearOp : public LinearOp<RTOp_value_type> {
+class EpetraLinearOp : public EuclideanLinearOpBase<RTOp_value_type> {
 public:
 
 	/** @name Public types */
@@ -73,10 +73,12 @@ public:
 
 	/// Calls <tt>initialize()</tt>.
 	EpetraLinearOp(
-		const Teuchos::RefCountPtr<Epetra_Operator>   &op
-		,ETransp                                      opTrans         = NOTRANS
-		,EApplyEpetraOpAs                             applyAs         = EPETRA_OP_APPLY_APPLY
-		,EAdjointEpetraOp                             adjointSupport  = EPETRA_OP_ADJOINT_SUPPORTED
+		const Teuchos::RefCountPtr<Epetra_Operator>             &op
+		,ETransp                                                opTrans         = NOTRANS
+		,EApplyEpetraOpAs                                       applyAs         = EPETRA_OP_APPLY_APPLY
+		,EAdjointEpetraOp                                       adjointSupport  = EPETRA_OP_ADJOINT_SUPPORTED
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetraRange    = Teuchos::null
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetraDomain   = Teuchos::null
 		);
 
 	///
@@ -95,23 +97,37 @@ public:
 	 *                  <tt>adjointSupport==EPETRA_OP_ADJOINT_SUPPORTED</tt> then <tt>this->opSupported(TRANS)</tt>
 	 *                  will return <tt>true</t>.  If <tt>adjointSupport==EPETRA_OP_ADJOINT_UNSUPPORTED</tt> then
 	 *                  <tt>this->opSupported(TRANS)</tt> will return <tt>false</tt>.
+	 * @param  epetraRange
+	 *                  [in] Smart pointer to the range space for the Epetra_Operator.  The default
+   *                  value is <tt>Teuchos::null</tt> in which case <tt>*this</tt> will allocate
+	 *                  a new <tt>EpetraVectorSpace</tt> given map from <tt>op</tt>.  A client may only bother
+	 *                  to specify this space if one wants to override the defintion of the scalar product.
+	 * @param  epetraDomain
+	 *                  [in] Smart pointer to the domain space for the Epetra_Operator.  The default
+   *                  value is <tt>Teuchos::null</tt> in which case <tt>*this</tt> will allocate
+	 *                  a new <tt>EpetraVectorSpace</tt> given map from <tt>op</tt>.  A client may only bother
+	 *                  to specify this space if one wants to override the defintion of the scalar product.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>op.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>this->domain().get() != NULL</tt>
-	 * <li> <tt>this->range().get() != NULL</tt>
+	 * <li> [<tt>epetraRange.get() != NULL</tt>] <tt>this->epetraRange().get() == epetraRange.get()</tt>
+	 * <li> [<tt>epetraDomain.get() != NULL</tt>] <tt>this->epetraDomain().get() == epetraDomain.get()</tt>
+	 * <li> [<tt>epetraRange.get() == NULL</tt>] <tt>this->epetraRange().get() != NULL</tt>
+	 * <li> [<tt>epetraDomain.get() == NULL</tt>] <tt>this->epetraDomain().get() != NULL</tt>
 	 * <li> <tt>this->opSupported(NOTRANS) == true</tt>
 	 * <li> <tt>this->opSupported(TRNAS) == adjointSupport==EPETRA_OP_ADJOINT_SUPPORTED</tt>
 	 * </ul>
 	 */
 	void initialize(
-		const Teuchos::RefCountPtr<Epetra_Operator>   &op
-		,ETransp                                      opTrans         = NOTRANS
-		,EApplyEpetraOpAs                             applyAs         = EPETRA_OP_APPLY_APPLY
-		,EAdjointEpetraOp                             adjointSupport  = EPETRA_OP_ADJOINT_SUPPORTED
+		const Teuchos::RefCountPtr<Epetra_Operator>             &op
+		,ETransp                                                opTrans         = NOTRANS
+		,EApplyEpetraOpAs                                       applyAs         = EPETRA_OP_APPLY_APPLY
+		,EAdjointEpetraOp                                       adjointSupport  = EPETRA_OP_ADJOINT_SUPPORTED
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetraRange    = Teuchos::null
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetraDomain   = Teuchos::null
 		);
 	
 	///
@@ -123,10 +139,12 @@ public:
 	 * </ul>
 	 */
 	void setUninitialized(
-		Teuchos::RefCountPtr<Epetra_Operator>    *op             = NULL
-		,ETransp                                 *opTrans        = NULL
-		,EApplyEpetraOpAs                        *applyAs        = NULL
-		,EAdjointEpetraOp                        *adjointSupport = NULL
+		Teuchos::RefCountPtr<Epetra_Operator>            *op             = NULL
+		,ETransp                                         *opTrans        = NULL
+		,EApplyEpetraOpAs                                *applyAs        = NULL
+		,EAdjointEpetraOp                                *adjointSupport = NULL
+		,Teuchos::RefCountPtr<const EpetraVectorSpace>   *epetraRange    = NULL
+		,Teuchos::RefCountPtr<const EpetraVectorSpace>   *epetraDomain   = NULL
 		);
 
   ///
@@ -164,20 +182,18 @@ public:
 
 	///
 	bool opSupported(ETransp M_trans) const;
-	///
-	Teuchos::RefCountPtr<const VectorSpace<Scalar> > range() const;
-	///
-	Teuchos::RefCountPtr<const VectorSpace<Scalar> > domain() const;
 	
 	//@}
 	
-	/** @name Overridden from LinearOp */
+	/** @name Overridden from EuclideanLinearOpBase */
 	//@{
-	
+
+	/// Returns <tt>this->epetraRange()</tt>
+	Teuchos::RefCountPtr< const ScalarProdVectorSpaceBase<Scalar> > rangeScalarProdVecSpc() const;
+	/// Returns <tt>this->epetraDomain()</tt>
+	Teuchos::RefCountPtr< const ScalarProdVectorSpaceBase<Scalar> > domainScalarProdVecSpc() const;
 	///
-	Teuchos::RefCountPtr<const LinearOp<Scalar> > clone() const;
-	///
-	void apply(
+	void euclideanApply(
 		const ETransp            M_trans
 		,const Vector<Scalar>    &x
 		,Vector<Scalar>          *y
@@ -185,7 +201,7 @@ public:
 		,const Scalar            beta
 		) const;
 	///
-	void apply(
+	void euclideanApply(
 		const ETransp                 M_trans
 		,const MultiVector<Scalar>    &X
 		,MultiVector<Scalar>          *Y
@@ -194,7 +210,14 @@ public:
 		) const;
 
 	//@}
+	
+	/** @name Overridden from LinearOp */
+	//@{
 
+	///
+	Teuchos::RefCountPtr<const LinearOp<Scalar> > clone() const;
+
+	//@}
   
 protected:
 
