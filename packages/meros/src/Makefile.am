@@ -102,6 +102,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src \
               -I$(top_srcdir)/../TSF/src/VectorSpaces     \
               -I$(top_srcdir)/../TSF/src/LinearSolvers    \
               -I$(top_srcdir)/../aztecoo/src              \
+              -I$(top_srcdir)/../ml/Obj                   \
               -I$(top_builddir)/../TSF/src/LinearOperators  \
               -I$(top_builddir)/../TSF/src/Implementations  \
               -I$(top_builddir)/../TSF/src/LinearProblem    \
@@ -110,7 +111,8 @@ AM_CPPFLAGS = -I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src \
               -I$(top_builddir)/../TSF/src/Preconditioners  \
               -I$(top_builddir)/../TSF/src/VectorSpaces     \
               -I$(top_builddir)/../TSF/src/LinearSolvers    \
-              -I$(top_builddir)/../aztecoo/src              
+              -I$(top_builddir)/../aztecoo/src              \
+              -I$(top_builddir)/../ml/Obj   
 
 # ------------------------------------------------------------------------
 # meros  library specifications
