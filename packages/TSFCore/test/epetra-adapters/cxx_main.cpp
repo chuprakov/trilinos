@@ -22,7 +22,7 @@
 //#define EPETRA_ADAPTERS_EPETRA_ONLY
 
 // Define this if you want to exclude opeations with Epetra_Operator
-#define EPETRA_ADAPTERS_EXCLUDE_EPETRA_OPERATOR
+//#define EPETRA_ADAPTERS_EXCLUDE_EPETRA_OPERATOR
 
 //
 // Some helper functions
@@ -295,14 +295,14 @@ int main_body( int argc, char* argv[] ) {
 				<< "\n***\n";
 
 		if(verbose) out << "\nPerforming ev1 = ev2 ...\n";
-		timer.start();
+		timer.start(true);
  		assign( &*ev1, *ev2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(ev1)",norm_1(*ev1),"norm_1(ev2)",ev2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming eV1 = eV2 ...\n";
-		timer.start();
+		timer.start(true);
  		assign( &*eV1, *eV2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
@@ -311,42 +311,42 @@ int main_body( int argc, char* argv[] ) {
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 
 		if(verbose) out << "\nPerforming ev1 = nev2 ...\n";
-		timer.start();
+		timer.start(true);
  		assign( &*ev1, *nev2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(ev1)",norm_1(*ev1),"norm_1(nev2)",nev2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming nev1 = ev2 ...\n";
-		timer.start();
+		timer.start(true);
  		assign( &*nev1, *ev2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(nev1)",norm_1(*nev1),"norm_1(ev2)",ev2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming nev1 = nev2 ...\n";
-		timer.start();
+		timer.start(true);
  		assign( &*nev1, *nev2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(nev1)",norm_1(*nev1),"norm_1(nev2)",nev2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming eV1 = neV2 ...\n";
-		timer.start();
+		timer.start(true);
  		assign( &*eV1, *neV2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(eV1)",norm_1(*eV1),"norm_1(neV2)",neV2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming neV1 = eV2 ...\n";
-		timer.start();
+		timer.start(true);
  		assign( &*neV1, *eV2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(neV1)",norm_1(*neV1),"norm_1(eV2)",eV2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming neV1 = neV2 ...\n";
-		timer.start();
+		timer.start(true);
  		assign( &*neV1, *neV2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
@@ -383,7 +383,7 @@ int main_body( int argc, char* argv[] ) {
 			dyn_cast<EpetraMultiVector>(*T).setUninitialized(&eT,&eT_range,&eT_domain);
 
 			if(verbose) out << "\nPerforming eeV1'*eeV2 ...\n";
-			timer.start();
+			timer.start(true);
 			eT->Multiply( 'T', 'N', 1.0, eeV1, eeV2, 0.0 );
 			timer.stop();
 			if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
@@ -401,7 +401,7 @@ int main_body( int argc, char* argv[] ) {
 				<< "\n***\n";
 
 		if(verbose) out << "\nPerforming eV1'*eV2 ...\n";
-		timer.start();
+		timer.start(true);
 		eV1->apply( TRANS, *eV2, &*T );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
@@ -411,7 +411,7 @@ int main_body( int argc, char* argv[] ) {
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 
 		if(verbose) out << "\nPerforming neV1'*eV2 ...\n";
-		timer.start();
+		timer.start(true);
 		neV1->apply( TRANS, *eV2, &*T );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
@@ -419,7 +419,7 @@ int main_body( int argc, char* argv[] ) {
 		if(verbose && dumpAll) out << "\nneV1'*eV2 =\n" << *T;
 
 		if(verbose) out << "\nPerforming eV1'*neV2 ...\n";
-		timer.start();
+		timer.start(true);
 		eV1->apply( TRANS, *neV2, &*T );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
@@ -427,7 +427,7 @@ int main_body( int argc, char* argv[] ) {
 		if(verbose && dumpAll) out << "\neV1'*neV2 =\n" << *T;
 
 		if(verbose) out << "\nPerforming neV1'*neV2 ...\n";
-		timer.start();
+		timer.start(true);
 		neV1->apply( TRANS, *neV2, &*T );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
@@ -468,13 +468,8 @@ int main_body( int argc, char* argv[] ) {
 
 		RefCountPtr<const LinearOp<Scalar> >
 			Op = rcp(new EpetraLinearOp(epetra_op));
-		
-		if(verbose)
-			out
-				<< "\n***"
-				<< "\n*** Mix and match vector and Multi-vectors with Epetra opeator"
-				<< "\n***\n";
-		
+
+
 		RefCountPtr<Vector<Scalar> >
 			ey  = epetra_vs->createMember();
 		RefCountPtr<MultiVector<Scalar> >
@@ -486,15 +481,54 @@ int main_body( int argc, char* argv[] ) {
 			neY = non_epetra_vs->createMembers(num_mv_cols);
 #endif
 
+		if(verbose)
+			out
+				<< "\n***"
+				<< "\n*** Test Epetra_Operator::Apply(...) using raw Epetra objects"
+				<< "\n***\n";
+
+		if(1) {
+
+			// Get constant references to Epetra_MultiVector objects in eV1 and eV2
+			const Epetra_MultiVector
+				&eeV1
+				= *dyn_cast<const EpetraMultiVector>(const_cast<const MultiVector<Scalar>&>(*eV1)).epetra_multi_vec();
+
+			// Get the Epetra_MultiVector object inside of T to be modified.  Note that the following is the recommended
+			// way to do this since it gives the greatest flexibility in the implementation of TSFCore::EpetraMultiVector.
+			RefCountPtr<Epetra_MultiVector>  eeY;
+			RefCountPtr<const EpetraVectorSpace> eY_range, eY_domain;
+			dyn_cast<EpetraMultiVector>(*eY).setUninitialized(&eeY,&eY_range,&eY_domain);
+
+			if(verbose) out << "\nPerforming eeY = 2 * eOp * eeV1 ...\n";
+			epetra_op->SetUseTranspose(false);
+			timer.start(true);
+			epetra_op->Apply( eeV1, *eeY );
+			eeY->Scalar(2.0);
+			timer.stop();
+			if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
+
+			dyn_cast<EpetraMultiVector>(*eY).initialize(eeY,eY_range,eY_domain);
+
+			if(verbose) out << "  norm_1(eeY) = " << norm_1(*eY) << std::endl;
+			
+		}
+		
+		if(verbose)
+			out
+				<< "\n***"
+				<< "\n*** Mix and match vector and Multi-vectors with Epetra opeator"
+				<< "\n***\n";
+		
 		if(verbose) out << "\nPerforming ey = 2*Op*ev1 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *ev1, &*ey, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(verbose) out << "  norm_1(ey) = " << norm_1(*ey) << std::endl;
 
 		if(verbose) out << "\nPerforming eY = 2*Op*eV1 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *eV1, &*eY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
@@ -503,42 +537,42 @@ int main_body( int argc, char* argv[] ) {
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 
 		if(verbose) out << "\nPerforming ney = 2*Op*ev1 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *ev1, &*ney, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(verbose) out << "  norm_1(ney) = " << norm_1(*ney) << std::endl;
 
 		if(verbose) out << "\nPerforming neY = 2*Op*eV1 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *eV1, &*neY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(verbose) out << "  norm_1(neY) = " << norm_1(*neY) << std::endl;
 
 		if(verbose) out << "\nPerforming ey = 2*Op*nev1 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *nev1, &*ey, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(verbose) out << "  norm_1(ey) = " << norm_1(*ey) << std::endl;
 
 		if(verbose) out << "\nPerforming eY = 2*Op*neV1 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *neV1, &*eY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(verbose) out << "  norm_1(eY) = " << norm_1(*eY) << std::endl;
 
 		if(verbose) out << "\nPerforming ney = 2*Op*nev1 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *nev1, &*ney, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(verbose) out << "  norm_1(ney) = " << norm_1(*ney) << std::endl;
 
 		if(verbose) out << "\nPerforming neY = 2*Op*neV1 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *neV1, &*neY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
@@ -566,14 +600,14 @@ int main_body( int argc, char* argv[] ) {
 #endif
 
 		if(verbose) out << "\nPerforming eY_v1 = 2*Op*eV1_v1 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *eV1_v1, &*eY->subView(col_rng), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(verbose) out << "  norm_1(eY) = " << norm_1(*eY->subView(col_rng)) << std::endl;
 
 		if(verbose) out << "\nPerforming eY_v2 = 2*Op*eV1_v2 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *eV1_v2, &*eY->subView(numCols,cols), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
@@ -582,28 +616,28 @@ int main_body( int argc, char* argv[] ) {
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 
 		if(verbose) out << "\nPerforming neY_v1 = 2*Op*eV1_v1 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *eV1_v1, &*neY->subView(col_rng), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(verbose) out << "  norm_1(eY) = " << norm_1(*neY->subView(col_rng)) << std::endl;
 
 		if(verbose) out << "\nPerforming eY_v1 = 2*Op*neV1_v1 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *neV1_v1, &*eY->subView(col_rng), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(verbose) out << "  norm_1(eY) = " << norm_1(*eY->subView(col_rng)) << std::endl;
 
 		if(verbose) out << "\nPerforming neY_v2 = 2*Op*eV1_v2 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *eV1_v2, &*neY->subView(numCols,cols), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(verbose) out << "  norm_1(eY) = " << norm_1(*neY->subView(numCols,cols)) << std::endl;
 
 		if(verbose) out << "\nPerforming eY_v2 = 2*Op*neV1_v2 ...\n";
-		timer.start();
+		timer.start(true);
 		Op->apply( NOTRANS, *neV1_v2, &*eY->subView(numCols,cols), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";

@@ -15,10 +15,22 @@ TSFCore::get_Epetra_MultiVector(
 {
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(
-		vs.isCompatible(*mv->range()), Exceptions::IncompatibleVectorSpaces
+		!vs.isCompatible(*mv->range()), Exceptions::IncompatibleVectorSpaces
 		,"TSFCore::get_Epetra_MultiVector(vs,mv): Error, must have compatible vector spaces!"
 		);
 #endif
+	//
+	// First try to dynamic_cast to get the Epetra object directly
+	// since this has proven to be the fastest way.  Note, it is not
+	// trivial to create an Epetra view of an object and a lot of
+	// dynamic memory allocations have to be performed to make this
+	// work.  One must be very careful not to create
+	// Epetra_MultiVector or Epetra_Vector objects on the fly!
+	//
+	EpetraMultiVector
+		*epetra_mv_adapter = dynamic_cast<EpetraMultiVector*>(&*mv);
+	if(epetra_mv_adapter)
+		return epetra_mv_adapter->epetra_multi_vec(); // Note, this is dangerous!
 	//
 	// The assumption that we (rightly) make here is that if the
 	// vector spaces are compatible, that either the multi-vectors are
@@ -83,10 +95,22 @@ TSFCore::get_Epetra_MultiVector(
 {
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(
-		vs.isCompatible(*mv->range()), Exceptions::IncompatibleVectorSpaces
+		!vs.isCompatible(*mv->range()), Exceptions::IncompatibleVectorSpaces
 		,"TSFCore::get_Epetra_MultiVector(vs,mv): Error, must have compatible vector spaces!"
 		);
 #endif
+	//
+	// First try to dynamic_cast to get the Epetra object directly
+	// since this has proven to be the fastest way.  Note, it is not
+	// trivial to create an Epetra view of an object and a lot of
+	// dynamic memory allocations have to be performed to make this
+	// work.  One must be very careful not to create
+	// Epetra_MultiVector or Epetra_Vector objects on the fly!
+	//
+	const EpetraMultiVector
+		*epetra_mv_adapter = dynamic_cast<const EpetraMultiVector*>(&*mv);
+	if(epetra_mv_adapter)
+		return epetra_mv_adapter->epetra_multi_vec();
 	//
 	// Same as above function except as stated below
 	//

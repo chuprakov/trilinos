@@ -40,16 +40,14 @@ bool MPIVectorSpaceBase<Scalar>::isInCore() const
 }
 
 template<class Scalar>
-bool MPIVectorSpaceBase<Scalar>::isCompatible(const VectorSpace<Scalar>& vecSpc ) const
+bool MPIVectorSpaceBase<Scalar>::isCompatible( const VectorSpace<Scalar>& vecSpc ) const
 {
-	if(isInCore() && vecSpc.isInCore() ) {
+	if( isInCore() && vecSpc.isInCore() )
 		return this->dim() == vecSpc.dim();
-	}
 	const MPIVectorSpaceBase<Scalar>
 		*mpiVecSpc = dynamic_cast<const MPIVectorSpaceBase<Scalar>*>(&vecSpc);
-	if(mpiVecSpc) {
+	if(mpiVecSpc)
 		return mapCode() == mpiVecSpc->mapCode();
-	}
 	return false;
 }
 

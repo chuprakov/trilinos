@@ -12,10 +12,13 @@
 #include "RTOpCppToMPI.hpp"
 #include "WorkspacePack.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "Teuchos_BLAS.hpp"
+#include "Teuchos_Time.hpp"
 #ifdef RTOp_USE_MPI
 #  include "Teuchos_RawMPITraits.hpp"
 #endif
+
+// Define to see some timing output!
+//#define TSFCORE_MPI_MULTI_VECTOR_BASE_PRINT_TIMES
 
 namespace TSFCore {
 
@@ -66,6 +69,12 @@ void MPIMultiVectorBase<Scalar>::apply(
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
+
+#ifdef TSFCORE_MPI_MULTI_VECTOR_BASE_PRINT_TIMES
+	Teuchos::Time timerTotal("dummy",true);
+	Teuchos::Time timer("dummy");
+#endif
+
 	//
 	// This function performs one of two operations.
 	//
@@ -106,8 +115,6 @@ void MPIMultiVectorBase<Scalar>::apply(
 		( globalDim_ > localSubDim_ ) && mpiComm == MPI_COMM_NULL, std::logic_error
 		,"MPIMultiVectorBase<Scalar>::apply(...MultiVector<Scalar>...): Error!"
 		);
-#endif
-
 	// ToDo: Write a good general validation function that I can call tha will replace
 	// all of these TEST_FOR_EXCEPTION(...) uses
 
@@ -119,10 +126,15 @@ void MPIMultiVectorBase<Scalar>::apply(
 		M_trans==TRANS && !mpiSpc.isCompatible(X_range), Exceptions::IncompatibleVectorSpaces
 		,"MPIMultiVectorBase<Scalar>::apply(...MultiVector<Scalar>...): Error!"
 		);
+#endif
 
 	//
 	// Get explicit (local) views of Y, M and X
 	//
+
+#ifdef TSFCORE_MPI_MULTI_VECTOR_BASE_PRINT_TIMES
+	timer.start();
+#endif
 		
 	ExplicitMutableMultiVectorView<Scalar>
 		Y_local(
@@ -138,11 +150,15 @@ void MPIMultiVectorBase<Scalar>::apply(
 			);
 	ExplicitMultiVectorView<Scalar>
 		X_local(
-			*this
+			X
 			,M_trans==NOTRANS ? Range1D() : Range1D(localOffset_+1,localOffset_+localSubDim_)
 			,Range1D()
 			);
-		
+#ifdef TSFCORE_MPI_MULTI_VECTOR_BASE_PRINT_TIMES
+	timer.stop();
+	std::cout << "\nMPIMultiVectorBase<Scalar>::apply(...): Time for getting view = " << timer.totalElapsedTime() << " seconds\n";
+#endif
+#ifdef _DEBUG		
 	TEST_FOR_EXCEPTION(
 		M_trans==NOTRANS && ( M_local.numSubCols() != X_local.subDim() || X_local.numSubCols() != Y_local.numSubCols() )
 		, Exceptions::IncompatibleVectorSpaces
@@ -153,6 +169,7 @@ void MPIMultiVectorBase<Scalar>::apply(
 		, Exceptions::IncompatibleVectorSpaces
 		,"MPIMultiVectorBase<Scalar>::apply(...MultiVector<Scalar>...): Error!"
 		);
+#endif
 
 	//
 	// If nonlocal (i.e. M_trans==TRANS) then create temorary storage
@@ -178,6 +195,10 @@ void MPIMultiVectorBase<Scalar>::apply(
 	//      Y_local_tmp = Y_local
 	//      localBeta = beta
 	//
+
+#ifdef TSFCORE_MPI_MULTI_VECTOR_BASE_PRINT_TIMES
+	timer.start();
+#endif
 		
 	wsp::Workspace<Scalar> Y_local_tmp_store(wss,Y_local.subDim()*Y_local.numSubCols());
 	RTOpPack::MutableSubMultiVectorT<Scalar> Y_local_tmp;
@@ -207,6 +228,11 @@ void MPIMultiVectorBase<Scalar>::apply(
 		Y_local_tmp = Y_local.smv(); // Shallow copy only!
 		localBeta = beta;
 	}
+
+#ifdef TSFCORE_MPI_MULTI_VECTOR_BASE_PRINT_TIMES
+	timer.stop();
+	std::cout << "\nMPIMultiVectorBase<Scalar>::apply(...): Time for setting up Y_local_tmp and localBeta = " << timer.totalElapsedTime() << " seconds\n";
+#endif
 		
 	//
 	// Perform the local multiplication:
@@ -217,23 +243,29 @@ void MPIMultiVectorBase<Scalar>::apply(
 	//
 	//     C        = beta      * C        + alpha * op(A)        * op(B)
 	//
-		
-	Teuchos::BLAS<int,Scalar> blas;
-	blas.GEMM(
-		M_trans==NOTRANS ? Teuchos::NO_TRANS : Teuchos::TRANS   // TRANSA
-		,Teuchos::NO_TRANS                                      // TRANSB
-		,Y_local.subDim()                                       // M
-		,Y_local.numSubCols()                                   // N
-		,M_local.numSubCols()                                   // K
-		,alpha                                                  // ALPHA
-		,const_cast<Scalar*>(M_local.values())                  // A
-		,M_local.leadingDim()                                   // LDA
-		,const_cast<Scalar*>(X_local.values())                  // B
-		,X_local.leadingDim()                                   // LDB
-		,localBeta                                              // BETA
-		,Y_local_tmp.values()                                   // C
-		,Y_local_tmp.leadingDim()                               // LDC
+
+#ifdef TSFCORE_MPI_MULTI_VECTOR_BASE_PRINT_TIMES
+	timer.start();
+#endif
+	blas_.GEMM(
+		M_trans==NOTRANS ? Teuchos::NO_TRANS : Teuchos::TRANS        // TRANSA
+		,Teuchos::NO_TRANS                                           // TRANSB
+		,Y_local.subDim()                                            // M
+		,Y_local.numSubCols()                                        // N
+		,M_trans==NOTRANS ? M_local.numSubCols() : M_local.subDim()  // K
+		,alpha                                                       // ALPHA
+		,const_cast<Scalar*>(M_local.values())                       // A
+		,M_local.leadingDim()                                        // LDA
+		,const_cast<Scalar*>(X_local.values())                       // B
+		,X_local.leadingDim()                                        // LDB
+		,localBeta                                                   // BETA
+		,Y_local_tmp.values()                                        // C
+		,Y_local_tmp.leadingDim()                                    // LDC
 		);
+#ifdef TSFCORE_MPI_MULTI_VECTOR_BASE_PRINT_TIMES
+	timer.stop();
+	std::cout << "\nMPIMultiVectorBase<Scalar>::apply(...): Time for GEMM = " << timer.totalElapsedTime() << " seconds\n";
+#endif
 
 #ifdef RTOp_USE_MPI
 		
@@ -269,6 +301,12 @@ void MPIMultiVectorBase<Scalar>::apply(
 
 	// When you get here the view Y_local will be committed back to Y
 	// in the distructor to Y_local
+
+#ifdef TSFCORE_MPI_MULTI_VECTOR_BASE_PRINT_TIMES
+	timer.stop();
+	std::cout << "\nMPIMultiVectorBase<Scalar>::apply(...): Total time = " << timerTotal.totalElapsedTime() << " seconds\n";
+#endif
+
 }
 
 // Overridden from MultiVector

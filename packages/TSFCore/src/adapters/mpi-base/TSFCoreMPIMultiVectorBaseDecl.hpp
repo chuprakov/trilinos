@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "TSFCoreMultiVector.hpp"
+#include "Teuchos_BLAS.hpp"
 
 namespace TSFCore {
 
@@ -190,6 +191,8 @@ private:
 	// Private data members
 	
 	mutable bool in_applyOp_;
+
+	mutable Teuchos::BLAS<int,Scalar> blas_;
 
 	// cached
 	Index  globalDim_;

@@ -9,7 +9,7 @@
 #include "TSFCoreMPIMultiVectorBase.hpp"
 
 // Define this to use Epetra_MultiVector::Multiply(...) to implement apply(...)
-#define TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR_MULTIPLY
+//#define TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR_MULTIPLY
 
 ///
 class Epetra_MultiVector;
