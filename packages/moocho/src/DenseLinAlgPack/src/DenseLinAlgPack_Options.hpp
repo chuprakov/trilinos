@@ -23,6 +23,8 @@
 #include "extended_value_type.h"
 #include "fortran_types.h"
 
+#if !defined(LINALGPACK_NO_CHECKS)
+
 /** @name {\bf LinAlgPack Options}.
   *
   * The header file LinAlgPackOptions.h contains the defines for several macros that
@@ -43,27 +45,26 @@
   * an subregion indexing.  If the preconditions for the subscripting operations are
   * not satisfied then the listed exceptions will be thrown.
   */
-#define LINALGPACK_CHECK_RANGE
+#ifndef LINALGPACK_CHECK_RANGE
+#define LINALGPACK_CHECK_RANGE=1
+#endif
 
 ///
 /** If defined the library code checks to see if the sizes of rhs arguments in expressions are compatible.
   * The exception std::length_error will be thrown if rhs sizes are not compatible.
   */
-#define LINALGPACK_CHECK_RHS_SIZES
+#ifndef LINALGPACK_CHECK_RHS_SIZES
+#define LINALGPACK_CHECK_RHS_SIZES=1
+#endif
 
 ///
 /** If defined the library code checks to see if VectorSlice and GenMatrixSlice objects have valid constructions.
   * If they do not have valid constructions then an exception will be thrown.  The operation of these
   * checks may depend on the definition of the macro \Ref{LINALGPACK_CHECK_RANGE}.
   */
-#define LINALGPACK_CHECK_SLICE_SETUP
-
-#if defined LINALGPACK_NO_CHECKS
-
-// Turn them all off.
-#undef LINALGPACK_CHECK_RANGE
-#undef LINALGPACK_CHECK_RHS_SIZES
-#undef LINALGPACK_CHECK_SLICE_SETUP
+#ifndef LINALGPACK_CHECK_SLICE_SETUP
+#define LINALGPACK_CHECK_SLICE_SETUP=1
+#endif
 
 #endif
 
