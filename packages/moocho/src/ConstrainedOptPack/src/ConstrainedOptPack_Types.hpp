@@ -18,6 +18,7 @@
 
 #include "ConstrainedOptimizationPackDebugAcronyms.h"
 #include "SparseSolverPack/include/SparseSolverPackTypes.h"
+#include "NLPInterfacePack/include/NLPInterfacePackTypes.h"
 #include "NLPInterfacePack/include/NLP.h"
 
 namespace ConstrainedOptimizationPack {
@@ -62,7 +63,8 @@ class MeritFuncNLPModL1;
 //class MatrixSymPosDefInvCholFactor;
 class MatrixSymPosDefCholFactor;
 class MatrixSymPosDefLBFGS;
-//class MatrixSymAddDelBunchKaufman;
+class MatrixSymAddDelBunchKaufman;
+class MatrixSymHessianRelaxNonSing;
 class MatrixIdentConcatStd;
 class DirectLineSearchArmQuad_Strategy;
 class DirectLineSearchArmQuad_StrategySetOptions;
