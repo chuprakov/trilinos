@@ -55,7 +55,9 @@ namespace SparseLinAlgPack {
  * This is not pretty but it is not supposed to be.  Of course the above function will throw
  * an exception if the <tt>dynamic_cast<></tt> fails.
  */
-class VectorWithOpMutableDense : virtual public VectorWithOpMutable {
+class VectorWithOpMutableDense
+	: virtual public AbstractLinAlgPack::VectorWithOpMutable
+{
 public:
 
 	///
@@ -69,7 +71,7 @@ public:
 	/** Calls <tt>this->initialize(dim)</tt>.
 	 */
 	VectorWithOpMutableDense(
-		const size_type                    dim
+		const size_type                    dim = 0
 		);
 	///
 	/** Calls <tt>this->initialize(v,v_release)</tt>.
