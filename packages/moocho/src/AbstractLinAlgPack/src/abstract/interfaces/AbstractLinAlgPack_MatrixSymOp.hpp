@@ -44,14 +44,44 @@ public:
 	///
 	using MatrixWithOp::Mp_StPtMtP;
 
+	/** @name Public types */
+	//@{
+
+#ifndef DOXYGEN_COMPILE
+	///
+	typedef ReferenceCountingPack::ref_count_ptr<const MatrixSymWithOp>    mat_mswo_ptr_t;
+	///
+	typedef ReferenceCountingPack::ref_count_ptr<MatrixSymWithOp>          mat_mswo_mut_ptr_t;
+#endif
 	///
 	enum EMatRhsPlaceHolder { DUMMY_ARG };
 
-	/// Returns <tt>this->rows()</tt>
-	size_type cols() const;
+	//@}
 
-	// Returns <tt>this->space_cols()</tt>
-	const VectorSpace& space_rows() const;
+	/** @name Clone */
+	//@{
+
+	///
+	/** Clone the non-const matrix object (if supported).
+	 *
+	 * The default implementation returns NULL which is perfectly acceptable.
+	 * A matrix object is not required to return a non-NULL value but almost
+	 * every good matrix implementation will.
+	 */
+	virtual mat_mswo_mut_ptr_t clone_mswo();
+
+	///
+	/** Clone the const matrix object (if supported).
+	 *
+	 * The behavior of this method is the same as for the non-const version
+	 * above except it returns a smart pointer to a const matrix object.
+	 */
+	virtual mat_mswo_ptr_t clone_mswo() const;
+
+	//@}
+
+	/** @name Level-1 BLAS */
+	//@{
 
 	///
 	/** sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
@@ -64,8 +94,13 @@ public:
 		MatrixSymWithOp* sym_lhs, value_type alpha
 		,EMatRhsPlaceHolder dummy_place_holder
 		,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
-		,value_type beta = 1.0
+		,value_type beta
 		) const;
+
+	//@}
+
+	/** @name Level-3 BLAS */
+	//@{
 
 	///
 	/** sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs) + beta * sym_lhs.
@@ -78,8 +113,10 @@ public:
 		MatrixSymWithOp* sym_lhs, value_type alpha
 		,EMatRhsPlaceHolder dummy_place_holder
 		,const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
-		,value_type beta = 1.0
+		,value_type beta
 		) const;
+
+	//@}
 
 	/// Hack!
 	MatrixSymWithOp& operator=(const MatrixSymWithOp& M)
@@ -87,6 +124,18 @@ public:
 		MatrixWithOp::operator=(M);
 		return *this;
 	}
+
+	/** Overridden from MatrixWithOp */
+	//@{
+	/// Returns <tt>this->rows()</tt>
+	size_type cols() const;
+	// Returns <tt>this->space_cols()</tt>
+	const VectorSpace& space_rows() const;
+	/// Returns <tt>this->clone_mswo()</tt>.
+	mat_mut_ptr_t clone();
+	/// Returns <tt>this->clone_mswo()</tt>.
+	mat_ptr_t clone() const;
+	//@}
 
 };	// end class MatrixSymWithOp
 

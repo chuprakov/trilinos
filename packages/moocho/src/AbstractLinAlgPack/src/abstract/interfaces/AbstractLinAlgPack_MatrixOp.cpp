@@ -71,6 +71,22 @@ std::ostream& MatrixWithOp::output(std::ostream& out) const
 	return out;
 }
 
+// Clone
+
+MatrixWithOp::mat_mut_ptr_t
+MatrixWithOp::clone()
+{
+	return NULL;
+}
+
+MatrixWithOp::mat_ptr_t
+MatrixWithOp::clone() const
+{
+	return NULL;
+}
+
+// Subview
+
 MatrixWithOp::mat_ptr_t
 MatrixWithOp::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {

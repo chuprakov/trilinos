@@ -23,6 +23,20 @@
 
 namespace AbstractLinAlgPack {
 
+// Clone
+
+MatrixNonsingular::mat_mns_mut_ptr_t
+MatrixNonsingular::clone_mns()
+{
+	return NULL;
+}
+
+MatrixNonsingular::mat_mns_ptr_t
+MatrixNonsingular::clone_mns() const
+{
+	return NULL;
+}
+
 // Level-2 BLAS
 
 void MatrixNonsingular::V_InvMtV(
@@ -37,6 +51,7 @@ value_type MatrixNonsingular::transVtInvMtV(
 	) const
 {
 	assert(0); // ToDo: Implement!
+	return 0.0;
 }
 
 value_type MatrixNonsingular::transVtInvMtV(
@@ -44,6 +59,7 @@ value_type MatrixNonsingular::transVtInvMtV(
 	) const
 {
 	assert(0); // ToDo: Implement!
+	return 0.0;
 }
 
 // Level-3 BLAS

@@ -20,11 +20,37 @@
 
 namespace AbstractLinAlgPack {
 
+MatrixSymNonsingular::mat_msns_mut_ptr_t
+MatrixSymNonsingular::clone_msns()
+{
+	return NULL;
+}
+
+MatrixSymNonsingular::mat_msns_ptr_t
+MatrixSymNonsingular::clone_msns() const
+{
+	return NULL;
+}
+
 void MatrixSymNonsingular::M_StMtInvMtM(
 	  MatrixSymWithOp* S, value_type a, const MatrixWithOp& B
 	, BLAS_Cpp::Transp B_trans, EMatrixDummyArg ) const
 {
 	assert(0); // ToDo: Implement!
+}
+
+// Overridden from MatrixNonsingular
+
+MatrixSymNonsingular::mat_mns_mut_ptr_t
+MatrixSymNonsingular::clone_mns()
+{
+	return clone_msns();
+}
+
+MatrixSymNonsingular::mat_mns_ptr_t
+MatrixSymNonsingular::clone_mns() const
+{
+	return clone_msns();
 }
 
 }	// end namespace AbstractLinAlgPack

@@ -20,14 +20,16 @@
 
 namespace AbstractLinAlgPack {
 
-size_type MatrixSymWithOp::cols() const
+MatrixSymWithOp::mat_mswo_mut_ptr_t
+MatrixSymWithOp::clone_mswo()
 {
-	return this->rows();
+	return NULL;
 }
 
-const VectorSpace& MatrixSymWithOp::space_rows() const
+MatrixSymWithOp::mat_mswo_ptr_t
+MatrixSymWithOp::clone_mswo() const
 {
-	return this->space_cols();
+	return NULL;
 }
 
 void MatrixSymWithOp::Mp_StPtMtP(
@@ -46,6 +48,31 @@ void MatrixSymWithOp::Mp_StMtMtM(
 	, value_type beta ) const
 {
 	assert(0); // ToDo: Implement!
+}
+
+// Overridden from MatrixWithOp
+
+
+size_type MatrixSymWithOp::cols() const
+{
+	return this->rows();
+}
+
+const VectorSpace& MatrixSymWithOp::space_rows() const
+{
+	return this->space_cols();
+}
+
+MatrixSymWithOp::mat_mut_ptr_t
+MatrixSymWithOp::clone()
+{
+	return clone_mswo();
+}
+
+MatrixSymWithOp::mat_ptr_t
+MatrixSymWithOp::clone() const
+{
+	return clone_mswo();
 }
 
 }	// end namespace AbstractLinAlgPack 

@@ -17,6 +17,7 @@
 #define ABSTRACT_LINALG_PACK_MATRIX_NONSINGULAR_H
 
 #include "MatrixBase.h"
+#include "ref_count_ptr.h"
 
 namespace AbstractLinAlgPack {
 
@@ -70,6 +71,40 @@ namespace AbstractLinAlgPack {
  */
 class MatrixNonsingular : public virtual MatrixBase {
 public:
+
+	/** @name Public types */
+	//@{
+
+#ifndef DOXYGEN_COMPILE
+	///
+	typedef ReferenceCountingPack::ref_count_ptr<const MatrixNonsingular>    mat_mns_ptr_t;
+	///
+	typedef ReferenceCountingPack::ref_count_ptr<MatrixNonsingular>          mat_mns_mut_ptr_t;
+#endif
+
+	//@}
+
+	/** @name Clone */
+	//@{
+
+	///
+	/** Clone the non-const matrix object (if supported).
+	 *
+	 * The default implementation returns NULL which is perfectly acceptable.
+	 * A matrix object is not required to return a non-NULL value but almost
+	 * every good matrix implementation will.
+	 */
+	virtual mat_mns_mut_ptr_t clone_mns();
+
+	///
+	/** Clone the const matrix object (if supported).
+	 *
+	 * The behavior of this method is the same as for the non-const version
+	 * above except it returns a smart pointer to a const matrix object.
+	 */
+	virtual mat_mns_ptr_t clone_mns() const;
+
+	//@}
 
 	/** @name Level-2 BLAS */
 	//@{

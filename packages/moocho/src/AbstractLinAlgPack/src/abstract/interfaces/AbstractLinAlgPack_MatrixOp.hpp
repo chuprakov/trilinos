@@ -109,9 +109,14 @@ namespace AbstractLinAlgPack {
 class MatrixWithOp : public virtual MatrixBase {
 public:
 
+	/** @name Public types */
+	//@{
+
 #ifndef DOXYGEN_COMPILE
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOp>    mat_ptr_t;
+	///
+	typedef ReferenceCountingPack::ref_count_ptr<MatrixWithOp>          mat_mut_ptr_t;
 #endif
 
 	/// Thrown if a method is not implemented
@@ -122,7 +127,9 @@ public:
 	class IncompatibleMatrices : public std::logic_error
 	{public: IncompatibleMatrices(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-	/** @name Vector spaces for the rows and columns of the matrix */
+	//@}
+
+	/** @name Vector spaces for the columns and rows of the matrix */
 	//@{
 
 	/// Vector space for vectors that are compatible with the columns of the matrix.
@@ -168,6 +175,34 @@ public:
 	  * object from a compatible <tt>M</tt> matrix object.
 	  */
 	virtual MatrixWithOp& operator=(const MatrixWithOp& mwo_rhs);
+
+	//@}
+
+	/** @name Clone */
+	//@{
+
+	///
+	/** Clone the non-const matrix object (if supported).
+	 *
+	 * The primary purpose for this method is to allow a client to capture the
+	 * current state of a matrix object and be guaranteed that some other client
+	 * will not alter its behavior.  A smart implementation will use reference
+	 * counting and lazy evaluation internally and will not actually copy any
+	 * large amount of data unless it has to.
+	 *
+	 * The default implementation returns NULL which is perfectly acceptable.
+	 * A matrix object is not required to return a non-NULL value but almost
+	 * every good matrix implementation will.
+	 */
+	virtual mat_mut_ptr_t clone();
+
+	///
+	/** Clone the const matrix object (if supported).
+	 *
+	 * The behavior of this method is the same as for the non-const version
+	 * above except it returns a smart pointer to a const matrix object.
+	 */
+	virtual mat_ptr_t clone() const;
 
 	//@}
 
@@ -420,7 +455,7 @@ public:
 	 *
 	 * The default implementation relays on <tt>dynamic_cast<MultiVectorSymMutable*>(sym_lhs)</tt>
 	 * is based on <tt>this->Vp_StMtV()</tt>.  If \c dynamic_cast returns \c NULL, the this
-	 * default implementation throws \c MethodNotDefined.  Of course in situations where this
+	 * default implementation throws \c MethodNotImplemented.  Of course in situations where this
 	 * default implemention is inefficient the subclass should override this method.
 	 */
 	virtual void syrk(
