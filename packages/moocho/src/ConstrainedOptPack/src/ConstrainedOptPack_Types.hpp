@@ -17,11 +17,13 @@
 #define CONSTRAINED_OPTIMIZATION_PACK_TYPES_H
 
 #include "ConstrainedOptimizationPackDebugAcronyms.h"
+#include "SparseLinAlgPack/include/SparseLinAlgPackTypes.h"
 //#include "SparseSolverPack/include/SparseSolverPackTypes.h"
 #include "NLPInterfacePack/include/NLP.h"
 
 namespace ConstrainedOptimizationPack {
 
+#include "SparseLinAlgPack/include/SparseLinAlgPackPublicTypes.ud"
 //#include "SparseSolverPack/include/SparseSolverPackPublicTypes.ud"
 #include "NLPInterfacePack/include/NLPInterfacePackPublicTypes.ud"
 

@@ -27,8 +27,8 @@ namespace ConstrainedOptimizationPack {
  * More operations will be overridden as they are needed by various applications.
  */
 class MatrixSymIdentitySerial
-	: public MatrixSymWithOpNonsingularSerial
-	, public MatrixExtractInvCholFactor
+	: virtual public MatrixSymWithOpNonsingularSerial
+	, virtual public MatrixExtractInvCholFactor
 {
 public:
 	
