@@ -17,6 +17,9 @@
 #define MAT_VEC_COMPARE_H
 
 #include <limits>
+#ifdef _GNU_GXX30
+#include <cmath>
+#endif
 
 #ifdef _WINDOWS
 #else

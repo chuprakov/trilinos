@@ -109,4 +109,4 @@ public:
 
 }  // end namespace ReducedSpaceSQPPack
 
-#endif BFGS_UPDATE_STRATEGY_H
+#endif // BFGS_UPDATE_STRATEGY_H

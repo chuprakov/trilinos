@@ -769,6 +769,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 										new SparseSolverPack::MA28SparseCOOSolverSetOptions ) )
 								,const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_) ) ) );
 #else
+				throw std::logic_error(
+					"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : MA28 is not supported,"
+					" must define SPARSE_SOLVER_PACK_USE_MA28!" );
 				assert(0);
 #endif
 			}
@@ -783,11 +786,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 										new SparseSolverPack::MA48SparseCOOSolverSetOptions ) )
 							,const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_) ) ) );
 #else
+				throw std::logic_error(
+					"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : MA48 is not supported,"
+					" must define SPARSE_SOLVER_PACK_USE_MA48!" );
 				assert(0);
 #endif
 			}
 			else {
-				assert(0);
+				assert(0); // Local programming error only!
 			}
 
 			// Note, the switch statement based code for the above if statements would not
