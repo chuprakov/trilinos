@@ -133,6 +133,7 @@ private:
 		EHessianInitialization	hessian_initialization_;
 		// QP subproblem solvers
 		EQPSolverType			qp_solver_type_;
+		bool                    reinit_hessian_on_qp_fail_;
 		// Line search methods
 		ELineSearchMethod		line_search_method_;
 		EMeritFunctionType		merit_function_type_;

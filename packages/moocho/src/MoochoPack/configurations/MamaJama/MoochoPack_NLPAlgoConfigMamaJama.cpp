@@ -93,6 +93,7 @@
 #include "ReducedSpaceSQPPack/include/std/CheckBasisFromPy_Step.h"
 #include "ReducedSpaceSQPPack/include/std/IndepDirecWithoutBounds_Step.h"
 #include "ReducedSpaceSQPPack/include/std/SetDBoundsStd_AddedStep.h"
+#include "ReducedSpaceSQPPack/include/std/QPFailureReinitReducedHessian_Step.h"
 #include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_Step.h"
 #include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/IndepDirecExact_Step.h"
@@ -159,23 +160,24 @@ namespace ReducedSpaceSQPPack {
 //
 rSQPAlgo_ConfigMamaJama::SOptionValues::SOptionValues()
 	:
-		  direct_linear_solver_type_(LA_AUTO)
-		, null_space_matrix_type_(NULL_SPACE_MATRIX_AUTO)
-		, range_space_matrix_type_(RANGE_SPACE_MATRIX_AUTO)
-		, max_basis_cond_change_frac_(-1.0)
-		, exact_reduced_hessian_(false)
-		, quasi_newton_(QN_AUTO)
-		, max_dof_quasi_newton_dense_(-1)
-		, num_lbfgs_updates_stored_(-1)
-		, lbfgs_auto_scaling_(true)
-		, hessian_initialization_(INIT_HESS_AUTO)
-		, qp_solver_type_(QP_AUTO)
-		, line_search_method_(LINE_SEARCH_AUTO)
-		, merit_function_type_(MERIT_FUNC_AUTO)
-		, l1_penalty_param_update_(L1_PENALTY_PARAM_AUTO)
-		, full_steps_after_k_(-1)
-		, print_qp_error_(false)
-		, correct_bad_init_guess_(false)
+	direct_linear_solver_type_(LA_AUTO)
+	, null_space_matrix_type_(NULL_SPACE_MATRIX_AUTO)
+	, range_space_matrix_type_(RANGE_SPACE_MATRIX_AUTO)
+	, max_basis_cond_change_frac_(-1.0)
+	, exact_reduced_hessian_(false)
+	, quasi_newton_(QN_AUTO)
+	, max_dof_quasi_newton_dense_(-1)
+	, num_lbfgs_updates_stored_(-1)
+	, lbfgs_auto_scaling_(true)
+	, hessian_initialization_(INIT_HESS_AUTO)
+	, qp_solver_type_(QP_AUTO)
+	, reinit_hessian_on_qp_fail_(true)
+	, line_search_method_(LINE_SEARCH_AUTO)
+	, merit_function_type_(MERIT_FUNC_AUTO)
+	, l1_penalty_param_update_(L1_PENALTY_PARAM_AUTO)
+	, full_steps_after_k_(-1)
+	, print_qp_error_(false)
+	, correct_bad_init_guess_(false)
 {}
 
 rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
@@ -1244,13 +1246,31 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 				// Set the step objects
 
+				if( trase_out ) {
+					*trase_out
+						<< "\n\nreinit_hessian_on_qp_fail = " << (cov_.reinit_hessian_on_qp_fail_ ? "true" : "false");
+					if(cov_.reinit_hessian_on_qp_fail_)
+						*trase_out
+							<< "\nThe algorithm will not reinitalize the reduced hessian if the QP subproblem fails"
+							<< "\nIt will just be a QPFailure exception thrown\n";
+					else
+						*trase_out
+							<< "\nThe algorithm will reinitalize the reduced hessian if the QP subproblem fails"
+							<< "\nand will not throw a QPFailure exception the first time\n";
+				}
+				rSQPAlgo_Step
+					*_indep_direc_step = NULL;
+				if(cov_.reinit_hessian_on_qp_fail_)
+					_indep_direc_step = new QPFailureReinitReducedHessian_Step(indep_direct_step); // Will clean up memory!
+				else
+					_indep_direc_step = indep_direct_step;
 				Algorithm::poss_type poss;
 				poss = algo->get_step_poss(IndepDirec_name);
 				algo->remove_step( poss );	// remove any pre or post steps also
 				algo->insert_step(
-					  poss
-					, IndepDirec_name
-					, indep_direct_step	// Will clean up memory!
+					poss
+					,IndepDirec_name
+					,_indep_direc_step // Will clean up memory!
 					);
 				algo->insert_assoc_step(
 					 poss
@@ -1622,7 +1642,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 	if( OptionsFromStream::options_group_exists( optgrp ) ) {
 
 		// Define map for options group "MamaJama".
-		const int num_opts = 14;
+		const int num_opts = 15;
 		enum EMamaJama {
 			DIRECT_LINEAR_SOLVER
 			,NULL_SPACE_MATRIX
@@ -1635,6 +1655,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 			,LBFGS_AUTO_SCALING
 			,HESSIAN_INITIALIZATION
 			,QP_SOLVER
+			,REINIT_HESSIAN_ON_QP_FAIL
 			,LINE_SEARCH_METHOD
 			,MERIT_FUNCTION_TYPE
 			,L1_PENALTY_PARAM_UPDATE
@@ -1651,6 +1672,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 			,"lbfgs_auto_scaling"
 			,"hessian_initialization"
 			,"qp_solver"
+			,"reinit_hessian_on_qp_fail"
 			,"line_search_method"
 			,"merit_function_type"
 			,"l1_penalty_parameter_update"
@@ -1785,6 +1807,9 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 							"Only qp solvers QPOPT, QPSOL, QPKWIK, QPSCHUR and AUTO are avalible."	);
 					break;
 				}
+				case REINIT_HESSIAN_ON_QP_FAIL:
+					ov->reinit_hessian_on_qp_fail_ = StringToBool( "reinit_hessian_on_qp_fail", ofsp::option_value(itr).c_str() );
+					break;
 				case LINE_SEARCH_METHOD:
 				{
 					const std::string &option = ofsp::option_value(itr);

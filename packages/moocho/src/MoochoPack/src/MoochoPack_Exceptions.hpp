@@ -5,6 +5,7 @@
 #define REDUCED_SPACE_SQP_PACK_EXCEPTIONS_H
 
 #include "ReducedSpaceSQPPackTypes.h"
+#include "ConstrainedOptimizationPack/include/QPSolverStats.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -20,6 +21,17 @@ class LineSearchFailure : public std::runtime_error
 class TestFailed : public std::runtime_error
 {public: TestFailed(const std::string& what_arg) : std::runtime_error(what_arg){}};
 
+/// Thrown if a the QP failed and was not corredted
+class QPFailure : public std::runtime_error
+{
+public:
+	QPFailure(const std::string& what_arg
+			  , const ConstrainedOptimizationPack::QPSolverStats& _qp_stats)
+		: std::runtime_error(what_arg)
+		, qp_stats(_qp_stats)
+		{}
+	ConstrainedOptimizationPack::QPSolverStats qp_stats;
+};
 
 }	// end namespace ReducedSpaceSQPPack 
 
