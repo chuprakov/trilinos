@@ -840,7 +840,8 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 	// P is not sorted properly, we will just use the default
 	// implementation of this operation.
 	if( 	( P.ordered_by() == GPMSIP::BY_ROW && P_trans == BLAS_Cpp::no_trans )
-	    || 	( P.ordered_by() == GPMSIP::BY_COL && P_trans == BLAS_Cpp::trans ) )
+	    || 	( P.ordered_by() == GPMSIP::BY_COL && P_trans == BLAS_Cpp::trans )
+		||  ( P.ordered_by() == GPMSIP::UNORDERED ) )
 	{
 		// Call the default implementation
 		MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,beta);

@@ -112,7 +112,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	typedef QPSchurPack::ConstraintsRelaxedStd constr_t;
 
 #ifdef PROFILE_HACK_ENABLED
-	ProfileHackPack::ProfileTiming profile_timing( "QPSolverRelaxedQPSchur::imp_solve_qp()" );
+	ProfileHackPack::ProfileTiming profile_timing( "QPSolverRelaxedQPSchur::imp_solve_qp(...)" );
 #endif
 
 	const size_type
