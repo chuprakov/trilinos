@@ -164,7 +164,7 @@ void VectorWithOpMutable::get_sub_vector(
 {
 	// Here we get a copy of the data for the sub-vector that the client will
 	// modify.  We must later commit these changes to the actual vector
-	// when the client calls free_sub_vector(...).
+	// when the client calls commit_sub_vector(...).
 	// Note, this implementation is very dependent on the behavior of the default
 	// implementation of VectorWithOp::get_sub_vector(...) and
 	// VectorWithOp::set_sub_vector(...)!
@@ -184,7 +184,7 @@ void VectorWithOpMutable::get_sub_vector(
 		);
 }
 
-void VectorWithOpMutable::free_sub_vector( RTOp_MutableSubVector* sub_vec )
+void VectorWithOpMutable::commit_sub_vector( RTOp_MutableSubVector* sub_vec )
 {
 	RTOp_SubVector _sub_vec;
 	RTOp_sub_vector_dense(

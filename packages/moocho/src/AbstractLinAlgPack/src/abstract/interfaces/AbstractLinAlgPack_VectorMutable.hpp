@@ -250,7 +250,7 @@ public:
 	 * passed to the same vector object for this to work correctly.
 	 *
 	 * Changes to the underlying sub-vector are not guarrenteed to become permanent
-	 * until <tt>this->get_sub_vector(...,sub_vec)</tt> or <tt>this->free_sub_vector(sub_vec)</tt>
+	 * until <tt>this->get_sub_vector(...,sub_vec)</tt> or <tt>this->commit_sub_vector(sub_vec)</tt>
 	 * is called.
 	 *
 	 * Preconditions:<ul>
@@ -273,7 +273,7 @@ public:
 	 *                  first call <tt>RTOp_mutable_sub_vector_null(sub_vec)</tt> must
 	 *                  have been called for the correct behavior.  Technically
 	 *                  <tt>*sub_vec</tt> owns the memory but this memory can be freed
-	 *                  only by calling <tt>this->free_sub_vector(sub_vec)</tt>.
+	 *                  only by calling <tt>this->commit_sub_vector(sub_vec)</tt>.
 	 */
 	virtual void get_sub_vector(
 		const Range1D& rng, RTOp_MutableSubVector* sub_vec );
@@ -293,7 +293,7 @@ public:
 	 *				and <tt>*sub_vec</tt> will be zeroed out using
 	 *				<tt>RTOp_mutable_sub_vector_null(sub_vec)</tt>.
 	 */
-	virtual void free_sub_vector( RTOp_MutableSubVector* sub_vec );
+	virtual void commit_sub_vector( RTOp_MutableSubVector* sub_vec );
 
 	///
 	/** Set a specific sub-vector.
