@@ -32,15 +32,15 @@ namespace {
 
 // Convert to compressed sparse row
 void convet_to_csr(
-	int                                n
-	,int                               m
-	,int                               nz
-	,const DenseLinAlgPack::value_type      a_val[]
-	,const DenseLinAlgPack::index_type      a_row_i[]
-	,const DenseLinAlgPack::index_type      a_col_j[]
-	,double                            acsr_val[]
-	,int                               acsr_col_j[]
-	,int                               acsr_row_ptr[]
+	int                                   n
+	,int                                  m
+	,int                                  nz
+	,const DenseLinAlgPack::value_type    a_val[]
+	,const DenseLinAlgPack::index_type    a_row_i[]
+	,const DenseLinAlgPack::index_type    a_col_j[]
+	,double                               acsr_val[]
+	,int                                  acsr_col_j[]
+	,int                                  acsr_row_ptr[]
 	)
 {
 	// Count the number of entries per row and put in acsr_row_ptr[1...m+1]
