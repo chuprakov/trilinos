@@ -68,21 +68,29 @@ const int indices_stride = (int)sizeof(AbstractLinAlgPack::SpVectorSlice::elemen
 
 } // end namespace
 
-RTOp_SubVector AbstractLinAlgPack::sub_vec_view( const SpVectorSlice& sv )
+RTOp_SubVector AbstractLinAlgPack::sub_vec_view(
+	const SpVectorSlice&   sv_in
+	,const Range1D&        rng_in
+	)
 {
-	RTOp_SubVector sub_vec;
+	const Range1D        rng = RangePack::full_range(rng_in,1,sv_in.dim());
+	const SpVectorSlice  sv = sv_in(rng);
+
+	RTOp_SubVector  sub_vec;
+
 	if(!sv.nz()) {
 		RTOp_sub_vector_sparse(
-			0           // global_offset
-			,sv.dim()   // sub_dim
-			,0          // nz
-			,NULL       // vlaues
-			,1          // values_stride
-			,NULL       // indices
-			,1          // indices_stride
-			,0          // local_offset
-			,1          // is_sorted
-			,&sub_vec);
+			rng.lbound()-1  // global_offset
+			,rng.size()     // sub_dim
+			,0              // nz
+			,NULL           // vlaues
+			,1              // values_stride
+			,NULL           // indices
+			,1              // indices_stride
+			,0              // local_offset
+			,1              // is_sorted
+			,&sub_vec
+			);
 	}
 	else {
 		SpVectorSlice::const_iterator
@@ -90,17 +98,18 @@ RTOp_SubVector AbstractLinAlgPack::sub_vec_view( const SpVectorSlice& sv )
 		assert(itr != sv.end());
 		const value_type   *values  = &itr->value();
 		const index_type   *indexes = &itr->index();
-		if( sv.nz() == sv.dim() && sv.is_sorted() ) {
+		if( sv.dim() && sv.nz() == sv.dim() && sv.is_sorted() ) {
 			RTOp_sub_vector_dense(
-				0                 // global_offset
-				,sv.dim()         // sub_dim
+				rng.lbound()-1    // global_offset
+				,rng.size()       // sub_dim
 				,values           // values
 				,values_stride    // values_stride
-				,&sub_vec);
+				,&sub_vec
+				);
 		}
 		else {
 			RTOp_sub_vector_sparse(
-				0                 // global_offset
+				rng.lbound()-1    // global_offset
 				,sv.dim()         // sub_dim
 				,sv.nz()          // nz
 				,values           // values
@@ -109,7 +118,8 @@ RTOp_SubVector AbstractLinAlgPack::sub_vec_view( const SpVectorSlice& sv )
 				,indices_stride   // indices_stride
 				,sv.offset()      // local_offset
 				,sv.is_sorted()   // is_sorted
-				,&sub_vec);
+				,&sub_vec
+				);
 		}
 	}
 	
