@@ -27,7 +27,7 @@ class NaNInfException : public std::runtime_error
 {public: NaNInfException(const std::string& what_arg) : std::runtime_error(what_arg) {}};
 
 ///
-/** This function asserts if a value_type scalare is a NaN or Inf and optionally
+/* * This function asserts if a value_type scalare is a NaN or Inf and optionally
   * prints out these entires.
   * 
   * @param	val				[I]	Value the check
@@ -50,7 +50,7 @@ bool assert_print_nan_inf( const value_type& val, char name[]
 	, bool throw_excpt, std::ostream* out );
 
 ///
-/** This function asserts if a vector has any NaN or inf entries and optionally
+/* * This function asserts if a vector has any NaN or inf entries and optionally
   * prints out these entires.
   * 
   * @param	v 				[I]	DVector slice to check
@@ -73,7 +73,7 @@ bool assert_print_nan_inf( const DVectorSlice& v, char name[]
 	, bool throw_excpt, std::ostream* out );
 
 ///
-/** This function asserts if a matrix has any NaN or inf entries and optionally
+/* * This function asserts if a matrix has any NaN or inf entries and optionally
   * prints out these entires.
   * 
   * @param	m 				[I]	Matrix slice to check

@@ -20,9 +20,9 @@
 
 namespace DenseLinAlgPack {
 
-/** @name {\bf DVector/DVectorSlice assignment functions}.
+/* * @name {\bf DVector/DVectorSlice assignment functions}.
   */
-//@{
+// @{
 
 /// v_lhs = alpha (elementwise)
 void assign(DVector* v_lhs, value_type alpha);
@@ -33,7 +33,7 @@ void assign(DVectorSlice* vs_lhs, value_type alpha);
 /// vs_lhs = vs_rhs
 void assign(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 
-//@}
+// @}
 
 
 } // end namespace DenseLinAlgPack

@@ -20,7 +20,7 @@
 
 namespace DenseLinAlgPack {
 
-/** @name DMatrixSlice output stream function.
+/* * @name DMatrixSlice output stream function.
   *
   * This is a function that are used to output a DMatrixSlice object
   * to a char based output stream.  This format is ment to be both

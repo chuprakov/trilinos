@@ -30,7 +30,7 @@ namespace DenseLinAlgPack {
 
 using TestingHelperPack::update_success;
 
-/** @name DVectorSlice and DMatrixSlice comparison functions.
+/* * @name DVectorSlice and DMatrixSlice comparison functions.
   *
   * These functions compare the elements of two DVectorSlice or DMatrixSlice
   * objects.  If any of the corresponding elements does not obey
@@ -38,7 +38,7 @@ using TestingHelperPack::update_success;
   * they return true.  An exact test (bits) is not performed to allow for some round-off
   * error to occur and still equate.
   */
-//@{
+// @{
 
 ///
 const value_type sqrt_eps
@@ -82,7 +82,7 @@ bool comp(const DMatrixSliceTriEle& tri_gms1, value_type alpha);
 ///
 bool comp_less(const DVectorSlice& vs, value_type alpha);
 
-//@}
+// @}
 
 }	// end namespace DenseLinAlgPack
 

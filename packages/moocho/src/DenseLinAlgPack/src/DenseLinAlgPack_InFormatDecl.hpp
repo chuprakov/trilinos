@@ -21,7 +21,7 @@
 namespace DenseLinAlgPack {
 
 ///
-/** Input stream operator function for bound_format objects.
+/* * Input stream operator function for bound_format objects.
   *
   * This template function performs the following tasks.
   * \begin{enumeration}

@@ -23,7 +23,7 @@
 namespace DenseLinAlgPack {
 
 ///
-/** DVectorSlice output stream operator.
+/* * DVectorSlice output stream operator.
   *
   * This operator function calls the function output(os,vs,0).
   */

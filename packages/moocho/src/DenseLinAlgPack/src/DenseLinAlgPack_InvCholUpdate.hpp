@@ -21,7 +21,7 @@
 namespace DenseLinAlgPack {
 
 ///
-/** Perform an update of the Cholesky factor of a symetric matrix (SM = L * L^T)
+/* * Perform an update of the Cholesky factor of a symetric matrix (SM = L * L^T)
   * and while maintaining the triangular structure.
   *
   * This function permforms an update of L^T or L^-1 depending on whether
@@ -37,7 +37,7 @@ void update_chol_factor(DMatrixSlice* UpTriM, DVectorSlice* u
 	, const DVectorSlice& v);
 
 ///
-/** Perform a jacobi rotation or a matrix about row i.
+/* * Perform a jacobi rotation or a matrix about row i.
   *
   * Preconditions: <ul>
   * <li> UpTriM.rows() == UpTriM.cols() (throw std::length_error)

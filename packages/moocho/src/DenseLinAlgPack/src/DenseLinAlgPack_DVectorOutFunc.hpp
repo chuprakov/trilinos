@@ -20,7 +20,7 @@
 
 namespace DenseLinAlgPack {
 
-/** @name DVectorSlice output stream function.
+/* * @name DVectorSlice output stream function.
   *
   * This is a functions that are used to output a DVectorSlice object
   * to a char based output stream.

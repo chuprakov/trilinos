@@ -21,22 +21,22 @@
 namespace DenseLinAlgPack {
 namespace MatlabPack {
 
-/** @name MatlabPack.
+/* * @name MatlabPack.
   *
   * This package contains functions that allow integration with 
   * Matlab.
   */
-//@{
+// @{
 
-/** @name Output matrices and vectors in Matlab readable format.
+/* * @name Output matrices and vectors in Matlab readable format.
   *
   * These function output vectors and matrices with enought digits
   * to reproduce the exact same floating point numbers.
   */
-//@{
+// @{
 
 ///
-/** Output a DVectorSlice.
+/* * Output a DVectorSlice.
   *
   * The DVectorSlice is output in the following format:
   *
@@ -51,7 +51,7 @@ std::ostream& out( std::ostream& o, const char* name, const DVectorSlice& vs
 	, BLAS_Cpp::Transp trans = BLAS_Cpp::no_trans );
 
 ///
-/** Output a DMatrixSlice.
+/* * Output a DMatrixSlice.
   *
   * The DMatrixSlice is output in the following format:
   *
@@ -71,9 +71,9 @@ std::ostream& out( std::ostream& o, const char* name, const DVectorSlice& vs
 std::ostream& out( std::ostream& o, const char* name, const DMatrixSlice& gms
 	, BLAS_Cpp::Transp trans = BLAS_Cpp::no_trans );
 
-//@}
+// @}
 
-//@}
+// @}
 
 }	// end namespace MatlabPack
 }	// end namespace DenseLinAlgPack

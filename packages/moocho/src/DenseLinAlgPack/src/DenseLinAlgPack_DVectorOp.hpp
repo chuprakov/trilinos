@@ -21,7 +21,7 @@
 
 #include "DVectorAssign.hpp"
 
-/** @name {\bf Basic DVector Operation Functions (Level-1 BLAS)}.
+/* * @name {\bf Basic DVector Operation Functions (Level-1 BLAS)}.
   *
   * These are functions that perform basic operations with vectors such as element-wise
   * linear algebra operations (e.g. v1 = v2 + v3, v1 = sin(v2)) and other vector 
@@ -63,19 +63,19 @@
   * \Ref{LinAlgOpPack}
   */
 
-//@{
+// @{
 //		begin Basic DVector Operation Functions
 
 namespace DenseLinAlgPack {
 
-/** @name {\bf Algebraic Functions}.
+/* * @name {\bf Algebraic Functions}.
   *
   * The functions assign(...) are used by the implementation of the assignment operators for
   * DVector and DVectorSlice and therefore the user can use the assignment operator to
   * perform the copies.
   */
 
-//@{
+// @{
 //		begin Algebraic Functions
 
 
@@ -123,11 +123,11 @@ void V_StV(DVectorSlice* vs_lhs, value_type alpha, const DVectorSlice& vs_rhs);
 void rot( const value_type c, const value_type s, DVectorSlice* x, DVectorSlice* y );
 
 //		end Algebraic Functions
-//@}
+// @}
 
-/** @name {\bf Elementwise Math DVector / DVectorSlice Functions}. */
+/* * @name {\bf Elementwise Math DVector / DVectorSlice Functions}. */
 
-//@{
+// @{
 //		begin Elementsize Math Functions
 
 /// vs_lhs = abs(vs_rhs)
@@ -225,11 +225,11 @@ void tan(DVector* v_lhs, const DVectorSlice& vs_rhs);
 void tanh(DVector* v_lhs, const DVectorSlice& vs_rhs);
 
 //		end Elementsize Math Functions
-//@}
+// @}
 
-/** @name {\bf Scalar Returning and Misc DVectorSlice Functions}. */
+/* * @name {\bf Scalar Returning and Misc DVectorSlice Functions}. */
 
-//@{
+// @{
 //		begin Scalar Returning DVectorSlice Functions}
 
 /// result = vs_rhs1' * vs_rhs2 (BLAS xDOT)
@@ -251,11 +251,11 @@ value_type norm_inf(const DVectorSlice& vs_rhs);
 void swap(DVectorSlice* vs1, DVectorSlice* vs2);
 
 //		end Scalar Returning DVectorSlice Functions
-//@}
+// @}
 
 } // end namespace DenseLinAlgPack
 
 //		end Basic DVector Operation Functions
-//@}
+// @}
 
 #endif // VECTOROP_H

@@ -21,7 +21,7 @@
 namespace DenseLinAlgPack {
 
 ///
-/** DMatrixSlice output stream operator.
+/* * DMatrixSlice output stream operator.
   *
   * This operator function calls the function output(os,gms,0).
   */

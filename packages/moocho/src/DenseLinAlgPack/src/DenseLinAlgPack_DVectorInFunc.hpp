@@ -20,7 +20,7 @@
 
 namespace DenseLinAlgPack {
 
-/** @name DVector/DVectorSlice input stream functions.
+/* * @name DVector/DVectorSlice input stream functions.
   *
   * These are functions that are used to read a DVector
   * or DVectorSlice object from a formated input stream.
@@ -60,10 +60,10 @@ namespace DenseLinAlgPack {
   * Also if the stream becomes corrupted (#is.bad() == true#) then a #std::ios_base::failure#
   * exception is thrown. 
   */
-//@{
+// @{
 
 ///
-/** DVector input stream function.
+/* * DVector input stream function.
   *
   * Inputs a DVector object from an input stream.  If #exta_flags & LinAlgPackIO::ignore_dim_bit != 0#
   * then #v# is resized to #n# given in the file.  If #exta_flags & LinAlgPackIO::ignore_dim_bit == 0#
@@ -73,7 +73,7 @@ namespace DenseLinAlgPack {
 std::istream& input(std::istream& is, DVector* v, LinAlgPackIO::fmtflags extra_flags);
 
 ///
-/** DVectorSlice input stream function.
+/* * DVectorSlice input stream function.
   *
   * Inputs a DVectorSlice object from an input stream.  If #exta_flags & LinAlgPackIO::ignore_dim_bit != 0#
   * then the size (!= 0) of #vs# is compared to the #n# given in the file and if they are not equal
@@ -83,7 +83,7 @@ std::istream& input(std::istream& is, DVector* v, LinAlgPackIO::fmtflags extra_f
   */
 std::istream& input(std::istream& is, DVectorSlice* vs, LinAlgPackIO::fmtflags extra_flags);
 
-//@}
+// @}
 
 }	// end namespace DenseLinAlgPack
 

@@ -20,16 +20,16 @@
 
 namespace DenseLinAlgPack {
 
-/** @name	Packaging arguments for GenMatrixSlices treated as triangular
+/* * @name	Packaging arguments for GenMatrixSlices treated as triangular
   *			and symmetric matrices in BLAS-like linear algebra operations.
   *
   */
 
-//@{
+// @{
 
 // /////////////////////////////////////////////////////////////////////////////////////
 ///
-/** Aggregate information for a triangular matrix (element-wise) stored in a DMatrix.
+/* * Aggregate information for a triangular matrix (element-wise) stored in a DMatrix.
   *
   * This is the type to be used as lhs and rhs arguments in element-wise
   * linear algebra operations like assignment and binary arithmetic.
@@ -97,7 +97,7 @@ const DMatrixSliceTriEle tri_ele(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
 
 // ////////////////////////////////////////////////////////////////////////////////
 ///
-/** Aggregate information for a triangular matrix (structure dependent) stored in a DMatrix.
+/* * Aggregate information for a triangular matrix (structure dependent) stored in a DMatrix.
   *
   * This is the type to be used as a rhs argument in linear algebra operations
   * that are structure specific like the BLAS operations.
@@ -170,7 +170,7 @@ const DMatrixSliceTri tri(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp
 
 // /////////////////////////////////////////////////////////////////////////////////////////
 ///
-/** Aggregate information for a symmetric matrix stored in a DMatrix.
+/* * Aggregate information for a symmetric matrix stored in a DMatrix.
   *
   * This is the type to be used as both lhs and rhs arguments in linear algebra operations.
   */
@@ -234,7 +234,7 @@ const DMatrixSliceSym sym(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
 	return DMatrixSliceSym(gms, uplo);
 }
 
-//@}
+// @}
 
 } // end namespace DenseLinAlgPack
 

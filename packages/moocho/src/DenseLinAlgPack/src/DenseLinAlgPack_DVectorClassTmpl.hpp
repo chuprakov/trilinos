@@ -25,7 +25,7 @@
 namespace DenseLinAlgPack{
 
 // ////////////////////////////////////////////////////////////////////////////////
-/** @name {\bf Dense 1-D DVector Abstractions}.
+/* * @name {\bf Dense 1-D DVector Abstractions}.
   *
   * These are classes that abstract 1-D vectors. The class \Ref{DVector} is a storage class
   * for vectors while the class \Ref{DVectorSlice} is used to represent regions of vectors
@@ -33,13 +33,13 @@ namespace DenseLinAlgPack{
   * and \Ref{DMatrixSlice}).
   */
 
-//@{
+// @{
 
-/** @name {\bf DVector Classes}. */
-//@{
+/* * @name {\bf DVector Classes}. */
+// @{
 	
 ///
-/** Slice of a 1-D sequential C++ array treated as a vector.
+/* * Slice of a 1-D sequential C++ array treated as a vector.
   *
   * Objects of this class represent regions of vectors (continuous), rows of matrices
   * , columns of matrices or diagonals of matrices.
@@ -63,7 +63,7 @@ template<class T>
 class VectorSliceTmpl {
 public:
 	
-	/** @name {\bf Nested Member Types (STL)}.
+	/* * @name {\bf Nested Member Types (STL)}.
 	  *
 	  * These nested types give the types used in the interface to the class.
 	  *
@@ -81,8 +81,8 @@ public:
 	  * \end{description}
 	  */
 
-	//@{
-	//@}
+	// @{
+	// @}
 
 	typedef T												value_type;
 	typedef DenseLinAlgPack::size_type							size_type;
@@ -106,7 +106,7 @@ public:
 	typedef value_type&										reference;
 	typedef const value_type&								const_reference;
 
-	/** @name {\bf Constructors}.
+	/* * @name {\bf Constructors}.
 	  *
 	  * The user usually does not need not call any of these constructors
 	  * explicitly to create a vector slice.
@@ -130,16 +130,16 @@ public:
 	  \endverbatim
 	  */
 
-	//@{
+	// @{
 
 	///
-	/** Creates an empty view.
+	/* * Creates an empty view.
 	  *
 	  * You must use bind(...) to bind to a view to initialize after construction.
 	  */
 	VectorSliceTmpl();
 	///
-	/** Creates a VectorSice object that represents a non-continous region of a raw C++ array.
+	/* * Creates a VectorSice object that represents a non-continous region of a raw C++ array.
 	  *
 	  * Of course the sequence of elements #ptr[stride * i]# for #i# = 0, 1, ..., #size#-1
 	  * must yield valid properly allocated regions of memory.  It is up the the user to insure
@@ -151,7 +151,7 @@ public:
 	  */
 	VectorSliceTmpl( value_type* ptr, size_type size, difference_type stride = 1 );
 	///
-	/** Creates a VectorSliceTmpl object that represents a continous region of a raw C++ array.
+	/* * Creates a VectorSliceTmpl object that represents a continous region of a raw C++ array.
 	  *
 	  * The VectorSliceTmpl Object represents the following elements of raw array:
 	  * 
@@ -168,7 +168,7 @@ public:
 	  */
 	VectorSliceTmpl( value_type* ptr, size_type size, const Range1D& rng );
 	/// 
-	/** Create a VectorSliceTmpl that represents a continous region of the existing VectorSliceTmpl object, vs.
+	/* * Create a VectorSliceTmpl that represents a continous region of the existing VectorSliceTmpl object, vs.
 	  *
 	  * The index, rng, is relative to the VectorSliceTmpl object, vs.
 	  * For example rng = [1,3] would create a VectorSliceTmpl object
@@ -191,12 +191,12 @@ public:
 	  */
 	VectorSliceTmpl( VectorSliceTmpl<value_type>& vs, const Range1D& rng );
 
-	//@}
+	// @}
 
 	/// Bind to the view of another VectorSliceTmpl
 	void bind(VectorSliceTmpl<value_type> vs);
 
-	/** @name {\bf STL Iterator Access Functions}.
+	/* * @name {\bf STL Iterator Access Functions}.
 	  *
 	  * These member functions return valid STL random access iterators to the elements in the
 	  * VectorSliceTmpl object.
@@ -213,7 +213,7 @@ public:
 	  * not allowed so use iterators with reversed VectorSliceTmpl objects at own risk.
 	  */
 
-	//@{
+	// @{
 
 	/// 
 	iterator begin();
@@ -232,9 +232,9 @@ public:
 	///
 	const_reverse_iterator rend() const;
 
-	//@}
+	// @}
 
-	/** @name {\bf Individual Element Access Subscripting (lvalue)}.
+	/* * @name {\bf Individual Element Access Subscripting (lvalue)}.
 	  *
 	  * These operator functions allow access (lvalue) to the individual elements
 	  * of the VectorSliceTmpl object.
@@ -244,7 +244,7 @@ public:
 	  * If they are not then an #std::out_of_range# exception will be thrown.
 	  */
 
-	//@{
+	// @{
 
 	/// 1-based element access (lvalue)
 	reference operator()(size_type i);
@@ -255,9 +255,9 @@ public:
 	/// 0-based element access (rvalue)
 	const_reference operator[](size_type i) const;
 
-	//@}
+	// @}
 
-	/** @name {\bf Subvector Access Operators}.
+	/* * @name {\bf Subvector Access Operators}.
 	  *
 	  * These operator functions are used to create views of continous regions of the VectorSliceTmpl.
 	  * Each of them returns a VectorSliceTmpl object for the region.  Constant (const) VectorSliceTmpl objects
@@ -270,10 +270,10 @@ public:
 	  * be fixed in future versions of the compiler or I when will get another compiler.
 	  */
 
-	//@{
+	// @{
 
 	/// 
-	/** Returns a VectorSliceTmpl object representing the entire vector slice.
+	/* * Returns a VectorSliceTmpl object representing the entire vector slice.
 	  *
 	  * Included for uniformity with vector.
 	  */
@@ -291,7 +291,7 @@ public:
 	/// 
 	VectorSliceTmpl<value_type> operator()(const Range1D& rng);
 	/// 
-	/** Returns a continous subregion of the VectorSliceTmpl object.
+	/* * Returns a continous subregion of the VectorSliceTmpl object.
 	  *
 	  * The returned VectorSliceTmpl object represents the range of the rng argument.
 	  *
@@ -303,7 +303,7 @@ public:
 	  */
 	const VectorSliceTmpl<value_type> operator()(const Range1D& rng) const;
 	/// 
-	/** Returns a VectorSliceTmpl object for the continous subregion [ubound, lbound].
+	/* * Returns a VectorSliceTmpl object for the continous subregion [ubound, lbound].
 	  * 
 	  * Preconditions: <ul>
 	  *		<li> #lbound > 1# (throw out_of_range)
@@ -317,7 +317,7 @@ public:
 	/// Same as above.
 	const VectorSliceTmpl<value_type> operator()(size_type lbound, size_type ubound) const;
 	/// 
-	/** Return a const VectorSliceTmpl object the reverse of this VectorSliceTmpl.
+	/* * Return a const VectorSliceTmpl object the reverse of this VectorSliceTmpl.
 	  *
 	  * In the reverse VectorSliceTmpl,
 	  * the first element becomes the last element and visa-versa.  For example, for 
@@ -328,14 +328,14 @@ public:
 	/// Same as above.
 	const VectorSliceTmpl<value_type> rev() const;
 
-	//@}
+	// @}
 	
-	/** @name {\bf Assignment operators}. */
+	/* * @name {\bf Assignment operators}. */
 
-	//@{
+	// @{
 
 	///
-	/** vs = alpha (Sets all the elements to the constant alpha).
+	/* * vs = alpha (Sets all the elements to the constant alpha).
 	  *
 	  * Preconditions: <ul>
 	  *		<li> #this->dim() > 0# (throw #std::length_error#)
@@ -347,7 +347,7 @@ public:
 	  */
 	VectorSliceTmpl<value_type>& operator=(value_type alpha);
 	///
-	/** vs = rhs (Copies the elements of rhs into the elements of this).
+	/* * vs = rhs (Copies the elements of rhs into the elements of this).
 	  *
 	  * Preconditions: <ul>
 	  *		<li> #this->dim() == rhs.dim()# (throw #out_of_range#)
@@ -360,16 +360,16 @@ public:
 	  */
 	VectorSliceTmpl<value_type>& operator=(const VectorSliceTmpl<value_type>& rhs);
 
-	//@}
+	// @}
 
-	/** @name {\bf Misc. Member Functions}. */
+	/* * @name {\bf Misc. Member Functions}. */
 
-	//@{
+	// @{
 
 	/// Returns the number of elements of the VectorSliceTmpl.
 	size_type dim() const;
 	/// 
-	/** Returns the degree of memory overlap of the two VectorSliceTmpl objects this and vs.
+	/* * Returns the degree of memory overlap of the two VectorSliceTmpl objects this and vs.
 	  *
 	  * @return 
 	  *		\begin{description}
@@ -380,14 +380,14 @@ public:
 	  */
 	EOverLap overlap(const VectorSliceTmpl<value_type>& vs) const;
 
-	//@}
+	// @}
 
-	/** @name {\bf Raw data access}.
+	/* * @name {\bf Raw data access}.
 	  *
 	  * Provides access to underlying raw data.
 	  */
 
-	//@{
+	// @{
 
 	/// Return a pointer to the address of the first memory location of underlying array.
 	value_type*			raw_ptr();
@@ -400,7 +400,7 @@ public:
 	/// Return the distance (+,-) (in units of elements) between adjacent elements in the underlying array.
 	difference_type		stride() const;
 
-	//@}
+	// @}
 
 private:
 	value_type					*ptr_;	// Pointer to first element in array.
@@ -416,7 +416,7 @@ private:
 //
 
 ///
-/** 1-D DVector Abstraction Storage Class.
+/* * 1-D DVector Abstraction Storage Class.
   *
   * Holds the storage space for a 1-D vector of element type value_type.  The storage space class
   * used in a standard vector<> private member.  DVector provides much of the
@@ -426,7 +426,7 @@ private:
 template<class T>
 class VectorTmpl {
 public:
-	/** @name {\bf Nested Member Types (STL)}.
+	/* * @name {\bf Nested Member Types (STL)}.
 	  *
 	  * These nested types give the types used in the interface to the class.
 	  *
@@ -443,8 +443,8 @@ public:
 	  * \end{description}
 	  */
 
-	//@{
-	//@}
+	// @{
+	// @}
 
 	typedef T										value_type;
 	typedef DenseLinAlgPack::size_type					size_type;
@@ -465,13 +465,13 @@ public:
 	typedef const value_type&						const_reference;
 	typedef std::vector<value_type>					valarray;
 
-	/** @name {\bf Constructors}.
+	/* * @name {\bf Constructors}.
 	  * 
 	  * These constructors allocate and may initialize the elements of a 1-D vector.
 	  * The default C++ copy constructor is used and is therefore not show here.
 	  */
 
-	//@{
+	// @{
 
 	/// Constructs a vector with 0 elements (this->dim()==0).
 	VectorTmpl();
@@ -480,7 +480,7 @@ public:
 	/// Constructs a vector with n elements initialized to val.
 	VectorTmpl(value_type val, size_type n);
 	///
-	/** Constructs a vector with n elements and intializes elements to those of an array.
+	/* * Constructs a vector with n elements and intializes elements to those of an array.
 	  *
 	  * Postconditions: <ul>
 	  *		<li> #this->operator[](i) == p[i]#, i = 0, 1, ... n
@@ -488,7 +488,7 @@ public:
 	  */  
 	VectorTmpl(const value_type* p, size_type n);
 	///
-	/** Constructs a DVector object fron a VectorSliceTmpl object.
+	/* * Constructs a DVector object fron a VectorSliceTmpl object.
 	  *
 	  * Postconditions: <ul>
 	  *		<li> #this->dim() == vs.dim()#
@@ -497,14 +497,14 @@ public:
 	  */  
 	VectorTmpl(const VectorSliceTmpl<value_type>& vs);
 
-	//@}
+	// @}
 
-	/** @name {\bf Memory Management / Misc}. */
+	/* * @name {\bf Memory Management / Misc}. */
 
-	//@{
+	// @{
 
 	///
-	/** Resize the vector to hold n elements.
+	/* * Resize the vector to hold n elements.
 	  *
 	  * Any new elements added are initialized to val.
 	  *
@@ -514,7 +514,7 @@ public:
 	  */  
 	void resize(size_type n, value_type val = value_type());
 	///
-	/** Free memory and resize DVector to this->dim() == 0.
+	/* * Free memory and resize DVector to this->dim() == 0.
 	  *
 	  * Postconditions: <ul>
 	  *		<li> #this->dim() == 0#
@@ -524,7 +524,7 @@ public:
 	/// Returns the number of elements of the DVector.
 	size_type dim() const;
 	/// 
-	/** Returns the degree of memory overlap of this and the VectorSliceTmpl object vs.
+	/* * Returns the degree of memory overlap of this and the VectorSliceTmpl object vs.
 	  *
 	  * @return 
 	  *		\begin{description}
@@ -539,17 +539,17 @@ public:
 	/// Conversion operator for implicit conversions from const DVector to const VectorSliceTmpl.
 	operator const VectorSliceTmpl<value_type>() const;
 
-	//@}
+	// @}
 	
 
-	/** @name {\bf STL Iterator Access functions}.
+	/* * @name {\bf STL Iterator Access functions}.
 	  *
 	  * The iterators returned are valid STL random access iterators.
 	  * The forward iterators returned iterate from the first element to the last element.
 	  * The reverse iterators returned iterate from the last element to the first element.
 	  */
 
-	//@{
+	// @{
 
 	///
 	iterator begin();
@@ -568,9 +568,9 @@ public:
 	///
 	const_reverse_iterator rend() const;
 
-	//@}
+	// @}
 
-	/** @name {\bf Individual Element Access Subscripting (lvalue)}.
+	/* * @name {\bf Individual Element Access Subscripting (lvalue)}.
 	  *
 	  * These operator functions allow access (lvalue) to the individual elements
 	  * of the DVector object.
@@ -580,7 +580,7 @@ public:
 	  * If they are not then an #std::out_of_range# exception will be thrown.
 	  */
 
-	//@{
+	// @{
 
 	/// 1-based element access (lvalue)
 	reference operator()(size_type i);
@@ -591,9 +591,9 @@ public:
 	/// 0-based element access (rvalue)
 	const_reference operator[](size_type i) const;
 
-	//@}
+	// @}
 
-	/** @name {\bf Subvector Access Operators}.
+	/* * @name {\bf Subvector Access Operators}.
 	  *
 	  * These operator functions are used to create views of continous regions of the DVector.
 	  * Each of them returns a VectorSliceTmpl object for the region.  Constant (const) VectorSliceTmpl objects
@@ -606,10 +606,10 @@ public:
 	  * be fixed in future versions of the compiler or I when will get another compiler.
 	  */
 
-	//@{
+	// @{
 
 	/// 
-	/** Returns a VectorSliceTmpl object representing the entire DVector. 
+	/* * Returns a VectorSliceTmpl object representing the entire DVector. 
 	  * 
 	  * Call this member function to force a type conversion to VectorSliceTmpl.  Using the
 	  * VectorSliceTmpl of a DVector for algebraic expressions used with the TCOL allows a for simplier
@@ -620,7 +620,7 @@ public:
 	/// Same as above
 	const VectorSliceTmpl<value_type> operator()() const;
 	/// 
-	/** Returns a continous subregion of the DVector object.
+	/* * Returns a continous subregion of the DVector object.
 	  *
 	  * The returned VectorSliceTmpl object represents the range of the rng argument.
 	  *
@@ -634,7 +634,7 @@ public:
 	/// Same as above
 	const VectorSliceTmpl<value_type> operator()(const Range1D& rng) const;
 	/// 
-	/** Returns a VectorSliceTmpl object for the continous subregion [ubound, lbound].
+	/* * Returns a VectorSliceTmpl object for the continous subregion [ubound, lbound].
 	  * 
 	  * Preconditions: <ul>
 	  *		<li> #lbound > 1# (throw #out_of_range#)
@@ -648,7 +648,7 @@ public:
 	/// Same as above.
 	const VectorSliceTmpl<value_type> operator()(size_type lbound, size_type ubound) const;
 	/// 
-	/** Return a VectorSliceTmpl object the reverse of this DVector.
+	/* * Return a VectorSliceTmpl object the reverse of this DVector.
 	  *
 	  * In the reverse VectorSliceTmpl,
 	  * the first element becomes the last element and visa-versa.  For example, for 
@@ -659,14 +659,14 @@ public:
 	/// Same as above.
 	const VectorSliceTmpl<value_type> rev() const;
 
-	//@}
+	// @}
 
-	/** @name {\bf Assignment Operators}. */
+	/* * @name {\bf Assignment Operators}. */
 
-	//@{
+	// @{
 
 	///
-	/** vs = alpha (Sets all the elements to the constant alpha).
+	/* * vs = alpha (Sets all the elements to the constant alpha).
 	  *
 	  * Preconditions: <ul>
 	  *		<li> #this->dim() > 0# (throw #std::length_error#)
@@ -678,7 +678,7 @@ public:
 	  */
 	VectorTmpl<value_type>& operator=(value_type alpha);
 	///
-	/** vs = rhs (Copies the elements of rhs into the elements of this).
+	/* * vs = rhs (Copies the elements of rhs into the elements of this).
 	  *
 	  * Preconditions: <ul>
 	  *		<li> #this->dim() == rhs.dim()# (throw #out_of_range#)
@@ -691,18 +691,18 @@ public:
 	  */
 	VectorTmpl<value_type>& operator=(const VectorSliceTmpl<value_type>& rhs);
 	///
-	/** Needed to override the default assignment operator.
+	/* * Needed to override the default assignment operator.
 	  */
 	VectorTmpl<value_type>& operator=(const VectorTmpl<value_type>& rhs);
 
-	//@}
+	// @}
 
-	/** @name {\bf Implementation Access}.
+	/* * @name {\bf Implementation Access}.
 	  *
 	  * Provides access to underlying raw data.
 	  */
 
-	//@{
+	// @{
 
 	/// Return a pointer to the address of the first memory location of underlying array.
 	value_type*			raw_ptr();
@@ -715,7 +715,7 @@ public:
 	/// Return the distance (+,-) (in units of elements) between adjacent elements in the underlying array.
 	difference_type		stride() const;
 
-	//@}
+	// @}
 	
 private:
 	valarray v_;
@@ -723,16 +723,16 @@ private:
 }; // end class VectorTmpl<T>
 
 //		end DVector Classes scope
-//@}
+// @}
 
 // ///////////////////////////////////////////////////////////////////////////////
 // Non-member function declarations												//
 // ///////////////////////////////////////////////////////////////////////////////
 
 
-/** @name {\bf Non-Member Functions}. */
+/* * @name {\bf Non-Member Functions}. */
 
-//@{
+// @{
 //		begin non-member functions scope
 
 //
@@ -742,13 +742,13 @@ void vector_validate_range(size_type ubound, size_type max_ubound);
 //
 void vector_validate_subscript(size_type size, size_type i);
 ///
-/** Utility for checking the sizes of two VectorSliceTmpl objects and throwing an exception
+/* * Utility for checking the sizes of two VectorSliceTmpl objects and throwing an exception
   * if the sizes are not the same.
   */
 void assert_vs_sizes(size_type size1, size_type size2);
 
 ///
-/** Create a general vector slice.
+/* * Create a general vector slice.
   */
 template<class T>
 inline
@@ -768,10 +768,10 @@ const VectorSliceTmpl<T> gen_vs( const VectorSliceTmpl<T>& vs, size_type start, 
 }
 
 //		end non-member functions scope
-//@}
+// @}
 
 //		end Vectors scope
-//@}
+// @}
 
 } // end namespace DenseLinAlgPack
 

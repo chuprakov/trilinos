@@ -21,7 +21,7 @@
 namespace DenseLinAlgPack {
 
 ///
-/** DVector input stream operator.
+/* * DVector input stream operator.
   *
   * This operator function calls the function input(is,v,0).
   */
@@ -30,7 +30,7 @@ std::istream& operator>>(std::istream& is, DVector& v)
 {	return input(is,&v,(LinAlgPackIO::fmtflags)0); }
 
 ///
-/** DVectorSlice input stream operator.
+/* * DVectorSlice input stream operator.
   *
   * This operator function calls the function input(is,vs,0).
   */

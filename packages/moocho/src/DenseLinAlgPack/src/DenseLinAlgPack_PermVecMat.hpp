@@ -22,7 +22,7 @@
 
 #include "DenseLinAlgPackTypes.hpp"
 
-/** @name {\bf DVector / Matrix Permutations}.
+/* * @name {\bf DVector / Matrix Permutations}.
   *
   * These are functions for pivoting the elements of a vector and the 
   * rows and/or columns of a rectandular matrix.
@@ -46,9 +46,9 @@
   * as the unpermuted object.
   */
 
-//@{
+// @{
 
-//@Include: IVector.hpp
+// @Include: IVector.hpp
 
 // /////////////////////////////////////////////////////////////////////////////////////////
 // Public Permutation functions
@@ -56,7 +56,7 @@
 namespace DenseLinAlgPack {
 
 ///
-/** Initialize a permutation to the identiy permutation.
+/* * Initialize a permutation to the identiy permutation.
   *
   * Preconditions: <ul>
   * <li> #perm.size() > 0# (throw std::length_error)
@@ -69,7 +69,7 @@ namespace DenseLinAlgPack {
 void identity_perm(IVector* perm);
 
 ///
-/** Find the inverse permutation (inv_perm) given a permutation vector (perm).
+/* * Find the inverse permutation (inv_perm) given a permutation vector (perm).
   *
   * Postconditions: <ul>
   * <li> #inv_perm.size() == perm.size()#
@@ -101,6 +101,6 @@ extern bool PermVecMat_print;
 
 } // end namespace DenseLinAlgPack
 
-//@}
+// @}
 
 #endif // PIVOTVECMAT_H

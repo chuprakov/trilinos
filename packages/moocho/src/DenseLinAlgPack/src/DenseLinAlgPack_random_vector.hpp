@@ -21,12 +21,12 @@
 namespace DenseLinAlgPack {
 
 ///
-/** Seed the random number generator
+/* * Seed the random number generator
   */
 void seed_random_vector_generator( unsigned int );
 
 ///
-/** Generate a random vector with elements uniformly
+/* * Generate a random vector with elements uniformly
   * distrubuted elements.
   * 
   * The elements are randomly generated between

@@ -21,7 +21,7 @@
 namespace DenseLinAlgPack {
 
 ///
-/** DMatrix input stream operator.
+/* * DMatrix input stream operator.
   *
   * This operator function calls the function input(is,gm,0).
   */
@@ -30,7 +30,7 @@ std::istream& operator>>(std::istream& is, DMatrix& gm)
 {	return input(is,&gm,(LinAlgPackIO::fmtflags)0); }
 
 ///
-/** DMatrixSlice input stream operator.
+/* * DMatrixSlice input stream operator.
   *
   * This operator function calls the function input(is,gms,0).
   */

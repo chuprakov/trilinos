@@ -25,7 +25,7 @@
 
 namespace DenseLinAlgPack {
 ///
-/** Fortran compatable integer vector for holding the  pivot information for
+/* * Fortran compatable integer vector for holding the  pivot information for
  * the elements of a vector, or the rows or columns of a matrix.
  */
 class IVector : public std::valarray<DenseLinAlgPack::size_type> {

@@ -21,27 +21,27 @@
 #include "DVectorClass.hpp"
 #include "DMatrixAssign.hpp"
 
-/** @name {\bf Dense 2-D Rectangular Matrix Absractions}.
+/* * @name {\bf Dense 2-D Rectangular Matrix Absractions}.
   *
   * The class DMatrix is a storage class for 2-D matrices while the class DMatrixSlice
   * is used to represent rectangular regions of a DMatrix object.
   */
-//@{
+// @{
 //		begin General Rectangular 2-D Matrices scope
 
 namespace DenseLinAlgPack {
 
 class DMatrix;
 
-/** @name {\bf General Matrix Classes}. */
-//@{
+/* * @name {\bf General Matrix Classes}. */
+// @{
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GenMatrixClass
 //
 
 ///
-/** 2-D General Rectangular Matrix Subregion Class (Slice) (column major).
+/* * 2-D General Rectangular Matrix Subregion Class (Slice) (column major).
   *
   * This class is used to represent a rectangular matrix.  It uses a BLAS-like
   * slice of a raw C++ array.  Objects of this class can represent
@@ -49,7 +49,7 @@ class DMatrix;
   */
 class DMatrixSlice {
 public:
-	/** @name {\bf Nested Member Types (STL)}.
+	/* * @name {\bf Nested Member Types (STL)}.
 	  *
 	  * These nested types give the types used in the interface to the class.
 	  *
@@ -61,15 +61,15 @@ public:
 	  *	<li>[#const_reference#]		- const value_type&
 	  * \end{description}
 	  */
-	//@{
-	//@}
+	// @{
+	// @}
 	typedef DenseLinAlgPack::value_type					value_type;
 	typedef DenseLinAlgPack::size_type					size_type;
 	typedef ptrdiff_t								difference_type;
 	typedef value_type&								reference;
 	typedef const value_type&						const_reference;
 
-	/** @name {\bf Constructors}.
+	/* * @name {\bf Constructors}.
 	  *
 	  * These constructors are used by the other entities in the library
 	  * to create DMatrixSlices.  In general user need not use these
@@ -80,17 +80,17 @@ public:
 	  * The default copy constructor is used and is therefore not shown here.
 	  */
 
-	//@{
+	// @{
 
 	/// 
-	/** Construct an empty view.
+	/* * Construct an empty view.
 	  *
 	  * The client can then call bind(...) to bind the view.
 	  */
 	DMatrixSlice();
 
 	/// 
-	/** Construct a veiw of a matrix from a raw C++ array.
+	/* * Construct a veiw of a matrix from a raw C++ array.
 	  *
 	  * The DMatrixSlice constructed represents a 2-D matrix whos elements are stored
 	  * in the array starting at #ptr#.  This is how the BLAS represent general rectangular
@@ -128,7 +128,7 @@ public:
 		, size_type max_rows, size_type rows, size_type cols );
 
 	/// 
-	/** Construct a submatrix region of another DMatrixSlice.
+	/* * Construct a submatrix region of another DMatrixSlice.
 	  *
 	  * This constructor simplifies the creation of subregions using the subscript
 	  * operators.
@@ -145,17 +145,17 @@ public:
 	DMatrixSlice( DMatrixSlice& gms, const Range1D& I
 		, const Range1D& J );
 
-	//@}
+	// @}
 
 	///
-	/** Set to the view of the input DMatrixSlice.
+	/* * Set to the view of the input DMatrixSlice.
 	  *
 	  *
 	  */
 	void bind( DMatrixSlice gms );
 
-	/** @name {\bf Dimensionality, Misc}. */
-	//@{
+	/* * @name {\bf Dimensionality, Misc}. */
+	// @{
 
 	/// Return the number of rows
 	size_type		rows() const;
@@ -163,7 +163,7 @@ public:
 	size_type		cols() const;
 
 	/// 
-	/** Returns the degree of memory overlap of #this# and the DMatrixSlice object #gms#.
+	/* * Returns the degree of memory overlap of #this# and the DMatrixSlice object #gms#.
 	  *
 	  * @return 
 	  *		\begin{description}
@@ -174,26 +174,26 @@ public:
 	  */
 	EOverLap overlap(const DMatrixSlice& gms) const;
 
-	//@}
+	// @}
 
-	/** @name {\bf Individual Element Access Subscripting (lvalue)}. */
-	//@{
+	/* * @name {\bf Individual Element Access Subscripting (lvalue)}. */
+	// @{
 
 	/// Return element at row i, col j (i,j) (1-based) (throws std::out_of_range if i, j are out of bounds)
 	reference		operator()(size_type i, size_type j);
 	/// Return element at row i, col j (i,j) (1-based) (throws std::out_of_range if i, j are out of bounds)
 	const_reference	operator()(size_type i, size_type j) const;
 
-	//@}
+	// @}
 
-	/** @name {\bf Subregion Access (1-based)}.
+	/* * @name {\bf Subregion Access (1-based)}.
 	  *
 	  * These member functions allow access to subregions of the DMatrixSlice object.
 	  * The functions, row(i), col(j), and diag(k) return DVectorSlice objects while
 	  * the subscripting operators opeator()(I,J) return DMatrixSlice objects for
 	  * rectangular subregions.
 	  */
-	//@{
+	// @{
 
 	/// Return DVectorSlice object representing the ith row (1-based; 1,2,..,#this->rows()#, or throw std::out_of_range)
 	DVectorSlice			row(size_type i);
@@ -204,7 +204,7 @@ public:
 	/// Same as above
 	const DVectorSlice	col(size_type j) const;
 	/// 
-	/** Return DVectorSlice object representing a diagonal.
+	/* * Return DVectorSlice object representing a diagonal.
 	  *
 	  * Passing k == 0 returns the center diagonal.  Values of k < 0 are the lower diagonals
 	  * (k = -1, -2, ..., -#this->rows()# + 1).  Values of k > 0 are the upper diagonals
@@ -219,7 +219,7 @@ public:
 	/// Same as above.
 	const DVectorSlice	diag(difference_type k = 0) const;
 	/// 
-	/** Extract a rectangular subregion containing rows I, and columns J.
+	/* * Extract a rectangular subregion containing rows I, and columns J.
 	  *
 	  * This operator function returns a DMatrixSlice that represents a
 	  * rectangular region of this DMatrixSlice.  This submatrix region
@@ -238,7 +238,7 @@ public:
 	/// Same as above.
 	const DMatrixSlice operator()(const Range1D& I, const Range1D& J) const;
 	/// 
-	/** Extract a rectangular subregion containing rows i1 to i2, and columns j1 to j2.
+	/* * Extract a rectangular subregion containing rows i1 to i2, and columns j1 to j2.
 	  *
 	  * This operator function returns a DMatrixSlice that represents a
 	  * rectangular region of this DMatrixSlice.  This submatrix region
@@ -269,13 +269,13 @@ public:
 	/// Same as above
 	const DMatrixSlice& operator()() const;
 
-	//@}
+	// @}
 
-	/** @name {\bf Assignment operators}. */
-	//@{
+	/* * @name {\bf Assignment operators}. */
+	// @{
 
 	///
-	/** Sets all elements = alpha
+	/* * Sets all elements = alpha
 	  *
 	  * If the underlying valarray is unsized (#this->v().size() == 0#) the matrix is sized to 1 x 1
 	  * and the single element is set to alpha.
@@ -286,7 +286,7 @@ public:
 	  */
 	DMatrixSlice& operator=(value_type alpha);
 	///
-	/**  Copies all of the elements of the DMatrixSlice, #rhs#, into the elements of #this#.
+	/* *  Copies all of the elements of the DMatrixSlice, #rhs#, into the elements of #this#.
 	  *
 	  * If the underlying valarray is unsized (#this->v().size() == 0#) the matrix is sized to
 	  * the size of the rhs matrix.
@@ -302,23 +302,23 @@ public:
 	  */
 	DMatrixSlice& operator=(const DMatrixSlice& gms_rhs);
 
-	//@}
+	// @}
 
-	/** @name {\bf Raw data access}.
+	/* * @name {\bf Raw data access}.
 	  */
-	//@{
+	// @{
 
 	/// Return the number of rows in the full matrix. Equivalent to BLAS LDA argument.
 	size_type			max_rows() const;
 	///
-	/** Return pointer to the first element in the underlying array the jth
+	/* * Return pointer to the first element in the underlying array the jth
 	   * col (j is 1-based here [1,cols]).  If unsized col_ptr(1) returns zero if unsized.
 	   */
 	value_type*			col_ptr(size_type j);
 	/// Same as above.
 	const value_type*	col_ptr(size_type j) const;
 
-	//@}
+	// @}
 
 private:
 	value_type		*ptr_;		// contains the data for the matrix region
@@ -339,13 +339,13 @@ private:
 };	// end class DMatrixSlice
 
 ///
-/** 2-D General Rectangular Matrix (column major) Storage Class.
+/* * 2-D General Rectangular Matrix (column major) Storage Class.
   *
   * This class provides the storage for 2-D rectangular matrices.
   */
 class DMatrix {
 public:
-	/** @name {\bf Nested Member Types (STL)}.
+	/* * @name {\bf Nested Member Types (STL)}.
 	  *
 	  * These nested types give the types used in the interface to the class.
 	  *
@@ -357,8 +357,8 @@ public:
 	  *	<li>[#const_reference#]		const value_type&
 	  * \end{description}
 	  */
-	//@{
-	//@}
+	// @{
+	// @}
 	
 	typedef DenseLinAlgPack::value_type					value_type;
 	typedef DenseLinAlgPack::size_type					size_type;
@@ -367,20 +367,20 @@ public:
 	typedef const value_type&						const_reference;
 	typedef std::valarray<value_type>				valarray;
 
-	/** @name {\bf Constructors}.
+	/* * @name {\bf Constructors}.
 	  *
 	  * The general user uses these constructors to create a matrix.  
 	  *
 	  * The default constructor is used and is therefore not shown here.
 	  */
-	//@{
+	// @{
 
 	/// Construct a matrix with rows = cols = 0
 	DMatrix();
 	/// Construct an uninitialied rectangular matrix (rows x cols) 
 	explicit DMatrix(size_type rows, size_type cols);
 	///
-	/** Construct rectangular matrix (rows x cols) with elements initialized to val.
+	/* * Construct rectangular matrix (rows x cols) with elements initialized to val.
 	  *
 	  * Postconditions: <ul>
 	  *		<li> #this->operator()(i,j) == val#, i = 1,2,...,#rows#, j = 1,2,...,#cols#  
@@ -388,7 +388,7 @@ public:
 	  */
 	explicit DMatrix(value_type val, size_type rows, size_type cols);
 	/// 
-	/** Construct rectangular matrix (rows x cols) initialized to elements of p (by column).
+	/* * Construct rectangular matrix (rows x cols) initialized to elements of p (by column).
 	  *
 	  * Postconditions: <ul>
 	  *		<li> #this->operator()(i,j) == p[i-1 + rows * (j - 1)]#, i = 1,2,...,#rows#, j = 1,2,...,#cols#  
@@ -396,7 +396,7 @@ public:
 	  */
 	explicit DMatrix(const value_type* p, size_type rows, size_type cols);
 	///
-	/** Construct a matrix from the elements in another DMatrixSlice, #gms#.
+	/* * Construct a matrix from the elements in another DMatrixSlice, #gms#.
 	  *
 	  * Postconditions: <ul>
 	  *		<li> #this->operator()(i,j) == gms(i,j)#, i = 1,2,...,#rows#, j = 1,2,...,#cols#  
@@ -404,10 +404,10 @@ public:
 	  */
 	DMatrix(const DMatrixSlice& gms);
 
-	//@}
+	// @}
 
-	/** @name {\bf Memory Management, Dimensionality, Misc}. */
-	//@{
+	/* * @name {\bf Memory Management, Dimensionality, Misc}. */
+	// @{
 	
 	/// Resize matrix to a (rows x cols) matrix and initializes any added elements by val
 	void resize(size_type rows, size_type cols, value_type val = value_type());
@@ -422,7 +422,7 @@ public:
 	size_type		cols() const;
 
 	/// 
-	/** Returns the degree of memory overlap of #this# and the DMatrixSlice object #gms#.
+	/* * Returns the degree of memory overlap of #this# and the DMatrixSlice object #gms#.
 	  *
 	  * @return 
 	  *		\begin{description}
@@ -433,10 +433,10 @@ public:
 	  */
 	EOverLap overlap(const DMatrixSlice& gms) const;
 
-	//@}
+	// @}
 
-	/** @name {\bf Individual Element Access Subscripting (lvalue)}. */
-	//@{
+	/* * @name {\bf Individual Element Access Subscripting (lvalue)}. */
+	// @{
 
 	/// Return element at row i, col j (i,j) (1-based)
 	reference		operator()(size_type i, size_type j);
@@ -444,16 +444,16 @@ public:
 	/// Return element at row i, col j (i,j) (1-based)
 	const_reference	operator()(size_type i, size_type j) const;
 
-	//@}
+	// @}
 
-	/** @name {\bf Subregion Access (1-based)}.
+	/* * @name {\bf Subregion Access (1-based)}.
 	  *
 	  * These member functions allow access to subregions of the DMatrix object.
 	  * The functions, row(i), col(j), and diag(k) return DVectorSlice objects while
 	  * the subscripting operators opeator()(I,J) return DMatrixSlice objects for
 	  * rectangular subregions.
 	  */
-	//@{
+	// @{
 
 	/// Return DVectorSlice object representing the ith row (1-based; 1,2,..,#this->rows()#)
 	DVectorSlice			row(size_type i);
@@ -468,7 +468,7 @@ public:
 	const DVectorSlice	col(size_type j) const;
 
 	/// 
-	/** Return DVectorSlice object representing a diagonal.
+	/* * Return DVectorSlice object representing a diagonal.
 	  *
 	  * Passing k == 0 returns the center diagonal.  Values of k < 0 are the lower diagonals
 	  * (k = -1, -2, ..., #this->rows()# - 1).  Values of k > 0 are the upper diagonals
@@ -485,7 +485,7 @@ public:
 	const DVectorSlice	diag(difference_type k = 0) const;
 
 	/// 
-	/** Extract a rectangular subregion containing rows I, and columns J.
+	/* * Extract a rectangular subregion containing rows I, and columns J.
 	  *
 	  * This operator function returns a DMatrixSlice that represents a
 	  * rectangular region of this DMatrixSlice.  This submatrix region
@@ -506,7 +506,7 @@ public:
 	const DMatrixSlice operator()(const Range1D& I, const Range1D& J) const;
 
 	/// 
-	/** Extract a rectangular subregion containing rows i1 to i2, and columns j1 to j2.
+	/* * Extract a rectangular subregion containing rows i1 to i2, and columns j1 to j2.
 	  *
 	  * This operator function returns a DMatrixSlice that represents a
 	  * rectangular region of this DMatrixSlice.  This submatrix region
@@ -532,28 +532,28 @@ public:
 	///
 	const DMatrixSlice operator()() const;
 
-	//@}
+	// @}
 
-	/** @name {\bf Implicit conversion operators}.
+	/* * @name {\bf Implicit conversion operators}.
 	  *
 	  * These functions allow for the implicit converstion from a DMatrix to a DMatrixSlice.
 	  * This implicit converstion is important for the proper usage of much of the
 	  * libraries functionality.
 	  */
-	//@{
+	// @{
 
 	///
 	operator DMatrixSlice();
 	///
 	operator const DMatrixSlice() const;
 
-	//@}
+	// @}
 
-	/** @name {\bf Assignment Operators}. */
-	//@{
+	/* * @name {\bf Assignment Operators}. */
+	// @{
 	
 	///
-	/** Sets all elements = alpha
+	/* * Sets all elements = alpha
 	  *
 	  * If the underlying valarray is unsized (#this->v().size() == 0#) the matrix is sized to 1 x 1
 	  * and the single element is set to alpha.
@@ -563,7 +563,7 @@ public:
 	  */
 	DMatrix& operator=(value_type rhs);
 	///
-	/** Copies all of the elements of the DMatrixSlice, #rhs#, into the elements of #this#.
+	/* * Copies all of the elements of the DMatrixSlice, #rhs#, into the elements of #this#.
 	  *
 	  * If #this# is not the same size as gms_rhs the #this# is resized.
 	  *
@@ -574,23 +574,23 @@ public:
 	/// Same as above.  Needed to override the default assignment operator.
 	DMatrix& operator=(const DMatrix& rhs);
 
-	//@}
+	// @}
 
-	/** @name {\bf Raw data access}.
+	/* * @name {\bf Raw data access}.
 	  */
-	//@{
+	// @{
 
 	/// Return the number of rows in the full matrix. Equivalent to BLAS LDA argument.
 	size_type			max_rows() const;
 	///
-	/** Return pointer to the first element in the underlying array the jth
+	/* * Return pointer to the first element in the underlying array the jth
 	   * col (j is 1-based here [1,cols]).  If unsized col_ptr(1) returns zero if unsized.
 	   */
 	value_type*			col_ptr(size_type j);
 	/// Same as above.
 	const value_type*	col_ptr(size_type j) const;
 
-	//@}
+	// @}
 
 private:
 	std::valarray<value_type>	v_;
@@ -607,19 +607,19 @@ private:
 };	// end class DMatrix
 
 //		end General Matix Classes scope
-//@}
+// @}
 
 // ///////////////////////////////////////////////////////////////////////////////
 // Non-member function declarations												//
 // ///////////////////////////////////////////////////////////////////////////////
 
-/** @name {\bf DMatrix / DMatrixSlice Associated Non-Member Functions}. */
-//@{
+/* * @name {\bf DMatrix / DMatrixSlice Associated Non-Member Functions}. */
+// @{
 //		begin non-member functions scope
 
 inline 
 ///  
-/** Explicit conversion function from DMatrix to DMatrixSlice.
+/* * Explicit conversion function from DMatrix to DMatrixSlice.
   *
   * This is needed to allow a defered evaluation class (TCOL) to be evaluated using its
   * implicit conversion operator temp_type() (which returns DMatrix for DMatrixSlice
@@ -643,7 +643,7 @@ void assert_gms_square(const DMatrixSlice& gms) {
 
 inline 
 ///
-/** Utility to check if a lhs matrix slice is the same size as a rhs matrix slice.
+/* * Utility to check if a lhs matrix slice is the same size as a rhs matrix slice.
   *
   * A DMatrixSlice can not be resized since the rows_ property of the
   * DMatrix it came from will not be updated.  Allowing a DMatrixSlice
@@ -660,8 +660,8 @@ void assert_gms_lhs(const DMatrixSlice& gms_lhs, size_type rows, size_type cols
 	throw std::length_error("assert_gms_lhs(...):  lhs DMatrixSlice dim does not match rhs dim");
 }
 
-/** @name Return rows or columns from a possiblly transposed DMatrix or DMatrixSlice. */
-//@{
+/* * @name Return rows or columns from a possiblly transposed DMatrix or DMatrixSlice. */
+// @{
 
 inline 
 ///
@@ -711,7 +711,7 @@ const DVectorSlice col(const DMatrix& gm, BLAS_Cpp::Transp trans, size_type j) {
 	return (trans ==  BLAS_Cpp::no_trans) ? gm.col(j) : gm.row(j);
 } 
 
-//@}
+// @}
 
 inline 
 /// Utility to resize a DMatrix to the size of a rhs matrix.
@@ -723,10 +723,10 @@ void resize_gm_lhs(DMatrix* gm_rhs, size_type rows, size_type cols
 }
 
 //		end non-member functions scope
-//@}
+// @}
 
 //		end General Rectangular 2-D Matrices scope
-//@}
+// @}
 
 // ////////////////////////////////////////////////////////////////////////////////
 // Inline definitions of computationally independent member function definitions //

@@ -20,7 +20,7 @@
 
 namespace DenseLinAlgPack {
 
-/** @name DMatrix/DMatrixSlice input stream functions.
+/* * @name DMatrix/DMatrixSlice input stream functions.
   *
   * These are functions that are used to read a DMatrix or DMatrixSlice object in from a
   * formated input stream.
@@ -82,10 +82,10 @@ namespace DenseLinAlgPack {
   * Also if the stream becomes corrupted (#is.bad() == true#) then a #std::ios_base::failure#
   * exception is thrown. 
   */
-//@{
+// @{
 
 ///
-/** DMatrix input stream function.
+/* * DMatrix input stream function.
   *
   * Inputs a DMatrix object from an input stream.
   * If #exta_flags & LinAlgPackIO::ignore_dim_bit != 0# then #gm# is resized to #m# x #n#
@@ -95,7 +95,7 @@ namespace DenseLinAlgPack {
 std::istream& input(std::istream& is, DMatrix* gm, LinAlgPackIO::fmtflags extra_flags);
 
 ///
-/** DMatrixSlice input stream function.
+/* * DMatrixSlice input stream function.
   *
   * Inputs a DMatrixSlice object from an input stream.
   * If #exta_flags & LinAlgPackIO::ignore_dim_bit != 0# then the dimension (sized) of #gms#
@@ -106,7 +106,7 @@ std::istream& input(std::istream& is, DMatrix* gm, LinAlgPackIO::fmtflags extra_
   */
 std::istream& input(std::istream& is, DMatrixSlice* gms, LinAlgPackIO::fmtflags extra_flags);
 
-//@}
+// @}
 
 }	// end namespace DenseLinAlgPack
 

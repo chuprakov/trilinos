@@ -22,7 +22,7 @@
 
 namespace DenseLinAlgPack {
 
-/** @name {\bf DenseLinAlgPack Type Declarations}.
+/* * @name {\bf DenseLinAlgPack Type Declarations}.
   *
   * These are forward declarations of the types used with the DenseLinAlgPack
   * package (namespace).  In addition the BLAS_Cpp enumerations
@@ -30,7 +30,7 @@ namespace DenseLinAlgPack {
   * are avalible using the qualifier #BLAS_Cpp#.
   */
 
-//@{
+// @{
 
 ///
 using RangePack::Range1D;
@@ -80,7 +80,7 @@ class DMatrixSliceTri;
 ///
 class DMatrixSliceSym;
 
-//@}
+// @}
 
 }  // namespace DenseLinAlgPack
 

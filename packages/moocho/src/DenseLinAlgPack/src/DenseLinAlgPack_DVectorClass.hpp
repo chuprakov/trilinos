@@ -22,17 +22,17 @@
 
 namespace DenseLinAlgPack {
 
-/** @name DVector.
+/* * @name DVector.
   * @memo typedef \Ref{VectorTmpl}<value_type> DVector;
   */
-//@{
-//@}
+// @{
+// @}
 
-/** @name DVectorSlice.
+/* * @name DVectorSlice.
   * @memo typedef \Ref{VectorSliceTmpl}<value_type> DVectorSlice;
   */
-//@{
-//@}
+// @{
+// @}
 
 } // end namespace DenseLinAlgPack
 

@@ -25,7 +25,7 @@
 namespace DenseLinAlgPack {
 
 // ///////////////////////////////////////////////////////////////////////////////////
-/** @name {\bf DMatrix/DMatrixSlice Assignment Fucntions}.
+/* * @name {\bf DMatrix/DMatrixSlice Assignment Fucntions}.
   *
   * These are functions for assigning one matrix to another.  The rhs matrices
   * can be transposed (op(rhs) = rhs) or non-transposed (op(rhs) = trans(rhs).
@@ -39,7 +39,7 @@ namespace DenseLinAlgPack {
   * These assignment functions check for aliasing and assignment to self
   * and create any needed temporaries if needed.
   */
-//@{
+// @{
 
 /// gm_lhs = alpha (elementwise)
 void assign(DMatrix* gm_lhs, value_type alpha);
@@ -60,7 +60,7 @@ void assign(DMatrixSliceTriEle* tri_gms_lhs, value_type alpha);
 void assign(DMatrixSliceTriEle* tri_ele_gms_lhs, const DMatrixSliceTriEle& tri_ele_gms_rhs);
 
 //		end Assignment Fucntions
-//@}
+// @}
 
 }	// end namespace DenseLinAlgPack
 

@@ -24,7 +24,7 @@ namespace DenseLinAlgPack {
 namespace LinAlgPackIO {
 
 ///
-/** This class is used to encapsulate a set of bit flags.
+/* * This class is used to encapsulate a set of bit flags.
   */
 class bit_flags {
 public:
@@ -68,7 +68,7 @@ private:
 };	// end class flags
 
 ///
-/** Memento class that saves the state of a standard stream.
+/* * Memento class that saves the state of a standard stream.
   *
   * This is a variation of the "Memento" Pattern in Gama et. al.
   *
@@ -101,7 +101,7 @@ template<class T> class bound_format;
 template<class T> class const_bound_format;
 
 ///
-/** This class is used to allow some flexiblility in inputing
+/* * This class is used to allow some flexiblility in inputing
   * and outputing of DVector, DVectorSlice, DMatrix and DMatrixSlice objects.
   * It maintains format information for a #std::ios_base# object and adds
   * additional format information.
@@ -142,9 +142,9 @@ public:
 		copy_format(s);
 	}
 
-	/** @name Access format flags objects
+	/* * @name Access format flags objects
 	  */
-	//@{	
+	// @{	
 	
 	///
 	bit_flags& ios_base_flags()				{	return ios_base_flags_;	}
@@ -156,9 +156,9 @@ public:
 	///
 	const bit_flags& extra_flags() const	{	return extra_flags_;	}
 
-	//@}
+	// @}
 
-	/** @name Manipulator like functions for standard floating-point number formating.
+	/* * @name Manipulator like functions for standard floating-point number formating.
 	  *
 	  * These member functions are ment to mirror the standard input/output
 	  * manipulator functions.  Their names are the same and you can set
@@ -172,7 +172,7 @@ public:
 	  * on how objects of this class are used to specify formating for input/output
 	  * operations.
 	  */
-	//@{
+	// @{
 
 	///
 	format& showpoint()		{	ios_base_flags().setf(std::ios_base::showpoint); return *this;	}
@@ -227,9 +227,9 @@ public:
 	///
 	format& setw(int w)		{	wdt_ = w; return *this;	}
 
-	//@}
+	// @}
 
-	/** @name Manipulator like functions for extra I/O formatin.
+	/* * @name Manipulator like functions for extra I/O formatin.
 	  *
 	  * These member functions are ment to mirror the type of standard input/output
 	  * manipulator functions accept they are used to set extra flags for 
@@ -242,7 +242,7 @@ public:
 	  * Like the member functions that simulate the standard manipulators these
 	  * options presist after input/output operations.
 	  */
-	//@{
+	// @{
 
 	///
 	format& ignore_dim()
@@ -269,11 +269,11 @@ public:
 		return *this;
 	}
 
-	//@}
+	// @}
 
-	/** @name Other access functions
+	/* * @name Other access functions
 	  */
-	//@{
+	// @{
 
 	///
 	int precision() const			{	return prec_;	}
@@ -288,11 +288,11 @@ public:
 	///
 	int fill(int c)					{	int tmp = fill_; fill_ = c; return tmp;	}
 
-	//@}
+	// @}
 
-	/** @name Utility functions for saving and replacing a streams format state
+	/* * @name Utility functions for saving and replacing a streams format state
 	  */
-	//@{
+	// @{
 
 	/// Copy a streams format to this object
 	void copy_format(const std::ios& s);
@@ -300,7 +300,7 @@ public:
 	/// Set a streams format to the one in this object
 	void set_format(std::ios& s) const;
 	
-	//@}
+	// @}
 
 
 // ToDo: Enable these once member templates are supported.  This is much more
@@ -330,7 +330,7 @@ private:
 template<class T> class const_bound_format;
 
 ///
-/** Special I/O manipulator class for non-constant objects.
+/* * Special I/O manipulator class for non-constant objects.
   *
   * This class as a special manipulator and is composed of a composition
   * of a format object and a templated object that is used in an input
@@ -368,7 +368,7 @@ private:
 };	// end class bound_format
 
 ///
-/** Special I/O manipulator class for constant objects.
+/* * Special I/O manipulator class for constant objects.
   *
   * This class as a special manipulator and is composed of a composition
   * of a format object and a const templated object that is used only in
@@ -404,7 +404,7 @@ private:
 };	// end class const_bound_format
 
 ///
-/** Returns a bound_format<T> object using this format object.
+/* * Returns a bound_format<T> object using this format object.
   *
   * Using templated input/output operator functions this function
   * is used to bind a format to a non-const target object for a
@@ -423,7 +423,7 @@ inline bound_format<T> bind(const format& f, T& obj) {
 }
 
 ///
-/** Returns a const_bound_format<T> using this format object.
+/* * Returns a const_bound_format<T> using this format object.
   *
   * This function works the same as the previous \Ref{bind}#()# function
   * accept it is for a const target object.  It could not use

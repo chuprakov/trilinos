@@ -19,13 +19,12 @@
 #ifndef LINALGPACK_OPTIONS_H
 #define LINALGPACK_OPTIONS_H
 
-#include "DenseLinAlgPackDebugAcronyms.hpp"
 #include "extended_value_type.hpp"
 #include "fortran_types.hpp"
 
 #if !defined(LINALGPACK_NO_CHECKS)
 
-/** @name {\bf DenseLinAlgPack Options}.
+/* * @name {\bf DenseLinAlgPack Options}.
   *
   * The header file DenseLinAlgPackOptions.hpp contains the defines for several macros that
   * determine how the library is built.  The user should comment out any
@@ -38,10 +37,10 @@
   * If the user checks all of the preconditions listed in this documentation for the calls
   * to all functions then the checks performed by the library are redundant.
   */
-//@{
+// @{
 
 ///
-/** If defined the library code checks to see if subscripts are in bounds for element access
+/* * If defined the library code checks to see if subscripts are in bounds for element access
   * an subregion indexing.  If the preconditions for the subscripting operations are
   * not satisfied then the listed exceptions will be thrown.
   */
@@ -50,7 +49,7 @@
 #endif
 
 ///
-/** If defined the library code checks to see if the sizes of rhs arguments in expressions are compatible.
+/* * If defined the library code checks to see if the sizes of rhs arguments in expressions are compatible.
   * The exception std::length_error will be thrown if rhs sizes are not compatible.
   */
 #ifndef LINALGPACK_CHECK_RHS_SIZES
@@ -58,7 +57,7 @@
 #endif
 
 ///
-/** If defined the library code checks to see if DVectorSlice and DMatrixSlice objects have valid constructions.
+/* * If defined the library code checks to see if DVectorSlice and DMatrixSlice objects have valid constructions.
   * If they do not have valid constructions then an exception will be thrown.  The operation of these
   * checks may depend on the definition of the macro \Ref{LINALGPACK_CHECK_RANGE}.
   */
@@ -78,6 +77,6 @@ typedef	FortranTypes::f_int				size_type;
 
 }
 
-//@}
+// @}
 
 #endif // LINALGPACK_OPTIONS_H

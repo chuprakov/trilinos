@@ -23,7 +23,7 @@ namespace DenseLinAlgPack {
 #ifdef LINALGPACK_CHECK_RHS_SIZES
 
 
-/** @name Assertion functions for linear algebra operations.
+/* * @name Assertion functions for linear algebra operations.
   *
   * These functions check the sizes of the linear algebra
   * expressions and throw a std::length_error if
@@ -31,11 +31,11 @@ namespace DenseLinAlgPack {
   * only perform there operations if #LINALGPACK_CHECK_RHS_SIZES#
   * is defined.
   */
-//@{
+// @{
 
-/** @name Level 1 BLAS
+/* * @name Level 1 BLAS
   */
-//@{
+// @{
 
 /// v_lhs += op v_rhs
 void Vp_V_assert_sizes(size_type v_lhs_size, size_type v_rhs_size);
@@ -52,11 +52,11 @@ void MopM_assert_sizes(size_type m_rhs1_rows, size_type m_rhs1_cols, BLAS_Cpp::T
 	, size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2);
 
 //		end Level 1 BLAS
-//@}
+// @}
 
-/**  @name Level 2 BLAS
+/* *  @name Level 2 BLAS
   */
-//@{
+// @{
 
 /// op(m_rhs1) * v_rhs2
 void MtV_assert_sizes(size_type m_rhs1_rows, size_type m_rhs1_cols
@@ -67,11 +67,11 @@ void Vp_MtV_assert_sizes(size_type v_lhs_size, size_type m_rhs1_rows
 	, size_type m_rhs1_cols, BLAS_Cpp::Transp trans_rhs1, size_type v_rhs2_size);
 
 //		end Level 2 BLAS
-//@}
+// @}
 
-/**  @name Level 3 BLAS
+/* *  @name Level 3 BLAS
   */
-//@{
+// @{
 
 /// op(m_lhs) += op(m_rhs1)
 void MtM_assert_sizes(
@@ -85,10 +85,10 @@ void Mp_MtM_assert_sizes(
 	, size_type m_rhs2_rows, size_type m_rhs2_cols, BLAS_Cpp::Transp trans_rhs2);
 
 //		end Level 3 BLAS
-//@}
+// @}
 
 
-//@}
+// @}
 
 #else
 
