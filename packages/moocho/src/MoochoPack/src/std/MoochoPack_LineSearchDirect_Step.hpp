@@ -31,7 +31,7 @@ class LineSearchDirect_Step
 {
 public:
 
-	/// <<std comp>> members for direct_line_search
+	/// Set the direct line search algorithm object
 	STANDARD_COMPOSITION_MEMBERS(DirectLineSearch_Strategy,direct_line_search)
 	///
 	LineSearchDirect_Step(
