@@ -18,8 +18,8 @@
 #include <iostream>
 
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "AbstractLinAlgPack/include/MultiVectorMutable.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
@@ -60,8 +60,8 @@ bool UpdateReducedSigma_Step::do_step(
 	ipState             &s      = dyn_cast<ipState>(_algo.state());
 	NLPFirstOrderInfo   &nlp    = dyn_cast<NLPFirstOrderInfo>(algo.nlp());
 	
-	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
-	std::ostream& out = algo.track().journal_out();
+	EJournalOutputLevel olevel  = algo.algo_cntr().journal_output_level();
+	std::ostream        &out    = algo.track().journal_out();
 	
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
@@ -74,12 +74,11 @@ bool UpdateReducedSigma_Step::do_step(
 		{
 		case ALWAYS_EXPLICIT:
 			{
-			FormReducedSigmaExplicitly(_algo);
-			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
+			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) 
 				{
-				out << "update_method is always_explicit\n"
-					<< " forming Reduced Sigma Explicitly\n";
+				out << "\nupdate_method is always_explicit, forming Reduced Sigma Explicitly ...\n";
 				}
+			FormReducedSigmaExplicitly(algo,s,olevel,out);
 			}
 			break;
 		case BFGS_PRIMAL:
@@ -94,10 +93,9 @@ bool UpdateReducedSigma_Step::do_step(
 			assert(0); // local error ?
 		};
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
+	if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) 
 		{
-		out << "rHB=\n";
-		s.rHB().get_k(0).output(out);
+		out << "\nrHB_k =\n" << s.rHB().get_k(0);
 		}
 
 	return true;
@@ -109,44 +107,45 @@ void UpdateReducedSigma_Step::print_step(
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
 	{
-	out << L << "\n#Update Z^T*Sigma*Z\n"
+	out << L << "*** Update Z'*Sigma*Z\n"
 		<< L << "if (update_method == always_explicit) then\n"
-		<< L << "   sigma = invXl*Vl-invXu*Vu\n"
-		<< L << "   sigma_I = sigma.sub_view(Z.I_rng)\n"
-		<< L << "   sigma_D_sqrt = (sigma.sub_view(Z.D_rng))^1/2\n"
-		<< L << "   J = sigma_D_sqrt*Z\n"
-		<< L << "   rHB = J^T*J + sigma_I\n"
+		<< L << "  Sigma_k = invXl*Vl-invXu*Vu\n"
+		<< L << "  Sigma_I = Sigma_k.sub_view(Z.I_rng)\n"
+		<< L << "  Sigma_D_sqrt = (Sigma_k.sub_view(Z.D_rng))^1/2\n"
+		<< L << "  J = Sigma_D_sqrt*Z\n"
+		<< L << "  rHB_k = J'*J + Sigma_I\n"
 		<< L << "elsif (update_method == BFGS_???) then\n"
-		<< L << "   # NOT IMPLEMENTED YET\n"
+		<< L << "  NOT IMPLEMENTED YET!\n"
 		<< L << "end\n";
 	}
 
-
-void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(Algorithm& _algo)
+void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
+	rSQPAlgo& algo, ipState& s, EJournalOutputLevel olevel,  std::ostream& out
+	)
 	{
+	namespace mmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
+	using AbstractLinAlgPack::ele_wise_prod;
+	using AbstractLinAlgPack::ele_wise_sqrt;
+ 	using LinAlgOpPack::Mp_M;
  	using LinAlgOpPack::Mp_MtM;
  	using LinAlgOpPack::M_MtM;
  	using LinAlgOpPack::M_StM;
+	using LinAlgOpPack::V_MtV;
+	using LinAlgOpPack::assign;
 
 	// Calculate Reduced Sigma directly from
 	// Sigma = invXl*Vl + invXu*Vu
 	// Z_kT*Sigma*Z_k
 
-	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
-	ipState             &s      = dyn_cast<ipState>(_algo.state());
-
-	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
-	std::ostream& out = algo.track().journal_out();
-
 	// Get the iteration quantities
-	const MatrixIdentConcat& Z = dyn_cast<MatrixIdentConcat>(s.Z().get_k(0));
-	const MatrixSymDiagonalStd& invXl = s.invXl().get_k(0);
-	const MatrixSymDiagonalStd& invXu = s.invXu().get_k(0);
-	const MatrixSymDiagonalStd& Vl = s.Vl().get_k(0);
-	const MatrixSymDiagonalStd& Vu = s.Vu().get_k(0);
+	const MatrixIdentConcat     &Z     = dyn_cast<MatrixIdentConcat>(s.Z().get_k(0));
+	const MatrixSymDiagonalStd  &invXl = s.invXl().get_k(0);
+	const MatrixSymDiagonalStd  &invXu = s.invXu().get_k(0);
+	const MatrixSymDiagonalStd  &Vl    = s.Vl().get_k(0);
+	const MatrixSymDiagonalStd  &Vu    = s.Vu().get_k(0);
 	
-	MatrixSymDiagonalStd& sigma = s.Sigma().set_k(0);
+	MatrixSymDiagonalStd  &Sigma = s.Sigma().set_k(0);
 
 	MatrixSymWithOpNonsingular& rHB = dyn_cast<MatrixSymWithOpNonsingular>(s.rHB().set_k(0));
 	if (rHB.cols() != Z.cols())
@@ -155,115 +154,125 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(Algorithm& _algo)
 		dyn_cast<MatrixSymInitDiagonal>(rHB).init_identity(Z.space_rows(), 0.0);
 		}
 	
-	// Calculate Sigma
-	sigma.diag()=0;
-	ele_wise_prod(1.0, invXl.diag(), Vl.diag(), &sigma.diag());
-	
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-		{
-		out << "sigma_l = \n"
-			<< sigma.diag();
-			
-		}
-	
-    MemMngPack::ref_count_ptr<VectorWithOpMutable> temp = invXl.diag().space().create_member(0);
-	ele_wise_prod(1.0, invXu.diag(), Vu.diag(), temp.get());
-	sigma.diag().axpy(1.0, *temp);
+	// Calculate Sigma = invXl*Vl + invXu*Vu
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-		{
-		out << "sigma_l + sigma_u = \n"
-			<< sigma.diag();
-			
-		}
+	ele_wise_prod(1.0, invXl.diag(), Vl.diag(), &(Sigma.diag() = 0.0));
+	
+	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
+		out << "\n||Sigma_l||inf = " << Sigma.diag().norm_inf() << std::endl;
+	if( (int)olevel >= (int)PRINT_VECTORS )
+		out << "\nSigma_l =\n" << Sigma.diag();
+	
+	ele_wise_prod(1.0, invXu.diag(), Vu.diag(), &Sigma.diag() );
 
-	// Calculate the cross term first...
+	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
+		out << "\n||Sigma_k||inf = ||Sigma_l + Sigma_u||inf = " << Sigma.diag().norm_inf() << std::endl;
+	if( (int)olevel >= (int)PRINT_VECTORS ) 
+		out << "\nSigma_k = Sigma_l + Sigma_u =\n" << Sigma.diag();
+
+	// Calculate the cross term (Z'*Sigma*Ypy) first
+	VectorSpace::vec_mut_ptr_t temp = Z.space_cols().create_member(0.0);
+	ele_wise_prod(1.0, s.Ypy().get_k(0), Sigma.diag(), temp.get());
 	VectorWithOpMutable& w_sigma = s.w_sigma().set_k(0);
-	*temp = 0;
-	ele_wise_prod(1.0, s.Ypy().get_k(0), sigma.diag(), temp.get());
-
-	using LinAlgOpPack::V_MtV;
 	V_MtV(&w_sigma, Z, BLAS_Cpp::trans, *temp);
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-		{
-		out << "w = \n";
-		w_sigma.output(out);
-		}
+	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
+		out << "\n||w_sigma_k||inf = " << w_sigma.norm_inf() << std::endl;
+	if( (int)olevel >= (int)PRINT_VECTORS ) 
+		out << "\nw_sigma_k = \n" << w_sigma;
 	
 	// Calculate Reduced Sigma
 	// Try sigma^1/2 making use of dependent and independent variables
-	MemMngPack::ref_count_ptr<MatrixSymDiagonalStd> sigma_I_sqrt = 
-		MemMngPack::rcp(
-		  new MatrixSymDiagonalStd(
-			sigma.diag().sub_view(Z.I_rng())->clone()
-			)
-		  );
 
+	mmp::ref_count_ptr<const VectorWithOpMutable>
+		Sigma_D_diag = Sigma.diag().sub_view(Z.D_rng()),
+		Sigma_I_diag = Sigma.diag().sub_view(Z.I_rng());
+	const size_type
+		Sigma_D_nz = Sigma_D_diag->nz(),
+		Sigma_I_nz = Sigma_I_diag->nz();
 
-	MemMngPack::ref_count_ptr<MatrixSymDiagonalStd> sigma_D_sqrt = 
-		MemMngPack::rcp(
-		  new MatrixSymDiagonalStd(
-			sigma.diag().sub_view(Z.D_rng())->clone()
-			)
-		  );
-
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
+	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
 		{
-		out << "sigma_I = \n";
-		sigma_I_sqrt->output(out);
-		}
-	
-	ele_wise_sqrt(sigma_I_sqrt->diag());
-	ele_wise_sqrt(sigma_D_sqrt->diag());
-
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-		{
-		out << "sigma_D_sqrt = \n";
-		sigma_D_sqrt->output(out);
+		out << "\nSigma_D.diag().nz() = " << Sigma_D_nz;
+		out << "\nSigma_I.diag().nz() = " << Sigma_I_nz << std::endl;
 		}
 
-	MemMngPack::ref_count_ptr<MultiVectorMutable> J = sigma_D_sqrt->space_cols().create_members(Z.cols());
-	M_MtM((MatrixWithOp*)J.get(), *sigma_D_sqrt, BLAS_Cpp::no_trans, Z.D(), BLAS_Cpp::no_trans);
-
-	J->syrk(BLAS_Cpp::trans, 1.0, 0.0, &rHB);
-
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
+	if( Sigma_D_nz || Sigma_I_nz )
 		{
-		out << "J'*J = \n";
-		rHB.output(out);
-		}	
+		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
+			{
+			out << "\nForming explicit, nonzero rHB_k = Z_k'*Sigma_k*Z_k ...\n";
+			}
+		if( Sigma_D_nz )
+			{
 
-	// This is really bad, but I cannot add a diagonal matrix to a PosDefCholFactor one
-	MemMngPack::ref_count_ptr<MultiVectorMutable> Ji = sigma_I_sqrt->space_cols().create_members(sigma_I_sqrt->cols());
-	using LinAlgOpPack::assign;
-	assign(Ji.get(), *sigma_I_sqrt, BLAS_Cpp::no_trans);
-	Ji->syrk(BLAS_Cpp::trans, 1.0, 1.0, &rHB);
-  
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-		{
-		out << "rHB = \n";
-		rHB.output(out);
-		}	
+			MatrixSymDiagonalStd Sigma_D_sqrt(Sigma_D_diag->clone());
 
-	//std::cout << "rHB=\n";
- 	//rHB.output(std::cout);
+			ele_wise_sqrt(&Sigma_D_sqrt.diag());
+
+			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
+				{
+				out << "\nSigma_D_sqrt =\n" << Sigma_D_sqrt;
+				}
 	
+			mmp::ref_count_ptr<MultiVectorMutable>
+				J = Sigma_D_sqrt.space_cols().create_members(Z.cols());
+			M_MtM(
+				static_cast<MatrixWithOp*>(J.get())
+				,Sigma_D_sqrt, BLAS_Cpp::no_trans, Z.D(), BLAS_Cpp::no_trans);
+
+			J->syrk(BLAS_Cpp::trans, 1.0, 0.0, &rHB);
+
+			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) 
+				{
+				out << "\nJ =\n" << *J;
+				out << "\nJ'*J =\n" << rHB;
+				}
+
+			}
+
+		if( Sigma_I_nz )
+			{
+
+			const MatrixSymDiagonalStd Sigma_I(
+				mmp::rcp_const_cast<VectorWithOpMutable>(Sigma_I_diag)
+				);
+
+			if(Sigma_D_nz)
+				{
+				Mp_M( &rHB, Sigma_I, BLAS_Cpp::no_trans );
+				}
+			else
+				{
+				assign( &rHB, Sigma_I, BLAS_Cpp::no_trans );
+				}
+
+			}
+		}
+	else
+		{
+		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
+			{
+			out << "\nSigma_k is zero so setting rHB_k = 0.0 ...\n";
+			}
+		rHB.zero_out();
+		}
+
 	/*
  	// Try the full unspecialised calculation, this is expensive, but will
 	// serve as a debug for the more efficient calculations.
 
-	VectorSpace::multi_vec_mut_ptr_t sigma_Z = Z.space_cols().create_members(Z.cols());
-	M_MtM((MatrixWithOp*)sigma_Z.get(), sigma, BLAS_Cpp::no_trans, Z, BLAS_Cpp::no_trans);
+	VectorSpace::multi_vec_mut_ptr_t Sigma_Z = Z.space_cols().create_members(Z.cols());
+	M_MtM((MatrixWithOp*)Sigma_Z.get(), Sigma, BLAS_Cpp::no_trans, Z, BLAS_Cpp::no_trans);
 
-	//std::cout << "sigma_Z\n";
-	//sigma_Z->output(std::cout);
+	//std::cout << "Sigma_Z\n";
+	//Sigma_Z->output(std::cout);
 
-	VectorSpace::multi_vec_mut_ptr_t ZT_sigma_Z = Z.space_rows().create_members(Z.cols());
-	M_MtM((MatrixWithOp*)ZT_sigma_Z.get(), (MatrixWithOp&)Z, BLAS_Cpp::trans, (MatrixWithOp&)*sigma_Z, BLAS_Cpp::no_trans);
+	VectorSpace::multi_vec_mut_ptr_t ZT_Sigma_Z = Z.space_rows().create_members(Z.cols());
+	M_MtM((MatrixWithOp*)ZT_Sigma_Z.get(), (MatrixWithOp&)Z, BLAS_Cpp::trans, (MatrixWithOp&)*Sigma_Z, BLAS_Cpp::no_trans);
 
-	std::cout << "ZT_sigma_Z=\n";
-	ZT_sigma_Z->output(std::cout);
+	std::cout << "ZT_Sigma_Z=\n";
+	ZT_Sigma_Z->output(std::cout);
 	*/
 	}
 
@@ -325,4 +334,4 @@ void UpdateReducedSigma_StepSetOptions::set_option(
 		}
 	}
 
-}; // end namespace ReducedSpaceSQPPack
+} // end namespace ReducedSpaceSQPPack
