@@ -84,7 +84,8 @@ void ExampleBasisSystem::update_basis(
 	,MatrixWithOp*              D
 	,MatrixWithOp*              GcUP
 	,MatrixWithOp*              GhUP
-	)
+	,EMatRelations              mat_rel
+	) const
 {
 	using DynamicCastHelperPack::dyn_cast;
 
@@ -133,9 +134,14 @@ void ExampleBasisSystem::update_basis(
 	if( C ) {
 		MatrixSymDiagonalStd
 			&C_sym_diag = dyn_cast<MatrixSymDiagonalStd>(*C);
-		if( C_sym_diag.rows() != m )
-			C_sym_diag.initialize( space_x_DI_->create_member() );
-		C_sym_diag.diag() = C_aggr.diag();
+		if(mat_rel == MATRICES_INDEP_IMPS) {
+			if( C_sym_diag.rows() != m )
+				C_sym_diag.initialize( space_x_DI_->create_member() );
+			C_sym_diag.diag() = C_aggr.diag();
+		}
+		else {
+			C_sym_diag.initialize( C_aggr.diag_ptr() );
+		}
 	}
 	// Compute D
 	if( D ) {

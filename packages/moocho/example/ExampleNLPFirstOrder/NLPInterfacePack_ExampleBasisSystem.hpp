@@ -65,7 +65,8 @@ public:
 		,MatrixWithOp*              D
 		,MatrixWithOp*              GcUP
 		,MatrixWithOp*              GhUP
-		);
+		,EMatRelations              mat_rel
+		) const;
 
 	//@}
 
