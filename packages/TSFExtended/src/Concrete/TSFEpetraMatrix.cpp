@@ -161,3 +161,20 @@ const Epetra_CrsMatrix* EpetraMatrix::crsMatrix() const
 
   return crs;
 }
+
+RefCountPtr<const TSFCore::EpetraVectorSpace> 
+EpetraMatrix::allocateDomain(const RefCountPtr<Epetra_Operator>  &op 
+                               ,TSFCore::ETransp  op_trans 
+                               )  const
+{
+  return rcp( new EpetraVectorSpace( rcp(&op->OperatorDomainMap(),false) ) );
+}
+
+RefCountPtr<const TSFCore::EpetraVectorSpace> 
+EpetraMatrix::allocateRange(const RefCountPtr<Epetra_Operator>  &op 
+                              ,TSFCore::ETransp  op_trans 
+                               )  const
+{
+  return rcp( new EpetraVectorSpace( rcp(&op->OperatorRangeMap(),false) ) );
+}
+
