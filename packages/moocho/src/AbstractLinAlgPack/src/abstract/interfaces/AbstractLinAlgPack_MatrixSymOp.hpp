@@ -33,6 +33,9 @@ class MatrixSymWithOp : public virtual MatrixWithOp {
 public:
 
 	///
+	using MatrixWithOp::Mp_StPtMtP;
+
+	///
 	enum EMatRhsPlaceHolder { DUMMY_ARG };
 
 	/// Returns size equal to rows() (need not be overridden by subclass again)
