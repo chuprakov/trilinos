@@ -102,6 +102,7 @@ int main(int argc, void *argv[])
       Vector<double> bCheck = space.createMember();
 
       Vector<double> c = space.createMember();
+      Vector<double> cCheck = space.createMember();
 
       a = x + y + z + u + v + w;
       
@@ -112,7 +113,10 @@ int main(int argc, void *argv[])
       if (verbosity > 1)
         {
           cerr << "a = " << endl << a << endl;
+          cerr << "b = " << endl << b << endl;
+          cerr << "c = " << endl << c << endl;
         }
+
 
       /* check */
       double aErr = 0.0;
@@ -124,12 +128,14 @@ int main(int argc, void *argv[])
             +  u.getElement(i) + v.getElement(i) + w.getElement(i);
           aCheck.setElement(i, ai);
           bCheck.setElement(i, x.getElement(i) * y.getElement(i) );
+          cCheck.setElement(i, b.getElement(i) / x.getElement(i) );
           aErr += ::fabs(ai-a.getElement(i));
           bErr += ::fabs(bCheck.getElement(i)-b.getElement(i));
           if (verbosity > 1)
             {
               cerr << i << " |ai-a[i]| " << ::fabs(ai-a.getElement(i)) << endl;
               cerr << i << " |bi-b[i]| " << ::fabs(bCheck.getElement(i)-b.getElement(i)) << endl;
+              cerr << i << " |ci-c[i]| " << ::fabs(cCheck.getElement(i)-c.getElement(i)) << endl;
             }
         }
 

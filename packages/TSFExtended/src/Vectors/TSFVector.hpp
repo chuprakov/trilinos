@@ -139,6 +139,24 @@ namespace TSFExtended
       Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x);
 
       /** 
+       * Add a scaled vector to this vector times a constant:
+       * \code
+       * this = gamma*this + alpha*x 
+       * \endcode
+       */
+      Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x, 
+                             const Scalar& gamma);
+      /** 
+       * Add two scaled vectors to this vector times a constant:
+       * \code
+       * this = alpha*x + beta*y + gamma*this
+       * \endcode
+       */
+      Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x, 
+                             const Scalar& beta, const Vector<Scalar>& y, 
+                             const Scalar& gamma);
+
+      /** 
        * Copy the values of another vector into this vector
        * \code
        * this = x
@@ -160,6 +178,31 @@ namespace TSFExtended
        * Element-by-element division (Matlab dot-slash operator)
        */
       Vector<Scalar> dotSlash(const Vector<Scalar>& other) const ;
+
+      /** 
+       * Return element-by-element reciprocal as a new vector
+       */
+      Vector<Scalar> reciprocal() const ;
+
+      /** 
+       * Return element-by-element absolute value as a new vector
+       */
+      Vector<Scalar> abs() const ;
+
+      /** 
+       * Overwrite self with element-by-element reciprocal
+       */
+      Vector<Scalar>& reciprocal() ;
+
+      /** 
+       * Overwrite self with element-by-element absolute value 
+       */
+      Vector<Scalar>& abs() ;
+
+      /** 
+       * Set all elements to a constant value
+       */
+      void setToConstant(const Scalar& alpha) ;
 
       
       /** 
@@ -336,7 +379,90 @@ namespace TSFExtended
     }
     return rtn;
   }
+
+  template <class Scalar> inline 
+  Vector<Scalar> Vector<Scalar>::abs() const 
+  {
+    Vector<Scalar> rtn = space()->createMember();
+    {
+      TimeMonitor t(*opTimer());
+      rtn.acceptCopyOf(*this);
+      rtn.abs();
+    }
+    return rtn;
+  }
+
+  template <class Scalar> inline 
+  Vector<Scalar> Vector<Scalar>::reciprocal() const 
+  {
+    Vector<Scalar> rtn = space()->createMember();
+    {
+      TimeMonitor t(*opTimer());
+      rtn.acceptCopyOf(*this);
+      rtn.reciprocal();
+    }
+    return rtn;
+  }
+
+  template <class Scalar> inline 
+  Vector<Scalar>& Vector<Scalar>::abs()
+  {
+    TSFCore::Vector<Scalar>* p = ptr().get();
+    const TSFCore::Vector<Scalar>* px = ptr().get();
+    {
+      TimeMonitor t(*opTimer());
+      TSFCore::abs(p, *px);
+    }
+    return *this;
+  }
   
+  template <class Scalar> inline 
+  Vector<Scalar>& Vector<Scalar>::reciprocal()
+  {
+    TSFCore::Vector<Scalar>* p = ptr().get();
+    const TSFCore::Vector<Scalar>* px = ptr().get();
+    {
+      TimeMonitor t(*opTimer());
+      TSFCore::reciprocal(p, *px);
+    }
+    return *this;
+  }
+
+  
+  template <class Scalar> inline
+  Vector<Scalar>& Vector<Scalar>::update(const Scalar& alpha, const Vector<Scalar>& x, 
+                                         const Scalar& gamma)
+  {
+    TSFCore::Vector<Scalar>* p = ptr().get();
+    const TSFCore::Vector<Scalar>* px = x.ptr().get();
+    {
+      TimeMonitor t(*opTimer());
+      TSFCore::linear_combination(1, &alpha, &px, gamma, p);
+    }
+    return *this;
+  }
+
+  template <class Scalar> inline
+  Vector<Scalar>& Vector<Scalar>::update(const Scalar& alpha, const Vector<Scalar>& x, 
+                                         const Scalar& beta, const Vector<Scalar>& y, 
+                                         const Scalar& gamma)
+  {
+    TSFCore::Vector<Scalar>* p = ptr().get();
+    const TSFCore::Vector<Scalar>* px = x.ptr().get();
+    const TSFCore::Vector<Scalar>* py = y.ptr().get();
+    {
+      TimeMonitor t(*opTimer());
+      double a[2];
+      a[0] = alpha;
+      a[1] = beta;
+      const TSFCore::Vector<Scalar>* vecs[2];
+      vecs[0] = px;
+      vecs[1] = py;
+      TSFCore::linear_combination(2, a, vecs, gamma, p);
+    }
+    return *this;
+  }
+
   template <class Scalar> inline 
   Scalar Vector<Scalar>::dot(const Vector<Scalar>& other) const 
   {
@@ -375,6 +501,14 @@ namespace TSFExtended
     TimeMonitor t(*opTimer());
     
     TSFCore::assign(ptr().get(), 0.0);
+  }
+
+  template <class Scalar> inline 
+  void Vector<Scalar>::setToConstant(const Scalar& alpha)
+  {
+    TimeMonitor t(*opTimer());
+    
+    TSFCore::assign(ptr().get(), alpha);
   }
 }
 
