@@ -6,6 +6,7 @@
 #include "TSFInverseAdjointOperator.h"
 #include "TSFLinearSolver.h"
 #include "TSFVectorSpaceBase.h"
+#include "TSFAdjointMatrixOperator.h"
 using namespace TSF;
 
 
@@ -130,4 +131,12 @@ void TSFAdjointOperator::getInverseAdjoint(const TSFLinearSolver& solver,
 bool TSFAdjointOperator::isMatrixOperator() const
 {
 	return op_.isMatrixOperator();	
+}
+
+const TSFSmartPtr<const TSFMatrixOperator>
+TSFAdjointOperator::getMatrix() const
+{
+	if(op_.isMatrixOperator())
+		return new TSFAdjointMatrixOperator(tsf_const_cast<TSFMatrixOperator>(op_.getMatrix()));
+	return TSFSmartPtr<const TSFMatrixOperator>();
 }

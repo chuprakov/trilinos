@@ -3,7 +3,7 @@
 
 namespace TSF {
 
-TSFAdjointMatrixOperator::TSFAdjointMatrixOperator( TSFMatrixOperator* mat_op )
+TSFAdjointMatrixOperator::TSFAdjointMatrixOperator( const TSFSmartPtr<TSFMatrixOperator>& mat_op )
 	:mat_op_(mat_op_)
 {}
 

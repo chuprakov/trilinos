@@ -8,7 +8,7 @@ namespace TSF
 {
 	class TSFLinearSolver;
 	class TSFLinearOperator;
-	
+	class TSFMatrixOperator;
 
 	/** \ingroup LinearOperatorSubtypes
 	 * Base class for all linear operators. The apply() method is pure virtual, 
@@ -107,6 +107,11 @@ namespace TSF
 
 			/** */
 			virtual bool isMatrixOperator() const {return false;}
+
+			/** Return the pointer to the matrix operator.  If not a matrix operation then
+			 * returns <tt>return.isNull() == true</tt>.
+			 */
+			virtual const TSFSmartPtr<const TSFMatrixOperator> getMatrix() const;
 
 			/**
 			 * Write to a stream 

@@ -1,6 +1,7 @@
 #include "TSFError.h"
 #include "TSFLinearOperator.h"
 #include "TSFLinearOperatorBase.h"
+#include "TSFMatrixOperator.h"
 #include "TSFVectorSpaceBase.h"
 #include "TSFVectorBase.h"
 #include "TSFVector.h"
@@ -143,11 +144,11 @@ void TSFLinearOperatorBase::getInverseAdjoint(const TSFLinearSolver& solver,
 }
 
 
-
-
-
-
-
+const TSFSmartPtr<const TSFMatrixOperator>
+TSFLinearOperatorBase::getMatrix() const
+{
+	return TSFSmartPtr<const TSFMatrixOperator>();
+}
 
 void TSFLinearOperatorBase::print(ostream& os) const 
 {

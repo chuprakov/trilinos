@@ -22,7 +22,7 @@ TSFPreconditioner ILUKPreconditionerFactory
 
 	if (A.isMatrixOperator())
 		{
-			const TSFMatrixOperator* matrix = A.getMatrix();
+			const TSFSmartPtr<const TSFMatrixOperator> matrix = A.getMatrix();
 			matrix->getILUKPreconditioner(fillLevels_, overlapFill_, rtn);
 		}
 	else

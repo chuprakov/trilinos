@@ -73,6 +73,9 @@ namespace TSF
 			virtual bool isMatrixOperator() const;
 
 			/** */
+			const TSFSmartPtr<const TSFMatrixOperator> getMatrix() const;
+
+			/** */
 			TSFLinearOperator op() const { return op_; }
 
 		protected:

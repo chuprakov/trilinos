@@ -23,12 +23,10 @@ TSFTimer TSFLinearOperator::opTimer_("Linear operators");
 
 TSFLinearOperator::TSFLinearOperator()
 	:ptr_(0)
-	 ,mat_op_ptr_(0)
 {;}
 
 TSFLinearOperator::TSFLinearOperator(TSFLinearOperatorBase* ptr)
 	: ptr_(ptr)
-	 ,mat_op_ptr_(0)
 {;}
 
 const TSFVectorSpace& TSFLinearOperator::range() const 
@@ -284,26 +282,15 @@ bool TSFLinearOperator::isMatrixOperator() const
 	return ptr_->isMatrixOperator();
 }
 
-const TSFMatrixOperator* TSFLinearOperator::getMatrix() const 
+const TSFSmartPtr<const TSFMatrixOperator> TSFLinearOperator::getMatrix() const 
 {
-	if (!isMatrixOperator())
+	TSFSmartPtr<const TSFMatrixOperator>
+		mat_op = ptr_->getMatrix();
+	if (mat_op.isNull())
 		{
 			TSFError::raise("TSFLinearOperator::getMatrix() called for matrix-free operator");
 		}
-	const TSFMatrixOperator
-		*mat_op = NULL;
-	mat_op = dynamic_cast<const TSFMatrixOperator*>(ptr_.operator->());
-	if(mat_op) return mat_op;
-	// Must be an adjoint operator
-	if( mat_op_ptr_.isNull() ) {
-		const TSFAdjointOperator
-			*adj_op = dynamic_cast<const TSFAdjointOperator*>(ptr_.operator->());
-		assert(adj_op);
-		mat_op = dynamic_cast<const TSFMatrixOperator*>(adj_op->op().ptr_.operator->());
-		assert(mat_op);
-		mat_op_ptr_ = new TSFAdjointMatrixOperator(const_cast<TSFMatrixOperator*>(mat_op));
-	}
-	return mat_op_ptr_.operator->();
+	return mat_op;
 }
 
 string TSFLinearOperator::toString() const 

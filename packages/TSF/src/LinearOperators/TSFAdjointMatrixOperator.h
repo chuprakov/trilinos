@@ -12,7 +12,7 @@ namespace TSF
 	class TSFAdjointMatrixOperator : public TSFMatrixOperator {
 	public:
 		///
-		TSFAdjointMatrixOperator( TSFMatrixOperator* mat_op );
+		TSFAdjointMatrixOperator( const TSFSmartPtr<TSFMatrixOperator>& mat_op );
 		///
 		void getILUKPreconditioner(
 			int fillLevels, int overlapFill, TSFPreconditioner& rtn) const;
@@ -31,7 +31,7 @@ namespace TSF
 		void zero();
 				
 	private:
-		TSFMatrixOperator* mat_op_;
+		const TSFSmartPtr<TSFMatrixOperator>& mat_op_;
 		TSFAdjointMatrixOperator(); // not defined and not to be called!
 
 	};

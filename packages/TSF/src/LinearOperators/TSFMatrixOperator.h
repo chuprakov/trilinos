@@ -30,6 +30,9 @@ namespace TSF
 			/** identify self as a matrix operator */
 			virtual bool isMatrixOperator() const {return true;}
 
+			/** */
+			const TSFSmartPtr<const TSFMatrixOperator> getMatrix() const {return TSFSmartPtr<const TSFMatrixOperator>(this,false);}
+
 			/** \name matrix configuration interface */
 			//@{
 			/** inform caller if a full graph is needed to configure this matrix */

@@ -143,7 +143,7 @@ namespace TSF
       
       /** access to the pointer to the matrix implementation. If the operator
        * is not a TSFMatrixOperator, throw an error */
-      const TSFMatrixOperator* getMatrix() const ;
+      const TSFSmartPtr<const TSFMatrixOperator> getMatrix() const ;
       //@}
       
       /** \name output */
@@ -158,9 +158,6 @@ namespace TSF
       
       /* pointer to a concrete type */
       TSFSmartPtr<TSFLinearOperatorBase> ptr_;
-      /* pointer to adjoint matrix operator (hack!!!!) */
-      mutable TSFSmartPtr<TSFMatrixOperator> mat_op_ptr_;
-      
       static TSFTimer opTimer_;
     };
   
