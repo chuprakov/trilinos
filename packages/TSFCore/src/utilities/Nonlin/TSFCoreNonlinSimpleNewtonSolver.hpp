@@ -4,9 +4,7 @@
 #ifndef TSFCORE_NONLIN_SIMPLE_NEWTON_SOLVER_HPP
 #define TSFCORE_NONLIN_SIMPLE_NEWTON_SOLVER_HPP
 
-#include <algorithm>
-#include <ostream>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreNonlinSimpleNewtonSolverDecl.hpp"
 #include "TSFCoreTestingTools.hpp"
 #include "TSFCoreNonlinNonlinearProblem.hpp"
@@ -127,7 +125,7 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 				<< ": Terminating algorithm!" );
 		}
 		// Take the Newton step
-		std::swap<mmp::ref_count_ptr<Vector<Scalar> > >( y_new, y ); // Swap y_new and y
+		swap<mmp::ref_count_ptr<Vector<Scalar> > >( y_new, y ); // Swap y_new and y
 	}
 	np->unsetQuantities();
 	// Failure!

@@ -13,16 +13,18 @@ TSFCoreNonlinNP2DSimTest_SOURCES = $(srcdir)/TSFCoreNonlinNP2DSimTestMain.cpp \
 TSFCoreNonlinNP2DSimTest_DEPENDENCIES =\
 $(top_builddir)/../TSFCoreUtils/src/libTSFCoreUtils.a
 
-TSFCoreNonlinNP2DSimTest_CXXFLAGS = -I$(top_srcdir)/src/interfaces/Core \
+TSFCoreNonlinNP2DSimTest_CXXFLAGS = -I$(top_srcdir)/src \
+	-I$(top_srcdir)/src/interfaces/Core \
 	-I$(top_srcdir)/src/interfaces/Solvers \
 	-I$(top_srcdir)/src/interfaces/Nonlin \
 	-I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities \
 	-I$(top_srcdir)/src/utilities/Nonlin \
 	-I$(top_srcdir)/src/utilities/Core \
 	-I$(top_srcdir)/src/utilities/Solvers \
+	-I$(top_srcdir)/../TSFCoreUtils/src \
 	-I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
 	-I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps \
-	-I$(top_builddir)/../TSFCoreUtils/src/MoochoUtilities
+	-I$(top_builddir)/../TSFCoreUtils/src
 
 TSFCoreNonlinNP2DSimTest_LDADD = \
 	$(top_builddir)/../TSFCoreUtils/src/libTSFCoreUtils.a \

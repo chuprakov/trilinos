@@ -4,9 +4,7 @@
 #ifndef TSFCORE_SOLVERS_NORM_HPP
 #define TSFCORE_SOLVERS_NORM_HPP
 
-#include <assert.h>
-#include <math.h>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreSolversNormDecl.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"

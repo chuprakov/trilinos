@@ -4,13 +4,7 @@
 #ifndef TSFCORE_SOLVERS_BICG_SOLVER_HPP
 #define TSFCORE_SOLVERS_BICG_SOLVER_HPP
 
-#include <assert.h>
-
-#include <iomanip>
-#include <ostream>
-#include <valarray>
-#include <algorithm>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreSolversBiCGSolverDecl.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"

@@ -4,8 +4,7 @@
 #ifndef TSFCORE_NONLIN_SIMPLE_NEWTON_SOLVER_DECL_HPP
 #define TSFCORE_NONLIN_SIMPLE_NEWTON_SOLVER_DECL_HPP
 
-#include <iosfwd>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreNonlinTypes.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 

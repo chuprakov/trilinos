@@ -4,10 +4,7 @@
 #ifndef TSFCORE_TESTING_TOOLS_HPP
 #define TSFCORE_TESTING_TOOLS_HPP
 
-#include <ostream>
-#include <vector>
-#include <algorithm>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreTestingToolsDecl.hpp"
 #include "TSFCoreVector.hpp"
 #include "TSFCoreVectorStdOps.hpp"

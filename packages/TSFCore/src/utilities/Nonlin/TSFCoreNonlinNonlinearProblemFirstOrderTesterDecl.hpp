@@ -4,8 +4,7 @@
 #ifndef TSFCORE_NONLIN_NONLINEAR_PROBLEM_FIRST_ORDER_TESTER_DECL_HPP
 #define TSFCORE_NONLIN_NONLINEAR_PROBLEM_FIRST_ORDER_TESTER_DECL_HPP
 
-#include <iosfwd>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreNonlinTypes.hpp"
 
 namespace TSFCore {

@@ -4,9 +4,7 @@
 #ifndef TSF_CORE_TYPES_HPP
 #define TSF_CORE_TYPES_HPP
 
-#include <memory>
-#include <stdexcept>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "RTOp.h"
 #include "Range1D.hpp"
 #include "ref_count_ptr.hpp"

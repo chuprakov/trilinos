@@ -4,9 +4,7 @@
 #ifndef TSFCORE_SOLVERS_BICG_SOLVER_DECL_HPP
 #define TSFCORE_SOLVERS_BICG_SOLVER_DECL_HPP
 
-#include <vector>
-#include <ostream>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreSolversIterativeLinearSolver.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 #include "StandardCompositionMacros.hpp"

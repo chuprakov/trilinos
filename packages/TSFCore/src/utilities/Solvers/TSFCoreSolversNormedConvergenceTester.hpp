@@ -4,8 +4,7 @@
 #ifndef TSFCORE_SOLVERS_NORMED_CONVERGENCE_TESTER_HPP
 #define TSFCORE_SOLVERS_NORMED_CONVERGENCE_TESTER_HPP
 
-#include <algorithm>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreSolversNormedConvergenceTesterDecl.hpp"
 #include "TSFCoreSolversNorm.hpp"
 #include "TSFCoreSolversSolverState.hpp"

@@ -4,8 +4,7 @@
 #ifndef TSFCORE_VECTOR_SERIAL_HPP
 #define TSFCORE_VECTOR_SERIAL_HPP
 
-#include <stdexcept>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreSerialVectorDecl.hpp"
 #include "TSFCoreSerialVectorBase.hpp"
 #include "ThrowException.hpp"

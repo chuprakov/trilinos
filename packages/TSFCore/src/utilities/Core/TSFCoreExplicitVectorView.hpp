@@ -2,6 +2,7 @@
 // TSFCoreExplicitVectorView.hpp
 
 #include "TSFCoreVector.hpp"
+#include "TSFCore_ConfigDefs.hpp"
 
 #ifndef TSFCORE_EXPLICIT_VECTOR_VIEW_HPP
 #define TSFCORE_EXPLICIT_VECTOR_VIEW_HPP

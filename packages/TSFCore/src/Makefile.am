@@ -152,14 +152,16 @@ endif
 
 #Specify locations of include files within Trilinos, but outside TSFCore
 
-AM_CPPFLAGS = -I$(srcdir)/interfaces/Core\
+AM_CPPFLAGS = -I$(top_srcdir)/src \
+-I$(srcdir)/interfaces/Core\
+-I$(top_srcdir)/../TSFCoreUtils/src \
 -I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities\
 -I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack\
 -I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps\
--I$(top_builddir)/../TSFCoreUtils/src/MoochoUtilities\
 -I$(srcdir)/adapters/mpi-base\
 -I$(top_srcdir)/../epetra/src\
--I$(top_builddir)/../epetra/src
+-I$(top_builddir)/../epetra/src \
+-I$(top_builddir)/../TSFCoreUtils/src
 
 # --------------------------------------------------------------------
 # TSFCore library specifications

@@ -4,6 +4,7 @@
 #ifndef TSFCORE_MULTI_VECTOR_ALLOCATOR_HPP
 #define TSFCORE_MULTI_VECTOR_ALLOCATOR_HPP
 
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "ThrowException.hpp"
 

@@ -4,8 +4,7 @@
 #ifndef TSFCORE_VECTOR_SPACE_FACTORY_SERIAL_HPP
 #define TSFCORE_VECTOR_SPACE_FACTORY_SERIAL_HPP
 
-#include <assert.h>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreSerialVectorSpaceFactoryDecl.hpp"
 #include "TSFCoreSerialVectorSpace.hpp"
 

@@ -4,10 +4,7 @@
 #ifndef TSFCORE_MULTI_VECTOR_STD_OPS_HPP
 #define TSFCORE_MULTI_VECTOR_STD_OPS_HPP
 
-#include <assert.h>
-
-#include <vector>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreMultiVectorStdOpsDecl.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVectorStdOps.hpp"

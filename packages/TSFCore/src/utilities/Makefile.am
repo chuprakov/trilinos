@@ -43,7 +43,9 @@ NONLIN_H = \
 #Specify locations of include files within Trilinos, but outside TSFCore
 ### Make sure all of these paths are still necessary
 #  
-AM_CPPFLAGS = -I$(top_srcdir)/interfaces/Core -I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities\
+AM_CPPFLAGS = -I$(top_srcdir) \
+-I$(top_srcdir)/interfaces/Core \
+-I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities\
 -I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack\
 -I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps\
 -I$(top_builddir)/../TSFCoreUtils/src/MoochoUtilities

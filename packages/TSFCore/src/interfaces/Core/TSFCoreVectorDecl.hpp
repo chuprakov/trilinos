@@ -4,8 +4,7 @@
 #ifndef TSFCORE_VECTOR_DECL_HPP
 #define TSFCORE_VECTOR_DECL_HPP
 
-#include <assert.h>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreTypes.hpp"
 #include "RTOpCpp.hpp"
 #include "RTOp_SparseSubVector.h"

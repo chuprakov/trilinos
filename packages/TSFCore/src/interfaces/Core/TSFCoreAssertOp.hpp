@@ -4,10 +4,7 @@
 #ifndef TSFCORE_ASSERT_OP_HPP
 #define TSFCORE_ASSERT_OP_HPP
 
-#include <stdexcept>
-#include <string>
-#include <typeinfo>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreAssertOpDecl.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"

@@ -4,9 +4,7 @@
 #ifndef TSFCORE_NONLIN_NONLINEAR_PROBLEM_TESTER_HPP
 #define TSFCORE_NONLIN_NONLINEAR_PROBLEM_TESTER_HPP
 
-#include <ostream>
-#include <iomanip>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreNonlinNonlinearProblemTesterDecl.hpp"
 #include "TSFCoreTestingTools.hpp"
 #include "TSFCoreNonlinNonlinearProblem.hpp"
@@ -25,7 +23,7 @@ NonlinearProblemTester<Scalar>::doTest(
 	namespace mmp = MemMngPack;
 	using std::endl;
 
-	if(o) *o << "Entering NonlinearProblemTester<Scalar>::do_test(prob,...)\n\n" << std::boolalpha;
+	if(o) *o << "Entering NonlinearProblemTester<Scalar>::do_test(prob,...)\n\n";
 
 	bool result, success = true;
 	int l;

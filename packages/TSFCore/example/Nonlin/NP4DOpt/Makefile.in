@@ -100,17 +100,19 @@ TSFCoreNonlinNP4DOptTest_DEPENDENCIES = \
 $(top_builddir)/../TSFCoreUtils/src/libTSFCoreUtils.a
 
 
-TSFCoreNonlinNP4DOptTest_CXXFLAGS = -I$(top_srcdir)/example/Nonlin/NP2DSim \
+TSFCoreNonlinNP4DOptTest_CXXFLAGS = -I$(top_srcdir)/src \
+	-I$(top_srcdir)/example/Nonlin/NP2DSim \
 	-I$(top_srcdir)/src/interfaces/Core \
 	-I$(top_srcdir)/src/interfaces/Solvers \
 	-I$(top_srcdir)/src/interfaces/Nonlin \
 	-I$(top_srcdir)/src/utilities/Nonlin \
 	-I$(top_srcdir)/src/utilities/Core \
 	-I$(top_srcdir)/src/utilities/Solvers \
+	-I$(top_srcdir)/../TSFCoreUtils/src \
 	-I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
 	-I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps \
 	-I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities \
-	-I$(top_builddir)/../TSFCoreUtils/src/MoochoUtilities
+	-I$(top_builddir)/../TSFCoreUtils/src
 
 
 TSFCoreNonlinNP4DOptTest_LDADD = \

@@ -4,8 +4,7 @@
 #ifndef TSFCORE_APPLY_OP_HELPER_HPP
 #define TSFCORE_APPLY_OP_HELPER_HPP
 
-#include <assert.h>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCore_apply_op_helper_decl.hpp"
 #include "TSFCoreVector.hpp"
 #include "TSFCoreVectorSpace.hpp"

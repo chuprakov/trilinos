@@ -4,8 +4,7 @@
 #ifndef TSFCORE_NONLIN_LINEAR_OP_WITH_SOLVE_HPP
 #define TSFCORE_NONLIN_LINEAR_OP_WITH_SOLVE_HPP
 
-#include <assert.h>
-
+#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreNonlinLinearOpWithSolveDecl.hpp"
 #include "TSFCoreNonlinLinearSolveOp.hpp"
 #include "TSFCoreMultiVector.hpp"
