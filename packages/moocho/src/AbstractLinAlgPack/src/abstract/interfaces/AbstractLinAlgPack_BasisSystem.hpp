@@ -216,8 +216,8 @@ public:
 	typedef ReferenceCountingPack::ref_count_ptr<
 		const AbstractFactoryPack::AbstractFactory<MatrixWithOp> >               mat_fcty_ptr_t;
 	///
-	class NumericallySingular : public std::runtime_error
-	{public: NumericallySingular(const std::string& what_arg) : std::runtime_error(what_arg) {}};
+	class SingularBasis : public std::runtime_error
+	{public: SingularBasis(const std::string& what_arg) : std::runtime_error(what_arg) {}};
 	///
 	enum EMatRelations { MATRICES_INDEP_IMPS, MATRICES_ALLOW_DEP_IMPS };
 
@@ -416,7 +416,7 @@ public:
 	 *      && GhUP->space_cols()->is_compatible(Gh->space_rows().sub_space(inequ_undecomp()))</tt>
 	 * </ul>
 	 *
-	 * This method with throw a \c NumericallySingular exception if the updated basis matrix \a C is too close
+	 * This method with throw a \c SingularBasis exception if the updated basis matrix \a C is too close
 	 * (as defined by the underlying implementation by some means) to being numerically singular.
 	 */
 	virtual void update_basis(
