@@ -178,3 +178,12 @@ EpetraMatrix::allocateRange(const RefCountPtr<Epetra_Operator>  &op
   return rcp( new EpetraVectorSpace( rcp(&op->OperatorRangeMap(),false) ) );
 }
 
+Epetra_CrsMatrix& EpetraMatrix::getConcrete(const LinearOperator<double>& A)
+{
+  EpetraMatrix* ep 
+    = dynamic_cast<EpetraMatrix*>(A.ptr().get());
+  TEST_FOR_EXCEPTION(ep==0, std::runtime_error,
+                     "EpetraMatrix::getConcrete called on a matrix that "
+                     "could not be cast to an EpetraMatrix");
+  return *(ep->crsMatrix());
+}

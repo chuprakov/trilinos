@@ -283,10 +283,12 @@ AC_SEARCH_LIBS(sqrt,[m],,AC_MSG_ERROR(Cannot find math library))
 # configure.ac file for epetra (Trilinos/packages/epetra)
 
 dnl Check for user-specified names for BLAS lib
+TAC_ARG_WITH_LAPACKLIB
 TAC_ARG_WITH_BLASLIB
 
   ACX_BLAS([], [AC_MSG_ERROR([[Cannot find blas library, specify a path using --with-ldflags=-I<DIR> (ex. --with-ldflags=-I/usr/path/lib) or a specific library using --with-blas=DIR/LIB (for example --with-blas=/usr/path/lib/libcxml.a)]])])
 
+  ACX_LAPACK([], [AC_MSG_ERROR([[Cannot find lapack library, specify a path using --with-ldflags=-I<DIR> (ex. --with-dlflags=-I/usr/path/lib) or a specific library using --with-lapack=DIR/LIB (ex. --with-lapack=/usr/path/lib/libcxml.a)]])])
 
 # ------------------------------------------------------------------------
 # Checks for compiler characteristics

@@ -32,6 +32,7 @@
 #include "TSFCoreEpetraLinearOp.hpp"
 #include "TSFEpetraVectorSpace.hpp"
 #include "TSFLoadableMatrix.hpp"
+#include "TSFLinearOperator.hpp"
 //#include "TSFRowAccessibleOp.hpp"
 //#include "TSFExplicitlyTransposeableOp.hpp"
 #include "TSFHandleable.hpp"
@@ -117,6 +118,9 @@ namespace TSFExtended
     virtual void print(ostream& os) const ;
 
     GET_RCP(TSFCore::LinearOp<double>);
+
+    /** */
+    static Epetra_CrsMatrix& getConcrete(const LinearOperator<double>& A);
 
   protected:
      /** \name Allocators for domain and range spaces */

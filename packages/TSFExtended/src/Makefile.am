@@ -98,6 +98,7 @@ OPERATORS = \
 	$(srcdir)/Operators/TSFBlockOperator.cpp 
 
 LINEARSOLVERS_H = \
+	$(srcdir)/LinearSolvers/TSFAztecSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFBICGSTABSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFIterativeSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFKrylovSolver.hpp \
@@ -105,7 +106,8 @@ LINEARSOLVERS_H = \
 	$(srcdir)/LinearSolvers/TSFLinearSolverBase.hpp \
 	$(srcdir)/LinearSolvers/TSFSolverState.hpp 
 
-LINEARSOLVERS = 
+LINEARSOLVERS = \
+	$(srcdir)/LinearSolvers/TSFAztecSolver.cpp
 
 #
 # Read macros that are common to building source and tests. We define these
@@ -124,6 +126,7 @@ AM_CPPFLAGS = \
 	$(TSFEXTENDED_INCLUDES) \
 	$(TSFCORE_INCLUDES)\
 	$(EPETRA_INCLUDES)\
+	$(AZTECOO_INCLUDES)\
 	$(TEUCHOS_INCLUDES)
 
 
