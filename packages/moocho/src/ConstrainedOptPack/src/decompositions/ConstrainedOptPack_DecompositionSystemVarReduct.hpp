@@ -93,6 +93,18 @@ public:
 
 	//@}
 
+	/** @name Variable partitions. */
+	//@{
+
+	///
+	virtual Range1D var_indep() const = 0;
+	///
+	virtual Range1D var_dep() const = 0;
+
+	//@}
+
+private:
+
 	// not defined and not to be called!
 	DecompositionSystemVarReduct(const DecompositionSystemVarReduct&);
 	DecompositionSystemVarReduct& operator=(const DecompositionSystemVarReduct&);
