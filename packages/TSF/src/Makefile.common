@@ -1,7 +1,7 @@
 
-TSF_LIB = libtsf.a
+TSF_LIB = libTSF.a
 
-libtsf_a_SOURCES = $(SOURCES)
+libTSF_a_SOURCES = $(SOURCES)
 
 
 TSF_INCLUDES = -I$(top_srcdir)/src/Support -I$(top_srcdir)/src/Vectors \
@@ -26,10 +26,10 @@ AM_CPPFLAGS = $(TSF_INCLUDES)	-I$(top_srcdir)/../aztecoo/src -I$(top_srcdir)/../
 
 if USE_ALTERNATE_AR
 
-libtsf_a_AR = $(ALTERNATE_AR)
+libTSF_a_AR = $(ALTERNATE_AR)
 else
 
-libtsf_a_AR = $(AR) cru
+libTSF_a_AR = $(AR) cru
 
 endif
 
@@ -38,7 +38,7 @@ endif
 # be sure to include these, and this is the hack to do it.
 # ------------------------------------------------------------------------
 
-libtsf_a_LIBADD = $(XTRALDADD)
+libTSF_a_LIBADD = $(XTRALDADD)
 
 # ------------------------------------------------------------------------
 # List of all libraries to install in $(libexecdir)

@@ -28,7 +28,7 @@ CINCLUDE = $(EXTERNAL_INCLUDE_PATH)
 
 # name of library that we're building
 
-TARGETLIB = $(TSF_ROOT)/lib/libtsf.a
+TARGETLIB = $(TSF_ROOT)/lib/libTSF.a
 
 
 ##########################################################################################
