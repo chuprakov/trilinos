@@ -130,8 +130,8 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	xu_full_(1,n_orig_)     = imp_xu_orig();
 	if( n_full_ > n_orig_ ) { // Include slack varaibles
 		xinit_full_(n_orig_+1,n_full_)  = 0.0;
-		xl_full_(n_orig_+1,n_full_)     = 0.0;
-		xu_full_(n_orig_+1,n_full_)     = 0.0;
+		xl_full_(n_orig_+1,n_full_)     = imp_hl_orig();
+		xu_full_(n_orig_+1,n_full_)     = imp_hu_orig();
 	}
 
 	// Force the initial point in bounds if it is not.
@@ -170,15 +170,13 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 				n_++;
 				var_full_to_fixed_(n_) = i;
 				// Check if xl is bounded
-				if(	*xl_full != -inf_bnd ) {
+				if(	*xl_full != -inf_bnd )
 					++xl_nz;
-					++num_bnd_x;
-				}
 				// Check if xu is bounded
-				if(	*xu_full != inf_bnd ) {
+				if(	*xu_full != inf_bnd )
 					++xu_nz;
+				if( *xl_full != -inf_bnd || *xu_full != inf_bnd )
 					++num_bnd_x;
-				}
 			}
 		}
 	}
@@ -692,7 +690,7 @@ void NLPSerialPreprocess::set_x_full(
 	,VectorSlice* x_full
 	) const
 {
-	LinAlgPack::assert_vs_sizes(x.dim(),x_full->dim());
+	LinAlgPack::assert_vs_sizes(x.dim(),n_);
 	if(newx)
 		var_to_full(x.begin(), x_full->begin());
 }
