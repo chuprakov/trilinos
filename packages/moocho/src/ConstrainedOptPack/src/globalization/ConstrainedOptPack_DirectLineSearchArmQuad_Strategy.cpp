@@ -61,9 +61,12 @@ bool ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::do_line_sear
 	
 	int w = 20;
 	int prec = 8;
-	if(out)
+	int prec_saved;
+	if(out) {
+		prec_saved = out->precision();
 		*out	<< std::setprecision(prec)
 				<< "\nStarting Armijo Quadratic interpolation linesearch ...\n";
+	}
 
 	// Loop initialization (technically the first iteration)
 
@@ -92,6 +95,7 @@ bool ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::do_line_sear
 	value_type	best_alpha = *alpha_k, best_phi = *phi_kp1;
 
 	// Perform linesearch.
+	bool success = false;
 	for( num_iter_ = 0; num_iter_ < max_iter(); ++num_iter_ ) {
 
 		// Print out this iteration.
@@ -113,8 +117,11 @@ bool ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::do_line_sear
 		else {		
 
 			// Armijo condition
-			if( *phi_kp1 < frac_phi )
-				return true;	// We have found our point.
+			if( *phi_kp1 < frac_phi ) {
+				// We have found our point.
+				success = true;
+				break;	// get out of the loop
+			}
 
 			// Select a new alpha to try:
 			//   alpha_k = ( min_frac*alpha_k <= quadratic interpolation <= max_frac*alpha_k )
@@ -143,11 +150,19 @@ bool ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::do_line_sear
 
 	}
 
+	// Be nice and reset the precision
+	if(out) {
+		out->precision(prec_saved);
+	}
+
+	if( success ) {
+		return true;
+	}
+
 	// Line search failure.  Return the best point found and let the 
 	// client decide what to do.
 	*alpha_k = best_alpha;
 	*phi_kp1 = phi(best_alpha);	// Make this the last call to phi(x)
-
 	return false; 
 }
 
