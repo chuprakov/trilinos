@@ -370,6 +370,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		cov_.range_space_matrix_type_ = RANGE_SPACE_MATRIX_COORDINATE;
 	}
 
+	if( uov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_AUTO ) {
+		if(trase_out)
+			*trase_out <<
+				"\nrange_space_matrix == AUTO:\n"
+				"setting range_space_matrix = COORDINATE ...\n";
+		cov_.range_space_matrix_type_ = RANGE_SPACE_MATRIX_COORDINATE;
+	}
+
 	// ToDo: Sort out the rest of the options!
 
 	// Set the default options that where not already set yet
@@ -767,10 +775,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		bounds_tester_ptr_t   bounds_tester = NULL;
 		if(nb) { // has variable bounds?
 			const value_type var_bounds_warning_tol = 1e-10;
+			const value_type var_bounds_error_tol   = 1e-5;
 			bounds_tester = rcp::rcp(
 				new VariableBoundsTester(
-					var_bounds_warning_tol              // default warning tolerance
-					, algo_cntr->max_var_bounds_viol()	// default warning tolerance
+					var_bounds_warning_tol      // default warning tolerance
+					,var_bounds_error_tol       // default error tolerance
 					) );
 			if(options_.get()) {
 				ConstrainedOptimizationPack::VariableBoundsTesterSetOptions
@@ -886,7 +895,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		// CheckDescentRangeSpaceStep
 		algo_step_ptr_t    check_descent_range_space_step_step = NULL;
 		if( algo->algo_cntr().check_results() ) {
-			check_descent_range_space_step_step = rcp::rcp(new CheckDescentRangeSpaceStep_Step(NULL));
+			check_descent_range_space_step_step = rcp::rcp(new CheckDescentRangeSpaceStep_Step(calc_fd_prod));
 		}
 
 		// ReducedGradient_Step
