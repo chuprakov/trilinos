@@ -442,11 +442,12 @@ EpetraNPFO::set_u( const Vector<Scalar>* u_in[], bool newPoint ) const
 
 void EpetraNPFO::updateNewPoint( bool newPoint ) const
 {
-  const int Nu = epetra_np_->Nu();
-  c_updated_ = g_updated_ = DcDy_updated_ = DgDy_updated_ = false;
-  for(int l=1;l<=Nu;++l) DcDu_updated_[l-1] = DgDu_updated_[l-1] = false;
+	if(newPoint) {
+		const int Nu = epetra_np_->Nu();
+		c_updated_ = g_updated_ = DcDy_updated_ = DgDy_updated_ = false;
+		for(int l=1;l<=Nu;++l) DcDu_updated_[l-1] = DgDu_updated_[l-1] = false;
+	}
 }
-
 
 void EpetraNPFO::calc_Dc(
   const Vector<Scalar>     &y_in
@@ -464,10 +465,14 @@ void EpetraNPFO::calc_Dc(
   //
   // Pick out the raw Epetra objects and in the process set their
   // adpater objects to uninitialized.
-  //
+	//
+	bool computeSomething = false;
   // c
   Teuchos::RefCountPtr<Epetra_Vector>  epetra_c;
-  if(c_ && !c_updated_) c_->setUninitialized( &epetra_c );
+  if(c_ && !c_updated_) {
+		c_->setUninitialized( &epetra_c );
+		computeSomething = true;
+	}
   // DcDy
   Teuchos::RefCountPtr<Epetra_Operator>  epetra_DcDy_op;
   Teuchos::RefCountPtr<Epetra_Operator>  epetra_DcDy_prec;
@@ -484,6 +489,7 @@ void EpetraNPFO::calc_Dc(
     if( !epetra_DcDy_prec.get() && specialized_DcDy_prec ) {
       epetra_DcDy_op = epetra_np_->create_DcDy_prec();
     }
+		computeSomething = true;
   }
   // DcDu
   for(int l=1;l<=Nu;++l) {
@@ -492,71 +498,77 @@ void EpetraNPFO::calc_Dc(
       if(!epetra_DcDu_op_[l-1].get())
         epetra_DcDu_op_[l-1] = epetra_np_->create_DcDu_op(l);
       epetra_DcDu_args_[l-1] = Epetra::EpetraOp_or_EpetraMV(&*epetra_DcDu_op_[l-1]);
+			computeSomething = true;
     }
     else if(computeGradients && DcDu_mv_[l-1] && !DcDu_updated_[l-1]) {
       DcDu_mv_[l-1]->setUninitialized( &epetra_DcDu_mv_[l-1] ); // Grap the RCP<Epetra_MultiVector>
       if(!epetra_DcDu_mv_[l-1].get())
         epetra_DcDu_mv_[l-1] = epetra_np_->create_DcDu_mv(l);
       epetra_DcDu_args_[l-1] = Epetra::EpetraOp_or_EpetraMV(&*epetra_DcDu_mv_[l-1]);
+			computeSomething = true;
     }
     else {
       epetra_DcDu_args_[l-1] = Epetra::EpetraOp_or_EpetraMV(); // No DcDu(l) to compute!
     }
   }
 
-  //
-  // Compute the set Epetra objects
-  //
-  epetra_np_->calc_Dc(
-    y
-    ,u
-    ,epetra_c.get()
-    ,epetra_DcDy_op.get()
-    ,specialized_DcDy_prec ? &*epetra_DcDy_prec : NULL
-    ,&epetra_DcDu_args_[0]
-    );
-
-  //
-  // Put the raw Epetra objects back into the adpater objects
-  //
-  // c
-  if( epetra_c.get() ) {
-    c_->initialize( epetra_c, space_c_ );
-    c_updated_ = true;
-  }
-  // DcDy
-  if( epetra_DcDy_op.get() ) {
-    // Setup the externally defined preconditioner
-    const bool usePrec = true; // ToDo: Make an external option
-    if( usePrec && !specialized_DcDy_prec ) {
-      precGenerator().setupPrec(epetra_DcDy_op,&epetra_DcDy_prec);
-    }
-		// Set the options for AztecOO::Iterate(...)
-		DcDy_->maxIter(maxLinSolveIter());
-		DcDy_->relTol(relLinSolveTol());
-    // Finally initialize the aggregate LinearOpWithSolve object
-    DcDy_->initialize(
-      epetra_DcDy_op                                               // Op
-      ,epetra_np_->opDcDy() == Epetra::NOTRANS ? NOTRANS : TRANS   // Op_trans
-      ,Teuchos::rcp(&aztecOO_,false)                               // solver
-      ,epetra_DcDy_prec                                            // Prec
-      ,epetra_np_->opDcDy() == Epetra::NOTRANS ? NOTRANS : TRANS   // Prec_trans
-      ,epetra_np_->adjointSupported()                              // adjointSupported
-      );
-  }
-  // DcDu
-  for(int l=1;l<=Nu;++l) {
-    if(epetra_DcDu_op_[l-1].get()) {
-      DcDu_op_[l-1]->initialize(epetra_DcDu_op_[l-1]);
-      epetra_DcDu_op_[l-1] = Teuchos::null;
-      DcDu_updated_[l-1] = true;
-    }
-    else if(epetra_DcDu_mv_[l-1].get()) {
-      DcDu_mv_[l-1]->initialize(epetra_DcDu_mv_[l-1],space_c_);
-      epetra_DcDu_mv_[l-1] = Teuchos::null;
-      DcDu_updated_[l-1] = true;
-    }
-  }
+	if(computeSomething) {
+		
+		//
+		// Compute the set Epetra objects
+		//
+		epetra_np_->calc_Dc(
+			y
+			,u
+			,epetra_c.get()
+			,epetra_DcDy_op.get()
+			,specialized_DcDy_prec ? &*epetra_DcDy_prec : NULL
+			,&epetra_DcDu_args_[0]
+			);
+		
+		//
+		// Put the raw Epetra objects back into the adpater objects
+		//
+		// c
+		if( epetra_c.get() ) {
+			c_->initialize( epetra_c, space_c_ );
+			c_updated_ = true;
+		}
+		// DcDy
+		if( epetra_DcDy_op.get() ) {
+			// Setup the externally defined preconditioner
+			const bool usePrec = true; // ToDo: Make an external option
+			if( usePrec && !specialized_DcDy_prec ) {
+				precGenerator().setupPrec(epetra_DcDy_op,&epetra_DcDy_prec);
+			}
+			// Set the options for AztecOO::Iterate(...)
+			DcDy_->maxIter(maxLinSolveIter());
+			DcDy_->relTol(relLinSolveTol());
+			// Finally initialize the aggregate LinearOpWithSolve object
+			DcDy_->initialize(
+				epetra_DcDy_op                                               // Op
+				,epetra_np_->opDcDy() == Epetra::NOTRANS ? NOTRANS : TRANS   // Op_trans
+				,Teuchos::rcp(&aztecOO_,false)                               // solver
+				,epetra_DcDy_prec                                            // Prec
+				,epetra_np_->opDcDy() == Epetra::NOTRANS ? NOTRANS : TRANS   // Prec_trans
+				,epetra_np_->adjointSupported()                              // adjointSupported
+				);
+			DcDy_updated_ = true;
+		}
+		// DcDu
+		for(int l=1;l<=Nu;++l) {
+			if(epetra_DcDu_op_[l-1].get()) {
+				DcDu_op_[l-1]->initialize(epetra_DcDu_op_[l-1]);
+				epetra_DcDu_op_[l-1] = Teuchos::null;
+				DcDu_updated_[l-1] = true;
+			}
+			else if(epetra_DcDu_mv_[l-1].get()) {
+				DcDu_mv_[l-1]->initialize(epetra_DcDu_mv_[l-1],space_c_);
+				epetra_DcDu_mv_[l-1] = Teuchos::null;
+				DcDu_updated_[l-1] = true;
+			}
+		}
+	}
 
 }
 
@@ -577,9 +589,13 @@ void EpetraNPFO::calc_Dg(
   // Pick out the raw Epetra objects and in the process set their
   // adpater objects to uninitialized.
   //
+	bool computeSomething = false;
   // g
   Teuchos::RefCountPtr<Epetra_Vector>  epetra_g;
-  if(g_ /*&& !g_updated_*/) g_->setUninitialized( &epetra_g );
+  if(g_ && !g_updated_ ) {
+		g_->setUninitialized( &epetra_g );
+		computeSomething = true;
+	}
   // DgDy
   Teuchos::RefCountPtr<Epetra_MultiVector>  epetra_DgDy;
   if(computeGradients && DgDy_ && !DgDy_updated_) {
@@ -587,6 +603,7 @@ void EpetraNPFO::calc_Dg(
     if( !epetra_DgDy.get() ) {
       epetra_DgDy = Teuchos::rcp(new Epetra_MultiVector(*epetra_np_->map_y(),space_g_->dim()));
     }
+		computeSomething = true;
   }
   // DgDu
   for(int l=1;l<=Nu;++l) {
@@ -595,44 +612,49 @@ void EpetraNPFO::calc_Dg(
       if(!epetra_DgDu_[l-1].get())
         epetra_DgDu_[l-1] = Teuchos::rcp(new Epetra_MultiVector(*epetra_np_->map_u(l),space_g_->dim()));
       epetra_DgDu_args_[l-1] = &*epetra_DgDu_[l-1];
+			computeSomething = true;
     }
     else {
       epetra_DgDu_args_[l-1] = NULL;
     }
   }
+	
+	if(computeSomething) {
 
-  //
-  // Compute the set Epetra objects
-  //
-  epetra_np_->calc_Dg(
-    y
-    ,u
-    ,epetra_g.get()
-    ,epetra_DgDy.get()
-    ,&epetra_DgDu_args_[0]
-    );
+		//
+		// Compute the set Epetra objects
+		//
+		epetra_np_->calc_Dg(
+			y
+			,u
+			,epetra_g.get()
+			,epetra_DgDy.get()
+			,&epetra_DgDu_args_[0]
+			);
+		
+		//
+		// Put the raw Epetra objects back into the adpater objects
+		//
+		if( epetra_g.get() ) {
+			g_->initialize( epetra_g, space_g_ );
+			g_updated_ = true;
+		}
+		// DgDy
+		if(epetra_DgDy.get()) {
+			DgDy_->initialize( epetra_DgDy, space_y_ );
+			epetra_DgDy = Teuchos::null;
+			DgDy_updated_ = true;
+		}
+		// DgDu
+		for(int l=1;l<=Nu;++l) {
+			if(epetra_DgDu_[l-1].get()) {
+				DgDu_[l-1]->initialize( epetra_DgDu_[l-1], space_u_[l-1] );
+				epetra_DgDu_[l-1] = Teuchos::null;
+				DgDu_updated_[l-1] = true;
+			}
+		}
 
-  //
-  // Put the raw Epetra objects back into the adpater objects
-  //
-  if( epetra_g.get() ) {
-    g_->initialize( epetra_g, space_g_ );
-    g_updated_ = true;
-  }
-  // DgDy
-  if(epetra_DgDy.get()) {
-    DgDy_->initialize( epetra_DgDy, space_y_ );
-    epetra_DgDy = Teuchos::null;
-    DgDy_updated_ = true;
-  }
-  // DgDu
-  for(int l=1;l<=Nu;++l) {
-    if(epetra_DgDu_[l-1].get()) {
-      DgDu_[l-1]->initialize( epetra_DgDu_[l-1], space_u_[l-1] );
-      epetra_DgDu_[l-1] = Teuchos::null;
-      DgDu_updated_[l-1] = true;
-    }
-  }
+	}
 
 }
 
