@@ -70,6 +70,12 @@ template<class Scalar>
 void scale( Scalar alpha, MultiVector<Scalar>* V );
 
 ///
+/** A*U + V -> V (where A is a diagonal matrix with diagoanl a).
+ */
+template<class Scalar>
+void scaleUpdate( const Vector<Scalar>& a, const MultiVector<Scalar>& U, MultiVector<Scalar>* V );
+
+///
 /** V = alpha.
  */
 template<class Scalar>

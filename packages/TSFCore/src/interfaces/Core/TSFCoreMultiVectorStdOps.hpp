@@ -106,6 +106,30 @@ void TSFCore::scale( Scalar alpha, MultiVector<Scalar>* V )
 }
 
 template<class Scalar>
+void TSFCore::scaleUpdate( const Vector<Scalar>& a, const MultiVector<Scalar>& U, MultiVector<Scalar>* V )
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"update(...), Error!");
+	bool is_compatible = U.range()->isCompatible(*a.space());
+	TEST_FOR_EXCEPTION(
+		!is_compatible,Exceptions::IncompatibleVectorSpaces
+		,"update(...), Error, U.range()->isCompatible(*a.space())==false");
+	is_compatible = U.range()->isCompatible(*V->range());
+	TEST_FOR_EXCEPTION(
+		!is_compatible,Exceptions::IncompatibleVectorSpaces
+		,"update(...), Error, U.range()->isCompatible((V->range())==false ");
+	is_compatible = U.domain()->isCompatible(*V->domain());
+	TEST_FOR_EXCEPTION(
+		!is_compatible,Exceptions::IncompatibleVectorSpaces
+		,"update(...), Error, U.domain().isCompatible(V->domain())==false ");
+#endif
+	const int m = U.domain()->dim();
+	for( int j = 1; j <= m; ++j ) {
+		ele_wise_prod( Scalar(1.0), a, *U.col(j), &*V->col(j) ); 
+	}
+}
+
+template<class Scalar>
 void TSFCore::assign( MultiVector<Scalar>* V, Scalar alpha )
 {
 #ifdef _DEBUG
