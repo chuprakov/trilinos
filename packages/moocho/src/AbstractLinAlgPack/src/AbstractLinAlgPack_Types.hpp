@@ -112,6 +112,7 @@ class MatrixZero;
 
 class VectorSpaceTester;
 class VectorSpaceTesterSetOptions;
+class MatrixWithOpNonsingularTester;
 class BasisSystemTester;
 class BasisSystemTesterSetOptions;
 
