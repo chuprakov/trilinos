@@ -62,10 +62,19 @@ ExampleNLPBanded::ExampleNLPBanded(
 #ifdef _DEBUG	
 	const char msg_err_head[] = "ExampleNLPBanded::ExampleNLPBanded(...) : Error";
 	THROW_EXCEPTION(
-		nI > nD, std::invalid_argument
+		nD <= 0, std::invalid_argument
+		,msg_err_head<<"!" );
+	THROW_EXCEPTION(
+		nI <= 0 || nD < nI, std::invalid_argument
 		,msg_err_head<<"!" );
 	THROW_EXCEPTION(
 		bw < 1 || nD < bw, std::invalid_argument
+		,msg_err_head<<"!" );
+	THROW_EXCEPTION(
+		mU < 0, std::invalid_argument
+		,msg_err_head<<"!" );
+	THROW_EXCEPTION(
+		mI < 0, std::invalid_argument
 		,msg_err_head<<"!" );
 	THROW_EXCEPTION(
 		mU != 0, std::invalid_argument
