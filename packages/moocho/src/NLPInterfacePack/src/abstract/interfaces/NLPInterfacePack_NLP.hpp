@@ -319,7 +319,7 @@ public:
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 *
-	 * Default implementation returns <tt>this->space_c().get() != NULL ? this-space_x()->dim() : 0</tt>.
+	 * Default implementation returns <tt>this->space_c().get() != NULL ? this-space_c()->dim() : 0</tt>.
 	 */
 	virtual size_type m() const;
 	///
@@ -344,6 +344,10 @@ public:
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>return.get() != NULL</tt>
+	 * </ul>
 	 */
 	virtual vec_space_ptr_t space_x() const = 0;
 	///
@@ -353,7 +357,10 @@ public:
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 *
-	 * If <tt>m() ==0</tt> then this method should return <tt>return.get() == NULL</tt>.
+	 * Postconditions:<ul>
+	 * <li> [<tt>this->m() > 0</tt>] <tt>return.get() != NULL</tt>
+	 * <li> [<tt>this->m() == 0</tt>] <tt>return.get() == NULL</tt>
+	 * </ul>
 	 */
 	virtual vec_space_ptr_t space_c() const = 0;
 
@@ -364,7 +371,10 @@ public:
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 *
-	 * If <tt>mI() == 0</tt> then this method should return <tt>return.get() == NULL</tt>.
+	 * Postconditions:<ul>
+	 * <li> [<tt>this->mI() > 0</tt>] <tt>return.get() != NULL</tt>
+	 * <li> [<tt>this->mI() == 0</tt>] <tt>return.get() == NULL</tt>
+	 * </ul>
 	 */
 	virtual vec_space_ptr_t space_h() const = 0;
 
