@@ -54,5 +54,8 @@
 ############################################################################
 
 INPUT                  = ../../../../Trilinos/packages/didasko/src
+INPUT                 += ../../../../Trilinos/packages/didasko/doc/mainpage.doxygen
 
 EXAMPLE_PATH           = ../../../../Trilinos/packages/didasko/examples
+
+IMAGE_PATH             = ../../../../Trilinos/packages/didasko/doc
