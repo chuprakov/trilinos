@@ -25,6 +25,7 @@
 #include "ConstrainedOptimizationPack/include/MatrixIdentConcat.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "dynamic_cast_verbose.h"
 

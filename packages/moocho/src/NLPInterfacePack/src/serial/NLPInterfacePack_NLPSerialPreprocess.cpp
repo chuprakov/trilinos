@@ -27,6 +27,7 @@
 #include "SparseLinAlgPack/include/PermutationSerial.h"
 #include "SparseLinAlgPack/include/VectorDenseEncap.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/IVector.h"
 #include "LinAlgPack/include/PermVecMat.h"

@@ -23,6 +23,7 @@
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "RTOpPack/include/RTOpCppC.h"
 #include "Range1D.h"

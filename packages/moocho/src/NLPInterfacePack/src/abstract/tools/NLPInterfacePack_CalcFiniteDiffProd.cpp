@@ -27,6 +27,7 @@
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "AbstractLinAlgPack/include/assert_print_nan_inf.h"
+#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "Range1D.h"
 #include "ThrowException.h"
