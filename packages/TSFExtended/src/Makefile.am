@@ -81,6 +81,7 @@ UTILS_H = \
 UTILS = 
 
 CONCRETE_H = \
+	$(srcdir)/Concrete/TSFDenseSerialVector.hpp\
 	$(srcdir)/Concrete/TSFEpetraGhostImporter.hpp\
 	$(srcdir)/Concrete/TSFEpetraGhostView.hpp\
 	$(srcdir)/Concrete/TSFEpetraMatrix.hpp\
@@ -90,6 +91,7 @@ CONCRETE_H = \
 	$(srcdir)/Concrete/TSFIfpackOperator.hpp
 
 CONCRETE = \
+	$(srcdir)/Concrete/TSFDenseSerialVector.cpp\
 	$(srcdir)/Concrete/TSFEpetraGhostImporter.cpp\
 	$(srcdir)/Concrete/TSFEpetraGhostView.cpp\
 	$(srcdir)/Concrete/TSFEpetraMatrix.cpp\

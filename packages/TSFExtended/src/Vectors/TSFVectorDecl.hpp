@@ -229,6 +229,11 @@ namespace TSFExtended
      */
     Scalar dot(const Vector<Scalar>& other) const ;
 
+    /** 
+     * Overloaded operator for dot product 
+     */
+    Scalar operator*(const Vector<Scalar>& other) const ;
+
     /**
      * Compute the 1-norm of this vector
      */

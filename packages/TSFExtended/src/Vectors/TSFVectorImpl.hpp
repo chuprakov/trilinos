@@ -301,6 +301,14 @@ Scalar Vector<Scalar>::dot(const Vector<Scalar>& other) const
 }
 
 
+//===========================================================================
+template <class Scalar> inline 
+Scalar Vector<Scalar>::operator*(const Vector<Scalar>& other) const 
+{
+  return dot(other);
+}
+
+
 
 
 //===========================================================================

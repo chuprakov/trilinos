@@ -157,6 +157,13 @@ namespace TSFExtendedOps
                         const TSFExtended::Vector<Scalar>& x)
   {
     return LC1<Scalar>(alpha, x);
+  } 
+
+  template <class Scalar> inline
+  LC1<Scalar> operator*(const TSFExtended::Vector<Scalar>& x, 
+                        const Scalar& alpha)
+  {
+    return LC1<Scalar>(alpha, x);
   }
 
   template <class Scalar> inline
