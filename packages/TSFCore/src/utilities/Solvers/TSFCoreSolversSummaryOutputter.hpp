@@ -79,7 +79,7 @@ void SummaryOutputter<Scalar>::convStatus(
 	if(out_.get()) {
 		const std::string &leadstr = leadingOutputStr();
 		if(resetCalled_) {
-			*out_ << leadstr << "Linear solve using type \'"<<typeid(solver).name()<<"\'\n"; 
+			*out_ << leadstr << "Linear solve using type \'"<<typeid(solver).name()<<"\':\n"; 
 			resetCalled_ = false;
 		}
 		if( static_cast<int>(norms_.size()) < currNumSystems ) norms_.resize(currNumSystems);
