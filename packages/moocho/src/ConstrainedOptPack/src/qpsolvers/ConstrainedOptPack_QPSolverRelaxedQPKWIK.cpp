@@ -438,7 +438,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 				gamma.add_element( ele_t( itr->indice() + o, itr->value() ) );
 		}
 		if(mu && mu->nz()) {
-			const SpVector::difference_type o = mu->offset() + nd + 1;
+			const SpVector::difference_type o = mu->offset() + nd;
 			for( SpVector::const_iterator itr = mu->begin(); itr != mu->end(); ++itr )
 				gamma.add_element( ele_t( itr->indice() + o, itr->value() ) );
 		}
@@ -460,7 +460,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 				++NACTSTORE_;
 			}
 			else if( j <= nd + m_in ) { // General inequality constraint
-				const size_type ibnd_i = IBND_INV_[nd+j-1]; // offset into M1_ + ibnd_j
+				const size_type ibnd_i = IBND_INV_[j-1]; // offset into M1_ + ibnd_j
 				assert(ibnd_i);
 				IACTSTORE_[NACTSTORE_]
 					= (val < 0.0

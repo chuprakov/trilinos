@@ -17,7 +17,7 @@
 extern "C" {
 
 FORTRAN_FUNC_DECL_UL(void,DPBTRF,dpbtrf)(
-	const char                       &UPLO
+	FORTRAN_CONST_CHAR_1_ARG(UPLO)
 	,const FortranTypes::f_int       &N
 	,const FortranTypes::f_int       &KD
 	,FortranTypes::f_dbl_prec        *AB
@@ -26,7 +26,7 @@ FORTRAN_FUNC_DECL_UL(void,DPBTRF,dpbtrf)(
 	);
 
 FORTRAN_FUNC_DECL_UL(void,DPBTRS,dpbtrs)(
-	const char                       &UPLO
+	FORTRAN_CONST_CHAR_1_ARG(UPLO)
 	,const FortranTypes::f_int       &N
 	,const FortranTypes::f_int       &KD
 	,const FortranTypes::f_int       &NRHS
@@ -230,7 +230,8 @@ void MatrixSymPosDefBandedChol::V_InvMtV(
 	
 	FortranTypes::f_int info = 0;
 	FORTRAN_FUNC_CALL_UL(DPBTRS,dpbtrs)(
-		UB_uplo_ == BLAS_Cpp::upper ? 'U' : 'L', n_, kd_, 1, UB_.col_ptr(1), UB_.max_rows()
+		FORTRAN_CHAR_1_ARG_CALL(UB_uplo_ == BLAS_Cpp::upper ? 'U' : 'L')
+		, n_, kd_, 1, UB_.col_ptr(1), UB_.max_rows()
 		,&t[0], t.size(), &info );
 	if( info > 0 )
 		assert(0); // Should not happen!
@@ -275,7 +276,8 @@ void MatrixSymPosDefBandedChol::update_factorization() const
 		UB_uplo_ = MB_uplo_;
 		FortranTypes::f_int info = 0;
 		FORTRAN_FUNC_CALL_UL(DPBTRF,dpbtrf)(
-			UB_uplo_ == BLAS_Cpp::upper ? 'U' : 'L', n_, kd_, UB_.col_ptr(1), UB_.max_rows(), &info );
+			FORTRAN_CHAR_1_ARG_CALL(UB_uplo_ == BLAS_Cpp::upper ? 'U' : 'L')
+			, n_, kd_, UB_.col_ptr(1), UB_.max_rows(), &info );
 		if( info < 0 ) {
 			std::ostringstream omsg;
 			omsg
