@@ -5,6 +5,7 @@
 #define TSFCORE_NONLIN_LINEAR_OP_WITH_SOLVE_ITER_DECL_HPP
 
 #include "TSFCoreNonlinLinearOpWithSolve.hpp"
+#include "StandardCompositionMacros.hpp"
 
 namespace TSFCore {
 namespace Nonlin {
@@ -33,6 +34,9 @@ public:
 	
 	/** @name Constructors / initializers / accessors */
 	//@{
+
+	/// Stream that trace information will be sent to
+	STANDARD_NONCONST_COMPOSITION_MEMBERS( std::ostream, trace_out );
 
 	///
 	LinearOpWithSolveIter();

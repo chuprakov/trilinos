@@ -168,7 +168,7 @@ void LinearOpWithSolveIter<Scalar>::apply(
 	state_.M->apply(trans_trans(M_trans,state_.M_trans),X,Y,alpha,beta);
 }
 
-// Overridden from LinearOpInverible
+// Overridden from LinearOpWithSolve
 
 template<class Scalar>
 void LinearOpWithSolveIter<Scalar>::solve(
@@ -193,6 +193,10 @@ void LinearOpWithSolveIter<Scalar>::solve(
 	,Solvers::ConvergenceTester<Scalar>   *convTester
 	) const
 {
+	if(get_trace_out().get())
+		trace_out()
+			<< "\n*** Entering LinearOpWithSolveIter<Scalar>::solve(...):...\n"
+			<< "\nUsing a linear solver of type \'" << typeid(*state_.solver).name() << "\' ...\n";
 	Solvers::SolveReturn
 		solve_return = state_.solver->solve(
 			*state_.M, trans_trans( M_trans, state_.M_trans )
@@ -202,9 +206,10 @@ void LinearOpWithSolveIter<Scalar>::solve(
 			,state_.M_tilde_left_inv.get(),  trans_trans( M_trans, state_.M_tilde_left_inv_trans )
 			,state_.M_tilde_right_inv.get(), trans_trans( M_trans, state_.M_tilde_right_inv_trans )
 			);
-	// ToDo: use a default convergence tester (defaultConvTester) if input convTester==NULL.
 	switch(solve_return.solve_status) {
 		case Solvers::SOLVED_TO_TOL: {
+			if(get_trace_out().get())
+				trace_out() << "\nLinear system(s) solved to tolerance in num_iter = "<<solve_return.num_iter<<" iterations!\n";
 			// Great! we solved it!
 			break;
 		}
@@ -220,6 +225,8 @@ void LinearOpWithSolveIter<Scalar>::solve(
 			assert(0);
 		}
 	}
+	if(get_trace_out().get())
+		trace_out() << "\n*** Leaving LinearOpWithSolveIter<Scalar>::solve(...) ...\n\n";
 }
 
 template<class Scalar>
