@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////
-// MatrixWithOp.cpp
+// MatrixWithOp43.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -31,6 +31,46 @@
 
 namespace AbstractLinAlgPack {
 
+void MatrixWithOp::zero_out()
+{
+	THROW_EXCEPTION(
+		true, std::logic_error, "MatrixWithOp::zero_out(): "
+		"Error, this method as not been defined by the subclass \'"
+		<<typeid(*this).name()<<"\'" );
+}
+
+void MatrixWithOp::Mt_S(value_type alpha)
+{
+	THROW_EXCEPTION(
+		true, std::logic_error, "MatrixWithOp::Mt_S(): "
+		"Error, this method as not been defined by the subclass \'"
+		<<typeid(*this).name()<<"\'" );
+}
+
+MatrixWithOp& MatrixWithOp::operator=(const MatrixWithOp& M)
+{
+	const bool assign_to_self = dynamic_cast<const void*>(this) == dynamic_cast<const void*>(&M);
+	THROW_EXCEPTION(
+		!assign_to_self, std::logic_error
+		,"MatrixWithOp::operator=(M) : Error, this is not assignment "
+		"to self and this method is not overridden for the subclass \'"
+		<< typeid(*this).name() << "\'" );
+	return *this; // assignment to self
+}
+
+std::ostream& MatrixWithOp::output(std::ostream& out) const
+{
+	const size_type m = this->rows(), n = this->cols();
+	VectorSpace::vec_mut_ptr_t
+		row_vec = space_rows().create_member(); // dim() == n
+	out << m << " " << n << std::endl;
+	for( size_type i = 1; i <= m; ++i ) {
+		LinAlgOpPack::V_StMtV( row_vec.get(), 1.0, *this, BLAS_Cpp::trans, EtaVector(i,m)() );
+		row_vec->output(out,false,true);
+	}
+	return out;
+}
+
 MatrixWithOp::mat_ptr_t
 MatrixWithOp::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
@@ -52,33 +92,6 @@ MatrixWithOp::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 			,row_rng,col_rng ) );
 }
 
-MatrixWithOp& MatrixWithOp::zero_out()
-{
-	THROW_EXCEPTION(
-		true, std::logic_error, "MatrixWithOp::zero_out(): "
-		"Error, this method as not been defined by the subclass \'"
-		<<typeid(*this).name()<<"\'" );
-}
-
-MatrixWithOp& MatrixWithOp::operator=(const MatrixWithOp& M)
-{
-	assert(0); // ToDo: Implement!
-	return *this;
-}
-
-std::ostream& MatrixWithOp::output(std::ostream& out) const
-{
-	const size_type m = this->rows(), n = this->cols();
-	VectorSpace::vec_mut_ptr_t
-		row_vec = space_rows().create_member(); // dim() == n
-	out << m << " " << n << std::endl;
-	for( size_type i = 1; i <= m; ++i ) {
-		LinAlgOpPack::V_StMtV( row_vec.get(), 1.0, *this, BLAS_Cpp::trans, EtaVector(i,m)() );
-		row_vec->output(out,false,true);
-	}
-	return out;
-}
-
 // Level-1 BLAS
 
 bool MatrixWithOp::Mp_StM(
@@ -87,6 +100,8 @@ bool MatrixWithOp::Mp_StM(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
+
+	
 
 	// Give m_lhs a chance to implement this method
 	if(m_lhs->Mp_StM(alpha,*this,trans_rhs))
@@ -198,7 +213,7 @@ void MatrixWithOp::Vp_StMtV(
 	VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2, value_type beta) const
 {
-	Vp_MtV_assert_sizes(v_lhs->dim(), this->rows(), this->cols(), trans_rhs1, sv_rhs2.dim() );
+	Vp_MtV_assert_compatibility(v_lhs,*this,trans_rhs1,sv_rhs2 );
 	if( sv_rhs2.nz() ) {
 		VectorSpace::vec_mut_ptr_t
 			v_rhs2 = (trans_rhs1 == BLAS_Cpp::no_trans

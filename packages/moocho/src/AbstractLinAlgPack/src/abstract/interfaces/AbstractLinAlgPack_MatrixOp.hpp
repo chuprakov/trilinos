@@ -135,25 +135,37 @@ public:
 	//@{
 
 	///
-	/** Zero out the matrix.
+	/** M_lhs = 0 :  Zero out the matrix.
 	 *
 	 * The default implementation throws an exception.  This is not
 	 * the best design but it meets some needs.  Any matrix implementation
-	 * can implement this method and mimic the behavior.  However, only
-	 * matrices that are going to be on the lhs (non-const) of a Level-1
-	 * or Level-3 BLAS operation need every implement this method.
+	 * could implement this method and mimic the behavior (i.e. see the
+	 * matrix subclass  \c MatrixZero).  However, only matrices that are
+	 * going to be on the lhs (non-const) of a Level-1 or Level-3 BLAS
+	 * operation need every implement this method.
 	 */
-	virtual MatrixWithOp& zero_out();
+	virtual void zero_out();
 
 	///
-	/** Virtual assignment operator.
+	/** M_lhs *= alpha : Multiply a matrix by a scalar.
+	 *
+	 * The default implementation throws an exception.  This is not
+	 * the best design but it meets some needs.  Any matrix implementation
+	 * could implement this method and mimic the behavior (i.e.
+	 * simply implement the matrix \c M as (<tt>alpha * M</tt>).
+	 * This method is only called in a few specialized situations. 
+	 */
+	virtual void Mt_S( value_type alpha );
+
+	///
+	/** M_lhs = mwo_rhs : Virtual assignment operator.
 	  *
 	  * The default implementation just throws a std::logic_error
 	  * exception if it is not assignment to self.  A more specialized
 	  * implementation could use this to copy the state to <tt>this</tt> matrix
 	  * object from a compatible <tt>M</tt> matrix object.
 	  */
-	virtual MatrixWithOp& operator=(const MatrixWithOp& M);
+	virtual MatrixWithOp& operator=(const MatrixWithOp& mwo_rhs);
 
 	//@}
 
