@@ -34,6 +34,7 @@
 #include "TSFDescribable.hpp"
 #include "TSFHandleable.hpp"
 #include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_MPIComm.hpp"
 
 
 #ifndef DOXYGEN_DEVELOPER_ONLY

@@ -35,6 +35,9 @@
 #include "TSFVectorSpace.hpp"
 #include "TSFEpetraVectorType.hpp"
 #include "Teuchos_Time.hpp"
+#include "Teuchos_MPIComm.hpp"
+#include "TSFLinearSolver.hpp"
+#include "TSFBICGSTABSolver.hpp"
 
 using namespace Teuchos;
 using namespace TSFExtended;
@@ -49,10 +52,12 @@ int main(int argc, void *argv[])
 
       MPISession::init(&argc, &argv);
 
+      MPIComm::world().synchronize();
+
       VectorType<double> type = new EpetraVectorType();
 
       /* create the range space  */
-      int nLocalRows = 4;
+      int nLocalRows = 50;
 
       int rank = MPISession::getRank();
       int nProc = MPISession::getNProc();
@@ -75,6 +80,7 @@ int main(int argc, void *argv[])
       
       RefCountPtr<LoadableMatrix<double> > mat = A.matrix();
 
+      /* fill in with the Laplacian operator */
       for (int i=0; i<nLocalRows; i++)
         {
           Array<int> colIndices;
@@ -99,17 +105,49 @@ int main(int argc, void *argv[])
 
       Vector<double> x = space.createMember();
       Vector<double> y;
+      Vector<double> ans = space.createMember();
 
       for (int i=0; i<nLocalRows; i++)
         {
           x.setElement(localRows[i], localRows[i]*localRows[i]);
+
+          if ((rank==0 && i==0) || (rank==nProc-1 && i==nLocalRows-1))
+            {
+              ans.setElement(localRows[i], localRows[i]*localRows[i]);
+            }
+          else
+            {
+              ans.setElement(localRows[i], -2.0);
+            }
         }
 
+      MPIComm::world().synchronize();
+
       cerr << "x=" << x << endl;
+
+      MPIComm::world().synchronize();
+
       A.apply(x, y);
       cerr << "y=" << y << endl;
-      
 
+      cerr << endl << "error 1-norm = " << (y-ans).norm1() << endl;
+      cerr << endl << "error 2-norm = " << (y-ans).norm2() << endl;
+      cerr << endl << "error inf-norm = " << (y-ans).normInf() << endl;
+
+      ParameterList solverParams;
+
+      solverParams.set(LinearSolverBase<double>::verbosityParam(), 2);
+      solverParams.set(IterativeSolver<double>::maxitersParam(), 100);
+      solverParams.set(IterativeSolver<double>::tolParam(), 1.0e-12);
+
+      LinearSolver<double> solver = new BICGSTABSolver<double>(solverParams);
+
+      SolverState<double> state = solver.solve(A, y, ans);
+      
+      cerr << state << endl;
+
+      cerr << endl << "solve error 2-norm = " << (x-ans).norm2() << endl;
+      
     }
   catch(std::exception& e)
     {

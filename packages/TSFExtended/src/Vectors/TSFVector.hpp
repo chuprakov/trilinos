@@ -103,6 +103,13 @@ namespace TSFExtended
       Vector(const RefCountPtr<TSFCore::Vector<Scalar> >& smartPtr);
 
 #ifndef DOXYGEN_DEVELOPER_ONLY
+      /** Construct a vector from a 1-term LC */
+      Vector(const TSFExtendedOps::LC1<Scalar>& x);
+
+      /** Construct a vector from a N-term LC */
+      template<class Node1, class Node2>
+      Vector(const TSFExtendedOps::LCN<Scalar, Node1, Node2>& x);
+
       /** Assign a one-term linear combination 
        * (i.e., a scalar times a vector) 
        * to this vector */
@@ -149,9 +156,41 @@ namespace TSFExtended
       Vector<Scalar> copy() const ;
 
       /** 
+       * Element-by-element product (Matlab dot-star operator)
+       */
+      Vector<Scalar> dotStar(const Vector<Scalar>& other) const ;
+
+      /** 
+       * Element-by-element division (Matlab dot-slash operator)
+       */
+      Vector<Scalar> dotSlash(const Vector<Scalar>& other) const ;
+
+      
+      /** 
        * Take dot product with another vector
        */
-      Scalar dot() const ;
+      Scalar dot(const Vector<Scalar>& other) const ;
+
+      /**
+       * Compute the 1-norm of this vector
+       */
+      Scalar norm1() const ;
+
+      /**
+       * Compute the 2-norm of this vector
+       */
+      Scalar norm2() const ;
+
+      /**
+       * Compute the infinity-norm of this vector
+       */
+      Scalar normInf() const ;
+
+      /**
+       * Set all elements to zero 
+       */
+      void zero();
+
       //@}
 
       /** \name Element loading interface */
@@ -195,6 +234,8 @@ namespace TSFExtended
           = TimeMonitor::getNewTimer("Low-level vector operations");
         return rtn;
       }
+
+      virtual Vector<Scalar> eval() const {return *this;}
     private:
 #ifndef DOXYGEN_DEVELOPER_ONLY
       /** Cross-cast vector pointer to an accessible vector */
@@ -287,9 +328,67 @@ namespace TSFExtended
     return rtn;
   }
 
-  
+  template <class Scalar> inline 
+  Vector<Scalar> Vector<Scalar>::dotStar(const Vector<Scalar>& other) const 
+  {
+    Vector<Scalar> rtn = space()->createMember();
+    {
+      TimeMonitor t(*opTimer());
+      TSFCore::ele_wise_prod(1.0, *ptr(), *(other.ptr()), rtn.ptr().get());
+    }
+    return rtn;
+  }
 
+  template <class Scalar> inline 
+  Vector<Scalar> Vector<Scalar>::dotSlash(const Vector<Scalar>& other) const 
+  {
+    Vector<Scalar> rtn = space()->createMember();
+    {
+      TimeMonitor t(*opTimer());
+      TSFCore::ele_wise_divide(1.0, *ptr(), *(other.ptr()), rtn.ptr().get());
+    }
+    return rtn;
+  }
   
+  template <class Scalar> inline 
+  Scalar Vector<Scalar>::dot(const Vector<Scalar>& other) const 
+  {
+    TimeMonitor t(*opTimer());
+    
+    return TSFCore::dot(*ptr(), *(other.ptr()));
+  }
+
+  template <class Scalar> inline 
+  Scalar Vector<Scalar>::norm1() const 
+  {
+    TimeMonitor t(*opTimer());
+    
+    return TSFCore::norm_1(*ptr());
+  }
+
+  template <class Scalar> inline 
+  Scalar Vector<Scalar>::norm2() const 
+  {
+    TimeMonitor t(*opTimer());
+    
+    return TSFCore::norm_2(*ptr());
+  }
+
+  template <class Scalar> inline 
+  Scalar Vector<Scalar>::normInf() const 
+  {
+    TimeMonitor t(*opTimer());
+    
+    return TSFCore::norm_inf(*ptr());
+  }
+
+  template <class Scalar> inline 
+  void Vector<Scalar>::zero()
+  {
+    TimeMonitor t(*opTimer());
+    
+    TSFCore::assign(ptr().get(), 0.0);
+  }
 }
 
 

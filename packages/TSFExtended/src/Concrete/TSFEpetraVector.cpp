@@ -39,17 +39,20 @@ EpetraVector::EpetraVector(const RefCountPtr<Epetra_Vector>& vec,
 
 void EpetraVector::setElement(Index index, const double& value)
 {
-  (*epetra_vec())[index] = value;
+  epetra_vec()->ReplaceGlobalValues(1, const_cast<double*>(&value), 
+                                    const_cast<int*>(&index));
 }
 
 void EpetraVector::addToElement(Index index, const double& value)
 {
-  (*epetra_vec())[index] += value;
+  epetra_vec()->SumIntoGlobalValues(1, const_cast<double*>(&value), 
+                                    const_cast<int*>(&index));
 }
 
 const double& EpetraVector::getElement(Index index) const 
 {
-  return (*epetra_vec())[index];
+  const Epetra_BlockMap& myMap = epetra_vec()->Map();
+  return (*epetra_vec())[myMap.LID(index)];
 }
 
 void EpetraVector::setElements(size_t numElems, const Index* globalIndices,

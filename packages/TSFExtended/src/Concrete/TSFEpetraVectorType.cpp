@@ -57,6 +57,7 @@ EpetraVectorType::createSpace(int dimension,
 	RefCountPtr<Epetra_Map> map = rcp(new Epetra_Map(dimension, nLocal,
                                                    (int*) localIndices,
                                                    0, *epetra_comm()));
+
 	return rcp(new EpetraVectorSpace(map));
 }
 

@@ -1,3 +1,4 @@
+/* @HEADER@ */
 /* ***********************************************************************
 // 
 //           TSFExtended: Trilinos Solver Framework Extended
@@ -23,44 +24,46 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
+/* @HEADER@ */
 
-#include "TSFEpetraVectorSpace.hpp"
-#include "TSFEpetraVector.hpp"
-#include "Teuchos_Utils.hpp"
+#ifndef TSFILUFACTORIZABLEOP_HPP
+#define TSFILUFACTORIZABLEOP_HPP
 
-using namespace TSFExtended;
-using namespace Teuchos;
+#include "TSFConfigDefs.hpp"
 
 
-EpetraVectorSpace::EpetraVectorSpace()
-	: TSFCore::EpetraVectorSpace()
-{}
-
-EpetraVectorSpace::EpetraVectorSpace(const RefCountPtr<const Epetra_Map>& localMap)
-	: TSFCore::EpetraVectorSpace(localMap)
-{}
-
-RefCountPtr<TSFCore::Vector<double> > EpetraVectorSpace::createMember() const
+namespace TSFExtended
 {
-  Epetra_Vector* v = new Epetra_Vector(*epetra_map(), false);
 
-  RefCountPtr<Epetra_Vector> vec = rcp(v);
-  //  RefCountPtr<const TSFCore::EpetraVectorSpace> me = rcp(this, false);
-  RefCountPtr<const EpetraVectorSpace> me = rcp(this, false);
-  return rcp(new EpetraVector(vec, me));
+  /** 
+   * Base interface for operators for which incomplete LU factorizations
+   * can be obtained. 
+   */
+  template <class Scalar>
+  class ILUFactorizableOp
+    {
+    public:
+      /** Virtual dtor */
+      virtual ~ILUFactorizableOp(){;}
+
+
+      /** \name incomplete factorization preconditioning interface */
+      //@{
+      /** create an incomplete factorization. 
+       * @param fillLevels number of levels of fill on the local processor
+       * @param overlapFill number of levels of fill on remote processors
+       * @param rtn newly created preconditioner, returned 
+       * by reference argument.
+       */
+      virtual void getILUKPreconditioner(int fillLevels,
+                                         int overlapFill,
+                                         Preconditioner<Scalar>& rtn) const=0;
+      //@}
+      
+      
+    private:
+    };
 }
 
-string EpetraVectorSpace::describe() const 
-{
-	string rtn = "EpetraVectorSpace[";
-  rtn += "nLocal=" 
-    + Teuchos::toString(epetra_map()->NumMyElements())
-    + " nGlobal=" 
-    + Teuchos::toString(epetra_map()->NumGlobalElements()) 
-    + "]";
 
-
-  return rtn;
-}
-
-
+#endif

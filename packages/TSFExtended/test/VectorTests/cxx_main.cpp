@@ -43,13 +43,13 @@ int main(int argc, void *argv[])
 {
   try
     {
-      int verbosity = 1;
+      int verbosity = 2;
 
       MPISession::init(&argc, &argv);
 
       VectorType<double> type = new EpetraVectorType();
 
-      int n = 20;
+      int n = 4;
 
       int rank = MPISession::getRank();
       int nProc = MPISession::getNProc();
@@ -66,19 +66,20 @@ int main(int argc, void *argv[])
       VectorSpace<double> space = type.createSpace(dimension, n, 
                                                    &(localRows[0]));
 
+            
       Vector<double> u = space.createMember();
       Vector<double> w = space.createMember();
       Vector<double> v = space.createMember();
       Vector<double> x = space.createMember();
       Vector<double> y = space.createMember();
       Vector<double> z = space.createMember();
-      
+
       for (int i=low; i<high; i++)
         {
-          u.setElement(i, i);
+          u.setElement(i, 1+i);
           v.setElement(i, i*i);
           w.setElement(i, i*i*i);
-          x.setElement(i, ::sqrt(i));
+          x.setElement(i, 1 + ::sqrt(i));
           y.setElement(i, ::cos(i));
           z.setElement(i, ::sin(i));
         }
@@ -96,8 +97,17 @@ int main(int argc, void *argv[])
 
       /* assign into an empty vector */
       Vector<double> a = space.createMember();
+      Vector<double> aCheck = space.createMember();
+      Vector<double> b = space.createMember();
+      Vector<double> bCheck = space.createMember();
+
+      Vector<double> c = space.createMember();
 
       a = x + y + z + u + v + w;
+      
+      b = x.dotStar(y);
+
+      c = b.dotSlash(x);
       
       if (verbosity > 1)
         {
@@ -105,20 +115,41 @@ int main(int argc, void *argv[])
         }
 
       /* check */
-      double err = 0.0;
+      double aErr = 0.0;
+      double bErr = 0.0;
+
       for (int i=low; i<high; i++)
         {
           double ai = x.getElement(i) + y.getElement(i) + z.getElement(i)
             +  u.getElement(i) + v.getElement(i) + w.getElement(i);
-          err += ::fabs(ai-a.getElement(i));
+          aCheck.setElement(i, ai);
+          bCheck.setElement(i, x.getElement(i) * y.getElement(i) );
+          aErr += ::fabs(ai-a.getElement(i));
+          bErr += ::fabs(bCheck.getElement(i)-b.getElement(i));
           if (verbosity > 1)
             {
               cerr << i << " |ai-a[i]| " << ::fabs(ai-a.getElement(i)) << endl;
+              cerr << i << " |bi-b[i]| " << ::fabs(bCheck.getElement(i)-b.getElement(i)) << endl;
             }
         }
 
       
-      if (verbosity > 0) cerr << "error norm = " << err << endl;
+      if (verbosity > 0) cerr << "error norm a  (computed term-by-term) = " 
+                              << aErr << endl;
+
+      if (verbosity > 0) cerr << "error norm a (computed with operators) = " 
+                              << (a-aCheck).norm2() << endl;
+
+      if (verbosity > 0) cerr << "error norm b  (computed term-by-term) = " 
+                              << bErr << endl;
+
+      if (verbosity > 0) cerr << "error norm b (computed with operators) = " 
+                              << (b-bCheck).norm2() << endl;
+
+      if (verbosity > 0) cerr << "error norm c (computed with operators) = " 
+                              << (c-y).norm2() << endl;
+
+      
     }
   catch(std::exception& e)
     {

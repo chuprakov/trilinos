@@ -1,3 +1,4 @@
+/* @HEADER@ */
 /* ***********************************************************************
 // 
 //           TSFExtended: Trilinos Solver Framework Extended
@@ -23,44 +24,54 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
+/* @HEADER@ */
 
-#include "TSFEpetraVectorSpace.hpp"
-#include "TSFEpetraVector.hpp"
-#include "Teuchos_Utils.hpp"
+#ifndef TSFPRECONDITIONERBASE_HPP
+#define TSFPRECONDITIONERBASE_HPP
 
-using namespace TSFExtended;
-using namespace Teuchos;
+#include "TSFConfigDefs.hpp"
+#include "TSFVector.hpp"
+#include "TSFLinearOperator.hpp"
+#include "Teuchos_ParameterList.hpp"
 
 
-EpetraVectorSpace::EpetraVectorSpace()
-	: TSFCore::EpetraVectorSpace()
-{}
-
-EpetraVectorSpace::EpetraVectorSpace(const RefCountPtr<const Epetra_Map>& localMap)
-	: TSFCore::EpetraVectorSpace(localMap)
-{}
-
-RefCountPtr<TSFCore::Vector<double> > EpetraVectorSpace::createMember() const
+namespace TSFExtended
 {
-  Epetra_Vector* v = new Epetra_Vector(*epetra_map(), false);
+  using namespace Teuchos;
 
-  RefCountPtr<Epetra_Vector> vec = rcp(v);
-  //  RefCountPtr<const TSFCore::EpetraVectorSpace> me = rcp(this, false);
-  RefCountPtr<const EpetraVectorSpace> me = rcp(this, false);
-  return rcp(new EpetraVector(vec, me));
+  /**
+   *
+   */
+  template <class Scalar>
+  class PreconditionerBase
+  {
+  public:
+    /** */
+    PreconditionerBase(const ParameterList& params)
+      : params_(params)
+    {;}
+
+    /** */
+    virtual ~PreconditionerBase(){;}
+
+    /** */
+    virtual LinearOperator<Scalar> left() const ;
+
+    /** */
+    virtual LinearOperator<Scalar> right() const ;
+
+    /** return true if this preconditioner has a nontrivial left component */
+    virtual bool hasLeft() const {return false;}
+
+    /** return true if this preconditioner has
+     * a nontrivial right component */
+    virtual bool hasRight() const {return false;}
+
+  private:
+
+    ParameterList params_;
+  };
+
 }
 
-string EpetraVectorSpace::describe() const 
-{
-	string rtn = "EpetraVectorSpace[";
-  rtn += "nLocal=" 
-    + Teuchos::toString(epetra_map()->NumMyElements())
-    + " nGlobal=" 
-    + Teuchos::toString(epetra_map()->NumGlobalElements()) 
-    + "]";
-
-
-  return rtn;
-}
-
-
+#endif

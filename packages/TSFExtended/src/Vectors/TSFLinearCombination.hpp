@@ -38,11 +38,37 @@
 namespace TSFExtendedOps
 {
   /** 
+   * 
+   */
+  enum LCSign {LCAdd = 1, LCSubtract = -1};
+
+  template <class Scalar>
+  class ConvertibleToVector
+  {
+  public:
+    /** */
+    virtual TSFExtended::Vector<Scalar> eval() const = 0 ;
+
+    /** */
+    Scalar operator*(const ConvertibleToVector<Scalar>& other) const
+    {return eval().dot(other.eval());}
+
+    /** */
+    Scalar norm1() const {return eval().norm1();}
+
+    /** */
+    Scalar norm2() const {return eval().norm2();}
+
+    /** */
+    Scalar normInf() const {return eval().normInf();}
+  };
+
+  /** 
    * Class LC1 holds the information required to perform
    * a 1-term linear combination, i.e., a scalar times a vector.
    */
   template <class Scalar>
-  class LC1
+  class LC1 : public ConvertibleToVector<Scalar>
   {
     public:
     /** */
@@ -58,12 +84,13 @@ namespace TSFExtendedOps
     void evalInto(TSFExtended::Vector<Scalar>& result) const ;
 
     /** Add the term into the argument vector */
-    void addInto(TSFExtended::Vector<Scalar>& result) const ;
+    void addInto(TSFExtended::Vector<Scalar>& result, 
+                 LCSign sign = LCAdd) const ;
 
-    /** */
-    TSFExtended::Vector<Scalar> eval() const ;
+    /** Evaluate the term and return its value */
+    virtual TSFExtended::Vector<Scalar> eval() const ;
 
-    /** */
+    /** Determine whether this term contains the given vector */
     bool containsVector(const TSFCore::Vector<Scalar>* vec) const 
     {return vec == x_.ptr().get();}
 
@@ -74,24 +101,28 @@ namespace TSFExtendedOps
   };
 
   /**
-   *
+   * Class LCN contains an n-term linear combination. 
    */
   template <class Scalar, class Node1, class Node2>
-  class LCN
+  class LCN : public ConvertibleToVector<Scalar>
   {
     public:
     /** */
-    LCN(const Node1& x1, const Node2& x2)
-      : x1_(x1), x2_(x2) {;}
+    LCN(const Node1& x1, const Node2& x2, LCSign sign = LCAdd)
+      : x1_(x1), x2_(x2), sign_(sign) {;}
+
+    /** */
+    operator TSFExtended::Vector<Scalar>() const {return eval();}
       
     /** */
     void evalInto(TSFExtended::Vector<Scalar>& result) const ;
 
     /** */
-    void addInto(TSFExtended::Vector<Scalar>& result) const ;
+    void addInto(TSFExtended::Vector<Scalar>& result, 
+                 LCSign sign = LCAdd) const ;
 
     /** */
-    TSFExtended::Vector<Scalar> eval() const ;
+    virtual TSFExtended::Vector<Scalar> eval() const ;
 
     /** */
     bool containsVector(const TSFCore::Vector<Scalar>* vec) const
@@ -101,29 +132,57 @@ namespace TSFExtendedOps
     Node1 x1_;
 
     Node2 x2_;
+
+    LCSign sign_;
   };
 
 
   template <class Scalar> inline
-  LC1<Scalar> operator*(const Scalar& alpha, const TSFExtended::Vector<Scalar>& x)
+  LC1<Scalar> operator*(const Scalar& alpha, 
+                        const TSFExtended::Vector<Scalar>& x)
   {
     return LC1<Scalar>(alpha, x);
   }
 
-  template <class Scalar> inline
-  LCN<Scalar, LC1<Scalar>, LC1<Scalar> >
-  operator+(const TSFExtended::Vector<Scalar>& x1, const TSFExtended::Vector<Scalar>& x2)
-  {
-    return LCN<Scalar, LC1<Scalar>, LC1<Scalar> >(x1, x2);
-  }
 
 
   template <class Scalar> inline
   LCN<Scalar, LC1<Scalar>, LC1<Scalar> >
-  operator+(const LC1<Scalar>& x1, const TSFExtended::Vector<Scalar>& x2)
+  operator+(const TSFExtended::Vector<Scalar>& x1, 
+            const TSFExtended::Vector<Scalar>& x2)
   {
     return LCN<Scalar, LC1<Scalar>, LC1<Scalar> >(x1, x2);
   }
+  
+  template <class Scalar> inline
+  LCN<Scalar, LC1<Scalar>, LC1<Scalar> >
+  operator-(const TSFExtended::Vector<Scalar>& x1, 
+            const TSFExtended::Vector<Scalar>& x2)
+  {
+    return LCN<Scalar, LC1<Scalar>, LC1<Scalar> >(x1, x2, LCSubtract);
+  }
+
+
+
+
+
+  template <class Scalar> inline
+  LCN<Scalar, LC1<Scalar>, LC1<Scalar> >
+  operator+(const LC1<Scalar>& x1, 
+            const TSFExtended::Vector<Scalar>& x2)
+  {
+    return LCN<Scalar, LC1<Scalar>, LC1<Scalar> >(x1, x2);
+  }
+
+  template <class Scalar> inline
+  LCN<Scalar, LC1<Scalar>, LC1<Scalar> >
+  operator-(const LC1<Scalar>& x1, 
+            const TSFExtended::Vector<Scalar>& x2)
+  {
+    return LCN<Scalar, LC1<Scalar>, LC1<Scalar> >(x1, x2, LCSubtract);
+  }
+
+
 
   template <class Scalar> inline
   LCN<Scalar, LC1<Scalar>, LC1<Scalar> >
@@ -132,21 +191,53 @@ namespace TSFExtendedOps
     return LCN<Scalar, LC1<Scalar>, LC1<Scalar> >(x1, x2);
   }
 
+  template <class Scalar> inline
+  LCN<Scalar, LC1<Scalar>, LC1<Scalar> >
+  operator-(const TSFExtended::Vector<Scalar>& x1, const LC1<Scalar>& x2)
+  {
+    return LCN<Scalar, LC1<Scalar>, LC1<Scalar> >(x1, x2, LCSubtract);
+  }
+
   
   
   template <class Scalar, class Node1, class Node2> inline
   LCN<Scalar, LC1<Scalar>, LCN<Scalar, Node1, Node2> >
-  operator+(const TSFExtended::Vector<Scalar>& x1, const LCN<Scalar, Node1, Node2>& x2)
+  operator+(const TSFExtended::Vector<Scalar>& x1, 
+            const LCN<Scalar, Node1, Node2>& x2)
   {
     return LCN<Scalar, LC1<Scalar>, LCN<Scalar, Node1, Node2> >(x1, x2);
   }
 
   template <class Scalar, class Node1, class Node2> inline
+  LCN<Scalar, LC1<Scalar>, LCN<Scalar, Node1, Node2> >
+  operator-(const TSFExtended::Vector<Scalar>& x1, 
+            const LCN<Scalar, Node1, Node2>& x2)
+  {
+    return LCN<Scalar, LC1<Scalar>, LCN<Scalar, Node1, Node2> >(x1, x2, 
+                                                                LCSubtract);
+  }
+
+
+
+  template <class Scalar, class Node1, class Node2> inline
   LCN<Scalar, LCN<Scalar, Node1, Node2>, LC1<Scalar> >
-  operator+(const LCN<Scalar, Node1, Node2>& x1, const TSFExtended::Vector<Scalar>& x2)
+  operator+(const LCN<Scalar, Node1, Node2>& x1, 
+            const TSFExtended::Vector<Scalar>& x2)
   {
     return LCN<Scalar, LCN<Scalar, Node1, Node2>, LC1<Scalar> >(x1, x2);
   }
+
+  template <class Scalar, class Node1, class Node2> inline
+  LCN<Scalar, LCN<Scalar, Node1, Node2>, LC1<Scalar> >
+  operator-(const LCN<Scalar, Node1, Node2>& x1, 
+            const TSFExtended::Vector<Scalar>& x2)
+  {
+    return LCN<Scalar, LCN<Scalar, Node1, Node2>, LC1<Scalar> >(x1, x2, 
+                                                                LCSubtract);
+  }
+
+
+
 
   template <class Scalar> inline
   LCN<Scalar, LC1<Scalar>, LC1<Scalar> > 
@@ -155,18 +246,45 @@ namespace TSFExtendedOps
     return LCN<Scalar, LC1<Scalar>, LC1<Scalar> >(x1, x2);
   }
 
+  template <class Scalar> inline
+  LCN<Scalar, LC1<Scalar>, LC1<Scalar> > 
+  operator-(const LC1<Scalar>& x1, const LC1<Scalar>& x2)
+  {
+    return LCN<Scalar, LC1<Scalar>, LC1<Scalar> >(x1, x2, LCSubtract);
+  }
+
+
+
   template <class Scalar, class Node1, class Node2> inline
   LCN<Scalar, LC1<Scalar>, LCN<Scalar, Node1, Node2> > 
   operator+(const LC1<Scalar>& x1, const LCN<Scalar, Node1, Node2>& x2)
   {
     return LCN<Scalar, LC1<Scalar>, LCN<Scalar, Node1, Node2> >(x1, x2);
   }
+
+  template <class Scalar, class Node1, class Node2> inline
+  LCN<Scalar, LC1<Scalar>, LCN<Scalar, Node1, Node2> > 
+  operator-(const LC1<Scalar>& x1, const LCN<Scalar, Node1, Node2>& x2)
+  {
+    return LCN<Scalar, LC1<Scalar>, LCN<Scalar, Node1, Node2> >(x1, x2, 
+                                                                LCSubtract);
+  }
   
+
+
   template <class Scalar, class Node1, class Node2> inline
   LCN<Scalar, LCN<Scalar, Node1, Node2>, LC1<Scalar> > 
   operator+(const LCN<Scalar, Node1, Node2>& x1, const LC1<Scalar>& x2)
   {
     return LCN<Scalar, LCN<Scalar, Node1, Node2>, LC1<Scalar> >(x1, x2);
+  }
+
+  template <class Scalar, class Node1, class Node2> inline
+  LCN<Scalar, LCN<Scalar, Node1, Node2>, LC1<Scalar> > 
+  operator-(const LCN<Scalar, Node1, Node2>& x1, const LC1<Scalar>& x2)
+  {
+    return LCN<Scalar, LCN<Scalar, Node1, Node2>, LC1<Scalar> >(x1, x2, 
+                                                                LCSubtract);
   }
 
   
@@ -180,25 +298,39 @@ namespace TSFExtendedOps
       LCN<Scalar, Node3, Node4> >(x1, x2);
   }
 
+  template <class Scalar, class Node1, class Node2, 
+            class Node3, class Node4> inline
+  LCN<Scalar, LCN<Scalar, Node1, Node2>, LCN<Scalar, Node3, Node4> >
+  operator-(const LCN<Scalar, Node1, Node2>& x1, 
+            const LCN<Scalar, Node3, Node4>& x2)
+  {
+    return LCN<Scalar, LCN<Scalar, Node1, Node2>, 
+      LCN<Scalar, Node3, Node4> >(x1, x2, LCSubtract);
+  }
+
+
+
+
   template <class Scalar, class Node1, class Node2> inline
   void LCN<Scalar, Node1, Node2>::evalInto(TSFExtended::Vector<Scalar>& result) const
   {
     x1_.evalInto(result);
-    x2_.addInto(result);
+    x2_.addInto(result, sign_);
   } 
 
   template <class Scalar, class Node1, class Node2> inline
-  void LCN<Scalar, Node1, Node2>::addInto(TSFExtended::Vector<Scalar>& result) const
+  void LCN<Scalar, Node1, Node2>::addInto(TSFExtended::Vector<Scalar>& result,
+                                          LCSign sign) const
   {
-    x1_.addInto(result);
-    x2_.addInto(result);
+    x1_.addInto(result, sign);
+    x2_.addInto(result, sign_ * sign);
   }
 
   template <class Scalar, class Node1, class Node2> inline
   TSFExtended::Vector<Scalar> LCN<Scalar, Node1, Node2>::eval() const
   {
     TSFExtended::Vector<Scalar> result = x1_.eval();
-    x2_.addInto(result);
+    x2_.addInto(result, sign_);
     return result;
   }
   
@@ -210,9 +342,10 @@ namespace TSFExtendedOps
   }
 
   template <class Scalar> inline
-  void LC1<Scalar>::addInto(TSFExtended::Vector<Scalar>& result) const
+  void LC1<Scalar>::addInto(TSFExtended::Vector<Scalar>& result,
+                            LCSign sign) const
   {
-    result.update(alpha_, x_);
+    result.update(sign*alpha_, x_);
   } 
 
   template <class Scalar> inline
@@ -228,7 +361,7 @@ namespace TSFExtendedOps
 namespace TSFExtended
 {
   /* definition of assignment from 1-term linear combination to a vector */
-  template <class Scalar>
+  template <class Scalar> inline
   Vector<Scalar>& Vector<Scalar>::operator=(const TSFExtendedOps::LC1<Scalar>& x)
   {
     if (ptr().get()==0)
@@ -250,7 +383,7 @@ namespace TSFExtended
  
   /* definition of assignment from N-term linear combination to a vector */
   template <class Scalar>
-  template <class Node1, class Node2>
+  template <class Node1, class Node2> inline
   Vector<Scalar>& Vector<Scalar>::operator=(const TSFExtendedOps::LCN<Scalar, Node1, Node2>& x)
   {
     if (ptr().get()==0)
@@ -268,6 +401,17 @@ namespace TSFExtended
       }
     return *this;
   }
+
+  template <class Scalar>
+  template <class Node1, class Node2> inline
+  Vector<Scalar>::Vector(const TSFExtendedOps::LCN<Scalar, Node1, Node2>& x)
+    : Handle<TSFCore::Vector<Scalar> >(x.eval().ptr())
+  {;}
+
+  template <class Scalar> inline
+  Vector<Scalar>::Vector(const TSFExtendedOps::LC1<Scalar>& x)
+    : Handle<TSFCore::Vector<Scalar> >(x.eval().ptr())
+  {;}
 
 }
 

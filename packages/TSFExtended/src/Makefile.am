@@ -82,7 +82,17 @@ OPERATORS_H = \
 	$(srcdir)/Operators/TSFLoadableMatrix.hpp\
 	$(srcdir)/Operators/TSFTransposeOperator.hpp
 
-OPERATOR = 
+OPERATORS = 
+
+LINEARSOLVERS_H = \
+	$(srcdir)/LinearSolvers/TSFBICGSTABSolver.hpp \
+	$(srcdir)/LinearSolvers/TSFIterativeSolver.hpp \
+	$(srcdir)/LinearSolvers/TSFKrylovSolver.hpp \
+	$(srcdir)/LinearSolvers/TSFLinearSolver.hpp \
+	$(srcdir)/LinearSolvers/TSFLinearSolverBase.hpp \
+	$(srcdir)/LinearSolvers/TSFSolverState.hpp 
+
+LINEARSOLVERS = 
 
 #
 # Read macros that are common to building source and tests. We define these
@@ -118,6 +128,7 @@ TSF_EXTENDED_H = \
 	$(UTILS_H) \
 	$(VECTORS_H) \
 	$(OPERATORS_H) \
+	$(LINEARSOLVERS_H) \
 	$(CONCRETE_H) 
 
 #np# replace new_package with the name of the package being autotool'ed here
@@ -125,6 +136,7 @@ libTSFExtended_a_SOURCES = \
 	$(UTILS) \
 	$(VECTORS) \
 	$(OPERATORS) \
+	$(LINEARSOLVERS) \
 	$(CONCRETE) 
 
 
