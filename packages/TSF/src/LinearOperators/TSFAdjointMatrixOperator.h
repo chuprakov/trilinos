@@ -31,7 +31,7 @@ namespace TSF
 		void zero();
 				
 	private:
-		const TSFSmartPtr<TSFMatrixOperator>& mat_op_;
+		const TSFSmartPtr<TSFMatrixOperator>  mat_op_;
 		TSFAdjointMatrixOperator(); // not defined and not to be called!
 
 	};

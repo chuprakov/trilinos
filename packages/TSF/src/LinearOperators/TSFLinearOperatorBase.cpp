@@ -15,11 +15,13 @@
 using namespace TSF;
 using std::ostream;
 
+/* Do not define this!!!!!!!!!!!!!!!!
 TSFLinearOperatorBase::TSFLinearOperatorBase()
 	: domain_(), range_()
 {
 	;
 }
+*/
 
 TSFLinearOperatorBase::TSFLinearOperatorBase(const TSFVectorSpace& domain,
 																						 const TSFVectorSpace& range)

@@ -10,13 +10,16 @@
 using namespace TSF;
 
 TSFMultiVectorOperator::TSFMultiVectorOperator()
-	: TSFLinearOperatorBase(), isVertical_(false), vectors_(0)
+	:TSFLinearOperatorBase(TSFVectorSpace(),TSFVectorSpace()),
+	 isVertical_(false),
+	 vectors_(0)
 {}
 
 TSFMultiVectorOperator::TSFMultiVectorOperator(const TSFVectorSpace& space,
 																							 int numVectors,
 																							 bool isVertical)
-	: TSFLinearOperatorBase(), isVertical_(isVertical), vectors_(numVectors)
+	:TSFLinearOperatorBase(TSFVectorSpace(),TSFVectorSpace()),
+	 isVertical_(isVertical), vectors_(numVectors)
 {
 	if (isVertical_)
 		{

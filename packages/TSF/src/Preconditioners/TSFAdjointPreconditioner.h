@@ -18,9 +18,9 @@ namespace TSF
 		///
 		TSFAdjointPreconditioner(const TSFPreconditioner& prec);
 		///
-		TSFLinearOperator left();
+		TSFLinearOperator left() const;
 		///
-		TSFLinearOperator right();
+		TSFLinearOperator right() const;
 		///
 		bool isTwoSided() const;
 		///

@@ -136,7 +136,11 @@ bool TSFAdjointOperator::isMatrixOperator() const
 const TSFSmartPtr<const TSFMatrixOperator>
 TSFAdjointOperator::getMatrix() const
 {
-	if(op_.isMatrixOperator())
-		return new TSFAdjointMatrixOperator(tsf_const_cast<TSFMatrixOperator>(op_.getMatrix()));
-	return TSFSmartPtr<const TSFMatrixOperator>();
+	TSFSmartPtr<const TSFAdjointMatrixOperator> adj_mat_op;
+	if(op_.isMatrixOperator()) {
+		TSFSmartPtr<TSFMatrixOperator> mat_op;
+		mat_op = tsf_const_cast<TSFMatrixOperator>(op_.getMatrix());
+		adj_mat_op = new TSFAdjointMatrixOperator(mat_op);
+	}
+	return tsf_implicit_cast<const TSFMatrixOperator>(adj_mat_op);
 }

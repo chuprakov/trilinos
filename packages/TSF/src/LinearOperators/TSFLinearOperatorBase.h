@@ -19,8 +19,6 @@ namespace TSF
 	class TSFLinearOperatorBase
 		{
 		public:
-			/** Empty ctor, sets domain and range to empty spaces */
-			TSFLinearOperatorBase();
 			/** Ctor sets domain and range spaces to specified values */
 			TSFLinearOperatorBase(const TSFVectorSpace& domain,
 														const TSFVectorSpace& range);
@@ -121,6 +119,9 @@ namespace TSF
 		protected:
 			TSFVectorSpace domain_;
 			TSFVectorSpace range_;
+		private:
+			TSFLinearOperatorBase(); // Not defined and not to be called
+
 		};
 }
 

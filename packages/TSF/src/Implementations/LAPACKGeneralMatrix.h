@@ -22,7 +22,7 @@ namespace TSF
 													const TSFVectorSpace& range);
 
             /** Empty Ctor */
-            LAPACKGeneralMatrix(){;}
+            LAPACKGeneralMatrix() : TSFMatrixOperator(TSFVectorSpace(),TSFVectorSpace()) {;}
 			/** the usual virtual dtor */
 			virtual ~LAPACKGeneralMatrix(){;}
 

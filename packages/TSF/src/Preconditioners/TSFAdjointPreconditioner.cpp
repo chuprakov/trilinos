@@ -7,12 +7,12 @@ TSFAdjointPreconditioner::TSFAdjointPreconditioner(const TSFPreconditioner& prec
 	:prec_(prec)
 {}
 
-TSFLinearOperator TSFAdjointPreconditioner::left()
+TSFLinearOperator TSFAdjointPreconditioner::left() const
 {
 	return prec_.right().adjoint();
 }
 
-TSFLinearOperator TSFAdjointPreconditioner::right()
+TSFLinearOperator TSFAdjointPreconditioner::right() const
 {
 	return prec_.left().adjoint();
 }

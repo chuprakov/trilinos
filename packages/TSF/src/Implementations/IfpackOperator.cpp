@@ -65,6 +65,30 @@ void IfpackOperator::apply(const TSFVector& argument,
 		}
 }
 
+void IfpackOperator::applyAdjoint(const TSFVector& argument, 
+													 TSFVector& result) const 
+{
+
+	// get petra vectors from the abstract arguments
+	const Epetra_Vector& in = PetraVector::getLocalValues(argument);
+	Epetra_Vector& out = PetraVector::getLocalValues(result);
+
+	// ifpack's solve is logically const but declared non-const since 
+	// internal data changes. So, do a const_cast.
+	Ifpack_CrsRiluk* p = const_cast<Ifpack_CrsRiluk*>(precond_);
+
+	int ierr;
+	{
+		TSFTimeMonitor t(opTimer_);
+		ierr = p->Solve((int) true, in, out);
+	}
+	if (ierr < 0)
+		{
+			TSFError::raise("IfpackOperator::apply detected ierr=" 
+											+ TSFUtils::toString(ierr));
+		}
+}
+
 void IfpackOperator::collectTimings(TSFArray<TSFTimer>& timers)
 {
 	timers.append(opTimer_);

@@ -1,10 +1,15 @@
+#include <iostream>
+
 #include "TSFAdjointMatrixOperator.h"
 #include "TSFAdjointPreconditioner.h"
 
 namespace TSF {
 
 TSFAdjointMatrixOperator::TSFAdjointMatrixOperator( const TSFSmartPtr<TSFMatrixOperator>& mat_op )
-	:mat_op_(mat_op_)
+	:TSFMatrixOperator(
+		mat_op.get() ? mat_op->range()  : TSFVectorSpace(),
+		mat_op.get() ? mat_op->domain() : TSFVectorSpace()),
+	mat_op_(mat_op)
 {}
 
 void TSFAdjointMatrixOperator::getILUKPreconditioner(

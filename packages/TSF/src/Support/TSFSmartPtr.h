@@ -1,6 +1,8 @@
 #ifndef TSFSMARTPTR_H
 #define TSFSMARTPTR_H
 
+#include <iostream>
+
 #include "TSFConfig.h"
 #include <string>
 
@@ -10,7 +12,8 @@
 #elif defined (SOLARIS)
 #define cond_inline 
 #else
-#define cond_inline inline
+//#define cond_inline inline
+#define cond_inline
 #endif
 
 namespace TSF
@@ -60,6 +63,12 @@ namespace TSF
 				return TSFSmartPtr<T2>(const_cast<T2*>(ptr.ptr()),ptr.refCount(),ptr.hasOwnership());
 			}
 	
+	template<class T2, class T1>
+		TSFSmartPtr<T2> tsf_implicit_cast(const TSFSmartPtr<T1>& ptr)
+			{
+				return TSFSmartPtr<T2>(ptr.ptr(),ptr.refCount(),ptr.hasOwnership());
+			}
+
 	template <class T> cond_inline
 		TSFSmartPtr<T>::TSFSmartPtr(T* ptr, bool hasOwnership)
 		: ptr_(ptr),
@@ -81,7 +90,7 @@ namespace TSF
 		hasOwnership_(hasOwnership)
 		{
 			if(refCount_)
-				*refCount_++;
+				++(*refCount_);
 		}
 
 	template <class T> cond_inline

@@ -44,6 +44,9 @@ namespace TSF
 			virtual void apply(const TSFVector& in, 
 												 TSFVector& out) const ;
 
+			virtual void applyAdjoint(const TSFVector& in,
+																TSFVector& out) const ;
+
 				/** append my timings to a list of timings */
 			static void collectTimings(TSFArray<TSFTimer>& timers) ;
 
