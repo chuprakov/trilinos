@@ -235,7 +235,9 @@ int TSF_MatrixAdd(const TSFLinearOperator& B, const TSFLinearOperator& Bt,
 
 
   Epetra_CrsMatrix  *Bt_crs = PetraMatrix::getConcrete(Bt);
+  cerr << "got here in matrix add " << endl;
   Epetra_CrsMatrix *result_crs = Epetra_MatrixAdd(B_crs,Bt_crs,scalar);
+
 
   PetraMatrix* result_petra = new PetraMatrix(B.range(), Bt.domain());
   result_petra->setPetraMatrix(result_crs,true);  // insert the epetra matrix into our TSF
@@ -318,10 +320,11 @@ int ML_TSF_defaults(TSF::TSFLinearSolver &FSolver,
    else
      solver_data->azOptions.put(AZ_solver, AZ_gmres);
 
-   solver_data->azOptions.put(AZ_kspace, 50);
+   solver_data->azOptions.put(AZ_kspace, 100);
    solver_data->azOptions.put(AZ_conv, AZ_r0);
    solver_data->azParams.put(AZ_tol, 1e-8);
-   solver_data->azOptions.put(AZ_max_iter, 50);
+   solver_data->azOptions.put(AZ_max_iter, 200);
+   solver_data->azOptions.put(AZ_output, 1);
    TSFSmartPtr<Epetra_Operator> Smart_MLprec = TSFSmartPtr<Epetra_Operator>(MLop, true);
 
    FSolver = new AZTECSolver(solver_data->azOptions, solver_data->azParams, Smart_MLprec);

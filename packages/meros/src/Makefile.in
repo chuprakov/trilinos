@@ -105,26 +105,37 @@ install_sh = @install_sh@
 # --with-xyz or --without-xyz)
 #
 CORE_H = \
-          $(srcdir)/Aztec2TSF.h  $(srcdir)/ReadPetra.h  \
+          $(srcdir)/Aztec2TSF.h                         \
+					$(srcdir)/ReadPetra.h                         \
           $(srcdir)/TSFLinearOperator2EpetraRowMatrix.h \
           $(srcdir)/KayLoghinRightOperatorSource.h      \
+          $(srcdir)/DiagRightOperatorSource.h           \
+          $(srcdir)/BJBRightOperatorSource.h            \
           $(srcdir)/RightBlockNSOperatorSource.h        \
           $(srcdir)/Vbr2Petra.h                         \
           $(srcdir)/KayLoghinSchurFactory.h             \
+          $(srcdir)/DiagSchurFactory.h                  \
+          $(srcdir)/BJBSchurFactory.h                   \
           $(srcdir)/SchurFactoryBase.h                  \
-          $(srcdir)/NSBlockPreconditionerFactory.h  $(srcdir)/SchurFactory.h
+          $(srcdir)/NSBlockPreconditionerFactory.h      \
+					$(srcdir)/SchurFactory.h                      
 
 
 CORE = \
-          $(srcdir)/Aztec2TSF.cpp  $(srcdir)/ReadPetra.cpp  \
+          $(srcdir)/Aztec2TSF.cpp                         \
+					$(srcdir)/ReadPetra.cpp                         \
           $(srcdir)/TSFLinearOperator2EpetraRowMatrix.cpp \
           $(srcdir)/KayLoghinRightOperatorSource.cpp      \
+          $(srcdir)/DiagRightOperatorSource.cpp           \
+          $(srcdir)/BJBRightOperatorSource.cpp            \
           $(srcdir)/RightBlockNSOperatorSource.cpp        \
           $(srcdir)/Vbr2Petra.cpp                         \
           $(srcdir)/KayLoghinSchurFactory.cpp             \
+          $(srcdir)/DiagSchurFactory.cpp                  \
+          $(srcdir)/BJBSchurFactory.cpp                   \
           $(srcdir)/SchurFactoryBase.cpp                  \
           $(srcdir)/NSBlockPreconditionerFactory.cpp      \
-          $(srcdir)/SchurFactory.cpp
+          $(srcdir)/SchurFactory.cpp                      
 
 
 UTIL_H = 
@@ -286,8 +297,11 @@ libmeros_a_DEPENDENCIES =
 am__objects_1 = Aztec2TSF.$(OBJEXT) ReadPetra.$(OBJEXT) \
 	TSFLinearOperator2EpetraRowMatrix.$(OBJEXT) \
 	KayLoghinRightOperatorSource.$(OBJEXT) \
+	DiagRightOperatorSource.$(OBJEXT) \
+	BJBRightOperatorSource.$(OBJEXT) \
 	RightBlockNSOperatorSource.$(OBJEXT) Vbr2Petra.$(OBJEXT) \
-	KayLoghinSchurFactory.$(OBJEXT) SchurFactoryBase.$(OBJEXT) \
+	KayLoghinSchurFactory.$(OBJEXT) DiagSchurFactory.$(OBJEXT) \
+	BJBSchurFactory.$(OBJEXT) SchurFactoryBase.$(OBJEXT) \
 	NSBlockPreconditionerFactory.$(OBJEXT) SchurFactory.$(OBJEXT)
 am__objects_2 =
 am__objects_3 =
@@ -310,6 +324,10 @@ LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Aztec2TSF.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/BJBRightOperatorSource.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/BJBSchurFactory.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DiagRightOperatorSource.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/DiagSchurFactory.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/KayLoghinRightOperatorSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/KayLoghinSchurFactory.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/NSBlockPreconditionerFactory.Po \
@@ -397,10 +415,14 @@ TSFLinearOperator2EpetraRowMatrix.$(OBJEXT): \
 	$(srcdir)/TSFLinearOperator2EpetraRowMatrix.cpp
 KayLoghinRightOperatorSource.$(OBJEXT): \
 	$(srcdir)/KayLoghinRightOperatorSource.cpp
+DiagRightOperatorSource.$(OBJEXT): $(srcdir)/DiagRightOperatorSource.cpp
+BJBRightOperatorSource.$(OBJEXT): $(srcdir)/BJBRightOperatorSource.cpp
 RightBlockNSOperatorSource.$(OBJEXT): \
 	$(srcdir)/RightBlockNSOperatorSource.cpp
 Vbr2Petra.$(OBJEXT): $(srcdir)/Vbr2Petra.cpp
 KayLoghinSchurFactory.$(OBJEXT): $(srcdir)/KayLoghinSchurFactory.cpp
+DiagSchurFactory.$(OBJEXT): $(srcdir)/DiagSchurFactory.cpp
+BJBSchurFactory.$(OBJEXT): $(srcdir)/BJBSchurFactory.cpp
 SchurFactoryBase.$(OBJEXT): $(srcdir)/SchurFactoryBase.cpp
 NSBlockPreconditionerFactory.$(OBJEXT): \
 	$(srcdir)/NSBlockPreconditionerFactory.cpp
@@ -417,6 +439,10 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Aztec2TSF.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BJBRightOperatorSource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BJBSchurFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DiagRightOperatorSource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DiagSchurFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/KayLoghinRightOperatorSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/KayLoghinSchurFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/NSBlockPreconditionerFactory.Po@am__quote@
@@ -490,6 +516,30 @@ KayLoghinRightOperatorSource.obj: $(srcdir)/KayLoghinRightOperatorSource.cpp
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o KayLoghinRightOperatorSource.obj `cygpath -w $(srcdir)/KayLoghinRightOperatorSource.cpp`
 
+DiagRightOperatorSource.o: $(srcdir)/DiagRightOperatorSource.cpp
+@AMDEP_TRUE@	source='$(srcdir)/DiagRightOperatorSource.cpp' object='DiagRightOperatorSource.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/DiagRightOperatorSource.Po' tmpdepfile='$(DEPDIR)/DiagRightOperatorSource.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DiagRightOperatorSource.o `test -f '$(srcdir)/DiagRightOperatorSource.cpp' || echo '$(srcdir)/'`$(srcdir)/DiagRightOperatorSource.cpp
+
+DiagRightOperatorSource.obj: $(srcdir)/DiagRightOperatorSource.cpp
+@AMDEP_TRUE@	source='$(srcdir)/DiagRightOperatorSource.cpp' object='DiagRightOperatorSource.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/DiagRightOperatorSource.Po' tmpdepfile='$(DEPDIR)/DiagRightOperatorSource.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DiagRightOperatorSource.obj `cygpath -w $(srcdir)/DiagRightOperatorSource.cpp`
+
+BJBRightOperatorSource.o: $(srcdir)/BJBRightOperatorSource.cpp
+@AMDEP_TRUE@	source='$(srcdir)/BJBRightOperatorSource.cpp' object='BJBRightOperatorSource.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/BJBRightOperatorSource.Po' tmpdepfile='$(DEPDIR)/BJBRightOperatorSource.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o BJBRightOperatorSource.o `test -f '$(srcdir)/BJBRightOperatorSource.cpp' || echo '$(srcdir)/'`$(srcdir)/BJBRightOperatorSource.cpp
+
+BJBRightOperatorSource.obj: $(srcdir)/BJBRightOperatorSource.cpp
+@AMDEP_TRUE@	source='$(srcdir)/BJBRightOperatorSource.cpp' object='BJBRightOperatorSource.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/BJBRightOperatorSource.Po' tmpdepfile='$(DEPDIR)/BJBRightOperatorSource.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o BJBRightOperatorSource.obj `cygpath -w $(srcdir)/BJBRightOperatorSource.cpp`
+
 RightBlockNSOperatorSource.o: $(srcdir)/RightBlockNSOperatorSource.cpp
 @AMDEP_TRUE@	source='$(srcdir)/RightBlockNSOperatorSource.cpp' object='RightBlockNSOperatorSource.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@	depfile='$(DEPDIR)/RightBlockNSOperatorSource.Po' tmpdepfile='$(DEPDIR)/RightBlockNSOperatorSource.TPo' @AMDEPBACKSLASH@
@@ -525,6 +575,30 @@ KayLoghinSchurFactory.obj: $(srcdir)/KayLoghinSchurFactory.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/KayLoghinSchurFactory.Po' tmpdepfile='$(DEPDIR)/KayLoghinSchurFactory.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o KayLoghinSchurFactory.obj `cygpath -w $(srcdir)/KayLoghinSchurFactory.cpp`
+
+DiagSchurFactory.o: $(srcdir)/DiagSchurFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/DiagSchurFactory.cpp' object='DiagSchurFactory.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/DiagSchurFactory.Po' tmpdepfile='$(DEPDIR)/DiagSchurFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DiagSchurFactory.o `test -f '$(srcdir)/DiagSchurFactory.cpp' || echo '$(srcdir)/'`$(srcdir)/DiagSchurFactory.cpp
+
+DiagSchurFactory.obj: $(srcdir)/DiagSchurFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/DiagSchurFactory.cpp' object='DiagSchurFactory.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/DiagSchurFactory.Po' tmpdepfile='$(DEPDIR)/DiagSchurFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o DiagSchurFactory.obj `cygpath -w $(srcdir)/DiagSchurFactory.cpp`
+
+BJBSchurFactory.o: $(srcdir)/BJBSchurFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/BJBSchurFactory.cpp' object='BJBSchurFactory.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/BJBSchurFactory.Po' tmpdepfile='$(DEPDIR)/BJBSchurFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o BJBSchurFactory.o `test -f '$(srcdir)/BJBSchurFactory.cpp' || echo '$(srcdir)/'`$(srcdir)/BJBSchurFactory.cpp
+
+BJBSchurFactory.obj: $(srcdir)/BJBSchurFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/BJBSchurFactory.cpp' object='BJBSchurFactory.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/BJBSchurFactory.Po' tmpdepfile='$(DEPDIR)/BJBSchurFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o BJBSchurFactory.obj `cygpath -w $(srcdir)/BJBSchurFactory.cpp`
 
 SchurFactoryBase.o: $(srcdir)/SchurFactoryBase.cpp
 @AMDEP_TRUE@	source='$(srcdir)/SchurFactoryBase.cpp' object='SchurFactoryBase.o' libtool=no @AMDEPBACKSLASH@

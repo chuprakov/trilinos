@@ -17,25 +17,36 @@
 # --with-xyz or --without-xyz)
 #
 CORE_H = \
-          $(srcdir)/Aztec2TSF.h  $(srcdir)/ReadPetra.h  \
+          $(srcdir)/Aztec2TSF.h                         \
+					$(srcdir)/ReadPetra.h                         \
           $(srcdir)/TSFLinearOperator2EpetraRowMatrix.h \
           $(srcdir)/KayLoghinRightOperatorSource.h      \
+          $(srcdir)/DiagRightOperatorSource.h           \
+          $(srcdir)/BJBRightOperatorSource.h            \
           $(srcdir)/RightBlockNSOperatorSource.h        \
           $(srcdir)/Vbr2Petra.h                         \
           $(srcdir)/KayLoghinSchurFactory.h             \
+          $(srcdir)/DiagSchurFactory.h                  \
+          $(srcdir)/BJBSchurFactory.h                   \
           $(srcdir)/SchurFactoryBase.h                  \
-          $(srcdir)/NSBlockPreconditionerFactory.h  $(srcdir)/SchurFactory.h
+          $(srcdir)/NSBlockPreconditionerFactory.h      \
+					$(srcdir)/SchurFactory.h                      
 
 CORE = \
-          $(srcdir)/Aztec2TSF.cpp  $(srcdir)/ReadPetra.cpp  \
+          $(srcdir)/Aztec2TSF.cpp                         \
+					$(srcdir)/ReadPetra.cpp                         \
           $(srcdir)/TSFLinearOperator2EpetraRowMatrix.cpp \
           $(srcdir)/KayLoghinRightOperatorSource.cpp      \
+          $(srcdir)/DiagRightOperatorSource.cpp           \
+          $(srcdir)/BJBRightOperatorSource.cpp            \
           $(srcdir)/RightBlockNSOperatorSource.cpp        \
           $(srcdir)/Vbr2Petra.cpp                         \
           $(srcdir)/KayLoghinSchurFactory.cpp             \
+          $(srcdir)/DiagSchurFactory.cpp                  \
+          $(srcdir)/BJBSchurFactory.cpp                   \
           $(srcdir)/SchurFactoryBase.cpp                  \
           $(srcdir)/NSBlockPreconditionerFactory.cpp      \
-          $(srcdir)/SchurFactory.cpp
+          $(srcdir)/SchurFactory.cpp                      
 
 UTIL_H = 
 

@@ -1,6 +1,6 @@
 
-/* Copyright (2001) Sandia Corportation. Under the terms of Contract 
- * DE-AC04-94AL85000, there is a non-exclusive license for use of this 
+/* Copyright (2001) Sandia Corportation. Under the terms of Contract
+ * DE-AC04-94AL85000, there is a non-exclusive license for use of this
  * work by or on behalf of the U.S. Government.  Export of this program
  * may require a license from the United States Government. */
 
@@ -14,7 +14,7 @@
  * worldwide license in this data to reproduce, prepare derivative works,
  * distribute copies to the public, perform publicly and display
  * publicly, and to permit others to do so.
- * 
+ *
  * NEITHER THE UNITED STATES GOVERNMENT, NOR THE UNITED STATES DEPARTMENT
  * OF ENERGY, NOR SANDIA CORPORATION, NOR ANY OF THEIR EMPLOYEES, MAKES
  * ANY WARRANTY, EXPRESS OR IMPLIED, OR ASSUMES ANY LEGAL LIABILITY OR
@@ -46,23 +46,23 @@
 #include "TSFHashtable.h"
 #include "ml_include.h"
 
-extern int Aztec2TSF(   AZ_MATRIX * Amat, 
-			Epetra_Comm * & junkcomm,
-			Epetra_BlockMap * & VbrMap,
-			Epetra_RowMatrix * &jacobian,
-			double * x,            Epetra_Vector ** tmpSolution,
-			double * resid_vector, Epetra_Vector ** residual,
-			Epetra_Map **);
+extern int Aztec2TSF(   AZ_MATRIX * Amat,
+                        Epetra_Comm * & junkcomm,
+                        Epetra_BlockMap * & VbrMap,
+                        Epetra_RowMatrix * &jacobian,
+                        double * x,            Epetra_Vector ** tmpSolution,
+                        double * resid_vector, Epetra_Vector ** residual,
+                        Epetra_Map **);
 
-extern Epetra_RowMatrix *Aztec2TSF(   AZ_MATRIX * Amat, 
-			Epetra_Comm * & junkcomm,
-			Epetra_BlockMap * & VbrMap,
-			Epetra_Map **);
+extern Epetra_RowMatrix *Aztec2TSF(   AZ_MATRIX * Amat,
+                                      Epetra_Comm * & junkcomm,
+                                      Epetra_BlockMap * & VbrMap,
+                                      Epetra_Map **);
 
 extern int TSF_MatrixMult(const TSF::TSFLinearOperator& B,const TSF::TSFLinearOperator& Bt,
-			  TSF::TSFLinearOperator& result);
-extern int TSF_MatrixAdd(const TSF::TSFLinearOperator& B,const TSF::TSFLinearOperator& Bt, double scalar, 
-			  TSF::TSFLinearOperator& result);
+                          TSF::TSFLinearOperator& result);
+extern int TSF_MatrixAdd(const TSF::TSFLinearOperator& B,const TSF::TSFLinearOperator& Bt, double scalar,
+                         TSF::TSFLinearOperator& result);
 
 struct ML_TSF_data {
   TSF::TSFHashtable<int, int>  azOptions;
@@ -73,12 +73,12 @@ struct ML_TSF_data {
 };
 typedef struct ML_TSF_data ML_solverData;
 
-  
+
 
 extern int ML_TSF_defaults(TSF::TSFLinearSolver &FSolver,
-			   ML_solverData *,
-			   bool symmetric,
-			   Epetra_RowMatrix *);
+                           ML_solverData *,
+                           bool symmetric,
+                           Epetra_RowMatrix *);
 
 
 
