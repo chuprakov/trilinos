@@ -95,6 +95,10 @@ void perm_cols(const IVector& col_perm, GenMatrixSlice* gms);
 /// Permute a GenMatrixSlices rows and columns
 void perm_rows_cols(const IVector& row_perm, const IVector& col_perm, GenMatrixSlice* gms);
 
+#ifdef _DEBUG
+extern bool PermVecMat_print;
+#endif
+
 } // end namespace LinAlgPack
 
 //@}

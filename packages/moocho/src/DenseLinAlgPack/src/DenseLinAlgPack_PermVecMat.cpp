@@ -13,9 +13,16 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "../include/PermVecMat.h"
-#include "../include/GenMatrixClass.h"
-#include "../include/IVector.h"
+#include "LinAlgPack/include/PermVecMat.h"
+#include "LinAlgPack/include/GenMatrixClass.h"
+#include "LinAlgPack/include/IVector.h"
+
+#ifdef _DEBUG   // Debug only!
+bool LinAlgPack::PermVecMat_print = false;
+#include <iostream>
+#include "LinAlgPack/include/PermOut.h"
+#include "LinAlgPack/include/VectorOut.h"
+#endif
 
 // Local assert function
 namespace {
@@ -27,7 +34,7 @@ inline void i_assert_perm_size(size_t size1, size_t size2)
 #endif
 }
 
-}
+} // end namespace
 
 void LinAlgPack::identity_perm(IVector* perm) {
 	if(!perm->size())
@@ -76,7 +83,16 @@ void LinAlgPack::inv_perm_ele(const VectorSlice& y, const IVector& perm, VectorS
 {
 	i_assert_perm_size(y.dim(),perm.size());
 	i_assert_perm_size(x->dim(),perm.size());
-
+#ifdef _DEBUG
+	if( PermVecMat_print ) {
+		std::cerr
+			<< "enter inv_perm_ele(y,perm,x):\n"
+			<< "before:\n"
+			<< "y =\n" << y
+			<< "perm =\n" << perm
+			<< "x =\n" << *x;
+	}
+#endif	
 	VectorSlice::const_iterator
 		y_itr		= y.begin(),
 		y_end		= y.end();
@@ -84,6 +100,15 @@ void LinAlgPack::inv_perm_ele(const VectorSlice& y, const IVector& perm, VectorS
 		perm_itr	= perm.begin();
 	while(y_itr != y_end)
 		(*x)(*perm_itr++) = *y_itr++;
+#ifdef _DEBUG
+	if( PermVecMat_print ) {
+		std::cerr
+			<< "inv_perm_ele(y,perm,x):\n"
+			<< "after:\n"
+			<< "x =\n" << *x
+			<< "exit inv_perm_ele(...) ...\n";
+	}
+#endif	
 }
 
 void LinAlgPack::perm_rows(const IVector& row_perm, GenMatrixSlice* gms)
