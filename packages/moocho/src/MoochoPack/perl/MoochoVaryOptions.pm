@@ -807,8 +807,8 @@ sub _add_summary_line {
   my $ngrad     = '-';
   my $CPU       = 0;
   my $fx        = 0;
-  my $nrm_cx    = 0;
-  my $kkt_error = 0;
+  my $nrm_cx    = -1;
+  my $kkt_error = -1;
   my $nact      = '-';
   my $nBC       = '-';
   my $nQN       = '-';

@@ -116,27 +116,35 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 
 	assert_print_nan_inf( step_err,"max(d(i)/max(1,x(i)),i=1...n)",true,&out);
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\nscale_kkt_factor = " << scale_kkt_factor
-			<< "\nopt_scale_factor = " << opt_scale_factor
-			<< "\nopt_kkt_err_k    = " << opt_kkt_err_k
-			<< "\nfeas_kkt_err_k   = " << feas_kkt_err_k
-			<< "\nstep_err         = " << step_err << std::endl;
-	}
-
 	const value_type
 		opt_tol		= algo.algo_cntr().opt_tol(),
 		feas_tol	= algo.algo_cntr().feas_tol(),
 		step_tol	= algo.algo_cntr().step_tol();
 
-	if( opt_kkt_err_k < opt_tol && feas_kkt_err_k < feas_tol && step_err < step_tol ) {
-		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ) {
-			out	<< "\nFound the solution!!!!!! (k = " << algo.state().k() << ")"
-				<< "\nopt_err/scale_kkt_factor   = " << opt_err/scale_kkt_factor	<< " < opt_tol = "	<< opt_tol
-				<< "\nfeas_err/scale_kkt_factor  = " << feas_err/scale_kkt_factor	<< " < feas_tol = "	<< feas_tol
-				<< "\nstep_err                   = " << step_err					<< " < step_tol = "	<< step_tol
-					<< std::endl;
-		}
+	const bool found_solution = opt_kkt_err_k < opt_tol && feas_kkt_err_k < feas_tol && step_err < step_tol;
+
+	if( int(olevel) >= int(PRINT_ALGORITHM_STEPS) || (int(olevel) >= int(PRINT_BASIC_ALGORITHM_INFO) && found_solution) )
+	{
+		out	<< "\nscale_kkt_factor = " << scale_kkt_factor
+			<< " (scale_kkt_error_by = " << (scale_kkt_error_by()==SCALE_BY_ONE ? "SCALE_BY_ONE"
+											 : (scale_kkt_error_by()==SCALE_BY_NORM_INF_X ? "SCALE_BY_NORM_INF_X"
+												: "SCALE_BY_NORM_2_X" ) ) << ")"
+			<< "\nopt_scale_factor = " << opt_scale_factor
+			<< " (scale_opt_error_by_Gf = " << (scale_opt_error_by_Gf()?"true":"false") << ")"
+			<< "\nopt_kkt_err_k    = " << opt_kkt_err_k << ( opt_kkt_err_k < opt_tol ? " < " : " > " )
+			<< "opt_tol = " << opt_tol
+			<< "\nfeas_kkt_err_k   = " << feas_kkt_err_k << ( feas_kkt_err_k < feas_tol ? " < " : " > " )
+			<< "feas_tol = " << feas_tol
+			<< "\nstep_err         = " << step_err << ( step_err < step_tol ? " < " : " > " )
+			<< "step_tol = " << step_tol
+			<< std::endl;
+		if( found_solution )
+			out	<< "\nJackpot!  Found the solution!!!!!! (k = " << algo.state().k() << ")\n";
+		else
+			out	<< "\nHave not found the solution yet, have to keep going :-(\n";
+	}
+
+	if( found_solution ) {
 		nlp.report_final_solution(
 			  s.x().get_k(0)()
 			, s.lambda().updated_k(0)	? &s.lambda().get_k(0)()	: 0

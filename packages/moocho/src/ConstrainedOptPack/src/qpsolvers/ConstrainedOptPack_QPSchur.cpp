@@ -38,7 +38,9 @@ namespace {
 
 // Some local helper functions.
 
+//
 // Print a bnd as a string
+//
 inline
 const char* bnd_str( ConstrainedOptimizationPack::EBounds bnd ) {
 	switch(bnd) {
@@ -55,13 +57,17 @@ const char* bnd_str( ConstrainedOptimizationPack::EBounds bnd ) {
 	return 0;
 }
 
+//
 // print a bool
+//
 inline
 const char* bool_str( bool b ) {
 	return b ? "true" : "false";
 }
 
+//
 // Deincrement all indices less that k_remove
+//
 void deincrement_indices(
 	LinAlgPack::size_type k_remove
 	,std::vector<LinAlgPack::size_type> *indice_vector
@@ -77,7 +83,9 @@ void deincrement_indices(
 	}
 }
 
+//
 // Insert the element (r_v,c_v) into r[] and c[] sorted by r[]
+//
 void insert_pair_sorted(
 	LinAlgPack::size_type  r_v
 	,LinAlgPack::size_type c_v
@@ -108,7 +116,9 @@ void insert_pair_sorted(
 	(*c)[p] = c_v;
 }
 	
+//
 // z_hat = inv(S_hat) * ( d_hat - U_hat'*vo )
+//
 void calc_z( const SparseLinAlgPack::MatrixFactorized& S_hat
 	, const LinAlgPack::VectorSlice& d_hat, const SparseLinAlgPack::MatrixWithOp& U_hat
 	, const LinAlgPack::VectorSlice& vo, LinAlgPack::VectorSlice* z_hat )
@@ -123,7 +133,9 @@ void calc_z( const SparseLinAlgPack::MatrixFactorized& S_hat
 	V_InvMtV( z_hat, S_hat, BLAS_Cpp::no_trans, tmp() );	
 }
 
+//
 // v = inv(Ko) * ( fo - U_hat * z_hat )
+//
 void calc_v( const SparseLinAlgPack::MatrixFactorized& Ko
 	, const LinAlgPack::VectorSlice& fo, const SparseLinAlgPack::MatrixWithOp& U_hat
 	, const LinAlgPack::VectorSlice& z_hat, LinAlgPack::VectorSlice* v )
@@ -138,11 +150,13 @@ void calc_v( const SparseLinAlgPack::MatrixFactorized& Ko
 	V_InvMtV( v, Ko, BLAS_Cpp::no_trans, tmp() );	
 }
 
+//
 // mu_D_hat =
 // 		- Q_XD_hat' * g
 // 		- Q_XD_hat' * G * x
 // 		- Q_XD_hat' * A * v(n_R+1:n_R+m)
 // 		- Q_XD_hat' * A_bar * P_plus_hat * z_hat
+//
 void calc_mu_D(
 	  const ConstrainedOptimizationPack::QPSchur::ActiveSet& act_set
 	, const LinAlgPack::VectorSlice& x
@@ -187,11 +201,13 @@ void calc_mu_D(
 	}
 }
 
+//
 // p_mu_D_hat =
 // 		- Q_XD_hat' * G * Q_R * p_v(1:n_R)
 // 		- Q_XD_hat' * G * P_XF_hat * p_z_hat
 // 		- Q_XD_hat' * A * p_v(n_R+1:n_R+m)
 // 		- Q_XD_hat' * A_bar * (P_plus_hat * p_z_hat + e(ja))
+//
 void calc_p_mu_D(
 	const ConstrainedOptimizationPack::QPSchur::ActiveSet& act_set
 	, const LinAlgPack::VectorSlice& p_v
@@ -245,6 +261,92 @@ void calc_p_mu_D(
 		Vp_StPtMtV( p_mu_D, -1.0, Q_XD_hat, trans
 			, constraints.A_bar(), no_trans, p_lambda_bar() );
 	}
+}
+
+//
+// Correct a nearly degenerate lagrange multiplier
+//
+// If < 0 is returned it means that the multiplier could not
+// be corrected and this should be nonsidered an error.  In this
+// case the error output is sent to out.
+//
+// If 0 is returned then the multiplier was near degenerate and
+// was corrected.  In this case a warning message is printed to
+// out.
+//
+// If > 0 is returned then the multipliers sign
+// is just fine and no corrections were needed (no output).
+//
+int correct_dual_infeas(
+	const LinAlgPack::size_type                                  j
+	,const ConstrainedOptimizationPack::EBounds                  bnd_j
+	,const LinAlgPack::value_type                                t_P              // > 0 full step length
+	,const LinAlgPack::value_type                                scale            // > 0 scaling value
+	,const LinAlgPack::value_type                                dual_infeas_tol
+	,const LinAlgPack::value_type                                degen_mult_val
+	,std::ostream                                                *out
+	,const ConstrainedOptimizationPack::QPSchur::EOutputLevel    olevel
+	,LinAlgPack::value_type                                      *nu_j
+	,LinAlgPack::value_type                                      *p_nu_j    // Can be NULL
+	,LinAlgPack::value_type                                      *nu_j_plus // Can be NULL
+	)
+{
+	typedef LinAlgPack::value_type value_type;
+	namespace COP = ConstrainedOptimizationPack;
+
+	value_type nu_j_max = scale * (*nu_j) * (bnd_j == COP::UPPER ? +1.0 : -1.0);
+	if( nu_j_max > dual_infeas_tol || bnd_j == COP::EQUALITY )
+		return +1; // No correction needed
+	// See if we need to correct the multiplier
+	nu_j_max = ::fabs(nu_j_max);
+	if( nu_j_max < dual_infeas_tol ) {
+		// This is a near degenerate multiplier so adjust it
+		value_type degen_val = degen_mult_val * ( bnd_j == COP::UPPER ? +1.0 : -1.0 );
+		if( (int)olevel >= (int)COP::QPSchur::OUTPUT_BASIC_INFO ) {
+			*out
+				<< "\nWarning, the constriant a(" << j << ") currently at its "
+				<< (bnd_j == COP::UPPER ? "UPPER" : "LOWER") << " bound"
+				<< " has the wrong Lagrange multiplier value but\n"
+				<< "scale*|nu("<<j<<")| = " << scale << " * |" << (*nu_j)
+				<< "| = " << nu_j_max  << " < dual_infeas_tol = " << dual_infeas_tol
+				<< "\nTherefore, this is considered a degenerate constraint and the "
+				<< "multiplier is set to " << degen_val << std::endl;
+		}
+		if(p_nu_j) {
+			nu_j_max += ::fabs( t_P * (*p_nu_j) ) * scale;
+			if( nu_j_max < dual_infeas_tol ) {
+				// The full step is also degenerate so adjust it also
+				if( (int)olevel >= (int)COP::QPSchur::OUTPUT_BASIC_INFO ) {
+					*out
+						<< "Also, the maximum full step scale*(|nu("<<j<<")|+|t_P*p_nu("<<j<<")|) = "
+						<< scale << " * (|" << (*nu_j) << "| +  |" << t_P << " * " << (*p_nu_j) << "|) = "
+						<< nu_j_max << " < dual_infeas_tol = " << dual_infeas_tol
+						<< "\nTherefore, this is considered degenerate and therefore "
+						<< "seting p_nu("<<j<<") = 0 and p_nu("<<j<<") = " << degen_val << std::endl;
+				}
+				*p_nu_j = 0.0; // Don't let it limit the step length
+				if(nu_j_plus) {
+					*nu_j_plus = degen_val;
+				}
+			}
+		}
+		*nu_j = degen_val;  // Now set it
+		return 0;
+	}
+	else {
+		if( (int)olevel >= (int)COP::QPSchur::OUTPUT_BASIC_INFO ) {
+			*out
+				<< "\nError, the constriant a(" << j << ") currently at its "
+				<< (bnd_j == COP::UPPER ? "UPPER" : "LOWER") << " bound"
+				<< " has the wrong Lagrange multiplier value and\n"
+				<< "scale*|nu("<<j<<")| = " << scale << " * |" << (*nu_j)
+				<< "| = " << nu_j_max  << " > dual_infeas_tol = " << dual_infeas_tol
+				<< "\nThis is an indication of instability in the calculations.\n"
+				<< "The QP algorithm is terminated!\n";
+		}
+		return -1;
+	}
+	return 0; // Will never be executed!
 }
 
 }	// end namespace
@@ -2464,6 +2566,10 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 */
 					return OPTIMAL_SOLUTION;	// current point is optimal.
 				}
+
+				*** ToDo: Combine the following two conditions into one and deal with
+							  *** the problem of (most violated, extra feas tol etc.)			  
+
 				if( sa != 0 || ( act_set->is_init_fixed(ja) && act_set->s_map(-ja) == 0 ) )
 				{
 					if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
@@ -3425,9 +3531,10 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							dump_act_set_quantities( *act_set, *out );
 						}
 						else {
-							*out
-								<< "\nz_hat =\n" << act_set->z_hat()
-								<< "\nmu_D_hat =\n" << act_set->mu_D_hat() << endl;
+							if(act_set->q_hat())
+								*out << "\nz_hat =\n" << act_set->z_hat();
+							if(act_set->q_D_hat())
+								*out << "\nmu_D_hat =\n" << act_set->mu_D_hat();
 						}
 					}
 					assume_lin_dep_ja = false;  // If we get here then we know these are true!

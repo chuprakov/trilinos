@@ -24,14 +24,17 @@ namespace ReducedSpaceSQPPack {
  ngrad          =          13; # max( number Gf(x) evals, number Gc(x) evals ) 
  CPU            =        0.50; # Number of CPU seconds total
  obj_func       =    1.046e-2; # Objective function value f(x) at final point
- feas_kkt_err   =   2.457e-10; # Feasibility error at final point (scaled ||c(x)||inf, feas_err_k)
- opt_kkt_err    =    4.568e-7; # Optimality error at final point (scaled ||rGL||inf, opt_err_k)
+ feas_kkt_err   =   2.457e-10; # Feasibility error at final point (scaled ||c(x)||inf)
+ opt_kkt_err    =    4.568e-7; # Optimality error at final point (scaled ||rGL||inf)
  nact           =          40; # Number of total active constraints at the final point
  nbasis_change  =           1; # Number of basis changes
  nquasi_newton  =           6; # Number of quasi-newton updates
  \end{verbatim}
  *
- * Any statistic that is not known will be given the value '-'.
+ * Any statistic that is not known will be given the value '-'.  If the returned status
+ * is 'execpt' then some exception was thrown or some other error occured so current
+ * information may not be available.  In this case every effort is made to fill the rest
+ * of the information from prior iterations.
  * The names of these fields will not change and the 'stat = value; # comment' format
  * can be counted.  However, the spacing and the precision of the numbers may be different
  * from what is shown above.
@@ -39,12 +42,8 @@ namespace ReducedSpaceSQPPack {
 class rSQPTrackStatsStd : public rSQPTrack {
 public:
 
-	/// Construct with an output stream
-	rSQPTrackStatsStd(
-		std::ostream& o, std::ostream& journal_out
-		)
-		: rSQPTrack(journal_out), o_(&o), num_QN_updates_(0)
-	{}
+	/// Construct with an output stream object and start the timer.
+	rSQPTrackStatsStd( std::ostream& o, std::ostream& journal_out );
 
 	///
 	/* Set the output stream for summary outputting.

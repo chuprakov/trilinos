@@ -28,6 +28,14 @@ using std::left;
 using std::right;
 using std::setprecision;
 
+rSQPTrackStatsStd::rSQPTrackStatsStd(
+	std::ostream& o, std::ostream& journal_out
+	)
+	: rSQPTrack(journal_out)
+{
+	set_output_stream(o);
+}
+
 void rSQPTrackStatsStd::set_output_stream(std::ostream& o)
 {
 	o_ = &o;
@@ -106,8 +114,8 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 	o() << "; # solved, except, max_iter, max_run_time\n";
 	// niter
 	o() << left << setw(stat_w) << "niter" << "= "
-		<< right << setw(val_w) << (s.k()+1)
-		<< "; # Number of rSQP iterations\n";
+		<< right << setw(val_w) << s.k()
+		<< "; # Number of rSQP iterations (plus 1?)\n";
 	// nfunc
 	o() << left << setw(stat_w) << "nfunc" << "= "
 		<< right << setw(val_w) << std::_MAX(nlp.num_f_evals(),nlp.num_c_evals())
@@ -133,6 +141,8 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 		<< right << setw(val_w);
 	if(s.feas_kkt_err().updated_k(0))
 		o() << s.feas_kkt_err().get_k(0);
+	else if(s.c().updated_k(0))
+		o() << s.c().get_k(0).norm_inf();
 	else
 		o() << "-";
 	o() << "; # Feasibility error at final point (scaled ||c(x)||inf, feas_err_k)\n";
@@ -141,6 +151,10 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 		<< right << setw(val_w);
 	if(s.opt_kkt_err().updated_k(0))
 		o() << s.opt_kkt_err().get_k(0);
+	else if(s.rGL().updated_k(0))
+		o() << s.rGL().get_k(0).norm_inf();
+	else if(s.rGL().updated_k(-1))
+		o() << s.rGL().get_k(-1).norm_inf();
 	else
 		o() << "-";
 	o() << "; # Optimality error at final point (scaled ||rGL||inf, opt_err_k)\n";
@@ -149,6 +163,8 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 		<< right << setw(val_w);
 	if(s.nu().updated_k(0))
 		o() << s.nu().get_k(0).nz();
+	else if(s.nu().updated_k(-1))
+		o() << s.nu().get_k(-1).nz();
 	else
 		o() << "-";
 	o() << "; # Number of total active constraints at the final point\n";
