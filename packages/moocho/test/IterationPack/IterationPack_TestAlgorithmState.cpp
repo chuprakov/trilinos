@@ -22,10 +22,10 @@
 #include <iomanip>
 #include <typeinfo>
 
-#include "../test/TestGeneralIterationPack.h"
-#include "../include/AlgorithmState.h"
-#include "../include/IterQuantityAccessContinuous.h"
-#include "../include/IterQuantityAccessDerivedToBase.h"
+#include "GeneralIterationPack/test/TestGeneralIterationPack.h"
+#include "GeneralIterationPack/include/AlgorithmState.h"
+#include "GeneralIterationPack/include/IterQuantityAccessContinuous.h"
+#include "AbstractFactoryStd.h"
 #include "update_success.h"
 #include "ThrowException.h"
 
@@ -71,8 +71,8 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 
 	using std::endl;
 	using std::setw;
-	
 	using TestingHelperPack::update_success;
+	namespace rcp = ReferenceCountingPack;
 
 	try {
 
@@ -92,7 +92,7 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 	typedef B														V_k_t;
 	typedef IterQuantityAccessContinuous<alpha_k_t>					alpha_t;
 	typedef IterQuantityAccessContinuous<x_k_t>						x_t;
-	typedef IterQuantityAccessDerivedToBase<V_k_t,D>				V_t;
+	typedef IterQuantityAccessContinuous<V_k_t>						V_t;
 
 	if(out) *out << "\n*** Create state object ...\n";
 	AlgorithmState state(4);
@@ -101,27 +101,29 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 
 	if(out) *out << "\n*** Set three types of iteration quantity access objects.\n";
 
-	typedef AlgorithmState::IQ_ptr		IQ_ptr;
-	typedef V_t::IQA_ptr				IQA_ptr;
-
 	if(out) *out << "set IterQuantityAccessContinuous<double>(2,\"alpha\")\n";
-	state.set_iter_quant( "alpha", IQ_ptr(new alpha_t(2,"alpha")) );
+	state.set_iter_quant( "alpha", rcp::rcp(new alpha_t(2,"alpha")) );
 
 	if(out) *out << "set IterQuantityAccessContinuous<std::vector<double> >(2,\"x\")\n";
-	state.set_iter_quant( "x", IQ_ptr(new x_t(2,"x")) );
+	state.set_iter_quant( "x", rcp::rcp(new x_t(2,"x")) );
 
 	if(out) *out << "set IterQuantityAccessDerivedToBase<B,D>(1,\"V\")\n";
-	state.set_iter_quant( "V"
-		, IQ_ptr(
-		      new V_t( IQA_ptr( new IterQuantityAccessContinuous<D>(1,"V") ) )
+	state.set_iter_quant(
+		"V"
+		,rcp::rcp(
+			new V_t(
+				1
+				,"V"
+				,rcp::rcp( new AbstractFactoryPack::AbstractFactoryStd<V_k_t,D> )
+				)
 		    )
-	  );
+		);
 
 	// Try to add the same name again.
 
 	if(out) *out << "\nTry to add \"x\" (should throw execption)\n";
 	try {
-		state.set_iter_quant( "x",IQ_ptr(0) );
+		state.set_iter_quant( "x", AlgorithmState::IQ_ptr(NULL) );
 		success = false;
 	}
 	catch(const AlgorithmState::AlreadyExists& expt) {
