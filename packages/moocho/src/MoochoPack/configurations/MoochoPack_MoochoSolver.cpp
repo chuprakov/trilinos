@@ -303,7 +303,7 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 				<< "\n************************************"
 				<< "\n*** MoochoSolver::solve_nlp()    ***"
 				<< "\n************************************\n"	
-				<< "\n*** Starting rSQP iterations ...\n\n";
+				<< "\n*** Starting iterations ...\n\n";
 		
 		solver_.set_algo_timing(algo_timing_);
 		timer.start();
@@ -452,7 +452,7 @@ void MoochoSolver::update_solver() const
 	
 	THROW_EXCEPTION(
 		nlp_.get() == NULL, std::logic_error
-		,"rSQPSolver::update_solver() : Error, this->get_nlp().get() can not be NULL!" );
+		,"MoochoSolver::update_solver() : Error, this->get_nlp().get() can not be NULL!" );
 		
 	//
 	// Get the options (or lack of)
@@ -474,7 +474,7 @@ void MoochoSolver::update_solver() const
 	// Read in some options for "MoochoSolver" if needed
 	//
 
-	bool rSQPppSolver_opt_grp_existed = true;
+	bool MoochoSolver_opt_grp_existed = true;
 	if( options_used_.get() && (reconfig_solver_ || solver_.get_track().get() == NULL ) )
 	{
 		
@@ -570,7 +570,7 @@ void MoochoSolver::update_solver() const
 			}
 		}
 		else {
-			rSQPppSolver_opt_grp_existed = false;
+			MoochoSolver_opt_grp_existed = false;
 		}
 	}
 
@@ -606,7 +606,7 @@ void MoochoSolver::update_solver() const
 			algo_out_used_ = algo_out_;
 	}
 	
-	if( do_algo_outputting() && !rSQPppSolver_opt_grp_existed )
+	if( do_algo_outputting() && !MoochoSolver_opt_grp_existed )
 		*algo_out_used_
 			<< "\nWarning!  The options group \'MoochoSolver\' was not found.\n"
 			"Using a default set of options ...\n";

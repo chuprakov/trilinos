@@ -89,7 +89,7 @@ NLPInterfacePack::ExampleNLPDirectRun(
 	solver.set_journal_out(rcp::rcp(journal_out,false));
 	solver.set_algo_out(   rcp::rcp(algo_out,false)   );
 
-	// Run rSQP++ using the MamaJama configuration
+	// Run MOOCHO using the MamaJama configuration
 	solve_return = solver.solve_nlp();
 
 	return solve_return;

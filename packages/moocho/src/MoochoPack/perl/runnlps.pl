@@ -38,7 +38,7 @@ my $g_use_msg_opts =
   "      : This is the file to which output is printed (default is to STDOUT)\n";
 #
 # This is a perl program for running an NLP while
-# varying a set of options for rSQP++.  This program will print
+# varying a set of options for MOOCHO.  This program will print
 # lots of nice output and give lots of nice statistics.  The program will return 0 if
 # none of the NLP runs throws an exception.
 #
@@ -130,7 +130,7 @@ sub new {
 # Object methods
 
 #
-# Setup the current directory and run rSQP++ on this NLP
+# Setup the current directory and run MOOCHO on this NLP
 #
 sub run_nlp {
   # Arguments
@@ -341,7 +341,7 @@ chdir("runs") || die "What: $!";
 # Run with the various options!
 print $g_output_fh
   "\n**************************************",
-  "\n*** Summary of running rSQP++ on NLP\n";
+  "\n*** Summary of running MOOCHO on NLP\n";
 $g_vary_options->run_nlps(
 						  NLPRunner->new(
 										 $g_setup_script_str

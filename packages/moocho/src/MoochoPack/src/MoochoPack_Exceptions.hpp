@@ -21,7 +21,7 @@
 
 namespace MoochoPack {
 
-/** \defgroup ReducedSpaceSQPPackExceptions_grp Standard exceptions for rSQP++ */
+/** \defgroup MoochoPack_grp Standard exceptions for MoochoPack */
 //@{
 
 // Thrown if the constraints are infeasible

@@ -17,7 +17,7 @@ CGI_NAME               = MOOCHO.cgi
 #---------------------------------------------------------------------------
 # General configuration options
 #---------------------------------------------------------------------------
-PROJECT_NAME           = rSQP++
+PROJECT_NAME           = MOOCHO
 PROJECT_NUMBER         = 1.0
 OUTPUT_DIRECTORY       = $(MOOCHO_BASE_DIR)/doc
 EXTRACT_ALL            = YES
