@@ -497,7 +497,7 @@ public:
 		{ return const_cast<Scalar&>(SubMultiVectorT<Scalar>::operator()(i,j)); }
 	/// Return a <tt>MutableSubVectorT</tt> view of the jth sub-column (Preconditions: <tt>values()!=NULL && (1<=i<=subDim()) && (1<=j<= numSubCols()</tt>)
 	MutableSubVectorT<Scalar> col( const RTOp_index_type j ) const
-		{ return MutableSubVectorT<Scalar>(globalOffset(),subDim(),values()+(j-1)*leadingDim(),1); }
+		{ return MutableSubVectorT<Scalar>(SubMultiVectorT<Scalar>::globalOffset(),SubMultiVectorT<Scalar>::subDim(),values()+(j-1)*SubMultiVectorT<Scalar>::leadingDim(),1); }
 };
 
 template<class Scalar>
