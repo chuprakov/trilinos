@@ -56,7 +56,7 @@ public:
 	///
 	void getLocalData( Scalar** values, ptrdiff_t* stride );
 	///
-	void commitLocalData( Scalar** values );
+	void commitLocalData( Scalar* values );
 
 	//@}
 

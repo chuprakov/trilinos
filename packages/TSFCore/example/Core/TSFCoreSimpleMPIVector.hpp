@@ -61,10 +61,9 @@ void SimpleMPIVector<Scalar>::getLocalData( Scalar** values, ptrdiff_t* stride )
 }
 
 template<class Scalar>
-void SimpleMPIVector<Scalar>::commitLocalData( Scalar** values )
+void SimpleMPIVector<Scalar>::commitLocalData( Scalar* values )
 {
 	// Nothing to commit!
-	*values = NULL;
 }
 
 } // end namespace TSFCore
