@@ -21,15 +21,13 @@ These vector interfaces represent nonmutable and mutable vectors respectively.
 The basic matrix interface compatible with these vector interfaces is
 <tt>\ref AbstractLinAlgPack::MatrixWithOp "MatrixWithOp"</tt>.
 
-<li> Auxiliary vector operations
-(<tt>\ref libAbstractLinAlgPackVecOps_grp "libAbstractLinAlgPackVecOps"</tt>):
-This library contains many different useful vector operations that are implemented
+This library also contains many different useful vector operations that are implemented
 using the vector interfaces <tt>VectorWithOp</tt> and <tt>VectorWithOpMutable</tt>.
 More and more useful vector operations will be added to this library as they
-are needed.
+are needed.  The reason that these vector operations are included in this basic
+interface library is that many of the default implementations depend on them.
 
-<li> Auxiliary subclasses and tools based on the fundamental vector and
-matrix interfaces
+<li> Auxiliary subclasses and tools based on the fundamental vector and matrix interfaces
 (<tt>\ref libAbstractLinAlgPackTools_grp "libAbstractLinAlgPackTools"</tt>):
 The classes and other functions in this
 library are not fundamental and could be recreated by any developer to meet the needs
@@ -141,19 +139,14 @@ and 56 methods in <A HREF="http://www.trip.caam.rice.edu/txt/hcldoc/html/HCL_Vec
 
 ToDo: Discuss Matrix interfaces!
 
-</ul>
-
-*/
-
-/** \defgroup libAbstractLinAlgPackVecOps_grp libAbstractLinAlgPackVecOps
-\brief Auxiliary Vector Operations.
+<li> Miscellaneous vector operations.
 
 A set of functions for miscellaneous vector operations based on the RTOp operator classes in 
 <A HREF="../../RTOpStdOpsLib/html/index.html">libRTOpStdOpsLib</A> is declared in VectorStdOps.h
 and documented \ref VectorStdOps_grp "here".  As more general vector opeations are needed, they
 will be added to this header file.
 
-*/
+</ul>
 
 /** \defgroup libAbstractLinAlgPackTools_grp libAbstractLinAlgPackTools
 \brief Auxiliary Subclasses and Tools.
