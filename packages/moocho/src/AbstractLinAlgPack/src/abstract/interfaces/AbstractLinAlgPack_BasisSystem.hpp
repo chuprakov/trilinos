@@ -96,7 +96,9 @@ namespace AbstractLinAlgPack {
  * sensistivity matrices <tt>GcUP</tt> and <tt>GhUP</tt> (shown above).  These matrix
  * objects are independent from \c this \c BasisSystem object or from other \a C, \a D, \c GcUP
  * or \c GhUP objects.  Therefore, a <tt>BasisSystem</tt> object can be thought of
- * as an "Abstract Factory" for basis matrices and auxillary matrices.
+ * as an "Abstract Factory" for basis matrices and auxillary matrices.  Note that
+ * a <tt>%BasisSystem</tt> object is not obligated to compute matrices \c D, \c GcUP
+ * and/or \c GhUP.
  *
  * Note that the purpose of this interface is to abstract client code away from the
  * details of how the matrices \c Gc and \c Gh are represented and implemented and how
@@ -217,16 +219,25 @@ public:
 	
 	///
 	/** Return a matrix space object for sensitivity matrix <tt>D = -inv(C)*N</tt>.
+	 *
+	 * It is allowed for this to return \c NULL in which case \c update_basis() will not
+	 * accept a \c D matrix to be computed.
 	 */
 	virtual const mat_space_ptr_t& space_D() const = 0;
 
 	///
 	/** Return a matrix space object for auxiliary sensitivity matrix <tt>GcUP = Gc(var_indep,equ_undecomp) + D'*Gc(var_dep,equ_undecomp)</tt>.
+	 *
+	 * It is allowed for this to return \c NULL in which case \c update_basis() will not
+	 * accept a \c GcUP matrix to be computed.
 	 */
 	virtual const mat_space_ptr_t& space_GcUP() const;
 
 	///
 	/** Return a matrix space object for auxiliary sensitivity matrix <tt>GhUP = Gh(var_indep,inequ_undecomp) + D'*Gh(var_dep,inequ_undecomp)</tt>.
+	 *
+	 * It is allowed for this to return \c NULL in which case \c update_basis() will not
+	 * accept a \c GhUP matrix to be computed.
 	 */
 	virtual const mat_space_ptr_t& space_GhUP() const;
 
