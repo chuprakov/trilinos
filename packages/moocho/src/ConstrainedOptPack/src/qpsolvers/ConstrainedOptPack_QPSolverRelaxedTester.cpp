@@ -266,6 +266,8 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	const bool force_complementarity_error_check
 		= solution_type!=qps_t::SUBOPTIMAL_POINT;
 
+	bool test_failed = false;
+
 	// Check some postconditions
 	if(nu) nu->assert_valid_and_sorted();
 	if(mu) mu->assert_valid_and_sorted();
@@ -357,7 +359,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 
 	if(!comp_v.comp( u(), 0.0, opt_warning_tol()
 		, force_opt_error_check ? opt_error_tol() : really_big_error_tol
-		, print_all_warnings, out ))	return false;
+		, print_all_warnings, out )) test_failed = true;
 
 	if(out) {
 		*out
@@ -396,7 +398,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 				<< "Error, etaL - eta = " << etaL << " - " << (*eta)
 				<< " = " << (etaL - (*eta)) << " >  feas_error_tol = "
 				<<  feas_error_tol() << endl;
-		return false;
+		test_failed = true;
 	} 
 
 	d_norm_inf = norm_inf(*d);
@@ -420,7 +422,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	}
 	if(!comp_v.comp_less( u(), 0.0, opt_warning_tol()
 		, force_inequality_error_check ? feas_error_tol() : really_big_error_tol
-		, print_all_warnings, out )) return false;
+		, print_all_warnings, out )) test_failed = true;
 	if(nu) {
 		if(out)
 			*out
@@ -437,7 +439,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		}
 		if(!comp_v.comp( c(), 0.0, opt_warning_tol()
 			, force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
-			, print_all_warnings, out )) return false;
+			, print_all_warnings, out )) test_failed = true;
 	}
 
 	///////////////////////////////////
@@ -459,7 +461,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	}
 	if(!comp_v.comp_less( u(), 0.0, opt_warning_tol()
 		, force_inequality_error_check ? feas_error_tol() : really_big_error_tol
-		, print_all_warnings, out )) return false;
+		, print_all_warnings, out )) test_failed = true;
 	if(nu) {
 		if(out)
 			*out
@@ -475,8 +477,8 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 				<< "u(i) = nuU(i) * (dL - d)(i) / ( 1 + |d(i)| + opt_scale ), v = 0 ...\n";
 		}
 		if(!comp_v.comp( c(), 0.0, opt_warning_tol()
-			, force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
-			, print_all_warnings, out )) return false;
+						 , force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
+						 , print_all_warnings, out )) test_failed = true;
 	}
 
 	if( E ) {
@@ -513,7 +515,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		}
 		if(!comp_v.comp_less( u(), 0.0, opt_warning_tol()
 			, force_inequality_error_check ? feas_error_tol() : really_big_error_tol
-			, print_all_warnings, out )) return false;
+			, print_all_warnings, out )) test_failed = true;
 		if(out)
 			*out
 				<< sep_line
@@ -522,15 +524,15 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		if(out && print_vectors)
 			*out
 				<< "muL(i) * (eL - e)(i) / ( 1 + |e(i)| + opt_scale ) =\n" << c();
-			if(out) {
-				*out
-					<< "Comparing:\n"
-					<< "u(i) = muL(i) * (eL - e)(i) / ( 1 + |e(i)| + opt_scale ), v = 0 ...\n";
-			}
-			if(!comp_v.comp( c(), 0.0, opt_warning_tol()
-				, force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
-				, print_all_warnings, out )) return false;
-
+		if(out) {
+			*out
+				<< "Comparing:\n"
+				<< "u(i) = muL(i) * (eL - e)(i) / ( 1 + |e(i)| + opt_scale ), v = 0 ...\n";
+		}
+		if(!comp_v.comp( c(), 0.0, opt_warning_tol()
+						 , force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
+						 , print_all_warnings, out )) test_failed = true;
+		
 		///////////////////////////////////
 		// e - eU <= 0
 		if(out)
@@ -551,7 +553,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		}
 		if(!comp_v.comp_less( u(), 0.0, opt_warning_tol()
 			, force_inequality_error_check ? feas_error_tol() : really_big_error_tol
-			, print_all_warnings, out )) return false;
+			, print_all_warnings, out )) test_failed = true;
 		if(out)
 			*out
 				<< sep_line
@@ -560,16 +562,16 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		if(out && print_vectors)
 			*out
 				<< "\nmuU(i) * (e - eU)(i) / ( 1 + |e(i)| + opt_scale ) =\n" << c();
-			if(out) {
-				*out
-					<< "\nComparing:\n"
-					<< "u(i) = muU(i) * (e - eU)(i) / ( 1 + |e(i)| + opt_scale )\n"
-					<< "v = 0 ...\n";
-			}
-			if(!comp_v.comp( c(), 0.0, opt_warning_tol()
-				, force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
-				, print_all_warnings, out )) return false;
-
+		if(out) {
+			*out
+				<< "\nComparing:\n"
+				<< "u(i) = muU(i) * (e - eU)(i) / ( 1 + |e(i)| + opt_scale )\n"
+				<< "v = 0 ...\n";
+		}
+		if(!comp_v.comp( c(), 0.0, opt_warning_tol()
+						 , force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
+						 , print_all_warnings, out )) test_failed = true;
+		
 	}
 
 	if( F ) {
@@ -594,21 +596,28 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		}
 		if(!comp_v.comp( r(), *f, opt_warning_tol()
 			, force_equality_error_check ? feas_error_tol() : really_big_error_tol
-			, print_all_warnings, out )) return false;
+			, print_all_warnings, out )) test_failed = true;
 
 	}
 
 	if(out) {
 		*out
 			<< sep_line;
-		if(solution_type!=qps_t::SUBOPTIMAL_POINT)
-			*out
-				<< "\nCongradulations!  All of the enforced QP optimality conditions were within the specified error tolerances!\n";
+		if(solution_type != qps_t::SUBOPTIMAL_POINT) {
+			if(test_failed) {
+				*out
+					<< "\nDarn it!  At least one of the enforced QP optimality conditions were not within the specified error tolerances!\n";
+			}
+			else {
+				*out
+					<< "\nCongradulations!  All of the enforced QP optimality conditions were within the specified error tolerances!\n";
+			}
+		}
 		*out
 			<< "\n*** End checking QP optimality conditions ***\n";
 	}
 
-	return true;	// If we get here then success
+	return !test_failed;
 
 }
 

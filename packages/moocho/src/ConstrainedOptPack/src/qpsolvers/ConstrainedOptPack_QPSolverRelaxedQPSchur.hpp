@@ -296,6 +296,13 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, pivot_wrong_inertia_tol )
 
 	///
+	/** Set whether equality constriants are to be added to the active set
+	 * initialy to the schur complement or not.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, add_equalities_initially )
+
+
+	///
 	QPSolverRelaxedQPSchur(
 		const init_kkt_sys_ptr_t&    init_kkt_sys       = NULL
 		,value_type                  max_qp_iter_frac   = 10.0
@@ -321,6 +328,7 @@ public:
 		,value_type                  pivot_warning_tol       = 1e-8
 		,value_type                  pivot_singular_tol      = 1e-11
 		,value_type                  pivot_wrong_inertia_tol = 1e-11
+		,bool                        add_equalities_initially= true
 		);
 
 	///

@@ -152,6 +152,11 @@ size_type MatrixSymPosDefBandedChol::rows() const
 	return n_;
 }
 
+size_type MatrixSymPosDefBandedChol::nz() const
+{
+	return (2 * kd_ + 1) * n_ - ( (kd_+1)*(kd_+1) - (kd_+1) );
+}
+
 std::ostream& MatrixSymPosDefBandedChol::output(std::ostream& out) const
 {
 	return MatrixWithOp::output(out); // ToDo: Implement specialized version later!

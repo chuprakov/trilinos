@@ -233,6 +233,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 	// ISTATE
 	ISTATE_.resize(N_+NCLIN_);
 	std::fill( ISTATE_.begin(), ISTATE_.end(), 0 ); // cold start!
+	ISTATE_[n] = 1; // Make eta >= etaL active
 
 	// X
 	X_.resize(N_);
@@ -253,15 +254,38 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 	LWORK_ = lrwork(N_,NCLIN_);
 	if(WORK_.size() < LWORK_) WORK_.resize(LWORK_);
 
-	// ToDo: We need to initialize some warm start information it was given by
-	// the user!
+	// We need to initialize some warm start information if
+	// it was given by the user!
 	bool warm_start = false;
+	if( (nu && nu->nz()) || (mu && mu->nz() ) ) {
+		// Let's try a warm start
+		
+		if(nu) {
+			const SpVectorSlice::difference_type o = nu->offset();
+			for( SpVectorSlice::const_iterator itr = nu->begin(); itr != nu->end(); ++itr ) {
+				if( itr->value() < 0.0 )
+					ISTATE_[ itr->indice() + o - 1 ] = 1; // Lower bound is active
+				else if( itr->value() > 0.0 )
+					ISTATE_[ itr->indice() + o - 1 ] = 2; // Upper bound is active
+			}
+		}
+		if(mu) {
+			const SpVectorSlice::difference_type o = mu->offset();
+			for( SpVectorSlice::const_iterator itr = mu->begin(); itr != mu->end(); ++itr ) {
+				if( itr->value() < 0.0 )
+					ISTATE_[ itr->indice() + o + n ] = 1; // Lower bound is active
+				else if( itr->value() > 0.0 )
+					ISTATE_[ itr->indice() + o + n ] = 2; // Upper bound is active
+			}
+		}
+		warm_start = true;
+	}
 
 	//
 	// Solve the QP using QPOPT or QPSOL
 	//
 
-	const EInform inform_return = call_qp_solver();
+	const EInform inform_return = call_qp_solver(warm_start);
 
 	//
 	// Map from the output from QPOPT or QPSOL

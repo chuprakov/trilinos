@@ -8,6 +8,7 @@
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchur.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "SparseLinAlgPack/include/SortByDescendingAbsValue.h"
+#include "SparseLinAlgPack/include/sparse_bounds.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "Misc/include/dynamic_cast_verbose.h"
 
@@ -41,6 +42,7 @@ QPSolverRelaxedQPSchur::QPSolverRelaxedQPSchur(
 	,value_type         pivot_warning_tol
 	,value_type         pivot_singular_tol
 	,value_type         pivot_wrong_inertia_tol
+	,bool               add_equalities_initially
 	)
 	:
 	init_kkt_sys_(init_kkt_sys)
@@ -65,6 +67,7 @@ QPSolverRelaxedQPSchur::QPSolverRelaxedQPSchur(
 	,pivot_warning_tol_(pivot_warning_tol)
 	,pivot_singular_tol_(pivot_singular_tol)
 	,pivot_wrong_inertia_tol_(pivot_wrong_inertia_tol)
+	,add_equalities_initially_(add_equalities_initially)
 {}
 
 QPSolverRelaxedQPSchur::~QPSolverRelaxedQPSchur()
@@ -159,9 +162,8 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		nd,etaL,&dL,&dU,E,trans_E,b,eL,eU,F,trans_F,f
 		, m_undecomp, m_undecomp && !all_f_undecomp ? &j_f_undecomp[0] : NULL
 		, Ed
-		, true	// Check the equality constraints since they will not be
-		        // added to the initial active set in case they are linearly
-		        // dependent!
+		, !add_equalities_initially()  // If we add equalities the the schur complement intially
+		                               // then we don't need to check if they are violated.
 		);
 	// ToDo: Add j_f_decomp to the above constraints class!
 
@@ -191,17 +193,39 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	typedef std::vector<int> 					ij_act_change_t;
 	typedef std::vector<EBounds>				bnds_t;
 	size_type			num_act_change = 0; // The default is a cold start
-	const size_type     max_num_act_change = (nu ? nu->nz() : 0) + (mu ? mu->nz() : 0) + n_X;
+	const size_type     max_num_act_change = 2*nd;
 	ij_act_change_t		ij_act_change(max_num_act_change);
 	bnds_t				bnds(max_num_act_change);
-
-	// Note that we do not add the general equality constraints to the initial
-	// guess of the active set since they may be linearly dependent!
-	// ToDo: Perhaps we should all the user to select which equality constraints
-	// that they would like to add to the initial guess of the active set?
-	// It is very important that the user would select a linearly independent
-	// set that would give a nonsingular KKT system.
-
+	// Go ahead and add the equality constraints.  If these are linearly
+	// dependent let's hope that QPSchur can handle this and still do a
+	// good job of things.  This is a scary thing to do!
+	if( m_eq && add_equalities_initially() ) {
+		for( size_type j = 1; j <= m_eq; ++j ) {
+			ij_act_change[num_act_change] = (nd + 1) + m_in + j;
+			bnds[num_act_change]          = EQUALITY;
+			++num_act_change;
+		}
+	}
+	// We will add fixed (EQUALITY) variable bounds to the initial active set
+	// (if it is not already an intially fixed variable).  If fixing a variable
+	// causes the KKT system to become singular then we are in real trouble!
+	// We should add these eairly on since they will not be freed.
+	if( dL.nz() && dU.nz() ) {
+		const QPSchurPack::QP::x_init_t &x_init = qp_.x_init();
+		const value_type inf_bnd = std::numeric_limits<value_type>::max();
+		SparseLinAlgPack::sparse_bounds_itr
+			dLU_itr(
+				dL.begin(), dL.end(), dL.offset(),
+				dU.begin(), dU.end(), dU.offset(), inf_bnd );
+		for( ; !dLU_itr.at_end(); ++dLU_itr ) {
+			if( dLU_itr.lbound() == dLU_itr.ubound() && x_init(dLU_itr.indice()) == FREE ) {
+				ij_act_change[num_act_change] = dLU_itr.indice();
+				bnds[num_act_change]          = EQUALITY;
+				++num_act_change;
+			}
+		}
+	}
+	// Add inequality constriants to the list form nu and mu
 	if( ( nu && nu->nz() ) || ( m_in && mu->nz() ) ) {
 		//
 		// Setup num_act_change, ij_act_change, bnds for a warm start!
@@ -216,8 +240,21 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		SpVector gamma( nd + 1 + m_in , nu_nz + mu_nz );
 		typedef SpVector::element_type ele_t;
 		if(nu && nu->nz()) {
+			const value_type inf_bnd = std::numeric_limits<value_type>::max();
+			SparseLinAlgPack::sparse_bounds_itr
+				dLU_itr(
+					dL.begin(), dL.end(), dL.offset(),
+					dU.begin(), dU.end(), dU.offset(), inf_bnd );
 			const SpVector::difference_type o = nu->offset();
 			for( SpVector::const_iterator itr = nu->begin(); itr != nu->end(); ++itr ) {
+				while( !dLU_itr.at_end() && dLU_itr.indice() < itr->indice() + o )
+					++dLU_itr;
+				if( !dLU_itr.at_end() && (dLU_itr.indice() == itr->indice() + o
+										  && dLU_itr.lbound() == dLU_itr.ubound()) )
+				{
+					continue; // The equality bound has already been added!
+				}
+				// This a variable bound (not an equality) that has not been added!
 				gamma.add_element( ele_t( itr->indice() + o, itr->value() ) );
 			}
 		}
@@ -288,6 +325,13 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 			}
 		}
 	}
+	// Consider the relaxation variable!
+	if(*eta > etaL) {
+		ij_act_change[num_act_change] = -int(nd+1);
+		bnds[num_act_change]          = FREE;
+		++num_act_change;
+	}		
+
 	// Set the output level
 	QPSchur::EOutputLevel qpschur_olevel;
 	switch( print_level() ) {

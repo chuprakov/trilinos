@@ -104,6 +104,11 @@ size_type MatrixGenBanded::cols() const
 	return n_;
 }
 
+size_type MatrixGenBanded::nz() const
+{
+	return (ku_ + kl_ + 1) * n_ - ( (ku_+1) * (ku_+1) - (ku_+1) )/2  - ( (kl_+1) * (kl_+1) - (kl_+1) )/2; // Is correct?
+}
+
 std::ostream& MatrixGenBanded::output(std::ostream& out) const
 {
 	return MatrixWithOp::output(out); // ToDo: Implement specialized version later!

@@ -158,7 +158,7 @@ protected:
 	/** Solve the QP defined in the protected input data members
 	  * and set the solution in the protected output data members.
 	  */
-	virtual EInform call_qp_solver() = 0;
+	virtual EInform call_qp_solver(bool warm_start) = 0;
 
 private:
 

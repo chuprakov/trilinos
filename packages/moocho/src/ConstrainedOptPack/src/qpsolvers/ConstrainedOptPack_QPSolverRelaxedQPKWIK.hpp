@@ -92,6 +92,9 @@ private:
 
 	QPSolverStats			qp_stats_;
 
+	// Inverse mapping for IBND_INV(j) == k <-> IBND(k) == j
+	IBND_t  IBND_INV_;
+
 	// Parameters to QPKWIK
 
 	///

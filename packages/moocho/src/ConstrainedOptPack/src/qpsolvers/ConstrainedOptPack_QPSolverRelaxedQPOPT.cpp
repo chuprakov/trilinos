@@ -114,7 +114,6 @@ QPSolverRelaxedQPOPT::QPSolverRelaxedQPOPT(
 	,ITMAX_(100)
 	,BIGBND_(std::numeric_limits<value_type>::max())
 	,FEATOL_( 1.0e-10 )
-	,COLD_(FortranTypes::TRUE)
 	,LDH_(1)
 {}
 
@@ -139,7 +138,7 @@ QPSolverRelaxedQPOPT::f_int QPSolverRelaxedQPOPT::liwork(f_int N, f_int NCLIN) c
 QPSolverRelaxedQPOPT::f_int QPSolverRelaxedQPOPT::lrwork(f_int N, f_int NCLIN) const
 {	return NCLIN > 0 ? 2*N*N + 8*N + 5*NCLIN : N*N + 8 *N; }
 
-QPSolverRelaxedQPOPTSOL::EInform QPSolverRelaxedQPOPT::call_qp_solver()
+QPSolverRelaxedQPOPTSOL::EInform QPSolverRelaxedQPOPT::call_qp_solver(bool warm_start)
 {
 	ITMAX_ = max_qp_iter_frac() * N_;
 
@@ -148,7 +147,7 @@ QPSolverRelaxedQPOPTSOL::EInform QPSolverRelaxedQPOPT::call_qp_solver()
 		namespace ns = QPOPT_CppDecl;
 		namespace ft = FortranTypes;
 		ns::reset_defaults();
-		ns::set_logical_option( ns::WARM_START				, COLD_==ft::TRUE ? ft::FALSE : ft::TRUE );
+		ns::set_logical_option( ns::WARM_START				, warm_start ? ft::FALSE : ft::TRUE		);
 		ns::set_real_option(    ns::FEASIBILITY_TOLERANCE	, FEATOL_								);
 		ns::set_real_option(    ns::INFINITE_BOUND_SIZE		, BIGBND_								);
 		ns::set_int_option(     ns::ITERATION_LIMIT			, ITMAX_								);

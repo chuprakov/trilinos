@@ -107,6 +107,8 @@ public:
 	///
 	size_type cols() const;
 	///
+	size_type nz() const;
+	///
 	std::ostream& output(std::ostream& out) const;
 	///
 	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
@@ -146,6 +148,18 @@ private:
 
 // ///////////////////////////////////////////////////////
 // Inline members for MatrixGenBanded
+
+inline
+size_type MatrixGenBanded::kl() const
+{
+	return kl_;
+}
+
+inline
+size_type MatrixGenBanded::ku() const
+{
+	return ku_;
+}
 
 inline
 GenMatrixSlice& MatrixGenBanded::MB()

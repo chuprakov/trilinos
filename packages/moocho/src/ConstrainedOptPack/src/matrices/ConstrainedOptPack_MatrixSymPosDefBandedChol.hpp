@@ -31,8 +31,8 @@ namespace ConstrainedOptimizationPack {
  [ x x x x x x x   ]                  [ x x x x x o o o ]
  [   x x x x x x x ]
  [     x x x x x x ]                  [ o o o x x x x x ]
- [         x x x x ]  upper triangle  [ o o x x x x x x ]
-                             =>       [ o x x x x x x x ]
+ [       x x x x x ]  upper triangle  [ o o x x x x x x ]
+ [         x x x x ]         =>       [ o x x x x x x x ]
                                       [ x x x x x x x x ]
  \end{verbatim}
  * The Cholesky factor #U# is sorted in a similar format #UB#.  Technically, the matrix
@@ -93,7 +93,7 @@ public:
 	 *                  This matrix may or may not be initialized on input.
 	 *                  If #update_factor == false# this this matrix must  already be initialized.
 	 *                  If #update_factor == true# then this matrix will be computed.
-	 *                  If #UB == NULL# then storage for the Cholesky factor will be computed
+2	 *                  If #UB == NULL# then storage for the Cholesky factor will be computed
 	 *                  on the fly and will be factored.
 	 * @param  UB_release_resource_ptr
 	 *                  [in] Only significant if #UB != NULL#.  Points to a resource to
@@ -125,17 +125,23 @@ public:
 	///
 	const GenMatrixSlice& MB() const;
 	///
+	BLAS_Cpp::Uplo MB_uplo() const;
+	///
 	/** Get view of UB.
 	 */
 	GenMatrixSlice& UB();
 	///
 	const GenMatrixSlice& UB() const;
+	///
+	BLAS_Cpp::Uplo UB_uplo() const;
 
 	// /////////////////////////////
 	// Overridden from MatrixWithOp
 
 	///
 	size_type rows() const;
+	///
+	size_type nz() const;
 	///
 	std::ostream& output(std::ostream& out) const;
 	///
@@ -190,6 +196,12 @@ private:
 // Inline members for MatrixSymPosDefBandedChol
 
 inline
+size_type MatrixSymPosDefBandedChol::kd() const
+{
+	return kd_;
+}
+
+inline
 GenMatrixSlice& MatrixSymPosDefBandedChol::MB()
 {
 	return MB_;
@@ -202,6 +214,12 @@ const GenMatrixSlice& MatrixSymPosDefBandedChol::MB() const
 }
 
 inline
+BLAS_Cpp::Uplo MatrixSymPosDefBandedChol::MB_uplo() const
+{
+	return MB_uplo_;
+}
+
+inline
 GenMatrixSlice& MatrixSymPosDefBandedChol::UB()
 {
 	return UB_;
@@ -211,6 +229,12 @@ inline
 const GenMatrixSlice& MatrixSymPosDefBandedChol::UB() const
 {
 	return UB_;
+}
+
+inline
+BLAS_Cpp::Uplo MatrixSymPosDefBandedChol::UB_uplo() const
+{
+	return UB_uplo_;
 }
 
 } // end namespace ConstrainedOptimizationPack

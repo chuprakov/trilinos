@@ -51,7 +51,7 @@ protected:
 	///
 	f_int lrwork(f_int N, f_int NCLIN) const;
 	///
-	EInform call_qp_solver();
+	EInform call_qp_solver(bool warm_start);
 
 private:
 
@@ -80,7 +80,6 @@ private:
 	f_int						ITMAX_;
 	f_dbl_prec					BIGBND_;
 	f_dbl_prec					FEATOL_;
-	f_logical					COLD_;
 
 	// input/output
 

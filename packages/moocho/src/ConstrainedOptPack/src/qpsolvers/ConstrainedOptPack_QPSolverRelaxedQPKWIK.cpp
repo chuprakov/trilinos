@@ -12,6 +12,7 @@
 #include "SparseLinAlgPack/include/SortByDescendingAbsValue.h"
 #include "SparseLinAlgPack/include/sparse_bounds.h"
 #include "SparseLinAlgPack/include/EtaVector.h"
+#include "SparseLinAlgPack/include/SortByDescendingAbsValue.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "Misc/include/dynamic_cast_verbose.h"
 
@@ -220,31 +221,18 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	// Determine the number of sparse bounds on variables and inequalities.
 	// By default set for the dence case
 	using SparseLinAlgPack::num_bounds;
-	size_type
+	const size_type
+		nd              = d->size(),
+		m_in            = E ? b->size() : 0,
+		m_eq            = F ? f->size() : 0,
 		nvarbounds      = num_bounds(dL,dU),
 		ninequbounds    = E ? num_bounds(*eL,*eU): 0,
 		nequalities     = F ? f->size(): 0;
 
 	// Determine if this is a QP with a structure different from the
-	// one just solved and if a warm start is possible.
-	//
-	// If:
-	//
-	// 1) The problem dimensions are the same ( N_ == d->size() && M1_ == nvarbounds
-    //     && M2_ == ninequbounds && M3_ == nequalities )
-	// 2) A warm start is requested nu->size() > 0 || mu->size() > 0
-	//
-	// then a warm start will be performed.
-	//
-	// ToDo 12/28/00:
-	// Note that with this fortran implementation, the previous active-set will be used as the initial guess
-	// even through the input lagrange multipliers should be used.  This can be fixed in a
-	// future version by removing the initialization of NACT and IACTSTORE from QPKWIK.  This will not
-	// be too hard.
-
-	bool
-		same_qp_struct = (  N_ == d->size() && M1_ == nvarbounds && M2_ == ninequbounds && M3_ == nequalities ),
-		warm_start     = same_qp_struct && ( (nu ? nu->size() : 0) || (mu ? mu->size() : 0) );
+	// one just solved.
+	
+	const bool same_qp_struct = (  N_ == d->size() && M1_ == nvarbounds && M2_ == ninequbounds && M3_ == nequalities );
 
 	/////////////////////////////////////////////////////////////////
 	// Set the input parameters to be sent to QPKWIKNEW
@@ -280,6 +268,8 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 
 	// IBND, BL , BU, A, LDA, YPY
 
+	IBND_INV_.resize( nd + m_in);
+	std::fill( IBND_INV_.begin(), IBND_INV_.end(), 0 ); // Initialize the zero
 	IBND_.resize( std::_MAX( 1, M1_ + M2_ ) );
 	BL_.resize( std::_MAX( 1, M1_ + M2_ ) );
 	BU_.resize( std::_MAX( 1, M1_ + M2_ + M3_ ) );
@@ -304,7 +294,8 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 			BU_itr = BU_.begin(),
 			YPY_itr = YPY_.begin();
 		// Loop
-		for( ; IBND_itr != IBND_end; ++dLU_itr ) {
+		for( size_type ibnd_i = 1; IBND_itr != IBND_end; ++ibnd_i, ++dLU_itr ) {
+			IBND_INV_[dLU_itr.indice()-1] = ibnd_i;
 			*IBND_itr++ = dLU_itr.indice();
 			*BL_itr++	= dLU_itr.lbound();
 			*BU_itr++	= dLU_itr.ubound();
@@ -315,7 +306,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	// Initialize inequality constraints
 	
 	if(M2_) {
-		if( M2_ < (E ? eL->size() : 0) ) {
+		if( M2_ < m_in ) {
 			// Initialize BL, BU, YPY and A for sparse bounds on general inequalities
 			// read iterators
 			SparseLinAlgPack::sparse_bounds_itr
@@ -336,6 +327,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 				*BU_itr++              = eLU_itr.ubound();
 				*YPY_itr++             = (*b)(k);
 				*ibnds_itr             = k;  // Only for my record, not used by QPKWIK
+				IBND_INV_[nd+k-1]      = M1_ + i;
 				// Add the corresponding row of op(E) to A
 				// y == A.row(i)'
 				// y' = e_k' * op(E) => y = op(E')*e_k
@@ -358,7 +350,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 				BU_itr		= BU_.begin() + M1_;
 			IBND_t::iterator
 				ibnds_itr	= IBND_.begin() + M1_;
-			{for(size_type i = 1; i <= M2_; ++i ) {
+			{for(size_type i = 1; i <= m_in; ++i ) {
 				if( !eLU_itr.at_end() && eLU_itr.indice() == i ) {
 					*BL_itr++ = eLU_itr.lbound();
 					*BU_itr++ = eLU_itr.ubound();
@@ -368,7 +360,8 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 					*BL_itr++ = -infinite_bound();
 					*BU_itr++ = +infinite_bound();
 				}
-				*ibnds_itr++ = i;
+				*ibnds_itr++     = i;
+				IBND_INV_[nd+i-1]= M1_ + i;
 			}}
 			// A(1:M2,1:N) = op(E)
 			assign( &A_(1,M2_,1,N_), *E, trans_E );
@@ -388,7 +381,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	IYPY_ = 1; // ???
 
 	// WARM
-	WARM_ = warm_start ? 1 : 0;
+	WARM_ = 0; // Cold start by default
 
 	// MAX_ITER
 	MAX_ITER_ = max_qp_iter_frac() * N_;
@@ -399,6 +392,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	// Initilize output, internal state and workspace quantities.
 	if(!same_qp_struct) {
 		X_.resize(N_);
+		NACTSTORE_ = 0;
 		IACTSTORE_.resize(N_+1);
 		IACT_.resize(N_+1);
 		UR_.resize(N_+1);
@@ -406,6 +400,79 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 		LRW_ = QPKWIKNEW_CppDecl::qpkwiknew_lrw(N_,M1_,M2_,M3_);
 		RW_.resize(LRW_);
 	}
+
+	// /////////////////////////////////////////////
+	// Setup a warm start form the input arguments
+	//
+	// Interestingly enough, QPKWIK sorts all of the
+	// constraints according to scaled multiplier values
+	// and mixes equality with inequality constriants.
+	// It seems to me that you should start with equality
+	// constraints first.
+
+	WARM_      = 0;
+	NACTSTORE_ = 0;
+
+	if( m_eq ) {
+		// Add equality constraints first since we know these will
+		// be part of the active set.
+		for( size_type j = 1; j <= m_eq; ++j ) {
+			IACTSTORE_[NACTSTORE_] = 2*M1_ + 2*M2_ + j;
+			++NACTSTORE_;
+		}
+	}
+	if( ( nu && nu->nz() ) || ( m_in && mu->nz() ) ) {
+		// Add inequality constraints
+		const size_type
+			nu_nz = nu ? nu->nz() : 0,
+			mu_nz = mu ? mu->nz() : 0;
+		// Combine all the multipliers for the bound and general inequality
+		// constraints and sort them from the largest to the smallest.  Hopefully
+		// the constraints with the larger multiplier values will not be dropped
+		// from the active set.
+		SpVector gamma( nd + 1 + m_in , nu_nz + mu_nz );
+		typedef SpVector::element_type ele_t;
+		if(nu && nu->nz()) {
+			const SpVector::difference_type o = nu->offset();
+			for( SpVector::const_iterator itr = nu->begin(); itr != nu->end(); ++itr )
+				gamma.add_element( ele_t( itr->indice() + o, itr->value() ) );
+		}
+		if(mu && mu->nz()) {
+			const SpVector::difference_type o = mu->offset() + nd + 1;
+			for( SpVector::const_iterator itr = mu->begin(); itr != mu->end(); ++itr )
+				gamma.add_element( ele_t( itr->indice() + o, itr->value() ) );
+		}
+		std::sort( gamma.begin(), gamma.end()
+			, SparseLinAlgPack::SortByDescendingAbsValue() );
+		// Now add the inequality constraints in decreasing order
+		const SpVector::difference_type o = gamma.offset();
+		for( SpVector::const_iterator itr = gamma.begin(); itr != gamma.end(); ++itr ) {
+			const size_type  j   = itr->indice() + o;
+			const value_type val = itr->value();
+			if( j <= nd ) { // Variable bound
+				const size_type ibnd_i = IBND_INV_[j-1];
+				assert(ibnd_i);
+				IACTSTORE_[NACTSTORE_]
+					= (val < 0.0
+					   ? ibnd_i               // lower bound (see IACT(*))
+					   : M1_ + M2_ + ibnd_i   // upper bound (see IACT(*))
+						);
+				++NACTSTORE_;
+			}
+			else if( j <= nd + m_in ) { // General inequality constraint
+				const size_type ibnd_i = IBND_INV_[nd+j-1]; // offset into M1_ + ibnd_j
+				assert(ibnd_i);
+				IACTSTORE_[NACTSTORE_]
+					= (val < 0.0
+					   ? ibnd_i               // lower bound (see IACT(*))
+					   : M1_ + M2_ + ibnd_i   // upper bound (see IACT(*))
+						);
+				++NACTSTORE_;
+			}
+		}
+	}
+	if( NACTSTORE_ > 0 )
+		WARM_ = 1;
 
 	// /////////////////////////
 	// Call QPKWIK
@@ -491,7 +558,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	qp_stats_.set_stats(
 		solution_type, QPSolverStats::CONVEX
 		,ITER_, NUM_ADDS_, NUM_DROPS_
-		,warm_start, *eta > 0.0 );
+		,WARM_==1, *eta > 0.0 );
  
 	return qp_stats_.solution_type();
 }
