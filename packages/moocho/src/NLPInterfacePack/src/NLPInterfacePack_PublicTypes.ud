@@ -19,6 +19,9 @@ using NLPInterfacePack::NLPFirstOrderInfo;
 using NLPInterfacePack::NLPSecondOrderInfo;
 using NLPInterfacePack::NLPReduced;
 
+using NLPInterfacePack::CalcFiniteDiffProd;
+using NLPInterfacePack::CalcFiniteDiffProdSetOptions;
+
 using NLPInterfacePack::NLPFirstDerivativesTester;
 using NLPInterfacePack::NLPFirstDerivativesTesterSetOptions;
 using NLPInterfacePack::NLPFirstOrderDirectTester;

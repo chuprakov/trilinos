@@ -32,6 +32,10 @@ class NLPFirstOrderInfo;
 class NLPSecondOrderInfo;
 class NLPReduced;
 
+// NLP utility classes
+class CalcFiniteDiffProd;
+class CalcFiniteDiffProdSetOptions;
+
 // NLP testing classes
 
 class NLPFirstDerivativesTester;
