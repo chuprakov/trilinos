@@ -24,7 +24,7 @@
 
 namespace NLPInterfacePack {
 
-/** \defgroup ExampleNLPFirstOrderInfoRun_grp Helper function for ExampleNLPFirstOrder */
+/** \defgroup ExampleNLPFirstOrderRun_grp Helper function for ExampleNLPFirstOrder */
 //@{
 
 ///
@@ -52,7 +52,7 @@ namespace NLPInterfacePack {
  * (see this function for most of the documentation).
  */
 MoochoPack::MoochoSolver::ESolutionStatus
-ExampleNLPFirstOrderInfoRun(
+ExampleNLPFirstOrderRun(
 	const VectorSpace&   vec_space
 	,value_type          xo
 	,bool                has_bounds

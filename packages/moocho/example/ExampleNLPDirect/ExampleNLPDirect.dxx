@@ -17,7 +17,7 @@ implemented in the source file <tt>ExampleNLPDirectRTOps.c</tt>.  These operator
 implemented in C (as are all the rest of the RTOp operators in the other libraries) this code should be
 able to run on any platform.
 
-Also included in this package is an encapsulation function <tt>ExampleNLPFirstOrderDirectRun()</tt>
+Also included in this package is an encapsulation function <tt>ExampleNLPDirectRun()</tt>
 declared in the header file <tt>ExampleNLPDirectRun.hpp</tt>.  This helper function creates an
 <tt>\ref NLPInterfacePack::ExampleNLPDirect "ExampleNLPDirect"</tt> object
 (given an input vector space object) and then calls
@@ -26,7 +26,7 @@ the %NLP object through a series of tests.
 
 Finally, a driver program is included in the source file <tt>ExampleNLPDirectMain.cpp</tt> that
 accepts command line arguments and uses one of a number of vector implementations to call the testing
-function <tt>%ExampleNLPFirstOrderDirectRun()"</tt>.  All that needs to be replaced to use different
+function <tt>%ExampleNLPDirectRun()"</tt>.  All that needs to be replaced to use different
 vector implementations is this driver program file and this can be done in a different project.
 
 */

@@ -156,7 +156,7 @@ int main(int argc, char* argv[] ) {
 
 	// Create and test the NLP using this vector space object
 	const MoochoSolver::ESolutionStatus
-		solve_return = NLPIP::ExampleNLPFirstOrderDirectRun(
+		solve_return = NLPIP::ExampleNLPDirectRun(
 			*vec_space, xo, has_bounds, dep_bounded
 			,proc_rank == 0 ? &out  : &blackhole  // console_out
 			,proc_rank == 0 ? &eout : &blackhole  // error_out

@@ -1,6 +1,6 @@
 begin_options
 
-options_group ExampleNLPFirstOrderInfoRun {
+options_group ExampleNLPFirstOrderRun {
 *    suppress_output = true;
 *    suppress_output = false;
 }

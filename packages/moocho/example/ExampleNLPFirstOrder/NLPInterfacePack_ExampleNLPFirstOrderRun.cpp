@@ -36,7 +36,7 @@
 #include "OptionsFromStream.hpp"
 
 MoochoPack::MoochoSolver::ESolutionStatus
-NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
+NLPInterfacePack::ExampleNLPFirstOrderRun(
 	const VectorSpace&   vec_space
 	,value_type          xo
 	,bool                has_bounds
