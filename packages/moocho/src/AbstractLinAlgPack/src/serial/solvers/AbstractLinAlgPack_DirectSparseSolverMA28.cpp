@@ -17,7 +17,7 @@
 
 #include <assert.h>
 
-#include <ostream>
+#include <fstream>
 #include <algorithm>
 
 #include "SparseSolverPack/include/DirectSparseSolverMA28.h"
@@ -28,6 +28,7 @@
 #include "ThrowException.h"
 #include "WorkspacePack.h"
 #include "dynamic_cast_verbose.h"
+#include "f_open_file.h"
 
 namespace {
 	// A cast to const is needed because the standard does not return a reference from
@@ -74,7 +75,6 @@ namespace SparseSolverPack {
 DirectSparseSolverMA28::FactorizationStructureMA28::FactorizationStructureMA28()
 	:m_(0),n_(0),max_n_(0),nz_(0),licn_(0),lirn_(0)
 	 ,u_(0.1),scaling_(NO_SCALING)
-	 ,cntr_var_changed_(false)
 {}
 
 // //////////////////////////////////////////////////
@@ -108,10 +108,6 @@ void DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(
 	THROW_EXCEPTION(
 		y == NULL, std::invalid_argument
 		,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...) : Error! " );
-	THROW_EXCEPTION(
-		fs.cntr_var_changed_, std::logic_error
-		,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...), Error, "
-		"You can't change control variables between calls of \'analyze_and factorize\' and \'solve\'");	
 #endif
 	const size_type y_dim = y->dim(), x_dim = x.dim();
 #ifdef _DEBUG
@@ -175,8 +171,25 @@ void DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(
 
 // Constructors/initializers
 
-DirectSparseSolverMA28::DirectSparseSolverMA28()
-	: estimated_fillin_ratio_(10.0)
+DirectSparseSolverMA28::DirectSparseSolverMA28(
+	value_type          estimated_fillin_ratio
+	,value_type         u
+	,bool               grow
+	,value_type         tol
+	,index_type         nsrch
+	,bool               lbig
+	,bool               print_ma28_outputs
+	,const std::string& output_file_name
+	)
+	:estimated_fillin_ratio_(estimated_fillin_ratio)
+	,u_(u)
+	,grow_(grow)
+	,tol_(tol)
+	,nsrch_(nsrch)
+	,lbig_(lbig)
+	,print_ma28_outputs_(print_ma28_outputs)
+	,output_file_name_(output_file_name)
+	,file_output_num_(0)
 {}
 
 // Overridden from DirectSparseSolver
@@ -234,9 +247,8 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 		&fn = dyn_cast<FactorizationNonzerosMA28>(*fact_nonzeros);
 
 	// Set MA28 parameters
-	fs.ma28_.nsrch(4);  // This is a well known trick to increase speed!
-	fs.ma28_.lblock(0); // Do not permute to block triangular form (*** This is critical!)
-
+	set_ma28_parameters(&fs);
+	
 	// Get the dimensions of things.
 	const index_type
 		m = A.rows(),
@@ -248,57 +260,85 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 		n <= 0 || m <= 0 || m > n, std::invalid_argument
 		,"DirectSparseSolverMA28::imp_analyze_and_factor(...) : Error!" );
 
-	// Sets control variable change flag to false.
-	fs.cntr_var_changed_ = false;
-
 	// Memorize the dimenstions for checks later
 	fs.m_ = m; fs.n_ = n; fs.nz_ = nz;
 	fs.max_n_ = std::_MAX(fs.m_,fs.n_);
 
-	// By default set licn and ircn equal to fillin_ratio * nz.
+	// By default set licn and ircn equal to estimated_fillin_ratio * nz.
+	if( estimated_fillin_ratio_ < 1.0 ) {
+		if( out ) *out << "Warning, client set estimated_fillin_ratio = " << estimated_fillin_ratio_
+					   << " < 1.0.\nSetting estimated_fillin_ratio = 10.0 ...\n";
+		estimated_fillin_ratio_ = 10.0;
+	}
 	if( fs.licn_ < fs.nz_ ) fs.licn_ = estimated_fillin_ratio_ * fs.nz_;
 	if( fs.lirn_ < fs.nz_ ) fs.lirn_ = estimated_fillin_ratio_ * fs.nz_;
 
-	// Initialize matrix factorization storage and temporary storage
+	// Initialize structure storage
 	fs.ivect_.resize(fs.nz_); // perminatly stores nz row indexes
 	fs.jvect_.resize(fs.nz_); // perminatly stores nz column indexes
-	fs.icn_.resize(fs.licn_); // first nz entries stores the column indexes
-	fn.a_.resize(fs.licn_);
-	fs.ikeep_.resize( fs.ma28_.lblock() ? 5*fs.max_n_ :  4*fs.max_n_ + 1 );
-	wsp::Workspace<index_type>  irn_tmp_(wss,fs.lirn_), iw(wss,8*fs.max_n_);
-	wsp::Workspace<value_type>  w(wss,fs.max_n_);
 
-	// Fill in the matrix information
-	A.coor_extract_nonzeros(
-		MCTS::EXTRACT_FULL_MATRIX
-		,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM
-		,fs.nz_
-		,&fn.a_[0]
-		,fs.nz_
-		,&fs.ivect_[0]
-		,&fs.jvect_[0]
-		);
-	std::copy( &fs.ivect_[0], &fs.ivect_[0] + fs.nz_, &irn_tmp_[0] );
-	std::copy( &fs.jvect_[0], &fs.jvect_[0] + fs.nz_, &fs.icn_[0] );
-
-	// Scale the matrix
-	if( fs.matrix_scaling_.get() )
-		fs.matrix_scaling_->scale_matrix(
-			fs.m_, fs.n_, fs.nz_, &fs.ivect_[0], &fs.jvect_[0], true
-			,&fn.a_[0]
-			);
-
-	// Analyze and factor the matrix
 	index_type iflag = 0;
-	fs.ma28_.ma28ad(
-		fs.max_n_, fs.nz_, &fn.a_[0], fs.licn_, &irn_tmp_[0], fs.lirn_, &fs.icn_[0], fs.u_
-		,&fs.ikeep_[0], &iw[0], &w[0], &iflag
-		);
+	for( int num_fac = 0; num_fac < 5; ++num_fac ) {
+		
+		// Initialize matrix factorization storage and temporary storage
+		fs.icn_.resize(fs.licn_); // first nz entries stores the column indexes
+ 		fn.a_.resize(fs.licn_);
+		fs.ikeep_.resize( fs.ma28_.lblock() ? 5*fs.max_n_ :  4*fs.max_n_ + 1 );
+		wsp::Workspace<index_type>  irn_tmp_(wss,fs.lirn_), iw(wss,8*fs.max_n_);
+		wsp::Workspace<value_type>  w(wss,fs.max_n_);
+		
+		// Fill in the matrix information
+		A.coor_extract_nonzeros(
+			MCTS::EXTRACT_FULL_MATRIX
+			,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM
+			,fs.nz_
+			,&fn.a_[0]
+			,fs.nz_
+			,&fs.ivect_[0]
+			,&fs.jvect_[0]
+			);
+		std::copy( &fs.ivect_[0], &fs.ivect_[0] + fs.nz_, &irn_tmp_[0] );
+		std::copy( &fs.jvect_[0], &fs.jvect_[0] + fs.nz_, &fs.icn_[0] );
+		
+		// Scale the matrix
+		if( fs.matrix_scaling_.get() )
+			fs.matrix_scaling_->scale_matrix(
+				fs.m_, fs.n_, fs.nz_, &fs.ivect_[0], &fs.jvect_[0], true
+				,&fn.a_[0]
+				);
+		
+		// Analyze and factor the matrix
+		if(out)
+			*out << "\nCalling ma28ad(...) ...\n";
+		fs.ma28_.ma28ad(
+			fs.max_n_, fs.nz_, &fn.a_[0], fs.licn_, &irn_tmp_[0], fs.lirn_, &fs.icn_[0], fs.u_
+			,&fs.ikeep_[0], &iw[0], &w[0], &iflag
+			);
+		
+		if(iflag != 0 && out)
+			*out << "\nMA28AD returned iflag = " << iflag << " != 0!\n";
 
-	// Todo : deal with resizing for insufficient storage when needed.  Write a loop!
+		// Print MA28 outputs
+		print_ma28_outputs(true,iflag,fs,&w[0],out);
 
-	if(iflag != 0 && out)
-		*out << "\nMA28AD returned iflag = " << iflag << " != 0!\n";
+		if( iflag >= 0 ) break;
+
+		switch( iflag ) {
+			case LICN_AND_LIRN_TOO_SMALL:
+			case LICN_TOO_SMALL:
+			case LICN_FAR_TOO_SMALL:
+			case LIRN_TOO_SMALL:
+				if(out)
+					*out << "\nWarning! iflag = " << iflag << ", LIRN and/or LICN are too small!\n"
+						 << "Increasing lirn = " << fs.lirn_ << " amd licn = " << fs.licn_
+						 << " by a factor of 10\n"
+						 << "(try increasing estimated_fillin_ratio = " << estimated_fillin_ratio_
+						 << " to a larger value next time)...\n";
+				fs.lirn_ = 10 * fs.lirn_;
+				fs.licn_ = 10 * fs.licn_;
+				break;
+		}
+	}
 
 	// Check for errors and throw exception if you have to.
 	ThrowIFlagException(iflag);
@@ -414,12 +454,70 @@ void DirectSparseSolverMA28::imp_factor(
 	if(iflag != 0 && out)
 		*out << "\nMA28BD returned iflag = " << iflag << " != 0!\n";
 
+	// Print MA28 outputs
+	print_ma28_outputs(false,iflag,fs,&w[0],out);
+
 	// Check for errors and throw exception if you have to.
 	ThrowIFlagException(iflag);
 
 }
 
 // private
+
+void DirectSparseSolverMA28::set_ma28_parameters( FactorizationStructureMA28* fs )
+{
+	// Set common block parameters
+	fs->ma28_.lblock( FortranTypes::FALSE ); // Do not permute to block triangular form (*** This is critical!)
+	fs->u_ = u_;
+	fs->ma28_.grow( grow_ ? FortranTypes::TRUE : FortranTypes::FALSE );
+	fs->ma28_.tol(tol_);
+	fs->ma28_.nsrch(nsrch_);
+	fs->ma28_.lbig( lbig_ ? FortranTypes::TRUE : FortranTypes::FALSE );
+	// Setup output file
+	if( output_file_name_.length() > 0 && fs->ma28_.lp() == 0 ) {
+		// Open a fortran file
+		index_type iout = 25; // Unique?
+		FortranTypes::f_open_file( iout, output_file_name_.c_str() );
+		fs->ma28_.mp(iout);
+		fs->ma28_.lp(iout);
+	}
+	else if( output_file_name_.length() == 0 && fs->ma28_.lp() ) {
+		fs->ma28_.mp(0);
+		fs->ma28_.lp(0);
+	} 
+}
+
+void DirectSparseSolverMA28::print_ma28_outputs(
+	bool                               ma28ad_bd
+	,index_type                        iflag
+	,const FactorizationStructureMA28  &fs
+	,const value_type                  w[]
+	,std::ostream                      *out
+	)
+{
+	if( print_ma28_outputs_ && out ) {
+		*out << "\nReturn parameters from MA28 (call number = " << ++file_output_num_ << ")\n";
+		if( fs.ma28_.grow() == FortranTypes::TRUE )
+			*out << "w(1)   = " << w[0] << std::endl;
+		*out << "rmin   = " << fs.ma28_.rmin() << std::endl;
+		*out << "irncp  = " << fs.ma28_.irncp() << std::endl;
+		*out << "icncp  = " << fs.ma28_.icncp() << std::endl;
+		*out << "minirn = " << fs.ma28_.minirn() << std::endl;
+		*out << "minicn = " << fs.ma28_.minicn() << std::endl;
+		*out << "irank  = " << fs.ma28_.irank() << std::endl;
+		*out << "themax = " << fs.ma28_.themax() << std::endl;
+		if( fs.ma28_.lbig() == FortranTypes::TRUE )
+			*out << "big    = " << fs.ma28_.big() << std::endl;
+		*out << "ndrop  = " << fs.ma28_.ndrop() << std::endl;
+		if( iflag >= 0 ) {
+			*out << "\nAnalysis:\n"
+				 << "estimated_fillin_ratio can be reduced to max(minirn,minicn)/nz = "
+				 << "max(" << fs.ma28_.minirn() << "," << fs.ma28_.minicn() << ")/" << fs.nz_
+				 << " = " << std::_MAX( fs.ma28_.minirn(), fs.ma28_.minicn() ) / (double)fs.nz_
+				 << std::endl;
+		}
+	}
+}
 
 void DirectSparseSolverMA28::ThrowIFlagException(index_type iflag)
 {

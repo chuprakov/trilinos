@@ -20,11 +20,13 @@
 
 #include <valarray>
 #include <vector>
+#include <string>
 
 #include "DirectSparseSolverImp.h"
 #include "MA28Solver.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/IVector.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace SparseSolverPack {
 
@@ -44,12 +46,47 @@ public:
 
 	//@}
 
+	/** @name Control parameters */
+	//@{
+
+	/// Pivot tolerance versus sparsity
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, u )
+
+	/// If true, than an estimate of growth of the factors is computed
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, grow )
+
+	/// Drop tolerance for an incomplete factorization
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, tol )
+
+	/// Number of columns to search to reduce fill-in
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( index_type, nsrch )
+
+	/// If true, then the largest entry encountered is returned
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, lbig )
+
+	/// If true, then outputs from ma28 are printed to output stream
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_ma28_outputs )
+
+	/// If output_file != "", then output from MA28 is sent to this file.
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, output_file_name )
+
+	//@}
+
 	/** @name Constructors/initializers */
 	//@{
 
 	///
-	/** Constructs with default \c estimated_fillin_ratio==10.0 */
-	DirectSparseSolverMA28();
+	/** Default constructor */
+	DirectSparseSolverMA28(
+		value_type          estimated_fillin_ratio  = 10.0
+		,value_type         u                       = 0.1
+		,bool               grow                    = false
+		,value_type         tol                     = 0.0
+		,index_type         nsrch                   = 4
+		,bool               lbig                    = false
+		,bool               print_ma28_outputs      = false
+		,const std::string& output_file_name        = ""
+		);
 
 	//@}
 
@@ -104,7 +141,6 @@ protected:
 		// /////////////////////////////////////////
 		// Private data members
 		mutable MA28_Cpp::MA28Solver ma28_; // Management of common block data
-		value_type	fillin_ratio_;
 		// Keep a memory of the size of the system to check for consistent usage.
 		index_type  m_;     // number of rows (keep for checks on consistancy)
 		index_type  n_;     // number of columns ("")
@@ -126,8 +162,6 @@ protected:
 		IVector     row_perm_;
 		IVector     col_perm_;
 		index_type  rank_;
-		 // flag for if a control variable has been changed
-		bool	cntr_var_changed_;
 		// /////////////////////////////////////////
 		// Private member functions
 		///
@@ -206,10 +240,24 @@ private:
 	// /////////////////////////////////
 	// Private data members
 
-	value_type estimated_fillin_ratio_;
+	value_type                               estimated_fillin_ratio_;
+	MemMngPack::ref_count_ptr<std::ostream>  output_file_;
+	int                                      file_output_num_;
 
 	// ////////////////////////////////
 	// Private member functions
+
+	// Set MA28 control parameters
+	void set_ma28_parameters( FactorizationStructureMA28* fs );
+
+	// Print MA28 return parameters
+	void print_ma28_outputs(
+		bool                               ma28ad_bd
+		,index_type                        iflag
+		,const FactorizationStructureMA28  &fs
+		,const value_type                  w[]
+		,std::ostream                      *out
+		);
 
 	// Throw an exception for an iflag error
 	void ThrowIFlagException(index_type iflag);
