@@ -94,6 +94,14 @@ const NLPInterfacePack::Vector& NLPInterfacePack::NLP::c() const
 
 // calculations
 
+void NLPInterfacePack::NLP::set_mult_calc(bool mult_calc) const
+{}
+
+bool NLPInterfacePack::NLP::mult_calc() const
+{
+	return false;
+}
+
 void NLPInterfacePack::NLP::calc_f(const VectorSlice& x, bool newx) const
 {
 	StandardCompositionRelationshipsPack::assert_role_name_set(f_c_.f, "NLP::calc_f()", name_f);

@@ -223,7 +223,7 @@ public:
 	  * See the <<std comp>> stereotype definition.
 	  *
 	  * Preconditions: \begin{itemize}
-	  * \item #this->set_info()# has been called before this member (throw NoRefSet)
+	  * \item #this->get_info() != NULL# (throw #NoRefSet#)
 	  * \end{itemize}
 	  *
 	  * Postconditions: \begin{itemize}
@@ -243,12 +243,20 @@ public:
 	///
 	/** Set whether the subclass can update multiple quanities to save recalculations.
 	  *
+	  * The default implementation does nothing.
+	  *
 	  * @param	set_mult_calc	[I] true: The subclass is allowed to update multiple quantities if it is
 	  *							more efficient to do so.  For example, calling calc_f(...) to update 'f'
 	  *							may result in an update of 'c' if it is more efficent to do so.
 	  *							false: The subclass is not allowed to update multiple quantities.
 	  */
-	virtual void set_mult_calc(bool mult_calc) const = 0;
+	virtual void set_mult_calc(bool mult_calc) const;
+	///
+	/** Query whether the NLP is allowed to perform multiple updates.
+	 *
+	 * The default implementation just returns false.
+	 */
+	virtual bool mult_calc() const;
 	///
 	/** Set the scaling of the objective function.
 	  */
@@ -348,23 +356,48 @@ protected:
 	/// Return pointer to set quantities
 	const ZeroOrderInfo zero_order_info() const;
 
-	/** @name Protected methods to be overridden by subclasses */
+	/** @name Protected methods to be overridden by subclasses
+	 */
 	//@{
 
 	///
 	/** Overridden to compute f(x) and perhaps c(x) (if multiple calculaiton = true).
 	 *
-	 * @param x           [in]  Unknown vector (size n).
-	 * @param newx        [in]  True if is a new point.
-	 * @param zero_order  [out] Pointers to f and c
+	 * Preconditions:\begin{itemize}
+	 * \item #x.size() == this->imp_n_full()# (throw #std::length_error#)
+	 * \item #zero_order_info.f != NULL# (throw #std::invalid_argument#)
+	 * \end{itemize}
+	 *
+	 * Postconditions:\begin{itemize}
+	 * \item #*zero_order_info.f# is updated to f(x).
+	 * \end{itemize}
+	 *
+	 * @param x       [in]  Unknown vector (size n).
+	 * @param newx    [in]  True if is a new point.
+	 * @param zero_order_info
+	 *                [out] Pointers to f and c.  If #zero_order_info.c != NULL# and #this->mult_calc() == true#
+	 *                      then it is allowed that #*zero_order_info.c# will be resized (to #this->m()#) and set
+	 *                      on output.
 	 */
 	virtual void imp_calc_f(const VectorSlice& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
 	///
 	/** Overridden to compute c(x) and perhaps f(x) (if multiple calculaiton = true).
 	 *
-	 * @param x           [in]  Unknown vector (size n).
-	 * @param newx        [in]  True if is a new point.
-	 * @param zero_order  [out] Pointers to f and c
+	 * Preconditions:\begin{itemize}
+	 * \item #x.size() == this->imp_n_full()# (throw #std::length_error#)
+	 * \item #zero_order_info.c != NULL# (throw #std::invalid_argument#)
+	 * \end{itemize}
+	 *
+	 * Postconditions:\begin{itemize}
+	 * \item #zero_order_info.c->size() == this->n()#
+	 * \item #*zero_order_info.c# is updated to c(x).
+	 * \end{itemize}
+	 *
+	 * @param x       [in]  Unknown vector (size n).
+	 * @param newx    [in]  True if is a new point.
+	 * @param zero_order_info
+	 *                [out] Pointers to f and c.  If #zero_order_info.f != NULL# and #this->mult_calc() == true#
+	 *                      then it is allowed that #*zero_order_info.f# will be set on output.
 	 */
 	virtual void imp_calc_c(const VectorSlice& x, bool newx, const ZeroOrderInfo& zero_order_info) const = 0;
 
