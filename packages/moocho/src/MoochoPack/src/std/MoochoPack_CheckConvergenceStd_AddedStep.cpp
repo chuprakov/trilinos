@@ -25,7 +25,7 @@ ReducedSpaceSQPPack::value_type
 assert_is_number( ReducedSpaceSQPPack::value_type val, const char name[] )
 {
 	typedef std::numeric_limits<ReducedSpaceSQPPack::value_type> nl_t;
-	if( val == nl_t::infinity() || val != val ) {
+	if( val >= nl_t::max() || val != val ) {
 		std::ostringstream omsg;
 		omsg
 			<<	"CheckConvergenceStd_AddedStep::do_step(...) : Error, "

@@ -15,7 +15,7 @@ namespace LinAlgPack {
   */
 inline
 std::istream& operator>>(std::istream& is, GenMatrix& gm)
-{	return input(is,&gm,0); }
+{	return input(is,&gm,(LinAlgPackIO::fmtflags)0); }
 
 ///
 /** GenMatrixSlice input stream operator.
@@ -24,7 +24,7 @@ std::istream& operator>>(std::istream& is, GenMatrix& gm)
   */
 inline
 std::istream& operator>>(std::istream& is, GenMatrixSlice& gms)
-{	return input(is,&gms,0); }
+{	return input(is,&gms,(LinAlgPackIO::fmtflags)0); }
 
 }	// end namespace LinAlgPack
 

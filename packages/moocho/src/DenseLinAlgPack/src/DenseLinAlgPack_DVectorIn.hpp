@@ -15,7 +15,7 @@ namespace LinAlgPack {
   */
 inline
 std::istream& operator>>(std::istream& is, Vector& v)
-{	return input(is,&v,0); }
+{	return input(is,&v,(LinAlgPackIO::fmtflags)0); }
 
 ///
 /** VectorSlice input stream operator.
@@ -24,7 +24,7 @@ std::istream& operator>>(std::istream& is, Vector& v)
   */
 inline
 std::istream& operator>>(std::istream& is, VectorSlice& vs)
-{	return input(is,&vs,0); }
+{	return input(is,&vs,(LinAlgPackIO::fmtflags)0); }
 
 }	// end namespace LinAlgPack
 

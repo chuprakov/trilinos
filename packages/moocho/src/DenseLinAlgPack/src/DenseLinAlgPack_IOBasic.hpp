@@ -6,6 +6,7 @@
 #ifndef LINALGPACK_IO_BASIC_H
 #define LINALGPACK_IO_BASIC_H
 
+#include <ios>
 #include <stdexcept>
 
 #include "LinAlgPackTypes.h"

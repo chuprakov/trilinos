@@ -37,7 +37,7 @@ public:
 			, const SpVectorSlice::const_iterator& bu_begin
 			, const SpVectorSlice::const_iterator& bu_end
 			, SpVectorSlice::difference_type bu_offset
-			, value_type big_bnd = std::numeric_limits<value_type>::infinity()		)
+			, value_type big_bnd = std::numeric_limits<value_type>::max()		)
 		: bl_itr_(bl_begin), bl_end_(bl_end), bu_itr_(bu_begin), bu_end_(bu_end)
 			, bl_offset_(bl_offset), bu_offset_(bu_offset)
 			, big_bnd_(big_bnd)

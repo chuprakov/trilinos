@@ -20,7 +20,7 @@ namespace GeneralIterationPack {
 
 Algorithm::Algorithm()
 	: running_state_(NOT_RUNNING), max_iter_(100)
-		, max_run_time_(std::numeric_limits<double>::infinity())
+		, max_run_time_(std::numeric_limits<double>::max())
 		, next_step_name_(0), do_step_next_called_(false), reconfigured_(false)
 {}
 

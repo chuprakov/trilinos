@@ -16,7 +16,7 @@ void ConstrainedOptimizationPack::vector_change_stats(
 	LinAlgPack::VopV_assert_sizes( x.size(), d.size() );
 	const value_type
 		min_num		= std::numeric_limits<value_type>::min(),
-		inf			= std::numeric_limits<value_type>::infinity();
+		inf			= std::numeric_limits<value_type>::max();
 	// Initialize statistics
 	*max_term	= 0.0;
 	*max_k		= 0;

@@ -6,6 +6,7 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <typeinfo>
 
 #include "AlgorithmState.h"
 #include "IterQuantityAccess.h"
