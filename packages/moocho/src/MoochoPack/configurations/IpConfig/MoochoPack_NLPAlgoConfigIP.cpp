@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// rSQPAlgo_ConfigMamaJama.cpp
+// Algo_ConfigIP.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -21,7 +21,7 @@
 
 #include "Misc/include/debug.h"
 
-#include "rSQPAlgo_ConfigMamaJama.h"
+#include "Algo_ConfigIP.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgoContainer.h"
 #include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"               // Y, Z
@@ -168,9 +168,9 @@ namespace ReducedSpaceSQPPack {
 
 //
 // Here is where we define the default values for the algorithm.  These
-// should agree with what are in the rSQPpp.opt.rSQPAlgo_ConfigMamaJama file.
+// should agree with what are in the rSQPpp.opt.Algo_ConfigIP file.
 //
-rSQPAlgo_ConfigMamaJama::SOptionValues::SOptionValues()
+Algo_ConfigIP::SOptionValues::SOptionValues()
 	:direct_linear_solver_type_(LA_AUTO)
 	,null_space_matrix_type_(NULL_SPACE_MATRIX_AUTO)
 	,range_space_matrix_type_(RANGE_SPACE_MATRIX_AUTO)
@@ -189,7 +189,7 @@ rSQPAlgo_ConfigMamaJama::SOptionValues::SOptionValues()
 	,full_steps_after_k_(-1)
 {}
 
-rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
+Algo_ConfigIP::Algo_ConfigIP(
 	const basis_sys_ptr_t                     &basis_sys
 	,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy
 	)
@@ -197,7 +197,7 @@ rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
 	this->initialize(basis_sys,var_reduct_orthog_strategy);
 }
 
-void rSQPAlgo_ConfigMamaJama::initialize(
+void Algo_ConfigIP::initialize(
 	const basis_sys_ptr_t                     &basis_sys
 	,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy
 	)
@@ -206,25 +206,25 @@ void rSQPAlgo_ConfigMamaJama::initialize(
 	var_reduct_orthog_strategy_ = var_reduct_orthog_strategy;
 }
 
-rSQPAlgo_ConfigMamaJama::~rSQPAlgo_ConfigMamaJama()
+Algo_ConfigIP::~Algo_ConfigIP()
 {
 	// No need to really do anything!
 }
 
 // overridden from rSQPAlgo_Config
 
-void rSQPAlgo_ConfigMamaJama::set_options( const options_ptr_t& options )
+void Algo_ConfigIP::set_options( const options_ptr_t& options )
 {
 	options_ = options;
 }
 
 const rSQPAlgo_Config::options_ptr_t&
-rSQPAlgo_ConfigMamaJama::get_options() const
+Algo_ConfigIP::get_options() const
 {
 	return options_;
 }
 
-void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
+void Algo_ConfigIP::config_algo_cntr(
 	rSQPAlgoContainer   *algo_cntr
 	,std::ostream       *trase_out
 	)
@@ -238,7 +238,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		*trase_out
 			<< std::endl
 			<< "*****************************************************************\n"
-			<< "*** rSQPAlgo_ConfigMamaJama configuration                     ***\n"
+			<< "*** Algo_ConfigIP configuration                     ***\n"
 			<< "***                                                           ***\n"
 			<< "*** Here, summary information about how the algorithm is      ***\n"
 			<< "*** configured is printed so that the user can see how the    ***\n"
@@ -322,7 +322,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		else {
 			THROW_EXCEPTION(
 				true, std::logic_error
-				,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+				,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
 				"the NLP object of type \'" << typeid(algo->nlp()).name() <<
 				"\' does not support the NLPFirstOrderDirect or "
 				"NLPFirstOrderInfo interfaces!" );
@@ -634,7 +634,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 		THROW_EXCEPTION( // ToDo: Remove this and support mI > 0 in the futrue!
 			mI, std::logic_error
-			,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
+			,"Algo_ConfigIP::config_alg_cntr(...) : Error, "
 			"general inequaity constraints are not supported yet!" );
 		if( tailored_approach ) {
 			// NLPFirstOrderDirect
@@ -1213,7 +1213,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						{
 							THROW_EXCEPTION(
 								true, std::logic_error
-								,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+								,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
 								"The quansi_newton options of PBFGS and LPBFGS have not been updated yet!" );
 							break;
 						}
@@ -1320,7 +1320,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 //								= mmp::rcp(new  MeritFunc_PenaltyParamUpdateWithMult_AddedStep());
 							THROW_EXCEPTION(
 								true, std::logic_error
-								,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+								,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
 								"The l1_penalty_parameter_update option of MULT_FREE has not been updated yet!" );
 							break;
 						case L1_PENALTY_PARAM_MULT_FREE:
@@ -1338,7 +1338,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 //											mmp::rcp_implicit_cast<MeritFuncNLP>(merit_func) );
 					THROW_EXCEPTION(
 						true, std::logic_error
-						,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+						,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
 						"The merit_function_type options of MODIFIED_L1 and MODIFIED_L1_INCR have not been updated yet!" );
 					break;
 				default:
@@ -1376,14 +1376,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				case LINE_SEARCH_2ND_ORDER_CORRECT: {
 					THROW_EXCEPTION(
 						true, std::logic_error
-						,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+						,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
 						"The line_search_method option of 2ND_ORDER_CORRECT has not been updated yet!" );
 					break;
 				}
 				case LINE_SEARCH_WATCHDOG: {
 					THROW_EXCEPTION(
 						true, std::logic_error
-						,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+						,"Algo_ConfigIP::config_algo_cntr(...) : Error, "
 						"The line_search_method option of WATCHDOG has not been updated yet!" );
 					break;
 				}
@@ -1419,7 +1419,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						<< "NLP (m == 0, mI == 0, num_bounded_x == 0) ...\n";
 				THROW_EXCEPTION(
 					m == 0 && mI == 0 && nb == 0, std::logic_error
-					,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
+					,"Algo_ConfigIP::config_alg_cntr(...) : Error, "
 					"Unconstrained NLPs are not supported yet!" );
 			}
 			else {
@@ -1432,7 +1432,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						<< "NLP (m == 0, mI == 0, num_bounded_x > 0) ...\n";
 				THROW_EXCEPTION(
 					m == 0 && mI == 0 && nb == 0, std::logic_error
-					,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
+					,"Algo_ConfigIP::config_alg_cntr(...) : Error, "
 					"Bound constrained NLPs are not supported yet!" );
 			}
 		}
@@ -1446,7 +1446,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					<< "NLP (n == m) ...\n";
 			THROW_EXCEPTION(
 				n == m, std::logic_error
-				,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
+				,"Algo_ConfigIP::config_alg_cntr(...) : Error, "
 				"Nonlinear equation (NLE) problems are not supported yet!" );
 			assert(0); // ToDo: add the step objects for this algorithm
 		}
@@ -1620,14 +1620,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	
 }
 
-void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface* _algo)
+void Algo_ConfigIP::init_algo(rSQPAlgoInterface* _algo)
 {
 	using DynamicCastHelperPack::dyn_cast;
 	namespace mmp = MemMngPack;
 
 	THROW_EXCEPTION(
 		_algo == NULL, std::invalid_argument
-		,"rSQPAlgo_ConfigMamaJama::init_algo(_algo) : Error, "
+		,"Algo_ConfigIP::init_algo(_algo) : Error, "
 		"_algo can not be NULL" );
 
 	rSQPAlgo             &algo    = dyn_cast<rSQPAlgo>(*_algo);
@@ -1655,7 +1655,7 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface* _algo)
 
 // private
 
-void rSQPAlgo_ConfigMamaJama::readin_options(
+void Algo_ConfigIP::readin_options(
 	  const OptionsFromStreamPack::OptionsFromStream     &options
 	, SOptionValues                                      *ov
 	, std::ostream                                       *trase_out
@@ -1669,8 +1669,8 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 
 	assert(ov);	// only a local class error
 
-	// Get the options group for "rSQPAlgo_ConfigMamaJama"
-	const std::string opt_grp_name = "rSQPAlgo_ConfigMamaJama";
+	// Get the options group for "Algo_ConfigIP"
+	const std::string opt_grp_name = "Algo_ConfigIP";
 	const OptionsFromStream::options_group_t optgrp = options.options_group( opt_grp_name );
 	if( OptionsFromStream::options_group_exists( optgrp ) ) {
 
@@ -1724,7 +1724,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 #else
 						THROW_EXCEPTION(
 							true, std::logic_error
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : MA28 is not supported,"
+							,"Algo_ConfigIP::readin_options(...) : MA28 is not supported,"
 							" must define SPARSE_SOLVER_PACK_USE_MA28!" );
 #endif
 					} else if( linear_solver == "MA48" ) {
@@ -1733,7 +1733,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 #else
 						THROW_EXCEPTION(
 							true, std::logic_error
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : MA48 is not supported,"
+							,"Algo_ConfigIP::readin_options(...) : MA48 is not supported,"
 							" must define SPARSE_SOLVER_PACK_USE_MA48!" );
 #endif
 					} else if( linear_solver == "AUTO" ) {
@@ -1741,7 +1741,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					} else {
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+							,"Algo_ConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"direct_linear_solver\" "
 							"Only the options \'AUTO\' \'MA28\' and \'MA48\' are avalible." );
 					}
@@ -1759,7 +1759,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					} else {
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+							,"Algo_ConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"null_space_matrix\" "
 							", Only the options for Z of EXPLICIT, IMPLICIT"
 							", and AUTO are avalible."	);
@@ -1778,7 +1778,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					else
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+							,"Algo_ConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"range_space_matrix\" "
 							", Only the options for Z of COORDINATE,"
 							", ORTHOGONAL and AUTO are avalible."	);
@@ -1806,7 +1806,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					else
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+							,"Algo_ConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"quasi_newton\" "
 							", Only options of BFGS, PBFGS"
 							", LBFGS, LPBFGS and AUTO are avalible."
@@ -1839,7 +1839,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					else
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+							,"Algo_ConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"hessian_initialization\" "
 							", Only options of IDENTITY, FINITE_DIFF_SCALE_IDENTITY,"
 							" FINITE_DIFF_DIAGONAL, FINITE_DIFF_DIAGONAL_ABS and AUTO"
@@ -1859,7 +1859,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 #else
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : QPOPT is not supported,"
+							,"Algo_ConfigIP::readin_options(...) : QPOPT is not supported,"
 							" must define CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT!" );
 #endif
 					} else if( qp_solver == "QPKWIK" ) {
@@ -1869,7 +1869,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					} else {
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+							,"Algo_ConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"qp_solver\" "
 							"Only qp solvers QPOPT, QPSOL, QPKWIK, QPSCHUR and AUTO are avalible."	);
 					}
@@ -1896,7 +1896,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					} else {
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+							,"Algo_ConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"line_search_method\".\n"
 							"Only the options NONE, DIRECT, 2ND_ORDER_CORRECT, FILTER, WATCHDOG "
 							"and AUTO are avalible." );
@@ -1917,7 +1917,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					else
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+							,"Algo_ConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"merit_function_type\".\n"
 							"Only the options L1, MODIFIED_L1, MODIFIED_L1_INCR "
 							"and AUTO are avalible." );
@@ -1938,7 +1938,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					else
 						THROW_EXCEPTION(
 							true, std::invalid_argument
-							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+							,"Algo_ConfigIP::readin_options(...) : "
 							"Error, incorrect value for \"l1_penalty_param_update\".\n"
 							"Only the options WITH_MULT, MULT_FREE and AUTO"
 							"are avalible."  );
@@ -1952,7 +1952,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 	else {
 		if(trase_out)
 			*trase_out
-				<< "\n\n*** Warning!  The options group \"rSQPAlgo_ConfigMamaJama\" was not found.\n"
+				<< "\n\n*** Warning!  The options group \"Algo_ConfigIP\" was not found.\n"
 				<< "Using a default set of options instead ... \n";
 	}
 }
@@ -1961,7 +1961,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 // This is where some of the default options are set and the user is alerted to what their
 // value is.
 //
-void rSQPAlgo_ConfigMamaJama::set_default_options( 
+void Algo_ConfigIP::set_default_options( 
 	const SOptionValues     &uov
 	,SOptionValues          *cov
 	,std::ostream           *trase_out

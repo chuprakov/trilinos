@@ -102,7 +102,7 @@ extern const std::string nu_name;
 ///
 /** Add class declarations for an arbitrary iteration quantity
  */
-#define RSQP_STATE_IQ_DECL(TYPE,NAME)                                     \
+#define STATE_IQ_DECL(TYPE,NAME)                                          \
 	virtual IterQuantityAccess<TYPE>&       NAME();                       \
 	virtual const IterQuantityAccess<TYPE>& NAME() const;                 \
 private:                                                                  \
@@ -112,20 +112,20 @@ public:
 ///
 /** Add class declarations for an index (i.e. index_type) iteration quantity
  */
-#define RSQP_STATE_INDEX_IQ_DECL(NAME)                                    \
-    RSQP_STATE_IQ_DECL(index_type,NAME)                                   \
+#define STATE_INDEX_IQ_DECL(NAME)                                    \
+    STATE_IQ_DECL(index_type,NAME)                                   \
 
 ///
 /** Add class declarations for a scalar (i.e. value_type) iteration quantity
  */
-#define RSQP_STATE_SCALAR_IQ_DECL(NAME)                                   \
-    RSQP_STATE_IQ_DECL(value_type,NAME)                                   \
+#define STATE_SCALAR_IQ_DECL(NAME)                                   \
+    STATE_IQ_DECL(value_type,NAME)                                   \
 
 ///
 /** Add class declarations for a VectorWithOpMutable iteration quantity.
  */
-#define RSQP_STATE_VECTOR_IQ_DECL(NAME)                                   \
-    RSQP_STATE_IQ_DECL(VectorWithOpMutable,NAME)                          \
+#define STATE_VECTOR_IQ_DECL(NAME)                                   \
+    STATE_IQ_DECL(VectorWithOpMutable,NAME)                          \
 
 ///
 /** Add class definitions for an arbitrary iteration quantity.
@@ -135,7 +135,7 @@ public:
  * just initializes the iq_id for the iteration quantity on the fly and
  * then casts the iteration quantity. 
  */
-#define RSQP_STATE_IQ_DEF(CLASS,TYPE,NAME,NAME_STR)                       \
+#define STATE_IQ_DEF(CLASS,TYPE,NAME,NAME_STR)                            \
 IterQuantityAccess<TYPE>&                                                 \
 CLASS::NAME()                                                             \
 {                                                                         \
@@ -146,7 +146,7 @@ CLASS::NAME()                                                             \
 const IterQuantityAccess<TYPE>&                                           \
 CLASS::NAME() const                                                       \
 {                                                                         \
-	return const_cast<rSQPState*>(this)->NAME();                          \
+	return const_cast<CLASS*>(this)->NAME();                              \
 }
 
 ///
@@ -154,7 +154,7 @@ CLASS::NAME() const                                                       \
  *
  * This implementation will instantiate the IterQuantity object on the fly.
  */
-#define RSQP_STATE_INDEX_IQ_DEF(CLASS,NAME,NAME_STR)                      \
+#define STATE_INDEX_IQ_DEF(CLASS,NAME,NAME_STR)                           \
 IterQuantityAccess<index_type>&                                           \
 CLASS::NAME()                                                             \
 {                                                                         \
@@ -173,7 +173,7 @@ CLASS::NAME() const                                                       \
  *
  * This implementation will instantiate the IterQuantity object on the fly.
  */
-#define RSQP_STATE_SCALAR_IQ_DEF(CLASS,NAME,NAME_STR)                     \
+#define STATE_SCALAR_IQ_DEF(CLASS,NAME,NAME_STR)                          \
 IterQuantityAccess<value_type>&                                           \
 CLASS::NAME()                                                             \
 {                                                                         \
@@ -197,7 +197,7 @@ CLASS::NAME() const                                                       \
  * that is called on *this for the maximum safety and to avoid strage
  * behavior.
  */
-#define RSQP_STATE_VECTOR_IQ_DEF(CLASS,NAME,NAME_STR,VEC_SPC,VEC_RN)      \
+#define STATE_VECTOR_IQ_DEF(CLASS,NAME,NAME_STR,VEC_SPC,VEC_RN)           \
 IterQuantityAccess<VectorWithOpMutable>&                                  \
 CLASS::NAME()                                                             \
 {                                                                         \
@@ -338,7 +338,7 @@ public:
 	//@{
 
     /// num_basis: Counts basis changes durring the algorithm
-	RSQP_STATE_INDEX_IQ_DECL(num_basis)
+	STATE_INDEX_IQ_DECL(num_basis)
 	
 	//@}
 
@@ -346,21 +346,21 @@ public:
 	//@{
 
 	/// x:  The current NLP point
-	RSQP_STATE_VECTOR_IQ_DECL(x)
+	STATE_VECTOR_IQ_DECL(x)
 	/// f:  Objective function value
-	RSQP_STATE_SCALAR_IQ_DECL(f)
+	STATE_SCALAR_IQ_DECL(f)
 	/// Gf:  Gradient of the objective function sorted according to current basis selection ( n x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(Gf)
+	STATE_VECTOR_IQ_DECL(Gf)
 	/// HL:  Hessian of the Lagrangian ( n x n 
-	RSQP_STATE_IQ_DECL(MatrixSymWithOp,HL)
+	STATE_IQ_DECL(MatrixSymWithOp,HL)
 	/// c:  Vector of general nonlinear equality constraints ( m x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(c)
+	STATE_VECTOR_IQ_DECL(c)
 	/// h:  Vector of general nonlinear inequality constraints ( mI x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(h)
+	STATE_VECTOR_IQ_DECL(h)
 	/// Gc:  Gradient of equality constraints ('c') matrix ( n x m )
-	RSQP_STATE_IQ_DECL(MatrixWithOp,Gc)
+	STATE_IQ_DECL(MatrixWithOp,Gc)
 	/// Gh:  Gradient of inequality constraints ('h') matrix ( n x mI )
-	RSQP_STATE_IQ_DECL(MatrixWithOp,Gh)
+	STATE_IQ_DECL(MatrixWithOp,Gh)
 
 	//@}
 
@@ -368,19 +368,19 @@ public:
 	//@{
 
 	/// Y:  Range space matrix for Gc ([Y  Z] is non-singular) ( n x r )
-	RSQP_STATE_IQ_DECL(MatrixWithOp,Y)
+	STATE_IQ_DECL(MatrixWithOp,Y)
 	/// Z:  Null space matrix for Gc(equ_decomp)' (Gc(equ_decomp)' * Z) ( n x (n-r) )
-	RSQP_STATE_IQ_DECL(MatrixWithOp,Z)
+	STATE_IQ_DECL(MatrixWithOp,Z)
 	/// R:  Represents the nonsingular matrix Gc(equ_decomp)' * Y ( r x r )
-	RSQP_STATE_IQ_DECL(MatrixWithOpNonsingular,R)
+	STATE_IQ_DECL(MatrixWithOpNonsingular,R)
 	/// Uy:  Represents Gc(equ_undecomp)' * Y ( (m-r) x r )
-	RSQP_STATE_IQ_DECL(MatrixWithOp,Uy)
+	STATE_IQ_DECL(MatrixWithOp,Uy)
 	/// Uz:  Represents Gc(equ_undecomp)' * Z ( (m-r) x (m-r) )
-	RSQP_STATE_IQ_DECL(MatrixWithOp,Uz)
+	STATE_IQ_DECL(MatrixWithOp,Uz)
 	/// Vy:  Represents Gh' * Y ( mI x r )
-	RSQP_STATE_IQ_DECL(MatrixWithOp,Vy)
+	STATE_IQ_DECL(MatrixWithOp,Vy)
 	/// Vz:  Represents Gh' * Z ( mI x (m-r) )
-	RSQP_STATE_IQ_DECL(MatrixWithOp,Vz)
+	STATE_IQ_DECL(MatrixWithOp,Vz)
 
 	//@}
 
@@ -388,15 +388,15 @@ public:
 	//@{
 
 	/// py:  Range space (dependent) QP solution component ( \c space_range, m x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(py)
+	STATE_VECTOR_IQ_DECL(py)
 	/// Ypy:  Range space (dependent) contribution to search direction (Ypy = Y * py) ( n x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(Ypy)
+	STATE_VECTOR_IQ_DECL(Ypy)
 	/// pz:  Null space (independent) QP solution component ( \c space_null, (n-m) x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(pz)
+	STATE_VECTOR_IQ_DECL(pz)
 	/// Zpz:  Null space (independent) contribution to the search direction (Zpz = Z * pz) ( n x 1)
-	RSQP_STATE_VECTOR_IQ_DECL(Zpz)
+	STATE_VECTOR_IQ_DECL(Zpz)
 	/// d:  Search direction (d = Zpz + Ypy) ( n x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(d)
+	STATE_VECTOR_IQ_DECL(d)
 
 	//@}
 
@@ -404,17 +404,17 @@ public:
 	//@{
 
 	/// rGf:  Reduced gradient of the objective function ( \c space_null, (n-r) x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(rGf)
+	STATE_VECTOR_IQ_DECL(rGf)
 	/// rHL:  Reduced Hessian of the Lagrangian function ( <tt>space_null|space_null</tt>, (n-r) x (n-r) )
-	RSQP_STATE_IQ_DECL(MatrixSymWithOp,rHL)
+	STATE_IQ_DECL(MatrixSymWithOp,rHL)
 	/// w:  QP gradient crossterm correction (Z' * HL * Y * py) ( \c space_null, (n-r) x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(w)
+	STATE_VECTOR_IQ_DECL(w)
 	/// zeta:  QP crossterm dampening parameter [0, 1]
-	RSQP_STATE_SCALAR_IQ_DECL(zeta)
+	STATE_SCALAR_IQ_DECL(zeta)
 	/// qp_grad:  QP gradient (qp_grad = rGf + zeta * w) ( (n-m) x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(qp_grad)
+	STATE_VECTOR_IQ_DECL(qp_grad)
 	/// eta:  QP relaxation parameter [0, 1]
-	RSQP_STATE_SCALAR_IQ_DECL(eta)
+	STATE_SCALAR_IQ_DECL(eta)
 
 	//@}
 
@@ -422,13 +422,13 @@ public:
 	//@{
 
 	/// alpha:  Line seach parameter
-	RSQP_STATE_SCALAR_IQ_DECL(alpha)
+	STATE_SCALAR_IQ_DECL(alpha)
 	/// merit_func_nlp: Primary merit function for the NLP
-	RSQP_STATE_IQ_DECL(MeritFuncNLP,merit_func_nlp)
+	STATE_IQ_DECL(MeritFuncNLP,merit_func_nlp)
 	/// mu:  Merit function penalty parameter
-	RSQP_STATE_SCALAR_IQ_DECL(mu)
+	STATE_SCALAR_IQ_DECL(mu)
 	/// phi:  Merit function value
-	RSQP_STATE_SCALAR_IQ_DECL(phi)
+	STATE_SCALAR_IQ_DECL(phi)
 
 	//@}
 
@@ -436,19 +436,19 @@ public:
 	//@{
 
 	/// Scaled KKT error for optimality ||rGL||
-	RSQP_STATE_SCALAR_IQ_DECL(opt_kkt_err)
+	STATE_SCALAR_IQ_DECL(opt_kkt_err)
 	/// Scaled KKT error for feasibility ||c|| and ||hl <= h <= hu||
-	RSQP_STATE_SCALAR_IQ_DECL(feas_kkt_err)
+	STATE_SCALAR_IQ_DECL(feas_kkt_err)
 	/// GL:  Gradient of the Lagrangian ( n x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(GL)
+	STATE_VECTOR_IQ_DECL(GL)
 	/// rGL:  Reduced gradient of the Lagrangian ( (n-m) x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(rGL)
+	STATE_VECTOR_IQ_DECL(rGL)
 	/// lambda:  Lagrange multipliers for the equality constraints 'c' ( m x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(lambda)
+	STATE_VECTOR_IQ_DECL(lambda)
 	/// lambdaI:  Lagrange multipliers for the ineequality constraints 'h' ( mI x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(lambdaI)
+	STATE_VECTOR_IQ_DECL(lambdaI)
 	/// nu:  Difference between Lagrange multipiers for the upper and lower bounds ( n x 1 )
-	RSQP_STATE_VECTOR_IQ_DECL(nu)
+	STATE_VECTOR_IQ_DECL(nu)
 
 	//@}
 

@@ -157,9 +157,14 @@ public:
 		,SOLVE_RETURN_EXCEPTION        = -4
 	};
 
+	enum EConfigOptions {
+		MAMA_JAMA
+		,INTERIOR_POINT
+	};
+
 	//@}
 
-	/** @name Initialization and algorithm configuraition */
+	/** @name Initialization and algorithm configuration */
 	//@{
 
 	///
@@ -631,6 +636,7 @@ private:
 	mutable bool              do_summary_outputting_;
 	mutable bool              do_journal_outputting_;
 	mutable bool              do_algo_outputting_;
+	mutable int               configuration_;
 #ifndef DOXYGEN_COMPILE
 	nlp_ptr_t                 nlp_;
 	track_ptr_t               track_;

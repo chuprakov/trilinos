@@ -22,7 +22,10 @@
 #include <sstream>
 
 #include "ReducedSpaceSQPPack/Configurations/rSQPppSolver.h"
+
+#include "ReducedSpaceSQPPack/Configurations/ipConfig/Algo_ConfigIP.h"
 #include "ReducedSpaceSQPPack/Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.h"
+
 #include "ReducedSpaceSQPPack/include/rSQPSolverClientInterfaceSetOptions.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgoClientInterface.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgoContainer.h"
@@ -62,6 +65,7 @@ rSQPppSolver::rSQPppSolver()
 	,do_journal_outputting_(true)
 	,do_algo_outputting_(true)
 	,error_out_used_(MemMngPack::rcp(&std::cerr,false))
+	 ,configuration_(MAMA_JAMA)
 {}
 
 void rSQPppSolver::set_nlp(const nlp_ptr_t& nlp)
@@ -480,7 +484,7 @@ void rSQPppSolver::update_solver() const
 		OptionsFromStream::options_group_t optgrp = options_used_->options_group( optgrp_name );
 		if( OptionsFromStream::options_group_exists( optgrp ) ) {
 			
-			const int num_opt = 11;
+			const int num_opt = 12;
 			enum EOptions {
 				WORKSPACE_MB
 				,OBJ_SCALE
@@ -493,6 +497,7 @@ void rSQPppSolver::update_solver() const
 				,ALGO_TIMING
 				,GENERATE_STATS_FILE
 				,PRINT_OPT_GRP_NOT_ACCESSED
+				,CONFIGURATION
 			};
 			const char* SOptions[num_opt] = {
 				"workspace_MB"
@@ -506,7 +511,18 @@ void rSQPppSolver::update_solver() const
 				,"algo_timing"
 				,"generate_stats_file"
 				,"print_opt_grp_not_accessed"
+				,"configuration"
 			};
+			
+			const int num_config_opt = 2;
+
+			const char* SConfigOptions[num_config_opt] = {
+				"mama_jama"
+				,"interior_point"
+			};
+
+			StringToIntMap	config_map( optgrp_name, num_config_opt, SConfigOptions );
+
 			StringToIntMap	opt_map( optgrp_name, num_opt, SOptions );
 			
 			OptionsFromStream::options_group_t::const_iterator itr = optgrp.begin();
@@ -545,6 +561,9 @@ void rSQPppSolver::update_solver() const
 					case PRINT_OPT_GRP_NOT_ACCESSED:
 						print_opt_grp_not_accessed_ = StringToBool( "algo_timing", ofsp::option_value(itr).c_str() );
 						break;
+				    case CONFIGURATION:
+						configuration_ = config_map( ofsp::option_value(itr).c_str() );
+					    break;
 					default:
 						assert(0);	// this would be a local programming error only.
 				}
@@ -693,8 +712,14 @@ void rSQPppSolver::update_solver() const
 			
 		// Get and set up the configuration object
 		config_ptr_t _config;
-		if(config_.get() == NULL)
-			_config = rcp::rcp(new rSQPAlgo_ConfigMamaJama());
+		if(config_.get() == NULL) {
+			if (configuration_ == (EConfigOptions) INTERIOR_POINT) {
+			    _config = rcp::rcp(new Algo_ConfigIP());
+            }
+			else {
+			    _config = rcp::rcp(new rSQPAlgo_ConfigMamaJama());
+			}
+        }
 		else
 			_config = config_;
 		_config->set_options( options_used_ );

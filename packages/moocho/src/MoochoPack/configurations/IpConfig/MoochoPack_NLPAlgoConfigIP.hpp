@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// rSQPAlgo_ConfigMamaJama.h
+// Algo_ConfigIP.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifndef RSQP_ALGO_CONFIG_MAMA_JAMA_H
-#define RSQP_ALGO_CONFIG_MAMA_JAMA_H
+#ifndef ALGO_CONFIG_IP_H
+#define ALGO_CONFIG_IP_H
 
 #include "ReducedSpaceSQPPack/include/rSQPAlgo_Config.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
@@ -29,14 +29,14 @@ namespace ReducedSpaceSQPPack {
  *
  * Options specific for to this configuration class and the classes that
  * it works with that can be set through <tt>this->set_options()</tt>, see the file
- * <tt>\ref rSQPAlgo_ConfigMamaJama_opts "rSQPpp.opt.rSQPAlgo_ConfigMamaJama"</tt>.
+ * <tt>\ref Algo_ConfigIP_opts "rSQPpp.opt.Algo_ConfigIP"</tt>.
  *
  * Note that all built-in support for basis permutations and direct sparse solvers
  * can be left out if the macro RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS is defined.
  * 
  * ToDo: Finish documentation!
  */
-class rSQPAlgo_ConfigMamaJama : public rSQPAlgo_Config {
+class Algo_ConfigIP : public rSQPAlgo_Config {
 public:
 
 	///
@@ -46,7 +46,7 @@ public:
                                                                var_reduct_orthog_strategy_ptr_t;
 
 	/// Calls <tt>this->initalize()</tt>
-	rSQPAlgo_ConfigMamaJama( 
+	Algo_ConfigIP( 
 		const basis_sys_ptr_t                     &basis_sys                  = MemMngPack::null
 		,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy = MemMngPack::null
 		);
@@ -62,7 +62,7 @@ public:
 		);
 
 	///
-	~rSQPAlgo_ConfigMamaJama();
+	~Algo_ConfigIP();
 
 	/** Overridden from rSQPAlgo_Config */
 	//@{
@@ -189,17 +189,17 @@ private:
 		, SOptionValues *current_option_values
 		, std::ostream* trase_out );
 
-};	// end class rSQPAlgo_ConfigMamaJama
+};	// end class Algo_ConfigIP
 
-/** \defgroup rSQPAlgo_ConfigMamaJama_opts Options for rSQPAlgo_ConfigMamaJama.
+/** \defgroup Algo_ConfigIP_opts Options for Algo_ConfigIP.
  *
- * The following is the contents of the file <tt>rSQPpp.opt.rSQPAlgo_ConfigMamaJama</tt>
- * which are options specific to the class <tt>ReducedSpaceSQPPack::rSQPAlgo_ConfigMamaJama</tt>
+ * The following is the contents of the file <tt>rSQPpp.opt.Algo_ConfigIP</tt>
+ * which are options specific to the class <tt>ReducedSpaceSQPPack::Algo_ConfigIP</tt>
  * and the class objects that it configures.
  *
- * \verbinclude rSQPpp.opt.rSQPAlgo_ConfigMamaJama
+ * \verbinclude rSQPpp.opt.Algo_ConfigIP
  */
 
 }	// end namespace ReducedSpaceSQPPack 
 
-#endif	// RSQP_ALGO_CONFIG_MAMA_JAMA_H
+#endif	// ALGO_CONFIG_IP_H

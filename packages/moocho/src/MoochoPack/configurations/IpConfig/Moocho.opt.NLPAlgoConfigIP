@@ -1,5 +1,5 @@
 ********************************************************************
-*** All of these options can be used with the rSQPAlgo_ConfigMamaJama
+*** All of these options can be used with the Algo_ConfigIP
 *** algorithm configuration class.  This file will be maintained and
 *** will include every option that users can set.  Most of these
 *** options the user will want to leave alone but they are there
@@ -8,10 +8,10 @@
 begin_options
 
 **********************************************************
-*** Options specific for the rSQP algorithm configuration
-*** class rSQPAlgo_ConfigMamaJama.
+*** Options specific for the rSQP IP algorithm configuration
+*** class Algo_ConfigIP
 ***
-options_group rSQPAlgo_ConfigMamaJama {
+options_group Algo_ConfigIP {
 
 *** Variable Reduction range/null space decomposition
 
