@@ -28,6 +28,7 @@
 #include "LinAlgPack/include/GenMatrixOp.h"
 #include "LinAlgPack/include/assert_print_nan_inf.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
+#include "ThrowException.h"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;
@@ -214,30 +215,40 @@ void MatrixSymDiagonalSparse::Mp_StMtMtM(
 	}
 }
 
-// Overridden from MatrixConvertToSparseFortranCompatible
+// Overridden from MatrixConvertToSparse
 
-FortranTypes::f_int
-MatrixSymDiagonalSparse::num_nonzeros( EExtractRegion extract_region ) const
+index_type
+MatrixSymDiagonalSparse::num_nonzeros(
+	EExtractRegion        extract_region
+	,EElementUniqueness   element_uniqueness
+	) const
 {
 	return diag().nz();
 }
 
 void MatrixSymDiagonalSparse::coor_extract_nonzeros(
 	EExtractRegion                extract_region
-	,const FortranTypes::f_int    len_Aval
-	,FortranTypes::f_dbl_prec     Aval[]
-	,const FortranTypes::f_int    len_Aij
-	,FortranTypes::f_int          Arow[]
-	,FortranTypes::f_int          Acol[]
-	,const FortranTypes::f_int    row_offset
-	,const FortranTypes::f_int    col_offset
-	 ) const
+	,EElementUniqueness           element_uniqueness
+	,const index_type             len_Aval
+	,value_type                   Aval[]
+	,const index_type             len_Aij
+	,index_type                   Arow[]
+	,index_type                   Acol[]
+	,const index_type             row_offset
+	,const index_type             col_offset
+	) const
 {
 	const SpVectorSlice
 		&diag = this->diag();
 
-	assert( len_Aval == 0 || (len_Aval == diag.nz() && Aval)			);
-	assert( len_Aij  == 0 || (len_Aij  == diag.nz() && Arow && Acol)	);
+	THROW_EXCEPTION(
+		(len_Aval != 0 ? len_Aval != diag.nz() : Aval != NULL)
+		,std::invalid_argument
+		,"MatrixSymDiagonalSparse::coor_extract_nonzeros(...): Error!" );
+	THROW_EXCEPTION(
+		(len_Aij != 0 ? len_Aij != diag.nz() : (Acol != NULL || Acol != NULL) )
+		,std::invalid_argument
+		,"MatrixSymDiagonalSparse::coor_extract_nonzeros(...): Error!" );
 
 	if( len_Aval > 0 ) {
 		SpVectorSlice::const_iterator
@@ -248,7 +259,6 @@ void MatrixSymDiagonalSparse::coor_extract_nonzeros(
 			*l_Aval++ = itr->value();
 		}			
 	}
-
 	if( len_Aij > 0 ) {
 		SpVectorSlice::const_iterator
 			itr;
@@ -261,7 +271,6 @@ void MatrixSymDiagonalSparse::coor_extract_nonzeros(
 			*l_Acol++ = ij + col_offset;
 		}			
 	}
-
 }
 
 }	// end namespace SparseLinAlgPack

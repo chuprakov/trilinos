@@ -16,7 +16,7 @@
 #define SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_H
 
 #include "MatrixSymWithOpSerial.h"
-#include "MatrixConvertToSparseFortranCompatible.h"
+#include "MatrixConvertToSparse.h"
 #include "StandardMemberCompositionMacros.h"
 
 namespace SparseLinAlgPack {
@@ -27,7 +27,7 @@ namespace SparseLinAlgPack {
  */
 class MatrixSymDiagonalSparse
 	: virtual public MatrixSymWithOpSerial
-	, virtual public MatrixConvertToSparseFortranCompatible
+	, virtual public MatrixConvertToSparse
 {
 public:
 
@@ -107,22 +107,25 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixConvertToSparseFortranCompatible */
+	/** @name Overridden from MatrixConvertToSparse */
 	//@{
 
 	///
-	FortranTypes::f_int num_nonzeros( EExtractRegion extract_region ) const;
-
+	index_type num_nonzeros(
+		EExtractRegion        extract_region
+		,EElementUniqueness   element_uniqueness
+		) const;
 	///
 	void coor_extract_nonzeros(
 		EExtractRegion                extract_region
-		,const FortranTypes::f_int    len_Aval
-		,FortranTypes::f_dbl_prec     Aval[]
-		,const FortranTypes::f_int    len_Aij
-		,FortranTypes::f_int          Arow[]
-		,FortranTypes::f_int          Acol[]
-		,const FortranTypes::f_int    row_offset
-		,const FortranTypes::f_int    col_offset
+		,EElementUniqueness           element_uniqueness
+		,const index_type             len_Aval
+		,value_type                   Aval[]
+		,const index_type             len_Aij
+		,index_type                   Arow[]
+		,index_type                   Acol[]
+		,const index_type             row_offset
+		,const index_type             col_offset
 		) const;
 
 	//@}
