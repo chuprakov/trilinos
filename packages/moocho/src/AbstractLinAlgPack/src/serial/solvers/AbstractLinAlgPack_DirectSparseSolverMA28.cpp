@@ -467,12 +467,12 @@ void DirectSparseSolverMA28::imp_factor(
 void DirectSparseSolverMA28::set_ma28_parameters( FactorizationStructureMA28* fs )
 {
 	// Set common block parameters
-	fs->ma28_.lblock( FortranTypes::FALSE ); // Do not permute to block triangular form (*** This is critical!)
+	fs->ma28_.lblock( FortranTypes::F_FALSE ); // Do not permute to block triangular form (*** This is critical!)
 	fs->u_ = u_;
-	fs->ma28_.grow( grow_ ? FortranTypes::TRUE : FortranTypes::FALSE );
+	fs->ma28_.grow( grow_ ? FortranTypes::F_TRUE : FortranTypes::F_FALSE );
 	fs->ma28_.tol(tol_);
 	fs->ma28_.nsrch(nsrch_);
-	fs->ma28_.lbig( lbig_ ? FortranTypes::TRUE : FortranTypes::FALSE );
+	fs->ma28_.lbig( lbig_ ? FortranTypes::F_TRUE : FortranTypes::F_FALSE );
 	// Setup output file
 	if( output_file_name_.length() > 0 && fs->ma28_.lp() == 0 ) {
 		// Open a fortran file
@@ -497,7 +497,7 @@ void DirectSparseSolverMA28::print_ma28_outputs(
 {
 	if( print_ma28_outputs_ && out ) {
 		*out << "\nReturn parameters from MA28 (call number = " << ++file_output_num_ << ")\n";
-		if( fs.ma28_.grow() == FortranTypes::TRUE )
+		if( fs.ma28_.grow() == FortranTypes::F_TRUE )
 			*out << "w(1)   = " << w[0] << std::endl;
 		*out << "rmin   = " << fs.ma28_.rmin() << std::endl;
 		*out << "irncp  = " << fs.ma28_.irncp() << std::endl;
@@ -506,7 +506,7 @@ void DirectSparseSolverMA28::print_ma28_outputs(
 		*out << "minicn = " << fs.ma28_.minicn() << std::endl;
 		*out << "irank  = " << fs.ma28_.irank() << std::endl;
 		*out << "themax = " << fs.ma28_.themax() << std::endl;
-		if( fs.ma28_.lbig() == FortranTypes::TRUE )
+		if( fs.ma28_.lbig() == FortranTypes::F_TRUE )
 			*out << "big    = " << fs.ma28_.big() << std::endl;
 		*out << "ndrop  = " << fs.ma28_.ndrop() << std::endl;
 		if( iflag >= 0 ) {
