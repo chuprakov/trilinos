@@ -45,11 +45,19 @@
 
 #include <assert.h>
 
+#include <typeinfo>
+
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefLBFGS.h"
 #include "ConstrainedOptimizationPack/include/BFGS_helpers.h"
+#include "SparseLinAlgPack/include/VectorDenseEncap.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
+#include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/GenMatrixOut.h"
 #include "LinAlgLAPack/include/LinAlgLAPack.h"
+#include "WorkspacePack.h"
+#include "ThrowException.h"
 
 namespace {
 
@@ -126,73 +134,73 @@ const sym_gms MatrixSymPosDefLBFGS::YTY() const
 // Nonlinined functions
 
 MatrixSymPosDefLBFGS::MatrixSymPosDefLBFGS(
-	size_type   max_size
-    ,size_type  m
+    size_type   m
 	,bool       maintain_original
 	,bool       maintain_inverse
 	,bool       auto_rescaling
 	)
 {
-	initial_setup(max_size,m,maintain_original,maintain_inverse,auto_rescaling);
+	initial_setup(m,maintain_original,maintain_inverse,auto_rescaling);
 }
 
 void MatrixSymPosDefLBFGS::initial_setup(
-	size_type   max_size
-    ,size_type  m
+    size_type   m
 	,bool       maintain_original
 	,bool       maintain_inverse
 	,bool       auto_rescaling
 	)
 {
 	// Validate input
-	if( !maintain_original && !maintain_inverse )
-		throw std::invalid_argument(
-			"MatrixSymPosDefLBFGS::initial_setup(...) : "
-			"Error, both maintain_original and maintain_inverse can not both be false!" );
-	if( m < 1 )
-		throw std::invalid_argument(
-			"MatrixSymPosDefLBFGS::set_num_updates_stored(m) : "
-			"Error, the number of storage locations must be > 0" );
+	THROW_EXCEPTION(
+		!maintain_original && !maintain_inverse, std::invalid_argument
+		,"MatrixSymPosDefLBFGS::initial_setup(...) : "
+		"Error, both maintain_original and maintain_inverse can not both be false!" );
+	THROW_EXCEPTION(
+		m < 1, std::invalid_argument
+		,"MatrixSymPosDefLBFGS::set_num_updates_stored(m) : "
+		"Error, the number of storage locations must be > 0" );
+	vec_spc_           = NULL;
 	maintain_original_ = maintain_original;
 	maintain_inverse_  = maintain_inverse;
 	m_                 = m;
 	n_                 = 0; // make uninitialized
-	n_max_             = max_size;
 	num_secant_updates_= 0;
-}
-
-// Overridden from Matrix
-
-size_type MatrixSymPosDefLBFGS::rows() const
-{
-	return n_;
 }
 
 // Overridden from MatrixWithOp
 
+const VectorSpace& MatrixSymPosDefLBFGS::space_cols() const
+{
+	return *vec_spc_;
+}
+
 std::ostream& MatrixSymPosDefLBFGS::output(std::ostream& out) const
 {
 	assert_initialized();
-	out << "*** Limited Memory BFGS matrix.\n"
-		<< "Conversion to dense =\n";
+	out << "\n*** Limited Memory BFGS matrix\n";
+	out << "\nConversion to dense =\n";
 	MatrixWithOp::output(out);
-	out << "\n*** Stored quantities\n"
+	out << "\nStored quantities\n"
+		<< "\nn       = " << n_
+		<< "\nm       = " << m_
+		<< "\nm_bar   = " << m_bar_
 		<< "\ngamma_k = " << gamma_k_ << std::endl;
 	if( m_bar_ ) {
-		out	<< "\nS =\n" << S()
-			<< "\nY =\n" << Y()
+		out	<< "\nS =\n" << *S()
+			<< "\nY =\n" << *Y()
 			<< "\nS'Y =\n" << STY_(1,m_bar_,1,m_bar_)
 			<< "\nlower(S'S) \\ zero diagonal \\ upper(Y'Y) =\n"
 				<< STSYTY_(1,m_bar_+1,1,m_bar_+1)
-			<< "\nQ updated? = " << Q_updated_ << std::endl
-			<< "\nCholesky of schur complement of Q, QJ =\n" << QJ_(1,m_bar_,1,m_bar_);
+			<< "\nQ updated? = " << Q_updated_ << std::endl;
+		if(Q_updated_)
+			out << "\nCholesky of schur complement of Q, QJ =\n" << QJ_(1,m_bar_,1,m_bar_);
 	}
 	return out;
 }
 
-MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)
+MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& mwo)
 {	
-	const MatrixSymPosDefLBFGS *p_m = dynamic_cast<const MatrixSymPosDefLBFGS*>(&m);
+	const MatrixSymPosDefLBFGS *p_m = dynamic_cast<const MatrixSymPosDefLBFGS*>(&mwo);
 	if(p_m) {
 		if( p_m == this ) return *this;	// assignment to self
 		// Important: Assign all members here.
@@ -201,11 +209,10 @@ MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)
 		original_is_updated_ = p_m->original_is_updated_;
 		maintain_inverse_    = p_m->maintain_inverse_;
 		inverse_is_updated_  = p_m->inverse_is_updated_;
-		n_max_ 		         = p_m->n_max_;
+		vec_spc_             = p_m->vec_spc_.get() ? p_m->vec_spc_->clone() : NULL;
 		n_	 		         = p_m->n_;
 		m_			         = p_m->m_;
 		m_bar_		         = p_m->m_bar_;
-		k_bar_		         = p_m->k_bar_;
 		num_secant_updates_  = p_m->num_secant_updates_;
 		gamma_k_	         = p_m->gamma_k_;
 		S_			         = p_m->S_;
@@ -216,8 +223,11 @@ MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)
 		QJ_			         = p_m->QJ_;
 	}
 	else {
-		throw std::invalid_argument("MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)"
-			" : The concrete type of m is not a subclass of MatrixSymPosDefLBFGS as expected" );
+		THROW_EXCEPTION(
+			true,std::invalid_argument
+			,"MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& mwo) : Error, "
+			"The concrete type of mwo \'" << typeid(mwo).name() << "\' is not "
+			"as subclass of MatrixSymPosDefLBFGS as required" );
 	}
 	return *this;
 }
@@ -225,15 +235,19 @@ MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)
 // Level-2 BLAS
 
 void MatrixSymPosDefLBFGS::Vp_StMtV(
-	  VectorSlice* y, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-	, const VectorSlice& x, value_type beta) const
+	  VectorWithOpMutable* y, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	, const VectorWithOp& x, value_type beta
+	) const
 {
+	using AbstractLinAlgPack::Vt_S;
+	using AbstractLinAlgPack::Vp_StV;
+	using AbstractLinAlgPack::Vp_StMtV;
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::V_MtV;
-
-	using LinAlgPack::Vt_S;
-	using LinAlgPack::Vp_StV;
-	using LinAlgPack::Vp_StMtV;
+	typedef VectorDenseEncap         vde;
+	typedef VectorDenseMutableEncap  vdme;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	assert_initialized();
 
@@ -262,77 +276,72 @@ void MatrixSymPosDefLBFGS::Vp_StMtV(
 		invgk = 1.0 / gamma_k_;
 
 	// y = b*y
-
-	if( beta == 0.0 )
-		*y = beta;
-	else
-		Vt_S( y, beta );
+	Vt_S( y, beta );
 
 	// y += (1/gk)*x
-
 	Vp_StV( y, invgk, x );
 
 	if( !m_bar_ )
 		return;	// No updates have been added yet.
 
-	// Get workspace
+	const multi_vec_ptr_t
+		S = this->S(),
+		Y = this->Y();
 
-	if( work_.size() < 4 * m_ )
-		work_.resize( 4 * m_ );
+	// Get workspace
 
 	const size_type
 		mb = m_bar_;
 
-	const size_type
-		t1s = 1,
-		t1n = 2*mb,
-		t2s = t1s+t1n,
-		t2n = 2*mb;
+	wsp::Workspace<value_type>  t1_ws(wss,2*mb);
+	VectorSlice                 t1(&t1_ws[0],t1_ws.size());
+	wsp::Workspace<value_type>  t2_ws(wss,2*mb);
+	VectorSlice                 t2(&t2_ws[0],t2_ws.size());
 
-	VectorSlice
-		t1 = work_(	t1s,	t1s + t1n - 1	),
-		t2 = work_(	t2s,	t2s + t2n - 1 	);
-
-	const GenMatrixSlice
-		&S = this->S(),
-		&Y = this->Y();
+	VectorSpace::vec_mut_ptr_t
+		t = S->space_rows().create_member();
 
 	// t1 = [ (1/gk)*S'*x ]
 	//		[      Y'*x   ]
 
-	V_StMtV( &t1(1,mb), invgk, S, BLAS_Cpp::trans, x );
-	V_MtV( &t1(mb+1,2*mb), Y, BLAS_Cpp::trans, x );
+	V_StMtV( t.get(), invgk, *S, BLAS_Cpp::trans, x );
+	t1(1,mb) = vde(*t)();
+	V_MtV( t.get(), *Y, BLAS_Cpp::trans, x );
+	t1(mb+1,2*mb) = vde(*t)();
 
 	// t2 =	inv(Q) * t1
-
 	V_invQtV( &t2, t1 );
 
 	// y += -(1/gk) * S * t2(1:m)
+	(vdme(*t)() = t2(1,mb));
+	Vp_StMtV( y, -invgk, *S, BLAS_Cpp::no_trans, *t );
 
-	Vp_StMtV( y, -invgk, S, BLAS_Cpp::no_trans, t2(1,mb) );
-
-	// y += -1.0 * Y * t2(m+1,2m)
-
-	Vp_StMtV( y, -1.0, Y, BLAS_Cpp::no_trans, t2(mb+1,2*mb) );
+	// y += -1.0 * Y * t2(m+1,2m
+	(vdme(*t)() = t2(mb+1,2*mb));
+	Vp_StMtV( y, -1.0, *Y, BLAS_Cpp::no_trans, *t );
 
 }
 
-// Overridden from MatrixWithOpFactorized
+// Overridden from MatrixWithOpNonsingular
 
-// Level-2 BLAS
-
-void MatrixSymPosDefLBFGS::V_InvMtV( VectorSlice* y, BLAS_Cpp::Transp trans_rhs1
-	, const VectorSlice& x ) const
+void MatrixSymPosDefLBFGS::V_InvMtV(
+	VectorWithOpMutable* y, BLAS_Cpp::Transp trans_rhs1
+	, const VectorWithOp& x
+	) const
 {
-	using LinAlgPack::V_mV;
-	using LinAlgPack::V_StV;
+	using AbstractLinAlgPack::Vp_StMtV;
 	using LinAlgPack::V_InvMtV;
-
+	using LinAlgOpPack::V_mV;
+	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::Vp_MtV;
-	using LinAlgOpPack::Vp_StMtV;
+	using LinAlgPack::Vp_StMtV;
+	typedef VectorDenseEncap         vde;
+	typedef VectorDenseMutableEncap  vdme;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	assert_initialized();
 
@@ -375,33 +384,25 @@ void MatrixSymPosDefLBFGS::V_InvMtV( VectorSlice* y, BLAS_Cpp::Transp trans_rhs1
 	if( !mb )
 		return;	// No updates have been performed.
 
+	const multi_vec_ptr_t
+		S = this->S(),
+		Y = this->Y();
+
 	// Get workspace
 
-	if( work_.size() < 6*m_ )
-		work_.resize( 6*m_ );
+	wsp::Workspace<value_type>    t1_ws(wss,2*mb);
+	VectorSlice                   t1(&t1_ws[0],t1_ws.size());
+	wsp::Workspace<value_type>    t2_ws(wss,mb);
+	VectorSlice                   t2(&t2_ws[0],t2_ws.size());
+	wsp::Workspace<value_type>    t3_ws(wss,mb);
+	VectorSlice                   t3(&t3_ws[0],t3_ws.size());
+	wsp::Workspace<value_type>    t4_ws(wss,mb);
+	VectorSlice                   t4(&t4_ws[0],t4_ws.size());
+	wsp::Workspace<value_type>    t5_ws(wss,mb);
+	VectorSlice                   t5(&t5_ws[0],t5_ws.size());
 
-	const size_type
-		t1s		= 1,
-		t1n		= 2*mb,
-		t2s		= t1s + t1n,
-		t2n		= mb,
-		t3s		= t2s + t2n,
-		t3n		= mb,
-		t4s		= t3s + t3n,
-		t4n		= mb,
-		t5s		= t4s + t4n,
-		t5n		= mb;
-
-	VectorSlice
-		t1	= work_( t1s, t1s + t1n - 1 ),
-		t2	= work_( t2s, t2s + t2n - 1 ),
-		t3	= work_( t3s, t3s + t3n - 1 ),
-		t4	= work_( t4s, t4s + t4n - 1 ),
-		t5	= work_( t5s, t5s + t5n - 1 );
-
-	const GenMatrixSlice
-		&S = this->S(),
-		&Y = this->Y();
+	VectorSpace::vec_mut_ptr_t
+		t = S->space_rows().create_member();
 
 	const tri_gms
 		&R = this->R();
@@ -411,8 +412,10 @@ void MatrixSymPosDefLBFGS::V_InvMtV( VectorSlice* y, BLAS_Cpp::Transp trans_rhs1
 
 	// t1 = [   S'*x  ]
 	//      [ gk*Y'*x ]
-	V_MtV( &t1(1,mb), S, BLAS_Cpp::trans, x );
-	V_StMtV( &t1(mb+1,2*mb), gamma_k_, Y, BLAS_Cpp::trans, x );
+	V_MtV( t.get(), *S, BLAS_Cpp::trans, x );
+	t1(1,mb) = vde(*t)();
+	V_StMtV( t.get(), gamma_k_, *Y, BLAS_Cpp::trans, x );
+	t1(mb+1,2*mb) = vde(*t)();
 
 	// t2 = inv(R) * t1(1:m)
 	V_InvMtV( &t2, R, BLAS_Cpp::no_trans, t1(1,mb) );
@@ -434,39 +437,34 @@ void MatrixSymPosDefLBFGS::V_InvMtV( VectorSlice* y, BLAS_Cpp::Transp trans_rhs1
 	Vp_V( &t5, t3 );
 
 	// y += S*t5
-	Vp_MtV( y, S, BLAS_Cpp::no_trans, t5 );
+	(vdme(*t)() = t5);
+	Vp_MtV( y, *S, BLAS_Cpp::no_trans, *t );
 
 	// y += -gk*Y*t2
-	Vp_StMtV( y, -gamma_k_, Y, BLAS_Cpp::no_trans, t2 );
+	(vdme(*t)() = t2);
+	Vp_StMtV( y, -gamma_k_, *Y, BLAS_Cpp::no_trans, *t );
 
 }
 
 // Overridden from MatrixSymSecantUpdateable
 
-void MatrixSymPosDefLBFGS::init_identity(size_type n, value_type alpha)
+void MatrixSymPosDefLBFGS::init_identity( const VectorSpace& space_diag, value_type alpha )
 {
 	// Validate input
-	if( alpha <= 0.0 ) {
-		std::ostringstream omsg;
-		omsg
-			<< "MatrixSymPosDefLBFGS::init_identity(n,alpha) : Error, "
-			<< "alpha = " << alpha << " <= 0 is not allowed!";
-		throw std::invalid_argument( omsg.str() );
-	}
-	if( n_max_ == 0 ) {
-		n_max_ = n;
-	}
-	else if( n > n_max_ ) {
-		std::ostringstream omsg;
-		omsg
-			<< "MatrixSymPosDefLBFGS::init_identity(n,alpha) : Error, "
-			<< "n = " << n << " > max_size = " << n_max_;
-		throw std::invalid_argument( omsg.str() );
-	}
+	THROW_EXCEPTION(
+		alpha <= 0.0, std::invalid_argument
+		,"MatrixSymPosDefLBFGS::init_identity(n,alpha) : Error, "
+		"alpha = " << alpha << " <= 0 is not allowed!" );
+	
+	// Set the vector space
+	vec_spc_ = space_diag.clone();
+	vec_spc_.get();
 
-	// Resize storage
-	S_.resize( n_max_, m_ );
-	Y_.resize( n_max_, m_ );
+	// Set storage
+	S_ = vec_spc_->create_members(m_);
+	Y_ = vec_spc_->create_members(m_);
+	assert(S_.get());
+	assert(Y_.get());
 	STY_.resize( m_, m_ );
 	STSYTY_.resize( m_+1, m_+1 );
 	STSYTY_.diag(0) = 0.0;
@@ -474,28 +472,27 @@ void MatrixSymPosDefLBFGS::init_identity(size_type n, value_type alpha)
 	gamma_k_ = 1.0/alpha;
 
 	// Initialize counters
-	k_bar_	= 0;
 	m_bar_	= 0;
 
-	n_ = n;	 // initialized;
+	n_ = vec_spc_->dim();        // initialized;
 	original_is_updated_ = true; // This will never change for now
 	inverse_is_updated_  = true; // This will never change for now
-	num_secant_updates_  = 0;
+	num_secant_updates_  = 0;    // reset this to zero
 }
 
-void MatrixSymPosDefLBFGS::init_diagonal(const VectorSlice& diag)
+void MatrixSymPosDefLBFGS::init_diagonal(const VectorWithOp& diag)
 {
-	using LinAlgPack::norm_inf;
-	init_identity( diag.size(), norm_inf(diag) );
+	init_identity( diag.space(), diag.norm_inf() );
 }
 
 void MatrixSymPosDefLBFGS::secant_update(
-	VectorSlice* s, VectorSlice* y, VectorSlice* Bs)
+	VectorWithOpMutable* s, VectorWithOpMutable* y, VectorWithOpMutable* Bs
+	)
 {
-	using LinAlgPack::dot;
-	using LinAlgPack::norm_2;
-
+	using AbstractLinAlgPack::dot;
 	using LinAlgOpPack::V_MtV;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	assert_initialized();
 
@@ -510,60 +507,60 @@ void MatrixSymPosDefLBFGS::secant_update(
 	try {
 
 	// Update counters
-	if( k_bar_ == m_ ) {
-//		// We are at the end storage so loop back around again
-//		k_bar_ = 1;
+	if( m_bar_ == m_ ) {
 		// We are at the end of the storage so remove the oldest stored update
 		// and move updates to make room for the new update.  This has to be done for the
 		// the matrix to behave properly
 		{for( size_type k = 1; k <= m_-1; ++k ) {
-			S_.col(k) = S_.col(k+1);                              // Shift S.col() to the left
-			Y_.col(k) = Y_.col(k+1);                              // Shift Y.col() to the left
+			S_->col(k) = S_->col(k+1);                            // Shift S.col() to the left
+			Y_->col(k) = Y_->col(k+1);                            // Shift Y.col() to the left
 			STY_.col(k)(1,m_-1) = STY_.col(k+1)(2,m_);            // Move submatrix STY(2,m-1,2,m-1) up and left
 			STSYTY_.col(k)(k+1,m_) = STSYTY_.col(k+1)(k+2,m_+1);  // Move triangular submatrix STS(2,m-1,2,m-1) up and left
 			STSYTY_.col(k+1)(1,k) = STSYTY_.col(k+2)(2,k+1);      // Move triangular submatrix YTY(2,m-1,2,m-1) up and left
 		}}
+		// ToDo: Create an abstract interface, call it MultiVectorShiftVecs, to rearrange S and Y all at once.
+		// This will be important for parallel performance.
 	}
 	else {
-		k_bar_++;
-	}
-	if( m_bar_ < m_ ) {
-		// This is the first few updates where we have not maxed out the storage.
 		m_bar_++;
 	}
-
 	// Set the update vectors
-	S_.col(k_bar_)(1,n_) = *s;
-	Y_.col(k_bar_)(1,n_) = *y;
+	*S_->col(m_bar_) = *s;
+	*Y_->col(m_bar_) = *y;
 
 	// /////////////////////////////////////////////////////////////////////////////////////
 	// Update S'Y
 	//
-	// Update the row and column k_bar
+	// Update the row and column m_bar
 	//
 	//	S'Y = 
 	//
-	//	[	s(1)'*y(1)		...		s(1)'*y(k_bar)		...		s(1)'*y(m_bar)		]
+	//	[	s(1)'*y(1)		...		s(1)'*y(m_bar)		...		s(1)'*y(m_bar)		]
 	//	[	.						.							.					] row
-	//	[	s(k_bar)'*y(1)	...		s(k_bar)'*y(k_bar)	...		s(k_bar)'*y(m_bar)	] k_bar
+	//	[	s(m_bar)'*y(1)	...		s(m_bar)'*y(m_bar)	...		s(m_bar)'*y(m_bar)	] m_bar
 	//	[	.						.							.					]
-	//	[	s(m_bar)'*y(1)	...		s(m_bar)'*y(k_bar)	...		s(m_bar)'*y(m_bar)	]
+	//	[	s(m_bar)'*y(1)	...		s(m_bar)'*y(m_bar)	...		s(m_bar)'*y(m_bar)	]
 	//
-	//								col k_bar
+	//								col m_bar
 	//
 	// Therefore we set:
-	//	(S'Y)(:,k_bar) =  S'*y(k_bar)
-	//	(S'Y)(k_bar,:) =  s(k_bar)'*Y
+	//	(S'Y)(:,m_bar) =  S'*y(m_bar)
+	//	(S'Y)(m_bar,:) =  s(m_bar)'*Y
 
-	const GenMatrixSlice
-		&S = this->S(),
-		&Y = this->Y();
+	const multi_vec_ptr_t
+		S = this->S(),
+		Y = this->Y();
 
-	//	(S'Y)(:,k_bar) =  S'*y(k_bar)
-	V_MtV( &STY_.col(k_bar_)(1,m_bar_), S, BLAS_Cpp::trans, Y.col(k_bar_) );
+	VectorSpace::vec_mut_ptr_t
+		t = S->space_rows().create_member();  // temporary workspace
 
-	//	(S'Y)(k_bar,:)' =  Y'*s(k_bar)
-	V_MtV( &STY_.row(k_bar_)(1,m_bar_), Y, BLAS_Cpp::trans, S.col(k_bar_) );
+	//	(S'Y)(:,m_bar) =  S'*y(m_bar)
+	V_MtV( t.get(), *S, BLAS_Cpp::trans, *y );
+	STY_.col(m_bar_)(1,m_bar_) = VectorDenseEncap(*t)();
+
+	//	(S'Y)(m_bar,:)' =  Y'*s(m_bar)
+	V_MtV( t.get(), *Y, BLAS_Cpp::trans, *s );
+	STY_.row(m_bar_)(1,m_bar_) = VectorDenseEncap(*t)();
 
 	// /////////////////////////////////////////////////////////////////
 	// Update S'S
@@ -572,62 +569,64 @@ void MatrixSymPosDefLBFGS::secant_update(
 	//
 	//	[	s(1)'*s(1)		...		symmetric					symmetric			]
 	//	[	.						.							.					] row
-	//	[	s(k_bar)'*s(1)	...		s(k_bar)'*s(k_bar)	...		symmetric			] k_bar
+	//	[	s(m_bar)'*s(1)	...		s(m_bar)'*s(m_bar)	...		symmetric			] m_bar
 	//	[	.						.							.					]
-	//	[	s(m_bar)'*s(1)	...		s(m_bar)'*s(k_bar)	...		s(m_bar)'*s(m_bar)	]
+	//	[	s(m_bar)'*s(1)	...		s(m_bar)'*s(m_bar)	...		s(m_bar)'*s(m_bar)	]
 	//
-	//								col k_bar
+	//								col m_bar
 	//
 	// Here we will update the lower triangular part of S'S.  To do this we
 	// only need to compute:
-	//		t = S'*s(k_bar) = { s(k_bar)' * [ s(1),..,s(k_bar),..,s(m_bar) ]  }'
+	//		t = S'*s(m_bar) = { s(m_bar)' * [ s(1),..,s(m_bar),..,s(m_bar) ]  }'
 	// then set the appropriate rows and columns of S'S.
 
-	if( work_.size() < m_ )
-		work_.resize(m_);
+	wsp::Workspace<value_type>   work_ws(wss,m_bar_);
+	VectorSlice                  work(&work_ws[0],work_ws.size());
 
-	// work = S'*s(k_bar)
-	V_MtV( &work_(1,m_bar_), S, BLAS_Cpp::trans, S.col(k_bar_) );
+	// work = S'*s(m_bar)
+	V_MtV( t.get(), *S, BLAS_Cpp::trans, *s );
+	work = VectorDenseEncap(*t)();
 
 	// Set row elements
-	STSYTY_.row(k_bar_+1)(1,k_bar_) = work_(1,k_bar_);
+	STSYTY_.row(m_bar_+1)(1,m_bar_) = work;
 	// Set column elements
-	STSYTY_.col(k_bar_)(k_bar_+1,m_bar_+1) = work_(k_bar_,m_bar_);
+	STSYTY_.col(m_bar_)(m_bar_+1,m_bar_+1) = work(m_bar_,m_bar_);
 
 	// /////////////////////////////////////////////////////////////////////////////////////
 	// Update Y'Y
 	//
-	// Update the row and column k_bar
+	// Update the row and column m_bar
 	//
 	//	Y'Y = 
 	//
-	//	[	y(1)'*y(1)		...		y(1)'*y(k_bar)		...		y(1)'*y(m_bar)		]
+	//	[	y(1)'*y(1)		...		y(1)'*y(m_bar)		...		y(1)'*y(m_bar)		]
 	//	[	.						.							.					] row
-	//	[	symmetric		...		y(k_bar)'*y(k_bar)	...		y(k_bar)'*y(m_bar)	] k_bar
+	//	[	symmetric		...		y(m_bar)'*y(m_bar)	...		y(m_bar)'*y(m_bar)	] m_bar
 	//	[	.						.							.					]
 	//	[	symmetric		...		symmetric			...		y(m_bar)'*y(m_bar)	]
 	//
-	//								col k_bar
+	//								col m_bar
 	//
 	// Here we will update the upper triangular part of Y'Y.  To do this we
 	// only need to compute:
-	//		t = Y'*y(k_bar) = { y(k_bar)' * [ y(1),..,y(k_bar),..,y(m_bar) ]  }'
+	//		t = Y'*y(m_bar) = { y(m_bar)' * [ y(1),..,y(m_bar),..,y(m_bar) ]  }'
 	// then set the appropriate rows and columns of Y'Y.
 
-	// work = Y'*y(k_bar)
-	V_MtV( &work_(1,m_bar_), Y, BLAS_Cpp::trans, Y.col(k_bar_) );
+	// work = Y'*y(m_bar)
+	V_MtV( t.get(), *Y, BLAS_Cpp::trans, *y );
+	work = VectorDenseEncap(*t)();
 
 	// Set row elements
-	STSYTY_.col(k_bar_+1)(1,k_bar_) = work_(1,k_bar_);
+	STSYTY_.col(m_bar_+1)(1,m_bar_) = work;
 	// Set column elements
-	STSYTY_.row(k_bar_)(k_bar_+1,m_bar_+1) = work_(k_bar_,m_bar_);
+	STSYTY_.row(m_bar_)(m_bar_+1,m_bar_+1) = work(m_bar_,m_bar_);
 
 	// /////////////////////////////
 	// Update gamma_k
 
 	// gamma_k = s'*y / y'*y
 	if(auto_rescaling_)
-		gamma_k_ = STY_(k_bar_,k_bar_) / STSYTY_(k_bar_,k_bar_+1);
+		gamma_k_ = STY_(m_bar_,m_bar_) / STSYTY_(m_bar_,m_bar_+1);
 
 	// We do not initially update Q unless we have to form a matrix-vector
 	// product later.
@@ -642,191 +641,15 @@ void MatrixSymPosDefLBFGS::secant_update(
 		n_ = 0;
 		throw;
 	}
-}
 
-// Overridden from MatrixSymAddDelUpdateble
-
-void MatrixSymPosDefLBFGS::initialize(
-	value_type         alpha
-	,size_type         max_size
-	)
-{
-	// Validate input
-	if( alpha <= 0.0 ) {
-		std::ostringstream omsg;
-		omsg
-			<< "MatrixSymPosDefLBFGS::initialize(alpha,max_size) : Error, "
-			<< "alpha = " << alpha << " <= 0 is not allowed!";
-		throw std::invalid_argument( omsg.str() );
-	}
-	n_max_ = max_size;
-	this->init_identity(1,alpha);
-}
-
-void MatrixSymPosDefLBFGS::initialize(
-	const sym_gms      &A
-	,size_type         max_size
-	,bool              force_factorization
-	,Inertia           inertia
-	,PivotTolerances   pivot_tols
-	)
-{
-	throw std::runtime_error(
-		"MatrixSymPosDefLBFGS::initialize(A,max_size,force_refactorization,inertia) : Error, "
-		"This function is undefined for this subclass.  I am so sorry for this terrible hack!" );
-}
-
-size_type MatrixSymPosDefLBFGS::max_size() const
-{
-	return n_max_;
-}
-
-MatrixSymAddDelUpdateable::Inertia MatrixSymPosDefLBFGS::inertia() const
-{
-	return Inertia(0,0,n_);
-}
-
-void MatrixSymPosDefLBFGS::set_uninitialized()
-{
-	n_ = 0;
-}
-
-void MatrixSymPosDefLBFGS::augment_update(
-	const VectorSlice  *t
-	,value_type        alpha
-	,bool              force_refactorization
-	,EEigenValType     add_eigen_val
-	,PivotTolerances   pivot_tols
-	)
-{
-	assert_initialized();
-	if( n_ == n_max_ ) {
-		std::ostringstream omsg;
-		omsg
-			<< "MatrixSymPosDefLBFGS::augment_update(...) : Error, "
-			<< "this->rows() = " << n_ << " == this->max_size() = " << n_max_
-			<< " so we can't allow the matrix to grow!";
-		throw std::invalid_argument( omsg.str() );
-	}
-	if( t ) {
-		throw std::invalid_argument(		
-			"MatrixSymPosDefLBFGS::augment_update(...) : Error, "
-			"t must be NULL in this implemention.  Sorry for this hack" );
-	}
-	if( alpha <= 0.0 ) {
-		std::ostringstream omsg;
-		omsg
-			<< "MatrixSymPosDefLBFGS::augment_update(...) : Error, "
-			<< "alpha = " << alpha << " <= 0 is not allowed!";
-		throw std::invalid_argument( omsg.str() );
-	}
-	if( add_eigen_val == MatrixSymAddDelUpdateable::EIGEN_VAL_NEG ) {
-		std::ostringstream omsg;
-		omsg
-			<< "MatrixSymPosDefLBFGS::augment_update(...) : Error, "
-			<< "add_eigen_val == EIGEN_VAL_NEG is not allowed!";
-		throw std::invalid_argument( omsg.str() );
-	}
-	//
-	// Here we will do the simplest thing possible.  We will just  set:
-	//
-	// [ S ] -> S       [ Y ] -> Y
-	// [ 0 ]            [ 0 ]
-	//
-	// and let the new matrix be:
-	//
-	// [ B      0     ] -> B
-	// [ 0  1/gamma_k ]
-	//
-	// Nothing else, not even Q, needs to be updated!
-	//
-	S_.row(n_+1)(1,m_bar_) = 0.0;
-	Y_.row(n_+1)(1,m_bar_) = 0.0;
-	++n_;
-}
-
-void MatrixSymPosDefLBFGS::delete_update(
-	size_type          jd
-	,bool              force_refactorization
-	,EEigenValType     drop_eigen_val
-	,PivotTolerances   pivot_tols
-	)
-{
-	assert_initialized();
-	//
-	// Removing a symmetric row and column jd is the same a removing row
-	// S(jd,:) from S and row Y(jd,:) from Y.  At the same time we must
-	// update S'*Y, S'*S and Y'*Y.  To see how to update these matrices
-	// not that we can represent each column of S and Y as:
-	//
-	//           [ S(1:jd-1,k) ]                 [ Y(1:jd-1,k) ]
-	// S(:,k) =  [ S(jd,k)     ]     , Y(:,k) =  [ Y(jd,k)     ]  , k = 1...m_bar
-	//           [ S(jd+1:n,k) ]                 [ Y(jd+1:n,k) ]
-	//
-	// Using the above, we can write:
-	//
-	// (S'*Y)(p,q) = S(1:jd-1,p)'*Y(1:jd-1,q) + S(jd,p)*Y(jd,q) + S(jd+1:n,p)'*Y(jd+1:n,q)
-	//     , for p = 1...m_bar, q = 1...m_bar
-	//
-	// We see that the new S'*Y and the old differ by only the term S(jd,p)*Y(jd,q).  Therefore, we
-	// only need to subtract off this term in each of the elements in order to update S'*Y for the
-	// deletion of this element jd.  To see how to do this with BLAS, first consider subtracting
-	// of the terms by column as:
-	//
-	// (S'*Y)(:,q) <- (S'*Y)(:,q) - S(jd,:)'*Y(jd,q)
-	//     , for q = 1...m_bar
-	// 
-	// Then, if we put all of the columns together we get:
-	//
-	// (S'*Y)(:,:) <- (S'*Y)(:,:) - S(jd,:)'*Y(jd,:)
-	// =>
-	// (S'*Y) <- (S'*Y) - S.row(jd)*Y.row(jd)'
-	//
-	// In otherwords the above update operation is just an unsymmetric rank-1 update
-	//
-	// Similar updates for S'*S and Y'*Y are derived by just substituting matrices
-	// in to the above update for S'*Y:
-	//
-	// (S'*S) <- (S'*S) - S.row(jd)*S.row(jd)'
-	// 
-	// (Y'*Y) <- (Y'*Y) - Y.row(jd)*Y.row(jd)'
-	//
-	// These updates are symmetric rank-1 updates.
-	//
-	GenMatrixSlice S = this->S();
-	GenMatrixSlice Y = this->Y();
-	GenMatrixSlice STY = this->STY();
-	sym_gms        STS = this->STS();
-	sym_gms        YTY = this->YTY();
-	// (S'*Y) <- (S'*Y) - S.row(jd)*Y.row(jd)'
-	LinAlgPack::ger( -1.0, S.row(jd), Y.row(jd), &STY );
-	// (S'*S) <- (S'*S) - S.row(jd)*S.row(jd)'
-	LinAlgPack::syr( -1.0, S.row(jd), &STS );
-	// (Y'*Y) <- (Y'*Y) - Y.row(jd)*Y.row(jd)'
-	LinAlgPack::syr( -1.0, Y.row(jd), &YTY );
-	// Remove row jd from S and Y one column at a time
-	// (one element at a time!)
-	if( jd < n_ ) {
-		{for( size_type k = 1; k <= m_bar_; ++k ) {
-			value_type *ptr = S.col_ptr(k);
-			std::copy( ptr + jd, ptr + n_, ptr + jd - 1 );
-		}}
-		{for( size_type k = 1; k <= m_bar_; ++k ) {
-			value_type *ptr = Y.col_ptr(k);
-			std::copy( ptr + jd, ptr + n_, ptr + jd - 1 );
-		}}
-	}
-	// Update the size
-	--n_;
-	Q_updated_ = false;
 }
 
 // Private member functions
 
 void MatrixSymPosDefLBFGS::Vp_DtV( VectorSlice* y, const VectorSlice& x ) const
 {
-	LinAlgPack::Vp_MtV_assert_sizes( y->size(), m_bar_, m_bar_
-		, BLAS_Cpp::no_trans, x.size() );
+	LinAlgPack::Vp_MtV_assert_sizes(
+		y->dim(), m_bar_, m_bar_, BLAS_Cpp::no_trans, x.dim() );
 
 	VectorSlice::const_iterator
 		d_itr	= STY_.diag(0).begin(),
@@ -1061,8 +884,10 @@ void MatrixSymPosDefLBFGS::assert_initialized() const
 
 namespace {
 
-void comp_Cb( const GenMatrixSlice& Lb, const VectorSlice& Db_diag
-	, GenMatrixSlice* Cb )
+void comp_Cb(
+	const GenMatrixSlice& Lb, const VectorSlice& Db_diag
+	,GenMatrixSlice* Cb
+	)
 {
 	// Lb * inv(Db) * Lb =
 	//
@@ -1084,9 +909,9 @@ void comp_Cb( const GenMatrixSlice& Lb, const VectorSlice& Db_diag
 	typedef LinAlgPack::size_type size_type;
 	typedef LinAlgPack::value_type value_type;
 
-	assert( Lb.rows() == Cb->rows() && Cb->rows() == Db_diag.size() );
+	assert( Lb.rows() == Cb->rows() && Cb->rows() == Db_diag.dim() ); // only a local error!
 
-	const size_type p = Db_diag.size();
+	const size_type p = Db_diag.dim();
 
 	for( size_type i = 1; i <= p; ++i ) {
 		for( size_type j = i; j <= p; ++j ) {
@@ -1097,7 +922,8 @@ void comp_Cb( const GenMatrixSlice& Lb, const VectorSlice& Db_diag
 		}
 	}
 
-	// ToDo: Make the above operation more efficent if needed!
+	// ToDo: Make the above operation more efficent if needed! (i.e. write
+	// it in fortran or something?).
 }
 
 }	// end namespace
