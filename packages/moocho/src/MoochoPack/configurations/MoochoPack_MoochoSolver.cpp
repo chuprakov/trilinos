@@ -261,7 +261,7 @@ rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
 					return solve_return;
 				}
 			}
-			if(NLPFirstOrderDirect* nlp_fod = dynamic_cast<NLPFirstOrderDirect*>(nlp_.get())) {
+			else if(NLPFirstOrderDirect* nlp_fod = dynamic_cast<NLPFirstOrderDirect*>(nlp_.get())) {
 				const char msg[] = "\nTesting the supported NLPFirstOrderDirect interface ...\n";
 				if(do_summary_outputting())
 					*summary_out_used_ << msg;
