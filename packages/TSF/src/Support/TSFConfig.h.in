@@ -122,6 +122,9 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
+/* define if vsnprintf is supported */
+#undef HAVE_VSNPRINTF
+
 /* Name of package */
 #undef PACKAGE
 

@@ -115,7 +115,7 @@ void TSFOut::vprintf(const char* format, va_list args)
 
 int TSFOut::hack_vsnprintf(char* str, size_t size, const char* format, va_list args)
 {
-#ifndef TFLOP
+#ifdef HAVE_VSNPRINTF
 	return vsnprintf(str, size, format, args);
 #else 
 	static FILE* devnull = fopen("/dev/null", "w");
