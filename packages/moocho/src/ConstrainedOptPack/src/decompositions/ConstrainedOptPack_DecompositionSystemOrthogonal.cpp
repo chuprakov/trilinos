@@ -237,7 +237,15 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 		if(S_ptr_.get() == NULL) {
 			S_ptr_ = var_reduct_orthog_strategy().factory_S()->create();
 		}
-		var_reduct_orthog_strategy().update_S(*D_ptr,S_ptr_.get());
+		try {
+			var_reduct_orthog_strategy().update_S(*D_ptr,S_ptr_.get());
+		}
+		catch( const VarReductOrthog_Strategy::SingularMatrix& except ) {
+			THROW_EXCEPTION(
+				true, SingularDecomposition
+				,"DecompositionSystemOrthogonal::initialize_matrices(...) : Error, update of S failed : "
+				<< except.what() );
+		}
 		R_orth->initialize(C_ptr,D_ptr,S_ptr_);
 	}
 	// ToDo: Implement for undecomposed equalities and general inequalities
