@@ -22,7 +22,7 @@
 #include "MatrixSymHessianRelaxNonSing.hpp"
 #include "ConstraintsRelaxedStd.hpp"
 #include "MatrixSymAddDelBunchKaufman.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
@@ -401,7 +401,7 @@ private:
 	QPSchur                          qp_solver_;
 	QPSchurPack::QPInitFixedFreeStd  qp_;
 	MatrixSymHessianRelaxNonSing     G_relaxed_;
-	VectorWithOpMutableDense         bigM_vec_;
+	VectorMutableDense         bigM_vec_;
 	MatrixSymAddDelBunchKaufman      schur_comp_;
 	DVector                           g_relaxed_;
 	DVector                           b_X_;

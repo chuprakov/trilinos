@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixWithOpGetGMSMutable.hpp
+// MatrixOpGetGMSMutable.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_WITH_OP_GET_GMS_MUTABLE_H
 #define MATRIX_WITH_OP_GET_GMS_MUTABLE_H
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpGetGMS.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpGetGMS.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -37,11 +37,11 @@ namespace AbstractLinAlgPack {
  * These methods should never be called directly.  Instead, use the helper
  * class type <tt>MatrixDenseMutableEncap</tt>.
  */
-class MatrixWithOpGetGMSMutable : virtual public MatrixWithOpGetGMS {
+class MatrixOpGetGMSMutable : virtual public MatrixOpGetGMS {
 public:
 
 	///
-	using MatrixWithOpGetGMS::get_gms_view;
+	using MatrixOpGetGMS::get_gms_view;
 
 	///
 	/** Get a representation of the abstract matrixr in the form <tt>DenseLinAlgPack::DMatrixSlice</tt>.
@@ -79,39 +79,39 @@ public:
 	 */
 	virtual void commit_gms_view(DMatrixSlice* gms_view) = 0;
 
-}; // end class MatrixWithOpGetGMSMutable
+}; // end class MatrixOpGetGMSMutable
 
 ///
-/** Helper class type that simplifies the usage of the <tt>MatrixWithOpGetGMSMutable</tt> interface for clients.
+/** Helper class type that simplifies the usage of the <tt>MatrixOpGetGMSMutable</tt> interface for clients.
  *
- * This takes care of worrying about if the <tt>MatrixWithOpGetGMSMutable</tt> interface is supported or not
+ * This takes care of worrying about if the <tt>MatrixOpGetGMSMutable</tt> interface is supported or not
  * and remembering to free the <tt>DMatrixSlice</tt> view properly.
  *
  * This class is only to be used on the stack as an automatic variable.  For example, to extract a
  * <tt>DMatrixSlice</tt> view of an abstract vector and use it to set the matrix to a scalar
  * one could write a function like:
  \code
- void assign( const value_type alpha, MatrixWithOpGetGMSMutable* mat_inout ) {
+ void assign( const value_type alpha, MatrixOpGetGMSMutable* mat_inout ) {
      MatrixDenseMutableEncap  gms_inout(*mat_inout);
 	 gms_inout() = alpha;
  }
  \endcode
- * In the above code, if the underlying <tt>MatrixWithOpGetGMSMutable</tt> object does not have to
+ * In the above code, if the underlying <tt>MatrixOpGetGMSMutable</tt> object does not have to
  * perform any dynamic memory allocations and copy in the method
- * <tt>MatrixWithOpGetGMSMutable::get_gms_view()</tt> then the above code will only have a constant
+ * <tt>MatrixOpGetGMSMutable::get_gms_view()</tt> then the above code will only have a constant
  * time overhead.
  */
 class MatrixDenseMutableEncap {
 public:
 
 	///
-	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixWithOpGetGMSMutable</tt> object.
+	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixOpGetGMSMutable</tt> object.
 	 */
-	MatrixDenseMutableEncap( MatrixWithOpGetGMSMutable*  mat_get );
+	MatrixDenseMutableEncap( MatrixOpGetGMSMutable*  mat_get );
 	///
 	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixOp</tt> object.
 	 *
-	 * If <tt>dynamic_cast<MatrixWithOpGetGMSMutable*>(mat) == NULL</tt> then a ???
+	 * If <tt>dynamic_cast<MatrixOpGetGMSMutable*>(mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
 	MatrixDenseMutableEncap( MatrixOp* mat );
@@ -124,7 +124,7 @@ public:
 
 private:
 
-	MatrixWithOpGetGMSMutable     *mat_get_;
+	MatrixOpGetGMSMutable     *mat_get_;
 	DMatrixSlice                gms_view_;
 	MatrixDenseMutableEncap();                                          // Not defined and not to be called!
 	MatrixDenseMutableEncap(const MatrixDenseMutableEncap&);            // ""
@@ -138,14 +138,14 @@ private:
 // MatrixDenseMutableEncap
 
 inline
-MatrixDenseMutableEncap::MatrixDenseMutableEncap( MatrixWithOpGetGMSMutable*  mat_get )
+MatrixDenseMutableEncap::MatrixDenseMutableEncap( MatrixOpGetGMSMutable*  mat_get )
 	:mat_get_(mat_get)
 	,gms_view_(mat_get_->get_gms_view())
 {}
 
 inline
 MatrixDenseMutableEncap::MatrixDenseMutableEncap( MatrixOp* mat )
-	:mat_get_(&DynamicCastHelperPack::dyn_cast<MatrixWithOpGetGMSMutable>(*mat))
+	:mat_get_(&DynamicCastHelperPack::dyn_cast<MatrixOpGetGMSMutable>(*mat))
 	,gms_view_(mat_get_->get_gms_view())
 {}
 

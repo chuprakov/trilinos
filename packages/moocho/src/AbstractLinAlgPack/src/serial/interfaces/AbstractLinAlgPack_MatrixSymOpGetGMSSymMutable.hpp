@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixSymWithOpGetGMSSymMutable.hpp
+// MatrixSymOpGetGMSSymMutable.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_SYM_WITH_OP_GET_GMS_SYM_MUTABLE_H
 #define MATRIX_SYM_WITH_OP_GET_GMS_SYM_MUTABLE_H
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSym.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSym.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -37,7 +37,7 @@ namespace AbstractLinAlgPack {
  * These methods should never be called directly.  Instead, use the helper
  * class type <tt>MatrixDenseSymMutableEncap</tt>.
  */
-class MatrixSymWithOpGetGMSSymMutable : virtual public MatrixSymWithOpGetGMSSym {
+class MatrixSymOpGetGMSSymMutable : virtual public MatrixSymOpGetGMSSym {
 public:
 
 	///
@@ -76,39 +76,39 @@ public:
 	 */
 	virtual void commit_sym_gms_view(DenseLinAlgPack::DMatrixSliceSym* sym_gms_view) = 0;
 
-}; // end class MatrixSymWithOpGetGMSSymMutable
+}; // end class MatrixSymOpGetGMSSymMutable
 
 ///
-/** Helper class type that simplifies the usage of the <tt>MatrixSymWithOpGetGMSSymMutable</tt> interface for clients.
+/** Helper class type that simplifies the usage of the <tt>MatrixSymOpGetGMSSymMutable</tt> interface for clients.
  *
- * This takes care of worrying about if the <tt>MatrixSymWithOpGetGMSSymMutable</tt> interface is supported or not
+ * This takes care of worrying about if the <tt>MatrixSymOpGetGMSSymMutable</tt> interface is supported or not
  * and remembering to free the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view properly.
  *
  * This class is only to be used on the stack as an automatic variable.  For example, to extract a
  * <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view of an abstract vector and use it to set the matrix to a scalar
  * one could write a function like:
  \code
- void assign( const value_type alpha, MatrixSymWithOpGetGMSSymMutable* mat_inout ) {
+ void assign( const value_type alpha, MatrixSymOpGetGMSSymMutable* mat_inout ) {
      MatrixDenseSymMutableEncap  gms_inout(*mat_inout);
 	 gms_inout() = alpha;
  }
  \endcode
- * In the above code, if the underlying <tt>MatrixSymWithOpGetGMSSymMutable</tt> object does not have to
+ * In the above code, if the underlying <tt>MatrixSymOpGetGMSSymMutable</tt> object does not have to
  * perform any dynamic memory allocations and copy in the method
- * <tt>MatrixSymWithOpGetGMSSymMutable::get_sym_gms_view()</tt> then the above code will only have a constant
+ * <tt>MatrixSymOpGetGMSSymMutable::get_sym_gms_view()</tt> then the above code will only have a constant
  * time overhead.
  */
 class MatrixDenseSymMutableEncap {
 public:
 
 	///
-	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymWithOpGetGMSSymMutable</tt> object.
+	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymOpGetGMSSymMutable</tt> object.
 	 */
-	MatrixDenseSymMutableEncap( MatrixSymWithOpGetGMSSymMutable*  mat_get );
+	MatrixDenseSymMutableEncap( MatrixSymOpGetGMSSymMutable*  mat_get );
 	///
 	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymOp</tt> object.
 	 *
-	 * If <tt>dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(mat) == NULL</tt> then a ???
+	 * If <tt>dynamic_cast<MatrixSymOpGetGMSSymMutable*>(mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
 	MatrixDenseSymMutableEncap( MatrixSymOp* mat );
@@ -121,7 +121,7 @@ public:
 
 private:
 
-	MatrixSymWithOpGetGMSSymMutable    *mat_get_;
+	MatrixSymOpGetGMSSymMutable    *mat_get_;
 	DenseLinAlgPack::DMatrixSliceSym                sym_gms_view_;
 	MatrixDenseSymMutableEncap();                                             // Not defined and not to be called!
 	MatrixDenseSymMutableEncap(const MatrixDenseSymMutableEncap&);            // ""
@@ -135,14 +135,14 @@ private:
 // MatrixDenseSymMutableEncap
 
 inline
-MatrixDenseSymMutableEncap::MatrixDenseSymMutableEncap( MatrixSymWithOpGetGMSSymMutable*  mat_get )
+MatrixDenseSymMutableEncap::MatrixDenseSymMutableEncap( MatrixSymOpGetGMSSymMutable*  mat_get )
 	:mat_get_(mat_get)
 	,sym_gms_view_(mat_get_->get_sym_gms_view())
 {}
 
 inline
 MatrixDenseSymMutableEncap::MatrixDenseSymMutableEncap( MatrixSymOp* mat )
-	:mat_get_(&DynamicCastHelperPack::dyn_cast<MatrixSymWithOpGetGMSSymMutable>(*mat))
+	:mat_get_(&DynamicCastHelperPack::dyn_cast<MatrixSymOpGetGMSSymMutable>(*mat))
 	,sym_gms_view_(mat_get_->get_sym_gms_view())
 {}
 

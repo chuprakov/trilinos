@@ -18,7 +18,7 @@
 
 #include "ConstrainedOptimizationPackTypes.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractInvCholFactor.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpNonsingularSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpNonsingSerial.hpp"
 
 namespace ConstrainedOptimizationPack {
 
@@ -28,7 +28,7 @@ namespace ConstrainedOptimizationPack {
  * More operations will be overridden as they are needed by various applications.
  */
 class MatrixSymIdentitySerial
-	: virtual public AbstractLinAlgPack::MatrixSymWithOpNonsingularSerial // doxygen needs full name
+	: virtual public AbstractLinAlgPack::MatrixSymOpNonsingSerial // doxygen needs full name
 	, virtual public AbstractLinAlgPack::MatrixExtractInvCholFactor
 {
 public:
@@ -70,7 +70,7 @@ public:
 
 	//@}
 
-	/** Overridden from MatrixWithOpSerial */
+	/** Overridden from MatrixOpSerial */
 	//@{
 
 	///
@@ -80,7 +80,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixNonsingularSerial */
+	/** @name Overridden from MatrixNonsingSerial */
 	//@{
 
 	///
@@ -89,13 +89,13 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixSymNonsingularSerial */
+	/** @name Overridden from MatrixSymNonsingSerial */
 	//@{
 
 	///
 	void M_StMtInvMtM(
 		DMatrixSliceSym* sym_gms_lhs, value_type alpha
-		,const MatrixWithOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
+		,const MatrixOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
 		,EMatrixDummyArg
 		) const;
 

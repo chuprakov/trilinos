@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "AbstractLinAlgPack/src/serial/interfaces/MultiVectorMutableCols.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSymMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -211,8 +211,8 @@ bool MultiVectorMutableCols::syrk(
 	, value_type beta, MatrixSymOp* sym_lhs ) const
 {
 	using LinAlgOpPack::dot;
-	MatrixSymWithOpGetGMSSymMutable
-		*symwo_gms_lhs = dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(sym_lhs);
+	MatrixSymOpGetGMSSymMutable
+		*symwo_gms_lhs = dynamic_cast<MatrixSymOpGetGMSSymMutable*>(sym_lhs);
 	if(!symwo_gms_lhs) {
 		return MatrixOp::syrk(M_trans,alpha,beta,sym_lhs); // Boot it
 	}

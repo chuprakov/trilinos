@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixWithOpGetGMSTri.hpp
+// MatrixOpGetGMSTri.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -39,7 +39,7 @@ namespace AbstractLinAlgPack {
  * These methods should never be called directly.  Instead, use the helper
  * class type <tt>MatrixDenseTriEncap</tt>.
  */
-class MatrixWithOpGetGMSTri
+class MatrixOpGetGMSTri
 	: virtual public AbstractLinAlgPack::MatrixOp // doxygen needs full name
 {
 public:
@@ -79,38 +79,38 @@ public:
 	 */
 	virtual void free_tri_gms_view(const DenseLinAlgPack::DMatrixSliceTri* tri_gms_view) const = 0;
 
-}; // end class MatrixWithOpGetGMSTri
+}; // end class MatrixOpGetGMSTri
 
 ///
-/** Helper class type that simplifies the usage of the <tt>MatrixWithOpGetGMSTri</tt> interface for clients.
+/** Helper class type that simplifies the usage of the <tt>MatrixOpGetGMSTri</tt> interface for clients.
  *
- * This takes care of worrying about if the <tt>MatrixWithOpGetGMSTri</tt> interface is supported or not
+ * This takes care of worrying about if the <tt>MatrixOpGetGMSTri</tt> interface is supported or not
  * and remembering to free the <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view properly.
  *
  * This class is only to be used on the stack as an automatic variable.  For example, to extract a
  * <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view of an abstract vector and use it to call another function
  * one could write a function like:
  \code
- void call_func(const MatrixWithOpGetGMSTri& mat_in ) {
+ void call_func(const MatrixOpGetGMSTri& mat_in ) {
      func( MatrixDenseTriEncap(mat_in)() );
  }
  \endcode
- * In the above code, if the underlying <tt>MatrixWithOpGetGMSTri</tt> object does not have to
+ * In the above code, if the underlying <tt>MatrixOpGetGMSTri</tt> object does not have to
  * perform any dynamic memory allocations and copy in the method
- * <tt>MatrixWithOpGetGMSTri::get_tri_gms_view()</tt> then the above code will only have a constant
+ * <tt>MatrixOpGetGMSTri::get_tri_gms_view()</tt> then the above code will only have a constant
  * time overhead.
  */
 class MatrixDenseTriEncap {
 public:
 
 	///
-	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view from a <tt>MatrixWithOpGetGMSTri</tt> object.
+	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view from a <tt>MatrixOpGetGMSTri</tt> object.
 	 */
-	MatrixDenseTriEncap( const MatrixWithOpGetGMSTri&  mat_get );
+	MatrixDenseTriEncap( const MatrixOpGetGMSTri&  mat_get );
 	///
 	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view from a <tt>MatrixOp</tt> object.
 	 *
-	 * If <tt>dynamic_cast<const MatrixWithOpGetGMSTri*>(&mat) == NULL</tt> then a ???
+	 * If <tt>dynamic_cast<const MatrixOpGetGMSTri*>(&mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
 	MatrixDenseTriEncap( const MatrixOp& mat );
@@ -121,7 +121,7 @@ public:
 
 private:
 
-	const MatrixWithOpGetGMSTri     &mat_get_;
+	const MatrixOpGetGMSTri     &mat_get_;
 	const DenseLinAlgPack::DMatrixSliceTri       tri_gms_view_;
 	MatrixDenseTriEncap();                                      // Not defined and not to be called!
 	MatrixDenseTriEncap(const MatrixDenseTriEncap&);               // ""
@@ -135,14 +135,14 @@ private:
 // MatrixDenseTriEncap
 
 inline
-MatrixDenseTriEncap::MatrixDenseTriEncap( const MatrixWithOpGetGMSTri&  mat_get )
+MatrixDenseTriEncap::MatrixDenseTriEncap( const MatrixOpGetGMSTri&  mat_get )
 	:mat_get_(mat_get)
 	,tri_gms_view_(mat_get_.get_tri_gms_view())
 {}
 
 inline
 MatrixDenseTriEncap::MatrixDenseTriEncap( const MatrixOp& mat )
-	:mat_get_(DynamicCastHelperPack::dyn_cast<const MatrixWithOpGetGMSTri>(mat))
+	:mat_get_(DynamicCastHelperPack::dyn_cast<const MatrixOpGetGMSTri>(mat))
 	,tri_gms_view_(mat_get_.get_tri_gms_view())
 {}
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixSymNonsingularSerial.cpp
+// MatrixSymNonsingSerial.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,9 +15,9 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymNonsingularSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSymMutable.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymNonsingSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
@@ -33,8 +33,8 @@ namespace LinAlgOpPack {
 
 namespace AbstractLinAlgPack {
 
-void MatrixSymNonsingularSerial::M_StMtInvMtM(
-	  DMatrixSliceSym* S, value_type a, const MatrixWithOpSerial& B
+void MatrixSymNonsingSerial::M_StMtInvMtM(
+	  DMatrixSliceSym* S, value_type a, const MatrixOpSerial& B
 	, BLAS_Cpp::Transp B_trans, EMatrixDummyArg ) const
 {
 	using BLAS_Cpp::trans;
@@ -84,7 +84,7 @@ void MatrixSymNonsingularSerial::M_StMtInvMtM(
 
 // Overridden from MatrixSymNonsing
 
-void MatrixSymNonsingularSerial::M_StMtInvMtM(
+void MatrixSymNonsingSerial::M_StMtInvMtM(
 	MatrixSymOp* symwo_lhs, value_type alpha
 	,const MatrixOp& mwo, BLAS_Cpp::Transp mwo_trans
 	,EMatrixDummyArg dummy
@@ -93,7 +93,7 @@ void MatrixSymNonsingularSerial::M_StMtInvMtM(
 	using DynamicCastHelperPack::dyn_cast;
 	this->M_StMtInvMtM(
 		&MatrixDenseSymMutableEncap(symwo_lhs)(), alpha
-		,dyn_cast<const MatrixWithOpSerial>(mwo), mwo_trans
+		,dyn_cast<const MatrixOpSerial>(mwo), mwo_trans
 		,dummy );
 }
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixSymDiagonalSparse.cpp
+// MatrixSymDiagSparse.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,7 +17,7 @@
 
 #include <fstream>		// For debugging only
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDiagonalSparse.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDiagSparse.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
@@ -38,29 +38,29 @@ T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
 
 namespace AbstractLinAlgPack {
 
-MatrixSymDiagonalSparse::MatrixSymDiagonalSparse()
+MatrixSymDiagSparse::MatrixSymDiagSparse()
 	: num_updates_at_once_(0)	// Flag that it is to be determined internally.
 {}
 
 // Overridden from MatrixBase
 
-size_type MatrixSymDiagonalSparse::rows() const
+size_type MatrixSymDiagSparse::rows() const
 {
 	return diag().dim();
 }
 
 // Overridden from MatrixOp
 
-std::ostream& MatrixSymDiagonalSparse::output(std::ostream& out) const
+std::ostream& MatrixSymDiagSparse::output(std::ostream& out) const
 {
 	out	<< "*** Sparse diagonal matrix ***\n"
 		<< "diag =\n" << diag();
 	return out;
 }
 
-// Overridden from MatrixWithOpSerial
+// Overridden from MatrixOpSerial
 
-void MatrixSymDiagonalSparse::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha
+void MatrixSymDiagSparse::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha
 	, BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2, value_type beta) const
 {
 	const SpVectorSlice &diag = this->diag();
@@ -84,12 +84,12 @@ void MatrixSymDiagonalSparse::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha
 	}
 }
 
-// Overridden from MatrixSymWithOpSerial
+// Overridden from MatrixSymOpSerial
 
-void MatrixSymDiagonalSparse::Mp_StMtMtM(
+void MatrixSymDiagSparse::Mp_StMtMtM(
 	DMatrixSliceSym* B, value_type alpha
 	,EMatRhsPlaceHolder dummy_place_holder
-	,const MatrixWithOpSerial& A, BLAS_Cpp::Transp A_trans
+	,const MatrixOpSerial& A, BLAS_Cpp::Transp A_trans
 	,value_type b
 	) const
 {
@@ -220,7 +220,7 @@ void MatrixSymDiagonalSparse::Mp_StMtMtM(
 // Overridden from MatrixConvertToSparse
 
 index_type
-MatrixSymDiagonalSparse::num_nonzeros(
+MatrixSymDiagSparse::num_nonzeros(
 	EExtractRegion        extract_region
 	,EElementUniqueness   element_uniqueness
 	) const
@@ -228,7 +228,7 @@ MatrixSymDiagonalSparse::num_nonzeros(
 	return diag().nz();
 }
 
-void MatrixSymDiagonalSparse::coor_extract_nonzeros(
+void MatrixSymDiagSparse::coor_extract_nonzeros(
 	EExtractRegion                extract_region
 	,EElementUniqueness           element_uniqueness
 	,const index_type             len_Aval
@@ -246,11 +246,11 @@ void MatrixSymDiagonalSparse::coor_extract_nonzeros(
 	THROW_EXCEPTION(
 		(len_Aval != 0 ? len_Aval != diag.nz() : Aval != NULL)
 		,std::invalid_argument
-		,"MatrixSymDiagonalSparse::coor_extract_nonzeros(...): Error!" );
+		,"MatrixSymDiagSparse::coor_extract_nonzeros(...): Error!" );
 	THROW_EXCEPTION(
 		(len_Aij != 0 ? len_Aij != diag.nz() : (Acol != NULL || Acol != NULL) )
 		,std::invalid_argument
-		,"MatrixSymDiagonalSparse::coor_extract_nonzeros(...): Error!" );
+		,"MatrixSymDiagSparse::coor_extract_nonzeros(...): Error!" );
 
 	if( len_Aval > 0 ) {
 		SpVectorSlice::const_iterator

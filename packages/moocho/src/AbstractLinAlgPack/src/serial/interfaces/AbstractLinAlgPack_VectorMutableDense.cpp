@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// VectorWithOpMutableDense.cpp
+// VectorMutableDense.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #include <typeinfo>
 #include <stdexcept>
 
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/apply_op_helper.hpp"
@@ -26,7 +26,7 @@
 
 #ifdef _DEBUG
 #define CLASS_MEMBER_PTRS \
-const VectorWithOpMutableDense   *_this = this; \
+const VectorMutableDense   *_this = this; \
 const DVectorSlice                *_v; \
 const release_resource_ptr_t     *_v_release; \
 const VectorSpaceSerial          *_space;
@@ -36,7 +36,7 @@ const VectorSpaceSerial          *_space;
 
 namespace AbstractLinAlgPack {
 
-VectorWithOpMutableDense::VectorWithOpMutableDense(
+VectorMutableDense::VectorMutableDense(
 	const size_type                   dim
 	)
 	:space_(dim)
@@ -45,7 +45,7 @@ VectorWithOpMutableDense::VectorWithOpMutableDense(
 	this->initialize(dim);
 }
 
-VectorWithOpMutableDense::VectorWithOpMutableDense(
+VectorMutableDense::VectorMutableDense(
 	DVectorSlice                        v
 	,const release_resource_ptr_t&     v_release
 	)
@@ -55,7 +55,7 @@ VectorWithOpMutableDense::VectorWithOpMutableDense(
 	this->initialize(v,v_release);
 }
 
-void VectorWithOpMutableDense::initialize(
+void VectorMutableDense::initialize(
 	const size_type                   dim
 	)
 {
@@ -74,7 +74,7 @@ void VectorWithOpMutableDense::initialize(
 		);
 }
 
-void VectorWithOpMutableDense::initialize(
+void VectorMutableDense::initialize(
 	DVectorSlice                        v
 	,const release_resource_ptr_t&     v_release
 	)
@@ -88,13 +88,13 @@ void VectorWithOpMutableDense::initialize(
 
 // Overridden from Vector
 
-const VectorSpace& VectorWithOpMutableDense::space() const
+const VectorSpace& VectorMutableDense::space() const
 {
 	CLASS_MEMBER_PTRS
 	return space_;
 }
 
-void VectorWithOpMutableDense::apply_reduction(
+void VectorMutableDense::apply_reduction(
 	const RTOpPack::RTOp& op
 	,const size_t num_vecs_in, const Vector** vecs_in
 	,const size_t num_targ_vecs_in, VectorMutable** targ_vecs_in
@@ -118,17 +118,17 @@ void VectorWithOpMutableDense::apply_reduction(
 		);
 }
 
-index_type VectorWithOpMutableDense::dim() const
+index_type VectorMutableDense::dim() const
 {
 	return v_.dim();
 }
 
-value_type VectorWithOpMutableDense::get_ele(index_type i) const
+value_type VectorMutableDense::get_ele(index_type i) const
 {
 	return v_(i);
 }
 
-void VectorWithOpMutableDense::get_sub_vector(
+void VectorMutableDense::get_sub_vector(
 	const Range1D& rng_in, ESparseOrDense sparse_or_dense, RTOp_SubVector* sub_vec ) const
 {
 	CLASS_MEMBER_PTRS
@@ -136,7 +136,7 @@ void VectorWithOpMutableDense::get_sub_vector(
 	const Range1D    rng = RangePack::full_range(rng_in,1,this_dim);
 	THROW_EXCEPTION(
 		rng.ubound() > this_dim, std::out_of_range
-		,"VectorWithOpMutableDense::get_sub_vector(...) : Error, "
+		,"VectorMutableDense::get_sub_vector(...) : Error, "
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
 		"is not in the range [1,this->dim()] = [1," << this_dim << "]!" );
 	// Just return the dense view regardless of spare_or_dense argument
@@ -151,14 +151,14 @@ void VectorWithOpMutableDense::get_sub_vector(
 	*sub_vec = _sub_vec;  // No memory has been allocated here!
 }
 
-void VectorWithOpMutableDense::free_sub_vector( RTOp_SubVector* sub_vec ) const
+void VectorMutableDense::free_sub_vector( RTOp_SubVector* sub_vec ) const
 {
 	RTOp_sub_vector_null( sub_vec ); // No memory to deallocate!
 }
 
 // Overriddenn from VectorMutable
 
-void VectorWithOpMutableDense::apply_transformation(
+void VectorMutableDense::apply_transformation(
 	const RTOpPack::RTOp& op
 	,const size_t num_vecs_in, const Vector** vecs_in
 	,const size_t num_targ_vecs_in, VectorMutable** targ_vecs_in
@@ -183,7 +183,7 @@ void VectorWithOpMutableDense::apply_transformation(
 }
 
 VectorMutable&
-VectorWithOpMutableDense::operator=(value_type alpha)
+VectorMutableDense::operator=(value_type alpha)
 {
 	CLASS_MEMBER_PTRS
 	v_ = alpha;
@@ -192,10 +192,10 @@ VectorWithOpMutableDense::operator=(value_type alpha)
 }
 
 VectorMutable&
-VectorWithOpMutableDense::operator=(const Vector& v)
+VectorMutableDense::operator=(const Vector& v)
 {
 	CLASS_MEMBER_PTRS
-	if( const VectorWithOpMutableDense *vp = dynamic_cast<const VectorWithOpMutableDense*>(&v) )
+	if( const VectorMutableDense *vp = dynamic_cast<const VectorMutableDense*>(&v) )
 		v_ = vp->v_;
 	else
 		return VectorMutable::operator=(v); // Try the default implementation?
@@ -204,10 +204,10 @@ VectorWithOpMutableDense::operator=(const Vector& v)
 }
 
 VectorMutable&
-VectorWithOpMutableDense::operator=(const VectorMutable& v)
+VectorMutableDense::operator=(const VectorMutable& v)
 {
 	CLASS_MEMBER_PTRS
-	if( const VectorWithOpMutableDense *vp = dynamic_cast<const VectorWithOpMutableDense*>(&v) )
+	if( const VectorMutableDense *vp = dynamic_cast<const VectorMutableDense*>(&v) )
 		v_ = vp->v_;
 	else
 		return VectorMutable::operator=(v); // Try the default implementation?
@@ -215,15 +215,15 @@ VectorWithOpMutableDense::operator=(const VectorMutable& v)
 	return *this;
 }
 
-void VectorWithOpMutableDense::set_ele( index_type i, value_type val )
+void VectorMutableDense::set_ele( index_type i, value_type val )
 {
 	CLASS_MEMBER_PTRS
 	v_(i) = val;
 	this->has_changed();
 }
 
-VectorWithOpMutableDense::vec_mut_ptr_t
-VectorWithOpMutableDense::sub_view( const Range1D& rng_in )
+VectorMutableDense::vec_mut_ptr_t
+VectorMutableDense::sub_view( const Range1D& rng_in )
 {
 	CLASS_MEMBER_PTRS
 	namespace rcp = MemMngPack;
@@ -232,17 +232,17 @@ VectorWithOpMutableDense::sub_view( const Range1D& rng_in )
 #ifdef _DEBUG
 	THROW_EXCEPTION(
 		rng.ubound() > this_dim, std::out_of_range
-		,"VectorWithOpMutableDense::sub_view(...) : Error, "
+		,"VectorMutableDense::sub_view(...) : Error, "
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
 		"is not in the range [1,this->dim()] = [1," << this_dim << "]!" );
 #endif
 	if( rng == Range1D(1,this_dim) )
 		return rcp::rcp( this, false );
 	this->has_changed(); // This will result in a change in the vector
-	return rcp::rcp( new VectorWithOpMutableDense( v_(rng), rcp::null ) ); 
+	return rcp::rcp( new VectorMutableDense( v_(rng), rcp::null ) ); 
 }
 
-void VectorWithOpMutableDense::get_sub_vector(
+void VectorMutableDense::get_sub_vector(
 	const Range1D& rng_in, RTOp_MutableSubVector* sub_vec )
 {
 	CLASS_MEMBER_PTRS
@@ -251,7 +251,7 @@ void VectorWithOpMutableDense::get_sub_vector(
 #ifdef _DEBUG
 	THROW_EXCEPTION(
 		rng.ubound() > this_dim, std::out_of_range
-		,"VectorWithOpMutableDense::get_sub_vector(...) : Error, "
+		,"VectorMutableDense::get_sub_vector(...) : Error, "
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
 		"is not in the range [1,this->dim()] = [1," << this_dim << "]!" );
 #endif
@@ -266,20 +266,20 @@ void VectorWithOpMutableDense::get_sub_vector(
 	*sub_vec = _sub_vec;  // No memory has been allocated here!
 }
 
-void VectorWithOpMutableDense::commit_sub_vector( RTOp_MutableSubVector* sub_vec )
+void VectorMutableDense::commit_sub_vector( RTOp_MutableSubVector* sub_vec )
 {
 	CLASS_MEMBER_PTRS
 	RTOp_mutable_sub_vector_null( sub_vec ); // No memory to deallocate!
 	this->has_changed(); // Be aware of any final changes!
 }
 
-void VectorWithOpMutableDense::set_sub_vector( const RTOp_SubVector& sub_vec )
+void VectorMutableDense::set_sub_vector( const RTOp_SubVector& sub_vec )
 {
 	CLASS_MEMBER_PTRS
 	VectorMutable::set_sub_vector(sub_vec); // ToDo: Provide specialized implementation?
 }
 
-void VectorWithOpMutableDense::Vp_StMtV(
+void VectorMutableDense::Vp_StMtV(
 	value_type                       alpha
 	,const GenPermMatrixSlice        &P
 	,BLAS_Cpp::Transp                P_trans
@@ -294,7 +294,7 @@ void VectorWithOpMutableDense::Vp_StMtV(
 
 // private
 
-void VectorWithOpMutableDense::apply_op(
+void VectorMutableDense::apply_op(
 	const RTOpPack::RTOp& op
 	,const size_t num_vecs,      const Vector**  vecs
 	,const size_t num_targ_vecs, VectorMutable** targ_vecs
@@ -305,7 +305,7 @@ void VectorWithOpMutableDense::apply_op(
 	CLASS_MEMBER_PTRS
 #ifdef _DEBUG
 	AbstractLinAlgPack::apply_op_validate_input(
-		NULL, "VectorWithOpMutableDense::apply_op(...)"
+		NULL, "VectorMutableDense::apply_op(...)"
 		,op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele_in,sub_dim_in,global_offset_in
 		);
 #endif

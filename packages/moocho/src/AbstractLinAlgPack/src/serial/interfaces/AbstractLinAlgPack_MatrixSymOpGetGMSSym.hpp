@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixSymWithOpGetGMSSym.hpp
+// MatrixSymOpGetGMSSym.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -39,7 +39,7 @@ namespace AbstractLinAlgPack {
  * These methods should never be called directly.  Instead, use the helper
  * class type <tt>MatrixDenseSymEncap</tt>.
  */
-class MatrixSymWithOpGetGMSSym
+class MatrixSymOpGetGMSSym
 	: virtual public AbstractLinAlgPack::MatrixSymOp // doxygen needs full name
 {
 public:
@@ -79,38 +79,38 @@ public:
 	 */
 	virtual void free_sym_gms_view(const DenseLinAlgPack::DMatrixSliceSym* sym_gms_view) const = 0;
 
-}; // end class MatrixSymWithOpGetGMSSym
+}; // end class MatrixSymOpGetGMSSym
 
 ///
-/** Helper class type that simplifies the usage of the <tt>MatrixSymWithOpGetGMSSym</tt> interface for clients.
+/** Helper class type that simplifies the usage of the <tt>MatrixSymOpGetGMSSym</tt> interface for clients.
  *
- * This takes care of worrying about if the <tt>MatrixSymWithOpGetGMSSym</tt> interface is supported or not
+ * This takes care of worrying about if the <tt>MatrixSymOpGetGMSSym</tt> interface is supported or not
  * and remembering to free the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view properly.
  *
  * This class is only to be used on the stack as an automatic variable.  For example, to extract a
  * <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view of an abstract vector and use it to call another function
  * one could write a function like:
  \code
- void call_func(const MatrixSymWithOpGetGMSSym& mat_in ) {
+ void call_func(const MatrixSymOpGetGMSSym& mat_in ) {
      func( MatrixDenseSymEncap(mat_in)() );
  }
  \endcode
- * In the above code, if the underlying <tt>MatrixSymWithOpGetGMSSym</tt> object does not have to
+ * In the above code, if the underlying <tt>MatrixSymOpGetGMSSym</tt> object does not have to
  * perform any dynamic memory allocations and copy in the method
- * <tt>MatrixSymWithOpGetGMSSym::get_sym_gms_view()</tt> then the above code will only have a constant
+ * <tt>MatrixSymOpGetGMSSym::get_sym_gms_view()</tt> then the above code will only have a constant
  * time overhead.
  */
 class MatrixDenseSymEncap {
 public:
 
 	///
-	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymWithOpGetGMSSym</tt> object.
+	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymOpGetGMSSym</tt> object.
 	 */
-	MatrixDenseSymEncap( const MatrixSymWithOpGetGMSSym&  mat_get );
+	MatrixDenseSymEncap( const MatrixSymOpGetGMSSym&  mat_get );
 	///
 	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymOp</tt> object.
 	 *
-	 * If <tt>dynamic_cast<const MatrixSymWithOpGetGMSSym*>(&mat) == NULL</tt> then a ???
+	 * If <tt>dynamic_cast<const MatrixSymOpGetGMSSym*>(&mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
 	MatrixDenseSymEncap( const MatrixSymOp& mat );
@@ -121,7 +121,7 @@ public:
 
 private:
 
-	const MatrixSymWithOpGetGMSSym     &mat_get_;
+	const MatrixSymOpGetGMSSym     &mat_get_;
 	const DenseLinAlgPack::DMatrixSliceSym          sym_gms_view_;
 	MatrixDenseSymEncap();                                       // Not defined and not to be called!
 	MatrixDenseSymEncap(const MatrixDenseSymEncap&);             // ""
@@ -135,14 +135,14 @@ private:
 // MatrixDenseSymEncap
 
 inline
-MatrixDenseSymEncap::MatrixDenseSymEncap( const MatrixSymWithOpGetGMSSym&  mat_get )
+MatrixDenseSymEncap::MatrixDenseSymEncap( const MatrixSymOpGetGMSSym&  mat_get )
 	:mat_get_(mat_get)
 	,sym_gms_view_(mat_get_.get_sym_gms_view())
 {}
 
 inline
 MatrixDenseSymEncap::MatrixDenseSymEncap( const MatrixSymOp& mat )
-	:mat_get_(DynamicCastHelperPack::dyn_cast<const MatrixSymWithOpGetGMSSym>(mat))
+	:mat_get_(DynamicCastHelperPack::dyn_cast<const MatrixSymOpGetGMSSym>(mat))
 	,sym_gms_view_(mat_get_.get_sym_gms_view())
 {}
 

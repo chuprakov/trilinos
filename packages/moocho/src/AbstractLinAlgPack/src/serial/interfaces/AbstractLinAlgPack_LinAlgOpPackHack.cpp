@@ -15,9 +15,9 @@
 //
 
 #include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPackHack.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpGetGMS.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpGetGMS.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
@@ -33,10 +33,10 @@ void LinAlgOpPack::Mp_StM(
 {
 	using AbstractLinAlgPack::VectorSpace;
 	using AbstractLinAlgPack::VectorDenseEncap;
-	using AbstractLinAlgPack::MatrixWithOpGetGMS;
+	using AbstractLinAlgPack::MatrixOpGetGMS;
 	using AbstractLinAlgPack::MatrixDenseEncap;
-	const MatrixWithOpGetGMS
-		*B_get_gms = dynamic_cast<const MatrixWithOpGetGMS*>(&B);
+	const MatrixOpGetGMS
+		*B_get_gms = dynamic_cast<const MatrixOpGetGMS*>(&B);
 	if(B_get_gms) {
 		DenseLinAlgPack::Mp_StM( C, a, MatrixDenseEncap(*B_get_gms)(), B_trans );		
 	}
@@ -151,7 +151,7 @@ void LinAlgOpPack::Vp_StPtMtV(
 {
 	namespace mmp = MemMngPack;
 	using BLAS_Cpp::no_trans;
-	using AbstractLinAlgPack::VectorWithOpMutableDense;
+	using AbstractLinAlgPack::VectorMutableDense;
 	using AbstractLinAlgPack::VectorDenseMutableEncap;
 	using AbstractLinAlgPack::Vp_StPtMtV;
 	VectorSpace::space_ptr_t
@@ -160,7 +160,7 @@ void LinAlgOpPack::Vp_StPtMtV(
 		ay =  ( ay_space.get()
 				? ay_space->create_member()
 				: mmp::rcp_implicit_cast<VectorMutable>(
-					mmp::rcp(new VectorWithOpMutableDense(BLAS_Cpp::rows(P.rows(),P.cols(),P_trans)))
+					mmp::rcp(new VectorMutableDense(BLAS_Cpp::rows(P.rows(),P.cols(),P_trans)))
 					) ),
 		ax = ( M_trans == no_trans ? M.space_rows() : M.space_cols() ).create_member();
 	(VectorDenseMutableEncap(*ay))() = *y;
@@ -177,7 +177,7 @@ void LinAlgOpPack::Vp_StPtMtV(
 	)
 {
 	using BLAS_Cpp::no_trans;
-	using AbstractLinAlgPack::VectorWithOpMutableDense;
+	using AbstractLinAlgPack::VectorMutableDense;
 	using AbstractLinAlgPack::VectorDenseMutableEncap;
 	using AbstractLinAlgPack::Vp_StPtMtV;
 	VectorSpace::vec_mut_ptr_t

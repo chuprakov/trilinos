@@ -21,7 +21,7 @@
 #include "MatrixSymAddDelUpdateableWithOpNonsingular.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymAddDelUpdateable.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpNonsingularSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpNonsingSerial.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 
 namespace ConstrainedOptimizationPack {
@@ -39,7 +39,7 @@ namespace ConstrainedOptimizationPack {
  * or positive eigen value in an efficient manner as well.
  */
 class MatrixSymAddDelBunchKaufman
-	:public virtual MatrixSymWithOpNonsingularSerial
+	:public virtual MatrixSymOpNonsingSerial
 	,public virtual MatrixSymAddDelUpdateable
 	,public virtual MatrixSymAddDelUpdateableWithOpNonsingular
 {
@@ -105,7 +105,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixSymWithOpNonsingularSerial */
+	/** @name Overridden from MatrixSymOpNonsingSerial */
 	//@{
 
 	///

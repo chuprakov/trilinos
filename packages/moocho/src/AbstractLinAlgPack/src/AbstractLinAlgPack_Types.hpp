@@ -145,20 +145,20 @@ class BasisSystemTesterSetOptions;
 
 // pure abstract classes
 
-class MatrixWithOpSerial;
-class MatrixNonsingularSerial;
-class MatrixSymWithOpSerial;
-class MatrixSymNonsingularSerial;
-class MatrixWithOpNonsingularSerial;
-class MatrixSymWithOpNonsingularSerial;
+class MatrixOpSerial;
+class MatrixNonsingSerial;
+class MatrixSymOpSerial;
+class MatrixSymNonsingSerial;
+class MatrixOpNonsingSerial;
+class MatrixSymOpNonsingSerial;
 class MatrixSymDenseInitialize;
-class MatrixSymDiagonalSparse;
+class MatrixSymDiagSparse;
 class MatrixLoadSparseElements;
 class MatrixConvertToSparse;
 class MatrixExtractSparseElements;
 class MatrixExtractInvCholFactor;
-class MatrixSymWithOpGetGMSSymMutable;
-class MatrixSymWithOpGetGMSSym;
+class MatrixSymOpGetGMSSymMutable;
+class MatrixSymOpGetGMSSym;
 class MatrixSymAddDelUpdateable;
 
 //@}
@@ -176,14 +176,14 @@ class MatrixDenseTriEncap;
 
 class PermutationSerial;
 class VectorSpaceSerial;
-class VectorWithOpMutableDense;
-class VectorWithOpSparse;
+class VectorMutableDense;
+class VectorSparse;
 class MatrixSparseCOORSerial;
 class MatrixSymPosDefCholFactor;
 class MatrixConvertToSparseEncap;
 class MultiVectorMutableDense;
 
-class MatrixSymDiagonalSparseStd;
+class MatrixSymDiagSparseStd;
 
 //@}
 

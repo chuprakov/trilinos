@@ -52,7 +52,7 @@ namespace AbstractLinAlgPack {
  * <tt>C = (P'*A*Q)(1:r,1:r)</tt> is the largest square nonsingular
  * (well conditioned) matrix that can be found.  This basis matrix
  * \c C is represented as a \c BasisMatrix object that supports the
- * \c MatrixNonsingularSerial interface.
+ * \c MatrixNonsingSerial interface.
  *
  * All the information needed to solve for a linear
  * system and to factor other matrices with the same structure
@@ -88,7 +88,7 @@ namespace AbstractLinAlgPack {
 	// to the same factorization structure as C1_ptr->get_fact_struc().get().
 
 	// Solve for x1 = inv(C1)*b1
-	VectorWithOpMutableDense x1(C1_ptr->cols());
+	VectorMutableDense x1(C1_ptr->cols());
 	V_InvMtV( &x1, *C1_ptr, BLAS_Cpp::no_trans, b1 );
 
 	// Factor another matrix with the same structure
@@ -97,7 +97,7 @@ namespace AbstractLinAlgPack {
 	direct_solver.factor( A2, C2_ptr.get() );
 
 	// Solve for x2 = inv(C2')*b2
-	VectorWithOpMutableDense x2(C2_ptr->rows());
+	VectorMutableDense x2(C2_ptr->rows());
 	V_InvMtV( &x2, *C2_ptr, BLAS_Cpp::trans, b2 );
 
  \endcode
@@ -119,7 +119,7 @@ namespace AbstractLinAlgPack {
 	direct_solver.analize_and_factor( A1, &row_perm1, &col_perm1, &rank1, C1_ptr.get() );
 
 	// Solve for x1 = inv(C1)*b1
-	VectorWithOpMutableDense x1(C1_ptr->cols());
+	VectorMutableDense x1(C1_ptr->cols());
 	V_InvMtV( &x1, *C1_ptr, BLAS_Cpp::no_trans, b1 );
 
 	// Factor another matrix A2 with a different structure from A1.
@@ -131,7 +131,7 @@ namespace AbstractLinAlgPack {
 	// be preserved.
 
 	// Solve for x2 = inv(C2)*b2
-	VectorWithOpMutableDense x2(C2_ptr->cols());
+	VectorMutableDense x2(C2_ptr->cols());
 	V_InvMtV( &x2, *C2_ptr, BLAS_Cpp::no_trans, b2 );
 
 	// Factor another matrix A3 with the same structure of as A1 but preserve
@@ -142,7 +142,7 @@ namespace AbstractLinAlgPack {
 	// will be preserved before and after this method call.
 
 	// Solve for x3 = inv(C3)*b3
-	VectorWithOpMutableDense x3(C3_ptr->cols());
+	VectorMutableDense x3(C3_ptr->cols());
 	V_InvMtV( &x3, *C3_ptr, BLAS_Cpp::no_trans, b3 );
 
  \endcode
@@ -166,7 +166,7 @@ namespace AbstractLinAlgPack {
 	direct_solver.analize_and_factor( A1, &row_perm1, &col_perm1, &rank1, C1_ptr.get() );
 
 	// Solve for x1 = inv(C1)*b1
-	VectorWithOpMutableDense x1(C1_ptr->cols());
+	VectorMutableDense x1(C1_ptr->cols());
 	V_InvMtV( &x1, *C1_ptr, BLAS_Cpp::no_trans, b1 );
 
 	// Factor another matrix A2 with a different structure from A1.
@@ -174,7 +174,7 @@ namespace AbstractLinAlgPack {
 	direct_solver.analize_and_factor( A2, &row_perm2, &col_perm2, &rank2, C2_ptr.get() );
 
 	// Solve for x2 = inv(C2)*b2
-	VectorWithOpMutableDense x2(C2_ptr->cols());
+	VectorMutableDense x2(C2_ptr->cols());
 	V_InvMtV( &x2, *C2_ptr, BLAS_Cpp::no_trans, b2 );
 
 	// Analyze and factor another matrix A3 with an all new structure and recycle storage of C1.
@@ -183,7 +183,7 @@ namespace AbstractLinAlgPack {
 	direct_solver.analyze_and_factor( A3, &row_perm1, &col_perm1, &rank1, C3_ptr.get() );
 
 	// Solve for x3 = inv(C3)*b3
-	VectorWithOpMutableDense x3(C1_ptr->cols());
+	VectorMutableDense x3(C1_ptr->cols());
 	V_InvMtV( &x3, *C3_ptr, BLAS_Cpp::no_trans, b3 );
 
 	// Factor another matrix A4 with the same structure as A2 but preserve
@@ -192,7 +192,7 @@ namespace AbstractLinAlgPack {
 	direct_solver.factor( A4, C4_ptr.get(), C2_ptr->get_fact_struc() );
 
 	// Solve for x4 = inv(C4)*b4
-	VectorWithOpMutableDense x4(C4_ptr->cols());
+	VectorMutableDense x4(C4_ptr->cols());
 	V_InvMtV( &x4, *C4_ptr, BLAS_Cpp::no_trans, b4 );
 
 	// Analyze and factor another matrix A5 with an all new structure

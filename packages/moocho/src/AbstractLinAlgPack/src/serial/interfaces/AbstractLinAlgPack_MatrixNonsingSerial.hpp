@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// MatrixNonsingularSerial.hpp
+// MatrixNonsingSerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -31,7 +31,7 @@ namespace AbstractLinAlgPack {
  * These methods should not be called directly but instead should be called through
  * the line \ref MatrixNonsingularSerial_funcs "non-member functions" that are provided.
  */
-class MatrixNonsingularSerial
+class MatrixNonsingSerial
 	: virtual public AbstractLinAlgPack::MatrixNonsing // doxygen needs full name
 {
 public:
@@ -92,21 +92,21 @@ public:
 	virtual void M_StInvMtM(
 		DMatrix* gm_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs1
-		,const MatrixWithOpSerial& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2 ) const;
+		,const MatrixOpSerial& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2 ) const;
 	/// gms_lhs	= alpha * inv(op(M_rhs1)) * op(mwo_rhs2) (right)
 	virtual void M_StInvMtM(
 		DMatrixSlice* gms_lhs, value_type alpha
 		,BLAS_Cpp::Transp trans_rhs1
-		,const MatrixWithOpSerial& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2 ) const;
+		,const MatrixOpSerial& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2 ) const;
 	/// gm_lhs	= alpha * op(mwo_rhs1) * inv(op(M_rhs2)) (left)
 	virtual void M_StMtInvM(
 		DMatrix* gm_lhs, value_type alpha
-		,const MatrixWithOpSerial& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+		,const MatrixOpSerial& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 		,BLAS_Cpp::Transp trans_rhs2 ) const;
 	/// gms_lhs	= alpha * op(mwo_rhs1) * inv(op(M_rhs2)) (left)
 	virtual void M_StMtInvM(
 		DMatrixSlice* gms_lhs, value_type alpha
-		,const MatrixWithOpSerial& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+		,const MatrixOpSerial& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 		,BLAS_Cpp::Transp trans_rhs2 ) const;
 
 	//		end Level-3 BLAS
@@ -143,11 +143,11 @@ public:
 
 	//@}
 
-};	// end class MatrixNonsingularSerial
+};	// end class MatrixNonsingSerial
 
-/** \defgroup MatrixNonsingularSerial_funcs MatrixNonsingularSerial nonmember inline functions.
+/** \defgroup MatrixNonsingularSerial_funcs MatrixNonsingSerial nonmember inline functions.
  *
- * These nonmember functions allow operations to be called on \c MatrixNonsingularSerial objects
+ * These nonmember functions allow operations to be called on \c MatrixNonsingSerial objects
  * in similar manner to those in \c DenseLinAlgPack.
  */
 //@{
@@ -156,42 +156,42 @@ public:
 //@{
 
 /// v_lhs	= inv(op(M_rhs1)) * vs_rhs2
-inline void V_InvMtV(DVector* v_lhs, const MatrixNonsingularSerial& M_rhs1
+inline void V_InvMtV(DVector* v_lhs, const MatrixNonsingSerial& M_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2)
 {
 	M_rhs1.V_InvMtV(v_lhs,trans_rhs1,vs_rhs2);
 }
 
 /// vs_lhs	= inv(op(M_rhs1)) * vs_rhs2
-inline void V_InvMtV(DVectorSlice* vs_lhs, const MatrixNonsingularSerial& M_rhs1
+inline void V_InvMtV(DVectorSlice* vs_lhs, const MatrixNonsingSerial& M_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2)
 {
 	M_rhs1.V_InvMtV(vs_lhs,trans_rhs1,vs_rhs2);
 }
 
 /// v_lhs	= inv(op(M_rhs1)) * sv_rhs2
-inline void V_InvMtV(DVector* v_lhs, const MatrixNonsingularSerial& M_rhs1
+inline void V_InvMtV(DVector* v_lhs, const MatrixNonsingSerial& M_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2)
 {
 	M_rhs1.V_InvMtV(v_lhs,trans_rhs1,sv_rhs2);
 }
 
 /// vs_lhs	= inv(op(M_rhs1)) * sv_rhs2
-inline void V_InvMtV(DVectorSlice* vs_lhs, const MatrixNonsingularSerial& M_rhs1
+inline void V_InvMtV(DVectorSlice* vs_lhs, const MatrixNonsingSerial& M_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2)
 {
 	M_rhs1.V_InvMtV(vs_lhs,trans_rhs1,sv_rhs2);
 }
 
 /// result	= vs_rhs1' * inv(op(M_rhs2)) * vs_rhs3
-inline value_type transVtInvMtV(const DVectorSlice& vs_rhs1, const MatrixNonsingularSerial& M_rhs2
+inline value_type transVtInvMtV(const DVectorSlice& vs_rhs1, const MatrixNonsingSerial& M_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, const DVectorSlice& sv_rhs3)
 {
 	return M_rhs2.transVtInvMtV(vs_rhs1,trans_rhs2,sv_rhs3);
 }
 
 /// result	= sv_rhs1' * inv(op(M_rhs2)) * sv_rhs3
-inline value_type transVtInvMtV(const SpVectorSlice& sv_rhs1, const MatrixNonsingularSerial& M_rhs2
+inline value_type transVtInvMtV(const SpVectorSlice& sv_rhs1, const MatrixNonsingSerial& M_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3)
 {
 	return M_rhs2.transVtInvMtV(sv_rhs1,trans_rhs2,sv_rhs3);
@@ -206,7 +206,7 @@ inline value_type transVtInvMtV(const SpVectorSlice& sv_rhs1, const MatrixNonsin
 /// gm_lhs	= alpha * inv(op(M_rhs1)) * op(gms_rhs2) (right)
 inline void M_StInvMtM(
 	DMatrix* gm_lhs, value_type alpha
-	,const MatrixNonsingularSerial& M_rhs1,   BLAS_Cpp::Transp trans_rhs1
+	,const MatrixNonsingSerial& M_rhs1,   BLAS_Cpp::Transp trans_rhs1
 	,const DMatrixSlice&          gms_rhs2, BLAS_Cpp::Transp trans_rhs2
 	)
 {
@@ -216,7 +216,7 @@ inline void M_StInvMtM(
 /// gms_lhs	= alpha * inv(op(M_rhs1)) * op(gms_rhs2) (right)
 inline void M_StInvMtM(
 	DMatrixSlice* gms_lhs, value_type alpha
-	,const MatrixNonsingularSerial& M_rhs1,   BLAS_Cpp::Transp trans_rhs1
+	,const MatrixNonsingSerial& M_rhs1,   BLAS_Cpp::Transp trans_rhs1
 	,const DMatrixSlice&          gms_rhs2, BLAS_Cpp::Transp trans_rhs2
 	)
 {
@@ -227,7 +227,7 @@ inline void M_StInvMtM(
 inline void M_StMtInvM(
 	DMatrix* gm_lhs, value_type alpha
 	,const DMatrixSlice&          gms_rhs1, BLAS_Cpp::Transp trans_rhs1
-	,const MatrixNonsingularSerial& M_rhs2,   BLAS_Cpp::Transp trans_rhs2
+	,const MatrixNonsingSerial& M_rhs2,   BLAS_Cpp::Transp trans_rhs2
 	)
 {
 	M_rhs2.M_StMtInvM(gm_lhs,alpha,gms_rhs1,trans_rhs1,trans_rhs2);
@@ -237,7 +237,7 @@ inline void M_StMtInvM(
 inline void M_StMtInvM(
 	DMatrixSlice* gms_lhs, value_type alpha
 	,const DMatrixSlice&          gms_rhs1, BLAS_Cpp::Transp trans_rhs1
-	,const MatrixNonsingularSerial& M_rhs2,   BLAS_Cpp::Transp trans_rhs2
+	,const MatrixNonsingSerial& M_rhs2,   BLAS_Cpp::Transp trans_rhs2
 	)
 {
 	M_rhs2.M_StMtInvM(gms_lhs,alpha,gms_rhs1,trans_rhs1,trans_rhs2);
@@ -246,8 +246,8 @@ inline void M_StMtInvM(
 /// gm_lhs	= alpha * inv(op(M_rhs1)) * op(mwo_rhs2) (right)
 inline void M_StInvMtM(
 	DMatrix* gm_lhs, value_type alpha
-	,const MatrixNonsingularSerial& M_rhs1,   BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOpSerial&      mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+	,const MatrixNonsingSerial& M_rhs1,   BLAS_Cpp::Transp trans_rhs1
+	,const MatrixOpSerial&      mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 	)
 {
 	M_rhs1.M_StInvMtM(gm_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2);
@@ -256,8 +256,8 @@ inline void M_StInvMtM(
 /// gms_lhs	= alpha * inv(op(M_rhs1)) * op(mwo_rhs2) (right)
 inline void M_StInvMtM(
 	DMatrixSlice* gms_lhs, value_type alpha
-	,const MatrixNonsingularSerial& M_rhs1,   BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOpSerial&      mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+	,const MatrixNonsingSerial& M_rhs1,   BLAS_Cpp::Transp trans_rhs1
+	,const MatrixOpSerial&      mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 	)
 {
 	M_rhs1.M_StInvMtM(gms_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2);
@@ -266,8 +266,8 @@ inline void M_StInvMtM(
 /// gm_lhs	= alpha * op(mwo_rhs1) * inv(op(M_rhs2)) (left)
 inline void M_StMtInvM(
 	DMatrix* gm_lhs, value_type alpha
-	,const MatrixWithOpSerial&      mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
-	,const MatrixNonsingularSerial& M_rhs2,   BLAS_Cpp::Transp trans_rhs2
+	,const MatrixOpSerial&      mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+	,const MatrixNonsingSerial& M_rhs2,   BLAS_Cpp::Transp trans_rhs2
 	)
 {
 	M_rhs2.M_StMtInvM(gm_lhs,alpha,mwo_rhs1,trans_rhs1,trans_rhs2);
@@ -276,8 +276,8 @@ inline void M_StMtInvM(
 /// gms_lhs	= alpha * op(mwo_rhs1) * inv(op(M_rhs2)) (left)
 inline void M_StMtInvM(
 	DMatrixSlice* gms_lhs, value_type alpha
-	,const MatrixWithOpSerial&      mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
-	,const MatrixNonsingularSerial& M_rhs2,   BLAS_Cpp::Transp trans_rhs2
+	,const MatrixOpSerial&      mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+	,const MatrixNonsingSerial& M_rhs2,   BLAS_Cpp::Transp trans_rhs2
 	)
 {
 	M_rhs2.M_StMtInvM(gms_lhs,alpha,mwo_rhs1,trans_rhs1,trans_rhs2);

@@ -613,7 +613,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 		throw WarnNearSingularUpdateException(omsg.str(),gamma);
 }
 
-// Overridden from MatrixSymWithOpNonsingularSerial
+// Overridden from MatrixSymOpNonsingSerial
 
 size_type MatrixSymAddDelBunchKaufman::rows() const
 {

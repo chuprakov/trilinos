@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// ConvertToSparseCompressedColumn.hpp
+// ConvertToCSC.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -33,7 +33,7 @@
   *
   * Where:\begin{itemize}
   *		\item	Ai are as set of matrix objects (dense vectors or matrices, 
-  *				or ConvertToSparseCompressedColumn types),
+  *				or ConvertToCSC types),
   *		\item	ai are the scaling parameters.
   *		\item	op(Ai) = Ai or Ai' and nonoverlapping regions of the nonpermuted
   *				formed matrix
@@ -70,11 +70,11 @@ namespace AbstractLinAlgPack {
   * a Fortran compatable compressed column sparse
   * matrix format.
   */
-class ConvertToSparseCompressedColumn {
+class ConvertToCSC {
 public:
 
 	///
-	virtual ~ConvertToSparseCompressedColumn()
+	virtual ~ConvertToCSC()
 	{}
 
 	///
@@ -118,7 +118,7 @@ public:
 		, FortranTypes::f_dbl_prec*			D_val
 		, FortranTypes::f_int*				D_row_i			) const = 0;
 
-};	// end class ConvertToSparseCompressedColumn
+};	// end class ConvertToCSC
 
 namespace ConvertToSparseCompressedColumnPack {
 

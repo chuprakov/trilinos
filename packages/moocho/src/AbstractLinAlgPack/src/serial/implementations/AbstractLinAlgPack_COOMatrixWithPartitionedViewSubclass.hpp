@@ -18,7 +18,7 @@
 
 #include "MatrixWithOpConcreteEncap.hpp"
 #include "COOMatrixWithPartitionedView.hpp"
-#include "ConvertToSparseCompressedColumn.hpp"
+#include "ConvertToCSC.hpp"
 #include "MatrixConvertToSparseFortranCompatible.hpp"
 #include "COOMPartitionOut.hpp"
 
@@ -32,7 +32,7 @@ namespace AbstractLinAlgPack {
   */
 class COOMatrixWithPartitionedViewSubclass
 	: public MatrixWithOpConcreteEncap<COOMatrixWithPartitionedView>
-		, public ConvertToSparseCompressedColumn
+		, public ConvertToCSC
 		, public MatrixConvertToSparseFortranCompatible
 {
 public:
@@ -106,7 +106,7 @@ public:
 	//@}
 
 	// /////////////////////////////////////////////////////
-	// Overridden from ConvertToSparseCompressedColumn
+	// Overridden from ConvertToCSC
 
 	///
 	size_type num_in_column(

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// MatrixSymDiagonalSparseStd.hpp
+// MatrixSymDiagSparseStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_STD_H
 #define SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_STD_H
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDiagonalSparse.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDiagSparse.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 
 namespace AbstractLinAlgPack {
@@ -29,20 +29,20 @@ namespace AbstractLinAlgPack {
   *
   * The default constructor, copy constructor are allowed.
   */
-class MatrixSymDiagonalSparseStd: virtual public MatrixSymDiagonalSparse {
+class MatrixSymDiagSparseStd: virtual public MatrixSymDiagSparse {
 public:
 
 	/** @name Constructors/initializes */
 	//@{
 
 	/// Construct uninitialized
-	MatrixSymDiagonalSparseStd()
+	MatrixSymDiagSparseStd()
 	{}
 
 	///
 	/** Construct the diagonal.
 	  */
-	MatrixSymDiagonalSparseStd( const SpVectorSlice& diag );
+	MatrixSymDiagSparseStd( const SpVectorSlice& diag );
 
 	///
 	/** Reinitialize the diagonal.

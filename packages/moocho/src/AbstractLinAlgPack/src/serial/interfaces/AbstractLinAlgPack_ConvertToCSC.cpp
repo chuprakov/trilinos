@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// ConvertToSparseCompressedColumn.cpp
+// ConvertToCSC.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,7 +17,7 @@
 
 #include <algorithm>
 
-#include "ConvertToSparseCompressedColumn.hpp"
+#include "ConvertToCSC.hpp"
 #include "MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
@@ -118,8 +118,8 @@ size_type ConvertToSparseCompressedColumnPack::num_in_column(
 	, const IVector::value_type*		col_perm
 	, size_type*						num_in_col	)
 {
-	const ConvertToSparseCompressedColumn*
-		conv_m = dynamic_cast<const ConvertToSparseCompressedColumn*>( &m );
+	const ConvertToCSC*
+		conv_m = dynamic_cast<const ConvertToCSC*>( &m );
 	if(conv_m)
 		return conv_m->num_in_column( trans, col_offset, col_perm, num_in_col );
 	else
@@ -139,8 +139,8 @@ void ConvertToSparseCompressedColumnPack::insert_nonzeros(
 	, FortranTypes::f_int*				D_row_i			)
 {
 	using LinAlgOpPack::assign;
-	const ConvertToSparseCompressedColumn*
-		conv_m = dynamic_cast<const ConvertToSparseCompressedColumn*>( &m );
+	const ConvertToCSC*
+		conv_m = dynamic_cast<const ConvertToCSC*>( &m );
 	if(conv_m) {
 		conv_m->insert_nonzeros( trans, alpha, row_offset, col_offset, row_perm
 			, col_perm, next_nz_in_col, D_val, D_row_i );
@@ -166,8 +166,8 @@ value_type ConvertToSparseCompressedColumnPack::insert_scaled_nonzeros(
 	, FortranTypes::f_int*				D_row_i			)
 {
 	using LinAlgOpPack::assign;
-	const ConvertToSparseCompressedColumn*
-		conv_m = dynamic_cast<const ConvertToSparseCompressedColumn*>( &m );
+	const ConvertToCSC*
+		conv_m = dynamic_cast<const ConvertToCSC*>( &m );
 	if(conv_m) {
 		return conv_m->insert_scaled_nonzeros( trans, scaled_max_ele, row_offset
 			, col_offset, row_perm, col_perm, next_nz_in_col, D_val, D_row_i );

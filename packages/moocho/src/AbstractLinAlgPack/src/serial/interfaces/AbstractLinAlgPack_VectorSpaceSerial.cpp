@@ -17,7 +17,7 @@
 
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceFactorySerial.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MultiVectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
@@ -80,7 +80,7 @@ VectorSpaceSerial::create_member() const
 {
 	CLASS_MEMBER_PTRS
 	namespace mmp = MemMngPack;
-	return mmp::rcp(new VectorWithOpMutableDense(dim_));
+	return mmp::rcp(new VectorMutableDense(dim_));
 }
 
 VectorSpace::multi_vec_mut_ptr_t

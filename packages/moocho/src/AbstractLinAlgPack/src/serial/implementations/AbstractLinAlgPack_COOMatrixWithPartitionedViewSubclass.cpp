@@ -101,7 +101,7 @@ void COOMatrixWithPartitionedViewSubclass::Mp_StMtM(DMatrixSlice* gms_lhs, value
 	AbstractLinAlgPack::Mp_StMtM(gms_lhs, alpha, gms_rhs1, trans_rhs1, m().coom_view()(), trans_rhs2, beta);
 }
 
-// Overridden from ConvertToSparseCompressedColumn
+// Overridden from ConvertToCSC
 
 size_type COOMatrixWithPartitionedViewSubclass::num_in_column(
 	  BLAS_Cpp::Transp					trans

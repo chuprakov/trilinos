@@ -142,9 +142,9 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	// Force the initial point in bounds if it is not.
 	if( force_xinit_in_bounds() && has_var_bounds ) {
 		AbstractLinAlgPack::force_in_bounds(
-			VectorWithOpMutableDense( xl_full_(), mmp::null )
-			,VectorWithOpMutableDense( xu_full_(), mmp::null )
-			,&VectorWithOpMutableDense( x_full_(), mmp::null )
+			VectorMutableDense( xl_full_(), mmp::null )
+			,VectorMutableDense( xu_full_(), mmp::null )
+			,&VectorMutableDense( x_full_(), mmp::null )
 			);
 	}
 	

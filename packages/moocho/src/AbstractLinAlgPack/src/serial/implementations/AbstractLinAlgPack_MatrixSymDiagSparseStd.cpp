@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixSymDiagonalSparseStd.cpp
+// MatrixSymDiagSparseStd.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymDiagonalSparseStd.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymDiagSparseStd.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorOut.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
@@ -21,31 +21,31 @@
 
 namespace AbstractLinAlgPack {
 
-MatrixSymDiagonalSparseStd::MatrixSymDiagonalSparseStd( const SpVectorSlice& diag )
+MatrixSymDiagSparseStd::MatrixSymDiagSparseStd( const SpVectorSlice& diag )
 	: diag_(diag)
 {}
 
-void MatrixSymDiagonalSparseStd::initialize( const SpVectorSlice& diag )
+void MatrixSymDiagSparseStd::initialize( const SpVectorSlice& diag )
 {
 	diag_ = diag;
 }
 
 // Overridden from MatrixOp
 
-MatrixOp& MatrixSymDiagonalSparseStd::operator=(const MatrixOp& m)
+MatrixOp& MatrixSymDiagSparseStd::operator=(const MatrixOp& m)
 {
 	if(&m == this) return *this;	// assignment to self
-	const MatrixSymDiagonalSparseStd
-		*p_m = dynamic_cast<const MatrixSymDiagonalSparseStd*>(&m);
+	const MatrixSymDiagSparseStd
+		*p_m = dynamic_cast<const MatrixSymDiagSparseStd*>(&m);
 	if(p_m) {
 		diag_ = p_m->diag_;
 	}
 	else {
 		THROW_EXCEPTION(
 			true, std::invalid_argument
-			,"MatrixSymDiagonalSparseStd::operator=(const MatrixOp& m) : Error!"
+			,"MatrixSymDiagSparseStd::operator=(const MatrixOp& m) : Error!"
 			"The concrete type of m = \'" << typeid(m).name() << "\' is not a subclass of "
-			"MatrixSymDiagonalSparseStd as expected"
+			"MatrixSymDiagSparseStd as expected"
 			);
 	}
 	return *this;
@@ -53,7 +53,7 @@ MatrixOp& MatrixSymDiagonalSparseStd::operator=(const MatrixOp& m)
 
 // Overridden from MatrixDiagonalSparse
 
-const SpVectorSlice MatrixSymDiagonalSparseStd::diag() const
+const SpVectorSlice MatrixSymDiagSparseStd::diag() const
 {
 	return diag_();
 }

@@ -23,7 +23,7 @@ namespace AbstractLinAlgPack {
 /** @name {\bf Conversion to Fortran compatable sparse compressed column 
   * operations for COOMatrixTemplateInterface (Level 2,3 BLAS)}.
   *
-  * See the ConvertToSparseCompressedColumn class.
+  * See the ConvertToCSC class.
   */
 //@{
 

@@ -28,7 +28,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymAddDelUpdateable.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpSerial.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
@@ -623,7 +623,7 @@ public:
 	 * public so that clients can developed specialized implementations
 	 * if needed.
 	 */
-	class U_hat_t : public MatrixWithOpSerial {
+	class U_hat_t : public MatrixOpSerial {
 	public:
 		/// Construct uninitialized
 		U_hat_t();
@@ -665,7 +665,7 @@ public:
 
 		//@}
 
-		/** @name Overridden from MatrixWithOpSerial */
+		/** @name Overridden from MatrixOpSerial */
 		//@{
 
 		///

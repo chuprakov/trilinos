@@ -57,7 +57,7 @@ std::ostream& MatrixSymIdentitySerial::output(std::ostream& out) const
 	return out;
 }
 
-// Overridden from MatrixWithOpSerial
+// Overridden from MatrixOpSerial
 
 void MatrixSymIdentitySerial::Vp_StMtV(
 	DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
@@ -83,11 +83,11 @@ void MatrixSymIdentitySerial::V_InvMtV(
 
 void MatrixSymIdentitySerial::M_StMtInvMtM(
 	  DMatrixSliceSym* S, value_type a
-	  ,const MatrixWithOpSerial& B, BLAS_Cpp::Transp B_trans
+	  ,const MatrixOpSerial& B, BLAS_Cpp::Transp B_trans
 	  ,EMatrixDummyArg dummy_arg
 	) const
 {
-	this->MatrixSymNonsingularSerial::M_StMtInvMtM(S,a,B,B_trans,dummy_arg);
+	this->MatrixSymNonsingSerial::M_StMtInvMtM(S,a,B,B_trans,dummy_arg);
 	// ToDo: Implement by calling S = b*S + scale*a*op(B')*op(B)
 }
 

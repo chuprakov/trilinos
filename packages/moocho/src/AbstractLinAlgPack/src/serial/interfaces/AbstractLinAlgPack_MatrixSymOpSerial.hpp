@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// MatrixSymWithOpSerial.hpp
+// MatrixSymOpSerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef SLAP_MATRIX_SYM_WITH_OP_SERIAL_H
 #define SLAP_MATRIX_SYM_WITH_OP_SERIAL_H
 
-#include "MatrixWithOpSerial.hpp"
+#include "MatrixOpSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 
 namespace AbstractLinAlgPack {
@@ -31,8 +31,8 @@ namespace AbstractLinAlgPack {
  * These methods should not be called directly but instead should be called through
  * the line \ref MatrixSymWithOpSerial_funcs "non-member functions" that are provided.
  */
-class MatrixSymWithOpSerial
-	: virtual public MatrixWithOpSerial
+class MatrixSymOpSerial
+	: virtual public MatrixOpSerial
 	, virtual public AbstractLinAlgPack::MatrixSymOp // doxygen needs full name
 {
 public:
@@ -64,14 +64,14 @@ public:
 	virtual void Mp_StMtMtM(
 		DMatrixSliceSym* sym_lhs, value_type alpha
 		,EMatRhsPlaceHolder dummy_place_holder
-		,const MatrixWithOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+		,const MatrixOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 		,value_type beta
 		) const;
 
 	/** @name Overridden from MatrixSymOp */
 	//@{
 
-	/// Must be overridden to call <tt>MatrixWithOpSerial::space_rows()</tt>
+	/// Must be overridden to call <tt>MatrixOpSerial::space_rows()</tt>
 	const VectorSpace& space_rows() const;
 
 	/// symwo_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
@@ -92,9 +92,9 @@ public:
 
 	//@}
 
-};	// end class MatrixSymWithOpSerial
+};	// end class MatrixSymOpSerial
 
-/** \defgroup MatrixSymWithOpSerial_funcs Inline nonmeber functions for <tt>MatrixSymWithOpSerial</tt>.
+/** \defgroup MatrixSymWithOpSerial_funcs Inline nonmeber functions for <tt>MatrixSymOpSerial</tt>.
   */
 //@{
 
@@ -102,8 +102,8 @@ inline
 /// sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
 void Mp_StPtMtP(
 	DMatrixSliceSym* sym_lhs, value_type alpha
-	,MatrixSymWithOpSerial::EMatRhsPlaceHolder dummy_place_holder
-	,const MatrixSymWithOpSerial& M
+	,MatrixSymOpSerial::EMatRhsPlaceHolder dummy_place_holder
+	,const MatrixSymOpSerial& M
 	,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
 	,value_type beta = 1.0
 	)
@@ -115,9 +115,9 @@ inline
 /// sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs) + beta * sym_lhs
 void Mp_StMtMtM(
 	DMatrixSliceSym* sym_lhs, value_type alpha
-	,MatrixSymWithOpSerial::EMatRhsPlaceHolder dummy_place_holder
-	,const MatrixSymWithOpSerial& M
-	,const MatrixWithOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+	,MatrixSymOpSerial::EMatRhsPlaceHolder dummy_place_holder
+	,const MatrixSymOpSerial& M
+	,const MatrixOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 	,value_type beta = 1.0
 	)
 {

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// MatrixWithOpNonsingularSerial.hpp
+// MatrixOpNonsingSerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -26,9 +26,9 @@ namespace AbstractLinAlgPack {
  * that can be used to compute matrix-vector products and solve for
  * linear systems efficiently.
  */
-class MatrixWithOpNonsingularSerial
-	: virtual public MatrixWithOpSerial
-	, virtual public MatrixNonsingularSerial
+class MatrixOpNonsingSerial
+	: virtual public MatrixOpSerial
+	, virtual public MatrixNonsingSerial
 	, virtual public AbstractLinAlgPack::MatrixOpNonsing  // doxygen needs full name
 {};
 

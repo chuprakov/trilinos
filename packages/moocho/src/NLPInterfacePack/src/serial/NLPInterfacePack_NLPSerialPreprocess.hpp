@@ -20,7 +20,7 @@
 
 #include "NLPFirstOrderInfo.hpp"
 #include "NLPVarReductPerm.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"
@@ -802,12 +802,12 @@ private:
 	VectorSpaceSerial          space_x_;
 	VectorSpaceSerial          space_c_;
 	VectorSpaceSerial          space_h_;
-	VectorWithOpMutableDense   xinit_; // Initial point of the shrunken NLP
+	VectorMutableDense   xinit_; // Initial point of the shrunken NLP
 	size_type                  num_bounded_x_;
-	VectorWithOpMutableDense   xl_;    // Lower bounds of transformed NLP
-	VectorWithOpMutableDense   xu_;    // Uppers bounds of transformed NLP
-	VectorWithOpMutableDense   hl_;    // Lower bounds for general inequalities of transformed NLP
-	VectorWithOpMutableDense   hu_;    // Uppers bounds for general inequalitiess of transformed NLP
+	VectorMutableDense   xl_;    // Lower bounds of transformed NLP
+	VectorMutableDense   xu_;    // Uppers bounds of transformed NLP
+	VectorMutableDense   hl_;    // Lower bounds for general inequalities of transformed NLP
+	VectorMutableDense   hu_;    // Uppers bounds for general inequalitiess of transformed NLP
 	size_type    n_orig_;              // Number of variables in the original NLP
 	size_type    m_orig_;              // Number of general equality constraints in the original NLP
 	size_type    mI_orig_;             // Number of general inequality constraints in the original NLP

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// VectorWithOpMutableDense.hpp
+// VectorMutableDense.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -32,11 +32,11 @@ namespace AbstractLinAlgPack {
  * or as a storage type for a <tt>DenseLinAlgPack::DVector</tt> object.
  *
  * To create a storage type with the dimension of \c dim just call the constructor
- * <tt>VectorWithOpMutableDense(dim)</tt> or after construction you can call
+ * <tt>VectorMutableDense(dim)</tt> or after construction you can call
  * <tt>this->initialize(dim)</tt>.
  *
  * To simply create a view of a vector, say \c v, without ownership just call
- * <tt>VectorWithOpMutableDense(v(),NULL)</tt> or after construction call
+ * <tt>VectorMutableDense(v(),NULL)</tt> or after construction call
  * <tt>this->initialize(v(),NULL)</tt>.
  *
  * Alternately, \c this can be given a vector with the responsibility to
@@ -47,7 +47,7 @@ namespace AbstractLinAlgPack {
  * the client really needs to get at the <tt>DenseLinAlgPack::DVector</tt> object
  * itself, then it can be obtained as:
  \code
- void f( VectorWithOpMutableDense* v )
+ void f( VectorMutableDense* v )
      namespace rmp = MemMngPack;
      DVector &_v = *dynamic_cast<rmp::ReleaseResource_ref_count_ptr<DVector>&>(*v.vec_release()).ptr;
 
@@ -55,7 +55,7 @@ namespace AbstractLinAlgPack {
  * This is not pretty but it is not supposed to be.  Of course the above function will throw
  * an exception if the <tt>dynamic_cast<></tt> fails.
  */
-class VectorWithOpMutableDense
+class VectorMutableDense
 	: virtual public AbstractLinAlgPack::VectorMutable
 {
 public:
@@ -70,13 +70,13 @@ public:
 	///
 	/** Calls <tt>this->initialize(dim)</tt>.
 	 */
-	VectorWithOpMutableDense(
+	VectorMutableDense(
 		const size_type                    dim = 0
 		);
 	///
 	/** Calls <tt>this->initialize(v,v_release)</tt>.
 	 */
-	VectorWithOpMutableDense(
+	VectorMutableDense(
 		DVectorSlice                        v
 		,const release_resource_ptr_t&     v_release
 		);
@@ -189,7 +189,7 @@ public:
 	//@}
 
 	/// Hack
-	VectorWithOpMutableDense* operator&()
+	VectorMutableDense* operator&()
 	{
 		return this;
 	}
@@ -217,17 +217,17 @@ private:
 		) const;
 
 	// Not defined and not to be called
-	VectorWithOpMutableDense(const VectorWithOpMutableDense&);
-	VectorWithOpMutableDense& operator=(const VectorWithOpMutableDense&);
+	VectorMutableDense(const VectorMutableDense&);
+	VectorMutableDense& operator=(const VectorMutableDense&);
 
-}; // end class VectorWithOpMutableDense
+}; // end class VectorMutableDense
 
 // //////////////////////////////////////
 // Inline members
 
 inline
 DVectorSlice
-VectorWithOpMutableDense::set_vec()
+VectorMutableDense::set_vec()
 {
 	this->has_changed();
 	return v_;
@@ -235,14 +235,14 @@ VectorWithOpMutableDense::set_vec()
 
 inline
 const DVectorSlice
-VectorWithOpMutableDense::get_vec() const
+VectorMutableDense::get_vec() const
 {
 	return v_;
 }
 
 inline
-const VectorWithOpMutableDense::release_resource_ptr_t&
-VectorWithOpMutableDense::vec_release() const
+const VectorMutableDense::release_resource_ptr_t&
+VectorMutableDense::vec_release() const
 {
 	return v_release_;
 }

@@ -16,8 +16,8 @@
 #include <assert.h>
 
 #include "AbstractLinAlgPack/src/serial/interfaces/MultiVectorMutableDense.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpMutableDense.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSymMutable.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
@@ -77,7 +77,7 @@ void MultiVectorMutableDense::initialize(
 	gms_release_ = gms_release;
 }
 
-// Overridden from MatrixWithOpGetGMS
+// Overridden from MatrixOpGetGMS
 
 const DMatrixSlice MultiVectorMutableDense::get_gms_view() const
 {
@@ -97,7 +97,7 @@ void MultiVectorMutableDense::free_gms_view(const DMatrixSlice* gms_view) const
 	}
 }
 
-// Overridden from MatrixWithOpGetGMSMutable
+// Overridden from MatrixOpGetGMSMutable
 
 DMatrixSlice MultiVectorMutableDense::get_gms_view()
 {
@@ -132,7 +132,7 @@ MultiVectorMutableDense::col(index_type j)
 {
 	namespace rcp = MemMngPack;
 	return rcp::rcp(
-		new VectorWithOpMutableDense(
+		new VectorMutableDense(
 			DenseLinAlgPack::col( set_gms(), gms_trans(), j )
 			,rcp::null ) );
 }
@@ -142,7 +142,7 @@ MultiVectorMutableDense::row(index_type i)
 {
 	namespace rcp = MemMngPack;
 	return rcp::rcp(
-		new VectorWithOpMutableDense(
+		new VectorMutableDense(
 			DenseLinAlgPack::row( set_gms(), gms_trans(), i )
 			,rcp::null ) );
 }
@@ -152,7 +152,7 @@ MultiVectorMutableDense::diag(int k)
 {
 	namespace rcp = MemMngPack;
 	return rcp::rcp(
-		new VectorWithOpMutableDense(
+		new VectorMutableDense(
 			gms_.diag( gms_trans() == BLAS_Cpp::no_trans ? k : -k )
 			,rcp::null ) );
 }
@@ -204,7 +204,7 @@ std::ostream& MultiVectorMutableDense::output(std::ostream& out) const
 {
 	if(gms_trans() == BLAS_Cpp::no_trans)
 		return out << gms_;
-	return MatrixWithOpSerial::output(out);
+	return MatrixOpSerial::output(out);
 }
 
 bool MultiVectorMutableDense::syrk(
@@ -218,8 +218,8 @@ bool MultiVectorMutableDense::syrk(
 		sym_lhs == NULL, std::invalid_argument
 		,"MultiVectorMutableDense::syrk(...) : Error!" );
 #endif
-	MatrixSymWithOpGetGMSSymMutable
-		*sym_get_lhs = dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(sym_lhs);
+	MatrixSymOpGetGMSSymMutable
+		*sym_get_lhs = dynamic_cast<MatrixSymOpGetGMSSymMutable*>(sym_lhs);
 	if(!sym_get_lhs)
 		return false;
 	MatrixDenseSymMutableEncap  sym_gms_lhs(sym_get_lhs);
@@ -235,7 +235,7 @@ bool MultiVectorMutableDense::Mp_StMtM(
 {
 	if(MultiVector::Mp_StMtM(mwo_lhs,alpha,mwo_rhs1,trans_rhs1,trans_rhs2,beta))
 		return true;
-	return MatrixWithOpSerial::Mp_StMtM(mwo_lhs,alpha,mwo_rhs1,trans_rhs1,trans_rhs2,beta);
+	return MatrixOpSerial::Mp_StMtM(mwo_lhs,alpha,mwo_rhs1,trans_rhs1,trans_rhs2,beta);
 }
 
 bool MultiVectorMutableDense::Mp_StMtM(
@@ -246,10 +246,10 @@ bool MultiVectorMutableDense::Mp_StMtM(
 {
 	if(MultiVector::Mp_StMtM(mwo_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2,beta))
 		return true;
-	return MatrixWithOpSerial::Mp_StMtM(mwo_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2,beta);
+	return MatrixOpSerial::Mp_StMtM(mwo_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2,beta);
 }
 
-// Overridden from MatrixWithOpSerial
+// Overridden from MatrixOpSerial
 
 void MultiVectorMutableDense::Vp_StMtV(
 	DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1

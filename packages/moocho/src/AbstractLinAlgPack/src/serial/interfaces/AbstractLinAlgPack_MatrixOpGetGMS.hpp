@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixWithOpGetGMS.hpp
+// MatrixOpGetGMS.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -39,7 +39,7 @@ namespace AbstractLinAlgPack {
  * These methods should never be called directly.  Instead, use the helper
  * class type <tt>MatrixDenseEncap</tt>.
  */
-class MatrixWithOpGetGMS 
+class MatrixOpGetGMS 
 	: virtual public AbstractLinAlgPack::MatrixOp // doxygen needs full path
 {
 public:
@@ -78,39 +78,39 @@ public:
 	 */
 	virtual void free_gms_view(const DMatrixSlice* gms_view) const = 0;
 
-}; // end class MatrixWithOpGetGMS
+}; // end class MatrixOpGetGMS
 
 ///
-/** Helper class type that simplifies the usage of the <tt>MatrixWithOpGetGMS</tt> interface for clients.
+/** Helper class type that simplifies the usage of the <tt>MatrixOpGetGMS</tt> interface for clients.
  *
- * This takes care of worrying about if the <tt>MatrixWithOpGetGMS</tt> interface is supported or not
+ * This takes care of worrying about if the <tt>MatrixOpGetGMS</tt> interface is supported or not
  * and remembering to free the <tt>DMatrixSlice</tt> view properly.
  *
  * This class is only to be used on the stack as an automatic variable.  For example, to extract a
  * <tt>DMatrixSlice</tt> view of an abstract vector and use it to copy to a <tt>DMatrix</tt>
  * object you could write a function like:
  \code
- void copy(const MatrixWithOpGetGMS& mat_in, GenMatrixClass* gms_out ) {
+ void copy(const MatrixOpGetGMS& mat_in, GenMatrixClass* gms_out ) {
      MatrixDenseEncap  gms_in(mat_in);
 	 *gms_out = gms_in();
  }
  \endcode
- * In the above code, if the underlying <tt>MatrixWithOpGetGMS</tt> object does not have to
+ * In the above code, if the underlying <tt>MatrixOpGetGMS</tt> object does not have to
  * perform any dynamic memory allocations and copy in the method
- * <tt>MatrixWithOpGetGMS::get_gms_view()</tt> then the above code will only have a constant
+ * <tt>MatrixOpGetGMS::get_gms_view()</tt> then the above code will only have a constant
  * time overhead.
  */
 class MatrixDenseEncap {
 public:
 
 	///
-	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixWithOpGetGMS</tt> object.
+	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixOpGetGMS</tt> object.
 	 */
-	MatrixDenseEncap( const MatrixWithOpGetGMS&  mat_get );
+	MatrixDenseEncap( const MatrixOpGetGMS&  mat_get );
 	///
 	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixOp</tt> object.
 	 *
-	 * If <tt>dynamic_cast<const MatrixWithOpGetGMS*>(&mat) == NULL</tt> then a ???
+	 * If <tt>dynamic_cast<const MatrixOpGetGMS*>(&mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
 	MatrixDenseEncap( const MatrixOp& mat );
@@ -121,7 +121,7 @@ public:
 
 private:
 
-	const MatrixWithOpGetGMS     &mat_get_;
+	const MatrixOpGetGMS     &mat_get_;
 	const DMatrixSlice         gms_view_;
 	MatrixDenseEncap();                                      // Not defined and not to be called!
 	MatrixDenseEncap(const MatrixDenseEncap&);               // ""
@@ -135,14 +135,14 @@ private:
 // MatrixDenseEncap
 
 inline
-MatrixDenseEncap::MatrixDenseEncap( const MatrixWithOpGetGMS&  mat_get )
+MatrixDenseEncap::MatrixDenseEncap( const MatrixOpGetGMS&  mat_get )
 	:mat_get_(mat_get)
 	,gms_view_(mat_get_.get_gms_view())
 {}
 
 inline
 MatrixDenseEncap::MatrixDenseEncap( const MatrixOp& mat )
-	:mat_get_(DynamicCastHelperPack::dyn_cast<const MatrixWithOpGetGMS>(mat))
+	:mat_get_(DynamicCastHelperPack::dyn_cast<const MatrixOpGetGMS>(mat))
 	,gms_view_(mat_get_.get_gms_view())
 {}
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////
-// MatrixSymNonsingularSerial.hpp
+// MatrixSymNonsingSerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef SLAP_MATRIX_SYM_NONSINGULAR_SERIAL_H
 #define SLAP_MATRIX_SYM_NONSINGULAR_SERIAL_H
 
-#include "MatrixNonsingularSerial.hpp"
+#include "MatrixNonsingSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymNonsing.hpp"
 
 namespace AbstractLinAlgPack {
@@ -28,8 +28,8 @@ namespace AbstractLinAlgPack {
  * The methods of this interface should not be called directly but instead through
  * the \ref MatrixSymNonsingularSerial_funcs "provided nonmember functions".
  */
-class MatrixSymNonsingularSerial
-	: virtual public MatrixNonsingularSerial
+class MatrixSymNonsingSerial
+	: virtual public MatrixNonsingSerial
 	, virtual public AbstractLinAlgPack::MatrixSymNonsing // doxygen needs full name
 {
 public:
@@ -49,7 +49,7 @@ public:
 	  */
 	virtual void M_StMtInvMtM(
 		DMatrixSliceSym* sym_gms_lhs, value_type alpha
-		,const MatrixWithOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
+		,const MatrixOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
 		,EMatrixDummyArg
 		) const;
 
@@ -66,11 +66,11 @@ public:
 
 	//@}
 
-};	// end class MatrixSymNonsingularSerial
+};	// end class MatrixSymNonsingSerial
 
-/** \defgroup MatrixSymNonsingularSerial_funcs MatrixSymNonsingularSerial nonmember inline functions.
+/** \defgroup MatrixSymNonsingularSerial_funcs MatrixSymNonsingSerial nonmember inline functions.
  *
- * These nonmember functions allow operations to be called on \c MatrixSymNonsingularSerial objects
+ * These nonmember functions allow operations to be called on \c MatrixSymNonsingSerial objects
  * in similar manner to those in \c DenseLinAlgPack.
  */
 //@{
@@ -79,9 +79,9 @@ inline
 /// sym_gms_lhs = alpha * op(mwo) * inv(mswof) * op(mwo)'
 void M_StMtInvMtM(
 	DMatrixSliceSym* sym_gms_lhs, value_type alpha
-	,const MatrixWithOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
-	,const MatrixSymNonsingularSerial& mswons
-	,MatrixSymNonsingularSerial::EMatrixDummyArg mwo_rhs
+	,const MatrixOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
+	,const MatrixSymNonsingSerial& mswons
+	,MatrixSymNonsingSerial::EMatrixDummyArg mwo_rhs
 	 )
 {
 	mswons.M_StMtInvMtM(sym_gms_lhs,alpha,mwo,mwo_trans,mwo_rhs);

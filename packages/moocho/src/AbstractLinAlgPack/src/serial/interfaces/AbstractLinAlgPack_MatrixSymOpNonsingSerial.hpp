@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////
-// MatrixSymWithOpNonsingularSerial.hpp
+// MatrixSymOpNonsingSerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SLAP_MATRIX_SYM_WITH_OP_NONSINGULAR_SERIAL_H
 #define SLAP_MATRIX_SYM_WITH_OP_NONSINGULAR_SERIAL_H
 
-#include "MatrixSymWithOpSerial.hpp"
-#include "MatrixSymNonsingularSerial.hpp"
+#include "MatrixSymOpSerial.hpp"
+#include "MatrixSymNonsingSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
 
 namespace AbstractLinAlgPack {
@@ -27,9 +27,9 @@ namespace AbstractLinAlgPack {
   * can be used to compute matrix-vector products and solve for linear systems relatively
   * efficiently.
   */
-class MatrixSymWithOpNonsingularSerial 
-	: virtual public MatrixSymWithOpSerial
-	, virtual public MatrixSymNonsingularSerial
+class MatrixSymOpNonsingSerial 
+	: virtual public MatrixSymOpSerial
+	, virtual public MatrixSymNonsingSerial
 	, virtual public AbstractLinAlgPack::MatrixOpNonsing      // doxygen needs full name
 	, virtual public AbstractLinAlgPack::MatrixSymOpNonsing   // ""
 {};

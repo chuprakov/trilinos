@@ -17,15 +17,15 @@
 #define SLAP_LIN_ALG_OP_PACK_H
 
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "MatrixSymWithOpNonsingularSerial.hpp"
+#include "MatrixSymOpNonsingSerial.hpp"
 
 namespace LinAlgOpPack {
 
-using AbstractLinAlgPack::MatrixWithOpSerial;
-using AbstractLinAlgPack::MatrixNonsingularSerial;
-using AbstractLinAlgPack::MatrixWithOpNonsingularSerial;
-using AbstractLinAlgPack::MatrixSymWithOpSerial;
-using AbstractLinAlgPack::MatrixSymWithOpNonsingularSerial;
+using AbstractLinAlgPack::MatrixOpSerial;
+using AbstractLinAlgPack::MatrixNonsingSerial;
+using AbstractLinAlgPack::MatrixOpNonsingSerial;
+using AbstractLinAlgPack::MatrixSymOpSerial;
+using AbstractLinAlgPack::MatrixSymOpNonsingSerial;
 
 using AbstractLinAlgPack::Vp_StMtV;
 using AbstractLinAlgPack::V_InvMtV;

@@ -16,8 +16,8 @@
 #ifndef MULTI_VECTOR_MUTABLE_DENSE_H
 #define MULTI_VECTOR_MUTABLE_DENSE_H
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpGetGMSMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpGetGMSMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "ReleaseResource.hpp"
@@ -56,8 +56,8 @@ namespace AbstractLinAlgPack {
  */
 class MultiVectorMutableDense
 	: public AbstractLinAlgPack::MultiVectorMutable   // doxygen needs the full path
-	, public MatrixWithOpSerial
-	, public MatrixWithOpGetGMS
+	, public MatrixOpSerial
+	, public MatrixOpGetGMS
 {
 public:
 
@@ -138,7 +138,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOpGetGMS */
+	/** @name Overridden from MatrixOpGetGMS */
 	//@{
 
 	///
@@ -148,7 +148,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOpGetGMSMutable */
+	/** @name Overridden from MatrixOpGetGMSMutable */
 	//@{
 
 	///
@@ -221,7 +221,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOpSerial */
+	/** @name Overridden from MatrixOpSerial */
 	//@{
 
 	///

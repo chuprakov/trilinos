@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixSymWithOpSerial.cpp
+// MatrixSymOpSerial.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSymMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
@@ -27,7 +27,7 @@
 
 namespace AbstractLinAlgPack {
 
-void MatrixSymWithOpSerial::Mp_StPtMtP(
+void MatrixSymOpSerial::Mp_StPtMtP(
 	DMatrixSliceSym* S, value_type a
 	,EMatRhsPlaceHolder
 	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
@@ -97,10 +97,10 @@ void MatrixSymWithOpSerial::Mp_StPtMtP(
 	}
 }
 
-void MatrixSymWithOpSerial::Mp_StMtMtM(
+void MatrixSymOpSerial::Mp_StMtMtM(
 	DMatrixSliceSym* sym_lhs, value_type alpha
 	,EMatRhsPlaceHolder dummy_place_holder
-	,const MatrixWithOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+	,const MatrixOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 	,value_type beta
 	) const
 {
@@ -110,12 +110,12 @@ void MatrixSymWithOpSerial::Mp_StMtMtM(
 
 // Overridden from MatrixSymOp
 
-const VectorSpace& MatrixSymWithOpSerial::space_rows() const
+const VectorSpace& MatrixSymOpSerial::space_rows() const
 {
-	return MatrixWithOpSerial::space_rows();
+	return MatrixOpSerial::space_rows();
 }
 
-void MatrixSymWithOpSerial::Mp_StPtMtP(
+void MatrixSymOpSerial::Mp_StPtMtP(
 	MatrixSymOp* symwo_lhs, value_type alpha
 	,EMatRhsPlaceHolder dummy
 	,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
@@ -128,7 +128,7 @@ void MatrixSymWithOpSerial::Mp_StPtMtP(
 		, beta );
 }
 
-void MatrixSymWithOpSerial::Mp_StMtMtM(
+void MatrixSymOpSerial::Mp_StMtMtM(
 	MatrixSymOp* symwo_lhs, value_type alpha
 	,EMatRhsPlaceHolder dummy
 	,const MatrixOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
@@ -138,7 +138,7 @@ void MatrixSymWithOpSerial::Mp_StMtMtM(
 	using DynamicCastHelperPack::dyn_cast;
 	this->Mp_StMtMtM(
 		&MatrixDenseSymMutableEncap(symwo_lhs)(), alpha, dummy
-		,dyn_cast<const MatrixWithOpSerial>(mwo_rhs), mwo_rhs_trans
+		,dyn_cast<const MatrixOpSerial>(mwo_rhs), mwo_rhs_trans
 		,beta );
 }
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixSymDiagonalSparse.hpp
+// MatrixSymDiagSparse.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,7 +15,7 @@
 #ifndef SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_H
 #define SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_H
 
-#include "MatrixSymWithOpSerial.hpp"
+#include "MatrixSymOpSerial.hpp"
 #include "MatrixConvertToSparse.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
@@ -25,8 +25,8 @@ namespace AbstractLinAlgPack {
 /** Abstract base class for all serial symmetric diagonal matrices with
  * significant zeros along the diagonal.
  */
-class MatrixSymDiagonalSparse
-	: virtual public MatrixSymWithOpSerial
+class MatrixSymDiagSparse
+	: virtual public MatrixSymOpSerial
 	, virtual public MatrixConvertToSparse
 {
 public:
@@ -41,7 +41,7 @@ public:
 	/** The default value of num_updates_at_once == 0 is set to allow
 	  * this class to determine the appropriate size internally.
 	  */
-	MatrixSymDiagonalSparse();
+	MatrixSymDiagSparse();
 
 	/** @name To be overridden by subclass */
 	//@{
@@ -67,7 +67,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOpSerial */
+	/** @name Overridden from MatrixOpSerial */
 	//@{
 
 	///
@@ -76,7 +76,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixSymWithOpSerial */
+	/** @name Overridden from MatrixSymOpSerial */
 	//@{
 
 	///
@@ -102,7 +102,7 @@ public:
 	 */
 	void Mp_StMtMtM( DMatrixSliceSym* sym_lhs, value_type alpha
 		, EMatRhsPlaceHolder dummy_place_holder
-		, const MatrixWithOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+		, const MatrixOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 		, value_type beta ) const;
 
 	//@}
@@ -130,7 +130,7 @@ public:
 
 	//@}
 
-};	// end class MatrixSymDiagonalSparse
+};	// end class MatrixSymDiagSparse
 
 }	// end namespace AbstractLinAlgPack
 

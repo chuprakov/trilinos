@@ -21,7 +21,7 @@
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/BFGS_helpers.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/rank_2_chol_update.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPack.hpp"
@@ -240,8 +240,8 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
 	,BLAS_Cpp::Transp trans_rhs
 	) const
 {
-	MatrixSymWithOpGetGMSSymMutable
-		*symwo_gms_lhs = dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(m_lhs);
+	MatrixSymOpGetGMSSymMutable
+		*symwo_gms_lhs = dynamic_cast<MatrixSymOpGetGMSSymMutable*>(m_lhs);
 	if(!symwo_gms_lhs)
 		return false;
 	MatrixDenseSymMutableEncap sym_lhs(symwo_gms_lhs);
@@ -266,7 +266,7 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
 	// Perform the operation
 	bool did_op  = false;
 	bool diag_op = false;
-	if(const MatrixSymWithOpGetGMSSym *symwo_gms_rhs = dynamic_cast<const MatrixSymWithOpGetGMSSym*>(&M_rhs)) {
+	if(const MatrixSymOpGetGMSSym *symwo_gms_rhs = dynamic_cast<const MatrixSymOpGetGMSSym*>(&M_rhs)) {
 		DMatrixSliceSym               M = this->M();
 		MatrixDenseSymEncap   sym_rhs(*symwo_gms_rhs);
 		DenseLinAlgPack::Mp_StM(
@@ -291,7 +291,7 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
 	// If only the original is updated
 	if(did_op) {
 		if( diag_op && is_diagonal_ )
-			init_diagonal( VectorWithOpMutableDense(
+			init_diagonal( VectorMutableDense(
 				this->M().gms().diag(), MemMngPack::null ) );
 		else
 			initialize( this->M() );
@@ -300,7 +300,7 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
 	return false;
 }
 
-// Overridden from MatrixWithOpSerial
+// Overridden from MatrixOpSerial
 
 void MatrixSymPosDefCholFactor::Vp_StMtV(
 	DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
@@ -393,7 +393,7 @@ void MatrixSymPosDefCholFactor::Vp_StMtV(
 		}
 	}
 	else {
-		MatrixWithOpSerial::Vp_StMtV(y,a,M_trans,x,b); // ToDo: Specialize when needed!
+		MatrixOpSerial::Vp_StMtV(y,a,M_trans,x,b); // ToDo: Specialize when needed!
 	}
 }
 
@@ -406,7 +406,7 @@ void MatrixSymPosDefCholFactor::Vp_StPtMtV(
 	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::Vp_StPtMtV(...DVectorSlice...)" );
 #endif
 	assert_initialized();
-	MatrixWithOpSerial::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // ToDo: Specialize when needed!
+	MatrixOpSerial::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // ToDo: Specialize when needed!
 }
 
 void MatrixSymPosDefCholFactor::Vp_StPtMtV(
@@ -432,14 +432,14 @@ void MatrixSymPosDefCholFactor::Vp_StPtMtV(
 
 			}
 		}
-		MatrixWithOpSerial::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // ToDo: Specialize when needed!
+		MatrixOpSerial::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // ToDo: Specialize when needed!
 	}
 	else {
-		MatrixWithOpSerial::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // ToDo: Specialize when needed!
+		MatrixOpSerial::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // ToDo: Specialize when needed!
 	}
 }
 
-// Overridden from MatrixSymWithOpSerial
+// Overridden from MatrixSymOpSerial
 
 void MatrixSymPosDefCholFactor::Mp_StPtMtP(
 	DMatrixSliceSym* S, value_type a
@@ -454,14 +454,14 @@ void MatrixSymPosDefCholFactor::Mp_StPtMtP(
 #endif
 	assert_initialized();
 	if( !maintain_original_ ) {
-		MatrixSymWithOpSerial::Mp_StPtMtP(S,a,dummy_place_holder,P,P_trans,b);
+		MatrixSymOpSerial::Mp_StPtMtP(S,a,dummy_place_holder,P,P_trans,b);
 	}
 	else {
-		MatrixSymWithOpSerial::Mp_StPtMtP(S,a,dummy_place_holder,P,P_trans,b); // ToDo: Override when needed!
+		MatrixSymOpSerial::Mp_StPtMtP(S,a,dummy_place_holder,P,P_trans,b); // ToDo: Override when needed!
 	}
 }
 
-// Overridden from MatrixNonsingularSerial
+// Overridden from MatrixNonsingSerial
 
 void MatrixSymPosDefCholFactor::V_InvMtV(
 	DVectorSlice* y, BLAS_Cpp::Transp M_trans, const DVectorSlice& x
@@ -506,13 +506,13 @@ void MatrixSymPosDefCholFactor::V_InvMtV(
 	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::V_InvMtV(...SpVectorSlice...)" );
 #endif
 	assert_initialized();
-	MatrixNonsingularSerial::V_InvMtV(y,M_trans,x);
+	MatrixNonsingSerial::V_InvMtV(y,M_trans,x);
 }
 
-// Overridden from MatrixSymNonsingularSerial
+// Overridden from MatrixSymNonsingSerial
 
 void MatrixSymPosDefCholFactor::M_StMtInvMtM(
-	  DMatrixSliceSym* S, value_type a, const MatrixWithOpSerial& B
+	  DMatrixSliceSym* S, value_type a, const MatrixOpSerial& B
 	, BLAS_Cpp::Transp B_trans, EMatrixDummyArg dummy_arg
 	) const
 {
@@ -581,7 +581,7 @@ void MatrixSymPosDefCholFactor::initialize( const DMatrixSliceSym& M )
 		);
 }
 
-// Overridden from MatrixSymWithOpGetGMSSym
+// Overridden from MatrixSymOpGetGMSSym
 
 const DenseLinAlgPack::DMatrixSliceSym MatrixSymPosDefCholFactor::get_sym_gms_view() const
 {
@@ -601,7 +601,7 @@ void MatrixSymPosDefCholFactor::free_sym_gms_view(const DenseLinAlgPack::DMatrix
 	// Nothing todo
 }
 
-// Overridden from MatrixSymWithOpGetGMSSymMutable
+// Overridden from MatrixSymOpGetGMSSymMutable
 
 DenseLinAlgPack::DMatrixSliceSym MatrixSymPosDefCholFactor::get_sym_gms_view()
 {
@@ -749,8 +749,8 @@ void MatrixSymPosDefCholFactor::secant_update(
 		sTy_scale = sTy*scale_;
 	std::ostringstream omsg;
 	if( !BFGS_sTy_suff_p_d(
-			VectorWithOpMutableDense((*s)(),rcp::null)
-			,VectorWithOpMutableDense((*y)(),rcp::null)
+			VectorMutableDense((*s)(),rcp::null)
+			,VectorMutableDense((*y)(),rcp::null)
 			,&sTy_scale,&omsg,"\nMatrixSymPosDefCholFactor::secant_update(...)"
 			)
 		)

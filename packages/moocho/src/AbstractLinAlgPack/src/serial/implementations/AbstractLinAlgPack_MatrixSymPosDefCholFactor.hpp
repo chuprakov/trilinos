@@ -19,9 +19,9 @@
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractInvCholFactor.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymAddDelUpdateable.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpNonsingularSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpNonsingSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDenseInitialize.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSymMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymSecant.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
@@ -91,9 +91,9 @@ namespace AbstractLinAlgPack {
  * More operations will be overridden as they are needed by various applications.
  */
 class MatrixSymPosDefCholFactor
-	: virtual public AbstractLinAlgPack::MatrixSymWithOpNonsingularSerial  // doxygen needs full name
+	: virtual public AbstractLinAlgPack::MatrixSymOpNonsingSerial  // doxygen needs full name
 	, virtual public AbstractLinAlgPack::MatrixSymDenseInitialize          // ""
-	, virtual public AbstractLinAlgPack::MatrixSymWithOpGetGMSSymMutable   // ""
+	, virtual public AbstractLinAlgPack::MatrixSymOpGetGMSSymMutable   // ""
 	, virtual public MatrixExtractInvCholFactor
 	, virtual public MatrixSymSecant
 	, virtual public MatrixSymAddDelUpdateable
@@ -362,7 +362,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixWithOpSerial */
+	/** @name Overridden from MatrixOpSerial */
 	//@{
 
 	///
@@ -384,7 +384,7 @@ public:
 
 	//@}
 
-	/** @name Overridden form MatrixSymWithOpSerial */
+	/** @name Overridden form MatrixSymOpSerial */
 	//@{
 
 	void Mp_StPtMtP( DMatrixSliceSym* sym_lhs, value_type alpha
@@ -394,7 +394,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixNonsingularSerial */
+	/** @name Overridden from MatrixNonsingSerial */
 	//@{
 
 	/// With throw exception if factorization is not allowed.
@@ -406,13 +406,13 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixSymNonsingularSerial */
+	/** @name Overridden from MatrixSymNonsingSerial */
 	//@{
 
 	/// Will throw exception if factorization is not allowed.
 	void M_StMtInvMtM(
 		DMatrixSliceSym* sym_gms_lhs, value_type alpha
-		, const MatrixWithOpSerial& mwo, BLAS_Cpp::Transp mwo_trans, EMatrixDummyArg
+		, const MatrixOpSerial& mwo, BLAS_Cpp::Transp mwo_trans, EMatrixDummyArg
 		) const;
 
 	//@}
@@ -425,7 +425,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixSymWithOpGetGMSSym */
+	/** @name Overridden from MatrixSymOpGetGMSSym */
 	//@{
 
 	///
@@ -435,7 +435,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixSymWithOpGetGMSSymMutable */
+	/** @name Overridden from MatrixSymOpGetGMSSymMutable */
 	//@{
 
 	///
