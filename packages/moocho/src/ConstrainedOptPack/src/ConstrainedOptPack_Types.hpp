@@ -62,7 +62,7 @@ class MeritFuncNLPModL1;
 //class MatrixHessianSuperBasicInitDiagonal;
 //class MatrixSymPosDefInvCholFactor;
 class MatrixSymPosDefCholFactor;
-//class MatrixSymPosDefLBFGS;
+class MatrixSymPosDefLBFGS;
 //class MatrixSymAddDelBunchKaufman;
 class MatrixIdentConcatStd;
 class DirectLineSearchArmQuad_Strategy;

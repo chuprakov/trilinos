@@ -39,7 +39,7 @@ using ConstrainedOptimizationPack::MeritFuncNLPModL1;
 //using ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal;
 //using ConstrainedOptimizationPack::MatrixSymPosDefInvCholFactor;
 using ConstrainedOptimizationPack::MatrixSymPosDefCholFactor;
-//using ConstrainedOptimizationPack::MatrixSymPosDefLBFGS;
+using ConstrainedOptimizationPack::MatrixSymPosDefLBFGS;
 //using ConstrainedOptimizationPack::MatrixSymAddDelBunchKaufman;
 using ConstrainedOptimizationPack::MatrixIdentConcatStd;
 using ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy;
