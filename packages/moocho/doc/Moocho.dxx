@@ -1,0 +1,80 @@
+/*
+
+This is the main documentation building file for rSQPpp.
+For this to work properly doc++ must be run in this
+directory for these include paths to work.  The paths
+must always be relative to the directory that doc++
+is invoked in.  That is the rule that I discovered by
+running through doc++ in the debugger.
+
+This file also shows how I figured out how to compile the DOC++ documentation
+for each package separately and how you can link them together.
+
+*/
+
+/** @name rSQP++.
+
+This is a reference for the packages of C++ classes and functions that compose
+rSQP++.
+
+Still under construction! Documentation of the primary high-level packages
+(such as {\em ConstraintedOptimizationPack}, {\em SparseSolverPack}
+and {\em ReducedSpaceSQPPack}) have not been compiled yet.  Only the more
+foundational packages are included.
+
+@memo C++ framework for building Successive Quadratic Programming
+algorithms.
+
+@author Roscoe A. Bartlett
+@version 1.0
+*/
+//@{
+  /** @name 1.Utility Packages
+    *
+	* @memo Packages that are used in the implementation of the other packages.
+    */
+  //@{
+    /** @name 1.\URL[namespace Misc]{../Misc/doc++/index.html}
+	  * @memo Single DOC++ collection.
+	  */
+	//@{
+	//@} 
+  //@}
+  /** @name 2.Abstractions for General Iterative Algorithms.
+    *
+	* @memo Package framework for iterative algorithms.
+    */
+  //@{
+    /** @name 1.\URL[namespace GeneralIterationPack]{../GeneralIterationPack/doc++/index.html}
+	  * @memo Single DOC++ collection.
+	  */
+	//@{
+	//@} 
+  //@}
+  /** @name 3.Numerical Packages.
+    *
+	* These are packages that are used to perform numerical computations within
+	* and algorithm.  They range from low level dense BLAS linear algebra to
+	* high level operations like the solution of complex Quadratic Programms.
+    *
+	* Each package is a separate set of DOC++ files.  Therefore the class hierarchies
+	* and and alphabetical indexes only include the componenets from the individual
+	* package itself.
+	*
+	* Packages are listed in assending order based on dependencies.  No package is
+	* dependent on any package below it but it may be dependent on a package above
+	* it.  For example the package {\em LinAlgPack} is dependent on the {
+	*/
+  //@{
+	/** @name 1.\URL[Dense Linear Algebra]{../LinAlgPack/doc++/index.html}.
+	  * @memo Single DOC++ collection.
+	  */
+	//@{
+	//@}
+    /** @name 2.\URL[namespace SparseLinAlgPack]{../SparseLinAlgPack/doc++/index.html}
+	  * @memo Single DOC++ collection.
+	  */
+	//@{
+	//@} 
+  //@}
+//@}

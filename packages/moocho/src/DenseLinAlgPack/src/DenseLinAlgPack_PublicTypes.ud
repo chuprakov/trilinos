@@ -1,0 +1,27 @@
+// //////////////////////////////////////////////////////////////
+// LinAlgPackPublicTypes.ud
+//
+// This is a set of using declarations for the types that LinAlgPack
+// exposes publicly.  A namespace that wants to included these
+// names should use:
+//
+// namespace MyNamespace {
+//     #include "LinAlgPackPublicTypes.ud"
+// }
+
+typedef LinAlgPack::value_type		value_type;
+typedef LinAlgPack::indice_type		indice_type;
+typedef LinAlgPack::size_type		size_type;
+
+using LinAlgPack::EOverLap;
+using LinAlgPack::IVector;
+using LinAlgPack::Range1D;
+using LinAlgPack::Vector;
+using LinAlgPack::VectorSlice;
+using LinAlgPack::TransVectorSlice;
+using LinAlgPack::GenMatrix;
+using LinAlgPack::GenMatrixSlice;
+using LinAlgPack::TransGenMatrixSlice;
+using LinAlgPack::tri_ele_gms;
+using LinAlgPack::tri_gms;
+using LinAlgPack::sym_gms;

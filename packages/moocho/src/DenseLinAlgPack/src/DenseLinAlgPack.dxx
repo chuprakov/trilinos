@@ -1,0 +1,79 @@
+/** @name namespace LinAlgPack.
+
+Dense 1-D vectors are abstracted by two classes, \ref{Vector} and \ref{VectorSlice}.
+#Vector# is a storage type that dynamically allocates memory for a sequential array of
+elements and provides access to those elements in a variety of way.  VectorSlice is a
+class that is used to provide a view of an array of elements that are spaced at regular
+intervals such as BLAS vectors.  A #VectorSlice# object can represent an entire vector,
+a subregion of a vector, or a row or column or diagonal of a rectangular BLAS compatable
+matrix.  In addition #VectorSlice# objects can be constructed a views of raw sequential
+(C++ or Fortran compatible) arrays and thus can coexist with other packages efficiently.
+
+BLAS compatible 2-D matrices are abstracted by the types \ref{GenMatrix} and
+\ref{GenMatrixSlice}.  These classes parallel #Vector# and #VectorSlice# as #GenMatrix#
+is a storage type that dynamically allocates memory and #GenMatrixSlice# provides BLAS
+compatible views of rectangular 2-D matrices or subregions of matrices.
+
+@memo
+Uses Packages Misc, BLAS_Cpp.\\
+This is a package of abstract data types and operations for dense linear algebra
+using real double precision floating point values.
+Included are vector and matrix types meant to abstract dense linear algebra
+that is BLAS compatable.
+
+*/
+//@{
+  //@Include: LinAlgPackOptions.h
+  /** @name Linear algebra vector, matrix and permutation types. */
+  //@{
+    //@Include: IVector.h
+    //@Include: VectorClass.h
+    //@Include: GenMatrixClass.h
+    //@Include: GenMatrixAsTriSym.h
+  //@}
+  /** @name Linear algebra operations */
+  //@{
+    /** @name Assignment */
+    //@{
+      //@Include: VectorAssign.h
+      //@Include: GenMatrixAssign.h
+    //@}
+    /** @name BLAS operations */
+    //@{
+      //@Include: VectorOp.h
+      //@Include: GenMatrixOp.h
+      //@Include: LinAlgPackAssertOp.h
+    //@}
+    //@Include: PermVecMat.h
+  //@}
+  /** @name Input / Output */
+  //@{
+    //@Include: PermIn.h
+    //@Include: PermOut.h
+    //@Include: VectorIn.h
+    //@Include: VectorOut.h
+    //@Include: GenMatrixIn.h
+    //@Include: GenMatrixOut.h
+    //@Include: VectorInFunc.h
+    //@Include: VectorOutFunc.h
+    //@Include: GenMatrixInFunc.h
+    //@Include: GenMatrixOutFunc.h
+    //@Include: LinAlgPackInFormatDecl.h
+    //@Include: LinAlgPackOutFormatDecl.h
+  //@}
+  /** @name Utilities / Misc. */
+  //@{
+    //@Include: ElementaryMatVec.h
+    //@Include: MatVecCompare.h
+    //@Include: InvCholUpdate.h
+//@}
+  //@Include: LinAlgPackIO.dxx
+//@}
+
+
+
+
+
+
+
+

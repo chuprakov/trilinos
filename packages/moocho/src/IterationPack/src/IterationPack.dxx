@@ -1,0 +1,33 @@
+/** @name namespace GeneralIterationPack.
+  * @memo Framework for implementing general iterative algorithms.
+  */
+//@{
+  //@Include: Algorithm.h
+  //@Include: AlgorithmStep.h
+  //@Include: AlgorithmState.h
+  /** @name Iteration Quantities.
+    * @memo Interfaces for abstracting iteration quantities
+    */
+  //@{
+    //@Include: IterQuantity.h
+    //@Include: IterQuantityAccess.h
+    /** @name Iteration quantity node subclasses. */
+    //@{
+      //@Include: IterQuantityAccessContinuousDecl.h
+      //@Include: IterQuantityAccessDerivedToBaseDecl.h
+    //@}
+  //@}
+  //@Include: AlgorithmTrack.h
+  /** @name Misc. */
+  //@{
+    //@Include: print_algorithm_step.h
+  //@}
+//@}
+
+
+
+
+
+
+
+

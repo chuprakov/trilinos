@@ -1,0 +1,20 @@
+// //////////////////////////////////////////////////////////////
+// NLPInterfacePackPublicTypes.ud
+//
+// This is a set of using declarations for the types that NLPInterfacePack
+// exposes publicly.  A namespace that wants to included these
+// names should use:
+//
+// namespace MyNamespace {
+//     #include "NLPInterfacePackPublicTypes.ud"
+// }
+
+// Include the types from SparseLinAlgPack
+#include "SparseLinAlgPack/include/SparseLinAlgPackPublicTypes.ud"
+
+using NLPInterfacePack::NLP;
+using NLPInterfacePack::NLPFirstOrderInfo;
+using NLPInterfacePack::NLPSecondOrderInfo;
+using NLPInterfacePack::NLPReduced;
+using NLPInterfacePack::NLPFullToReduced;
+using NLPInterfacePack::NLPDualCalc;
