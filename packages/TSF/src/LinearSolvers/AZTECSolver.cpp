@@ -18,7 +18,7 @@
 #include "ml_epetra_utils.h"
 #include "ml_epetra_operator.h"
 #include "ml_aztec_utils.h"
-using namespace Epetra_ML;
+using namespace ML_Epetra;
 #endif
 
 using namespace TSF;
