@@ -30,10 +30,7 @@ using LinAlgPack::Mp_M_assert_sizes;
 using LinAlgPack::Vp_MtV_assert_sizes;
 using LinAlgPack::Mp_MtM_assert_sizes;
 
-// //////////////////////////////////////////////////////
-// Level-2 BLAS matrix-matrix element-wise operations
-
-// gms_lhs += alpha * coom_rhs (time = O(coom_rhs.nz(), space = O(1))
+// gms_lhs += alpha * coom_rhs (time = O(coom_rhs.nz()), space = O(1))
 template<class T_COOM>
 void Mp_StCOOM(GenMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs
 	, BLAS_Cpp::Transp trans_rhs)
@@ -51,15 +48,12 @@ void Mp_StCOOM(GenMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs
 			(*gms_lhs)(itr->col_j()+j_o,itr->row_i()+i_o) += alpha * itr->value();
 }
 
-// /////////////////////////////////////////////////////////////////////////
-// Level-2 BLAS (vector-matrtix) Liner Algebra Operations
-
-// vs_lhs += alpha * coom_rhs1 * vs_rhs2 (BLAS xGEMV) (time = O(coom_rhs.nz(), space = O(1))
+// vs_lhs += alpha * coom_rhs1 * vs_rhs2 (BLAS xGEMV) (time = O(coom_rhs.nz()), space = O(1))
 template<class T_COOM>
 void Vp_StCOOMtV(VectorSlice* vs_lhs, value_type alpha, const T_COOM& coom_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_rhs2)
 {
-	Vp_MtV_assert_sizes( vs_lhs->size(), coom_rhs1.rows(), coom_rhs1.cols(), trans_rhs1, vs_rhs2.size() );
+	Vp_MtV_assert_sizes( vs_lhs->dim(), coom_rhs1.rows(), coom_rhs1.cols(), trans_rhs1, vs_rhs2.dim() );
 	typename T_COOM::difference_type
 		i_o	= coom_rhs1.row_offset(),
 		j_o	= coom_rhs1.col_offset();
@@ -70,9 +64,6 @@ void Vp_StCOOMtV(VectorSlice* vs_lhs, value_type alpha, const T_COOM& coom_rhs1
 		for(typename T_COOM::const_iterator itr = coom_rhs1.begin(); itr != coom_rhs1.end(); ++itr)
 			(*vs_lhs)(itr->col_j()+j_o) += alpha * itr->value() * vs_rhs2(itr->row_i()+i_o);
 }
-
-// ////////////////////////////////////////////////////////////////////////
-// Level-3 BLAS (matrix-matrix) Linear Algebra Operations
 
 namespace UtilityPack {
 

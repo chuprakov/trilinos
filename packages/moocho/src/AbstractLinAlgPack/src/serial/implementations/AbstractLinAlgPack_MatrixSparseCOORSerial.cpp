@@ -16,6 +16,11 @@
 #include <assert.h>
 
 #include "SparseLinAlgPack/include/MatrixSparseCOORSerial.h"
+#include "SparseLinAlgPack/include/MatrixCOORTmplItfc.h"
+#include "SparseLinAlgPack/include/COOMatrixTmplOp.h"
+#include "SparseLinAlgPack/include/VectorDenseEncap.h"
+#include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
+#include "LinAlgPack/include/LinAlgOpPack.h"
 #include "ThrowException.h"
 #include "dynamic_cast_verbose.h"
 
@@ -164,7 +169,27 @@ MatrixWithOp& MatrixSparseCOORSerial::operator=(const MatrixWithOp& M)
 
 std::ostream& MatrixSparseCOORSerial::output(std::ostream& out) const
 {
-	return MatrixWithOp::output(out); // ToDo: Specialize!
+	const size_type
+		rows = this->rows(),
+		cols = this->cols();
+	out
+		<< "Sparse " << rows << " x " << cols << " matrix with nonzero entries:\n";
+	const value_type
+		*itr_val      = &val_[0],
+		*itr_val_end  = itr_val + nz_;
+	const index_type
+		*itr_ivect    = &row_i_[0],
+		*itr_jvect    = &col_j_[0];
+	for(; itr_val != itr_val_end; ++itr_val, ++itr_ivect, ++itr_jvect)
+		out << *itr_val << ":" << *itr_ivect << ":" << *itr_jvect << " ";
+	out << "\n";
+	
+	if( rows * cols <= 400 ) {
+		out << "Converted to dense =\n";
+		MatrixWithOp::output(out);
+	}
+
+	return out;
 }
 
 void MatrixSparseCOORSerial::Vp_StMtV(
@@ -172,7 +197,15 @@ void MatrixSparseCOORSerial::Vp_StMtV(
 	, const VectorWithOp& x, value_type b
 	) const
 {
-	assert(0); // ToDo: Implement!
+	AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, M_trans, x );
+	VectorDenseMutableEncap   y_d(*y);
+	VectorDenseEncap          x_d(x);
+	LinAlgPack::Vt_S(&y_d(),b);
+	Vp_StCOOMtV(
+		&y_d(),a,MatrixCOORTmplItfc<value_type,index_type>(
+			rows_,cols_,nz_,0,0,val_,row_i_,col_j_ )
+		,M_trans, x_d()
+		);
 }
 
 // Overridden from MatrixLoadSparseElements
@@ -251,12 +284,12 @@ void MatrixSparseCOORSerial::get_load_nonzeros_buffers(
 		"be greater than max_nz - nz = " << max_nz_ << " - " << nz_ << " = " << (max_nz_-nz_) <<
 		" entries!" );
 	THROW_EXCEPTION(
-		reload_val_only_ && (*row_i != NULL || *col_j != NULL), std::invalid_argument
+		reload_val_only_ && (row_i != NULL || col_j != NULL), std::invalid_argument
 		,"MatrixSparseCOORSerial::get_load_nonzeros_buffers(...) : Error, "
 		"reset_to_load_values() was called and therefore the structure of the matrix "
 		"can not be set!" );
 	THROW_EXCEPTION(
-		!reload_val_only_  && (*row_i == NULL || *col_j == NULL), std::invalid_argument
+		!reload_val_only_  && (row_i == NULL || col_j == NULL), std::invalid_argument
 		,"MatrixSparseCOORSerial::get_load_nonzeros_buffers(...) : Error, "
 		"both *row_i and *col_j must be non-NULL since reinitialize() was called" );
 #endif

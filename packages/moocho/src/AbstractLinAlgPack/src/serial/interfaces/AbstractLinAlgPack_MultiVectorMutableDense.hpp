@@ -72,8 +72,8 @@ public:
 	/** Calls <tt>this->initialize(rows,cols)</tt>.
 	 */
 	MultiVectorMutableDense(
-		const size_type                    rows
-		,const size_type                   cols
+		const size_type                    rows = 0
+		,const size_type                   cols = 0
 		);
 	///
 	/** Calls <tt>this->initialize(gms,gms_trans,gms_release)</tt>.
