@@ -96,6 +96,7 @@ $(srcdir)/RTOpPack/RTOpServerDecl.hpp\
 $(srcdir)/RTOpPack/RTOpServer.hpp\
 $(srcdir)/RTOpPack/RTOpUnaryFuncPtrDecl.hpp\
 $(srcdir)/RTOpPack/RTOpUnaryFuncPtr.hpp\
+$(srcdir)/RTOpPack/RTOpPack_RTOpTDecl.hpp\
 $(srcdir)/RTOpPack/RTOpPack_RTOpT.hpp\
 $(srcdir)/RTOpPack/RTOpPack_RTOpTHelpers.hpp\
 $(srcdir)/RTOpPack/RTOpPack_RTOpC.hpp\
@@ -210,7 +211,8 @@ SOURCES_H=\
   $(MoochoUtilities_SOURCES_H)\
   $(RTOp_C_SOURCES_H)\
   $(RTOp_CXX_SOURCES_H)\
-	$(RTOp_STDOPS_SOURCES_H)
+	$(RTOp_STDOPS_SOURCES_H)\
+	$(RTOp_STDOPS_SOURCES_HPP)
 
 TSFCOREUTILS_LIB = libTSFCoreUtils.a
 
