@@ -85,17 +85,17 @@ void MatrixWithOpNonsingularAggr::set_uninitialized()
 
 size_type MatrixWithOpNonsingularAggr::rows() const
 {
-	return mwo_->rows(); // square matrix!
+	return mwo_.get() ? mwo_->rows() : 0; // square matrix!
 }
 
 size_type MatrixWithOpNonsingularAggr::cols() const
 {
-	return mwo_->rows(); // square matrix!
+	return mwo_.get() ? mwo_->rows() : 0; // square matrix!
 }
 
 size_type MatrixWithOpNonsingularAggr::nz() const
 {
-	return mwo_->nz();
+	return mwo_.get() ? mwo_->nz() : 0;
 }
 
 // Overridden from MatrixWithOp
