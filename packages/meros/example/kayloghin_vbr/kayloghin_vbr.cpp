@@ -42,6 +42,7 @@
 #include "TSFPreconditioner.h"
 #include "TSFMatrixOperator.h"
 #include "Epetra_Vector.h"
+#include "TSFHashtable.h"
 
 #ifdef EPETRA_MPI
 #include "Epetra_MpiComm.h"
@@ -121,42 +122,46 @@ int main(int argc, void** argv)
 
 
  // 1) Build solver for inv(F) so that it corresponds to using GMRES with ML.
- 
- ML *ml_handle;
- int N_levels = 10;
- ML_Set_PrintLevel(10);
- ML_Create(&ml_handle, N_levels);
- EpetraMatrix2MLMatrix(ml_handle, 0, F_crs);
- ML_Aggregate *agg_object;
- ML_Aggregate_Create(&agg_object);
- ML_Aggregate_Set_MaxCoarseSize(agg_object,30);
- ML_Set_Symmetrize(ml_handle, ML_TRUE);
- ML_Aggregate_Set_DampingFactor(agg_object,0.25);
- N_levels = ML_Gen_MGHierarchy_UsingAggregation(ml_handle, 0,
-                                                ML_INCREASING, agg_object);
- ML_Gen_Smoother_SymGaussSeidel(ml_handle, ML_ALL_LEVELS,
-                                ML_BOTH, 2, .2);
- ML_Gen_Solver    (ml_handle, ML_MGV, 0, N_levels-1);
+  TSFHashtable<int, int> azOptionsF;
+  TSFHashtable<int, double> azParamsF;
+  azOptionsF.put(AZ_solver, AZ_gmres);
+  azOptionsF.put(AZ_ml, 1);
+  azOptionsF.put(AZ_ml_levels, 10);
+  azOptionsF.put(AZ_precond, AZ_dom_decomp);
+  azOptionsF.put(AZ_subdomain_solve, AZ_ilu);
+  azParamsF.put(AZ_tol, 1e-6);
+  azOptionsF.put(AZ_max_iter, 200);
+  azOptionsF.put(AZ_recursive_iterate, 1);
+  TSFLinearSolver FSolver = new AZTECSolver(azOptionsF,azParamsF);
+  FSolver.setVerbosityLevel(4); 
 
- Epetra_ML_Operator  *MLop = new Epetra_ML_Operator(ml_handle,*comm,*F_map,*F_map);
- MLop->SetOwnership(true);
- ML_Aggregate_Destroy(&agg_object);
- TSFSmartPtr<Epetra_Operator> Smart_MLprec = TSFSmartPtr<Epetra_Operator>(MLop, true);
+  // int N_levels = 10;
+  // ML_Set_PrintLevel(10);
+  // ML_Create(&ml_handle, N_levels);
+  // EpetraMatrix2MLMatrix(ml_handle, 0, F_crs);
+  // ML_Aggregate *agg_object;
+  // ML_Aggregate_Create(&agg_object);
+  // ML_Aggregate_Set_MaxCoarseSize(agg_object,30);
+  // ML_Set_Symmetrize(ml_handle, ML_TRUE);
+  // ML_Aggregate_Set_DampingFactor(agg_object,0.25);
+  // N_levels = ML_Gen_MGHierarchy_UsingAggregation(ml_handle, 0,
+  //                               ML_INCREASING, agg_object);
+  // ML_Gen_Smoother_SymGaussSeidel(ml_handle, ML_ALL_LEVELS,
+  //                              ML_BOTH, 2, .2);
+  // ML_Gen_Solver    (ml_handle, ML_MGV, 0, N_levels-1);
 
- TSFHashtable<int, int> azOptions;
- TSFHashtable<int, double> azParams;
- azOptions.put(AZ_solver, AZ_gmres);
- azOptions.put(AZ_kspace, 50);
- azOptions.put(AZ_conv, AZ_r0);
- azParams.put(AZ_tol, 1e-8);
- azOptions.put(AZ_max_iter, 5);
- azOptions.put(AZ_precond, AZ_none);
+  // Epetra_ML_Operator  *MLop = 
+  //                 new Epetra_ML_Operator(ml_handle,*comm,*F_map,*F_map);
+  // MLop->SetOwnership(true);
+  // ML_Aggregate_Destroy(&agg_object);
+  // TSFSmartPtr<Epetra_Operator> Smart_MLprec = 
+  //                    TSFSmartPtr<Epetra_Operator>(MLop, true);
 
- printf("the way ML is passed to an aztec solver has changed\n");
- printf("so this code no longer works. Someone will have to fix\n");
- printf("this\n");
- exit(1);
- TSFLinearSolver FSolver;//= new AZTECSolver(azOptions, azParams, Smart_MLprec);
+  //  printf("the way ML is passed to an aztec solver has changed\n");
+  // printf("so this code no longer works. Someone will have to fix\n");
+  // printf("this\n");
+  // exit(1);
+  // TSFLinearSolver FSolver;//= new AZTECSolver(azOptions, azParams, Smart_MLprec);
  FSolver.setVerbosityLevel(4);
  
   TSFLinearOperator F_inv = F_tsf.inverse(FSolver);
