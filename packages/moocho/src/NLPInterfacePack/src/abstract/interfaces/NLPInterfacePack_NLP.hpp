@@ -248,8 +248,7 @@ public:
 	  */
 	virtual void report_final_x(
 		  const VectorSlice&	x
-		, bool					optimal		) const
-	{}
+		, bool					optimal		) const;
 
 	/** @name Objective and constraint function counts.
 	  *

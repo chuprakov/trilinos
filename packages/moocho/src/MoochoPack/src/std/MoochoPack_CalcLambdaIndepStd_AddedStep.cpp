@@ -10,6 +10,7 @@
 #include "../../include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/ComputeMinMult.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "SparseLinAlgPack/include/SpVectorOp.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
@@ -57,14 +58,14 @@ bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 	// Must resize lambda here explicitly since we will only be updating a region of it.
 	// If lambda(dep) has already been updated then lambda will have been resized
 	// already but lambda(indep) will not be initialized yet.
-	if( !s.lambda().updated_k(0) ) s.lambda().set_k(0).resize( algo.nlp().m() );
+	if( !s.lambda().updated_k(0) ) s.lambda().set_k(0).v().resize( algo.nlp().m() );
 	
-	VectorSlice lambda_indep = s.lambda().get_k(0)(indep);
+	VectorSlice lambda_indep = s.lambda().get_k(0).v()(indep);
 	
 	// lambda_indep_tmp1 = - Y' * (Gf + nu)
 	if( algo.nlp().has_bounds() ) {
 		// _tmp = Gf + nu
-		Vector _tmp = s.Gf().get_k(0);
+		Vector _tmp = s.Gf().get_k(0)();
 		VectorSlice _vs_tmp = _tmp;	// only create this VectorSlice once
 		Vp_V( &_vs_tmp, s.nu().get_k(0)() );
 		// lambda_indep_tmp1 = - Y' * _tmp
@@ -78,7 +79,7 @@ bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 	// lambda_indep_tmp2 = lambda_indep_tmp1 - U' * lambda(dep)
 	if( algo.nlp().r() < algo.nlp().m() ) {
 		Range1D dep = s.con_dep();
-		Vp_StMtV( &lambda_indep, -1.0, s.U().get_k(0), trans, s.lambda().get_k(0)(dep) );
+		Vp_StMtV( &lambda_indep, -1.0, s.U().get_k(0), trans, s.lambda().get_k(0).v()(dep) );
 	}
 	// else lambda(indep)_tmp2 = lambda(indep)_tmp1
 

@@ -1,6 +1,9 @@
 // //////////////////////////////////////////////////////////////
 // rSQPAlgorithmStepNames.h
 
+#ifndef RSQP_ALGORITHM_STEP_NAMES_H
+#define RSQP_ALGORITHM_STEP_NAMES_H
+
 #include <string>
 
 #include "../ReducedSpaceSQPPackTypes.h"
@@ -25,3 +28,5 @@ const std::string CheckSkipBFGSUpdate_name			= "CheckSkipBFGSUpdate";
 
 //@}
 }	// end namespace ReducedSpaceSQPPack
+
+#endif // RSQP_ALGORITHM_STEP_NAMES_H

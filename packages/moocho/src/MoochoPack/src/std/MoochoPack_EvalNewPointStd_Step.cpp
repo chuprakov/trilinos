@@ -11,6 +11,7 @@
 #include "../../include/std/EvalNewPointStd_Step.h"
 #include "../../include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
@@ -37,19 +38,19 @@ bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 
 	// Set the references to the current point's quantities to be updated
 	bool f_k_updated = s.f().updated_k(0);
-	nlp.set_f(	&s.f().set_k(0)		);
-	nlp.set_Gf(	&s.Gf().set_k(0)	);
+	nlp.set_f(	&s.f().set_k(0)			);
+	nlp.set_Gf(	&s.Gf().set_k(0).v()	);
 	bool c_k_updated = s.c().updated_k(0);
-	nlp.set_c(	&s.c().set_k(0)		);
-	nlp.set_Gc(	&s.Gc().set_k(0)	);
+	nlp.set_c(	&s.c().set_k(0).v()		);
+	nlp.set_Gc(	&s.Gc().set_k(0)		);
 
-	Vector& x = s.x().get_k(0);
+	VectorWithNorms& x = s.x().get_k(0);
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out << "\n||x||inf = " << norm_inf( x() ) << std::endl;
+		out << "\n||x||inf = " << x.norm_inf() << std::endl;
 	}
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out << "\nx = \n" << x;
+		out << "\nx = \n" << x.v();
 	}
 	
 	// allow multiple updates as defined in NLP, and NLPFirstOrderInfo<...>.
@@ -59,7 +60,7 @@ bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 //	std::cout
 //		<< "EvaluateNewPoint: x(1) = " << x(1)
 //		<< ", new_point_ = " << new_point_ << "\n";
-	nlp.calc_Gc(x, new_point_);
+	nlp.calc_Gc( x.v(), new_point_ );
 
 	// Form the decomposition of Gc and update Z and Y
 	s.decomp_sys().update_decomp( &s.Gc().get_k(0), &s.Z().set_k(0)
@@ -69,16 +70,16 @@ bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 	// reduction decomposition system object, then nlp will be hip to the
 	// basis selection and will permute these quantities to that basis.
 	// Note that x will already be permuted to the current basis.
-	nlp.calc_Gf(x, false);
+	nlp.calc_Gf(x.v(), false);
 	if( !c_k_updated )
-		nlp.calc_c(x, false);
+		nlp.calc_c(x.v(), false);
 	if( !f_k_updated )
-		nlp.calc_f(x, false);
+		nlp.calc_f(x.v(), false);
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\nf         = "	<< s.f().get_k(0)
-			<< "\n||Gf||inf = "	<< norm_inf( s.Gf().get_k(0) )
-			<< "\n||c||inf  = " << ( s.norm_inf_c().set_k(0) = norm_inf(s.c().get_k(0)) ) << "\n";
+			<< "\n||Gf||inf = "	<< s.Gf().get_k(0).norm_inf()
+			<< "\n||c||inf  = " << s.c().get_k(0).norm_inf() << "\n";
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
@@ -91,8 +92,8 @@ bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 		}
 	}
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out	<< "\nGf = \n" << s.Gf().get_k(0);
-		out	<< "\nc = \n" << s.c().get_k(0) << "\n";
+		out	<< "\nGf = \n" << s.Gf().get_k(0)();
+		out	<< "\nc = \n" << s.c().get_k(0)() << "\n";
 	}
 
 	new_point_ = true;	// Figure this out?

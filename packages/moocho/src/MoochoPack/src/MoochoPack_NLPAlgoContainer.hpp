@@ -7,6 +7,7 @@
 #include "rSQPAlgoClientInterface.h"
 #include "rSQPAlgoInterface.h"
 #include "rSQPAlgo_Config.h"
+#include "Misc/include/StandardCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -19,37 +20,18 @@ namespace ReducedSpaceSQPPack {
 class rSQPAlgoContainer : public rSQPAlgoClientInterface {
 public:
 
+	/// Members for <<std comp>> of the algorithm object algo.
+	STANDARD_COMPOSITION_MEMBERS( rSQPAlgoInterface, algo )
+
 	/// Construct a container with no configuration object set.
 	rSQPAlgoContainer()
 	{}
-
-	/** @name <<std aggr>> stereotype members for algo.
-	  */
-	//@{
-
-	///
-	void set_algo(rSQPAlgoInterface* algo)
-	{	algo_ = algo; }
-	///
-	rSQPAlgoInterface* get_algo()
-	{	return algo_; }
-	///
-	const rSQPAlgoInterface* get_algo() const
-	{	return algo_; }
-	///
-	rSQPAlgoInterface& algo()
-	{	return StandardCompositionRelationshipsPack::role_name(algo_, false, "algo"); }
-	///
-	const rSQPAlgoInterface& algo() const
-	{	return StandardCompositionRelationshipsPack::role_name(algo_, false, "algo"); }
-
-	//@}
 
 	/** @name Overridden.*/
 	//@{
 
 	///
-	void set_max_run_time(double max_run_time);
+	void max_run_time(double max_run_time);
 	///
 	double max_run_time() const;
 
@@ -78,7 +60,7 @@ public:
 	///	
 	const rSQPState& state() const;
 	///
-	void configure_algorithm();
+	void configure_algorithm(std::ostream* trase_out);
 	///
 	void print_algorithm(std::ostream& out) const;
 	///
@@ -92,7 +74,6 @@ public:
 
 private:
 	config_ptr_t			config_;
-	rSQPAlgoInterface		*algo_;
 
 	// Assert that the object has been set up properly and throw exception if it has not
 	void assert_valid_setup() const;

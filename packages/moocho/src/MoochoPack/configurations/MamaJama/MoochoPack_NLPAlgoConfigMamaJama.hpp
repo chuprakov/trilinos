@@ -184,14 +184,6 @@ public:
 	void lbfgs_auto_scaling( bool lbfgs_auto_scaling )
 	{	lbfgs_auto_scaling_ = lbfgs_auto_scaling; }
 
-	/// Give direct access to the algorithm to query it.
-	const rSQPAlgo* get_algo() const
-	{	return algo_; }
-
-	///
-	void print_state() const;
-
-
 	/// Set the options from stream object before configuring algorithm.
 	void set_options( const OptionsFromStreamPack::OptionsFromStream* options )
 	{	options_ = options; }
@@ -200,13 +192,9 @@ public:
 	// Overridden members
 
 	///
-	void config_algo_cntr(rSQPAlgoContainer& algo_cntr);
-	///
-	void deconfig_algo_cntr(rSQPAlgoContainer& algo_cntr);
+	void config_algo_cntr(rSQPAlgoContainer& algo_cntr, std::ostream* trase_out);
 	///
 	void init_algo(rSQPAlgoInterface& algo);
-	///
-	void print_algorithm(std::ostream& out) const;
 
 protected:
 	typedef std::auto_ptr<std::ofstream> mapped_qp_file_ptr_t;
@@ -216,13 +204,6 @@ protected:
 	typedef ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
 		U_iq_creator_ptr_t;
 	
-	// just keep track of the algo_cntr and the algo this object is associated with.
-	rSQPAlgo			*algo_;
-	rSQPAlgoContainer	*algo_cntr_;
-	bool	in_destructor_;	// a flag to determine if decomfig_algo_cntr()
-							// was called from within the call stack of
-							// ~rSQPAlgo_ConfigMamaJama
-
 	basis_sys_ptr_t		basis_sys_ptr_;	// Basis system object (if null will be set)
 	Gc_iq_creator_ptr_t	Gc_iq_creator_ptr_;	// IQA creator for Gc
 	U_iq_creator_ptr_t	U_iq_creator_ptr_;	// IQA creator for U which is N

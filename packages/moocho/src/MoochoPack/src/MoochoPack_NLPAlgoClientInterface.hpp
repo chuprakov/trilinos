@@ -54,7 +54,7 @@ public:
 	{	return iteration_info_output_; }
 
 	///
-	/** Call the cause the algorithm to be configured.
+	/** Call that causes the algorithm to be configured.
 	  *
 	  * Causes the config object to configure the algorithm
 	  * to be ready to solve an NLP or print the algorithm.
@@ -64,7 +64,11 @@ public:
 	  *
 	  * Must be  called before print_algorithm(...) is called.
 	  */
-	virtual void configure_algorithm() = 0;
+	virtual void configure_algorithm(std::ostream* trase_out = 0) = 0;
+
+
+	/// Print the configured algorithm
+	virtual void print_algorithm(std::ostream& out) const = 0;
 
 private:
 	EIterationInfoOutput iteration_info_output_;

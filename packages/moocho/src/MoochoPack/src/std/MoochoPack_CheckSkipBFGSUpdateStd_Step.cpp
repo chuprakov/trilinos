@@ -10,6 +10,7 @@
 #include "../../include/rsqp_algo_conversion.h"
 #include "../../include/std/quasi_newton_stats.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/VectorClass.h"
@@ -40,19 +41,13 @@ bool ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::do_step(Algorithm& _algo
 		// The information exists for the update so determine
 		// if we are in the region to perform the BFGS update.
 		
-		// update norms if you have to
-		if(!s.norm_2_Ypy().updated_k(-1))
-			s.norm_2_Ypy().set_k(-1) = norm_2( s.Ypy().get_k(-1)() );
-		if(!s.norm_2_Zpz().updated_k(-1))
-			s.norm_2_Zpz().set_k(-1) = norm_2( s.Zpz().get_k(-1)() );
-
 		// Check if we are to skip the update for this iteration
 		
 		const value_type
-			nrm_rGL_km1 = norm_2(s.rGL().get_k(-1)),
-			nrm_c_km1	= norm_2(s.c().get_k(-1)),
-			nrm_Zpz_km1	= s.norm_2_Zpz().get_k(-1),
-			nrm_Ypy_km1	= s.norm_2_Ypy().get_k(-1);
+			nrm_rGL_km1 = s.rGL().get_k(-1).norm_2(),
+			nrm_c_km1	= s.c().get_k(-1).norm_2(),
+			nrm_Zpz_km1	= s.Zpz().get_k(-1).norm_2(),
+			nrm_Ypy_km1	= s.Ypy().get_k(-1).norm_2();
 
 		// ratio = (10.0 / sqrt(||rGL_km1|| + ||c_km1||)) * ( ||Zpz_km1|| / ||Ypy_km1|| )
 		value_type
@@ -104,10 +99,8 @@ void ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::print_step( const Algorit
 		<< L << "*** Check if we should do the BFGS update\n"
 		<< L << "if Ypy, Zpz, rGL, rHL and c are updated for the k-1 iteration\n"
 		<< L << "    *** Check if we are in the proper region\n"
-		<< L << "    if norm_2_Ypy_km1 is not updated, norm_2_Ypy_km1 = norm( Ypy_km1, 2 )\n"
-		<< L << "    if norm_2_Zpz_km1 is not updated, norm_2_Zpz_km1 = norm( Zpz_km1, 2 )\n"
 		<< L << "    ratio = ( 10 / sqrt( norm(rGL_km1,2) + norm(c_km1,2) ) )\n"
-		<< L << "             * ( norm_2_Zpz_km1 / norm_2_Ypy )\n"
+		<< L << "             * ( norm(Zpz_km1,2) / norm(Ypy_km1,2) )\n"
 		<< L << "    if ratio < 1 then \n"
 		<< L << "        rHL_k = rHL_km1\n"
 		<< L << "    end\n"

@@ -17,6 +17,7 @@
 #include "../../include/rSQPAlgoContainer.h"
 #include "../../include/rSQPStateContinuousStorage.h"
 #include "../../include/rSQPStateContinuousStorageMatrixWithOpCreatorAggr.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "SparseLinAlgPack/include/COOMatrixWithPartitionedViewSubclass.h"			// Hf, Gc, Hcj
 #include "ConstrainedOptimizationPack/include/IdentZeroVertConcatMatrixSubclass.h"	// Y
 #include "ConstrainedOptimizationPack/include/DenseIdentVertConcatMatrixSubclass.h"	// Z
@@ -76,6 +77,7 @@
 #include "../../include/std/CalcLambdaIndepStd_AddedStep.h"
 #include "../../include/std/CalcReducedGradLagrangianStd_AddedStep.h"
 #include "../../include/std/CheckConvergenceStd_AddedStep.h"
+#include "../../include/std/CheckConvergenceStd_AddedStepSetOptions.h"
 #include "../../include/std/CheckSkipBFGSUpdateStd_Step.h"
 #include "../../include/std/CheckSkipBFGSUpdateNoPy_Step.h"
 #include "../../include/std/MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.h"
@@ -102,10 +104,7 @@ rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
 			Gc_iq_creator_ptr
 		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
 			U_iq_creator_ptr	)
-	: algo_(0)
-		, algo_cntr_(0)
-		, in_destructor_(false)
-		, basis_sys_ptr_(basis_sys_ptr)
+	: basis_sys_ptr_(basis_sys_ptr)
 		, Gc_iq_creator_ptr_(Gc_iq_creator_ptr)
 		, U_iq_creator_ptr_(U_iq_creator_ptr)
 		, qp_solver_type_(QPOPT)
@@ -127,29 +126,7 @@ rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
 {}
 
 rSQPAlgo_ConfigMamaJama::~rSQPAlgo_ConfigMamaJama() {
-
-	in_destructor_ = true;
-
-	if(algo_) {
-		// If the config object is deleted before the algo container (algo_cntr)
-		// before algo_cntr has been deconfigured then
-		// either #this# was allocatted on the stack after algo_cntr in which case
-		// we don't want algo_cntr call or delete #this# in its destructor, or
-		// #this# was dynamically allocated and is now being deleted by someone
-		// else by mistake.
-
-		// The expression (algo_ && algo_cntr_) can not be true
-		assert( algo_cntr_ );
-		// If algo_cntr_ owns #this# then this->decomfig_algo_cntr()
-		// should have been called first so you should not be here.		
-		assert( !algo_cntr_->get_config().has_ownership() );
-
-		// Must defig the algo and algo_cntr because I will not be around to call
-		// after this.
-		algo_cntr_->set_algo(0);
-		algo_cntr_->set_config(0);
-		delete algo_;
-	}
+	// No need to realy do anything!
 }
 
 void rSQPAlgo_ConfigMamaJama::warm_start_frac(value_type warm_start_frac) {
@@ -159,7 +136,9 @@ void rSQPAlgo_ConfigMamaJama::warm_start_frac(value_type warm_start_frac) {
 	warm_start_frac_ = warm_start_frac;
 }
 
-void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
+void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
+	, std::ostream* trase_out)
+{
 
 //	TRACE0( "\n*** rSQPAlgo_ConfigMamaJama::config_algo_cntr(algo_cntr) called\n" );
 //	TRACE0( "\n*** Before algo is configured\n" );
@@ -168,18 +147,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 	namespace rcp = ReferenceCountingPack;
 	using rcp::ref_count_ptr;
 	
-	if(algo_cntr_) {
-		if(algo_cntr_ != &algo_cntr)
-			throw std::logic_error("rSQPAlgo_ConfigMamaJama::config_algo_cntr(): rSQPAlgo_ConfigMamaJama can only configure one rSQPAlgoContainer and I have already configured mine");
-		else
-			return; // same one so you are done
-	}
-
 	// ////////////////////////////////////////////////////////////
-	// A. Remember the algorithm container
-
-	// remember who the algo container is
-	algo_cntr_ = &algo_cntr;
+	// A. ???
 
 	// /////////////////////////////////////////////////////////////////////////
 	// B. Create an algo object, give to algo_cntr, then give algo_cntr to algo
@@ -188,19 +157,23 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 	std::cout << "\n*** Create the algo object ...\n";
 #endif
 
-	assert(algo_ = new rSQPAlgo);
+	namespace rcp = ReferenceCountingPack;
+	typedef rcp::ref_count_ptr<rSQPAlgo>	algo_ptr_t;
+	
+	algo_ptr_t algo(new rSQPAlgo);
+	assert(algo.get());
 
 #ifdef RELEASE_TRACE
-	std::cout << "\n*** algo_cntr_->set_algo(algo_) ...\n";
+	std::cout << "\n*** algo_cntr.set_algo(algo.get()) ...\n";
 #endif
 
-	algo_cntr_->set_algo(algo_);
+	algo_cntr.set_algo( rcp::rcp_implicit_cast<rSQPAlgoInterface>(algo) );
 
 #ifdef RELEASE_TRACE
-	std::cout << "\n*** algo_->set_algo_cntr(algo_cntr_) ...\n";
+	std::cout << "\n*** algo->set_algo_cntr(&algo_cntr) ...\n";
 #endif
 
-	algo_->set_algo_cntr(algo_cntr_);
+	algo->set_algo_cntr(&algo_cntr);
 
 	// /////////////////////////////////////////////
 	// C. Configure algo
@@ -212,8 +185,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 	std::cout << "\n*** Set the NLP and track objects ...\n";
 #endif
 
-	algo_->set_nlp( algo_cntr_->get_nlp().get() );
-	algo_->set_track( rcp::rcp_implicit_cast<AlgorithmTrack>(algo_cntr_->get_track()) );
+	algo->set_nlp( algo_cntr.get_nlp().get() );
+	algo->set_track( rcp::rcp_implicit_cast<AlgorithmTrack>(algo_cntr.get_track()) );
 
 	// Determine whether to use direct or adjoint factorization
 	switch(factorization_type_) {
@@ -225,7 +198,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 			break;
 		case AUTO_FACT:
 		{
-			if( ! algo_->nlp().has_bounds()  || qp_solver_type_ == VE09
+			if( ! algo->nlp().has_bounds()  || qp_solver_type_ == VE09
 					|| qp_solver_type_ == QPSCPD )
 			{
 				fact_type_ = ADJOINT_FACT;
@@ -234,7 +207,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 				// If the total number of bounds is less than the number
 				// of degrees of freedom then the adjoint factorization
 				// will be faster.
-				NLPReduced &nlp = algo_->nlp();
+				NLPReduced &nlp = algo->nlp();
 				if(!nlp.is_initialized()) nlp.initialize();
 				using SparseLinAlgPack::num_bounds;
 				if( num_bounds( nlp.xl(), nlp.xu() ) < nlp.n() - nlp.r() )
@@ -264,16 +237,15 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 
 		matrix_iqa_creator_ptr_t matrix_iqa_creators[matrix_creator_t::num_MatrixWithOp] =
 		{
-			new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>(),						// Q_Hf
+			new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>(),						// Q_HL (not used)
 			Gc_iq_creator_ptr_.get()
 				? Gc_iq_creator_ptr_
-				: new IterQuantMatrixWithOpCreatorContinuous<COOMatrixWithPartitionedViewSubclass>(),		// Q_Gc
-			new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>(),						// Q_Hcj
+				: new IterQuantMatrixWithOpCreatorContinuous<COOMatrixWithPartitionedViewSubclass>(),// Q_Gc
 			new IterQuantMatrixWithOpCreatorContinuous<IdentZeroVertConcatMatrixSubclass>(),		// Q_Y
 			0,																						// Q_Z
 			U_iq_creator_ptr_.get()
 				? U_iq_creator_ptr_
-				: new IterQuantMatrixWithOpCreatorContinuous<COOMatrixPartitionViewSubclass>(),			// Q_U
+				: new IterQuantMatrixWithOpCreatorContinuous<COOMatrixPartitionViewSubclass>(),		// Q_U
 			new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>(),						// Q_V
 			0																						// Q_rHL
 		};
@@ -297,8 +269,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 		// Decide if we could use limited memory BFGS or not?
 		bool use_limited_memory = false;
 		const size_type
-			n = algo_->nlp().n(),
-			m = algo_->nlp().m();
+			n = algo->nlp().n(),
+			m = algo->nlp().m();
 		switch( quasi_newton_ ) {
 			case QN_AUTO: {
 				if( n - m > max_dof_quasi_newton_dense_ )
@@ -315,7 +287,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 				assert(0);	// only local programming error
 		}
 
-		if( ! algo_->nlp().has_bounds() ) {
+		if( ! algo->nlp().has_bounds() ) {
 			// Here we just need to solve for linear systems with rHL
 			// and we can use a limited memory method or update the dense
 			// factors directly.
@@ -371,16 +343,12 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 		storage_num[state_t::Q_x]				= 2;
 		storage_num[state_t::Q_f]				= 2;
 		storage_num[state_t::Q_c]				= 2;
-		storage_num[state_t::Q_norm_inf_c]		= 2;
 
+		storage_num[state_t::Q_kkt_err]			= 2;
 		storage_num[state_t::Q_rGL]				= 2;
-		storage_num[state_t::Q_norm_2_rGL]		= 2;
-		storage_num[state_t::Q_norm_inf_rGL]	= 2;
 		storage_num[state_t::Q_lambda]			= 2;
 
 		storage_num[state_t::Q_d]				= 2;
-		storage_num[state_t::Q_norm_2_d]		= 2;
-		storage_num[state_t::Q_norm_inf_d]		= 2;
 
 		storage_num[state_t::Q_rGf]				= 2;
 
@@ -390,7 +358,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 		storage_num[state_t::Q_nu]				= 2;
 
 		// create a new state object
-		algo_->set_state( new state_t( new matrix_creator_aggr_t(matrix_iqa_creators), storage_num ) );
+		algo->set_state( new state_t( new matrix_creator_aggr_t(matrix_iqa_creators), storage_num ) );
 
 		// Now set the number of LBFGS update vectors
 		if(use_limited_memory) {
@@ -399,11 +367,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 			// be updated and therefore the regular initializations will still
 			// be performed.  This is a little bit of a hack but it should work.
 			SymLBFGSMatrixSubclass *_rHL
-				= dynamic_cast<SymLBFGSMatrixSubclass*>(&algo_->rsqp_state().rHL().set_k(-1));
+				= dynamic_cast<SymLBFGSMatrixSubclass*>(&algo->rsqp_state().rHL().set_k(-1));
 			if(_rHL) {
 				_rHL->set_num_updates_stored( num_lbfgs_updates_stored_ );
 				_rHL->auto_rescaling( lbfgs_auto_scaling_ );
-				algo_->rsqp_state().rHL().set_not_updated(-1);
+				algo->rsqp_state().rHL().set_not_updated(-1);
 			}
 		}
 	}
@@ -444,9 +412,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 	}
 	
 	DecompositionSystemVarReductStd*
-		decomp_sys = new DecompositionSystemVarReductStd( false, algo_, decomp_sys_aggr );
+		decomp_sys = new DecompositionSystemVarReductStd( false, algo.get(), decomp_sys_aggr );
 
-	algo_->rsqp_state().set_decomp_sys(decomp_sys);
+	algo->rsqp_state().set_decomp_sys(decomp_sys);
 
 	// /////////////////////////////////////////////////////
 	// C.3  Create and set the step objects
@@ -465,30 +433,40 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 		// This default algorithm is for NLPs with no variable bounds.
 
 		// (1) EvalNewPoint
-		algo_->insert_step( ++step_num, EvalNewPoint_name, new EvalNewPointStd_Step );
+		algo->insert_step( ++step_num, EvalNewPoint_name, new EvalNewPointStd_Step );
 
 		// (2) ReducedGradient
-		algo_->insert_step( ++step_num, ReducedGradient_name, new ReducedGradientStd_Step );
+		algo->insert_step( ++step_num, ReducedGradient_name, new ReducedGradientStd_Step );
 
 		// (3) Calculate Reduced Gradient of the Lagrangian
-		algo_->insert_step( ++step_num, CalcReducedGradLagrangian_name, new CalcReducedGradLagrangianStd_AddedStep );
+		algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, new CalcReducedGradLagrangianStd_AddedStep );
 
 		// (4)	Calculate the Lagrange multipliers for the independent constraints.
 		// 		These are computed here just in case the algorithm converges and we need to
 		// 		report these multipliers to the NLP.
-		algo_->insert_step( ++step_num, CalcLambdaIndep_name, new  CalcLambdaIndepStd_AddedStep		);
+		algo->insert_step( ++step_num, CalcLambdaIndep_name, new  CalcLambdaIndepStd_AddedStep		);
 
 		// (5) Check for convergence
-		algo_->insert_step( ++step_num, CheckConvergence_name, new CheckConvergenceStd_AddedStep );
+		{
+			CheckConvergenceStd_AddedStep
+				*check_convergence_step = new CheckConvergenceStd_AddedStep;
+
+			CheckConvergenceStd_AddedStepSetOptions
+				opt_setter( check_convergence_step );
+			opt_setter.set_options( *options_ );
+
+			algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
+		}
+
 
 		// (6) ReducedHessian
 		ref_count_ptr<ReducedHessianBFGSStd_Step>
 			bfgs_updater = new ReducedHessianBFGSStd_Step(quasi_newton_dampening_);
-		algo_->insert_step( ++step_num, ReducedHessian_name
+		algo->insert_step( ++step_num, ReducedHessian_name
 			, rcp::rcp_implicit_cast<AlgorithmStep>(bfgs_updater) );
 
 		// (6.-1) CheckSkipBFGSUpdate
-		algo_->insert_assoc_step(
+		algo->insert_assoc_step(
 			  step_num
 			, GeneralIterationPack::PRE_STEP
 			, 1
@@ -497,20 +475,20 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 		  );
 
 		// (7) DepDirec
-		algo_->insert_step( ++step_num, DepDirec_name, new  DepDirecStd_Step );
+		algo->insert_step( ++step_num, DepDirec_name, new  DepDirecStd_Step );
 
 		// (8) IndepDirec
-		algo_->insert_step( ++step_num, IndepDirec_name, new  IndepDirecWithoutBounds_Step );
+		algo->insert_step( ++step_num, IndepDirec_name, new  IndepDirecWithoutBounds_Step );
 
 		// (9) CalcDFromYPYZPZ
 
-		algo_->insert_step( ++step_num, "CalcDFromYPYZPZ", new CalcDFromYPYZPZ_Step );
+		algo->insert_step( ++step_num, "CalcDFromYPYZPZ", new CalcDFromYPYZPZ_Step );
 
 		// (10) LineSearch
 
 		if( line_search_method_ == LINE_SEARCH_NONE ) {
 
-			algo_->insert_step(
+			algo->insert_step(
 				  ++step_num
 				, LineSearch_name
 				, new LineSearchFullStep_Step
@@ -557,7 +535,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 					// Set the default print level for the newton iterations
 					ls_t::ENewtonOutputLevel
 						newton_olevel;
-					switch( algo_cntr_->iteration_info_output() ) {
+					switch( algo_cntr.iteration_info_output() ) {
 						case PRINT_NOTHING:
 							newton_olevel = ls_t::PRINT_NEWTON_NOTHING;
 							break;
@@ -613,7 +591,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 				}
 			}
 
-			algo_->insert_step(
+			algo->insert_step(
 				  ++step_num
 				, LineSearch_name
 				, new LineSearchFailureNewBasisSelection_Step( 
@@ -647,7 +625,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 				ppu_options_setter( param_update_step );
 			ppu_options_setter.set_options( *options_ );
 
-			algo_->insert_assoc_step(	  step_num
+			algo->insert_assoc_step(	  step_num
 										, GeneralIterationPack::PRE_STEP
 										, ++pre_step_i
 										, "MeritFunc_PenaltyParamUpdate"
@@ -655,7 +633,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 									);
 			
 			// (10.-?)	Compute the full step before the linesearch
-			algo_->insert_assoc_step(	  step_num
+			algo->insert_assoc_step(	  step_num
 										, GeneralIterationPack::PRE_STEP
 										, ++pre_step_i
 										, "LineSearchFullStep"
@@ -673,7 +651,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 					options_setter( _added_step );
 				options_setter.set_options( *options_ );
 
-				algo_->insert_assoc_step(	  step_num
+				algo->insert_assoc_step(	  step_num
 											, GeneralIterationPack::PRE_STEP
 											, ++pre_step_i
 											, "MeritFunc_ModifiedL1LargerSteps"
@@ -686,7 +664,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 		std::cout << "\n*** Reconfigure steps for NLP with bounds ...\n";
 #endif
 
-		if( algo_cntr_->nlp().has_bounds() ) {
+		if( algo_cntr.nlp().has_bounds() ) {
 			
 			// If the NLP has bounds on the variables then we must replace
 			// IndepDirec and move the convergence check to the end (along
@@ -710,20 +688,20 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 
 					// If we are going to dump all of the iteration quantites we might as
 					// well just print out the mappings to QPOPT and QPSOL.
-					if(algo_cntr_->iteration_info_output() == PRINT_ITERATION_QUANTITIES)
+					if(algo_cntr.iteration_info_output() == PRINT_ITERATION_QUANTITIES)
 						mapped_qp_file_ = mapped_qp_file_ptr_t( new std::ofstream("mapped_qp.txt") );
 					_qp_solver->qp_mapping_output( mapped_qp_file_.get() );
-					qp_solver = qp_solver_ptr_t( new ReducedQPSolverQPOPTSOLStd(_qp_solver,algo_) );
+					qp_solver = qp_solver_ptr_t( new ReducedQPSolverQPOPTSOLStd(_qp_solver,algo.get()) );
 					break;
 				}
 				case QPKWIK:
 				{
 					ReducedQPSolverQPKWIKNEW*
 						_qp_solver = new ReducedQPSolverQPKWIKNEW;
-					if(algo_cntr_->iteration_info_output() == PRINT_ITERATION_QUANTITIES)
+					if(algo_cntr.iteration_info_output() == PRINT_ITERATION_QUANTITIES)
 						_qp_solver->create_qpkwiknew_file(true);
 					ReducedQPSolverQPKWIKNEWStd*
-						__qp_solver = new ReducedQPSolverQPKWIKNEWStd(_qp_solver,algo_);
+						__qp_solver = new ReducedQPSolverQPKWIKNEWStd(_qp_solver,algo.get());
 					if( warm_start_frac_ > 0.0 )
 						__qp_solver->warm_start_frac(warm_start_frac_);
 					qp_solver = qp_solver_ptr_t( __qp_solver );
@@ -733,12 +711,12 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 
 			Algorithm::poss_type poss;
 
-			poss = algo_->get_step_poss(IndepDirec_name);
-			algo_->replace_step(
+			poss = algo->get_step_poss(IndepDirec_name);
+			algo->replace_step(
 						poss
 						,new  IndepDirecExact_Step( 
 							new ReducedQPSolverCheckOptimality(
-								qp_solver, algo_, check_results_ )
+								qp_solver, algo.get(), check_results_ )
 						  )
 				    );
 
@@ -749,24 +727,24 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 
 
 
-			poss			= algo_->get_step_poss(CalcReducedGradLagrangian_name);
-			calc_rgrad_lagr	= algo_->get_step(poss);
-			algo_->remove_step(poss);
+			poss			= algo->get_step_poss(CalcReducedGradLagrangian_name);
+			calc_rgrad_lagr	= algo->get_step(poss);
+			algo->remove_step(poss);
 
-			poss			= algo_->get_step_poss(CalcLambdaIndep_name);
-			calc_lambda		= algo_->get_step(poss);
-			algo_->remove_step(poss);
+			poss			= algo->get_step_poss(CalcLambdaIndep_name);
+			calc_lambda		= algo->get_step(poss);
+			algo->remove_step(poss);
 
-			poss			= algo_->get_step_poss(CheckConvergence_name);
-			check_conv		= algo_->get_step(poss);
-			algo_->remove_step(poss);
+			poss			= algo->get_step_poss(CheckConvergence_name);
+			check_conv		= algo->get_step(poss);
+			algo->remove_step(poss);
 
 			// Add them before LineSearch
 	
-			poss		= algo_->get_step_poss(LineSearch_name);
-			algo_->insert_step( poss++, CalcReducedGradLagrangian_name, calc_rgrad_lagr );
-			algo_->insert_step( poss++, CalcLambdaIndep_name, calc_lambda );
-			algo_->insert_step( poss++, CheckConvergence_name, check_conv );
+			poss		= algo->get_step_poss(LineSearch_name);
+			algo->insert_step( poss++, CalcReducedGradLagrangian_name, calc_rgrad_lagr );
+			algo->insert_step( poss++, CalcLambdaIndep_name, calc_lambda );
+			algo->insert_step( poss++, CheckConvergence_name, check_conv );
 
 		}
 
@@ -784,7 +762,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 			// note: ref_count_ptr<> manages memory here.
 			using QPSCPDPack::QPMixedFullReducedQPSCPDSolver;
 			QPMixedFullReducedQPSCPDSolver
-				*qp_solver = new QPMixedFullReducedQPSCPDSolver(algo_);
+				*qp_solver = new QPMixedFullReducedQPSCPDSolver(algo.get());
 			qp_solver->set_pick_violated_policy(
 					ReducedSpaceSQPPack::QPSCPDPack::ConstraintsVarBoundsRelaxed::MOST_VIOLATED );
 			if( bigM_ > 0.0 )
@@ -793,7 +771,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 				qp_solver->set_warm_start_frac(warm_start_frac_);
 			using ConstrainedOptimizationPack::QPSCPD;	
 			QPSCPD::EOutputLevel	qp_olevel;
-			switch( algo_cntr_->iteration_info_output() ) {
+			switch( algo_cntr.iteration_info_output() ) {
 				case PRINT_NOTHING:
 					qp_olevel = QPSCPD::NO_OUTPUT;
 					break;
@@ -822,14 +800,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 
 			QPMixedFullReducedSolverCheckOptimality
 				*qp_opt_checker = new QPMixedFullReducedSolverCheckOptimality(
-					 qp_solver, algo_, check_results_ );
+					 qp_solver, algo.get(), check_results_ );
 
 			Algorithm::poss_type poss;
-			poss = algo_->get_step_poss(IndepDirec_name);
+			poss = algo->get_step_poss(IndepDirec_name);
 
-			algo_->remove_step(poss);
+			algo->remove_step(poss);
 
-			algo_->insert_step(
+			algo->insert_step(
 				poss
 				, SearchDirec_name
 				, new SearchDirecMixedFullReduced_Step(
@@ -837,31 +815,31 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 				  )
 			  );
 
-			algo_->insert_step(
+			algo->insert_step(
 				poss + 1
 				, "CalcZpzFromDYPY"
 				, new CalcZpzFromDYPY_Step
 			  );
 
-			poss = algo_->get_step_poss(CalcLambdaIndep_name);
-			algo_->remove_step(poss);
+			poss = algo->get_step_poss(CalcLambdaIndep_name);
+			algo->remove_step(poss);
 
 /* VE09 is disabled for now.  Latter I will reintegrate it with what is above.
 
 			// Set the options for VE09 QP solver
 			QPSolverWithBoundsVE09 *qp_solver = new QPSolverWithBoundsVE09;
 			qp_solver->create_ve09_err_mon_files(
-				algo_cntr_->iteration_info_output() >= PRINT_ALGORITHM_STEPS );
+				algo_cntr.iteration_info_output() >= PRINT_ALGORITHM_STEPS );
 
 			Algorithm::poss_type poss;
-			poss = algo_->get_step_poss( IndepDirec_name );
-			algo_->replace_step(
+			poss = algo->get_step_poss( IndepDirec_name );
+			algo->replace_step(
 				poss
 				, new SearchDirecMixedFullReduced_Step(
 					new QPSolverWithBoundsValidateInput(
 						new QPSolverWithBoundsVE09Std(
 							qp_solver
-							, algo_
+							, algo.get()
 						)
 					)
 				  )
@@ -879,16 +857,16 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 
 			// Replace calculation of search direction
 
-			algo_->remove_step( algo_->get_step_poss( DepDirec_name ) );
-			algo_->remove_step( algo_->get_step_poss( IndepDirec_name ) );
-			algo_->insert_step(
-				algo_->get_step_poss( ReducedHessian_name ) + 1	// after reduced hessian calc.
+			algo->remove_step( algo->get_step_poss( DepDirec_name ) );
+			algo->remove_step( algo->get_step_poss( IndepDirec_name ) );
+			algo->insert_step(
+				algo->get_step_poss( ReducedHessian_name ) + 1	// after reduced hessian calc.
 				, SearchDirec_name
 				, new SearchDirecMixedFullReduced_Step(
 					new QPSolverWithBoundsValidateInput(
 						new QPSolverWithBoundsVE09Std(
 							new QPSolverWithBoundsVE09
-							, algo_
+							, algo.get()
 						)
 					)
 				  )
@@ -897,11 +875,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 			// Remove the CalcLambdaIndep step
 
 			Algorithm::poss_type poss;
-			poss = algo_->get_step_poss( LineSearch_name );
-			algo_->remove_assoc_step(
+			poss = algo->get_step_poss( LineSearch_name );
+			algo->remove_assoc_step(
 				poss
 				, GeneralIterationPack::PRE_STEP
-				, algo_->get_assoc_step_poss(
+				, algo->get_assoc_step_poss(
 					poss
 					, GeneralIterationPack::PRE_STEP
 					, CalcLambdaIndep_name
@@ -910,20 +888,20 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 
 			// Replace Check for skipping BFGS update
 
-			poss = algo_->get_step_poss( ReducedHessian_name );
+			poss = algo->get_step_poss( ReducedHessian_name );
 
 			Algorithm::poss_type assoc_poss;
 			
-			algo_->remove_assoc_step(
+			algo->remove_assoc_step(
 				poss
 				, GeneralIterationPack::PRE_STEP
-				, assoc_poss = algo_->get_assoc_step_poss(
+				, assoc_poss = algo->get_assoc_step_poss(
 					poss
 					, GeneralIterationPack::PRE_STEP
 					, CheckSkipBFGSUpdate_name			  )
 			  );
 
-			algo_->insert_assoc_step(
+			algo->insert_assoc_step(
 				poss
 				, GeneralIterationPack::PRE_STEP
 				, assoc_poss
@@ -941,30 +919,30 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 
 	{
 		// Add active set and QP statistics to state object
-		algo_->state().set_iter_quant( act_set_stats_name
+		algo->state().set_iter_quant( act_set_stats_name
 			, new IterQuantityAccessContinuous<ActSetStats>( 1, act_set_stats_name ) );
-		algo_->state().set_iter_quant( qp_solver_stats_name
+		algo->state().set_iter_quant( qp_solver_stats_name
 			, new IterQuantityAccessContinuous<QPSolverStats>( 1, qp_solver_stats_name ) );
 
 		// Insert active set computational step into algorithm
 		Algorithm::poss_type
-			poss = algo_->get_step_poss( IndepDirec_name );
+			poss = algo->get_step_poss( IndepDirec_name );
 		if( poss == Algorithm::DOES_NOT_EXIST ) {
 			// If we are not using IndepDirec to compute the active set then
 			// we must be using SearchDirec
-			assert( poss = algo_->get_step_poss( SearchDirec_name ) );		
+			assert( poss = algo->get_step_poss( SearchDirec_name ) );		
 		}
 		Algorithm::poss_type
-			nas = algo_->num_assoc_steps( poss, GeneralIterationPack::POST_STEP );
-		algo_->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+1
+			nas = algo->num_assoc_steps( poss, GeneralIterationPack::POST_STEP );
+		algo->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+1
 			, "ActiveSetStatistics", new ActSetStats_AddedStep );
 		
 		// Output the number of fixed depenent and indepent variables.
-		algo_->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+2
+		algo->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+2
 			, "CountNumFixedDepIndep", new NumFixedDepIndep_AddedStep );
 
 		// Output of KKT conditions of reduced QP subproblem
-		algo_->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+3
+		algo->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+3
 			, "PrintReducedQPError", new PrintReducedQPError_AddedStep( print_qp_error_ ) );
 
 	}
@@ -977,8 +955,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 		if( max_basis_cond_change_frac_ > 0.0 )
 			basis_check_step->max_basis_cond_change_frac( max_basis_cond_change_frac_ );
 		Algorithm::poss_type poss;
-		assert(poss = algo_->get_step_poss( DepDirec_name ) );
-		algo_->insert_step(
+		assert(poss = algo->get_step_poss( DepDirec_name ) );
+		algo->insert_step(
 			  poss+1
 			, "CheckBasis"
 			, basis_check_step
@@ -986,16 +964,16 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 	}
 
 	// 10/19/99: Add quasi-newton stats
-	algo_->state().set_iter_quant( quasi_newton_stats_name
+	algo->state().set_iter_quant( quasi_newton_stats_name
 		, new IterQuantityAccessContinuous<QuasiNewtonStats>( 1, quasi_newton_stats_name ) );
 
 	// 11/12/99: Add the option of using full steps after a specified number of iterations
 	// if this option has been set and if we are using a linesearch method.
 	if( full_steps_after_k_ > 0 && line_search_method_ != LINE_SEARCH_NONE ) {
 		Algorithm::poss_type poss;
-		assert(poss = algo_->get_step_poss( LineSearch_name ) );
+		assert(poss = algo->get_step_poss( LineSearch_name ) );
 		Algorithm::step_ptr_t
-			existing_step_ptr = algo_->get_step( poss );
+			existing_step_ptr = algo->get_step( poss );
 		// Check that the existing step is indeed a linesearch step and that
 		// we can safely use static cast cast up in types.  If multiple
 		// inheritance was used then this test will also fail.
@@ -1003,7 +981,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 				==  existing_step_ptr.get() );
 		rcp::ref_count_ptr<LineSearch_Step>
 			existing_ls_step_ptr = rcp::rcp_static_cast<LineSearch_Step>(existing_step_ptr);
-		algo_->replace_step(
+		algo->replace_step(
 			  poss
 			, new LineSearchFullStepAfterKIter_Step(
 				  existing_ls_step_ptr
@@ -1016,7 +994,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 	// 12/3/99: Adding finite difference initializaiton of the reduced hessian
 	if( hessian_initialization_ != INIT_HESS_IDENTITY ) {
 		Algorithm::poss_type poss;
-		assert(poss = algo_->get_step_poss( ReducedHessian_name ) );
+		assert(poss = algo->get_step_poss( ReducedHessian_name ) );
 		InitFinDiffReducedHessian_Step::EInitializationMethod
 			init_hess;
 		switch( hessian_initialization_ ) {
@@ -1037,33 +1015,15 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 		InitFinDiffReducedHessian_StepSetOptions
 			opt_setter( init_red_hess_step );
 		opt_setter.set_options( *options_ );
-		algo_->insert_assoc_step( poss, GeneralIterationPack::PRE_STEP, 1
+		algo->insert_assoc_step( poss, GeneralIterationPack::PRE_STEP, 1
 			, "InitFiniteDiffReducedHessian"
 			, init_red_hess_step  );
 	}
 
 	// Desprite debugging stuff
-//	assert(algo_);
+//	assert(algo.get());
 //	TRACE0( "\n*** After algo is configured\n" );
 //	print_state();
-}
-
-void rSQPAlgo_ConfigMamaJama::deconfig_algo_cntr(rSQPAlgoContainer& algo_cntr) {
-
-//	TRACE0( "\n*** rSQPAlgo_ConfigMamaJama::deconfig_algo_cntr(algo_cntr) called\n" );
-//	TRACE0( "\n*** Before algo is deconfigured\n" );
-//	print_state();
-
-	if(in_destructor_) return;	// This funciton was called from algo_cntr.set_config()
-								// which was called from ~rSQPAlgo_ConfigMamaJama()
-	if( algo_cntr.get_algo() != algo_ )
-		throw std::logic_error("rSQPAlgo_ConfigMamaJama::deconfig_algo_cntr(...): This is not my algo object");
-	delete algo_;
-	algo_cntr.set_algo(algo_ = 0);
-
-//	TRACE0( "\n*** After algo is deconfigured\n" );
-//	print_state();
-
 }
 
 void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
@@ -1072,19 +1032,15 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
 //	TRACE0( "\n*** rSQPAlgo_ConfigMamaJama::init_algo(_algo) called\n" );
 //	TRACE0( "\n*** Before algo is initialized\n" );
 //	print_state();
-		
+
 	namespace rcp = ReferenceCountingPack;
 
-	assert( algo_ );			// The algo object should have been set
-
-	assert( &_algo == algo_  );	// They should be the same
-
-	rSQPAlgo	&algo	= *algo_;
+	rSQPAlgo	&algo	= dynamic_cast<rSQPAlgo&>(_algo);
 	rSQPState	&state	= algo.rsqp_state();
 
-	algo_->max_iter( algo_cntr_->max_iter() );
-	algo_->rsqp_state().iteration_info_output( algo_cntr_->iteration_info_output() );
-	algo_->rsqp_state().check_results( check_results_ );
+	algo.max_iter( algo.algo_cntr().max_iter() );
+	algo.rsqp_state().iteration_info_output( algo.algo_cntr().iteration_info_output() );
+	algo.rsqp_state().check_results( check_results_ );
 
 	NLPReduced	&nlp	= algo.nlp();
 
@@ -1092,7 +1048,7 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
 	nlp.initialize();
 
 	// (2) Set the initial x to the initial guess.
-	state.x().set_k(0) = nlp.xinit();
+	state.x().set_k(0).v() = nlp.xinit();
 
 	// (3) Get the initial basis from the nlp.  The nlp will have a basis
 	// set whether or not nlp.nlp_selects_basis() returns true (See NLPReduced).
@@ -1112,24 +1068,6 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
 	algo.do_step_first(1);
 
 	// The rest of the algorithm will initialize itself
-}
-
-void rSQPAlgo_ConfigMamaJama::print_algorithm(std::ostream& out) const {
-	out
-		<< "\n"
-		<< "*************************************\n"
-		<< "*** rSQPAlgo_ConfigMamaJama setup ***\n"
-		<< "*************************************\n";
-	
-	assert(algo_);
-
-	algo_->print_algorithm(out);
-}
-
-void rSQPAlgo_ConfigMamaJama::print_state() const {
-//	TRACE0("\n*** rSQPAlgo_ConfigMamaJama State ***\n" );
-//	TRACE1("algo_ = 0x%x\n", algo_ );
-//	TRACE1("algo_cntr_ = 0x%x\n", algo_cntr_ );
 }
 
 }	// end namespace ReducedSpaceSQPPack 

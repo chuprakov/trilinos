@@ -9,6 +9,7 @@
 #include "../../include/rSQPAlgoContainer.h"
 #include "../../include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "SparseLinAlgPack/include/SpVectorOp.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
@@ -43,32 +44,32 @@ bool ReducedSpaceSQPPack::CalcReducedGradLagrangianStd_AddedStep::do_step(Algori
 
 	// Calculate rGL = Z' * Gf + Z' * nu + V' * lambda(dep)
 
-	Vector &rGL = s.rGL().set_k(0);
+	VectorWithNorms &rGL = s.rGL().set_k(0);
 
 	if( s.nu().updated_k(0) ) {
 		// Compute rGL = Z'*(Gf + nu) to reduce the effect of roundoff in this
 		// catastropic cancelation.
 		Vector tmp;	// tmp = Gf + nu
-		tmp = s.Gf().get_k(0);
+		tmp = s.Gf().get_k(0)();
 		Vp_V( &tmp(), s.nu().get_k(0)() );
-		V_MtV(	&rGL, s.Z().get_k(0), trans, tmp() );
+		V_MtV(	&rGL.v(), s.Z().get_k(0), trans, tmp() );
 	}
 	else {
-		rGL = s.rGf().get_k(0);
+		rGL.v() = s.rGf().get_k(0)();
 	}
 
 //	int stupid = 1;	// Put is to avoid an internal compiler error in Release mode.
 							
 	// rGL += V' * lambda(dep)					
 	if( algo.nlp().r() < algo.nlp().m() )
-		Vp_MtV( &rGL(), s.V().get_k(0), trans, s.lambda().get_k(0)(s.con_dep()) );	
+		Vp_MtV( &rGL.v()(), s.V().get_k(0), trans, s.lambda().get_k(0).v()(s.con_dep()) );	
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\n||rGL||inf = " << ( s.norm_inf_rGL().set_k(0) = norm_inf(rGL()) ) << "\n";
+		out	<< "\n||rGL||inf = " << rGL.norm_inf() << "\n";
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out	<< "\nrGL_k = \n" << rGL;
+		out	<< "\nrGL_k = \n" << rGL.v()();
 	}
 
 	return true;

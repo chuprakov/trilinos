@@ -32,22 +32,10 @@ public:
 	virtual ~rSQPAlgo_Config() {}
 
 	/// Configure the rSQP algorithm container with an rSQP algorithm object (non-templated).
-	virtual void config_algo_cntr(rSQPAlgoContainer& algo_cntr) = 0;
-
-	/// Deconfigure the rSQP algorithm container object.
-	virtual void deconfig_algo_cntr(rSQPAlgoContainer& algo_cntr) = 0;
+	virtual void config_algo_cntr(rSQPAlgoContainer& algo_cntr, std::ostream* trase_out = 0) = 0;
 
 	/// Initialize the rSQP algorithm object for the start of the rSQP iterations
 	virtual void init_algo(rSQPAlgoInterface& algo) = 0;
-
-	///
-	/** Prints a description of the algorithm.
-	  *
-	  */
-	virtual void print_algorithm(std::ostream& out) const = 0;
-
-	///
-	virtual void print_state() const = 0;
 
 };	// end class rSQPAlgo_Config
 

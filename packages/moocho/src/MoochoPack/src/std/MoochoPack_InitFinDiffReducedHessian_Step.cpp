@@ -12,6 +12,7 @@
 #include "../../include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymSecantUpdateable.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
@@ -162,7 +163,7 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 		// rGf_fd = ( Z_k'*Gf(x_k + u*Ze) - rGf_k ) / u
 		//
 
-		Vector x_fd = s.x().get_k(0);
+		Vector x_fd = s.x().get_k(0)();
 		Vp_StV( &x_fd(), u, Ze() );
 
 		// Gf_fd = Gf(x_fd)
@@ -180,7 +181,7 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 		V_MtV( &rGf_fd, s.Z().get_k(0), BLAS_Cpp::trans, Gf_fd() );
 
 		// rGf_fd = rGf_fd - rGf_k
-		Vp_StV( &rGf_fd(), -1.0, s.rGf().get_k(0) );
+		Vp_StV( &rGf_fd(), -1.0, s.rGf().get_k(0)() );
 
 		// rGf_fd = rGf_fd / u
 		Vt_S( &rGf_fd(), 1.0 / u );

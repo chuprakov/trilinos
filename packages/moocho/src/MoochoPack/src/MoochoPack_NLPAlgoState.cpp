@@ -53,18 +53,15 @@ const std::string * const rSQPState::iq_name_all_[rSQPState::num_quantites] = {
 
 	// value_type names
 
-	&f_name,				&norm_2_c_name,				&norm_inf_c_name,			&norm_2_Ypy_name,
-	&norm_inf_Ypy_name,		&norm_2_Zpz_name,			&norm_inf_Zpz_name,			&norm_2_d_name,
-	&norm_inf_d_name,		&zeta_name,					&alpha_name,				&mu_name,
-	&phi_name,				&norm_2_rGL_name,			&norm_inf_rGL_name,			&norm_2_lambda_name,
-	&norm_inf_lambda_name,
+	&f_name,				&zeta_name,					&eta_name,					&alpha_name,
+	&mu_name,				&phi_name,					&kkt_err_name,
 
 	// Vector names
 
 	&x_name,				&Gf_name,					&c_name,					&py_name,
 	&Ypy_name,				&pz_name,					&Zpz_name,					&d_name,
 	&rGf_name,				&w_name,					&qp_grad_name,				&Delta_name,
-	&rGL_name,				&lambda_name,
+	&GL_name,				&rGL_name,					&lambda_name,
 
 	// SpVector names
 
@@ -72,7 +69,7 @@ const std::string * const rSQPState::iq_name_all_[rSQPState::num_quantites] = {
 
 	// MatrixWithOp names
 
-	&Hf_name,				&Gc_name,					&Hcj_name,					&Y_name,
+	&HL_name,				&Gc_name,					&Y_name,
 	&Z_name,				&U_name,					&V_name,					&rHL_name
 };
 
@@ -101,13 +98,13 @@ const rSQPState::IQA_value_type& rSQPState::iqa_value_type(E_IterQuantities_valu
 
 inline
 rSQPState::IQA_Vector& rSQPState::iqa_Vector(E_IterQuantities_Vector iq) {
-	return cast_to_type<Vector>( *this, iq_id_[VECTOR][iq], *iq_name_[VECTOR][iq]
+	return cast_to_type<VectorWithNorms>( *this, iq_id_[VECTOR][iq], *iq_name_[VECTOR][iq]
 		, iq_ids_initialized_ );
 }
 
 inline
 const rSQPState::IQA_Vector& rSQPState::iqa_Vector(E_IterQuantities_Vector iq) const {
-	return cast_to_type<Vector>( *this, iq_id_[VECTOR][iq], *iq_name_[VECTOR][iq]
+	return cast_to_type<VectorWithNorms>( *this, iq_id_[VECTOR][iq], *iq_name_[VECTOR][iq]
 		, iq_ids_initialized_ );
 }
 
@@ -247,12 +244,12 @@ const rSQPState::IQA_Vector& rSQPState::Gf() const {
 }
 
 
-rSQPState::IQA_MatrixWithOp& rSQPState::Hf() {
-	return iqa_MatrixWithOp(Q_Hf);
+rSQPState::IQA_MatrixWithOp& rSQPState::HL() {
+	return iqa_MatrixWithOp(Q_HL);
 }
 
-const rSQPState::IQA_MatrixWithOp& rSQPState::Hf() const {
-	return iqa_MatrixWithOp(Q_Hf);
+const rSQPState::IQA_MatrixWithOp& rSQPState::HL() const {
+	return iqa_MatrixWithOp(Q_HL);
 }
 
 
@@ -265,24 +262,6 @@ const rSQPState::IQA_Vector& rSQPState::c() const {
 }
 
 
-rSQPState::IQA_value_type& rSQPState::norm_2_c() {
-	return iqa_value_type(Q_norm_2_c);
-}
-
-const rSQPState::IQA_value_type& rSQPState::norm_2_c() const {
-	return iqa_value_type(Q_norm_2_c);
-}
-
-
-rSQPState::IQA_value_type& rSQPState::norm_inf_c() {
-	return iqa_value_type(Q_norm_inf_c);
-}
-
-const rSQPState::IQA_value_type& rSQPState::norm_inf_c() const {
-	return iqa_value_type(Q_norm_inf_c);
-}
-
-
 rSQPState::IQA_MatrixWithOp& rSQPState::Gc() {
 	return iqa_MatrixWithOp(Q_Gc);
 }
@@ -291,15 +270,6 @@ const rSQPState::IQA_MatrixWithOp& rSQPState::Gc() const {
 	return iqa_MatrixWithOp(Q_Gc);
 }
 	
-
-rSQPState::IQA_MatrixWithOp& rSQPState::Hcj() {
-	return iqa_MatrixWithOp(Q_Hcj);
-}
-
-const rSQPState::IQA_MatrixWithOp& rSQPState::Hcj() const {
-	return iqa_MatrixWithOp(Q_Hcj);
-}
-
 // Constraint Gradient Null Space / Range Space Decomposition Info.
 
 
@@ -357,25 +327,6 @@ const rSQPState::IQA_Vector& rSQPState::Ypy() const {
 	return iqa_Vector(Q_Ypy);
 }
 
-
-rSQPState::IQA_value_type& rSQPState::norm_2_Ypy() {
-	return iqa_value_type(Q_norm_2_Ypy);
-}
-
-const rSQPState::IQA_value_type& rSQPState::norm_2_Ypy() const {
-	return iqa_value_type(Q_norm_2_Ypy);
-}
-
-
-rSQPState::IQA_value_type& rSQPState::norm_inf_Ypy() {
-	return iqa_value_type(Q_norm_inf_Ypy);
-}
-
-const rSQPState::IQA_value_type& rSQPState::norm_inf_Ypy() const {
-	return iqa_value_type(Q_norm_inf_Ypy);
-}
-
-
 rSQPState::IQA_Vector& rSQPState::pz() {
 	return iqa_Vector(Q_pz);
 }
@@ -393,25 +344,6 @@ const rSQPState::IQA_Vector& rSQPState::Zpz() const {
 	return iqa_Vector(Q_Zpz);
 }
 
-
-rSQPState::IQA_value_type& rSQPState::norm_2_Zpz() {
-	return iqa_value_type(Q_norm_2_Zpz);
-}
-
-const rSQPState::IQA_value_type& rSQPState::norm_2_Zpz() const {
-	return iqa_value_type(Q_norm_2_Zpz);
-}
-
-
-rSQPState::IQA_value_type& rSQPState::norm_inf_Zpz() {
-	return iqa_value_type(Q_norm_inf_Zpz);
-}
-
-const rSQPState::IQA_value_type& rSQPState::norm_inf_Zpz() const {
-	return iqa_value_type(Q_norm_inf_Zpz);
-}
-
-
 rSQPState::IQA_Vector& rSQPState::d() {
 	return iqa_Vector(Q_d);
 }
@@ -420,23 +352,6 @@ const rSQPState::IQA_Vector& rSQPState::d() const {
 	return iqa_Vector(Q_d);
 }
 
-
-rSQPState::IQA_value_type& rSQPState::norm_2_d() {
-	return iqa_value_type(Q_norm_2_d);
-}
-
-const rSQPState::IQA_value_type& rSQPState::norm_2_d() const {
-	return iqa_value_type(Q_norm_2_d);
-}
-
-
-rSQPState::IQA_value_type& rSQPState::norm_inf_d() {
-	return iqa_value_type(Q_norm_inf_d);
-}
-
-const rSQPState::IQA_value_type& rSQPState::norm_inf_d() const {
-	return iqa_value_type(Q_norm_inf_d);
-}
 
 // QP Subproblem Info
 
@@ -485,6 +400,15 @@ const rSQPState::IQA_Vector& rSQPState::qp_grad() const {
 	return iqa_Vector(Q_qp_grad);
 }
 
+
+rSQPState::IQA_value_type& rSQPState::eta() {
+	return iqa_value_type(Q_eta);
+}
+
+const rSQPState::IQA_value_type& rSQPState::eta() const {
+	return iqa_value_type(Q_eta);
+}
+
 // Global Convergence Info
 
 
@@ -526,6 +450,21 @@ const rSQPState::IQA_value_type& rSQPState::phi() const {
 
 // KKT Info
 
+rSQPState::IQA_value_type& rSQPState::kkt_err() {
+	return iqa_value_type(Q_kkt_err);
+}
+
+const rSQPState::IQA_value_type& rSQPState::kkt_err() const {
+	return iqa_value_type(Q_kkt_err);
+}
+
+rSQPState::IQA_Vector& rSQPState::GL() {
+	return iqa_Vector(Q_GL);
+}
+
+const rSQPState::IQA_Vector& rSQPState::GL() const {
+	return iqa_Vector(Q_GL);
+}
 
 rSQPState::IQA_Vector& rSQPState::rGL() {
 	return iqa_Vector(Q_rGL);
@@ -535,49 +474,12 @@ const rSQPState::IQA_Vector& rSQPState::rGL() const {
 	return iqa_Vector(Q_rGL);
 }
 
-
-rSQPState::IQA_value_type& rSQPState::norm_2_rGL() {
-	return iqa_value_type(Q_norm_2_rGL);
-}
-
-const rSQPState::IQA_value_type& rSQPState::norm_2_rGL() const {
-	return iqa_value_type(Q_norm_2_rGL);
-}
-
-
-rSQPState::IQA_value_type& rSQPState::norm_inf_rGL() {
-	return iqa_value_type(Q_norm_inf_rGL);
-}
-
-const rSQPState::IQA_value_type& rSQPState::norm_inf_rGL() const {
-	return iqa_value_type(Q_norm_inf_rGL);
-}
-
-
 rSQPState::IQA_Vector& rSQPState::lambda() {
 	return iqa_Vector(Q_lambda);
 }
 
 const rSQPState::IQA_Vector& rSQPState::lambda() const {
 	return iqa_Vector(Q_lambda);
-}
-
-
-rSQPState::IQA_value_type& rSQPState::norm_2_lambda() {
-	return iqa_value_type(Q_norm_2_lambda);
-}
-
-const rSQPState::IQA_value_type& rSQPState::norm_2_lambda() const {
-	return iqa_value_type(Q_norm_2_lambda);
-}
-
-
-rSQPState::IQA_value_type& rSQPState::norm_inf_lambda() {
-	return iqa_value_type(Q_norm_inf_lambda);
-}
-
-const rSQPState::IQA_value_type& rSQPState::norm_inf_lambda() const {
-	return iqa_value_type(Q_norm_inf_lambda);
 }
 
 

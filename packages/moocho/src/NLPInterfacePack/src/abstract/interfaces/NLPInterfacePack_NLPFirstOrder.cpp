@@ -130,6 +130,16 @@ void NLPInterfacePack::NLPFirstOrderInfo::calc_Gc(const Vector& x
 	num_Gc_evals_++;
 }
 
+void NLPInterfacePack::NLPFirstOrderInfo::report_final_solution(
+	  const VectorSlice&	x
+	, const VectorSlice*	lambda
+	, const SpVectorSlice*	nu
+	, bool					optimal		) const
+{
+	NLP::report_final_x(x,optimal);
+}
+
+
 NLPInterfacePack::size_type NLPInterfacePack::NLPFirstOrderInfo::num_Gf_evals() const
 {
 	return num_Gf_evals_;

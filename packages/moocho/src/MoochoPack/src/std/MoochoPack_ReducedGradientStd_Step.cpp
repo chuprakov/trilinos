@@ -9,6 +9,7 @@
 #include "../../include/std/ReducedGradientStd_Step.h"
 #include "../../include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/VectorClass.h"
@@ -36,14 +37,14 @@ bool ReducedSpaceSQPPack::ReducedGradientStd_Step::do_step(Algorithm& _algo
 	}
 
 	// rGf = Z' * Gf
-	V_MtV( &s.rGf().set_k(0), s.Z().get_k(0), BLAS_Cpp::trans, s.Gf().get_k(0)() );
+	V_MtV( &s.rGf().set_k(0).v(), s.Z().get_k(0), BLAS_Cpp::trans, s.Gf().get_k(0)() );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\n||rGf||inf = "	<< norm_inf( s.rGf().get_k(0) ) << std::endl;
+		out	<< "\n||rGf||inf = "	<< s.rGf().get_k(0).norm_inf() << std::endl;
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out << "\nrGf_k =\n" << s.rGf().get_k(0);
+		out << "\nrGf_k =\n" << s.rGf().get_k(0)();
 	}
 
 	return true;

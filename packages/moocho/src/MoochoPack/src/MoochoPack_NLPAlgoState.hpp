@@ -22,12 +22,9 @@ namespace ReducedSpaceSQPPack {
 const std::string x_name				= "x";
 const std::string f_name				= "f";
 const std::string Gf_name				= "Gf";
-const std::string Hf_name				= "Hf";
+const std::string HL_name				= "HL";
 const std::string c_name				= "c";
-const std::string norm_2_c_name			= "norm_2_c";
-const std::string norm_inf_c_name		= "norm_inf_c";
 const std::string Gc_name				= "Gc";
-const std::string Hcj_name				= "Hcj";
 
 // Constraint Gradient Null Space / Range Space Decomposition Info
 const std::string Y_name				= "Y";
@@ -38,15 +35,9 @@ const std::string V_name				= "V";
 // Search Direction Info
 const std::string py_name				= "py";
 const std::string Ypy_name				= "Ypy";
-const std::string norm_2_Ypy_name		= "norm_2_Ypy";
-const std::string norm_inf_Ypy_name		= "norm_inf_Ypy";
 const std::string pz_name				= "pz";
 const std::string Zpz_name				= "Zpz";
-const std::string norm_2_Zpz_name		= "norm_2_ZpZ";
-const std::string norm_inf_Zpz_name		= "norm_inf_ZpZ";
 const std::string d_name				= "d";
-const std::string norm_2_d_name			= "norm_2_d";
-const std::string norm_inf_d_name		= "norm_inf_d";
 
 // Reduced QP Subproblem Info
 const std::string rGf_name				= "rGf";
@@ -54,6 +45,7 @@ const std::string rHL_name				= "rHL";
 const std::string w_name				= "w";
 const std::string zeta_name				= "zeta";
 const std::string qp_grad_name			= "qp_grad";
+const std::string eta_name				= "eta";
 
 // Global Convergence Info
 const std::string alpha_name			= "alpha";
@@ -62,12 +54,10 @@ const std::string Delta_name			= "Delta";
 const std::string phi_name				= "phi";
 
 // KKT Info
+const std::string kkt_err_name			= "kkt_err";
+const std::string GL_name				= "GL";
 const std::string rGL_name				= "rGL";
-const std::string norm_2_rGL_name		= "norm_2_rGL";
-const std::string norm_inf_rGL_name		= "norm_inf_rGL";
 const std::string lambda_name			= "lambda";
-const std::string norm_2_lambda_name	= "norm_2_lambda";
-const std::string norm_inf_lambda_name	= "norm_inf_lambda";
 const std::string nu_name				= "nu";
 
 //@}
@@ -92,7 +82,7 @@ public:
 	///
 	typedef GeneralIterationPack::IterQuantityAccess<value_type>		IQA_value_type;
 	///
-	typedef GeneralIterationPack::IterQuantityAccess<Vector>			IQA_Vector;
+	typedef GeneralIterationPack::IterQuantityAccess<VectorWithNorms>	IQA_Vector;
 	///
 	typedef GeneralIterationPack::IterQuantityAccess<SpVector>			IQA_SpVector;
 	///
@@ -208,35 +198,20 @@ public:
 	///
 	virtual const IQA_Vector& Gf() const;
 
-	/// Hf:  Hessian of the objective function ( n x n )
-	virtual IQA_MatrixWithOp& Hf();
+	/// HL:  Hessian of the Lagrangian ( n x n )
+	virtual IQA_MatrixWithOp& HL();
 	///
-	virtual const IQA_MatrixWithOp& Hf() const;
+	virtual const IQA_MatrixWithOp& HL() const;
 
 	/// c:  Vector of equality constraints ( m x 1 )
 	virtual IQA_Vector& c();
 	///
 	virtual const IQA_Vector& c() const;
 
-	/// norm_2_c:  ||c||2
-	virtual IQA_value_type& norm_2_c();
-	///
-	virtual const IQA_value_type& norm_2_c() const;
-
-	/// norm_inf_c:  ||c||infinity
-	virtual IQA_value_type& norm_inf_c();
-	///
-	virtual const IQA_value_type& norm_inf_c() const;
-
 	/// Gc:  Gradient of equality constraints ('c') matrix ( n x m )
 	virtual IQA_MatrixWithOp& Gc();
 	///
 	virtual const IQA_MatrixWithOp& Gc() const;
-	
-	/// Hcj:  Hessain of the jth equality constraints ('c_j')( n x n )
-	virtual IQA_MatrixWithOp& Hcj();
-	///
-	virtual const IQA_MatrixWithOp& Hcj() const;
 
 	//@}
 
@@ -278,16 +253,6 @@ public:
 	///
 	virtual const IQA_Vector& Ypy() const;
 
-	/// norm_2_Ypy:  ||Ypy||2
-	virtual IQA_value_type& norm_2_Ypy();
-	///
-	virtual const IQA_value_type& norm_2_Ypy() const;
-
-	/// norm_inf_Ypy:  ||Ypy||infinity
-	virtual IQA_value_type& norm_inf_Ypy();
-	///
-	virtual const IQA_value_type& norm_inf_Ypy() const;
-
 	/// pz:  Null space (independent) QP solution component ( (n-m) x 1 )
 	virtual IQA_Vector& pz();
 	///
@@ -298,30 +263,10 @@ public:
 	///
 	virtual const IQA_Vector& Zpz() const;
 
-	/// norm_2_Zpz:  ||Zpz||2
-	virtual IQA_value_type& norm_2_Zpz();
-	///
-	virtual const IQA_value_type& norm_2_Zpz() const;
-
-	/// norm_inf_Zpz:  ||Zpz||infinity
-	virtual IQA_value_type& norm_inf_Zpz();
-	///
-	virtual const IQA_value_type& norm_inf_Zpz() const;
-
 	/// d:  Search direction (d = Zpz + Ypy) ( n x 1 )
 	virtual IQA_Vector& d();
 	///
 	virtual const IQA_Vector& d() const;
-
-	/// norm_2_d:  ||d||2
-	virtual IQA_value_type& norm_2_d();
-	///
-	virtual const IQA_value_type& norm_2_d() const;
-
-	/// norm_inf_d:  ||d||infinity
-	virtual IQA_value_type& norm_inf_d();
-	///
-	virtual const IQA_value_type& norm_inf_d() const;
 
 	//@}
 
@@ -352,6 +297,11 @@ public:
 	virtual IQA_Vector& qp_grad();
 	///
 	virtual const IQA_Vector& qp_grad() const;
+
+	/// eta:  QP relaxation parameter [0, 1]
+	virtual IQA_value_type& eta();
+	///
+	virtual const IQA_value_type& eta() const;
 
 	//@}
 
@@ -409,35 +359,25 @@ public:
 	  */
 	//@{
 
+	/// kkt_error
+	virtual IQA_value_type& kkt_err();
+	///
+	virtual const IQA_value_type& kkt_err() const;
+
+	/// GL:  Gradient of the Lagrangian ( n x 1 )
+	virtual IQA_Vector& GL();
+	///
+	virtual const IQA_Vector& GL() const;
+
 	/// rGL:  Reduced gradient of the Lagrangian ( (n-m) x 1 )
 	virtual IQA_Vector& rGL();
 	///
 	virtual const IQA_Vector& rGL() const;
 
-	/// norm_2_rGL:  ||rGL||2
-	virtual IQA_value_type& norm_2_rGL();
-	///
-	virtual const IQA_value_type& norm_2_rGL() const;
-
-	/// norm_inf_rGL:  ||rGL||infinity
-	virtual IQA_value_type& norm_inf_rGL();
-	///
-	virtual const IQA_value_type& norm_inf_rGL() const;
-
 	/// lambda:  Lagrange multipliers for the equality constraints 'c' ( m x 1 )
 	virtual IQA_Vector& lambda();
 	///
 	virtual const IQA_Vector& lambda() const;
-
-	/// norm_2_lambda:  ||lambda||2
-	virtual IQA_value_type& norm_2_lambda();
-	///
-	virtual const IQA_value_type& norm_2_lambda() const;
-
-	/// norm_inf_lambda:  ||lambda||infinity
-	virtual IQA_value_type& norm_inf_lambda();
-	///
-	virtual const IQA_value_type& norm_inf_lambda() const;
 
 	/// nu:  Difference between Lagrange multipiers for the upper and lower bounds ( n x 1 )
 	virtual IQA_SpVector& nu();
@@ -502,24 +442,21 @@ private:
 	enum EIQType { VALUE_TYPE, VECTOR, SP_VECTOR, MATRIX_WITH_OP }; 
 
 	///
-	enum { num_value_type_quantities = 17 };
+	enum { num_value_type_quantities = 7 };
 	/// Enumeration for the value_type iteration quantities
 	enum E_IterQuantities_value_type {
-		Q_f,				Q_norm_2_c,			Q_norm_inf_c,			Q_norm_2_Ypy,
-		Q_norm_inf_Ypy,		Q_norm_2_Zpz,		Q_norm_inf_Zpz,			Q_norm_2_d,
-		Q_norm_inf_d,		Q_zeta,				Q_alpha,				Q_mu,
-		Q_phi,				Q_norm_2_rGL,		Q_norm_inf_rGL,			Q_norm_2_lambda,
-		Q_norm_inf_lambda
+		Q_f,				Q_zeta,				Q_eta,					Q_alpha,
+		Q_mu,				Q_phi,				Q_kkt_err
 	};
 
 	///
-	enum { num_Vector_quantities = 14 };
+	enum { num_Vector_quantities = 15 };
 	/// Enumeration for the Vector iteration quantities
 	enum E_IterQuantities_Vector {
 		Q_x,				Q_Gf,				Q_c,					Q_py,
 		Q_Ypy,				Q_pz,				Q_Zpz,					Q_d,
 		Q_rGf,				Q_w,				Q_qp_grad,				Q_Delta,
-		Q_rGL,				Q_lambda
+		Q_GL,				Q_rGL,				Q_lambda
 	};
 
 	///
@@ -530,10 +467,10 @@ private:
 	};
 
 	///
-	enum { num_MatrixWithOp_quantities = 8 };
+	enum { num_MatrixWithOp_quantities = 7 };
 	/// Enumeration for the Vector iteration quantities
 	enum E_IterQuantities_MatrixWithOp {
-		Q_Hf,				Q_Gc,				Q_Hcj,					Q_Y,
+		Q_HL,				Q_Gc,				Q_Y,
 		Q_Z,				Q_U,				Q_V,					Q_rHL
 	};
 

@@ -10,6 +10,7 @@
 #include "../../include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/print_vector_change_stats.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorOut.h"
@@ -39,17 +40,17 @@ bool ReducedSpaceSQPPack::CalcDFromYPYZPZ_Step::do_step(Algorithm& _algo
 	}
 
 	// d = Ypy + Zpz
-	V_VpV( &s.d().set_k(0), s.Ypy().get_k(0), s.Zpz().get_k(0) );
+	VectorWithNorms &d = s.d().set_k(0);
+	V_VpV( &d.v(), s.Ypy().get_k(0)(), s.Zpz().get_k(0)() );
 
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-		out	<< "\n||d||inf = " << ( s.norm_inf_d().set_k(0) = norm_inf(s.d().get_k(0)) )
-			<< std::endl;
+		out	<< "\n||d||inf = " << d.norm_inf() << std::endl;
 		ConstrainedOptimizationPack::print_vector_change_stats(
-			s.x().get_k(0), "x", s.d().get_k(0), "d", out );
+			s.x().get_k(0)(), "x", s.d().get_k(0)(), "d", out );
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out	<< "\nd_k = \n" << s.d().get_k(0);
+		out	<< "\nd_k = \n" << s.d().get_k(0)();
 	}
 
 	return true;

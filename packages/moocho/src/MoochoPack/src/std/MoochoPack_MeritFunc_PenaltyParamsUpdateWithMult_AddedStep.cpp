@@ -12,6 +12,7 @@
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncPenaltyParams.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPDirecDeriv.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOut.h"
@@ -106,7 +107,7 @@ bool MeritFunc_PenaltyParamsUpdateWithMult_AddedStep::do_step(Algorithm& _algo
 			}
 
 			const Vector
-				&lambda_k = s.lambda().get_k(0);
+				&lambda_k = s.lambda().get_k(0).cv();
 
 			if( params->mu().size() != lambda_k.size() )
 				params->resize( lambda_k.size() );
@@ -140,9 +141,7 @@ bool MeritFunc_PenaltyParamsUpdateWithMult_AddedStep::do_step(Algorithm& _algo
 								);
 				}
 				// ToDo: Replace this with an iteration quantity kkt_error_k
-				value_type kkt_error = max(
-					  s.norm_inf_rGL().get_k(0)/max(1.0,norm_inf(s.Gf().get_k(0)))
-					, s.norm_inf_c().get_k(0) );
+				value_type kkt_error = s.kkt_err().get_k(0);
 				if(kkt_error <= kkt_near_sol_) {
 					if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 						out << "\nkkt_error = " << kkt_error << " <= kkt_near_sol = "
@@ -180,7 +179,7 @@ bool MeritFunc_PenaltyParamsUpdateWithMult_AddedStep::do_step(Algorithm& _algo
 	}
 
 	// In addition also compute the directional derivative
-	direc_deriv->calc_deriv( s.Gf().get_k(0), s.c().get_k(0), s.d().get_k(0) );
+	direc_deriv->calc_deriv( s.Gf().get_k(0)(), s.c().get_k(0)(), s.d().get_k(0)() );
 
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 		out << "\nmu_k = " << s.mu().get_k(0) << "\n";
@@ -224,7 +223,7 @@ void MeritFunc_PenaltyParamsUpdateWithMult_AddedStep::print_step( const Algorith
 		<< L << "                mu(j) = max( ( 3.0 * mu(j) + abs(lambda_k(j)) ) / 4.0\n"
 		<< L << "                            , max( 1.001 * abs(lambda_k(j)) , small_mu ) )\n"
 		<< L << "            end\n"
-		<< L << "            kkt_error = max(norm_inf_rGL_k/max(1,norm_inf_Gf),norm_inf_c_k)\n"
+		<< L << "            kkt_error = kkt_err_k\n"
 		<< L << "            if kkt_error <= kkt_near_sol then\n"
 		<< L << "                near_solution = true\n"
 		<< L << "            end\n"

@@ -114,6 +114,13 @@ void NLPInterfacePack::NLP::calc_c(const Vector& x, bool newx) const
 	num_c_evals_++;
 }
 
+void NLPInterfacePack::NLP::report_final_x(
+	  const VectorSlice&	x
+	, bool					optimal		) const
+{
+	// The default behavior is just to ignore this!
+}
+
 NLPInterfacePack::size_type NLPInterfacePack::NLP::num_f_evals() const
 {
 	return num_f_evals_;

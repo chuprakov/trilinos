@@ -160,10 +160,7 @@ public:
 		  const VectorSlice&	x
 		, const VectorSlice*	lambda
 		, const SpVectorSlice*	nu
-		, bool					optimal		) const
-	{
-		NLP::report_final_x(x,optimal);
-	}
+		, bool					optimal		) const;
 
 	/** @name Objective and constraint function gradients.
 	  *

@@ -12,6 +12,7 @@
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncPenaltyParams.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPDirecDeriv.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOut.h"
@@ -90,12 +91,12 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
 		&f_kp1		= s.f().get_k(+1);
 
 	const Vector
-		&c_k		= s.c().get_k(0),
-		&c_kp1		= s.c().get_k(+1);
+		&c_k		= s.c().get_k(0).cv(),
+		&c_kp1		= s.c().get_k(+1).cv();
 
 	const Vector
-		&Gf_k		= s.Gf().get_k(0),
-		&d_k		= s.d().get_k(0);
+		&Gf_k		= s.Gf().get_k(0).cv(),
+		&d_k		= s.d().get_k(0).cv();
 
 	// Determining if the objective increase is sufficent.
 

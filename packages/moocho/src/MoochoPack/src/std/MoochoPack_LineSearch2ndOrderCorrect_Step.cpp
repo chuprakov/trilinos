@@ -16,6 +16,7 @@
 #include "ConstrainedOptimizationPack/include/MeritFuncCalcNLP.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncCalcNLE.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncNLESqrResid.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "LinAlgPack/include/VectorClass.h"
@@ -96,20 +97,20 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 	// we have backward storage.
 	
 	Vector
-		&x_kp1 = s.x().set_k(+1);
+		&x_kp1 = s.x().set_k(+1).v();
 	value_type
 		&f_kp1 = s.f().set_k(+1);
 	Vector
-		&c_kp1 = s.c().set_k(+1);
+		&c_kp1 = s.c().set_k(+1).v();
 
 	const value_type
 		&f_k = s.f().get_k(0);
 	const Vector
-		&c_k = s.c().get_k(0);
+		&c_k = s.c().get_k(0).v();
 	const Vector
-		&x_k = s.x().get_k(0);
+		&x_k = s.x().get_k(0).v();
 	const Vector
-		&d_k = s.d().get_k(0);
+		&d_k = s.d().get_k(0).v();
 	value_type
 		&alpha_k = s.alpha().get_k(0);
 
@@ -147,7 +148,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 
 	if( !considering_correction_ ) {
 		const value_type
-			nrm_c_x  = s.norm_inf_c().get_k(0);
+			nrm_c_x  = s.c().get_k(0).norm_inf();
 		if( nrm_c_x <= constr_norm_threshold() && s.k() >= after_k_iter() ) {
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 				out	<< "\nConsider the 2nd order correction for x_kp1 = x_k + d_k + w from now on:\n"
@@ -193,7 +194,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 		}
 
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-			const value_type obj_descent = dot( s.Gf().get_k(0), d_k() );
+			const value_type obj_descent = dot( s.Gf().get_k(0)(), d_k() );
 			out	<< "\nGf_k' * d_k = " << obj_descent << std::endl;
 			if( obj_descent >= 0.0 ) {
 				out	<< "\nWarning, this may not work well with Gf_k'*d_k >= 0.0\n";

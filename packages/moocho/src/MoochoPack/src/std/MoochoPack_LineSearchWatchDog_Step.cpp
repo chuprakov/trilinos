@@ -14,6 +14,7 @@
 #include "ConstrainedOptimizationPack/include/MeritFuncCalc1DQuadratic.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncCalcNLP.h"
 #include "ConstrainedOptimizationPack/include/print_vector_change_stats.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
@@ -75,20 +76,20 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 	// we have backward storage.
 	
 	Vector
-		&x_kp1 = s.x().set_k(+1);
+		&x_kp1 = s.x().set_k(+1).v();
 	value_type
 		&f_kp1 = s.f().set_k(+1);
 	Vector
-		&c_kp1 = s.c().set_k(+1);
+		&c_kp1 = s.c().set_k(+1).v();
 
 	const value_type
 		&f_k = s.f().get_k(0);
 	const Vector
-		&c_k = s.c().get_k(0);
+		&c_k = s.c().get_k(0).v();
 	const Vector
-		&x_k = s.x().get_k(0);
+		&x_k = s.x().get_k(0).v();
 	const Vector
-		&d_k = s.d().get_k(0);
+		&d_k = s.d().get_k(0).v();
 	value_type
 		&alpha_k = s.alpha().get_k(0);
 
@@ -126,7 +127,7 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 
 	if( watch_k_ == NORMAL_LINE_SEARCH ) {
 		const value_type
-			kkt_error	= std::_MAX( s.norm_inf_rGL().get_k(0), s.norm_inf_c().get_k(0) );
+			kkt_error	= s.kkt_err().get_k(0);
 		if( kkt_error <= use_line_search_correct_kkt_tol() ) {
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 				out	<< "\nkkt_error = " << kkt_error << " <= use_line_search_correct_kkt_tol = "
@@ -239,9 +240,8 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 				// A negative sign for alpha is an indication that we are backtracking.
 				//
 				s.alpha().set_k(0)			= -1.0;
-				s.d().set_k(0)				= do_;
+				s.d().set_k(0).v()			= do_;
 				s.f().set_k(+1)				= fo_;
-				s.norm_inf_c().set_k(+1)	= nrm_co_;
 
 				if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 					out << "Output iteration k ...\n"
@@ -274,7 +274,7 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 				const Vector &x_k								= xo_;
 
 				// d_k
-				const Vector &d_k = s.d().set_k(0)				= do_;
+				const Vector &d_k = s.d().set_k(0).v()			= do_;
 
 				// Dphi_k
 				const value_type &Dphi_k						= Dphio_;
@@ -285,14 +285,14 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 				// Here f_kp1, and c_kp1 are updated at the same time the
 				// line search is being performed.
 				algo.nlp().set_f( &s.f().set_k(+1) );
-				algo.nlp().set_c( &s.c().set_k(+1) );
+				algo.nlp().set_c( &s.c().set_k(+1).v() );
 				phi_calc.set_nlp( algo.get_nlp() );
 
 				// ////////////////////////////////////////
 				// Compute x_xp1 and ph_kp1 for full step
 
 				// x_kp1 = x_k + alpha_k * d_k
-				Vector &x_kp1 = s.x().set_k(+1);
+				Vector &x_kp1 = s.x().set_k(+1).v();
 				V_VpV( &x_kp1, x_k, d_k );
 
 				// phi_kp1
@@ -378,8 +378,8 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out << "\nd_k = \n" << s.d().get_k(0);
-		out << "\nx_kp1 = \n" << s.x().get_k(+1);
+		out << "\nd_k = \n" << s.d().get_k(0)();
+		out << "\nx_kp1 = \n" << s.x().get_k(+1)();
 	}
 
 	if( !ls_success )
@@ -408,7 +408,7 @@ void ReducedSpaceSQPPack::LineSearchWatchDog_Step::print_step( const Algorithm& 
 		<< L << "phi_kp1 = phi_k.value(f_kp1,c_kp1)\n"
 		<< L << "phi_k = phi.value(f_k,c_k)\n"
 		<< L << "if watch_k == NORMAL_LINE_SEARCH then\n"
-		<< L << "    kkt_error = max( norm_inf_rGL_k, norm_inf_c_k )\n"
+		<< L << "    kkt_error = kkt_err_k\n"
 		<< L << "    if kkt_error <= use_line_search_correct_kkt_tol then\n"
 		<< L << "        *** Start using watchdog from now on\n"
 		<< L << "        watch_k = 0\n"
@@ -446,7 +446,6 @@ void ReducedSpaceSQPPack::LineSearchWatchDog_Step::print_step( const Algorithm& 
 		<< L << "        alpha_k        = -1.0\n"
 		<< L << "        d_k            = do\n"
 		<< L << "        f_kp1          = fo\n"
-		<< L << "        norm_c_inf_kp1 = nrm_co\n"
 		<< L << "        Output this iteration (k)\n"
 		<< L << "        k = k+1\n"
 		<< L << "        *** Go from x_k = x_km2 to x_kp1 for this iteration (k+1)\n"

@@ -5,6 +5,7 @@
 #define CHECK_CONVERGENCE_STD_ADDEDSTEP_H
 
 #include "../rSQPAlgo_Step.h"
+#include "Misc/include/StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -15,13 +16,27 @@ class CheckConvergenceStd_AddedStep : public rSQPAlgo_Step {
 public:
 
 	///
-	CheckConvergenceStd_AddedStep(bool check_d = false)
-		 : check_d_(check_d)
-	{}
+	enum EOptErrorCheck { OPT_ERROR_REDUCED_GRADIENT_LAGR, OPT_ERROR_GRADIENT_LAGR };
 
-	/// Check ||d||inf < tolerance ?
-	virtual void set_check_d(bool check_d)
-	{	check_d_ = check_d; }
+	///
+	/** <<std member comp>> members for whether the optimality conditions
+	  * should be scaled by the 
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( EOptErrorCheck, opt_error_check )
+
+	///
+	enum EScaleKKTErrorBy { SCALE_BY_ONE, SCALE_BY_NORM_2_X, SCALE_BY_NOMR_INF_X };
+
+	///
+	/** <<std member comp>> members for whether the optimality conditions
+	  * should be scaled by the 
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( EScaleKKTErrorBy, scale_kkt_error_by )
+
+	///
+	CheckConvergenceStd_AddedStep(
+		  EOptErrorCheck opt_error_check		= OPT_ERROR_REDUCED_GRADIENT_LAGR
+		, EScaleKKTErrorBy scale_kkt_error_by	= SCALE_BY_ONE );
 
 	// ////////////////////
 	// Overridden
@@ -34,9 +49,6 @@ public:
 	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 
-private:
-	bool	check_d_;	// flag for if I should check ||d||inf
-	
 };	// end class CheckConvergenceStd_AddedStep
 
 }	// end namespace ReducedSpaceSQPPack 

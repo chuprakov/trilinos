@@ -12,6 +12,7 @@
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncCalc1DQuadratic.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncCalcNLP.h"
+#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorOut.h"
@@ -43,20 +44,20 @@ bool ReducedSpaceSQPPack::LineSearchDirect_Step::do_step(Algorithm& _algo
 	// we have backward storage.
 	
 	Vector
-		&x_kp1 = s.x().set_k(+1);
+		&x_kp1 = s.x().set_k(+1).v();
 	value_type
 		&f_kp1 = s.f().set_k(+1);
 	Vector
-		&c_kp1 = s.c().set_k(+1);
+		&c_kp1 = s.c().set_k(+1).v();
 
 	const value_type
 		&f_k = s.f().get_k(0);
 	const Vector
-		&c_k = s.c().get_k(0);
+		&c_k = s.c().get_k(0).v();
 	const Vector
-		&x_k = s.x().get_k(0);
+		&x_k = s.x().get_k(0).v();
 	const Vector
-		&d_k = s.d().get_k(0);
+		&d_k = s.d().get_k(0).v();
 	value_type
 		&alpha_k = s.alpha().get_k(0);
 

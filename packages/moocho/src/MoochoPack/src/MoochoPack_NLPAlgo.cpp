@@ -38,7 +38,7 @@ void rSQPAlgo::set_max_run_time(double max_run_time)
 
 double rSQPAlgo::return_max_run_time() const
 {
-	return this->max_run_time();
+	return Algorithm::max_run_time();
 }
 
 rSQPSolverClientInterface::EFindMinReturn
