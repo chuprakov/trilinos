@@ -24,13 +24,7 @@
 #include "rSQPAlgo_ConfigMamaJama.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgoContainer.h"
-//#include "ReducedSpaceSQPPack/include/rSQPStateContinuousStorage.h"
-//#include "ReducedSpaceSQPPack/include/rSQPStateContinuousStorageMatrixWithOpCreatorAggr.h"
-//#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-//#include "SparseLinAlgPack/include/COOMatrixWithPartitionedViewSubclass.h"			// HL, Gc, Hcj
-#include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"                   // Y, Z
-//#include "SparseLinAlgPack/include/COOMatrixPartitionViewSubclass.h"				// U
-//#include "SparseLinAlgPack/include/GenMatrixSubclass.h"								// V
+#include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"               // Y, Z
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"          // rHL 
 //#include "ConstrainedOptimizationPack/include/MatrixSymPosDefInvCholFactor.h"		// .
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefLBFGS.h"				// .
@@ -57,6 +51,10 @@
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPL1.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPModL1.h"
 
+// Range/null decomposition
+
+#include "ReducedSpaceSQPPack/include/std/DecompositionSystemHandlerVarReductPerm_Strategy.h"
+#include "ReducedSpaceSQPPack/include/std/DecompositionSystemHandlerStd_Strategy.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemTester.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemTesterSetOptions.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinate.h"
@@ -104,16 +102,16 @@
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_StrategySetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/RangeSpaceStepStd_Step.h"
 #include "ReducedSpaceSQPPack/include/std/CheckDescentRangeSpaceStep_Step.h"
-//#include "ReducedSpaceSQPPack/include/std/CheckBasisFromCPy_Step.h"
-//#include "ReducedSpaceSQPPack/include/std/CheckBasisFromPy_Step.h"
+#include "ReducedSpaceSQPPack/include/std/CheckDecompositionFromPy_Step.h"
+#include "ReducedSpaceSQPPack/include/std/CheckDecompositionFromRPy_Step.h"
 #include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithoutBounds_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/SetDBoundsStd_AddedStep.h"
 //#include "ReducedSpaceSQPPack/include/std/QPFailureReinitReducedHessian_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/CalcDFromYPYZPZ_Step.h"
-//#include "ReducedSpaceSQPPack/include/std/LineSearchFailureNewBasisSelection_Step.h"
-//#include "ReducedSpaceSQPPack/include/std/NewBasisSelectionStd_Strategy.h"
+#include "ReducedSpaceSQPPack/include/std/LineSearchFailureNewDecompositionSelection_Step.h"
+#include "ReducedSpaceSQPPack/include/std/NewDecompositionSelectionStd_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFullStep_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchDirect_Step.h"
 //#include "ReducedSpaceSQPPack/include/std/LineSearch2ndOrderCorrect_Step.h"
@@ -297,7 +295,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 	// Get the dimensions of the NLP
 	NLP &nlp = algo->nlp();
-	if(!nlp.is_initialized()) nlp.initialize();
+	nlp.initialize(algo->algo_cntr().check_results());
 	const size_type
 		n   = algo->nlp().n(),
 		m   = algo->nlp().m(),
@@ -957,7 +955,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 //	qp_tester_ptr_t qp_tester;
 //	typedef ref_count_ptr<FeasibilityStepReducedStd_Strategy> feasibility_step_strategy_ptr_t;
 //	feasibility_step_strategy_ptr_t  feasibility_step_strategy;
-
+	typedef ref_count_ptr<DecompositionSystemHandler_Strategy> decomp_sys_handler_ptr_t;
+	decomp_sys_handler_ptr_t  decomp_sys_handler;
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+	typedef ref_count_ptr<DecompositionSystemHandlerSelectNew_Strategy> decomp_sys_handler_select_new_ptr_t;
+	decomp_sys_handler_select_new_ptr_t  decomp_sys_handler_select_new;
+	typedef ref_count_ptr<NewDecompositionSelection_Strategy>  new_decomp_selection_strategy_ptr_t;
+	new_decomp_selection_strategy_ptr_t  new_decomp_selection_strategy;
+#endif
 	{
 
 		//
@@ -996,7 +1001,27 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				options_setter.set_options(*options_);
 			}
 		}
-		
+
+		// Decomposition system handler
+		if( nlp_foi ) {
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+			if( basis_sys_perm.get() )
+				decomp_sys_handler = decomp_sys_handler_select_new
+					= rcp::rcp( new DecompositionSystemHandlerVarReductPerm_Strategy );
+			else
+#endif
+				decomp_sys_handler = rcp::rcp( new DecompositionSystemHandlerStd_Strategy );
+		}
+	
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+		// NewDecompositionSelectionStd_Strategy
+		if( decomp_sys_handler_select_new.get() ) {
+			new_decomp_selection_strategy = rcp::rcp(
+				new NewDecompositionSelectionStd_Strategy(decomp_sys_handler_select_new)
+				);
+		}
+#endif
+
 		// EvalNewPoint_Step
 		algo_step_ptr_t    eval_new_point_step = rcp::null;
 		{
@@ -1067,7 +1092,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				_eval_new_point_step_ptr_t
 					_eval_new_point_step = rcp::rcp(
 						new EvalNewPointStd_Step(
-							deriv_tester
+							decomp_sys_handler
+							,deriv_tester
 							,decomp_sys_tester
 							,bounds_tester
 							) );
@@ -1084,6 +1110,22 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		algo_step_ptr_t    range_space_step_step = rcp::null;
 		if( !tailored_approach ) {
 			range_space_step_step = rcp::rcp(new RangeSpaceStepStd_Step());
+		}
+
+		// Check and change decomposition 
+		algo_step_ptr_t    check_decomp_from_py_step  = rcp::null;
+		algo_step_ptr_t    check_decomp_from_Rpy_step = rcp::null;
+		if( new_decomp_selection_strategy.get() && cov_.max_basis_cond_change_frac_ < INF_BASIS_COND_CHANGE_FRAC ) {
+			check_decomp_from_py_step = rcp::rcp(
+				new CheckDecompositionFromPy_Step(
+					new_decomp_selection_strategy
+					,cov_.max_basis_cond_change_frac_
+					) );
+			check_decomp_from_Rpy_step = rcp::rcp(
+				new CheckDecompositionFromRPy_Step(
+					new_decomp_selection_strategy
+					,cov_.max_basis_cond_change_frac_
+					) );
 		}
 
 		// CheckDescentRangeSpaceStep
@@ -1287,7 +1329,17 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				}
 			}
 		}
-		
+
+		// LineSearchFailure
+		if( new_decomp_selection_strategy.get() ) {
+			line_search_step = rcp::rcp(
+				new LineSearchFailureNewDecompositionSelection_Step(
+					line_search_step
+					,new_decomp_selection_strategy
+					)
+				);
+		}
+	
 		//
 		// Create the algorithm depending on the type of NLP we are
 		// trying to solve.
@@ -1343,11 +1395,13 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					<< "\nConfiguring an algorithm for a nonlinear equality constrained "
 					<< "NLP ( m > 0 && mI == 0 && num_bounded_x == 0) ...\n";
 
-			int step_num = 0;
+			int step_num       = 0;
+			int assoc_step_num = 0;
 	
 			// (1) EvalNewPoint
 			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
-			if( tailored_approach && algo->algo_cntr().check_results() ) {
+			if( check_descent_range_space_step_step.get() && tailored_approach && algo->algo_cntr().check_results() )
+			{
 				algo->insert_assoc_step(
 					step_num
 					,GeneralIterationPack::POST_STEP
@@ -1360,15 +1414,31 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			// (2) RangeSpaceStep
 			if( !tailored_approach ) {
 				algo->insert_step( ++step_num, RangeSpaceStep_name, range_space_step_step );
-				if(algo->algo_cntr().check_results() ) {
+				assoc_step_num = 0;
+				if( check_decomp_from_py_step.get() )
 					algo->insert_assoc_step(
 						step_num
 						,GeneralIterationPack::POST_STEP
-						,1
+						,++assoc_step_num
+						,"CheckDecompositionFromPy"
+						,check_decomp_from_py_step
+						);
+				if( check_decomp_from_Rpy_step.get() )
+					algo->insert_assoc_step(
+						step_num
+						,GeneralIterationPack::POST_STEP
+						,++assoc_step_num
+						,"CheckDecompositionFromRPy"
+						,check_decomp_from_Rpy_step
+						);
+				if( check_descent_range_space_step_step.get() )
+					algo->insert_assoc_step(
+						step_num
+						,GeneralIterationPack::POST_STEP
+						,++assoc_step_num
 						,"CheckDescentRangeSpaceStep"
 						,check_descent_range_space_step_step
 						);
-				}
 			}
 
 			// (3) ReducedGradient
