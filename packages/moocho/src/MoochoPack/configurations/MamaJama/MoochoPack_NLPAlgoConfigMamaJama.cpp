@@ -38,7 +38,7 @@
 //#include "SparseLinAlgPack/include/GenMatrixSubclass.h"								// V
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"          // rHL 
 //#include "ConstrainedOptimizationPack/include/MatrixSymPosDefInvCholFactor.h"		// .
-//#include "ConstrainedOptimizationPack/include/MatrixSymPosDefLBFGS.h"				// .
+#include "ConstrainedOptimizationPack/include/MatrixSymPosDefLBFGS.h"				// .
 //#include "ConstrainedOptimizationPack/include/MatrixHessianSuperBasicInitDiagonal.h"// | rHL (super basics)
 //#include "SparseLinAlgPack/include/MatrixSymDiagonalStd.h"                          // |
 
@@ -71,7 +71,7 @@
 //#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateDirect.h"
 //#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateAdjoint.h"
 
-#include "SparseSolverPack/test/BasisSystemTesterSetOptions.h"
+//#include "SparseSolverPack/test/BasisSystemTesterSetOptions.h"
 
 //#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
 //#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
@@ -196,16 +196,23 @@ rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
 	const basis_sys_ptr_t&  basis_sys
 	)
 	:basis_sys_(basis_sys)
-	,options_(NULL)
 {}
 
 rSQPAlgo_ConfigMamaJama::~rSQPAlgo_ConfigMamaJama() {
 	// No need to really do anything!
 }
 
-void rSQPAlgo_ConfigMamaJama::set_options( const OptionsFromStreamPack::OptionsFromStream* options )
+// overridden from rSQPAlgo_Config
+
+void rSQPAlgo_ConfigMamaJama::set_options( const options_ptr_t& options )
 {
 	options_ = options;
+}
+
+const rSQPAlgo_Config::options_ptr_t&
+rSQPAlgo_ConfigMamaJama::get_options() const
+{
+	return options_;
 }
 
 void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
@@ -257,7 +264,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	// Determine what the options are:
 
 	// Readin the options
-	if(options_) {
+	if(options_.get()) {
 		readin_options( *options_, &uov_, trase_out );
 	}
 	else {
@@ -470,27 +477,62 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 		// Add reduced Hessian
 
-		state->set_iter_quant(
-			rHL_name
-			,rcp::rcp(
-				new IterQuantityAccessContiguous<MatrixSymWithOp>(
-					1
-					,rHL_name
-					,rcp::rcp(
+		if( !cov_.exact_reduced_hessian_ ) {
+			ref_count_ptr<afp::AbstractFactory<MatrixSymWithOp> >
+				abstract_factory_rHL = NULL;
+			// Only maintain the orginal matrix if we have inequality constraints and therefore will be
+			// needing a QP solver (which may be QPSchur which needs an accurate original matrix for
+			// iterative refinment).
+			const bool
+				maintain_original = ( nb || mI );
+			// Maintain the factor if a QP solver is needed, QPSchur is being used, or we are checking
+			// results
+			const bool
+				maintain_inverse = ( (!nb && !mI && m==r) || cov_.qp_solver_type_==QP_QPSCHUR
+									 || algo->algo_cntr().check_results() );
+			switch( cov_.quasi_newton_ ) {
+				case QN_BFGS:
+					abstract_factory_rHL = rcp::rcp(
 						new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
 							MatrixSymPosDefCholFactor::PostMod(
-								nb || mI                                                   // maintain_original (only if we are using a QP solver)
-								,(!nb && !mI && m==r)                                      // maintain_factor   (only if no QP solver needed
-								|| cov_.qp_solver_type_==QP_QPSCHUR                        //                    or using QPSchur
-								|| algo->algo_cntr().check_results()                       //                    or will be checking results)
-								,true                                                      // allow_factor      (always!)
+								maintain_original      // maintain_original
+								,maintain_inverse      // maintain_factor
+								,true                  // allow_factor      (always!)
 								)
 							)
+						);
+					break;
+				case QN_LBFGS:
+					abstract_factory_rHL = rcp::rcp(
+						new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefLBFGS,MatrixSymPosDefLBFGS::PostMod>(
+							MatrixSymPosDefLBFGS::PostMod(
+								cov_.num_lbfgs_updates_stored_  //
+								,maintain_original              // maintain_original
+								,maintain_inverse               // maintain_inverse
+								,cov_.lbfgs_auto_scaling_       // 
+								)
+							)
+						);
+					break;
+				default:
+					assert(0); // Should not be called for now!
+			}
+			
+			state->set_iter_quant(
+				rHL_name
+				,rcp::rcp(
+					new IterQuantityAccessContiguous<MatrixSymWithOp>(
+						1
+						,rHL_name
+						,abstract_factory_rHL
 						)
 					)
-				)
-			);
-
+				);
+		}
+		else {
+			assert(0); // ToDo: Add rHL for an exact reduced Hessian!
+		}
+		
 		//
 		// Set the NLP merit function 
 		//
@@ -524,7 +566,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 
 		//
-		// Resize the number of storage locations (these can be changed later)
+		// Resize the number of storage locations (these can be changed later).
+		//
+		// Also, touch all of the value_type, index_type and vector iteration quantities
+		// that we know about so that when state.dump_iter_quant() is called, all of the
+		// iteration quantities will be included.
 		//
 		
 		typedef IterQuantityAccessContiguous<value_type>            IQ_scalar_cngs;
@@ -533,7 +579,26 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		dyn_cast<IQ_vector_cngs>(state->x()).resize(2);
 		dyn_cast<IQ_scalar_cngs>(state->f()).resize(2);
 		if(m) dyn_cast<IQ_vector_cngs>(state->c()).resize(2);
+		state->Gf();
 		if(mI) dyn_cast<IQ_vector_cngs>(state->h()).resize(2);
+		if(m && nlp_foi) state->Gc();
+		if(mI) state->Gh();
+
+		if(m) state->py();
+		if(m) dyn_cast<IQ_vector_cngs>(state->Ypy()).resize(2);
+		if(m) state->pz();
+		if(m) dyn_cast<IQ_vector_cngs>(state->Zpz()).resize(2);
+		dyn_cast<IQ_vector_cngs>(state->d()).resize(2);
+
+		dyn_cast<IQ_vector_cngs>(state->rGf()).resize(2);
+		state->w();
+		state->zeta();
+		state->qp_grad();
+		state->eta();
+
+		dyn_cast<IQ_scalar_cngs>(state->alpha()).resize(2);
+		dyn_cast<IQ_scalar_cngs>(state->mu()).resize(2);
+		dyn_cast<IQ_scalar_cngs>(state->phi()).resize(2);
 
 		dyn_cast<IQ_scalar_cngs>(state->opt_kkt_err()).resize(2);
 		dyn_cast<IQ_scalar_cngs>(state->feas_kkt_err()).resize(2);
@@ -541,16 +606,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		if(m) dyn_cast<IQ_vector_cngs>(state->lambda()).resize(2);
 		if(mI) dyn_cast<IQ_vector_cngs>(state->lambdaI()).resize(2);
 		dyn_cast<IQ_vector_cngs>(state->nu()).resize(2);
-
-		dyn_cast<IQ_vector_cngs>(state->Ypy()).resize(2);
-		dyn_cast<IQ_vector_cngs>(state->Zpz()).resize(2);
-		dyn_cast<IQ_vector_cngs>(state->d()).resize(2);
-
-		dyn_cast<IQ_vector_cngs>(state->rGf()).resize(2);
-
-		dyn_cast<IQ_scalar_cngs>(state->alpha()).resize(2);
-		dyn_cast<IQ_scalar_cngs>(state->mu()).resize(2);
-		dyn_cast<IQ_scalar_cngs>(state->phi()).resize(2);
 
 		// Set the state object
 		algo->set_state( state );
@@ -597,7 +652,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					var_bounds_warning_tol              // default warning tolerance
 					, algo_cntr->max_var_bounds_viol()	// default warning tolerance
 					) );
-			if(options_) {
+			if(options_.get()) {
 				ConstrainedOptimizationPack::VariableBoundsTesterSetOptions
 					options_setter( bounds_tester.get() );
 				options_setter.set_options(*options_);
@@ -618,7 +673,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 							NLPFirstOrderDirectTester::FD_DIRECTIONAL    // Gf testing
 							,NLPFirstOrderDirectTester::FD_DIRECTIONAL   // -Inv(C)*N testing
 							) );
-				if(options_) {
+				if(options_.get()) {
 					NLPInterfacePack::NLPFirstOrderDirectTesterSetOptions
 						options_setter(deriv_tester.get());
 					options_setter.set_options(*options_);
@@ -643,7 +698,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					default:
 						assert(0);	// only a local error
 				}
-				if(options_) {
+				if(options_.get()) {
 					EvalNewPointTailoredApproach_StepSetOptions
 						options_setter(_eval_new_point_step.get());
 					options_setter.set_options(*options_);
@@ -675,7 +730,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		if(!cov_.exact_reduced_hessian_) {
 			ref_count_ptr<CheckSkipBFGSUpdateStd_Step>
 				step = rcp::rcp(new CheckSkipBFGSUpdateStd_Step());
-			if(options_) {
+			if(options_.get()) {
 				CheckSkipBFGSUpdateStd_StepSetOptions
 					opt_setter( step.get() );
 				opt_setter.set_options( *options_ );
@@ -700,7 +755,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					typedef ref_count_ptr<BFGSUpdate_Strategy> bfgs_strategy_ptr_t;
 					bfgs_strategy_ptr_t
 						bfgs_strategy = rcp::rcp(new BFGSUpdate_Strategy);
-					if(options_) { 
+					if(options_.get()) { 
 						BFGSUpdate_StrategySetOptions
 							opt_setter( bfgs_strategy.get() );
 						opt_setter.set_options( *options_ );
@@ -763,7 +818,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		{
 			ref_count_ptr<CheckConvergenceStd_AddedStep>
 				_check_convergence_step = rcp::rcp(new CheckConvergenceStd_AddedStep());
-			if(options_) {
+			if(options_.get()) {
 				CheckConvergenceStd_AddedStepSetOptions
 					opt_setter( _check_convergence_step.get() );
 				opt_setter.set_options( *options_ );
@@ -808,7 +863,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				default:
 					assert(0);	// local programming error
 			}
-			if(options_) {
+			if(options_.get()) {
 				MeritFunc_PenaltyParamUpdate_AddedStepSetOptions
 					ppu_options_setter( param_update_step.get() );
 				ppu_options_setter.set_options( *options_ );
@@ -827,7 +882,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
 			ref_count_ptr<DirectLineSearchArmQuad_Strategy>
 				direct_line_search = rcp::rcp(new  DirectLineSearchArmQuad_Strategy());
-			if(options_) {
+			if(options_.get()) {
 				ConstrainedOptimizationPack::DirectLineSearchArmQuad_StrategySetOptions
 					ls_options_setter( direct_line_search.get(), "DirectLineSearchArmQuadSQPStep" );
 				ls_options_setter.set_options( *options_ );

@@ -18,15 +18,20 @@
 
 #include "ReducedSpaceSQPPack/include/rSQPAlgo_Config.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
+#include "AbstractLinAlgPack/include/BasisSystem.h"
 #include "OptionsFromStream.h"
 
 namespace ReducedSpaceSQPPack {
 
 ///
-/** This is a do all configuration class for rSQPAlgo.
-  *
-  * ToDo: Finish documentation!
-  */
+/** This is a do all configuration class for <tt>rSQPAlgo</tt>.
+ *
+ * Options specific for to this configuration class and the classes that
+ * it works with that can be set through <tt>this->set_options()</tt>, see the file
+ * <tt>\ref rSQPAlgo_ConfigMamaJama_opts "rSQPpp.opt.rSQPAlgo_ConfigMamaJama"</tt>.
+ *
+ * ToDo: Finish documentation!
+ */
 class rSQPAlgo_ConfigMamaJama : public rSQPAlgo_Config {
 public:
 
@@ -44,12 +49,11 @@ public:
 	///
 	~rSQPAlgo_ConfigMamaJama();
 
+	/** Overridden from rSQPAlgo_Config */
+	//@{
+
 	///
-	/** Set the OptionsFromStream object that will be used for specifying the exact options.
-	 *
-	 * There are a lot of options associated with this configuration.  The main options
-	 * group is "rSQPAlgo_ConfigMamaJama".  See the file rSQPpp.opt.rsqp_mama_jama_solve
-	 * for these options and how they are specified.
+	/** Set the <tt>OptionsFromStream</tt> object that will be used for specifying the options.
 	 *
 	 *  @param  options
 	 *               [in] If \c NULL then no options will be set.  If <tt>!=NULL</tt> then
@@ -57,12 +61,11 @@ public:
 	 *               options to use for the algorithm.  The state of this object must
 	 *               be maintained by the client until \c config_algo_cntr() is called
 	 *               and it is at this point that the options are read.
+	 *
 	 */
-	void set_options( const OptionsFromStreamPack::OptionsFromStream* options );
-
-	/** Overridden from rSQPAlgo_Config */
-	//@{
-
+	void set_options( const options_ptr_t& options );
+	///
+	const options_ptr_t& get_options() const;
 	///
 	void config_algo_cntr(rSQPAlgoContainer* algo_cntr, std::ostream* trase_out);
 	///
@@ -70,7 +73,10 @@ public:
 
 	//@}
 
-private:
+public:
+
+	/** @name Enums for variaous options categories */
+	//@{
 
 	///
 	enum EDirectLinearSolverType {
@@ -106,7 +112,10 @@ private:
 		L1_PENALTY_PARAM_AUTO, L1_PENALTY_PARAM_WITH_MULT
 		, L1_PENALTY_PARAM_MULT_FREE };
 
-private:
+	//@}
+
+	/** @name Struct for options values */
+	//@{
 
 	///
 	struct SOptionValues {
@@ -135,13 +144,17 @@ private:
 		int						full_steps_after_k_;			// If < 0, do not use this option at all.
 	};
 
+	//@}
+
+private:
+
 	/// Possible user supplied stuff
 	basis_sys_ptr_t     basis_sys_; // Basis system object (if null will be set)
 
-	/// Pointer to options
-	const OptionsFromStreamPack::OptionsFromStream
-	                    *options_;
-	/// Options
+	/// Smart pointer to options
+	options_ptr_t      options_;
+
+	/// Options structs
 	SOptionValues       uov_; // options set by user
 	SOptionValues       cov_; // current option values actually used
 
@@ -160,6 +173,15 @@ private:
 		, std::ostream* trase_out );
 
 };	// end class rSQPAlgo_ConfigMamaJama
+
+/** \defgroup rSQPAlgo_ConfigMamaJama_opts Options for rSQPAlgo_ConfigMamaJama.
+ *
+ * The following is the contents of the file <tt>rSQPpp.opt.rSQPAlgo_ConfigMamaJama</tt>
+ * which are options specific to the class <tt>ReducedSpaceSQPPack::rSQPAlgo_ConfigMamaJama</tt>
+ * and the class objects that it configures.
+ *
+ * \verbinclude rSQPpp.opt.rSQPAlgo_ConfigMamaJama
+ */
 
 }	// end namespace ReducedSpaceSQPPack 
 
