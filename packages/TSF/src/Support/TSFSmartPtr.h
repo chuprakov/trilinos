@@ -31,13 +31,11 @@ namespace TSF
 		cond_inline TSFSmartPtr(T* ptr, int* refCount);
 		~TSFSmartPtr();
 		const TSFSmartPtr<T>& operator =(const TSFSmartPtr<T>& rhs);
-		cond_inline T* operator ->();
 		cond_inline bool isNull() const;
-		cond_inline const T* operator ->() const;
+		cond_inline T* operator ->() const;
 		/** Read/write dereferencing */
-		cond_inline T& operator *();
+		cond_inline T& operator *() const;
 		/** Read-only dereferencing */
-		cond_inline const T& operator *() const;
 		cond_inline operator const T* () const;
 		cond_inline bool isNonUnique() const;
 
@@ -118,7 +116,7 @@ namespace TSF
 	}
 
 	template <class T> cond_inline
-		T* TSFSmartPtr<T>::operator ->() {
+		T* TSFSmartPtr<T>::operator ->() const {
 
 		if (ptr_ == 0)
 			error("TSFSmartPtr<T>::operator ->() on null pointer");
@@ -126,21 +124,7 @@ namespace TSF
 	}
 
 	template <class T> cond_inline
-		const T* TSFSmartPtr<T>::operator ->() const {
-		if (ptr_ == 0)
-			error("TSFSmartPtr<T>::operator ->() on null pointer");
-		return ptr_;
-	}
-
-	template <class T> cond_inline
-		T& TSFSmartPtr<T>::operator *() {
-		if (ptr_ == 0)
-			error("TSFSmartPtr<T>::operator *() on null pointer");
-		return *ptr_;
-	}
-
-	template <class T> cond_inline
-		const T& TSFSmartPtr<T>::operator *() const {
+		T& TSFSmartPtr<T>::operator *() const {
 		if (ptr_ == 0)
 			error("TSFSmartPtr<T>::operator *() on null pointer");
 		return *ptr_;
