@@ -11,11 +11,8 @@
 #include <iostream>
 #include <iomanip>
 
-#include "ExampleVectorLib/src/MPIDenseVector.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack/src/abstract/tsfl/VectorSpaceTSFL.hpp"
-#include "TSFCore/src/Core/VectorSpaceSerialDecl.hpp"
-#include "CommandLineProcessor.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "ref_count_ptr.hpp"
 
 namespace AbstractLinAlgPack {
 

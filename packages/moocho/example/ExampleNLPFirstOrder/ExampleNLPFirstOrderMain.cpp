@@ -23,6 +23,7 @@
 
 #include "ExampleNLPFirstOrderRun.hpp"
 #include "ExampleNLPDirect/exampleNLPDiagSetup.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "WorkspacePack.hpp"
 #include "oblackholestream.hpp"
 
