@@ -11,7 +11,7 @@
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreMultiVector.hpp"
 #include "Teuchos_ScalarTraits.hpp"
-#include "Teuchos_DenseMatrix.hpp"
+#include "Teuchos_SerialDenseMatrix.hpp"
 #include "Teuchos_BLAS.hpp"
 
 namespace TSFCore {
@@ -50,7 +50,7 @@ private:
 	bool				                                          isConverged;
 	Scalar			                                              tol, curr_res, r0; 
 	std::vector<Scalar>                                           z;
-	Teuchos::DenseMatrix<int,Scalar>                              H_;
+	Teuchos::SerialDenseMatrix<int,Scalar>                              H_;
 	MemMngPack::ref_count_ptr< MultiVector<Scalar> >              V_;
 	MemMngPack::ref_count_ptr< Vector<Scalar> >                   r;
 	std::vector<Scalar>		                                      cs, sn;	
@@ -162,7 +162,7 @@ void GMRESSolver<Scalar>::doIteration( const LinearOp<Scalar> &Op, const ETransp
     int i;
     Scalar temp;
     Teuchos::BLAS<int, Scalar> blas;
-    Teuchos::DenseMatrix<int, Scalar> &H = H_;
+    Teuchos::SerialDenseMatrix<int, Scalar> &H = H_;
     // 
 	MemMngPack::ref_count_ptr<Vector<Scalar> >
 		w = V_->col(curr_iter+2);                              // w = v_{j+1}
