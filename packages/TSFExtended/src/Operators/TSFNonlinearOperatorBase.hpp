@@ -26,41 +26,59 @@
 // **********************************************************************/
 /* @HEADER@ */
 
-#ifndef TSFACCESSIBLEVECTOR_HPP
-#define TSFACCESSIBLEVECTOR_HPP
+#ifndef TSFNONLINEAROPERATORBASE_HPP
+#define TSFNONLINEAROPERATORBASE_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreTypes.hpp"
-
-
-
-#ifndef DOXYGEN_DEVELOPER_ONLY
+#include "TSFHandleable.hpp"
+#include "TSFVector.hpp"
 
 namespace TSFExtended
 {
   using TSFCore::Index;
+  using namespace Teuchos;
 
-  /**
-   * TSFExtended::AccessibleVector defines an interface through which
-   * elements for a vector can be accessed. Element access is occasionally
-   * used by application codes in probing results vectors, 
-   * but should rarely be used by high-performance solver codes; this 
-   * capability is therefore in TSFExtended rather than TSFCore.
-   *
-   * @author Kevin Long (krlong@sandia.gov)
+  /** 
+   * Base class for nonlinear operators
    */
   template <class Scalar>
-  class AccessibleVector 
+  class NonlinearOperatorBase 
+    : public Handleable<NonlinearOperatorBase<Scalar> >
     {
     public:
-      /** virtual dtor */
-      virtual ~AccessibleVector() {;}
+      /** */
+      NonlinearOperatorBase(const VectorSpace<Scalar>& domain,
+                            const VectorSpace<Scalar>& range) 
+        : domain_(domain.ptr()), range_(range.ptr()) 
+      {;}
+                            
+      /** */
+      const RefCountPtr<const TSFCore::VectorSpace<Scalar> >& domain() const 
+      {return domain_;}
 
-      /** get the element at the given global index */
-      virtual const Scalar& getElement(Index globalIndex) const = 0 ;
+      /** */
+      const RefCountPtr<const TSFCore::VectorSpace<Scalar> >& range() const 
+      {return range_;}
+
+      /** */
+      virtual void apply(const Vector<Scalar>& in,
+                         Vector<Scalar>& out) const = 0 ;
+
+      /** */
+      virtual RefCountPtr<TSFCore::LinearOp<Scalar> > jacobian(const Vector<Scalar>& x) const = 0 ;
+
+    private:
+      /** */
+      RefCountPtr<const TSFCore::VectorSpace<Scalar> > domain_;
+
+      /** */
+      RefCountPtr<const TSFCore::VectorSpace<Scalar> > range_;
     };
+
+
+
+ 
 }
 
-#endif  /* DOXYGEN_DEVELOPER_ONLY */
 
 #endif

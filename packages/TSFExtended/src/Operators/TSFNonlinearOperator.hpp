@@ -26,41 +26,65 @@
 // **********************************************************************/
 /* @HEADER@ */
 
-#ifndef TSFACCESSIBLEVECTOR_HPP
-#define TSFACCESSIBLEVECTOR_HPP
+#ifndef TSFNONLINEAROPERATOR_HPP
+#define TSFNONLINEAROPERATOR_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreTypes.hpp"
-
-
-
-#ifndef DOXYGEN_DEVELOPER_ONLY
+#include "TSFHandle.hpp"
+#include "TSFNonlinearOperatorBase.hpp"
+#include "Teuchos_TimeMonitor.hpp"
 
 namespace TSFExtended
 {
   using TSFCore::Index;
+  using namespace Teuchos;
 
-  /**
-   * TSFExtended::AccessibleVector defines an interface through which
-   * elements for a vector can be accessed. Element access is occasionally
-   * used by application codes in probing results vectors, 
-   * but should rarely be used by high-performance solver codes; this 
-   * capability is therefore in TSFExtended rather than TSFCore.
-   *
-   * @author Kevin Long (krlong@sandia.gov)
+  /** 
+   * User-level nonlinear operator class
    */
   template <class Scalar>
-  class AccessibleVector 
+  class NonlinearOperator : public Handle<NonlinearOperatorBase<Scalar> >
     {
     public:
-      /** virtual dtor */
-      virtual ~AccessibleVector() {;}
+      /* boilerplate ctors */
+      HANDLE_CTORS(NonlinearOperator<Scalar>, NonlinearOperatorBase<Scalar>);
 
-      /** get the element at the given global index */
-      virtual const Scalar& getElement(Index globalIndex) const = 0 ;
+      /** */
+      VectorSpace<Scalar> domain() const 
+      {return ptr()->domain();}
+
+      /** */
+      VectorSpace<Scalar>  range() const 
+      {return ptr()->range();}
+
+      /** */
+      void apply(const Vector<Scalar>& in,
+                 Vector<Scalar>& out) const ;
+      
+      /** */
+      LinearOperator<Scalar> jacobian(const Vector<Scalar>& evalPt) const 
+      {
+        return ptr()->jacobian(evalPt);
+      }
+
+    private:
     };
+
+
+
+  template <class Scalar> inline 
+  void NonlinearOperator<Scalar>::apply(const Vector<Scalar>& in,
+                                        Vector<Scalar>& out) const
+  {
+    /* the result vector might not be initialized. If it's null,
+     * create a new vector in the range space */
+    if (out.ptr().get()==0)
+      {
+        out = range().createMember();
+      }
+    ptr()->apply(in, out);
+  }
 }
 
-#endif  /* DOXYGEN_DEVELOPER_ONLY */
 
 #endif

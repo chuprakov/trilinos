@@ -68,7 +68,7 @@
 # 
 # ************************************************************************
 
-SOURCES = $(Poisson_test_SOURCES)
+SOURCES = $(Kepler_test_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -93,8 +93,8 @@ POST_UNINSTALL = :
 host_triplet = @host@
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/Makefile.common
-noinst_PROGRAMS = Poisson_test$(EXEEXT)
-subdir = test/PoissonTest
+noinst_PROGRAMS = Kepler_test$(EXEEXT)
+subdir = test/Nonlinear
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/config/ac_cxx_bool.m4 \
 	$(top_srcdir)/config/ac_cxx_have_stl.m4 \
@@ -118,8 +118,8 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/TSF_config.h
 CONFIG_CLEAN_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_Poisson_test_OBJECTS = Poisson_test-cxx_main.$(OBJEXT)
-Poisson_test_OBJECTS = $(am_Poisson_test_OBJECTS)
+am_Kepler_test_OBJECTS = Kepler_test-kepler.$(OBJEXT)
+Kepler_test_OBJECTS = $(am_Kepler_test_OBJECTS)
 am__DEPENDENCIES_1 = $(top_builddir)/src/libTSFExtended.a
 am__DEPENDENCIES_2 = $(top_builddir)/../TSFCore/src/libTSFCore.a \
 	$(top_builddir)/../TSFCoreUtils/src/libTSFCoreUtils.a
@@ -129,14 +129,14 @@ am__DEPENDENCIES_5 =
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Poisson_test-cxx_main.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Kepler_test-kepler.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(Poisson_test_SOURCES)
-DIST_SOURCES = $(Poisson_test_SOURCES)
+SOURCES = $(Kepler_test_SOURCES)
+DIST_SOURCES = $(Kepler_test_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -298,20 +298,20 @@ TEUCHOS_LIBS = \
 EPETRA_LIBS = \
 	$(top_builddir)/../epetra/src/libepetra.a
 
-Poisson_test_SOURCES = $(srcdir)/cxx_main.cpp 
-Poisson_test_DEPENDENCIES = \
+Kepler_test_SOURCES = $(srcdir)/kepler.cpp 
+Kepler_test_DEPENDENCIES = \
 $(TSF_EXTENDED_LIBS) \
 $(TSF_CORE_LIBS) \
 $(TEUCHOS_LIBS) \
 $(EPETRA_LIBS) 
 
-Poisson_test_CXXFLAGS = \
+Kepler_test_CXXFLAGS = \
 	$(TSFEXTENDED_INCLUDES) \
 	$(TSFCORE_INCLUDES)\
 	$(EPETRA_INCLUDES)\
 	$(TEUCHOS_INCLUDES)
 
-Poisson_test_LDADD = \
+Kepler_test_LDADD = \
 $(TSF_EXTENDED_LIBS) \
 $(TSF_CORE_LIBS) \
 $(TEUCHOS_LIBS) \
@@ -331,9 +331,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  test/PoissonTest/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign  test/Nonlinear/Makefile'; \
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  test/PoissonTest/Makefile
+	  $(AUTOMAKE) --foreign  test/Nonlinear/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -354,9 +354,9 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
-Poisson_test$(EXEEXT): $(Poisson_test_OBJECTS) $(Poisson_test_DEPENDENCIES) 
-	@rm -f Poisson_test$(EXEEXT)
-	$(CXXLINK) $(Poisson_test_LDFLAGS) $(Poisson_test_OBJECTS) $(Poisson_test_LDADD) $(LIBS)
+Kepler_test$(EXEEXT): $(Kepler_test_OBJECTS) $(Kepler_test_DEPENDENCIES) 
+	@rm -f Kepler_test$(EXEEXT)
+	$(CXXLINK) $(Kepler_test_LDFLAGS) $(Kepler_test_OBJECTS) $(Kepler_test_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -364,7 +364,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Poisson_test-cxx_main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Kepler_test-kepler.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -382,21 +382,21 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
-Poisson_test-cxx_main.o: $(srcdir)/cxx_main.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Poisson_test_CXXFLAGS) $(CXXFLAGS) -MT Poisson_test-cxx_main.o -MD -MP -MF "$(DEPDIR)/Poisson_test-cxx_main.Tpo" -c -o Poisson_test-cxx_main.o `test -f '$(srcdir)/cxx_main.cpp' || echo '$(srcdir)/'`$(srcdir)/cxx_main.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/Poisson_test-cxx_main.Tpo" "$(DEPDIR)/Poisson_test-cxx_main.Po"; else rm -f "$(DEPDIR)/Poisson_test-cxx_main.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/cxx_main.cpp' object='Poisson_test-cxx_main.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/Poisson_test-cxx_main.Po' tmpdepfile='$(DEPDIR)/Poisson_test-cxx_main.TPo' @AMDEPBACKSLASH@
+Kepler_test-kepler.o: $(srcdir)/kepler.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Kepler_test_CXXFLAGS) $(CXXFLAGS) -MT Kepler_test-kepler.o -MD -MP -MF "$(DEPDIR)/Kepler_test-kepler.Tpo" -c -o Kepler_test-kepler.o `test -f '$(srcdir)/kepler.cpp' || echo '$(srcdir)/'`$(srcdir)/kepler.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/Kepler_test-kepler.Tpo" "$(DEPDIR)/Kepler_test-kepler.Po"; else rm -f "$(DEPDIR)/Kepler_test-kepler.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/kepler.cpp' object='Kepler_test-kepler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/Kepler_test-kepler.Po' tmpdepfile='$(DEPDIR)/Kepler_test-kepler.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Poisson_test_CXXFLAGS) $(CXXFLAGS) -c -o Poisson_test-cxx_main.o `test -f '$(srcdir)/cxx_main.cpp' || echo '$(srcdir)/'`$(srcdir)/cxx_main.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Kepler_test_CXXFLAGS) $(CXXFLAGS) -c -o Kepler_test-kepler.o `test -f '$(srcdir)/kepler.cpp' || echo '$(srcdir)/'`$(srcdir)/kepler.cpp
 
-Poisson_test-cxx_main.obj: $(srcdir)/cxx_main.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Poisson_test_CXXFLAGS) $(CXXFLAGS) -MT Poisson_test-cxx_main.obj -MD -MP -MF "$(DEPDIR)/Poisson_test-cxx_main.Tpo" -c -o Poisson_test-cxx_main.obj `if test -f '$(srcdir)/cxx_main.cpp'; then $(CYGPATH_W) '$(srcdir)/cxx_main.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/cxx_main.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/Poisson_test-cxx_main.Tpo" "$(DEPDIR)/Poisson_test-cxx_main.Po"; else rm -f "$(DEPDIR)/Poisson_test-cxx_main.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/cxx_main.cpp' object='Poisson_test-cxx_main.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/Poisson_test-cxx_main.Po' tmpdepfile='$(DEPDIR)/Poisson_test-cxx_main.TPo' @AMDEPBACKSLASH@
+Kepler_test-kepler.obj: $(srcdir)/kepler.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Kepler_test_CXXFLAGS) $(CXXFLAGS) -MT Kepler_test-kepler.obj -MD -MP -MF "$(DEPDIR)/Kepler_test-kepler.Tpo" -c -o Kepler_test-kepler.obj `if test -f '$(srcdir)/kepler.cpp'; then $(CYGPATH_W) '$(srcdir)/kepler.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/kepler.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/Kepler_test-kepler.Tpo" "$(DEPDIR)/Kepler_test-kepler.Po"; else rm -f "$(DEPDIR)/Kepler_test-kepler.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/kepler.cpp' object='Kepler_test-kepler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/Kepler_test-kepler.Po' tmpdepfile='$(DEPDIR)/Kepler_test-kepler.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Poisson_test_CXXFLAGS) $(CXXFLAGS) -c -o Poisson_test-cxx_main.obj `if test -f '$(srcdir)/cxx_main.cpp'; then $(CYGPATH_W) '$(srcdir)/cxx_main.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/cxx_main.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Kepler_test_CXXFLAGS) $(CXXFLAGS) -c -o Kepler_test-kepler.obj `if test -f '$(srcdir)/kepler.cpp'; then $(CYGPATH_W) '$(srcdir)/kepler.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/kepler.cpp'; fi`
 uninstall-info-am:
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)

@@ -81,6 +81,8 @@ OPERATORS_H = \
 	$(srcdir)/Operators/TSFExplicitlyTransposeableOp.hpp\
 	$(srcdir)/Operators/TSFLinearOperator.hpp\
 	$(srcdir)/Operators/TSFLoadableMatrix.hpp\
+	$(srcdir)/Operators/TSFNonlinearOperator.hpp\
+	$(srcdir)/Operators/TSFNonlinearOperatorBase.hpp\
 	$(srcdir)/Operators/TSFTransposeOperator.hpp
 
 OPERATORS = 

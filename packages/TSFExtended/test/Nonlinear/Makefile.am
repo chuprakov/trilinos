@@ -26,5 +26,29 @@
 # ************************************************************************
 #@HEADER
 
-SUBDIRS = VectorTests Double RectMatrixTest PoissonTest Nonlinear
+include $(top_srcdir)/Makefile.common
 
+EXEEXT = .exe
+
+noinst_PROGRAMS = Kepler_test
+
+Kepler_test_SOURCES = $(srcdir)/kepler.cpp 
+
+Kepler_test_DEPENDENCIES = \
+$(TSF_EXTENDED_LIBS) \
+$(TSF_CORE_LIBS) \
+$(TEUCHOS_LIBS) \
+$(EPETRA_LIBS) 
+
+Kepler_test_CXXFLAGS = \
+	$(TSFEXTENDED_INCLUDES) \
+	$(TSFCORE_INCLUDES)\
+	$(EPETRA_INCLUDES)\
+	$(TEUCHOS_INCLUDES)
+
+Kepler_test_LDADD = \
+$(TSF_EXTENDED_LIBS) \
+$(TSF_CORE_LIBS) \
+$(TEUCHOS_LIBS) \
+$(EPETRA_LIBS) \
+	$(LIBS) $(BLAS_LIBS) $(FLIBS)

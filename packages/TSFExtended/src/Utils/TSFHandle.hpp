@@ -75,10 +75,10 @@ namespace TSFExtended
     /** Empty ctor  */
     Handle() : ptr_() {;}
 
-    /** Construct */
+    /** Construct from a smart pointer */
     Handle(const RefCountPtr<PointerType>& ptr) : ptr_(ptr) {;}
 
-    /** */
+    /** Construct from a raw pointer to a Handleable.  */
     Handle(Handleable<PointerType>* rawPtr) : ptr_(rawPtr->getRcp()) {;}
 
     /** Read-only access to the underlying smart pointer. */
@@ -138,7 +138,7 @@ namespace TSFExtended
       return v->verbosity();
     }
 
-    /** */
+    /** Writeable access to the class-wide verbosity setting for the handled type */
     static VerbositySetting& classVerbosity() 
     {
       return PointerType::classVerbosity();
