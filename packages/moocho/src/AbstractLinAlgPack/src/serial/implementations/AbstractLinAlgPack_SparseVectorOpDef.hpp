@@ -200,7 +200,7 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const tri_gms& tri_rhs1
 					vs_lhs(j) += alpha * sv_itr->value();	// diagonal element is one
 				}
 				// vs_lhs(j,n) = vs_lhs(j,n) + alpha * sv_itr->value() * tri_rhs1.col(j)(j,n)
-				if(j_adjusted < n)
+				if(j_adjusted <= n)
 				{
 					LinAlgPack::Vp_StV( &vs_lhs(j_adjusted,n), alpha * sv_itr->value()
 						,col(tri_rhs1.gms(),trans_rhs1,j)(j_adjusted,n) );
