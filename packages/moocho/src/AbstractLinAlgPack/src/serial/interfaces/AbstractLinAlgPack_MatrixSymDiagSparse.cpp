@@ -21,7 +21,7 @@
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "AbstractLinAlgPack/include/EtaVector.h"
 #include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
-#include "SparseLinAlgPack/include/SpVectorOut.h"
+#include "AbstractLinAlgPack/include/SpVectorOut.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/GenMatrixAssign.h"
 #include "LinAlgPack/include/GenMatrixClass.h"

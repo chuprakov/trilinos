@@ -380,6 +380,14 @@ void Mp_MtM(MatrixWithOp* M_lhs, const MatrixWithOp& M_rhs1, BLAS_Cpp::Transp tr
 	Mp_StMtM(M_lhs,1.0,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2,beta);
 }
 
+// M_lhs = inv(op(M_rhs1)) * op(M_rhs2)
+inline
+void M_InvMtM(MatrixWithOp* M_lhs, const MatrixNonsingular& M_rhs1, BLAS_Cpp::Transp trans_rhs1
+	, const MatrixWithOp& M_rhs2, BLAS_Cpp::Transp trans_rhs2 )
+{
+	M_StInvMtM(M_lhs,1.0,M_rhs1,trans_rhs1,M_rhs2,trans_rhs2);
+}
+
 } // end namespace LinAlgOpPack
 
 #endif	// ABSTRACT_LIN_ALG_OP_PACK_DECL_H

@@ -20,6 +20,7 @@
 #include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
 #include "AbstractLinAlgPack/include/MultiVectorMutable.h"
 #include "AbstractLinAlgPack/include/VectorSpaceCompositeStd.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "ReleaseResource_ref_count_ptr.h"
 #include "AbstractFactoryStd.h"
 #include "dynamic_cast_verbose.h"
@@ -369,7 +370,8 @@ void BasisSystemCompositeStd::update_D(
 	,EMatRelations                  mat_rel
 	) const
 {
-	assert(0); // ToDo: Implement when needed!
+	using LinAlgOpPack::M_StInvMtM;
+	M_StInvMtM( D, -1.0, C, BLAS_Cpp::no_trans, N, BLAS_Cpp::no_trans ); // D = -inv(C)*N
 }
 
 void BasisSystemCompositeStd::update_GhUP(
