@@ -44,10 +44,10 @@ This subclass allows a vector object to be constructed out of a set of
 useful and flexible testing software is also included here that will
 be of great use to any developer.
 
-<li> Adapter subclasses for <tt>TSFL</tt> objects
-(<tt>\ref libAbstractLinAlgPackTSFL_grp "libAbstractLinAlgPackTSFL"</tt>):
+<li> Adapter subclasses for <tt>TSFCore</tt> objects
+(<tt>\ref libAbstractLinAlgPackTSFCore_grp "libAbstractLinAlgPackTSFCore"</tt>):
 These are simple wrappers for all of the major <tt>AbstractLinAlgPack</tt>
-interfaces classes described above using <tt>TSFL</tt> objects.
+interfaces classes described above using <tt>TSFCore</tt> objects.
 
 <li> Interfaces for mixed abstract and serial computaitons
 (<tt>\ref libAbstractLinAlgPackSerialItfc_grp "libAbstractLinAlgPackSerialItfc"</tt>):
@@ -205,19 +205,19 @@ become very familiar to the developers who do the debugging.
 
 */
 
-/** \defgroup libAbstractLinAlgPackTSFL_grp libAbstractLinAlgPackTSFL
-\brief Adapter subclasses for <tt>TSFL</tt> objects.
+/** \defgroup libAbstractLinAlgPackTSFCore_grp libAbstractLinAlgPackTSFCore
+\brief Adapter subclasses for <tt>TSFCore</tt> objects.
 
 <ul>
 <li> Adapter subclasses:
   <ul>
-  <li><tt>AbstractLinAlgPack::InnerProductTSFL</tt>: Adapts <em><tt>TSFL::VectorSpace::scalarProd()</tt></em>
-  <li><tt>AbstractLinAlgPack::VectorSpaceFactoryTSFL</tt>: Adapts <em><tt>TSFL::VectorSpaceFactory</tt></em>
-  <li><tt>AbstractLinAlgPack::VectorSpaceTSFL</tt>: Adapts <em><tt>TSFL::VectorSpace</tt></em>
-  <li><tt>AbstractLinAlgPack::VectorMutableTSFL</tt>: Adapts <em><tt>TSFL::Vector</tt></em>
-  <li><tt>AbstractLinAlgPack::MatrixOpTSFL</tt>: Adapts <em><tt>TSFL::LinearOp</tt></em>
-  <li><tt>AbstractLinAlgPack::MultiVectorMutableTSFL</tt>: Adapts <em><tt>TSFL::MultiVector</tt></em>
-  <li><tt>AbstractLinAlgPack::MatrixOpNonsingTSFL</tt>: Adapts <em><tt>TSFL::LinearOpInvertible</tt></em>
+  <li><tt>AbstractLinAlgPack::InnerProductTSFCore</tt>: Adapts <em><tt>TSFCore::VectorSpace::scalarProd()</tt></em>
+  <li><tt>AbstractLinAlgPack::VectorSpaceFactoryTSFCore</tt>: Adapts <em><tt>TSFCore::VectorSpaceFactory</tt></em>
+  <li><tt>AbstractLinAlgPack::VectorSpaceTSFCore</tt>: Adapts <em><tt>TSFCore::VectorSpace</tt></em>
+  <li><tt>AbstractLinAlgPack::VectorMutableTSFCore</tt>: Adapts <em><tt>TSFCore::Vector</tt></em>
+  <li><tt>AbstractLinAlgPack::MatrixOpTSFCore</tt>: Adapts <em><tt>TSFCore::LinearOp</tt></em>
+  <li><tt>AbstractLinAlgPack::MultiVectorMutableTSFCore</tt>: Adapts <em><tt>TSFCore::MultiVector</tt></em>
+  <li><tt>AbstractLinAlgPack::MatrixOpNonsingTSFCore</tt>: Adapts <em><tt>TSFCore::LinearOpInvertible</tt></em>
   </ul>
 </ul>
 
@@ -251,28 +251,28 @@ Blah blah blah ...
   <ul>
   <li> Core abstract interface classes
     <ul>
-    <li><em><tt>TSFL::VectorSpace</tt></em>
-    <li><em><tt>TSFL::Vector</tt></em>
-    <li><em><tt>TSFL::LinearOp</tt></em>
-    <li><em><tt>TSFL::MultiVector</tt></em>
-    <li><em><tt>TSFL::LinearOpInvertible</tt></em>
+    <li><em><tt>TSFCore::VectorSpace</tt></em>
+    <li><em><tt>TSFCore::Vector</tt></em>
+    <li><em><tt>TSFCore::LinearOp</tt></em>
+    <li><em><tt>TSFCore::MultiVector</tt></em>
+    <li><em><tt>TSFCore::LinearOpInvertible</tt></em>
     </ul>
   <li> Supporting abstract interface classes
     <ul>
-    <li><em><tt>TSFL::VectorSpaceFactory</tt></em>
-    <li><em><tt>TSFL::Norm</tt></em>
+    <li><em><tt>TSFCore::VectorSpaceFactory</tt></em>
+    <li><em><tt>TSFCore::Norm</tt></em>
     </ul>
   <li> Basic node support subclasses
     <ul>
-    <li><em><tt>TSFL::VectorSpaceSerialBase</tt></em>
-    <li><em><tt>TSFL::VectorSerialBase</tt></em>
+    <li><em><tt>TSFCore::VectorSpaceSerialBase</tt></em>
+    <li><em><tt>TSFCore::VectorSerialBase</tt></em>
     </ul>
   <li> Basic concrete support subclasses
     <ul>
-    <li><tt>TSFL::VectorSpaceFactorySerial</tt>
-    <li><tt>TSFL::VectorSpaceSerial</tt>
-    <li><tt>TSFL::VectorSerial</tt>
-    <li><tt>TSFL::MultiVectorCols</tt>
+    <li><tt>TSFCore::VectorSpaceFactorySerial</tt>
+    <li><tt>TSFCore::VectorSpaceSerial</tt>
+    <li><tt>TSFCore::VectorSerial</tt>
+    <li><tt>TSFCore::MultiVectorCols</tt>
     </ul>
   </ul>
 

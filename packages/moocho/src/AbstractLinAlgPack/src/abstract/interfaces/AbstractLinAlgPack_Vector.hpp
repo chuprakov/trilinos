@@ -211,7 +211,7 @@ protected:
 	 * assumed to be one of the vectors in
 	 * <tt>v[0]...v[nv-1],z[0]...z[nz-1]</tt>.  This method is not
 	 * called directly by the client but is instead
-	 * <tt>TSFL::applyOp()</tt>.
+	 * <tt>TSFCore::applyOp()</tt>.
 	 *
 	 * See the documentation for the method <tt>AbstractLinAlgPack::apply_op()</tt>
 	 * for a description of what this method does.

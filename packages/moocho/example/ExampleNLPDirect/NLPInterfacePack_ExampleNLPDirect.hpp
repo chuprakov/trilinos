@@ -109,12 +109,6 @@ public:
 	void initialize(bool test_setup);
 	///
 	bool is_initialized() const;
-	/// Returns <tt>return.get() == NULL</tt>.
-	vec_space_ptr_t space_h() const;
-	/// Throws exception.
-	const Vector& hl() const;
-	/// Throws exception.
-	const Vector& hu() const;
 
 	//@}
 

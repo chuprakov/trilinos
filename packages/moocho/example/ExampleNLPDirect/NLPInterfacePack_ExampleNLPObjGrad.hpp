@@ -20,6 +20,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlock.hpp"
+#include "ThrowException.hpp"
 
 namespace NLPInterfacePack {
 
@@ -43,9 +44,7 @@ namespace NLPInterfacePack {
  * This is not really a fully functional NLP in the sense that there is
  * no derivative information for the constraints.
  */
-class ExampleNLPObjGrad
-	: virtual public NLPObjGrad
-{
+class ExampleNLPObjGrad : virtual public NLPObjGrad {
 public:
 
 	///
@@ -94,8 +93,6 @@ public:
 	vec_space_ptr_t space_x() const;
 	///
 	vec_space_ptr_t space_c() const;
-	/// Returns <tt>return.get() == NULL</tt>.
-	vec_space_ptr_t space_h() const;
 	///
     size_type num_bounded_x() const;
 	///
@@ -110,10 +107,6 @@ public:
 	const Vector& xu() const;
 	///
 	value_type max_var_bounds_viol() const;
-	/// Throws exception.
-	const Vector& hl() const;
-	/// Throws exception.
-	const Vector& hu() const;
 	///
 	void scale_f( value_type scale_f );
 	///
@@ -192,9 +185,10 @@ inline
 void ExampleNLPObjGrad::assert_is_initialized() const
 {
     using NLPInterfacePack::NLP;
-	if( !is_initialized() )
-		throw NLP::UnInitialized("ExampleNLPObjGrad::assert_is_initialized() : Error, "
-			"ExampleNLPObjGrad::initialize() has not been called yet." );
+	THROW_EXCEPTION(
+		!is_initialized(), NLP::UnInitialized
+		,"ExampleNLPObjGrad::assert_is_initialized() : Error, "
+		"ExampleNLPObjGrad::initialize() has not been called yet." );
 }
 
 }	// end namespace NLPInterfacePack

@@ -156,11 +156,6 @@ NLP::vec_space_ptr_t ExampleNLPObjGrad::space_c() const
 	return vec_space_;
 }
 
-NLP::vec_space_ptr_t ExampleNLPObjGrad::space_h() const
-{
-	return MemMngPack::null;
-}
-
 size_type ExampleNLPObjGrad::num_bounded_x() const
 {
 	return has_bounds_ ? n_/2 : 0;
@@ -197,18 +192,6 @@ const Vector& ExampleNLPObjGrad::xu() const
 value_type ExampleNLPObjGrad::max_var_bounds_viol() const
 {
 	return std::numeric_limits<value_type>::max(); // No limits on the bounds
-}
-
-const Vector& ExampleNLPObjGrad::hl() const
-{
-	THROW_EXCEPTION( true, NoBounds, "ExampleNLPObjGrad::hl(), Error, default is for mI() == 0" );
-	return xl(); // will never execute.
-}
-
-const Vector& ExampleNLPObjGrad::hu() const
-{
-	THROW_EXCEPTION( true, NoBounds, "ExampleNLPObjGrad::hl(), Error, default is for mI() == 0" );
-	return xu(); // will never execute.
 }
 
 void ExampleNLPObjGrad::scale_f( value_type scale_f )

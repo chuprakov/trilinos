@@ -11,7 +11,7 @@
 #include "exampleNLPDiagSetup.hpp"
 #include "ExampleVectorLib/src/MPIDenseVector.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack/src/abstract/tsfl/VectorSpaceTSFL.hpp"
+#include "AbstractLinAlgPack/src/abstract/tsfcore/VectorSpaceTSFCore.hpp"
 #include "TSFCore/src/Core/TSFCoreSerialVectorSpaceDecl.hpp"
 #include "OptionsFromStream.hpp"
 #include "CommandLineProcessor.hpp"
@@ -35,7 +35,7 @@ int AbstractLinAlgPack::exampleNLPDiagSetup(
 	using AbstractLinAlgPack::Vector;
 	using AbstractLinAlgPack::VectorMutable;
 
-	using AbstractLinAlgPack::VectorSpaceTSFL;
+	using AbstractLinAlgPack::VectorSpaceTSFCore;
 
 	using CommandLineProcessorPack::CommandLineProcessor;
 
@@ -103,7 +103,7 @@ int AbstractLinAlgPack::exampleNLPDiagSetup(
 		// Use serial vectors
 		//
 		if( use_tsf ) {
-			*vec_space = mmp::rcp(new VectorSpaceTSFL(mmp::rcp(new TSFCore::SerialVectorSpace<value_type>(*n))));
+			*vec_space = mmp::rcp(new VectorSpaceTSFCore(mmp::rcp(new TSFCore::SerialVectorSpace<value_type>(*n))));
 		}
 		else {
 			*vec_space = mmp::rcp(new AbstractLinAlgPack::VectorSpaceSerial(*n));

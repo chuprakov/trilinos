@@ -101,21 +101,6 @@ bool ExampleNLPDirect::is_initialized() const
 	return initialized_;
 }
 
-NLP::vec_space_ptr_t ExampleNLPDirect::space_h() const
-{
-	return ExampleNLPObjGrad::space_h();
-}
-
-const Vector& ExampleNLPDirect::hl() const
-{
-	return ExampleNLPObjGrad::hl();
-}
-
-const Vector& ExampleNLPDirect::hu() const
-{
-	return ExampleNLPObjGrad::hl();
-}
-
 // Overridden public members from NLPDirect
 
 Range1D ExampleNLPDirect::var_dep() const
