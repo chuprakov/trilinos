@@ -1384,12 +1384,12 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		Algorithm::poss_type poss;
 		assert(poss = algo->get_step_poss( DepDirec_name ) );
 		algo->insert_step(
-			  poss+1
+			  ++poss
 			, "CheckBasis1"
 			, basis_check_step1
 		  );
 		algo->insert_step(
-			  poss+1
+			  ++poss
 			, "CheckBasis2"
 			, basis_check_step2
 		  );
