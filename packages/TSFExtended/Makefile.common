@@ -115,7 +115,7 @@ IFPACK_LIBS = \
 AZTECOO_LIBS = \
 	$(top_builddir)/../aztecoo/src/libaztecoo.a
 
-if HAVE_TSF_ML
+if HAVE_ML
 ML_LIBS = $(top_builddir)/../ml/src/libml.a
 else
 ML_LIBS = 

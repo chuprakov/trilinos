@@ -350,7 +350,7 @@ AC_F77_LIBRARY_LDFLAGS
 # ------------------------------------------------------------------------
 
 TAC_ARG_ENABLE_FEATURE(ml, [Enable the ML multilevel solvers and preconditioners in TSF], ML, yes)
-AM_CONDITIONAL(HAVE_TSF_ML, test "X$ac_cv_use_ml" != "Xno")
+AM_CONDITIONAL(HAVE_ML, test "X$ac_cv_use_ml" != "Xno")
 
 # ------------------------------------------------------------------------
 # Checks if NOX is enabled
@@ -374,6 +374,7 @@ AM_CONDITIONAL(HAVE_TSF_NOX, test "X$ac_cv_use_nox" != "Xno")
 # ------------------------------------------------------------------------
 
 AC_SUBST(ac_aux_dir)
+AC_SUBST(HAVE_ML)
 
 # ------------------------------------------------------------------------
 # Output files
@@ -385,6 +386,7 @@ AC_SUBST(ac_aux_dir)
 #  to add a new directory.
 AC_CONFIG_FILES([
 		Makefile 
+		Makefile.export 
 		src/Makefile
 		test/Makefile
 		test/VectorTests/Makefile
