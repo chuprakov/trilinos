@@ -168,9 +168,14 @@ void MoochoTrackerSummaryStd::output_iteration(const Algorithm& algo) const
 		if( act_stats->num_drops() == ActSetStats::NOT_KNOWN ) {
 			o	<< setw(7) << "-";
 		}
-	else {		
-		o	<< setw(7) << act_stats->num_drops();
+		else {		
+			o	<< setw(7) << act_stats->num_drops();
+		}
 	}
+	else if( s.nu().updated_k(0) ) {
+		o	<< setw(7) << s.nu().get_k(0).nz()
+			<< setw(7) << "-"
+			<< setw(7) << "-";
 	}
 	else {
 		o	<< setw(7) << "-"
@@ -327,6 +332,11 @@ void MoochoTrackerSummaryStd::output_final(const Algorithm& algo
 		o	<< setw(7) << act_stats->num_active()
 			<< setw(7) << act_stats->num_adds()
 			<< setw(7) << act_stats->num_drops();
+	}
+	else if( s.nu().updated_k(0) ) {
+		o	<< setw(7) << s.nu().get_k(0).nz()
+			<< setw(7) << "-"
+			<< setw(7) << "-";
 	}
 	else {
 		o	<< setw(7) << "-"
