@@ -80,7 +80,7 @@ template<class Scalar>
 void NP2DSim<Scalar>::initialize( bool testSetup )
 {
 	if(isInitialized_) return;
-	const Scalar inf_bnd = infiniteBound();
+	const Scalar inf_bnd = NonlinearProblem<Scalar>::infiniteBound();
 	yL_ = space_y_c_->createMember(); assign(yL_.get(),-inf_bnd);
 	yU_ = space_y_c_->createMember(); assign(yU_.get(),+inf_bnd);
 	y0_ = space_y_c_->createMember(); assign(y0_.get(),0.0);

@@ -56,6 +56,12 @@ public:
 	///
 	typedef RTOp_value_type Scalar;
 
+	///
+	using MultiVector<Scalar>::col; // Inject *all* functions!
+
+	///
+	using MultiVector<Scalar>::subView; // Inject *all* functions!
+
 	/** @name Constructors/Initializers */
 	//@{
 

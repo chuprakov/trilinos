@@ -49,6 +49,9 @@ class BiCGSolver : virtual public IterativeLinearSolver<Scalar> {
 public:
 
 	///
+	using IterativeLinearSolver<Scalar>::solve;
+
+	///
 	/** Set the output steam for iterative algorithm.
 	 */
 	STANDARD_COMPOSITION_MEMBERS(std::ostream,out)

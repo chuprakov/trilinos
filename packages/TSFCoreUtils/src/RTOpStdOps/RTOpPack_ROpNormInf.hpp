@@ -45,7 +45,7 @@ public:
   ///
   ROpNormInf() : RTOpT<Scalar>("ROpNormInf") {}
   ///
-  Scalar operator()(const ReductTarget& reduct_obj ) const { return getRawVal(reduct_obj); }
+  Scalar operator()(const ReductTarget& reduct_obj ) const { return this->getRawVal(reduct_obj); }
   /** @name Overridden from RTOpT */
   //@{
   ///

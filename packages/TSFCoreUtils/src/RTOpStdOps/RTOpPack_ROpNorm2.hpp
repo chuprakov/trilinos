@@ -46,7 +46,7 @@ public:
   ROpNorm2() : RTOpT<Scalar>("ROpNorm2") {}
   ///
   Scalar operator()(const ReductTarget& reduct_obj ) const
-    { return Teuchos::ScalarTraits<Scalar>::squareroot(getRawVal(reduct_obj)); }
+    { return Teuchos::ScalarTraits<Scalar>::squareroot(this->getRawVal(reduct_obj)); }
   /** @name Overridden from RTOpT */
   //@{
   ///

@@ -73,6 +73,11 @@ template<class Scalar>
 class NP2DSim : public NonlinearProblemFirstOrder<Scalar> {
 public:
 
+	///
+	//using NonlinearProblem<Scalar>::get_c;
+	///
+	using NonlinearProblemFirstOrder<Scalar>::get_DcDy;
+
 	/** @name Constructors / Initializers / accessors */
 	//@{
 

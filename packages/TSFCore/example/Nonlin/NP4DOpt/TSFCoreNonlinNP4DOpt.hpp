@@ -89,7 +89,7 @@ void NP4DOpt<Scalar>::initialize( bool testSetup )
 	if(np2dsim_.isInitialized()) return;
 	np2dsim_.initialize(testSetup);
 	const VectorSpace<Scalar> &space_y_c = *np2dsim_.space_y();
-	const Scalar inf_bnd = infiniteBound();
+	const Scalar inf_bnd = NonlinearProblem<Scalar>::infiniteBound();
 	uL_ = space_y_c.createMember(); assign(uL_.get(),-inf_bnd);
 	uU_ = space_y_c.createMember(); assign(uU_.get(),+inf_bnd);
 	u0_ = space_y_c.createMember(); { ExplicitMutableVectorView<Scalar> u0(*u0_); u0(1)=ut1_; u0(2)=ut2_; }

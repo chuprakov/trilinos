@@ -43,9 +43,9 @@ template<class Scalar>
 class TOpAssignScalar : public ROpScalarTransformationBase<Scalar> {
 public:
   ///
-  void alpha( const Scalar& alpha ) { scalarData(alpha); }
+  void alpha( const Scalar& alpha ) { this->scalarData(alpha); }
   ///
-  Scalar alpha() const { return scalarData(); }
+  Scalar alpha() const { return this->scalarData(); }
   ///
   TOpAssignScalar( const Scalar &alpha = Teuchos::ScalarTraits<Scalar>::zero() )
     : ROpScalarTransformationBase<Scalar>(alpha), RTOpT<Scalar>("TOpAssignScalar")

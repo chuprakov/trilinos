@@ -45,7 +45,7 @@ public:
   ///
   ROpCountNanInf() : RTOpT<Scalar>("ROpCountNanInf") {}
   ///
-  index_type operator()(const ReductTarget& reduct_obj ) const { return getRawVal(reduct_obj); }
+  index_type operator()(const ReductTarget& reduct_obj ) const { return this->getRawVal(reduct_obj); }
   /** @name Overridden from RTOpT */
   //@{
   ///

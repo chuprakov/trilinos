@@ -392,9 +392,9 @@ public:
 		{}
 	///
 	SubMultiVectorT( const SubMultiVectorT<Scalar>& smv )
-		:globalOffset_(smv.globalOffset), subDim_(smv.subDim)
-		,colOffset_(smv.colOffset), numSubCols_(smv.numSubCols)
-		,values_(smv.values), leadingDim_(smv.leadingDim)
+		:globalOffset_(smv.globalOffset()), subDim_(smv.subDim())
+		,colOffset_(smv.colOffset()), numSubCols_(smv.numSubCols())
+		,values_(smv.values()), leadingDim_(smv.leadingDim())
 		{}
 	///
 	void initialize(

@@ -55,6 +55,12 @@ template<class Scalar>
 class MultiVectorCols : virtual public MultiVector<Scalar> {
 public:
 
+	///
+	using MultiVector<Scalar>::col; // Inject *all* functions!
+
+	///
+	using MultiVector<Scalar>::subView; // Inject *all* functions!
+
 	/** @name Constructors/Initializers */
 	//@{
 
@@ -170,8 +176,7 @@ private:
 #else
 	Teuchos::RefCountPtr<const VectorSpace<Scalar> >        range_;
 	Teuchos::RefCountPtr<const VectorSpace<Scalar> >        domain_;
-	//std::vector< Teuchos::RefCountPtr<Vector<Scalar> > >    col_vecs_; // RAB: 2004/06/03: Causing strange bug in test/product_space/cxx_main.cpp
-	std::deque< Teuchos::RefCountPtr<Vector<Scalar> > >     col_vecs_;
+	std::vector< Teuchos::RefCountPtr<Vector<Scalar> > >    col_vecs_;
 #endif
 	
 }; // end class MultiVectorCols

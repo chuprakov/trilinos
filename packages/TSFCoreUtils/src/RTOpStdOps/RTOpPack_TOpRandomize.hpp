@@ -49,7 +49,7 @@ template<class Scalar>
 class TOpRandomize : public ROpScalarScalarTransformationBase<Scalar> {
 public:
   ///
-  void set_bounds( const Scalar& l, const Scalar& u ) { scalarData1(l); scalarData2(u); }
+  void set_bounds( const Scalar& l, const Scalar& u ) { this->scalarData1(l); this->scalarData2(u); }
   ///
   TOpRandomize(
     const Scalar& l   = -Teuchos::ScalarTraits<Scalar>::one()
@@ -66,7 +66,7 @@ public:
 		,ReductTarget *reduct_obj
 		) const
     {
-      const Scalar l = scalarData1(), u = scalarData2();
+      const Scalar l = this->scalarData1(), u = this->scalarData2();
       const Scalar a = 0.5*(u-l), b = 0.5*(u+l) ; // Linear coefficients for translating from [-1,+1] to [l,b]
       RTOP_APPLY_OP_0_1(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
       for( RTOp_index_type i = 0; i < subDim; ++i, z0_val += z0_s ) {

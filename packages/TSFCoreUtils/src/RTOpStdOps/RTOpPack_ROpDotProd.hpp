@@ -45,7 +45,7 @@ public:
   ///
   ROpDotProd() : RTOpT<Scalar>("ROpDotProd") {}
   ///
-  Scalar operator()(const ReductTarget& reduct_obj ) const { return getRawVal(reduct_obj); }
+  Scalar operator()(const ReductTarget& reduct_obj ) const { return this->getRawVal(reduct_obj); }
   /** @name Overridden from RTOpT */
   //@{
   ///

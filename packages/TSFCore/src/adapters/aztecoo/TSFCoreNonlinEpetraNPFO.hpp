@@ -60,7 +60,20 @@ namespace Nonlin {
 class EpetraNPFO : public NonlinearProblemFirstOrder<double> {
 public:
 
+	///
 	typedef double Scalar;
+	///
+	using NonlinearProblem<Scalar>::get_c;
+	///
+	using NonlinearProblem<Scalar>::get_g;
+	///
+	using NonlinearProblemFirstOrder<Scalar>::get_DcDy;
+	///
+	using NonlinearProblemFirstOrder<Scalar>::get_DcDu;
+	///
+	using NonlinearProblemFirstOrder<Scalar>::get_DgDy;
+	///
+	using NonlinearProblemFirstOrder<Scalar>::get_DgDu;
 
 	/// Stream that trace to which information will be sent
 	STANDARD_NONCONST_COMPOSITION_MEMBERS( std::ostream, trace_out )
@@ -293,6 +306,8 @@ private:
   // ///////////////////////////////////////
   // Private types
 
+public: // Intel C++ 6.0 requires this?
+
   ///
   class DcDu_Allocator {
   public:
@@ -324,6 +339,8 @@ private:
     const bool  useEO_;
     
   }; // class DcDu_Allocator
+
+private:
 
 	// //////////////////////////////////////
 	// Private data members

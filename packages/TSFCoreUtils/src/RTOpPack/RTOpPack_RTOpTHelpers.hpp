@@ -159,7 +159,7 @@ public:
   //@}
 protected:
   ///
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, initReductObjValue );
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, initReductObjValue )
 }; // class ROpScalarReductionBase
 
 
@@ -269,7 +269,7 @@ public:
   //@}
 protected:
   ///
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( index_type, initReductObjValue );
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( index_type, initReductObjValue )
 }; // class ROpScalarIndexReductionBase
 
 ///
@@ -340,7 +340,7 @@ public:
   //@}
 protected:
   ///
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, scalarData );
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, scalarData )
 }; // class ROpScalarTransformationBase
 
 ///
@@ -416,9 +416,9 @@ public:
   //@}
 protected:
   ///
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, scalarData1 );
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, scalarData1 )
   ///
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, scalarData2 );
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, scalarData2 )
 }; // class ROpScalarTransformationBase
 
 } // namespace RTOpPack

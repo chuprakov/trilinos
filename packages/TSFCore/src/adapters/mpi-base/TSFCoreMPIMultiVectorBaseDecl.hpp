@@ -53,6 +53,9 @@ public:
 	using MultiVector<Scalar>::apply; // Inject *all* the apply methods!
 
 	///
+	using MultiVector<Scalar>::applyOp; // Inject *all* the applyOp methods!
+
+	///
 	MPIMultiVectorBase();
 
 	/** @name Pure virtual methods to be overridden by subclasses */

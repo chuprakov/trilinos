@@ -223,7 +223,8 @@ int reduct_obj_ext_size(
 	,int  num_chars
 	)
 {
-
+	TEST_FOR_EXCEPT(true);
+	return 0;
 }
 
 template<class Scalar>
@@ -245,9 +246,9 @@ void RTOpPack::extract_reduct_obj_ext_state(
 		values_off      = num_chars_off   + sizeof(primitive_value_type),
 		indexes_off     = values_off      + num_values  * sizeof(primitive_value_type),
 		chars_off       = indexes_off     + num_indexes * sizeof(index_type);
-	*reinterpret_cast<primitive_value_type*>(reduct_obj_ext + num_values_off)  = static_cast<const primitive_value_type>(num_values);
-	*reinterpret_cast<primitive_value_type*>(reduct_obj_ext + num_indexes_off) = static_cast<const primitive_value_type>(num_indexes);
-	*reinterpret_cast<primitive_value_type*>(reduct_obj_ext + num_chars_off)   = static_cast<const primitive_value_type>(num_chars);
+	*reinterpret_cast<primitive_value_type*>(reduct_obj_ext + num_values_off)  = static_cast<primitive_value_type>(num_values);
+	*reinterpret_cast<primitive_value_type*>(reduct_obj_ext + num_indexes_off) = static_cast<primitive_value_type>(num_indexes);
+	*reinterpret_cast<primitive_value_type*>(reduct_obj_ext + num_chars_off)   = static_cast<primitive_value_type>(num_chars);
   op.extract_reduct_obj_state(
     reduct_obj
 		,num_values,  num_values  ? reinterpret_cast<primitive_value_type*>(reduct_obj_ext + values_off) : NULL
@@ -267,11 +268,11 @@ void RTOpPack::load_reduct_obj_ext_state(
   const char *reduct_obj_ext = reinterpret_cast<const char*>(_reduct_obj_ext);
 	const int
 		num_values_off  = 0,
-		num_values      =                   static_cast<const int>(*reinterpret_cast<const primitive_value_type*>(reduct_obj_ext + num_values_off)),
+		num_values      =                   static_cast<int>(*reinterpret_cast<const primitive_value_type*>(reduct_obj_ext + num_values_off)),
 		num_indexes_off = num_values_off  + sizeof(primitive_value_type),
-		num_indexes     =                   static_cast<const int>(*reinterpret_cast<const primitive_value_type*>(reduct_obj_ext + num_indexes_off)),
+		num_indexes     =                   static_cast<int>(*reinterpret_cast<const primitive_value_type*>(reduct_obj_ext + num_indexes_off)),
 		num_chars_off   = num_indexes_off + sizeof(primitive_value_type),
-		num_chars       =                   static_cast<const int>(*reinterpret_cast<const primitive_value_type*>(reduct_obj_ext + num_chars_off)),
+		num_chars       =                   static_cast<int>(*reinterpret_cast<const primitive_value_type*>(reduct_obj_ext + num_chars_off)),
 		values_off      = num_chars_off + sizeof(primitive_value_type),
 		indexes_off     = values_off  + num_values  * sizeof(primitive_value_type),
 		chars_off       = indexes_off + num_indexes * sizeof(index_type);
