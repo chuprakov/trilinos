@@ -158,12 +158,14 @@ public:
 	 * or an <tt>std::logic_error</tt> will be thrown with an appropriate error
 	 * message.
 	 *
+	 * @param  test_setup  [in] If true, then the setup will be checked (ToDo: elaborate)
+	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>this->nz()</tt> returns the sum of all of <tt>nz_commit</tt> in all previous calls to
 	 *      <tt>commit_load_nonzeros_buffers()</tt> since the last call to <tt>reinitialize()</tt>.
 	 * </ul>
 	 */
-	virtual void finish_construction() = 0;
+	virtual void finish_construction( bool test_setup ) = 0;
 
 };	// end class MatrixLoadSparseElements
 
