@@ -161,12 +161,12 @@ options_group BFGSUpdate {
 *    use_dampening = false;
      *** Use dampened BFGS update
 
-*    secant_testing          = DEFAULT;  *** Test secant condition if check_results==true (see above)
+*    secant_testing          = DEFAULT;  *** Test secant condition if check_results==true (see above) (default)
 *    secant_testing          = TEST;     *** Always test secant condition
 *    secant_testing          = NO_TEST;  *** Never test secant condition
 
-*    secant_warning_tol      = 1e-14;
-*    secant_error_tol        = 1e-10;
+*    secant_warning_tol      = 1e-6; *** (default)
+*    secant_error_tol        = 1e-1; *** (default)
 
 }
 

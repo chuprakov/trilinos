@@ -71,8 +71,8 @@ public:
 
 	///
 	BFGSUpdate_Strategy(
-		bool               rescale_init_identity  = false
-		,bool              use_dampening          = false
+		bool               rescale_init_identity  = true
+		,bool              use_dampening          = true
 		,ESecantTesting    secant_testing         = SECANT_TEST_DEFAULT
 		,value_type        secant_warning_tol     = 1e-6
 		,value_type        secant_error_tol       = 1e-1
