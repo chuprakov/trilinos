@@ -53,6 +53,7 @@ LineSearchFilter_Step::LineSearchFilter_Step(
   ,const value_type &s_f
   ,const value_type &s_theta
   ,const value_type &theta_small_fact
+  ,const value_type &theta_max
   ,const value_type &eta_f
   ,const value_type &back_track_frac
   )
@@ -67,6 +68,7 @@ LineSearchFilter_Step::LineSearchFilter_Step(
 	s_f_(s_f),
 	s_theta_(s_theta),
 	theta_small_fact_(theta_small_fact),
+	theta_max_(theta_max),
 	eta_f_(eta_f),
 	back_track_frac_(back_track_frac),
 	filter_(FILTER_IQ_STRING)
@@ -264,8 +266,21 @@ bool LineSearchFilter_Step::do_step(
 					<< " " << setw(40) << "Unacceptable to filter"
 					<< "|" << std::endl;
 				}
-	    
 			}
+
+		// Check if point has theta less than theta_max
+		if (accepted) {
+			if (theta_kp1 > theta_max_) {
+				accepted = false;
+				// Print out failure information
+				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+					out << " " << setw(w) << "failed"
+						<< " " << setw(40) << "theta_kp1 > theta_max"
+						<< "|" << std::endl;
+				}
+			}
+		}
+
 
 		// Check if point satisfies sufficient decrease (Armijo on f if switching cond holds)
 		if (accepted)
@@ -342,10 +357,16 @@ bool LineSearchFilter_Step::do_step(
 		{
 		// Could not find an acceptable alpha_k, go to restoration
 		// Print status
-		if(static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-			{ out << "\nCould not find acceptable alpha_k - going to restoration phase.\n"; }
-
-		THROW_EXCEPTION( true, std::out_of_range, "Tried to go to restoration phase." );	
+		//if(static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
+		//	{
+		//	out << "\nCould not find acceptable alpha_k - going to restoration phase.\n"; 
+		//  }
+			
+		//THROW_EXCEPTION( true, std::out_of_range, "Tried to go to restoration phase." );	
+		
+			THROW_EXCEPTION( true, LineSearchFailure
+							 ,"FilterLineSearchFailure : Should go to restoration"
+			  );
 		}
 
     if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 

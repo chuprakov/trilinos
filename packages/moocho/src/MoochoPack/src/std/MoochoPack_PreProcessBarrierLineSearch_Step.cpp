@@ -28,6 +28,7 @@
 #include "MoochoPack/src/IpState.hpp"
 #include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
+#include "RTOpPack/src/check_nan_inf.h"
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
@@ -176,9 +177,29 @@ bool PreProcessBarrierLineSearch_Step::do_step(
 		if (c_iq)
 			{
 			barrier_nlp_->set_c( &c_iq->set_k(+1) );
-			barrier_nlp_->calc_c( x_kp1, true );
+
+			// need to put a try catch in here... 
+			// if fail, set to NAN or INF
+			try 
+				{
+				barrier_nlp_->calc_c( x_kp1, true );
+				}
+			catch(...) 
+				{
+				c_iq->set_k(+1) = (value_type)pos_inf;
+				}
 			}
-		barrier_nlp_->calc_f( x_kp1, false ); 
+		
+		// need to put a try catch in here... 
+		// if fail, set to NAN or INF
+		try
+			{
+			barrier_nlp_->calc_f( x_kp1, false ); 
+			}
+		catch(...)
+			{
+			s.barrier_obj().set_k(+1) =  (value_type)pos_inf;
+			}
 		barrier_nlp_->unset_quantities();
 		}
 	

@@ -113,6 +113,13 @@ class LineSearchFilter_Step
 		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_small_fact )
 
 		///
+		/** Maximum allowable theta value
+		 *
+		 * ToDo: Finish documentation.
+		 */
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_max )
+
+		///
 		/** Constant for Armijo condition on objective
 		 *
 		 * ToDo: Finish documentation.
@@ -140,6 +147,7 @@ class LineSearchFilter_Step
 		  ,const value_type          &s_theta          = 1.1
 		  ,const value_type          &s_f              = 2.3
 		  ,const value_type          &theta_small_fact = 1e-4 
+		  ,const value_type          &theta_max        = 1e10
 		  ,const value_type          &eta_f            = 1e-4
 		  ,const value_type          &back_track_frac  = 0.5
 		  );

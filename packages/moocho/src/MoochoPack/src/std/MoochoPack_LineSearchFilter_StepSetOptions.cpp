@@ -22,7 +22,7 @@
 // Define the options
 namespace {
 
-const int local_num_options = 9;
+const int local_num_options = 10;
 
 enum local_EOptions 
 	{
@@ -33,6 +33,7 @@ enum local_EOptions
 		,S_THETA
 		,S_F
 		,THETA_SMALL_FACT
+		,THETA_MAX
 		,ETA_F
 		,BACK_TRACK_FRAC
 	};
@@ -46,6 +47,7 @@ const char* local_SOptions[local_num_options] =
 		,"s_theta"
 		,"s_f"
 		,"theta_small_fact"
+		,"theta_max"
 		,"eta_f"
 		,"back_track_frac"
 	};
@@ -92,6 +94,9 @@ void LineSearchFilter_StepSetOptions::set_option(
 			break;
 		case THETA_SMALL_FACT:
 			target().theta_small_fact(::atof(option_value.c_str()));
+			break;
+		case THETA_MAX:
+			target().theta_max(::atof(option_value.c_str()));
 			break;
 		case ETA_F:
 			target().eta_f(::atof(option_value.c_str()));

@@ -410,6 +410,7 @@ options_group LineSearchFilter {
 *    s_theta          = 1.1;
 *    s_f              = 2.3;	
 *    theta_small_fact = 1e-4;
+*    theta_max        = 1e10;
 *    eta_f            = 1e-4;
 *    back_track_frac  = 0.5;
 }
