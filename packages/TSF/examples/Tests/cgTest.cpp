@@ -4,12 +4,14 @@
 #include <fstream>
 #include <vector>
 
+
 using namespace TSF;
 using namespace std;
 
 int main(int argc, void** argv)
 {
   TSFMPI::init(&argc, &argv);
+
 
   try
     {
@@ -131,7 +133,7 @@ int main(int argc, void** argv)
           cerr << " FAILED error>tolerance" << endl;
         }
     }
-  catch(exception& e)
+  catch(std::exception& e)
     {
       cerr << e.what() << endl;
       cerr << " EXCEPTION" << endl;

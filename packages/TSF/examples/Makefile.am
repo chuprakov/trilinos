@@ -35,10 +35,11 @@ AM_CPPFLAGS = $(TSF_INCLUDES)	-I$(top_srcdir)/../aztecoo/src -I$(top_srcdir)/../
 #JW changed top_srcdir to top_builddir in each line below.  If source and 
 #build directories are not the same, the libraries will be located in the
 #build directory.
-TSF_LIBS = -L$(top_builddir)/src \
+TSF_LIBS = $(TRILINOS_TEMPLATE_OBJS) -L$(top_builddir)/src \
 	-L$(top_builddir)/../aztecoo/src \
 	-L$(top_builddir)/../ifpack/src \
 	-L$(top_builddir)/../epetra/src \
+	-L$(top_builddir)/../ml/src \
 	-L$(top_builddir)/../triutils/src \
-	-lTSF -laztecoo -lifpack -lepetra -ltriutils 
+	-lTSF -lml -laztecoo -lifpack -lepetra -ltriutils 
 

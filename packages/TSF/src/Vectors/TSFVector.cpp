@@ -196,7 +196,7 @@ void TSFVector::setElements(const TSFArray<int>& globalIndices,
 	ptr_->setElements(sub.length(), &(globalIndices[0]), &(sub[0]));
 }
 
-void TSFVector::getElements(const int* globalIndices, int length,
+void TSFVector::getElements(const int* globalIndices, const int length,
 														DenseSerialVector& sub) const 
 {
 	sub.resize(length);

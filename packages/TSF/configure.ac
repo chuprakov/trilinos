@@ -251,6 +251,34 @@ TAC_ARG_ENABLE_FEATURE(ml, [Enable the ML multilevel solvers and preconditioners
 AM_CONDITIONAL(HAVE_TSF_ML, test "X$ac_cv_use_ml" != "Xno")
 
 
+#  ----------------------------------------------------
+#  Needs this because Dec handles templates differently
+#  ----------------------------------------------------
+#  #np# - Only uncomment the following lines if the package
+#         creates a subdirectory called cxx_repository for
+#         template object files on DEC.  (HINT: try to build on
+#         DEC/CPLANT and see if template-related errors occur)
+
+# -- DEC CXX --
+if test "X$TRILINOS_TEMPLATE_OBJS" = "X"; then
+  case $target in
+    alpha*)
+      if test $CXX = cxx; then
+        TRILINOS_TEMPLATE_OBJS="cxx_repository/*.o"
+      fi
+    ;;
+  esac
+fi
+
+AC_MSG_CHECKING([for template-specific object files to be linked])
+if test "X$TRILINOS_TEMPLATE_OBJS" = "X"; then
+ AC_MSG_RESULT(none)
+else
+ AC_MSG_RESULT($TRILINOS_TEMPLATE_OBJS)
+fi
+
+AC_SUBST(TRILINOS_TEMPLATE_OBJS)
+
 
 # ------------------------------------------------------------------------
 # Specify other directories 

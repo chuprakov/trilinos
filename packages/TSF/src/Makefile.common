@@ -72,7 +72,7 @@ endif
 # be sure to include these, and this is the hack to do it.
 # ------------------------------------------------------------------------
 
-libTSF_a_LIBADD = $(XTRALDADD)
+libTSF_a_LIBADD = $(XTRALDADD) $(TRILINOS_TEMPLATE_OBJS)
 
 # ------------------------------------------------------------------------
 # List of all libraries to install in $(libexecdir)
