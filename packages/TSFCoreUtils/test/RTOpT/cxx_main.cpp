@@ -55,7 +55,7 @@ void test_do_stuff( MPI_Comm mpiComm, const int n, std::ostream &out )
   using RTOpPack::SubVectorT;
   using RTOpPack::MutableSubVectorT;
   using RTOpPack::ReductTarget;
-  out << "\n*** Entering test_do_stuff<"<<typeid(Scalar).name()<<"> ...\n";
+  out << "\n*** Entering test_do_stuff<"<<Teuchos::ScalarTraits<Scalar>::name()<<">) ...\n";
   std::vector<Scalar> z0_store(n);
   MutableSubVectorT<Scalar> z0(0,n,&z0_store[0],1);
   out << "\nPerforming: z0 = 1.0\n";
@@ -76,7 +76,7 @@ void test_do_stuff( MPI_Comm mpiComm, const int n, std::ostream &out )
     ,&*sum_targ
     );
   out << sum_op(*sum_targ) << std::endl;
-  out << "\n*** Leaving test_do_stuff<"<<typeid(Scalar).name()<<"> ...\n";
+  out << "\n*** Leaving test_do_stuff<"<<Teuchos::ScalarTraits<Scalar>::name()<<">) ...\n";
 }
 
 } // namespace
