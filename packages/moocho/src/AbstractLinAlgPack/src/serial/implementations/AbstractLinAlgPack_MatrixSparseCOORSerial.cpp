@@ -165,6 +165,7 @@ MatrixWithOp& MatrixSparseCOORSerial::operator=(const MatrixWithOp& M)
 	nz_               = Mc.nz_;
 	space_cols_.initialize(rows_);
 	space_rows_.initialize(cols_);
+	return *this;
 }
 
 std::ostream& MatrixSparseCOORSerial::output(std::ostream& out) const
