@@ -59,7 +59,7 @@ public:
 	/** Construct with no references set to nlp or track objects.
 	 */
 	rSQPSolverClientInterface(
-		int                    max_iter             = 100
+		int                    max_iter             = 10000
 		,double                max_run_time         = 1e+10 // run forever
 		,value_type            opt_tol              = 1e-6
 		,value_type            feas_tol             = 1e-6
