@@ -156,7 +156,7 @@ public:
 	/** Update the matrix for <tt>HL</tt> at the point <tt>x</tt>, <tt>lambda</tt>,
 	 * <tt>lambdaI</tt> and put it in the stored reference.
 	 *
-	 * If <tt>set_mult_calc(true)</tt> was called then referenced storage for <tt>f</tt>, <tt>c</tt>,
+	 * If <tt>set_multi_calc(true)</tt> was called then referenced storage for <tt>f</tt>, <tt>c</tt>,
 	 * <tt>h</tt>, <tt>Gf</tt>, <tt>Gc</tt> and <tt>Gh</tt> may also be  changed but are not guarentied to be.
 	 * But no other quanities from possible subclasses are allowed to be updated as a side effect.
 	 *
@@ -258,7 +258,7 @@ protected:
 	 * @param second_order_info     [out] Pointers to \c HL, \c Gc, \c Gh, \c Gf, \c f, \c c and \c h
 	 *                              On output <tt>*second_order_info.HL</tt> is updated to \a HL(x).
 	 *                              Any of the other objects pointed to in \c second_order_info may
-	 *                              be updated if <tt>this->mult_calc() == true</tt> but are
+	 *                              be updated if <tt>this->multi_calc() == true</tt> but are
 	 *                              now guaranteed to be.
 	 *
 	 * Preconditions:<ul>

@@ -151,7 +151,7 @@ public:
 	 * <li> <tt>this->Gf()</tt> is updated to \c Gf(x)
 	 * </ul>
 	 *
-	 * If <tt>set_mult_calc(true)</tt> was called then referenced storage for \c f and/or \c c and/or \c h
+	 * If <tt>set_multi_calc(true)</tt> was called then referenced storage for \c f and/or \c c and/or \c h
 	 * may also be updated but are not guaranteed to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect (i.e. no higher order derivatives).
 	 */ 
@@ -171,6 +171,9 @@ public:
 	virtual size_type num_Gf_evals() const;
 	
 	//@}
+
+	/** @name Protected types */
+	//@{
 	
 	///
 	/** Struct for gradient (objective), objective and constriants (pointers)
@@ -188,11 +191,13 @@ public:
 		VectorWithOpMutable*       Gf;
 		/// Pointer to objective function <tt>f</tt> (may be NULL if not set)
 		value_type*                f;
-		/// Pointer to constraints residule <tt>c</tt> (may be NULL if not set)
+		/// Pointer to constraints residual <tt>c</tt> (may be NULL if not set)
 		VectorWithOpMutable*       c;
-		/// Pointer to constraints residule <tt>h</tt> (may be NULL if not set)
+		/// Pointer to constraints residual <tt>h</tt> (may be NULL if not set)
 		VectorWithOpMutable*       h;
 	}; // end struct ObjGradInfo
+
+	//@}
 
 protected:
 
@@ -220,7 +225,7 @@ protected:
 	 *                [out] Pointers to \c f, \c c, \c h and \c Gf.
 	 *                On output <tt>*obj_grad_info.Gf</tt> is updated to \a Gf(x).
 	 *                Any of the other objects pointed to in
-	 *                \c obj_grad_info may be set if <tt>this->mult_calc() == true</tt> but are
+	 *                \c obj_grad_info may be set if <tt>this->multi_calc() == true</tt> but are
 	 *                now guaranteed to be.
 	 */
 	virtual void imp_calc_Gf(const VectorWithOp& x, bool newx, const ObjGradInfo& obj_grad_info) const = 0;
@@ -228,6 +233,7 @@ protected:
 	//@}
 
 private:
+
 	mutable VectorWithOpMutable     *Gf_;
 	mutable size_type				num_Gf_evals_;
 

@@ -87,7 +87,7 @@ namespace NLPInterfacePack {
  * <li> Unconstrained %NLP :
  *      <ul><li><tt>( xl == -Inf && xu == +Inf ) && ( m == 0 && mI == 0 )</tt></ul>
  * <li> Nonlinear Equations (NLE) :
- *      <ul><tt>n == m</tt><li></ul>
+ *      <ul><li><tt>n == m</tt></ul>
  * </ol>
  *
  * Note that in (6) above, that this allows for bounds on the variables and general
@@ -175,7 +175,7 @@ namespace NLPInterfacePack {
  * functions and objective function.  Therefore it is more efficient to compute \a f(x), \a c(x) and \a h(x)
  * simultaneously rather than computing them separately.  In order to allow for this possibility,
  * the client can set the desired quantities (i.e. \c set_f(), \c set_c() and \c set_h()) and then
- * calling the method \c set_mult_calc(true) prior to calling \c calc_f(), \c calc_c() and \c calc_h().
+ * calling the method \c set_multi_calc(true) prior to calling \c calc_f(), \c calc_c() and \c calc_h().
  * Another reason for structuring this %NLP interface this way is when automatic differentiation is used
  * to compute derivatives (see \c NLPFirstOrderInfo) the function values are computed for free.
  *
@@ -209,7 +209,7 @@ namespace NLPInterfacePack {
  *
  * <A NAME="should_override"></A>
  * The following methods should be overridden by most subclasses but do not have to be: \c initialize(),
- * \c n(), \c m(), \c mI(), \c get_init_lagrange_mult(), \c set_mult_calc(bool), \c mult_calc(),
+ * \c n(), \c m(), \c mI(), \c get_init_lagrange_mult(), \c set_multi_calc(bool), \c multi_calc(),
  * \c report_final_solution().
  *
  * The following methods should never have to be overridden by most subclasses except in some very
@@ -691,7 +691,7 @@ public:
 	 *
 	 * The default implementation does nothing.
 	 *
-	 * @param  set_mult_calc
+	 * @param  set_multi_calc
 	 *                [in] If \c true the subclass is allowed to update multiple quantities if it is
 	 *                more efficient to do so.  For example, calling calc_f(...) to update 'f'
 	 *                may result in an update of 'c' if it is more efficent to do so.
@@ -701,7 +701,7 @@ public:
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 */
-	virtual void set_mult_calc(bool mult_calc) const;
+	virtual void set_multi_calc(bool multi_calc) const;
 	///
 	/** Query whether the NLP is allowed to perform multiple updates.
 	 *
@@ -711,7 +711,7 @@ public:
 	 *
 	 * The default implementation just returns false.
 	 */
-	virtual bool mult_calc() const;
+	virtual bool multi_calc() const;
 	///
 	/** Set the scaling of the objective function.
 	 *
@@ -751,7 +751,7 @@ public:
 	 * <li> <tt>this->f()</tt> is updated to \a f(x)
 	 * </ul>
 	 *
-	 * If <tt>set_mult_calc(true)</tt> was called then storage reference for <tt>c</tt> and/or <tt>h</tt> may also be changed
+	 * If <tt>set_multi_calc(true)</tt> was called then storage reference for <tt>c</tt> and/or <tt>h</tt> may also be changed
 	 * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect.
 	 */ 
@@ -775,7 +775,7 @@ public:
 	 * <li> <tt>this->c()</tt> is updated to \a c(x)
 	 * </ul>
 	 *
-	 * If <tt>set_mult_calc(true)</tt> was called then storage reference for <tt>f</tt> and/or <tt>h</tt> may also be changed
+	 * If <tt>set_multi_calc(true)</tt> was called then storage reference for <tt>f</tt> and/or <tt>h</tt> may also be changed
 	 * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect.
 	 */ 
@@ -799,7 +799,7 @@ public:
 	 * <li> <tt>this->h()</tt> is updated to \a h(x)
 	 * </ul>
 	 *
-	 * If <tt>set_mult_calc(true)</tt> was called then storage reference for <tt>f</tt> and/or <tt>c</tt> may also be changed
+	 * If <tt>set_multi_calc(true)</tt> was called then storage reference for <tt>f</tt> and/or <tt>c</tt> may also be changed
 	 * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect.
 	 */ 
@@ -868,8 +868,6 @@ public:
 
 	//@}
 
-protected:
-
 	///
 	/** Struct for objective and constriants (pointer).
 	 *
@@ -887,17 +885,18 @@ protected:
 		{}
 		/// Pointer to objective function <tt>f</tt> (may be NULL if not set)
 		value_type*           f;
-		/// Pointer to constraints residule <tt>c</tt> (may be NULL if not set)
+		/// Pointer to constraints residual <tt>c</tt> (may be NULL if not set)
 		VectorWithOpMutable*  c;
-		/// Pointer to constraints residule <tt>h</tt> (may be NULL if not set)
+		/// Pointer to constraints residual <tt>h</tt> (may be NULL if not set)
 		VectorWithOpMutable*  h;
 	}; // end struct ZeroOrderInfo
 
 	/// Return pointer to set quantities
 	const ZeroOrderInfo zero_order_info() const;
 
-	/** @name Protected methods to be overridden by subclasses
-	 */
+protected:
+
+	/** @name Protected methods to be overridden by subclasses */
 	//@{
 
 	///
@@ -917,7 +916,7 @@ protected:
 	 * @param zero_order_info
 	 *                [out] Pointers to \c f, \c c and \c h.
 	 *                On output, <tt>*zero_order_info.f</tt> is updated to \a f(x)
-	 *                If <tt>this->mult_calc() == true</tt> then
+	 *                If <tt>this->multi_calc() == true</tt> then
 	 *                any of the other quantities pointed to in \c zero_order_info may be set on
 	 *                output, but are not guaranteed to be.
 	 */
@@ -939,7 +938,7 @@ protected:
 	 * @param zero_order_info
 	 *                [out] Pointers to \c f, \c c and \c h.
 	 *                On output, <tt>*zero_order_info.c</tt> is updated to \a c(x)
-	 *                If <tt>this->mult_calc() == true</tt> then
+	 *                If <tt>this->multi_calc() == true</tt> then
 	 *                any of the other quantities pointed to in \c zero_order_info may be set on
 	 *                output, but are not guaranteed to be.
 	 */
@@ -961,7 +960,7 @@ protected:
 	 * @param zero_order_info
 	 *                [out] Pointers to \c f, \c c and \c h.
 	 *                On output, <tt>*zero_order_info.h</tt> is updated to \a h(x)
-	 *                If <tt>this->mult_calc() == true</tt> then
+	 *                If <tt>this->multi_calc() == true</tt> then
 	 *                any of the other quantities pointed to in \c zero_order_info may be set on
 	 *                output, but are not guaranteed to be.
 	 */
@@ -976,6 +975,9 @@ protected:
 	}
 
 private:
+
+	// ////////////////////////////////////////
+	// Private data members
 
 #ifdef DOXYGEN_COMPILE
 	AbstractLinAlgPack::VectorSpace *space_x;

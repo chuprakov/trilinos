@@ -243,7 +243,7 @@ public:
 	 * <li> <tt>this->Gc()</tt> is updated to \c Gc(x)
 	 * </ul>
 	 *
-	 * If \c set_mult_calc(true) was called then referenced storage for \c f, \c c, \c Gf and \c Gh may also be changed
+	 * If \c set_multi_calc(true) was called then referenced storage for \c f, \c c, \c Gf and \c Gh may also be changed
 	 * but are not guarantied to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect.
 	 */ 
@@ -268,7 +268,7 @@ public:
 	 * <li> <tt>this->Gh()</tt> is updated to \c Gh(x)
 	 * </ul>
 	 *
-	 * If \c set_mult_calc(true) was called then referenced storage for \c f, \c c, \c Gf and \c Gc may also be changed
+	 * If \c set_multi_calc(true) was called then referenced storage for \c f, \c c, \c Gf and \c Gc may also be changed
 	 * but are not guarantied to be.  But no other quanities from possible subclasses are allowed
 	 * to be updated as a side effect.
 	 */ 
@@ -349,7 +349,7 @@ protected:
 	 *                [out] Pointers to \c f, \c c, \c h, \c Gf, \c Gc and \c Gh.
 	 *                On output <tt>*obj_grad_info.Gc</tt> is updated to \a Gc(x).
 	 *                Any of the other objects pointed to in
-	 *                \c obj_grad_info may be set if <tt>this->mult_calc() == true</tt> but are
+	 *                \c obj_grad_info may be set if <tt>this->multi_calc() == true</tt> but are
 	 *                now guaranteed to be.
 	 */
 	virtual void imp_calc_Gc(const VectorWithOp& x, bool newx, const FirstOrderInfo& first_order_info) const = 0;
@@ -363,7 +363,7 @@ protected:
 	 *                [out] Pointers to \c f, \c c, \c h, \c Gf, \c Gc and \c Gh.
 	 *                On output <tt>*obj_grad_info.Gh</tt> is updated to \a Gh(x).
 	 *                Any of the other objects pointed to in
-	 *                \c obj_grad_info may be set if <tt>this->mult_calc() == true</tt> but are
+	 *                \c obj_grad_info may be set if <tt>this->multi_calc() == true</tt> but are
 	 *                now guaranteed to be.
 	 *
 	 * Preconditions:<ul>
