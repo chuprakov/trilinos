@@ -144,10 +144,10 @@ VectorWithOpMutable::sub_view( const Range1D& rng_in )
 		"is not in the range [1,this->dim()] = [1,"<<dim<<"]" );
 #endif	
 	if( rng.lbound() == 1 && rng.ubound() == dim )
-		return vec_mut_ptr_t( this, false );
+		return rcp::rcp( this, false );
 	return rcp::rcp(
 		new VectorWithOpMutableSubView(
-			vec_mut_ptr_t( this, false )
+			rcp::rcp( this, false )
 			,rng ) );
 }
 
