@@ -44,20 +44,30 @@ namespace AbstractLinAlgPack {
 class BasisSystemTester {
 public:
 
+	/** @name Set and access options */
+	//@{
+
 	///
-	enum EPrintTestLevel { PRINT_NONE=0, PRINT_BASIC=1, PRINT_MORE=2, PRINT_ALL=3 };
-	///
+	enum EPrintTestLevel {
+		PRINT_NONE=0       ///< Don't print anything
+		,PRINT_BASIC=1     ///< Print only very basic info
+		,PRINT_MORE=2      ///< Print greater detail about the tests.
+		,PRINT_ALL=3       ///< Print everything all the tests in great detail but output is independent of problem size.
+	};
+	/// Set the level of output produced durring tests.
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( EPrintTestLevel, print_tests )
-	///
+	/// Set whether matrices, vectors ect. are printed (warning, this may be a lot of output for larger systems).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all )
-	///
+	/// Set whether an exception that is thrown is thrown clear out of the testing function or not.
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, throw_exception )
-	///
+	/// Set the number of random test cases created.
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_random_tests )
-	///
+	/// Set the relative tolerance for numerical tests above which to print a warning.
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
-	///
+	/// Set the relative tolerance for numerical tests above which to return false from the testing function.
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
+
+	//@}
 
 	///	Constructor (default options)
 	BasisSystemTester(
@@ -72,6 +82,26 @@ public:
 	///
 	/** Test a \c BasisSystem object after <tt>BasisSystem::update_basis()</tt> is called.
 	 *
+	 * @param  basis_sys
+	 *              [in] The \c BasisSystem object that \c BasisSystem::update_basis() was called on.
+	 * @param  Gc   [in] Matrix \c Gc that was passed into \c basis_sys.update_basis() (if not \c NULL).
+	 * @param  Gh   [in] Matrix \c Gh that was passed into \c basis_sys.update_basis() (if not \c NULL).
+	 * @param  C    [in] Matrix \c C that was passed in and out of \c basis_sys.update_basis() (if not \c NULL).
+	 * @param  N    [in] If not \c NULL, then this must the matrix \a N described in the documentation for
+	 *              \c BasisSystem.  This allows a matrix object created by the client to be check out here
+	 *              also.
+	 * @param  D    [in] Matrix \c D that was passed in and out of \c basis_sys.update_basis() (if not \c NULL).
+	 *              Actually, this can be any matrix object that the client may want to define that takes the
+	 *              role of \c D.  Such a matrix object can be tested here in this function along with the rest
+	 *              of the matrices.
+	 * @param  GcUP [in] Matrix \c GcUP that was passed in and out of \c basis_sys.update_basis() (if not \c NULL).
+	 *              Actually, this can be any matrix object that the client may want to define that takes the
+	 *              role of \c GcUP.  Such a matrix object can be tested here in this function along with the rest
+	 *              of the matrices.
+	 * @param  GhUP [in] Matrix \c GhUP that was passed in and out of \c basis_sys.update_basis() (if not \c NULL).
+	 *              Actually, this can be any matrix object that the client may want to define that takes the
+	 *              role of \c GhUP.  Such a matrix object can be tested here in this function along with the rest
+	 *              of the matrices.
 	 * @param  print_all_warnings
 	 *              [in] Determines if warnings for all of the comparison tests are printed or not.
 	 *              Warning! may cause as much as <i>O(</i><tt>bs->var_dep().size())<tt><i>)</i> output.
@@ -102,7 +132,10 @@ public:
 		,const MatrixWithOp             *Gc
 		,const MatrixWithOp             *Gh
 		,const MatrixWithOpNonsingular  *C
+		,const MatrixWithOp             *N
 		,const MatrixWithOp             *D
+		,const MatrixWithOp             *GcUP
+		,const MatrixWithOp             *GhUP
 		,bool                           print_all_warnings
 		,std::ostream                   *out
 		);

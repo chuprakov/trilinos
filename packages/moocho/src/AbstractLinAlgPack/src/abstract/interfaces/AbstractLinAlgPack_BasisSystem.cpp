@@ -14,6 +14,8 @@
 // above mentioned "Artistic License" for more details.
 
 #include "AbstractLinAlgPack/include/BasisSystem.h"
+#include "AbstractLinAlgPack/include/MatrixSpace.h"
+#include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "Range1D.h"
 
 namespace AbstractLinAlgPack {
@@ -37,5 +39,19 @@ Range1D BasisSystem::inequ_undecomp() const
 {
 	return Range1D::Invalid;
 }
+
+const BasisSystem::mat_space_ptr_t& BasisSystem::space_GcUP() const
+{
+	return mat_space_ptr_null_;
+}
+
+const BasisSystem::mat_space_ptr_t& BasisSystem::space_GhUP() const
+{
+	return mat_space_ptr_null_;
+}
+
+// private
+
+const BasisSystem::mat_space_ptr_t   BasisSystem::mat_space_ptr_null_(NULL);
 
 } // end namespace AbstractLinAlgPack
