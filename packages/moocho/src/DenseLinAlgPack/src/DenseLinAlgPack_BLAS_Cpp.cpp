@@ -8,7 +8,7 @@
 // /////////////////////////////////////
 // Fortran function declarations.
 
-namespace {
+namespace BLAS_C_Decl {
 
 using namespace std;
 typedef FortranTypes::f_int  		f_int;
@@ -112,7 +112,7 @@ FORTRAN_FUNC_DECL_UL(void,DTPMV,dtpmv)(const char* UPLO, const char* TRANS, cons
 		   const f_dbl_prec* AP, f_dbl_prec* X, const f_int& INCX);
 
 // Triangular equation solve
-FORTRAN_FUNC_DECL_UL(void,DTRSV,dstrv)(const char* UPLO, const char* TRANS, const char* DIAG, const f_int& N,
+FORTRAN_FUNC_DECL_UL(void,DTRSV,dtrsv)(const char* UPLO, const char* TRANS, const char* DIAG, const f_int& N,
 		   const f_dbl_prec* A, const f_int& LDA, f_dbl_prec* X, const f_int& INCX);
 
 // Triangular band equation solve
@@ -192,10 +192,14 @@ FORTRAN_FUNC_DECL_UL(void,DTRSM,dtrsm)(const char* SIDE, const char* UPLO, const
 
 } // end extern "C"
 
-} // end namespace
+} // end namespace BLAS_C_Decl
 
 // ////////////////////////////////////////////////////////
 // C++ BLAS Function Declarations
+
+namespace BLAS_Cpp {
+  using namespace BLAS_C_Decl;
+}
 
 // Level 1 BLAS (vector-vector operations)
 
