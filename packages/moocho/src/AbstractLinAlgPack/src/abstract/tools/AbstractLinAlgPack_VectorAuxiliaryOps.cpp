@@ -406,11 +406,11 @@ bool AbstractLinAlgPack::max_inequ_viol(
 	const AbstractLinAlgPack::Vector   &v
 	,const AbstractLinAlgPack::Vector  &vL
 	,const AbstractLinAlgPack::Vector  &vU
-	,AbstractLinAlgPack::size_type           *max_viol_i
-	,AbstractLinAlgPack::value_type          *max_viol
-	,AbstractLinAlgPack::value_type          *v_i
-	,int                                     *bnd_type
-	,AbstractLinAlgPack::value_type          *vLU_i
+	,AbstractLinAlgPack::size_type     *max_viol_i
+	,AbstractLinAlgPack::value_type    *max_viol
+	,AbstractLinAlgPack::value_type    *v_i
+	,int                               *bnd_type
+	,AbstractLinAlgPack::value_type    *vLU_i
 	)
 {
 	RTOpPack::RTOpC          op;
