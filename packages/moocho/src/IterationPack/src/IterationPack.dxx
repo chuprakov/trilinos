@@ -20,6 +20,8 @@ acts as a central repository for a set of iteration quantities (of type
 object helps to remove data dependencies between different step objects.  The interface
 <tt>\ref GeneralIterationPack::AlgorithmTrack "AlgorithmTrack"</tt> allows outside
 clients the ability to easily monitor (but not control) the progress of the algorithm.
+Multiply <tt>AlgorithmTrack</tt> object can be added by using the composite class
+<tt>\ref GeneralIterationPack::AlgorithmTrackComposite "AlgorithmTrackComposite"</tt>.
 
 In order to allow typed access to the iteration quantities, the templated interface
 <tt>\ref GeneralIterationPack::IterQuantityAccess "IterQuantityAccess<T>"</tt> is
