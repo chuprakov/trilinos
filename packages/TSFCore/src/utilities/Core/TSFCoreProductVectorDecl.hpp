@@ -129,15 +129,10 @@ private:
 	// //////////////////////////////
 	// Private data members
 
-#ifndef DOXYGEN_COMPILE
 	Teuchos::RefCountPtr<const ProductVectorSpace<Scalar> >       productSpace_;
 	std::vector<Teuchos::RefCountPtr<Vector<Scalar> > >           vecs_;
 	// cache
 	int numBlocks_;
-#else
-	const ProductVectorSpace<Scalar>         *productSpace;
-	Vector<Scalar>                           *vectors;
-#endif
 
 	// //////////////////////////////
 	// Private member functions

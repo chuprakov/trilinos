@@ -66,10 +66,10 @@ void ProductVector<Scalar>::initialize(
 	productSpace_ = productSpace;
 	vecs_.resize(numBlocks_);
 	if(vecs) {
-		std::copy( vecs, vecs + numBlocks_, vecs_.begin() );
+		std::copy( vecs, vecs + numBlocks_, &vecs_[0] );
 	}
 	else {
-		for( int k = 0; k < static_cast<int>(vecs_.size()); ++k )
+		for( int k = 0; k < numBlocks_; ++k )
 			vecs_[k] = productSpace->getBlock(k)->createMember();
 	}
 }
@@ -80,8 +80,8 @@ void ProductVector<Scalar>::uninitialize(
 	,Teuchos::RefCountPtr<Vector<Scalar> >                   vecs[]
 	)
 {
-	if(productSpace) *productSpace = productSpace;
-	if(vecs) std::copy( vecs_.begin(), vecs_.end(), vecs );
+	if(productSpace) *productSpace = productSpace_;
+	if(vecs) std::copy( &vecs_[0], &vecs_[0]+numBlocks_, vecs );
 	productSpace_ = Teuchos::null;
 	vecs_.resize(0);
 	numBlocks_ = 0;
@@ -288,7 +288,7 @@ void ProductVector<Scalar>::getSubVector(
 	Index  kth_global_offset = 0;
 	productSpace_->getVecSpcPoss(rng.lbound(),&kth_vector_space,&kth_global_offset);
 #ifdef _DEBUG
-	TEST_FOR_EXCEPT( !( 0 <= kth_vector_space && kth_vector_space <= static_cast<int>(vecs_.size()) ) );
+	TEST_FOR_EXCEPT( !( 0 <= kth_vector_space && kth_vector_space <= numBlocks_ ) );
 #endif
 	if( rng.lbound() + rng.size() <= kth_global_offset + 1 + vecs_[kth_vector_space]->space()->dim() ) {
 		// This involves only one sub-vector so just return it.
@@ -316,7 +316,7 @@ void ProductVector<Scalar>::freeSubVector(
 	Index  kth_global_offset = 0;
 	productSpace_->getVecSpcPoss(sub_vec->globalOffset()+1,&kth_vector_space,&kth_global_offset);
 #ifdef _DEBUG
-	TEST_FOR_EXCEPT( !( 0 <= kth_vector_space && kth_vector_space <= static_cast<int>(vecs_.size()) ) );
+	TEST_FOR_EXCEPT( !( 0 <= kth_vector_space && kth_vector_space <= numBlocks_ ) );
 #endif
 	if( sub_vec->globalOffset() + sub_vec->subDim() <= kth_global_offset +  vecs_[kth_vector_space]->space()->dim() ) {
 		// This sub_vec was extracted from a single constituent vector
@@ -340,7 +340,7 @@ void ProductVector<Scalar>::getSubVector(
 	Index  kth_global_offset = 0;
 	productSpace_->getVecSpcPoss(rng.lbound(),&kth_vector_space,&kth_global_offset);
 #ifdef _DEBUG
-	TEST_FOR_EXCEPT( !( 0 <= kth_vector_space && kth_vector_space <= static_cast<int>(vecs_.size()) ) );
+	TEST_FOR_EXCEPT( !( 0 <= kth_vector_space && kth_vector_space <= numBlocks_ ) );
 #endif
 	if( rng.lbound() + rng.size() <= kth_global_offset + 1 + vecs_[kth_vector_space]->space()->dim() ) {
 		// This involves only one sub-vector so just return it.
@@ -368,7 +368,7 @@ void ProductVector<Scalar>::commitSubVector(
 	Index  kth_global_offset = 0;
 	productSpace_->getVecSpcPoss(sub_vec->globalOffset()+1,&kth_vector_space,&kth_global_offset);
 #ifdef _DEBUG
-	TEST_FOR_EXCEPT( !( 0 <= kth_vector_space && kth_vector_space <= static_cast<int>(vecs_.size()) ) );
+	TEST_FOR_EXCEPT( !( 0 <= kth_vector_space && kth_vector_space <= numBlocks_ ) );
 #endif
 	if( sub_vec->globalOffset() + sub_vec->subDim() <= kth_global_offset +  vecs_[kth_vector_space]->space()->dim() ) {
 		// This sub_vec was extracted from a single constituent vector
@@ -390,7 +390,7 @@ void ProductVector<Scalar>::setSubVector(
 	Index  kth_global_offset = 0;
 	productSpace_->getVecSpcPoss(sub_vec.globalOffset()+1,&kth_vector_space,&kth_global_offset);
 #ifdef _DEBUG
-	TEST_FOR_EXCEPT( !( 0 <= kth_vector_space && kth_vector_space <= static_cast<int>(vecs_.size()) ) );
+	TEST_FOR_EXCEPT( !( 0 <= kth_vector_space && kth_vector_space <= numBlocks_ ) );
 #endif
 	if( sub_vec.globalOffset() + sub_vec.subDim() <= kth_global_offset + vecs_[kth_vector_space]->space()->dim() ) {
 		// This sub-vector fits into a single constituent vector

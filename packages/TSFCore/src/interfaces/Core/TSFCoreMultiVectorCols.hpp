@@ -75,6 +75,7 @@ void MultiVectorCols<Scalar>::initialize(
 #endif
 	range_  = col_vec->space();
 	domain_ = range_->smallVecSpcFcty()->createVecSpc(1);
+	num_cols_ = 1;
 	col_vecs_.resize(1);
 	col_vecs_[0] = col_vec;
 }
@@ -96,14 +97,14 @@ void MultiVectorCols<Scalar>::initialize(
 #endif
 	range_ = range;
 	domain_ = domain;
-	const Index num_cols = domain->dim();
-	col_vecs_.resize(num_cols);
+	num_cols_ = domain->dim();
+	col_vecs_.resize(num_cols_);
 	if(col_vecs) {
-		for( Index j = 1; j <= num_cols; ++j )
+		for( Index j = 1; j <= num_cols_; ++j )
 			col_vecs_[j-1] = col_vecs[j-1];
 	}
 	else {
-		for( Index j = 1; j <= num_cols; ++j )
+		for( Index j = 1; j <= num_cols_; ++j )
 			col_vecs_[j-1] = range_->createMember();
 	}
 }
@@ -139,8 +140,8 @@ Teuchos::RefCountPtr<Vector<Scalar> >
 MultiVectorCols<Scalar>::col(Index j)
 {
 	TEST_FOR_EXCEPTION(
-		!(  1 <= j  && j <= static_cast<Index>(col_vecs_.size()) ), std::logic_error
-		,"Error, j = " << j << " does not fall in the range [1,"<<col_vecs_.size()<< "]!"
+		!(  1 <= j  && j <= num_cols_ ), std::logic_error
+		,"Error, j = " << j << " does not fall in the range [1,"<<num_cols_<< "]!"
 		);
 	return col_vecs_[j-1];
 }

@@ -169,15 +169,10 @@ public:
 
 private:
 	
-#ifdef DOXYGEN_COMPILE
-	const VectorSpace<Scalar>                  *range;
-	const VectorSpace<Scalar>                  *domain;
-	Vector<Scalar>                             *column_vectors;
-#else
 	Teuchos::RefCountPtr<const VectorSpace<Scalar> >        range_;
 	Teuchos::RefCountPtr<const VectorSpace<Scalar> >        domain_;
 	std::vector< Teuchos::RefCountPtr<Vector<Scalar> > >    col_vecs_;
-#endif
+	int                                                     num_cols_;
 	
 }; // end class MultiVectorCols
 
