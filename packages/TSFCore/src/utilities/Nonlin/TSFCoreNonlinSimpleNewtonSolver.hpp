@@ -125,7 +125,7 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 				<< ": Terminating algorithm!" );
 		}
 		// Take the Newton step
-		swap<mmp::ref_count_ptr<Vector<Scalar> > >( y_new, y ); // Swap y_new and y
+		std::swap<mmp::ref_count_ptr<Vector<Scalar> > >( y_new, y ); // Swap y_new and y
 	}
 	np->unsetQuantities();
 	// Failure!

@@ -68,7 +68,7 @@
 #include <ostream>
 #elif defined(HAVE_IOSTREAM)
 #include <iostream>
-#else
+#elif defined(HAVE_IOSTREAM_H)
 #include <iostream.h>
 #endif
 
@@ -118,16 +118,6 @@
 
 #ifdef HAVE_IOSFWD
 #include <iosfwd>
-#else
-class ios;
-class streambuf;
-class istream;
-class ostream;
-class iostream;
-class filebuf;
-class ifstream;
-class ofstream;
-class fstream;
 #endif
 
 
