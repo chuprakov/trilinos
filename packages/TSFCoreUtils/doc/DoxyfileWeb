@@ -27,6 +27,8 @@ CLASS_DIAGRAMS         = YES
 SOURCE_BROWSER         = YES
 INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
+REFERENCED_BY_RELATION = NO
+REFERENCES_RELATION    = NO
 CASE_SENSE_NAMES       = YES
 HIDE_SCOPE_NAMES       = NO
 VERBATIM_HEADERS       = YES
@@ -84,6 +86,7 @@ EXPAND_AS_DEFINED      = STANDARD_MEMBER_COMPOSITION_MEMBERS STANDARD_COMPOSITIO
 TAGFILES               = ../../../../Trilinos/packages/teuchos/doc/teuchos.tag=../../../../../Trilinos/packages/teuchos/doc/html
 GENERATE_TAGFILE       = TSFCoreUtils.tag
 ALLEXTERNALS           = NO
+EXTERNAL_GROUPS        = NO
 #
 # Environment
 #

@@ -438,6 +438,9 @@ public:
 	/// One-based indexing (Preconditions: <tt>values()!=NULL && (1<=i<=subDim()) && (1<=j<= numSubCols()</tt>)
 	const Scalar& operator()(RTOp_index_type i, RTOp_index_type j) const
 		{ return values_[ (i-1) + leadingDim_*(j-1) ]; }
+	/// Return a <tt>SubVectorT</tt> view of the jth sub-column (Preconditions: <tt>values()!=NULL && (1<=i<=subDim()) && (1<=j<= numSubCols()</tt>)
+	SubVectorT<Scalar> col( const RTOp_index_type j ) const
+		{ return SubVectorT<Scalar>(globalOffset(),subDim(),values()+(j-1)*leadingDim(),1); }
 private:
 	RTOp_index_type     globalOffset_;
 	RTOp_index_type     subDim_;
@@ -492,6 +495,9 @@ public:
 	/// One-based indexing (Preconditions: <tt>values()!=NULL && (1 <= i <= subDim()) && (1<= j <= numSubCols()</tt>)
 	Scalar& operator()(RTOp_index_type i, RTOp_index_type j) const
 		{ return const_cast<Scalar&>(SubMultiVectorT<Scalar>::operator()(i,j)); }
+	/// Return a <tt>MutableSubVectorT</tt> view of the jth sub-column (Preconditions: <tt>values()!=NULL && (1<=i<=subDim()) && (1<=j<= numSubCols()</tt>)
+	MutableSubVectorT<Scalar> col( const RTOp_index_type j ) const
+		{ return MutableSubVectorT<Scalar>(globalOffset(),subDim(),values()+(j-1)*leadingDim(),1); }
 };
 
 template<class Scalar>

@@ -37,16 +37,18 @@
 namespace RTOpPack {
 
 ///
-/** Weighted Two (Euclidean) norm reduction operator: <tt>result = sqrt( sum( v0[i]*v1[i]*v1[i], i=1...n ) )</tt>.
+/** Weighted Two (Euclidean) norm reduction operator: <tt>result = sqrt( sum( v0[i]*conj(v1[i])*v1[i], i=1...n ) )</tt>.
  */
 template<class Scalar>
 class ROpWeightedNorm2 : public ROpScalarReductionBase<Scalar> {
+	typedef Teuchos::ScalarTraits<Scalar> ST;
 public:
   ///
   ROpWeightedNorm2() : RTOpT<Scalar>("ROpWeightedNorm2") {}
   ///
-  Scalar operator()(const ReductTarget& reduct_obj ) const
-    { return Teuchos::ScalarTraits<Scalar>::squareroot(this->getRawVal(reduct_obj)); }
+  typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+	operator()(const ReductTarget& reduct_obj ) const
+    { return ST::magnitude(ST::squareroot(this->getRawVal(reduct_obj))); }
   /** @name Overridden from RTOpT */
   //@{
   ///
@@ -61,7 +63,7 @@ public:
       RTOP_APPLY_OP_2_0(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
       Scalar sum = reduct_obj.get();
       for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s, v1_val += v1_s ) {
-        sum += (*v0_val) * (*v1_val) * (*v1_val);
+        sum += (*v0_val) * ST::conjugate(*v1_val) * (*v1_val);
       }
       reduct_obj.set(sum);
     }

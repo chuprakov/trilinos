@@ -37,7 +37,7 @@
 namespace RTOpPack {
 
 ///
-/** Dot product reduction operator: <tt>result = sum( v0[i]*v1[i], i=1...n )</tt>.
+/** Dot product reduction operator: <tt>result = sum( conj(v0[i])*v1[i], i=1...n )</tt>.
  */
 template<class Scalar>
 class ROpDotProd : public ROpScalarReductionBase<Scalar> {
@@ -56,16 +56,17 @@ public:
 		) const
     {
       using Teuchos::dyn_cast;
+			typedef Teuchos::ScalarTraits<Scalar> ST;
       ReductTargetScalar<Scalar> &reduct_obj = dyn_cast<ReductTargetScalar<Scalar> >(*_reduct_obj); 
       RTOP_APPLY_OP_2_0(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
       Scalar dot_prod = reduct_obj.get();
       if( v0_s == 1 && v1_s == 1 ) {
         for( RTOp_index_type i = 0; i < subDim; ++i )
-          dot_prod += (*v0_val++)*(*v1_val++);
+          dot_prod += ST::conjugate(*v0_val++)*(*v1_val++);
       }
       else {
         for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s, v1_val += v1_s )
-          dot_prod += (*v0_val)*(*v1_val);
+          dot_prod += ST::conjugate(*v0_val)*(*v1_val);
       }
       reduct_obj.set(dot_prod);
     }

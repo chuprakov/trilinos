@@ -40,12 +40,14 @@ namespace RTOpPack {
 /** One norm reduction operator: <tt>result = max( |v0[i]|, i=1...n )</tt>.
  */
 template<class Scalar>
-class ROpNorm1 : public ROpScalarReductionBase<Scalar> {
+class ROpNorm1 : public ROpScalarReductionBase<typename Teuchos::ScalarTraits<Scalar>::magnitudeType> {
 public:
   ///
   ROpNorm1() : RTOpT<Scalar>("ROpNorm1") {}
   ///
-  Scalar operator()(const ReductTarget& reduct_obj ) const { return this->getRawVal(reduct_obj); }
+  typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+	operator()(const ReductTarget& reduct_obj ) const
+		{ return this->getRawVal(reduct_obj); }
   /** @name Overridden from RTOpT */
   //@{
   ///
@@ -58,7 +60,7 @@ public:
       using Teuchos::dyn_cast;
       ReductTargetScalar<Scalar> &reduct_obj = dyn_cast<ReductTargetScalar<Scalar> >(*_reduct_obj); 
       RTOP_APPLY_OP_1_0(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
-      Scalar norm1 = reduct_obj.get();
+      typename Teuchos::ScalarTraits<Scalar>::magnitudeType norm1 = reduct_obj.get();
       if( v0_s == 1 ) {
         for( RTOp_index_type i = 0; i < subDim; ++i )
           norm1 += Teuchos::ScalarTraits<Scalar>::magnitude(*v0_val++);

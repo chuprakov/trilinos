@@ -67,7 +67,7 @@ public:
 		) const
     {
       const Scalar l = this->scalarData1(), u = this->scalarData2();
-      const Scalar a = 0.5*(u-l), b = 0.5*(u+l) ; // Linear coefficients for translating from [-1,+1] to [l,b]
+      const Scalar a = Scalar(0.5)*(u-l), b = Scalar(0.5)*(u+l) ; // Linear coefficients for translating from [-1,+1] to [l,b]
       RTOP_APPLY_OP_0_1(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
       for( RTOp_index_type i = 0; i < subDim; ++i, z0_val += z0_s ) {
         *z0_val = a * Teuchos::ScalarTraits<Scalar>::random() + b; // Should be in the range [l,b]

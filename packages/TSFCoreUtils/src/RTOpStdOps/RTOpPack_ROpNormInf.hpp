@@ -40,12 +40,13 @@ namespace RTOpPack {
 /** Infinity norm reduction operator: <tt>result = sum( |v0[i]|, i=1...n )</tt>.
  */
 template<class Scalar>
-class ROpNormInf : public ROpScalarReductionBase<Scalar> {
+class ROpNormInf : public ROpScalarReductionBase<typename Teuchos::ScalarTraits<Scalar>::magnitudeType> {
 public:
   ///
   ROpNormInf() : RTOpT<Scalar>("ROpNormInf") {}
   ///
-  Scalar operator()(const ReductTarget& reduct_obj ) const { return this->getRawVal(reduct_obj); }
+  typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+  operator()(const ReductTarget& reduct_obj ) const { return this->getRawVal(reduct_obj); }
   /** @name Overridden from RTOpT */
   //@{
   ///
@@ -70,16 +71,18 @@ public:
       using Teuchos::dyn_cast;
       ReductTargetScalar<Scalar> &reduct_obj = dyn_cast<ReductTargetScalar<Scalar> >(*_reduct_obj); 
       RTOP_APPLY_OP_1_0(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
-      Scalar norm_inf = reduct_obj.get();
+      typename Teuchos::ScalarTraits<Scalar>::magnitudeType norm_inf = reduct_obj.get();
       if( v0_s == 1 ) {
         for( RTOp_index_type i = 0; i < subDim; ++i ) {
-          const Scalar mag = Teuchos::ScalarTraits<Scalar>::magnitude(*v0_val++);
+          const typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+						mag = Teuchos::ScalarTraits<Scalar>::magnitude(*v0_val++);
           norm_inf = mag > norm_inf ? mag : norm_inf;
         }
       }
       else {
         for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s ) {
-          const Scalar mag = Teuchos::ScalarTraits<Scalar>::magnitude(*v0_val);
+          const typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+						mag = Teuchos::ScalarTraits<Scalar>::magnitude(*v0_val);
           norm_inf = mag > norm_inf ? mag : norm_inf;
         }
       }
