@@ -16,12 +16,9 @@
 #ifndef LINALGPACK_TYPES_H
 #define LINALGPACK_TYPES_H
 
-#include "BLAS_CppTypes.h"
 #include "LinAlgPackOptions.h"
-
-namespace RangePack {
-	class Range1D;
-}
+#include "Range1D.h"
+#include "BLAS_CppTypes.h"
 
 namespace LinAlgPack {
 
@@ -37,7 +34,9 @@ namespace LinAlgPack {
 
 ///
 using RangePack::Range1D;
-
+#ifdef _INTEL_CXX
+using RangePack::full_range;
+#endif
 ///
 using BLAS_Cpp::rows;
 ///
