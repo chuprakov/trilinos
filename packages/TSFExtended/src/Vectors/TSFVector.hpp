@@ -27,7 +27,7 @@ namespace TSFExtended
       Vector();
 
       /** Construct with an existing smart pointer */
-      Vector(RefCountPtr<TSFCore::Vector<Scalar> >& smartPtr);
+      Vector(const RefCountPtr<TSFCore::Vector<Scalar> >& smartPtr);
 
       /** \name Element loading interface */
       //@{
@@ -79,7 +79,7 @@ namespace TSFExtended
 
 
   template <class Scalar> inline 
-  Vector<Scalar>::Vector(RefCountPtr<TSFCore::Vector<Scalar> >& smartPtr)
+  Vector<Scalar>::Vector(const RefCountPtr<TSFCore::Vector<Scalar> >& smartPtr)
     : Handle<TSFCore::Vector<Scalar> >(smartPtr)
   {}
 
@@ -87,7 +87,7 @@ namespace TSFExtended
   const AccessibleVector<Scalar>* Vector<Scalar>::castToAccessible() const
   {
     const AccessibleVector<Scalar>* av 
-      = dynamic_cast<const AccessibleVector<Scalar>*>(ptr_.get());
+      = dynamic_cast<const AccessibleVector<Scalar>*>(ptr().get());
     TEST_FOR_EXCEPTION(av==0, std::runtime_error,
                        "Attempted to cast non-accessible vector "
                        << *this << " to an AccessibleVector");
@@ -98,8 +98,8 @@ namespace TSFExtended
   LoadableVector<Scalar>* Vector<Scalar>::castToLoadable()
   {
     LoadableVector<Scalar>* lv 
-      = dynamic_cast<LoadableVector<Scalar>*>(ptr_.get());
-    TEST_FOR_EXCEPTION(av==0, std::runtime_error,
+      = dynamic_cast<LoadableVector<Scalar>*>(ptr().get());
+    TEST_FOR_EXCEPTION(lv==0, std::runtime_error,
                        "Attempted to cast non-loadable vector "
                        << *this << " to a LoadableVector");
     return lv;

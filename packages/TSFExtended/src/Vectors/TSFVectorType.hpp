@@ -2,7 +2,7 @@
 #define TSFVECTORTYPE_HPP
 
 #include "TSFHandle.hpp"
-#include "TSFVectorTypeBase.hpp"
+#include "TSFCoreVectorSpaceFactory.hpp"
 #include "TSFVectorSpace.hpp"
 
 namespace TSFExtended
@@ -15,6 +15,8 @@ namespace TSFExtended
   class VectorType : public Handle<TSFCore::VectorSpaceFactory<Scalar> >
   {
   public:
+    /** */
+    VectorType(Handleable<TSFCore::VectorSpaceFactory<Scalar> >* ptr);
 
     /** */
     VectorSpace<Scalar> createSpace(int dimension) const ;
@@ -40,6 +42,18 @@ namespace TSFExtended
                                       int nGhost,
                                       const int* ghostIndices) const ;
   };
+
+  template <class Scalar> inline 
+  VectorType<Scalar>::VectorType(Handleable<TSFCore::VectorSpaceFactory<Scalar> >* ptr)
+    : Handle<TSFCore::VectorSpaceFactory<Scalar> >(ptr)
+  {;}
+
+
+  template <class Scalar> inline 
+  VectorSpace<Scalar> VectorType<Scalar>::createSpace(int dimension) const
+  {
+    return ptr()->createVecSpc(dimension);
+  }
   
 }
 

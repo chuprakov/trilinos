@@ -1395,7 +1395,7 @@ ac_configure="$SHELL $ac_aux_dir/configure" # This should be Cygnus configure.
 
 # Add the stamp file to the list of files AC keeps track of,
 # along with our hook.
-          ac_config_headers="$ac_config_headers src/TSFExtended_config.h:src/TSFExtended_config.h.in"
+          ac_config_headers="$ac_config_headers src/TSF_config.h:src/TSF_config.h.in"
 
 
 
@@ -8322,7 +8322,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 #  of tests.  New package comes only with src and example.
 #  You will need to change AC_CONFIG_FILES below and Makefile.am
 #  to add a new directory.
-                    ac_config_files="$ac_config_files Makefile src/Makefile"
+                                        ac_config_files="$ac_config_files Makefile src/Makefile test/Makefile test/VectorTests/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -8910,8 +8910,10 @@ do
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
+  "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
+  "test/VectorTests/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/VectorTests/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
-  "src/TSFExtended_config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS src/TSFExtended_config.h:src/TSFExtended_config.h.in" ;;
+  "src/TSF_config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS src/TSF_config.h:src/TSF_config.h.in" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
@@ -9499,8 +9501,8 @@ echo "$as_me: error: cannot create directory \"$ac_dir\"" >&2;}
   fi
   # Run the commands associated with the file.
   case $ac_file in
-    src/TSFExtended_config.h ) # update the timestamp
-echo 'timestamp for src/TSFExtended_config.h:src/TSFExtended_config.h.in' >"src/stamp-h1"
+    src/TSF_config.h ) # update the timestamp
+echo 'timestamp for src/TSF_config.h:src/TSF_config.h.in' >"src/stamp-h1"
  ;;
   esac
 done

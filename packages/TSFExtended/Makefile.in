@@ -175,11 +175,11 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 autom4te.cache/* \
 #endif
 
 #SUBDIRS = src $(TEST_SUBDIR
-SUBDIRS = src 
+SUBDIRS = src test
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/src/TSFExtended_config.h
+CONFIG_HEADER = $(top_builddir)/src/TSF_config.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
 

@@ -30,7 +30,8 @@ namespace TSFExtended
     {
     public:
       /** Construct with a smart pointer to an Epetra FE vector. */
-      //EpetraVector(const Epetra_FEVector& vec);
+      EpetraVector(const RefCountPtr<Epetra_Vector>& vec,
+                   const RefCountPtr<const TSFCore::EpetraVectorSpace>& map);
 
       /** virtual dtor */
       virtual ~EpetraVector() {;}

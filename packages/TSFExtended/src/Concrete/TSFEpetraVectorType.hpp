@@ -1,7 +1,9 @@
 #ifndef TSFEPETRAVECTORTYPE_HPP
 #define TSFEPETRAVECTORTYPE_HPP
 
+#include "TSFCoreEpetraVectorSpaceFactory.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
+#include "TSFHandleable.hpp"
 
 
 namespace TSFExtended
@@ -17,7 +19,7 @@ namespace TSFExtended
    * TSFCore-based code.
    */
   class EpetraVectorType : public TSFCore::EpetraVectorSpaceFactory,
-                           public VectorTypeExtensions<double>
+                           public Handleable<TSFCore::VectorSpaceFactory<double> >
   {
   public:
     /** Ctor needs no arguments */
@@ -26,29 +28,25 @@ namespace TSFExtended
     /** virtual dtor */
     virtual ~EpetraVectorType() {;}
 
+    /** create a vector space of dimension dim */
+    virtual RefCountPtr<const TSFCore::VectorSpace<double> > 
+    createVecSpc(int dimension) const ;
+
     /** create a vector space in which the local processor owns
      * indices \f$[firstLocal, firstLocal+nLocal]f$. */
-    virtual RefCountPtr<TSFCore::VectorSpace<Scalar> > 
+    virtual RefCountPtr<const TSFCore::VectorSpace<double> > 
     createVecSpc(int dimension, 
                  int nLocal,
                  int firstLocal) const  ;
       
     /** create a vector space in which the given local indices are owned by 
      * this processor */
-    virtual RefCountPtr<TSFCore::VectorSpace<Scalar> > 
+    virtual RefCountPtr<const TSFCore::VectorSpace<double> > 
     createVecSpc(int dimension, 
                  int nLocal,
                  const int* localIndices) const  ;
       
-    /** create a vector space in which the given local indices are owned
-     * by this processor, and the given ghost indices are available but
-     * not owned. */
-    virtual RefCountPtr<TSFCore::VectorSpace<Scalar> > 
-    createVecSpc(int dimension, 
-                 int nLocal,
-                 const int* localIndices,
-                 int nGhost,
-                 const int* ghostIndices) const  ;
+    
 
     /** \name Describable interface */
     //@{

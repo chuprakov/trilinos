@@ -18,7 +18,7 @@ namespace TSFExtended
    * TSFCore-based code.
    */
   class EpetraVectorSpace : public TSFCore::EpetraVectorSpace,
-                            public Handleable<TSFCore::VectorSpace<double> >,
+                            public Handleable<const TSFCore::VectorSpace<double> >,
                             public Describable
     {
     public:
@@ -31,6 +31,9 @@ namespace TSFExtended
       /** virtual dtor */
       virtual ~EpetraVectorSpace() {;}
 
+      /** */
+      virtual RefCountPtr<TSFCore::Vector<double> > createMember() const ;
+
       /** \name Describable interface */
       //@{
       /** Return a short description  */
@@ -38,7 +41,7 @@ namespace TSFExtended
       //@}
 
       /** \name Handleable interface */
-      virtual RefCountPtr<TSFCore::VectorSpace<double> > getRcp() 
+      virtual RefCountPtr<const TSFCore::VectorSpace<double> > getRcp() 
       {return rcp(this);}
     };
   

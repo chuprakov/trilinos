@@ -63,37 +63,20 @@ UTILS =
 
 CONCRETE_H = \
 	$(srcdir)/Concrete/TSFEpetraVector.hpp\
-	$(srcdir)/Concrete/TSFEpetraVectorSpace.hpp
+	$(srcdir)/Concrete/TSFEpetraVectorSpace.hpp\
+	$(srcdir)/Concrete/TSFEpetraVectorType.hpp
 
 CONCRETE = \
 	$(srcdir)/Concrete/TSFEpetraVector.cpp\
-	$(srcdir)/Concrete/TSFEpetraVectorSpace.cpp
+	$(srcdir)/Concrete/TSFEpetraVectorSpace.cpp\
+	$(srcdir)/Concrete/TSFEpetraVectorType.cpp
 
-TSFEXTENDED_INCLUDES =  \
--I$(top_builddir)/src \
--I$(top_srcdir)/src/Utils \
--I$(top_srcdir)/src/Vectors \
--I$(top_builddir)/src/Utils \
--I$(top_builddir)/src/Vectors 
 
-TSFCORE_INCLUDES =  \
--I$(top_builddir)/../TSFCore/src \
--I$(top_builddir)/../TSFCore/src/interfaces/Core \
--I$(top_builddir)/../TSFCore/src/utilities/Core \
--I$(top_builddir)/../TSFCore/src/adapters/aztecoo \
--I$(top_builddir)/../TSFCore/src/adapters/epetra \
--I$(top_builddir)/../TSFCore/src/adapters/mpi-base \
--I$(top_srcdir)/../TSFCore/src \
--I$(top_srcdir)/../TSFCore/src/interfaces/Core \
--I$(top_srcdir)/../TSFCore/src/utilities/Core \
--I$(top_srcdir)/../TSFCore/src/adapters/aztecoo \
--I$(top_srcdir)/../TSFCore/src/adapters/epetra \
--I$(top_srcdir)/../TSFCore/src/adapters/mpi-base \
--I$(top_srcdir)/../TSFCoreUtils/src \
--I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities \
--I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
--I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps \
--I$(top_builddir)/../TSFCoreUtils/src
+#
+# Read macros that are common to building source and tests. We define these
+# in Makefile.common to avoid maintaining the lists in multiple files.
+#
+include $(top_srcdir)/Makefile.common
 
 
 
@@ -102,9 +85,12 @@ TSFCORE_INCLUDES =  \
 #np# - Add packages that this package is dependent on
 #np#   Remove epetra if this package does not need it
 #  
-AM_CPPFLAGS = $(TSFEXTENDED_INCLUDES) $(TSFCORE_INCLUDES)\
- -I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src\
- -I$(top_srcdir)/../teuchos/src -I$(top_builddir)/../teuchos/src
+AM_CPPFLAGS = \
+	$(TSFEXTENDED_INCLUDES) \
+	$(TSFCORE_INCLUDES)\
+	$(EPETRA_INCLUDES)\
+	$(TEUCHOS_INCLUDES)
+
 
 #np# The following section can be duplicated for building multiple libraries -
 #np# make sure to list the correct categories with each library.

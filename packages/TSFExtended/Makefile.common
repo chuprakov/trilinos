@@ -1,0 +1,46 @@
+TSFEXTENDED_INCLUDES =  \
+-I$(top_builddir)/src \
+-I$(top_srcdir)/src/Utils \
+-I$(top_srcdir)/src/Vectors \
+-I$(top_srcdir)/src/Concrete \
+-I$(top_builddir)/src/Utils \
+-I$(top_builddir)/src/Vectors \
+-I$(top_builddir)/src/Concrete 
+
+TSFCORE_INCLUDES =  \
+-I$(top_builddir)/../TSFCore/src \
+-I$(top_builddir)/../TSFCore/src/interfaces/Core \
+-I$(top_builddir)/../TSFCore/src/utilities/Core \
+-I$(top_builddir)/../TSFCore/src/adapters/aztecoo \
+-I$(top_builddir)/../TSFCore/src/adapters/epetra \
+-I$(top_builddir)/../TSFCore/src/adapters/mpi-base \
+-I$(top_srcdir)/../TSFCore/src \
+-I$(top_srcdir)/../TSFCore/src/interfaces/Core \
+-I$(top_srcdir)/../TSFCore/src/utilities/Core \
+-I$(top_srcdir)/../TSFCore/src/adapters/aztecoo \
+-I$(top_srcdir)/../TSFCore/src/adapters/epetra \
+-I$(top_srcdir)/../TSFCore/src/adapters/mpi-base \
+-I$(top_srcdir)/../TSFCoreUtils/src \
+-I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities \
+-I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
+-I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps \
+-I$(top_builddir)/../TSFCoreUtils/src
+
+EPETRA_INCLUDES = \
+-I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src
+
+TEUCHOS_INCLUDES = \
+-I$(top_srcdir)/../teuchos/src -I$(top_builddir)/../teuchos/src
+
+
+TSF_EXTENDED_LIBS = $(top_builddir)/src/libTSFExtended.a
+
+TSF_CORE_LIBS = \
+	$(top_builddir)/../TSFCore/src/libTSFCore.a \
+  $(top_builddir)/../TSFCoreUtils/src/libTSFCoreUtils.a
+
+TEUCHOS_LIBS = \
+	$(top_builddir)/../teuchos/src/libteuchos.a
+
+EPETRA_LIBS = \
+	$(top_builddir)/../epetra/src/libepetra.a

@@ -6,13 +6,19 @@ using namespace TSFExtended;
 using TSFCore::Index;
 
 
-// EpetraVector::EpetraVector(const Epetra_FEVector& vec)
-//   : TSFCore::EpetraVector(vec) 
-// {;}
+EpetraVector::EpetraVector(const RefCountPtr<Epetra_Vector>& vec,
+                           const RefCountPtr<const TSFCore::EpetraVectorSpace>& vs)
+   : TSFCore::EpetraVector(vec, vs) 
+{;}
 
 void EpetraVector::setElement(Index index, const double& value)
 {
   (*epetra_vec())[index] = value;
+}
+
+void EpetraVector::addToElement(Index index, const double& value)
+{
+  (*epetra_vec())[index] += value;
 }
 
 const double& EpetraVector::getElement(Index index) const 

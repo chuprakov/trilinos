@@ -68,7 +68,7 @@ AC_CONFIG_AUX_DIR(config)
 #  #np# - Change file names in next line 
 # Configure should create src/New_Package_config.h from src/New_Package_config.h.in
 
-AM_CONFIG_HEADER(src/TSFExtended_config.h:src/TSFExtended_config.h.in)
+AM_CONFIG_HEADER(src/TSF_config.h:src/TSF_config.h.in)
 
 # AM_MAINTAINER_MODE turns off maintainer-only makefile targets by
 # default, and changes configure to understand a
@@ -367,6 +367,8 @@ AC_SUBST(ac_aux_dir)
 AC_CONFIG_FILES([
 		Makefile 
 		src/Makefile
+		test/Makefile
+		test/VectorTests/Makefile
 		])
 
 AC_OUTPUT()
