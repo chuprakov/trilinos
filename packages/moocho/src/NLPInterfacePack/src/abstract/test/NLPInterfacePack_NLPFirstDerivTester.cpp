@@ -14,6 +14,8 @@
 // above mentioned "Artistic License" for more details.
 
 #include <assert.h>
+#include <math.h>
+
 #include <iomanip>
 #include <sstream>
 
@@ -21,53 +23,67 @@
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
 #include "NLPInterfacePack/include/CalcFiniteDiffFirstDerivativeProduct.h"
 #include "NLPInterfacePack/include/CalcFiniteDiffFirstDerivatives.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "SparseLinAlgPack/test/CompareDenseVectors.h"
-#include "LinAlgPack/include/random_vector.h"
-#include "LinAlgPack/include/GenMatrixClass.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/MatVecCompare.h"
-#include "LinAlgPack/include/assert_print_nan_inf.h"
+#include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/include/assert_print_nan_inf.h"
+#include "Range1D.h"
+#include "update_success.h"
+#include "ThrowException.h"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 namespace NLPInterfacePack {
-namespace TestingPack {
 
 NLPFirstDerivativesTester::NLPFirstDerivativesTester(
-		  ETestingMethod		fd_testing_method
-		, size_type				num_fd_directions
-		, value_type			warning_tol
-		, value_type			error_tol
-		, const comp_Gc_ptr_t&	comp_Gc		)
-	:
-		  fd_testing_method_(fd_testing_method)
-		, num_fd_directions_(num_fd_directions)
-		, warning_tol_(warning_tol)
-		, error_tol_(error_tol)
-		, comp_Gc_(comp_Gc)
-{}	
+	ETestingMethod      fd_testing_method
+	,size_type          num_fd_directions
+	,value_type         warning_tol
+	,value_type         error_tol
+	)
+	:fd_testing_method_(fd_testing_method)
+	,num_fd_directions_(num_fd_directions)
+	,warning_tol_(warning_tol)
+	,error_tol_(error_tol)
+{}
 
 bool NLPFirstDerivativesTester::finite_diff_check(
-	  NLP						*nlp
-	, const VectorSlice			&xo
-	, const SpVectorSlice		*xl
-	, const SpVectorSlice		*xu
-	, const value_type			&max_var_bounds_viol
-	, const MatrixWithOp		*Gc
-	, const VectorSlice			*Gf
-	, bool						print_all_warnings
-	, std::ostream				*out
+	NLP                     *nlp
+	,const VectorWithOp     &xo
+	,const VectorWithOp     *xl
+	,const VectorWithOp     *xu
+	,const value_type       &max_var_bounds_viol
+	,const MatrixWithOp     *Gc
+	,const MatrixWithOp     *Gh
+	,const VectorWithOp     *Gf
+	,bool                   print_all_warnings
+	,std::ostream           *out
 	) const
 {
-	using LinAlgPack::assert_print_nan_inf;
+	using AbstractLinAlgPack::assert_print_nan_inf;
+
+	const size_type
+		n  = nlp->n(),
+		m  = nlp->m(),
+		mI = nlp->mI();
 
 	// ///////////////////////////////////
 	// Validate the input
 
-	// Check the input vectors
+	THROW_EXCEPTION(
+		!m && Gc, std::invalid_argument
+		,"NLPFirstDerivativesTester::finite_diff_check(...) : "
+		"Error, Gc must be NULL if m == 0" );
+	THROW_EXCEPTION(
+		!mI && Gh, std::invalid_argument
+		,"NLPFirstDerivativesTester::finite_diff_check(...) : "
+		"Error, Gh must be NULL if mI == 0" );
+
 	assert_print_nan_inf(xo, "xo",true,out);
 	if(Gf)
 		assert_print_nan_inf(*Gf, "Gf",true,out); 
@@ -78,20 +94,20 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 
 	switch(fd_testing_method_) {
 		case FD_COMPUTE_ALL:
-			return fd_check_all(nlp,xo,xl,xu,max_var_bounds_viol,Gc,Gf
+			return fd_check_all(nlp,xo,xl,xu,max_var_bounds_viol,Gc,Gh,Gf
 				,print_all_warnings,out);
 		case FD_DIRECTIONAL:
-			return fd_directional_check(nlp,xo,xl,xu,max_var_bounds_viol,Gc,Gf
+			return fd_directional_check(nlp,xo,xl,xu,max_var_bounds_viol,Gc,Gh,Gf
 				,print_all_warnings,out);
 		default:
 			assert(0);
 	}
 
 	} // end try
-	catch( const LinAlgPack::NaNInfException& except ) {
+	catch( const AbstractLinAlgPack::NaNInfException& except ) {
 		if(out)
 			*out
-				<< "Error, found a NaN or Inf.  Stoping tests\n";
+				<< "Error: found a NaN or Inf.  Stoping tests!\n";
 		success = false;
 	}
 	
@@ -101,27 +117,29 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 // private
 
 bool NLPFirstDerivativesTester::fd_check_all(
-	  NLP						*nlp
-	, const VectorSlice			&xo
-	, const SpVectorSlice		*xl
-	, const SpVectorSlice		*xu
-	, const value_type			&max_var_bounds_viol
-	, const MatrixWithOp		*Gc
-	, const VectorSlice			*Gf
-	, bool						print_all_warnings
-	, std::ostream				*out
+	NLP                     *nlp
+	,const VectorWithOp     &xo
+	,const VectorWithOp     *xl
+	,const VectorWithOp     *xu
+	,const value_type       &max_var_bounds_viol
+	,const MatrixWithOp     *Gc
+	,const MatrixWithOp     *Gh
+	,const VectorWithOp     *Gf
+	,bool                   print_all_warnings
+	,std::ostream           *out
 	) const
 {
 	using std::setw;
 	using std::endl;
 	using std::right;
 
+	assert(0); // ToDo: Update the below code!
+/*
 	using LinAlgPack::Vp_StV;
-	using LinAlgPack::sqrt_eps;
 	using LinAlgPack::assert_print_nan_inf;
 	using LinAlgOpPack::V_StV;
 
-	using SparseLinAlgPack::TestingPack::CompareDenseVectors;
+	using AbstractLinAlgPack::TestingPack::CompareDenseVectors;
 
 	using NLPInterfacePack::CalcFiniteDiffFirstDerivatives;
 
@@ -183,48 +201,59 @@ bool NLPFirstDerivativesTester::fd_check_all(
 	}
 
 	return success;
+
+*/
+
+	return false;
+
 }
 
 bool NLPFirstDerivativesTester::fd_directional_check(
-	  NLP						*nlp
-	, const VectorSlice			&xo
-	, const SpVectorSlice		*xl
-	, const SpVectorSlice		*xu
-	, const value_type			&max_var_bounds_viol
-	, const MatrixWithOp		*Gc
-	, const VectorSlice			*Gf
-	, bool						print_all_warnings
-	, std::ostream				*out
+	NLP                     *nlp
+	,const VectorWithOp     &xo
+	,const VectorWithOp     *xl
+	,const VectorWithOp     *xu
+	,const value_type       &max_var_bounds_viol
+	,const MatrixWithOp     *Gc
+	,const MatrixWithOp     *Gh
+	,const VectorWithOp     *Gf
+	,bool                   print_all_warnings
+	,std::ostream           *out
 	) const
 {
 	using std::setw;
 	using std::endl;
 	using std::right;
 
-	using LinAlgPack::dot;
-	using LinAlgPack::Vp_StV;
-	using LinAlgPack::sqrt_eps;
-	using LinAlgPack::assert_print_nan_inf;
-	using LinAlgPack::random_vector;
+	using AbstractLinAlgPack::sum;
+	using AbstractLinAlgPack::dot;
+	using AbstractLinAlgPack::Vp_StV;
+	using AbstractLinAlgPack::assert_print_nan_inf;
+	using AbstractLinAlgPack::random_vector;
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;
 
-	using SparseLinAlgPack::TestingPack::CompareDenseVectors;
-
-	using NLPInterfacePack::CalcFiniteDiffFirstDerivativeProduct;
-
-	using TestingHelperPack::update_success;
+//	using AbstractLinAlgPack::TestingPack::CompareDenseVectors;
+ 	using TestingHelperPack::update_success;
 
 	bool success = true, result;
 
 	const size_type
-		n = nlp->n(),
-		m = nlp->m();
+		n  = nlp->n(),
+		m  = nlp->m(),
+		mI = nlp->mI();
+
+	// //////////////////////////////////////////////
+	// Validate the input
+
+	NLP::vec_space_ptr_t
+		space_x = nlp->space_x(),
+		space_c = nlp->space_c(),
+		space_h = nlp->space_h();
 
 	CalcFiniteDiffFirstDerivativeProduct
 		fd_deriv_prod;
-	CompareDenseVectors	
-		comp_v;
+//	CompareDenseVectors	comp_v;
 
 	const value_type
 		rand_y_l = -1.0, rand_y_u = 1.0,
@@ -232,40 +261,47 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 
 	if(out)
 		*out
-			<< "\nComparing products Gf'*y and/or Gc'*y with finite difference values "
-				" FDGf'*y and/or FDGc'*y for random y's ...\n";
-	Vector y(n);
-	value_type max_Gf_warning_viol = 0.0;
-	int num_Gf_warning_viol = 0;
-	Vector Gc_prod, FDGc_prod;
-	if(Gc) {
-		Gc_prod.resize(m);
-		FDGc_prod.resize(m);
-	}
+			<< "\nComparing products Gf'*y Gc'*y and/or Gh'*y with finite difference values "
+				" FDGf'*y, FDGc'*y and/or FDGh'*y for random y's ...\n";
+
+	value_type  max_Gf_warning_viol = 0.0;
+	int         num_Gf_warning_viol = 0;
+
+	VectorSpace::vec_mut_ptr_t
+		y         = space_x->create_member(),
+		Gc_prod   = ( Gc ? space_c->create_member() : NULL ),
+		FDGc_prod = ( Gc ? space_c->create_member() : NULL ),
+		Gh_prod   = ( Gh ? space_c->create_member() : NULL ),
+		FDGh_prod = ( Gh ? space_c->create_member() : NULL );
+
 	for( int direc_i = 1; direc_i <= num_fd_directions(); ++direc_i ) {
-		random_vector( rand_y_l, rand_y_u, &y() );
+		random_vector( rand_y_l, rand_y_u, y.get() );
 		if(out)
 			*out
 				<< "\n****"
 				<< "\n**** Random directional vector " << direc_i << " ( ||y||_1 / n = "
-				<< LinAlgPack::norm_1(y()) / y.size() << " )"
+				<< (y->norm_1() / y->dim()) << " )"
 				<< "\n***\n";
 		// Compute exact??? values
 		value_type
-			Gf_y = Gf ? dot( *Gf, y() ) : 0.0;
+			Gf_y = Gf ? dot( *Gf, *y ) : 0.0;
 		if(Gc)
-			V_MtV( &Gc_prod(), *Gc, BLAS_Cpp::trans, y() );
+			V_MtV( Gc_prod.get(), *Gc, BLAS_Cpp::trans, *y );
+		if(Gh)
+			V_MtV( Gh_prod.get(), *Gh, BLAS_Cpp::trans, *y );
 		// Compute finite difference values
 		value_type
 			FDGf_y;
 		fd_deriv_prod.calc_deriv_product(
 			xo,xl,xu,max_var_bounds_viol
-			,y(),nlp
-			, Gf ? &FDGf_y : NULL
-			, Gc ? &FDGc_prod() : NULL
+			,*y,nlp
+			,Gf ? &FDGf_y : NULL
+			,Gc ? FDGc_prod.get() : NULL
+			,Gh ? FDGc_prod.get() : NULL
 			,out
 			);
 		// Compare the quantities
+		// Gf
 		assert_print_nan_inf(FDGf_y, "FDGf'*y",true,out);
 		const value_type
 			Gf_err = ::fabs( Gf_y - FDGf_y ) / ( ::fabs(Gf_y) + ::fabs(FDGf_y) + small_num );
@@ -285,16 +321,48 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 					<< "Stoping the tests!\n";
 			return false;
 		}
-		if(out)
-			*out
-				<< "\nChecking the computed FDGc'*y\n"
-				<< "where u(i) = (FDGc'*y)(i), v(i) = (Gc'*y)(i) ...\n";
-		bool result = comp_v.comp( FDGc_prod(), Gc_prod()
-						, warning_tol(), error_tol()
-						, print_all_warnings, out );
-		update_success( result, &success );
-		if(!result) return false;
-
+		// Gc
+		if(Gc) {
+			const value_type
+				sum_Gc_prod   = sum(*Gc_prod),
+				sum_FDGc_prod = sum(*FDGc_prod);
+			assert_print_nan_inf(sum_FDGc_prod, "sum(FDGc'*y)",true,out);
+			const value_type
+				calc_err = ::fabs( ( sum_Gc_prod - sum_FDGc_prod )
+								   /( ::fabs(sum_Gc_prod) + ::fabs(sum_FDGc_prod) + small_num ) );
+			if(out)
+				*out
+					<< "\nrel_err(sum(Gc'*y),sum(FDGc'*y)) = "
+					<< "rel_err(" << sum_Gc_prod << "," << sum_FDGc_prod << ") = "
+					<< calc_err << endl;
+			if( calc_err >= error_tol() ) {
+				if(out)
+					*out
+						<< "\nError, rel_err(sum(Gc'*y),sum(FDGc'*y)) = "
+						<< "rel_err(" << sum_Gc_prod << "," << sum_FDGc_prod << ") = "
+						<< calc_err << endl
+						<< "exceeded error_tol = " << error_tol() << endl
+						<< "Stoping the tests!\n";
+				if(print_all_warnings)
+					*out << "\ny =\n"          << *y
+						 << "\nGc_prod =\n"    << *Gc_prod
+						 << "\nFDGc_prod =\n"  << *FDGc_prod;
+				update_success( false, &success );
+				return false;
+			}
+			if( calc_err >= warning_tol() ) {
+				if(out)
+					*out
+						<< "\nWarning, rel_err(sum(Gc'*y),sum(FDGc'*y)) = "
+						<< "rel_err(" << sum_Gc_prod << "," << sum_FDGc_prod << ") = "
+						<< calc_err << endl
+						<< "exceeded warning_tol = " << warning_tol() << endl;
+			}
+		}
+		// Gh
+		if(Gh) {
+			assert(0); // ToDo: Implement for general inequalities!
+		}
 	}
 	if(out && num_Gf_warning_viol)
 		*out
@@ -311,5 +379,4 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 	return true;
 }
 
-}	// end namesapce TestingPack
 }	// end namespace NLPInterfacePack

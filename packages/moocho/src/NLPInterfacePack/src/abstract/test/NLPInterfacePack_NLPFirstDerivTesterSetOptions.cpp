@@ -43,7 +43,6 @@ namespace {
 }
 
 namespace NLPInterfacePack {
-namespace TestingPack {
 
 NLPFirstDerivativesTesterSetOptions::NLPFirstDerivativesTesterSetOptions(
 			  NLPFirstDerivativesTester* target
@@ -86,5 +85,4 @@ void NLPFirstDerivativesTesterSetOptions::set_option(
 	}
 }
 
-}	// end namesapce TestingPack
 }	// end namespace NLPInterfacePack
