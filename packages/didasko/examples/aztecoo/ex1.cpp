@@ -193,12 +193,23 @@ void  get_neighbours( const int i, const int nx, const int ny,
 
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef HAVE_MPI
+#include "mpi.h"
+#endif
 
 int main(int argc, char *argv[])
 {
+#ifdef HAVE_MPI
+  MPI_Init(&argc,&argv);
+#endif
+
   puts("Please configure Didasko with:\n"
        "--enable-epetra\n"
        "--enable-aztecoo");
+
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
 
   return 0;
 }

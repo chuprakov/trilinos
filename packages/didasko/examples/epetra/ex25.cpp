@@ -57,13 +57,6 @@ public:
     val_(val),
     Map_(Map)
   {
-    // check number of processes
-    if( Map_.Comm().NumProc() != 1 ) {
-      cerr << "*ERR* can be used only with one process" << endl;
-      // return success not to break the test
-      exit(EXIT_SUCCESS);
-    }
-    
   }
 
   // destructor, nothing to do
@@ -165,6 +158,12 @@ int main(int argc, char *argv[])
   Epetra_SerialComm Comm;
 #endif
 
+  // check number of processes
+  if( Comm.NumProc() != 1 ) {
+    cerr << "*ERR* can be used only with one process" << endl;
+    exit(EXIT_SUCCESS);
+  }
+    
   // process 0 will read an HB matrix, and store it
   // in the MSR format given by the arrays bindx and val
   int N_global;
@@ -198,7 +197,7 @@ int main(int argc, char *argv[])
   double norm2;
   yyy.Norm2(&norm2);
 
-  cout << norm2 << endl;
+  cout << norm2;
 
   // free memory allocated by Trilinos_Util_read_hb
   if (val != NULL) free((void*)val);

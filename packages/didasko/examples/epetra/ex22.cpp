@@ -71,17 +71,17 @@ public:
 		       double diag,
 		       double diag_plus_one,
 		       const Epetra_Map & Map) :
+    Map_( Map ),
     diag_minus_one_(diag_minus_one),
     diag_(diag),
-    diag_plus_one_(diag_plus_one),
-    Map_( Map )
+    diag_plus_one_(diag_plus_one)
   {
     // build the importer
     // Each local node will need the node+1 and node-1
     // (except for global node 0 and global node NumGlobalElemenets-1
     NumMyElements_ = Map_.NumMyElements();
     NumGlobalElements_ = Map_.NumGlobalElements();
-    int MyGlobalElements[NumMyElements_];
+    int* MyGlobalElements = new int[NumMyElements_];
     Map_.MyGlobalElements(MyGlobalElements);
 
     // count the nodes required from other processors
@@ -103,7 +103,7 @@ public:
     // (an external node is a node required for the matrix-vector
     // product, but owned by another process)
     int Length = count;
-    int ListOfNodes[Length];
+    int* ListOfNodes = new int[Length];
 
     count=0;
     for( int i=0 ; i<NumMyElements_ ; ++i ) {
@@ -139,6 +139,9 @@ public:
     ImportMap_ = new Epetra_Map(-1,count,ListOfNodes,0,Map_.Comm());
 
     Importer_ = new  Epetra_Import(*ImportMap_,Map_);
+
+    delete[] MyGlobalElements;
+    delete[] ListOfNodes;
 
     return;
     
@@ -185,7 +188,9 @@ public:
 
   // other function
   int SetUseTranspose( bool UseTranspose) 
-  {}
+  {
+    return(0);
+  }
 
   int ApplyInverse( const Epetra_MultiVector & X,
 		    Epetra_MultiVector & Y ) const
@@ -198,7 +203,7 @@ public:
     return( abs(diag_) + abs(diag_minus_one_) + abs(diag_plus_one_) );
   }
 
-  char * Label () const
+  const char * Label () const
   {
     return "TriDiagonalOperator";
   }
@@ -256,8 +261,6 @@ int main(int argc, char *argv[]) {
 #else
   Epetra_SerialComm Comm;
 #endif
-
-  int ierr;
 
   // global dimension of the problem, could be any positive number
   int NumGlobalElements( 5 );

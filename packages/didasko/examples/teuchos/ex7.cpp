@@ -1,10 +1,17 @@
 #include "Didasko_ConfigDefs.h"
+#ifdef HAVE_MPI
+#include "mpi.h"
+#endif
 #if defined(HAVE_DIDASKO_TEUCHOS)
 
 #include "Teuchos_CommandLineProcessor.hpp"
 
 int main(int argc, char* argv[])
 {
+#ifdef HAVE_MPI
+  MPI_Init(&argc,&argv);
+#endif
+
   // Creating an empty command line processor looks like:
   Teuchos::CommandLineProcessor My_CLP;
 
@@ -42,6 +49,9 @@ int main(int argc, char* argv[])
   //Finally, to parse the command line, argc and argv are passed to the parse method:
   My_CLP.parse( argc, argv );
 
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 
 #else
@@ -51,10 +61,16 @@ int main(int argc, char* argv[])
 
 int main(int argc, char *argv[])
 {
-  puts("Please configure Didasko with:\n"
-       "--enable-teuchos");
+#ifdef HAVE_MPI
+  MPI_Init(&argc,&argv);
+#endif
 
+  puts("Please configure Didasko with:");
+  puts("--enable-teuchos");
+
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 }
 #endif
-}

@@ -44,20 +44,11 @@
 #include "Epetra_Vector.h"
 #include "Epetra_FECrsMatrix.h"
 
-#endif
-
 // =========== //
 // main driver //
 // ----------- //
 
 int main(int argc, char *argv[]) {
-
-#ifndef HAVE_DIDASKO_EPETRA
-  puts("Please configure Didasko with:\n"
-       "--enable-epetra");
-
-  return 0;
-#endif
 
 #ifdef HAVE_MPI
   MPI_Init(&argc, &argv);
@@ -111,4 +102,29 @@ int main(int argc, char *argv[]) {
   return(EXIT_SUCCESS);
 
 }
+
+#else
+
+#include <stdlib.h>
+#include <stdio.h>
+#ifdef HAVE_MPI
+#include "mpi.h"
+#endif
+
+int main(int argc, char *argv[])
+{
+#ifdef HAVE_MPI
+  MPI_Init(&argc,&argv);
+#endif
+
+  puts("Please configure Didasko with:\n"
+       "--enable-epetra");
+
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
+  return 0;
+}
+#endif
+
 

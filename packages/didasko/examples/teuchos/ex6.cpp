@@ -1,11 +1,10 @@
 #include "Didasko_ConfigDefs.h"
+#ifdef HAVE_MPI
+#include "mpi.h"
+#endif
 #if defined(HAVE_DIDASKO_TEUCHOS)
 
 #include "Teuchos_TimeMonitor.hpp"
-
-#ifdef HAVE_MPI
-#include <mpi.h>
-#endif
 
 using namespace Teuchos;
 
@@ -79,9 +78,16 @@ double factFunc( int x )
 
 int main(int argc, char *argv[])
 {
+#ifdef HAVE_MPI
+  MPI_Init(&argc,&argv);
+#endif
+
   puts("Please configure Didasko with:\n"
        "--enable-teuchos");
 
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 }
 #endif

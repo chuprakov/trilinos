@@ -1,4 +1,7 @@
 #include "Didasko_ConfigDefs.h"
+#ifdef HAVE_MPI
+#include "mpi.h"
+#endif
 #if defined(HAVE_DIDASKO_TEUCHOS)
 
 #include "Teuchos_RefCountPtr.hpp"
@@ -17,6 +20,10 @@ using namespace Teuchos;
 
 int main(int argc, char* argv[])
 {
+
+#ifdef HAVE_MPI
+  MPI_Init(&argc,&argv);
+#endif
 
   // Create some reference-counted pointers.
   // Create a reference-counted NULL pointer of type A.
@@ -66,6 +73,9 @@ int main(int argc, char* argv[])
   // Get the raw C++ pointer.
   A* true_ptr = a_ptr1.get();
 
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 }
 
@@ -76,9 +86,16 @@ int main(int argc, char* argv[])
 
 int main(int argc, char *argv[])
 {
+#ifdef HAVE_MPI
+  MPI_Init(&argc,&argv);
+#endif
+
   puts("Please configure Didasko with:\n"
        "--enable-teuchos");
 
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 }
 #endif

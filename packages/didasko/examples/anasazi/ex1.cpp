@@ -30,8 +30,8 @@
 // Compute the lowest eigenvalue and the corresponding eigenvector
 
 #include "Didasko_ConfigDefs.h"
-#if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_ANASAZI) && defined(HAVE_DIDASKO_TEUCHOS) && defined(HAVE_DIDASKO_TRIUTILS) && NOT_DEFINED
-// this is not compatible with the new Anasazi
+#if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_ANASAZI) && defined(HAVE_DIDASKO_TEUCHOS) && defined(HAVE_DIDASKO_TRIUTILS) && defined(FIXME)
+//not compatible with the new anasazi interacae
 
 #include "Epetra_ConfigDefs.h"
 #ifdef HAVE_MPI
@@ -136,15 +136,25 @@ int main(int argc, char *argv[])
 
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef HAVE_MPI
+#include "mpi.h"
+#endif
 
 int main(int argc, char *argv[])
 {
-  puts("Please configure Didasko with:\n"
-       "--enable-epetra\n"
-       "--enable-teuchos\n"
-       "--enable-triutils\n"
-       "--enable-anasazi");
+#ifdef HAVE_MPI
+  MPI_Init(&argc, &argv);
+#endif
 
+  puts("Please configure Didasko with:");
+  puts("--enable-epetra");
+  puts("--enable-teuchos");
+  puts("--enable-triutils");
+  puts("--enable-anasazi");
+
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 }
 

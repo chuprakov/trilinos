@@ -1,10 +1,17 @@
 #include "Didasko_ConfigDefs.h"
 #if defined(HAVE_DIDASKO_TEUCHOS)
+#ifdef HAVE_MPI
+#include "mpi.h"
+#endif
 
 #include "Teuchos_SerialDenseMatrix.hpp"
 
 int main(int argc, char* argv[])
 {
+#ifdef HAVE_MPI
+  MPI_Init(&argc,&argv);
+#endif
+
   // Creating a double-precision matrix can be done in several ways:
   // Create an empty matrix with no dimension
   Teuchos::SerialDenseMatrix<int,double> Empty_Matrix;
@@ -62,6 +69,9 @@ int main(int argc, char* argv[])
   // A matrix can be sent to the output stream:
   cout<< My_Matrix << endl;
 
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 }
 
@@ -69,12 +79,22 @@ int main(int argc, char* argv[])
 
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef HAVE_MPI
+#include "mpi.h"
+#endif
 
 int main(int argc, char *argv[])
 {
+#ifdef HAVE_MPI
+  MPI_Init(&argc,&argv);
+#endif
+
   puts("Please configure Didasko with:\n"
        "--enable-teuchos");
 
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 }
 #endif

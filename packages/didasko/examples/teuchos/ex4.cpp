@@ -1,10 +1,17 @@
 #include "Didasko_ConfigDefs.h"
+#ifdef HAVE_MPI
+#include "mpi.h"
+#endif
 #if defined(HAVE_DIDASKO_TEUCHOS)
 
 #include "Teuchos_ParameterList.hpp"
 
 int main(int argc, char* argv[])
 {
+#ifdef HAVE_MPI
+  MPI_Init(&argc,&argv);
+#endif
+
   // Creating an empty parameter list looks like:
   Teuchos::ParameterList My_List;
 
@@ -85,6 +92,9 @@ int main(int argc, char* argv[])
   */ 
   My_List.unused( cout );
 
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 }
 
@@ -95,9 +105,16 @@ int main(int argc, char* argv[])
 
 int main(int argc, char *argv[])
 {
+#ifdef HAVE_MPI
+  MPI_Init(&argc,&argv);
+#endif
+
   puts("Please configure Didasko with:\n"
        "--enable-teuchos");
 
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 }
 #endif

@@ -1,10 +1,17 @@
 #include "Didasko_ConfigDefs.h"
 #if defined(HAVE_DIDASKO_TEUCHOS)
+#ifdef HAVE_MPI
+#include "mpi.h"
+#endif
 
 #include "Teuchos_BLAS.hpp"
 
 int main(int argc, char* argv[])
 {
+#ifdef HAVE_MPI
+  MPI_Init(&argc,&argv);
+#endif
+
   // Creating an instance of the BLAS class for double-precision kernels looks like:
   Teuchos::BLAS<int, double> blas;
 
@@ -19,6 +26,9 @@ int main(int argc, char* argv[])
       <<  max_idx <<"-th and x[ " << max_idx-1 << " ] = "<< x[max_idx-1] 
       << endl;
   
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 }
 #else

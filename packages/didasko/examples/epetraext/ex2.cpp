@@ -166,14 +166,24 @@ int main(int argc, char *argv[]) {
 #else
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef HAVE_MPI
+#include "mpi.h"
+#endif
 
 int main(int argc, char *argv[])
 {
+#ifdef HAVE_MPI
+  MPI_Init(&argc,&argv);
+#endif
+
   puts("Please configure Didasko with:\n"
        "--enable-epetra\n"
        "--enable-epetraext\n"
        "--enable-epetraext-zoltan");
 
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
   return 0;
 }
 
