@@ -21,7 +21,7 @@ namespace QPSchurPack {
   
   (1.2)               etaL <=  eta
   (1.3)               dL   <=  d                       <= dU
-  (1.4)               eL   <=  op(E)*d + b*eta         <= eU
+  (1.4)               eL   <=  op(E)*d - b*eta         <= eU
   (1.5)                        op(F)*d + (1 - eta) * f  = 0
   
   \end{verbatim}
@@ -31,7 +31,7 @@ namespace QPSchurPack {
 
        [ dL   ]     [ I           ]              [ dU   ]
        [ etaL ] <=  [          1  ] * [  d  ] <= [ inf  ]
-  (2)  [ eL   ]     [ op(E)    b  ]   [ eta ]    [ eU   ]
+  (2)  [ eL   ]     [ op(E)    -b ]   [ eta ]    [ eU   ]
        [ -f   ]     [ op(F)    -f ]              [ -f   ]
        \______/     \_____________/   \_____/    \______/
         cL_bar           A_bar'          x        cU_bar

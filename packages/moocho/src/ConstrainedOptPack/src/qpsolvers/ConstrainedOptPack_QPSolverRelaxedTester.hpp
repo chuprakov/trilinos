@@ -10,7 +10,7 @@
 namespace ConstrainedOptimizationPack {
 
 ///
-/** Tests the optimality conditions of the output from a QPSolverRelaxed
+/** Tests the optimality conditions of the output from a \Ref{QPSolverRelaxed}
   * object.
   *
   * For the given QP and is solution (if solved) this class tests
@@ -30,15 +30,15 @@ namespace ConstrainedOptimizationPack {
 	  
 	(4.1)  etaL <=  eta
 	(4.2)  dL   <=  d                       <= dU
-	(4.3)  eL   <=  op(E)*d + b*eta         <= eU
+	(4.3)  eL   <=  op(E)*d - b*eta         <= eU
 	(4.4)  op(F)*d + (1 - eta) * f  = 0
 
 	Complementarity:
 
 	(5.1)  nu(i) * (dL - d)(i), if nu(i) <= 0, i = 1...n
 	(5.2)  nu(i) * (d - dU)(i), if nu(i) >= 0, i = 1...n
-	(5.3)  mu(j) * (eL - op(E)*d - b*eta)(j), if mu(j) <= 0, j = 1...m_in
-	(5.4)  mu(j) * (op(E)*d + b*eta - eU)(j), if mu(j) >= 0, j = 1...m_in
+	(5.3)  mu(j) * (eL - op(E)*d + b*eta)(j), if mu(j) <= 0, j = 1...m_in
+	(5.4)  mu(j) * (op(E)*d - b*eta - eU)(j), if mu(j) >= 0, j = 1...m_in
  
   \end{verbatim}
   *
@@ -127,7 +127,7 @@ public:
 	  * which accepts various sets of constraints.
 	  *
 	  *	@param	solution_type
-	  *						[I]	Value returned from QPSolverRelaxed::solve_qp(...).
+	  *						[in] Value returned from QPSolverRelaxed::solve_qp(...).
 	  *							The exact optimality conditions enforced is determined
 	  *							by this argument.  All of the optimality conditions are
 	  *							checked.
@@ -139,30 +139,30 @@ public:
 	  *								 	(2) and (6.1)-(6.4) are enforced.
 	  *								SUBOPTIMAL_POINT : None of the optimality conditions
 	  *								 	are enforced.
-	  *	@param	out			[O]	If != NULL, the output is sent to this stream.
+	  *	@param	out			[out] If != NULL, the output is sent to this stream.
 	  *	@param	print_all_warnings
-	  *						[I]	If true, then all errors greater than warning_tol will
+	  *						[in] If true, then all errors greater than warning_tol will
 	  *							be printed.
-	  *	@param	g			[I]	Input to QPSolverRelaxed::solve_qp(...).
-	  *	@param	G			[I]	Input to QPSolverRelaxed::solve_qp(...).
-	  *	@param	etaL		[I]	Input to QPSolverRelaxed::solve_qp(...).
-	  *	@param	dL			[I]	Input to QPSolverRelaxed::solve_qp(...).
-	  *	@param	dU			[I]	Input to QPSolverRelaxed::solve_qp(...).
-	  *	@param	E			[I]	Input to QPSolverRelaxed::solve_qp(...).
-	  *	@param	trans_E		[I]	Input to QPSolverRelaxed::solve_qp(...).
-	  *	@param	b			[I]	Input to QPSolverRelaxed::solve_qp(...).
-	  *	@param	eL			[I]	Input to QPSolverRelaxed::solve_qp(...).
-	  *	@param	eU			[I]	Input to QPSolverRelaxed::solve_qp(...).
-	  *	@param	F			[I]	Input to QPSolverRelaxed::solve_qp(...).
-	  *	@param	trans_F		[I]	Input to QPSolverRelaxed::solve_qp(...).
-	  *	@param	f			[I]	Input to QPSolverRelaxed::solve_qp(...).
-	  *	@param	obj_d		[I]	Output from QPSolverRelaxed::solve_qp(...).
-	  *	@param	eta			[I]	Output from QPSolverRelaxed::solve_qp(...).
-	  *	@param	d 			[I]	Output from QPSolverRelaxed::solve_qp(...).
-	  *	@param	nu			[I]	Output from QPSolverRelaxed::solve_qp(...).
-	  *	@param	mu 			[I]	Output from QPSolverRelaxed::solve_qp(...).
-	  *	@param	Ed			[I]	Output from QPSolverRelaxed::solve_qp(...).
-	  *	@param	Fd			[I]	Output from QPSolverRelaxed::solve_qp(...).
+	  *	@param	g			[in] Input to QPSolverRelaxed::solve_qp(...).
+	  *	@param	G			[in] Input to QPSolverRelaxed::solve_qp(...).
+	  *	@param	etaL		[in] Input to QPSolverRelaxed::solve_qp(...).
+	  *	@param	dL			[in] Input to QPSolverRelaxed::solve_qp(...).
+	  *	@param	dU			[in] Input to QPSolverRelaxed::solve_qp(...).
+	  *	@param	E			[in] Input to QPSolverRelaxed::solve_qp(...).
+	  *	@param	trans_E		[in] Input to QPSolverRelaxed::solve_qp(...).
+	  *	@param	b			[in] Input to QPSolverRelaxed::solve_qp(...).
+	  *	@param	eL			[in] Input to QPSolverRelaxed::solve_qp(...).
+	  *	@param	eU			[in] Input to QPSolverRelaxed::solve_qp(...).
+	  *	@param	F			[in] Input to QPSolverRelaxed::solve_qp(...).
+	  *	@param	trans_F		[in] Input to QPSolverRelaxed::solve_qp(...).
+	  *	@param	f			[in] Input to QPSolverRelaxed::solve_qp(...).
+	  *	@param	obj_d		[in] Output from QPSolverRelaxed::solve_qp(...).
+	  *	@param	eta			[in] Output from QPSolverRelaxed::solve_qp(...).
+	  *	@param	d 			[in] Output from QPSolverRelaxed::solve_qp(...).
+	  *	@param	nu			[in] Output from QPSolverRelaxed::solve_qp(...).
+	  *	@param	mu 			[in] Output from QPSolverRelaxed::solve_qp(...).
+	  *	@param	Ed			[in] Output from QPSolverRelaxed::solve_qp(...).
+	  *	@param	Fd			[in] Output from QPSolverRelaxed::solve_qp(...).
 	  *
 	  * @return #true# if all of the errors are greater than the error tolerances
 	  * 	, otherwise it returns #false#

@@ -459,13 +459,13 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		// e = op(E)*d + b*eta
 		if(out)
 			*out
-				<< "\nComputing e = op(E)*d + b*eta ...\n";
+				<< "\nComputing e = op(E)*d - b*eta ...\n";
 		V_MtV( &e, *E, trans_E, *d );
-		Vp_StV( &e(), *eta, *b );
+		Vp_StV( &e(), -(*eta), *b );
 		e_norm_inf = norm_inf(e());	
 		if(out && print_vectors)
 			*out
-				<< "e = op(E)*d + b*eta  =\n" << e();
+				<< "e = op(E)*d - b*eta  =\n" << e();
 
 		///////////////////////////////////
 		// eL - e <= 0

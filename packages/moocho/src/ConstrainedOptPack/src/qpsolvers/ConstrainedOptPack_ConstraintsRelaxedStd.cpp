@@ -318,7 +318,7 @@ void ConstraintsRelaxedStd::pick_violated(
 	else {
 		// Find the most violated inequality constraint
 		if( A_bar_.m_in() &&  ( eL_->nz() || eU_->nz() ) ) {
-			// e = op(E)*d + b*eta
+			// e = op(E)*d - b*eta
 			Vector e;
 			LinAlgOpPack::V_MtV( &e, *A_bar_.E(), A_bar_.trans_E(), d );
 			if(Ed_) {
@@ -326,7 +326,7 @@ void ConstraintsRelaxedStd::pick_violated(
 				Ed_computed = true;
 			}
 			const value_type scale = 1.0 / (1.0 + norm_inf(e));
-			LinAlgPack::Vp_StV( &e(), eta, *A_bar_.b() );
+			LinAlgPack::Vp_StV( &e(), -eta, *A_bar_.b() );
 			// r = eL - e
 			r.resize(A_bar_.m_in());
 			imp_sparse_bnd_diff( +1, *eL_, BLAS_Cpp::lower, e(), &r() );
@@ -532,7 +532,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Mp_StPtMtP(
 
 	//	
 	//	A_bar = [  I   0  op(E')   op(F')  ]
-	//	        [  0   1    b'      -f'    ]
+	//	        [  0   1   -b'      -f'    ]
 	//
 
 	const size_type
@@ -565,12 +565,12 @@ void ConstraintsRelaxedStd::MatrixConstraints::Mp_StPtMtP(
 		// C += a * op(P1) * A_bar * op(P2)
 		//
 		//    = a * [ op(P11)  op(P12) ] * [ I  0  op(E')  op(F') ] * [ op(P21) ]
-		//                                 [ 0  1    b'     -f'   ]   [ op(P22) ]
+		//                                 [ 0  1    -b'    -f'   ]   [ op(P22) ]
 		//                                                            [ op(P23) ]
 		//                                                            [ op(P24) ]
 		//
 		// C +=   a*op(P11)*op(P21) + a*op(P21)*op(P22)
-		//      + a*op(P11)*op(E')*op(P23) + a*op(P12)*b'*op(P23)
+		//      + a*op(P11)*op(E')*op(P23) - a*op(P12)*b'*op(P23)
 		//      + a*op(P11)*op(F')*op(P24) - a*op(P12)*f'*op(P24)
 		//      
 
@@ -597,7 +597,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 
 	//	
 	//	A_bar = [  I   0  op(E')   op(F')  ]
-	//	        [  0   1    b'      -f'    ]
+	//	        [  0   1   -b'      -f'    ]
 	//
 
 	const size_type
@@ -620,12 +620,12 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 		// y += a* A_bar * x
 		// 
 		//   += a * [ I  0  op(E')  op(F') ] * [ x1 ]
-		//          [ 0  1    b'     -f'   ]   [ x2 ]
+		//          [ 0  1   -b'     -f'   ]   [ x2 ]
 		//                                     [ x3 ]
 		//                                     [ x4 ]
 		//
 		// [ y1 ]  += [ a * x1 + a * op(E') * x3 + a * op(F') * x4 ]
-		// [ y2 ]     [ a * x2 + a * b' * x3     - a * f' * x4     ]
+		// [ y2 ]     [ a * x2 - a * b' * x3     - a * f' * x4     ]
 		//
 		VectorSlice
 			y1 = (*y)(d_rng);
@@ -645,10 +645,10 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 			Vp_StMtV( &y1, a, *E(), trans_not( trans_E() ), x3 );
 		if( m_eq() )
 			Vp_StMtV( &y1, a, *F(), trans_not( trans_F() ), x4 );
-		// [ y2 ]  += [ a * x2 + a * b' * x3     - a * f' * x4     ]
+		// [ y2 ]  += [ a * x2 - a * b' * x3     - a * f' * x4     ]
 		y2 += a * x2;
 		if( m_in() )
-			y2 += a * dot( *this->b(), x3 );
+			y2 += - a * dot( *this->b(), x3 );
 		if( m_eq() )
 			y2 += - a * dot( *f(), x4 );
 	}
@@ -658,12 +658,12 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 		// 
 		//   += a * [ I       0 ] * [ x1 ]
 		//          [ 0       1 ]   [ x2 ]
-		//          [ op(E)   b ]
+		//          [ op(E)  -b ]
 		//          [ op(F)  -f ]
 		//
 		// [ y1 ]    [ a * x1                        ]
 		// [ y2 ]    [                + a * x2       ]
-		// [ y3 ] += [ a * op(E) * x1 + a * b * x2   ]
+		// [ y3 ] += [ a * op(E) * x1 - a * b * x2   ]
 		// [ y4 ]    [ a * op(F) * x1 - a * f * x2   ]
 		//
 		VectorSlice
@@ -681,10 +681,10 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 		Vp_StV( &y1, a, x1 );
 		// y2 += a * x2
 		y2 += a * x2;
-		// y3 += a * op(E) * x1 + (a*x2) * b
+		// y3 += a * op(E) * x1 - (a*x2) * b
 		if( m_in() ) {
 			Vp_StMtV( &y3, a, *E(), trans_E(), x1 );
-			Vp_StV( &y3, a * x2, *this->b() );
+			Vp_StV( &y3, - a * x2, *this->b() );
 		}
 		// y4 += a * op(F) * x1 - (a*x2) * f
 		if( m_eq() ) {
@@ -716,7 +716,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 
 	//	
 	//	A_bar = [  I   0  op(E')   op(F')  ]
-	//	        [  0   1    b'      -f'    ]
+	//	        [  0   1   -b'      -f'    ]
 	//
 
 	const size_type
@@ -747,12 +747,12 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 		//   = beta * y
 		//   
 		//    + a * [op(P1)  op(P2) ] * [ I  0  op(E')  op(F') ] * [ x1 ]
-		//                              [ 0  1    b'     -f'   ]   [ x2 ]
+		//                              [ 0  1   -b'     -f'   ]   [ x2 ]
 		//                                                         [ x3 ]
 		//                                                         [ x4 ]
 		//
 		// y = beta*y + a*op(P1)*x1 + a*op(P1)*op(E')*x3 + a*op(P1)*op(F')*x4
-		//     + a*op(P2)*x2 + a*op(P2)*b'*x3 - a*op(P2)*f'*x4
+		//     + a*op(P2)*x2 - a*op(P2)*b'*x3 - a*op(P2)*f'*x4
 		//
 		// Where:
 		//   op(P1) = op(P)(:,1:nd)
@@ -780,12 +780,12 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 		if( m_eq() )
 			Vp_StPtMtV( y, a, P1, P_trans, *F(), trans_not(trans_F()), x4 );
 		//
-		// y += a*op(P2)*x2 + a*op(P2)*b'*x3 - a*op(P2)*f'*x4
+		// y += a*op(P2)*x2 - a*op(P2)*b'*x3 - a*op(P2)*f'*x4
 		//   += a * op(P2) * ( x2 + b'*x3 - f'*x4 )
 		//   
 		//   ==>
 		//   
-		// y(i) +=  a * ( x2 + b'*x3 - f'*x4 )
+		// y(i) +=  a * ( x2 - b'*x3 - f'*x4 )
 		//   
 		if( P2.nz() ){
 			assert(P2.nz() == 1);
@@ -795,7 +795,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 			value_type
 				&y_i = (*y)(i) += a * x2;
 			if(m_in())
-				y_i += a * dot(*this->b(),x3);
+				y_i += -a * dot(*this->b(),x3);
 			if(m_eq())
 				y_i += -a * dot(*this->f(),x4);
 		}
@@ -808,10 +808,10 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 		//   
 		//    + a * [ P1  P2  P3  P4 ] * [ I       0 ] * [ x1 ]
 		//                               [ 0       1 ]   [ x2 ]
-		//                               [ op(E)   b ]
+		//                               [ op(E)  -b ]
 		//                               [ op(F)  -f ]
 		//
-		// y = beta*y + a*P1*x1 + a*P2*x2 + a*P3*op(E)*x1 + a*P3*b*x2
+		// y = beta*y + a*P1*x1 + a*P2*x2 + a*P3*op(E)*x1 - a*P3*b*x2
 		//     + a*P4*op(F)*x1 - a*P4*f*x2
 		//
 		// Where:
@@ -855,8 +855,8 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 		if(m_in()) {
 			// y += a*P3*op(E)*x1
 			Vp_StPtMtV( y, a, P3, P_trans, *E(), trans_E(), x1 );
-			// y += (a*x2)*P3*b
-			Vp_StMtV( y, a * x2, P3, P_trans, *this->b() );
+			// y += (-a*x2)*P3*b
+			Vp_StMtV( y, - a * x2, P3, P_trans, *this->b() );
 		}
 		if(m_eq()) {
 			// y += a*P4*op(F)*x1

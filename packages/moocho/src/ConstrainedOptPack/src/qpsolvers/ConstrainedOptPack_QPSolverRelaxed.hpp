@@ -21,7 +21,7 @@ namespace ConstrainedOptimizationPack {
          s.t.
   (1.2)               etaL <=  eta
   (1.3)               dL   <=  d                       <= dU
-  (1.4)               eL   <=  op(E)*d + b*eta         <= eU
+  (1.4)               eL   <=  op(E)*d - b*eta         <= eU
   (1.5)                        op(F)*d + (1 - eta) * f  = 0
   
   \end{verbatim}
@@ -39,7 +39,7 @@ namespace ConstrainedOptimizationPack {
 	     + nuL' * (dL - d)
 	     + nuU' * (d - dU)
 	     + muL' * (eL - op(E)*d - b*eta)
-	     + muU' * (op(E)*d + b*eta - eU)
+	     + muU' * (op(E)*d - b*eta - eU)
 		 + lambda' * (op(F)*d + (1 - eta) * f)
 	
   \end{verbatim}
@@ -53,28 +53,28 @@ namespace ConstrainedOptimizationPack {
 	  
 	     where: nu = nuU - nuL, mu = muU - muL
 
-	(3)  d(L)/d(eta) = d(M)/d(eta) - kappa + b'*mu - f'*lambda = 0
+	(3)  d(L)/d(eta) = d(M)/d(eta) - kappa - b'*mu - f'*lambda = 0
 	  
 	Feasibility:
 	  
 	(4.1)  etaL <=  eta
 	(4.2)  dL   <=  d                       <= dU
-	(4.3)  eL   <=  op(E)*d + b*eta         <= eU
+	(4.3)  eL   <=  op(E)*d - b*eta         <= eU
 	(4.4)  op(F)*d + (1 - eta) * f  = 0
 
 	Complementarity:
 
 	(5.1)  nu(i) * (dL - d)(i) \approx 0, if nu(i) <= 0, i = 1...n
 	(5.2)  nu(i) * (d - dU)(i) \approx 0, if nu(i) >= 0, i = 1...n
-	(5.3)  mu(j) * (eL - op(E)*d - b*eta)(j) \approx 0, if mu(j) <= 0, j = 1...m_in
-	(5.4)  mu(j) * (op(E)*d + b*eta - eU)(j) \approx 0, if mu(j) >= 0, j = 1...m_in
+	(5.3)  mu(j) * (eL - op(E)*d + b*eta)(j) \approx 0, if mu(j) <= 0, j = 1...m_in
+	(5.4)  mu(j) * (op(E)*d - b*eta - eU)(j) \approx 0, if mu(j) >= 0, j = 1...m_in
 
 	Nonnegativity of Lagrange Multipliers for Inequality Constraints:
 
 	(6.1)  nu(i) <= 0 if (dL - d)(i) \approx 0, i = 1...n
 	(6.2)  nu(i) >= 0 if (d - dU)(i) \approx 0, i = 1...n
 	(6.3)  mu(j) <= 0 if (eL - op(E)*d - b*eta)(j) \approx 0, j = 1...m_in
-	(6.4)  mu(j) >= 0 if (op(E)*d + b*eta - eU)(j) \approx 0, j = 1...m_in
+	(6.4)  mu(j) >= 0 if (op(E)*d - b*eta - eU)(j) \approx 0, j = 1...m_in
 
   \end{verbatim}
   * The optimal #d# and #eta# are determined as well as the lagrange multipliers
@@ -83,7 +83,7 @@ namespace ConstrainedOptimizationPack {
 
 	nu :       dL <= d <= dU
  
-	mu :       eL <= op(E)*d + b*eta <= eU
+	mu :       eL <= op(E)*d - b*eta <= eU
 
 	lambda :   op(F)*d + (1 - eta) * f  = 0
 
