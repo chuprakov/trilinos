@@ -11,7 +11,7 @@
 namespace Epetra {
 
 ///
-/** Struct for passing Epetra_Operator or Epetra_MultiVector
+/** Simple class for passing and Epetra_Operator or Epetra_MultiVector object.
  *
  * <b>Assertions:</b>
  * <ul>
@@ -58,7 +58,27 @@ public:
 	//@{
 
 	///
-	virtual Teuchos::RefCountPtr<Epetra_Operator> create_DcDy() const = 0;
+	virtual Teuchos::RefCountPtr<Epetra_Operator> create_DcDy_op() const = 0;
+  
+  ///
+  /** Determines if <tt>this</tt> can create and define a specialized preconditioner for DcDy.
+   *
+   * The default implementation returns <tt>false</tt>.
+   */
+  virtual bool specialized_DcDy_prec() const;
+
+	///
+  /** Create a (possibly uninitialized) specialized preconditioner for DcDy.
+   *
+   * <b>Postconditions:</b>
+   * <ul>
+   * <li> [<tt>this->specialized_DcDy_prec()==true</tt>] <tt>this->create_DcDy_prec().get()!=NULL</tt>
+   * <li> [<tt>this->specialized_DcDy_prec()==false</tt>] <tt>this->create_DcDy_prec().get()==NULL</tt>
+   * </ul>
+   *
+   * The default implementation returns <tt>return.get()==NULL</tt>.
+   */
+	virtual Teuchos::RefCountPtr<Epetra_Operator> create_DcDy_prec() const;
 
   /// Return if a <tt>Epetra_Operator</tt> is used for <tt>DcDu(l)</tt>.
   /**
@@ -86,7 +106,35 @@ public:
    *
    * The default implementation returns <tt>return.get()==NULL</tt>.
    */
- 	virtual Teuchos::RefCountPtr<Epetra_Operator> create_DcDu(int l) const;
+ 	virtual Teuchos::RefCountPtr<Epetra_Operator> create_DcDu_op(int l) const;
+
+	///
+  /** Returns a (potentially uninitialized) <tt>Epetra_MultiVector</tt> that will store
+   * <tt>D(c)/D(u(l))</tt>.
+   *
+   * <b>Postconditions:</b>
+   * <ul>
+   * <li> [<tt>this->use_EO_DcDu(l)==false</tt>] <tt>this->create_DcDu_mv(l).get()!=NULL</tt>
+   * <li> [<tt>this->use_EO_DcDu(l)==true</tt>] <tt>this->create_DcDu_mv(l).get()==NULL</tt>
+   * </ul>
+   *
+   * The default implementation returns
+   *\verbatim
+    if(this->use_EO_DcDu(l)) {
+      return Teuchos::null;
+    }
+    else {
+      return Teuchos::rcp(
+        new Epetra_MultiVector(
+          *this->map_c()
+          ,map_u(l)->NumGlobalElements()
+          )
+        );
+    }
+   *\endverbatim
+
+   */
+ 	virtual Teuchos::RefCountPtr<Epetra_MultiVector> create_DcDu_mv(int l) const;
 
 	//@}
 
@@ -109,7 +157,8 @@ public:
 		const Epetra_Vector           &y
 		,const Epetra_Vector*         u[]
     ,Epetra_Vector                *c
-    ,Epetra_Operator              *DcDy
+    ,Epetra_Operator              *DcDy_op
+    ,Epetra_Operator              *DcDy_prec
     ,const EpetraOp_or_EpetraMV   DcDu[]
     ) const = 0;
 

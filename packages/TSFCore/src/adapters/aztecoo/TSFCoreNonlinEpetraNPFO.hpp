@@ -9,13 +9,36 @@
 #include "Epetra_NonlinearProblemFirstOrder.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVector.hpp"
-#include "Ifpack_IlukGraph.h"
+#include "Ifpack_PrecGenerator.hpp"
 
 namespace TSFCore {
 namespace Nonlin {
 
+///
+/** Adds first-derivatives to <tt>NonlinearProblem</tt> as Epetra objects.
+ *
+ * Note: this class is setup for the default case where only a square
+ * set if equations are defined and if optimization is performed then
+ * DcDu are all <tt>Epetra_MultiVector</tt> objects.
+ *
+ * ToDo: Finish documentation!
+ */
 class EpetraNPFO : public NonlinearProblemFirstOrder<double> {
 public:
+
+  ///
+  /** Give mutable access to the object used to generate
+   * preconditioners.
+   *
+   * The purpose of this function is to allow clients to change the
+   * options that affect how preconditioners are generated.
+   */
+  Ifpack::PrecGenerator& precGenerator();
+
+  ///
+  /** Same as above except is constant.
+   */
+  const Ifpack::PrecGenerator& precGenerator() const;
 
 	/** @name Constructors / Initializers / accessors */
 	//@{
@@ -191,6 +214,8 @@ private:
 
 	bool isInitialized_;
 
+  Ifpack::PrecGenerator   precGenerator_;
+
   Teuchos::RefCountPtr<Epetra::NonlinearProblemFirstOrder>        epetra_np_;
 
 	Teuchos::RefCountPtr<const EpetraVectorSpace >                  space_y_;
@@ -222,8 +247,6 @@ private:
   std::vector<EpetraMultiVector*>                 DcDu_mv_;
   EpetraMultiVector                               *DgDy_;
   std::vector<EpetraMultiVector*>                 DgDu_;
-
-  mutable Teuchos::RefCountPtr<Ifpack_IlukGraph>  epetra_DcDy_iluk_graph_;
 
   mutable std::vector<Teuchos::RefCountPtr<Epetra_Operator> >     epetra_DcDu_op_;
   mutable std::vector<Teuchos::RefCountPtr<Epetra_MultiVector> >  epetra_DcDu_mv_;
@@ -260,12 +283,6 @@ private:
     ,bool                    computeGradients
     ) const;
 
-  //
-  void setupPreconditioner(
-    const Teuchos::RefCountPtr<Epetra_Operator>   &epetra_DcDy_op
-    ,Teuchos::RefCountPtr<Epetra_Operator>        *epetra_DcDy_prec
-    ) const;
-
 	// Not defined and not to be called
 	EpetraNPFO(const EpetraNPFO&);
 	EpetraNPFO& operator=(const EpetraNPFO&);
@@ -274,6 +291,22 @@ private:
 
 // ///////////////////////////////////
 // Inline members
+
+// public
+
+inline
+Ifpack::PrecGenerator& EpetraNPFO::precGenerator()
+{
+  return precGenerator_;
+}
+
+inline
+const Ifpack::PrecGenerator& EpetraNPFO::precGenerator() const
+{
+  return precGenerator_;
+}
+
+// private
 
 inline
 const Epetra_Vector& EpetraNPFO::get_epetra_vec( const Vector<Scalar> &v )

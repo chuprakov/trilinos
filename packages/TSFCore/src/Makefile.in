@@ -234,6 +234,7 @@ EXTRA_ADAPTERS_EPETRA = \
 EXTRA_ADAPTERS_AZTECOO_H = \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.hpp \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.hpp \
+	$(srcdir)/adapters/aztecoo/Ifpack_PrecGenerator.hpp \
 	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.hpp \
 	$(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.hpp
 
@@ -241,6 +242,7 @@ EXTRA_ADAPTERS_AZTECOO_H = \
 EXTRA_ADAPTERS_AZTECOO = \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp \
+	$(srcdir)/adapters/aztecoo/Ifpack_PrecGenerator.cpp \
 	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp \
 	$(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.cpp
 
@@ -382,6 +384,7 @@ am__objects_1 = TSFCoreEpetraLinearOp.$(OBJEXT) \
 @HAVE_TSFCORE_EPETRA_FALSE@am__objects_2 =
 am__objects_3 = Epetra_NonlinearProblem.$(OBJEXT) \
 	Epetra_NonlinearProblemFirstOrder.$(OBJEXT) \
+	Ifpack_PrecGenerator.$(OBJEXT) \
 	TSFCoreNonlinEpetraNPFO.$(OBJEXT) \
 	TSFCoreNonlinLinearOpWithSolveAztecOO.$(OBJEXT)
 @HAVE_TSFCORE_AZTECOO_TRUE@am__objects_4 = $(am__objects_3)
@@ -398,6 +401,7 @@ depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Epetra_NonlinearProblem.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Epetra_NonlinearProblemFirstOrder.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/Ifpack_PrecGenerator.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraLinearOp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraMultiVector.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraVector.Po \
@@ -499,6 +503,8 @@ Epetra_NonlinearProblem.$(OBJEXT): \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp
 Epetra_NonlinearProblemFirstOrder.$(OBJEXT): \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp
+Ifpack_PrecGenerator.$(OBJEXT): \
+	$(srcdir)/adapters/aztecoo/Ifpack_PrecGenerator.cpp
 TSFCoreNonlinEpetraNPFO.$(OBJEXT): \
 	$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp
 TSFCoreNonlinLinearOpWithSolveAztecOO.$(OBJEXT): \
@@ -516,6 +522,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Epetra_NonlinearProblem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Epetra_NonlinearProblemFirstOrder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Ifpack_PrecGenerator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraLinearOp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraMultiVector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreEpetraVector.Po@am__quote@
@@ -635,6 +642,18 @@ Epetra_NonlinearProblemFirstOrder.obj: $(srcdir)/adapters/aztecoo/Epetra_Nonline
 @AMDEP_TRUE@	depfile='$(DEPDIR)/Epetra_NonlinearProblemFirstOrder.Po' tmpdepfile='$(DEPDIR)/Epetra_NonlinearProblemFirstOrder.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Epetra_NonlinearProblemFirstOrder.obj `cygpath -w $(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp`
+
+Ifpack_PrecGenerator.o: $(srcdir)/adapters/aztecoo/Ifpack_PrecGenerator.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/aztecoo/Ifpack_PrecGenerator.cpp' object='Ifpack_PrecGenerator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Ifpack_PrecGenerator.Po' tmpdepfile='$(DEPDIR)/Ifpack_PrecGenerator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Ifpack_PrecGenerator.o `test -f '$(srcdir)/adapters/aztecoo/Ifpack_PrecGenerator.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/aztecoo/Ifpack_PrecGenerator.cpp
+
+Ifpack_PrecGenerator.obj: $(srcdir)/adapters/aztecoo/Ifpack_PrecGenerator.cpp
+@AMDEP_TRUE@	source='$(srcdir)/adapters/aztecoo/Ifpack_PrecGenerator.cpp' object='Ifpack_PrecGenerator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Ifpack_PrecGenerator.Po' tmpdepfile='$(DEPDIR)/Ifpack_PrecGenerator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Ifpack_PrecGenerator.obj `cygpath -w $(srcdir)/adapters/aztecoo/Ifpack_PrecGenerator.cpp`
 
 TSFCoreNonlinEpetraNPFO.o: $(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp
 @AMDEP_TRUE@	source='$(srcdir)/adapters/aztecoo/TSFCoreNonlinEpetraNPFO.cpp' object='TSFCoreNonlinEpetraNPFO.o' libtool=no @AMDEPBACKSLASH@

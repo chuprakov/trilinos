@@ -104,9 +104,6 @@ void EpetraNPFO::initialize(
   epetra_DgDu_.resize(Nu);
   epetra_DgDu_args_.resize(Nu);
 
-  // Set the graph for DcDy preconditioner to NULL just the be safe
-  epetra_DcDy_iluk_graph_ = Teuchos::null;
-
   // ToDo: Initialize everything else!
 
   unsetQuantities();
@@ -467,24 +464,29 @@ void EpetraNPFO::calc_Dc(
   Teuchos::RefCountPtr<Epetra_Operator>  epetra_DcDy_op;
   Teuchos::RefCountPtr<AztecOO>          aztecoo_solver;
   Teuchos::RefCountPtr<Epetra_Operator>  epetra_DcDy_prec;
-  if(DcDy_ && !DcDy_updated_) {
+  const bool allow_specialized_DcDy_prec = true; // ToDo: Make this an external parameter!
+  const bool specialized_DcDy_prec = ( epetra_np_->specialized_DcDy_prec() && allow_specialized_DcDy_prec );
+  if(computeGradients && DcDy_ && !DcDy_updated_) {
     DcDy_->setUninitialized( &epetra_DcDy_op, NULL, &aztecoo_solver, &epetra_DcDy_prec, NULL );
     if( !epetra_DcDy_op.get() ) {
-      epetra_DcDy_op = epetra_np_->create_DcDy();
+      epetra_DcDy_op = epetra_np_->create_DcDy_op();
+    }
+    if( !epetra_DcDy_prec.get() && specialized_DcDy_prec ) {
+      epetra_DcDy_op = epetra_np_->create_DcDy_prec();
     }
   }
   // DcDu
   for(int l=1;l<=Nu;++l) {
-    if(DcDu_op_[l-1] && !DcDu_updated_[l-1]) {
+    if(computeGradients && DcDu_op_[l-1] && !DcDu_updated_[l-1]) {
       DcDu_op_[l-1]->setUninitialized( &epetra_DcDu_op_[l-1] ); // Grab the RCP<Epetra_Operator>
       if(!epetra_DcDu_op_[l-1].get())
-        epetra_DcDu_op_[l-1] = epetra_np_->create_DcDu(l);
+        epetra_DcDu_op_[l-1] = epetra_np_->create_DcDu_op(l);
       epetra_DcDu_args_[l-1] = Epetra::EpetraOp_or_EpetraMV(&*epetra_DcDu_op_[l-1]);
     }
-    else if(DcDu_mv_[l-1] && !DcDu_updated_[l-1]) {
+    else if(computeGradients && DcDu_mv_[l-1] && !DcDu_updated_[l-1]) {
       DcDu_mv_[l-1]->setUninitialized( &epetra_DcDu_mv_[l-1] ); // Grap the RCP<Epetra_MultiVector>
       if(!epetra_DcDu_mv_[l-1].get())
-        epetra_DcDu_mv_[l-1] = Teuchos::rcp(new Epetra_MultiVector(*epetra_np_->map_c(),space_u_[l-1]->dim()));
+        epetra_DcDu_mv_[l-1] = epetra_np_->create_DcDu_mv(l);
       epetra_DcDu_args_[l-1] = Epetra::EpetraOp_or_EpetraMV(&*epetra_DcDu_mv_[l-1]);
     }
     else {
@@ -500,6 +502,7 @@ void EpetraNPFO::calc_Dc(
     ,u
     ,epetra_c.get()
     ,epetra_DcDy_op.get()
+    ,specialized_DcDy_prec ? &*epetra_DcDy_prec : NULL
     ,&epetra_DcDu_args_[0]
     );
 
@@ -513,10 +516,10 @@ void EpetraNPFO::calc_Dc(
   }
   // DcDy
   if( epetra_DcDy_op.get() ) {
-    // Setup the preconditioner
+    // Setup the externally defined preconditioner
     const bool usePrec = true; // ToDo: Make an external option
-    if(usePrec) {
-      setupPreconditioner(epetra_DcDy_op,&epetra_DcDy_prec);
+    if( usePrec && !specialized_DcDy_prec ) {
+      precGenerator().setupPrec(epetra_DcDy_op,&epetra_DcDy_prec);
     }
     // Set up the options for the AztecOO solver
     if(!aztecoo_solver.get()) {
@@ -573,7 +576,7 @@ void EpetraNPFO::calc_Dg(
   if(g_ /*&& !g_updated_*/) g_->setUninitialized( &epetra_g );
   // DgDy
   Teuchos::RefCountPtr<Epetra_MultiVector>  epetra_DgDy;
-  if(DgDy_ && !DgDy_updated_) {
+  if(computeGradients && DgDy_ && !DgDy_updated_) {
     DgDy_->setUninitialized( &epetra_DgDy );
     if( !epetra_DgDy.get() ) {
       epetra_DgDy = Teuchos::rcp(new Epetra_MultiVector(*epetra_np_->map_y(),space_g_->dim()));
@@ -581,7 +584,7 @@ void EpetraNPFO::calc_Dg(
   }
   // DgDu
   for(int l=1;l<=Nu;++l) {
-    if(DgDu_[l-1] && !DgDu_updated_[l-1]) {
+    if(computeGradients && DgDu_[l-1] && !DgDu_updated_[l-1]) {
       DgDu_[l-1]->setUninitialized( &epetra_DgDu_[l-1] ); // Grap the RCP<Epetra_MultiVector>
       if(!epetra_DgDu_[l-1].get())
         epetra_DgDu_[l-1] = Teuchos::rcp(new Epetra_MultiVector(*epetra_np_->map_u(l),space_g_->dim()));
@@ -625,81 +628,6 @@ void EpetraNPFO::calc_Dg(
     }
   }
 
-}
-
-void EpetraNPFO::setupPreconditioner(
-  const Teuchos::RefCountPtr<Epetra_Operator>   &epetra_DcDy_op
-  ,Teuchos::RefCountPtr<Epetra_Operator>        *epetra_DcDy_prec_in
-  ) const
-{
-  using DynamicCastHelperPack::dyn_cast;
-  Teuchos::RefCountPtr<Epetra_Operator> &epetra_DcDy_prec = *epetra_DcDy_prec_in;
-
-  // Determine what type of Epetra_Operator we have for DcDy
-  const Epetra_RowMatrix *epetra_DcDy_rm = dynamic_cast<const Epetra_RowMatrix*>(&*epetra_DcDy_op);
-  if(epetra_DcDy_rm) {
-    // Yea! We can use AztecOO or Ifpack preconditioners!  Now
-    // determine if epetra_DcDy_op_rm is actually a a Crs or a Vbr
-    // matrix.
-    const Epetra_CrsMatrix *epetra_DcDy_crs
-      = dynamic_cast<const Epetra_CrsMatrix*>(epetra_DcDy_rm);
-    const Epetra_VbrMatrix *epetra_DcDy_vbr
-      = ( epetra_DcDy_crs ? (const Epetra_VbrMatrix*)NULL : dynamic_cast<const Epetra_VbrMatrix*>(epetra_DcDy_rm) );
-    if( epetra_DcDy_crs || epetra_DcDy_vbr ) { 
-      //
-      // epetra_DcDy_op is a Crs or a Vbr matrix!
-      //
-      // Create the graph if we have not done so already
-      if(!epetra_DcDy_iluk_graph_.get()) {
-        // We only need this graph once!
-        const int             // ToDo: Make these external parameters!
-          levelFill     = 1,  // This is the default used in NOX
-          levelOverlap = 0;   // ""
-        epetra_DcDy_iluk_graph_ = Teuchos::rcp(
-          new Ifpack_IlukGraph(
-            ( epetra_DcDy_crs
-              ? epetra_DcDy_crs->Graph()
-              : epetra_DcDy_vbr->Graph() )
-            ,levelFill
-            ,levelOverlap
-            )
-          );
-        epetra_DcDy_iluk_graph_->ConstructFilledGraph();
-      }
-      // Create the preconditioner if it has not been created already
-      if(!epetra_DcDy_prec.get()) {
-        epetra_DcDy_prec = Teuchos::rcp(new Ifpack_CrsRiluk(*epetra_DcDy_iluk_graph_));
-      }
-      // Get a Ifpack_CrsRiluk subclass pointer for epetra_DcDy_prec
-      Ifpack_CrsRiluk *epetra_DcDy_prec_crs_riluk = &dyn_cast<Ifpack_CrsRiluk>(*epetra_DcDy_prec);
-      // Now initialize the values
-      if(epetra_DcDy_crs)
-        epetra_DcDy_prec_crs_riluk->InitValues(*epetra_DcDy_crs);
-      else if(epetra_DcDy_vbr)
-        epetra_DcDy_prec_crs_riluk->InitValues(*epetra_DcDy_vbr);
-      else
-        assert(0); // Should never get here!
-      // Set diagonal perturbations
-      const double          // ToDo: Make these externally set
-        absThreshold = 0.0, // The default used by NOX
-        relThreshold = 1.0; // The default used by NOX
-      epetra_DcDy_prec_crs_riluk->SetAbsoluteThreshold(absThreshold);
-      epetra_DcDy_prec_crs_riluk->SetRelativeThreshold(relThreshold);
-      // Finally, complete the factorization
-      epetra_DcDy_prec_crs_riluk->Factor();
-    }
-    else {
-      // It turns out that epetra_DcDy_op only supports the Epetra_RowMatrix interface!
-      TEST_FOR_EXCEPTION(
-        true,std::logic_error
-        ,"Have not implemented support for only Epetra_RowMatrix interface yet!");
-    }
-  }
-  else {
-    TEST_FOR_EXCEPTION(
-      true,std::logic_error
-      ,"Error, can't handle operator that does not support Epetra_RowMatrix!");
-  }
 }
 
 //
