@@ -2188,9 +2188,15 @@ void rSQPAlgo_ConfigMamaJama::set_default_options(
 	cov->lbfgs_auto_scaling_ = uov.lbfgs_auto_scaling_;
 	if( cov->hessian_initialization_ == INIT_HESS_AUTO && uov.hessian_initialization_ == INIT_HESS_AUTO ) {
 		if(trase_out)
+ 			*trase_out
+				<< "\nhessian_initialization == AUTO: setting hessian_initialization = IDENTITY\n";
+		cov->hessian_initialization_ = INIT_HESS_IDENTITY;
+/*
+		if(trase_out)
 			*trase_out
 				<< "\nhessian_initialization == AUTO: setting hessian_initialization = FINITE_DIFF_DIAGONAL_ABS\n";
 		cov->hessian_initialization_ = INIT_HESS_FIN_DIFF_SCALE_DIAGONAL_ABS;
+*/
 	}
 	else if(cov->hessian_initialization_ == INIT_HESS_AUTO) {
 		cov->hessian_initialization_ = uov.hessian_initialization_;
