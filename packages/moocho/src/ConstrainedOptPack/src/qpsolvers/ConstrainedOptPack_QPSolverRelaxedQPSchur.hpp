@@ -40,7 +40,7 @@ public:
 		///
 		typedef std::vector<size_type> i_x_fixed_t;
 		///
-		typedef std::vector<QPSchurPack::EBounds> bnd_fixed_t;
+		typedef std::vector<EBounds>   bnd_fixed_t;
 		///
 		typedef std::vector<size_type> j_f_decomp_t;
 		///

@@ -50,7 +50,7 @@ void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 	(*i_x_fixed)[0] = nd+1;
 	// bnd_fixed[0] = LOWER
 	bnd_fixed->resize(1);
-	(*bnd_fixed)[0] = QPSchurPack::LOWER;
+	(*bnd_fixed)[0] = LOWER;
 	// j_f_decomp[] = empty
 	j_f_decomp->resize(0);
 	// b_X = etaL

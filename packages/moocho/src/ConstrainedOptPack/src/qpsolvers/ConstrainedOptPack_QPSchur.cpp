@@ -39,15 +39,15 @@ namespace {
 
 // Print a bnd as a string
 inline
-const char* bnd_str( ConstrainedOptimizationPack::QPSchurPack::EBounds bnd ) {
+const char* bnd_str( ConstrainedOptimizationPack::EBounds bnd ) {
 	switch(bnd) {
-		case ConstrainedOptimizationPack::QPSchurPack::FREE:
+		case ConstrainedOptimizationPack::FREE:
 			return "FREE";
-		case ConstrainedOptimizationPack::QPSchurPack::UPPER:
+		case ConstrainedOptimizationPack::UPPER:
 			return "UPPER";
-		case ConstrainedOptimizationPack::QPSchurPack::LOWER:
+		case ConstrainedOptimizationPack::LOWER:
 			return "LOWER";
-		case ConstrainedOptimizationPack::QPSchurPack::EQUALITY:
+		case ConstrainedOptimizationPack::EQUALITY:
 			return "EQUALITY";
 	}
 	assert(0);	// should never be executed
@@ -356,30 +356,30 @@ void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M
 			y1 = (*y)(1,n_R),
 			y2 = m ? (*y)(n_R+1,n_R+m) : VectorSlice();
 		SpVector
-			P_XF_hat_P,
-			P_plus_hat_P;
-		// P_XF_hat_P = P_XF_hat * x
+			P_XF_hat_x,
+			P_plus_hat_x;
+		// P_XF_hat_x = P_XF_hat * x
 		if( P_XF_hat().nz() )
-			V_MtV( &P_XF_hat_P, P_XF_hat(), no_trans, x );
-		// P_plus_hat_P = P_plus_hat * x
+			V_MtV( &P_XF_hat_x, P_XF_hat(), no_trans, x );
+		// P_plus_hat_x = P_plus_hat * x
 		if(P_plus_hat().nz())
-			V_MtV( &P_plus_hat_P, P_plus_hat(), no_trans, x );
+			V_MtV( &P_plus_hat_x, P_plus_hat(), no_trans, x );
 		// y1 = b * y1
 		if(b==0.0)      y1=0.0;
 		else if(b!=1.0) Vt_S(&y1,b);
-		// y1 += a * Q_R' * G * P_XF_hat_P
+		// y1 += a * Q_R' * G * P_XF_hat_x
 		if(P_XF_hat().nz())
-			Vp_StPtMtV( &y1, a, Q_R(), trans, G(), no_trans, P_XF_hat_P() );
-		// y1 += a * Q_R' * A_bar * P_plus_hat_P
+			Vp_StPtMtV( &y1, a, Q_R(), trans, G(), no_trans, P_XF_hat_x() );
+		// y1 += a * Q_R' * A_bar * P_plus_hat_x
 		if(P_plus_hat().nz())
-			Vp_StPtMtV( &y1, a, Q_R(), trans, A_bar(), no_trans, P_plus_hat_P() );
+			Vp_StPtMtV( &y1, a, Q_R(), trans, A_bar(), no_trans, P_plus_hat_x() );
 		if(m) {
 			// y2 = b * y2
 			if(b==0.0)      y2=0.0;
 			else if(b!=1.0) Vt_S(&y2,b);
-			// y2 +=  a * A' * P_XF_hat_P
+			// y2 +=  a * A' * P_XF_hat_x
 			if( P_XF_hat().nz() )
-				Vp_StMtV( &y2, a, *A(), trans, P_XF_hat_P() );
+				Vp_StMtV( &y2, a, *A(), trans, P_XF_hat_x() );
 		}
 	}
 	else if( M_trans == BLAS_Cpp::trans ) {
@@ -459,30 +459,30 @@ void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M
 			y1 = (*y)(1,n_R),
 			y2 = m ? (*y)(n_R+1,n_R+m) : VectorSlice();
 		SpVector
-			P_XF_hat_P,
-			P_plus_hat_P;
-		// P_XF_hat_P = P_XF_hat * x
+			P_XF_hat_x,
+			P_plus_hat_x;
+		// P_XF_hat_x = P_XF_hat * x
 		if( P_XF_hat().nz() )
-			V_MtV( &P_XF_hat_P, P_XF_hat(), no_trans, x );
-		// P_plus_hat_P = P_plus_hat * x
+			V_MtV( &P_XF_hat_x, P_XF_hat(), no_trans, x );
+		// P_plus_hat_x = P_plus_hat * x
 		if(P_plus_hat().nz())
-			V_MtV( &P_plus_hat_P, P_plus_hat(), no_trans, x );
+			V_MtV( &P_plus_hat_x, P_plus_hat(), no_trans, x );
 		// y1 = b * y1
 		if(b==0.0)      y1=0.0;
 		else if(b!=1.0) Vt_S(&y1,b);
-		// y1 += a * Q_R' * G * P_XF_hat_P
+		// y1 += a * Q_R' * G * P_XF_hat_x
 		if(P_XF_hat().nz())
-			Vp_StPtMtV( &y1, a, Q_R(), trans, G(), no_trans, P_XF_hat_P() );
-		// y1 += a * Q_R' * A_bar * P_plus_hat_P
+			Vp_StPtMtV( &y1, a, Q_R(), trans, G(), no_trans, P_XF_hat_x() );
+		// y1 += a * Q_R' * A_bar * P_plus_hat_x
 		if(P_plus_hat().nz())
-			Vp_StPtMtV( &y1, a, Q_R(), trans, A_bar(), no_trans, P_plus_hat_P() );
+			Vp_StPtMtV( &y1, a, Q_R(), trans, A_bar(), no_trans, P_plus_hat_x() );
 		if(m) {
 			// y2 = b * y2
 			if(b==0.0)      y2=0.0;
 			else if(b!=1.0) Vt_S(&y2,b);
-			// y2 += a * A' * P_XF_hat_P
+			// y2 += a * A' * P_XF_hat_x
 			if(P_XF_hat().nz())
-				Vp_StMtV( &y2, a, *A(), trans, P_XF_hat_P() );
+				Vp_StMtV( &y2, a, *A(), trans, P_XF_hat_x() );
 		}
 	}
 	else if( M_trans == BLAS_Cpp::trans ) {
@@ -540,7 +540,7 @@ QPSchur::ActiveSet::ActiveSet(const schur_comp_ptr_t& schur_comp)
 
 void QPSchur::ActiveSet::initialize(
 	  QP& qp, size_type num_act_change, const int ij_act_change[]
-	, const QPSchurPack::EBounds bnds[], bool test
+	, const EBounds bnds[], bool test
 	, std::ostream *out, EOutputLevel output_level )
 {
 	using LinAlgOpPack::V_mV;
@@ -584,10 +584,10 @@ void QPSchur::ActiveSet::initialize(
 	if( num_act_change ) {
 		for( size_type k = 1; k <= num_act_change; ++k ) {
 			const int ij = ij_act_change[k-1];
-			const QPSchurPack::EBounds bnd = bnds[k-1];
+			const EBounds bnd = bnds[k-1];
 			if( ij < 0 ) {
 				// Initially fixed variable being freed.
-				if( x_init(-ij) == QPSchurPack::FREE ) {
+				if( x_init(-ij) == FREE ) {
 					std::ostringstream omsg;
 					omsg
 						<< "QPSchur::ActiveSet::initialize(...) : Error, "
@@ -595,7 +595,7 @@ void QPSchur::ActiveSet::initialize(
 						<< "be freed by ij_act_change[" << k-1 << "]\n";
 					throw std::invalid_argument( omsg.str() );
 				}
-				if( x_init(-ij) == QPSchurPack::EQUALITY ) {
+				if( x_init(-ij) == EQUALITY ) {
 					std::ostringstream omsg;
 					omsg
 						<< "QPSchur::ActiveSet::initialize(...) : Error, "
@@ -609,12 +609,12 @@ void QPSchur::ActiveSet::initialize(
 				// Constraint being added to the active-set
 				if( ij <= n ) {
 					// Fixing a variable to a bound
-					QPSchurPack::EBounds x_init_bnd = x_init(ij);
-					if( x_init_bnd == QPSchurPack::FREE ) {
+					EBounds x_init_bnd = x_init(ij);
+					if( x_init_bnd == FREE ) {
 						// initially free variable being fixed
 						++q_plus_hat;
 					}
-					else if ( x_init_bnd == QPSchurPack::EQUALITY ) {
+					else if ( x_init_bnd == EQUALITY ) {
 						// ToDo: Throw exception
 						assert(0);
 					}
@@ -662,12 +662,12 @@ void QPSchur::ActiveSet::initialize(
 		size_type s = 0;
 		for( size_type k = 1; k <= num_act_change; ++k ) {
 			const int ij = ij_act_change[k-1];
-			const QPSchurPack::EBounds bnd = bnds[k-1];
+			const EBounds bnd = bnds[k-1];
 			if( ij < 0 ) {
 				// Initially fixed variable being freed.
 				ij_map_[s]		= ij;
 				constr_norm_[s]	= 1.0;
-				bnds_[s]		= QPSchurPack::FREE;
+				bnds_[s]		= FREE;
 				d_hat_[s]		= - g(-ij);		// - g^X_{l^{(-)}}
 				++s;
 			}
@@ -675,8 +675,8 @@ void QPSchur::ActiveSet::initialize(
 				// Constraint being added to the active-set
 				if( ij <= n ) {
 					// Fixing a variable to a bound
-					QPSchurPack::EBounds x_init_bnd = x_init(ij);
-					if( x_init_bnd == QPSchurPack::FREE ) {
+					EBounds x_init_bnd = x_init(ij);
+					if( x_init_bnd == FREE ) {
 						// initially free variable being fixed
 						ij_map_[s]		= ij;
 						constr_norm_[s]	= 1.0;
@@ -689,7 +689,7 @@ void QPSchur::ActiveSet::initialize(
 						// Free the variable first
 						ij_map_[s]		= ij;
 						constr_norm_[s]	= 1.0;
-						bnds_[s]		= QPSchurPack::FREE;
+						bnds_[s]		= FREE;
 						d_hat_[s]		= - g(ij);		// - g^X_{l^{(-)}}
 						++s;
 						// Now fix to a different bound
@@ -736,7 +736,7 @@ void QPSchur::ActiveSet::initialize(
 				P_XF_hat_col_[k_XF_hat] = s;
 				++k_XF_hat;
 			}
-			else if( !(ij <= n && x_init(ij) != QPSchurPack::FREE ) ) {
+			else if( !(ij <= n && x_init(ij) != FREE ) ) {
 				const size_type j = ij;
 				assert( 0 < j && j <= n + m_breve );
 				// [P_plus_hat](:,s) = e(j)
@@ -916,7 +916,7 @@ void QPSchur::ActiveSet::refactorize_schur_comp()
 }
 
 void QPSchur::ActiveSet::add_constraint(
-	  size_type ja, QPSchurPack::EBounds bnd_ja
+	  size_type ja, EBounds bnd_ja
 	, bool update_steps, bool force_refactorization )
 {
 	using BLAS_Cpp::no_trans;
@@ -958,8 +958,13 @@ void QPSchur::ActiveSet::add_constraint(
 			//
 			// Fix an initially free variable is being fixed
 			// 
-			// u_p = e(ja) <: R^(n_R+m)
-			const eta_t u_p = eta_t(ja,n_R_+m_);
+			// u_p = [ Q_R' * e(ja) ] <: R^(n_R+m)
+			//       [      0       ]
+			//
+			const size_type
+				la = qp_->Q_R().lookup_col_j(ja);
+			assert( la );
+			const eta_t u_p = eta_t(la,n_R_+m_);
 			// r = inv(Ko)*u_p
 			Vector r;	// ToDo: Make this sparse!
 			V_InvMtV( &r, qp_->Ko(), no_trans, u_p() );
@@ -1219,7 +1224,7 @@ void QPSchur::ActiveSet::drop_constraint(
 		// add s_map(-id) == q_hat to s_map(...)
 		// ToDo: implement s_map(...)
 		// add bnds(q_hat) == FREE to bnds(...)
-		bnds_[q_hat-1] = QPSchurPack::FREE;
+		bnds_[q_hat-1] = FREE;
 		// add d_hat(q_hat) == d_p to d_hat(...)
 		d_hat_[q_hat-1] = d_p;
 		// add p_X(ld) == 0 to the end of z_hat(...)
@@ -1282,7 +1287,7 @@ void QPSchur::ActiveSet::drop_constraint(
 }
 
 void QPSchur::ActiveSet::drop_add_constraints(
-	int jd, size_type ja, QPSchurPack::EBounds bnd_ja, bool update_steps )
+	int jd, size_type ja, EBounds bnd_ja, bool update_steps )
 {
 	drop_constraint( jd, false );
 	add_constraint( ja, bnd_ja, update_steps, true );
@@ -1353,7 +1358,7 @@ value_type QPSchur::ActiveSet::constr_norm( size_type s ) const
 	return constr_norm_(s);
 }
 
-QPSchurPack::EBounds QPSchur::ActiveSet::bnd( size_type s ) const
+EBounds QPSchur::ActiveSet::bnd( size_type s ) const
 {
 	assert( 1 <= s && s <= this->q_hat() );
 	return bnds_[s-1];
@@ -1452,7 +1457,7 @@ const VectorSlice QPSchur::ActiveSet::p_mu_D_hat() const
 bool QPSchur::ActiveSet::is_init_fixed( size_type j ) const
 {
 	assert_initialized();
-	return j <= n_ && (*x_init_)(j) != QPSchurPack::FREE;
+	return j <= n_ && (*x_init_)(j) != FREE;
 }
 
 bool QPSchur::ActiveSet::all_dof_used_up() const
@@ -1531,7 +1536,7 @@ QPSchur::QPSchur(
 QPSchur::ESolveReturn QPSchur::solve_qp(
 	  QP& qp
 	, size_type num_act_change, const int ij_act_change[]
-		, const QPSchurPack::EBounds bnds[]
+		, const EBounds bnds[]
 	, std::ostream *out, EOutputLevel output_level, ERunTests test_what
 	, VectorSlice* x, SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve
 	, size_type* iter, size_type* num_adds, size_type* num_drops
@@ -1696,10 +1701,10 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			if( j > 0 ) {
 				// This is for an active constraint not initially in Ko so
 				// z_hat(s) = mu(j)
-				QPSchurPack::EBounds bnd = act_set_.bnd(s);
+				EBounds bnd = act_set_.bnd(s);
 				const value_type inf = std::numeric_limits<value_type>::max();
 				value_type viol = -inf;
-				if( bnd == QPSchurPack::LOWER ) {
+				if( bnd == LOWER ) {
 					viol = (*z_itr) / act_set_.constr_norm(s);	// + scaled violation.
 					if( viol > 0 ) {
 						if( viol < dual_infeas_tol() ) {
@@ -1712,7 +1717,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 						}
 					}
 				}
-				else if( bnd == QPSchurPack::UPPER ) {
+				else if( bnd == UPPER ) {
 					viol = -(*z_itr) / act_set_.constr_norm(s);	// + scaled violation.
 					if( viol > 0 ) {
 						if( viol < dual_infeas_tol() ) {
@@ -1854,11 +1859,11 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			for( int k = 1; k <= q_D_hat; ++k, ++mu_D_itr ) {
 				int
 					i = i_x_X_map(act_set_.l_fxfx(k));
-				QPSchurPack::EBounds
+				EBounds
 					bnd = x_init(i);
 				const value_type inf = std::numeric_limits<value_type>::max();
 				value_type viol = -inf;
-				if( bnd == QPSchurPack::LOWER ) {
+				if( bnd == LOWER ) {
 					viol = (*mu_D_itr);
 					if( viol > 0 ) {
 						if( viol < dual_infeas_tol() ) {
@@ -1872,7 +1877,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 						}
 					}
 				}
-				else if( bnd == QPSchurPack::UPPER ) {
+				else if( bnd == UPPER ) {
 					viol = -(*mu_D_itr);
 					if( viol > 0 ) {
 						if( viol < dual_infeas_tol() ) {
@@ -2120,7 +2125,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	value_type				con_ja_val;	// value of violated constraint.
 	value_type				b_a; // value of the violated bound
 	value_type				norm_2_constr;	// norm of violated constraint
-	QPSchurPack::EBounds	bnd_ja;	// bound of constraint ja which is violated.
+	EBounds					bnd_ja;	// bound of constraint ja which is violated.
 	bool					can_ignore_ja;	// true if we can ignore a constraint if it is LD.
 	bool					assume_lin_dep_ja;
 	value_type				gamma_plus;	// used to store the new multipler value for the added
@@ -2425,13 +2430,17 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						if( ja <= n ) {
 							// Fix an initially free variable
 							//
-							// u_a = e(ja) <: R^(n_R + m)
-							// 
+							// u_a = [ Q_R' * e(ja) ] <: R^(n_R+m)
+							//       [      0       ]
+							//
 							// v_a = 0     <: R^(q_hat)
 							//
 							// d_a = b_a   <: R
 							// 
-							const EtaVector  u_a = EtaVector( ja, n_R + m );
+							const size_type
+								la = act_set->qp().Q_R().lookup_col_j(ja);
+							assert( la );
+							const EtaVector u_a = EtaVector(la,n_R+m);
 							const value_type d_a = b_a;
 							Vector t1;
 							// t1 = inv(Ko) * u_a
@@ -2726,7 +2735,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 				value_type max_feas_viol = 0.0; // Remember the amount of violation.
 				int j_degen = 0;	// remember which (if any) constraint was near
 									// degenerate and had an incorrect sign.
-				QPSchurPack::EBounds bnd_jd;	// The bound of the constraint to be dropped.
+				EBounds	    bnd_jd;	// The bound of the constraint to be dropped.
 
 				// Search through Lagrange multipliers in z_hat
 				if( act_set->q_hat() ) {
@@ -2765,7 +2774,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						int j = act_set->ij_map(s);
 						if( j > 0 ) {
 							namespace ns = QPSchurPack;
-							ns::EBounds bnd = act_set->bnd(s);
+							EBounds bnd = act_set->bnd(s);
 							// Print first part of row for s, j, z_hat(s), p_z_hat(s), bnds(s) ....
 							if( (int)output_level >= (int)OUTPUT_ACT_SET ) {
 								*out
@@ -2777,7 +2786,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							}
 							value_type t = inf;
 							bool j_is_degen = false;
-							if( (bnd == ns::LOWER && *z_itr > 0.0) || (bnd == ns::UPPER && *z_itr < 0.0) ) {
+							if( (bnd == LOWER && *z_itr > 0.0) || (bnd == UPPER && *z_itr < 0.0) ) {
 								if( (int)output_level >= (int)OUTPUT_BASIC_INFO && !warned_degeneracy ) {
 									*out
 										<< "\nWarning, possible degeneracy and numerical instability detected.\n";
@@ -2786,9 +2795,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								assert(0);	// ToDo: Finish this!
 							}
 							const value_type feas_viol = beta*(*p_z_itr);
-							if( bnd == ns::LOWER && feas_viol <= 0.0 )
+							if( bnd == LOWER && feas_viol <= 0.0 )
 								;	// dual feasible for all t > 0
-							else if( bnd == ns::UPPER && feas_viol >= 0.0 )
+							else if( bnd == UPPER && feas_viol >= 0.0 )
 								;	// dual feasible for all t > 0
 							else {
 								// finite t.
@@ -2853,7 +2862,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						int i = Q_XD_itr->row_i();	// ith fixed variable
 						{
 							namespace ns = QPSchurPack;
-							ns::EBounds bnd = qp.x_init()(i);
+							EBounds bnd = qp.x_init()(i);
 							// Print first part of row for s, j, z_hat(s), p_z_hat(s), bnds(s) ....
 							if( (int)output_level >= (int)OUTPUT_ACT_SET ) {
 								*out
@@ -2865,7 +2874,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							}
 							value_type t = inf;
 							bool j_is_degen = false;
-							if( (bnd == ns::LOWER && *mu_D_itr > 0.0) || (bnd == ns::UPPER && *mu_D_itr < 0.0) ) {
+							if( (bnd == LOWER && *mu_D_itr > 0.0) || (bnd == UPPER && *mu_D_itr < 0.0) ) {
 								if( (int)output_level >= (int)OUTPUT_BASIC_INFO && !warned_degeneracy ) {
 									*out
 										<< "\nWarning, possible degeneracy and numerical instability detected.\n";
@@ -2874,9 +2883,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								assert(0);	// ToDo: Finish this!
 							}
 							const value_type feas_viol = beta*(*p_mu_D_itr);
-							if( bnd == ns::LOWER && feas_viol <= 0.0 )
+							if( bnd == LOWER && feas_viol <= 0.0 )
 								;	// dual feasible for all t > 0
-							else if( bnd == ns::UPPER && feas_viol >= 0.0 )
+							else if( bnd == UPPER && feas_viol >= 0.0 )
 								;	// dual feasible for all t > 0
 							else {
 								// finite t.

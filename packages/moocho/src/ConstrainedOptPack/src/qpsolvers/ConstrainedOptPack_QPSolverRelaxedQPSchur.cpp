@@ -172,7 +172,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// Setup for a warm start (changes to initial KKT system)
 
 	typedef std::vector<int> 					ij_act_change_t;
-	typedef std::vector<QPSchurPack::EBounds>	bnds_t;
+	typedef std::vector<EBounds>				bnds_t;
 	size_type			num_act_change = 0; // The default is a cold start
 	const size_type     max_num_act_change = (nu ? nu->nz() : 0) + (mu ? mu->nz() : 0) + n_X;
 	ij_act_change_t		ij_act_change(max_num_act_change);
@@ -215,12 +215,12 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 			const SpVector::difference_type o = gamma.offset();
 			for( SpVector::const_iterator itr = gamma.begin(); itr != gamma.end(); ++itr ) {
 				const size_type i =  itr->indice() + o;
-				if( i <= nd && x_init(i) != QPSchurPack::FREE )
+				if( i <= nd && x_init(i) != FREE )
 					continue; // This variable is already initially fixed
 				// This is not an initially fixed variable so add it
 				ij_act_change[num_act_change] = i;
 				bnds[num_act_change]
-					= itr->value() > 0.0 ? QPSchurPack::UPPER : QPSchurPack::LOWER;
+					= itr->value() > 0.0 ? UPPER : LOWER;
 				++num_act_change;
 			}
 		}
@@ -236,8 +236,8 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 			nu_itr = const_cast<const SpVector*>(nu)->begin(), // Okay even if nu.nz() == 0
 			nu_end = const_cast<const SpVector*>(nu)->end();
 		for( size_type i = 1; i <= nd; ++i, ++x_init_itr ) {
-			if( *x_init_itr != QPSchurPack::FREE
-				&& *x_init_itr != QPSchurPack::EQUALITY )
+			if( *x_init_itr != FREE
+				&& *x_init_itr != EQUALITY )
 			{
 				// This is an initially fixed upper or lower bound
 				// Look for lagrange multiplier stating that it is
@@ -248,20 +248,20 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 				else if( nu_itr != nu_end && (nu_itr->indice() + o) == i ) {
 					// This active bound is present but lets make sure
 					// that it is still the same bound
-					if( ( *x_init_itr == QPSchurPack::LOWER && nu_itr->value() > 0 )
-						|| ( *x_init_itr == QPSchurPack::UPPER && nu_itr->value() < 0 ) )
+					if( ( *x_init_itr == LOWER && nu_itr->value() > 0 )
+						|| ( *x_init_itr == UPPER && nu_itr->value() < 0 ) )
 					{
 						// The bound has changed from upper to lower or visa-versa!
 						ij_act_change[num_act_change] = i;
 						bnds[num_act_change]
-							= nu_itr->value() > 0.0 ? QPSchurPack::UPPER : QPSchurPack::LOWER;
+							= nu_itr->value() > 0.0 ? UPPER : LOWER;
 						++num_act_change;
 					}
 				}
 				else {
 					// This initially fixed variable is not fixed in nu so lets free it!
 					ij_act_change[num_act_change] = -i;
-					bnds[num_act_change]          = QPSchurPack::FREE;
+					bnds[num_act_change]          = FREE;
 					++num_act_change;
 				}
 			}

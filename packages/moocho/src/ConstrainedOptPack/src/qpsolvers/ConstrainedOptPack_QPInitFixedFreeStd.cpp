@@ -87,7 +87,7 @@ void QPInitFixedFreeStd::initialize(
 
 	const int NOT_SET_YET = -9999; // Can't be FREE, LOWER, UPPER, or EQUALITY
 	if(test_setup)
-		x_init_.assign( n, (QPSchurPack::EBounds)NOT_SET_YET );
+		x_init_.assign( n, (EBounds)NOT_SET_YET );
 	else
 		x_init_.resize(n);
 	l_x_X_map_.assign(n,0);
@@ -96,7 +96,7 @@ void QPInitFixedFreeStd::initialize(
 	// Set free portion of x_init
 	if( i_x_free == NULL ) {
 		for( size_type i = 0; i < n_R; ++i )
-			x_init_[i] = QPSchurPack::FREE;
+			x_init_[i] = FREE;
 	}
 	else {
 		if(test_setup) {
@@ -117,12 +117,12 @@ void QPInitFixedFreeStd::initialize(
 						<< (*i_x_R);
 					throw std::invalid_argument( omsg.str() );
 				}
-				x_init_(*i_x_R) = QPSchurPack::FREE;
+				x_init_(*i_x_R) = FREE;
 			}
 		}
 		else {
 			for( const size_type *i_x_R = i_x_free; i_x_R != i_x_free + n_R; ++i_x_R ) {
-				x_init_(*i_x_R) = QPSchurPack::FREE;
+				x_init_(*i_x_R) = FREE;
 			}
 		}
 	}
@@ -131,7 +131,7 @@ void QPInitFixedFreeStd::initialize(
 	{
 		const size_type
 			*i_x_X = i_x_fixed;
-		const QPSchurPack::EBounds
+		const EBounds
 			*bnd = bnd_fixed;
 		i_x_X_map_t::iterator
 			i_x_X_map_itr = i_x_X_map_.begin();
@@ -145,7 +145,7 @@ void QPInitFixedFreeStd::initialize(
 						<< (*i_x_X) << " is out of bounds";
 					throw std::invalid_argument( omsg.str() );
 				}
-				if( *bnd == QPSchurPack::FREE ) {
+				if( *bnd == FREE ) {
 					std::ostringstream omsg;
 					omsg
 						<< "QPInitFixedFreeStd::initialize(...) : Error, "

@@ -83,15 +83,22 @@ void MatrixHessianSuperBasic::initialize(
 	}
 
 	// Setup Q_R and Q_X and validate i_x_free[] and i_x_fixed[]
-	Q_R_row_i_.resize(n_R);
-	Q_R_col_j_.resize(n_R);
+	const bool Q_R_is_idenity = (n_R == n && i_x_fixed == NULL );
+	if( Q_R_is_idenity ) {
+		Q_R_row_i_.resize(0);
+		Q_R_col_j_.resize(0);
+	}
+	else {
+		Q_R_row_i_.resize(n_R);
+		Q_R_col_j_.resize(n_R);
+	}
 	Q_X_row_i_.resize(n_X);
 	Q_X_col_j_.resize(n_X);
 	bool test_setup = true;  // ToDo: Make this an input parameter!
 	initialize_Q_R_Q_X(
 		n_R,n_X,i_x_free,i_x_fixed,test_setup
-		,n_R ? &Q_R_row_i_[0] : NULL
-		,n_R ? &Q_R_col_j_[0] : NULL
+		,!Q_R_is_idenity ? &Q_R_row_i_[0] : NULL
+		,!Q_R_is_idenity ? &Q_R_col_j_[0] : NULL
 		,&Q_R_
 		,n_X ? &Q_X_row_i_[0] : NULL
 		,n_X ? &Q_X_col_j_[0] : NULL
@@ -262,6 +269,90 @@ void MatrixHessianSuperBasic::Vp_StMtV(
 		// y += a*Q_X*B_XX*x_X
 		SparseLinAlgPack::Vp_StPtMtV(
 			y, a, Q_X(), no_trans, *B_XX_ptr(), no_trans, x_X() );
+	}
+}
+
+void MatrixHessianSuperBasic::Vp_StPtMtV(
+	VectorSlice* y, value_type a
+	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	, BLAS_Cpp::Transp M_trans
+	, const VectorSlice& x, value_type b ) const
+{
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
+	using BLAS_Cpp::trans_not;
+	using SparseLinAlgPack::V_MtV;
+	using LinAlgPack::Vt_S;
+	using LinAlgOpPack::V_MtV;
+	namespace slap = SparseLinAlgPack;
+
+	assert_initialized();
+
+	//
+	// y = b*y + a * op(P) * B * x
+	//
+	// =>
+	//
+	// y = b*y + a * op(P)*(Q_R*B_RR*Q_R' + Q_R*op(B_RX)*Q_X' + Q_X*op(B_RX')*Q_R + Q_X*B_XX*Q_X')*x
+	//   
+	//   = b*y + a*op(P)*Q_R*B_RR*Q_R'*x     + a*op(P)*Q_R*op(B_RX)*Q_X'*x
+	//         + a*op(P)*Q_X*op(B_RX')*Q_R*x + a*op(P)*Q_X*B_XX*Q_X'*x
+	//
+	// In order to implement the above as efficiently as possible we need to minimize the
+	// computations with the constituent matrices.  First off we will compute
+	// Q_RT_x = Q_R'*x (O(n_R)) and Q_XT_x = Q_X'*x (O(n_R)) neglect any terms where
+	// Q_RT_x.nz() == 0 or Q_XT_x.nz() == 0.  We will also determine if op(P)*Q_R == 0 (O(n_R))
+	// or op(P)*Q_X == 0 (O(n_X)) and neglect these terms if the are zero.
+	// Hopefully this work will allow us to skip as many computations as possible.
+	//
+	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans
+		, BLAS_Cpp::rows( rows(), cols(), M_trans) );
+	LinAlgOpPack::Vp_MtV_assert_sizes( BLAS_Cpp::cols( P.rows(), P.cols(), P_trans)
+		,rows(),cols(),M_trans,x.size());
+	// Q_R'*x
+	SpVector Q_RT_x;
+	if(n_R_) {
+		slap::V_MtV( &Q_RT_x, Q_R(), trans, x );
+	}
+	// Q_X'*x
+	SpVector Q_XT_x;
+	if(n_ > n_R_) {
+		slap::V_MtV( &Q_XT_x, Q_X(), trans, x );
+	}
+	// op(P)*Q_R overlap
+	size_type P_Q_R_nz = 0;
+	SparseLinAlgPack::intersection( P, P_trans, Q_R(), no_trans, &P_Q_R_nz );
+	// op(P)*Q_X overlap
+	size_type P_Q_X_nz = 0;
+	SparseLinAlgPack::intersection( P, P_trans, Q_X(), no_trans, &P_Q_X_nz );
+	// y = b*y
+	if(b==0.0)      *y = 0.0;
+	else if(b!=1.0) Vt_S(y,b);
+	// 
+	Vector t; // ToDo: use workspace
+	// y += a*op(P)*Q_R*B_RR*Q_R'*x
+	if( P_Q_R_nz && Q_RT_x.nz() ) {
+		t.resize(n_);
+		slap::Vp_StPtMtV( &t(), 1.0, Q_R(), no_trans, *B_RR_ptr(), no_trans, Q_RT_x() );
+		slap::Vp_StMtV( y, a, P, P_trans, t() );
+	}
+	// y += a*op(P)*Q_R*op(B_RX)*Q_X'*x
+	if( P_Q_R_nz && B_RX_ptr().get() && Q_XT_x.nz() ) {
+		t.resize(n_);
+		slap::Vp_StPtMtV( &t(), 1.0, Q_R(), no_trans, *B_RX_ptr(), B_RX_trans(), Q_XT_x() );
+		slap::Vp_StMtV( y, a, P, P_trans, t() );
+	}
+	// y += a*op(P)*Q_X*op(B_RX')*Q_R*x
+	if( P_Q_X_nz && B_RX_ptr().get() && Q_RT_x.nz() ) {
+		t.resize(n_);
+		slap::Vp_StPtMtV( &t(), 1.0, Q_X(), no_trans, *B_RX_ptr(), trans_not(B_RX_trans()), Q_RT_x() );
+		slap::Vp_StMtV( y, a, P, P_trans, t() );
+	}
+	// y += a*op(P)*Q_X*B_XX*Q_X'*x
+	if( P_Q_X_nz && Q_XT_x.nz() ) {
+		t.resize(n_);
+		slap::Vp_StPtMtV( &t(), 1.0, Q_X(), no_trans, *B_XX_ptr(), no_trans, Q_XT_x() );
+		slap::Vp_StMtV( y, a, P, P_trans, t() );
 	}
 }
 

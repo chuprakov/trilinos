@@ -52,8 +52,6 @@ class MatrixHessianSuperBasic
 {
 public:
 
-    ///
-	enum EBounds { UPPER, LOWER, EQUALITY };
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<const MatrixSymWithOpFactorized>
 		B_RR_ptr_t;
@@ -185,6 +183,11 @@ public:
 	///
 	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
+	///
+	void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
+		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+		, BLAS_Cpp::Transp M_rhs2_trans
+		, const VectorSlice& sv_rhs3, value_type beta) const;
 	///
 	value_type transVtMtV(const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
 		, const SpVectorSlice& sv_rhs3) const ;

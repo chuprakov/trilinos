@@ -63,8 +63,8 @@ private:
 	// //////////////////////////////
 	// Private types
 
-	typedef std::vector<size_type>                         i_x_t;
-	typedef std::vector<MatrixHessianSuperBasic::EBounds>  bnd_fixed_t;
+	typedef std::vector<size_type>                              i_x_t;
+	typedef std::vector<ConstrainedOptimizationPack::EBounds>   bnd_fixed_t;
 
 	// /////////////////////////////
 	// Private data members

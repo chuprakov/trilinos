@@ -163,8 +163,9 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 						}
 						if(!keep) {
 							*i_x_fixed_itr++ = i_indep;
+							namespace COP = ConstrainedOptimizationPack;
 							*bnd_fixed_itr++
-								= ( nu_itr->value() > 0.0 ? MHSB_t::UPPER : MHSB_t::LOWER );
+								= ( nu_itr->value() > 0.0 ? COP::UPPER : COP::LOWER );
 							// ToDo: Consider fixed variable bounds
 							++n_pz_X;
 						}

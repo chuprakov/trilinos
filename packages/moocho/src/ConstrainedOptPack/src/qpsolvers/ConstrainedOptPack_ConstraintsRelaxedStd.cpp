@@ -92,7 +92,7 @@ ConstraintsRelaxedStd::ConstraintsRelaxedStd()
 		,Ed_(NULL)
 		,last_added_j_(0)
 		,last_added_bound_(0.0)
-		,last_added_bound_type_(QPSchurPack::FREE)
+		,last_added_bound_type_(FREE)
 {}
 
 void ConstraintsRelaxedStd::initialize(
@@ -283,7 +283,7 @@ void ConstraintsRelaxedStd::pick_violated(
 				? d(max_bound_viol_j) - max_bounds_viol		// e(i) - (e(i) - eU(i)) = eU(i)
 				: max_bounds_viol + d(max_bound_viol_j);	// (eL(i) - e(i)) + e(i) = eL(i)
 			*norm_2_constr	= 1.0;
-			*bnd			= max_bound_viol_upper ? QPSchurPack::UPPER : QPSchurPack::LOWER;
+			*bnd			= max_bound_viol_upper ? UPPER : LOWER;
 			*can_ignore		= false;
 		}
 		else {
@@ -345,7 +345,7 @@ void ConstraintsRelaxedStd::pick_violated(
 					? e(max_inequality_viol_j) - max_inequality_viol	// e(i) - (e(i) - eU(i)) = eU(i)
 					: max_inequality_viol + e(max_inequality_viol_j);	// (eL(i) - e(i)) + e(i) = eL(i)
 				*norm_2_constr	= 1.0;	// ToDo: Compute it some how?
-				*bnd			= max_inequality_viol_upper ? QPSchurPack::UPPER : QPSchurPack::LOWER;
+				*bnd			= max_inequality_viol_upper ? UPPER : LOWER;
 				*can_ignore		= false;
 			}
 			else {
@@ -400,11 +400,11 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 	const SpVectorSlice::element_type *ele_ptr = NULL;
 	if( j_local <= A_bar_.nd() && dL_ ) {
 		switch( bnd ) {
-			case QPSchurPack::EQUALITY:
-			case QPSchurPack::LOWER:
+			case EQUALITY:
+			case LOWER:
 				return ( ele_ptr = dL_->lookup_element(j_local) )
 					? ele_ptr->value() : -inf;
-			case QPSchurPack::UPPER:
+			case UPPER:
 				return ( ele_ptr = dU_->lookup_element(j_local) )
 					? ele_ptr->value() : +inf;
 			default:
@@ -413,10 +413,10 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 	}
 	else if( (j_local -= A_bar_.nd()) <= 1 ) {
 		switch( bnd ) {
-			case QPSchurPack::EQUALITY:
-			case QPSchurPack::LOWER:
+			case EQUALITY:
+			case LOWER:
 				return etaL_;
-			case QPSchurPack::UPPER:
+			case UPPER:
 				return +inf;
 			default:
 				assert(0);
@@ -424,11 +424,11 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 	}
 	else if( (j_local -= 1) <= A_bar_.m_in() ) {
 		switch( bnd ) {
-			case QPSchurPack::EQUALITY:
-			case QPSchurPack::LOWER:
+			case EQUALITY:
+			case LOWER:
 				return ( ele_ptr = eL_->lookup_element(j_local) )
 					? ele_ptr->value() : -inf;
-			case QPSchurPack::UPPER:
+			case UPPER:
 				return ( ele_ptr = eU_->lookup_element(j_local) )
 					? ele_ptr->value() : +inf;
 			default:
@@ -437,9 +437,9 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 	}
 	else if( (j_local -= A_bar_.m_in()) <= A_bar_.m_eq() ) {
 		switch( bnd ) {
-			case QPSchurPack::EQUALITY:
-			case QPSchurPack::LOWER:
-			case QPSchurPack::UPPER:
+			case EQUALITY:
+			case LOWER:
+			case UPPER:
 				return -(*A_bar_.f())(j_local);
 			default:
 				assert(0);
@@ -486,7 +486,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 	, const size_type       j_f_undecomp[]
 	)
 {
-	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 	// Setup P_u
 	const bool test_setup = true; // Todo: Make this an argument!
@@ -503,7 +503,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 			*row_i_itr = *j_f_u;
 			*col_j_itr = i;
 		}					
-		P_u_.initialize_and_sort(nd,m_undecomp,m_undecomp,0,0,GPMSTP::BY_ROW
+		P_u_.initialize_and_sort(nd,m_undecomp,m_undecomp,0,0,GPMSIP::BY_ROW
 			,&P_u_row_i_[0],&P_u_col_j_[0],test_setup);
 	}
 	
@@ -553,7 +553,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Mp_StPtMtP(
 	using SparseLinAlgPack::dot;
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
-	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 	//	
 	//	A_bar = [  I   0  op(E')   op(F')  ]
@@ -575,10 +575,10 @@ void ConstraintsRelaxedStd::MatrixConstraints::Mp_StPtMtP(
 	// row if op(P2) = P2 or sorted by column if op(P2) = P2'
 	// If P1 or P2 are not sorted properly, we will just use the default
 	// implementation of this operation.
-	if( 	( P1.ordered_by() == GPMSTP::BY_ROW && P1_trans == BLAS_Cpp::no_trans )
-	    || 	( P1.ordered_by() == GPMSTP::BY_COL && P1_trans == BLAS_Cpp::trans )
-	    || 	( P2.ordered_by() == GPMSTP::BY_ROW && P2_trans == BLAS_Cpp::trans )
-	    || 	( P2.ordered_by() == GPMSTP::BY_COL && P2_trans == BLAS_Cpp::no_trans ) )
+	if( 	( P1.ordered_by() == GPMSIP::BY_ROW && P1_trans == BLAS_Cpp::no_trans )
+	    || 	( P1.ordered_by() == GPMSIP::BY_COL && P1_trans == BLAS_Cpp::trans )
+	    || 	( P2.ordered_by() == GPMSIP::BY_ROW && P2_trans == BLAS_Cpp::trans )
+	    || 	( P2.ordered_by() == GPMSIP::BY_COL && P2_trans == BLAS_Cpp::no_trans ) )
 	{
 		// Call the default implementation
 		MatrixWithOp::Vp_StPtMtV(C,a,P1,P1_trans,M_trans,P2,P2_trans);
@@ -736,11 +736,13 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 
 	assert( !F_ || P_u_.cols() == f_->size() ); // ToDo: Add P_u when needed!
 
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
 	using BLAS_Cpp::trans_not;
-	using SparseLinAlgPack::dot;
+ 	using SparseLinAlgPack::dot;
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
-	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans
 		, BLAS_Cpp::rows( rows(), cols(), M_trans) );
@@ -765,8 +767,8 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 	// row if op(P) = P' or sorted by column if op(P) = P.  If
 	// P is not sorted properly, we will just use the default
 	// implementation of this operation.
-	if( 	( P.ordered_by() == GPMSTP::BY_ROW && P_trans == BLAS_Cpp::no_trans )
-	    || 	( P.ordered_by() == GPMSTP::BY_COL && P_trans == BLAS_Cpp::trans ) )
+	if( 	( P.ordered_by() == GPMSIP::BY_ROW && P_trans == BLAS_Cpp::no_trans )
+	    || 	( P.ordered_by() == GPMSIP::BY_COL && P_trans == BLAS_Cpp::trans ) )
 	{
 		// Call the default implementation
 		MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,beta);
@@ -795,14 +797,14 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 		const GenPermMatrixSlice
 			P1 = ( P.is_identity() 
 				   ? GenPermMatrixSlice( nd(), nd(), GenPermMatrixSlice::IDENTITY_MATRIX )
-				   : P.create_submatrix(d_rng,P.ordered_by())
+				   : P.create_submatrix(d_rng,P_trans==trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
 				),
 			P2 = ( P.is_identity()
 				   ? GenPermMatrixSlice(
 					   P_trans == no_trans ? nd() : 1
 					   , P_trans == no_trans ? 1 : nd()
 					   , GenPermMatrixSlice::ZERO_MATRIX )
-				   : P.create_submatrix(Range1D(nd()+1,nd()+1),P.ordered_by())
+				   : P.create_submatrix(Range1D(nd()+1,nd()+1),P_trans==trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
 				);
 
 		const SpVectorSlice
@@ -867,19 +869,23 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 
 		size_type off = 0;
 		const GenPermMatrixSlice
-			P1 = P.create_submatrix(Range1D(off+1,off+nd()),P.ordered_by());
+			P1 = P.create_submatrix(Range1D(off+1,off+nd())
+									,P_trans==trans?GPMSIP::BY_ROW:GPMSIP::BY_COL);
 		off += nd();
 		const GenPermMatrixSlice
-			P2 = P.create_submatrix(Range1D(off+1,off+1),P.ordered_by());
+			P2 = P.create_submatrix(Range1D(off+1,off+1)
+									,P_trans==trans?GPMSIP::BY_ROW:GPMSIP::BY_COL);
 		off += 1;
 		const GenPermMatrixSlice
 			P3 = m_in()
-				? P.create_submatrix(Range1D(off+1,off+m_in()),P.ordered_by())
+				? P.create_submatrix(Range1D(off+1,off+m_in())
+									 ,P_trans==trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
 				: GenPermMatrixSlice();
 		off += m_in();
 		const GenPermMatrixSlice
 			P4 = m_eq()
-				? P.create_submatrix(Range1D(off+1,off+m_eq()),P.ordered_by())
+				? P.create_submatrix(Range1D(off+1,off+m_eq())
+									 ,P_trans==trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
 				: GenPermMatrixSlice();
 
 		const SpVectorSlice

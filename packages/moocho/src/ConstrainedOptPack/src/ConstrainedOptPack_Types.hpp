@@ -16,6 +16,9 @@ namespace ConstrainedOptimizationPack {
 // types from NLPInterfacePack
 #include "NLPInterfacePack/include/NLPInterfacePackPublicTypes.ud"
 
+/// Bounds type
+enum EBounds { FREE, UPPER, LOWER, EQUALITY };
+
 // concrete classes
 
 class VectorWithNorms;

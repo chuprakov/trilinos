@@ -52,9 +52,6 @@ class Constraints;
 class QP;
 
 ///
-enum EBounds { FREE, UPPER, LOWER, EQUALITY };
-
-///
 /** Represents the QP to be solved by QPSchur {abstract}.
   *
   * In order to solve a QP, clients must define subclasses
@@ -527,7 +524,7 @@ public:
 	ESolveReturn solve_qp(
 		  QP& qp
 		, size_type num_act_change, const int ij_act_change[]
-			, const QPSchurPack::EBounds bnds[]
+			, const EBounds bnds[]
 		, std::ostream *out, EOutputLevel output_level, ERunTests test_what
 		, VectorSlice* x, SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve
 		, size_type* iter, size_type* num_adds, size_type* num_drops
@@ -648,8 +645,6 @@ public:
 
 		///
 		typedef QPSchurPack::QP          QP;
-		///
-		typedef QPSchurPack::EBounds     EBounds;
 
 		/// Thrown if the update failed
 		class BadUpdateException : public std::logic_error
@@ -686,7 +681,7 @@ public:
 		  * can such that the schur complement is nonsingular.
 		  */
 		void initialize( QP& qp, size_type num_act_change, const int ij_act_change[]
-		, const QPSchurPack::EBounds bnds[], bool test
+		, const EBounds bnds[], bool test
 		, std::ostream *out, EOutputLevel output_level );
 
 		///
@@ -707,7 +702,7 @@ public:
 		  * the exception #LDConstraintException# and the active set will not
 		  * be updated.
 		  */
-		void add_constraint( size_type ja, QPSchurPack::EBounds bnd_ja
+		void add_constraint( size_type ja, EBounds bnd_ja
 			, bool update_steps, bool force_refactorization = true );
 
 		///
@@ -724,7 +719,7 @@ public:
 		  *
 		  * ToDo: Finish documentation
 		  */
-		void drop_add_constraints( int jd, size_type ja, QPSchurPack::EBounds bnd_ja
+		void drop_add_constraints( int jd, size_type ja, EBounds bnd_ja
 			, bool update_steps );
 
 		//@}
@@ -812,7 +807,7 @@ public:
 		///
 		/** Return which bound is active for the active constraint.
 		  */
-		QPSchurPack::EBounds bnd( size_type s ) const;
+		EBounds bnd( size_type s ) const;
 
 		///
 		/** Returns the indice of x_X(l) of the initially fixed variables

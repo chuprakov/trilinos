@@ -169,14 +169,14 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
 	const GenPermMatrixSlice
 		P1 = ( P.is_identity() 
 			   ? GenPermMatrixSlice( n_, n_, GenPermMatrixSlice::IDENTITY_MATRIX )
-			   : P.create_submatrix(Range1D(1,n_),P.ordered_by())
+			   : P.create_submatrix(Range1D(1,n_),P_trans==trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
 			),
 		P2 = ( P.is_identity()
 			   ? GenPermMatrixSlice(
 				   P_trans == no_trans ? n_ : 1
 				   , P_trans == no_trans ? 1 : n_
 				   , GenPermMatrixSlice::ZERO_MATRIX )
-			   : P.create_submatrix(Range1D(n_+1,n_+1),P.ordered_by())
+			   : P.create_submatrix(Range1D(n_+1,n_+1),P_trans==trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
 			);
 	
 	const VectorSlice
@@ -236,14 +236,14 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
 	const GenPermMatrixSlice
 		P1 = ( P.is_identity() 
 			   ? GenPermMatrixSlice( n_, n_, GenPermMatrixSlice::IDENTITY_MATRIX )
-			   : P.create_submatrix(Range1D(1,n_),P.ordered_by())
+			   : P.create_submatrix(Range1D(1,n_),P_trans==trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
 			),
 		P2 = ( P.is_identity()
 			   ? GenPermMatrixSlice(
 				   P_trans == no_trans ? n_ : 1
 				   , P_trans == no_trans ? 1 : n_
 				   , GenPermMatrixSlice::ZERO_MATRIX )
-			   : P.create_submatrix(Range1D(n_+1,n_+1),P.ordered_by())
+			   : P.create_submatrix(Range1D(n_+1,n_+1),P_trans==trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
 			);
 
 	const SpVectorSlice

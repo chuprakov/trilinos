@@ -102,23 +102,9 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 			bnd_from_itr = bnd_fixed_from.begin();
 		bnd_fixed_t::iterator
 			bnd_to_itr = bnd_fixed->begin();
-		for( ; bnd_from_itr != bnd_fixed_from.end(); ++bnd_from_itr, ++ bnd_to_itr ) {
-			switch( *bnd_from_itr ) {
-			    case MHSB::LOWER:
-					*bnd_to_itr = QPSchurPack::LOWER;
-					break;
-			    case MHSB::UPPER:
-					*bnd_to_itr = QPSchurPack::UPPER;
-					break;
-			    case MHSB::EQUALITY:
-					*bnd_to_itr = QPSchurPack::EQUALITY;
-					break;
-			    default:
-					assert(0);
-			}
-		}
+		std::copy( bnd_from_itr, bnd_fixed_from.end(), bnd_to_itr );
 	}
-	(*bnd_fixed)[nd_X] = QPSchurPack::LOWER; // relaxation is always initially active
+	(*bnd_fixed)[nd_X] = LOWER; // relaxation is always initially active
 	// j_f_decomp[]
 	j_f_decomp->resize(0);
 	// b_X
@@ -140,11 +126,11 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 		for( ; bnd_itr != bnd_itr_end; ++bnd_itr, ++i_x_itr, ++b_X_itr ) {
 			const size_type i = *i_x_itr;
 			switch(*bnd_itr) {
-			    case QPSchurPack::LOWER:
-			    case QPSchurPack::EQUALITY:
+			    case LOWER:
+			    case EQUALITY:
 					*b_X_itr = (ele = dL.lookup_element(i))->value(); // Should not be null!
 					break;
-			    case QPSchurPack::UPPER:
+			    case UPPER:
 					*b_X_itr = (ele = dU.lookup_element(i))->value(); // Should not be null!
 					break;
 			    default:
