@@ -196,6 +196,8 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/../TSFCoreUtils/src\
 -I$(top_srcdir)/../epetra/src \
 -I$(top_builddir)/../epetra/src \
+-I$(top_srcdir)/../ifpack/src \
+-I$(top_builddir)/../ifpack/src \
 -I$(top_srcdir)/../aztecoo/src \
 -I$(top_builddir)/../aztecoo/src \
 -I$(top_srcdir)/../teuchos \

@@ -7,6 +7,9 @@
 #include "TSFCoreEpetraMultiVector.hpp"
 #include "TSFCoreEpetraLinearOp.hpp"
 #include "AbstractFactoryStd.hpp"
+#include "Epetra_CrsMatrix.h"
+#include "Epetra_VbrMatrix.h"
+#include "Ifpack_CrsRiluk.h"
 
 #ifdef _DEBUG
 #define EpetraNPFO_VALIDATE_L_IN_RANGE(l) TEST_FOR_EXCEPTION( l > epetra_np_->Nu() || l < 0, std::invalid_argument, "Error!  l == " << l << " out of range")
@@ -16,6 +19,10 @@
 
 namespace TSFCore {
 namespace Nonlin {
+
+//
+// EpetraNPFO
+//
 
 // Constructors / Initializers / accessors
 
@@ -39,6 +46,9 @@ void EpetraNPFO::initialize(
 
   epetra_np_ = epetra_np;
 
+  // Make sure that the Epetra Nonlinear Problem is initialized
+  epetra_np_->initialize(false);
+
   // The the number of auxiliary variables and responce functions
   const int
     Nu  = epetra_np_->Nu(),
@@ -60,6 +70,7 @@ void EpetraNPFO::initialize(
   uL_.resize(Nu);
   uU_.resize(Nu);
   u0_.resize(Nu);
+  u_in_.resize(Nu);
   for(int l=1;l<=Nu;++l) {
     uL_[l-1] = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->uL(l)),false),space_u_[l-1]));
     uU_[l-1] = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->uU(l)),false),space_u_[l-1]));
@@ -71,6 +82,30 @@ void EpetraNPFO::initialize(
 
   // Setup factories
 	factory_DcDy_ = Teuchos::rcp(new MemMngPack::AbstractFactoryStd<LinearOpWithSolve<Scalar>,LinearOpWithSolveAztecOO>());
+  factory_DcDu_.resize(Nu);
+  for(int l=1;l<=Nu;++l) {
+    typedef LinearOp<Scalar> T_itfc;
+    typedef MemMngPack::PostModNothing<T_itfc> pm_t;
+    typedef MemMngPack::AbstractFactoryStd<T_itfc,T_itfc,pm_t,DcDu_Allocator>  af_t;
+    factory_DcDu_[l-1] = Teuchos::rcp( new af_t( pm_t(), DcDu_Allocator( epetra_np_->use_EO_DcDu(l) ) ) );
+  }
+
+  // Setup cache arrays for dealing with DcDu
+  DcDu_op_.resize(Nu);
+  DcDu_mv_.resize(Nu);
+  DcDu_updated_.resize(Nu);
+  epetra_DcDu_op_.resize(Nu);
+  epetra_DcDu_mv_.resize(Nu);
+  epetra_DcDu_args_.resize(Nu);
+
+  // Setup cache arrays for dealing with D\gDu
+  DgDu_.resize(Nu);
+  DgDu_updated_.resize(Nu);
+  epetra_DgDu_.resize(Nu);
+  epetra_DgDu_args_.resize(Nu);
+
+  // Set the graph for DcDy preconditioner to NULL just the be safe
+  epetra_DcDy_iluk_graph_ = Teuchos::null;
 
   // ToDo: Initialize everything else!
 
@@ -84,6 +119,7 @@ void EpetraNPFO::initialize(
 
 void EpetraNPFO::initialize( bool testSetup )
 {
+  epetra_np_->initialize(testSetup);
   // Already initialized!
 }
 
@@ -212,10 +248,10 @@ void EpetraNPFO::unsetQuantities()
   c_ = NULL;
   g_ = NULL;
   DcDy_ = NULL;
-  std::fill( DcDu_.begin(), DcDu_.end(), (EpetraLinearOp*)NULL );
+  std::fill( DcDu_op_.begin(), DcDu_op_.end(), (EpetraLinearOp*)NULL );
+  std::fill( DcDu_mv_.begin(), DcDu_mv_.end(), (EpetraMultiVector*)NULL );
   DgDy_ = NULL;
   std::fill( DgDu_.begin(), DgDu_.end(), (EpetraMultiVector*)NULL );
-  // ToDo: Unset the rest ...
 }
 
 void EpetraNPFO::calc_c(
@@ -258,7 +294,6 @@ ETransp EpetraNPFO::opDcDy() const
 
 ETransp EpetraNPFO::opDcDu(int l) const
 {
-  assert(0);
   return NOTRANS;
 }
 
@@ -281,35 +316,65 @@ LinearOpWithSolve<Scalar>* EpetraNPFO::get_DcDy()
 
 void EpetraNPFO::set_DcDu(int l, LinearOp<Scalar>* DcDu_l)
 {
-  assert(0);
+  EpetraNPFO_VALIDATE_L_IN_RANGE(l);
+  using DynamicCastHelperPack::dyn_cast;
+  if(DcDu_l) {
+    if(epetra_np_->use_EO_DcDu(l)) {
+      DcDu_op_[l-1] = &dyn_cast<TSFCore::EpetraLinearOp>(*DcDu_l);
+    }
+    else {
+      DcDu_mv_[l-1] = &dyn_cast<TSFCore::EpetraMultiVector>(*DcDu_l);
+    }
+    DcDu_updated_[l-1] = false;
+  }
+  else {
+    DcDu_op_[l-1] = NULL;
+    DcDu_mv_[l-1] = NULL;
+  }
 }
 
 LinearOp<Scalar>* EpetraNPFO::get_DcDu(int l)
 {
-  assert(0);
-  return NULL;
+  EpetraNPFO_VALIDATE_L_IN_RANGE(l);
+  if(epetra_np_->use_EO_DcDu(l)) {
+    return DcDu_op_[l-1];
+  }
+  return DcDu_mv_[l-1];
 }
 
 void EpetraNPFO::set_DgDy(MultiVector<Scalar>* DgDy)
 {
-  assert(0);
+  using DynamicCastHelperPack::dyn_cast;
+  if(DgDy) {
+    DgDy_ = &dyn_cast<TSFCore::EpetraMultiVector>(*DgDy);
+    DgDy_updated_ = false;
+  }
+  else {
+    DgDy_ = NULL;
+  }
 }
 
 MultiVector<Scalar>* EpetraNPFO::get_DgDy()
 {
-  assert(0);
-  return NULL;
+  return DgDy_;
 }
 
 void EpetraNPFO::set_DgDu(int l, MultiVector<Scalar>* DgDu_l)
 {
-  assert(0);
+  EpetraNPFO_VALIDATE_L_IN_RANGE(l);
+  using DynamicCastHelperPack::dyn_cast;
+  if(DgDu_l) {
+    DgDu_[l-1] = &dyn_cast<TSFCore::EpetraMultiVector>(*DgDu_l);
+    DgDu_updated_[l-1] = false;
+  }
+  else {
+    DgDu_[l-1] = NULL;
+  }
 }
 
 MultiVector<Scalar>* EpetraNPFO::get_DgDu(int l)
 {
-  assert(0);
-  return NULL;
+  return DgDu_[l-1];
 }
 
 void EpetraNPFO::calc_DcDy(
@@ -352,10 +417,31 @@ void EpetraNPFO::calc_DgDu(
 
 // private
 
-void EpetraNPFO::set_u( const Vector<Scalar>* u_in[], bool newPoint ) const
+const Epetra_Vector**
+EpetraNPFO::set_u( const Vector<Scalar>* u_in[], bool newPoint ) const
 {
-  // ToDo: Fill this in!
+	using DynamicCastHelperPack::dyn_cast;
+  updateNewPoint(newPoint);
+  if( u_in && newPoint ) {
+    for( int l = 1; l <= u_in_.size(); ++l ) {
+      if(u_in[l-1]) {
+        u_in_[l-1] = &*(dyn_cast<const EpetraVector>(*u_in[l-1]).epetra_vec());
+      }
+      else {
+        u_in_[l-1] = NULL;  // Tell epetra_np_ to use epetra_np_->u0(l)
+      }
+    }
+  }
+  return &u_in_[0];
 }
+
+void EpetraNPFO::updateNewPoint( bool newPoint ) const
+{
+  const int Nu = epetra_np_->Nu();
+  c_updated_ = g_updated_ = DcDy_updated_ = DgDy_updated_ = false;
+  for(int l=1;l<=Nu;++l) DcDu_updated_[l-1] = DgDu_updated_[l-1] = false;
+}
+
 
 void EpetraNPFO::calc_Dc(
   const Vector<Scalar>     &y_in
@@ -364,9 +450,12 @@ void EpetraNPFO::calc_Dc(
   ,bool                    computeGradients
   ) const
 {
-  const Epetra_Vector &y = get_epetra_vec(y_in);
-  set_u( u_in, newPoint );
-
+  const int Nu = epetra_np_->Nu();
+  //
+  // Get Epetra objects for y and u
+  //
+  const Epetra_Vector &y  = get_epetra_vec(y_in);
+  const Epetra_Vector **u = set_u( u_in, newPoint );
   //
   // Pick out the raw Epetra objects and in the process set their
   // adpater objects to uninitialized.
@@ -384,33 +473,58 @@ void EpetraNPFO::calc_Dc(
       epetra_DcDy_op = epetra_np_->create_DcDy();
     }
   }
+  // DcDu
+  for(int l=1;l<=Nu;++l) {
+    if(DcDu_op_[l-1] && !DcDu_updated_[l-1]) {
+      DcDu_op_[l-1]->setUninitialized( &epetra_DcDu_op_[l-1] ); // Grab the RCP<Epetra_Operator>
+      if(!epetra_DcDu_op_[l-1].get())
+        epetra_DcDu_op_[l-1] = epetra_np_->create_DcDu(l);
+      epetra_DcDu_args_[l-1] = Epetra::EpetraOp_or_EpetraMV(&*epetra_DcDu_op_[l-1]);
+    }
+    else if(DcDu_mv_[l-1] && !DcDu_updated_[l-1]) {
+      DcDu_mv_[l-1]->setUninitialized( &epetra_DcDu_mv_[l-1] ); // Grap the RCP<Epetra_MultiVector>
+      if(!epetra_DcDu_mv_[l-1].get())
+        epetra_DcDu_mv_[l-1] = Teuchos::rcp(new Epetra_MultiVector(*epetra_np_->map_c(),space_u_[l-1]->dim()));
+      epetra_DcDu_args_[l-1] = Epetra::EpetraOp_or_EpetraMV(&*epetra_DcDu_mv_[l-1]);
+    }
+    else {
+      epetra_DcDu_args_[l-1] = Epetra::EpetraOp_or_EpetraMV(); // No DcDu(l) to compute!
+    }
+  }
 
   //
   // Compute the set Epetra objects
   //
   epetra_np_->calc_Dc(
     y
-    ,NULL            // ToDo: Put in array for u
+    ,u
     ,epetra_c.get()
     ,epetra_DcDy_op.get()
-    ,NULL            // ToDo: Put in array for DcDy
+    ,&epetra_DcDu_args_[0]
     );
-  // ToDo: Finish for DcDu ...
 
   //
   // Put the raw Epetra objects back into the adpater objects
   //
+  // c
   if( epetra_c.get() ) {
     c_->initialize( epetra_c, space_c_ );
     c_updated_ = true;
   }
+  // DcDy
   if( epetra_DcDy_op.get() ) {
-    // ToDo: Create Ifpack preconditioner!
+    // Setup the preconditioner
+    const bool usePrec = true; // ToDo: Make an external option
+    if(usePrec) {
+      setupPreconditioner(epetra_DcDy_op,&epetra_DcDy_prec);
+    }
+    // Set up the options for the AztecOO solver
     if(!aztecoo_solver.get()) {
       aztecoo_solver = Teuchos::rcp(new AztecOO);
       aztecoo_solver->SetAztecOption(AZ_output,AZ_none);
       // ToDo: Setup AztecOO options!
     }
+    // Finally initialize the aggregate LinearOpWithSolve object
     DcDy_->initialize(
       epetra_DcDy_op                                               // Op
       ,epetra_np_->opDcDy() == Epetra::NOTRANS ? NOTRANS : TRANS   // Op_trans
@@ -421,20 +535,193 @@ void EpetraNPFO::calc_Dc(
       );
     DcDy_->set_trace_out( Teuchos::rcp(new std::ofstream("LinearOpWithSolveAztecOO.out") ) ); // ToDo: Make this more flexible!
   }
-  // ToDo: Finish for DcDu ...
+  // DcDu
+  for(int l=1;l<=Nu;++l) {
+    if(epetra_DcDu_op_[l-1].get()) {
+      DcDu_op_[l-1]->initialize(epetra_DcDu_op_[l-1]);
+      epetra_DcDu_op_[l-1] = Teuchos::null;
+      DcDu_updated_[l-1] = true;
+    }
+    else if(epetra_DcDu_mv_[l-1].get()) {
+      DcDu_mv_[l-1]->initialize(epetra_DcDu_mv_[l-1],space_c_);
+      epetra_DcDu_mv_[l-1] = Teuchos::null;
+      DcDu_updated_[l-1] = true;
+    }
+  }
 
 }
 
 void EpetraNPFO::calc_Dg(
-  const Vector<Scalar>     &y
-  ,const Vector<Scalar>*   u[]
+  const Vector<Scalar>     &y_in
+  ,const Vector<Scalar>*   u_in[]
   ,bool                    newPoint
   ,bool                    computeGradients
   ) const
 {
-  assert(0);
+  const int Nu = epetra_np_->Nu();
+  //
+  // Get Epetra objects for y and u
+  //
+  const Epetra_Vector &y  = get_epetra_vec(y_in);
+  const Epetra_Vector **u = set_u( u_in, newPoint );
+  //
+  // Pick out the raw Epetra objects and in the process set their
+  // adpater objects to uninitialized.
+  //
+  // g
+  Teuchos::RefCountPtr<Epetra_Vector>  epetra_g;
+  if(g_ /*&& !g_updated_*/) g_->setUninitialized( &epetra_g );
+  // DgDy
+  Teuchos::RefCountPtr<Epetra_MultiVector>  epetra_DgDy;
+  if(DgDy_ && !DgDy_updated_) {
+    DgDy_->setUninitialized( &epetra_DgDy );
+    if( !epetra_DgDy.get() ) {
+      epetra_DgDy = Teuchos::rcp(new Epetra_MultiVector(*epetra_np_->map_y(),space_g_->dim()));
+    }
+  }
+  // DgDu
+  for(int l=1;l<=Nu;++l) {
+    if(DgDu_[l-1] && !DgDu_updated_[l-1]) {
+      DgDu_[l-1]->setUninitialized( &epetra_DgDu_[l-1] ); // Grap the RCP<Epetra_MultiVector>
+      if(!epetra_DgDu_[l-1].get())
+        epetra_DgDu_[l-1] = Teuchos::rcp(new Epetra_MultiVector(*epetra_np_->map_u(l),space_g_->dim()));
+      epetra_DgDu_args_[l-1] = &*epetra_DgDu_[l-1];
+    }
+    else {
+      epetra_DgDu_args_[l-1] = NULL;
+    }
+  }
+
+  //
+  // Compute the set Epetra objects
+  //
+  epetra_np_->calc_Dg(
+    y
+    ,u
+    ,epetra_g.get()
+    ,epetra_DgDy.get()
+    ,&epetra_DgDu_args_[0]
+    );
+
+  //
+  // Put the raw Epetra objects back into the adpater objects
+  //
+  if( epetra_g.get() ) {
+    g_->initialize( epetra_g, space_g_ );
+    g_updated_ = true;
+  }
+  // DgDy
+  if(epetra_DgDy.get()) {
+    DgDy_->initialize( epetra_DgDy, space_y_ );
+    epetra_DgDy = Teuchos::null;
+    DgDy_updated_ = true;
+  }
+  // DgDu
+  for(int l=1;l<=Nu;++l) {
+    if(epetra_DgDu_[l-1].get()) {
+      DgDu_[l-1]->initialize( epetra_DgDu_[l-1], space_u_[l-1] );
+      epetra_DgDu_[l-1] = Teuchos::null;
+      DgDu_updated_[l-1] = true;
+    }
+  }
+
+}
+
+void EpetraNPFO::setupPreconditioner(
+  const Teuchos::RefCountPtr<Epetra_Operator>   &epetra_DcDy_op
+  ,Teuchos::RefCountPtr<Epetra_Operator>        *epetra_DcDy_prec_in
+  ) const
+{
+  using DynamicCastHelperPack::dyn_cast;
+  Teuchos::RefCountPtr<Epetra_Operator> &epetra_DcDy_prec = *epetra_DcDy_prec_in;
+
+  // Determine what type of Epetra_Operator we have for DcDy
+  const Epetra_RowMatrix *epetra_DcDy_rm = dynamic_cast<const Epetra_RowMatrix*>(&*epetra_DcDy_op);
+  if(epetra_DcDy_rm) {
+    // Yea! We can use AztecOO or Ifpack preconditioners!  Now
+    // determine if epetra_DcDy_op_rm is actually a a Crs or a Vbr
+    // matrix.
+    const Epetra_CrsMatrix *epetra_DcDy_crs
+      = dynamic_cast<const Epetra_CrsMatrix*>(epetra_DcDy_rm);
+    const Epetra_VbrMatrix *epetra_DcDy_vbr
+      = ( epetra_DcDy_crs ? (const Epetra_VbrMatrix*)NULL : dynamic_cast<const Epetra_VbrMatrix*>(epetra_DcDy_rm) );
+    if( epetra_DcDy_crs || epetra_DcDy_vbr ) { 
+      //
+      // epetra_DcDy_op is a Crs or a Vbr matrix!
+      //
+      // Create the graph if we have not done so already
+      if(!epetra_DcDy_iluk_graph_.get()) {
+        // We only need this graph once!
+        const int             // ToDo: Make these external parameters!
+          levelFill     = 1,  // This is the default used in NOX
+          levelOverlap = 0;   // ""
+        epetra_DcDy_iluk_graph_ = Teuchos::rcp(
+          new Ifpack_IlukGraph(
+            ( epetra_DcDy_crs
+              ? epetra_DcDy_crs->Graph()
+              : epetra_DcDy_vbr->Graph() )
+            ,levelFill
+            ,levelOverlap
+            )
+          );
+        epetra_DcDy_iluk_graph_->ConstructFilledGraph();
+      }
+      // Create the preconditioner if it has not been created already
+      if(!epetra_DcDy_prec.get()) {
+        epetra_DcDy_prec = Teuchos::rcp(new Ifpack_CrsRiluk(*epetra_DcDy_iluk_graph_));
+      }
+      // Get a Ifpack_CrsRiluk subclass pointer for epetra_DcDy_prec
+      Ifpack_CrsRiluk *epetra_DcDy_prec_crs_riluk = &dyn_cast<Ifpack_CrsRiluk>(*epetra_DcDy_prec);
+      // Now initialize the values
+      if(epetra_DcDy_crs)
+        epetra_DcDy_prec_crs_riluk->InitValues(*epetra_DcDy_crs);
+      else if(epetra_DcDy_vbr)
+        epetra_DcDy_prec_crs_riluk->InitValues(*epetra_DcDy_vbr);
+      else
+        assert(0); // Should never get here!
+      // Set diagonal perturbations
+      const double          // ToDo: Make these externally set
+        absThreshold = 0.0, // The default used by NOX
+        relThreshold = 1.0; // The default used by NOX
+      epetra_DcDy_prec_crs_riluk->SetAbsoluteThreshold(absThreshold);
+      epetra_DcDy_prec_crs_riluk->SetRelativeThreshold(relThreshold);
+      // Finally, complete the factorization
+      epetra_DcDy_prec_crs_riluk->Factor();
+    }
+    else {
+      // It turns out that epetra_DcDy_op only supports the Epetra_RowMatrix interface!
+      TEST_FOR_EXCEPTION(
+        true,std::logic_error
+        ,"Have not implemented support for only Epetra_RowMatrix interface yet!");
+    }
+  }
+  else {
+    TEST_FOR_EXCEPTION(
+      true,std::logic_error
+      ,"Error, can't handle operator that does not support Epetra_RowMatrix!");
+  }
+}
+
+//
+// EpetraNPFO::DcDu_Allocator
+//
+
+EpetraNPFO::DcDu_Allocator::DcDu_Allocator(
+  const bool  useEO
+  )
+  :useEO_(useEO)
+{}
+
+const EpetraNPFO::DcDu_Allocator::ptr_t
+EpetraNPFO::DcDu_Allocator::allocate() const
+{
+  if(useEO_) {
+    // Wrap an Epetra_Operator
+    return Teuchos::rcp(new EpetraLinearOp());
+  }
+  // Wrap an Epetra_MultiVector
+  return Teuchos::rcp(new EpetraMultiVector());
 }
 
 } // namespace Nonlin
 } // namespace TSFCore
-

@@ -143,6 +143,13 @@ void MPIVectorBase<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::SubVe
 template<class Scalar>
 void MPIVectorBase<Scalar>::freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const
 {
+#ifdef _DEBUG
+  TEST_FOR_EXCEPTION(
+    sub_vec==NULL || sub_vec->globalOffset() < 0 || sub_vec->globalOffset() + sub_vec->subDim() > globalDim_
+    ,std::logic_error
+    ,"MPIVectorBase<Scalar>::freeSubVector(...) : Error, this sub vector was not gotten from getSubVector(...)!"
+    );
+#endif
 	if( sub_vec->globalOffset() < localOffset_ || localOffset_+localSubDim_ < sub_vec->globalOffset()+sub_vec->subDim() ) {
 		// Let the default implementation handle it!
 		Vector<Scalar>::freeSubVector(sub_vec);
@@ -176,6 +183,13 @@ void MPIVectorBase<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::Mutab
 template<class Scalar>
 void MPIVectorBase<Scalar>::commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec )
 {
+#ifdef _DEBUG
+  TEST_FOR_EXCEPTION(
+    sub_vec==NULL || sub_vec->globalOffset() < 0 || sub_vec->globalOffset() + sub_vec->subDim() > globalDim_
+    ,std::logic_error
+    ,"MPIVectorBase<Scalar>::commitSubVector(...) : Error, this sub vector was not gotten from getSubVector(...)!"
+    );
+#endif
 	if( sub_vec->globalOffset() < localOffset_ || localOffset_+localSubDim_ < sub_vec->globalOffset()+sub_vec->subDim() ) {
 		// Let the default implementation handle it!
 		Vector<Scalar>::commitSubVector(sub_vec);

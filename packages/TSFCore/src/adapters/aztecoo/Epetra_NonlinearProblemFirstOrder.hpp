@@ -15,12 +15,19 @@ namespace Epetra {
  *
  * <b>Assertions:</b>
  * <ul>
- * <li> <tt>!( op!=NULLL && mv!=NULL )</tt>
+ * <li> <tt>( op==NULL && mv==NULL )|| ( op!=NULL != mv!=NULL )</tt>
  * </ul>
  */
-struct EpetraOp_or_EpetraMV {
-  Epetra_Operator      *op;
-  Epetra_MultiVector   *mv;
+class EpetraOp_or_EpetraMV {
+public:
+  EpetraOp_or_EpetraMV() : op_(NULL), mv_(NULL) {}
+  EpetraOp_or_EpetraMV( Epetra_Operator *op ) : op_(op), mv_(NULL) {}
+  EpetraOp_or_EpetraMV( Epetra_MultiVector  *mv ) : op_(NULL), mv_(mv) {}
+  Epetra_Operator*     op() const { return op_; }
+  Epetra_MultiVector*  mv() const { return mv_; }
+private:
+  Epetra_Operator      *op_;
+  Epetra_MultiVector   *mv_;
 };
 
 ///
@@ -53,12 +60,31 @@ public:
 	///
 	virtual Teuchos::RefCountPtr<Epetra_Operator> create_DcDy() const = 0;
 
+  /// Return if a <tt>Epetra_Operator</tt> is used for <tt>DcDu(l)</tt>.
+  /**
+   * @return Returns <tt>true</tt> if <tt>this->create_DcDu(l).get()!=NULL</tt>.
+   * otherwise returns <tt>false</tt>.
+   *
+   * If this function returns returns <tt>false</tt> then
+   * <tt>Epetra_MultiVector(*this->map_c(),this->map_u(l)->NumGlobalElements())</tt>
+   * should be used to create the object for <tt>DcDu(l)</tt> that is passed
+   * to <tt>calc_Dc(..)</tt>.
+   *
+   * The default implementation returns <tt>false</tt>.
+   */
+  virtual bool use_EO_DcDu(int l) const;
+
 	///
   /** Returns an (uninitialized) <tt>Epetra_Operator</tt> that will store
    * <tt>D(c)/D(u(l))</tt>.
    *
-   * If this function return <tt>return.get()==NULL</tt> then
-   * a <tt>Epetra_MultiVector</tt> must be used instead.
+   * <b>Postconditions:</b>
+   * <ul>
+   * <li> [<tt>this->use_EO_DcDu(l)==true</tt>] <tt>this->create_DcDu(l).get()!=NULL</tt>
+   * <li> [<tt>this->use_EO_DcDu(l)==false</tt>] <tt>this->create_DcDu(l).get()==NULL</tt>
+   * </ul>
+   *
+   * The default implementation returns <tt>return.get()==NULL</tt>.
    */
  	virtual Teuchos::RefCountPtr<Epetra_Operator> create_DcDu(int l) const;
 

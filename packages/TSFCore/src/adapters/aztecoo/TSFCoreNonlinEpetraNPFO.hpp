@@ -9,6 +9,7 @@
 #include "Epetra_NonlinearProblemFirstOrder.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVector.hpp"
+#include "Ifpack_IlukGraph.h"
 
 namespace TSFCore {
 namespace Nonlin {
@@ -150,6 +151,41 @@ public:
 
 private:
 
+  // ///////////////////////////////////////
+  // Private types
+
+  ///
+  class DcDu_Allocator {
+  public:
+    
+    /** @name Constructors */
+    //@{
+    
+    ///
+    DcDu_Allocator(
+      const bool  useEO
+      );
+      
+    //@}
+      
+    /** @name AbstractFactoryStd compliant interface */
+    //@{
+    
+    ///
+    typedef Teuchos::RefCountPtr<TSFCore::LinearOp<double> >  ptr_t;
+    ///
+    const ptr_t allocate() const;
+
+    //@}
+    
+  private:
+    
+    DcDu_Allocator();  // Not derfined and not to be called
+    
+    const bool  useEO_;
+    
+  }; // class DcDu_Allocator
+
 	// //////////////////////////////////////
 	// Private data members
 
@@ -174,15 +210,27 @@ private:
 	Teuchos::RefCountPtr<const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > >       factory_DcDy_;
   std::vector<Teuchos::RefCountPtr<const MemMngPack::AbstractFactory<LinearOp<Scalar> > > >  factory_DcDu_;
 
+	mutable std::vector<const Epetra_Vector*>  u_in_;
+
   mutable bool c_updated_, g_updated_, DcDy_updated_, DgDy_updated_;
   mutable std::vector<bool> DcDu_updated_, DgDu_updated_;
 
   EpetraVector                                    *c_;
 	EpetraVector                                    *g_;
 	LinearOpWithSolveAztecOO                        *DcDy_;
-  std::vector<EpetraLinearOp*>                    DcDu_;
+  std::vector<EpetraLinearOp*>                    DcDu_op_;
+  std::vector<EpetraMultiVector*>                 DcDu_mv_;
   EpetraMultiVector                               *DgDy_;
   std::vector<EpetraMultiVector*>                 DgDu_;
+
+  mutable Teuchos::RefCountPtr<Ifpack_IlukGraph>  epetra_DcDy_iluk_graph_;
+
+  mutable std::vector<Teuchos::RefCountPtr<Epetra_Operator> >     epetra_DcDu_op_;
+  mutable std::vector<Teuchos::RefCountPtr<Epetra_MultiVector> >  epetra_DcDu_mv_;
+  mutable std::vector<Epetra::EpetraOp_or_EpetraMV>               epetra_DcDu_args_;
+
+  mutable std::vector<Teuchos::RefCountPtr<Epetra_MultiVector> >  epetra_DgDu_;
+  mutable std::vector<Epetra_MultiVector*>                        epetra_DgDu_args_;
 
 	// //////////////////////////////////////
 	// Private member functions
@@ -191,7 +239,10 @@ private:
   static const Epetra_Vector& get_epetra_vec( const Vector<Scalar> &v );
 
   //
-	void set_u( const Vector<Scalar>* u[], bool newPoint ) const;
+	const Epetra_Vector** set_u( const Vector<Scalar>* u[], bool newPoint ) const;
+
+  //
+	void updateNewPoint( bool newPoint ) const;
   
   //
   void calc_Dc(
@@ -207,6 +258,12 @@ private:
 		,const Vector<Scalar>*   u[]
 		,bool                    newPoint
     ,bool                    computeGradients
+    ) const;
+
+  //
+  void setupPreconditioner(
+    const Teuchos::RefCountPtr<Epetra_Operator>   &epetra_DcDy_op
+    ,Teuchos::RefCountPtr<Epetra_Operator>        *epetra_DcDy_prec
     ) const;
 
 	// Not defined and not to be called

@@ -158,7 +158,9 @@ void LinearOpWithSolveAztecOO::solve(
   //
   // Create the linear problem
   //
-  Op_->SetUseTranspose( trans_trans(Op_trans_,M_trans)==TRANS ); // Must set mode just before use!
+  if(get_trace_out().get())
+    trace_out() << "\nUsing an operator of type \'" << typeid(*Op_).name() << "\'\n";
+  Op_->SetUseTranspose(trans_trans(Op_trans_,M_trans)==TRANS); // Must set mode just before use!
   Epetra_LinearProblem
     lp(
       &*Op_
@@ -176,6 +178,8 @@ void LinearOpWithSolveAztecOO::solve(
   // Set the preconditioner on the AztecOO solver object
   //
   if(Prec_.get()) {
+    if(get_trace_out().get())
+      trace_out() << "\nUsing a preconditioner of type \'" << typeid(*Prec_).name() << "\'\n";
     Prec_->SetUseTranspose(trans_trans(Prec_trans_,M_trans)==TRANS); // Must set mode just before use!
     solver_used.SetPrecOperator(&*Prec_);
   }
