@@ -101,7 +101,8 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 			)
 		{
 			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-				out	<< "\nWarning!  use_damening == false so there is no way we can perform any kind BFGS update (projected or not) so we will skip it!\n";
+				out	<< "\nWarning!  use_damening == false so there is no way we can perform any"
+						" kind of BFGS update (projected or not) so we will skip it!\n";
 			}
 			quasi_newton_stats_(*s).set_k(0).set_updated_stats(
 				QuasiNewtonStats::INDEF_SKIPED );
@@ -201,8 +202,9 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 						// Determine if we are be using dense or limited memory BFGS?
 						const bool
 							low_num_super_basics = n_pz_R <= num_superbasics_switch_dense();
-						if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-							out << "\nn_pz_R = " << n_pz_R << ( low_num_super_basics ? " <= " : " > " )
+						if( static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ) {
+							out	<< "\nSwitching to projected BFGS updating ..."
+								<< "\nn_pz_R = " << n_pz_R << ( low_num_super_basics ? " <= " : " > " )
 								<< " num_superbasics_switch_dense = " << num_superbasics_switch_dense()
 								<< ( low_num_super_basics
 									 ? "\nThere are not too many superbasic variables so use dense projected BFGS ...\n"
