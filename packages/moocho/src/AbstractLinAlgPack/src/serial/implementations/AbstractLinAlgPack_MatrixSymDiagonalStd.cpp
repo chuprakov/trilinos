@@ -63,15 +63,16 @@ void MatrixSymDiagonalStd::Vp_StMtV(
 	const VectorSlice diag = this->diag();
 	size_type n = diag.size();
 
+	//
 	// y = b*y + a * op(A) * x
+	//
+	LinAlgPack::Vp_MtV_assert_sizes(
+		vs_lhs->size(), n, n, trans_rhs1, vs_rhs2.size() );
 	//
 	// A is symmetric and diagonal A = diag(diag) so:
 	//
-	// y(j) = b*y(j) + a * diag(j) * x(j), for j = 1...n
-	
-	LinAlgPack::Vp_MtV_assert_sizes(
-		vs_lhs->size(), n, n, trans_rhs1, vs_rhs2.size() );
-
+	// y(j) += a * diag(j) * x(j), for j = 1...n
+	//
 	if( vs_rhs2.stride() == 1 && vs_lhs->stride() == 1 ) {
 		// Optimized implementation
 		const value_type
@@ -120,24 +121,25 @@ void MatrixSymDiagonalStd::Vp_StMtV(
 	const VectorSlice diag = this->diag();
 	size_type n = diag.size();
 
+	LinAlgPack::Vp_MtV_assert_sizes( vs_lhs->size()
+		, n, n, trans_rhs1, sv_rhs2.size() );
+	//
 	// y = b*y + a * op(A) * x
+	//
+	LinAlgPack::Vt_S(vs_lhs,beta); // y = b * y
 	//
 	// A is symmetric and diagonal A = diag(diag) so:
 	//
-	// y(j) = b*y(j) + a * diag(j) * x(j), for j = 1...n
+	// y(j) += a * diag(j) * x(j), for j = 1...n
 	//
 	// x is sparse so take account of this.
-	
-	LinAlgPack::Vp_MtV_assert_sizes( vs_lhs->size()
-		, n, n, trans_rhs1, sv_rhs2.size() );
 
 	for(   SpVectorSlice::const_iterator x_itr = sv_rhs2.begin()
 		 ; x_itr != sv_rhs2.end()
 		 ; ++x_itr )
 	{
 		(*vs_lhs)(x_itr->indice() + sv_rhs2.offset())
-			= beta * (*vs_lhs)(x_itr->indice() + sv_rhs2.offset())
-				+ alpha * diag(x_itr->indice() + sv_rhs2.offset()) * x_itr->value();
+			+= alpha * diag(x_itr->indice() + sv_rhs2.offset()) * x_itr->value();
 			// Note: The indice x(i) invocations are ranged check
 			// if this is compiled into the code.
 	}

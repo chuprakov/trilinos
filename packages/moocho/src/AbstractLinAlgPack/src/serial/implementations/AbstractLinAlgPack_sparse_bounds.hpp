@@ -27,26 +27,25 @@ public:
 	typedef	SpVectorSlice::element_type::indice_type	indice_type;
 	///
 	typedef	SpVectorSlice::element_type::value_type		value_type;
-
-
 	///
 	sparse_bounds_itr(	
-			  const SpVectorSlice::const_iterator& bl_begin
-			, const SpVectorSlice::const_iterator& bl_end
-			, SpVectorSlice::difference_type bl_offset
-			, const SpVectorSlice::const_iterator& bu_begin
-			, const SpVectorSlice::const_iterator& bu_end
-			, SpVectorSlice::difference_type bu_offset
-			, value_type big_bnd = std::numeric_limits<value_type>::max()		)
+		const SpVectorSlice::const_iterator& bl_begin
+		, const SpVectorSlice::const_iterator& bl_end
+		, SpVectorSlice::difference_type bl_offset
+		, const SpVectorSlice::const_iterator& bu_begin
+		, const SpVectorSlice::const_iterator& bu_end
+		, SpVectorSlice::difference_type bu_offset
+		, value_type big_bnd = std::numeric_limits<value_type>::max()		)
 		: bl_itr_(bl_begin), bl_end_(bl_end), bu_itr_(bu_begin), bu_end_(bu_end)
-			, bl_offset_(bl_offset), bu_offset_(bu_offset)
-			, big_bnd_(big_bnd)
+		, bl_offset_(bl_offset), bu_offset_(bu_offset)
+		, big_bnd_(big_bnd)
 	{	if(!at_end()) update(); }
-
+	///
+	const value_type& big_bnd() const
+	{    return big_bnd_; }
 	///
 	bool at_end() const
 	{	return bl_itr_ == bl_end_ && bu_itr_ == bu_end_; }
-
 	///
 	sparse_bounds_itr& operator++() {
 		switch(at_bound_) {
@@ -64,15 +63,12 @@ public:
 		update();
 		return *this;
 	}
-
 	///
 	indice_type indice() const
 	{	return indice_; }
-
 	///
 	value_type lbound() const
 	{	return lbound_; }
-
 	///
 	value_type ubound() const
 	{	return ubound_; }
