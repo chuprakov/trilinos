@@ -18,7 +18,7 @@
 #
 CORE_H = \
           $(srcdir)/Aztec2TSF.h                         \
-					$(srcdir)/ReadPetra.h                         \
+	  $(srcdir)/ReadPetra.h                         \
           $(srcdir)/TSFLinearOperator2EpetraRowMatrix.h \
           $(srcdir)/KayLoghinRightOperatorSource.h      \
           $(srcdir)/DiagRightOperatorSource.h           \
@@ -26,17 +26,22 @@ CORE_H = \
           $(srcdir)/RightBlockNSOperatorSource.h        \
           $(srcdir)/Vbr2Petra.h                         \
           $(srcdir)/KayLoghinSchurFactory.h             \
+	  $(srcdir)/Epetra2TSFutils.h                   \
           $(srcdir)/DiagSchurFactory.h                  \
           $(srcdir)/BJBSchurFactory.h                   \
           $(srcdir)/SchurFactoryBase.h                  \
-          $(srcdir)/NSBlockPreconditionerFactory.h      \
-					$(srcdir)/SchurFactory.h                      
+	  $(srcdir)/SimpleOperatorSource.h               \
+	  $(srcdir)/SimpleSchurFactory.h                 \
+	  $(srcdir)/SimpleBlockPreconditionerFactory.h   \
+          $(srcdir)/NSBlockPreconditionerFactory.h       \
+	  $(srcdir)/SchurFactory.h                      
 
 CORE = \
           $(srcdir)/Aztec2TSF.cpp                         \
-					$(srcdir)/ReadPetra.cpp                         \
+	  $(srcdir)/ReadPetra.cpp                         \
           $(srcdir)/TSFLinearOperator2EpetraRowMatrix.cpp \
           $(srcdir)/KayLoghinRightOperatorSource.cpp      \
+	  $(srcdir)/Epetra2TSFutils.cpp     	          \
           $(srcdir)/DiagRightOperatorSource.cpp           \
           $(srcdir)/BJBRightOperatorSource.cpp            \
           $(srcdir)/RightBlockNSOperatorSource.cpp        \
@@ -46,6 +51,9 @@ CORE = \
           $(srcdir)/BJBSchurFactory.cpp                   \
           $(srcdir)/SchurFactoryBase.cpp                  \
           $(srcdir)/NSBlockPreconditionerFactory.cpp      \
+	  $(srcdir)/SimpleBlockPreconditionerFactory.cpp   \
+          $(srcdir)/SimpleOperatorSource.cpp               \
+	  $(srcdir)/SimpleSchurFactory.cpp                 \
           $(srcdir)/SchurFactory.cpp                      
 
 UTIL_H = 
