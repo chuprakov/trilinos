@@ -23,7 +23,7 @@ namespace ConstrainedOptimizationPack {
 
 ///
 /** Solves Quadratic Programs (QPs) of several different forms while
- * allowing a relaxation the constraints.
+ * allowing a relaxation of the constraints.
  *
  * The formulation for the QP being solved is:
  \verbatim
@@ -42,7 +42,7 @@ namespace ConstrainedOptimizationPack {
  * and <tt>eL <= b <= eU</tt>).  If the function <tt>M(eta)</tt> in the
  * objective is large enough, then the constraint <tt>etaL <= eta</tt> will be active
  * if a feasible region exists.  The form of the function <tt>M(eta)</tt> is not
- * specified by this interface defined as appropriate for each individual
+ * specified by this interface but is defined as appropriate for each individual
  * QP solver method and implementation. 
  *
  * The Lagrangian for the QP in (1) is:
@@ -77,17 +77,17 @@ namespace ConstrainedOptimizationPack {
 
 	Complementarity:
 
-	(5.1)  nu(i) * (dL - d)(i) \approx 0, if nu(i) <= 0, i = 1...n
-	(5.2)  nu(i) * (d - dU)(i) \approx 0, if nu(i) >= 0, i = 1...n
-	(5.3)  mu(j) * (eL - op(E)*d + b*eta)(j) \approx 0, if mu(j) <= 0, j = 1...m_in
-	(5.4)  mu(j) * (op(E)*d - b*eta - eU)(j) \approx 0, if mu(j) >= 0, j = 1...m_in
+	(5.1)  nu(i) * (dL - d)(i) = 0, if nu(i) <= 0, i = 1...n
+	(5.2)  nu(i) * (d - dU)(i) = 0, if nu(i) >= 0, i = 1...n
+	(5.3)  mu(j) * (eL - op(E)*d + b*eta)(j) = 0, if mu(j) <= 0, j = 1...m_in
+	(5.4)  mu(j) * (op(E)*d - b*eta - eU)(j) = 0, if mu(j) >= 0, j = 1...m_in
 
 	Nonnegativity of Lagrange Multipliers for Inequality Constraints:
 
-	(6.1)  nu(i) <= 0 if (dL - d)(i) \approx 0, i = 1...n
-	(6.2)  nu(i) >= 0 if (d - dU)(i) \approx 0, i = 1...n
-	(6.3)  mu(j) <= 0 if (eL - op(E)*d - b*eta)(j) \approx 0, j = 1...m_in
-	(6.4)  mu(j) >= 0 if (op(E)*d - b*eta - eU)(j) \approx 0, j = 1...m_in
+	(6.1)  nu(i) <= 0 if (dL - d)(i) = 0, i = 1...n
+	(6.2)  nu(i) >= 0 if (d - dU)(i) = 0, i = 1...n
+	(6.3)  mu(j) <= 0 if (eL - op(E)*d - b*eta)(j) = 0, j = 1...m_in
+	(6.4)  mu(j) >= 0 if (op(E)*d - b*eta - eU)(j) = 0, j = 1...m_in
  \endverbatim
  * The optimal <tt>d</tt> and <tt>eta</tt> are determined as well as the lagrange multipliers
  * for the constriants:
@@ -103,9 +103,6 @@ namespace ConstrainedOptimizationPack {
  * since if this constraint is not active, then <tt>kappa == 0</tt> and all of the multiplier
  * estimates will be off because of the arbitrarily large value of <tt>d(M)/d(eta)</tt> in
  * the optimality condition (3).
- *
- * Note that this interface is geared toward active-set solvers but could also
- * be used for iterative solvers with care.
  */
 class QPSolverRelaxed {
 public:
