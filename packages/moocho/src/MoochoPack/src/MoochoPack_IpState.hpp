@@ -26,6 +26,7 @@ extern const std::string barrier_parameter_name;
 extern const std::string barrier_obj_name;
 extern const std::string grad_barrier_obj_name;
 extern const std::string e_tol_name;
+extern const std::string comp_err_mu_name;
 extern const std::string Vu_name;
 extern const std::string Vl_name;
 extern const std::string invXu_name;
@@ -60,6 +61,9 @@ class IpState
 
 		/// e_tol: current error tolerance for inner loop
 		STATE_SCALAR_IQ_DECL(e_tol)
+
+		/// comp_err_mu: perturbed complementarity error for barrier sub problem
+		STATE_SCALAR_IQ_DECL(comp_err_mu)
 
 		/// Vu - diagonal matrix of upper bound multipliers
 		STATE_IQ_DECL(MatrixSymDiagStd, Vu)

@@ -308,6 +308,8 @@ public:
 	///
 	Range1D equ_undecomp() const;
 	///
+    bool nlp_selects_basis() const;
+	///
 	bool get_next_basis(
 		Permutation*  P_var,   Range1D* var_dep
 		,Permutation* P_equ,   Range1D* equ_decomp

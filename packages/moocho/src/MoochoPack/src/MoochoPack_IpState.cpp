@@ -21,6 +21,7 @@ extern const std::string MoochoPack::barrier_parameter_name = "barrier_parameter
 extern const std::string MoochoPack::barrier_obj_name = "barrier_obj";
 extern const std::string MoochoPack::grad_barrier_obj_name = "grad_barrier_obj";
 extern const std::string MoochoPack::e_tol_name = "e_tol";
+extern const std::string MoochoPack::comp_err_mu_name = "comp_err_mu";
 extern const std::string MoochoPack::Vu_name = "Vu";
 extern const std::string MoochoPack::Vl_name = "Vl";
 extern const std::string MoochoPack::invXu_name = "invXu";
@@ -61,6 +62,8 @@ STATE_SCALAR_IQ_DEF(IpState, barrier_obj, barrier_obj_name)
 STATE_VECTOR_IQ_DEF(IpState, grad_barrier_obj, grad_barrier_obj_name, get_space_x(), VST_SPACE_X)
 
 STATE_SCALAR_IQ_DEF(IpState, e_tol, e_tol_name)
+
+STATE_SCALAR_IQ_DEF(IpState, comp_err_mu, comp_err_mu_name)
 
 STATE_IQ_DEF(IpState, MatrixSymDiagStd, Vu, Vu_name)
 

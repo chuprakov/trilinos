@@ -108,7 +108,7 @@ bool UpdateBarrierParameter_Step::do_step(
 		///***********************************************************
 		const value_type opt_err = s.opt_kkt_err().get_k(0);
 		const value_type feas_err = s.feas_kkt_err().get_k(0);
-		const value_type comp_err = s.comp_kkt_err().get_k(0);
+		const value_type comp_err_mu = s.comp_err_mu().get_k(0);
 
 		const value_type mu_km1 = mu_iq.get_k(-1);
 		if (e_tol_iq.last_updated() == IterQuantity::NONE_UPDATED)
@@ -120,7 +120,7 @@ bool UpdateBarrierParameter_Step::do_step(
 		else
 			{
 			const value_type e_tol_km1 = e_tol_iq.get_k(-1);
-			bool sub_prob_converged = (opt_err < e_tol_km1 && feas_err < e_tol_km1 && comp_err < e_tol_km1); 
+			bool sub_prob_converged = (opt_err < e_tol_km1 && feas_err < e_tol_km1 && comp_err_mu < e_tol_km1); 
 			if (sub_prob_converged)
 				{
 				// Calculate new mu and e_tol
@@ -133,17 +133,6 @@ bool UpdateBarrierParameter_Step::do_step(
 					out << "\nSub-problem converged!\n"
 						<< " Updating barrier parameter (mu) and sub problem tolerance (e_tol) ...\n";
 					}
-
-
-	        	        /*VectorMutable& vu = s.Vu().set_k(0).diag();
-        	        	vu = 0;
-		                Vp_StV(&vu, mu_k, s.invXu().get_k(0).diag());
-                		correct_upper_bound_multipliers(nlp.xu(), NLP::infinite_bound(), &vu); 
-                
-		                VectorMutable& vl = s.Vl().set_k(0).diag();
-                		vl = 0;
-		                Vp_StV(&vl, mu_k, s.invXl().get_k(0).diag());
-                		correct_lower_bound_multipliers(nlp.xl(), -NLP::infinite_bound(), &vl);*/
 				}
 			else
 				{

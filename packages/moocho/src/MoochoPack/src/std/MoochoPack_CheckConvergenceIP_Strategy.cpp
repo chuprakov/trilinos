@@ -82,6 +82,7 @@ bool CheckConvergenceIP_Strategy::Converged(
 	value_type& opt_err = s.opt_kkt_err().set_k(0);
 	value_type& feas_err = s.feas_kkt_err().set_k(0);
 	value_type& comp_err = s.comp_kkt_err().set_k(0);
+	value_type& comp_err_mu = s.comp_err_mu().set_k(0);
 
 	// scaling
 	value_type scale_1 = 1 + x_k.norm_1()/x_k.dim();
@@ -105,8 +106,6 @@ bool CheckConvergenceIP_Strategy::Converged(
 	feas_err = c_k.norm_inf() / scale_1;
 	
 	// Calculate the comp_err
-	comp_err = 0.0;
-
 	if( (int)olevel >= (int)PRINT_VECTORS )
 		{
 		out << "\nx =\n"    << s.x().get_k(0);
@@ -117,18 +116,23 @@ bool CheckConvergenceIP_Strategy::Converged(
 		}
 
 	comp_err = IP_comp_err_with_mu(
+		0.0, nlp.infinite_bound(), s.x().get_k(0), nlp.xl(), nlp.xu()
+		,s.Vl().get_k(0).diag(), s.Vu().get_k(0).diag());
+
+	comp_err_mu = IP_comp_err_with_mu(
 		mu_km1, nlp.infinite_bound(), s.x().get_k(0), nlp.xl(), nlp.xu()
 		,s.Vl().get_k(0).diag(), s.Vu().get_k(0).diag());
+
 	comp_err = comp_err / scale_2;
+	comp_err_mu = comp_err_mu / scale_2;
 
 	// check for convergence
 	
 	const value_type opt_tol = algo.algo_cntr().opt_tol();
 	const value_type feas_tol = algo.algo_cntr().feas_tol();
 	const value_type comp_tol = algo.algo_cntr().comp_tol();
-	// RAB: 2002/07/28: I removed the complementarity error since it was causing unconstrained
-	// ExampleNLPBanded to fail!
-	if (opt_err < opt_tol && feas_err < feas_tol && comp_err < comp_tol /* && mu_km1 < comp_tol */ )
+
+	if (opt_err < opt_tol && feas_err < feas_tol && comp_err < comp_tol)
 		{
 		found_solution = true;
 		}
@@ -142,7 +146,8 @@ bool CheckConvergenceIP_Strategy::Converged(
 			<< "feas_tol = " << feas_tol
 			<< "\ncomp_kkt_err_k   = " << comp_err << ( comp_err < comp_tol ? " < " : " > " )
 			<< "comp_tol = " << comp_tol
-			<< "\nbarrier_parameter_k (mu_km1) = " << mu_km1 << ( mu_km1 < comp_tol ? " < " : " > " )
+			<< "\ncomp_err_mu      = " << comp_err_mu
+			<< "\nbarrier_parameter_k (mu_km1) = " << mu_km1
 			<< "comp_tol = " << comp_tol
 			<< std::endl;
 		}

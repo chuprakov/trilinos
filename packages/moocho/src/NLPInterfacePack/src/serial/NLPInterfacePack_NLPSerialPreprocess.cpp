@@ -60,7 +60,9 @@ NLPSerialPreprocess::NLPSerialPreprocess(
 	)
 	:initialized_(false)
 	,force_xinit_in_bounds_(true)
-	,scale_f_(1.0)
+    ,scale_f_(1.0)
+	,basis_selection_num_(0)
+
 {}
 
 // Overridden public members from NLP
@@ -80,6 +82,8 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	namespace mmp = MemMngPack;
 
 	const value_type inf_bnd = NLP::infinite_bound();
+
+	basis_selection_num_ = 0;
 
 	if( initialized_  && !imp_nlp_has_changed() ) {
 		// The subclass NLP has not changed so we can just
@@ -506,6 +510,24 @@ Range1D NLPSerialPreprocess::equ_undecomp() const
 	return r_ < m_full_ ? Range1D(r_+1,m_full_) : Range1D::Invalid;
 }
 
+bool NLPSerialPreprocess::nlp_selects_basis() const
+	{
+	// Check if the user has supplied a basis from a file
+	char ind[17];
+	sprintf(ind, "%d", basis_selection_num_);
+	std::string fname = "basis_";
+	fname += ind;
+	fname += ".sel";
+
+	std::ifstream basis_file(fname.c_str());
+	if (basis_file)
+		{
+		return true;
+		}
+
+	return false;
+	}
+
 bool NLPSerialPreprocess::get_next_basis(
 	Permutation*  P_var,   Range1D* var_dep
 	,Permutation* P_equ,   Range1D* equ_decomp
@@ -900,9 +922,9 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 			int var_index;
 			basis_file >> var_index;
 			THROW_EXCEPTION(
-				var_index >= n, std::logic_error
-				,"Incorrect basis file format for var_perm: 0 <= indice <= n expected, \"" << n << "\" found.");
-			(*var_perm)(i) = var_index;
+				var_index < 1 || var_index > n, std::logic_error
+				,"Incorrect basis file format for var_perm: 1 <= indice <= n expected, \"" << n << "\" found.");
+			(*var_perm)[i] = var_index;
 			}}
 
 		// eqn_permutation
@@ -916,9 +938,9 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 			int equ_index;
 			basis_file >> equ_index;
 			THROW_EXCEPTION(
-				equ_index >= m, std::logic_error
-				,"Incorrect basis file format for equ_perm: 0 <= indice <= m expected, \"" << n << "\" found.");
-			(*equ_perm)(i) = equ_index;
+				equ_index < 1 || equ_index > m, std::logic_error
+				,"Incorrect basis file format for equ_perm: 1 <= indice <= m expected, \"" << m << "\" found.");
+			(*equ_perm)[i] = equ_index;
 			}}
 
 		return true;
