@@ -21,7 +21,8 @@ namespace SparseLinAlgPack {
  * \item [sv_lhs_before->is_sorted() || sv_lhs_before->nz() == 0] sv_lhs->is_sorted() == true
  * \end{itemize}
  */
-void add_elements( SpVector* sv_lhs, value_type alpha, const VectorSlice& vs_rhs, size_type offset = 0 );
+void add_elements( SpVector* sv_lhs, value_type alpha, const VectorSlice& vs_rhs
+				   , size_type offset = 0, bool add_zeros = true );
 
 ///
 /** Add elements from a sparse vector to another sparse vector.
@@ -36,7 +37,8 @@ void add_elements( SpVector* sv_lhs, value_type alpha, const VectorSlice& vs_rhs
  *        && (sv_rhs.is_sorted() || sv_rhs.nz() == 0)] sv_lhs->is_sorted() == true
  * \end{itemize}
  */
-void add_elements( SpVector* sv_lhs, value_type alpha, const SpVectorSlice& sv_rhs, size_type offset = 0 );
+void add_elements( SpVector* sv_lhs, value_type alpha, const SpVectorSlice& sv_rhs
+				   , size_type offset = 0, bool add_zeros = true );
 
 inline
 ///
