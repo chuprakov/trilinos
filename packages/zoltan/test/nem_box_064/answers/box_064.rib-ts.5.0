@@ -1,0 +1,21 @@
+Decomposition Method 	= rib
+Zoltan Parameters	= tflops_special=1
+Zoltan Parameters       = 
+File Type		= NemesisI
+File Name		= box_064-m5-r.par
+Parallel Disk Info	= number=1,offset=1,zeros
+Parallel file location  = root=pio_, subdir=.
+Global element ids assigned to processor 0
+25
+26
+33
+34
+35
+41
+42
+49
+50
+51
+57
+58
+59

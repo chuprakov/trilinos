@@ -1,0 +1,64 @@
+Decomposition Method 	= rcb
+Zoltan Parameters	= tflops_special=1
+Zoltan Parameters       = 
+File Type		= NemesisI
+File Name		= ti_300-m6-r.par
+Parallel Disk Info	= number=2,offset=1,zeros
+Parallel file location  = root=pio_, subdir=.
+Global element ids assigned to processor 0
+10
+11
+12
+13
+14
+27
+39
+40
+41
+42
+43
+56
+249
+250
+251
+252
+253
+262
+263
+264
+267
+268
+269
+270
+271
+272
+279
+280
+281
+282
+283
+284
+285
+294
+295
+296
+299
+300
+301
+302
+303
+304
+311
+312
+316
+317
+318
+319
+320
+321
+328
+329
+330
+331
+332
+333

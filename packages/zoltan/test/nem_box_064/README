@@ -1,0 +1,35 @@
+##############################################################################
+# Zoltan Dynamic Load-Balancing Library for Parallel Applications            #
+# Copyright (c) 2000, Sandia National Laboratories.                          #
+# Zoltan is distributed under the GNU Lesser General Public License 2.1.     #
+# For more info, see the README file in the top-level Zoltan directory.      # 
+##############################################################################
+##############################################################################
+# CVS File Information
+#    $RCSfile$
+#    $Author$
+#    $Date$
+#    $Revision$
+##############################################################################
+
+Instructions for Nemesis examples
+
+To change number of processors:
+  1.  In problem subdirectory, change nem_slice_command file to include 
+      mesh dimensions for desired number of processors (e.g., mesh=3x3 
+      yields 9 processors).
+  2.  Run nem_slice_command; a Nemesis decomposition file is produced
+      (*.nemI).
+  3.  Change LB file line in nem_spread.inp to be the Nemesis decomposition
+      file produced in step 2.
+  4.  Run nem_spread.  The parallel Nemesis files will be produced in
+      ti_0* directories.
+  5.  In zdrive.inp, change File Name to the base name for the files produced
+      in step 4.
+-------------------------------------------------------------------------------
+nem_box_064
+  8x8 element 2D mesh.
+  Run on 5 processors (for committed values).
+  Random Chaco decomposition initially.
+  No vertex weighting.
+-------------------------------------------------------------------------------

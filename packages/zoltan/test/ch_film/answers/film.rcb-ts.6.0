@@ -1,0 +1,54 @@
+Decomposition Method 	= rcb
+Zoltan Parameters	= tflops_special=1
+Zoltan Parameters	= 
+File Type		= Chaco
+File Name		= film
+Parallel Disk Info	= number=0
+Global element ids assigned to processor 0
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+93
+94
+95
+96
+97
+98
+99
+100
+102
+103
+104
+105
+106
+162
+163
+164
+165
+166
+167
+168
+169
+170
+208
+209
+210
+211
+249
+250
+251
+252
+253

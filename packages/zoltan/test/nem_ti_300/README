@@ -33,3 +33,11 @@ nem_ti_300
   Random Chaco decomposition initially.
   No vertex weighting.
 -------------------------------------------------------------------------------
+
+Answers on dec differ from answers on Sun for zdrive.inp.partgeom
+   ElementID      SUN Assignment       Dec Assignment
+    241                4                    5
+    224                5                    4
+Reason unknown.
+
+

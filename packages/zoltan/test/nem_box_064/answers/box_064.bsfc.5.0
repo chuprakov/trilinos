@@ -1,0 +1,19 @@
+Decomposition Method 	= sfc
+Zoltan Parameters       = 
+File Type		= NemesisI
+File Name		= box_064-m5-r.par
+Parallel Disk Info	= number=1,offset=1,zeros
+Parallel file location  = root=pio_, subdir=.
+Global element ids assigned to processor 0
+1
+2
+9
+10
+17
+18
+19
+20
+25
+26
+27
+28
