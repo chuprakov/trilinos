@@ -4,7 +4,7 @@
 // disable VC 5.0 warnings about debugger limitations
 #pragma warning(disable : 4786)	
 
-#include <cassert>
+#include <assert.h>
 
 #include "../../include/std/LineSearch2ndOrderCorrect_StepSetOptions.h"
 #include "Misc/include/StringToBool.h"

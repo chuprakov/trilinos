@@ -6,7 +6,8 @@
 // disable VC 5.0 warnings about debugger limitations
 #pragma warning(disable : 4786)	
 
-#include <cassert>
+#include <assert.h>
+
 #include <iostream>
 
 #include "Misc/include/debug.h"

@@ -1,7 +1,8 @@
 // //////////////////////////////////////////////////////////////////////////
 // active_set_change.cpp
 
-#include <cassert>
+#include <assert.h>
+
 #include <iomanip>
 #include <ostream>
 

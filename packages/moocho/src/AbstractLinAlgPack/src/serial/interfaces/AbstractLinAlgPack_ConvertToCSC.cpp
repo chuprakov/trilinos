@@ -1,7 +1,8 @@
 // ////////////////////////////////////////////////////////////////
 // ConvertToSparseCompressedColumn.cpp
 
-#include <cassert>
+#include <assert.h>
+
 #include <algorithm>
 
 #include "../include/ConvertToSparseCompressedColumn.h"

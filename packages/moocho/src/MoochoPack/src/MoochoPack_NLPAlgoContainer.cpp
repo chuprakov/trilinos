@@ -5,7 +5,8 @@
 
 #pragma warning(disable : 4786)	// too long class name for debugger warning
 
-#include <cassert>
+#include <assert.h>
+
 #include <iostream>	// used for debugging the Release version.
 
 #include "Misc/include/debug.h"

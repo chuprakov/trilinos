@@ -3,7 +3,8 @@
 
 #pragma warning(disable : 4786)	// too long class name for debugger warning
 
-#include <cassert>
+#include <assert.h>
+
 #include <iterator>
 #include <numeric>
 #include <typeinfo>

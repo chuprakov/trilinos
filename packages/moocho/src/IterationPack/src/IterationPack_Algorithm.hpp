@@ -4,13 +4,14 @@
 #ifndef ALGORITHM_H
 #define ALGORITHM_H
 
+#include <assert.h>
+
 #include <string>
 #include <deque>
 #include <list>
 #include <vector>
 #include <sstream>
 #include <algorithm>
-#include <cassert>
 
 #include "AlgorithmState.h"
 #include "AlgorithmTrack.h"
