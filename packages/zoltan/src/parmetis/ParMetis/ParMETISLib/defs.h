@@ -63,7 +63,7 @@
 
 /* Debug Levels */
 #define DBG_TIME	1		/* Perform timing analysis */
-#define DBG_INFO	2		/* Perform timing analysis */
+#define DBG_INFO	2		/* Show info on the cut/partitioning quality */
 #define DBG_PROGRESS   	4		/* Show the coarsening progress */
 #define DBG_REFINEINFO	8		/* Show info on communication during folding */
 #define DBG_MATCHINFO	16		/* Show info on matching */
