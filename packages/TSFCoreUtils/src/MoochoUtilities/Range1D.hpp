@@ -66,80 +66,80 @@ namespace RangePack {
   */
 class Range1D {
 public:
-	///
-	enum EInvalidRange { INVALID };
-	/// Range1D(INVALID)
-	static const Range1D Invalid;
-    /// 
-	/** Constructs a range representing the entire range.
-	  *
-	  * Postconditions: <ul>
-	  *	<li> <tt>this->full_range() == true</tt>
-	  * <li> <tt>this->size() ==</tt> a very large number
-	  * <li> <tt>this->lbound() == 1</tt>
-	  * <li> <tt>this->ubound() ==</tt> a very large number
-	  *	</ul>
-	  */
-    /// 
-	Range1D();
-	/** Constructs an invalid (zero) range.
-	  *
-	  * Postconditions: <ul>
-	  *	<li> <tt>this->full_range() == false</tt>
-	  * <li> <tt>this->size() == 0</tt>
-	  * <li> <tt>this->lbound() == 1</tt>
-	  * <li> <tt>this->ubound() == 0</tt>
-	  *	</ul>
-	  */
-	Range1D( EInvalidRange );
-	///
-	/** Constructs a range that represents the range <tt>[lbound, ubound]</tt>.
-	  *
-	  * Preconditions: <ul>
-	  *	<li> <tt>lbound >= 1</tt> (throw \c range_error)
-	  *	<li> <tt>lbound <= ubound</tt> (throw \c range_error)
-	  *	</ul>
-	  *
-	  * Postconditions: <ul>
-	  *	<li> <tt>this->full_range() == false</tt>
-	  * <li> <tt>this->size() == ubound - lbound + 1</tt>
-	  * <li> <tt>this->lbound() == lbound</tt>
-	  * <li> <tt>this->ubound() == ubound</tt>
-	  *	</ul>
-	  */
-    Range1D(int lbound, int ubound);
-	/// Returns \c true if the range represents the entire region (constructed from \c Range1D())
-	bool full_range() const;
-	/// Return lower bound of the range
-    int lbound() const;
-	/// Return upper bound of the range
-    int ubound() const;
-	/// Return the size of the range (<tt>ubound() - lbound() + 1</tt>)
-	int size() const;
-	/// Return true if the index is in range
-	bool in_range(int i) const;
-	/// Increment the range by a constant
-	Range1D& operator+=( int incr );
-	/// Deincrement the range by a constant
-	Range1D& operator-=( int incr );
+  ///
+  enum EInvalidRange { INVALID };
+  /// Range1D(INVALID)
+  static const Range1D Invalid;
+  /// 
+  /** Constructs a range representing the entire range.
+   *
+   * Postconditions: <ul>
+   *	<li> <tt>this->full_range() == true</tt>
+   * <li> <tt>this->size() ==</tt> a very large number
+   * <li> <tt>this->lbound() == 1</tt>
+   * <li> <tt>this->ubound() ==</tt> a very large number
+   *	</ul>
+   */
+  /// 
+  inline Range1D();
+  /** Constructs an invalid (zero) range.
+   *
+   * Postconditions: <ul>
+   *	<li> <tt>this->full_range() == false</tt>
+   * <li> <tt>this->size() == 0</tt>
+   * <li> <tt>this->lbound() == 1</tt>
+   * <li> <tt>this->ubound() == 0</tt>
+   *	</ul>
+   */
+  inline Range1D( EInvalidRange );
+  ///
+  /** Constructs a range that represents the range <tt>[lbound, ubound]</tt>.
+   *
+   * Preconditions: <ul>
+   *	<li> <tt>lbound >= 1</tt> (throw \c range_error)
+   *	<li> <tt>lbound <= ubound</tt> (throw \c range_error)
+   *	</ul>
+   *
+   * Postconditions: <ul>
+   *	<li> <tt>this->full_range() == false</tt>
+   * <li> <tt>this->size() == ubound - lbound + 1</tt>
+   * <li> <tt>this->lbound() == lbound</tt>
+   * <li> <tt>this->ubound() == ubound</tt>
+   *	</ul>
+   */
+  inline Range1D(int lbound, int ubound);
+  /// Returns \c true if the range represents the entire region (constructed from \c Range1D())
+  inline bool full_range() const;
+  /// Return lower bound of the range
+  inline int lbound() const;
+  /// Return upper bound of the range
+  inline int ubound() const;
+  /// Return the size of the range (<tt>ubound() - lbound() + 1</tt>)
+  inline int size() const;
+  /// Return true if the index is in range
+  inline bool in_range(int i) const;
+  /// Increment the range by a constant
+  inline Range1D& operator+=( int incr );
+  /// Deincrement the range by a constant
+  inline Range1D& operator-=( int incr );
 
 private:
-    int lbound_;
-    int ubound_;	// = INT_MAX flag for entire range
-	// lbound == ubound == 0 flag for invalid range.
-
-	// assert that the range is valid
-	void assert_valid_range(int lbound, int ubound) const;
-	
-};	// end class Range1D
-
+  int lbound_;
+  int ubound_;	// = INT_MAX flag for entire range
+  // lbound == ubound == 0 flag for invalid range.
+  
+  // assert that the range is valid
+  void assert_valid_range(int lbound, int ubound) const;
+  
+}; // end class Range1D
+  
 /** \defgroup Range1D_funcs_grp  Non-Member Functions Associated with Range1D.
-  *
-  * The first three are arithmetic operator functions for incrementing the index
-  * and the last is utility function.
-  */
+ *
+ * The first three are arithmetic operator functions for incrementing the index
+ * and the last is utility function.
+ */
 //@{
-
+  
 ///
 /** rng1 == rng2.
  *

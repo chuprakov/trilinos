@@ -146,13 +146,13 @@ private:
  */
 class ReductTargetC : public ReductTarget {
 public:
-  ReductTargetC( const RTOp_RTOp& op, RTOp_ReductTarget obj );
-  ~ReductTargetC();
-  RTOp_ReductTarget& obj();
-  const RTOp_ReductTarget& obj() const;
+  inline ReductTargetC( const RTOp_RTOp& op, RTOp_ReductTarget obj );
+  inline ~ReductTargetC();
+  inline RTOp_ReductTarget& obj();
+  inline const RTOp_ReductTarget& obj() const;
 private:
-	const RTOp_RTOp      &op_;
-	RTOp_ReductTarget    obj_;
+  const RTOp_RTOp      &op_;
+  RTOp_ReductTarget    obj_;
   ReductTargetC(); // Not defined and not to be called
 };
 
