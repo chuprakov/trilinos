@@ -148,6 +148,8 @@ will be added to this header file.
 
 </ul>
 
+*/
+
 /** \defgroup libAbstractLinAlgPackTools_grp libAbstractLinAlgPackTools
 \brief Auxiliary Subclasses and Tools.
 
