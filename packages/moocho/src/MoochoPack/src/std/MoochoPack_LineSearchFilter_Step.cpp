@@ -206,7 +206,7 @@ bool LineSearchFilter_Step::do_step(
 		}
 
     // Begin the line search
-    bool augment_filter = true;
+    bool augment_filter = false;
     bool accepted = false;
     while (alpha_k > alpha_min && !accepted)
 		{
