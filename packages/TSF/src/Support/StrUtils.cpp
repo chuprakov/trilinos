@@ -265,9 +265,11 @@ int StrUtils::find(const string& str, const string& sub)
 bool StrUtils::isWhite(const string& str)
 {
 // look for non-white characters
-  int n = (int) strcspn(str.c_str(), " \n\t\r");
-  if (n==0) return true;
-  return false;
+  int nWhite = (int) strspn(str.c_str(), " \n\t\r");
+  //int n = (int) strcspn(str.c_str(), " \n\t\r");
+  //if (n==0) return true;
+  if (nWhite < str.length()) return false;
+  return true;
 }
 
 string StrUtils::between(const string& str, const string& begin,
