@@ -28,6 +28,14 @@ using LinAlgPack::VectorSlice;
 using LinAlgPack::GenMatrix;
 using LinAlgPack::GenMatrixSlice;
 
+using LinAlgPack::Vt_S;
+using LinAlgPack::Vp_StV;
+using LinAlgPack::Vp_StMtV;
+using LinAlgPack::V_InvMtV;
+using LinAlgPack::Mp_StM;
+using LinAlgPack::Mp_StMtM;
+using LinAlgPack::M_StInvMtM;
+
 // //////////////////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////////////////
 /** @name Default Linear Algebra implementation operations.
