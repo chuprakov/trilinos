@@ -45,7 +45,7 @@
 extern "C" {
 #endif
 
-/** \file RTOp_TOp_Correct_Multipliers.h
+/** \file RTOp_TOp_correct_multipliers.h
  *
  \verbatim
 
