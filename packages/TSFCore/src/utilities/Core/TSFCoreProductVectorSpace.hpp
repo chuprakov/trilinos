@@ -198,6 +198,8 @@ void ProductVectorSpace<Scalar>::scalarProds(
 	,Scalar                      scalar_prods[]
 	) const
 {
+ 	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	const int numBlocks = this->numBlocks(); 
 	const ProductMultiVectorBase<Scalar>
 		&X = Teuchos::dyn_cast<const ProductMultiVectorBase<Scalar> >(X_in),
@@ -206,9 +208,12 @@ void ProductVectorSpace<Scalar>::scalarProds(
 	const VectorSpace<Scalar> &domain = *X.domain();
 	TEST_FOR_EXCEPT( !domain.isCompatible(*Y.domain()) );
 	const Index m = domain.dim();
+	wsp::Workspace<Scalar> _scalar_prods(wss,m);
 	std::fill_n( scalar_prods, m, Teuchos::ScalarTraits<Scalar>::zero() );
-	for( int k = 0; k < numBlocks; ++k )
-		vecSpaces_[k]->scalarProds(*X.getBlock(k),*Y.getBlock(k),scalar_prods);
+	for( int k = 0; k < numBlocks; ++k ) {
+		vecSpaces_[k]->scalarProds(*X.getBlock(k),*Y.getBlock(k),&_scalar_prods[0]);
+		for( int j = 0; j < m; ++j ) scalar_prods[j] += _scalar_prods[j];
+	}
 }
 
 template<class Scalar>
