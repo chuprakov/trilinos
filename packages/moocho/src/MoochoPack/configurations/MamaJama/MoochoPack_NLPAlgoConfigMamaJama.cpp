@@ -322,15 +322,28 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		}
 	}
 	else {
-		if(trase_out) {
-			*trase_out
-				<< "\nThere are no equality constraints (m == 0) which forces the following options:\n"
-				<< "line_search_method          = DIRECT;\n"
-				<< "merit_function_type         = L1;\n"
-				;
+		if( uov_.line_search_method_ == LINE_SEARCH_NONE ) {
+			if(trase_out) {
+				*trase_out
+					<< "\nThere are no equality constraints (m == 0) and line_search_method==NONE so set the following options:\n"
+					<< "line_search_method          = NONE;\n"
+					<< "merit_function_type         = L1;\n"
+					;
+			}
+			cov_.line_search_method_       = LINE_SEARCH_NONE;
+			cov_.merit_function_type_      = MERIT_FUNC_L1;
 		}
-		cov_.line_search_method_       = LINE_SEARCH_DIRECT;
-		cov_.merit_function_type_      = MERIT_FUNC_L1;
+		else {
+			if(trase_out) {
+				*trase_out
+					<< "\nThere are no equality constraints (m == 0) and line_search_method==AUTO so set the following options:\n"
+					<< "line_search_method          = DIRECT;\n"
+					<< "merit_function_type         = L1;\n"
+					;
+			}
+			cov_.line_search_method_       = LINE_SEARCH_DIRECT;
+			cov_.merit_function_type_      = MERIT_FUNC_L1;
+		}
 	}
 
 	// Decide what type of quasi-newton update to use
