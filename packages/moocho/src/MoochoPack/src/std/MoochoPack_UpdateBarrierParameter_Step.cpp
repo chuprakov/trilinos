@@ -98,7 +98,7 @@ bool UpdateBarrierParameter_Step::do_step(
 
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
 			{
-			out << "Initializing barrier parameter (mu) and sub problem tolerance (e_tol)\n";
+			out << "\nInitializing barrier parameter (mu) and sub problem tolerance (e_tol) ...\n";
 			}
 		}
 		else*/
@@ -131,27 +131,27 @@ bool UpdateBarrierParameter_Step::do_step(
 				
 				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
 					{
-					out << "Sub-problem converged!\n"
-						<< " Updating barrier parameter (mu) and sub problem tolerance (e_tol)\n";
+					out << "\nSub-problem converged!\n"
+						<< " Updating barrier parameter (mu) and sub problem tolerance (e_tol) ...\n";
 					}
 
 
 	        	        /*VectorWithOpMutable& vu = s.Vu().set_k(0).diag();
         	        	vu = 0;
 		                Vp_StV(&vu, mu_k, s.invXu().get_k(0).diag());
-                		correct_upper_bound_multipliers(vu, nlp.xu(), NLP::infinite_bound()); 
+                		correct_upper_bound_multipliers(nlp.xu(), NLP::infinite_bound(), &vu); 
                 
 		                VectorWithOpMutable& vl = s.Vl().set_k(0).diag();
                 		vl = 0;
 		                Vp_StV(&vl, mu_k, s.invXl().get_k(0).diag());
-                		correct_lower_bound_multipliers(vl, nlp.xl(), -NLP::infinite_bound());*/
+                		correct_lower_bound_multipliers(nlp.xl(), -NLP::infinite_bound(), &vl);*/
 				}
 			else
 				{
 				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
 					{
-					out << "Sub-problem not-converged!\n"
-						<< " Keeping existing barrier parameter (mu) and sub problem tolerance (e_tol)\n";
+					out << "\nSub-problem not-converged!\n"
+						<< " Keeping existing barrier parameter (mu) and sub problem tolerance (e_tol) ...\n";
 					}
 				mu_iq.set_k(0,-1);
 				e_tol_iq.set_k(0,-1);
@@ -160,8 +160,8 @@ bool UpdateBarrierParameter_Step::do_step(
 
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
 			{
-			out << "barrier_parameter (mu) = " << mu_iq.get_k(0)
-				<< "\nsub problem tolerance (e_tol) = " << e_tol_iq.get_k(0);
+			out << "\nbarrier_parameter (mu) = " << mu_iq.get_k(0)
+				<< "\nsub problem tolerance (e_tol) = " << e_tol_iq.get_k(0)  << std::endl;
 			}
 		}
 

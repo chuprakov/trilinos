@@ -38,6 +38,8 @@ bool ReducedSpaceSQPPack::CalcD_vStep_Step::do_step(Algorithm& _algo
 	using DynamicCastHelperPack::dyn_cast;
 	using GeneralIterationPack::print_algorithm_step;
 	using AbstractLinAlgPack::ele_wise_prod;
+	using AbstractLinAlgPack::lowerbound_multipliers_step;
+	using AbstractLinAlgPack::upperbound_multipliers_step;
 
 	rSQPAlgo &algo = rsqp_algo(_algo);
 	ipState	&s = dyn_cast<ipState>(_algo.state());

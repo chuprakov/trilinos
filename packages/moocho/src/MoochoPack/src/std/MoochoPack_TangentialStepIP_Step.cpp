@@ -34,10 +34,6 @@
 #include "dynamic_cast_verbose.h"
 #include "ThrowException.h"
 
-namespace LinAlgOpPack {
-	using AbstractLinAlgPack::Vp_StMtV;
-}
-
 namespace ReducedSpaceSQPPack {
 
 bool NullSpaceStepIP_Step::do_step(
@@ -48,13 +44,13 @@ bool NullSpaceStepIP_Step::do_step(
 	using BLAS_Cpp::no_trans;
 	using DynamicCastHelperPack::dyn_cast;
 	using AbstractLinAlgPack::assert_print_nan_inf;
-	using AbstractLinAlgPack::Vt_S;
-	using AbstractLinAlgPack::Vp_StV;
-	using AbstractLinAlgPack::V_InvMtV;
-	using AbstractLinAlgPack::Mp_StM;
+	using LinAlgOpPack::Vt_S;
+	using LinAlgOpPack::Vp_StV;
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;
+	using LinAlgOpPack::V_InvMtV;
  	using LinAlgOpPack::M_StM;
+	using LinAlgOpPack::Mp_StM;
 	using LinAlgOpPack::assign;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
@@ -73,46 +69,59 @@ bool NullSpaceStepIP_Step::do_step(
 	// minimize round off error by calc'ing Z'*(Gf + mu*(invXu*e-invXl*e))
 
 	// qp_grad_k = Z'*(Gf + mu*(invXu*e-invXl*e))
-	const MatrixSymDiagonalStd& invXu = s.invXu().get_k(0);
-	const MatrixSymDiagonalStd& invXl = s.invXl().get_k(0);
-	const value_type& mu = s.barrier_parameter().get_k(0);
+	const MatrixSymDiagonalStd  &invXu = s.invXu().get_k(0);
+	const MatrixSymDiagonalStd  &invXl = s.invXl().get_k(0);
+	const value_type            &mu    = s.barrier_parameter().get_k(0);
+	const MatrixWithOp          &Z_k   = s.Z().get_k(0);
 
 	MemMngPack::ref_count_ptr<VectorWithOpMutable> rhs = s.Gf().get_k(0).clone();
-	rhs->axpy(mu, invXu.diag());
-	rhs->axpy(-1.0*mu, invXl.diag());
+	Vp_StV( rhs.get(), mu,      invXu.diag() );
+	Vp_StV( rhs.get(), -1.0*mu, invXl.diag() );
 	
-	out << "mu(invXu-invXl)\n";
-	rhs->output(out);
+	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) 
+		{
+		out << "\n||Gf_k + mu_k*(invXu_k-invXl_k)||inf = " << rhs->norm_inf() << std::endl;
+		}
+	if( (int)olevel >= (int)PRINT_VECTORS)
+		{
+		out << "\nGf_k + mu_k*(invXu_k-invXl_k) =\n" << *rhs;
+		}
 
 	VectorWithOpMutable &qp_grad_k = s.qp_grad().set_k(0);
-	V_MtV(&qp_grad_k, s.Z().get_k(0), BLAS_Cpp::trans, *rhs);
+	V_MtV(&qp_grad_k, Z_k, BLAS_Cpp::trans, *rhs);
 	
-	out << "rhs (no w)=\n";
-	qp_grad_k.output(out);
+	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) 
+		{
+		out << "\n||Z_k'*(Gf_k + mu_k*(invXu_k-invXl_k))||inf = " << qp_grad_k.norm_inf() << std::endl;
+		}
+	if( (int)olevel >= (int)PRINT_VECTORS )
+		{
+		out << "\nZ_k'*(Gf_k + mu_k*(invXu_k-invXl_k)) =\n" << qp_grad_k;
+		}
 
 	// error check for cross term
-	value_type& zeta = s.zeta().set_k(0);
-	const VectorWithOp& w_sigma = s.w_sigma().get_k(0);
+	value_type         &zeta    = s.zeta().set_k(0);
+	const VectorWithOp &w_sigma = s.w_sigma().get_k(0);
 	
 	// need code to calculate damping parameter
 	zeta = 1.0;
 
-	using LinAlgOpPack::Vp_StV;
 	Vp_StV(&qp_grad_k, zeta, w_sigma);
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
+	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) 
 		{
-		out << "rhs=\n";
-		qp_grad_k.output(out);
+		out << "\n||qp_grad_k||inf = " << qp_grad_k.norm_inf() << std::endl;
+		}
+	if( (int)olevel >= (int)PRINT_VECTORS ) 
+		{
+		out << "\nqp_grad_k =\n" << qp_grad_k;
 		}
 
 	// build the "Hessian" term B = rHL + rHB
 	// should this be MatrixSymWithOpNonsingular
-	const MatrixSymWithOpNonsingular  &rHL_k = dyn_cast<MatrixSymWithOpNonsingular>(s.rHL().get_k(0));
-	const MatrixSymWithOp  &rHB_k = dyn_cast<MatrixSymWithOpNonsingular>(s.rHB().get_k(0));
-	const MatrixWithOp& Z_k = s.Z().get_k(0);
-
-	MatrixSymWithOpNonsingular& B_k = dyn_cast<MatrixSymWithOpNonsingular>(s.B().set_k(0));
+	const MatrixSymWithOp      &rHL_k = s.rHL().get_k(0);
+	const MatrixSymWithOp      &rHB_k = s.rHB().get_k(0);
+	MatrixSymWithOpNonsingular &B_k   = dyn_cast<MatrixSymWithOpNonsingular>(s.B().set_k(0));
 	if (B_k.cols() != Z_k.cols())
 		{
 		// Initialize space in rHB
@@ -121,45 +130,43 @@ bool NullSpaceStepIP_Step::do_step(
 
 	//	M_StM(&B_k, 1.0, rHL_k, no_trans);
 	assign(&B_k, rHL_k, BLAS_Cpp::no_trans);
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
+	if( (int)olevel >= (int)PRINT_VECTORS ) 
 		{
-		out << "rHL_k=\n";
-		B_k.output(out);
+		out << "\nB_k = rHL_k =\n" << B_k;
 		}
-
 	Mp_StM(&B_k, 1.0, rHB_k, BLAS_Cpp::no_trans);
-	
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
+	if( (int)olevel >= (int)PRINT_VECTORS ) 
 		{
-		out << "B=\n";
-		B_k.output(out);
+		out << "\nB_k = rHL_k + rHB_k =\n" << B_k;
 		}
-	
 
 	// Solve the system pz = - inv(rHL) * qp_grad
-	VectorWithOpMutable               &pz_k  = s.pz().set_k(0);
+	VectorWithOpMutable   &pz_k  = s.pz().set_k(0);
 	V_InvMtV( &pz_k, B_k, no_trans, qp_grad_k );
 	Vt_S( &pz_k, -1.0 );
 
 	// Zpz = Z * pz
 	V_MtV( &s.Zpz().set_k(0), s.Z().get_k(0), no_trans, pz_k );
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
+		{
 		out	<< "\n||pz||inf   = " << s.pz().get_k(0).norm_inf()
 			<< "\nsum(Zpz)    = " << AbstractLinAlgPack::sum(s.Zpz().get_k(0))  << std::endl;
-	}
+		}
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+	if( (int)olevel >= (int)PRINT_VECTORS )
+		{
 		out << "\npz_k = \n" << s.pz().get_k(0);
 		out << "\nnu_k = \n" << s.nu().get_k(0);
 		out << "\nZpz_k = \n" << s.Zpz().get_k(0);
 		out << std::endl;
-	}
+		}
 
-	if(algo.algo_cntr().check_results()) {
+	if(algo.algo_cntr().check_results())
+		{
 		assert_print_nan_inf(s.pz().get_k(0),  "pz_k",true,&out);
 		assert_print_nan_inf(s.Zpz().get_k(0), "Zpz_k",true,&out);
-	}
+		}
 
 	return true;
 	}
@@ -170,7 +177,12 @@ void NullSpaceStepIP_Step::print_step( const Algorithm& algo
 	{
 	out
 		<< L << "*** Calculate the null space step by solving an unconstrainted QP\n"
-		<< L << "TODO: Correct this documentation\n";
+		<< L << "zeta_k = 1.0\n"
+		<< L << "qp_grad_k = Z_k'*(Gf_k + mu_k*(invXu_k-invXl_k)) + zeta_k*w_sigma_k\n"
+		<< L << "B_k = rHL_k + rHB_k\n"
+		<< L << "pz_k = -inv(B_k)*qp_grad_k\n"
+		<< L << "Zpz_k = Z_k*pz_k\n"
+		;
 	}
 
 } // end namespace ReducedSpaceSQPPack

@@ -35,7 +35,7 @@ class CheckConvergenceStd_AddedStep
 		/** Strategy object to be used when checking for convergence
 		 * 
 		 */
-		STANDARD_COMPOSITION_MEMBERS( CheckConvergence_Strategy, convergence_strategy );
+		STANDARD_COMPOSITION_MEMBERS( CheckConvergence_Strategy, convergence_strategy )
 
 		///
 		CheckConvergenceStd_AddedStep(

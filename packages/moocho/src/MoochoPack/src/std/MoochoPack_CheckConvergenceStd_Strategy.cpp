@@ -58,6 +58,7 @@ bool CheckConvergenceStd_Strategy::Converged(
   )
 	{
 	using AbstractLinAlgPack::assert_print_nan_inf;
+	using AbstractLinAlgPack::combined_nu_comp_err;
 	
 	rSQPAlgo	&algo	  = rsqp_algo(_algo);
 	rSQPState	&s		  = algo.rsqp_state();

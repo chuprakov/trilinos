@@ -21,8 +21,8 @@
 #include "AbstractLinAlgPack/include/assert_print_nan_inf.h"
 #include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "NLPInterfacePack/include/BarrierNLP.h"
 #include "ReducedSpaceSQPPack/include/std/PreProcessBarrierLineSearch_Step.h"
 #include "ReducedSpaceSQPPack/include/ipState.h"
@@ -61,7 +61,10 @@ bool PreProcessBarrierLineSearch_Step::do_step(
 	{
 	using DynamicCastHelperPack::dyn_cast;
 	using GeneralIterationPack::print_algorithm_step;
-	using AbstractLinAlgPack::Vp_StV;
+    using AbstractLinAlgPack::assert_print_nan_inf;
+	using AbstractLinAlgPack::fraction_to_boundary;
+	using AbstractLinAlgPack::fraction_to_zero_boundary;
+	using LinAlgOpPack::Vp_StV;
 
 	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
 	ipState             &s      = dyn_cast<ipState>(_algo.state());
@@ -89,7 +92,7 @@ bool PreProcessBarrierLineSearch_Step::do_step(
 				{
 				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
 					{
-					out << "Barrier Parameter changed - resetting the filter.\n";
+					out << "\nBarrier Parameter changed - resetting the filter ...\n";
 					}
 				// reset the filter
 				ReducedSpaceSQPPack::Filter_T &filter_k = filter_(s).set_k(0);
@@ -111,7 +114,6 @@ bool PreProcessBarrierLineSearch_Step::do_step(
 
 	// Calculate the k+1 terms
 	// Get iteration quantities...
-	using AbstractLinAlgPack::fraction_to_boundary;
 	value_type& alpha_k = s.alpha().set_k(0);
 	value_type& alpha_vl_k = s.alpha_vl().set_k(0);
 	value_type& alpha_vu_k = s.alpha_vu().set_k(0);
@@ -165,10 +167,8 @@ bool PreProcessBarrierLineSearch_Step::do_step(
  
 
     IterQuantityAccess<VectorWithOpMutable>
-		*c_iq   = nlp.m() > 0 ? &s.c() : NULL,
-		*h_iq   = nlp.mI() > 0 ? &s.h() : NULL;
+		*c_iq   = nlp.m() > 0 ? &s.c() : NULL;
 
-    using AbstractLinAlgPack::assert_print_nan_inf;
     if (assert_print_nan_inf(x_kp1, "x", true, NULL))
 		{
 		// Calcuate f and c at the new point.
@@ -179,31 +179,22 @@ bool PreProcessBarrierLineSearch_Step::do_step(
 			barrier_nlp_->set_c( &c_iq->set_k(+1) );
 			barrier_nlp_->calc_c( x_kp1, true );
 			}
-
-		if (h_iq)
-			{
-			barrier_nlp_->set_h( &h_iq->set_k(+1) );
-			barrier_nlp_->calc_h( x_kp1, true ); 
-			}
-
 		barrier_nlp_->calc_f( x_kp1, false ); 
 		}
-
-	
-
 	
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
 		{
-		out << "alpha_vl_k = " << alpha_vl_k
-			<< "\nalpha_vu_k = " << alpha_vu_k 
-			<< "\nalpha_k = " << alpha_k;
+		out << "\nalpha_vl_k = " << alpha_vl_k
+			<< "\nalpha_vu_k = " << alpha_vu_k
+			<< "\nalpha_k    = " << alpha_k
+			<< std::endl;
 		}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
 		{
 		out << "\nvl_kp1 = \n" << vl_kp1
 			<< "\nvu_kp1 = \n" << vu_kp1
-			<< "x_kp1 = \n" << x_kp1;
+			<< "\nx_kp1 = \n" << x_kp1;
 		}
 
 	return true;
@@ -217,7 +208,7 @@ void PreProcessBarrierLineSearch_Step::print_step(
 	{
 	//const rSQPAlgo   &algo = rsqp_algo(_algo);
 	//const rSQPState  &s    = algo.rsqp_state();
-	out << L << "# calculate alpha max by the fraction to boundary rule\n"
+	out << L << "*** calculate alpha max by the fraction to boundary rule\n"
 		<< L << "ToDo: Complete documentation\n";
 	}
 

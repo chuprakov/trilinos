@@ -55,6 +55,6 @@ class PostEvalNewPointBarrier_Step
 
 	}; // end class PostEvalNewPointBarrier_Step
 
-}; // end namespace ReducedSpaceSQPPack
+}  // end namespace ReducedSpaceSQPPack
 
 #endif // POST_EVAL_NEW_POINT_BARRIER_STEP_H

@@ -71,15 +71,14 @@ bool CalcReducedGradLagrangianStd_AddedStep::do_step(
 		VectorSpace::vec_mut_ptr_t
 			tmp = nu_k.space().create_member();
 
-		out << "nu_k = \n" << nu_k;
-
+		if( (int)olevel >= (int)PRINT_VECTORS )
+			out << "\nnu_k = \n" << nu_k;
 		V_VpV( tmp.get(), Gf_iq.get_k(0), nu_k );
-
-		out << "\nGf+nu = \n" << *tmp;
-
+		if( (int)olevel >= (int)PRINT_VECTORS )
+			out << "\nGf_k+nu_k = \n" << *tmp;
 		V_MtV(	&rGL_k, s.Z().get_k(0), trans, *tmp );
-
-		out << "\nrGL = \n" << rGL_k;
+		if( (int)olevel >= (int)PRINT_VECTORS )
+			out << "\nrGL_k = \n" << rGL_k;
 	}
 	else {
 		rGL_k = s.rGf().get_k(0);

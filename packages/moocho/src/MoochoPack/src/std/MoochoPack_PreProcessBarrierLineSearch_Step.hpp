@@ -51,8 +51,7 @@ class PreProcessBarrierLineSearch_Step
 		 *
 		 * mu_kp1 = min(tau_mu*mu_k,mu_k^theta_mu)
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, tau_boundary_frac );
-
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, tau_boundary_frac )
 
 		///
 		/** Constructor.

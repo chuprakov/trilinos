@@ -55,8 +55,7 @@ class PreEvalNewPointBarrier_Step
 		 *   else if (x > xu_sb) then
 		 *      x = xu_sb
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, relative_bound_push );
-
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, relative_bound_push )
 
 		///
 		/** absolute measure for initializing x within
@@ -72,8 +71,7 @@ class PreEvalNewPointBarrier_Step
 		 *   else if (x > xu_sb) then
 		 *      x = xu_sb
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, absolute_bound_push );
-
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, absolute_bound_push )
 
 		/** @name Overridden from AlgorithmStep */
 		//@{
@@ -113,6 +111,6 @@ class PreEvalNewPointBarrier_StepSetOptions
 	};	// end class PreEvalNewPointBarrier_StepSetOptions
 
 
-}; // end namespace ReducedSpaceSQPPack
+}  // end namespace ReducedSpaceSQPPack
 
 #endif // PRE_EVAL_NEW_POINT_BARRIER_STEP_H

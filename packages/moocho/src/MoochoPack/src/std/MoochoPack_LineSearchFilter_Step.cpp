@@ -167,7 +167,7 @@ bool LineSearchFilter_Step::do_step(
     int w = 15;
     if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
 		{
-		out << "Beginning Filter line search method.\n\n";
+		out << "\nBeginning Filter line search method.\n\n";
 
 		out << "  Current Filter\n";
 		out << "-----------------------------------------------------" << std::endl;

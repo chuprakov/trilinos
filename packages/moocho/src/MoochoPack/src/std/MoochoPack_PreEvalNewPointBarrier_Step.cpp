@@ -19,6 +19,7 @@
 
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
 #include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 #include "AbstractLinAlgPack/include/assert_print_nan_inf.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
@@ -33,8 +34,6 @@
 
 namespace ReducedSpaceSQPPack {
 
-		/** Constructor.
-		 */
 PreEvalNewPointBarrier_Step::PreEvalNewPointBarrier_Step(
   const value_type relative_bound_push,
   const value_type absolute_bound_push
@@ -51,6 +50,7 @@ bool PreEvalNewPointBarrier_Step::do_step(
 	{
 	using DynamicCastHelperPack::dyn_cast;
 	using GeneralIterationPack::print_algorithm_step;
+	using AbstractLinAlgPack::force_in_bounds_buffer;
 
 	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
 	ipState             &s      = dyn_cast<ipState>(_algo.state());
@@ -69,7 +69,8 @@ bool PreEvalNewPointBarrier_Step::do_step(
 		print_algorithm_step( _algo, step_poss, type, assoc_step_poss, out );
 		}
 
-	IterQuantityAccess<VectorWithOpMutable> &x_iq = s.x();
+	IterQuantityAccess<value_type>           &barrier_parameter_iq = s.barrier_parameter();
+	IterQuantityAccess<VectorWithOpMutable>  &x_iq  = s.x();
 	IterQuantityAccess<MatrixSymDiagonalStd> &Vl_iq = s.Vl();
 	IterQuantityAccess<MatrixSymDiagonalStd> &Vu_iq = s.Vu();
 
@@ -87,59 +88,43 @@ bool PreEvalNewPointBarrier_Step::do_step(
 							   absolute_bound_push_,
 							   nlp.xl(),
 							   nlp.xu(),
-							   x_k);
+							   &x_k);
 
 		// evaluate the func and constraints
+		IterQuantityAccess<value_type>
+			&f_iq    = s.f();
 		IterQuantityAccess<VectorWithOpMutable>
-			*c_iq   = nlp.m() > 0 ? &s.c() : NULL,
-			*h_iq   = nlp.mI() > 0 ? &s.h() : NULL;
+			&Gf_iq   = s.Gf(),
+			*c_iq    = nlp.m() > 0 ? &s.c() : NULL;
+		IterQuantityAccess<MatrixWithOp>
+			*Gc_iq   = c_iq ? &s.Gc() : NULL;
 
 		using AbstractLinAlgPack::assert_print_nan_inf;
-		if (assert_print_nan_inf(x_k, "x", true, NULL))
+		assert_print_nan_inf(x_k, "x", true, NULL); // With throw exception if Inf or NaN!
+
+		// Wipe out storage for computed iteration quantities (just in case?) : RAB: 7/29/2002
+		if(f_iq.updated_k(0))
+			f_iq.set_not_updated_k(0);
+		if(Gf_iq.updated_k(0))
+			Gf_iq.set_not_updated_k(0);
+		if (c_iq)
 			{
-			// Calcuate f and c at the new point.
-			nlp.set_multi_calc(true);
-			nlp.set_f( &s.f().set_k(0) );
-			nlp.set_Gf( &s.Gf().set_k(0) );
-			if (c_iq)
-				{
-				nlp.set_c( &c_iq->set_k(0) );
-				nlp.set_Gc( &s.Gc().set_k(0) );
-				}
-			
-			if (h_iq)
-				{
-				nlp.set_h( &h_iq->set_k(0) );
-				nlp.set_Gh( &s.Gh().set_k(0) );
-				}
-
-			nlp.calc_Gf(x_k, true);
-			nlp.calc_f( x_k, false ); 
-
-			if (c_iq)
-				{
-				nlp.calc_Gc( x_k, false );
-				nlp.calc_c( x_k, false);
-				}
-			
-			if (h_iq)
-				{
-				nlp.calc_Gh( x_k, false );
-				nlp.calc_h( x_k, false );
-				}
+			if(c_iq->updated_k(0))
+				c_iq->set_not_updated_k(0);
+			if(Gc_iq->updated_k(0))
+				Gc_iq->set_not_updated_k(0);
 			}
 		}
 
-	if (s.barrier_parameter().last_updated() == IterQuantity::NONE_UPDATED)
+	if (barrier_parameter_iq.last_updated() == IterQuantity::NONE_UPDATED)
 		{
-		s.barrier_parameter().set_k(-1) = 0.1;
+		barrier_parameter_iq.set_k(-1) = 0.1; // RAB: 7/29/2002: This should be parameterized! (allow user to set this!)
 		}
 
 	// Print vector information
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
 		{
-		out << "x_k=\n";
-		x_iq.get_k(0).output(out);
+		out << "x_k =\n" << x_iq.get_k(0);
 		}
 
 	return true;
@@ -155,14 +140,13 @@ void PreEvalNewPointBarrier_Step::print_step(
 	//const rSQPState  &s    = algo.rsqp_state();
 	out << L << "# Evaluate information specific to primal / dual barrier algorithms\n"
 		<< L << "if (x never updated) then\n"
-		<< L << "   x_k = nlp.xinit()\n"
-		<< L << "   force_in_bounds(x_k)\n"
-		<< L << "   Gf_k = calc_Gf\n"
-		<< L << "   f_k = calc_f\n"
-		<< L << "   Gc_k = calc_Gf\n"
-		<< L << "   c_k = calc_f\n"
-		<< L << "   Gh_k = calc_Gf\n"
-		<< L << "   h_k = calc_f\n"
+		<< L << "  x_k = nlp.xinit()\n"
+		<< L << "  force_in_bounds(x_k)\n"
+		<< L << "  set f_k not updated\n"
+		<< L << "  set Gf_k not updated\n"
+		<< L << "  if (m > 0) then\n"
+		<< L << "    set c_k not updated\n"
+		<< L << "    set Gc_k not updated\n"
 		<< L << "end\n";
 	}
 
@@ -215,4 +199,4 @@ void PreEvalNewPointBarrier_StepSetOptions::set_option(
 		}
 	}
 
-}; // end namespace ReducedSpaceSQPPack
+}  // end namespace ReducedSpaceSQPPack

@@ -82,8 +82,8 @@ bool PostProcessBarrierLineSearch_Step::do_step(
 	
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
 		{
-		out << "f = " << f_kp1
-			<< "\nbarrier_term = " << barrier_nlp_->barrier_term();
+		out << "\nf = " << f_kp1
+			<< "\nbarrier_term = " << barrier_nlp_->barrier_term() << std::endl;
 		
 		}
 

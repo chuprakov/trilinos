@@ -18,10 +18,10 @@
 #include <iostream>
 
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 #include "AbstractLinAlgPack/include/assert_print_nan_inf.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
 #include "ReducedSpaceSQPPack/include/ipState.h"
@@ -41,6 +41,10 @@ bool PostEvalNewPointBarrier_Step::do_step(
 	{
 	using DynamicCastHelperPack::dyn_cast;
 	using GeneralIterationPack::print_algorithm_step;
+	using AbstractLinAlgPack::inv_of_difference;
+	using AbstractLinAlgPack::correct_upper_bound_multipliers;
+	using AbstractLinAlgPack::correct_lower_bound_multipliers;
+	using LinAlgOpPack::Vp_StV;
 
 	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
 	ipState             &s      = dyn_cast<ipState>(_algo.state());
@@ -76,8 +80,8 @@ bool PostEvalNewPointBarrier_Step::do_step(
 	//std::cout << "xu=\n";
 	//nlp.xu().output(std::cout);
 
-	inv_of_difference(invXu.diag(), 1.0, nlp.xu(), x);
-	inv_of_difference(invXl.diag(), 1.0, x, nlp.xl());
+	inv_of_difference(1.0, nlp.xu(), x, &invXu.diag());
+	inv_of_difference(1.0, x, nlp.xl(), &invXl.diag());
 
 	//std::cout << "invXu=\v";
 	//invXu.output(std::cout);
@@ -130,7 +134,7 @@ if ( /*!Vl_iq.updated_k(0) */ Vl_iq.last_updated() == IterQuantity::NONE_UPDATED
 		s.P_var_last().permute( BLAS_Cpp::trans, &vu ); // Permute back to original order
 		s.P_var_last().permute( BLAS_Cpp::trans, &vl ); // Permute back to original order
 
-		if( olevel >= PRINT_VECTORS ) 
+		if( (int)olevel >= (int)PRINT_VECTORS ) 
 			{
 			out	<< "\nx resorted vl and vu to the original order\n" << x;
 			}
@@ -138,25 +142,23 @@ if ( /*!Vl_iq.updated_k(0) */ Vl_iq.last_updated() == IterQuantity::NONE_UPDATED
 		s.P_var_current().permute( BLAS_Cpp::no_trans, &vu ); // Permute to new (current) order
 		s.P_var_current().permute( BLAS_Cpp::no_trans, &vl ); // Permute to new (current) order
 
-		if( olevel >= PRINT_VECTORS ) 
+		if( (int)olevel >= (int)PRINT_VECTORS ) 
 			{
 			out	<< "\nx resorted to new basis \n" << x;
 			}
 		}
 
-	correct_upper_bound_multipliers(Vu_iq.get_k(0).diag(), nlp.xu(), NLP::infinite_bound());
-	correct_lower_bound_multipliers(Vl_iq.get_k(0).diag(), nlp.xl(), -NLP::infinite_bound());
+	correct_upper_bound_multipliers(nlp.xu(), +NLP::infinite_bound(), &Vu_iq.get_k(0).diag());
+	correct_lower_bound_multipliers(nlp.xl(), -NLP::infinite_bound(), &Vl_iq.get_k(0).diag());
 	
-	out << "x=\n";
-	s.x().get_k(0).output(out);
-	out << "xl=\n";
-	nlp.xl().output(out);
-	out << "vl=\n";
-	s.Vl().get_k(0).diag().output(out);
-	out << "xu=\n";
-	nlp.xu().output(out);
-	out << "vu=\n";
-	s.Vu().get_k(0).diag().output(out);
+	if( (int)olevel >= (int)PRINT_VECTORS ) 
+		{
+		out << "x=\n"  << s.x().get_k(0);
+		out << "xl=\n" << nlp.xl();
+		out << "vl=\n" << s.Vl().get_k(0).diag();
+		out << "xu=\n" << nlp.xu();
+		out << "vu=\n" << s.Vu().get_k(0).diag();
+		}
 
 	// Update general algorithm bound multipliers
 	VectorWithOpMutable& v = s.nu().set_k(0);
@@ -166,20 +168,11 @@ if ( /*!Vl_iq.updated_k(0) */ Vl_iq.last_updated() == IterQuantity::NONE_UPDATED
 	// Print vector information
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) 
 		{
-		out	<< "invXu_k.diag()=\n";
-		invXu.diag().output(out);
-
-		out	<< "invXl_k.diag()=\n";
-		invXl.diag().output(out);
-
-		out	<< "Vu_k.diag()=\n";
-		Vu_iq.get_k(0).diag().output(out);
-
-		out	<< "Vl_k.diag()=\n";
-		Vl_iq.get_k(0).diag().output(out);
-
-		out << "nu_k=\n";
-		s.nu().get_k(0).output(out);
+		out	<< "invXu_k.diag()=\n" << invXu.diag();
+		out	<< "invXl_k.diag()=\n" << invXl.diag();
+		out	<< "Vu_k.diag()=\n"    << Vu_iq.get_k(0).diag();
+		out	<< "Vl_k.diag()=\n"    << Vl_iq.get_k(0).diag();
+		out << "nu_k=\n"           << s.nu().get_k(0);
 		}
 
 	return true;
@@ -205,4 +198,4 @@ void PostEvalNewPointBarrier_Step::print_step(
 		<< L << "nu_k_k = Vu_k.diag() - Vl_k.diag()\n";
 	}
 
-}; // end namespace ReducedSpaceSQPPack
+} // end namespace ReducedSpaceSQPPack

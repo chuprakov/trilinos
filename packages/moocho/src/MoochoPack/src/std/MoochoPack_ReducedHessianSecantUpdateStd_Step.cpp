@@ -25,6 +25,7 @@
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
 #include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
 #include "AbstractLinAlgPack/include/MatrixSymInitDiagonal.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "dynamic_cast_verbose.h"
 
@@ -106,11 +107,13 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(
 		if( new_basis ) {
 
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-				out << "\nBasis changed.  Reinitializing rHL_k = eye(n-r)\n";
+				out << "\nBasis changed.  Reinitializing rHL_k = eye(n-r) ...\n";
 			}
 			dyn_cast<MatrixSymInitDiagonal>(rHL_iq.set_k(0)).init_identity(
 				Z_iq.get_k(0).space_rows()
 				);
+			if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES )
+				out << "\nrHL_k = \n" << rHL_iq.get_k(0);
 			quasi_newton_stats_(s).set_k(0).set_updated_stats(
 				QuasiNewtonStats::REINITIALIZED );
 			iter_k_rHL_init_ident_ = s.k();	// remember what iteration this was
@@ -228,7 +231,7 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(
 					QuasiNewtonStats::REINITIALIZED );
 
 				if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
-					rHL_iq.get_k(0).output( out << "\nrHL_k = \n" );
+					out << "\nrHL_k = \n" << rHL_iq.get_k(0);
 				}
 			}
 		}

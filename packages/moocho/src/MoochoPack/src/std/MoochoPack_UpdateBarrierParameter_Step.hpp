@@ -46,41 +46,41 @@ class UpdateBarrierParameter_Step
 		 *
 		 * mu_kp1 = min(tau_mu*mu_k,mu_k^theta_mu)
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, init_barrier_parameter );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, init_barrier_parameter )
 
 		///
 		/** barrier_parameter decrease fraction (linear decrease)
 		 *
 		 * mu_kp1 = min(tau_mu*mu_k,mu_k^theta_mu)
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, tau_mu );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, tau_mu )
 
 		///
 		/** barrier_parameter decrease power (for superlinear decrease)
 		 *
 		 * mu_kp1 = min(tau_mu*mu_k,mu_k^theta_mu)
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_mu );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_mu )
 
 		///
 		/** error tolerance fraction
 		 *
 		 * e_tol = min( e_tol_max, tau_epsilon*min(mu_k,mu_k^theta_epsilon))
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, tau_epsilon );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, tau_epsilon )
 
 		///
 		/** error tolerance power
 		 *
 		 * e_tol = min( e_tol_max, tau_epsilon*min(mu_k,mu_k^theta_epsilon))
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_epsilon );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_epsilon )
 
 		///
 		/** maximum error tolerance
 		 *
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, e_tol_max );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, e_tol_max )
 
 		///
 		/** Constructor.

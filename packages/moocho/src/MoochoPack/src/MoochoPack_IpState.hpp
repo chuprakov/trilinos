@@ -48,54 +48,54 @@ class ipState
 		///********** Iteration Quantities **************
 
 		/// mu: barrier parameter
-		STATE_SCALAR_IQ_DECL(barrier_parameter);
+		STATE_SCALAR_IQ_DECL(barrier_parameter)
 
 		/// barrier_obj: objective value with 
 		//   barrier term included
-		STATE_SCALAR_IQ_DECL(barrier_obj);
+		STATE_SCALAR_IQ_DECL(barrier_obj)
 
 		/// grad_barrier_obj: gradient of the objective
 		//   with barrier term included
-		STATE_VECTOR_IQ_DECL(grad_barrier_obj);
+		STATE_VECTOR_IQ_DECL(grad_barrier_obj)
 
 		/// e_tol: current error tolerance for inner loop
-		STATE_SCALAR_IQ_DECL(e_tol);
+		STATE_SCALAR_IQ_DECL(e_tol)
 
 		/// Vu - diagonal matrix of upper bound multipliers
-		STATE_IQ_DECL(MatrixSymDiagonalStd, Vu);
+		STATE_IQ_DECL(MatrixSymDiagonalStd, Vu)
 
 		/// Vl - diagonal matrix of lower bound multipliers
-		STATE_IQ_DECL(MatrixSymDiagonalStd, Vl);
+		STATE_IQ_DECL(MatrixSymDiagonalStd, Vl)
 
 		/// invXu - (Xu)^-1 - matrix of 1/(xu-x) diagonal
-		STATE_IQ_DECL(MatrixSymDiagonalStd, invXu);
+		STATE_IQ_DECL(MatrixSymDiagonalStd, invXu)
 
 		/// invXl - (Xl)^-1 - matrix of 1/(x-xl) diagonal
-		STATE_IQ_DECL(MatrixSymDiagonalStd, invXl);
+		STATE_IQ_DECL(MatrixSymDiagonalStd, invXl)
 
 		/// rHB - reduced Hessian of the barrier term (Z_Sigma_Z)
-		STATE_IQ_DECL(MatrixSymWithOp, rHB);
+		STATE_IQ_DECL(MatrixSymWithOp, rHB)
 
 		/// B - overall reduced 'Hessian' (Z_W_Z+Z_Sigma_Z)
-		STATE_IQ_DECL(MatrixSymWithOp, B);
+		STATE_IQ_DECL(MatrixSymWithOp, B)
 
 		/// Full space Sigma (invXl*Vl-invXu*Vu)
-		STATE_IQ_DECL(MatrixSymDiagonalStd, Sigma);
+		STATE_IQ_DECL(MatrixSymDiagonalStd, Sigma)
 
 		/// w_sigma:  crossterm correction for sigma (Z' * Sigma * Y * py)
 		STATE_VECTOR_IQ_DECL(w_sigma) 
 
 		/// dvl:  Search direction for lower bound multipliers ( n x 1 )
-		STATE_VECTOR_IQ_DECL(dvl);
+		STATE_VECTOR_IQ_DECL(dvl)
 
 		/// dvu:  Search direction for upper bound multipliers ( n x 1 )
-		STATE_VECTOR_IQ_DECL(dvu);
+		STATE_VECTOR_IQ_DECL(dvu)
 
 		/// alpha_vl: step size for vl
-		STATE_SCALAR_IQ_DECL(alpha_vl);
+		STATE_SCALAR_IQ_DECL(alpha_vl)
 
 		/// alpha_vl: step size for vu
-		STATE_SCALAR_IQ_DECL(alpha_vu);
+		STATE_SCALAR_IQ_DECL(alpha_vu)
 
 		///
 		/** Construct

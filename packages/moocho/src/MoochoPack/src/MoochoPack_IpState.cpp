@@ -55,32 +55,32 @@ ipState::~ipState()
 
 ///********** Iteration Quantities **************
 
-STATE_SCALAR_IQ_DEF(ipState, barrier_parameter, barrier_parameter_name);
+STATE_SCALAR_IQ_DEF(ipState, barrier_parameter, barrier_parameter_name)
 
-STATE_SCALAR_IQ_DEF(ipState, barrier_obj, barrier_obj_name);
+STATE_SCALAR_IQ_DEF(ipState, barrier_obj, barrier_obj_name)
 
-STATE_VECTOR_IQ_DEF(ipState, grad_barrier_obj, grad_barrier_obj_name, get_space_x(), VST_SPACE_X);
+STATE_VECTOR_IQ_DEF(ipState, grad_barrier_obj, grad_barrier_obj_name, get_space_x(), VST_SPACE_X)
 
-STATE_SCALAR_IQ_DEF(ipState, e_tol, e_tol_name);
+STATE_SCALAR_IQ_DEF(ipState, e_tol, e_tol_name)
 
-STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, Vu, Vu_name);
+STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, Vu, Vu_name)
 
-STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, Vl, Vl_name);
+STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, Vl, Vl_name)
 
-STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, invXu, invXu_name);
+STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, invXu, invXu_name)
 
-STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, invXl, invXl_name);
+STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, invXl, invXl_name)
 
-STATE_IQ_DEF(ipState, MatrixSymWithOp, rHB, rHB_name);
+STATE_IQ_DEF(ipState, MatrixSymWithOp, rHB, rHB_name)
 
-STATE_IQ_DEF(ipState, MatrixSymWithOp, B, B_name);
+STATE_IQ_DEF(ipState, MatrixSymWithOp, B, B_name)
 
-STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, Sigma, Sigma_name);
+STATE_IQ_DEF(ipState, MatrixSymDiagonalStd, Sigma, Sigma_name)
 
-STATE_VECTOR_IQ_DEF(ipState, w_sigma, w_sigma_name, get_space_null(), VST_SPACE_NULL );  
-STATE_VECTOR_IQ_DEF(ipState, dvl, dvl_name, get_space_x(), VST_SPACE_X);
-STATE_VECTOR_IQ_DEF(ipState, dvu, dvu_name, get_space_x(), VST_SPACE_X);
+STATE_VECTOR_IQ_DEF(ipState, w_sigma, w_sigma_name, get_space_null(), VST_SPACE_NULL )  
+STATE_VECTOR_IQ_DEF(ipState, dvl, dvl_name, get_space_x(), VST_SPACE_X)
+STATE_VECTOR_IQ_DEF(ipState, dvu, dvu_name, get_space_x(), VST_SPACE_X)
 
-STATE_SCALAR_IQ_DEF(ipState, alpha_vl, alpha_vl_name);
-STATE_SCALAR_IQ_DEF(ipState, alpha_vu, alpha_vu_name);
+STATE_SCALAR_IQ_DEF(ipState, alpha_vl, alpha_vl_name)
+STATE_SCALAR_IQ_DEF(ipState, alpha_vu, alpha_vu_name)
 } // end namespace ReducedSpaceSQPPack

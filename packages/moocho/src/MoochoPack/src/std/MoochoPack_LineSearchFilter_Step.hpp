@@ -67,42 +67,42 @@ class LineSearchFilter_Step
 		 *
 		 * ToDo: Finish documentation.
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_theta );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_theta )
 
 		///
 		/** Optimality decrease fraction.
 		 *
 		 * ToDo: Finish documentation.
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_f );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_f )
 
 		///
 		/** alpha_min linearization correction fraction
 		 *
 		 * ToDo: Finish documentation.
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_alpha );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, gamma_alpha )
 
 		///
 		/** Delta parameter for switching condition.
 		 *
 		 * ToDo: Finish documentation.
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, delta );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, delta )
 	
 		///
 		/** Exponent for objective in switching condition.
 		 *
 		 * ToDo: Finish documentation.
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, s_f );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, s_f )
 
 		///
 		/** Exponent for theta in switching condition.
 		 *
 		 * ToDo: Finish documentation.
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, s_theta );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, s_theta )
 
 		///
 		/** Factor to evaluate theta_small
@@ -110,21 +110,21 @@ class LineSearchFilter_Step
 		 *
 		 * ToDo: Finish documentation.
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_small_fact );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, theta_small_fact )
 
 		///
 		/** Constant for Armijo condition on objective
 		 *
 		 * ToDo: Finish documentation.
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, eta_f );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, eta_f )
 
 		///
 		/** Backtracking fraction for step.
 		 *
 		 * ToDo: Finish documentation.
 		 */
-		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, back_track_frac );
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, back_track_frac )
 
 		///
 		/** Constructor.

@@ -317,9 +317,6 @@ void Algo_ConfigIP::config_algo_cntr(
 		dof = n - r,
 		nb  = nlp.num_bounded_x();
 	
-	THROW_EXCEPTION(nb == 0, std::logic_error, "Algo_ConfigIP::config_alg_cntr(...) : Error, " <<
-					"you have not set any bounds - Interior Point currently does not handle this.");
-
 	// Determine which NLP interface is supported
 	NLPFirstOrderInfo    *nlp_foi = dynamic_cast<NLPFirstOrderInfo*>(   algo->get_nlp() );	
 	NLPSecondOrderInfo   *nlp_soi = dynamic_cast<NLPSecondOrderInfo*>(  algo->get_nlp() );	
@@ -724,8 +721,8 @@ void Algo_ConfigIP::config_algo_cntr(
 				new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
 				  MatrixSymPosDefCholFactor::PostMod(
 					true      // maintain_original
-					,false      // maintain_factor
-					,true                  // allow_factor      (always!)
+					,false    // maintain_factor
+					,true     // allow_factor      (always!)
 					)
 				  )
 				)
@@ -743,8 +740,8 @@ void Algo_ConfigIP::config_algo_cntr(
 				new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
 				  MatrixSymPosDefCholFactor::PostMod(
 					true      // maintain_original
-					,false      // maintain_factor
-					,true                  // allow_factor      (always!)
+					,false    // maintain_factor
+					,true     // allow_factor      (always!)
 					)
 				  )
 				)
@@ -935,49 +932,19 @@ void Algo_ConfigIP::config_algo_cntr(
 				);
 		}
 
-		// Add reduced Hessian
+		// Add reduced Hessian of the Lagrangian
 
 		if( !cov_.exact_reduced_hessian_ ) {
 			ref_count_ptr<afp::AbstractFactory<MatrixSymWithOp> >
-				abstract_factory_rHL = mmp::null;
-			// Only maintain the orginal matrix if we have inequality constraints and therefore will be
-			// needing a QP solver (which may be QPSchur which needs an accurate original matrix for
-			// iterative refinment).
-			const bool
-				maintain_original = ( nb || mI );
-			// Maintain the factor if a QP solver is needed, QPSchur is being used, or we are checking
-			// results
-			const bool
-				maintain_inverse = ( (!nb && !mI && m==r) || cov_.qp_solver_type_==QP_QPSCHUR
-									 || algo->algo_cntr().check_results() );
-			switch( cov_.quasi_newton_ ) {
-				case QN_BFGS:
-					abstract_factory_rHL = mmp::rcp(
-						new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
-							MatrixSymPosDefCholFactor::PostMod(
-								maintain_original      // maintain_original
-								,maintain_inverse      // maintain_factor
-								,true                  // allow_factor      (always!)
-								)
+				abstract_factory_rHL = mmp::rcp(
+					new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
+						MatrixSymPosDefCholFactor::PostMod(
+							true    // maintain_original
+							,false  // maintain_factor
+							,true   // allow_factor      (always!)
 							)
-						);
-					break;
-				case QN_LBFGS:
-					abstract_factory_rHL = mmp::rcp(
-						new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefLBFGS,MatrixSymPosDefLBFGS::PostMod>(
-							MatrixSymPosDefLBFGS::PostMod(
-								cov_.num_lbfgs_updates_stored_  //
-								,maintain_original              // maintain_original
-								,maintain_inverse               // maintain_inverse
-								,cov_.lbfgs_auto_scaling_       // 
-								)
-							)
-						);
-					break;
-				default:
-					assert(0); // Should not be called for now!
-			}
-			
+						)
+					);
 			state->set_iter_quant(
 				rHL_name
 				,mmp::rcp(
@@ -1066,8 +1033,7 @@ void Algo_ConfigIP::config_algo_cntr(
 		dyn_cast<IQ_vector_cngs>(state->x()).resize(2);
 		dyn_cast<IQ_scalar_cngs>(state->f()).resize(2);
 		if(m) dyn_cast<IQ_vector_cngs>(state->c()).resize(2);
-		state->Gf();
-		if(mI) dyn_cast<IQ_vector_cngs>(state->h()).resize(2);
+		dyn_cast<IQ_vector_cngs>(state->Gf()).resize(2);
 		if(m && nlp_foi) state->Gc();
 		if(mI) state->Gh();
 
@@ -2329,8 +2295,8 @@ void Algo_ConfigIP::set_default_options(
 	if( cov->line_search_method_ == LINE_SEARCH_AUTO && uov.line_search_method_ == LINE_SEARCH_AUTO ) {
 		if(trase_out)
 			*trase_out
-				<< "\nline_search_method == AUTO: setting line_search_method = 2ND_ORDER_CORRECT\n";
-		cov->line_search_method_ = LINE_SEARCH_2ND_ORDER_CORRECT;
+				<< "\nline_search_method == AUTO: setting line_search_method = FILTER\n";
+		cov->line_search_method_ = LINE_SEARCH_FILTER;
 	}
 	else if(cov->line_search_method_ == LINE_SEARCH_AUTO) {
 		cov->line_search_method_ = uov.line_search_method_;
