@@ -30,6 +30,16 @@ namespace TSFExtended
     inline const double& operator()(int i, int j) const
       {return data_[i+nRows_*j];}
 
+    inline int getNumRows() const
+    {
+      return nRows_;
+    }
+
+    inline int getNumCols() const
+    {
+      return nCols_;
+    }
+
 
     /** apply operator to dense serial vector.
      * in the range space */
