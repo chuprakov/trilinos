@@ -174,8 +174,11 @@ if test "X$ac_cv_header_iomanip" != "Xyes" && test "X$ac_cv_header_iomanip_h" !=
 fi  
 
 if test "X$ac_cv_header_malloc_h" != "Xyes"; then
-    AC_MSG_ERROR([[Cannot find malloc.h.  TSFCoreUtils requires at least one or the other.]])
-fi  
+ AC_FUNC_MALLOC
+ #if test "X$ac_cv_func_malloc_works" != "Xyes"; then
+ #  AC_MSG_ERROR([malloc(...) not working, required by AztecOO])
+ #fi
+fi
 
 if test "X$ac_cv_header_stdexcept" != "Xyes"; then
     AC_MSG_ERROR([[Cannot find stdexcept.  TSFCoreUtils requires at least one or the other.]])
