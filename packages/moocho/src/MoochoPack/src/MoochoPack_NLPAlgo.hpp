@@ -28,7 +28,10 @@ namespace ReducedSpaceSQPPack {
 ///
 /** rSQP Algorithm control class.
   */
-class rSQPAlgo : public rSQPAlgoInterface, public GeneralIterationPack::Algorithm {
+class rSQPAlgo
+	: public rSQPAlgoInterface
+	, public GeneralIterationPack::Algorithm
+{
 public:
 
 	/** @name Public Types */
