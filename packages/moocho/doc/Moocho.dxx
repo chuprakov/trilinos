@@ -35,19 +35,12 @@ extensive.
 
 <li> General Abstractions for Linear Algebra
 	<ul>
-	<li> <A HREF="../TSFCore/html/index.html">TSFCore</A> Basic interfaces.
-	<li> <A HREF="../TSFTools/html/index.html">TSFTools</A> Some tools based on <tt>TSFCore</tt>.
+	<li> <A HREF="../TSFCore/html/index.html">TSFCore</A>: Basic interfaces.
+	<li> <A HREF="../TSFExtended/html/index.html">TSFExtended</A>: Some extensions based on <tt>TSFCore</tt>.
 	</ul>
 
-<li> Numerical Packages:
-    Packages for abstract, sparse and dense linear algebra, linear solvers,
-    QP solvers and range / null space decompositions.
-    These are packages that are used to perform numerical computations within
-    an algorithm.  They range from low level dense BLAS linear algebra to
-    high level operations like the solution of complex Quadratic Programms.
-    Packages are listed in assending order based on dependencies.  No package is
-    dependent on any package below it but it may be dependent on a package above
-    it.
+<li> MOOCHO Numerical Packages:
+	These range from low-level to high-level abstractions and implementations.
 	<ul>
 	<li> <A HREF="../RTOpPack/html/index.html">RTOpPack</A>: C/C++ interfaces to vector
 		reduction/transformation operators.
@@ -75,7 +68,7 @@ extensive.
 
 <li> NLP Algorithms:
 	<ul>
-	<li> <A HREF="../MoochoPack/html/index.html">MoochoPack</A>.
+	<li> <A HREF="../MoochoPack/html/index.html">MoochoPack</A>: SQP-related algorithm building blocks.
 	</ul>
 
 <li> Example projects:
