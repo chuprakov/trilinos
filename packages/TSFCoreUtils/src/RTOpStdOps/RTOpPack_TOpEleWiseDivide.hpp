@@ -61,7 +61,7 @@ public:
     {
       RTOP_APPLY_OP_2_1(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
       for( RTOp_index_type i = 0; i < subDim; ++i,  v0_val += v0_s,  v1_val += v1_s, z0_val += z0_s )
-        *z0_val += alpha() * (*v0_val) * (*v1_val);
+        *z0_val += alpha() * (*v0_val) / (*v1_val);
     }
   //@}
 }; // class TOpEleWiseDivide
