@@ -206,8 +206,10 @@ void ExampleNLPBanded::imp_calc_c_orig(
 	inform_new_point(newx);
 	if(c_orig_updated_)
 		return; // c(x) is already computed in *zero_order_info.c
+	if(zero_order_info.c == NULL)
+		c_tmp_.resize(this->imp_m_orig());
 	DVector
-		&c  = *zero_order_info.c;
+		&c  = zero_order_info.c ? *zero_order_info.c : c_tmp_;
 	const size_type
 		num_I_per_D = nD_ / nI_,  // Integer division (rounds down)
 		I_remainder = nD_ % nI_;
@@ -371,10 +373,10 @@ void ExampleNLPBanded::imp_calc_Gc_orig(
 	) const
 {
 	inform_new_point(newx);
-	// Compute c(x) if not already
+	// Compute c(x) if not already (will compute in temp if needed)
 	this->imp_calc_c_orig( x_full, newx, zero_order_orig_info() );
 	DVector
-		&c = *first_order_expl_info.c; // This must not be NULL!
+		&c = first_order_expl_info.c ? *first_order_expl_info.c : c_tmp_;
 	// Get references/pointers to data for Gc to be computed/updated.
 	index_type
 		&Gc_nz = *first_order_expl_info.Gc_nz;
