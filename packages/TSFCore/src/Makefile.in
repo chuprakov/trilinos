@@ -277,7 +277,9 @@ libTSFCore_a_SOURCES = \
 
 
 EXTRA_libTSFCore_a_SOURCES = \
-	$(EXTRA_ADAPTERS_MPI_H)
+	$(EXTRA_ADAPTERS_MPI_H) \
+	$(EXTRA_ADAPTERS_EPETRA_H) \
+	$(EXTRA_ADAPTERS_EPETRA)
 
 
 
@@ -738,8 +740,6 @@ uninstall-am: uninstall-includeHEADERS uninstall-info-am \
 	uninstall-includeHEADERS uninstall-info-am \
 	uninstall-libLIBRARIES uninstall-nodist_execincludeHEADERS
 
-	$(EXTRA_ADAPTERS_EPETRA_H)
-	$(EXTRA_ADAPTERS_EPETRA)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
