@@ -80,7 +80,7 @@ void ReducedSpaceSQPPack::CalcReducedGradLagrangianStd_AddedStep::print_step( co
 	, std::ostream& out, const std::string& L ) const
 {
 	out
-		<< L << "*** Evaluate the reduced gradient of the Lagrangian ***\n"
+		<< L << "*** Evaluate the reduced gradient of the Lagrangian\n"
 		<< L << "if nu_k is updated then\n"
 		<< L << "    rGL_k = Z_k' * (Gf_k + nu_k) + V_k' * lambda_k(undecomp)\n"
 		<< L << "else\n"

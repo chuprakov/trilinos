@@ -706,7 +706,8 @@ void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
 		assoc_steps_ele_list_t::const_iterator pre_step_itr = pre_steps.begin();
 		for(int pre_step_i = - pre_steps.size(); pre_step_i < 0; ++pre_step_i, ++pre_step_itr) {
 			out		<< step_i << "." << pre_step_i << ". \""
-					<< pre_step_itr->name << "\" (" << typeid(*pre_step_itr->step_ptr).name() << ")\n";
+					<< pre_step_itr->name << "\"\n"
+					<< leading_str << "(" << typeid(*pre_step_itr->step_ptr).name() << ")\n";
 			if(print_steps) {
 				pre_step_itr->step_ptr->print_step( *this, step_i, DO_PRE_STEP
 					, pre_steps.size()+pre_step_i+1, out, leading_str );
@@ -715,7 +716,8 @@ void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
 		}
 		// The main step.
 		out		<< step_i << ". \"" << s_itr->name
-				<< "\" (" << typeid(*s_itr->step_ptr).name() << ")\n";
+				<< "\"\n"
+				<< leading_str << "(" << typeid(*s_itr->step_ptr).name() << ")\n";
 		if(print_steps) {
 			s_itr->step_ptr->print_step( *this, step_i, DO_MAIN_STEP, 0, out, leading_str );
 			out << std::endl;
@@ -725,7 +727,8 @@ void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
 		assoc_steps_ele_list_t::const_iterator post_step_itr = post_steps.begin();
 		for(int post_step_i = 1; post_step_i <= post_steps.size(); ++post_step_i, ++post_step_itr) {
 			out		<< step_i << "." << post_step_i << ". \""
-					<< post_step_itr->name << "\" (" << typeid(*post_step_itr->step_ptr).name() << ")\n";
+					<< post_step_itr->name << "\"\n"
+					<< leading_str << "(" << typeid(*post_step_itr->step_ptr).name() << ")\n";
 			if(print_steps) {
 				post_step_itr->step_ptr->print_step( *this, step_i, DO_POST_STEP, post_step_i
 					, out, leading_str );

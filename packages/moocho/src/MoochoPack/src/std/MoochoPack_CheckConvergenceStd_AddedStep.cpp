@@ -156,7 +156,7 @@ void CheckConvergenceStd_AddedStep::print_step( const Algorithm& algo
 	, std::ostream& out, const std::string& L ) const
 {
 	out
-		<< L << "*** Check to see if the KKT error is small enough for convergence ***\n"
+		<< L << "*** Check to see if the KKT error is small enough for convergence\n"
 		<< L << "if scale_kkt_error_by == SCALE_BY_ONE then\n"
 		<< L << "    scale_kkt_factor = 1.0\n"
 		<< L << "else if scale_by == SCALE_BY_NORM_2_X then\n"
@@ -164,7 +164,6 @@ void CheckConvergenceStd_AddedStep::print_step( const Algorithm& algo
 		<< L << "else if scale_by == SCALE_BY_NORM_INF_X then\n"
 		<< L << "    scale_kkt_factor = 1.0 + norm_inf(x_k)\n"
 		<< L << "else\n"
-		<< L << "norm_inf_c_k = norm(c_k,inf)\n"
 		<< L << "if scale_opt_error_by_Gf == true then\n"
 		<< L << "    opt_scale_factor = 1.0 + norm_inf(Gf_k)\n"
 		<< L << "else\n"
