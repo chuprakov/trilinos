@@ -128,13 +128,13 @@ bool NLPSerialPreprocessExplJac::is_initialized() const {
 
 // Overridden public members from NLPFirstOrderInfo
 
-const NLPFirstOrderInfo::mat_space_ptr_t&
+const NLPFirstOrderInfo::mat_space_ptr_t
 NLPSerialPreprocessExplJac::space_Gc() const
 {
 	return space_Gc_;
 }
 
-const NLPFirstOrderInfo::mat_space_ptr_t&
+const NLPFirstOrderInfo::mat_space_ptr_t
 NLPSerialPreprocessExplJac::space_Gh() const
 {
 	return space_Gh_;
@@ -176,6 +176,7 @@ bool NLPSerialPreprocessExplJac::get_next_basis(
 		Gc_perm_new_basis_updated_ = false;
 		Gh_perm_new_basis_updated_ = false;
 	}
+	return new_basis;
 }
 
 void NLPSerialPreprocessExplJac::set_basis(

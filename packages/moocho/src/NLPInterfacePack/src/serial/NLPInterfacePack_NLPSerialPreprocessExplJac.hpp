@@ -88,9 +88,9 @@ public:
 	//@{
 	
 	///
-	const mat_space_ptr_t& space_Gc() const;
+	const mat_space_ptr_t space_Gc() const;
 	///
-	const mat_space_ptr_t& space_Gh() const;
+	const mat_space_ptr_t space_Gh() const;
 	/// Validates the type of Gc is correct
 	void set_Gc(MatrixWithOp* Gc);
 	/// Validates the type of Gh is correct

@@ -48,37 +48,37 @@ Range1D NLPFirstOrderDirect::con_undecomp() const
 	return Range1D::Invalid;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t&
+const NLPFirstOrderDirect::mat_space_ptr_t
 NLPFirstOrderDirect::space_GcU() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t&
+const NLPFirstOrderDirect::mat_space_ptr_t
 NLPFirstOrderDirect::space_Gh() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t&
+const NLPFirstOrderDirect::mat_space_ptr_t
 NLPFirstOrderDirect::space_Uz() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t&
+const NLPFirstOrderDirect::mat_space_ptr_t
 NLPFirstOrderDirect::space_Vz() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t&
+const NLPFirstOrderDirect::mat_space_ptr_t
 NLPFirstOrderDirect::space_GcUD() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t&
+const NLPFirstOrderDirect::mat_space_ptr_t
 NLPFirstOrderDirect::space_GhD() const
 {
 	return MemMngPack::null;

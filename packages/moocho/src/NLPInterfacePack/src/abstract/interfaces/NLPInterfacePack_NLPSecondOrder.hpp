@@ -97,7 +97,7 @@ public:
 	 * sub-matrix spaces (i.e. <tt>return->sub_space(rrng,crng).get() == NULL</tt>
 	 * for all <tt>rrng</tt> and <tt>crng</tt>).
 	 */
-	virtual const mat_sym_space_ptr_t& space_HL() const = 0;
+	virtual const mat_sym_space_ptr_t space_HL() const = 0;
 
 	//@}
 

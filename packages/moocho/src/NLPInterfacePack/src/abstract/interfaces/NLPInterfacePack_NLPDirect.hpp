@@ -172,7 +172,7 @@ public:
 	 * must be non-null for <tt>rng == this->var_dep()</tt> or <tt>rng == this->var_indep()</tt>.
 	 * This gives access to the matrices <tt>E'</tt> and <tt>F'</tt> as shown above.
 	 */
-	virtual const mat_space_ptr_t& space_GcU() const;
+	virtual const mat_space_ptr_t space_GcU() const;
 	///
 	/** Return a matrix space object for creating <tt>Gh</tt>.
 	 *
@@ -186,7 +186,7 @@ public:
 	 * must be non-null for <tt>rng == this->var_dep()</tt> or <tt>rng == this->var_indep()</tt>.
 	 * This gives access to the matrices <tt>GhD</tt> and <tt>GhI</tt> as shown above.
 	 */
-	virtual const mat_space_ptr_t& space_Gh() const;
+	virtual const mat_space_ptr_t space_Gh() const;
 	///
 	/** Return a matrix space object for <tt>D = -inv(C)*N</tt> {abstract}.
 	 *
@@ -194,7 +194,7 @@ public:
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 */
-	virtual const mat_space_ptr_t& space_D() const = 0;
+	virtual const mat_space_ptr_t space_D() const = 0;
 	///
 	/** Return a matrix space object for <tt>Uz = F + E * D</tt>.
 	 *
@@ -207,7 +207,7 @@ public:
 	 * when <tt>m() > r()</tt> this method must be overridden to return a
 	 * non-null matrix space object.
 	 */
-	virtual const mat_space_ptr_t& space_Uz() const;
+	virtual const mat_space_ptr_t space_Uz() const;
 	///
 	/** Return a matrix space object for <tt>Vz = GhI' + GhD'* D</tt>.
 	 *
@@ -220,7 +220,7 @@ public:
 	 * when <tt>m() > r()</tt> this method must be overridden to return a
 	 * non-null matrix space object.
 	 */
-	virtual const mat_space_ptr_t& space_Vz() const;
+	virtual const mat_space_ptr_t space_Vz() const;
 	///
 	/** Return a matrix space object for a mutable matrix compatible with <tt>GcU(var_dep)</tt>.
 	 *
@@ -234,7 +234,7 @@ public:
 	 * when <tt>m() > r()</tt> this method must be overridden to return a
 	 * non-null matrix space object.
 	 */
-	virtual const mat_space_ptr_t& space_GcUD() const;
+	virtual const mat_space_ptr_t space_GcUD() const;
 	///
 	/** Return a matrix space object for a mutable matrix compatible with <tt>Gh(var_dep,:)</tt>.
 	 *
@@ -252,7 +252,7 @@ public:
 	 * when <tt>mI() > 0</tt> this method must be overridden to return a
 	 * non-null matrix space object.
 	 */
-	virtual const mat_space_ptr_t& space_GhD() const;
+	virtual const mat_space_ptr_t space_GhD() const;
 
 	//@}
 
