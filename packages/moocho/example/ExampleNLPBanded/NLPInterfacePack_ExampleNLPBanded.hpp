@@ -158,6 +158,7 @@ public:
 		,value_type   diag_scal         = 10.0
 		,value_type   diag_vary         = 1.0
 		,bool         sym_basis         = false
+		,value_type   f_offset          = 0.0
 		,value_type   co                = 0.0
 		);
 
@@ -297,6 +298,8 @@ private:
 	bool         basis_selection_was_given_;
 
 	bool         has_var_bounds_;
+
+	value_type   f_offset_;
 
 	mutable bool multi_calc_;
 

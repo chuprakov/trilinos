@@ -41,12 +41,14 @@ ExampleNLPBanded::ExampleNLPBanded(
 	,value_type   diag_scal
 	,value_type   diag_vary
 	,bool         sym_basis
+	,value_type   f_offset
 	,value_type   co
 	)
 	:is_initialized_(false)
 	,nlp_selects_basis_(nlp_selects_basis)
 	,basis_selection_was_given_(false)
 	,has_var_bounds_(false)
+	,f_offset_(f_offset)
 	,multi_calc_(false)
 	,nD_(nD)
 	,nI_(nI)
@@ -197,7 +199,7 @@ void ExampleNLPBanded::imp_calc_f_orig(
 {
 	inform_new_point(newx);
 	const VectorSlice x_orig = x_full(1,imp_n_orig());
-	*zero_order_info.f = ( 1.0 / 2.0 ) * LinAlgPack::dot( x_orig, x_orig );
+	*zero_order_info.f = f_offset_ + ( 1.0 / 2.0 ) * LinAlgPack::dot( x_orig, x_orig );
 }
 
 void ExampleNLPBanded::imp_calc_c_orig(
