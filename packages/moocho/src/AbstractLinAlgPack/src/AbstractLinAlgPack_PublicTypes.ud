@@ -19,7 +19,7 @@ typedef AbstractLinAlgPack::size_type   size_type;
 typedef AbstractLinAlgPack::value_type  value_type;
 typedef AbstractLinAlgPack::index_type  index_type;
 
-using AbstractLinAlgPack::Range1D;
+using RangePack::Range1D;
 
 using AbstractLinAlgPack::VectorSpaceBase;
 using AbstractLinAlgPack::VectorSpace;
@@ -44,6 +44,12 @@ using AbstractLinAlgPack::MultiVector;
 using AbstractLinAlgPack::MultiVectorMutable;
 
 using AbstractLinAlgPack::BasisSystem;
+
+// concreate types
+
+using AbstractLinAlgPack::GenPermMatrixSlice;
+using AbstractLinAlgPack::SpVector;
+using AbstractLinAlgPack::SpVectorSlice;
 
 // Tools library
 
