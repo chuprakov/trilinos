@@ -56,7 +56,7 @@ namespace AbstractLinAlgPack {
  \f[
     C = \left[\begin{array}{c}
             (Q^{cD})^T \nabla c^T Q^{xD} \\
-            (Q^{cD})^T \nabla c^T Q^{xD}
+            (Q^{hD})^T \nabla h^T Q^{xD}
 	    \end{array}\right]
  \f]
  \verbatim
@@ -68,7 +68,7 @@ namespace AbstractLinAlgPack {
  \f[
     N = \left[\begin{array}{c}
             (Q^{cD})^T \nabla c^T Q^{xI} \\
-            (Q^{cD})^T \nabla c^T Q^{xI}
+            (Q^{hD})^T \nabla h^T Q^{xI}
 	    \end{array}\right]
  \f]
  \verbatim
