@@ -19,7 +19,7 @@
 
 #include "ConstrainedOptPack/src/globalization/DirectLineSearchArmQuad_Strategy.hpp"
 #include "ConstrainedOptPack/src/globalization/MeritFuncCalc1D.hpp"
-#include "RTOpPack/src/check_nan_inf.h"
+#include "check_nan_inf.h"
 
 namespace ConstrainedOptPack {
 inline value_type min(value_type v1, value_type v2) {

@@ -20,7 +20,7 @@
 #include "DenseLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "RTOpPack/src/check_nan_inf.h"
+#include "check_nan_inf.h"
 
 bool DenseLinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
 	, bool throw_excpt, std::ostream* out )

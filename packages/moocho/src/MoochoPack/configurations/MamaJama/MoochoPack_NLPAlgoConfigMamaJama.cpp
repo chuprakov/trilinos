@@ -27,7 +27,7 @@
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"                     // rHL 
 //#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefInvCholFactor.hpp"		// .
 #include "ConstrainedOptPack/src/matrices/MatrixSymPosDefLBFGS.hpp"				// .
-//#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasicInitDiagonal.hpp"// | rHL (super basics)
+//#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasicInitDiagonal.hpp/ | rHL (super basics)
 //#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"                          // |
 
 #include "ConstrainedOptPack/src/misc/VariableBoundsTester.hpp"

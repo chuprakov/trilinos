@@ -19,7 +19,7 @@
 #include <memory>
 #include <stdexcept>
 
-#include "RTOpPack/src/RTOp.h"
+#include "RTOp.h"
 #include "BLAS_CppTypes.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackTypes.hpp"
 

@@ -397,7 +397,7 @@ bool LineSearchFilter_Step::do_step(
 			{
 			fout << "         <FilterPoint iter=\"" << entry->iter 
 				 << "\" f=\"" << entry->f 
-				 << "\" theta=\"" << entry->theta << "\"/>" << std::endl;
+				 << "\" theta=\"" << entry->theta << "\>" << std::endl;
 			}
 		}
     else
@@ -420,7 +420,7 @@ bool LineSearchFilter_Step::do_step(
 			fout << "         <AlphaPoint "
 				 << "alpha=\"" << alpha_tmp << "\" "
 				 << "f=\"" << f_iq.get_k(+1) << "\" "
-				 << "theta=\"" << theta << "\"/>" << std::endl;
+				 << "theta=\"" << theta << "\>" << std::endl;
 			}
 
 		alpha_tmp=alpha_tmp*back_track_frac_;

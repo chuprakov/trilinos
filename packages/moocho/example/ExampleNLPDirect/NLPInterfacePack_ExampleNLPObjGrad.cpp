@@ -25,7 +25,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "RTOpPack/src/RTOpCppC.hpp"
+#include "RTOpCppC.hpp"
 #include "Range1D.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"

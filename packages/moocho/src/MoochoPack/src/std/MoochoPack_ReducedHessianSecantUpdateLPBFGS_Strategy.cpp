@@ -336,7 +336,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 										<< ( sXTyX_cond ? " <= " : " > " ) << " project_error_tol = "
 										<< project_error_tol;
 									if( sXTyX_cond ) {
-										out	<< "\n(s_X'*rHL_XX*s_X/s_R'*rHL_RR*s_R) = (" << sXTBXXsX << "/" << sRTBRRsR
+										out	<< "\n(s_X'*rHL_XX*s_X/s_R'*rHL_RR*s_R) = (" << sXTBXXsX << " << sRTBRRsR
 											<< ") = " << (sXTBXXsX/sRTBRRsR)
 											<< ( sXTBXXsX_cond ? " <= " : " > " ) << " project_error_tol = "
 											<< project_error_tol;

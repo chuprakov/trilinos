@@ -17,7 +17,7 @@
 #define ALAP_VECTOR_MUTABLE_HPP
 
 #include "Vector.hpp"
-#include "RTOpPack/src/RTOpPackTypes.hpp"
+#include "RTOpPackTypes.hpp"
 #include "Range1D.hpp"
 
 namespace AbstractLinAlgPack {

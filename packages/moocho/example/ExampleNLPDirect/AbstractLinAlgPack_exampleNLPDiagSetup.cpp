@@ -12,7 +12,7 @@
 #include "ExampleVectorLib/src/MPIDenseVector.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/tsfcore/VectorSpaceTSFCore.hpp"
-#include "TSFCore/src/Core/TSFCoreSerialVectorSpaceDecl.hpp"
+#include "TSFCoreSerialVectorSpaceDecl.hpp"
 #include "OptionsFromStream.hpp"
 #include "CommandLineProcessor.hpp"
 

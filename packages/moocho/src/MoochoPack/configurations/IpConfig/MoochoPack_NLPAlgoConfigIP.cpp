@@ -29,7 +29,7 @@
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"                     // rHL 
 //#include "ConstrainedOptPack/src/matrices/MatrixSymPosDefInvCholFactor.hpp"		// .
 #include "ConstrainedOptPack/src/matrices/MatrixSymPosDefLBFGS.hpp"				// .
-//#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasicInitDiagonal.hpp"// | rHL (super basics)
+//#include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasicInitDiagonal.hpp/ | rHL (super basics)
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"                          // |
 
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
