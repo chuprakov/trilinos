@@ -29,7 +29,7 @@ namespace NLPInterfacePack {
 
 ///
 /** Function accepts a VectorSpace object and then uses it to define
- * an example NLP and run a whole battery of tests.
+ * an example NLP and run <tt>ReducedSpaceSQPPack::rSQPppSolver</tt> on it.
  *
  * @param  vec_space   [in] The vector space object used to create all of the
  *                     needed vector spaces and vectors.  This vector space and
@@ -59,10 +59,10 @@ ExampleNLPFirstOrderDirectRun(
 	,bool                dep_bounded
 	,std::ostream*       console_out
 	,std::ostream*       error_out
-	,bool                throw_sole_exception = false
-	,std::ostream*       algo_out             = NULL
-	,std::ostream*       summary_out          = NULL
-	,std::ostream*       journal_out          = NULL
+	,bool                throw_solve_exception = false
+	,std::ostream*       algo_out              = NULL
+	,std::ostream*       summary_out           = NULL
+	,std::ostream*       journal_out           = NULL
 	);
 
 //@}
