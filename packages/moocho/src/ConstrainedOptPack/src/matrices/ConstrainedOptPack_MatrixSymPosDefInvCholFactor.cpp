@@ -234,4 +234,16 @@ void MatrixSymPosDefInvCholFactor::extract_inv_chol( DMatrixSliceTriEle* InvChol
 	DenseLinAlgPack::assign( InvChol, DenseLinAlgPack::tri_ele( m().UInv(), BLAS_Cpp::upper ) );
 }
 
+// Overridden from Serializable
+
+void MatrixSymPosDefInvCholFactor::serialize( std::ostream &out ) const
+{
+	assert(0);
+}
+
+void MatrixSymPosDefInvCholFactor::unserialize( std::istream &in )
+{
+	assert(0);
+}
+
 }	// end namespace ConstrainedOptPack

@@ -25,6 +25,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymSecant.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "MoochoMoreUtilities/src/Serializable.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "ReleaseResource.hpp"
 
@@ -97,6 +98,7 @@ class MatrixSymPosDefCholFactor
 	, virtual public MatrixExtractInvCholFactor
 	, virtual public MatrixSymSecant
 	, virtual public MatrixSymAddDelUpdateable
+	, public virtual SerializationPack::Serializable
 {
 public:
 	
@@ -512,6 +514,17 @@ public:
 
 	//@}
 
+
+	/** @name Overridden from Serializable */
+	//@{
+
+	///
+	void serialize( std::ostream &out ) const;
+	///
+	void unserialize( std::istream &in );
+
+	//@}
+
 private:
 	
 	// /////////////////////////////
@@ -519,20 +532,20 @@ private:
 
 	bool                    maintain_original_;
 	bool                    maintain_factor_;
-	bool                    factor_is_updated_;    // only used if maintain_factor_ == false, otherwise assumed true
-	bool                    allocates_storage_;    // If then then this object allocates the storage
+	bool                    factor_is_updated_;    // Is set to true if maintain_factor_=true
+	bool                    allocates_storage_;    // If true then this object allocates the storage
 	release_resource_ptr_t  release_resource_ptr_;
-	DMatrixSlice          MU_store_;
+	DMatrixSlice            MU_store_;
 	size_t                  max_size_;
 	size_t                  M_size_,               // M_size == 0 is flag that we are completely uninitialized
-		                    M_l_r_,
-		                    M_l_c_,
+		                      M_l_r_,
+		                      M_l_c_,
 	                        U_l_r_,
 	                        U_l_c_;
 	value_type              scale_;
 	bool                    is_diagonal_;
 	PivotTolerances         pivot_tols_;
-	DVector                  work_; // workspace.
+	DVector                 work_; // workspace.
 
 	// /////////////////////////////
 	// Private member functions
@@ -542,6 +555,9 @@ private:
 	void assert_initialized() const;
 	void resize_and_zero_off_diagonal(size_type n, value_type scale);
 	void update_factorization() const;
+	std::string build_serialization_string() const;
+	static void write_matrix( const DMatrixSlice &Q, BLAS_Cpp::Uplo Q_uplo, std::ostream &out );
+	static void read_matrix( std::istream &in, BLAS_Cpp::Uplo Q_uplo, DMatrixSlice *Q );
 
 }; // end class MatrixSymPosDefCholFactor
 

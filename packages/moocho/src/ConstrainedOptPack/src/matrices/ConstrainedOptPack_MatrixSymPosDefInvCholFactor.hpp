@@ -21,6 +21,7 @@
 #include "MatrixExtractInvCholFactor.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixWithOpConcreteEncap.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
+#include "MoochoMoreUtilities/src/Serializable.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -32,6 +33,7 @@ class MatrixSymPosDefInvCholFactor
 	, public virtual MatrixSymWithOpFactorized
 	, public MatrixSymSecant
 	, public MatrixExtractInvCholFactor
+	, public virtual SerializationPack::Serializable
 {
 public:
 
@@ -44,7 +46,6 @@ public:
 		: MatrixWithOpConcreteEncap<SymInvCholMatrix>(m)
 	{}
 
-	// /////////////////////////////////////////////////////////
 	/** @name Overridden from Matrix */
 	//@{
 
@@ -53,7 +54,6 @@ public:
 
 	//@}
 
-	// /////////////////////////////////////////////////////////
 	/** @name Overridden from MatrixOp */
 	//@{
 
@@ -76,7 +76,6 @@ public:
 
 	//@}
 
-	// ////////////////////////////////////////////////////////////
 	/** @name Overridden from MatrixFactorized */
 	//@{
 
@@ -101,7 +100,6 @@ public:
 
 	//@}
 
-	// ////////////////////////////////////////////////////////////
 	/** @name Overridden from MatrixSymFactorized */
 	//@{
 
@@ -112,7 +110,6 @@ public:
 
 	//@}
 
-	// ///////////////////////////////////////////////////////////
 	/** @name Overridden from MatrixSymSecant */
 	//@{
 
@@ -125,12 +122,21 @@ public:
 
 	//@}
 
-	// ///////////////////////////////////////////////////////////
 	/** @name Overridden from MatrixExtractInvCholFactor */
 	//@{
 
 	///
 	void extract_inv_chol( DMatrixSliceTriEle* InvChol ) const;
+
+	//@}
+
+	/** @name Overridden from Serializable */
+	//@{
+
+	///
+	void serialize( std::ostream &out ) const;
+	///
+	void unserialize( std::istream &in );
 
 	//@}
 

@@ -78,7 +78,7 @@ MatrixSymPosDefCholFactor::MatrixSymPosDefCholFactor()
 {}
 
 MatrixSymPosDefCholFactor::MatrixSymPosDefCholFactor(
-	DMatrixSlice                    *MU_store
+	DMatrixSlice                      *MU_store
 	,const release_resource_ptr_t&    release_resource_ptr
 	,size_type                        max_size
 	,bool                             maintain_original
@@ -94,7 +94,7 @@ MatrixSymPosDefCholFactor::MatrixSymPosDefCholFactor(
 }
 
 void MatrixSymPosDefCholFactor::init_setup(
-	DMatrixSlice                    *MU_store
+	DMatrixSlice                      *MU_store
 	,const release_resource_ptr_t&    release_resource_ptr
 	,size_type                        max_size
 	,bool                             maintain_original
@@ -108,7 +108,7 @@ void MatrixSymPosDefCholFactor::init_setup(
 	if( MU_store == NULL ) {
 		maintain_original_ = maintain_original;
 		maintain_factor_   = maintain_factor;
-		factor_is_updated_ = false;
+		factor_is_updated_ = maintain_factor;
 		allocates_storage_ = true; // We will be able to allocate our own storage!
 		release_resource_ptr_ = Teuchos::null; // Free any bound resource
 		MU_store_.bind( DMatrixSlice(NULL,0,0,0,0) ); // Unbind this!
@@ -192,7 +192,7 @@ void MatrixSymPosDefCholFactor::set_view(
 		M_l_c_                = 0;
 		U_l_r_                = U_l_r;
 		U_l_c_                = U_l_r;
-		factor_is_updated_    = false;
+		factor_is_updated_    = maintain_factor;
 	}
 }
 
@@ -227,7 +227,7 @@ std::ostream& MatrixSymPosDefCholFactor::output(std::ostream& out) const
 			out << "Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):\n"
 				<< M().gms();
 		}
-		if( maintain_factor_ || factor_is_updated_ ) {
+		if( factor_is_updated_ ) {
 			out << "Matrix scaling M = scale*U'*U, scale = " << scale_ << std::endl
 				<< "Upper cholesky factor U (ignore lower nonzeros):\n"
 				<< U().gms();
@@ -1373,6 +1373,62 @@ void MatrixSymPosDefCholFactor::delete_update(
 	--M_size_;
 }
 
+// Overridden from Serializable
+
+// ToDo: Refactor this code and create an external utility matrix
+// serialization class that will convert from matrix type to matrix
+// type.
+
+void MatrixSymPosDefCholFactor::serialize( std::ostream &out ) const
+{
+	// Write key words on top line
+	out << build_serialization_string() << std::endl;
+	// Write the dimmension
+	out << M_size_ << std::endl;
+	if(M_size_) {
+		// Write the matrix values
+		if( maintain_original_ ) {
+			const DMatrixSliceSym M = this->M();
+			write_matrix( M.gms(), M.uplo(), out );
+		}
+		else {
+			const DMatrixSliceTri U = this->U();
+			write_matrix( U.gms(), U.uplo(), out );
+		}
+	}
+	// ToDo: You need to write both M and U if both are computed!
+}
+
+void MatrixSymPosDefCholFactor::unserialize( std::istream &in )
+{
+	// Get the keywords for the matrix type
+	std::string keywords;
+	std::getline( in, keywords, '\n' );
+	// For now make sure the types are exactly the same!
+	const std::string this_keywords = build_serialization_string();
+	TEST_FOR_EXCEPTION(
+		this_keywords != keywords, std::logic_error
+		,"MatrixSymPosDefCholFactor::unserialize(...): Error, the matrix type being read in from file of "
+		"\'"<<keywords<<"\' does not equal the type expected of \'"<<this_keywords<<"\'!"
+		);
+	// Read in the dimension of the matrix
+	in >> M_size_;
+	TEST_FOR_EXCEPTION(
+		M_size_ < 0, std::logic_error
+		,"MatrixSymPosDefCholFactor::unserialize(...): Error, read in a size of M_size = "<<M_size_<<" < 0!"
+		);
+	allocate_storage(M_size_);
+	// Read in the matrix into storage
+	if(maintain_original_) {
+		DMatrixSliceSym M = this->M();
+		read_matrix( in, M.uplo(), &M.gms() );
+	}
+	else {
+		DMatrixSliceTri U = this->U();
+		read_matrix( in, U.uplo(), &U.gms() );
+	}
+}
+
 // Private member functions
 
 void MatrixSymPosDefCholFactor::assert_storage() const
@@ -1425,10 +1481,7 @@ void MatrixSymPosDefCholFactor::resize_and_zero_off_diagonal(size_type n, value_
 
 void MatrixSymPosDefCholFactor::update_factorization() const
 {
-	if( factor_is_updated_ || maintain_factor_ )
-		return; // The factor should already be updated.
-	assert( maintain_original_ ); // This should never be false here since
-	                              // (maintain_factor || matinatain_original) == true
+	if( factor_is_updated_ ) return; // The factor should already be updated.
 	TEST_FOR_EXCEPTION(
 		U_l_r_ == 0, std::logic_error
 		,"MatrixSymPosDefCholFactor::update_factorization() : "
@@ -1442,13 +1495,78 @@ void MatrixSymPosDefCholFactor::update_factorization() const
 		*nc_this = const_cast<MatrixSymPosDefCholFactor*>(this);
 	DMatrixSliceTriEle U = DenseLinAlgPack::nonconst_tri_ele( nc_this->U().gms(), BLAS_Cpp::upper );
 	DenseLinAlgPack::assign( &U, DenseLinAlgPack::tri_ele( M().gms(), BLAS_Cpp::lower ) );  // Copy in the original
-	{
+	if(1){
 #ifdef PROFILE_HACK_ENABLED
 		ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::update_factorization(...) ... potrf" );
 #endif
 		DenseLinAlgLAPack::potrf( &U );
 	}
 	nc_this->factor_is_updated_ = true;
+}
+
+std::string MatrixSymPosDefCholFactor::build_serialization_string() const
+{
+	std::string str = "SYMMETRIC POS_DEF";
+	if( !maintain_original_ )
+		str.append(" CHOL_FACTOR");
+	if( maintain_original_ )
+		str.append(" LOWER");
+	else
+		str.append(" UPPER");
+	return str;
+}
+
+void MatrixSymPosDefCholFactor::write_matrix( const DMatrixSlice &Q, BLAS_Cpp::Uplo Q_uplo, std::ostream &out )
+{
+	const int Q_dim = Q.rows();
+	if( Q_uplo == BLAS_Cpp::lower ) {
+		for( int i = 1; i <= Q_dim; ++i ) {
+			for( int j = 1; j <= i; ++j ) {
+				out << " " << Q(i,j);
+			}
+			out << std::endl;
+		}
+	}
+	else {
+		for( int i = 1; i <= Q_dim; ++i ) {
+			for( int j = i; j <= Q_dim; ++j ) {
+				out << " " << Q(i,j);
+			}
+			out << std::endl;
+		}
+	}
+}
+
+void MatrixSymPosDefCholFactor::read_matrix(  std::istream &in, BLAS_Cpp::Uplo Q_uplo, DMatrixSlice *Q_out )
+{
+	DMatrixSlice &Q = *Q_out;
+	const int Q_dim = Q.rows();
+	if( Q_uplo == BLAS_Cpp::lower ) {
+		for( int i = 1; i <= Q_dim; ++i ) {
+			for( int j = 1; j <= i; ++j ) {
+#ifdef _DEBUG
+				TEST_FOR_EXCEPTION(
+					in.eof(), std::logic_error
+					,"MatrixSymPosDefCholFactor::read_matrix(in,lower,Q_out): Error, not finished reading in matrix yet (i="<<i<<",j="<<j<<")!"
+					);
+#endif
+				in >> Q(i,j);
+			}
+		}
+	}
+	else {
+		for( int i = 1; i <= Q_dim; ++i ) {
+			for( int j = i; j <= Q_dim; ++j ) {
+#ifdef _DEBUG
+				TEST_FOR_EXCEPTION(
+					in.eof(), std::logic_error
+					,"MatrixSymPosDefCholFactor::read_matrix(in,upper,Q_out): Error, not finished reading in matrix yet (i="<<i<<",j="<<j<<")!"
+					);
+#endif
+				in >> Q(i,j);
+			}
+		}
+	}
 }
 
 } // end namespace AbstractLinAlgPack
