@@ -24,7 +24,7 @@
 #include <iosfwd>
 
 #include "IterQuantity.h"
-#include "Misc/include/ref_count_ptr.h"
+#include "ref_count_ptr.h"
 
 namespace GeneralIterationPack {
 

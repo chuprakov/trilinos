@@ -23,7 +23,6 @@
 
 #include <stdexcept>
 #include <string>
-#include <sstream>
 #include <iomanip>
 #include <limits>
 
@@ -109,25 +108,10 @@ public:
 	virtual void set_all_not_updated() = 0;
 
 	/// Assert #has_storage_k(offset) == true# (throw #NoStorageAvailable#).
-	void assert_has_storage_k(int offset) const {
-		if(!has_storage_k(offset)) {
-			std::ostringstream omsg;
-			omsg	<< "IterQuantity::assert_has_storage_k(offset) : There is not storage available for "
-					<< name() << " for the k"	<< std::showpos << offset << " iteration";
-			throw NoStorageAvailable(omsg.str());
-		}
-	}
+	void assert_has_storage_k(int offset) const;
 
 	/// Assert updated_k(offset) == true# (throw QuanityNotSet).
-	void assert_updated_k(int offset) const {
-		if(!updated_k(offset)) {
-			std::ostringstream omsg;
-			omsg	<< "IterQuantity::assert_updated_k(offset) : The interation quantity " << name() 
-					<< " has not been been updated for the k"	<< std::showpos << offset
-					<< " iteration yet.";
-			throw QuanityNotSet(omsg.str());
-		}
-	}
+	void assert_updated_k(int offset) const;
 
 	///
 	/** Determine if the memory for the k #offset# quanity will be lost if

@@ -26,7 +26,8 @@
 #include "../include/AlgorithmState.h"
 #include "../include/IterQuantityAccessContinuous.h"
 #include "../include/IterQuantityAccessDerivedToBase.h"
-#include "Misc/include/update_success.h"
+#include "update_success.h"
+#include "ThrowException.h"
 
 // explicit instantiation for testing compilation only
 //template ReferenceCountingPack::ref_count_ptr<double>;

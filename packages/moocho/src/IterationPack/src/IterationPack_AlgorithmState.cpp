@@ -19,7 +19,8 @@
 #include <iomanip>
 #include <typeinfo>
 
-#include "../include/AlgorithmState.h"
+#include "GeneralIterationPack/include/AlgorithmState.h"
+#include "ThrowException.h"
 
 namespace {
 inline void output_spaces(std::ostream& out, int spaces)
@@ -34,12 +35,11 @@ AlgorithmState::iq_id_type AlgorithmState::set_iter_quant(
 	iq_id_type new_id = iq_.size();
 	std::pair<iq_name_to_id_t::iterator,bool>
 		r = iq_name_to_id_.insert(iq_name_to_id_t::value_type(iq_name,new_id));
-	if( !r.second ) {	// an insert did not take place, key = iq_name already existed.
-		std::ostringstream omsg;
-		omsg	<< "AlgorithmState::set_iter_quant(...) : An iteration quantity with the name \""
-				<< iq_name << "\" already exists with the iq_id = " << (*r.first).second;
-		throw AlreadyExists(omsg.str());
-	}
+	THROW_EXCEPTION(
+		!r.second // an insert did not take place, key = iq_name already existed.
+		,AlreadyExists
+		,"AlgorithmState::set_iter_quant(...) : An iteration quantity with the name \""
+		<< iq_name << "\" already exists with the iq_id = " << (*r.first).second );
 	iq_.push_back(iq);
 	return new_id;
 }
@@ -66,20 +66,13 @@ IterQuantity& AlgorithmState::iter_quant(iq_id_type iq_id) {
 	catch(const std::range_error& excpt) {	// Thrown by libstdc++ v3 in g++ 2.95.2
 		exists = false;
 	}
-	if( !exists ) {
-		std::ostringstream omsg;
-		omsg
-			<< "AlgorithmState::iter_quant(iq_id) : Error, the iteration quantity iq_id = "
-			<< iq_id << " does not exist.  ";
-		if( iq_id < iq_.size() )
-			omsg
-				<< "This iteration quantity was set and then erased.";
-		else
-			omsg
-				<< "This iteration quantity was never set by the client.";
-																		
-		throw DoesNotExist( omsg.str() );
-	}																								
+	THROW_EXCEPTION(
+		!exists, DoesNotExist
+		,"AlgorithmState::iter_quant(iq_id) : Error, the iteration quantity iq_id = "
+		<< iq_id << " does not exist.  "
+		<< ( iq_id < iq_.size()
+			 ? "This iteration quantity was set and then erased."
+			 : "This iteration quantity was never set by the client." ) );
 	return *iq_.at(0);	// Will never be executed.
 }
 
@@ -127,12 +120,11 @@ AlgorithmState::iq_name_to_id_t::iterator AlgorithmState::find_and_assert(
 	const std::string& iq_name)
 {
 	iq_name_to_id_t::iterator itr = iq_name_to_id_.find(iq_name);
-	if(itr == iq_name_to_id_.end()) {
-		std::ostringstream omsg;
-		omsg	<< "AlgorithmState::find_and_assert(iq_name) : The iteration "
-					"quantity with the name \"" << iq_name << "\" does not exist";
-		throw DoesNotExist(omsg.str());
-	}
+	if(itr == iq_name_to_id_.end())
+		THROW_EXCEPTION(
+			true, DoesNotExist
+			,"AlgorithmState::find_and_assert(iq_name) : The iteration "
+			"quantity with the name \"" << iq_name << "\" does not exist" );
 	return itr;
 }
 
@@ -140,12 +132,11 @@ AlgorithmState::iq_name_to_id_t::const_iterator AlgorithmState::find_and_assert(
 	const std::string& iq_name) const
 {
 	iq_name_to_id_t::const_iterator itr = iq_name_to_id_.find(iq_name);
-	if(itr == iq_name_to_id_.end()) {
-		std::ostringstream omsg;
-		omsg	<< "AlgorithmState::find_and_assert(iq_name) : The iteration "
-					"quantity with the name \"" << iq_name << "\" does not exist";
-		throw DoesNotExist(omsg.str());
-	}
+	if(itr == iq_name_to_id_.end())
+		THROW_EXCEPTION(
+			true, DoesNotExist
+			,"AlgorithmState::find_and_assert(iq_name) : The iteration "
+			"quantity with the name \"" << iq_name << "\" does not exist" );
 	return itr;
 }
 

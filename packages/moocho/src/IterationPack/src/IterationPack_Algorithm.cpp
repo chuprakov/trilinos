@@ -21,8 +21,9 @@
 #include <numeric>
 #include <typeinfo>
 
-#include "../include/Algorithm.h"
-#include "Misc/include/stpwatch.h"
+#include "GeneralIterationPack/include/Algorithm.h"
+#include "stpwatch.h"
+#include "ThrowException.h"
 
 // ToDo: change step_itr and assoc_step_itr to just return iterators without
 // asserting if the names exist.  This will be more useful.
@@ -130,12 +131,10 @@ void Algorithm::insert_step(poss_type step_poss, const std::string& step_name, c
 	// Make sure a step with this name does not already exist.
 	steps_t::iterator itr;
 	if( steps_.end() != ( itr = step_itr(step_name) ) )
-	{
-		std::ostringstream omsg;
-		omsg	<< "Algorithm::insert_step(...) : A step with the name = " << step_name
-				<< " already exists at step_poss = " << std::distance(steps_.begin(),itr) + 1;
-		throw AlreadyExists(omsg.str());
-	}
+		THROW_EXCEPTION(
+			true, AlreadyExists
+			,"Algorithm::insert_step(...) : A step with the name = " << step_name
+			<< " already exists at step_poss = " << std::distance(steps_.begin(),itr) + 1 );
 	// insert the step in such a way that any container can be used for steps_
 	itr = steps_.begin();
 	std::advance ( itr , validate(step_poss,+1) - 1 );
@@ -193,15 +192,13 @@ void Algorithm::insert_assoc_step(poss_type step_poss, EAssocStepType type, poss
 	assoc_steps_ele_list_t::iterator itr = assoc_list.begin();
 	char assoc_type_name[2][10] = { "PRE_STEP" , "POST_STEP" };
 	if( assoc_list.end() != ( itr = assoc_step_itr(assoc_list,assoc_step_name) ) )
-	{
-		std::ostringstream omsg;
-		omsg	<< "Algorithm::insert_assoc_step(...) : An associated step of type = "
-				<<	assoc_type_name[type]
-				<< " with the name = " << assoc_step_name
-				<< " already exists at step_poss = " << step_poss
-				<< " and assoc_step_poss = " <<  std::distance(assoc_list.begin(),itr) + 1;
-		throw AlreadyExists(omsg.str());
-	}
+		THROW_EXCEPTION(
+			true, AlreadyExists
+			,"Algorithm::insert_assoc_step(...) : An associated step of type = "
+			<<	assoc_type_name[type]
+			<< " with the name = " << assoc_step_name
+			<< " already exists at step_poss = " << step_poss
+			<< " and assoc_step_poss = " <<  std::distance(assoc_list.begin(),itr) + 1 );
 	// insert an associated step in such a way that any container could be used.
 	itr = assoc_list.begin();
 	std::advance( itr, assoc_step_poss - 1 );
@@ -419,10 +416,12 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 			// should have called do_step_next(...) to request a jump to
 			// a specific operation.
 			if(!do_step_next_called_)
-				throw InvalidControlProtocal( "EAlgoReturn Algorithm::do_algorithm(...) :"
-						" A step object returned false from its do_step(...) operation"
-						" without calling do_step_next(...) to request jump to a specific"
-						" step." );
+				THROW_EXCEPTION(
+					true, InvalidControlProtocal
+					,"EAlgoReturn Algorithm::do_algorithm(...) :"
+					" A step object returned false from its do_step(...) operation"
+					" without calling do_step_next(...) to request jump to a specific"
+					" step." );
 			do_step_next_called_ = false;
 			// just loop around and do the step that the step object requested
 			// by changing next_step_poss_ by its call to do_step_next(...).
@@ -616,59 +615,59 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 
 void Algorithm::validate_in_state(ERunningState running_state) const {
 	const char running_state_name[3][25] = { "NOT_RUNNING" , "RUNNING", "RUNNING_BEING_CONFIGURED" };
-	if(running_state_ != running_state) {
-		std::ostringstream omsg;
-		omsg	<< "Algorithm::validate_in_state(...) : The condition running_state() == "
-				<< running_state_name[running_state_] << " has been violated with "
-					" running_state() = " << running_state_name[running_state];
-		throw InvalidRunningState(omsg.str());
-	}
+	if(running_state_ != running_state)
+		THROW_EXCEPTION(
+			true, InvalidRunningState
+			,"Algorithm::validate_in_state(...) : The condition running_state() == "
+			<< running_state_name[running_state_] << " has been violated with "
+			<< " running_state() = " << running_state_name[running_state] );
 }
 
 void Algorithm::validate_not_in_state(ERunningState running_state) const {
 	const char running_state_name[3][25] = { "NOT_RUNNING" , "RUNNING", "RUNNING_BEING_CONFIGURED" };
-	if(running_state_ == running_state) {
-		std::ostringstream omsg;
-		omsg	<< "Algorithm::validate_not_in_state(...) : The condition running_state() != "
-				<< running_state_name[running_state_] << " has been violated";
-		throw InvalidRunningState(omsg.str());
-	}
+	if(running_state_ == running_state)
+		THROW_EXCEPTION(
+			true, InvalidRunningState
+			,"Algorithm::validate_not_in_state(...) : The condition running_state() != "
+			<< running_state_name[running_state_] << " has been violated" );
 }
 
 void Algorithm::validate_not_curr_step(poss_type step_poss) const {
 	if(step_poss == curr_step_poss_)
-		throw InvalidConfigChange( "Algorithm::validate_not_curr_step(step_poss) : "
-				"You can not modify the step being currently executed" );
+		THROW_EXCEPTION(
+			true, InvalidConfigChange
+			,"Algorithm::validate_not_curr_step(step_poss="<<step_poss<<") : "
+			"Error, You can not modify the step being currently executed" );
 }
 
 void Algorithm::validate_not_next_step(const std::string& step_name) const {
 	if( step_name == saved_next_step_name_ )
-		throw InvalidConfigChange( "Algorithm::validate_not_next_step(step_name) : "
-				"You can not modify name or remove the step given by "
-				"what_is_next_name()" );
+		THROW_EXCEPTION(
+			true, InvalidConfigChange,
+			"Algorithm::validate_not_next_step(step_name): "
+			"Error, You can not modify name or remove the step given by "
+			"step_name = what_is_next_name() = " << step_name );
 }
 
 Algorithm::steps_t::iterator Algorithm::step_itr_and_assert(const std::string& step_name)
 {
 	steps_t::iterator itr = step_itr(step_name);
-	if(itr == steps_.end()) {
-		std::ostringstream omsg;
-		omsg	<< "Algorithm::step_itr(...) : A step with the name "
-				<< step_name << " does not exist.";
-		throw DoesNotExist(omsg.str());
-	}
+	if(itr == steps_.end())
+		THROW_EXCEPTION(
+			true, DoesNotExist
+			,"Algorithm::step_itr(...) : A step with the name "
+			<< step_name << " does not exist." );
 	return itr;	
 }
 
 Algorithm::steps_t::const_iterator Algorithm::step_itr_and_assert(const std::string& step_name) const
 {
 	steps_t::const_iterator itr = step_itr(step_name);
-	if(itr == steps_.end()) {
-		std::ostringstream omsg;
-		omsg	<< "Algorithm::step_itr(...) : A step with the name "
-				<< step_name << " does not exist.";
-		throw DoesNotExist(omsg.str());
-	}
+	if(itr == steps_.end())
+		THROW_EXCEPTION(
+			true, DoesNotExist
+			,"Algorithm::step_itr(...) : A step with the name "
+			<< step_name << " does not exist." );
 	return itr;	
 }
 
@@ -761,6 +760,28 @@ void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
 			<< "        goto 1\n"
 			<< "    end\n";
 	}
+}
+
+// validate poss
+
+Algorithm::poss_type Algorithm::validate(poss_type step_poss, int past_end) const
+{
+    
+	THROW_EXCEPTION(
+		step_poss < 1 || steps_.size() + past_end < step_poss, DoesNotExist
+		,"Algorithm::validate(step_poss) : The step_poss = " << step_poss
+		<< " is not in range of 1 to " << steps_.size() + past_end );
+	return step_poss;
+}	
+
+Algorithm::poss_type Algorithm::validate(const assoc_steps_ele_list_t& assoc_list
+	, poss_type assoc_step_poss, int past_end) const
+{
+	THROW_EXCEPTION(
+		assoc_step_poss < 1 || assoc_list.size() + past_end < assoc_step_poss, DoesNotExist
+		,"Algorithm::validate(assoc_list,assoc_step_poss) : The assoc_step_poss = "
+		<< assoc_step_poss << " is not in range of 1 to " << assoc_list.size() + past_end );
+	return assoc_step_poss;
 }
 
 } // end namespace GeneralIterationPack

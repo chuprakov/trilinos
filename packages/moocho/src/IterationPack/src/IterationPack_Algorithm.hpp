@@ -22,14 +22,13 @@
 #include <deque>
 #include <list>
 #include <vector>
-#include <sstream>
 #include <algorithm>
 
 #include "AlgorithmState.h"
 #include "AlgorithmTrack.h"
 #include "AlgorithmStep.h"
-
-#include "Misc/include/ref_count_ptr.h"
+#include "ref_count_ptr.h"
+#include "ThrowException.h"
 
 namespace GeneralIterationPack {
 
@@ -874,33 +873,6 @@ const AlgorithmTrack& Algorithm::track() const
 inline
 Algorithm::ERunningState Algorithm::running_state() const
 {	return running_state_; }
-
-// validate poss
-
-inline
-Algorithm::poss_type Algorithm::validate(poss_type step_poss, int past_end) const
-{
-	if( step_poss < 1 || steps_.size() + past_end < step_poss ) {
-		std::ostringstream omsg;
-		omsg	<< "Algorithm::validate(step_poss) : The step_poss = " << step_poss
-				<< " is not in range of 1 to " << steps_.size() + past_end;
-		throw DoesNotExist(omsg.str());
-	}
-	return step_poss;
-}	
-
-inline
-Algorithm::poss_type Algorithm::validate(const assoc_steps_ele_list_t& assoc_list
-	, poss_type assoc_step_poss, int past_end) const
-{
-	if( assoc_step_poss < 1 || assoc_list.size() + past_end < assoc_step_poss ) {
-		std::ostringstream omsg;
-		omsg	<< "Algorithm::validate(assoc_list,assoc_step_poss) : The assoc_step_poss = "
-				<< assoc_step_poss << " is not in range of 1 to " << assoc_list.size() + past_end;
-		throw DoesNotExist(omsg.str());
-	}
-	return assoc_step_poss;
-}
 
 // lookup iterator given name
 

@@ -23,7 +23,7 @@
 #include "../include/AlgorithmState.h"
 #include "../test/AlgorithmStepTesting.h"
 #include "../test/AlgorithmTrackTesting.h"
-#include "Misc/include/debug.h"
+#include "debug.h"
 
 namespace GeneralIterationPack {
 
