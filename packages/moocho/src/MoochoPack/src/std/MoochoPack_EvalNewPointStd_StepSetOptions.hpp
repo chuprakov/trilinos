@@ -23,32 +23,44 @@
 namespace ReducedSpaceSQPPack {
 
 ///
-/** Set options for EvalNewPointStd_Step from an
-  * OptionsFromStream object.
-  *
-  * The default options group name is EvalNewPointStd.
-  *
-  * The options group is:
-  *
-  \begin{verbatim}
-	options_group EvalNewPointStd {
-		fd_deriv_testing   = FD_DEFAULT;
-	}
-  \end{verbatim}
-  *
-  * \begin{description}
-  *	\item[fd_deriv_testing] Determines if finite differerece testing of the 
-  *		derivatives of the Gc and Gf.  See the class \Ref{EvalNewPointStd_Step}
-  *		and its printed algorithm for more details).
-  *		\begin{description}
-  *		\item[FD_DEFAULT]			The global flag check_results determines
-  *									if the tests are performed.
-  *		\item[FD_TEST]				The tests are performed reguardless the
-  *									value of check_results
-  *		\item[FD_NO_TEST]			The tests are not performed reguardless the
-  *									value of check_results
-  *		\end{description}
-  */
+/** Set options for EvalNewPointStd_Step from an \c OptionsFromStream object.
+ *
+ * The default options group name is EvalNewPointStd.
+ *
+ * The options group is:
+ *
+ \verbatim
+    options_group EvalNewPointStd {
+        fd_deriv_testing = FD_DEFAULT;
+        decomp_sys_teting = DST_DEFAULT;
+    }
+ \verbatim
+ *
+ * <ul>
+ * <li> <b>fd_deriv_testing</b>: Determines if finite differerece testing of the 
+ *      derivatives of the Gc and Gf.  See the class \c EvalNewPointStd_Step
+ *      and its printed algorithm for more details.
+ *      <ul>
+ *      <li> <b>FD_DEFAULT</b>: The global flag check_results determines
+ *           if the tests are performed.
+ *      <li> <b>FD_TEST</b>: The tests are performed reguardless the
+ *           value of check_results
+ *      <li> <b>FD_NO_TEST</b>: The tests are not performed reguardless the
+ *           value of check_results
+ *      </ul>
+ * <li> <b>decomp_sys_testing</b>: Determines if the range/null decomposition of
+ *      Gc and Gh is performed.  See the class \c EvalNewPointStd_Step
+ *      and its printed algorithm for more details.
+ *      <ul>
+ *      <li> <b>DST_DEFAULT</b>: The global flag check_results determines
+ *           if the tests are performed.
+ *      <li> <b>DST_TEST</b>: The tests are performed reguardless the
+ *           value of check_results
+ *      <li> <b>DST_NO_TEST</b>: The tests are not performed reguardless the
+ *           value of check_results
+ *      </ul>
+ * </ul>
+ */
 class EvalNewPointStd_StepSetOptions
 	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
 		, public OptionsFromStreamPack::SetOptionsToTargetBase<

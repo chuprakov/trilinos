@@ -18,20 +18,23 @@
 
 #include <assert.h>
 
-#include "../../include/std/EvalNewPointStd_StepSetOptions.h"
-#include "Misc/include/StringToBool.h"
+#include "ReducedSpaceSQPPack/include/std/EvalNewPointStd_StepSetOptions.h"
+#include "StringToBool.h"
+#include "ThrowException.h"
 
 // Define the options
 namespace {
 
-	const int local_num_options = 1;
+	const int local_num_options = 2;
 
 	enum local_EOptions {
 		FD_DERIV_TESTING
+		,DECOMP_SYS_TESTING
 	};
 
 	const char* local_SOptions[local_num_options]	= {
 		"fd_deriv_testing"
+		,"decomp_sys_testing"
 	};
 
 }
@@ -64,9 +67,29 @@ void EvalNewPointStd_StepSetOptions::set_option(
 			else if( option == "FD_NO_TEST" )
 				target().fd_deriv_testing( target_t::FD_NO_TEST );
 			else
-				throw std::invalid_argument( "Error, incorrect value for "
+				THROW_EXCEPTION(
+					true, std::invalid_argument
+					,"Error, incorrect value for "
 					"\"fd_deriv_testing\".  Only the options "
 					"FD_DEFAULT, FD_TEST, and FD_NO_TEST "
+					"are available" );
+			break;
+		}
+	    case DECOMP_SYS_TESTING:
+		{
+			const std::string &option = option_value.c_str();
+			if( option == "DST_DEFAULT" )
+				target().decomp_sys_testing( target_t::DST_DEFAULT );
+			else if( option == "DST_TEST" )
+				target().decomp_sys_testing( target_t::DST_TEST );
+			else if( option == "DST_NO_TEST" )
+				target().decomp_sys_testing( target_t::DST_NO_TEST );
+			else
+				THROW_EXCEPTION(
+					true, std::invalid_argument
+					,"Error, incorrect value for "
+					"\"decomp_sys_testing\".  Only the options "
+					"DST_DEFAULT, DST_TEST, and DST_NO_TEST "
 					"are available" );
 			break;
 		}
