@@ -40,8 +40,8 @@ public:
 	VectorDenseEncap( const VectorWithOp&  vec );
 	/// Calls <tt>vec.free_sub_vector(&sub_vec)</tt> to release the view.  
 	~VectorDenseEncap();
-	/// Returns a constant view of the dense vector.
-	const VectorSlice operator()() const;
+	/// Returns a reference to a constant view of the dense vector.
+	const VectorSlice& operator()() const;
 
 private:
 
@@ -68,10 +68,10 @@ public:
 	VectorDenseMutableEncap( VectorWithOpMutable&  vec );
 	/// Calls <tt>vec.free_sub_vector(&sub_vec)</tt> to release the view.  
 	~VectorDenseMutableEncap();
-	/// Returns a constant view of the dense vector.
-	VectorSlice operator()();
-	/// Returns a non-const view of the dense vector.
-	const VectorSlice operator()() const;
+	/// Returns a reference to a constant view of the dense vector.
+	VectorSlice& operator()();
+	/// Returns a reference to a non-const view of the dense vector.
+	const VectorSlice& operator()() const;
 
 private:
 
@@ -110,7 +110,7 @@ VectorDenseEncap::~VectorDenseEncap()
 }
 
 inline
-const VectorSlice VectorDenseEncap::operator()() const
+const VectorSlice& VectorDenseEncap::operator()() const
 {
 	return vs_;
 }
@@ -138,13 +138,13 @@ VectorDenseMutableEncap::~VectorDenseMutableEncap()
 }
 
 inline
-VectorSlice VectorDenseMutableEncap::operator()()
+VectorSlice& VectorDenseMutableEncap::operator()()
 {
 	return vs_;
 }
 
 inline
-const VectorSlice VectorDenseMutableEncap::operator()() const
+const VectorSlice& VectorDenseMutableEncap::operator()() const
 {
 	return vs_;
 }
