@@ -72,6 +72,12 @@ NormedConvergenceTester<Scalar>::norm() const
 }
 
 template<class Scalar>
+void NormedConvergenceTester<Scalar>::reset()
+{
+	return; // There is nothing to reset!
+}
+
+template<class Scalar>
 void NormedConvergenceTester<Scalar>::convStatus(
 	const SolverState<Scalar>     &solver
 	,const Index                  currNumSystems

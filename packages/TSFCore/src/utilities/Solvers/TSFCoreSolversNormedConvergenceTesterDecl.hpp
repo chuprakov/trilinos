@@ -62,6 +62,8 @@ public:
 	///
 	MemMngPack::ref_count_ptr<const Norm<Scalar> > norm() const;
 	///
+	void reset();
+	///
 	void convStatus(
 		const SolverState<Scalar>     &solver
 		,const Index                  currNumSystems

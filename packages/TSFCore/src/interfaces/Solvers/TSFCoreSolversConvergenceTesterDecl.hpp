@@ -10,7 +10,7 @@ namespace TSFCore {
 namespace Solvers {
 
 ///
-/** Abstract interface for convergence tests ofr systems of equations.
+/** Abstract interface for convergence tests for systems of equations.
  *
  * ToDo: Finish documentation!
  */
@@ -28,6 +28,14 @@ public:
 	 * and uses the default definition implementation <tt>Norm</tt>.
 	 */
 	virtual MemMngPack::ref_count_ptr<const Norm<Scalar> > norm() const;
+
+	///
+	/** Reset the convergence tester for a new set of iterations for solving
+	 * the system of equations.
+	 *
+	 * ToDo: Finish documentation!
+	 */
+	virtual void reset() = 0;
 
 	///
 	/** Determing the convergence status for the currently active linear systems.
