@@ -16,13 +16,11 @@
 #ifndef ABSTRACT_LINALG_PACK_VECTOR_STD_OPS_H
 #define ABSTRACT_LINALG_PACK_VECTOR_STD_OPS_H
 
-#include <utility>
-
 #include "VectorWithOpMutable.h"
 
 namespace AbstractLinAlgPack {
 
-/** \defgroup VectorStdOps_grp Collection of useful vector operations.
+/** \defgroup VectorStdOps_grp Collection of standard vector operations.
  */
 //@{
 
@@ -38,38 +36,6 @@ value_type sum( const VectorWithOp& v_rhs );
 /** result = v_rhs1' * v_rhs2
  */
 value_type dot( const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2 );
-
-///
-/** Computes the maximum positive and negative step that can be taken
-  * that are within the relaxed bounds.
-  *
-  *	This function computes and returns the maximum (in magnitude) postive
-  *	(<tt>return.first >= 0.0</tt>) and negative (<tt>return.second <= 0.0</tt>) steps
-  * \c u that can be taken such that the relaxed bounds:
-  \verbatim
-  xl - max_bnd_viol <= x + u * d <= xu - max_bnd_viol
-  \endverbatim
-  * are strictly satisfied.
-  *
-  * If <tt>return.first < 0.0</tt> then this is a flag that \c x is not
-  * in the relaxed bounds to begin with.  In this case \c return.second
-  * has no meaning.
-  */
-std::pair<value_type,value_type>
-max_near_feas_step(
-	const VectorWithOp& x, const VectorWithOp& d
-	,const VectorWithOp& xl, const VectorWithOp& xu
-	,value_type max_bnd_viol
-	); 
-
-///
-/** Count the number of finitly bounded elements in <tt>xl <= x <= xu</tt>.
- *
- * ToDo: Finish documentation!
- */
-size_type num_bounded(
-	const VectorWithOp& xl, const VectorWithOp& xu
-	,value_type inf_bound );
 
 //@}
 
@@ -122,20 +88,10 @@ void seed_random_vector_generator( unsigned int );
   */
 void random_vector( value_type l, value_type u, VectorWithOpMutable* v );
 
-///
-/** Force a vector in bounds.
- *
- * ToDo: Finish documentation!
- */
-void force_in_bounds( const VectorWithOp& xl, const VectorWithOp& xu, VectorWithOpMutable* x );
-
 //@}
 
 //@}
 
 } // end namespace AbstractLinAlgPack
-
-// //////////////////////////////////////////////
-// Inline implementations
 
 #endif // ABSTRACT_LINALG_PACK_VECTOR_STD_OPS_H
