@@ -104,10 +104,10 @@ options_group rSQPppSolver {
      *** on option values from other options groups.
 
 *    configuration = mama_jama; *** (default)
-    configuration = interior_point;
-     *** decides which configuration object will be used
-	 *** mama_jama is the standard reduced Space SQP configuration
-	 *** interior_point is the configuration for an interior point method
+*    configuration = interior_point;
+     *** decides which configuration object will be used:
+	 ***   mama_jama      : standard reduced Space SQP configuration
+	 ***   interior_point : configuration for an interior point method
 
 }
 
