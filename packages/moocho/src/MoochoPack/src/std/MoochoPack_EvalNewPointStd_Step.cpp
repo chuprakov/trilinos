@@ -67,8 +67,8 @@ bool EvalNewPointStd_Step::do_step(
 	using IterationPack::print_algorithm_step;
 	using NLPInterfacePack::NLPFirstOrder;
 
-	NLPAlgo            &algo   = rsqp_algo(_algo);
-	NLPAlgoState           &s      = algo.rsqp_state();
+	NLPAlgo         &algo   = rsqp_algo(_algo);
+	NLPAlgoState    &s      = algo.rsqp_state();
 	NLPFirstOrder   &nlp    = dyn_cast<NLPFirstOrder>(algo.nlp());
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -88,7 +88,7 @@ bool EvalNewPointStd_Step::do_step(
 		nb = nlp.num_bounded_x(),
 		m  = nlp.m();
 	size_type
-		r  = m ? s.decomp_sys().equ_decomp().size() : 0;
+		r  = 0;
 
 	// Get the iteration quantity container objects
 	IterQuantityAccess<index_type>

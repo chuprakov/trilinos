@@ -100,9 +100,6 @@ public:
 
 	///
 	/** Return a matrix factory object for the composte \c Gc matrix object.
-	 *
-	 * Only call this if there are independent variables.  Otherwise,
-	 * supply your own version of this factory object.
 	 */
 	static const fcty_Gc_ptr_t factory_Gc();
 	

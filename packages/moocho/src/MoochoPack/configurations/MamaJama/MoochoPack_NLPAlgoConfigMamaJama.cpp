@@ -320,7 +320,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 	else {
 		if(trase_out) {
 			*trase_out
-				<< "\nThere are now equality constraints (m == 0) which forces the following options:\n"
+				<< "\nThere are no equality constraints (m == 0) which forces the following options:\n"
 				<< "line_search_method          = DIRECT;\n"
 				<< "merit_function_type         = L1;\n"
 				;

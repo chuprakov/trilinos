@@ -136,26 +136,26 @@ void BasisSystemComposite::initialize_Gc(
 		,"BasisSystemComposite::initialize_Gc(...): Error!" );
 #endif
 
+	MatrixComposite
+		&Gc_comp = dyn_cast<MatrixComposite>(*Gc);
+		
+	//
+	// Gc = [ C'; N' ]
+	//
+	
+	Gc_comp.reinitialize(n,m);
+	// Add the C matrix object
+	typedef mmp::ref_count_ptr<mmp::ReleaseResource_ref_count_ptr<MatrixOpNonsing> > C_rr_ptr_ptr_t;
+	C_rr_ptr_ptr_t
+		C_rr_ptr_ptr = mmp::rcp(new mmp::ReleaseResource_ref_count_ptr<MatrixOpNonsing>(C));
+	Gc_comp.add_matrix(
+		var_dep.lbound()-1, 0    // row_offset, col_offset
+		,1.0                     // alpha
+		,C_rr_ptr_ptr->ptr.get() // A
+		,C_rr_ptr_ptr            // A_release
+		,BLAS_Cpp::trans         // A_trans
+		);
 	if( n > m ) {
-		MatrixComposite
-			&Gc_comp = dyn_cast<MatrixComposite>(*Gc);
-		
-		//
-		// Gc = [ C'; N' ]
-		//
-		
-		Gc_comp.reinitialize(n,m);
-		// Add the C matrix object
-		typedef mmp::ref_count_ptr<mmp::ReleaseResource_ref_count_ptr<MatrixOpNonsing> > C_rr_ptr_ptr_t;
-		C_rr_ptr_ptr_t
-			C_rr_ptr_ptr = mmp::rcp(new mmp::ReleaseResource_ref_count_ptr<MatrixOpNonsing>(C));
-		Gc_comp.add_matrix(
-			var_dep.lbound()-1, 0    // row_offset, col_offset
-			,1.0                     // alpha
-			,C_rr_ptr_ptr->ptr.get() // A
-			,C_rr_ptr_ptr            // A_release
-			,BLAS_Cpp::trans         // A_trans
-			);
 		// Add the N matrix object
 		typedef mmp::ref_count_ptr<mmp::ReleaseResource_ref_count_ptr<MatrixOp> > N_rr_ptr_ptr_t;
 		N_rr_ptr_ptr_t
@@ -167,12 +167,9 @@ void BasisSystemComposite::initialize_Gc(
 			,N_rr_ptr_ptr            // A_release
 			,BLAS_Cpp::trans         // A_trans
 			);
-		// Finish construction
-		Gc_comp.finish_construction( space_x, space_c );
 	}
-	else {
-		// Nothing to do, *Gc is already the same object as *C!
-	}
+	// Finish construction
+	Gc_comp.finish_construction( space_x, space_c );
 }
 
 void BasisSystemComposite::get_C_N(
@@ -198,29 +195,26 @@ void BasisSystemComposite::get_C_N(
 		n > m && N == NULL, std::invalid_argument
 		,"BasisSystemComposite::get_C_N(...): Error!" );
 #endif
-	if( n > m || n == 0 ) {
-		// Get reference to concrete Gc matrix subclass
-		MatrixComposite
-			&Gc_comp = dyn_cast<MatrixComposite>(*Gc);
-		// Get referencs to the aggregate C and N matrtices
-		MatrixComposite::matrix_list_t::const_iterator
-			mat_itr = Gc_comp.matrices_begin(),
-			mat_end = Gc_comp.matrices_end();
-		if( mat_itr != mat_end ) {
-			assert(mat_itr != mat_end);
-			*C = &dyn_cast<MatrixOpNonsing>(
-				const_cast<MatrixOp&>(*(mat_itr++)->A_) );
+	// Get reference to concrete Gc matrix subclass
+	MatrixComposite
+		&Gc_comp = dyn_cast<MatrixComposite>(*Gc);
+	// Get referencs to the aggregate C and N matrtices
+	MatrixComposite::matrix_list_t::const_iterator
+		mat_itr = Gc_comp.matrices_begin(),
+		mat_end = Gc_comp.matrices_end();
+	if( mat_itr != mat_end ) {
+		assert(mat_itr != mat_end);
+		*C = &dyn_cast<MatrixOpNonsing>(
+			const_cast<MatrixOp&>(*(mat_itr++)->A_) );
+		if( n > m ) {
 			assert(mat_itr != mat_end);
 			*N = &const_cast<MatrixOp&>(*(mat_itr++)->A_);
-			assert(mat_itr == mat_end);
 		}
-		else {
-			*C = NULL;
-			*N = NULL;
-		}
+		assert(mat_itr == mat_end);
 	}
 	else {
-		*C = &dyn_cast<MatrixOpNonsing>(*Gc);
+		*C = NULL;
+		*N = NULL;
 	}
 }
 
@@ -242,30 +236,27 @@ void BasisSystemComposite::get_C_N(
 		n > m && N == NULL, std::invalid_argument
 		,"BasisSystemComposite::get_C_N(...): Error!" );
 #endif
-	if( n > m ) {
-		// Get reference to concrete Gc matrix subclass
-		const AbstractLinAlgPack::MatrixComposite
-			&Gc_comp = dyn_cast<const AbstractLinAlgPack::MatrixComposite>(Gc);
-		// Get referencs to the aggregate C and N matrtices
-		MatrixComposite::matrix_list_t::const_iterator
-			mat_itr = Gc_comp.matrices_begin(),
-			mat_end = Gc_comp.matrices_end();
-		if( mat_itr != mat_end ) {
-			assert(mat_itr != mat_end);
-			*C = &dyn_cast<const MatrixOpNonsing>(*(mat_itr++)->A_);
+	// Get reference to concrete Gc matrix subclass
+	const AbstractLinAlgPack::MatrixComposite
+		&Gc_comp = dyn_cast<const AbstractLinAlgPack::MatrixComposite>(Gc);
+	// Get referencs to the aggregate C and N matrtices
+	MatrixComposite::matrix_list_t::const_iterator
+		mat_itr = Gc_comp.matrices_begin(),
+		mat_end = Gc_comp.matrices_end();
+	if( mat_itr != mat_end ) {
+		assert(mat_itr != mat_end);
+		*C = &dyn_cast<const MatrixOpNonsing>(*(mat_itr++)->A_);
+		if( n > m ) {
 			assert(mat_itr != mat_end);
 			*N = &dyn_cast<const MatrixOp>(*(mat_itr++)->A_);
-			assert(mat_itr == mat_end);
 		}
-		else {
-			THROW_EXCEPTION(
-				true, std::invalid_argument
-				,"BasisSystemComposite::get_C_N(...): Error, "
-				"The Gc matrix object has not been initialized with C and N!" );
-		}
+		assert(mat_itr == mat_end);
 	}
 	else {
-		*C = &dyn_cast<const MatrixOpNonsing>(Gc);
+		THROW_EXCEPTION(
+			true, std::invalid_argument
+			,"BasisSystemComposite::get_C_N(...): Error, "
+			"The Gc matrix object has not been initialized with C and N!" );
 	}
 }
 
@@ -448,7 +439,7 @@ void BasisSystemComposite::update_basis(
 	get_C_N( Gc, &C_aggr, &N_aggr );
 	// Setup C
 	if( C ) {
-		*C = *C_aggr;
+		*C = *C_aggr;  // Assignment had better work!
 	}
 	// Compute D
 	if( D ) {

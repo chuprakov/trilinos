@@ -22,13 +22,15 @@
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptPack/src/decompositions/DecompositionSystem.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystem.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymIdent.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
@@ -58,8 +60,7 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 	const size_type
 		n  = nlp.n(),
 		nb = nlp.num_bounded_x(),
-		m  = nlp.m();
-	size_type
+		m  = nlp.m(),
 		r  = s.decomp_sys().equ_decomp().size();
 
 	// Get the iteration quantity container objects
@@ -69,68 +70,89 @@ bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 		&x_iq   = s.x(),
 		&nu_iq  = s.nu();
 	IterQuantityAccess<MatrixOp>
-		*Gc_iq  = m  > 0                  ? &s.Gc() : NULL,
+		*Gc_iq  = ( m  > 0 )              ? &s.Gc() : NULL,
 		*Z_iq   = ( n > m && r > 0 )      ? &s.Z()  : NULL,
 		*Y_iq   = ( r > 0 )               ? &s.Y()  : NULL,
 		*Uz_iq  = ( m  > 0 && m  > r )    ? &s.Uz() : NULL,
 		*Uy_iq  = ( m  > 0 && m  > r )    ? &s.Uy() : NULL;
 	IterQuantityAccess<MatrixOpNonsing>
 		*R_iq   = ( m > 0 )               ? &s.R()  : NULL;
-	
-	//
-	// Update range/null decomposition
-	//
 
-	// Determine if we will test the decomp_sys or not
-	const DecompositionSystem::ERunTests
-		ds_test_what = ( ( decomp_sys_testing == DST_TEST
-						   || ( decomp_sys_testing == DST_DEFAULT
-								&& algo.algo_cntr().check_results() ) )
-						 ? DecompositionSystem::RUN_TESTS
-						 : DecompositionSystem::NO_TESTS );
+	if( n > m ) {
+
+		//
+		// Update range/null decomposition
+		//
 		
-	// Determine the output level for decomp_sys				
-	DecompositionSystem::EOutputLevel ds_olevel;
-	switch(olevel) {
-		case PRINT_NOTHING:
-		case PRINT_BASIC_ALGORITHM_INFO:
-			ds_olevel = DecompositionSystem::PRINT_NONE;
-			break;
-		case PRINT_ALGORITHM_STEPS:
-		case PRINT_ACTIVE_SET:
-			ds_olevel = DecompositionSystem::PRINT_BASIC_INFO;
-			break;
-		case PRINT_VECTORS:
-			ds_olevel = DecompositionSystem::PRINT_VECTORS;
-			break;
-		case PRINT_ITERATION_QUANTITIES:
-			ds_olevel = DecompositionSystem::PRINT_EVERY_THING;
-			break;
-		default:
-			assert(0); // Should not get here!
-	};
+		// Determine if we will test the decomp_sys or not
+		const DecompositionSystem::ERunTests
+			ds_test_what = ( ( decomp_sys_testing == DST_TEST
+							   || ( decomp_sys_testing == DST_DEFAULT
+									&& algo.algo_cntr().check_results() ) )
+							 ? DecompositionSystem::RUN_TESTS
+							 : DecompositionSystem::NO_TESTS );
+		
+		// Determine the output level for decomp_sys				
+		DecompositionSystem::EOutputLevel ds_olevel;
+		switch(olevel) {
+			case PRINT_NOTHING:
+			case PRINT_BASIC_ALGORITHM_INFO:
+				ds_olevel = DecompositionSystem::PRINT_NONE;
+				break;
+			case PRINT_ALGORITHM_STEPS:
+			case PRINT_ACTIVE_SET:
+				ds_olevel = DecompositionSystem::PRINT_BASIC_INFO;
+				break;
+			case PRINT_VECTORS:
+				ds_olevel = DecompositionSystem::PRINT_VECTORS;
+				break;
+			case PRINT_ITERATION_QUANTITIES:
+				ds_olevel = DecompositionSystem::PRINT_EVERY_THING;
+				break;
+			default:
+				assert(0); // Should not get here!
+		};
+		
+		// Form the decomposition of Gc and update the decomposition system matrices
+		if( olevel >= PRINT_ALGORITHM_STEPS ) {
+			out << "\nUpdating the range/null decompostion matrices ...\n";
+		}
+		s.decomp_sys().update_decomp(
+			&out                               // out
+			,ds_olevel                         // olevel
+			,ds_test_what                      // test_what
+			,Gc_iq->get_k(0)                   // Gc
+			,&Z_iq->set_k(0)                   // Z
+			,&Y_iq->set_k(0)                   // Y
+			,&R_iq->set_k(0)                   // R
+			,Uz_iq ? &Uz_iq->set_k(0) : NULL   // Uz
+			,Uy_iq ? &Uy_iq->set_k(0) : NULL   // Uy
+			,DecompositionSystem::MATRICES_ALLOW_DEP_IMPS // ToDo: Change this!
+			);
+		s.equ_decomp(   s.decomp_sys().equ_decomp()   );
+		s.equ_undecomp( s.decomp_sys().equ_undecomp() );
+		
+		*new_decomp_selected = false;
 
-	// Form the decomposition of Gc and update the decomposition system matrices
-	if( olevel >= PRINT_ALGORITHM_STEPS ) {
-		out << "\nUpdating the range/null decompostion matrices ...\n";
 	}
-	s.decomp_sys().update_decomp(
-		&out                               // out
-		,ds_olevel                         // olevel
-		,ds_test_what                      // test_what
-		,Gc_iq->get_k(0)                   // Gc
-		,&Z_iq->set_k(0)                   // Z
-		,&Y_iq->set_k(0)                   // Y
-		,&R_iq->set_k(0)                   // R
-		,Uz_iq ? &Uz_iq->set_k(0) : NULL   // Uz
-		,Uy_iq ? &Uy_iq->set_k(0) : NULL   // Uy
-		,DecompositionSystem::MATRICES_ALLOW_DEP_IMPS // ToDo: Change this!
-		);
-	s.equ_decomp(   s.decomp_sys().equ_decomp()   );
-	s.equ_undecomp( s.decomp_sys().equ_undecomp() );
-
-	*new_decomp_selected = false;
-
+	else {
+		//
+		// Update decomposition
+		//
+		// R = C
+		// Y = I
+		//
+		nlp.basis_sys()->update_basis(
+			Gc_iq->get_k(0)                        // Gc
+			,&R_iq->set_k(0 )                      // C
+			,NULL                                  // D
+			,NULL                                  // GcUP
+			,BasisSystem::MATRICES_ALLOW_DEP_IMPS  // Meaningless
+			,olevel >= PRINT_BASIC_ALGORITHM_INFO ? &out : NULL
+			);
+		dyn_cast<MatrixSymIdent>(Y_iq->set_k(0)).initialize( nlp.space_x() );
+	}
+	
 	return true;
 }
 
@@ -141,15 +163,27 @@ void DecompositionSystemHandlerStd_Strategy::print_update_decomposition(
 	,const std::string                     &L
 	) const
 {
+	using DynamicCastHelperPack::dyn_cast;
+
+	const NLPFirstOrder &nlp = dyn_cast<const NLPFirstOrder>(algo.nlp());
+	const size_type n  = nlp.n(), m = nlp.m(), r = nlp.basis_sys()->equ_decomp().size();
 	out
-		<< L << "*** Updating the range/null decomposition.\n"
-		<< L << "begin update decomposition\n"
-		<< L << "(class = \'" << typeid(s.decomp_sys()).name() << "\')\n"
-		;
-	s.decomp_sys().print_update_decomp( out, L + "  " );
-	out
-		<< L << "end update decomposition\n"
-		;
+		<< L << "*** Updating the range/null decomposition.\n";
+	if( n == m && m == r ) {
+		out
+			<< L << "R = C\n"
+			<< L << "Y = I\n";
+	}
+	else {
+		out
+			<< L << "begin update decomposition\n"
+			<< L << "(class = \'" << typeid(s.decomp_sys()).name() << "\')\n"
+			;
+		s.decomp_sys().print_update_decomp( out, L + "  " );
+		out
+			<< L << "end update decomposition\n"
+			;
+	}
 }
 
 } // end namespace MoochoPack

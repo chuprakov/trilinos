@@ -67,6 +67,7 @@
 #include "StringToBool.hpp"
 #include "OptionsFromStream.hpp"
 #include "ThrowException.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace {
 	const int DEFAULT_MAX_DOF_QUASI_NEWTON_DENSE = 200;
@@ -333,9 +334,11 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 	)
 {
 	namespace mmp = MemMngPack;
+	using DynamicCastHelperPack::dyn_cast;
 	
 	const size_type
-		m  = nlp.m();
+		n = nlp.n(),
+		m = nlp.m();
 
 	if( tailored_approach ) {
 		// NLPDirect
@@ -402,61 +405,87 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 			// ToDo: Add matrix iq object for Uy
 		}
 		else {
-			// Z
-			state->set_iter_quant(
-				Z_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixOp>(
-						1
-						,Z_name
-						,decomp_sys->factory_Z()
+			if( n > m ) {
+				// Z
+				state->set_iter_quant(
+					Z_name
+					,mmp::rcp(
+						new IterQuantityAccessContiguous<MatrixOp>(
+							1
+							,Z_name
+							,decomp_sys->factory_Z()
+							)
 						)
-					)
-				);
-			// Y
-			state->set_iter_quant(
-				Y_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixOp>(
-						1
-						,Y_name
-						,decomp_sys->factory_Y()
+					);
+				// Y
+				state->set_iter_quant(
+					Y_name
+					,mmp::rcp(
+						new IterQuantityAccessContiguous<MatrixOp>(
+							1
+							,Y_name
+							,decomp_sys->factory_Y()
+							)
 						)
-					)
-				);
-			// R
-			state->set_iter_quant(
-				R_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixOpNonsing>(
-						1
-						,R_name
-						,decomp_sys->factory_R()
+					);
+				// R
+				state->set_iter_quant(
+					R_name
+					,mmp::rcp(
+						new IterQuantityAccessContiguous<MatrixOpNonsing>(
+							1
+							,R_name
+							,decomp_sys->factory_R()
+							)
 						)
-					)
-				);
-			// Uz
-			state->set_iter_quant(
-				Uz_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixOp>(
-						1
-						,Uz_name
-						,decomp_sys->factory_Uz()
+					);
+				// Uz
+				state->set_iter_quant(
+					Uz_name
+					,mmp::rcp(
+						new IterQuantityAccessContiguous<MatrixOp>(
+							1
+							,Uz_name
+							,decomp_sys->factory_Uz()
+							)
 						)
-					)
-				);
-			// Uy
-			state->set_iter_quant(
-				Uy_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixOp>(
-						1
-						,Uy_name
-						,decomp_sys->factory_Uy()
+					);
+				// Uy
+				state->set_iter_quant(
+					Uy_name
+					,mmp::rcp(
+						new IterQuantityAccessContiguous<MatrixOp>(
+							1
+							,Uy_name
+							,decomp_sys->factory_Uy()
+							)
 						)
-					)
-				);
+					);
+			}
+			else {
+				// Y
+				state->set_iter_quant(
+					Y_name
+					,mmp::rcp(
+						new IterQuantityAccessContiguous<MatrixOp>(
+							1
+							,Y_name
+							,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymIdent>())
+							)
+						)
+					);
+				// R
+				state->set_iter_quant(
+					R_name
+					,mmp::rcp(
+						new IterQuantityAccessContiguous<MatrixOpNonsing>(
+							1
+							,R_name
+							,dyn_cast<NLPFirstOrder>(nlp).basis_sys()->factory_C()
+							)
+						)
+					);
+			}
 		}
 	}
 	else {
