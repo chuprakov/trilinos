@@ -215,16 +215,19 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	)
 {
 	using std::endl;
+	using BLAS_Cpp::trans_not;
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using BLAS_Cpp::upper;
 	using BLAS_Cpp::lower;
 	using LinAlgPack::norm_inf;
 	using LinAlgPack::Vt_S;
+	using LinAlgPack::Vp_StV;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_MtV;
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::Vp_V;
+	using SparseLinAlgPack::norm_inf;
 	using SparseLinAlgPack::imp_sparse_bnd_diff;
 	typedef QPSolverStats qps_t;
 

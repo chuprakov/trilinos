@@ -223,6 +223,7 @@ void ConstraintsRelaxedStd::pick_violated(
 	, value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
 	) const
 {
+	using SparseLinAlgPack::imp_sparse_bnd_diff;
 
 	if( x.size() != A_bar_.nd()+1 ) {
 		throw std::length_error( "ConstraintsRelaxedStd::pick_violated(...) : Error, "
@@ -509,6 +510,10 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 	  VectorSlice* y, value_type a, BLAS_Cpp::Transp trans_rhs1
 	, const VectorSlice& x, value_type b) const
 {
+	using BLAS_Cpp::trans_not;
+	using LinAlgPack::dot;
+	using LinAlgPack::Vt_S;
+	using LinAlgPack::Vp_StV;
 	using SparseLinAlgPack::Vp_StMtV;
 
 	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),rows(),cols(),trans_rhs1,x.size());

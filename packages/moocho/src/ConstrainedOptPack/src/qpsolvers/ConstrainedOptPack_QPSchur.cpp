@@ -19,6 +19,11 @@
 #include "LinAlgPack/include/VectorOut.h"
 #include "LinAlgPack/include/GenMatrixOut.h"
 
+namespace LinAlgOpPack {
+	using SparseLinAlgPack::Vp_StV;
+	using SparseLinAlgPack::Vp_StMtV;
+}
+
 namespace {
 
 // Some local helper functions.
@@ -94,8 +99,10 @@ void calc_mu_D(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
+	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_MtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
+	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::V_StMtV;
 
 	const ConstrainedOptimizationPack::QPSchurPack::QP
@@ -224,6 +231,7 @@ void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
+	using LinAlgPack::Vt_S;
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
@@ -337,6 +345,7 @@ void QPSchur::ActiveSet::initialize(
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::V_InvMtV;
 	using SparseLinAlgPack::M_StMtInvMtM;
+	using SparseLinAlgPack::Vp_StPtMtV;
 	using LinAlgPack::sym;
 	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
 	
@@ -690,7 +699,7 @@ void QPSchur::ActiveSet::refactorize_schur_comp()
 
 void QPSchur::ActiveSet::add_constraint(
 	  size_type ja, QPSchurPack::EBounds bnd_ja
-	, bool update_steps, bool force_refactorization = true )
+	, bool update_steps, bool force_refactorization )
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
@@ -859,7 +868,7 @@ void QPSchur::ActiveSet::add_constraint(
 }
 
 void QPSchur::ActiveSet::drop_constraint(
-	 size_type jd , bool force_refactorization = true )
+	 size_type jd , bool force_refactorization )
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
@@ -1474,6 +1483,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	using std::endl;
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
+	using LinAlgPack::dot;
 	using LinAlgPack::norm_inf;
 	using LinAlgPack::Vt_S;
 	using LinAlgPack::V_mV;
@@ -1481,8 +1491,10 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	using LinAlgPack::V_VmV;
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_StV;
+	using SparseLinAlgPack::dot;
 	using SparseLinAlgPack::EtaVector;
 	using SparseLinAlgPack::V_InvMtV;
+	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
 	using LinAlgOpPack::V_MtV;
 
@@ -2369,8 +2381,9 @@ void QPSchur::set_multipliers( const ActiveSet& act_set, const VectorSlice& v
 {
 	using BLAS_Cpp::no_trans;
 	using LinAlgOpPack::V_MtV;
-	using SparseLinAlgPack::V_MtV
-	using SparseLinAlgPack::Vp_StMtV
+	using SparseLinAlgPack::V_MtV;
+	using SparseLinAlgPack::Vp_MtV;
+	using SparseLinAlgPack::Vp_StMtV;
 	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 	const size_type

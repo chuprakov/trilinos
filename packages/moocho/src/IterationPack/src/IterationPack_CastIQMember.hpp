@@ -141,7 +141,7 @@ private:
 // Definition of template members
 
 template < class T >
-CastIQMember<T>::CastIQMember<T>( const std::string iq_name )
+CastIQMember<T>::CastIQMember( const std::string iq_name )
 	:  CastIQMemberBase(iq_name)
 {}
 

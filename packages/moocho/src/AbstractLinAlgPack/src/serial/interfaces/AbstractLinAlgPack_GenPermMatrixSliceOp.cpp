@@ -76,8 +76,9 @@ void SparseLinAlgPack::Vp_StMtV(
 
 void SparseLinAlgPack::Vp_StMtV(
 	  VectorSlice* y, value_type a, const GenPermMatrixSlice& P
-	, BLAS_Cpp::Transp P_trans, const VectorSlice& x, value_type b = 1.0)
+	, BLAS_Cpp::Transp P_trans, const VectorSlice& x, value_type b )
 {
+	using LinAlgPack::Vt_S;
 	using LinAlgPack::Vp_MtV_assert_sizes;
 	Vp_MtV_assert_sizes( y->size(), P.rows(), P.cols(), P_trans, x.size() );
 	// y = b*y
@@ -106,11 +107,12 @@ void SparseLinAlgPack::Vp_StMtV(
 
 void SparseLinAlgPack::Vp_StMtV(
 	  VectorSlice* y, value_type a, const GenPermMatrixSlice& P
-	, BLAS_Cpp::Transp P_trans, const SpVectorSlice& x, value_type b = 1.0)
+	, BLAS_Cpp::Transp P_trans, const SpVectorSlice& x, value_type b )
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	namespace GPMSIP = GenPermMatrixSliceIteratorPack;
+	using LinAlgPack::Vt_S;
 	using LinAlgPack::Vp_MtV_assert_sizes;
 	
 	Vp_MtV_assert_sizes( y->size(), P.rows(), P.cols(), P_trans, x.size() );

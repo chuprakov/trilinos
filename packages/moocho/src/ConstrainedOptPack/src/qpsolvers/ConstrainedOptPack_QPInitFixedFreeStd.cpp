@@ -33,11 +33,11 @@ void QPInitFixedFreeStd::initialize(
 	, const MatrixSymWithOpFactorized		&Ko
 	, const VectorSlice						&fo
 	, Constraints							*constraints
-	, std::ostream							*out				= NULL
-	, bool									test_setup			= false
-	, value_type							warning_tol			= 1e-6
-	, value_type							error_tol			= 1e-1
-	, bool									print_all_warnings	= false
+	, std::ostream							*out
+	, bool									test_setup
+	, value_type							warning_tol
+	, value_type							error_tol
+	, bool									print_all_warnings
 	)
 {
 	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;

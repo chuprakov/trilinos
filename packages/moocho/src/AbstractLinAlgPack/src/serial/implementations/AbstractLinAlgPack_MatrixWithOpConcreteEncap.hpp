@@ -15,7 +15,7 @@ namespace SparseLinAlgPack {
   * The default copy constructor and assignment operator are allowed.
   */
 template<class M>
-class MatrixWithOpConcreteEncap : public MatrixWithOp
+class MatrixWithOpConcreteEncap : public virtual MatrixWithOp
 {
 public:
 
