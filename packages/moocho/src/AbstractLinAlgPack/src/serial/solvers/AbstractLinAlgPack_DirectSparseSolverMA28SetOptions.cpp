@@ -15,9 +15,6 @@
 
 #ifdef SPARSE_SOLVER_PACK_USE_MA28
 
-// disable VC 5.0 warnings about debugger limitations
-#pragma warning(disable : 4786)	
-
 #include <assert.h>
 
 #include "../include/DirectSparseSolverMA28SetOptions.h"

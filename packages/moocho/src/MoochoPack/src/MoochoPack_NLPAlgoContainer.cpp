@@ -15,8 +15,6 @@
 
 //#define RELEASE_TRACE
 
-#pragma warning(disable : 4786)	// too long class name for debugger warning
-
 #include <assert.h>
 
 #include <iostream>	// used for debugging the Release version.

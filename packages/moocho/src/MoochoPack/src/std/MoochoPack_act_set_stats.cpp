@@ -13,9 +13,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-// disable VC 5.0 warnings about debugger limitations
-#pragma warning(disable : 4786)	
-
 #include "../../include/std/act_set_stats.h"
 
 extern const std::string

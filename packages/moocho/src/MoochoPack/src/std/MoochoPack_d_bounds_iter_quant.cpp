@@ -13,11 +13,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-// disable VC 5.0 warnings about debugger limitations
-#pragma warning(disable : 4786)	
-// disable VC 5.0 warnings about truncated identifier names (templates).
-#pragma warning(disable : 4503)	
-
 #include "ReducedSpaceSQPPack/include/std/d_bounds_iter_quant.h"
 
 const std::string

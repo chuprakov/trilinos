@@ -20,11 +20,6 @@
 // this!
 //
 
-// disable VC 5.0 warnings about debugger limitations
-#pragma warning(disable : 4786)	
-// disable VC 5.0 warnings about truncated identifier names (templates).
-#pragma warning(disable : 4503)	
-
 #include <assert.h>
 
 #include <limits>

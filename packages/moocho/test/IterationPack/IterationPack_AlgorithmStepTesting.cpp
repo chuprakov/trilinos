@@ -13,8 +13,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#pragma warning(disable : 4786)	// too long class name for debugger warning
-
 #include <iomanip>
 
 #include "../test/AlgorithmStepTesting.h"

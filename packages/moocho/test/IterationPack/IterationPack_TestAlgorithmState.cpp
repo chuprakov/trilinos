@@ -13,11 +13,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-// ToDo: RAB: 7/1/99: remove a dependancy of on LinAlgPack and
-// SparseLinAlgPack from the testing software you dork.
-
-#pragma warning(disable : 4786)	// too long class name for debugger warning
-
 #include <ostream>
 #include <iomanip>
 #include <typeinfo>

@@ -13,11 +13,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifdef _INTEL_CXX
-// disable Intel C++ 5.0 warnings about debugger limitations
-#pragma warning(disable : 985)
-#endif
-
 #include <assert.h>
 #include <math.h>
 
