@@ -32,14 +32,15 @@
 #include "NLPInterfacePack/test/test_basis_system.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "OptionsFromStream.h"
+#include "StringToBool.h"
 
 bool NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
 	const VectorSpace&   vec_space
 	,value_type          xo
 	,bool                has_bounds
 	,bool                dep_bounded
-	,std::ostream*       out
-	,std::ostream*       eout
+	,std::ostream*       out_in
+	,std::ostream*       eout_in
 	)
 {
 	using std::endl;
@@ -48,6 +49,7 @@ bool NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
 	using rcp::ref_count_ptr;
 	namespace ofsp = OptionsFromStreamPack;
 	using ofsp::OptionsFromStream;
+	using ofsp::StringToBool;
 
 	bool prog_return = true;
 
@@ -56,8 +58,8 @@ bool NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
 	int w = 15;
 	int prec = 8;
 
-	if(out)
-		*out
+	if(out_in)
+		*out_in
 			<< std::setprecision(prec)
 			<< std::scientific
 			<< "*****************************************************\n"
@@ -67,6 +69,29 @@ bool NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
 	// Read in the options
 	std::ifstream      options_in_file("ExampleNLPFirstOrderInfoRun.opt");	
 	OptionsFromStream  options(options_in_file);
+
+	bool suppress_output = false;
+	const std::string                    optgrp_name = "ExampleNLPFirstOrderInfoRun";
+	OptionsFromStream::options_group_t   optgrp = options.options_group( optgrp_name );
+	if( OptionsFromStream::options_group_exists( optgrp ) ) {
+		const std::string val = optgrp.option_value("suppress_output");
+		if(OptionsFromStream::options_group_t::option_exists(val))
+			suppress_output = StringToBool( "suppress_output", val.c_str() );
+	}
+
+	std::ostream
+		*out  = NULL,
+		*eout = NULL;
+	if(suppress_output) {
+		if(out_in)
+			*out_in << "\nOption ExampleNLPFirstOrdeInfoRun::suppress_out = true was set, suppressing all future output!\n";
+		out  = NULL;
+		eout = NULL;
+	}
+	else {
+		out  = out_in;
+		eout = eout_in;
+	}
 
 	// Create the nlp
 	ExampleNLPFirstOrderInfo
@@ -88,16 +113,16 @@ bool NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
 		prog_return = false;
 
 	if(prog_return == true) {
-		if(eout && eout != out)
-			*eout   << "Congradulations!  The VectorSpace, NLP and BasisSystem objects seems to check out!\n";
-		if(out)
-			*out    << "\nCongradulations!  The VectorSpace, NLP and BasisSystem objects seems to check out!\n";
+		if(eout_in && eout_in != out_in)
+			*eout_in   << "Congradulations!  The VectorSpace, NLP and BasisSystem objects seems to check out!\n";
+		if(out_in)
+			*out_in    << "\nCongradulations!  The VectorSpace, NLP and BasisSystem objects seems to check out!\n";
 	}
 	else {
-		if(eout && eout != out)
-			*eout   << "Oh No!  Something did not checkout!\n";
-		if(out)
-			*out    << "\nOh No!  Something did not checkout!\n";
+		if(eout_in && eout_in!= out_in)
+			*eout_in   << "Oh No!  Something did not checkout!\n";
+		if(out_in)
+			*out_in    << "\nOh No!  Something did not checkout!\n";
 	}
 
 	return prog_return;
