@@ -14,6 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include <assert.h>
+#include <math.h>
 
 #include <typeinfo>
 #include <stdexcept>

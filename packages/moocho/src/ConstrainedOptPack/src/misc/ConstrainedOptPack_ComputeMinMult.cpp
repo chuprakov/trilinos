@@ -17,6 +17,12 @@
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "LinAlgPack/include/VectorClass.h"
 
+namespace {
+template< class T >
+inline
+T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
+} // end namespace
+
 ConstrainedOptimizationPack::value_type
 ConstrainedOptimizationPack ::min_abs( const VectorSlice& mu )
 {
@@ -24,7 +30,7 @@ ConstrainedOptimizationPack ::min_abs( const VectorSlice& mu )
 		return 0.0;
 	value_type min = ::fabs(mu(1));
 	for( VectorSlice::const_iterator itr = mu.begin() + 1; itr != mu.end(); )
-		min = std::_MIN( min, ::fabs(*itr++) );
+		min = my_min( min, ::fabs(*itr++) );
 	return min;
 }
 
@@ -37,6 +43,6 @@ ConstrainedOptimizationPack ::min_abs( const SpVectorSlice& mu )
 		return 0.0;
 	value_type min = ::fabs(mu.begin()->value());
 	for( SpVectorSlice::const_iterator itr = mu.begin() + 1; itr != mu.end(); ++itr )
-		min = std::_MIN( min, ::fabs(itr->value()) );
+		min = my_min( min, ::fabs(itr->value()) );
 	return min;
 }

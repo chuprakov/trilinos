@@ -32,6 +32,12 @@
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
 #include "dynamic_cast_verbose.h"
 
+namespace {
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+} // end namespace
+
 namespace ReducedSpaceSQPPack {
 
 InitFinDiffReducedHessian_Step::InitFinDiffReducedHessian_Step(
@@ -222,7 +228,7 @@ bool InitFinDiffReducedHessian_Step::do_step(
 					// ||rGf_fd||inf / max_cond
 				
 					const value_type
-						min_ele = std::_MAX( nrm_rGf_fd / max_cond(), min_diag() );
+						min_ele = my_max( nrm_rGf_fd / max_cond(), min_diag() );
 
 					if( initialization_method() == SCALE_DIAGONAL )
 						AbstractLinAlgPack::max_vec_scalar( min_ele, rGf_fd.get() );

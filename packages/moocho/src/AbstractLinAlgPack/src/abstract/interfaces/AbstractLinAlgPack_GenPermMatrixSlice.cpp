@@ -45,6 +45,11 @@ void swap(
 
 namespace {
 
+//
+template< class T >
+inline
+T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
+
 // Return a string with the same name as the enumeration
 const char* ordered_by_str(
 	AbstractLinAlgPack::GenPermMatrixSliceIteratorPack::EOrderedBy ordered_by )
@@ -117,7 +122,7 @@ void GenPermMatrixSlice::initialize( size_type rows, size_type cols, EIdentityOr
 {
 	rows_       = rows;
 	cols_       = cols;
-	nz_         = type == IDENTITY_MATRIX ? std::_MIN(rows,cols) : 0;
+	nz_         = type == IDENTITY_MATRIX ? my_min(rows,cols) : 0;
 	ordered_by_ = GenPermMatrixSliceIteratorPack::BY_ROW_AND_COL;
 	row_i_      = NULL;
 	col_j_      = NULL;   // Don't need to be set but might as well for safely

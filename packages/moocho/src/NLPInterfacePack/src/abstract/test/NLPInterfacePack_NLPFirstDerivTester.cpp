@@ -33,6 +33,12 @@
 #include "update_success.h"
 #include "ThrowException.h"
 
+namespace {
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+} // end namespace
+
 namespace NLPInterfacePack {
 
 NLPFirstDerivativesTester::NLPFirstDerivativesTester(
@@ -226,7 +232,7 @@ bool NLPFirstDerivativesTester::fd_check_all(
 				<< "rel_err(" << Gf_i << "," << FDGf_i << ") = "
 				<< Gf_err << endl;
 		if( Gf_err >= warning_tol() ) {
-			max_Gf_warning_viol = std::_MAX( max_Gf_warning_viol, Gf_err );
+			max_Gf_warning_viol = my_max( max_Gf_warning_viol, Gf_err );
 			++num_Gf_warning_viol;
 		}
 		if( Gf_err >= error_tol() ) {
@@ -251,7 +257,7 @@ bool NLPFirstDerivativesTester::fd_check_all(
 					<< "rel_err(" << sum_Gc_i << "," << sum_FDGc_i << ") = "
 					<< calc_err << endl;
 			if( calc_err >= warning_tol() ) {
-				max_Gc_warning_viol = std::_MAX( max_Gc_warning_viol, calc_err );
+				max_Gc_warning_viol = my_max( max_Gc_warning_viol, calc_err );
 				++num_Gc_warning_viol;
 			}
 			if( calc_err >= error_tol() ) {
@@ -420,7 +426,7 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 				<< "rel_err(" << Gf_y << "," << FDGf_y << ") = "
 				<< Gf_err << endl;
 		if( Gf_err >= warning_tol() ) {
-			max_Gf_warning_viol = std::_MAX( max_Gf_warning_viol, Gf_err );
+			max_Gf_warning_viol = my_max( max_Gf_warning_viol, Gf_err );
 			++num_Gf_warning_viol;
 		}
 		if( Gf_err >= error_tol() ) {

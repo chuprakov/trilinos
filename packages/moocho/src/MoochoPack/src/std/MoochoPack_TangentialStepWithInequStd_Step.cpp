@@ -29,6 +29,15 @@
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "dynamic_cast_verbose.h"
 
+namespace {
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+template< class T >
+inline
+T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
+} // end namespace
+
 namespace ReducedSpaceSQPPack {
 
 NullSpaceStepWithInequStd_Step::NullSpaceStepWithInequStd_Step(
@@ -183,7 +192,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 			frac_same
 			= ( num_adds == ActSetStats::NOT_KNOWN || num_active == 0
 				? 0.0
-				: std::_MAX(((double)(num_active)-num_adds-num_drops) / num_active, 0.0 ) );
+				: my_max(((double)(num_active)-num_adds-num_drops) / num_active, 0.0 ) );
 		do_warm_start = ( num_active > 0 && frac_same >= warm_start_frac() );
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 			out << "\nnum_active = " << num_active;
@@ -506,7 +515,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 			const std::pair<value_type,value_type>
 				u_steps = max_near_feas_step( *zero, *d_tmp, dl_iq.get_k(0), du_iq.get_k(0), 0.0 );
 			const value_type
-				u = std::_MIN( u_steps.first, 1.0 ); // largest positive step size
+				u = my_min( u_steps.first, 1.0 ); // largest positive step size
 			alpha_iq.set_k(0) = u;
 			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 				out	<< "\nFinding u s.t. dl <= u*(Ypy_k+Zpz_k) <= du\n"

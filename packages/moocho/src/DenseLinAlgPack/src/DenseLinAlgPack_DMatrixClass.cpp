@@ -63,7 +63,7 @@ EOverLap GenMatrixSlice::overlap(const GenMatrixSlice& gms) const
 		std::swap(cols1,cols2);
 	}
 
-	if( raw_ptr1 + (cols1 - 1) * max_rows1 + (rows1 - 1) < raw_ptr2 ) {
+	if( raw_ptr2 > (raw_ptr1 + (cols1 - 1) * max_rows1 + (rows1 - 1)) ) {
 		return NO_OVERLAP; // can't be any overlap
 	}
 

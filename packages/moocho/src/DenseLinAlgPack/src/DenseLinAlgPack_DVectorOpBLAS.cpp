@@ -35,6 +35,15 @@ typedef LinAlgPack::value_type value_type;
 typedef VectorSlice::size_type size_type;
 typedef VectorSlice::difference_type difference_type;
 
+//
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+//
+template< class T >
+inline
+T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
+
 // Utility for copying vector slices.  Takes care of aliasing etc. but not sizes.
 void i_assign(VectorSlice* vs_lhs, const VectorSlice& vs_rhs) {
 	switch(vs_lhs->overlap(vs_rhs)) {
@@ -229,14 +238,14 @@ void LinAlgPack::max(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlic
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;
 	for(itr_lhs = v_lhs->begin(), itr_rhs1 = vs_rhs1.begin(), itr_rhs2 = vs_rhs2.begin();
 		itr_lhs != v_lhs->end(); ++itr_lhs, ++itr_rhs1, ++itr_rhs2)
-	{	*itr_lhs = std::_MAX(*itr_rhs1, *itr_rhs2); }
+	{	*itr_lhs = my_max(*itr_rhs1, *itr_rhs2); }
 }
 // v_lhs = max(alpha,vs_rhs)
 void LinAlgPack::max(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rhs) {
 	v_lhs->resize(vs_rhs.dim());
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs;
 	for(itr_lhs = v_lhs->begin(), itr_rhs = vs_rhs.begin(); itr_lhs != v_lhs->end(); ++itr_lhs, ++itr_rhs)
-	{	*itr_lhs = std::_MAX(alpha,*itr_rhs); }
+	{	*itr_lhs = my_max(alpha,*itr_rhs); }
 }
 // v_lhs = min(vs_rhs1,vs_rhs2)
 void LinAlgPack::min(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2) 
@@ -245,14 +254,14 @@ void LinAlgPack::min(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlic
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;
 	for(itr_lhs = v_lhs->begin(), itr_rhs1 = vs_rhs1.begin(), itr_rhs2 = vs_rhs2.begin();
 		itr_lhs != v_lhs->end(); ++itr_lhs, ++itr_rhs1, ++itr_rhs2)
-	{	*itr_lhs = std::_MIN(*itr_rhs1, *itr_rhs2); }
+	{	*itr_lhs = my_min(*itr_rhs1, *itr_rhs2); }
 }
 // v_lhs = min(alpha,vs_rhs)
 void LinAlgPack::min(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rhs) {
 	v_lhs->resize(vs_rhs.dim());
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs;
 	for(itr_lhs = v_lhs->begin(), itr_rhs = vs_rhs.begin(); itr_lhs != v_lhs->end(); ++itr_lhs, ++itr_rhs)
-	{	*itr_lhs = std::_MIN(alpha,*itr_rhs); }
+	{	*itr_lhs = my_min(alpha,*itr_rhs); }
 }
 // v_lhs = pow(vs_rhs1,vs_rhs2)
 void LinAlgPack::pow(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
@@ -417,7 +426,7 @@ void LinAlgPack::max(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const Vect
 	VectorSlice::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;
 	for(itr_lhs = vs_lhs->begin(), itr_rhs1 = vs_rhs1.begin(), itr_rhs2 = vs_rhs2.begin();
 		itr_lhs != vs_lhs->end(); ++itr_lhs, ++itr_rhs1, ++itr_rhs2)
-	{	*itr_lhs = std::_MAX(*itr_rhs1, *itr_rhs2); }
+	{	*itr_lhs = my_max(*itr_rhs1, *itr_rhs2); }
 }
 // vs_lhs = max(alpha,vs_rhs)
 void LinAlgPack::max(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs)
@@ -425,7 +434,7 @@ void LinAlgPack::max(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& v
 	LinAlgPack::Vp_V_assert_sizes( vs_lhs->dim(), vs_rhs.dim() );
 	VectorSlice::iterator itr_lhs; VectorSlice::const_iterator itr_rhs;
 	for(itr_lhs = vs_lhs->begin(), itr_rhs = vs_rhs.begin(); itr_lhs != vs_lhs->end(); ++itr_lhs, ++itr_rhs)
-	{	*itr_lhs = std::_MAX(alpha,*itr_rhs); }
+	{	*itr_lhs = my_max(alpha,*itr_rhs); }
 }
 // vs_lhs = min(vs_rhs1,vs_rhs2)
 void LinAlgPack::min(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
@@ -435,7 +444,7 @@ void LinAlgPack::min(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const Vect
 	VectorSlice::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;
 	for(itr_lhs = vs_lhs->begin(), itr_rhs1 = vs_rhs1.begin(), itr_rhs2 = vs_rhs2.begin();
 		itr_lhs != vs_lhs->end(); ++itr_lhs, ++itr_rhs1, ++itr_rhs2)
-	{	*itr_lhs = std::_MIN(*itr_rhs1, *itr_rhs2); }
+	{	*itr_lhs = my_min(*itr_rhs1, *itr_rhs2); }
 }
 // vs_lhs = min(alpha,vs_rhs)
 void LinAlgPack::min(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs)
@@ -443,7 +452,7 @@ void LinAlgPack::min(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& v
 	LinAlgPack::Vp_V_assert_sizes( vs_lhs->dim(), vs_rhs.dim() );
 	VectorSlice::iterator itr_lhs; VectorSlice::const_iterator itr_rhs;
 	for(itr_lhs = vs_lhs->begin(), itr_rhs = vs_rhs.begin(); itr_lhs != vs_lhs->end(); ++itr_lhs, ++itr_rhs)
-	{	*itr_lhs = std::_MIN(alpha,*itr_rhs); }
+	{	*itr_lhs = my_min(alpha,*itr_rhs); }
 }
 // vs_lhs = pow(vs_rhs1,vs_rhs2)
 void LinAlgPack::pow(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2) 

@@ -31,13 +31,17 @@
 #include "f_open_file.h"
 
 namespace {
-	// A cast to const is needed because the standard does not return a reference from
-	// valarray<>::operator[]() const.
-	template <class T>
-	std::valarray<T>& cva(const std::valarray<T>& va )
-	{
-		return const_cast<std::valarray<T>&>(va);
-	}
+//
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+// A cast to const is needed because the standard does not return a reference from
+// valarray<>::operator[]() const.
+template <class T>
+std::valarray<T>& cva(const std::valarray<T>& va )
+{
+	return const_cast<std::valarray<T>&>(va);
+}
 }
 
 namespace SparseSolverPack {
@@ -262,7 +266,7 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 
 	// Memorize the dimenstions for checks later
 	fs.m_ = m; fs.n_ = n; fs.nz_ = nz;
-	fs.max_n_ = std::_MAX(fs.m_,fs.n_);
+	fs.max_n_ = my_max(fs.m_,fs.n_);
 
 	// By default set licn and ircn equal to estimated_fillin_ratio * nz.
 	if( estimated_fillin_ratio_ < 1.0 ) {
@@ -513,7 +517,7 @@ void DirectSparseSolverMA28::print_ma28_outputs(
 			*out << "\nAnalysis:\n"
 				 << "estimated_fillin_ratio can be reduced to max(minirn,minicn)/nz = "
 				 << "max(" << fs.ma28_.minirn() << "," << fs.ma28_.minicn() << ")/" << fs.nz_
-				 << " = " << std::_MAX( fs.ma28_.minirn(), fs.ma28_.minicn() ) / (double)fs.nz_
+				 << " = " << my_max( fs.ma28_.minirn(), fs.ma28_.minicn() ) / (double)fs.nz_
 				 << std::endl;
 		}
 	}

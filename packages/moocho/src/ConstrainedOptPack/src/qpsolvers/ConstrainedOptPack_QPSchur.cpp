@@ -63,6 +63,10 @@ namespace {
 
 // Some local helper functions.
 
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+
 //
 // Print a bnd as a string
 //
@@ -2271,7 +2275,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		output_level = NO_OUTPUT;
 
 	const int dbl_min_w = 20;
-	const int dbl_w = (out ? std::_MAX(dbl_min_w,int(out->precision()+8)) : 20 );
+	const int dbl_w = (out ? my_max(dbl_min_w,int(out->precision()+8)) : 20 );
 
 	// Set the schur complement
 	act_set_.set_schur_comp( schur_comp_ );
@@ -2856,7 +2860,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	}
 
 	const int dbl_min_w = 20;
-	const int dbl_w = (out ? std::_MAX(dbl_min_w,int(out->precision()+8)): 20 );
+	const int dbl_w = (out ? my_max(dbl_min_w,int(out->precision()+8)): 20 );
 
 	try {
 
@@ -3848,11 +3852,11 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 				const size_type q_hat = act_set->q_hat();
 				dual_infeas_scale = 1.0;
 //				if( q_hat )
-//					dual_infeas_scale = std::_MAX( dual_infeas_scale, norm_inf( act_set->z_hat() ) );
+//					dual_infeas_scale = my_max( dual_infeas_scale, norm_inf( act_set->z_hat() ) );
 //				if( m )
-//					dual_infeas_scale = std::_MAX( dual_infeas_scale, norm_inf( (*v)(n_R+1,n_R+m) ) );
+//					dual_infeas_scale = my_max( dual_infeas_scale, norm_inf( (*v)(n_R+1,n_R+m) ) );
 //				if( act_set->q_D_hat() )
-//					dual_infeas_scale = std::_MAX( dual_infeas_scale, norm_inf( act_set->mu_D_hat() ) );
+//					dual_infeas_scale = my_max( dual_infeas_scale, norm_inf( act_set->mu_D_hat() ) );
 				
 				// Primal step length, t_P = beta * gamma_plus, z_plus = [ z_hat_plus; gama_plus ].
 				// Or constraint ja is linearly dependent in which case p_x is zero so
@@ -4606,7 +4610,7 @@ QPSchur::iter_refine(
 	const int int_w = 8;
 	const char int_ul[] = "------";
 	const int dbl_min_w = 20;
-	const int dbl_w = ( out ? std::_MAX(dbl_min_w,int(out->precision()+8)): 20 );
+	const int dbl_w = ( out ? my_max(dbl_min_w,int(out->precision()+8)): 20 );
 	const char dbl_ul[] = "------------------";
 
 	const QPSchurPack::QP
@@ -4903,7 +4907,7 @@ void QPSchur::dump_act_set_quantities(
 	const int  int_w = 10;
 	const char int_ul[] = "--------";
 	const int  dbl_min_w = 20;
-	const int  dbl_w = std::_MAX(dbl_min_w,int(out.precision()+8));
+	const int  dbl_w = my_max(dbl_min_w,int(out.precision()+8));
 	const char dbl_ul[] = "------------------";
 
     out << "\n*** Dumping the current active set ***\n"

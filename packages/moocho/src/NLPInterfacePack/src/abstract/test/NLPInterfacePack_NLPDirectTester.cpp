@@ -32,6 +32,12 @@
 #include "update_success.h"
 #include "ThrowException.h"
 
+namespace {
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+} // end namespace
+
 namespace NLPInterfacePack {
 
 NLPFirstOrderDirectTester::NLPFirstOrderDirectTester(
@@ -175,7 +181,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 					const value_type
 						calc_err = ::fabs( ( Gf_y - FDGf_y )/( ::fabs(Gf_y) + ::fabs(FDGf_y) + small_num ) );
 					if( calc_err >= Gf_warning_tol() ) {
-						max_warning_viol = std::_MAX( max_warning_viol, calc_err );
+						max_warning_viol = my_max( max_warning_viol, calc_err );
 						++num_warning_viol;
 					}
 					if( calc_err >= Gf_error_tol() ) {
@@ -385,7 +391,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 					const value_type
 						calc_err = ::fabs( ( sum_t2 - sum_t3 )/( ::fabs(sum_t2) + ::fabs(sum_t3) + small_num ) );
 					if( calc_err >= Gc_warning_tol() ) {
-						max_warning_viol = std::_MAX( max_warning_viol, calc_err );
+						max_warning_viol = my_max( max_warning_viol, calc_err );
 						++num_warning_viol;
 					}
 					if( calc_err >= Gc_error_tol() ) {

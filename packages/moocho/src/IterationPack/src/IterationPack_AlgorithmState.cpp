@@ -21,6 +21,11 @@
 #include "ThrowException.h"
 
 namespace {
+namespace {
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+} // end namespace
 inline void output_spaces(std::ostream& out, int spaces)
 {	for(int i = 0; i < spaces; ++i) out << ' '; }
 }
@@ -97,7 +102,7 @@ void AlgorithmState::dump_iter_quant(std::ostream& out) const {
 	{for(	iq_name_to_id_t::const_iterator itr = iq_name_to_id_.begin();
 			itr !=  iq_name_to_id_.end(); ++itr )
 	{
-		name_w_max = std::_MAX( (int)name_w_max, (int)(*itr).first.length() );
+		name_w_max = my_max( (int)name_w_max, (int)(*itr).first.length() );
 	}}	
 
 	const int name_w = name_w_max + 4, id_w = 6;

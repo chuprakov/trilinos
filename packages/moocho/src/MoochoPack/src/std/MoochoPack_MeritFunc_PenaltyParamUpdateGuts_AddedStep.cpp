@@ -25,6 +25,12 @@
 #include "AbstractLinAlgPack/include/VectorWithOp.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
 
+namespace {
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+} // end namespace
+
 namespace ReducedSpaceSQPPack {
 
 MeritFunc_PenaltyParamUpdateGuts_AddedStep::MeritFunc_PenaltyParamUpdateGuts_AddedStep(
@@ -103,15 +109,15 @@ bool MeritFunc_PenaltyParamUpdateGuts_AddedStep::do_step(
 				if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 					out << "\nNear solution, forcing mu_k >= mu_km1...\n";
 				}
-				new_mu = std::_MAX( std::_MAX( mu_km1, mult_fact * min_mu ), small_mu_ );
+				new_mu = my_max( my_max( mu_km1, mult_fact * min_mu ), small_mu_ );
 			}
 			else {
 				if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 					out << "\nNot near solution, allowing reduction in mu ...\n";
 				}
-				new_mu =	std::_MAX(
+				new_mu =	my_max(
 					(3.0 * mu_km1 + min_mu) / 4.0	
-					, std::_MAX( mult_fact * min_mu, small_mu_ )
+					, my_max( mult_fact * min_mu, small_mu_ )
 					); 
 				value_type
 					kkt_error = s.opt_kkt_err().get_k(0) + s.feas_kkt_err().get_k(0);

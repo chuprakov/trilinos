@@ -50,6 +50,17 @@ extern "C" {
 		, FortranTypes::f_dbl_prec* C, FortranTypes::f_dbl_prec* S );
 } // end extern "C"
 
+namespace {
+//
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+//
+template< class T >
+inline
+T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
+} // end namespace
+
 namespace SparseLinAlgPack {
 
 // Constructors/initalizers
@@ -115,7 +126,7 @@ void MatrixSymPosDefCholFactor::init_setup(
 		if( set_full_view ) {
 			assert( scale != 0.0 );
 			this->set_view(
-				std::_MIN( MU_store->rows(), MU_store->cols() ) - 1
+				my_min( MU_store->rows(), MU_store->cols() ) - 1
 				,scale,maintain_original,1,1
 				,maintain_factor, allow_factor ? 1: 0, allow_factor ? 1 : 0
 				);
@@ -145,7 +156,7 @@ void MatrixSymPosDefCholFactor::set_view(
 	if( max_size_ )
 		allocate_storage(max_size_);
 	else
-		allocate_storage( std::_MAX( M_l_r + M_size, M_l_c + M_size ) - 1 );
+		allocate_storage( my_max( M_l_r + M_size, M_l_c + M_size ) - 1 );
 	// Check the preconditions
 	if( maintain_original ) {
 		assert( 1 <= M_l_r && M_l_r <= M_l_c );
@@ -160,7 +171,7 @@ void MatrixSymPosDefCholFactor::set_view(
 	maintain_factor_      = maintain_factor;
 	is_diagonal_          = false;
 	if( M_size ) {
-		max_size_             = std::_MIN( MU_store_.rows() - U_l_r, MU_store_.cols() - U_l_c );
+		max_size_             = my_min( MU_store_.rows() - U_l_r, MU_store_.cols() - U_l_c );
 		M_size_               = M_size;
 		scale_                = scale;
 		M_l_r_                = M_l_r;
@@ -848,7 +859,7 @@ void MatrixSymPosDefCholFactor::initialize(
 		U_l_c_ = 1;
 	}
 	M_size_ = 1;
-	max_size_ = std::_MIN( MU_store_.rows(), MU_store_.cols() ) - 1;
+	max_size_ = my_min( MU_store_.rows(), MU_store_.cols() ) - 1;
 	scale_ = alpha > 0.0 ? +1.0 : -1.0;
 	// Update the matrix
 	if( maintain_original_ ) {
@@ -1353,7 +1364,7 @@ void MatrixSymPosDefCholFactor::resize_and_zero_off_diagonal(size_type n, value_
 	using LinAlgPack::nonconst_tri_ele;
 	using LinAlgPack::assign;
 
-	assert( n <= std::_MIN( MU_store_.rows(), MU_store_.cols() ) - 1 );
+	assert( n <= my_min( MU_store_.rows(), MU_store_.cols() ) - 1 );
 
 	// Resize the views
 	set_view(

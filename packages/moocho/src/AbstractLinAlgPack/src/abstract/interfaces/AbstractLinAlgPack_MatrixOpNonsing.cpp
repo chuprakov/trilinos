@@ -13,6 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#include <math.h>
+
 #include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"

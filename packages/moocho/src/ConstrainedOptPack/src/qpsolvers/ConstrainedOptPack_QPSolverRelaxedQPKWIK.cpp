@@ -118,6 +118,10 @@ f_int qpkwiknew_lrw(const f_int& n, const f_int& m1, const f_int& m2
 
 namespace {
 
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+
 using FortranTypes::f_int;
 typedef LinAlgPack::value_type value_type;
 
@@ -279,12 +283,12 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 
 	IBND_INV_.resize( nd + m_in);
 	std::fill( IBND_INV_.begin(), IBND_INV_.end(), 0 ); // Initialize the zero
-	IBND_.resize( std::_MAX( 1, M1_ + M2_ ) );
-	BL_.resize( std::_MAX( 1, M1_ + M2_ ) );
-	BU_.resize( std::_MAX( 1, M1_ + M2_ + M3_ ) );
-	LDA_ = std::_MAX( 1, M2_ + M3_ );
+	IBND_.resize( my_max( 1, M1_ + M2_ ) );
+	BL_.resize( my_max( 1, M1_ + M2_ ) );
+	BU_.resize( my_max( 1, M1_ + M2_ + M3_ ) );
+	LDA_ = my_max( 1, M2_ + M3_ );
 	A_.resize( LDA_, (  M2_ + M3_ > 0 ? N_ : 1 ) );
-	YPY_.resize( std::_MAX( 1, M1_ + M2_ ) );
+	YPY_.resize( my_max( 1, M1_ + M2_ ) );
 	if(M1_)
 		YPY_(1,M1_) = 0.0; // Must be for this QP interface
 

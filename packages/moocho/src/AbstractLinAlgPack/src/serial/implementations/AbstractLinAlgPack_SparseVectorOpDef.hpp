@@ -37,6 +37,15 @@
 #include "LinAlgPack/include/GenMatrixClass.h"
 #include "LinAlgPack/include/LinAlgPackAssertOp.h"
 
+namespace {
+template< class T >
+inline
+T my_my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+template< class T >
+inline
+T my_my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
+} // end namespace
+
 namespace SparseLinAlgPack {
 
 using LinAlgPack::VopV_assert_sizes;
@@ -91,7 +100,7 @@ template<class T_SpVec>
 value_type norm_inf_SV(const T_SpVec& sv_rhs) {
 	typename T_SpVec::element_type::value_type result = 0.0;
 	for(typename T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
-		result = std::_MAX(result,::fabs(iter->value()));
+		result = my_my_max(result,::fabs(iter->value()));
 	return result;
 }
 
@@ -100,7 +109,7 @@ template<class T_SpVec>
 value_type max_SV(const T_SpVec& sv_rhs) {
 	typename T_SpVec::element_type::value_type result = 0.0;
 	for(typename T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
-		result = std::_MAX(iter->value(),result);
+		result = my_my_max(iter->value(),result);
 	return result;
 }
 
@@ -109,7 +118,7 @@ template<class T_SpVec>
 value_type min_SV(const T_SpVec& sv_rhs) {
 	typename T_SpVec::element_type::value_type result = 0.0;
 	for(typename T_SpVec::const_iterator iter = sv_rhs.begin(); iter != sv_rhs.end(); ++iter)
-		result = std::_MIN(result,iter->value());
+		result = my_my_min(result,iter->value());
 	return result;
 }
 

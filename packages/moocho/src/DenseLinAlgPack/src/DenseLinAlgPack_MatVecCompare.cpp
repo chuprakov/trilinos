@@ -21,12 +21,23 @@
 #include "../include/GenMatrixAsTriSym.h"
 
 namespace {
+//
 using LinAlgPack::value_type;
+//
 using LinAlgPack::sqrt_eps;
+//
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+//
+template< class T >
+inline
+T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
+//
 inline
 bool _comp(value_type val1, value_type val2)
 {
-	const value_type denom = std::_MAX( ::fabs(val1), 1.0 ); // compare relative errors.
+	const value_type denom = my_max( ::fabs(val1), 1.0 ); // compare relative errors.
 	return ::fabs(val1 - val2) / denom < sqrt_eps;
 } 
 
@@ -51,7 +62,7 @@ bool LinAlgPack::comp(const VectorSlice& vs, value_type alpha) {
 bool LinAlgPack::comp(const GenMatrixSlice& gms1, BLAS_Cpp::Transp trans1
 	, const GenMatrixSlice& gms2, BLAS_Cpp::Transp trans2)
 {
-	for(size_type i = 1; i < std::_MIN(gms1.cols(),gms2.cols()); ++i)
+	for(size_type i = 1; i < my_min(gms1.cols(),gms2.cols()); ++i)
 		if( !comp( col(gms1,trans1,i) , col( gms2, trans2, i ) ) ) return false;
 	return true;
 }
@@ -95,7 +106,7 @@ bool LinAlgPack::comp(const tri_ele_gms& tri_gms1, value_type alpha)
 bool LinAlgPack::comp_less(const VectorSlice& vs, value_type alpha)
 {
 	VectorSlice::const_iterator vs_itr = vs.begin();
-	const value_type denom = std::_MAX( ::fabs(alpha), 1.0 );
+	const value_type denom = my_max( ::fabs(alpha), 1.0 );
 	for(; vs_itr != vs.end(); ++vs_itr)
 		if( *vs_itr > alpha ) return false;
 	return true;

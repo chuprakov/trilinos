@@ -30,9 +30,11 @@
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "ThrowException.h"
 
-namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
-}
+namespace {
+template< class T >
+inline
+T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
+} // end namespace
 
 namespace SparseLinAlgPack {
 
@@ -172,7 +174,7 @@ void MatrixSymDiagonalSparse::Mp_StMtMtM(
 	// Get the actual number of updates to use per rank-(num_updates) update
 	const size_type
 		num_updates
-			= std::_MIN( num_updates_at_once()
+			= my_min( num_updates_at_once()
 							? num_updates_at_once()
 							: 20	// There may be a better default value for this?
 						, diag.nz()
@@ -193,7 +195,7 @@ void MatrixSymDiagonalSparse::Mp_StMtMtM(
 	for( size_type k = 1; k <= num_blocks; ++k ) {
 		const size_type
 			i1 = (k-1) * num_updates + 1,
-			i2 = std::_MIN( diag.nz(), i1 + num_updates - 1 );
+			i2 = my_min( diag.nz(), i1 + num_updates - 1 );
 		// Generate the colunns of D(k)
 		SpVectorSlice::const_iterator
 			m_itr = diag.begin() + (i1-1);

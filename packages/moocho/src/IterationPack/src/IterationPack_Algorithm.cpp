@@ -23,6 +23,12 @@
 #include "stpwatch.h"
 #include "ThrowException.h"
 
+namespace {
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+} // end namespace
+
 // ToDo: change step_itr and assoc_step_itr to just return iterators without
 // asserting if the names exist.  This will be more useful.
 
@@ -371,7 +377,7 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 		keep_on = imp_do_step(curr_step_poss_);
 
 		if( algo_timing_ ) {
-			const double time = std::_MAX(step_timer.stop(),-1e-50);	// negative somehow (g++ -O2 ?)
+			const double time = my_max(step_timer.stop(),-1e-50);	// negative somehow (g++ -O2 ?)
 			// time for step k for the iteration
 			step_times_[state().k()-first_k_+(curr_step_poss_-1)*(max_iter()+1+NUM_STEP_TIME_STATS)] = time;
 			// Add to time for the full iteration

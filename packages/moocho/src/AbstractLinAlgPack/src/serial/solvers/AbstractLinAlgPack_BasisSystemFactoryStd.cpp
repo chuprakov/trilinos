@@ -56,6 +56,7 @@ BasisSystemFactoryStd::create() const
 	mmp::ref_count_ptr<DirectSparseSolver>  direct_sparse_solver;
 	switch(direct_linear_solver_type_) {
 		case LA_MA28: {
+#ifdef SPARSE_SOLVER_PACK_USE_MA28
 			mmp::ref_count_ptr<DirectSparseSolverMA28>
 				dss_ma28 = mmp::rcp(new DirectSparseSolverMA28());
 			if(options_.get()) {
@@ -64,6 +65,11 @@ BasisSystemFactoryStd::create() const
 				opt_setter.set_options(*options_);
 			}
 			direct_sparse_solver = dss_ma28;
+#else
+			THROW_EXCEPTION(
+				true, std::logic_error
+				,"Error, SPARSE_SOLVER_PACK_USE_MA28 is not defined and therefore MA28 is not supported!" );
+#endif
 			break;
 		}
 		case LA_MA48: {
@@ -73,10 +79,16 @@ BasisSystemFactoryStd::create() const
 			break;
 		}
 		case LA_SUPERLU: {
+#ifdef SPARSE_SOLVER_PACK_USE_SUPERLU
 			mmp::ref_count_ptr<DirectSparseSolverSuperLU>
 				dss_slu = mmp::rcp(new DirectSparseSolverSuperLU());
 			// ToDo: Set options from stream!
 			direct_sparse_solver = dss_slu;
+#else
+			THROW_EXCEPTION(
+				true, std::logic_error
+				,"Error, SPARSE_SOLVER_PACK_USE_SUPERLU is not defined and therefore SuperLU is not supported!" );
+#endif
 			break;
 		}
 		default:

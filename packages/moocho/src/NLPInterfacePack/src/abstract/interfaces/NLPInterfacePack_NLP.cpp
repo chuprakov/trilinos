@@ -21,9 +21,10 @@
 #include "ThrowException.h"
 
 namespace {
-	const char name_f[] = "f";
-	const char name_c[] = "c";
-	const char name_h[] = "h";
+const char name_f[] = "f";
+const char name_c[] = "c";
+const char name_h[] = "h";
+NLPInterfacePack::NLP::options_ptr_t  null_options = MemMngPack::null;
 } // end namespace
 
 // static
@@ -50,7 +51,7 @@ void NLPInterfacePack::NLP::set_options( const options_ptr_t& options )
 const NLPInterfacePack::NLP::options_ptr_t&
 NLPInterfacePack::NLP::get_options() const
 {
-	return MemMngPack::null;
+	return null_options;
 }
 
 void NLPInterfacePack::NLP::initialize(bool test_setup)

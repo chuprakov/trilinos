@@ -25,6 +25,15 @@
 #include "update_success.h"
 #include "ThrowException.h"
 
+namespace {
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+template< class T >
+inline
+T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
+} // end namespace
+
 namespace AbstractLinAlgPack {
 
 VectorSpaceTester::VectorSpaceTester(
@@ -169,7 +178,7 @@ bool VectorSpaceTester::check_vector_space(
 		{for(int r = 0; r < num_random_tests(); ++r) {
 			srand( n / (1+r) + r ); // This is very important in a parallel program!
 			const RTOp_index_type
-				i = std::_MIN( n, std::_MAX( (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1.0), 1 ) );
+				i = my_min( n, my_max( (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1.0), 1 ) );
 			const RTOp_value_type
 				val = 10.0;
 			
@@ -242,8 +251,8 @@ bool VectorSpaceTester::check_vector_space(
 			*out << std::endl << z_name << " =\n" << *z[k];
 		{for(int r = 0; r < num_random_tests(); ++r) {
 			RTOp_index_type
-				i1 = std::_MIN( n, (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1) ),
-				i2 = std::_MIN( n, (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1) );
+				i1 = my_min( n, (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1) ),
+				i2 = my_min( n, (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1) );
 			if( i1 > i2 ) std::swap( i1, i2 );
 			RTOp_index_type
 				sub_vec_dim = i2-i1+1;
@@ -337,8 +346,8 @@ bool VectorSpaceTester::check_vector_space(
 
 		{for(int r = 0; r < num_random_tests(); ++r) {
 			const RTOp_index_type // Get random small sub-vectors so parallel efficiency will be good
-				i1 = std::_MIN( n, (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1) ),
-				i2 = std::_MIN( (RTOp_index_type)(i1 + ((double)rand() / RAND_MAX) * 9), n );
+				i1 = my_min( n, (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1) ),
+				i2 = my_min( (RTOp_index_type)(i1 + ((double)rand() / RAND_MAX) * 9), n );
 			const RTOp_index_type
 				sub_vec_dim = i2-i1+1;
 
@@ -422,7 +431,7 @@ bool VectorSpaceTester::check_vector_space(
 
 		value_type
 			norm_inf        = z[k]->norm_inf(),
-			expect_norm_inf = std::_MAX(::fabs(val1),::fabs(val2));
+			expect_norm_inf = my_max(::fabs(val1),::fabs(val2));
 		err = (norm_inf - expect_norm_inf)/n;
 		if(out && (print_all_tests() || ::fabs(err) >= warning_tol()) )
 			*out << "check: (" << z_name << "->norm_inf() - max(|"<<val1<<"|,"

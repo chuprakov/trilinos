@@ -24,6 +24,12 @@
 #include "AbstractLinAlgPack/include/VectorWithOp.h"
 #include "dynamic_cast_verbose.h"
 
+namespace {
+template< class T >
+inline
+T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+} // end namespace
+
 namespace ReducedSpaceSQPPack {
 
 using std::endl;
@@ -136,11 +142,11 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 		<< "; # Number of rSQP iterations (plus 1?)\n";
 	// nfunc
 	o << left << setw(stat_w) << "nfunc" << "= "
-		<< right << setw(val_w) << std::_MAX(nlp.num_f_evals(),(m? nlp.num_c_evals():0) )
+		<< right << setw(val_w) << my_max(nlp.num_f_evals(),(m? nlp.num_c_evals():0) )
 		<< "; # max( number f(x) evals, number c(x) evals )\n";
 	// ngrad
 	o << left << setw(stat_w) << "ngrad" << "= "
-		<< right << setw(val_w) << std::_MAX(nlp.num_Gf_evals(),(m?(nlp_foi?nlp_foi->num_Gc_evals():s.k()+1):0))
+		<< right << setw(val_w) << my_max(nlp.num_Gf_evals(),(m?(nlp_foi?nlp_foi->num_Gc_evals():s.k()+1):0))
 		<< "; # max( number Gf(x) evals, number Gc(x) evals )\n";
 	// CPU
 	o << left << setw(stat_w) << "CPU" << "= "
