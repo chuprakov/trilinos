@@ -1,0 +1,103 @@
+/** @name namespace ConstrainedOptimizationPack.
+
+Package of higher lever level numerical object.  Included in this package are such things as range / null space decompositions, QP solvers, updatable matrices and line searches and merit functions.
+
+@memo
+Uses packages LinAlgPack, SparseLinAlgPack, SparseSolverPack and NLPInterfacePack.
+*/
+//@{
+
+  /** @name 1. Range / Null Decompositions for Matrices.
+    */
+  //@{
+
+    /** @name 1. Range / Null Space Decompositions.
+      */
+    //@{
+      
+      /** @name 1. Abstract Interfaces.
+        */
+      //@{
+        //@Include: DecompositionSystem.h
+        //@Include: DecompositionSystemVarReduct.h
+      //@}
+
+      /** @name 2. Node Subclasses.
+        */
+      //@{
+        //@Include: DecompositionSystemVarReductImpNode.h
+        //@Include: DecompositionSystemCoordinate.h
+      //@}
+
+      /** @name 3. Concrete Subclasses.
+        */
+      //@{
+        //@Include: DecompositionSystemCoordinateAdjoint.h
+        //@Include: DecompositionSystemCoordinateDirect.h
+      //@}
+
+    //@}
+
+    /** @name 2. Variable Reduction Null Space Matrices.
+      */
+    //@{
+
+      /** @name 1. Abstract Matrix Interfaces.
+        */
+      //@{
+        //@Include: ZVarReductMatrix.h
+      //@}
+
+      /** @name 2. Concrete Matrix Subclasses.
+        */
+      //@{
+        //@Include: ZAdjointFactDensePartSubclass.h
+        //@Include: ZAdjointFactMatrixSubclass.h
+        //@Include: DenseIdentVertConcatMatrixSubclass.h
+      //@}
+
+      /** @name 3. Concrete Matrix Types.
+        */
+      //@{
+        //@Include: DenseIdentVertConcatMatrixClass.h
+        //@Include: DenseIdentVertConcatMatrixOp.h
+      //@}
+
+    //@}
+
+    /** @name 3. Variable Reduction Range Space Matrices. */
+    //@{
+      
+      /** @name 1. Concrete Matrix Subclasses.
+        */
+      //@{
+        //@Include: IdentZeroVertConcatMatrixSubclass.h
+      //@}
+
+      /** @name 2. Concrete Matrix Types.
+        */
+      //@{
+        //@Include: IdentZeroVertConcatMatrixClass.h
+        //@Include: IdentZeroVertConcatMatrixOp.h
+      //@}
+
+    //@}
+
+  //@}
+
+  /** @name 2. QP Solvers.
+    */
+  //@{
+  //@}
+
+  /** @name 3. Updateable Matrices.
+    */
+  //@{
+  //@}
+
+  /** @name 4. Line Searches and Merit Functions.
+    */
+  //@{
+  //@}
+
+//@}

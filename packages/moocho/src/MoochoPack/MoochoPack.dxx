@@ -1,0 +1,90 @@
+/** @name namespace ReducedSpaceSQPPack.
+
+Framework for building Successive Quadratic Programming (SQP)
+algorithms.  ReducedSpaceSQPPack and its other packages that it
+is dependent on are collectively known as rSQP++.
+
+@memo
+Uses packages LinAlgPack, SparseLinAlgPack, SparseSolverPack
+, NLPInterfacePack, ConstrainedOptimizationPack and
+, GeneralIterationPack.
+*/
+//@{
+
+  /** @name 1. Optimizer Configurations.
+    */
+  //@{
+
+    /** @name 1. MamaJama.
+      *
+      * @memo
+      * This is a very full featured configuration object
+      * and encapsulation functions for many rSQP algorithms.
+      */
+    //@{
+      //@Include: ./Configurations/MamaJama/rsqp_mama_jama_solve.h
+      //@Include: ./Configurations/MamaJama/create_mama_jama_solver.h
+      //@Include: ./Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.h
+    //@}
+
+  //@}
+
+  /** @name 2. Archetictural Classes.
+    */
+  //@{
+  //@}
+
+  /** @name 3. Standard Algorithm Step Classes.
+    */
+  //@{
+    //@Include: ./include/std/CalcDFromYPYZPZ_Step.h
+    //@Include: ./include/std/CalcLambdaIndepStd_AddedStep.h
+    //@Include: ./include/std/CalcReducedGradLagrangianStd_AddedStep.h
+    //@Include: ./include/std/CalcZpzFromDYPY_Step.h
+    //@Include: ./include/std/CheckBasisFromPy_Step.h
+    //@Include: ./include/std/CheckConvergenceStd_AddedStep.h
+    //@Include: ./include/std/CheckSkipBFGSUpdateNoPy_Step.h
+    //@Include: ./include/std/CheckSkipBFGSUpdateStd_Step.h
+    //@Include: ./include/std/DecompositionSystemVarReductStd.h
+    //@Include: ./include/std/DepDirecStd_Step.h
+    //@Include: ./include/std/EvalNewPointStd_Step.h
+    //@Include: ./include/std/IndepDirecExact_Step.h
+    //@Include: ./include/std/IndepDirecWithoutBounds_Step.h
+    //@Include: ./include/std/InitFinDiffReducedHessian_Step.h
+    //@Include: ./include/std/InitFinDiffReducedHessian_StepSetOptions.h
+    //@Include: ./include/std/LineSearch2ndOrderCorrect_Step.h
+    //@Include: ./include/std/LineSearch2ndOrderCorrect_StepSetOptions.h
+    //@Include: ./include/std/LineSearchDirect_Step.h
+    //@Include: ./include/std/LineSearchFailureNewBasisSelection_Step.h
+    //@Include: ./include/std/LineSearchFullStepAfterKIter_Step.h
+    //@Include: ./include/std/LineSearchFullStep_Step.h
+    //@Include: ./include/std/LineSearchWatchDog_Step.h
+    //@Include: ./include/std/LineSearhFailureNewBasisSelection_Step.h
+    //@Include: ./include/std/MeritFunc_ModifiedL1LargerSteps_AddedStep.h
+    //@Include: ./include/std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.h
+    //@Include: ./include/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.h
+    //@Include: ./include/std/MeritFunc_PenaltyParamUpdate_AddedStep.h
+    //@Include: ./include/std/MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.h
+    //@Include: ./include/std/MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.h
+    //@Include: ./include/std/NewBasisSelectionStd_Strategy.h
+    //@Include: ./include/std/NewBasisSelection_Strategy.h
+    //@Include: ./include/std/NumFixedDepIndep_AddedStep.h
+    //@Include: ./include/std/PrintReducedQPError_AddedStep.h
+    //@Include: ./include/std/ReducedGradientStd_Step.h
+    //@Include: ./include/std/ReducedHessianBFGSStd_Step.h
+    //@Include: ./include/std/ReducedHessianBFGS_Step.h
+    //@Include: ./include/std/SearchDirecMixedFullReduced_Step.h
+  //@}
+
+  /** @name 4. Standard Algorithm Track Classes.
+    */
+  //@{
+  //@}
+
+  /** @name 5. Misc. Classes and Functions.
+    */
+  //@{
+  //@}
+
+
+//@}
