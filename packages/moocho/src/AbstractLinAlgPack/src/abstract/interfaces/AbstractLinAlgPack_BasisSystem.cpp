@@ -40,18 +40,14 @@ Range1D BasisSystem::inequ_undecomp() const
 	return Range1D::Invalid;
 }
 
-const BasisSystem::mat_space_ptr_t& BasisSystem::space_GcUP() const
+const BasisSystem::mat_fcty_ptr_t BasisSystem::factory_GcUP() const
 {
-	return mat_space_ptr_null_;
+	return NULL;
 }
 
-const BasisSystem::mat_space_ptr_t& BasisSystem::space_GhUP() const
+const BasisSystem::mat_fcty_ptr_t BasisSystem::factory_GhUP() const
 {
-	return mat_space_ptr_null_;
+	return NULL;
 }
-
-// private
-
-const BasisSystem::mat_space_ptr_t   BasisSystem::mat_space_ptr_null_(NULL);
 
 } // end namespace AbstractLinAlgPack

@@ -17,13 +17,14 @@
 #define ABSTRACT_LIN_ALG_PACK_BASIS_SYSTEM_H
 
 #include "AbstractLinAlgPackTypes.h"
+#include "AbstractFactory.h"
 #include "ref_count_ptr.h"
 
 namespace AbstractLinAlgPack {
 
 ///
-/** Interface for the creation and maintainance of a basis matrix
- * for a decomposition of linearlized constriants.
+/** Interface for the creation and maintainance of a basis matrix for a decomposition of
+ * linearlized constriants.
  *
  * <b>Overview:</b>
  *
@@ -87,8 +88,8 @@ namespace AbstractLinAlgPack {
  \endverbatim
  * Given this matrix \a D, we can define some other projected sensistivity matrices:
  * <ul>
- * <li> <tt>GcUP = Gc(var_indep,equ_undecomp)   + D'*Gc(var_dep,equ_undecomp)</tt>
- * <li> <tt>GhUP = Gh(var_indep,inequ_undecomp) + D'*Gh(var_dep,inequ_undecomp)</tt>
+ * <li> <tt>GcUP = Gc(var_indep,equ_undecomp)'   + Gc(var_dep,equ_undecomp)'   * D</tt>
+ * <li> <tt>GhUP = Gh(var_indep,inequ_undecomp)' + Gh(var_dep,inequ_undecomp)' * D</tt>
  * </ul>
  *
  * This interface allows a client to create the basis matrix <tt>C</tt> and optionally
@@ -109,11 +110,11 @@ namespace AbstractLinAlgPack {
  * <b>Client usage:</b>
  *
  * The matrix objects for the basis matrix \a C and the direct sensitivity matrix
- * \a D are created by the client using the \c MatrixSpace objects returned from
- * \c space_C() and \c space_D().  These methods return smart pointers to these
- * <tt>%MatrixSpace</tt> objects and these objects are ment to have a lifetime that extends
+ * \a D are created by the client using the \c AbstractFactory<> objects returned from
+ * \c factory_C() and \c factory_D().  These methods return smart pointers to these
+ * matrix factory objects and these objects are ment to have a lifetime that extends
  * up to and beyond the lifetime of the <tt>%BasisSystem</tt> object that created them.
- * Note that the matrix objects returned by this matrix space objects are not to be
+ * Note that the matrix objects returned by these matrix factory objects are not to be
  * considered usable until they have passed through \c update_basis().
  *
  * The ranges of the dependent and independent variables, decomposed and undecomposed
@@ -134,16 +135,22 @@ namespace AbstractLinAlgPack {
  * Note that the client should not rely on \c var_dep(), \c var_indep(), \c equ_decomp(),
  * \c equ_undecomp(), \c inequ_decomp() or \c inequ_undecomp() until after the first
  * call to \c update_basis().  This allows a <tt>%BasisSystem</tt> object to adjust itself
- * to accommodate the input matrices \c Gc and \c Gh.  However, in general, a <tt>%BasisSystem</tt>
- * will be ready to deal with only specific \c Gc and/or \c Gh matrices when it is
- * given to a client. The return value <ttt>var_dep() == Range1D::Invalid</tt> is used to
- * flag that \c this <tt>%BasisSystem</tt> object is not initialized for a specific
- * set of matrices yet.  This interface is completely worthless unless \c var_dep() returns
+ * to accommodate the input matrices \c Gc and \c Gh.
+ *
+ * A fully initialized <tt>%BasisSystem</tt> object will be setup to work with specific
+ * types and sizes of input matrices \c Gc and \c Gh.  Therefore, the client should be
+ * able to get accrate values from \c var_dep(), \c var_indep(), \c equ_decomp(),
+ * \c equ_undecomp(), \c inequ_decomp() or \c inequ_undecomp() even before the first
+ * call to \c update_basis().  The <tt>%BasisSystem</tt> object must therefore be
+ * initialized in some way to accommodate input matrices \c Gc and \c Gh of a specific
+ * dimension.
+ *
+ * Note that This interface is completely worthless unless \c var_dep() returns
  * some valid range (i.e. a basis matrix exists).
  *
  * The method \c update_basis() is used by the client to update the basis matrix \a C and
  * perhaps the direct sensitivity matrix \a D and it's auxillary projected sensistivity
- * matrices \a V and \a P.  Strictly speaking, it would be possible to
+ * matrices \c GcUP and \c GhUP.  Strictly speaking, it would be possible to
  * form the matrix \a D externally through the <tt>MatrixNonsingular</tt> interface using
  * the returned \a C and an \a N matrix object, but this may not take advantage of any
  * special application specific tricks that
@@ -178,7 +185,7 @@ namespace AbstractLinAlgPack {
  \endcode
  * Note that the above nonbasis matrix object \a N returned from the above function depends the matrix objects
  * \c Gc and \c Gh not being modified while \a N is in use.  To make \c N independnet of \c Gc and \c Gh we would
- * of had to clone then (which is not part of the <tt>MatrixWithOp</tt> interface) and may have resulted in a 
+ * of had to clone them (which is not part of the <tt>MatrixWithOp</tt> interface) and may have resulted in a 
  * large allocation of memory. 
  * Given the nonbasis matrix object for \a N returned by the above function, this matrix object could be used
  * to form an explicit \a D matrix object (but perhaps not very efficiently) or be used to implicitly implement
@@ -199,47 +206,55 @@ namespace AbstractLinAlgPack {
 class BasisSystem {
 public:
 
+	/** @name Public types */
+	//@{
+
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<
-		const AbstractLinAlgPack::MatrixSpace<MatrixWithOpNonsingular> >    mat_nonsing_space_ptr_t;
+		const AbstractFactoryPack::AbstractFactory<MatrixWithOpNonsingular> >    mat_nonsing_fcty_ptr_t;
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<
-		const AbstractLinAlgPack::MatrixSpace<MatrixWithOp> >               mat_space_ptr_t;
+		const AbstractFactoryPack::AbstractFactory<MatrixWithOp> >               mat_fcty_ptr_t;
+	///
+	class NumericallySingular : public std::runtime_error
+	{public: NumericallySingular(const std::string& what_arg) : std::runtime_error(what_arg) {}};
+
+	//@}
 
 	///
 	virtual ~BasisSystem() {}
 
-	/** @name MatrixSpace objects */
+	/** @name Matrix factories */
 	//@{
 
 	///
-	/** Return a matrix space object for basis <tt>C = [ Gc(var_dep,equ_decomp)';  Gh(var_dep,inequ_decomp)' ]</tt>.
+	/** Return a matrix factory object for basis <tt>C = [ Gc(var_dep,equ_decomp)';  Gh(var_dep,inequ_decomp)' ]</tt>.
 	 */
-	virtual const mat_nonsing_space_ptr_t& space_C() const = 0;
+	virtual const mat_nonsing_fcty_ptr_t factory_C() const = 0;
 	
 	///
-	/** Return a matrix space object for sensitivity matrix <tt>D = -inv(C)*N</tt>.
+	/** Return a matrix factory object for sensitivity matrix <tt>D = -inv(C)*N</tt>.
 	 *
 	 * It is allowed for this to return \c NULL in which case \c update_basis() will not
 	 * accept a \c D matrix to be computed.
 	 */
-	virtual const mat_space_ptr_t& space_D() const = 0;
+	virtual const mat_fcty_ptr_t factory_D() const = 0;
 
 	///
-	/** Return a matrix space object for auxiliary sensitivity matrix <tt>GcUP = Gc(var_indep,equ_undecomp) + D'*Gc(var_dep,equ_undecomp)</tt>.
+	/** Return a matrix factory object for auxiliary sensitivity matrix <tt>GcUP = Gc(var_indep,equ_undecomp)' + Gc(var_dep,equ_undecomp)'*D</tt>.
 	 *
 	 * It is allowed for this to return \c NULL in which case \c update_basis() will not
 	 * accept a \c GcUP matrix to be computed.
 	 */
-	virtual const mat_space_ptr_t& space_GcUP() const;
+	virtual const mat_fcty_ptr_t factory_GcUP() const;
 
 	///
-	/** Return a matrix space object for auxiliary sensitivity matrix <tt>GhUP = Gh(var_indep,inequ_undecomp) + D'*Gh(var_dep,inequ_undecomp)</tt>.
+	/** Return a matrix factory object for auxiliary sensitivity matrix <tt>GhUP = Gh(var_indep,inequ_undecomp)' + Gh(var_dep,inequ_undecomp)'*D</tt>.
 	 *
 	 * It is allowed for this to return \c NULL in which case \c update_basis() will not
 	 * accept a \c GhUP matrix to be computed.
 	 */
-	virtual const mat_space_ptr_t& space_GhUP() const;
+	virtual const mat_fcty_ptr_t factory_GhUP() const;
 
 	//@}
 
@@ -315,7 +330,7 @@ public:
 	 * @param  Gh    [in] Jacobian of the inequality constraints.
 	 * @param  C     [out] Basis matrix.  If <tt>C == NULL</tt> on input, then this
 	 *               quantity is not updated.  If <tt>C != NULL</tt> then this must
-	 *               have been created by <tt>this->space_C()->create_member()</tt>.
+	 *               have been created by <tt>this->factory_C()->create()</tt>.
 	 *               This basis matrix object must be independent of the input
 	 *               matrices \c Gc and/or \c Gh.  Therefore, it must be legal to
 	 *               destroy \c Gc and/or \c Gh without affecting the behavior of
@@ -323,35 +338,33 @@ public:
 	 * @param  D     [out] Direct sensitivity matrix <tt>D = -inv(C)*N</tt>.  If
 	 *               <tt>D == NULL</tt> on input then this quantity is not updated.
 	 *               If <tt>D != NULL</tt> then this must have been created by
-	 *               <tt>this->space_D()->create_member()</tt>.  This matrix object
+	 *               <tt>this->factory_D()->create()</tt>.  This matrix object
 	 *               is meaningless if <tt>this->var_indep() == Range1D::Invalid</tt>
 	 *               on return.
-	 *               This matrix object must be independent of the input
-	 *               matrices \c Gc and/or \c Gh.  Therefore, it must be legal to
+	 *               This matrix object must be independent matrices \c Gc and/or \c Gh
+	 *               Therefore, it must be legal to
 	 *               destroy \c Gc and/or \c Gh without affecting the behavior of
 	 *               the direct sensitivity matrix object \c D.
 	 * @param  GcUP  [out] Auxiliary sensistivity matrix
-	 *               <tt>GcUP = Gc(var_indep,equ_undecomp) + D'*Gc(var_dep,equ_undecomp)</tt>.
+	 *               <tt>GcUP = Gc(var_indep,equ_undecomp)' + Gc(var_dep,equ_undecomp)'*D</tt>.
 	 *               If <tt>GcUP == NULL</tt> on input then this quantity is not updated.
 	 *               If <tt>GcUP != NULL</tt> then this must have been created by
-	 *               <tt>this->space_GcUP()->create_member()</tt>.  This matrix object
+	 *               <tt>this->factory_GcUP()->create()</tt>.  This matrix object
 	 *               is meaningless if <tt>this->var_indep() == Range1D::Invalid</tt>
 	 *               on return.
-	 *               This matrix object must be independent of the input
-	 *               matrices \c Gc and/or \c Gh.  Therefore, it must be legal to
-	 *               destroy \c Gc and/or \c Gh without affecting the behavior of
-	 *               the direct sensitivity matrix object \c D.
+	 *               This matrix object must be independent of the matrices \c Gc and/or \c Gh
+	 *               and/or \c D.  Therefore, it must be legal to destroy \c Gc and/or \c Gh
+	 *               and/or \c D without affecting the behavior of the matrix object \c GcUP.
 	 * @param  GhUP  [out] Auxiliary sensistivity matrix
-	 *               <tt>GhUP = Gh(var_indep,inequ_undecomp) + D'*Gh(var_dep,inequ_undecomp)</tt>.
+	 *               <tt>GhUP = Gh(var_indep,inequ_undecomp)' + Gh(var_dep,inequ_undecomp)'*D</tt>.
 	 *               If <tt>GhUP == NULL</tt> on input then this quantity is not updated.
 	 *               If <tt>GhUP != NULL</tt> then this must have been created by
-	 *               <tt>this->space_GhUP()->create_member()</tt>.  This matrix object
+	 *               <tt>this->factory_GhUP()->create()</tt>.  This matrix object
 	 *               is meaningless if <tt>this->var_indep() == Range1D::Invalid</tt>
 	 *               on return.
-	 *               This matrix object must be independent of the input
-	 *               matrices \c Gc and/or \c Gh.  Therefore, it must be legal to
-	 *               destroy \c Gc and/or \c Gh without affecting the behavior of
-	 *               the direct sensitivity matrix object \c D.
+	 *               This matrix object must be independent of the matrices \c Gc and/or \c Gh
+	 *               and/or \c D.  Therefore, it must be legal to destroy \c Gc and/or \c Gh
+	 *               and/or \c D without affecting the behavior of the matrix object \c GhUP.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>Gc != NULL || Gh != NULL</tt>
@@ -360,13 +373,16 @@ public:
 	 * <li> [<tt>Gc != NULL</tt>] <tt>Gc->space_cols().sub_space(var_dep()).get() != NULL</tt>
 	 * <li> [<tt>Gc != NULL</tt>] <tt>Gc->space_cols().sub_space(var_indep()).get() != NULL</tt>
 	 * <li> [<tt>Gc != NULL</tt>] <tt>Gc->space_rows().sub_space(equ_decomp()).get() != NULL</tt>
-	 * <li> [<tt>Gc != NULL && equ_decomp().size() < Gc.cols()</tt>]
+	 * <li> [<tt>Gc != NULL && equ_decomp().size() > 0 </tt>]
+	 *      <tt>Gc.space_rows().sub_space(equ_decomp()).get() != NULL</tt>
+	 * <li> [<tt>Gc != NULL && equ_undecomp().size() > 0 </tt>]
 	 *      <tt>Gc.space_rows().sub_space(equ_undecomp()).get() != NULL</tt>
-	 * <li> [<tt>Gh != NULL</tt>]  <tt>Gh->space_rows().sub_space(inequ_decomp()).get() != NULL</tt>
-	 * <li> [<tt>Gh != NULL && inequ_decomp().size() < Gh->cols()</tt>]
-	 *      <tt>Gh.space_rows().sub_space(inequ_undecomp()).get() != NULL</tt>
-	 * <li> [<tt>Gc == NULL</tt>] <tt>GcUP == NULL</tt>
-	 * <li> [<tt>Gh == NULL</tt>] <tt>GhUP == NULL</tt>
+	 * <li> [<tt>Gh != NULL && inequ_decomp().size() > 0</tt>]
+	 *      <tt>Gh->space_rows().sub_space(inequ_decomp()).get() != NULL</tt>
+	 * <li> [<tt>Gh != NULL && inequ_undecomp().size() > 0</tt>]
+	 *      <tt>Gh->space_rows().sub_space(inequ_undecomp()).get() != NULL</tt>
+	 * <li> [<tt>Gc == NULL || equ_undecomp().size() == 0</tt>] <tt>GcUP == NULL</tt>
+	 * <li> [<tt>Gh == NULL || inequ_undecomp().size() == 0</tt>] <tt>GhUP == NULL</tt>
 	 * <li> <tt>C != NULL || D != NULL || GcUP != NULL || GhUP != NULL</tt>
 	 * </ul>
 	 *
@@ -385,15 +401,15 @@ public:
 	 *      <tt>D->space_cols().sub_space(equ_decomp().size()+inequ_decomp())->is_compatible(Gh->space_rows().sub_space(inequ_decomp()))
 	 *      && D->space_rows().is_compatible(Gh->space_cols().sub_space(var_indep()))</tt>
 	 * <li> [<tt>GcUP != NULL && var_indep().size() > 0 && equ_undecomp().size() > 0</tt>]
-	 *      <tt>GcUP->space_cols()->is_compatible(Gc->space_cols().sub_space(var_indep()))
-	 *      && GcUP->space_rows()->is_compatible(Gc->space_rows().sub_space(equ_undecomp()))</tt>
+	 *      <tt>GcUP->space_rows()->is_compatible(Gc->space_cols().sub_space(var_indep()))
+	 *      && GcUP->space_cols()->is_compatible(Gc->space_rows().sub_space(equ_undecomp()))</tt>
 	 * <li> [<tt>GhUP != NULL && var_indep().size() > 0 && inequ_undecomp().size() > 0</tt>]
-	 *      <tt>GhUP->space_cols()->is_compatible(Gh->space_cols().sub_space(var_indep()))
-	 *      && GhUP->space_rows()->is_compatible(Gh->space_rows().sub_space(inequ_undecomp()))</tt>
+	 *      <tt>GhUP->space_rows()->is_compatible(Gh->space_cols().sub_space(var_indep()))
+	 *      && GhUP->space_cols()->is_compatible(Gh->space_rows().sub_space(inequ_undecomp()))</tt>
 	 * </ul>
 	 *
-	 * This method is declared non-const because it may change what is returned by the partitioning functions such as
-	 * \c var_dep().
+	 * This method with throw a \c NumericallySingular exception if the updated basis matrix \a C is too close
+	 * (as defined by the underlying implementation by some means) to being numerically singular.
 	 */
 	virtual void update_basis(
 		const MatrixWithOp*         Gc
@@ -402,13 +418,9 @@ public:
 		,MatrixWithOp*              D
 		,MatrixWithOp*              GcUP
 		,MatrixWithOp*              GhUP
-		) = 0;
+		) const = 0;
 
 	//@}
-
-private:
-
-	static const mat_space_ptr_t   mat_space_ptr_null_;
 
 }; // end class BasisSystem
 
