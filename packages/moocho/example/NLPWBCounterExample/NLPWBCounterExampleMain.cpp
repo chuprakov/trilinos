@@ -37,7 +37,7 @@ int main( int argc, char* argv[] )
 		bool     nlp_selects_basis = true;
 		bool     linear_obj        = true;
 
-		CommandLineProcessor  command_line_processor;
+		CommandLineProcessor  command_line_processor(false); // don't throw exceptions
 
 		command_line_processor.setOption( "x1-init",  &xinit[0], "Initail guess for x(1)" );
 		command_line_processor.setOption( "x2-init",  &xinit[1], "Initail guess for x(2)" );

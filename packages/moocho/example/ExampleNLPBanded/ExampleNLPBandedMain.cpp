@@ -21,7 +21,6 @@
 
 int main( int argc, char* argv[] )
 {
-	namespace mmp   = MemMngPack;
 	namespace mp  = MoochoPack;
 	namespace nlpip = NLPInterfacePack;
 	using mp::MoochoSolver;
@@ -62,7 +61,7 @@ int main( int argc, char* argv[] )
 		double   co        = 0.0;
 		bool     ignore_constraints = false;
 		
-		CommandLineProcessor  command_line_processor;
+		CommandLineProcessor  command_line_processor(false); // don't throw exceptions
 
 		command_line_processor.setOption( "nD",  &nD, "Number of dependent variables" );
 		command_line_processor.setOption( "nI",  &nI, "Number of independent variables" );
