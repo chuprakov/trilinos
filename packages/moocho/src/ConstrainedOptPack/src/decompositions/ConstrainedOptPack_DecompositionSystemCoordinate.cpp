@@ -173,11 +173,11 @@ void DecompositionSystemCoordinate::initialize_matrices(
 		Y_coor->initialize(
 			space_x()                                         // space_cols
 			,space_x()->sub_space(var_dep)->clone()           // space_rows
-			,MatrixIdentConcatStd::TOP                        // top_or_bottom
+			,MatrixIdentConcatStd::BOTTOM                     // top_or_bottom
 			,0.0                                              // alpha
 			,rcp::rcp(
 				new MatrixZero(
-					space_x()
+					space_x()->sub_space(var_indep)->clone()
 					,space_x()->sub_space(var_dep)->clone()
 					) )                                       // D_ptr
 			,BLAS_Cpp::no_trans                               // D_trans
