@@ -51,6 +51,9 @@ public:
 		,const MemMngPack::ref_count_ptr<const Norm<Scalar> >  &norm           = MemMngPack::null
 		);
 
+	/// Return the minimum (over all iterations) maximum (over all right-hand-sides) tolerance seen
+	Scalar minMaxError() const;
+
 	//@}
 
 	/** @name Overridden from ConvergenceTester */
@@ -74,7 +77,19 @@ private:
 	std::vector<Index>                               activeSystems_;  // cache
 	std::vector<Scalar>                              norms_;          // cache
 
+	Scalar                                           minMaxErr_;
+
 }; // class NormedConvergenceTester
+
+// ///////////////////////////
+// Inline members
+
+template<class Scalar>
+inline
+Scalar NormedConvergenceTester<Scalar>::minMaxError() const
+{
+	return minMaxErr_;
+}
 
 } // namespace Solvers
 } // namespace TSFCore
