@@ -24,7 +24,8 @@ public:
 
 	///
 	enum ENewtonOutputLevel {
-		PRINT_NEWTON_NOTHING       = 0
+		PRINT_USE_DEFAULT
+		,PRINT_NEWTON_NOTHING      = 0
 		,PRINT_NEWTON_SUMMARY_INFO = 1
 		,PRINT_NEWTON_STEPS        = 2
 		,PRINT_NEWTON_VECTORS      = 3
@@ -71,7 +72,7 @@ public:
 		,const feasibility_step_ptr_t&		feasibility_step        = NULL
 		,const direct_ls_newton_ptr_t&		direct_ls_newton		= 0
 		,value_type							eta						= 1.0e-4
-		,ENewtonOutputLevel					newton_olevel			= PRINT_NEWTON_NOTHING
+		,ENewtonOutputLevel					newton_olevel			= PRINT_USE_DEFAULT
 		,value_type							constr_norm_threshold	= 1e-3
 		,int								after_k_iter			= 2
 		,EForcedConstrReduction				forced_constr_reduction	= CONSTR_LESS_X_D
