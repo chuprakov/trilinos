@@ -63,6 +63,8 @@ class MultiVectorMutable;
 
 class BasisSystem;
 
+class Permutation;
+
 // template classes
 
 template <class T_Indice, class T_Value>	class SparseElement;
@@ -108,6 +110,7 @@ class MatrixCompositeStd;
 class MatrixSymIdentity;
 class MatrixSymDiagonalStd;
 class MatrixZero;
+class MatrixPermAggr;
 
 // testing classes
 
