@@ -4,15 +4,17 @@
 #ifndef VECTOR_WITH_OP_MUTABLE_H
 #define VECTOR_WITH_OP_MUTABLE_H
 
+#include "VectorBaseMutable.h"
 #include "VectorWithOp.h"
 
 namespace AbstractLinAlgPack {
 
 ///
-/** Abstract interface for objects that represent a space for vectors.
+/** Abstract interface for objects that represent a space for mutable coordinate vectors.
  *
+ * This class is primary an "Abstract Factory" interface.
  */
-class VectorSpace {
+class VectorSpace : public virtual VectorSpaceBase {
 public:
 
 	///
@@ -27,15 +29,6 @@ public:
 	/** Return the dimmension of the vector space.
 	 */
 	virtual RTOp_index_type dim() const = 0;
-
-	///
-	/** Compare the compatibility of two vector spaces.
-	 *
-	 * If this function returns true, then vectors created from
-	 * either of the vector spaces will be compatible and can
-	 * be combined in vector operations.
-	 */
-	virtual bool is_compatible(const VectorSpace& another_vector_space) const = 0;
 
 	///
 	/** Create a member of the vector space.
@@ -64,45 +57,78 @@ public:
 	 * It is allowed for the implementation to return #return->get() == NULL#
 	 * for arbitrary values of #rng#.  Only some #rng# ranges may be allowed
 	 * but they will be appropriate for the application at hand.
+	 *
+	 * Note that if two vector space objects #X# and #Y# are compatible (i.e.
+	 * #X.is_compatible(Y) == true#, then it is also expected that
+	 * #X.sub_space(rng)->is_compatible(*Y.sub_space(rng))# will also be true.
+	 * However, in general it can not be expected that
+	 * #X.sub_space(rng1)->is_compatible(*X.sub_space(rng2))#, with
+	 * #rng1.size() == rng2.size()#, will be true.  For serial vectors, it may
+	 * be but for parallel vectors it will most certainly not be.  Therefore, in
+	 * general, don't assume that arbitrary subsets of the vector spaces will be
+	 * comatible, even if the sizes of these subspaces are the same.
 	 */
 	virtual space_ptr_t sub_space(const LinAlgPack::Range1D& rng) const = 0;
+	
+	/** @name Overrriden from \Ref{VectorSpaceBase} */
+	//@{
+	
+	///
+	/** This implementaion just calls #create_member()# and then converts
+	 * the smart pointer.
+	 */
+	vec_ptr_t new_member() const;
+
+	//@}
 
 }; // end class VectorSpace
 
 ///
-/** Abstract interface for mutable vectors {abstract}.
+/** Abstract interface for mutable coordinate vectors {abstract}.
   *
   * Objects of this type can act as a target vector of
   * reduction/transformation operations.  Similarly to 
-  * \Ref{VectorWithOp} this interface contains a single
-  * method \Ref{apply_transformation}#(...)# that allows
-  * users to apply user defined transformation operators.
+  * \Ref{VectorWithOp} this interface contains very few pure
+  * virtual methods that must be overridden.
+  * 
+  * The most important method is \Ref{apply_transformation}#(...)#
+  * that allows users to apply user defined transformation operators.
   * Every standard (i.e. BLAS) and non-standard element-wise
   * vector operation can be performed using a transformation
-  * operator and therefore the operation #apply_transformation(...)#
-  * is the only method an mutable abstract vector must implement.
-  * As long as the individual sub-vectors are large enough,
+  * operator.  As long as the individual sub-vectors are large enough,
   * transformation operators will be nearly as efficient as
   * specialized operations for most vector subclasses so why
   * even include any other methods?
+  *
+  * There are a few pure virtual methods that a concreate subclass
+  * must override.  The #dim()# method from the \Ref{VectorBase} base
+  * class interface must be overridden to give the dimmension of the vector.
+  * The \Ref{apply_reduction}#(...)# method from the \Ref{VectorWithOp}
+  * base class inteface must be defined.  The mutable (non-const)
+  * \Ref{create_sub_view}#(...)# method from this interface must be
+  * overriden.  The #space()# method must also be overridden which in
+  * turn requires defining a concreate #VectorSpace# class.  Theresfore,
+  * defining a concreate #VectorWithOpMutable# subclass is significanly
+  * harder that definign a concreate #VectorWithOp# class.  However,
+  * note only four vector methods and three #VectorSpace# methods
+  * must be overridden to define a very powerful vector class.
+  *
+  * The non-mutable (const) \Ref{create_sub_view}#(...)# from the
+  * #VectorWithOp# interface has a default implementation defined
+  * here that will be adequate for most subclasses.
   */
-class VectorWithOpMutable : virtual public VectorWithOp {
+class VectorWithOpMutable
+	: virtual public VectorBaseMutable
+	, virtual public VectorWithOp
+{
 public:
 
 	///
 	typedef VectorSpace::vec_mut_ptr_t    vec_mut_ptr_t;
 
-	///
-	/** Set a specific element of a vector.
-	 *
-	 * Preconditions:\begin{itemize}
-	 * \item #1 <= i <= this->dim()# (#throw std::out_of_range#)
-	 * \end{itemize}
-	 *
-	 * @param  i    [in] Index of the element value to set.
-	 * @param  val  [in] Value of the element to set.
+	/** @name Pure virtual methods (must be overridden by subclass).
 	 */
-	virtual void set_ele( RTOp_index_type i, RTOp_value_type val ) = 0;
+	//@{
 
 	///
 	/** Apply a reduction/transformation,operation over a set of vectors:
@@ -168,15 +194,6 @@ public:
 	 * (but not through the VectorWithOpMutable interface).
 	 */
 	virtual const VectorSpace& space() const = 0;
-	
-	///
-	/** Create a clone of this vector objet {abstract}.
-	 *
-	 * The vector object returned in the smart reference counted pointer
-	 * is a functional copy of the current vector object.  The vector object
-	 * #this# and the vector returned by this method can be modified independently.
-	 */
-	virtual vec_mut_ptr_t clone() const = 0;
 
 	///
 	/** Create a mutable abstract view of a vector object {abstract}.
@@ -199,6 +216,56 @@ public:
 	 */
 	virtual vec_mut_ptr_t create_sub_view( const LinAlgPack::Range1D& rng ) = 0;
 
+	//@}
+
+	/** @name Virtual methods with default implementations based on
+	 * reduction/transforamtion operators and \Ref{apply_transforamtion}#(...)#.
+	 */
+	//@{
+
+	///
+	/** Assign the elements of this vector to a scalar.
+	 *
+	 * The default implementation of this function uses a transforamtion
+	 * operator class (see RTOp_TOp_assign_scalar) and calls \Ref{apply_transformation}#(...)#.
+	 */
+	virtual VectorWithOpMutable& operator=(RTOp_value_type);
+
+	///
+	/** Assign the elements of of a vector to this.
+	 *
+	 * The default implementation of this function uses a transforamtion
+	 * operator class (see RTOp_TOp_assign_vector) and calls \Ref{apply_transformation}#(...)#.
+	 */
+	virtual VectorWithOpMutable& operator=(const VectorWithOpMutable&);
+
+	///
+	/** Set a specific element of a vector.
+	 *
+	 * Preconditions:\begin{itemize}
+	 * \item #1 <= i <= this->dim()# (#throw std::out_of_range#)
+	 * \end{itemize}
+	 *
+	 * The default implementation uses a transforamtion operator
+	 * class (see RTOp_TOp_set_ele) and calls \Ref{apply_transforamtion}#(...)#.
+	 *
+	 * @param  i    [in] Index of the element value to set.
+	 * @param  val  [in] Value of the element to set.
+	 */
+	virtual void set_ele( RTOp_index_type i, RTOp_value_type val );
+
+	///
+	/** Create a clone of this vector objet {abstract}.
+	 *
+	 * The vector object returned in the smart reference counted pointer
+	 * is a functional copy of the current vector object.  The vector object
+	 * #this# and the vector returned by this method can be modified independently.
+	 *
+	 * The default implementation of this function calls on #this->space().create_member()# and
+	 * then copies over the elements from #this# using #operator=(...)#.
+	 */
+	virtual vec_mut_ptr_t clone() const;
+
 	///
 	/** Set a specific sub-vector {abstract}.
 	 *
@@ -209,11 +276,54 @@ public:
 	 * \item #sub_vec.global_offset + sub_dim <= this->dim()# (#throw std::out_of_range#)
 	 * \end{itemize}
 	 *
+	 * The default implementation of this operation uses a transformation operator class
+	 * (see RTOp_TOp_set_sub_vector) and calls \Ref{apply_transforamtion}#(...)#.  Be forwarned
+	 * however, that the operator objects state data (both internal and external) will be
+	 * O(sub_vec.sub_nz).  For serial applications, this is entirely adequate.  For parallel
+	 * applications this will be very bad!
+	 *
 	 * @param  sub_vec  [in] Represents the elements in the subvector to be set.
 	 */
-	virtual void set_sub_vector( const RTOp_SubVector& sub_vec ) = 0;
+	virtual void set_sub_vector( const RTOp_SubVector& sub_vec );
 
-};
+	//@}
+
+	/** @name Overridden from \Ref{VectorWithOp} */
+	//@{
+
+	///
+	/** Default implementation calls create_sub_view (non-const) and then converts.
+	 *
+	 * This function override is actually needed here for another reason.  Without, the
+	 * override, the non-const version defined in this interface hides the const version
+	 * defined in \Ref{VectorWithOp}.
+	 */
+	vec_ptr_t create_sub_view( const LinAlgPack::Range1D& rng ) const;
+
+	//@}
+
+	/** @name Overrriden from \Ref{VectorBaseMutable} */
+	//@{
+	
+	///
+	/** Calls #this-space()#.
+	 */
+	const VectorSpaceBase& get_space() const;
+
+	///
+	/** Calls #operator=(0.0)#.
+	 */
+	void zero();
+
+	///
+	/** Calls #apply_transformation(...)# with the operator class
+	 * RTOp_TOp_axpy.
+	 */
+	void axpy( RTOp_value_type alpha, const VectorBase& x );
+
+	//@}
+
+}; // end class VectorWithOpMutable
 
 } // end namespace AbstractLinAlgPack
 
