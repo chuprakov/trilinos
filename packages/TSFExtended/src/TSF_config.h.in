@@ -113,6 +113,9 @@
 /* Define if want to build tests */
 #undef HAVE_TESTS
 
+/* Define if want to build tsfextended-tests */
+#undef HAVE_TSFEXTENDED_TESTS
+
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
