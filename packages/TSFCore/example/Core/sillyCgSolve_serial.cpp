@@ -99,9 +99,9 @@ bool runCgSolveExample(
 	// (C) Check that the linear system was solved to the specified tolerance
 	//
 	RefCountPtr<TSFCore::Vector<Scalar> > r = A->range()->createMember();                     
-	assign(&*r,*b);                                                 // r = b
+	TSFCore::assign(&*r,*b);                                        // r = b
 	A->apply(TSFCore::NOTRANS,*x,&*r,Scalar(-ST::one()),ST::one()); // r = -A*x + r
-	const ScalarMag r_nrm = norm(*r), b_nrm = norm(*b);
+	const ScalarMag r_nrm = TSFCore::norm(*r), b_nrm = TSFCore::norm(*b);
 	const ScalarMag rel_err = r_nrm/b_nrm, relaxTol = ScalarMag(10.0)*tolerance;
 	result = rel_err <= relaxTol;
 	if(!result) success = false;

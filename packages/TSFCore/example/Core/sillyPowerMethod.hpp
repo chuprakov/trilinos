@@ -67,17 +67,17 @@ bool sillyPowerMethod(
 	TSFCore::randomize( Scalar(-ST::one()), Scalar(+ST::one()), &*z );
 	// Perform iterations
 	for( int iter = 0; iter < maxNumIters; ++iter ) {
-		const ScalarMag z_nrm = norm(*z);                  // Compute natural norm of z
-		V_StV( &*q, Scalar(ST::one()/z_nrm), *z );         // q = (1/||z}*z
-		A.apply( TSFCore::NOTRANS , *q, &*z );             // z = A*q
-		*lambda = A.range()->scalarProd(*q,*z);            // lambda = <q,z> : Approximate maximum absolute eigenvalue
+		const ScalarMag z_nrm = TSFCore::norm(*z);          // Compute natural norm of z
+		TSFCore::V_StV( &*q, Scalar(ST::one()/z_nrm), *z ); // q = (1/||z}*z
+		A.apply( TSFCore::NOTRANS , *q, &*z );              // z = A*q
+		*lambda = A.range()->scalarProd(*q,*z);             // lambda = <q,z> : Approximate maximum absolute eigenvalue
 		if( iter%(maxNumIters/10) == 0 || iter+1 == maxNumIters ) {
-			linear_combination(                              // r = z - lambda*q : Compute residual of eigenvalue equation
+			TSFCore::linear_combination(                      // r = z - lambda*q : Compute residual of eigenvalue equation
 				2,arrayArg<Scalar>(ST::one(),-*lambda)()
 				,arrayArg<const TSFCore::Vector<Scalar>*>(&*z,&*q)()
 				,ST::zero(),&*r
 				);
-			const ScalarMag r_nrm = norm(*r);                // Compute natural norm of r
+			const ScalarMag r_nrm = TSFCore::norm(*r);        // Compute natural norm of r
 			if(out) *out << "Iter = " << iter << ", lambda = " << (*lambda) << ", ||A*q-lambda*q|| = " << r_nrm << std::endl;
 			if( r_nrm < tolerance ) return true; // Success!
 		}

@@ -51,7 +51,7 @@ class OpBase {
 public:
 
 	///
-	virtual ~OpBase();
+	virtual ~OpBase() {}
 
 	/** @name Pure virtual methods (must be overridden by subclass) */
 

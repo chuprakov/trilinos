@@ -69,19 +69,19 @@ bool run_scalar_product_tests(
 		op_coeff = rcp(new TSFCore::SerialMultiVectorStd<Scalar>(range,domain)),
 		op       = rcp(new TSFCore::SerialMultiVectorStd<Scalar>(range,domain));
 	TSFCore::seed_randomize<Scalar>(0);
-	randomize( Scalar(Scalar(-1)*ST::one()), Scalar(Scalar(+1)*ST::one()), &*op_coeff );
+	TSFCore::randomize( Scalar(Scalar(-1)*ST::one()), Scalar(Scalar(+1)*ST::one()), &*op_coeff );
 	if(out && dumpAll) *out << "\nop_coeff =\n" << *op_coeff;
 	RefCountPtr<TSFCore::Vector<Scalar> >
 		domainScalarProdDiag = domain->createMember(),
 		rangeScalarProdDiag  = range->createMember();
-	randomize( Scalar(Scalar(+1)*ST::one()), Scalar(Scalar(+2)*ST::one()), &*domainScalarProdDiag );
-	randomize( Scalar(Scalar(+1)*ST::one()), Scalar(Scalar(+2)*ST::one()), &*rangeScalarProdDiag );
+	TSFCore::randomize( Scalar(Scalar(+1)*ST::one()), Scalar(Scalar(+2)*ST::one()), &*domainScalarProdDiag );
+	TSFCore::randomize( Scalar(Scalar(+1)*ST::one()), Scalar(Scalar(+2)*ST::one()), &*rangeScalarProdDiag );
 
 	const ScalarMag warning_tol = ScalarMag(1e-2)*tol, error_tol = tol;
 	TSFCore::LinearOpTester<Scalar> linearOpTester(warning_tol,error_tol);
 	
 	if(out) *out << "\nTesting LinearOp with Euclidean domain and range scalar products ...\n";
-	assign( &*op, *op_coeff );
+	TSFCore::assign( &*op, *op_coeff );
 	if(out && dumpAll) *out << "\nop =\n" << LONP(*op,TSFCore::NOTRANS);
 	if(out && dumpAll) *out << "\nop' =\n" << LONP(*op,TSFCore::CONJTRANS);
 	result = linearOpTester.check(*op,out);
@@ -97,7 +97,7 @@ bool run_scalar_product_tests(
 			)
 		);
 	op->initialize(range,domain);
-	assign( &*op, *op_coeff );
+	TSFCore::assign( &*op, *op_coeff );
 	if(out && dumpAll) *out << "\nop =\n" << LONP(*op,TSFCore::NOTRANS);
 	if(out && dumpAll) *out << "\nop' =\n" << LONP(*op,TSFCore::CONJTRANS);
 	result = linearOpTester.check(*op,out);
@@ -113,7 +113,7 @@ bool run_scalar_product_tests(
 		);
 	domain->setScalarProd(rcp(new TSFCore::EuclideanScalarProd<Scalar>()));
 	op->initialize(range,domain);
-	assign( &*op, *op_coeff );
+	TSFCore::assign( &*op, *op_coeff );
 	if(out && dumpAll) *out << "\nop =\n" << LONP(*op,TSFCore::NOTRANS);
 	if(out && dumpAll) *out << "\nop' =\n" << LONP(*op,TSFCore::CONJTRANS);
 	result = linearOpTester.check(*op,out);
@@ -135,7 +135,7 @@ bool run_scalar_product_tests(
 			)
 		);
 	op->initialize(range,domain);
-	assign( &*op, *op_coeff );
+	TSFCore::assign( &*op, *op_coeff );
 	if(out && dumpAll) *out << "\nop =\n" << LONP(*op,TSFCore::NOTRANS);
 	if(out && dumpAll) *out << "\nop' =\n" << LONP(*op,TSFCore::CONJTRANS);
 	result = linearOpTester.check(*op,out);

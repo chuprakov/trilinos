@@ -66,9 +66,9 @@ bool sillyCgSolve(
 	RefCountPtr<const TSFCore::VectorSpace<Scalar> > space = A.domain();
 	// Compute initial residual : r = b - A*x
 	RefCountPtr<TSFCore::Vector<Scalar> > r = space->createMember();                     
-	assign(&*r,b);                                        // r = b
+	TSFCore::assign(&*r,b);                               // r = b
 	A.apply(TSFCore::NOTRANS,*x,&*r,-ST::one(),ST::one());// r = -A*x + r
-	const ScalarMag r0_nrm = norm(*r);                    // Compute ||r0|| = sqrt(<r0,r0>) for convergence test
+	const ScalarMag r0_nrm = TSFCore::norm(*r);           // Compute ||r0|| = sqrt(<r0,r0>) for convergence test
 	if(r0_nrm == ST::zero()) return true;                 // Trivial RHS and initial LHS guess?
 	// Create workspace vectors and scalars
 	RefCountPtr<TSFCore::Vector<Scalar> > p = space->createMember(), q = space->createMember();
@@ -76,7 +76,7 @@ bool sillyCgSolve(
 	// Perform the iterations
 	for( int iter = 0; iter <= maxNumIters; ++iter ) {
 		// Check convergence and output iteration
-		const ScalarMag r_nrm = norm(*r);                   // Compute ||r|| = sqrt(<r,r>)
+		const ScalarMag r_nrm = TSFCore::norm(*r);          // Compute ||r|| = sqrt(<r,r>)
 		const bool isConverged = r_nrm/r0_nrm <= tolerance;
 		if( iter%(maxNumIters/10+1) == 0 || iter == maxNumIters || isConverged ) {
 			if(out) *out << "Iter = " << iter << ", ||b-A*x||/||b-A*x0|| = " << (r_nrm/r0_nrm) << std::endl;
@@ -84,12 +84,12 @@ bool sillyCgSolve(
 		}
 		// Compute iteration
 		const Scalar rho = space->scalarProd(*r,*r);        // <r,r>              -> rho
-		if(iter==0) assign(&*p,*r);                         // r                  -> p   (iter == 0)
-		else Vp_V( &*p, *r, Scalar(rho/rho_old) );          // r+(rho/rho_old)*p  -> p   (iter  > 0)
+		if(iter==0) TSFCore::assign(&*p,*r);                // r                  -> p   (iter == 0)
+		else TSFCore::Vp_V( &*p, *r, Scalar(rho/rho_old) ); // r+(rho/rho_old)*p  -> p   (iter  > 0)
 		A.apply(TSFCore::NOTRANS,*p,&*q);                   // A*p                -> q
 		const Scalar alpha = rho/space->scalarProd(*p,*q);  // rho/<p,q>          -> alpha
-		Vp_StV( x,   Scalar(+alpha), *p );                  // +alpha*p + x       -> x
-		Vp_StV( &*r, Scalar(-alpha), *q );                  // -alpha*q + r       -> r
+		TSFCore::Vp_StV( x,   Scalar(+alpha), *p );         // +alpha*p + x       -> x
+		TSFCore::Vp_StV( &*r, Scalar(-alpha), *q );         // -alpha*q + r       -> r
 		rho_old = rho;                                      // rho                -> rho_old (remember rho for next iter)
 	}
 	return false; // Failure

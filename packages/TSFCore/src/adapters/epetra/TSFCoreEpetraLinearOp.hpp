@@ -33,7 +33,7 @@
 #define TSFCORE_EPETRA_LINEAR_OP_HPP
 
 #include "TSFCoreEpetraTypes.hpp"
-#include "TSFCoreEuclideanLinearOpBaseDecl.hpp"
+#include "TSFCoreEuclideanLinearOpBase.hpp"
 
 namespace TSFCore {
 

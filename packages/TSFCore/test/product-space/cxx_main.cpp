@@ -99,12 +99,12 @@ bool run_product_space_tests(
 		three = Scalar(3)*one;
 
 	if(out) *out << "\nassign(&*pv1,2.0) ...\n";
-	assign( &*pv1, two );
+	TSFCore::assign( &*pv1, two );
 
 	if(out) *out << "\nsum(pv1)=";
-	sresult1 = sum(*pv1);
+	sresult1 = TSFCore::sum(*pv1);
 	sresult2 = two*Scalar(ps.dim());
-	result = ( ST::magnitude( relErr( sresult1, sresult2 ) )
+	result = ( ST::magnitude( TSFCore::relErr( sresult1, sresult2 ) )
 						 < ST::magnitude( tol ) );
 	if(!result) success = false;
 	if(out) *out
@@ -115,12 +115,12 @@ bool run_product_space_tests(
 		<< "\npv1 =\n" << *pv1;
 	
 	if(out) *out << "\nassign(&*pv2,3.0) ...\n";
-	assign( &*pv2, three );
+	TSFCore::assign( &*pv2, three );
 
 	if(out) *out << "\nsum(pv2)=";
-	sresult1 = sum(*pv2);
+	sresult1 = TSFCore::sum(*pv2);
 	sresult2 = three*Scalar(ps.dim());
-	result = ( ST::magnitude( relErr( sresult1, sresult2 ) )
+	result = ( ST::magnitude( TSFCore::relErr( sresult1, sresult2 ) )
 						 < ST::magnitude( tol ) );
 	if(!result) success = false;
 	if(out) *out
@@ -134,7 +134,7 @@ bool run_product_space_tests(
 	const Scalar
 		scalarProdTarget  = two*three*Scalar(n)*Scalar(numBlocks),
 		scalarProd        = ps.scalarProd(*pv1,*pv2);
-	result = ( ST::magnitude( relErr( scalarProd, scalarProdTarget ) )
+	result = ( ST::magnitude( TSFCore::relErr( scalarProd, scalarProdTarget ) )
 						 < ST::magnitude( tol ) );
 	if(!result) success = false;
 	if(out) *out
@@ -156,12 +156,12 @@ bool run_product_space_tests(
 		sv2 = ss.createMember();
 
 	if(out) *out << "\nassign(&sv1,*pv1) ...\n";
-	assign( &*sv1, *pv1 );
+	TSFCore::assign( &*sv1, *pv1 );
 
 	if(out) *out << "\nsum(sv1)=";
-	sresult1 = sum(*sv1);
+	sresult1 = TSFCore::sum(*sv1);
 	sresult2 = two*Scalar(ps.dim());
-	result = ( ST::magnitude( relErr( sresult1, sresult2 ) )
+	result = ( ST::magnitude( TSFCore::relErr( sresult1, sresult2 ) )
 						 < ST::magnitude( tol ) );
 	if(!result) success = false;
 	if(out) *out
@@ -172,12 +172,12 @@ bool run_product_space_tests(
 		<< "\nsv1 =\n" << *sv1;
 
 	if(out) *out << "\nassign(&pv2,*sv1) ...\n";
-	assign( &*pv2, *sv1 );
+	TSFCore::assign( &*pv2, *sv1 );
 
 	if(out) *out << "\nsum(pv2)=";
-	sresult1 = sum(*pv2);
+	sresult1 = TSFCore::sum(*pv2);
 	sresult2 = two*Scalar(ps.dim());
-	result = ( ST::magnitude( relErr( sresult1, sresult2 ) )
+	result = ( ST::magnitude( TSFCore::relErr( sresult1, sresult2 ) )
 						 < ST::magnitude( tol ) );
 	if(!result) success = false;
 	if(out) *out

@@ -146,9 +146,9 @@ int main(int argc, char *argv[])
 		// (F) Check that the linear system was solved to the specified tolerance
 		//
 		RefCountPtr<TSFCore::Vector<double> > r = A->range()->createMember();                     
-		assign(&*r,*b);                                                 // r = b
+		TSFCore::assign(&*r,*b);                                        // r = b
 		A->apply(TSFCore::NOTRANS,*x,&*r,-1.0,+1.0);                    // r = -A*x + r
-		const double r_nrm = norm(*r), b_nrm = norm(*b);
+		const double r_nrm = TSFCore::norm(*r), b_nrm =TSFCore:: norm(*b);
 		const double rel_err = r_nrm/b_nrm, relaxTol = 2.0*tolerance;
 		result = rel_err <= relaxTol;
 		if(!result) success = false;

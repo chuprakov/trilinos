@@ -37,10 +37,6 @@
 namespace TSFCore {
 
 template<class Scalar>
-OpBase<Scalar>::~OpBase()
-{}
-
-template<class Scalar>
 bool OpBase<Scalar>::opSupported(ETransp) const
 {
 	return true;

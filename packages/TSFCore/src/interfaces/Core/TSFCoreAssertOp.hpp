@@ -183,7 +183,7 @@ TSFCORE_ASSERT_VEC_SPACES_NAMES(FUNC_NAME,VS1,#VS1,VS2,#VS2)
 						<< "." << ( (M_VS) == TSFCore::VS_RANGE ? "range()" : "domain()" ); \
 	TSFCORE_ASSERT_VEC_SPACES_NAMES( \
 		FUNC_NAME \
-		,linear_op_op(M,M_T,M_VS),M_VS_name.str().c_str() \
+		,::TSFCore::linear_op_op(M,M_T,M_VS),M_VS_name.str().c_str() \
 		,(VS),#VS \
 		) \
 }
@@ -241,8 +241,8 @@ TSFCORE_ASSERT_VEC_SPACES_NAMES(FUNC_NAME,VS1,#VS1,VS2,#VS2)
 			   << "." << ( M2_VS == ::TSFCore::VS_RANGE ? "range()" : "domain()" ); \
 	TSFCORE_ASSERT_VEC_SPACES_NAMES( \
 		FUNC_NAME \
-		,linear_op_op(M1,M1_T,M1_VS),M1_VS_name.str().c_str() \
-		,linear_op_op(M2,M2_T,M2_VS),M2_VS_name.str().c_str() \
+		,::TSFCore::linear_op_op(M1,M1_T,M1_VS),M1_VS_name.str().c_str() \
+		,::TSFCore::linear_op_op(M2,M2_T,M2_VS),M2_VS_name.str().c_str() \
 		); \
 }
 

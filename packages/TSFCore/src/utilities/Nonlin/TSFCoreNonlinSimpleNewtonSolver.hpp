@@ -114,7 +114,7 @@ SimpleNewtonSolver<Scalar>::solve(
 			if(out) *out << "\n*** newtonIter = " << newtonIter << std::endl;
 			// Check convergence
 			if(out) *out << "\nChecking for convergence ... : ";
-			const Scalar phi = space_c.scalarProd(*c,*c), sqrt_phi = sqrt(phi); // merit function: phi(c) = <c,c>
+			const Scalar phi = space_c.scalarProd(*c,*c), sqrt_phi = ST::squareroot(phi); // merit function: phi(c) = <c,c>
 			const bool isConverged = sqrt_phi <= tol();
 			if(out) *out << "sqrt(phi) = sqrt(<c,c>) = ||c|| = " << sqrt_phi << ( isConverged ? " <= " : " > " ) << "tol = " << tol() << std::endl;
 			if(sout) *sout
