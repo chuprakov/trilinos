@@ -7,6 +7,7 @@
 #include "TSFCoreNonlinNP4DOptDecl.hpp"
 #include "TSFCoreMultiVectorAllocator.hpp"
 #include "TSFCoreExplicitVectorView.hpp"
+#include "TSFCoreExplicitMultiVectorView.hpp"
 #include "TSFCoreNonlinLinearOpWithSolve.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -63,7 +64,7 @@ void NP4DOpt<Scalar>::initialize( bool testSetup )
 	const Scalar inf_bnd = infiniteBound();
 	uL_ = space_y_c.createMember(); assign(uL_.get(),-inf_bnd);
 	uU_ = space_y_c.createMember(); assign(uU_.get(),+inf_bnd);
-	u0_ = space_y_c.createMember(); { ExplicitMutableVectorView<Scalar> u0(*u0_); u0(1) = ut1_; u0(2) = ut2_; }
+	u0_ = space_y_c.createMember(); { ExplicitMutableVectorView<Scalar> u0(*u0_); u0(1)=ut1_; u0(2)=ut2_; }
 	gL_ = space_g_->createMember(); assign(gL_.get(),-10.0);
 	gU_ = space_g_->createMember(); assign(gU_.get(),+10.0);
 }
@@ -373,12 +374,11 @@ void NP4DOpt<Scalar>::calc_DcDu(
 	TEST_FOR_EXCEPTION( !u_in[0]->space()->isCompatible(*this->space_u(1)), Exceptions::IncompatibleVectorSpaces, "Error!" );
 	TEST_FOR_EXCEPTION( DcDu_ == NULL, std::logic_error, "Error!" );
 #endif
-	assign( DcDu_, 0.0 ); 
-	ExplicitVectorView<Scalar>           u(*u_in[0]);
-	Teuchos::RefCountPtr<Vector<Scalar> >  Dc1Du_vec = DcDu_->col(1),  Dc2Du_vec = DcDu_->col(2);
-	ExplicitMutableVectorView<Scalar>    Dc1Du(*Dc1Du_vec),          Dc2Du(*Dc2Du_vec);
-	// Fill the Jacobian
-	Dc1Du(1) = -1.0;  Dc2Du(2) = -np2dsim_.get_d();
+	ExplicitVectorView<Scalar> u(*u_in[0]);
+	ExplicitMutableMultiVectorView<Scalar> DcDu_t(*DcDu_);
+	// Fill the Jacobian DcDu'
+	DcDu_t(1,1) = -1.0;   DcDu_t(1,2) = 0.0;
+	DcDu_t(2,1) = 0.0;    DcDu_t(2,2) = -np2dsim_.get_d();
 }
 
 template<class Scalar>
@@ -393,9 +393,9 @@ void NP4DOpt<Scalar>::calc_DgDy(
 #endif
 	assign( DgDy_, 0.0 );
 	ExplicitVectorView<Scalar> y(y_in);
-	Teuchos::RefCountPtr<Vector<Scalar> >  Dg1Dy_vec = DgDy_->col(1), Dg2Dy_vec = DgDy_->col(2);
-	ExplicitMutableVectorView<Scalar>      Dg1Dy(*Dg1Dy_vec),         Dg2Dy(*Dg2Dy_vec);
-	Dg1Dy(1) = 1.0; Dg2Dy(2) = 1.0;
+	ExplicitMutableMultiVectorView<Scalar> DgDy_t(*DgDy_);
+	// Fill nonzeros in DgDy'
+	DgDy_t(1,1) = 1.0; DgDy_t(2,2) = 1.0;
 }
 
 template<class Scalar>
@@ -413,11 +413,10 @@ void NP4DOpt<Scalar>::calc_DgDu(
 	TEST_FOR_EXCEPTION( DgDu_ == NULL, std::logic_error, "Error!" );
 #endif
 	assign( DgDu_, 0.0 );
-	ExplicitVectorView<Scalar>             u(*u_in[0]);
-	Teuchos::RefCountPtr<Vector<Scalar> >  Dg3Du_vec = DgDu_->col(3),  Dg4Du_vec = DgDu_->col(4);
-	ExplicitMutableVectorView<Scalar>      Dg3Du(*Dg3Du_vec),          Dg4Du(*Dg4Du_vec);
-	// Fill the Jacobian
-	Dg3Du(1) = 1.0;  Dg4Du(2) = 1.0;
+	ExplicitVectorView<Scalar> u(*u_in[0]);
+	ExplicitMutableMultiVectorView<Scalar> DgDu_t(*DgDu_);
+	// Fill nonzeros in DgDu'
+	DgDu_t(1,2) = 1.0;  DgDu_t(2,4) = 1.0;
 }
 
 // private

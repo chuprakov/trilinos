@@ -11,6 +11,7 @@
 #include "TSFCoreMultiVector.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreExplicitVectorView.hpp"
+#include "TSFCoreExplicitMultiVectorView.hpp"
 #include "TSFCoreSolversBiCGSolver.hpp"
 #include "TSFCoreSolversNormedConvergenceTester.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -222,27 +223,26 @@ void NP2DSim<Scalar>::calc_DcDy(
 	if( !convTester.get() )   convTester  = Teuchos::rcp(new Solvers::NormedConvergenceTester<Scalar>(lin_sol_tol_));
 	// Get at the state vector and Jacobian data
 	if(true) {
-		ExplicitVectorView<Scalar>           y(y_in);
-		Teuchos::RefCountPtr<Vector<Scalar> >  Dc1Dy_vec = DcDy_mv->col(1),  Dc2Dy_vec = DcDy_mv->col(2);
-		ExplicitMutableVectorView<Scalar>    Dc1Dy(*Dc1Dy_vec),            Dc2Dy(*Dc2Dy_vec);
+		ExplicitVectorView<Scalar> y(y_in);
+		ExplicitMutableMultiVectorView<Scalar> DcDy(*DcDy_mv);
 		// Fill the Jacobian
-		Dc1Dy(1) = 1.0;           Dc1Dy(2) = 2.0*y(2);
-		Dc2Dy(1) = 2.0*d_*y(1);   Dc2Dy(2) = -d_;
+		DcDy(1,1) = 1.0;           DcDy(1,2) = 2.0*y(2);
+        DcDy(2,1) = 2.0*d_*y(1);   DcDy(2,2) = -d_;
 	}
 	// Initialize the precondtioner to a Diagonal matrix only the first time!
 	if( !DcDy_prec.get() ) {
 		DcDy_prec  = this->space_y()->createMembers(2);
-		assign( DcDy_prec.get(), 0.0 );
-		Teuchos::RefCountPtr<Vector<Scalar> >  Dc1Dy_prec_vec = DcDy_prec->col(1),  Dc2Dy_prec_vec = DcDy_prec->col(2);
-		ExplicitMutableVectorView<Scalar>    Dc1Dy_prec(*Dc1Dy_prec_vec),         Dc2Dy_prec(*Dc2Dy_prec_vec);
-		Dc1Dy_prec(1) = 1.0;  Dc2Dy_prec(2) = -d_;
+		ExplicitMutableMultiVectorView<Scalar> M_tilde(*DcDy_prec);
+		// Fill the preconditioner \tilde{M}
+		M_tilde(1,1) = 1.0;       M_tilde(1,2) = 0.0;
+        M_tilde(2,1) = 0.0;       M_tilde(2,2) = -d_;
 	}
 	// Initialize the DcDy object given its initialized parts
 	DcDy_->initialize(
-		DcDy_mv, TRANS      // M, M_trans
-		,DcDy_solver        // solver
-		,convTester         // default convTester
-		,DcDy_prec, TRANS  // M_tilde_left_inv, M_tilde_left_inv_trans
+		DcDy_mv, NOTRANS      // M, M_trans
+		,DcDy_solver          // solver
+		,convTester           // default convTester
+		,DcDy_prec, NOTRANS   // M_tilde_left_inv, M_tilde_left_inv_trans
 		);
 }
 
