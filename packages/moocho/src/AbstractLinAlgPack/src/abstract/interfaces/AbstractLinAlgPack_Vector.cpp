@@ -7,6 +7,7 @@
 #include <ostream>
 
 #include "AbstractLinAlgPack/include/VectorWithOp.h"
+#include "AbstractLinAlgPack/include/VectorWithOpSubView.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_dot_prod.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_get_ele.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_norms.h"
@@ -46,63 +47,63 @@ class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
 		// Operator and target for getting a vector element
-		if(0!=RTOp_ROp_get_ele_construct( 0, &get_ele_op.op() ))
+		if(0>RTOp_ROp_get_ele_construct( 0, &get_ele_op.op() ))
 			assert(0);
 		get_ele_op.reduct_obj_create(&get_ele_targ);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_ROp_get_ele_name
 			   ,&RTOp_ROp_get_ele_vtbl
 			   ))
 			assert(0);
 		// Operator and target for norm 1
-		if(0!=RTOp_ROp_num_nonzeros_construct(&num_nonzeros_op.op() ))
+		if(0>RTOp_ROp_num_nonzeros_construct(&num_nonzeros_op.op() ))
 			assert(0);
 		num_nonzeros_op.reduct_obj_create(&num_nonzeros_targ);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_ROp_num_nonzeros_name
 			   ,&RTOp_ROp_num_nonzeros_vtbl
 			   ))
 			assert(0);
 		// Operator and target for norm 1
-		if(0!=RTOp_ROp_norm_1_construct(&norm_1_op.op() ))
+		if(0>RTOp_ROp_norm_1_construct(&norm_1_op.op() ))
 			assert(0);
 		norm_1_op.reduct_obj_create(&norm_1_targ);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_ROp_norm_1_name
 			   ,&RTOp_ROp_norm_1_vtbl
 			   ))
 			assert(0);
 		// Operator and target for norm 1
-		if(0!=RTOp_ROp_norm_2_construct(&norm_2_op.op() ))
+		if(0>RTOp_ROp_norm_2_construct(&norm_2_op.op() ))
 			assert(0);
 		norm_2_op.reduct_obj_create(&norm_2_targ);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_ROp_norm_2_name
 			   ,&RTOp_ROp_norm_2_vtbl
 			   ))
 			assert(0);
 		// Operator and target for norm 1
-		if(0!=RTOp_ROp_norm_inf_construct(&norm_inf_op.op() ))
+		if(0>RTOp_ROp_norm_inf_construct(&norm_inf_op.op() ))
 			assert(0);
 		norm_inf_op.reduct_obj_create(&norm_inf_targ);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_ROp_norm_inf_name
 			   ,&RTOp_ROp_norm_inf_vtbl
 			   ))
 			assert(0);
 		// Dot product operator and target
-		if(0!=RTOp_ROp_dot_prod_construct(&dot_op.op()))
+		if(0>RTOp_ROp_dot_prod_construct(&dot_op.op()))
 			assert(0);
 		dot_op.reduct_obj_create(&dot_targ);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_ROp_dot_prod_name
 			   ,&RTOp_ROp_dot_prod_vtbl
 			   ))
 			assert(0);
 		// Get sub-vector operator
-		if(0!=RTOp_ROp_get_sub_vector_construct(1,1,&get_sub_vector_op.op()))
+		if(0>RTOp_ROp_get_sub_vector_construct(1,1,&get_sub_vector_op.op()))
 			assert(0);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_ROp_get_sub_vector_name
 			   ,&RTOp_ROp_get_sub_vector_vtbl
 			   ))
@@ -183,11 +184,24 @@ value_type VectorWithOp::norm_inf() const {
 }
 
 VectorWithOp::vec_ptr_t
-VectorWithOp::create_sub_view( const Range1D& rng ) const
+VectorWithOp::sub_view( const Range1D& rng_in ) const
 {
-	if( rng.full_range() || ( rng.lbound() == 1 && rng.ubound() == this->dim() ) )
-		return vec_ptr_t(this,false); // returned ref counted pointer does not own memory!
-	return NULL;
+	namespace rcp = ReferenceCountingPack;
+	const index_type dim = this->dim();
+	const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
+#ifdef _DEBUG
+	THROW_EXCEPTION(
+		rng.ubound() > dim, std::out_of_range
+		,"VectorWithOp::sub_view(rng): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
+		"is not in the range [1,this->dim()] = [1,"<<dim<<"]" );
+#endif	
+	if( rng.lbound() == 1 && rng.ubound() == dim )
+		return vec_ptr_t( this, false );
+	return rcp::rcp_implicit_cast<vec_ptr_t::element_type>(
+		rcp::ref_count_ptr<VectorWithOpSubView>(
+			new VectorWithOpSubView(
+				vec_ptr_t( this, false )
+				,rng ) ) );
 }
 
 void VectorWithOp::get_sub_vector(

@@ -5,6 +5,7 @@
 #define VECTOR_SPACE_H
 
 #include "VectorSpaceBase.h"
+#include "Range1D.h"
 
 namespace AbstractLinAlgPack {
 
@@ -27,7 +28,7 @@ public:
 	///
 	/** Return the dimmension of the vector space.
 	 */
-	virtual RTOp_index_type dim() const = 0;
+	virtual index_type dim() const = 0;
 
 	///
 	/** Create a member of the vector space.
@@ -47,7 +48,7 @@ public:
 	virtual vec_mut_ptr_t create_member() const = 0;
 
 	///
-	/** Create a subspace of the current vector space.
+	/** Create a transient sub-space of the current vector space.
 	 *
 	 * Preconditions:\begin{itemize}
 	 * \item #rng.ubound() <= this->dim()# (#throw std::out_of_range#)
@@ -63,12 +64,15 @@ public:
 	 * allocated vector space object.  Note that the vector object returned
 	 * by #this->sub_space(rng).create_member()# should be exactly equivalent
 	 * to the vector returned by
-	 * #this->create_member()->create_sub_view(rng)->space()->create_member()#.
+	 * #this->create_member()->sub_view(rng)->space()->create_member()#.
 	 * It is allowed for the implementation to return #return->get() == NULL#
 	 * for arbitrary values of #rng#.  Only some #rng# ranges may be allowed
 	 * but they will be appropriate for the application at hand.  However, a
 	 * very good implementation should be able to accomidate any valid #rng#
-	 * that meets the basic preconditions.
+	 * that meets the basic preconditions.  The default implementation uses
+	 * the subclass \Ref{VectorSpaceSubSpace} to represent any arbitrary
+	 * sub-space but this can be very inefficient if the sub-space is
+	 * very small compared this this full vector space.
 	 *
 	 * Note that if two vector space objects #X# and #Y# are compatible (i.e.
 	 * #X.is_compatible(Y) == true#, then it is also expected that
@@ -80,7 +84,10 @@ public:
 	 * general, don't assume that arbitrary subsets of the vector spaces will be
 	 * compatible, even if the sizes of these subspaces are the same.
 	 */
-	virtual space_ptr_t sub_space(const Range1D& rng) const = 0;
+	virtual space_ptr_t sub_space(const Range1D& rng) const;
+
+	/// Inlined to call #this->sub_space(Range1D(il,iu))#.
+	space_ptr_t sub_space( const index_type il, const index_type iu ) const;
 	
 	/** @name Overrriden from \Ref{VectorSpaceBase} */
 	//@{
@@ -94,6 +101,16 @@ public:
 	//@}
 
 }; // end class VectorSpace
+
+// ////////////////////////////////////////////////
+// Inline members
+
+inline
+VectorSpace::space_ptr_t
+VectorSpace::sub_space( const index_type il, const index_type iu ) const
+{
+	return this->sub_space(Range1D(il,iu));
+}
 
 } // end namespace AbstractLinAlgPack
 

@@ -24,9 +24,13 @@ namespace AbstractLinAlgPack {
   * operators.  Every standard (i.e. BLAS) and non-standard element-wise
   * vector operation can be performed using a reduction/transformation
   * operator.  As long as the individual sub-vectors are large enough,
-  * transformation operators will be nearly as efficient as
-  * specialized operations for most vector subclasses so why
-  * even include any other methods?
+  * reduction/transformation operators will be nearly as efficient as
+  * specialized operations for most vector subclasses.  Similarly
+  * to \Ref{apply_reduction}#(...)# the #apply_transformation(...)# method
+  * allows clients to include only subsets of elements in a reduciton
+  * /transformation operation.
+  *
+  * ToDo: Finish documentation (create_sub_vew(...), set_sub_vector(...)).
   *
   * There are only few pure virtual methods that a concreate subclass
   * must override.  The #dim()# method from the \Ref{VectorWithOp} base
@@ -34,12 +38,10 @@ namespace AbstractLinAlgPack {
   * The \Ref{apply_reduction}#(...)# method from the \Ref{VectorWithOp}
   * base class inteface must be defined.  The #space()# method must also
   * be overridden which in turn requires defining a concreate #VectorSpace#
-  * class.  Therefore, defining a concreate #VectorWithOpMutable# subclass is
-  * harder than defining a concreate #VectorWithOp# class.  However, note only
-  * three vector methods and three #VectorSpace# methods must be overridden to
-  * define a powerful coordinate vector class.
+  * class.  Note only three vector methods and three #VectorSpace# methods
+  * must be overridden to define a powerful coordinate vector class.
   *
-  * The non-mutable (const) \Ref{create_sub_view}#(...)# from the
+  * The non-mutable (const) \Ref{sub_view}#(...)# from the
   * #VectorWithOp# interface has a default implementation defined
   * here that will be adequate for most subclasses.
   */
@@ -58,63 +60,79 @@ public:
 
 	///
 	/** Apply a reduction/transformation,operation over a set of vectors:
-	  * #op(op(v[0]...v[nv-1],(*this),z[0]...z[nz-1]),(*reduct_obj)) -> (*this),z[0]...z[nz-1],(*reduct_obj)#.
-	  *
-	  * The first mutable vector in the argument list to #op# will be
-	  * #this# vector then followed by those in #targ_vecs[k]#, k = 0...#num_targ_vecs-1
-	  * Therefore, the number of mutable vectors passed to
-	  * \Ref{RTOp_apply_op}#(...)# will be #num_targ_vecs+1#.
-	  *
-	  * Preconditions:\begin{itemize}
-	  * \item [#num_vecs > 0#] #vecs[k]->dim() == this->dim()#, for k = 0...num_vecs-1
-	  * \item [#num_targ_vecs > 0#] #vecs[k]->dim() == this->dim()#, for k = 0...num_targ_vecs-1	
-	  * \end{itemize}
-	  *
-	  * @param  op	[in] Reduction operator to apply over each sub-vector
-	  *				and assemble the intermediate targets into #reduct_obj#.
-	  *	@param  num_vecs
-	  *				[in] Number of nonmutable vectors in #vecs[]#.  If #vecs==NULL#
-	  *				then this argument is ignored but should be set to zero.
-	  *	@param  vecs
-	  *				[in] Array (length #num_vecs#) of a set of pointers to
-	  *				nonmutable vectors to include in the operation.
-	  *				The order of these vectors is significant to #op#.
-	  *				If #vecs==NULL# then #op# is called with the
-	  *				single vector represented by #this# object.
-	  *	@param  num_targ_vecs
-	  *				[in] Number of mutable vectors in #targ_vecs[]#.  If #targ_vecs==NULL#
-	  *				then this argument is ignored but should be set to zero.
-	  *	@param  targ_vecs
-	  *				[in] Array (length #num_targ_vecs#) of a set of pointers to
-	  *				mutable vectors to include in the operation. The order of these vectors
-	  * 			is significant to #op#.  If #targ_vecs==NULL# then #op# is called with
-	  *				only one mutable vector (#*this#).
-	  *	@param  reduct_obj
-	  *				[in/out] Target object of the reduction operation.
-	  *				This object must have been created by the
-	  *				#op#.\Ref{reduct_obj_create_raw}#(&reduct_obj)# function
-	  *				first.  The reduction operation will be added
-	  *				to #(*reduct_obj)# if #(*reduct_obj)# has already been
-	  *				through a reduction.  By allowing the info in #(*reduct_obj)#
-	  *				to be added to the reduction over all of these
-	  *				vectors, the reduction operation can
-	  *				be accumulated over a set of abstract vectors
-	  *				which can be useful for implementing concatenated
-	  *				vectors for instance.
- 	  *             If #op#.\Ref{get_reduct_type_num_entries}#(...)# returns
-	  *             #num_values == 0#, #num_indexes == 0# and #num_chars == 0#
-	  *             then #reduct_obj# should be set to #RTOp_REDUCT_OBJ_NULL#
-	  *             and no reduction will be performed.
-	 * 	@param	global_offset
+	 * #op(op(v[0]...v[nv-1],(*this),z[0]...z[nz-1]),(*reduct_obj)) -> (*this),z[0]...z[nz-1],(*reduct_obj)#.
+	 *
+	 * The first mutable vector in the argument list to #op# will be
+	 * #this# vector then followed by those in #targ_vecs[k]#, k = 0...#num_targ_vecs-1
+	 * Therefore, the number of mutable vectors passed to
+	 * \Ref{RTOp_apply_op}#(...)# will be #num_targ_vecs+1#.
+	 *
+	 * If #global_offset >= 0# then, #this->get_ele(i)# is really the
+	 * element #i + global_offset# in the aggregate vector that these vectors
+	 * belong to.  If #global_offset < 0# then the first element in the
+	 * vector represented is #this->get_ele(-global_offset+1)# and the
+	 * last is #this->get_ele(-global_offset + sub_dim)#.
+	 *
+	 * Preconditions:\begin{itemize}
+	 * \item [#num_vecs > 0#] #vecs[k]->dim() == this->dim()#, for k = 0...num_vecs-1
+	 * \item [#num_targ_vecs > 0#] #vecs[k]->dim() == this->dim()#, for k = 0...num_targ_vecs-1	
+	 * \item [#global_offset <= 0#] #-global_offset + sub_dim <= this->dim()#
+	 * \item [#global_offset >= 0#] #sub_dim <= this->dim()#
+	 * \end{itemize}
+	 *
+	 * @param  op	[in] Reduction operator to apply over each sub-vector
+	 *				and assemble the intermediate targets into #reduct_obj#.
+	 * @param  num_vecs
+	 *				[in] Number of nonmutable vectors in #vecs[]#.  If #vecs==NULL#
+	 *				then this argument is ignored but should be set to zero.
+	 * @param  vecs
+	 *				[in] Array (length #num_vecs#) of a set of pointers to
+	 *				nonmutable vectors to include in the operation.
+	 *				The order of these vectors is significant to #op#.
+	 *				If #vecs==NULL# then #op# is called with the
+	 *				single vector represented by #this# object.
+	 * @param  num_targ_vecs
+	 *				[in] Number of mutable vectors in #targ_vecs[]#.  If #targ_vecs==NULL#
+	 *				then this argument is ignored but should be set to zero.
+	 * @param  targ_vecs
+	 *				[in] Array (length #num_targ_vecs#) of a set of pointers to
+	 *				mutable vectors to include in the operation. The order of these vectors
+	 * 		        is significant to #op#.  If #targ_vecs==NULL# then #op# is called with
+	 *				only one mutable vector (#*this#).
+	 * @param  reduct_obj
+	 *				[in/out] Target object of the reduction operation.
+	 *				This object must have been created by the
+	 *				#op#.\Ref{reduct_obj_create_raw}#(&reduct_obj)# function
+	 *				first.  The reduction operation will be added
+	 *				to #(*reduct_obj)# if #(*reduct_obj)# has already been
+	 *				through a reduction.  By allowing the info in #(*reduct_obj)#
+	 *				to be added to the reduction over all of these
+	 *				vectors, the reduction operation can
+	 *				be accumulated over a set of abstract vectors
+	 *				which can be useful for implementing concatenated
+	 *				vectors for instance.
+	 *              If #op#.\Ref{get_reduct_type_num_entries}#(...)# returns
+	 *              #num_values == 0#, #num_indexes == 0# and #num_chars == 0#
+	 *              then #reduct_obj# should be set to #RTOp_REDUCT_OBJ_NULL#
+	 *              and no reduction will be performed.
+	 * @param  global_offset
 	 *				[in] (default = 0) The offset of the vectors into a larger
-	 *				composite vector.
+	 *				composite vector.  If global_offset > 0 then the vector
+	 *              arguments are only sub-vectors in a larger aggregate
+	 *              vector.  If global_offset < 0 then a sub-vector
+	 *              within these vector arguments is selected.
+	 * @param  sub_dim
+	 *              [in] (default = 0) The number of elements in these
+	 *              vectors to include in the reduction/transformation
+	 *              operation.  The value of sub_dim == 0 means to
+	 *              include all available elements.
 	 */
 	virtual void apply_transformation(
 		const RTOpPack::RTOp& op
 		,const size_t num_vecs, const VectorWithOp** vecs
 		,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
 		,RTOp_ReductTarget reduct_obj
-		,const index_type global_offset = 0
+		,const index_type global_offset = 0, const index_type sub_dim = 0
 		) = 0;
 
 	//@}
@@ -173,7 +191,7 @@ public:
 	 * (see \Ref{VectorSpace}).  For example, given the vector objects where
 	 * #x.space().is_compatible(y.space()) == true# then if
 	 * #x.space().sub_space(rng1)->is_compatible(*y.space().sub_space(rng2)) == true#
-	 * then the sub-vector views #*x.create_sub_view(rng1)# and #*y.create_sub_view(rng2)#
+	 * then the sub-vector views #*x.sub_view(rng1)# and #*y.sub_view(rng2)#
 	 * should be compatible and can be combined in vector operations.
 	 *
 	 * Preconditions:\begin{itemize}
@@ -186,16 +204,16 @@ public:
 	 * vector elements.  It is allowed for the vector implementation to refuse to
 	 * create arbitrary views in which case this function will return
 	 * #return.get() == NULL#. In most applications, only specific views are
-	 * every required.    The default implementation of this method just
-	 * returns #NULL# unless #rng.full_range() == true#
-	 * or #rng.lbound() == 1 && #rng.ubound()==this->dim()#.
+	 * every required.  The default implementation uses the subclass \Ref{VectorWithOpSubView}
+	 * to represent any arbitrary sub-view but this can be inefficient if the sub-view is very
+	 * small compared this this full vector space but not necessarily.
 	 */
-	virtual vec_mut_ptr_t create_sub_view( const Range1D& rng );
+	virtual vec_mut_ptr_t sub_view( const Range1D& rng );
 
 	///
-	/** Inline member function that simply calls #this->create_sub_view(Range1D(l,u)).
+	/** Inline member function that simply calls #this->sub_view(Range1D(l,u)).
 	 */
-	vec_mut_ptr_t create_sub_view( const index_type& l, const index_type& u );
+	vec_mut_ptr_t sub_view( const index_type& l, const index_type& u );
 
 	///
 	/** Create a clone of this vector objet {abstract}.
@@ -235,13 +253,14 @@ public:
 	//@{
 
 	///
-	/** Default implementation calls create_sub_view (non-const) and then converts.
+	/** Default implementation calls #this->sub_view(,,,)# (non-const) and then
+	 * performs a downcast.
 	 *
 	 * This function override is actually needed here for another reason.  Without, the
 	 * override, the non-const version defined in this interface hides the const version
 	 * defined in \Ref{VectorWithOp}.
 	 */
-	vec_ptr_t create_sub_view( const Range1D& rng ) const;
+	vec_ptr_t sub_view( const Range1D& rng ) const;
 
 	//@}
 
@@ -273,9 +292,9 @@ public:
 
 inline
 VectorWithOpMutable::vec_mut_ptr_t
-VectorWithOpMutable::create_sub_view( const index_type& l, const index_type& u )
+VectorWithOpMutable::sub_view( const index_type& l, const index_type& u )
 {
-	return this->create_sub_view(Range1D(l,u));
+	return this->sub_view(Range1D(l,u));
 }
 
 } // end namespace AbstractLinAlgPack

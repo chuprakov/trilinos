@@ -5,9 +5,11 @@
 
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "RTOpStdOpsLib/include/RTOp_ROp_dot_prod.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_max_near_feas_step.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_num_bounded.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_sum.h"
+#include "RTOpStdOpsLib/include/RTOp_TOp_axpy.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_ele_wise_prod.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_force_in_bounds.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_random_vector.h"
@@ -20,6 +22,9 @@ namespace {
 // sum
 static RTOpPack::RTOpC          sum_op;
 static RTOpPack::ReductTarget   sum_targ;
+// dot prod
+static RTOpPack::RTOpC          dot_prod_op;
+static RTOpPack::ReductTarget   dot_prod_targ;
 // maximum near feasible step
 static RTOpPack::RTOpC          max_near_feas_step_op;
 static RTOpPack::ReductTarget   max_near_feas_step_targ;
@@ -28,6 +33,8 @@ static RTOpPack::RTOpC          num_bounded_op;
 static RTOpPack::ReductTarget   num_bounded_targ;
 // scale vector
 static RTOpPack::RTOpC          scale_vector_op;
+// axpy
+static RTOpPack::RTOpC          axpy_op;
 // random vector
 static RTOpPack::RTOpC          random_vector_op;
 // element-wise product
@@ -40,60 +47,77 @@ class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
 		// Operator and target obj for sum
-		if(0!=RTOp_ROp_sum_construct(&sum_op.op() ))
+		if(0>RTOp_ROp_sum_construct(&sum_op.op() ))
 			assert(0);
 		sum_op.reduct_obj_create(&sum_targ);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_ROp_sum_name
 			   ,&RTOp_ROp_sum_vtbl
 			   ))
 			assert(0);
+		// Operator and target obj for dot_prod
+		if(0>RTOp_ROp_dot_prod_construct(&dot_prod_op.op() ))
+			assert(0);
+		dot_prod_op.reduct_obj_create(&dot_prod_targ);
+		if(0>RTOp_Server_add_op_name_vtbl(
+			   RTOp_ROp_dot_prod_name
+			   ,&RTOp_ROp_dot_prod_vtbl
+			   ))
+			assert(0);
 		// Operator and target obj for max_near_feas_step
-		if(0!=RTOp_ROp_max_near_feas_step_construct(0.0,&max_near_feas_step_op.op() ))
+		if(0>RTOp_ROp_max_near_feas_step_construct(0.0,&max_near_feas_step_op.op() ))
 			assert(0);
 		max_near_feas_step_op.reduct_obj_create(&max_near_feas_step_targ);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_ROp_max_near_feas_step_name
 			   ,&RTOp_ROp_max_near_feas_step_vtbl
 			   ))
 			assert(0);
 		// Operator and target obj for num_bounded
-		if(0!=RTOp_ROp_num_bounded_construct(0.0,&num_bounded_op.op() ))
+		if(0>RTOp_ROp_num_bounded_construct(0.0,&num_bounded_op.op() ))
 			assert(0);
 		num_bounded_op.reduct_obj_create(&num_bounded_targ);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_ROp_num_bounded_name
 			   ,&RTOp_ROp_num_bounded_vtbl
 			   ))
 			assert(0);
 		// Operator scale_vector
-		if(0!=RTOp_TOp_scale_vector_construct( 0.0, &scale_vector_op.op() ))
+		if(0>RTOp_TOp_scale_vector_construct( 0.0, &scale_vector_op.op() ))
 			assert(0);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_TOp_scale_vector_name
 			   ,&RTOp_TOp_scale_vector_vtbl
 			   ))
 			assert(0);
-		// Operator random_vector
-		if(0!=RTOp_TOp_random_vector_construct( 0.0, 0.0, &random_vector_op.op() ))
+		// Operator axpy
+		if(0>RTOp_TOp_axpy_construct( 0.0, &axpy_op.op() ))
 			assert(0);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
+			   RTOp_TOp_axpy_name
+			   ,&RTOp_TOp_axpy_vtbl
+			   ))
+			assert(0);
+		// Operator random_vector
+		if(0>RTOp_TOp_random_vector_construct( 0.0, 0.0, &random_vector_op.op() ))
+			assert(0);
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_TOp_random_vector_name
 			   ,&RTOp_TOp_random_vector_vtbl
 			   ))
 			assert(0);
 		// Operator ele_wise_prod
-		if(0!=RTOp_TOp_ele_wise_prod_construct( 0.0, &ele_wise_prod_op.op() ))
+		if(0>RTOp_TOp_ele_wise_prod_construct( 0.0, &ele_wise_prod_op.op() ))
 			assert(0);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_TOp_ele_wise_prod_name
 			   ,&RTOp_TOp_ele_wise_prod_vtbl
 			   ))
 			assert(0);
 		// Operator force_in_bounds
-		if(0!=RTOp_TOp_force_in_bounds_construct( &force_in_bounds_op.op() ))
+		if(0>RTOp_TOp_force_in_bounds_construct( &force_in_bounds_op.op() ))
 			assert(0);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_TOp_force_in_bounds_name
 			   ,&RTOp_TOp_force_in_bounds_vtbl
 			   ))
@@ -113,6 +137,17 @@ AbstractLinAlgPack::sum( const VectorWithOp& v_rhs )
 	sum_targ.reinit();
 	v_rhs.apply_reduction(sum_op,0,NULL,0,NULL,sum_targ.obj() );
 	return RTOp_ROp_sum_val(sum_targ.obj());
+}
+
+AbstractLinAlgPack::value_type
+AbstractLinAlgPack::dot( const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2 )
+{
+	dot_prod_targ.reinit();
+	const int num_vecs = 1;
+	const VectorWithOp*
+		vecs[num_vecs] = { &v_rhs2 };
+	v_rhs1.apply_reduction(dot_prod_op,num_vecs,vecs,0,NULL,dot_prod_targ.obj() );
+	return RTOp_ROp_dot_prod_val(dot_prod_targ.obj());
 }
 
 std::pair<AbstractLinAlgPack::value_type,AbstractLinAlgPack::value_type>
@@ -156,10 +191,23 @@ void AbstractLinAlgPack::Vt_S(
 	VectorWithOpMutable* v_lhs, const value_type& alpha )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error");
+	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
 #endif
 	assert(0==RTOp_TOp_scale_vector_set_alpha( alpha, &scale_vector_op.op() ));
 	v_lhs->apply_transformation(scale_vector_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL);
+}
+
+void AbstractLinAlgPack::Vp_StV(
+	VectorWithOpMutable* v_lhs, const value_type& alpha, const VectorWithOp& v_rhs)
+{
+#ifdef _DEBUG
+	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_StV(...), Error!");
+#endif
+	assert(0==RTOp_TOp_axpy_set_alpha( alpha, &axpy_op.op() ));
+	const int num_vecs = 1;
+	const VectorWithOp*
+		vecs[num_vecs] = { &v_rhs };
+	v_lhs->apply_transformation(axpy_op,num_vecs,vecs,0,NULL,RTOp_REDUCT_OBJ_NULL);
 }
 
 void AbstractLinAlgPack::ele_wise_prod(

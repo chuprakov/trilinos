@@ -110,18 +110,4 @@ void force_in_bounds( const VectorWithOp& xl, const VectorWithOp& xu, VectorWith
 // //////////////////////////////////////////////
 // Inline implementations
 
-inline
-AbstractLinAlgPack::value_type
-AbstractLinAlgPack::dot( const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2 )
-{
-	return v_rhs1.inner_product(v_rhs2);
-}
-
-inline
-void AbstractLinAlgPack::Vp_StV(
-	VectorWithOpMutable* v_lhs, const value_type& alpha, const VectorWithOp& v_rhs)
-{
-	v_lhs->axpy(alpha,v_rhs);
-}
-
 #endif // ABSTRACT_LINALG_PACK_VECTOR_STD_OPS_H

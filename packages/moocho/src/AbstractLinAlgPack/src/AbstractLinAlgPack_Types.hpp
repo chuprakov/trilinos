@@ -92,6 +92,11 @@ class VectorWithOpMutableCompositeStd;
 class MatrixSymIdentity;
 class MatrixSymDiagonalStd;
 
+// testing classes
+
+class VectorSpaceTester;
+class VectorSpaceTesterSetOptions;
+
 //@}
 
 } // end namespace AbstractLinAlgPack

@@ -42,3 +42,6 @@ using AbstractLinAlgPack::VectorSpaceCompositeStd;
 using AbstractLinAlgPack::VectorWithOpMutableCompositeStd;
 using AbstractLinAlgPack::MatrixSymIdentity;
 using AbstractLinAlgPack::MatrixSymDiagonalStd;
+
+using AbstractLinAlgPack::VectorSpaceTester;
+using AbstractLinAlgPack::VectorSpaceTesterSetOptions;

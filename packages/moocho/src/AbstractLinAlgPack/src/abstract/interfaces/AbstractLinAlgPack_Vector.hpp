@@ -11,8 +11,6 @@
 
 namespace AbstractLinAlgPack {
 
-class VectorWithOpMutable;
-
 ///
 /** Abstract interface for immutable coordinate vectors {abstract}.
   *
@@ -27,21 +25,39 @@ class VectorWithOpMutable;
   * would not be significantly faster than those implemented through
   * reduction/transformation operators.  There are some operations however
   * that can not always be efficiently with reduction/transforamtion operators
-  * and a few of these important methods are added to this interface.
+  * and a few of these important methods are included in this interface.  The
+  * \Ref{apply_reduction}#(...)# method allows to client to specify a sub-set
+  * of the vector elements to include in reduction/transformation operation.
+  * This greatly increases the generality of this vector interface as vector
+  * objects can be used as sub objects in larger composite vectors and sub
+  * views of a vector can be created.
+  *
+  * This interface allows clients to create sub-views of a vector that in turn
+  * are fully functional #VectorWithOp# objects.  This functionality is supported
+  * by default by using a default vector subclass \Ref{VectorWithOpSubView} which
+  * in turn calls #apply_reduciton(...)# but the client need not ever worry about
+  * how this is done.
+  *
+  * This interface also allows a client to extract a sub-set of elements in an
+  * explicit form as an RTO_SubVector object using the method \Ref{get_sub_vector}#(...)#.
+  * In general, this is very bad thing to do and should be avoided at all costs.
+  * However, there are some applications where this is needed and therefore it is
+  * supported.  The default implementation of this method uses a reduction/transformation
+  * operator with \Ref{apply_reduction}#(...)# in order to extract the needed elements.
   *
   * In order to create a concreate subclass of this interface, only three
-  * methods absolutely must be overridden.  The method \Ref{dim}#()#
+  * methods must be overridden.  The method \Ref{dim}#()#
   * gives the dimension of the vector at hand.  The #space()# method must
   * also be overridden which in turn requires defining a concreate #VectorSpace#
   * class (which has three pure virtual methods).  As mentioned above,
-  * the \Ref{apply_reduction}#(...)# method must be overridden.
+  * the \Ref{apply_reduction}#(...)# method must be overridden as well.
   *
   * The fact that this interface returns a #VectorSpace# object (which in turn
   * can create mutable vectors) implies that for every possible vector, it is
   * possible to associate with it a mutable vector object that can be the target
   * of transformation operations.  This is not a serious limitation.  For any
-  * application area mutable vectors should be able to defined and should be
-  * usable with the non-mutable vectors that can be created.
+  * application area, mutable vectors should be able to defined and should be
+  * usable with the non-mutable vectors.
   *
   * The default implementation of this class caches away the values of the
   * norms that are computed.  The operations in any subclass that modifies
@@ -86,31 +102,39 @@ public:
 	 * Therefore, the number of nonmutable vectors passed to
 	 * \Ref{RTOp_apply_op}#(...)# will be #num_vecs+1#.
 	 *
+	 * If #global_offset >= 0# then, #this->get_ele(i)# is really the
+	 * element #i + global_offset# in the aggregate vector that these vectors
+	 * belong to.  If #global_offset < 0# then the first element in the
+	 * vector represented is #this->get_ele(-global_offset+1)# and the
+	 * last is #this->get_ele(-global_offset + sub_dim)#.
+	 *
 	 * Preconditions:\begin{itemize}
 	 * \item [#num_vecs > 0#] #vecs[k]->dim() == this->dim()#, for k = 0...num_vecs-1
 	 * \item [#num_targ_vecs > 0#] #vecs[k]->dim() == this->dim()#, for k = 0...num_targ_vecs-1
+	 * \item [#global_offset <= 0#] #-global_offset + sub_dim <= this->dim()#
+	 * \item [#global_offset >= 0#] #sub_dim <= this->dim()#
 	 * \end{itemize}
 	 *
 	 * @param  op	[in] Reduction operator to apply over each sub-vector
 	 *				and assemble the intermediate targets into #reduct_obj#.
-	 *	@param  num_vecs
+	 * @param  num_vecs
 	 *				[in] Number of nonmutable vectors in #vecs[]#.  If #vecs==NULL#
 	 *				then this argument is ignored but should be set to zero.
-	 *	@param  vecs
+	 * @param  vecs
 	 *				[in] Array (length #num_vecs#) of a set of pointers to
 	 *				nonmutable vectors to include in the operation.
 	 *				The order of these vectors is significant to #op#.
 	 *				If #vecs==NULL# then #op# is called with the
 	 *				single vector represented by #this# object.
-	 *	@param  num_targ_vecs
+	 * @param  num_targ_vecs
 	 *				[in] Number of mutable vectors in #targ_vecs[]#.  If #targ_vecs==NULL#
 	 *				then this argument is ignored but should be set to zero.
-	 *	@param  targ_vecs
+	 * @param  targ_vecs
 	 *				[in] Array (length #num_targ_vecs#) of a set of pointers to
 	 *				mutable vectors to include in the operation.
 	 *				The order of these vectors is significant to #op#.
 	 *				If #targ_vecs==NULL# then #op# is called with no mutable vectors.
-	 *	@param  reduct_obj
+	 * @param  reduct_obj
 	 *				[in/out] Target object of the reduction operation.
 	 *				This object must have been created by the
 	 *				#op#.\Ref{reduct_obj_create_raw}#(&reduct_obj)# function
@@ -126,16 +150,24 @@ public:
 	 *              #num_values == 0#, #num_indexes == 0# and #num_chars == 0#
 	 *              then #reduct_obj# should be set to #RTOp_REDUCT_OBJ_NULL#
 	 *              and no reduction will be performed.
-	 * 	@param	global_offset
+	 * @param  global_offset
 	 *				[in] (default = 0) The offset of the vectors into a larger
-	 *				composite vector.
+	 *				composite vector.  If global_offset > 0 then the vector
+	 *              arguments are only sub-vectors in a larger aggregate
+	 *              vector.  If global_offset < 0 then a sub-vector
+	 *              within these vector arguments is selected.
+	 * @param  sub_dim
+	 *              [in] (default = 0) The number of elements in these
+	 *              vectors to include in the reduction/transformation
+	 *              operation.  The value of sub_dim == 0 means to
+	 *              include all available elements.
 	 */
 	virtual void apply_reduction(
 		const RTOpPack::RTOp& op
 		,const size_t num_vecs, const VectorWithOp** vecs
 		,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
 		,RTOp_ReductTarget reduct_obj
-		,const index_type global_offset = 0
+		,const index_type global_offset = 0, const index_type sub_dim = 0
 		) const = 0;
 
 	//@}
@@ -157,8 +189,19 @@ public:
 	///
 	/** Virtual output function.
 	  *
-	  * The default just uses get_sub_vector(...) to convert to a dense vector
-	  * and then prints this.
+	  * The default implementation just uses \Ref{get_sub_vector}#(...)# to convert to
+	  * a dense vector and then prints this.
+	  *
+	  * ToDo: Finish documentation!
+	  *
+	  * @param  out        [in/out] Receives the output.
+	  * @param  print_dim  [in] (default = true) If true, then the dimension is printed
+	  *                    first followed by a newline.
+	  * @param  newline    [in] (default = true) If true, then a newline is printed after
+	  *                    the last element is printed.
+	  * @param  global_offset
+	  *                    [in] (default = 0) The offset added to the vector element
+	  *                    indexes when they are printed.
 	  */
 	virtual std::ostream& output(
 		std::ostream& out, bool print_dim = true, bool newline = true
@@ -212,44 +255,54 @@ public:
 	 *
 	 * It is important to understand what the minimum postconditions are for the sub vector objects
 	 * returned from this method.  If two vector objects #x# and #y# are compatible (possibly of
-	 * different types) it is assumed that #*x.create_sub_view(rng)# and #*y.create_sub_view(rng)#
+	 * different types) it is assumed that #*x.sub_view(rng)# and #*y.sub_view(rng)#
 	 * will also be compatible vector objects no mater what range #rng# represents.  However,
 	 * if #i1 < i2 < i3 < i4# with #i2-i1 == i4-i3#, then in general, one can not expect
-	 * that the vector objects #*x.create_sub_view(Range1D(i2,i1))# and
-	 * #*x.create_sub_view(Range1D(i4,i5))# will be compatible objects.  For some vector
+	 * that the vector objects #*x.sub_view(Range1D(i2,i1))# and
+	 * #*x.sub_view(Range1D(i4,i5))# will be compatible objects.  For some vector
 	 * implementaions they may be (i.e. serial vectors) but for others they most
 	 * certainly will not be (i.e. parallel vectors).  This limitation must be kept in
 	 * mind by all vector subclass implementors and vector interface clients.
 	 *
 	 * Preconditions:\begin{itemize}
-	 * \item #rng.in_range(this->dim()) == true# (#throw std::out_of_range#)
+	 * \item #rng.ubound() <= this->dim() == true# (#throw std::out_of_range#)
 	 * \end{itemize}
 	 *
-	 * @param  rng  [in] The range of the elements to extract the sub-vector view.
+	 * Postconditions:\begin{itemize}
+	 * \item #[return.get() != NULL] return->get_ele(i) == this->get_ele(i+rng.lbound()-1)#
+	 *       , for #i = 1...rng.size()#.
+	 * \end{itemize}
+	 *
+	 * @param  rng  [in] The range of the elements to extract the sub-vector view.  It
+	 *              is allowed for #rng.full_range() == true# in which case it implicitly
+	 *              treated as #rng = [1,this->dim()]#.
 	 * 
 	 * @return  Returns a smart reference counted pointer to a view of the requested
-	 * vector elements.  It is allowed that #return->get() == NULL# for some selections
+	 * vector elements.  It is allowed for subclasses to return  #return->get() == NULL#
+	 * for some selections
 	 * of #rng#.  Only some #rng# ranges may be allowed but they will be appropriate for the
 	 * application at hand.  However, a very good implementation should be able to
 	 * accommodate any valid #rng# that meets the basic preconditions.  The default
-	 * implementation of this method just returns #NULL# unless #rng.full_range() == true#
-	 * or #rng.lbound() == 1 && #rng.ubound()==this->dim()#.
+	 * implementation uses the subclass \Ref{VectorWithOpSubView} to represent any arbitrary
+	 * sub-view but this can be inefficient if the sub-view is very small compared this this
+	 * full vector space but not necessarily.
 	 */
-	virtual vec_ptr_t create_sub_view( const Range1D& rng ) const;
+	virtual vec_ptr_t sub_view( const Range1D& rng ) const;
 
 	///
-	/** Inline member function that simply calls #this->create_sub_view(Range1D(l,u)).
+	/** Inline member function that simply calls #this->sub_view(Range1D(l,u)).
 	 */
-	vec_ptr_t create_sub_view( const index_type& l, const index_type& u ) const;
+	vec_ptr_t sub_view( const index_type& l, const index_type& u ) const;
 
 	/** @name Explicit sub-vector access.
 	 *
 	 * These member functions can be used to extract a explicit view
-	 * of any subvector in the overall vector.  Note that this may be
+	 * of any sub-vector in the overall vector.  Note that this may be
 	 * a very bad thing to do with many vector subclasses (i.e. parallel
 	 * and out-of-core vectors).  Allowing a user to create an explict view
 	 * of the elements allows great flexibility but must be used with care
-	 * and only when absolutly needed.
+	 * and only when absolutely needed.  If possible, use \Ref{sub_view}#(...)#
+	 * and an RTOp operator class instead.
 	 */
 	//@{
 
@@ -321,29 +374,6 @@ public:
 	 */
 	virtual void free_sub_vector( RTOp_SubVector* sub_vec ) const;
 
-	///
-	/** Must be called by any vector subclass that modifies this vector
-	 * object!
-	 *
-	 * The way to use this method by subclass is to call it when ever
-	 * there is a chance that the vector may have changed.  Therefore, this
-	 * method should be called in every non-const member function in every
-	 * subclass.  This is a little bit of a pain but overall this is a good
-	 * design.  For example, if the subclass #SomeVector# has cashed
-	 * data as well and some method #SomeVector::foo()# may modify the
-	 * vector then #SomeVector# should override this method and its
-	 * implementation should look like this!
-	 \begin{verbatim}
-	 void SomeVector::has_changed()
-	 {
-	     BaseClass::has_changed(); // Called on most direct subclass that
-		                           // has overridden this method as well.
-	    ...  // Reinitialize your own cached data to uninitialized!
-	 }
-	 \end{verbatim}
-	 */
-	virtual void has_changed() const;
-
 	//@}
 
 	/** @name Overridden from \Ref{VectorBase} */
@@ -357,10 +387,36 @@ public:
 
 	//@}
 
+protected:
+
+	///
+	/** Must be called by any vector subclass that modifies this vector
+	 * object!
+	 *
+	 * The way to use this method by subclasses is to call it when ever
+	 * there is a chance that the vector may have changed.  Therefore, this
+	 * method should be called in every non-const member function in every
+	 * subclass.  This is a little bit of a pain but overall this is a good
+	 * design in that it allows for efficient cacheing of information for
+	 * multiple retreval.  For example, if the subclass #SomeVector# has cashed
+	 * data and has a method #SomeVector::foo()# may modify the
+	 * vector then #SomeVector# should override the method #has_changed()# and its
+	 * implementation should look someting likde like this!
+	 \begin{verbatim}
+	 void SomeVector::has_changed()
+	 {
+	     BaseClass::has_changed(); // Called on most direct subclass that
+		                           // has overridden this method as well.
+	    ...  // Reinitialize your own cached data to uninitialized!
+	 }
+	 \end{verbatim}
+	 */
+	virtual void has_changed() const;
+
 private:
 
-	mutable size_type   num_nonzeros_;  // > this->dim() not initialized
-	mutable value_type  norm_1_, norm_2_, norm_inf_;   // < 0 not initialized, > 0 already calculated
+	mutable size_type   num_nonzeros_;  // > this->dim() == not initialized
+	mutable value_type  norm_1_, norm_2_, norm_inf_;   // < 0 == not initialized, > 0 == already calculated
 
 }; // end class MatrixWithOp
 
@@ -369,9 +425,9 @@ private:
 
 inline
 VectorWithOp::vec_ptr_t
-VectorWithOp::create_sub_view( const index_type& l, const index_type& u ) const
+VectorWithOp::sub_view( const index_type& l, const index_type& u ) const
 {
-	return this->create_sub_view(Range1D(l,u));
+	return this->sub_view(Range1D(l,u));
 }
 
 } // end namespace AbstractLinAlgPack

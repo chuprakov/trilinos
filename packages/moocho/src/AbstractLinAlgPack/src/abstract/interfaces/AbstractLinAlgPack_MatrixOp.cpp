@@ -18,6 +18,20 @@
 
 namespace AbstractLinAlgPack {
 
+MatrixWithOp::mat_ptr_t
+MatrixWithOp::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
+{
+	if( 
+		( ( row_rng.lbound() == 1 && row_rng.ubound() == this->rows() )
+		  || row_rng.full_range() )
+		&&
+		( ( col_rng.lbound() == 1 && col_rng.ubound() == this->cols() )
+		  || row_rng.full_range() )
+		)
+		return mat_ptr_t(this,false); // don't clean up memory
+	return NULL; // requested a view that was not the entire matrix!
+}
+
 MatrixWithOp& MatrixWithOp::zero_out()
 {
 	THROW_EXCEPTION(

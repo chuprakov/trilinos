@@ -2,6 +2,7 @@
 // VectorWithOpMutable.cpp
 
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutableSubView.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_assign_scalar.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_assign_vectors.h"
@@ -10,6 +11,7 @@
 #include "RTOpStdOpsLib/include/RTOp_TOp_set_sub_vector.h"
 #include "RTOpPack/include/RTOpCppC.h"
 #include "Range1D.h"
+#include "ThrowException.h"
 
 namespace {
 
@@ -29,25 +31,25 @@ class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
 		// Vector scalar assignment operator
-		if(0!=RTOp_TOp_assign_scalar_construct( 0.0, &assign_scalar_op.op() ))
+		if(0>RTOp_TOp_assign_scalar_construct( 0.0, &assign_scalar_op.op() ))
 			assert(0);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_TOp_assign_scalar_name
 			   ,&RTOp_TOp_assign_scalar_vtbl
 			   ))
 			assert(0);
 		// Vector assignment operator
-		if(0!=RTOp_TOp_assign_vectors_construct( &assign_vec_op.op() ))
+		if(0>RTOp_TOp_assign_vectors_construct( &assign_vec_op.op() ))
 			assert(0);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_TOp_assign_vectors_name
 			   ,&RTOp_TOp_assign_vectors_vtbl
 			   ))
 			assert(0);
 		// Set element operator
-		if(0!=RTOp_TOp_set_ele_construct( 0, 0.0, &set_ele_op.op() ))
+		if(0>RTOp_TOp_set_ele_construct( 0, 0.0, &set_ele_op.op() ))
 			assert(0);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_TOp_set_ele_name
 			   ,&RTOp_TOp_set_ele_vtbl
 			   ))
@@ -55,17 +57,17 @@ public:
 		// Set sub-vector operator
 		RTOp_SubVector sub_vec;
 		RTOp_sub_vector_null(&sub_vec);
-		if(0!=RTOp_TOp_set_sub_vector_construct( &sub_vec, &set_sub_vector_op.op() ))
+		if(0>RTOp_TOp_set_sub_vector_construct( &sub_vec, &set_sub_vector_op.op() ))
 			assert(0);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_TOp_set_sub_vector_name
 			   ,&RTOp_TOp_set_sub_vector_vtbl
 			   ))
 			assert(0);	
 		// axpy operator
-		if(0!=RTOp_TOp_axpy_construct( 0.0, &axpy_op.op() ))
+		if(0>RTOp_TOp_axpy_construct( 0.0, &axpy_op.op() ))
 			assert(0);
-		if(0!=RTOp_Server_add_op_name_vtbl(
+		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_TOp_axpy_name
 			   ,&RTOp_TOp_axpy_vtbl
 			   ))
@@ -115,11 +117,24 @@ void VectorWithOpMutable::set_ele( index_type i, value_type alpha )
 }
 
 VectorWithOpMutable::vec_mut_ptr_t
-VectorWithOpMutable::create_sub_view( const Range1D& rng )
+VectorWithOpMutable::sub_view( const Range1D& rng_in )
 {
-	if( rng.full_range() || ( rng.lbound() == 1 && rng.ubound() == this->dim() ) )
-		return vec_mut_ptr_t(this,false); // returned ref counted pointer does not own memory!
-	return NULL;
+	namespace rcp = ReferenceCountingPack;
+	const index_type dim = this->dim();
+	const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
+#ifdef _DEBUG
+	THROW_EXCEPTION(
+		rng.ubound() > dim, std::out_of_range
+		,"VectorWithOpMutable::sub_view(rng): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
+		"is not in the range [1,this->dim()] = [1,"<<dim<<"]" );
+#endif	
+	if( rng.lbound() == 1 && rng.ubound() == dim )
+		return vec_mut_ptr_t( this, false );
+	return rcp::rcp_implicit_cast<vec_mut_ptr_t::element_type>(
+		rcp::ref_count_ptr<VectorWithOpMutableSubView>(
+			new VectorWithOpMutableSubView(
+				vec_mut_ptr_t( this, false )
+				,rng ) ) );
 }
 
 VectorWithOpMutable::vec_mut_ptr_t VectorWithOpMutable::clone() const
@@ -140,11 +155,11 @@ void VectorWithOpMutable::set_sub_vector( const RTOp_SubVector& sub_vec )
 // Overridden from VectorWithOp
 
 VectorWithOp::vec_ptr_t
-VectorWithOpMutable::create_sub_view( const Range1D& rng ) const
+VectorWithOpMutable::sub_view( const Range1D& rng ) const
 {
 	namespace rcp = ReferenceCountingPack;
 	return rcp::rcp_implicit_cast<vec_ptr_t::element_type>(
-		const_cast<VectorWithOpMutable*>(this)->create_sub_view(rng)
+		const_cast<VectorWithOpMutable*>(this)->sub_view(rng)
 		);
 }
 
