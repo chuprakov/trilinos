@@ -87,7 +87,7 @@ SimpleNewtonSolver<Scalar>::solve(
 			);
 	}
 	if(out) *out << "\n*** Entering SimpleNewtonSolver::solve(...) ...\n";
- 	if(sout) *sout << leadstr << "newton_iter=0: Starting nonlinear solve\n";
+ 	if(sout) *sout << leadstr << "newton_iter=0: Starting nonlinear solve ...\n";
 	// Create the data for the problem
 	const VectorSpace<Scalar>                         &space_c = *np->space_c();
 	const VectorSpace<Scalar>                         &space_y = *np->space_y();
@@ -118,8 +118,8 @@ SimpleNewtonSolver<Scalar>::solve(
 			const bool isConverged = sqrt_phi <= tol();
 			if(out) *out << "sqrt(phi) = sqrt(<c,c>) = ||c|| = " << sqrt_phi << ( isConverged ? " <= " : " > " ) << "tol = " << tol() << std::endl;
 			if(sout) *sout
-				<< leadstr << "newton_iter="<<newtonIter<<": ||c|| = "
-				<< sqrt_phi << ( isConverged ? " <= " : " > " ) << "tol = " << tol() << std::endl;
+				<< leadstr << "newton_iter="<<newtonIter<<": Check convergence: ||c|| = "
+				<< sqrt_phi << ( isConverged ? " <= " : " > " ) << "tol = " << tol() << ( isConverged ? ", Converged!!!" : "" ) << std::endl;
 			if(isConverged) {
 				np->unsetQuantities();
 				if(y_inout != y.get()) assign( y_inout, *y );  // Assign the solution if we have to
@@ -142,7 +142,7 @@ SimpleNewtonSolver<Scalar>::solve(
 			}
 			// Compute the newton step: dy = -inv(DcDy)*c
 			if(out) *out << "\nComputing the Newton step: dy = - inv(DcDy)*c ...\n";
-			if(sout) *sout	<< leadstr << "newton_iter="<<newtonIter<<": Computing Newton step\n";
+			if(sout) *sout	<< leadstr << "newton_iter="<<newtonIter<<": Computing Newton step ...\n";
 			assign( &*dy, 0.0 );                      // Initial guess for the linear solve
 			DcDy->solve(opDcDy,*c,&*dy,souter.get()); // Solve: DcDy*dy = c
 			Vt_S( &*dy, -1.0 );                       // dy *= -1.0
@@ -150,7 +150,7 @@ SimpleNewtonSolver<Scalar>::solve(
 			if(out && dumpAll) *out << "\ndy =\n" << *dy;
 			// Perform backtracking armijo line search
 			if(out) *out << "\nStarting backtracking line search iterations ...\n";
-			if(sout) *sout	<< leadstr << "newton_iter="<<newtonIter<<": Starting backtracking line search\n";
+			if(sout) *sout	<< leadstr << "newton_iter="<<newtonIter<<": Starting backtracking line search ...\n";
 			const Scalar Dphi = -2.0*phi; // D(phi(y+alpha*dy))/D(alpha) at alpha=0.0 => -2.0*<c,c>: where dy = -inv(DcDy)*c
 			Scalar alpha = 1.0; // Try a full step initially since it will eventually be accepted near solution
 			int lineSearchIter;
