@@ -45,8 +45,8 @@ void LinAlgPack::inv_perm(const IVector& perm, IVector* inv_perm) {
 
 void LinAlgPack::perm_ele(const IVector& perm, VectorSlice* vs)
 {
-	i_assert_perm_size(vs->size(),perm.size());
-	Vector tmp_v(vs->size());
+	i_assert_perm_size(vs->dim(),perm.size());
+	Vector tmp_v(vs->dim());
 	Vector::iterator		v_itr		= tmp_v.begin(),
 							v_itr_end	= tmp_v.end();
 	IVector::const_iterator perm_itr = perm.begin();
@@ -60,8 +60,8 @@ void LinAlgPack::perm_ele(const IVector& perm, VectorSlice* vs)
 
 void LinAlgPack::perm_ele(const VectorSlice& x, const IVector& perm, VectorSlice* y)
 {
-	i_assert_perm_size(x.size(),perm.size());
-	i_assert_perm_size(y->size(),perm.size());
+	i_assert_perm_size(x.dim(),perm.size());
+	i_assert_perm_size(y->dim(),perm.size());
 
 	IVector::const_iterator
 		perm_itr	= perm.begin();
@@ -74,8 +74,8 @@ void LinAlgPack::perm_ele(const VectorSlice& x, const IVector& perm, VectorSlice
 
 void LinAlgPack::inv_perm_ele(const VectorSlice& y, const IVector& perm, VectorSlice* x)
 {
-	i_assert_perm_size(y.size(),perm.size());
-	i_assert_perm_size(x->size(),perm.size());
+	i_assert_perm_size(y.dim(),perm.size());
+	i_assert_perm_size(x->dim(),perm.size());
 
 	VectorSlice::const_iterator
 		y_itr		= y.begin(),

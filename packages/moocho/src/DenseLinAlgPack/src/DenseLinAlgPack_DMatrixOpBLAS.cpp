@@ -321,8 +321,8 @@ void LinAlgPack::Mp_StM(GenMatrixSlice* gms_lhs, value_type alpha, const tri_gms
 void LinAlgPack::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_rhs2, value_type beta)
 {
-	Vp_MtV_assert_sizes(vs_lhs->size(), gms_rhs1.rows()	, gms_rhs1.cols(), trans_rhs1
-		, vs_rhs2.size());
+	Vp_MtV_assert_sizes(vs_lhs->dim(), gms_rhs1.rows()	, gms_rhs1.cols(), trans_rhs1
+		, vs_rhs2.dim());
 	BLAS_Cpp::gemv(trans_rhs1,gms_rhs1.rows(),gms_rhs1.cols(),alpha,gms_rhs1.col_ptr(1)
 		,gms_rhs1.max_rows(), vs_rhs2.raw_ptr(),vs_rhs2.stride(),beta,vs_lhs->raw_ptr()
 		,vs_lhs->stride());
@@ -333,8 +333,8 @@ void LinAlgPack::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, const sym_gms& 
 	, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_rhs2, value_type beta)
 {
 	assert_gms_square(sym_rhs1.gms());
-	Vp_MtV_assert_sizes(vs_lhs->size(), sym_rhs1.gms().rows(), sym_rhs1.gms().cols(), trans_rhs1
-		, vs_rhs2.size());
+	Vp_MtV_assert_sizes(vs_lhs->dim(), sym_rhs1.gms().rows(), sym_rhs1.gms().cols(), trans_rhs1
+		, vs_rhs2.dim());
 	BLAS_Cpp::symv(sym_rhs1.uplo(),sym_rhs1.gms().rows(),alpha,sym_rhs1.gms().col_ptr(1)
 		,sym_rhs1.gms().max_rows(),vs_rhs2.raw_ptr(),vs_rhs2.stride(),beta
 		,vs_lhs->raw_ptr(),vs_lhs->stride());
@@ -345,7 +345,7 @@ void LinAlgPack::V_MtV(Vector* v_lhs, const tri_gms& tri_rhs1, BLAS_Cpp::Transp 
 	, const VectorSlice& vs_rhs2)
 {
 	assert_gms_square(tri_rhs1.gms());
-	MtV_assert_sizes(tri_rhs1.gms().rows(), tri_rhs1.gms().cols(), trans_rhs1, vs_rhs2.size());
+	MtV_assert_sizes(tri_rhs1.gms().rows(), tri_rhs1.gms().cols(), trans_rhs1, vs_rhs2.dim());
 	v_lhs->resize(tri_rhs1.gms().rows());
 	(*v_lhs) = vs_rhs2;
 	BLAS_Cpp::trmv(tri_rhs1.uplo(),trans_rhs1,tri_rhs1.diag(),tri_rhs1.gms().rows()
@@ -357,8 +357,8 @@ void LinAlgPack::V_MtV(VectorSlice* vs_lhs, const tri_gms& tri_rhs1, BLAS_Cpp::T
 	, const VectorSlice& vs_rhs2)
 {
 	assert_gms_square(tri_rhs1.gms());
-	MtV_assert_sizes(tri_rhs1.gms().rows(), tri_rhs1.gms().cols(), trans_rhs1, vs_rhs2.size());
-	Vp_V_assert_sizes( vs_lhs->size(), tri_rhs1.gms().rows() );
+	MtV_assert_sizes(tri_rhs1.gms().rows(), tri_rhs1.gms().cols(), trans_rhs1, vs_rhs2.dim());
+	Vp_V_assert_sizes( vs_lhs->dim(), tri_rhs1.gms().rows() );
 	(*vs_lhs) = vs_rhs2;
 	BLAS_Cpp::trmv(tri_rhs1.uplo(),trans_rhs1,tri_rhs1.diag(),tri_rhs1.gms().rows()
 		,tri_rhs1.gms().col_ptr(1),tri_rhs1.gms().max_rows(), vs_lhs->raw_ptr(),vs_lhs->stride());
@@ -368,8 +368,8 @@ void LinAlgPack::V_MtV(VectorSlice* vs_lhs, const tri_gms& tri_rhs1, BLAS_Cpp::T
 void LinAlgPack::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, const tri_gms& tri_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_rhs2, value_type beta)
 {
-	Vp_MtV_assert_sizes(vs_lhs->size(),tri_rhs1.gms().rows(),tri_rhs1.gms().cols()
-						,trans_rhs1,vs_rhs2.size() );
+	Vp_MtV_assert_sizes(vs_lhs->dim(),tri_rhs1.gms().rows(),tri_rhs1.gms().cols()
+						,trans_rhs1,vs_rhs2.dim() );
 
 	// If op(gms_rhs2) == gms_lhs and beta = 0.0 then this is a direct call to the BLAS.
 	if( vs_lhs->overlap(vs_rhs2) == SAME_MEM && beta == 0.0 )
@@ -391,7 +391,7 @@ void LinAlgPack::V_InvMtV(Vector* v_lhs, const tri_gms& tri_rhs1, BLAS_Cpp::Tran
 	, const VectorSlice& vs_rhs2)
 {
 	assert_gms_square(tri_rhs1.gms());
-	MtV_assert_sizes(tri_rhs1.gms().rows(), tri_rhs1.gms().cols(), trans_rhs1, vs_rhs2.size());
+	MtV_assert_sizes(tri_rhs1.gms().rows(), tri_rhs1.gms().cols(), trans_rhs1, vs_rhs2.dim());
 	v_lhs->resize(tri_rhs1.gms().rows());
 	(*v_lhs) = vs_rhs2;
 	BLAS_Cpp::trsv(tri_rhs1.uplo(),trans_rhs1,tri_rhs1.diag(),tri_rhs1.gms().rows()
@@ -403,8 +403,8 @@ void LinAlgPack::V_InvMtV(VectorSlice* vs_lhs, const tri_gms& tri_rhs1, BLAS_Cpp
 	, const VectorSlice& vs_rhs2)
 {
 	assert_gms_square(tri_rhs1.gms());
-	MtV_assert_sizes(tri_rhs1.gms().rows(), tri_rhs1.gms().cols(), trans_rhs1, vs_rhs2.size());
-	Vp_V_assert_sizes( vs_lhs->size(), tri_rhs1.gms().rows() );
+	MtV_assert_sizes(tri_rhs1.gms().rows(), tri_rhs1.gms().cols(), trans_rhs1, vs_rhs2.dim());
+	Vp_V_assert_sizes( vs_lhs->dim(), tri_rhs1.gms().rows() );
 	(*vs_lhs) = vs_rhs2;
 	BLAS_Cpp::trsv(tri_rhs1.uplo(),trans_rhs1,tri_rhs1.diag(),tri_rhs1.gms().rows()
 		,tri_rhs1.gms().col_ptr(1),tri_rhs1.gms().max_rows(), vs_lhs->raw_ptr(),vs_lhs->stride());
@@ -416,8 +416,8 @@ void LinAlgPack::ger(
 	value_type alpha, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2
 	, GenMatrixSlice* gms_lhs )
 {
-	Vp_MtV_assert_sizes( vs_rhs2.size(),  gms_lhs->rows(), gms_lhs->cols()
-		, BLAS_Cpp::no_trans, vs_rhs1.size() );
+	Vp_MtV_assert_sizes( vs_rhs2.dim(),  gms_lhs->rows(), gms_lhs->cols()
+		, BLAS_Cpp::no_trans, vs_rhs1.dim() );
 	BLAS_Cpp::ger(
 		gms_lhs->rows(), gms_lhs->cols(), alpha
 		,vs_rhs1.raw_ptr(), vs_rhs1.stride()
@@ -430,8 +430,8 @@ void LinAlgPack::syr(value_type alpha, const VectorSlice& vs_rhs, sym_gms* sym_l
 {
 	assert_gms_square(sym_lhs->gms());
 	MtV_assert_sizes( sym_lhs->gms().rows(), sym_lhs->gms().cols()
-		, BLAS_Cpp::no_trans, vs_rhs.size() );
-	BLAS_Cpp::syr( sym_lhs->uplo(), vs_rhs.size(), alpha, vs_rhs.raw_ptr()
+		, BLAS_Cpp::no_trans, vs_rhs.dim() );
+	BLAS_Cpp::syr( sym_lhs->uplo(), vs_rhs.dim(), alpha, vs_rhs.raw_ptr()
 		, vs_rhs.stride(), sym_lhs->gms().col_ptr(1), sym_lhs->gms().max_rows() );
 }
 
@@ -440,10 +440,10 @@ void LinAlgPack::syr2(value_type alpha, const VectorSlice& vs_rhs1, const Vector
 	, sym_gms* sym_lhs)
 {
 	assert_gms_square(sym_lhs->gms());
-	VopV_assert_sizes( vs_rhs1.size(), vs_rhs2.size() );
+	VopV_assert_sizes( vs_rhs1.dim(), vs_rhs2.dim() );
 	MtV_assert_sizes( sym_lhs->gms().rows(), sym_lhs->gms().cols()
-		, BLAS_Cpp::no_trans, vs_rhs1.size() );
-	BLAS_Cpp::syr2( sym_lhs->uplo(), vs_rhs1.size(), alpha, vs_rhs1.raw_ptr()
+		, BLAS_Cpp::no_trans, vs_rhs1.dim() );
+	BLAS_Cpp::syr2( sym_lhs->uplo(), vs_rhs1.dim(), alpha, vs_rhs1.raw_ptr()
 		, vs_rhs1.stride(), vs_rhs2.raw_ptr(), vs_rhs2.stride()
 		, sym_lhs->gms().col_ptr(1), sym_lhs->gms().max_rows() );
 }

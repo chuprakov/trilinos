@@ -73,7 +73,7 @@ typedef FortranTypes::f_dbl_prec		value_type;
 /// Typedef for the index type of elements that are used by the library
 typedef FortranTypes::f_int				index_type;
 /// Typedef for the size type of elements that are used by the library
-typedef	int								size_type;
+typedef	FortranTypes::f_int				size_type;
 
 }
 

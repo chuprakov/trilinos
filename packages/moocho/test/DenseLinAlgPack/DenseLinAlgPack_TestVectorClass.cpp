@@ -54,7 +54,7 @@ void test_access( V* _v, I begin, I end, std::ostream*out, bool* success ) {
 	bool result;
 
 	if(out)
-		*out	<< "\nbegin + i == v[i] == v(i+1), for i = 0,1,...,v.size()\n";
+		*out	<< "\nbegin + i == v[i] == v(i+1), for i = 0,1,...,v.dim()\n";
 
 	I itr;
 	int i;
@@ -216,15 +216,15 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 		*out	<< "\n***\n*** Testing Vector resizing\n***\n"
 				<< "\nv2.free();\n";
 	v2.free();
-	if(out) *out << "v2.size() == 0 : " << update_success( v2.size() == 0, &success ) << std::endl;
+	if(out) *out << "v2.dim() == 0 : " << update_success( v2.dim() == 0, &success ) << std::endl;
 
 	if(out)
 		*out	<< "\nv2.resize(n,2*alpha1);\n";
 	v2.resize(n,2*alpha1);
-	result1 = update_success( v2.size() == n, &success );
+	result1 = update_success( v2.dim() == n, &success );
 	result2 = update_success( comp(v2,2*alpha1), &success );
 	if(out)
-		*out	<< "( (v2.size() -> " << v2.size() << ") == n && "
+		*out	<< "( (v2.dim() -> " << v2.dim() << ") == n && "
 				<< "(comp(v2,2*alpha1) -> " << result2 << ") ) : " << (result1 && result2) << std::endl
 				<< "v2 =\n" << v2;
 

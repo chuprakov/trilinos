@@ -52,7 +52,7 @@ namespace LinAlgPack{
   *
   * VectorSlice provides many STL compliant features such as typedef type members
   *, iterator returning functions
-  * and the size() function.  It also provides access to individual elements (lvalue)
+  * and the dim() function.  It also provides access to individual elements (lvalue)
   * through 0-based
   * and 1-based subscripting with operator[](i) and operator()(i) respectively.
   *  In addition and subregions can be created
@@ -183,7 +183,7 @@ public:
 
 	  * Preconditions: <ul>
 	  *		<li> rng.full_range() == false (throw #std::out_of_range#)
-	  *		<li> rng.size() <= vs.size() (throw #std::out_of_range#) 
+	  *		<li> rng.dim() <= vs.dim() (throw #std::out_of_range#) 
 	  *		</ul>
 	  * 
 	  * @param	vs		VectorSliceTmpl object that this VectorSliceTmpl object is being created from
@@ -203,7 +203,7 @@ public:
 	  *
 	  * The forward iterators returned by begin() and end() iterator sequentialy from the first
 	  * element (same element as returned by operator()(1)) to the last
-	  * element (same element as returned by operator()(size()).  This goes for reverse 
+	  * element (same element as returned by operator()(dim()).  This goes for reverse 
 	  * (stride() < 0) VectorSliceTmpl objects as well.  The reverse iterators returned by
 	  * rbegin() and rend() iterate in the reverse sequence.
 	  *
@@ -239,8 +239,8 @@ public:
 	  * These operator functions allow access (lvalue) to the individual elements
 	  * of the VectorSliceTmpl object.
 	  * 
-	  * The subscript i must be, 1 <= i <= this->size(), for the 1-based element access
-	  * operators and, 0 <= i <= this->size() - 1, for the 0-based element access operators.
+	  * The subscript i must be, 1 <= i <= this->dim(), for the 1-based element access
+	  * operators and, 0 <= i <= this->dim() - 1, for the 0-based element access operators.
 	  * If they are not then an #std::out_of_range# exception will be thrown.
 	  */
 
@@ -296,7 +296,7 @@ public:
 	  * The returned VectorSliceTmpl object represents the range of the rng argument.
 	  *
 	  * Preconditions: <ul>
-	  *		<li> #rng.ubound() - 1 <= this->size()# (throw #out_of_range#)
+	  *		<li> #rng.ubound() - 1 <= this->dim()# (throw #out_of_range#)
 	  *		</ul>
 	  *
 	  * @param	rng		Indece range [lbound,ubound] of the region being returned.
@@ -308,7 +308,7 @@ public:
 	  * Preconditions: <ul>
 	  *		<li> #lbound > 1# (throw out_of_range)
 	  *		<li> #lbound < ubound# (throw out_of_range)
-	  *		<li> #ubound <= this->size()# (throw out_of_range)
+	  *		<li> #ubound <= this->dim()# (throw out_of_range)
 	  *		</ul>
 	  *
 	  * @param	rng		Range [lbound,ubound] of the region being returned.
@@ -321,7 +321,7 @@ public:
 	  *
 	  * In the reverse VectorSliceTmpl,
 	  * the first element becomes the last element and visa-versa.  For example, for 
-	  * #VectorSliceTmpl r = x.rev()#, #&x(1) == &z(z.size())# and #&x(x.size()) == &z(1)# are both true.
+	  * #VectorSliceTmpl r = x.rev()#, #&x(1) == &z(z.dim())# and #&x(x.dim()) == &z(1)# are both true.
 	  * The iterators returned by \Ref{begin()} iterate from the first conceptual element to the last.
 	  */
 	VectorSliceTmpl<value_type> rev();
@@ -338,11 +338,11 @@ public:
 	/** vs = alpha (Sets all the elements to the constant alpha).
 	  *
 	  * Preconditions: <ul>
-	  *		<li> #this->size() > 0# (throw #std::length_error#)
+	  *		<li> #this->dim() > 0# (throw #std::length_error#)
 	  *		</ul>
 	  *
 	  * Postconditions: <ul>
-	  *		<li> #this->operator()(i) == alpha#, i = 1, 2, ... , #this->size()#
+	  *		<li> #this->operator()(i) == alpha#, i = 1, 2, ... , #this->dim()#
 	  *		</ul>
 	  */
 	VectorSliceTmpl<value_type>& operator=(value_type alpha);
@@ -350,12 +350,12 @@ public:
 	/** vs = rhs (Copies the elements of rhs into the elements of this).
 	  *
 	  * Preconditions: <ul>
-	  *		<li> #this->size() == rhs.size()# (throw #out_of_range#)
-	  *		<li> #rhs.size() > 0# (throw #out_of_range#)
+	  *		<li> #this->dim() == rhs.dim()# (throw #out_of_range#)
+	  *		<li> #rhs.dim() > 0# (throw #out_of_range#)
 	  *		</ul>
 	  *
 	  * Postconditions: <ul>
-	  *		<li> #this->operator()(i) == rhs(i)#, i = 1, 2, ..., #this->size()#
+	  *		<li> #this->operator()(i) == rhs(i)#, i = 1, 2, ..., #this->dim()#
 	  *		</ul>
 	  */
 	VectorSliceTmpl<value_type>& operator=(const VectorSliceTmpl<value_type>& rhs);
@@ -367,7 +367,7 @@ public:
 	//@{
 
 	/// Returns the number of elements of the VectorSliceTmpl.
-	size_type size() const;
+	size_type dim() const;
 	/// 
 	/** Returns the degree of memory overlap of the two VectorSliceTmpl objects this and vs.
 	  *
@@ -473,7 +473,7 @@ public:
 
 	//@{
 
-	/// Constructs a vector with 0 elements (this->size()==0).
+	/// Constructs a vector with 0 elements (this->dim()==0).
 	VectorTmpl();
 	/// Constructs a vector with n elements of initialized memory.
 	VectorTmpl(size_type n);
@@ -491,7 +491,7 @@ public:
 	/** Constructs a Vector object fron a VectorSliceTmpl object.
 	  *
 	  * Postconditions: <ul>
-	  *		<li> #this->size() == vs.size()#
+	  *		<li> #this->dim() == vs.dim()#
 	  *		<li> #this->operator[](i) == vs[i]#, i = 0, 1, ... n
 	  *		</ul>
 	  */  
@@ -509,20 +509,20 @@ public:
 	  * Any new elements added are initialized to val.
 	  *
 	  * Postconditions: <ul>
-	  *		<li> #this->size() == n#
+	  *		<li> #this->dim() == n#
 	  *		</ul>
 	  */  
 	void resize(size_type n, value_type val = value_type());
 	///
-	/** Free memory and resize Vector to this->size() == 0.
+	/** Free memory and resize Vector to this->dim() == 0.
 	  *
 	  * Postconditions: <ul>
-	  *		<li> #this->size() == 0#
+	  *		<li> #this->dim() == 0#
 	  *		</ul>
 	  */  
 	void free();
 	/// Returns the number of elements of the Vector.
-	size_type size() const;
+	size_type dim() const;
 	/// 
 	/** Returns the degree of memory overlap of this and the VectorSliceTmpl object vs.
 	  *
@@ -575,8 +575,8 @@ public:
 	  * These operator functions allow access (lvalue) to the individual elements
 	  * of the Vector object.
 	  * 
-	  * The subscript i must be, 1 <= i <= this->size(), for the 1-based element access
-	  * operators and, 0 <= i <= this->size() - 1, for the 0-based element access operators.
+	  * The subscript i must be, 1 <= i <= this->dim(), for the 1-based element access
+	  * operators and, 0 <= i <= this->dim() - 1, for the 0-based element access operators.
 	  * If they are not then an #std::out_of_range# exception will be thrown.
 	  */
 
@@ -625,7 +625,7 @@ public:
 	  * The returned VectorSliceTmpl object represents the range of the rng argument.
 	  *
 	  * Preconditions: <ul>
-	  *		<li> #rng.ubound() - 1 <= this->size()# (throw #out_of_range#)
+	  *		<li> #rng.ubound() - 1 <= this->dim()# (throw #out_of_range#)
 	  *		</ul>
 	  *
 	  * @param	rng		Indece range [lbound,ubound] of the region being returned.
@@ -639,7 +639,7 @@ public:
 	  * Preconditions: <ul>
 	  *		<li> #lbound > 1# (throw #out_of_range#)
 	  *		<li> #lbound < ubound# (throw #out_of_range#)
-	  *		<li> #ubound <= this->size()# (throw #out_of_range#)
+	  *		<li> #ubound <= this->dim()# (throw #out_of_range#)
 	  *		</ul>
 	  *
 	  * @param	rng		Range [lbound,ubound] of the region being taken.
@@ -652,7 +652,7 @@ public:
 	  *
 	  * In the reverse VectorSliceTmpl,
 	  * the first element becomes the last element and visa-versa.  For example, for 
-	  * #VectorSliceTmpl r = x.rev()#, #&x(1) == &z(z.size())# and #&x(x.size()) == &z(1)# are both true.
+	  * #VectorSliceTmpl r = x.rev()#, #&x(1) == &z(z.dim())# and #&x(x.dim()) == &z(1)# are both true.
 	  * The iterators returned by \Ref{begin()} iterate from the first conceptual element to the last.
 	  */
 	VectorSliceTmpl<value_type> rev();
@@ -669,11 +669,11 @@ public:
 	/** vs = alpha (Sets all the elements to the constant alpha).
 	  *
 	  * Preconditions: <ul>
-	  *		<li> #this->size() > 0# (throw #std::length_error#)
+	  *		<li> #this->dim() > 0# (throw #std::length_error#)
 	  *		</ul>
 	  *
 	  * Postconditions: <ul>
-	  *		<li> #this->operator()(i) == alpha#, i = 1, 2, ... , #this->size()#
+	  *		<li> #this->operator()(i) == alpha#, i = 1, 2, ... , #this->dim()#
 	  *		</ul>
 	  */
 	VectorTmpl<value_type>& operator=(value_type alpha);
@@ -681,12 +681,12 @@ public:
 	/** vs = rhs (Copies the elements of rhs into the elements of this).
 	  *
 	  * Preconditions: <ul>
-	  *		<li> #this->size() == rhs.size()# (throw #out_of_range#)
-	  *		<li> #rhs.size() > 0# (throw #out_of_range#)
+	  *		<li> #this->dim() == rhs.dim()# (throw #out_of_range#)
+	  *		<li> #rhs.dim() > 0# (throw #out_of_range#)
 	  *		</ul>
 	  *
 	  * Postconditions: <ul>
-	  *		<li> #this->operator()(i) == rhs(i)#, i = 1, 2, ..., #this->size()#
+	  *		<li> #this->operator()(i) == rhs(i)#, i = 1, 2, ..., #this->dim()#
 	  *		</ul>
 	  */
 	VectorTmpl<value_type>& operator=(const VectorSliceTmpl<value_type>& rhs);
@@ -845,9 +845,9 @@ template<class T>
 inline
 VectorSliceTmpl<T>::VectorSliceTmpl( VectorSliceTmpl<T>& vs, const Range1D& rng )
 	: ptr_( vs.start_ptr() + (rng.lbound() - 1) * vs.stride() )
-	, size_( rng.full_range() ?	vector_validate_sized(vs.size()) : rng.size() )
+	, size_( rng.full_range() ?	vector_validate_sized(vs.dim()) : rng.size() )
 	, stride_( vs.stride() )
-{	vector_validate_range(  rng.full_range() ? vs.size() : rng.ubound(), vs.size() ); }
+{	vector_validate_range(  rng.full_range() ? vs.dim() : rng.ubound(), vs.dim() ); }
 
 template<class T>
 inline
@@ -867,7 +867,7 @@ VectorSliceTmpl<T>::iterator	VectorSliceTmpl<T>::begin()
 template<class T>
 inline
 VectorSliceTmpl<T>::iterator	VectorSliceTmpl<T>::end()
-{	return iterator(start_ptr() + size() * stride(), stride()); }
+{	return iterator(start_ptr() + dim() * stride(), stride()); }
 
 template<class T>
 inline
@@ -877,7 +877,7 @@ VectorSliceTmpl<T>::const_iterator VectorSliceTmpl<T>::begin() const
 template<class T>
 inline
 VectorSliceTmpl<T>::const_iterator VectorSliceTmpl<T>::end() const
-{	return const_iterator(start_ptr() + size() * stride(), stride()); }
+{	return const_iterator(start_ptr() + dim() * stride(), stride()); }
 
 template<class T>
 inline
@@ -904,7 +904,7 @@ template<class T>
 inline
 VectorSliceTmpl<T>::reference VectorSliceTmpl<T>::operator()(size_type i) // 1 based
 {
-	vector_validate_subscript(size(),i);
+	vector_validate_subscript(dim(),i);
 	return ptr_[(i-1)*stride_];
 }
 
@@ -912,7 +912,7 @@ template<class T>
 inline
 VectorSliceTmpl<T>::const_reference VectorSliceTmpl<T>::operator()(size_type i) const
 {
-	vector_validate_subscript(size(),i);
+	vector_validate_subscript(dim(),i);
 	return ptr_[(i-1)*stride_];
 }
 
@@ -920,7 +920,7 @@ template<class T>
 inline
 VectorSliceTmpl<T>::reference VectorSliceTmpl<T>::operator[](size_type i) // 0 based		
 {
-	vector_validate_subscript(size(),i+1);
+	vector_validate_subscript(dim(),i+1);
 	return ptr_[(i)*stride_];
 }
 
@@ -928,7 +928,7 @@ template<class T>
 inline
 VectorSliceTmpl<T>::const_reference VectorSliceTmpl<T>::operator[](size_type i) const
 {
-	vector_validate_subscript(size(),i+1);
+	vector_validate_subscript(dim(),i+1);
 	return ptr_[(i)*stride_];
 }
 
@@ -946,12 +946,12 @@ const VectorSliceTmpl<T>& VectorSliceTmpl<T>::operator()() const
 template<class T>
 inline
 VectorSliceTmpl<T> VectorSliceTmpl<T>::operator()(const Range1D& rng) 
-{	return VectorSliceTmpl(*this, full_range(rng,1,size())); }
+{	return VectorSliceTmpl(*this, full_range(rng,1,dim())); }
 
 template<class T>
 inline
 const VectorSliceTmpl<T> VectorSliceTmpl<T>::operator()(const Range1D& rng) const
-{	return VectorSliceTmpl(const_cast<VectorSliceTmpl<T>&>(*this), full_range(rng,1,size())); }
+{	return VectorSliceTmpl(const_cast<VectorSliceTmpl<T>&>(*this), full_range(rng,1,dim())); }
 
 template<class T>
 inline
@@ -966,12 +966,12 @@ const VectorSliceTmpl<T> VectorSliceTmpl<T>::operator()(size_type lbound, size_t
 template<class T>
 inline
 VectorSliceTmpl<T> VectorSliceTmpl<T>::rev()
-{	return VectorSliceTmpl( start_ptr() + stride() * (size()-1), size(), - stride() ); }
+{	return VectorSliceTmpl( start_ptr() + stride() * (dim()-1), dim(), - stride() ); }
 
 template<class T>
 inline
 const VectorSliceTmpl<T> VectorSliceTmpl<T>::rev() const
-{	return VectorSliceTmpl( const_cast<value_type*>(start_ptr()) + stride() * (size()-1), size(), - stride() ); }
+{	return VectorSliceTmpl( const_cast<value_type*>(start_ptr()) + stride() * (dim()-1), dim(), - stride() ); }
 
 // Assignment Operators
 template<class T>
@@ -986,7 +986,7 @@ template<class T>
 inline
 VectorSliceTmpl<T>& VectorSliceTmpl<T>::operator=(const VectorSliceTmpl<T>& rhs) 
 {
-	assert_vs_sizes(this->size(),rhs.size());
+	assert_vs_sizes(this->dim(),rhs.dim());
 	std::copy(rhs.begin(),rhs.end(),begin());
 	return *this;
 }
@@ -995,7 +995,7 @@ VectorSliceTmpl<T>& VectorSliceTmpl<T>::operator=(const VectorSliceTmpl<T>& rhs)
 
 template<class T>
 inline
-VectorSliceTmpl<T>::size_type VectorSliceTmpl<T>::size() const
+VectorSliceTmpl<T>::size_type VectorSliceTmpl<T>::dim() const
 {	return size_; }
 
 // Raw pointer access
@@ -1003,12 +1003,12 @@ VectorSliceTmpl<T>::size_type VectorSliceTmpl<T>::size() const
 template<class T>
 inline
 VectorSliceTmpl<T>::value_type*	VectorSliceTmpl<T>::raw_ptr()
-{	return stride() > 0 ? start_ptr() : start_ptr() + stride() * (size() - 1); }
+{	return stride() > 0 ? start_ptr() : start_ptr() + stride() * (dim() - 1); }
 
 template<class T>
 inline
 const VectorSliceTmpl<T>::value_type* VectorSliceTmpl<T>::raw_ptr() const
-{	return stride() > 0 ? start_ptr() : start_ptr() + stride() * (size() - 1); }
+{	return stride() > 0 ? start_ptr() : start_ptr() + stride() * (dim() - 1); }
 
 template<class T>
 inline
@@ -1059,7 +1059,7 @@ VectorTmpl<T>::VectorTmpl(const value_type* p, size_type n)
 template<class T>
 inline
 VectorTmpl<T>::VectorTmpl(const VectorSliceTmpl<T>& vs)
-	: v_(vs.size())
+	: v_(vs.dim())
 {  
 	std::copy(vs.begin(),vs.end(),begin());
 }
@@ -1083,7 +1083,7 @@ void VectorTmpl<T>::free()
 // Size
 template<class T>
 inline
-VectorTmpl<T>::size_type VectorTmpl<T>::size() const
+VectorTmpl<T>::size_type VectorTmpl<T>::dim() const
 {	return v_.size(); }
 
 // Iterator functions
@@ -1095,7 +1095,7 @@ VectorTmpl<T>::iterator VectorTmpl<T>::begin()
 template<class T>
 inline
 VectorTmpl<T>::iterator VectorTmpl<T>::end()
-{	return start_ptr() + size(); }
+{	return start_ptr() + dim(); }
 
 template<class T>
 inline
@@ -1105,7 +1105,7 @@ VectorTmpl<T>::const_iterator VectorTmpl<T>::begin() const
 template<class T>
 inline
 VectorTmpl<T>::const_iterator VectorTmpl<T>::end() const 
-{	return start_ptr() + size(); }
+{	return start_ptr() + dim(); }
 
 template<class T>
 inline
@@ -1132,7 +1132,7 @@ template<class T>
 inline
 VectorTmpl<T>::reference VectorTmpl<T>::operator()(size_type i)
 {
-	vector_validate_subscript(size(),i);
+	vector_validate_subscript(dim(),i);
 	return start_ptr()[i-1];
 }
 
@@ -1140,7 +1140,7 @@ template<class T>
 inline
 VectorTmpl<T>::const_reference VectorTmpl<T>::operator()(size_type i) const
 {
-	vector_validate_subscript(size(),i);
+	vector_validate_subscript(dim(),i);
 	return start_ptr()[i-1];
 }
 
@@ -1148,7 +1148,7 @@ template<class T>
 inline
 VectorTmpl<T>::reference VectorTmpl<T>::operator[](size_type i)
 {
-	vector_validate_subscript(size(),i+1);
+	vector_validate_subscript(dim(),i+1);
 	return start_ptr()[i];
 }
 
@@ -1156,7 +1156,7 @@ template<class T>
 inline
 VectorTmpl<T>::const_reference VectorTmpl<T>::operator[](size_type i) const
 {
-	vector_validate_subscript(size(),i+1);
+	vector_validate_subscript(dim(),i+1);
 	return start_ptr()[i];
 }
 
@@ -1164,60 +1164,60 @@ VectorTmpl<T>::const_reference VectorTmpl<T>::operator[](size_type i) const
 template<class T>
 inline
 VectorSliceTmpl<T> VectorTmpl<T>::operator()() 
-{	return VectorSliceTmpl<T>(start_ptr(),size()); }
+{	return VectorSliceTmpl<T>(start_ptr(),dim()); }
 
 template<class T>
 inline
 const VectorSliceTmpl<T> VectorTmpl<T>::operator()() const
-{	return VectorSliceTmpl<T>(const_cast<value_type*>(start_ptr()),size()); }
+{	return VectorSliceTmpl<T>(const_cast<value_type*>(start_ptr()),dim()); }
 
 template<class T>
 inline
 VectorSliceTmpl<T> VectorTmpl<T>::operator()(const Range1D& rng) 
-{	return VectorSliceTmpl<T>(start_ptr(),size(),rng); }
+{	return VectorSliceTmpl<T>(start_ptr(),dim(),rng); }
 
 template<class T>
 inline
 const VectorSliceTmpl<T> VectorTmpl<T>::operator()(const Range1D& rng) const
-{	return VectorSliceTmpl<T>(const_cast<value_type*>(start_ptr()),size(),rng); }
+{	return VectorSliceTmpl<T>(const_cast<value_type*>(start_ptr()),dim(),rng); }
 
 template<class T>
 inline
 VectorSliceTmpl<T> VectorTmpl<T>::operator()(size_type lbound, size_type ubound)
-{	return VectorSliceTmpl<T>(start_ptr(), size(), Range1D(lbound, ubound)); }
+{	return VectorSliceTmpl<T>(start_ptr(), dim(), Range1D(lbound, ubound)); }
 
 template<class T>
 inline
 const VectorSliceTmpl<T> VectorTmpl<T>::operator()(size_type lbound, size_type ubound) const
-{	return VectorSliceTmpl<T>(const_cast<value_type*>(start_ptr()), size(), Range1D(lbound, ubound)); }
+{	return VectorSliceTmpl<T>(const_cast<value_type*>(start_ptr()), dim(), Range1D(lbound, ubound)); }
 
 template<class T>
 inline
 VectorSliceTmpl<T> VectorTmpl<T>::rev()
-{	return VectorSliceTmpl<T>( start_ptr() + size() - 1, size(), -1 ); }
+{	return VectorSliceTmpl<T>( start_ptr() + dim() - 1, dim(), -1 ); }
 
 template<class T>
 inline
 const VectorSliceTmpl<T> VectorTmpl<T>::rev() const
-{	return VectorSliceTmpl<T>( const_cast<value_type*>(start_ptr()) + size() - 1, size(), -1 ); }
+{	return VectorSliceTmpl<T>( const_cast<value_type*>(start_ptr()) + dim() - 1, dim(), -1 ); }
 
 // Conversion operators
 template<class T>
 inline
 VectorTmpl<T>::operator VectorSliceTmpl<T>()
-{	return VectorSliceTmpl<T>(start_ptr(), size()); }
+{	return VectorSliceTmpl<T>(start_ptr(), dim()); }
 
 template<class T>
 inline
 VectorTmpl<T>::operator const VectorSliceTmpl<T>() const
-{	return VectorSliceTmpl<T>(const_cast<value_type*>(start_ptr()), size()); }
+{	return VectorSliceTmpl<T>(const_cast<value_type*>(start_ptr()), dim()); }
 
 // Assignment Operators
 template<class T>
 inline
 VectorTmpl<T>& VectorTmpl<T>::operator=(value_type alpha) 
 {
-	if(!size()) resize(1);
+	if(!dim()) resize(1);
 	std::fill(begin(),end(),alpha);
 	return *this;
 }
@@ -1226,7 +1226,7 @@ template<class T>
 inline
 VectorTmpl<T>& VectorTmpl<T>::operator=(const VectorTmpl<T>& rhs) 
 {
-	resize(rhs.size());
+	resize(rhs.dim());
 	std::copy(rhs.begin(),rhs.end(),begin());
 	return *this;
 }
@@ -1235,7 +1235,7 @@ template<class T>
 inline
 VectorTmpl<T>& VectorTmpl<T>::operator=(const VectorSliceTmpl<T>& rhs) 
 {
-	resize(rhs.size());
+	resize(rhs.dim());
 	std::copy(rhs.begin(),rhs.end(),begin());
 	return *this;
 }
@@ -1255,7 +1255,7 @@ const VectorTmpl<T>::value_type* VectorTmpl<T>::raw_ptr() const
 template<class T>
 inline
 VectorTmpl<T>::value_type*	VectorTmpl<T>::start_ptr()
-{	return size() ? &(v_)[0] : 0; }
+{	return dim() ? &(v_)[0] : 0; }
 
 template<class T>
 inline
@@ -1275,11 +1275,11 @@ template<class T>
 EOverLap VectorSliceTmpl<T>::overlap(const VectorSliceTmpl<value_type>& vs) const {
 
 	const VectorSliceTmpl<T>::value_type
-		*raw_ptr1 = ( stride() > 0 ? start_ptr() : start_ptr() + (size()-1)*stride() ),
-		*raw_ptr2 = ( vs.stride() > 0 ? vs.start_ptr() : vs.start_ptr() + (vs.size()-1)*vs.stride() );
+		*raw_ptr1 = ( stride() > 0 ? start_ptr() : start_ptr() + (dim()-1)*stride() ),
+		*raw_ptr2 = ( vs.stride() > 0 ? vs.start_ptr() : vs.start_ptr() + (vs.dim()-1)*vs.stride() );
 	VectorSliceTmpl<T>::size_type
-		size1 = size(),
-		size2 = vs.size();
+		size1 = dim(),
+		size2 = vs.dim();
 	VectorSliceTmpl<T>::difference_type
 		stride1 = ::abs(stride()),
 		stride2 = ::abs(vs.stride());
@@ -1390,11 +1390,11 @@ template<class T>
 EOverLap VectorTmpl<T>::overlap(const VectorSliceTmpl<value_type>& vs) const {
 
 	const VectorSliceTmpl<T>::value_type
-		*raw_ptr1 = ( stride() > 0 ? start_ptr() : start_ptr() + (size()-1)*stride() ),
-		*raw_ptr2 = ( vs.stride() > 0 ? vs.start_ptr() : vs.start_ptr() + (vs.size()-1)*vs.stride() );
+		*raw_ptr1 = ( stride() > 0 ? start_ptr() : start_ptr() + (dim()-1)*stride() ),
+		*raw_ptr2 = ( vs.stride() > 0 ? vs.start_ptr() : vs.start_ptr() + (vs.dim()-1)*vs.stride() );
 	VectorSliceTmpl<T>::size_type
-		size1 = size(),
-		size2 = vs.size();
+		size1 = dim(),
+		size2 = vs.dim();
 
 	if( raw_ptr1 <= raw_ptr2 && raw_ptr2 + size2 <= raw_ptr1 + size1 ) {
 		if( raw_ptr1 == raw_ptr2 && size1 == size2 && 1 == vs.stride() )

@@ -44,7 +44,7 @@ std::istream& LinAlgPack::input(std::istream& is, VectorSlice* vs, LinAlgPackIO:
 			throw LinAlgPackIO::InputException("LinAlgPack::input() {VectorSlice}:  Input operation of vector dimension failed.  Check that the constant n is a valid integer.");
 		if(is.bad())
 			throw std::ios_base::failure("LinAlgPack::input() {VectorSlice}: Input operation failed because the stream became currupted.");
-		LinAlgPack::Vp_V_assert_sizes( vs->size(), n );
+		LinAlgPack::Vp_V_assert_sizes( vs->dim(), n );
 	}
 	return input_vs(is,vs,"LinAlgPack::input() {VectorSlice}");
 }
@@ -64,7 +64,7 @@ namespace {
 std::istream& input_vs(std::istream& is, LinAlgPack::VectorSlice* vs, const char func[]) {
 	using std::ios_base;
 	using LinAlgPack::VectorSlice;
-	if(!vs->size()) return is;	// If there are no elements to read in just return
+	if(!vs->dim()) return is;	// If there are no elements to read in just return
 	ios_base::iostate old_state = is.exceptions();		// save the old state
 	is.exceptions(ios_base::badbit | ios_base::failbit);
 	try {

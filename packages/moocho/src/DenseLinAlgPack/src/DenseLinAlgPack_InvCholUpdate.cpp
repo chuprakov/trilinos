@@ -39,7 +39,7 @@ void LinAlgPack::update_chol_factor(GenMatrixSlice* pM, VectorSlice* pu
 	VectorSlice		&u = *pu;
 
 	assert_gms_square(M);
-	if(M.rows() != u.size() || u.size() != v.size())
+	if(M.rows() != u.dim() || u.dim() != v.dim())
 		throw std::length_error("update_chol_factor(): Sizes of matrix and vectors do not match");
 
 	// Algorithm A3.4.1a in Dennis and Schabel

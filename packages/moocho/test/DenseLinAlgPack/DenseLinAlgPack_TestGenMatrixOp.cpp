@@ -72,7 +72,7 @@ void test_MtV( M_t& M_rhs1, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_r
 		n = M_rhs1.cols();
 	
 	tmp1->resize( rows(m,n,trans_rhs1) );
-	tmp2->resize( tmp1->size() );
+	tmp2->resize( tmp1->dim() );
 
 	for( int i = 0; i < 2; ++i, alpha -= 0.5 ) {
 		beta = 0.0;
@@ -82,7 +82,7 @@ void test_MtV( M_t& M_rhs1, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_r
 						<< ( trans_rhs1 == BLAS_Cpp::trans ? '\'' : ' ' )
 						<< " * vs_rhs2 + " << beta << " * vs_lhs : ";
 			// Initialize vs_lhs
-			for( int k = 1; k <= tmp1->size(); ++k )
+			for( int k = 1; k <= tmp1->dim(); ++k )
 				(*tmp1)(k) = (*tmp2)(k) = k;
 			// Compute expected
 			Vt_S( &(*tmp1)(), beta );

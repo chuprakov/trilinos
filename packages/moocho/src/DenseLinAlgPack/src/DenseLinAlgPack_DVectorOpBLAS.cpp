@@ -42,12 +42,12 @@ void i_assign(VectorSlice* vs_lhs, const VectorSlice& vs_rhs) {
 		case LinAlgPack::SOME_OVERLAP:		// create a temp for the copy
 		{
 			Vector temp(vs_rhs);
-			BLAS_Cpp::copy( temp.size(), temp.raw_ptr(), 1, vs_lhs->raw_ptr(), vs_lhs->stride() );
+			BLAS_Cpp::copy( temp.dim(), temp.raw_ptr(), 1, vs_lhs->raw_ptr(), vs_lhs->stride() );
 			return;
 		}
 		default:				// no overlap so just perform the copy
 		{
-			BLAS_Cpp::copy( vs_rhs.size(),vs_rhs.raw_ptr(), vs_rhs.stride()
+			BLAS_Cpp::copy( vs_rhs.dim(),vs_rhs.raw_ptr(), vs_rhs.stride()
 				, vs_lhs->raw_ptr(), vs_lhs->stride() );
 			return;
 		}
@@ -64,7 +64,7 @@ void LinAlgPack::Vp_S(VectorSlice* vs_lhs, value_type alpha) {
 	if(vs_lhs->stride() == 1) {
 		VectorSlice::value_type
 			*itr		= vs_lhs->start_ptr(),
-			*itr_end	= itr + vs_lhs->size();
+			*itr_end	= itr + vs_lhs->dim();
 		while(itr != itr_end)
 			*itr++ += alpha;
 	}
@@ -84,13 +84,13 @@ void LinAlgPack::Vt_S(VectorSlice* vs_lhs, value_type alpha) {
 	else if( alpha == 0.0 )
 		*vs_lhs = 0.0;
 	else
-		BLAS_Cpp::scal( vs_lhs->size(), alpha, vs_lhs->raw_ptr(), vs_lhs->stride() );
+		BLAS_Cpp::scal( vs_lhs->dim(), alpha, vs_lhs->raw_ptr(), vs_lhs->stride() );
 }
 
 // vs_lhs += alpha * vs_rhs (BLAS xAXPY)
 void LinAlgPack::Vp_StV(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs) {
-	Vp_V_assert_sizes(vs_lhs->size(), vs_rhs.size());
-	BLAS_Cpp::axpy( vs_lhs->size(), alpha, vs_rhs.raw_ptr(), vs_rhs.stride()
+	Vp_V_assert_sizes(vs_lhs->dim(), vs_rhs.dim());
+	BLAS_Cpp::axpy( vs_lhs->dim(), alpha, vs_rhs.raw_ptr(), vs_rhs.stride()
 		, vs_lhs->raw_ptr(), vs_lhs->stride());
 }
 
@@ -100,21 +100,21 @@ void LinAlgPack::Vp_StV(VectorSlice* vs_lhs, value_type alpha, const VectorSlice
 // v_lhs = alpha
 void LinAlgPack::assign(Vector* v_lhs, value_type alpha)
 {
-	if(!v_lhs->size())
+	if(!v_lhs->dim())
 		throw std::length_error("LinAlgPack::assign(v_lhs,alpha): Vector must be sized.");
 	else
-		BLAS_Cpp::copy( v_lhs->size(), &alpha, 0, v_lhs->raw_ptr(), v_lhs->stride() );
+		BLAS_Cpp::copy( v_lhs->dim(), &alpha, 0, v_lhs->raw_ptr(), v_lhs->stride() );
 }
 // v_lhs = vs_rhs
 void LinAlgPack::assign(Vector* v_lhs, const VectorSlice& vs_rhs) {
-	v_lhs->resize(vs_rhs.size());
+	v_lhs->resize(vs_rhs.dim());
 	i_assign( &(*v_lhs)(), vs_rhs );
 }
 // v_lhs = vs_rhs1 + vs_rhs2
 void LinAlgPack::V_VpV(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
 {
-	assert_vs_sizes(vs_rhs1.size(), vs_rhs2.size());
-	v_lhs->resize(vs_rhs1.size());
+	assert_vs_sizes(vs_rhs1.dim(), vs_rhs2.dim());
+	v_lhs->resize(vs_rhs1.dim());
 	std::transform(vs_rhs1.begin(),vs_rhs1.end(),vs_rhs2.begin(),v_lhs->begin(),std::plus<value_type>());
 //	VectorSlice::const_iterator
 //		v1 = vs_rhs1.begin(),
@@ -128,54 +128,54 @@ void LinAlgPack::V_VpV(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSl
 // v_lhs = vs_rhs1 - vs_rhs2
 void LinAlgPack::V_VmV(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
 {
-	assert_vs_sizes(vs_rhs1.size(), vs_rhs2.size());
-	v_lhs->resize(vs_rhs1.size());
+	assert_vs_sizes(vs_rhs1.dim(), vs_rhs2.dim());
+	v_lhs->resize(vs_rhs1.dim());
 	std::transform(vs_rhs1.begin(),vs_rhs1.end(),vs_rhs2.begin(),v_lhs->begin(),std::minus<value_type>());
 }
 // v_lhs = - vs_rhs
 void LinAlgPack::V_mV(Vector* v_lhs, const VectorSlice& vs_rhs) {
-	v_lhs->resize(vs_rhs.size());
+	v_lhs->resize(vs_rhs.dim());
 	(*v_lhs) = vs_rhs;
-	BLAS_Cpp::scal(v_lhs->size(), -1.0, v_lhs->raw_ptr(), 1);
+	BLAS_Cpp::scal(v_lhs->dim(), -1.0, v_lhs->raw_ptr(), 1);
 }
 // v_lhs = alpha * vs_rhs
 void LinAlgPack::V_StV(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rhs) {
-	v_lhs->resize(vs_rhs.size());
+	v_lhs->resize(vs_rhs.dim());
 	(*v_lhs) = vs_rhs;
-	BLAS_Cpp::scal( v_lhs->size(), alpha, v_lhs->raw_ptr(), 1);
+	BLAS_Cpp::scal( v_lhs->dim(), alpha, v_lhs->raw_ptr(), 1);
 }
 
 void LinAlgPack::rot( const value_type c, const value_type s, VectorSlice* x, VectorSlice* y )
 {
-	assert_vs_sizes( x->size(), y->size() );
-	BLAS_Cpp::rot( x->size(), x->raw_ptr(), x->stride(), y->raw_ptr(), y->stride(), c, s );
+	assert_vs_sizes( x->dim(), y->dim() );
+	BLAS_Cpp::rot( x->dim(), x->raw_ptr(), x->stride(), y->raw_ptr(), y->stride(), c, s );
 }
 
 // Elementwise math vector functions. VC++ 5.0 is not allowing use of ptr_fun() with overloaded
 // functions so I have to perform the loops straight out.
 // ToDo: use ptr_fun() when you get a compiler that works this out.  For now I will just use macros.
 #define UNARYOP_VEC(LHS, RHS, FUNC)																			\
-	LHS->resize(RHS.size());																				\
+	LHS->resize(RHS.dim());																				\
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs;											\
 	for(itr_lhs = LHS->begin(), itr_rhs = RHS.begin(); itr_lhs != LHS->end(); ++itr_lhs, ++itr_rhs)			\
 	{	*itr_lhs = FUNC(*itr_rhs); }
 
 #define BINARYOP_VEC(LHS, RHS1, RHS2, FUNC)																	\
-	LinAlgPack::assert_vs_sizes(RHS1.size(), RHS2.size()); LHS->resize(RHS1.size());						\
+	LinAlgPack::assert_vs_sizes(RHS1.dim(), RHS2.dim()); LHS->resize(RHS1.dim());						\
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;								\
 	for(itr_lhs = LHS->begin(), itr_rhs1 = RHS1.begin(), itr_rhs2 = RHS2.begin();							\
 		itr_lhs != LHS->end(); ++itr_lhs, ++itr_rhs1, ++itr_rhs2)											\
 	{	*itr_lhs = FUNC(*itr_rhs1, *itr_rhs2); }
 
 #define BINARYOP_BIND1ST_VEC(LHS, RHS1, RHS2, FUNC)															\
-	LHS->resize(RHS2.size());																				\
+	LHS->resize(RHS2.dim());																				\
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs2;											\
 	for(itr_lhs = LHS->begin(), itr_rhs2 = RHS2.begin();													\
 		itr_lhs != LHS->end(); ++itr_lhs, ++itr_rhs2)														\
 	{	*itr_lhs = FUNC(RHS1, *itr_rhs2); }
 
 #define BINARYOP_BIND2ND_VEC(LHS, RHS1, RHS2, FUNC)															\
-	LHS->resize(RHS1.size());																				\
+	LHS->resize(RHS1.dim());																				\
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1;											\
 	for(itr_lhs = LHS->begin(), itr_rhs1 = RHS1.begin();													\
 		itr_lhs != LHS->end(); ++itr_lhs, ++itr_rhs1)														\
@@ -225,7 +225,7 @@ void LinAlgPack::exp(Vector* v_lhs, const VectorSlice& vs_rhs) {
 // v_lhs = max(vs_rhs1,vs_rhs2)
 void LinAlgPack::max(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
 {
-	LinAlgPack::assert_vs_sizes(vs_rhs1.size(), vs_rhs2.size()); v_lhs->resize(vs_rhs1.size());
+	LinAlgPack::assert_vs_sizes(vs_rhs1.dim(), vs_rhs2.dim()); v_lhs->resize(vs_rhs1.dim());
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;
 	for(itr_lhs = v_lhs->begin(), itr_rhs1 = vs_rhs1.begin(), itr_rhs2 = vs_rhs2.begin();
 		itr_lhs != v_lhs->end(); ++itr_lhs, ++itr_rhs1, ++itr_rhs2)
@@ -233,7 +233,7 @@ void LinAlgPack::max(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlic
 }
 // v_lhs = max(alpha,vs_rhs)
 void LinAlgPack::max(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rhs) {
-	v_lhs->resize(vs_rhs.size());
+	v_lhs->resize(vs_rhs.dim());
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs;
 	for(itr_lhs = v_lhs->begin(), itr_rhs = vs_rhs.begin(); itr_lhs != v_lhs->end(); ++itr_lhs, ++itr_rhs)
 	{	*itr_lhs = std::_MAX(alpha,*itr_rhs); }
@@ -241,7 +241,7 @@ void LinAlgPack::max(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rhs)
 // v_lhs = min(vs_rhs1,vs_rhs2)
 void LinAlgPack::min(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2) 
 {
-	LinAlgPack::assert_vs_sizes(vs_rhs1.size(), vs_rhs2.size()); v_lhs->resize(vs_rhs1.size());
+	LinAlgPack::assert_vs_sizes(vs_rhs1.dim(), vs_rhs2.dim()); v_lhs->resize(vs_rhs1.dim());
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;
 	for(itr_lhs = v_lhs->begin(), itr_rhs1 = vs_rhs1.begin(), itr_rhs2 = vs_rhs2.begin();
 		itr_lhs != v_lhs->end(); ++itr_lhs, ++itr_rhs1, ++itr_rhs2)
@@ -249,7 +249,7 @@ void LinAlgPack::min(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlic
 }
 // v_lhs = min(alpha,vs_rhs)
 void LinAlgPack::min(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rhs) {
-	v_lhs->resize(vs_rhs.size());
+	v_lhs->resize(vs_rhs.dim());
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs;
 	for(itr_lhs = v_lhs->begin(), itr_rhs = vs_rhs.begin(); itr_lhs != v_lhs->end(); ++itr_lhs, ++itr_rhs)
 	{	*itr_lhs = std::_MIN(alpha,*itr_rhs); }
@@ -297,70 +297,70 @@ void LinAlgPack::tanh(Vector* v_lhs, const VectorSlice& vs_rhs) {
 
 // vs_lhs = alpha
 void LinAlgPack::assign(VectorSlice* vs_lhs, value_type alpha) {
-	if(!vs_lhs->size())
+	if(!vs_lhs->dim())
 		throw std::length_error("LinAlgPack::assign(vs_lhs,alpha): VectorSlice must be bound and sized.");
-	BLAS_Cpp::copy( vs_lhs->size(), &alpha, 0, vs_lhs->raw_ptr(), vs_lhs->stride() );
+	BLAS_Cpp::copy( vs_lhs->dim(), &alpha, 0, vs_lhs->raw_ptr(), vs_lhs->stride() );
 }
 // vs_lhs = vs_rhs
 void LinAlgPack::assign(VectorSlice* vs_lhs, const VectorSlice& vs_rhs) {
-	Vp_V_assert_sizes( vs_lhs->size(), vs_rhs.size() );
+	Vp_V_assert_sizes( vs_lhs->dim(), vs_rhs.dim() );
 	i_assign(vs_lhs,vs_rhs);
 }
 // vs_lhs = vs_rhs1 + vs_rhs2
 void LinAlgPack::V_VpV(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2) {
-	VopV_assert_sizes( vs_rhs1.size(), vs_rhs2.size() );
-	Vp_V_assert_sizes( vs_lhs->size(), vs_rhs1.size() );
+	VopV_assert_sizes( vs_rhs1.dim(), vs_rhs2.dim() );
+	Vp_V_assert_sizes( vs_lhs->dim(), vs_rhs1.dim() );
 	std::transform(vs_rhs1.begin(),vs_rhs1.end(),vs_rhs2.begin(),vs_lhs->begin(),std::plus<value_type>());
 }
 // vs_lhs = vs_rhs1 - vs_rhs2
 void LinAlgPack::V_VmV(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
 {
-	VopV_assert_sizes( vs_rhs1.size(), vs_rhs2.size() );
-	Vp_V_assert_sizes( vs_lhs->size(), vs_rhs1.size() );
+	VopV_assert_sizes( vs_rhs1.dim(), vs_rhs2.dim() );
+	Vp_V_assert_sizes( vs_lhs->dim(), vs_rhs1.dim() );
 	std::transform(vs_rhs1.begin(),vs_rhs1.end(),vs_rhs2.begin(),vs_lhs->begin(),std::minus<value_type>());
 }
 // vs_lhs = - vs_rhs
 void LinAlgPack::V_mV(VectorSlice* vs_lhs, const VectorSlice& vs_rhs)
 {
-	Vp_V_assert_sizes( vs_lhs->size(), vs_rhs.size() );
+	Vp_V_assert_sizes( vs_lhs->dim(), vs_rhs.dim() );
 	(*vs_lhs) = vs_rhs;
-	BLAS_Cpp::scal( vs_lhs->size(), -1.0, vs_lhs->raw_ptr(), vs_lhs->stride() );
+	BLAS_Cpp::scal( vs_lhs->dim(), -1.0, vs_lhs->raw_ptr(), vs_lhs->stride() );
 }
 // vs_lhs = alpha * vs_rhs
 void LinAlgPack::V_StV(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs)
 {
-	Vp_V_assert_sizes( vs_lhs->size(), vs_rhs.size() );
+	Vp_V_assert_sizes( vs_lhs->dim(), vs_rhs.dim() );
 	(*vs_lhs) = vs_rhs;
-	BLAS_Cpp::scal( vs_lhs->size(), alpha, vs_lhs->raw_ptr(), vs_lhs->stride() );
+	BLAS_Cpp::scal( vs_lhs->dim(), alpha, vs_lhs->raw_ptr(), vs_lhs->stride() );
 }
 
 // Elementwise math vector functions. VC++ 5.0 is not allowing use of ptr_fun() with overloaded
 // functions so I have to perform the loops straight out.
 // ToDo: use ptr_fun() when you get a compiler that works this out.  For now I will just use macros.
 #define UNARYOP_VECSLC(LHS, RHS, FUNC)																		\
-	LinAlgPack::Vp_V_assert_sizes( (LHS)->size(), (RHS).size() );											\
+	LinAlgPack::Vp_V_assert_sizes( (LHS)->dim(), (RHS).dim() );											\
 	VectorSlice::iterator itr_lhs; VectorSlice::const_iterator itr_rhs;										\
 	for(itr_lhs = LHS->begin(), itr_rhs = RHS.begin(); itr_lhs != LHS->end(); ++itr_lhs, ++itr_rhs)			\
 	{	*itr_lhs = FUNC(*itr_rhs); }
 
 
 #define BINARYOP_VECSLC(LHS, RHS1, RHS2, FUNC)																\
-	LinAlgPack::VopV_assert_sizes( (RHS1).size(), (RHS2).size() );											\
-	LinAlgPack::Vp_V_assert_sizes( (LHS)->size(), (RHS1).size() );											\
+	LinAlgPack::VopV_assert_sizes( (RHS1).dim(), (RHS2).dim() );											\
+	LinAlgPack::Vp_V_assert_sizes( (LHS)->dim(), (RHS1).dim() );											\
 	VectorSlice::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;							\
 	for(itr_lhs = LHS->begin(), itr_rhs1 = RHS1.begin(), itr_rhs2 = RHS2.begin();							\
 		itr_lhs != LHS->end(); ++itr_lhs, ++itr_rhs1, ++itr_rhs2)											\
 	{	*itr_lhs = FUNC(*itr_rhs1, *itr_rhs2); }
 
 #define BINARYOP_BIND1ST_VECSLC(LHS, RHS1, RHS2, FUNC)														\
-	LinAlgPack::Vp_V_assert_sizes( (LHS)->size(), (RHS2).size() );											\
+	LinAlgPack::Vp_V_assert_sizes( (LHS)->dim(), (RHS2).dim() );											\
 	VectorSlice::iterator itr_lhs; VectorSlice::const_iterator itr_rhs2;									\
 	for(itr_lhs = LHS->begin(), itr_rhs2 = RHS2.begin();													\
 		itr_lhs != LHS->end(); ++itr_lhs, ++itr_rhs2)														\
 	{	*itr_lhs = FUNC(RHS1, *itr_rhs2); }
 
 #define BINARYOP_BIND2ND_VECSLC(LHS, RHS1, RHS2, FUNC)														\
-	LinAlgPack::Vp_V_assert_sizes( (LHS)->size(), (RHS1).size());											\
+	LinAlgPack::Vp_V_assert_sizes( (LHS)->dim(), (RHS1).dim());											\
 	VectorSlice::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1;									\
 	for(itr_lhs = LHS->begin(), itr_rhs1 = RHS1.begin();													\
 		itr_lhs != LHS->end(); ++itr_lhs, ++itr_rhs1)														\
@@ -412,8 +412,8 @@ void LinAlgPack::exp(VectorSlice* vs_lhs, const VectorSlice& vs_rhs) {
 // vs_lhs = max(vs_rhs1,vs_rhs2)
 void LinAlgPack::max(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
 {
-	LinAlgPack::VopV_assert_sizes( vs_rhs1.size(), vs_rhs2.size() );
-	LinAlgPack::Vp_V_assert_sizes( vs_lhs->size(), vs_rhs1.size() );
+	LinAlgPack::VopV_assert_sizes( vs_rhs1.dim(), vs_rhs2.dim() );
+	LinAlgPack::Vp_V_assert_sizes( vs_lhs->dim(), vs_rhs1.dim() );
 	VectorSlice::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;
 	for(itr_lhs = vs_lhs->begin(), itr_rhs1 = vs_rhs1.begin(), itr_rhs2 = vs_rhs2.begin();
 		itr_lhs != vs_lhs->end(); ++itr_lhs, ++itr_rhs1, ++itr_rhs2)
@@ -422,7 +422,7 @@ void LinAlgPack::max(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const Vect
 // vs_lhs = max(alpha,vs_rhs)
 void LinAlgPack::max(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs)
 {
-	LinAlgPack::Vp_V_assert_sizes( vs_lhs->size(), vs_rhs.size() );
+	LinAlgPack::Vp_V_assert_sizes( vs_lhs->dim(), vs_rhs.dim() );
 	VectorSlice::iterator itr_lhs; VectorSlice::const_iterator itr_rhs;
 	for(itr_lhs = vs_lhs->begin(), itr_rhs = vs_rhs.begin(); itr_lhs != vs_lhs->end(); ++itr_lhs, ++itr_rhs)
 	{	*itr_lhs = std::_MAX(alpha,*itr_rhs); }
@@ -430,8 +430,8 @@ void LinAlgPack::max(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& v
 // vs_lhs = min(vs_rhs1,vs_rhs2)
 void LinAlgPack::min(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
 {
-	LinAlgPack::VopV_assert_sizes( vs_rhs1.size(), vs_rhs2.size() );
-	LinAlgPack::Vp_V_assert_sizes( vs_lhs->size(), vs_rhs1.size() );
+	LinAlgPack::VopV_assert_sizes( vs_rhs1.dim(), vs_rhs2.dim() );
+	LinAlgPack::Vp_V_assert_sizes( vs_lhs->dim(), vs_rhs1.dim() );
 	VectorSlice::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;
 	for(itr_lhs = vs_lhs->begin(), itr_rhs1 = vs_rhs1.begin(), itr_rhs2 = vs_rhs2.begin();
 		itr_lhs != vs_lhs->end(); ++itr_lhs, ++itr_rhs1, ++itr_rhs2)
@@ -440,7 +440,7 @@ void LinAlgPack::min(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const Vect
 // vs_lhs = min(alpha,vs_rhs)
 void LinAlgPack::min(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs)
 {
-	LinAlgPack::Vp_V_assert_sizes( vs_lhs->size(), vs_rhs.size() );
+	LinAlgPack::Vp_V_assert_sizes( vs_lhs->dim(), vs_rhs.dim() );
 	VectorSlice::iterator itr_lhs; VectorSlice::const_iterator itr_rhs;
 	for(itr_lhs = vs_lhs->begin(), itr_rhs = vs_rhs.begin(); itr_lhs != vs_lhs->end(); ++itr_lhs, ++itr_rhs)
 	{	*itr_lhs = std::_MIN(alpha,*itr_rhs); }
@@ -491,8 +491,8 @@ void LinAlgPack::tanh(VectorSlice* vs_lhs, const VectorSlice& vs_rhs) {
 // result = trans(vs_rhs1) * vs_rhs2
 LinAlgPack::value_type LinAlgPack::dot(const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
 {
-	VopV_assert_sizes( vs_rhs1.size(), vs_rhs2.size() );
-	return BLAS_Cpp::dot( vs_rhs1.size(), vs_rhs1.raw_ptr(), vs_rhs1.stride()
+	VopV_assert_sizes( vs_rhs1.dim(), vs_rhs2.dim() );
+	return BLAS_Cpp::dot( vs_rhs1.dim(), vs_rhs1.raw_ptr(), vs_rhs1.stride()
 		, vs_rhs2.raw_ptr(), vs_rhs2.stride() );
 }
 // result = max(vs_rhs)
@@ -503,13 +503,13 @@ LinAlgPack::value_type LinAlgPack::min(const VectorSlice& vs_rhs)
 {	return *std::min_element(vs_rhs.begin(),vs_rhs.end()); }
 // result = ||vs_rhs||1
 LinAlgPack::value_type LinAlgPack::norm_1(const VectorSlice& vs_rhs)
-{	return BLAS_Cpp::asum( vs_rhs.size(), vs_rhs.raw_ptr(), vs_rhs.stride() ); }
+{	return BLAS_Cpp::asum( vs_rhs.dim(), vs_rhs.raw_ptr(), vs_rhs.stride() ); }
 // result = ||vs_rhs||2
 LinAlgPack::value_type LinAlgPack::norm_2(const VectorSlice& vs_rhs) 
-{	return BLAS_Cpp::nrm2( vs_rhs.size(), vs_rhs.raw_ptr(), vs_rhs.stride() ); }
+{	return BLAS_Cpp::nrm2( vs_rhs.dim(), vs_rhs.raw_ptr(), vs_rhs.stride() ); }
 // result = ||vs_rhs||infinity
 LinAlgPack::value_type LinAlgPack::norm_inf(const VectorSlice& vs_rhs) {
-//	return BLAS_Cpp::iamax( vs_rhs.size(), vs_rhs.raw_ptr(), vs_rhs.stride() );
+//	return BLAS_Cpp::iamax( vs_rhs.dim(), vs_rhs.raw_ptr(), vs_rhs.stride() );
 //	For some reason iamax() is not working properly?
 	value_type max_ele = 0.0;
 	for(VectorSlice::const_iterator itr = vs_rhs.begin(); itr != vs_rhs.end(); ) {
@@ -525,6 +525,6 @@ LinAlgPack::value_type LinAlgPack::norm_inf(const VectorSlice& vs_rhs) {
 // swap(vs1, vs2)
 void LinAlgPack::swap( VectorSlice* vs1, VectorSlice* vs2 ) {
 	if( vs1->overlap(*vs2) == SAME_MEM ) return;
-	VopV_assert_sizes( vs1->size(), vs2->size() );
-	BLAS_Cpp::swap( vs1->size(), vs1->raw_ptr(), vs1->stride(), vs2->raw_ptr(), vs2->stride() );
+	VopV_assert_sizes( vs1->dim(), vs2->dim() );
+	BLAS_Cpp::swap( vs1->dim(), vs1->raw_ptr(), vs1->stride(), vs2->raw_ptr(), vs2->stride() );
 }
