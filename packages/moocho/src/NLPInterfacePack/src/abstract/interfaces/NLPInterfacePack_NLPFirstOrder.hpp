@@ -61,7 +61,7 @@ namespace NLPInterfacePack {
  * specialized situations: \c set_Gc(), \c get_Gc(), \c Gc(), \c set_Gh(), \c get_Gh(), \c Gh(),
  * \c num_Gc_evals(), \c num_Gh_evals().
  */
-class NLPFirstOrderInfo : public NLPObjGradient {
+class NLPFirstOrderInfo : virtual public NLPObjGradient {
 public:
 
 	///
