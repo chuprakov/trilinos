@@ -57,7 +57,7 @@
 #include "NLPInterfacePack/include/NLPVarReductPerm.h"
 //#include "SparseSolverPack/include/COOBasisSystem.h"
 #ifdef SPARSE_SOLVER_PACK_USE_MA28
-//#include "SparseSolverPack/include/MA28SparseCOOSolverCreator.h"
+#include "SparseSolverPack/include/DirectSparseSolverMA28.h"
 #endif
 #ifdef SPARSE_SOLVER_PACK_USE_MA48
 //#include "SparseSolverPack/include/MA48SparseCOOSolverCreator.h"
