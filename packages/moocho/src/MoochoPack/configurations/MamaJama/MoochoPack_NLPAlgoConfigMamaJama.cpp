@@ -471,8 +471,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			);
 
 		// ToDo: Add matrix iq object for R
-		// ToDo: Add matrix iq object for U
-		// ToDo: Add matrix iq object for V
+		// ToDo: Add matrix iq object for Uz
+		// ToDo: Add matrix iq object for Uy
+		// ToDo: Add matrix iq object for Vz
+		// ToDo: Add matrix iq object for Vy
 		// ToDo: Add other needed projected matrix iq objects
 
 		// Add reduced Hessian
