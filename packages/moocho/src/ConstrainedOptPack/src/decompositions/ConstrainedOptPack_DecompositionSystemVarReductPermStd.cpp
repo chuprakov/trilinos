@@ -27,6 +27,9 @@ DecompositionSystemVarReductPermStd::DecompositionSystemVarReductPermStd(
 	const decomp_sys_imp_ptr_t&        decomp_sys_imp
 	,const basis_sys_ptr_t&            basis_sys
 	,bool                              basis_selected
+	,EExplicitImplicit                 D_imp
+	,EExplicitImplicit                 Uz_imp
+	,EExplicitImplicit                 Vz_imp
 	)
 {
 	this->initialize(decomp_sys_imp,basis_sys,basis_selected);
@@ -36,11 +39,17 @@ void DecompositionSystemVarReductPermStd::initialize(
 	const decomp_sys_imp_ptr_t&        decomp_sys_imp
 	,const basis_sys_ptr_t&            basis_sys
 	,bool                              basis_selected
+	,EExplicitImplicit                 D_imp
+	,EExplicitImplicit                 Uz_imp
+	,EExplicitImplicit                 Vz_imp
 	)
 {
 	decomp_sys_imp_ = decomp_sys_imp;
 	basis_sys_      = basis_sys;
 	basis_selected_ = basis_selected;
+	this->D_imp(D_imp);
+	this->Uz_imp(Uz_imp);
+	this->Vz_imp(Vz_imp);
 }
 
 // Overridden from DecompositionSystem

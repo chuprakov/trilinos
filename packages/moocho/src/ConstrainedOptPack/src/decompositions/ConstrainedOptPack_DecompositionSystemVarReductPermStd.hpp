@@ -50,6 +50,9 @@ public:
 		const decomp_sys_imp_ptr_t&        decomp_sys_imp  = MemMngPack::null
 		,const basis_sys_ptr_t&            basis_sys       = MemMngPack::null
 		,bool                              basis_selected  = false
+		,EExplicitImplicit                 D_imp           = MAT_IMP_AUTO
+		,EExplicitImplicit                 Uz_imp          = MAT_IMP_AUTO
+		,EExplicitImplicit                 Vz_imp          = MAT_IMP_AUTO
 		);
 
 	/// Initialize given decomposition system and basis system objects.
@@ -57,6 +60,9 @@ public:
 		const decomp_sys_imp_ptr_t&        decomp_sys_imp
 		,const basis_sys_ptr_t&            basis_sys
 		,bool                              basis_selected  = false
+		,EExplicitImplicit                 D_imp           = MAT_IMP_AUTO
+		,EExplicitImplicit                 Uz_imp          = MAT_IMP_AUTO
+		,EExplicitImplicit                 Vz_imp          = MAT_IMP_AUTO
 		);
 
 	//@}
