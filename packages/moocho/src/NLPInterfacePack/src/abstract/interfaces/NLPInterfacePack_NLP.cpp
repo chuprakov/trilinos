@@ -34,8 +34,8 @@ namespace NLPInterfacePack {
 
 value_type NLP::infinite_bound()
 {
-	return std::numeric_limits<value_type>::max();
-	//	return 1e+50;
+//	return std::numeric_limits<value_type>::max();
+	return 1e+50;
 }
 
 // constructors
