@@ -244,6 +244,8 @@ bool EvalNewPointStd_Step::do_step(
 			,mI > 0 ? &Vy_iq->set_k(0) : NULL  // Vy
 			,DecompositionSystem::MATRICES_ALLOW_DEP_IMPS // ToDo: Change this to MATRICES_INDEP_IMPS
 			);
+		s.con_decomp(   s.decomp_sys().con_decomp()   );
+		s.con_undecomp( s.decomp_sys().con_undecomp() );
 
 		// Test the decomposition system
 		if( ds_test_what == DecompositionSystem::RUN_TESTS ) {
@@ -374,7 +376,6 @@ bool EvalNewPointStd_Step::do_step(
 				,x
 				,nb ? &nlp.xl() : NULL
 				,nb ? &nlp.xu() : NULL
-				,algo.algo_cntr().max_var_bounds_viol()
 				,m  ? &Gc_iq->get_k(0) : NULL
 				,mI ? &Gh_iq->get_k(0) : NULL
 				,&Gf_iq.get_k(0)

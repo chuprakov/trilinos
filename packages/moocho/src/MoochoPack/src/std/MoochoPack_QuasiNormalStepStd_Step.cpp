@@ -41,7 +41,7 @@ bool RangeSpaceStepStd_Step::do_step(
 
 	rSQPAlgo         &algo        = rsqp_algo(_algo);
 	rSQPState        &s           = algo.rsqp_state();
-	const Range1D    con_decomp   = s.decomp_sys().con_decomp();
+	const Range1D    con_decomp   = s.con_decomp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();

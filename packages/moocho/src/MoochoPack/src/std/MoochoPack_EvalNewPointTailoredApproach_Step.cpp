@@ -183,6 +183,8 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 		,Uz_k                                                 // Uz
 		,Vz_k                                                 // Vz
 		);
+	s.con_decomp(   nlp.con_decomp()   );
+	s.con_undecomp( nlp.con_undecomp() );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out << "\nf_k           = " << s.f().get_k(0);
@@ -234,7 +236,6 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 			,x
 			,has_bounds ? &nlp.xl() : (const VectorWithOp*)NULL
 			,has_bounds ? &nlp.xu() : (const VectorWithOp*)NULL
-			,algo.algo_cntr().max_var_bounds_viol()
 			,&s.c().get_k(0)
 			,mI ? &s.h().get_k(0) : (const VectorWithOp*)NULL
 			,&s.Gf().get_k(0)
