@@ -19,27 +19,38 @@
 #include "ReducedSpaceSQPPackTypes.h"
 #include "GeneralIterationPack/include/IterQuantityAccess.h"
 #include "GeneralIterationPack/include/AlgorithmState.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystem.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "LinAlgPack/include/IVector.h"
-#include "LinAlgPack/include/Range1D.h"
+#include "GeneralIterationPack/include/cast_iq.h"
+#include "GeneralIterationPack/include/IterQuantityAccessContiguous.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
+//#include "ConstrainedOptimizationPack/include/DecompositionSystem.h"
+#include "AbstractLinAlgPack/include/MatrixWithOp.h"
+//#include "LinAlgPack/include/IVector.h"
+#include "StandardCompositionMacros.h"
+#include "Range1D.h"
 
 namespace ReducedSpaceSQPPack {
 
-// ///////////////////////////////////////////////////////////////
-/** @name rSQPState iteration quantities names. */
+/** \defgroup rSQPState_IQ_names_grp rSQPState iteration quantities names.
+ *
+ * ToDo: Finish documentation!
+ */
 //@{
 
+// Iteration Info
+extern const std::string num_basis_name;
 // NLP Problem Info 
 extern const std::string x_name;
 extern const std::string f_name;
 extern const std::string Gf_name;
 extern const std::string HL_name;
 extern const std::string c_name;
+extern const std::string h_name;
 extern const std::string Gc_name;
+extern const std::string Gh_name;
 // Constraint Gradient Null Space / Range Space Decomposition Info
 extern const std::string Y_name;
 extern const std::string Z_name;
+extern const std::string R_name;
 extern const std::string U_name;
 extern const std::string V_name;
 // Search Direction Info
@@ -57,8 +68,8 @@ extern const std::string qp_grad_name;
 extern const std::string eta_name;
 // Global Convergence Info
 extern const std::string alpha_name;
+extern const std::string merit_func_nlp_name;
 extern const std::string mu_name;
-extern const std::string Delta_name;
 extern const std::string phi_name;
 // KKT Info
 extern const std::string opt_kkt_err_name;
@@ -66,40 +77,178 @@ extern const std::string feas_kkt_err_name;
 extern const std::string GL_name;
 extern const std::string rGL_name;
 extern const std::string lambda_name;
+extern const std::string lambdaI_name;
 extern const std::string nu_name;
 
-// Call to initialize names (hack for the SGI 8/16/00)
-void initialize_rsqp_names();
+//@}
+
+/** \defgroup rSQPState_Macros_grp Macros for adding IterQuantity objects to rSQPState.
+ *
+ * These macros make it easy to add and remove iteration quantities of any type
+ * to the state class.  These macros can even be used by subclasses of rSQPState
+ * (only any <tt>GeneralIterationPack::AlgorithmState</tt> subclass) to add
+ * iteration quantities.  Since scalars and vectors are so pervasive they have
+ * there own special macros that take care of actually instantiating the
+ * iteration quantities.
+ */
+//@{
+
+///
+/** Add class declarations for an arbitrary iteration quantity
+ */
+#define RSQP_STATE_IQ_DECL(TYPE,NAME)                                     \
+	virtual IterQuantityAccess<TYPE>&       NAME();                       \
+	virtual const IterQuantityAccess<TYPE>& NAME() const;                 \
+private:                                                                  \
+	iq_id_encap NAME ## _iq_id_;                                          \
+public:
+
+///
+/** Add class declarations for an index (i.e. index_type) iteration quantity
+ */
+#define RSQP_STATE_INDEX_IQ_DECL(NAME)                                    \
+    RSQP_STATE_IQ_DECL(index_type,NAME)                                   \
+
+///
+/** Add class declarations for a scalar (i.e. value_type) iteration quantity
+ */
+#define RSQP_STATE_SCALAR_IQ_DECL(NAME)                                   \
+    RSQP_STATE_IQ_DECL(value_type,NAME)                                   \
+
+///
+/** Add class declarations for a VectorWithOpMutable iteration quantity.
+ */
+#define RSQP_STATE_VECTOR_IQ_DECL(NAME)                                   \
+    RSQP_STATE_IQ_DECL(VectorWithOpMutable,NAME)                          \
+
+///
+/** Add class definitions for an arbitrary iteration quantity.
+ *
+ * This implementation can not instantate the underlying iteration quantity
+ * so it is the responsibility of some client to do this.  This implementation
+ * just initializes the iq_id for the iteration quantity on the fly and
+ * then casts the iteration quantity. 
+ */
+#define RSQP_STATE_IQ_DEF(CLASS,TYPE,NAME,NAME_STR)                       \
+IterQuantityAccess<TYPE>&                                                 \
+CLASS::NAME()                                                             \
+{                                                                         \
+	update_iq_id( NAME_STR, &NAME ## _iq_id_ );                           \
+	return GeneralIterationPack::cast_iq<TYPE>(                           \
+        *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
+}                                                                         \
+const IterQuantityAccess<TYPE>&                                           \
+CLASS::NAME() const                                                       \
+{                                                                         \
+	return const_cast<rSQPState*>(this)->NAME();                          \
+}
+
+///
+/** Add class definitions for a index_type iteration quantity.
+ *
+ * This implementation will instantiate the IterQuantity object on the fly.
+ */
+#define RSQP_STATE_INDEX_IQ_DEF(CLASS,NAME,NAME_STR)                      \
+IterQuantityAccess<index_type>&                                           \
+CLASS::NAME()                                                             \
+{                                                                         \
+	update_index_type_iq_id( NAME_STR, &NAME ## _iq_id_ );                \
+	return GeneralIterationPack::cast_iq<index_type>(                     \
+        *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
+}                                                                         \
+const IterQuantityAccess<index_type>&                                     \
+CLASS::NAME() const                                                       \
+{                                                                         \
+	return const_cast<rSQPState*>(this)->NAME();                          \
+}
+
+///
+/** Add class definitions for a value_type iteration quantity.
+ *
+ * This implementation will instantiate the IterQuantity object on the fly.
+ */
+#define RSQP_STATE_SCALAR_IQ_DEF(CLASS,NAME,NAME_STR)                     \
+IterQuantityAccess<value_type>&                                           \
+CLASS::NAME()                                                             \
+{                                                                         \
+	update_value_type_iq_id( NAME_STR, &NAME ## _iq_id_ );                \
+	return GeneralIterationPack::cast_iq<value_type>(                     \
+        *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
+}                                                                         \
+const IterQuantityAccess<value_type>&                                     \
+CLASS::NAME() const                                                       \
+{                                                                         \
+	return const_cast<rSQPState*>(this)->NAME();                          \
+}
+
+///
+/** Add class definitions for a VectorWithOpMutable iteration quantity.
+ *
+ * This implementation will instantiate the IterQuantity object on the fly
+ * given the VectorSpace (VEC_SPC).  Note that this VEC_SPC can be any
+ * code that will returns a smart pointer to a AbstractFactory<VectorWithOpMutable>
+ * object from within the class body.  It is best if VEC_SPC is some function
+ * that is called on *this for the maximum safety and to avoid strage
+ * behavior.
+ */
+#define RSQP_STATE_VECTOR_IQ_DEF(CLASS,NAME,NAME_STR,VEC_SPC)             \
+IterQuantityAccess<VectorWithOpMutable>&                                  \
+CLASS::NAME()                                                             \
+{                                                                         \
+    update_vector_iq_id( NAME_STR, VEC_SPC, &NAME ## _iq_id_ );           \
+	return GeneralIterationPack::cast_iq<VectorWithOpMutable>(            \
+        *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
+}                                                                         \
+const IterQuantityAccess<VectorWithOpMutable>&                            \
+CLASS::NAME() const                                                       \
+{                                                                         \
+	return const_cast<rSQPState*>(this)->NAME();                          \
+}
 
 //@}
 
 ///
 /** Reduced space SQP state encapsulation interface.
-  *
-  * This in an interface to a set of data specific to a
-  * reduced space SQP algorithm.  The iteration quantites
-  * are abstracted within IterQuantityAccess<...> objects.
-  *
-  * The interface functions use dynamic_cast<...> to cast
-  * from IterQuantity to the specific types of IterQuantityAccess<...>.
-  */
-class rSQPState : public AlgorithmState {
+ *
+ * This in an interface to a set of data specific to a reduced space SQP algorithms.
+ * The iteration quantites are abstracted within <tt>IterQuantityAccess<></tt> objects.
+ * A set of boilerplate macros are used to add the necessary declarations and
+ * implemetations of these iteration quantity access functions.  As shown by
+ * these macros the access methods are declared virtual so that subclasses can
+ * override these methods.  Otherwise, much of these could have been declared
+ * inline.
+ *
+ * The implementation defined in this class uses <tt>IterQuantityAccessContiguous<></tt>
+ * for iteration quantities of type <tt>index_type</tt>, <tt>value_type</tt> and
+ * <tt>VectorWithOpMutable</tt> with a default of one storage location.  The default
+ * implementation is able to create the <tt>VectorWithOpMutable</tt> iteration quantities
+ * by using <tt>VectorSpace</tt> objects that the client sets \c this up with.
+ *
+ * For all other types of iteration quantities (i.e. <tt>MatrixWithOp</tt> etc.) the
+ * client is responsible for setting the iteration quantity object of type
+ * <tt>IterQuantityAccess<></tt>.  The client can also change the type of class
+ * used for any iteration quantity by simply calling
+ * <tt>AlgorithmState::set_iter_quant(...)</tt>.
+ *
+ * The number of storage locations for any iteration quantity of type
+ * <tt>IterQuantityAccessContiguous<></tt> can be changed by fetching
+ * the iteration quantity using the access methods defined here and then
+ * using <tt>dynamic_cast<></tt> and calling the
+ * <tt>IterQuantityAccessContiguous<>::resize(...)</tt> method.
+ *
+ * Note that the underlying <tt>AlgorithmState</tt> object will not know
+ * about the iteration quantity objects with default implementations
+ * until the access functions have been called at least once.
+ *
+ * ToDo: Finish documentation.
+ */
+class rSQPState
+	: public GeneralIterationPack::AlgorithmState // doxygen needs full path
+{
 public:
 
-	// ////////////////////////////////////////////////////////////////////////////
 	/** @name Public Types */
 	//@{
-
-	///
-	typedef GeneralIterationPack::IterQuantityAccess<value_type>		IQA_value_type;
-	///
-	typedef GeneralIterationPack::IterQuantityAccess<VectorWithNorms>	IQA_Vector;
-	///
-	typedef GeneralIterationPack::IterQuantityAccess<SpVector>			IQA_SpVector;
-	///
-	typedef GeneralIterationPack::IterQuantityAccess<MatrixWithOp>		IQA_MatrixWithOp;
-	///
-	typedef ReferenceCountingPack::ref_count_ptr<DecompositionSystem>	decomp_sys_ptr_t;
 
 	/// Thrown if an iteration quantity is of an invalid type.
 	class InvalidType : public std::logic_error
@@ -107,162 +256,110 @@ public:
 
 	//@}
 
-	/// Initializes num_basis() == 0;
-	rSQPState();
+protected:
 
-	/// Virtual destructor
-	virtual ~rSQPState() {}
-
-	// ////////////////////////////////////////
-	// Overridden from AlgorithmState
-
-	/// Causes fast access to iteration quantities to be lost.
-	void erase_iter_quant(const std::string& iq_name);
+	// /////////////////////////////
+	// Protected types.
 
 	///
-	void dump_iter_quant(std::ostream& out) const;
+	struct iq_id_encap {
+		iq_id_encap() : iq_id(DOES_NOT_EXIST) {}
+		iq_id_type iq_id;
+	};
 
-	/** @name «std comp» members for decomp_sys. */
+public:
+
+	/** @name Constructors/initializers */
 	//@{
 
+	/// <<std comp>> members for the VectorSpace of x
+	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_x )
+	/// <<std comp>> members for the VectorSpace of c
+	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_c )
+	/// <<std comp>> members for the VectorSpace of h
+	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_h )
+	/// <<std comp>> members for the VectorSpace of py
+	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_py )
+	/// <<std comp>> members for the VectorSpace of pz
+	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_pz )
+
 	///
-	virtual void set_decomp_sys(const decomp_sys_ptr_t& decomp_sys);
+	/** Construct
+	 *
+	 * Initializes num_basis() == 0
+	 */
+	rSQPState(
+		const space_x_ptr_t&   space_x   = NULL
+		,const space_x_ptr_t&  space_c   = NULL
+		,const space_x_ptr_t&  space_h   = NULL
+		,const space_x_ptr_t&  space_py  = NULL
+		,const space_x_ptr_t&  space_pz  = NULL
+		);
+
 	///
-	virtual decomp_sys_ptr_t& get_decomp_sys();
-	///
-	virtual const decomp_sys_ptr_t& get_decomp_sys() const;
-	///
-	virtual DecompositionSystem& decomp_sys();
-	///
-	virtual const DecompositionSystem& decomp_sys() const;
+	virtual ~rSQPState() {}
 
 	//@}
 
-	/// Determine if the object is full setup and ready to use.
-	virtual bool is_fully_setup() const;
-
-	///
-	/** Initializes fast access to iteration quantities after a configuration update.
-	  *
-	  * This function causes #*this# to access iteration quantities using id's instead
-	  * by names.  This decreases lookup times from O(log(num_iter_quant()) to O(1).
-	  */
-	virtual void initialize_fast_access();
-	
 	/** @name Iteration Info */
 	//@{
 
-	/// num_basis:  Number of basis changes durring the course of the rSQP algorithm
-	virtual void set_num_basis(int num_basis);
-	///
-	virtual int incr_num_basis();
-	///
-	virtual int num_basis() const;
+    /// num_basis: Counts basis changes durring the algorithm
+	RSQP_STATE_INDEX_IQ_DECL(num_basis)
 	
 	//@}
 
-	/** @name NLP Problem Info 
-	  *
-	  * The problem is of the form:\\
-	  \begin{verbatim}
-	min     f(x)
-	s.t.    c(x)
-	        xl < x < xu
-	        n = size(x), m = size(c)
-	  \end{verbatim}
-	  *
-	  * #Gf# is the gradient of #f#
-	  *
-	  * #Gc = [Gc1, Gc2, ... , Gcm] = [Gc(indep)  Gc(dep)]#\\
-	  * is the matrix of constriant gradients partitioned into independent and dependent
-	  * columns.
-	  */
+	/** @name NLP Problem Info */
 	//@{
 
 	/// x:  The current NLP point
-	virtual IQA_Vector& x();
-	///
-	virtual const IQA_Vector& x() const;
-
+	RSQP_STATE_VECTOR_IQ_DECL(x)
 	/// f:  Objective function value
-	virtual IQA_value_type& f();
-	///
-	virtual const IQA_value_type& f() const;
-
+	RSQP_STATE_SCALAR_IQ_DECL(f)
 	/// Gf:  Gradient of the objective function sorted according to current basis selection ( n x 1 )
-	virtual IQA_Vector& Gf();
-	///
-	virtual const IQA_Vector& Gf() const;
-
-	/// HL:  Hessian of the Lagrangian ( n x n )
-	virtual IQA_MatrixWithOp& HL();
-	///
-	virtual const IQA_MatrixWithOp& HL() const;
-
-	/// c:  Vector of equality constraints ( m x 1 )
-	virtual IQA_Vector& c();
-	///
-	virtual const IQA_Vector& c() const;
-
+	RSQP_STATE_VECTOR_IQ_DECL(Gf)
+	/// HL:  Hessian of the Lagrangian ( n x n 
+	RSQP_STATE_IQ_DECL(MatrixSymWithOp,HL)
+	/// c:  Vector of general nonlinear equality constraints ( m x 1 )
+	RSQP_STATE_VECTOR_IQ_DECL(c)
+	/// h:  Vector of general nonlinear inequality constraints ( mI x 1 )
+	RSQP_STATE_VECTOR_IQ_DECL(h)
 	/// Gc:  Gradient of equality constraints ('c') matrix ( n x m )
-	virtual IQA_MatrixWithOp& Gc();
-	///
-	virtual const IQA_MatrixWithOp& Gc() const;
+	RSQP_STATE_IQ_DECL(MatrixWithOp,Gc)
+	/// Gh:  Gradient of inequality constraints ('h') matrix ( n x mI )
+	RSQP_STATE_IQ_DECL(MatrixWithOp,Gh)
 
 	//@}
 
-	/** @name Constraint Gradient Null Space / Range Space Decomposition Info. */
+	/** @name Constraint Gradient Null Space / Range Space Decomposition Info */
 	//@{
 
 	/// Y:  Range space matrix for Gc ([Y  Z] is non-singular) ( n x r )
-	virtual IQA_MatrixWithOp& Y();
-	///
-	virtual const IQA_MatrixWithOp& Y() const;
-
+	RSQP_STATE_IQ_DECL(MatrixWithOp,Y)
 	/// Z:  Null space matrix for Gc(con_decomp)' (Gc(con_decomp)' * Z) ( n x (n-r) )
-	virtual IQA_MatrixWithOp& Z();
-	///
-	virtual const IQA_MatrixWithOp& Z() const;
-
+	RSQP_STATE_IQ_DECL(MatrixWithOp,Z)
+	/// R:  Represents the nonsingular matrix Gc(con_decomp)' * Y ( r x r )
+	RSQP_STATE_IQ_DECL(MatrixWithOpNonsingular,R)
 	/// U:  Represents Gc(con_undecomp)' * Y ( (m-r) x r )
-	virtual IQA_MatrixWithOp& U();
-	///
-	virtual const IQA_MatrixWithOp& U() const;
-
+	RSQP_STATE_IQ_DECL(MatrixWithOp,U)
 	/// V:  Represents Gc(con_undecomp)' * Z ( (m-r) x (m-r) )
-	virtual IQA_MatrixWithOp& V();
-	///
-	virtual const IQA_MatrixWithOp& V() const;
+	RSQP_STATE_IQ_DECL(MatrixWithOp,V)
 
 	//@}
 
 	/** @name Search Direction Info */
 	//@{
 
-	/// py:  Range space (dependent) QP solution component ( m x 1 )
-	virtual IQA_Vector& py();
-	///
-	virtual const IQA_Vector& py() const;
-
+	/// py:  Range space (dependent) QP solution component ( space_py, m x 1 )
+	RSQP_STATE_VECTOR_IQ_DECL(py)
 	/// Ypy:  Range space (dependent) contribution to search direction (Ypy = Y * py) ( n x 1 )
-	virtual IQA_Vector& Ypy();
-	///
-	virtual const IQA_Vector& Ypy() const;
-
+	RSQP_STATE_VECTOR_IQ_DECL(Ypy)
 	/// pz:  Null space (independent) QP solution component ( (n-m) x 1 )
-	virtual IQA_Vector& pz();
-	///
-	virtual const IQA_Vector& pz() const;
-
+	RSQP_STATE_VECTOR_IQ_DECL(pz)
 	/// Zpz:  Null space (independent) contribution to the search direction (Zpz = Z * pz) ( n x 1)
-	virtual IQA_Vector& Zpz();
-	///
-	virtual const IQA_Vector& Zpz() const;
-
+	RSQP_STATE_VECTOR_IQ_DECL(Zpz)
 	/// d:  Search direction (d = Zpz + Ypy) ( n x 1 )
-	virtual IQA_Vector& d();
-	///
-	virtual const IQA_Vector& d() const;
+	RSQP_STATE_VECTOR_IQ_DECL(d)
 
 	//@}
 
@@ -270,34 +367,17 @@ public:
 	//@{
 
 	/// rGf:  Reduced gradient of the objective function ( (n-r) x 1 )
-	virtual IQA_Vector& rGf();
-	///
-	virtual const IQA_Vector& rGf() const;
-
+	RSQP_STATE_VECTOR_IQ_DECL(rGf)
 	/// rHL:  Reduced Hessian of the Lagrangian function ( (n-r) x (n-r) )
-	virtual IQA_MatrixWithOp& rHL();
-	///
-	virtual const IQA_MatrixWithOp& rHL() const;
-
+	RSQP_STATE_IQ_DECL(MatrixSymWithOp,rHL)
 	/// w:  QP gradient crossterm correction (Z' * HL * Y * py) ( (n-r) x 1 )
-	virtual IQA_Vector& w();
-	///
-	virtual const IQA_Vector& w() const;
-
+	RSQP_STATE_VECTOR_IQ_DECL(w)
 	/// zeta:  QP crossterm dampening parameter [0, 1]
-	virtual IQA_value_type& zeta();
-	///
-	virtual const IQA_value_type& zeta() const;
-
+	RSQP_STATE_SCALAR_IQ_DECL(zeta)
 	/// qp_grad:  QP gradient (qp_grad = rGf + zeta * w) ( (n-m) x 1 )
-	virtual IQA_Vector& qp_grad();
-	///
-	virtual const IQA_Vector& qp_grad() const;
-
+	RSQP_STATE_VECTOR_IQ_DECL(qp_grad)
 	/// eta:  QP relaxation parameter [0, 1]
-	virtual IQA_value_type& eta();
-	///
-	virtual const IQA_value_type& eta() const;
+	RSQP_STATE_SCALAR_IQ_DECL(eta)
 
 	//@}
 
@@ -305,232 +385,75 @@ public:
 	//@{
 
 	/// alpha:  Line seach parameter
-	virtual IQA_value_type& alpha();
-	///
-	virtual const IQA_value_type& alpha() const;
-
+	RSQP_STATE_SCALAR_IQ_DECL(alpha)
+	/// merit_func_nlp: Primary merit function for the NLP
+	RSQP_STATE_IQ_DECL(MeritFuncNLP,merit_func_nlp)
 	/// mu:  Merit function penalty parameter
-	virtual IQA_value_type& mu();
-	///
-	virtual const IQA_value_type& mu() const;
-
-	/// Delta:  Trust region size ( n x 1 )
-	virtual IQA_Vector& Delta();
-	///
-	virtual const IQA_Vector& Delta() const;
-
-	/// phi:  Merrit function value
-	virtual IQA_value_type& phi();
-	///
-	virtual const IQA_value_type& phi() const;
-
+	RSQP_STATE_SCALAR_IQ_DECL(mu)
+	/// phi:  Merit function value
+	RSQP_STATE_SCALAR_IQ_DECL(phi)
 
 	//@}
 
-	/** @name KKT Info.
-	  *
-	  * The Lagrangian is:
-	  \begin{verbatim}
-	L = f + lambda'*c + nul'*(xl - x) + nuu'*(x - xu)
-	  = f + lambda'*c + nu'*x + nul'*xl - nuu'*xu
-	where: nu = nul - nuu
-	  \end{verbatim}
-	  * 
-	  * The gradient of the Lagrangian is:
-	  *
-	  * #GL = Gf + Gc*lambda + nu#
-	  *
-	  * The reduced gradient of the Lagrangian is:
-	  \begin{verbatim}
-	rGL = Z'*GL
-	    = Z'*Gf + Z'*Gc*lambda + Z'*nu
-	    = Z'*Gf + Z'*Gc(decomp)*lambda(decomp) + Z'*Gc(undecomp)*lambda(undecomp) + Z'*nu
-		      with Gc(decomp)' * Z, V = [Gc(undecomp)' * Z],  and rGf = Z'*Gf
-		= rGf + Z'*nu + V'*lambda(undecomp)
-	where:
-	    Gc(decomp)' * Z = 0
-		V = [Gc(undecomp)' * Z]
-		rGf = Z'*Gf
-	  \end{verbatim}
-	  */
+	/** @name KKT Info */
 	//@{
 
 	/// Scaled KKT error for optimality ||rGL||
-	virtual IQA_value_type& opt_kkt_err();
-	///
-	virtual const IQA_value_type& opt_kkt_err() const;
-
+	RSQP_STATE_SCALAR_IQ_DECL(opt_kkt_err)
 	/// Scaled KKT error for feasibility ||c||
-	virtual IQA_value_type& feas_kkt_err();
-	///
-	virtual const IQA_value_type& feas_kkt_err() const;
-
+	RSQP_STATE_SCALAR_IQ_DECL(feas_kkt_err)
 	/// GL:  Gradient of the Lagrangian ( n x 1 )
-	virtual IQA_Vector& GL();
-	///
-	virtual const IQA_Vector& GL() const;
-
+	RSQP_STATE_VECTOR_IQ_DECL(GL)
 	/// rGL:  Reduced gradient of the Lagrangian ( (n-m) x 1 )
-	virtual IQA_Vector& rGL();
-	///
-	virtual const IQA_Vector& rGL() const;
-
+	RSQP_STATE_VECTOR_IQ_DECL(rGL)
 	/// lambda:  Lagrange multipliers for the equality constraints 'c' ( m x 1 )
-	virtual IQA_Vector& lambda();
-	///
-	virtual const IQA_Vector& lambda() const;
-
+	RSQP_STATE_VECTOR_IQ_DECL(lambda)
+	/// lambdaI:  Lagrange multipliers for the ineequality constraints 'h' ( mI x 1 )
+	RSQP_STATE_VECTOR_IQ_DECL(lambdaI)
 	/// nu:  Difference between Lagrange multipiers for the upper and lower bounds ( n x 1 )
-	virtual IQA_SpVector& nu();
-	///
-	virtual const IQA_SpVector& nu() const;
+	RSQP_STATE_VECTOR_IQ_DECL(nu)
 
 	//@}
 
 	/** @name Basis Pivot Info */
 	//@{
 
-	/// var_perm_new:  New variable permutation to form Gc' = [C  N] ( n x 1 )
-	virtual IVector& var_perm_new();
-	///
-	virtual const IVector& var_perm_new() const;
-
-	/// con_perm_new:  New constraint permutation to form Gc' = [C  N] ( m_full x 1 )
-	virtual IVector& con_perm_new();
-	///
-	virtual const IVector& con_perm_new() const;
-
-	/// var_perm_old:  Old variable permutation to form Gc' = [C  N] ( n x 1 )
-	virtual IVector& var_perm_old();
-	///
-	virtual const IVector& var_perm_old() const;
-
-	/// con_perm_old:  Old constraint permutation to form Gc' = [C  N] ( m_full x 1 )
-	virtual IVector& con_perm_old();
-	///
-	virtual const IVector& con_perm_old() const;
-
-	/// var_dep:  Range of dependent variables (columns of C, E)
-	virtual Range1D& var_dep();
-	///
-	virtual const Range1D& var_dep() const;
-	/// var_indep:  Range of independent variables (columns of N, F)
-	virtual Range1D& var_indep();
-	///
-	virtual const Range1D& var_indep() const;
-	
-	/// con_decomp:  Range of decomposed constraints (rows of C, N)
-	virtual Range1D& con_decomp();
-	///
-	virtual const Range1D& con_decomp() const;
-	///
-	/** con_undecomp:  Range of undecomposed constraints. (rows of E, F)
-	  *
-	  * If there are no decomposed constraints then con_undecomp = [m +1, m + 1]
-	  */
-	virtual Range1D& con_undecomp();
-	///
-	virtual const Range1D& con_undecomp() const;
-
 	//@}
+
+protected:
+
+	// /////////////////////////////
+	// Protected member functions
+
+	// These implementations are used to avoid code blot and help in debugging
+	// (can't debug macros very well).
+
+	///
+	void update_iq_id(
+		const std::string&                iq_name
+		,iq_id_encap*                     iq_id
+		) const;
+	///
+	void update_index_type_iq_id(
+		const std::string&                iq_name
+		,iq_id_encap*                     iq_id
+		);
+	///
+	void update_value_type_iq_id(
+		const std::string&                iq_name
+		,iq_id_encap*                     iq_id
+		);
+	///
+	void update_vector_iq_id(
+		const std::string&                iq_name
+		,const VectorSpace::space_ptr_t&  vec_space
+		,iq_id_encap*                     iq_id
+		);
 
 private:
 
-	// ///////////////////////////////////////////////////////////////////////////
-	// Private types.
-
-	///
-	enum EIQType { VALUE_TYPE, VECTOR, SP_VECTOR, MATRIX_WITH_OP }; 
-
-	///
-	enum { num_value_type_quantities = 8 };
-	/// Enumeration for the value_type iteration quantities
-	enum E_IterQuantities_value_type {
-		Q_f,				Q_zeta,				Q_eta,					Q_alpha,
-		Q_mu,				Q_phi,				Q_opt_kkt_err,			Q_feas_kkt_err
-	};
-
-	///
-	enum { num_Vector_quantities = 15 };
-	/// Enumeration for the Vector iteration quantities
-	enum E_IterQuantities_Vector {
-		Q_x,				Q_Gf,				Q_c,					Q_py,
-		Q_Ypy,				Q_pz,				Q_Zpz,					Q_d,
-		Q_rGf,				Q_w,				Q_qp_grad,				Q_Delta,
-		Q_GL,				Q_rGL,				Q_lambda
-	};
-
-	///
-	enum { num_SpVector_quantities = 1 };
-	/// Enumeration for the Vector iteration quantities
-	enum E_IterQuantities_SpVector {
-		Q_nu
-	};
-
-	///
-	enum { num_MatrixWithOp_quantities = 7 };
-	/// Enumeration for the Vector iteration quantities
-	enum E_IterQuantities_MatrixWithOp {
-		Q_HL,				Q_Gc,				Q_Y,
-		Q_Z,				Q_U,				Q_V,					Q_rHL
-	};
-
-	///
-	enum { num_quantites = num_value_type_quantities + num_Vector_quantities
-		+ num_SpVector_quantities + num_MatrixWithOp_quantities };
-
-	///
-	enum { num_quantity_types = 4 };
-
-	// ///////////////////////////////////////////////////////////////////////////
-	// Private data members.
-
-	// Non-iteration quantities.
-
-	int num_basis_;
-	IVector var_perm_new_, var_perm_old_, con_perm_new_, con_perm_old_;
-	Range1D var_dep_, var_indep_, con_decomp_, con_undecomp_;
-	decomp_sys_ptr_t decomp_sys_;
-
-	bool iq_ids_initialized_;
-	// Flag to keep track if the id's to the IQ objects are initialized
-
-	static const std::string * const				iq_name_all_[num_quantites];
-	// Array of pointers to the names of the IQ names.  Shared by all instances
-	// of rSQPState.  These are partitioned into the different concrete types.
-
-	AlgorithmState::iq_id_type						iq_id_all_[num_quantites];
-	// Array of IQ id's that are updated when initialize_fast_access(...) is called.
-	// These are partitioned into the different concrete types.
-
-	static const std::string * const * const		iq_name_[num_quantity_types];
-	// Indexed by EIQType to give array of names indexed by E_IterQuantities_«type»
-
-	const AlgorithmState::iq_id_type *				iq_id_[num_quantity_types];
-	// Indexed by EIQType to give array of IQ id's indexed by E_IterQuantities_«type»
-
-	// ///////////////////////////////////////////////////////////////////////////
+	// ////////////////////////////
 	// Private member functions.
-
-	///
-	IQA_value_type& iqa_value_type(E_IterQuantities_value_type);
-	///
-	const IQA_value_type& iqa_value_type(E_IterQuantities_value_type) const;
-
-	///
-	IQA_Vector& iqa_Vector(E_IterQuantities_Vector);
-	///
-	const IQA_Vector& iqa_Vector(E_IterQuantities_Vector) const;
-
-	///
-	IQA_SpVector& iqa_SpVector(E_IterQuantities_SpVector);
-	///
-	const IQA_SpVector& iqa_SpVector(E_IterQuantities_SpVector) const;
-
-	///
-	IQA_MatrixWithOp& iqa_MatrixWithOp(E_IterQuantities_MatrixWithOp);
-	///
-	const IQA_MatrixWithOp& iqa_MatrixWithOp(E_IterQuantities_MatrixWithOp) const;
 
 	// not defined and not to be called
 	rSQPState(const rSQPState&);
