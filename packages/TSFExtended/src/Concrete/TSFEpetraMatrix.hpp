@@ -33,7 +33,7 @@
 #include "TSFEpetraVectorSpace.hpp"
 #include "TSFLoadableMatrix.hpp"
 #include "TSFLinearOperatorDecl.hpp"
-//#include "TSFRowAccessibleOp.hpp"
+#include "TSFRowAccessibleOp.hpp"
 //#include "TSFExplicitlyTransposeableOp.hpp"
 #include "TSFHandleable.hpp"
 #include "TSFPrintable.hpp"
@@ -48,7 +48,7 @@ namespace TSFExtended
   /** */
   class EpetraMatrix : public TSFCore::EpetraLinearOp,
                        public LoadableMatrix<double>,
-                       //   public RowAccessibleOp<double>,
+		       public RowAccessibleOp<double>,
                        // public ExplicitlyTransposeableOp<double>,
                        public Printable,
                        public DescribableByTypeID,
@@ -211,6 +211,15 @@ namespace TSFExtended
     const RefCountPtr<Epetra_Operator>  &op 
     ,TSFCore::ETransp  op_trans 
     )  const ; 
+
+
+
+
+    /** Get the specified row as defined by RowAccessible  */
+    void getRow(const int& row, 
+		Teuchos::Array<int>& indices, 
+		Teuchos::Array<Scalar>& values) const;
+    
 
 
   private:

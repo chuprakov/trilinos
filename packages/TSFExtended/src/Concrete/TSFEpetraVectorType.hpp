@@ -33,7 +33,7 @@
 #include "TSFPrintable.hpp"
 #include "TSFDescribable.hpp"
 #include "TSFVectorTypeExtensions.hpp"
-#include "TSFLinearOperator.hpp"
+ //#include "TSFLinearOperator.hpp"
 
 
 namespace TSFExtended
@@ -48,6 +48,13 @@ namespace TSFExtended
    * seamlessly in any 
    * TSFCore-based code.
    */
+
+  template <class Scalar>
+  class LinearOperator;  // changed by ptb
+
+
+
+
   class EpetraVectorType : public VectorTypeExtensions<double>,
                            public TSFCore::EpetraVectorSpaceFactory,
                            public Handleable<VectorTypeExtensions<double> >,

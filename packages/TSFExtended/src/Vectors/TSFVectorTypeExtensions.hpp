@@ -30,7 +30,7 @@
 #include "TSFHandle.hpp"
 #include "TSFCoreVectorSpaceFactory.hpp"
 #include "TSFVectorSpaceDecl.hpp"
-#include "TSFLinearOperator.hpp"
+#include "TSFLinearOperatorDecl.hpp" //Decl added by ptb
 #include "TSFGhostImporter.hpp"
 
 namespace TSFExtended

@@ -292,3 +292,36 @@ Epetra_CrsMatrix& EpetraMatrix::getConcrete(const LinearOperator<double>& A)
                      "could not be cast to an EpetraMatrix");
   return *(ep->crsMatrix());
 }
+
+
+
+
+
+void EpetraMatrix::getRow(const int& row, 
+			  Teuchos::Array<int>& indices, 
+			  Teuchos::Array<Scalar>& values) const
+{
+  const Epetra_CrsMatrix* crs 
+    = dynamic_cast<const Epetra_CrsMatrix*>(epetra_op().get());
+
+  TEST_FOR_EXCEPTION(crs==0, runtime_error,
+                     "cast failed in EpetraMatrix::getRow()");
+
+  int numEntries;
+  int* epIndices;
+  double* epValues;
+
+  int info = crs->ExtractGlobalRowView(row, numEntries, epValues, epIndices);
+  TEST_FOR_EXCEPTION(info != 0, runtime_error,
+		     "call to ExtractGlobalRowView not successful");
+
+  indices.resize(numEntries);
+  values.resize(numEntries);
+  for (int i = 0; i < numEntries; i++)
+    {
+      indices[i] = *epIndices;
+      values[i] = *epValues;
+      epIndices++;
+      epValues++;
+    }
+}

@@ -52,6 +52,8 @@ namespace TSFExtended
   class VectorSpace;
   template <class Scalar>
   class Vector;
+  template <class Scalar>
+  class VectorType;
 
   /** 
    * User-level linear operator class
@@ -171,6 +173,16 @@ namespace TSFExtended
     /** Describe with proper indent  */
     string describe(int depth) const;
 
+
+    /** Form a Linear operator in the specified type.  The source
+     *LinearOperator must be RowAccexxible and the target must be
+     *Loadable.
+
+     * @param type is the VectorType used to specify the type of
+     * operator to be formed
+     */
+
+    LinearOperator<Scalar> form(const VectorType<Scalar>& type);
 
       
 

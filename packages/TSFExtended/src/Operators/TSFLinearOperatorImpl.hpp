@@ -38,6 +38,7 @@
 #include "TSFTransposeOperator.hpp"
 #include "TSFComposedOperator.hpp"
 #include "TSFBlockOperatorDecl.hpp"
+#include "TSFVectorType.hpp"
 
 
 
@@ -251,7 +252,51 @@ string LinearOperator<Scalar>::describe(int depth) const
 
 
 
+//=============================================================================
+template <class Scalar>
+LinearOperator<Scalar> LinearOperator<Scalar>::form(const VectorType<Scalar>& type)
+{
+  const RowAccessibleOp<Scalar>* me =
+    dynamic_cast<const RowAccessibleOp<Scalar>* >(ptr().get());
 
+  TEST_FOR_EXCEPTION(me == 0, runtime_error,
+		     "Given operator is not row accessible.");
+
+
+  int domDimension = domain().dim();
+  std::vector<int> rowsDom(domDimension);
+  for (int i = 0; i < domDimension; i++)
+    {
+      rowsDom[i] = i;
+    }
+  VectorSpace<Scalar> domainRet = type.createSpace(domDimension, domDimension, &(rowsDom[0])); 
+
+  int ranDimension = range().dim();
+  std::vector<int> rowsRan(ranDimension);
+  for (int i = 0; i < ranDimension; i++)
+    {
+      rowsRan[i] = i;
+    }
+  VectorSpace<Scalar> rangeRet = type.createSpace(ranDimension, ranDimension, &(rowsRan[0])); 
+
+  LinearOperator<Scalar> ret = type.createMatrix(domainRet, rangeRet);
+  LoadableMatrix<Scalar>*  rtnLoad
+    = dynamic_cast<LoadableMatrix<Scalar>* >(ret.ptr().get());
+
+  TEST_FOR_EXCEPTION(rtnLoad == 0, runtime_error,
+		     "Target matrix type is not loadable.");
+
+
+  Teuchos::Array<int> indices;
+  Teuchos::Array<double> vals;
+
+  for (int i = 0; i < ranDimension; i++)
+    {
+      me->getRow(i, indices, vals);
+      rtnLoad->setRowValues(i, indices.length(), &(indices[0]), &(vals[0]));
+    }
+  return ret;
+}
 
 
 

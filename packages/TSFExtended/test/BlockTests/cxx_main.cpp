@@ -49,6 +49,10 @@
 #include "TSFIdentityOperator.hpp"
 #include "TSFZeroOperator.hpp"
 #include "TSFBlockOperator.hpp"
+#include "TSFDiagonalOperator.hpp"
+#include "TSFScaledOperator.hpp"
+#include "TSFSumOperator.hpp"
+#include "TSFComposedOperator.hpp"
 
 
 //using namespace Teuchos;
@@ -147,45 +151,119 @@ int main(int argc, void *argv[])
       vec.zero();
       vec2.zero();
 
-//       VectorSpace<double> pvs = 
-// 	new ProductVectorSpace<double>(space, space2);
-//       cerr << "Created a product vector space\n";
-//       cerr << pvs.describe() << endl;
+      VectorSpace<double> pvs = 
+	new ProductVectorSpace<double>(space, space2);
+      cerr << "Created a product vector space\n";
+      cerr << pvs.describe() << endl;
 
-//       cerr << "Creating ProductVector" << endl;
-//       Vector<double> pv = pvs.createMember();
-//       cerr << pv.describe() << endl;
+      cerr << "Creating ProductVector" << endl;
+      Vector<double> pv = pvs.createMember();
+      cerr << pv.describe() << endl;
       
-//       pv.setBlock(0, vec);
-//       pv.setBlock(1, vec2);
-//       cerr << "Set the blocks of the pv\n";
-//       cerr << pv.describe() << endl;
+      pv.setBlock(0, vec);
+      pv.setBlock(1, vec2);
+      cerr << "Set the blocks of the pv\n";
+      cerr << pv.describe() << endl;
 
 
-//       cerr << "Setting up block Operator" << endl;
-//       LinearOperator<double> B = new BlockOperator<double>(pvs, pvs);
-//       cerr << "B = " << B.describe() << endl;
+      cerr << "Setting up block Operator" << endl;
+      LinearOperator<double> B = new BlockOperator<double>(pvs, pvs);
+      cerr << "B = " << B.describe() << endl;
 
-//       cerr << "Getting nBlockRows = " << B.numBlockRows() << endl;
+      cerr << "Getting nBlockRows = " << B.numBlockRows() << endl;
 
 
-//       cerr << "Setting up the blocks" << endl;
-//       B.setBlock(0, 0, I);
+      cerr << "Setting up the blocks" << endl;
+      B.setBlock(0, 0, I);
 
       
-//       LinearOperator<double> I2 = new IdentityOperator<double>(space2);
-//       B.setBlock(1, 1, I2);
+      LinearOperator<double> I2 = new IdentityOperator<double>(space2);
+      B.setBlock(1, 1, I2);
      
-//       B.finalize(true);
-//       cerr << "B set up and finalized" << endl;
-//       cerr << B.describe() << endl;
+      B.finalize(true);
+      cerr << "B set up and finalized" << endl;
+      cerr << B.describe() << endl;
 
 
-//       vec.setToConstant(1.0);
-//       vec2.setToConstant(1.0);
-//       /* Let's do a matrix-vect mult  */
-//       Vector<double> r = B*pv;
-//       cerr << "Did a mv mult; norm of r = " << pow(r.norm2(), 2) << endl;
+      vec.setToConstant(1.0);
+      vec2.setToConstant(1.0);
+      /* Let's do a matrix-vect mult  */
+      Vector<double> r = B*pv;
+      cerr << "Did a mv mult; norm of r = " << pow(r.norm2(), 2) << endl;
+
+      cerr << endl << "Trying a getRow " << endl;
+      Teuchos::Array<int> indices;
+      Teuchos::Array<double> values;
+      cerr << "calling" << endl;
+      B.getRow(55, indices, values);
+      for (int i = 0; i < indices.size(); i++)
+	{
+	  cerr << "   incex = " << indices[i] << " value = " << values[i] 
+	       << endl;
+	}
+
+      cerr << endl << "Setting up a diagonal matrix and calling getRow" 
+	   << endl;
+      LinearOperator<double> D = new DiagonalOperator<double>(vec);
+      cerr << "   " << vec.describe() << endl;
+
+      D.getRow(5, indices, values);
+      for (int i = 0; i < indices.size(); i++)
+	{
+	  cerr << "   incex = " << indices[i] << " value = " << values[i] 
+	       << endl;
+	}
+      
+      cerr << endl << "Setting up a scaled matrix and calling getRow" 
+	   << endl;
+      LinearOperator<double> Sc = new ScaledOperator<double>(D, 3.14);
+
+      Sc.getRow(5, indices, values);
+      for (int i = 0; i < indices.size(); i++)
+	{
+	  cerr << "   incex = " << indices[i] << " value = " << values[i] 
+	       << endl;
+	}
+      
+
+      /* Trying SumOperator  */
+      cerr << endl << "Creating a SumOperator and calling getRow" << endl;
+      LinearOperator<double> SumOp = new SumOperator<double>(Sc, D);
+      SumOp.getRow(5, indices, values);
+      for (int i = 0; i < indices.size(); i++)
+	{
+	  cerr << "   incex = " << indices[i] << " value = " << values[i] 
+	       << endl;
+	}
+
+
+      /* Trying ComposedOperator  */
+      cerr << endl << "Creating a ComposedOperator and calling getRow" << endl;
+      LinearOperator<double> ComOp = new ComposedOperator<double>(Sc, D);
+      ComOp.getRow(5, indices, values);
+      for (int i = 0; i < indices.size(); i++)
+	{
+	  cerr << "   incex = " << indices[i] << " value = " << values[i] 
+	       << endl;
+	}
+
+
+
+      /* Trying to form a matrix  */
+      cerr << endl << "Forming a matrix from a row accessible matrix" 
+	   << endl;
+      LinearOperator<double> formSumOp = SumOp.form(type);
+      cerr << "    Formed it: testing with getRow" << endl;
+      formSumOp.getRow(5, indices, values);
+      for (int i = 0; i < indices.size(); i++)
+	{
+	  cerr << "   incex = " << indices[i] << " value = " << values[i] 
+	       << endl;
+	}
+
+
+
+      
 
       /* Try Block operators  */
 
