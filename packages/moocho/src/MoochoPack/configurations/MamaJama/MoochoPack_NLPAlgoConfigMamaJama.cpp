@@ -53,7 +53,9 @@
 #include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPSchurSetOptions.hpp"
 #include "ConstrainedOptPack/src/qpsolvers/QPSchurInitKKTSystemHessianFull.hpp"
 //#include "ConstrainedOptPack/src/qpsolvers/QPSchurInitKKTSystemHessianSuperBasic.hpp"
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK
 #include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPKWIK.hpp"
+#endif
 #ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
 //#include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPOPT.hpp"
 #endif
@@ -410,7 +412,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 	if( cov_.qp_solver_type_ == QP_QPKWIK && nb ) {
 		if(trase_out)
 			*trase_out
-				<< "\nqp_solver == QPKWIK and nlp.num_bounded_x() == " << nb << ":\n"
+				<< "\nqp_solver == QPKWIK and nlp.num_bounded_x() == " << nb << " > 0:\n"
 				<< "Setting quasi_newton == BFGS...\n";
 		cov_.quasi_newton_ = QN_BFGS;
 	}
@@ -899,17 +901,25 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					}
 					Teuchos::RefCountPtr<QPSolverRelaxedQPSchur>
 						_qp_solver = Teuchos::rcp(new QPSolverRelaxedQPSchur(init_kkt_sys));
-					QPSolverRelaxedQPSchurSetOptions
-						qp_options_setter(_qp_solver.get());
-					qp_options_setter.set_options( *options_ );
+          if(options_.get()) {
+            QPSolverRelaxedQPSchurSetOptions
+              qp_options_setter(_qp_solver.get());
+            qp_options_setter.set_options( *options_ );
+          }
 					qp_solver = _qp_solver; // give ownership to delete!
 					break;
 				}
 				case QP_QPKWIK: {
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK
 					using ConstrainedOptPack::QPSolverRelaxedQPKWIK;
 					Teuchos::RefCountPtr<QPSolverRelaxedQPKWIK>
 						_qp_solver = Teuchos::rcp(new QPSolverRelaxedQPKWIK());
 					qp_solver = _qp_solver; // give ownership to delete!
+#else
+					TEST_FOR_EXCEPTION(
+            true,std::logic_error,"Error! QPKWIK interface is not supported since "
+            "CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK is not defined!");
+#endif
 					break;
 				}
 				case QP_QPOPT: {
@@ -1646,7 +1656,14 @@ void NLPAlgoConfigMamaJama::readin_options(
 							" must define CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT!" );
 #endif
 					} else if( qp_solver == "QPKWIK" ) {
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK
 						ov->qp_solver_type_ = QP_QPKWIK;
+#else
+						TEST_FOR_EXCEPTION(
+							true, std::invalid_argument
+							,"NLPAlgoConfigMamaJama::readin_options(...) : QPKWIK is not supported,"
+							" must define CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK!" );
+#endif
 					} else if( qp_solver == "QPSCHUR" ) {
 						ov->qp_solver_type_ = QP_QPSCHUR;
 					} else {
@@ -1799,16 +1816,17 @@ void NLPAlgoConfigMamaJama::set_default_options(
 		cov->hessian_initialization_ = uov.hessian_initialization_;
 	}
 	if( cov->qp_solver_type_ == QP_AUTO && uov.qp_solver_type_ == QP_AUTO ) {
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPKWIK
 		if(trase_out)
 			*trase_out
 				<< "\nqp_solver_type == AUTO: setting qp_solver_type = QPKWIK\n";
 		cov->qp_solver_type_ = QP_QPKWIK;
-/*
+#else
 		if(trase_out)
 			*trase_out
 				<< "\nqp_solver_type == AUTO: setting qp_solver_type = QPSCHUR\n";
 		cov->qp_solver_type_ = QP_QPSCHUR;
-*/
+#endif
 	}
 	else if(cov->qp_solver_type_ == QP_AUTO) {
 		cov->qp_solver_type_ = uov.qp_solver_type_;
