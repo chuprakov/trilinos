@@ -39,7 +39,6 @@
 #include "TSFCoreVector.hpp"
 #include "TSFCoreAssertOp.hpp"
 #include "TSFCoreMultiVectorCols.hpp"
-#include "RTOp_TOp_assign_vectors.h"
 #include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 

@@ -39,7 +39,7 @@
 #include "TSFCoreMultiVector.hpp"
 #include "TSFCoreSolversConvergenceTester.hpp"
 #include "TSFCoreTestingTools.hpp"
-#include "check_nan_inf.h"
+#include "Teuchos_ScalarTraits.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {
@@ -293,6 +293,7 @@ void BiCGSolver<Scalar>::doIteration(
 	,const LinearOp<Scalar> *M_tilde_inv, ETransp opM_tilde_inv_notrans, ETransp opM_tilde_inv_trans
 	) const
 {
+	typedef Teuchos::ScalarTraits<Scalar> ST;
 	if(get_out().get()) {
 		*get_out() << "\n*** currIteration = " << currIteration_ << std::endl;
 		if(dump_all()) {
@@ -352,7 +353,7 @@ void BiCGSolver<Scalar>::doIteration(
 	}
 	for(j=0;j<m;++j) { 	// Check for failure: alpha_{i-1} = 0 or NaN or Inf
 		TEST_FOR_EXCEPTION(
-			alpha_[j] == 0.0 || RTOp_is_nan_inf(alpha_[j]), Exceptions::SolverBreakdown
+			alpha_[j] == 0.0 || ST::isnaninf(alpha_[j]), Exceptions::SolverBreakdown
 			,"BiCGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = 0.0, the method has failed!"
 			);
 	}

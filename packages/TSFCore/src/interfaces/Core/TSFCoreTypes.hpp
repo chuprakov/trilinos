@@ -34,7 +34,6 @@
 
 #include "TSFCore_ConfigDefs.hpp"
 
-#include "RTOp.h"
 #include "Range1D.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "RTOpPackTypes.hpp"

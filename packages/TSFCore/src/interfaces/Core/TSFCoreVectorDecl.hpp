@@ -35,7 +35,6 @@
 #include "TSFCoreTypes.hpp"
 #include "TSFCoreMultiVectorDecl.hpp"
 #include "RTOpPack_RTOpT.hpp"
-#include "RTOp_SparseSubVector.h"
 
 namespace TSFCore {
 

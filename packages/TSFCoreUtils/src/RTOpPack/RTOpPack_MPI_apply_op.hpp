@@ -36,7 +36,7 @@
 #include <malloc.h>
 
 #include "RTOpPack_MPI_apply_op_decl.hpp"
-#include "RTOp.h"
+//#include "RTOp.h"
 #include "Teuchos_RawMPITraits.hpp"
 #include "Teuchos_Workspace.hpp"
 

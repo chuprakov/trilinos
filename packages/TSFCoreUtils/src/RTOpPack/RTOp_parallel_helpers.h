@@ -31,7 +31,7 @@
 #ifndef RTOP_PARALLEL_HELPERS_H
 #define RTOP_PARALLEL_HELPERS_H
 
-#include "RTOp.h"
+#include "RTOp_config.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -34,9 +34,9 @@
 #include "RTOpPack_ROpCountNanInf.hpp"
 #include "RTOpPack_ROpSum.hpp"
 #include "RTOpPack_TOpAssignScalar.hpp"
-#include "RTOpPack_RTOpC.hpp"
-#include "RTOp_ROp_sum.h"
-#include "RTOp_TOp_assign_scalar.h"
+//#include "RTOpPack_RTOpC.hpp"
+//#include "RTOp_ROp_sum.h"
+//#include "RTOp_TOp_assign_scalar.h"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "Teuchos_arrayArg.hpp"
@@ -164,6 +164,8 @@ int main( int argc, char* argv[] ) {
     test_do_stuff<std::complex<double> >(mpiComm,n,out);
 #endif
 
+/*
+
     //
     // Use adapters for C RTOp_RTOp operator subclasses
     //
@@ -204,6 +206,8 @@ int main( int argc, char* argv[] ) {
         );
       out << RTOp_ROp_sum_val(sum_op(*sum_targ)) << std::endl;
     }
+
+*/
 
     // Do more stuff, Blah blah blah ...
 
