@@ -39,45 +39,55 @@ int main(int argc, char *argv[]) {
 	// Set verbosity of output
 	bool verbose = false;
 	for( i=1; i<argc; i++ ) {
-	  if (argv[i][0]=='-' && argv[i][1]=='v' && MyPID==0 ) { verbose = true; };
+		if (argv[i][0]=='-' && argv[i][1]=='v' && MyPID==0 ) { verbose = true; };
 	}
 	if ( verbose ) { argc--; } // Decrement argument counter if one of the arguments is the verbosity flag.
 	//
-    	if( argc < 4 ) {
-	  if ( verbose ) {
-	    cerr << "Usage: " << argv[0] 
-		 << " HB_filename max_iter tol [-v] " << endl
-		 << "where:" << endl
-		 << "HB_filename        - filename and path of a Harwell-Boeing data set" << endl
-		 << "max_iter           - maximum number of iterations allowed in GMRES solve" <<endl
-		 << "tol                - relative residual tolerance for GMRES solve" << endl
-		 << "[-v]               - verbosity flag for debugging" << endl
-		 << endl;
-	  }
-	  return(1);
+	if( argc < 4 ) {
+		if ( verbose ) {
+			cerr
+				<< "Usage: " << argv[0] 
+				<< " HB_filename max_iter tol [-v] " << endl
+				<< "where:" << endl
+				<< "HB_filename        - filename and path of a Harwell-Boeing data set" << endl
+				<< "max_iter           - maximum number of iterations allowed in GMRES solve" <<endl
+				<< "tol                - relative residual tolerance for GMRES solve" << endl
+				<< "[-v]               - verbosity flag for debugging" << endl
+				<< endl;
+		}
+		return(1);
 	}
-       	//
+
+	if ( verbose ) {
+		std::cout
+			<< std::endl << std::endl
+			<< "***\n"
+			<< "*** Testing simple GMRES solver on test problem \'" << argv[1] << "\'\n"
+			<< "***\n\n";
+	}
+
+	//
 	//**********************************************************************
 	//******************Set up the problem to be solved*********************
 	//**********************************************************************
-    	//
-    	int NumGlobalElements;  // total # of rows in matrix
+	//
+	int NumGlobalElements;  // total # of rows in matrix
 	//
 	// *****Read in matrix from HB file****** 
 	//
 	Trilinos_Util_read_hb(argv[1], MyPID, &NumGlobalElements, &n_nonzeros,
-			      &val, &bindx, &xguess, &b, &xexact);
+						  &val, &bindx, &xguess, &b, &xexact);
 	//
 	// *****Distribute data among processors*****
 	//
 	Trilinos_Util_distrib_msr_matrix(Comm, &NumGlobalElements, &n_nonzeros, &N_update,
-					 &update, &val, &bindx, &xguess, &b, &xexact);
+									 &update, &val, &bindx, &xguess, &b, &xexact);
 	//
 	// *****Construct the matrix*****
 	//
 	int NumMyElements = N_update; // # local rows of matrix on processor
 	//
-    	// Create an integer vector NumNz that is used to build the Petra Matrix.
+	// Create an integer vector NumNz that is used to build the Petra Matrix.
 	// NumNz[i] is the Number of OFF-DIAGONAL term for the ith global equation 
 	// on this processor
 	//
@@ -91,7 +101,7 @@ int main(int argc, char *argv[]) {
 	// Create a Epetra_Matrix
 	//
 	mmp::ref_count_ptr<Epetra_CrsMatrix> A =
-	  mmp::rcp( new Epetra_CrsMatrix(Copy, Map, NumNz) );
+		mmp::rcp( new Epetra_CrsMatrix(Copy, Map, NumNz) );
 	//
 	// Create some Epetra_Vectors
 	//
@@ -124,10 +134,10 @@ int main(int argc, char *argv[]) {
 	TSFCore::EpetraVector RHS( bb );
 	TSFCore::EpetraVector Soln( x );
 	//
-    	// ********Other information used by the GMRES solver***********
+	// ********Other information used by the GMRES solver***********
 	//
-    	int max_iter = atoi(argv[2]);  // maximum number of iterations to run
-    	double tol = atof(argv[3]);  // relative residual tolerance
+	int max_iter = atoi(argv[2]);  // maximum number of iterations to run
+	double tol = atof(argv[3]);  // relative residual tolerance
 	//
 	//*******************************************************************
 	// *************Start the GMRES iteration*************************
@@ -143,19 +153,28 @@ int main(int argc, char *argv[]) {
 	//
 	double final_rel_err = norm_2( RHS )/bnorm;
 	if (verbose) {
-	  cout << "******************* Results ************************"<<endl;
-	  cout << "Iteration "<< MySolver.currIteration()<<" of "<<max_iter<< endl;
-	  cout << "Final Computed GMRES Residual Norm : " << 
-	    MySolver.currEstRelResidualNorm() << endl;
-	  cout << "Actual Computed GMRES Residual Norm : " <<
-	    final_rel_err << endl;
-	  cout << "****************************************************"<<endl;
+		cout << "******************* Results ************************"<<endl;
+		cout << "Iteration "<< MySolver.currIteration()<<" of "<<max_iter<< endl;
+		cout << "Final Computed GMRES Residual Norm : " << 
+			MySolver.currEstRelResidualNorm() << endl;
+		cout << "Actual Computed GMRES Residual Norm : " <<
+			final_rel_err << endl;
+		cout << "****************************************************"<<endl;
 	}
       	
 	// Release all objects  	
 	delete [] NumNz;
 	delete [] bindx;
+
+	bool success = (final_rel_err <= tol);
+
+	if (verbose) {
+		if(success)
+			std::cout << "\nCongradualtions! the system was solved to the specified tolerance!\n";
+		else
+			std::cout << "\nOh no! the system was not solved to the specified tolerance!\n";
+	}
 	
-	return final_rel_err <= tol ? 0 : -1;
-  //
+	return success ? 0 : -1;
+
 } // end TSFCoreSolversGmresTest.cpp
