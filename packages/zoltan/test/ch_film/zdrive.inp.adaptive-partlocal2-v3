@@ -8,4 +8,3 @@ Parallel Disk Info	= number=0
 test local partitions   = 2
 test multi callbacks    = 1
 test null import lists  = 1
-
