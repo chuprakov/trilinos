@@ -417,7 +417,7 @@ void MatrixCompositeStd::add_matrix(
 	matrix_list_.push_back(
 		SubMatrixEntry(
 			row_offset+1,row_offset+opPopAopQ_rows
-			,col_offset+1,col_offset+opPopAopQ_rows
+			,col_offset+1,col_offset+opPopAopQ_cols
 			,alpha
 			,rng_P
 			,rcp::null,rcp::null,BLAS_Cpp::no_trans
