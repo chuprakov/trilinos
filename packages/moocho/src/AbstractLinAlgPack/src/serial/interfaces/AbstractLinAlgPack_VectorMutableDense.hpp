@@ -169,6 +169,8 @@ public:
 	///
 	void set_ele( index_type i, value_type val );
 	///
+	vec_mut_ptr_t sub_view( const Range1D& rng );
+	///
 	void get_sub_vector(
 		const Range1D& rng, RTOp_MutableSubVector* sub_vec );
 	///

@@ -69,6 +69,8 @@ public:
 	vec_mut_ptr_t create_member() const;
 	/// Returns a <tt>MultiVectorMutableDense</tt> object.
 	multi_vec_mut_ptr_t create_members(size_type num_vecs) const;
+	///
+	space_ptr_t sub_space(const Range1D& rng) const;
 
 	//@}
 

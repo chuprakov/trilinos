@@ -20,6 +20,7 @@
 #include "SparseLinAlgPack/include/MultiVectorMutableDense.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "LinAlgPack/include/VectorClass.h"
+#include "ThrowException.h"
 
 namespace SparseLinAlgPack {
 
@@ -64,6 +65,24 @@ VectorSpaceSerial::create_members(size_type num_vecs) const
 {
 	namespace rcp = MemMngPack;
 	return rcp::rcp(new MultiVectorMutableDense(dim_,num_vecs));
+}
+
+VectorSpace::space_ptr_t
+VectorSpaceSerial::sub_space(const Range1D& rng_in) const
+{
+	namespace rcp = MemMngPack;
+	const size_type this_dim = this->dim();
+	const Range1D rng = RangePack::full_range( rng_in, 1, this_dim );
+#ifdef _DEBUG
+	THROW_EXCEPTION(
+		rng.ubound() > this_dim, std::out_of_range
+		,"VectorSpaceSerial::sub_view(...) : Error, "
+		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
+		"is not in the range [1,this->dim()] = [1," << this_dim );
+#endif
+	if( rng == Range1D(1,this_dim) )
+		return rcp::rcp( this, false );
+	return rcp::rcp( new VectorSpaceSerial( rng.size() ) ); 
 }
 
 } // end namespace SparseLinAlgPack

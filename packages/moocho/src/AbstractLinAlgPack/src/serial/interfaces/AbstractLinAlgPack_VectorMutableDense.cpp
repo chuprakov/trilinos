@@ -197,16 +197,36 @@ void VectorWithOpMutableDense::set_ele( index_type i, value_type val )
 	this->has_changed();
 }
 
+VectorWithOpMutableDense::vec_mut_ptr_t
+VectorWithOpMutableDense::sub_view( const Range1D& rng_in )
+{
+	namespace rcp = MemMngPack;
+	const size_type this_dim = this->dim();
+	const Range1D rng = RangePack::full_range( rng_in, 1, this_dim );
+#ifdef _DEBUG
+	THROW_EXCEPTION(
+		rng.ubound() > this_dim, std::out_of_range
+		,"VectorWithOpMutableDense::sub_view(...) : Error, "
+		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
+		"is not in the range [1,this->dim()] = [1," << this_dim );
+#endif
+	if( rng == Range1D(1,this_dim) )
+		return rcp::rcp( this, false );
+	return rcp::rcp( new VectorWithOpMutableDense( v_(rng), rcp::null ) ); 
+}
+
 void VectorWithOpMutableDense::get_sub_vector(
 	const Range1D& rng_in, RTOp_MutableSubVector* sub_vec )
 {
 	const size_type  this_dim = v_.dim();
 	const Range1D    rng = RangePack::full_range(rng_in,1,this_dim);
+#ifdef _DEBUG
 	THROW_EXCEPTION(
 		rng.ubound() > this_dim, std::out_of_range
 		,"VectorWithOpMutableDense::get_sub_vector(...) : Error, "
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
 		"is not in the range [1,this->dim()] = [1," << this_dim );
+#endif
 	RTOp_MutableSubVector _sub_vec;
 	RTOp_mutable_sub_vector(
 		rng.lbound()-1                             // global_offset
