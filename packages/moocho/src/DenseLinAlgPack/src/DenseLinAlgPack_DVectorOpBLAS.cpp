@@ -67,7 +67,12 @@ void LinAlgPack::Vp_S(VectorSlice* vs_lhs, value_type alpha) {
 
 // vs_lhs *= alpha (BLAS xSCAL)
 void LinAlgPack::Vt_S(VectorSlice* vs_lhs, value_type alpha) {
-	BLAS_Cpp::scal( vs_lhs->size(), alpha, vs_lhs->raw_ptr(), vs_lhs->stride() );
+	if( alpha == 1.0 )
+		return;
+	else if( alpha == 0.0 )
+		*vs_lhs = 0.0;
+	else
+		BLAS_Cpp::scal( vs_lhs->size(), alpha, vs_lhs->raw_ptr(), vs_lhs->stride() );
 }
 
 // vs_lhs += alpha * vs_rhs (BLAS xAXPY)

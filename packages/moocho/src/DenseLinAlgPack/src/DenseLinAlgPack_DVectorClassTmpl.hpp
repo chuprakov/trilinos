@@ -4,7 +4,7 @@
 #ifndef VECTOR_CLASS_TMPL_H
 #define VECTOR_CLASS_TMPL_H
 
-#include <valarray>
+#include <vector>
 
 #include "Range1D.h"
 #include "Misc/include/StrideIter.h"
@@ -148,7 +148,8 @@ public:
 	  *		\item #rng.ubound() + 1 <= n# (throw std::out_of_range)
 	  *		\end{itemize}
 	  *
-	  * @param	v		valarray<> the vector slice region is representing.
+	  *	@param	ptr		Pointer to the first element in the raw C++ array
+	  * @param	size	number of elements in the vector slice
 	  * @param	rng		index range (1-based) of the region being represented.  
 	  *					Here rng.full_range() can be true.
 	  */
@@ -405,7 +406,7 @@ private:
 /** 1-D Vector Abstraction Storage Class.
   *
   * Holds the storage space for a 1-D vector of element type value_type.  The storage space class
-  * used in a standard valarray<> private member.  Vector provides much of the
+  * used in a standard vector<> private member.  Vector provides much of the
   * same functionaliy of a VectorSliceTmpl object accept that Vector object can be resized at any time by
   * either explicitly calling #resize(...)# or to match an assignment to a rhs linear algebra expression.
   */
@@ -417,8 +418,8 @@ public:
 	  * These nested types give the types used in the interface to the class.
 	  *
 	  * \begin{description}
-	  *	\item[#value_type#]				- type being stored in the underlying valarray<>			
-	  *	\item[#size_type#]				- type for the number of elements in the valarray<>
+	  *	\item[#value_type#]				- type being stored in the underlying vector<>			
+	  *	\item[#size_type#]				- type for the number of elements in the vector<>
 	  *	\item[#difference_type#]		- type for the distance between elements
 	  *	\item[#iterator#]				- type for the forward non-constant iterator
 	  *	\item[#const_iterator#]			- type for the forward constant iterator (can't change elements)
@@ -449,7 +450,7 @@ public:
 #endif
 	typedef value_type&								reference;
 	typedef const value_type&						const_reference;
-	typedef std::valarray<value_type>				valarray;
+	typedef std::vector<value_type>					valarray;
 
 	/** @name {\bf Constructors}.
 	  * 
@@ -998,26 +999,35 @@ VectorTmpl<T>::VectorTmpl(size_type n)
 template<class T>
 inline
 VectorTmpl<T>::VectorTmpl(value_type val, size_type n) 
-	: v_(val, n)
-{}
+	: v_(n)
+{
+	std::fill(begin(),end(),val);
+}
 
 template<class T>
 inline
 VectorTmpl<T>::VectorTmpl(const value_type* p, size_type n)
-	: v_(p, n)
-{}
+	: v_(n)
+{
+	std::copy(p,p+n,begin());
+}
 
 template<class T>
 inline
 VectorTmpl<T>::VectorTmpl(const VectorSliceTmpl<T>& vs)
 	: v_(vs.size())
-{	*this = vs;	}
+{  
+	std::copy(vs.begin(),vs.end(),begin());
+}
 
 // Memory management
 template<class T>
 inline
 void VectorTmpl<T>::resize(size_type n, value_type val)
-{	v_.resize(n,val); }
+{
+	v_.resize(n);
+	std::fill(begin(),end(),val);
+ }
 
 template<class T>
 inline
@@ -1163,6 +1173,7 @@ template<class T>
 inline
 VectorTmpl<T>& VectorTmpl<T>::operator=(value_type alpha) 
 {
+	if(!size()) resize(1);
 	std::fill(begin(),end(),alpha);
 	return *this;
 }
@@ -1171,7 +1182,7 @@ template<class T>
 inline
 VectorTmpl<T>& VectorTmpl<T>::operator=(const VectorTmpl<T>& rhs) 
 {
-	assert_vs_sizes(this->size(),rhs.size());
+	resize(rhs.size());
 	std::copy(rhs.begin(),rhs.end(),begin());
 	return *this;
 }
