@@ -157,7 +157,7 @@ public:
 	 * </ul>
 	 *
 	 * Postcondtions:<ul>
-	 * <li> Minimum of NLPReduced is found to opt_tol, max_iter was reached
+	 * <li> Minimum of %NLP is found to opt_tol, max_iter was reached
 	 * or max_run_time reached (throw std::exection)
 	 * </ul>
 	 */
