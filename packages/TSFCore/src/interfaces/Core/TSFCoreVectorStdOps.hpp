@@ -40,6 +40,7 @@
 #include "RTOpPack_ROpNorm2.hpp"
 #include "RTOpPack_ROpNormInf.hpp"
 #include "RTOpPack_ROpSum.hpp"
+#include "RTOpPack_ROpWeightedNorm2.hpp"
 #include "RTOpPack_TOpAbs.hpp"
 #include "RTOpPack_TOpAddScalar.hpp"
 #include "RTOpPack_TOpAssignScalar.hpp"
@@ -83,6 +84,16 @@ Scalar TSFCore::norm_2( const Vector<Scalar>& v_rhs )
 	const Vector<Scalar>* vecs[] = { &v_rhs };
 	applyOp<Scalar>(norm_2_op,1,vecs,0,(Vector<Scalar>**)NULL,&*norm_2_targ);
 	return norm_2_op(*norm_2_targ);
+}
+
+template<class Scalar>
+Scalar TSFCore::norm_2( const Vector<Scalar>& w, const Vector<Scalar>& v )
+{
+  RTOpPack::ROpWeightedNorm2<Scalar> wght_norm_2_op;
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget> wght_norm_2_targ = wght_norm_2_op.reduct_obj_create();
+	const Vector<Scalar>* vecs[] = { &w, &v };
+	applyOp<Scalar>(wght_norm_2_op,2,vecs,0,(Vector<Scalar>**)NULL,&*wght_norm_2_targ);
+	return wght_norm_2_op(*wght_norm_2_targ);
 }
 
 template<class Scalar>

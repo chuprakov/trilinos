@@ -41,13 +41,13 @@ namespace TSFCore {
 //@{
 
 ///
-/** <tt>result = sum( v(i), i = 1...v.space()->dim() )</tt>
+/** Sum of vector elements: <tt>result = sum( v(i), i = 1...v.space()->dim() )</tt>.
  */
 template<class Scalar>
 Scalar sum( const Vector<Scalar>& v );
 
 ///
-/** <tt>result = sqrt(<v,v>)</tt> : Natural norm of a vector.
+/** Natural norm: <tt>result = sqrt(<v,v>)</tt>.
  *
  * Returns <tt>Teuchos::ScalarTraits<Scalar>::squareroot(v.space()->scalarProd(v,v))</tt>
  */
@@ -55,61 +55,67 @@ template<class Scalar>
 Scalar norm( const Vector<Scalar>& v );
 
 ///
-/** <tt>result = ||v||1</tt>
+/** One (1) norm: <tt>result = ||v||1</tt>
  */
 template<class Scalar>
 Scalar norm_1( const Vector<Scalar>& v );
 
 ///
-/** <tt>result = ||v||2</tt>
+/** Euclidean (2) norm: <tt>result = ||v||2</tt>
  */
 template<class Scalar>
 Scalar norm_2( const Vector<Scalar>& v );
 
 ///
-/** <tt>result = ||v||inf</tt>
+/** Weighted Euclidean (2) norm: <tt>result = sqrt( sum( w(i)*v(i)^2) )</tt>
+ */
+template<class Scalar>
+Scalar norm_2( const Vector<Scalar> &w, const Vector<Scalar>& v );
+
+///
+/** Infinity norm: <tt>result = ||v||inf</tt>
  */
 template<class Scalar>
 Scalar norm_inf( const Vector<Scalar>& v_rhs );
 
 ///
-/** <tt>result = x'*y</tt>
+/** Dot product: <tt>result = x'*y</tt>
  */
 template<class Scalar>
 Scalar dot( const Vector<Scalar>& x, const Vector<Scalar>& y );
 
 ///
-/** <tt>result = v(i)</tt>
+/** Get single element: <tt>result = v(i)</tt>
  */
 template<class Scalar>
 Scalar get_ele( const Vector<Scalar>& v, Index i );
 
 ///
-/** <tt>v(i) = alpha</tt>
+/** Set single element: <tt>v(i) = alpha</tt>
  */
 template<class Scalar>
 void set_ele( Index i, Scalar alpha, Vector<Scalar>* v );
 
 ///
-/** <tt>y = alpha</tt>
+/** Assign all elements to a scalar: <tt>y(i) = alpha, i = 1...y->space()->dim()</tt>
  */
 template<class Scalar>
 void assign( Vector<Scalar>* y, const Scalar& alpha );
 
 ///
-/** <tt>y = x</tt>
+/** Vector assignment: <tt>y(i) = x(i), i = 1...y->space()->dim()</tt>
  */
 template<class Scalar>
 void assign( Vector<Scalar>* y, const Vector<Scalar>& x );
 
 ///
-/** <tt>y += alpha</tt>
+/** Add a scalar to all elements: <tt>y(i) += alpha, i = 1...y->space()->dim()</tt>
  */
 template<class Scalar>
 void Vp_S( Vector<Scalar>* y, const Scalar& alpha );
 
 ///
-/** <tt>y *= alpha</tt>
+/** Scale all elements by a scalar: <tt>y(i) *= alpha, i = 1...y->space()->dim()</tt>
  *
  * This takes care of the special cases of <tt>alpha == 0.0</tt>
  * (set <tt>y = 0.0</tt>) and <tt>alpha == 1.0</tt> (don't
@@ -119,7 +125,7 @@ template<class Scalar>
 void Vt_S( Vector<Scalar>* y, const Scalar& alpha );
 
 ///
-/** <tt>y = alpha * x + y</tt>
+/** AXPY update: <tt>y(i) = alpha * x(i) + y(i), i = 1...y->space()->dim()</tt>
  */
 template<class Scalar>
 void Vp_StV( Vector<Scalar>* y, const Scalar& alpha, const Vector<Scalar>& x );

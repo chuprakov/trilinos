@@ -97,6 +97,15 @@ bool run_tests( const int n, const Scalar max_rel_err, const bool dumpAll, std::
 			 )
 		) success=false;
 
+	if(out) *out << "\nassign(&*z,2.0);\n";
+	assign(&*z,Scalar(2.0));
+	if(!testRelErr(
+			 "norm_2(*z,*v2)",norm_2(*z,*v2)
+			 ,"sqrt(2.0*3.0*3.0*svp.dim())",ST::squareroot(Scalar(2.0*3.0*3.0)*Scalar(svp.dim()))
+			 ,"max_rel_err",max_rel_err,out
+			 )
+		) success=false;
+
 	// ToDo: Add tests for *all* standard operators!
 
   if(out) *out
