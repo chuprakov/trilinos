@@ -498,7 +498,7 @@ void MatrixWithOpSerial::Vp_StMtV(
 	if(sv_rhs2)
 		this->Vp_StMtV( &vs_lhs(), alpha, trans_rhs1, VectorSparseEncap(*sv_rhs2)(), beta );
 	VectorDenseEncap              vs_rhs2(v_rhs2);
-	return this->Vp_StMtV( &vs_lhs(), alpha, trans_rhs1, vs_rhs2(), beta );	
+	this->Vp_StMtV( &vs_lhs(), alpha, trans_rhs1, vs_rhs2(), beta );	
 }
 
 void MatrixWithOpSerial::Vp_StMtV(
@@ -537,7 +537,6 @@ value_type MatrixWithOpSerial::transVtMtV(
 	const VectorWithOp& v_rhs1, BLAS_Cpp::Transp trans_rhs2
 	, const VectorWithOp& v_rhs3) const
 {
-	using DynamicCastHelperPack::dyn_cast;
 	VectorDenseEncap              vs_rhs1(v_rhs1);
 	VectorDenseEncap              vs_rhs3(v_rhs3);
 	return this->transVtMtV(vs_rhs1(),trans_rhs2,vs_rhs3());

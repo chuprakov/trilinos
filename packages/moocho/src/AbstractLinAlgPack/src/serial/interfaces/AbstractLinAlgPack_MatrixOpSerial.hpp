@@ -46,7 +46,7 @@ namespace SparseLinAlgPack {
  *
  * ToDo: Finish documentation!
  */
-class MatrixWithOpSerial : public virtual MatrixWithOp {
+class MatrixWithOpSerial : virtual public MatrixWithOp {
 public:
 
 	/** @name Level-1 BLAS */
@@ -265,7 +265,6 @@ private:
 
 	// ////////////////////////////////////
 	// Private member functions
-
 
 };	// end class MatrixWithOpSerial
 
