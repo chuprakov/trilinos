@@ -91,11 +91,11 @@ int main(int argc, char* argv[] ) {
 	// Get the starting point
 	value_type xo = 0.1;
 	// Determine if the NLP has bounds or not.
-	bool has_bounds = true;
+	bool has_bounds = false;
 	// Make the dependent or independent variables bounded.
 	bool dep_bounded = true;
 	// Serial or parallel?
-	bool in_parallel = true;
+	bool in_parallel = false;
 
 	// Read from the arguments
 	if(argc > 1)
