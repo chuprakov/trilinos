@@ -97,7 +97,7 @@ bool NullSpaceStepWithoutBounds_Step::do_step(
 	// Zpz = Z * pz
 	V_MtV( &s.Zpz().set_k(0), s.Z().get_k(0), no_trans, pz_k );
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\n||pz||inf   = " << s.pz().get_k(0).norm_inf()
 			<< "\n||Zpz||2    = " << s.Zpz().get_k(0).norm_2()  << std::endl;
 	}
