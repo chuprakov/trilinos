@@ -20,7 +20,7 @@
 
 #include "QPSchur.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlock.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
 
 namespace ConstrainedOptPack {
 namespace QPSchurPack {
@@ -195,7 +195,7 @@ public:
 		row_i_t             P_u_row_i_;
 		col_j_t             P_u_col_j_;
 		VectorSpace::space_ptr_t   space_cols_;
-		VectorSpaceBlock    space_rows_;
+		VectorSpaceBlocked    space_rows_;
 	};	// end class MatrixConstraints
 
 	///

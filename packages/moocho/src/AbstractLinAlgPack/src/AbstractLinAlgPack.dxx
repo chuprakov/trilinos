@@ -38,7 +38,7 @@ and could be recreated by any developer to meet the needs of the
 application.  However, they are included here since it is anticipated
 that they will meet the needs of many different developers.  An
 example of a useful vector subclass is <tt>\ref
-AbstractLinAlgPack::VectorMutableBlock "VectorMutableBlock"</tt>.
+AbstractLinAlgPack::VectorMutableBlocked "VectorMutableBlocked"</tt>.
 This subclass allows a vector object to be constructed out of a set of
 <tt>VectorMutable</tt> objects and allows for great flexibility.  Some
 useful and flexible testing software is also included here that will
@@ -121,7 +121,7 @@ that accepts <tt>RTOp</tt> objects and use them to perform
 the desired reduction/transformation operations.  This method allows great flexibility in how vectors are
 used in an application.  The method <tt>apply_op(...)</tt> can be
 used to allow vector objects to participate as sub-vectors in a larger composite vector (see
-<tt>\ref AbstractLinAlgPack::VectorMutableBlock "VectorMutableBlock"</tt>)
+<tt>\ref AbstractLinAlgPack::VectorMutableBlocked "VectorMutableBlocked"</tt>)
 or allow only sub-sets of the elements to participate in vector operatations (see
 <tt>\ref AbstractLinAlgPack::VectorMutableSubView "VectorMutableSubView"</tt>).  All of the other methods that are
 associated with these vector interfaces have default implementations based on <tt>apply_op(...)</tt>
@@ -189,7 +189,7 @@ will be added to this header file.
 /** \defgroup libAbstractLinAlgPackTools_grp libAbstractLinAlgPackTools
 \brief Auxiliary Subclasses and Tools.
 
-One particularly useful vector subclass is <tt>\ref AbstractLinAlgPack::VectorMutableBlock "VectorWithOpComposite"</tt>.
+One particularly useful vector subclass is <tt>\ref AbstractLinAlgPack::VectorMutableBlocked "VectorWithOpComposite"</tt>.
 This vector subclass allows a vector object to be created out of the concatonation of two or more other vector
 objects.  In most situations this is a near optimal implementation of such a composite vector.
 

@@ -19,7 +19,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlock.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "AbstractFactoryStd.hpp"
@@ -86,7 +86,7 @@ void BasisSystemComposite::initialize_space_x(
 	if(space_xI.get()) {
 		const VectorSpace::space_ptr_t
 			vec_spaces[2] = { space_xD, space_xI };
-		*space_x   = mmp::rcp(new VectorSpaceBlock(vec_spaces,2));
+		*space_x   = mmp::rcp(new VectorSpaceBlocked(vec_spaces,2));
 	}
 	else {
 		*space_x = space_xD;

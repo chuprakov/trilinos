@@ -90,7 +90,7 @@ namespace AbstractLinAlgPack {
  *
  * Note that implementing the <tt>VectorSpace</tt> objects that are returned by
  * \c space_rows() and \c space_cols() may be non-trivial.  These methods return
- * <tt>VectorSpaceBlock</tt> objects.  Therefore, in order for clients to
+ * <tt>VectorSpaceBlocked</tt> objects.  Therefore, in order for clients to
  * use vectors with this matrix object, it must create vectors compatible with these
  * vector space objects.  This can be a little tricky but should be doable.
  *
@@ -415,7 +415,7 @@ public:
 	 * This method must be called after all of the sub-vectors and sub-matrices have
 	 * been added and before <tt>this</tt> matrix object can be used.  This method will
 	 * validate that the constructed matrix is valid.  It is up to the client to pass
-	 * in vector space objects (presumably of type \c VectorSpaceBlock) that
+	 * in vector space objects (presumably of type \c VectorSpaceBlocked) that
 	 * represent the rows and columns of this matrix.  It would be very complicated
 	 * for this matrix class to figure out how to construct these vector space
 	 * objects in general.

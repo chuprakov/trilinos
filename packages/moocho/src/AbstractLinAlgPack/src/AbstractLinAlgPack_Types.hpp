@@ -137,8 +137,8 @@ class MatrixSymDiag;
 // concrete subclasses
 
 class BasisSystemComposite;
-class VectorSpaceBlock;
-class VectorMutableBlock;
+class VectorSpaceBlocked;
+class VectorMutableBlocked;
 class MatrixOpSubView;
 class MatrixComposite;
 class MatrixSymIdent;

@@ -19,7 +19,7 @@
 #include "NLPInterfacePack/src/abstract/interfaces/NLPObjGrad.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlock.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
 #include "ThrowException.hpp"
 
 namespace NLPInterfacePack {

@@ -16,7 +16,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorMutableBlock.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorMutableBlocked.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
 //#include "AbstractLinAlgPack/src/GenPermMatrixSliceOp.hpp"
 #include "WorkspacePack.hpp"

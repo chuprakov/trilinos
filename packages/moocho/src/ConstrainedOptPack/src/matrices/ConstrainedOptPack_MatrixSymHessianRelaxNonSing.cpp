@@ -18,7 +18,7 @@
 #include "ConstrainedOptPack/src/matrices/MatrixSymHessianRelaxNonSing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlock.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "profile_hack.hpp"
 #include "ThrowException.hpp"
@@ -151,7 +151,7 @@ void MatrixSymHessianRelaxNonSing::initialize(
 	else {
 		VectorSpace::space_ptr_t spaces[]
 			= { mmp::rcp(&G_ptr->space_cols(),false), mmp::rcp(&M_diag_ptr->space(),false) };
-		vec_space_ = mmp::rcp(new VectorSpaceBlock( spaces, 2 ) );
+		vec_space_ = mmp::rcp(new VectorSpaceBlocked( spaces, 2 ) );
 	}
 	G_ptr_ = G_ptr;
 	M_.initialize(M_diag_ptr);

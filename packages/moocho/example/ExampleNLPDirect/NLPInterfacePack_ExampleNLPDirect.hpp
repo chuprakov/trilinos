@@ -20,7 +20,7 @@
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlock.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
 
 namespace NLPInterfacePack {
 
@@ -41,7 +41,7 @@ namespace NLPInterfacePack {
  * This implementation is defined entirely based on an arbitrary
  * <tt>VectorSpace</tt> object that is passed to the constructor
  * \c ExampleNLPDirect().  This %NLP subclass uses a
- * <tt>\ref AbstractLinAlgPack::VectorSpaceBlock "VectorSpaceBlock"</tt>
+ * <tt>\ref AbstractLinAlgPack::VectorSpaceBlocked "VectorSpaceBlocked"</tt>
  * object to represent the space for <tt>[ x_dep; x_indep ]</tt>
  *
  * The quantities computed by this subclass include:

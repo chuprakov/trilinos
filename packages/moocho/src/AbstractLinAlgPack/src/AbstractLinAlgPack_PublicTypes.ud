@@ -75,8 +75,8 @@ using AbstractLinAlgPack::MatrixSymInitDiag;
 using AbstractLinAlgPack::MatrixSymDiag;
 
 using AbstractLinAlgPack::BasisSystemComposite;
-using AbstractLinAlgPack::VectorSpaceBlock;
-using AbstractLinAlgPack::VectorMutableBlock;
+using AbstractLinAlgPack::VectorSpaceBlocked;
+using AbstractLinAlgPack::VectorMutableBlocked;
 using AbstractLinAlgPack::MatrixOpSubView;
 using AbstractLinAlgPack::MatrixComposite;
 using AbstractLinAlgPack::MatrixSymIdent;
