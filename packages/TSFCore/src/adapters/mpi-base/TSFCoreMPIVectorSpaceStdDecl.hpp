@@ -51,7 +51,7 @@ namespace TSFCore {
  * \ingroup TSFCore_adapters_MPI_concrete_std_grp
  */
 template<class Scalar>
-class MPIVectorSpaceStd : virtual public MPIVectorSpaceBase<Scalar> {
+class MPIVectorSpaceStd : public MPIVectorSpaceBase<Scalar> {
 public:
 
 	/** @name Constructors and initializers */

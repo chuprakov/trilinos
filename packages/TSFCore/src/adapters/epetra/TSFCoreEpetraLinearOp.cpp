@@ -30,6 +30,7 @@
 // TSFCoreEpetraLinearOp.cpp
 
 #include "TSFCoreEpetraLinearOp.hpp"
+#include "TSFCoreMPIMultiVectorBase.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVector.hpp"
 #include "TSFCoreEpetraMultiVector.hpp"

@@ -33,6 +33,7 @@
 #define TSFCORE_MPI_VECTOR_SPACE_STD_HPP
 
 #include "TSFCoreMPIVectorSpaceStdDecl.hpp"
+#include "TSFCoreMPIVectorSpaceBase.hpp"
 #include "TSFCoreMPIMultiVectorStd.hpp"
 #include "TSFCoreMPIVectorStd.hpp"
 //#include "TSFCoreVectorMultiVector.hpp"
