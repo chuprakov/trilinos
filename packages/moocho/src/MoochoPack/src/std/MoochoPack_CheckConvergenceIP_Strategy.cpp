@@ -24,6 +24,7 @@
 #include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
 #include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
+#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "dynamic_cast_verbose.h"
 
@@ -51,6 +52,8 @@ bool CheckConvergenceIP_Strategy::Converged(
   )
 	{
 	using DynamicCastHelperPack::dyn_cast;
+	using AbstractLinAlgPack::num_bounded;
+	using AbstractLinAlgPack::IP_comp_err_with_mu;
 
 	// Calculate kkt errors and check for overall convergence
 	//bool found_solution = CheckConvergenceStd_Strategy::Converged(_algo);
@@ -104,18 +107,18 @@ bool CheckConvergenceIP_Strategy::Converged(
 	// Calculate the comp_err
 	comp_err = 0.0;
 
-	out << "x=\n";
-	s.x().get_k(0).output(out);
-	out << "xl=\n";
-	nlp.xl().output(out);
-	out << "vl=\n";
-	s.Vl().get_k(0).diag().output(out);
-	out << "xu=\n";
-	nlp.xu().output(out);
-	out << "vu=\n";
-	s.Vu().get_k(0).diag().output(out);
+	if( (int)olevel >= (int)PRINT_VECTORS )
+		{
+		out << "\nx =\n"    << s.x().get_k(0);
+		out << "\nxl =\n"   << nlp.xl();
+		out << "\nvl =\n"   << s.Vl().get_k(0).diag();
+		out << "\nxu =\n"   << nlp.xu();
+		out << "\nvu =\n"   << s.Vu().get_k(0).diag();
+		}
 
-	comp_err = IP_comp_err_with_mu(mu_km1, nlp.infinite_bound(), s.x().get_k(0), nlp.xl(), nlp.xu(), s.Vl().get_k(0).diag(), s.Vu().get_k(0).diag());
+	comp_err = IP_comp_err_with_mu(
+		mu_km1, nlp.infinite_bound(), s.x().get_k(0), nlp.xl(), nlp.xu()
+		,s.Vl().get_k(0).diag(), s.Vu().get_k(0).diag());
 	comp_err = comp_err / scale_2;
 
 	// check for convergence
@@ -123,7 +126,9 @@ bool CheckConvergenceIP_Strategy::Converged(
 	const value_type opt_tol = algo.algo_cntr().opt_tol();
 	const value_type feas_tol = algo.algo_cntr().feas_tol();
 	const value_type comp_tol = algo.algo_cntr().comp_tol();
-	if (opt_err < opt_tol && feas_err < feas_tol && comp_err < comp_tol && mu_km1 < comp_tol)
+	// RAB: 2002/07/28: I removed the complementarity error since it was causing unconstrained
+	// ExampleNLPBanded to fail!
+	if (opt_err < opt_tol && feas_err < feas_tol && comp_err < comp_tol /* && mu_km1 < comp_tol */ )
 		{
 		found_solution = true;
 		}
@@ -154,7 +159,7 @@ void CheckConvergenceIP_Strategy::print_step( const Algorithm& _algo, std::ostre
 	CheckConvergenceStd_Strategy::print_step(_algo, out, L+"   ");
 	
 	out 
-		<< L << "# recalculate comp_err\n"
+		<< L << "*** recalculate comp_err\n"
 		<< L << "comp_err_k = 0.0"
 		<< L << "for all i = 1 to n\n"
 		<< L << "   comp_err_k = max( comp_err_k, vl_k(i)*(x_k(i)-xl_k(i))-mu_km1, vu_k(i)*(xu_k(i)-x_k(i))-mu_k )\n"
