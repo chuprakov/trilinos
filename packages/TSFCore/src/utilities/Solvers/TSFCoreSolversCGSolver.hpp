@@ -164,6 +164,7 @@ SolveReturn CGSolver<Scalar>::solve(
 	,const LinearOp<Scalar> *M_tilde_right_inv, ETransp M_tilde_right_inv_trans
 	) const
 {
+	typedef Teuchos::ScalarTraits<Scalar> ST;
 	TEST_FOR_EXCEPTION( M_tilde_right_inv != NULL, std::logic_error, "Error, we can not handle right preconditioners yet!" );
 	namespace mmp = MemMngPack;
 	const VectorSpace<Scalar> &opM_domain     = ( M_trans == NOTRANS                ? *M.domain() : *M.range()  );
@@ -219,6 +220,14 @@ SolveReturn CGSolver<Scalar>::solve(
 	//
 	const int max_iter = ( max_iter_in == DEFAULT_MAX_ITER ? default_max_iter() : max_iter_in );
 	//
+	// Check for trivial RHS
+	//
+	const Scalar nrmRhs = norm_1(Y);
+	if( nrmRhs == ST::zero() ) {
+		assign( X, ST::zero() );
+		return SolveReturn(SOLVED_TO_TOL,0);
+	}
+	//
 	// Setup storage and initialize the algorithm
 	//
 	currNumSystems_ = totalNumSystems_;
@@ -232,12 +241,13 @@ SolveReturn CGSolver<Scalar>::solve(
 	gamma_.resize(currNumSystems_); alpha_.resize(currNumSystems_);   norms_.resize(currNumSystems_);	
 	// R^{0} = a*Y
 	assign( R_.get(), 0.0 ); update( a, Y, R_.get() );
-	// Denominator for relative error ( denom(j) = a||Y|| + 1 )
+	// R^{0} += - op(M)*X^{0}
+	const Scalar nrmX = norm_1(*X);
+	if( nrmX != ST::zero() ) M.apply(M_trans,*X,&*R_,-1.0,1.0);
+	// Denominator for relative error ( denom(j) = ||R^{0}|| )
 	rel_err_denom_.resize(currNumSystems_);
 	norms( *R_, &rel_err_denom_[0] );
-	for(j=0;j<currNumSystems_;++j) rel_err_denom_[j] += 1.0;
-	// R^{0} += - op(M)*X^{0}
-	M.apply(M_trans,*X,R_.get(),-1.0,1.0);
+	// for(j=0;j<currNumSystems_;++j) rel_err_denom_[j] += 1.0;
 	//
 	// Perform the iterations
 	//
