@@ -150,11 +150,11 @@ public:
 	typedef ReferenceCountingPack::ref_count_ptr<std::ostream>       ostream_ptr_t;
 	///
 	enum ESolutionStatus {
-		SOLVE_RETURN_SOLVED
-		,SOLVE_RETURN_NLP_TEST_FAILED
-		,SOLVE_RETURN_MAX_ITER
-		,SOLVE_RETURN_MAX_RUN_TIME
-		,SOLVE_RETURN_EXCEPTION
+		SOLVE_RETURN_SOLVED            =  0
+		,SOLVE_RETURN_NLP_TEST_FAILED  = -1
+		,SOLVE_RETURN_MAX_ITER         = -2
+		,SOLVE_RETURN_MAX_RUN_TIME     = -3
+		,SOLVE_RETURN_EXCEPTION        = -4
 	};
 
 	//@}
