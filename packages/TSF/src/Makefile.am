@@ -119,7 +119,6 @@ $(srcdir)/LinearSolvers/TSFLinearSolver.cpp
 NonlinearOperators_SOURCES_H =\
 $(srcdir)/NonlinearOperators/TSFAddVectorNonlinearOperator.h\
 $(srcdir)/NonlinearOperators/TSFComposedNonlinearOperator.h\
-$(srcdir)/NonlinearOperators/TSFConstantNonlinearoperator.h\
 $(srcdir)/NonlinearOperators/TSFConstantNonlinearOperator.h\
 $(srcdir)/NonlinearOperators/TSFLinearNonlinearOperator.h\
 $(srcdir)/NonlinearOperators/TSFNonlinearOperatorBase.h\
