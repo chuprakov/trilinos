@@ -90,28 +90,38 @@ void AlgorithmState::dump_iter_quant(std::ostream& out) const {
 	using std::setw;
 	using std::endl;
 
-	const int name_w = 30, id_w = 6;
-	char gap[] = "     ";
-
-	out		<< "\n\n"
-			<< std::left	<< setw(name_w)		<< "iq_name"
-			<< std::right	<< setw(id_w)		<< "iq_id"
-			<< gap			<< std::left		<< "concrete type\n";
-
-	out		<< std::left	<< setw(name_w)	<< "-----"
-			<< std::right	<< setw(id_w)	<< "-------"
-			<< gap			<< std::left	<< "-------------\n";
-
-	for(	iq_name_to_id_t::const_iterator itr = iq_name_to_id_.begin();
+	// Find the maximum length of an iteration quantity name
+	int name_w_max = 0;
+	{for(	iq_name_to_id_t::const_iterator itr = iq_name_to_id_.begin();
 			itr !=  iq_name_to_id_.end(); ++itr )
 	{
-		out		<< std::left					<< (*itr).first;
+		name_w_max = std::_MAX( (int)name_w_max, (int)(*itr).first.length() );
+	}}	
 
-		output_spaces( out, name_w - (*itr).first.size() );
+	const int name_w = name_w_max + 4, id_w = 6;
+	const char gap[] = "    ";
 
-		out		<< std::right	<< setw(id_w)	<< (*itr).second
-				<< gap			<< std::left	<< typeid(*iq_[(*itr).second]).name() << endl;
-	}	
+	out		<< "\n\n"
+			<< std::left    << setw(name_w) << "iq_name"
+			<< std::right   << setw(id_w)   << "iq_id"
+			<< gap          << std::left    << "concrete type of iq / concrete type of object\n";
+
+	out		<< std::left    << setw(name_w) << "-----"
+			<< std::right   << setw(id_w)   << "------"
+			<< gap          << std::left    << "---------------------------------------------\n";
+
+	{for(	iq_name_to_id_t::const_iterator itr = iq_name_to_id_.begin();
+			itr !=  iq_name_to_id_.end(); ++itr )
+	{
+		out << std::left    << setw(name_w) << (*itr).first
+			<< std::right   << setw(id_w)   << (*itr).second
+			<< gap          << std::left    << typeid(*iq_[(*itr).second]).name() << endl
+			<< std::left    << setw(name_w) << ""
+			<< std::right   << setw(id_w)   << ""
+			<< gap          << std::left;
+		iq_[(*itr).second]->print_concrete_type(out);
+		out << endl;
+	}}
 }
 
 // private
