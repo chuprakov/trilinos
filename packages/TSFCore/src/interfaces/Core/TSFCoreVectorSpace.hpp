@@ -52,7 +52,7 @@ public:
     {
       RTOpPack::SubVectorT<Scalar> sv;
       v_->getSubVector(Range1D(),&sv);
-      assign_entries( &raw_v_, sv );
+      RTOpPack::assign_entries( &raw_v_, sv );
       v_->freeSubVector(&sv);
     }
 private:
@@ -70,7 +70,7 @@ public:
     {
       RTOpPack::SubMultiVectorT<Scalar> smv;
       mv_->getSubMultiVector(Range1D(),Range1D(),&smv);
-      assign_entries( &raw_mv_, smv );
+      RTOpPack::assign_entries( &raw_mv_, smv );
       mv_->freeSubMultiVector(&smv);
     }
 private:
@@ -112,10 +112,10 @@ VectorSpace<Scalar>::createMemberView( const RTOpPack::MutableSubVectorT<Scalar>
   // Copy initial values in raw_v into vector
   RTOpPack::MutableSubVectorT<Scalar> sv;
   v->getSubVector(Range1D(),&sv);
-  assign_entries( &sv, raw_v );
+  RTOpPack::assign_entries( &sv, raw_v );
   v->commitSubVector(&sv);
   // Setup smart pointer to vector to copy view back out just before vector is destoryed
-  set_extra_data(
+  Teuchos::set_extra_data(
     Teuchos::rcp(new CopyVectorViewBack<Scalar>(&*v,raw_v))
     ,"CopyVectorViewBack"
     ,&v
@@ -137,7 +137,7 @@ VectorSpace<Scalar>::createMemberView( const RTOpPack::SubVectorT<Scalar> &raw_v
   // Copy initial values in raw_v into vector
   RTOpPack::MutableSubVectorT<Scalar> sv;
   v->getSubVector(Range1D(),&sv);
-  assign_entries( &sv, raw_v );
+  RTOpPack::assign_entries( &sv, raw_v );
   v->commitSubVector(&sv);
   return v;
 }
@@ -154,10 +154,10 @@ VectorSpace<Scalar>::createMembersView( const RTOpPack::MutableSubMultiVectorT<S
   // Copy initial values in raw_mv into multi-vector
   RTOpPack::MutableSubMultiVectorT<Scalar> smv;
   mv->getSubMultiVector(Range1D(),Range1D(),&smv);
-  assign_entries( &smv, raw_mv );
+  RTOpPack::assign_entries( &smv, raw_mv );
   mv->commitSubMultiVector(&smv);
   // Setup smart pointer to multi-vector to copy view back out just before multi-vector is destoryed
-  set_extra_data(
+  Teuchos::set_extra_data(
     Teuchos::rcp(new CopyMultiVectorViewBack<Scalar>(&*mv,raw_mv))
     ,"CopyMultiVectorViewBack"
     ,&mv
@@ -179,7 +179,7 @@ VectorSpace<Scalar>::createMembersView( const RTOpPack::SubMultiVectorT<Scalar> 
   // Copy values in raw_mv into multi-vector
   RTOpPack::MutableSubMultiVectorT<Scalar> smv;
   mv->getSubMultiVector(Range1D(),Range1D(),&smv);
-  assign_entries( &smv, raw_mv );
+  RTOpPack::assign_entries( &smv, raw_mv );
   mv->commitSubMultiVector(&smv);
   return mv;
 }

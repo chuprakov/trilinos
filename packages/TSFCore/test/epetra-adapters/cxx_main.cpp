@@ -282,109 +282,109 @@ int main( int argc, char* argv[] ) {
 
 		if(verbose) out << "\n*** (B.1) Testing individual vector/multi-vector RTOps\n";
 
-		assign( &*ev1, 0.0 );
-		assign( &*ev2, scalar );
-		assign( &*nev1, 0.0 );
-		assign( &*nev2, scalar );
-		assign( &*eV1, 0.0 );
-		assign( &*eV2, scalar );
-		assign( &*neV1, 0.0 );
-		assign( &*neV2, scalar );
+		TSFCore::assign( &*ev1, 0.0 );
+		TSFCore::assign( &*ev2, scalar );
+		TSFCore::assign( &*nev1, 0.0 );
+		TSFCore::assign( &*nev2, scalar );
+		TSFCore::assign( &*eV1, 0.0 );
+		TSFCore::assign( &*eV2, scalar );
+		TSFCore::assign( &*neV1, 0.0 );
+		TSFCore::assign( &*neV2, scalar );
 
 		Scalar
-			ev1_nrm = norm_1(*ev1),
-			ev2_nrm = norm_1(*ev2),
-			eV1_nrm = norm_1(*eV1),
-			eV2_nrm = norm_1(*eV2),
-			nev1_nrm = norm_1(*nev1),
-			nev2_nrm = norm_1(*nev2),
-			neV1_nrm = norm_1(*neV1),
-			neV2_nrm = norm_1(*neV2);
+			ev1_nrm = TSFCore::norm_1(*ev1),
+			ev2_nrm = TSFCore::norm_1(*ev2),
+			eV1_nrm = TSFCore::norm_1(*eV1),
+			eV2_nrm = TSFCore::norm_1(*eV2),
+			nev1_nrm = TSFCore::norm_1(*nev1),
+			nev2_nrm = TSFCore::norm_1(*nev2),
+			neV1_nrm = TSFCore::norm_1(*neV1),
+			neV2_nrm = TSFCore::norm_1(*neV2);
 
 		const std::string s1_n = "fabs(scalar)*global_dim";
 		const Scalar s1 = fabs(scalar)*global_dim;
 		
-		if(!testRelErr("norm_1(ev1)",ev1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(ev1)",ev1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nev1 =\n" << *ev1;
-		if(!testRelErr("norm_1(ev2)",ev2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(ev2)",ev2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nev2 =\n" << *ev2;
-		if(!testRelErr("norm_1(nev1)",nev1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(nev1)",nev1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nnev2 =\n" << *ev1;
-		if(!testRelErr("norm_1(nev2)",nev2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(nev2)",nev2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nnev2 =\n" << *nev2;
-		if(!testRelErr("norm_1(eV1)",eV1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(eV1)",eV1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV1 =\n" << *eV1;
-		if(!testRelErr("norm_1(eV2)",eV2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(eV2)",eV2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV2 =\n" << *eV2;
-		if(!testRelErr("norm_1(neV1)",neV1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(neV1)",neV1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV1 =\n" << *neV1;
-		if(!testRelErr("norm_1(neV2)",neV2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(neV2)",neV2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV2 =\n" << *neV2;
 
 		if(verbose) out << "\n*** (B.2) Test RTOps with two or more arguments\n";
 
 		if(verbose) out << "\nPerforming ev1 = ev2 ...\n";
 		timer.start(true);
- 		assign( &*ev1, *ev2 );
+ 		TSFCore::assign( &*ev1, *ev2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(ev1)",norm_1(*ev1),"norm_1(ev2)",ev2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(ev1)",TSFCore::norm_1(*ev1),"TSFCore::norm_1(ev2)",ev2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nev1 =\n" << *ev1;
 
 		if(verbose) out << "\nPerforming eV1 = eV2 ...\n";
 		timer.start(true);
- 		assign( &*eV1, *eV2 );
+ 		TSFCore::assign( &*eV1, *eV2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(eV1)",norm_1(*eV1),"norm_1(eV2)",eV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(eV1)",TSFCore::norm_1(*eV1),"TSFCore::norm_1(eV2)",eV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV1 =\n" << *eV1;
 
 		if(verbose) out << "\nPerforming ev1 = nev2 ...\n";
 		timer.start(true);
- 		assign( &*ev1, *nev2 );
+ 		TSFCore::assign( &*ev1, *nev2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(ev1)",norm_1(*ev1),"norm_1(nev2)",nev2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(ev1)",TSFCore::norm_1(*ev1),"TSFCore::norm_1(nev2)",nev2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nev1 =\n" << *ev1;
 
 		if(verbose) out << "\nPerforming nev1 = ev2 ...\n";
 		timer.start(true);
- 		assign( &*nev1, *ev2 );
+ 		TSFCore::assign( &*nev1, *ev2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(nev1)",norm_1(*nev1),"norm_1(ev2)",ev2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(nev1)",TSFCore::norm_1(*nev1),"TSFCore::norm_1(ev2)",ev2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nnev1 =\n" << *nev1;
 
 		if(verbose) out << "\nPerforming nev1 = nev2 ...\n";
 		timer.start(true);
- 		assign( &*nev1, *nev2 );
+ 		TSFCore::assign( &*nev1, *nev2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(nev1)",norm_1(*nev1),"norm_1(nev2)",nev2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(nev1)",TSFCore::norm_1(*nev1),"TSFCore::norm_1(nev2)",nev2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nnev1 =\n" << *nev1;
 
 		if(verbose) out << "\nPerforming eV1 = neV2 ...\n";
 		timer.start(true);
- 		assign( &*eV1, *neV2 );
+ 		TSFCore::assign( &*eV1, *neV2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(eV1)",norm_1(*eV1),"norm_1(neV2)",neV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(eV1)",TSFCore::norm_1(*eV1),"TSFCore::norm_1(neV2)",neV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV1 =\n" << *eV1;
 
 		if(verbose) out << "\nPerforming neV1 = eV2 ...\n";
 		timer.start(true);
- 		assign( &*neV1, *eV2 );
+ 		TSFCore::assign( &*neV1, *eV2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(neV1)",norm_1(*neV1),"norm_1(eV2)",eV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(neV1)",TSFCore::norm_1(*neV1),"TSFCore::norm_1(eV2)",eV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV1 =\n" << *neV1;
 
 		if(verbose) out << "\nPerforming neV1 = neV2 ...\n";
 		timer.start(true);
- 		assign( &*neV1, *neV2 );
+ 		TSFCore::assign( &*neV1, *neV2 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(neV1)",norm_1(*neV1),"norm_1(neV2)",neV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(neV1)",TSFCore::norm_1(*neV1),"TSFCore::norm_1(neV2)",neV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV1 =\n" << *neV1;
 
 		TSFCore::LinearOpTester<Scalar> linearOpTester(max_rel_warn,max_rel_err);
@@ -422,7 +422,7 @@ int main( int argc, char* argv[] ) {
 		eV1->apply( TRANS, *eV2, &*T );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(eV1'*eV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(eV1'*eV2)",TSFCore::norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV1'*eV2 =\n" << *T;
 
 		if(verbose) out << "\nPerforming neV1'*eV2 ...\n";
@@ -430,7 +430,7 @@ int main( int argc, char* argv[] ) {
 		neV1->apply( TRANS, *eV2, &*T );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(neV1'*eV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(neV1'*eV2)",TSFCore::norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV1'*eV2 =\n" << *T;
 
 		if(verbose) out << "\nPerforming eV1'*neV2 ...\n";
@@ -438,7 +438,7 @@ int main( int argc, char* argv[] ) {
 		eV1->apply( TRANS, *neV2, &*T );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(eV1'*neV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(eV1'*neV2)",TSFCore::norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV1'*neV2 =\n" << *T;
 
 		if(verbose) out << "\nPerforming neV1'*neV2 ...\n";
@@ -446,7 +446,7 @@ int main( int argc, char* argv[] ) {
 		neV1->apply( TRANS, *neV2, &*T );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(neV1'*neV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(neV1'*neV2)",TSFCore::norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV1'*neV2 =\n" << *T;
 
 		if(verbose) out << "\n*** (B.6) Creating a diagonal Epetra_Operator Op\n";
@@ -501,63 +501,63 @@ int main( int argc, char* argv[] ) {
 		Op->apply( NOTRANS, *ev1, &*ey, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(ey)",norm_1(*ey),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(ey)",TSFCore::norm_1(*ey),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming eY = 2*Op*eV1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *eV1, &*eY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(eY)",norm_1(*eY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(eY)",TSFCore::norm_1(*eY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming ney = 2*Op*ev1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *ev1, &*ney, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(ney)",norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(ney)",TSFCore::norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming neY = 2*Op*eV1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *eV1, &*neY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(neY)",norm_1(*neY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(neY)",TSFCore::norm_1(*neY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming ey = 2*Op*nev1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *nev1, &*ey, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(ey)",norm_1(*ey),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(ey)",TSFCore::norm_1(*ey),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming eY = 2*Op*neV1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *neV1, &*eY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(eY)",norm_1(*eY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(eY)",TSFCore::norm_1(*eY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming ney = 2*Op*nev1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *nev1, &*ney, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(ney)",norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(ney)",TSFCore::norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming ney = 2*Op*nev1 through MultiVector interface ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, static_cast<const TSFCore::MultiVector<Scalar>&>(*nev1), static_cast<TSFCore::MultiVector<Scalar>*>(&*ney), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(ney)",norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(ney)",TSFCore::norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming neY = 2*Op*neV1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *neV1, &*neY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(neY)",norm_1(*neY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(neY)",TSFCore::norm_1(*neY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\n*** (B.9) Testing Multi-vector views with Epetra operator\n";
 
@@ -577,42 +577,42 @@ int main( int argc, char* argv[] ) {
 		Op->apply( NOTRANS, *eV1_v1, &*eY->subView(col_rng), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(eY_v1)",norm_1(*eY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(eY_v1)",TSFCore::norm_1(*eY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming eY_v2 = 2*Op*eV1_v2 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *eV1_v2, &*eY->subView(numCols,cols), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(eY_v2)",norm_1(*eY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(eY_v2)",TSFCore::norm_1(*eY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming neY_v1 = 2*Op*eV1_v1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *eV1_v1, &*neY->subView(col_rng), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(neY_v1)",norm_1(*neY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(neY_v1)",TSFCore::norm_1(*neY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming eY_v1 = 2*Op*neV1_v1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *neV1_v1, &*eY->subView(col_rng), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(eY_v1)",norm_1(*eY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(eY_v1)",TSFCore::norm_1(*eY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming neY_v2 = 2*Op*eV1_v2 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *eV1_v2, &*neY->subView(numCols,cols), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(neY_v2)",norm_1(*neY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(neY_v2)",TSFCore::norm_1(*neY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\nPerforming eY_v2 = 2*Op*neV1_v2 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *neV1_v2, &*eY->subView(numCols,cols), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(!testRelErr("norm_1(eY_v2)",norm_1(*eY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+		if(!testRelErr("TSFCore::norm_1(eY_v2)",TSFCore::norm_1(*eY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
 		if(verbose) out << "\n*** (B.10) Testing Vector and MultiVector view creation functions\n";
 
@@ -625,18 +625,18 @@ int main( int argc, char* argv[] ) {
       RTOpPack::MutableSubVectorT<Scalar> t_raw( 0, num_mv_cols, &t_raw_values[0], 1 );
 
       std::fill_n( t_raw_values.begin(), t_raw_values.size(), ST::zero() );
-			assign( &*T->range()->createMemberView(t_raw), scalar );
+			TSFCore::assign( &*T->range()->createMemberView(t_raw), scalar );
       Teuchos::RefCountPtr<const TSFCore::Vector<Scalar> > t_view = T->range()->createMemberView(static_cast<RTOpPack::SubVectorT<Scalar>&>(t_raw));
-      Scalar t_nrm = norm_1(*t_view);
-      if(!testRelErr("norm_1(t_view)",t_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+      Scalar t_nrm = TSFCore::norm_1(*t_view);
+      if(!testRelErr("TSFCore::norm_1(t_view)",t_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
       if(verbose && dumpAll) out << "\nt_view =\n" << *t_view;
 
 #ifndef __sun // The sun compiler Forte Developer 5.4 does not destory temporaries properly and this does not work
       std::fill_n( t_raw_values.begin(), t_raw_values.size(), ST::zero() );
-      assign( &*T->range()->TSFCore::VectorSpace<Scalar>::createMemberView(t_raw), scalar );
+      TSFCore::assign( &*T->range()->TSFCore::VectorSpace<Scalar>::createMemberView(t_raw), scalar );
       t_view = T->range()->TSFCore::VectorSpace<Scalar>::createMemberView(static_cast<RTOpPack::SubVectorT<Scalar>&>(t_raw));
-      t_nrm = norm_1(*t_view);
-      if(!testRelErr("norm_1(t_view)",t_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+      t_nrm = TSFCore::norm_1(*t_view);
+      if(!testRelErr("TSFCore::norm_1(t_view)",t_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
       if(verbose && dumpAll) out << "\nt_view =\n" << *t_view;
 #endif
 
@@ -644,19 +644,19 @@ int main( int argc, char* argv[] ) {
       RTOpPack::MutableSubMultiVectorT<Scalar> T_raw( 0, num_mv_cols, 0, num_mv_cols, &T_raw_values[0], num_mv_cols );
 
       std::fill_n( T_raw_values.begin(), T_raw_values.size(), ST::zero() );
-      assign( &*T->range()->createMembersView(T_raw), scalar );
+      TSFCore::assign( &*T->range()->createMembersView(T_raw), scalar );
       Teuchos::RefCountPtr<const TSFCore::MultiVector<Scalar> >
 				T_view = T->range()->createMembersView(static_cast<RTOpPack::SubMultiVectorT<Scalar>&>(T_raw));
-      Scalar T_nrm = norm_1(*T_view);
-      if(!testRelErr("norm_1(T_view)",T_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+      Scalar T_nrm = TSFCore::norm_1(*T_view);
+      if(!testRelErr("TSFCore::norm_1(T_view)",T_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
       if(verbose && dumpAll) out << "\nT_view =\n" << *T_view;
 
 #ifndef __sun // The sun compiler Forte Developer 5.4 does not destory temporaries properly and this does not work
       std::fill_n( T_raw_values.begin(), T_raw_values.size(), ST::zero() );
-      assign( &*T->range()->TSFCore::VectorSpace<Scalar>::createMembersView(T_raw), scalar );
+      TSFCore::assign( &*T->range()->TSFCore::VectorSpace<Scalar>::createMembersView(T_raw), scalar );
       T_view = T->range()->TSFCore::VectorSpace<Scalar>::createMembersView(static_cast<RTOpPack::SubMultiVectorT<Scalar>&>(T_raw));
-      T_nrm = norm_1(*T_view);
-      if(!testRelErr("norm_1(T_view)",T_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+      T_nrm = TSFCore::norm_1(*T_view);
+      if(!testRelErr("TSFCore::norm_1(T_view)",T_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
       if(verbose && dumpAll) out << "\nT_view =\n" << *T_view;
 #endif
 
@@ -732,7 +732,7 @@ int main( int argc, char* argv[] ) {
 			out << "\nPerforming eV1 = eV2 (using TSFCore::MPIMultiVectorBase::applyOp(...)) " << num_time_loops_1 << " times ...\n";
 		timer.start(true);
 		for(int k = 0; k < num_time_loops_1; ++k ) {
-			assign( &*eV1, *eV2 );
+			TSFCore::assign( &*eV1, *eV2 );
 		}
 		timer.stop();
 		tsfcore_wrapped_time = timer.totalElapsedTime();
@@ -745,7 +745,7 @@ int main( int argc, char* argv[] ) {
 		// applied seperately column by column but the relative
 		// performance should go to about 1.0 when local_dim is
 		// sufficiently large!  However, because
-		// Epetra_MultiVector::Assign(...) is implemented using double
+		// Epetra_MultiVector::TSFCore::Assign(...) is implemented using double
 		// pointer indexing, the RTOp implementation used with the TSFCore
 		// adapters is actually faster in some cases.  However, the extra
 		// overhead of RTOp is much worse for very very small (order 10)

@@ -33,6 +33,7 @@
 #define TSFCORE_LINEAR_OP_HPP
 
 #include "TSFCoreLinearOpDecl.hpp"
+#include "TSFCoreOpBase.hpp"
 #include "TSFCoreMultiVector.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreAssertOp.hpp"
