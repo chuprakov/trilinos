@@ -42,6 +42,7 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 	ETransp                                         opDcDy   = np->opDcDy();                  // Transpose argument for DcDy
 	mmp::ref_count_ptr<Vector<Scalar> >             dy       = np->space_y()->createMember(); // Newton step for y
 	mmp::ref_count_ptr<Vector<Scalar> >             y_new    = np->space_y()->createMember(); // Trial point for y
+	mmp::ref_count_ptr<Vector<Scalar> >             y_temp   = np->space_y()->createMember(); // Trial point for y
 	// Compute the initial starting point
 	np->unsetQuantities(); np->set_c(c.get()); np->set_DcDy(DcDy.get()); // These pointers will be maintained throughout
 	np->calc_DcDy(*y,NULL); np->calc_c(*y,NULL,false);
@@ -124,8 +125,10 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 				,"lineSearchIter = " << lineSearchIter << " > maxLineSearchIter = " << maxLineSearchIter()
 				<< ": Terminating algorithm!" );
 		}
-		// Take the Newton step
-		std::swap<mmp::ref_count_ptr<Vector<Scalar> > >( y_new, y ); // Swap y_new and y
+		// Take the Newton step, swap y_new and y.
+		y_temp = y_new;
+		y_new = y;
+		y = y_temp;
 	}
 	np->unsetQuantities();
 	// Failure!
