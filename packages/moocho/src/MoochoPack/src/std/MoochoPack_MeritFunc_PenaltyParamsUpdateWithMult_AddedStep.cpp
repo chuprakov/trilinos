@@ -146,8 +146,8 @@ bool MeritFunc_PenaltyParamsUpdateWithMult_AddedStep::do_step(Algorithm& _algo
 						out << "\nkkt_error = " << kkt_error << " <= kkt_near_sol = "
 								<< kkt_near_sol_ << std::endl
 							<< "Switching to forcing mu_k >= mu_km1 in the future\n";
-						near_solution_ = true;
 					}
+					near_solution_ = true;
 				}
 			}
 
