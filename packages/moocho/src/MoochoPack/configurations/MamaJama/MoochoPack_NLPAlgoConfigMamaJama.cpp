@@ -241,6 +241,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 	{
 		// set the matrix creator (factory)
+
 		typedef rSQPStateContinuousStorageMatrixWithOpCreator
 			matrix_creator_t;
 		typedef rSQPStateContinuousStorageMatrixWithOpCreatorAggr
@@ -248,22 +249,28 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		typedef rSQPStateContinuousStorageMatrixWithOpCreatorAggr::matrix_iqa_creator_ptr_t
 			matrix_iqa_creator_ptr_t;
 
-		matrix_iqa_creator_ptr_t matrix_iqa_creators[matrix_creator_t::num_MatrixWithOp] =
-		{
-			HL_iq_creator_ptr_.get()																// HL
+		matrix_iqa_creator_ptr_t
+			matrix_iqa_creators[matrix_creator_t::num_MatrixWithOp];
+		matrix_iqa_creators[matrix_creator_t::Q_HL]
+			= HL_iq_creator_ptr_.get()
 				? HL_iq_creator_ptr_
-				: new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>(),
-			Gc_iq_creator_ptr_.get()
+				: new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>();
+		matrix_iqa_creators[matrix_creator_t::Q_Gc]
+			= Gc_iq_creator_ptr_.get()
 				? Gc_iq_creator_ptr_
-				: new IterQuantMatrixWithOpCreatorContinuous<COOMatrixWithPartitionedViewSubclass>(),// Q_Gc
-			new IterQuantMatrixWithOpCreatorContinuous<IdentZeroVertConcatMatrixSubclass>(),		// Q_Y
-			0,																						// Q_Z
-			U_iq_creator_ptr_.get()
+				: new IterQuantMatrixWithOpCreatorContinuous<COOMatrixWithPartitionedViewSubclass>();
+		matrix_iqa_creators[matrix_creator_t::Q_Y]
+			= new IterQuantMatrixWithOpCreatorContinuous<IdentZeroVertConcatMatrixSubclass>();
+		matrix_iqa_creators[matrix_creator_t::Q_Z]
+			= NULL;		// Determine later
+		matrix_iqa_creators[matrix_creator_t::Q_U]
+			= U_iq_creator_ptr_.get()
 				? U_iq_creator_ptr_
-				: new IterQuantMatrixWithOpCreatorContinuous<COOMatrixPartitionViewSubclass>(),		// Q_U
-			new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>(),						// Q_V
-			0																						// Q_rHL
-		};
+				: new IterQuantMatrixWithOpCreatorContinuous<COOMatrixPartitionViewSubclass>();
+		matrix_iqa_creators[matrix_creator_t::Q_V]
+			= new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>();
+		matrix_iqa_creators[matrix_creator_t::Q_rHL]
+			= NULL;		// Determine later
 
 		// Q_Z
 		switch(fact_type_) {
@@ -858,92 +865,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			poss = algo->get_step_poss(CalcLambdaIndep_name);
 			algo->remove_step(poss);
 
-/* VE09 is disabled for now.  Latter I will reintegrate it with what is above.
-
-			// Set the options for VE09 QP solver
-			QPSolverWithBoundsVE09 *qp_solver = new QPSolverWithBoundsVE09;
-			qp_solver->create_ve09_err_mon_files(
-				algo_cntr.journal_output_level() >= PRINT_ALGORITHM_STEPS );
-
-			Algorithm::poss_type poss;
-			poss = algo->get_step_poss( IndepDirec_name );
-			algo->replace_step(
-				poss
-				, new SearchDirecMixedFullReduced_Step(
-					new QPSolverWithBoundsValidateInput(
-						new QPSolverWithBoundsVE09Std(
-							qp_solver
-							, algo.get()
-						)
-					)
-				  )
-			  );
-
-*/
-
-/* This algorithm has been disabled because it did not work (I think).
-			// Here we must remove DepDirec and IndepDirec and replace them with
-			// SearchDirec.  Since the multipliers for the constraints will
-			// also be calculated in the calculation of the full
-			// space search directioin we can remove CalcLambdaIndep.
-			// We also need to replace how the BFGS update is checked since
-			// py is no longer calculated.
-
-			// Replace calculation of search direction
-
-			algo->remove_step( algo->get_step_poss( DepDirec_name ) );
-			algo->remove_step( algo->get_step_poss( IndepDirec_name ) );
-			algo->insert_step(
-				algo->get_step_poss( ReducedHessian_name ) + 1	// after reduced hessian calc.
-				, SearchDirec_name
-				, new SearchDirecMixedFullReduced_Step(
-					new QPSolverWithBoundsValidateInput(
-						new QPSolverWithBoundsVE09Std(
-							new QPSolverWithBoundsVE09
-							, algo.get()
-						)
-					)
-				  )
-			  );
-
-			// Remove the CalcLambdaIndep step
-
-			Algorithm::poss_type poss;
-			poss = algo->get_step_poss( LineSearch_name );
-			algo->remove_assoc_step(
-				poss
-				, GeneralIterationPack::PRE_STEP
-				, algo->get_assoc_step_poss(
-					poss
-					, GeneralIterationPack::PRE_STEP
-					, CalcLambdaIndep_name
-				  )
-			  );
-
-			// Replace Check for skipping BFGS update
-
-			poss = algo->get_step_poss( ReducedHessian_name );
-
-			Algorithm::poss_type assoc_poss;
-			
-			algo->remove_assoc_step(
-				poss
-				, GeneralIterationPack::PRE_STEP
-				, assoc_poss = algo->get_assoc_step_poss(
-					poss
-					, GeneralIterationPack::PRE_STEP
-					, CheckSkipBFGSUpdate_name			  )
-			  );
-
-			algo->insert_assoc_step(
-				poss
-				, GeneralIterationPack::PRE_STEP
-				, assoc_poss
-				, CheckSkipBFGSUpdate_name
-				, new CheckSkipBFGSUpdateNoPy_Step
-			  );
-*/
-
 		}
 	}
 
@@ -1088,10 +1009,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		// That's it man!
 	}
 
-	// Desprite debugging stuff
+// Desprite debugging stuff
 //	assert(algo.get());
 //	TRACE0( "\n*** After algo is configured\n" );
 //	print_state();
+
 }
 
 void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
