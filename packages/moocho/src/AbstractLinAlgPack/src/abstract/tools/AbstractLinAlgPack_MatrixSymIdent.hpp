@@ -41,7 +41,7 @@ public:
 	///
 	void initialize(
 		const VectorSpace::space_ptr_t&          vec_space
-		,const value_type                        scale
+		,const value_type                        scale       = 1.0
 	);
 
 	//@}
