@@ -31,6 +31,7 @@
 #include "SparseLinAlgPack/include/VectorSpaceSerial.h"
 #include "OptionsFromStream.h"
 #include "WorkspacePack.h"
+#include "oblackholestream.h"
 
 int main(int argc, char* argv[] ) {
 
@@ -110,26 +111,12 @@ int main(int argc, char* argv[] ) {
 		in_parallel = (::atoi(argv[5]) == 1);
 
 	// Set the output stream
-	char console_out_name[20];
-	::sprintf( console_out_name, "console.%d.out", proc_rank );
-	std::ofstream console_out(console_out_name);
-	std::ostream // Only send output to the root process!
-		&out  = ( proc_rank == 0 ? std::cout : console_out );
-	std::ostream // Only send output to the root process!
-		&eout = ( proc_rank == 0 ? std::cerr : console_out );
+	std::ostream &out  = std::cout;
+	std::ostream &eout = std::cerr;
+	IOStreamHelperPack::oblackholestream  blackhole;
 
 	try {
 	
-	int w = 15;
-	int prec = 8;
-
-	out
-		<< std::setprecision(prec)
-		<< std::scientific
-		<< "***************************************************\n"
-		<< "*** Running Tests on ExampleNLPFirstOrderDirect ***\n"
-		<< "***************************************************\n";
-
 	// Create the vector space object to use.
 	VectorSpace::space_ptr_t    vec_space;
 
@@ -160,7 +147,12 @@ int main(int argc, char* argv[] ) {
 	const rSQPppSolver::ESolutionStatus
 		solve_return = NLPIP::ExampleNLPFirstOrderDirectRun(
 			*vec_space, xo, has_bounds, dep_bounded
-			,&out,&eout
+			,proc_rank == 0 ? &out  : &blackhole  // console_out
+			,proc_rank == 0 ? &eout : &blackhole  // error_out
+			,proc_rank == 0 ? false : true        // throw_solve_exception
+			,proc_rank == 0 ? NULL  : &blackhole  // algo_out
+			,proc_rank == 0 ? NULL  : &blackhole  // summary_out
+			,proc_rank == 0 ? NULL  : &blackhole  // journal_out
 			);
 
 	switch(solve_return) {
@@ -185,11 +177,11 @@ int main(int argc, char* argv[] ) {
 
 	}	// end try
 	catch(const std::exception& excpt) {
-		out << "\nCaught a std::exception: " << excpt.what() << endl;
+		eout << "\nCaught a std::exception on process " << proc_rank<< ": " << excpt.what() << endl;
 		prog_return = PROG_EXCEPTION;
 	}
 	catch(...) {
-		out << "\nCaught an unknown exception\n";
+		eout << "\nCaught an unknown exception on process " << proc_rank<< "\n";
 		prog_return = PROG_EXCEPTION;
 	}
 
