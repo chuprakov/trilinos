@@ -21,6 +21,7 @@
 #include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
+#include "AbstractLinAlgPack/include/MatrixSymIdentity.h"
 #include "AbstractLinAlgPack/include/PermutationOut.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
@@ -88,7 +89,7 @@ bool EvalNewPointStd_Step::do_step(
 		m  = nlp.m(),
 		mI = nlp.mI();
 	size_type
-		r  = s.decomp_sys().equ_decomp().size();
+		r  = m ? s.decomp_sys().equ_decomp().size() : 0;
 
 	// Get the iteration quantity container objects
 	IterQuantityAccess<index_type>
@@ -104,7 +105,7 @@ bool EvalNewPointStd_Step::do_step(
 	IterQuantityAccess<MatrixWithOp>
 		*Gc_iq  = m  > 0 ? &s.Gc() : NULL,
 		*Gh_iq  = mI > 0 ? &s.Gh() : NULL,
-		*Z_iq   = NULL,
+		*Z_iq   = &s.Z(),
 		*Y_iq   = NULL,
 		*Uz_iq  = NULL,
 		*Uy_iq  = NULL,
@@ -288,6 +289,14 @@ bool EvalNewPointStd_Step::do_step(
 				"the tests of the decomposition system failed!" );
 		}
 	}
+	else {
+		// Unconstrained problem
+		dyn_cast<MatrixSymIdentity>(Z_iq->set_k(0)).initialize( nlp.space_x() );
+		s.var_dep(Range1D::Invalid);
+		s.var_indep(Range1D(1,n));
+		s.equ_decomp(Range1D::Invalid);
+		s.equ_undecomp(Range1D::Invalid);
+	}
 
 	// Calculate the rest of the quantities.  If decomp_sys is a variable
 	// reduction decomposition system object, then nlp will be hip to the
@@ -338,12 +347,13 @@ bool EvalNewPointStd_Step::do_step(
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
-		out << "\nGc_k =\n" << Gc_iq->get_k(0);
-		if(mI)
-			out << "\nGh_k =\n" << Gh_iq->get_k(0);
+		if(m)
+			out << "\nGc_k =\n" << Gc_iq->get_k(0);
 		out << "\nZ_k =\n" << Z_iq->get_k(0);
-		out << "\nY_k =\n" << Y_iq->get_k(0);
-		out << "\nR_k =\n" << R_iq->get_k(0);
+		if(r) {
+			out << "\nY_k =\n" << Y_iq->get_k(0);
+			out << "\nR_k =\n" << R_iq->get_k(0);
+		}
 		if( m > r ) {
 			out << "\nUz_k =\n" << Uz_iq->get_k(0);
 			out << "\nUy_k =\n" << Uy_iq->get_k(0);
@@ -394,47 +404,61 @@ void EvalNewPointStd_Step::print_step(
 {
 	const rSQPAlgo   &algo = rsqp_algo(_algo);
 	const rSQPState  &s    = algo.rsqp_state();
+	const NLP        &nlp  = algo.nlp();
+	const size_type
+		n = nlp.n(),
+		m = nlp.m();
 	out
 		<< L << "*** Evaluate the new point and update the range/null decomposition\n"
 		<< L << "if nlp is not initialized then initialize the nlp\n"
-		<< L << "if x is not updated for any k then set x_k = xinit\n"
-		<< L << "if m > 0 and Gc_k is not updated Gc_k = Gc(x_k) <: space_x|space_c\n"
-		<< L << "if mI > 0 Gh_k is not updated Gh_k = Gh(x_k) <: space_x|space_h\n"
-		<< L << "if m > 0 then\n"
-		<< L << "  For Gc_k = [ Gc_k(:,equ_decomp), Gc_k(:,equ_undecomp) ] where:\n"
-		<< L << "    Gc_k(:,equ_decomp) <: space_x|space_c(equ_decomp) has full column rank r\n"
-		<< L << "  Find:\n"
-		<< L << "    Z_k  <: space_x|space_null    s.t. Gc_k(:,equ_decomp)' * Z_k = 0\n"
-		<< L << "    Y_k  <: space_x|space_range   s.t. [Z_k Y_k] is nonsigular \n"
-		<< L << "    R_k  <: space_c(equ_decomp)|space_range\n"
-		<< L << "                                  s.t. R_k = Gc_k(:,equ_decomp)' * Y_k\n"
-		<< L << "    if m > r : Uz_k <: space_c(equ_undecomp)|space_null\n"
-		<< L << "                                  s.t. Uz_k = Gc_k(:,equ_undecomp)' * Z_k\n"
-		<< L << "    if m > r : Uy_k <: space_c(equ_undecomp)|space_range\n"
-		<< L << "                                  s.t. Uy_k = Gc_k(:,equ_undecomp)' * Y_k\n"
-		<< L << "    if mI > 0 : Vz_k <: space_h|space_null\n"
-		<< L << "                                  s.t. Vz_k = Gh_k' * Z_k\n"
-		<< L << "    if mI > 0 : Vy_k <: space_h|space_range\n"
-		<< L << "                                  s.t. Vy_k = Gh_k' * Y_k\n"
-		<< L << "  begin update decomposition (class \'" << typeid(decomp_sys_handler()).name() << "\')\n"
-		;
-	decomp_sys_handler().print_update_decomposition( algo, s, out, L + "    " );
+		<< L << "if x is not updated for any k then set x_k = xinit\n";
+	if(m) {
+		out
+			<< L << "if m > 0 and Gc_k is not updated Gc_k = Gc(x_k) <: space_x|space_c\n"
+			<< L << "if m > 0 then\n"
+			<< L << "  For Gc_k = [ Gc_k(:,equ_decomp), Gc_k(:,equ_undecomp) ] where:\n"
+			<< L << "    Gc_k(:,equ_decomp) <: space_x|space_c(equ_decomp) has full column rank r\n"
+			<< L << "  Find:\n"
+			<< L << "    Z_k  <: space_x|space_null    s.t. Gc_k(:,equ_decomp)' * Z_k = 0\n"
+			<< L << "    Y_k  <: space_x|space_range   s.t. [Z_k Y_k] is nonsigular \n"
+			<< L << "    R_k  <: space_c(equ_decomp)|space_range\n"
+			<< L << "                                  s.t. R_k = Gc_k(:,equ_decomp)' * Y_k\n"
+			<< L << "    if m > r : Uz_k <: space_c(equ_undecomp)|space_null\n"
+			<< L << "                                  s.t. Uz_k = Gc_k(:,equ_undecomp)' * Z_k\n"
+			<< L << "    if m > r : Uy_k <: space_c(equ_undecomp)|space_range\n"
+			<< L << "                                  s.t. Uy_k = Gc_k(:,equ_undecomp)' * Y_k\n"
+			<< L << "    if mI > 0 : Vz_k <: space_h|space_null\n"
+			<< L << "                                  s.t. Vz_k = Gh_k' * Z_k\n"
+			<< L << "    if mI > 0 : Vy_k <: space_h|space_range\n"
+			<< L << "                                  s.t. Vy_k = Gh_k' * Y_k\n"
+			<< L << "  begin update decomposition (class \'" << typeid(decomp_sys_handler()).name() << "\')\n"
+			;
+		decomp_sys_handler().print_update_decomposition( algo, s, out, L + "    " );
+		out
+			<< L << "  end update decomposition\n"
+			<< L << "  if ( (decomp_sys_testing==DST_TEST)\n"
+			<< L << "    or (decomp_sys_testing==DST_DEFAULT and check_results==true)\n"
+			<< L << "    ) then\n"
+			<< L << "    check properties for Z_k, Y_k, R_k, Uz_k, Uy_k, Vz_k and Vy_k.\n"
+			<< L << "  end\n"
+			;
+	}
+	else {
+		out 
+			<< L << "Z_k = eye(space_x)\n";
+	}
+	if(m) {
+		out
+			<< L << "end\n";
+	}
 	out
-		<< L << "  end update decomposition\n"
-		<< L << "  if ( (decomp_sys_testing==DST_TEST)\n"
-		<< L << "    or (decomp_sys_testing==DST_DEFAULT and check_results==true)\n"
-		<< L << "    ) then\n"
-		<< L << "    check properties for Z_k, Y_k, R_k, Uz_k, Uy_k, Vz_k and Vy_k.\n"
-		<< L << "  end\n"
-		<< L << "end\n"
 		<< L << "Gf_k = Gf(x_k) <: space_x\n"
 		<< L << "if m > 0 and c_k is not updated c_k = c(x_k) <: space_c\n"
-		<< L << "if mI > 0 and h_k is not updated h_k = h(x_k) <: space_h\n"
 		<< L << "if f_k is not updated f_k = f(x_k) <: REAL\n"
 		<< L << "if ( (fd_deriv_testing==FD_TEST)\n"
 		<< L << "  or (fd_deriv_testing==FD_DEFAULT and check_results==true)\n"
 		<< L << "  ) then\n"
-		<< L << "  check Gc_k (if m > 0), Gh_k (if mI > 0) and Gf_k by finite differences.\n"
+		<< L << "  check Gc_k (if m > 0) and Gf_k by finite differences.\n"
 		<< L << "end\n"
 		;
 }

@@ -70,7 +70,8 @@ bool CheckConvergenceStd_Strategy::Converged(
 	const size_type
 		n  = nlp.n(),
 		m  = nlp.m(),
-		mI = nlp.mI();
+		mI = nlp.mI(),
+		nb = nlp.num_bounded_x();
 
 	// Get the iteration quantities
 	IterQuantityAccess<value_type>
@@ -80,6 +81,7 @@ bool CheckConvergenceStd_Strategy::Converged(
 	
 	IterQuantityAccess<VectorWithOpMutable>
 		&x_iq       = s.x(),
+		&d_iq       = s.d(),
 		&Gf_iq      = s.Gf(),
 		*c_iq       = m  ? &s.c() : NULL,
 		*h_iq       = mI ? &s.h() : NULL,
@@ -125,13 +127,13 @@ bool CheckConvergenceStd_Strategy::Converged(
 
 	// comp_err
 	value_type comp_err = 0.0;
-	if (nlp.num_bounded_x() > 0)
+	if (nb > 0)
 		{
 		comp_err = combined_nu_comp_err(nu_iq.get_k(0), x_iq.get_k(0), nlp.xl(), nlp.xu());
 		}
 
-	assert(mI == 0);  // ToDo: add hl <= h(x) <= hu when  mI > 0
-	assert_print_nan_inf( feas_err,"||c_k||inf",true,&out);
+	if(m)
+		assert_print_nan_inf( feas_err,"||c_k||inf",true,&out);
 
 	// scaling factors
 	const value_type 
@@ -152,20 +154,10 @@ bool CheckConvergenceStd_Strategy::Converged(
 
 	// step_err
 	value_type step_err = 0.0;
-	if( s.d().updated_k(0) ) 
+	if( d_iq.updated_k(0) ) 
 		{
-/*
-		const Vector
-			&d = s.d().get_k(0).v(),
-			&x = x_iq.get_k(0).v();
-		Vector::const_iterator
-			d_itr = d.begin(),
-			x_itr = x.begin();
-		while( d_itr != d.end() )
-			step_err = std::_MAX( step_err, ::fabs(*d_itr++)/(1.0+::fabs(*x_itr++)) );
-*/
-		// ToDo: Replace the above with a reduction operator!
-		assert_print_nan_inf( step_err,"max(d(i)/max(1,x(i)),i=1...n)",true,&out);
+			step_err = AbstractLinAlgPack::max_rel_step(x_iq.get_k(0),d_iq.get_k(0));
+			assert_print_nan_inf( step_err,"max(d(i)/max(1,x(i)),i=1...n)",true,&out);
 		}
 
 	const value_type

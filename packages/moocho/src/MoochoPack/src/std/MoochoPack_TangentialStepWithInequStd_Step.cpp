@@ -110,7 +110,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 		&Zpz_iq     = s.Zpz();
 	IterQuantityAccess<MatrixWithOp>
 		&Z_iq   = s.Z(),
-		&Y_iq   = s.Y(),
+		*Y_iq   = m        ? &s.Y()  : NULL,
 		*Uz_iq  = (m > r)  ? &s.Uz() : NULL,
 		*Uy_iq  = (m > r)  ? &s.Uy() : NULL,
 		*Vz_iq  = (mI > 0) ? &s.Vz() : NULL,
@@ -121,7 +121,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 		&act_set_stats_iq = act_set_stats_(s);
 	
 	// Accessed/modified/updated (just some)
-	VectorWithOpMutable  &Ypy_k = Ypy_iq.get_k(0);
+	VectorWithOpMutable  *Ypy_k = (m ? &Ypy_iq.get_k(0) : NULL);
 	const MatrixWithOp   &Z_k   = Z_iq.get_k(0);
 	VectorWithOpMutable  &pz_k  = pz_iq.set_k(0);
 	VectorWithOpMutable  &Zpz_k = Zpz_iq.set_k(0);
@@ -147,11 +147,16 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 		bl = s.space_x().create_member(),
 		bu = s.space_x().create_member();
 
-	// bl = dl_k - Ypy_k
-	V_VmV( bl.get(), dl_iq.get_k(0), Ypy_k );
-
-	// bu = du_k - Ypy_k
-	V_VmV( bu.get(), du_iq.get_k(0), Ypy_k );
+	if(m) {
+		// bl = dl_k - Ypy_k
+		V_VmV( bl.get(), dl_iq.get_k(0), *Ypy_k );
+		// bu = du_k - Ypy_k
+		V_VmV( bu.get(), du_iq.get_k(0), *Ypy_k );
+	}
+	else {
+		*bl = dl_iq.get_k(0);
+		*bu = du_iq.get_k(0);
+	}
 
 	// Print out the QP bounds for the constraints
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
@@ -272,19 +277,20 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 	const MatrixIdentConcat
 		*Zvr = dynamic_cast<const MatrixIdentConcat*>( &Z_k );
 	const Range1D
-		var_dep   = Zvr ? Zvr->D_rng() : Range1D(),
+		var_dep   = Zvr ? Zvr->D_rng() : Range1D::Invalid,
 		var_indep = Zvr ? Zvr->I_rng() : Range1D();
 
-	const value_type Ypy_indep_norm_inf = Ypy_k.sub_view(var_indep)->norm_inf();
+	const value_type Ypy_indep_norm_inf = ( m ? Ypy_k->sub_view(var_indep)->norm_inf() : 0.0);
 
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
 		out
 			<< "\nDetermine if we can use simple bounds on pz ...\n"
+			<< "    m = " << m << std::endl
 			<< "    dynamic_cast<const MatrixIdentConcat*>(&Z_k) = " << Zvr << std::endl
 			<< "    ||Ypy_k(var_indep)||inf = " << Ypy_indep_norm_inf << std::endl;
 
 	const bool
-		use_simple_pz_bounds = ( Zvr != NULL && Ypy_indep_norm_inf == 0.0 );
+		use_simple_pz_bounds = ( m == 0 || ( Zvr != NULL && Ypy_indep_norm_inf == 0.0 ) );
 
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
 		out
@@ -301,19 +307,21 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 		qp_dL = bl->sub_view(var_indep);
 		qp_dU = bu->sub_view(var_indep);
 		qp_nu = nu_k.sub_view(var_indep); // nu_k(var_indep) will be updated directly!
-		// Set general inequality constraints for D*pz
-		qp_E   = mmp::rcp(&Zvr->D(),false);
-		qp_b   = Ypy_k.sub_view(var_dep);
-		qp_eL  = bl->sub_view(var_dep);
-		qp_eU  = bu->sub_view(var_dep);
-		qp_mu  = nu_k.sub_view(var_dep);  // nu_k(var_dep) will be updated directly!
-		qp_Ed  = Zpz_k.sub_view(var_dep); // Zpz_k(var_dep) will be updated directly!
+		if(m) {
+			// Set general inequality constraints for D*pz
+			qp_E   = mmp::rcp(&Zvr->D(),false);
+			qp_b   = Ypy_k->sub_view(var_dep);
+			qp_eL  = bl->sub_view(var_dep);
+			qp_eU  = bu->sub_view(var_dep);
+			qp_mu  = nu_k.sub_view(var_dep);  // nu_k(var_dep) will be updated directly!
+			qp_Ed  = Zpz_k.sub_view(var_dep); // Zpz_k(var_dep) will be updated directly!
+		}
 	}
 	else if( !mI && !use_simple_pz_bounds ) {
 		// There are no simple bounds! (leave qp_dL, qp_dU and qp_nu as null)
 		// Set general inequality constraints for Z*pz
 		qp_E   = mmp::rcp(&Z_k,false);
-		qp_b   = mmp::rcp(&Ypy_k,false);
+		qp_b   = mmp::rcp(Ypy_k,false);
 		qp_eL  = bl;
 		qp_eU  = bu;
 		qp_mu  = mmp::rcp(&nu_k,false);
@@ -451,7 +459,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 			out
 				<< "\n*** Alert! the QP was infeasible (eta = "<<qp_eta<<").  Cutting back Ypy_k = (1.0 - eta)*Ypy_k  ...\n";
 		}
-		Vt_S( &Ypy_k, 1.0 - qp_eta );
+		Vt_S( Ypy_k, 1.0 - qp_eta );
 	}
 
 	// eta_k
@@ -494,7 +502,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 			vec_mut_ptr_t
 				zero  = s.space_x().create_member(0.0),
 				d_tmp = s.space_x().create_member();
-			V_VpV( d_tmp.get(), Ypy_k, Zpz_k );
+			V_VpV( d_tmp.get(), *Ypy_k, Zpz_k );
 			const std::pair<value_type,value_type>
 				u_steps = max_near_feas_step( *zero, *d_tmp, dl_iq.get_k(0), du_iq.get_k(0), 0.0 );
 			const value_type
@@ -581,7 +589,7 @@ return;
 		<< L << "end\n"
 		<< L << "etaL = 0.0\n"
 		<< L << "*** Determine if we can use simple bounds on pz or not\n"
-		<< L << "if Z_k is a variable reduction null space matrix and ||Ypy_k(var_indep)||inf == 0 then\n"
+		<< L << "if m==0 or (Z_k is a variable reduction null space matrix and ||Ypy_k(var_indep)||inf == 0) then\n"
 		<< L << "  use_simple_pz_bounds = true\n"
 		<< L << "else\n"
 		<< L << "  use_simple_pz_bounds = false\n"
@@ -613,8 +621,10 @@ return;
 		<< L << "          [ hu - h_k - Vy_k*py_k ]\n"
 		<< L << "elseif (mI == 0) and (use_simple_pz_bounds == true) then\n"
 		<< L << "  qp_dL = bl(var_indep),  qp_dU = bu(var_indep)\n"
-		<< L << "  qp_E  = Z_k.D,          qp_b  = Ypy_k(var_dep)\n"
-		<< L << "  qp_eL = bl(var_dep),    qp_eU = bu(var_dep)\n"
+		<< L << "  if (m > 0) then\n"
+		<< L << "    qp_E  = Z_k.D,          qp_b  = Ypy_k(var_dep)\n"
+		<< L << "    qp_eL = bl(var_dep),    qp_eU = bu(var_dep)\n"
+		<< L << "  end\n"
 		<< L << "elseif (mI == 0) and (use_simple_pz_bounds == false) then\n"
 		<< L << "  qp_dL = -inf,           qp_dU = +inf\n"
 		<< L << "  qp_E  = Z_k,            qp_b  = Ypy_k\n"

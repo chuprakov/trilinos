@@ -91,6 +91,7 @@
 #include "ReducedSpaceSQPPack/include/std/SetDBoundsStd_AddedStep.h"
 #include "ReducedSpaceSQPPack/include/std/QPFailureReinitReducedHessian_Step.h"
 #include "ReducedSpaceSQPPack/include/std/CalcDFromYPYZPZ_Step.h"
+#include "ReducedSpaceSQPPack/include/std/CalcDFromZPZ_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFailureNewDecompositionSelection_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFilter_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFilter_StepSetOptions.h"
@@ -110,6 +111,7 @@
 #include "ReducedSpaceSQPPack/include/std/CheckConvergenceStd_AddedStep.h"
 #include "ReducedSpaceSQPPack/include/std/CheckConvergenceStd_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/CheckSkipBFGSUpdateStd_StepSetOptions.h"
+#include "ReducedSpaceSQPPack/include/std/MeritFunc_DummyUpdate_Step.h"
 #include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.h"
 //#include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.h"
@@ -276,10 +278,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 	// Make sure that we can handle this type of NLP currently
 	THROW_EXCEPTION(
-		m == 0, std::logic_error
-		,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
-		"can not currently solve an unconstrained NLP!" );
-	THROW_EXCEPTION(
 		n == m, std::logic_error
 		,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
 		"can not currently solve a square system of equations!" );
@@ -429,17 +427,23 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					,nlp.space_x()
 					,nlp.space_c()
 					,nlp.space_h()
-					,( tailored_approach
-					   ? ( nlp_fod->var_dep().size() 
-						   ? nlp.space_x()->sub_space(nlp_fod->var_dep())->clone()
-						   : mmp::null )
-					   : decomp_sys->space_range() // could be NULL for BasisSystemPerm
+					,( m
+					   ? ( tailored_approach
+						   ? ( nlp_fod->var_dep().size() 
+							   ? nlp.space_x()->sub_space(nlp_fod->var_dep())->clone()
+							   : mmp::null )
+						   : decomp_sys->space_range() // could be NULL for BasisSystemPerm
+						   )
+					   : mmp::null
 						)
-					,( tailored_approach
-					   ?( nlp_fod->var_indep().size()
-						  ? nlp.space_x()->sub_space(nlp_fod->var_indep())->clone()
-						  : mmp::null )
-					   : decomp_sys->space_null() // could be NULL for BasisSystemPerm
+					,( m
+					   ? ( tailored_approach
+						   ?( nlp_fod->var_indep().size()
+							  ? nlp.space_x()->sub_space(nlp_fod->var_indep())->clone()
+							  : mmp::null )
+						   : decomp_sys->space_null() // could be NULL for BasisSystemPerm
+						   )
+					   : nlp.space_x()
 						)
 					)
 				);
@@ -1057,6 +1061,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		//
 
 		if( m == 0 && mI == 0 ) {
+
 			if( nb == 0 ) {
 				//
 				// Unconstrained NLP (m == 0, mI == 0, num_bounded_x == 0)
@@ -1065,10 +1070,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					*trase_out 
 						<< "\nConfiguring an algorithm for an unconstrained "
 						<< "NLP (m == 0, mI == 0, num_bounded_x == 0) ...\n";
-				THROW_EXCEPTION(
-					m == 0 && mI == 0 && nb == 0, std::logic_error
-					,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
-					"Unconstrained NLPs are not supported yet!" );
 			}
 			else {
 				//
@@ -1078,11 +1079,93 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					*trase_out 
 						<< "\nConfiguring an algorithm for a simple bound constrained "
 						<< "NLP (m == 0, mI == 0, num_bounded_x > 0) ...\n";
-				THROW_EXCEPTION(
-					m == 0 && mI == 0 && nb == 0, std::logic_error
-					,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
-					"Bound constrained NLPs are not supported yet!" );
 			}
+
+			int step_num       = 0;
+			int assoc_step_num = 0;
+	
+			// EvalNewPoint
+			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
+			
+			// ReducedGradient
+			algo->insert_step( ++step_num, ReducedGradient_name, reduced_gradient_step );
+
+			if( nb == 0 ) {
+				
+				// CalcReducedGradLagrangian
+				algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
+
+				// CheckConvergence
+				algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
+
+			}
+
+			// ReducedHessian
+			algo->insert_step( ++step_num, ReducedHessian_name, reduced_hessian_step );
+
+			// (.-1) Initialize reduced Hessian
+			if(init_red_hess_step.get()) {
+				algo->insert_assoc_step(
+					step_num, GeneralIterationPack::PRE_STEP, 1
+					,"InitFiniteDiffReducedHessian"
+					,init_red_hess_step
+					);
+			}
+			
+			// NullSpaceStep
+			algo->insert_step( ++step_num, NullSpaceStep_name, null_space_step_step );
+			if( mI > 0 || nb > 0 ) {
+				// SetDBoundsStd
+				algo->insert_assoc_step(
+					step_num
+					,GeneralIterationPack::PRE_STEP
+					,1
+					,"SetDBoundsStd"
+					,set_d_bounds_step
+				  );
+			}
+
+			// CalcDFromZPZ
+			algo->insert_step( ++step_num, "CalcDFromZpz", mmp::rcp(new CalcDFromZPZ_Step()) );
+
+			if( nb > 0 ) {
+				
+				// CalcReducedGradLagrangian
+				algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
+
+				// CheckConvergence
+				algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
+
+			}
+
+			// LineSearch
+			if( cov_.line_search_method_ == LINE_SEARCH_NONE ) {
+				algo->insert_step( ++step_num, LineSearch_name, line_search_full_step_step );
+			}
+			else {
+				// Main line search step
+				algo->insert_step( ++step_num, LineSearch_name, line_search_step );
+				// Insert presteps
+				Algorithm::poss_type
+					pre_step_i = 0;
+				// (.-?) LineSearchFullStep
+				algo->insert_assoc_step(
+					step_num
+					,GeneralIterationPack::PRE_STEP
+					,++pre_step_i
+					,"LineSearchFullStep"
+					,line_search_full_step_step
+					);
+				// (.-?) MeritFunc_DummyUpdate
+				algo->insert_assoc_step(
+					step_num
+					,GeneralIterationPack::PRE_STEP
+					,++pre_step_i
+					,"MeritFunc_DummyUpdate"
+					,mmp::rcp(new MeritFunc_DummyUpdate_Step())
+					);
+			}
+			
 		}
 		else if( n == m ) {
 			//

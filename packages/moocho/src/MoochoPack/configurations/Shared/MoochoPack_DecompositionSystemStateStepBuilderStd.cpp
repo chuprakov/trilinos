@@ -33,6 +33,7 @@
 
 // Range/null decomposition
 
+#include "AbstractLinAlgPack/include/MatrixSymIdentity.h"
 #include "ReducedSpaceSQPPack/include/std/DecompositionSystemHandlerVarReductPerm_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/DecompositionSystemHandlerStd_Strategy.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemTester.h"
@@ -212,6 +213,14 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 	namespace mmp = MemMngPack;
 	using mmp::ref_count_ptr;
 
+	const size_type
+		m  = nlp.m();
+
+	if( m == 0 ) {
+		*decomp_sys = mmp::null;
+		return;
+	}
+
 	ref_count_ptr<BasisSystem> basis_sys = mmp::null;
 	if(!tailored_approach) {
 		// Set the default basis system if one is not set
@@ -330,19 +339,12 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 	namespace mmp = MemMngPack;
 	
 	const size_type
-		m  = nlp.m(),
-		mI = nlp.mI();
-
-	THROW_EXCEPTION( // ToDo: Remove this and support mI > 0 in the futrue!
-		mI, std::logic_error
-		,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
-		"general inequaity constraints are not supported yet!" );
+		m  = nlp.m();
 
 	if( tailored_approach ) {
 		// NLPFirstOrderDirect
-		assert( mI == 0 && nlp_fod->con_undecomp().size() == 0 );
-		// ToDo: Add the necessary iteration quantities when mI > 0 and
-		// con_undecomp().size() > 0 are supported!
+		assert( nlp_fod->con_undecomp().size() == 0 );
+		// ToDo: Add the necessary iteration quantities when con_undecomp().size() > 0 is supported!
 	}
 	else {
 		// NLPFirstOrderInfo
@@ -354,17 +356,6 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 						1
 						,Gc_name
 						,nlp_foi->factory_Gc()
-						)
-					)
-				);
-		if(mI)
-			state->set_iter_quant(
-				Gh_name
-				,mmp::rcp(
-					new IterQuantityAccessContiguous<MatrixWithOp>(
-						1
-						,Gh_name
-						,nlp_foi->factory_Gh()
 						)
 					)
 				);
@@ -387,33 +378,90 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 		
 	// Add range/null decomposition matrices
 
-	if(tailored_approach) {
-		// Z
-		state->set_iter_quant(
-			Z_name
-			,mmp::rcp(
-				new IterQuantityAccessContiguous<MatrixWithOp>(
-					1
-					,Z_name
-					,mmp::rcp(new mmp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+	if( m ) {
+		if(tailored_approach) {
+			// Z
+			state->set_iter_quant(
+				Z_name
+				,mmp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Z_name
+						,mmp::rcp(new mmp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+						)
 					)
-				)
-			);
-		// Y
-		state->set_iter_quant(
-			Y_name
-			,mmp::rcp(
-				new IterQuantityAccessContiguous<MatrixWithOp>(
-					1
-					,Y_name
-					,mmp::rcp(new mmp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+				);
+			// Y
+			state->set_iter_quant(
+				Y_name
+				,mmp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Y_name
+						,mmp::rcp(new mmp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+						)
 					)
-				)
-			);
-		// ToDo: Add matrix iq object for Uz
-		// ToDo: Add matrix iq object for Uy
-		// ToDo: Add matrix iq object for Vz
-		// ToDo: Add matrix iq object for Vy
+				);
+			// ToDo: Add matrix iq object for Uz
+			// ToDo: Add matrix iq object for Uy
+		}
+		else {
+			// Z
+			state->set_iter_quant(
+				Z_name
+				,mmp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Z_name
+						,decomp_sys->factory_Z()
+						)
+					)
+				);
+			// Y
+			state->set_iter_quant(
+				Y_name
+				,mmp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Y_name
+						,decomp_sys->factory_Y()
+						)
+					)
+				);
+			// R
+			state->set_iter_quant(
+				R_name
+				,mmp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOpNonsingular>(
+						1
+						,R_name
+						,decomp_sys->factory_R()
+						)
+					)
+				);
+			// Uz
+			state->set_iter_quant(
+				Uz_name
+				,mmp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Uz_name
+						,decomp_sys->factory_Uz()
+						)
+					)
+				);
+			// Uy
+			state->set_iter_quant(
+				Uy_name
+				,mmp::rcp(
+					new IterQuantityAccessContiguous<MatrixWithOp>(
+						1
+						,Uy_name
+						,decomp_sys->factory_Uy()
+						)
+					)
+				);
+		}
 	}
 	else {
 		// Z
@@ -423,78 +471,12 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 				new IterQuantityAccessContiguous<MatrixWithOp>(
 					1
 					,Z_name
-					,decomp_sys->factory_Z()
-					)
-				)
-			);
-		// Y
-		state->set_iter_quant(
-			Y_name
-			,mmp::rcp(
-				new IterQuantityAccessContiguous<MatrixWithOp>(
-					1
-					,Y_name
-					,decomp_sys->factory_Y()
-					)
-				)
-			);
-		// R
-		state->set_iter_quant(
-			R_name
-			,mmp::rcp(
-				new IterQuantityAccessContiguous<MatrixWithOpNonsingular>(
-					1
-					,R_name
-					,decomp_sys->factory_R()
-					)
-				)
-			);
-		// Uz
-		state->set_iter_quant(
-			Uz_name
-			,mmp::rcp(
-				new IterQuantityAccessContiguous<MatrixWithOp>(
-					1
-					,Uz_name
-					,decomp_sys->factory_Uz()
-					)
-				)
-			);
-		// Uy
-		state->set_iter_quant(
-			Uy_name
-			,mmp::rcp(
-				new IterQuantityAccessContiguous<MatrixWithOp>(
-					1
-					,Uy_name
-					,decomp_sys->factory_Uy()
-					)
-				)
-			);
-		// Vz
-		state->set_iter_quant(
-			Vz_name
-			,mmp::rcp(
-				new IterQuantityAccessContiguous<MatrixWithOp>(
-					1
-					,Vz_name
-					,decomp_sys->factory_Vz()
-					)
-				)
-			);
-		// Vy
-		state->set_iter_quant(
-			Vy_name
-			,mmp::rcp(
-				new IterQuantityAccessContiguous<MatrixWithOp>(
-					1
-					,Vy_name
-					,decomp_sys->factory_Vy()
+					,mmp::rcp(new mmp::AbstractFactoryStd<MatrixWithOp,MatrixSymIdentity>())
 					)
 				)
 			);
 	}
-
+	
 }
 
 void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
@@ -515,6 +497,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 	using mmp::ref_count_ptr;
 
 	const size_type
+		m  = nlp.m(),
 		nb = nlp.num_bounded_x();
 
 	typedef ref_count_ptr<DecompositionSystemHandler_Strategy>           decomp_sys_handler_ptr_t;
@@ -548,27 +531,35 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 		options_setter.set_options(*options_);
 	}
 
-	// Decomposition system handler
-	if( nlp_foi ) {
+	if( m ) {
+
+		// Decomposition system handler
+		if( nlp_foi ) {
 #ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-		if( basis_sys_perm_.get() )
-			decomp_sys_handler = decomp_sys_handler_select_new
-				= mmp::rcp( new DecompositionSystemHandlerVarReductPerm_Strategy );
-		else
+			if( basis_sys_perm_.get() )
+				decomp_sys_handler = decomp_sys_handler_select_new
+					= mmp::rcp( new DecompositionSystemHandlerVarReductPerm_Strategy );
+			else
 #endif
-			decomp_sys_handler = mmp::rcp( new DecompositionSystemHandlerStd_Strategy );
-	}
+				decomp_sys_handler = mmp::rcp( new DecompositionSystemHandlerStd_Strategy );
+		}
 	
 #ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-	// NewDecompositionSelectionStd_Strategy
-	if( decomp_sys_handler_select_new.get() ) {
-		*new_decomp_selection_strategy = mmp::rcp(
-			new NewDecompositionSelectionStd_Strategy(decomp_sys_handler_select_new)
-			);
-	}
+		// NewDecompositionSelectionStd_Strategy
+		if( decomp_sys_handler_select_new.get() ) {
+			*new_decomp_selection_strategy = mmp::rcp(
+				new NewDecompositionSelectionStd_Strategy(decomp_sys_handler_select_new)
+				);
+		}
 #else
-	*new_decomp_selection_strategy = mmp::null;
+		*new_decomp_selection_strategy = mmp::null;
 #endif
+
+	}
+	else {
+		decomp_sys_handler             = mmp::null;
+		*new_decomp_selection_strategy = mmp::null;
+	}
 
 	//
 	// EvalNewPoint_Step

@@ -48,6 +48,9 @@ bool LineSearchFullStep_Step::do_step(Algorithm& _algo
 	rSQPState	&s		= algo.rsqp_state();
 	NLP			&nlp	= algo.nlp();
 
+	const size_type
+		m = nlp.m();
+
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
 
@@ -64,9 +67,10 @@ bool LineSearchFullStep_Step::do_step(Algorithm& _algo
 		alpha_iq.set_k(0) = 1.0;
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\nf_k        = " << s.f().get_k(0)
-			<< "\n||c_k||inf = " << s.c().get_k(0).norm_inf()
-			<< "\nalpha_k    = " << alpha_iq.get_k(0) << std::endl;
+		out	<< "\nf_k        = " << s.f().get_k(0);
+		if(m)
+			out << "\n||c_k||inf = " << s.c().get_k(0).norm_inf();
+		out << "\nalpha_k    = " << alpha_iq.get_k(0) << std::endl;
 	}
 
 	// x_kp1 = x_k + d_k
@@ -108,23 +112,25 @@ bool LineSearchFullStep_Step::do_step(Algorithm& _algo
 
 	// Calcuate f and c at the new point.
 	nlp.set_multi_calc(true);
-	nlp.set_c( &s.c().set_k(+1) );
+	if(m) nlp.set_c( &s.c().set_k(+1) );
 	nlp.set_f( &s.f().set_k(+1) );
-	nlp.calc_c( x_kp1 );
-	nlp.calc_f( x_kp1, false );
+	if(m) nlp.calc_c( x_kp1 );
+	nlp.calc_f( x_kp1, m==0 );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\nf_kp1        = " << s.f().get_k(+1)
-			<< "\n||c_kp1||inf = " << s.c().get_k(+1).norm_inf() << std::endl;
+		out	<< "\nf_kp1        = " << s.f().get_k(+1);
+		if(m)
+			out << "\n||c_kp1||inf = " << s.c().get_k(+1).norm_inf() << std::endl;
 	}
 
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+	if( m && static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out << "\nc_kp1 =\n" << s.c().get_k(+1); 
 	}
 
 	if(algo.algo_cntr().check_results()) {
 		assert_print_nan_inf( s.f().get_k(+1), "f(x_kp1)", true, &out );
-		assert_print_nan_inf( s.c().get_k(+1), "c(x_kp1)", true, &out );
+		if(m)
+			assert_print_nan_inf( s.c().get_k(+1), "c(x_kp1)", true, &out );
 	}
 
 	return true;
@@ -140,7 +146,7 @@ void LineSearchFullStep_Step::print_step( const Algorithm& algo
 		<< L << "end\n"
 		<< L << "x_kp1 = x_k + alpha_k * d_k\n"
 		<< L << "f_kp1 = f(x_kp1)\n"
-		<< L << "c_kp1 = c(x_kp1)\n";
+		<< L << "if m > 0 then c_kp1 = c(x_kp1)\n";
 }
 
 } // end namespace ReducedSpaceSQPPack

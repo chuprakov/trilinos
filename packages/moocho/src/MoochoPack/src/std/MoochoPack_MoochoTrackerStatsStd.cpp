@@ -60,8 +60,8 @@ void rSQPTrackStatsStd::initialize()
 
 void rSQPTrackStatsStd::output_iteration(const Algorithm& p_algo) const
 {
-	const rSQPAlgo &algo = rsqp_algo(p_algo);
-	const rSQPState &s =algo.rsqp_state();
+	const rSQPAlgo  &algo = rsqp_algo(p_algo);
+	const rSQPState &s    = algo.rsqp_state();
 
 	// All we have to do here is to just to count the number of quasi-newton updates
 	const QuasiNewtonStats	*quasi_newt_stats =
@@ -84,6 +84,9 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 	const rSQPState          &s       = algo.rsqp_state();
 	const NLPObjGradient     &nlp     = dyn_cast<const NLPObjGradient>(algo.nlp()); 
 	const NLPFirstOrderInfo  *nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
+
+	const size_type
+		m = nlp.m();
 
 	std::ostream& o = this->o();
 
@@ -133,11 +136,11 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 		<< "; # Number of rSQP iterations (plus 1?)\n";
 	// nfunc
 	o << left << setw(stat_w) << "nfunc" << "= "
-		<< right << setw(val_w) << std::_MAX(nlp.num_f_evals(),nlp.num_c_evals())
+		<< right << setw(val_w) << std::_MAX(nlp.num_f_evals(),(m? nlp.num_c_evals():0) )
 		<< "; # max( number f(x) evals, number c(x) evals )\n";
 	// ngrad
 	o << left << setw(stat_w) << "ngrad" << "= "
-		<< right << setw(val_w) << std::_MAX(nlp.num_Gf_evals(),(nlp_foi?nlp_foi->num_Gc_evals():s.k()+1))
+		<< right << setw(val_w) << std::_MAX(nlp.num_Gf_evals(),(m?(nlp_foi?nlp_foi->num_Gc_evals():s.k()+1):0))
 		<< "; # max( number Gf(x) evals, number Gc(x) evals )\n";
 	// CPU
 	o << left << setw(stat_w) << "CPU" << "= "

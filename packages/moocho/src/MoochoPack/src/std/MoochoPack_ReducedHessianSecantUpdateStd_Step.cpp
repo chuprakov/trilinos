@@ -29,10 +29,6 @@
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "dynamic_cast_verbose.h"
 
-namespace LinAlgOpPack {
-	using AbstractLinAlgPack::Vp_StMtV;
-}
-
 ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::ReducedHessianSecantUpdateStd_Step(
 	const secant_update_ptr_t&   secant_update
 	)
@@ -83,9 +79,11 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(
 		&rHL_iq = s.rHL();
 
 	// problem size
+	const NLP &nlp = algo.nlp();
 	const size_type
-		n    = algo.nlp().n(),
-		r    = py_iq.get_k(py_iq.last_updated()).dim(),
+		n    = nlp.n(),
+		m    = nlp.m(),
+		r    = m ? py_iq.get_k(py_iq.last_updated()).dim() : 0,
 		nind = n - r;
 
 	// See if a new basis has been selected

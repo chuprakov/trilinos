@@ -55,7 +55,12 @@ rSQPTrackSummaryStd::get_output_stream() const
 void rSQPTrackSummaryStd::output_iteration(const Algorithm& algo) const
 {
 
-	const rSQPState &s = rsqp_algo(algo).rsqp_state();
+	const rSQPAlgo            &_algo  = rsqp_algo(algo);
+	const rSQPState           &s      =_algo.rsqp_state();
+	const NLP                 &nlp    = _algo.nlp(); 
+
+	const size_type
+		m = nlp.m();
 
 	std::ostream& o = this->o();
 	
@@ -88,7 +93,7 @@ void rSQPTrackSummaryStd::output_iteration(const Algorithm& algo) const
 	// Get the norms of Ypy and Zpz
 	value_type norm_2_Ypy = -1.0, norm_2_Zpz = -1.0;
 	bool Ypy_exists, Zpz_exists;
-	if( Ypy_exists = s.Ypy().updated_k(0) )
+	if( m && ( Ypy_exists = s.Ypy().updated_k(0) ) )
 		norm_2_Ypy = s.Ypy().get_k(0).norm_2();
 	if( Zpz_exists = s.Zpz().updated_k(0) )
 		norm_2_Zpz = s.Zpz().get_k(0).norm_2();
@@ -106,7 +111,7 @@ void rSQPTrackSummaryStd::output_iteration(const Algorithm& algo) const
 	else
 		o << setw(w) << "-";
 
-	if( s.c().updated_k(0) )
+	if( m && s.c().updated_k(0) )
 		o << setw(w)
 			<< s.c().get_k(0).norm_inf();
 	else
@@ -185,7 +190,7 @@ void rSQPTrackSummaryStd::output_iteration(const Algorithm& algo) const
 		<< setw(2) << "-";
 	}
 
-	if(Ypy_exists)
+	if(m && Ypy_exists)
 		o	<< setw(w) << norm_2_Ypy;
 	else
 		o << setw(w) << "-";
@@ -218,6 +223,9 @@ void rSQPTrackSummaryStd::output_final(const Algorithm& algo
 	const rSQPState           &s      =_algo.rsqp_state();
 	const NLPObjGradient      &nlp    = dyn_cast<const NLPObjGradient>(_algo.nlp()); 
 	const NLPFirstOrderInfo  *nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
+
+	const size_type
+		m = nlp.m();
 
 	std::ostream& o = this->o();
 
@@ -270,7 +278,7 @@ void rSQPTrackSummaryStd::output_final(const Algorithm& algo
 	else
 		o << setw(w) << "-";
 
-	if( s.c().updated_k(0) )
+	if( m && s.c().updated_k(0) )
 		o << setw(w)
 			<< s.c().get_k(0).norm_inf();
 	else
@@ -338,7 +346,7 @@ void rSQPTrackSummaryStd::output_final(const Algorithm& algo
 			<< setw(2) << "-";
 	}
 	
-	if(s.Ypy().updated_k(0))
+	if(m && s.Ypy().updated_k(0))
 		o	<< setw(w) 
 			<< s.Ypy().get_k(0).norm_2();
 	else
@@ -356,17 +364,23 @@ void rSQPTrackSummaryStd::output_final(const Algorithm& algo
 	else
 		o << setw(w) << "-";
 	
-	o	<< "\n\nNumber of function evaluations:\n"
+	o	<< "\nNumber of function evaluations:\n"
 		<<     "-------------------------------\n"
 		<< "f(x)  : " << nlp.num_f_evals() << endl
-		<< "c(x)  : " << nlp.num_c_evals() << endl
+		<< "c(x)  : " << ( m ? nlp.num_c_evals() : 0 ) << endl
 		<< "Gf(x) : " << nlp.num_Gf_evals() << endl
 		<< "Gc(x) : ";
-	if( nlp_foi )
-		o << nlp_foi->num_Gc_evals();
-	else
-		o << "?";
+	if(m){
+		if( nlp_foi )
+			o << nlp_foi->num_Gc_evals();
+		else
+			o << "?";
+	}
+	else {
+		o << 0;
+	}
 	o << endl;
+
 }
 
 void rSQPTrackSummaryStd::print_header(const rSQPState &s) const
@@ -379,16 +393,24 @@ void rSQPTrackSummaryStd::print_header(const rSQPState &s) const
 	int w = 15;
 	int prec = 6;
 
+	rSQPState::space_c_ptr_t
+		space_c = s.get_space_c();
+
 	o	<< "\n\n********************************\n"
 		<< "*** Start of rSQP Iterations ***\n"
 		<< "n = " << s.space_x().dim()
-		<< ", m = " << s.space_c().dim()
+		<< ", m = " << ( space_c.get() ? space_c->dim() : 0 )
 		<< ", nz = ";
 	try {
-		if( s.Gc().updated_k(0) )
-			o	<< s.Gc().get_k(0).nz() << endl;
-		else
-			o	<< "?\n";
+		if(space_c.get()) {
+			if( s.Gc().updated_k(0) )
+				o	<< s.Gc().get_k(0).nz() << endl;
+			else
+				o	<< "?\n";
+		}
+		else {
+			o	<< 0 << endl;
+		}
 	}
 	catch( const AlgorithmState::DoesNotExist& ) {
 			o	<< "?\n";
