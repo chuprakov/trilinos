@@ -150,17 +150,8 @@ int main(int argc, void** argv)
 
  // 2) Build a Schur complement factory for getting inv(X) approximation.
 
- // 2 a) Build solver for inv(Ap) so that it corresponds to using CG with ML.
- //      Using same MLop as built for F solver.
- // Can't use aztec for Ap solve yet since my Ap isn't an epetra matrix.
- // azOptions.put(AZ_solver, AZ_cg);
- // azOptions.put(AZ_conv, AZ_r0);
- // azParams.put(AZ_tol, 1e-8);
- // azOptions.put(AZ_max_iter, 250);
- // azOptions.put(AZ_precond, AZ_none);
- // TSFLinearSolver ApSolver = new AZTECSolver(azOptions, azParams, &MLop);
- // TSFLinearSolver ApSolver = new AZTECSolver(azOptions, azParams);
- // TSF's unrestarted GMRES
+ // 2 a) Build solver for inv(Ap) 
+ //      using TSF's GMRES solver
  TSFLinearSolver ApSolver = new GMRESSolver(1e-08, 250, 250);
  ApSolver.setVerbosityLevel(1);
 
@@ -178,32 +169,6 @@ int main(int argc, void** argv)
  //      For a Kay and Loghin preconditioner we need saddleA, Fp, and Ap.
  //      Setting Fp and Ap to identity operators for now. Later will read these in.
 
- // Make an epetra identity matrix so I can try Aztec/ML in our preconditioner Ap solve
- //  PetraMatrix* Ap_petra = new PetraMatrix(pressureSpace, pressureSpace);
- // putting in C since it's the right size
- //  for (int index = 0; index < pressureSpace.dim(); index++)
- //    Ap_petra->setElement(index, index, diag);
-//  double val = 1.0;
-//  for (int index = 0; index < pressureSpace.dim(); index++) 
-//    C->InsertGlobalValues(index,1,&val,&index);
-//  C->TransformToLocal();
-//  cout << "got here" << endl;
-//  Ap_petra->setPetraMatrix(C);    // insert the epetra matrix into our TSF 
-//  TSFLinearOperator Ap_tsf = Ap_petra; 
-//  TSFReal diag = 1.0;
-
-//  Epetra_CrsMatrix *Fp_crs;
-//  ReadPetraMatrix(&p1, &Fp_crs, "FpMatrixFile");
-//  Epetra_CrsMatrix *Ap_crs;
-//  ReadPetraMatrix(&p1, &Ap_crs, "ApMatrixFile");
-
-//  PetraMatrix* Fp_petra = new PetraMatrix(pressureSpace, pressureSpace);
-//  Fp_petra->setPetraMatrix(Fp_crs);    // insert the epetra matrix into our TSF 
-//  TSFLinearOperator Fp_tsf = Fp_petra; // matrix and make it a TSF linear op
-//  PetraMatrix* Ap_petra = new PetraMatrix(pressureSpace, pressureSpace);
-//  Ap_petra->setPetraMatrix(Ap_crs);    // insert the epetra matrix into our TSF 
-//  TSFLinearOperator Ap_tsf = Ap_petra; // matrix and make it a TSF linear op
-
  TSFLinearOperator Fp_tsf = new TSFIdentityOperator(pressureSpace);
  TSFLinearOperator Ap_tsf = new TSFIdentityOperator(pressureSpace);
  TSFOperatorSource opSrc = new KayLoghinRightOperatorSource(saddleA_tsf, Fp_tsf, Ap_tsf);
@@ -211,9 +176,6 @@ int main(int argc, void** argv)
  // 4 b) Create the Kay & Loghin style preconditioner as a TSFLinearOperator
  TSFPreconditioner P = pfac.createPreconditioner(opSrc);
  TSFLinearOperator saddleM_tsf = P.right();
-
-//  TSFVector xtmp = domainBlockSpace.createMember();
-//  TSFVector ytmp = rangeBlockSpace.createMember();
 
 
  // Build a map. This map is intended to go between vbr-style vectors and TSF-style vectors. 
@@ -248,6 +210,7 @@ int main(int argc, void** argv)
  ReadPetraVector(x_epet  , "../data/mac/init_guess");
  ReadPetraVector(rhs_epet, "../data/mac/rhs");
  
+
  // Set up the outer iteration
  
  Epetra_LinearProblem problem(saddleA_epet, x_epet, rhs_epet);
