@@ -197,13 +197,11 @@ value_type ExampleNLPObjGrad::scale_f() const
 void ExampleNLPObjGrad::report_final_solution(
 	const Vector&    x
 	,const Vector*   lambda
-	,const Vector*   lambdaI
 	,const Vector*   nu
-	,bool                  optimal
-	) const
+	,bool            optimal
+	)
 {
 	assert_is_initialized();
-
 	// Do what you want with the solution (or final values) here.
 	// For this example we will just ignore it.
 }

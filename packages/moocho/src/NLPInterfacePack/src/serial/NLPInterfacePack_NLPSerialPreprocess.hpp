@@ -274,7 +274,7 @@ public:
 		,const Vector*   lambda
 		,const Vector*   nu
 		,bool            is_optimal
-		) const;
+		);
 	///
 	virtual size_type ns() const;
 	///
@@ -617,7 +617,7 @@ protected:
 		,const DVectorSlice     *lambdaI_orig
 		,const DVectorSlice     *nu_orig
 		,bool                   optimal
-		) const
+		)
 	{}
 
 	//@}

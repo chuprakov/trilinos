@@ -736,7 +736,7 @@ public:
 		,const Vector*   lambda
 		,const Vector*   nu
 		,bool            is_optimal
-		) const;
+		);
 
 	//@}
 

@@ -193,7 +193,7 @@ void NLP::report_final_solution(
 	,const Vector*   lambda
 	,const Vector*   nu
 	,bool            optimal
-	) const
+	)
 {
 	// The default behavior is just to ignore the solution!
 }

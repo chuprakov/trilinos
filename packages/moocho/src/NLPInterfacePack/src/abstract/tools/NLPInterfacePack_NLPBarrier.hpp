@@ -176,7 +176,7 @@ public:
 	  ,const Vector*   lambda
 	  ,const Vector*   nu
 	  ,bool            is_optimal
-	  ) const
+	  )
 	{ nlp_->report_final_solution(
 	  x, lambda, nu, is_optimal
 	  );

@@ -127,7 +127,7 @@ public:
 	NLPFirstDerivTester(
 		const calc_fd_prod_ptr_t  &calc_fd_prod      = Teuchos::rcp(new CalcFiniteDiffProd())
 		,ETestingMethod           fd_testing_method  = FD_DIRECTIONAL
-		,size_type                num_fd_directions  = 3
+		,size_type                num_fd_directions  = 1
 		,value_type               warning_tol        = 1e-8
 		,value_type               error_tol          = 1e-3
 		);

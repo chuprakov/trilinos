@@ -115,10 +115,9 @@ public:
 	void report_final_solution(
 		const Vector&    x
 		,const Vector*   lambda
-		,const Vector*   lambdaI
 		,const Vector*   nu
-		,bool                  optimal
-		) const;
+		,bool            optimal
+		);
 
 	//@}
 

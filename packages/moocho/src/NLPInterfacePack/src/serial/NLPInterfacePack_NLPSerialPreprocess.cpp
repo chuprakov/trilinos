@@ -385,8 +385,8 @@ void NLPSerialPreprocess::report_final_solution(
 	const Vector&    x
 	,const Vector*   lambda
 	,const Vector*   nu
-	,bool                  is_optimal
-	) const
+	,bool            is_optimal
+	)
 {
 	assert_initialized();
 	// set x_full
