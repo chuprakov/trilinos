@@ -246,7 +246,7 @@ public:
 		,index_type    **col_j
 		);
 	///
-	void finish_construction();
+	void finish_construction( bool test_setup );
 
 	//@}
 

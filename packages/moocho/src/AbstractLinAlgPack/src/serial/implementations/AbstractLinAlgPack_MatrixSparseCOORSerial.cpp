@@ -340,13 +340,28 @@ void MatrixSparseCOORSerial::commit_load_nonzeros_buffers(
 	max_nz_load_    = 0;
 }
 
-void MatrixSparseCOORSerial::finish_construction()
+void MatrixSparseCOORSerial::finish_construction( bool test_setup )
 {
 	THROW_EXCEPTION(
 		reload_val_only_ == true && reload_val_only_nz_last_ != nz_, std::logic_error
 		,"MatrixSparseCOORSerial::finish_construction() : Error, the number of nonzeros on"
 		" the initial load with row and column indexes was = " << reload_val_only_nz_last_ <<
 		" and does not agree with the number of nonzero values = " << nz_ << " loaded this time!" );
+	if( test_setup ) {
+		for( size_type k = 0; k < nz_; ++k ) {
+			const index_type
+				i = row_i_[k],
+				j = col_j_[k];
+			THROW_EXCEPTION(
+				i < 1 || rows_ < i, std::logic_error
+				,"MatrixSparseCOORSerial::finish_construction(true) : Error, "
+				"row_i[" << k << "] = " << i << " is not in the range [1,rows] = [1,"<<rows_<<"]!" );
+			THROW_EXCEPTION(
+				j < 1 || cols_ < j, std::logic_error
+				,"MatrixSparseCOORSerial::finish_construction(true) : Error, "
+				"col_j[" << k << "] = " << j << " is not in the range [1,cols] = [1,"<<cols_<<"]!" );
+		}
+	}
 	space_cols_.initialize(rows_);
 	space_rows_.initialize(cols_);
 }
