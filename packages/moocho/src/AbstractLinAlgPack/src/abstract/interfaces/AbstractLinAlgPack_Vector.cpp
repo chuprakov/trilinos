@@ -21,7 +21,7 @@
 #include "VectorMutable.hpp"
 #include "VectorSubView.hpp"
 #include "RTOpStdOpsLib/src/RTOp_ROp_dot_prod.h"
-#include "RTOpStdOpsLib/src/RTOp_ROp_get_ele.h"
+#include "RTOpStdOpsLib/src/RTOp_ROp_sum.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_norms.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_num_nonzeros.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_get_sub_vector.h"
@@ -34,8 +34,8 @@
 namespace {
 
 // get element operator
-static RTOpPack::RTOpC          get_ele_op;
-static RTOpPack::ReductTarget   get_ele_targ;
+static RTOpPack::RTOpC          sum_op;
+static RTOpPack::ReductTarget   sum_targ;
 // number nonzros
 static RTOpPack::RTOpC          num_nonzeros_op;
 static RTOpPack::ReductTarget   num_nonzeros_targ;
@@ -59,9 +59,9 @@ class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
 		// Operator and target for getting a vector element
-		if(0>RTOp_ROp_get_ele_construct( 0, &get_ele_op.op() ))
+		if(0>RTOp_ROp_sum_construct( &sum_op.op() ))
 			assert(0);
-		get_ele_op.reduct_obj_create(&get_ele_targ);
+		sum_op.reduct_obj_create(&sum_targ);
 		// Operator and target for norm 1
 		if(0>RTOp_ROp_num_nonzeros_construct(&num_nonzeros_op.op() ))
 			assert(0);
@@ -137,14 +137,13 @@ VectorMutable::vec_mut_ptr_t Vector::clone() const
 }
 
 value_type Vector::get_ele(index_type i) const {
-	assert(0==RTOp_ROp_get_ele_set_i( i, &get_ele_op.op() ));
-	get_ele_targ.reinit();
+	sum_targ.reinit();
 	const Vector *vecs[1] = { this };
 	AbstractLinAlgPack::apply_op(
-		get_ele_op,1,vecs,0,NULL,get_ele_targ.obj()
-		,i,1,i-1 // first_ele, sub_dim, global_offset
+		sum_op,1,vecs,0,NULL,sum_targ.obj()
+		,i,1,0 // first_ele, sub_dim, global_offset
 		);
-	return RTOp_ROp_get_ele_val(get_ele_targ.obj());
+	return RTOp_ROp_sum_val(sum_targ.obj());
 }
 
 value_type Vector::norm_1() const {

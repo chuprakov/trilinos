@@ -19,7 +19,6 @@
 #include "RTOpStdOpsLib/src/RTOp_TOp_assign_scalar.h"
 #include "RTOpStdOpsLib/src/RTOp_TOp_assign_vectors.h"
 #include "RTOpStdOpsLib/src/RTOp_TOp_axpy.h"
-#include "RTOpStdOpsLib/src/RTOp_TOp_set_ele.h"
 #include "RTOpStdOpsLib/src/RTOp_TOp_set_sub_vector.h"
 #include "RTOpPack/src/RTOpCppC.hpp"
 #include "Range1D.hpp"
@@ -47,9 +46,6 @@ public:
 			assert(0);
 		// Vector assignment operator
 		if(0>RTOp_TOp_assign_vectors_construct( &assign_vec_op.op() ))
-			assert(0);
-		// Set element operator
-		if(0>RTOp_TOp_set_ele_construct( 0, 0.0, &set_ele_op.op() ))
 			assert(0);
 		// Set sub-vector operator
 		RTOp_SparseSubVector spc_sub_vec;
@@ -98,12 +94,12 @@ VectorMutable& VectorMutable::operator=(const VectorMutable& vec)
 
 void VectorMutable::set_ele( index_type i, value_type alpha )
 {
-	if(0!=RTOp_TOp_set_ele_set_i_alpha( i, alpha, &set_ele_op.op() ))
+	if(0!=RTOp_TOp_assign_scalar_set_alpha( alpha, &assign_scalar_op.op() ))
 		assert(0);
 	VectorMutable* targ_vecs[1] = { this };
 	AbstractLinAlgPack::apply_op(
-		set_ele_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL
-		,i,1,i-1 // first_ele, sub_dim, global_offset
+		assign_scalar_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL
+		,i,1,0 // first_ele, sub_dim, global_offset
 		);
 }
 
