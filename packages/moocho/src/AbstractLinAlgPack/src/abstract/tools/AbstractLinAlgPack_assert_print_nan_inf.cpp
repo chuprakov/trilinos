@@ -33,15 +33,9 @@ static RTOpPack::ReductTarget   find_nan_inf_targ;
 class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
-		// Operator and target obj for find_nan_inf
-		if(0!=RTOp_ROp_find_nan_inf_construct(&find_nan_inf_op.op() ))
+		if(0>RTOp_ROp_find_nan_inf_construct(&find_nan_inf_op.op() ))
 			assert(0);
 		find_nan_inf_op.reduct_obj_create(&find_nan_inf_targ);
-		if(0!=RTOp_Server_add_op_name_vtbl(
-			   RTOp_ROp_find_nan_inf_name
-			   ,&RTOp_ROp_find_nan_inf_vtbl
-			   ))
-			assert(0);
 	}
 }; 
 
