@@ -70,8 +70,7 @@ Every vector is a member of a vector space.  Vector spaces are represented in so
 as objects with their own abstract interface.  For <tt>VectorBaseMutable</tt>, the
 vector space is represented through the base interface <tt>\ref AbstractLinAlgPack::VectorSpaceBase "VectorSpaceBase"</tt>.
 In software terms, a vector space object primarily acts as an "Abstract Factory" [Design Patterns,
-Gamma, et. al., 1995] and derives from the base interface
-<tt>\ref AbstractFactoryPack::AbstractFactory "AbstractFactory<...>"</tt>.  In addition to acting as abstact
+Gamma, et. al., 1995].  In addition to acting as abstact
 factories, vector space objects are also responsible for determining the compatibility
 of vector objects and are useful in debugging an application.
 
@@ -90,7 +89,9 @@ The vector and vector space interfaces <tt>\ref AbstractLinAlgPack::VectorWithOp
 <tt>\ref AbstractLinAlgPack::VectorSpace "VectorSpace"</tt> have been defined
 for finite dimensional coordinate vectors.  These interfaces parallel <tt>VectorBase</tt>,
 <tt>VectorBaseMutable</tt> and <tt>VectorSpaceBase</tt> respectively and are derived from them
-(since they represent a specializations).
+(since they represent a specializations).  For practical reasons, the <tt>VectorSpace</tt>
+interface derives also from the base interface
+<tt>\ref AbstractFactoryPack::AbstractFactory "AbstractFactory<VectorWithOpMutable>"</tt>.
 
 These finite dimensional coordinate vectors and vector spaces admit a finite dimension
 (i.e. <tt>\ref AbstractLinAlgPack::VectorSpace::dim "VectorSpace::dim()"</tt>) and allow access to
@@ -105,7 +106,7 @@ way to represent and implement vector reduction and transformation operations th
 (i.e. numerical application developer) in charge while still allowing efficient implementation
 in a variety of environments.
 
-The solution to this problem taken by these vector interfaces is to adopt a <A HREF="../../RTOpPack/html/index.html">
+The solution to this problem which has been embraced by these vector interfaces is to adopt a <A HREF="../../RTOpPack/html/index.html">
 specification for user defined vector reduction/transformation operators </A>.  This design is based on
 the "Visitor" design pattern.  A detailed (but slightly out of date) discussion of the underlying design concepts for
 this idea can be found at http://dynopt.cheme.cmu.edu/roscoe/RTOp/doc/RTOp.ps .  These vector interfaces accept 
@@ -135,9 +136,43 @@ to most other abstract vector interfaces that require between 20-50 pure virtual
 (e.g. 26 methods in <A HREF="http://www.cs.sandia.gov/~mheroux/Trilinos/doc/tsf/doc/html/class_tsf__multivector.html">TSF</A>
 and 56 methods in <A HREF="http://www.trip.caam.rice.edu/txt/hcldoc/html/HCL_Vector_d.html">HCL</A>).
 
-<li> Matrix interfaces
+<li> Matrix interfaces:
 
-ToDo: Discuss Matrix interfaces!
+ToDo: Discuss operator base interfaces.
+
+The base class for finite dimensional, coordinate based matrices is <tt>\ref AbstractLinAlgPack::MatrixBase "MatrixBase"</tt>.
+This base interface contains only dimensionality information for a matrix.  The derived interface
+<tt>\ref AbstractLinAlgPack::MatrixWithOp "MatrixWithOp"</tt> contains a whole slew of methods for performing standard
+BLAS-like linear algebra operations with a general, possibly rectangular, possibly rank deficient matrix.  Nearly any abstraction
+that can be though of as a matrix should be able to implement this interface.  A matrix object primarily acts as an operator that
+transforms (linearly) vectors from one vector space to another.
+<tt>\ref AbstractLinAlgPack::MatrixWithOpNonsingular "MatrixWithOpNonsingular"</tt> is a specialization of <tt>MatrixWithOp</tt>
+for matrices that are square and nonsingular.  This interface adds methods for solving for linear systems involving the matrix.
+While these matrix interfaces meet most of the needs of a numerical algorithm, there are some types of methods that can only
+by implemented by a symmetric matrix.  For example, the operations like <tt>C = b*C + B'*A*B</tt> and <tt>C = b*C + B'*inv(A)*B</tt>
+are only guaranteed to preserve the symmetry of the lhs matrix \a C if the matrix \a A is also symmetric.  To handle these types
+of specialized operations, symmetric matrix interface <tt>\ref AbstractLinAlgPack::MatrixSymWithOp "MatrixSymWithOp"</tt> and
+<tt>\ref AbstractLinAlgPack::MatrixSymWithOpNonsingular "MatrixSymWithOpNonsingular"</tt> are also included.  This design makes
+use of multiple inheritance so that all of the logical relationships between matrix types is preserved in the code.  For example,
+a nonsingular symmetric matrix satisfies all of the minimum properties of an unsymmetric nonsingular matrix, so it derived from
+the <tt>MatrixWithOpNonsingular</tt> interface as well as from the <tt>MatrixSymWithOp</tt> interface.  This is an example
+of where multiple inheritance is needed accuratly model the application domain.
+
+A very specialized type of matrix implementation is one where the rows and/or columns and/or diagonals of a matrix can be
+individualy accessed as a client.  To support these types of matrices in an abstract manner, the interfaces
+<tt>\ref AbstractLinAlgPack::MultiVector "MultiVector"</tt> and <tt>\ref AbstractLinAlgPack::MultiVectorMutable "MultiVectorMutable"</tt>
+are defined.  Since a multi-vector satisfies all of the properties of a matrix, it supports the <tt>MatrixWithOp</tt> interface.
+Multi-vectors are so critical to the optimal performance of many applications that it is required that every
+<tt>\ref AbstractLinAlgPack::VectorSpace "VectorSpace"</tt> object is required to be able to create multi-vector objects
+in addition to vector objects.
+
+The <tt>MatrixWithOp</tt> interface assumes that
+matrix-vector multiplication with the original matrix <tt>y = M*x</tt> and its transpose <tt>y = M'*x</tt> can both be performed.
+The basic assumption that the untransposed and transposed operator are both allowed somewhat limits the types of <tt>MatrixWithOp</tt>
+subclasses that can be correctly and efficiently implemented.  Unlike other interfaces that encourage developers to selectively
+disallow implementations of certain operations, these interfaces assume almost universally that every published method must have
+a correct implementation in the subclass.  There are some race cases where a subclass may refuse to implement a method but in
+general this is not allowed. 
 
 <li> Miscellaneous vector operations.
 
