@@ -42,7 +42,7 @@ DecompositionSystemCoordinate::DecompositionSystemCoordinate(
 	,EExplicitImplicit                 Uz_imp
 	,EExplicitImplicit                 Vz_imp
 	)
-	:DecompositionSystemVarReduct(
+	:DecompositionSystemVarReductImp(
 		space_x, space_c, space_h, basis_sys, basis_sys_tester
 		,D_imp,Uz_imp,Vz_imp )
 {}
@@ -82,7 +82,7 @@ DecompositionSystemCoordinate::factory_Vy() const
 		);
 }
 
-// Overridden from DecompositionSystemVarReduct
+// Overridden from DecompositionSystemVarReductImp
 
 DecompositionSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
 DecompositionSystemCoordinate::uninitialize_matrices(
@@ -122,7 +122,7 @@ DecompositionSystemCoordinate::uninitialize_matrices(
 	// not owned.  This matrix object (if R != NULL) will get updated
 	// by the basis_sys object as C in the method
 	// 
-	//     DecompositionSystemVarReduct::update_decomp(...)
+	//     DecompositionSystemVarReductImp::update_decomp(...)
 	//
 
 	return rcp::rcp(R,false);

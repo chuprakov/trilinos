@@ -74,6 +74,9 @@ class VarReductOrthogDenseStd_Strategy;
 
 class DecompositionSystem;
 class DecompositionSystemVarReduct;
+class DecompositionSystemVarReductPerm;
+class DecompositionSystemVarReductPermStd;
+class DecompositionSystemVarReductImp;
 class DecompositionSystemCoordinate;
 class DecompositionSystemOrthogonal;
 class DecompositionSystemTester;

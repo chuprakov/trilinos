@@ -16,7 +16,7 @@
 #ifndef DECOMPOSITION_SYSTEM_COORDINATE_H
 #define DECOMPOSITION_SYSTEM_COORDINATE_H
 
-#include "DecompositionSystemVarReduct.h"
+#include "DecompositionSystemVarReductImp.h"
 #include "StandardCompositionMacros.h"
 
 namespace ConstrainedOptimizationPack {
@@ -44,7 +44,7 @@ namespace ConstrainedOptimizationPack {
  *
  * For now the copy constructor and the assignment operator are not defined.
  */
-class DecompositionSystemCoordinate : public DecompositionSystemVarReduct {
+class DecompositionSystemCoordinate : public DecompositionSystemVarReductImp {
 public:
 
 	/** @name Constructors / initializers */
@@ -80,7 +80,7 @@ public:
 
 protected:
 
-	/** @name Overridden from DecompositionSystemVarReduct */
+	/** @name Overridden from DecompositionSystemVarReductImp */
 	//@{
 
 	///

@@ -41,7 +41,7 @@ DecompositionSystemOrthogonal::DecompositionSystemOrthogonal(
 	,EExplicitImplicit                       Uz_imp
 	,EExplicitImplicit                       Vz_imp
 	)
-	:DecompositionSystemVarReduct(
+	:DecompositionSystemVarReductImp(
 		space_x, space_c, space_h, basis_sys, basis_sys_tester
 		,D_imp,Uz_imp,Vz_imp )
 	 ,var_reduct_orthog_strategy_(var_reduct_orthog_strategy)
@@ -81,7 +81,7 @@ DecompositionSystemOrthogonal::factory_Vy() const
 	return MemMngPack::null;
 }
 
-// Overridden from DecompositionSystemVarReduct
+// Overridden from DecompositionSystemVarReductImp
 
 DecompositionSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
 DecompositionSystemOrthogonal::uninitialize_matrices(

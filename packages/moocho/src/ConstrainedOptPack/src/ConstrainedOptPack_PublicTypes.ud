@@ -49,6 +49,9 @@ using ConstrainedOptimizationPack::VarReductOrthogDenseStd_Strategy;
 
 using ConstrainedOptimizationPack::DecompositionSystem;
 using ConstrainedOptimizationPack::DecompositionSystemVarReduct;
+using ConstrainedOptimizationPack::DecompositionSystemVarReductPerm;
+using ConstrainedOptimizationPack::DecompositionSystemVarReductPermStd;
+using ConstrainedOptimizationPack::DecompositionSystemVarReductImp;
 using ConstrainedOptimizationPack::DecompositionSystemCoordinate;
 using ConstrainedOptimizationPack::DecompositionSystemOrthogonal;
 using ConstrainedOptimizationPack::DecompositionSystemTester;
