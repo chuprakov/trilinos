@@ -44,6 +44,7 @@ bool NLPTester::test_interface(
 	)
 {
 	using TestingHelperPack::update_success;
+	using AbstractLinAlgPack::assert_print_nan_inf;
 
 	bool result;
 	bool success = true;

@@ -451,6 +451,8 @@ public:
 	//@{
 
 	///
+	int                             num_vectors() const;
+	///
 	vector_list_t::iterator         vectors_begin();
 	///
 	vector_list_t::iterator         vectors_end();
@@ -458,6 +460,8 @@ public:
 	vector_list_t::const_iterator   vectors_begin() const;
 	///
 	vector_list_t::const_iterator   vectors_end() const;
+	///
+	int                             num_matrices() const;
 	///
 	matrix_list_t::iterator         matrices_begin();
 	///

@@ -29,17 +29,17 @@ static int explnlp2_c_eval_apply_op(
 	, RTOp_ReductTarget targ_obj )
 {
 	// c
-	const size_t           sub_dim;
+	size_t                 sub_dim;
 	RTOp_value_type        *c_val;
-	const ptrdiff_t        c_val_s;
+	ptrdiff_t              c_val_s;
 	// xD
 	const RTOp_value_type  *xD_val;
-	const ptrdiff_t        xD_val_s;
+	ptrdiff_t              xD_val_s;
 	// xI
 	const RTOp_value_type  *xI_val;
-	const ptrdiff_t        xI_val_s;
+	ptrdiff_t              xI_val_s;
 
-	register size_t k;
+	register RTOp_index_type  k;
 
 	//
 	// Validate the input
@@ -122,26 +122,26 @@ static int explnlp2_calc_py_D_apply_op(
 	, const int num_targ_vecs, const struct RTOp_MutableSubVector targ_vecs[]
 	, RTOp_ReductTarget targ_obj )
 {
-	const size_t           sub_dim;
+	size_t                 sub_dim;
 	// xD
 	const RTOp_value_type  *xD_val;
-	const ptrdiff_t        xD_val_s;
+	ptrdiff_t              xD_val_s;
 	// xI
 	const RTOp_value_type  *xI_val;
-	const ptrdiff_t        xI_val_s;
+	ptrdiff_t              xI_val_s;
 	// c
 	const RTOp_value_type  *c_val;
-	const ptrdiff_t        c_val_s;
+	ptrdiff_t              c_val_s;
 	// d
 	RTOp_value_type        *d_val;
-	const ptrdiff_t        d_val_s;
+	ptrdiff_t              d_val_s;
 	// py
 	RTOp_value_type        *py_val;
-	const ptrdiff_t        py_val_s;
+	ptrdiff_t              py_val_s;
 
-	register size_t k;
-	int all_unit_stride = 0;
-	RTOp_value_type denom;
+	register RTOp_index_type  k;
+	int                       all_unit_stride = 0;
+	RTOp_value_type           denom;
 
 	// task
 	int task;

@@ -119,7 +119,7 @@ public:
 	///
 	typedef const element_type*								const_iterator;
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) || defined(_INTEL_CXX)
 
 	typedef std::reverse_iterator<iterator, element_type
 		, element_type&, element_type*, difference_type>	reverse_iterator;
@@ -562,7 +562,7 @@ public:
 	///
 	typedef const element_type*								const_iterator;
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS) || defined(_INTEL_CXX)
 
 	typedef std::reverse_iterator<iterator, element_type
 		, element_type&, element_type*, difference_type>	reverse_iterator;

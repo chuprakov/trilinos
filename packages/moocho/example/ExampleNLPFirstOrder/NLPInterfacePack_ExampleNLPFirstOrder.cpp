@@ -91,6 +91,7 @@ void ExampleNLPFirstOrderInfo::imp_calc_Gc(
 	namespace rcp = ReferenceCountingPack;
 	namespace rmp = ResourceManagementPack;
 	using DynamicCastHelperPack::dyn_cast;
+	using AbstractLinAlgPack::Vp_S; // Should not have to do this!
 
 	const index_type
 		n = this->n(),
@@ -104,7 +105,7 @@ void ExampleNLPFirstOrderInfo::imp_calc_Gc(
 	//
 	// Initialize Gc with C and N matrices this has not already been done.
 	//
-	if( Gc_comp.rows() != n || Gc_comp.cols() != m || Gc_comp.matrices_begin() == Gc_comp.matrices_end() ) {
+	if( Gc_comp.rows() != n || Gc_comp.cols() != m || Gc_comp.num_matrices() != 2 ) {
 		Gc_comp.reinitalize(n,m);
 		// Gc = [ C'; N' ]
 		VectorSpace::space_ptr_t

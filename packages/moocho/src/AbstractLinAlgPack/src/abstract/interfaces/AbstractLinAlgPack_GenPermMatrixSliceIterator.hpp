@@ -133,7 +133,7 @@ void swap( row_col_value_type<T>& v1, row_col_value_type<T>& v2 )
   */
 template< class T >
 class row_col_iterator
-#if defined(_WINDOWS) || defined(_PG_CXX) 
+#if defined(_WINDOWS) || defined(_INTEL_CXX) || defined(_PG_CXX) 
 	: public std::iterator< std::random_access_iterator_tag, external_row_col_value_type<T>, ptrdiff_t >
 #endif
 {

@@ -120,9 +120,9 @@ int main(int argc, char* argv[] ) {
 	out
 		<< std::setprecision(prec)
 		<< std::scientific
-		<< "********************************************************\n"
-		<< "*** Running Tests on Example First Order Dirrect NLP ***\n"
-		<< "********************************************************\n";
+		<< "************************************************************************\n"
+		<< "*** Running Driver Program for Tests on Example First Order Info NLP ***\n"
+		<< "************************************************************************\n";
 
 	// Create the vector space object to use.
 	VectorSpace::space_ptr_t    vec_space;

@@ -549,6 +549,11 @@ void MatrixCompositeStd::finish_construction(
 
 // Member access
 
+int MatrixCompositeStd::num_vectors() const
+{
+	return vector_list_.size();
+}
+
 MatrixCompositeStd::vector_list_t::iterator
 MatrixCompositeStd::vectors_begin()
 {
@@ -571,6 +576,11 @@ MatrixCompositeStd::vector_list_t::const_iterator
 MatrixCompositeStd::vectors_end() const
 {
 	return vector_list_.end();
+}
+
+int MatrixCompositeStd::num_matrices() const
+{
+	return matrix_list_.size();
 }
 
 MatrixCompositeStd::matrix_list_t::iterator
