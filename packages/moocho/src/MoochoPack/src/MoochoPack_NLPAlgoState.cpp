@@ -40,8 +40,10 @@ const std::string ReducedSpaceSQPPack::Gh_name				= "Gh";
 const std::string ReducedSpaceSQPPack::Y_name				= "Y";
 const std::string ReducedSpaceSQPPack::Z_name				= "Z";
 const std::string ReducedSpaceSQPPack::R_name				= "R";
-const std::string ReducedSpaceSQPPack::U_name				= "U";
-const std::string ReducedSpaceSQPPack::V_name				= "V";
+const std::string ReducedSpaceSQPPack::Uy_name				= "Uy";
+const std::string ReducedSpaceSQPPack::Uz_name				= "Uz";
+const std::string ReducedSpaceSQPPack::Vy_name				= "Vy";
+const std::string ReducedSpaceSQPPack::Vz_name				= "Vz";
 // Search Direction Info
 const std::string ReducedSpaceSQPPack::py_name				= "py";
 const std::string ReducedSpaceSQPPack::Ypy_name				= "Ypy";
@@ -107,8 +109,10 @@ RSQP_STATE_IQ_DEF(        rSQPState, MatrixWithOp,    Gh,        Gh_name        
 RSQP_STATE_IQ_DEF(        rSQPState, MatrixWithOp,            Y,  Y_name                  )
 RSQP_STATE_IQ_DEF(        rSQPState, MatrixWithOp,            Z,  Z_name                  )
 RSQP_STATE_IQ_DEF(        rSQPState, MatrixWithOpNonsingular, R,  R_name                  )
-RSQP_STATE_IQ_DEF(        rSQPState, MatrixWithOp,            U,  U_name                  )
-RSQP_STATE_IQ_DEF(        rSQPState, MatrixWithOp,            V,  V_name                  )
+RSQP_STATE_IQ_DEF(        rSQPState, MatrixWithOp,            Uy, Uy_name                 )
+RSQP_STATE_IQ_DEF(        rSQPState, MatrixWithOp,            Uz, Uz_name                 )
+RSQP_STATE_IQ_DEF(        rSQPState, MatrixWithOp,            Vy, Vy_name                 )
+RSQP_STATE_IQ_DEF(        rSQPState, MatrixWithOp,            Vz, Vz_name                 )
 
 // Search Direction Info
 

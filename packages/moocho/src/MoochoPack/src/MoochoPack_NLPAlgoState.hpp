@@ -26,6 +26,7 @@
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
 //#include "LinAlgPack/include/IVector.h"
 #include "StandardCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
 #include "Range1D.h"
 
 namespace ReducedSpaceSQPPack {
@@ -51,8 +52,10 @@ extern const std::string Gh_name;
 extern const std::string Y_name;
 extern const std::string Z_name;
 extern const std::string R_name;
-extern const std::string U_name;
-extern const std::string V_name;
+extern const std::string Uy_name;
+extern const std::string Uz_name;
+extern const std::string Vy_name;
+extern const std::string Vz_name;
 // Search Direction Info
 extern const std::string py_name;
 extern const std::string Ypy_name;
@@ -340,10 +343,14 @@ public:
 	RSQP_STATE_IQ_DECL(MatrixWithOp,Z)
 	/// R:  Represents the nonsingular matrix Gc(con_decomp)' * Y ( r x r )
 	RSQP_STATE_IQ_DECL(MatrixWithOpNonsingular,R)
-	/// U:  Represents Gc(con_undecomp)' * Y ( (m-r) x r )
-	RSQP_STATE_IQ_DECL(MatrixWithOp,U)
-	/// V:  Represents Gc(con_undecomp)' * Z ( (m-r) x (m-r) )
-	RSQP_STATE_IQ_DECL(MatrixWithOp,V)
+	/// Uy:  Represents Gc(con_undecomp)' * Y ( (m-r) x r )
+	RSQP_STATE_IQ_DECL(MatrixWithOp,Uy)
+	/// Uz:  Represents Gc(con_undecomp)' * Z ( (m-r) x (m-r) )
+	RSQP_STATE_IQ_DECL(MatrixWithOp,Uz)
+	/// Vy:  Represents Gh' * Y ( mI x r )
+	RSQP_STATE_IQ_DECL(MatrixWithOp,Vy)
+	/// Vz:  Represents Gh' * Z ( mI x (m-r) )
+	RSQP_STATE_IQ_DECL(MatrixWithOp,Vz)
 
 	//@}
 
