@@ -277,6 +277,11 @@ public:
 	{public: NoCurrentBasisException (const std::string& what_arg)
 	: std::logic_error(what_arg) {}};
 
+	///
+	class FactorizationFailure : public std::logic_error
+	{public: FactorizationFailure (const std::string& what_arg)
+	: std::logic_error(what_arg) {}};
+
 	//@}
 	
 	///
@@ -378,6 +383,9 @@ public:
 	 \code
 	 direct_solver.analyze_and_factor(A3,&row_perm,&col_perm,&rank,C1_ptr.get());
 	 \endcode
+	 *
+	 * If the factorization can not be performed for some reason then the exception
+	 * \c FactorizationFailure will be thrown.
 	 *
 	 * Scenarios / behavior:
 	 * <ul>

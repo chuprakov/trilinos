@@ -146,6 +146,8 @@ void DirectSparseSolverImp::analyze_and_factor(
 	BasisMatrixImp::fact_nonzeros_ptr_t          fact_nonzeros;
 	if( bm_fact_nonzeros.count() == 1 )
 		fact_nonzeros = bm_fact_nonzeros;
+	else
+		fact_nonzeros = this->create_fact_nonzeros();
 	// Now ask the subclass to do the work
 	this->imp_analyze_and_factor(
 		A,fact_struc,fact_nonzeros,row_perm,col_perm,rank,out

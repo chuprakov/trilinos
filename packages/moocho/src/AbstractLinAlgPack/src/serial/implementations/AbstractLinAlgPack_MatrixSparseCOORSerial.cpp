@@ -390,9 +390,10 @@ index_type MatrixSparseCOORSerial::count_nonzeros(
 		col_rng = RangePack::full_range(row_rng_in,1,rows_),
 		row_rng_full(1,rows_),
 		col_rng_full(1,cols_);
-	index_type
+	const index_type
 		*row_i    = row_i_,
-		*col_j    = col_j_,
+		*col_j    = col_j_;
+	index_type
 		cnt_nz    = 0,
 		k         = 0;
 	if( dl == -row_rng.ubound() + col_rng.lbound() && du == +col_rng.ubound() - row_rng.lbound() ) {
@@ -416,15 +417,15 @@ index_type MatrixSparseCOORSerial::count_nonzeros(
 		// We have to consider the diagonals dl and du
 		assert(0); // ToDo: Implement!
 	}
-	return 0;
+	return cnt_nz;
 }
 
 void MatrixSparseCOORSerial::coor_extract_nonzeros(
 	EElementUniqueness    element_uniqueness
 	,const index_type     inv_row_perm[]
 	,const index_type     inv_col_perm[]
-	,const Range1D        &row_rng
-	,const Range1D        &col_rng
+	,const Range1D        &row_rng_in
+	,const Range1D        &col_rng_in
 	,index_type           dl
 	,index_type           du
 	,value_type           alpha
@@ -437,7 +438,60 @@ void MatrixSparseCOORSerial::coor_extract_nonzeros(
 	,const index_type     col_offset
 	) const
 {
-	assert(0); // ToDo: Implement!
+#ifdef _DEBUG
+	const char err_msg_head[] = "MatrixSparseCOORSerial::count_nonzeros(...): Error";
+	THROW_EXCEPTION(
+		element_uniqueness_ == ELEMENTS_ASSUME_DUPLICATES_SUM && element_uniqueness == ELEMENTS_FORCE_UNIQUE
+		,std::logic_error
+		,err_msg_head << ", the client requests extraction of unique "
+		"elements but this sparse matrix object can not guarantee this!" );
+	THROW_EXCEPTION( inv_row_perm == NULL, std::logic_error, err_msg_head<<"!" );
+	THROW_EXCEPTION( inv_col_perm == NULL, std::logic_error, err_msg_head<<"!" );
+#endif
+	const Range1D
+		row_rng = RangePack::full_range(row_rng_in,1,rows_),
+		col_rng = RangePack::full_range(row_rng_in,1,rows_),
+		row_rng_full(1,rows_),
+		col_rng_full(1,cols_);
+	value_type
+		*val      = val_;
+	const index_type
+		*row_i    = row_i_,
+		*col_j    = col_j_;
+	index_type
+		cnt_nz    = 0,
+		k         = 0;
+	if( dl == -row_rng.ubound() + col_rng.lbound() && du == +col_rng.ubound() - row_rng.lbound() ) {
+		// The diagonals are not limiting so we can ignore them
+		if( row_rng == row_rng_full && col_rng == col_rng_full ) {
+			// The row and column ranges are not limiting either
+			assert(0); // ToDo: Implement!
+		}
+		else {
+			// The row or column range is limiting
+			for( k = 0; k < nz_; ++val, ++row_i, ++col_j, ++k ) {
+				const index_type
+					i = inv_row_perm[(*row_i)-1],
+					j = inv_col_perm[(*col_j)-1];
+				VALIDATE_ROW_COL_IN_RANGE();
+				if( row_rng.in_range(i) && col_rng.in_range(j) ) {
+					++cnt_nz;
+					if( len_Aval )
+						*Aval++ = *val;           // ToDo: Split into different loops (no inner if())
+					if( len_Aij ) {
+						*Arow++ = i + row_offset;
+						*Acol++ = j + col_offset;
+					}
+				}
+			}
+		}
+	}
+	else {
+		// We have to consider the diagonals dl and du
+		assert(0); // ToDo: Implement!
+	}
+	assert( len_Aval == 0 || len_Aval == cnt_nz );
+	assert( len_Aij == 0  || len_Aij  == cnt_nz );
 }
 
 // private
