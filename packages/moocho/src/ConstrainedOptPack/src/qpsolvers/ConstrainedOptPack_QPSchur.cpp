@@ -306,14 +306,14 @@ void calc_p_mu_D(
 //
 // Calculate the residual of the augmented KKT system:
 //
-// [ ro ] = [   Ko     U_hat ] [   v   ] - [  bo ]
-// [ ra ]   [ U_hat'   V_hat ] [ z_hat ]   [  ba ]
+// [ ro ] = [   Ko     U_hat ] [   v   ] + [  ao*bo ]
+// [ ra ]   [ U_hat'   V_hat ] [ z_hat ]   [  aa*ba ]
 //
 // Expanding this out we have:
 //
-// ro = Ko * v + U_hat * z_hat - bo
+// ro = Ko * v + U_hat * z_hat + ao*bo
 //
-// ra = U_hat' * v + V_hat * z_hat - ba
+// ra = U_hat' * v + V_hat * z_hat + ao*ba
 //
 // On output we will have set:
 //
@@ -328,11 +328,13 @@ void calc_resid_ext(
 	const ConstrainedOptimizationPack::QPSchur::ActiveSet     &act_set
 	,const LinAlgPack::VectorSlice                            &v
 	,const LinAlgPack::VectorSlice                            &z_hat        // Only accessed if q_hat > 0
+	,const LinAlgPack::value_type                             ao            // Only accessed if bo != NULL
 	,const LinAlgPack::VectorSlice                            *bo           // If NULL then considered 0
 	,LinAlgPack::VectorSliceTmpl<val_type>                    *ro
 	,LinAlgPack::value_type                                   *roR_scaling
 	,LinAlgPack::value_type                                   *rom_scaling  // Only set if m > 0
-	,const LinAlgPack::VectorSlice                            &ba           // Only accessed if q_hat > 0
+	,const LinAlgPack::value_type                             aa            // Only accessed if q_hat > 0
+	,const LinAlgPack::VectorSlice                            *ba           // If NULL then considered 0, Only accessed if q_hat > 0
 	,LinAlgPack::VectorSliceTmpl<val_type>                    *ra           // Only set if q_hat > 0
 	,LinAlgPack::value_type                                   *ra_scaling   // Only set if q_hat > 0
 	)
@@ -374,53 +376,102 @@ void calc_resid_ext(
 		*ra_scaling  = 0.0;
 
 	// Convert to dense for now
-	LinAlgPack::GenMatrix dense_Ko, dense_U_hat;
+	LinAlgPack::GenMatrix dense_Ko(n_R+m,n_R+m), dense_U_hat(n_R+m,q_hat), dense_V_hat(q_hat,q_hat);
+	// dense_Ko = Ko
 	LinAlgOpPack::assign( &dense_Ko, qp.Ko(), no_trans );
+	// dense_U_hat = U_hat
 	LinAlgOpPack::assign( &dense_U_hat, act_set.U_hat(), no_trans );
-
+	// sym_V_hat =  P_XF_hat'*G*P_XF_hat + P_XF_hat'*A_bar*P_plus_hat + P_plus_hat'*A_bar'*P_XF_hat + ...
+	dense_V_hat = 0.0;
+	LinAlgPack::sym_gms sym_V_hat(dense_V_hat(),BLAS_Cpp::upper);
+	if( act_set.q_F_hat() ) {
+		// sym_V_hat += P_XF_hat' * G * P_XF_hat
+		SparseLinAlgPack::Mp_StPtMtP(
+			&sym_V_hat, 1.0, SparseLinAlgPack::MatrixSymWithOp::DUMMY_ARG
+			, qp.G(), act_set.P_XF_hat(), no_trans );
+	}
+	if( act_set.q_F_hat() && act_set.q_plus_hat() ) {
+		// sym_V_hat += P_XF_hat' * A_bar * P_plus_hat + P_plus_hat' * A_bar' * P_XF_hat
+		qp.constraints().A_bar().syr2k(
+			no_trans, 1.0
+			,act_set.P_XF_hat(), no_trans
+			,act_set.P_plus_hat(), no_trans
+			,1.0, &sym_V_hat );
+	}
 	//
-	// ro = Ko * v + U_hat * z_hat - bo
+	// ro = Ko * v + U_hat * z_hat + ao*bo
 	//
 	*ro = 0.0;
 	// ro += Ko*v
+	LinAlgPack::value_type nrm = 0.0;
 	{for( LinAlgPack::size_type k1 = 1; k1 <= n_R+m; ++k1 ) {
 		for( LinAlgPack::size_type k2 = 1; k2 <= n_R+m; ++k2 )
 			(*ro)(k1) += dense_Ko(k1,k2) * v(k2); // extended precision
-		*roR_scaling += ::fabs(double((*ro)(k1)));
+		nrm = std::_MAX(nrm,::fabs(double((*ro)(k1))));
 	}}
+	*roR_scaling += nrm;
+
 	// ro += U_hat*z_hat
+	nrm = 0.0;
 	if( q_hat ) {
 		for( LinAlgPack::size_type k1 = 1; k1 <= n_R+m; ++k1 ) {
+			val_type tmp = 0.0;
 			for( LinAlgPack::size_type k2 = 1; k2 <= q_hat; ++k2 )
-				(*ro)(k1) += dense_U_hat(k1,k2) * z_hat(k2); // extended precision
-			*roR_scaling += ::fabs(double((*ro)(k1)));
+				tmp += dense_U_hat(k1,k2) * z_hat(k2); // extended precision
+			(*ro)(k1) += tmp;
+			nrm = std::_MAX(nrm,::fabs((double)tmp));
 		}
 	}
-	// ro += -bo
+	*roR_scaling += nrm;
+	// ro += ao*bo
+	nrm = 0.0;
 	if( bo ) {
 		for( LinAlgPack::size_type k1 = 1; k1 <= n_R+m; ++k1 ) {
-			(*ro)(k1) += -(*bo)(k1); // extended precision
-			*roR_scaling += ::fabs(double((*ro)(k1)));
+			val_type tmp = 0.0;
+			tmp += ao*(*bo)(k1); // extended precision
+			(*ro)(k1) += tmp;
+			nrm = std::_MAX(nrm,::fabs((double)tmp));
 		}
 	}
+	*roR_scaling += nrm;
 	//
-	// ra = U_hat' * v + V_hat * z_hat - ba
+	// ra = U_hat' * v + V_hat * z_hat + aa*ba
 	//
 	if( q_hat ) {
 		*ra = 0.0;
 		// ra += U_hat'*v
+		nrm = 0.0;
 		{for( LinAlgPack::size_type k1 = 1; k1 <= q_hat; ++k1 ) {
+			val_type tmp = 0.0;
 			for( LinAlgPack::size_type k2 = 1; k2 <= n_R+m; ++k2 )
-				(*ra)(k1) += dense_U_hat(k2,k1) * v(k2); // extended precision
-			*ra_scaling += ::fabs(double((*ra)(k1)));
+				tmp += dense_U_hat(k2,k1) * v(k2); // extended precision
+			(*ra)(k1) += tmp;
+			nrm = std::_MAX(nrm,::fabs((double)tmp));
 		}}
+		*ra_scaling += nrm;
 		// ra += V_hat * z_hat
-		assert( act_set.q_F_hat() == 0 ); // Not implemented yet!
-		// ra += - ba
-		{for( LinAlgPack::size_type k1 = 1; k1 <= q_hat; ++k1 ) {
-			(*ra)(k1) += -ba(k1); // extended precision
-			*ra_scaling += ::fabs(double((*ra)(k1)));
+		nrm = 0.0;
+		{for( LinAlgPack::size_type k1 = 1; k1 <= q_hat; ++k1 ) { // upper triangule only
+			val_type tmp = 0.0;
+			for(  LinAlgPack::size_type k2a = 1; k2a < k1; ++k2a )
+				tmp += dense_V_hat(k2a,k1) * z_hat(k2a); // extended precision
+			for( LinAlgPack::size_type k2b = k1; k2b <= q_hat; ++k2b )
+				tmp += dense_V_hat(k1,k2b) * z_hat(k2b); // extended precision
+			(*ra)(k1) += tmp;
+			nrm = std::_MAX(nrm,::fabs((double)tmp));
 		}}
+		*ra_scaling += nrm;
+		// ra += aa*ba
+		nrm = 0.0;
+		if(ba) {
+			{for( LinAlgPack::size_type k1 = 1; k1 <= q_hat; ++k1 ) {
+				val_type tmp = 0.0;
+				tmp += aa*(*ba)(k1); // extended precision
+				(*ra)(k1) += tmp;
+				nrm = std::_MAX(nrm,::fabs((double)tmp));
+			}}
+		}
+		*ra_scaling += nrm;
 	}
 }
 
@@ -2247,7 +2298,8 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	if( !out )
 		output_level = NO_OUTPUT;
 
-	const int   dbl_w = (out ? out->precision()+8 : 20 );
+	const int dbl_min_w = 20;
+	const int dbl_w = (out ? std::_MAX(dbl_min_w,out->precision()+8) : 20 );
 
 	// Set the schur complement
 	act_set_.set_schur_comp( schur_comp_ );
@@ -2770,7 +2822,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 			<< "\n*** Starting Primal-Dual Iterations ***\n";
 	}
 
-	const int   dbl_w = (out ? out->precision()+8: 20 );
+	const int dbl_min_w = 20;
+	const int dbl_w = (out ? std::_MAX(dbl_min_w,out->precision()+8): 20 );
 
 	try {
 
@@ -3122,14 +3175,39 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						// and we have not been using iterative refinement up to this point.
 						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 							*out
-								<< "\nWe have found to solution and are now performing iterative refinement ...\n";
+								<< "\nWe think we have found the solution, are not currently using iterative refinement"
+								<< "and iter_refine_at_solution==true so perform iterative refinement ...\n";
 						}
-						iter_refine(
+						using_iter_refinement = true;
+						EIterRefineReturn status = iter_refine(
 							*act_set, out, output_level, -1.0, &qp.fo(), -1.0, act_set->q_hat() ? &act_set->d_hat() : NULL
 							,v, act_set->q_hat() ? &act_set->z_hat() : NULL
 							,iter_refine_num_resid, iter_refine_num_solves
 							);
-						set_x( *act_set, *v, x );
+						switch(status) {
+						case ITER_REFINE_ONE_STEP:
+						case ITER_REFINE_IMPROVED:
+						case ITER_REFINE_CONVERGED:
+							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+								*out
+									<< "\nIterative refinement may have altered the unknowns so go back and look for another violated constraint ...\n";
+							}
+							summary_lines_counter = 0;
+							next_step = PICK_VIOLATED_CONSTRAINT;
+							continue;
+							break;
+						case ITER_REFINE_NOT_PERFORMED:
+						case ITER_REFINE_NOT_NEEDED:
+						case ITER_REFINE_NOT_IMPROVED:
+							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+								*out
+									<< "\nIterative refinement did not alter the unknowns so exit with this solution...\n";
+							}
+							set_x( *act_set, *v, x );
+							break;
+						default:
+							assert(0); // Local programming error only!
+						}
 					}
 					if( iter_refine_at_solution() || using_iter_refinement ) {
 						// The user has requested iterative refinement at the solution
@@ -4300,8 +4378,9 @@ QPSchur::iter_refine(
 	const value_type small_num = std::numeric_limits<value_type>::min();
 
 	const int int_w = 8;
-	const char int_ul[] = "------"; 
-	const int dbl_w = ( out ? out->precision()+8: 20 );
+	const char int_ul[] = "------";
+	const int dbl_min_w = 20;
+	const int dbl_w = ( out ? std::_MAX(dbl_min_w,out->precision()+8): 20 );
 	const char dbl_ul[] = "------------------";
 
 	const QPSchurPack::QP
@@ -4423,6 +4502,7 @@ QPSchur::iter_refine(
 			rom_scaling = 0.0,
 			ra_scaling  = 0.0;
 		++(*iter_refine_num_resid);
+//		calc_resid_ext( // 2001/03/12: There is something wrong with this function?
 		calc_resid(
 			act_set
 			, v_itr, z_itr
@@ -4592,8 +4672,9 @@ void QPSchur::dump_act_set_quantities(
 		&constraints = qp.constraints();
 
 	const int  int_w = 10;
-	const char int_ul[] = "--------"; 
-	const int  dbl_w = out.precision()+8;
+	const char int_ul[] = "--------";
+	const int  dbl_min_w = 20;
+	const int  dbl_w = std::_MAX(dbl_min_w,out.precision()+8);
 	const char dbl_ul[] = "------------------";
 
     out << "\n*** Dumping the current active set ***\n"

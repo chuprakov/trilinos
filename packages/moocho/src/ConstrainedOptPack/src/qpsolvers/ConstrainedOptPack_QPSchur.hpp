@@ -524,7 +524,7 @@ public:
 		,value_type               iter_refine_opt_tol  = 1e-12
 		,value_type               iter_refine_feas_tol = 1e-12
 		,bool                     iter_refine_at_solution = true
-		,MSADU::PivotTolerances   pivot_tols = MSADU::PivotTolerances( 1e-6,1e-8,1e-8 )
+		,MSADU::PivotTolerances   pivot_tols = MSADU::PivotTolerances( 1e-8,1e-11,1e-11 )
 		);
 
 	///
