@@ -731,7 +731,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		typedef SparseSolverPack::TestingPack::BasisSystemTester basis_sys_tester_t;
 		basis_sys_tester_t
 			*basis_sys_tester = new basis_sys_tester_t;
-		basis_sys_tester->solve_error_tol(1e-5); // ToDo: Make better documented?
+		basis_sys_tester->solve_error_tol(1e+10); // ToDo: Make better documented?
 		SparseSolverPack::TestingPack::BasisSystemTesterSetOptions
 			basis_sys_options_setter( basis_sys_tester );
 		basis_sys_options_setter.set_options( *options_ );
@@ -848,20 +848,25 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
 		}
 
-		// (2) ReducedGradient
+		// (2) DepDirec
+		if( !tailored_approach ) {
+			algo->insert_step( ++step_num, DepDirec_name, new  DepDirecStd_Step );
+		}
+
+		// (3) ReducedGradient
 		algo->insert_step( ++step_num, ReducedGradient_name, new ReducedGradientStd_Step );
 
-		// (3) Calculate Reduced Gradient of the Lagrangian
+		// (4) Calculate Reduced Gradient of the Lagrangian
 		algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, new CalcReducedGradLagrangianStd_AddedStep );
 
-		// (4)	Calculate the Lagrange multipliers for the independent constraints.
+		// (5)	Calculate the Lagrange multipliers for the independent constraints.
 		// 		These are computed here just in case the algorithm converges and we need to
 		// 		report these multipliers to the NLP.
 		if( !tailored_approach ) {
 			algo->insert_step( ++step_num, CalcLambdaIndep_name, new  CalcLambdaIndepStd_AddedStep );
 		}
 
-		// (5) Check for convergence
+		// (6) Check for convergence
 		{
 			CheckConvergenceStd_AddedStep
 				*check_convergence_step = new CheckConvergenceStd_AddedStep;
@@ -873,7 +878,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
 		}
 
-		// (6) ReducedHessian
+		// (7) ReducedHessian
 		{
 			// Get the strategy object that will perform the actual secant update.
 			ref_count_ptr<ReducedHessianSecantUpdate_Strategy>
@@ -941,7 +946,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			algo->insert_step( ++step_num, ReducedHessian_name, step );
 		}
 
-		// (6.-1) CheckSkipBFGSUpdate
+		// (7.-1) CheckSkipBFGSUpdate
 		{
 			CheckSkipBFGSUpdateStd_Step
 				*step = new CheckSkipBFGSUpdateStd_Step;
@@ -956,11 +961,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				, CheckSkipBFGSUpdate_name
 				, step
 			  );
-		}
-
-		// (7) DepDirec
-		if( !tailored_approach ) {
-			algo->insert_step( ++step_num, DepDirec_name, new  DepDirecStd_Step );
 		}
 
 		// (8) IndepDirec
