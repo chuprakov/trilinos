@@ -19,9 +19,18 @@ SerialVector<Scalar>::~SerialVector()
 
 template<class Scalar>
 SerialVector<Scalar>::SerialVector(
+	const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc
+	)
+	:v_(NULL),vs_(0),ownsMem_(false)
+{
+	this->initialize(vecSpc);
+}
+
+template<class Scalar>
+SerialVector<Scalar>::SerialVector(
 	int dim
 	)
-	:v_(NULL),vs_(0),ownsMem_(false),space_serial_(dim)
+	:v_(NULL),vs_(0),ownsMem_(false)
 {
 	this->initialize(dim);
 }
@@ -32,10 +41,26 @@ SerialVector<Scalar>::SerialVector(
 	,int    vs
 	,int    dim
 	,bool   ownsMem
+	,const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc
 	)
-	:v_(NULL),vs_(0),ownsMem_(false),space_serial_(dim)
+	:v_(NULL),vs_(0),ownsMem_(false)
 {
-	this->initialize(v,vs,dim,ownsMem);
+	this->initialize(v,vs,dim,ownsMem,vecSpc);
+}
+
+template<class Scalar>
+void SerialVector<Scalar>::initialize(
+	const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc
+	)
+{
+	const int dim = vecSpc->dim();
+	this->initialize(
+		new Scalar[dim]
+		,1
+		,dim
+		,true
+		,vecSpc
+		);
 }
 
 template<class Scalar>
@@ -43,15 +68,12 @@ void SerialVector<Scalar>::initialize(
 	int dim
 	)
 {
-	namespace mmp = MemMngPack;
-	free_mem();
 	this->initialize(
 		new Scalar[dim]
 		,1
 		,dim
 		,true
 		);
-	space_serial_.initialize(dim);
 }
 
 template<class Scalar>
@@ -60,8 +82,16 @@ void SerialVector<Scalar>::initialize(
 	,int    vs
 	,int    dim
 	,bool   ownsMem
+	,const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc
 	)
 {
+	if(vecSpc.get()) {
+		THROW_EXCEPTION( vecSpc.get()!=NULL && dim != vecSpc->dim(), std::invalid_argument, "SerialVector<Scalar>::initialize(...): Error!" );
+		space_serial_ = vecSpc;
+	}
+	else {
+		space_serial_ = MemMngPack::rcp(new SerialVectorSpace<Scalar>(dim));
+	}
 	free_mem();
 	v_       = v;
 	vs_      = vs;
@@ -75,7 +105,7 @@ template<class Scalar>
 MemMngPack::ref_count_ptr< const VectorSpace<Scalar> >
 SerialVector<Scalar>::space() const
 {
-	return MemMngPack::rcp(&space_serial_,false);
+	return space_serial_;
 }
 
 template<class Scalar>

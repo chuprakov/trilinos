@@ -35,7 +35,12 @@ public:
 	/** Frees memory if <tt>this</tt> owns it.
 	 */
 	~SerialVector();
-
+	///
+	/** Calls <tt>this->initialize(vecSpc)</tt>.
+	 */
+	SerialVector(
+		const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc
+		);
 	///
 	/** Calls <tt>this->initialize(dim)</tt>.
 	 */
@@ -50,43 +55,86 @@ public:
 		,int    vs
 		,int    dim
 		,bool   ownsMem = false
+		,const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc = MemMngPack::null
 		);
 	///
-	/** Call <tt>this->initialize(v,vs,true)</tt> with allocated data <tt>v</tt>.
-	 *
-	 * Postconditions:<ul>
-	 * <li><tt>this->dim() == dim</tt>
-	 * </ul>
+	/** Call <tt>this->initialize(v,vs,true,vecSpc)</tt> with internally dynamically allocated data <tt>v</tt>.
+	 */
+	void initialize(
+		const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc
+		);
+	///
+	/** Call <tt>this->initialize(v,vs,true)</tt> with internally dynamically allocated data <tt>v</tt>.
 	 */
 	void initialize(
 		int dim
 		);
 	///
-	/** Initialize with a dense vector slice.
+	/** Initialize with storage.
 	 *
-	 * 
+	 * @param  v      [in] Pointer to array of storage that <tt>*this</tt> will represent.
+	 * @param  vs     [in] Stride for the storage in <tt>v[]</tt> (see Postconditions).
+	 * @param  dim    [in] Number of elements in <tt>v[]</tt> this this will represent (see Postconditions).
+	 * @param  ownsMem
+	 *                [in] If <tt>true</tt> then <tt>delete [] v</tt> will be called after <tt>*this</tt>
+	 *                no longer needs access to this memory.  If <tt>false</tt> then the client is responsible
+	 *                for memory management.  The default is <tt>false</tt>.
+	 * @param  vecSpc
+	 *                [in] Smart pointer to a <tt>VectorSpace</tt> object that will be used to represent the
+	 *                vector space for <tt>*this</tt>.  If <tt>vecSpc.get()==NULL</tt> on input, then
+	 *                a <tt>SerialVectorSpace</tt> object of dimension <tt>dim</tt> is allocated for this
+	 *                role.  The default is <tt>MemMngPack::null</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> [<tt>vecSpc.get()!=NULL</tt>] <tt>dim == vecSpc->dim()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>vecSpc.get()!=NULL</tt>] <tt>vecSpc->createMember()</tt> must create vectors that are compatible
+	 *      with <tt>*this</tt> (i.e. <tt>getSubVector()</tt>, <tt>commitSubVector()</tt> behave the same as with
+	 *      this class).
+	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li><tt>this->dim() == dim</tt>
-	 * <tt>sub_vec.values == v</tt>
-	 * <tt>sub_vec.values_stride == vs</tt>
+	 * <li> [<tt>vecSpc.get()!=NULL</tt>] <tt>vecSpc.get() == this->space().get()</tt>
+	 * <li> [<tt>vecSpc.get()==NULL</tt>] <tt>dynamic_cast<const SerialVectorSpace<Scalar>*>(this->space().get()) != NULL</tt>
+	 * <li> <tt>this->space()->dim() == dim</tt>
+	 * <li> <tt>this->getPtr() == v</tt>
+	 * <li> <tt>this->getStride() == vs</tt>
+	 * <li> <tt>this->getOwnsMem() == ownsMem</tt>
 	 * </ul>
-	 *  where <tt>sub_vec</tt> above is returned from <tt>this->getSubVector(Range1D(),&sub_vec)</tt>
+	 *
+	 * Note that this function is declared virtual so that subclasses
+	 * can override it to be informed whenever <tt>*this</tt> vector
+	 * is resized.  An override should call this function as
+	 * <tt>this->SerialVector<Scalar>::initialize(...)</tt>.
 	 */
-	void initialize(
+	virtual void initialize(
 		Scalar  v[]
 		,int    vs
 		,int    dim
 		,bool   ownsMem = false
+		,const MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > &vecSpc = MemMngPack::null
 		);
 
+	//@}
+
+	/** @name Accessors (inlined for minimal overhead) */
+	//@{
+
+	///
+	Scalar* getPtr();
+	///
+	const Scalar* getPtr() const;
+	///
+	int getStride() const;
+	///
+	int getDim() const;
+	///
+	bool getOwnsMem() const;
+	
 	//@}
 
 	/** @name Overridden from Vector */
 	//@{
 
-	/// Returns 0 if <tt>this</tt> is not initialized yet.
-	Index dim() const;
 	///
 	MemMngPack::ref_count_ptr< const VectorSpace<Scalar> > space() const;
 	///
@@ -111,7 +159,7 @@ private:
 	int                                                     vs_;
 	int                                                     dim_;
 	bool                                                    ownsMem_;
-	SerialVectorSpace<Scalar>                               space_serial_;
+	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >   space_serial_;
 
 	// ////////////////////////////////
 	// Private member functions
@@ -123,6 +171,44 @@ private:
 	SerialVector& operator=(const SerialVector&);
 
 }; // end class SerialVector
+
+// /////////////////////////////////////////////////////
+// Inline members
+
+template<class Scalar>
+inline
+Scalar* SerialVector<Scalar>::getPtr()
+{
+	return v_;
+}
+
+template<class Scalar>
+inline
+const Scalar* SerialVector<Scalar>::getPtr() const
+{
+	return v_;
+}
+
+template<class Scalar>
+inline
+int SerialVector<Scalar>::getStride() const
+{
+	return vs_;
+}	
+
+template<class Scalar>
+inline
+int SerialVector<Scalar>::getDim() const
+{
+	return dim_;
+}	
+
+template<class Scalar>
+inline
+bool SerialVector<Scalar>::getOwnsMem() const
+{
+	return ownsMem_;
+}	
 
 } // end namespace TSFCore
 
