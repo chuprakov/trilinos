@@ -63,31 +63,31 @@ public:
 	typedef double Scalar;
 
 	/// Stream that trace to which information will be sent
-	STANDARD_NONCONST_COMPOSITION_MEMBERS( std::ostream, trace_out );
+	STANDARD_NONCONST_COMPOSITION_MEMBERS( std::ostream, trace_out )
 
 	/// Set if the constraints c are to be automatically scaled by inverse row-sums of the initial Jacobian
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, autoScaleStateConstraints );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, autoScaleStateConstraints )
 
 	/// Set if the state variables y are to be automatically scaled by inverse column-sums of the initial Jacobian
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, autoScaleStateVariables );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, autoScaleStateVariables )
 
   /// Set the maximum number of linear solver iterations
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, maxLinSolveIter );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, maxLinSolveIter ) 
 
   /// Set the relative residual tolerance for the linear solver
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, relLinSolveTol );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, relLinSolveTol )
 
   /// Determine if preconditioning is used or not
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, usePrec );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, usePrec )
 
   /// Determines if operators are tested after they are formed
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, testOperators );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, testOperators )
 
   /// Determine the file that the initial state solution is read from.
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, yGuessFileNameBase );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, yGuessFileNameBase )
 
   /// Determine the file that the final solution for the state is written.
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, yFinalFileNameBase );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, yFinalFileNameBase )
 
   ///
   /** Give mutable access to the object used to generate
@@ -132,10 +132,10 @@ public:
 	AztecOO& aztecOO();
 
 	/// Scaling vector for constraints c(y,u)
-	STANDARD_COMPOSITION_MEMBERS( EpetraVector, c_scaling );
+	STANDARD_COMPOSITION_MEMBERS( EpetraVector, c_scaling )
 
 	/// Scaling vector for state variables y
-	STANDARD_COMPOSITION_MEMBERS( EpetraVector, y_scaling );
+	STANDARD_COMPOSITION_MEMBERS( EpetraVector, y_scaling )
 
 	/** @name Constructors / Initializers / accessors */
 	//@{

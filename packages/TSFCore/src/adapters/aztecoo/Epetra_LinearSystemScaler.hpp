@@ -119,17 +119,17 @@ public:
 	//@{
 
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( EFwdSolveLeftScaling, fwdSolveLeftScaling );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( EFwdSolveLeftScaling, fwdSolveLeftScaling )
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( EFwdSolveRightScaling, fwdSolveRightScaling );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( EFwdSolveRightScaling, fwdSolveRightScaling )
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( EAdjSolveLeftScaling, adjSolveLeftScaling );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( EAdjSolveLeftScaling, adjSolveLeftScaling )
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( EAdjSolveRightScaling, adjSolveRightScaling );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( EAdjSolveRightScaling, adjSolveRightScaling )
 	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( EFwdSolvePrec, fwdSolvePrec );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( EFwdSolvePrec, fwdSolvePrec ) 
 	///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( EAdjSolvePrec, adjSolvePrec );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( EAdjSolvePrec, adjSolvePrec ) 
 
 	///
 	/** Construct uninitialized but with default option values.

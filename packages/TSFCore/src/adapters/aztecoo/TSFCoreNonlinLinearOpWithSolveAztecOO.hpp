@@ -62,13 +62,13 @@ public:
 	//@{
 
 	/// Stream that trace to which information will be sent
-	STANDARD_NONCONST_COMPOSITION_MEMBERS( std::ostream, trace_out );
+	STANDARD_NONCONST_COMPOSITION_MEMBERS( std::ostream, trace_out )
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, maxIter );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, maxIter )
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, relTol );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, relTol )
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, minRelTol );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, minRelTol )
 
 	///
 	/** Give non-const access to the linear system scaler object so that

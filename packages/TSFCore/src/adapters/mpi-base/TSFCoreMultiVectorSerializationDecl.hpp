@@ -47,7 +47,7 @@ class MultiVectorSerialization {
 public:
 
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, binaryMode );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, binaryMode )
 
   ///
 	MultiVectorSerialization(

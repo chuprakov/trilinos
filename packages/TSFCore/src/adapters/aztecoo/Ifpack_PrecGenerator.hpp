@@ -64,15 +64,15 @@ class PrecGenerator {
 public:
 
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, levelFill );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, levelFill )
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, levelOverlap );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, levelOverlap )
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, absThreshold );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, absThreshold )
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, relThreshold );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, relThreshold )
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calcCondEst );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calcCondEst )
 
   ///
   /** Sets all of the adjustable options to default values.

@@ -54,22 +54,22 @@ public:
 	///
 	/** Set the output steam for iterative algorithm.
 	 */
-	STANDARD_COMPOSITION_MEMBERS(std::ostream,out);
+	STANDARD_COMPOSITION_MEMBERS(std::ostream,out)
 
 	///
 	/** Set the default maximum number GMRES iterations to take
 	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all )
 
 	///
 	/** Set the default maximum number GMRES iterations to take
 	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, default_max_iter );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, default_max_iter )
 	
 	///
 	/** Set the default solution tolerance to use
 	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, default_tol );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, default_tol )
 
 	///
 	SimpleGMRESSolver(

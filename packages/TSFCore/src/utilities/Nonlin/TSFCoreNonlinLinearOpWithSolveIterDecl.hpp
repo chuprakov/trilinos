@@ -64,7 +64,7 @@ public:
 	//@{
 
 	/// Stream that trace information will be sent to
-	STANDARD_NONCONST_COMPOSITION_MEMBERS( std::ostream, trace_out );
+	STANDARD_NONCONST_COMPOSITION_MEMBERS( std::ostream, trace_out )
 
 	///
 	LinearOpWithSolveIter();

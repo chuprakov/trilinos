@@ -46,9 +46,9 @@ class LinearOpTester {
 public:
 
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, warning_tol );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, warning_tol )
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, error_tol );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, error_tol )
 
 	///
 	LinearOpTester(

@@ -51,22 +51,22 @@ public:
 	///
 	/** Set the tolerance on ||c|| <= tol for convergence.
 	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, tol );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, tol )
 
 	///
 	/** Set the maximum number of newton iterations to take.
 	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, maxNewtonIter );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, maxNewtonIter )
 
 	///
 	/** Set the maximum number of backtracking line search iterations to take.
 	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, maxLineSearchIter );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, maxLineSearchIter )
 
 	///
 	/** Set the armijo constant for the line search
 	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, eta );
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, eta )
 
 	///
 	SimpleNewtonSolver(
