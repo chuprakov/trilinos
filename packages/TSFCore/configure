@@ -1839,8 +1839,8 @@ fi
 
 
 # Define the identity of the package.
- PACKAGE=TSFCore
- VERSION=0.0
+ PACKAGE='tsfcore'
+ VERSION='0.0'
 
 
 cat >>confdefs.h <<_ACEOF

@@ -1,7 +1,7 @@
 #@HEADER
 # ************************************************************************
 # 
-#               TSFCore: Abstract Linear Solver Package 
+#               TSFCore: Trilinos Solver Framework Core
 #                 Copyright (2004) Sandia Corporation
 # 
 # Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
