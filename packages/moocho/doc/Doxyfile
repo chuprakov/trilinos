@@ -1,11 +1,17 @@
-@INCLUDE = ./Doxyfile.env
-@INCLUDE = ./Doxyfile.doc
-
 #
 # Doxygen options specific to rSQPpp main page
 #
 
 # Doxyfile 1.2.8.1
+
+#---------------------------------------------------------------------------
+# Configuration::addtions related to the search engine   
+#---------------------------------------------------------------------------
+SEARCHENGINE           = YES
+CGI_NAME               = rSQPpp.cgi
+
+@INCLUDE = ./Doxyfile.env
+@INCLUDE = ./Doxyfile.doc
 
 #---------------------------------------------------------------------------
 # General configuration options
@@ -27,6 +33,10 @@ IMAGE_PATH             =
 INPUT_FILTER           = 
 FILTER_SOURCE_FILES    = NO
 #---------------------------------------------------------------------------
+# Configuration options related to the preprocessor   
+#---------------------------------------------------------------------------
+INCLUDE_PATH           = ./Misc/include
+#---------------------------------------------------------------------------
 # Configuration::addtions related to external references   
 #---------------------------------------------------------------------------
 TAGFILES               = ../doc/Misc/Misc.tag=./Misc/html \
@@ -42,3 +52,4 @@ ALLEXTERNALS           = YES
 # Configuration options related to the preprocessor   
 #---------------------------------------------------------------------------
 PREDEFINED             += REF_COUNT_PTR_INLINE=
+
