@@ -102,10 +102,24 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 	if(out) *out << "\n*** Set three types of iteration quantity access objects.\n";
 
 	if(out) *out << "set IterQuantityAccessContiguous<double>(2,\"alpha\")\n";
-	state.set_iter_quant( "alpha", rcp::rcp(new alpha_t(2,"alpha")) );
+	state.set_iter_quant( "alpha", rcp::rcp(
+		new alpha_t(
+			2,"alpha"
+#ifdef _MIPS_CXX
+			,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<alpha_k_t,alpha_k_t> >(
+				new AbstractFactoryPack::AbstractFactoryStd<alpha_k_t,alpha_k_t>())
+#endif			
+			)) );
 
 	if(out) *out << "set IterQuantityAccessContiguous<std::vector<double> >(2,\"x\")\n";
-	state.set_iter_quant( "x", rcp::rcp(new x_t(2,"x")) );
+	state.set_iter_quant( "x", rcp::rcp(
+		new x_t(
+			2,"x"
+#ifdef _MIPS_CXX
+			,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<x_k_t,x_k_t> >(
+				new AbstractFactoryPack::AbstractFactoryStd<x_k_t,x_k_t>())
+#endif			
+			)) );
 
 	if(out) *out << "set IterQuantityAccessDerivedToBase<B,D>(1,\"V\")\n";
 	state.set_iter_quant(
@@ -123,7 +137,14 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 
 	if(out) *out << "\nTry to add \"x\" (should throw execption) : ";
 	try {
-		state.set_iter_quant( "x", rcp::rcp(new x_t(2,"x")) );
+		state.set_iter_quant( "x", rcp::rcp(
+			new x_t(
+				2,"x"
+#ifdef _MIPS_CXX
+				,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<x_k_t,x_k_t> >(
+					new AbstractFactoryPack::AbstractFactoryStd<x_k_t,x_k_t>())
+#endif			
+				)) );
 		success = false;
 		if(out)
 			*out << "false\n";

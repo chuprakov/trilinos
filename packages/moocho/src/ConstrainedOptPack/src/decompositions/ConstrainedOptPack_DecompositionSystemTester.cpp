@@ -71,6 +71,7 @@ bool DecompositionSystemTester::test_decomp_system(
 	using AbstractLinAlgPack::sum;
 	using AbstractLinAlgPack::dot;
 	using AbstractLinAlgPack::Vp_StV;
+	using AbstractLinAlgPack::Vp_StMtV;
 	using AbstractLinAlgPack::assert_print_nan_inf;
 	using AbstractLinAlgPack::random_vector;
 	using LinAlgOpPack::V_StMtV;

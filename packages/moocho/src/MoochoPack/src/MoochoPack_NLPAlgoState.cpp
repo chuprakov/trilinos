@@ -183,6 +183,10 @@ void rSQPState::update_index_type_iq_id(
 					new IterQuantityAccessContiguous<index_type>(
 						1
 						,iq_name
+#ifdef _MIPS_CXX
+						,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<index_type,index_type> >(
+							new AbstractFactoryPack::AbstractFactoryStd<index_type,index_type>())
+#endif
 						)
 					)
 				);
@@ -209,6 +213,10 @@ void rSQPState::update_value_type_iq_id(
 					new IterQuantityAccessContiguous<value_type>(
 						1
 						,iq_name
+#ifdef _MIPS_CXX
+						,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<value_type,value_type> >(
+							new AbstractFactoryPack::AbstractFactoryStd<value_type,value_type>())
+#endif
 						)
 					)
 				);

@@ -25,9 +25,18 @@
 
 bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::ostream* out)
 {
+	namespace rcp = ReferenceCountingPack;
+
 	{
 		// explicit instantiation test
-		IterQuantityAccessContiguous< std::vector<int> > iq_v(1,"v");
+		typedef std::vector<int> T;
+		IterQuantityAccessContiguous<T> iq_v(
+			1,"v"
+#ifdef _MIPS_CXX
+			,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<T,T> >(
+				new AbstractFactoryPack::AbstractFactoryStd<T,T>())
+#endif			
+			);
 	}
 
 	using std::endl;
@@ -58,7 +67,13 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::os
 			*out	<< "\n *** Test single storage ***\n"
 					<< "  IterQuantityAccessContiguous<int> x_cont(1,\"x\");\n"
 					<< "  IterQuantityAccess<int>& x = x_cont;\n";
-		IterQuantityAccessContiguous<int> x_cont(1, "x");
+		IterQuantityAccessContiguous<int> x_cont(
+			1, "x"
+#ifdef _MIPS_CXX
+			,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<int,int> >(
+				new AbstractFactoryPack::AbstractFactoryStd<int,int>())
+#endif			
+			);
 		IterQuantityAccess<int>& x = x_cont;
 
 		if(out)
@@ -228,7 +243,13 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::os
 			*out<< "\n*** Test dual storage ***\n"
 				<< "IterQuantityAccessContiguous<int> x_cont(2,\"x\");\n"
 				<< "IterQuantityAccess<int>& x = x_cont;\n";
-		IterQuantityAccessContiguous<int> x_cont(2, "x");
+		IterQuantityAccessContiguous<int> x_cont(
+			2, "x"
+#ifdef _MIPS_CXX
+			,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<int,int> >(
+				new AbstractFactoryPack::AbstractFactoryStd<int,int>())
+#endif			
+			);
 		IterQuantityAccess<int>& x = x_cont;
 
 		if(out)
@@ -453,7 +474,13 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::os
 			*out<< "\n*** Test 4 storage ***\n"
 				<< "IterQuantityAccessContiguous<int> x_cont(4,\"x\");\n"
 				<< "IterQuantityAccess<int>& x = x_cont;\n";
-		IterQuantityAccessContiguous<int> x_cont(4, "x");
+		IterQuantityAccessContiguous<int> x_cont(
+			4, "x"
+#ifdef _MIPS_CXX
+			,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<int,int> >(
+				new AbstractFactoryPack::AbstractFactoryStd<int,int>())
+#endif			
+			);
 		IterQuantityAccess<int>& x = x_cont;
 
 		if(out)

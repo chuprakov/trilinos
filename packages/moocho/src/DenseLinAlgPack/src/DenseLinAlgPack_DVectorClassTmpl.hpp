@@ -946,12 +946,12 @@ const VectorSliceTmpl<T>& VectorSliceTmpl<T>::operator()() const
 template<class T>
 inline
 VectorSliceTmpl<T> VectorSliceTmpl<T>::operator()(const Range1D& rng) 
-{	return VectorSliceTmpl(*this, full_range(rng,1,dim())); }
+{	return VectorSliceTmpl(*this, RangePack::full_range(rng,1,dim())); }
 
 template<class T>
 inline
 const VectorSliceTmpl<T> VectorSliceTmpl<T>::operator()(const Range1D& rng) const
-{	return VectorSliceTmpl(const_cast<VectorSliceTmpl<T>&>(*this), full_range(rng,1,dim())); }
+{	return VectorSliceTmpl(const_cast<VectorSliceTmpl<T>&>(*this), RangePack::full_range(rng,1,dim())); }
 
 template<class T>
 inline

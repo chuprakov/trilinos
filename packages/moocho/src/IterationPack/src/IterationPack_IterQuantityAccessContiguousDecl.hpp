@@ -83,7 +83,11 @@ public:
 	IterQuantityAccessContiguous(
 		int                              num_quantities
 		,const std::string&              name
+#ifdef _MIPS_CXX // MipsPro 7.3.1.1 tries to instantiate the default type even when one is specified?
+		,const abstract_factory_ptr_t&   abstract_factory
+#else
 		,const abstract_factory_ptr_t&   abstract_factory  = new abstract_factory_std_t()
+#endif
 		);
 
 	///

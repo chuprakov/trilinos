@@ -859,13 +859,13 @@ const VectorSlice GenMatrixSlice::diag(difference_type k) const {
 
 inline
 GenMatrixSlice GenMatrixSlice::operator()(const Range1D& I, const Range1D& J) {
-	return GenMatrixSlice(*this, full_range(I, 1, rows()), full_range(J,1,cols()));
+	return GenMatrixSlice(*this, RangePack::full_range(I, 1, rows()), RangePack::full_range(J,1,cols()));
 }
 
 inline
 const GenMatrixSlice GenMatrixSlice::operator()(const Range1D& I, const Range1D& J) const {
 	return GenMatrixSlice( const_cast<GenMatrixSlice&>(*this)
-		, full_range(I, 1, rows()), full_range(J,1,cols()) );
+		, RangePack::full_range(I, 1, rows()), RangePack::full_range(J,1,cols()) );
 }
 
 inline
@@ -1066,7 +1066,7 @@ const VectorSlice GenMatrix::diag(difference_type k) const
 inline
 GenMatrixSlice GenMatrix::operator()(const Range1D& I, const Range1D& J)
 {
-	Range1D Ix = full_range(I,1,rows()), Jx = full_range(J,1,cols());
+	Range1D Ix = RangePack::full_range(I,1,rows()), Jx = RangePack::full_range(J,1,cols());
 	return GenMatrixSlice( col_ptr(1) + (Ix.lbound() - 1) + (Jx.lbound() - 1) * rows()
 		, max_rows() * cols(), max_rows(), Ix.size(), Jx.size() );
 }
@@ -1074,7 +1074,7 @@ GenMatrixSlice GenMatrix::operator()(const Range1D& I, const Range1D& J)
 inline
 const GenMatrixSlice GenMatrix::operator()(const Range1D& I, const Range1D& J) const
 {
-	Range1D Ix = full_range(I,1,rows()), Jx = full_range(J,1,cols());
+	Range1D Ix = RangePack::full_range(I,1,rows()), Jx = RangePack::full_range(J,1,cols());
 	return GenMatrixSlice( const_cast<value_type*>(col_ptr(1)) + (Ix.lbound() - 1) + (Jx.lbound() - 1) * rows()
 		, max_rows() * cols(), max_rows(), Ix.size(), Jx.size() );
 }

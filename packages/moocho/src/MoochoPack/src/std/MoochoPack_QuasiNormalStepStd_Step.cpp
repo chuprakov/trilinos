@@ -34,6 +34,7 @@ bool RangeSpaceStepStd_Step::do_step(
 	)
 {
 	using BLAS_Cpp::no_trans;
+	using AbstractLinAlgPack::Vt_S;
 	using AbstractLinAlgPack::V_InvMtV;
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;

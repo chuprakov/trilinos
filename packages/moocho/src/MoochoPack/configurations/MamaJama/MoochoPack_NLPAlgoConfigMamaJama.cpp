@@ -913,7 +913,13 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			algo->state().set_iter_quant(
 				quasi_newton_stats_name
 				,new IterQuantityAccessContiguous<QuasiNewtonStats>(
-					1, quasi_newton_stats_name )
+					1
+					,quasi_newton_stats_name
+#ifdef _MIPS_CXX
+					,rcp::ref_count_ptr<AbstractFactoryPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats> >(
+						new AbstractFactoryPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats>())
+#endif
+					)
 				);
 		}
 
