@@ -44,9 +44,14 @@ namespace SparseLinAlgPack {
  * are not overridden.  These methods have default implementations that should be sufficient
  * for most uses but subclasses may want to provide specialized implementations anyway.
  *
+ * These methods should not be called directly but instead through a set of
+ * \ref MatrixWithOpSerial_funcs "provided nonmember functions".
+ *
  * ToDo: Finish documentation!
  */
-class MatrixWithOpSerial : virtual public MatrixWithOp {
+class MatrixWithOpSerial
+	: virtual public AbstractLinAlgPack::MatrixWithOp // doxygen needs full name
+{
 public:
 
 	///
@@ -281,11 +286,11 @@ private:
 
 };	// end class MatrixWithOpSerial
 
-/** \group MatrixWithOpSerial_funcs MatrixWithOpSerial inline non-member functions that call virtual functions.
-  *
-  * @memo These allow nonmember functions to act like virtual functions
-  * and thereby allow the same syntax as in <tt>LinAlgPack</tt>.
-  */
+/** \defgroup MatrixWithOpSerial_funcs MatrixWithOpSerial nonmember inline functions.
+ *
+ * These nonmember functions allow operations to be called on \c MatrixWithOpSerial objects
+ * in similar manner to those in \c LinAlgPack.
+ */
 //@{
 
 /** @name Level-1 BLAS */

@@ -33,7 +33,7 @@ namespace SparseLinAlgPack {
  */
 class MatrixSymWithOpSerial
 	: virtual public MatrixWithOpSerial
-	, virtual public MatrixSymWithOp
+	, virtual public AbstractLinAlgPack::MatrixSymWithOp // doxygen needs full name
 {
 public:
 

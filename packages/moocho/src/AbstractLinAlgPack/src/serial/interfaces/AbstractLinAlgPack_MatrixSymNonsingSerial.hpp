@@ -24,10 +24,13 @@ namespace SparseLinAlgPack {
 ///
 /** Abstract base class for all serial polymorphic symmetrix nonsingular matrices that
  * can be used to solve for linear systems relatively efficiently.
+ *
+ * The methods of this interface should not be called directly but instead through
+ * the \ref MatrixSymNonsingularSerial_funcs "provided nonmember functions".
  */
 class MatrixSymNonsingularSerial
-	: virtual public MatrixSymNonsingular
-	, virtual public MatrixNonsingularSerial
+	: virtual public MatrixNonsingularSerial
+	, virtual public AbstractLinAlgPack::MatrixSymNonsingular // doxygen needs full name
 {
 public:
 
@@ -65,8 +68,12 @@ public:
 
 };	// end class MatrixSymNonsingularSerial
 
-// //////////////////////////////////////////////////////////
-// Inline nonmember helper function.
+/** \defgroup MatrixSymNonsingularSerial_funcs MatrixSymNonsingularSerial nonmember inline functions.
+ *
+ * These nonmember functions allow operations to be called on \c MatrixSymNonsingularSerial objects
+ * in similar manner to those in \c LinAlgPack.
+ */
+//@{
 
 inline
 /// sym_gms_lhs = alpha * op(mwo) * inv(mswof) * op(mwo)'
@@ -79,6 +86,8 @@ void M_StMtInvMtM(
 {
 	mswons.M_StMtInvMtM(sym_gms_lhs,alpha,mwo,mwo_trans,mwo_rhs);
 }
+
+//@}
 
 } // end namespace SparseLinAlgPack
 

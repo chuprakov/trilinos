@@ -31,7 +31,9 @@ namespace SparseLinAlgPack {
  * These methods should not be called directly but instead should be called through
  * the line \ref MatrixNonsingularSerial_funcs "non-member functions" that are provided.
  */
-class MatrixNonsingularSerial : virtual public MatrixNonsingular {
+class MatrixNonsingularSerial
+	: virtual public AbstractLinAlgPack::MatrixNonsingular // doxygen needs full name
+{
 public:
 
 	/** @name Level-2 BLAS */
@@ -143,12 +145,11 @@ public:
 
 };	// end class MatrixNonsingularSerial
 
-/** \defgroup MatrixNonsingularSerial_funcs MatrixNonsingularSerial inline
- * non-member operation functions that call virtual functions.
-  *
-  * These allow nonmember functions to act like virtual functions
-  * and thereby allow the same syntax as in \c LinAlgPack.
-  */
+/** \defgroup MatrixNonsingularSerial_funcs MatrixNonsingularSerial nonmember inline functions.
+ *
+ * These nonmember functions allow operations to be called on \c MatrixNonsingularSerial objects
+ * in similar manner to those in \c LinAlgPack.
+ */
 //@{
 
 /** @name Level-2 BLAS */

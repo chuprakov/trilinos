@@ -29,7 +29,7 @@ namespace SparseLinAlgPack {
 class MatrixWithOpNonsingularSerial
 	: virtual public MatrixWithOpSerial
 	, virtual public MatrixNonsingularSerial
-	, virtual public MatrixWithOpNonsingular
+	, virtual public AbstractLinAlgPack::MatrixWithOpNonsingular  // doxygen needs full name
 {};
 
 }	// end namespace SparseLinAlgPack

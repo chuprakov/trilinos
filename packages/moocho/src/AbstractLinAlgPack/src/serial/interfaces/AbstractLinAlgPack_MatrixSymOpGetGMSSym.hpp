@@ -39,7 +39,9 @@ namespace SparseLinAlgPack {
  * These methods should never be called directly.  Instead, use the helper
  * class type <tt>MatrixDenseSymEncap</tt>.
  */
-class MatrixSymWithOpGetGMSSym : virtual public MatrixSymWithOp {
+class MatrixSymWithOpGetGMSSym
+	: virtual public AbstractLinAlgPack::MatrixSymWithOp // doxygen needs full name
+{
 public:
 
 	///
