@@ -64,10 +64,10 @@ namespace TSFExtended
     static string tolParam() {return "Tolerance";}
 
     /** */
-    static const int defaultMaxiters() {return 500;}
+    static int defaultMaxiters() {return 500;}
 
     /** */
-    static const Scalar defaultTol() {return 1.0e-10;}
+    static Scalar defaultTol() {return 1.0e-10;}
   };
 
   
