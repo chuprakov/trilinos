@@ -66,7 +66,7 @@ public:
 
 	/// Calls <tt>vec.get_sub_vector(Range1D(),&sub_vec)</tt> to get the view.  
 	VectorDenseMutableEncap( VectorWithOpMutable&  vec );
-	/// Calls <tt>vec.free_sub_vector(&sub_vec)</tt> to release the view.  
+	/// Calls <tt>vec.commit_sub_vector(&sub_vec)</tt> to release the view.  
 	~VectorDenseMutableEncap();
 	/// Returns a reference to a constant view of the dense vector.
 	VectorSlice& operator()();
@@ -134,7 +134,7 @@ VectorDenseMutableEncap::VectorDenseMutableEncap( VectorWithOpMutable&  vec )
 inline
 VectorDenseMutableEncap::~VectorDenseMutableEncap()
 {
-	vec_.free_sub_vector(&sub_vec_);
+	vec_.commit_sub_vector(&sub_vec_);
 }
 
 inline
