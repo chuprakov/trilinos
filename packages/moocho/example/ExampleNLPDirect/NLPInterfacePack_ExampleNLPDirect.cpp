@@ -117,10 +117,10 @@ ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect(
 		const Range1D
 			bounded_rng   = ( dep_bounded ? Range1D(1,m)    : Range1D(m+1,n_) ),
 			unbounded_rng = ( dep_bounded ? Range1D(m+1,n_) : Range1D(1,m)    );
-		*xl_->create_sub_view(bounded_rng)   = 0.01;
-		*xl_->create_sub_view(unbounded_rng) = -NLP::infinite_bound();
-		*xu_->create_sub_view(bounded_rng)   = 20.0;
-		*xu_->create_sub_view(unbounded_rng) = +NLP::infinite_bound();
+		*xl_->sub_view(bounded_rng)   = 0.01;
+		*xl_->sub_view(unbounded_rng) = -NLP::infinite_bound();
+		*xu_->sub_view(bounded_rng)   = 20.0;
+		*xu_->sub_view(unbounded_rng) = +NLP::infinite_bound();
 	}
 	else {
 		*xl_ = -NLP::infinite_bound();
@@ -290,7 +290,7 @@ void ExampleNLPFirstOrderDirect::calc_point(
 		Gf && !this->space_x()->is_compatible(Gf->space()), std::invalid_argument
 		,"ExampleNLPFirstOrderDirect::calc_point(...), Error, Gf is not compatible" );
 	THROW_EXCEPTION(
-		py && !this->space_c()->sub_space(this->con_decomp())->is_compatible(py->space()), std::invalid_argument
+		py && !this->space_x()->sub_space(this->var_dep())->is_compatible(py->space()), std::invalid_argument
 		,"ExampleNLPFirstOrderDirect::calc_point(...), Error, py is not compatible" );
 	THROW_EXCEPTION(
 		rGf && !this->space_x()->sub_space(this->var_dep())->is_compatible(rGf->space()), std::invalid_argument
@@ -374,8 +374,8 @@ void ExampleNLPFirstOrderDirect::calc_point(
 		*D_diag = dynamic_cast<MatrixSymDiagonalStd*>(D);
 
 	VectorWithOp::vec_ptr_t
-		xD= x.create_sub_view(this->var_dep()),
-		xI = x.create_sub_view(this->var_indep());
+		xD= x.sub_view(this->var_dep()),
+		xI = x.sub_view(this->var_indep());
 
 	int task;
 	if     ( py  && !D )  task = 0;
@@ -415,8 +415,8 @@ void ExampleNLPFirstOrderDirect::calc_point(
 
 	// rGf = Gf(var_indep) + D' * Gf(var_dep)
 	if(rGf) {
-		*rGf = *Gf->create_sub_view(this->var_indep());
-		Vp_MtV( rGf, *D, BLAS_Cpp::trans, *Gf->create_sub_view(this->var_dep()) );
+		*rGf = *Gf->sub_view(this->var_indep());
+		Vp_MtV( rGf, *D, BLAS_Cpp::trans, *Gf->sub_view(this->var_dep()) );
 	}
 }
 
@@ -455,8 +455,8 @@ void ExampleNLPFirstOrderDirect::imp_calc_c(const VectorWithOp& x, bool newx
 	// c(x)(j) = x(j) * (x(m+j) -1) - 10 * x(m+j) = 0, for j = 1...m
 
 	VectorWithOp::vec_ptr_t
-		xD= x.create_sub_view(this->var_dep()),
-		xI = x.create_sub_view(this->var_indep());
+		xD= x.sub_view(this->var_dep()),
+		xI = x.sub_view(this->var_indep());
 
 	const int num_vecs = 2;
 	const VectorWithOp*
