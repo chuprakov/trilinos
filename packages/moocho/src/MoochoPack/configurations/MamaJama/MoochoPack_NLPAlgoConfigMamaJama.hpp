@@ -98,6 +98,12 @@ public:
 	{	bigM_ = bigM;	}
 
 	///
+	/** Set if to try the correction of a bad initial starting point.
+	  */
+	void correct_bad_init_guess(bool correct_bad_init_guess)
+	{	correct_bad_init_guess_ = correct_bad_init_guess; }
+
+	///
 	/** Set the maximum change in the estimate of the condition number
 	  * of the basis matrix before a change of basis is forced.
 	  */
@@ -235,6 +241,7 @@ protected:
 	bool				print_qp_error_;	// If true we print the QP error to journal.
 
 	value_type			bigM_;
+	bool				correct_bad_init_guess_;
 	value_type			max_basis_cond_change_frac_;	// default = 1.0, don't change default.
 	value_type			warm_start_frac_;	// default = -1.0, don't change default
 	EMeritFunctionType	merit_function_type_;

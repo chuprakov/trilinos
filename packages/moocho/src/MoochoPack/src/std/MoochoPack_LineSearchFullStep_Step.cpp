@@ -13,12 +13,14 @@
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorOut.h"
+	#include "LinAlgPack/include/assert_print_nan_inf.h"
 
 bool ReducedSpaceSQPPack::LineSearchFullStep_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
 	using LinAlgPack::norm_inf;
 	using LinAlgPack::V_VpV;
+	using LinAlgPack::assert_print_nan_inf;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
@@ -54,11 +56,14 @@ bool ReducedSpaceSQPPack::LineSearchFullStep_Step::do_step(Algorithm& _algo
 	nlp.calc_f( x_kp1, false );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "alpha_k      = " << s.f().get_k(0) << std::endl
+		out	<< "alpha_k      = " << s.alpha().get_k(0) << std::endl
 			<< "||x_kp1||inf = " << s.x().get_k(+1).norm_inf() << std::endl
 			<< "f_kp1        = " << s.f().get_k(+1) << std::endl
 			<< "||c_kp1||inf = " << s.c().get_k(+1).norm_inf() << std::endl;
 	}
+
+	assert_print_nan_inf( s.f().get_k(+1), "f(x_kp1)", true, &out );
+	assert_print_nan_inf( s.c().get_k(+1)(), "c(x_kp1)", true, &out );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out << "\nx_kp1 =\n" << s.x().get_k(+1)()

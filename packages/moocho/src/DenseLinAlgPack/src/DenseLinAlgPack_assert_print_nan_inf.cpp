@@ -69,7 +69,7 @@ bool LinAlgPack::assert_print_nan_inf( const VectorSlice& v, char name[]
 		throw std::runtime_error( omsg.str() );
 	}
 
-	return has_nan_or_inf;
+	return !has_nan_or_inf;
 }
 
 bool LinAlgPack::assert_print_nan_inf( const GenMatrixSlice& m, char name[]

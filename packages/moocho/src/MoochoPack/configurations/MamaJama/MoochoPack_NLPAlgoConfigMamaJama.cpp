@@ -107,6 +107,10 @@
 #include "../../include/std/DampenCrossTermStd_Step.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefChol.h"	// rHL_k
 
+// Correct a bad initial guess
+#include "../../include/std/CorrectBadInitGuessStd_AddedStep.h"
+#include "../../include/std/CorrectBadInitGuessStd_AddedStepSetOptions.h"
+
 namespace ReducedSpaceSQPPack {
 
 rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
@@ -126,6 +130,7 @@ rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
 		, linear_solver_type_(MA28)
 		, factorization_type_(AUTO_FACT)
 		, bigM_(-1.0)
+		, correct_bad_init_guess_(false)
 		, max_basis_cond_change_frac_(-1.0)
 		, warm_start_frac_(-1.0)
 		, merit_function_type_(MERIT_FUNC_MOD_L1_INCR)
@@ -1044,6 +1049,35 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			= AlgorithmState::IQ_ptr( new iq_rHL_t( new iq_rHL_concrete_t(1,rHL_name) ) );
 
 		// That's it man!
+	}
+
+	// 7/3/00: Adding some steps to correct a bad initial guess.
+	if( correct_bad_init_guess_ ) {
+		typedef rcp::ref_count_ptr<CorrectBadInitGuessStd_AddedStep>
+			corr_xinit_ptr_t;
+		corr_xinit_ptr_t
+			corr_xinit_ptr = new CorrectBadInitGuessStd_AddedStep;
+		CorrectBadInitGuessStd_AddedStepSetOptions
+			options_setter(corr_xinit_ptr.get());
+		options_setter.set_options(*options_);
+
+		Algorithm::poss_type poss;
+
+		// Add it after the computation of the reduced gradient of the Lagrangian
+		assert(poss = algo->get_step_poss( CalcReducedGradLagrangian_name ) );
+		algo->insert_step(
+			  poss+1
+			, "CorrectBadInitGuessFirst"
+			, rcp::rcp_implicit_cast<AlgorithmStep>( corr_xinit_ptr )
+		  );
+
+		// Add it after the line search
+		assert(poss = algo->get_step_poss( LineSearch_name ) );
+		algo->insert_step(
+			  poss+1
+			, "CorrectBadInitGuessSecond"
+			, rcp::rcp_implicit_cast<AlgorithmStep>( corr_xinit_ptr )
+		  );
 	}
 
 // Desprite debugging stuff

@@ -19,26 +19,7 @@
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorOut.h"
 #include "SparseLinAlgPack/include/SpVectorClass.h"
-
-namespace {
-
-// Assert that we have a finite number.  It it is not then throw
-// an std::runtime_error exception.
-ReducedSpaceSQPPack::value_type
-assert_is_number( ReducedSpaceSQPPack::value_type val, const char name[] )
-{
-	typedef std::numeric_limits<ReducedSpaceSQPPack::value_type> nl_t;
-	if( val >= nl_t::max() || val != val ) {
-		std::ostringstream omsg;
-		omsg
-			<<	"CheckConvergenceStd_AddedStep::do_step(...) : Error, "
-			<< name << " = " << val << " is not a finite number.";
-		throw std::runtime_error( omsg.str() );
-	}
-	return val;
-}
-
-}	// end namespace 
+#include "LinAlgPack/include/assert_print_nan_inf.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -56,6 +37,7 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 {
 	using LinAlgPack::norm_inf;
 	using LinAlgPack::norm_2;
+	using LinAlgPack::assert_print_nan_inf;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
@@ -89,20 +71,29 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 
 
 	// opt_err = (||rGL||inf or ||GL||) / (||Gf|| + scale_kkt_factor)
-
+	value_type
+		norm_inf_Gf_k = 0.0,
+		norm_inf_GLrGL_k = 0.0;
+	if( scale_opt_error_by_Gf() ) {
+		assert_print_nan_inf( norm_inf_Gf_k = s.Gf().get_k(0).norm_inf()
+			,"||Gf_k||inf",true,&out);
+	}
+	if( opt_error_check() == OPT_ERROR_REDUCED_GRADIENT_LAGR ) {
+		assert_print_nan_inf( norm_inf_GLrGL_k = s.rGL().get_k(0).norm_inf()
+			,"||rGL_k||inf",true,&out);
+	}
+	else {
+		assert_print_nan_inf( norm_inf_GLrGL_k = s.GL().get_k(0).norm_inf()
+			,"||GL_k||inf",true,&out);
+	}
 	const value_type
-		opt_scale_factor = ( scale_opt_error_by_Gf()
-			? (value_type)(1.0 + assert_is_number( s.Gf().get_k(0).norm_inf(), "||Gf_k||inf" ))
-			: (value_type)1.0	),
-		opt_err =
-			( opt_error_check() == OPT_ERROR_REDUCED_GRADIENT_LAGR ?
-				assert_is_number( s.rGL().get_k(0).norm_inf() , "||rGL_k||inf" )
-				: assert_is_number( s.GL().get_k(0).norm_inf() , "||GL_k||inf" )
-			) / opt_scale_factor;
+		opt_scale_factor = 1.0 + norm_inf_Gf_k,
+		opt_err = norm_inf_GLrGL_k / opt_scale_factor;
 
 	// feas_err
 	const value_type
-		feas_err = assert_is_number( s.c().get_k(0).norm_inf(), "||c_k||inf" );
+		feas_err = s.c().get_k(0).norm_inf();
+	assert_print_nan_inf( feas_err,"||c_k||inf",true,&out);
 
 	// kkt_err
 	s.kkt_err().set_k(0) = opt_err + feas_err;
@@ -121,7 +112,7 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 			step_err = std::_MAX( step_err, ::fabs(*d_itr++)/(1.0+::fabs(*x_itr++)) );
 	}
 
-	assert_is_number( step_err, "max(d(i)/max(1,x(i)),i=1...n)" );
+	assert_print_nan_inf( step_err,"max(d(i)/max(1,x(i)),i=1...n)",true,&out);
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\nscale_kkt_factor = " << scale_kkt_factor
