@@ -33,29 +33,29 @@ scripts to TSFCoreUtils to facilitate this move. [Done 3/8/2005]
 3) Create a new RTOpPack package in Moocho and move all non-templated
 and C-based RTOps there. [Done 3/9/2005]
 
-4) Create directory structure for Thyra based on plan.
+4) Create directory structure for Thyra in TSFCore based on plan.
 
 5) Move remaining code in TSFCoreUtils/src/MoochoMoreUtilities into
-Thyra/src/utils.
+Thyra/src/utils (or back into Moocho).
 
 6) Move templated RTOp code into Thyra/src/rtop/base and
-Thyra/src/rtop/ops\_lib.
+Thyra/src/rtop/ops_lib.
 
 7) Copy selected TSFCore files into new Thyra directory structure.
-Change the names of files as appropriate and develope refactoring
+Change the names of files as appropriate and develop refactoring
 scripts for changing the names of classes and functions.
 
 8) Get auto stuff working to build new Thyra library.
 
 9) Copy over doxygen files to new Thyra subdirectories.  Create
-doxygen collections for Thyra, ana and operator_vector stuff.  Update
-all of the doxygen stuff for new names etc.
+doxygen collections for 'Thyra', 'ana' and 'operator_vector' stuff.
+Update all of the doxygen stuff for new names etc.
 
-10) Update LinearOpBaseTester by add checking of linear operator
+10) Update LinearOpBaseTester by adding checking of linear operator
 properties A*(beta*b + gamma*c) == beta*A*b + gamma*A*c for random
 vectors b and c.
 
-11) Create a VectorSpaceBaseTester class tests all of the basic
+11) Create a VectorSpaceBaseTester class that tests all of the basic
 properties of vectors and multivectors that it creates.
 
 12) Create a testing function that tests the basic postconditions of
@@ -77,4 +77,3 @@ software.
   e) Add section on Index type and ordinal times and why the
      operator/vector classes do not need to be templated
      on an ordinal type.
-  

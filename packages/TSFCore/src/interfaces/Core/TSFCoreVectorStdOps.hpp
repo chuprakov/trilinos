@@ -36,6 +36,12 @@
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"
 #include "RTOpPack_ROpDotProd.hpp"
+#include "RTOpPack_ROpMin.hpp"
+#include "RTOpPack_ROpMinIndex.hpp"
+#include "RTOpPack_ROpMinIndexGreaterThanBound.hpp"
+#include "RTOpPack_ROpMax.hpp"
+#include "RTOpPack_ROpMaxIndex.hpp"
+#include "RTOpPack_ROpMaxIndexLessThanBound.hpp"
 #include "RTOpPack_ROpNorm1.hpp"
 #include "RTOpPack_ROpNorm2.hpp"
 #include "RTOpPack_ROpNormInf.hpp"
@@ -54,6 +60,10 @@
 #include "RTOpPack_TOpRandomize.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_arrayArg.hpp"
+
+//
+// All scalar types
+//
 
 // Reduction operations
 
@@ -320,6 +330,77 @@ void TSFCore::randomize( Scalar l, Scalar u, Vector<Scalar>* v )
   RTOpPack::TOpRandomize<Scalar> random_vector_op(l,u);
 	Vector<Scalar>* targ_vecs[] = { v };
 	applyOp<Scalar>(random_vector_op,0,(const Vector<Scalar>**)NULL,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
+}
+
+//
+// For real types only
+//
+
+template<class Scalar>
+Scalar TSFCore::min( const Vector<Scalar>& x ) {
+  RTOpPack::ROpMin<Scalar> min_op;
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget> min_targ = min_op.reduct_obj_create();
+	const Vector<Scalar>* vecs[] = { &x };
+	applyOp<Scalar>(min_op,1,vecs,0,(Vector<Scalar>**)NULL,&*min_targ);
+	return min_op(*min_targ);
+}
+
+template<class Scalar>
+void TSFCore::min( const Vector<Scalar>& x, Scalar *minEle, Index *minIndex )
+{
+  RTOpPack::ROpMinIndex<Scalar> min_op;
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget> min_targ = min_op.reduct_obj_create();
+	const Vector<Scalar>* vecs[] = { &x };
+	applyOp<Scalar>(min_op,1,vecs,0,(Vector<Scalar>**)NULL,&*min_targ);
+	RTOpPack::ScalarIndex<Scalar> scalarIndex = min_op(*min_targ);
+	*minEle   = scalarIndex.scalar;
+	*minIndex = scalarIndex.index;
+}
+
+template<class Scalar>
+void TSFCore::minGreaterThanBound( const Vector<Scalar>& x, const Scalar &bound, Scalar *minEle, Index *minIndex )
+{
+  RTOpPack::ROpMinIndexGreaterThanBound<Scalar> min_op(bound);
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget> min_targ = min_op.reduct_obj_create();
+	const Vector<Scalar>* vecs[] = { &x };
+	applyOp<Scalar>(min_op,1,vecs,0,(Vector<Scalar>**)NULL,&*min_targ);
+	RTOpPack::ScalarIndex<Scalar> scalarIndex = min_op(*min_targ);
+	*minEle   = scalarIndex.scalar;
+	*minIndex = scalarIndex.index;
+}
+
+template<class Scalar>
+Scalar TSFCore::max( const Vector<Scalar>& x )
+{
+  RTOpPack::ROpMax<Scalar> max_op;
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget> max_targ = max_op.reduct_obj_create();
+	const Vector<Scalar>* vecs[] = { &x };
+	applyOp<Scalar>(max_op,1,vecs,0,(Vector<Scalar>**)NULL,&*max_targ);
+	return max_op(*max_targ);
+}
+
+template<class Scalar>
+void TSFCore::max( const Vector<Scalar>& x, Scalar *maxEle, Index *maxIndex )
+{
+  RTOpPack::ROpMaxIndex<Scalar> max_op;
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget> max_targ = max_op.reduct_obj_create();
+	const Vector<Scalar>* vecs[] = { &x };
+	applyOp<Scalar>(max_op,1,vecs,0,(Vector<Scalar>**)NULL,&*max_targ);
+	RTOpPack::ScalarIndex<Scalar> scalarIndex = max_op(*max_targ);
+	*maxEle   = scalarIndex.scalar;
+	*maxIndex = scalarIndex.index;
+}
+
+template<class Scalar>
+void TSFCore::maxLessThanBound( const Vector<Scalar>& x, const Scalar &bound, Scalar *maxEle, Index *maxIndex )
+{
+  RTOpPack::ROpMaxIndexLessThanBound<Scalar> max_op(bound);
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget> max_targ = max_op.reduct_obj_create();
+	const Vector<Scalar>* vecs[] = { &x };
+	applyOp<Scalar>(max_op,1,vecs,0,(Vector<Scalar>**)NULL,&*max_targ);
+	RTOpPack::ScalarIndex<Scalar> scalarIndex = max_op(*max_targ);
+	*maxEle   = scalarIndex.scalar;
+	*maxIndex = scalarIndex.index;
 }
 
 #endif // TSFCORE_VECTOR_STD_OPS_HPP

@@ -30,6 +30,8 @@
 // cxx_main.cpp
 
 #include "TSFCoreSerialVectorSpaceStd.hpp"
+#include "TSFCoreProductVectorSpace.hpp"
+#include "TSFCoreVectorStdOpsTester.hpp"
 #include "TSFCoreTestingTools.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_arrayArg.hpp"
@@ -51,70 +53,33 @@ bool run_tests(
 	)
 {
 
-	using Teuchos::arrayArg;
+	VectorStdOpsTester<Scalar> vectorStdOpsTester(max_rel_err);
 
 	typedef Teuchos::ScalarTraits<Scalar> ST;
 
-	if(out) *out << "\n*** Entering run_tests<"<<ST::name()<<">) ...\n";
+	if(out) *out << "\n*** Entering run_tests<"<<ST::name()<<">(...) ...\n";
 
 	bool success = true;
-	//bool result;
-	//Scalar sresult1, sresult2;
 
 	if(out) *out << "\nCreating a serial vector space svp with n="<<n<<" vector elements ...\n";
 	const SerialVectorSpaceStd<Scalar>  svp(n);
-	if(out) *out << "\nsvp.dim() = " << svp.dim() << std::endl;
 
-	if(out) *out << "\nCreating serial vectors v1, v2, v3 and z ...\n";
-	Teuchos::RefCountPtr<Vector<Scalar> >
-		v1 = svp.createMember(),
-		v2 = svp.createMember(),
-		v3 = svp.createMember(),
-		z  = svp.createMember();
+	if(!vectorStdOpsTester.checkStdOps(svp,out,dumpAll)) success = false;
 
-	if(out) *out << "\nassign(&*v1,-2.0);\n";
-	assign(&*v1,Scalar(-2.0));
-	if(out) *out << "\nassign(&*v2,-3.0);\n";
-	assign(&*v2,Scalar(-3.0));
-	if(out) *out << "\nassign(&*v3,-4.0);\n";
-	assign(&*v3,Scalar(-4.0));
-	
-	if(out) *out << "\nabs(&*z,*v1);\n";
-	abs(&*z,*v1);
-	if(!testRelErr<Scalar>("sum(*z)",sum(*z),"2.0*svp.dim()",Scalar(2.0)*Scalar(svp.dim()),"max_rel_err",max_rel_err,out)) success=false;
-	
-	if(out) *out << "\nreciprocal(&*z,*v1);\n";
-	reciprocal(&*z,*v1);
-	if(!testRelErr<Scalar>("sum(*z)",sum(*z),"-0.5*svp.dim()",Scalar(-0.5)*Scalar(svp.dim()),"max_rel_err",max_rel_err,out)) success=false;
+	const int numBlocks = 2;
 
-	if(out) *out << "\nlinear_combination(2,{0.5,0.25},{&*v1,&*v2},0.0,&*z);\n";
-	linear_combination(2,arrayArg<Scalar>(0.5,0.25)(),arrayArg<const Vector<Scalar>*>(&*v1,&*v2)(),Scalar(0.0),&*z);
-	if(!testRelErr<Scalar>("sum(*z)",sum(*z),"(-0.5*2.0-0.25*3.0)*svp.dim()",Scalar(-0.5*2.0-0.25*3.0)*Scalar(svp.dim()),"max_rel_err",max_rel_err,out)) success=false;
+	if(out) *out << "\nCreating a product space ps with numBlocks="<<numBlocks<<" and n="<<n<<"vector elements per block ...\n";
 
-	if(out) *out << "\nassign(&*z,2.0);\n";
-	assign(&*z,Scalar(2.0));
-	if(out) *out << "\nlinear_combination(3,{0.5,0.25,0.125},{&*v1,&*v2,&*v2},0.5,&*z);\n";
-	linear_combination(3,arrayArg<Scalar>(0.5,0.25,0.125)(),arrayArg<const Vector<Scalar>*>(&*v1,&*v2,&*v3)(),Scalar(0.5),&*z);
-	if(!testRelErr<Scalar>(
-			 "sum(*z)",sum(*z)
-			 ,"(0.5*2.0-0.5*2.0-0.25*3.0-0.125*4.0)*svp.dim()",Scalar(0.5*2.0-0.5*2.0-0.25*3.0-0.125*4.0)*Scalar(svp.dim())
-			 ,"max_rel_err",max_rel_err,out
-			 )
-		) success=false;
+	std::vector<Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> > >
+		vecSpaces(numBlocks);
+	Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> >
+		spaceBlock = Teuchos::rcp(new TSFCore::SerialVectorSpaceStd<Scalar>(n));
+	for( int i = 0; i < numBlocks; ++i )
+		vecSpaces[i] = spaceBlock;
 
-	if(out) *out << "\nassign(&*z,2.0);\n";
-	assign(&*z,Scalar(2.0));
-	if(!testRelErr<Scalar>(
-			 "norm_2(*z,*v2)",norm_2(*z,*v2)
-			 ,"sqrt(2.0*3.0*3.0*svp.dim())",ST::magnitude(ST::squareroot(Scalar(2.0*3.0*3.0)*Scalar(svp.dim())))
-			 ,"max_rel_err",max_rel_err,out
-			 )
-		) success=false;
+	TSFCore::ProductVectorSpace<Scalar> ps(numBlocks,&vecSpaces[0]);
 
-	// ToDo: Add tests for *all* standard operators!
-
-  if(out) *out
-		<< "\n*** Leaving run_tests<"<<ST::name()<<">) ...\n";
+	if(!vectorStdOpsTester.checkStdOps(ps,out,dumpAll)) success = false;
 
 	return success;
 

@@ -35,20 +35,18 @@
 
 namespace TSFCore {
 
-/** \defgroup TSFCore_VectorStdOps_grp Collection of standard vector operations.
+/** \defgroup TSFCore_VectorStdOpsAll_grp Collection of vector operations for all scalar types.
  *
  * \ingroup TSFCore_ANA_Development_grp
  */
 //@{
 
-///
-/** Sum of vector elements: <tt>result = sum( v(i), i = 1...v.space()->dim() )</tt>.
+/** \brief Sum of vector elements: <tt>result = sum( v(i), i = 1...v.space()->dim() )</tt>.
  */
 template<class Scalar>
 Scalar sum( const Vector<Scalar>& v );
 
-///
-/** Natural norm: <tt>result = sqrt(<v,v>)</tt>.
+/** \brief Natural norm: <tt>result = sqrt(<v,v>)</tt>.
  *
  * Returns <tt>Teuchos::ScalarTraits<Scalar>::squareroot(v.space()->scalarProd(v,v))</tt>.
  */
@@ -56,72 +54,61 @@ template<class Scalar>
 typename Teuchos::ScalarTraits<Scalar>::magnitudeType
 norm( const Vector<Scalar>& v );
 
-///
-/** One (1) norm: <tt>result = ||v||1</tt>.
+/** \brief One (1) norm: <tt>result = ||v||1</tt>.
  */
 template<class Scalar>
 typename Teuchos::ScalarTraits<Scalar>::magnitudeType
 norm_1( const Vector<Scalar>& v );
 
-///
-/** Euclidean (2) norm: <tt>result = ||v||2</tt>.
+/** \brief Euclidean (2) norm: <tt>result = ||v||2</tt>.
  */
 template<class Scalar>
 typename Teuchos::ScalarTraits<Scalar>::magnitudeType
 norm_2( const Vector<Scalar>& v );
 
-///
-/** Weighted Euclidean (2) norm: <tt>result = sqrt( sum( w(i)*conj(v(i))*v(i)) )</tt>.
+/** \brief Weighted Euclidean (2) norm: <tt>result = sqrt( sum( w(i)*conj(v(i))*v(i)) )</tt>.
  */
 template<class Scalar>
 typename Teuchos::ScalarTraits<Scalar>::magnitudeType
 norm_2( const Vector<Scalar> &w, const Vector<Scalar>& v );
 
-///
-/** Infinity norm: <tt>result = ||v||inf</tt>.
+/** \brief Infinity norm: <tt>result = ||v||inf</tt>.
  */
 template<class Scalar>
 typename Teuchos::ScalarTraits<Scalar>::magnitudeType
 norm_inf( const Vector<Scalar>& v_rhs );
 
-///
-/** Dot product: <tt>result = conj(x)'*y</tt>.
+/** \brief Dot product: <tt>result = conj(x)'*y</tt>.
  */
 template<class Scalar>
 Scalar dot( const Vector<Scalar>& x, const Vector<Scalar>& y );
 
-///
-/** Get single element: <tt>result = v(i)</tt>.
+/** \brief Get single element: <tt>result = v(i)</tt>.
  */
 template<class Scalar>
 Scalar get_ele( const Vector<Scalar>& v, Index i );
 
-///
-/** Set single element: <tt>v(i) = alpha</tt>.
+/** \brief Set single element: <tt>v(i) = alpha</tt>.
  */
 template<class Scalar>
 void set_ele( Index i, Scalar alpha, Vector<Scalar>* v );
 
-///
-/** Assign all elements to a scalar: <tt>y(i) = alpha, i = 1...y->space()->dim()</tt>.
+/** \brief Assign all elements to a scalar: <tt>y(i) = alpha, i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void assign( Vector<Scalar>* y, const Scalar& alpha );
 
-///
-/** Vector assignment: <tt>y(i) = x(i), i = 1...y->space()->dim()</tt>.
+/** \brief Vector assignment: <tt>y(i) = x(i), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void assign( Vector<Scalar>* y, const Vector<Scalar>& x );
 
-///
-/** Add a scalar to all elements: <tt>y(i) += alpha, i = 1...y->space()->dim()</tt>.
+/** \brief Add a scalar to all elements: <tt>y(i) += alpha, i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void Vp_S( Vector<Scalar>* y, const Scalar& alpha );
 
-///
-/** Scale all elements by a scalar: <tt>y(i) *= alpha, i = 1...y->space()->dim()</tt>.
+/** \brief Scale all elements by a scalar: <tt>y(i) *= alpha, i = 1...y->space()->dim()</tt>.
  *
  * This takes care of the special cases of <tt>alpha == 0.0</tt>
  * (set <tt>y = 0.0</tt>) and <tt>alpha == 1.0</tt> (don't
@@ -130,50 +117,42 @@ void Vp_S( Vector<Scalar>* y, const Scalar& alpha );
 template<class Scalar>
 void Vt_S( Vector<Scalar>* y, const Scalar& alpha );
 
-///
-/** Assign scaled vector: <tt>y(i) = alpha * x(i), i = 1...y->space()->dim()</tt>.
+/** \brief Assign scaled vector: <tt>y(i) = alpha * x(i), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void V_StV( Vector<Scalar>* y, const Scalar& alpha, const Vector<Scalar> &x );
 
-///
-/** AXPY update: <tt>y(i) = alpha * x(i) + y(i), i = 1...y->space()->dim()</tt>.
+/** \brief AXPY update: <tt>y(i) = alpha * x(i) + y(i), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void Vp_StV( Vector<Scalar>* y, const Scalar& alpha, const Vector<Scalar>& x );
 
-///
-/** Scale and update: <tt>y(i) = x(i) + beta*y(i), i = 1...y->space()->dim()</tt>.
+/** \brief Scale and update: <tt>y(i) = x(i) + beta*y(i), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void Vp_V( Vector<Scalar>* y, const Vector<Scalar>& x, const Scalar& beta );
 
-///
-/** Element-wise absolute value<tt>y(i) = abs(x(i)), i = 1...y->space()->dim()</tt>.
+/** \brief Element-wise absolute value<tt>y(i) = abs(x(i)), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void abs( Vector<Scalar>* y, const Vector<Scalar>& x );
 
-///
-/** Element-wise reciprocal: <tt>y(i) = 1/x(i), i = 1...y->space()->dim()</tt>.
+/** \brief Element-wise reciprocal: <tt>y(i) = 1/x(i), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void reciprocal( Vector<Scalar>* y, const Vector<Scalar>& x );
 
-///
-/** Element-wise product update: <tt>y(i) += alpha * x(i) * v(i), i = 1...y->space()->dim()</tt>.
+/** \brief Element-wise product update: <tt>y(i) += alpha * x(i) * v(i), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void ele_wise_prod( const Scalar& alpha, const Vector<Scalar>& x, const Vector<Scalar>& v, Vector<Scalar>* y );
 
-///
-/** Element-wise division update: <tt>y(i) = alpha * x(i) / v(i), i = 1...y->space()->dim()</tt>.
+/** \brief Element-wise division update: <tt>y(i) = alpha * x(i) / v(i), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void ele_wise_divide( const Scalar& alpha, const Vector<Scalar>& x, const Vector<Scalar>& v, Vector<Scalar>* y );
 
-///
-/** Linear combination: <tt>y(i) = beta*y(i) + sum( alpha[k]*x[k](i), k=0...m-1 ), i = 1...y->space()->dim()</tt>.
+/** \brief Linear combination: <tt>y(i) = beta*y(i) + sum( alpha[k]*x[k](i), k=0...m-1 ), i = 1...y->space()->dim()</tt>.
  *
  * @param  m          [in] Number of vectors x[]
  * @param  alpha      [in] Array (length <tt>m</tt>) of input scalars.
@@ -195,8 +174,7 @@ void linear_combination(
 	,Vector<Scalar>          *y
 	);
 
-///
-/** Seed the random number generator used in <tt>randomize()</tt>.
+/** \brief Seed the random number generator used in <tt>randomize()</tt>.
  *
  * @param  s  [in] The seed for the random number generator.
  *
@@ -205,8 +183,7 @@ void linear_combination(
 template<class Scalar>
 void seed_randomize( unsigned int s );
 
-///
-/** Random vector generation: <tt>v(i) = rand(l,u), , i = 1...v->space()->dim()</tt>.
+/** \brief Random vector generation: <tt>v(i) = rand(l,u), , i = 1...v->space()->dim()</tt>.
  * 
  * The elements <tt>v->getEle(i)</tt> are randomly generated between
  * <tt>[l,u]</tt>.
@@ -218,9 +195,125 @@ void randomize( Scalar l, Scalar u, Vector<Scalar>* v );
 
 //@}
 
+/** \defgroup TSFCore_VectorStdOpsComparable_grp Subset of vector operations for types supporting relational opeators.
+ *
+ * Warning! do not try to instatiate these functions for complex types
+ * where relational operators are not defined (i.e. <, >, <=, >= etc).
+ *
+ * \ingroup TSFCore_ANA_Development_grp
+ */
+//@{
+
+/** \brief Min element: <tt>result = min{ x(i), i = 1...n } </tt>.
+ */
+template<class Scalar>
+Scalar min( const Vector<Scalar>& x );
+
+/** \brief Min element and its index: Returns <tt>maxEle = x(k)</tt>
+ * and <tt>maxIndex = k</tt> such that <tt>x(k) <= x(i)</tt> for all
+ * <tt>i=1...n</tt>.
+ *
+ * @param  x         [in] Input vector.
+ * @param  minEle    [out] The minimum element value.
+ * @param  maxindex  [out] The global index of the miminum element.
+ *                   If there is more than one element with the
+ *                   maximum entry then this returns the lowest index
+ *                   in order to make the output independent of the order
+ *                   of operations.
+ *
+ * Preconditions:<ul>
+ * <li><tt>minEle!=NULL</tt>
+ * <li><tt>minIndex!=NULL</tt>
+ * </ul>
+ */
+template<class Scalar>
+void min( const Vector<Scalar>& x, Scalar *maxEle, Index *maxIndex );
+
+/** \brief Minimum element greater than some bound and its index:
+ * Returns <tt>minEle = x(k)</tt> and <tt>minIndex = k</tt> such that
+ * <tt>x(k) <= x(i)</tt> for all <tt>i</tt> where <tt>x(i) >
+ * bound</tt>.
+ *
+ * @param  x         [in] Input vector.
+ * @param  bound     [in] The upper bound
+ * @param  minEle    [out] The minimum element value as defined above.
+ * @param  minIndex  [out] The global index of the maximum element.
+ *                   If there is more than one element with the
+ *                   mimimum value then this returns the lowest index
+ *                   in order to make the output independent of the order
+ *                   of operations.  If no entries are less than <tt>bound</tt>
+ *                   then <tt>minIndex < 0</tt> on return.
+ *
+ * Preconditions:<ul>
+ * <li><tt>minEle!=NULL</tt>
+ * <li><tt>minIndex!=NULL</tt>
+ * </ul>
+ *
+ * Postconditions:<ul>
+ * <li>If <tt>*minIndex > 0</tt> then such an element was found.
+ * <li>If <tt>*minIndex < 0</tt> then no such element was found.
+ * </ul>
+ */
+template<class Scalar>
+void minGreaterThanBound( const Vector<Scalar>& x, const Scalar &bound, Scalar *minEle, Index *minIndex );
+
+/** \brief Max element: <tt>result = max{ x(i), i = 1...n } </tt>.
+ */
+template<class Scalar>
+Scalar max( const Vector<Scalar>& x );
+
+/** \brief Max element and its index: Returns <tt>maxEle = x(k)</tt>
+ * and <tt>maxIndex = k</tt> such that <tt>x(k) >= x(i)</tt> for
+ * <tt>i=1...n</tt>.
+ *
+ * @param  x         [in] Input vector.
+ * @param  maxEle    [out] The maximum element value.
+ * @param  maxindex  [out] The global index of the maximum element.
+ *                   If there is more than one element with the
+ *                   maximum value then this returns the lowest index
+ *                   in order to make the output independent of the order
+ *                   of operations.
+ *
+ * Preconditions:<ul>
+ * <li><tt>maxEle!=NULL</tt>
+ * <li><tt>maxIndex!=NULL</tt>
+ * </ul>
+ */
+template<class Scalar>
+void max( const Vector<Scalar>& x, Scalar *maxEle, Index *maxIndex );
+
+/** \brief Max element less than bound and its index: Returns <tt>maxEle =
+ * x(k)</tt> and <tt>maxIndex = k</tt> such that <tt>x(k) >= x(i)</tt> for all
+ * <tt>i</tt> where <tt>x(i) < bound</tt>.
+ *
+ * @param  x         [in] Input vector.
+ * @param  bound     [in] The upper bound
+ * @param  maxEle    [out] The maximum element value as defined above.
+ * @param  maxindex  [out] The global index of the maximum element.
+ *                   If there is more than one element with the
+ *                   maximum index then this returns the lowest index
+ *                   in order to make the output independent of the order
+ *                   of operations.  If no entries are less than <tt>bound</tt>
+ *                   then <tt>minIndex < 0</tt> on return.
+ *
+ * Preconditions:<ul>
+ * <li><tt>maxEle!=NULL</tt>
+ * <li><tt>maxIndex!=NULL</tt>
+ * </ul>
+ *
+ * Postconditions:<ul>
+ * <li>If <tt>*maxIndex > 0</tt> then such an element was found.
+ * <li>If <tt>*maxIndex < 0</tt> then no such element was found.
+ * </ul>
+ */
+template<class Scalar>
+void maxLessThanBound( const Vector<Scalar>& x, const Scalar &bound, Scalar *maxEle, Index *maxIndex );
+
+//@}
+
 } // end namespace TSFCore
 
-// ////////////////////////////
+// /////////////////////////
 // Inline functions
 
 template<class Scalar>
