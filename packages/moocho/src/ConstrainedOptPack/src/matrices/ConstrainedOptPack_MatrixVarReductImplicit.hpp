@@ -183,7 +183,7 @@ public:
 	///
 	MatrixWithOp& operator=(const MatrixWithOp& M);
 	///
-	std::ostream& output(std::ostream&);
+	std::ostream& output(std::ostream&) const;
 	///
 	void Vp_StMtV(
 		VectorWithOpMutable* v_lhs, value_type alpha
@@ -229,9 +229,9 @@ private:
 	AbstractLinAlgPack::MatrixWithOp             *N;
 	AbstractLinAlgPack::MatrixWithOp             *D_direct;
 #else
-	mat_nonsing_ptr_t        C_;
-	mat_ptr_t                N_;
-	mat_ptr_t                D_direct_;
+	mat_nonsing_ptr_t                   C_;
+	mat_ptr_t                           N_;
+	mat_ptr_t                           D_direct_;
 
 	mutable InvCtN_rows_t               InvCtN_rows_;
 	// InvCtN_rows_ keeps track of a set pointers of computed rows of inv(C)*N.

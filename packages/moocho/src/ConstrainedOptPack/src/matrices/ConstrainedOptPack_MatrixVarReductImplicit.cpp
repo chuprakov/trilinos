@@ -17,10 +17,12 @@
 #include "SparseLinAlgPack/include/SpVectorOp.h"
 //#include "SparseLinAlgPack/include/dense_Vp_StPtMtV.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "WorkspacePack.h"
+#include "ThrowException.h"
 
 namespace {
 
@@ -169,31 +171,39 @@ void MatrixVarReductImplicit::initialize(
 	,const mat_ptr_t                 &D_direct
 	)
 {
-/*
 	// Validate the inputs
-	if( !decomp_sys )
-		throw std::invalid_argument(
-			"MatrixVarReductImplicit::initialize(...): Error, "
-			"decomp_sys must not be NULL" );
-	if( D_dense && (D_dense->rows() != decomp_sys->C().rows() || D_dense->cols() != decomp_sys->N().cols() ) )
-		throw std::invalid_argument(
-			"MatrixVarReductImplicit::initialize(...): Error, "
-			"*D_dense does not match the size of the decomposition in *decomp_sys" );
-	// Set the members
-	decomp_sys_ = decomp_sys;
-	if( D_dense )
-		D_dense_.bind( const_cast<GenMatrixSlice&>(*D_dense) );
-	use_dense_mat_vec_ = true; // ToDo: We should use a timer to determine if this is faster than sparse or not!
-	release_resource_ptr_ = release_resource_ptr;
-	if(InvCtN_rows_.size()) { // Free previously allocated vectors
-		for( InvCtN_rows_t::iterator itr = InvCtN_rows_.begin(); itr != InvCtN_rows_.end(); ++itr ) {
-			if( *itr )
-				delete [] *itr; // ToDo: We may want to allocate vectors in larger chuncks
-			*itr = (value_type*)NULL;
-		}
+	THROW_EXCEPTION(
+		C.get() == NULL, std::invalid_argument
+		,"MatrixVarReductImplicit::initialize(...): Error, "
+		"C.get() must not be NULL" );
+	THROW_EXCEPTION(
+		N.get() == NULL, std::invalid_argument
+		,"MatrixVarReductImplicit::initialize(...): Error, "
+		"N.get() must not be NULL" );
+	if( D_direct.get() ) {
+		const bool is_compatible_cols = D_direct->space_cols().is_compatible(C->space_cols());
+		THROW_EXCEPTION(
+			!is_compatible_cols, VectorSpaceBase::IncompatibleVectorSpaces
+			,"MatrixVarReductImplicit::initialize(...): Error, "
+			"D_direct->space_cols() is not compatible with C->space_cols()" );
+		const bool is_compatible_rows = D_direct->space_rows().is_compatible(N->space_rows());
+		THROW_EXCEPTION(
+			!is_compatible_rows, VectorSpaceBase::IncompatibleVectorSpaces
+			,"MatrixVarReductImplicit::initialize(...): Error, "
+			"D_direct->space_rows() is not compatible with N->space_rows()" );
 	}
-*/
-	assert(0); // ToDo: Initialize the above!
+	// Set the members
+	C_        = C;
+	N_        = N;
+	D_direct_ = D_direct;
+	if(!InvCtN_rows_set_list_.empty()) { // Free previously allocated vectors
+		for( InvCtN_rows_set_list_t::iterator itr = InvCtN_rows_set_list_.begin();
+			 itr != InvCtN_rows_set_list_.end(); ++itr )
+        {
+			InvCtN_rows_[*itr] = NULL;
+		}
+		InvCtN_rows_set_list_.clear();
+	}
 }
 
 void MatrixVarReductImplicit::set_uninitialized()
@@ -236,9 +246,12 @@ MatrixWithOp& MatrixVarReductImplicit::operator=(const MatrixWithOp& M)
 	return *this;
 }
 
-std::ostream& MatrixVarReductImplicit::output(std::ostream& o)
+std::ostream& MatrixVarReductImplicit::output(std::ostream& o) const
 {
-	return MatrixWithOp::output(o); // ToDo: Specialize!
+	o << "\nVariable reduction matrix D = -inv(C)*N where C and N are:\n"
+	  << "\nC =\n" << *C_
+	  << "\nN =\n" << *N_;
+	return o;
 }
 
 void MatrixVarReductImplicit::Vp_StMtV(
