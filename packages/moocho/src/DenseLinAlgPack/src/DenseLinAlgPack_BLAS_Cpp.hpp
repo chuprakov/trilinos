@@ -18,10 +18,8 @@
 #ifndef BLAS_CPP_OVERLOADS_DECLARATIONS_H
 #define BLAS_CPP_OVERLOADS_DECLARATIONS_H
 
-#include <stdexcept>
-
-#include "BLAS_CppTypes.hpp"
 #include "fortran_types.hpp"
+#include "BLAS_CppTypes.hpp"
 
 // Overloaded BLAS wrappers.
 // The naming convention is the Fortran BLAS name minus the type prefix.

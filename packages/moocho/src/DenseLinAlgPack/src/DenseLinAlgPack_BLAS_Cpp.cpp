@@ -13,18 +13,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-// ////////////////////////////////////////////////////////////
-// When using the Intel BLAS you have to use lower case names
-//
-// To set this define the macro _INTEL_BLAS
-//
-
-#ifdef _INTEL_BLAS
-#define FORTRAN_NAMES_UPPERCASE 0
-#endif
-
-#include <stdexcept>
-
 #include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
 
 // /////////////////////////////////////
