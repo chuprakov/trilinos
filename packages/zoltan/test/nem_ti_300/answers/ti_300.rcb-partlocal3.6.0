@@ -9,5 +9,6 @@ test multi callbacks    = 1
 test null import lists  = 1
 test local partitions   = 3
 Test Drops		= 1
+Test RCB Box		= 1
 Global element ids assigned to processor 0
 GID	Part	Perm	IPerm

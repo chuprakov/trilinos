@@ -8,3 +8,4 @@ test multi callbacks    = 1
 test null import lists  = 1
 Test Drops		= 1
 Test Generate Files	= 1
+Test RCB Box		= 1
