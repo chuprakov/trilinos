@@ -23,7 +23,7 @@
 // Definitions of members for SpVecIndexLookup<>
 
 template<class T_Element>
-AbstractLinAlgPack::SparseVectorUtilityPack::SpVecIndexLookup<T_Element>::poss_type
+typename AbstractLinAlgPack::SparseVectorUtilityPack::SpVecIndexLookup<T_Element>::poss_type
 AbstractLinAlgPack::SparseVectorUtilityPack::SpVecIndexLookup<T_Element>::find_poss(
 	index_type index, UpperLower uplow) const
 {
@@ -86,7 +86,7 @@ AbstractLinAlgPack::SparseVectorUtilityPack::SpVecIndexLookup<T_Element>::find_p
 }
 
 template<class T_Element>
-AbstractLinAlgPack::size_type
+typename AbstractLinAlgPack::size_type
 AbstractLinAlgPack::SparseVectorUtilityPack::SpVecIndexLookup<T_Element>::find_element(
 	index_type index, bool is_sorted ) const
 {
@@ -141,7 +141,7 @@ AbstractLinAlgPack::SparseVectorUtilityPack::SpVecIndexLookup<T_Element>::adjust
 }
 
 template<class T_Element>
-AbstractLinAlgPack::SparseVectorUtilityPack::SpVecIndexLookup<T_Element>::poss_type
+typename AbstractLinAlgPack::SparseVectorUtilityPack::SpVecIndexLookup<T_Element>::poss_type
 AbstractLinAlgPack::SparseVectorUtilityPack::SpVecIndexLookup<T_Element>::binary_ele_search(
 	index_type index, UpperLower uplow) const
 {

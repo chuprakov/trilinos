@@ -145,7 +145,7 @@ public:
 	/** @name Initializers */
 	//@{
 
-	/// Set the maximum number of QP iterations as max_itr = max_qp_iter_frac * n.
+	/// Set the scalar that will be used to identigy infinite bounds
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, infinite_bound )
 
 	///

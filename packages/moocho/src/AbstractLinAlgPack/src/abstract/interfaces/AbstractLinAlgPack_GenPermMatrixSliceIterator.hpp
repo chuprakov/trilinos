@@ -250,7 +250,7 @@ void row_col_value_type<T>::increment(difference_type d)
 
 template< class T >
 inline
-row_col_value_type<T>::index_type row_col_value_type<T>::row_i() const
+typename row_col_value_type<T>::index_type row_col_value_type<T>::row_i() const
 {
 	assert_in_range();
 	return *row_i_ + row_off_;
@@ -258,7 +258,7 @@ row_col_value_type<T>::index_type row_col_value_type<T>::row_i() const
 
 template< class T >
 inline
-row_col_value_type<T>::index_type row_col_value_type<T>::col_j() const
+typename row_col_value_type<T>::index_type row_col_value_type<T>::col_j() const
 {
 	assert_in_range();
 	return *col_j_ + col_off_;
@@ -266,7 +266,7 @@ row_col_value_type<T>::index_type row_col_value_type<T>::col_j() const
 
 template< class T >
 inline
-row_col_value_type<T>::index_type* row_col_value_type<T>::row_i_ptr() const
+typename row_col_value_type<T>::index_type* row_col_value_type<T>::row_i_ptr() const
 {
 	return row_i_;
 }
@@ -325,7 +325,7 @@ row_col_iterator<T>& row_col_iterator<T>::operator=( const row_col_iterator<T>& 
 
 template< class T >
 inline
-row_col_iterator<T>::reference
+typename row_col_iterator<T>::reference
 row_col_iterator<T>::operator*()
 {
 	GPMS_row_col_iterator_assert_not_null(value_.row_i_ptr());
@@ -335,7 +335,7 @@ row_col_iterator<T>::operator*()
 
 template< class T >
 inline
-row_col_iterator<T>::reference
+typename row_col_iterator<T>::reference
 row_col_iterator<T>::operator*() const
 {
 	GPMS_row_col_iterator_assert_not_null(value_.row_i_ptr());
@@ -344,7 +344,7 @@ row_col_iterator<T>::operator*() const
 
 template< class T >
 inline
-row_col_iterator<T>::pointer
+typename row_col_iterator<T>::pointer
 row_col_iterator<T>::operator->() const
 {
 	GPMS_row_col_iterator_assert_not_null(value_.row_i_ptr());
@@ -429,7 +429,7 @@ row_col_iterator<T>::operator--(int)
 
 template< class T >
 inline
-row_col_iterator<T>::difference_type
+typename row_col_iterator<T>::difference_type
 row_col_iterator<T>::operator-(const row_col_iterator<T>& itr) const
 {
 	return value_.row_i_ptr() - itr.value_.row_i_ptr();

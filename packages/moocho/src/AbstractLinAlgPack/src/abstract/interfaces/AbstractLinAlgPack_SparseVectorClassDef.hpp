@@ -51,7 +51,7 @@ create_slice(const SparseVectorUtilityPack::SpVecIndexLookup<T_Element>& index_l
 	// Create the slice (assumed sorted oviously).
 	typedef SparseVectorUtilityPack::SpVecIndexLookup<T_Element> SpVecIndexLookup;
 	index_lookup.validate_state();
-	SpVecIndexLookup::poss_type
+	typename SpVecIndexLookup::poss_type
 		lower_poss = index_lookup.find_poss(rng.lbound(), SpVecIndexLookup::LOWER_ELE),
 		upper_poss = index_lookup.find_poss(rng.ubound(), SpVecIndexLookup::UPPER_ELE);
 	if( lower_poss.poss == upper_poss.poss
@@ -232,7 +232,7 @@ EOverLap SparseVector<T_Element,T_Alloc>::overlap(const SparseVectorSlice<T_Elem
 	if(!sv.dim()) return DenseLinAlgPack::NO_OVERLAP;
 
 	const_iterator										this_begin	= begin();
-	SparseVectorSlice<T_Element>::const_iterator		sv_begin	= sv.begin();
+	typename SparseVectorSlice<T_Element>::const_iterator		sv_begin	= sv.begin();
 
 	if( this_begin == sv_begin && end() == sv.end() )
 	{
@@ -311,7 +311,7 @@ void SparseVector<T_Element,T_Alloc>::insert_element(element_type ele)
 	if( nz() ) {
 		typedef SparseVectorUtilityPack::SpVecIndexLookup<T_Element> SpVecIndexLookup;
 		index_lookup_.validate_state();
-		SpVecIndexLookup::poss_type
+		typename SpVecIndexLookup::poss_type
 			poss = ( nz() ? index_lookup_.find_poss(ele.index(), SpVecIndexLookup::LOWER_ELE)
 					 : SpVecIndexLookup::poss_type(0,SpVecIndexLookup::BEFORE_ELE) );
 		// Make sure this element does not already exist!

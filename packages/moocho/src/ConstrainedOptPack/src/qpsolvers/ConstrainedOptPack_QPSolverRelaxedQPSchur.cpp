@@ -347,7 +347,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		}
 	}
 	// Consider the relaxation variable!
-	if(*eta > etaL) {
+	if( *eta > etaL) {
 		ij_act_change[num_act_change] = -int(nd+1);
 		bnds[num_act_change]          = FREE;
 		++num_act_change;

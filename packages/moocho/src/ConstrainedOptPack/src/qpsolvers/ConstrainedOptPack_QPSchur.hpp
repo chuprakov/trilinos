@@ -42,9 +42,10 @@ namespace QPSchurPack {
 template < class T >
 class vector_one_based_checked : public std::vector<T>
 {
+	typedef vector_one_based_checked this_t;
 public:
 	/// one based indexing
-	T& operator()( size_type i )
+	T& operator()( typename this_t::size_type i )
 	{
 #ifdef LINALGPACK_CHECK_RANGE
 			return this->at(i-1);
@@ -53,7 +54,7 @@ public:
 #endif
 	}
 	/// one based indexing
-	T operator()( size_type i ) const
+	T operator()( typename this_t::size_type i ) const
 	{
 #ifdef LINALGPACK_CHECK_RANGE
 			return this->at(i-1);

@@ -103,10 +103,12 @@ QPSolverRelaxed::solve_qp(
 	,VectorMutable* nu
 	)
 {
-	return solve_qp(out,olevel,test_what,g,G,0,&dL,&dU
+	value_type eta = 0, etaL = 0;
+	return solve_qp(
+		out,olevel,test_what,g,G,etaL,&dL,&dU
 		,NULL,BLAS_Cpp::no_trans,NULL,NULL,NULL
 		,NULL,BLAS_Cpp::no_trans,NULL
-		,obj_d,NULL,d,nu,NULL,NULL,NULL,NULL);
+		,obj_d,&eta,d,nu,NULL,NULL,NULL,NULL);
 }
 
 QPSolverStats::ESolutionType

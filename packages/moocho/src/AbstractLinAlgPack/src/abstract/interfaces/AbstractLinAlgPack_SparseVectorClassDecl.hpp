@@ -859,17 +859,17 @@ inline SparseVector<T_Element,T_Alloc>::~SparseVector() {
 // SparseVectorTemplateInterface for linear algebra operations
 
 template <class T_Element, class T_Alloc>
-inline SparseVector<T_Element,T_Alloc>::size_type SparseVector<T_Element,T_Alloc>::dim() const {
+inline typename SparseVector<T_Element,T_Alloc>::size_type SparseVector<T_Element,T_Alloc>::dim() const {
 	return size_;
 }
 
 template <class T_Element, class T_Alloc>
-inline SparseVector<T_Element,T_Alloc>::size_type SparseVector<T_Element,T_Alloc>::nz() const {
+inline typename SparseVector<T_Element,T_Alloc>::size_type SparseVector<T_Element,T_Alloc>::nz() const {
 	return index_lookup_.nz();
 }
 
 template <class T_Element, class T_Alloc>
-inline SparseVector<T_Element,T_Alloc>::difference_type SparseVector<T_Element,T_Alloc>::offset() const {
+inline typename SparseVector<T_Element,T_Alloc>::difference_type SparseVector<T_Element,T_Alloc>::offset() const {
 	return index_lookup_.offset();
 }
 
@@ -879,49 +879,49 @@ inline bool SparseVector<T_Element,T_Alloc>::is_sorted() const {
 }
 
 template <class T_Element, class T_Alloc>
-inline SparseVector<T_Element,T_Alloc>::iterator SparseVector<T_Element,T_Alloc>::begin() {
+inline typename SparseVector<T_Element,T_Alloc>::iterator SparseVector<T_Element,T_Alloc>::begin() {
 	return index_lookup_.nz() ? index_lookup_.ele() : NULL;
 }
 
 template <class T_Element, class T_Alloc>
-inline SparseVector<T_Element,T_Alloc>::const_iterator SparseVector<T_Element,T_Alloc>::begin() const {
+inline typename SparseVector<T_Element,T_Alloc>::const_iterator SparseVector<T_Element,T_Alloc>::begin() const {
 	return index_lookup_.nz() ? index_lookup_.ele() : NULL;
 }
 
 template <class T_Element, class T_Alloc>
-inline SparseVector<T_Element,T_Alloc>::iterator SparseVector<T_Element,T_Alloc>::end() {
+inline typename SparseVector<T_Element,T_Alloc>::iterator SparseVector<T_Element,T_Alloc>::end() {
 	return index_lookup_.nz() ? index_lookup_.ele() + index_lookup_.nz() : NULL;
 }
 
 template <class T_Element, class T_Alloc>
-inline SparseVector<T_Element,T_Alloc>::const_iterator SparseVector<T_Element,T_Alloc>::end() const {
+inline typename SparseVector<T_Element,T_Alloc>::const_iterator SparseVector<T_Element,T_Alloc>::end() const {
 	return index_lookup_.nz() ? index_lookup_.ele() + index_lookup_.nz() : NULL;
 }
 
 template <class T_Element, class T_Alloc>
-inline SparseVector<T_Element,T_Alloc>::reverse_iterator SparseVector<T_Element,T_Alloc>::rbegin() {
+inline typename SparseVector<T_Element,T_Alloc>::reverse_iterator SparseVector<T_Element,T_Alloc>::rbegin() {
 	return reverse_iterator(end());
 }
 
 template <class T_Element, class T_Alloc>
-inline SparseVector<T_Element,T_Alloc>::const_reverse_iterator SparseVector<T_Element,T_Alloc>::rbegin() const {
+inline typename SparseVector<T_Element,T_Alloc>::const_reverse_iterator SparseVector<T_Element,T_Alloc>::rbegin() const {
 	return const_reverse_iterator(end());
 }
 
 template <class T_Element, class T_Alloc>
-inline SparseVector<T_Element,T_Alloc>::reverse_iterator SparseVector<T_Element,T_Alloc>::rend() {
+inline typename SparseVector<T_Element,T_Alloc>::reverse_iterator SparseVector<T_Element,T_Alloc>::rend() {
 	return reverse_iterator(begin());
 }
 
 template <class T_Element, class T_Alloc>
-inline SparseVector<T_Element,T_Alloc>::const_reverse_iterator SparseVector<T_Element,T_Alloc>::rend() const {
+inline typename SparseVector<T_Element,T_Alloc>::const_reverse_iterator SparseVector<T_Element,T_Alloc>::rend() const {
 	return const_reverse_iterator(begin());
 }
 
 // Element setup and modification
 
 template <class T_Element, class T_Alloc>
-inline SparseVector<T_Element,T_Alloc>::size_type SparseVector<T_Element,T_Alloc>::max_nz() const {
+inline typename SparseVector<T_Element,T_Alloc>::size_type SparseVector<T_Element,T_Alloc>::max_nz() const {
 	return max_nz_;
 }
 
@@ -946,7 +946,7 @@ inline void SparseVector<T_Element,T_Alloc>::assume_sorted(bool assume_is_sorted
 
 template <class T_Element, class T_Alloc>
 inline
-SparseVector<T_Element,T_Alloc>::element_type*
+typename SparseVector<T_Element,T_Alloc>::element_type*
 SparseVector<T_Element,T_Alloc>::lookup_element(size_type i)
 {
 	return const_cast<element_type*>(SparseVectorUtilityPack::lookup_element(index_lookup_,i,assume_sorted_));
@@ -954,7 +954,7 @@ SparseVector<T_Element,T_Alloc>::lookup_element(size_type i)
 
 template <class T_Element, class T_Alloc>
 inline
-const SparseVector<T_Element,T_Alloc>::element_type*
+const typename SparseVector<T_Element,T_Alloc>::element_type*
 SparseVector<T_Element,T_Alloc>::lookup_element(size_type i) const
 {
 	return SparseVectorUtilityPack::lookup_element(index_lookup_,i,assume_sorted_);
@@ -1024,17 +1024,17 @@ inline void SparseVectorSlice<T_Element>::bind(SparseVectorSlice svs)
 // Sparse Vector Templated interface for linear algebra operations
 
 template <class T_Element>
-inline SparseVectorSlice<T_Element>::size_type SparseVectorSlice<T_Element>::dim() const {
+inline typename SparseVectorSlice<T_Element>::size_type SparseVectorSlice<T_Element>::dim() const {
 	return size_;
 }
 
 template <class T_Element>
-inline SparseVectorSlice<T_Element>::size_type SparseVectorSlice<T_Element>::nz() const {
+inline typename SparseVectorSlice<T_Element>::size_type SparseVectorSlice<T_Element>::nz() const {
 	return index_lookup_.nz();
 }
 
 template <class T_Element>
-inline SparseVectorSlice<T_Element>::difference_type SparseVectorSlice<T_Element>::offset() const {
+inline typename SparseVectorSlice<T_Element>::difference_type SparseVectorSlice<T_Element>::offset() const {
 	return index_lookup_.offset();
 }
 
@@ -1044,42 +1044,42 @@ inline bool SparseVectorSlice<T_Element>::is_sorted() const {
 }
 
 template <class T_Element>
-inline SparseVectorSlice<T_Element>::iterator SparseVectorSlice<T_Element>::begin() {
+inline typename SparseVectorSlice<T_Element>::iterator SparseVectorSlice<T_Element>::begin() {
 	return index_lookup_.ele();
 }
 
 template <class T_Element>
-inline SparseVectorSlice<T_Element>::const_iterator SparseVectorSlice<T_Element>::begin() const {
+inline typename SparseVectorSlice<T_Element>::const_iterator SparseVectorSlice<T_Element>::begin() const {
 	return index_lookup_.ele();
 }
 
 template <class T_Element>
-inline SparseVectorSlice<T_Element>::iterator SparseVectorSlice<T_Element>::end() {
+inline typename SparseVectorSlice<T_Element>::iterator SparseVectorSlice<T_Element>::end() {
 	return index_lookup_.ele() + index_lookup_.nz();
 }
 
 template <class T_Element>
-inline SparseVectorSlice<T_Element>::const_iterator SparseVectorSlice<T_Element>::end() const {
+inline typename SparseVectorSlice<T_Element>::const_iterator SparseVectorSlice<T_Element>::end() const {
 	return index_lookup_.ele() +  index_lookup_.nz();
 }
 
 template <class T_Element>
-inline SparseVectorSlice<T_Element>::reverse_iterator SparseVectorSlice<T_Element>::rbegin() {
+inline typename SparseVectorSlice<T_Element>::reverse_iterator SparseVectorSlice<T_Element>::rbegin() {
 	return reverse_iterator(end());
 }
 
 template <class T_Element>
-inline SparseVectorSlice<T_Element>::const_reverse_iterator SparseVectorSlice<T_Element>::rbegin() const {
+inline typename SparseVectorSlice<T_Element>::const_reverse_iterator SparseVectorSlice<T_Element>::rbegin() const {
 	return const_reverse_iterator(end());
 }
 
 template <class T_Element>
-inline SparseVectorSlice<T_Element>::reverse_iterator SparseVectorSlice<T_Element>::rend() {
+inline typename SparseVectorSlice<T_Element>::reverse_iterator SparseVectorSlice<T_Element>::rend() {
 	return reverse_iterator(begin());
 }
 
 template <class T_Element>
-inline SparseVectorSlice<T_Element>::const_reverse_iterator SparseVectorSlice<T_Element>::rend() const {
+inline typename SparseVectorSlice<T_Element>::const_reverse_iterator SparseVectorSlice<T_Element>::rend() const {
 	return const_reverse_iterator(begin());
 }
 
@@ -1087,7 +1087,7 @@ inline SparseVectorSlice<T_Element>::const_reverse_iterator SparseVectorSlice<T_
 
 template <class T_Element>
 inline
-SparseVectorSlice<T_Element>::element_type*
+typename SparseVectorSlice<T_Element>::element_type*
 SparseVectorSlice<T_Element>::lookup_element(size_type i)
 {
 	return const_cast<element_type*>(SparseVectorUtilityPack::lookup_element(index_lookup_,i,assume_sorted_));
@@ -1095,7 +1095,7 @@ SparseVectorSlice<T_Element>::lookup_element(size_type i)
 
 template <class T_Element>
 inline
-const SparseVectorSlice<T_Element>::element_type*
+const typename SparseVectorSlice<T_Element>::element_type*
 SparseVectorSlice<T_Element>::lookup_element(size_type i) const
 {
 	return SparseVectorUtilityPack::lookup_element(index_lookup_,i,assume_sorted_);
