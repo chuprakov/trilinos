@@ -445,11 +445,9 @@ int main(int argc, char *argv[])
 #ifdef HAVE_MPI
   MPI_Init(&argc,&argv);
 #endif
-  puts("Please configure Didasko with:\n"
-       "--enable-epetra\n"
-       "--enable-teuchos\n"
-       "--enable-triutils\n"
-       "--enable-amesos\n");
+  puts("Please configure Didasko with:");
+  puts("--enable-epetra");
+  puts("--enable-nox\n");
 
 #ifdef HAVE_MPI
   MPI_Finalize();

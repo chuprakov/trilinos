@@ -155,10 +155,13 @@ int main( int argc, char **argv )
 #else
   Epetra_SerialComm Comm;
 #endif
-
+ 
   if (Comm.NumProc() != 1) {
-    cerr << "Please run this test with one process only!" << endl;
-    // return true not to break the tests
+    if (Comm.MyPID() == 0)
+      cerr << "Please run this test with one process only!" << endl;
+#ifdef HAVE_MPI
+    MPI_Finalize();
+#endif
     exit(EXIT_SUCCESS);
   }
       
@@ -308,9 +311,9 @@ int main(int argc, char *argv[])
 #ifdef HAVE_MPI
   MPI_Init(&argc,&argv);
 #endif
-  puts("Please configure Didasko with:\n"
-       "--enable-epetra\n"
-       "--enable-ml");
+  puts("Please configure Didasko with:");
+  puts("--enable-epetra");
+  puts("--enable-nox");
 
 #ifdef HAVE_MPI
   MPI_Finalize();

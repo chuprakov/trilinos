@@ -159,8 +159,12 @@ int main(int argc, char *argv[])
 #endif
 
   // check number of processes
-  if( Comm.NumProc() != 1 ) {
-    cerr << "*ERR* can be used only with one process" << endl;
+  if (Comm.NumProc() != 1) {
+    if (Comm.MyPID() == 0)
+      cerr << "*ERR* can be used only with one process" << endl;
+#ifdef HAVE_MPI
+    MPI_Finalize();
+#endif
     exit(EXIT_SUCCESS);
   }
     
