@@ -57,8 +57,6 @@ public:
 
 	//@}
 
-	//@}
-
 	/** @name Calculation Members.
 	  *
 	  * See \Ref{NLP} for a description of the behavior of these member functions.
@@ -123,6 +121,8 @@ protected:
 	 * @param obj_grad    Pointers to Gf, f and c
 	 */
 	virtual void imp_calc_Gc(const VectorSlice& x, bool newx, const FirstOrderInfo& first_order_info) const = 0;
+
+	//@}
 
 private:
 	mutable MatrixWithOp      *Gc_;

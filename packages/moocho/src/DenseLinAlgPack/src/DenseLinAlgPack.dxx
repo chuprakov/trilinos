@@ -28,6 +28,7 @@ that is BLAS compatable.
   //@{
     //@Include: IVector.h
     //@Include: VectorClass.h
+    //@Include: VectorClassTmpl.h
     //@Include: GenMatrixClass.h
     //@Include: GenMatrixAsTriSym.h
   //@}

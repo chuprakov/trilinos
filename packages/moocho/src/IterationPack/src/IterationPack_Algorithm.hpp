@@ -24,7 +24,7 @@ namespace GeneralIterationPack {
 // ToDo: 7/31/98: Finish documentation.
 
 ///
-/** Acks as the central hub for an iterative algorithm.
+/** Acts as the central hub for an iterative algorithm.
   *
   * This class is the center for a framework for iterative algorithms.
   * These iterative algorithms are of the form:

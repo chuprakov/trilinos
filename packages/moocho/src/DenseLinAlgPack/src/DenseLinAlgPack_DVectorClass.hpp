@@ -22,8 +22,17 @@
 
 namespace LinAlgPack {
 
-	typedef VectorTmpl<value_type>       Vector;
-	typedef VectorSliceTmpl<value_type>  VectorSlice;
+/** @name Vector.
+  * @memo typedef \Ref{VectorTmpl}<value_type> Vector;
+  */
+//@{
+//@}
+
+/** @name VectorSlice.
+  * @memo typedef \Ref{VectorSliceTmpl}<value_type> VectorSlice;
+  */
+//@{
+//@}
 
 } // end namespace LinAlgPack
 

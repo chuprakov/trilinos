@@ -28,63 +28,74 @@ Uses packages LinAlgPack, SparseLinAlgPack, SparseSolverPack
 
   //@}
 
-  /** @name 2. Archetictural Classes.
+  /** @name 2. NLP Interfaces */
+  //@{
+      //@Include: ./include/NLPrSQPTailoredApproach.h
+      //@Include: ./include/NLPrSQPTailoredApproachTester.h
+  //@}
+
+
+  /** @name 3. Archetictural Classes.
     */
   //@{
+    //@Include: ./include/rSQPAlgoClientInterface.h
+    //@Include: ./include/rSQPSolverClientInterface.h
     //@Include: ./include/rSQPState.h
   //@}
 
-  /** @name 3. Standard Algorithm Step Classes.
+  /** @name 4. Standard Algorithm Step Classes.
     */
   //@{
     //@Include: ./include/std/CalcDFromYPYZPZ_Step.h
     //@Include: ./include/std/CalcLambdaIndepStd_AddedStep.h
     //@Include: ./include/std/CalcReducedGradLagrangianStd_AddedStep.h
+    //@Include: ./include/std/CheckBasisFromCPy_Step.h
     //@Include: ./include/std/CheckBasisFromPy_Step.h
     //@Include: ./include/std/CheckConvergenceStd_AddedStep.h
     //@Include: ./include/std/CheckSkipBFGSUpdateStd_Step.h
     //@Include: ./include/std/DecompositionSystemVarReductStd.h
     //@Include: ./include/std/DepDirecStd_Step.h
     //@Include: ./include/std/EvalNewPointStd_Step.h
-    //@Include: ./include/std/IndepDirecExact_Step.h
+    //@Include: ./include/std/EvalNewPointTailoredApproach_Step.h
+    //@Include: ./include/std/EvalNewPointTailoredApproachCoordinate_Step.h
+    //@Include: ./include/std/EvalNewPointTailoredApproachOrthogonal_Step.h
+    //@Include: ./include/std/IndepDirecWithBoundsStd_Step.h
     //@Include: ./include/std/IndepDirecWithoutBounds_Step.h
     //@Include: ./include/std/InitFinDiffReducedHessian_Step.h
-    //@Include: ./include/std/InitFinDiffReducedHessian_StepSetOptions.h
     //@Include: ./include/std/LineSearch2ndOrderCorrect_Step.h
-    //@Include: ./include/std/LineSearch2ndOrderCorrect_StepSetOptions.h
     //@Include: ./include/std/LineSearchDirect_Step.h
     //@Include: ./include/std/LineSearchFailureNewBasisSelection_Step.h
     //@Include: ./include/std/LineSearchFullStepAfterKIter_Step.h
     //@Include: ./include/std/LineSearchFullStep_Step.h
     //@Include: ./include/std/LineSearchWatchDog_Step.h
     //@Include: ./include/std/MeritFunc_ModifiedL1LargerSteps_AddedStep.h
-    //@Include: ./include/std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.h
     //@Include: ./include/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.h
     //@Include: ./include/std/MeritFunc_PenaltyParamUpdate_AddedStep.h
-    //@Include: ./include/std/MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.h
     //@Include: ./include/std/MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.h
-    //@Include: ./include/std/NewBasisSelectionStd_Strategy.h
-    //@Include: ./include/std/NewBasisSelection_Strategy.h
     //@Include: ./include/std/NumFixedDepIndep_AddedStep.h
-    //@Include: ./include/std/PrintReducedQPError_AddedStep.h
     //@Include: ./include/std/ReducedGradientStd_Step.h
+    //@Include: ./include/std/ReducedHessianExactStd_Step.h
+    //@Include: ./include/std/ReducedHessianSecantUpdateStd_Step.h
+    //@Include: ./include/std/SetDBoundsStd_AddedStep.h
   //@}
 
-  /** @name 4. Reduced Space QP Solvers.
-    */
-  //@{
-    //@Include: ./include/std/ReducedQPSolver.h
-  //@}
-
-  /** @name 5. Standard Algorithm Track Classes.
+  /** @name 5. Strategy/Utility classes.
     */
   //@{
   //@}
 
-  /** @name 6. Misc. Classes and Functions.
+  /** @name 6. Standard Algorithm Track Classes.
+    */
+  //@{
+    //@Include: ./include/std/rSQPTrackComposite.h
+    //@Include: ./include/std/rSQPTrackConsoleStd.h
+    //@Include: ./include/std/rSQPTrackStatsStd.h
+    //@Include: ./include/std/rSQPTrackSummaryStd.h
+  //@}
+
+  /** @name 7. Misc. Classes and Functions.
     */
   //@{
   //@}
-
 
 //@}

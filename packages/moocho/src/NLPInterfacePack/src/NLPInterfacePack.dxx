@@ -10,6 +10,7 @@ Uses Package {\em SparseLinAlgPack}.\\
   /** @name 1. Abstract inteface classes */
   //@{
     //@Include: NLP.h
+    //@Include: NLPObjGradient.h
     //@Include: NLPFirstOrderInfo.h
     //@Include: NLPSecondOrderInfo.h
     //@Include: NLPReduced.h
@@ -17,12 +18,18 @@ Uses Package {\em SparseLinAlgPack}.\\
   /** @name 2. Implementation node classes */
   //@{
     //@Include: NLPFullToReduced.h
-    //@Include: NLPDualCalc.h
+    //@Include: NLPFullToReducedExplJac.h
   //@}
-  /** @name 3. Testing Functions and Classes */
+  /** @name 3. Utility classes */
   //@{
-    //@Include: ../test/TestNLPFirstOrderInfoCOOR.h
+    //@Include: CalcFiniteDiffFirstDerivativeProduct.h
+    //@Include: CalcFiniteDiffFirstDerivatives.h
+  //@}
+  /** @name 4. Testing Functions and Classes */
+  //@{
+    //@Include: ../test/NLPFirstDerivativesTester.h
+    //@Include: ../test/NLPFirstDerivativesTesterSetOptions.h
     //@Include: ../test/TestNLPDerivatives.h
-    //@Include: ../test/CompareDenseSparseMatricesStd.h
+    //@Include: ../test/TestNLPFirstOrderInfoCOOR.h
   //@}
 //@}

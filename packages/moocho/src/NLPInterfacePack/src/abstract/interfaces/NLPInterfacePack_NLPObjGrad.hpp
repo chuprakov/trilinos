@@ -26,6 +26,9 @@ public:
 
 	///
 	/** Initialize the NLP for its first use.
+	  *
+	  * This function implementation should be called by subclass implementations
+	  * in order to reset counts for f(x) and c(x) evaluations.
 	  */
 	void initialize();
 
@@ -110,6 +113,8 @@ protected:
 	 * @param obj_grad    [out] Pointers to Gf, f and c
 	 */
 	virtual void imp_calc_Gf(const VectorSlice& x, bool newx, const ObjGradInfo& obj_grad_info) const = 0;
+
+	//@}
 
 private:
 	mutable Vector                  *Gf_;
