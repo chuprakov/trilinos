@@ -54,8 +54,8 @@ In the future this docuentation will be much more extensive.
 		for sparse linear algebra with implementations of abstract interfaces
 		in  <tt>%AbstractLinAlgPack</tt>.
 	<li> <A HREF="../SparseSolverPack/html/index.html">SparseSolverPack</A>: Abstract C++ interfaces
-		and subclasses for serial linear solvers with implementations of abstract interfades
-		in  <tt>%AbstractLinAlgPack</tt>. *** Not updated yet!
+		and subclasses for serial linear solvers with implementations of abstract interfaces
+		in  <tt>%AbstractLinAlgPack</tt>.
 	<li> <A HREF="../ConstrainedOptimizationPack/html/index.html">ConstrainedOptimizationPack</A>:
 		C++ classes and interfaces for utilities for constrained optimization based on the
 		interfaces in <tt>%AbstractLinAlgPack</tt>.
@@ -76,7 +76,7 @@ In the future this docuentation will be much more extensive.
 	<ul>
 	<li> <A HREF="../ExampleNLPFirstOrderDirect/html/index.html">ExampleNLPFirstOrderDirect</A>.
 	<li> <A HREF="../ExampleNLPFirstOrderInfo/html/index.html">ExampleNLPFirstOrderInfo</A>.
-	<li> <A HREF="../ExampleNLPFullToReducedExplJac/html/index.html">ExampleNLPFullToReducedExplJac</A>. *** Not updated yet!
+	<li> <A HREF="../ExampleNLPBanded/html/index.html">ExampleNLPBanded</A>.
 	</ul>
 
 </ul>
