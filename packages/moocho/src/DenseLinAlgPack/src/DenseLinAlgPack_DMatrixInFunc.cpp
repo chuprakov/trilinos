@@ -15,7 +15,7 @@
 
 #include <sstream>
 
-#include "Misc/include/EatInputComment.h"
+#include "EatInputComment.h"
 #include "../include/GenMatrixInFunc.h"
 #include "../include/VectorInFunc.h"
 #include "../include/GenMatrixClass.h"

@@ -27,7 +27,7 @@
 #endif
 
 #include "LinAlgPackTypes.h"
-#include "Misc/include/update_success.h"
+#include "update_success.h"
 
 namespace LinAlgPack {
 

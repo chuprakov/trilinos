@@ -20,7 +20,7 @@
 #include "LinAlgPack/include/assert_print_nan_inf.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/GenMatrixClass.h"
-#include "Misc/include/check_nan_inf.h"
+#include "check_nan_inf.h"
 
 bool LinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
 	, bool throw_excpt, std::ostream* out )

@@ -21,7 +21,7 @@
 #include <stdexcept>
 
 #include "BLAS_CppTypes.h"
-#include "Misc/include/fortran_types.h"
+#include "fortran_types.h"
 
 // Overloaded BLAS wrappers.
 // The naming convention is the Fortran BLAS name minus the type prefix.

@@ -22,7 +22,7 @@
 #include "../include/VectorClass.h"
 #include "../include/VectorOut.h"
 #include "../include/MatVecCompare.h"
-#include "Misc/include/update_success.h"
+#include "update_success.h"
 
 namespace {
 

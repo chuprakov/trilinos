@@ -21,7 +21,7 @@
 
 #include "LinAlgPackDebugAcronyms.h"
 #include "extended_value_type.h"
-#include "Misc/include/fortran_types.h"
+#include "fortran_types.h"
 
 /** @name {\bf LinAlgPack Options}.
   *

@@ -20,7 +20,7 @@
 #ifndef LINALGPACK_IO_H
 #define LINALGPACK_IO_H
 
-#include "Misc/include/EatInputComment.h"
+#include "EatInputComment.h"
 #include "VectorIn.h"
 #include "VectorOut.h"
 #include "GenMatrixIn.h"
