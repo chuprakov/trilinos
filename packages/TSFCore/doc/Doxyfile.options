@@ -1,7 +1,7 @@
 #
 # Include the global look and feel options
 #
-@INCLUDE               = ../../../../../Trilinos/packages/common/Doxyfile
+@INCLUDE               = ../../../../Trilinos/packages/common/Doxyfile
 #
 # Package options
 #
