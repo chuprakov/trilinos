@@ -146,7 +146,9 @@ namespace AbstractLinAlgPack {
  * dimension.
  *
  * Note that This interface is completely worthless unless \c var_dep() returns
- * some valid range (i.e. a basis matrix exists).
+ * some valid range (i.e. a basis matrix exists).  If <tt>var_dep().size() == 0</tt>
+ * then this is an indication that \c this is uninitialzed and therefore only
+ * the factory methods can be called!
  *
  * The method \c update_basis() is used by the client to update the basis matrix \a C and
  * perhaps the direct sensitivity matrix \a D and it's auxillary projected sensistivity
@@ -270,6 +272,10 @@ public:
 	 * This would be a strange case where there was no basis matrix in which
 	 * case this whole interface would be worthless.  Therefore, to be useful
 	 * <tt>return.size() > 0</tt> must be true.
+	 *
+	 * If \c var_dep().size() returns 0, then this is an indication that
+	 * \c *this is uninitialized and only the factory methods can be
+	 * called.
 	 */
 	virtual Range1D var_dep() const = 0;
 	///
