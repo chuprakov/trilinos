@@ -71,7 +71,7 @@ namespace NLPInterfacePack {
  * Note that \c con_undecomp() may return an invalid range if there are no undecomposed equalities.
  *
  * Note that the matrix objects returned from \c space_GcU(), \c space_D(), \c space_V(),
- * \c space_P(), \c space_GcUD() and \c space GhD() can not be expected to be usable until they are
+ * \c space_P(), \c space_GcUD() and \c space_GhD() can not be expected to be usable until they are
  * passed to the calculation routines or have been intialized in some other way.
  *
  * <b>Subclass Developer's Notes:</b>
