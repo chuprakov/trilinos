@@ -27,14 +27,14 @@ size_type DecompositionSystem::r() const
 	return this->space_range()->dim();
 }
 
-Range1D DecompositionSystem::con_decomp() const
+Range1D DecompositionSystem::equ_decomp() const
 {
 	const size_type
 		r = this->r();
 	return r ? Range1D(1,this->r()) : Range1D::Invalid;
 }
 	
-Range1D DecompositionSystem::con_undecomp() const
+Range1D DecompositionSystem::equ_undecomp() const
 {
 	const size_type
 		r = this->r(),
