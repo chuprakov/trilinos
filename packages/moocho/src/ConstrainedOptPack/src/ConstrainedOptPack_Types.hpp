@@ -49,6 +49,7 @@ class MeritFuncNLPDirecDeriv;
 class MeritFuncPenaltyParam;
 class MeritFuncPenaltyParams;
 class DirectLineSearch_Strategy;
+class VarReductOrthog_Strategy;
 
 // concrete subclasses
 
@@ -67,6 +68,7 @@ class MatrixSymPosDefLBFGS;
 class MatrixIdentConcatStd;
 class DirectLineSearchArmQuad_Strategy;
 class DirectLineSearchArmQuad_StrategySetOptions;
+class VarReductOrthogDenseStd_Strategy;
 
 // decomposition classes
 

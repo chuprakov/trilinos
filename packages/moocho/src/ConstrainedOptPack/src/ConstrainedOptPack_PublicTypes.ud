@@ -28,6 +28,7 @@ using ConstrainedOptimizationPack::MeritFuncNLPDirecDeriv;
 using ConstrainedOptimizationPack::MeritFuncPenaltyParam;
 using ConstrainedOptimizationPack::MeritFuncPenaltyParams;
 using ConstrainedOptimizationPack::DirectLineSearch_Strategy;
+using ConstrainedOptimizationPack::VarReductOrthog_Strategy;
 
 using ConstrainedOptimizationPack::MeritFuncCalc1DQuadratic;
 using ConstrainedOptimizationPack::MeritFuncCalcNLP;
@@ -44,6 +45,7 @@ using ConstrainedOptimizationPack::MatrixSymPosDefLBFGS;
 using ConstrainedOptimizationPack::MatrixIdentConcatStd;
 using ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy;
 using ConstrainedOptimizationPack::DirectLineSearchArmQuad_StrategySetOptions;
+using ConstrainedOptimizationPack::VarReductOrthogDenseStd_Strategy;
 
 using ConstrainedOptimizationPack::DecompositionSystem;
 using ConstrainedOptimizationPack::DecompositionSystemVarReduct;
