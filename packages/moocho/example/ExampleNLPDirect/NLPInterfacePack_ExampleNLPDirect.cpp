@@ -134,11 +134,11 @@ void ExampleNLPFirstOrderDirect::initialize()
 {
 
 #ifndef _WINDOWS
-    using NLPInterfacePack::NLPFirstOrderInfo;
+    using NLPInterfacePack::NLPFirstOrderDirect;
 #endif
 
 	if( initialized_ ) {
-		NLPObjGradient::initialize();
+		NLPFirstOrderDirect::initialize();
 		return;
 	}
 
@@ -147,7 +147,7 @@ void ExampleNLPFirstOrderDirect::initialize()
 //	xinit_->set_ele(n_/3+1,1.0/0.0); // Uncomment to throw in an invalid value
 //	xinit_->set_ele((2*n_)/3+1,0.0/0.0); // Uncomment to throw in an invalid value
 
-	NLPObjGradient::initialize();
+	NLPFirstOrderDirect::initialize();
 
 	initialized_ = true;
 }
