@@ -53,6 +53,7 @@ void DirectSparseSolverImp::BasisMatrixImp::initialize(
 	dim_            = dim;
 	fact_struc_     = fact_struc;
 	fact_nonzeros_  = fact_nonzeros;
+	vec_space_.initialize(dim);
 }
 
 void DirectSparseSolverImp::BasisMatrixImp::set_uninitialized()
@@ -60,6 +61,7 @@ void DirectSparseSolverImp::BasisMatrixImp::set_uninitialized()
 	dim_            = 0;
 	fact_struc_     = MemMngPack::null;
 	fact_nonzeros_  = MemMngPack::null;
+	vec_space_.initialize(0);
 }
 
 const DirectSparseSolverImp::BasisMatrixImp::fact_nonzeros_ptr_t&
@@ -69,6 +71,16 @@ DirectSparseSolverImp::BasisMatrixImp::get_fact_nonzeros() const
 }
 
 // Overridden from MatrixBase
+
+const VectorSpace& DirectSparseSolverImp::BasisMatrixImp::space_cols() const
+{
+	return vec_space_;
+}
+
+const VectorSpace& DirectSparseSolverImp::BasisMatrixImp::space_rows() const
+{
+	return vec_space_;
+}
 
 size_type DirectSparseSolverImp::BasisMatrixImp::rows() const
 {

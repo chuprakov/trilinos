@@ -17,6 +17,7 @@
 #define DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_IMP_H
 
 #include "DirectSparseSolver.h"
+#include "SparseLinAlgPack/include/VectorSpaceSerial.h"
 
 namespace SparseSolverPack {
 
@@ -102,6 +103,10 @@ public:
 		//@{
 
 		///
+		const VectorSpace& space_cols() const;
+		///
+		const VectorSpace& space_rows() const;
+		///
 		size_type rows() const;
 		///
 		size_type cols() const;
@@ -175,10 +180,12 @@ public:
 
 	private:
 
-		/// Allow only DirectSparseSolverImp to initialize objects of this type
+		///
+		/** Allow only DirectSparseSolverImp to initialize objects of this type.
+		 * Important !!!!! Even though DirectSparseSolverImp has access to these
+		 * private members it is strictly not to access them directly !!!!
+		 */
 		friend class DirectSparseSolverImp;
-		// Even though DirectSparseSolverImp has access to these private members it
-		// is strictly not to access them directly.
 
 #ifdef DOXYGEN_COMPILE
 		FactorizationStructure    *fact_struc;
@@ -187,6 +194,7 @@ public:
 		size_type                 dim_;
 		fact_struc_ptr_t          fact_struc_;
 		fact_nonzeros_ptr_t       fact_nonzeros_;
+		VectorSpaceSerial         vec_space_;
 #endif
 
 	}; // end class BasisMatrixImp
