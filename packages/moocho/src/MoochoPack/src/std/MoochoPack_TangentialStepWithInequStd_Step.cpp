@@ -127,7 +127,7 @@ bool TangentialStepWithInequStd_Step::do_step(
 	
 	// Accessed/modified/updated (just some)
 	VectorMutable  *Ypy_k = (m ? &Ypy_iq.get_k(0) : NULL);
-	const MatrixOp   &Z_k   = Z_iq.get_k(0);
+	const MatrixOp  &Z_k   = Z_iq.get_k(0);
 	VectorMutable  &pz_k  = pz_iq.set_k(0);
 	VectorMutable  &Zpz_k = Zpz_iq.set_k(0);
 
@@ -240,13 +240,13 @@ bool TangentialStepWithInequStd_Step::do_step(
 
 	const value_type  qp_bnd_inf = NLP::infinite_bound();
 
-	const Vector      &qp_g       = qp_grad_k;
-	const MatrixSymOp   &qp_G       = rHL_iq.get_k(0);
-	const value_type		qp_etaL     = 0.0;
+	const Vector            &qp_g       = qp_grad_k;
+	const MatrixSymOp       &qp_G       = rHL_iq.get_k(0);
+	const value_type        qp_etaL     = 0.0;
 	vec_mut_ptr_t           qp_dL       = Teuchos::null;
 	vec_mut_ptr_t           qp_dU       = Teuchos::null;
 	Teuchos::RefCountPtr<const MatrixOp>
-                            qp_E        = Teuchos::null;
+                          qp_E        = Teuchos::null;
 	BLAS_Cpp::Transp        qp_trans_E  = BLAS_Cpp::no_trans;
 	vec_mut_ptr_t           qp_b        = Teuchos::null;
 	vec_mut_ptr_t           qp_eL       = Teuchos::null;
@@ -255,8 +255,8 @@ bool TangentialStepWithInequStd_Step::do_step(
 	                        qp_F        = Teuchos::null;
 	BLAS_Cpp::Transp        qp_trans_F  = BLAS_Cpp::no_trans;
 	vec_mut_ptr_t           qp_f        = Teuchos::null;
-	value_type				qp_eta      = 0.0;
-	VectorMutable     &qp_d       = pz_k;  // pz_k will be updated directly!
+	value_type              qp_eta      = 0.0;
+	VectorMutable           &qp_d       = pz_k;  // pz_k will be updated directly!
 	vec_mut_ptr_t           qp_nu       = Teuchos::null;
 	vec_mut_ptr_t           qp_mu       = Teuchos::null;
 	vec_mut_ptr_t           qp_Ed       = Teuchos::null;
@@ -297,18 +297,24 @@ bool TangentialStepWithInequStd_Step::do_step(
 			<< "    ||Ypy_k(var_indep)||inf = " << Ypy_indep_norm_inf << std::endl;
 
 	const bool
-		use_simple_pz_bounds = ( m == 0 || ( Zvr != NULL && Ypy_indep_norm_inf == 0.0 ) );
+		use_simple_pz_bounds = ( m == 0 || ( Zvr != NULL && Ypy_indep_norm_inf == 0.0 ) ),
+		bounded_var_dep      = ( m > 0 && num_bounded( *bl->sub_view(var_dep), *bu->sub_view(var_dep), qp_bnd_inf ) );
 
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
 		out
-			<< (use_simple_pz_bounds ? "\nUsing simple bounds on pz ...\n" : "\nUsing bounds on full Z*pz ...\n");
+			<< (use_simple_pz_bounds
+					? "\nUsing simple bounds on pz ...\n"
+					: "\nUsing bounds on full Z*pz ...\n")
+			<< (bounded_var_dep
+					? "\nThere are finite bounds on dependent variables.  Adding extra inequality constrints for D*pz ...\n" 
+					: "\nThere are no finite bounds on dependent variables.  There will be no extra inequality constraints added on D*pz ...\n" ) ;
 
 	if( use_simple_pz_bounds ) {
 		// Set simple bound constraints on pz
 		qp_dL = bl->sub_view(var_indep);
 		qp_dU = bu->sub_view(var_indep);
 		qp_nu = nu_k.sub_view(var_indep); // nu_k(var_indep) will be updated directly!
-		if(m) {
+		if( m && bounded_var_dep ) {
 			// Set general inequality constraints for D*pz
 			qp_E   = Teuchos::rcp(&Zvr->D(),false);
 			qp_b   = Ypy_k->sub_view(var_dep);
@@ -317,8 +323,11 @@ bool TangentialStepWithInequStd_Step::do_step(
 			qp_mu  = nu_k.sub_view(var_dep);  // nu_k(var_dep) will be updated directly!
 			qp_Ed  = Zpz_k.sub_view(var_dep); // Zpz_k(var_dep) will be updated directly!
 		}
+		else {
+			// Leave these as NULL since there is no extra general inequality constraints
+		}
 	}
-	else if( !use_simple_pz_bounds ) {
+	else if( !use_simple_pz_bounds ) { // ToDo: Leave out parts for unbounded dependent variables!
 		// There are no simple bounds! (leave qp_dL, qp_dU and qp_nu as null)
 		// Set general inequality constraints for Z*pz
 		qp_E   = Teuchos::rcp(&Z_k,false);
@@ -441,6 +450,11 @@ bool TangentialStepWithInequStd_Step::do_step(
 	else if( use_simple_pz_bounds ) {
 		// Just have to set Zpz_k(var_indep) = pz_k
 		*Zpz_k.sub_view(var_indep) = pz_k;
+		if( m && !bounded_var_dep ) {
+			// Must compute Zpz_k(var_dep) = D*pz
+			LinAlgOpPack::V_MtV( &*Zpz_k.sub_view(var_dep), Zvr->D(), BLAS_Cpp::no_trans, pz_k );
+			// ToDo: Remove the compuation of Zpz here unless you must
+		}
 	}
 	else {
 		assert(0);
