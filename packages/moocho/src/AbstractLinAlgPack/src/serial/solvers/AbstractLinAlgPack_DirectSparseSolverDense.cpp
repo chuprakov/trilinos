@@ -29,6 +29,7 @@
 
 namespace {
 
+// My swap function
 template<class T>
 inline
 void my_swap( T* v1, T* v2 )
@@ -36,6 +37,14 @@ void my_swap( T* v1, T* v2 )
 	T tmp = *v1;
 	*v1 = *v2;
 	*v2 = tmp;
+}
+
+// A cast to const is needed because the standard does not return a reference from
+// valarray<>::operator[]() const.
+template <class T>
+std::valarray<T>& cva(const std::valarray<T>& va )
+{
+	return const_cast<std::valarray<T>&>(va);
 }
 
 } // end namespace
@@ -126,7 +135,7 @@ void DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(
 
 	// Solve
 	LinAlgLAPack::getrs(
-		fn.LU_(1,fs.rank_,1,fs.rank_), &fn.ipiv_[0], BLAS_Cpp::trans_not(M_trans)
+		fn.LU_(1,fs.rank_,1,fs.rank_), &cva(fn.ipiv_)[0], BLAS_Cpp::trans_not(M_trans)
 		,&B
 		);
 

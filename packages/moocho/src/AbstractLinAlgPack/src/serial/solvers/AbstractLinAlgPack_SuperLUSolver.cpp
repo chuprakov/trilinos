@@ -350,7 +350,7 @@ void SuperLUSolverImpl::factor(
 		int b_nz = -1;
 		copy_basis_nonzeros(
 			m,n,nz,a_val,a_row_i,a_col_ptr
-			,&fs.perm_r_orig_[0],&fs.perm_c_orig_[0],fs.rank_
+			,&cva(fs.perm_r_orig_)[0],&cva(fs.perm_c_orig_)[0],fs.rank_
 			,&b_val[0],&b_row_i[0],&b_col_ptr[0]
 			,&b_nz
 			);
@@ -392,7 +392,7 @@ void SuperLUSolverImpl::factor(
 		,0.0    /* drop_tol */
 		,local_relax
 		,local_panel_size
-		,const_cast<int*>(&fs.etree_[0])
+		,const_cast<int*>(&cva(fs.etree_)[0])
 		,NULL   /* work */
 		,0      /* lwork */
 		,&cva(fs.perm_r_)[0]
