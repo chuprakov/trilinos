@@ -1,4 +1,4 @@
-#include "SimpleBlockPreconditionerFactory.h"
+#include "SimpleCBlockPreconditionerFactory.h"
 #include "TSFPreconditionerFactory.h"
 #include "GenericRightPreconditioner.h"
 #include "TSFVectorSpaceBase.h"
@@ -8,7 +8,7 @@
 #include "TSFBlockLinearOperator.h"
 #include "TSFUtils.h"
 #include "RightBlockNSOperatorSource.h"
-#include "SimpleOperatorSource.h"
+#include "SimpleCOperatorSource.h"
 #include "BlockForwardsolver.h"
 #include "TSFZeroOperator.h"
 #include "Aztec2TSF.h"
@@ -17,17 +17,17 @@ using namespace SPP;
 using namespace TSF;
 using std::string;
 //Need to update to reflect the Schur solver (pick a default solver)
-SimpleBlockPreconditionerFactory
-::SimpleBlockPreconditionerFactory(const TSFLinearSolver& Fsolver, const SchurFactory& sfac)
+SimpleCBlockPreconditionerFactory
+::SimpleCBlockPreconditionerFactory(const TSFLinearSolver& Fsolver, const SchurFactory& sfac)
  	: TSFPreconditionerFactoryBase(), Fsolver_(Fsolver), sfac_(sfac)
 {}
 
-SimpleBlockPreconditionerFactory
-::SimpleBlockPreconditionerFactory(const TSFLinearSolver& Fsolver, const SchurFactory& sfac, const TSFLinearSolver& Schursolver)
+SimpleCBlockPreconditionerFactory
+::SimpleCBlockPreconditionerFactory(const TSFLinearSolver& Fsolver, const SchurFactory& sfac, const TSFLinearSolver& Schursolver)
   : TSFPreconditionerFactoryBase(), Fsolver_(Fsolver), sfac_(sfac), Schursolver_(Schursolver)
 {}
 
-TSFPreconditioner SimpleBlockPreconditionerFactory
+TSFPreconditioner SimpleCBlockPreconditionerFactory
 ::createPreconditioner(const TSFLinearOperator& op) const
 {
   TSFError::raise("SimpleBlockPreconditionerFactory::createPreconditioner called "
@@ -35,7 +35,7 @@ TSFPreconditioner SimpleBlockPreconditionerFactory
   return 0;
 }
 
-TSFPreconditioner SimpleBlockPreconditionerFactory
+TSFPreconditioner SimpleCBlockPreconditionerFactory
 ::createPreconditioner(const TSFOperatorSource& opSource) const
 {
   // SIMPLE style block preconditioner
@@ -47,7 +47,7 @@ TSFPreconditioner SimpleBlockPreconditionerFactory
   // Get the saddle point operator S
   TSFLinearOperator S = opSource.getOp();
 
-   const SimpleOperatorSource* diagSrcPtr = dynamic_cast<const SimpleOperatorSource*>(opSource.ptr());
+   const SimpleCOperatorSource* diagSrcPtr = dynamic_cast<const SimpleCOperatorSource*>(opSource.ptr());
 
   // Get the blocks from S
   TSFLinearOperator F = S.getBlock(0,0);
@@ -96,7 +96,7 @@ TSFPreconditioner SimpleBlockPreconditionerFactory
   return new GenericRightPreconditioner(prec);
 }
 
-string SimpleBlockPreconditionerFactory::toString() const 
+string SimpleCBlockPreconditionerFactory::toString() const 
 {
 	return "NS block preco factory";
 }

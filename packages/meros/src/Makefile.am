@@ -31,8 +31,10 @@ CORE_H = \
           $(srcdir)/BJBSchurFactory.h                   \
           $(srcdir)/SchurFactoryBase.h                  \
 	  $(srcdir)/SimpleOperatorSource.h               \
+	  $(srcdir)/SimpleCOperatorSource.h               \
 	  $(srcdir)/SimpleSchurFactory.h                 \
 	  $(srcdir)/SimpleBlockPreconditionerFactory.h   \
+	  $(srcdir)/SimpleCBlockPreconditionerFactory.h   \
           $(srcdir)/NSBlockPreconditionerFactory.h       \
 	  $(srcdir)/SchurFactory.h                      
 
@@ -51,8 +53,10 @@ CORE = \
           $(srcdir)/BJBSchurFactory.cpp                   \
           $(srcdir)/SchurFactoryBase.cpp                  \
           $(srcdir)/NSBlockPreconditionerFactory.cpp      \
+	  $(srcdir)/SimpleCBlockPreconditionerFactory.cpp   \
 	  $(srcdir)/SimpleBlockPreconditionerFactory.cpp   \
           $(srcdir)/SimpleOperatorSource.cpp               \
+	  $(srcdir)/SimpleCOperatorSource.cpp		   \
 	  $(srcdir)/SimpleSchurFactory.cpp                 \
           $(srcdir)/SchurFactory.cpp                      
 

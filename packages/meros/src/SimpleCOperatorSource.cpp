@@ -1,4 +1,4 @@
-   #include "SimpleOperatorSource.h"
+   #include "SimpleCOperatorSource.h"
    #include "RightBlockNSOperatorSource.h"
    #include "TSFOperatorSourceBase.h"
    #include "TSFBlockLinearOperator.h"
@@ -10,17 +10,17 @@
   using namespace SPP;
   using std::string;
 
-  SimpleOperatorSource::SimpleOperatorSource(TSFLinearOperator& S)
+  SimpleCOperatorSource::SimpleCOperatorSource(TSFLinearOperator& S)
   : S_(S), Dinv_(), hasDinv_(false)
   {;}
 
-  TSFLinearOperator SimpleOperatorSource
+  TSFLinearOperator SimpleCOperatorSource
   ::getOp() const
  {
   return S_;
  }
 
-  TSFLinearOperator SimpleOperatorSource
+  TSFLinearOperator SimpleCOperatorSource
   ::getDinv() const
   {
   // if Dinv_ already exists (passed in or already built), return it
@@ -37,34 +37,38 @@
 
       cerr << "number of diags in F_crs " << F_crs->NumGlobalDiagonals() << endl;
 
-      // get an appropriate vector (with the right map)
-      // to hold the extracted diagonals
-      // and extract the diagonal from F
-      Epetra_Vector Fdiags(F_crs->Map());
-      F_crs->ExtractDiagonalCopy(Fdiags);
+       cerr << "\n Simple C " << endl;
 
-      // get the reciprocals of the diag values
-      Epetra_Vector FdiagsInv(F_crs->Map());
-      FdiagsInv.Reciprocal(Fdiags);
-      
-      // cerr << "F diags" << endl;
-      // cerr << FdiagsInv << endl;
-      // cerr << Fdiags << endl;
+  TSFVector vec = F.range().createMember();
+  TSFVector posvec = F.range().createMember();
+  TSFVector finalvec = F.range().createMember();
+  int numRows = F.range().dim();
+  int len;
 
-      // make an epetra matrix for the diagonal matrix
-      Epetra_CrsMatrix *Dinv_crs = 
+  for (int i = 0; i<numRows; i++)
+    {
+    TSFArray<int> ind;
+    TSFArray<TSFReal> aij;
+    F.getRow(i, ind, aij);
+    len = aij.length();
+    for (int j = 0; j<len; j++)
+      {
+	vec[j] = aij[j];
+      }
+    //posvec = vec.abs();
+    TSFReal sum  = vec.abs().sumElements();
+    finalvec[i] = sum;
+    }
+  cerr << "\nfinalvec is:" << finalvec;
+   Epetra_CrsMatrix *Dinv_crs = 
         new Epetra_CrsMatrix(Copy, 
                              F_crs->RowMatrixColMap(),
                              F_crs->OperatorDomainMap(),
                              0);
 
-      // Dinv_crs->ReplaceDiagonalValues(FdiagsInv);
-      // Note: this is building -Dinv
-      int diagSize = FdiagsInv.GlobalLength();
-      double value;
-      for (int j = 0; j < diagSize; j++)
+ for (int j = 0; j < numRows; j++)
         {
-          value = -1.0*FdiagsInv[j]; // get negative of diags
+          double value = -1.0/finalvec[j]; // get negative of diags
           Dinv_crs->InsertGlobalValues(j, 1, &value, &j);
         }
 
@@ -93,7 +97,7 @@
     }
   }
 
-  string SimpleOperatorSource::toString() const 
+  string SimpleCOperatorSource::toString() const 
   {
-	return "Simple operator source";
+	return "Simple C operator source";
   }

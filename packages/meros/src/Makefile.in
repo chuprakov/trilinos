@@ -120,8 +120,10 @@ CORE_H = \
           $(srcdir)/BJBSchurFactory.h                   \
           $(srcdir)/SchurFactoryBase.h                  \
 	  $(srcdir)/SimpleOperatorSource.h               \
+	  $(srcdir)/SimpleCOperatorSource.h               \
 	  $(srcdir)/SimpleSchurFactory.h                 \
 	  $(srcdir)/SimpleBlockPreconditionerFactory.h   \
+	  $(srcdir)/SimpleCBlockPreconditionerFactory.h   \
           $(srcdir)/NSBlockPreconditionerFactory.h       \
 	  $(srcdir)/SchurFactory.h                      
 
@@ -141,8 +143,10 @@ CORE = \
           $(srcdir)/BJBSchurFactory.cpp                   \
           $(srcdir)/SchurFactoryBase.cpp                  \
           $(srcdir)/NSBlockPreconditionerFactory.cpp      \
+	  $(srcdir)/SimpleCBlockPreconditionerFactory.cpp   \
 	  $(srcdir)/SimpleBlockPreconditionerFactory.cpp   \
           $(srcdir)/SimpleOperatorSource.cpp               \
+	  $(srcdir)/SimpleCOperatorSource.cpp		   \
 	  $(srcdir)/SimpleSchurFactory.cpp                 \
           $(srcdir)/SchurFactory.cpp                      
 
@@ -312,9 +316,10 @@ am__objects_1 = Aztec2TSF.$(OBJEXT) ReadPetra.$(OBJEXT) \
 	KayLoghinSchurFactory.$(OBJEXT) DiagSchurFactory.$(OBJEXT) \
 	BJBSchurFactory.$(OBJEXT) SchurFactoryBase.$(OBJEXT) \
 	NSBlockPreconditionerFactory.$(OBJEXT) \
+	SimpleCBlockPreconditionerFactory.$(OBJEXT) \
 	SimpleBlockPreconditionerFactory.$(OBJEXT) \
-	SimpleOperatorSource.$(OBJEXT) SimpleSchurFactory.$(OBJEXT) \
-	SchurFactory.$(OBJEXT)
+	SimpleOperatorSource.$(OBJEXT) SimpleCOperatorSource.$(OBJEXT) \
+	SimpleSchurFactory.$(OBJEXT) SchurFactory.$(OBJEXT)
 am__objects_2 =
 @HAVE_MPI_TRUE@am__objects_3 = $(am__objects_2)
 @HAVE_MPI_FALSE@am__objects_3 =
@@ -344,6 +349,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/SchurFactory.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SchurFactoryBase.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SimpleBlockPreconditionerFactory.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/SimpleCBlockPreconditionerFactory.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/SimpleCOperatorSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SimpleOperatorSource.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/SimpleSchurFactory.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFLinearOperator2EpetraRowMatrix.Po \
@@ -438,9 +445,12 @@ BJBSchurFactory.$(OBJEXT): $(srcdir)/BJBSchurFactory.cpp
 SchurFactoryBase.$(OBJEXT): $(srcdir)/SchurFactoryBase.cpp
 NSBlockPreconditionerFactory.$(OBJEXT): \
 	$(srcdir)/NSBlockPreconditionerFactory.cpp
+SimpleCBlockPreconditionerFactory.$(OBJEXT): \
+	$(srcdir)/SimpleCBlockPreconditionerFactory.cpp
 SimpleBlockPreconditionerFactory.$(OBJEXT): \
 	$(srcdir)/SimpleBlockPreconditionerFactory.cpp
 SimpleOperatorSource.$(OBJEXT): $(srcdir)/SimpleOperatorSource.cpp
+SimpleCOperatorSource.$(OBJEXT): $(srcdir)/SimpleCOperatorSource.cpp
 SimpleSchurFactory.$(OBJEXT): $(srcdir)/SimpleSchurFactory.cpp
 SchurFactory.$(OBJEXT): $(srcdir)/SchurFactory.cpp
 libmeros.a: $(libmeros_a_OBJECTS) $(libmeros_a_DEPENDENCIES) 
@@ -468,6 +478,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SchurFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SchurFactoryBase.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleBlockPreconditionerFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleCBlockPreconditionerFactory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleCOperatorSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleOperatorSource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleSchurFactory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFLinearOperator2EpetraRowMatrix.Po@am__quote@
@@ -656,6 +668,18 @@ NSBlockPreconditionerFactory.obj: $(srcdir)/NSBlockPreconditionerFactory.cpp
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o NSBlockPreconditionerFactory.obj `cygpath -w $(srcdir)/NSBlockPreconditionerFactory.cpp`
 
+SimpleCBlockPreconditionerFactory.o: $(srcdir)/SimpleCBlockPreconditionerFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/SimpleCBlockPreconditionerFactory.cpp' object='SimpleCBlockPreconditionerFactory.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SimpleCBlockPreconditionerFactory.Po' tmpdepfile='$(DEPDIR)/SimpleCBlockPreconditionerFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SimpleCBlockPreconditionerFactory.o `test -f '$(srcdir)/SimpleCBlockPreconditionerFactory.cpp' || echo '$(srcdir)/'`$(srcdir)/SimpleCBlockPreconditionerFactory.cpp
+
+SimpleCBlockPreconditionerFactory.obj: $(srcdir)/SimpleCBlockPreconditionerFactory.cpp
+@AMDEP_TRUE@	source='$(srcdir)/SimpleCBlockPreconditionerFactory.cpp' object='SimpleCBlockPreconditionerFactory.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SimpleCBlockPreconditionerFactory.Po' tmpdepfile='$(DEPDIR)/SimpleCBlockPreconditionerFactory.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SimpleCBlockPreconditionerFactory.obj `cygpath -w $(srcdir)/SimpleCBlockPreconditionerFactory.cpp`
+
 SimpleBlockPreconditionerFactory.o: $(srcdir)/SimpleBlockPreconditionerFactory.cpp
 @AMDEP_TRUE@	source='$(srcdir)/SimpleBlockPreconditionerFactory.cpp' object='SimpleBlockPreconditionerFactory.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@	depfile='$(DEPDIR)/SimpleBlockPreconditionerFactory.Po' tmpdepfile='$(DEPDIR)/SimpleBlockPreconditionerFactory.TPo' @AMDEPBACKSLASH@
@@ -679,6 +703,18 @@ SimpleOperatorSource.obj: $(srcdir)/SimpleOperatorSource.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/SimpleOperatorSource.Po' tmpdepfile='$(DEPDIR)/SimpleOperatorSource.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SimpleOperatorSource.obj `cygpath -w $(srcdir)/SimpleOperatorSource.cpp`
+
+SimpleCOperatorSource.o: $(srcdir)/SimpleCOperatorSource.cpp
+@AMDEP_TRUE@	source='$(srcdir)/SimpleCOperatorSource.cpp' object='SimpleCOperatorSource.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SimpleCOperatorSource.Po' tmpdepfile='$(DEPDIR)/SimpleCOperatorSource.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SimpleCOperatorSource.o `test -f '$(srcdir)/SimpleCOperatorSource.cpp' || echo '$(srcdir)/'`$(srcdir)/SimpleCOperatorSource.cpp
+
+SimpleCOperatorSource.obj: $(srcdir)/SimpleCOperatorSource.cpp
+@AMDEP_TRUE@	source='$(srcdir)/SimpleCOperatorSource.cpp' object='SimpleCOperatorSource.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/SimpleCOperatorSource.Po' tmpdepfile='$(DEPDIR)/SimpleCOperatorSource.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o SimpleCOperatorSource.obj `cygpath -w $(srcdir)/SimpleCOperatorSource.cpp`
 
 SimpleSchurFactory.o: $(srcdir)/SimpleSchurFactory.cpp
 @AMDEP_TRUE@	source='$(srcdir)/SimpleSchurFactory.cpp' object='SimpleSchurFactory.o' libtool=no @AMDEPBACKSLASH@
