@@ -731,9 +731,6 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 	, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type beta) const
 {
-	using BLAS_Cpp::no_trans;
-	using BLAS_Cpp::trans;
-
 	assert( !F_ || P_u_.cols() == f_->size() ); // ToDo: Add P_u when needed!
 
 	using BLAS_Cpp::no_trans;

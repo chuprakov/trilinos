@@ -116,7 +116,7 @@ public:
 		, value_type			max_var_bounds_viol		= 1e-5
 		, EJournalOutputLevel 	journal_output_level 	= PRINT_NOTHING
 		, int					journal_print_digits	= 6
-		, bool					check_results			= true
+		, bool					check_results			= false
 		);
 
 	///

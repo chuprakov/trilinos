@@ -377,12 +377,12 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			if(trase_out)
 				*trase_out
 					<< "\nquasi_newton == AUTO:\n"
-					<< "\nnlp.has_bounds() == " << nlp.has_bounds() << ":";
+					<< "\nnlp.has_bounds() == " << nlp.has_bounds() << ":\n";
 			if( n - r > cov_.max_dof_quasi_newton_dense_ ) {
 				if(trase_out)
 					*trase_out
 						<< "n-r = " << n-r << " > max_dof_quasi_newton_dense = "
-						<< cov_.max_dof_quasi_newton_dense_;
+						<< cov_.max_dof_quasi_newton_dense_ <<  ":\n";
 				if( !algo->nlp().has_bounds() ) {
 					if(trase_out)
 						*trase_out
@@ -400,8 +400,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				if(trase_out)
 					*trase_out
 						<< "n-r = " << n-r << " <= max_dof_quasi_newton_dense = "
-						<< cov_.max_dof_quasi_newton_dense_ << std::endl;
-				cov_.quasi_newton_ = QN_BFGS;
+						<< cov_.max_dof_quasi_newton_dense_ << ":\n";
 				if( !algo->nlp().has_bounds() ) {
 					if(trase_out)
 						*trase_out
@@ -418,30 +417,31 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			break;
 		}
 		case QN_BFGS:
-			cov_.quasi_newton_ = QN_BFGS;
-			break;
 		case QN_PBFGS:
-			if( uov_.qp_solver_type_ == QP_QPKWIK ) {
-				if(trase_out)
-					*trase_out
-						<< "\nqp_solver == QPKWIK and quasi_newton == PBFGS:\n"
-						<< "QPKWIK can not use this option, setting quasi_newton = BFGS\n";
-				cov_.quasi_newton_ = QN_BFGS;
-			}
-			else
-				cov_.quasi_newton_ = QN_PBFGS;
-			break;
 		case QN_LBFGS:
 		case QN_LPBFGS:
-			if( uov_.qp_solver_type_ == QP_QPKWIK ) {
+			cov_.quasi_newton_ = uov_.quasi_newton_;
+			break;
+	    default:
+			assert(0); // Invalid option!
+	}
+
+	// Set the default options that where not already set yet
+	set_default_options(uov_,&cov_,trase_out);
+
+	// Adjust quasi-newton for QPKWIK
+	switch( cov_.quasi_newton_ ) {
+		case QN_BFGS:
+			break;
+		case QN_PBFGS:
+		case QN_LBFGS:
+		case QN_LPBFGS:
+			if( cov_.qp_solver_type_ == QP_QPKWIK ) {
 				if(trase_out)
 					*trase_out
 						<< "\nqp_solver == QPKWIK and quasi_newton != BFGS:\n"
 						<< "QPKWIK can not use any other option than BFGS, setting quasi_newton = BFGS\n";
 				cov_.quasi_newton_ = QN_BFGS;
-			}
-			else {
-				cov_.quasi_newton_ = uov_.quasi_newton_;
 			}
 			break;
 	    default:
@@ -456,9 +456,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				<< "We can not use auto rescaling with this option, setting lbfgs_auto_scaling = false\n";
 		cov_.lbfgs_auto_scaling_ = false;
 	}
-
-	// Set the default options that where not already set yet
-	set_default_options(uov_,&cov_,trase_out);
 
 	// /////////////////////////////////////////////////////
 	// C.1. Create and set the state object
