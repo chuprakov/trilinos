@@ -245,6 +245,21 @@ void BasisSystemCompositeStd::get_C_N(
 
 // Constructors / initializers
 
+BasisSystemCompositeStd::BasisSystemCompositeStd()
+{}
+
+BasisSystemCompositeStd::BasisSystemCompositeStd(
+	const VectorSpace::space_ptr_t       &space_x
+	,const VectorSpace::space_ptr_t      &space_c
+	,const mat_nonsing_fcty_ptr_t        &factory_C
+	)
+{
+	this->initialize(
+		space_x,Range1D(1,space_c->dim()),Range1D(space_c->dim()+1,space_x->dim())
+		,space_c,factory_C
+		);
+}
+
 BasisSystemCompositeStd::BasisSystemCompositeStd(
 	const VectorSpace::space_ptr_t       &space_x
 	,const Range1D                       &var_dep

@@ -662,8 +662,8 @@ bool BasisSystemTester::test_basis_system(
 						if(dump_all() && print_tests >= PRINT_ALL) {
 							*out << "\nalpha = " << alpha << std::endl;
 							*out << "\nv_xD =\n"                   << *v_xD;
-							*out << "\ninv(C')*v_chD =\n"          << *v_chD_tmp;
-							*out << "\nalpha*C'*inv(C')*v_chD =\n" << *v_xD_tmp;
+							*out << "\ninv(C')*v_xD =\n"           << *v_chD_tmp;
+							*out << "\nalpha*C'*inv(C')*v_xD =\n"  << *v_xD_tmp;
 						}
 						llresult = false;
 					}

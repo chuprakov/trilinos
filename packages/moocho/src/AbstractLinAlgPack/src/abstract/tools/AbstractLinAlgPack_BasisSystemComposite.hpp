@@ -199,6 +199,15 @@ public:
 	 */
 	BasisSystemCompositeStd();
 
+	///
+	/**  Calls <tt>this->initialize()</tt> in a way that is consistant with above helper functions.
+	 */
+	BasisSystemCompositeStd(
+		const VectorSpace::space_ptr_t       &space_x
+		,const VectorSpace::space_ptr_t      &space_c
+		,const mat_nonsing_fcty_ptr_t        &factory_C
+		);
+
 	/// Calls <tt>this->initialize()</tt>
 	BasisSystemCompositeStd(
 		const VectorSpace::space_ptr_t       &space_x
