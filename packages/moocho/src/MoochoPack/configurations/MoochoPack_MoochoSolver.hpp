@@ -470,6 +470,16 @@ public:
 	bool do_algo_outputting() const;
 
 	///
+	/** Turn on and off the generation of a statistics file.
+	 */
+	void generate_stats_file(bool);
+
+	///
+	/** Return if a statistics file will be generated or not.
+	 */
+	bool generate_stats_file() const;
+
+	///
 	/** Set the <tt>std::ostream</tt> object to use for algorithm output.
 	 *
 	 * @param  algo_out  [in] Smart pointer to an <tt>std::ostream</tt> object
@@ -723,6 +733,18 @@ inline
 bool rSQPppSolver::do_algo_outputting() const
 {
 	return do_algo_outputting_;
+}
+
+inline
+void rSQPppSolver::generate_stats_file(bool generate_stats_file)
+{
+	generate_stats_file_ = generate_stats_file;
+}
+
+inline
+bool rSQPppSolver::generate_stats_file() const
+{
+	return generate_stats_file_;
 }
 
 } // end namespace ReducedSpaceSQPPack
