@@ -20,7 +20,7 @@
 #include <iosfwd>
 
 #include "NLPInterfacePack/include/NLPInterfacePackTypes.h"
-#include "ReducedSpaceSQPPack/Configurations/MamaJama/mama_jama_solve_return.h"
+#include "ReducedSpaceSQPPack/Configurations/rSQPppSolver.h"
 
 namespace NLPInterfacePack {
 
@@ -47,7 +47,7 @@ namespace NLPInterfacePack {
  * @returns Returns the return value from <tt>ReducedSpaceSQPPack::rsqp_mama_jama_solve()</tt>
  * (see this function for most of the documentation).
  */
-ReducedSpaceSQPPack::mama_jama_solve_return_t
+ReducedSpaceSQPPack::rSQPppSolver::ESolutionStatus
 ExampleNLPFirstOrderDirectRun(
 	const VectorSpace&   vec_space
 	,value_type          xo

@@ -29,15 +29,14 @@
 
 #include "ExampleNLPFirstOrderDirectRun.h"
 #include "ExampleNLPFirstOrderDirect.h"
-#include "ReducedSpaceSQPPack/include/rSQPAlgoClientInterface.h"
-#include "ReducedSpaceSQPPack/Configurations/MamaJama/rsqp_mama_jama_solve.h"
+//#include "ReducedSpaceSQPPack/include/rSQPAlgoClientInterface.h"
 #include "GeneralIterationPack/include/AlgorithmTrack.h"
 #include "NLPInterfacePack/test/test_nlp_first_order_direct.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/BasisSystem.h"
 #include "OptionsFromStream.h"
 
-ReducedSpaceSQPPack::mama_jama_solve_return_t
+ReducedSpaceSQPPack::rSQPppSolver::ESolutionStatus
 NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	const VectorSpace&   vec_space
 	,value_type          xo
@@ -54,9 +53,10 @@ NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	namespace ofsp = OptionsFromStreamPack;
 	using ofsp::OptionsFromStream;
 	namespace rsqp = ReducedSpaceSQPPack;
-	typedef rsqp::mama_jama_solve_return_t  solve_return_t;
+	using rsqp::rSQPppSolver;
 
-	solve_return_t solve_return(solve_return_t::SOLVE_RETURN_EXCEPTION);
+	rSQPppSolver::ESolutionStatus
+		solve_return = rSQPppSolver::SOLVE_RETURN_EXCEPTION;
 
 	int err = 0;
 	
@@ -78,28 +78,24 @@ NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	ExampleNLPFirstOrderDirect
 		nlp(VectorSpace::space_ptr_t(&vec_space,false),xo,has_bounds,dep_bounded);
 
+	// Create the solver object and set it up
+	rSQPppSolver solver;
+	solver.set_nlp(rcp::rcp(&nlp,false));                  // Set the NLP!
+	if(out) solver.set_console_out(rcp::rcp(out,false));   // Set the console outputting
+
 	// Run rSQP++ using the MamaJama configuration
-	solve_return = rsqp::rsqp_mama_jama_solve(
-		rcp::rcp(&nlp,false)    // nlp
-		,NULL                   // options (read from "rSQPpp.opt")
-		,NULL                   // summary_out
-		,NULL                   // journal_out
-		,NULL                   // algo_out
-		,out                    // console_out
-		,NULL                   // track
-		,NULL                   // basis_sys
-		);
-	switch(solve_return.status) {
-		case solve_return_t::SOLVE_RETURN_SOLVED:
-		case solve_return_t::SOLVE_RETURN_MAX_ITER:
-		case solve_return_t::SOLVE_RETURN_MAX_RUN_TIME:
+	solve_return = solver.solve_nlp();
+	switch(solve_return) {
+		case rSQPppSolver::SOLVE_RETURN_SOLVED:
+		case rSQPppSolver::SOLVE_RETURN_MAX_ITER:
+		case rSQPppSolver::SOLVE_RETURN_MAX_RUN_TIME:
 			if(eout)
 				*eout   << "Congradulations!  The vector space and NLP class seems to check out!\n";
 			if(out && out != eout)
 				*out    << "\nCongradulations!  The vector space and NLP class seems to check out!\n";
 			break;
-		case solve_return_t::SOLVE_RETURN_NLP_TEST_FAILED:
-		case solve_return_t::SOLVE_RETURN_EXCEPTION:
+		case rSQPppSolver::SOLVE_RETURN_NLP_TEST_FAILED:
+		case rSQPppSolver::SOLVE_RETURN_EXCEPTION:
 			if(eout)
 				*eout   << "Oh No!  Something did not checkout!\n";
 			if(out && out != eout)
