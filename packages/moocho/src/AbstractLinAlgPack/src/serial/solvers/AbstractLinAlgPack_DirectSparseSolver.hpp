@@ -33,7 +33,8 @@ namespace SparseSolverPack {
  * symmetric system.  Of couse this would also allow a client to attempt
  * to solve an unsymmetric system with a symmetric solver which of course
  * will not work.  A symmetric implementation can of course check that
- * <tt>A.rows() == A.cols()</tt> but it would be much more difficult to determine
+ * <tt>A.rows() == A.cols()</tt> but it would be much more difficult
+ * to determine
  * if the matrix was indeed symmetric.  It is likely that the symmetric
  * solver would only extract the upper or lower triangular region of an
  * unsymmetric matrix and would never check the other triangular region

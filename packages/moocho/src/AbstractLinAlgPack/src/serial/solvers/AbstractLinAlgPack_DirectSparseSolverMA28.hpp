@@ -86,7 +86,7 @@ protected:
 		,LinAlgPack::IVector                            *col_perm
 		,size_type                                      *rank
 		,BasisMatrixImp                                 *basis_matrix
-		,std::ostream                                   *out            = NULL
+		,std::ostream                                   *out
 		);
 	///
 	void imp_factor(
@@ -94,7 +94,7 @@ protected:
 		,const BasisMatrix::fact_struc_ptr_t            &fact_struc
 		,const BasisMatrixImp::fact_nonzeros_ptr_t      &fact_nonzeros
 		,BasisMatrixImp                                 *basis_matrix
-		,std::ostream                                   *out            = NULL
+		,std::ostream                                   *out
 		);
 
 	//@}

@@ -86,7 +86,7 @@ void BasisSystemPermDirectSparse::update_basis(
 	,MatrixWithOp*              D
 	,MatrixWithOp*              GcUP
 	,MatrixWithOp*              GhUP
-	,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
+	,EMatRelations              mat_rel
 	) const
 {
 	assert(0); // ToDo: Implement!
@@ -128,7 +128,7 @@ void BasisSystemPermDirectSparse::set_basis(
 	,MatrixWithOp              *D
 	,MatrixWithOp              *GcUP
 	,MatrixWithOp              *GhUP
-	,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
+	,EMatRelations              mat_rel
 	) const
 {
 	assert(0); // ToDo: Implement!
@@ -149,7 +149,7 @@ void BasisSystemPermDirectSparse::select_basis(
 	,MatrixWithOp               *D
 	,MatrixWithOp               *GcUP
 	,MatrixWithOp               *GhUP
-	,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
+	,EMatRelations              mat_rel
 	) const
 {
 	assert(0); // ToDo: Implement!

@@ -13,6 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#include <assert.h>
+
 #include "SparseSolverPack/include/DirectSparseSolverImp.h"
 #include "AbstractFactoryStd.h"
 #include "ThrowException.h"

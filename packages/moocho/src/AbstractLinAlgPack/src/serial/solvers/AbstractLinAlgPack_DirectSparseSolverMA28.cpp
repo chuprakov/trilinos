@@ -13,6 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#include <assert.h>
+
 #include "SparseSolverPack/include/DirectSparseSolverMA28.h"
 
 namespace SparseSolverPack {
@@ -33,36 +35,43 @@ void DirectSparseSolverMA28::estimated_fillin_ratio(
 	assert(0); // ToDo: Implement!
 }
 
-void DirectSparseSolverMA28::analyze_and_factor(
-	const MatrixConvertToSparse     &A
-	,IVector                        *row_perm
-	,IVector                        *col_perm
-	,size_type                      *rank
-	,BasisMatrix                    *basis_matrix
-	,std::ostream                   *out
-	)
-{
-	assert(0); // ToDo: Implement!
-}
+// Overridden from DirectSparseSolverImp
 
-void DirectSparseSolverMA28::factor(
-	const MatrixConvertToSparse              &A
-	,const BasisMatrix::fact_struc_ptr_t     &fact_struc
-	,BasisMatrix                             *basis_matrix
-	,std::ostream                            *out
-	)
-{
-	assert(0); // ToDo: Implement!
-}
-
-const DirectSparseSolverMA28::basis_matrix_ptr_t&
-DirectSparseSolverMA28::get_basis_matrix() const
+const MemMngPack::ref_count_ptr<DirectSparseSolver::FactorizationStructure>
+DirectSparseSolverMA28::create_fact_struc() const
 {
 	assert(0); // ToDo: Implement!
 	return MemMngPack::null;
 }
 
-void DirectSparseSolverMA28::release_memory()
+const MemMngPack::ref_count_ptr<DirectSparseSolverImp::FactorizationNonzeros>
+DirectSparseSolverMA28::create_fact_nonzeros() const
+{
+	assert(0); // ToDo: Implement!
+	return MemMngPack::null;
+}
+
+void DirectSparseSolverMA28::imp_analyze_and_factor(
+	const SparseLinAlgPack::MatrixConvertToSparse   &A
+	,const BasisMatrix::fact_struc_ptr_t            &fact_struc
+	,const BasisMatrixImp::fact_nonzeros_ptr_t      &fact_nonzeros
+	,LinAlgPack::IVector                            *row_perm
+	,LinAlgPack::IVector                            *col_perm
+	,size_type                                      *rank
+	,BasisMatrixImp                                 *basis_matrix
+	,std::ostream                                   *out            = NULL
+	)
+{
+	assert(0); // ToDo: Implement!
+}
+
+void DirectSparseSolverMA28::imp_factor(
+	const SparseLinAlgPack::MatrixConvertToSparse   &A
+	,const BasisMatrix::fact_struc_ptr_t            &fact_struc
+	,const BasisMatrixImp::fact_nonzeros_ptr_t      &fact_nonzeros
+	,BasisMatrixImp                                 *basis_matrix
+	,std::ostream                                   *out            = NULL
+	)
 {
 	assert(0); // ToDo: Implement!
 }

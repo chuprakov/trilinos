@@ -35,34 +35,6 @@ namespace SparseSolverPack {
 class DirectSparseSolverImp : public DirectSparseSolver {
 public:
 
-	/** @name Overridden from DirectSparseSolver */
-	//@{
-
-	///
-	void analyze_and_factor(
-		const SparseLinAlgPack::MatrixConvertToSparse   &A
-		,LinAlgPack::IVector                            *row_perm
-		,LinAlgPack::IVector                            *col_perm
-		,size_type                                      *rank
-		,BasisMatrix                                    *basis_matrix
-		,std::ostream                                   *out
-		);
-	///
-	void factor(
-		const SparseLinAlgPack::MatrixConvertToSparse   &A
-		,BasisMatrix                                    *basis_matrix
-		,const BasisMatrix::fact_struc_ptr_t            &fact_struc
-		,std::ostream                                   *out
-		);
-	///
-	const BasisMatrix::fact_struc_ptr_t& get_fact_struc() const;
-	///
-	void set_uninitialized();
-
-	//@}
-
-protected:
-
 	/** @name Protected types */
 	//@{
 
@@ -113,15 +85,14 @@ protected:
 			);
 
 		///
-		/** Make the basis matrix uninitialized.
+		/** Make uninitialized.
 		 *
 		 * Postconditions:<ul>
-		 * <li> <tt>this->get_fact_struc().get() == NULL</tt>
-		 * <li> <tt>this->get_fact_nonzeros().get() == NULL</tt>
+		 * <li> ToDo: Fill-in
 		 * </ul>
 		 */
-		virtual void set_uninitialized();
-		
+		void set_uninitialized();
+
 		/// Return a smart pointer to the object that represents the factorization structure.
 		virtual const fact_nonzeros_ptr_t&  get_fact_nonzeros() const;
 
@@ -157,6 +128,34 @@ protected:
 	}; // end class BasisMatrixImp
 
 	//@}
+
+	/** @name Overridden from DirectSparseSolver */
+	//@{
+
+	///
+	void analyze_and_factor(
+		const SparseLinAlgPack::MatrixConvertToSparse   &A
+		,LinAlgPack::IVector                            *row_perm
+		,LinAlgPack::IVector                            *col_perm
+		,size_type                                      *rank
+		,BasisMatrix                                    *basis_matrix
+		,std::ostream                                   *out
+		);
+	///
+	void factor(
+		const SparseLinAlgPack::MatrixConvertToSparse   &A
+		,BasisMatrix                                    *basis_matrix
+		,const BasisMatrix::fact_struc_ptr_t            &fact_struc
+		,std::ostream                                   *out
+		);
+	///
+	const BasisMatrix::fact_struc_ptr_t& get_fact_struc() const;
+	///
+	void set_uninitialized();
+
+	//@}
+
+protected:
 
 	/** @name Protected pure virtual methods to be overridden by concrete direct solver subclasses */
 	//@{
