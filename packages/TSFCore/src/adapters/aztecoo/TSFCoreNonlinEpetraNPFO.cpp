@@ -26,9 +26,17 @@ namespace Nonlin {
 
 // Constructors / Initializers / accessors
 
-EpetraNPFO::EpetraNPFO()
-  :isInitialized_(false)
-{}
+EpetraNPFO::EpetraNPFO(
+	const int      maxLinSolveIter
+	,const double  relLinSolveTol
+	)
+	:maxLinSolveIter_(maxLinSolveIter)
+	,relLinSolveTol_(relLinSolveTol)
+	,isInitialized_(false)
+{
+	// Turn off output from Aztec by default!
+	aztecOO_.SetAztecOption(AZ_output,AZ_none);
+}
 
 EpetraNPFO::EpetraNPFO(
   const Teuchos::RefCountPtr<Epetra::NonlinearProblemFirstOrder>   &epetra_np
@@ -87,7 +95,7 @@ void EpetraNPFO::initialize(
     typedef LinearOp<Scalar> T_itfc;
     typedef MemMngPack::PostModNothing<T_itfc> pm_t;
     typedef MemMngPack::AbstractFactoryStd<T_itfc,T_itfc,pm_t,DcDu_Allocator>  af_t;
-    factory_DcDu_[l-1] = Teuchos::rcp( new af_t( pm_t(), DcDu_Allocator( epetra_np_->use_EO_DcDu(l) ) ) );
+    factory_DcDu_[l-1] = Teuchos::rcp( new af_t( pm_t(), DcDu_Allocator( epetra_np_->use_DcDu_op(l) ) ) );
   }
 
   // Setup cache arrays for dealing with DcDu
@@ -316,7 +324,7 @@ void EpetraNPFO::set_DcDu(int l, LinearOp<Scalar>* DcDu_l)
   EpetraNPFO_VALIDATE_L_IN_RANGE(l);
   using DynamicCastHelperPack::dyn_cast;
   if(DcDu_l) {
-    if(epetra_np_->use_EO_DcDu(l)) {
+    if(epetra_np_->use_DcDu_op(l)) {
       DcDu_op_[l-1] = &dyn_cast<TSFCore::EpetraLinearOp>(*DcDu_l);
     }
     else {
@@ -333,7 +341,7 @@ void EpetraNPFO::set_DcDu(int l, LinearOp<Scalar>* DcDu_l)
 LinearOp<Scalar>* EpetraNPFO::get_DcDu(int l)
 {
   EpetraNPFO_VALIDATE_L_IN_RANGE(l);
-  if(epetra_np_->use_EO_DcDu(l)) {
+  if(epetra_np_->use_DcDu_op(l)) {
     return DcDu_op_[l-1];
   }
   return DcDu_mv_[l-1];
@@ -462,14 +470,16 @@ void EpetraNPFO::calc_Dc(
   if(c_ && !c_updated_) c_->setUninitialized( &epetra_c );
   // DcDy
   Teuchos::RefCountPtr<Epetra_Operator>  epetra_DcDy_op;
-  Teuchos::RefCountPtr<AztecOO>          aztecoo_solver;
   Teuchos::RefCountPtr<Epetra_Operator>  epetra_DcDy_prec;
   const bool allow_specialized_DcDy_prec = true; // ToDo: Make this an external parameter!
   const bool specialized_DcDy_prec = ( epetra_np_->specialized_DcDy_prec() && allow_specialized_DcDy_prec );
   if(computeGradients && DcDy_ && !DcDy_updated_) {
-    DcDy_->setUninitialized( &epetra_DcDy_op, NULL, &aztecoo_solver, &epetra_DcDy_prec, NULL );
+    DcDy_->setUninitialized( &epetra_DcDy_op, NULL, NULL, &epetra_DcDy_prec, NULL );
     if( !epetra_DcDy_op.get() ) {
       epetra_DcDy_op = epetra_np_->create_DcDy_op();
+			DcDy_->set_trace_out(
+				Teuchos::rcp(new std::ofstream("LinearOpWithSolveAztecOO.out") )
+				); // ToDo: Make this more flexible!
     }
     if( !epetra_DcDy_prec.get() && specialized_DcDy_prec ) {
       epetra_DcDy_op = epetra_np_->create_DcDy_prec();
@@ -521,22 +531,18 @@ void EpetraNPFO::calc_Dc(
     if( usePrec && !specialized_DcDy_prec ) {
       precGenerator().setupPrec(epetra_DcDy_op,&epetra_DcDy_prec);
     }
-    // Set up the options for the AztecOO solver
-    if(!aztecoo_solver.get()) {
-      aztecoo_solver = Teuchos::rcp(new AztecOO);
-      aztecoo_solver->SetAztecOption(AZ_output,AZ_none);
-      // ToDo: Setup AztecOO options!
-    }
+		// Set the options for AztecOO::Iterate(...)
+		DcDy_->maxIter(maxLinSolveIter());
+		DcDy_->relTol(relLinSolveTol());
     // Finally initialize the aggregate LinearOpWithSolve object
     DcDy_->initialize(
       epetra_DcDy_op                                               // Op
       ,epetra_np_->opDcDy() == Epetra::NOTRANS ? NOTRANS : TRANS   // Op_trans
-      ,aztecoo_solver                                              // solver
+      ,Teuchos::rcp(&aztecOO_,false)                               // solver
       ,epetra_DcDy_prec                                            // Prec
       ,epetra_np_->opDcDy() == Epetra::NOTRANS ? NOTRANS : TRANS   // Prec_trans
       ,epetra_np_->adjointSupported()                              // adjointSupported
       );
-    DcDy_->set_trace_out( Teuchos::rcp(new std::ofstream("LinearOpWithSolveAztecOO.out") ) ); // ToDo: Make this more flexible!
   }
   // DcDu
   for(int l=1;l<=Nu;++l) {

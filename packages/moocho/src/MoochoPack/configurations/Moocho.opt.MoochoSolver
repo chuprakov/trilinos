@@ -266,7 +266,7 @@ options_group VectorSpaceTester {
 *** basis of the constraints Jacobian.
 ***
 *** See options_group BasisSystemTester in
-*** Moocho.opt.NLPAlgoConfigMamaJama
+*** Moocho.opt.DecompositionSystemStateStepBuilderStd
 ***
 
 ****************************************************************

@@ -17,6 +17,7 @@
 #define DIRECT_LINE_SEARCH_ARM_QUAD_STRATEGY_H
 
 #include "DirectLineSearch_Strategy.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -27,24 +28,31 @@ namespace ConstrainedOptPack {
 class DirectLineSearchArmQuad_Strategy : public DirectLineSearch_Strategy {
 public:
 
-	/// Constructs with default settings.
-	DirectLineSearchArmQuad_Strategy(int max_iter = 20, value_type eta = 1.0e-4
-		, value_type min_frac = 0.1, value_type max_frac = 0.5 );
-
 	/// Set the Armijo cord test fractional reduction parameter.
-	void eta(value_type eta);
-	///
-	value_type eta() const;
-
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, eta );
+	
 	/// The minimum fraction that alpha is reduced for each line search iteration.
-	void min_frac(value_type min_frac);
-	///
-	value_type min_frac() const;
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, min_frac );
 
 	/// The maximum fraction that alpha is reduced for each line search iteration.
-	void max_frac(value_type max_frac);
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_frac );
+
 	///
-	value_type max_frac() const;
+	/** Deterimine if the line search iterations are maxed out or not.
+	 * 
+	 * This option is really only used for debugging and requires
+	 * changing the other parameters to make it useful.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, max_out_iter );
+
+	/// Constructs with default settings.
+	DirectLineSearchArmQuad_Strategy(
+		int           max_iter       = 20
+		,value_type   eta            = 1.0e-4
+		,value_type   min_frac       = 0.1
+		,value_type   max_frac       = 0.5
+		,bool         max_out_iter   = false
+		);
 
 	/** @name Overridden from DirectLineSearch_Strategy */
 	//@{
@@ -94,45 +102,11 @@ public:
 private:
 	int	max_iter_;
 	int	num_iter_;	// stores the number of interations
-	value_type eta_, min_frac_, max_frac_;
 
 	// Throw an exception if the parameters are not in a proper range.
 	void validate_parameters() const;
 
 };	// end class DirectLineSearchArmQuad_Strategy
-
-// ///////////////////////////////////////////
-// Inline member functions
-
-inline
-void DirectLineSearchArmQuad_Strategy::eta(value_type eta) {
-	eta_ = eta;
-}
-
-inline
-value_type DirectLineSearchArmQuad_Strategy::eta() const {
-	return eta_;
-}
-
-inline
-void DirectLineSearchArmQuad_Strategy::min_frac(value_type min_frac) {
-	min_frac_ = min_frac;
-}
-
-inline
-value_type DirectLineSearchArmQuad_Strategy::min_frac() const {
-	return min_frac_;
-}
-
-inline
-void DirectLineSearchArmQuad_Strategy::max_frac(value_type max_frac) {
-	max_frac_ = max_frac;
-}
-
-inline
-value_type DirectLineSearchArmQuad_Strategy::max_frac() const {
-	return max_frac_;
-}
 
 }	// end namespace ConstrainedOptPack
 

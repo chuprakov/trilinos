@@ -163,7 +163,7 @@ private:
 	
 	mutable bool in_applyOp_;
 
-	// cached
+	// Cached (only on vector space!)
 	mutable Index  globalDim_;
 	mutable Index  localOffset_;
 	mutable Index  localSubDim_;

@@ -92,7 +92,7 @@ public:
    *
    * The default implementation returns <tt>false</tt>.
    */
-  virtual bool use_EO_DcDu(int l) const;
+  virtual bool use_DcDu_op(int l) const;
 
 	///
   /** Returns an (uninitialized) <tt>Epetra_Operator</tt> that will store
@@ -100,8 +100,8 @@ public:
    *
    * <b>Postconditions:</b>
    * <ul>
-   * <li> [<tt>this->use_EO_DcDu(l)==true</tt>] <tt>this->create_DcDu(l).get()!=NULL</tt>
-   * <li> [<tt>this->use_EO_DcDu(l)==false</tt>] <tt>this->create_DcDu(l).get()==NULL</tt>
+   * <li> [<tt>this->use_DcDu_op(l)==true</tt>] <tt>this->create_DcDu(l).get()!=NULL</tt>
+   * <li> [<tt>this->use_DcDu_op(l)==false</tt>] <tt>this->create_DcDu(l).get()==NULL</tt>
    * </ul>
    *
    * The default implementation returns <tt>return.get()==NULL</tt>.
@@ -114,13 +114,13 @@ public:
    *
    * <b>Postconditions:</b>
    * <ul>
-   * <li> [<tt>this->use_EO_DcDu(l)==false</tt>] <tt>this->create_DcDu_mv(l).get()!=NULL</tt>
-   * <li> [<tt>this->use_EO_DcDu(l)==true</tt>] <tt>this->create_DcDu_mv(l).get()==NULL</tt>
+   * <li> [<tt>this->use_DcDu_op(l)==false</tt>] <tt>this->create_DcDu_mv(l).get()!=NULL</tt>
+   * <li> [<tt>this->use_DcDu_op(l)==true</tt>] <tt>this->create_DcDu_mv(l).get()==NULL</tt>
    * </ul>
    *
    * The default implementation returns
    *\verbatim
-    if(this->use_EO_DcDu(l)) {
+    if(this->use_DcDu_op(l)) {
       return Teuchos::null;
     }
     else {

@@ -7,6 +7,11 @@
 #include "Ifpack_CrsRiluk.h"
 #include "dynamic_cast_verbose.hpp"
 
+// RAB: 2004/01/19: It turns out that as of this writting the Ifpack
+// preconditioner class Ifpack_CrsRiluk does not allow reuse with
+// InitValues(...) and Factor(...)  which is unfortunate!
+#define IFPACK_PRECGENERATOR_CREATE_PREC_EVERY_TIME  1
+
 namespace Ifpack {
 
 PrecGenerator::PrecGenerator(
@@ -48,10 +53,24 @@ void PrecGenerator::setupPrec(
       // Op is a Crs or a Vbr matrix!
       //
       // Create the preconditioner if it has not been created already.
-      if(!Prec.get()) {
-        // Create the graph first
-        RefCountPtr<Ifpack_IlukGraph>
-          Op_iluk_graph = rcp(
+			const bool createPrec
+#ifdef IFPACK_PRECGENERATOR_CREATE_PREC_EVERY_TIME
+				= true
+#else
+				= !Prec.get()
+#endif
+				;
+			if( createPrec ) {
+        RefCountPtr<Ifpack_IlukGraph>  Op_iluk_graph;
+#ifdef IFPACK_PRECGENERATOR_CREATE_PREC_EVERY_TIME
+				if(Prec.get()) {
+					// Get the precreated graph
+					Op_iluk_graph = get_extra_data<RefCountPtr<Ifpack_IlukGraph> >(Prec,0);
+				}
+				else {
+#endif
+					// Create the graph
+					Op_iluk_graph = rcp(
             new Ifpack_IlukGraph(
               ( Op_crs
                 ? Op_crs->Graph()
@@ -60,8 +79,11 @@ void PrecGenerator::setupPrec(
               ,levelOverlap()
               )
             );
-        Op_iluk_graph->ConstructFilledGraph();
-        // Create the preconditioner given the graph
+					Op_iluk_graph->ConstructFilledGraph();
+#ifdef IFPACK_PRECGENERATOR_CREATE_PREC_EVERY_TIME
+				}
+#endif
+				// Create the preconditioner
         Prec = rcp(new Ifpack_CrsRiluk(*Op_iluk_graph));
         // Give ownership of the graph to the preconditioner.  Note,
         // if multiple operator and multiple preconditioner objects
@@ -72,7 +94,7 @@ void PrecGenerator::setupPrec(
         // this approach should not be a performance problem and this
         // greatly simplifies how this class is used.
         set_extra_data( Op_iluk_graph, &Prec );
-      }
+			}
       // Get a Ifpack_CrsRiluk subclass pointer for prec
       Ifpack_CrsRiluk *Prec_crs_riluk = &dyn_cast<Ifpack_CrsRiluk>(*Prec);
       // Now initialize the values

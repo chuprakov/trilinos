@@ -10,6 +10,7 @@
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVector.hpp"
 #include "Ifpack_PrecGenerator.hpp"
+#include "AztecOO.h"
 
 namespace TSFCore {
 namespace Nonlin {
@@ -26,6 +27,12 @@ namespace Nonlin {
 class EpetraNPFO : public NonlinearProblemFirstOrder<double> {
 public:
 
+  /// Set the maximum number of linear solver iterations
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, maxLinSolveIter );
+
+  /// Set the relative residual tolerance for the linear solver
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, relLinSolveTol );
+
   ///
   /** Give mutable access to the object used to generate
    * preconditioners.
@@ -39,12 +46,24 @@ public:
   /** Same as above except is constant.
    */
   const Ifpack::PrecGenerator& precGenerator() const;
+	
+	///
+	AztecOO& aztecOO();
 
 	/** @name Constructors / Initializers / accessors */
 	//@{
 
-  /// Construct to uninitialized
-  EpetraNPFO();
+  ///
+	/** Construct to uninitialized (but with default options set)
+	 *
+	 *
+	 * Note, these defaults where taken from
+	 * NOX::Epetra::Group::applyJacobianInverse(...) on 2004/01/19.
+	 */
+  EpetraNPFO(
+	 	const int      maxLinSolveIter = 400
+		,const double  relLinSolveTol  = 1e-6
+		);
 
   /// Calls <tt>initialize()</tt>
   EpetraNPFO(
@@ -213,6 +232,8 @@ private:
 	// Private data members
 
 	bool isInitialized_;
+	
+	mutable AztecOO  aztecOO_;
 
   Ifpack::PrecGenerator   precGenerator_;
 
@@ -313,6 +334,12 @@ const Epetra_Vector& EpetraNPFO::get_epetra_vec( const Vector<Scalar> &v )
 {
   using DynamicCastHelperPack::dyn_cast;
   return *dyn_cast<const TSFCore::EpetraVector>(v).epetra_vec();
+}
+
+inline
+AztecOO& EpetraNPFO::aztecOO()
+{
+	return aztecOO_;
 }
 
 } // namespace Nonlin

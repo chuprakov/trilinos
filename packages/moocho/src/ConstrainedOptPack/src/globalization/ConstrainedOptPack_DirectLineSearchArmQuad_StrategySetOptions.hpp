@@ -36,6 +36,7 @@ namespace ConstrainedOptPack {
 		min_frac_step = ?:
 		max_frac_step = ?;
 		max_ls_iter = ?;
+    max_out_ls_iter = ?;
 	}
   \end{verbatim}
   *
@@ -57,6 +58,8 @@ namespace ConstrainedOptPack {
   *		to take before giving up and declaring a line search failure.
   *		Mapps to max_ls_iter in linesearch algorithm.
   *		Example: max_ls_iter = 20.
+  *	\item[max_out_ls_iter] A flag to max out on line search iterations.
+  *   Mostly just used for debugging, not very useful in general.
   *	\end{description}
   */
 class DirectLineSearchArmQuad_StrategySetOptions

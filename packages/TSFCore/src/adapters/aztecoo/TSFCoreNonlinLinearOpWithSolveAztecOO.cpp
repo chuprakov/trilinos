@@ -13,7 +13,12 @@ namespace Nonlin {
 
 // Constructors / initializers / accessors
 
-LinearOpWithSolveAztecOO::LinearOpWithSolveAztecOO()
+LinearOpWithSolveAztecOO::LinearOpWithSolveAztecOO(
+	const int      maxIter
+	,const double  relTol
+	)
+	:maxIter_(maxIter)
+	,relTol_(relTol)
 {}
 
 LinearOpWithSolveAztecOO::LinearOpWithSolveAztecOO(
@@ -188,15 +193,13 @@ void LinearOpWithSolveAztecOO::solve(
   //
 	if(get_trace_out().get())
 		trace_out() << "\nSolving the linear system with AztecOO ...\n";
-  const int     maxIter = 1000;   // ToDo: Make these into parameters on this class!
-  const double  tol     = 1e-13;
-  int aztecStatus = solver_used.Iterate( maxIter, tol );
+  int aztecStatus = solver_used.Iterate( maxIter(), relTol() );
   TEST_FOR_EXCEPTION(
     aztecStatus != 0, Solvers::Exceptions::FailureToConverge
     ,"LinearOpWithSolveAztecOO::solve(...): Error, AztecOO performed numIter = "
-    << solver_used.NumIters() << " iterations (maxIter = " << maxIter << ") and failed to converge and "
+    << solver_used.NumIters() << " iterations (maxIter = " << maxIter() << ") and failed to converge and "
     << "only achieved a scaled residual tolerance of " << solver_used.ScaledResidual()
-    << " >= tol = " << tol << "!"
+    << " >= tol = " << relTol() << "!"
     );
 	if(get_trace_out().get())
 		trace_out() << "\nSolved the linear system(s) in " << solver_used.NumIters() << " iterations to a scaled "

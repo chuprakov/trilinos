@@ -222,11 +222,13 @@ options_group NLPDirectTester {
 *** basis of the constraints Jacobian.
 ***
 options_group BasisSystemTester {
+*    print_tests = PRINT_NONE;    *** (default)
+*    print_tests = PRINT_BASIC;
+*    print_tests = PRINT_MORE;
+*    print_tests = PRINT_ALL;
 *    num_random_vectors = 1;      *** (+int) Number of sets of random vectors to use
-*    mult_warning_tol   = 1e-15;  *** (+dbl) Warning tolerance for checking matrix-vector multiplication
-*    mult_error_tol     = 1e-12;  *** (+dbl) Error tolerance for checking matrix-vector multiplication
-*    solve_warning_tol  = 1e-12;  *** (+dbl) Warning tolerance for checking linear solves
-*    solve_error_tol    = 1e-10;  *** (+dbl) Error tolerance for checking linear solves
+*    warning_tol   = 1e-15;       *** (+dbl) Warning tolerance
+*    error_tol     = 1e-12;       *** (+dbl) Error tolerance
 }
 
 ****************************************************************

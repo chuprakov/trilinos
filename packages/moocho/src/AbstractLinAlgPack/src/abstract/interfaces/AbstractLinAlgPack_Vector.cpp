@@ -31,6 +31,9 @@
 #include "dynamic_cast_verbose.hpp"
 #include "Teuchos_TestForException.hpp"
 
+// Uncomment to ignore cache of reduction data
+#define ALAP_VECTOR_IGNORE_CACHE_DATA
+
 namespace {
 
 // get element operator
@@ -106,7 +109,11 @@ index_type Vector::dim() const
 
 index_type Vector::nz() const
 {
+#ifdef ALAP_VECTOR_IGNORE_CACHE_DATA
+	if(1) {
+#else
 	if( num_nonzeros_ < 0 ) {
+#endif
 		num_nonzeros_targ.reinit();
 		const Vector *vecs[1] = { this };
 		AbstractLinAlgPack::apply_op(num_nonzeros_op,1,vecs,0,NULL,num_nonzeros_targ.obj());
@@ -147,7 +154,11 @@ value_type Vector::get_ele(index_type i) const {
 }
 
 value_type Vector::norm_1() const {
+#ifdef ALAP_VECTOR_IGNORE_CACHE_DATA
+	if(1) {
+#else
 	if( norm_1_ < 0.0 ) {
+#endif
 		norm_1_targ.reinit();
 		const Vector *vecs[1] = { this };
 		AbstractLinAlgPack::apply_op(norm_1_op,1,vecs,0,NULL,norm_1_targ.obj());
@@ -157,7 +168,11 @@ value_type Vector::norm_1() const {
 }
 
 value_type Vector::norm_2() const {
+#ifdef ALAP_VECTOR_IGNORE_CACHE_DATA
+	if(1) {
+#else
 	if( norm_2_ < 0.0 ) {
+#endif
 		norm_2_targ.reinit();
 		const Vector *vecs[1] = { this };
 		AbstractLinAlgPack::apply_op(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj());
@@ -167,7 +182,11 @@ value_type Vector::norm_2() const {
 }
 
 value_type Vector::norm_inf() const {
+#ifdef ALAP_VECTOR_IGNORE_CACHE_DATA
+	if(1) {
+#else
 	if( norm_inf_ < 0.0 ) {
+#endif
 		norm_inf_targ.reinit();
 		const Vector *vecs[1] = { this };
 		AbstractLinAlgPack::apply_op(norm_inf_op,1,vecs,0,NULL,norm_inf_targ.obj());

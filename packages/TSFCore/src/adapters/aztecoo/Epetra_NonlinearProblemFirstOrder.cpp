@@ -22,9 +22,9 @@ bool NonlinearProblemFirstOrder::adjointSupported() const
 
 // Factories for linear operators
 
-bool NonlinearProblemFirstOrder::use_EO_DcDu(int l) const
+bool NonlinearProblemFirstOrder::use_DcDu_op(int l) const
 {
-  EPETRA_NONLINEARPROBLEMFIRSTORDER_NOT_DEFINED("use_EO_DcDu(l)");
+  EPETRA_NONLINEARPROBLEMFIRSTORDER_NOT_DEFINED("use_DcDu_op(l)");
   return false;
 }
 
@@ -49,7 +49,7 @@ NonlinearProblemFirstOrder::create_DcDy_prec() const
 Teuchos::RefCountPtr<Epetra_MultiVector>
 NonlinearProblemFirstOrder::create_DcDu_mv(int l) const
 {
-  if(this->use_EO_DcDu(l)) {
+  if(this->use_DcDu_op(l)) {
     return Teuchos::null;
   }
   else {
@@ -67,7 +67,7 @@ NonlinearProblemFirstOrder::create_DcDu_mv(int l) const
 ETransp NonlinearProblemFirstOrder::opDcDu(int l) const
 {
   TEST_FOR_EXCEPTION(
-    this->use_EO_DcDu(l), std::logic_error
+    this->use_DcDu_op(l), std::logic_error
     ,"NonlinearProblemFirstOrder::opDcDu(l): Error, the default implementation for "
     "this function is for the creation of Epetra_MultiVector objects for DcDu.  For "
     "different behavior, this function must be overridden by the subclass "

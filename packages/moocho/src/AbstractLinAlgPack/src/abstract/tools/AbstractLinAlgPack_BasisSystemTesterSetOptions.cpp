@@ -30,8 +30,8 @@ namespace {
 		,DUMP_ALL
 		,TEST_FOR_EXCEPTION
 		,NUM_RANDOM_TESTS
-	    ,WARNING_TOL
-	    ,ERROR_TOL
+		,WARNING_TOL
+		,ERROR_TOL
 	};
 
 	const char* local_SOptions[local_num_options]	= {
@@ -39,8 +39,8 @@ namespace {
 		,"dump_all"
 		,"throw_exception"
 		,"num_random_tests"
-	    ,"warning_tol"
-	    ,"error_tol"
+		,"warning_tol"
+		,"error_tol"
 	};
 
 }

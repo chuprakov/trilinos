@@ -114,10 +114,10 @@ namespace OptionsFromStreamUtilityPack {
   * 1) Looking up the values directly.
   *
   * Here the software client just looks up the value directly.  If the option with the given
-  * name does not exist then the function #option_exists( ... )# will return #false#.
+  * name does not exist then the function <tt>option_exists( ... )</tt> will return <tt>false</tt>.
   *
   * In the following example, the lookup of the option named "tol" is attempted
-  * on the #OptionsGroup# object #optgrp#.
+  * on the <tt>OptionsGroup</tt> object <tt>optgrp</tt>.
   \verbatim
 
 	const std::string& val = optgrp.option_value( "tol" );
@@ -132,7 +132,7 @@ namespace OptionsFromStreamUtilityPack {
   * The disadvantage of using this method is that if the user misspelled the
   * name of the option then the option will not be found or set.  In the
   * above example, if the user misspelled the option "tol" as "tal" then
-  * #OptionsGroup::option_exists( val )# would return false and the option
+  * <tt>OptionsGroup::option_exists( val )</tt> would return false and the option
   * value would not be accessed.
   *
   * 2) Setting options by iterating through options present.
@@ -184,14 +184,14 @@ namespace OptionsFromStreamUtilityPack {
   \endverbatim
   *
   * The above code terminates the program in case the option with
-  * the name returned from #option_name(itr)# is not expected.  This option
+  * the name returned from <tt>option_name(itr)</tt> is not expected.  This option
   * could be ignored (as would have been in method 1) or some other action
   * could be taken.  It is a good idea to use the above method to validate
   * that all of the options that the user sets for an options_group are
   * known by the client software so that misspellings are caught.
   * For example, if the user misspelled "tol" as "tal" then the
   * "opt_map" object above would not find this option name an the
-  * #default:# case above would be executed.
+  * <tt>default:</tt> case above would be executed.
   *
   * The total cost of this way off looking up option values is:
   *
@@ -231,8 +231,8 @@ public:
 
 	/** @name Lookup an an value of an option given the option's name.
 	  *
-	  * If the option does not exist then #option_exists( option_value( option_name ) )#
-	  * will return #false# otherwise the option exists and can be read.
+	  * If the option does not exist then <tt>option_exists( option_value( option_name ) )</tt>
+	  * will return <tt>false</tt> otherwise the option exists and can be read.
 	  */
 	//@{
 
@@ -337,26 +337,26 @@ const std::string& option_value( OptionsGroup::const_iterator& itr ) {
 	end_options
 
   \endverbatim
-  * The text stream will be read up to the #end_options# line.
-  * Options groups will be read starting with the #begin_options# line.
+  * The text stream will be read up to the <tt>end_options</tt> line.
+  * Options groups will be read starting with the <tt>begin_options</tt> line.
   * Options groups can not be nested.  The names for the option groups
   * or the options themselves can not contain any white space.  The
-  * text for the option values however can contain white space.  The #=# must
+  * text for the option values however can contain white space.  The <tt>=</tt> must
   * separate each option from its value.  The value for an option begins
-  * with the first non-whitespace character after the #=# and ends with the
-  * last non-whitespace character before the #;#.  For the option and value
+  * with the first non-whitespace character after the <tt>=</tt> and ends with the
+  * last non-whitespace character before the <tt>;</tt>.  For the option and value
   * pair "tol = + 1e-5 ;" the option value would be
   * stored as "+ 1e-5".  Comment lines starting with
-  * #*# can be placed anywhere in the stream and will be ignored.
-  * Also comments starting with #*# after the #;# for an option and value
+  * <tt>*</tt> can be placed anywhere in the stream and will be ignored.
+  * Also comments starting with <tt>*</tt> after the <tt>;</tt> for an option and value
   * pair can occur on the same line as shown above.
   *
   * The options groups are also reentrant which means that they may be included
   * more than once as shown above.  Therefore options may be set and reset in the
   * same or another declaration of the options groups.
   * In the above example, the second declaration of the options group declaration
-  * for #OptionsGroup1# resets the value of #OptionsGroup1::option1# from
-  * #value1# to #another_value#.  This feature provides much more flexibility
+  * for <tt>OptionsGroup1</tt> resets the value of <tt>OptionsGroup1::option1</tt> from
+  * <tt>value1</tt> to <tt>another_value</tt>.  This feature provides much more flexibility
   * in letting options be changed easily without having to edit the text stream
   * before it is read in.
   * 
@@ -370,7 +370,7 @@ const std::string& option_value( OptionsGroup::const_iterator& itr ) {
   * options group?  In this case the options group would never be read by the
   * client software and the user may be perplexed as to why nothing changed.
   * To help deal with this problem, after all of the option groups have been
-  * accessed, the client can call the function #print_unaccessed_options_groups(...)#
+  * accessed, the client can call the function <tt>print_unaccessed_options_groups(...)</tt>
   * to print the list of options groups that have not been accessed.  This way
   * the user can see if they may have not spelled and "optional" options group
   * correctly.
@@ -429,7 +429,7 @@ public:
 	/** Construct initialized from a text stream.
 	  *
 	  * This is equivalent to calling the default constructor and then calling
-	  * #read_options(in)#.
+	  * <tt>read_options(in)</tt>.
 	  */
 	explicit OptionsFromStream( std::istream& in );
 
@@ -441,7 +441,7 @@ public:
 	  *
 	  * The format of the text stream is described in the introduction.
 	  *
-	  * The options read in from #in# will either be added anew or will
+	  * The options read in from <tt>in</tt> will either be added anew or will
 	  * overwrite options already present.
 	  *
 	  * If the format of the stream is not correct then a \Ref{InputStreamError}
@@ -461,8 +461,8 @@ public:
 	/** @name Get an options group access object given its name.
 	  *
 	  * If the option group does not exist then\\
-	  * #options_group_exists( this->options_group( options_group_name ) ) == false#\\
-	  * where #options_group_name# is the string name of the option group. 
+	  * <tt>options_group_exists( this->options_group( options_group_name ) ) == false</tt>\\
+	  * where <tt>options_group_name</tt> is the string name of the option group. 
 	  */
 	//@{
 

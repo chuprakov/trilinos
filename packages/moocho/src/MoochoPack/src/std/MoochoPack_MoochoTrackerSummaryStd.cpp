@@ -363,6 +363,8 @@ void MoochoTrackerSummaryStd::output_final(const Algorithm& algo
 			<< s.d().get_k(0).norm_inf();
 	else
 		o << setw(w) << "-";
+
+	o << endl;
 	
 	o	<< "\nNumber of function evaluations:\n"
 		<<     "-------------------------------\n"

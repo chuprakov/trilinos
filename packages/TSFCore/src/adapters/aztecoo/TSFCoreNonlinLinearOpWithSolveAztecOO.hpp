@@ -6,6 +6,7 @@
 
 #include "TSFCoreNonlinLinearOpWithSolve.hpp"
 #include "TSFCoreEpetraLinearOp.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "AztecOO.h"
 
@@ -26,11 +27,23 @@ public:
 	/** @name Constructors / initializers / accessors */
 	//@{
 
-	/// Stream that trace information will be sent to
+	/// Stream that trace to which information will be sent
 	STANDARD_NONCONST_COMPOSITION_MEMBERS( std::ostream, trace_out );
+  ///
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, maxIter );
+  ///
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, relTol );
 
 	///
-	LinearOpWithSolveAztecOO();
+	/** Construct uninitialized but with default option values.
+	 *
+	 * Note, these defaults where taken from
+	 * NOX::Epetra::Group::applyJacobianInverse(...) on 2004/01/19.
+	 */
+ 	LinearOpWithSolveAztecOO(
+	 	const int      maxIter = 400
+		,const double  relTol  = 1e-6
+		);
 
 	///
 	LinearOpWithSolveAztecOO(

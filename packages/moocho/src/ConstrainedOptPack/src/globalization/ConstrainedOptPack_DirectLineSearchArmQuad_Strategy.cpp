@@ -31,8 +31,17 @@ inline value_type max(value_type v1, value_type v2) {
 }
 
 ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::DirectLineSearchArmQuad_Strategy(
-		int max_iter, value_type eta, value_type min_frac, value_type max_frac )
-	: max_iter_(max_iter), eta_(eta), min_frac_(min_frac), max_frac_(max_frac)
+	int           max_iter
+	,value_type   eta
+	,value_type   min_frac
+	,value_type   max_frac
+	,bool         max_out_iter
+	)
+	:max_iter_(max_iter)
+	,eta_(eta)
+	,min_frac_(min_frac)
+	,max_frac_(max_frac)
+	,max_out_iter_(max_out_iter)
 {}
 
 void ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::set_max_iter(int max_iter)
@@ -79,7 +88,9 @@ bool ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::do_line_search(
 	const value_type Dphi_k = phi.deriv();
 
 	// output header
-	if(out)
+	if(out) {
+		if(max_out_iter())
+			*out << "\nmax_out_iter == true, maxing out the number of iterations!"; 
 		*out	<< "\nDphi_k = "	<< Dphi_k
 				<< "\nphi_k = "		<< phi_k << "\n\n"
 				<< setw(5)			<< "itr"
@@ -90,6 +101,7 @@ bool ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::do_line_search(
 				<< setw(w)			<< "----------------"
 				<< setw(w)			<< "----------------"
 				<< setw(w)			<< "----------------\n";
+	}
 
 	// Check that this is a decent direction
 	if(Dphi_k >= 0) throw DirectLineSearch_Strategy::NotDescentDirection(
@@ -124,9 +136,10 @@ bool ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::do_line_search(
 
 			// Armijo condition
 			if( *phi_kp1 < frac_phi ) {
-				// We have found our point.
+				// We have found an acceptable point
 				success = true;
-				break;	// get out of the loop
+				if( !max_out_iter() || ( max_out_iter() && num_iter_ == max_iter() - 1 ) )
+					break;	// get out of the loop
 			}
 
 			// Select a new alpha to try:
@@ -181,6 +194,7 @@ void ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::print_algorithm(
 		<< L << "         eta = " << eta() << std::endl
 		<< L << "         min_frac = " << min_frac() << std::endl
 		<< L << "         max_frac = " << max_frac() << std::endl
+		<< L << "         max_out_iter = " << max_out_iter() << std::endl
 		<< L << "Dphi_k = phi.deriv()\n"
 		<< L << "if Dphi_k >= 0\n"
 		<< L << "    throw not_descent_direction\n"
@@ -198,9 +212,11 @@ void ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::print_algorithm(
 		<< L << "        best_alpha = 0\n"
 		<< L << "        best_phi = phi_k\n"
 		<< L << "    else\n"
-		<< L << "        if phi_kp1 < frac_phi then\n"
-		<< L << "            *** We have found our point\n"
-		<< L << "            end line search\n"
+		<< L << "        if ( phi_kp1 < frac_phi ) then\n"
+		<< L << "            *** We have found an acceptable point\n"
+		<< L << "            if( !max_out_iter || max_out_iter && num_iter == max_ls_iter - 1 ) )\n"
+		<< L << "                end line search\n"
+		<< L << "            end\n"
 		<< L << "        end\n"
 		<< L << "        *** Use a quadratic interpoation to minimize phi(alpha)\n"
 		<< L << "        alpha_quad = (-0.5 * Dphi_k * alpha_k^2) / ( phi_kp1 - phi_k - alpha_k*Dphi_k )\n"
@@ -234,7 +250,7 @@ void ConstrainedOptPack::DirectLineSearchArmQuad_Strategy::validate_parameters()
 			<< "Error, min_frac = " << min_frac() << " is not in the range [0, 1]";
 		throw std::invalid_argument( omsg.str() );
 	}
-	if( max_frac() < 0.0 || 1.0 < max_frac() ) {
+	if( max_frac() < 0.0 || ( !max_out_iter() && 1.0 < max_frac() ) ) {
 		std::ostringstream omsg;
 		omsg
 			<< "DirectLineSearchArmQuad_Strategy::validate_parameters() : "

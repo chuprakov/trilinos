@@ -174,7 +174,7 @@ public:
 	/** Constructs to uninitialized.
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>this->throw_exception() == false</tt>
+	 * <li> <tt>this->throw_exceptions() == false</tt>
 	 * <li> ToDo: Fill these in!
 	 * </ul>
 	 */
@@ -282,7 +282,7 @@ public:
 	///
 	/** Set the error output and whether exceptions will be thrown from these functions or not.
 	 *
-	 * @param  throw_exception
+	 * @param  throw_exceptions
 	 *                [in] If \c true, then after printing the error message (see error_out) the
 	 *                exception will be rethrown out of <tt>this->solve_nlp()</tt>.
 	 * @param  error_out
@@ -292,18 +292,18 @@ public:
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>this->get_error_out().get() == error_out.get()</tt>
-	 * <li> <tt>this->throw_exception() == throw_exception()</tt>
+	 * <li> <tt>this->throw_exceptions() == throw_exceptions()</tt>
 	 * </ul>
 	 */
 	void set_error_handling(
-		bool                    throw_exception
+		bool                    throw_exceptions
 		,const ostream_ptr_t&   error_out
 		);
 
 	///
 	/** Return if exceptions will be thrown out of <tt>this->solve_nlp()</tt>.
 	 */
-	bool throw_exception() const;
+	bool throw_exceptions() const;
 
 	///
 	/** Return the <tt>std::ostream</tt> object used for error reporting on exceptions.
@@ -524,6 +524,33 @@ public:
 	 */
 	const ostream_ptr_t& get_algo_out() const;
 
+	///
+	/** Set all output streams to <tt>Teuchos::oblackholestream</tt> unless
+	 * set otherwise.
+	 *
+	 * @param  send_all_output_to_black_hole
+	 *               [in] If <tt>true</tt> then all output (i.e. journal, summary
+	 *               console, algo etc.) will all be sent to a stream object
+	 *               <tt>Teuchos::oblackholestream</tt>.  If <tt>false</tt>
+	 *               then the default behavior is maintained.
+	 *
+	 * This feature is designed to be used in special situations such as
+	 * in SPMD mode where only one process should do outputtting.  The
+	 * root process should call <tt>send_all_output_to_black_hole(false)</tt>
+	 * and all of the slave processes should call
+	 * <tt>send_all_output_to_black_hole(true)</tt>.
+	 *
+	 * Note, this function must be called before <tt>solve_nlp()</tt>.
+	 */
+	void send_all_output_to_black_hole( bool send_all_output_to_black_hole );
+
+	///
+	/** Returns the current value of <tt>send_all_output_to_black_hole</tt> set by
+	 * <tt>send_all_output_to_black_hole()</tt>.
+	 *
+	 */
+  bool send_all_output_to_black_hole() const;
+
 	//@}
 
 	/** @name Solve the NLP */
@@ -572,11 +599,11 @@ public:
 	 *      <tt>\ref MoochoSolver_opts "Moocho.opt.MoochoSolver"</tt>).
 	 * </ul>
 	 *
-	 * If <tt>this->throw_exception() == false</tt> then any exceptions that may be thown
+	 * If <tt>this->throw_exceptions() == false</tt> then any exceptions that may be thown
 	 * internally will be caught, <tt>std::exception::what()</tt>  will be printed to
 	 * <tt>*this->error_out()</tt> (or <tt>std::cerr</tt> if <tt>this->error_out().get() == NULL</tt>)
 	 * and this method will return <tt>SOLVE_RETURN_EXCEPTION</tt>.
-	 * If <tt>this->throw_exception() == true</tt>, then after the error has been reported, the
+	 * If <tt>this->throw_exceptions() == true</tt>, then after the error has been reported, the
 	 * exception will be rethrown out for the caller to deal with!
 	 *
 	 * Even if no exception is thrown, then a short one-line summary message will be printed to
@@ -645,7 +672,7 @@ private:
 	mutable bool              algo_timing_;
 	mutable bool              generate_stats_file_;
 	mutable bool              print_opt_grp_not_accessed_;
-	mutable bool              throw_exception_;
+	mutable bool              throw_exceptions_;
 	mutable bool              do_console_outputting_;
 	mutable bool              do_summary_outputting_;
 	mutable bool              do_journal_outputting_;
@@ -667,6 +694,7 @@ private:
 	mutable ostream_ptr_t     summary_out_used_; // actually used (can be NULL if do_summary_outputting == false)
 	mutable ostream_ptr_t     journal_out_used_; // actually used (can be NULL if do_journal_outputting == false)
 	mutable ostream_ptr_t     algo_out_used_;    // actually used (can be NULL if do_algo_outputting == false)
+	bool                      send_all_output_to_black_hole_;
 #endif
 
 	// ////////////////////////////////////

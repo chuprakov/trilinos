@@ -68,6 +68,9 @@ void MPIVectorBase<Scalar>::applyOp(
 #endif
 	// Flag that we are in applyOp()
 	in_applyOp_ = true;
+	// First see if this is a locally replicated vector in which case
+	// we treat this as a local operation only.
+	const bool locallyReplicated = (localSubDim_ == globalDim_);
 	// Get the overlap in the current process with the input logical sub-vector
 	// from (first_ele_in,sub_dim_in,global_offset_in)
 	RTOp_index_type  overlap_first_local_ele  = 0;
@@ -97,7 +100,7 @@ void MPIVectorBase<Scalar>::applyOp(
 	}
 	// Apply the RTOp operator object (all processors must participate)
 	RTOpPack::MPI_apply_op(
-		mpiSpc.mpiComm()                                                       // comm
+		locallyReplicated ? MPI_COMM_NULL : mpiSpc.mpiComm()                   // comm
 		,op                                                                    // op
 		,-1                                                                    // root_rank (perform an all-reduce)
 		,num_vecs                                                              // num_vecs

@@ -45,6 +45,7 @@
 #include "WorkspacePack.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "oblackholestream.hpp"
+#include "Teuchos_oblackholestream.hpp"
 
 namespace MoochoPack {
 
@@ -59,13 +60,14 @@ MoochoSolver::MoochoSolver()
 	,algo_timing_(true)
 	,generate_stats_file_(false)
 	,print_opt_grp_not_accessed_(true)
-	,throw_exception_(false)
+	,throw_exceptions_(false)
 	,do_console_outputting_(true)
 	,do_summary_outputting_(true)
 	,do_journal_outputting_(true)
 	,do_algo_outputting_(true)
 	,error_out_used_(Teuchos::rcp(&std::cerr,false))
-	 ,configuration_(MAMA_JAMA)
+	,configuration_(MAMA_JAMA)
+	,send_all_output_to_black_hole_(false)
 {}
 
 void MoochoSolver::set_nlp(const nlp_ptr_t& nlp)
@@ -126,7 +128,7 @@ MoochoSolver::get_options() const
 }
 
 void MoochoSolver::set_error_handling(
-	bool                    throw_exception
+	bool                    throw_exceptions
 	,const ostream_ptr_t&   error_out
 	)
 
@@ -141,13 +143,13 @@ void MoochoSolver::set_error_handling(
 	else if( error_out.get() != NULL ) {
 		error_out_used_ = error_out;
 	}
-	throw_exception_ = throw_exception;
+	throw_exceptions_ = throw_exceptions;
 	error_out_       = error_out;
 }
 
-bool MoochoSolver::throw_exception() const
+bool MoochoSolver::throw_exceptions() const
 {
-	return throw_exception();
+	return throw_exceptions_;
 }
 
 const MoochoSolver::ostream_ptr_t&
@@ -209,6 +211,33 @@ const MoochoSolver::ostream_ptr_t&
 MoochoSolver::get_algo_out() const
 {
 	return algo_out_;
+}
+
+void MoochoSolver::send_all_output_to_black_hole(
+	bool send_all_output_to_black_hole
+	)
+{
+	send_all_output_to_black_hole_ = send_all_output_to_black_hole;
+	if(send_all_output_to_black_hole) {
+		Teuchos::RefCountPtr<std::ostream>  obh = Teuchos::rcp(new Teuchos::oblackholestream);
+		set_error_handling(throw_exceptions(),obh);
+		set_algo_out(obh);
+		set_console_out(obh);
+		set_summary_out(obh);
+		set_journal_out(obh);
+	}
+	else {
+		set_error_handling(throw_exceptions(),Teuchos::null);
+		set_algo_out(Teuchos::null);
+		set_console_out(Teuchos::null);
+		set_summary_out(Teuchos::null);
+		set_journal_out(Teuchos::null);
+	}
+}
+
+bool MoochoSolver::send_all_output_to_black_hole() const
+{
+	return send_all_output_to_black_hole_;
 }
 
 // Solve the NLP
@@ -316,7 +345,7 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 		if(do_journal_outputting())
 			*journal_out_used_ << "\nCaught a std::exception: " << excpt.what() << endl;
 		*error_out_used_   << "\nCaught a std::exception: " << excpt.what() << endl;
-		if(throw_exception_)
+		if(throw_exceptions_)
 			throw;
 		threw_exception = true;
 	}
@@ -326,7 +355,7 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 		if(do_journal_outputting())
 			*journal_out_used_ << "\nCaught an unknown exception\n";
 		*error_out_used_   << "\nCaught an unknown exception\n";
-		if(throw_exception_)
+		if(throw_exceptions_)
 			throw;
 		threw_exception = true;
 	}
