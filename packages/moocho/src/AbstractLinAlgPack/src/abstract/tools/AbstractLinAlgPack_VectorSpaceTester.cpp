@@ -167,6 +167,7 @@ bool VectorSpaceTester::check_vector_space(
 		if(out && print_vectors())
 			*out << std::endl << z_name << " =\n" << *z[k];
 		{for(int r = 0; r < num_random_tests(); ++r) {
+			srand( n / (1+r) + r ); // This is very important in a parallel program!
 			const RTOp_index_type
 				i = std::_MIN( n, std::_MAX( (RTOp_index_type)(((double)rand() / RAND_MAX) * n + 1.0), 1 ) );
 			const RTOp_value_type
