@@ -16,9 +16,7 @@
 #ifndef WORK_SPACE_PACK_H
 #define WORK_SPACE_PACK_H
 
-#include <assert.h>
-#include <iosfwd>
-
+#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "ref_count_ptr.hpp"
 
 namespace WorkspacePack {

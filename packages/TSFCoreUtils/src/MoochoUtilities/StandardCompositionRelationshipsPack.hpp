@@ -16,10 +16,7 @@
 #ifndef STANDARD_COMPOSITION_RELATIONSHIPS_PACK_H
 #define STANDARD_COMPOSITION_RELATIONSHIPS_PACK_H
 
-#include <sstream>
-#include <string>
-#include <stdexcept>
-
+#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "ThrowException.hpp"
 
 namespace StandardCompositionRelationshipsPack {

@@ -21,11 +21,7 @@
 #ifndef RANGE1D_H
 #define RANGE1D_H
 
-#include <limits.h>
-
-#include <memory>
-#include <string>
-#include <stdexcept>
+#include "TSFCoreUtils_ConfigDefs.hpp"
 
 namespace RangePack {
 

@@ -16,7 +16,7 @@
 #ifndef DYNAMIC_CAST_VERBOSE_H
 #define DYNAMIC_CAST_VERBOSE_H
 
-#include <typeinfo>
+#include "TSFCoreUtils_ConfigDefs.hpp"
 
 namespace DynamicCastHelperPack {
 

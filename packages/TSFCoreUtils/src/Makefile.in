@@ -261,7 +261,7 @@ $(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.h\
 $(srcdir)/RTOpStdOps/RTOp_TOp_sign.h
 
 
-AM_CPPFLAGS = \
+AM_CPPFLAGS = -I$(top_builddir)/src \
   -I$(top_srcdir)/src/MoochoUtilities\
   -I$(top_srcdir)/src/RTOpPack\
   -I$(top_srcdir)/src/RTOpStdOps
@@ -323,7 +323,7 @@ pkginclude_HEADERS = $(SOURCES_H)
 # not a default installation directory, so we had to create it
 # special.
 pkgexecincludedir = $(exec_prefix)/include/TSFCoreUtils
-nodist_pkgexecinclude_HEADERS = MoochoUtilities/TSFCoreUtilsConfig.h
+nodist_pkgexecinclude_HEADERS = TSFCoreUtilsConfig.h $(SOURCES_H)
 
 
 # ------------------------------------------------------------------------
@@ -332,7 +332,7 @@ nodist_pkgexecinclude_HEADERS = MoochoUtilities/TSFCoreUtilsConfig.h
 MAINTAINERCLEANFILES = Makefile.in 
 subdir = src
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/src/MoochoUtilities/TSFCoreUtilsConfig.h
+CONFIG_HEADER = TSFCoreUtilsConfig.h
 CONFIG_CLEAN_FILES =
 LIBRARIES = $(lib_LIBRARIES)
 
@@ -387,7 +387,7 @@ am_libTSFCoreUtils_a_OBJECTS = $(am__objects_1) $(am__objects_2) \
 libTSFCoreUtils_a_OBJECTS = $(am_libTSFCoreUtils_a_OBJECTS)
 
 DEFS = @DEFS@
-DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/src/MoochoUtilities
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I.
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
@@ -473,10 +473,12 @@ CXXFLAGS = @CXXFLAGS@
 DIST_SOURCES = $(libTSFCoreUtils_a_SOURCES)
 HEADERS = $(nodist_pkgexecinclude_HEADERS) $(pkginclude_HEADERS)
 
-DIST_COMMON = $(pkginclude_HEADERS) Makefile.am Makefile.in
+DIST_COMMON = $(pkginclude_HEADERS) Makefile.am Makefile.in \
+	TSFCoreUtilsConfig.h.in
 SOURCES = $(libTSFCoreUtils_a_SOURCES)
 
-all: all-am
+all: TSFCoreUtilsConfig.h
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .cpp .o .obj
@@ -485,6 +487,23 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configu
 	  $(AUTOMAKE) --foreign  src/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
+
+TSFCoreUtilsConfig.h: stamp-h1
+	@if test ! -f $@; then \
+	  rm -f stamp-h1; \
+	  $(MAKE) stamp-h1; \
+	else :; fi
+
+stamp-h1: $(srcdir)/TSFCoreUtilsConfig.h.in $(top_builddir)/config.status
+	@rm -f stamp-h1
+	cd $(top_builddir) && $(SHELL) ./config.status src/TSFCoreUtilsConfig.h
+
+$(srcdir)/TSFCoreUtilsConfig.h.in: @MAINTAINER_MODE_TRUE@ $(top_srcdir)/configure.ac $(ACLOCAL_M4) 
+	cd $(top_srcdir) && $(AUTOHEADER)
+	touch $(srcdir)/TSFCoreUtilsConfig.h.in
+
+distclean-hdr:
+	-rm -f TSFCoreUtilsConfig.h stamp-h1
 
 AR = ar
 libLIBRARIES_INSTALL = $(INSTALL_DATA)
@@ -1586,11 +1605,11 @@ ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	       END { for (i in files) print i; }'`; \
 	mkid -fID $$unique
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+TAGS:  $(HEADERS) $(SOURCES) TSFCoreUtilsConfig.h.in $(TAGS_DEPENDENCIES) \
 		$(TAGS_FILES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
+	list='$(SOURCES) $(HEADERS) TSFCoreUtilsConfig.h.in $(LISP) $(TAGS_FILES)'; \
 	unique=`for i in $$list; do \
 	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
 	  done | \
@@ -1636,7 +1655,7 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LIBRARIES) $(HEADERS)
+all-am: Makefile $(LIBRARIES) $(HEADERS) TSFCoreUtilsConfig.h
 
 installdirs:
 	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(pkgexecincludedir) $(DESTDIR)$(pkgincludedir)
@@ -1673,7 +1692,7 @@ clean-am: clean-generic clean-libLIBRARIES mostlyclean-am
 distclean: distclean-am
 
 distclean-am: clean-am distclean-compile distclean-depend \
-	distclean-generic distclean-tags
+	distclean-generic distclean-hdr distclean-tags
 
 dvi: dvi-am
 
@@ -1708,10 +1727,10 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES \
 
 .PHONY: GTAGS all all-am check check-am clean clean-generic \
 	clean-libLIBRARIES distclean distclean-compile distclean-depend \
-	distclean-generic distclean-tags distdir dvi dvi-am info \
-	info-am install install-am install-data install-data-am \
-	install-exec install-exec-am install-info install-info-am \
-	install-libLIBRARIES install-man \
+	distclean-generic distclean-hdr distclean-tags distdir dvi \
+	dvi-am info info-am install install-am install-data \
+	install-data-am install-exec install-exec-am install-info \
+	install-info-am install-libLIBRARIES install-man \
 	install-nodist_pkgexecincludeHEADERS install-pkgincludeHEADERS \
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \

@@ -16,8 +16,7 @@
 #ifndef RTOPPACK_RTOP_CPP_DECL_HPP
 #define RTOPPACK_RTOP_CPP_DECL_HPP
 
-#include <assert.h>
-
+#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "RTOpPackTypes.hpp"
 #include "RTOp.h"
 

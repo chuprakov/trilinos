@@ -66,7 +66,7 @@ AC_CONFIG_AUX_DIR(config)
 #  #np# - Change file names in next line 
 # Configure should create src/New_Package_config.h from src/New_Package_config.h.in
 
-AM_CONFIG_HEADER(src/MoochoUtilities/TSFCoreUtilsConfig.h:src/MoochoUtilities/TSFCoreUtilsConfig.h.in)
+AM_CONFIG_HEADER(src/TSFCoreUtilsConfig.h:src/TSFCoreUtilsConfig.h.in)
 
 # AM_MAINTAINER_MODE turns off maintainer-only makefile targets by
 # default, and changes configure to understand a
@@ -140,8 +140,9 @@ TAC_ARG_CHECK_MPI
 # ------------------------------------------------------------------------
 
 AC_CHECK_HEADERS([cstdlib stdlib.h cstdio stdio.h cassert assert.h],,,)
-AC_CHECK_HEADERS([cmath math.h iomanip iomanip.h iostream iostream.h],,,)
-AC_CHECK_HEADERS([string string.h],,,)
+AC_CHECK_HEADERS([cmath math.h iomanip iomanip.h ostream iostream iostream.h],,,)
+AC_CHECK_HEADERS([string string.h malloc.h sstream stdexcept],,,)
+AC_CHECK_HEADERS([memory memory.h typeinfo limits.h new iosfwd],,,)
 
 if test "X$ac_cv_header_cstdlib" != "Xyes" && test "X$ac_cv_header_stdlib_h" != "Xyes"; then
   AC_MSG_ERROR([[Cannot find cstdlib or stdlib.h.  New_Package requires at least one or the other.]])
@@ -159,19 +160,32 @@ if test "X$ac_cv_header_string" != "Xyes" && test "X$ac_cv_header_string_h" != "
   AC_MSG_ERROR([[Cannot find string or string.h.  New_Package requires at least one or the other.]])
 fi
 
-if test "X$ac_cv_header_iostream" != "Xyes" && test "X$ac_cv_header_iostream_h" != "Xyes"; then
+if test "X$ac_cv_header_ostream" != "Xyes" && test "X$ac_cv_header_iostream" != "Xyes" && test "X$ac_cv_header_iostream_h" != "Xyes"; then
   AC_MSG_ERROR([[Cannot find iostream or iostream.h.  New_Package requires at least one or the other.]])
 fi
 
-if test "X${host}" != "Xtflop"; then
-  if test "X$ac_cv_header_cmath" != "Xyes" && test "X$ac_cv_header_math_h" != "Xyes"; then
+if test "X$ac_cv_header_cmath" != "Xyes" && test "X$ac_cv_header_math_h" != "Xyes"; then
     AC_MSG_ERROR([[Cannot find cmath or math.h.  New_Package requires at least one or the other.]])
-  fi
-else
-  # TFLOP
-  if test "X$ac_cv_header_iomanip" != "Xyes" && test "X$ac_cv_header_iomanip_h" != "Xyes"; then
+fi
+  
+if test "X$ac_cv_header_iomanip" != "Xyes" && test "X$ac_cv_header_iomanip_h" != "Xyes"; then
     AC_MSG_ERROR([[Cannot find iomanip or iomanip.h.  New_Package requires at least one or the other.]])
-  fi
+fi  
+
+if test "X$ac_cv_header_malloc_h" != "Xyes"; then
+    AC_MSG_ERROR([[Cannot find malloc.h.  New_Package requires at least one or the other.]])
+fi  
+
+if test "X$ac_cv_header_sstream" != "Xyes"; then
+    AC_MSG_ERROR([[Cannot find sstream.  New_Package requires at least one or the other.]])
+fi  
+
+if test "X$ac_cv_header_stdexcept" != "Xyes"; then
+    AC_MSG_ERROR([[Cannot find stdexcept.  New_Package requires at least one or the other.]])
+fi  
+
+if test "X$ac_cv_header_memory" != "Xyes" && test "X$ac_cv_header_memory_h" != "Xyes"; then
+    AC_MSG_ERROR([[Cannot find memory or memory.h.  New_Package requires at least one or the other.]])
 fi  
 
 # Checks for typedefs, structures, and compiler characteristics.

@@ -170,7 +170,7 @@ $(srcdir)/RTOpStdOps/RTOp_TOp_sign.h
 
 
 
-AM_CPPFLAGS = \
+AM_CPPFLAGS = -I$(top_builddir)/src \
   -I$(top_srcdir)/src/MoochoUtilities\
   -I$(top_srcdir)/src/RTOpPack\
   -I$(top_srcdir)/src/RTOpStdOps
@@ -236,7 +236,7 @@ pkginclude_HEADERS = $(SOURCES_H)
 # special.
 
 pkgexecincludedir = $(exec_prefix)/include/TSFCoreUtils
-nodist_pkgexecinclude_HEADERS = MoochoUtilities/TSFCoreUtilsConfig.h
+nodist_pkgexecinclude_HEADERS = TSFCoreUtilsConfig.h $(SOURCES_H)
 
 # ------------------------------------------------------------------------
 # Files to be deleted by 'make maintainer-clean'

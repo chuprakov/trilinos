@@ -13,9 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include <float.h>
-#include <math.h>
-
+#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "check_nan_inf.hpp"
 
 // Computed values to compare to

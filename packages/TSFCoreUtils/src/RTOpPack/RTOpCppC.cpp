@@ -1,8 +1,7 @@
 // ////////////////////////////////////////////////////////////////////////
 // RTOpCppC.cpp
 
-#include <assert.h>
-
+#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "RTOpCppC.hpp"
 #include "ThrowException.hpp"
 

@@ -13,8 +13,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include <assert.h>
-
 #include "Range1D.hpp"
 #include "ThrowException.hpp"
 

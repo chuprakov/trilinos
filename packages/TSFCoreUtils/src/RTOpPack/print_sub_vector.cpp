@@ -1,11 +1,6 @@
 // //////////////////////////////////////////////////////////////////
 // print_sub_vector.cpp
 
-#include <assert.h>
-
-#include <ostream>
-#include <iomanip>
-
 #include "print_sub_vector.hpp"
 
 std::ostream& RTOpPack::output(
@@ -14,8 +9,11 @@ std::ostream& RTOpPack::output(
 	)
 {
 	int w = o.width(0) - 1; // get the set width (minus 1 since a space is inserted)
-	if( print_dim )
-		o << std::setw(0) << std::left << v.subDim() << std::endl << std::right;
+	if( print_dim ) {
+		o.setf(ios::left);
+		o << std::setw(0) << v.subDim() << std::endl;
+		o.setf(ios::right);
+	}
 	const RTOp_value_type  *v_val        = v.values();
 	const ptrdiff_t        v_val_s       = v.stride();
 	for( RTOp_index_type i = 1; i <= v.subDim(); ++i, v_val+=v_val_s ) {

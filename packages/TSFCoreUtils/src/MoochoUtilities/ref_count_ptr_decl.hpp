@@ -16,8 +16,7 @@
 #ifndef REF_COUNT_PTR_DECL_H
 #define REF_COUNT_PTR_DECL_H
 
-#include <stdexcept>
-#include <string>
+#include "TSFCoreUtils_ConfigDefs.hpp"
 
 // Uncomment this if not supported or define it in arguments
 // to the C++ compiler (even better)

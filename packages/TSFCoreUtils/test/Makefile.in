@@ -98,7 +98,7 @@ install_sh = @install_sh@
 SUBDIRS = rcp_test
 subdir = test
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/src/MoochoUtilities/TSFCoreUtilsConfig.h
+CONFIG_HEADER = $(top_builddir)/src/TSFCoreUtilsConfig.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
 

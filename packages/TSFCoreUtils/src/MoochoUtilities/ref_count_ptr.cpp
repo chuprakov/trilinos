@@ -15,7 +15,6 @@
 
 #include "ref_count_ptr.hpp"
 #include "ThrowException.hpp"
-#include "assert.h"
 
 void MemMngPack::PrivateUtilityPack::assert_not_null(const void *ptr)
 {

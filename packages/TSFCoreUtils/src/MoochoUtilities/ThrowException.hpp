@@ -16,8 +16,7 @@
 #ifndef THROW_EXCEPTION_H
 #define THROW_EXCEPTION_H
 
-#include <sstream>
-
+#include "TSFCoreUtils_ConfigDefs.hpp"
 ///
 void ThrowException_break();
 

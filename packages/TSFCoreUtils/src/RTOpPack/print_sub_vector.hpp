@@ -16,8 +16,7 @@
 #ifndef PRINT_SUB_VECTOR_H
 #define PRINT_SUB_VECTOR_H
 
-#include <iosfwd>
-
+#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "RTOpPackTypes.hpp"
 
 namespace RTOpPack {

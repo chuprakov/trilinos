@@ -4,8 +4,7 @@
 #ifndef RTOPPACK_RTOP_CPP_HPP
 #define RTOPPACK_RTOP_CPP_HPP
 
-#include <assert.h>
-
+#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "RTOpCppDecl.hpp"
 #include "RTOpCppC.hpp"
 #include "RTOp_RTOp_C_Cpp.h"

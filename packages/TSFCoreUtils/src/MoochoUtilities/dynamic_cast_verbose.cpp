@@ -13,9 +13,6 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include <stdexcept>
-#include <sstream>
-
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 

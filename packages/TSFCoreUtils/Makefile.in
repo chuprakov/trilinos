@@ -157,7 +157,7 @@ SUBDIRS = src test
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/src/MoochoUtilities/TSFCoreUtilsConfig.h
+CONFIG_HEADER = $(top_builddir)/src/TSFCoreUtilsConfig.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
 
@@ -165,10 +165,9 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
 	install-exec-recursive installdirs-recursive install-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
-DIST_COMMON = ./src/MoochoUtilities/TSFCoreUtilsConfig.h.in Makefile.am \
-	Makefile.in aclocal.m4 config/config.guess config/config.sub \
-	config/depcomp config/install-sh config/missing \
-	config/mkinstalldirs configure configure.ac
+DIST_COMMON = Makefile.am Makefile.in aclocal.m4 config/config.guess \
+	config/config.sub config/depcomp config/install-sh \
+	config/missing config/mkinstalldirs configure configure.ac
 DIST_SUBDIRS = $(SUBDIRS)
 all: all-recursive
 
@@ -189,23 +188,6 @@ $(srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(srcdir)/configure.ac $(ACLOCAL_M4)
 
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ configure.ac 
 	cd $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
-
-src/MoochoUtilities/TSFCoreUtilsConfig.h: src/MoochoUtilities/stamp-h1
-	@if test ! -f $@; then \
-	  rm -f src/MoochoUtilities/stamp-h1; \
-	  $(MAKE) src/MoochoUtilities/stamp-h1; \
-	else :; fi
-
-src/MoochoUtilities/stamp-h1: $(srcdir)/./src/MoochoUtilities/TSFCoreUtilsConfig.h.in $(top_builddir)/config.status
-	@rm -f src/MoochoUtilities/stamp-h1
-	cd $(top_builddir) && $(SHELL) ./config.status src/MoochoUtilities/TSFCoreUtilsConfig.h
-
-$(srcdir)/./src/MoochoUtilities/TSFCoreUtilsConfig.h.in: @MAINTAINER_MODE_TRUE@ $(top_srcdir)/configure.ac $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOHEADER)
-	touch $(srcdir)/./src/MoochoUtilities/TSFCoreUtilsConfig.h.in
-
-distclean-hdr:
-	-rm -f src/MoochoUtilities/TSFCoreUtilsConfig.h src/MoochoUtilities/stamp-h1
 uninstall-info-am:
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -319,7 +301,7 @@ distcleancheck_listfiles = find . -type f -print
 distdir: $(DISTFILES)
 	$(am__remove_distdir)
 	mkdir $(distdir)
-	$(mkinstalldirs) $(distdir)/./src/MoochoUtilities $(distdir)/config
+	$(mkinstalldirs) $(distdir)/config
 	@list='$(DISTFILES)'; for file in $$list; do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
@@ -442,7 +424,7 @@ clean-am: clean-generic mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-distclean-am: clean-am distclean-generic distclean-hdr distclean-tags
+distclean-am: clean-am distclean-generic distclean-tags
 
 dvi: dvi-recursive
 
@@ -477,19 +459,18 @@ uninstall-info: uninstall-info-recursive
 
 .PHONY: $(RECURSIVE_TARGETS) GTAGS all all-am check check-am clean \
 	clean-generic clean-recursive dist dist-all dist-gzip distcheck \
-	distclean distclean-generic distclean-hdr distclean-recursive \
-	distclean-tags distcleancheck distdir dvi dvi-am dvi-recursive \
-	info info-am info-recursive install install-am install-data \
-	install-data-am install-data-recursive install-exec \
-	install-exec-am install-exec-recursive install-info \
-	install-info-am install-info-recursive install-man \
-	install-recursive install-strip installcheck installcheck-am \
-	installdirs installdirs-am installdirs-recursive \
-	maintainer-clean maintainer-clean-generic \
-	maintainer-clean-recursive mostlyclean mostlyclean-generic \
-	mostlyclean-recursive tags tags-recursive uninstall \
-	uninstall-am uninstall-info-am uninstall-info-recursive \
-	uninstall-recursive
+	distclean distclean-generic distclean-recursive distclean-tags \
+	distcleancheck distdir dvi dvi-am dvi-recursive info info-am \
+	info-recursive install install-am install-data install-data-am \
+	install-data-recursive install-exec install-exec-am \
+	install-exec-recursive install-info install-info-am \
+	install-info-recursive install-man install-recursive \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am installdirs-recursive maintainer-clean \
+	maintainer-clean-generic maintainer-clean-recursive mostlyclean \
+	mostlyclean-generic mostlyclean-recursive tags tags-recursive \
+	uninstall uninstall-am uninstall-info-am \
+	uninstall-info-recursive uninstall-recursive
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -95,12 +95,14 @@ rcp_test_SOURCES = $(srcdir)/cxx_main.cpp
 
 rcp_test_DEPENDENCIES = $(top_builddir)/src/libTSFCoreUtils.a
 
-rcp_test_CXXFLAGS = -I$(top_srcdir)/src/MoochoUtilities
+rcp_test_CXXFLAGS = -I$(top_srcdir)/src/MoochoUtilities \
+		    -I$(top_srcdir)/src
+
 
 rcp_test_LDADD = -L$(top_builddir)/src -lTSFCoreUtils $(FLIBS)
 subdir = test/rcp_test
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
-CONFIG_HEADER = $(top_builddir)/src/MoochoUtilities/TSFCoreUtilsConfig.h
+CONFIG_HEADER = $(top_builddir)/src/TSFCoreUtilsConfig.h
 CONFIG_CLEAN_FILES =
 noinst_PROGRAMS = rcp_test$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
@@ -110,7 +112,7 @@ rcp_test_OBJECTS = $(am_rcp_test_OBJECTS)
 rcp_test_LDFLAGS =
 
 DEFS = @DEFS@
-DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/src/MoochoUtilities
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/src
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@

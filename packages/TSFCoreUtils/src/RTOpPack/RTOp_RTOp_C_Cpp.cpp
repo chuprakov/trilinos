@@ -2,9 +2,7 @@
 // RTOp_RTOp_C_Cpp.cpp
 //
 
-#include <assert.h>
-#include <malloc.h>
-
+#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "RTOp_RTOp_C_Cpp.h"
 #include "RTOpCpp.hpp"
 
