@@ -32,6 +32,7 @@
 #include "OptionsFromStream.h"
 #include "WorkspacePack.h"
 #include "oblackholestream.h"
+#include "CommandLineProcessor.h"
 
 int main(int argc, char* argv[] ) {
 
@@ -50,6 +51,8 @@ int main(int argc, char* argv[] ) {
 	using AbstractLinAlgPack::VectorSpace;
 	using AbstractLinAlgPack::VectorWithOp;
 	using AbstractLinAlgPack::VectorWithOpMutable;
+
+	using CommandLineProcessorPack::CommandLineProcessor;
 
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
@@ -97,18 +100,26 @@ int main(int argc, char* argv[] ) {
 	bool dep_bounded = true;
 	// Serial or parallel?
 	bool in_parallel = false;
-
-	// Read from the arguments
-	if(argc > 1)
-		n = ::atoi(argv[1]);
-	if(argc > 2)
-		xo = ::atof(argv[2]);
-	if(argc > 3)
-		has_bounds = (::atoi(argv[3]) == 1);
-	if(argc > 4)
-		dep_bounded = (::atoi(argv[4]) == 1);
-	if(argc > 5)
-		in_parallel = (::atoi(argv[5]) == 1);
+	
+	CommandLineProcessor  command_line_processor;
+	
+	command_line_processor.set_option( "n",  &n,   "Number of variables per process" );
+	command_line_processor.set_option( "xo", &xo,  "Initial guess of the solution" );
+	command_line_processor.set_option(
+		"has-bounds", "no-has-bounds", &has_bounds
+		,"Determine if the NLP has bounds or not" );
+	command_line_processor.set_option(
+		"dep-bounded", "indep-bounded", &dep_bounded
+		,"Determine if the dependent or independent variables are bounded" );
+	command_line_processor.set_option(
+		"in-parallel", "in-serial", &in_parallel
+		,"Determine if computations are performed in parallel or not" );
+	
+	CommandLineProcessor::EParseCommandLineReturn
+		parse_return = command_line_processor.parse_command_line(argc,argv,&std::cerr);
+	
+	if( parse_return != CommandLineProcessor::PARSE_SUCCESSFULL )
+		return parse_return;
 
 	// Set the output stream
 	std::ostream &out  = std::cout;
