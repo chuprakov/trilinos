@@ -500,11 +500,11 @@ int main_body( int argc, char* argv[] ) {
 			RefCountPtr<const EpetraVectorSpace> eY_range, eY_domain;
 			dyn_cast<EpetraMultiVector>(*eY).setUninitialized(&eeY,&eY_range,&eY_domain);
 
-			if(verbose) out << "\nPerforming eeY = 2 * eOp * eeV1 ...\n";
+			if(verbose) out << "\nPerforming eeY = 2*eOp*eeV1 ...\n";
 			epetra_op->SetUseTranspose(false);
 			timer.start(true);
 			epetra_op->Apply( eeV1, *eeY );
-			eeY->Scalar(2.0);
+			eeY->Scale(2.0);
 			timer.stop();
 			if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 
