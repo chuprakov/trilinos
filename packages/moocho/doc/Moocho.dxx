@@ -74,6 +74,7 @@ In the future this docuentation will be much more extensive.
 
 <li> Example projects:
 	<ul>
+	<li> <A HREF="../ExampleRTOpSimple/html/index.html">ExampleRTOpSimple</A>.
 	<li> <A HREF="../ExampleNLPFirstOrderDirect/html/index.html">ExampleNLPFirstOrderDirect</A>.
 	<li> <A HREF="../ExampleNLPFirstOrderInfo/html/index.html">ExampleNLPFirstOrderInfo</A>.
 	<li> <A HREF="../ExampleNLPBanded/html/index.html">ExampleNLPBanded</A>.

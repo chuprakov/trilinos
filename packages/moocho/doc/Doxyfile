@@ -45,6 +45,7 @@ TAGFILES               = $(RSQPPP_BASE_DIR)/doc/Misc/Misc.tag=./Misc/html \
                          $(RSQPPP_BASE_DIR)/doc/RTOpStdOpsLib/RTOpStdOpsLib.tag=./RTOpStdOpsLib/html \
                          $(RSQPPP_BASE_DIR)/doc/AbstractLinAlgPack/AbstractLinAlgPack.tag=./AbstractLinAlgPack/html \
                          $(RSQPPP_BASE_DIR)/doc/NLPInterfacePack/NLPInterfacePack.tag=./NLPInterfacePack/html \
+                         $(RSQPPP_BASE_DIR)/doc/ExampleRTOpSimple/ExampleRTOpSimple.tag=./ExampleRTOpSimple/html \
                          $(RSQPPP_BASE_DIR)/doc/ExampleNLPFirstOrderDirect/ExampleNLPFirstOrderDirect.tag=./ExampleNLPFirstOrderDirect/html \
                          $(RSQPPP_BASE_DIR)/doc/ExampleNLPFirstOrderInfo/ExampleNLPFirstOrderInfo.tag=./ExampleNLPFirstOrderInfo/html \
                          $(RSQPPP_BASE_DIR)/doc/ExampleNLPBanded/ExampleNLPBanded.tag=./ExampleNLPBanded/html
