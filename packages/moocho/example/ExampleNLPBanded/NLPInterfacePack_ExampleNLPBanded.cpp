@@ -87,14 +87,14 @@ ExampleNLPBanded::ExampleNLPBanded(
 
 // Overridden public members from NLP
 
-void ExampleNLPBanded::initialize()
+void ExampleNLPBanded::initialize(bool test_setup)
 {
 	if(is_initialized_) {
-		NLPSerialPreprocessExplJac::initialize();
+		NLPSerialPreprocessExplJac::initialize(test_setup);
 		return;
 	}
 	// Nothing to initialize?
-	NLPSerialPreprocessExplJac::initialize();
+	NLPSerialPreprocessExplJac::initialize(test_setup);
 	is_initialized_ = true;
 }
 
@@ -443,6 +443,7 @@ void ExampleNLPBanded::imp_calc_Gh_orig(
 		const size_type   num_I_per_D_local = num_I_per_D + ( q_i <= I_remainder ? 1 : 0 );
 		for( size_type q_k = 0; q_k < num_I_per_D_local; ++q_k ) {
 			++jI;
+			if( jI > mI_ ) goto EXIT_LOOP;
 			// w.r.t. x(jI)
 			++Gh_nz;
 			*Gh_val++ = 1.0;
@@ -459,6 +460,8 @@ void ExampleNLPBanded::imp_calc_Gh_orig(
 			}
 		}
 	}
+EXIT_LOOP:
+	jI; // Must have a statement here
 }
 
 // private
