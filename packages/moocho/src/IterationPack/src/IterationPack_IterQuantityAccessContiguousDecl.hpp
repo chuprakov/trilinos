@@ -22,8 +22,8 @@
 //  12/20/01:
 //      * AbstractFactory added to handle memory management
 
-#ifndef ITER_QUANITY_ACCESS_CONTINUOUS_DECL_H
-#define ITER_QUANITY_ACCESS_CONTINUOUS_DECL_H
+#ifndef ITER_QUANITY_ACCESS_CONTIGUOUS_DECL_H
+#define ITER_QUANITY_ACCESS_CONTIGUOUS_DECL_H
 
 #include <vector>
 #include <limits>
@@ -36,7 +36,7 @@ namespace GeneralIterationPack {
 // ToDo: Use an implementation subclass for the operations to avoid code blot.
 
 ///
-/** Iteration Quanities subclass for continous iterations.
+/** Iteration Quanities subclass for contiguous iterations.
   *
   * This class implements the IterQuantityAccess interface for
   * the case where storage is provided for consecutive iterations.
@@ -63,9 +63,9 @@ public:
 
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<
-		AbstractFactoryPack::AbstractFactory<T_info> >              abstract_factory_ptr_t;
+		const AbstractFactoryPack::AbstractFactory<T_info> >          abstract_factory_ptr_t;
 	///
-	typedef AbstractFactoryPack::AbstractFactoryStd<T_info,T_info>  abstract_factory_std_t;
+	typedef AbstractFactoryPack::AbstractFactoryStd<T_info,T_info>    abstract_factory_std_t;
 
 	/** @name Constructors/initalizers */
 	//@{
@@ -221,4 +221,4 @@ int IterQuantityAccessContiguous<T_info>::num_quantities() const
 
 }	// end namespace GeneralIterationPack
 
-#endif	// ITER_QUANITY_ACCESS_CONTINUOUS_DECL_H
+#endif	// ITER_QUANITY_ACCESS_CONTIGUOUS_DECL_H
