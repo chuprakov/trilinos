@@ -80,6 +80,8 @@ CONCRETE = \
 
 OPERATORS_H = \
 	$(srcdir)/Operators/TSFBlockOperator.hpp \
+	$(srcdir)/Operators/TSFComposedOperator.hpp \
+	$(srcdir)/Operators/TSFDiagonalOperator.hpp\
 	$(srcdir)/Operators/TSFExplicitlyTransposeableOp.hpp\
 	$(srcdir)/Operators/TSFIdentityOperator.hpp \
 	$(srcdir)/Operators/TSFLinearOperator.hpp\
@@ -87,13 +89,13 @@ OPERATORS_H = \
 	$(srcdir)/Operators/TSFNonlinearOperator.hpp\
 	$(srcdir)/Operators/TSFNonlinearOperatorBase.hpp\
 	$(srcdir)/Operators/TSFOpDescribableByTypeID.hpp \
-	$(srcdir)/Operators/TSFTransposeOperator.hpp \
+	$(srcdir)/Operators/TSFScaledOperator.hpp\
+	$(srcdir)/Operators/TSFSumOperator.hpp\
+	$(srcdir)/Operators/TSFTransposeOperator.hpp\
 	$(srcdir)/Operators/TSFZeroOperator.hpp 
 
 OPERATORS = \
 	$(srcdir)/Operators/TSFBlockOperator.cpp 
-
-
 
 LINEARSOLVERS_H = \
 	$(srcdir)/LinearSolvers/TSFBICGSTABSolver.hpp \
