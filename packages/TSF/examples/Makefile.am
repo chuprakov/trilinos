@@ -4,7 +4,7 @@ EXEEXT = .exe
 noinst_PROGRAMS = cgTest
 cgTest_SOURCES = Tests/cgTest.cpp
 
-cgTest_LDADD = $(TSF_LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+cgTest_LDADD = $(TSF_LIBS) $(EXPAT_LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
 cgTest_DEPENDENCIES = $(top_builddir)/src/libtsf.a
 

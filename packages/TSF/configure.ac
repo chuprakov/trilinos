@@ -109,6 +109,12 @@ AC_PROG_RANLIB
 TAC_ARG_CONFIG_MPI
 
 # ------------------------------------------------------------------------
+# Check to see if expat enabled and if any special configuration done
+# ------------------------------------------------------------------------
+
+TAC_ARG_CONFIG_EXPAT
+
+# ------------------------------------------------------------------------
 # Checks for --enable-debug, --enable-optimize, --enable-profile, --enable-purify
 # Changes flags and compiler names accordingly
 # ------------------------------------------------------------------------

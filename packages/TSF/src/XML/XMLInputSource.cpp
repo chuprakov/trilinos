@@ -2,12 +2,14 @@
 #include "TreeBuildingXMLHandler.h"
 
 
-#if HAVE_XERCES
+#ifdef HAVE_XERCES
 #include "XercesHandlerAdapter.h"
 #include "XercesInputSourceAdapter.h"
 #include "XercesInputStreamAdapter.h"
 #include <util/PlatformUtils.hpp>
-#elif HAVE_EXPAT
+#endif
+
+#ifdef HAVE_EXPAT
 #include "ExpatHandlerAdapter.h"
 #define EXPAT_BUFSIZE 8192
 #endif
@@ -17,7 +19,7 @@ using namespace TSF;
 
 XMLObject XMLInputSource::getObject() const
 {
-#if HAVE_XERCES
+#ifdef HAVE_XERCES
 
 	static bool first = true;
 	if (first)
@@ -41,8 +43,9 @@ XMLObject XMLInputSource::getObject() const
 			TSFError::trace(e, "in SAX parsing");
 		}
 	return handler.getObject();
+#endif
 
-#elif HAVE_EXPAT
+#ifdef HAVE_EXPAT
 
 	TSFSmartPtr<TreeBuildingXMLHandler> handler = new TreeBuildingXMLHandler();
 

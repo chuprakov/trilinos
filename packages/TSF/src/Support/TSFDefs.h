@@ -80,9 +80,6 @@
 
 typedef double TSFReal;
 
-/* define HAVE_EXPAT=1 to link with the expat XML parser */
-
-#define HAVE_EXPAT 0
 
 
 /* define flags indicating debug and opt level */

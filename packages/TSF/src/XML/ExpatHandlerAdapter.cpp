@@ -1,6 +1,6 @@
 #include "ExpatHandlerAdapter.h"
 
-#if HAVE_EXPAT
+#ifdef HAVE_EXPAT
 
 #include "TreeBuildingXMLHandler.h"
 
