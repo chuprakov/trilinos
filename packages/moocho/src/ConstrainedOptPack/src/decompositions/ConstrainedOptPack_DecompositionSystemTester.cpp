@@ -775,7 +775,7 @@ bool DecompositionSystemTester::test_decomp_system(
 		if(success)
 			*out << "\nCongradulations! The DecompositionSystem object and its associated matrix objects seem to check out!\n";
 		else
-			*out << "\nOops! At last one of the tests did not check out!\n";
+			*out << "\nOops! At least one of the tests did not check out!\n";
 		if( print_tests >= PRINT_BASIC )
 			*out << "\nEnd DecompositionSystemTester::test_decomp_system(...)\n";
 	}
