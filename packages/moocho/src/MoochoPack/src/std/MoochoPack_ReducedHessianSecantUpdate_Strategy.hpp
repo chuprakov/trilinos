@@ -44,7 +44,7 @@ public:
 	 * @param algo          [in/out] The rSQPAlgo object.  This object can be queryed for
 	 *                      information and also be called to redirect control (in which
 	 *                      case this function should probably return false).
-	 * @param s             [in/out] rSQPState object.  May be queried or modified in needed.
+	 * @param s             [in/out] rSQPState object.  May be queried or modified if needed.
 	 * @param rHL_k         [in/out] The matrix to be updated.  Note that #rHL_k# was already
 	 *                      set to #rHL_km1# before this call was made.  Also, #rHL_k# will
 	 *                      probably have to support the #MatrixSymSecantUpdateable# interface

@@ -49,11 +49,12 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(Algorithm& 
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
-	NLPrSQPTailoredApproach
 #ifdef _WINDOWS
-				&nlp	= dynamic_cast<NLPrSQPTailoredApproach&>(algo.nlp());
+	NLPrSQPTailoredApproach
+		&nlp	= dynamic_cast<NLPrSQPTailoredApproach&>(algo.nlp());
 #else
-				&nlp	= dyn_cast<NLPrSQPTailoredApproach>(algo.nlp());
+	NLPrSQPTailoredApproach
+		&nlp	= dyn_cast<NLPrSQPTailoredApproach>(algo.nlp());
 #endif
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
@@ -99,11 +100,16 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(Algorithm& 
 	// allow multiple updates as defined in NLP, and NLPFirstOrderInfo<...>.
 	nlp.set_mult_calc(true);
 
-	// If c_k is not updated then we must set size to zero so it will be
-	// computed
-	if( !s.c().updated_k(0) )
-		s.c().set_k(0).v().resize(0);
-
+	// If c_k is not updated then we must compute it
+	bool recalc_c = true;
+	if( !s.c().updated_k(0) ) {
+		s.c().set_k(0).v();
+		recalc_c = true;
+	}
+	else {
+		recalc_c = false;
+	}
+		
 	// Get a reference to D = -inv(C)*N storage in Z = [ D; I ].
 	MatrixWithOp
 		&Z_k = s.Z().set_k(0);
@@ -119,12 +125,13 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(Algorithm& 
 
 	// Compute all the quantities.
 	nlp.calc_point(
-		  x()
-		, s.f().updated_k(0) ? (value_type*)NULL : &s.f().set_k(0)
-		, &s.c().get_k(0).v() 	// If we need to compute c then c.size() == 0
-		, &s.Gf().set_k(0).v()
-		, &s.py().set_k(0).v()	// -inv(C)*c
-		, &D					// -inv(C)*N
+		x()
+		,s.f().updated_k(0) ? (value_type*)NULL : &s.f().set_k(0)
+		,&s.c().get_k(0).v()
+		,recalc_c
+		,&s.Gf().set_k(0).v()
+		,&s.py().set_k(0).v()	// -inv(C)*c
+		,&D					    // -inv(C)*N
 		);
 
 	// ToDo: Put this under check results?
@@ -167,7 +174,11 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(Algorithm& 
 	}
 
 	// Compute py and Ypy
-	calc_py_Ypy( D, &s.py().get_k(0).v()(), &s.Ypy().set_k(0).v(), olevel, out ); 
+	Vector
+		&py  = s.py().get_k(0).v(),
+		&Ypy = s.Ypy().set_k(0).v();
+	Ypy.resize(x.v().size());
+	calc_py_Ypy( D, &py(), &Ypy(), olevel, out ); 
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\n||py_k||inf   = " << s.py().get_k(0).norm_inf()

@@ -102,6 +102,9 @@ void BFGSUpdate_Strategy::perform_update(
 					<< "B =  Iscale * eye(n-r) ...\n";
 			}
 			B_updatable.init_identity( nind, Iscale );
+			if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
+				out << "\nB after rescaling = \n" << *B;
+			}
 		}
 		else {
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
@@ -171,58 +174,57 @@ void BFGSUpdate_Strategy::perform_update(
 	}
 
 	// Perform the update if it is defined (s_bfgs' * y_bfgs > 0.0)
+				
+	Vector s_bfgs_save, y_bfgs_save;
+	if( check_results ) {
+		// Save s and y since they may be overwritten in the update.
+		s_bfgs_save = *s_bfgs;
+		y_bfgs_save = *y_bfgs;
+	}
 	try {
-				
-		Vector s_bfgs_save, y_bfgs_save;
-		if( check_results ) {
-			// Save s and y since they may be overwritten in the update.
-			s_bfgs_save = *s_bfgs;
-			y_bfgs_save = *y_bfgs;
-		}
-				
 		B_updatable.secant_update( s_bfgs, y_bfgs
-									 , Bs.size()
-									 ? static_cast<VectorSlice*>(&Bs())
-									 : static_cast<VectorSlice*>(0) );
-
-		if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
-			out << "\nB after the BFGS update = \n" << *B;
-		}
-
-		if( ( check_results && secant_testing() == SECANT_TEST_DEFAULT )
-			|| secant_testing() == SECANT_TEST_ALWAYS )
-		{
-			const bool result =
-				ConstrainedOptimizationPack::TestingPack::TestMatrixSymSecantUpdate(
-					*B, s_bfgs_save(), y_bfgs_save()
-					, secant_warning_tol(), secant_error_tol()
-					, (int)olevel >= (int)PRINT_VECTORS
-					, (int)olevel >  (int)PRINT_NOTHING ? &out : NULL
-					, (int)olevel >= (int)PRINT_ALGORITHM_STEPS
-					);
-			if( !result ) {
-				const char
-					msg[] =	"Error, the secant property for the BFGS update failed\n"
-					"Stopping the algorithm ...\n";
-				out << msg;
-				throw TestFailed( msg );
-			}
-		}
-
-		quasi_newton_stats->set_updated_stats(
-			used_dampening
-			? QuasiNewtonStats::DAMPENED_UPDATED
-			: QuasiNewtonStats::UPDATED );
+								   , Bs.size()
+								   ? static_cast<VectorSlice*>(&Bs())
+								   : static_cast<VectorSlice*>(0) );
 	}
 	catch( const MatrixSymSecantUpdateable::UpdateSkippedException& excpt ) {
 		if( (int)olevel >= (int)PRINT_BASIC_ALGORITHM_INFO ) {
 			out << excpt.what() << std::endl
-				<< "\nSkipping BFGS update.  B = B\n";
+				<< "\nSkipping BFGS update.  B = B ...\n";
 		}
 		quasi_newton_stats->set_updated_stats(
 			QuasiNewtonStats::INDEF_SKIPED );
+		return;
 	}					
-
+		
+	if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
+		out << "\nB after the BFGS update = \n" << *B;
+	}
+	
+	if( ( check_results && secant_testing() == SECANT_TEST_DEFAULT )
+		|| secant_testing() == SECANT_TEST_ALWAYS )
+	{
+		const bool result =
+			ConstrainedOptimizationPack::TestingPack::TestMatrixSymSecantUpdate(
+				*B, s_bfgs_save(), y_bfgs_save()
+				, secant_warning_tol(), secant_error_tol()
+				, (int)olevel >= (int)PRINT_VECTORS
+				, (int)olevel >  (int)PRINT_NOTHING ? &out : NULL
+				, (int)olevel >= (int)PRINT_ALGORITHM_STEPS
+				);
+		if( !result ) {
+			const char
+				msg[] =	"Error, the secant property for the BFGS update failed\n"
+				"Stopping the algorithm ...\n";
+			out << msg;
+			throw TestFailed( msg );
+		}
+	}
+	
+	quasi_newton_stats->set_updated_stats(
+		used_dampening
+		? QuasiNewtonStats::DAMPENED_UPDATED
+		: QuasiNewtonStats::UPDATED );
 }
 
 void BFGSUpdate_Strategy::print_step( std::ostream& out, const std::string& L ) const

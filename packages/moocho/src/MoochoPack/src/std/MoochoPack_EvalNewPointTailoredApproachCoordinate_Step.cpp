@@ -21,7 +21,15 @@ EvalNewPointTailoredApproachCoordinate_Step::EvalNewPointTailoredApproachCoordin
 // protected
 
 void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Ypy(
-	  const GenMatrixSlice& D, VectorSlice* py, Vector* Ypy
+	  const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
+	, EJournalOutputLevel olevel, std::ostream& out
+	)
+{
+	recalc_py_Ypy(D,py,Ypy,olevel,out);
+}
+
+void EvalNewPointTailoredApproachCoordinate_Step::recalc_py_Ypy(
+	  const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
 	, EJournalOutputLevel olevel, std::ostream& out
 	)
 {
@@ -29,7 +37,7 @@ void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Ypy(
 		n = D.rows()+D.cols(),
 		r = D.cols();
 	// py is not altered
-	Ypy->resize(n);
+	LinAlgPack::assert_vs_sizes(Ypy->size(),n);
 	(*Ypy)(1,r) = *py;
 	(*Ypy)(r+1,n) = 0.0;
 }

@@ -7,8 +7,8 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "../../include/std/LineSearch2ndOrderCorrect_Step.h"
-#include "../../include/rsqp_algo_conversion.h"
+#include "ReducedSpaceSQPPack/include/std/LineSearch2ndOrderCorrect_Step.h"
+#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/print_vector_change_stats.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncCalc1DQuadratic.h"
@@ -31,28 +31,30 @@ namespace LinAlgOpPack {
 namespace ReducedSpaceSQPPack {
 
 LineSearch2ndOrderCorrect_Step::LineSearch2ndOrderCorrect_Step(
-		  const direct_ls_sqp_ptr_t&		direct_ls_sqp
-		, const merit_func_ptr_t&			merit_func
-		, const direct_ls_newton_ptr_t&		direct_ls_newton
-		, value_type						eta
-		, ENewtonOutputLevel				newton_olevel
-		, value_type						constr_norm_threshold
-		, int								after_k_iter
-		, EForcedConstrReduction			forced_constr_reduction
-		, value_type						max_step_ratio
-		, int								max_newton_iter			)
-	:
-		  direct_ls_sqp_(direct_ls_sqp)
-		, merit_func_(merit_func)
-		, direct_ls_newton_(direct_ls_newton)
-		, eta_(eta)
-		, newton_olevel_(newton_olevel)
-		, constr_norm_threshold_(constr_norm_threshold)
-		, after_k_iter_(after_k_iter)
-		, forced_constr_reduction_(forced_constr_reduction)
-		, max_step_ratio_(max_step_ratio)
-		, max_newton_iter_(max_newton_iter)
-		, considering_correction_(false)
+	const direct_ls_sqp_ptr_t&			direct_ls_sqp
+	,const merit_func_ptr_t&			merit_func
+	,const feasibility_step_ptr_t&		feasibility_step
+	,const direct_ls_newton_ptr_t&		direct_ls_newton
+	,value_type							eta
+	,ENewtonOutputLevel					newton_olevel
+	,value_type							constr_norm_threshold
+	,int								after_k_iter
+	,EForcedConstrReduction				forced_constr_reduction
+	,value_type							max_step_ratio
+	,int								max_newton_iter
+	)
+	:direct_ls_sqp_(direct_ls_sqp)
+	,merit_func_(merit_func)
+	,feasibility_step_(feasibility_step)
+	,direct_ls_newton_(direct_ls_newton)
+	,eta_(eta)
+	,newton_olevel_(newton_olevel)
+	,constr_norm_threshold_(constr_norm_threshold)
+	,after_k_iter_(after_k_iter)
+	,forced_constr_reduction_(forced_constr_reduction)
+	,max_step_ratio_(max_step_ratio)
+	,max_newton_iter_(max_newton_iter)
+	,considering_correction_(false)
 {}
 
 bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
@@ -179,12 +181,13 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 	// the trial newton points and must be remembered for latter
 	value_type f_xdww;
 	Vector     c_xdww;
-	Vector w,		// Full correction after completed computation.
-		   xdww;	// Will be set to xdw + sum( w(newton_i), newton_i = 1... )
-					//     where w(itr) is the local corrections for the current
-					//		newton iteration.
+	Vector w(x_kp1.size()),		// Full correction after completed computation.
+		   xdww(x_kp1.size());	// Will be set to xdw + sum( w(newton_i), newton_i = 1... )
+								// where w(itr) is the local corrections for the current
+								// newton iteration.
 	bool use_correction = false;
-
+	bool newton_failed  = true;
+	
 	bool considered_correction = ( considering_correction_ && !chose_point );
 	if( considered_correction ) {
 
@@ -221,7 +224,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 		ConstrainedOptimizationPack::MeritFuncCalcNLE
 			phi_c_calc( &phi_c, &nlp );
 
-		Vector wy(s.decomp_sys().r());	// Range space wy (see latter).
+		Vector wy(s.con_decomp().size());	// Range space wy (see latter).
 
 		if( phi_c_xd < phi_c_x ) {
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
@@ -241,34 +244,56 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 			}
 			
 			// Print header for summary information
-			int owidth = 22;
-			int prec = 8;
-			out	<< std::setprecision(prec);
+			const int dbl_min_w = 21;
+			const int dbl_w = std::_MAX(dbl_min_w,out.precision()+8);
 			if( newton_olevel() == PRINT_NEWTON_SUMMARY_INFO ) {
 				out	<< "\nStarting Newton iterations\n\n"
 					<< "\nphi_c_x   = "	<< phi_c_x 
 					<< "\nphi_c_xd  = "	<< phi_c_xd
 					<< "\n||d_k||nf = "	<< phi_c_xd << "\n\n"
 					<< setw(5)			<< "it"
-					<< setw(owidth)		<< "||w||inf"
-					<< setw(owidth)		<< "u"
-					<< setw(owidth)		<< "step_ratio"
+					<< setw(dbl_w)		<< "||w||inf"
+					<< setw(dbl_w)		<< "u"
+					<< setw(dbl_w)		<< "step_ratio"
 					<< setw(5)			<< "lsit"
-					<< setw(owidth)		<< "a"
-					<< setw(owidth)		<< "phi_c_xdww"
-					<< setw(owidth)		<< "phi_c_xdww-phi_c_x"
-					<< setw(owidth)		<< "phi_c_xdww-phi_c_xd\n"
+					<< setw(dbl_w)		<< "a"
+					<< setw(dbl_w)		<< "phi_c_xdww"
+					<< setw(dbl_w)		<< "phi_c_xdww-phi_c_x"
+					<< setw(dbl_w)		<< "phi_c_xdww-phi_c_xd\n"
 					<< setw(5)			<< "----"
-					<< setw(owidth)		<< "-------------------"
-					<< setw(owidth)		<< "-------------------"
-					<< setw(owidth)		<< "-------------------"
+					<< setw(dbl_w)		<< "--------------------"
+					<< setw(dbl_w)		<< "-------------------"
+					<< setw(dbl_w)		<< "-------------------"
 					<< setw(5)			<< "----"
-					<< setw(owidth)		<< "-------------------"
-					<< setw(owidth)		<< "-------------------"
-					<< setw(owidth)		<< "-------------------"
-					<< setw(owidth)		<< "-------------------\n";
+					<< setw(dbl_w)		<< "-------------------"
+					<< setw(dbl_w)		<< "-------------------"
+					<< setw(dbl_w)		<< "-------------------"
+					<< setw(dbl_w)		<< "-------------------\n";
 			}
 
+			// Set print level for inner newton iterations
+			EJournalOutputLevel inner_olevel;
+			switch(newton_olevel()) {
+			    case PRINT_NEWTON_NOTHING:
+			    case PRINT_NEWTON_SUMMARY_INFO:
+					inner_olevel = PRINT_NOTHING;
+					break;
+			    case PRINT_NEWTON_STEPS:
+					inner_olevel = PRINT_ALGORITHM_STEPS;
+					break;
+			    case PRINT_NEWTON_VECTORS:
+					if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES )
+						inner_olevel = PRINT_ITERATION_QUANTITIES;
+					else if( (int)olevel >= (int)PRINT_ACTIVE_SET )
+						inner_olevel = PRINT_ACTIVE_SET;
+					else
+						inner_olevel = PRINT_VECTORS;
+					break;
+			    default:
+					assert(0);
+			}
+
+			// Perform newton feasibility iterations
 			int newton_i;
 			for( newton_i = 1; newton_i <= max_newton_iter(); ++newton_i ) {
 				
@@ -276,34 +301,15 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 					out << "\n**** newton_i = " << newton_i << std::endl;
 				}
 
-				// ToDo: The calculation of the correction needs to be
-				// delegated to somewhere else so that we can compute it
-				// different ways.
-
-				// Compute the local second order correction w which in the end
-				// the full correction will be sum(w(i)).
-				//
-				// Compute w s.t. Gc'*w + c(xdw) = 0
-				//
-				// To find such a w:
-				//
-				// Gc'*w + c(xdw)
-				//	=> Gc'* (Z*wz + Y*wy) + c(xdw) = 0
-				//
-				// Set wz = 0 then solve:
-				//
-				// wy = -inv(Gc'*Y) * c(xdw)
-				// w = Y*wy
-
-				// wy = -inv(Gc'*Y) * c(xdw)
-				// Note: c(xdw) was already computed when phi_c_calc(xdw) was computed.
-				s.decomp_sys().solve_transAtY( nlp.c(), BLAS_Cpp::no_trans, &wy() );
-				Vt_S( &wy(), -1.0 );
-
-				// w = Y*wy
-				V_MtV( &w, s.Y().get_k(0), BLAS_Cpp::no_trans, wy() );
-
-				// End code to delagete to some where else
+				// Compute a feasibility step
+				if(!feasibility_step().compute_feasibility_step(
+					out,inner_olevel,&algo,&s,xdw,nlp.c()(),&w() ))
+				{
+					if( (int)newton_olevel() == (int)PRINT_NEWTON_SUMMARY_INFO ) {
+						out << "\nCould not compute feasible direction!\n";
+					}
+					break; // exit the newton iterations
+				}
 
 				value_type
 					nrm_w = norm_inf(w());				
@@ -369,33 +375,44 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 				const VectorSlice xdw_w[2] = { xdw(), w() };
 				MeritFuncCalc1DQuadratic
 					phi_c_calc_1d( phi_c_calc, 1 , xdw_w, &xdww() );
-				const bool
-					ls_okay = direct_ls_newton().do_line_search(phi_c_calc_1d,phi_c_xdw
+				bool ls_okay = false;
+				try {
+					ls_okay = direct_ls_newton().do_line_search(
+						phi_c_calc_1d,phi_c_xdw
 						,&a,&phi_c_xdww
 						, (int)newton_olevel() >= (int)this_t::PRINT_NEWTON_STEPS 
-							? &out : 0												);
-				// Note that the last value c(x) computed but the line search is for
+						? &out : 0												
+						);
+				}
+				catch(const DirectLineSearch_Strategy::NotDescentDirection& excpt ) {
+					if( (int)newton_olevel() >= (int)this_t::PRINT_NEWTON_SUMMARY_INFO ) {
+						out << "\nThe line search object throw the exception:" << typeid(excpt).name() << ":\n"
+							<< excpt.what() << std::endl;
+					}
+					ls_okay = false;
+				}
+				// Note that the last value c(x) computed by the line search is for
 				// xdw + a*w.
 
 				// Print line for summary output
 				if( newton_olevel() == PRINT_NEWTON_SUMMARY_INFO ) {
 					out	<< setw(5)			<< newton_i
-						<< setw(owidth)		<< nrm_w
-						<< setw(owidth)		<< u
-						<< setw(owidth)		<< step_ratio
+						<< setw(dbl_w)		<< nrm_w
+						<< setw(dbl_w)		<< u
+						<< setw(dbl_w)		<< step_ratio
 						<< setw(5)			<< direct_ls_newton().num_iterations()
-						<< setw(owidth)		<< a
-						<< setw(owidth)		<< phi_c_xdww
-						<< setw(owidth)		<< (phi_c_xdww-phi_c_x)
-						<< setw(owidth)		<< (phi_c_xdww-phi_c_xd) << std::endl;
+						<< setw(dbl_w)		<< a
+						<< setw(dbl_w)		<< phi_c_xdww
+						<< setw(dbl_w)		<< (phi_c_xdww-phi_c_x)
+						<< setw(dbl_w)		<< (phi_c_xdww-phi_c_xd) << std::endl;
 				}
 
 				if(!ls_okay) {
 					if( (int)newton_olevel() >= (int)this_t::PRINT_NEWTON_SUMMARY_INFO ) {
-						out << "\nMaximum number of linesearch iterations has been exceeded\n"
-							<< "so forget about computing a correction ...\n";
+						out << "\nThe line search failed so forget about computing a correction ...\n";
 					}
 					use_correction = false;
+					newton_failed = true;
 					break;
 				}
 
@@ -433,13 +450,14 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 					// Compute the full correction and do a curved linesearch
 					// w = xdww - x_kp1
 					V_VmV( &w(), xdww(), x_kp1() );
-					if( (int)newton_olevel() >= (int)this_t::PRINT_NEWTON_STEPS ) {
-						out << "\n||w||inf = " << (a * nrm_w) << std::endl;
+					if( (int)newton_olevel() >= (int)this_t::PRINT_NEWTON_SUMMARY_INFO ) {
+						out << "\n||w||inf = " << norm_inf(w()) << std::endl;
 					}
 					if( (int)newton_olevel() >= (int)this_t::PRINT_NEWTON_VECTORS ) {
 						out << "\nw = " << w();
 					}
 					use_correction = true;
+					newton_failed  = false;
 					break;
 				}
 
@@ -449,6 +467,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 
 			}	// end for
 			if( !use_correction ) {
+				newton_failed  = true;
 				if( forced_constr_reduction() == CONSTR_LESS_X_D ) {
 					if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 						out	<< "\nDam! This is really bad!\n"
@@ -473,6 +492,12 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 						// Compute the full correction and do a curved linesearch
 						// w = xdww - x_kp1
 						V_VmV( &w(), xdww(), x_kp1() );
+						if( (int)newton_olevel() >= (int)this_t::PRINT_NEWTON_SUMMARY_INFO ) {
+							out << "\n||w||inf = " << norm_inf(w()) << std::endl;
+						}
+						if( (int)newton_olevel() >= (int)this_t::PRINT_NEWTON_VECTORS ) {
+							out << "\nw = " << w();
+						}
 						use_correction = true;
 					}
 					else {
@@ -495,6 +520,10 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 			// We are using the correction so setup the full step for the
 			// NLP linesearch to come.
 			Vp_V( &x_kp1(), w() );	// Set point to x_kp1 = x_k + d_k + w
+			if(newton_failed) {
+				nlp.calc_f(x_kp1(),true);
+				nlp.calc_c(x_kp1(),false);
+			}
 			f_kp1 = nlp.f();		// Here f and c where computed at x_k+d_k+w
 			c_kp1 = nlp.c()();
 			phi_kp1 = merit_func().value( f_kp1, c_kp1 );
@@ -619,7 +648,7 @@ void LineSearch2ndOrderCorrect_Step::print_step( const Algorithm& algo
 
 	ConstrainedOptimizationPack::MeritFuncNLESqrResid().print_merit_func(
 		out, L + "        " );
-	
+
 	out	<< L << "    end definition\n"
 		<< L << "    xdw = x_kp1;\n"
 		<< L << "    phi_c_x = phi_c.value(c_k);\n"
@@ -655,10 +684,10 @@ void LineSearch2ndOrderCorrect_Step::print_step( const Algorithm& algo
 		<< L << "            *** Determine if this is sufficent reduction in c(x) error\n"
 		<< L << "            if forced_constr_reduction == CONSTR_LESS_X_D then\n"
 		<< L << "                good_correction = (phi_c.value(c(xdww))\n"
-		<< L << "                                        < phi_c.value(c(x_k+d_k)));\n"
+		<< L << "                                        < phi_c_xd);\n"
 		<< L << "            else if forced_constr_reduction == CONSTR_LESS_X then\n"
 		<< L << "                good_correction = (phi_c.value(c(xdww))\n"
-		<< L << "                                        < phi_c.value(c(x_k)));\n"
+		<< L << "                                        < phi_c_x);\n"
 		<< L << "            end\n"
 		<< L << "            if good_correction == true then\n"
 		<< L << "                w = xdww - (x_k+d_k);\n"
@@ -672,14 +701,14 @@ void LineSearch2ndOrderCorrect_Step::print_step( const Algorithm& algo
 		<< L << "        if use_correction == false then\n"
 		<< L << "            if forced_constr_reduction == CONSTR_LESS_X_D then\n"
 		<< L << "               *** Dam! We could not find a point phi_c_xdww < phi_c_xd.\n"
-		<< L << "               *** Perhaps Gc_k does not give a descent direction for phi_c\n"
+		<< L << "               *** Perhaps Gc_k does not give a descent direction for phi_c!\n"
 		<< L << "            else if forced_constr_reduction == CONSTR_LESS_X then\n"
 		<< L << "               if phi_c_dww < phi_c_xd then\n"
 		<< L << "                   *** Accept this correction anyway.\n"
 		<< L << "                   use_correction = true\n"
 		<< L << "               else\n"
 		<< L << "                   *** Dam! we could not find any reduction in phi_c so\n"
-		<< L << "                   *** Perhaps Gc_k does not give a descent direction for phi_c\n"
+		<< L << "                   *** Perhaps Gc_k does not give a descent direction for phi_c!\n"
 		<< L << "            end\n"
 		<< L << "        end\n"
 		<< L << "    end\n"

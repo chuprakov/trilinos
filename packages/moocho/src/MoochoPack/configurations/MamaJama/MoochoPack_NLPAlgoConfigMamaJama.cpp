@@ -104,6 +104,10 @@
 #include "ReducedSpaceSQPPack/include/std/LineSearchDirect_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearch2ndOrderCorrect_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearch2ndOrderCorrect_StepSetOptions.h"
+#include "ReducedSpaceSQPPack/include/std/FeasibilityStepReducedStd_Strategy.h"
+#include "ReducedSpaceSQPPack/include/std/FeasibilityStepReducedStd_StrategySetOptions.h"
+#include "ReducedSpaceSQPPack/include/std/QuasiRangeSpaceStepStd_Strategy.h"
+#include "ReducedSpaceSQPPack/include/std/QuasiRangeSpaceStepTailoredApproach_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchWatchDog_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchWatchDog_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFullStepAfterKIter_Step.h"
@@ -754,10 +758,17 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	if(trase_out)
 		*trase_out << "\nCreating and setting the step objects ...\n";
 
-	{
-		typedef ref_count_ptr<MeritFuncNLP> merit_func_ptr_t;
-		merit_func_ptr_t merit_func;
+	typedef ref_count_ptr<MeritFuncNLP> merit_func_ptr_t;
+	merit_func_ptr_t merit_func;
+	typedef ref_count_ptr<QPSolverRelaxed> qp_solver_ptr_t;
+	qp_solver_ptr_t qp_solver;
+	typedef ConstrainedOptimizationPack::QPSolverRelaxedTester QPSolverRelaxedTester;
+	typedef ref_count_ptr<QPSolverRelaxedTester> qp_tester_ptr_t;
+	qp_tester_ptr_t qp_tester;
+	typedef ref_count_ptr<FeasibilityStepReducedStd_Strategy> feasibility_step_strategy_ptr_t;
+	feasibility_step_strategy_ptr_t  feasibility_step_strategy;
 
+	{
 		int step_num = 0;
 
 		// Create the variable bounds testing object.  This will not
@@ -1037,6 +1048,30 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 							newton_olevel = ls_t::PRINT_NEWTON_VECTORS;
 							break;
 					}
+					// Create the QuasiRangeSpaceStep_Strategy object
+					QuasiRangeSpaceStep_Strategy
+						*quasi_range_space_step = NULL;
+					if(tailored_approach) {
+						// ToDo: Set the EvalNewPointTailoredApproach_Step object!
+						quasi_range_space_step = new QuasiRangeSpaceStepTailoredApproach_Strategy();
+					}
+					else {
+						quasi_range_space_step = new QuasiRangeSpaceStepStd_Strategy();
+					}
+					// Create the FeasibilityStepReducedStd_Strategy object and
+					// set its options
+					{
+						feasibility_step_strategy
+							= new FeasibilityStepReducedStd_Strategy(
+								quasi_range_space_step         // Given ownership to delete!
+								,NULL  // QP solver (must be set later)
+								,NULL  // QP solver tester (must be set later)
+								);
+						// Set the options
+						FeasibilityStepReducedStd_StrategySetOptions
+							opt_setter(feasibility_step_strategy.get());
+						if(options_) opt_setter.set_options( *options_ );
+					}
 					// Create the line search object for the newton iterations
 					// and set its options from the option from stream object.
 					DirectLineSearchArmQuad_Strategy
@@ -1050,11 +1085,13 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					// Create the step object and set its options from the options object.
 					LineSearch2ndOrderCorrect_Step
 						*_line_search_step = new LineSearch2ndOrderCorrect_Step(
-							  direct_line_search
-							, rcp::rcp_implicit_cast<MeritFuncNLP>(merit_func)
-							, direct_ls_newton
-							, direct_line_search->eta()
-							, newton_olevel
+							direct_line_search
+							,rcp::rcp_implicit_cast<MeritFuncNLP>(merit_func)
+							,rcp::rcp_implicit_cast<FeasibilityStep_Strategy>(
+								feasibility_step_strategy)
+							,direct_ls_newton
+							,direct_line_search->eta()
+							,newton_olevel
 						);
 					LineSearch2ndOrderCorrect_StepSetOptions
 						ls_opt_setter( _line_search_step );
@@ -1183,8 +1220,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				// Create the QP solver
 
 				// RAB 8/28/00: In the future, all the QP solvers will also use this interface.
-				typedef ref_count_ptr<QPSolverRelaxed> qp_solver_ptr_t;
-				qp_solver_ptr_t qp_solver;
 
 				switch( cov_.qp_solver_type_ ) {
 					case QP_QPSCHUR: {
@@ -1226,12 +1261,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				}
 
 				// Create the QP solver tester object and set its options
-
-				typedef ConstrainedOptimizationPack::QPSolverRelaxedTester qp_tester_t;
-				typedef ref_count_ptr<qp_tester_t> qp_tester_ptr_t;
-
-				qp_tester_ptr_t
-					qp_tester = new qp_tester_t();
+				qp_tester = new QPSolverRelaxedTester();
 				ConstrainedOptimizationPack::QPSolverRelaxedTesterSetOptions
 					qp_tester_options_setter( qp_tester.get() );
 				qp_tester_options_setter.set_options( *options_ );
@@ -1546,6 +1576,12 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			, "CorrectBadInitGuessSecond"
 			, rcp::rcp_implicit_cast<AlgorithmStep>( corr_xinit_ptr )
 		  );
+	}
+
+	// 4/10/01: Set the QP solver and tester objects.
+	if( feasibility_step_strategy.get() ) {
+		feasibility_step_strategy->set_qp_solver(qp_solver);
+		feasibility_step_strategy->set_qp_tester(qp_tester);
 	}
 
 }

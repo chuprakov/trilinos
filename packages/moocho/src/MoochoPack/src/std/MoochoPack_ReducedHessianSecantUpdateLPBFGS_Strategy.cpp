@@ -108,21 +108,14 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 			return true;
 		}
 		// Consider if we can even look at the active set yet.
-		const bool consider_switch  = lbfgs_rHL_RR->m_bar() >= min_num_updates_proj_start();
+		const bool consider_switch  = lbfgs_rHL_RR->num_secant_updates() >= min_num_updates_proj_start();
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-			if( min_num_updates_proj_start() > lbfgs_rHL_RR->m() ) {
-				out << "\nWarning! num_lbfgs_updates_stored = " << lbfgs_rHL_RR->m()
-					<< " < min_num_updates_proj_start = " << min_num_updates_proj_start()
-					<< "\nWe will never be able to switch to projected BFGS! (consider reducing min_num_updates_proj_start) ...\n";
-			}
-			else {
-				out << "\nnum_previous_updates_stored = " << lbfgs_rHL_RR->m_bar()
-					<< ( consider_switch ? " >= " : " < " )
-					<< "min_num_updates_proj_start = " << min_num_updates_proj_start()
-					<< ( consider_switch
-						 ? "\nConsidering if we should switch to projected BFGS updating of superbasics ...\n"
-						 : "\nNot time to consider switching to projected BFGS updating of superbasics yet!" );
-			}
+			out << "\nnum_previous_updates = " << lbfgs_rHL_RR->num_secant_updates()
+				<< ( consider_switch ? " >= " : " < " )
+				<< "min_num_updates_proj_start = " << min_num_updates_proj_start()
+				<< ( consider_switch
+					 ? "\nConsidering if we should switch to projected BFGS updating of superbasics ...\n"
+					 : "\nNot time to consider switching to projected BFGS updating of superbasics yet!" );
 		}
 		if( consider_switch ) {
 			// 

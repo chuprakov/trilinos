@@ -21,14 +21,14 @@ namespace ReducedSpaceSQPPack {
 class EvalNewPointTailoredApproach_Step : public EvalNewPoint_Step {
 public:
 
-	/// «std comp» members for comparision object compatible with Gc
+	/// <<std comp>> members for comparision object compatible with Gc
 	STANDARD_COMPOSITION_MEMBERS( NLPrSQPTailoredApproachTester, deriv_tester )
 
 	///
 	typedef ConstrainedOptimizationPack::VariableBoundsTester
 		VariableBoundsTester;
 
-	/// «std comp» Members for variable bounds tester object
+	/// <<std comp>> Members for variable bounds tester object
 	STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
 
 	///
@@ -59,18 +59,26 @@ public:
 	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 
-protected:
-
 	///
 	/** Overridden by subclass to compute py and Ypy.
 	  *
 	  * The matrix Y is never computed explicity.
 	  *
-	  * @param	D	[I]		matrix D = -inv(C)*N
-	  * @param	py	[I/O]	On input py = -inv(C)*c, on output py = -inv((Gc(decomp)'*Y)*c
-	  * @param	Ypy	[O]		On ouput is Y*py.
+	  * @param	D	[in] matrix D = -inv(C)*N
+	  * @param	py	[in/out] On input py = -inv(C)*c, on output py = -inv((Gc(decomp)'*Y)*c
+	  * @param	Ypy	[out] On ouput is Y*py.
 	  */
-	virtual void calc_py_Ypy( const GenMatrixSlice& D, VectorSlice* py, Vector* Ypy
+	virtual void calc_py_Ypy( const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
+		, EJournalOutputLevel olevel, std::ostream& out ) = 0;
+
+	///
+	/** Overridden by subclass to recompute py and Ypy.
+	  *
+	  * @param	D	[in] matrix D = -inv(C)*N
+	  * @param	py	[in/out] On input py = -inv(C)*c, on output py = -inv((Gc(decomp)'*Y)*c
+	  * @param	Ypy	[out] On ouput is Y*py.
+	  */
+	virtual void recalc_py_Ypy( const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
 		, EJournalOutputLevel olevel, std::ostream& out ) = 0;
 
 	///

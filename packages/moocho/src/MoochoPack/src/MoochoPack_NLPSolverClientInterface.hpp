@@ -147,7 +147,7 @@ public:
 	  * exception is thrown then #this->track().output_final(...,TERMINATE_FALSE)# will
 	  * be called before this exception is rethrown out of this functiion.  If the constraints
 	  * are found to be infeasible, then the exception #InfeasibleConstraints# will be thrown.
-	  * If a line search failure occures then the exception #LineSearchFailure# will be thrown.
+	  * If a line search failure occurs then the exception #LineSearchFailure# will be thrown.
 	  * If some test failed then the exception #TestFailed# will be thrown.  Many other exceptions
 	  * may be thrown but these are the main ones that the SQP algorithms known about and will
 	  * purposefully generate.

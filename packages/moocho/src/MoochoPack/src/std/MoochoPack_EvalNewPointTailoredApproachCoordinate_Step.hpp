@@ -33,9 +33,11 @@ protected:
 	// Overridden
 
 	///
-	void calc_py_Ypy( const GenMatrixSlice& D, VectorSlice* py, Vector* Ypy
+	void calc_py_Ypy( const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
 		, EJournalOutputLevel olevel, std::ostream& out );
-
+	///
+	void recalc_py_Ypy( const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
+		, EJournalOutputLevel olevel, std::ostream& out );
 	///
 	void print_calc_Y_py_Ypy( std::ostream& out, const std::string& leading_str ) const;
 
