@@ -13,7 +13,9 @@ $(srcdir)/MoochoUtilities/ThrowException.hpp\
 $(srcdir)/MoochoUtilities/WorkspacePack.hpp\
 $(srcdir)/MoochoUtilities/dynamic_cast_verbose.hpp\
 $(srcdir)/MoochoUtilities/ref_count_ptr.hpp\
-$(srcdir)/MoochoUtilities/ref_count_ptr_decl.hpp
+$(srcdir)/MoochoUtilities/ref_count_ptr_decl.hpp\
+$(srcdir)/MoochoUtilities/ReleaseResource_ref_count_ptr.hpp\
+$(srcdir)/MoochoUtilities/ReleaseResource.hpp
 
 MoochoUtilities_SOURCES=\
 $(srcdir)/MoochoUtilities/Range1D.cpp\
