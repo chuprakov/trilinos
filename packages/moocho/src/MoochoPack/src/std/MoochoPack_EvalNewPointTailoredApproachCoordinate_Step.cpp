@@ -57,7 +57,7 @@ void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y_Uy_Vy(
 	using DynamicCastHelperPack::dyn_cast;
 
 	MatrixIdentConcatStd
-		cY = dyn_cast<MatrixIdentConcatStd>(*Y);
+		&cY = dyn_cast<MatrixIdentConcatStd>(*Y);
 	//
 	// Y = [      I     ] space_xD  
 	//     [    Zero    ] space_xI
