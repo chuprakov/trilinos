@@ -69,8 +69,8 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, primal_feasible_point_error )
 
 	///
-	/** Determine if a QPFailure exception is thrown if the QP solver
-	 * returns DUAl_FEASIBLE_POINT.
+	/** Determine if a \c QPFailure exception is thrown if the QP solver
+	 * returns \c DUAl_FEASIBLE_POINT.
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dual_feasible_point_error )
 
