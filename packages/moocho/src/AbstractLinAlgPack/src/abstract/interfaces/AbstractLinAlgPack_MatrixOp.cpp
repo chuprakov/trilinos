@@ -19,6 +19,7 @@
 #include <stdexcept>
 
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpSubView.h"
 #include "AbstractLinAlgPack/include/MultiVectorMutable.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
@@ -33,18 +34,22 @@ namespace AbstractLinAlgPack {
 MatrixWithOp::mat_ptr_t
 MatrixWithOp::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
+	namespace rcp = ReferenceCountingPack;
+
 	if( 
 		( ( row_rng.lbound() == 1 && row_rng.ubound() == this->rows() )
 		  || row_rng.full_range() )
 		&&
 		( ( col_rng.lbound() == 1 && col_rng.ubound() == this->cols() )
 		  || row_rng.full_range() )
-		)
-		return mat_ptr_t(this,false); // don't clean up memory
-	return NULL; // requested a view that was not the entire matrix!
-	// ToDo: create a matrix subclass that can simulate such a view!
-	// We should be able to do this using VectorSpaceSubView and
-	// VectorWithOp::sub_view(...).
+		) 
+	{
+		return rcp::rcp(this,false); // don't clean up memory
+	}
+	return rcp::rcp(
+		new MatrixWithOpSubView(
+			rcp::rcp(const_cast<MatrixWithOp*>(this),false) // don't clean up memory
+			,row_rng,col_rng ) );
 }
 
 MatrixWithOp& MatrixWithOp::zero_out()
@@ -182,13 +187,18 @@ void MatrixWithOp::Vp_StMtV(
 	, const SpVectorSlice& sv_rhs2, value_type beta) const
 {
 	Vp_MtV_assert_sizes(v_lhs->dim(), this->rows(), this->cols(), trans_rhs1, sv_rhs2.dim() );
-	VectorSpace::vec_mut_ptr_t
-		v_rhs2 = (trans_rhs1 == BLAS_Cpp::no_trans
-				  ? this->space_rows()
-				  : this->space_cols()
-			).create_member();
-	v_rhs2->set_sub_vector(sub_vec_view(sv_rhs2));
-	this->Vp_StMtV(v_lhs,alpha,trans_rhs1,*v_rhs2,beta);
+	if( sv_rhs2.nz() ) {
+		VectorSpace::vec_mut_ptr_t
+			v_rhs2 = (trans_rhs1 == BLAS_Cpp::no_trans
+					  ? this->space_rows()
+					  : this->space_cols()
+				).create_member();
+		v_rhs2->set_sub_vector(sub_vec_view(sv_rhs2));
+		this->Vp_StMtV(v_lhs,alpha,trans_rhs1,*v_rhs2,beta);
+	}
+	else {
+		Vt_S( v_lhs, beta );
+	}
 }
 
 void MatrixWithOp::Vp_StPtMtV(
