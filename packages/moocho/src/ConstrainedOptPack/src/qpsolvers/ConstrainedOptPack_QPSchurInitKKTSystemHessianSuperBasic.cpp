@@ -40,13 +40,18 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 	using SparseLinAlgPack::Vp_StMtV;
 
 	// Validate type of and convert G
-#ifdef _WINDOWS
-	const MatrixHessianSuperBasic&
-		G_super = dynamic_cast<const MatrixHessianSuperBasic&>(G);
-#else
-	const MatrixHessianSuperBasic&
-		G_super = dyn_cast<const MatrixHessianSuperBasic>(G);
-#endif
+	const MatrixHessianSuperBasic
+		*G_super_ptr = dynamic_cast<const MatrixHessianSuperBasic*>(&G);
+
+	if( G_super_ptr == NULL ) {
+		init_kkt_full_.initialize_kkt_system(
+			g,G,etaL,dL,dU,F,trans_F,f,n_R,i_x_free,i_x_fixed,bnd_fixed
+			,j_f_decomp,b_X,Ko,fo);
+		return;
+	}
+
+	const MatrixHessianSuperBasic
+		&G_super = *G_super_ptr;
 
 	// get some stuff
 	const GenPermMatrixSlice

@@ -170,6 +170,8 @@ public:
 	bool maintain_original() const;
 	///
 	bool maintain_inverse() const;
+	/// Returns the total number of successful secant updates performed.
+	size_type num_secant_updates() const;
 
 	// /////////////////////////////////////////////////////
 	// Overridden from Matrix
@@ -288,9 +290,9 @@ private:
 				m_,		// Maximum number of update vectors that can be stored.
 				m_bar_,	// Current number of update vectors being stored.
 						// 0 <= m_bar <= m
-				k_bar_;	// Position of the most recently stored update vector in S & Y
+				k_bar_,	// Position of the most recently stored update vector in S & Y
 						// 1 <= k_bar <= m_bar
-
+		        num_secant_updates_; // Records the number of secant updates performed
 	value_type	gamma_k_;// Scaling factor for Bo = (1/gamma_k) * I.
 
 	GenMatrix	S_,		// (n_max x m) Matrix of stored update vectors = [ s1, ..., sm ]
@@ -394,6 +396,13 @@ bool MatrixSymPosDefLBFGS::maintain_inverse() const
 {
 	return maintain_inverse_;
 }
+
+inline
+size_type MatrixSymPosDefLBFGS::num_secant_updates() const
+{
+	return num_secant_updates_;
+}
+
 
 }	// end namespace ConstrainedOptimizationPack 
 

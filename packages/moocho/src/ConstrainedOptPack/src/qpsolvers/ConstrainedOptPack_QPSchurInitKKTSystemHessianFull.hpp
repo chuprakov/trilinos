@@ -20,6 +20,7 @@ namespace ConstrainedOptimizationPack {
 class QPSchurInitKKTSystemHessianFull
 	: public QPSolverRelaxedQPSchur::InitKKTSystem 
 {
+public:
 
 	// ////////////////////////////////
 	// Overridden from InitKKTSystem

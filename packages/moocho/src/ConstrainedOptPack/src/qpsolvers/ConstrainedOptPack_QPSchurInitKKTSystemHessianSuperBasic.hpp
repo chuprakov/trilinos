@@ -5,6 +5,7 @@
 #define QPSCHUR_INIT_KKT_SYSTEM_HESSIAN_SUPER_BASIC_H
 
 #include "QPSolverRelaxedQPSchur.h"
+#include "QPSchurInitKKTSystemHessianFull.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -18,6 +19,7 @@ namespace ConstrainedOptimizationPack {
 class QPSchurInitKKTSystemHessianSuperBasic
 	: public QPSolverRelaxedQPSchur::InitKKTSystem 
 {
+public:
 
 	// ////////////////////////////////
 	// Overridden from InitKKTSystem
@@ -55,6 +57,10 @@ class QPSchurInitKKTSystemHessianSuperBasic
 	 * Above, it is assumed that if #G.bnd_fixed[l-1] == EQUALITY#, that
 	 * #dL(G.i_x_fixed[l-1]) == dU(G.i_x_fixed[l-1]# but this may not be
 	 * inforced by this class.
+	 *
+	 * If the \Ref{MatrixHessianSuperBasic} interface is not suppored by #G# then a
+	 * \Ref{QPSchurInitKKTSystemHessianFull} strategy object is used to
+	 * try to initialize the KKT system.
 	 */
 	void initialize_kkt_system(
 		const VectorSlice&    g
@@ -74,6 +80,9 @@ class QPSchurInitKKTSystemHessianSuperBasic
 		,Ko_ptr_t*            Ko
 		,Vector*              fo
 		) const;
+
+private:
+	QPSchurInitKKTSystemHessianFull  init_kkt_full_;
 
 }; // end class QPSchurInitKKTSystemHessianSuperBasic
 

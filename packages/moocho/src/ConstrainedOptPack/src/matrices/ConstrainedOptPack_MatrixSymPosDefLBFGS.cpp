@@ -146,6 +146,7 @@ void MatrixSymPosDefLBFGS::initial_setup(
 	m_                 = m;
 	n_                 = 0; // make uninitialized
 	n_max_             = max_size;
+	num_secant_updates_= 0;
 }
 
 // Overridden from Matrix
@@ -193,6 +194,7 @@ MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)
 		m_			         = p_m->m_;
 		m_bar_		         = p_m->m_bar_;
 		k_bar_		         = p_m->k_bar_;
+		num_secant_updates_  = p_m->num_secant_updates_;
 		gamma_k_	         = p_m->gamma_k_;
 		S_			         = p_m->S_;
 		Y_			         = p_m->Y_;
@@ -457,7 +459,7 @@ void MatrixSymPosDefLBFGS::init_identity(size_type n, value_type alpha)
 	STSYTY_.resize( m_+1, m_+1 );
 	STSYTY_.diag(0) = 0.0;
 
-	gamma_k_	= alpha;
+	gamma_k_ = 1.0/alpha;
 
 	// Initialize counters
 	k_bar_	= 0;
@@ -466,6 +468,7 @@ void MatrixSymPosDefLBFGS::init_identity(size_type n, value_type alpha)
 	n_ = n;	 // initialized;
 	original_is_updated_ = true; // This will never change for now
 	inverse_is_updated_  = true; // This will never change for now
+	num_secant_updates_  = 0;
 }
 
 void MatrixSymPosDefLBFGS::init_diagonal(const VectorSlice& diag)
@@ -496,8 +499,18 @@ void MatrixSymPosDefLBFGS::secant_update(
 
 	// Update counters
 	if( k_bar_ == m_ ) {
-		// We are at the end storage so loop back around again
-		k_bar_ = 1;
+//		// We are at the end storage so loop back around again
+//		k_bar_ = 1;
+		// We are at the end of the storage so remove the oldest stored update
+		// and move updates to make room for the new update.  This has to be done for the
+		// the matrix to behave properly
+		{for( size_type k = 1; k <= m_-1; ++k ) {
+			S_.col(k) = S_.col(k+1);                              // Shift S.col() to the left
+			Y_.col(k) = Y_.col(k+1);                              // Shift Y.col() to the left
+			STY_.col(k)(1,m_-1) = STY_.col(k+1)(2,m_);            // Move submatrix STY(2,m-1,2,m-1) up and left
+			STSYTY_.col(k)(k+1,m_) = STSYTY_.col(k+1)(k+2,m_+1);  // Move triangular submatrix STS(2,m-1,2,m-1) up and left
+			STSYTY_.col(k+1)(1,k) = STSYTY_.col(k+2)(2,k+1);      // Move triangular submatrix YTY(2,m-1,2,m-1) up and left
+		}}
 	}
 	else {
 		k_bar_++;
@@ -601,12 +614,14 @@ void MatrixSymPosDefLBFGS::secant_update(
 	// Update gamma_k
 
 	// gamma_k = s'*y / y'*y
-	gamma_k_ = auto_rescaling_ ? STY_(k_bar_,k_bar_) / STSYTY_(k_bar_,k_bar_+1) : 1.0;
+	if(auto_rescaling_)
+		gamma_k_ = STY_(k_bar_,k_bar_) / STSYTY_(k_bar_,k_bar_+1);
 
 	// We do not initially update Q unless we have to form a matrix-vector
 	// product later.
 	
 	Q_updated_ = false;
+	num_secant_updates_++;
 
 	}	//	end try
 	catch(...) {

@@ -4020,11 +4020,19 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 									,"p_z_hat(s)",&(*p_z_itr),"z_hat_plus(s)"
 									, (assume_lin_dep_ja ? NULL: &z_hat_plus(s) ) );
 							if( dual_feas_status < 0 ) {
-								// Turn on iterative refinement and go back
-								throw std::logic_error(
-									error_msg(__FILE__,__LINE__,"QPSchur::qp_algo(...): Error, "
-											  "iterative refinement not implemented here yet!"));
-								assert(0);
+								if( !using_iter_refinement ) {
+									if( (int)output_level >= (int)OUTPUT_BASIC_INFO )
+										*out << "We are not using iterative refinement yet so turn it on"
+											 << "\nthen recompute the steps ...\n";
+									using_iter_refinement = true;
+									next_step = COMPUTE_SEARCH_DIRECTION;
+									continue;
+								}
+								else {
+									if( (int)output_level >= (int)OUTPUT_BASIC_INFO )
+										*out << "We are already using iterative refinement so the QP algorithm is terminated!\n";
+									return DUAL_INFEASIBILITY;
+								}
 							}
 							else if( dual_feas_status == 0 ) {
 								j_is_degen = true;
@@ -4114,11 +4122,19 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								,out,output_level,true,"mu_D_hat(k)",&(*mu_D_itr),&viol
 								,"p_mu_D_hat(k)",&(*p_mu_D_itr) );
 						if( dual_feas_status < 0 ) {
-								// Turn on iterative refinement and go back
-							throw std::logic_error(
-								error_msg(__FILE__,__LINE__,"QPSchur::qp_algo(...): Error, "
-										  "iterative refinement not implemented here yet!"));
-							assert(0);
+							if( !using_iter_refinement ) {
+								if( (int)output_level >= (int)OUTPUT_BASIC_INFO )
+									*out << "We are not using iterative refinement yet so turn it on"
+										 << "\nthen recompute the steps ...\n";
+								using_iter_refinement = true;
+								next_step = COMPUTE_SEARCH_DIRECTION;
+								continue;
+							}
+							else {
+								if( (int)output_level >= (int)OUTPUT_BASIC_INFO )
+									*out << "We are already using iterative refinement so the QP algorithm is terminated!\n";
+								return DUAL_INFEASIBILITY;
+							}
 						}
 						else if( dual_feas_status == 0 ) {
 							j_is_degen = true;
