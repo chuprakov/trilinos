@@ -4,7 +4,8 @@
 #ifndef INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_H
 #define INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_H
 
-#include "../rSQPAlgo_StepBaseClasses.h"
+#include "ReducedSpaceSQPPack/include/rSQPAlgo_StepBaseClasses.h"
+#include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
 #include "Misc/include/StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
@@ -81,6 +82,7 @@ public:
 private:
 	enum { NO_BASIS_UPDATED_YET = -1 };
 	int num_basis_;
+	quasi_newton_stats_iq_member	quasi_newton_stats_;
 
 };	// end class ReducedHessianBFGS_Step
 

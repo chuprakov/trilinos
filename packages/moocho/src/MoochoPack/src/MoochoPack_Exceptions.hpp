@@ -13,8 +13,13 @@ class InfeasibleConstraints : public std::logic_error
 {public: InfeasibleConstraints(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
 /// Thrown if a line search failure occurs.
-class LineSearchFailure : public std::logic_error
-{public: LineSearchFailure(const std::string& what_arg) : std::logic_error(what_arg){}};
+class LineSearchFailure : public std::runtime_error
+{public: LineSearchFailure(const std::string& what_arg) : std::runtime_error(what_arg){}};
+
+/// Thrown if a runtime test failed.
+class TestFailed : public std::runtime_error
+{public: TestFailed(const std::string& what_arg) : std::runtime_error(what_arg){}};
+
 
 }	// end namespace ReducedSpaceSQPPack 
 

@@ -5,6 +5,7 @@
 #define RSQP_TRACK_CONSOLE_STD_H
 
 #include "ReducedSpaceSQPPack/include/rSQPTrack.h"
+#include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
 #include "Misc/include/stpwatch.h"
 
 namespace ReducedSpaceSQPPack {
@@ -110,6 +111,7 @@ private:
 	std::ostream*						o_;
 	mutable StopWatchPack::stopwatch	timer_;
 	mutable int							printed_lines_;
+	quasi_newton_stats_iq_member		quasi_newton_stats_;
 
 	// Static formating info.
 	static int		w_i2_;

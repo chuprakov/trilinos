@@ -6,9 +6,8 @@
 
 #include <ostream>
 
-#include "../../include/std/InitFinDiffReducedHessian_Step.h"
-#include "../../include/std/quasi_newton_stats.h"
-#include "../../include/rsqp_algo_conversion.h"
+#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_Step.h"
+#include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymSecantUpdateable.h"
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
@@ -258,7 +257,7 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 			}
 		}
 
-		quasi_newton_stats(s).set_k(0).set_updated_stats(
+		quasi_newton_stats_(s).set_k(0).set_updated_stats(
 			QuasiNewtonStats::REINITIALIZED );
 
 		if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {

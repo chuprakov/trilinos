@@ -111,8 +111,8 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Ypy(
 	// a direct call to the BLAS is used and aliaseing the
 	// rhs and lhs is fine.
 	// 
-	LinAlgPack::V_invMtV( &t(), L, BLAS_Cpp::no_trans, t() );
-	LinAlgPack::V_invMtV( &t(), L, BLAS_Cpp::trans, t() ); 	
+	LinAlgPack::V_InvMtV( &t(), L, BLAS_Cpp::no_trans, t() );
+	LinAlgPack::V_InvMtV( &t(), L, BLAS_Cpp::trans, t() ); 	
 	
 	// py = py - D * t
 	LinAlgPack::Vp_StMtV( py, -1.0, D, BLAS_Cpp::no_trans, t() );

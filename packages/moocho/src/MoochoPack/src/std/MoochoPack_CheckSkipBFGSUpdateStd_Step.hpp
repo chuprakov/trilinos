@@ -5,6 +5,7 @@
 #define CHECK_SKIP_BFGS_UPDATE_STD_STEP_H
 
 #include "ReducedSpaceSQPPack/include/rSQPAlgo_StepBaseClasses.h"
+#include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
 #include "Misc/include/StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
@@ -38,6 +39,7 @@ public:
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 
 private:
+	quasi_newton_stats_iq_member	quasi_newton_stats_;
 	
 };	// end class ReducedHessianBFGS_Step
 

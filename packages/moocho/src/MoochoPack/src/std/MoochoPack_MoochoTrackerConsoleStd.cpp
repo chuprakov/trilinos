@@ -10,7 +10,6 @@
 #include "../../include/std/rSQPTrackConsoleStd.h"
 #include "../../include/rSQPState.h"
 #include "../../include/rsqp_algo_conversion.h"
-#include "../../include/std/quasi_newton_stats.h"
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
 #include "SparseLinAlgPack/include/SpVectorClass.h"
@@ -75,7 +74,7 @@ void rSQPTrackConsoleStd::output_iteration(const Algorithm& p_algo) const
 	
 	// Get a Quasi-Newton statistics.
 	const QuasiNewtonStats	*quasi_newt_stats =
-		( quasi_newton_stats(s).updated_k(0) ? &quasi_newton_stats(s).get_k(0) : 0 );
+		( quasi_newton_stats_(s).updated_k(0) ? &quasi_newton_stats_(s).get_k(0) : 0 );
 
 	// k
 	o() << " " << right << setw(w_i4_) << s.k();
@@ -189,7 +188,7 @@ void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 	
 	// Get a Quasi-Newton statistics.
 	const QuasiNewtonStats	*quasi_newt_stats =
-		( quasi_newton_stats(s).updated_k(0) ? &quasi_newton_stats(s).get_k(0) : 0 );
+		( quasi_newton_stats_(s).updated_k(0) ? &quasi_newton_stats_(s).get_k(0) : 0 );
 
 	// k
 	o() << " " << right << setw(w_i4_) << s.k();

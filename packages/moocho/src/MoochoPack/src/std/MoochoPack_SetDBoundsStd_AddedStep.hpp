@@ -1,11 +1,11 @@
 // ////////////////////////////////////////////////////////////////////////////
-// ActSetStats_AddedStep.h
+// SetDBoundsStd_AddedStep.h
 
-#ifndef ACT_SET_STATS_ADDED_STEP_H
-#define ACT_SET_STATS_ADDED_STEP_H
+#ifndef SET_D_BOUNDS_STD_ADDED_STEP_HH
+#define SET_D_BOUNDS_STD_ADDED_STEP_HH
 
 #include "ReducedSpaceSQPPack/include/rSQPAlgo_Step.h"
-#include "ReducedSpaceSQPPack/include/std/act_set_stats.h"
+#include "ReducedSpaceSQPPack/include/std/d_bounds_iter_quant.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -15,7 +15,7 @@ namespace ReducedSpaceSQPPack {
   * The function act_set_stats(...) is used to access the iteration
   * quantity object for the active set object.
   */
-class ActSetStats_AddedStep : public rSQPAlgo_Step {
+class SetDBoundsStd_AddedStep : public rSQPAlgo_Step {
 public:
 
 	// ////////////////////
@@ -30,10 +30,10 @@ public:
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 
 private:
-	act_set_stats_iq_member		act_set_stats_;
+	d_bounds_iq_member		d_bounds_;
 
-};	// end class ActSetStats_AddedStep
+};	// end class SetDBoundsStd_AddedStep
 
 }	// end namespace ReducedSpaceSQPPack 
 
-#endif	// ACT_SET_STATS_ADDED_STEP_H
+#endif	// SET_D_BOUNDS_STD_ADDED_STEP_HH

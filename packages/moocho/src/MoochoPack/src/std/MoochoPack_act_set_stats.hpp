@@ -5,6 +5,7 @@
 #define ACT_SET_STATS_HH
 
 #include "ActSetStats.h"
+#include "GeneralIterationPack/include/CastIQMember.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -12,14 +13,17 @@ namespace ReducedSpaceSQPPack {
 extern const std::string act_set_stats_name;
 
 ///
-/** Function attempts to return an IterQuantityAccess<ActSetStats>
+/** Class for object that attempts to return an IterQuantityAccess<ActSetStats>
   * from an AlgorithmState object with the name act_set_stats_name.
   */
-IterQuantityAccess<ActSetStats>& act_set_stats( AlgorithmState& state );
-
-///
-const IterQuantityAccess<ActSetStats>& act_set_stats( const AlgorithmState& state );
-
+class act_set_stats_iq_member
+	: public CastIQMember<ActSetStats>
+{
+public:
+    act_set_stats_iq_member()
+    	: CastIQMember<ActSetStats>(act_set_stats_name)
+    {}
+};
 
 }	// end namespace ReducedSpaceSQPPack
 

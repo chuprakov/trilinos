@@ -50,6 +50,11 @@
 #include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateAdjoint.h"
 #include "ConstrainedOptimizationPack/include/DirectLineSearchArmQuad_StrategySetOptions.h"
 
+#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
+#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
+#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurRangeSpace.h"
+#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurRangeSpaceSetOptions.h"
+
 #include "../../include/std/ReducedQPSolverCheckOptimality.h"
 #include "../../include/std/ReducedQPSolverQPOPTSOLStd.h"
 #include "../../include/std/ReducedQPSolverQPSOL.h"
@@ -59,6 +64,8 @@
 #include "../../include/std/QPMixedFullReducedSolverCheckOptimality.h"
 #include "../../include/std/QPSCPD/QPMixedFullReducedQPSCPDSolver.h"
 #include "../../include/std/QPSCPD/QPMixedFullReducedQPSCPDSolverSetOptions.h"
+
+
 
 #include "../../include/std/rSQPAlgorithmStepNames.h"
 
@@ -76,6 +83,9 @@
 #include "../../include/std/DepDirecStd_Step.h"
 #include "../../include/std/CheckBasisFromPy_Step.h"
 #include "../../include/std/IndepDirecWithoutBounds_Step.h"
+#include "../../include/std/SetDBoundsStd_AddedStep.h"
+#include "../../include/std/IndepDirecWithBoundsStd_Step.h"
+#include "../../include/std/IndepDirecWithBoundsStd_StepSetOptions.h"
 #include "../../include/std/IndepDirecExact_Step.h"
 #include "../../include/std/SearchDirecMixedFullReduced_Step.h"
 #include "../../include/std/CalcDFromYPYZPZ_Step.h"
@@ -466,6 +476,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					use_limited_memory = false;
 					break;
 				case QPSCPD:
+				case QPSCHUR:
 					matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
 						= use_limited_memory
 							? static_cast<IterQuantMatrixWithOpCreator*>(
@@ -938,64 +949,135 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 			if(trase_out)
 				*trase_out << "\nReconfiguring steps for NLP with bounds ...\n";
-
 			
 			// If the NLP has bounds on the variables then we must replace
 			// IndepDirec and move the convergence check to the end (along
 			// with the calculation of the reduced gradient of the lagrangian).
 			
-			typedef ref_count_ptr<ReducedQPSolver> qp_solver_ptr_t;
-			qp_solver_ptr_t qp_solver;
+			// Setup IndepDirec step
+			if( cov_.qp_solver_type_ == QPSCHUR ) {
+			
+				// Add iteration quantity for d_bounds
+				algo->state().set_iter_quant( d_bounds_name
+					, new IterQuantityAccessContinuous<SparseBounds>( 1, d_bounds_name ) );
 
-			switch(cov_.qp_solver_type_) {
-				case QPOPT:
-				case QPSOL:
-				{
-					ReducedQPSolverQPOPTSOL*  _qp_solver = 0;
-					if(cov_.qp_solver_type_ == QPOPT)
-						_qp_solver = new ReducedQPSolverQPOPT;
-					else
-						_qp_solver = new ReducedQPSolverQPSOL;
-					
-					// If we are going to dump all of the iteration quantites we might as
-					// well just print out the mappings to QPOPT and QPSOL.
-					if(algo_cntr.journal_output_level() == PRINT_ITERATION_QUANTITIES)
-						mapped_qp_file_ = mapped_qp_file_ptr_t( new std::ofstream("mapped_qp.txt") );
-					_qp_solver->qp_mapping_output( mapped_qp_file_.get() );
-					qp_solver = qp_solver_ptr_t( new ReducedQPSolverQPOPTSOLStd(_qp_solver,algo.get()) );
-					break;
+				// Create the QP solver
+
+				// RAB 8/28/00: In the future, more QP solvers will also use this interface.
+				typedef ref_count_ptr<QPSolverRelaxed> qp_solver_ptr_t;
+				qp_solver_ptr_t qp_solver;
+
+				switch( cov_.qp_solver_type_ ) {
+					case QPSCHUR: {
+						QPSolverRelaxedQPSchurRangeSpace
+							*_qp_solver = new QPSolverRelaxedQPSchurRangeSpace();
+						ConstrainedOptimizationPack::QPSolverRelaxedQPSchurRangeSpaceSetOptions
+							qp_options_setter( _qp_solver );
+						qp_options_setter.set_options( *options_ );
+						qp_solver = qp_solver_ptr_t(_qp_solver);
+						break;
+					}
+					default:
+						assert(0);
 				}
-				case QPKWIK:
-				{
-					ReducedQPSolverQPKWIKNEW*
-						_qp_solver = new ReducedQPSolverQPKWIKNEW;
-					if(algo_cntr.journal_output_level() == PRINT_ITERATION_QUANTITIES)
-						_qp_solver->create_qpkwiknew_file(true);
-					ReducedQPSolverQPKWIKNEWStd*
-						__qp_solver = new ReducedQPSolverQPKWIKNEWStd(_qp_solver,algo.get());
-					if( cov_.warm_start_frac_ > 0.0 )
-						__qp_solver->warm_start_frac(cov_.warm_start_frac_);
-					qp_solver = qp_solver_ptr_t( __qp_solver );
-					break;
+
+				// Create the QP solver tester object and set its options
+
+				typedef ConstrainedOptimizationPack::QPSolverRelaxedTester qp_tester_t;
+				typedef ref_count_ptr<qp_tester_t> qp_tester_ptr_t;
+
+				qp_tester_ptr_t
+					qp_tester = new qp_tester_t();
+				ConstrainedOptimizationPack::QPSolverRelaxedTesterSetOptions
+					qp_tester_options_setter( qp_tester.get() );
+				qp_tester_options_setter.set_options( *options_ );
+
+				// Create the step object
+
+				IndepDirecWithBoundsStd_Step
+					*indep_direct_step = new  IndepDirecWithBoundsStd_Step( qp_solver, qp_tester );
+				IndepDirecWithBoundsStd_StepSetOptions
+					indep_direct_step_options_setter( indep_direct_step );
+				indep_direct_step_options_setter.set_options( *options_ );
+
+				// Set the step objects
+
+				Algorithm::poss_type poss;
+				poss = algo->get_step_poss(IndepDirec_name);
+				algo->remove_step( poss );	// remove any pre or post steps also
+				algo->insert_step(
+					  poss
+					, IndepDirec_name
+					, indep_direct_step	// Will clean up memory!
+					);
+				algo->insert_assoc_step(
+					 poss
+					, GeneralIterationPack::PRE_STEP
+					, 1
+					, "SetDBounds"
+					, new  SetDBoundsStd_AddedStep
+					);
+
+			}
+			else {
+
+				// RAB 8/28/00: This step object and QP solver interface will be phased out!
+
+				typedef ref_count_ptr<ReducedQPSolver> qp_solver_ptr_t;
+				qp_solver_ptr_t qp_solver;
+
+				switch(cov_.qp_solver_type_) {
+					case QPOPT:
+					case QPSOL:
+					{
+						ReducedQPSolverQPOPTSOL*  _qp_solver = 0;
+						if(cov_.qp_solver_type_ == QPOPT)
+							_qp_solver = new ReducedQPSolverQPOPT;
+						else
+							_qp_solver = new ReducedQPSolverQPSOL;
+						
+						// If we are going to dump all of the iteration quantites we might as
+						// well just print out the mappings to QPOPT and QPSOL.
+						if(algo_cntr.journal_output_level() == PRINT_ITERATION_QUANTITIES)
+							mapped_qp_file_ = mapped_qp_file_ptr_t( new std::ofstream("mapped_qp.txt") );
+						_qp_solver->qp_mapping_output( mapped_qp_file_.get() );
+						qp_solver = qp_solver_ptr_t( new ReducedQPSolverQPOPTSOLStd(_qp_solver,algo.get()) );
+						break;
+					}
+					case QPKWIK:
+					{
+						ReducedQPSolverQPKWIKNEW*
+							_qp_solver = new ReducedQPSolverQPKWIKNEW;
+						if(algo_cntr.journal_output_level() == PRINT_ITERATION_QUANTITIES)
+							_qp_solver->create_qpkwiknew_file(true);
+						ReducedQPSolverQPKWIKNEWStd*
+							__qp_solver = new ReducedQPSolverQPKWIKNEWStd(_qp_solver,algo.get());
+						if( cov_.warm_start_frac_ > 0.0 )
+							__qp_solver->warm_start_frac(cov_.warm_start_frac_);
+						qp_solver = qp_solver_ptr_t( __qp_solver );
+						break;
+					}
 				}
+
+				Algorithm::poss_type poss;
+
+				poss = algo->get_step_poss(IndepDirec_name);
+				algo->replace_step(
+							poss
+							,new  IndepDirecExact_Step( 
+								new ReducedQPSolverCheckOptimality(
+									qp_solver, algo.get(), algo->algo_cntr().check_results() )
+							  )
+					    );
 			}
 
-			Algorithm::poss_type poss;
-
-			poss = algo->get_step_poss(IndepDirec_name);
-			algo->replace_step(
-						poss
-						,new  IndepDirecExact_Step( 
-							new ReducedQPSolverCheckOptimality(
-								qp_solver, algo.get(), algo->algo_cntr().check_results() )
-						  )
-				    );
 
 			Algorithm::step_ptr_t calc_rgrad_lagr, calc_lambda, check_conv;
 
 			// Remove and save CalcReducedGradLagr..., CalcLambdaIndep... and CheckConv...
 
-			poss			= algo->get_step_poss(CalcReducedGradLagrangian_name);
+			Algorithm::poss_type poss;
+			poss = algo->get_step_poss(CalcReducedGradLagrangian_name);
 			calc_rgrad_lagr	= algo->get_step(poss);
 			algo->remove_step(poss);
 
@@ -1523,6 +1605,8 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 						ov->qp_solver_type_ = QPKWIK;
 					else if( qp_solver == "QPSCPD" )
 						ov->qp_solver_type_ = QPSCPD;
+					else if( qp_solver == "QPSCHUR" )
+						ov->qp_solver_type_ = QPSCHUR;
 					else
 						throw std::invalid_argument( "rSQPAlgo_ConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"qp_solver\" "

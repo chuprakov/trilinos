@@ -208,7 +208,7 @@ public:
 	enum ELineSearchMethod { LINE_SEARCH_NONE, LINE_SEARCH_DIRECT
 		, LINE_SEARCH_2ND_ORDER_CORRECT, LINE_SEARCH_WATCHDOG };
 	///
-	enum EQPSolverType { QPSOL, QPOPT, QPKWIK, QPSCPD };
+	enum EQPSolverType { QPSOL, QPOPT, QPKWIK, QPSCPD, QPSCHUR };
 	///
 	enum EDirectLinearSolverType { MA28, MA48 };
 	///

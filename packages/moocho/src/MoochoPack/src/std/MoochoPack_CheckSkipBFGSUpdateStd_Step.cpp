@@ -8,7 +8,6 @@
 
 #include "../../include/std/CheckSkipBFGSUpdateStd_Step.h"
 #include "../../include/rsqp_algo_conversion.h"
-#include "../../include/std/quasi_newton_stats.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
@@ -101,7 +100,7 @@ bool ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::do_step(Algorithm& _algo
 
 			const MatrixWithOp &rHL_km1 = s.rHL().get_k(-1);
 			s.rHL().set_k(0) = rHL_km1;
-			quasi_newton_stats(s).set_k(0).set_updated_stats(
+			quasi_newton_stats_(s).set_k(0).set_updated_stats(
 				QuasiNewtonStats::SKIPED );
 
 			if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {

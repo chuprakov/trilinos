@@ -5,6 +5,7 @@
 #define QUASI_NEWTON_STATS_HH
 
 #include "QuasiNewtonStats.h"
+#include "GeneralIterationPack/include/CastIQMember.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -12,14 +13,17 @@ namespace ReducedSpaceSQPPack {
 extern const std::string quasi_newton_stats_name;
 
 ///
-/** Function attempts to return an IterQuantityAccess<ActSetStats>
+/** Class for object that attempts to return an IterQuantityAccess<QuasiNewtonStats>
   * from an AlgorithmState object with the name quasi_newton_stats_name.
   */
-IterQuantityAccess<QuasiNewtonStats>& quasi_newton_stats( AlgorithmState& state );
-
-///
-const IterQuantityAccess<QuasiNewtonStats>& quasi_newton_stats( const AlgorithmState& state );
-
+class quasi_newton_stats_iq_member
+	: public CastIQMember<QuasiNewtonStats>
+{
+public:
+    quasi_newton_stats_iq_member()
+    	: CastIQMember<QuasiNewtonStats>(quasi_newton_stats_name)
+    {}
+};
 
 }	// end namespace ReducedSpaceSQPPack
 

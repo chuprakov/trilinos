@@ -24,7 +24,7 @@ ReducedSpaceSQPPack::DampenCrossTermStd_Step::DampenCrossTermStd_Step(const valu
 bool ReducedSpaceSQPPack::DampenCrossTermStd_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
-	using SparseLinAlgPack::V_invMtV;
+	using SparseLinAlgPack::V_InvMtV;
 	using LinAlgPack::norm_inf;
 	using LinAlgPack::dot;
 
@@ -45,7 +45,7 @@ bool ReducedSpaceSQPPack::DampenCrossTermStd_Step::do_step(Algorithm& _algo
 		// inv(rHL_k) * rGf_k
 		const VectorSlice rGf_k = s.rGf().get_k(0)();
 		Vector Inv_rHL_rGf;
-		V_invMtV( &Inv_rHL_rGf, dynamic_cast<MatrixWithOpFactorized&>(s.rHL().get_k(0))
+		V_InvMtV( &Inv_rHL_rGf, dynamic_cast<MatrixWithOpFactorized&>(s.rHL().get_k(0))
 			, BLAS_Cpp::no_trans, rGf_k );
 		
 		const value_type

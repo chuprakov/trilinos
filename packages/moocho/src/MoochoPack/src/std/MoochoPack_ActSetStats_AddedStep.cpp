@@ -7,7 +7,6 @@
 #include <ostream>
 
 #include "../../include/std/ActSetStats_AddedStep.h"
-#include "../../include/std/act_set_stats.h"
 #include "../../include/std/active_set_change.h"
 #include "../../include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
@@ -35,10 +34,10 @@ bool ReducedSpaceSQPPack::ActSetStats_AddedStep::do_step(Algorithm& _algo
 		if( s.nu().updated_k(-1) ) {
 			const SpVector &nu_km1	= s.nu().get_k(-1);
 			active_set_change( nu_k(), nu_km1(), olevel, &num_adds, &num_drops, &out );
-			act_set_stats(s).set_k(0).set_stats(num_active,num_adds,num_drops);
+			act_set_stats_(s).set_k(0).set_stats(num_active,num_adds,num_drops);
 		}
 		else {
-			act_set_stats(s).set_k(0).set_stats( num_active, ActSetStats::NOT_KNOWN
+			act_set_stats_(s).set_k(0).set_stats( num_active, ActSetStats::NOT_KNOWN
 				,ActSetStats::NOT_KNOWN );
 		}
 	}
