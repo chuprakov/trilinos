@@ -1021,31 +1021,35 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		algo->state().set_iter_quant( qp_solver_stats_name
 			, new IterQuantityAccessContinuous<QPSolverStats>( 1, qp_solver_stats_name ) );
 
-		// Insert active set computational step into algorithm
-		Algorithm::poss_type
-			poss = algo->get_step_poss( IndepDirec_name );
-		if( poss == Algorithm::DOES_NOT_EXIST ) {
-			// If we are not using IndepDirec to compute the active set then
-			// we must be using SearchDirec
-			assert( poss = algo->get_step_poss( SearchDirec_name ) );		
-		}
-		Algorithm::poss_type
-			nas = algo->num_assoc_steps( poss, GeneralIterationPack::POST_STEP );
-		algo->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+1
-			, "ActiveSetStatistics", new ActSetStats_AddedStep );
-		
-		// Output the number of fixed depenent and indepent variables.
-		algo->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+2
-			, "CountNumFixedDepIndep", new NumFixedDepIndep_AddedStep );
+		if( algo_cntr.nlp().has_bounds() ) {
 
-		// Output of KKT conditions of reduced QP subproblem
-		algo->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+3
-			, "PrintReducedQPError", new PrintReducedQPError_AddedStep( print_qp_error_ ) );
+			// Insert active set computational step into algorithm
+			Algorithm::poss_type
+				poss = algo->get_step_poss( IndepDirec_name );
+			if( poss == Algorithm::DOES_NOT_EXIST ) {
+				// If we are not using IndepDirec to compute the active set then
+				// we must be using SearchDirec
+				assert( poss = algo->get_step_poss( SearchDirec_name ) );		
+			}
+			Algorithm::poss_type
+				nas = algo->num_assoc_steps( poss, GeneralIterationPack::POST_STEP );
+			algo->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+1
+				, "ActiveSetStatistics", new ActSetStats_AddedStep );
+			
+			// Output the number of fixed depenent and indepent variables.
+			algo->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+2
+				, "CountNumFixedDepIndep", new NumFixedDepIndep_AddedStep );
+
+			// Output of KKT conditions of reduced QP subproblem
+			algo->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+3
+				, "PrintReducedQPError", new PrintReducedQPError_AddedStep( print_qp_error_ ) );
+
+		}
 
 	}
 
 	// 10/15/99: Add basis checking step
-	if( !tailored_approach ) {
+	if( !tailored_approach && max_basis_cond_change_frac_ < 1.0e+20 ) {
 		CheckBasisFromPy_Step
 			*basis_check_step = new CheckBasisFromPy_Step(
 				new NewBasisSelectionStd_Strategy(decomp_sys) );
@@ -1232,10 +1236,10 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
 		n = nlp.n(),
 		m = nlp.m(),
 		r = nlp.r();
-	state.var_dep()		= Range1D(1, r);
-	state.var_indep()	= Range1D(r + 1, n);
-	state.con_indep()	= Range1D(1, r);
-	state.con_dep()		= (r < m) ? Range1D(r + 1, m) : Range1D(m + 1, m + 1);
+	state.var_dep()			= Range1D(1, r);
+	state.var_indep()		= Range1D(r + 1, n);
+	state.con_decomp()		= Range1D(1, r);
+	state.con_undecomp()	= (r < m) ? Range1D(r + 1, m) : Range1D(m + 1, m + 1);
 
 	if( NLPReduced	*red_nlp = dynamic_cast<NLPReduced*>(algo.get_nlp()) ) {
 		// The nlp will have a basis

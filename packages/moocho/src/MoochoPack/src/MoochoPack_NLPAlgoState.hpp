@@ -215,17 +215,17 @@ public:
 	///
 	virtual const IQA_MatrixWithOp& Y() const;
 
-	/// Z:  Null space matrix for Gc(con_indep)' (Gc(con_indep)' * Z) ( n x (n-r) )
+	/// Z:  Null space matrix for Gc(con_decomp)' (Gc(con_decomp)' * Z) ( n x (n-r) )
 	virtual IQA_MatrixWithOp& Z();
 	///
 	virtual const IQA_MatrixWithOp& Z() const;
 
-	/// U:  Represents Gc(con_dep)' * Y ( (m-r) x r )
+	/// U:  Represents Gc(con_undecomp)' * Y ( (m-r) x r )
 	virtual IQA_MatrixWithOp& U();
 	///
 	virtual const IQA_MatrixWithOp& U() const;
 
-	/// V:  Represents Gc(con_dep)' * Z ( (m-r) x (m-r) )
+	/// V:  Represents Gc(con_undecomp)' * Z ( (m-r) x (m-r) )
 	virtual IQA_MatrixWithOp& V();
 	///
 	virtual const IQA_MatrixWithOp& V() const;
@@ -340,12 +340,12 @@ public:
 	  \begin{verbatim}
 	rGL = Z'*GL
 	    = Z'*Gf + Z'*Gc*lambda + Z'*nu
-	    = Z'*Gf + Z'*Gc(indep)*lambda(indep) + Z'*Gc(dep)*lambda(dep) + Z'*nu
-		      with Gc(indep)' * Z, V = [Gc(dep)' * Z],  and rGf = Z'*Gf
-		= rGf + Z'*nu + V'*lambda(dep)
+	    = Z'*Gf + Z'*Gc(decomp)*lambda(decomp) + Z'*Gc(undecomp)*lambda(undecomp) + Z'*nu
+		      with Gc(decomp)' * Z, V = [Gc(undecomp)' * Z],  and rGf = Z'*Gf
+		= rGf + Z'*nu + V'*lambda(undecomp)
 	where:
-	    Gc(indep)' * Z = 0
-		V = [Gc(dep)' * Z]
+	    Gc(decomp)' * Z = 0
+		V = [Gc(undecomp)' * Z]
 		rGf = Z'*Gf
 	  \end{verbatim}
 	  */
@@ -410,18 +410,18 @@ public:
 	///
 	virtual const Range1D& var_indep() const;
 	
-	/// con_indep:  Range of independent constraints (rows of C, N)
-	virtual Range1D& con_indep();
+	/// con_decomp:  Range of decomposed constraints (rows of C, N)
+	virtual Range1D& con_decomp();
 	///
-	virtual const Range1D& con_indep() const;
+	virtual const Range1D& con_decomp() const;
 	///
-	/** con_dep:  Range of dependent constraints. (rows of E, F)
+	/** con_undecomp:  Range of undecomposed constraints. (rows of E, F)
 	  *
-	  * If there are no dependent constraints then con_dep = [m +1, m + 1]
+	  * If there are no decomposed constraints then con_undecomp = [m +1, m + 1]
 	  */
-	virtual Range1D& con_dep();
+	virtual Range1D& con_undecomp();
 	///
-	virtual const Range1D& con_dep() const;
+	virtual const Range1D& con_undecomp() const;
 
 	//@}
 
@@ -480,7 +480,7 @@ private:
 
 	int num_basis_;
 	IVector var_perm_new_, var_perm_old_, con_perm_new_, con_perm_old_;
-	Range1D var_dep_, var_indep_, con_indep_, con_dep_;
+	Range1D var_dep_, var_indep_, con_decomp_, con_undecomp_;
 	decomp_sys_ptr_t decomp_sys_;
 
 	bool check_results_;

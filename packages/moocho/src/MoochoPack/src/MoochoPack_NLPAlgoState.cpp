@@ -551,20 +551,20 @@ const Range1D& rSQPState::var_indep() const {
 }
 	
 
-Range1D& rSQPState::con_indep() {
-	return con_indep_;
+Range1D& rSQPState::con_decomp() {
+	return con_decomp_;
 }
 
-const Range1D& rSQPState::con_indep() const {
-	return con_indep_;
+const Range1D& rSQPState::con_decomp() const {
+	return con_decomp_;
 }
 
-Range1D& rSQPState::con_dep() {
-	return con_dep_;
+Range1D& rSQPState::con_undecomp() {
+	return con_undecomp_;
 }
 
-const Range1D& rSQPState::con_dep() const {
-	return con_dep_;
+const Range1D& rSQPState::con_undecomp() const {
+	return con_undecomp_;
 }
 
 

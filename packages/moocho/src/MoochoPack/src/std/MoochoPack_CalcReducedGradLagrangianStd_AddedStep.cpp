@@ -62,7 +62,7 @@ bool ReducedSpaceSQPPack::CalcReducedGradLagrangianStd_AddedStep::do_step(Algori
 							
 	// rGL += V' * lambda(dep)					
 	if( algo.nlp().r() < algo.nlp().m() )
-		Vp_MtV( &rGL.v()(), s.V().get_k(0), trans, s.lambda().get_k(0).v()(s.con_dep()) );	
+		Vp_MtV( &rGL.v()(), s.V().get_k(0), trans, s.lambda().get_k(0).v()(s.con_undecomp()) );	
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\n||rGL||inf = " << rGL.norm_inf() << "\n";
@@ -82,8 +82,8 @@ void ReducedSpaceSQPPack::CalcReducedGradLagrangianStd_AddedStep::print_step( co
 	out
 		<< L << "*** Evaluate the reduced gradient of the Lagrangian ***\n"
 		<< L << "if nu_k is updated then\n"
-		<< L << "    rGL_k = Z_k' * (Gf_k + nu_k) + V_k' * lambda_k(dep)\n"
+		<< L << "    rGL_k = Z_k' * (Gf_k + nu_k) + V_k' * lambda_k(undecomp)\n"
 		<< L << "else\n"
-		<< L << "    rGL_k = rGf_k + V_k' * lambda_k(dep)\n"
+		<< L << "    rGL_k = rGf_k + V_k' * lambda_k(undecomp)\n"
 		<< L << "end\n";
 }
