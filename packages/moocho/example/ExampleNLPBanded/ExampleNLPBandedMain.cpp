@@ -21,7 +21,7 @@
 
 int main( int argc, char* argv[] )
 {
-	namespace rcp   = MemMngPack;
+	namespace mmp   = MemMngPack;
 	namespace rsqp  = ReducedSpaceSQPPack;
 	namespace nlpip = NLPInterfacePack;
 	using rsqp::rSQPppSolver;
@@ -108,7 +108,7 @@ int main( int argc, char* argv[] )
 
 		rSQPppSolver  solver;
 
-		solver.set_nlp( rcp::rcp(&nlp,false) );
+		solver.set_nlp( mmp::rcp(&nlp,false) );
 
 		const rSQPppSolver::ESolutionStatus
 			solution_status = solver.solve_nlp();
