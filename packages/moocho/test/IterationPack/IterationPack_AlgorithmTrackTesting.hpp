@@ -16,7 +16,7 @@
 #ifndef ALGORITHM_TRACK_TESTING_H
 #define ALGORITHM_TRACK_TESTING_H
 
-#include "../include/AlgorithmTrack.h"
+#include "GeneralIterationPack/include/AlgorithmTrack.h"
 
 namespace GeneralIterationPack {
 
@@ -26,7 +26,7 @@ namespace GeneralIterationPack {
 class AlgorithmTrackTesting : public AlgorithmTrack {
 public:
 
-	AlgorithmTrackTesting(std::ostream& out) : AlgorithmTrack(out)
+	AlgorithmTrackTesting(const ostream_ptr_t& journal_out) : AlgorithmTrack(journal_out)
 	{}
 
 	// Overriden
