@@ -15,34 +15,6 @@ options_group NLPAlgoConfigIP {
 
 *** Variable Reduction range/null space decomposition
 
-*    null_space_matrix = AUTO;         *** Let the solver decide (default)
-*    null_space_matrix = EXPLICIT;     *** Store D = -inv(C)*N explicitly
-*    null_space_matrix = IMPLICIT;     *** Perform operations implicity with C, N
-     *** This option is used to determine the type of implementation to use for
-     *** the variable reduction null space matrix Z = [ -inv(C)*N; I ].
-     ***    AUTO     : Let the algorithm decide.  The algorithm will take into
-     ***               account the number of degrees of freedom in the problem
-     ***               (n-r), the number of active inequality constraints and
-     ***               other issues when deciding what implementation to use.
-     ***    EXPLICIT : The matrix D = -inv(C)*N is formed expliciting an us used
-     ***               to form Z = [ D; I ].
-     ***    IMPLICIT : The matrix D = -inv(C)*N is not formed explicitly but is
-     ***               instead used implicitly in matrix-vector and other
-     ***               related operations.
-
-*    range_space_matrix = AUTO;        *** Let the algorithm decide dynamically (default)
-*    range_space_matrix = COORDINATE;  *** Y = [ I; 0 ] (Cheaper computationally)
-*    range_space_matrix = ORTHOGONAL;  *** Y = [ I; -N'*inv(C') ] (more stable)
-     *** This option is used to determine the selection of the range space matrix Y.
-     ***    AUTO      : Let the algorithm decide.  The algorithm will take into
-     ***                account the number of degrees of freedom in the problem
-     ***                (n-r) and other issues when deciding what representation to use.
-     ***   COORDINATE : Use the coordinate decomposition Y = [ I; 0 ]
-     ***   ORTHOGONAL : Use the orthogonal decomposition Y = [ I; N'*inv(C') ].
-     ***                Warning!  For general NLPs this option costs approximatly
-     ***                O((n-r)^2*r) flops per rSQP iteration and will dominate
-     ***                the runtime for large (n-r).
-
 *    max_basis_cond_change_frac = -1.0;  *** (default)
      *** (+-dbl) If < 0 then the solver will decide what value to use.
      *** Otherwise this is the (see printed algorithm description) above
@@ -92,9 +64,6 @@ options_group NLPAlgoConfigIP {
 *    line_search_method = AUTO;               *** Let the solver decide dynamically (default)
 *    line_search_method = NONE;               *** Take full steps at every iteration
 *    line_search_method = DIRECT;             *** Use standard Armijo backtracking
-*    line_search_method = 2ND_ORDER_CORRECT;  *** Like DIRECT except computes corrections for
-*                                             *** c(x) before backtracking line search
-*    line_search_method = WATCHDOG;           *** Like DIRECT except uses watchdog type trial steps
 *    line_search_method = FILTER;              *** Use the Filter line search method
      *** Options:
      *** AUTO : Let the solver decide dynamically what line search method to use (if any)
@@ -204,44 +173,6 @@ options_group CalcFiniteDiffProd {
 }
 
 ***************************************************************
-*** Options for EvalNewPoint for NLPFirstOrder.
-*** See options_group NLPFirstDerivTester
-***
-options_group EvalNewPointStd {
-
-*    fd_deriv_testing = FD_DEFAULT; *** (default) Test if check_results==true (see above)
-*    fd_deriv_testing = FD_TEST;    *** Always test
-*    fd_deriv_testing = FD_NO_TEST; *** never test
-     *** Determines if the derivatives of the NLP returned from the NLPFirstOrder interface
-     *** are correct using finite differences (see the options_group NLPFirstDerivTester).
-     *** Valid options include:
-     ***    FD_DEFAULT : Perform the finite difference tests if check_results==true.
-     ***    FD_TEST    : Always test, regardless of the value of check_results.
-     ***    FD_NO_TEST : Never test, regardless of the value of check_results.
-
-*    decomp_sys_testing = DST_DEFAULT; *** (default) Test if check_results==true (see above)
-*    decomp_sys_testing = DST_TEST;    *** Always test
-*    decomp_sys_testing = DST_NO_TEST; *** never test
-     *** Determines if the range/null decomposition matrices from DecompositionSystem are
-     *** tested or not (see the options_group DecompositionSystemTester).
-     *** Valid options include:
-     ***    FD_DEFAULT : Perform the tests if check_results==true.
-     ***    FD_TEST    : Always test, regardless of the value of check_results.
-     ***    FD_NO_TEST : Never test, regardless of the value of check_results.
-
-*    decomp_sys_testing_print_level = DSPL_USE_GLOBAL;    *** (default) Use the value in journal_print_level (see above).
-*    decomp_sys_testing_print_level = DSPL_LEAVE_DEFAULT; *** Leave whatever setting in already in use.
-     *** This option allows the user to determine how the testing print level is determined.
-     *** Valid options include:
-     ***    DSLP_USE_GLOBAL    : The value of journal_print_level will be used to determine reasonable values for
-     ***                         print_tests and dump_all.
-     ***    DSLP_LEAVE_DEFAULT : Whatever values are currently set for DecompositionSystemTester::print_tests and
-     ***                         DecompositionSystemTester::dump_all will be used (see the options_group
-     ***                         DecompositionSystemTester).
-
-}
-
-***************************************************************
 *** Options for EvalNewPointBarrier.
 *** See options_group NLPFirstDerivTester
 ***
@@ -262,99 +193,6 @@ options_group EvalNewPointBarrier {
 		 *   else if (x > xu_sb) then
 		 *      x = xu_sb
 
-}
-
-***************************************************************
-*** Options for determining if variable bounds
-*** xL <= x <= xU are violated by
-*** more than an acceptable tolerance.
-***
-options_group VariableBoundsTester {
-*    warning_tol   = 1e-10; *** (default)
-*    error_tol     = 1e-5; *** (default)
-}
-
-***********************************************************
-*** Options for the finite derivative testing for a
-*** standard NLP.
-***
-options_group NLPFirstDerivTester {
-*    fd_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(m))
-*    fd_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
-*    num_fd_directions = 1;  *** [fd_testing_method == DIRECTIONAL]
-*    warning_tol   = 1e-10;
-*    warning_tol   = 0.0;  *** Show me all comparisons.
-*    error_tol     = 1e-5;
-}
-
-***************************************************************
-*** Options for EvalNewPoint for a "Tailored Approach" NLP.
-*** See options_group NLPrSQPTailoredApproachTester
-***
-options_group EvalNewPointTailoredApproach {
-*    fd_deriv_testing   = FD_DEFAULT;  *** Test if check_results==true (see above)
-*    fd_deriv_testing   = FD_TEST;    *** Always test
-*    fd_deriv_testing   = FD_NO_TEST; *** never test
-}
-
-****************************************************************
-*** Options for the finite difference derivative tester for a 
-*** direct sensistivity NLP.
-***
-options_group NLPDirectTester {
-*    Gf_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n))
-*    Gf_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
-*    Gf_warning_tol   = 1e-10;
-*    Gf_error_tol     = 1e-5;
-*    Gc_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n-m))
-*    Gc_testing_method = FD_DIRECTIONAL; *** Only compute along random directions
-*    Gc_warning_tol   = 1e-10;
-*    Gc_error_tol     = 1e-5;
-*    num_fd_directions = 1;  *** [testing_method == DIRECTIONAL]
-}
-
-****************************************************************
-*** Options for the BasisSystem tester used to validate the
-*** basis of the constraints Jacobian.
-***
-options_group BasisSystemTester {
-*    num_random_vectors = 1;      *** (+int) Number of sets of random vectors to use
-*    mult_warning_tol   = 1e-15;  *** (+dbl) Warning tolerance for checking matrix-vector multiplication
-*    mult_error_tol     = 1e-12;  *** (+dbl) Error tolerance for checking matrix-vector multiplication
-*    solve_warning_tol  = 1e-12;  *** (+dbl) Warning tolerance for checking linear solves
-*    solve_error_tol    = 1e-10;  *** (+dbl) Error tolerance for checking linear solves
-}
-
-****************************************************************
-*** Options for the DecompositionSystem tester used to validate
-*** range/null decomposition matrices (NLPFirstOrder only).
-***
-options_group DecompositionSystemTester {
-*    print_tests = PRINT_NONE;    *** (default)
-*    print_tests = PRINT_BASIC;
-*    print_tests = PRINT_MORE;
-*    print_tests = PRINT_ALL;
-*    dump_all = true;
-*    dump_all = false;            *** (default)
-*    num_random_vectors = 1;      *** (+int) Number of sets of random vectors to use
-*    mult_warning_tol   = 1e-15;  *** (+dbl) Warning tolerance for checking matrix-vector multiplication
-*    mult_error_tol     = 1e-12;  *** (+dbl) Error tolerance for checking matrix-vector multiplication
-*    solve_warning_tol  = 1e-12;  *** (+dbl) Warning tolerance for checking linear solves
-*    solve_error_tol    = 1e-10;  *** (+dbl) Error tolerance for checking linear solves
-}
-
-*********************************************************************
-*** Options for finite difference initialization of reduced hessian.
-*** 
-*** [NLPAlgoConfigMamaJama::hessian_initialization == FINITE_DIFF_*]
-***
-options_group InitFinDiffReducedHessian {
-*    initialization_method	= SCALE_IDENTITY;
-*    initialization_method	= SCALE_DIAGONA;
-*    initialization_method	= SCALE_DIAGONAL_ABS;
-*    max_cond			= 1e+1;
-*    min_diag			= 1e-8;
-*    step_scale			= 1e-1;
 }
 
 *********************************************************************
@@ -414,7 +252,6 @@ options_group UpdateReducedSigma {
 	***										(scale by mu_kp1/mu_k when mu changes)
 
 }
-
 
 *********************************************************************
 *** Options for the convergence test.
@@ -647,65 +484,6 @@ options_group MeritFuncModifiedL1LargerSteps {
 *    pos_to_neg_penalty_increase   = 1.0;  *** (+dbl)
 
 *    incr_mult_factor              = 1e-4; *** (+dbl)
-
-}
-
-*****************************************************************
-*** Change how the penalty parameters for the modifed
-*** L1 merit function are increased.
-***
-*** [NLPAlgoConfigMamaJama::linear_solver == MA28]
-*** [NLPAlgoConfigMamaJama::merit_function_type == MODIFIED_L1_INCR]
-***
-options_group DirectSparseSolverMA28 {
-
-*    estimated_fillin_ratio = 10.0; *** (default)
-     *** (+dbl) Estimated amount of fillin ( > 1.0 ) for the
-     *** the sparse LU factorization.  If this is too little
-     *** then more storage will automatically be allocated
-     *** on the fly (at the cost some wasted computations).
-     *** This parameter is mostly problem dependent and can
-     *** be adjusted to a proper size to reduce memory requirements.
-     *** Example values:
-     ***   1.0   : No fill-in?
-     ***   10.0  : LU factors have three times the number of nonzeros
-
-*    u = 0.1; *** (default)
-     *** (+dbl) Control parameter (0 <= u <= 1.0) that us used
-     *** to balance 
-     *** Example values:
-     ***    0.0 : Pivot for sparsity only
-     ***    0.1 : Balance sparsity and stability
-     ***    1.0 : Pivot for stability only
- 
-*    grow = true;
-*    grow = false; *** (default)
-     *** See MA28 documentation.
-
-*    nsrch = 4; *** (default)
-     *** (+int) Number of columns that MA28 will search to find
-     *** pivots to try to reduce fill-in.
-     *** Example values:
-     ***    0  : No columns are searched
-     ***    4  : Four columns are searched
-     *** 1000  : A thousand columns are searched
-
-*    lbig = true;
-*    lbig = false; *** (default)
-     *** See MA28 documentation.
-
-*    print_ma28_outputs = true;
-*    print_ma28_outputs = false; *** (default)
-     *** If true, then the values of the MA28 output will
-     *** be dumped to the output stream
-     *** (if journal_output_level >= PRINT_ALGORITHM_STEPS).
-
-*    output_file_name = NONE; *** (default)
-     *** Gives the file name that MA28 Fortran output is set to (from LP and MP).
-     *** Example values:
-     ***    NONE           : No output file
-     ***    any_other_name : Output from MA28 will be sent to this file in the
-     ***                     current directory
 
 }
 

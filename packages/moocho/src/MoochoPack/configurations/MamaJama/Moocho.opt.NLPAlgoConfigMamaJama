@@ -101,8 +101,8 @@ options_group NLPAlgoConfigMamaJama {
 *    merit_function_type = AUTO;              *** [line_search_method != NONE] Let solver decide
 *    merit_function_type = L1;                *** [line_search_method != NONE] phi(x) = f(x) + mu*||c(x)||1
 *    merit_function_type = MODIFIED_L1;       *** [line_search_method != NONE] phi(x) = f(x) + sum{mu(j),|cj(x)|,j}
-*    merit_function_type = MODIFIED_L1_INCR;  *** [line_search_method != NONE] Like MODIFIED_L1 except mu(j) are
-*                                             *** altered in order to take larger steps
+*    merit_function_type = MODIFIED_L1_INCR;  *** [line_search_method != NONE] Like MODIFIED_L1 except mu(j) are altered
+                                              *** in order to take larger steps
 *    l1_penalty_parameter_update = AUTO;      *** [merit_function_type == L1] let solver decide
 *    l1_penalty_parameter_update = WITH_MULT; *** [merit_function_type == L1] Use Lagrange multipliers to update mu
 *    l1_penalty_parameter_update = MULT_FREE; *** [merit_function_type == L1] Don't use Lagrange multipliers to update mu
@@ -118,20 +118,6 @@ options_group InitFinDiffReducedHessian {
 *    initialization_method	= SCALE_IDENTITY;
 *    initialization_method	= SCALE_DIAGONA;
 *    initialization_method	= SCALE_DIAGONAL_ABS;
-*    max_cond			= 1e+1;
-*    min_diag			= 1e-8;
-*    step_scale			= 1e-1;
-}
-
-*********************************************************************
-*** Options for finite difference initialization of reduced hessian.
-*** 
-*** [NLPAlgoConfigMamaJama::hessian_initialization == FINITE_DIFF_*]
-***
-options_group InitFinDiffReducedHessian {
-*    initialization_method	= SCALE_IDENTITY;
-*    initialization_method	= SCALE_DIAGONAL;
-*    initialization_method	= SCALE_DIAGONAL_ABS; *** (default)
 *    max_cond			= 1e+1;
 *    min_diag			= 1e-8;
 *    step_scale			= 1e-1;
