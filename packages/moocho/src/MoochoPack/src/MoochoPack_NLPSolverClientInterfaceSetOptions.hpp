@@ -23,14 +23,13 @@
 namespace ReducedSpaceSQPPack {
 
 ///
-/** Set options for rSQPSolverClientInterface from an
-  * OptionsFromStream object.
-  *
-  * The default options group name is rSQPSolverClientInterface.
-  *
-  * The options group is:
-  *
-  \begin{verbatim}
+/** Set options for rSQPSolverClientInterface from an \c OptionsFromStream object.
+ *
+ * The default options group name is rSQPSolverClientInterface.
+ *
+ * The options group is:
+ *
+ \verbatim
 	options_group rSQPSolverClientInterface {
         max_iter = ?;
         max_run_time = ?;  *** In minutes
@@ -42,11 +41,11 @@ namespace ReducedSpaceSQPPack {
 		journal_print_digits = ?;
 		check_results = ?;
 	}
-  \end{verbatim}
-  *
-  * See the class \Ref{rSQPSolverClientInterface} for a description of these
-  * parameters.
-  */
+ \endverbatim
+ *
+ * See the class \c rSQPSolverClientInterface for a description of these
+ * parameters.
+ */
 class rSQPSolverClientInterfaceSetOptions
 	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
 		, public OptionsFromStreamPack::SetOptionsToTargetBase<
