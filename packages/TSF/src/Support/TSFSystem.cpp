@@ -60,6 +60,7 @@ string TSFSystem::date()
 
 void TSFSystem::nsleep(int sec, int nsec)
 {
+#ifndef __SUNPRO_CC
 	struct timespec request ;
 	struct timespec remaining ;
 
@@ -67,6 +68,9 @@ void TSFSystem::nsleep(int sec, int nsec)
 	request.tv_nsec = nsec;
 
 	nanosleep(&request, &remaining);
+#else
+	TSFError::raise("TSFSystem::nsleep(int sec, int nsec) not implemented on this platform");
+#endif
 }
 
 void TSFSystem::usleep(int usec)

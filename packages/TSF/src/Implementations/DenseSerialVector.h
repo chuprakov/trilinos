@@ -4,11 +4,6 @@
 #include "TSFDefs.h"
 #include "TSFError.h"
 #include "TSFTimer.h"
-#include <stdlib.h>
-#include <iostream.h>
-#include <string.h>
-
-
 
 namespace TSF
 {

@@ -195,7 +195,8 @@ void MatlabReader::createMatrix(const string name, TSFLinearOperator& mat) const
   TSFMatrixView matView(mat);
   
   int numRows = mv->numRows();
-  int numIndicesPerRow [numRows];
+  TSFArray<int> xnumIndicesPerRow(numRows);
+  int* numIndicesPerRow = &(xnumIndicesPerRow[0]);
   for(int i=0; i<numRows; i++) numIndicesPerRow[i] = mv->getRowHash(i).size();
   cerr << "rows: " << mv->numRows() << "\nnumIndicesPerRow: " << numIndicesPerRow << "\n";
   matView.setBandwidth(mv->numRows(), numIndicesPerRow);

@@ -32,7 +32,7 @@ void TSFAdjointMatrixOperator::factor()
 
 void TSFAdjointMatrixOperator::apply(const TSFVector& in, TSFVector& out) const
 {
-	assert(0);
+  TSFError::raise(" TSFAdjointMatrixOperator::apply not implemented");
 }
 
 void TSFAdjointMatrixOperator::addToRow(
@@ -41,7 +41,7 @@ void TSFAdjointMatrixOperator::addToRow(
 	const int* globalColumnIndices,
 	const TSFReal* a)
 {
-	assert(0);
+  TSFError::raise(" TSFAdjointMatrixOperator::addToRow not implemented");
 }
 
 
@@ -50,7 +50,7 @@ void TSFAdjointMatrixOperator::addToRow(
 
 void TSFAdjointMatrixOperator::zero()
 {
-	assert(0);
+  TSFError::raise(" TSFAdjointMatrixOperator::zero not implemented");
 }
 
 } // end namespace TSF

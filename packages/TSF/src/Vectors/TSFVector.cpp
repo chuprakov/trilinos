@@ -308,7 +308,7 @@ TSFReal TSFVector::sumElements() const
 void TSFVector::setScalar(const TSFReal& a)
 {
 	TSFTimeMonitor t(opTimer());
-	return ptr_->setScalar(a);
+	ptr_->setScalar(a);
 }
 
 void TSFVector::randomize(const TSFRandomNumberGenerator& r)

@@ -136,13 +136,20 @@ bool TSFAdjointOperator::isMatrixOperator() const
 const TSFSmartPtr<const TSFMatrixOperator>
 TSFAdjointOperator::getMatrix() const
 {
-	TSFSmartPtr<const TSFAdjointMatrixOperator> adj_mat_op;
-	if(op_.isMatrixOperator()) {
-		TSFSmartPtr<TSFMatrixOperator> mat_op;
-		mat_op = tsf_const_cast<TSFMatrixOperator>(op_.getMatrix());
-		adj_mat_op = new TSFAdjointMatrixOperator(mat_op);
-	}
-	return tsf_implicit_cast<const TSFMatrixOperator>(adj_mat_op);
+#ifdef __SUNPRO_CC
+  TSFError::raise("TSFAdjointOperator::getMatrix() const not implemented");
+  return 0;
+#else
+ TSFSmartPtr<const TSFAdjointMatrixOperator> adj_mat_op;
+  if(op_.isMatrixOperator()) 
+    {
+      TSFSmartPtr<TSFMatrixOperator> mat_op;
+      mat_op = tsf_const_cast<TSFMatrixOperator>(op_.getMatrix());
+      adj_mat_op = new TSFAdjointMatrixOperator(mat_op);
+    }
+  return tsf_implicit_cast<const TSFMatrixOperator>(adj_mat_op);
+#endif
+
 }
 
 
