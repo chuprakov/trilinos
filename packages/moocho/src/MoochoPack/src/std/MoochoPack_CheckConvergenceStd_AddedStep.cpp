@@ -132,7 +132,7 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 			<< "\nopt_scale_factor = " << opt_scale_factor
 			<< " (scale_opt_error_by_Gf = " << (scale_opt_error_by_Gf()?"true":"false") << ")"
 			<< "\nopt_kkt_err_k    = " << opt_kkt_err_k << ( opt_kkt_err_k < opt_tol ? " < " : " > " )
-			<< "opt_tol = " << opt_tol
+			<< "opt_tol  = " << opt_tol
 			<< "\nfeas_kkt_err_k   = " << feas_kkt_err_k << ( feas_kkt_err_k < feas_tol ? " < " : " > " )
 			<< "feas_tol = " << feas_tol
 			<< "\nstep_err         = " << step_err << ( step_err < step_tol ? " < " : " > " )

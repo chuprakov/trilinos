@@ -1251,12 +1251,12 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 						<< "\n\nreinit_hessian_on_qp_fail = " << (cov_.reinit_hessian_on_qp_fail_ ? "true" : "false");
 					if(cov_.reinit_hessian_on_qp_fail_)
 						*trase_out
-							<< "\nThe algorithm will not reinitalize the reduced hessian if the QP subproblem fails"
-							<< "\nIt will just be a QPFailure exception thrown\n";
-					else
-						*trase_out
 							<< "\nThe algorithm will reinitalize the reduced hessian if the QP subproblem fails"
 							<< "\nand will not throw a QPFailure exception the first time\n";
+					else
+						*trase_out
+							<< "\nThe algorithm will not reinitalize the reduced hessian if the QP subproblem fails"
+							<< "\nIt will just be a QPFailure exception thrown\n";
 				}
 				rSQPAlgo_Step
 					*_indep_direc_step = NULL;
@@ -1927,6 +1927,7 @@ void rSQPAlgo_ConfigMamaJama::set_default_options(
 	else {
 		cov->max_basis_cond_change_frac_ = uov.max_basis_cond_change_frac_;
 	}
+	cov->exact_reduced_hessian_ = uov.exact_reduced_hessian_;
 	if( cov->quasi_newton_ == QN_AUTO && uov.quasi_newton_ == QN_AUTO ) {
 		if(trase_out)
 			*trase_out
@@ -1954,6 +1955,7 @@ void rSQPAlgo_ConfigMamaJama::set_default_options(
 	else if(cov->num_lbfgs_updates_stored_ < 0) {
 		cov->num_lbfgs_updates_stored_ = uov.num_lbfgs_updates_stored_;
 	}
+	cov->lbfgs_auto_scaling_ = uov.lbfgs_auto_scaling_;
 	if( cov->hessian_initialization_ == INIT_HESS_AUTO && uov.hessian_initialization_ == INIT_HESS_AUTO ) {
 		if(trase_out)
 			*trase_out
@@ -1972,6 +1974,7 @@ void rSQPAlgo_ConfigMamaJama::set_default_options(
 	else if(cov->qp_solver_type_ == QP_AUTO) {
 		cov->qp_solver_type_ = uov.qp_solver_type_;
 	}
+	cov->reinit_hessian_on_qp_fail_ = uov.reinit_hessian_on_qp_fail_;
 	if( cov->line_search_method_ == LINE_SEARCH_AUTO && uov.line_search_method_ == LINE_SEARCH_AUTO ) {
 		if(trase_out)
 			*trase_out

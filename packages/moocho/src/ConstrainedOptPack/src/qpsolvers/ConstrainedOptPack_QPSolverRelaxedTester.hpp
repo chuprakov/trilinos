@@ -13,7 +13,7 @@ namespace ConstrainedOptimizationPack {
 /** Tests the optimality conditions of the output from a \Ref{QPSolverRelaxed}
   * object.
   *
-  * For the given QP and is solution (if solved) this class tests
+  * For the given QP and its solution (if solved) this class tests
   * the optimality conditions.
   * 
   * The optimality conditions checked are:
@@ -57,6 +57,7 @@ namespace ConstrainedOptimizationPack {
    	where:
 	    op(A)*x <= b
 	    opt_scale = ||g||inf + ||G*d||inf + ||nu||inf + ||op(E)'*mu||inf + ||op(F)'*lambda||inf
+                    + |(eta - etaL) * (b'*mu + f'*lambda)|
 
   \end{verbatim}
   *
@@ -85,7 +86,11 @@ namespace ConstrainedOptimizationPack {
   * but not for very small numbers very well and therefore tests may be conserative
   * in some cases.  At the very least we account for loss of precision due to 
   * catastrophic cancelation that occurs when adding large numbers and expecting
-  * to get zero. 
+  * to get zero.  The purpose of including the term |b'*mu + f'*lambda| is to account
+  * for the situation where the relaxation is needed and kappa != 0 and therefore
+  * form the condition d(M)/d(eta) - kappa - b'*mu - f'*lambda = 0 (with d(M)/d(eta)
+  * very large) the multipliers mu and lambda will be very large and will contribute
+  * to much roundoff errors.
   *
   * As shown above, the complementarity conditions (5.1)-(5.4) are specifically checked.
   * These should be satisfied for any solution type other than a SUBOPTIMAL_POINT

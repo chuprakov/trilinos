@@ -317,9 +317,9 @@ public:
 		,value_type                  iter_refine_opt_tol     = 1e-12
 		,value_type                  iter_refine_feas_tol    = 1e-12
 		,bool                        iter_refine_at_solution = true
-		,value_type                  pivot_warning_tol       = 1e-6
-		,value_type                  pivot_singular_tol      = 1e-8
-		,value_type                  pivot_wrong_inertia_tol = 1e-10
+		,value_type                  pivot_warning_tol       = 1e-8
+		,value_type                  pivot_singular_tol      = 1e-11
+		,value_type                  pivot_wrong_inertia_tol = 1e-11
 		);
 
 	///

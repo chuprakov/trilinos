@@ -225,6 +225,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	using BLAS_Cpp::upper;
 	using BLAS_Cpp::lower;
 	using LinAlgPack::norm_inf;
+	using LinAlgPack::dot;
 	using LinAlgPack::Vt_S;
 	using LinAlgPack::Vp_StV;
 	using LinAlgOpPack::V_MtV;
@@ -232,6 +233,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::Vp_V;
 	using SparseLinAlgPack::norm_inf;
+	using SparseLinAlgPack::dot;
 	using SparseLinAlgPack::imp_sparse_bnd_diff;
 	typedef QPSolverStats qps_t;
 
@@ -285,13 +287,17 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 
 	u = g;
 	opt_scale += norm_inf(g);
+
+	if(out) {
+		*out << "||g||inf = " << norm_inf(u()) << endl;
+	}
 	
 	V_MtV( &t, G, no_trans, *d );
 	Vp_V( &u(), t() );
 	opt_scale += norm_inf(t);
 
 	if(out) {
-		*out << "||g + G*d||inf = " << norm_inf(u()) << endl;
+		*out << "||G*d||inf = " << norm_inf(t()) << endl;
 		if(print_vectors)
 			*out << "g + G*d =\n" << u();
 	}
@@ -325,6 +331,15 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 				*out << "op(F)'*lambda =\n" << t();
 		}
 	}			
+
+	if( *eta > etaL ) { // opt_scale + |(eta - etaL) * (b'*mu + f'*lambda)|
+		const value_type
+			term = ::fabs( (*eta - etaL) * (E ? dot(*b,(*mu)()) : 0.0) + (F ? dot(*f,*lambda) : 0.0 ) );
+		if(out) {
+			*out << "|(eta - etaL) * (b'*mu + f'*lambda)| = " << term << endl;
+		}
+		opt_scale += term;
+	}
 
 	if(out && print_vectors)
 		*out
@@ -365,7 +380,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		*out
 			<< sep_line
 			<< "\nChecking etaL - eta <= 0 ...\n";
-	if(out && print_vectors)
+	if(out)
 		*out
 			<< "etaL - eta = " << (etaL - (*eta)) << endl;
 	if( etaL - (*eta) > feas_warning_tol() ) {

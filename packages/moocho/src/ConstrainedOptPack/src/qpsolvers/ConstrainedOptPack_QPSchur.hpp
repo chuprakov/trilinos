@@ -696,9 +696,10 @@ public:
 	  * MatrixWithOp               : U_hat        <: R^((n_R+m) x q_hat)
 	  * MatrixSymWithOP            : V_hat        <: R^(q_hat x q_hat)
 	  * MatrixSymWithOpFactorized  : S_hat        <: R^(q_hat x q_hat)
-	  * GenPermMatrixSlice         : P_XF_hat     <: R^(n x q_hat)
-	  * GenPermMatrixSlice         : P_plus_hat   <: R^((n+m_breve) x q_hat)
-	  * GenPermMatrixSlice         : Q_XD_hat     <: R^(n x q_D_hat)
+	  * GenPermMatrixSlice         : P_XF_hat     <: R^(n x q_hat)             (q_F_hat nonzeros)
+	  * GenPermMatrixSlice         : P_FC_hat     <: R^(q_hat x q_hat)         (q_C_hat nonzeros)
+	  * GenPermMatrixSlice         : P_plus_hat   <: R^((n+m_breve) x q_hat)   (q_plus_hat nonzeros)
+	  * GenPermMatrixSlice         : Q_XD_hat     <: R^(n x q_D_hat)           (q_D_hat nonzeros)
 	  * Vector                     : d_hat        <: R^(q_hat)
 	  * Vector                     : z_hat        <: R^(q_hat)
 	  * 
@@ -909,6 +910,8 @@ public:
 		///
 		const GenPermMatrixSlice& P_XF_hat() const;
 		///
+		const GenPermMatrixSlice& P_FC_hat() const;
+		///
 		const GenPermMatrixSlice& P_plus_hat() const;
 		///
 		const GenPermMatrixSlice& Q_XD_hat() const;
@@ -993,9 +996,20 @@ public:
 		// [P_XF_hat](:,s)   = |
 		//                     \  0       otherwise
 		//                     
-		GenPermMatrixSlice	P_XF_hat_;		// \hat{P}^{XF}
+		GenPermMatrixSlice	P_XF_hat_;		// \hat{P}^{XF} \in \Re^{n \times \hat{q}}
 		P_row_t				P_XF_hat_row_;	// i
 		P_row_t				P_XF_hat_col_;	// s
+		//
+		// for s = 1...q_hat
+		//
+		//                   /  e(sd)   if 0 < j <= n && is_init_fixed(j)
+		//                   |          (where: j = ij_map(s), sd = s_map(-j))
+		// [P_FC_hat](:,s) = |
+		//                   \  0       otherwise
+		//
+		GenPermMatrixSlice	P_FC_hat_;		// {\tilde{P}^{F}}^{T} \hat{P}^{C} \in \Re^{\hat{q} \times \hat{q}}
+		P_row_t				P_FC_hat_row_;	// sd
+		P_row_t				P_FC_hat_col_;	// s
 		//
 		// for s = 1...q_hat
 		//
@@ -1003,7 +1017,7 @@ public:
 		// [P_plus_hat](:,s) = |
 		//                     \  0       otherwise
 		//
-		GenPermMatrixSlice	P_plus_hat_;	// \hat{P}^{(+)}
+		GenPermMatrixSlice	P_plus_hat_;	// \hat{P}^{(+)} \in \Re^{n+\breve{m} \times \hat{q}^{D}}
 		P_row_t				P_plus_hat_row_;	// j
 		P_row_t				P_plus_hat_col_;	// s
 		//
@@ -1011,10 +1025,11 @@ public:
 		//
 		// [Q_XD_hat](:,k) = e(i)  (where is_init_fixed(i) && s_map(-i) == 0)
 		//
-		GenPermMatrixSlice	Q_XD_hat_;		// \hat{Q}^{XD}
+		GenPermMatrixSlice	Q_XD_hat_;		// \hat{Q}^{XD} \in \Re^{n_X \times \hat{q}^{D}}
 		P_row_t				Q_XD_hat_row_;	// i
 		P_row_t				Q_XD_hat_col_;	// k
-		Vector				d_hat_;			// \hat{d}		
+		//
+		Vector				d_hat_;			// \hat{d}
 		Vector				z_hat_;			// \hat{z}
 		Vector				p_z_hat_;
 		Vector				mu_D_hat_;		// \hat{\mu}^{D}

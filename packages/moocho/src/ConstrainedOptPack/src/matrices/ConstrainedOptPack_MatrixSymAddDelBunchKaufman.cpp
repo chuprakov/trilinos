@@ -302,7 +302,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 			correct_inertia = (
 				add_eigen_val == MSADU::EIGEN_VAL_UNKNOWN
 				|| beta > 0.0 && add_eigen_val == MSADU::EIGEN_VAL_POS
-				|| beta < 0.0 && add_eigen_val == MSADU::EIGEN_VAL_POS
+				|| beta < 0.0 && add_eigen_val == MSADU::EIGEN_VAL_NEG
 				);
 		PivotTolerances use_pivot_tols = S_chol_.pivot_tols();
 		if( pivot_tols.warning_tol != PivotTolerances::UNKNOWN )
@@ -313,7 +313,6 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 			use_pivot_tols.wrong_inertia_tol = pivot_tols.wrong_inertia_tol;
 		throw_exception = (
 			gamma == 0.0
-			|| correct_inertia && gamma <= use_pivot_tols.warning_tol
 			|| correct_inertia && gamma <= use_pivot_tols.singular_tol
 			|| !correct_inertia
 			);
@@ -343,13 +342,6 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 					<< "Indefinite update!\n" << onum_msg.str() << " >= wrong_inertia_tol = "
 					<< use_pivot_tols.wrong_inertia_tol;
 				throw WrongInertiaUpdateException( omsg.str(), gamma );
-			}
-			else if( correct_inertia && gamma <= use_pivot_tols.warning_tol ) {
-				omsg
-					<< "Warning, near singular update!\nsingular_tol = " << use_pivot_tols.singular_tol
-					<< " < " << onum_msg.str() << " <= warning_tol = "
-					<< use_pivot_tols.warning_tol;
-				// Don't throw the exception till the very end!
 			}
 			else {
 				assert(0); // Only local programming error?
@@ -491,8 +483,10 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 		//
 		// Update the factorization
 		//
-		if( (drop_eigen_val == MSADU::EIGEN_VAL_POS && inertia_.pos_eigens == 1 )
-			|| (drop_eigen_val == MSADU::EIGEN_VAL_NEG && inertia_.neg_eigens == 1 ) )
+		Inertia inertia = S_chol_.inertia();
+		if( (drop_eigen_val == MSADU::EIGEN_VAL_POS && inertia.pos_eigens == 1 )
+			|| (drop_eigen_val == MSADU::EIGEN_VAL_NEG && inertia.neg_eigens == 1 )
+			|| S_size_ == 2 )
 		{
 			// Lets take the users word for it and switch to a cholesky factorization.
 			// To do this we will just let S_chol_ do it for us.  If the new matrix

@@ -1355,24 +1355,29 @@ EOverLap VectorTmpl<T>::overlap(const VectorSliceTmpl<value_type>& vs) const {
 // Non-member functions / utilities
 
 #ifndef LINALGPACK_CHECK_SLICE_SETUP
-size_type vector_validate_sized(size_type size)
+inline
+LinAlgPack::size_type LinAlgPack::vector_validate_sized(size_type size)
 {
 	return size;
 }
 #endif
 
 #ifndef LINALGPACK_CHECK_RANGE
-void vector_validate_range(size_type ubound, size_type max_ubound)
+inline
+void LinAlgPack::vector_validate_range(size_type ubound, size_type max_ubound)
 {}
 #endif
 
 #ifndef LINALGPACK_CHECK_RANGE
-void vector_validate_subscript(size_type size, size_type i)
+inline
+void LinAlgPack::vector_validate_subscript(size_type size, size_type i)
 {}
 #endif
 
 #ifndef LINALGPACK_CHECK_RHS_SIZES
-void assert_vs_sizes(size_type size1, size_type size2);
+inline
+void LinAlgPack::assert_vs_sizes(size_type size1, size_type size2)
+{}
 #endif
 
 #endif	// end VECTOR_CLASS_TMPL_H

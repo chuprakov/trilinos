@@ -341,7 +341,10 @@ void SparseLinAlgPack::intersection(
 	}
 	// Both are identity?
 	if( P1.is_identity() && P2.is_identity() ) {
-		assert(0); // ToDo: think about this but it is tricky!
+		*Q_nz = P1.nz(); // Should be the same as P2.nz();
+		assert( P1.nz() == P2.nz() );
+		if(Q)
+			Q->initialize(opP1_rows,opP2_cols,GenPermMatrixSlice::IDENTITY_MATRIX);
 		return;
 	}
 	// One is identity?
