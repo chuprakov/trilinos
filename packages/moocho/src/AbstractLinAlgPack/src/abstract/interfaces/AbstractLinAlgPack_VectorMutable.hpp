@@ -275,8 +275,7 @@ public:
 	 *                  <tt>*sub_vec</tt> owns the memory but this memory can be freed
 	 *                  only by calling <tt>this->commit_sub_vector(sub_vec)</tt>.
 	 */
-	virtual void get_sub_vector(
-		const Range1D& rng, RTOp_MutableSubVector* sub_vec );
+	virtual void get_sub_vector( const Range1D& rng, RTOp_MutableSubVector* sub_vec );
 
 	///
 	/** Free a mutable explicit view of a sub-vector.
