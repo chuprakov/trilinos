@@ -377,12 +377,14 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 				// Check if the maximum number of iterations has been exceeded.
 				if( state().k() - first_k_ >= max_iter() ) {
 					running_state_ = NOT_RUNNING;
+					track().output_final(*this,MAX_ITER_EXCEEDED);
 					return MAX_ITER_EXCEEDED;
 				}
 
 				// Check if the maximum runtime has been exceeded.
 				if( overall_timer.read() / 60 >= max_run_time() ) {
 					running_state_ = NOT_RUNNING;
+					track().output_final(*this,MAX_RUN_TIME_EXCEEDED);
 					return MAX_RUN_TIME_EXCEEDED;
 				}
 
