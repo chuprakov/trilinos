@@ -21,8 +21,28 @@ NewtonSolver::NewtonSolver(const TSFLinearSolver& linearSolver,
 	: TSFNonlinearSolverBase(maxIters),
 		linearSolver_(linearSolver),
 		stepTol_(stepTol),
-		funcTol_(funcTol)
+		funcTol_(funcTol),
+    hasBounds_(false),
+    low_(0.0),
+    high_(0.0)
 {;}
+
+
+NewtonSolver::NewtonSolver(const TSFLinearSolver& linearSolver,
+													 int maxIters,
+													 const double& stepTol,
+													 const double& funcTol,
+                           const double& low, 
+                           const double& high)
+  : TSFNonlinearSolverBase(maxIters),
+		linearSolver_(linearSolver),
+		stepTol_(stepTol),
+		funcTol_(funcTol),
+    hasBounds_(true),
+    low_(low),
+    high_(high)
+{;}
+
 
 NewtonSolver::~NewtonSolver(){}
 		
@@ -40,7 +60,7 @@ bool NewtonSolver::solve(const TSFNonlinearOperatorBase& F,
 	TSFVector deltaX;
 	TSFLinearOperator J;
 
-	int maxBacktracks = 20;
+	int maxBacktracks = 40;
 
 	for (int i=0; i<maxIters_; i++)
 		{
@@ -60,6 +80,14 @@ bool NewtonSolver::solve(const TSFNonlinearOperatorBase& F,
 			J = F.derivative(x0);
 			J.applyInverse(linearSolver_, f0, deltaX);
 
+      
+      /* truncate the step to bounds if necessary */
+      double alpha = 1.0;
+      if (hasBounds())
+        {
+          alpha = 0.99*distanceToBoundary(x0, deltaX);
+        }
+
 			double dx = deltaX.norm2();
 			TSFOut::printf("iter=%d newton step norm=%g\n",
 										 i, dx);
@@ -76,7 +104,7 @@ bool NewtonSolver::solve(const TSFNonlinearOperatorBase& F,
 			 * it's possible that the Newton step has overshot. If the full 
 			 * step does not decrease the residual norm, we halve the
 			 * step length until a decrease is found. */
-			double stepFrac = 1.0;
+			double stepFrac = alpha;
 			bool accepted = false;
 			for (int b=0; b<maxBacktracks; b++)
 				{
@@ -111,4 +139,17 @@ bool NewtonSolver::solve(const TSFNonlinearOperatorBase& F,
 	
 	soln = x0;
 	return false;
+}
+
+double NewtonSolver::distanceToBoundary(const TSFVector& x0,
+                                        const TSFVector& deltaX) const
+{
+  TSFVector a, b;
+  a = x0.copy();
+  b = x0.copy();
+  a.setScalar(low_);
+  a = a + (high_-low_)*deltaX.step() - x0;
+  b.dotSlash(a,deltaX);
+
+  return b.min();
 }

@@ -75,6 +75,13 @@ namespace TSF
 
       /** elementwise absolute value */
       virtual void abs() ;
+      /** elementwise sign() */
+      virtual void sign() ;
+      /** heaviside step() */
+      virtual void step() ;
+
+      /** reciprocal */
+      virtual void reciprocal() ;
 
       //@}
 

@@ -356,6 +356,30 @@ void TSFBlockVector::abs()
 		}
 }
 
+void TSFBlockVector::sign()
+{
+	for (int i=0; i<numBlocks(); i++)
+		{
+			setBlock(i, subvectors_[i].sign());
+		}
+}
+
+void TSFBlockVector::step()
+{
+	for (int i=0; i<numBlocks(); i++)
+		{
+			setBlock(i, subvectors_[i].step());
+		}
+}
+
+void TSFBlockVector::reciprocal()
+{
+	for (int i=0; i<numBlocks(); i++)
+		{
+			setBlock(i, subvectors_[i].reciprocal());
+		}
+}
+
 TSFVectorBase* TSFBlockVector::deepCopy() const 
 {
 	TSFVectorBase* rtn = new TSFBlockVector(space());

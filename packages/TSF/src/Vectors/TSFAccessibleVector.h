@@ -68,6 +68,15 @@ namespace TSF
       /** absolute value */
       virtual void abs() ;
 
+      /** algebraic sign */
+      virtual void sign() ;
+
+      /** heaviside step function */
+      virtual void step() ;
+
+      /** reciprocal */
+      virtual void reciprocal() ;
+
       //@}
 
       /** \name generating random vectors */

@@ -322,3 +322,56 @@ void TSFAccessibleVector::abs()
 			restoreChunk(myChunk, myChunkSize);
 		}
 }
+
+void TSFAccessibleVector::sign()
+{
+	rewindChunkIterator();
+	int myChunkSize;
+	
+	while(hasMoreChunks())
+		{
+			TSFReal* myChunk = getNextChunk(myChunkSize);
+			TSFReal* x = myChunk;
+			for (int i=0; i<myChunkSize; i++, x++) 
+				{
+          if (*x < 0.0) *x = -1.0;
+          else *x = 1.0;
+				}
+			restoreChunk(myChunk, myChunkSize);
+		}
+}
+
+void TSFAccessibleVector::step()
+{
+	rewindChunkIterator();
+	int myChunkSize;
+	
+	while(hasMoreChunks())
+		{
+			TSFReal* myChunk = getNextChunk(myChunkSize);
+			TSFReal* x = myChunk;
+			for (int i=0; i<myChunkSize; i++, x++) 
+				{
+          if (*x <= 0.0) *x = 0.0;
+          else *x = 1.0;
+				}
+			restoreChunk(myChunk, myChunkSize);
+		}
+}
+
+void TSFAccessibleVector::reciprocal()
+{
+	rewindChunkIterator();
+	int myChunkSize;
+	
+	while(hasMoreChunks())
+		{
+			TSFReal* myChunk = getNextChunk(myChunkSize);
+			TSFReal* x = myChunk;
+			for (int i=0; i<myChunkSize; i++, x++) 
+				{
+          *x = 1.0/(*x);
+				}
+			restoreChunk(myChunk, myChunkSize);
+		}
+}

@@ -379,6 +379,15 @@ namespace TSF
           /** element-wise absolute value */
           TSFVector abs() const ;
 
+          /** element-wise sign */
+          TSFVector sign() const ;
+
+          /** element-wise heaviside step function */
+          TSFVector step() const ;
+
+          /** element-wise reciprocal function */
+          TSFVector reciprocal() const ;
+
           /** set all elements to zero */
           void zero();
 

@@ -20,6 +20,12 @@ namespace TSF
                    int maxIters,
                    const double& stepTol,
                    const double& funcTol);
+      /** */
+      NewtonSolver(const TSFLinearSolver& linearSolver,
+                   int maxIters,
+                   const double& stepTol,
+                   const double& funcTol,
+                   const double& low, const double& high);
 
       /** TUVD */
       virtual ~NewtonSolver();
@@ -43,9 +49,16 @@ namespace TSF
                          TSFVector& soln) const ;
 
     private:
+      bool hasBounds() const {return hasBounds_;}
+
+      double distanceToBoundary(const TSFVector& x0, const TSFVector& delta) const ;
+
       TSFLinearSolver linearSolver_;
       double stepTol_;
       double funcTol_;
+      bool hasBounds_;
+      double low_;
+      double high_;
     };
 
 }

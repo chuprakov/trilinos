@@ -299,6 +299,30 @@ TSFVector TSFVector::abs() const
 	return rtn;
 }
 
+TSFVector TSFVector::sign() const
+{
+	TSFVector rtn = copy();
+	TSFTimeMonitor t(opTimer());
+	rtn.ptr_->sign();
+	return rtn;
+}
+
+TSFVector TSFVector::step() const
+{
+	TSFVector rtn = copy();
+	TSFTimeMonitor t(opTimer());
+	rtn.ptr_->step();
+	return rtn;
+}
+
+TSFVector TSFVector::reciprocal() const
+{
+	TSFVector rtn = copy();
+	TSFTimeMonitor t(opTimer());
+	rtn.ptr_->reciprocal();
+	return rtn;
+}
+
 TSFReal TSFVector::sumElements() const
 {
 	TSFTimeMonitor t(opTimer());

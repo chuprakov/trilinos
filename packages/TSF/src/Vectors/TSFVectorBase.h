@@ -78,6 +78,15 @@ namespace TSF
 
       /** replace vector by element-wise absolute value */
       virtual void abs() = 0 ;
+
+      /** replace vector by element-wise sign() function */
+      virtual void sign() = 0;
+
+      /** replace vector by heaviside step() function */
+      virtual void step() = 0;
+
+      /** replace vector by element-wise reciprocal */
+      virtual void reciprocal() = 0;
       //@}
 
 #if HAVE_RTOP
