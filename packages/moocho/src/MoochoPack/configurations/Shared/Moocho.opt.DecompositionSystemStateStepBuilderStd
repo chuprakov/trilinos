@@ -1,3 +1,5 @@
+*** Moocho.opt.DecompositionSystemStateStepBuilderStd 
+
 **********************************************************************************
 *** All of these options can be used with any NLPAlgoConfig
 *** subclass that using the standard DecompositionSystemStateStepBuilderStd
@@ -7,8 +9,6 @@
 *** users can set.  Most of these options the user will want to leave
 *** alone but they are there in any case.
 ***
-
-begin_options
 
 *****************************************************************
 *** Options specific for the shared rSQP algorithm builder
@@ -247,6 +247,4 @@ options_group DecompositionSystemTester {
 *    solve_error_tol    = 1e-10;  *** (+dbl) Error tolerance for checking linear solves
 }
 
-end_options
-
-*** End
+*** End Moocho.opt.DecompositionSystemStateStepBuilderStd 

@@ -1,3 +1,5 @@
+*** Begin Moocho.opt.NLPAlgoConfigMamaJama
+
 *************************************************************************
 *** All of these options can be used with the NLPAlgoConfigMamaJama
 *** algorithm configuration class.
@@ -9,8 +11,6 @@
 *** users can set.  Most of these options the user will want to leave
 *** alone but they are there in any case.
 ***
-
-begin_options
 
 **********************************************************
 *** Options specific for the rSQP algorithm configuration
@@ -504,6 +504,4 @@ options_group MeritFuncModifiedL1LargerSteps {
 
 }
 
-end_options
-
-*** End
+*** End Moocho.opt.NLPAlgoConfigMamaJama

@@ -1,3 +1,5 @@
+*** Begin Moocho.opt.MoochoSolver
+
 *************************************************************************************
 *** All of these options can be used with the class MoochoSolver.
 ***
@@ -8,8 +10,6 @@
 *** For options specific to the NLPAlgoConfigMamaJama configuration
 *** class see the file 'Moocho.opt.NLPAlgoConfigMamaJama'.
 ***
-
-begin_options
 
 **********************************************************
 *** Options specific for the MoochoSolver class.
@@ -335,6 +335,4 @@ options_group DirectSparseSolverMA28 {
 
 }
 
-end_options
-
-*** End file
+*** End Moocho.opt.MoochoSolver

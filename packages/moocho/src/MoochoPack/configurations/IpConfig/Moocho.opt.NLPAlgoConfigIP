@@ -1,11 +1,11 @@
+*** Begin Moocho.opt.NLPAlgoConfigIP
+
 ********************************************************************
 *** All of these options can be used with the NLPAlgoConfigIP
 *** algorithm configuration class.  This file will be maintained and
 *** will include every option that users can set.  Most of these
 *** options the user will want to leave alone but they are there
 *** in any case.
-
-begin_options
 
 **********************************************************
 *** Options specific for the rSQP IP algorithm configuration
@@ -709,6 +709,4 @@ options_group DirectSparseSolverMA28 {
 
 }
 
-end_options
-
-*** End
+*** End Moocho.opt.NLPAlgoConfigIP

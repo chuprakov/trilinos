@@ -68,6 +68,8 @@ namespace MoochoPack {
  * <tt>\ref DecompositionSystemStateStepBuilderStd_opts "Moocho.opt.DecompositionSystemStateStepBuilderStd"</tt>
  * and <tt>\ref NLPAlgoConfigMamaJama_opts "Moocho.opt.NLPAlgoConfigMamaJama"</tt>
  * conatain the listing of these options as well as some documentation.
+ * An options file <tt>Moocho.opt</tt> can be generated automatically
+ * using the shell script <tt>generate_opt_file.x</tt>.
  *
  * <b>Requirements / Specifications</b>
  *
