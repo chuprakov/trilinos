@@ -15,6 +15,7 @@
 // types from NLPInterfacePack
 #include "NLPInterfacePack/include/NLPInterfacePackPublicTypes.ud"
 
+using ConstrainedOptimizationPack::VectorWithNorms;
 using ConstrainedOptimizationPack::SymMatrixSubclass;
 using ConstrainedOptimizationPack::SymInvCholMatrix;
 using ConstrainedOptimizationPack::SymLBFGSMatrixSubclass;

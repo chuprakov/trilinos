@@ -18,6 +18,7 @@ namespace ConstrainedOptimizationPack {
 
 // concrete classes
 
+class VectorWithNorms;
 class SymMatrixSubclass;
 class SymInvCholMatrix;
 class SymLBFGSMatrixSubclass;
