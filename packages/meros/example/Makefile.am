@@ -1,4 +1,5 @@
 #@HEADER
 #@HEADER
 
-SUBDIRS = saddle_solve saddle_kayloghin saddle_matvec vbr_test kayloghin_vbr
+SUBDIRS = saddle_solve saddle_bjb saddle_kayloghin saddle_matvec saddle_diagschur \
+	vbr_test kayloghin_vbr
