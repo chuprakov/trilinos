@@ -207,7 +207,7 @@ void LinearOpWithSolveAztecOO::setUninitialized(
 void LinearOpWithSolveAztecOO::resetCounters()
 {
 	numFwdSolves_ = numFwdLinearIters_ = numAdjSolves_ = numAdjLinearIters_ = 0;
-	fwdLinearCPU_ = adjLinearCPU_;
+	fwdLinearCPU_ = adjLinearCPU_ = 0.0;
 }
 
 // Overridden from OpBase
