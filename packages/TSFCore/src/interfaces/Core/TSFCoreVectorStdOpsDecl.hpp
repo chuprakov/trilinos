@@ -47,6 +47,14 @@ template<class Scalar>
 Scalar sum( const Vector<Scalar>& v );
 
 ///
+/** <tt>result = sqrt(<v,v>)</tt> : Natural norm of a vector.
+ *
+ * Returns <tt>Teuchos::ScalarTraits<Scalar>::squareroot(v.space()->scalarProd(v,v))</tt>
+ */
+template<class Scalar>
+Scalar norm( const Vector<Scalar>& v );
+
+///
 /** <tt>result = ||v||1</tt>
  */
 template<class Scalar>
@@ -149,5 +157,16 @@ void randomize( Scalar l, Scalar u, Vector<Scalar>* v );
 //@}
 
 } // end namespace TSFCore
+
+// ////////////////////////////
+// Inline functions
+
+template<class Scalar>
+inline
+Scalar TSFCore::norm( const Vector<Scalar>& v )
+{
+	return Teuchos::ScalarTraits<Scalar>::squareroot(v.space()->scalarProd(v,v));
+}
+
 
 #endif // TSFCORE_VECTOR_STD_OPS_DECL_HPP
