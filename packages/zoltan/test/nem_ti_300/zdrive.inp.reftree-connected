@@ -1,0 +1,8 @@
+Decomposition Method 	= reftree
+Zoltan Parameters	= reftree_initpath=connected
+File Type		= NemesisI
+File Name		= ti_300-m6-r.par
+Parallel Disk Info	= number=2,offset=1,zeros
+Parallel file location  = root=pio_, subdir=.
+test multi callbacks    = 1
+test null import lists  = 1

@@ -1,5 +1,6 @@
 Decomposition Method 	= reftree
 Zoltan Parameters	= remap=0
+Zoltan Parameters	= reftree_initpath=connected
 File Type		= NemesisI
 File Name		= box_064-m5-r.par
 Parallel Disk Info	= number=1,offset=1,zeros
@@ -7,12 +8,15 @@ Parallel file location  = root=pio_, subdir=.
 Global element ids assigned to processor 0
 GID	Part	Perm	IPerm
 1	0	-1	-1
-13	0	-1	-1
+9	0	-1	-1
+10	0	-1	-1
 17	0	-1	-1
 18	0	-1	-1
 19	0	-1	-1
-20	0	-1	-1
-41	0	-1	-1
-42	0	-1	-1
-43	0	-1	-1
-44	0	-1	-1
+25	0	-1	-1
+26	0	-1	-1
+27	0	-1	-1
+28	0	-1	-1
+36	0	-1	-1
+37	0	-1	-1
+45	0	-1	-1
