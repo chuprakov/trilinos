@@ -2,7 +2,7 @@
 #include "TSFVectorBase.h"
 #include "TSFError.h"
 #include "TSFDeferredLinearCombination.h"
-
+#include "TSFBlas.h"
 #include "TSFOut.h"
 #include "DenseSerialVector.h"
 
@@ -455,8 +455,9 @@ void TSFVector::selfModifyingDotSlash(const TSFVector& x)
 
 TSFTimer& TSFVector::opTimer()
 {
-	static TSFSmartPtr<TSFTimer> timer= TSFTimer::getNewTimer("TSFVector operations");
-	return *timer;
+	//	static TSFSmartPtr<TSFTimer> timer= TSFTimer::getNewTimer("TSFVector operations");
+	//	return *timer;
+	return TSFBlas<double>::blasTimer();
 }
 
 TSFTimer& TSFVector::copyTimer()

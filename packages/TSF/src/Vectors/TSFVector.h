@@ -459,15 +459,15 @@ namespace TSF
 			/** find a min or max */
 			TSFReal findExtremeValue(TSFVectorBase::MinOrMax type, TSFGeneralizedIndex& location, 
 															 const TSFReal& tol) const ;
-			//@}
-		private:
-
-			TSFSmartPtr<TSFVectorBase> ptr_;
-
+			//@}	
 			/** timer for math operations */
 			static TSFTimer& opTimer();
 			/** timer for deep copies */
 			static TSFTimer& copyTimer();
+		private:
+
+			TSFSmartPtr<TSFVectorBase> ptr_;
+
 		};
 
 	/** \relates TSFVector
