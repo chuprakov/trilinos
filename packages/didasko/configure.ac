@@ -6,7 +6,7 @@
 # ************************************************************************
 # 
 #                      Didasko Tutorial Package
-#                 Copyright (2002,2003) Sandia Corporation
+#                 Copyright (2005) Sandia Corporation
 # 
 #
 # Copyright (2001,2002,2003) Sandia Corportation. Under the terms of Contract 
