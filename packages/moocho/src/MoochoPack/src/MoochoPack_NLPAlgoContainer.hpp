@@ -80,11 +80,10 @@ public:
 
 private:
 
+#ifndef DOXYGEN_COMPILE
 	config_ptr_t			config_;
-
-#ifdef DOXYGEN_COMPILE
-	///
-	rSQPAlgoInterface       *algo_interface;
+#else
+	config_ptr_t			config;
 #endif
 
 	// Assert that the object has been set up properly and throw exception if it has not

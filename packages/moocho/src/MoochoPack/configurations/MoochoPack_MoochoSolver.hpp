@@ -618,7 +618,11 @@ private:
 	// ////////////////////////////////////
 	// Private data members
 
+#ifndef DOXYGEN_COMPILE
 	mutable rSQPAlgoContainer solver_;          // Solver object.
+#else
+	mutable rSQPAlgoContainer solver;
+#endif
 	mutable bool              reconfig_solver_; // If true then we must reconfigure the solver!
 	mutable value_type        workspace_MB_;
 	mutable value_type        obj_scale_;
@@ -632,7 +636,7 @@ private:
 	mutable bool              do_summary_outputting_;
 	mutable bool              do_journal_outputting_;
 	mutable bool              do_algo_outputting_;
-#ifndef DOXYGEN_COMPILE // We don't want to clutter up the doxygen diagrams with these
+#ifndef DOXYGEN_COMPILE
 	nlp_ptr_t                 nlp_;
 	track_ptr_t               track_;
 	config_ptr_t              config_;
