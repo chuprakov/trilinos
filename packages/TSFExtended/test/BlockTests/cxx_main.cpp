@@ -147,30 +147,30 @@ int main(int argc, void *argv[])
       vec.zero();
       vec2.zero();
 
-      VectorSpace<double> pvs = 
-	new ProductVectorSpace<double>(space, space2);
-      cerr << "Created a product vector space\n";
-      cerr << pvs.describe() << endl;
+//       VectorSpace<double> pvs = 
+// 	new ProductVectorSpace<double>(space, space2);
+//       cerr << "Created a product vector space\n";
+//       cerr << pvs.describe() << endl;
 
-      cerr << "Creating ProductVector" << endl;
-      Vector<double> pv = pvs.createMember();
-      cerr << pv.describe() << endl;
+//       cerr << "Creating ProductVector" << endl;
+//       Vector<double> pv = pvs.createMember();
+//       cerr << pv.describe() << endl;
       
-      pv.setBlock(0, vec);
-      pv.setBlock(1, vec2);
-      cerr << "Set the blocks of the pv\n";
-      cerr << pv.describe() << endl;
+//       pv.setBlock(0, vec);
+//       pv.setBlock(1, vec2);
+//       cerr << "Set the blocks of the pv\n";
+//       cerr << pv.describe() << endl;
 
 
-      cerr << "Setting up block Operator" << endl;
-      LinearOperator<double> B = new BlockOperator<double>(pvs, pvs);
-      cerr << "B = " << B.describe() << endl;
+//       cerr << "Setting up block Operator" << endl;
+//       LinearOperator<double> B = new BlockOperator<double>(pvs, pvs);
+//       cerr << "B = " << B.describe() << endl;
 
-      cerr << "Getting nBlockRows = " << B.numBlockRows() << endl;
+//       cerr << "Getting nBlockRows = " << B.numBlockRows() << endl;
 
 
-      cerr << "Setting up the blocks" << endl;
-      B.setBlock(0, 0, I);
+//       cerr << "Setting up the blocks" << endl;
+//       B.setBlock(0, 0, I);
 
 
 

@@ -31,7 +31,7 @@
 
  //#include "TSFProductVectorSpace.hpp"
  #include "TSFProductVectorDecl.hpp"
-#include "WorkspacePack.hpp"
+ //#include "WorkspacePack.hpp"
  //#include "TSFCoreProductMultiVectorBase.hpp"
 
  
