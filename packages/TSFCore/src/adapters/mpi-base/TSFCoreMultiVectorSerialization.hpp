@@ -40,12 +40,6 @@
 namespace TSFCore {
 
 template<class Scalar>
-union MV_binary_ele {
-	Scalar s;
-	char c[sizeof(Scalar)];
-};
-
-template<class Scalar>
 MultiVectorSerialization<Scalar>::MultiVectorSerialization(
 	const bool  binaryMode
 	)
@@ -68,17 +62,12 @@ void MultiVectorSerialization<Scalar>::serialize( const MultiVector<Scalar>& mv,
 		ExplicitMultiVectorView<Scalar> local_mv(mv,localRng,Range1D());
 		out << localSubDim << " " << local_mv.numSubCols() << std::endl;
 		if( binaryMode() ) {
-			// Write column-based for better cache performance
-			MV_binary_ele<Scalar> conv;
-			for( Index j = 1; j <= local_mv.numSubCols(); ++j ) {
-				for( Index i = 1; i <= localSubDim; ++i ) {
-					conv.s = local_mv(i,j);
-					out.write( conv.c, sizeof(Scalar) );
-				}
-			}
+			// Write column-wise for better cache performance
+			for( Index j = 1; j <= local_mv.numSubCols(); ++j )
+				out.write( reinterpret_cast<const char*>(&local_mv(1,j)), sizeof(Scalar)*localSubDim );
 		}
 		else {
-			// Write row based for better readability
+			// Write row-wise for better readability
 			for( Index i = 1; i <= localSubDim; ++i ) {
 				out << " " << i;
 				for( Index j = 1; j <= local_mv.numSubCols(); ++j ) {
@@ -134,13 +123,8 @@ void MultiVectorSerialization<Scalar>::unserialize( std::istream& in, MultiVecto
 		// Get the elements
 		if( binaryMode() ) {
 			// Column-wise
-			MV_binary_ele<Scalar> conv;
-			for( Index j = 1; j <= local_mv.numSubCols(); ++j ) {
-				for( Index i = 1; i <= localSubDim; ++i ) {
-					in.read( conv.c, sizeof(Scalar) );
-					local_mv(i,j) = conv.s;
-				}
-			}
+			for( Index j = 1; j <= local_mv.numSubCols(); ++j )
+				in.read( reinterpret_cast<char*>(&local_mv(1,j)), sizeof(Scalar)*localSubDim );
 		}
 		else {
 			// Row-wise
