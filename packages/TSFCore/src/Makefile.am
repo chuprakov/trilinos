@@ -62,7 +62,8 @@ CORE = \
 #  
 AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/../TSFCoreUtils/src/MoochoUtilities\
 -I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack\
--I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps
+-I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps\
+-I$(top_builddir)/../TSFCoreUtils/src/MoochoUtilities
 
 # ------------------------------------------------------------------------
 # New_Package library specifications
