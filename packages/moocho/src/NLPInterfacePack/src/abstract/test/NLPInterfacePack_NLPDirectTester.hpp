@@ -145,64 +145,28 @@ public:
 	///
 	enum ETestingMethod { FD_COMPUTE_ALL, FD_DIRECTIONAL };
 
-	///
-	typedef const MatrixSpace<MatrixWithOpMutable>  mat_space_t;
-
-	/// Members for option \c mat_space() (see StandardCompositionMacros.h).
-	STANDARD_COMPOSITION_MEMBERS( mat_space_t, mat_space )
-#ifdef DOXYGEN_COMPILE
-		;
-#endif		
 	/// Members for option \c Gf_testing_method() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gf_testing_method )
-#ifdef DOXYGEN_COMPILE
-		;
-#endif		
 	/// Members for option \c Gc_testing_method() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( ETestingMethod, Gc_testing_method )
-#ifdef DOXYGEN_COMPILE
-		;
-#endif		
 	/// Members for option \c Gf_warning_tol() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_warning_tol )
-#ifdef DOXYGEN_COMPILE
-		;
-#endif		
 	/// Members for option \c Gf_error_tol() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gf_error_tol )
-#ifdef DOXYGEN_COMPILE
-		;
-#endif		
 	/// Members for option \c Gc_warning_tol() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_warning_tol )
-#ifdef DOXYGEN_COMPILE
-		;
-#endif		
 	/// Members for option \c Gc_error_tol() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gc_error_tol )
-#ifdef DOXYGEN_COMPILE
-		;
-#endif		
 	/// Members for option \c Gh_warning_tol() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gh_warning_tol )
-#ifdef DOXYGEN_COMPILE
-		;
-#endif		
 	/// Members for option \c Gh_error_tol() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, Gh_error_tol )
-#ifdef DOXYGEN_COMPILE
-		;
-#endif		
 	/// Members for option \c num_fd_directions() (see StandardMemberCompositionMacros.h).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
-#ifdef DOXYGEN_COMPILE
-		;
-#endif		
 
 	/// Constructor
 	NLPFirstOrderDirectTester(
-		const mat_space_ptr_t&  mat_space           = NULL
-		,ETestingMethod         Gf_testing_method   = FD_DIRECTIONAL
+		ETestingMethod          Gf_testing_method   = FD_DIRECTIONAL
 		,ETestingMethod         Gc_testing_method   = FD_DIRECTIONAL
 		,value_type             Gf_warning_tol      = 1e-6
 		,value_type             Gf_error_tol        = 1e-1

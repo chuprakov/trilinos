@@ -1,10 +1,22 @@
 // /////////////////////////////////////////////////////
 // NLPFirstOrderDirect.cpp
+//
+// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+//
+// This is free software; you can redistribute it and/or modify it
+// under the terms of the "Artistic License" (see the web site
+//   http://www.opensource.org/licenses/artistic-license.html).
+// This license is spelled out in the file COPYING.
+//
+// This software is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// above mentioned "Artistic License" for more details.
 
 #include <assert.h>
 
 #include "NLPInterfacePack/include/NLPFirstOrderDirect.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpMutable.h"
+#include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "Range1D.h"
 #include "ThrowException.h"
@@ -60,13 +72,13 @@ NLPFirstOrderDirect::space_P() const
 	return NULL;
 }
 
-const NLPFirstOrderDirect::mat_mut_space_ptr_t&
+const NLPFirstOrderDirect::mat_space_ptr_t&
 NLPFirstOrderDirect::space_GcUD() const
 {
 	return NULL;
 }
 
-const NLPFirstOrderDirect::mat_mut_space_ptr_t&
+const NLPFirstOrderDirect::mat_space_ptr_t&
 NLPFirstOrderDirect::space_GhD() const
 {
 	return NULL;

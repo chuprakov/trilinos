@@ -40,8 +40,7 @@
 namespace NLPInterfacePack {
 
 NLPFirstOrderDirectTester::NLPFirstOrderDirectTester(
-	const mat_space_ptr_t&  mat_space
-	,ETestingMethod         Gf_testing_method
+	ETestingMethod          Gf_testing_method
 	,ETestingMethod         Gc_testing_method
 	,value_type             Gf_warning_tol
 	,value_type             Gf_error_tol
@@ -51,8 +50,7 @@ NLPFirstOrderDirectTester::NLPFirstOrderDirectTester(
 	,value_type             Gh_error_tol
 	,size_type              num_fd_directions
 	)
-	:mat_space_(mat_space)
-	,Gf_testing_method_(Gf_testing_method)
+	:Gf_testing_method_(Gf_testing_method)
 	,Gc_testing_method_(Gc_testing_method)
 	,Gf_warning_tol_(Gf_warning_tol)
 	,Gf_error_tol_(Gf_error_tol)
