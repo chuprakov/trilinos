@@ -37,9 +37,9 @@ template<class T_impl>
 class AllocatorNew {
 public:
 	///
-	typedef MemMngPack::ref_count_ptr<T_impl>  ptr_t;             // required!
+	typedef MemMngPack::ref_count_ptr<T_impl>  ptr_t;                       // required!
 	///
-	const ptr_t allocate() const { return ptr_t(new T_impl()); }  // required!
+	const ptr_t allocate() const { return MemMngPack::rcp(new T_impl()); }  // required!
 };
 
 ///
@@ -58,7 +58,7 @@ public:
  * The type <tt>T_PostMod</tt> is responsible for performing any post
  * modifications on a dynamically allocated object before returning it
  * from \c this->create().  The requirements for the type <tt>T_PostMod</tt>
- * are that it has a default constructor and a method
+ * are that it has a default constructor, a copy constructor and a method
  * <tt>T_PostMod::initialize(T_itfc2*) const</tt> that will perform any
  * required post modifications (initializations).  The type \c T_itfc2 argument
  * for this function must be a base class of \c T_impl of course.  The default type
@@ -74,9 +74,9 @@ public:
  * client can all initialize the object using more than just the default
  * constructor.  Therefore, if the client provides a specialized \c T_Allocator
  * class, there are no restrictions on the class \c T_impl (i.e. does not
- * have to have a default constructor or allow \c new ore \c delete).
+ * have to have a default constructor or allow \c new or \c delete).
  * The default class for \c T_Allocator is \c AllocatorNew who's \c allocate()
- * method just returns <tt>MemMngPack::ref_count_ptr<T_impl>(new T_impl())</tt>.  
+ * method just returns <tt>MemMngPack::rcp(new T_impl())</tt>.  
  * 
  * Since the \c T_Allocator class can specialize both the memory management
  * and can initialize the object using more that the default constructor, the

@@ -5,7 +5,7 @@ foundational and useful.
 
 <ul>
 
-<li> Memory management:
+<li> <b>Memory management</b>:
 
 Here are many classes and tools for performing memory management in
 C++.
@@ -53,7 +53,7 @@ functions.  The memory management model for <tt>Workspace</tt> is a
 stack model and is therefore potentially much faster than the generic
 <tt>new</tt> and <tt>delete</tt> implementations.
 
-<li> Debugging:
+<li> <b>Debugging</b>:
 
 These are tools for aiding in the task of debugging.
 
@@ -78,7 +78,7 @@ error message.  With a careful use of this macro, it is very easy to
 set up a debugger (e.g. gdb) to break when the condition to throw the
 exception is met.
 
-<li> Macros for simple containment relationships in classes:
+<li> <b>Macros for simple containment relationships in classes</b>:
 
 Several macros have been defined to aid in adding members to a class
 for different types of relationships for different kinds of objects.
@@ -108,7 +108,7 @@ underlying data member here is an
 garbage collection (i.e. <tt>delete</tt> called) when all of the
 object references to the shared compsite object are removed.
 
-<li> Linear algebra utilities:
+<li> <b>Linear algebra utilities</b>:
 
 These are utilities that are helpful in building interfaces for linear algebra:
 
