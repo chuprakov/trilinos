@@ -63,6 +63,7 @@
 #include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianFull.h"
 #include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianSuperBasic.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPKWIK.h"
+#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPOPT.h"
 
 #include "ReducedSpaceSQPPack/include/std/ReducedQPSolverCheckOptimality.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedQPSolverQPOPTSOLStd.h"
@@ -555,9 +556,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					? rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
 						ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefLBFGS> >(
 							new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefLBFGS>() ) )
-					: rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-						ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefInvCholFactor> >(
-							new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefInvCholFactor>() ) )
+					: ( cov_.qp_solver_type_ == QP_QPKWIK
+						? rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+							ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefInvCholFactor> >(
+								new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefInvCholFactor>() ) )
+						: rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+							ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefCholFactor> >(
+								new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefCholFactor>() ) )
+						)
 					);
 		}
 		else {
@@ -565,7 +571,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				case QP_QPSOL:
 				case QP_QPOPT:
 			    case QP_QPSCHUR: {
-					if( cov_.quasi_newton_==QN_LBFGS ) {
+					if( cov_.quasi_newton_ == QN_LBFGS ) {
 						matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
 							= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
 								ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefLBFGS> >(
@@ -1283,7 +1289,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			// with the calculation of the reduced gradient of the lagrangian).
 			
 			// Setup IndepDirec step
-			if( cov_.qp_solver_type_ == QP_QPSCHUR || cov_.qp_solver_type_ == QP_QPKWIK ) {
+			if( cov_.qp_solver_type_ == QP_QPSCHUR || cov_.qp_solver_type_ == QP_QPKWIK
+				|| cov_.qp_solver_type_ == QP_QPOPT )
+			{
 			
 				// Add iteration quantity for d_bounds
 				algo->state().set_iter_quant( d_bounds_name
@@ -1325,6 +1333,13 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 						using ConstrainedOptimizationPack::QPSolverRelaxedQPKWIK;
 						QPSolverRelaxedQPKWIK
 							*_qp_solver = new QPSolverRelaxedQPKWIK();
+						qp_solver = _qp_solver; // give ownership to delete!
+						break;
+					}
+					case QP_QPOPT: {
+						using ConstrainedOptimizationPack::QPSolverRelaxedQPOPT;
+						QPSolverRelaxedQPOPT
+							*_qp_solver = new QPSolverRelaxedQPOPT();
 						qp_solver = _qp_solver; // give ownership to delete!
 						break;
 					}
