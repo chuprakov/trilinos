@@ -20,7 +20,7 @@
 #include "SparseLinAlgPack/include/MatrixSymDiagonalSparse.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "AbstractLinAlgPack/include/EtaVector.h"
-#include "AbstractLinAlgPack/include/LinAlgPackAssertOp.h"
+#include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
 #include "SparseLinAlgPack/include/SpVectorOut.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/GenMatrixAssign.h"
@@ -66,8 +66,7 @@ void MatrixSymDiagonalSparse::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha
 
 	// Assert that the dimensions of the aruments match up and if not
 	// then throw an excption.
-	LinAlgPack::Vp_MtV_assert_sizes( vs_lhs->dim()
-		, n, n, trans_rhs1, vs_rhs2.dim() );
+	LinAlgPack::Vp_MtV_assert_sizes( vs_lhs->dim(), n, n, trans_rhs1, vs_rhs2.dim() );
 
 	// y = b*y + a * op(A) * x
 	//
