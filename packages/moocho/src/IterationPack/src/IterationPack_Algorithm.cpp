@@ -128,6 +128,11 @@ const Algorithm::step_ptr_t& Algorithm::get_assoc_step(poss_type step_poss, EAss
 void Algorithm::insert_step(poss_type step_poss, const std::string& step_name, const step_ptr_t& step)
 {
 	validate_not_in_state(RUNNING);
+	THROW_EXCEPTION(
+		step.get() == NULL, std::invalid_argument
+		,"Algorithm::insert_step(...) : A step with the name = \'" << step_name
+		<< "\' being inserted into the position  = " << step_poss
+		<< " has step.get() == NULL!" );
 	// Make sure a step with this name does not already exist.
 	steps_t::iterator itr;
 	if( steps_.end() != ( itr = step_itr(step_name) ) )
@@ -185,6 +190,14 @@ void Algorithm::insert_assoc_step(poss_type step_poss, EAssocStepType type, poss
 	, const std::string& assoc_step_name, const step_ptr_t& assoc_step)
 {
 	validate_not_in_state(RUNNING);
+	THROW_EXCEPTION(
+		assoc_step.get() == NULL, std::invalid_argument
+		,"Algorithm::insert_assoc_step(...) : A step with the name = \'" << assoc_step_name
+		<< "\' being inserted into the position  = " << step_poss
+		<< "." << ( type == PRE_STEP
+					? (int)assoc_step_poss - num_assoc_steps(step_poss,type) - 1
+					: assoc_step_poss )
+		<< " has assoc_step.get() == NULL!" );
 	if(running_state() == RUNNING_BEING_CONFIGURED) validate_not_curr_step(validate(step_poss));
 	// Make sure an associated step with this name does not already exist.
 	assoc_steps_ele_list_t &assoc_list = assoc_steps_[step_poss - 1][type];
@@ -486,12 +499,12 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 	const int mmm = mm + NUM_STEP_TIME_STATS;	// total entries in a step_i row
 	 
 	// Print the header.
-	out	<< "\n\n**********************************\n"
-		<< "*** Algorithm step times (sec) ***\n\n"
-		<< "iterations k, steps 1,...," << n << endl << endl;
+	out	<< "\n\n**************************************\n"
+		<< "*** Algorithm step CPU times (sec) ***\n";
 
 	// Print the step names.
-	out	<< "\n*** Step names\n";
+	out	<< "\nStep names"
+		<< "\n----------\n";
 	{for( int i = 1; i <= n; ++i ) {
 		out	<< i << ") \"" << get_step_name(i) << "\"\n";	
 	}}
@@ -499,9 +512,12 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 	out << endl;
 
 	out << std::right << std::setprecision(prec);
+
+	// Print table header
+	out << setw(w) << "" << "  steps 1..." << n+1 << " ->\n\n";
 	
 	// print step numbers
-	out	<< setw(w)	<< "k";
+	out	<< setw(w)	<< " iter k";
 	{for( int i = 1; i <= n+1; ++i ) {
 		out	<< setw(w) << i;	
 	}}
@@ -608,7 +624,7 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 
 	// Print total time for entire algorithm.
 	out << "------------------------------" << endl
-		<< "total time = " << total_time_ << " sec\n";;
+		<< "total CPU time = " << total_time_ << " sec\n";;
 }
 
 // private

@@ -299,6 +299,7 @@ public:
 	  * Preconditions:<ul>
 	  * <li> <tt>running_state() != RUNNING]</tt> (throw <tt>InvalidRunningState</tt>)
 	  * <li> <tt>1 <= ste_poss && step_poss <= num_steps() + 1</tt> (throw <tt>DoesNotExist</tt>)
+	  * <li> <tt>step.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	  * </ul>
 	  */
 	virtual void insert_step(poss_type step_poss, const std::string& step_name, const step_ptr_t& step);
@@ -357,6 +358,7 @@ public:
 	  * <li> <tt>1 <= step_poss && step_poss <= num_steps() + 1</tt> (throw <tt>DoesNotExist</tt>)
 	  * <li> <tt>1 <= assoc_step_poss && assoc_step_poss <= num_assoc_steps(step_poss,type) + 1</tt>
 	  *		(throw <tt>DoesNotExist</tt>)
+	  * <li> <tt>assoc_step.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	  * </ul>
 	  */
 	virtual void insert_assoc_step(poss_type step_poss, EAssocStepType type, poss_type assoc_step_poss
