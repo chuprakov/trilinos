@@ -1317,12 +1317,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		  );
 
 		// Add the calculation of the dampening parameter for the cross term.
-		DampenCrossTermStd_Step
-			*zeta_step = new DampenCrossTermStd_Step;
-		// ToDo: set options from stream
-		algo->insert_assoc_step( poss+1, GeneralIterationPack::POST_STEP, 1
-			, "DampenReducedQPCrossTerm"
-			, zeta_step  );
+		if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
+			DampenCrossTermStd_Step
+				*zeta_step = new DampenCrossTermStd_Step;
+			// ToDo: set options from stream
+			algo->insert_assoc_step( poss+1, GeneralIterationPack::POST_STEP, 1
+				, "DampenReducedQPCrossTerm"
+				, zeta_step  );
+		}
 
 		// Change the type of the iteration quantity for rHL
 		typedef GeneralIterationPack::IterQuantityAccessContinuous<
