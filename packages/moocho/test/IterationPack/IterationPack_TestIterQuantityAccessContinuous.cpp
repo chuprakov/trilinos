@@ -52,25 +52,25 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 
 		if(out)
 			*out<< "\n** Check state\n"
-				<< "x.has_storage_k(-300) ?= true : ";
+				<< "x.has_storage_k(-300) == true : ";
 		update_success( result = (x.has_storage_k(-300) == true), &success );
 		if(out)
 			*out<< result << endl;
 
 		if(out)
-			*out<< "x.has_storage_k(400) ?= true : ";
+			*out<< "x.has_storage_k(400) == true : ";
 		update_success( result = x.has_storage_k(400) == true, &success );
 		if(out)
 			*out<< result << endl;
 
 		if(out)
-			*out<< "x.updated_k(-45) ?= false : ";
+			*out<< "!x.updated_k(-45) == true : ";
 		update_success( result = x.updated_k(-45) == false, &success );
 		if(out)
 			*out<< result << endl;
 
 		if(out)
-			*out<< "x.updated_k(60) ?= false : ";
+			*out<< "!x.updated_k(60) == true : ";
 		update_success( result = x.updated_k(60) == false, &success );
 		if(out)
 			*out<< result << endl;
@@ -81,32 +81,32 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.set_k(0) = 5;
 
 		if(out)
-			*out<< "x.get_k(0) ?= 5 : ";
+			*out<< "x.get_k(0) == 5 : ";
 		r = x.get_k(0);
 		update_success( result = r == 5, &success );
 		if(out) 
 			*out<< r << " : " << result << endl;
 
 		if(out)
-			*out<< "x.updated_k(-1) ?= false : ";
+			*out<< "!x.updated_k(-1) == true : ";
 		update_success( result = x.updated_k(-1) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(1) ?= false : ";
+			*out<< "!x.updated_k(1) == true : ";
 		update_success( result = x.updated_k(1) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(-1) ?= false : ";
+			*out<< "!x.has_storage_k(-1) == true : ";
 		update_success( result = x.has_storage_k(-1) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(1) ?= true : ";
+			*out<< "x.has_storage_k(1) == true : ";
 		update_success( result = x.has_storage_k(1) == true, &success );
 		if(out)
 			*out<< result << endl;
@@ -135,47 +135,50 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		if(out) *out	<< "\nx.next_iteration();\n";
 		x.next_iteration();
 
-		if(out) *out<< "x.get_k(-1) ?= 5 : ";
+		if(out) *out<< "x.get_k(-1) == 5 : ";
 		r = x.get_k(-1);
 		update_success( result = r == 5, &success );
 		if(out) 
 			*out<< " : " << result << endl;
 
 		if(out)
-			*out<< "x.updated_k(-2) ?= false : ";
+			*out<< "!x.updated_k(-2) == true : ";
 		update_success( result = x.updated_k(-2) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(0) ?= false : ";
+			*out<< "x.updated_k(0) == true : ";
 		update_success( result = x.updated_k(0) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(-2) ?= false : ";
+			*out<< "!x.has_storage_k(-2) == true : ";
 		update_success( result = x.has_storage_k(-2) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(0) ?= true : ";
+			*out<< "x.has_storage_k(0) == true : ";
 		update_success( result = x.has_storage_k(0) == true, &success );
 		if(out)
 			*out<< result << endl;
 
 		if(out) *out	<< "\nx.set_k(0) = x.get_k(-1);\n\n";
-		x.set_k(0) = x.get_k(-1);
-
-		if(out) *out	<< "x.get_k(0) ?= 5 : ";
+		{
+			int &x_km1 = x.get_k(-1);
+			x.set_k(0) = x_km1;
+		}
+		
+		if(out) *out	<< "x.get_k(0) == 5 : ";
 		r = x.get_k(0);
 		update_success( result = r  == 5, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 	
 		if(out)
-			*out<< "x.will_loose_mem(0,1) ?= true : ";
+			*out<< "x.will_loose_mem(0,1) == true : ";
 		update_success( result = x.will_loose_mem(0,1) == true, &success );
 		if(out)
 			*out<< result << endl;
@@ -184,7 +187,7 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.set_k(1) = -4;
 
 		if(out)
-			*out<< "x.get_k(1) ?= -4 : ";
+			*out<< "x.get_k(1) == -4 : ";
 		r = x.get_k(1);
 		update_success( result = r == -4, &success );
 		if(out)
@@ -195,7 +198,7 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.next_iteration();
 
 		if(out)
-			*out<< "x.get_k(0) ?= -4 : ";
+			*out<< "x.get_k(0) == -4 : ";
 		r = x.get_k(0);
 		update_success( result = r == -4, &success );
 		if(out)
@@ -215,25 +218,25 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 
 		if(out)
 			*out<< "\n** Check state\n"
-				<< "x.has_storage_k(-300) ?= true : ";
+				<< "x.has_storage_k(-300) == true : ";
 		update_success( result = x.has_storage_k(-300) == true, &success );
 		if(out)
 			*out<< result << endl;
 
 		if(out)
-			*out<< "x.has_storage_k(400) ?= true : ";
+			*out<< "x.has_storage_k(400) == true : ";
 		update_success( result = x.has_storage_k(400) == true, &success );
 		if(out)
 			*out<< result << endl;
 
 		if(out)
-			*out<< "x.updated_k(-45) ?= false : ";
+			*out<< "!x.updated_k(-45) == true : ";
 		update_success( result = x.updated_k(-45) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(60) ?= false : ";
+			*out<< "!x.updated_k(60) == true : ";
 		update_success( result = x.updated_k(60) == false, &success );
 		if(out)
 			*out<< result << endl;
@@ -244,38 +247,38 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.set_k(0) = 5;
 
 		if(out)
-			*out<< "x.get_k(0) ?= 5 : ";
+			*out<< "x.get_k(0) == 5 : ";
 		r = x.get_k(0);
 		update_success( result = r == 5, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(-1) ?= false : ";
+			*out<< "!x.updated_k(-1) == true : ";
 		update_success( result = x.updated_k(-1) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(1) ?= false : ";
+			*out<< "!x.updated_k(1) == true : ";
 		update_success( result = x.updated_k(1) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(-2) ?= false : ";
+			*out<< "!x.has_storage_k(-2) == true : ";
 		update_success( result = x.has_storage_k(-2) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(-1) ?= true : ";
+			*out<< "x.has_storage_k(-1) == true : ";
 		update_success( result = x.has_storage_k(-1) == true, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(1) ?= true : ";
+			*out<< "x.has_storage_k(1) == true : ";
 		update_success( result = x.has_storage_k(1) == true, &success );
 		if(out)
 			*out<< result << endl;
@@ -285,7 +288,7 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.set_k(-1) = 4;
 
 		if(out)
-			*out<< "x.get_k(-1) ?= 4 : ";
+			*out<< "x.get_k(-1) == 4 : ";
 		r = x.get_k(-1);
 		update_success( result = r == 4, &success );
 		if(out)
@@ -318,75 +321,78 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.next_iteration();
 
 		if(out)
-			*out<< "x.get_k(-2) ?= 4 : ";
+			*out<< "x.get_k(-2) == 4 : ";
 		r = x.get_k(-2);
 		update_success( result = r == 4, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(-1) ?= 5 : ";
+			*out<< "x.get_k(-1) == 5 : ";
 		r = x.get_k(-1);
 		update_success( result = r == 5, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(-3) ?= false : ";
+			*out<< "!x.updated_k(-3) == true : ";
 		update_success( result = x.updated_k(-3) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(0) ?= false : ";
+			*out<< "!x.updated_k(0) == true : ";
 		update_success( result = x.updated_k(0) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(-3) ?= false : ";
+			*out<< "!x.has_storage_k(-3) == true : ";
 		update_success( result = x.has_storage_k(-3) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(0) ?= true : ";
+			*out<< "!x.has_storage_k(0) == true : ";
 		update_success( result = x.has_storage_k(0) == true, &success );
 		if(out)
 			*out<< result << endl;
 
 		if(out)
 			*out<< "x.set_k(0) = x.get_k(-1);\n\n";
-		x.set_k(0) = x.get_k(-1);
+		{
+			int &x_km1 = x.get_k(-1);
+			x.set_k(0) = x_km1;
+		}
 
 		if(out)
-			*out<< "x.get_k(0) ?= 5 : ";
+			*out<< "x.get_k(0) == 5 : ";
 		r = x.get_k(0);
 		update_success( result = r == 5, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(-1) ?= 5 : ";
+			*out<< "x.get_k(-1) == 5 : ";
 		r = x.get_k(-1);
 		update_success( result = r == 5, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(-2) ?= false : ";
+			*out<< "!x.updated_k(-2) == true : ";
 		update_success( result = x.updated_k(-2) == false, &success );
 		if(out)
 			*out<< result << endl;
 	
 		if(out)
-			*out<< "x.will_loose_mem(0,1) ?= false : ";
+			*out<< "!x.will_loose_mem(0,1) == true : ";
 		update_success( result = x.will_loose_mem(0,1) == false, &success );
 		if(out)
 			*out<< result << endl;
 			
 		if(out)
-			*out<< "x.will_loose_mem(-1,1) ?= true : ";
+			*out<< "x.will_loose_mem(-1,1) == true : ";
 		update_success( result = x.will_loose_mem(-1,1) == true, &success );
 		if(out)
 			*out<< result << endl;
@@ -396,14 +402,14 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.set_k(1) = -4;
 		
 		if(out)
-			*out<< "x.get_k(1) ?= -4 : ";
+			*out<< "x.get_k(1) == -4 : ";
 		r = x.get_k(1);
 		update_success( result = r == -4, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(0) ?= 5 : ";
+			*out<< "x.get_k(0) == 5 : ";
 		r = x.get_k(0);
 		update_success( result = r == 5, &success );
 		if(out)
@@ -414,7 +420,7 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.next_iteration();
 
 		if(out)
-			*out<< "x.get_k(0) ?= -4 : ";
+			*out<< "x.get_k(0) == -4 : ";
 		r = x.get_k(0);
 		update_success( result = r == -4, &success );
 		if(out)
@@ -435,25 +441,25 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 			*out<< "\n** Check state\n";
 				
 		if(out)
-			*out<< "x.has_storage_k(-300) ?= true : ";
+			*out<< "x.has_storage_k(-300) == true : ";
 		update_success( result = x.has_storage_k(-300) == true, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(400) ?= true : ";
+			*out<< "x.has_storage_k(400) == true : ";
 		update_success( result = x.has_storage_k(400) == true, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(-45) ?= false : ";
+			*out<< "!x.updated_k(-45) == true : ";
 		update_success( result = x.updated_k(-45) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(60) ?= false : ";
+			*out<< "!x.updated_k(60) == true : ";
 		update_success( result = x.updated_k(60) == false, &success );
 		if(out)
 			*out<< result << endl;
@@ -464,80 +470,80 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.set_k(0) = 1;
 
 		if(out)
-			*out<< "x.get_k(0) ?= 1 : ";
+			*out<< "x.get_k(0) == 1 : ";
 		r = x.get_k(0);
 		update_success( result = r == 1, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(-4) ?= false : ";
+			*out<< "!x.updated_k(-4) == true : ";
 		update_success( result = x.updated_k(-4) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(-3) ?= false : ";
+			*out<< "!x.updated_k(-3) == true : ";
 		update_success( result = x.updated_k(-3) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(-2) ?= false : ";
+			*out<< "!x.updated_k(-2) == true : ";
 		update_success( result = x.updated_k(-2) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(-1) ?= false : ";
+			*out<< "!x.updated_k(-1) == true : ";
 		update_success( result = x.updated_k(-1) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(0) ?= true : ";
+			*out<< "x.updated_k(0) == true : ";
 		update_success( result = x.updated_k(0) == true, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(1) ?= false : ";
+			*out<< "!x.updated_k(1) == true : ";
 		update_success( result = x.updated_k(1) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(-4) ?= false : ";
+			*out<< "!x.has_storage_k(-4) == true : ";
 		update_success( result = x.has_storage_k(-4) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(-3) ?= true : ";
+			*out<< "x.has_storage_k(-3) == true : ";
 		update_success( result = x.has_storage_k(-3) == true, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(-2) ?= true : ";
+			*out<< "x.has_storage_k(-2) == true : ";
 		update_success( result = x.has_storage_k(-2) == true, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(-1) ?= true : ";
+			*out<< "x.has_storage_k(-1) == true : ";
 		update_success( result = x.has_storage_k(-1) == true, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(0) ?= true : ";
+			*out<< "x.has_storage_k(0) == true : ";
 		update_success( result = x.has_storage_k(0) == true, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(1) ?= true : ";
+			*out<< "x.has_storage_k(1) == true : ";
 		update_success( result = x.has_storage_k(1) == true, &success );
 		if(out)
 			*out<< result << endl;
@@ -547,7 +553,7 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.set_k(-1) = 2;
 		
 		if(out)
-			*out<< "x.get_k(-1) ?= 2 : ";
+			*out<< "x.get_k(-1) == 2 : ";
 		r = x.get_k(-1);
 		update_success( result = r == 2, &success );
 		if(out)
@@ -560,14 +566,14 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.set_k(-3) = 4;
 	
 		if(out)
-			*out<< "x.get_k(-2) ?= 3 : ";
+			*out<< "x.get_k(-2) == 3 : ";
 		r = x.get_k(-2);
 		update_success( result = r == 3, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(-3) ?= 4 : ";
+			*out<< "x.get_k(-3) == 4 : ";
 		r = x.get_k(-3);
 		update_success( result = r == 4, &success );
 		if(out)
@@ -601,103 +607,106 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.next_iteration();
 
 		if(out)
-			*out<< "x.get_k(-4) ?= 4 : ";
+			*out<< "x.get_k(-4) == 4 : ";
 		r = x.get_k(-4);
 		update_success( result = r == 4, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(-3) ?= 3 : ";
+			*out<< "x.get_k(-3) == 3 : ";
 		r = x.get_k(-3);
 		update_success( result = r == 3, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(-2) ?= 2 : ";
+			*out<< "x.get_k(-2) == 2 : ";
 		r = x.get_k(-2);
 		update_success( result = r == 2, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(-1) ?= 1 : ";
+			*out<< "x.get_k(-1) == 1 : ";
 		r = x.get_k(-1);
 		update_success( result = r == 1, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(-5) ?= false : ";
+			*out<< "!x.updated_k(-5) == true : ";
 		update_success( result = x.updated_k(-5) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(0) ?= false : ";
+			*out<< "!x.updated_k(0) == true : ";
 		update_success( result = x.updated_k(0) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(-5) ?= false : ";
+			*out<< "!x.has_storage_k(-5) == true : ";
 		update_success( result = x.has_storage_k(-5) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.has_storage_k(0) ?= true : ";
+			*out<< "x.has_storage_k(0) == true : ";
 		update_success( result = x.has_storage_k(0) == true, &success );
 		if(out)
 			*out<< result << endl;
 
 		if(out)
 			*out<< "\nx.set_k(0) = x.get_k(-1);\n\n";
-		x.set_k(0) = x.get_k(-1);
+		{
+			int &x_km1 = x.get_k(-1);
+			x.set_k(0) = x_km1;
+		}
 
 		if(out)
-			*out<< "x.get_k(-3) ?= 3 : ";
+			*out<< "x.get_k(-3) == 3 : ";
 		r = x.get_k(-3);
 		update_success( result = r == 3, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(-2) ?= 2 : ";
+			*out<< "x.get_k(-2) == 2 : ";
 		r = x.get_k(-2);
 		update_success( result = r == 2, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(-1) ?= 1 : ";
+			*out<< "x.get_k(-1) == 1 : ";
 		r = x.get_k(-1);
 		update_success( result = r == 1, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(0) ?= 1 : ";
+			*out<< "x.get_k(0) == 1 : ";
 		r = x.get_k(0);
 		update_success( result = r == 1, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.updated_k(-4) ?= false : ";
+			*out<< "!x.updated_k(-4) == true : ";
 		update_success( result = x.updated_k(-4) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.will_loose_mem(-2,1) ?= false : ";
+			*out<< "!x.will_loose_mem(-2,1) == true : ";
 		update_success( result = x.will_loose_mem(-2,1) == false, &success );
 		if(out)
 			*out<< result << endl;
 				
 		if(out)
-			*out<< "x.will_loose_mem(-3,1) ?= true : ";
+			*out<< "x.will_loose_mem(-3,1) == true : ";
 		update_success( result = x.will_loose_mem(-3,1) == true, &success );
 		if(out)
 			*out<< result << endl;
@@ -707,28 +716,28 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.set_k(1) = -4;
 
 		if(out)
-			*out<< "x.get_k(-2) ?= 2 : ";
+			*out<< "x.get_k(-2) == 2 : ";
 		r = x.get_k(-2);
 		update_success( result = r == 2, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(-1) ?= 1 : ";
+			*out<< "x.get_k(-1) == 1 : ";
 		r = x.get_k(-1);
 		update_success( result = r == 1, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(0) ?= 1 : ";
+			*out<< "x.get_k(0) == 1 : ";
 		r = x.get_k(0);
 		update_success( result = r == 1, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(1) ?= -4 : ";
+			*out<< "x.get_k(1) == -4 : ";
 		r = x.get_k(1);
 		update_success( result = r == -4, &success );
 		if(out)
@@ -739,21 +748,21 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 		x.next_iteration();
 
 		if(out)
-			*out<< "x.get_k(-2) ?= 1 : ";
+			*out<< "x.get_k(-2) == 1 : ";
 		r = x.get_k(-2);
 		update_success( result = r == 1, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 
 		if(out)
-			*out<< "x.get_k(-1) ?= 1 : ";
+			*out<< "x.get_k(-1) == 1 : ";
 		r = x.get_k(-1);
 		update_success( result = r == 1, &success );
 		if(out)
 			*out<< r << " : " << result << endl;
 				
 		if(out)
-			*out<< "x.get_k(0) ?= -4 : ";
+			*out<< "x.get_k(0) == -4 : ";
 		r = x.get_k(0);
 		update_success( result = r == -4, &success );
 		if(out)

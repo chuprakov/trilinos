@@ -4,6 +4,8 @@
 #ifndef GENERAL_ITERATION_PACK_TYPES_H
 #define GENERAL_ITERATION_PACK_TYPES_H
 
+#include <stdexcept>
+
 namespace GeneralIterationPack {
 
 ///

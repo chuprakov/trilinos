@@ -6,6 +6,7 @@
 #include <cassert>
 #include <iterator>
 #include <numeric>
+#include <typeinfo>
 
 #include "../include/Algorithm.h"
 #include "Misc/include/stpwatch.h"

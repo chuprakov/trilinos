@@ -5,6 +5,7 @@
 
 #include <ostream>
 #include <iomanip>
+#include <typeinfo>
 
 #include "../include/AlgorithmState.h"
 
@@ -36,6 +37,35 @@ void AlgorithmState::erase_iter_quant(const std::string& iq_name) {
 	const iq_id_type iq_id = itr->second;
 	iq_[iq_id] = IQ_ptr(0);	// set the pointer to null
 	iq_name_to_id_.erase( itr );
+}
+
+IterQuantity& AlgorithmState::iter_quant(iq_id_type iq_id) {
+	bool exists = true;
+	try {
+		IQ_ptr &_iq = iq_.at(iq_id);
+		if( _iq.get() )
+			return *_iq;
+		else
+			exists = false;
+	}
+	catch(const std::out_of_range& excpt) {	// Thrown by MS VC++ 6.0
+		exists = false;
+	}
+	catch(const std::range_error& excpt) {	// Thrown by libstdc++ v3 in g++ 2.95.2
+		exists = false;
+	}
+	if( !exists ) {
+		std::ostringstream omsg;
+		omsg
+			<< "AlgorithmState::iter_quant(iq_id) : Error, the iteration quantity iq_id = "
+			<< iq_id << " does not exist.";															
+		throw DoesNotExist( omsg.str() );
+	}																								
+	return *iq_.at(0);	// Will never be executed.
+}
+
+const IterQuantity& AlgorithmState::iter_quant(iq_id_type iq_id) const {
+	return const_cast<AlgorithmState*>(this)->iter_quant(iq_id);
 }
 
 void AlgorithmState::next_iteration(bool incr_k) {

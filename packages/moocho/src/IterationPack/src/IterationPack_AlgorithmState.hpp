@@ -168,8 +168,8 @@ public:
 	  *
 	  * Time = O(1), Space = O(1).
 	  *
-	  * If the IQ object with iq_id does not exist then a #std::out_of_range#
-	  * or #std::logic_error# will be thrown.
+	  * If the IQ object with iq_id does not exist then a #DoesNotExist#
+	  * exception will be thrown.
 	  */
 	virtual IterQuantity& iter_quant(iq_id_type iq_id);
 	///
@@ -284,16 +284,6 @@ IterQuantity& AlgorithmState::iter_quant(const std::string& iq_name ) {
 inline
 const IterQuantity& AlgorithmState::iter_quant(const std::string& iq_name ) const {
 	return *iq_[find_and_assert(iq_name)->second];
-}
-
-inline
-IterQuantity& AlgorithmState::iter_quant(iq_id_type iq_id) {
-	return *iq_.at(iq_id);
-}
-
-inline
-const IterQuantity& AlgorithmState::iter_quant(iq_id_type iq_id) const {
-	return *iq_.at(iq_id);
 }
 
 }	// end namespace GeneralIterationPack 

@@ -8,6 +8,7 @@
 
 #include <ostream>
 #include <iomanip>
+#include <typeinfo>
 
 #include "../test/TestGeneralIterationPack.h"
 #include "../include/AlgorithmState.h"
@@ -73,9 +74,12 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 			<< "\nWarning: this interface is weakly typed and mistakes"
 			<< "can be very bad\n";
 
-	typedef IterQuantityAccessContinuous<double>					alpha_t;
-	typedef IterQuantityAccessContinuous< std::vector<double> >		x_t;
-	typedef IterQuantityAccessDerivedToBase<B,D>					V_t;
+	typedef double													alpha_k_t;
+	typedef std::vector<double>										x_k_t;
+	typedef B														V_k_t;
+	typedef IterQuantityAccessContinuous<alpha_k_t>					alpha_t;
+	typedef IterQuantityAccessContinuous<x_k_t>						x_t;
+	typedef IterQuantityAccessDerivedToBase<V_k_t,D>				V_t;
 
 	if(out) *out << "\n*** Create state object ...\n";
 	AlgorithmState state(4);
@@ -119,7 +123,7 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 	}
 
 	update_success( result = state.k() == 0, &success );
-	if(out) *out << "\nstate.k() ?= 0 : " << result << endl; 
+	if(out) *out << "\nstate.k() == 0 : " << result << endl; 
 
 	// Set the iteration quantities for the kth iteration and check them
 
@@ -169,7 +173,7 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 		, & success );
 	if(out) *out << result << endl;
 
-	if(out) *out << "\nAccess nonexistant iteration quantity by name \"X\" throws an exception : ";
+	if(out) *out << "\nAccess nonexistant iteration quantity by name \"X\" throws a AlgorithmState::DoesNotExist exception : ";
 	try {
 		state.iter_quant("X");
 		success = false;
@@ -181,13 +185,13 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 
 	// use a nonexistant id
 
-	if(out) *out << "\nUse of a nonexistant id = 100 throws an exception : ";
+	if(out) *out << "\nUse of a nonexistant id = 100 throws a AlgorithmState::DoesNotExist exception : ";
 	try {
 		state.iter_quant(100);
 		success = false;
 		if(out) *out << false << endl;
 	}
-	catch(const std::out_of_range& expt) {
+	catch(const AlgorithmState::DoesNotExist& expt) {
 		if(out) *out << true << endl;
 	}
 
@@ -197,15 +201,24 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 
 	if(out) *out << "alpha_k(+1) = alpha_k(0)...\n";
 	alpha = dynamic_cast<alpha_t*>( &state.iter_quant("alpha") );
-	alpha->set_k(+1) = alpha->get_k(0);
+	{
+		alpha_k_t &alpha_k = alpha->get_k(0);
+		alpha->set_k(+1) = alpha_k;
+	}
 
 	if(out) *out << "x_k(+1) = x_k(0)...\n";
 	x = dynamic_cast<x_t*>( &state.iter_quant("x") );
-	x->set_k(+1) = x->get_k(0);
+	{
+		x_k_t &x_k = x->get_k(0);
+		x->set_k(+1) = x_k;
+	}
 
 	if(out) *out << "V_k(+1) = V_k(0)...\n";
 	V = dynamic_cast<V_t*>( &state.iter_quant("V") );
-	V->set_k(+1) = V->get_k(0);
+	{
+		V_k_t &V_k = V->get_k(0);
+		V->set_k(+1) = V_k;
+	}
 
 	if(out) *out << "shift reference from k to k+1...\n";
 	state.next_iteration();
@@ -234,14 +247,14 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 	// erase an iteration quantity then try to access it
 
 	if(out) *out << "\n*** Erasing iteration quantity \"x\" then trying to access it throws"
-					" an exception : ";
+					" a AlgorithmState::DoesNotExist exception : ";
 	state.erase_iter_quant("x");
 	try {
 		state.iter_quant(x_id);
-		success = false;
 		if(out) *out << false << endl;
+		update_success( false, &success );
 	}
-	catch(const std::logic_error& expt) {
+	catch(const AlgorithmState::DoesNotExist& expt) {
 		if(out) *out << true << endl;
 	}
 
@@ -262,7 +275,7 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 
 	} // end try
 	catch(const std::exception& excpt) {
-		if(out) *out << "\nCaught a std::exception: " << excpt.what() << endl;
+		if(out) *out << "\nCaught a std::exception: " << typeid(excpt).name() << " : " <<  excpt.what() << endl;
 	}
 	catch(...) {
 		if(out) *out << "\nCaught an unknown exception\n";
