@@ -71,6 +71,7 @@ template <class T_Element>					class SparseVectorSlice;
 
 // concrete classes
 
+class EtaVector;
 class GenPermMatrixSlice;
 typedef SparseVector<
 	SparseElement<index_type,value_type>

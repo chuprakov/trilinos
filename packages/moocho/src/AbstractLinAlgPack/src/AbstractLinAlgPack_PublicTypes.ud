@@ -45,8 +45,15 @@ using AbstractLinAlgPack::MultiVectorMutable;
 
 using AbstractLinAlgPack::BasisSystem;
 
+// template classes
+
+using AbstractLinAlgPack::SparseElement;
+using AbstractLinAlgPack::SparseVector;
+using AbstractLinAlgPack::SparseVectorSlice;
+
 // concreate types
 
+using AbstractLinAlgPack::EtaVector;
 using AbstractLinAlgPack::GenPermMatrixSlice;
 using AbstractLinAlgPack::SpVector;
 using AbstractLinAlgPack::SpVectorSlice;
