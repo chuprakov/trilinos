@@ -1,10 +1,11 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_TOp_Correct_Multipliers.c
 
 //
 // Note: This file was created automatically by 'new_rtop.pl'
 //       on 7/1/2002 at 18:11
 //
+*/
 
 #include <assert.h>
 #include <math.h>
@@ -13,11 +14,11 @@
 #define min(a,b) ( (a) < (b) ? (a) : (b) )
 
 #include "RTOp_TOp_correct_multipliers.h"
-#include "RTOp_obj_value_index_vtbl.h"  // vtbl for operator object instance data
+#include "RTOp_obj_value_index_vtbl.h"  /* vtbl for operator object instance data */
 
 
 
-// Implementation functions for RTOp_RTOp
+/* Implementation functions for RTOp_RTOp */
 
 static int RTOp_TOp_Correct_Multipliers_apply_op(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -25,61 +26,61 @@ static int RTOp_TOp_Correct_Multipliers_apply_op(
   , const int num_targ_vecs, const struct RTOp_MutableSubVector targ_vecs[]
   , RTOp_ReductTarget reduct_obj )
 {
-  //
+  /*
   // Declare local variables
-  //
+  */
 
-  // Access to the operator object instance data
+  /* Access to the operator object instance data */
   struct RTOp_value_index_type *data_cntr = (struct RTOp_value_index_type*)obj_data;
   RTOp_value_type *inf_bound_limit = &data_cntr->value;
   RTOp_index_type *lower_or_upper = &data_cntr->index;
-  // Vector data
+  /* Vector data */
   RTOp_index_type           sub_dim;
-  // z0
+  /* z0 */
   RTOp_value_type           *z0_val;
   ptrdiff_t                 z0_val_s;
-  // v0
+  /* v0 */
   const RTOp_value_type     *v0_val;
   ptrdiff_t                 v0_val_s;
 
-  // Automatic temporary variables
+  /* Automatic temporary variables */
   register RTOp_index_type  k;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 1 || ( num_vecs && vecs == NULL ) )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 1 || ( num_targ_vecs && targ_vecs == NULL ) )
     return RTOp_ERR_INVALID_NUM_TARG_VECS;
-  if( // Validate sub_dim
+  if( /* Validate sub_dim */
     targ_vecs[0].sub_dim != vecs[0].sub_dim
     )
     return RTOp_ERR_INCOMPATIBLE_VECS;
   assert(obj_data);
 
 
-  //
+  /*
   // Get pointers to data
-  //
+  */
   sub_dim       = vecs[0].sub_dim;
-  // z0
+  /* z0 */
   z0_val        = targ_vecs[0].values;
   z0_val_s      = targ_vecs[0].values_stride;
-  // v0
+  /* v0 */
   v0_val        = vecs[0].values;
   v0_val_s      = vecs[0].values_stride;
 
 
-  //
+  /*
   // Apply the operator:
-  //
+  */
   for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s, z0_val += z0_val_s )
     {
-    // Element-wise transformation
+    /* Element-wise transformation */
     if ( (*z0_val) < 0 )
       {
-      // should only get here if the value is slightly negative
+      /* should only get here if the value is slightly negative */
       assert(*z0_val > -1e-50);
       (*z0_val) = 0.0;
       }
@@ -93,15 +94,15 @@ static int RTOp_TOp_Correct_Multipliers_apply_op(
       }
         }
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
 
 
-// Name of this transformation operator class
+/* Name of this transformation operator class */
 const char RTOp_TOp_Correct_Multipliers_name[] = "TOp_Correct_Multipliers";
 
-// Virtual function table
+/* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_Correct_Multipliers_vtbl =
 {
   &RTOp_obj_value_index_vtbl
@@ -112,7 +113,7 @@ const struct RTOp_RTOp_vtbl_t RTOp_TOp_Correct_Multipliers_vtbl =
   ,NULL
 };
 
-// Class specific functions
+/* Class specific functions */
 
 int RTOp_TOp_Correct_Multipliers_construct( RTOp_value_type inf_bound_limit, RTOp_index_type lower_or_upper,  struct RTOp_RTOp* op )
 {

@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_sum.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #include <assert.h>
 #include <string.h>
@@ -22,7 +23,7 @@
 #include "RTOp_obj_value_vtbl.h"
 #include "RTOp_reduct_sum_value.h"
 
-// Implementation functions
+/* Implementation functions */
 
 static int RTOp_ROp_sum_apply_op(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -36,53 +37,53 @@ static int RTOp_ROp_sum_apply_op(
   register RTOp_index_type k;
   RTOp_value_type sum = 0.0;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
     return RTOp_ERR_INVALID_NUM_TARG_VECS;
 
-  //
+  /*
   // Get pointers to data
-  //
+  */
 
-  // v0
+  /* v0 */
   v0_sub_dim      = vecs[0].sub_dim;
   v0_val         = vecs[0].values;
   v0_val_s       = vecs[0].values_stride;
 
-  //
+  /*
   // Sum the vector elements!
-  //
+  */
 
   for( k = 0; k < v0_sub_dim; ++k, v0_val += v0_val_s )
     sum += *v0_val;
 
-  //
+  /*
   // Add this to the result
-  //
+  */
   *((RTOp_value_type*)targ_obj) += sum;
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
-// Name of this reduction operator class
+/* Name of this reduction operator class */
 const char RTOp_ROp_sum_name[] = "ROp_sum";
 
-// Virtual function table
+/* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_sum_vtbl =
 {
-  &RTOp_obj_null_vtbl   // use null type for instance data
-  ,&RTOp_obj_value_vtbl // use simple scalar type for target object
+  &RTOp_obj_null_vtbl   /* use null type for instance data */
+  ,&RTOp_obj_value_vtbl /* use simple scalar type for target object */
   ,NULL
   ,RTOp_ROp_sum_apply_op
   ,RTOp_reduct_sum_value
   ,RTOp_get_reduct_sum_value_op
 };
 
-// Class specific functions
+/* Class specific functions */
 
 int RTOp_ROp_sum_construct( struct RTOp_RTOp* op )
 {

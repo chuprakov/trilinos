@@ -47,11 +47,11 @@ extern "C" {
 /** Reduction target object for this max_inequ_viol operation.
  */
 struct RTOp_ROp_max_inequ_viol_reduct_obj_t {
-  RTOp_value_type   max_viol;   ///< <tt>max_viol = |v_i-vLU|/(1.0+|v_i|) > 0</tt>
-  RTOp_value_type   v_i;        ///< <tt>v_i = v(max_viol_i)</tt>
-  RTOp_value_type   vLU_i;      ///< <tt>vLU_i = vL(i)</tt> or <tt>vU(i)</tt>
-  RTOp_index_type   max_viol_i; ///< <tt>max_viol_i > 0</tt> if a inequality is violated
-  RTOp_index_type   bnd_type;   ///< -1 : LOWER, 0 : EQUALITY, +1 : UPPER
+  RTOp_value_type   max_viol;   /**< <tt>max_viol = |v_i-vLU|/(1.0+|v_i|) > 0</tt> */
+  RTOp_value_type   v_i;        /**< <tt>v_i = v(max_viol_i)</tt> */
+  RTOp_value_type   vLU_i;      /**< <tt>vLU_i = vL(i)</tt> or <tt>vU(i)</tt> */
+  RTOp_index_type   max_viol_i; /**< <tt>max_viol_i > 0</tt> if a inequality is violated */
+  RTOp_index_type   bnd_type;   /**< -1 : LOWER, 0 : EQUALITY, +1 : UPPER */
 };
 
 /** Name of this reduction operator class */

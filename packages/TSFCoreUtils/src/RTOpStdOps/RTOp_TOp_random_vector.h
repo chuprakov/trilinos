@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_TOp_random_vector.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_TOP_RANDOM_VECTOR_H
 #define RTOP_TOP_RANDOM_VECTOR_H
@@ -34,29 +35,29 @@ extern "C" {
   * (<tt>num_vecs == 0</tt>).
   *
   */
-//@{
+/*@{*/
 
-/// Name of this transformation operator class
+/** Name of this transformation operator class */
 extern const char RTOp_TOp_random_vector_name[];
 
-/// Virtual function table
+/** Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_random_vector_vtbl;
 
-/// Constructor
+/** Constructor */
 int RTOp_TOp_random_vector_construct( RTOp_value_type lbnd, RTOp_value_type ubnd
   , struct RTOp_RTOp* op );
 
-/// Destructor
+/** Destructor */
 int RTOp_TOp_random_vector_destroy( struct RTOp_RTOp* op );
 
-/// Reset the bounds
+/** Reset the bounds */
 int RTOp_TOp_random_vector_set_bounds( RTOp_value_type lbnd, RTOp_value_type ubnd
   , struct RTOp_RTOp* op );
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // RTOP_TOP_RANDOM_VECTOR_H
+#endif  /* RTOP_TOP_RANDOM_VECTOR_H */

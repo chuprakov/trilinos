@@ -25,8 +25,8 @@
 #define min(a,b) ( (a) < (b) ? (a) : (b) )
 
 #include "RTOp_ROp_log_bound_barrier.h"
-#include "RTOp_obj_null_vtbl.h"  // vtbl for operator object instance data
-#include "RTOp_reduct_sum_value.h"  // Reduction of intermediate reduction objects
+#include "RTOp_obj_null_vtbl.h"  /* vtbl for operator object instance data */
+#include "RTOp_reduct_sum_value.h"  /* Reduction of intermediate reduction objects */
 
 
 

@@ -255,13 +255,13 @@ typedef void (*RTOp_reduct_op_func_ptr_t) ( void *, void *, int *, RTOp_Datatype
  * or <tt>RTOp_sub_vector_null()</tt>.
  */
 struct RTOp_SubVector {
-	/// Offset for the sub-vector into the global vector
+	/** Offset for the sub-vector into the global vector */
 	RTOp_index_type                  global_offset;
-	/// Dimension of the sub-vector
+	/** Dimension of the sub-vector */
 	RTOp_index_type                  sub_dim;
-	/// Array (size min{|<tt>value_stride*sub_nz</tt>|,1}) for the values in the vector
+	/** Array (size min{|<tt>value_stride*sub_nz</tt>|,1}) for the values in the vector */
 	const RTOp_value_type            *values;
-	/// Stride between elements in <tt>values[]</tt>
+	/** Stride between elements in <tt>values[]</tt> */
 	ptrdiff_t                        values_stride;
 };
 /*!<*/
@@ -288,13 +288,13 @@ struct RTOp_SubVector {
  * or <tt>RTOp_mutable_sub_vector_null()</tt>.
  */
 struct RTOp_MutableSubVector {
-	/// Offset for the sub-vector into the global vector
+	/** Offset for the sub-vector into the global vector */
 	RTOp_index_type                  global_offset;
-	/// Dimension of the sub-vector
+	/** Dimension of the sub-vector */
 	RTOp_index_type                  sub_dim;
-	/// Array (size min{|<tt>value_stride*sub_dim</tt>|,1}) for the values in the vector
+	/** Array (size min{|<tt>value_stride*sub_dim</tt>|,1}) for the values in the vector */
 	RTOp_value_type	                 *values;
-	/// Stride between elements in <tt>values[]</tt>
+	/** Stride between elements in <tt>values[]</tt> */
 	ptrdiff_t                        values_stride;
 };
 /*!<*/

@@ -1,4 +1,4 @@
-// ////////////////////////////////////////////////////////////////////
+/* ////////////////////////////////////////////////////////////////////
 // RTOp_ROp_max_step.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_ROP_MAX_STEP_H
 #define RTOP_ROP_MAX_STEP_H
@@ -37,33 +38,33 @@ extern "C" {
  * (<tt>num_vecs == 2</tt>) \c v[0], \c v[1], and can only handle
  * dense vectors.
  */
-//@{
+/*@{*/
 
-/// Name of this reduction operator class
+/** Name of this reduction operator class */
 extern const char RTOp_ROp_max_step_name[];
 
-/// Virtual function table
+/** Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_step_vtbl;
 
-/// Constructor
+/** Constructor */
 int RTOp_ROp_max_step_construct( RTOp_value_type beta, struct RTOp_RTOp* op );
 
-/// Destructor
+/** Destructor */
 int RTOp_ROp_max_step_destroy( struct RTOp_RTOp* op );
 
-/// Reset beta
+/** Reset beta */
 int RTOp_ROp_max_step_set_beta( RTOp_value_type beta, struct RTOp_RTOp* op );
 
-/// Value of max step if step is unrestricted.
+/** Value of max step if step is unrestricted. */
 extern RTOp_value_type  RTOp_ROp_max_step_inf;
 
-/// Extract the concrete value from a reduction target object.
+/** Extract the concrete value from a reduction target object. */
 RTOp_value_type  RTOp_ROp_max_step_val(RTOp_ReductTarget reduct_obj);
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // RTOP_ROP_MAX_STEP_H
+#endif  /* RTOP_ROP_MAX_STEP_H */

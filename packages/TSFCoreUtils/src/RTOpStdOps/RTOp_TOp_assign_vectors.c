@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_TOp_assign_vectors.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #include <assert.h>
 #include <malloc.h>
@@ -19,7 +20,7 @@
 #include "RTOp_TOp_assign_vectors.h"
 #include "RTOp_obj_null_vtbl.h"
 
-// Implementation functions for RTOp_RTOp
+/* Implementation functions for RTOp_RTOp */
 
 static int RTOp_TOp_assign_vectors_apply_op(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -40,9 +41,9 @@ static int RTOp_TOp_assign_vectors_apply_op(
   RTOp_index_type i;
 #endif
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 1 || vecs == NULL )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 1 || targ_vecs == NULL )
@@ -50,66 +51,66 @@ static int RTOp_TOp_assign_vectors_apply_op(
   if( targ_vecs[0].sub_dim != vecs[0].sub_dim )
     return RTOp_ERR_INCOMPATIBLE_VECS;
 
-  //
+  /*
   // Get pointers to data
-  //
+  */
 
-  // z
+  /* z */
   z_sub_dim     = targ_vecs[0].sub_dim;
   z_val         = targ_vecs[0].values;
   z_val_s       = targ_vecs[0].values_stride;
 
-  // v0
+  /* v0 */
   v0_sub_dim     = vecs[0].sub_dim;
   v0_val         = vecs[0].values;
   v0_val_s       = vecs[0].values_stride;
 
   z_val_tmp = z_val;
 
-  //
+  /*
   // Assign the elements
-  //
+  */
 
   if( z_val_s == 1 && v0_val_s == 1 ) {
-    // Slightly faster loop for unit stride vectors
+    /* Slightly faster loop for unit stride vectors */
     for( k = 0; k < z_sub_dim; ++k )
       *z_val++ = *v0_val++;
   }
   else {
-    // More general implementation for one or both non-unit strides
+    /* More general implementation for one or both non-unit strides */
     for( k = 0; k < z_sub_dim; ++k, z_val += z_val_s, v0_val += v0_val_s )
       *z_val = *v0_val;
   }
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
-// Name of this transformation operator class
+/* Name of this transformation operator class */
 const char RTOp_TOp_assign_vectors_name[] = "TOp_assign_vectors";
 
-// Virtual function table
+/* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_assign_vectors_vtbl =
 {
-  &RTOp_obj_null_vtbl  // Use a null object for instance data
-  ,&RTOp_obj_null_vtbl // use null type for target object
-  ,NULL // use default from reduct_vtbl
+  &RTOp_obj_null_vtbl  /* Use a null object for instance data */
+  ,&RTOp_obj_null_vtbl /* use null type for target object */
+  ,NULL /* use default from reduct_vtbl */
   ,RTOp_TOp_assign_vectors_apply_op
   ,NULL
   ,NULL
 };
 
-// Class specific functions
+/* Class specific functions */
 
 int RTOp_TOp_assign_vectors_construct( struct RTOp_RTOp* op )
 {
   op->obj_data  = NULL;
   op->vtbl      = &RTOp_TOp_assign_vectors_vtbl;
-  return 0; // success?
+  return 0; /* success? */
 }
 
 int RTOp_TOp_assign_vectors_destroy( struct RTOp_RTOp* op )
 {
   op->obj_data  = NULL;
   op->vtbl      = NULL;
-  return 0; // success?
+  return 0; /* success? */
 }

@@ -63,7 +63,7 @@ int RTOp_apply_op_serial(
   }
   /* Apply the reduction/transformation operator in one chunk */
   err = RTOp_apply_op( op, num_vecs, sub_vecs, num_targ_vecs, targ_sub_vecs, reduct_obj );
-  // Free the sub-vector data structures
+  /* Free the sub-vector data structures */
   if(      sub_vecs ) free(      sub_vecs );
   if( targ_sub_vecs ) free( targ_sub_vecs );
 

@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_norms.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #include <assert.h>
 #include <math.h>
@@ -24,7 +25,7 @@
 
 #define MY_MAX(a,b) a > b ? a : b
 
-// One norm reduction operator class.
+/* One norm reduction operator class. */
 
 static int RTOp_ROp_norms_apply_op_norm_1(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -38,9 +39,9 @@ static int RTOp_ROp_norms_apply_op_norm_1(
   register RTOp_index_type k;
   RTOp_value_type        *norm = NULL;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
@@ -48,32 +49,32 @@ static int RTOp_ROp_norms_apply_op_norm_1(
   assert(targ_obj);
   assert(vecs);
 
-  //
+  /*
   // Get pointers to data
-  //
+  */
 
-  // v0
+  /* v0 */
   sub_dim        = vecs[0].sub_dim;
   v0_val         = vecs[0].values;
   v0_val_s       = vecs[0].values_stride;
 
-  //
+  /*
   // Perform the reduction
-  //
+  */
   norm = (RTOp_value_type*)targ_obj;
   for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s ) {
-    *norm += fabs(*v0_val);  // ||v[0]||_1
+    *norm += fabs(*v0_val);  /* ||v[0]||_1 */
   }
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
 const char RTOp_ROp_norm_1_name[] = "RTOp_ROp_norm_1";
 
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_norm_1_vtbl =
 {
-  &RTOp_obj_null_vtbl   // use null type for instance data
-  ,&RTOp_obj_value_vtbl // use simple scalar type for target object
+  &RTOp_obj_null_vtbl   /* use null type for instance data */
+  ,&RTOp_obj_value_vtbl /* use simple scalar type for target object */
   ,NULL
   ,RTOp_ROp_norms_apply_op_norm_1
   ,RTOp_reduct_sum_value
@@ -95,7 +96,7 @@ RTOp_value_type RTOp_ROp_norm_1_val(RTOp_ReductTarget targ_obj)
   return *(RTOp_value_type*)targ_obj;
 }
 
-// Two norm reduction operator class.
+/* Two norm reduction operator class. */
 
 static int RTOp_ROp_norms_apply_op_norm_2(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -109,9 +110,9 @@ static int RTOp_ROp_norms_apply_op_norm_2(
   register RTOp_index_type k;
   RTOp_value_type        *norm = NULL;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
@@ -119,31 +120,31 @@ static int RTOp_ROp_norms_apply_op_norm_2(
   assert(targ_obj);
   assert(vecs);
 
-  //
+  /*
   // Get pointers to data
-  //
+  */
 
-  // v0
+  /* v0 */
   sub_dim        = vecs[0].sub_dim;
   v0_val         = vecs[0].values;
   v0_val_s       = vecs[0].values_stride;
 
-  //
+  /*
   // Perform the reduction
-  //
+  */
   norm = (RTOp_value_type*)targ_obj;
   for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s )
-    *norm += (*v0_val)*(*v0_val);  // (||v[0]||_2)^2
+    *norm += (*v0_val)*(*v0_val);  /* (||v[0]||_2)^2 */
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
 const char RTOp_ROp_norm_2_name[] = "RTOp_ROp_norm_2";
 
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_norm_2_vtbl =
 {
-  &RTOp_obj_null_vtbl   // use null type for instance data
-  ,&RTOp_obj_value_vtbl // use simple scalar type for target object
+  &RTOp_obj_null_vtbl   /* use null type for instance data */
+  ,&RTOp_obj_value_vtbl /* use simple scalar type for target object */
   ,NULL
   ,RTOp_ROp_norms_apply_op_norm_2
   ,RTOp_reduct_sum_value
@@ -165,7 +166,7 @@ RTOp_value_type RTOp_ROp_norm_2_val(RTOp_ReductTarget targ_obj)
   return sqrt(*(RTOp_value_type*)targ_obj);
 }
 
-// Infinity norm reduction operator class.
+/* Infinity norm reduction operator class. */
 
 static int RTOp_ROp_norms_apply_op_norm_inf(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -179,9 +180,9 @@ static int RTOp_ROp_norms_apply_op_norm_inf(
   register RTOp_index_type k;
   RTOp_value_type        *norm = NULL;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
@@ -189,31 +190,31 @@ static int RTOp_ROp_norms_apply_op_norm_inf(
   assert(targ_obj);
   assert(vecs);
 
-  //
+  /*
   // Get pointers to data
-  //
+  */
 
-  // v0
+  /* v0 */
   sub_dim        = vecs[0].sub_dim;
   v0_val         = vecs[0].values;
   v0_val_s       = vecs[0].values_stride;
 
-  //
+  /*
   // Perform the reduction
-  //
+  */
   norm = (RTOp_value_type*)targ_obj;
   for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s )
-    *norm = MY_MAX( fabs(*v0_val), (*(RTOp_value_type*)targ_obj) );  // ||v[0]||_inf
+    *norm = MY_MAX( fabs(*v0_val), (*(RTOp_value_type*)targ_obj) );  /* ||v[0]||_inf */
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
 const char RTOp_ROp_norm_inf_name[] = "RTOp_ROp_norm_inf";
 
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_norm_inf_vtbl =
 {
-   &RTOp_obj_null_vtbl  // use null type for instance data
-  ,&RTOp_obj_value_vtbl // use simple scalar type for target object
+   &RTOp_obj_null_vtbl  /* use null type for instance data */
+  ,&RTOp_obj_value_vtbl /* use simple scalar type for target object */
   ,NULL
   ,RTOp_ROp_norms_apply_op_norm_inf
   ,RTOp_reduct_max_value
@@ -235,7 +236,7 @@ RTOp_value_type RTOp_ROp_norm_inf_val(RTOp_ReductTarget targ_obj)
   return *(RTOp_value_type*)targ_obj;
 }
 
-// Common functions
+/* Common functions */
 
 int RTOp_ROp_norm_destroy( struct RTOp_RTOp* op )
 {

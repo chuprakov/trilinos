@@ -1,10 +1,11 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_TOp_max_abs_vec_scalar.c
 
 //
 // Note: This file was created automatically by 'new_rtop.pl'
 //       on 7/13/2002 at 13:48
 //
+*/
 
 #include <assert.h>
 #include <math.h>
@@ -13,9 +14,9 @@
 #define min(a,b) ( (a) < (b) ? (a) : (b) )
 
 #include "RTOp_TOp_max_abs_vec_scalar.h"
-#include "RTOp_obj_value_vtbl.h"  // vtbl for operator object instance data
+#include "RTOp_obj_value_vtbl.h"  /* vtbl for operator object instance data */
 
-// Implementation functions for RTOp_RTOp
+/* Implementation functions for RTOp_RTOp */
 
 static int RTOp_TOp_max_abs_vec_scalar_apply_op(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -23,54 +24,54 @@ static int RTOp_TOp_max_abs_vec_scalar_apply_op(
   , const int num_targ_vecs, const struct RTOp_MutableSubVector targ_vecs[]
   , RTOp_ReductTarget reduct_obj )
 {
-  //
+  /*
   // Declare local variables
-  //
+  */
 
-  // Access to the operator object instance data
+  /* Access to the operator object instance data */
   RTOp_value_type *min_ele = (RTOp_value_type*)obj_data;
-  // Vector data
+  /* Vector data */
   RTOp_index_type           sub_dim;
-  // z0
+  /* z0 */
   RTOp_value_type           *z0_val;
   ptrdiff_t                 z0_val_s;
 
-  // Automatic temporary variables
+  /* Automatic temporary variables */
   register RTOp_index_type  k;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 0 || ( num_vecs && vecs == NULL ) )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 1 || ( num_targ_vecs && targ_vecs == NULL ) )
     return RTOp_ERR_INVALID_NUM_TARG_VECS;
   assert(obj_data);
 
-  //
+  /*
   // Get pointers to data
-  //
+  */
   sub_dim       = targ_vecs[0].sub_dim;
-  // z0
+  /* z0 */
   z0_val        = targ_vecs[0].values;
   z0_val_s      = targ_vecs[0].values_stride;
 
-  //
+  /*
   // Apply the operator:
-  //
+  */
   for( k = 0; k < sub_dim; ++k, z0_val += z0_val_s )
   {
-    // Element-wise transformation
+    /* Element-wise transformation */
     (*z0_val) = max(fabs((*z0_val)),(*min_ele));
   }
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
-// Name of this transformation operator class
+/* Name of this transformation operator class */
 const char RTOp_TOp_max_abs_vec_scalar_name[] = "TOp_max_abs_vec_scalar";
 
-// Virtual function table
+/* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_max_abs_vec_scalar_vtbl =
 {
   &RTOp_obj_value_vtbl
@@ -81,7 +82,7 @@ const struct RTOp_RTOp_vtbl_t RTOp_TOp_max_abs_vec_scalar_vtbl =
   ,NULL
 };
 
-// Class specific functions
+/* Class specific functions */
 
 int RTOp_TOp_max_abs_vec_scalar_construct( RTOp_value_type min_ele,  struct RTOp_RTOp* op )
 {

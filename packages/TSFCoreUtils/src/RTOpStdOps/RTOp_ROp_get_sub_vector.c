@@ -41,7 +41,7 @@ static int get_op_type_num_entries(
   assert( num_indexes );
   assert( num_chars );
   *num_values  = 0;
-  *num_indexes = 2; // l and u
+  *num_indexes = 2; /* l and u */
   *num_chars   = 0;
   return 0;
 }

@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_TOp_random_vector.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -17,6 +17,7 @@
 // on the struct may not be portable in a heterogeneous
 // environment!  The user has been warned!
 //
+*/
 
 #include <assert.h>
 #include <malloc.h>
@@ -26,7 +27,7 @@
 #include "RTOp_obj_null_vtbl.h"
 #include "RTOp_obj_free_free.h"
 
-// Functions for the reduction/transformation object
+/* Functions for the reduction/transformation object */
 
 struct RTOp_TOp_random_vector_bnd_t {
   RTOp_value_type  l;
@@ -105,7 +106,7 @@ static struct RTOp_obj_type_vtbl_t  instance_obj_vtbl =
   ,load_op_state
 };
 
-// Implementation functions for RTOp_RTOp
+/* Implementation functions for RTOp_RTOp */
 
 static int RTOp_TOp_random_vector_apply_op(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -113,58 +114,58 @@ static int RTOp_TOp_random_vector_apply_op(
   , const int num_targ_vecs, const struct RTOp_MutableSubVector targ_vecs[]
   , RTOp_ReductTarget targ_obj )
 {
-  //
+  /*
   // Get pointers to data
-  //
+  */
 
-  // lbnd, ubnd
+  /* lbnd, ubnd */
   const struct RTOp_TOp_random_vector_bnd_t *bnd = (const struct RTOp_TOp_random_vector_bnd_t*)obj_data;
 
-  // z
+  /* z */
   RTOp_index_type  z_sub_dim;
   RTOp_value_type  *z_val      = NULL;
   ptrdiff_t        z_val_s;
 
   register RTOp_index_type k;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 0 || vecs != NULL )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 1 || targ_vecs == NULL )
     return RTOp_ERR_INVALID_NUM_TARG_VECS;
 
-  // z
+  /* z */
   z_sub_dim     = targ_vecs[0].sub_dim;
   z_val         = targ_vecs[0].values;
   z_val_s       = targ_vecs[0].values_stride;
 
-  //
+  /*
   // Assign the elements to random values
-  //
+  */
 
   for( k = 0; k < z_sub_dim; ++k, z_val += z_val_s )
     *z_val = bnd->l + ((RTOp_value_type)rand())/RAND_MAX * (bnd->u - bnd->l);
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
-/// Name of this transformation operator class
+/** Name of this transformation operator class */
 const char RTOp_TOp_random_vector_name[] = "TOp_random_vector";
 
-/// Virtual function table
+/** Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_random_vector_vtbl =
 {
   &instance_obj_vtbl
-  ,&RTOp_obj_null_vtbl // use null type for target object
-  ,NULL // use default from reduct_vtbl
+  ,&RTOp_obj_null_vtbl /* use null type for target object */
+  ,NULL /* use default from reduct_vtbl */
   ,RTOp_TOp_random_vector_apply_op
   ,NULL
   ,NULL
 };
 
-// Class specific functions
+/* Class specific functions */
 
 int RTOp_TOp_random_vector_construct( RTOp_value_type lbnd, RTOp_value_type ubnd
   , struct RTOp_RTOp* op )
@@ -176,7 +177,7 @@ int RTOp_TOp_random_vector_construct( RTOp_value_type lbnd, RTOp_value_type ubnd
   bnd = (struct RTOp_TOp_random_vector_bnd_t*)op->obj_data;
   bnd->l = lbnd;
   bnd->u = ubnd;
-  return 0; // success?
+  return 0; /* success? */
 }
 
 int RTOp_TOp_random_vector_destroy( struct RTOp_RTOp* op )
@@ -184,7 +185,7 @@ int RTOp_TOp_random_vector_destroy( struct RTOp_RTOp* op )
   free( op->obj_data );
   op->obj_data  = NULL;
   op->vtbl      = NULL;
-  return 0; // success?
+  return 0; /* success? */
 }
 
 int RTOp_TOp_random_vector_set_bounds( RTOp_value_type lbnd, RTOp_value_type ubnd
@@ -193,5 +194,5 @@ int RTOp_TOp_random_vector_set_bounds( RTOp_value_type lbnd, RTOp_value_type ubn
   struct RTOp_TOp_random_vector_bnd_t *bnd = (struct RTOp_TOp_random_vector_bnd_t*)op->obj_data;
   bnd->l = lbnd;
   bnd->u = ubnd;
-  return 0; // success?
+  return 0; /* success? */
 }

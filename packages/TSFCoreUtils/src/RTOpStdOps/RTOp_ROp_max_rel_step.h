@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_max_rel_step.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -17,12 +17,13 @@
 // Note: This file was created automatically by 'new_rtop.pl'
 //       on 6/24/2002 at 21:2
 //
+*/
 
 #ifndef RTOp_ROp_max_rel_step_H
 #define RTOp_ROp_max_rel_step_H
 
 #include "RTOp.h"
-#include "RTOp_obj_value_vtbl.h"  // vtbl for reduction object data
+#include "RTOp_obj_value_vtbl.h"  /* vtbl for reduction object data */
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,27 +46,27 @@ extern "C" {
  * This operator class implementation was created
  * automatically by 'new_rtop.pl'.
  */
-//@{
+/*@{*/
 
-/// Name of this transformation operator class
+/** Name of this transformation operator class */
 extern const char RTOp_ROp_max_rel_step_name[];
 
-/// Virtual function table
+/** Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_rel_step_vtbl;
 
-/// Constructor
+/** Constructor */
 int RTOp_ROp_max_rel_step_construct(  struct RTOp_RTOp* op );
 
-/// Destructor
+/** Destructor */
 int RTOp_ROp_max_rel_step_destroy( struct RTOp_RTOp* op );
 
-/// Extract the value of the reduction object \c gamma
+/** Extract the value of the reduction object \c gamma */
 RTOp_value_type RTOp_ROp_max_rel_step_val(RTOp_ReductTarget reduct_obj);
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // RTOp_ROp_max_rel_step_H
+#endif  /* RTOp_ROp_max_rel_step_H */

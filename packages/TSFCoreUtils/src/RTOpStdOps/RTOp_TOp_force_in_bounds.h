@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_TOp_force_in_bounds.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,12 +12,13 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_TOP_FORCE_IN_BOUNDS_H
 #define RTOP_TOP_FORCE_IN_BOUNDS_H
 
 #include "RTOp.h"
-#include "RTOp_obj_null_vtbl.h"  // vtbl for reduction object data
+#include "RTOp_obj_null_vtbl.h"  /* vtbl for reduction object data */
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,21 +41,21 @@ extern "C" {
  \endverbatim
  *
  */
-//@{
+/*@{*/
 
-/// Name of this transformation operator class
+/** Name of this transformation operator class */
 extern const char RTOp_TOp_force_in_bounds_name[];
 
-/// Virtual function table
+/** Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_force_in_bounds_vtbl;
 
-/// Constructor
+/** Constructor */
 int RTOp_TOp_force_in_bounds_construct( struct RTOp_RTOp* op );
 
-/// Destructor
+/** Destructor */
 int RTOp_TOp_force_in_bounds_destroy( struct RTOp_RTOp* op );
 
-//@}
+/*@}*/
 
 
 /** This operator is used by the interior point algorithm to push
@@ -72,7 +73,7 @@ element-wise transformation:
         { z0 = xl_sb; }
     else if (z0 > xu_sb)
         { z0 = xu_sb; }
-    // Otherwise, leave it
+    // Otherwise, leave it 
 
  \endverbatim
  *
@@ -90,27 +91,27 @@ element-wise transformation:
  *   else if (x > xu_sb) then
  *      x = xu_sb
  */
-//@{
+/*@{*/
 
-/// Name of this transformation operator class
+/** Name of this transformation operator class */
 extern const char RTOp_TOp_force_in_bounds_buffer_name[];
 
-/// Virtual function table
+/** Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_force_in_bounds_buffer_vtbl;
 
-/// Constructor
+/** Constructor */
 int RTOp_TOp_force_in_bounds_buffer_construct( RTOp_value_type rel_push, RTOp_value_type abs_push,  struct RTOp_RTOp* op );
 
-/// Destructor
+/** Destructor */
 int RTOp_TOp_force_in_bounds_buffer_destroy( struct RTOp_RTOp* op );
 
-/// Initialize the state of the operator object
+/** Initialize the state of the operator object */
 int RTOp_TOp_force_in_bounds_buffer_init( RTOp_value_type rel_push, RTOp_value_type abs_push, struct RTOp_RTOp* op );
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // RTOP_TOP_FORCE_IN_BOUNDS_H
+#endif  /* RTOP_TOP_FORCE_IN_BOUNDS_H */

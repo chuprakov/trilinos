@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_TOp_add_scalar.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_TOP_ADD_SCALAR_H
 #define RTOP_TOP_ADD_SCALAR_H
@@ -28,27 +29,27 @@ extern "C" {
   *
   * This operator is only defined for a self transformation (<tt>num_vecs == 0</tt>).
   */
-//@{
+/*@{*/
 
-/// Name of this transformation operator class
+/** Name of this transformation operator class */
 extern const char RTOp_TOp_add_scalar_name[];
 
-/// Virtual function table
+/** Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_add_scalar_vtbl;
 
-/// Constructor
+/** Constructor */
 int RTOp_TOp_add_scalar_construct( RTOp_value_type alpha, struct RTOp_RTOp* op );
 
-/// Destructor
+/** Destructor */
 int RTOp_TOp_add_scalar_destroy( struct RTOp_RTOp* op );
 
-/// Reset alpha
+/** Reset alpha */
 int RTOp_TOp_add_scalar_set_alpha( RTOp_value_type alpha, struct RTOp_RTOp* op );
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // RTOP_TOP_ADD_SCALAR_H
+#endif  /* RTOP_TOP_ADD_SCALAR_H */

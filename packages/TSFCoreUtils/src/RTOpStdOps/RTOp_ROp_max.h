@@ -11,7 +11,7 @@
 #define RTOp_ROp_max_H
 
 #include "RTOp.h"
-#include "RTOp_obj_value_vtbl.h"  // vtbl for reduction object data
+#include "RTOp_obj_value_vtbl.h"  /* vtbl for reduction object data */
 
 #ifdef __cplusplus
 extern "C" {

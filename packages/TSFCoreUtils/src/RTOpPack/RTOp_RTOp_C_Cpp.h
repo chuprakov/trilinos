@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_RTOp_C_Cpp.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,9 +12,10 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_RTOP_C_CPP_H
-#define RTOP_RTOP_C_Cpp_H
+#define RTOP_RTOP_C_CPP_H
 
 #include "RTOp.h"
 
@@ -55,14 +56,11 @@ extern "C" {
  *
  * Even though these functions have C linkage, they have C++ implementations.
  */
-//@{
+/*@{*/
 
-///
 typedef int (*RTOp_op_create_func_ptr_t)( const struct RTOp_obj_type_vtbl_t* vtbl, const void* dummy, void** op_data );
-///
 typedef int (*RTOp_op_free_func_ptr_t)( const struct RTOp_obj_type_vtbl_t* vtbl, const void* dummy, void** op_data );
 
-///
 /** Populate a virtual function table for <tt>RTOp_RTOp</tt> given the function <tt>op_create(...)</tt>
  * that will create an RTOpPack::RTOp object and <tt>op_free(...)</tt> that will free it.
  *
@@ -85,7 +83,6 @@ int RTOp_create_C_Cpp_vtbl(
 	RTOp_op_create_func_ptr_t op_create, RTOp_op_free_func_ptr_t op_free
 	,struct RTOp_RTOp_vtbl_t* vtbl );
 
-///
 /** Free any dynamically allocated data for a virtual function table populated by <tt>RTOp_create_C_Cpp_vtbl()</tt>.
  *
  * @param  vtbl       [in/out] On input, points to a virtual function table populated by <tt>RTOp_create_C_Cpp_tbl()</tt>.
@@ -107,10 +104,10 @@ int RTOp_create_C_Cpp_vtbl(
  */
 int RTOp_free_C_Cpp_vtbl( struct RTOp_RTOp_vtbl_t* vtbl );
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // RTOP_RTOP_C_CPP_H
+#endif  /* RTOP_RTOP_C_CPP_H */

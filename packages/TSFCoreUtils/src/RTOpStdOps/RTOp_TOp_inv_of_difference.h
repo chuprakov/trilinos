@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_TOp_inv_of_difference.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -17,12 +17,13 @@
 // Note: This file was created automatically by 'new_rtop.pl'
 //       on 6/27/2002 at 20:41
 //
+*/
 
 #ifndef RTOp_TOp_inv_of_difference_H
 #define RTOp_TOp_inv_of_difference_H
 
 #include "RTOp.h"
-#include "RTOp_obj_null_vtbl.h"  // vtbl for reduction object data
+#include "RTOp_obj_null_vtbl.h"  /* vtbl for reduction object data */
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,29 +44,29 @@ extern "C" {
  *  element-wise difference of two other vectors
  *
  */
-//@{
+/*@{*/
 
-/// Name of this transformation operator class
+/** Name of this transformation operator class */
 extern const char RTOp_TOp_inv_of_difference_name[];
 
-/// Virtual function table
+/** Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_inv_of_difference_vtbl;
 
-/// Constructor
+/** Constructor */
 int RTOp_TOp_inv_of_difference_construct( RTOp_value_type alpha,  struct RTOp_RTOp* op );
 
-/// Destructor
+/** Destructor */
 int RTOp_TOp_inv_of_difference_destroy( struct RTOp_RTOp* op );
 
-/// Initialize the state of the operator object
+/** Initialize the state of the operator object */
 int RTOp_TOp_inv_of_difference_init( RTOp_value_type alpha, struct RTOp_RTOp* op );
 
 
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // RTOp_TOp_inv_of_difference_H
+#endif  /* RTOp_TOp_inv_of_difference_H */

@@ -39,7 +39,7 @@ int RTOp_apply_op_mpi(
   RTOp_index_type              overlap_global_offset    = 0;
   int                          k;
   int                          kc;
-  // Validate the input
+  /* Validate the input */
 #ifdef RTOp_DEBUG
   assert( num_vecs || num_targ_vecs );
   if(num_vecs)
@@ -104,7 +104,7 @@ int RTOp_apply_op_mpi(
   // just call the reduction operation with NULL sub-vectors
   */
   err = RTOp_MPI_apply_op(
-    comm, op, -1 // MPI_Allreduce(...)
+    comm, op, -1 /* MPI_Allreduce(...) */
     ,num_cols
     ,num_vecs,      num_vecs && overlap_first_local_ele      ? &local_vecs[0]      : NULL
     ,num_targ_vecs, num_targ_vecs && overlap_first_local_ele ? &local_targ_vecs[0] : NULL

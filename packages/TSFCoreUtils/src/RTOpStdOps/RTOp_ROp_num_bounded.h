@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_num_bounded.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_ROP_NUM_BOUNDED_H
 #define RTOP_ROP_NUM_BOUNDED_H
@@ -29,30 +30,30 @@ extern "C" {
   * This operator is defined to allow exactly two vector arguments
   * (<tt>num_vecs == 2</tt>) <tt>v[0]</tt>, <tt>v[1]</tt> and can only handle dense vectors.
   */
-//@{
+/*@{*/
 
-/// Name of this reduction operator class
+/** Name of this reduction operator class */
 extern const char RTOp_ROp_num_bounded_name[];
 
-/// Virtual function table
+/** Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_ROp_num_bounded_vtbl;
 
-/// Constructor
+/** Constructor */
 int RTOp_ROp_num_bounded_construct( RTOp_value_type inf_bnd, struct RTOp_RTOp* op );
 
-/// Destructor
+/** Destructor */
 int RTOp_ROp_num_bounded_destroy( struct RTOp_RTOp* op );
 
-/// Reset inf_bnd
+/** Reset inf_bnd */
 int RTOp_ROp_num_bounded_set_inf_bnd( RTOp_value_type inf_bnd, struct RTOp_RTOp* op );
 
-/// Extract the number of bounded variables
+/** Extract the number of bounded variables */
 RTOp_index_type RTOp_ROp_num_bounded_val(RTOp_ReductTarget targ_obj);
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // RTOP_ROP_NUM_BOUNDED_H
+#endif  /* RTOP_ROP_NUM_BOUNDED_H */

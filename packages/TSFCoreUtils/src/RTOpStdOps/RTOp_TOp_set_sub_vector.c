@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////////////////////////////////
+/* /////////////////////////////////////////////////////////////////////////
 // RTOp_TOp_set_sub_vector.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #include <assert.h>
 #include <malloc.h>
@@ -19,11 +20,11 @@
 #include "RTOp_TOp_set_sub_vector.h"
 #include "RTOp_obj_null_vtbl.h"
 
-// Operator object data virtual function table
+/* Operator object data virtual function table */
 
-struct RTOp_ROp_set_sub_vector_state_t { // operator object instance data
-  struct RTOp_SparseSubVector  sub_vec;   // The sub vector to set!
-  int                    owns_mem;  // if true then memory is sub_vec must be deleted!
+struct RTOp_ROp_set_sub_vector_state_t { /* operator object instance data */
+  struct RTOp_SparseSubVector  sub_vec;   /* The sub vector to set! */
+  int                    owns_mem;  /* if true then memory is sub_vec must be deleted! */
 };
 
 static int get_op_type_num_entries(
@@ -42,10 +43,10 @@ static int get_op_type_num_entries(
   assert( obj_data );
 #endif
   state = (const struct RTOp_ROp_set_sub_vector_state_t*)obj_data;
-  *num_values  = state->sub_vec.sub_nz;  // values[]
+  *num_values  = state->sub_vec.sub_nz;  /* values[] */
   *num_indexes =
-    8  // global_offset, sub_dim, sub_nz, values_stride, indices_stride, local_offset, is_sorted, owns_mem
-    + (state->sub_vec.indices ? state->sub_vec.sub_nz : 0 ); // indices[]
+    8  /* global_offset, sub_dim, sub_nz, values_stride, indices_stride, local_offset, is_sorted, owns_mem */
+    + (state->sub_vec.indices ? state->sub_vec.sub_nz : 0 ); /* indices[] */
   *num_chars   = 0;
   return 0;
 }
@@ -125,14 +126,14 @@ static int load_op_state(
   struct RTOp_ROp_set_sub_vector_state_t *state = NULL;
   register RTOp_index_type k, j;
   RTOp_value_type *values = NULL;
-  // Allocate the operator object's state data if it has not been already
+  /* Allocate the operator object's state data if it has not been already */
   if( *obj_data == NULL ) {
     *obj_data = (void*)malloc(sizeof(struct RTOp_ROp_set_sub_vector_state_t));
     state = (struct RTOp_ROp_set_sub_vector_state_t*)*obj_data;
     RTOp_sparse_sub_vector_null( &state->sub_vec );
     state->owns_mem = 0;
   }
-  // Get the operator object's state data
+  /* Get the operator object's state data */
 #ifdef RTOp_DEBUG
   assert( *obj_data );
 #endif
@@ -140,20 +141,20 @@ static int load_op_state(
 #ifdef RTOp_DEBUG
   if( num_indexes > 8 ) assert( num_values == num_indexes - 8 );
 #endif
-  // Reallocate storage if we have to
+  /* Reallocate storage if we have to */
   if( num_values != state->sub_vec.sub_nz || !state->owns_mem ) {
-    // Delete current storage if owned
+    /* Delete current storage if owned */
     if( state->owns_mem ) {
       free( (RTOp_value_type*)state->sub_vec.values );
       free( (RTOp_index_type*)state->sub_vec.indices );
     }
-    // We need to reallocate storage for values[] and perhaps
+    /* We need to reallocate storage for values[] and perhaps */
     state->sub_vec.values = (RTOp_value_type*)malloc(num_values*sizeof(RTOp_value_type));
     if( num_indexes > 8 )
       state->sub_vec.indices = (RTOp_index_type*)malloc(num_values*sizeof(RTOp_index_type));
     state->owns_mem = 1;
   }
-  // Set the internal state!
+  /* Set the internal state! */
 #ifdef RTOp_DEBUG
   assert( num_chars == 0 );
   assert( value_data );
@@ -179,14 +180,14 @@ static int load_op_state(
 static struct RTOp_obj_type_vtbl_t  instance_obj_vtbl =
 {
   get_op_type_num_entries
-  ,NULL  // obj_create
-  ,NULL  // obj_reinit
+  ,NULL  /* obj_create */
+  ,NULL  /* obj_reinit */
   ,op_free
   ,extract_op_state
   ,load_op_state
 };
 
-// Implementation functions
+/* Implementation functions */
 
 static int RTOp_TOp_set_sub_vector_apply_op(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -211,9 +212,9 @@ static int RTOp_TOp_set_sub_vector_apply_op(
   register RTOp_index_type  k, i;
   RTOp_index_type num_overlap;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 0 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 1 )
@@ -221,15 +222,15 @@ static int RTOp_TOp_set_sub_vector_apply_op(
   assert(targ_vecs);
   assert(targ_obj == RTOp_REDUCT_OBJ_NULL);
 
-  //
+  /*
   // Get pointers to data
-  //
+  */
 
-  // Get the sub-vector we are reading from
+  /* Get the sub-vector we are reading from */
   assert(obj_data);
   state = (const struct RTOp_ROp_set_sub_vector_state_t*)obj_data;
 
-  // v (the vector to read from)
+  /* v (the vector to read from) */
   v_global_offset  = state->sub_vec.global_offset;
   v_sub_dim        = state->sub_vec.sub_dim;
   v_sub_nz         = state->sub_vec.sub_nz;
@@ -240,24 +241,24 @@ static int RTOp_TOp_set_sub_vector_apply_op(
   v_l_off          = state->sub_vec.local_offset;
   v_sorted         = state->sub_vec.is_sorted;
 
-  // z (the vector to set)
+  /* z (the vector to set) */
   z_global_offset  = targ_vecs[0].global_offset;
   z_sub_dim        = targ_vecs[0].sub_dim;
   z_val            = targ_vecs[0].values;
   z_val_s          = targ_vecs[0].values_stride;
 
-  //
+  /*
   // Set part of the sub-vector for this chunk.
-  //
+  */
 
   if( v_global_offset + v_sub_dim < z_global_offset + 1
     || z_global_offset + z_sub_dim < v_global_offset + 1 )
-    return 0; // The sub-vector that we are setting does not overlap with this vector chunk!
+    return 0; /* The sub-vector that we are setting does not overlap with this vector chunk! */
 
   if( v_sub_nz == 0 )
-    return 0; // The sparse sub-vector we are reading from is empty?
+    return 0; /* The sparse sub-vector we are reading from is empty? */
 
-  // Get the number of elements that overlap
+  /* Get the number of elements that overlap */
   if( v_global_offset <= z_global_offset ) {
     if( v_global_offset + v_sub_dim >= z_global_offset + z_sub_dim )
       num_overlap = z_sub_dim;
@@ -271,26 +272,26 @@ static int RTOp_TOp_set_sub_vector_apply_op(
       num_overlap = (z_global_offset + z_sub_dim) - v_global_offset;
   }
 
-  // Set the part of the sub-vector that overlaps
+  /* Set the part of the sub-vector that overlaps */
   if( v_ind != NULL ) {
-    // Sparse elements
-    // Set the overlapping elements to zero first.
+    /* Sparse elements */
+    /* Set the overlapping elements to zero first. */
     if( v_global_offset >= z_global_offset )
       z_val += (v_global_offset - z_global_offset) * z_val_s;
     for( k = 0; k < num_overlap; ++k, z_val += z_val_s )
       *z_val = 0.0;
-    // Now set the sparse entries
+    /* Now set the sparse entries */
     z_val = targ_vecs[0].values;
     for( k = 0; k < v_sub_nz; ++k, v_val += v_val_s, v_ind += v_ind_s ) {
       i = v_global_offset + v_l_off + (*v_ind);
       if( z_global_offset < i && i <= z_global_offset + z_sub_dim )
         z_val[ z_val_s * (i - z_global_offset - 1) ] = *v_val;
     }
-    // ToDo: Implement a faster version for v sorted and eliminate the
-    // if statement in the loop.
+    /* ToDo: Implement a faster version for v sorted and eliminate the */
+    /* if statement in the loop. */
   }
   else {
-    // Dense elemements
+    /* Dense elemements */
     if( v_global_offset <= z_global_offset )
       v_val += (z_global_offset - v_global_offset) * v_val_s;
     else
@@ -299,21 +300,21 @@ static int RTOp_TOp_set_sub_vector_apply_op(
       *z_val = *v_val;
   }
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
-// Public interface
+/* Public interface */
 
 const char RTOp_TOp_set_sub_vector_name[] = "RTOp_TOp_set_sub_vector";
 
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_set_sub_vector_vtbl =
 {
   &instance_obj_vtbl
-  ,&RTOp_obj_null_vtbl // use null type for reduction target object
-  ,NULL // use default from reduct_vtbl
+  ,&RTOp_obj_null_vtbl /* use null type for reduction target object */
+  ,NULL /* use default from reduct_vtbl */
   ,RTOp_TOp_set_sub_vector_apply_op
-  ,NULL // reduce_reduct_obj
-  ,NULL // get_reduct_op
+  ,NULL /* reduce_reduct_obj */
+  ,NULL /* get_reduct_op */
 };
 
 int RTOp_TOp_set_sub_vector_construct(
@@ -324,7 +325,7 @@ int RTOp_TOp_set_sub_vector_construct(
   assert(sub_vec);
   assert(op);
 #endif
-  // Allocate the object
+  /* Allocate the object */
   op->vtbl     = &RTOp_TOp_set_sub_vector_vtbl;
   op->obj_data = (void*)malloc(sizeof(struct RTOp_ROp_set_sub_vector_state_t));
   state = (struct RTOp_ROp_set_sub_vector_state_t*)op->obj_data;
@@ -345,7 +346,7 @@ int RTOp_TOp_set_sub_vector_set_sub_vec(
     free( (void*)state->sub_vec.values );
     free( (void*)state->sub_vec.indices );
   }
-  state->sub_vec = *sub_vec;  // We do not own the arrays values[] and indices[]
+  state->sub_vec = *sub_vec;  /* We do not own the arrays values[] and indices[] */
   state->owns_mem = 0;
   return 0;
 }
