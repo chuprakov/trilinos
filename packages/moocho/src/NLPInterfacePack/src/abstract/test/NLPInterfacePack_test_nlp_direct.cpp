@@ -208,7 +208,6 @@ bool NLPInterfacePack::test_nlp_first_order_direct(
 			nlp_tester_opt_setter(&nlp_first_order_direct_tester);
 		nlp_tester_opt_setter.set_options(*options);
 	}
-	// ToDo: Set options from stream!
 	result = nlp_first_order_direct_tester.finite_diff_check(
 		nlp, nlp->xinit(), nlp->num_bounded_x() ? &nlp->xl() : NULL
 		,nlp->num_bounded_x() ? &nlp->xu() : NULL, 0.0, c.get(), h.get()

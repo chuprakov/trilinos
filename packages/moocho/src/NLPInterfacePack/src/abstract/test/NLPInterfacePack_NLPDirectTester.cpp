@@ -86,6 +86,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 	using std::endl;
 	using std::right;
 
+	using AbstractLinAlgPack::sum;
 	using AbstractLinAlgPack::dot;
 	using AbstractLinAlgPack::Vp_StV;
 	using AbstractLinAlgPack::random_vector;
@@ -184,8 +185,10 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 					value_type
 						Gf_y = dot( *Gf, *y ),
 						FDGf_y;
-					fd_deriv_prod.calc_deriv_product(xo,xl,xu,max_var_bounds_viol
-						,*y,nlp,&FDGf_y,NULL,NULL,out);
+					fd_deriv_prod.calc_deriv_product(
+						xo,xl,xu,max_var_bounds_viol
+						,*y,nlp,&FDGf_y,NULL,NULL,out
+						);
 					assert_print_nan_inf(FDGf_y, "FDGf'*y",true,out);
 					const value_type
 						calc_err = ::fabs( ( Gf_y - FDGf_y )/( ::fabs(Gf_y) + ::fabs(FDGf_y) + small_num ) );
