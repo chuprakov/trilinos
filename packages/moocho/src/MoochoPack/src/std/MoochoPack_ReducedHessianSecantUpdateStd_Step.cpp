@@ -154,9 +154,35 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(Algorithm&
 			// We do not have the info to perform the update
 
 			int k_last_offset = s.rHL().last_updated();
-
-			if( k_last_offset == IterQuantity::NONE_UPDATED && k_last_offset < 0 ) {
-
+			bool set_current = false;
+			if( k_last_offset != IterQuantity::NONE_UPDATED && k_last_offset < 0 ) {
+				const MatrixWithOp &rHL_k_last = s.rHL().get_k(k_last_offset);
+				const size_type nind_last = rHL_k_last.rows();
+				if( nind_last != nind) {
+					if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+						algo.track().journal_out()
+							<< "No new basis was selected.\n"
+							<< "The previous matrix rHL_k(" << k_last_offset << ") was found but its dimmension\n"
+							<< "rHL_k(" << k_last_offset << ").rows() = " << nind_last << " != n-r = " << nind << std::endl;
+					}
+				}
+				else {
+					if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+						algo.track().journal_out()
+							<< "No new basis was selected so using previously updated...\n "
+							<< "rHL_k = rHL_k(" << k_last_offset << ")\n";
+					}
+					s.rHL().set_k(0) = rHL_k_last;
+					quasi_newton_stats_(s).set_k(0).set_updated_stats(
+						QuasiNewtonStats::SKIPED );
+					
+					if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
+						s.rHL().get_k(0).output( out << "\nrHL_k = \n" );
+					}
+					set_current = true;
+				}
+			}
+			if( !set_current ) {
 				if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 					algo.track().journal_out()
 						<< "\nInitializing rHL = eye(n-r) "
@@ -177,24 +203,6 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(Algorithm&
 				if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
 					s.rHL().get_k(0).output( out << "\nrHL_k = \n" );
 				}
-
-			}
-			else {
-
-				if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-					algo.track().journal_out()
-						<< "No new basis was selected so using previously updated...\n "
-						<< "rHL_k = rHL_k(" << k_last_offset << ")\n";
-				}
-				const MatrixWithOp &rHL_k_last = s.rHL().get_k(k_last_offset);
-				s.rHL().set_k(0) = rHL_k_last;
-				quasi_newton_stats_(s).set_k(0).set_updated_stats(
-					QuasiNewtonStats::SKIPED );
-
-				if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
-					s.rHL().get_k(0).output( out << "\nrHL_k = \n" );
-				}
-
 			}
 		}
 	}
