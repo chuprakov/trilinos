@@ -39,6 +39,9 @@ using AbstractLinAlgPack::MatrixWithOpNonsingular;
 // it does not perform name lookups properly but it
 // is not adverse to the standard so it is a portable
 // fix.
+using AbstractLinAlgPack::sum;
+using AbstractLinAlgPack::dot;
+using AbstractLinAlgPack::Vp_S;
 using AbstractLinAlgPack::Vt_S;
 using AbstractLinAlgPack::Vp_StV;
 using AbstractLinAlgPack::Vp_StMtV;
