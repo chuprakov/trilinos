@@ -37,7 +37,6 @@
 #include "TSFCoreVector.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreMultiVector.hpp"
-#include "TSFCoreSolversNorm.hpp"
 #include "TSFCoreSolversConvergenceTester.hpp"
 #include "TSFCoreTestingTools.hpp"
 #include "check_nan_inf.h"
@@ -67,12 +66,10 @@ BiCGSolver<Scalar>::BiCGSolver(
 	const out_ptr_t   &out
 	,bool             dump_all
 	,int              default_max_iter
-	,Scalar           default_tol
 	)
 	:out_(out)
 	,dump_all_(dump_all)
 	,default_max_iter_(default_max_iter)
-	,default_tol_(default_tol)
 {}
 
 // Overridden from SolverState
@@ -105,7 +102,7 @@ template<class Scalar>
 void BiCGSolver<Scalar>::currEstRelResidualNorms( Scalar norms[] ) const
 {
 	if(!norms_updated_) {
-		norm_->norms( *R_, &norms_[0] );
+		TSFCore::norms( *R_, &norms_[0] );
 		for(int j=0;j<currNumSystems_;++j)
 			norms_[j] /= rel_err_denom_[j];
 		norms_updated_ = true;
@@ -223,7 +220,6 @@ SolveReturn BiCGSolver<Scalar>::solve(
 	// Resolve default parameters
 	//
 	const int max_iter = ( max_iter_in == DEFAULT_MAX_ITER ? default_max_iter() : max_iter_in );
-	if (convTester) norm_ = convTester->norm(); else norm_ = Teuchos::rcp(new Solvers::Norm<Scalar>());
 	//
 	// Setup storage and initialize the algorithm
 	//
@@ -240,7 +236,7 @@ SolveReturn BiCGSolver<Scalar>::solve(
 	assign( R_.get(), 0.0 ); update( a, Y, R_.get() );
 	// Denominator for relative error
 	rel_err_denom_.resize(currNumSystems_);
-	norm_->norms( *R_, &rel_err_denom_[0] );
+	norms( *R_, &rel_err_denom_[0] );
 	for(j=0;j<currNumSystems_;++j) rel_err_denom_[j] += 1.0;
 	// R^{0} += - op(M)*X^{0}
 	M.apply(M_trans,*X,R_.get(),-1.0,1.0);

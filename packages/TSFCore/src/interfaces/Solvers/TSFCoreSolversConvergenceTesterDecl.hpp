@@ -53,18 +53,12 @@ public:
 	//@{
 
 	///
-	/** Return the definition of the norm to be used in computing relative errors.
-	 *
-	 * The default implementation returns <tt>return.get()!=NULL</tt>
-	 * and uses the default definition implementation <tt>Norm</tt>.
-	 */
-	virtual Teuchos::RefCountPtr<const Norm<Scalar> > norm() const;
-
-	///
 	/** Reset the convergence tester for a new set of iterations for solving
 	 * the system of equations.
 	 *
-	 * ToDo: Finish documentation!
+	 * Calling this function before each set of iterative solvers on a
+	 * block of right-hand sides allows <tt>*this</tt> convergence
+	 * tester object to keep track of what is going on.
 	 */
 	virtual void reset() = 0;
 
@@ -83,13 +77,12 @@ public:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li><tt>isConverged[k]==true</tt> if the linear system <tt>j</tt> is converged where
-	 *     <tt>j = activeSystems[k]</tt> and where <tt>activeSystems[]</tt> is returned from
-	 *     the <tt>solver.SolverState::currActiveSystems()</tt>.
+	 * <li><tt>isConverged[k]==true</tt> if the current linear system <tt>k</tt> is converged.
 	 * </ul>
 	 *
-	 * This method is declared conconstant since it is assumed that the internal implementation
-	 * will record these calls and will therefore modify the state of the object.
+	 * This method is declared non-constant since it is assumed that the
+	 * internal implementation will record these calls and will
+	 * therefore modify the state of the object.
 	 */
 	virtual void convStatus(
 		const SolverState<Scalar>     &solver
@@ -98,6 +91,54 @@ public:
 		) = 0;
 
 	///
+	/** Attach another convergence tester object.
+	 *
+	 * @param  convTester  [in] Smart pointer to another convergence tester that
+	 *                     can be considered in some way.  It is allowed for
+	 *                     <tt>convTester.get()==NULL</tt> in which case
+	 *                     the current convergence tester (if one is currently
+	 *                     attached) will be unattached.
+	 *
+	 * Postconditions:<ul>
+	 * <li><tt>this->getAttachedConvTester().get() == convTester.get()</tt>
+	 * </ul>
+	 *
+	 * The convergence tester <tt>convTester</tt> being attached can be
+	 * dealt any way that <tt>*this</tt> chooses.
+	 */
+	virtual void attach( const Teuchos::RefCountPtr<ConvergenceTester<Scalar> > &convTester ) = 0;
+
+	///
+	/** Get a smart pointer to non-<tt>const</tt> attached convergence
+	 * tester.
+	 */
+	virtual Teuchos::RefCountPtr<ConvergenceTester<Scalar> > getAttachedConvTester() = 0;
+
+	//@}
+
+	/** @name Virtual functions with default implementation */
+	//@{
+
+	///
+	/** Get a smart pointer to <tt>const</tt> attached convergence
+	 * tester.
+	 *
+	 * The default implementation returns
+	 \code
+
+	   const_cast<ConvergenceTester<Scalar>*>(this)->getAttachedConvTester()
+
+   \endcode
+	 *
+	 * No override of this function should be needed.
+	 */
+	virtual Teuchos::RefCountPtr<const ConvergenceTester<Scalar> > getAttachedConvTester() const;
+
+	///
+	/** Clone the convergence test if supported.
+	 *
+	 * Default returns <tt>return.get()==NULL</tt>
+	 */
 	virtual Teuchos::RefCountPtr<ConvergenceTester<Scalar> > clone();
 
 	//@}

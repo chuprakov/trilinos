@@ -29,10 +29,11 @@
 // //////////////////////////////////////////////////////////////////////////
 // TSFCoreSolversGmresSolver.hpp
 
-// #define TSFCORE_GMRES_USE_DOT_FOR_SCALAR_PROD
-
 #ifndef TSFCORE_SOLVERS_GMRES_SOLVER_HPP
 #define TSFCORE_SOLVERS_GMRES_SOLVER_HPP
+
+// #define TSFCORE_GMRES_USE_DOT_FOR_SCALAR_PROD
+// #define TSFCORE_GMRES_HACKED_PRINT_STATEMENTS
 
 #include "TSFCoreSolversTypes.hpp"
 #include "TSFCoreVectorSpace.hpp"
@@ -123,7 +124,7 @@ SolveReturn GMRESSolver<Scalar>::solve(
 	tol = tol_in;
 	if( max_iter_in+1 != H_.numRows() ) {
 		max_iter = max_iter_in;
-		H_.shape( max_iter+1, max_iter );
+		H_.shapeUninitialized( max_iter+1, max_iter );
 		z.resize(max_iter+1);
 		cs.resize(max_iter); sn.resize(max_iter);
 	}
@@ -135,6 +136,9 @@ SolveReturn GMRESSolver<Scalar>::solve(
 	const Scalar norm_b = norm_2( b );
 #else
 	const Scalar norm_b = norm( b );
+#endif
+#ifdef TSFCORE_GMRES_HACKED_PRINT_STATEMENTS
+		std::cout << "\nGmresSolver::solve(): ||b|| = " << norm_b << std::endl;
 #endif
 	if(norm_b == 0.0) {
 		isConverged = true;
@@ -151,6 +155,9 @@ SolveReturn GMRESSolver<Scalar>::solve(
 #else
 		curr_res = norm( *r ) / ( 1.0 + norm_b );
 #endif
+#ifdef TSFCORE_GMRES_HACKED_PRINT_STATEMENTS
+		std::cout << "\nGmresSolver::solve(): ||r("<<curr_iter<<")||/(1+||b||) = " << curr_res << std::endl;
+#endif
 		if (curr_res < tol) isConverged = true;
 		//
 		// Set up initial vector.
@@ -159,6 +166,9 @@ SolveReturn GMRESSolver<Scalar>::solve(
 		r0 = norm_2( *r );
 #else
 		r0 = norm( *r );
+#endif
+#ifdef TSFCORE_GMRES_HACKED_PRINT_STATEMENTS
+		std::cout << "\nGmresSolver::solve(): ||r0|| = " << r0 << std::endl;
 #endif
 		z[0] = r0;
 		Teuchos::RefCountPtr<Vector<Scalar> >
@@ -242,7 +252,13 @@ void GMRESSolver<Scalar>::doIteration( const LinearOp<Scalar> &Op, const ETransp
 	//
 	z[curr_iter+1] = -sn[curr_iter]*z[curr_iter];
 	z[curr_iter] *= cs[curr_iter];
+#ifdef TSFCORE_GMRES_HACKED_PRINT_STATEMENTS
+	std::cout << "\nGmresSolver::solve(): z["<<curr_iter+1<<"] = " << z[curr_iter+1] << std::endl;
+#endif
 	curr_res = Teuchos::ScalarTraits<Scalar>::magnitude( z[curr_iter+1] ) / r0; 
+#ifdef TSFCORE_GMRES_HACKED_PRINT_STATEMENTS
+	std::cout << "\nGmresSolver::doIteration(): ||r("<<curr_iter<<")||/(1+||b||) = " << curr_res << std::endl;
+#endif
 	if (curr_res < tol) { isConverged = true; }
 	//    
 	// Increment the iteration counter.

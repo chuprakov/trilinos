@@ -27,29 +27,35 @@
 // @HEADER
 
 // //////////////////////////////////////////////////////////////////////////////////
-// TSFCoreSolversBiCGSolverDecl.hpp
+// TSFCoreSolversGMRESSolverDecl.hpp
 
-#ifndef TSFCORE_SOLVERS_BICG_SOLVER_DECL_HPP
-#define TSFCORE_SOLVERS_BICG_SOLVER_DECL_HPP
+#ifndef TSFCORE_SOLVERS_GMRES_SOLVER_DECL_HPP
+#define TSFCORE_SOLVERS_GMRES_SOLVER_DECL_HPP
 
 #include "TSFCoreSolversIterativeLinearSolver.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
+#include "Teuchos_SerialDenseMatrix.hpp"
+#include "Teuchos_ScalarTraits.hpp"
 #include "StandardCompositionMacros.hpp"
 
 namespace TSFCore {
 namespace Solvers {
 
 ///
-/** Implementation of a block preconditioned BiCG iterative solver.
+/** Implementation of a simple GMRES iterative solver.
  *
  * ToDo: Finish documentation!
+ *
+ * Note: A convergence tester must be passed into <tt>solve()</tt> or
+ * the maximum number of iterations will be performed (unless
+ * breakdown of GMRES is detected which implies convergence).
  */
 template<class Scalar>
-class BiCGSolver : virtual public IterativeLinearSolver<Scalar> {
+class GMRESSolver : virtual public IterativeLinearSolver<Scalar> {
 public:
 
 	///
-	using IterativeLinearSolver<Scalar>::solve;
+	typedef typename Teuchos::ScalarTraits<Scalar>::magnitudeType ScalarMagnitude;
 
 	///
 	/** Set the output steam for iterative algorithm.
@@ -57,20 +63,26 @@ public:
 	STANDARD_COMPOSITION_MEMBERS(std::ostream,out)
 
 	///
-	/** Set the default maximum number BiCG iterations to take
+	/** Set the default maximum number GMRES iterations to take
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all )
 
 	///
-	/** Set the default maximum number BiCG iterations to take
+	/** Set the default maximum number GMRES iterations to take
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, default_max_iter )
 
 	///
-	BiCGSolver(
+	/** Set the tolerance for detecting solver breakdown
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( ScalarMagnitude, breakdown_tol )
+
+	///
+	GMRESSolver(
 		const out_ptr_t   &out               = Teuchos::null
 		,bool             dump_all           = false
 		,int              default_max_iter   = 10000
+		,ScalarMagnitude  breakdown_tol      = 1e-12
 		);
 
 	/** @name Overridden from SolverState (only to be called by ConvergenceTester objects) */
@@ -118,39 +130,38 @@ private:
 	// ///////////////////////////////
 	// Private data members
 
-	mutable Index                                    totalNumSystems_;
-	mutable Index                                    currNumSystems_;
-	mutable int                                      currIteration_;
-	mutable std::vector<Index>                       activeSystems_;
-	mutable Teuchos::RefCountPtr<MultiVector<Scalar> >
-	    X_curr_, R_, R_tilde_, Q_, Q_tilde_, Z_, Z_tilde_, P_, P_tilde_;
-	mutable std::vector<Scalar>
-	    rho_, rho_old_, beta_, gamma_, alpha_;
-	mutable bool norms_updated_;
-	mutable std::vector<Scalar>
-	    rel_err_denom_, norms_;
+	mutable int                                           totalNumSystems_;
+	mutable int                                           currActiveSystem_;
+	mutable int                                           curr_iter_;
+	mutable Scalar                                        r0_nrm_; 
+	mutable Scalar			                                  rel_r_nrm_;
+	mutable std::valarray<Scalar>                         z_;
+	mutable Teuchos::SerialDenseMatrix<int,Scalar>        H_;
+	mutable Teuchos::RefCountPtr< MultiVector<Scalar> >   V_;
+	mutable Teuchos::RefCountPtr< Vector<Scalar> >        r_;
+	mutable std::valarray<Scalar>	                        cs_, sn_;
 
 	// ///////////////////////////////
 	// Private member functions
-	
-	///
-	void doIteration(
-		const LinearOp<Scalar>              &M
-		,ETransp                            opM_notrans
-		,ETransp                            opM_trans
-		,MultiVector<Scalar>                *X
-		,Scalar                             a
-		,const LinearOp<Scalar>             *M_tilde_inv
-		,ETransp                            opM_tilde_inv_notrans
-		,ETransp                            opM_tilde_inv_trans
-		) const;
-	
-	///
-	void compress( bool isConverged[], MultiVector<Scalar>* X ) const;
 
-};	// end class BiCGSolver
+	//
+	virtual SolveReturn localSolve(
+		const LinearOp<Scalar>               &M
+		,const ETransp                       M_trans
+		,const Vector<Scalar>                &b
+		,Vector<Scalar>                      *x
+		,const int                           max_iter
+		,ConvergenceTester<Scalar>           *convTester
+		) const;
+	// Returns true if solver breakdown
+	bool doIteration(
+		const LinearOp<Scalar>    &Op
+		,const ETransp            Op_trans
+		) const;
+
+};	// end class GMRESSolver
 
 } // namespace Solvers
 } // namespace TSFCore
 
-#endif	// TSFCORE_SOLVERS_BICG_SOLVER_DECL_HPP
+#endif	// TSFCORE_SOLVERS_GMRES_SOLVER_DECL_HPP

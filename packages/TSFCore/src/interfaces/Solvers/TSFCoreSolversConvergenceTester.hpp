@@ -38,19 +38,18 @@ namespace TSFCore {
 namespace Solvers{
 
 template<class Scalar>
-Teuchos::RefCountPtr<const Norm<Scalar> >
-ConvergenceTester<Scalar>::norm() const
-{
-	return Teuchos::rcp( new Norm<Scalar>() );
-}
-
-template<class Scalar>
 Teuchos::RefCountPtr<ConvergenceTester<Scalar> >
 ConvergenceTester<Scalar>::clone()
 {
 	return Teuchos::null;
 }
 
+template<class Scalar>
+Teuchos::RefCountPtr<const ConvergenceTester<Scalar> >
+ConvergenceTester<Scalar>::getAttachedConvTester() const
+{
+	return const_cast<ConvergenceTester<Scalar>*>(this)->getAttachedConvTester();
+}
 
 } // namespace Solvers
 } // namespace TSFCore

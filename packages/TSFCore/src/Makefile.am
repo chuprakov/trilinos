@@ -108,8 +108,6 @@ INTERFACES_SOLVERS_H = \
 	$(srcdir)/interfaces/Solvers/TSFCoreSolversConvergenceTester.hpp\
 	$(srcdir)/interfaces/Solvers/TSFCoreSolversIterativeLinearSolverDecl.hpp\
 	$(srcdir)/interfaces/Solvers/TSFCoreSolversIterativeLinearSolver.hpp\
-	$(srcdir)/interfaces/Solvers/TSFCoreSolversNormDecl.hpp\
-	$(srcdir)/interfaces/Solvers/TSFCoreSolversNorm.hpp\
 	$(srcdir)/interfaces/Solvers/TSFCoreSolversSolverStateDecl.hpp\
 	$(srcdir)/interfaces/Solvers/TSFCoreSolversSolverState.hpp\
 	$(srcdir)/interfaces/Solvers/TSFCoreSolversTypes.hpp

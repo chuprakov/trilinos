@@ -49,17 +49,18 @@ TSFCoreNonlinNP2DSimTest_CXXFLAGS = -I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/utilities/Nonlin \
 	-I$(top_srcdir)/src/utilities/Core \
 	-I$(top_srcdir)/src/utilities/Solvers \
+	-I$(top_srcdir)/example/Solvers \
 	-I$(top_srcdir)/../TSFCoreUtils/src \
 	-I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
 	-I$(top_srcdir)/../TSFCoreUtils/src/RTOpStdOps \
 	-I$(top_builddir)/../TSFCoreUtils/src \
-    -I$(top_builddir)/../teuchos/src \
-    -I$(top_srcdir)/../teuchos \
-    -I$(top_srcdir)/../teuchos/src
+	-I$(top_builddir)/../teuchos/src \
+	-I$(top_srcdir)/../teuchos \
+	-I$(top_srcdir)/../teuchos/src
 
 TSFCoreNonlinNP2DSimTest_LDADD = \
 	$(top_builddir)/../TSFCoreUtils/src/libTSFCoreUtils.a \
 	$(top_builddir)/../teuchos/src/libteuchos.a \
-	$(LIBS) $(FLIBS)
+	$(LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
 

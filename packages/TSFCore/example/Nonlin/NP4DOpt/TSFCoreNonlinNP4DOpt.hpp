@@ -56,15 +56,18 @@ namespace Nonlin {
 
 template<class Scalar>
 NP4DOpt<Scalar>::NP4DOpt(
-	const Scalar                                                  yt1
-	,const Scalar                                                 yt2
-	,const Scalar                                                 ut1
-	,const Scalar                                                 ut2
-	,const Scalar                                                 d
-	,const Scalar                                                 lin_sol_tol
+	const Scalar                                             yt1
+	,const Scalar                                            yt2
+	,const Scalar                                            ut1
+	,const Scalar                                            ut2
+	,const Scalar                                            d
+	,const Scalar                                            lin_sol_tol
+	,const typename NP2DSim<Scalar>::ELinearSolverType       linearSolverType
+	,const bool                                              dumpToFile
 	,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >  &space_y_c
 	)
-	:np2dsim_(ut1,ut2,d,lin_sol_tol,space_y_c),yt1_(yt1),yt2_(yt2),ut1_(ut1),ut2_(ut2)
+	:np2dsim_(ut1,ut2,d,lin_sol_tol,linearSolverType,dumpToFile,space_y_c)
+	,yt1_(yt1),yt2_(yt2),ut1_(ut1),ut2_(ut2)
 {
 	typedef LinearOp<Scalar>                LO;
 	typedef MultiVector<Scalar>             MV;

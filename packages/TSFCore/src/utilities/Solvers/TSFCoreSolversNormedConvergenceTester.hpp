@@ -33,7 +33,6 @@
 #define TSFCORE_SOLVERS_NORMED_CONVERGENCE_TESTER_HPP
 
 #include "TSFCoreSolversNormedConvergenceTesterDecl.hpp"
-#include "TSFCoreSolversNorm.hpp"
 #include "TSFCoreSolversSolverState.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -44,99 +43,44 @@ namespace Solvers{
 
 template<class Scalar>
 NormedConvergenceTester<Scalar>::NormedConvergenceTester(
-	const Scalar                                      tol
-	,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm
+	const ScalarMagnitude tol
+	,const EAttachmentMode attachmentMode
 	)
+	:AttachConvergenceTesterBase<Scalar>(attachmentMode)
 {
-	initialize(tol,norm);
+	this->tol(tol);
 }
 
 template<class Scalar>
-NormedConvergenceTester<Scalar>::NormedConvergenceTester(
-	const Index                                       totalNumSystems
-	,const Scalar                                     tols[]
-	,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm
+void NormedConvergenceTester<Scalar>::tol(
+	const ScalarMagnitude tol
 	)
 {
-	initialize(totalNumSystems,tols,norm);
-}
-
-template<class Scalar>
-void NormedConvergenceTester<Scalar>::initialize(
-	const Scalar                                      tol
-	,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm
-	)
-{
-	tols_.resize(1);
-	tols_[0] = tol;
-	if(norm.get())   norm_ = norm;
-	else             norm_ = Teuchos::rcp(new Norm<Scalar>());
-	minTol_    = tol;
-	minMaxErr_ = 1e+50;
-}
-
-template<class Scalar>
-void NormedConvergenceTester<Scalar>::initialize(
-	const Index                                       totalNumSystems
-	,const Scalar                                     tols[]
-	,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm
-	)
-{
-	tols_.resize(totalNumSystems);
-	std::copy( tols, tols + totalNumSystems, tols_.begin() );
-	if(norm.get())   norm_ = norm;
-	else             norm_ = Teuchos::rcp(new Norm<Scalar>());
-	minTol_    = *std::min_element( tols, tols + totalNumSystems );
-	minMaxErr_ = 1e+50;
+	tol_ = tol;
+	minMaxErr_ = ScalarMagnitude(1e+50);
 }
 
 // Overridden from ConvergenceTester
 
 template<class Scalar>
-Teuchos::RefCountPtr<const Norm<Scalar> >
-NormedConvergenceTester<Scalar>::norm() const
-{
-	return norm_;
-}
-
-template<class Scalar>
-void NormedConvergenceTester<Scalar>::reset()
+void NormedConvergenceTester<Scalar>::protectedReset()
 {
 	return; // There is nothing to reset!
 }
 
 template<class Scalar>
-void NormedConvergenceTester<Scalar>::convStatus(
+void NormedConvergenceTester<Scalar>::protectedConvStatus(
 	const SolverState<Scalar>     &solver
 	,const Index                  currNumSystems
 	,bool                         isConverged[]
 	)
 {
-	const Index  totalNumSystems = solver.totalNumSystems();
-	const int    tols_size       = tols_.size();
-#ifdef _DEBUG
-	TEST_FOR_EXCEPTION(
-		tols_size == 0, std::logic_error
-		,"NormedConvergenceTester<Scalar>::convStatus(...): Error!"
-		);
-	TEST_FOR_EXCEPTION(
-		tols_size > 1 && totalNumSystems != tols_size, std::logic_error
-		,"NormedConvergenceTester<Scalar>::convStatus(...): Error!"
-		);
-	TEST_FOR_EXCEPTION(
-		currNumSystems > totalNumSystems, std::logic_error
-		,"NormedConvergenceTester<Scalar>::convStatus(...): Error!"
-		);
-#endif
-	if(static_cast<Index>(activeSystems_.size()) != totalNumSystems) {
-		activeSystems_.resize(totalNumSystems);
-		norms_.resize(totalNumSystems);
-	}
-	solver.currActiveSystems(&activeSystems_[0]);
+	if( static_cast<Index>(norms_.size()) < currNumSystems )
+		norms_.resize(currNumSystems);
 	solver.currEstRelResidualNorms(&norms_[0]);
-	Scalar maxErr = 0.0;
+	ScalarMagnitude maxErr = 0.0;
 	for(int k = 0; k < currNumSystems; ++k ) {
-		isConverged[k] = ( norms_[k] <= ( tols_size > 1 ? tols_[activeSystems_[k]] : tols_[0] ) );
+		isConverged[k] = ( norms_[k] <= tol_ );
 		if( maxErr < norms_[k] ) maxErr = norms_[k]; 
 	}
 	if( minMaxErr_ > maxErr ) minMaxErr_ = maxErr; 

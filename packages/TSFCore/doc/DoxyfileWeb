@@ -94,8 +94,8 @@ ALLEXTERNALS           = NO
 PERL_PATH              = /usr/bin/perl
 HAVE_DOT               = YES
 DOT_PATH               = 
-MAX_DOT_GRAPH_WIDTH    = 1024
-MAX_DOT_GRAPH_HEIGHT   = 1024
+#MAX_DOT_GRAPH_WIDTH    = 1024
+#MAX_DOT_GRAPH_HEIGHT   = 1024
 #
 # What kind of documentation is generated
 #

@@ -37,7 +37,6 @@
 #include "TSFCoreVector.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreMultiVector.hpp"
-#include "TSFCoreSolversNorm.hpp"
 #include "TSFCoreSolversConvergenceTester.hpp"
 #include "TSFCoreSolversNormedConvergenceTester.hpp"
 #include "TSFCoreTestingTools.hpp"
@@ -103,39 +102,6 @@ bool SimpleGMRESSolver<Scalar>::adjointRequired() const
 	return false;
 }
 
-//
-// Here we will transform the problem from
-//
-//    1/a*op(M)*X[j] - Y[j] == 0
-//
-// to
-//
-//    Y_hat[j] - op(M_hat)*X_hat[j] == 0
-//
-// with preconditioner M_tilde_inv
-//
-//    where:
-//        if M_tilde_right_inv == NULL
-//            Y_hat       = a*Y
-//            M_hat       = M
-//            X_hat       = X
-//            M_tilde_inv = M_tilde_left_inv
-//        elif M_tilde_left_inv == NULL && M_tilde_right_inv != NULL
-//            Y_hat       = a*Y
-//            M_hat       = M*M_tilde_right_inv
-//            X_hat       = inv(M_tilde_right_inv)*X
-//            M_tilde_inv = NULL
-//        elif M_tilde_left_inv != NULL && M_tilde_right_inv != NULL
-//            Y_hat       = a*M_tilde_left_inv*Y
-//            M_hat       = M_tilde_left_inv*M*M_tilde_right_inv
-//            X_hat       = inv(M_tilde_right_inv)*X
-//            M_tilde_inv = NULL
-//        endif
-//
-// and then apply the CG method as exactly described
-// in "Templates for the Solution of Linear Systems" except
-// this is a simple multi-vector version.
-//
 template<class Scalar>
 SolveReturn SimpleGMRESSolver<Scalar>::solve(
 	const LinearOp<Scalar> &M, ETransp M_trans, const MultiVector<Scalar> &Y, MultiVector<Scalar> *X
@@ -207,9 +173,7 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 	NormedConvergenceTester<Scalar>
 		*normedConvTester = dynamic_cast<NormedConvergenceTester<Scalar>*>(convTester);
 	const int max_iter = ( max_iter_in == DEFAULT_MAX_ITER ? default_max_iter() : max_iter_in );
-	const Scalar tol = ( normedConvTester ? normedConvTester->minTol() : default_tol_ );
-	
-//	if (convTester) norm_ = convTester->norm(); else norm_ = Teuchos::rcp(new Solvers::Norm<Scalar>());
+	const Scalar tol = ( normedConvTester ? normedConvTester->tol() : default_tol_ );
 	//
 	// Solve each linear system one at a time
 	//

@@ -72,6 +72,7 @@ int main()
 		std::cout << "\n*** Solve the equations c(y)==0 ...\n\n";
 
 		TSFCore::Nonlin::SimpleNewtonSolver<Scalar> newtonSolver;
+		newtonSolver.set_summaryOut(Teuchos::rcp(new std::ofstream("NewtonSummary.out")));
 		Teuchos::RefCountPtr<TSFCore::Vector<Scalar> > y = np4dopt.space_y()->createMember();
 		assign( y.get(), np4dopt.y0() );
 		newtonSolver.solve( &np4dopt, y.get(), &std::cout, true );
@@ -91,6 +92,6 @@ int main()
 	else
 		std::cout << "\nOohs! At least one of the tests failed!\n";
 	
-	return success ? 0 : -1;
+	return success ? 0 : 1;
 
 }

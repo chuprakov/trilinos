@@ -37,7 +37,6 @@
 #include "TSFCoreVector.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreMultiVector.hpp"
-#include "TSFCoreSolversNorm.hpp"
 #include "TSFCoreSolversConvergenceTester.hpp"
 #include "TSFCoreTestingTools.hpp"
 #include "check_nan_inf.h"
@@ -219,7 +218,6 @@ SolveReturn CGSolver<Scalar>::solve(
 	// Resolve default parameters
 	//
 	const int max_iter = ( max_iter_in == DEFAULT_MAX_ITER ? default_max_iter() : max_iter_in );
-	if (convTester) norm_ = convTester->norm(); else norm_ = Teuchos::rcp(new Solvers::Norm<Scalar>());
 	//
 	// Setup storage and initialize the algorithm
 	//

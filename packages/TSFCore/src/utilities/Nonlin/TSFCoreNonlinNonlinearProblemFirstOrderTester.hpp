@@ -160,9 +160,11 @@ NonlinearProblemFirstOrderTester<Scalar>::doTest(
 			t4 = DcDy->range()->createMember();
 		if(o) *o << "assign(t1.get(),0.5);\n";                    TSFCore::assign(t1.get(),0.5);
 		if(o) *o << "assign(t2.get(),0.0);\n";                    TSFCore::assign(t2.get(),0.0);
-		if(o) *o << "DcDy->solve(NOTRANS,*t1,t2.get());\n";       DcDy->solve(NOTRANS,*t1,t2.get());
+		if(o) *o << "DcDy->solve(NOTRANS,*t1,t2.get());\n";
+		DcDy->solve(NOTRANS,*t1,t2.get());
 		if(o && olevel>=VERBOSE_OUTPUT) *o << "*t2 =\n" << *t2;
-		if(o) *o << "DcDy->apply(NOTRANS,*t2,t3.get());\n";       DcDy->apply(NOTRANS,*t2,t3.get());
+		if(o) *o << "DcDy->apply(NOTRANS,*t2,t3.get());\n";
+		DcDy->apply(NOTRANS,*t2,t3.get());
 		if(o && olevel>=VERBOSE_OUTPUT) *o << "*t3 =\n" << *t3;
 		if(o) *o << "assign(t4.get(),*t3);\n";                    TSFCore::assign(t4.get(),*t3);
 		if(o) *o << "Vp_StV(t4.get(),-1.0,*t1);\n";               TSFCore::Vp_StV(t4.get(),-1.0,*t1);
@@ -178,9 +180,11 @@ NonlinearProblemFirstOrderTester<Scalar>::doTest(
 			t4 = DcDy->domain()->createMember();
 		if(o) *o << "assign(t1.get(),0.5);\n";                    TSFCore::assign(t1.get(),0.5);
 		if(o) *o << "assign(t2.get(),0.0);\n";                    TSFCore::assign(t2.get(),0.0);
-		if(o) *o << "DcDy->solve(TRANS,*t1,t2.get());\n";         DcDy->solve(TRANS,*t1,t2.get());
+		if(o) *o << "DcDy->solve(TRANS,*t1,t2.get());\n";
+		DcDy->solve(TRANS,*t1,t2.get());
 		if(o && olevel>=VERBOSE_OUTPUT) *o << "*t2 =\n" << *t2;
-		if(o) *o << "DcDy->apply(TRANS,*t2,t3.get());\n";         DcDy->apply(TRANS,*t2,t3.get());
+		if(o) *o << "DcDy->apply(TRANS,*t2,t3.get());\n";
+		DcDy->apply(TRANS,*t2,t3.get());
 		if(o && olevel>=VERBOSE_OUTPUT) *o << "*t3 =\n" << *t3;
 		if(o) *o << "assign(t4.get(),*t3);\n";                    TSFCore::assign(t4.get(),*t3);
 		if(o) *o << "Vp_StV(t4.get(),-1.0,*t1);\n";               TSFCore::Vp_StV(t4.get(),-1.0,*t1);

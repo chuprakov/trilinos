@@ -36,13 +36,12 @@
 
 int main()
 {
-	namespace mmp = MemMngPack;
 	using TSFCore::assign;
 
 	bool result, success = true;
 
 	try {
-
+		
 		std::cout
 			<< std::endl
 			<< "************************************************\n"
@@ -72,6 +71,7 @@ int main()
 		std::cout << "\n*** Solve the equations ...\n\n";
 
 		TSFCore::Nonlin::SimpleNewtonSolver<Scalar> newtonSolver;
+		newtonSolver.set_summaryOut(Teuchos::rcp(new std::ofstream("NewtonSummary.out")));
 		Teuchos::RefCountPtr<TSFCore::Vector<Scalar> > y = np2dsim.space_y()->createMember();
 		assign( y.get(), np2dsim.y0() );
 		newtonSolver.solve( &np2dsim, y.get(), &std::cout, true );
@@ -91,6 +91,6 @@ int main()
 	else
 		std::cout << "\nOohs! At least one of the tests failed!\n";
 	
-	return success ? 0 : -1;
+	return success ? 0 : 1;
 
 }

@@ -34,6 +34,8 @@
 
 #include "TSFCoreNonlinNonlinearProblemFirstOrder.hpp"
 #include "TSFCoreNonlinLinearOpWithSolveIter.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
+#include "StandardCompositionMacros.hpp"
 
 namespace TSFCore {
 namespace Nonlin {
@@ -67,7 +69,7 @@ namespace Nonlin {
  * for the Jacobian <tt>DcDy</tt>.  The class
  * <tt>LinearOpWithSolveIter</tt> is used for the nonsingualar
  * Jacobian object <tt>DcDy</tt> and the subclass <tt>BiCGSolver</tt>
- * is used to solve the linear systems (without a preconditioner).
+ * is used to solve the linear systems.
  */
 template<class Scalar>
 class NP2DSim : public NonlinearProblemFirstOrder<Scalar> {
@@ -78,6 +80,20 @@ public:
 	///
 	using NonlinearProblemFirstOrder<Scalar>::get_DcDy;
 
+	/** @name Public types and options */
+	//@{
+
+	///
+	enum ELinearSolverType { LINEAR_SOLVER_BICG, LINEAR_SOLVER_GMRES };
+	
+	/// Set the type of linear solver used.
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( ELinearSolverType, linearSolverType )	
+
+  /// Determine if we will dump to a file or not.
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dumpToFile )	
+
+	//@}
+
 	/** @name Constructors / Initializers / accessors */
 	//@{
 
@@ -87,11 +103,13 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	NP2DSim(
-		const Scalar                                             a           = 2.0
-		,const Scalar                                            b           = 0.0
-		,const Scalar                                            d           = 10.0
-		,const Scalar                                            lin_sol_tol = 1e-12
-		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >  &space_y_c  = Teuchos::null
+		const Scalar                                             a                  = 2.0
+		,const Scalar                                            b                  = 0.0
+		,const Scalar                                            d                  = 10.0
+		,const Scalar                                            lin_sol_tol        = 1e-12
+		,const ELinearSolverType                                 linearSolverType   = LINEAR_SOLVER_GMRES  // Test GMRES
+		,const bool                                              dumpToFile         = false
+		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >  &space_y_c         = Teuchos::null
 		);
 	///
 	void set_a( const Scalar a );
@@ -144,7 +162,7 @@ public:
 
 	/** @name Overridden from NonlinearProblemFirstOrder */
 	//@{
-
+	
 	///
 	Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > > factory_DcDy() const;
 	///
@@ -178,7 +196,7 @@ private:
 	Vector<Scalar>                                                  *c_;
 	LinearOpWithSolveIter<Scalar>                                   *DcDy_;
 
-  mutable Teuchos::RefCountPtr<std::ostream>                      bicg_solver_out_;
+  mutable Teuchos::RefCountPtr<std::ostream>                      linear_solver_out_;
 
 	// Not defined and not to be called
 	NP2DSim(const NP2DSim<Scalar>&);

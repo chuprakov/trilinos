@@ -34,6 +34,7 @@
 
 #include "TSFCoreNonlinSimpleNewtonSolverDecl.hpp"
 #include "TSFCoreTestingTools.hpp"
+#include "TSFCoreSolversSummaryOutputter.hpp"
 #include "TSFCoreNonlinNonlinearProblem.hpp"
 #include "TSFCoreNonlinNonlinearProblemFirstOrder.hpp"
 #include "TSFCoreNonlinLinearOpWithSolve.hpp"
@@ -67,11 +68,26 @@ SimpleNewtonSolver<Scalar>::SimpleNewtonSolver(
 		
 template<class Scalar>
 Solvers::SolveReturn
-SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
-								   ,Vector<Scalar> *y_inout, std::ostream *out, bool dumpAll ) const
+SimpleNewtonSolver<Scalar>::solve(
+	NonlinearProblemFirstOrder<Scalar> *np
+	,Vector<Scalar> *y_inout, std::ostream *out, bool dumpAll
+	) const
 {
-	namespace mmp = MemMngPack;
+	typedef Teuchos::ScalarTraits<Scalar>  ST;
+	const std::string &leadstr = leadingSummaryOutputStr();
+	// Setup summary outputting
+	Teuchos::RefCountPtr<Solvers::SummaryOutputter<Scalar> > souter;
+	std::ostream *sout = get_summaryOut().get();
+	if(sout) {
+		souter = Teuchos::rcp(
+			new Solvers::SummaryOutputter<Scalar>(
+				get_summaryOut()
+				,leadstr+std::string("  ")
+				)
+			);
+	}
 	if(out) *out << "\n*** Entering SimpleNewtonSolver::solve(...) ...\n";
+ 	if(sout) *sout << leadstr << "newton_iter=0: Starting nonlinear solve\n";
 	// Create the data for the problem
 	const VectorSpace<Scalar>                         &space_c = *np->space_c();
 	const VectorSpace<Scalar>                         &space_y = *np->space_y();
@@ -100,7 +116,10 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 			if(out) *out << "\nChecking for convergence ... : ";
 			const Scalar phi = space_c.scalarProd(*c,*c), sqrt_phi = sqrt(phi); // merit function: phi(c) = <c,c>
 			const bool isConverged = sqrt_phi <= tol();
-			if(out) *out << "sqrt(phi) = sqrt(<c,c>) = " << sqrt_phi << ( isConverged ? " <= " : " > " ) << "tol = " << tol() << std::endl;
+			if(out) *out << "sqrt(phi) = sqrt(<c,c>) = ||c|| = " << sqrt_phi << ( isConverged ? " <= " : " > " ) << "tol = " << tol() << std::endl;
+			if(sout) *sout
+				<< leadstr << "newton_iter="<<newtonIter<<": ||c|| = "
+				<< sqrt_phi << ( isConverged ? " <= " : " > " ) << "tol = " << tol() << std::endl;
 			if(isConverged) {
 				np->unsetQuantities();
 				if(y_inout != y.get()) assign( y_inout, *y );  // Assign the solution if we have to
@@ -123,13 +142,15 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 			}
 			// Compute the newton step: dy = -inv(DcDy)*c
 			if(out) *out << "\nComputing the Newton step: dy = - inv(DcDy)*c ...\n";
-			assign( &*dy, 0.0 );         // Initial guess for the linear solve
-			DcDy->solve(opDcDy,*c,&*dy); // Solve: DcDy*dy = c
-			Vt_S( &*dy, -1.0 );          // dy *= -1.0
+			if(sout) *sout	<< leadstr << "newton_iter="<<newtonIter<<": Computing Newton step\n";
+			assign( &*dy, 0.0 );                      // Initial guess for the linear solve
+			DcDy->solve(opDcDy,*c,&*dy,souter.get()); // Solve: DcDy*dy = c
+			Vt_S( &*dy, -1.0 );                       // dy *= -1.0
 			if(out) *out << "\n||dy||inf = " << norm_inf(*dy) << std::endl;
 			if(out && dumpAll) *out << "\ndy =\n" << *dy;
 			// Perform backtracking armijo line search
 			if(out) *out << "\nStarting backtracking line search iterations ...\n";
+			if(sout) *sout	<< leadstr << "newton_iter="<<newtonIter<<": Starting backtracking line search\n";
 			const Scalar Dphi = -2.0*phi; // D(phi(y+alpha*dy))/D(alpha) at alpha=0.0 => -2.0*<c,c>: where dy = -inv(DcDy)*c
 			Scalar alpha = 1.0; // Try a full step initially since it will eventually be accepted near solution
 			int lineSearchIter;
@@ -151,9 +172,12 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 				}
 				const bool acceptPoint = (phi_new <= phi_frac);
 				if(out) *out
-					<< "\nphi_new = " << phi_new << ( isConverged ? " <= " : " > " )
+					<< "\nphi_new = " << phi_new << ( acceptPoint ? " <= " : " > " )
 					<< "phi + alpha * eta * Dphi = " << phi << " + " << alpha << " * " << eta() << " * " << Dphi
 					<< " = " << phi_frac << std::endl;
+				if(sout) *sout
+					<< leadstr << "newton_iter="<<newtonIter<<", ls_iter="<<lineSearchIter<<" : "
+					<< "phi(alpha="<<alpha<<") = "<<phi_new<<(acceptPoint?" <=":" >")<<" armijo_cord = " << phi_frac << std::endl;
 				if( acceptPoint ) {
 					if(out) *out << "\nAccepting the current step with step length alpha = " << alpha << "!\n";
 					break;
@@ -163,8 +187,12 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 			}
 			// Check for line search failure
 			if( lineSearchIter > maxLineSearchIter() ) {
-				if(out) *out << "\nlineSearchIter = " << lineSearchIter << " > maxLineSearchIter = " << maxLineSearchIter()
-										 << ": Terminating algorithm (throw SolverBreakDown)...\n";
+				if(out) *out
+					<< "\nlineSearchIter = " << lineSearchIter << " > maxLineSearchIter = " << maxLineSearchIter()
+					<< ": Terminating algorithm (throw SolverBreakDown)...\n";
+				if(sout) *sout
+					<< std::endl << leadstr << "ls_iter = " << lineSearchIter << " > maxLineSearchIter = " << maxLineSearchIter()
+					<< ": Terminating algorithm (throw SolverBreakDown)...\n";
 				if(y_inout != y.get()) assign( y_inout, *y ); // Assign the final point
 				TEST_FOR_EXCEPTION(
 					lineSearchIter > maxLineSearchIter(), Solvers::Exceptions::SolverBreakdown

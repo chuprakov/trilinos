@@ -29,6 +29,8 @@
 // ////////////////////////////////////////////////////////////
 // TSFCoreNonlinNP2DSim.hpp
 
+//#define TSFCORE_NONLIN_NP_2D_SIM_USE_SIMPLE_GMRES_SOLVER
+
 #ifndef TSFCORE_NONLIN_NP_2D_SIM_HPP
 #define TSFCORE_NONLIN_NP_2D_SIM_HPP
 
@@ -44,18 +46,29 @@
 #include "Teuchos_TestForException.hpp"
 #include "AbstractFactoryStd.hpp"
 
+#ifdef TSFCORE_NONLIN_NP_2D_SIM_USE_SIMPLE_GMRES_SOLVER
+#include "TSFCoreSolversSimpleGMRESSolver.hpp"
+#else
+#include "TSFCoreSolversGMRESSolver.hpp"
+#endif
+
+
 namespace TSFCore {
 namespace Nonlin {
 
 template<class Scalar>
 NP2DSim<Scalar>::NP2DSim(
-	const Scalar                                                  a
-	,const Scalar                                                 b
-	,const Scalar                                                 d
-	,const Scalar                                                 lin_sol_tol
+	const Scalar                                             a
+	,const Scalar                                            b
+	,const Scalar                                            d
+	,const Scalar                                            lin_sol_tol
+	,const ELinearSolverType                                 linearSolverType
+	,const bool                                              dumpToFile
 	,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >  &space_y_c
 	)
-	: isInitialized_(false), a_(a), b_(b), d_(d), lin_sol_tol_(lin_sol_tol), c_(NULL), DcDy_(NULL)
+	:linearSolverType_(linearSolverType),dumpToFile_(dumpToFile),isInitialized_(false)
+	,a_(a),b_(b),d_(d)
+	,lin_sol_tol_(lin_sol_tol),c_(NULL),DcDy_(NULL)
 {
 	if(space_y_c.get()) {
 		TEST_FOR_EXCEPTION( !(space_y_c->dim()==2), std::logic_error, "NP2DSim<Scalar>::NP2DSim(...): Error!" );
@@ -70,8 +83,8 @@ NP2DSim<Scalar>::NP2DSim(
 template<class Scalar>
 void NP2DSim<Scalar>::set_y0( const Scalar y01, const Scalar y02 )
 {
-	TSFCore::set_ele( 1, y01, &*y0_ );
-	TSFCore::set_ele( 2, y02, &*y0_ );
+	set_ele( 1, y01, &*y0_ );
+	set_ele( 2, y02, &*y0_ );
 }
 
 // Overridden from NonlinearProblem
@@ -233,10 +246,8 @@ void NP2DSim<Scalar>::calc_DcDy(
 		DcDy_mv = Teuchos::rcp_dynamic_cast<MultiVector<Scalar> >(
 			Teuchos::rcp_const_cast<LinearOp<Scalar> >(DcDy_state.M)
 			);
-	Teuchos::RefCountPtr<Solvers::BiCGSolver<Scalar> >
-		DcDy_solver = Teuchos::rcp_dynamic_cast<Solvers::BiCGSolver<Scalar> >(
-			Teuchos::rcp_const_cast<Solvers::IterativeLinearSolver<Scalar> >(DcDy_state.solver)
-			);
+	Teuchos::RefCountPtr<const Solvers::IterativeLinearSolver<Scalar> >
+		DcDy_solver = DcDy_state.solver;
 	Teuchos::RefCountPtr<Solvers::ConvergenceTester<Scalar> >
 		convTester = DcDy_state.convTester;
 	Teuchos::RefCountPtr<MultiVector<Scalar> >
@@ -246,15 +257,38 @@ void NP2DSim<Scalar>::calc_DcDy(
 	// Create these objects if they have not been created already
 	if( !DcDy_mv.get() ) DcDy_mv = this->space_y()->createMembers(2);
 	if( !DcDy_solver.get() ) {
-    Teuchos::RefCountPtr<Solvers::BiCGSolver<Scalar> >
-      bicg_solver = Teuchos::rcp(new Solvers::BiCGSolver<Scalar>());
-    if(1) { // ToDo: Make this a runtime option?
-      if(!bicg_solver_out_.get())
-        bicg_solver_out_ = Teuchos::rcp(new std::ofstream("BiCGSolver.out"));
-      bicg_solver->set_out(bicg_solver_out_);
-      bicg_solver->dump_all(true);
-    }
-    DcDy_solver = bicg_solver;
+		// Create output stream
+		if( dumpToFile() && !linear_solver_out_.get() )
+			linear_solver_out_ = Teuchos::rcp(new std::ofstream("NP2DSim::linearSolver.out"));
+		// Create the linear solver
+		switch(linearSolverType()) {
+			case LINEAR_SOLVER_BICG: {
+				Teuchos::RefCountPtr<Solvers::BiCGSolver<Scalar> >
+					bicg_solver = Teuchos::rcp(new Solvers::BiCGSolver<Scalar>());
+				if(dumpToFile()) {
+					bicg_solver->set_out(linear_solver_out_);
+					bicg_solver->dump_all(true);
+				}
+				DcDy_solver = bicg_solver;
+				break;
+			}
+			case LINEAR_SOLVER_GMRES: {
+#ifdef TSFCORE_NONLIN_NP_2D_SIM_USE_SIMPLE_GMRES_SOLVER
+				Teuchos::RefCountPtr<Solvers::SimpleGMRESSolver<Scalar> >
+					gmres_solver = Teuchos::rcp(new Solvers::SimpleGMRESSolver<Scalar>());
+#else
+				Teuchos::RefCountPtr<Solvers::GMRESSolver<Scalar> >
+					gmres_solver = Teuchos::rcp(new Solvers::GMRESSolver<Scalar>());
+#endif
+				// ToDo: Put in this type of printing?
+				//if(dumpToFile()) {
+				//	gmres_solver->set_out(linear_solver_out);
+				//	gmres_solver->dump_all(true);
+				//}
+				DcDy_solver = gmres_solver;
+				break;
+			}
+		}
   }
 	if( !convTester.get() ) convTester = Teuchos::rcp(new Solvers::NormedConvergenceTester<Scalar>(lin_sol_tol_));
 	// Get at the state vector and Jacobian data
@@ -263,15 +297,18 @@ void NP2DSim<Scalar>::calc_DcDy(
 		ExplicitMutableMultiVectorView<Scalar> DcDy(*DcDy_mv);
 		// Fill the Jacobian
 		DcDy(1,1) = 1.0;           DcDy(1,2) = 2.0*y(2);
-        DcDy(2,1) = 2.0*d_*y(1);   DcDy(2,2) = -d_;
+		DcDy(2,1) = 2.0*d_*y(1);   DcDy(2,2) = -d_;
 	}
 	// Initialize the precondtioner to a Diagonal matrix only the first time!
 	if( !DcDy_prec.get() ) {
-		DcDy_prec  = this->space_y()->createMembers(2);
-		ExplicitMutableMultiVectorView<Scalar> M_tilde(*DcDy_prec);
-		// Fill the preconditioner \tilde{M}
-		M_tilde(1,1) = 1.0;       M_tilde(1,2) = 0.0;
-        M_tilde(2,1) = 0.0;       M_tilde(2,2) = -d_;
+		if(linearSolverType()==LINEAR_SOLVER_BICG) {
+			DcDy_prec  = this->space_y()->createMembers(2);
+			ExplicitMutableMultiVectorView<Scalar> M_tilde(*DcDy_prec);
+			// Fill the preconditioner \tilde{M}
+			M_tilde(1,1) = 1.0;       M_tilde(1,2) = 0.0;
+			M_tilde(2,1) = 0.0;       M_tilde(2,2) = -1.0/d_;
+		}
+		// GMRES can not handle preconditioners yet!
 	}
 	// Initialize the DcDy object given its initialized parts
 	DcDy_->initialize(

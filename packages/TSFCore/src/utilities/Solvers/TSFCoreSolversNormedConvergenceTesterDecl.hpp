@@ -27,78 +27,86 @@
 // @HEADER
 
 // ///////////////////////////////////////////////////////////////
-// NormedConvergenceTesterDecl.hpp
+// TSFCoreSolversNormedConvergenceTesterDecl.hpp
 
 #ifndef TSFCORE_SOLVERS_NORMED_CONVERGENCE_TESTER_DECL_HPP
 #define TSFCORE_SOLVERS_NORMED_CONVERGENCE_TESTER_DECL_HPP
 
-#include "TSFCoreSolversConvergenceTester.hpp"
+#include "TSFCoreSolversAttachConvergenceTesterBase.hpp"
+#include "Teuchos_ScalarTraits.hpp"
 
 namespace TSFCore {
 namespace Solvers {
 
 ///
-/** Convergence test based on relative errors.
+/** Convergence test based on a relative error tolerance.
  *
- * ToDo: Finish documentation!
+ * This concrete subclass is derived from
+ * <tt>AttachedConvergenceTesterBase</tt> and therefore inherits all
+ * of the machinary for handling attachec convergence tests.
+ *
+ * 
  */
 template<class Scalar>
-class NormedConvergenceTester : public ConvergenceTester<Scalar> {
+class NormedConvergenceTester : public AttachConvergenceTesterBase<Scalar> {
 public:
+
+	///
+	typedef typename Teuchos::ScalarTraits<Scalar>::magnitudeType  ScalarMagnitude;
+	///
+	typedef typename AttachConvergenceTesterBase<Scalar>::EAttachmentMode EAttachmentMode;
 
 	/** @name Constructors / initializers */
 	//@{
 	
-	/// Calls <tt>initialize()</tt>
+	///
+	/** Calls <tt>tol()</tt> and <tt>attachmentMode()</tt>
+	 *
+	 * Postconditions:<ul>
+	 * <li><tt>this->tol() == tol</tt>
+	 * <li><tt>this->attachmentMode()==attachmentMode</tt>.
+	 * </ul>
+	 *
+	 * By default <tt>*this</tt> is constructed to ignore an attached
+	 * convergence tester.
+	 */
 	NormedConvergenceTester(
-		const Scalar                                      tol             = 1e-12
-		,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm           = Teuchos::null
-		);
-
-	/// Calls <tt>initialize()</tt>
-	NormedConvergenceTester(
-		const Index                                       totalNumSystems
-		,const Scalar                                     tols[]
-		,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm           = Teuchos::null
+		const ScalarMagnitude tol             = ScalarMagnitude(1e-12)
+		,const EAttachmentMode attachmentMode = AttachConvergenceTesterBase<Scalar>::ATTACHED_TEST_EXCLUDE
 		);
 
 	///
-	/** Initialize with one set of tolerances for multiple linear systems
+	/** Set the tolerance used for the convergence check.
+	 *
+	 * Postconditions:<ul>
+	 * <li><tt>this->tol() == tol</tt>
+	 * <li><tt>this->minMaxErr() == ScalarMagnitude(1e+50)</tt>
+	 * </ul>
 	 */
-	void initialize(
-		const Scalar                                      tol             = 1e-12
-		,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm           = Teuchos::null
+	void tol(
+		const ScalarMagnitude tol
 		);
+	
+	/// Return the tolerance passed into <tt>initialize()</tt>.
+	ScalarMagnitude tol() const;
 
-	///
-	/** Initialize with different tolerances for multiple linear systems.
-	 */
-	void initialize(
-		const Index                                       totalNumSystems
-		,const Scalar                                     tols[]
-		,const Teuchos::RefCountPtr<const Norm<Scalar> >  &norm           = Teuchos::null
-		);
-
-	/// Return the minimum (over all right-hand sides) tolerance passed into <tt>initialize()</tt>.
-	Scalar minTol() const;
-
-	/// Return the minimum (over all iterations) maximum (over all right-hand sides) error seen
-	Scalar minMaxError() const;
+	/// Return the minimum (over all iterations) maximum (over all right-hand sides) error seen.
+	ScalarMagnitude minMaxError() const;
 
 	/// Set the value returned by <tt>minMaxError()</tt> as a hack (should not be called generally)
-	void minMaxErr( const Scalar& minMaxErr );
+	void minMaxErr( const ScalarMagnitude& minMaxErr );
 
 	//@}
 
-	/** @name Overridden from ConvergenceTester */
+protected:
+
+	/** @name Overridden from AttachedConvergenceTesterBase */
 	//@{
 
 	///
-	Teuchos::RefCountPtr<const Norm<Scalar> > norm() const;
+	void protectedReset();
 	///
-	void reset();
-	///
-	void convStatus(
+	void protectedConvStatus(
 		const SolverState<Scalar>     &solver
 		,const Index                  currNumSystems
 		,bool                         isConverged[]
@@ -108,13 +116,10 @@ public:
 
 private:
 
-	Teuchos::RefCountPtr<const Norm<Scalar> >   norm_;
-	std::vector<Scalar>                         tols_;           // if size()==1 then works for multiple systems
-	std::vector<Index>                          activeSystems_;  // cache
-	std::vector<Scalar>                         norms_;          // cache
+	ScalarMagnitude                     tol_;
+	ScalarMagnitude                     minMaxErr_;
 
-	Scalar                                      minTol_;
-	Scalar                                      minMaxErr_;
+	std::valarray<ScalarMagnitude>      norms_;          // cache
 
 }; // class NormedConvergenceTester
 
@@ -123,21 +128,23 @@ private:
 
 template<class Scalar>
 inline
-Scalar NormedConvergenceTester<Scalar>::minTol() const
+typename NormedConvergenceTester<Scalar>::ScalarMagnitude
+NormedConvergenceTester<Scalar>::tol() const
 {
-	return minTol_;
+	return tol_;
 }
 
 template<class Scalar>
 inline
-Scalar NormedConvergenceTester<Scalar>::minMaxError() const
+typename NormedConvergenceTester<Scalar>::ScalarMagnitude
+NormedConvergenceTester<Scalar>::minMaxError() const
 {
 	return minMaxErr_;
 }
 
 template<class Scalar>
 inline
-void NormedConvergenceTester<Scalar>::minMaxErr( const Scalar& minMaxErr )
+void NormedConvergenceTester<Scalar>::minMaxErr( const ScalarMagnitude& minMaxErr )
 {
 	minMaxErr_ = minMaxErr;
 }

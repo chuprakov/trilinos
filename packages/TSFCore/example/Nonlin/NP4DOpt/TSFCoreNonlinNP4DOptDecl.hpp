@@ -87,13 +87,15 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	NP4DOpt(
-		const Scalar                                                  yt1         = 1.0
-		,const Scalar                                                 yt2         = 1.0
-		,const Scalar                                                 ut1         = 2.0
-		,const Scalar                                                 ut2         = 0.0
-		,const Scalar                                                 d           = 10.0
-		,const Scalar                                                 lin_sol_tol = 1e-12
-		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >  &space_y_c  = Teuchos::null
+		const Scalar                                             yt1                = 1.0
+		,const Scalar                                            yt2                = 1.0
+		,const Scalar                                            ut1                = 2.0
+		,const Scalar                                            ut2                = 0.0
+		,const Scalar                                            d                  = 10.0
+		,const Scalar                                            lin_sol_tol        = 1e-12
+		,const typename NP2DSim<Scalar>::ELinearSolverType       linearSolverType   = NP2DSim<Scalar>::LINEAR_SOLVER_BICG // Test BiCG
+		,const bool                                              dumpToFile         = false
+		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >  &space_y_c         = Teuchos::null
 		);
 	///
 	void set_ut1( const Scalar ut1 );

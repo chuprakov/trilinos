@@ -51,13 +51,13 @@ LinearOpWithSolveIter<Scalar>::LinearOpWithSolveIter()
 template<class Scalar>
 LinearOpWithSolveIter<Scalar>::LinearOpWithSolveIter(
 	const Teuchos::RefCountPtr<const LinearOp<Scalar> >                          &M
-	,ETransp                                                                          M_trans
+	,ETransp                                                                     M_trans
 	,const Teuchos::RefCountPtr<const Solvers::IterativeLinearSolver<Scalar> >   &solver
 	,const Teuchos::RefCountPtr<Solvers::ConvergenceTester<Scalar> >             &convTester
 	,const Teuchos::RefCountPtr<const LinearOp<Scalar> >                         &M_tilde_left_inv
-	,ETransp                                                                          M_tilde_left_inv_trans
+	,ETransp                                                                     M_tilde_left_inv_trans
 	,const Teuchos::RefCountPtr<const LinearOp<Scalar> >                         &M_tilde_right_inv
-	,ETransp                                                                          M_tilde_right_inv_trans
+	,ETransp                                                                     M_tilde_right_inv_trans
 	)
 {
 	initialize(M,M_trans,solver,convTester,M_tilde_left_inv,M_tilde_left_inv_trans,M_tilde_right_inv,M_tilde_right_inv_trans);
@@ -66,13 +66,13 @@ LinearOpWithSolveIter<Scalar>::LinearOpWithSolveIter(
 template<class Scalar>
 void LinearOpWithSolveIter<Scalar>::initialize(
 	const Teuchos::RefCountPtr<const LinearOp<Scalar> >                          &M
-	,ETransp                                                                          M_trans
+	,ETransp                                                                     M_trans
 	,const Teuchos::RefCountPtr<const Solvers::IterativeLinearSolver<Scalar> >   &solver
 	,const Teuchos::RefCountPtr<Solvers::ConvergenceTester<Scalar> >             &convTester
 	,const Teuchos::RefCountPtr<const LinearOp<Scalar> >                         &M_tilde_left_inv
-	,ETransp                                                                          M_tilde_left_inv_trans
+	,ETransp                                                                     M_tilde_left_inv_trans
 	,const Teuchos::RefCountPtr<const LinearOp<Scalar> >                         &M_tilde_right_inv
-	,ETransp                                                                          M_tilde_right_inv_trans
+	,ETransp                                                                     M_tilde_right_inv_trans
 	)
 {
 #ifdef _DEBUG
@@ -226,6 +226,7 @@ void LinearOpWithSolveIter<Scalar>::solve(
 		trace_out()
 			<< "\n*** Entering LinearOpWithSolveIter<Scalar>::solve(...):...\n"
 			<< "\nUsing a linear solver of type \'" << typeid(*state_.solver).name() << "\' ...\n";
+	if(convTester) convTester->attach(state_.convTester);
 	Solvers::SolveReturn
 		solve_return = state_.solver->solve(
 			*state_.M, trans_trans( M_trans, state_.M_trans )
@@ -235,6 +236,7 @@ void LinearOpWithSolveIter<Scalar>::solve(
 			,state_.M_tilde_left_inv.get(),  trans_trans( M_trans, state_.M_tilde_left_inv_trans )
 			,state_.M_tilde_right_inv.get(), trans_trans( M_trans, state_.M_tilde_right_inv_trans )
 			);
+	if(convTester) convTester->attach(Teuchos::null);
 	switch(solve_return.solve_status) {
 		case Solvers::SOLVED_TO_TOL: {
 			if(get_trace_out().get())
@@ -283,7 +285,7 @@ template<class Scalar>
 Teuchos::RefCountPtr<const LinearOp<Scalar> >
 LinearOpWithSolveIter<Scalar>::preconditioner() const
 {
-	assert(0); // ToDo: Return a composite operator for M_tilde_left_inv*M_tilde_right_inv
+	TEST_FOR_EXCEPT(true); // ToDo: Return a composite operator for M_tilde_left_inv*M_tilde_right_inv
 	return state_.M_tilde_left_inv;
 }
 

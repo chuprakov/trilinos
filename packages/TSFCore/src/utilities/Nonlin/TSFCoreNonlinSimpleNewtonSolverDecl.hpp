@@ -69,6 +69,17 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, eta )
 
 	///
+	/** Stream that summary outputting will be sent to.
+	 */
+	STANDARD_NONCONST_COMPOSITION_MEMBERS( std::ostream, summaryOut )
+
+	///
+	/** Set the leading string that will be printed at the beginning of
+	 * each new line of summary output.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, leadingSummaryOutputStr )
+
+	///
 	SimpleNewtonSolver(
 		const Scalar   tol                    = 1e-8 
 		,const int     maxNewtonIter          = 1000
@@ -83,6 +94,11 @@ public:
 	 *             <tt>np->initialize()</tt> must be called prior to calling this function.
 	 * @param  y   [in/out] On input, <tt>y</tt> contains the initial guess.  On output, <tt>y</tt>
 	 *             contains the solution (or partial solution) of the set of nonlinear equations.
+	 * @param  out [in/out] Basic outputting stream.  If <tt>out!=NULL</tt> then <tt>*out</tt> will get
+	 *             basic info about the solution procedure.
+	 * @param  dumpAll
+	 *             [in] If <tt>true</tt> then lots of stuff will be dumpped to the <tt>*out</tt> if
+	 *             <tt>out!=NULL</tt>.  This should only be set to <tt>true</tt> to debug very small problems.
 	 *
 	 * If a linesearch failure or other problem occurs, then an <tt>Exceptions::SolverBreakdown</tt>
 	 * exception object will be thrown and <tt>*y</tt> will contain the current solution.
