@@ -34,7 +34,8 @@ TSF_INCLUDES = -I$(top_srcdir)/src/Support -I$(top_srcdir)/src/Vectors \
 
 #JW added all paths beginning with -I$(top_builddir) so that TSF could be
 #configured and built in a build tree separate from the source tree.
-AM_CPPFLAGS = $(TSF_INCLUDES)	-I$(top_srcdir)/../aztecoo/src -I$(top_srcdir)/../ifpack/src -I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src -I$(top_builddir)/../ifpack/src -I$(top_builddir)/../aztecoo/src
+AM_CPPFLAGS = $(TSF_INCLUDES)	-I$(top_srcdir)/../aztecoo/src -I$(top_srcdir)/../ifpack/src -I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src -I$(top_builddir)/../ifpack/src -I$(top_builddir)/../aztecoo/src \
+-I$(top_builddir)/../teuchos/src
 
 #JW changed top_srcdir to top_builddir in each line below.  If source and 
 #build directories are not the same, the libraries will be located in the
@@ -45,5 +46,6 @@ TSF_LIBS = $(TRILINOS_TEMPLATE_OBJS) -L$(top_builddir)/src \
 	-L$(top_builddir)/../epetra/src \
 	-L$(top_builddir)/../ml/src \
 	-L$(top_builddir)/../triutils/src \
-	-lTSF $(ML_LIB) -laztecoo -lifpack -lepetra -ltriutils 
+	-L$(top_builddir)/../teuchos/src \
+	-lTSF $(ML_LIB) -laztecoo -lifpack -lepetra -ltriutils -lteuchos
 
