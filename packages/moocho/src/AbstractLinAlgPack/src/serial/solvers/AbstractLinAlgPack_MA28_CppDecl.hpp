@@ -57,7 +57,7 @@ struct MA28ED_struct {
 	f_logical	lblock;
 	f_logical	grow;
 };
-extern MA28ED_struct MA28ED; // link to fortan common block
+extern MA28ED_struct FORTRAN_NAME(MA28ED); // link to fortan common block
 
 //  COMMON /MA28FD/ EPS, RMIN, RESID, IRNCP, ICNCP, MINIRN, MINICN,
 // * IRANK, ABORT1, ABORT2
@@ -76,7 +76,7 @@ struct MA28FD_struct {
 	f_logical	abort1;
 	f_logical	abort2;
 };
-extern MA28FD_struct MA28FD; // link to fortan common block
+extern MA28FD_struct FORTRAN_NAME(MA28FD); // link to fortan common block
 
 
 //  COMMON /MA28GD/ IDISP
@@ -84,7 +84,7 @@ extern MA28FD_struct MA28FD; // link to fortan common block
 struct MA28GD_struct {
 	f_int		idisp[2];
 };
-extern MA28GD_struct MA28GD; // link to fortan common block
+extern MA28GD_struct FORTRAN_NAME(MA28GD); // link to fortan common block
 
 //  COMMON /MA28HD/ TOL, THEMAX, BIG, DXMAX, ERRMAX, DRES, CGCE,
 // * NDROP, MAXIT, NOITER, NSRCH, ISTART, LBIG
@@ -106,7 +106,7 @@ struct MA28HD_struct {
 	f_int		istart;
 	f_logical	lbig;
 };
-extern MA28HD_struct MA28HD; // link to fortan common block
+extern MA28HD_struct FORTRAN_NAME(MA28HD); // link to fortan common block
 
 //  COMMON /MA30ED/ LP, ABORT1, ABORT2, ABORT3
 //  INTEGER LP
@@ -117,7 +117,7 @@ struct MA30ED_struct {
 	f_logical	abort2;
 	f_logical	abort3;
 };
-extern MA30ED_struct MA30ED; // link to fortan common block
+extern MA30ED_struct FORTRAN_NAME(MA30ED); // link to fortan common block
 
 //  COMMON /MA30FD/ IRNCP, ICNCP, IRANK, IRN, ICN
 //  INTEGER IRNCP, ICNCP, IRANK, IRN, ICN
@@ -128,7 +128,7 @@ struct MA30FD_struct {
 	f_int		minirn;
 	f_int		minicn;
 };
-extern MA30FD_struct MA30FD; // link to fortan common block
+extern MA30FD_struct FORTRAN_NAME(MA30FD); // link to fortan common block
 
 //  COMMON /MA30GD/ EPS, RMIN
 //  DOUBLE PRECISION EPS, RMIN
@@ -136,14 +136,14 @@ struct MA30GD_struct {
 	f_dbl_prec	eps;
 	f_dbl_prec	rmin;
 };
-extern MA30GD_struct MA30GD; // link to fortan common block
+extern MA30GD_struct FORTRAN_NAME(MA30GD); // link to fortan common block
 
 //  COMMON /MA30HD/ RESID
 //  DOUBLE PRECISION RESID
 struct MA30HD_struct {
 	f_dbl_prec	resid;
 };
-extern MA30HD_struct MA30HD; // link to fortan common block
+extern MA30HD_struct FORTRAN_NAME(MA30HD); // link to fortan common block
 
 //  COMMON /MA30ID/ TOL, BIG, NDROP, NSRCH, LBIG
 //  INTEGER NDROP, NSRCH
@@ -156,7 +156,7 @@ struct MA30ID_struct {
 	f_int		nsrch;
 	f_logical	lbig;
 };
-extern MA30ID_struct MA30ID; // link to fortan common block
+extern MA30ID_struct FORTRAN_NAME(MA30ID); // link to fortan common block
 
 //  COMMON /MC23BD/ LP,NUMNZ,NUM,LARGE,ABORT
 //  INTEGER LP, NUMNZ, NUM, LARGE
@@ -168,7 +168,7 @@ struct MC23BD_struct {
 	f_int		large;
 	f_logical	abort;
 };
-extern MC23BD_struct MC23BD; // link to fortan common block
+extern MC23BD_struct FORTRAN_NAME(MC23BD); // link to fortan common block
 
 
 } // end extern "C"
