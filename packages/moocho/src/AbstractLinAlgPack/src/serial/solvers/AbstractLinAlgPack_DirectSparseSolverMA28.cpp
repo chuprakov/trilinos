@@ -18,6 +18,7 @@
 #include <assert.h>
 
 #include <ostream>
+#include <algorithm>
 
 #include "SparseSolverPack/include/DirectSparseSolverMA28.h"
 #include "SparseSolverPack/include/MatrixScaling_Strategy.h"
@@ -27,6 +28,16 @@
 #include "ThrowException.h"
 #include "WorkspacePack.h"
 #include "dynamic_cast_verbose.h"
+
+namespace {
+	// A cast to const is needed because the standard does not return a reference from
+	// valarray<>::operator[]() const.
+	template <class T>
+	std::valarray<T>& cva(const std::valarray<T>& va )
+	{
+		return const_cast<std::valarray<T>&>(va);
+	}
+}
 
 namespace SparseSolverPack {
 
@@ -142,7 +153,7 @@ void DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(
 	// Solve for the rhs
 	FortranTypes::f_int mtype = ( (M_trans == BLAS_Cpp::no_trans) ? 1 : 0 );
 	fs.ma28_.ma28cd(
-		fs.max_n_, &fn.a_[0], fs.licn_, &fs.icn_[0], &fs.ikeep_[0]
+		fs.max_n_, &cva(fn.a_)[0], fs.licn_, &cva(fs.icn_)[0], &cva(fs.ikeep_)[0]
 		,xfull.raw_ptr(), w.raw_ptr(), mtype );
 
 	// Scale the lhs
@@ -389,15 +400,15 @@ void DirectSparseSolverMA28::imp_factor(
 	// Scale the matrix
 	if( fs.matrix_scaling_.get() )
 		fs.matrix_scaling_->scale_matrix(
-			fs.m_, fs.n_, fs.nz_, &fs.ivect_[0], &fs.jvect_[0], false
+			fs.m_, fs.n_, fs.nz_, &cva(fs.ivect_)[0], &cva(fs.jvect_)[0], false
 			,&fn.a_[0]
 			);
 
 	// Factor the matrix
 	index_type iflag = 0;
 	fs.ma28_.ma28bd(
-		fs.max_n_, fs.nz_, &fn.a_[0], fs.licn_, &fs.ivect_[0], &fs.jvect_[0], &fs.icn_[0]
-		,&fs.ikeep_[0], &iw[0], &w[0], &iflag
+		fs.max_n_, fs.nz_, &fn.a_[0], fs.licn_, &cva(fs.ivect_)[0], &cva(fs.jvect_)[0], &cva(fs.icn_)[0]
+		,&cva(fs.ikeep_)[0], &iw[0], &w[0], &iflag
 		);
 
 	if(iflag != 0 && out)
