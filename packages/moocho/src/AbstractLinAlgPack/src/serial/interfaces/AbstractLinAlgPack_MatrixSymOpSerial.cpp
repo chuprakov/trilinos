@@ -134,7 +134,7 @@ void MatrixSymWithOpSerial::Mp_StMtMtM(
 	this->Mp_StMtMtM(
 		&MatrixDenseSymMutableEncap(symwo_lhs)(), alpha, dummy
 		,dyn_cast<const MatrixWithOpSerial>(mwo_rhs), mwo_rhs_trans
-		, beta );
+		,beta );
 }
 
 }	// end namespace SparseLinAlgPack 
