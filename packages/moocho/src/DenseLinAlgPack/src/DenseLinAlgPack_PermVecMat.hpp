@@ -18,8 +18,12 @@
   * For Vector and VectorSlice pivot funcitions the #perm# argument
   * gives the mapping from the new sequence to the old sequence.
   * The statement #i_old = perm(i_new)# gives the indice in the
-  * old vector.  After the permutation is perform the postcondition:\\
-  * #     perm_vs(i) == vs(perm(i))#, for i = 1,2,...,#vs.size()#\\
+  * old vector.  After the permutation is performed the postcondition:
+  \begin{verbatim}
+
+    perm_vs(i) == vs(perm(i)), for i = 1,2,...,vs.size()
+
+  \end{verbatim}
   * is true.
   *
   * For the GenMatrix permutation functions the #row_perm# argument
