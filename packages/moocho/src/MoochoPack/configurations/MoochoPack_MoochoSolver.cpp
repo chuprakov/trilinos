@@ -41,6 +41,7 @@
 #include "StringToBool.h"
 #include "WorkspacePack.h"
 #include "ThrowException.h"
+#include "oblackholestream.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -55,6 +56,12 @@ rSQPppSolver::rSQPppSolver()
 	,algo_timing_(true)
 	,generate_stats_file_(false)
 	,print_opt_grp_not_accessed_(true)
+	,throw_exception_(false)
+	,do_console_outputting_(true)
+	,do_summary_outputting_(true)
+	,do_journal_outputting_(true)
+	,do_algo_outputting_(true)
+	,error_out_used_(ReferenceCountingPack::rcp(&std::cerr,false))
 {}
 
 void rSQPppSolver::set_nlp(const nlp_ptr_t& nlp)
@@ -101,6 +108,7 @@ void rSQPppSolver::set_options( const options_ptr_t& options )
 		&config = solver_.get_config();  // removing the options object for the configuration
 	if(config.get())                     // object.
 		config->set_options(NULL);       // ...
+	options_used_ = options;
 	reconfig_solver_ = true;
 }
 
@@ -108,6 +116,37 @@ const rSQPppSolver::options_ptr_t&
 rSQPppSolver::get_options() const
 {
 	return options_;
+}
+
+void rSQPppSolver::set_error_handling(
+	bool                    throw_exception
+	,const ostream_ptr_t&   error_out
+	)
+
+{
+	namespace rcp = ReferenceCountingPack;
+	if( error_out_.get() != NULL ) {
+		if( error_out.get() == NULL )
+			error_out_used_ = rcp::rcp(&std::cerr,false);
+		else 
+			error_out_used_ = error_out;
+	}
+	else if( error_out.get() != NULL ) {
+		error_out_used_ = error_out;
+	}
+	throw_exception_ = throw_exception;
+	error_out_       = error_out;
+}
+
+bool rSQPppSolver::throw_exception() const
+{
+	return throw_exception();
+}
+
+const rSQPppSolver::ostream_ptr_t&
+rSQPppSolver::error_out() const
+{
+	return error_out_;
 }
 
 void rSQPppSolver::set_console_out( const ostream_ptr_t& console_out )
@@ -170,165 +209,202 @@ rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
 	using StopWatchPack::stopwatch;
 	namespace rcp = ReferenceCountingPack;
 	using rcp::ref_count_ptr;
+	typedef ReducedSpaceSQPPack::rSQPSolverClientInterface    solver_interface_t;
 
-	update_solver();
+	stopwatch                             timer;
+	bool                                  threw_exception = false;
+	ESolutionStatus                       solve_return    = SOLVE_RETURN_EXCEPTION;
+	solver_interface_t::EFindMinReturn    r_find_min      = solver_interface_t::SOLUTION_FOUND;
 
-	ESolutionStatus solve_return    = SOLVE_RETURN_EXCEPTION;
-	bool            threw_exception = false;
-
-	solver_.set_algo_timing(algo_timing_);
-
-	//
-	// Test the nlp if needed
-	//
-	
-	if(test_nlp_) {
+	try {
 		
-		// Set the scaling for the NLP
+		update_solver();
+	
 		nlp_->scale_f(obj_scale_);
 
 		//
 		// Test the nlp if needed
 		//
 		
-		if( test_nlp_ ) {
-			const char msg1[] = "\ntest_nlp = true: Testing the NLP!\n";
-			*summary_out_used_ << msg1;
-			*journal_out_used_ << msg1;
-			if(NLPFirstOrderInfo* nlp_foi = dynamic_cast<NLPFirstOrderInfo*>(nlp_.get())) {
-				const char msg[] = "\nTesting the supported NLPFirstOrderInfo interface ...\n";
-				*summary_out_used_ << msg;
-				*journal_out_used_ << msg;
-				const bool
-					result = NLPInterfacePack::test_nlp_first_order_info(nlp_foi,options_used_.get(),journal_out_used_.get());
-				if(!result) {
-					const char msg[] = "\nTest failed! exiting!\n";
-					*summary_out_used_ << msg;
-					*journal_out_used_ << msg;
-					solve_return = SOLVE_RETURN_NLP_TEST_FAILED;
-					return solve_return;
+		if(test_nlp_) {
+			
+			//
+			// Test the nlp if needed
+			//
+			
+			if( test_nlp_ ) {
+				const char msg1[] = "\ntest_nlp = true: Testing the NLP!\n";
+				if(do_summary_outputting())
+					*summary_out_used_ << msg1;
+				if(do_journal_outputting())
+					*journal_out_used_ << msg1;
+				if(NLPFirstOrderInfo* nlp_foi = dynamic_cast<NLPFirstOrderInfo*>(nlp_.get())) {
+					const char msg[] = "\nTesting the supported NLPFirstOrderInfo interface ...\n";
+					if(do_summary_outputting())
+						*summary_out_used_ << msg;
+					if(do_journal_outputting())
+						*journal_out_used_ << msg;
+					const bool
+						result = NLPInterfacePack::test_nlp_first_order_info(
+							nlp_foi,options_used_.get()
+							,do_journal_outputting() ? journal_out_used_.get() : NULL
+							);
+					if(!result) {
+						const char msg[] = "\nTest failed! exiting!\n";
+						if(do_summary_outputting())
+							*summary_out_used_ << msg;
+						if(do_journal_outputting())
+							*journal_out_used_ << msg;
+						solve_return = SOLVE_RETURN_NLP_TEST_FAILED;
+						return solve_return;
+					}
 				}
-			}
-			if(NLPFirstOrderDirect* nlp_fod = dynamic_cast<NLPFirstOrderDirect*>(nlp_.get())) {
-				const char msg[] = "\nTesting the supported NLPFirstOrderDirect interface ...\n";
-				*summary_out_used_ << msg;
-				*journal_out_used_ << msg;
-				const bool
-					result = NLPInterfacePack::test_nlp_first_order_direct(nlp_fod,options_used_.get(),journal_out_used_.get());
-				if(!result) {
-					const char msg[] = "\nTest failed! exiting!\n";
-					*summary_out_used_ << msg;
-					*journal_out_used_ << msg;
-					solve_return = SOLVE_RETURN_NLP_TEST_FAILED;
-					return solve_return;
+				if(NLPFirstOrderDirect* nlp_fod = dynamic_cast<NLPFirstOrderDirect*>(nlp_.get())) {
+					const char msg[] = "\nTesting the supported NLPFirstOrderDirect interface ...\n";
+					if(do_summary_outputting())
+						*summary_out_used_ << msg;
+					if(do_journal_outputting())
+						*journal_out_used_ << msg;
+					const bool
+						result = NLPInterfacePack::test_nlp_first_order_direct(
+							nlp_fod,options_used_.get()
+							,do_journal_outputting() ? journal_out_used_.get() : NULL
+							);
+					if(!result) {
+						const char msg[] = "\nTest failed! exiting!\n";
+						if(do_summary_outputting())
+							*summary_out_used_ << msg;
+						if(do_journal_outputting())
+							*journal_out_used_ << msg;
+						solve_return = SOLVE_RETURN_NLP_TEST_FAILED;
+						return solve_return;
+					}
 				}
+				const char msg2[] = "\n... end testing of nlp\n";
+				if(do_summary_outputting())
+					*summary_out_used_ << msg2;
+				if(do_journal_outputting())
+					*journal_out_used_ << msg2;
 			}
-			const char msg2[] = "\n... end testing of nlp\n";
-			*summary_out_used_ << msg2;
-			*journal_out_used_ << msg2;
+			
 		}
-
-	}
-	
-	//
-	// Solve the NLP
-	//
-
-	stopwatch timer;
-
-	typedef ReducedSpaceSQPPack::rSQPSolverClientInterface    solver_interface_t;
-	solver_interface_t::EFindMinReturn                        r_find_min;
-
-	*journal_out_used_
-		<< "\n*** Starting rSQP iterations ...\n\n";	
-	
-	try {
+		
+		//
+		// Solve the NLP
+		//
+		
+		if(do_journal_outputting())
+			*journal_out_used_
+				<< "\n*** Starting rSQP iterations ...\n\n";	
+		
+		solver_.set_algo_timing(algo_timing_);
 		timer.start();
 		r_find_min = solver_.find_min();
-	}
+		
+    }
 	catch(const std::exception& excpt) {
-		*summary_out_used_ << "\nCaught a std::exception: " << excpt.what() << endl;
-		*journal_out_used_ << "\nCaught a std::exception: " << excpt.what() << endl;
-		std::cerr << "\nCaught a std::exception: " << excpt.what() << endl;
+		if(do_summary_outputting())
+			*summary_out_used_ << "\nCaught a std::exception: " << excpt.what() << endl;
+		if(do_journal_outputting())
+			*journal_out_used_ << "\nCaught a std::exception: " << excpt.what() << endl;
+		*error_out_used_   << "\nCaught a std::exception: " << excpt.what() << endl;
+		if(throw_exception_)
+			throw;
 		threw_exception = true;
 	}
 	catch(...) {
-		*summary_out_used_ << "\nCaught an unknown exception\n";
-		*journal_out_used_ << "\nCaught an unknown exception\n";
-		std::cerr << "\nCaught an unknown exception\n";
+		if(do_summary_outputting())
+			*summary_out_used_ << "\nCaught an unknown exception\n";
+		if(do_journal_outputting())
+			*journal_out_used_ << "\nCaught an unknown exception\n";
+		*error_out_used_   << "\nCaught an unknown exception\n";
+		if(throw_exception_)
+			throw;
 		threw_exception = true;
 	}
+	
 	timer.stop();
 	
 	if(threw_exception) {
-		*summary_out_used_	<< "\n\n****************************\n"
-							<< "**** Threw an exception ****\n";
-		std::cerr << "Threw an exception!\n";
+		if(do_summary_outputting())
+			*summary_out_used_	<< "\n\n****************************\n"
+								<< "**** Threw an exception ****\n";
 		solve_return = SOLVE_RETURN_EXCEPTION;
 	}
 	else {
 		switch( r_find_min ) {
 		    case solver_interface_t::SOLUTION_FOUND: {
-				*summary_out_used_	<< "\n\n************************\n"
-									<< "**** Solution Found ****\n";
-				std::cerr << "Solution Found!\n";
+				if(do_summary_outputting())
+					*summary_out_used_	<< "\n\n************************\n"
+										<< "**** Solution Found ****\n";
+				*error_out_used_    << "Solution Found!\n";
 				solve_return = SOLVE_RETURN_SOLVED;
 				break;
 			}
 		    case solver_interface_t::MAX_ITER_EXCEEDED: {
-				*summary_out_used_	<< "\n\n**********************************************\n"
-									<< "**** Maximun number of iteration exceeded ****\n";
-				std::cerr << "Maximun number of iteration exceeded!\n";
+				if(do_summary_outputting())
+					*summary_out_used_	<< "\n\n**********************************************\n"
+										<< "**** Maximun number of iteration exceeded ****\n";
+				*error_out_used_    << "Maximun number of iteration exceeded!\n";
 				solve_return = SOLVE_RETURN_MAX_ITER;
 				break;
 			}
 		    case solver_interface_t::MAX_RUN_TIME_EXCEEDED: {
-				*summary_out_used_	<< "\n\n**********************************\n"
-									<< "**** Maximun runtime exceeded ****\n";
-				std::cerr << "Maximun runtime exceeded!\n";
+				if(do_summary_outputting())
+					*summary_out_used_	<< "\n\n**********************************\n"
+										<< "**** Maximun runtime exceeded ****\n";
+				*error_out_used_    << "Maximun runtime exceeded!\n";
 				solve_return = SOLVE_RETURN_MAX_RUN_TIME;
 				break;
 			}
 		    case solver_interface_t::ALGORITHMIC_ERROR: {
-				*summary_out_used_	<< "\n\n*********************************************\n"
-									<< "**** Some error occured in the algorithm ****\n";
-				std::cerr << "Some algorithmic error occured!\n";
+				if(do_summary_outputting())
+					*summary_out_used_	<< "\n\n*********************************************\n"
+										<< "**** Some error occured in the algorithm ****\n";
+				*error_out_used_    << "Some algorithmic error occured!\n";
 				solve_return = SOLVE_RETURN_EXCEPTION;
 				break;
 			}
 		}
 	}
 	
-	*summary_out_used_	<< "\n  total time = " << timer.read() << " sec.\n";
-
-	if( solver_.algo_timing() )
-		solver_.print_algorithm_times( *summary_out_used_ );
+	if(do_summary_outputting()) {
+		*summary_out_used_	<< "\n  total time = " << timer.read() << " sec.\n";
+		if( solver_.algo_timing() )
+			solver_.print_algorithm_times( *summary_out_used_ );
+	}
 	
 	// Print workspace usage statistics
-	*summary_out_used_
-		<< "\n*** Statistics for autmatic array workspace:"
-		<< "\nNumber of megabytes of preallocated workspace                = "
-		<< workspace_MB_
-		<< "\nNumber of allocations using preallocated workspace           = "
-		<< WorkspacePack::default_workspace_store->num_static_allocations()
-		<< "\nNumber of dynamic allocations beyond preallocated workspace  = "
-		<< WorkspacePack::default_workspace_store->num_dyn_allocations();
+	if(do_summary_outputting())
+		*summary_out_used_
+			<< "\n*** Statistics for autmatic array workspace:"
+			<< "\nNumber of megabytes of preallocated workspace                = "
+			<< workspace_MB_
+			<< "\nNumber of allocations using preallocated workspace           = "
+			<< WorkspacePack::default_workspace_store->num_static_allocations()
+			<< "\nNumber of dynamic allocations beyond preallocated workspace  = "
+			<< WorkspacePack::default_workspace_store->num_dyn_allocations();
 	
 	// Print which options groups were not read
-	if(print_opt_grp_not_accessed_) {
+	if( do_algo_outputting() && print_opt_grp_not_accessed_ ) {
 		*algo_out_used_
 			<<	"\n***************************************************************\n"
 			"Warning, the following options groups where not accessed.\n"
 			"An options group may not be accessed if it is not looked for\n"
 			"or if an \"optional\" options group was looked from and the user\n"
 			"spelled it incorrectly:\n\n";
-		options_used_->print_unaccessed_options_groups(*algo_out_used_);
+		if(options_used_.get())
+			options_used_->print_unaccessed_options_groups(*algo_out_used_);
 	}
 
-	algo_out_used_->flush();
-	summary_out_used_->flush();
-	journal_out_used_->flush();
-	if(console_out_used_.get()) console_out_used_->flush();
+	if(do_console_outputting())
+		console_out_used_->flush();
+	if(do_summary_outputting())
+		summary_out_used_->flush();
+	if(do_journal_outputting())
+		journal_out_used_->flush();
+	if(do_algo_outputting())
+		algo_out_used_->flush();
 	
 	return solve_return;
 	
@@ -362,43 +438,14 @@ void rSQPppSolver::update_solver() const
 	using ofsp::StringToIntMap;
 	using ofsp::StringToBool;
 
-	//
+	///
 	// Validate the input
 	//
-
+	
 	THROW_EXCEPTION(
 		nlp_.get() == NULL, std::logic_error
 		,"rSQPSolver::update_solver() : Error, this->get_nlp().get() can not be NULL!" );
-
-	//
-	// Get the output streams if needed
-	//
-	
-	if( summary_out_used_.get()==NULL ) {
-		if( summary_out_.get() == NULL )
-			summary_out_used_ = rcp::rcp(new std::ofstream("rSQPppSummary.out"));
-		else
-			summary_out_used_ = summary_out_;
-	}
-	if( journal_out_used_.get() == NULL ) {
-		if( journal_out_.get() == NULL )
-			journal_out_used_ = rcp::rcp(new std::ofstream("rSQPppJournal.out"));
-		else
-			journal_out_used_ = journal_out_;
-	}
-	if( algo_out_used_.get() == NULL ) {
-		if( algo_out_.get() == NULL )
-			algo_out_used_ = rcp::rcp(new std::ofstream("rSQPppAlgo.out"));
-		else
-			algo_out_used_ = algo_out_;
-	}
-	if( console_out_used_.get() == NULL ) {
-		if( console_out_.get() != NULL )
-			console_out_used_ = console_out_;
-		else
-			console_out_used_ = NULL;
-	}
-
+		
 	//
 	// Get the options (or lack of)
 	//
@@ -406,32 +453,38 @@ void rSQPppSolver::update_solver() const
 	if( options_used_.get() == NULL ) {
 		if( options_.get() == NULL ) {
 			std::ifstream options_in("rSQPpp.opt");
-			options_used_ = ( options_in
-							  ? rcp::rcp<options_ptr_t::element_type>(new OptionsFromStream(options_in))
-							  : rcp::rcp<options_ptr_t::element_type>(NULL)
-				);
+			if(options_in)
+				options_used_ = rcp::rcp(new OptionsFromStream(options_in));
+			else
+				options_used_ = NULL;
 		}
 		else
 			options_used_ = options_;
 	}
-
+	
 	//
 	// Read in some options for "rSQPppSolver" if needed
 	//
-	
-	if( reconfig_solver_ || solver_.get_track().get() == NULL ) {
 
+	bool rSQPppSolver_opt_grp_existed = true;
+	if( options_used_.get() && (reconfig_solver_ || solver_.get_track().get() == NULL ) )
+	{
+		
 		options_used_->reset_unaccessed_options_groups();
-
+		
 		const std::string optgrp_name = "rSQPppSolver";
 		OptionsFromStream::options_group_t optgrp = options_used_->options_group( optgrp_name );
 		if( OptionsFromStream::options_group_exists( optgrp ) ) {
 			
-			const int num_opt = 7;
+			const int num_opt = 11;
 			enum EOptions {
 				WORKSPACE_MB
 				,OBJ_SCALE
 				,TEST_NLP
+				,CONSOLE_OUTPUTTING
+				,SUMMARY_OUTPUTTING
+				,JOURNAL_OUTPUTTING
+				,ALGO_OUTPUTTING
 				,PRINT_ALGO
 				,ALGO_TIMING
 				,GENERATE_STATS_FILE
@@ -441,6 +494,10 @@ void rSQPppSolver::update_solver() const
 				"workspace_MB"
 				,"obj_scale"
 				,"test_nlp"
+				,"console_outputting"
+				,"summary_outputting"
+				,"journal_outputting"
+				,"algo_outputting"
 				,"print_algo"
 				,"algo_timing"
 				,"generate_stats_file"
@@ -460,6 +517,18 @@ void rSQPppSolver::update_solver() const
 					case TEST_NLP:
 						test_nlp_ = StringToBool( "test_nlp", ofsp::option_value(itr).c_str() );
 						break;
+					case CONSOLE_OUTPUTTING:
+						do_console_outputting_ = StringToBool( "console_outputting", ofsp::option_value(itr).c_str() );
+						break;
+					case SUMMARY_OUTPUTTING:
+						do_summary_outputting_ = StringToBool( "summary_outputting", ofsp::option_value(itr).c_str() );
+						break;
+					case JOURNAL_OUTPUTTING:
+						do_journal_outputting_ = StringToBool( "journal_outputting", ofsp::option_value(itr).c_str() );
+						break;
+					case ALGO_OUTPUTTING:
+						do_algo_outputting_ = StringToBool( "algo_outputting", ofsp::option_value(itr).c_str() );
+						break;
 					case PRINT_ALGO:
 						print_algo_ = StringToBool( "print_algo", ofsp::option_value(itr).c_str() );
 						break;
@@ -478,89 +547,146 @@ void rSQPppSolver::update_solver() const
 			}
 		}
 		else {
-			*algo_out_used_
-				<< "\nWarning!  The options group \'rSQPppSolver\' was not found.\n"
-				"Using a default set of options ...\n";
+			rSQPppSolver_opt_grp_existed = false;
 		}
 	}
 
+	//
+	// Get the output streams if needed
+	//
+	
+	if( do_console_outputting() && console_out_used_.get() == NULL ) {
+		if( console_out_.get() != NULL )
+			console_out_used_ = console_out_;
+		else
+			console_out_used_ = rcp::rcp(&std::cout,false);
+	}
+	if( do_summary_outputting() && summary_out_used_.get()==NULL ) {
+		if( summary_out_.get() == NULL )
+			summary_out_used_ = rcp::rcp(new std::ofstream("rSQPppSummary.out"));
+		else
+			summary_out_used_ = summary_out_;
+	}
+	if( do_journal_outputting() && journal_out_used_.get() == NULL ) {
+		if( journal_out_.get() == NULL )
+			journal_out_used_ = rcp::rcp(new std::ofstream("rSQPppJournal.out"));
+		else
+			journal_out_used_ = journal_out_;
+	}
+	else {
+		journal_out_used_ = rcp::rcp(new IOStreamHelperPack::oblackholestream());
+	}
+	if( do_algo_outputting() && algo_out_used_.get() == NULL ) {
+		if( algo_out_.get() == NULL )
+			algo_out_used_ = rcp::rcp(new std::ofstream("rSQPppAlgo.out"));
+		else
+			algo_out_used_ = algo_out_;
+	}
+	
+	if( do_algo_outputting() && !rSQPppSolver_opt_grp_existed )
+		*algo_out_used_
+			<< "\nWarning!  The options group \'rSQPppSolver\' was not found.\n"
+			"Using a default set of options ...\n";
+
+
+
+	//
+	// Configure the algorithm
+	//
+		
 	bool did_reconfigured_solver = false;
 	if(reconfig_solver_) {
 		did_reconfigured_solver = true;
-
+			
 		//
 		// Print the headers for the output files
 		//
-		
+			
 		int w = 15;
 		int prec = 8;
-		summary_out_used_->precision(prec);
-		*journal_out_used_ << std::setprecision(prec) << std::scientific;
+		if(do_summary_outputting())
+			summary_out_used_->precision(prec);
+		if(do_journal_outputting())
+			*journal_out_used_ << std::setprecision(prec) << std::scientific;
 
-		*algo_out_used_
-			<< "\n********************************************************************"
-			<< "\n*** Algorithm information output                                 ***"
-			<< "\n***                                                              ***"
-			<< "\n*** Below, information about how the the rSQP++ algorithm is     ***"
-			<< "\n*** setup is given and is followed by detailed printouts of the  ***"
-			<< "\n*** contents of the algorithm state object (i.e. iteration       ***"
-			<< "\n*** quantities) and the algorithm description printout           ***"
-			<< "\n*** (if the option rSQPppSolver::print_algo = true is set).      ***"
-			<< "\n********************************************************************\n";
-		*summary_out_used_
-			<< "\n********************************************************************"
-			<< "\n*** Algorithm iteration summary output                           ***"
-			<< "\n***                                                              ***"
-			<< "\n*** Below, a summary table of the SQP iterations is given as     ***"
-			<< "\n*** well as a table of the CPU times for each step (if the       ***"
-			<< "\n*** option rSQPppSolver::algo_timing = true is set).             ***"
-			<< "\n********************************************************************\n";
-		*journal_out_used_
-			<< "\n********************************************************************"
-			<< "\n*** Algorithm iteration detailed journal output                  ***"
-			<< "\n***                                                              ***"
-			<< "\n*** Below, detailed information about the SQP algorithm is given ***"
-			<< "\n*** while it is running.  The amount of information that is      ***"
-			<< "\n*** produced can be specified using the option                   ***"
-			<< "\n*** rSQPSolverClientInterface::journal_output_level (the default ***"
-			<< "\n*** is PRINT_NOTHING and produces no output                      ***"
-			<< "\n********************************************************************\n";
-
+		if(do_algo_outputting())
+			*algo_out_used_
+				<< "\n********************************************************************"
+				<< "\n*** Algorithm information output                                 ***"
+				<< "\n***                                                              ***"
+				<< "\n*** Below, information about how the the rSQP++ algorithm is     ***"
+				<< "\n*** setup is given and is followed by detailed printouts of the  ***"
+				<< "\n*** contents of the algorithm state object (i.e. iteration       ***"
+				<< "\n*** quantities) and the algorithm description printout           ***"
+				<< "\n*** (if the option rSQPppSolver::print_algo = true is set).      ***"
+				<< "\n********************************************************************\n";
+		if(do_summary_outputting())
+			*summary_out_used_
+				<< "\n********************************************************************"
+				<< "\n*** Algorithm iteration summary output                           ***"
+				<< "\n***                                                              ***"
+				<< "\n*** Below, a summary table of the SQP iterations is given as     ***"
+				<< "\n*** well as a table of the CPU times for each step (if the       ***"
+				<< "\n*** option rSQPppSolver::algo_timing = true is set).             ***"
+				<< "\n********************************************************************\n";
+		if(do_journal_outputting())
+			*journal_out_used_
+				<< "\n********************************************************************"
+				<< "\n*** Algorithm iteration detailed journal output                  ***"
+				<< "\n***                                                              ***"
+				<< "\n*** Below, detailed information about the SQP algorithm is given ***"
+				<< "\n*** while it is running.  The amount of information that is      ***"
+				<< "\n*** produced can be specified using the option                   ***"
+				<< "\n*** rSQPSolverClientInterface::journal_output_level (the default ***"
+				<< "\n*** is PRINT_NOTHING and produces no output                      ***"
+				<< "\n********************************************************************\n";
+		
 		// Echo options.
-		*summary_out_used_ << "\n*** Echoing input options ...\n";
-		options_used_->print_options( *summary_out_used_ );
-		summary_out_used_->flush();
-		*algo_out_used_ << "\n*** Echoing input options ...\n";
-		options_used_->print_options( *algo_out_used_ );
-		algo_out_used_->flush();
-		*journal_out_used_ << "\n*** Echoing input options ...\n";
-		options_used_->print_options( *journal_out_used_ );
-		algo_out_used_->flush();
-
+		if(do_summary_outputting()) {
+			*summary_out_used_ << "\n*** Echoing input options ...\n";
+			if(options_used_.get())
+				options_used_->print_options( *summary_out_used_ );
+			summary_out_used_->flush();
+		}
+		if(do_algo_outputting()) {
+			*algo_out_used_ << "\n*** Echoing input options ...\n";
+			if(options_used_.get())
+				options_used_->print_options( *algo_out_used_ );
+			algo_out_used_->flush();
+		}
+		if(do_journal_outputting()) {
+			*journal_out_used_ << "\n*** Echoing input options ...\n";
+			if(options_used_.get())
+				options_used_->print_options( *journal_out_used_ );
+			journal_out_used_->flush();
+		}
+			
 		//
 		// Allocate the workspace
 		//
-		
+			
 		nlp_->initialize();
 		const int default_ws_scale = 10;
 		if( workspace_MB_ < 0.0 ) {
 			workspace_MB_ = nlp_->n() * default_ws_scale * 1e-6 * sizeof(value_type);
-			*algo_out_used_
-				<< "\nworkspace_MB < 0.0:\n"
-				<< "Setting workspace_MB = n * default_ws_scale * 1e-6 * sizeof(value_type) = "
-				<< nlp_->n() << " * " << default_ws_scale << " * 1e-6 * " << sizeof(value_type)
-				<< " = " << workspace_MB_ << " MB\n";
+			if(do_algo_outputting())
+				*algo_out_used_
+					<< "\nworkspace_MB < 0.0:\n"
+					<< "Setting workspace_MB = n * default_ws_scale * 1e-6 * sizeof(value_type) = "
+					<< nlp_->n() << " * " << default_ws_scale << " * 1e-6 * " << sizeof(value_type)
+					<< " = " << workspace_MB_ << " MB\n";
 		}
-		*summary_out_used_
-			<< "\nAllocating workspace_MB = " << workspace_MB_ << " megabytes of temporary "
-			"workspace for autmatic arrays only ...\n";
+		if(do_summary_outputting())
+			*summary_out_used_
+				<< "\nAllocating workspace_MB = " << workspace_MB_ << " megabytes of temporary "
+				"workspace for autmatic arrays only ...\n";
 		WorkspacePack::default_workspace_store
 			= rcp::rcp(new WorkspacePack::WorkspaceStoreInitializeable(1e+6*workspace_MB_));
-
+		
 		//
 		// Reconfigure the algorithm
 		//
-		
+			
 		// Get and set up the configuration object
 		config_ptr_t _config;
 		if(config_.get() == NULL)
@@ -568,46 +694,48 @@ void rSQPppSolver::update_solver() const
 		else
 			_config = config_;
 		_config->set_options( options_used_ );
-
-		{
+			
+		if( do_summary_outputting() || do_journal_outputting() || do_algo_outputting() ) {
 			std::ostringstream msg;
 			msg << "\n*** Setting up to run rSQP++ on the NLP using a "
 				<< "configuration object of type \'" << typeid(*_config).name() << "\' ...\n";
-			*algo_out_used_
-				<< msg.str();
-			*summary_out_used_
-				<< msg.str();
-			*journal_out_used_
-				<< msg.str();
+			if(do_summary_outputting())
+				*summary_out_used_ << msg.str();
+			if(do_journal_outputting())
+				*journal_out_used_ << msg.str();
+			if(do_algo_outputting())
+				*algo_out_used_ << msg.str();
 		}
-		
+			
 		// Set up the solver
-	
+			
 		solver_.set_nlp(nlp_);           // Set the NLP object
 		solver_.set_config(_config);     // Set the configuration object
-		
+			
 		// Set the client interface options
-		rSQPSolverClientInterfaceSetOptions
-			solver_options_setter( &solver_ );
-		solver_options_setter.set_options( *options_used_ );
-
+		if(options_used_.get()) {
+			rSQPSolverClientInterfaceSetOptions
+				solver_options_setter( &solver_ );
+			solver_options_setter.set_options( *options_used_ );
+		}
+		
 		did_reconfigured_solver = true;
 		reconfig_solver_    = false;
 	}
-
+		
 	//
 	// Set up the track objects if needed
 	//
-
+		
 	if( solver_.get_track().get() == NULL ) {
 		ref_count_ptr<AlgorithmTrackComposite>
 			composite_track = rcp::rcp(new AlgorithmTrackComposite(journal_out_used_));
-		composite_track->tracks().push_back(
-			rcp::rcp(new rSQPTrackSummaryStd(summary_out_used_,journal_out_used_)) );
-		if( console_out_used_.get() ) {
+		if(do_console_outputting())
 			composite_track->tracks().push_back(
 				rcp::rcp(new rSQPTrackConsoleStd(console_out_used_,journal_out_used_)) );
-		}
+		if(do_summary_outputting())
+			composite_track->tracks().push_back(
+				rcp::rcp(new rSQPTrackSummaryStd(summary_out_used_,journal_out_used_)) );
 		if(generate_stats_file_) {
 			ostream_ptr_t
 				stats_out = rcp::rcp(new std::ofstream("rSQPppStats.out"));
@@ -621,14 +749,14 @@ void rSQPppSolver::update_solver() const
 		}
 		solver_.set_track( composite_track );
 	}
-
+		
 	//
 	// Configure and print the algorithm if needed
 	//
-
-	if(did_reconfigured_solver) {
+	
+	if( did_reconfigured_solver ) {
 		solver_.configure_algorithm(algo_out_used_.get());
-		if(print_algo_)
+		if( do_algo_outputting() && print_algo_ )
 			solver_.print_algorithm(*algo_out_used_);
 	}
 	

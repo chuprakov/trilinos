@@ -136,10 +136,11 @@ public:
 	//@{
 
 	///
-	typedef ReferenceCountingPack::ref_count_ptr<NLP>                nlp_ptr_t;
+	typedef ReferenceCountingPack::ref_count_ptr<
+		NLPInterfacePack::NLP>                                       nlp_ptr_t; // full path needed by doxygen
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<
-		GeneralIterationPack::AlgorithmTrack>                        track_ptr_t;
+		GeneralIterationPack::AlgorithmTrack>                        track_ptr_t; // full path needed by doxygen
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<rSQPAlgo_Config>    config_ptr_t;
 	///
@@ -161,7 +162,14 @@ public:
 	/** @name Initialization and algorithm configuraition */
 	//@{
 
-	/// Constructs to uninitialized
+	///
+	/** Constructs to uninitialized.
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->throw_exception() == false</tt>
+	 * <li> ToDo: Fill these in!
+	 * </ul>
+	 */
 	rSQPppSolver();
 
 	///
@@ -264,6 +272,50 @@ public:
 	const options_ptr_t& get_options() const;
 
 	///
+	/** Set the error output and whether exceptions will be thrown from these functions or not.
+	 *
+	 * @param  throw_exception
+	 *                [in] If \c true, then after printing the error message (see error_out) the
+	 *                exception will be rethrown out of <tt>this->solve_nlp()</tt>.
+	 * @param  error_out
+	 *                [in] If <tt>error_out.get() != NULL</tt>, then the error messages from any thrown
+	 *                <tt>std::exception</tt> will be printed to <tt>*error_out</tt>.  Otherwise, they
+	 *                will be printed to <tt>std::cerr</tt>.
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->get_error_out().get() == error_out.get()</tt>
+	 * <li> <tt>this->throw_exception() == throw_exception()</tt>
+	 * </ul>
+	 */
+	void set_error_handling(
+		bool                    throw_exception
+		,const ostream_ptr_t&   error_out
+		);
+
+	///
+	/** Return if exceptions will be thrown out of <tt>this->solve_nlp()</tt>.
+	 */
+	bool throw_exception() const;
+
+	///
+	/** Return the <tt>std::ostream</tt> object used for error reporting on exceptions.
+	 *
+	 * If <tt>return.get() == NULL</tt> then this means that <tt>std::cerr</tt> wil be
+	 * written to.
+	 */
+	const ostream_ptr_t& error_out() const;
+
+	///
+	/** Turn on and off console outputting.
+	 */
+	void do_console_outputting(bool);
+
+	///
+	/** Return if console outputting is performed or not.
+	 */
+	bool do_console_outputting() const;
+
+	///
 	/** Set the <tt>std::ostream</tt> object to use for console output
 	 * by a <tt>rSQPTrackConsoleStd</tt> object.
 	 *
@@ -274,9 +326,9 @@ public:
 	 *                      <tt>this->set_console_out(rcp(&std::cout,false))</tt>.
 	 *
 	 * Postconditions:<ul>
-	 * <li> [<tt>console_out.get() == NULL</tt>] No output will be produced
-	 *   to any stream for console outputing by a <tt>rSQPTrackConsoleStd</tt>
-	 *   object.
+	 * <li> [<tt>summary_out.get() == NULL</tt>] The stream <tt>std::cout</tt>
+	 *   will be written to with summary output from a <tt>rSQPTrackConsoleStd</tt>
+	 *   object the next time <tt>this->solve_nlp()</tt> is called.
 	 * <li> [<tt>console_out.get() != NULL</tt>] Output appropriate for the
 	 *   console will be sent to <tt>*console_out</tt> the next time
 	 *   <tt>this->solve_nlp()</tt> is called by a <tt>rSQPTrackConsoleStd</tt>
@@ -289,12 +341,28 @@ public:
 	void set_console_out( const ostream_ptr_t& console_out );
 
 	///
-	/** Get the non-const smart pointer to the set output stream for console outputing.
+	/** Get the non-const smart pointer to the set output stream for console outputting.
 	 *
 	 * @return Returns the console_out smart pointer object pointer set by
-	 * the last call to <tt>this->set_console_out()</tt>.
+	 * the last call to <tt>this->set_console_out()</tt>.  Not that if
+	 * <tt>console_out.get() == NULL</tt> on in the last call to
+	 * <tt>this->set_console_out(console_out)</tt> this this method returns
+	 * <tt>return.get() == NULL</tt> which is a flag that the stream
+	 * \c std::cout is being written to and this function does not
+	 * provide access to that <tt>std::ofstream</tt> object (the client
+	 * can access that stream themselves).
 	 */
 	const ostream_ptr_t& get_console_out() const;
+	
+	///
+	/** Turn on and off summary outputting.
+	 */
+	void do_summary_outputting(bool);
+
+	///
+	/** Return if summary outputting is performed or not.
+	 */
+	bool do_summary_outputting() const;
 
 	///
 	/** Set the <tt>std::ostream</tt> object to use for summary output.
@@ -317,7 +385,7 @@ public:
 	void set_summary_out( const ostream_ptr_t& summary_out );
 	
 	///
-	/** Get the non-const smart pointer to the set output stream for summary outputing.
+	/** Get the non-const smart pointer to the set output stream for summary outputting.
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>return.get() == summary_out.get()</tt> where <tt>summary_out</tt> was the
@@ -333,6 +401,16 @@ public:
 	 * provide access to that <tt>std::ofstream</tt> object.
 	 */
 	const ostream_ptr_t& get_summary_out() const;
+
+	///
+	/** Turn on and off journal outputting.
+	 */
+	void do_journal_outputting(bool);
+
+	///
+	/** Return if journal outputting is performed or not.
+	 */
+	bool do_journal_outputting() const;
 
 	///
 	/** Set the <tt>std::ostream</tt> object to use for journal output by the
@@ -359,7 +437,7 @@ public:
 	void set_journal_out( const ostream_ptr_t& journal_out );
 	
 	///
-	/** Get the non-const smart pointer to the set output stream for journal outputing.
+	/** Get the non-const smart pointer to the set output stream for journal outputting.
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>return.get() == journal_out.get()</tt> where <tt>journal_out</tt> was the
@@ -375,6 +453,16 @@ public:
 	 * provide access to that <tt>std::ofstream</tt> object.
 	 */
 	const ostream_ptr_t& get_journal_out() const;
+
+	///
+	/** Turn on and off algo outputting.
+	 */
+	void do_algo_outputting(bool);
+
+	///
+	/** Return if algo outputting is performed or not.
+	 */
+	bool do_algo_outputting() const;
 
 	///
 	/** Set the <tt>std::ostream</tt> object to use for algorithm output.
@@ -401,7 +489,7 @@ public:
 	void set_algo_out( const ostream_ptr_t& algo_out );
 	
 	///
-	/** Get the non-const smart pointer to the set output stream for algo outputing.
+	/** Get the non-const smart pointer to the set output stream for algo outputting.
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>return.get() == algo_out.get()</tt> where <tt>algo_out</tt> was the
@@ -430,11 +518,57 @@ public:
 	 * <li> <tt>this->get_nlp() != NULL</tt> (throw <tt>std::logic_error</tt>)
 	 * </ul>
 	 *
+	 * <b>Algorithm configuration:</b><br>
+	 * The <tt>rSQPAlgo_Config</tt> object used to configure an optimization algorithm is specified
+	 * by <tt>*this->get_config()</tt>.  If <tt>this->get_config().get() == NULL</tt> then
+	 * the default configuratiion class <tt>rSQPAlgo_ConfigMamaJama</tt> is used.  This default
+	 * configuration class is full featured and should have a good shot at solving any NLP thrown at it.
+	 *
+	 * <b>Specifying options:</b><br>
+	 * The options used by the configuration object to configure the optimization algorithm as well
+	 * as solver tolerances, maximum number of iterations etc are taken from the
+	 * <tt>OptionsFromSteamPack::OptionsFromStream</tt> object returned from <tt>*this->get_options()</tt>.
+	 * If <tt>this->get_options().get() == NULL</tt> then an attempt is made to open the file 'rSQPpp.opt'
+	 * in the current directory.  If this file does not exist, then a default set of options is used
+	 * which will be acceptable for most NLPs.  The files <tt>\ref rSQPppSolver_opts "rSQPpp.opt.rSQPppSolver"</tt>
+	 * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "rSQPpp.opt.rSQPAlgo_ConfigMamaJama"</tt> show which
+	 * options can be used with this solver interface and a <tt>rSQPAlgo_ConfigMamaJama</tt> configuration
+	 * object respectively.  Other configuration classes will use a different set of options.  See the
+	 * documentation for those configuration classes for details.
+	 *
+	 * <b>Outputting to streams:</b><ul>
+	 * <li> [<tt>this->do_console_outputting() == true</tt>] Output will be set to <tt>*this->get_console_out()</tt>
+	 *      (or <tt>std::cout</tt> if <tt>this->get_console_out().get() == NULL</tt>) by a
+	 *      <tt>rSQPTrackConsoleStd</tt> object.
+	 * <li> [<tt>this->do_summary_outputting() == true</tt>] Output will be set to <tt>*this->get_summary_out()</tt>
+	 *      (or the file 'rSQPppSummary.out' in the current directory if <tt>this->get_summary_out().get()
+	 *      == NULL</tt>) by a <tt>rSQPTrackSummaryStd</tt> object.
+	 * <li> [<tt>this->do_journal_outputting() == true</tt>] Output will be set to <tt>*this->get_journal_out()</tt>
+	 *      (or the file 'rSQPppJournal.out' in the current directory if <tt>this->get_journal_out().get()
+	 *      == NULL</tt>) by the step objects in the optimization algorithm.
+	 * <li> [<tt>this->do_algo_outputting() == true</tt>] Output will be set to <tt>*this->get_algo_out()</tt>
+	 *      (or the file 'rSQPppAlgo.out' in the current directory if <tt>this->get_algo_out().get()
+	 *      == NULL</tt>) which contains information on how the optimization algorithm is configured and what
+	 *      the algorithm is (if the option 'rSQPppSolver::print_alg == true', see the options file
+	 *      <tt>\ref rSQPppSolver_opts "rSQPpp.opt.rSQPppSolver"</tt>).
+	 * </ul>
+	 *
+	 * If <tt>this->throw_exception() == false</tt> then any exceptions that may be thown
+	 * internally will be caught, <tt>std::exception::what()</tt>  will be printed to
+	 * <tt>*this->error_out()</tt> (or <tt>std::cerr</tt> if <tt>this->error_out().get() == NULL</tt>)
+	 * and this method will return <tt>SOLVE_RETURN_EXCEPTION</tt>.
+	 * If <tt>this->throw_exception() == true</tt>, then after the error has been reported, the
+	 * exception will be rethrown out for the caller to deal with!
+	 *
+	 * Even if no exception is thrown, then a short one-line summary message will be printed to
+	 * <tt>*this->error_out()</tt> (or <tt>std::cerr</tt> if <tt>this->error_out().get() == NULL</tt>)
+	 * stating whether the NLP was solved or not.
+	 *
+	 * ToDo: Finish documentation!
+	 *
 	 * @return The solution status:<ul>
 	 * <li> ToDo: Fill these in and discuss them!
 	 * </ul>
-	 *
-	 * ToDo: Finish documentation!
 	 */
 	ESolutionStatus solve_nlp() const;
 
@@ -493,20 +627,27 @@ private:
 	mutable bool              algo_timing_;
 	mutable bool              generate_stats_file_;
 	mutable bool              print_opt_grp_not_accessed_;
+	mutable bool              throw_exception_;
+	mutable bool              do_console_outputting_;
+	mutable bool              do_summary_outputting_;
+	mutable bool              do_journal_outputting_;
+	mutable bool              do_algo_outputting_;
 #ifndef DOXYGEN_COMPILE // We don't want to clutter up the doxygen diagrams with these
 	nlp_ptr_t                 nlp_;
 	track_ptr_t               track_;
 	config_ptr_t              config_;
 	options_ptr_t             options_;          // set by client
+	ostream_ptr_t             error_out_;        // set by client
 	ostream_ptr_t             algo_out_;         // set by client
 	ostream_ptr_t             console_out_;      // set by client
 	ostream_ptr_t             summary_out_;      // set by client
 	ostream_ptr_t             journal_out_;      // set by client
-	mutable options_ptr_t     options_used_;     // actually used (can't be NULL)
-	mutable ostream_ptr_t     algo_out_used_;    // actually used (can't be NULL)
-	mutable ostream_ptr_t     console_out_used_; // actually used (can be NULL)
-	mutable ostream_ptr_t     summary_out_used_; // actually used (can't be NULL)
-	mutable ostream_ptr_t     journal_out_used_; // actually used (can't be NULL)
+	mutable options_ptr_t     options_used_;     // actually used (can be NULL)
+	mutable ostream_ptr_t     error_out_used_;   // actually used (can't be NULL)
+	mutable ostream_ptr_t     console_out_used_; // actually used (can be NULL if do_console_outputting == false)
+	mutable ostream_ptr_t     summary_out_used_; // actually used (can be NULL if do_summary_outputting == false)
+	mutable ostream_ptr_t     journal_out_used_; // actually used (can be NULL if do_journal_outputting == false)
+	mutable ostream_ptr_t     algo_out_used_;    // actually used (can be NULL if do_algo_outputting == false)
 #endif
 
 	// ////////////////////////////////////
@@ -527,6 +668,57 @@ private:
  *
  * \verbinclude rSQPpp.opt.rSQPppSolver
  */
+
+// /////////////////////////////////////////
+// Inline members
+
+inline
+void rSQPppSolver::do_console_outputting(bool do_console_outputting)
+{
+	do_console_outputting_ = do_console_outputting;
+}
+
+inline
+bool rSQPppSolver::do_console_outputting() const
+{
+	return do_console_outputting_;
+}
+
+inline
+void rSQPppSolver::do_summary_outputting(bool do_summary_outputting)
+{
+	do_summary_outputting_ = do_summary_outputting;
+}
+
+inline
+bool rSQPppSolver::do_summary_outputting() const
+{
+	return do_summary_outputting_;
+}
+
+inline
+void rSQPppSolver::do_journal_outputting(bool do_journal_outputting)
+{
+	do_journal_outputting_ = do_journal_outputting;
+}
+
+inline
+bool rSQPppSolver::do_journal_outputting() const
+{
+	return do_journal_outputting_;
+}
+
+inline
+void rSQPppSolver::do_algo_outputting(bool do_algo_outputting)
+{
+	do_algo_outputting_ = do_algo_outputting;
+}
+
+inline
+bool rSQPppSolver::do_algo_outputting() const
+{
+	return do_algo_outputting_;
+}
 
 } // end namespace ReducedSpaceSQPPack
 
