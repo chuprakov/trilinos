@@ -106,6 +106,8 @@ UTILITIES_CORE_H = \
 	$(srcdir)/utilities/Core/TSFCoreProductVectorSpaceDecl.hpp\
 	$(srcdir)/utilities/Core/TSFCoreProductVector.hpp\
 	$(srcdir)/utilities/Core/TSFCoreProductVectorDecl.hpp\
+	$(srcdir)/utilities/Core/TSFCoreVectorStdOpsTester.hpp\
+	$(srcdir)/utilities/Core/TSFCoreVectorStdOpsTesterDecl.hpp\
 	$(srcdir)/utilities/Core/TSFCoreTestingToolsDecl.hpp\
 	$(srcdir)/utilities/Core/TSFCoreTestingTools.hpp
 

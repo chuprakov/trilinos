@@ -70,6 +70,12 @@ RTOp_STDOPS_SOURCES_CPP=
 RTOp_STDOPS_SOURCES_HPP=\
 $(srcdir)/RTOpStdOps/RTOpPack_ROpDotProd.hpp\
 $(srcdir)/RTOpStdOps/RTOpPack_ROpGetSubVector.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_ROpMax.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_ROpMaxIndex.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_ROpMaxIndexLessThanBound.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_ROpMin.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_ROpMinIndex.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_ROpMinIndexGreaterThanBound.hpp\
 $(srcdir)/RTOpStdOps/RTOpPack_ROpNorm1.hpp\
 $(srcdir)/RTOpStdOps/RTOpPack_ROpNorm2.hpp\
 $(srcdir)/RTOpStdOps/RTOpPack_ROpNormInf.hpp\
