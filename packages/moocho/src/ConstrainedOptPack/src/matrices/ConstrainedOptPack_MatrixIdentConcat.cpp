@@ -165,9 +165,9 @@ void MatrixIdentConcat::Vp_StMtV(
 	, const SpVectorSlice& x, value_type b
 	) const
 {
+
 	AbstractLinAlgPack::Vp_MtV_assert_compatibility(y,*this,M_trans,x);
-//	mat_vec( y, a, alpha(), D(), D_trans(), D_rng(), I_rng(), M_trans, x, b );
-	assert(0); // ToDo: Must implement Vp_StV(...) for rhs SpVectorSlice
+	mat_vec( y, a, alpha(), D(), D_trans(), D_rng(), I_rng(), M_trans, x, b );
 }
 
 } // end namespace ConstrainedOptimizationPack

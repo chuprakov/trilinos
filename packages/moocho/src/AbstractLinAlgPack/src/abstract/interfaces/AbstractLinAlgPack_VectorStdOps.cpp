@@ -16,7 +16,11 @@
 #include <assert.h>
 
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
+#include "AbstractLinAlgPack/include/SpVectorClass.h"
+#include "AbstractLinAlgPack/include/SpVectorView.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_dot_prod.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_sum.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_add_scalar.h"
@@ -186,6 +190,18 @@ void AbstractLinAlgPack::Vp_StV(
 	const VectorWithOp*
 		vecs[num_vecs] = { &v_rhs };
 	v_lhs->apply_transformation(axpy_op,num_vecs,vecs,0,NULL,RTOp_REDUCT_OBJ_NULL);
+}
+
+void AbstractLinAlgPack::Vp_StV(
+	VectorWithOpMutable* y, const value_type& a, const SpVectorSlice& sx )
+{
+	Vp_V_assert_compatibility(y,sx);
+	if( sx.nz() ) {
+		VectorSpace::vec_mut_ptr_t
+		    x = y->space().create_member();
+		x->set_sub_vector(sub_vec_view(sx));
+		Vp_StV( y, a, *x );
+	}
 }
 
 void AbstractLinAlgPack::ele_wise_prod(

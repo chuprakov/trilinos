@@ -62,6 +62,11 @@ void Vt_S( VectorWithOpMutable* v_lhs, const value_type& alpha );
 void Vp_StV( VectorWithOpMutable* v_lhs, const value_type& alpha, const VectorWithOp& v_rhs );
 
 ///
+/** v_lhs = alpha * sv_rhs + v_lhs
+ */
+void Vp_StV( VectorWithOpMutable* v_lhs, const value_type& alpha, const SpVectorSlice& sv_rhs );
+
+///
 /** v_lhs(i) += alpha * v_rhs1(i) * v_rhs2(i), i = 1,,,dim.
  */
 void ele_wise_prod(
