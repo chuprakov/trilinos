@@ -6,7 +6,7 @@
 
 #include <limits>
 
-#ifdef _MS_VCXX_60
+#ifdef _WINDOWS
 #else
 #include <math.h>
 #endif

@@ -38,58 +38,83 @@ template <class T_Indice, class T_Value> class TransposedPartition;
   * #partition_order#.
   *
   * For example, concider the following permuted and partitioned sparse COO matrix:
-  *
-  *
-  *				non-permuted COO matrix					permuted and partitioned COO matrix
-  *
-  *
-  *															 1		 3		 5		 2		 4
-  *													   ------------------------------------------
-  *		 1		 2		 3		 4		 5			  |		 1		 2		 3		 4		 5	
-  *		---		---		---		---		---			  |		---		---		---		---		---	
-  *	  												  |							 				
-  * 1 |			1.2				1.4			|		2 |	1 |	2.1				2.5	 +	2.2		2.4	|
-  *													  |							 +				
-  *	2 |	2.1		2.2				2.4		2.5	|		3 |	2 |			3.3			 +				|
-  *	  												  |							 +
-  *	3 |					3.3					|		6 |	3 |			6.3		6.5	 +				|
-  *													  |		++++++++++++++++++++++++++++++++++++
-  *	4 |									4.5	|		1 |	4 |						 +	1.2		1.4	|
-  *												=>	  |							 +
-  *	5 |	5.1		5.2		5.3		5.4			|		4 |	5 |					4.5	 +				|
-  *													  |							 +
-  *	6 |					6.3				6.5	|		5 |	6 |	5.1		5.3			 +	5.2		5.4	|
-  *													  |							 +
-  *	7 |	7.1						7.4			|		7 |	7 |	7.1					 +			7.4	|
-  *													  |							 +
-  *	8 |			8.2		8.3					|		8 |	8 |			8.3			 +	8.2			|
-  *													  |							 
-  *
+  \begin{verbatim}
+  
+         Non-permuted COO matrix		
+  											
+     1       2       3       4       5	
+    ---     ---     ---     ---     ---	
+								
+1 |         1.2             1.4         |
+								
+2 | 2.1     2.2             2.4     2.5 |
+  	  										
+3 |                 3.3                 |
+  											
+4 |                                 4.5 |
+  											
+5 | 5.1     5.2     5.3     5.4         |
+  											
+6 |                 6.3             6.5 |
+  											
+7 | 7.1                     7.4         |
+  											
+8 |         8.2     8.3                 |
+
+
+ ==>
+
+      Permuted and partitioned COO matrix
+ 
+         1       3       5       2       4
+   ------------------------------------------
+  |      1       2       3       4       5	
+  |     ---     ---     ---     ---     ---	
+  |							 				
+2 | 1 | 2.1             2.5  +  2.2     2.4 |
+  |                          +				
+3 | 2 |         3.3          +              |
+  |                          +
+6 | 3 |         6.3     6.5  +              |
+  |    +++++++++++++++++++++++++++++++++++++
+1 | 4 |                      +  1.2     1.4 |
+  |                          +
+4 | 5 |                 4.5  +              |
+  |                          +
+5 | 6 | 5.1     5.3          +  5.2     5.4 |
+  |                          +
+7 | 7 | 7.1                  +          7.4 |
+  |                          +
+8 | 8 |         8.3          +  8.2         |
+  
+  \end{verbatim}
   *	The following quantities are used to specify the example shown above:
-  *
-  *	rows = 8, cols = 5, nz = 18
-  *	val		= {	2.1,5.1,7.1,1.2,2.2,5.2,8.2,3.3,5.3,6.3,8.3,1.4,2.4,5.4,7.4,2.5,4.5,6.5 }
-  *	ivect	= {	2,	5,	7,	1,	2,	5,	8,	3,	5,	6,	8,	1,	2,	5,	7,	2,	4,	6	}
-  * jvect	= {	1,	1,	1,	2,	2,	2,	2,	3,	3,	3,	3,	4,	4,	4,	4,	5,	5,	5	}
-  *
-  *	inv_row_perm	= {	4,	1,	2,	5,	6,	3,	7,	8	}
-  *	inv_col_perm	= {	1,	4,	2,	5,	3 }
-  *
-  *	num_row_part	= 2
-  *	row_part	= { 1,	4,	9 }
-  *	num_col_part	= 2
-  *	col_part	= {	1,	4,	6 } 	
-  *
+  \begin{verbatim}
+
+rows  = 8, cols = 5, nz = 18
+val   = { 2.1,5.1,7.1,1.2,2.2,5.2,8.2,3.3,5.3,6.3,8.3,1.4,2.4,5.4,7.4,2.5,4.5,6.5 }
+ivect = { 2,  5,  7,  1,  2,  5,  8,  3,  5,  6,  8,  1,  2,  5,  7,  2,  4,  6   }
+jvect = { 1,  1,  1,  2,  2,  2,  2,  3,  3,  3,  3,  4,  4,  4,  4,  5,  5,  5   }
+  
+inv_row_perm  = { 4,  1,  2,  5,  6,  3,  7,  8  }
+inv_col_perm  = { 1,  4,  2,  5,  3  }
+  
+num_row_part  = 2
+row_part      = { 1,  4,  9 }
+num_col_part  = 2
+col_part      = { 1,  4,  6 }
+  
+  \end{verbatim}
   * The partitions are ordered by row or column counting from the upper left hand partition.
   * For this example the partitions are numbered as:
-  *
-  *		#partition_order = PARTITION_BY_ROW#		#partition_order = PARTITION_BY_COL# 
-  *					 ---------------							 ---------------
-  *					|	1	|	2	|							|	1	|	3	|
-  *					|-------|-------|							|-------|-------|
-  *					|	3	|	4	|							|	2	|	4	|
-  *					 ---------------							 --------------- 
-  *
+  \begin{verbatim}
+  partition_order = PARTITION_BY_ROW          partition_order = PARTITION_BY_COL 
+            --------------                             ---------------
+           |   1   |  2   |                           |   1   |   3   |
+           |-------|------|                           |-------|-------|
+           |   3   |  4   |                           |   2   |   4   |
+            --------------                             --------------- 
+  \end{verbatim}
   *	The overall partition number is given by a call to #overall_part_num(row_p,col_p)# where
   * #row_p# and #col_p# are the row and column parition numbers respectively.  In the example,
   * the lower left partition has #row_p# = 2 and #col_p# = 1 and #overall_part_num(row_p,col_p)# would
@@ -218,6 +243,13 @@ public:
 	  * are not looked for in the input COO matrix.  It is up to the client to make sure
 	  * that there are no duplicates since this is an expensive test since the matrix
 	  * elements are not assumed to be sorted.
+	  *
+	  * It is important to note that #this# object keeps a pointer to the array
+	  * of nonzero elements in #val# passed into this function.  Therefore,
+	  * the numerical values of these elements can be altered and #this# object
+	  * will still provide the view into this coordinate matrix.  If the memory
+	  * pointed to by #val# change then this operation must be called again
+	  * setupd the view again.
 	  *
 	  * Preconditions:\begin{itemize}
 	  * \item #nz <= rows * cols#, (throw #std::invalid_argument#)
