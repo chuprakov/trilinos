@@ -85,6 +85,9 @@ public:
 	/// Return the minimum (over all iterations) maximum (over all right-hand sides) error seen
 	Scalar minMaxError() const;
 
+	/// Set the value returned by <tt>minMaxError()</tt> as a hack (should not be called generally)
+	void minMaxErr( const Scalar& minMaxErr );
+
 	//@}
 
 	/** @name Overridden from ConvergenceTester */
@@ -130,6 +133,13 @@ inline
 Scalar NormedConvergenceTester<Scalar>::minMaxError() const
 {
 	return minMaxErr_;
+}
+
+template<class Scalar>
+inline
+void NormedConvergenceTester<Scalar>::minMaxErr( const Scalar& minMaxErr )
+{
+	minMaxErr_ = minMaxErr;
 }
 
 } // namespace Solvers
