@@ -205,11 +205,11 @@ int main( int argc, char* argv[] ) {
 			// Non-Epetra vector space
 			if(use_mpi_vec_spc_std) {
 				if(verbose) out << "\nCreating TSFCore::MPIVectorSpaceStd ...\n";
-				non_epetra_vs = rcp(new MPIVectorSpaceStd<Scalar>(mpiComm,local_dim,-1));
+				non_epetra_vs = rcp(new TSFCore::MPIVectorSpaceStd<Scalar>(mpiComm,local_dim,-1));
 			}
 			else {
 				if(verbose) out << "\nCreating TSFCore::SimpleMPIVectorSpace ...\n";
-				non_epetra_vs = rcp(new SimpleMPIVectorSpace<Scalar>(mpiComm,local_dim));
+				non_epetra_vs = rcp(new TSFCore::SimpleMPIVectorSpace<Scalar>(mpiComm,local_dim));
 			}
 		}
 		else {
