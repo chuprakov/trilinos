@@ -131,6 +131,7 @@ bool MatrixWithOpNonsingularTester::test_matrix(
 				t2 = v_c2.get();
 			}
 			for( int k = 1; k <= num_random_tests(); ++k ) {
+				lresult = true;
 				random_vector( rand_y_l, rand_y_u, v );
 					if(out && print_tests() >= PRINT_ALL) {
 					*out
@@ -193,17 +194,17 @@ bool MatrixWithOpNonsingularTester::test_matrix(
 						lresult = false;
 					}
 				}
+				if(!lresult) result = false;
 			}
-			if(!lresult) result = false;
+			if(!result) success = false;
 			if( out && print_tests() == PRINT_MORE )
-				*out << " : " << ( lresult ? "passed" : "failed" )
+				*out << " : " << ( result ? "passed" : "failed" )
 					 << std::endl;
 		}
 	}
 
-	if(!result) success = false;
 	if( out && print_tests() == PRINT_BASIC )
-		*out << " : " << ( lresult ? "passed" : "failed" );
+		*out << " : " << ( success ? "passed" : "failed" );
 
 	return success;
 }
