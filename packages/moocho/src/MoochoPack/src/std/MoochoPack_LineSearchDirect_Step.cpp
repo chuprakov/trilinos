@@ -79,13 +79,13 @@ bool LineSearchDirect_Step::do_step(
 		&c_iq    = s.c(),
 		&h_iq    = s.h();
 	
-	VectorWithOpMutable        &x_kp1   = x_iq.set_k(+1);
+	VectorWithOpMutable        &x_kp1   = x_iq.get_k(+1);
 	const VectorWithOp         &x_k     = x_iq.get_k(0);
-	value_type                 &f_kp1   = f_iq.set_k(+1);
+	value_type                 &f_kp1   = f_iq.get_k(+1);
 	const value_type           &f_k     = f_iq.get_k(0);
-	VectorWithOpMutable        *c_kp1   = m  ? &c_iq.set_k(+1) : NULL;
+	VectorWithOpMutable        *c_kp1   = m  ? &c_iq.get_k(+1) : NULL;
 	const VectorWithOp         *c_k     = m  ? &c_iq.get_k(0)  : NULL;
-	VectorWithOpMutable        *h_kp1   = mI ? &h_iq.set_k(+1) : NULL;
+	VectorWithOpMutable        *h_kp1   = mI ? &h_iq.get_k(+1) : NULL;
 	const VectorWithOp         *h_k     = mI ? &h_iq.get_k(0)  : NULL;
 	const VectorWithOp         &d_k     = d_iq.get_k(0);
 	value_type                 &alpha_k = alpha_iq.get_k(0);
