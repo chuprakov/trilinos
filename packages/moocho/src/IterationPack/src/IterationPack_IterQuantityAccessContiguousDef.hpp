@@ -54,7 +54,12 @@ void IterQuantityAccessContiguous<T_info>::set_factory(
 	)
 {
 	release_mem();
+	abstract_factory_ = abstract_factory;
 	max_offset_ = std::numeric_limits<int>::min() + num_quantities_;  // uninitialized
+	// ToDo: Don't wipe out storage, just reallocate new objects
+	// as iteration quantities are updated.  This will take a little bit of
+	// work and more overhead but it should be worth it in some types of
+	// applications.
 }
 
 template<class T_info>
