@@ -71,12 +71,24 @@ bool NLPTester::test_interface(
 			*out << "\nnlp->initialize(true)\n";
 		nlp->initialize(true);
 		
+		const size_type
+			n = nlp->n(),
+			m = nlp->m(),
+			mI = nlp->mI();
 		if(out)
 			*out << "\n*** Dimensions of the NLP"
-				 << "\nnlp->n()  = " << nlp->n()
-				 << "\nnlp->m()  = " << nlp->m()
-				 << "\nnlp->mI() = " << nlp->mI()
+				 << "\nnlp->n()  = " << n
+				 << "\nnlp->m()  = " << m
+				 << "\nnlp->mI() = " << mI
 				 << std::endl;
+		if( n < m ) {
+			if(*out)
+				*out << "Error! n = " << n << " < m = " << m << " is not allowed!\n";
+			THROW_EXCEPTION(
+				throw_exception_, std::logic_error
+				,"NLPTester::test_interface(...): Error! n = " << n << " < m = " << m << " is not allowed!"
+				);
+		}
 
 		// Validate the vector spaces
 		if(out)
