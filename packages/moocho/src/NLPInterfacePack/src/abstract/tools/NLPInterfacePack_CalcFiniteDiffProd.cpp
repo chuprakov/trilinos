@@ -299,7 +299,7 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 		abs_max_u_feas = ::fabs(max_u_feas);
 	value_type
 	   num_u_i = 0;
-	switch(this->fd_method_order()) {
+	switch(fd_method_order) {
 		case FD_ORDER_ONE:
 			num_u_i = 1.0;
 			break;
