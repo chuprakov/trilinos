@@ -148,8 +148,10 @@ public:
 		,size_type    mU                = 0
 		,size_type    mI                = 0
 		,value_type   xo                = 0.1
-		,value_type   xl                = -NLP::infinite_bound()
-		,value_type   xu                = +NLP::infinite_bound()
+		,value_type   xDl               = -NLP::infinite_bound()
+		,value_type   xDu               = +NLP::infinite_bound()
+		,value_type   xIl               = -NLP::infinite_bound()
+		,value_type   xIu               = +NLP::infinite_bound()
 		,value_type   hl                = -NLP::infinite_bound()
 		,value_type   hu                = +NLP::infinite_bound()
 		,bool         nlp_selects_basis = false
@@ -291,6 +293,8 @@ private:
 
 	bool         nlp_selects_basis_;
 	bool         basis_selection_was_given_;
+
+	bool         has_var_bounds_;
 
 	mutable bool multi_calc_;
 

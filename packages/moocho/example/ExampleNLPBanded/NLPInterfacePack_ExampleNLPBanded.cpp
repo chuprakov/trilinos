@@ -31,8 +31,10 @@ ExampleNLPBanded::ExampleNLPBanded(
 	,size_type    mU
 	,size_type    mI
 	,value_type   xo
-	,value_type   xl
-	,value_type   xu
+	,value_type   xDl
+	,value_type   xDu
+	,value_type   xIl
+	,value_type   xIu
 	,value_type   hl
 	,value_type   hu
 	,bool         nlp_selects_basis
@@ -43,6 +45,7 @@ ExampleNLPBanded::ExampleNLPBanded(
 	:is_initialized_(false)
 	,nlp_selects_basis_(nlp_selects_basis)
 	,basis_selection_was_given_(false)
+	,has_var_bounds_(false)
 	,multi_calc_(false)
 	,nD_(nD)
 	,nI_(nI)
@@ -75,14 +78,22 @@ ExampleNLPBanded::ExampleNLPBanded(
 	hu_orig_.resize(mI_);
 	co_orig_.resize(nD_ + mU_);
 	//
-	xinit_orig_ = xo;
-	xl_orig_    = xl;
-	xu_orig_    = xu;
+	xinit_orig_             = xo;
+	xl_orig_(1,nD_)         = xDl;
+	xu_orig_(1,nD_)         = xDu;
+	xl_orig_(nD_+1,nD_+nI_) = xIl;
+	xu_orig_(nD_+1,nD_+nI_) = xIu;
 	if( mI_ ) {
 		hl_orig_    = hl;
 		hu_orig_    = hu;
 	}
 	co_orig_    = 0.0;
+	//
+	const value_type inf = NLP::infinite_bound();
+	if( xDl > -inf || xDu < +inf || xIl > -inf || xIu < +inf )
+		has_var_bounds_ = true;
+	else
+		has_var_bounds_ = false;
 }
 
 // Overridden public members from NLP
@@ -154,7 +165,7 @@ const VectorSlice ExampleNLPBanded::imp_xinit_orig() const
 
 bool ExampleNLPBanded::imp_has_var_bounds() const
 {
-	return false; // ToDo: Add bounds!
+	return has_var_bounds_;
 }
 
 const VectorSlice ExampleNLPBanded::imp_xl_orig() const
