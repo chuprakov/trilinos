@@ -4,7 +4,7 @@
 
 \section table Table of Contents
 
-- \ref intro
+- \ref did_intro
 - \ref amesos
 - \ref anasazi
 - \ref aztecoo
@@ -16,7 +16,7 @@
 - \ref teuchos
 - \ref triutils
 
-\section intro Introduction
+\section did_intro Introduction
 
 DIDASKO, the tutorial of Trilinos, offers a quick overview of Trilinos.
 The reader can find a variety of examples on several Trilinos packages. Each
@@ -107,7 +107,7 @@ Packages are reported in alphabetical order.
   \ref ifpack_ex2
 
 \section ml ML Examples
-- Two-level domain decomposition preconditioner with AztecO and ML: \ref
+- Two-level domain decomposition preconditioner with AztecOO and ML: \ref
   ml_ex1
 - Use of ML as a black-box smoothed aggregation preconditioner: \ref ml_ex2
 

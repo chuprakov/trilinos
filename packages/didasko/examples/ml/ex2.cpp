@@ -87,17 +87,11 @@ int main(int argc, char *argv[])
   // tell AztecOO to use this preconditioner, then solve
   solver.SetPrecOperator(MLPrec);
  
-  double rthresh = 1.4;
-  solver.SetAztecParam(AZ_rthresh, rthresh);
   solver.SetAztecOption(AZ_solver, AZ_gmres_condnum);
   solver.SetAztecOption(AZ_output, 32);
-  double athresh = 10.0;
-  solver.SetAztecParam(AZ_athresh, athresh);
-  solver.SetAztecParam(AZ_ill_cond_thresh, 1.0e200);
-
-  int Niters = 500;
   solver.SetAztecOption(AZ_kspace, 160);
    
+  int Niters = 500;
   solver.Iterate(Niters, 1e-12);
 
   // print out some information about the preconditioner
