@@ -68,7 +68,7 @@ extensive.
 
 <li> NLP Algorithms:
 	<ul>
-	<li> <A HREF="../MoochoPack/html/index.html">MoochoPack</A>: SQP-related algorithm building blocks.
+	<li> <A HREF="../MoochoPack/html/index.html">MoochoPack</A>: SQP-related algorithms and algorithm building blocks.
 	</ul>
 
 <li> Example projects:
@@ -78,6 +78,7 @@ extensive.
 	<li> <A HREF="../ExampleNLPFirstOrder/html/index.html">ExampleNLPFirstOrder</A>.
 	<li> <A HREF="../ExampleNLPBanded/html/index.html">ExampleNLPBanded</A>.
 	<li> <A HREF="../NLPWBCounterExample/html/index.html">NLPWBCounterExample</A>.
+	<li> <A HREF="../NLPTSFCoreNP4DOpt/html/index.html">NLPTSFCoreNP4DOpt</A>.
 	</ul>
 
 </ul>
