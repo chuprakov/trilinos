@@ -545,6 +545,22 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				opt_setter(basis_sys_tester.get());
 			opt_setter.set_options(*options_);
 		}
+		// Determine what type of null space matrix to use
+		DecompositionSystemVarReduct::EExplicitImplicit
+			D_imp;
+		switch( cov_.null_space_matrix_type_ ) {
+			case NULL_SPACE_MATRIX_AUTO:
+				D_imp = DecompositionSystemVarReduct::MAT_IMP_AUTO;
+				break;
+			case NULL_SPACE_MATRIX_EXPLICIT:
+				D_imp = DecompositionSystemVarReduct::MAT_IMP_EXPLICIT;
+				break;
+			case NULL_SPACE_MATRIX_IMPLICIT:
+				D_imp = DecompositionSystemVarReduct::MAT_IMP_IMPLICIT;
+				break;
+			default:
+				assert(0);
+		}
 #ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 		// See if the basis system object supports basis permutations
 		basis_sys_perm = mmp::rcp_dynamic_cast<BasisSystemPerm>(basis_sys_);
@@ -561,6 +577,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						,nlp.space_h()
 						,basis_sys_  // Will have basis_sys_->var_dep().size() == 0 if permutation
 						,basis_sys_tester
+						,D_imp
 						) );
 				break;
 			case RANGE_SPACE_MATRIX_ORTHOGONAL: {
@@ -590,6 +607,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				new DecompositionSystemVarReductPermStd(
 					decomp_sys_imp
 					,basis_sys_perm
+					,false // basis_selected
+					,D_imp
 					) );
 		}
 		else {
