@@ -103,8 +103,6 @@ class MPIVectorBase : virtual public Vector<Scalar> {
 public:
 
 	///
-	using MultiVector<Scalar>::applyOp;
-	///
 	using Vector<Scalar>::applyOp;
 
 	///

@@ -79,9 +79,9 @@ class NP4DOpt : public NonlinearProblemFirstOrder<Scalar> {
 public:
 
   ///
-  using NonlinearProblem<Scalar>::get_c;
-	///
-  using NonlinearProblem<Scalar>::get_g;
+  //using NonlinearProblem<Scalar>::get_c;
+  ///
+  //using NonlinearProblem<Scalar>::get_g;
   ///
   using NonlinearProblemFirstOrder<Scalar>::get_DcDy;
 	///

@@ -49,9 +49,9 @@ class MPIMultiVectorStd : virtual public MPIMultiVectorBase<Scalar> {
 public:
 
   ///
-  using MultiVector<Scalar>::subView;
+  using MPIMultiVectorBase<Scalar>::subView;
   ///
-  using MultiVector<Scalar>::col;
+  using MPIMultiVectorBase<Scalar>::col;
 
   /** @name Constructors/initializers/accessors */
   //@{

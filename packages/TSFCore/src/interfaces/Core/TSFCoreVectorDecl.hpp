@@ -109,8 +109,6 @@ public:
 	///
 	using MultiVector<Scalar>::applyOp;
 	///
-	using MultiVector<Scalar>::apply;
-	///
 	using MultiVector<Scalar>::col;
 
 	/** @name Pure virtual operations (must be overridden by subclass) */
