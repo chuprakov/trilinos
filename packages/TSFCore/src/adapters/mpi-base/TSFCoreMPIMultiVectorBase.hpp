@@ -38,7 +38,7 @@
 #include "RTOpPack_MPI_apply_op.hpp"
 #include "RTOp_parallel_helpers.h"
 #include "WorkspacePack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_Time.hpp"
 #ifdef RTOp_USE_MPI
 #  include "Teuchos_RawMPITraits.hpp"
@@ -352,7 +352,7 @@ void MPIMultiVectorBase<Scalar>::applyOp(
 	,const Index                    sec_sub_dim_in
 	) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	const Index numCols = this->domain()->dim();

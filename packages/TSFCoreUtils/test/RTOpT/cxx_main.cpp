@@ -40,7 +40,7 @@
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "Teuchos_arrayArg.hpp"
 #include "Teuchos_oblackholestream.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 //
 // Simple templated testing function
@@ -80,23 +80,6 @@ void test_do_stuff( MPI_Comm mpiComm, const int n, std::ostream &out )
 }
 
 } // namespace
-
-//
-// ToDo: 2004/03/22
-//
-// 1) Finish updating the function MPI_apply_op() to do the right thing
-// when run in parallel with MPI.  Specifically, this will require:
-//
-//   a) Definition of (static) MPI-compatible function that will use
-//      the "current" RTOpT<Scalar> object to define the reduction.
-//      Actually, use static functions to set and get this opeator and
-//      function so as to allow future support of threaded programs.
-//
-//   b) Finish development and use the traits classes to support arbitrary
-//      datatypes.
-//
-// 2) Put in MPI calls to make this test program run in parallel and test.
-//
 
 int main( int argc, char* argv[] ) {
 

@@ -34,7 +34,7 @@
 
 #include "RTOpPack_RTOpT.hpp"
 #include "RTOp.h"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace RTOpPack {
 
@@ -177,14 +177,14 @@ inline
 RTOp_ReductTarget&
 RTOpC::operator()(ReductTarget& reduct_obj) const
 {
-  return DynamicCastHelperPack::dyn_cast<ReductTargetC>(reduct_obj).obj();
+  return Teuchos::dyn_cast<ReductTargetC>(reduct_obj).obj();
 }
 
 inline
 const RTOp_ReductTarget&
 RTOpC::operator()(const ReductTarget& reduct_obj) const
 {
-  return DynamicCastHelperPack::dyn_cast<const ReductTargetC>(reduct_obj).obj();
+  return Teuchos::dyn_cast<const ReductTargetC>(reduct_obj).obj();
 }
 
 // ReductTargetC

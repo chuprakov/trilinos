@@ -33,7 +33,7 @@
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_VbrMatrix.h"
 #include "Ifpack_CrsRiluk.h"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_Time.hpp"
 
 // RAB: 2004/01/19: It turns out that as of this writting the Ifpack
@@ -67,7 +67,7 @@ void PrecGenerator::setupPrec(
 	,std::ostream                                 *out
   ) const
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
   using Teuchos::RefCountPtr;
   using Teuchos::rcp;
   using Teuchos::set_extra_data;

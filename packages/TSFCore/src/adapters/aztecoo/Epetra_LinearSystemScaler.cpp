@@ -34,7 +34,7 @@
 #include "Epetra_RowMatrix.h"
 #include "Epetra_Vector.h"
 #include "Epetra_Map.h"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace {
 
@@ -401,7 +401,7 @@ void LinearSystemScaler::preSolveTransformRhs(
 	,Epetra_MultiVector     *Rhs
 	) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	Epetra::ProductOperator &prod_Op = dyn_cast<Epetra::ProductOperator>(Op_solve);
 	if( prod_Op.num_Op() == 1 ) {
 		// There is only the original operator so no transformation is needed!
@@ -425,7 +425,7 @@ void LinearSystemScaler::postSolveTransformSolu(
 	,Epetra_MultiVector     *Solu
 	) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	Epetra::ProductOperator
 		&prod_Op = dyn_cast<Epetra::ProductOperator>(Op_solve);
 	if( prod_Op.num_Op() == 1 ) {

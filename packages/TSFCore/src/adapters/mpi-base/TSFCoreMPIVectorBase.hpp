@@ -37,7 +37,7 @@
 #include "RTOpPack_MPI_apply_op.hpp"
 #include "WorkspacePack.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace TSFCore {
 
@@ -79,7 +79,7 @@ void MPIVectorBase<Scalar>::applyOp(
 	,const Index                    global_offset_in
 	) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	const MPIVectorSpaceBase<Scalar> &mpiSpc = *mpiSpace();

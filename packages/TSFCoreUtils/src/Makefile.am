@@ -34,7 +34,6 @@ $(srcdir)/MoochoUtilities/StandardAggregationMacros.hpp\
 $(srcdir)/MoochoUtilities/StandardCompositionMacros.hpp\
 $(srcdir)/MoochoUtilities/StandardCompositionRelationshipsPack.hpp\
 $(srcdir)/MoochoUtilities/WorkspacePack.hpp\
-$(srcdir)/MoochoUtilities/dynamic_cast_verbose.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource_ref_count_ptr.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource.hpp \
 $(srcdir)/MoochoUtilities/ObjectDB.hpp
@@ -42,7 +41,6 @@ $(srcdir)/MoochoUtilities/ObjectDB.hpp
 MoochoUtilities_SOURCES=\
 $(srcdir)/MoochoUtilities/Range1D.cpp\
 $(srcdir)/MoochoUtilities/WorkspacePack.cpp\
-$(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp\
 $(srcdir)/MoochoUtilities/ObjectDB.cpp
 
 RTOp_C_SOURCES_H=\

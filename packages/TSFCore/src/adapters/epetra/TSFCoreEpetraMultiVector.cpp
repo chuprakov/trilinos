@@ -39,7 +39,7 @@
 #include "Epetra_SerialComm.h"
 #include "Epetra_LocalMap.h"
 #include "WorkspacePack.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace TSFCore {
 
@@ -63,7 +63,7 @@ void EpetraMultiVector::initialize(
 	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_domain
 	)
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
 #ifdef _DEBUG
 	const char err_msg[] = "EpetraMultiVector::initialize(...): Error!";
 	TEST_FOR_EXCEPTION( epetra_multi_vec.get() == NULL, std::invalid_argument, err_msg ); 
@@ -161,7 +161,7 @@ void EpetraMultiVector::apply(
 Teuchos::RefCountPtr<Vector<EpetraMultiVector::Scalar> >
 EpetraMultiVector::col(Index j)
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
 	TEST_FOR_EXCEPTION( !(  1 <= j  && j <= epetra_domain_->dim() ), std::logic_error, "EpetraMultiVector::col(j): Error!" );
 	return Teuchos::rcp(
 		new EpetraVector(

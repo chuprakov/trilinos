@@ -48,7 +48,7 @@ namespace TSFCore {
 template<class Scalar>
 void Vector<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::SubVectorT<Scalar>* sub_vec_inout ) const
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
 	const Range1D rng = rng_in.full_range() ? Range1D(1,this->space()->dim()) : rng_in;
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(

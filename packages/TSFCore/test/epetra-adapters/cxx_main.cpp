@@ -37,7 +37,7 @@
 #include "Epetra_LocalMap.h"
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_MultiVector.h"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_Time.hpp"
 #include "Teuchos_oblackholestream.hpp"
@@ -125,7 +125,7 @@ int main_body( int argc, char* argv[] ) {
 
 	typedef double Scalar;
 
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using Teuchos::CommandLineProcessor;
 	using Teuchos::RefCountPtr;
 	using Teuchos::rcp;

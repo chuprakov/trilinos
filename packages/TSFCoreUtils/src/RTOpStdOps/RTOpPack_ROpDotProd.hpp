@@ -55,7 +55,7 @@ public:
 		,ReductTarget *_reduct_obj
 		) const
     {
-      using DynamicCastHelperPack::dyn_cast;
+      using Teuchos::dyn_cast;
       ReductTargetScalar<Scalar> &reduct_obj = dyn_cast<ReductTargetScalar<Scalar> >(*_reduct_obj); 
       RTOP_APPLY_OP_2_0(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
       Scalar dot_prod = reduct_obj.get();

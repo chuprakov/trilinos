@@ -40,7 +40,7 @@
 #include "TSFCoreExplicitMultiVectorView.hpp"
 #include "TSFCoreSolversBiCGSolver.hpp"
 #include "TSFCoreSolversNormedConvergenceTester.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "AbstractFactoryStd.hpp"
 
@@ -195,7 +195,7 @@ ETransp NP2DSim<Scalar>::opDcDy() const
 template<class Scalar>
 void NP2DSim<Scalar>::set_DcDy(LinearOpWithSolve<Scalar>* DcDy)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	if(DcDy)  DcDy_ = &dyn_cast<LinearOpWithSolveIter<Scalar> >(*DcDy);
 	else      DcDy_ = NULL;
 }

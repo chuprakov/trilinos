@@ -40,7 +40,7 @@
 #include "Epetra_Comm.h"
 #include "Ifpack_CrsRiluk.h"
 #include "Teuchos_Time.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 #ifdef _DEBUG
 #define EpetraNPFO_VALIDATE_L_IN_RANGE(l) TEST_FOR_EXCEPTION( l > epetra_np_->Nu() || l < 0, std::invalid_argument, "Error!  l == " << l << " out of range")
@@ -103,7 +103,7 @@ void EpetraNPFO::initialize(
   using Teuchos::RefCountPtr;
   using Teuchos::rcp;
   using Teuchos::rcp_dynamic_cast;
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 
 	Teuchos::Time timer("");
 
@@ -288,7 +288,7 @@ EpetraNPFO::u0(int l) const
 
 void EpetraNPFO::set_c(Vector<Scalar>* c)
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
   if(c) {
     c_ = &dyn_cast<TSFCore::EpetraVector>(*c);
     c_updated_ = false;
@@ -305,7 +305,7 @@ Vector<EpetraNPFO::Scalar>* EpetraNPFO::get_c()
 
 void EpetraNPFO::set_g(Vector<Scalar>* g)
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
   if(g) {
     g_ = &dyn_cast<TSFCore::EpetraVector>(*g);
     g_updated_ = false;
@@ -392,7 +392,7 @@ ETransp EpetraNPFO::opDcDu(int l) const
 
 void EpetraNPFO::set_DcDy(LinearOpWithSolve<Scalar>* DcDy)
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
   if(DcDy) {
     DcDy_ = &dyn_cast<TSFCore::Nonlin::LinearOpWithSolveAztecOO>(*DcDy);
     DcDy_updated_ = false;
@@ -410,7 +410,7 @@ LinearOpWithSolve<EpetraNPFO::Scalar>* EpetraNPFO::get_DcDy()
 void EpetraNPFO::set_DcDu(int l, LinearOp<Scalar>* DcDu_l)
 {
   EpetraNPFO_VALIDATE_L_IN_RANGE(l);
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
   if(DcDu_l) {
     if(epetra_np_->use_DcDu_op(l)) {
       DcDu_op_[l-1] = &dyn_cast<TSFCore::EpetraLinearOp>(*DcDu_l);
@@ -437,7 +437,7 @@ LinearOp<EpetraNPFO::Scalar>* EpetraNPFO::get_DcDu(int l)
 
 void EpetraNPFO::set_DgDy(MultiVector<Scalar>* DgDy)
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
   if(DgDy) {
     DgDy_ = &dyn_cast<TSFCore::EpetraMultiVector>(*DgDy);
     DgDy_updated_ = false;
@@ -455,7 +455,7 @@ MultiVector<EpetraNPFO::Scalar>* EpetraNPFO::get_DgDy()
 void EpetraNPFO::set_DgDu(int l, MultiVector<Scalar>* DgDu_l)
 {
   EpetraNPFO_VALIDATE_L_IN_RANGE(l);
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
   if(DgDu_l) {
     DgDu_[l-1] = &dyn_cast<TSFCore::EpetraMultiVector>(*DgDu_l);
     DgDu_updated_[l-1] = false;
@@ -513,7 +513,7 @@ void EpetraNPFO::calc_DgDu(
 const Epetra_Vector&
 EpetraNPFO::set_y( const Vector<Scalar> &y_scaled_in ) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	const Epetra_Vector &y_scaled = *dyn_cast<const EpetraVector>(y_scaled_in).epetra_vec();
 	if(!y_scaling_.get())
 		return y_scaled; // There is no scaling
@@ -526,7 +526,7 @@ const Epetra_Vector**
 EpetraNPFO::set_u( const Vector<Scalar>* u_in[], bool newPoint ) const
 {
 	// ToDo: Must unscaled u_in into u_unscaled_ if we are scaling u!
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
   updateNewPoint(newPoint);
   if( u_in && newPoint ) {
     for( int l = 1; l <= static_cast<int>(u_unscaled_.size()); ++l ) {
@@ -593,7 +593,7 @@ void EpetraNPFO::write_y_final( const Epetra_Vector &epetra_y )
 
 void EpetraNPFO::computeScaling()
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	using Teuchos::rcp;
 	using Teuchos::rcp_dynamic_cast;
 	Teuchos::Time timer("");
@@ -761,7 +761,7 @@ void EpetraNPFO::calc_Dc(
   ,bool                    computeGradients
   ) const
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
   const int Nu = epetra_np_->Nu();
 	Teuchos::Time timer("");
   //

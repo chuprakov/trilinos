@@ -34,7 +34,7 @@
 #include "TSFCoreEpetraVector.hpp"
 #include "TSFCoreEpetraMultiVector.hpp"
 #include "TSFCore_get_Epetra_MultiVector.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_TestForException.hpp"
 
 #include "Epetra_Map.h"

@@ -35,7 +35,7 @@
 #include "RTOpPack_RTOpT.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "Teuchos_ScalarTraits.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 namespace RTOpPack {
 
@@ -71,7 +71,7 @@ public:
   ///
   const Scalar& getRawVal( const ReductTarget &reduct_obj ) const
     {
-      using DynamicCastHelperPack::dyn_cast;
+      using Teuchos::dyn_cast;
       return dyn_cast<const ReductTargetScalar<Scalar> >(reduct_obj).get();
     }
   ///
@@ -80,7 +80,7 @@ public:
 #ifdef _DEBUG
       TEST_FOR_EXCEPTION( reduct_obj==NULL, std::invalid_argument, "Error!" );
 #endif
-      using DynamicCastHelperPack::dyn_cast;
+      using Teuchos::dyn_cast;
       dyn_cast<ReductTargetScalar<Scalar> >(*reduct_obj).set(rawVal);
     }
   /** @name Overridden from RTOpT */
@@ -106,7 +106,7 @@ public:
 		const ReductTarget& _in_reduct_obj, ReductTarget* _inout_reduct_obj
 		) const
     {
-      using DynamicCastHelperPack::dyn_cast;
+      using Teuchos::dyn_cast;
       const ReductTargetScalar<Scalar> &in_reduct_obj    = dyn_cast<const ReductTargetScalar<Scalar> >(_in_reduct_obj); 
       ReductTargetScalar<Scalar>       &inout_reduct_obj = dyn_cast<ReductTargetScalar<Scalar> >(*_inout_reduct_obj); 
       inout_reduct_obj.set( inout_reduct_obj.get() + in_reduct_obj.get() );

@@ -39,7 +39,7 @@
 #  include "TSFCoreEpetraMultiVector.hpp"
 #endif
 #include "Teuchos_TestForException.hpp"
-#include "dynamic_cast_verbose.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
 #include "Epetra_Comm.h"
 #ifdef RTOp_USE_MPI
@@ -67,7 +67,7 @@ void EpetraVectorSpace::initialize(
 	const Teuchos::RefCountPtr<const Epetra_Map>  &epetra_map
 	)
 {
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION( !epetra_map.get(), std::invalid_argument, "EpetraVectorSpace::initialize(...): Error!" );
 #endif // _DEBUG

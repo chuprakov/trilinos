@@ -315,7 +315,7 @@ template<class Scalar>
 void NP4DOpt<Scalar>::set_DcDu(int l, LinearOp<Scalar>* DcDu_l)
 {
 	NP4DOPT_VALIDATE_L_IN_RANGE(l);
-	using DynamicCastHelperPack::dyn_cast;
+	using Teuchos::dyn_cast;
 	if(DcDu_l)  DcDu_ = &dyn_cast<MultiVector<Scalar> >(*DcDu_l);
 	else        DcDu_ = NULL;
 }

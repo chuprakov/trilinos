@@ -56,7 +56,7 @@ void EpetraVector::initialize(
 	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_vec_spc
 	)
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION( !epetra_vec.get(), std::invalid_argument, "EpetraVector::initialize(...): Error!");
 	TEST_FOR_EXCEPTION( !epetra_vec_spc.get(), std::invalid_argument, "EpetraVector::initialize(...): Error!");

@@ -215,7 +215,7 @@ template<class Scalar>
 ReductTargetSubVectorT<Scalar>&
 ROpGetSubVector<Scalar>::operator()(ReductTarget& reduct_obj ) const
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
   return dyn_cast<ReductTargetSubVectorT<Scalar> >(reduct_obj);
 }
 
@@ -223,7 +223,7 @@ template<class Scalar>
 const ReductTargetSubVectorT<Scalar>&
 ROpGetSubVector<Scalar>::operator()( const ReductTarget& reduct_obj ) const
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
   return dyn_cast<const ReductTargetSubVectorT<Scalar> >(reduct_obj);
 }
 
@@ -254,7 +254,7 @@ void ROpGetSubVector<Scalar>::reduce_reduct_objs(
   const ReductTarget& in_reduct_obj, ReductTarget* inout_reduct_obj
   ) const
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
   const SubVectorT<Scalar> &sub_vec_in = dyn_cast<const ReductTargetSubVectorT<Scalar> >(in_reduct_obj).sub_vec;
   SubVectorT<Scalar> &sub_vec_inout = dyn_cast<ReductTargetSubVectorT<Scalar> >(*inout_reduct_obj).sub_vec;
   TEST_FOR_EXCEPT(
@@ -270,7 +270,7 @@ void ROpGetSubVector<Scalar>::reduce_reduct_objs(
 template<class Scalar>
 void ROpGetSubVector<Scalar>::reduct_obj_reinit( ReductTarget* reduct_obj ) const
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
   dyn_cast<ReductTargetSubVectorT<Scalar> >(*reduct_obj).reinit();
 }
 
@@ -285,7 +285,7 @@ void ROpGetSubVector<Scalar>::extract_reduct_obj_state(
   ,RTOp_char_type           char_data[]
   ) const
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
   typedef Teuchos::PrimitiveTypeTraits<Scalar> PTT;
   const int num_prim_objs_per_scalar = PTT::numPrimitiveObjs();
   const SubVectorT<Scalar> &sub_vec = dyn_cast<const ReductTargetSubVectorT<Scalar> >(reduct_obj).sub_vec;
@@ -305,7 +305,7 @@ void ROpGetSubVector<Scalar>::load_reduct_obj_state(
   ,ReductTarget                  *reduct_obj
   ) const
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
   typedef Teuchos::PrimitiveTypeTraits<Scalar> PTT;
   const int num_prim_objs_per_scalar = PTT::numPrimitiveObjs();
   SubVectorT<Scalar> &sub_vec = dyn_cast<ReductTargetSubVectorT<Scalar> >(*reduct_obj).sub_vec;
@@ -373,7 +373,7 @@ void ROpGetSubVector<Scalar>::apply_op(
   ,ReductTarget *reduct_obj
   ) const
 {
-  using DynamicCastHelperPack::dyn_cast;
+  using Teuchos::dyn_cast;
 
   RTOP_APPLY_OP_1_0(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
   const index_type globalOffset = sub_vecs[0].globalOffset();
