@@ -48,6 +48,11 @@ VectorSpace::inner_prod() const
 
 // Virtual functions with default implementations
 
+bool VectorSpace::is_in_core() const
+{
+	return false;
+}
+
 VectorSpace::space_fcty_ptr_t
 VectorSpace::small_vec_spc_fcty() const
 {

@@ -16,24 +16,26 @@
 #include <assert.h>
 
 #include "ConstrainedOptPack/src/matrices/MatrixSymHessianRelaxNonSing.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPackHack.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "profile_hack.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {
 
-/* ToDo: Finish updating below code!
-
 //
 template<class V>
 void Vp_StPtMtV_imp( 
 	DenseLinAlgPack::DVectorSlice* y, DenseLinAlgPack::value_type a
-	, const AbstractLinAlgPack::GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
-	, const ConstrainedOptPack::MatrixSymHessianRelaxNonSing& H, BLAS_Cpp::Transp H_trans
-	, const V& x, DenseLinAlgPack::value_type b
+	,const AbstractLinAlgPack::GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	,const ConstrainedOptPack::MatrixSymHessianRelaxNonSing& H, BLAS_Cpp::Transp H_trans
+	,const V& x, DenseLinAlgPack::value_type b
 	)
 {
 	using BLAS_Cpp::no_trans;
@@ -50,10 +52,12 @@ void Vp_StPtMtV_imp(
 		nr = H.M().rows(),  // number of relaxation variables
 		nd = no + nr;       // total number of variables
 
-	DenseLinAlgPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans
-		, BLAS_Cpp::rows( nd, nd, H_trans) );
-	DenseLinAlgPack::Vp_MtV_assert_sizes( BLAS_Cpp::cols( P.rows(), P.cols(), P_trans)
-		, nd, nd, H_trans, x.size() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes(
+		y->dim(),P.rows(),P.cols(),P_trans
+		,BLAS_Cpp::rows( nd, nd, H_trans) );
+	DenseLinAlgPack::Vp_MtV_assert_sizes(
+		BLAS_Cpp::cols( P.rows(), P.cols(), P_trans)
+		,nd, nd, H_trans, x.dim() );
 
 	//
 	// y = b*y + a * op(P) * H * x
@@ -72,7 +76,8 @@ void Vp_StPtMtV_imp(
 		||  ( P.ordered_by() == GPMSIP::UNORDERED ) )
 	{
 		// Call the default implementation
-		H.MatrixOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b);
+		//H.MatrixOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b);
+		assert(0); // ToDo: Implement!
 		return;
 	}
 	const DenseLinAlgPack::Range1D
@@ -97,16 +102,14 @@ void Vp_StPtMtV_imp(
 		x1 = x(o_rng),
 		x2 = x(r_rng);
 	// y = b*y
-	DenseLinAlgPack::Vt_S(y,b);
+	LinAlgOpPack::Vt_S(y,b);
 	// y += a*op(P1)*G*x1
 	if( P1.nz() )
-		AbstractLinAlgPack::Vp_StPtMtV( y, a, P1, P_trans, H.G(), H_trans, x1, b );
+		LinAlgOpPack::Vp_StPtMtV( y, a, P1, P_trans, H.G(), H_trans, x1, b );
 	// y2 += a*op(P2)*M*x2
 	if( P2.nz() )
-		AbstractLinAlgPack::Vp_StPtMtV( y, a, P2, P_trans, H.M(), H_trans, x2, 1.0 );
+		LinAlgOpPack::Vp_StPtMtV( y, a, P2, P_trans, H.M(), H_trans, x2, 1.0 );
 }
-
-*/
 
 } // end namespace
 
@@ -226,10 +229,10 @@ void MatrixSymHessianRelaxNonSing::Vp_StPtMtV(
 	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Vp_StPtMtV(...Vector...)" );
 #endif
 	assert_initialized();
-	MatrixOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // Uncomment for this default implementation
-/* ToDo: Update below code!
-	Vp_StPtMtV_imp(y,a,P,P_trans,*this,H_trans,x,b);
-*/
+	//MatrixOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // Uncomment for this default implementation
+	AbstractLinAlgPack::VectorDenseMutableEncap y_d(*y);
+	AbstractLinAlgPack::VectorDenseEncap x_d(x);
+	Vp_StPtMtV_imp(&y_d(),a,P,P_trans,*this,H_trans,x_d(),b);
 }
 
 void MatrixSymHessianRelaxNonSing::Vp_StPtMtV(
@@ -241,10 +244,9 @@ void MatrixSymHessianRelaxNonSing::Vp_StPtMtV(
 	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymHessianRelaxNonSing::Vp_StPtMtV(...SpVectorSlice...)" );
 #endif
 	assert_initialized();
-	MatrixOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // Uncomment for this default implementation
-/* ToDo: Update below code!
-	Vp_StPtMtV_imp(y,a,P,P_trans,*this,H_trans,x,b);
-*/
+	//MatrixOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // Uncomment for this default implementation
+	AbstractLinAlgPack::VectorDenseMutableEncap y_d(*y);
+	Vp_StPtMtV_imp(&y_d(),a,P,P_trans,*this,H_trans,x,b);
 }
 
 // Overridden form MatrixSymOp

@@ -18,6 +18,7 @@
 
 #include "VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorApplyOpSerialBase.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "ReleaseResource.hpp"
@@ -56,7 +57,8 @@ namespace AbstractLinAlgPack {
  * an exception if the <tt>dynamic_cast<></tt> fails.
  */
 class VectorMutableDense
-	: virtual public AbstractLinAlgPack::VectorMutable
+	: virtual public VectorMutable
+	, virtual private VectorApplyOpSerialBase
 {
 public:
 

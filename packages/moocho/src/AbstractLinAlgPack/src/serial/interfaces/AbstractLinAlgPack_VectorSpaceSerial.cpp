@@ -46,13 +46,18 @@ void VectorSpaceSerial::initialize( size_type dim )
 	dim_ = dim;
 }
 
+// Overridden from VectorSpace
+
 bool VectorSpaceSerial::is_compatible(const VectorSpace& a_vec_space ) const
 {
 	CLASS_MEMBER_PTRS
-	return this->dim() == a_vec_space.dim();
+	return this->dim() == a_vec_space.dim() && a_vec_space.is_in_core();
 }
 
-// Overridden from VectorSpace
+bool VectorSpaceSerial::is_in_core() const
+{
+	return true;
+}
 
 index_type VectorSpaceSerial::dim() const
 {

@@ -167,10 +167,10 @@ void insert_pair_sorted(
 //
 void calc_z(
 	const AbstractLinAlgPack::MatrixSymOpNonsing   &S_hat
-	,const DenseLinAlgPack::DVectorSlice                         &d_hat
-	,const AbstractLinAlgPack::MatrixOp                &U_hat
-	,const DenseLinAlgPack::DVectorSlice                         *vo       // If NULL then assumed zero
-	,DenseLinAlgPack::DVectorSlice                               *z_hat
+	,const DenseLinAlgPack::DVectorSlice           &d_hat
+	,const AbstractLinAlgPack::MatrixOp            &U_hat
+	,const DenseLinAlgPack::DVectorSlice           *vo       // If NULL then assumed zero
+	,DenseLinAlgPack::DVectorSlice                 *z_hat
 	)
 {
 	using LinAlgOpPack::Vp_StMtV;
@@ -475,8 +475,8 @@ void calc_resid(
 		t2(&t2_ws[0],t2_ws.size()),
 		t3(&t3_ws[0],t3_ws.size()),
 		tR(&tR_ws[0],tR_ws.size()),
-		tm(&tm_ws[0],tm_ws.size()),
-		ta(&ta_ws[0],ta_ws.size());
+		tm(tm_ws.size()?&tm_ws[0]:NULL,tm_ws.size()),
+		ta(ta_ws.size()?&ta_ws[0]:NULL,ta_ws.size());
 
 	*roR_scaling = 0.0;
 	if( m )
@@ -1533,9 +1533,8 @@ bool QPSchur::ActiveSet::add_constraint(
 		
 		value_type			d_p = 0.0;
 		const size_type		q_hat = this->q_hat();
-		wsp::Workspace<value_type>
-			                t_hat_ws(wss,q_hat);
-		DVectorSlice         t_hat(&t_hat_ws[0],q_hat);
+		wsp::Workspace<value_type> t_hat_ws(wss,q_hat);
+		DVectorSlice t_hat(t_hat_ws.size()?&t_hat_ws[0]:NULL,t_hat_ws.size());
 		value_type			alpha_hat = 0.0;
 		bool				changed_bounds = false;
 		size_type           sd = 0; // Only used if changed_bounds == true
@@ -4582,11 +4581,11 @@ QPSchur::iter_refine(
 	,std::ostream        *out
 	,EOutputLevel        output_level
 	,const value_type    ao
-	,const DVectorSlice   *bo
+	,const DVectorSlice  *bo
 	,const value_type    aa
-	,const DVectorSlice   *ba
-	,DVectorSlice         *v
-	,DVectorSlice         *z
+	,const DVectorSlice  *ba
+	,DVectorSlice        *v
+	,DVectorSlice        *z
 	,size_type           *iter_refine_num_resid
 	,size_type           *iter_refine_num_solves
 	)
@@ -4636,7 +4635,7 @@ QPSchur::iter_refine(
 		ext_ra_ws(wss,q_hat);
 	DenseLinAlgPack::VectorSliceTmpl<extra_value_type>
 		ext_ro(&ext_ro_ws[0],ext_ro_ws.size()),
-		ext_ra(&ext_ra_ws[0],ext_ra_ws.size());
+		ext_ra(ext_ra_ws.size()?&ext_ra_ws[0]:NULL,ext_ra_ws.size());
 	wsp::Workspace<value_type>
 		ro_ws(wss,n_R+m),
 		ra_ws(wss,q_hat),
@@ -4647,12 +4646,12 @@ QPSchur::iter_refine(
 		z_itr_ws(wss,q_hat);
 	DVectorSlice
 		ro(&ro_ws[0],ro_ws.size()),
-		ra(&ra_ws[0],ra_ws.size()),
+		ra(ra_ws.size()?&ra_ws[0]:NULL,ra_ws.size()),
 		t1(&t1_ws[0],t1_ws.size()),
 		del_v(&del_v_ws[0],del_v_ws.size()),
-		del_z(&del_z_ws[0],del_z_ws.size()),
+		del_z(del_z_ws.size()?&del_z_ws[0]:NULL,del_z_ws.size()),
 		v_itr(&v_itr_ws[0],v_itr_ws.size()),
-		z_itr(&z_itr_ws[0],z_itr_ws.size());
+		z_itr(z_itr_ws.size()?&z_itr_ws[0]:NULL,z_itr_ws.size());
 	
 	// Accumulate into temporary variables
 	v_itr = *v;
@@ -4748,7 +4747,7 @@ QPSchur::iter_refine(
 			,q_hat ? &ra_scaling : NULL
 			);
 		std::copy(ext_ro.begin(),ext_ro.end(),ro.begin());  // Convert back to standard precision
-		std::copy(ext_ra.begin(),ext_ra.end(),ra.begin());
+		if(q_hat) std::copy(ext_ra.begin(),ext_ra.end(),ra.begin());
 		//
 		// Calcuate convergence criteria
 		//

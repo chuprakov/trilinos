@@ -61,6 +61,8 @@ public:
 	 * all of the methods on an SMP machine in an efficient manner.
 	 */
  	bool is_compatible(const VectorSpace& vec_space) const;
+	/// Returns true
+	bool is_in_core() const;
 	/// Returns 0 if uninitialized
 	index_type dim() const;
 	/// Returns a <tt>VectorSpaceFactorySerial</tt> object

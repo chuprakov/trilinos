@@ -18,8 +18,8 @@
 #include <stdexcept>
 
 #include "VectorMutableSubView.hpp"
-#include "WorkspacePack.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "WorkspacePack.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace AbstractLinAlgPack {
@@ -73,6 +73,16 @@ void VectorSubView::apply_op(
 	using DynamicCastHelperPack::dyn_cast;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	// If these are in-core vectors then just let a default implementation
+	// take care of this.
+	if( this->space().is_in_core() ) {
+		this->apply_op_serial(
+			op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj
+			,first_ele_in,sub_dim_in,global_offset_in
+			);
+		return;
+	}
+	// These are not in-core vectors so ...
 	int k;
 	const index_type this_dim = this->dim();
 #ifdef _DEBUG
@@ -135,9 +145,7 @@ VectorSubView::sub_view( const Range1D& rng_in ) const
 void VectorSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec ) const
 {
 #ifdef _DEBUG
-	TEST_FOR_EXCEPTION(
-		!sub_vec, std::logic_error
-		,"VectorSubView::get_sub_vector(...): Error!" ) ;
+	TEST_FOR_EXCEPTION( !sub_vec, std::logic_error, "VectorSubView::get_sub_vector(...): Error!" );
 #endif
 	const index_type this_dim = this->dim();
 	const Range1D rng = RangePack::full_range(rng_in,1,this_dim);
@@ -150,9 +158,7 @@ void VectorSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* 
 void VectorSubView::free_sub_vector( RTOpPack::SubVector* sub_vec ) const
 {
 #ifdef _DEBUG
-	TEST_FOR_EXCEPTION(
-		!sub_vec, std::logic_error
-		,"VectorSubView::free_sub_vector(...): Error!" ) ;
+	TEST_FOR_EXCEPTION( !sub_vec, std::logic_error, "VectorSubView::free_sub_vector(...): Error!" );
 #endif
 	const index_type this_offset = space_.rng().lbound() - 1;
 	sub_vec->setGlobalOffset( sub_vec->globalOffset() + this_offset );

@@ -68,9 +68,10 @@ void VectorSpaceSubSpace::validate_range(const Range1D& rng) const
 
 // Overridden from VectorSpace
 
-
 bool VectorSpaceSubSpace::is_compatible(const VectorSpace& another_space) const
 {
+	if( this->dim() == another_space.dim() && this->is_in_core() && another_space.is_in_core() )
+		return true;
 	const VectorSpaceSubSpace
 		*a_space = dynamic_cast<const VectorSpaceSubSpace*>(&another_space);
 	if(!a_space)
@@ -81,7 +82,10 @@ bool VectorSpaceSubSpace::is_compatible(const VectorSpace& another_space) const
 		( this->rng_ == a_space->rng_ && this->full_space_->is_compatible(*a_space->full_space_) );
 }
 
-// Overridden form VectorSpace
+bool VectorSpaceSubSpace::is_in_core() const
+{
+	return full_space_->is_in_core();
+}
 
 index_type VectorSpaceSubSpace::dim() const
 {

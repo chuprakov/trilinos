@@ -25,6 +25,8 @@
 #include <limits>
 
 #include "ConstrainedOptPack/src/qpsolvers/ConstraintsRelaxedStd.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPackHack.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
@@ -53,20 +55,16 @@ convert_bnd_type( int bnd_type )
 	return ConstrainedOptPack::LOWER; // Never be called
 }
 
-/*
-
 // Get an element from a sparse vector and return zero if it does not exist
-DenseLinAlgPack::value_type get_sparse_element(
+AbstractLinAlgPack::value_type get_sparse_element(
 	const AbstractLinAlgPack::SpVectorSlice& v
-	,DenseLinAlgPack::size_type i
+	,AbstractLinAlgPack::size_type i
 	)
 {
 	const AbstractLinAlgPack::SpVectorSlice::element_type
 		*ele_ptr = v.lookup_element(i);
 	return ele_ptr ? ele_ptr->value() : 0.0;
 }
-
-*/
 
 }	// end namespace
 
@@ -867,28 +865,35 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 }
 
 void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
-	VectorMutable* y, value_type a
+	VectorMutable* y_out, value_type a
 	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	,BLAS_Cpp::Transp M_trans
 	,const SpVectorSlice& x, value_type beta
 	) const
 {
-	MatrixOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,beta); // ToDo: Update below code!
+	MatrixOp::Vp_StPtMtV(y_out,a,P,P_trans,M_trans,x,beta); // ToDo: Update below code!
+	
 /*
-	assert( !F_ || P_u_.cols() == f_->size() ); // ToDo: Add P_u when needed!
+
+	assert( !F_ || P_u_.cols() == f_->dim() ); // ToDo: Add P_u when needed!
 
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using BLAS_Cpp::trans_not;
- 	using AbstractLinAlgPack::dot;
+ 	using DenseLinAlgPack::dot;
 	using AbstractLinAlgPack::Vp_StMtV;
 	using AbstractLinAlgPack::Vp_StPtMtV;
 	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 
-	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans
-		, BLAS_Cpp::rows( rows(), cols(), M_trans) );
-	LinAlgOpPack::Vp_MtV_assert_sizes( BLAS_Cpp::cols( P.rows(), P.cols(), P_trans)
-		,rows(),cols(),M_trans,x.size());
+	AbstractLinAlgPack::VectorDenseMutableEncap y_d(*y_out);
+	DVectorSlice *y = &y_d();
+
+	DenseLinAlgPack::Vp_MtV_assert_sizes(
+		y->dim(),P.rows(),P.cols(),P_trans
+		,BLAS_Cpp::rows( rows(), cols(), M_trans) );
+	DenseLinAlgPack::Vp_MtV_assert_sizes(
+		BLAS_Cpp::cols( P.rows(), P.cols(), P_trans)
+		,rows(),cols(),M_trans,x.dim());
 
 	//	
 	//	A_bar = [  I   0  op(E')   op(F')  ]
@@ -913,7 +918,8 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 		||  ( P.ordered_by() == GPMSIP::UNORDERED ) )
 	{
 		// Call the default implementation
-		MatrixOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,beta);
+		//MatrixOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,beta);
+		assert(0);
 		return;
 	}
 
@@ -961,10 +967,10 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 		Vp_StMtV( y, a, P1, P_trans, x1, beta );
 		// y += a*op(P1)*op(E')*x3
 		if( m_in() && P1.nz() )
-			Vp_StPtMtV( y, a, P1, P_trans, *E(), trans_not(trans_E()), x3 );
+			LinAlgOpPack::Vp_StPtMtV( y, a, P1, P_trans, *E(), trans_not(trans_E()), x3 );
 		// y += a*op(P1)*op(F')*x4
 		if( m_eq() && P1.nz() )
-			Vp_StPtMtV( y, a, P1, P_trans, *F(), trans_not(trans_F()), x4 );
+			LinAlgOpPack::Vp_StPtMtV( y, a, P1, P_trans, *F(), trans_not(trans_F()), x4 );
 		//
 		// y += a*op(P2)*x2 - a*op(P2)*b'*x3 - a*op(P2)*f'*x4
 		//   += a * op(P2) * ( x2 + b'*x3 - f'*x4 )
@@ -1046,15 +1052,15 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 		}
 		if( m_in() && P3.nz() ) {
 			// y += a*P3*op(E)*x1
-			Vp_StPtMtV( y, a, P3, P_trans, *E(), trans_E(), x1 );
+			LinAlgOpPack::Vp_StPtMtV( y, a, P3, P_trans, *E(), trans_E(), x1 );
 			// y += (-a*x2)*P3*b
-			Vp_StMtV( y, - a * x2, P3, P_trans, *this->b() );
+			AbstractLinAlgPack::Vp_StMtV( y, - a * x2, P3, P_trans, *this->b() );
 		}
 		if( m_eq() && P4.nz() ) {
 			// y += a*P4*op(F)*x1
-			Vp_StPtMtV( y, a, P4, P_trans, *F(), trans_F(), x1 );
+			LinAlgOpPack::Vp_StPtMtV( y, a, P4, P_trans, *F(), trans_F(), x1 );
 			// y += (-a*x2)*P4*f
-			Vp_StMtV( y, - a * x2, P4, P_trans, *this->f() );
+			AbstractLinAlgPack::Vp_StMtV( y, - a * x2, P4, P_trans, *this->f() );
 		}
 		
 	}

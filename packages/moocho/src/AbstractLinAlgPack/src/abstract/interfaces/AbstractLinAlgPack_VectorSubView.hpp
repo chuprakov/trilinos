@@ -17,6 +17,7 @@
 #define ALAP_VECTOR_SUB_VIEW_H
 
 #include "Vector.hpp"
+#include "VectorApplyOpSerialBase.hpp"
 #include "VectorSpaceSubSpace.hpp"
 
 namespace AbstractLinAlgPack {
@@ -37,7 +38,10 @@ namespace AbstractLinAlgPack {
  * The default constructor and copy constructors are allowed but the default
  * assignment operator is not allowed.
  */
-class VectorSubView : virtual public Vector {
+class VectorSubView
+	: virtual public Vector
+	, virtual private VectorApplyOpSerialBase
+{
 public:
 
 	///

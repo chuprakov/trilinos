@@ -220,6 +220,24 @@ public:
 	//@{
 
 	///
+	/** Returns true if the vectors are in core.
+	 *
+	 * If this function returns true then it means that the vector
+	 * access functions <tt>Vector::get_sub_vector()</tt> and
+	 * <tt>VectorMutable::get_sub_vector()</tt> can be safely called and
+	 * can be expected to be fairly efficient.  If this function does
+	 * return true then the functions <tt>Vector::get_sub_vector()</tt>,
+	 * <tt>Vector::free_sub_vector()</tt>,
+	 * <tt>VectorMutable::get_sub_vector()</tt> and
+	 * <tt>VectorMutable::commit_sub_vector()</tt> had better be
+	 * overridden and had better not call
+	 * <tt>Vector::apply_op(...)</tt>.
+	 *
+	 * The default implementation returns <tt>false</tt>
+	 */
+	virtual bool is_in_core() const;
+
+	///
 	/** Return a <tt>VectorSpaceFactory</tt> object for the creation of
 	 * vector spaces with a small dimension.
 	 *

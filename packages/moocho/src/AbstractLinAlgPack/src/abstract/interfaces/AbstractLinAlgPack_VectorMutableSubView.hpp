@@ -93,6 +93,10 @@ public:
 	///
 	vec_mut_ptr_t sub_view( const Range1D& rng );
 	///
+	void get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec );
+	///
+	void commit_sub_vector( RTOpPack::MutableSubVector* sub_vec );
+	///
 	void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
 
 	//@}

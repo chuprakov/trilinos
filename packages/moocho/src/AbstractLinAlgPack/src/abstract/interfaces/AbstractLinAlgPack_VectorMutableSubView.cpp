@@ -74,6 +74,29 @@ VectorMutableSubView::sub_view( const Range1D& rng_in )
 			) );
 }
 
+void VectorMutableSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::MutableSubVector* sub_vec )
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION( !sub_vec, std::logic_error ,"VectorMutableSubView::get_sub_vector(...): Error!" );
+#endif
+	const index_type this_dim = this->dim();
+	const Range1D rng = RangePack::full_range(rng_in,1,this_dim);
+	space_impl().validate_range(rng);
+	const index_type this_offset = space_impl().rng().lbound() - 1;
+	full_vec_->get_sub_vector( rng + this_offset, sub_vec );
+	sub_vec->setGlobalOffset( sub_vec->globalOffset() - this_offset );
+}
+
+void VectorMutableSubView::commit_sub_vector( RTOpPack::MutableSubVector* sub_vec )
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION( !sub_vec, std::logic_error, "VectorMutableSubView::commit_sub_vector(...): Error!" );
+#endif
+	const index_type this_offset = space_impl().rng().lbound() - 1;
+	sub_vec->setGlobalOffset( sub_vec->globalOffset() + this_offset );
+	full_vec_->commit_sub_vector( sub_vec );
+}
+
 void VectorMutableSubView::set_sub_vector( const RTOpPack::SparseSubVector& sub_vec_in )
 {
 	const index_type            this_offset = space_impl().rng().lbound() - 1;

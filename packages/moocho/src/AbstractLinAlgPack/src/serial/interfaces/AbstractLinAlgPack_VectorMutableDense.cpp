@@ -19,7 +19,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/apply_op_helper.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/apply_op_helper.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "WorkspacePack.hpp"
 #include "Teuchos_TestForException.hpp"
@@ -75,7 +75,7 @@ void VectorMutableDense::initialize(
 }
 
 void VectorMutableDense::initialize(
-	DVectorSlice                        v
+	DVectorSlice                       v
 	,const release_resource_ptr_t&     v_release
 	)
 {
@@ -109,9 +109,10 @@ void VectorMutableDense::apply_op(
 		,op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele_in,sub_dim_in,global_offset_in
 		);
 #endif
-	AbstractLinAlgPack::apply_op_serial(
+	this->apply_op_serial(
 		op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj
-		,first_ele_in,sub_dim_in,global_offset_in );
+		,first_ele_in,sub_dim_in,global_offset_in
+		);
 }
 
 index_type VectorMutableDense::dim() const

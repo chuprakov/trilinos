@@ -202,7 +202,14 @@ void VectorMutable::Vp_StMtV(
 	,value_type                      beta
 	)
 {
-	assert(0); // ToDo: Implement using reduction or transformation operators
+	TEST_FOR_EXCEPTION(
+		true, std::logic_error
+		,"VectorMutable::Vp_StMtV(...): Error, this function has not yet been "
+		"given a default implementation and has not been overridden for the "
+		"subclass \'" << typeid(*this).name() << "\'!"
+		);
+  // ToDo: Implement using reduction or transformation operators that will
+	// work with any type of vector.
 }
 
 // Overridden from Vector

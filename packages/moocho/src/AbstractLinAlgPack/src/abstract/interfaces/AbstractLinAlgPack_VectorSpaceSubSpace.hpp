@@ -92,12 +92,8 @@ public:
 
 	///
 	bool is_compatible(const VectorSpace& ) const;
-
-	//@}
-
-	/** @name Overridden form VectorSpace */
-	//@{
-
+	///
+	bool is_in_core() const;
 	///
 	index_type dim() const;
 	///
