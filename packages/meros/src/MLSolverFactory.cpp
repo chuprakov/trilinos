@@ -28,7 +28,7 @@
 
 #include "MLSolverFactory.h"
 
-using namespace SPP;
+using namespace Meros;
 using namespace TSF;
 
 

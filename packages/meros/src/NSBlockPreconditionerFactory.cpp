@@ -40,7 +40,7 @@
 #include "RightBlockNSOperatorSource.h"
 #include "KayLoghinRightOperatorSource.h"
 
-using namespace SPP;
+using namespace Meros;
 using namespace TSF;
 using std::string;
 

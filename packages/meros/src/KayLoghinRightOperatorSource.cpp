@@ -31,7 +31,7 @@
 #include "TSFOperatorSourceBase.h"
 
 using namespace TSF;
-using namespace SPP;
+using namespace Meros;
 using std::string;
 
 // KayLoghinRightOperatorSource::

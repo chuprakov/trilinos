@@ -41,7 +41,7 @@
 #include "TSFZeroOperator.h"
 #include "Aztec2TSF.h"
 
-using namespace SPP;
+using namespace Meros;
 using namespace TSF;
 using std::string;
 //Need to update to reflect the Schur solver (pick a default solver)

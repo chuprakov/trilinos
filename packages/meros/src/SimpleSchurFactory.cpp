@@ -39,7 +39,7 @@
   #include "SimpleOperatorSource.h"
   #include "Aztec2TSF.h"
 
-  using namespace SPP;
+  using namespace Meros;
   using namespace TSF;
   using std::string;
 

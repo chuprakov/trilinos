@@ -41,7 +41,7 @@
 #include <iostream>
 #include <string>
 
-namespace SPP
+namespace Meros
 {
 
   using std::string;

@@ -39,7 +39,7 @@
 #include "TSFParameterList.h"
 #include "TSFParameterListImplem.h"
 
-namespace SPP
+namespace Meros
 {
   using namespace TSF;
   using std::ostream;

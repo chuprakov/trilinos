@@ -44,7 +44,7 @@
 #include <iostream>
 #include <string>
 
-namespace SPP
+namespace Meros
 {
 
   using namespace TSF;

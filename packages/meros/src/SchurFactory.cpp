@@ -35,7 +35,7 @@
 #include "TSFOperatorSourceBase.h"
 
 
-using namespace SPP;
+using namespace Meros;
 using namespace TSF;
 
 using std::string;
@@ -69,7 +69,7 @@ string SchurFactory::toString() const
 	return ptr_->toString();
 }
 
-namespace SPP
+namespace Meros
 {
 	ostream& operator<<(ostream& os, const SchurFactory& x)
 	{

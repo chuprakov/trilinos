@@ -39,7 +39,7 @@
 #include "TSFOperatorSourceBase.h"
 #include "BJBRightOperatorSource.h"
 
-using namespace SPP;
+using namespace Meros;
 using namespace TSF;
 using std::string;
 

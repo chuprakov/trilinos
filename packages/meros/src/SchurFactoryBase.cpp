@@ -37,7 +37,7 @@
 #include "TSFVector.h"
 #include "TSFVectorBase.h"
 
-using namespace SPP;
+using namespace Meros;
 using namespace TSF;
 
 SchurFactoryBase::SchurFactoryBase(){;}
