@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "NLPInterfacePack/src/CalcFiniteDiffProdSetOptions.hpp"
+#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProdSetOptions.hpp"
 #include "ThrowException.hpp"
 
 // Define the options

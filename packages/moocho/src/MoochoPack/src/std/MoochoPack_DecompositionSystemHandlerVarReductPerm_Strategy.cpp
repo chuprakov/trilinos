@@ -23,8 +23,8 @@
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPerm.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
-#include "NLPInterfacePack/src/NLPVarReductPerm.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPVarReductPerm.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/PermutationOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
@@ -48,7 +48,7 @@ DecompositionSystemHandlerVarReductPerm_Strategy::DecompositionSystemHandlerVarR
 bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 	rSQPAlgo                                &algo
 	,rSQPState                              &s
-	,NLPFirstOrderInfo                      &nlp
+	,NLPFirstOrder                      &nlp
 	,EDecompSysTesting                      decomp_sys_testing
 	,EDecompSysPrintLevel                   decomp_sys_testing_print_level
 	,bool                                   *new_decomp_selected

@@ -17,7 +17,7 @@
 #define EXAMPLE_NLP_FIRST_ORDER_DIRECT_H
 
 #include "ExampleNLPObjGradient.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlock.hpp"
@@ -26,7 +26,7 @@ namespace NLPInterfacePack {
 
 ///
 /** Simple example %NLP subclass to illustrate how to implement the
- * \c NLPFirstOrderDirect interface for a specialized \c NLP.
+ * \c NLPDirect interface for a specialized \c NLP.
  *
  * For the NLP formulation see <tt>ExampleNLPObjGradient</tt>.
  *
@@ -76,7 +76,7 @@ namespace NLPInterfacePack {
  * file <tt>ExampleNLPFirstOrderDirect.hpp</tt> and are documented \ref explnlp2_ops_grp "here".
  */
 class ExampleNLPFirstOrderDirect
-	: virtual public NLPFirstOrderDirect
+	: virtual public NLPDirect
 	, virtual public ExampleNLPObjGradient
 {
 public:
@@ -118,7 +118,7 @@ public:
 
 	//@}
 
-	/** @name Overridden public members from NLPFirstOrderDirect */
+	/** @name Overridden public members from NLPDirect */
 	//@{
 
 	///

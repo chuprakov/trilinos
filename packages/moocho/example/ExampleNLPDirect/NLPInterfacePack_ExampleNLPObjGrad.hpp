@@ -16,7 +16,7 @@
 #ifndef EXAMPLE_NLP_OBJ_GRADIENT_H
 #define EXAMPLE_NLP_OBJ_GRADIENT_H
 
-#include "NLPInterfacePack/src/NLPObjGradient.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPObjGrad.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlock.hpp"
@@ -25,7 +25,7 @@ namespace NLPInterfacePack {
 
 ///
 /** Simple example %NLP subclass to illustrate how to implement the
- * \c NLPObjGradient interface for a specialized \c NLP.
+ * \c NLPObjGrad interface for a specialized \c NLP.
  *
  * The example %NLP we will use is a scalable problem where
  * the basis of the jacobian of the constraints is a diagonal
@@ -44,7 +44,7 @@ namespace NLPInterfacePack {
  * no derivative information for the constraints.
  */
 class ExampleNLPObjGradient
-	: virtual public NLPObjGradient
+	: virtual public NLPObjGrad
 {
 public:
 
@@ -147,7 +147,7 @@ protected:
 
 	//@}
 
-	/** @name Overridden protected members from NLPObjGradient */
+	/** @name Overridden protected members from NLPObjGrad */
 	//@{
 
 	///

@@ -17,7 +17,7 @@
 #include <iostream>
 #include <limits>
 
-#include "NLPInterfacePack/src/BarrierNLP.hpp"
+#include "NLPInterfacePack/src/abstract/tools/BarrierNLP.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
@@ -44,12 +44,12 @@ void BarrierNLP::InitializeFromNLP(
 	  "null nlp passed to BarrierNLP decorator"
 	  );
 
-	nlp_ = MemMngPack::rcp_dynamic_cast<NLPObjGradient>(original_nlp);
+	nlp_ = MemMngPack::rcp_dynamic_cast<NLPObjGrad>(original_nlp);
 
 	THROW_EXCEPTION(
 	  !nlp_.get(),
 	  std::logic_error,
-	  "non NLPObjGradient NLP passed to BarrierNLP decorator"
+	  "non NLPObjGrad NLP passed to BarrierNLP decorator"
 	  );
 	}
 

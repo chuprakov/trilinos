@@ -21,7 +21,7 @@
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystem.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
@@ -44,7 +44,7 @@ DecompositionSystemHandlerStd_Strategy::DecompositionSystemHandlerStd_Strategy()
 bool DecompositionSystemHandlerStd_Strategy::update_decomposition(
 	rSQPAlgo                                &algo
 	,rSQPState                              &s
-	,NLPFirstOrderInfo                      &nlp
+	,NLPFirstOrder                      &nlp
 	,EDecompSysTesting                      decomp_sys_testing
 	,EDecompSysPrintLevel                   decomp_sys_testing_print_level
 	,bool                                   *new_decomp_selected

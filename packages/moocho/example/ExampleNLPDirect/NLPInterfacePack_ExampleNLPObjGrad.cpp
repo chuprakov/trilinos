@@ -113,17 +113,17 @@ void ExampleNLPObjGradient::initialize(bool test_setup)
 {
 
 #ifndef _WINDOWS
-    using NLPInterfacePack::NLPFirstOrderDirect;
+    using NLPInterfacePack::NLPDirect;
 #endif
 
 	if( initialized_ ) {
-		NLPObjGradient::initialize(test_setup);
+		NLPObjGrad::initialize(test_setup);
 		return;
 	}
 
 	AbstractLinAlgPack::force_in_bounds( *xl_, *xu_, xinit_.get() );
 
-	NLPObjGradient::initialize(test_setup);
+	NLPObjGrad::initialize(test_setup);
 
 	initialized_ = true;
 }
@@ -286,7 +286,7 @@ void ExampleNLPObjGradient::imp_calc_h(
 	assert(0); // Should never be called!
 }
 
-// Overridden protected members from NLPFirstOrderInfo
+// Overridden protected members from NLPFirstOrder
 
 void ExampleNLPObjGradient::imp_calc_Gf(const Vector& x, bool newx
 	, const ObjGradInfo& obj_grad_info) const

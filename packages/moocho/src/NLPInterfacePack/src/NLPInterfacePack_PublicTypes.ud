@@ -13,10 +13,10 @@
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackPublicTypes.ud"
 
 using NLPInterfacePack::NLP;
-using NLPInterfacePack::NLPObjGradient;
-using NLPInterfacePack::NLPFirstOrderDirect;
-using NLPInterfacePack::NLPFirstOrderInfo;
-using NLPInterfacePack::NLPSecondOrderInfo;
+using NLPInterfacePack::NLPObjGrad;
+using NLPInterfacePack::NLPDirect;
+using NLPInterfacePack::NLPFirstOrder;
+using NLPInterfacePack::NLPSecondOrder;
 using NLPInterfacePack::NLPVarReductPerm;
 
 using NLPInterfacePack::CalcFiniteDiffProd;

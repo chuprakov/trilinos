@@ -20,7 +20,7 @@
 #include "ReducedSpaceSQPPack/src/std/rSQPTrackStatsStd.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -88,8 +88,8 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 
 	const rSQPAlgo           &algo    = rsqp_algo(p_algo);
 	const rSQPState          &s       = algo.rsqp_state();
-	const NLPObjGradient     &nlp     = dyn_cast<const NLPObjGradient>(algo.nlp()); 
-	const NLPFirstOrderInfo  *nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
+	const NLPObjGrad     &nlp     = dyn_cast<const NLPObjGrad>(algo.nlp()); 
+	const NLPFirstOrder  *nlp_foi = dynamic_cast<const NLPFirstOrder*>(&nlp); 
 
 	const size_type
 		m = nlp.m();

@@ -18,8 +18,8 @@
 
 #include <valarray>
 
-#include "NLPSerialPreprocess.hpp"
-#include "NLPFirstOrderInfo.hpp"
+#include "NLPInterfacePack/src/serial/NLPSerialPreprocess.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/serial/solvers/BasisSystemFactoryStd.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "AbstractFactory.hpp"
@@ -76,7 +76,7 @@ namespace NLPInterfacePack {
  */
 class NLPSerialPreprocessExplJac
 	: virtual public NLPSerialPreprocess
-	, virtual public NLPFirstOrderInfo
+	, virtual public NLPFirstOrder
 {
 public:
 
@@ -139,7 +139,7 @@ public:
 
 	//@}
 
-	/** @name Overridden public members from NLPFirstOrderInfo */
+	/** @name Overridden public members from NLPFirstOrder */
 	//@{
 	
 	///
@@ -176,7 +176,7 @@ public:
 
 protected:
 
-	/** @name Overridden protected members from NLPFirstOrderInfo */
+	/** @name Overridden protected members from NLPFirstOrder */
 	//@{
 
 	///

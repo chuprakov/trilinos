@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// NLPFirstOrderDirect.hpp
+// NLPDirect.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef NLP_FIRST_ORDER_DIRECT_H
 #define NLP_FIRST_ORDER_DIRECT_H
 
-#include "NLPObjGradient.hpp"
+#include "NLPObjGrad.hpp"
 
 namespace NLPInterfacePack {
 
@@ -82,7 +82,7 @@ namespace NLPInterfacePack {
  *
  * ToDo: Finish Documentation!
  */
-class NLPFirstOrderDirect : virtual public NLPObjGradient
+class NLPDirect : virtual public NLPObjGrad
 {
 public:
 
@@ -418,10 +418,10 @@ public:
 	  *
 	  * This function implementation should be called by subclass implementations
 	  * in order to reset counts for \c f(x), \c c(x), \c h(x) and \c Gf(x) evaluations.
-	  * This implementation calls <tt>this->NLPObjGradient::initialize()</tt>
+	  * This implementation calls <tt>this->NLPObjGrad::initialize()</tt>
 	  *
 	  * Postconditions:<ul>
-	  * <li> See <tt>NLPObjGradient::initialize()</tt>
+	  * <li> See <tt>NLPObjGrad::initialize()</tt>
 	  * </ul>
 	  */
 	void initialize(bool test_setup);
@@ -448,7 +448,7 @@ private:
 	mat_sym_fcty_ptr_t             factory_transDtD_;
 	mat_sym_nonsing_fcty_ptr_t     factory_S_;
 
-};	// end class NLPFirstOrderDirect
+};	// end class NLPDirect
 
 }	// end namespace NLPInterfacePack
 

@@ -20,7 +20,7 @@
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymIdent.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/PermutationOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
@@ -65,11 +65,11 @@ bool EvalNewPointStd_Step::do_step(
 	using DynamicCastHelperPack::dyn_cast;
 	using AbstractLinAlgPack::assert_print_nan_inf;
 	using IterationPack::print_algorithm_step;
-	using NLPInterfacePack::NLPFirstOrderInfo;
+	using NLPInterfacePack::NLPFirstOrder;
 
 	rSQPAlgo            &algo   = rsqp_algo(_algo);
 	rSQPState           &s      = algo.rsqp_state();
-	NLPFirstOrderInfo   &nlp    = dyn_cast<NLPFirstOrderInfo>(algo.nlp());
+	NLPFirstOrder   &nlp    = dyn_cast<NLPFirstOrder>(algo.nlp());
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -174,7 +174,7 @@ bool EvalNewPointStd_Step::do_step(
 		nlp.set_Gh( &Gh_iq->set_k(0) );
 	}
 
-	// Allow multiple updates as defined in NLP and NLPFirstOrderInfo interfaces
+	// Allow multiple updates as defined in NLP and NLPFirstOrder interfaces
 	nlp.set_multi_calc(true);
 
 	// Calculate Gc and Gh at x_k

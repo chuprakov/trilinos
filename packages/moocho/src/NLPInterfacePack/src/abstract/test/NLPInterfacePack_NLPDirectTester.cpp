@@ -21,7 +21,7 @@
 #include <sstream>
 
 #include "NLPFirstOrderDirectTester.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
@@ -65,7 +65,7 @@ NLPFirstOrderDirectTester::NLPFirstOrderDirectTester(
 {}
 
 bool NLPFirstOrderDirectTester::finite_diff_check(
-	NLPFirstOrderDirect     *nlp
+	NLPDirect     *nlp
 	,const Vector     &xo
 	,const Vector     *xl
 	,const Vector     *xu

@@ -1,7 +1,7 @@
 /** \mainpage Simple Example NLP with general purpose sensitivities.
 
 This project contains a simple scalable example NLP that implements the
-<tt>\ref NLPInterfacePack::NLPFirstOrderInfo "NLPFirstOrderInfo"</tt> interface.
+<tt>\ref NLPInterfacePack::NLPFirstOrder "NLPFirstOrder"</tt> interface.
 
 The NLP subclass <tt>\ref NLPInterfacePack::ExampleNLPFirstOrderInfo "ExampleNLPFirstOrderInfo"</tt>
 represents an complete NLP implementation for a very simple example NLP.  This NLP implemementation is

@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/std/PreEvalNewPointBarrier_Step.hpp"
@@ -55,7 +55,7 @@ bool PreEvalNewPointBarrier_Step::do_step(
 	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
 	ipState             &s      = dyn_cast<ipState>(_algo.state());
 	NLP                 &nlp    = algo.nlp();
-	NLPFirstOrderInfo   *nlp_foi = dynamic_cast<NLPFirstOrderInfo*>(&nlp);
+	NLPFirstOrder   *nlp_foi = dynamic_cast<NLPFirstOrder*>(&nlp);
 	
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();

@@ -32,10 +32,10 @@
 
 #include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
 
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 
-#include "NLPInterfacePack/src/CalcFiniteDiffProd.hpp"
-#include "NLPInterfacePack/src/NLPVarReductPerm.hpp"
+#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPVarReductPerm.hpp"
 
 // line search
 #include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_Strategy.hpp"
@@ -264,9 +264,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		nb  = nlp.num_bounded_x();
 
 	// Process the NLP
-	NLPFirstOrderInfo    *nlp_foi = NULL;
-	NLPSecondOrderInfo   *nlp_soi = NULL;
-	NLPFirstOrderDirect  *nlp_fod = NULL;
+	NLPFirstOrder    *nlp_foi = NULL;
+	NLPSecondOrder   *nlp_soi = NULL;
+	NLPDirect  *nlp_fod = NULL;
 	bool                 tailored_approach = false;
 	decomp_sys_step_builder_.process_nlp_and_options(
 		trase_out, nlp
@@ -298,7 +298,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			// Change the options for the tailored approach. 
 			if(trase_out) {
 				*trase_out
-					<< "\nThis is a tailored approach NLP (NLPFirstOrderDirect) which forces the following options:\n"
+					<< "\nThis is a tailored approach NLP (NLPDirect) which forces the following options:\n"
 					<< "merit_function_type         = L1;\n"
 					<< "l1_penalty_parameter_update = MULT_FREE;\n"
 					<< "null_space_matrix           = EXPLICIT;\n"
@@ -1387,7 +1387,7 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface* _algo)
 	rSQPState	         &state   = algo.rsqp_state();
 	NLP			         &nlp     = algo.nlp();
 	NLPVarReductPerm     *nlp_vrp = dynamic_cast<NLPVarReductPerm*>(&nlp);
-	NLPFirstOrderDirect  *nlp_fod = dynamic_cast<NLPFirstOrderDirect*>(&nlp);
+	NLPDirect  *nlp_fod = dynamic_cast<NLPDirect*>(&nlp);
 
 	algo.max_iter( algo.algo_cntr().max_iter() );
 	algo.max_run_time( algo.algo_cntr().max_run_time() );

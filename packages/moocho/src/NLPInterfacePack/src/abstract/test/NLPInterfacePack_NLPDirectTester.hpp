@@ -19,7 +19,7 @@
 #include <iosfwd>
 
 #include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
-#include "NLPInterfacePack/src/CalcFiniteDiffProd.hpp"
+#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
@@ -27,7 +27,7 @@ namespace NLPInterfacePack {
 
 ///
 /** Concrete class that tests the computed values of the
-  * <tt>NLPFirstOrderDirect</tt> interface using finite differences.
+  * <tt>NLPDirect</tt> interface using finite differences.
   *
   * There are two options for testing the derivatives by finite differences.
   * Each option can be picked independently for the computations with
@@ -243,7 +243,7 @@ public:
 	 *	where encountered.
 	 */
 	bool finite_diff_check(
-		NLPFirstOrderDirect     *nlp
+		NLPDirect     *nlp
 		,const Vector     &xo
 		,const Vector     *xl
 		,const Vector     *xu

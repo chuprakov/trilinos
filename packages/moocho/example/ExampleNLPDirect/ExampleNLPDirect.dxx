@@ -1,7 +1,7 @@
 /** \mainpage Simple Example NLP with Direct Sensitivities.
 
 This project contains a simple scalable example NLP that implements the
-<tt>\ref NLPInterfacePack::NLPFirstOrderDirect "NLPFirstOrderDirect"</tt> interface.
+<tt>\ref NLPInterfacePack::NLPDirect "NLPDirect"</tt> interface.
 
 The NLP subclass <tt>\ref NLPInterfacePack::ExampleNLPFirstOrderDirect "ExampleNLPFirstOrderDirect"</tt>
 represents an complete NLP implementation for a very simple example NLP.  This NLP implemementation is

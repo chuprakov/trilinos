@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPFirstOrderInfo.hpp
+// NLPFirstOrder.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef NLP_FIRST_ORDER_INFO_H
 #define NLP_FIRST_ORDER_INFO_H
 
-#include "NLPObjGradient.hpp"
+#include "NLPObjGrad.hpp"
 
 namespace NLPInterfacePack {
 ///
@@ -25,7 +25,7 @@ namespace NLPInterfacePack {
  * <b>Overview:</b>
  *
  * This class adds Jacobian information for the constraints.  This augments the
- * information provided by the \c NLP and \c NLPObjGradient interfaces.  This interface
+ * information provided by the \c NLP and \c NLPObjGrad interfaces.  This interface
  * includes access to matrix space objects which must be used by the client
  * to create the matrix objects that are used with this interface.  This
  * totally decouples the client from the implementation of these matrix
@@ -49,11 +49,11 @@ namespace NLPInterfacePack {
  * 
  * <b>Subclass developer's notes:</b>
  *
- * In addition to the methods that must be overridden by the \c NLPObjGradient interface
+ * In addition to the methods that must be overridden by the \c NLPObjGrad interface
  * (<A HREF="classNLPInterfacePack_1_1NLPObjGradient.html#must_override">see</A>) the following methods
  * must also be overridden: \c factory_Gc(), \c factory_Gh(), \c imp_calc_Gc(), \c imp_calc_Gc().
  *
- * In addition to the methods that should be overridden from <tt>%NLPObjGradient</tt> by most subclasses
+ * In addition to the methods that should be overridden from <tt>%NLPObjGrad</tt> by most subclasses
  * (<A HREF="classNLPInterfacePack_1_1NLPObjGradient.html#should_override">see</A>), the following
  * additional methods should be overridden: \c initialize().
  *
@@ -61,7 +61,7 @@ namespace NLPInterfacePack {
  * specialized situations: \c set_Gc(), \c get_Gc(), \c Gc(), \c set_Gh(), \c get_Gh(), \c Gh(),
  * \c num_Gc_evals(), \c num_Gh_evals().
  */
-class NLPFirstOrderInfo : virtual public NLPObjGradient {
+class NLPFirstOrder : virtual public NLPObjGrad {
 public:
 
 	///
@@ -74,7 +74,7 @@ public:
 	//@{
 
 	/// Initialize to no reference set to calculation quanities
-	NLPFirstOrderInfo();
+	NLPFirstOrder();
 
 	//@}
 
@@ -87,10 +87,10 @@ public:
 	 * This function implementation should be called by subclass implementations
 	 * in order to reset counts for \c f(x), \c c(x), \c h(x), \c Gf(x), \c Gc(x)
 	 * and \c Gh(x) evaluations.  This implementation calls
-	 * <tt>this->NLPObjGradient::initialize()</tt>
+	 * <tt>this->NLPObjGrad::initialize()</tt>
 	 *
 	 * Postconditions:<ul>
-	 * <li> See <tt>NLPObjGradient::initialize()</tt>
+	 * <li> See <tt>NLPObjGrad::initialize()</tt>
 	 * <li> <tt>this->num_Gc_evals() == 0</tt>
 	 * <li> <tt>this->num_Gh_evals() == 0</tt>
 	 * </ul>
@@ -402,13 +402,13 @@ private:
 	mutable size_type         num_Gc_evals_;
 	mutable size_type         num_Gh_evals_;
 
-};	// end class NLPFirstOrderInfo
+};	// end class NLPFirstOrder
 
 // /////////////////////
 // Inline members
 
 inline
-const NLPFirstOrderInfo::FirstOrderInfo NLPFirstOrderInfo::first_order_info() const
+const NLPFirstOrder::FirstOrderInfo NLPFirstOrder::first_order_info() const
 {
 	return FirstOrderInfo(Gc_,Gh_,obj_grad_info());
 }

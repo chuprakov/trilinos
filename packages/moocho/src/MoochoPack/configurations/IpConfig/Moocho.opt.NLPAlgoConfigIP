@@ -204,7 +204,7 @@ options_group CalcFiniteDiffProd {
 }
 
 ***************************************************************
-*** Options for EvalNewPoint for NLPFirstOrderInfo.
+*** Options for EvalNewPoint for NLPFirstOrder.
 *** See options_group NLPFirstDerivativesTester
 ***
 options_group EvalNewPointStd {
@@ -212,7 +212,7 @@ options_group EvalNewPointStd {
 *    fd_deriv_testing = FD_DEFAULT; *** (default) Test if check_results==true (see above)
 *    fd_deriv_testing = FD_TEST;    *** Always test
 *    fd_deriv_testing = FD_NO_TEST; *** never test
-     *** Determines if the derivatives of the NLP returned from the NLPFirstOrderInfo interface
+     *** Determines if the derivatives of the NLP returned from the NLPFirstOrder interface
      *** are correct using finite differences (see the options_group NLPFirstDerivativesTester).
      *** Valid options include:
      ***    FD_DEFAULT : Perform the finite difference tests if check_results==true.
@@ -327,7 +327,7 @@ options_group BasisSystemTester {
 
 ****************************************************************
 *** Options for the DecompositionSystem tester used to validate
-*** range/null decomposition matrices (NLPFirstOrderInfo only).
+*** range/null decomposition matrices (NLPFirstOrder only).
 ***
 options_group DecompositionSystemTester {
 *    print_tests = PRINT_NONE;    *** (default)

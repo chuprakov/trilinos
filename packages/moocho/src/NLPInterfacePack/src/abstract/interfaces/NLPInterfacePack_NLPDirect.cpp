@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////
-// NLPFirstOrderDirect.cpp
+// NLPDirect.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,7 +15,7 @@
 
 #include <assert.h>
 
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "Range1D.hpp"
@@ -23,9 +23,9 @@
 
 namespace NLPInterfacePack {
 
-// NLPFirstOrderDirect
+// NLPDirect
 
-void NLPFirstOrderDirect::set_factories(
+void NLPDirect::set_factories(
 	const mat_sym_fcty_ptr_t             &factory_transDtD
 	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
 	)
@@ -34,100 +34,100 @@ void NLPFirstOrderDirect::set_factories(
 	factory_S_        = factory_S;
 }
 
-size_type NLPFirstOrderDirect::r() const
+size_type NLPDirect::r() const
 {
 	return this->con_decomp().size();
 }
 
-Range1D NLPFirstOrderDirect::var_dep() const
+Range1D NLPDirect::var_dep() const
 {
 	return Range1D(1,m());
 }
-Range1D NLPFirstOrderDirect::var_indep() const
+Range1D NLPDirect::var_indep() const
 {
 	return Range1D(m()+1,n());
 }
-Range1D NLPFirstOrderDirect::con_decomp() const
+Range1D NLPDirect::con_decomp() const
 {
 	return Range1D(1,m());
 }
 
-Range1D NLPFirstOrderDirect::con_undecomp() const
+Range1D NLPDirect::con_undecomp() const
 {
 	return Range1D::Invalid;
 }
 
-const NLPFirstOrderDirect::mat_fcty_ptr_t
-NLPFirstOrderDirect::factory_GcU() const
+const NLPDirect::mat_fcty_ptr_t
+NLPDirect::factory_GcU() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_fcty_ptr_t
-NLPFirstOrderDirect::factory_Gh() const
+const NLPDirect::mat_fcty_ptr_t
+NLPDirect::factory_Gh() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_fcty_ptr_t
-NLPFirstOrderDirect::factory_Uz() const
+const NLPDirect::mat_fcty_ptr_t
+NLPDirect::factory_Uz() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_fcty_ptr_t
-NLPFirstOrderDirect::factory_Vz() const
+const NLPDirect::mat_fcty_ptr_t
+NLPDirect::factory_Vz() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_fcty_ptr_t
-NLPFirstOrderDirect::factory_GcUD() const
+const NLPDirect::mat_fcty_ptr_t
+NLPDirect::factory_GcUD() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_fcty_ptr_t
-NLPFirstOrderDirect::factory_GhD() const
+const NLPDirect::mat_fcty_ptr_t
+NLPDirect::factory_GhD() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_sym_fcty_ptr_t
-NLPFirstOrderDirect::factory_transDtD() const
+const NLPDirect::mat_sym_fcty_ptr_t
+NLPDirect::factory_transDtD() const
 {
 	return factory_transDtD_;
 }
 	
-const NLPFirstOrderDirect::mat_sym_nonsing_fcty_ptr_t
-NLPFirstOrderDirect::factory_S() const
+const NLPDirect::mat_sym_nonsing_fcty_ptr_t
+NLPDirect::factory_S() const
 {
 	return factory_S_;
 }
 
-void NLPFirstOrderDirect::initialize(bool test_setup)
+void NLPDirect::initialize(bool test_setup)
 {
-	NLPObjGradient::initialize(test_setup);
+	NLPObjGrad::initialize(test_setup);
 }
 
-NLP::vec_space_ptr_t NLPFirstOrderDirect::space_h() const
+NLP::vec_space_ptr_t NLPDirect::space_h() const
 {
 	return MemMngPack::null;
 }
 
-const Vector& NLPFirstOrderDirect::hl() const
+const Vector& NLPDirect::hl() const
 {
-	THROW_EXCEPTION( true, NoBounds, "NLPFirstOrderDirect::hl(), Error, default is for mI() == 0" );
+	THROW_EXCEPTION( true, NoBounds, "NLPDirect::hl(), Error, default is for mI() == 0" );
 	return xl(); // will never execute.
 }
 
-const Vector& NLPFirstOrderDirect::hu() const
+const Vector& NLPDirect::hu() const
 {
-	THROW_EXCEPTION( true, NoBounds, "NLPFirstOrderDirect::hl(), Error, default is for mI() == 0" );
+	THROW_EXCEPTION( true, NoBounds, "NLPDirect::hl(), Error, default is for mI() == 0" );
 	return xu(); // will never execute.
 }
 
-void NLPFirstOrderDirect::imp_calc_h(
+void NLPDirect::imp_calc_h(
 	const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const
 {
 	assert(0); // Should never be called!

@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "NLPInterfacePack/src/BarrierNLP.hpp"
+#include "NLPInterfacePack/src/abstract/tools/BarrierNLP.hpp"
 #include "ReducedSpaceSQPPack/src/std/PostProcessBarrierLineSearch_Step.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"

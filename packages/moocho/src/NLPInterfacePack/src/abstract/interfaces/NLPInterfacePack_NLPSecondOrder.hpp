@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPSecondOrderInfo.hpp
+// NLPSecondOrder.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef NLP_SECOND_ORDER_INFO_H
 #define NLP_SECOND_ORDER_INFO_H
 
-#include "NLPFirstOrderInfo.hpp"
+#include "NLPFirstOrder.hpp"
 
 namespace NLPInterfacePack {
 
@@ -26,7 +26,7 @@ namespace NLPInterfacePack {
  * <b>Overview:</b>
  *
  * This class adds second order inforamtion to the first order information
- * and basic information given in the <tt>NLPFirstOrderInfo</tt> and base interfaces.
+ * and basic information given in the <tt>NLPFirstOrder</tt> and base interfaces.
  *
  * Specifically the Hesssian of the Lagrangian is defined as:
  \verbatim
@@ -52,7 +52,7 @@ namespace NLPInterfacePack {
  * ToDo: Finish Documentation!
  *
  */
-class NLPSecondOrderInfo : virtual public NLPFirstOrderInfo {
+class NLPSecondOrder : virtual public NLPFirstOrder {
 public:
 
 	///
@@ -63,7 +63,7 @@ public:
 	//@{
 
 	/// Initialize to no reference set to calculation quanities
-	NLPSecondOrderInfo();
+	NLPSecondOrder();
 
 	//@}
 
@@ -76,10 +76,10 @@ public:
 	 * This function implementation should be called by subclass implementations
 	 * in order to reset counts for \c f(x), \c c(x), \c h(x), \c Gf(x), \c Gc(x),
 	 * \c Gh(x) and \c HL(x) evaluations.  This implementation calls
-	 * <tt>this->NLPFirstOrderInfo::initialize()</tt>
+	 * <tt>this->NLPFirstOrder::initialize()</tt>
  	 *
 	 * Postconditions:<ul>
-	 * <li> See <tt>NLPFirstOrderInfo::initialize()</tt>
+	 * <li> See <tt>NLPFirstOrder::initialize()</tt>
 	 * <li> <tt>this->num_HL_evals() == 0</tt>
 	 * </ul>
 	 */
@@ -282,13 +282,13 @@ private:
 	mutable MatrixSymOp   *HL_;
 	mutable bool              num_HL_evals_;
 
-};	// end class NLPSecondOrderInfo
+};	// end class NLPSecondOrder
 
 // //////////////////
 // Inline members
 
 inline
-const NLPSecondOrderInfo::SecondOrderInfo NLPSecondOrderInfo::second_order_info() const
+const NLPSecondOrder::SecondOrderInfo NLPSecondOrder::second_order_info() const
 {
 	return SecondOrderInfo(HL_,first_order_info());
 }

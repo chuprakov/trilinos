@@ -19,7 +19,7 @@
 #include <stdexcept>
 
 #include "ReducedSpaceSQPPackTypes.hpp"
-#include "NLPInterfacePack/src/NLP.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 

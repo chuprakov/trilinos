@@ -70,8 +70,8 @@ namespace NLPInterfacePack {
  * The client can also select a basis itself and then set that basis by calling
  * <tt>this->set_basis()</tt> to force the use of that basis selection.
  * In this way a valid basis is automatically selected after initialization so that
- * clients using another interface (\c NLP, \c NLPFirstOrderInfo, or 
- * \c NLPSecondOrderInfo) will be able to use the %NLP object without even knowing
+ * clients using another interface (\c NLP, \c NLPFirstOrder, or 
+ * \c NLPSecondOrder) will be able to use the %NLP object without even knowing
  * about a basis selection.
  *
  * Below are some obviouls assertions about the basis selection: <ul>

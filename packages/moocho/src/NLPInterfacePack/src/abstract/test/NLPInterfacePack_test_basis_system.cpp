@@ -14,14 +14,14 @@
 // above mentioned "Artistic License" for more details.
 
 #include "test_basis_system.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystem.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTester.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTesterSetOptions.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 
 bool NLPInterfacePack::test_basis_system(
- 	NLPFirstOrderInfo*                             nlp
+ 	NLPFirstOrder*                             nlp
 	,BasisSystem*                                  basis_sys
 	,OptionsFromStreamPack::OptionsFromStream*     options
 	,std::ostream*                                 out
@@ -35,7 +35,7 @@ bool NLPInterfacePack::test_basis_system(
 		mI = nlp->mI();
 
 	// Create the matrices Gc and Gh
-	NLPFirstOrderInfo::mat_fcty_ptr_t::element_type::obj_ptr_t
+	NLPFirstOrder::mat_fcty_ptr_t::element_type::obj_ptr_t
 		Gc = ( m  ? nlp->factory_Gc()->create() : rcp::null ),
 		Gh = ( mI ? nlp->factory_Gh()->create() : rcp::null );
 	

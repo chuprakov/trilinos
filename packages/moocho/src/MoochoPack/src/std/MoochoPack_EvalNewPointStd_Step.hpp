@@ -20,7 +20,7 @@
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystemTester.hpp"
 #include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
-#include "NLPInterfacePack/test/NLPFirstDerivativesTester.hpp"
+#include "NLPInterfacePack/src/abstract/test/NLPFirstDerivativesTester.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 

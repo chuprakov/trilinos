@@ -22,7 +22,7 @@
 #include "debug.hpp"
 
 #include "Algo_ConfigIP.hpp"
-#include "NLPInterfacePack/src/BarrierNLP.hpp"
+#include "NLPInterfacePack/src/abstract/tools/BarrierNLP.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
@@ -32,9 +32,9 @@
 //#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasicInitDiagonal.hpp"// | rHL (super basics)
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"                          // |
 
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
-#include "NLPInterfacePack/src/NLPVarReductPerm.hpp"
-#include "NLPInterfacePack/src/CalcFiniteDiffProd.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPVarReductPerm.hpp"
+#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
 
 // line search
 #include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_Strategy.hpp"
@@ -248,9 +248,9 @@ void Algo_ConfigIP::config_algo_cntr(
 		nb  = nlp.num_bounded_x();
 
 	// Process the NLP
-	NLPFirstOrderInfo    *nlp_foi = NULL;
-	NLPSecondOrderInfo   *nlp_soi = NULL;
-	NLPFirstOrderDirect  *nlp_fod = NULL;
+	NLPFirstOrder    *nlp_foi = NULL;
+	NLPSecondOrder   *nlp_soi = NULL;
+	NLPDirect  *nlp_fod = NULL;
 	bool                 tailored_approach = false;
 	decomp_sys_step_builder_.process_nlp_and_options(
 		trase_out, nlp
@@ -285,7 +285,7 @@ void Algo_ConfigIP::config_algo_cntr(
 		// Change the options for the tailored approach. 
 		if(trase_out) {
 			*trase_out
-				<< "\nThis is a tailored approach NLP (NLPFirstOrderDirect) which forces the following options:\n"
+				<< "\nThis is a tailored approach NLP (NLPDirect) which forces the following options:\n"
 				<< "merit_function_type         = L1;\n"
 				<< "l1_penalty_parameter_update = MULT_FREE;\n"
 				<< "null_space_matrix           = EXPLICIT;\n"
@@ -1324,7 +1324,7 @@ void Algo_ConfigIP::init_algo(rSQPAlgoInterface* _algo)
 	rSQPState	         &state   = algo.rsqp_state();
 	NLP			         &nlp     = algo.nlp();
 	NLPVarReductPerm     *nlp_vrp = dynamic_cast<NLPVarReductPerm*>(&nlp);
-	NLPFirstOrderDirect  *nlp_fod = dynamic_cast<NLPFirstOrderDirect*>(&nlp);
+	NLPDirect  *nlp_fod = dynamic_cast<NLPDirect*>(&nlp);
 
 	algo.max_iter( algo.algo_cntr().max_iter() );
 	algo.max_run_time( algo.algo_cntr().max_run_time() );

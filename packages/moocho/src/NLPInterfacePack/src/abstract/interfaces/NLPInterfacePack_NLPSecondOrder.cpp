@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPSecondOrderInfo.cpp
+// NLPSecondOrder.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "NLPInterfacePack/src/NLPSecondOrderInfo.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPSecondOrder.hpp"
 #include "ThrowException.hpp"
 
 namespace {
@@ -22,41 +22,41 @@ namespace {
 
 // constructors
 
-NLPInterfacePack::NLPSecondOrderInfo::NLPSecondOrderInfo()
+NLPInterfacePack::NLPSecondOrder::NLPSecondOrder()
 	: HL_(0)
 {}
 
 
-void NLPInterfacePack::NLPSecondOrderInfo::initialize(bool test_setup) {
+void NLPInterfacePack::NLPSecondOrder::initialize(bool test_setup) {
 	num_HL_evals_ = 0;
-	NLPFirstOrderInfo::initialize(test_setup);
+	NLPFirstOrder::initialize(test_setup);
 }
 
 // <<std aggr>> members for HL
 
-void NLPInterfacePack::NLPSecondOrderInfo::set_HL(MatrixSymOp* HL)
+void NLPInterfacePack::NLPSecondOrder::set_HL(MatrixSymOp* HL)
 {
 	HL_ = HL;
 }
 
-NLPInterfacePack::MatrixSymOp* NLPInterfacePack::NLPSecondOrderInfo::get_HL()
+NLPInterfacePack::MatrixSymOp* NLPInterfacePack::NLPSecondOrder::get_HL()
 {
 	return StandardCompositionRelationshipsPack::get_role_name(HL_, false, name_HL);
 }
 
-NLPInterfacePack::MatrixSymOp& NLPInterfacePack::NLPSecondOrderInfo::HL()
+NLPInterfacePack::MatrixSymOp& NLPInterfacePack::NLPSecondOrder::HL()
 {
 	return StandardCompositionRelationshipsPack::role_name(HL_, false, name_HL);
 }
 
-const NLPInterfacePack::MatrixSymOp& NLPInterfacePack::NLPSecondOrderInfo::HL() const
+const NLPInterfacePack::MatrixSymOp& NLPInterfacePack::NLPSecondOrder::HL() const
 {
 	return StandardCompositionRelationshipsPack::role_name(HL_, false, name_HL);
 }
 
 // calculations
 
-void NLPInterfacePack::NLPSecondOrderInfo::calc_HL(
+void NLPInterfacePack::NLPSecondOrder::calc_HL(
 	const Vector& x, const Vector* lambda, const Vector* lambdaI, bool newpoint
 	) const
 {
@@ -68,7 +68,7 @@ void NLPInterfacePack::NLPSecondOrderInfo::calc_HL(
 	imp_calc_HL(x,lambda,lambdaI,newpoint,second_order_info());
 }
 
-NLPInterfacePack::size_type NLPInterfacePack::NLPSecondOrderInfo::num_HL_evals() const
+NLPInterfacePack::size_type NLPInterfacePack::NLPSecondOrder::num_HL_evals() const
 {
 	return num_HL_evals_;
 }

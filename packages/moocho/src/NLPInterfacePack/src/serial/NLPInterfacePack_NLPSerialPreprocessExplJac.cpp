@@ -18,7 +18,7 @@
 #include <typeinfo>
 #include <algorithm>
 
-#include "NLPInterfacePack/src/NLPSerialPreprocessExplJac.hpp"
+#include "NLPInterfacePack/src/serial/NLPSerialPreprocessExplJac.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSparseCOORSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
@@ -93,13 +93,13 @@ void NLPSerialPreprocessExplJac::initialize(bool test_setup)
 	if( initialized_  && !imp_nlp_has_changed() ) {
 		// The subclass NLP has not changed so we can just
 		// slip this preprocessing.
-		NLPFirstOrderInfo::initialize(test_setup);
+		NLPFirstOrder::initialize(test_setup);
 		NLPSerialPreprocess::initialize(test_setup);  // Some duplication but who cares!
 		return;
 	}
 
 	// Initialize the base object first
-	NLPFirstOrderInfo::initialize(test_setup);
+	NLPFirstOrder::initialize(test_setup);
 	NLPSerialPreprocess::initialize(test_setup);  // Some duplication but who cares!
 
 	const NLP::vec_space_ptr_t
@@ -127,21 +127,21 @@ bool NLPSerialPreprocessExplJac::is_initialized() const {
 	return initialized_;
 }
 
-// Overridden public members from NLPFirstOrderInfo
+// Overridden public members from NLPFirstOrder
 
-const NLPFirstOrderInfo::mat_fcty_ptr_t
+const NLPFirstOrder::mat_fcty_ptr_t
 NLPSerialPreprocessExplJac::factory_Gc() const
 {
 	return factory_Gc_;
 }
 
-const NLPFirstOrderInfo::mat_fcty_ptr_t
+const NLPFirstOrder::mat_fcty_ptr_t
 NLPSerialPreprocessExplJac::factory_Gh() const
 {
 	return factory_Gh_;
 }
 
-const NLPFirstOrderInfo::basis_sys_ptr_t
+const NLPFirstOrder::basis_sys_ptr_t
 NLPSerialPreprocessExplJac::basis_sys() const
 {
 	BasisSystemFactory &fcty = const_cast<NLPSerialPreprocessExplJac*>(this)->basis_sys_fcty();
@@ -156,7 +156,7 @@ void NLPSerialPreprocessExplJac::set_Gc(MatrixOp* Gc)
 	if( Gc != NULL ) {
 		dyn_cast<MatrixPermAggr>(*Gc); // With throw exception if not correct type!
 	}
-	NLPFirstOrderInfo::set_Gc(Gc);
+	NLPFirstOrder::set_Gc(Gc);
 }
 
 void NLPSerialPreprocessExplJac::set_Gh(MatrixOp* Gh)
@@ -166,7 +166,7 @@ void NLPSerialPreprocessExplJac::set_Gh(MatrixOp* Gh)
 	if( Gh != NULL ) {
 		dyn_cast<MatrixPermAggr>(*Gh); // With throw exception if not correct type!
 	}
-	NLPFirstOrderInfo::set_Gh(Gh);
+	NLPFirstOrder::set_Gh(Gh);
 }
 
 // Overridden public members from NLPVarReductPerm
@@ -200,7 +200,7 @@ void NLPSerialPreprocessExplJac::set_basis(
 	Gh_perm_new_basis_updated_ = false;
 }
 
-// Overridden protected members from NLPFirstOrderInfo
+// Overridden protected members from NLPFirstOrder
 
 void NLPSerialPreprocessExplJac::imp_calc_Gc(
 	const Vector& x, bool newx

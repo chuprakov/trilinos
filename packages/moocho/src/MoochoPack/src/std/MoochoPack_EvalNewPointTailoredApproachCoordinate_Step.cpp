@@ -15,7 +15,7 @@
 
 #include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixZero.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
@@ -43,7 +43,7 @@ void EvalNewPointTailoredApproachCoordinate_Step::uninitialize_Y_Uv_Uy(
 }
 
 void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y_Uy_Vy(
-	const NLPFirstOrderDirect   &nlp
+	const NLPDirect   &nlp
 	,const D_ptr_t              &D
 	,VectorMutable        *py
 	,MatrixOp               *Y

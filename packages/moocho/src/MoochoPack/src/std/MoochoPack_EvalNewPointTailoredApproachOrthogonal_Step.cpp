@@ -15,7 +15,7 @@
 
 #include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymInitDiag.hpp"
@@ -61,7 +61,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::uninitialize_Y_Uv_Uy(
 }
 
 void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy_Vy(
-	const NLPFirstOrderDirect   &nlp
+	const NLPDirect   &nlp
 	,const D_ptr_t              &D
 	,VectorMutable        *py
 	,MatrixOp               *Y

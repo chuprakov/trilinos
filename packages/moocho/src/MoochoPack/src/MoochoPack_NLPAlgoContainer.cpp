@@ -22,7 +22,7 @@
 #include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPAlgoInterface.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "NLPInterfacePack/src/NLP.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
 #include "ThrowException.hpp"
 
 namespace {

@@ -20,7 +20,7 @@
 #include "ReducedSpaceSQPPack/src/std/InitFinDiffReducedHessian_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "NLPInterfacePack/src/NLPObjGradient.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPObjGrad.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymInitDiag.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
@@ -65,7 +65,7 @@ bool InitFinDiffReducedHessian_Step::do_step(
 
 	rSQPAlgo          &algo  = rsqp_algo(_algo);
 	rSQPState         &s     = algo.rsqp_state();
-	NLPObjGradient    &nlp   = dyn_cast<NLPObjGradient>(algo.nlp());
+	NLPObjGrad    &nlp   = dyn_cast<NLPObjGrad>(algo.nlp());
 	
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -269,7 +269,7 @@ void InitFinDiffReducedHessian_Step::print_step(
 {
 	out
 		<< L << "*** Initialize the reduced Hessian using a single finite difference.\n"
-		<< L << "*** Where the nlp must support the NLPObjGradient interface and\n"
+		<< L << "*** Where the nlp must support the NLPObjGrad interface and\n"
 		<< L << "*** rHL_k must support the MatrixSymInitDiag interface or exceptions\n"
 		<< L << "*** will be thrown.\n"
 		<< L << "default: num_basis_remembered = NO_BASIS_UPDATED_YET\n"

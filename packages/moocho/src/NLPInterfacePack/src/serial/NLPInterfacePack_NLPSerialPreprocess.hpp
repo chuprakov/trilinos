@@ -18,8 +18,8 @@
 
 #include <valarray>
 
-#include "NLPFirstOrderInfo.hpp"
-#include "NLPVarReductPerm.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPVarReductPerm.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
@@ -195,7 +195,7 @@ namespace NLPInterfacePack {
  * \c imp_get_next_basis() and \c imp_report_orig_final_solution().
  */
 class NLPSerialPreprocess
-	: virtual public NLPObjGradient
+	: virtual public NLPObjGrad
 	, virtual public NLPVarReductPerm
 {
 public:
@@ -369,7 +369,7 @@ protected:
 
 	//@}
 
-	/** @name Overridden protected members from NLPObjGradient */
+	/** @name Overridden protected members from NLPObjGrad */
 	//@{
 
 	///

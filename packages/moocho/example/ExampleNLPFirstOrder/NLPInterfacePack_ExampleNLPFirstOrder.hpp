@@ -17,13 +17,13 @@
 #define EXAMPLE_NLP_FIRST_ORDER_INFO_H
 
 #include "ExampleNLPFirstOrderDirect/ExampleNLPObjGradient.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 
 namespace NLPInterfacePack {
 
 ///
 /** Simple example %NLP subclass to illustrate how to implement the
- * \c NLPFirstOrderInfo interface for a specialized \c NLP.
+ * \c NLPFirstOrder interface for a specialized \c NLP.
  *
  * The example %NLP we will use is a scalable problem where
  * the basis of the jacobian of the constraints is a diagonal
@@ -46,7 +46,7 @@ namespace NLPInterfacePack {
  * ToDo: Finish documentation!
  */
 class ExampleNLPFirstOrderInfo
-	: virtual public NLPFirstOrderInfo
+	: virtual public NLPFirstOrder
 	, virtual public ExampleNLPObjGradient
 {
 public:
@@ -71,15 +71,15 @@ public:
 
 	//@}
 
-	/** @name Overridden public members from NLPFirstOrderInfo */
+	/** @name Overridden public members from NLPFirstOrder */
 	//@{
 
 	/// Overridden to check the concrete type of Gc
 	void set_Gc(MatrixOp* Gc);
 	///
-	const NLPFirstOrderInfo::mat_fcty_ptr_t factory_Gc() const;
+	const NLPFirstOrder::mat_fcty_ptr_t factory_Gc() const;
 	/// Return NULL
-	const NLPFirstOrderInfo::mat_fcty_ptr_t factory_Gh() const;
+	const NLPFirstOrder::mat_fcty_ptr_t factory_Gh() const;
 	/// Returns an ExampleBasisSystem
 	const basis_sys_ptr_t basis_sys() const;
 
@@ -87,7 +87,7 @@ public:
 
 protected:
 
-	/** @name Overridden protected members from NLPFirstOrderInfo */
+	/** @name Overridden protected members from NLPFirstOrder */
 	//@{
 
 	///
@@ -103,8 +103,8 @@ private:
 	// Private data members
 
 	bool                                    initialized_;  // flag for if initialized has been called.
-	NLPFirstOrderInfo::mat_fcty_ptr_t       factory_Gc_;   // Factory for Gc
-	NLPFirstOrderInfo::basis_sys_ptr_t      basis_sys_;    // The basis system
+	NLPFirstOrder::mat_fcty_ptr_t       factory_Gc_;   // Factory for Gc
+	NLPFirstOrder::basis_sys_ptr_t      basis_sys_;    // The basis system
 
 	// /////////////////////////////////////////
 	// Private member functions

@@ -71,7 +71,7 @@ ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect(
 
 	// Create the factory object for D
 	factory_D_ = rcp::rcp(new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>());
-	NLPFirstOrderDirect::set_factories(
+	NLPDirect::set_factories(
 		MemMngPack::rcp(
 			new MemMngPack::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())               // D'*D
 		,MemMngPack::rcp(
@@ -85,12 +85,12 @@ void ExampleNLPFirstOrderDirect::initialize(bool test_setup)
 {
 
 	if( initialized_ ) {
-		NLPFirstOrderDirect::initialize(test_setup);
+		NLPDirect::initialize(test_setup);
 		ExampleNLPObjGradient::initialize(test_setup);
 		return;
 	}
 
-	NLPFirstOrderDirect::initialize(test_setup);
+	NLPDirect::initialize(test_setup);
 	ExampleNLPObjGradient::initialize(test_setup);
 
 	initialized_ = true;
@@ -116,7 +116,7 @@ const Vector& ExampleNLPFirstOrderDirect::hu() const
 	return ExampleNLPObjGradient::hl();
 }
 
-// Overridden public members from NLPFirstOrderDirect
+// Overridden public members from NLPDirect
 
 Range1D ExampleNLPFirstOrderDirect::var_dep() const
 {
@@ -128,7 +128,7 @@ Range1D ExampleNLPFirstOrderDirect::var_indep() const
 	return ExampleNLPObjGradient::var_indep();
 }
 
-const NLPFirstOrderDirect::mat_fcty_ptr_t
+const NLPDirect::mat_fcty_ptr_t
 ExampleNLPFirstOrderDirect::factory_D() const
 {
 	return factory_D_;

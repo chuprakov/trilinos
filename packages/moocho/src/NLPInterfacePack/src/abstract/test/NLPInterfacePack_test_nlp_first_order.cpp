@@ -16,13 +16,13 @@
 #include <assert.h>
 
 #include "test_nlp_first_order_info.hpp"
-#include "NLPInterfacePack/src/CalcFiniteDiffProd.hpp"
-#include "NLPInterfacePack/src/CalcFiniteDiffProdSetOptions.hpp"
+#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
+#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProdSetOptions.hpp"
 #include "NLPTester.hpp"
 #include "NLPTesterSetOptions.hpp"
 #include "NLPFirstDerivativesTester.hpp"
 #include "NLPFirstDerivativesTesterSetOptions.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceTester.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceTesterSetOptions.hpp"
@@ -34,7 +34,7 @@
 #include "update_success.hpp"
 
 bool NLPInterfacePack::test_nlp_first_order_info(
-	NLPFirstOrderInfo*                          nlp
+	NLPFirstOrder*                          nlp
 	,OptionsFromStreamPack::OptionsFromStream*    options
 	,std::ostream*                                out
 	)
@@ -114,7 +114,7 @@ bool NLPInterfacePack::test_nlp_first_order_info(
 		nlp, nlp->xinit(), print_all_warnings, out );
 	update_success( result, &success );
 	
-	// Test the NLPFirstOrderInfo interface now!
+	// Test the NLPFirstOrder interface now!
 
 	const size_type
 		n  = nlp->n(),
@@ -124,7 +124,7 @@ bool NLPInterfacePack::test_nlp_first_order_info(
 		c   = m  ? nlp->space_c()->create_member() : rcp::null,
 		h   = mI ? nlp->space_h()->create_member() : rcp::null,
 		Gf  =      nlp->space_x()->create_member();
-	NLPFirstOrderInfo::mat_fcty_ptr_t::element_type::obj_ptr_t
+	NLPFirstOrder::mat_fcty_ptr_t::element_type::obj_ptr_t
 		Gc  = m  ? nlp->factory_Gc()->create() : rcp::null,
 		Gh  = mI ? nlp->factory_Gh()->create() : rcp::null;
 

@@ -17,11 +17,11 @@
 
 // NLP Stuff
 
-#include "NLPInterfacePack/src/NLPSecondOrderInfo.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
-#include "NLPInterfacePack/src/NLPVarReductPerm.hpp"
-#include "NLPInterfacePack/test/NLPFirstOrderDirectTester.hpp"
-#include "NLPInterfacePack/test/NLPFirstOrderDirectTesterSetOptions.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPSecondOrder.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPVarReductPerm.hpp"
+#include "NLPInterfacePack/src/abstract/test/NLPFirstOrderDirectTester.hpp"
+#include "NLPInterfacePack/src/abstract/test/NLPFirstOrderDirectTesterSetOptions.hpp"
 
 // Basis system and direct sparse solvers
 
@@ -58,9 +58,9 @@
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
 #include "ReducedSpaceSQPPack/src/std/NewDecompositionSelectionStd_Strategy.hpp"
 #include "ConstrainedOptimizationPack/src/VariableBoundsTesterSetOptions.hpp"
-#include "NLPInterfacePack/src/CalcFiniteDiffProdSetOptions.hpp"
-#include "NLPInterfacePack/test/NLPFirstDerivativesTester.hpp"
-#include "NLPInterfacePack/test/NLPFirstDerivativesTesterSetOptions.hpp"
+#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProdSetOptions.hpp"
+#include "NLPInterfacePack/src/abstract/test/NLPFirstDerivativesTester.hpp"
+#include "NLPInterfacePack/src/abstract/test/NLPFirstDerivativesTesterSetOptions.hpp"
 
 // Common utilities
 #include "StringToIntMap.hpp"
@@ -101,9 +101,9 @@ DecompositionSystemStateStepBuilderStd::get_options() const
 void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
 	std::ostream          *trase_out
 	,NLP                  &nlp
-	,NLPFirstOrderInfo    **nlp_foi
-	,NLPSecondOrderInfo   **nlp_soi
-	,NLPFirstOrderDirect  **nlp_fod
+	,NLPFirstOrder    **nlp_foi
+	,NLPSecondOrder   **nlp_soi
+	,NLPDirect  **nlp_fod
 	,bool                 *tailored_approach
 	)
 {
@@ -125,19 +125,19 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
 		*trase_out << "\n*** Probing the NLP object for supported interfaces ...\n";
 
 	// Determine which NLP interface is supported
-	*nlp_foi = dynamic_cast<NLPFirstOrderInfo*>(&nlp);	
-	*nlp_soi = dynamic_cast<NLPSecondOrderInfo*>(&nlp);	
-	*nlp_fod = dynamic_cast<NLPFirstOrderDirect*>(&nlp);
+	*nlp_foi = dynamic_cast<NLPFirstOrder*>(&nlp);	
+	*nlp_soi = dynamic_cast<NLPSecondOrder*>(&nlp);	
+	*nlp_fod = dynamic_cast<NLPDirect*>(&nlp);
 	*tailored_approach = false;
 	if( *nlp_foi ) {
 		if(trase_out)
-			*trase_out << "\nDetected that NLP object supports the NLPFirstOrderInfo interface!\n";
+			*trase_out << "\nDetected that NLP object supports the NLPFirstOrder interface!\n";
 		*tailored_approach = false;
 	}
 	else {
 		if( *nlp_fod ) {
 			if(trase_out)
-				*trase_out << "\nDetected that NLP object supports the NLPFirstOrderDirect interface!\n";
+				*trase_out << "\nDetected that NLP object supports the NLPDirect interface!\n";
 			*tailored_approach = true;
 		}
 		else {
@@ -145,13 +145,13 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
 				true, std::logic_error
 				,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
 				"the NLP object of type \'" << typeid(nlp).name() <<
-				"\' does not support the NLPFirstOrderDirect or "
-				"NLPFirstOrderInfo interfaces!" );
+				"\' does not support the NLPDirect or "
+				"NLPFirstOrder interfaces!" );
 		}
 	}
 	if( *nlp_soi ) {
 		if(trase_out)
-			*trase_out << "\nDetected that NLP object also supports the NLPSecondOrderInfo interface!\n";
+			*trase_out << "\nDetected that NLP object also supports the NLPSecondOrder interface!\n";
 	}
 
 	//
@@ -203,9 +203,9 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
 void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 	std::ostream                                                     *trase_out
 	,NLP                                                             &nlp
-	,NLPFirstOrderInfo                                               *nlp_foi
-	,NLPSecondOrderInfo                                              *nlp_soi
-	,NLPFirstOrderDirect                                             *nlp_fod
+	,NLPFirstOrder                                               *nlp_foi
+	,NLPSecondOrder                                              *nlp_soi
+	,NLPDirect                                             *nlp_fod
 	,bool                                                            tailored_approach
 	,MemMngPack::ref_count_ptr<DecompositionSystem>                  *decomp_sys
 	)
@@ -228,7 +228,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 		if( basis_sys.get() == NULL ) {
 			THROW_EXCEPTION(
 				true, std::logic_error
-				,"\nA basis system object was not specified by the NLPFirstOrderInfo object of type \'"
+				,"\nA basis system object was not specified by the NLPFirstOrder object of type \'"
 				<< typeid(nlp).name() << "\' and we can not build a rSQP algorithm without one!" );
 
 		}
@@ -328,9 +328,9 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 	std::ostream                                                     *trase_out
 	,NLP                                                             &nlp
-	,NLPFirstOrderInfo                                               *nlp_foi
-	,NLPSecondOrderInfo                                              *nlp_soi
-	,NLPFirstOrderDirect                                             *nlp_fod
+	,NLPFirstOrder                                               *nlp_foi
+	,NLPSecondOrder                                              *nlp_soi
+	,NLPDirect                                             *nlp_fod
 	,bool                                                            tailored_approach
 	,const MemMngPack::ref_count_ptr<DecompositionSystem>            &decomp_sys
 	,const MemMngPack::ref_count_ptr<rSQPState>                      &state
@@ -342,12 +342,12 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 		m  = nlp.m();
 
 	if( tailored_approach ) {
-		// NLPFirstOrderDirect
+		// NLPDirect
 		assert( nlp_fod->con_undecomp().size() == 0 );
 		// ToDo: Add the necessary iteration quantities when con_undecomp().size() > 0 is supported!
 	}
 	else {
-		// NLPFirstOrderInfo
+		// NLPFirstOrder
 		if(m)
 			state->set_iter_quant(
 				Gc_name
@@ -482,9 +482,9 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 	std::ostream                                                      *trase_out
 	,NLP                                                              &nlp
-	,NLPFirstOrderInfo                                                *nlp_foi
-	,NLPSecondOrderInfo                                               *nlp_soi
-	,NLPFirstOrderDirect                                              *nlp_fod
+	,NLPFirstOrder                                                *nlp_foi
+	,NLPSecondOrder                                               *nlp_soi
+	,NLPDirect                                              *nlp_fod
 	,bool                                                             tailored_approach
 	,const MemMngPack::ref_count_ptr<DecompositionSystem>             &decomp_sys
 	,MemMngPack::ref_count_ptr<IterationPack::AlgorithmStep>   *eval_new_point_step

@@ -25,12 +25,12 @@ namespace OptionsFromStreamPack {
 namespace NLPInterfacePack {
 
 ///
-/** Test a \c BasisSystem object given matrices from a compatible \c NLPFirstOrderInfo object.
+/** Test a \c BasisSystem object given matrices from a compatible \c NLPFirstOrder object.
  *
  * ToDo: Finish documentation!
  */
 bool test_basis_system(
- 	NLPFirstOrderInfo*                             nlp
+ 	NLPFirstOrder*                             nlp
 	,BasisSystem*                                  basis_sys
 	,OptionsFromStreamPack::OptionsFromStream*     options
 	,std::ostream*                                 out

@@ -27,7 +27,7 @@ namespace OptionsFromStreamPack {
 namespace NLPInterfacePack {
 
 ///
-/** Test an <tt>NLPFirstOrderInfo</tt> object.
+/** Test an <tt>NLPFirstOrder</tt> object.
  *
  * @param  nlp     [in/out] %NLP object being tested.
  * @param  options [in] If <tt>options != NULL</tt> then the options to use are extracted
@@ -41,7 +41,7 @@ namespace NLPInterfacePack {
  * This function uses the testing classes <tt>\ref AbstractLinAlgPack::VectorSpaceTester "VectorSpaceTester"</tt>
  * <tt>\ref NLPInterfacePack::NLPTester "NLPTester"</tt> and
  * <tt>\ref NLPInterfacePack::NLPFirstOrderInfoTester "NLPFirstOrderInfoTester"</tt> to perform many through tests
- * of an input <tt>\ref NLPInterfacePack::NLPFirstOrderInfo "NLPFirstOrderInfo"</tt> object.
+ * of an input <tt>\ref NLPInterfacePack::NLPFirstOrder "NLPFirstOrder"</tt> object.
  * The vector spaces exposed by <tt>\ref NLPInterfacePack::NLP "NLP"</tt> are thoroughly tested by the <tt>VectorSpaceTester</tt>
  * class.
  *
@@ -53,7 +53,7 @@ namespace NLPInterfacePack {
  * objects.
  */
 bool test_nlp_first_order_info(
-	NLPFirstOrderInfo*                            nlp
+	NLPFirstOrder*                            nlp
 	,OptionsFromStreamPack::OptionsFromStream*    options
 	,std::ostream*                                out
 	);

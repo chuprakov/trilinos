@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPObjGradient.cpp
+// NLPObjGrad.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "NLPInterfacePack/src/NLPObjGradient.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPObjGrad.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 
 namespace {
@@ -24,47 +24,47 @@ namespace NLPInterfacePack {
 
 // constructors
 
-NLPObjGradient::NLPObjGradient()
+NLPObjGrad::NLPObjGrad()
 	: Gf_(NULL)
 {}
 
-void NLPObjGradient::initialize(bool test_setup) {
+void NLPObjGrad::initialize(bool test_setup) {
 	num_Gf_evals_ = 0;
 	NLP::initialize(test_setup);
 }
 
 // <<std aggr>> members for Gf
 
-void NLPObjGradient::set_Gf(VectorMutable* Gf)
+void NLPObjGrad::set_Gf(VectorMutable* Gf)
 {
 	Gf_ = Gf;
 }
 
-AbstractLinAlgPack::VectorMutable* NLPObjGradient::get_Gf()
+AbstractLinAlgPack::VectorMutable* NLPObjGrad::get_Gf()
 {
 	return StandardCompositionRelationshipsPack::get_role_name(Gf_, false, name_Gf);
 }
 
-AbstractLinAlgPack::VectorMutable& NLPObjGradient::Gf()
+AbstractLinAlgPack::VectorMutable& NLPObjGrad::Gf()
 {
 	return StandardCompositionRelationshipsPack::role_name(Gf_, false, name_Gf);
 }
 
-const AbstractLinAlgPack::Vector& NLPObjGradient::Gf() const
+const AbstractLinAlgPack::Vector& NLPObjGrad::Gf() const
 {
 	return StandardCompositionRelationshipsPack::role_name(Gf_, false, name_Gf);
 }
 
 // calculations
 
-void NLPObjGradient::calc_Gf(const Vector& x, bool newx) const
+void NLPObjGrad::calc_Gf(const Vector& x, bool newx) const
 {
 	StandardCompositionRelationshipsPack::assert_role_name_set(Gf_, "NLP::calc_Gf()", name_Gf);
 	imp_calc_Gf(x,newx,obj_grad_info());
 	num_Gf_evals_++;
 }
 
-size_type NLPObjGradient::num_Gf_evals() const
+size_type NLPObjGrad::num_Gf_evals() const
 {
 	return num_Gf_evals_;
 }

@@ -19,7 +19,7 @@
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
-#include "NLPInterfacePack/test/NLPFirstOrderDirectTester.hpp"
+#include "NLPInterfacePack/src/abstract/test/NLPFirstOrderDirectTester.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
@@ -28,7 +28,7 @@ namespace ReducedSpaceSQPPack {
 ///
 /** Base class for evaluating a new point for the "Tailored Approach".
  *
- * Uses the \c NLPFirstOrderDirect interface to compute <tt>Z = [ -inv(C)*N; I ]</tt>
+ * Uses the \c NLPDirect interface to compute <tt>Z = [ -inv(C)*N; I ]</tt>
  * and <tt>py = -inv(C)*c(decomp)</tt> explicitly.  Subclasses determine how
  * <tt>py</tt> and <tt>Y</tt> are updated.
  */
@@ -48,7 +48,7 @@ public:
 
 	///
 	typedef MemMngPack::ref_count_ptr<const MatrixOp> D_ptr_t;
-	/// <<std comp>> members for testing object for NLPFirstOrderDirect
+	/// <<std comp>> members for testing object for NLPDirect
 	STANDARD_COMPOSITION_MEMBERS( NLPFirstOrderDirectTester, deriv_tester )
 	/// <<std comp>> Members for variable bounds tester object
 	STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
@@ -108,7 +108,7 @@ public:
 	 * @param  out  [out] Journal outputting.
 	 */
 	virtual void calc_py_Y_Uy_Vy(
-		const NLPFirstOrderDirect   &nlp
+		const NLPDirect   &nlp
 		,const D_ptr_t              &D
 		,VectorMutable        *py
 		,MatrixOp               *Y

@@ -34,10 +34,10 @@
 #include "ReducedSpaceSQPPack/src/std/rSQPTrackConsoleStd.hpp"
 #include "ReducedSpaceSQPPack/src/std/rSQPTrackStatsStd.hpp"
 #include "IterationPack/src/AlgorithmTrackerComposite.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
-#include "NLPInterfacePack/test/test_nlp_first_order_info.hpp"
-#include "NLPInterfacePack/test/test_nlp_first_order_direct.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
+#include "NLPInterfacePack/src/abstract/test/test_nlp_first_order_info.hpp"
+#include "NLPInterfacePack/src/abstract/test/test_nlp_first_order_direct.hpp"
 #include "OptionsFromStream.hpp"
 #include "stpwatch.hpp"
 #include "StringToIntMap.hpp"
@@ -244,8 +244,8 @@ rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
 				*summary_out_used_ << msg1;
 			if(do_journal_outputting())
 				*journal_out_used_ << msg1;
-			if(NLPFirstOrderInfo* nlp_foi = dynamic_cast<NLPFirstOrderInfo*>(nlp_.get())) {
-				const char msg[] = "\nTesting the supported NLPFirstOrderInfo interface ...\n";
+			if(NLPFirstOrder* nlp_foi = dynamic_cast<NLPFirstOrder*>(nlp_.get())) {
+				const char msg[] = "\nTesting the supported NLPFirstOrder interface ...\n";
 				if(do_summary_outputting())
 					*summary_out_used_ << msg;
 				if(do_journal_outputting())
@@ -265,8 +265,8 @@ rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
 					return solve_return;
 				}
 			}
-			else if(NLPFirstOrderDirect* nlp_fod = dynamic_cast<NLPFirstOrderDirect*>(nlp_.get())) {
-				const char msg[] = "\nTesting the supported NLPFirstOrderDirect interface ...\n";
+			else if(NLPDirect* nlp_fod = dynamic_cast<NLPDirect*>(nlp_.get())) {
+				const char msg[] = "\nTesting the supported NLPDirect interface ...\n";
 				if(do_summary_outputting())
 					*summary_out_used_ << msg;
 				if(do_journal_outputting())

@@ -52,7 +52,7 @@ protected:
 		);
 	///
 	void calc_py_Y_Uy_Vy(
-		const NLPFirstOrderDirect   &nlp
+		const NLPDirect   &nlp
 		,const D_ptr_t              &D
 		,VectorMutable        *py
 		,MatrixOp               *Y

@@ -100,9 +100,9 @@ public:
 	void process_nlp_and_options(
 		std::ostream          *trase_out
 		,NLP                  &nlp
-		,NLPFirstOrderInfo    **nlp_foi
-		,NLPSecondOrderInfo   **nlp_soi
-		,NLPFirstOrderDirect  **nlp_fod
+		,NLPFirstOrder    **nlp_foi
+		,NLPSecondOrder   **nlp_soi
+		,NLPDirect  **nlp_fod
 		,bool                 *tailored_approach
 		);
 	///
@@ -113,9 +113,9 @@ public:
 	void create_decomp_sys(
 		std::ostream                                                     *trase_out
 		,NLP                                                             &nlp
-		,NLPFirstOrderInfo                                               *nlp_foi
-		,NLPSecondOrderInfo                                              *nlp_soi
-		,NLPFirstOrderDirect                                             *nlp_fod
+		,NLPFirstOrder                                               *nlp_foi
+		,NLPSecondOrder                                              *nlp_soi
+		,NLPDirect                                             *nlp_fod
 		,bool                                                            tailored_approach
 		,MemMngPack::ref_count_ptr<DecompositionSystem>                  *decomp_sys
 		);
@@ -127,9 +127,9 @@ public:
 	void add_iter_quantities(
 		std::ostream                                                     *trase_out
 		,NLP                                                             &nlp
-		,NLPFirstOrderInfo                                               *nlp_foi
-		,NLPSecondOrderInfo                                              *nlp_soi
-		,NLPFirstOrderDirect                                             *nlp_fod
+		,NLPFirstOrder                                               *nlp_foi
+		,NLPSecondOrder                                              *nlp_soi
+		,NLPDirect                                             *nlp_fod
 		,bool                                                            tailored_approach
 		,const MemMngPack::ref_count_ptr<DecompositionSystem>            &decomp_sys
 		,const MemMngPack::ref_count_ptr<rSQPState>                      &state
@@ -143,9 +143,9 @@ public:
 	void create_eval_new_point(
 		std::ostream                                                      *trase_out
 		,NLP                                                              &nlp
-		,NLPFirstOrderInfo                                                *nlp_foi
-		,NLPSecondOrderInfo                                               *nlp_soi
-		,NLPFirstOrderDirect                                              *nlp_fod
+		,NLPFirstOrder                                                *nlp_foi
+		,NLPSecondOrder                                               *nlp_soi
+		,NLPDirect                                              *nlp_fod
 		,bool                                                             tailored_approach
 		,const MemMngPack::ref_count_ptr<DecompositionSystem>             &decomp_sys
 		,MemMngPack::ref_count_ptr<IterationPack::AlgorithmStep>   *eval_new_point_step

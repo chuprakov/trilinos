@@ -15,7 +15,7 @@
 
 #include <limits>
 
-#include "NLPInterfacePack/src/NLP.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "ThrowException.hpp"

@@ -20,7 +20,7 @@
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
@@ -55,7 +55,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 
 	rSQPAlgo             &algo   = rsqp_algo(_algo);
 	rSQPState            &s      = algo.rsqp_state();
-	NLPFirstOrderDirect  &nlp    = dyn_cast<NLPFirstOrderDirect>(algo.nlp());
+	NLPDirect  &nlp    = dyn_cast<NLPDirect>(algo.nlp());
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();

@@ -26,10 +26,10 @@ namespace NLPInterfacePack {
 // NLP interface classes
 
 class NLP;
-class NLPObjGradient;
-class NLPFirstOrderDirect;
-class NLPFirstOrderInfo;
-class NLPSecondOrderInfo;
+class NLPObjGrad;
+class NLPDirect;
+class NLPFirstOrder;
+class NLPSecondOrder;
 class NLPVarReductPerm;
 
 // NLP utility classes

@@ -21,8 +21,8 @@
 #include <iomanip>
 #include <sstream>
 
-#include "NLPInterfacePack/src/CalcFiniteDiffProd.hpp"
-#include "NLPInterfacePack/src/NLP.hpp"
+#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"

@@ -16,7 +16,7 @@
 #ifndef CALC_FINITE_DIFF_FIRST_DERIVATIVE_PRODUCT_H
 #define CALC_FINITE_DIFF_FIRST_DERIVATIVE_PRODUCT_H
 
-#include "NLPInterfacePackTypes.hpp"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
 namespace NLPInterfacePack {

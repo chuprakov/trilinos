@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPObjGradient.hpp
+// NLPObjGrad.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -51,14 +51,14 @@ namespace NLPInterfacePack {
  * The following methods should never have to be overridden by most subclasses except in some very
  * strange situations: \c set_Gf(), \c get_Gf(), \c Gf(), \c num_Gf_evals().
  */
-class NLPObjGradient : virtual public NLP {
+class NLPObjGrad : virtual public NLP {
 public:
 
 	/** @name Constructors */
 	//@{
 
 	/// Initialize to no reference set to calculation quanities
-	NLPObjGradient();
+	NLPObjGrad();
 
 	//@}
 
@@ -237,13 +237,13 @@ private:
 	mutable VectorMutable     *Gf_;
 	mutable size_type				num_Gf_evals_;
 
-};	// end class NLPObjGradient
+};	// end class NLPObjGrad
 
 // //////////////////
 // Inline members
 
 inline
-const NLPObjGradient::ObjGradInfo NLPObjGradient::obj_grad_info() const
+const NLPObjGrad::ObjGradInfo NLPObjGrad::obj_grad_info() const
 {
 	return ObjGradInfo(Gf_,zero_order_info());
 }

@@ -16,7 +16,7 @@
 #ifndef BARRIER_NLP_H
 #define BARRIER_NLP_H
 
-#include "NLPInterfacePack/src/NLPObjGradient.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPObjGrad.hpp"
 
 namespace NLPInterfacePack {
 
@@ -26,7 +26,7 @@ namespace NLPInterfacePack {
  *
  */
 class BarrierNLP
-	: public NLPObjGradient
+	: public NLPObjGrad
 	{
 	public:
 		
@@ -70,7 +70,7 @@ class BarrierNLP
 
 		// @}
 
-		/** @name Overridden public members from NLPObjGradient */
+		/** @name Overridden public members from NLPObjGrad */
 		//@{
 
 		///
@@ -313,7 +313,7 @@ class BarrierNLP
 		//@}
 
 
-		/* protected members Overridden from NLPObjGradient */
+		/* protected members Overridden from NLPObjGrad */
 		//@{
 
 		///
@@ -327,7 +327,7 @@ class BarrierNLP
 	private:
 
 		///
-		MemMngPack::ref_count_ptr<NLPObjGradient> nlp_;
+		MemMngPack::ref_count_ptr<NLPObjGrad> nlp_;
 
 		///
 		value_type mu_;

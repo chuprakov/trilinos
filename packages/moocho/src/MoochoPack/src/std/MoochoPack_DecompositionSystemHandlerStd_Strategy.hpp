@@ -48,7 +48,7 @@ public:
 	bool update_decomposition(
 		rSQPAlgo                                &algo
 		,rSQPState                              &s
-		,NLPFirstOrderInfo                      &nlp
+		,NLPFirstOrder                      &nlp
 		,EDecompSysTesting                      decomp_sys_testing
 		,EDecompSysPrintLevel                   decomp_sys_testing_print_level
 		,bool                                   *new_decomp_selected

@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <fstream>
 
-#include "NLPInterfacePack/src/NLPSerialPreprocess.hpp"
+#include "NLPInterfacePack/src/serial/NLPSerialPreprocess.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
@@ -92,7 +92,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	if( initialized_  && !imp_nlp_has_changed() ) {
 		// The subclass NLP has not changed so we can just
 		// slip this preprocessing.
-		NLPObjGradient::initialize(test_setup);
+		NLPObjGrad::initialize(test_setup);
 		return;
 	}
 
@@ -305,7 +305,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 //	std::cerr << "equ_perm_ =\n" << equ_perm_;
 
 	// If you get here then the initialization went Ok.
-	NLPObjGradient::initialize(test_setup);
+	NLPObjGrad::initialize(test_setup);
 	initialized_ = true;
 }
 
@@ -693,7 +693,7 @@ void NLPSerialPreprocess::imp_calc_h(
 	h_d() = h_orig_(); // Nothing fancy right now
 }
 
-// Overridden protected members from NLPObjGradient
+// Overridden protected members from NLPObjGrad
 
 void NLPSerialPreprocess::imp_calc_Gf(
 	const Vector      &x

@@ -16,13 +16,13 @@
 #include <assert.h>
 
 #include "test_nlp_first_order_direct.hpp"
-#include "NLPInterfacePack/src/CalcFiniteDiffProd.hpp"
-#include "NLPInterfacePack/src/CalcFiniteDiffProdSetOptions.hpp"
+#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
+#include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProdSetOptions.hpp"
 #include "NLPTester.hpp"
 #include "NLPTesterSetOptions.hpp"
 #include "NLPFirstOrderDirectTester.hpp"
 #include "NLPFirstOrderDirectTesterSetOptions.hpp"
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceTester.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceTesterSetOptions.hpp"
@@ -34,7 +34,7 @@
 #include "update_success.hpp"
 
 bool NLPInterfacePack::test_nlp_first_order_direct(
-	NLPFirstOrderDirect*                          nlp
+	NLPDirect*                          nlp
 	,OptionsFromStreamPack::OptionsFromStream*    options
 	,std::ostream*                                out
 	)
@@ -156,7 +156,7 @@ bool NLPInterfacePack::test_nlp_first_order_direct(
 		nlp, nlp->xinit(), print_all_warnings, out );
 	update_success( result, &success );
 	
-	// Test the NLPFirstOrderDirect interface now!
+	// Test the NLPDirect interface now!
 
 	if(out)
 		*out << "\nCalling nlp->calc_point(...) at nlp->xinit() ...\n";
@@ -175,7 +175,7 @@ bool NLPInterfacePack::test_nlp_first_order_direct(
 		Gf  =      nlp->space_x()->create_member(),
 		py  =      nlp->space_x()->sub_space(var_dep)->create_member(),
 		rGf =      nlp->space_x()->sub_space(var_indep)->create_member();
-	NLPFirstOrderDirect::mat_fcty_ptr_t::element_type::obj_ptr_t
+	NLPDirect::mat_fcty_ptr_t::element_type::obj_ptr_t
 		GcU = con_decomp.size() < m ? nlp->factory_GcU()->create() : rcp::null,
 		Gh  = mI                    ? nlp->factory_Gh()->create()  : rcp::null,
 		D   =                         nlp->factory_D()->create(),

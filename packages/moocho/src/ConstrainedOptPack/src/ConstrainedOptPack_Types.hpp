@@ -17,7 +17,7 @@
 #define CONSTRAINED_OPTIMIZATION_PACK_TYPES_H
 
 #include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
-#include "NLPInterfacePack/src/NLP.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
 
 namespace ConstrainedOptimizationPack {
 

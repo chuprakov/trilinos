@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDenseInitialize.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
-#include "NLPInterfacePack/src/NLPSecondOrderInfo.hpp"
+#include "NLPInterfacePack/src/abstract/interfaces/NLPSecondOrder.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
@@ -43,15 +43,15 @@ bool ReducedHessianExactStd_Step::do_step(
 	using AbstractLinAlgPack::Mp_StMtMtM;
 	typedef AbstractLinAlgPack::MatrixSymDenseInitialize	MatrixSymDenseInitialize;
 	typedef AbstractLinAlgPack::MatrixSymOp			MatrixSymOp;
-	using ConstrainedOptimizationPack::NLPSecondOrderInfo;
+	using ConstrainedOptimizationPack::NLPSecondOrder;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
-	NLPSecondOrderInfo
+	NLPSecondOrder
 #ifdef _WINDOWS
-				&nlp	= dynamic_cast<NLPSecondOrderInfo&>(algo.nlp());
+				&nlp	= dynamic_cast<NLPSecondOrder&>(algo.nlp());
 #else
-				&nlp	= dyn_cast<NLPSecondOrderInfo>(algo.nlp());
+				&nlp	= dyn_cast<NLPSecondOrder>(algo.nlp());
 #endif
 	MatrixSymOp
 		*HL_sym_op = dynamic_cast<MatrixSymOp*>(&s.HL().get_k(0));

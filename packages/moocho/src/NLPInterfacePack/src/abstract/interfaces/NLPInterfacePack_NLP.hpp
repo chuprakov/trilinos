@@ -19,7 +19,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "NLPInterfacePackTypes.hpp"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "StandardCompositionRelationshipsPack.hpp"
 #include "ref_count_ptr.hpp"
@@ -181,7 +181,7 @@ namespace NLPInterfacePack {
  * the client can set the desired quantities (i.e. \c set_f(), \c set_c() and \c set_h()) and then
  * calling the method \c set_multi_calc(true) prior to calling \c calc_f(), \c calc_c() and \c calc_h().
  * Another reason for structuring this %NLP interface this way is when automatic differentiation is used
- * to compute derivatives (see \c NLPFirstOrderInfo) the function values are computed for free.
+ * to compute derivatives (see \c NLPFirstOrder) the function values are computed for free.
  *
  * Once an optimization algorithm has the solution (or gives up with a suboptimal point), it should
  * report this solution to the %NLP object using the method \c report_final_solution().
