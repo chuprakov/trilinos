@@ -26,7 +26,7 @@
 
 namespace {
 
-#if !defined(_MIPS_CXX) && !defined(_PG_CXX) && !defined(_KAI_CXX)
+#if !defined(_MIPS_CXX) && !defined(_PG_CXX) && !defined(_KAI_CXX) && !defined(_INTEL_CXX)
 
 // 2/10/00:  It seems that with g++ 2.95.2 that within a template function in an annonymus namespace
 // that you can't write:

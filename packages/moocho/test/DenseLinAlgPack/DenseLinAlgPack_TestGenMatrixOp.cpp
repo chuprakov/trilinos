@@ -32,7 +32,7 @@
 
 namespace {
 
-#if !defined(_MIPS_CXX) && !defined(_PG_CXX) && !defined(_KAI_CXX)
+#if !defined(_MIPS_CXX) && !defined(_PG_CXX) && !defined(_KAI_CXX) && !defined(_INTEL_CXX)
 
 // 2/10/00: See TestVectorClass.cpp
 inline
