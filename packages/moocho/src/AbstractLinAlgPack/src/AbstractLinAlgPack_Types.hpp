@@ -96,7 +96,7 @@ class MatrixSymDiagonal;
 
 // template classes
 
-template <class M_itfc, class M_impl>   class MatrixSpaceStd;
+template <class M_itfc, class M_impl, class T_PostMod>  class MatrixSpaceStd;
 
 // concrete subclasses
 
@@ -105,6 +105,7 @@ class VectorWithOpMutableCompositeStd;
 class MatrixCompositeStd;
 class MatrixSymIdentity;
 class MatrixSymDiagonalStd;
+class MatrixZero;
 
 // testing classes
 
