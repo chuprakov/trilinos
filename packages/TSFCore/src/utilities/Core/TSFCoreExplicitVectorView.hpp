@@ -15,7 +15,7 @@ template<class Scalar>
 class ExplicitVectorView {
 public:
 	///
-	ExplicitVectorView( const Vector<Scalar>& v ) : v_(v) { v_.getSubVector(Range1D(),&sv_); }
+	ExplicitVectorView( const Vector<Scalar>& v, const Range1D &rng = Range1D() ) : v_(v) { v_.getSubVector(rng,&sv_); }
 	///
 	~ExplicitVectorView() { v_.freeSubVector(&sv_); }
 	///
@@ -46,7 +46,7 @@ template<class Scalar>
 class ExplicitMutableVectorView {
 public:
 	///
-	ExplicitMutableVectorView( Vector<Scalar>& v ) : v_(v) { v_.getSubVector(Range1D(),&sv_); }
+	ExplicitMutableVectorView( Vector<Scalar>& v, const Range1D &rng = Range1D() ) : v_(v) { v_.getSubVector(rng,&sv_); }
 	///
 	~ExplicitMutableVectorView() { v_.commitSubVector(&sv_); }
 	///
