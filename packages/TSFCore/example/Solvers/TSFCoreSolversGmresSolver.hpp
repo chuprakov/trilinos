@@ -10,6 +10,7 @@
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreMultiVector.hpp"
 #include "TSFCoreTypes.hpp"
+#include "Teuchos_ScalarTraits.hpp"
 #include "Teuchos_DenseMatrix.hpp"
 #include "Teuchos_BLAS.hpp"
 
@@ -181,7 +182,7 @@ void GMRESSolver<Scalar>::doIteration( const LinearOp<Scalar> &Op, const ETransp
     //
     z[curr_iter+1] = -sn[curr_iter]*z[curr_iter];
     z[curr_iter] *= cs[curr_iter];
-    curr_res = std::abs( z[curr_iter+1] ) / r0; 
+    curr_res = Teuchos::ScalarTraits<Scalar>::magnitude( z[curr_iter+1] ) / r0; 
     if (curr_res < tol) { isConverged = true; }
     //    
     // Increment the iteration counter.
