@@ -101,17 +101,17 @@ int main(int argc, char* argv[] ) {
 	
 	CommandLineProcessor  command_line_processor;
 	
-	command_line_processor.set_option( "n",  &n,   "Global number of dependent (and independent) variables" );
+	command_line_processor.set_option( "n",  &n,   "Global number of dep (and indep) vars" );
 	command_line_processor.set_option( "xo", &xo,  "Initial guess of the solution" );
 	command_line_processor.set_option(
 		"has-bounds", "no-has-bounds", &has_bounds
 		,"Determine if the NLP has bounds or not" );
 	command_line_processor.set_option(
 		"dep-bounded", "indep-bounded", &dep_bounded
-		,"Determine if the dependent or independent variables are bounded" );
+		,"Determine if dep or indep vars are bounded" );
 	command_line_processor.set_option(
 		"in-parallel", "in-serial", &in_parallel
-		,"Determine if computations are performed in parallel or not" );
+		,"Computations performed in parallel or serial" );
 	
 	CommandLineProcessor::EParseCommandLineReturn
 		parse_return = command_line_processor.parse_command_line(argc,argv,&std::cerr);
