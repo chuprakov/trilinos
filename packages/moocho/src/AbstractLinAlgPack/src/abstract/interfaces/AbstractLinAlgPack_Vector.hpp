@@ -125,14 +125,15 @@ public:
 	 * case where the vectors are representing consitituent vectors in a larger
 	 * aggregrate vector.  The situation where <tt>first_ele > 1</tt> and
 	 * <tt>global_offset == 0</tt> is for when a sub-view of the vectors are being
-	 * treated as full vectors.  Other combinations of <tt>first_ele</tt> and
+	 * treated as full vectors.  Other combinations of these arguments is
+	 * possible.
 	 *
 	 * Preconditions:<ul>
 	 * <li> [<tt>num_vecs > 0</tt>] <tt>vecs[k]->space().is_compatible(this->space()) == true</tt>
 	 *          , for <tt>k = 0...num_vecs-1</tt> (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
 	 * <li> [<tt>num_targ_vecs > 0</tt>] <tt>targ_vecs[k]->space().is_compatible(this->space()) == true</tt>
 	 *          , for <tt>k = 0...num_targ_vecs-1</tt> (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
-	 * <li> <tt>1 <= first_ele <= this_dim 1</tt> (throw <tt>std::out_of_range</tt>)
+	 * <li> <tt>1 <= first_ele <= this->dim()</tt> (throw <tt>std::out_of_range</tt>)
 	 * <li> <tt>global_offset >= 0</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>sub_dim - (first_ele - 1) <= this->dim()</tt> (throw <tt>std::length_error</tt>).
 	 * </ul>
@@ -164,7 +165,7 @@ public:
 	 *              <tt>(*reduct_obj)</tt> has already been through a reduction.  By allowing the info in
 	 *              <tt>(*reduct_obj)</tt> to be added to the reduction over all of these vectors, the reduction
 	 *              operation can be accumulated over a set of abstract vectors	which can be useful for implementing
-	 *              composite vectors instance.  If <tt>op.get_reduct_type_num_entries<tt>(...)</tt> returns
+	 *              composite vectors for instance.  If <tt>op.get_reduct_type_num_entries(...)</tt> returns
 	 *              <tt>num_values == 0</tt>, <tt>num_indexes == 0</tt> and <tt>num_chars == 0</tt> then
 	 *              <tt>reduct_obj</tt> should be set to #RTOp_REDUCT_OBJ_NULL and no reduction will be performed.
 	 * @param  first_ele

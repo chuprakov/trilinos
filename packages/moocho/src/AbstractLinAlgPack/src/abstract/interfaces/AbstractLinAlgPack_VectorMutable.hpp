@@ -114,7 +114,7 @@ public:
 	 *              <tt>(*reduct_obj)</tt> has already been through a reduction.  By allowing the info in
 	 *              <tt>(*reduct_obj)</tt> to be added to the reduction over all of these vectors, the reduction
 	 *              operation can be accumulated over a set of abstract vectors	which can be useful for implementing
-	 *              composite vectors instance.  If <tt>op.get_reduct_type_num_entries<tt>(...)</tt> returns
+	 *              composite vectors for instance.  If <tt>op.get_reduct_type_num_entries(...)</tt> returns
 	 *              <tt>num_values == 0</tt>, <tt>num_indexes == 0</tt> and <tt>num_chars == 0</tt> then
 	 *              <tt>reduct_obj</tt> should be set to #RTOp_REDUCT_OBJ_NULL and no reduction will be performed.
 	 * @param  first_ele
