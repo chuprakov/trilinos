@@ -17,7 +17,7 @@
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutableCompositeStd.h"
-#include "AbstractLinAlgPack/include/LinAlgPackAssertOp.h"
+#include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
 //#include "AbstractLinAlgPack/include/GenPermMatrixSliceOp.h"
 #include "WorkspacePack.h"
 #include "Range1D.h"
@@ -88,8 +88,6 @@ void Vp_StMtV_imp(
 	using AbstractLinAlgPack::dot;  // We should not have to do this but some compiles &%!#$
 	typedef AbstractLinAlgPack::MatrixCompositeStd::matrix_list_t  mat_list_t;
 	typedef AbstractLinAlgPack::MatrixCompositeStd::vector_list_t  vec_list_t;
-
-	AbstractLinAlgPack::Vp_MtV_assert_sizes( y->dim(), M_rows, M_cols, M_trans, x.dim() );
 
     AbstractLinAlgPack::Vt_S( y, b );  // Will take care of b == 0.0
 
@@ -656,6 +654,7 @@ void MatrixCompositeStd::Vp_StMtV(
 	ProfileHackPack::ProfileTiming profile_timing( "MatrixCompositeStd::Vp_StMtV(...VectorSlice...)" );
 #endif
 	assert_fully_constructed();
+	AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, M_trans, x );
 	Vp_StMtV_imp(y,a,rows_,cols_,matrix_list_,vector_list_,M_trans,x,b);
 }
 
@@ -668,6 +667,7 @@ void MatrixCompositeStd::Vp_StMtV(
 	ProfileHackPack::ProfileTiming profile_timing( "MatrixCompositeStd::Vp_StMtV(...SpVectorSlice...)" );
 #endif
 	assert_fully_constructed();
+	AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, M_trans, x );
 	Vp_StMtV_imp(y,a,rows_,cols_,matrix_list_,vector_list_,M_trans,x,b);
 }
 
