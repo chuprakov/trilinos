@@ -26,7 +26,7 @@
 #include "ReducedSpaceSQPPack/include/rSQPState.h"
 #include "NLPInterfacePack/include/NLP.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
-#include "debug.h"
+#include "ThrowException.h"
 
 namespace {
 
@@ -128,15 +128,15 @@ void rSQPAlgoContainer::print_algorithm_times(
 }
 
 void rSQPAlgoContainer::assert_valid_setup() const {
-	if( !get_nlp().get() )
-		throw rSQPSolverClientInterface::InvalidSetup( "rSQPAlgoContainer::assert_valid_setup() : "
-				"The NLP object has not been set" );
-	if( !get_track().get() )
-		throw rSQPSolverClientInterface::InvalidSetup( "rSQPAlgoContainer::assert_valid_setup() : "
-				"The rSQPTrack object has not been set" );
-	if( !get_config().get() )
-		throw rSQPSolverClientInterface::InvalidSetup( "rSQPAlgoContainer::assert_valid_setup() : "
-				"The rSQPAlgo_Config object has not been set" );
+	THROW_EXCEPTION(
+		!get_nlp().get(), rSQPSolverClientInterface::InvalidSetup
+		,"rSQPAlgoContainer::assert_valid_setup() : The NLP object has not been set" );
+	THROW_EXCEPTION(
+		!get_track().get(), rSQPSolverClientInterface::InvalidSetup
+		,"rSQPAlgoContainer::assert_valid_setup() : The rSQPTrack object has not been set" );
+	THROW_EXCEPTION(
+		!get_config().get(), rSQPSolverClientInterface::InvalidSetup
+		,"rSQPAlgoContainer::assert_valid_setup() : The rSQPAlgo_Config object has not been set" );
 }
 
 } // end namespace ReducedSpaceSQPPack
