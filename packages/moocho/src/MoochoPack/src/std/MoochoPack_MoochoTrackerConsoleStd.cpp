@@ -323,8 +323,8 @@ void rSQPTrackConsoleStd::print_top_header(const rSQPState &s
 
 	o	<< "\n\n********************************\n"
 		<< "*** Start of rSQP Iterations ***\n"
-		<< "n = " << s.x().get_k(0).dim()
-		<< ", m = " << s.c().get_k(0).dim()
+		<< "n = " << s.space_x().dim()
+		<< ", m = " << s.space_c().dim()
 		<< ", nz = ";
 	try {
 		if( s.Gc().updated_k(0) )
