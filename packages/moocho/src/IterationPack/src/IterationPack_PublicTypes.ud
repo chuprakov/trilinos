@@ -19,7 +19,6 @@ using GeneralIterationPack::IterQuantityAccessContinuous;
 using GeneralIterationPack::IterQuantityAccessDerivedToBase;
 using GeneralIterationPack::Algorithm;
 using GeneralIterationPack::AlgorithmStep;
-using GeneralIterationPack::AlgorithmAssocStep;
 using GeneralIterationPack::AlgorithmState;
 using GeneralIterationPack::AlgorithmTrack;
 using GeneralIterationPack::CastIQMember;

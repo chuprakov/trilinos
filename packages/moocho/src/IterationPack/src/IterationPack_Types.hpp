@@ -39,7 +39,6 @@ template<class T> class IterQuantityAccessContinuous;
 template<class T_Base, class T_Derived> class IterQuantityAccessDerivedToBase;
 class Algorithm;
 class AlgorithmStep;
-class AlgorithmAssocStep;
 class AlgorithmState;
 class AlgorithmTrack;
 template<class T> class CastIQMember;
