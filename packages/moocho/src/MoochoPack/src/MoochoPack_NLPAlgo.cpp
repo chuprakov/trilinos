@@ -57,6 +57,7 @@ rSQPAlgo::dispatch() {
 }
 
 void rSQPAlgo::interface_print_algorithm(std::ostream& out) const {
+	print_steps(out);
 	print_algorithm(out);
 }
 

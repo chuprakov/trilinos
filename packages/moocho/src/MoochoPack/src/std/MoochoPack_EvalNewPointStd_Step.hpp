@@ -40,8 +40,21 @@ public:
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, new_point )
 
+	///
+	enum EFDDerivTesting { FD_DEFAULT, FD_TEST, FD_NO_TEST };
+
+	///
+	/** Set how and if finite derivatives are tested.
+	  *
+	  * ToDo: Finish documentation.
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( EFDDerivTesting, fd_deriv_testing )
+
 	/// set new_point == true by default.
-	EvalNewPointStd_Step(const deriv_tester_ptr_t& deriv_tester = 0);
+	EvalNewPointStd_Step(
+		  const deriv_tester_ptr_t& 	deriv_tester = 0
+		, EFDDerivTesting				fd_deriv_testing = FD_DEFAULT
+		);
 
 	// ////////////////////
 	// Overridden

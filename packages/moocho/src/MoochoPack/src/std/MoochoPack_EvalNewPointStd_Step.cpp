@@ -19,9 +19,12 @@
 #include "LinAlgPack/include/assert_print_nan_inf.h"
 
 ReducedSpaceSQPPack::EvalNewPointStd_Step::EvalNewPointStd_Step(
-		const deriv_tester_ptr_t& deriv_tester )
+		  const deriv_tester_ptr_t& 	deriv_tester
+		, EFDDerivTesting				fd_deriv_testing
+		)
 	:
 		  deriv_tester_(deriv_tester)
+		, fd_deriv_testing_(fd_deriv_testing)
 		, new_point_(true)
 {}
 
@@ -94,7 +97,9 @@ bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 	assert_print_nan_inf(s.Gf().get_k(0)(), "Gf_k",true,&out); 
 
 	// Check the derivatives if we are checking the results
-	if( s.check_results() ) {
+	if(		fd_deriv_testing() == FD_TEST
+		|| ( fd_deriv_testing() == FD_DEFAULT && s.check_results() )  )
+	{
 		
 		if( olevel >= PRINT_ALGORITHM_STEPS ) {
 			out	<< "\n*** Checking derivatives by finite differences\n";
@@ -150,6 +155,8 @@ void ReducedSpaceSQPPack::EvalNewPointStd_Step::print_step( const Algorithm& alg
 		<< L << "Gf_k = Gf(x_k) <: R^n -> R^n\n"
 		<< L << "if c_k is not updated c_k = c(x_k) <: R^n -> R^m\n"
 		<< L << "if f_k is not updated f_k = f(x_k) <: R^n -> R^1\n"
-		<< L << "if check_results == true then check Gc and Gf by finite differences.\n"
+		<< L << "if (fd_deriv_testing==FD_TEST) or (fd_deriv_testing==FD_DEFAULT and check_results==true) then\n"
+		<< L << "    check Gc and Gf by finite differences.\n"
+		<< L << "end\n"
 		;
 }
