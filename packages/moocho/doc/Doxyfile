@@ -1,0 +1,44 @@
+@INCLUDE = ./Doxyfile.env
+@INCLUDE = ./Doxyfile.doc
+
+#
+# Doxygen options specific to rSQPpp main page
+#
+
+# Doxyfile 1.2.8.1
+
+#---------------------------------------------------------------------------
+# General configuration options
+#---------------------------------------------------------------------------
+PROJECT_NAME           = rSQP++
+PROJECT_NUMBER         = 0.1 (beta)
+OUTPUT_DIRECTORY       = ../doc
+EXTRACT_ALL            = YES
+#---------------------------------------------------------------------------
+# configuration options related to the input files
+#---------------------------------------------------------------------------
+INPUT                  = rSQPpp.dxx
+RECURSIVE              = NO
+EXCLUDE                = 
+EXCLUDE_PATTERNS       = 
+EXAMPLE_PATH           = 
+EXAMPLE_PATTERNS       = 
+IMAGE_PATH             = 
+INPUT_FILTER           = 
+FILTER_SOURCE_FILES    = NO
+#---------------------------------------------------------------------------
+# Configuration::addtions related to external references   
+#---------------------------------------------------------------------------
+TAGFILES               = ../doc/Misc/Misc.tag=./Misc/html \
+                         ../doc/RTOpPack/RTOpPack.tag=./RTOpPack/html \
+                         ../doc/RTOpStdOpsLib/RTOpStdOpsLib.tag=./RTOpStdOpsLib/html \
+                         ../doc/AbstractLinAlgPack/AbstractLinAlgPack.tag=./AbstractLinAlgPack/html \
+                         ../doc/NLPInterfacePack/NLPInterfacePack.tag=./NLPInterfacePack/html \
+                         ../doc/ExampleNLPFirstOrderDirect/ExampleNLPFirstOrderDirect.tag=./ExampleNLPFirstOrderDirect/html \
+                         ../doc/ExampleNLPFirstOrderInfo/ExampleNLPFirstOrderInfo.tag=./ExampleNLPFirstOrderInfo/html
+GENERATE_TAGFILE       =
+ALLEXTERNALS           = YES
+#---------------------------------------------------------------------------
+# Configuration options related to the preprocessor   
+#---------------------------------------------------------------------------
+PREDEFINED             += REF_COUNT_PTR_INLINE=
