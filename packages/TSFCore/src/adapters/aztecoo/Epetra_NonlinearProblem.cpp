@@ -119,4 +119,15 @@ void NonlinearProblem::calc_g(
   assert(0);
 }
 
+// Reporting of the final soltuion
+
+void NonlinearProblem::reportFinalSolution(
+	const Epetra_Vector     &y
+	,const Epetra_Vector*   u[]
+	,bool                   solved
+	)
+{
+	// The default is to just to ignore the final solution!
+}
+
 } // namespace Epetra

@@ -554,6 +554,39 @@ public:
 
 	//@}
 
+	/** @name Reporting of the final soltuion */
+	//@{
+
+	///
+	/** Report the final solution as defined by whatever abstract linear algorithm was run.
+	 *
+	 * @param  y     [in] The value of the state variables
+	 * @param  u     [in] Array (size <tt>this->Nu()</tt>) of the values of the
+	 *               auxiliary variables.  It is allowed for <tt>u==NULL</tt> in which
+	 *               interpreted as <tt>u[l-1] == &u0(l)</tt>, for <tt>l=1...this->Nu()</tt>.
+	 * @param  solved
+	 *               [in] If true, then <tt>*this</tt> should assume that the mathematical
+	 *               problem was solved.  This is determined by the abstract numerical algorithm
+	 *               that was run on this problem.
+	 *
+	 * Preconditions:<ul>
+	 * <li><tt>this->isInitialized()==true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li><tt>y.space()->is_compatible(*this->space_y())==true</tt>
+	 *     (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
+	 * <li><tt>this->get_c()!=NULL</tt> (throw <tt>std::logic_error</tt>)
+	 * <li>[<tt>this->Nu()==0</tt>] <tt>u==NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * </ul>
+	 *
+	 * The default behavior is to just ignore this.
+	 */ 
+	virtual void reportFinalSolution(
+		const Vector<Scalar>     &y
+		,const Vector<Scalar>*   u[]
+		,bool                    solved
+		);
+
+	//@}
+
 }; // class NonlinearProblem
 
 } // namespace Nonlin

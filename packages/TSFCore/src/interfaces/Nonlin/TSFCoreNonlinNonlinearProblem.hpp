@@ -194,6 +194,16 @@ void NonlinearProblem<Scalar>::calc_g(
 		);
 }
 
+template<class Scalar>
+void NonlinearProblem<Scalar>::reportFinalSolution(
+		const Vector<Scalar>     &y
+		,const Vector<Scalar>*   u[]
+		,bool                    solved
+		)
+{
+	// By default we just ignore the solution.
+}
+
 } // namespace Nonlin
 } // namespace TSFCore
 

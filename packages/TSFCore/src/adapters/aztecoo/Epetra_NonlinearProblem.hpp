@@ -136,6 +136,18 @@ public:
 
 	//@}
 
+	/** @name Reporting of the final soltuion */
+	//@{
+
+	///
+	virtual void reportFinalSolution(
+		const Epetra_Vector     &y
+		,const Epetra_Vector*   u[]
+		,bool                   solved
+		);
+
+	//@}
+
 }; // class NonlinearProblem
 
 } // namespace Epetra
