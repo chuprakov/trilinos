@@ -330,6 +330,8 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 
 	validate_in_state(NOT_RUNNING);
 
+	track().initialize();
+
 	try{
 	
 	terminate_status_ = STATUS_KEEP_RUNNING;

@@ -40,7 +40,7 @@ namespace GeneralIterationPack {
   * This class is the center for a framework for iterative algorithms.
   * These iterative algorithms are of the form:
   *
-	\verbatim
+  \verbatim
 
 	Step1------>Step2------>Step3------>Step4------>Step5
 	 /|\         /|\         /|\          |           |
@@ -49,7 +49,7 @@ namespace GeneralIterationPack {
 	  |           |_____Minor Loop 2______|           |
 	  |                                               |
 	  |_______________Major Loop (k = k+1)____________|
-	\endverbatim
+  \endverbatim
   *
   * For the typical iteration the steps are executed sequantially from Step1 to Step2
   * and then control loops around the Major Loop to Step1 again.
@@ -520,6 +520,12 @@ public:
 	///
 	/** Called by clients to begin an algorithm.
 	  *
+	  * Preconditions:<ul>
+	  * <li> <tt>this->get_track() != NULL</tt> (throw <tt>???</tt>)
+	  * <li> <tt>running_state() == NOT_RUNNING</tt> (throw <tt>InvalidRunningState</tt>)
+	  * <li> <tt>1 <= step_poss && step_poss <= num_steps()</tt> (throw <tt>DoesNotExist</tt>)
+	  * </ul>
+	  *
 	  * This operation acts as the central hub for the algorithm.  It calls the <tt>do_step(i)</tt>
 	  * each <tt>i</tt> = 1,...,<tt>num_steps()</tt> and then loops around again for the major loop.  If
 	  * <tt>do_step(i)</tt> returns false then it goes executes the step specified by the 
@@ -527,6 +533,7 @@ public:
 	  * object returns false but does not call <tt>do_step_next()</tt> to specify a step to
 	  * jump to, then <tt>this</tt> will throw an <tt>InvalidControlProtocal</tt> exception.
 	  *
+	  * Before the algorithm is started, <tt>this</tt> calls <tt>track().initialize()</tt>.
 	  * At the end of each iteration <tt>this</tt> calls <tt>track().output_iteration(*this)</tt> and
 	  * <tt>state().next_iteration()</tt>.  It then checks if <tt>state.k() - k_start</tt> >= <tt>max_iter()</tt>.
 	  * If it is then the <tt>do_algorithm()</tt> immediatly terminates with a value of
@@ -543,10 +550,6 @@ public:
 	  *
 	  * The algorithm starts on the step specified with <tt>step_poss</tt>.
 	  *
-	  * Preconditions:<ul>
-	  * <li> <tt>running_state() == NOT_RUNNING</tt> (throw <tt>InvalidRunningState</tt>)
-	  * <li> <tt>1 <= step_poss && step_poss <= num_steps()</tt> (throw <tt>DoesNotExist</tt>)
-	  * </ul>
 	  */
 	virtual EAlgoReturn do_algorithm(poss_type step_poss = 1);
 
