@@ -56,8 +56,9 @@
 
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurRangeSpace.h"
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurRangeSpaceSetOptions.h"
+#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchur.h"
+#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurSetOptions.h"
+#include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianFull.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPKWIK.h"
 
 #include "ReducedSpaceSQPPack/include/std/ReducedQPSolverCheckOptimality.h"
@@ -79,6 +80,7 @@
 #include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateStd_Step.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSFull_Strategy.h"
+#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/DepDirecStd_Step.h"
 #include "ReducedSpaceSQPPack/include/std/CheckBasisFromPy_Step.h"
@@ -438,6 +440,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				use_limited_memory = false;
 				cov_.quasi_newton_used_ = QN_BFGS;
 				break;
+			case QN_BFGS_PROJECTED:
+				use_limited_memory = false;
+				cov_.quasi_newton_used_ = QN_BFGS_PROJECTED;
+				break;
 			case QN_LBFGS:
 				use_limited_memory = true;
 				cov_.quasi_newton_used_ = QN_LBFGS;
@@ -763,7 +769,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 						}
 					    case QN_BFGS_PROJECTED:
 						{
-							assert(0); // ToDo: Implement this!
+							secant_update_strategy
+								= new ReducedHessianSecantUpdateBFGSProjected_Strategy(bfgs_strategy);
 							break;
 						}
 					}
@@ -1026,9 +1033,13 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 				switch( cov_.qp_solver_type_ ) {
 					case QPSCHUR: {
-						QPSolverRelaxedQPSchurRangeSpace
-							*_qp_solver = new QPSolverRelaxedQPSchurRangeSpace();
-						ConstrainedOptimizationPack::QPSolverRelaxedQPSchurRangeSpaceSetOptions
+						using ConstrainedOptimizationPack::QPSolverRelaxedQPSchur;
+						using ConstrainedOptimizationPack::QPSolverRelaxedQPSchurSetOptions;
+						using ConstrainedOptimizationPack::QPSchurInitKKTSystemHessianFull;
+						QPSolverRelaxedQPSchur
+							*_qp_solver = new QPSolverRelaxedQPSchur(
+								new QPSchurInitKKTSystemHessianFull );
+						QPSolverRelaxedQPSchurSetOptions
 							qp_options_setter( _qp_solver );
 						qp_options_setter.set_options( *options_ );
 						qp_solver = _qp_solver; // give ownership to delete!
