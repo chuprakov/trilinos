@@ -247,6 +247,10 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 				var_from_full( xu_full_().begin(), xu_.set_vec().begin() );
 				do_force_xinit_in_bounds();
 			}
+			else {
+				xl_ = -inf_bnd;
+				xu_ = +inf_bnd;
+			}
 		}
 		else {
 			// The nlp subclass is selecting the first basis.
@@ -278,7 +282,21 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 			initialized_ = false;	// resize to false to continue initialization
 		}
 	}
-
+	else {
+		LinAlgPack::identity_perm(&var_perm_);
+		r_ = 0;
+		var_from_full( xinit_full_().begin(), xinit_.set_vec().begin() );
+		if(has_var_bounds) {
+			var_from_full( xl_full_().begin(), xl_.set_vec().begin() );
+			var_from_full( xu_full_().begin(), xu_.set_vec().begin() );
+			do_force_xinit_in_bounds();
+		}
+		else {
+			xl_ = -inf_bnd;
+			xu_ = +inf_bnd;
+		}
+	}
+	
 //	std::cerr << "n_full_ = " << n_full_ << std::endl;
 //	std::cerr << "n_ = " << n_ << std::endl;
 //	std::cerr << "var_full_to_fixed_ =\n" << var_full_to_fixed_;
