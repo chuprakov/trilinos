@@ -42,12 +42,14 @@ namespace RTOpPack {
 // Basic types
 //
 
-///
+/// Depreciated
 typedef RTOp_value_type value_type;
-///
+///Depreciated
 typedef RTOp_index_type index_type;
-///
+/// Depreciated
 typedef RTOp_char_type  char_type;
+///
+typedef RTOp_index_type Index;
 
 //
 // Exceptions

@@ -27,45 +27,61 @@
 // @HEADER
 
 // ///////////////////////////////
-// RTOpPack_ROpCountNanInf.hpp
+// RTOpPack_ROpMax.hpp
 
-#ifndef RTOPPACK_ROP_COUNT_NAN_INF_HPP
-#define RTOPPACK_ROP_COUNT_NAN_INF_HPP
+#ifndef RTOPPACK_ROP_MAX_HPP
+#define RTOPPACK_ROP_MAX_HPP
 
 #include "RTOpPack_RTOpTHelpers.hpp"
 
 namespace RTOpPack {
 
-/** \breif Reduction operator that counts the number of entries that are NaN or Inf.
+/** \breif Returns the maximum element: <tt>result = max{ v0[i], i=1...n }</tt>.
  */
 template<class Scalar>
-class ROpCountNanInf : public ROpIndexReductionBase<Scalar> {
+class ROpMax : public ROpScalarReductionBase<Scalar> {
 public:
   ///
-  ROpCountNanInf() : RTOpT<Scalar>("ROpCountNanInf") {}
+  ROpMax() :  RTOpT<Scalar>("ROpMax"), ROpScalarReductionBase<Scalar>(-Teuchos::ScalarTraits<Scalar>::rmax()) {}
   ///
-  index_type operator()(const ReductTarget& reduct_obj ) const { return this->getRawVal(reduct_obj); }
+  Scalar operator()(const ReductTarget& reduct_obj ) const { return this->getRawVal(reduct_obj); }
   /** @name Overridden from RTOpT */
   //@{
+	///
+	void reduce_reduct_objs(
+		const ReductTarget& in_reduct_obj, ReductTarget* inout_reduct_obj
+		) const
+    {
+			const Scalar in_max_ele    = getRawVal(in_reduct_obj);
+			const Scalar inout_max_ele = getRawVal(*inout_reduct_obj);
+			setRawVal( in_max_ele > inout_max_ele ? in_max_ele : inout_max_ele, inout_reduct_obj );
+    }
   ///
 	void apply_op(
 		const int   num_vecs,       const SubVectorT<Scalar>         sub_vecs[]
 		,const int  num_targ_vecs,  const MutableSubVectorT<Scalar>  targ_sub_vecs[]
-		,ReductTarget *_reduct_obj
+		,ReductTarget *reduct_obj
 		) const
     {
-      using Teuchos::dyn_cast;
-      ReductTargetScalar<index_type> &reduct_obj = dyn_cast<ReductTargetScalar<index_type> >(*_reduct_obj); 
       RTOP_APPLY_OP_1_0(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
-      index_type sum = reduct_obj.get();
-      for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s ) {
-        sum += ( Teuchos::ScalarTraits<Scalar>::isnaninf(*v0_val) ? 1 : 0 );
+      Scalar max_ele = getRawVal(*reduct_obj);
+      if( v0_s == 1 ) {
+        for( RTOp_index_type i = 0; i < subDim; ++i ) {
+					const Scalar &v0_i = *v0_val++;
+					max_ele = ( v0_i > max_ele ? v0_i : max_ele );
+				}
       }
-      reduct_obj.set(sum);
+      else {
+        for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s ) {
+					const Scalar &v0_i = *v0_val;
+					max_ele = ( v0_i > max_ele ? v0_i : max_ele );
+				}
+			}
+			setRawVal(max_ele,reduct_obj);
     }
   //@}
-}; // class ROpCountNanInf
+}; // class ROpMax
 
 } // namespace RTOpPack
 
-#endif // RTOPPACK_ROP_COUNT_NAN_INF_HPP
+#endif // RTOPPACK_ROP_MAX_HPP
