@@ -319,7 +319,7 @@ public:
 	 * Note that subclasses must call this function to reset what needs to be
 	 * reset in this base object.
 	 */
-	virtual void initialize();
+	virtual void initialize( bool test_setup = false );
 	///
 	/** Return if <tt>this</tt> is initialized.
 	  */

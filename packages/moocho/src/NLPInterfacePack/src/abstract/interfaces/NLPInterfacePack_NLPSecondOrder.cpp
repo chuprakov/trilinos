@@ -27,9 +27,9 @@ NLPInterfacePack::NLPSecondOrderInfo::NLPSecondOrderInfo()
 {}
 
 
-void NLPInterfacePack::NLPSecondOrderInfo::initialize() {
+void NLPInterfacePack::NLPSecondOrderInfo::initialize(bool test_setup) {
 	num_HL_evals_ = 0;
-	NLPFirstOrderInfo::initialize();
+	NLPFirstOrderInfo::initialize(test_setup);
 }
 
 // <<std aggr>> members for HL

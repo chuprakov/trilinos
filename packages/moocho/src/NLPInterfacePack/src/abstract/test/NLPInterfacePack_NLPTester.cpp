@@ -67,8 +67,8 @@ bool NLPTester::test_interface(
 			*out << "\nnlp->force_xinit_in_bounds(true)";
 		nlp->force_xinit_in_bounds();
 		if(out)
-			*out << "\nnlp->initialize()\n";
-		nlp->initialize();
+			*out << "\nnlp->initialize(true)\n";
+		nlp->initialize(true);
 		
 		if(out)
 			*out << "\n*** Dimensions of the NLP"

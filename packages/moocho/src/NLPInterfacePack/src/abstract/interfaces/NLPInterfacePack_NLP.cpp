@@ -44,7 +44,7 @@ NLPInterfacePack::NLP::NLP()
 NLPInterfacePack::NLP::~NLP()
 {}
 
-void NLPInterfacePack::NLP::initialize() {
+void NLPInterfacePack::NLP::initialize(bool test_setup) {
 	num_f_evals_ = num_c_evals_ = num_h_evals_ = 0;
 }
 

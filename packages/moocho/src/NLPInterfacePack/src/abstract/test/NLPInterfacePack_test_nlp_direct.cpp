@@ -50,7 +50,7 @@ bool NLPInterfacePack::test_nlp_first_order_direct(
 			 << "\n*** test_nlp_first_order_direct(...) ***"
 			 << "\n****************************************\n";
 	
-	nlp->initialize();
+	nlp->initialize(true);
 
 	// Test the Vector spaces
 	if(out)

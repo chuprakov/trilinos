@@ -28,9 +28,9 @@ NLPObjGradient::NLPObjGradient()
 	: Gf_(NULL)
 {}
 
-void NLPObjGradient::initialize() {
+void NLPObjGradient::initialize(bool test_setup) {
 	num_Gf_evals_ = 0;
-	NLP::initialize();
+	NLP::initialize(test_setup);
 }
 
 // <<std aggr>> members for Gf

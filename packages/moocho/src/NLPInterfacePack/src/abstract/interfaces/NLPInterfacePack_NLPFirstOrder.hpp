@@ -93,7 +93,7 @@ public:
 	 * <li> <tt>this->num_Gh_evals() == 0</tt>
 	 * </ul>
 	 */
-	void initialize();
+	void initialize(bool test_setup);
 
 	//@}
 

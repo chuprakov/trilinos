@@ -83,7 +83,7 @@ public:
 	 * <li> <tt>this->num_HL_evals() == 0</tt>
 	 * </ul>
 	 */
-	void initialize();
+	void initialize(bool test_setup);
 
 	//@}
 

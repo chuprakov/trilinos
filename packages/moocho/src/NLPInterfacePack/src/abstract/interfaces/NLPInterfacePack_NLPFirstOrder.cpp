@@ -31,10 +31,10 @@ NLPFirstOrderInfo::NLPFirstOrderInfo()
 	: Gc_(NULL), Gh_(NULL)
 {}
 
-void NLPFirstOrderInfo::initialize() {
+void NLPFirstOrderInfo::initialize(bool test_setup) {
 	num_Gc_evals_ = 0;
 	num_Gh_evals_ = 0;
-	NLPObjGradient::initialize();
+	NLPObjGradient::initialize(test_setup);
 }
 
 // <<std aggr>> members for Gc
