@@ -502,8 +502,8 @@ void assign_entries( const MutableSubMultiVectorT<Scalar> *msmv, const SubMultiV
   TEST_FOR_EXCEPT(msmv->subDim() != smv.subDim());
   TEST_FOR_EXCEPT(msmv->numSubCols() != smv.numSubCols());
 #endif
-  for( int j = 1; j <= smv.numSubCols(); ++j ) {
-    for( int i = 1; i <= smv.subDim(); ++i ) {
+  for( RTOp_index_type j = 1; j <= smv.numSubCols(); ++j ) {
+    for( RTOp_index_type i = 1; i <= smv.subDim(); ++i ) {
       (*msmv)(i,j) = smv(i,j);
     }
   }
