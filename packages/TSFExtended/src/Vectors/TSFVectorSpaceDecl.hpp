@@ -24,38 +24,30 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
-/* @HEADER@ */
+ /* @HEADER@ */
 
 #ifndef TSFVECTORSPACEDECL_HPP
 #define TSFVECTORSPACEDECL_HPP
 
 #include "TSFConfigDefs.hpp"
- //#include "TSFCoreVectorSpaceStdBase.hpp"
- #include "TSFCoreVectorSpace.hpp"
- //#include "TSFVector.hpp"
+#include "TSFCoreVectorSpace.hpp"
 #include "TSFHandle.hpp"
- //#include "TSFProductVectorSpaceDecl.hpp"
- //#include "TSFDescribableByTypeID.hpp"
+
 
 namespace TSFExtended
 {
   using namespace Teuchos;
-template<class Scalar> class Vector;
+  template<class Scalar> class Vector;
 
   /**
-   *
+   *  Implementation of the Handle for the Vector class.  This wraps a
+   *  TSFCoreVector
    */
   template <class Scalar>
-  class VectorSpace : public Handle< const TSFCore::VectorSpace<Scalar> >//,
-		      // public TSFCore::VectorSpaceStdBase<Scalar>
+  class VectorSpace : public Handle< const TSFCore::VectorSpace<Scalar> >
   {
   public:
     HANDLE_CTORS(VectorSpace<Scalar>, const TSFCore::VectorSpace<Scalar>);
-//   class VectorSpace : public Handle<mutable  TSFCore::VectorSpace<Scalar> >//,
-// 		      // public TSFCore::VectorSpaceStdBase<Scalar>
-//   {
-//   public:
-//     HANDLE_CTORS(VectorSpace<Scalar>, mutable  TSFCore::VectorSpace<Scalar>);
     
     /** Create a new element of this vector space */
     Vector<Scalar>  createMember() const 
@@ -77,79 +69,46 @@ template<class Scalar> class Vector;
     bool isCompatible(const VectorSpace<Scalar>& vecSpc) const 
     {return vecSpc.isCompatible(*ptr());}
 
-//     /*put it to fix problem in nonlinearOperatorBase:97 */
-//     bool isCompatible(const RefCountPtr<TSFCore::VectorSpace<Scalar> >& vecSpc) const
-//     {
-//       VectorSpace<Scalar> vs = vecSpc;
-//       return vs.isCompatible(*ptr());
-//     } 
 
 
-      /** Tell if vectors of this space are in core  */
+    /** Tell if vectors of this space are in core  */
     bool isInCore() const {return ptr()->isInCore();}
 
    
 
-      /** test equality between two spaces */
-      bool operator==(const VectorSpace<Scalar>& other) const ;
+    /** test equality between two spaces */
+    bool operator==(const VectorSpace<Scalar>& other) const ;
 
 
-      /** test inequality of two spaces */
-      bool operator!=(const VectorSpace<Scalar>& other) const ;
+    /** test inequality of two spaces */
+    bool operator!=(const VectorSpace<Scalar>& other) const ;
 
 
-      /** test whether the space contains a given vector */
-       bool contains(const Vector<Scalar>& vec) const ;
+    /** test whether the space contains a given vector */
+    bool contains(const Vector<Scalar>& vec) const ;
 
 
-      /** return the number of subblocks. */
-      int numBlocks() const ;
+    /** return the number of subblocks. */
+    int numBlocks() const ;
 
-      /** get the i-th subblock */
-      VectorSpace<Scalar> getBlock(int i) const ;
+    /** get the i-th subblock */
+    VectorSpace<Scalar> getBlock(int i) const ;
 
 
-      /** set the i-th subblock */
+    /** set the i-th subblock */
     void setBlock(int i, const VectorSpace<Scalar>& space);
 
 
-      /** Describe the vectorSpace.  This gives just the number of
-          elements, if the vector is a simple vector.  It gives
-          the block structure if the vector is a TSFBlockVector
-          if the vector is a block vector.  */
-      string describe() const;
+    /** Describe the vectorSpace.  This gives just the number of
+	elements, if the vector is a simple vector.  It gives
+	the block structure if the vector is a TSFBlockVector
+	if the vector is a block vector.  */
+    string describe() const;
 
-      /** The companion to describe that indents for readability  */
-      string describe(int depth) const;
-
-
-      /** access to raw pointer */
-    //const TSFCore::VectorSpace<Scalar>* ptr() const {return ptr();}
-
-
-
-
-
-// template <class Scalar> inline 
-//   VectorSpace<Scalar>::VectorSpace()
-//     : Handle<const TSFCore::VectorSpace<Scalar> >()
-//   {}
-
-//   template <class Scalar> inline 
-//   VectorSpace<Scalar>::VectorSpace(Handleable<const TSFCore::VectorSpace<Scalar> >* ptr)
-//     : Handle<const TSFCore::VectorSpace<Scalar> >(ptr)
-//   {}
-
-//   template <class Scalar> inline 
-//   VectorSpace<Scalar>::VectorSpace(const RefCountPtr<const TSFCore::VectorSpace<Scalar> >& smartPtr)
-//     : Handle<const TSFCore::VectorSpace<Scalar> >(smartPtr)
-//   {}
-
+    /** The companion to describe that indents for readability  */
+    string describe(int depth) const;
 
   };
-  
-
-
 
 }
 

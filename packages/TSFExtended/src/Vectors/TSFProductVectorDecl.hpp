@@ -68,17 +68,6 @@ namespace TSFExtended
     void finalize();
     
 
-//     /** Returns the kth block */
-//     Vector<Scalar> getBlock(int k) const;
-
-
-//     /** Return the space  */
-//     Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> > space() const
-//     {
-//       return space_;
-//     }
-
-
     /** Return the number of blocks  */
     int numBlocks(){return numBlocks_;}
 
@@ -90,119 +79,119 @@ namespace TSFExtended
     void testSpace(const VectorSpace<Scalar> &space, const string &method);
  
 
-      /** \name Math operations */
-      //@{
-      /** Multiply this vector by a constant scalar factor 
-       * \code
-       * this = alpha * this;
-       * \endcode
-      */
-      Vector<Scalar>& scale(const Scalar& alpha);
+    /** \name Math operations */
+    //@{
+    /** Multiply this vector by a constant scalar factor 
+     * \code
+     * this = alpha * this;
+     * \endcode
+     */
+    Vector<Scalar>& scale(const Scalar& alpha);
 
-//       /** 
-//        * Add a scaled vector to this vector:
-//        * \code
-//        * this = this + alpha*x 
-//        * \endcode
-//        */
-//       Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x);
+    //       /** 
+    //        * Add a scaled vector to this vector:
+    //        * \code
+    //        * this = this + alpha*x 
+    //        * \endcode
+    //        */
+    //       Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x);
 
-//       /** 
-//        * Add a scaled vector to this vector times a constant:
-//        * \code
-//        * this = gamma*this + alpha*x 
-//        * \endcode
-//        */
-//       Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x, 
-//                              const Scalar& gamma);
-//       /** 
-//        * Add two scaled vectors to this vector times a constant:
-//        * \code
-//        * this = alpha*x + beta*y + gamma*this
-//        * \endcode
-//        */
-//       Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x, 
-//                              const Scalar& beta, const Vector<Scalar>& y, 
-//                              const Scalar& gamma);
+    //       /** 
+    //        * Add a scaled vector to this vector times a constant:
+    //        * \code
+    //        * this = gamma*this + alpha*x 
+    //        * \endcode
+    //        */
+    //       Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x, 
+    //                              const Scalar& gamma);
+    //       /** 
+    //        * Add two scaled vectors to this vector times a constant:
+    //        * \code
+    //        * this = alpha*x + beta*y + gamma*this
+    //        * \endcode
+    //        */
+    //       Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x, 
+    //                              const Scalar& beta, const Vector<Scalar>& y, 
+    //                              const Scalar& gamma);
 
-      /** 
-       * Copy the values of another vector into this vector
-       * \code
-       * this = x
-       * \endcode
-       */
-      Vector<Scalar>& acceptCopyOf(const Vector<Scalar>& x);
+    /** 
+     * Copy the values of another vector into this vector
+     * \code
+     * this = x
+     * \endcode
+     */
+    Vector<Scalar>& acceptCopyOf(const Vector<Scalar>& x);
 
-      /** 
-       * Create a new vector that is a copy of this vector 
-       */
-      Vector<Scalar> copy() const ;
+    /** 
+     * Create a new vector that is a copy of this vector 
+     */
+    Vector<Scalar> copy() const ;
 
-      /** 
-       * Element-by-element product (Matlab dot-star operator)
-       */
-      Vector<Scalar> dotStar(const Vector<Scalar>& other) const ;
+    /** 
+     * Element-by-element product (Matlab dot-star operator)
+     */
+    Vector<Scalar> dotStar(const Vector<Scalar>& other) const ;
 
-      /** 
-       * Element-by-element division (Matlab dot-slash operator)
-       */
-      Vector<Scalar> dotSlash(const Vector<Scalar>& other) const ;
+    /** 
+     * Element-by-element division (Matlab dot-slash operator)
+     */
+    Vector<Scalar> dotSlash(const Vector<Scalar>& other) const ;
 
-      /** 
-       * Return element-by-element reciprocal as a new vector
-       */
-      Vector<Scalar> reciprocal() const ;
+    /** 
+     * Return element-by-element reciprocal as a new vector
+     */
+    Vector<Scalar> reciprocal() const ;
 
-      /** 
-       * Return element-by-element absolute value as a new vector
-       */
-      Vector<Scalar> abs() const ;
+    /** 
+     * Return element-by-element absolute value as a new vector
+     */
+    Vector<Scalar> abs() const ;
 
-      /** 
-       * Overwrite self with element-by-element reciprocal
-       */
-      Vector<Scalar>& reciprocal() ;
+    /** 
+     * Overwrite self with element-by-element reciprocal
+     */
+    Vector<Scalar>& reciprocal() ;
 
-      /** 
-       * Overwrite self with element-by-element absolute value 
-       */
-      Vector<Scalar>& abs() ;
+    /** 
+     * Overwrite self with element-by-element absolute value 
+     */
+    Vector<Scalar>& abs() ;
 
-      /** 
-       * Set all elements to a constant value
-       */
-      void setToConstant(const Scalar& alpha) ;
+    /** 
+     * Set all elements to a constant value
+     */
+    void setToConstant(const Scalar& alpha) ;
 
       
-      /** 
-       * Take dot product with another vector
-       */
-      Scalar dot(const Vector<Scalar>& other) const ;
+    /** 
+     * Take dot product with another vector
+     */
+    Scalar dot(const Vector<Scalar>& other) const ;
 
-      /**
-       * Compute the 1-norm of this vector
-       */
-      Scalar norm1() const ;
+    /**
+     * Compute the 1-norm of this vector
+     */
+    Scalar norm1() const ;
 
-      /**
-       * Compute the 2-norm of this vector
-       */
-      Scalar norm2() const ;
+    /**
+     * Compute the 2-norm of this vector
+     */
+    Scalar norm2() const ;
 
-      /**
-       * Compute the infinity-norm of this vector
-       */
-      Scalar normInf() const ;
+    /**
+     * Compute the infinity-norm of this vector
+     */
+    Scalar normInf() const ;
 
-      /**
-       * Set all elements to zero 
-       */
-      void zero();
+    /**
+     * Set all elements to zero 
+     */
+    void zero();
 
-      //@}
+    //@}
 
-      /** \name Element loading interface */
-      //@{
+    /** \name Element loading interface */
+    //@{
 
     
 

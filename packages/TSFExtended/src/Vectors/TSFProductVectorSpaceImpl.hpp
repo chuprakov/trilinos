@@ -24,21 +24,17 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
-/* @HEADER@ */
+ /* @HEADER@ */
 
 #ifndef TSFPRODUCTVECTORSPACEIMPL_HPP
 #define TSFPRODUCTVECTORSPACEIMPL_HPP
 
- //#include "TSFProductVectorSpace.hpp"
- #include "TSFProductVectorDecl.hpp"
- //#include "WorkspacePack.hpp"
- //#include "TSFCoreProductMultiVectorBase.hpp"
+#include "TSFProductVectorDecl.hpp"
+
 
  
 using namespace TSFExtended;
-//using namespace Teuchos;
-using Teuchos::Array;
-using Teuchos::RefCountPtr;
+using namespace Teuchos;
 using std::ostream;
 
 
@@ -46,15 +42,15 @@ using std::ostream;
 //========================================================================
 template <class Scalar>
 ProductVectorSpace<Scalar>::
-  ProductVectorSpace(const Teuchos::Array<const VectorSpace<Scalar> >
-		     &vecSpaces)
-    :vecSpaces_(vecSpaces),
-     numBlocks_(vecSpaces.size())
-  {
-    finalize();
+ProductVectorSpace(const Teuchos::Array<const VectorSpace<Scalar> >
+		   &vecSpaces)
+  :vecSpaces_(vecSpaces),
+   numBlocks_(vecSpaces.size())
+{
+  finalize();
 
-    setUpCore();
-  }
+  setUpCore();
+}
     
 
 
@@ -63,13 +59,13 @@ ProductVectorSpace<Scalar>::
 template <class Scalar>
 void ProductVectorSpace<Scalar>::setUpCore()
 {
-    Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> > 
-      coreVecSpaces[numBlocks_];
-    for (int i = 0; i < numBlocks_; i++)
-      {
-	coreVecSpaces[i] = vecSpaces_[i].ptr();
-      }
-    initialize(numBlocks_, coreVecSpaces);
+  Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> > 
+    coreVecSpaces[numBlocks_];
+  for (int i = 0; i < numBlocks_; i++)
+    {
+      coreVecSpaces[i] = vecSpaces_[i].ptr();
+    }
+  initialize(numBlocks_, coreVecSpaces);
 }
 
 
@@ -80,8 +76,8 @@ void ProductVectorSpace<Scalar>::setUpCore()
 //========================================================================
 template <class Scalar>
 ProductVectorSpace<Scalar>::
-  ProductVectorSpace(const VectorSpace<Scalar>& s1, 
-		     const VectorSpace<Scalar>& s2)
+ProductVectorSpace(const VectorSpace<Scalar>& s1, 
+		   const VectorSpace<Scalar>& s2)
 {
   vecSpaces_.resize(2);
   vecSpaces_[0] = s1;
@@ -135,7 +131,7 @@ bool ProductVectorSpace<Scalar>::operator==(const VectorSpace<Scalar> &other)
 //========================================================================
 template <class Scalar>
 bool ProductVectorSpace<Scalar>::operator!=(const VectorSpace<Scalar>& other) 
-const
+  const
 {
   return !(operator==(other));
 }
@@ -148,15 +144,15 @@ const
 //========================================================================
 template <class Scalar>
 RefCountPtr<TSFCore::Vector<Scalar> >ProductVectorSpace<Scalar>::createMember() const
-  {
-    cerr << "In ProdVecspace:createMember: numBlocks_ = " << numBlocks_ << endl;
-    RefCountPtr<const ProductVectorSpace<Scalar> > me = rcp(this, false);
-    VectorSpace<Scalar> vs(me);
-    cerr << "In PVSImpl: createMember: about to create PV" << endl;
-    Vector<Scalar> v = new ProductVector<Scalar>(vs);
-    cerr << "   returning the vector" << endl;
-    return v.ptr();
-  }
+{
+  cerr << "In ProdVecspace:createMember: numBlocks_ = " << numBlocks_ << endl;
+  RefCountPtr<const ProductVectorSpace<Scalar> > me = rcp(this, false);
+  VectorSpace<Scalar> vs(me);
+  cerr << "In PVSImpl: createMember: about to create PV" << endl;
+  Vector<Scalar> v = new ProductVector<Scalar>(vs);
+  cerr << "   returning the vector" << endl;
+  return v.ptr();
+}
 
 
 

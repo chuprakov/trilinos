@@ -24,7 +24,7 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
-/* @HEADER@ */
+ /* @HEADER@ */
 
 #ifndef TSFVECTORSPACEIMPL_HPP
 #define TSFVECTORSPACEIMPL_HPP
@@ -39,9 +39,7 @@ using namespace Teuchos;
 using std::ostream;
 
 
-// namespace TSFExtended
-// {
-  
+ 
 //========================================================================
 template <class Scalar>
 bool VectorSpace<Scalar>::operator==(const VectorSpace<Scalar>& other) const 
@@ -110,15 +108,14 @@ VectorSpace<Scalar> VectorSpace<Scalar>::getBlock(const int i) const
 //========================================================================
 template <class Scalar>
 void VectorSpace<Scalar>::setBlock(int i, 
-				    const VectorSpace<Scalar>& space)
+				   const VectorSpace<Scalar>& space)
 {
-  //VectorSpace<Scalar>* pt = const_cast<VectorSpace<Scalar>* > (this); 
   const ProductVectorSpace<Scalar>*  pvs = 
     dynamic_cast<const ProductVectorSpace<Scalar>* >  (ptr().get());
-//   const ProductVectorSpace<Scalar>*  pvs = 
-//     dynamic_cast<const ProductVectorSpace<Scalar>* >  (ptr().get());
+
   TEST_FOR_EXCEPTION(pvs == 0, runtime_error,
-		     "Can't set block of vector space that is not a ProductVectorSpace.");
+		     "Can't set block of vector space that is " <<
+		     "not a ProductVectorSpace.");
 
   ProductVectorSpace<Scalar>* pvsc = const_cast<ProductVectorSpace<Scalar>*> (pvs);
   pvsc->setBlock(i, space);
@@ -148,7 +145,7 @@ string VectorSpace<Scalar>::describe(int depth) const
     }
   return "Space not describable \n";
 }
-//}
+
 
 
 #endif

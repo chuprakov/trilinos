@@ -24,7 +24,7 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
-/* @HEADER@ */
+ /* @HEADER@ */
 
 #ifndef TSFVECTORDECL_HPP
 #define TSFVECTORDECL_HPP
@@ -49,8 +49,7 @@ namespace TSFExtendedOps
 namespace TSFExtended
 {
   using TSFCore::Index;
-//   template<class Scalar>
-//   class ProductVector;
+
 
   /** 
    * User-level vector class. 
@@ -94,254 +93,254 @@ namespace TSFExtended
    */
   template <class Scalar>
   class Vector : public Handle<TSFCore::Vector<Scalar> >
+  {
+  public:
+    /** \name Constructors, Destructors, and Assignment Operators */
+    //@{
+    HANDLE_CTORS(Vector<Scalar>, TSFCore::Vector<Scalar>);
+
+#ifndef DOXYGEN_DEVELOPER_ONLY
+    /** Construct a vector from a 1-term LC */
+    Vector(const TSFExtendedOps::LC1<Scalar>& x);
+
+    /** Construct a vector from a N-term LC */
+    template<class Node1, class Node2>
+    Vector(const TSFExtendedOps::LCN<Scalar, Node1, Node2>& x);
+
+    /** Assign a one-term linear combination 
+     * (i.e., a scalar times a vector) 
+     * to this vector */
+    Vector& operator=(const TSFExtendedOps::LC1<Scalar>& x);
+
+    /** Assign a linear combination of vectors to this vector */
+    template<class Node1, class Node2>
+    Vector& operator=(const TSFExtendedOps::LCN<Scalar, Node1, Node2>& x);
+#endif
+    //@}
+
+    /** */
+    VectorSpace<Scalar> space() const 
+    {return ptr()->space();}
+
+    /** Return the dimension of the vector  */
+    int dim() const
     {
-    public:
-      /** \name Constructors, Destructors, and Assignment Operators */
-      //@{
-      HANDLE_CTORS(Vector<Scalar>, TSFCore::Vector<Scalar>);
+      return ptr()->space().dim();
+    }
+      
+
+    /** \name ProductVector operations */
+    //@{
+
+    /** set block  */
+    void setBlock(int i, const Vector<Scalar>& v);
+      
+    /** get block */
+    Vector<Scalar> getBlock(int i) const;
+
+    //const Vector<Scalar> getBlock(int i) const;
+
+    /** \name Math operations */
+    //@{
+    /** Multiply this vector by a constant scalar factor 
+     * \code
+     * this = alpha * this;
+     * \endcode
+     */
+    Vector<Scalar>& scale(const Scalar& alpha);
+
+    /** 
+     * Add a scaled vector to this vector:
+     * \code
+     * this = this + alpha*x 
+     * \endcode
+     */
+    Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x);
+
+    /** 
+     * Add a scaled vector to this vector times a constant:
+     * \code
+     * this = gamma*this + alpha*x 
+     * \endcode
+     */
+    Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x, 
+			   const Scalar& gamma);
+    /** 
+     * Add two scaled vectors to this vector times a constant:
+     * \code
+     * this = alpha*x + beta*y + gamma*this
+     * \endcode
+     */
+    Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x, 
+			   const Scalar& beta, const Vector<Scalar>& y, 
+			   const Scalar& gamma);
+
+    /** 
+     * Copy the values of another vector into this vector
+     * \code
+     * this = x
+     * \endcode
+     */
+    Vector<Scalar>& acceptCopyOf(const Vector<Scalar>& x);
+
+    /** 
+     * Create a new vector that is a copy of this vector 
+     */
+    Vector<Scalar> copy() const ;
+
+    /** 
+     * Element-by-element product (Matlab dot-star operator)
+     */
+    Vector<Scalar> dotStar(const Vector<Scalar>& other) const ;
+
+    /** 
+     * Element-by-element division (Matlab dot-slash operator)
+     */
+    Vector<Scalar> dotSlash(const Vector<Scalar>& other) const ;
+
+    /** 
+     * Return element-by-element reciprocal as a new vector
+     */
+    Vector<Scalar> reciprocal() const ;
+
+    /** 
+     * Return element-by-element absolute value as a new vector
+     */
+    Vector<Scalar> abs() const ;
+
+    /** 
+     * Overwrite self with element-by-element reciprocal
+     */
+    Vector<Scalar>& reciprocal() ;
+
+    /** 
+     * Overwrite self with element-by-element absolute value 
+     */
+    Vector<Scalar>& abs() ;
+
+    /** 
+     * Set all elements to a constant value
+     */
+    void setToConstant(const Scalar& alpha) ;
+
+      
+    /** 
+     * Take dot product with another vector
+     */
+    Scalar dot(const Vector<Scalar>& other) const ;
+
+    /**
+     * Compute the 1-norm of this vector
+     */
+    Scalar norm1() const ;
+
+    /**
+     * Compute the 2-norm of this vector
+     */
+    Scalar norm2() const ;
+
+    /**
+     * Compute the weighted 2-norm of this vector
+     */
+    Scalar norm2(const Vector<Scalar>& weights) const ;      
+
+    /**
+     * Compute the infinity-norm of this vector
+     */
+    Scalar normInf() const ;
+
+    /**
+     * Set all elements to zero 
+     */
+    void zero();
+
+    //@}
+
+    /** \name Element loading interface */
+    //@{
+    /** set a single element at the given global index */
+    void setElement(Index globalIndex, const Scalar& value) 
+    {castToLoadable()->setElement(globalIndex, value);}
+
+    /** add to the existing value of 
+     * a single element at the given global index */
+    void addToElement(Index globalIndex, const Scalar& value) 
+    {castToLoadable()->addToElement(globalIndex, value);}
+
+    /** set a group of elements */
+    void setElements(size_t numElems, const Index* globalIndices, 
+		     const Scalar* values) 
+    {castToLoadable()->setElements(numElems, globalIndices, values);}
+
+    /** add to a group of elements */
+    void addToElements(size_t numElems, const Index* globalIndices, 
+		       const Scalar* values)
+    {castToLoadable()->addToElements(numElems, globalIndices, values);}
+
+    /** Do whatever finalization steps are needed by the implementation,
+	for instance, synchronizing border elements. The default implementation
+	* is a no-op. */
+    void finalizeAssembly() {castToLoadable()->finalizeAssembly();}
+    //@}
+
+    /** \name Element access interface */
+    //@{
+    /** get the element at the given global index */
+    const Scalar& getElement(Index globalIndex) const 
+    {return castToAccessible()->getElement(globalIndex);}
+
+    /** Get a batch of elements */
+    void getElements(const Index* globalIndices, int numElems,
+		     vector<Scalar>& elems) const 
+    {castToAccessible()->getElements(globalIndices, numElems, elems);}
+    //@}
+      
+    /** Get a stopwtach for timing vector operations */
+    static RefCountPtr<Time>& opTimer()
+    {
+      static RefCountPtr<Time> rtn 
+	= TimeMonitor::getNewTimer("Low-level vector operations");
+      return rtn;
+    }
+
+    virtual Vector<Scalar> eval() const {return *this;}
+
+
+
+    /** Describe the vector  */
+    string describe() const
+    {
+      return describe(0);
+    }
+
+    string describe(int depth) const
+    {
+      // 	const OpDescribableByTypeID<Scalar>* p = 
+      // 	  dynamic_cast<const OpDescribableByTypeID<Scalar>* >(ptr().get());
+      const DescribableByTypeID* p = 
+	dynamic_cast<const DescribableByTypeID* >(ptr().get());
+      if (p != 0)
+	{
+	  return p -> describe(depth);
+	}
+      return "Vector not describable";
+    }
+      
+      
+
+  private:
 
 #ifndef DOXYGEN_DEVELOPER_ONLY
-      /** Construct a vector from a 1-term LC */
-      Vector(const TSFExtendedOps::LC1<Scalar>& x);
+    /** Cross-cast vector pointer to an accessible vector */
+    const AccessibleVector<Scalar>* castToAccessible() const ;
 
-      /** Construct a vector from a N-term LC */
-      template<class Node1, class Node2>
-      Vector(const TSFExtendedOps::LCN<Scalar, Node1, Node2>& x);
-
-      /** Assign a one-term linear combination 
-       * (i.e., a scalar times a vector) 
-       * to this vector */
-      Vector& operator=(const TSFExtendedOps::LC1<Scalar>& x);
-
-      /** Assign a linear combination of vectors to this vector */
-      template<class Node1, class Node2>
-      Vector& operator=(const TSFExtendedOps::LCN<Scalar, Node1, Node2>& x);
-#endif
-      //@}
-
-      /** */
-      VectorSpace<Scalar> space() const 
-      {return ptr()->space();}
-
-      /** Return the dimension of the vector  */
-      int dim() const
-      {
-	return ptr()->space().dim();
-      }
-      
-
-      /** \name ProductVector operations */
-      //@{
-
-      /** set block  */
-      void setBlock(int i, const Vector<Scalar>& v);
-      
-      /** get block */
-      Vector<Scalar> getBlock(int i) const;
-
-      //const Vector<Scalar> getBlock(int i) const;
-
-      /** \name Math operations */
-      //@{
-      /** Multiply this vector by a constant scalar factor 
-       * \code
-       * this = alpha * this;
-       * \endcode
-      */
-      Vector<Scalar>& scale(const Scalar& alpha);
-
-      /** 
-       * Add a scaled vector to this vector:
-       * \code
-       * this = this + alpha*x 
-       * \endcode
-       */
-      Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x);
-
-      /** 
-       * Add a scaled vector to this vector times a constant:
-       * \code
-       * this = gamma*this + alpha*x 
-       * \endcode
-       */
-      Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x, 
-                             const Scalar& gamma);
-      /** 
-       * Add two scaled vectors to this vector times a constant:
-       * \code
-       * this = alpha*x + beta*y + gamma*this
-       * \endcode
-       */
-      Vector<Scalar>& update(const Scalar& alpha, const Vector<Scalar>& x, 
-                             const Scalar& beta, const Vector<Scalar>& y, 
-                             const Scalar& gamma);
-
-      /** 
-       * Copy the values of another vector into this vector
-       * \code
-       * this = x
-       * \endcode
-       */
-      Vector<Scalar>& acceptCopyOf(const Vector<Scalar>& x);
-
-      /** 
-       * Create a new vector that is a copy of this vector 
-       */
-      Vector<Scalar> copy() const ;
-
-      /** 
-       * Element-by-element product (Matlab dot-star operator)
-       */
-      Vector<Scalar> dotStar(const Vector<Scalar>& other) const ;
-
-      /** 
-       * Element-by-element division (Matlab dot-slash operator)
-       */
-      Vector<Scalar> dotSlash(const Vector<Scalar>& other) const ;
-
-      /** 
-       * Return element-by-element reciprocal as a new vector
-       */
-      Vector<Scalar> reciprocal() const ;
-
-      /** 
-       * Return element-by-element absolute value as a new vector
-       */
-      Vector<Scalar> abs() const ;
-
-      /** 
-       * Overwrite self with element-by-element reciprocal
-       */
-      Vector<Scalar>& reciprocal() ;
-
-      /** 
-       * Overwrite self with element-by-element absolute value 
-       */
-      Vector<Scalar>& abs() ;
-
-      /** 
-       * Set all elements to a constant value
-       */
-      void setToConstant(const Scalar& alpha) ;
-
-      
-      /** 
-       * Take dot product with another vector
-       */
-      Scalar dot(const Vector<Scalar>& other) const ;
-
-      /**
-       * Compute the 1-norm of this vector
-       */
-      Scalar norm1() const ;
-
-      /**
-       * Compute the 2-norm of this vector
-       */
-      Scalar norm2() const ;
-
-      /**
-       * Compute the weighted 2-norm of this vector
-       */
-      Scalar norm2(const Vector<Scalar>& weights) const ;      
-
-      /**
-       * Compute the infinity-norm of this vector
-       */
-      Scalar normInf() const ;
-
-      /**
-       * Set all elements to zero 
-       */
-      void zero();
-
-      //@}
-
-      /** \name Element loading interface */
-      //@{
-      /** set a single element at the given global index */
-      void setElement(Index globalIndex, const Scalar& value) 
-      {castToLoadable()->setElement(globalIndex, value);}
-
-      /** add to the existing value of 
-       * a single element at the given global index */
-      void addToElement(Index globalIndex, const Scalar& value) 
-      {castToLoadable()->addToElement(globalIndex, value);}
-
-      /** set a group of elements */
-      void setElements(size_t numElems, const Index* globalIndices, 
-                               const Scalar* values) 
-      {castToLoadable()->setElements(numElems, globalIndices, values);}
-
-      /** add to a group of elements */
-      void addToElements(size_t numElems, const Index* globalIndices, 
-                         const Scalar* values)
-      {castToLoadable()->addToElements(numElems, globalIndices, values);}
-
-      /** Do whatever finalization steps are needed by the implementation,
-       for instance, synchronizing border elements. The default implementation
-      * is a no-op. */
-      void finalizeAssembly() {castToLoadable()->finalizeAssembly();}
-      //@}
-
-      /** \name Element access interface */
-      //@{
-      /** get the element at the given global index */
-      const Scalar& getElement(Index globalIndex) const 
-      {return castToAccessible()->getElement(globalIndex);}
-
-      /** Get a batch of elements */
-      void getElements(const Index* globalIndices, int numElems,
-                       vector<Scalar>& elems) const 
-      {castToAccessible()->getElements(globalIndices, numElems, elems);}
-      //@}
-      
-      /** Get a stopwtach for timing vector operations */
-      static RefCountPtr<Time>& opTimer()
-      {
-        static RefCountPtr<Time> rtn 
-          = TimeMonitor::getNewTimer("Low-level vector operations");
-        return rtn;
-      }
-
-      virtual Vector<Scalar> eval() const {return *this;}
-
-
-
-      /** Describe the vector  */
-      string describe() const
-      {
-	return describe(0);
-      }
-
-      string describe(int depth) const
-      {
-// 	const OpDescribableByTypeID<Scalar>* p = 
-// 	  dynamic_cast<const OpDescribableByTypeID<Scalar>* >(ptr().get());
-	const DescribableByTypeID* p = 
-	  dynamic_cast<const DescribableByTypeID* >(ptr().get());
-	if (p != 0)
-	  {
-	    return p -> describe(depth);
-	  }
-	return "Vector not describable";
-      }
-      
-      
-
-    private:
-
-#ifndef DOXYGEN_DEVELOPER_ONLY
-      /** Cross-cast vector pointer to an accessible vector */
-      const AccessibleVector<Scalar>* castToAccessible() const ;
-
-      /** Cross-cast vector to a loadable vector */
-      LoadableVector<Scalar>* castToLoadable()  ;
+    /** Cross-cast vector to a loadable vector */
+    LoadableVector<Scalar>* castToLoadable()  ;
 
       
       
 #endif
-    };
+  };
 
   
 }

@@ -33,7 +33,7 @@
 #ifndef TSFPRODUCTVECTORIMPL_HPP
 #define TSFPRODUCTVECTORIMPL_HPP
 
-//#include "TSFProductVectorDecl.hpp"
+
 #include "TSFVectorSpaceDecl.hpp"
 #include "TSFProductVectorSpaceDecl.hpp"
 #include "Teuchos_RefCountPtr.hpp"
@@ -50,28 +50,20 @@ using namespace Teuchos;
 template <class Scalar>
 ProductVector<Scalar>::ProductVector(const VectorSpace<Scalar> &space)
 {
-  cerr << "In PVImpl:ctor: setting up vector" << endl;
   const ProductVectorSpace<Scalar>* pvs =
     dynamic_cast<const ProductVectorSpace<Scalar>* > (space.ptr().get());
   TEST_FOR_EXCEPTION(pvs == 0, runtime_error,
 		     "Space must be a ProductVectorSpace." << endl);
-  cerr << "   space OK" << endl;
   space_ = space;
   numBlocks_ = pvs->numBlocks();
   vecsE_.resize(numBlocks_);
   vecsCore_.resize(numBlocks_);
-  cerr << "   initializing" << endl;
   for (int i = 0; i < numBlocks_; i++)
     {
-      cerr << "     in loop: i = " << i << endl;
       vecsE_[i] = space_.getBlock(i).createMember();
-      cerr << "     created member" << endl;
       vecsCore_[i] = vecsE_[i].ptr();
-      cerr << "     set up vecsCore" << endl;
     }
   setCore();
-  cerr << "   created Vector" << endl;
-
 }
 
 
@@ -81,8 +73,6 @@ template <class Scalar>
 void ProductVector<Scalar>::setCore()
 {
   uninitialize();
-//   const TSFCore::ProductVectorSpace<Scalar>* pvs = 
-//     dynamic_cast<const TSFCore::ProductVectorSpace<Scalar>* > (space_.ptr().get());
   Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> > vs = space_.ptr();
   const Teuchos::RefCountPtr<const TSFCore::ProductVectorSpace<Scalar> > pvs
     = Teuchos::rcp_dynamic_cast<const TSFCore::ProductVectorSpace<Scalar> >(vs);
@@ -98,11 +88,6 @@ void ProductVector<Scalar>::setCore()
 template <class Scalar>
 void ProductVector<Scalar>::setBlock(int k, const Vector<Scalar> &vec)
 {
-/*  NOTE: since productVector should never be created except by
-    productVectorSpace, we don't have to increase length of vecsE_.
-    We do need to check for k in range and that the vector is a member
-    of the correct underlying space.  */
-
   TEST_FOR_EXCEPTION(k < 0 || k > vecsE_.length(), runtime_error,
 		     "index k  = " << k << " out of range");
 
@@ -119,18 +104,6 @@ void ProductVector<Scalar>::setBlock(int k, const Vector<Scalar> &vec)
   setCore();
 }
 
-
-
-// //========================================================================
-// template <class Scalar>
-// Vector ProductVector<Scalar>::getBlock(int k) const
-// {
-//   TEST_FOR_EXCEPTION(k < 0 || k > numBlocks_, std:out_of_range,
-// 		     "Value of k = " << k << " is out of range" << endl);
-//   TEST_FOR_EXCEPTION(vecsE_[k].ptr() == 0, runtime_error,
-// 		     "Block k = " << k << " is not set" << endl);
-//   return vecsE_[k];
-// }
 
 
 
@@ -163,16 +136,9 @@ void ProductVector<Scalar>::testSpace(const VectorSpace<Scalar> &space,
 }
 
 
-      /** \name Math operations */
-      //@{
-      /** Multiply this vector by a constant scalar factor 
-       * \code
-       * this = alpha * this;
-       * \endcode
-      */
-
+//========================================================================
 template <class Scalar>
-      Vector<Scalar>& ProductVector<Scalar>::scale(const Scalar& alpha)
+Vector<Scalar>& ProductVector<Scalar>::scale(const Scalar& alpha)
 {
   for (int i = 0; i < numBlocks_; i++)
     {
@@ -265,16 +231,16 @@ string ProductVector<Scalar>::describe(int depth) const
 
 
 
-      /** 
-       * Copy the values of another vector into this vector
-       * \code
-       * this = x
-       * \endcode
-       */
+/** 
+ * Copy the values of another vector into this vector
+ * \code
+ * this = x
+ * \endcode
+ */
 
 
 template <class Scalar>
-      Vector<Scalar>& ProductVector<Scalar>::acceptCopyOf(const Vector<Scalar>& x)
+Vector<Scalar>& ProductVector<Scalar>::acceptCopyOf(const Vector<Scalar>& x)
 {
   testSpace(x.space(), "update");
   for (int i = 0; i < numBlocks_; i++)
@@ -284,11 +250,11 @@ template <class Scalar>
 
 }
 
-      /** 
-       * Create a new vector that is a copy of this vector 
-       */
+/** 
+ * Create a new vector that is a copy of this vector 
+ */
 template <class Scalar>
-      Vector<Scalar> ProductVector<Scalar>::copy() const 
+Vector<Scalar> ProductVector<Scalar>::copy() const 
 {
   Vector<Scalar> ret = space_.createMember();
   for (int i = 0; i < numBlocks_; i++)
@@ -298,9 +264,9 @@ template <class Scalar>
   return ret;
 }
 
-      /** 
-       * Element-by-element product (Matlab dot-star operator)
-       */
+/** 
+ * Element-by-element product (Matlab dot-star operator)
+ */
 template <class Scalar>
 Vector<Scalar> ProductVector<Scalar>::dotStar(const Vector<Scalar>& other) const 
 {
@@ -315,9 +281,9 @@ Vector<Scalar> ProductVector<Scalar>::dotStar(const Vector<Scalar>& other) const
 
 
 
-      /** 
-       * Element-by-element division (Matlab dot-slash operator)
-       */
+/** 
+ * Element-by-element division (Matlab dot-slash operator)
+ */
 template <class Scalar>
 Vector<Scalar> ProductVector<Scalar>::dotSlash(const Vector<Scalar>& other) const 
 {
@@ -330,9 +296,9 @@ Vector<Scalar> ProductVector<Scalar>::dotSlash(const Vector<Scalar>& other) cons
   return ret;
 }
 
-      /** 
-       * Return element-by-element reciprocal as a new vector
-       */
+/** 
+ * Return element-by-element reciprocal as a new vector
+ */
 template <class Scalar>
 Vector<Scalar> ProductVector<Scalar>::reciprocal() const 
 {
@@ -344,11 +310,11 @@ Vector<Scalar> ProductVector<Scalar>::reciprocal() const
   return ret;
 }
 
-      /** 
-       * Return element-by-element absolute value as a new vector
-       */
+/** 
+ * Return element-by-element absolute value as a new vector
+ */
 template <class Scalar>
-      Vector<Scalar> ProductVector<Scalar>::abs() const 
+Vector<Scalar> ProductVector<Scalar>::abs() const 
 {
   Vector<Scalar> ret = space_.createMember();
   for (int i = 0; i < numBlocks_; i++)
@@ -358,11 +324,11 @@ template <class Scalar>
   return ret;
 }
 
-      /** 
-       * Overwrite self with element-by-element reciprocal
-       */
+/** 
+ * Overwrite self with element-by-element reciprocal
+ */
 template <class Scalar>
-      Vector<Scalar>& ProductVector<Scalar>::reciprocal() 
+Vector<Scalar>& ProductVector<Scalar>::reciprocal() 
 {
   for (int i = 0; i < numBlocks_; i++)
     {
@@ -371,53 +337,53 @@ template <class Scalar>
   return *this;
 }
 
-      /** 
-       * Overwrite self with element-by-element absolute value 
-       */
+/** 
+ * Overwrite self with element-by-element absolute value 
+ */
 template <class Scalar>
-      Vector<Scalar>& ProductVector<Scalar>::abs() {;}
+Vector<Scalar>& ProductVector<Scalar>::abs() {;}
 
-      /** 
-       * Set all elements to a constant value
-       */
+/** 
+ * Set all elements to a constant value
+ */
 template <class Scalar>
-      void ProductVector<Scalar>::setToConstant(const Scalar& alpha) {;}
+void ProductVector<Scalar>::setToConstant(const Scalar& alpha) {;}
 
       
-      /** 
-       * Take dot product with another vector
-       */
+/** 
+ * Take dot product with another vector
+ */
 template <class Scalar>
-      Scalar ProductVector<Scalar>::dot(const Vector<Scalar>& other) const {;}
+Scalar ProductVector<Scalar>::dot(const Vector<Scalar>& other) const {;}
 
-      /**
-       * Compute the 1-norm of this vector
-       */
+/**
+ * Compute the 1-norm of this vector
+ */
 template <class Scalar>
-      Scalar ProductVector<Scalar>::norm1() const {;}
+Scalar ProductVector<Scalar>::norm1() const {;}
 
-      /**
-       * Compute the 2-norm of this vector
-       */
+/**
+ * Compute the 2-norm of this vector
+ */
 template <class Scalar>
-      Scalar ProductVector<Scalar>::norm2() const {;}
+Scalar ProductVector<Scalar>::norm2() const {;}
 
-      /**
-       * Compute the infinity-norm of this vector
-       */
+/**
+ * Compute the infinity-norm of this vector
+ */
 template <class Scalar>
-      Scalar ProductVector<Scalar>::normInf() const {;}
+Scalar ProductVector<Scalar>::normInf() const {;}
 
-      /**
-       * Set all elements to zero 
-       */
+/**
+ * Set all elements to zero 
+ */
 template <class Scalar>
-      void ProductVector<Scalar>::zero(){;}
+void ProductVector<Scalar>::zero(){;}
 
-      //@}
+//@}
 
-      /** \name Element loading interface */
-      //@{
+/** \name Element loading interface */
+//@{
 
 
 #endif
