@@ -7,7 +7,8 @@
 #---------------------------------------------------------------------------
 # Configuration::addtions related to the search engine   
 #---------------------------------------------------------------------------
-SEARCHENGINE           = YES
+#SEARCHENGINE           = YES
+SEARCHENGINE           = NO
 CGI_NAME               = rSQPpp.cgi
 
 @INCLUDE = ./Doxyfile.env
@@ -35,7 +36,7 @@ FILTER_SOURCE_FILES    = NO
 #---------------------------------------------------------------------------
 # Configuration options related to the preprocessor   
 #---------------------------------------------------------------------------
-INCLUDE_PATH           = ./Misc/include
+INCLUDE_PATH           = ../core/Misc/include
 #---------------------------------------------------------------------------
 # Configuration::addtions related to external references   
 #---------------------------------------------------------------------------
