@@ -651,6 +651,7 @@ void DecompositionSystemVarReductImp::print_update_decomp(
 	out
 		<< L << "*** Variable reduction decomposition (class DecompositionSytemVarReductImp)\n"
 		<< L << "C = Gc(var_dep,equ_decomp)' (using basis_sys)\n"
+		<< L << "if C is nearly singular then throw SingularDecomposition exception\n"
 		<< L << "if D_imp == MAT_IMP_IMPICIT then\n"
 		<< L << "  D = -inv(C)*N represented implicitly (class MatrixVarReductImplicit)\n"
 		<< L << "else\n"
