@@ -76,6 +76,7 @@
 #include "ConstrainedOptimizationPack/include/DecompositionSystemVarReductPermStd.h"
 #include "SparseSolverPack/include/BasisSystemPermDirectSparse.h"
 #include "SparseSolverPack/include/DirectSparseSolverMA28.h"
+#include "SparseSolverPack/include/DirectSparseSolverMA28SetOptions.h"
 #endif
 
 //#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
@@ -483,12 +484,20 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					"Creating BasisSystemPermDirectSparse object for direct sparse matrices ...\n";
 			rcp::ref_count_ptr<DirectSparseSolver>  direct_sparse_solver;
 			switch(cov_.direct_linear_solver_type_) {
-				case LA_MA28:
+				case LA_MA28: {
 					if(trase_out)
 						*trase_out <<
 							"Using DirectSparseSolverMA28 ...\n";
-					direct_sparse_solver = rcp::rcp(new DirectSparseSolverMA28());
+					rcp::ref_count_ptr<DirectSparseSolverMA28>
+						dss_ma28 = rcp::rcp(new DirectSparseSolverMA28());
+					if(options_.get()) {
+						SparseSolverPack::DirectSparseSolverMA28SetOptions
+							opt_setter(dss_ma28.get());
+						opt_setter.set_options(*options_);
+					}
+					direct_sparse_solver = dss_ma28;
 					break;
+				}
 				case LA_MA48:
 					if(trase_out)
 						*trase_out <<

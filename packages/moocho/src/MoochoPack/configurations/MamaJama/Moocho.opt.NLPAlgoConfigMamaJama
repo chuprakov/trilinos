@@ -555,6 +555,65 @@ options_group MeritFuncModifiedL1LargerSteps {
 
 }
 
+*****************************************************************
+*** Change how the penalty parameters for the modifed
+*** L1 merit function are increased.
+***
+*** [rSQPAlgo_ConfigMamaJama::linear_solver == MA28]
+*** [rSQPAlgo_ConfigMamaJama::merit_function_type == MODIFIED_L1_INCR]
+***
+options_group DirectSparseSolverMA28 {
+
+*    estimated_fillin_ratio = 10.0; *** (default)
+     *** (+dbl) Estimated amount of fillin ( > 1.0 ) for the
+     *** the sparse LU factorization.  If this is too little
+     *** then more storage will automatically be allocated
+     *** on the fly (at the cost some wasted computations).
+     *** This parameter is mostly problem dependent and can
+     *** be adjusted to a proper size to reduce memory requirements.
+     *** Example values:
+     ***   1.0   : No fill-in?
+     ***   10.0  : LU factors have three times the number of nonzeros
+
+*    u = 0.1; *** (default)
+     *** (+dbl) Control parameter (0 <= u <= 1.0) that us used
+     *** to balance 
+     *** Example values:
+     ***    0.0 : Pivot for sparsity only
+     ***    0.1 : Balance sparsity and stability
+     ***    1.0 : Pivot for stability only
+ 
+*    grow = true;
+*    grow = false; *** (default)
+     *** See MA28 documentation.
+
+*    nsrch = 4; *** (default)
+     *** (+int) Number of columns that MA28 will search to find
+     *** pivots to try to reduce fill-in.
+     *** Example values:
+     ***    0  : No columns are searched
+     ***    4  : Four columns are searched
+     *** 1000  : A thousand columns are searched
+
+*    lbig = true;
+*    lbig = false; *** (default)
+     *** See MA28 documentation.
+
+*    print_ma28_outputs = true;
+*    print_ma28_outputs = false; *** (default)
+     *** If true, then the values of the MA28 output will
+     *** be dumped to the output stream
+     *** (if journal_output_level >= PRINT_ALGORITHM_STEPS).
+
+*    output_file_name = NONE; *** (default)
+     *** Gives the file name that MA28 Fortran output is set to (from LP and MP).
+     *** Example values:
+     ***    NONE           : No output file
+     ***    any_other_name : Output from MA28 will be sent to this file in the
+     ***                     current directory
+
+}
+
 end_options
 
 *** End
