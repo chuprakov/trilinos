@@ -283,10 +283,14 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 	// Determine if we need to set the structure and the nonzeros or just the nonzeros
 	const bool load_struct = (G_lse.nz() == 0);
 
-	if( load_struct )
+	size_type G_nz_previous;
+	if( load_struct ) {
 		G_lse.reinitialize(n,num_cols,nz_full); // The actual number of nonzeros will be minus the fixed variables
-	else
+	}
+	else {
+		G_nz_previous = G_lse.nz();
 		G_lse.reset_to_load_values();           // Use row and column indexes already set (better be same insert order!)
+	}
 		
 	// Get pointers to the full COOR matrix just updated
 	value_type		*val_full		= &Gc_val_full_[0],
@@ -350,11 +354,9 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 				++nz;
 			}
 		}
-		// Check that the number of nonzeros added matches the number of
-		// nonzeros in G
-		const size_type G_nz = G_lse.nz();
+		// Check that the number of nonzeros added matches the number of nonzeros in G
 		THROW_EXCEPTION(
-			G_nz != (val_itr - val), std::runtime_error
+			G_nz_previous != nz, std::runtime_error
 			,"NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(...): Error, "
 			"The number of added nonzeros does not match the number of nonzeros "
 			"in the previous matrix load!." );
@@ -376,18 +378,20 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 	// Setup row (variable) permutation
 	if( P_row.get() == NULL || P_col.count() > 1 )
 	    P_row = rcp::rcp(new PermutationSerial());
-	if( P_row->perm().get() == NULL )
-		P_row->initialize(rcp::rcp(new IVector(n)),rcp::null);
-	const_cast<IVector&>(*P_row->perm()) = this->var_perm();
+	rcp::ref_count_ptr<IVector>        var_perm;
+	if( P_row->perm().get() == NULL )  var_perm = rcp::rcp(new IVector(n_full));
+	else                               var_perm = rcp::rcp_const_cast<IVector>(P_row->perm());
+	*var_perm = this->var_perm();
+	P_row->initialize(var_perm,rcp::null);
 	// Setup column (constraint) permutation
 	if( P_col.get() == NULL || P_col.count() > 1 )
 	    P_col = rcp::rcp(new PermutationSerial());
-	if( P_col->perm().get() == NULL )
-		P_col->initialize(rcp::rcp(new IVector(num_cols)),rcp::null);
-	if( calc_Gc )
-		const_cast<IVector&>(*P_col->perm()) = this->equ_perm();
-	else
-		LinAlgPack::identity_perm(const_cast<IVector*>(P_col->perm().get()));
+	rcp::ref_count_ptr<IVector>        con_perm;
+	if( P_col->perm().get() == NULL )  con_perm = rcp::rcp(new IVector(calc_Gc?m_full:mI_full));
+	else                               con_perm = rcp::rcp_const_cast<IVector>(P_col->perm());
+	if( calc_Gc )                      *con_perm = this->equ_perm();
+	else                               LinAlgPack::identity_perm(con_perm.get());
+	P_col->initialize(con_perm,rcp::null);
 	// Setup G_perm
 	int num_row_part, num_col_part;
 	index_type row_part[3], col_part[3];
