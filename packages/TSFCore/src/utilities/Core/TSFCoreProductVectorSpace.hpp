@@ -72,9 +72,10 @@ void ProductVectorSpace<Scalar>::initialize(
 	//
 	// Setup private data members (should not throw an exception from here)
 	//
+	numBlocks_ = numBlocks;
 	vecSpaces_.resize(numBlocks);
-	std::copy( vecSpaces, vecSpaces+numBlocks, vecSpaces_.begin() );
-	vecSpacesOffsets_.resize(numBlocks);
+	std::copy( vecSpaces, vecSpaces+numBlocks, &vecSpaces_[0] );
+	vecSpacesOffsets_.resize(numBlocks+1);
 	vecSpacesOffsets_[0] = 0;
 	dim_ = 0;
 	for( int k = 1; k <= numBlocks; ++k ) {
@@ -92,6 +93,7 @@ void ProductVectorSpace<Scalar>::uninitialize(
 	)
 {
 	vecSpaces_.resize(0);
+	vecSpacesOffsets_.resize(0);
 	dim_      = 0;
 	isInCore_ = false;
 }
@@ -111,7 +113,7 @@ void ProductVectorSpace<Scalar>::getVecSpcPoss(
 #endif
 	*kth_vector_space  = 0;
 	*kth_global_offset = 0;
-	while( *kth_vector_space < static_cast<int>(vecSpaces_.size()) ) {
+	while( *kth_vector_space < numBlocks_ ) {
 		const Index off_kp1 = vecSpacesOffsets_[*kth_vector_space+1];
 		if( off_kp1 + 1 > i ) {
 			*kth_global_offset = vecSpacesOffsets_[*kth_vector_space];
@@ -119,7 +121,7 @@ void ProductVectorSpace<Scalar>::getVecSpcPoss(
 		}
 		++(*kth_vector_space);
 	}
-	TEST_FOR_EXCEPT( !(*kth_vector_space < static_cast<int>(vecSpaces_.size())) );
+	TEST_FOR_EXCEPT( !(*kth_vector_space < numBlocks_) );
 }
 
 // Overridden from ProductVectorSpace
@@ -127,14 +129,14 @@ void ProductVectorSpace<Scalar>::getVecSpcPoss(
 template<class Scalar>
 int ProductVectorSpace<Scalar>::numBlocks() const
 {
-	return vecSpaces_.size();
+	return numBlocks_;
 }
 
 template<class Scalar>
 Teuchos::RefCountPtr<const VectorSpace<Scalar> >
 ProductVectorSpace<Scalar>::getBlock(const int k) const
 {
-	TEST_FOR_EXCEPT( k < 0 || static_cast<int>(vecSpaces_.size()-1) < k );
+	TEST_FOR_EXCEPT( k < 0 || numBlocks_ < k );
 	return vecSpaces_[k];
 }
 

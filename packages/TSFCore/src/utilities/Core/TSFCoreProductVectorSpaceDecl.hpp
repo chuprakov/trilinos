@@ -106,8 +106,7 @@ public:
 
 	/** @name Constructors/initializers/accessors */
 	//@{
-	
-	
+
 	/// Construct to an initialized state (calls <tt>initialize</tt>)
 	ProductVectorSpace(
 		const int                                                   numBlocks
@@ -252,15 +251,12 @@ private:
 	// ///////////////////////////////////
 	// Private data members
 
-#ifndef DOXYGEN_COMPILE
+	int                                                              numBlocks_;
 	std::vector<Teuchos::RefCountPtr<const VectorSpace<Scalar> > >   vecSpaces_;
 	std::vector<Index>                                               vecSpacesOffsets_;
 	// cached info
 	Index     dim_;
 	bool      isInCore_;
-#else
-	const VectorSpace<Scalar>  *vecSpaces;
-#endif
 	
 	// ///////////////////////////////////
 	// Private member functions
