@@ -29,7 +29,11 @@
 #include "Epetra_Map.h"
 #include "Epetra_Import.h"
 #include "Epetra_Comm.h"
+
+#ifdef HAVE_MPI
 #include "Epetra_MpiComm.h"
+#endif
+
 #include "Teuchos_RefCountPtr.hpp"
 #include "TSFEpetraMatrix.hpp"
 

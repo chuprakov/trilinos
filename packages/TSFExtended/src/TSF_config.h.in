@@ -35,9 +35,6 @@
 /* Define to 1 if you have the <cstdlib> header file. */
 #undef HAVE_CSTDLIB
 
-/* Define if want to build examples */
-#undef HAVE_EXAMPLES
-
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
@@ -67,9 +64,6 @@
 
 /* define if the compiler implements namespaces */
 #undef HAVE_NAMESPACES
-
-/* Define if want to build with newp_swahili enabled */
-#undef HAVE_NEWP_SWAHILI
 
 /* define if the compiler accepts the new for scoping rules */
 #undef HAVE_NEW_FOR_SCOPING
@@ -103,6 +97,9 @@
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
+
+/* Define if want to build tests */
+#undef HAVE_TESTS
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
