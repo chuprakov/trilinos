@@ -302,6 +302,7 @@ void CGSolver<Scalar>::doIteration(
 		}
 	}
 	const Index m = currNumSystems_;
+	const VectorSpace<Scalar> &space = *R_->range(); // Operator should be symmetric so any space will do!
 	int j;
 	if( M_tilde_inv ) { // Preconditioner is available
 		M_tilde_inv->apply( opM_tilde_inv_notrans, *R_, Z_.get() );  // M_tilde_inv*R^{i-1}              -> Z^{i-1}
@@ -312,7 +313,7 @@ void CGSolver<Scalar>::doIteration(
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\nZ =\n" << *Z_;
 	}
-	dot( *Z_, *R_, &rho_[0] );                                       // rho_{i-1}[j] = Z^{i-1}[j]' * R^{i-1}[j]
+	space.scalarProds( *Z_, *R_, &rho_[0] );                       // rho_{i-1}[j] = Z^{i-1}[j]' * R^{i-1}[j]
 	for(j=0;j<m;++j) { 	// Check indefinite operator
 		TEST_FOR_EXCEPTION(
 			RTOp_is_nan_inf(rho_[j]), Exceptions::SolverBreakdown
@@ -342,11 +343,11 @@ void CGSolver<Scalar>::doIteration(
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\nP =\n" << *P_;
 	}
-	M.apply( opM_notrans, *P_, Q_.get() );                 // op(M)*P^{i}                             -> Q^{i}
+	M.apply( opM_notrans, *P_, Q_.get() );               // op(M)*P^{i}                             -> Q^{i}
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\nQ =\n" << *Q_;
 	}
-	dot( *P_, *Q_, &gamma_[0] );                           // P^{i}[j]' * Q^{i}[j]                    -> gamma_{i-1}[j]
+	space.scalarProds( *P_, *Q_, &gamma_[0] );           // P^{i}[j]' * Q^{i}[j]                    -> gamma_{i-1}[j]
 	for(j=0;j<m;++j) { 	// Check indefinite operator
 		TEST_FOR_EXCEPTION(
 			RTOp_is_nan_inf(gamma_[j]), Exceptions::SolverBreakdown
@@ -357,13 +358,13 @@ void CGSolver<Scalar>::doIteration(
 			,TSFCORE_CG_SOLVER_ERR_MSG << "gamma["<<j<<"] = " << gamma_[j] << " <= 0, the operator is indefinite!"
 			);
 	}
-	for(j=0;j<m;++j) alpha_[j] = rho_[j]/gamma_[j];        // rho_{i-1}[j] / gamma_{i-1}[j]           -> alpha_{i}[j]
+	for(j=0;j<m;++j) alpha_[j] = rho_[j]/gamma_[j];      // rho_{i-1}[j] / gamma_{i-1}[j]           -> alpha_{i}[j]
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\ngamma =\n"; for(j=0;j<m;++j) *get_out() << " " << gamma_[j]; *get_out() << std::endl;
 		*get_out() << "\nalpha =\n"; for(j=0;j<m;++j) *get_out() << " " << alpha_[j]; *get_out() << std::endl;
 	}
-	update( &alpha_[0], +1.0, *P_, X );                    // +alpha_{i}[j] * P^{i}[j] + X^{i-1}      -> X^{i} 
-	update( &alpha_[0], -1.0, *Q_, R_.get() );             // -alpha_{i}[j] * Q^{i}[j] + R^{i-1}      -> R^{i} 
+	update( &alpha_[0], +1.0, *P_, X );                  // +alpha_{i}[j] * P^{i}[j] + X^{i-1}      -> X^{i} 
+	update( &alpha_[0], -1.0, *Q_, R_.get() );           // -alpha_{i}[j] * Q^{i}[j] + R^{i-1}      -> R^{i} 
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\nX =\n" << *X;
 		*get_out() << "\nR =\n" << *R_;
