@@ -17,7 +17,7 @@ multiple linear solver packages.
 One category of modules that is becoming
 increasingly important is abstract numerical algorithms (ANAs).  ANAs
 such as linear and nonlinear equation solvers,
-stability and bifurcation methods,
+methods for stability and bifurcation analysis,
 uncertainty quantification methods and nonlinear programming solvers
 for optimization are typically mathematically 
 sophisticated but have surprisingly little essential dependence on the
@@ -28,7 +28,8 @@ software such that it will work, unchanged, with a variety of
 applications and linear algebra libraries.  Such an approach is often
 referred to as {\it generic programming}~\cite{ref:boost_generic_programming}.
 
-In this paper we propose the use of a new stripped down version of the
+In this paper we propose the use of a new stripped down
+and enhanced version of the
 Trilinos Solver Framework (TSF) called TSFCore as the common interface
 for (i) ANA development, (ii) the integration of an ANA into an
 application (APP) and (iii) providing services to the ANA from a
@@ -66,165 +67,72 @@ Here we consider only the type of functionality such as is required in
 the numerical solution of optimal control problems as described in
 \cite{ref:opt_ctrl_itfc}.
 
-To motivate TSFCore, we present a simple mathematical formulation in
-Section \ref{tsfcore:sec:background} for a basic set of nonlinear
-equations which is common to many different types of numerical
-problems.  The major requirements for TSFCore is spelled out in
-Section \ref{tsfcore:sec:TSFCore_requirements}.  This is followed by
-an overview of the TSFCore linear algebra interfaces in Section
-\ref{tsfcore:sec:TSFCore_core_overview}.  A more detailed discussion of the
-design of the TSFCore linear algebra interfaces is presented in
-Section \ref{tsfcore:sec:TSFCore_Details} which includes numerous
-examples.  A complete example ANA for the iterative solution of
-simultaneous systems of linear equations (using a simple block BiCG
-method) is described in Section
-\ref{tsfcore:sec:ANA_iter_solver_example}.  A discussion of some of the
-object-oriented and other general software design concepts and
-principles that have gone into the development of TSFCore is deferred
-to Section \ref{tsfcore:sec:general_software_concepts}.  Some of the
-nonessential but convenient functionality that is useful to direct ANA
-developers that is missing in TSFCore is described in Section
-\ref{tsfcore:sec:convenience_functionality}. Finally, a few comments
-about making the most of TSFCore by developing adapters is described in
-Section \ref{tsfcore:sec:adapters}.
+We assume that the reader has a basic understanding of vector
+reduction/transformation operators (RTOp) (see \cite{ref:rtop_toms}),
+is comfortable with object-orientation \cite{ref:gama_et_al_1995} and
+C++, and knows how to read basic Unified Modeling Language (UML)
+\cite{ref:uml_distilled_2nd_ed} class diagrams.  We also assume
+that the reader has some background in large-scale numerics and will
+therefore be able to appreciate the challenges that are addressed by
+TSFCore.
+
+To motivate TSFCore, we discuss the context for TSFCore in large-scale
+(both in lines of code and in problem dimensionality) numerical
+software in Section \ref{tsfcore:sec:classification_of_lin_alg_itfc}.
+The major requirements for TSFCore are spelled out in Section
+\ref{tsfcore:sec:TSFCore_requirements}.  This is followed by an
+overview of the TSFCore linear algebra interfaces in Section
+\ref{tsfcore:sec:TSFCore_core_overview} and a detailed discussion
+of the design of the TSFCore linear algebra interfaces in Section
+\ref{tsfcore:sec:TSFCore_Details} including numerous examples.  A
+complete example ANA for the iterative solution of simultaneous
+systems of linear equations (using a simple BiCG method) is described
+in Section \ref{tsfcore:sec:ANA_iter_solver_example}.  A discussion of
+some of the object-oriented and other general software design concepts
+and principles that have gone into the development of TSFCore is
+deferred to Section \ref{tsfcore:sec:general_software_concepts}.  Some
+of the nonessential but convenient functionality that is useful to
+direct ANA developers that is missing in TSFCore is described in
+Section \ref{tsfcore:sec:convenience_functionality}. Finally, a few
+comments about making the most of TSFCore by developing adapters is
+described in Section \ref{tsfcore:sec:adapters}.
 
 %
-\section{Background}
-\label{tsfcore:sec:background}
+\section{Classification of linear algebra interfaces}
+\label{tsfcore:sec:classification_of_lin_alg_itfc}
 %
 
-%
-\subsection{APP, ANA and LAL Modules}
-\label{tsfcore:sec:module_overview}
 Although we will discuss APPs, ANAs and LALs in detail later in this
 section, we want to briefly introduce these terms here to make them
-clear.  Also, although there are certainly other types of modules 
-in a large-scale application, we only focus on these three.
+clear.  Also, although there are certainly other types of modules in a
+large-scale application, we only focus on these three.
 \begin{itemize}
 \item Application (APP):  The modules of an application that are not
-ANA or LAL modules.  Typically this includes 
-the code that is unique to the application 
-itself such as the code that formulates and
-generates the discrete problem.  In general it would also include other
-third-party software that is not an ANA or LAL module.
+ANA or LAL modules.  Typically this includes the code that is unique
+to the application itself such as the code that formulates and
+generates the discrete problem.  In general it would also include
+other third-party software that is not an ANA or LAL module.
 \item Abstract Numerical Algorithm (ANA):  Software that drives a 
-solution process, e.g., a nonlinear solver.  This type of package 
-provides solutions to and requires services from
-the APP, and utilizes services from one or more LALs.  It can usually 
-be written so that
-it does not depend on the details of the computer platform, or the
-details of how the APP and LALs are implemented, so that an ANA
-can be used across many APPs and with many LALs.
+solution process, e.g., an iterative linear or nonlinear solver.  This
+type of package provides solutions to and requires services from the
+APP, and utilizes services from one or more LALs.  It can usually be
+written so that it does not depend on the details of the computer
+platform, or the details of how the APP and LALs are implemented, so
+that an ANA can be used across many APPs and with many LALs.
 \item Linear Algebra Library (LAL): Software that provides the 
 ability to construct
 concrete linear algebra objects such as matrices and vectors.  
 A LAL can also be a specific linear solver or preconditioner.
 \end{itemize}
 
-An important focus of this paper is to clearly identify the interfaces 
-between APPs, ANAs 
-and LALs for the purposes of defining the TSFCore interface.
+An important focus of this paper is to clearly identify the interfaces
+between APPs, ANAs and LALs for the purposes of defining the TSFCore
+interface.
 
-%
-\subsection{A Mathematical Formulation}
-\label{tsfcore:sec:math}
-%
-
-In this section, we describe a mathematical formulation for nonlinear
-equations that is related to by many different types of ANAs and APPs.
-The set of nonlinear equations is shown below.
-
-{\bsinglespace
-\begin{equation}
-c(y)  = 0
-\label{tsfcore:eqn:c}
-\end{equation}
-\begin{tabbing}
-\hspace{4ex}where:\hspace{5ex}\= \\
-\>	$y \:\in\:\mathcal{Y}$ : Vector of state variables \\
-\>	$c(y) : \:\mathcal{Y} \rightarrow \mathcal{C}$ : State constraint functions \\
-\>	$\mathcal{Y} \:\subseteq\:\RE^{n_y}$: Space of the state variables $y$ \\
-\>	$\mathcal{C} \:\subseteq\:\RE^{n_y}$: Space of the state constraints $c$
-\end{tabbing}
-\esinglespace}
-
-Equation (\ref{tsfcore:eqn:c}) represents a set of large-scale
-nonlinear simulation equations which we refer to as the \textit{state
-constraints}.  In this notation, $c(y)$ is a vector function where
-each component $c_j(y)$, for $j = 1 \ldots n_y$, represents a
-nonlinear scalar function of the variables $y$.  The variables $y$ are
-often called the {\em state variables}.  These variables are also
-known as the simulation, or solution variables.  The basic assumption
-is that the size of the state space $n_y = |\mathcal{Y}| =
-|\mathcal{C}|$ may be very large (e.g.~$n_y \ge 10^{6}$).
-
-Here we identify the mathematical entities that are required by an ANA
-which are revealed through a first-order Taylor expansion of $c(y)$
-about $c(y_k)$
-
-\begin{equation}
-c(y) \approx c(y_k) + \frac{\partial c}{\partial y} \delta y
-\label{tsfcore:eqn:c_taylor}
-\end{equation}
-\begin{tabbing}
-\hspace{4ex}where:\hspace{5ex}\= \\
-\>	$\frac{\partial c}{\partial y}$ is a square, (usually nonsingular) $\RE^{n_y}$-by-$\RE^{n_y}$
-    Jacobian matrix evaluated at $(y_k)$
-\end{tabbing}
-
-We use the notation where the Jacobian matrix $\frac{\partial
-c}{\partial y}$ is defined element-wise as $\left( \frac{\partial
-c}{\partial y} \right)_{(j,l)} = \left.\frac{\partial c_j(y)}{\partial y_l}\right|_{y=y_k}$ ,
-for $j = 1 \ldots n_y$, $l = 1 \ldots n_y$.
-
-Note that (\ref{tsfcore:eqn:c_taylor}) is used to define the 
-Newton system
-
-\begin{equation}
-\frac{\partial c}{\partial y} \delta y = - c(y_k)
-\label{tsfcore:eqn:c_newton}
-\end{equation}
-
-that is the cornerstone for many different types of ANAs.
-
-%
-\subsection{Classification of abstract numerical algorithms}
-\label{tsfcore:sec:classification_of_ANAs}
-%
-
-There are many different types of ANAs that are related to the type of
-formulation in (\ref{tsfcore:eqn:c}) and (\ref{tsfcore:eqn:c_newton})
-and the requirements associated for each will be a little different.
-There are also different levels of ANAs where ANAs build on one
-another.  For example, ANAs for iterative linear solvers
-\cite{ref:tmpls_for_iter_systems} solve equations of the form
-(\ref{tsfcore:eqn:c_newton}) that generate Newton steps for ANAs for
-solving the nonlinear equations \cite{JEDennis_RBSchnabel_1996} in
-(\ref{tsfcore:eqn:c}).  The solution of linear systems is also
-required in stability analysis and bifurcation methods
-\cite{salinger99a}, implicit DAE and ODE solvers
-\cite{ref:numerical_analysis_burden}, uncertainty quantification methods
-(i.e.~SFE \cite{ref:sfe}) and many different types of optimization
-methods \cite{ref:nocedal_wright_1999}.  In addition, various other
-types of numerical analysis methods such as for eigenvalue problems
-\cite{maschhoff96} (that can be applied, for example, to matrices like the
-Jacobian $\frac{\partial c}{\partial y}$), can be considered to be
-ANAs.  TSFCore is designed to provide functionality for the
-intersection of all of the requirements for all of these different
-types of ANAs.  Requirements for more specific types of ANAs is
-deferred to other discussions (for example, see
-\cite{ref:TSFCore::Nonlin}).
-
-%
-\subsection{Classification of linear algebra interfaces}
-\label{tsfcore:sec:classification_of_lin_alg_itfc}
-%
-
-The requirements for the linear algebra objects in
-(\ref{tsfcore:eqn:c_taylor}) as imposed by
-an ANA are very different from the requirements imposed by an
-application code.  In order to differentiate the various types of
-interfaces and the requirements associated with each, consider Figure
+The requirements for the linear algebra objects as imposed by an ANA
+are very different from the requirements imposed by an application
+code.  In order to differentiate the various types of interfaces and
+the requirements associated with each, consider Figure
 \ref{tsfcore:fig:ANA_LAL_APP}.  This figure shows the three major
 categories of software modules that make up a complete numerical
 application.  The first category is application (APP) software in
@@ -285,12 +193,12 @@ type of interface is also not addressed by TSFCore.  The ESI
 \cite{ref:esi_2001} and much of the current TSF contain examples of
 LAL/LAL interfaces.
 
-The parts of TSFCore described in this paper specify only part of the
-ANA/LAL interfaces.  The TSFCore-based ANA/APP interfaces are
+TSFCore, as described in this paper, specifies only the
+ANA/LAL interface.  TSFCore-based ANA/APP interfaces are
 described elsewhere (e.g. \cite{ref:TSFCore::Nonlin}).
 
 %
-\section{TSFCore: Requirements}
+\section{TSFCore: Basic Requirements}
 \label{tsfcore:sec:TSFCore_requirements}
 %
 
@@ -312,14 +220,14 @@ computations at a fundamental level.
 
 \item
 TSFCore should provide a minimal, but complete, interface that
-addresses all for the basic efficiency needs (in both speed and
-storage) which will result in near optimal implementations of all of
-the linear algebra objects and all of the above mentioned ANA
-algorithms that use these objects.  All other types of nonessential
-but convenient functionality (e.g.~Matlab-like syntax using operator
-overloading, see Section \ref{tsfcore:sec:operator_overloading}) will
-not be addressed by TSFCore.  This extra functionality can be built on
-top the basic TSFCore abstractions (e.g.~using TSF).
+addresses all the basic efficiency needs (in both speed and storage)
+which will result in near-optimal implementations of all of the linear
+algebra objects and all of the above mentioned ANA algorithms that use
+these objects.  All other types of nonessential but convenient
+functionality (e.g.~Matlab-like syntax using operator overloading, see
+Section \ref{tsfcore:sec:operator_overloading}) will not be addressed
+by TSFCore.  This extra functionality can be built on top the basic
+TSFCore abstractions (e.g.~using TSF).
 
 \item
 ANAs developed with TSFCore should be able to transparently utilize
@@ -330,7 +238,7 @@ client/server\footnote{Client/Server: The ANA runs in a process on a
 client computer and the APP and LAL run in processors on a server} and
 out-of-core\footnote{Out-of-core: The data for the problem is stored
 on disk and is read from and written to back disk as needed}
-implementations.  A hand coded program (e.g.~using Fortran and MPI)
+implementations.  A hand-coded program (e.g.~using Fortran and MPI)
 should not provide any significant gains in performance in any of the
 above categories in any computing environment.  This is critical for
 the use of TSFCore in scientific computing.
@@ -340,7 +248,7 @@ The work required to implement adapter subclasses (see the ``Adapter''
 pattern in \cite{ref:gama_et_al_1995}) for and with TSFCore should be
 minimal and straightforward for all of the existing related linear
 algebra and ANA interfaces (e.g.~the linear algebra interfaces in
-MOOCHO \cite{ref:moochouserguide}, NOX \cite{ref:nox} and TSF, see
+MOOCHO \cite{ref:moochouserguide} and NOX \cite{ref:nox}, see
 Section \ref{tsfcore:sec:adapters}).  This requirement is facilitated
 by the fact that the TSFCore interfaces are minimal.
 
@@ -352,8 +260,10 @@ by the fact that the TSFCore interfaces are minimal.
 %
 
 The basic linear algebra abstractions that make up TSFCore are shown in
-Figure \ref{tsfcore:fig:tsfl_basic}.  The key abstractions include
-vectors, vector spaces and linear operators.  Note that all of the interfaces
+Figure \ref{tsfcore:fig:tsfl_basic}.  Complete C++ class declarations
+for these interfaces are given in Appendix \ref{app:tsfcore_classes}.
+The key abstractions include
+vectors, vector spaces and linear operators.  All of the interfaces
 are templated on the \texttt{Scalar} type (the UML notation for
 templated classes is not used in the figure for the sake of improving
 readability).  A vector space is the foundation for all other linear
@@ -368,7 +278,7 @@ defines one nontrivial method -- \texttt{\textit{applyOp(\-...)}}.  The
 \texttt{\textit{applyOp(\-...)}} method accepts user-defined
 (i.e.~ANA-defined) reduction/transformation operator (RTOp) objects
 through the templated RTOp C++ interface
-\texttt{\textit{RTOpPack::RTOpT<Scalar>}}.  A set of standard vector
+\texttt{\textit{RTOpPack::RTOpT}}.  A set of standard vector
 operations is provided as nonmember functions using standard RTOp
 subclasses (see Section \ref{tsfcore:sec:vector}).  The set of
 operations is also easily extensible.  Every \texttt{\textit{Vector}}
@@ -384,7 +294,7 @@ to create \texttt{\textit{Multi\-Vector}} objects through the
 column in the matrix is a
 \texttt{\textit{Vector}} object which is accessible through the
 \texttt{\textit{col(...)}} method.  \texttt{\textit{Multi\-Vector}}s
-are needed for near optimal processor cache performance (in serial and
+are needed for near-optimal processor cache performance (in serial and
 parallel programs) and to minimize the number of global communications
 in a distributed parallel environment.  The
 \texttt{\textit{Multi\-Vector}} interface is useful in many different
@@ -416,7 +326,7 @@ respectively.
 ]{UML1}
 %}%fbox
 %\fbox{
-\includegraphics*[bb= 0.0in 0.0in 6.55in 4.4in,scale=0.70
+\includegraphics*[bb= 0.0in 0.0in 6.55in 4.6in,scale=0.65
 ]{TSFCore}
 %}%fbox
 \end{center}
@@ -442,12 +352,12 @@ access to these vector spaces through the methods \texttt{domain()} and
 \texttt{\textit{OpBase}} and \texttt{\textit{VectorSpace}} classes).
 The exact form of this mapping, as implemented by the
 method \texttt{\textit{apply(\-...)}}, is
-
+%
 \begin{equation}
 y = \alpha \, op(M) \, x + \beta y
 \label{tsfcore:equ:apply_vec}
 \end{equation}
-
+%
 where $M$ is a \texttt{\textit{LinearOp}} object; $x$ and $y$ are
 \texttt{\textit{Vector}} objects; and $\alpha$ and $\beta$ are \texttt{Scalar}
 objects.  Note that the linear operator in (\ref{tsfcore:equ:apply_vec})
@@ -455,8 +365,8 @@ is shown as $op(M)$ where $op(M) = M$ or $M^T$ (depending on the
 argument \texttt{M\_trans}). This implies that both the non-transposed
 and transposed (i.e.~adjoint) linear mappings can be performed.
 However, support for transposed (adjoint) operations by a
-\texttt{\textit{LinearOp}} object are only optional.  If adjoints are
-not supported then the method \texttt{\textit{opSupported(TRANS)}}
+\texttt{\textit{LinearOp}} object are only optional.  If an operation is
+not supported then the method \texttt{\textit{opSupported(M\_trans)}}
 will return \texttt{false} (see Section
 \ref{tsfcore:sec:linear_op_adjoints}).  Note that when $op(M) = M^T$,
 then $x$ and $y$ must lie in the \texttt{range} and
@@ -467,13 +377,13 @@ In addition to implementing linear mappings for single
 \texttt{\textit{Vector}} objects, the
 \texttt{\textit{LinearOp}} interface also provides linear mappings of
 \texttt{\textit{Multi\-Vector}} objects through an overloaded method
-also called \texttt{\textit{apply(\-...)}} which performs
-
+\texttt{\textit{apply(\-...)}} which performs
+%
 \begin{equation}
 Y = \alpha \, op(M) \, X + \beta Y
 \label{tsfcore:equ:apply_multi_vec}
 \end{equation}
-
+%
 where $X$ and $Y$ are \texttt{\textit{Multi\-Vector}} objects.  The
 \texttt{\textit{Multi\-Vector}} version of the \texttt{\textit{apply(\-...)}} method has a
 default implementation based on the \texttt{\textit{Vector}} version.
@@ -496,10 +406,10 @@ interfaces by both clients and subclass developers.
 A basic overview of the interface classes shown in Figure
 \ref{tsfcore:fig:tsfl_basic} was provided in Section
 \ref{tsfcore:sec:TSFCore_core_overview}.  In the following sections, we go into
-more detail as the the design decisions for these interfaces and give
-examples of the use of these classes.  Note that in all the below code
-examples it is assumed that the code is in source file(s) which
-includes the appropriate header files.
+more detail about the design of these interfaces and give examples of
+the use of these classes.  Note that in all the below code examples it
+is assumed that the code is in a source file which include the
+appropriate header files.
 
 %
 \subsection{A motivating example sub-ANA : Compact limited-memory BFGS}
@@ -514,46 +424,50 @@ quasi-Newton methods are used to approximate a Hessian matrix $B$ of
 second derivatives.  This approximation is then used to generate
 search directions for various types of optimization algorithms.  The
 Hessian matrix $B$ and/or its inverse $H = B^{-1}$ is approximated
-using only changes in the gradient $y = \nabla f(\tilde{x}) - \nabla
-f(\hat{x})$ of some multi-variable scalar function $f(x)$ for changes
-in the variables $s = \tilde{x} - \hat{x}$.  A set of matrix
+using only changes in the gradient $y = \nabla f(x_{k+1}) - \nabla
+f(x_k)$ of some multi-variable scalar function $f(x)$ for changes
+in the variables $s = x_{k+1} - x_k$.  A set of matrix
 approximations $B_k$ are formed using rank-2 updates where each update
 takes the form
-
+%
 \begin{equation}
 B_{k+1} = B_k - \frac{B_k s_k s_k^T B_k}{s_k^T B_k s_k} + \frac{y_k y_k^T}{y_k^T s_k}.
 \end{equation}
 
 In a limited-memory BFGS method, only a fixed maximum number
-$m_{\tiny\mbox{max}}$ of stored updates are stored in the multi-vectors
-
+$m_{\tiny\mbox{max}}$ of updates are stored
+%
 \begin{eqnarray}
-S & = & {\bmat{cccc} s_1 & s_2 & \ldots & s_{m} \emat} \\
-Y & = & {\bmat{cccc} y_1 & y_2 & \ldots & y_{m} \emat}
+S & = & {\bmat{cccc} s_1 & s_2 & \ldots & s_{m} \emat} \label{tsfcore:eqn:LBSFGS_S}\\
+Y & = & {\bmat{cccc} y_1 & y_2 & \ldots & y_{m} \emat} \label{tsfcore:eqn:LBSFGS_Y}
 \end{eqnarray}
-
+%
 where $m \le m_{\tiny\mbox{max}}$ is the current number of stored
-updates.  When an optimization algorithm begins, $m=0$ and is
-incremented each iteration until $m = m_{\tiny\mbox{max}}$ and then
+updates and $S$ and $Y$ are multi-vectors (note that the subscripts in
+(\ref{tsfcore:eqn:LBSFGS_S})--(\ref{tsfcore:eqn:LBSFGS_Y}) correspond
+to column indexes in the multi-vector objects, not iteration counters
+$k$).  When an optimization algorithm begins, $m=0$ and $m$
+incremented each iteration until $m = m_{\tiny\mbox{max}}$ after which
 the method starts dropping older update pairs $(s,y)$ to make room for
 newer ones.  In a compact LBFGS method, the inverse $H$ (shown in
-Figure \ref{tsfcore:fig:LBFGS}) of the quasi-Newton matrix $B$ is
-approximated using the tall thin multi-vectors $S$ and $Y$ along with
-a small (serial) coordinating matrix $Q$ (which is computed and
-updated from $S$ and $Y$).  The scalar $g$ is chosen for scaling
-reasons and $H_0 = B_0^{-1} = g I$ represents the initial matrix
-approximation from which the updates are performed.  A similar compact
-formula also exists for $B$ which involves the same matrices (and
-requires solves with $Q$).  In an SPMD configuration, the
+Figure \ref{tsfcore:fig:LBFGS}) of the quasi-Newton matrix $B$ (where
+when the index $k$ is dropped, it implicitly refers to the current
+iteration $B_k$) on is approximated using the tall thin multi-vectors
+$S$ and $Y$ along with a small (serial) coordinating matrix $Q$ (which
+is computed and updated from $S$ and $Y$).  The scalar $g$ is chosen
+for scaling reasons and $H_0 = B_0^{-1} = g I$ represents the initial
+matrix approximation from which the updates are performed.  A similar
+compact formula also exists for $B$ which involves the same matrices
+(and requires solves with $Q$).  In an SPMD configuration, the
 multi-vectors $Y$ and $S$ may contain vector elements spread over many
 processors.  However, the number of columns $m$ in $S$ and $Y$ is
 usually less than $40$.  Because of the small number of columns in $S$
 and $Y$, all of the linear algebra performed with the matrix $Q$ is
 performed serially using dense methods (i.e.~BLAS and LAPACK).  A
-parallel implementation of the compact LBFGS method is implemented,
-for example, as an option in MOOCHO.  TSFCore supports efficient
-versions all of the operations needed for a near optimal parallel
-implementation.
+parallel version of the compact LBFGS method is implemented, for
+example, as an option in MOOCHO.  TSFCore supports efficient versions
+of all of the operations needed for a near-optimal parallel
+implementation of this LBFGS method.
 
 {\bsinglespace
 \begin{figure}[t]
@@ -571,7 +485,7 @@ A compact limited-memory representation of the inverse of a BFGS matrix.
 \esinglespace}
 
 The requirements for this sub-ANA will be mentioned in several of the
-below sections along with example code.
+following sections along with example code.
 
 %
 \subsection{\texttt{\textit{VectorSpace}}}
@@ -582,54 +496,56 @@ The basic design of the \texttt{\textit{VectorSpace}} interface was
 taken directly from HCL which is also used in TSF and
 \textit{AbstractLinAlgPack}.
 
-Now we show a few simple code examples as to the use of the
+We now show a simple code example as to the use of the
 \texttt{\textit{VectorSpace}} and
 \texttt{\textit{Vector}} interfaces.  The following code snippet shows
 a function that performs several types of tasks:
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 temaplate<class Scalar>
 void TSFCore::foo0( const VectorSpace<Scalar>& vecSpc, const LinearOp<Scalar>& M )
 {
     namespace mmp = MemMngPack;
-    THROW_EXCEPTION(!vecSpc.isCompatible(*M.domain()),std::logic_error,"Error!"); // Check space compatibility
-    mmp::ref_count_ptr<Vector<Scalar> > x = vecSpc.createMember();                // Create a new vector x
-    mmp::ref_count_ptr<Vector<Scalar> > y = M.range()->createMember();            // Create a new vector y
+    THROW_EXCEPTION(!vecSpc.isCompatible(*M.domain()),std::logic_error,"Error!"); // Check compatibility
+    mmp::ref_count_ptr<Vector<Scalar> > x = vecSpc.createMember();                // Create new vector x
+    mmp::ref_count_ptr<Vector<Scalar> > y = M.range()->createMember();            // Create new vector y
     assign(x.get(),1.0);                                                          // x = 1.0
     M.apply(NOTRANS,*x,y.get());                                                  // y = M*x
     M.apply(TRANS,*y,x.get(),0.5,0.1);                                            // x = 0.5*M*y + 0.1*x
 }
 \end{verbatim}}
 
-The above code snippet shows how memory management in TSFCore is handled
--- through the smart reference-counted pointer class
+\noindent The above code snippet shows how memory management in TSFCore is
+handled -- through the templated smart reference-counted pointer class
 \texttt{MemMngPack\-::ref\_count\_ptr<>} (see Section
 \ref{tsfcore:sec:general_software_concepts}).  The vector objects pointed
 to by the objects \texttt{x} and \texttt{y} are accessed in various
 ways in the last three lines.  For instance, in the statement
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
     assign(x.get(),1.0);
 \end{verbatim}}
 
+\noindent
 the raw C++ pointer (of type \texttt{Vector<Scalar>*}) to the
 underlying vector object is returned using the method
 \texttt{ref\_count\_ptr<>\-::get()}.  The function
 \texttt{assign(...)} is implemented through an RTOp object and its
-implementation is shown in the next section.  The next statement
+implementation is shown in Section \ref{tsfcore:sec:vec_apply_op}.
+The next statement
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
     M.apply(NOTRANS,*x,y.get());
 \end{verbatim}}
 
-shows the created vectors being passed into the \texttt{apply(\-...)}
+\noindent shows the created vectors being passed into the \texttt{apply(\-...)}
 method of a \texttt{\textit{LinearOp}} object.  The expression
 \texttt{*x} invokes the method
 \texttt{ref\_count\_ptr<>\-::operator*()} which returns a reference
 (of type \texttt{Vector<Scalar>\&}) to the underlying vector object.
 
 %
-\subsubsection{General compatibility of \texttt{\textit{VectorSpace}} objects}
+\subsubsection{General compatibility of \texttt{\textit{Vector}} objects}
 \label{tsfcore:sec:vec_spc_compatibility}
 %
 
@@ -656,13 +572,14 @@ are involved.  The RTOp design, given the appropriate
 \texttt{\textit{VectorSpace}} and \texttt{\textit{Vector}} interfaces,
 allows the seamless integration of vectors of different {\em concrete}
 types given the same {\em general} type.  If all of these adapter
-subclasses inherited from node interface classes like
+subclasses inherited from the node interface classes
 \texttt{\textit{MPIVectorSpaceBase}} and
-\texttt{\textit{MPIVectorBase}} with the appropriate set of abstract
-methods (like determining compatibility of maps and access to local
-vector data) then Epetra vectors should be transparently compatible
-with PETSc and Aztec vectors and so on.  This type of interoperability
-is demonstrated for serial vectors and vector spaces in Section
+\texttt{\textit{MPIVectorBase}} (see the Doxygen documentation) which
+include an appropriate set of abstract methods (like determining
+compatibility of maps and access to local vector data), then Epetra
+vectors should be transparently compatible with PETSc and Aztec
+vectors and so on.  This type of interoperability is demonstrated for
+serial vectors and vector spaces in Section
 \ref{tsfcore:sec:serial_vecs}
 
 %
@@ -696,32 +613,35 @@ these operations (see \textit{AbstractLinAlgPack\-::\texttt{Vector}}).
 {\bsinglespace
 \begin{figure}[t]
 \begin{minipage}{\textwidth}
-{\tiny\begin{verbatim}
------------------------------------------------------------------------------------------------------------------
+{\scriptsize\begin{verbatim}
+----------------------------------------------------------------------------------------------------
 // TSFCoreVectorStdOpsDecl.hpp
 ...
 namespace TSFCore {
-template<class Scalar> Scalar sum( const Vector<Scalar>& v );                            // result = sum(v(i))
-template<class Scalar> Scalar norm_1( const Vector<Scalar>& v );                         // result = ||v||1
-template<class Scalar> Scalar norm_2( const Vector<Scalar>& v );                         // result = ||v||2
-template<class Scalar> Scalar norm_inf( const Vector<Scalar>& v_rhs );                   // result = ||v||inf
-template<class Scalar> Scalar dot( const Vector<Scalar>& x, const Vector<Scalar>& y );   // result = x'*y
-template<class Scalar> Scalar get_ele( const Vector<Scalar>& v, Index i );               // result = v(i)
-template<class Scalar> void set_ele( Index i, Scalar alpha, Vector<Scalar>* v );         // v(i) = alpha
-template<class Scalar> void assign( Vector<Scalar>* y, const Scalar& alpha );            // y = alpha
-template<class Scalar> void assign( Vector<Scalar>* y, const Vector<Scalar>& x );        // y = x
-template<class Scalar> void Vp_S( Vector<Scalar>* y, const Scalar& alpha );              // y += alpha
-template<class Scalar> void Vt_S( Vector<Scalar>* y, const Scalar& alpha );              // y *= alpha
+template<class Scalar> Scalar sum( const Vector<Scalar>& v );                   // result = sum(v(i))
+template<class Scalar> Scalar norm_1( const Vector<Scalar>& v );                // result = ||v||1
+template<class Scalar> Scalar norm_2( const Vector<Scalar>& v );                // result = ||v||2
+template<class Scalar> Scalar norm_inf( const Vector<Scalar>& v_rhs );          // result = ||v||inf
+template<class Scalar> Scalar dot( const Vector<Scalar>& x
+                                   ,const Vector<Scalar>& y );                  // result = x'*y
+template<class Scalar> Scalar get_ele( const Vector<Scalar>& v, Index i );      // result = v(i)
+template<class Scalar> void set_ele( Index i, Scalar alpha
+                                     ,Vector<Scalar>* v );                      // v(i) = alpha
+template<class Scalar> void assign( Vector<Scalar>* y, const Scalar& alpha );   // y = alpha
+template<class Scalar> void assign( Vector<Scalar>* y
+                                    ,const Vector<Scalar>& x );                 // y = x
+template<class Scalar> void Vp_S( Vector<Scalar>* y, const Scalar& alpha );     // y += alpha
+template<class Scalar> void Vt_S( Vector<Scalar>* y, const Scalar& alpha );     // y *= alpha
 template<class Scalar> void Vp_StV( Vector<Scalar>* y, const Scalar& alpha
-                                    ,const Vector<Scalar>& x );                          // y = alpha*x + y
-template<class Scalar> void ele_wise_prod( const Scalar& alpha, const Vector<Scalar>& x
-                                         ,const Vector<Scalar>& v, Vector<Scalar>* y );  // y(i)+=alpha*x(i)*v(i)
-template<class Scalar> void ele_wise_divide( const Scalar& alpha, const Vector<Scalar>& x
-                                           ,const Vector<Scalar>& v, Vector<Scalar>* y );// y(i)=alpha*x(i)/v(i)
-template<class Scalar> void seed_randomize( unsigned int );                              // Seed for randomize()
-template<class Scalar> void randomize( Scalar l, Scalar u, Vector<Scalar>* v );          // v(i) = random(l,u)
+                                    ,const Vector<Scalar>& x );                 // y = alpha*x + y
+template<class Scalar> void ele_wise_prod( const Scalar& alpha
+    ,const Vector<Scalar>& x, const Vector<Scalar>& v, Vector<Scalar>* y );     // y(i)+=alpha*x(i)*v(i)
+template<class Scalar> void ele_wise_divide( const Scalar& alpha
+    ,const Vector<Scalar>& x, const Vector<Scalar>& v, Vector<Scalar>* y );     // y(i)=alpha*x(i)/v(i)
+template<class Scalar> void seed_randomize( unsigned int );                     // Seed for randomize()
+template<class Scalar> void randomize( Scalar l, Scalar u, Vector<Scalar>* v ); // v(i) = random(l,u)
 } // end namespace TSFCore
------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 \end{verbatim}}
 \end{minipage}
 \caption{
@@ -740,9 +660,11 @@ file \texttt{TSFCore\-Vector\-Std\-Ops\-Decl.hpp}.  The declarations for the
 functions in this file are shown in Figure
 \ref{tsfcore:fig:std_vec_ops}.  Note, to use these template functions
 you should include the definitions from
-\texttt{TSFCore\-Vector\-Std\-Ops.hpp}.  Using one of these non-member
-vector functions is transparently obvious and there is not even one
-hint that the method
+\texttt{TSFCore\-Vector\-Std\-Ops.hpp} (never directly \texttt{\#include} a
+\texttt{xxxDecl.hpp} file unless you know what you
+are doing, instead, include the \texttt{xxx.hpp} file for all of the
+TSFCore code).  Using one of these non-member vector functions is
+transparently obvious and there is not even one hint that the method
 \texttt{\textit{Vector::applyOp(\-...)}} is involved.
 
 %
@@ -751,18 +673,18 @@ hint that the method
 %
 
 Several important issues regarding the specification of the
-\texttt{\textit{Vector::applyOp(\-...)}} method where not discussed in
+\texttt{\textit{Vector::applyOp(\-...)}} method were not discussed in
 \cite{ref:rtop_toms}.  Before describing these issues, note that the
 \texttt{\textit{Vector\-::applyOp(\-...)}} method is not directly called
-by a client (it is protected) but is instead is called through a
+by a client (it is protected) but instead is called through a
 non-member (friend) function of the same name.  This is done to
 provide a uniform way to deal with all of the allowed permutations of
 the number and types of vector arguments to this function when the
 function is called by the client.  Therefore, we will only consider
-the prototype for the non-member function \texttt{TSFCore::appyOp(...)}
-which is
+the prototype for the non-member function
+\texttt{TSFCore::appyOp(...)}  which is
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::applyOp(
     const RTOpPack::RTOpT<Scalar> &op
@@ -773,7 +695,7 @@ void TSFCore::applyOp(
     );
 \end{verbatim}}
 
-and has nine arguments: the RTOp object that defines the
+\noindent and has nine arguments: the RTOp object that defines the
 reduction/transformation operation to be performed \texttt{op}; the
 non-mutable input vectors specified by \texttt{num\_vecs} and
 \texttt{vecs[]} (\texttt{num\_vecs==0} and \texttt{vecs==NULL}
@@ -794,15 +716,15 @@ cases where the last three arguments are important need to be
 carefully explained since they are critical to the success of this
 design.  In short, what this specification allows is the ability to
 take \texttt{\textit{Vector}} objects and then be able to put together
-abstract compositions of them to create new vector
+abstract compositions of them to create new (logical) vector
 \texttt{\textit{Vector}} objects.  There are primarily four use cases
 that this specification is designed to support: (a) treating all of
 the elements in a \texttt{\textit{Vector}} object a a single logical
 vector, (b) targeting an RTOp operator to a specific element or range
 of elements, (c) creating a sub-view of an existing vector and
 treating it as a vector in its own right, and (d) creating a new,
-larger composite (i.e.~block) abstract vector out of a collection of
-other vector objects.
+larger composite (i.e.~block, or product) abstract vector out of a
+collection of other vector objects.
 
 The first use case (a), where all of the elements in a
 \texttt{\textit{Vector}} object are treated as a single logical
@@ -814,18 +736,18 @@ included) and \texttt{global\_offset=0} are used and
 For example, consider the invocation of an assignment-to-scalar
 transformation operator in the following function.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::assign( Vector<Scalar>* y, const Scalar& alpha )
 {
     THROW_EXCEPTION(y==NULL,std::logic_error,"assign(...), Error!");           // Validate input
-    RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op;                        // Create the operator object
-    Vector<Scalar>* targ_vecs[] = { y };                                       // Set up the array of mutable vector arguments
-    applyOp<Scalar>(assign_scalar_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL); // Invoke the transformation operator on the vector arguments
+    RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op;                        // Create the operator
+    Vector<Scalar>* targ_vecs[] = { y };                                       // Set up vector args
+    applyOp<Scalar>(assign_scalar_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL); // Invoke operator
 }
 \end{verbatim}}
 
-In the above function, the operator \texttt{assign\_scalar\_op} of type
+\noindent In the above function, the operator \texttt{assign\_scalar\_op} of type
 \texttt{RTOpPack::RTOpAssignScalar} only performs a transformation which
 does not require a reduction object.  In these cases the special value
 of \texttt{RTOp\_REDUCT\_OBJ\_NULL} must be passed in for the
@@ -836,46 +758,46 @@ prior to a single call to \texttt{TSFCore::applyOp(\-...)} and then the
 reduction value is extracted.  The following function shows an example
 where the norm $||.||_2$ is computed
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 Scalar TSFCore::norm_2( const Vector<Scalar>& v )
 {
     RTOpPack::ROpNorm2<Scalar>        norm_2_op;                     // Create the RTOp operator object
-    RTOpPack::ReductTargetT<Scalar>   norm_2_targ(norm_2_op);        // Create and initialize the reduction object
-    const Vector<Scalar>* vecs[] = { &v };                           // Set up the array of non-mutable vector arguments
-    applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj();       // Invoke the reduction operator on the vector arguments
-    return norm_2_op(norm_2_targ);                                   // Extract the value from the reduction target object
+    RTOpPack::ReductTargetT<Scalar>   norm_2_targ(norm_2_op);        // Create (init) reduction object
+    const Vector<Scalar>* vecs[] = { &v };                           // Set up non-mutable vector args
+    applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj();       // Invoke the reduction operator
+    return norm_2_op(norm_2_targ);                                   // Extract reduction value
 }
 \end{verbatim}}
 
-A great many implementations of \texttt{RTOp} operator subclasses are
-already available and wrapper functions to several of these more
+\noindent A great many implementations of \texttt{RTOp} operator subclasses are
+already available and wrapper functions to several of the more
 standard operations, including the above functions
 \texttt{assign( y, alpha )} and \texttt{norm\_2(v)},
-are included in the header file \texttt{TSFCore\-Vector\-Std\-Ops.hpp} shown in
-Figure \ref{tsfcore:fig:std_vec_ops}.
+are defined in the header file \texttt{TSFCore\-Vector\-Std\-Ops.hpp}
+shown in Figure \ref{tsfcore:fig:std_vec_ops}.
 
 The second use case (b) is where the client targets an RTOp operator
 for a specific element or set of elements in a \texttt{Vector} object.
 Two important examples are getting and setting individual vector
 elements.  This can be accomplished without having to write specialized
 RTOp subclasses for these cases.  For example, getting an element
-can be performed using the standard RTOp subclass as is done
+can be performed using a standard RTOp subclass as is done
 in the following function.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 Scalar TSFCore::get_ele( const Vector<Scalar>& v, Index i )
 {
-    RTOpPack::ROpSum<Scalar>          sum_op;                 // Create the RTOp operator object
-    RTOpPack::ReductTargetT<Scalar>   sum_targ(sum_op);       // Create and initialize the reduction object
-    const Vector<Scalar>* vecs[1] = { &v };                   // Set up the array of non-mutable vector arguments
+    RTOpPack::ROpSum<Scalar>          sum_op;                 // Create RTOp operator object
+    RTOpPack::ReductTargetT<Scalar>   sum_targ(sum_op);       // Create (init) reduction object
+    const Vector<Scalar>* vecs[1] = { &v };                   // Set up non-mutable vector args
     applyOp<Scalar>(sum_op,1,vecs,0,NULL,sum_targ.obj(),i,1); // Invoke the reduction operator
-    return sum_opt(sum_targ);                                 // Extract the value from the reduction target object
+    return sum_opt(sum_targ);                                 // Extract reduction value
 }
 \end{verbatim}}
 
-In the above call to \texttt{TSFCore::applyOp(\-...)}, the argument
+\noindent In the above call to \texttt{TSFCore::applyOp(\-...)}, the argument
 \texttt{global\_offset} is left at its default value of \texttt{0},
 since this argument is ignored by the RTOp object \texttt{sum\_op}
 anyway (the sum operator is coordinate invariant).
@@ -886,18 +808,18 @@ of a vector that was used in the \texttt{assign(...)} function shown
 above.  The following function shows how setting a vector element
 is performed using this transformation operator.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::set_ele( Index i, Scalar alpha, Vector<Scalar>* v )
 {
     THROW_EXCEPTION(v==NULL,std::logic_error,"set_ele(...), Error!");               // Validate input
-    RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op;                             // Create the operator object
-    Vector<Scalar>* targ_vecs[1] = { v };                                           // Set up the array of mutable vector arguments
-    applyOp<Scalar>(assign_scalar_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL,i,1);  // Invoke the transformation operator
+    RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op;                             // Create op object
+    Vector<Scalar>* targ_vecs[1] = { v };                                           // Set up vector args
+    applyOp<Scalar>(assign_scalar_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL,i,1);  // Invoke operator
 }
 \end{verbatim}}
 
-Again, since the assignment operator is also coordinate invariant, the
+\noindent Again, since the assignment operator is also coordinate invariant, the
 \texttt{assign\_scalar\_op} object ignores the \texttt{global\_offset}
 argument so \texttt{global\_offset} is left at its default value in
 the call to \texttt{TSFCore::applyOp(\-...)}.
@@ -917,7 +839,7 @@ algorithm needs to apply an RTOp operator to the state variables $y$, it
 sets \texttt{first\_ele=1} and \texttt{sub\_dim=10} and then calls
 \texttt{TSFCore::applyOp(\-...)} (leaving the default value of
 \texttt{global\_offset=0}).  When the algorithm needs to apply an
-RTOp operator to the design variables $u$, it sets it sets
+RTOp operator to the design variables $u$, it sets
 \texttt{first\_ele=11} and \texttt{sub\_dim=5} and then calls
 \texttt{TSFCore::applyOp(\-...)} (also leaving the default value of
 \texttt{global\_offset=0}).  In each case, if a reduction is being performed,
@@ -927,52 +849,61 @@ just as in the first use case (a).  For example, the following
 function computes the $||.||_2$ norms for the state and design
 sub-vectors given the vector object \texttt{x}.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::compute_norm_2( const Vector<Scalar>& x, Index ny, Scalar* nrm_2_y, Scalar* nrm_2_u )
 {
-    const Index  nx = x.space()->dim(), nu = nx - ny;                      // Get the dimension of the state and design spaces
-    RTOpPack::ROpNorm2<Scalar>        norm_2_op;                           // Create the RTOp operator object
-    RTOpPack::ReductTargetT<Scalar>   norm_2_targ(norm_2_op);              // Create and initialize the reduction object
-    const Vector<Scalar>* vecs[1] = { &x };                                // Set up the array of non-mutable vector arguments
-    applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj(),1,ny);       // Invoke the reduction operator for subvector y only
-    *nrm_2_y = norm_2_op(norm_2_targ);                                     // Extract the value of ||y||2
-    norm_2_targ.reinit()                                                   // Reinitialize the reduction target object
-    applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj(),ny+1,ny+nu); // Invoke the reduction operator for subvector u only
-    *nrm_2_u = norm_2_op(norm_2_targ);                                     // Extract the value of ||u||2
+    const Index  nx = x.space()->dim(), nu = nx - ny;                   // Get dimensions
+    RTOpPack::ROpNorm2<Scalar>        norm_2_op;                        // Create op object
+    RTOpPack::ReductTargetT<Scalar>   norm_2_targ(norm_2_op);           // Create (init) reduction object
+    const Vector<Scalar>* vecs[1] = { &x };                             // Set up non-mutable vector args
+    applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj(),1,ny);    // Invoke the operator for y
+    *nrm_2_y = norm_2_op(norm_2_targ);                                  // Extract the value of ||y||2
+    norm_2_targ.reinit()                                                // Reinitialize reduction object
+    applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj(),ny+1,ny+nu);// Invoke operator for u
+    *nrm_2_u = norm_2_op(norm_2_targ);                                  // Extract the value of ||u||2
 }
 \end{verbatim}}
 
-Finally, as an example of the fourth use case (d), where a new larger
+\noindent Finally, as an example of the fourth use case (d), where a new larger
 composite (i.e.~block) abstract vector is created out of a collection
 of other abstract vectors, we use the same optimization example as
 above, except this time the vector $x$ is actually represented as two
 separate \texttt{\textit{Vector}} objects \texttt{y} and \texttt{u}.
-With that said, consider how the element with the maximum absolute
-value and its index can be determined for the full vector $x$ given
-separate \texttt{Vector} objects for the state $y$ and design $u$
-variables.  This can be done with the predefined RTOp subclass
+In this case, a new composite blocked or product vector
+%
+\[
+x = {\bmat{c} y \\ u \emat}
+\]
+%
+is abstractly created which lies in a new product vector space
+$\mathcal{X} = \mathcal{Y} \times \mathcal{U}$.  With that said,
+consider how the element with the maximum absolute value and its index
+can be determined for the full vector $x$ given separate
+\texttt{Vector} objects for the state $y$ and design $u$ variables.
+This can be done with the predefined RTOp subclass
 \texttt{ROpMax\-AbsEle} which is applied in the following
 function.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
-void TSFCore::compute_max_abs_ele( const Vector<Scalar>& y, const Vector<Scalar>& u, Scalar* x_max, Index* x_i );
+void TSFCore::compute_max_abs_ele( const Vector<Scalar>& y, const Vector<Scalar>& u
+    ,Scalar* x_max, Index* x_i )
 {
-    const Index ny = y.space()->dim(), nu = u.space()->dim();            // Get the dimensions of the state and design spaces
-    RTOpPack::ROpMaxAbsEle<Scalar>    max_abs_ele_op;                    // Create the RTOp operator object
-    RTOpPack::ReductTargetT<Scalar>   max_abs_ele_targ(max_abe_ele_op);  // Create and initialize the reduction object
-    const Vector<Scalar>* vecs[1];                                       // Declare array for non-mutable vector arguments
-    vecs[0] = &y;                                                        // Set the pointer to the y vector object
-    applyOp<Scalar>(max_abs_ele_op,1,vecs,0,NULL,max_abs_ele_targ.obj(),1,0,0);// Accumulate the reduction over y
-    vecs[0] = &u;                                                        // Set the pointer to the u vector object
-    applyOp(max_abs_ele_op,1,vecs,0,NULL,max_abs_ele_targ.obj(),1,0,ny); // Combine the reduction over u with the reduction over y
-    *x_max = max_abs_ele_op(max_abse_ele_targ).x_max();                  // Extract the values of the reduction object
-    *x_i   = max_abs_ele_op(max_abse_ele_targ).x_i();                    // ...
+    const Index ny = y.space()->dim(), nu = u.space()->dim();           // Get dimensions
+    RTOpPack::ROpMaxAbsEle<Scalar>    max_abs_ele_op;                   // Create op object
+    RTOpPack::ReductTargetT<Scalar>   max_abs_ele_targ(max_abe_ele_op); // Create (init) reduct object
+    const Vector<Scalar>* vecs[1];                                      // Declare array
+    vecs[0] = &y;                                                       // Set pointer to y
+    applyOp<Scalar>(max_abs_ele_op,1,vecs,0,NULL,max_abs_ele_targ.obj(),1,0,0);// Reduce over y
+    vecs[0] = &u;                                                       // Set pointer to u
+    applyOp(max_abs_ele_op,1,vecs,0,NULL,max_abs_ele_targ.obj(),1,0,ny);// Combine with reduction over u
+    *x_max = max_abs_ele_op(max_abse_ele_targ).x_max();                 // Extract reduction values
+    *x_i   = max_abs_ele_op(max_abse_ele_targ).x_i();                   // ...
 }
 \end{verbatim}}
 
-The above reduction operation is not coordinate invariant and
+\noindent The above reduction operation is not coordinate invariant and
 therefore the value of \texttt{global\_offset} is critical in the
 calls to \texttt{TSFCore\-::applyOp(\-...)}.
 
@@ -989,13 +920,14 @@ all of these examples through the above use cases.
 
 %
 \subsubsection{Explicit access to \texttt{\textit{Vector}} elements}
+\label{tsfcore:sec:explicit_vec_access}
 %
 
 Another important feature of the \texttt{\textit{Vector}} interface
 regards the methods that can be used to gain explicit access to the
 vector elements (which are not shown in the UML diagram in Figure
 \ref{tsfcore:fig:tsfl_basic}) .  First, it should be noted that requesting
-explicit access to vector elements is ill advised in general
+explicit access to vector elements is ill-advised in general
 (especially in an SPMD or client-server environment).  However, there
 are instances where this is perfectly appropriate.  One example is
 when one needs to access elements for vectors in the domain space of a
@@ -1008,7 +940,7 @@ coordinating matrix $Q$.  Another situation when explicit access to
 vector elements is appropriate and needed is when the vector is in a
 small dimensional design space in an optimization problem and where
 the ANA uses dense quasi-Newton methods to approximate the reduced
-Hessian of the Lagrangian (this is one option in MOOCHO, for example).
+Hessian of the Lagrangian (e.g.~this is one option in MOOCHO).
 
 The methods in \texttt{\textit{Vector}} support three different types
 of use cases with respect to explicit element access: (a) extracting a
@@ -1017,32 +949,40 @@ of the vector elements and then committing the changes back to the
 vector object; and finally, (c) explicitly setting the elements in the
 vector.  The prototypes for these methods are shown below.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 namespace TSFCore {
 teamplate<class Scalar>
 class Vector {
 public:
     ...
-    virtual bool isInCore() const;                                                                  // True if in core
-    virtual void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;   // Extract a non-mutable view
-    virtual void freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const;                      // Free a non-mutable view
-    virtual void getSubVector( const Range1D& rng, RTOpPack::MutableSubVectorT<Scalar>* sub_vec );  // Extract a mutable view
-    virtual void commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec );                   // Commit and free a mutable view
-    virtual void setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub_vec );                 // Set elements in a sparse format
+    virtual bool isInCore() const;
+    virtual void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
+    virtual void freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
+    virtual void getSubVector( const Range1D& rng, RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
+    virtual void commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
+    virtual void setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub_vec );
     ...
 };
 } // namespace TSFCore
 \end{verbatim}}
 
-All of these methods have reasonably efficient default implementations
+\noindent All of these methods have reasonably efficient default implementations
 based on fairly sophisticated RTOp subclasses and
 \texttt{\textit{Vector::applyOp(\-...)}}.  The default implementations of the
 \texttt{\textit{getSubVector(...)}} methods require dynamic memory allocation.
-With respect to use cases in typical ANAs, \texttt{\textit{Vector}}
-subclasses usually do not need to override these methods for the sake
-of efficiency but may need to override them for other reasons (see the
-subclass \texttt{SerialVector} in Section
-\ref{tsfcore:sec:serial_vecs}).
+For most use cases, \texttt{\textit{Vector}} subclasses usually do not
+need to override these methods for the sake of efficiency but may need
+to override them for other reasons (see the subclass
+\texttt{SerialVector} in Section \ref{tsfcore:sec:serial_vecs} and
+the interface \texttt{\textit{MPI\-Vector\-Base}} in the Doxygen
+documentation).  The method \texttt{\textit{isInCore()}} returns true
+if all of the vector's elements are easily accessible is all of the
+calling processes and therefore these explicit vector access methods
+are an efficient way to get at the explicit elements.  This method
+should not generally be called by typical client code but instead is
+designed to be used by more specialized types of purposes (e.g.~see the
+class \texttt{\textit{MPI\-Vector\-Space\-Base}} in the Doxygen
+documentation).
 
 In the first use case (a), extracting and releasing a non-mutable view of the
 vector elements involves calling the \texttt{const} methods
@@ -1050,29 +990,28 @@ vector elements involves calling the \texttt{const} methods
 \texttt{freeSubVector(...)} respectively.  These methods use the C++ class
 \texttt{RTOpPack::\-SubVectorT<>} that is build into the C++ interfaces for RTOp
 and was therefore a natural choice for this purpose.  To demonstrate
-the use of these methods the following example function will will copy
-the elements from a \texttt{\textit{Vector}} object into a raw C++
-array.
+the use of these methods the following example function copies the
+elements from a \texttt{\textit{Vector}} object into a raw C++ array.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 teamplate<class Scalar>
 void foo1( const Vector<Scalar>& x, Scalar v[] )
 {
-    RTOpPack::SubVectorT<Scalar> sub_vec;             // Create and initialize the object that will provide the subvector view
-    x.getSubVector(Range1D(),&sub_vec);               // Have the vector object initialize the view and store in sub_vec
-    for( Index i = 0; i < sub_vec.subDim(); ++i )     // Loop through the explicit elements and extract the values into v[]
-        v[i] = sub_vec(i+1);                          // ...
+    RTOpPack::SubVectorT<Scalar> sub_vec;             // Create (int) subvector view object
+    x.getSubVector(Range1D(),&sub_vec);               // Initialize the view object
+    for( Index i = 0; i < sub_vec.subDim(); ++i )     // Loop through the explicit elements
+        v[i] = sub_vec(i+1);                          //     Extract values
     x.freeSubVector(&sub_vec);                        // Free the view of the vector x
 }
 \end{verbatim}}
 
-In the statement
+\noindent In the statement
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
     x.getSubVector(Range1D(),&sub_vec);
 \end{verbatim}}
 
-the constructed \texttt{Range1D()} object represents the full range of
+\noindent the constructed \texttt{Range1D()} object represents the full range of
 vector elements (this is similar to the colon '\texttt{:}' syntax
 in Matlab).  Note that this method call may require dynamic memory
 allocation in order to create a strided view of the vector elements
@@ -1080,11 +1019,11 @@ that is represented in the output argument \texttt{sub\_vec}.  The
 data pointed to by \texttt{sub\_vec.values} may be dynamically
 allocated which is why it is necessary to call
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
     x.freeSubVector(&sub_vec);
 \end{verbatim}}
 
-after the view in \texttt{sub\_vec} is no longer needed in order to possibly
+\noindent after the view in \texttt{sub\_vec} is no longer needed in order to possibly
 free dynamically allocated memory.
 
 The process of extracting, modifying and committing a mutable view of
@@ -1096,14 +1035,14 @@ example, consider the following function that accepts a raw C++ array
 of values and then adds them to a \texttt{\textit{Vector}} object's
 elements.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void foo2( const Scalar v[], Vector<Scalar>* x )
 {
-    RTOpPack::MutableSubVectorT<Scalar> sub_vec;      // Create and initialize the object that will provide the subvector view
-    x->getSubVector(Range1D(),&sub_vec);              // Have the vector object initialize the view and store in sub_vec
-    for( Index i = 0; i < sub_vec.subDim(); ++i )     // Loop through the explict elements and add v[] to them
-        sub_vec(i+1) += v[i];                         // ..
+    RTOpPack::MutableSubVectorT<Scalar> sub_vec;      // Create (init) subvector view object
+    x->getSubVector(Range1D(),&sub_vec);              // Initialize the view object
+    for( Index i = 0; i < sub_vec.subDim(); ++i )     // Loop through the explict elements
+        sub_vec(i+1) += v[i];                         //      add v[] to elements
     x->commitSubVector(&sub_vec);                     // Commit and free the view of x
 }
 \end{verbatim}}
@@ -1119,17 +1058,18 @@ uses yet another built-in RTOp C++ class called
 sparse vectors.  This is very useful for quickly and efficiently
 setting up sparse \texttt{\textit{Vector}} objects.  For example, one
 way to initialize a \texttt{\textit{Vector}} object to represent a
-column of identity is to use a function like the following.
+column of identity (i.e.~an ``eta'' vector $e_i$) is to use a function
+like the following.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void set_eta_vec( Index i, Vector<Scalar>* e_i )
 {
     const Scalar av[] = { 1.0 };                      // Create array for the values
     const Index  ai[] = { i   };                      // Create array for the indexes
-    RTOpPack::SparseSubVectorT<Scalar> sub_vec(       // Initialize sub_vec with the sparse nonzero element arrays
-        0,e_i->dim(),1,av,1,ai,1,0,1,&sub_vec);       // ...
-    x->setSubVector(sub_vec);                         // Set all of the elements in sub_vec to 0 except x(i) = 1.0
+    RTOpPack::SparseSubVectorT<Scalar> sub_vec(       // Initialize sub_vec with sparse ele arrays
+        0,e_i->dim(),1,av,1,ai,1,0,1);                // ...
+    x->setSubVector(sub_vec);                         // Set all x = 0 except x(i) = 1.0
 }
 \end{verbatim}}
 
@@ -1149,9 +1089,10 @@ exist numerous C++ classes libraries that contain some concept of a
 serial vector \cite{ref:lumsdaine_and_siek_1998, ref:tnt,
 ref:roberts_et_al_1996, ref:math++_1996} which are all largely
 incompatible (except perhaps through explicit element access using
-\texttt{operator[]} or \texttt{operator()}).  With TSFCore, these
-incompatibilities are not an issue.  The way that this works is
-exemplified by the subclasses \texttt{SerialVectorSpace} and
+\texttt{operator[]} or \texttt{operator()} but certainty only
+through compile time polymorphism (i.e.~C++ templates)).  With
+TSFCore, these incompatibilities are not an issue.  The way that this
+works is exemplified by the subclasses \texttt{SerialVectorSpace} and
 \texttt{SerialVector} which are derived from the node subclasses
 \texttt{Serial\-VectorSpace\-Base} and
 \texttt{SerialVectorBase} respectively.
@@ -1161,7 +1102,7 @@ subclass to implement the \texttt{\textit{isCompatible(\-...)}}  method
 in the same way as shown below (using \texttt{SerialVectorSpaceBase}
 as the example).
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 bool SerialVectorSpaceBase<Scalar>::isCompatible( const VectorSpace<Scalar>& aVecSpc ) const
 {
@@ -1169,13 +1110,14 @@ bool SerialVectorSpaceBase<Scalar>::isCompatible( const VectorSpace<Scalar>& aVe
 }
 \end{verbatim}}
 
-The above implementation makes the assumption that if the dimensions
+\noindent The above implementation makes the assumption that if the dimensions
 of the vector spaces are the same and both vectors are stored in core,
 then the vectors themselves should also be compatible (through the
-efficient use of the explicit sub-vector element access methods as
+efficient use of the explicit sub-vector element access methods,
+first introduced in Section \ref{tsfcore:sec:explicit_vec_access}, as
 described below).  This also technically assumes consistent
-definitions of the scalar product but this will generally not be
-an issue.
+definitions of the scalar product but this will generally not be an
+issue.
 
 The second critical step is to have every serial
 \texttt{\textit{Vector}} subclass override of the explicit sub-vector
@@ -1190,7 +1132,7 @@ override and implement the method \texttt{applyOp(\-...)} in the
 same way as shown below (using the \texttt{SerialVectorBase} node
 subclass as the example).
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::SerialVectorBase::applyOp(
     const RTOpPack::RTOpT<Scalar> &op, const size_t num_vecs, const Vector<Scalar>* vecs[]
@@ -1209,7 +1151,7 @@ void TSFCore::SerialVectorBase::applyOp(
 }
 \end{verbatim}}
 
-The implementation of the above \texttt{applyOp(\-...)} method is really
+\noindent The implementation of the above \texttt{applyOp(\-...)} method is really
 quite simple and it uses a helper function
 \texttt{apply\_op\_serial(...)}  that takes care of all of the details
 of calling the sub-vector extraction methods on the \texttt{Vector}
@@ -1217,7 +1159,7 @@ objects.  No dynamic casting is performed during this process and in
 the case of \texttt{SerialVector}, no dynamic memory allocation is
 performed either.  Therefore, for sufficiently large serial vectors,
 the overhead of these function calls will be swamped by computation in
-the RTOp operators, yielding near optimal implementations.
+the RTOp operators, yielding near-optimal performance.
 
 There are cases where it can not be determined until runtime whether a
 vector is serial or not.  In these cases the concrete subclasses can
@@ -1225,8 +1167,8 @@ not simply derive from the \texttt{Serial\-VectorSpace\-Base} and
 \texttt{SerialVectorBase} node subclasses but must instead implement
 this this functionality themselves to be used when it is determined
 that the vectors are indeed serial (see the Epetra TSFCore adapter
-subclasses \texttt{TSFCore::VectorSpaceEpetra} and
-\texttt{TSFCore::SerialVectorEpetra} for instance).
+subclasses \texttt{TSFCore::EpetraVectorSpace} and
+\texttt{TSFCore::EpetraVector} for instance).
 
 By using this simple approach to developing serial
 \texttt{\textit{VectorSpace}} and \texttt{\textit{Vector}} subclass,
@@ -1250,7 +1192,7 @@ This section continues the discussion started in Section
 The C++ prototype for the \texttt{\textit{Vector}} version of
 \texttt{\textit{LinearOp\-::apply(\-...)}} is
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 namespace TSFCore{
 template<class Scalar>
 class LinearOp : public virtual OpBase<Scalar> {
@@ -1265,13 +1207,13 @@ public:
 } // namespace TSFCore
 \end{verbatim}}
 
-where the type \texttt{ETransp} is the C++ \texttt{enum}
+\noindent where the type \texttt{ETransp} is the C++ \texttt{enum}
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 enum ETransp { NOTRANS, TRANS, CONJTRANS };
 \end{verbatim}}
 
-The use of an \texttt{enum} instead of a simple \texttt{bool} for the
+\noindent The use of an \texttt{enum} instead of a simple \texttt{bool} for the
 \texttt{M\_trans} argument is very important.  The use of an \texttt{enum}
 disallows the implicit conversion from other types like \texttt{char},
 \texttt{int}, \texttt{double} and any type of pointer.  Using
@@ -1280,8 +1222,7 @@ greatly helps to avoid introducing bugs into the program that are
 extremely difficult to track down.  In addition, the use of an
 \texttt{enum} allows for more than just two values such as is shown
 for the third value \texttt{CONJTRANS} which signifies the complex
-conjugate (*** ToDo: We need to think about all of the ramifications
-of this for MultiVectors as LinearOps).
+conjugate.
 
 The \texttt{\textit{Multi\-Vector}} version of
 \texttt{\textit{LinearOp\-::apply(\-...)}} has an identical prototype
@@ -1294,28 +1235,27 @@ version has a default implementation based on the
 In the above prototype, the scalars $\alpha$ and $\beta$ default to
 $1.0$ and $0.0$ respectively.  Therefore, by leaving the default values,
 the default operation becomes
-
+%
 \[
 y = op(M) x
 \]
-
+%
 which is the same form that is declared in
-\texttt{\textit{TSF\-::Linear\-Operator\-::apply(\-...)}}  and
 \texttt{\textit{HCL\-\_Linear\-Operator\-::apply(\-...)}}.  However, the scalars
 $\alpha$ and $\beta$ provide direct calls to BLAS functions and remove
 the need to create temporaries when performing long operations (see
 Section \ref{tsfcore:sec:multi_vec_linear_op}).  For example, consider
 the following long expression
-
+%
 \[
 y = A u + \gamma B^T v + \eta C w
 \]
-
+%
 where $A$, $B$ and $C$ are \texttt{\textit{LinearOp}} objects; and $y$,
 $u$, $v$ and $w$ are \texttt{\textit{Vector}} objects.  Using TSFCore, this
 long operation can be performed as follows
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::long_expression(
     const LinearOp<Scalar>& A, const Vector<Scalar>& u
@@ -1324,18 +1264,18 @@ void TSFCore::long_expression(
     ,Vector<Scalar>* y
     )
 {
-    A.apply(NOTRANS,u,y);         // y  =  A*u
-    B.aply(TRANS,v,y,gamma,1.0);  // y +=  gamma*B'*v
-    C.aply(NOTRANS,w,y,eta,1.0);  // y +=  eta*C*w
+    A.apply(NOTRANS,u,y);          // y  =  A*u
+    B.apply(TRANS,v,y,gamma,1.0);  // y +=  gamma*B'*v
+    C.apply(NOTRANS,w,y,eta,1.0);  // y +=  eta*C*w
 }
 \end{verbatim}}
 
-where no temporary vectors are required.  Note that if the arguments
+\noindent where no temporary vectors are required.  Note that if the arguments
 \texttt{alpha=1.0} and \texttt{beta=0.0} where fixed (as they are
 in HCL for instance), the above operation would have to be implemented
 as:
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::bad_long_expression(
     const LinearOp<Scalar>& A, const Vector<Scalar>& u
@@ -1345,20 +1285,20 @@ void TSFCore::bad_long_expression(
     )
 {
     MemMngPack::ref_count_ptr<Vector<Scalar> >
-        t = A.range()->createMember(); // Create a temporary to store the intermidiate matrix-vector products
+        t = A.range()->createMember(); // Create a temporary to store the intermediate  products
     A.apply(NOTRANS,u,y);              // y  =  A*u
-    B.aply(TRANS,v,t.get());           // t  =  B'*v
+    B.apply(TRANS,v,t.get());          // t  =  B'*v
     axpy(gamma,*t,y);                  // y +=  gamma*t
-    C.aply(NOTRANS,w,t.get());         // t  =  C*w
+    C.apply(NOTRANS,w,t.get());        // t  =  C*w
     axpy(eta,*t,y);                    // y +=  eta*t
 }
 \end{verbatim}}
 
-Not only is the function \texttt{bad\-\_long\-\_expression(\-...)} less
-efficient than \texttt{long\-\_expression(\-...)} but it is also longer
-and more difficult to write.  Clearly the arguments \texttt{alpha} and
-\texttt{beta} are important to achieve a near optimal implementation
-and ease of use.
+Not only is the function \texttt{bad\-\_long\-\_expression(\-...)}
+slightly less efficient than \texttt{long\-\_expression(\-...)} but it
+is also longer and more difficult to write.  The arguments
+\texttt{alpha} and \texttt{beta} are important to achieve a near-optimal
+implementation and for ease of use.
 
 Note that some implementations of \texttt{\textit{LinearOp}} may not be
 able to apply the operator with a value of $\beta \ne 0$ without
@@ -1374,10 +1314,9 @@ The \texttt{\textit{LinearOp}} interface only optionally supports
 transposed (adjoint) matrix-vector multiplications and linear solves.
 If the method \texttt{\textit{opSupported(M\_trans)}} returns
 \texttt{false}, then the argument \texttt{M\_trans}, when
-passed to \texttt{\textit{apply(\-...)}} and
-\texttt{\textit{solve(...)}}, will result in an
+passed to \texttt{\textit{apply(\-...)}}, will result in an
 \texttt{OpNotSupported} exception being thrown.
-This specification, while not ideal form an object-orientation purest
+This specification, while not ideal from an object-orientation purest
 point of view, does satisfy the basic principles outlined in Section
 \ref{tsfcore:sec:general_software_concepts}.
 
@@ -1388,24 +1327,30 @@ point of view, does satisfy the basic principles outlined in Section
 
 While the concepts of a \texttt{\textit{VectorSpace}} and
 \texttt{\textit{Vector}} are well established, the
-concept of a multi-vector is something that is fairly new.  The idea
-of a multi-vector was motivated by the library Epetra
-\cite{ref:Epetra} which contains mostly concrete implementations of
-distributed-memory linear algebra classes using MPI \cite{ref:mpi}.  A
-key issue is how multi-vectors and vectors relate to each other.  In
-Epetra, the vector class is a specialization of the multi-vector
-class.  This make since from an implementation point of view.  The
-Epetra approach takes the view that a vector {\em is a} type of
-multi-vector.  An arguably more natural view from an abstract
-mathematical perspective is that multi-vectors are composed out of a
-set of vectors where each vector represents a column of the
-multi-vector.  This is the view that multi-vectors {\em have} or {\em
-contain} vectors and this is the approach that has been adopted for
-TSFCore as shown in Figure \ref{tsfcore:fig:tsfl_basic}.
+concept of a multi-vector is fairly new.  The idea of a multi-vector
+was motivated by the library Epetra \cite{ref:Epetra} which contains
+mostly concrete implementations of distributed-memory linear algebra
+classes using MPI \cite{ref:mpi}.  A key issue is how multi-vectors
+and vectors relate to each other.  In Epetra, the vector class is a
+specialization of the multi-vector class.  This make sense from an
+implementation point of view.  The Epetra approach takes the view that
+a vector {\em is a} type of multi-vector.  An arguably more natural
+view from an abstract mathematical perspective is that multi-vectors
+are composed out of a set of vectors where each vector represents a
+column of the multi-vector.  This is the view that multi-vectors {\em
+have} or {\em contain} vectors and this is the approach that has been
+adopted for TSFCore as shown in Figure \ref{tsfcore:fig:tsfl_basic}.
+
+Note that a multi-vector is not the same thing as a blocked or product
+vector.  In fact, multi-vectors and product vectors are orthogonal
+concepts and it is possible to have product multi-vectors.  Product
+vectors and vector spaces are discussed in Sections
+\ref{tsfcore:sec:vec_apply_op} and \ref{tsfcore:sec:composite_abstractions}.
 
 All of the below examples will involve the compact LBFGS
-implementation described above in Section \ref{tsfcore:sec:LBFGS}.  For
-these examples we will consider the interaction with the two principle
+implementation described above in Section \ref{tsfcore:sec:LBFGS}.
+For these examples we will consider interactions with the two
+principle
 \texttt{\textit{Multi\-Vector}} objects \texttt{Y\_store} and
 \texttt{S\_store} which each have $m_{\tiny\mbox{max}}$ columns.
 
@@ -1417,11 +1362,11 @@ as \texttt{\textit{Vector}} objects}
 The columns of a \texttt{\textit{Multi\-Vector}} object can be accessed
 using the \texttt{const} or non-\texttt{const}
 \texttt{\textit{col(j)}} methods which return
-\texttt{ref\_count\_ptr<Vector<Scalar> >} objects which points to an abstract
+\texttt{ref\_count\_ptr<>} objects which points to an abstract
 \texttt{\textit{Vector}} view of a column.  The prototypes for these
 methods are shown below.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 namespace TSFCore{
 template<class Scalar>
 class MultiVector : virtual public LinearOp<Scalar> {
@@ -1434,7 +1379,7 @@ public:
 } // namespace TSFCore
 \end{verbatim}}
 
-Actually, the non-\texttt{const} version of \texttt{\textit{col(...)}}
+\noindent Actually, the non-\texttt{const} version of \texttt{\textit{col(...)}}
 is the only pure virtual function in \texttt{\textit{Multi\-Vector}} and
 therefore the only function that must be overridden in order to create
 a concrete (but suboptimal) \texttt{\textit{Multi\-Vector}} subclass.
@@ -1447,7 +1392,7 @@ The following example function copies the most recent update vectors
 and \texttt{Y\_store} and increments the counter \texttt{m} for a
 compact LBFGS implementation.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::update_S_Y( const Vector<Scalar>& s, const Vector<Scalar>& y
                           ,MultiVector<Scalar>* S_store, MultiVector<Scalar>* Y_store, int* m )
@@ -1465,7 +1410,7 @@ void TSFCore::update_S_Y( const Vector<Scalar>& s, const Vector<Scalar>& y
 }
 \end{verbatim}}
 
-Note that the \texttt{\textit{Multi\-Vector}} object that
+\noindent Note that the \texttt{\textit{Multi\-Vector}} object that
 \texttt{\textit{col(...)}} is called on is not guaranteed to be
 updated until the returned \texttt{\textit{Vector}} object is
 destroyed when the \texttt{ref\_count\_ptr<>} object returned from
@@ -1483,7 +1428,7 @@ can also create \texttt{const} and non-\texttt{const}
 \texttt{\textit{Multi\-Vector}} views of the columns
 using one of the \texttt{\textit{subView(...)}} methods shown below.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 namespace TSFCore {
 template<class Scalar>
 class MultiVector : virtual public LinearOp<Scalar> {
@@ -1491,20 +1436,22 @@ public:
     ...
     virtual MemMngPack::ref_count_ptr<MultiVector<Scalar> >       subView(const Range1D& col_rng);
     virtual MemMngPack::ref_count_ptr<const MultiVector<Scalar> > subView(const Range1D& col_rng) const;
-    virtual MemMngPack::ref_count_ptr<MultiVector<Scalar> >       subView(const int numCols, const int cols[]);
-    virtual MemMngPack::ref_count_ptr<const MultiVector<Scalar> > subView(const int numCols, const int cols[]) const;
+    virtual MemMngPack::ref_count_ptr<MultiVector<Scalar> >       subView(const int numCols
+                                                                          ,const int cols[]);
+    virtual MemMngPack::ref_count_ptr<const MultiVector<Scalar> > subView(const int numCols
+                                                                          ,const int cols[]) const;
     ...
 };
 } // namespace TSFCore
 \end{verbatim}}
 
-The ability to extract a \texttt{\textit{Multi\-Vector}} sub-view of a
-contiguous set of columns of a \texttt{\textit{Multi\-Vector}} object is
-required in order to implement certain types of numerical methods.
-For example, the implementation of the compact LBFGS method described
-above in Section \ref{tsfcore:sec:LBFGS} requires this functionality.
-
-The following example function shows how the
+\noindent The ability to extract a \texttt{\textit{Multi\-Vector}} sub-view of a
+contiguous set of columns of a \texttt{\textit{Multi\-Vector}} object,
+which is supported by the first two methods, is required in order to
+implement certain types of numerical methods.  For example, the
+implementation of the compact LBFGS method described above in Section
+\ref{tsfcore:sec:LBFGS} requires this functionality.
+The following example function shows how the contiguous
 \texttt{\textit{subView(...)}} method is used in an LBFGS
 implementation where \texttt{\textit{Multi\-Vector}} storage objects
 \texttt{S\_store} and \texttt{Y\_store} are used to create
@@ -1512,7 +1459,7 @@ implementation where \texttt{\textit{Multi\-Vector}} storage objects
 for only the number of updates currently stored.  These sub-view
 objects are used in later example code.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 MemMngPack::ref_count_ptr<const TSFCore::MultiVector<Scalar> >
 TSFCore::get_updated( const MultiVector<Scalar>& Store, int m )
@@ -1531,9 +1478,9 @@ Note that both forms of the \texttt{\textit{subView(...)}} method have
 (suboptimal) default implementations based on the
 \texttt{MultiVectorCols} utility subclass.  This
 \texttt{MultiVectorCols} class, coincidentally, is also used
-to provide a general (but suboptimal) implementation for
-\texttt{\textit{Multi\-Vector}}s just given an implementation for
-\texttt{\textit{Vector}}s.  This utility subclass is also used to
+to provide a general (but suboptimal) implementation of
+\texttt{\textit{Multi\-Vector}} just given an implementation of
+\texttt{\textit{Vector}}.  This utility subclass is also used to
 provide default implementations for many of the
 \texttt{\textit{Multi\-Vector}}-related methods which includes
 the default implementation of the
@@ -1546,14 +1493,14 @@ the default implementation of the
 
 RTOp operators can be applied to the columns of a
 \texttt{\textit{Multi\-Vector}} object one column at a time
-using the \texttt{\textit{col(...)}} method.  However, A potentially
+using the \texttt{\textit{col(...)}} method.  However, a potentially
 more efficient approach is to allow the
 \texttt{\textit{Multi\-Vector}} object to apply the \texttt{RTOp} operator itself.
 This is supported by the \texttt{\textit{applyOp(\-...)}} methods on
 \texttt{\textit{Multi\-Vector}}.  The \texttt{\textit{applyOp(\-...)}} methods are not
 called directly (they are protected) but instead are called by
 non-member (friend) methods \texttt{\textit{applyOp(\-...)}} which then
-invoke the member functions \texttt{\textit{applyOp(\-...)}}.  This
+invoke the member functions.  This
 approach allows a more natural way to invoke a
 reduction/transformation operation in line with the mathematical
 description in \cite{ref:rtop_toms}.
@@ -1568,59 +1515,60 @@ is returned.  Both versions of the
 that are based on \texttt{\textit{Multi\-Vector\-::col(...)}} and
 \texttt{\textit{Vector\-::applyOp(\-...)}}.
 
-Below, two example operations, which are declared in the header
+Below, two example operations, which are defined in the header
 \texttt{TSFCore\-Multi\-Vector\-Std\-Ops.hpp}, are shown that are needed
 by various ANAs.
 
 The first example is the update operator $\alpha U + V \rightarrow V$
 and is implemented in the following function.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::update( Scalar alpha, const MultiVector<Scalar>& U, MultiVector<Scalar>* V )
 {
     THROW_EXCEPTION(V==NULL,std::logic_error,"axpy(...), Error!");    // Validate input
-    RTOpPack::TOpAxpy<Scalar> axpy_op(alpha);                         // Create and initialize the RTOp operator object
-    const MultiVector<Scalar>* multi_vecs[]       = { &U };           // Set up the array of non-mutable mulit-vector arguments
-    MultiVector<Scalar>*       targ_multi_vecs[]  = { V  };           // Set up the array of mutable mulit-vector arguments
-    applyOp<Scalar>(axpy_op,1,multi_vecs,1,targ_multi_vecs,NULL);     // Invoke the transformation operator on the vector arguments
+    RTOpPack::TOpAxpy<Scalar> axpy_op(alpha);                         // Create (init) op object
+    const MultiVector<Scalar>* multi_vecs[]       = { &U };           // Set up non-mutable mv args
+    MultiVector<Scalar>*       targ_multi_vecs[]  = { V  };           // Set up mutable mv args
+    applyOp<Scalar>(axpy_op,1,multi_vecs,1,targ_multi_vecs,NULL);     // Invoke the transformation operator
 }
 \end{verbatim}}
 
-In the above call to \texttt{applyOp(\-...)}, a \texttt{NULL} pointer is
+\noindent In the above call to \texttt{applyOp(\-...)}, a \texttt{NULL} pointer is
 passed in for the array of reduction objects which is allowed since
 this RTOp operator does not perform a reduction.
 
 The second example is a column-wise dot product operation and is
-implemented in the below function.
+implemented in the following function.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::dot( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2, Scalar dot[] )
 {
-    const int m = V1.domain()->dim();                                        // Get the number of columns in V1 and V2
-    RTOpPack::ROpDot<Scalar> dot_op;                                         // Allocate the RTOp operator object
-    std::vector<RTOp_ReductTarget>  dot_targs(m);                            // Allocate the array of reduction target objects
+    const int m = V1.domain()->dim();                                        // Get the num cols
+    RTOpPack::ROpDot<Scalar> dot_op;                                         // Create op object
+    std::vector<RTOp_ReductTarget>  dot_targs(m);                            // Array of reduct objects
     for( int kc = 0; kc < m; ++kc )                                          // For each column:
-        dot_op.reduct_obj_create_raw(&(dot_targs[kc]=RTOp_REDUCT_OBJ_NULL)); //     Create each reduction target object
-    const MultiVector<Scalar>* multi_vecs[] = { &V1, &V2 };                  // Set up the array of non-mutable mulit-vector arguments
-    applyOp(dot_op,2,multi_vecs,0,NULL,&dot_targs[0]);                       // Invoke the reduction operator on the multi-vector arguments
+        dot_op.reduct_obj_create_raw(&(dot_targs[kc]=RTOp_REDUCT_OBJ_NULL)); //   Create reduct object
+    const MultiVector<Scalar>* multi_vecs[] = { &V1, &V2 };                  // Set up non-mutable mv args
+    applyOp(dot_op,2,multi_vecs,0,NULL,&dot_targs[0]);                       // Invoke the reduction operator
     for( int kc = 0; kc < m; ++kc ) {                                        // For each column:
-        dot[kc] = dot_op(dot_targs[kc]);                                     //     Extract the value for each dot product
-        dot_op.reduct_obj_free_raw(&(dot_targs[kc]));                        //     Free each reduction target object
+        dot[kc] = dot_op(dot_targs[kc]);                                     //   Extract dot product val
+        dot_op.reduct_obj_free_raw(&(dot_targs[kc]));                        //   Free each reduction object
     }
 }
 \end{verbatim}}
 
-Note that the above reduction operation will be performed with a
+\noindent Note that the above reduction operation will be performed with a
 single global reduction when performed on a distributed-memory
 parallel computer (using MPI).  Without the concept of a
 \texttt{\textit{Multi\-Vector}} or support for the
-\texttt{\textit{applyOp(\-...)}} method, this type of mulit-vector
+\texttt{\textit{applyOp(\-...)}} method, this type of multi-vector
 reduction operation would require $m$ separate global reductions,
-where $m$ is the number of columns in the multi-vector.  This is
-critical for a near optimal implementation with respect the
-minimizing communication in a distributed program.
+where $m$ is the number of columns in the multi-vector.  The
+presence of this method is
+critical for a near-optimal implementation with respect to
+minimizing communication in a distributed memory program.
 
 %
 \subsubsection{\texttt{\textit{Vector}} and \texttt{\textit{Multi\-Vector}} correspondence}
@@ -1656,20 +1604,24 @@ support for the \texttt{\textit{Vector}} version of
 \texttt{\textit{apply(\-...)}} when providing an optimized
 implementation of the \texttt{\textit{Multi\-Vector}} version.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 namespace TSFCore {
 template<class Scalar>
 class MyLinearOp : public LinearOp<Scalar> {
 public:
     ...
-    void apply( ETransp M_trans, const Vector<Scalar> &x, Vector<Scalar> *y, Scalar alpha, Scalar beta ) const
+    void apply( ETransp M_trans, const Vector<Scalar> &x, Vector<Scalar> *y, Scalar alpha
+               ,Scalar beta ) const
     {
         namespace mmp = MemMngPack;
-        const MultiVectorCols<Scalar>  X(mmp::rcp(const_cast<Vector<Scalar>*>(&x),false)); // Create single-column MultiVector views
-        MultiVectorCols<Scalar>        Y(mmp::rcp(y,false));                               // ...
-        apply(alpha,M_trans,X,&Y,beta);                                                    // Call the MultiVector version defined below
+        const MultiVectorCols<Scalar>
+            X(mmp::rcp(const_cast<Vector<Scalar>*>(&x),false)); // Create mv views
+        MultiVectorCols<Scalar>
+            Y(mmp::rcp(y,false));                               // ...
+        apply(alpha,M_trans,X,&Y,beta);                         // Call mv version
     }
-    void apply( ETransp M_trans, const MultiVector<Scalar> &X, MultiVector<Scalar> *Y, Scalar alpha, Scalar beta ) const
+    void apply( ETransp M_trans, const MultiVector<Scalar> &X, MultiVector<Scalar> *Y, Scalar alpha
+                ,Scalar beta ) const
     {
         // Optimized implementation for multi-vectors
         ...
@@ -1679,14 +1631,15 @@ public:
 } // namespace TSFCore
 \end{verbatim}}
 
-Note that the constructor for the the class \texttt{MultiVectorCols},
+\noindent Note that the constructor for the the class \texttt{MultiVectorCols},
 for instance called in the line
 
-{\tiny\begin{verbatim}
-    MultiVectorCols<Scalar>        Y(mmp::rcp(y,false));
+{\scriptsize\begin{verbatim}
+      MultiVectorCols<Scalar>
+          Y(mmp::rcp(y,false));
 \end{verbatim}}
 
-takes a \texttt{ref\_count\_ptr<const Vector<Scalar> >} object.  In
+\noindent takes a \texttt{ref\_count\_ptr<const Vector<Scalar> >} object.  In
 order to call this constructor with memory not owned by the client
 (which is the case here), the \texttt{rcp(...)} function must be
 called with the argument \texttt{owns\_mem = false} so that the last
@@ -1706,10 +1659,10 @@ In other words, a \texttt{\textit{Multi\-Vector}} object can also act as
 a \texttt{\textit{LinearOp}} object.
 
 As an example where this is needed, consider using the LBFGS inverse
-matrix $H$ shown in Figure \ref{tsfcore:fig:LBFGS} as an inverse linear
+matrix $H$ shown in Figure \ref{tsfcore:fig:LBFGS} as a linear
 operator which acts on multi-vector arguments $U$ and $V$ in an
 operation of the form
-
+%
 \begin{eqnarray*}
 U & = & \alpha B^{-1} V \\
   & = & \alpha H V \\
@@ -1718,7 +1671,7 @@ U & = & \alpha B^{-1} V \\
                             {\bmat{cc} Q_{ss} & Q_{sy} \\ Q_{sy}^T & Q_{yy} \emat}
                             {\bmat{c} S^T \\ g Y^T \emat} V
 \end{eqnarray*}
-
+%
 where the matrices $Q_{ss}$, $Q_{ys}$ and $Q_{yy}$ are stored as small
 \texttt{\textit{Multi\-Vector}} objects.  A multi-vector solve using
 the inverse $H = B^{-1}$ might be used, for instance, in an active-set
@@ -1728,7 +1681,7 @@ formation of a Schur complement of the KKT system in the QP subproblem
 of an reduced-space SQP method \cite{RABartlett_2001}.  This
 multi-vector operation using $H$ can be performed with the following
 operations
-
+%
 \begin{eqnarray*}
 T_1 & = & S^T V \\
 T_2 & = & Y^T V \\
@@ -1736,13 +1689,13 @@ T_3 & = & Q_{ss} T_1 + g Q_{sy} T_2 \\
 T_4 & = & Q_{sy}^T T_1 + g Q_{yy} T_2 \\
 U   & = & \alpha g V + \alpha S T_3 + \alpha g Y T_4
 \end{eqnarray*}
-
+%
 where $T_1$, $T_2$, $T_3$ and $T_4$ are all temporary
 \texttt{\textit{Multi\-Vector}} objects of dimension $m \times p$.  The
 following function shows how the above operations are performed in
 order to implement the overall multi-vector solve.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::LBFGS_solve(
     int m, Scalar g, const MultiVector<Scalar>& S_store, const MultiVector<Scalar>& Y_store
@@ -1752,10 +1705,10 @@ void TSFCore::LBFGS_solve(
 {
     // validate input
     ...
-    const int p = V.domain()->dim();                // Get the number of columns in V and U
+    const int p = V.domain()->dim();                // Get number of columns in V and U
     MemMngPack::ref_count_ptr<const MultiVector<Scalar> >
-        S = get_updated(S_store,m),                 // Get the view of only the columns in S_store for stored updates
-        Y = get_updated(Y_store,m);                 // Get the view of only the columns in Y_store for stored updates
+        S = get_updated(S_store,m),                 // Get view of only stored columns in S_store
+        Y = get_updated(Y_store,m);                 // Get view of only stored columns in Y_store
     MemMngPack::ref_count_ptr<MultiVector<Scalar> >
         T_1 = S->domain()->createMembers(p),        // Create the tempoarary multi-vectors
         T_2 = Y->domain()->createMembers(p),        // ...
@@ -1790,27 +1743,27 @@ The first type of operation performed by
 \texttt{\textit{Multi\-Vector\-::apply(\-...)}} is the parallel/parallel
 matrix-matrix products performed in the lines
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
     S->apply(TRANS,V,T_1->get());
     Y->apply(TRANS,V,T_2->get());
 \end{verbatim}}
 
-where the results are stored in the local multi-vectors 
+\noindent where the results are stored in the local multi-vectors 
 \texttt{T\_1} and \texttt{T\_2}.  These two operations only
 require a single global reduction each, independent of the number of
 updates $m$ represented in $S$ and $Y$ or columns $p$ in $V$.  Note
 that if there was no concept of a multi-vector and these matrix-matrix
 products had to be performed one set of vectors at a time, then these
-two parallel matrix-matrix products would require a whooping $2 m p$
+two parallel matrix-matrix products would require a whopping $2 m p$
 global reductions.  For $m = 40$ and $p = 20$ this would result in $2
-m p = 2(40)(20) = 1600$ global reductions.  Clearly this many global
+m p = 2(40)(20) = 1600$ global reductions!  Clearly this many global
 reductions would destroy the parallel scalability of the overall ANA.
 It is in this type of operation that the concept of a
-\texttt{\textit{Multi\-Vector}} is most critical for near optimal
+\texttt{\textit{Multi\-Vector}} is most critical for near-optimal
 performance in parallel programs.  In addition to mimimizing
 communication overhead, the \texttt{\textit{Multi\-Vector}}
 implementation can utilize level-3 BLAS to perform the local processor
-matrix-matrix multiplications yielding near optimal cache performance
+matrix-matrix multiplications yielding near-optimal cache performance
 on most systems.
 
 The second type of operation performed by
@@ -1818,47 +1771,47 @@ The second type of operation performed by
 products of small local \texttt{\textit{Multi\-Vector}} objects in the
 lines
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
     Q_ss.apply(NOTRANS,*T_1,T_3->get());
     Q_sy.apply(NOTRANS,*T_2,T_3->get(),g,1.0);
     Q_sy.apply(TRANS,  *T_1,T_4->get());
     Q_yy.apply(NOTRANS,*T_2,T_4->get(),g,1.0);
 \end{verbatim}}
 
-Note that these types of local computations classify as serial
+\noindent Note that these types of local computations classify as serial
 overhead and therefore it is critical that the cost of these
-operations be kept to a minimum or they could also cripple the
-parallel scalability of the overall ANA.  Each of these four
-matrix-matrix multiplications involve only one virtual function call
-and the matrix-matrix multiplication itself can be performed with
-level-3 BLAS, achieving the fastest possible flop rate attainable on
-most processors \cite{ref:demmel_1997}.
+operations be kept to a minimum or they could cripple the parallel
+scalability of the overall ANA.  Each of these four matrix-matrix
+multiplications involve only one virtual function call and the
+matrix-matrix multiplication itself can be performed with level-3
+BLAS, achieving the fastest possible flop rate attainable on most
+processors \cite{ref:demmel_1997}.
 
 The third type of operation performed by
 \texttt{\textit{Multi\-Vector\-::apply(\-...)}} is local/parallel matrix-matrix
 multiplications performed in the lines
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
     S->apply(NOTRANS,*T_3,U,alpha);
     Y->apply(NOTRANS,*T_4,U,alpha*g,1.0);
 \end{verbatim}}
 
-This type of operation involves fully scalable work with no
-communication or synchronization required.  For this type of operation
-a vector-by-vector implementation would not be a bottleneck form a
-standpoint of global communication.  However, this operation will
-utilize level-3 BLAS and yield near optimal local cache performance
-where a vector-by-vector implementation would not.
+\noindent This type of operation involves fully scalable work with no
+communication or synchronization required.  Here, a vector-by-vector
+implementation will not be a bottleneck from a standpoint of global
+communication.  However, this operation will utilize level-3 BLAS and
+yield near-optimal local cache performance where a vector-by-vector
+implementation would not.
 
 The last type of operation performed in the above
 \texttt{LBFGS\_solve(...)}  function does not involve
 \texttt{\textit{Multi\-Vector\-::apply(\-...)}} and is shown in the line
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
     axpy(alpha*g,V,U);
 \end{verbatim}}
 
-The implementation of this function uses an RTOp transformation
+\noindent The implementation of this function uses an RTOp transformation
 operator with the \texttt{\textit{Multi\-Vector\-::applyOp(\-...)}}
 method.  Note that this function only involves transformation
 operations (i.e.~no communication) which are fully scalable.
@@ -1876,7 +1829,7 @@ forbidden for any of the mutable objects to alias any of the other
 objects of the same type in the same method.  For example, code like the
 following is strictly forbidden.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void foo3( const LinearOp& M, ETransp M_trans, Vector<Scalar>* x )
 {
@@ -1884,12 +1837,12 @@ void foo3( const LinearOp& M, ETransp M_trans, Vector<Scalar>* x )
 }
 \end{verbatim}}
 
-Note that typically the above function would not even get to the numerics
+\noindent Note that typically the above function would not even get to the numerics
 (where it would most likely compute the wrong results) because
 \texttt{M.range()->isCompatible(*M.domain())==false} in general.
 Instead, this operation must be implemented as follows.
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void foo4( const LinearOp& M, ETransp M_trans, Vector<Scalar>* x )
 {
@@ -1898,7 +1851,7 @@ void foo4( const LinearOp& M, ETransp M_trans, Vector<Scalar>* x )
 }
 \end{verbatim}}
 
-Allowing client code to pass in aliased arguments would greatly
+\noindent Allowing client code to pass in aliased arguments would greatly
 complicate the implementation of most RTOp,
 \texttt{\textit{Multi\-Vector}} and \texttt{\textit{LinearOp}}
 subclasses and would introduce the possibility of many different types
@@ -1908,7 +1861,7 @@ interfaces but it is a very important issue.  Allowing ANA developers
 to alias objects in these methods does not provide any new
 functionality and is considered to be only nonessential but convenient
 functionality and is therefore not included in TSFCore.  In general,
-it is not possible to determine , from the abstract interfaces for the
+it is not possible to determine, from the abstract interfaces for the
 objects themselves, if objects alias each other.  To perform this type
 of test would require special methods be added to the
 \texttt{\textit{Vector}} and
@@ -1942,22 +1895,22 @@ other input arguments in any of the TSFCore interface methods.
 In this section we describe how TSFCore can be directly used to build
 ANAs and while this is not the primary role TSFCore is designed for, this
 example shows that TSFCore provides all of the needed functionality for
-near optimaly performing implementations.  Code for a partial ANA in
+near-optimaly performing implementations.  Code for a partial ANA in
 the form of a compact LBFGS method was described in Section
 \ref{tsfcore:sec:LBFGS}.  In this section, we will describe the
 implementation of a simple block BiCG
-\cite{ref:tmpls_for_iter_systems} method.  The reason that BiCG was
-chosen for this example was because it requires adjoints and is fairly
-simple.  Other types of block iterative linear solvers such as methods
-as CG, BiCGStab, GMRES and QMR \cite{ref:tmpls_for_iter_systems} can
-all be implemented in a similar manner.
+\cite{ref:tmpls_for_iter_systems} method.  BiCG was chosen for this
+example was because it requires adjoints and is fairly simple.  Other
+types of block iterative linear solvers such as methods as CG,
+BiCGStab, GMRES and QMR \cite{ref:tmpls_for_iter_systems} can be
+implemented in a similar manner.
 
 The subclass \texttt{BiCG\-Solver} implements a simple block BiCG
 method.  A listing for a single-vector version of the BiCG method is
 shown in Figure \ref{tsfcore:fig:BiCG}.  This listing is identical to
 the listing in \cite{ref:tmpls_for_iter_systems} except for the
 substitutions $A = op(M)$, $M = op(\tilde{M})$ and $b =a y$ (where $a$
-is the scalar multiplier).  The multi-vector version, as implemented
+is a scalar multiplier).  The multi-vector version, as implemented
 using TSFCore in code, follows in a straightforward manner.  This
 implementation does not take advantage of any potential linear
 dependence in the right-hand-side vectors in an attempt to accelerate
@@ -2014,7 +1967,7 @@ a single iteration of the BiCG method) as implemented in the file
 {\bsinglespace
 \begin{figure}
 \begin{minipage}{\textwidth}
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
  00273 template<class Scalar>
  00274 void BiCGSolver<Scalar>::doIteration(
  00275     const LinearOp<Scalar> &M, ETransp opM_notrans, ETransp opM_trans, MultiVector<Scalar> *X, Scalar a
@@ -2023,43 +1976,43 @@ a single iteration of the BiCG method) as implemented in the file
  00278 {
  00285     const Index m = currNumSystems_;
  00286     int j;
- 00287     if( M_tilde_inv ) { // Preconditioner is available
- 00288         M_tilde_inv->apply( opM_tilde_inv_notrans, *R_,       Z_.get()       ); // M_tilde_inv*R^{i-1}        -> Z^{i-1}
- 00289         M_tilde_inv->apply( opM_tilde_inv_trans,   *R_tilde_, Z_tilde_.get() ); // M_tilde_inv'R_tilde^{i-1}  -> Z_tilde^{i-1}
+ 00287     if( M_tilde_inv ) {
+ 00288         M_tilde_inv->apply( opM_tilde_inv_notrans, *R_,       Z_.get()       );
+ 00289         M_tilde_inv->apply( opM_tilde_inv_trans,   *R_tilde_, Z_tilde_.get() );
  00290     }
- 00291     else {          // No preconditioner is available
- 00292         assign( Z_.get(),       *R_        );                                    // R^{i-1}                    -> Z^{i-1}
- 00293         assign( Z_tilde_.get(), *R_tilde_  );                                    // R_tilde^{i-1}              -> Z_tilde^{i-1}
+ 00291     else {
+ 00292         assign( Z_.get(),       *R_        );
+ 00293         assign( Z_tilde_.get(), *R_tilde_  );
  00294     }
- 00299     dot( *Z_, *R_tilde_, &rho_[0] );                       // rho_{i-1}[j] = Z^{i-1}[j]' * R_tilde^{i-1}[j]
- 00303     for(j=0;j<m;++j) { // Check for failure: rho_{i-1} = 0
+ 00299     dot( *Z_, *R_tilde_, &rho_[0] );
+ 00303     for(j=0;j<m;++j) {
  00304         THROW_EXCEPTION(
  00305             rho_[j] == 0.0, Exceptions::SolverBreakdown
  00306             ,"BiCGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = 0.0, the method has failed!"
  00307             );
  00308     }
  00309     if( currIteration_ == 1 ) {
- 00310         assign( P_.get(),       *Z_       );                 // Z^{i-1}                                         -> P^{i}
- 00311         assign( P_tilde_.get(), *Z_tilde_ );                 // Z_tilde^{i-1}                                   -> P_tilde^{i}
+ 00310         assign( P_.get(),       *Z_       );
+ 00311         assign( P_tilde_.get(), *Z_tilde_ );
  00312     }
  00313     else {
- 00314         for(j=0;j<m;++j) beta_[j] = rho_[j]/rho_old_[j];     // rho_{i-1}[j]/rho_{i-2}[j]                        -> beta_{i-1}[j]
- 00315         update( *Z_,       &beta_[0], 1.0, P_.get()       ); // Z^{i-1}[j]       + beta_{i-1} * P^{i-1}[j]       -> P^{i}[j]
- 00316         update( *Z_tilde_, &beta_[0], 1.0, P_tilde_.get() ); // Z_tilde^{i-1}[j] + beta_{i-1} * P_tilde^{i-1}[j] -> P_tilde^{i}[j]
+ 00314         for(j=0;j<m;++j) beta_[j] = rho_[j]/rho_old_[j];
+ 00315         update( *Z_,       &beta_[0], 1.0, P_.get()       );
+ 00316         update( *Z_tilde_, &beta_[0], 1.0, P_tilde_.get() );
  00317     }
- 00322     M.apply(opM_notrans, *P_,       Q_.get()       );      // op(M)*P^(1)                                    -> Q^{i}
- 00323     M.apply(opM_trans,   *P_tilde_, Q_tilde_.get() );      // op(M)'*P_tilde^(1)                             -> Q_tilde^{i}
- 00328     dot( *P_tilde_, *Q_, &gamma_[0] );                     // P_tilde^{i}[j]' * Q^{i}[j]                     -> gamma_{i-1}[j]
- 00329     for(j=0;j<m;++j) alpha_[j] = rho_[j]/gamma_[j];        // rho_{i-1}[j] / gamma_{i-1}[j]                  -> alpha_{i}[j]
- 00334     for(j=0;j<m;++j) {  // Check for failure: alpha_{i-1} = 0 or NaN or Inf
+ 00322     M.apply(opM_notrans, *P_,       Q_.get()       );
+ 00323     M.apply(opM_trans,   *P_tilde_, Q_tilde_.get() );
+ 00328     dot( *P_tilde_, *Q_, &gamma_[0] );
+ 00329     for(j=0;j<m;++j) alpha_[j] = rho_[j]/gamma_[j];
+ 00334     for(j=0;j<m;++j) {
  00335         THROW_EXCEPTION(
  00336             alpha_[j] == 0.0 || RTOp_is_nan_inf(alpha_[j]), Exceptions::SolverBreakdown
  00337             ,"BiCGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = 0.0, the method has failed!"
  00338             );
  00339     }
- 00340     update( &alpha_[0], +1.0, *P_, X );                    // +alpha_{i}[j] * P^{i}[j] + X^{i-1}             -> X^{i} 
- 00341     update( &alpha_[0], -1.0, *Q_, R_.get() );             // -alpha_{i}[j] * Q^{i}[j] + R^{i-1}             -> R^{i} 
- 00342     update( &alpha_[0], -1.0, *Q_tilde_, R_tilde_.get() ); // -alpha_{i}[j] * Q_tilde^{i}[j] + R_tilde^{i-1} -> R_tilde^{i} 
+ 00340     update( &alpha_[0], +1.0, *P_, X );
+ 00341     update( &alpha_[0], -1.0, *Q_, R_.get() );
+ 00342     update( &alpha_[0], -1.0, *Q_tilde_, R_tilde_.get() );
  00348 }
 \end{verbatim}}
 \end{minipage}
@@ -2074,7 +2027,7 @@ All of the functions and methods called in the C++ code shown in
 Figure \ref{tsfcore:fig:BiCG_code} have already been described except
 for the non-member functions \texttt{assign(...)} (lines 292, 293, 310
 and 311) and \texttt{update(...)} (lines 315, 316 and 340--342) which
-are declared in the header \texttt{TSFCore\-Multi\-Vector\-Std\-Ops.hpp}.
+are defined in the header \texttt{TSFCore\-Multi\-Vector\-Std\-Ops.hpp}.
 There are two assignment functions \texttt{assign(...)}: one that
 assigns a \texttt{\textit{Multi\-Vector}} object to a \texttt{Scalar},
 and another that assigns one \texttt{\textit{Multi\-Vector}} object to
@@ -2084,14 +2037,14 @@ RTOp operators.  The two versions of the \texttt{update(...)} method
 used in this code, however, can not use
 \texttt{\textit{Multi\-Vector\-::applyOp(\-...)}} and instead are
 implemented column-by-column as, for instance
-
+%
 \[
 (\alpha_{(j)} \beta) U_{(:,j)} + V_{(:,j)} \rightarrow V_{(:,j)}, \; \mbox{for} \; j = 1 \ldots m
 \]
-
+%
 in the function
 
-{\tiny\begin{verbatim}
+{\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::update( Scalar alpha[], Scalar beta, const MultiVector<Scalar>& U, MultiVector<Scalar>* V )
 {
@@ -2102,11 +2055,12 @@ void TSFCore::update( Scalar alpha[], Scalar beta, const MultiVector<Scalar>& U,
 }
 \end{verbatim}}
 
-where the \texttt{Vp\_StV(...)} function is the axpy operation for
+\noindent where the \texttt{Vp\_StV(...)} function is the axpy operation for
 vectors and is declared in the header
 \texttt{TSFCore\-Vector\-StdOps\-Decl.hpp}.  Note that when running the
 above BiCG method in an SPMD configuration (where the ANA runs in
-parallel and in duplicate in each process) this implementation does
+parallel and in duplicate in each process) this implementation of
+\texttt{update(...)} does
 not involve any communication or require any synchronization and
 therefore will not affect the performance of the algorithm for a
 communication point of view.  However, when running in a master-slave
@@ -2118,13 +2072,13 @@ call to
 invocations on TSFCore objects for all of the other operations shown in
 Figure \ref{tsfcore:fig:BiCG_code} are independent of the number of
 right-hand-sides $m$, this is not true for the above implementation of
-the \texttt{update(...)} function.  However, form a local cache
+the \texttt{update(...)} function.  However, from a local cache
 performance point of view, note that this is a level-1 BLAS operation
 so there is no real performance motivation for providing a
 multi-vector version.
 
 The reason that this operation is performed column-by-column is that
-is that it is not well supported by the methods
+it is not well supported by the methods
 \texttt{\textit{Multi\-Vector\-::applyOp(\-...)}} or
 \texttt{\textit{Multi\-Vector\-::apply(\-...)}}.  The problem is that in
 the current design of RTOp and
@@ -2138,23 +2092,23 @@ vectors.
 This operation could be implemented with the
 \texttt{\textit{Multi\-Vector\-::apply(\-...)}} method using a
 \texttt{\textit{Multi\-Vector}} object
-
+%
 \[
 A = {\bmat{cccc} \alpha_{(1)} \beta \\ & \alpha_{(2)} \beta \\ & & \ddots \\ & & & \alpha_{(m)} \beta \emat}
 \]
-
+%
 and then performing
-
+%
 \[
-U A + V \rightarrow V
+U A + V \rightarrow V.
 \]
-
-but, since it would generally be assumed that the local multi-vector
+%
+But, since it would generally be assumed that the local multi-vector
 $A$ is dense, this would likely cost $O(n m^2)$ flops instead of the
 $O(n m)$ flops of the actual update operation (where $n$ is the global
 number of unknowns in each linear system).
 
-To yield a near optimal implementation in all computing environments,
+To yield a near-optimal implementation in all computing environments,
 this type of update operation would have to be added directly to the
 \texttt{\textit{Multi\-Vector}} interface.  However, it is not clear
 that this is justified since iterative linear solvers such as this
@@ -2165,15 +2119,15 @@ With that said, assuming that the BiCG method shown if Figure
 algorithm only involves three global reductions per BiCG iteration --
 independent of the number of linear systems $m$ that are being solved.
 These three global reductions include the two multi-vector dot
-products on lines 299 and 328 (along with a multi-vector norm
-calculation (for the convergence check) which is performed in a
-calling function).  The two preconditioner solves on lines 288--289
+products on lines 299 and 328 along with a multi-vector norm
+calculation for the convergence check which is performed in a
+calling function.  The two preconditioner solves on lines 288--289
 and the two multi-vector operator applications in lines 322--323
 likely involve global communication also, so in general there will be
 a total of seven parallel synchronizations per BiCG iteration (or only
 five is no preconditioner is used) --- independent of the number of
 linear systems being solved.  Therefore, this implementation allows
-for near optimal performance both in terms of minimizing the number of
+for near-optimal performance both in terms of minimizing the number of
 global synchronizations and in local cache performance (because of the
 use of block operations with multi-vectors).
 
@@ -2217,7 +2171,7 @@ automatically deleted once all of the
 scope.  The methods
 \texttt{\textit{VectorSpace\-::createMember()}} and
 \texttt{\textit{VectorSpace\-::createMembers(...)}}, as well as may others that
-(may) have to allocate new objects all return pointers to these
+(may) have to allocate new objects, all return pointers to these
 objects embedded in \texttt{ref\_count\_ptr<>} objects.  Note that
 there are many types of C++ client code, such as functions and
 methods, that simply collaborate with preallocated objects for a short
@@ -2341,14 +2295,14 @@ Another desirable principle of object-oriented design is that an
 interface should provide declarations for all important methods for
 which if specialized implementations for all of these methods were
 provided, then the resulting overall software implementation would be
-near optimal with respect to storage and runtime efficiency.  Again,
+near-optimal with respect to storage and runtime efficiency.  Again,
 knowledge, experience and taste are required in the selection of the
 appropriate set of methods.  However, there is conflict between the
-goals of declaring many methods for the sake of near optimal
+goals of declaring many methods for the sake of near-optimal
 performance and the desire to keep the number of methods to a minimum
 to ease subclass development.  The approach that each TSFCore
 interface takes to this issue is that the (nearly) full set of methods
-needed for a near optimal implementation are declared in the interface
+needed for a near-optimal implementation are declared in the interface
 but reasonable (suboptimal) default implementations are provided for
 as many of the methods as possible.  Examples of the application of
 this principle are mentioned for every major TSFCore interface (for
@@ -2391,24 +2345,65 @@ code.  These ``sub-view'' subclasses can be easily implemented through the
 
 %
 \subsection{Composition of \texttt{\textit{Vector}} and \texttt{\textit{LinearOp}} objects}
+\label{tsfcore:sec:composite_abstractions}
 %
 
-The ideal way to represent composite vector object, such as described
-in Section \ref{tsfcore:sec:vec_apply_op}, is to create a composite
-block vector subclass such as \texttt{TSF\-::TSF\-Product\-Vector} in TSF or
+The ideal way to represent composite blocked or product vector
+objects, such as described in Section \ref{tsfcore:sec:vec_apply_op},
+is to create a composite blocked or product vector subclass such as
+\texttt{TSF\-::TSF\-Product\-Vector} in TSF or
 \texttt{Abstract\-Lin\-Alg\-Pack\-::Vector\-Blocked} in
-\textit{Abstract\-Lin\-AlgP\-ack}.  Associated with these composite vector
-subclasses are composite vector spaces subclsses.  These subclasses
-are called \texttt{TSF\-::TSF\-Product\-Space} in TSF and
+\textit{Abstract\-Lin\-AlgP\-ack}.  Associated with these product
+(or blocked) vector subclasses are product vector spaces subclasses.
+These subclasses are called
+\texttt{TSF\-::TSF\-Product\-Space} in TSF and
 \texttt{Abstract\-Lin\-Alg\-Pack\-::Vector\-Space\-Blocked} in
 \textit{Abstract\-Lin\-Alg\-Pack}.  These types of composite
-\texttt{\textit{Vector}} and \texttt{\textit{VectorSpace}} subclasses
-are easy to develop because of the specification of
+product \texttt{\textit{Vector}} and \texttt{\textit{VectorSpace}}
+subclasses are easy to develop because of the specification of
 \texttt{\textit{Vector\-::applyOp(\-...)}}.
+
+Note that a product vector such as
+%
+\[
+\tilde{x} = {\bmat{c} x_1 \\ x_2 \\ \vdots \\ x_N \emat}
+\]
+%
+with $N$ block vectors is distictly different from a multi-vector
+%
+\[
+Y = {\bmat{cccc} y_1 & y_2 & \ldots & y_N \emat}
+\]
+%
+with $N$ colunns.  In the multi-vector $Y$, each of the column vectors
+$y_j$ lie in the same vector space (i.e.~the range space of the linear
+operator represented by the multi-vector) which may not be the case
+for the vector blocks $x_j$ of $\tilde{x}$ which may lie in distictly
+different vector spaces $\mathcal{X}_j$.  While it may seem that the
+mathematical differences between a multi-vector and a product vector
+are subtle, they are distictly different from a software implication
+point of view.  Multi-vectors are ment to represent tall, thin dense
+matrices such as for multiple right-hand-sides that are passed to a
+linear solver or for performing mulitple linear operator applications
+(with the same linear operator) while product vectors and product
+vector spaces are ment to represent single vector objects which are
+composed of individual vector blocks such as would be used for the
+composite unknowns in an SFE method or a multi-period design problem.
+For example, a product vector space would be able to create a product
+multi-vector such as
+%
+\[
+\tilde{Y} = {\bmat{c} Y_1 \\ Y_2 \\ \vdots \\ Y_N \emat}
+\]
+%
+where each constituent multi-vector $Y_j$ may have a different range
+space but all must have the same domain space obviously.  For an
+example of a product (or blocked) multi-vector, see
+\texttt{Abstract\-Lin\-Alg\-Pack\-::Multi\-Vector\-Mutable\-Blocked}.
 
 Similar generic composition subclasses also exist for linear operators
 in TSF (see \texttt{TSF\-::TSF\-Block\-Linear\-Operator} and
-\texttt{TSF\-::TSF\-Sum\-Operator})) and \texttt{AbstractLinAlgPack} (see
+\texttt{TSF\-::TSF\-Sum\-Operator}) and \textit{AbstractLinAlgPack} (see
 \texttt{Abstract\-Lin\-Alg\-Pack\-::Matrix\-Op\-Blocked} and
 \texttt{Abstract\-Lin\-Alg\-Pack\-::Matrix\-Op\-Composite}).  In addition, more
 application-specific composite \texttt{\textit{LinearOp}} subclasses
@@ -2428,18 +2423,18 @@ linear algebra syntax using only ASCII characters.  C++ has operator
 overloading.  When you put all of this together it seems obvious, at
 first glance, that operator overloading in C++ should be used to
 specify linear algebra operations like
-
+%
 \[
 y = A u + \gamma B^T v + \eta C w
 \]
-
+%
 in C++ as
-
+%
 \begin{verbatim}
     y = A*u + gamma*trans(B)*v + eta*w;
 \end{verbatim}
 
-However, providing a near optimal implementation (i.e.~no unnecessary
+\noindent However, providing a near-optimal implementation (i.e.~no unnecessary
 temporaries or multiple memory accesses) of operator overloading for
 linear algebra in C++ is nontrivial.  While this type of syntax is
 desirable, it does not provide any new functionality and is only
@@ -2458,12 +2453,12 @@ classes \cite{ref:advanced_c++_coplien}.  Handles assume the same type
 of role as a smart pointers except all of the method forwarding (which
 is performed automatically with the operator function
 \texttt{ref\_count\_ptr<>\-::operator->()}) must be performed manually
-in handle class (which must be programmed an maintained for every
-method on every class by some developer).  Handles make the
-implementation of linear algebra operations with operator overloading
-much easier.  Handles are used extensively in TSF.  Since TSFCore does
-not implement operator overloading, handles classify as unnecessary
-nonessential but convenient functionality and are therefore not included in TSFCore.
+in handle class (which must be written an maintained for every method
+on every class by some developer).  Handles make the implementation of
+linear algebra operations with operator overloading much easier.
+Handles are used extensively in TSF.  Since TSFCore does not implement
+operator overloading, handles classify as nonessential but convenient
+functionality and are therefore not included in TSFCore.
 
 %
 \section{Making the most of TSFCore : Adapters}
@@ -2480,14 +2475,17 @@ For example, there already exist adapter subclasses that implement the
 (i.e.~TSFCore-to-\textit{AbstractLinAlgPack}).  There are also adapter
 subclasses that implement the TSFCore interfaces using
 \textit{AbstractLinAlgPack} objects
-(i.e.~\textit{AbstractLinAlgPack}-to-TSFCore).  If these same set of
-adapters are also developed for TSF and HCL then scenarios such as the
+(i.e.~\textit{AbstractLinAlgPack}-to-TSFCore).  TSF is built on
+top of TSFCore so there is no need for TSFCore/TSF adapters.
+If these same set of
+adapters are also developed for HCL, and other similar
+interfaces, then scenarios such as the
 following are possible.
 
 Consider an advanced transient PDE-constrained optimization problem
 where the basic PDE constraints are modeled and discretized (in space)
 using Sundance \cite{krlong:Sundance}.  Sundance uses TSF for all of
-its linear algebra needs.  If the adapters from TSF-to-TSFCore and
+its linear algebra needs.  If the adapters from
 TSFCore-to-HCL are available, then the adjoint-sensitivity time
 integrator described in \cite{Gockenbach:2002:EAI} could be used to
 compute transient adjoint-sensitivities for objective and auxiliary
@@ -2500,7 +2498,7 @@ implemented using
 \textit{AbstractLinAlgPack}, as a preconditioner) using an iterative
 conjugate gradient method as implemented using TSF as provided in
 Trilinos.  This would be easy if adapters for
-\textit{AbstractLinAlgPack}-to-TSFCore and TSFCore-to-TSF were implemented.
+\textit{AbstractLinAlgPack}-to-TSFCore were implemented.
 Without going into any more detail about the above optimization
 scenario, it should be clear how the adoption of TSFCore as a standard
 basic minimal set of linear algebra interfaces would make such
@@ -2510,9 +2508,10 @@ advanced examples of reuse possible.
 \section{Summary}
 %
 
-Here the basic requirements for linear and nonlinear iterative
-abstract numerical algorithms (ANAs) have been defined and a set of
-minimal but efficient object-oriented interfaces for linear algebra
-called TSFCore has been described.  By adapting TSFCore as a standard
-interface layer, interoperability between applications,
-linear algebra libraries and ANAs can become a reality.
+TSFCore provides the intersection of all of the functionality required
+by a variety of abstract numerical algorithms ranging from iterative
+linear solvers all the way up to optimizers.  By adapting TSFCore as a
+standard interface layer, interoperability between applications,
+linear algebra libraries and abstract numerical algorithms can become
+a reality.  An extension of the basic TSFCore interfaces for nonlinear
+problems is described in \cite{ref:TSFCore::Nonlin}.

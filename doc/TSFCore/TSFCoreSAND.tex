@@ -21,7 +21,7 @@
 %
 
 \title{
-{\Huge\bf TSFCore}\\[1.5ex]
+{\Huge\bf TSFCore 1.0}\\[1.5ex]
 A Package of Light-Weight Object-Oriented Abstractions for the
 Development of Abstract Numerical Algorithms and Interfacing
 to Linear Algebra Libraries and Applications.
@@ -46,6 +46,7 @@ under Contract DE-AC04-94AL85000.}, Albuquerque NM 87185 USA, \\
 % ones provided by SANDreport.cls
 %
 \SANDreleaseType{Unlimited Release}
+%\SANDreleaseType{Not approved for release outside Sandia}
 
 % ---------------------------------------------------------------------------- %
 % The following definition does not have a default value and will not
@@ -77,7 +78,7 @@ these various modules, and to develop good abstract interfaces between
 the primary modules.  One category of modules that is becoming
 increasingly important is abstract numerical algorithms (ANAs).  ANAs
 such as linear and nonlinear equation solvers,
-stability and bifurcation methods,
+methods for stability and bifurcation analysis,
 uncertainty quantification methods and nonlinear programming solvers
 for optimization are typically mathematically 
 sophisticated but have surprisingly little essential dependence on the
@@ -87,11 +88,12 @@ interface capabilities in languages such as C++, we can implement ANA
 software such that it will work, unchanged, with a variety of
 applications and linear algebra libraries.
 
-In this paper we present a package of minimal but complete
-object-oriented interfaces (implemented in C++) called TSFCore,
-which allows the development many of these ANAs and
-simplifies the development of interfaces to applications and linear
-algebra libraries.
+In this paper we present a package of minimal but complete (with
+respect to basic required functionality and performance)
+object-oriented interfaces (implemented in C++) called TSFCore, which
+allows the development many of these ANAs and simplifies the
+development of interfaces to applications and linear algebra
+libraries.
 %
 \end{abstract}
 %
@@ -118,7 +120,7 @@ in~\cite{Sand98-0730}.
 \clearpage
 \tableofcontents
 \listoffigures
-\listoftables
+%\listoftables
 
 % ---------------------------------------------------------------------- %
 % An optional preface or Foreword
@@ -163,6 +165,13 @@ in~\cite{Sand98-0730}.
 \bibliographystyle{plain}
 \bibliography{references}
 \addcontentsline{toc}{section}{References}
+
+% ---------------------------------------------------------------------- %
+% Appendices should be stand-alone for SAND reports. If there is only
+% one appendix, put \setcounter{secnumdepth}{0} after \appendix
+%
+\appendix
+\input{apdx_TSFCoreClassDecl}
 
 \begin{SANDdistribution}
 %\SANDdistExternal{1}{An Address\\ 99 $99^{th}$ street NW\\City, State}
