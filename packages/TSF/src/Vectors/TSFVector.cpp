@@ -180,6 +180,60 @@ TSFReal TSFVector::normInf() const
 	return ptr_->normInf();
 }
 
+TSFReal TSFVector::max() const
+{
+	TSFGeneralizedIndex i;
+	return max(i);
+}
+
+TSFReal TSFVector::min() const
+{
+	TSFGeneralizedIndex i;
+	return min(i);
+}
+
+TSFReal TSFVector::min(TSFGeneralizedIndex& i) const
+{
+	return findExtremeValue(TSFVectorBase::MIN, i, TSFUtils::negativeInfinity());
+}
+
+TSFReal TSFVector::max(TSFGeneralizedIndex& i) const
+{
+	return findExtremeValue(TSFVectorBase::MAX, i, TSFUtils::infinity());
+}
+
+TSFReal TSFVector::max(const TSFReal& tol, TSFGeneralizedIndex& i) const
+{
+	return findExtremeValue(TSFVectorBase::MAX, i, tol);
+}
+
+TSFReal TSFVector::min(const TSFReal& tol, TSFGeneralizedIndex& i) const
+{
+	return findExtremeValue(TSFVectorBase::MIN, i, tol);
+}
+
+TSFReal TSFVector::findExtremeValue(TSFVectorBase::MinOrMax type,
+																		TSFGeneralizedIndex& i,
+																		const TSFReal& tol) const
+{
+	TSFTimeMonitor t(opTimer());
+	return ptr_->findExtremeValue(type, i, tol);
+}
+
+TSFVector TSFVector::abs() const
+{
+	TSFVector rtn = copy();
+	TSFTimeMonitor t(opTimer());
+	rtn.ptr_->abs();
+	return rtn;
+}
+
+
+
+
+
+
+
 TSFReal TSFVector::sumElements() const
 {
 	TSFTimeMonitor t(opTimer());
@@ -238,6 +292,18 @@ void TSFVector::selfModifyingScalarMult(const TSFReal& a)
 {
 	TSFTimeMonitor t(opTimer());
 	ptr_->scalarMult(a);
+}
+
+void TSFVector::selfModifyingDotStar(const TSFVector& x)
+{
+	TSFTimeMonitor t(opTimer());
+	ptr_->dotStar(x);
+}
+
+void TSFVector::selfModifyingDotSlash(const TSFVector& x)
+{
+	TSFTimeMonitor t(opTimer());
+	ptr_->dotSlash(x);
 }
 
 TSFTimer& TSFVector::opTimer()

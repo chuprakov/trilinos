@@ -92,6 +92,23 @@ void TSFBlockVector::scalarMult(const TSFReal& a)
 		}
 }
 
+void TSFBlockVector::dotStar(const TSFVector& other) 
+{
+	for (int i=0; i<numBlocks(); i++)
+		{
+			subvectors_[i].selfModifyingDotStar(other.getBlock(i));
+		}
+}
+
+void TSFBlockVector::dotSlash(const TSFVector& other) 
+{
+	for (int i=0; i<numBlocks(); i++)
+		{
+			subvectors_[i].selfModifyingDotSlash(other.getBlock(i));
+		}
+}
+
+
 TSFReal TSFBlockVector::dot(const TSFVector& other) const
 {
 	TSFReal sum = 0.0;
@@ -144,11 +161,44 @@ void TSFBlockVector::setScalar(const TSFReal& a)
 		}
 }
 
+TSFReal TSFBlockVector::findExtremeValue(MinOrMax type, TSFGeneralizedIndex& location, 
+																				 const TSFReal& tol) const
+{
+	TSFReal current;
+	if (type==MIN) current = TSFUtils::infinity();
+	else current = TSFUtils::negativeInfinity();
+
+	for (int i=0; i<numBlocks(); i++)
+		{
+			TSFGeneralizedIndex j;
+			TSFReal blockVal = subvectors_[i].findExtremeValue(type, j, tol);
+			if (type==MIN && blockVal < current)
+				{
+					location = TSFGeneralizedIndex(j, i);
+					current = blockVal;
+				}
+			if (type==MAX && blockVal > current)
+				{
+					location = TSFGeneralizedIndex(j, i);
+					current = blockVal;
+				}
+		}
+	return current;
+}
+
 void TSFBlockVector::randomize(const TSFRandomNumberGenerator& r)
 {
 	for (int i=0; i<numBlocks(); i++)
 		{
 			subvectors_[i].randomize(r);
+		}
+}
+
+void TSFBlockVector::abs()
+{
+	for (int i=0; i<numBlocks(); i++)
+		{
+			subvectors_[i].abs();
 		}
 }
 

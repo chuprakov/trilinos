@@ -27,6 +27,9 @@ namespace TSF
 			/** pop the top element from the top of the stack */
 			inline T pop();
 
+			/** peek at the top element */
+			inline T peek();
+
 			/** get the number of elements in the stack */
 			inline int size() const {return list_.length();}
 
@@ -57,6 +60,13 @@ namespace TSF
 			T rtn;
 			if (!list_.getLastNode(rtn)) TSFError::raise("TSFStack<T>::get() on empty TSFStack");
 			list_.removeLast();
+			return rtn;
+		}
+
+	template<class T> inline T TSFStack<T>::peek() 
+		{
+			T rtn;
+			if (!list_.getLastNode(rtn)) TSFError::raise("TSFStack<T>::get() on empty TSFStack");
 			return rtn;
 		}
 

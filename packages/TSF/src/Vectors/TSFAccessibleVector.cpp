@@ -34,12 +34,76 @@ void TSFAccessibleVector::axpy(const TSFReal& a, const TSFVector& x)
 			const TSFReal* otherChunk = xPtr->getNextChunk(otherChunkSize);
 			if (myChunkSize != otherChunkSize)
 				{
-					TSFError::raise("mismatched chunk sizes in doBinaryOperation");
+					TSFError::raise("mismatched chunk sizes in axpy");
 				}
 			TSFReal* yy = myChunk;
 			TSFReal* xx = const_cast<TSFReal*>(otherChunk);
 			int one=1;
 			TSFBlas<TSFReal>::axpy(&myChunkSize, &a, xx, &one, yy, &one);
+			restoreChunk(myChunk, myChunkSize);
+		}
+}
+
+void TSFAccessibleVector::dotStar(const TSFVector& x)
+{
+	const TSFAccessibleVector* xPtr 
+		= dynamic_cast<const TSFAccessibleVector*>(x.ptr());
+
+	if (xPtr==0) TSFError::raise("cast error in dotStar()");
+	
+	rewindChunkIterator();
+	xPtr->rewindChunkIterator();
+	int myChunkSize;
+	int otherChunkSize;
+	
+	while(hasMoreChunks())
+		{
+			TSFReal* myChunk = getNextChunk(myChunkSize);
+			const TSFReal* otherChunk = xPtr->getNextChunk(otherChunkSize);
+			if (myChunkSize != otherChunkSize)
+				{
+					TSFError::raise("mismatched chunk sizes in dotStar");
+				}
+			TSFReal* yy = myChunk;
+			TSFReal* xx = const_cast<TSFReal*>(otherChunk);
+			
+			for (int i=0; i<myChunkSize; i++, xx++, yy++) 
+				{
+					*yy = (*yy)*(*xx);
+				}
+
+			restoreChunk(myChunk, myChunkSize);
+		}
+}
+
+void TSFAccessibleVector::dotSlash(const TSFVector& x)
+{
+	const TSFAccessibleVector* xPtr 
+		= dynamic_cast<const TSFAccessibleVector*>(x.ptr());
+
+	if (xPtr==0) TSFError::raise("cast error in dotStar()");
+	
+	rewindChunkIterator();
+	xPtr->rewindChunkIterator();
+	int myChunkSize;
+	int otherChunkSize;
+	
+	while(hasMoreChunks())
+		{
+			TSFReal* myChunk = getNextChunk(myChunkSize);
+			const TSFReal* otherChunk = xPtr->getNextChunk(otherChunkSize);
+			if (myChunkSize != otherChunkSize)
+				{
+					TSFError::raise("mismatched chunk sizes in dotStar");
+				}
+			TSFReal* yy = myChunk;
+			TSFReal* xx = const_cast<TSFReal*>(otherChunk);
+			
+			for (int i=0; i<myChunkSize; i++, xx++, yy++) 
+				{
+					*yy = (*yy)/(*xx);
+				}
+
 			restoreChunk(myChunk, myChunkSize);
 		}
 }
@@ -62,7 +126,7 @@ void TSFAccessibleVector::acceptCopyOf(const TSFVector& x)
 			const TSFReal* otherChunk = xPtr->getNextChunk(otherChunkSize);
 			if (myChunkSize != otherChunkSize)
 				{
-					TSFError::raise("mismatched chunk sizes in doBinaryOperation");
+					TSFError::raise("mismatched chunk sizes in acceptCopyOf()");
 				}
 			TSFReal* yy = myChunk;
 			TSFReal* xx = const_cast<TSFReal*>(otherChunk);
@@ -189,6 +253,43 @@ void TSFAccessibleVector::setScalar(const TSFReal& a)
 		}
 }
 
+TSFReal TSFAccessibleVector::findExtremeValue(MinOrMax type, 
+																							TSFGeneralizedIndex& location, 
+																							const TSFReal& tol) const
+{
+
+	TSFReal current;
+	if (type==MIN) current = TSFUtils::infinity();
+	else current = TSFUtils::negativeInfinity();
+	int position=-1;
+
+	rewindChunkIterator();
+	int myChunkSize;
+	
+	while(hasMoreChunks())
+		{
+			const TSFReal* myChunk = getNextLocalChunk(myChunkSize);
+			TSFReal* x = const_cast<TSFReal*>(myChunk);
+			for (int i=0; i<myChunkSize; i++, x++) 
+				{
+					if (type==MIN && *x < current)
+						{
+							position = i;
+							current = *x;
+						}
+					if (type==MAX && *x > current)
+						{
+							position = i;
+							current = *x;
+						}	
+				}
+			restoreChunk(myChunk, myChunkSize);
+		}
+	
+	location = position;
+	return current;
+}
+
 void TSFAccessibleVector::randomize(const TSFRandomNumberGenerator& r)
 {
 	rewindChunkIterator();
@@ -205,3 +306,16 @@ void TSFAccessibleVector::randomize(const TSFRandomNumberGenerator& r)
 	synchronizeGhostValues();
 }
 
+void TSFAccessibleVector::abs()
+{
+	rewindChunkIterator();
+	int myChunkSize;
+	
+	while(hasMoreChunks())
+		{
+			TSFReal* myChunk = getNextChunk(myChunkSize);
+			TSFReal* x = myChunk;
+			*x = fabs(*x);
+			restoreChunk(myChunk, myChunkSize);
+		}
+}

@@ -41,6 +41,12 @@ namespace TSF
 			/** multiply by a scalar */
 			virtual void scalarMult(const TSFReal& a) ;
 
+			/** element-by-element multiplication (this = this .* y) */
+			virtual void dotStar(const TSFVector& x) ;
+
+			/** element-by-element division (this = this ./ y) */
+			virtual void dotSlash(const TSFVector& x) ; 
+
 			/** dot product */
 			virtual TSFReal dot(const TSFVector& other) const ;
 
@@ -55,6 +61,14 @@ namespace TSF
 
 			/** set all elements to a scalar value */
 			virtual void setScalar(const TSFReal& a) ;
+
+			/** find an extreme value, possibly subject to a constraint */
+			virtual TSFReal findExtremeValue(MinOrMax type, TSFGeneralizedIndex& location, 
+																			 const TSFReal& tol) const ;
+
+			/** elementwise absolute value */
+			virtual void abs() ;
+			
 			//@}	
 
 

@@ -109,6 +109,9 @@ namespace TSF
 			/** dot product with self */
 			TSFReal norm2Squared() const ;
 
+			/** 2-norm */
+			TSFReal norm2() const {return sqrt(norm2Squared());}
+			
 			/** sum elements */
 			inline TSFReal sumElements() const ;
 
@@ -116,7 +119,10 @@ namespace TSF
 			TSFReal maxNorm() const ;
 
 			/** set all elements to zero */
-			void zero();	
+			void zero() {setScalar(0.0);}	
+
+			/** set all elements to the given value */
+			void setScalar(const TSFReal& a);
 			//@}
 
 			/** {\bf overloaded math operators; for performance reasons, 

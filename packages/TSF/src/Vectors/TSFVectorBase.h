@@ -3,6 +3,7 @@
 
 #include "TSFConfig.h"
 #include "TSFVectorSpace.h"
+#include "TSFGeneralizedIndex.h"
 
 #if HAVE_RTOP
 #include "RTOp.h"
@@ -20,7 +21,12 @@ namespace TSF
 
 	class TSFVectorBase
 		{
-		public: 
+
+		public:
+			/** flag that indicates whether we're looking for a min or a max */
+			enum MinOrMax {MAX, MIN};
+
+		public: 	
 			/** \name Constructor and Destructors */
 			//@{
 			/** construct with a given space */
@@ -44,6 +50,12 @@ namespace TSF
 			/** multiply by a scalar */
 			virtual void scalarMult(const TSFReal& a) = 0 ;
 
+			/** element-by-element multiplication (this = this .* y) */
+			virtual void dotStar(const TSFVector& x) = 0 ;
+
+			/** element-by-element division (this = this ./ y) */
+			virtual void dotSlash(const TSFVector& x) = 0 ; 
+
 			/** dot product */
 			virtual TSFReal dot(const TSFVector& other) const = 0 ;
 
@@ -58,6 +70,13 @@ namespace TSF
 
 			/** set all elements to a scalar value */
 			virtual void setScalar(const TSFReal& a) = 0 ;
+
+			/** find an extreme value, possibly subject to a constraint */
+			virtual TSFReal findExtremeValue(MinOrMax type, TSFGeneralizedIndex& location, 
+																			 const TSFReal& tol) const = 0;
+
+			/** replace vector by element-wise absolute value */
+			virtual void abs() = 0 ;	
 			//@}
 
 #if HAVE_RTOP

@@ -194,6 +194,14 @@ namespace TSF
 			/** subtraction (this = x - y) */
 			inline void subtract(const TSFVector& x, const TSFVector& y) {axpy(-1.0, y, x);}
 
+			/** element-by-element multiplication (this = x .* y) */
+			void dotStar(const TSFVector& x, const TSFVector& y) 
+				{acceptCopyOf(x); selfModifyingDotStar(y);}
+
+			/** element-by-element division (this = x ./ y) */
+			void dotSlash(const TSFVector& x, const TSFVector& y) 
+				{acceptCopyOf(x); selfModifyingDotSlash(y);} 
+
 			/** dot product with another vector */
 			TSFReal dot(const TSFVector& other) const ;
 	
@@ -203,9 +211,30 @@ namespace TSF
 			/** 1-norm */
 			TSFReal norm1() const ;
 
-			/** inf-norm */
+			/** infinity-norm */
 			TSFReal normInf() const ;
-			
+
+			/** max value */
+			TSFReal max() const ;
+
+			/** min value */
+			TSFReal min() const ;
+
+			/** max with location */
+			TSFReal max(TSFGeneralizedIndex& location) const ;
+
+			/** min with location */
+			TSFReal min(TSFGeneralizedIndex& location) const ;
+
+			/** max less than tol with location */
+			TSFReal max(const TSFReal& tol, TSFGeneralizedIndex& location) const ;
+
+			/** min greater than tol with location */
+			TSFReal min(const TSFReal& tol, TSFGeneralizedIndex& location) const ;
+
+			/** element-wise absolute value */
+			TSFVector abs() const ;
+
 			/** set all elements to zero */
 			void zero();	
 
@@ -278,8 +307,15 @@ namespace TSF
 			void acceptCopyOf(const TSFVector& x);
 			/** set self = self + a*x */
 			void selfModifyingAxpy(const TSFReal& a, const TSFVector& x);
+			/** set self = self .* x */
+			void selfModifyingDotStar(const TSFVector& x);
+			/** set self = self .* x */
+			void selfModifyingDotSlash(const TSFVector& x);
 			/** set self = a*self */
 			void selfModifyingScalarMult(const TSFReal& a);
+			/** find a min or max */
+			TSFReal findExtremeValue(TSFVectorBase::MinOrMax type, TSFGeneralizedIndex& location, 
+															 const TSFReal& tol) const ;
 			//@}
 		private:
 

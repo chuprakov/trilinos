@@ -27,12 +27,12 @@ DenseSerialVector& DenseSerialVector::operator=(const DenseSerialVector& other)
 	
 
 
-void DenseSerialVector::zero()
+void DenseSerialVector::setScalar(const TSFReal& a)
 {
 	TSFReal* yy = x_;
 	for (int i=0; i<n_; i++, yy++)
 		{
-			*yy = 0.0;
+			*yy = a;
 		}
 }
 
