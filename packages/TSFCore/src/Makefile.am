@@ -190,8 +190,8 @@ libTSFCore_a_SOURCES = \
 	$(ADAPTERS_EPETRA) 
 
 EXTRA_libTSFCore_a_SOURCES = \
-	$(EXTRA_ADAPTERS_MPI_H)
-	$(EXTRA_ADAPTERS_EPETRA_H)
+	$(EXTRA_ADAPTERS_MPI_H) \
+	$(EXTRA_ADAPTERS_EPETRA_H) \
 	$(EXTRA_ADAPTERS_EPETRA)
 
 #We need the following to support separate build directories
