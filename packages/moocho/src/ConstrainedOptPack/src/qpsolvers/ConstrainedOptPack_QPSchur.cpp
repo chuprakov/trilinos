@@ -4683,7 +4683,7 @@ bool QPSchur::timeout_return( StopWatchPack::stopwatch* timer, std::ostream *out
 	if( minutes >= max_real_runtime() ) {
 		if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 			*out
-				<< "\n*** Runtime = " << minutes << " minutes >= max_real_runtime = " << max_real_runtime() << "!\n"
+				<< "\n*** Runtime = " << minutes << " min >= max_real_runtime = " << max_real_runtime() << " min!\n"
 				<< "Must terminite the algorithm!\n";
 		}
 		return true;
