@@ -46,7 +46,7 @@
   * not satisfied then the listed exceptions will be thrown.
   */
 #ifndef LINALGPACK_CHECK_RANGE
-#define LINALGPACK_CHECK_RANGE=1
+#define LINALGPACK_CHECK_RANGE 1
 #endif
 
 ///
@@ -54,7 +54,7 @@
   * The exception std::length_error will be thrown if rhs sizes are not compatible.
   */
 #ifndef LINALGPACK_CHECK_RHS_SIZES
-#define LINALGPACK_CHECK_RHS_SIZES=1
+#define LINALGPACK_CHECK_RHS_SIZES 1
 #endif
 
 ///
@@ -63,7 +63,7 @@
   * checks may depend on the definition of the macro \Ref{LINALGPACK_CHECK_RANGE}.
   */
 #ifndef LINALGPACK_CHECK_SLICE_SETUP
-#define LINALGPACK_CHECK_SLICE_SETUP=1
+#define LINALGPACK_CHECK_SLICE_SETUP 1
 #endif
 
 #endif
