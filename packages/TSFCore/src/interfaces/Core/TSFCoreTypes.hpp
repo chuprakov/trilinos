@@ -131,8 +131,7 @@ template<class Scalar> class MultiVector;
 
 // Misc interface classes
 
-template<class Scalar> class LinOpPersisting;
-template<class Scalar> class LinOpNonPersisting;
+template<class Scalar> class LinearOpHandle;
 
 // Basic node support subclasses and interfaces
 

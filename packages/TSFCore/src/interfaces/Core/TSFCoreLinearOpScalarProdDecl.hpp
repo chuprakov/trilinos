@@ -57,16 +57,16 @@ public:
 	LinearOpScalarProd();
 
 	///
-	LinearOpScalarProd( const LinOpPersisting<Scalar> &op );
+	LinearOpScalarProd( const LinearOpHandle<Scalar> &op );
 
 	///
-	void initialize( const LinOpPersisting<Scalar> &op );
+	void initialize( const LinearOpHandle<Scalar> &op );
 
 	///
-	const LinOpPersisting<Scalar>& op() const;
+	const LinearOpHandle<Scalar>& op() const;
 
 	///
-	void uninitialize( LinOpPersisting<Scalar> *op = NULL );
+	void uninitialize( LinearOpHandle<Scalar> *op = NULL );
 
 	//@}
 	
@@ -100,13 +100,13 @@ public:
 
 private:
 
-	LinOpPersisting<Scalar>  op_;
+	LinearOpHandle<Scalar>  op_;
 
 }; // end class LinearOpScalarProd
 
 template<class Scalar>
 inline
-const LinOpPersisting<Scalar>& LinearOpScalarProd<Scalar>::op() const
+const LinearOpHandle<Scalar>& LinearOpScalarProd<Scalar>::op() const
 {
 	return op_;
 }

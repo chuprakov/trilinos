@@ -44,6 +44,7 @@
 
 INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCoreAssertOp.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreLinearOpHandle.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreLinearOp.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreLinearOpDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreMultiVector.hpp\

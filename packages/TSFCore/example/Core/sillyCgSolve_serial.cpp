@@ -28,7 +28,6 @@
 
 #include "SerialTridiagLinearOp.hpp"
 #include "sillyCgSolve.hpp"
-#include "TSFCoreLinOp.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreTestingTools.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
@@ -93,7 +92,7 @@ bool runCgSolveExample(
 	//
 	// (B) Solve the linear system with the silly CG solver
 	//
-	result = sillyCgSolve(TSFCore::LinOpNonPersisting<Scalar>(*A),*b,maxNumIters,tolerance,&*x,verbose?&std::cout:0);
+	result = sillyCgSolve(TSFCore::LinearOpHandle<Scalar>(A),*b,maxNumIters,tolerance,&*x,verbose?&std::cout:0);
 	if(!result) success = false;
 	//
 	// (C) Check that the linear system was solved to the specified tolerance

@@ -45,13 +45,13 @@ LinearOpScalarProd<Scalar>::LinearOpScalarProd()
 {}
 
 template<class Scalar>
-LinearOpScalarProd<Scalar>::LinearOpScalarProd( const LinOpPersisting<Scalar> &op )
+LinearOpScalarProd<Scalar>::LinearOpScalarProd( const LinearOpHandle<Scalar> &op )
 {
 	this->initialize(op);
 }
 
 template<class Scalar>
-void LinearOpScalarProd<Scalar>::initialize( const LinOpPersisting<Scalar> &op )
+void LinearOpScalarProd<Scalar>::initialize( const LinearOpHandle<Scalar> &op )
 {
 #ifdef _DEBUG
 	TEST_FOR_EXCEPT(op.op().get()==NULL);
@@ -60,10 +60,10 @@ void LinearOpScalarProd<Scalar>::initialize( const LinOpPersisting<Scalar> &op )
 }
 
 template<class Scalar>
-void LinearOpScalarProd<Scalar>::uninitialize( LinOpPersisting<Scalar> *op )
+void LinearOpScalarProd<Scalar>::uninitialize( LinearOpHandle<Scalar> *op )
 {
 	if(op) *op = op_;
-	op_ = TSFCore::LinOpPersisting<Scalar>();
+	op_ = TSFCore::LinearOpHandle<Scalar>();
 }
 
 // Overridden from ScalarProd

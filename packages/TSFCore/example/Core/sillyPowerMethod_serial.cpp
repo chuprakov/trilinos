@@ -75,8 +75,9 @@ bool runPowerMethodExample(
 		lower[k-1] = -one; diag[k] = two; upper[k] = -one;   //  Middle rows
 	}
 	lower[k-1] = -one; diag[k] = two;                      //  Last row
-	SerialTridiagLinearOp<Scalar>  A(dim,&lower[0],&diag[0],&upper[0]);
-	if( verbose && dumpAll ) std::cout << "\nA =\n" << A;
+	Teuchos::RefCountPtr<SerialTridiagLinearOp<Scalar> >
+		A = Teuchos::rcp( new SerialTridiagLinearOp<Scalar>(dim,&lower[0],&diag[0],&upper[0]) );
+	if( verbose && dumpAll ) std::cout << "\nA =\n" << *A;
 
 	//
 	// (2) Run the power method ANA
@@ -85,7 +86,7 @@ bool runPowerMethodExample(
 	Scalar     lambda      = ST::zero();
 	ScalarMag  tolerance   = ScalarMag(1e-3)*Teuchos::ScalarTraits<ScalarMag>::one();
 	result = sillyPowerMethod(
-		TSFCore::LinOpNonPersisting<Scalar>(A), maxNumIters, tolerance
+		TSFCore::LinearOpHandle<Scalar>(A), maxNumIters, tolerance
 		,&lambda, ( verbose ? &std::cout : NULL )
 		);
 	if(!result) success = false;
@@ -96,15 +97,15 @@ bool runPowerMethodExample(
 	//
 	if(verbose) std::cout << "\n(3) Increasing first diagonal entry by factor of 10 ...\n";
 	diag[0] *= 10;
-	A.initialize(dim,&lower[0],&diag[0],&upper[0]);
-	if( verbose && dumpAll ) std::cout << "A =\n" << A;
+	A->initialize(dim,&lower[0],&diag[0],&upper[0]);
+	if( verbose && dumpAll ) std::cout << "A =\n" << *A;
 
 	//
 	// (4) Run the power method ANA
 	//
 	if(verbose) std::cout << "\n(4) Running the power method again on matrix A ...\n";
 	result = sillyPowerMethod(
-		TSFCore::LinOpNonPersisting<Scalar>(A), maxNumIters, tolerance
+		TSFCore::LinearOpHandle<Scalar>(A), maxNumIters, tolerance
 		,&lambda, ( verbose ? &std::cout : NULL )
 		);
 	if(!result) success = false;

@@ -32,7 +32,7 @@
 #ifndef TSFCORE_MULTIPLICATIVE_LINEAR_OP_DECL_HPP
 #define TSFCORE_MULTIPLICATIVE_LINEAR_OP_DECL_HPP
 
-#include "TSFCoreLinOp.hpp"
+#include "TSFCoreLinearOphandle.hpp"
 
 namespace TSFCore {
 
@@ -48,7 +48,7 @@ namespace TSFCore {
  \endverbatim
  *
  * where <tt>Op[]</tt> is an array of <tt>numOps</tt>
- * <tt>LinOpPersisting</tt> objects and <tt>gamma</tt> is a scalar.
+ * <tt>LinearOpHandle</tt> objects and <tt>gamma</tt> is a scalar.
  * Of course the operator <tt>M</tt> is not constructed explicitly but
  * instead just applies the constituent linear operators accordingly
  * using temporaries.
@@ -86,7 +86,7 @@ namespace TSFCore {
     ,Teuchos::RefCountPtr<const TSFCore::LinearOp<Scalar> >        *D
     )
  {
-   typedef TSFCore::LinOpPersisting<Scalar> LOP;
+   typedef TSFCore::LinearOpHandle<Scalar> LOP;
    *D = Teuchos::rcp(
      new TSFCore::MultiplicativeLinearOp<Scalar>(
        3, Teuchos::arrayArg<LOP>(LOP(A),LOP(B,TSFCore::TRANS),LOP(C))(), gamma
@@ -118,7 +118,7 @@ public:
 	/// Calls <tt>initialize()</tt>
 	MultiplicativeLinearOp(
 		const int                        numOps
-		,const LinOpPersisting<Scalar>   Ops[]
+		,const LinearOpHandle<Scalar>    Ops[]
 		,const Scalar                    &gamma = Teuchos::ScalarTraits<Scalar>::one()
 		);
 
@@ -146,7 +146,7 @@ public:
 	 */
 	void initialize(
 		const int                        numOps
-		,const LinOpPersisting<Scalar>   Ops[]
+		,const LinearOpHandle<Scalar>    Ops[]
 		,const Scalar                    &gamma = Teuchos::ScalarTraits<Scalar>::one()
 		);
 
@@ -167,7 +167,7 @@ public:
 	 * <li><tt> 0 <= k < this->numOps()</tt>
 	 * </ul>
 	 */
-	const LinOpPersisting<Scalar>& getOp(const int k) const;
+	const LinearOpHandle<Scalar>& getOp(const int k) const;
 
 	///
 	/** Set to uninitialized.
@@ -190,7 +190,7 @@ public:
 	 */
 	void uninitialize(
 		const int                  numOps   = 0
-		,LinOpPersisting<Scalar>   Ops[]    = NULL
+		,LinearOpHandle<Scalar>    Ops[]    = NULL
 		,Scalar                    *gamma   = NULL
 		);
 
@@ -247,7 +247,7 @@ public:
 
 private:
 
-	std::vector<LinOpPersisting<Scalar> >  Ops_;
+	std::vector<LinearOpHandle<Scalar> >   Ops_;
 	Scalar                                 gamma_;
 
 	void assertInitialized() const;
@@ -266,7 +266,7 @@ int MultiplicativeLinearOp<Scalar>::numOps() const
 
 template<class Scalar>
 inline
-const LinOpPersisting<Scalar>& MultiplicativeLinearOp<Scalar>::getOp(const int k) const
+const LinearOpHandle<Scalar>& MultiplicativeLinearOp<Scalar>::getOp(const int k) const
 {
 #ifdef _DEBUG
 	TEST_FOR_EXCEPT( !( 0 <= k && k < numOps() ) );

@@ -185,6 +185,7 @@ DIST_SOURCES = $(am__libTSFCore_a_SOURCES_DIST) \
 	$(EXTRA_libTSFCore_a_SOURCES)
 am__include_HEADERS_DIST = $(srcdir)/TSFCore_ConfigDefs.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreAssertOp.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreLinearOpHandle.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreLinearOp.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreLinearOpDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreMultiVector.hpp \
@@ -195,12 +196,18 @@ am__include_HEADERS_DIST = $(srcdir)/TSFCore_ConfigDefs.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreMultiVectorStdOpsDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreOpBase.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreOpBaseDecl.hpp \
-	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProd.hpp \
-	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProdDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreScalarProd.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreScalarProdDecl.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProd.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProdDecl.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreLinearOpScalarProd.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreLinearOpScalarProdDecl.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanLinearOpBase.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanLinearOpBaseDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorBase.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorBaseDecl.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreSerialMultiVectorBase.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreSerialMultiVectorBaseDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorStd.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorStdDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceStd.hpp \
@@ -443,6 +450,7 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCoreAssertOp.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreLinearOpHandle.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreLinearOp.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreLinearOpDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreMultiVector.hpp\
@@ -453,12 +461,18 @@ INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCoreMultiVectorStdOpsDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreOpBase.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreOpBaseDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProd.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProdDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreScalarProd.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreScalarProdDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProdDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreLinearOpScalarProd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreLinearOpScalarProdDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanLinearOpBase.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanLinearOpBaseDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorBase.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorBaseDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialMultiVectorBase.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialMultiVectorBaseDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorStd.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorStdDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceStd.hpp\

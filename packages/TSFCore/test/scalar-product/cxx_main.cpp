@@ -52,7 +52,7 @@ bool run_scalar_product_tests(
 {
 
 	using TSFCore::relErr;
-	typedef TSFCore::LinOpNonPersisting<Scalar> LONP;
+	typedef TSFCore::LinearOpHandle<Scalar> LOH;
 	typedef Teuchos::ScalarTraits<Scalar> ST;
 	typedef typename ST::magnitudeType    ScalarMag;
 	using Teuchos::RefCountPtr;
@@ -82,8 +82,8 @@ bool run_scalar_product_tests(
 	
 	if(out) *out << "\nTesting LinearOp with Euclidean domain and range scalar products ...\n";
 	TSFCore::assign( &*op, *op_coeff );
-	if(out && dumpAll) *out << "\nop =\n" << LONP(*op,TSFCore::NOTRANS);
-	if(out && dumpAll) *out << "\nop' =\n" << LONP(*op,TSFCore::CONJTRANS);
+	if(out && dumpAll) *out << "\nop =\n" << LOH(op,TSFCore::NOTRANS);
+	if(out && dumpAll) *out << "\nop' =\n" << LOH(op,TSFCore::CONJTRANS);
 	result = linearOpTester.check(*op,out);
 	if(!result) success = false;
 	
@@ -92,14 +92,14 @@ bool run_scalar_product_tests(
 	domain->setScalarProd(
 		rcp(
 			new TSFCore::LinearOpScalarProd<Scalar>(
-				TSFCore::LinOpPersisting<Scalar>(rcp(new TSFCore::DiagonalLinearOp<Scalar>(domainScalarProdDiag)))
+				TSFCore::LinearOpHandle<Scalar>(rcp(new TSFCore::DiagonalLinearOp<Scalar>(domainScalarProdDiag)))
 				)
 			)
 		);
 	op->initialize(range,domain);
 	TSFCore::assign( &*op, *op_coeff );
-	if(out && dumpAll) *out << "\nop =\n" << LONP(*op,TSFCore::NOTRANS);
-	if(out && dumpAll) *out << "\nop' =\n" << LONP(*op,TSFCore::CONJTRANS);
+	if(out && dumpAll) *out << "\nop =\n" << LOH(op,TSFCore::NOTRANS);
+	if(out && dumpAll) *out << "\nop' =\n" << LOH(op,TSFCore::CONJTRANS);
 	result = linearOpTester.check(*op,out);
 	if(!result) success = false;
 	
@@ -107,15 +107,15 @@ bool run_scalar_product_tests(
 	range->setScalarProd(
 		rcp(
 			new TSFCore::LinearOpScalarProd<Scalar>(
-				TSFCore::LinOpPersisting<Scalar>(rcp(new TSFCore::DiagonalLinearOp<Scalar>(rangeScalarProdDiag)))
+				TSFCore::LinearOpHandle<Scalar>(rcp(new TSFCore::DiagonalLinearOp<Scalar>(rangeScalarProdDiag)))
 				)
 			)
 		);
 	domain->setScalarProd(rcp(new TSFCore::EuclideanScalarProd<Scalar>()));
 	op->initialize(range,domain);
 	TSFCore::assign( &*op, *op_coeff );
-	if(out && dumpAll) *out << "\nop =\n" << LONP(*op,TSFCore::NOTRANS);
-	if(out && dumpAll) *out << "\nop' =\n" << LONP(*op,TSFCore::CONJTRANS);
+	if(out && dumpAll) *out << "\nop =\n" << LOH(op,TSFCore::NOTRANS);
+	if(out && dumpAll) *out << "\nop' =\n" << LOH(op,TSFCore::CONJTRANS);
 	result = linearOpTester.check(*op,out);
 	if(!result) success = false;
 	
@@ -123,21 +123,21 @@ bool run_scalar_product_tests(
 	range->setScalarProd(
 		rcp(
 			new TSFCore::LinearOpScalarProd<Scalar>(
-				TSFCore::LinOpPersisting<Scalar>(rcp(new TSFCore::DiagonalLinearOp<Scalar>(rangeScalarProdDiag)))
+				TSFCore::LinearOpHandle<Scalar>(rcp(new TSFCore::DiagonalLinearOp<Scalar>(rangeScalarProdDiag)))
 				)
 			)
 		);
 	domain->setScalarProd(
 		rcp(
 			new TSFCore::LinearOpScalarProd<Scalar>(
-				TSFCore::LinOpPersisting<Scalar>(rcp(new TSFCore::DiagonalLinearOp<Scalar>(domainScalarProdDiag)))
+				TSFCore::LinearOpHandle<Scalar>(rcp(new TSFCore::DiagonalLinearOp<Scalar>(domainScalarProdDiag)))
 				)
 			)
 		);
 	op->initialize(range,domain);
 	TSFCore::assign( &*op, *op_coeff );
-	if(out && dumpAll) *out << "\nop =\n" << LONP(*op,TSFCore::NOTRANS);
-	if(out && dumpAll) *out << "\nop' =\n" << LONP(*op,TSFCore::CONJTRANS);
+	if(out && dumpAll) *out << "\nop =\n" << LOH(op,TSFCore::NOTRANS);
+	if(out && dumpAll) *out << "\nop' =\n" << LOH(op,TSFCore::CONJTRANS);
 	result = linearOpTester.check(*op,out);
 	if(!result) success = false;
 

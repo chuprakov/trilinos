@@ -33,6 +33,7 @@
 #define TSFCORE_DIAGONAL_LINEAR_OP_HPP
 
 #include "TSFCoreDiagonalLinearOpDecl.hpp"
+#include "TSFCoreLinearOp.hpp"
 #include "TSFCoreVector.hpp"
 
 namespace TSFCore {

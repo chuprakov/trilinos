@@ -94,7 +94,7 @@ std::ostream& operator<<( std::ostream& o, const Vector<Scalar>& v );
 ///
 /** Output operator to pretty print any <tt>TSFCore::LinearOp</tt> object.
  *
- * Calls <tt>operator<<( std::ostream, const LinOpNonPersisting<Scalar> )</tt>
+ * Calls <tt>operator<<( std::ostream, const LinearOpHandle<Scalar> )</tt>
  *
  * \ingroup TSFCore_test_tools_code_grp
  */
@@ -102,24 +102,14 @@ template<class Scalar>
 std::ostream& operator<<( std::ostream& o, const LinearOp<Scalar>& M );
 
 ///
-/** Output operator to pretty print any <tt>TSFCore::LinOpNonPersisting</tt> object.
- *
- * Calls <tt>operator<<( std::ostream, const LinOpNonPersisting<Scalar> )</tt>
- *
- * \ingroup TSFCore_test_tools_code_grp
- */
-template<class Scalar>
-std::ostream& operator<<( std::ostream& o, const LinOpPersisting<Scalar>& M );
-
-///
-/** Output operator to pretty print any <tt>TSFCore::LinOpNonPersisting</tt> object.
+/** Output operator to pretty print any <tt>TSFCore::LinearOpHandle</tt> object.
  *
  * ToDo: Finish documentation!
  *
  * \ingroup TSFCore_test_tools_code_grp
  */
 template<class Scalar>
-std::ostream& operator<<( std::ostream& o, const LinOpNonPersisting<Scalar>& M );
+std::ostream& operator<<( std::ostream& o, const LinearOpHandle<Scalar>& M );
 
 } // namespace TSFCore
 

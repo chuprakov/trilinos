@@ -1034,22 +1034,18 @@ non-transposed and scaled transposed mathematical operators of the
 operator implementation <tt>A</tt> respectivly.  The aggregation of
 the default transpose argument and scalar multiplier along with a
 <tt>TSFCore::LinearOp</tt> object is given in the following trivial
-concrete handle-like classes:
+concrete handle-like class:
 
 <ul>
-<li><tt>TSFCore::LinOpPersisting</tt> is a simple concrete handle class that aggregates
-     a <tt>LinearOp</tt> and its natural transpose and scalar multiplier arguments (for
-     persisting relationships).
-<li><tt>TSFCore::LinOpNonPersisting</tt> is a simple concrete handle class that aggregates
-     a <tt>LinearOp</tt> and its natural transpose and scalar multiplier arguments (for
-     non-persisting relationships).
+<li><tt>TSFCore::LinearOpHandle</tt> is a simple concrete handle class that aggregates
+     a <tt>LinearOp</tt> and its "mathematical" transpose and scalar multiplier arguments.
 </ul>
 
-The reason that there are two different aggregate handle classes is to
-support the notion of <em>persisting</em> and <em>non-persisting</em>
-relationships as defined in <a
+Note that the above class can be used in both persisting and
+non-persisting relationships (as described in <a
 href="http://software.sandia.gov/Trilinos/RefCountPtrBeginnersGuideSAND.pdf">this
-report</a>.
+report</a>) but the documentation must make it clear what type of
+relationship is being formed.
 
 <li> <b>Creating explicit views of vector and multi-vector elements</b>
 
@@ -1064,13 +1060,13 @@ multi-vector).  The following utility classes streamline creating and
 using explicit views.
 
 <ul>
-<li><tt>TSFCore::ExplicitVectorView</tt> creates a (<tt>const</tt>) non-mutable explicit view of a <tt>const %TSFCore::Vector</tt> object,
+<li><tt>TSFCore::ExplicitVectorView</tt> creates a (<tt>const</tt>) non-mutable explicit view of a <tt>const %TSFCore::%Vector</tt> object,
     allows direct access to vector elements and then frees the view in the destructor.
-<li><tt>TSFCore::ExplicitMutableVectorView</tt> creates a (non-<tt>const</tt>) mutable explicit view of a <tt>%TSFCore::Vector</tt> object,
+<li><tt>TSFCore::ExplicitMutableVectorView</tt> creates a (non-<tt>const</tt>) mutable explicit view of a <tt>%TSFCore::%Vector</tt> object,
     allows direct access to vector elements and then frees the view in the destructor.
-<li><tt>TSFCore::ExplicitMultiVectorView</tt> creates a (<tt>const</tt>) non-mutable explicit view of a <tt>const %TSFCore::MultiVector</tt> object,
+<li><tt>TSFCore::ExplicitMultiVectorView</tt> creates a (<tt>const</tt>) non-mutable explicit view of a <tt>const %TSFCore::%MultiVector</tt> object,
     allows direct access to multi-vector elements and then frees the view in the destructor.
-<li><tt>TSFCore::ExplicitMutableMultiVectorView</tt> creates a (non-<tt>const</tt>) mutable explicit view of a <tt>%TSFCore::MultiVector</tt> object,
+<li><tt>TSFCore::ExplicitMutableMultiVectorView</tt> creates a (non-<tt>const</tt>) mutable explicit view of a <tt>%TSFCore::%MultiVector</tt> object,
     allows direct access to multi-vector elements and then frees the view in the destructor.
 </ul>
 
@@ -1206,13 +1202,11 @@ of a linear operator.
 implements the conjugate gradient method for solving a symmetric
 possitive definite linear system.
 
-<li><tt>TSFCore::LinearOpTester::check()</tt> (Note: click on the link
-near the bottom of the documentation that says "Definition at line
-... of the file %TSFCoreLinearOpTester.hpp"): This function shows how
-to access a <tt>TSFCore::LinearOp</tt> objects domain and range
-spaces, how to use these spaces to create vectors and multi-vectors
-and how to perform various types of operations involving vectors,
-multi-vectors and linear operators.
+<li><tt>TSFCore::LinearOpTester::check()</tt> shows how to access a
+<tt>TSFCore::LinearOp</tt> objects domain and range spaces, how to use
+these spaces to create vectors and multi-vectors and how to perform
+various types of operations involving vectors, multi-vectors and
+linear operators.
 
 </ul>
 

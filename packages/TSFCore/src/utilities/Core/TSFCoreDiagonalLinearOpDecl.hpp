@@ -32,7 +32,7 @@
 #ifndef TSFCORE_DIAGONAL_LINEAR_OP_DECL_HPP
 #define TSFCORE_DIAGONAL_LINEAR_OP_DECL_HPP
 
-#include "TSFCoreLinOp.hpp"
+#include "TSFCoreLinearOpDecl.hpp"
 
 namespace TSFCore {
 

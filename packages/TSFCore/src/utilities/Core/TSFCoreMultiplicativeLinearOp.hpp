@@ -46,7 +46,7 @@ MultiplicativeLinearOp<Scalar>::MultiplicativeLinearOp()
 template<class Scalar>
 MultiplicativeLinearOp<Scalar>::MultiplicativeLinearOp(
 	const int                        numOps
-	,const LinOpPersisting<Scalar>   Ops[]
+	,const LinearOpHandle<Scalar>    Ops[]
 	,const Scalar                    &gamma
 	)
 {
@@ -56,7 +56,7 @@ MultiplicativeLinearOp<Scalar>::MultiplicativeLinearOp(
 template<class Scalar>
 void MultiplicativeLinearOp<Scalar>::initialize(
 	const int                        numOps
-	,const LinOpPersisting<Scalar>   Ops[]
+	,const LinearOpHandle<Scalar>    Ops[]
 	,const Scalar                    &gamma
 	)
 {
@@ -80,7 +80,7 @@ void MultiplicativeLinearOp<Scalar>::initialize(
 template<class Scalar>
 void MultiplicativeLinearOp<Scalar>::uninitialize(
 	const int                  numOps
-	,LinOpPersisting<Scalar>   Ops[]
+	,LinearOpHandle<Scalar>    Ops[]
 	,Scalar                    *gamma
 	)
 {

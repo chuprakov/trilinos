@@ -29,7 +29,7 @@
 #ifndef TSFCORE_SILLY_POWER_METHOD_HPP
 #define TSFCORE_SILLY_POWER_METHOD_HPP
 
-#include "TSFCoreLinOp.hpp"
+#include "TSFCoreLinearOpHandle.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 
 ///
@@ -46,7 +46,7 @@
  */
 template<class Scalar>
 bool sillyPowerMethod(
-	const TSFCore::LinOpNonPersisting<Scalar>                      &A
+	const TSFCore::LinearOpHandle<Scalar>                          &A
 	,const int                                                     maxNumIters
 	,const typename Teuchos::ScalarTraits<Scalar>::magnitudeType   tolerance
 	,Scalar                                                        *lambda

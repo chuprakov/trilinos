@@ -35,7 +35,7 @@
 #include "TSFCoreTestingToolsDecl.hpp"
 #include "TSFCoreVector.hpp"
 #include "TSFCoreVectorStdOps.hpp"
-#include "TSFCoreLinOp.hpp"
+#include "TSFCoreLinearOpHandle.hpp"
 
 template <class Scalar>
 Scalar TSFCore::relErr( const Scalar &s1, const Scalar &s2 )
@@ -89,17 +89,11 @@ std::ostream& TSFCore::operator<<( std::ostream& o, const Vector<Scalar>& v )
 template<class Scalar>
 std::ostream& TSFCore::operator<<( std::ostream& o, const LinearOp<Scalar>& M )
 {
-	return o << TSFCore::LinOpNonPersisting<Scalar>(M);
+	return o << TSFCore::LinearOpHandle<Scalar>(Teuchos::rcp(&M,false));
 }
 
 template<class Scalar>
-std::ostream& TSFCore::operator<<( std::ostream& o, const LinOpPersisting<Scalar>& M )
-{
-	return o << TSFCore::LinOpNonPersisting<Scalar>(M);
-}
-
-template<class Scalar>
-std::ostream& TSFCore::operator<<( std::ostream& o, const LinOpNonPersisting<Scalar>& M )
+std::ostream& TSFCore::operator<<( std::ostream& o, const LinearOpHandle<Scalar>& M )
 {
 	typedef Teuchos::ScalarTraits<Scalar> ST;
 	const Index dimDomain = M.domain()->dim(), dimRange = M.range()->dim();

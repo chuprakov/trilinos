@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
 		double  tolerance   = 1e-3;
 		int     maxNumIters = 10*globalDim;
 		result = sillyPowerMethod<double>(
-			TSFCore::LinOpNonPersisting<double>(*A), maxNumIters, tolerance
+			TSFCore::LinearOpHandle<double>(A), maxNumIters, tolerance
 			,&lambda, ( verbose ? &out : NULL )
 			);
 		if(!result) success = false;
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
 		//
 		if(verbose) out << "\n(4) Running the power method again on matrix A ...\n";
 		result = sillyPowerMethod<double>(
-			TSFCore::LinOpNonPersisting<double>(*A), maxNumIters, tolerance
+			TSFCore::LinearOpHandle<double>(A), maxNumIters, tolerance
 			,&lambda, ( verbose ? &out : NULL )
 			);
 		if(!result) success = false;

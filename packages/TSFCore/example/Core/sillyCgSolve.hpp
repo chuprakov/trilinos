@@ -29,7 +29,7 @@
 #ifndef TSFCORE_SILLY_CG_SOLVE_HPP
 #define TSFCORE_SILLY_CG_SOLVE_HPP
 
-#include "TSFCoreLinOp.hpp"
+#include "TSFCoreLinearOpHandle.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 
 ///
@@ -46,7 +46,7 @@
  */
 template<class Scalar>
 bool sillyCgSolve(
-	const TSFCore::LinOpNonPersisting<Scalar>                      &A
+	const TSFCore::LinearOpHandle<Scalar>                          &A
 	,const TSFCore::Vector<Scalar>                                 &b
 	,const int                                                     maxNumIters
 	,const typename Teuchos::ScalarTraits<Scalar>::magnitudeType   tolerance
