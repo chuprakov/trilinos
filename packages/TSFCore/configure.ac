@@ -155,10 +155,16 @@ TAC_ARG_CHECK_MPI
 # Checks for header files
 # ------------------------------------------------------------------------
 
-AC_CHECK_HEADERS([ostream iostream iostream.h iomanip iomanip.h],,,)
-AC_CHECK_HEADERS([valarray stdexcept typeinfo cassert assert.h],,,)
-AC_CHECK_HEADERS([vector algorithm algo.h algorithm.h],,,)
-AC_CHECK_HEADERS([memory string string.h],,,)
+AC_CHECK_HEADERS([ostream iostream iostream.h], [break],)
+AC_CHECK_HEADERS([iomanip iomanip.h], [break],)
+AC_CHECK_HEADERS([cassert assert.h], [break],)
+AC_CHECK_HEADERS([algorithm algo.h algorithm.h], [break],)
+AC_CHECK_HEADERS([string string.h], [break],)
+AC_CHECK_HEADER([valarray],,)
+AC_CHECK_HEADER([stdexcept],,)
+AC_CHECK_HEADER([typeinfo],,)
+AC_CHECK_HEADER([vector],,)
+AC_CHECK_HEADER([memory],,)
 
 if test "X$ac_cv_header_ostream" != "Xyes" && test "X$ac_cv_header_iostream" != "Xyes" && "X$ac_cv_header_iostream_h" != "Xyes"; then
   AC_MSG_ERROR([[Cannot find ostream, iostream, or iostream.h.  TSFCore requires at least one or the other.]])
