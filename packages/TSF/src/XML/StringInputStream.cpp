@@ -1,5 +1,4 @@
 #include "StringInputStream.h"
-#include <cstring>
 
 using namespace TSF;
 

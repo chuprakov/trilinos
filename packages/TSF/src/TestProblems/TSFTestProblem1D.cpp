@@ -3,7 +3,6 @@
 #include "TSFVectorBase.h"
 #include "TSFVectorSpaceBase.h"
 #include "TSFMPI.h"
-#include <cmath>
 
 using namespace TSF;
 

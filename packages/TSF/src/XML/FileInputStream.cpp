@@ -1,5 +1,4 @@
 #include "FileInputStream.h"
-#include <cstdlib>
 #include "TSFError.h"
 
 using namespace TSF;

@@ -164,7 +164,7 @@ fi
 # Checks for header files
 # ------------------------------------------------------------------------
 
-AC_CHECK_HEADERS([cstdlib stdlib.h cstdio stdio.h cassert assert.h],,,)
+AC_CHECK_HEADERS([cstdlib stdlib.h cstdarg stdarg.h cstdio stdio.h cassert assert.h],,,)
 AC_CHECK_HEADERS([cmath math.h iostream iostream.h string string.h],,,)
 AC_CHECK_HEADERS([sstream strstream sstream.h strstream.h],,,)
 

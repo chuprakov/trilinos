@@ -44,26 +44,6 @@ namespace TSF
        */
       static int system(const string& cmd);
 
-      /**
-       * sleep for a specified number of seconds
-       */
-      static void sleep(int sec);
-
-      /**
-       * sleep for a specified number of milliseconds
-       */
-      static void msleep(int millis);
-
-      /**
-       * sleep for a specified number of microseconds
-       */
-      static void usleep(int usec);
-
-      /**
-       * sleep for a specified number of nanoseconds
-       */
-      static void nsleep(int sec, int nanos);
-
       static void hold();
     };
 

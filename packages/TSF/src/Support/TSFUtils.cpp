@@ -1,9 +1,6 @@
 #include "TSFUtils.h"
 #include "TSFVersion.h"
 #include "TSFOut.h"
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
 
 using namespace TSF;
 

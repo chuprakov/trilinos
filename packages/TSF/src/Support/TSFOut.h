@@ -42,6 +42,9 @@ namespace TSF
 
       /** */
       static void vprintf(const char* format, va_list args);
+
+			/** */
+			static int hack_vsnprintf(char* str, size_t size, const char* format, va_list args);
     };
 }
 

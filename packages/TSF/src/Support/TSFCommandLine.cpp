@@ -1,7 +1,5 @@
 #include "TSFCommandLine.h"
 
-
-#include <cstring>
 #include "TSFError.h"
 #include "TSFOut.h"
 

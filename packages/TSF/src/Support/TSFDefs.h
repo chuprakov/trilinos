@@ -113,6 +113,14 @@ typedef double TSFReal;
 #error "Found neither cstdio nor stdio.h"
 #endif
 
+#if HAVE_CSTDARG
+#include <cstdarg>
+#elif HAVE_STDARG_H
+#include <stdarg.h>
+#else
+#error "Found neither cstdarg nor stdarg.h"
+#endif
+
 
 #if HAVE_CSTDLIB
 #include <cstdlib>

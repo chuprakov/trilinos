@@ -59,8 +59,8 @@ void TSFOut::printf(const char* format, ...)
 
 	while (bufSize > 0)
 		{
-			char* str = new char[bufSize];
-			int rtn = vsnprintf(str, bufSize, format, args);
+			char* str = new char[bufSize+1];
+			int rtn = hack_vsnprintf(str, bufSize, format, args);
 			if (rtn > 0)
 				{
 					writer_->print(str);
@@ -89,8 +89,8 @@ void TSFOut::vprintf(const char* format, va_list args)
 
 	while (bufSize > 0)
 		{
-			char* str = new char[bufSize];
-			int rtn = vsnprintf(str, bufSize, format, args);
+			char* str = new char[bufSize+1];
+			int rtn = hack_vsnprintf(str, bufSize, format, args);
 			if (rtn > 0)
 				{
 					writer_->print(str);
@@ -111,6 +111,38 @@ void TSFOut::vprintf(const char* format, va_list args)
 		}
 	
 	TSFError::raise("buffer overflow in TSFOut::printf()");
+}
+
+int TSFOut::hack_vsnprintf(char* str, size_t size, const char* format, va_list args)
+{
+#ifndef TFLOP
+	return vsnprintf(str, size, format, args);
+#else 
+	static FILE* devnull = fopen("/dev/null", "w");
+
+	if (devnull==0)
+		{
+			if (size < 0)
+				{
+					str[0] = '\0';
+				}
+			return 0;
+		}
+	else
+		{
+			/* count the characters */
+			int n = vfprintf(devnull, format, args);
+			if (n <= size-1)
+				{
+					vsprintf(str, format, args);
+					return n;
+				}
+			else
+				{
+					return -1;
+				}
+		}
+#endif
 }
 
 void TSFOut::setWriter(const TSFSmartPtr<TSFWriterBase>& writer )
