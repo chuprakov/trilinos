@@ -71,7 +71,21 @@ namespace TSFExtended
                 int nLocal,
                 const int* locallyOwnedIndices) const ;
 
-    
+    /**  
+     * Create an importer for accessing ghost elements.
+     * @param space the distributed vector space on which ghost elements
+     * are to be shared
+     * @param nGhost number of ghost elements needed by this processor
+     * @param ghostIndices read-only C array of off-processor indices needed
+     * by this processor.
+     * @return A RCP to a GhostImporter object.
+     */
+    RefCountPtr<GhostImporter<double> > 
+    createGhostImporter(const VectorSpace<double>& space,
+                        int nGhost,
+                        const int* ghostIndices) const ;
+
+
     /**
      * Create an empty matrix of type compatible with this vector type,
      * sized according to the given domain and range spaces.

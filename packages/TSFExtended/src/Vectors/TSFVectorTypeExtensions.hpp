@@ -31,6 +31,7 @@
 #include "TSFCoreVectorSpaceFactory.hpp"
 #include "TSFVectorSpaceDecl.hpp"
 #include "TSFLinearOperator.hpp"
+#include "TSFGhostImporter.hpp"
 
 namespace TSFExtended
 {
@@ -75,6 +76,20 @@ namespace TSFExtended
     createSpace(int dimension, 
                 int nLocal,
                 const int* locallyOwnedIndices) const = 0 ;
+
+    /**  
+     * Create an importer for accessing ghost elements.
+     * @param space the distributed vector space on which ghost elements
+     * are to be shared
+     * @param nGhost number of ghost elements needed by this processor
+     * @param ghostIndices read-only C array of off-processor indices needed
+     * by this processor.
+     * @return A RCP to a GhostImporter object.
+     */
+    virtual RefCountPtr<GhostImporter<Scalar> > 
+    createGhostImporter(const VectorSpace<Scalar>& space,
+                        int nGhost,
+                        const int* ghostIndices) const = 0 ;
 
     
     /**

@@ -26,6 +26,7 @@
 
 #include "TSFEpetraVectorType.hpp"
 #include "TSFEpetraVectorSpace.hpp"
+#include "TSFEpetraGhostImporter.hpp"
 #include "Epetra_Map.h"
 #include "Epetra_Import.h"
 #include "Epetra_Comm.h"
@@ -59,6 +60,22 @@ EpetraVectorType::createSpace(int dimension,
                                                    0, *epetra_comm()));
 
 	return rcp(new EpetraVectorSpace(map));
+}
+
+RefCountPtr<GhostImporter<double> > 
+EpetraVectorType::createGhostImporter(const VectorSpace<double>& space,
+                                      int nGhost,
+                                      const int* ghostIndices) const
+{
+  const EpetraVectorSpace* p 
+    = dynamic_cast<const EpetraVectorSpace*>(space.ptr().get());
+
+  TEST_FOR_EXCEPTION(p==0, runtime_error,
+                     "non-epetra vector space [" << space << "] given as "
+                     "argument to EpetraVectorType::createGhostImporter()");
+
+  return rcp(new EpetraGhostImporter(p->epetra_map(), nGhost, ghostIndices));
+  
 }
 
 LinearOperator<double>

@@ -39,7 +39,7 @@ AztecSolver::AztecSolver(const ParameterList& params)
     {
       const string& name = params.name(iter);
       const ParameterEntry& entry = params.entry(iter);
-      cerr << "Found parameter " << name << " = " << entry << endl;
+      //   cerr << "Found parameter " << name << " = " << entry << endl;
       /* Check that the param name appears in the table of Aztec params */
       if (paramMap().find(name) == paramMap().end()) continue;
 

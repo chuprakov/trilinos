@@ -44,6 +44,8 @@
 #np# Make sure to list all source files in one of the following categories.
 
 VECTORS_H = \
+	$(srcdir)/Vectors/TSFGhostImporter.hpp \
+	$(srcdir)/Vectors/TSFGhostView.hpp \
 	$(srcdir)/Vectors/TSFLoadableVector.hpp\
 	$(srcdir)/Vectors/TSFLinearCombination.hpp\
 	$(srcdir)/Vectors/TSFAccessibleVector.hpp\
@@ -79,6 +81,8 @@ UTILS_H = \
 UTILS = 
 
 CONCRETE_H = \
+	$(srcdir)/Concrete/TSFEpetraGhostImporter.hpp\
+	$(srcdir)/Concrete/TSFEpetraGhostView.hpp\
 	$(srcdir)/Concrete/TSFEpetraMatrix.hpp\
 	$(srcdir)/Concrete/TSFEpetraVector.hpp\
 	$(srcdir)/Concrete/TSFEpetraVectorSpace.hpp\
@@ -86,6 +90,8 @@ CONCRETE_H = \
 	$(srcdir)/Concrete/TSFIfpackOperator.hpp
 
 CONCRETE = \
+	$(srcdir)/Concrete/TSFEpetraGhostImporter.cpp\
+	$(srcdir)/Concrete/TSFEpetraGhostView.cpp\
 	$(srcdir)/Concrete/TSFEpetraMatrix.cpp\
 	$(srcdir)/Concrete/TSFEpetraVector.cpp\
 	$(srcdir)/Concrete/TSFEpetraVectorSpace.cpp\

@@ -30,6 +30,7 @@
 #include "TSFHandle.hpp"
 #include "TSFVectorTypeExtensions.hpp"
 #include "TSFVectorSpaceDecl.hpp"
+#include "TSFGhostImporter.hpp"
 
 namespace TSFExtended
 {
@@ -58,6 +59,15 @@ namespace TSFExtended
     VectorSpace<Scalar> createSpace(int dimension, 
                                     int nLocal,
                                     const int* locallyOwnedIndices) const ;
+
+
+    /** 
+     * Create an importer for ghost elements
+     **/
+    RefCountPtr<GhostImporter<Scalar> > 
+    createGhostImporter(const VectorSpace<Scalar>& space,
+                        int nGhost,
+                        const int* ghostIndices) const ;
 
     /**
      * Create an empty matrix of type compatible with this vector type,
@@ -91,6 +101,15 @@ namespace TSFExtended
                                                       const int* locallyOwnedIndices) const
   {
     return ptr()->createSpace(dimension, nLocal, locallyOwnedIndices);
+  }
+
+  template <class Scalar> inline 
+  RefCountPtr<GhostImporter<Scalar> > 
+  VectorType<Scalar>::createGhostImporter(const VectorSpace<Scalar>& space,
+                                         int nGhost,
+                                         const int* ghostIndices) const
+  {
+    return ptr()->createGhostImporter(space, nGhost, ghostIndices);
   }
 
   template <class Scalar> inline
