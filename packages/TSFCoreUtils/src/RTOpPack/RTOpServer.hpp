@@ -4,6 +4,10 @@
 #ifndef RTOP_SERVER_HPP
 #define RTOP_SERVER_HPP
 
+//#include <typeinfo>
+//#include <ostream>
+//#include <iomanip>
+
 #include "RTOpServerDecl.hpp"
 
 namespace RTOpPack {
