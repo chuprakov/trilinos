@@ -137,8 +137,8 @@ index_type MatrixConvertToSparseEncap::num_nonzeros(
 			assert(0);
 	}
 	const index_type
-		*inv_row_perm = inv_row_perm_.get() ? &(*inv_row_perm_)[0] : NULL,
-		*inv_col_perm = inv_col_perm_.get() ? &(*inv_col_perm_)[0] : NULL;
+		*inv_row_perm = inv_row_perm_.get() ? &(*inv_row_perm_)(1) : NULL,
+		*inv_col_perm = inv_col_perm_.get() ? &(*inv_col_perm_)(1) : NULL;
 	return mese_->count_nonzeros(
 		element_uniqueness
 		,inv_row_perm
@@ -180,8 +180,8 @@ void MatrixConvertToSparseEncap::coor_extract_nonzeros(
 			assert(0);
 	}
 	const index_type
-		*inv_row_perm = inv_row_perm_.get() ? &(*inv_row_perm_)[0] : NULL,
-		*inv_col_perm = inv_col_perm_.get() ? &(*inv_col_perm_)[0] : NULL;
+		*inv_row_perm = inv_row_perm_.get() ? &(*inv_row_perm_)(1) : NULL,
+		*inv_col_perm = inv_col_perm_.get() ? &(*inv_col_perm_)(1) : NULL;
 	mese_->coor_extract_nonzeros(
 		element_uniqueness
 		,inv_row_perm
