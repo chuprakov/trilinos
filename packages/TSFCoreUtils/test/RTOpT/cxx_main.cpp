@@ -31,6 +31,7 @@
 
 #include "RTOpPack_RTOpT.hpp"
 #include "RTOpPack_MPI_apply_op.hpp"
+#include "RTOpPack_ROpCountNanInf.hpp"
 #include "RTOpPack_ROpSum.hpp"
 #include "RTOpPack_TOpAssignScalar.hpp"
 #include "RTOpPack_RTOpC.hpp"
@@ -76,6 +77,37 @@ void test_do_stuff( MPI_Comm mpiComm, const int n, std::ostream &out )
     ,&*sum_targ
     );
   out << sum_op(*sum_targ) << std::endl;
+  out << "\nisnaninf(sum(z0)) = " << Teuchos::ScalarTraits<Scalar>::isnaninf(sum_op(*sum_targ)) << std::endl;;
+  out << "\nPerforming z0 = nan\n";
+  assign_scalar_op.alpha(Teuchos::ScalarTraits<Scalar>::nan());
+  RTOpPack::MPI_apply_op(
+    mpiComm, assign_scalar_op, -1
+    ,0,(const RTOpPack::SubVectorT<Scalar>*)NULL
+    ,1,arrayArg(z0)()
+    ,NULL
+    );
+/*
+  out << "\ncountNanInf(z0) = ";
+  RTOpPack::ROpCountNanInf<Scalar> countNanInf_op;
+  Teuchos::RefCountPtr<ReductTarget> countNanInf_targ = countNanInf_op.reduct_obj_create();
+  RTOpPack::MPI_apply_op(
+    mpiComm, countNanInf_op, -1
+    ,1,arrayArg(z0)()
+    ,0,(const RTOpPack::MutableSubVectorT<Scalar>*)NULL
+    ,&*sum_targ
+    );
+  out << countNanInf_op(*countNanInf_targ) << std::endl;
+*/
+  out << "\nPerforming sum(z0) = ";
+  sum_op.reduct_obj_reinit(&*sum_targ);
+  RTOpPack::MPI_apply_op(
+    mpiComm, sum_op, -1
+    ,1,arrayArg(z0)()
+    ,0,(const RTOpPack::MutableSubVectorT<Scalar>*)NULL
+    ,&*sum_targ
+    );
+  out << sum_op(*sum_targ) << std::endl;
+  out << "\nisnaninf(sum(z0)) = " << Teuchos::ScalarTraits<Scalar>::isnaninf(sum_op(*sum_targ)) << std::endl;;
   out << "\n*** Leaving test_do_stuff<"<<Teuchos::ScalarTraits<Scalar>::name()<<">) ...\n";
 }
 
