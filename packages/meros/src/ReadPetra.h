@@ -7,7 +7,7 @@
 #include "Epetra_Vector.h"
 #include "AztecOO.h"
 
-extern int ReadPetraMatrix(Epetra_Map *map, 
+extern int ReadPetraMatrix(Epetra_Map *row_map, Epetra_Map *col_map, 
 			   Epetra_CrsMatrix **A, char *fname);
 
 extern int ReadPetraVector(Epetra_Vector *A, char *fname);

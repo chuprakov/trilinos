@@ -24,11 +24,14 @@
 
 #include "ReadPetra.h"
 
-int ReadPetraMatrix(Epetra_Map *map, 
+int ReadPetraMatrix(Epetra_Map *row_map, Epetra_Map *col_map, 
 		    Epetra_CrsMatrix **A, char *fname) { 
 
 
-    Epetra_CrsMatrix *AA = new Epetra_CrsMatrix(Copy, *map, 0);
+
+    Epetra_CrsMatrix *AA = new Epetra_CrsMatrix(Copy, *row_map, *col_map, 0);
+    if (AA==0) EPETRA_CHK_ERR(-3); // Ran out of memory
+
     FILE *fp;
     int row, col, count = 0;
     double value;
@@ -44,10 +47,16 @@ int ReadPetraMatrix(Epetra_Map *map,
       col--;
       AA->InsertGlobalValues(row, 1, &value, &col);
     }
-    *A = AA;   
     fclose(fp);
 
-  return 0;
+    int ierr=AA->TransformToLocal(col_map, row_map);
+    if (ierr!=0) {
+      cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
+      EPETRA_CHK_ERR(ierr);
+    }
+    *A = AA;   
+
+    return 0;
 }
 int ReadPetraVector(Epetra_Vector *AA, char *fname) { 
 
