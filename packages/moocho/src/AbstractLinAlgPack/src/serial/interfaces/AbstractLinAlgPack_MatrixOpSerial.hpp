@@ -49,6 +49,19 @@ namespace SparseLinAlgPack {
 class MatrixWithOpSerial : virtual public MatrixWithOp {
 public:
 
+	///
+	using MatrixWithOp::Mp_StM;
+	///
+	using MatrixWithOp::Mp_StMtP;
+	///
+	using MatrixWithOp::Mp_StPtM;
+	///
+	using MatrixWithOp::Mp_StPtMtP;
+	///
+	using MatrixWithOp::Vp_StMtV;
+	///
+	using MatrixWithOp::Mp_StMtM;
+
 	/** @name Level-1 BLAS */
 	//@{
 
