@@ -61,7 +61,8 @@ CORE_H = \
 	  $(srcdir)/SimpleBlockPreconditionerFactory.h   \
 	  $(srcdir)/SimpleCBlockPreconditionerFactory.h   \
           $(srcdir)/NSBlockPreconditionerFactory.h       \
-	  $(srcdir)/SchurFactory.h                      
+	  $(srcdir)/SchurFactory.h                       \
+	  $(srcdir)/EPW/EPWBlockPreconditionerFactory.h      
 
 CORE = \
           $(srcdir)/Aztec2TSF.cpp                         \
@@ -83,7 +84,8 @@ CORE = \
           $(srcdir)/SimpleOperatorSource.cpp               \
 	  $(srcdir)/SimpleCOperatorSource.cpp		   \
 	  $(srcdir)/SimpleSchurFactory.cpp                 \
-          $(srcdir)/SchurFactory.cpp                      
+          $(srcdir)/SchurFactory.cpp                       \
+	  $(srcdir)/EPW/EPWBlockPreconditionerFactory.cpp      
 
 UTIL_H = 
 
@@ -140,7 +142,9 @@ COMP_H =
 COMP = 
 
 
-AM_CPPFLAGS = -I$(top_srcdir)/../epetra/src               \
+AM_CPPFLAGS = -I$(srcdir) \
+              -I$(srcdir)/EPW                             \
+              -I$(top_builddir)/../meros/src/EPW          \
               -I$(top_builddir)/../epetra/src             \
               -I$(top_srcdir)/../TSF/src/LinearOperators  \
               -I$(top_srcdir)/../TSF/src/Implementations  \
