@@ -19,10 +19,9 @@
 #include <iomanip>
 #include <vector>
 
-#include "../test/TestGeneralIterationPack.h"
-#include "../include/IterQuantityAccessContinuous.h"
+#include "GeneralIterationPack/test/TestGeneralIterationPack.h"
+#include "GeneralIterationPack/include/IterQuantityAccessContinuous.h"
 #include "update_success.h"
-
 
 bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::ostream* out)
 {
