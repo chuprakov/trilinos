@@ -22,6 +22,7 @@
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
 #include "AbstractLinAlgPack/include/SpVectorView.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_dot_prod.h"
+#include "RTOpStdOpsLib/include/RTOp_ROp_max_abs_ele.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_sum.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_add_scalar.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_axpy.h"
@@ -29,6 +30,7 @@
 #include "RTOpStdOpsLib/include/RTOp_TOp_ele_wise_prod.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_random_vector.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_scale_vector.h"
+#include "RTOpStdOpsLib/include/RTOp_TOp_sign.h"
 #include "RTOpPack/include/RTOpCppC.h"
 #include "ThrowException.h"
 
@@ -167,6 +169,21 @@ AbstractLinAlgPack::dot( const VectorWithOp& v_rhs1, const SpVectorSlice& sv_rhs
 	return 0.0;
 }
 
+void AbstractLinAlgPack::max_abs_ele(
+	const VectorWithOp& v, value_type* max_v_j, index_type* max_j
+	)
+{
+	assert( max_v_j && max_j );
+	RTOpPack::RTOpC          op;
+	RTOpPack::ReductTarget   reduct_obj;
+	assert(0==RTOp_ROp_max_abs_ele_construct(&op.op()));
+	op.reduct_obj_create(&reduct_obj);
+	v.apply_reduction( op, 0, NULL, 0, NULL,reduct_obj.obj() );
+	RTOp_value_index_type val = RTOp_ROp_max_abs_ele_val(reduct_obj.obj());
+	*max_v_j = val.value;
+	*max_j   = val.index;
+}
+
 void AbstractLinAlgPack::Vp_S(
 	VectorWithOpMutable* v_lhs, const value_type& alpha )
 {
@@ -260,4 +277,17 @@ void AbstractLinAlgPack::random_vector(
 #endif
 	assert(0==RTOp_TOp_random_vector_set_bounds( l, u, &random_vector_op.op() ));
 	v->apply_transformation(random_vector_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL);
+}
+
+void AbstractLinAlgPack::sign(
+	const VectorWithOp      &v
+	,VectorWithOpMutable    *z
+	)
+{
+	RTOpPack::RTOpC op;
+	assert(0==RTOp_TOp_sign_construct(&op.op()));
+	const int num_vecs = 1;
+	const VectorWithOp*
+		vecs[num_vecs] = { &v };
+	z->apply_transformation( op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
 }

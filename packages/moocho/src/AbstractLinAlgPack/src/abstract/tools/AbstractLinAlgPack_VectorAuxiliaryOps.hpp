@@ -33,11 +33,11 @@ namespace AbstractLinAlgPack {
 /** Compute the maximum element in a vector.
  *
  * Returns:
-  \verbatim
+ \verbatim
 
-  max{ v(i), i = 1...n }
-  \endverbatim
-  */
+ max{ v(i), i = 1...n }
+ \endverbatim
+ */
 value_type max( const VectorWithOp& v ); 
 
 ///

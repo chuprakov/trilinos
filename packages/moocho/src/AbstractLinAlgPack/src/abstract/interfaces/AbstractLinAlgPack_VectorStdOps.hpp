@@ -47,6 +47,24 @@ value_type dot( const VectorWithOp& v_rhs1, const SpVectorSlice& sv_rhs2 );
  */
 value_type dot( const SpVectorSlice& sv_rhs1, const VectorWithOp& v_rhs2 );
 
+///
+/** Compute the maximum element in a vector.
+ *
+ * @param  v        [in] The vector being searched
+ * @param  max_v_j  [out] The value of the element with the max abs value.
+ * @param  max_j    [out] The index of the element with the max abs value.
+ *
+ * Returns:
+ \verbatim
+
+ max_v_j = v(max_j) s.t. |v(max_j)| <= |v(j)|, for j = 1...n
+ \endverbatim
+ * If there is a tie, the lowest index is returned so that the
+ * result is unique no matter what order the vector elements are
+ * searched.
+ */
+void max_abs_ele( const VectorWithOp& v, value_type* max_v_j, index_type* max_j ); 
+
 //@}
 
 /** \defgroup VectorStdOps_TOp_grp Transformation operations */
@@ -102,6 +120,23 @@ void seed_random_vector_generator( unsigned int );
   * The elements are randomly generated between <tt>[l,u]</tt>.
   */
 void random_vector( value_type l, value_type u, VectorWithOpMutable* v );
+
+///
+/** Compute the sign of each element in an input vector.
+ *
+ \verbatim
+
+         / -1.0 : if v(i)  < 0.0
+ z(i) =  |  0.0 : if v(i) == 0.0
+         \ +1.0 : if v(i)  < 0.0
+
+ , for i = 1...n
+ \endverbatim
+ */
+void sign(
+	const VectorWithOp      &v
+	,VectorWithOpMutable    *z
+	);
 
 //@}
 
