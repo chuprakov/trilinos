@@ -39,6 +39,14 @@ public:
 	//@{
 
 	///
+	/** Assign the state of one Merit functions.
+	 *
+	 * The default implementation throws an <tt>std::logic_error</tt> exception
+	 * unless it is assignment to self.
+	 */
+	virtual MeritFuncNLP& operator=(const MeritFuncNLP&);
+
+	///
 	/** Return the value of the merit function at f(x), c(x), h(x).
 	 * This interface requires the client to compute f(x)
 	 * c(x) and h(x) and pass it to this function to have
