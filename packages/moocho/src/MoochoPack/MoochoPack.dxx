@@ -23,7 +23,6 @@ Uses packages LinAlgPack, SparseLinAlgPack, SparseSolverPack
       */
     //@{
       //@Include: ./Configurations/MamaJama/rsqp_mama_jama_solve.h
-      //@Include: ./Configurations/MamaJama/create_mama_jama_solver.h
       //@Include: ./Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.h
     //@}
 
@@ -41,10 +40,8 @@ Uses packages LinAlgPack, SparseLinAlgPack, SparseSolverPack
     //@Include: ./include/std/CalcDFromYPYZPZ_Step.h
     //@Include: ./include/std/CalcLambdaIndepStd_AddedStep.h
     //@Include: ./include/std/CalcReducedGradLagrangianStd_AddedStep.h
-    //@Include: ./include/std/CalcZpzFromDYPY_Step.h
     //@Include: ./include/std/CheckBasisFromPy_Step.h
     //@Include: ./include/std/CheckConvergenceStd_AddedStep.h
-    //@Include: ./include/std/CheckSkipBFGSUpdateNoPy_Step.h
     //@Include: ./include/std/CheckSkipBFGSUpdateStd_Step.h
     //@Include: ./include/std/DecompositionSystemVarReductStd.h
     //@Include: ./include/std/DepDirecStd_Step.h
@@ -60,7 +57,6 @@ Uses packages LinAlgPack, SparseLinAlgPack, SparseSolverPack
     //@Include: ./include/std/LineSearchFullStepAfterKIter_Step.h
     //@Include: ./include/std/LineSearchFullStep_Step.h
     //@Include: ./include/std/LineSearchWatchDog_Step.h
-    //@Include: ./include/std/LineSearhFailureNewBasisSelection_Step.h
     //@Include: ./include/std/MeritFunc_ModifiedL1LargerSteps_AddedStep.h
     //@Include: ./include/std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.h
     //@Include: ./include/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.h
@@ -72,9 +68,6 @@ Uses packages LinAlgPack, SparseLinAlgPack, SparseSolverPack
     //@Include: ./include/std/NumFixedDepIndep_AddedStep.h
     //@Include: ./include/std/PrintReducedQPError_AddedStep.h
     //@Include: ./include/std/ReducedGradientStd_Step.h
-    //@Include: ./include/std/ReducedHessianBFGSStd_Step.h
-    //@Include: ./include/std/ReducedHessianBFGS_Step.h
-    //@Include: ./include/std/SearchDirecMixedFullReduced_Step.h
   //@}
 
   /** @name 4. Reduced Space QP Solvers.
