@@ -43,6 +43,15 @@ namespace AbstractLinAlgPack {
  * in general so don't assume that you can alias the lhs with the rhs and
  * get correct results.
  *
+ * Any nonsingular matrix abstraction that can be used to solve for nonlinear
+ * systems should also be able to support the \c MatrixWithOp interface.
+ * Therefore, this interface is more of an implementation artifact than
+ * an a legitimate domain abstraction.  However, some linear solvers that
+ * can implement this interface, can not easily implement the <tt>%MatrixWithOp</tt>
+ * interface and therefore this interface is justified.  A general client should never
+ * use this interface directly.  Instead, the combined interface \c MatrixWithOpNonsingular
+ * should be used with fully formed matrix abstractions.
+ *
  * All these Level-2 and Level-3 BLAS operations have default implementations
  * based on the Level-2 BLAS operations:
  *
