@@ -99,7 +99,10 @@ void TSFCore::scale( Scalar alpha, MultiVector<Scalar>* V )
 	RTOpPack::RTOpC  scale_vector_op;
 	if(0>RTOp_TOp_scale_vector_construct(alpha,&scale_vector_op.op())) assert(0);
 	MultiVector<Scalar>* targ_multi_vecs[] = { V };
-	applyOp<Scalar>(scale_vector_op,0,NULL,1,targ_multi_vecs,RTOp_REDUCT_OBJ_NULL);
+	applyOp<Scalar>(
+		scale_vector_op,0,(const MultiVector<Scalar>**)NULL // The SUN compiler requires these casts!
+		,1,targ_multi_vecs,(RTOp_ReductTarget*)NULL
+		);
 }
 
 template<class Scalar>
@@ -111,7 +114,10 @@ void TSFCore::assign( MultiVector<Scalar>* V, Scalar alpha )
 	RTOpPack::RTOpC  assign_scalar_op;
 	if(0>RTOp_TOp_assign_scalar_construct(alpha,&assign_scalar_op.op())) assert(0);
 	MultiVector<Scalar>* targ_multi_vecs[] = { V };
-	applyOp<Scalar>(assign_scalar_op,0,NULL,1,targ_multi_vecs,RTOp_REDUCT_OBJ_NULL);
+	applyOp<Scalar>(
+		assign_scalar_op,0,(const MultiVector<Scalar>**)NULL // The SUN compiler requires these casts!
+		,1,targ_multi_vecs,(RTOp_ReductTarget*)NULL
+		);
 }
 
 template<class Scalar>
@@ -124,7 +130,10 @@ void TSFCore::assign( MultiVector<Scalar>* V, const MultiVector<Scalar>& U )
 	if(0>RTOp_TOp_assign_vectors_construct(&assign_vectors_op.op())) assert(0);
 	const MultiVector<Scalar>* multi_vecs[]      = { &U };
 	MultiVector<Scalar>*       targ_multi_vecs[] = { V   };
-	applyOp<Scalar>(assign_vectors_op,1,multi_vecs,1,targ_multi_vecs,RTOp_REDUCT_OBJ_NULL);
+	applyOp<Scalar>(
+		assign_vectors_op,1,multi_vecs,1,targ_multi_vecs
+		,(RTOp_ReductTarget*)NULL // The SUN compiler requires this cast!
+		);
 }
 
 template<class Scalar>

@@ -51,8 +51,6 @@ namespace TSFCore {
 ///
 typedef RTOp_index_type  Index;
 ///
-typedef RTOp_value_type  Scalar;
-///
 using RangePack::Range1D;
 
 ///
@@ -90,7 +88,7 @@ namespace Exceptions {
 //@{
 
 /// Special values for solving a linear system to any convienet tolerance.
-const Scalar DEFAULT_TOLERANCE = 1e-20; // Should not select this by accident
+const RTOp_value_type DEFAULT_TOLERANCE = 1e-20; // Should not select this by accident
 
 /// Thrown if any member functions are called before initialize() has been called.
 class UnInitialized : public std::logic_error

@@ -63,6 +63,9 @@ public:
 	///
 	typedef RTOp_value_type Scalar;
 
+	///
+	using MPIVectorBase<Scalar>::getLocalData; // Injects non-const version
+
 	/** @name Constructors/initializers */
 	//@{
 
