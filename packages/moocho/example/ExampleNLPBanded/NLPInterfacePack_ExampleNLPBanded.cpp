@@ -41,6 +41,7 @@ ExampleNLPBanded::ExampleNLPBanded(
 	,value_type   diag_scal
 	,value_type   diag_vary
 	,bool         sym_basis
+	,value_type   co
 	)
 	:is_initialized_(false)
 	,nlp_selects_basis_(nlp_selects_basis)
@@ -87,7 +88,7 @@ ExampleNLPBanded::ExampleNLPBanded(
 		hl_orig_    = hl;
 		hu_orig_    = hu;
 	}
-	co_orig_    = 0.0;
+	co_orig_    = co;
 	//
 	const value_type inf = NLP::infinite_bound();
 	if( xDl > -inf || xDu < +inf || xIl > -inf || xIu < +inf )

@@ -158,6 +158,7 @@ public:
 		,value_type   diag_scal         = 10.0
 		,value_type   diag_vary         = 1.0
 		,bool         sym_basis         = false
+		,value_type   co                = 0.0
 		);
 
 	//@}

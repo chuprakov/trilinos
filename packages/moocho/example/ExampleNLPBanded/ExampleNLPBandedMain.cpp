@@ -53,6 +53,7 @@ int main( int argc, char* argv[] )
 		double   diag_scal = 1.0;
 		double   diag_vary = 1.0;
 		bool     sym_basis = false;
+		double   co        = 0.0;
 		
 		CommandLineProcessor  command_line_processor;
 
@@ -76,6 +77,7 @@ int main( int argc, char* argv[] )
 		command_line_processor.set_option(
 			"sym-basis", "unsym-basis", &sym_basis
 			,"Determine if the basis is symmetric" );
+		command_line_processor.set_option( "co", &co, "Constant term in general equalities" );
 	
 		CommandLineProcessor::EParseCommandLineReturn
 			parse_return = command_line_processor.parse_command_line(argc,argv,&std::cerr);
@@ -88,7 +90,7 @@ int main( int argc, char* argv[] )
 		//
 
 		ExampleNLPBanded
-			nlp(nD,nI,bw,mU,mI,xo,xDl,xDu,xIl,xIu,hl,hu,nlp_selects_basis,diag_scal,diag_vary,sym_basis);
+			nlp(nD,nI,bw,mU,mI,xo,xDl,xDu,xIl,xIu,hl,hu,nlp_selects_basis,diag_scal,diag_vary,sym_basis,co);
 
 		rSQPppSolver  solver;
 
