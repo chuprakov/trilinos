@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <ostream>
 #include <vector>
+#include <typeinfo>
 
 #include "../test/TestLinAlgPack.h"
 #include "../include/GenMatrixClass.h"
@@ -17,7 +18,7 @@ using LinAlgPack::sqrt_eps;
 
 // Check consistency of row(), col(), diag() and operator()().
 template<class M_t>
-void check_access( M_t& M, M_t::size_type row_offset, M_t::size_type col_offset
+void check_access( M_t& M, typename M_t::size_type row_offset, typename M_t::size_type col_offset
 	, std::ostream* out, bool* success )
 {
 	if(out)
@@ -27,11 +28,11 @@ void check_access( M_t& M, M_t::size_type row_offset, M_t::size_type col_offset
 
 	bool result = true;
 
-	for( M_t::size_type i = 1; i <= M.rows(); ++i ) {
-		for( M_t::size_type j = 1; j <= M.rows(); ++j ) {
-			const M_t::value_type
+	for( typename M_t::size_type i = 1; i <= M.rows(); ++i ) {
+		for( typename M_t::size_type j = 1; j <= M.rows(); ++j ) {
+			const typename M_t::value_type
 				Mij = M(i,j);
-			M_t::value_type
+			typename M_t::value_type
 				val = (i+row_offset)+0.1*(j+col_offset);
 			if( ::fabs(Mij-val) > sqrt_eps ) {
 				result = false;
@@ -46,7 +47,7 @@ void check_access( M_t& M, M_t::size_type row_offset, M_t::size_type col_offset
 				if(out) *out << "M("<<i<<","<<j<<") != (M.col("<<j<<")("<<i<<") -> "<<val<<")\n";
 			}
 			const int k = ( i > j ? -i + j : j - i );
-			const M_t::size_type k_i = ( i > j ? j : i );
+			const typename M_t::size_type k_i = ( i > j ? j : i );
 			if( Mij != (val = M.diag(k)(k_i) ) ) {
 				result = false;
 				if(out) *out << "M("<<i<<","<<j<<") != (M.diag("<<k<<")("<<k_i<<") -> "<<val<<")\n";
@@ -215,22 +216,22 @@ bool LinAlgPack::TestingPack::TestGenMatrixClass(std::ostream* out)
 	// GenMatrixSlice
 
 	if(out) *out << "\nLet M = const_cast<GenMatrixSlice&>(gms2)(r_rng,c_rng)\n";
-	gms1.bind( const_cast<GenMatrixSlice&>( const_cast<GenMatrixSlice&>(gms2)(r_rng,c_rng) ) );
+	gms1.bind( const_cast<GenMatrixSlice&>(gms2)(r_rng,c_rng) );
 	if(out) *out << "M =\n" << gms1;
 	check_access( gms1, 1, 1, out, &success );
 
 	if(out) *out << "\nLet M = const_cast<GenMatrixSlice&>(gms2(r_rng,c_rng))\n";
-	gms1.bind( const_cast<GenMatrixSlice&>(gms2(r_rng,c_rng)) );
+	gms1.bind( const_cast<GenMatrixSlice&>(gms2)(r_rng,c_rng) );
 	if(out) *out << "M =\n" << gms1;
 	check_access( gms1, 1, 1, out, &success );
 
 	if(out) *out << "\nLet M = const_cast<GenMatrixSlice&>(gms2)(2,m-1,2,n-1)\n";
-	gms1.bind( const_cast<GenMatrixSlice&>( const_cast<GenMatrixSlice&>(gms2)(2,m-1,2,n-1) ) );
+	gms1.bind(const_cast<GenMatrixSlice&>(gms2)(2,m-1,2,n-1) );
 	if(out) *out << "M =\n" << gms1;
 	check_access( gms1, 1, 1, out, &success );
 
 	if(out) *out << "\nLet M = const_cast<GenMatrixSlice&>(gms2(2,m-1,2,n-1))\n";
-	gms1.bind( const_cast<GenMatrixSlice&>(gms2(2,m-1,2,n-1)) );
+	gms1.bind( const_cast<GenMatrixSlice&>(gms2)(2,m-1,2,n-1) );
 	if(out) *out << "M =\n" << gms1;
 	check_access( gms1, 1, 1, out, &success );
 
@@ -242,7 +243,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixClass(std::ostream* out)
 	check_access( gms1, 1, 1, out, &success );
 
 	if(out) *out << "\nLet M = const_cast<const GenMatrixSlice&>(gm4)(r_rng,c_rng)\n";
-	gms1.bind( const_cast<GenMatrixSlice&>( const_cast<const GenMatrix&>(gm4)(r_rng,c_rng) ) );
+	gms1.bind( const_cast<const GenMatrix&>(gm4)(r_rng,c_rng) );
 	if(out) *out << "M =\n" << gms1;
 	check_access( gms1, 1, 1, out, &success );
 
@@ -252,7 +253,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixClass(std::ostream* out)
 	check_access( gms1, 1, 1, out, &success );
 
 	if(out) *out << "\nLet M = const_cast<const GenMatrixSlice&>(gm4)(2,m-1,2,n-1)\n";
-	gms1.bind( const_cast<GenMatrixSlice&>( const_cast<const GenMatrix&>(gm4)(2,m-1,2,n-1) ) );
+	gms1.bind( const_cast<const GenMatrix&>(gm4)(2,m-1,2,n-1) );
 	if(out) *out << "M =\n" << gms1;
 	check_access( gms1, 1, 1, out, &success );
 

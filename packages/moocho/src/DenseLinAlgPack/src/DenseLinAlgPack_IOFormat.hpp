@@ -21,7 +21,7 @@ public:
 	typedef LinAlgPackIO::fmtflags fmtflags;	
 
 	/// Initialize the flags to 0x0000
-	bit_flags() : flags_(0x0000) {}
+	bit_flags() : flags_((fmtflags)(0x0000)) {}
 
 	/// Get the flags
 	fmtflags flags() const {
@@ -37,17 +37,17 @@ public:
 
 	/// Set a flag
 	fmtflags setf(fmtflags f) {
-		return flags( flags() | f );
+		return flags( (fmtflags)(flags() | f) );
 	}
 
 	/// Set a flag under a mask
 	fmtflags setf(fmtflags f, fmtflags mask) {
-		return flags( flags() | (f&mask) );
+		return flags( (fmtflags)(flags() | (f&mask)) );
 	}
 
 	/// Unset a flag(s)
 	void unsetf(fmtflags mask) {
-		flags( flags() & ~mask );
+		flags( (fmtflags)(flags() & ~mask) );
 	}
 
 private:
@@ -80,7 +80,8 @@ private:
 	int				fill_;
 
 	///
-	ios_format_memento() : flags_(0), prec_(6), wdt_(0), fill_(' ') {}
+	ios_format_memento() : flags_((fmtflags)(0)), prec_(6), wdt_(0)
+		, fill_(' ') {}
 
 };	// end class ios_format_memento
 
@@ -194,7 +195,7 @@ public:
 	}
 	///
 	format& general()		{
-		ios_base_flags().setf(0, std::ios_base::floatfield);
+		ios_base_flags().setf((fmtflags)0, std::ios_base::floatfield);
 		return *this;
 	}
 	///
@@ -232,13 +233,29 @@ public:
 	//@{
 
 	///
-	format& ignore_dim()		{	extra_flags().setf(ignore_dim_bit); return *this;	}
+	format& ignore_dim()
+	{
+		extra_flags().setf((fmtflags)(ignore_dim_bit));
+		return *this;
+	}
 	///
-	format& no_ignore_dim()		{	extra_flags().unsetf(ignore_dim_bit); return *this;	}
+	format& no_ignore_dim()
+	{
+		extra_flags().unsetf((fmtflags)(ignore_dim_bit));
+		return *this;
+	}
 	///
-	format& insert_newlines()	{	extra_flags().unsetf(no_insert_newlines_bit); return *this;	}
+	format& insert_newlines()
+	{
+		extra_flags().unsetf((fmtflags)(no_insert_newlines_bit));
+		return *this;
+	}
 	///
-	format& no_insert_newlines(){	extra_flags().setf(no_insert_newlines_bit); return *this;	}
+	format& no_insert_newlines()
+	{
+		extra_flags().setf((fmtflags)(no_insert_newlines_bit));
+		return *this;
+	}
 
 	//@}
 

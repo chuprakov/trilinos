@@ -1,9 +1,14 @@
 // ///////////////////////////////////////////////////////////////////
 // TestGenMatrixOp.cpp
+//
+// 2/10/00: g++ 2.95.2 is giving me some trouble with update_success(...) in template
+// functions for some reason?
+//
 
 #include <iomanip>
 #include <ostream>
 #include <vector>
+#include <typeinfo>
 
 #include "../test/TestLinAlgPack.h"
 #include "../include/GenMatrixClass.h"
@@ -14,6 +19,12 @@
 //#include "../include/LinAlgOpPack.h"
 
 namespace {
+
+// 2/10/00: See TestVectorClass.cpp
+inline
+bool update_success( bool result, bool *success ) {
+	return TestingHelperPack::update_success( result, success );
+}
 
 using LinAlgPack::size_type;
 using LinAlgPack::value_type;
@@ -33,7 +44,6 @@ void test_MtV( M_t& M_rhs1, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_r
 	using LinAlgPack::Vp_StV;
 	using LinAlgPack::Vp_StMtV;
 	using LinAlgPack::comp;
-	using TestingHelperPack::update_success;
 	
 	// Check alpha = 1.0, 0.5.  Check beta = 0.0, 0.5, 1.0
 	bool result = true;
@@ -90,7 +100,6 @@ void test_MtM( M_t& B, BLAS_Cpp::Transp trans_B, const GenMatrixSlice& I
 	using LinAlgPack::Mp_StM;
 	using LinAlgPack::Mp_StMtM;
 	using LinAlgPack::comp;
-	using TestingHelperPack::update_success;
 	
 	value_type alpha = 1.0, beta = 0.0;
 	bool result = true;
@@ -233,10 +242,10 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 
 	if(out) *out << "\ntri_ele_gms_lhs = alpha (elementwise)\n";
 
-	if(out) *out << "\ngms_lhs.resize(m,m); gm_lhs = 1.0; assign(&tri_ele(gm_lhs(),lower),2.0);\n";
+	if(out) *out << "\ngms_lhs.resize(m,m); gm_lhs = 1.0; assign(&nonconst_tri_ele(gm_lhs(),lower),2.0);\n";
 	gm_lhs.resize(m,m);
 	gm_lhs = 1.0;
-	assign(&tri_ele(gm_lhs(),lower),2.0);
+	assign(&nonconst_tri_ele(gm_lhs(),lower),2.0);
 	update_success( result1 = comp(tri_ele(gm_lhs(),lower),2.0), &success );
 	update_success( result2 = comp(tri_ele(gm_lhs(1,m-1,2,m),upper),1.0), &success );
 	if(out && (!result1 || !result2) )
@@ -245,7 +254,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 				 << "tri_ele(gm_lhs(1,m-1,2,m),upper) == 1.0 : " << result2 << std::endl;
 
 	if(out) *out << "\nassign(&tri_ele(gm_lhs(1,m-1,2,m),upper),3.0);\n";
-	assign(&tri_ele(gm_lhs(1,m-1,2,m),upper),3.0);
+	assign(&nonconst_tri_ele(gm_lhs(1,m-1,2,m),upper),3.0);
 	update_success( result1 = comp(tri_ele(gm_lhs(),lower),2.0), &success );
 	update_success( result2 = comp(tri_ele(gm_lhs(1,m-1,2,m),upper),3.0), &success );
 	if(out && (!result1 || !result2) )
@@ -257,9 +266,9 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 
 	if(out) *out << "\ntri_ele_gms_lhs = tri_ele_gms_rhs\n"
 				 << "\nassign(&tri_ele(gm_lhs(2,m,1,m-1),lower),tri_ele(gms_rhs(1,m-1,2,m),upper));\n";
-	assign(&tri_ele(gm_lhs(2,m,1,m-1),lower),tri_ele(gms_rhs(1,m-1,2,m),upper));
+	assign(&nonconst_tri_ele(gm_lhs(2,m,1,m-1),lower),tri_ele(gms_rhs(1,m-1,2,m),upper));
 	if(out) *out << "assign(&tri_ele(gm_lhs(1,m-1,2,m),upper),tri_ele(gms_rhs(2,m,1,m-1),lower));\n";
-	assign(&tri_ele(gm_lhs(1,m-1,2,m),upper),tri_ele(gms_rhs(2,m,1,m-1),lower));
+	assign(&nonconst_tri_ele(gm_lhs(1,m-1,2,m),upper),tri_ele(gms_rhs(2,m,1,m-1),lower));
 	if(out) *out << "gm_lhs.diag() = gms_rhs.diag();\n";
 	gm_lhs.diag() = gms_rhs.diag();
 	update_success( result1 = comp( gm_lhs(1,m,1,m), no_trans, gms_rhs(1,m,1,m), trans ), &success );
@@ -291,8 +300,8 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 						"tm2 = tri_ele(gm_lhs(1,m-1,2,m),BLAS_Cpp::upper)\n";
 		gm_lhs = 1.0;
 		tri_ele_gms
-			tm1 = tri_ele(gm_lhs(1,m,1,m),BLAS_Cpp::lower),
-			tm2 = tri_ele(gm_lhs(1,m-1,2,m),BLAS_Cpp::upper);
+			tm1 = nonconst_tri_ele(gm_lhs(1,m,1,m),BLAS_Cpp::lower),
+			tm2 = nonconst_tri_ele(gm_lhs(1,m-1,2,m),BLAS_Cpp::upper);
 		if(out) *out << "Mt_S( &tm1, 2.0 );\n";
 		Mt_S( &tm1, 2.0 );
 		if(out) *out << "Mt_S( &tm2, 3.0 );\n";
@@ -310,7 +319,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 					  "gm_lhs = 1.0;\n";
 	gm_lhs = 1.0;
 	if(out) *out << "Mp_StM( &tri_ele(gm_lhs(2,m,1,m-1),lower), 2.0, tri_ele(gm_lhs(1,m-1,2,m),upper) );\n";
-	Mp_StM( &tri_ele(gm_lhs(2,m,1,m-1),lower), 2.0, tri_ele(gm_lhs(1,m-1,2,m),upper) );
+	Mp_StM( &nonconst_tri_ele(gm_lhs(2,m,1,m-1),lower), 2.0, tri_ele(gm_lhs(1,m-1,2,m),upper) );
 	update_success( result1 = comp( tri_ele(gm_lhs(2,m,1,m-1),lower), 3.0 ), &success );
 	update_success( result2 = comp( tri_ele(gm_lhs(1,m,1,m),upper), 1.0 ), &success );
 	if(out && (!result1 || !result2) )
@@ -395,11 +404,11 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 								?	lower : upper											),
 					oth_as_uplo = ( as_uplo == lower ? upper : lower );
 				const tri_ele_gms
-					M_ele = tri_ele( ( _uplo==lower?M.gms()(2,m,1,m-1):M.gms()(1,m-1,2,m) )
+					M_ele = tri_ele( ( _uplo==lower ? M.gms()(2,m,1,m-1) : M.gms()(1,m-1,2,m) )
 										, _uplo ),
-					tri_reg_ele = tri_ele( ( as_uplo==lower?gm_lhs(2,m,1,m-1):gm_lhs(1,m-1,2,m) )
+					tri_reg_ele = tri_ele( ( as_uplo==lower ? gm_lhs(2,m,1,m-1) : gm_lhs(1,m-1,2,m) )
 										, as_uplo ),
-					oth_tri_reg_ele = tri_ele( ( oth_as_uplo==lower?gm_lhs(2,m,1,m-1):gm_lhs(1,m-1,2,m) )
+					oth_tri_reg_ele = tri_ele( ( oth_as_uplo==lower ? gm_lhs(2,m,1,m-1) : gm_lhs(1,m-1,2,m) )
 										, oth_as_uplo );
 				update_success( result1 = comp( tri_reg_ele, M_ele ), &success );
 				update_success( result2 = comp( oth_tri_reg_ele, 0.0 ), &success );
@@ -590,8 +599,8 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 		if(out)
 			*out << "\nFor sym_lhs = sym(gms_rhs(1,m,1,m)," << str_uplo[i_uplo]
 				 << ")\n";
-		assign( &tri_ele(gm_lhs(),_uplo), tri_ele(gms_rhs(1,m,1,m),_uplo) );
-		assign( &tri_ele(ex_gm_lhs(),_uplo), tri_ele(gms_rhs(1,m,1,m),_uplo) );
+		assign( &nonconst_tri_ele(gm_lhs(),_uplo), tri_ele(gms_rhs(1,m,1,m),_uplo) );
+		assign( &nonconst_tri_ele(ex_gm_lhs(),_uplo), tri_ele(gms_rhs(1,m,1,m),_uplo) );
 		// Compute expected
 		for(int i = 1; i<=m; ++i) {
 			for(int j = i; j<=m; ++j) {	// upper triangular
@@ -602,7 +611,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 			}
 		}
 		// Compute update
-		syr( alpha, vs_rhs(1,m), &sym(gm_lhs(),_uplo) );
+		syr( alpha, vs_rhs(1,m), &nonconst_sym(gm_lhs(),_uplo) );
 		// Compare
 		update_success( result = comp( tri_ele(gm_lhs(),_uplo), tri_ele(ex_gm_lhs(),_uplo) )
 			, &success );
@@ -624,8 +633,8 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 		if(out)
 			*out << "\nFor sym_lhs = sym(gms_rhs(1,m,1,m)," << str_uplo[i_uplo]
 				 << ")\n";
-		assign( &tri_ele(gm_lhs(),_uplo), tri_ele(gms_rhs(1,m,1,m),_uplo) );
-		assign( &tri_ele(ex_gm_lhs(),_uplo), tri_ele(gms_rhs(1,m,1,m),_uplo) );
+		assign( &nonconst_tri_ele(gm_lhs(),_uplo), tri_ele(gms_rhs(1,m,1,m),_uplo) );
+		assign( &nonconst_tri_ele(ex_gm_lhs(),_uplo), tri_ele(gms_rhs(1,m,1,m),_uplo) );
 		// Compute expected
 		for(int i = 1; i<=m; ++i) {
 			for(int j = i; j<=m; ++j) {	// upper triangular
@@ -636,7 +645,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 			}
 		}
 		// Compute update
-		syr2( alpha, vs_rhs(1,m), vs_rhs2(1,m), &sym(gm_lhs(),_uplo) );
+		syr2( alpha, vs_rhs(1,m), vs_rhs2(1,m), &nonconst_sym(gm_lhs(),_uplo) );
 		// Compare
 		update_success( result = comp( tri_ele(gm_lhs(),_uplo), tri_ele(ex_gm_lhs(),_uplo) )
 			, &success );
@@ -684,14 +693,22 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 					// gms_lhs = alpha * op(tri_rhs1) * op(gms_rhs2) (left) (BLAS xTRMM).
 					// gms_lhs = alpha * inv(op(tri_rhs1)) * op(gms_rhs2) (left) (BLAS xTRSM).
 					assign( &Tmp2, gms_rhs(1,m,1,m), _trans2 );
-					M_StinvMtM( &Tmp2(), 2.0, M, _trans1, Tmp2(), no_trans );
-					M_StMtM( &Tmp2, 0.5, M, _trans1, Tmp2(), no_trans );
+					M_StinvMtM( &Tmp1(), 2.0, M, _trans1, Tmp2(), no_trans );
+					M_StMtM( &Tmp2, 0.5, M, _trans1, Tmp1(), no_trans );
 					update_success( result = comp( Tmp2(), no_trans, gms_rhs(1,m,1,m), _trans2 )
 						, &success );
-					if(out) *out << "(gms_lhs,left)...0.5*M*(2*inv(M)*gms_rhs(1,m,1,m)"
-								 << trans_char(_trans2) << ")"
-									" == gms_rhs(1,m,1,m)" << trans_char(_trans2) << " : "
-									<< result << std::endl;
+					if(out) {
+						 *out
+						 	<< "(gms_lhs,left)...0.5*M*(2*inv(M)*gms_rhs(1,m,1,m)"
+							<< trans_char(_trans2) << ")"
+								" == gms_rhs(1,m,1,m)" << trans_char(_trans2) << " : "
+							<< result << std::endl;
+						if(!result) {
+							*out
+								<< "\ngms_lhs =\n" << Tmp2
+								<< "\ngms_rhs(1,m,1,m) =\n" << gms_rhs(1,m,1,m);
+						}
+					}
 					// gm_lhs (right)
 					// gm_lhs = alpha * op(gms_rhs1) * op(tri_rhs2) (right) (BLAS xTRMM).
 					// gm_lhs = alpha * op(gms_rhs1) * inv(op(tri_rhs2)) (right) (BLAS xTRSM).

@@ -4,6 +4,9 @@
 #include <iomanip>
 #include <ostream>
 #include <vector>
+#include <typeinfo>
+
+#include <math.h>
 
 #include "../test/TestLinAlgPack.h"
 #include "../include/VectorClass.h"
@@ -177,8 +180,8 @@ bool LinAlgPack::TestingPack::TestVectorOp(std::ostream* out)
 
 	if(out) *out << "\n(norm_2(v2()) -> ";
 	rval = norm_2(v2());
-	result = update_success( ::fabs( rval - v2val*::sqrt(n) ) < sqrt_eps, &success );
-	if(out)	*out << rval <<") == " << v2val*::sqrt(n) << " : " << result << std::endl;
+	result = update_success( ::fabs( rval - v2val*::sqrt((value_type)n) ) < sqrt_eps, &success );
+	if(out)	*out << rval <<") == " << v2val*::sqrt((value_type)n) << " : " << result << std::endl;
 
 	if(out) *out << "\n(norm_inf(v2()) -> ";
 	rval = norm_inf(v2());

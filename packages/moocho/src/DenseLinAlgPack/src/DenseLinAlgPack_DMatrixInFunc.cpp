@@ -17,9 +17,12 @@ std::istream& LinAlgPack::input(std::istream& is, GenMatrix* gm, LinAlgPackIO::f
 		size_type m, n;
 		is >> m >> n;
 		if(is.fail())
-			throw LinAlgPackIO::InputException("LinAlgPack::input() {GenMatrix}:  Input operation of matrix dimension failed.  Check that the constant n is a valid integer.");
+			throw LinAlgPackIO::InputException( "LinAlgPack::input() {GenMatrix}: "
+				"Input operation of matrix dimension failed.  Check that the constant n "
+				"is a valid integer." );
 		if(is.bad())
-			throw std::ios_base::failure("LinAlgPack::input() {GenMatrix}: Input operation failed because the stream became currupted.");
+			throw std::ios_base::failure( "LinAlgPack::input() {GenMatrix}: "
+				"Input operation failed because the stream became currupted." );
 		gm->resize(m,n);
 	}
 	return input_gms(is,&(*gm)(),"LinAlgPack::input() {GenMatrix}");
@@ -30,9 +33,12 @@ std::istream& LinAlgPack::input(std::istream& is, GenMatrixSlice* gms, LinAlgPac
 		size_type m, n;
 		is >> m >> n;
 		if(is.fail())
-			throw LinAlgPackIO::InputException("LinAlgPack::input() {GenMatrixSlice}:  Input operation of matrix dimension failed.  Check that the constant n is a valid integer.");
+			throw LinAlgPackIO::InputException( "LinAlgPack::input() {GenMatrixSlice}: "
+				"Input operation of matrix dimension failed.  Check that the constant n "
+				" is a valid integer.");
 		if(is.bad())
-			throw std::ios_base::failure("LinAlgPack::input() {GenMatrixSlice}: Input operation failed because the stream became currupted.");
+			throw std::ios_base::failure( "LinAlgPack::input() {GenMatrixSlice}: "
+				"Input operation failed because the stream became currupted." );
 		LinAlgPack::assert_gms_lhs(*gms,m,n);
 	}
 	return input_gms( is, gms, "LinAlgPack::input() {GenMatrixSlice}" );
@@ -60,7 +66,8 @@ std::istream& input_gms(std::istream& is, LinAlgPack::GenMatrixSlice* gms, const
 		// Read in the rows
 		for(size_type i = 1; i <= gms->rows(); ++i) {
 			InputStreamHelperPack::eat_comment_lines(is,'*');
-			LinAlgPack::input( is, &gms->row(i), LinAlgPack::LinAlgPackIO::ignore_dim_bit );
+			LinAlgPack::input( is, &gms->row(i)
+				, (LinAlgPack::LinAlgPackIO::fmtflags)(LinAlgPack::LinAlgPackIO::ignore_dim_bit) );
 		}
 	}
 	catch(...) {

@@ -2,6 +2,7 @@
 // LinAlgPackAssertOp.cpp
 
 #include <stdexcept>
+#include <string>
 
 #include "../include/LinAlgPackAssertOp.h"
 

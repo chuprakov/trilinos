@@ -234,8 +234,12 @@ void i_Mp_StSM( LinAlgPack::GenMatrixSlice* gms_lhs, LinAlgPack::value_type alph
 	using LinAlgPack::Mp_StM;
 	using LinAlgPack::tri_ele;
 	const LinAlgPack::size_type n = gms_lhs->rows(); // same as cols
-	Mp_StM( &tri_ele((*gms_lhs)(2,n,1,n-1), BLAS_Cpp::lower ), alpha, tri_ele_rhs );
-	Mp_StM( &tri_ele((*gms_lhs)(1,n-1,2,n), BLAS_Cpp::upper ), alpha, tri_ele_rhs );
+	Mp_StM( const_cast<LinAlgPack::tri_ele_gms*>( 
+				&tri_ele((*gms_lhs)(2,n,1,n-1), BLAS_Cpp::lower ) )
+			, alpha, tri_ele_rhs );
+	Mp_StM( const_cast<LinAlgPack::tri_ele_gms*>(
+				&tri_ele((*gms_lhs)(1,n-1,2,n), BLAS_Cpp::upper ) )
+			, alpha, tri_ele_rhs );
 }
 }	// end namespace
 
@@ -286,10 +290,14 @@ void LinAlgPack::Mp_StM(GenMatrixSlice* gms_lhs, value_type alpha, const tri_gms
 					?	lower : upper											);
 	switch(as_uplo) {
 		case lower:
-			Mp_StM( &tri_ele((*gms_lhs)(2,n,1,n-1),lower), alpha, tri );
+			Mp_StM( const_cast<LinAlgPack::tri_ele_gms*>(
+						&tri_ele((*gms_lhs)(2,n,1,n-1),lower) )
+					, alpha, tri );
 			break;
 		case upper:
-			Mp_StM( &tri_ele((*gms_lhs)(1,n-1,2,n),upper), alpha, tri );
+			Mp_StM( const_cast<LinAlgPack::tri_ele_gms*>(
+						&tri_ele((*gms_lhs)(1,n-1,2,n),upper) )
+					, alpha, tri );
 			break;
 	}
 }

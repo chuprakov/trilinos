@@ -140,7 +140,7 @@ public:
 	  *
 	  *
 	  */
-	void bind( GenMatrixSlice& gms );
+	void bind( GenMatrixSlice gms );
 
 	/** @name {\bf Dimensionality, Misc}. */
 
@@ -784,7 +784,7 @@ GenMatrixSlice::GenMatrixSlice( GenMatrixSlice& gms, const Range1D& I
 }
 
 inline
-void GenMatrixSlice::bind(GenMatrixSlice& gms) {
+void GenMatrixSlice::bind(GenMatrixSlice gms) {
 	ptr_		= gms.ptr_;
 	max_rows_	= gms.max_rows_;
 	rows_		= gms.rows_;
@@ -989,7 +989,7 @@ void GenMatrix::resize(size_type rows, size_type cols, value_type val)
 
 inline
 void GenMatrix::free() {
-	v_.free();
+	v_.resize(0);
 	rows_ = 0;
 }
 

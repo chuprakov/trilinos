@@ -3,6 +3,7 @@
 
 #include <limits>
 #include <iomanip>
+#include <ostream>
 
 #include "../include/MatlabPack.h"
 #include "../include/GenMatrixClass.h"

@@ -4,21 +4,37 @@
 #include <iomanip>
 #include <ostream>
 #include <vector>
+#include <typeinfo>
 
 #include "../test/TestLinAlgPack.h"
 #include "../include/VectorClass.h"
 #include "../include/VectorOut.h"
 #include "../include/MatVecCompare.h"
+#include "Misc/include/update_success.h"
 
 namespace {
+
+// 2/10/00:  It seems that with g++ 2.95.2 that within a template function in an annonymus namespace
+// that you can't write:
+// 
+// 		use TestingHelperPack::update_success;
+// 		...
+// 		update_success(...);
+// 		
+// But I can write an inline function such as the one shown below to perform the name lookup
+// for me.
+inline
+bool update_success( bool result, bool *success ) {
+	return TestingHelperPack::update_success( result, success );
+}
 
 // This template function checks that iterator and subscriping access all
 // give the same results.
 template<class V, class I>
-void test_access( V& v, I begin, I end, std::ostream*out, bool* success ) {
-	using TestingHelperPack::update_success;
+void test_access( V* _v, I begin, I end, std::ostream*out, bool* success ) {
 	using std::setw;
 
+	V &v = *_v;
 	bool result;
 
 	if(out)
@@ -36,7 +52,7 @@ void test_access( V& v, I begin, I end, std::ostream*out, bool* success ) {
 					<< setw(14) << *itr
 					<< setw(11) << v[i]
 					<< setw(11) << v(i+1)
-					<< setw(11) << result << std::endl;
+					<< setw(11) << std::right << result << std::endl << std::left;
 	}
 	if(out) *out << std::endl;
 }
@@ -44,20 +60,21 @@ void test_access( V& v, I begin, I end, std::ostream*out, bool* success ) {
 // This template function checks that a subregion creates the expected view.
 // Here rng must be rng.full_range() == true.
 template<class V, class VS>
-void test_subregion_access( V& v, VS& vs, const LinAlgPack::Range1D& rng
+void test_subregion_access( V* _v, VS* _vs, const LinAlgPack::Range1D& rng
 	, std::ostream* out, bool* success )
 {
-	using TestingHelperPack::update_success;
 	using std::setw;
 
 	bool result;
+	V &v = *_v;
+	VS &vs = *_vs;
 
 	if(out)
 		*out	<< "\nv.begin() + i1 == vs.begin() + i2 == vs[i2] == vs(i2+1)"
 				<< ", for i1 = lb-1,..,ub-1, for i2 = 0,..,rng.size()-1\n";
 
-	V::const_iterator itr1;
-	VS::const_iterator itr2;
+	typename V::const_iterator itr1;
+	typename VS::const_iterator itr2;
 	int i1, i2;
 	if(out)
 		*out	<< "\ni1, i2, *(v.begin() + i1)  ==  *(vs.begin() + i2)  ==  vs[i2]  ==  vs(i2+1)  ==    ?  "
@@ -74,7 +91,7 @@ void test_subregion_access( V& v, VS& vs, const LinAlgPack::Range1D& rng
 					<< setw(24) << *itr2
 					<< setw(12) << vs[i2]
 					<< setw(14) << vs(i2+1)
-					<< setw(12) << result << std::endl;
+					<< setw(12) << std::right << result << std::endl << std::left;
 	}
 	if(out) *out << std::endl;
 }
@@ -138,11 +155,11 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 	if(out) *out << "vs1 =\n" << vs1;
 
 	if(out) *out << "\nVectorSlice vs2(vvz.begin(),n)\n";
-	VectorSlice	vs2(vvz.begin(),n);
+	VectorSlice	vs2(&vvz[0],n);
 	if(out) *out << "vs2 =\n" << vs2;
 
 	if(out) *out << "\nVectorSlice vs3(vvz.begin(),n,Range1D())\n";
-	VectorSlice	vs3(vvz.begin(),n,Range1D());
+	VectorSlice	vs3(&vvz[0],n,Range1D());
 	if(out) *out << "vs3 =\n" << vs3;
 
 	if(out) *out << "\nVectorSlice vs4(vs3,Range1D())\n";
@@ -160,7 +177,7 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 	if(out) *out << "v2 =\n" << v2;
 
 	if(out) *out << "\nVector v3(vvz.begin(),n)\n";
-	Vector v3(vvz.begin(),n);
+	Vector v3(&vvz[0],n);
 	if(out) *out << "v3 =\n" << v3;
 
 	if(out) *out << "\nVector v4(vs4)\n";
@@ -203,39 +220,39 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 
 	if(out)
 		*out	<< "\nLet v == v3, begin = v.begin()";
-	test_access(v3,v3.begin(),v3.end(),out,&success);
+	test_access(&v3,v3.begin(),v3.end(),out,&success);
 
 	if(out)
 		*out	<< "\nLet v == const_cast<const Vector&>(v3), begin = v.begin()";
-	test_access(const_cast<const Vector&>(v3),const_cast<const Vector&>(v3).begin()
+	test_access(&const_cast<const Vector&>(v3),const_cast<const Vector&>(v3).begin()
 		,const_cast<const Vector&>(v3).end(),out,&success);
 
 	if(out)
 		*out	<< "\nLet v == vs3, begin = v.begin()";
-	test_access(vs3,vs3.begin(),vs3.end(),out,&success);
+	test_access(&vs3,vs3.begin(),vs3.end(),out,&success);
 
 	if(out)
 		*out	<< "\nLet v == const_cast<const VectorSlice&>(vs3), begin = v.begin()";
-	test_access(const_cast<const VectorSlice&>(vs3),const_cast<const VectorSlice&>(vs3).begin()
+	test_access(&const_cast<const VectorSlice&>(vs3),const_cast<const VectorSlice&>(vs3).begin()
 		,const_cast<const VectorSlice&>(vs3).end(),out,&success);
 
 	if(out)
 		*out	<< "\nLet v == v3.rev(), begin = v3.rbegin()";
-	test_access(v3.rev(),v3.rbegin(),v3.rend(),out,&success);
+	test_access(&v3.rev(),v3.rbegin(),v3.rend(),out,&success);
 
 	if(out)
 		*out	<< "\nLet v == const_cast<const Vector&>(v3).rev(), begin = const_cast<const Vector&>(v3).rbegin()";
-	test_access(const_cast<const Vector&>(v3).rev(),const_cast<const Vector&>(v3).rbegin()
+	test_access(&const_cast<const Vector&>(v3).rev(),const_cast<const Vector&>(v3).rbegin()
 		,const_cast<const Vector&>(v3).rend(),out,&success);
 
 	if(out)
 		*out	<< "\nLet v == vs3.rev(), begin = vs3.rbegin()";
-	test_access(vs3.rev(),vs3.rbegin(),vs3.rend(),out,&success);
+	test_access(&vs3.rev(),vs3.rbegin(),vs3.rend(),out,&success);
 
 	if(out)
 		*out	<< "\nLet v == const_cast<const VectorSlice&>(vs3).rev()"
 					", begin = const_cast<const VectorSlice&>(vs3).rbegin()";
-	test_access(const_cast<const VectorSlice&>(vs3).rev(),const_cast<const VectorSlice&>(vs3).rbegin()
+	test_access(&const_cast<const VectorSlice&>(vs3).rev(),const_cast<const VectorSlice&>(vs3).rbegin()
 		,const_cast<const VectorSlice&>(vs3).rend(),out,&success);
 
 #ifdef LINALGPACK_CHECK_RANGE
@@ -298,53 +315,53 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 
 	if(out) *out << "\nv = v3, rng = [1,n/2], vs = v(rng)";
 	rng.set_bounds(1,n/2);
-	test_subregion_access( v3, v3(rng), rng, out, &success );
+	test_subregion_access( &v3, &v3(rng), rng, out, &success );
 
 	if(out) *out << "\nv = v3, rng = [n/3,2*n/3], vs = v(rng)";
 	rng.set_bounds(n/3,2*n/3);
-	test_subregion_access( v3, v3(rng), rng, out, &success );
+	test_subregion_access( &v3, &v3(rng), rng, out, &success );
 	
 	if(out) *out << "\nv = v3, rng = [n/2,n], vs = v(rng)";
 	rng.set_bounds(n/2,n);
-	test_subregion_access( v3, v3(rng), rng, out, &success );
+	test_subregion_access( &v3, &v3(rng), rng, out, &success );
 
 	if(out) *out << "\nv = const_cast<const Vector&>(v3), rng = [n/2,n], vs = v(rng)";
 	rng.set_bounds(n/2,n);
-	test_subregion_access( v3, const_cast<const Vector&>(v3)(rng), rng, out, &success );
+	test_subregion_access( &v3, &const_cast<const Vector&>(v3)(rng), rng, out, &success );
 
 	if(out) *out << "\nv = v3, rng = [1,n/2], vs = v(1,n/2)";
 	rng.set_bounds(1,n/2);
-	test_subregion_access( v3, v3(1,n/2), rng, out, &success );
+	test_subregion_access( &v3, &v3(1,n/2), rng, out, &success );
 
 	if(out) *out << "\nv = const_cast<const Vector&>(v3), rng = [n/2,n], vs = v(n/2,n)";
 	rng.set_bounds(n/2,n);
-	test_subregion_access( v3, const_cast<const Vector&>(v3)(n/2,n), rng, out, &success );
+	test_subregion_access( &v3, &const_cast<const Vector&>(v3)(n/2,n), rng, out, &success );
 
 	// VectorSlice Subregions
 
 	if(out) *out << "\nv = vs3, rng = [1,n/2], vs = v(rng)";
 	rng.set_bounds(1,n/2);
-	test_subregion_access( vs3, vs3(rng), rng, out, &success );
+	test_subregion_access( &vs3, &vs3(rng), rng, out, &success );
 
 	if(out) *out << "\nv = vs3, rng = [n/3,2*n/3], vs = v(rng)";
 	rng.set_bounds(n/3,2*n/3);
-	test_subregion_access( vs3, vs3(rng), rng, out, &success );
+	test_subregion_access( &vs3, &vs3(rng), rng, out, &success );
 	
 	if(out) *out << "\nv = vs3, rng = [n/2,n], vs = v(rng)";
 	rng.set_bounds(n/2,n);
-	test_subregion_access( vs3, vs3(rng), rng, out, &success );
+	test_subregion_access( &vs3, &vs3(rng), rng, out, &success );
 
 	if(out) *out << "\nv = const_cast<const VectorSlice&>(vs3), rng = [n/2,n], vs = v(rng)";
 	rng.set_bounds(n/2,n);
-	test_subregion_access( vs3, const_cast<const VectorSlice&>(vs3)(rng), rng, out, &success );
+	test_subregion_access( &vs3, &const_cast<const VectorSlice&>(vs3)(rng), rng, out, &success );
 
 	if(out) *out << "\nv = vs3, rng = [1,n/2], vs = v(1,n/2)";
 	rng.set_bounds(1,n/2);
-	test_subregion_access( vs3, vs3(1,n/2), rng, out, &success );
+	test_subregion_access( &vs3, &vs3(1,n/2), rng, out, &success );
 
 	if(out) *out << "\nv = const_cast<const VectorSlice&>(vs3), rng = [n/2,n], vs = v(n/2,n)";
 	rng.set_bounds(n/2,n);
-	test_subregion_access( vs3, const_cast<const VectorSlice&>(vs3)(n/2,n), rng, out, &success );
+	test_subregion_access( &vs3, &const_cast<const VectorSlice&>(vs3)(n/2,n), rng, out, &success );
 
 	// ///////////////////////
 	// Test Assignment

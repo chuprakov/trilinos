@@ -19,9 +19,9 @@ namespace {
 
 using LinAlgPack::Vector;
 using LinAlgPack::VectorSlice;
-using LinAlgPack::value_type;
-using VectorSlice::size_type;
-using VectorSlice::difference_type;
+typedef LinAlgPack::value_type value_type;
+typedef VectorSlice::size_type size_type;
+typedef VectorSlice::difference_type difference_type;
 
 // Utility for copying vector slices.  Takes care of aliasing etc. but not sizes.
 void i_assign(VectorSlice* vs_lhs, const VectorSlice& vs_rhs) {
@@ -467,26 +467,26 @@ void LinAlgPack::tanh(VectorSlice* vs_lhs, const VectorSlice& vs_rhs) {
 // Scalar returning functions
 
 // result = trans(vs_rhs1) * vs_rhs2
-value_type LinAlgPack::dot(const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
+LinAlgPack::value_type LinAlgPack::dot(const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
 {
 	VopV_assert_sizes( vs_rhs1.size(), vs_rhs2.size() );
 	return BLAS_Cpp::dot( vs_rhs1.size(), vs_rhs1.raw_ptr(), vs_rhs1.stride()
 		, vs_rhs2.raw_ptr(), vs_rhs2.stride() );
 }
 // result = max(vs_rhs)
-value_type LinAlgPack::max(const VectorSlice& vs_rhs)
+LinAlgPack::value_type LinAlgPack::max(const VectorSlice& vs_rhs)
 {	return *std::max_element(vs_rhs.begin(),vs_rhs.end()); }
 // result = min(vs_rhs)
-value_type LinAlgPack::min(const VectorSlice& vs_rhs)
+LinAlgPack::value_type LinAlgPack::min(const VectorSlice& vs_rhs)
 {	return *std::min_element(vs_rhs.begin(),vs_rhs.end()); }
 // result = ||vs_rhs||1
-value_type LinAlgPack::norm_1(const VectorSlice& vs_rhs)
+LinAlgPack::value_type LinAlgPack::norm_1(const VectorSlice& vs_rhs)
 {	return BLAS_Cpp::asum( vs_rhs.size(), vs_rhs.raw_ptr(), vs_rhs.stride() ); }
 // result = ||vs_rhs||2
-value_type LinAlgPack::norm_2(const VectorSlice& vs_rhs) 
+LinAlgPack::value_type LinAlgPack::norm_2(const VectorSlice& vs_rhs) 
 {	return BLAS_Cpp::nrm2( vs_rhs.size(), vs_rhs.raw_ptr(), vs_rhs.stride() ); }
 // result = ||vs_rhs||infinity
-value_type LinAlgPack::norm_inf(const VectorSlice& vs_rhs) {
+LinAlgPack::value_type LinAlgPack::norm_inf(const VectorSlice& vs_rhs) {
 //	return BLAS_Cpp::iamax( vs_rhs.size(), vs_rhs.raw_ptr(), vs_rhs.stride() );
 //	For some reason iamax() is not working properly?
 	value_type max_ele = 0.0;

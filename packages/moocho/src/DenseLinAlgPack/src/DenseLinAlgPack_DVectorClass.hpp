@@ -90,11 +90,16 @@ public:
 	typedef StrideIterPack::stride_iter<const value_type*
 		, value_type, const value_type&, const value_type*
 		, difference_type>									const_iterator;
+#ifdef _MS_VCXX_60
 	typedef std::reverse_iterator<iterator, value_type
 		, value_type&, value_type*, difference_type>		reverse_iterator;
 	typedef std::reverse_iterator<const_iterator
 		, value_type, const value_type&, const value_type*
 		, difference_type>									const_reverse_iterator;
+#else
+	typedef std::reverse_iterator<iterator>					reverse_iterator;
+	typedef std::reverse_iterator<const_iterator>			const_reverse_iterator;
+#endif
 	typedef value_type&										reference;
 	typedef const value_type&								const_reference;
 
@@ -185,7 +190,7 @@ public:
 	//@}
 
 	/// Bind to the view of another VectorSlice
-	void bind(VectorSlice& vs);
+	void bind(VectorSlice vs);
 
 	/** @name {\bf STL Iterator Access Functions}.
 	  *
@@ -442,12 +447,16 @@ public:
 	typedef ptrdiff_t								difference_type;
 	typedef value_type*								iterator;
 	typedef const value_type*						const_iterator;
-	typedef std::reverse_iterator<iterator
-		, value_type, value_type&, value_type*
-		, difference_type>							reverse_iterator;
+#ifdef _MS_VCXX_60
+	typedef std::reverse_iterator<iterator, value_type
+		, value_type&, value_type*, difference_type>		reverse_iterator;
 	typedef std::reverse_iterator<const_iterator
-		, value_type, const value_type&
-		, const value_type*, difference_type>		const_reverse_iterator;
+		, value_type, const value_type&, const value_type*
+		, difference_type>									const_reverse_iterator;
+#else
+	typedef std::reverse_iterator<iterator>					reverse_iterator;
+	typedef std::reverse_iterator<const_iterator>			const_reverse_iterator;
+#endif
 	typedef value_type&								reference;
 	typedef const value_type&						const_reference;
 	typedef std::valarray<value_type>				valarray;
@@ -832,7 +841,7 @@ VectorSlice::VectorSlice( VectorSlice& vs, const Range1D& rng )
 {	validate_range(  rng.full_range() ? vs.size() : rng.ubound(), vs.size() ); }
 
 inline
-void VectorSlice::bind(VectorSlice& vs)
+void VectorSlice::bind(VectorSlice vs)
 {
 	ptr_	= vs.ptr_;
 	size_	= vs.size_;
@@ -1015,7 +1024,9 @@ void Vector::resize(size_type n, value_type val)
 
 inline
 void Vector::free()
-{	v_.free(); }
+{
+	v_.resize(0);
+}
 
 // Size
 inline

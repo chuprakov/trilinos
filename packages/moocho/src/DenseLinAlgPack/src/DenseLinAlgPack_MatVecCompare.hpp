@@ -6,6 +6,11 @@
 
 #include <limits>
 
+#ifdef _MS_VCXX_60
+#else
+#include <cmath>
+#endif
+
 #include "LinAlgPackTypes.h"
 #include "Misc/include/update_success.h"
 
@@ -24,7 +29,12 @@ using TestingHelperPack::update_success;
 //@{
 
 ///
-const value_type sqrt_eps = ::sqrt(std::numeric_limits<value_type>::epsilon());
+const value_type sqrt_eps
+#ifdef _MS_VCXX_60
+	= ::sqrt(std::numeric_limits<value_type>::epsilon());
+#else
+	= std::sqrt(std::numeric_limits<value_type>::epsilon());
+#endif
 
 ///
 bool comp(const VectorSlice& vs1, const VectorSlice& vs2);

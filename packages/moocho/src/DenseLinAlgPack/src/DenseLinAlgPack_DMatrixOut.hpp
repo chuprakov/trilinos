@@ -14,7 +14,7 @@ namespace LinAlgPack {
   * This operator function calls the function output(os,gms,0).
   */
 inline std::ostream& operator<<(std::ostream& os, const GenMatrixSlice& gms) {
-	return output(os, gms, 0);
+	return output(os, gms, (LinAlgPackIO::fmtflags)(0));
 }
 
 }	// end namespace LinAlgPack

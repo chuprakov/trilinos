@@ -65,7 +65,7 @@ private:
 
 inline
 /// Return a triangular element-wise matrix
-tri_ele_gms tri_ele(GenMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
+tri_ele_gms nonconst_tri_ele(GenMatrixSlice gms, BLAS_Cpp::Uplo uplo)
 {
 	return tri_ele_gms(gms, uplo);
 }
@@ -133,7 +133,7 @@ private:
 
 inline
 /// Return a triangular matrix
-tri_gms tri(GenMatrixSlice& gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
+tri_gms nonconst_tri(GenMatrixSlice gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
 {
 	return tri_gms(gms, uplo, diag);
 }
@@ -194,7 +194,7 @@ private:
 
 inline
 /// Return a symmetric matrix
-sym_gms sym(GenMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
+sym_gms nonconst_sym(GenMatrixSlice gms, BLAS_Cpp::Uplo uplo)
 {
 	return sym_gms(gms, uplo);
 }

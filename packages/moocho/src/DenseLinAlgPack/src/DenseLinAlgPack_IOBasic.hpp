@@ -18,7 +18,7 @@ class InputException : public std::logic_error
 {public: InputException(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
 ///
-typedef int fmtflags;	
+typedef std::ios_base::fmtflags fmtflags;	
 	
 /// Format flags
 enum { ignore_dim_bit = 0x0001, no_insert_newlines_bit = 0x0002 };
