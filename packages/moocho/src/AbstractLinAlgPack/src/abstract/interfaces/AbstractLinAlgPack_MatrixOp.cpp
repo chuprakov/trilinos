@@ -81,8 +81,6 @@ std::ostream& MatrixWithOp::output(std::ostream& out) const
 
 // Level-1 BLAS
 
-// rhs matrix argument
-
 bool MatrixWithOp::Mp_StM(
 	MatrixWithOp* m_lhs, value_type alpha
 	, BLAS_Cpp::Transp trans_rhs) const
@@ -90,6 +88,16 @@ bool MatrixWithOp::Mp_StM(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 
+	// Give m_lhs a chance to implement this method
+	if(m_lhs->Mp_StM(alpha,*this,trans_rhs))
+		return true;
+
+	// We msut try to implement the method
+	MultiVectorMutable
+		*m_mut_lhs = dynamic_cast<MultiVectorMutable*>(m_lhs);
+	if(!m_mut_lhs)
+		return false; // Could not implement the method :-(
+		
 #ifdef _DEBUG
 	THROW_EXCEPTION(
 		!m_lhs->space_rows().is_compatible(
@@ -100,18 +108,20 @@ bool MatrixWithOp::Mp_StM(
 		,"MatrixWithOp::Mp_StM(m_lhs,...): Error, m_lhs of type \'"<<typeid(*m_lhs).name()<<"\' "
 		<<"is not compatible with this of type \'"<<typeid(*m_lhs).name()<<"\'" );
 #endif
-	MultiVectorMutable
-		*m_mut_lhs = dynamic_cast<MultiVectorMutable*>(m_lhs);
-	if(!m_mut_lhs)
-		return m_lhs->Mp_StM(alpha,*this,trans_rhs);
-		
+
 	const size_type
 		rows = BLAS_Cpp::rows( m_lhs->rows(), m_lhs->cols(), trans_rhs ),
 		cols = BLAS_Cpp::cols( m_lhs->rows(), m_lhs->cols(), trans_rhs );
 	for( size_type j = 1; j <= cols; ++j )
 		AbstractLinAlgPack::Vp_StMtV( m_mut_lhs->col(j).get(), alpha, *this, trans_rhs, EtaVector(j,cols)() );
-	// ToDo: consider row and or diagonal access!
+	// ToDo: consider row access?
 	return true;
+}
+
+bool MatrixWithOp::Mp_StM(
+	value_type alpha,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs)
+{
+	return false;
 }
 
 bool MatrixWithOp::Mp_StMtP(
@@ -120,7 +130,19 @@ bool MatrixWithOp::Mp_StMtP(
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	) const
 {
-	assert(0); // ToDo: Implement!
+	// Give m_lhs a chance to implement this method
+	if(m_lhs->Mp_StMtP(alpha,*this,M_trans,P_rhs,P_rhs_trans))
+		return true;
+	assert(0); // ToDo: Implement default!
+	return false;
+}
+
+bool MatrixWithOp::Mp_StMtP(
+	value_type alpha
+	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
+	,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
+	)
+{
 	return false;
 }
 
@@ -130,7 +152,19 @@ bool MatrixWithOp::Mp_StPtM(
 	, BLAS_Cpp::Transp M_trans
 	) const
 {
-	assert(0); // ToDo: Implement!
+	// Give m_lhs a chance to implement this method
+	if(m_lhs->Mp_StPtM(alpha,P_rhs,P_rhs_trans,*this,M_trans))
+		return true;
+	assert(0); // ToDo: Implement default!
+	return false;
+}
+
+bool MatrixWithOp::Mp_StPtM(
+	value_type alpha
+	,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
+	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
+	)
+{
 	return false;
 }
 
@@ -141,33 +175,10 @@ bool MatrixWithOp::Mp_StPtMtP(
 	, const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 	) const
 {
-	assert(0); // ToDo: Implement!
-	return false;
-}
-
-// lhs matrix argument
-
-bool MatrixWithOp::Mp_StM(
-	value_type alpha,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs)
-{
-	return false;
-}
-
-bool MatrixWithOp::Mp_StMtP(
-	value_type alpha
-	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
-	,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
-	)
-{
-	return false;
-}
-
-bool MatrixWithOp::Mp_StPtM(
-	value_type alpha
-	,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
-	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
-	)
-{
+	// Give m_lhs a chance to implement this method
+	if(m_lhs->Mp_StPtMtP(alpha,P_rhs1,P_rhs1_trans,*this,M_trans,P_rhs2,P_rhs2_trans))
+		return true;
+	assert(0); // ToDo: Implement default!
 	return false;
 }
 
@@ -252,7 +263,11 @@ bool MatrixWithOp::Mp_StMtM(
 	, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOp& mwo_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta) const
 {
-	assert(0); // ToDo: Implement!
+	if(mwo_rhs2.Mp_StMtM(m_lhs,alpha,*this,trans_rhs1,trans_rhs2,beta))
+		return true;
+	else if(m_lhs->Mp_StMtM(alpha,*this,trans_rhs1,mwo_rhs2,trans_rhs2,beta))
+		return true;
+	assert(0); // ToDo: Implement default!
 	return false;
 }
 
@@ -261,7 +276,6 @@ bool MatrixWithOp::Mp_StMtM(
 	, const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta ) const
 {
-	assert(0); // ToDo: Implement!
 	return false;
 }
 
@@ -271,7 +285,6 @@ bool MatrixWithOp::Mp_StMtM(
 	,const MatrixWithOp& mwo_rhs2,BLAS_Cpp::Transp trans_rhs2
 	,value_type beta )
 {
-	assert(0); // ToDo: Implement!
 	return false;
 }
 

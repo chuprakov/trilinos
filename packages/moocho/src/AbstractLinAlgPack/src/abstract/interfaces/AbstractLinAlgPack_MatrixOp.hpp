@@ -83,13 +83,13 @@ namespace AbstractLinAlgPack {
  * being the way they are is to try to deal with the multiple dispatch problem
  * (i.e. selecting the proper method at run time based on two or more abstract
  * arguments).  The idea is that the client calls a non-member function of the
- * for <tt>Mp_StM(...)</tt> or <tt>Mp_StMtM(...)</tt> (these are defined later).
+ * form <tt>Mp_StM(...)</tt> or <tt>Mp_StMtM(...)</tt> (these are defined later).
  * These non-member functions call the method on the first rhs abstract \c MatrixWithOp
- * argument.  The first thing that tests methods do is to call the methods <tt>Mp_StM(...)</tt>
+ * argument.  The first thing that these methods do is to call the methods <tt>Mp_StM(...)</tt>
  * or <tt>Mp_StMtM(...)</tt> implemented by the lhs matrix object (or the other rhs matrix
  * object for <tt>Mp_StMtM(...)</tt>) and give them a chance to implement the operation.
  * If the other matrix objects return false from these method calls and refuse to
- * implement the method, that these default implementations try to cast the lhs matrix to
+ * implement the method, then these default implementations try to cast the lhs matrix to
  * <tt>MultiVectorMutable</tt>.  Therefore, if there is a common multi-vector matrix
  * class associated with any particular application area (i.e. a standard dense matrix
  * class for a serial application) then these default methods will do the trick
@@ -97,11 +97,11 @@ namespace AbstractLinAlgPack {
  * <tt>MultiVectorMutable</tt> interface is not supported then \c false is returned to signal
  * the the client that the method is not implemented.  Therefore, we have done all we can do to
  * provide a default implementation (no matter how inefficient it may be) while allowing the other matrix
- * objects to handle the method if possible, but in the end we may fail (and hense the
+ * objects to handle the method if possible, but in the end we may fail (and hence the
  * exception is thrown).  This is the price we have to pay if we are to allow fully
  * abstract lhs and rhs matrix arguments in matrix operations.  The only alternative is to implement
  * a full blown multiple dispatch method calling infrastructure which would
- * be a burden even the simplest matrix classes.
+ * be a burden on even the simplest matrix classes.
  *
  * ToDo: Add more detailed documentation for the default Level-1 and Level-3 BLAS
  * methods.
@@ -205,26 +205,73 @@ public:
 	/** @name Level-1 BLAS */
 	//@{
 
-	/// mwo_lhs += alpha * op(M_rhs) (BLAS xAXPY)
+	///
+	/** mwo_lhs += alpha * op(M_rhs) (BLAS xAXPY).
+	 *
+	 * The default implementation of this method first calls
+	 * <tt>mwo_lhs->Mp_StM(alpha,*this,trans_rhs)</tt> to give
+	 * the lhs matrix argument a chance to implement the method.
+	 * If <tt>mwo_lhs->Mp_StM(...)</tt> returns false, then
+	 * an attempt to perform a dynamic cast to <tt>MultiVectorMutable</tt>
+	 * is attempted.  If this cast failes, then an exception is thrown.
+	 */
 	virtual bool Mp_StM(
 		MatrixWithOp* mwo_lhs, value_type alpha
 		, BLAS_Cpp::Transp trans_rhs) const;
 
-	/// mwo_lhs += alpha * op(M_rhs) * op(P_rhs)
+	/// M_lhs += alpha * op(mwo_rhs) (BLAS xAXPY)
+	virtual bool Mp_StM(
+		value_type alpha,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs);
+
+	///
+	/** mwo_lhs += alpha * op(M_rhs) * op(P_rhs).
+	 *
+	 * ToDo: Finish documentation!
+	 */
 	virtual bool Mp_StMtP(
 		MatrixWithOp* mwo_lhs, value_type alpha
 		, BLAS_Cpp::Transp M_trans
 		, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 		) const;
 
-	/// mwo_lhs += alpha * op(P) * op(M_rhs)
+	///
+	/** M_lhs += alpha * op(mwo_rhs) * op(P_rhs).
+	 *
+	 * The default implementation does nothing and returns false.
+	 */
+	virtual bool Mp_StMtP(
+		value_type alpha
+		,const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp M_trans
+		,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
+		);
+
+	///
+	/** mwo_lhs += alpha * op(P) * op(M_rhs).
+	 *
+	 * ToDo: Finish documentation!
+	 */
 	virtual bool Mp_StPtM(
 		MatrixWithOp* mwo_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 		, BLAS_Cpp::Transp M_trans
 		) const;
 
-	/// mwo_lhs += alpha * op(P_rhs1) * op(M_rhs) * op(P_rhs2)
+	///
+	/** M_lhs += alpha * op(P) * op(mwo_rhs).
+	 *
+	 * The default implementation does nothing and returns false.
+	 */
+	virtual bool Mp_StPtM(
+		value_type alpha
+		,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
+		,const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp M_trans
+		);
+
+	///
+	/** mwo_lhs += alpha * op(P_rhs1) * op(M_rhs) * op(P_rhs2).
+	 *
+	 * ToDo: Finish documentation!
+	 */
 	virtual bool Mp_StPtMtP(
 		MatrixWithOp* mwo_lhs, value_type alpha
 		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
@@ -232,29 +279,15 @@ public:
 		,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 		) const;
 
-	/// mwo_lhs += alpha * op(M_rhs) (BLAS xAXPY)
-	virtual bool Mp_StM(
-		value_type alpha,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs);
-
-	/// mwo_lhs += alpha * op(M_rhs) * op(P_rhs)
-	virtual bool Mp_StMtP(
-		value_type alpha
-		,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
-		,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
-		);
-
-	/// mwo_lhs += alpha * op(P) * op(M_rhs)
-	virtual bool Mp_StPtM(
-		value_type alpha
-		,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
-		,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
-		);
-
-	/// mwo_lhs += alpha * op(P_rhs1) * op(M_rhs) * op(P_rhs2)
+	///
+	/** M_lhs += alpha * op(P_rhs1) * op(mwo_rhs) * op(P_rhs2).
+	 *
+	 * The default implementation does nothing and returns false.
+	 */
 	virtual bool Mp_StPtMtP(
 		value_type alpha
 		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-		,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
+		,const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp M_trans
 		,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 		);
 
