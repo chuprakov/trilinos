@@ -12,7 +12,9 @@ TSF_INCLUDES = -I$(top_srcdir)/src/Support -I$(top_srcdir)/src/Vectors \
 	-I$(top_srcdir)/src/Writers -I$(top_srcdir)/src/XML \
 	-I$(top_srcdir)/src/Implementations
 
-AM_CPPFLAGS = $(TSF_INCLUDES)	-I$(top_srcdir)/../aztecoo/src -I$(top_srcdir)/../ifpack/src -I$(top_srcdir)/../epetra/src 
+#JW added all paths beginning with -I$(top_builddir) so that TSF could be
+#configured and built in a build tree separate from the source tree.
+AM_CPPFLAGS = $(TSF_INCLUDES)	-I$(top_srcdir)/../aztecoo/src -I$(top_srcdir)/../ifpack/src -I$(top_srcdir)/../epetra/src -I$(top_builddir)/../epetra/src -I$(top_builddir)/../ifpack/src -I$(top_builddir)/../aztecoo/src
 
 # ------------------------------------------------------------------------
 # For using a special archiver

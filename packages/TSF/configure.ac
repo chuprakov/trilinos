@@ -43,6 +43,11 @@
 
 AC_INIT(TSF, 2.0, krlong@sandia.gov)
 
+# Hello World! JW added these 4 lines
+echo "----------------------------------------"
+echo "Running TSF Configure Script"
+echo "----------------------------------------"
+
 # This is to protect against accidentally specifying the wrong
 # directory with --srcdir.
 
@@ -152,31 +157,31 @@ AC_CHECK_HEADERS([cmath math.h iostream iostream.h string string.h],,,)
 AC_CHECK_HEADERS([sstream strstream sstream.h strstream.h],,,)
 
 if test "X$ac_cv_header_cstdlib" != "Xyes" && test "X$ac_cv_header_stdlib_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find cstdlib or stdlib.h.  Ifpack requires at least one or the other.]])
+  AC_MSG_ERROR([[Cannot find cstdlib or stdlib.h.  TSF requires at least one or the other.]])
 fi
 
 if test "X$ac_cv_header_cstdio" != "Xyes" && test "X$ac_cv_header_stdio_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find cstdio or stdio.h.  Ifpack requires at least one or the other.]])
+  AC_MSG_ERROR([[Cannot find cstdio or stdio.h.  TSF requires at least one or the other.]])
 fi
 
 if test "X$ac_cv_header_cassert" != "Xyes" && test "X$ac_cv_header_assert_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find cassert or assert.h.  Ifpack requires at least one or the other.]])
+  AC_MSG_ERROR([[Cannot find cassert or assert.h.  TSF requires at least one or the other.]])
 fi
 
 if test "X$ac_cv_header_string" != "Xyes" && test "X$ac_cv_header_string_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find string or string.h.  Ifpack requires at least one or the other.]])
+  AC_MSG_ERROR([[Cannot find string or string.h.  TSF requires at least one or the other.]])
 fi
 
 if test "X$ac_cv_header_iostream" != "Xyes" && test "X$ac_cv_header_iostream_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find iostream or iostream.h.  Ifpack requires at least one or the other.]])
+  AC_MSG_ERROR([[Cannot find iostream or iostream.h.  TSF requires at least one or the other.]])
 fi
 
 if test "X$ac_cv_header_cmath" != "Xyes" && test "X$ac_cv_header_math_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find cmath or math.h.  Ifpack requires at least one or the other.]])
+  AC_MSG_ERROR([[Cannot find cmath or math.h.  TSF requires at least one or the other.]])
 fi
 
 if test "X$ac_cv_header_sstream" != "Xyes" && test "X$ac_cv_header_strstream" != "Xyes" && test "X$ac_cv_header_sstream" != "Xyes" && test "X$ac_cv_header_strstream" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find sstream, strstream, sstream.h, or strstream.h.  Ifpack requires at least one of these.]])
+  AC_MSG_ERROR([[Cannot find sstream, strstream, sstream.h, or strstream.h.  TSF requires at least one of these.]])
 fi
 
 
@@ -201,9 +206,6 @@ AC_CXX_STD_SPRINTF
 # ------------------------------------------------------------------------
 # Checks for special package flags
 # ------------------------------------------------------------------------
-
-TAC_ARG_ENABLE_FEATURE(oldifpack, [Build old ifpack], OLDIFPACK, no)
-AM_CONDITIONAL(BUILD_OLDIFPACK, test "X$ac_cv_use_oldifpack" != "Xno")
 
 ### fill in ifdefs here - EPETRA_MPI, DEBUG, CRAY, COMPLEX_SUPPORT
 
@@ -305,4 +307,7 @@ AC_CONFIG_FILES([
 
 AC_OUTPUT()
 
-
+# Bye World! JW added these 4 lines
+echo "----------------------------------------"
+echo "Finished Running TSF Configure Script"
+echo "----------------------------------------"
