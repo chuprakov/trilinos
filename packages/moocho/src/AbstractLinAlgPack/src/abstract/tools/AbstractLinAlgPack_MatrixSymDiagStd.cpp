@@ -13,6 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#include <iostream> // Debuggin only
+
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
 #include "AbstractLinAlgPack/include/MultiVectorMutable.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
@@ -28,6 +30,10 @@ MatrixSymDiagonalStd::MatrixSymDiagonalStd(
 	)
 {
 	this->initialize(diag,unique);
+//	std::cerr << "MatrixSymDiagonalStd::rows() = " << this->rows() << std::endl; // Debugging
+//	std::cerr << "MatrixSymDiagonalStd::nz() = "   << this->nz()   << std::endl; // Debugging
+//	std::cerr << "MatrixSymDiagonalStd::cols() = " << this->cols() << std::endl; // Debugging
+//	std::cerr << "MatrixSymDiagonalStd::nz() = "   << this->nz()   << std::endl; // Debugging
 }
 
 void MatrixSymDiagonalStd::initialize(
