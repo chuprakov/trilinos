@@ -28,7 +28,7 @@ In the future this docuentation will be much more extensive.
 <li> Abstractions for General Iterative Algorithms:
     Package framework for iterative algorithms.
 	<ul>
-	<li> <A HREF="../GeneralIterationPack/html/index.html">GeneralIterationPack</A>. *** Not updated yet!
+	<li> <A HREF="../GeneralIterationPack/html/index.html">GeneralIterationPack</A>.
 	</ul>
 
 <li> Numerical Packages:
@@ -49,17 +49,16 @@ In the future this docuentation will be much more extensive.
 		for vectors, matrices and related linear algebra objects based on 
 		<A HREF="../RTOpPack/html/index.html">RTOpPack</A>.
 	<li> <A HREF="../LinAlgPack/html/index.html">LinAlgPack</A>: Concreate C++ classes
-		for dense BLAS compatible linear algebra with implementations of abstract interfaces
-		in  <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>. *** Not updated yet!
+		for dense BLAS compatible linear algebra . *** Not updated yet!
 	<li> <A HREF="../SparseLinAlgPack/html/index.html">SparseLinAlgPack</A>: Concreate C++ classes
 		for sparse linear algebra with implementations of abstract interfaces
-		in  <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>. *** Not updated yet!
+		in  <tt>%AbstractLinAlgPack</tt>. *** Not updated yet!
 	<li> <A HREF="../SparseSolverPack/html/index.html">SparseSolverPack</A>: Abstract C++ interfaces
 		and subclasses for serial linear solvers with implementations of abstract interfades
-		in  <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>. *** Not updated yet!
+		in  <tt>%AbstractLinAlgPack</tt>. *** Not updated yet!
 	<li> <A HREF="../ConstrainedOptimizationPack/html/index.html">ConstrainedOptimizationPack</A>:
 		C++ classes and interfaces for utilities for constrained optimization based on the
-		interfaces in <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>. *** Not updated yet!
+		interfaces in <tt>%AbstractLinAlgPack</tt>. *** Not updated yet!
 	</ul>
 
 <li> Intefaces for Nonlinear Programs (NLPs):
