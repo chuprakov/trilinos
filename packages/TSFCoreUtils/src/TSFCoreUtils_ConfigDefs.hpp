@@ -1,4 +1,4 @@
-
+/*
 // @HEADER
 // ***********************************************************************
 // 
@@ -26,6 +26,7 @@
 // 
 // ***********************************************************************
 // @HEADER
+*/
 
 #ifndef _TSFCOREUTILS_CONFIGDEFS_CPP_H_
 #define _TSFCOREUTILS_CONFIGDEFS_CPP_H_
@@ -182,10 +183,8 @@ class ofstream;
 class fstream;
 #endif
 
-
 /* Every line that begins with 'using' should eventually be dependent
    on some check within the configure script */
-
 
 #ifndef TFLOP
 #ifdef HAVE_CMATH
@@ -209,7 +208,11 @@ using std::cerr;
 using std::cout;
 using std::endl;
 #endif
+
 #endif
-#endif
+
+#else /* __cplusplus not defined*/
+
+#endif /* __cplusplus */
 
 #endif /*_TSFCORE_CONFIGDEFS_CPP_H_*/

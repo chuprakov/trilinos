@@ -36,9 +36,7 @@
 #ifndef REDUCT_TRANS_VECTOR_OPERATORS_CONFIG_H
 #define REDUCT_TRANS_VECTOR_OPERATORS_CONFIG_H
 
-#ifndef PACKAGE_TARNAME  /* This is flag that this file is already included */
-#include <TSFCoreUtilsConfig.h>
-#endif
+#include <TSFCoreUtils_ConfigDefs.hpp>  /* This C++ header also has a proper C mode */
 
 #ifdef HAVE_MPI
 #define RTOp_USE_MPI  /* This macro is used in several places so we must keep it */
