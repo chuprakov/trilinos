@@ -21,6 +21,7 @@ namespace ConstrainedOptimizationPack {
   \begin{verbatim}
 	options_group QPSolverRelaxedQPSchur {
 	*    max_qp_iter_frac  = 10.0;   *** (+dbl) max_qp_itr = max_qp_itr_frac * (# variables)
+	*    max_real_runtime  = 1e+20;  *** (+dbl) maximum runtime in minutes
 	*    inequality_pick_policy = ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY;
 	*    inequality_pick_policy = ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY; *** not supported yet!
 	*    inequality_pick_policy = ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY;

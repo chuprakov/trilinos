@@ -13,10 +13,11 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 21;
+	const int local_num_options = 22;
 
 	enum local_EOptions {
 		MAX_QP_ITER_FRAC
+		,MAX_REAL_RUNTIME
 		,INEQUALITY_PICK_POLICY
 		,BOUND_TOL
 		,INEQUALITY_TOL
@@ -41,6 +42,7 @@ namespace {
 
 	const char* local_SOptions[local_num_options]	= {
 		"max_qp_iter_frac"
+		,"max_real_runtime"
 		,"inequality_pick_policy"
 		,"bounds_tol"
 		,"inequality_tol"
@@ -85,6 +87,9 @@ void QPSolverRelaxedQPSchurSetOptions::set_option(
 	switch( (local_EOptions)option_num ) {
 		case MAX_QP_ITER_FRAC:
 			target().max_qp_iter_frac(::fabs(::atof(option_value.c_str())));
+			break;
+		case MAX_REAL_RUNTIME:
+			target().max_real_runtime(::fabs(::atof(option_value.c_str())));
 			break;
 		case INEQUALITY_PICK_POLICY:
 			if(			option_value == "ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY" )
