@@ -32,7 +32,8 @@
 #ifdef RTOp_USE_MPI
 #include "mpi.h"       /* Use real MPI declarations */
 #else
-#warning "Compiling in support for dummy MPI, real MPI will not be available!"
+/* #warning causes errors on Atlantis
+#warning "Compiling in support for dummy MPI, real MPI will not be available!" */
 #include "RTOp_mpi.h"  /* Use dummy MPI declarations */
 #endif
 
