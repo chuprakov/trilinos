@@ -514,7 +514,12 @@ public:
 	  * At the end of each iteration #this# calls #track().output_iteration(*this)# and
 	  * #state().next_iteration()#.  It then checks if #state.k() - k_start# >= #max_iter()#.
 	  * If it is then the #do_algorithm(...)# immediatly terminates with a value of
-	  * #MAX_ITER_EXCEEDED#.
+	  * #MAX_ITER_EXCEEDED# after it passes #MAX_ITER_EXCEEDED# to #track().output_final(...)#.
+	  * If the maxinum runtime #this->max_run_time()# is exceeded then #MAX_RUN_TIME_EXCEEDED#
+	  * will be passed to #track().output_final(...)# and this function will return
+	  * #track().output_final(...)#.  If the algorithm throws any exception then
+	  * #track().output_final(...)# will be called with the value #TERMINATE_FALSE#
+	  * and this exception will be rethrown clean out of here.
 	  *
 	  * Any step object can cause the algorithm to terminate by calling #terminate(success)#.
 	  * This operation will then immediatly return #TERMINATE_TRUE# if #success == true#

@@ -420,6 +420,7 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 	}	// end try
 	catch(...) {
 		running_state_ = NOT_RUNNING;
+		track().output_final( *this,TERMINATE_FALSE );  // This may also throw an exception?
 		throw;
 	}
 }
@@ -605,7 +606,7 @@ void Algorithm::validate_in_state(ERunningState running_state) const {
 	const char running_state_name[3][25] = { "NOT_RUNNING" , "RUNNING", "RUNNING_BEING_CONFIGURED" };
 	if(running_state_ != running_state) {
 		std::ostringstream omsg;
-		omsg	<< "Algorithm::validate_in_state((...) : The condition running_state() == "
+		omsg	<< "Algorithm::validate_in_state(...) : The condition running_state() == "
 				<< running_state_name[running_state_] << " has been violated with "
 					" running_state() = " << running_state_name[running_state];
 		throw InvalidRunningState(omsg.str());
@@ -616,7 +617,7 @@ void Algorithm::validate_not_in_state(ERunningState running_state) const {
 	const char running_state_name[3][25] = { "NOT_RUNNING" , "RUNNING", "RUNNING_BEING_CONFIGURED" };
 	if(running_state_ == running_state) {
 		std::ostringstream omsg;
-		omsg	<< "Algorithm::validate_not_in_state((...) : The condition running_state() != "
+		omsg	<< "Algorithm::validate_not_in_state(...) : The condition running_state() != "
 				<< running_state_name[running_state_] << " has been violated";
 		throw InvalidRunningState(omsg.str());
 	}
