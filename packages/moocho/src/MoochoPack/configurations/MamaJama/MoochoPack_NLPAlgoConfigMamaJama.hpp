@@ -16,79 +16,61 @@
 #ifndef RSQP_ALGO_CONFIG_MAMA_JAMA_H
 #define RSQP_ALGO_CONFIG_MAMA_JAMA_H
 
-#include <memory>
-#include <fstream>
-
-#include "../../include/rSQPAlgo_Config.h"
-#include "../../include/rSQPAlgo.h"
-#include "Misc/include/OptionsFromStream.h"
+#include "ReducedSpaceSQPPack/include/rSQPAlgo_Config.h"
+#include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
+#include "OptionsFromStream.h"
 
 namespace ReducedSpaceSQPPack {
 
 ///
 /** This is a do all configuration class for rSQPAlgo.
   *
-  * 
+  * ToDo: Finish documentation!
   */
 class rSQPAlgo_ConfigMamaJama : public rSQPAlgo_Config {
 public:
 
 	///
-	rSQPAlgo_ConfigMamaJama(
-		  ReferenceCountingPack::ref_count_ptr<BasisSystem>
-			basis_sys_ptr = 0
-		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
-			Gc_iq_creator_ptr = 0
-		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
-			U_iq_creator_ptr = 0
-		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
-			HL_iq_creator_ptr = 0
-		);
+	typedef ReferenceCountingPack::ref_count_ptr<BasisSystem> basis_sys_ptr_t;
+
+	/// Calls <tt>this->initalize()</tt>
+	rSQPAlgo_ConfigMamaJama( const basis_sys_ptr_t&  basis_sys = NULL );
+
+	///
+	/** Initialize with an optional \c BasisSystem object.
+	 */
+	void initialize( const basis_sys_ptr_t&  basis_sys = NULL );
 
 	///
 	~rSQPAlgo_ConfigMamaJama();
 
 	///
 	/** Set the OptionsFromStream object that will be used for specifying the exact options.
-	  *
-	  * There are a lot of options associated with this configuration.  The main options
-	  * group is "rSQPAlgo_ConfigMamaJama".  See the file rSQPpp.opt.rsqp_mama_jama_solve
-	  * for these options and how they are specified.
-	  *
-	  * @param	options	[in] If NULL then no options will be set.  If !=NULL then this is the
-	  * 				OptionsFromStream object that will be used to extract the
-	  * 				options to use for the algorithm.  The state of this object must
-	  * 				be maintained by the client until config_algo_cntr(...) is called
-	  * 				and it is at this point that the options are read.
-	  */
+	 *
+	 * There are a lot of options associated with this configuration.  The main options
+	 * group is "rSQPAlgo_ConfigMamaJama".  See the file rSQPpp.opt.rsqp_mama_jama_solve
+	 * for these options and how they are specified.
+	 *
+	 *  @param  options
+	 *               [in] If \c NULL then no options will be set.  If <tt>!=NULL</tt> then
+	 *               this is the \c OptionsFromStream object that will be used to extract the
+	 *               options to use for the algorithm.  The state of this object must
+	 *               be maintained by the client until \c config_algo_cntr() is called
+	 *               and it is at this point that the options are read.
+	 */
 	void set_options( const OptionsFromStreamPack::OptionsFromStream* options );
 
-	// ///////////////////
-	// Overridden members
+	/** Overridden from rSQPAlgo_Config */
+	//@{
 
 	///
-	void config_algo_cntr(rSQPAlgoContainer& algo_cntr, std::ostream* trase_out);
+	void config_algo_cntr(rSQPAlgoContainer* algo_cntr, std::ostream* trase_out);
 	///
-	void init_algo(rSQPAlgoInterface& algo);
+	void init_algo(rSQPAlgoInterface* algo);
 
-public:
+	//@}
 
-	// ///////////////////////////////////////////////////////////////////////
-	// These should be private types but MS VC++ 6.0 will not allow it!
-
-	///
-	typedef std::auto_ptr<std::ofstream> mapped_qp_file_ptr_t;
-	///
-	typedef ReferenceCountingPack::ref_count_ptr<BasisSystem> basis_sys_ptr_t;
-	///
-	typedef ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
-		Gc_iq_creator_ptr_t;
-	///
-	typedef ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
-		U_iq_creator_ptr_t;
-	///
-	typedef ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
-			HL_iq_creator_ptr_t;
+private:
 
 	///
 	enum EDirectLinearSolverType {
@@ -151,26 +133,17 @@ private:
 		EMeritFunctionType		merit_function_type_;
 		EL1PenaltyParamUpdate	l1_penalty_param_update_;
 		int						full_steps_after_k_;			// If < 0, do not use this option at all.
-		// Not used for now
-		bool					print_qp_error_;				// If true we print the QP error to journal.
-		bool					correct_bad_init_guess_;
 	};
 
 	/// Possible user supplied stuff
-	basis_sys_ptr_t		basis_sys_ptr_;	// Basis system object (if null will be set)
-	Gc_iq_creator_ptr_t	Gc_iq_creator_ptr_;	// IQA creator for Gc
-	U_iq_creator_ptr_t	U_iq_creator_ptr_;	// IQA creator for U which is N
-	HL_iq_creator_ptr_t	HL_iq_creator_ptr_;	// IQA creator for HL
+	basis_sys_ptr_t     basis_sys_; // Basis system object (if null will be set)
 
 	/// Pointer to options
 	const OptionsFromStreamPack::OptionsFromStream
-						*options_;
+	                    *options_;
 	/// Options
-	SOptionValues		uov_;	// options set by user
-	SOptionValues		cov_;	// current option values actually used
-
-	// Keep a file that is used to output the mapped from a QP
-	mapped_qp_file_ptr_t	mapped_qp_file_;
+	SOptionValues       uov_; // options set by user
+	SOptionValues       cov_; // current option values actually used
 
 	// ///////////////////////////////////////////////////////
 	// Private member functions

@@ -22,7 +22,6 @@
 
 #include <sstream>
 #include <typeinfo>
-
 #include <iostream>
 
 #include "Misc/include/debug.h"
@@ -30,140 +29,138 @@
 #include "rSQPAlgo_ConfigMamaJama.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgoContainer.h"
-#include "ReducedSpaceSQPPack/include/rSQPStateContinuousStorage.h"
-#include "ReducedSpaceSQPPack/include/rSQPStateContinuousStorageMatrixWithOpCreatorAggr.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
-#include "SparseLinAlgPack/include/COOMatrixWithPartitionedViewSubclass.h"			// HL, Gc, Hcj
-#include "ConstrainedOptimizationPack/include/IdentZeroVertConcatMatrixSubclass.h"	// Y
-#include "ConstrainedOptimizationPack/include/DenseIdentVertConcatMatrixSubclass.h"	// Z
-#include "ConstrainedOptimizationPack/include/ZAdjointFactMatrixSubclass.h"			// .
-#include "SparseLinAlgPack/include/COOMatrixPartitionViewSubclass.h"				// U
-#include "SparseLinAlgPack/include/GenMatrixSubclass.h"								// V
+//#include "ReducedSpaceSQPPack/include/rSQPStateContinuousStorage.h"
+//#include "ReducedSpaceSQPPack/include/rSQPStateContinuousStorageMatrixWithOpCreatorAggr.h"
+//#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
+//#include "SparseLinAlgPack/include/COOMatrixWithPartitionedViewSubclass.h"			// HL, Gc, Hcj
+#include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"                   // Y, Z
+//#include "SparseLinAlgPack/include/COOMatrixPartitionViewSubclass.h"				// U
+//#include "SparseLinAlgPack/include/GenMatrixSubclass.h"								// V
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"          // rHL 
-#include "ConstrainedOptimizationPack/include/MatrixSymPosDefInvCholFactor.h"		// .
-#include "ConstrainedOptimizationPack/include/MatrixSymPosDefLBFGS.h"				// .
-#include "ConstrainedOptimizationPack/include/MatrixHessianSuperBasicInitDiagonal.h"// | rHL (super basics)
-#include "SparseLinAlgPack/include/MatrixSymDiagonalStd.h"                          // |
+//#include "ConstrainedOptimizationPack/include/MatrixSymPosDefInvCholFactor.h"		// .
+//#include "ConstrainedOptimizationPack/include/MatrixSymPosDefLBFGS.h"				// .
+//#include "ConstrainedOptimizationPack/include/MatrixHessianSuperBasicInitDiagonal.h"// | rHL (super basics)
+//#include "SparseLinAlgPack/include/MatrixSymDiagonalStd.h"                          // |
 
 #include "ConstrainedOptimizationPack/include/VariableBoundsTesterSetOptions.h"
 
-#include "ReducedSpaceSQPPack/include/NLPrSQPTailoredApproach.h"
-#include "ReducedSpaceSQPPack/include/NLPrSQPTailoredApproachTester.h"
-#include "ReducedSpaceSQPPack/include/NLPrSQPTailoredApproachTesterSetOptions.h"
+#include "NLPInterfacePack/include/NLPFirstOrderDirect.h"
+#include "NLPInterfacePack/test/NLPFirstOrderDirectTester.h"
+#include "NLPInterfacePack/test/NLPFirstOrderDirectTesterSetOptions.h"
 
 #include "NLPInterfacePack/test/NLPFirstDerivativesTester.h"
 #include "NLPInterfacePack/test/NLPFirstDerivativesTesterSetOptions.h"
 
-#include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
+#include "NLPInterfacePack/include/NLPSecondOrderInfo.h"
 #include "NLPInterfacePack/include/NLPReduced.h"
-#include "SparseSolverPack/include/COOBasisSystem.h"
-#ifdef SPARSE_SOLVER_PACK_USE_MA48
-#include "SparseSolverPack/include/MA28SparseCOOSolverCreator.h"
+//#include "SparseSolverPack/include/COOBasisSystem.h"
+#ifdef SPARSE_SOLVER_PACK_USE_MA28
+//#include "SparseSolverPack/include/MA28SparseCOOSolverCreator.h"
 #endif
 #ifdef SPARSE_SOLVER_PACK_USE_MA48
-#include "SparseSolverPack/include/MA48SparseCOOSolverCreator.h"
+//#include "SparseSolverPack/include/MA48SparseCOOSolverCreator.h"
 #endif
+
+// line search
 #include "ConstrainedOptimizationPack/include/DirectLineSearchArmQuad_Strategy.h"
+#include "ConstrainedOptimizationPack/include/DirectLineSearchArmQuad_StrategySetOptions.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPL1.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPModL1.h"
-#include "ReducedSpaceSQPPack/include/std/DecompositionSystemVarReductStd.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateDirect.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateAdjoint.h"
-#include "ConstrainedOptimizationPack/include/DirectLineSearchArmQuad_StrategySetOptions.h"
+
+//#include "ReducedSpaceSQPPack/include/std/DecompositionSystemVarReductStd.h"
+//#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateDirect.h"
+//#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateAdjoint.h"
 
 #include "SparseSolverPack/test/BasisSystemTesterSetOptions.h"
 
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchur.h"
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurSetOptions.h"
-#include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianFull.h"
-#include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianSuperBasic.h"
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPKWIK.h"
+//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
+//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
+//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchur.h"
+//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurSetOptions.h"
+//#include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianFull.h"
+//#include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianSuperBasic.h"
+//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPKWIK.h"
 #ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
-#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPOPT.h"
-#endif // CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
+//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPOPT.h"
+#endif
 
 #include "ReducedSpaceSQPPack/include/std/rSQPAlgorithmStepNames.h"
 
-#include "ReducedSpaceSQPPack/include/std/DecompositionSystemVarReductStd.h"
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointStd_Step.h"
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointStd_StepSetOptions.h"
+//#include "ReducedSpaceSQPPack/include/std/DecompositionSystemVarReductStd.h"
+//#include "ReducedSpaceSQPPack/include/std/EvalNewPointStd_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproach_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachCoordinate_Step.h"
-#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
-#include "ReducedSpaceSQPPack/include/std/ReducedGradientStd_Step.h"
-#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_Step.h"
-#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_StepSetOptions.h"
+//#include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/ReducedGradientStd_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateStd_Step.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSFull_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.h"
-#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateLPBFGS_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.h"
+//#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
+//#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.h"
+//#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateLPBFGS_Strategy.h"
+//#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_StrategySetOptions.h"
-#include "ReducedSpaceSQPPack/include/std/DepDirecStd_Step.h"
-#include "ReducedSpaceSQPPack/include/std/CheckBasisFromCPy_Step.h"
-#include "ReducedSpaceSQPPack/include/std/CheckBasisFromPy_Step.h"
-#include "ReducedSpaceSQPPack/include/std/IndepDirecWithoutBounds_Step.h"
-#include "ReducedSpaceSQPPack/include/std/SetDBoundsStd_AddedStep.h"
-#include "ReducedSpaceSQPPack/include/std/QPFailureReinitReducedHessian_Step.h"
-#include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_Step.h"
-#include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_StepSetOptions.h"
+//#include "ReducedSpaceSQPPack/include/std/DepDirecStd_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/CheckBasisFromCPy_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/CheckBasisFromPy_Step.h"
+#include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithoutBounds_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/SetDBoundsStd_AddedStep.h"
+//#include "ReducedSpaceSQPPack/include/std/QPFailureReinitReducedHessian_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/CalcDFromYPYZPZ_Step.h"
-#include "ReducedSpaceSQPPack/include/std/LineSearchFailureNewBasisSelection_Step.h"
-#include "ReducedSpaceSQPPack/include/std/NewBasisSelectionStd_Strategy.h"
+//#include "ReducedSpaceSQPPack/include/std/LineSearchFailureNewBasisSelection_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/NewBasisSelectionStd_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFullStep_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchDirect_Step.h"
-#include "ReducedSpaceSQPPack/include/std/LineSearch2ndOrderCorrect_Step.h"
-#include "ReducedSpaceSQPPack/include/std/LineSearch2ndOrderCorrect_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/include/std/FeasibilityStepReducedStd_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/FeasibilityStepReducedStd_StrategySetOptions.h"
-#include "ReducedSpaceSQPPack/include/std/QuasiRangeSpaceStepStd_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/QuasiRangeSpaceStepTailoredApproach_Strategy.h"
-#include "ReducedSpaceSQPPack/include/std/LineSearchWatchDog_Step.h"
-#include "ReducedSpaceSQPPack/include/std/LineSearchWatchDog_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/include/std/LineSearchFullStepAfterKIter_Step.h"
-#include "ReducedSpaceSQPPack/include/std/CalcLambdaIndepStd_AddedStep.h"
+//#include "ReducedSpaceSQPPack/include/std/LineSearch2ndOrderCorrect_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/LineSearch2ndOrderCorrect_StepSetOptions.h"
+//#include "ReducedSpaceSQPPack/include/std/FeasibilityStepReducedStd_Strategy.h"
+//#include "ReducedSpaceSQPPack/include/std/FeasibilityStepReducedStd_StrategySetOptions.h"
+//#include "ReducedSpaceSQPPack/include/std/QuasiRangeSpaceStepStd_Strategy.h"
+//#include "ReducedSpaceSQPPack/include/std/QuasiRangeSpaceStepTailoredApproach_Strategy.h"
+//#include "ReducedSpaceSQPPack/include/std/LineSearchWatchDog_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/LineSearchWatchDog_StepSetOptions.h"
+//#include "ReducedSpaceSQPPack/include/std/LineSearchFullStepAfterKIter_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/CalcLambdaIndepStd_AddedStep.h"
 #include "ReducedSpaceSQPPack/include/std/CalcReducedGradLagrangianStd_AddedStep.h"
 #include "ReducedSpaceSQPPack/include/std/CheckConvergenceStd_AddedStep.h"
 #include "ReducedSpaceSQPPack/include/std/CheckConvergenceStd_AddedStepSetOptions.h"
-#include "ReducedSpaceSQPPack/include/std/CheckSkipBFGSUpdateStd_Step.h"
 #include "ReducedSpaceSQPPack/include/std/CheckSkipBFGSUpdateStd_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.h"
-#include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.h"
-#include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.h"
-#include "ReducedSpaceSQPPack/include/std/MeritFunc_ModifiedL1LargerSteps_AddedStep.h"
-#include "ReducedSpaceSQPPack/include/std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.h"
-#include "ReducedSpaceSQPPack/include/std/ActSetStats_AddedStep.h"
-#include "ReducedSpaceSQPPack/include/std/NumFixedDepIndep_AddedStep.h"
+//#include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.h"
+//#include "ReducedSpaceSQPPack/include/std/MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.h"
+//#include "ReducedSpaceSQPPack/include/std/MeritFunc_ModifiedL1LargerSteps_AddedStep.h"
+//#include "ReducedSpaceSQPPack/include/std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.h"
+//#include "ReducedSpaceSQPPack/include/std/ActSetStats_AddedStep.h"
+//#include "ReducedSpaceSQPPack/include/std/NumFixedDepIndep_AddedStep.h"
 
-#include "ReducedSpaceSQPPack/include/std/act_set_stats.h"
-#include "ReducedSpaceSQPPack/include/std/qp_solver_stats.h"
-#include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
+//#include "ReducedSpaceSQPPack/include/std/act_set_stats.h"
+//#include "ReducedSpaceSQPPack/include/std/qp_solver_stats.h"
+//#include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
 
-#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateDirect.h"
-#include "SparseLinAlgPack/include/sparse_bounds.h"
+//#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateDirect.h"
+//#include "SparseLinAlgPack/include/sparse_bounds.h"
 
-#include "LinAlgPack/include/PermVecMat.h"
+//#include "LinAlgPack/include/PermVecMat.h"
 
-#include "Misc/include/dynamic_cast_verbose.h"
-#include "Misc/include/ReleaseResource_ref_count_ptr.h"
+// Misc utilities
+#include "AbstractFactoryStd.h"
+#include "dynamic_cast_verbose.h"
+#include "ReleaseResource_ref_count_ptr.h"
+#include "ThrowException.h"
 
-// Stuff to readin options
+// Stuff to read in options
 #include "Misc/include/StringToIntMap.h"
 #include "Misc/include/StringToBool.h"
 
 // Stuff for exact reduced hessian
-#include "ReducedSpaceSQPPack/include/std/ReducedHessianExactStd_Step.h"
-#include "ReducedSpaceSQPPack/include/std/CrossTermExactStd_Step.h"
-#include "ReducedSpaceSQPPack/include/std/DampenCrossTermStd_Step.h"
-
-// Correct a bad initial guess
-#include "ReducedSpaceSQPPack/include/std/CorrectBadInitGuessStd_AddedStep.h"
-#include "ReducedSpaceSQPPack/include/std/CorrectBadInitGuessStd_AddedStepSetOptions.h"
+//#include "ReducedSpaceSQPPack/include/std/ReducedHessianExactStd_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/CrossTermExactStd_Step.h"
+//#include "ReducedSpaceSQPPack/include/std/DampenCrossTermStd_Step.h"
 
 namespace {
 	const double INF_BASIS_COND_CHANGE_FRAC      = 1e+20;
@@ -173,45 +170,33 @@ namespace {
 namespace ReducedSpaceSQPPack {
 
 //
-// Here is where we defint the default values for the algorithm.  These
+// Here is where we define the default values for the algorithm.  These
 // should agree with what are in the rSQPpp.opt.rsqp_mama_jama_solve file.
 //
 rSQPAlgo_ConfigMamaJama::SOptionValues::SOptionValues()
-	:
-	direct_linear_solver_type_(LA_AUTO)
-	, null_space_matrix_type_(NULL_SPACE_MATRIX_AUTO)
-	, range_space_matrix_type_(RANGE_SPACE_MATRIX_AUTO)
-	, max_basis_cond_change_frac_(-1.0)
-	, exact_reduced_hessian_(false)
-	, quasi_newton_(QN_AUTO)
-	, max_dof_quasi_newton_dense_(-1)
-	, num_lbfgs_updates_stored_(-1)
-	, lbfgs_auto_scaling_(true)
-	, hessian_initialization_(INIT_HESS_AUTO)
-	, qp_solver_type_(QP_AUTO)
-	, reinit_hessian_on_qp_fail_(true)
-	, line_search_method_(LINE_SEARCH_AUTO)
-	, merit_function_type_(MERIT_FUNC_AUTO)
-	, l1_penalty_param_update_(L1_PENALTY_PARAM_AUTO)
-	, full_steps_after_k_(-1)
-	, print_qp_error_(false)
-	, correct_bad_init_guess_(false)
+	:direct_linear_solver_type_(LA_AUTO)
+	,null_space_matrix_type_(NULL_SPACE_MATRIX_AUTO)
+	,range_space_matrix_type_(RANGE_SPACE_MATRIX_AUTO)
+	,max_basis_cond_change_frac_(-1.0)
+	,exact_reduced_hessian_(false)
+	,quasi_newton_(QN_AUTO)
+	,max_dof_quasi_newton_dense_(-1)
+	,num_lbfgs_updates_stored_(-1)
+	,lbfgs_auto_scaling_(true)
+	,hessian_initialization_(INIT_HESS_AUTO)
+	,qp_solver_type_(QP_AUTO)
+	,reinit_hessian_on_qp_fail_(true)
+	,line_search_method_(LINE_SEARCH_AUTO)
+	,merit_function_type_(MERIT_FUNC_AUTO)
+	,l1_penalty_param_update_(L1_PENALTY_PARAM_AUTO)
+	,full_steps_after_k_(-1)
 {}
 
 rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
-		  ReferenceCountingPack::ref_count_ptr<BasisSystem> basis_sys_ptr
-		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
-			Gc_iq_creator_ptr
-		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
-			U_iq_creator_ptr
-		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
-			HL_iq_creator_ptr
-		)
-	: basis_sys_ptr_(basis_sys_ptr)
-		, Gc_iq_creator_ptr_(Gc_iq_creator_ptr)
-		, U_iq_creator_ptr_(U_iq_creator_ptr)
-		, HL_iq_creator_ptr_(HL_iq_creator_ptr)
-		, options_(NULL)
+	const basis_sys_ptr_t&  basis_sys
+	)
+	:basis_sys_(basis_sys)
+	,options_(NULL)
 {}
 
 rSQPAlgo_ConfigMamaJama::~rSQPAlgo_ConfigMamaJama() {
@@ -223,11 +208,15 @@ void rSQPAlgo_ConfigMamaJama::set_options( const OptionsFromStreamPack::OptionsF
 	options_ = options;
 }
 
-void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
-	, std::ostream* trase_out)
+void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
+	rSQPAlgoContainer   *algo_cntr
+	,std::ostream       *trase_out
+	)
 {
+	namespace afp = AbstractFactoryPack;
 	namespace rcp = ReferenceCountingPack;
 	using rcp::ref_count_ptr;
+	using DynamicCastHelperPack::dyn_cast;
 
 	if(trase_out) {
 		*trase_out
@@ -247,10 +236,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		*trase_out << "\nCreating the algo object ...\n";
 
 	typedef rcp::ref_count_ptr<rSQPAlgo>	algo_ptr_t;
-	algo_ptr_t algo(new rSQPAlgo);
+	algo_ptr_t algo = rcp::rcp(new rSQPAlgo);
 	assert(algo.get());
-	algo_cntr.set_algo( rcp::rcp_implicit_cast<rSQPAlgoInterface>(algo) );
-	algo->set_algo_cntr(&algo_cntr);
+	algo_cntr->set_algo(algo);
+	algo->set_algo_cntr(algo_cntr);
 
 	// /////////////////////////////////////////////
 	// C. Configure algo
@@ -261,8 +250,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	if(trase_out)
 		*trase_out << "\nSetting the NLP and track objects ...\n";
 
-	algo->set_nlp( algo_cntr.get_nlp().get() );
-	algo->set_track( rcp::rcp_implicit_cast<AlgorithmTrack>(algo_cntr.get_track()) );
+	algo->set_nlp( algo_cntr->get_nlp().get() );
+	algo->set_track( algo_cntr->get_track() );
 
 	// ////////////////////////////////////////////////
 	// Determine what the options are:
@@ -282,21 +271,44 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	// Get the dimensions of the NLP
 	NLP &nlp = algo->nlp();
 	if(!nlp.is_initialized()) nlp.initialize();
-	using SparseLinAlgPack::num_bounds;
 	const size_type
-		n = algo->nlp().n(),
-		r = algo->nlp().r(),
-		dof = nlp.n() - nlp.r(),
-		nb = nlp.has_bounds() ? num_bounds( nlp.xl(), nlp.xu() ) : 0;
+		n   = algo->nlp().n(),
+		m   = algo->nlp().m(),
+		mI  = algo->nlp().mI(),
+		r   = m, // ToDo: Compute this for real!
+		dof = n - r,
+		nb  = nlp.num_bounded_x();
 
-	// 7/28/00: Determine if this is a standard NLPFirstOrderInfo nlp or a tailored approach nlp.
-	bool tailored_approach
-		= (NULL != dynamic_cast<NLPrSQPTailoredApproach*>(algo->get_nlp()));
+	// Determine which NLP interface is supported
+	NLPFirstOrderInfo    *nlp_foi = dynamic_cast<NLPFirstOrderInfo*>(   algo->get_nlp() );	
+	NLPSecondOrderInfo   *nlp_soi = dynamic_cast<NLPSecondOrderInfo*>(  algo->get_nlp() );	
+	NLPFirstOrderDirect  *nlp_fod = dynamic_cast<NLPFirstOrderDirect*>( algo->get_nlp() );
+	bool tailored_approach = false;
+	if( nlp_foi ) {
+		tailored_approach = false;
+	}
+	else {
+		if( nlp_fod ) {
+			tailored_approach = true;
+		}
+		else {
+			THROW_EXCEPTION(
+				true, std::logic_error
+				,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+				"the NLP object of type \'" << typeid(algo->nlp()).name() <<
+				"\' does not support the NLPFirstOrderDirect or "
+				"NLPFirstOrderInfo interfaces!" );
+		}
+	}
+
+	// //////////////////////////////////////////////////////
+	// C.1.  Sort out the options
+
 	if( tailored_approach ) {
 		// Change the options for the tailored approach. 
 		if(trase_out) {
 			*trase_out
-				<< "\nThis is a tailored approach NLP and the following options are set:\n"
+				<< "\nThis is a tailored approach NLP (NLPFirstOrderDirect) which forces the following options:\n"
 				<< "merit_function_type         = L1;\n"
 				<< "l1_penalty_parameter_update = MULT_FREE;\n"
 				<< "null_space_matrix           = EXPLICIT;\n"
@@ -306,189 +318,37 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		cov_.l1_penalty_param_update_	= L1_PENALTY_PARAM_MULT_FREE;
 		cov_.null_space_matrix_type_    = NULL_SPACE_MATRIX_EXPLICIT;
 	}
-	else {
-		// If it is not a tailored approach NLP then it better
-		// support at least the NLPFirstOrder interface (and perhaps
-		// the NLPReduced interface also)!
-		if( NULL == dynamic_cast<NLPFirstOrderInfo*>(algo->get_nlp()) ) {
-			std::ostringstream omsg;
-			omsg
-				<< "rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : "
-				<< "Error, type nlp object with the concrete type "
-				<< typeid(algo->nlp()).name()
-				<< " does not support the NLPFirstOrderInfo interface.";
-			if(trase_out)
-				*trase_out << std::endl << omsg.str() << std::endl;
-			throw std::logic_error( omsg.str() );
-		}
-	}
 
-	// Determine whether to use direct or adjoint factorization
-	if( cov_.null_space_matrix_type_ == NULL_SPACE_MATRIX_AUTO ) {
-		switch(uov_.null_space_matrix_type_) {
-		    case NULL_SPACE_MATRIX_EXPLICIT:
-				cov_.null_space_matrix_type_ = NULL_SPACE_MATRIX_EXPLICIT;
-				break;
-		    case NULL_SPACE_MATRIX_IMPLICIT:
-				cov_.null_space_matrix_type_ = NULL_SPACE_MATRIX_IMPLICIT;
-				break;
-		    case NULL_SPACE_MATRIX_AUTO:
-			{
-				if( !nlp.has_bounds() || uov_.qp_solver_type_ == QP_QPSCHUR )
-				{
-					if(trase_out) {
-						*trase_out << "\nnull_sapce_matrix == AUTO:";
-						if(!nlp.has_bounds())
-							*trase_out << "\nnlp.has_bounds() == " << algo->nlp().has_bounds() << ":";
-						else if( uov_.qp_solver_type_ == QP_QPSCHUR )
-							*trase_out << "\nqp_solver == QPSCHUR:";
-						else
-							assert(0);
-						*trase_out << "\nsetting null_space_matrix = IMPLICIT ...\n";
-					}
-					cov_.null_space_matrix_type_ = NULL_SPACE_MATRIX_IMPLICIT;
-				}
-				else {
-					if(trase_out)
-						*trase_out <<
-							"\nnull_sapce_matrix == AUTO:\n"
-							"Checking the total number of variable bounds ...\n";
-					// If the total number of bounds is less than the number
-					// of degrees of freedom then the adjoint factorization
-					// will be faster.
-					if(trase_out)
-						*trase_out << "#bounds = " << nb << ", n-r = " << dof << std::endl;
-					if( nb < dof ) { 
-						if(trase_out)
-							*trase_out <<
-								"There are fewer bounds than degrees of freedom:\n"
-								"setting null_space_matrix = IMPLICIT ...\n";
-						cov_.null_space_matrix_type_ = NULL_SPACE_MATRIX_IMPLICIT;
-					}
-					else {
-						if(trase_out)
-							*trase_out <<
-								"There are more bounds than degrees of freedom:\n"
-								"setting null_space_matrix = EXPLICIT ...\n";
-						cov_.null_space_matrix_type_ = NULL_SPACE_MATRIX_EXPLICIT;
-					}
-				}
-				break;
-			}
-		}
-	}
-
-	// Set default
-	if( uov_.max_dof_quasi_newton_dense_ < 0 )
-		cov_.max_dof_quasi_newton_dense_ = DEFAULT_MAX_DOF_QUASI_NEWTON_DENSE;
-	else
-		cov_.max_dof_quasi_newton_dense_ = uov_.max_dof_quasi_newton_dense_;
-
-	// Decide what type of quasi newton update to use
-	switch( uov_.quasi_newton_ ) {
-		case QN_AUTO: {
-			if(trase_out)
-				*trase_out
-					<< "\nquasi_newton == AUTO:"
-					<< "\nnlp.has_bounds() == " << nlp.has_bounds() << ":\n";
-			if( n - r > cov_.max_dof_quasi_newton_dense_ ) {
-				if(trase_out)
-					*trase_out
-						<< "n-r = " << n-r << " > max_dof_quasi_newton_dense = "
-						<< cov_.max_dof_quasi_newton_dense_ <<  ":\n";
-				if( !algo->nlp().has_bounds() ) {
-					if(trase_out)
-						*trase_out
-							<< "setting quasi_newton == LPBFGS\n";
-					cov_.quasi_newton_ = QN_LPBFGS;
-				}
-				else {
-					if(trase_out)
-						*trase_out
-							<< "setting quasi_newton == LBFGS\n";
-					cov_.quasi_newton_ = QN_LPBFGS;
-				}
-			}
-			else {
-				if(trase_out)
-					*trase_out
-						<< "n-r = " << n-r << " <= max_dof_quasi_newton_dense = "
-						<< cov_.max_dof_quasi_newton_dense_ << ":\n";
-				if( !algo->nlp().has_bounds() ) {
-					if(trase_out)
-						*trase_out
-							<< "setting quasi_newton == BFGS\n";
-					cov_.quasi_newton_ = QN_BFGS;
-				}
-				else {
-					if(trase_out)
-						*trase_out
-							<< "setting quasi_newton == PBFGS\n";
-					cov_.quasi_newton_ = QN_PBFGS;
-				}
-			}
-			break;
-		}
-		case QN_BFGS:
-		case QN_PBFGS:
-		case QN_LBFGS:
-		case QN_LPBFGS:
-			cov_.quasi_newton_ = uov_.quasi_newton_;
-			break;
-	    default:
-			assert(0); // Invalid option!
-	}
-
-	// Decide what type of range space matrix to use
-	if( uov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_AUTO ) {
-		const bool use_orth = dof*dof*r
-			<= cov_.max_dof_quasi_newton_dense_*cov_.max_dof_quasi_newton_dense_;
-		if(trase_out)
-			*trase_out
-				<< "\nrange_space_matrix == AUTO:"
-				<< "\n(n-r)^2*r = (" << dof << ")^2 * " << r << " = " << (dof*dof*r)
-				<< ( use_orth ? " <= " : " > " ) << "max_dof_quasi_newton_dense^2 = ("
-				<< cov_.max_dof_quasi_newton_dense_ << ")^2 = "
-				<< cov_.max_dof_quasi_newton_dense_*cov_.max_dof_quasi_newton_dense_
-				<< ( use_orth
-					 ? "\nsetting nrange_space_matrix = ORTHOGONAL\n"
-					 : "\nsetting nrange_space_matrix = COORDINATE\n" );
-		cov_.range_space_matrix_type_ =
-			( use_orth
-			  ? RANGE_SPACE_MATRIX_COORDINATE
-			  : RANGE_SPACE_MATRIX_ORTHOGONAL );
-	}
-	// ToDo: Implement the orthogonal decompositon for general NLPs
-	if( !tailored_approach && uov_.range_space_matrix_type_ != RANGE_SPACE_MATRIX_COORDINATE ) {
+	if( uov_.range_space_matrix_type_ != RANGE_SPACE_MATRIX_COORDINATE ) {
 		if(trase_out)
 			*trase_out <<
 				"\nrange_space_matrix != COORDINATE:\n"
-				"Sorry, the orthogonal decomposition is not "
-				"supported for general NLPs yet!\n"
+				"Sorry, the orthogonal decomposition is not updated yet!\n"
 				"setting range_space_matrix = COORDINATE ...\n";
 		cov_.range_space_matrix_type_ = RANGE_SPACE_MATRIX_COORDINATE;
 	}
 
+	// ToDo: Sort out the rest of the options!
+
 	// Set the default options that where not already set yet
 	set_default_options(uov_,&cov_,trase_out);
 
-	// Adjust quasi-newton for QPKWIK
-	switch( cov_.quasi_newton_ ) {
-		case QN_BFGS:
-			break;
-		case QN_PBFGS:
-		case QN_LBFGS:
-		case QN_LPBFGS:
-			if( cov_.qp_solver_type_ == QP_QPKWIK ) {
-				if(trase_out)
-					*trase_out
-						<< "\nqp_solver == QPKWIK and quasi_newton != BFGS:\n"
-						<< "QPKWIK can not use any other option than BFGS, setting quasi_newton = BFGS\n";
-				cov_.quasi_newton_ = QN_BFGS;
-			}
-			break;
-	    default:
-			assert(0); // Invalid option!
+	// ToDo: Implement the 2nd order correction linesearch
+	if( cov_.line_search_method_ == LINE_SEARCH_2ND_ORDER_CORRECT ) {
+		if(trase_out)
+			*trase_out <<
+				"\nline_search_method == 2ND_ORDER_CORRECT:\n"
+				"Sorry, the second order corrrection linesearch is not updated yet!\n"
+				"setting line_search_method = DIRECT ...\n";
+		cov_.line_search_method_ = LINE_SEARCH_DIRECT;
+	}
+	if( cov_.line_search_method_ == LINE_SEARCH_WATCHDOG ) {
+		if(trase_out)
+			*trase_out <<
+				"\nline_search_method ==WATCHDOG:\n"
+				"Sorry, the watchdog linesearch is not updated yet!\n"
+				"setting line_search_method = DIRECT ...\n";
+		cov_.line_search_method_ = LINE_SEARCH_DIRECT;
 	}
 
 	// /////////////////////////////////////////////////////
@@ -498,364 +358,209 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		*trase_out << "\nCreating and setting the state object ...\n";
 
 	{
-		// set the matrix creator (factory)
+		//
+		// Create the state object with the vector spaces
+		//
 
-		typedef rSQPStateContinuousStorageMatrixWithOpCreator
-			matrix_creator_t;
-		typedef rSQPStateContinuousStorageMatrixWithOpCreatorAggr
-			matrix_creator_aggr_t;
-		typedef rSQPStateContinuousStorageMatrixWithOpCreatorAggr::matrix_iqa_creator_ptr_t
-			matrix_iqa_creator_ptr_t;
-
-		matrix_iqa_creator_ptr_t
-			matrix_iqa_creators[matrix_creator_t::num_MatrixWithOp];
-		// HL
-		matrix_iqa_creators[matrix_creator_t::Q_HL]
-			= ( HL_iq_creator_ptr_.get()
-				? HL_iq_creator_ptr_
-				: rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-					ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass> >(
-						new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>() ) )
+		typedef ref_count_ptr<rSQPState>   state_ptr_t;
+		state_ptr_t state = NULL;
+		if( tailored_approach ) {
+			state = rcp::rcp(
+				new rSQPState(
+					nlp.space_x()
+					,nlp.space_c()
+					,nlp.space_h()
+					,( nlp_fod->var_dep().size() 
+					   ? nlp.space_x()->sub_space(nlp_fod->var_dep())->clone()
+					   : NULL )
+					,( nlp_fod->var_indep().size()
+					   ? nlp.space_x()->sub_space(nlp_fod->var_indep())->clone()
+					   : NULL )
+					)
 				);
-		// Gc
-		matrix_iqa_creators[matrix_creator_t::Q_Gc]
-			= ( Gc_iq_creator_ptr_.get()
-				? Gc_iq_creator_ptr_
-				: rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-					ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<COOMatrixWithPartitionedViewSubclass> >(
-						new IterQuantMatrixWithOpCreatorContinuous<COOMatrixWithPartitionedViewSubclass>() ) )
-				);
-		// Y
-		matrix_iqa_creators[matrix_creator_t::Q_Y]
-			= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-				ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<IdentZeroVertConcatMatrixSubclass> >(
-					new IterQuantMatrixWithOpCreatorContinuous<IdentZeroVertConcatMatrixSubclass>() ) );
-		// Z
-		switch(cov_.null_space_matrix_type_) {
-			case NULL_SPACE_MATRIX_EXPLICIT:
-				matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_Z]
-					= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-						ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<DenseIdentVertConcatMatrixSubclass> >(
-							new IterQuantMatrixWithOpCreatorContinuous<DenseIdentVertConcatMatrixSubclass>() ) );
-				break;
-		    case NULL_SPACE_MATRIX_IMPLICIT:
-				matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_Z]
-					= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-						ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<ZAdjointFactMatrixSubclass> >(
-							new IterQuantMatrixWithOpCreatorContinuous<ZAdjointFactMatrixSubclass>() ) );
-				break;
-		    default:
-				assert(0);
 		}
-		// U
-		matrix_iqa_creators[matrix_creator_t::Q_U]
-			= ( U_iq_creator_ptr_.get()
-				? U_iq_creator_ptr_
-				: rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-					ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<COOMatrixPartitionViewSubclass> >(
-						new IterQuantMatrixWithOpCreatorContinuous<COOMatrixPartitionViewSubclass>() ) )
-				);
-		// V
-		matrix_iqa_creators[matrix_creator_t::Q_V]
-			= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-				ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass> >(
-					new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>() ) );
-		// rHL
-		if( ! algo->nlp().has_bounds() ) {
-			// Here we just need to solve for linear systems with rHL
-			// and we can use a limited memory method or update the dense
-			// factors directly.
-			matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
-				= ( cov_.quasi_newton_==QN_LBFGS
-					? rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-						ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefLBFGS> >(
-							new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefLBFGS>() ) )
-					: ( cov_.qp_solver_type_ == QP_QPKWIK
-						? rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-							ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefInvCholFactor> >(
-								new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefInvCholFactor>() ) )
-						: rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-							ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefCholFactor> >(
-								new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefCholFactor>() ) )
+		else {
+			assert(0); // ToDo: Implement by adding space_py() and space_pz() to BasisSystem!
+		}
+		
+		//
+		// Set the iteration quantities for the NLP matrix objects
+		//
+
+		THROW_EXCEPTION( // ToDo: Remove this and support mI > 0 in the futrue!
+			mI, std::logic_error
+			,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
+			"general inequaity constraints are not supported yet!" );
+		if( tailored_approach ) {
+			// NLPFirstOrderDirect
+			assert( mI == 0 && nlp_fod->con_undecomp().size() == 0 );
+			// ToDo: Add the necessary iteration quantities when mI > 0 and
+			// con_undecomp().size() > 0 are supported!
+		}
+		else {
+			// NLPFirstOrderInfo
+			if(m)
+				state->set_iter_quant(
+					Gc_name
+					,rcp::rcp(
+						new IterQuantityAccessContiguous<MatrixWithOp>(
+							1
+							,Gc_name
+							,nlp_foi->space_Gc()
+							)
+						)
+					);
+			if(mI)
+				state->set_iter_quant(
+					Gh_name
+					,rcp::rcp(
+						new IterQuantityAccessContiguous<MatrixWithOp>(
+							1
+							,Gh_name
+							,nlp_foi->space_Gh()
+							)
+						)
+					);
+			if(nlp_soi)
+				state->set_iter_quant(
+					HL_name
+					,rcp::rcp(
+						new IterQuantityAccessContiguous<MatrixSymWithOp>(
+							1
+							,HL_name
+							,nlp_soi->space_HL()
+							)
 						)
 					);
 		}
-		else {
-			switch(cov_.qp_solver_type_) {
-				case QP_QPSOL:
-				case QP_QPOPT:
-			    case QP_QPSCHUR: {
-					if( cov_.quasi_newton_ == QN_LBFGS ) {
-						matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
-							= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-								ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefLBFGS> >(
-									new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefLBFGS>() ) );
-					}
-					else if( cov_.quasi_newton_ == QN_PBFGS || cov_.quasi_newton_ == QN_LPBFGS ) {
-						matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
-							= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-								ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<
-								ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal> >(
-									new IterQuantMatrixWithOpCreatorContinuous<
-									ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal>() ) );
-					}
-					else {
-						matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
-							= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-								ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefCholFactor> >(
-									new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefCholFactor>() ) );
-					}
-					break;
-				}
-				case QP_QPKWIK:
-					matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
-						= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
-							ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefInvCholFactor> >(
-								new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefInvCholFactor>() ) );
-					break;
-				default:
-					assert(0);
-			}
-		}
-				
-		// Set the number of storage locations (these can be changed later)
-		typedef rSQPStateContinuousStorage state_t;
-		size_type storage_num[state_t::num_quantities];
-		state_t::set_default_storage_num(storage_num);
 
-		storage_num[state_t::Q_x]				= 2;
-		storage_num[state_t::Q_f]				= 2;
-		storage_num[state_t::Q_c]				= 2;
+		//
+		// Set the algorithm specific matrix objects
+		//
+		
+		// Add range/null decomposition matrices
 
-		storage_num[state_t::Q_opt_kkt_err]		= 2;
-		storage_num[state_t::Q_feas_kkt_err]	= 2;
-		storage_num[state_t::Q_rGL]				= 2;
-		storage_num[state_t::Q_lambda]			= 2;
+		// Y
+		state->set_iter_quant(
+			Y_name
+			,rcp::rcp(
+				new IterQuantityAccessContiguous<MatrixWithOp>(
+					1
+					,Y_name
+					,rcp::rcp(new afp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+					)
+				)
+			);
+		// Z
+		state->set_iter_quant(
+			Z_name
+			,rcp::rcp(
+				new IterQuantityAccessContiguous<MatrixWithOp>(
+					1
+					,Z_name
+					,rcp::rcp(new afp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+					)
+				)
+			);
 
-		storage_num[state_t::Q_Ypy]				= 2;
-		storage_num[state_t::Q_Zpz]				= 2;
+		// ToDo: Add matrix iq object for R
+		// ToDo: Add matrix iq object for U
+		// ToDo: Add matrix iq object for V
+		// ToDo: Add other needed projected matrix iq objects
 
-		storage_num[state_t::Q_d]				= 2;
+		// Add reduced Hessian
 
-		storage_num[state_t::Q_rGf]				= 2;
-
-		storage_num[state_t::Q_alpha]			= 2;
-		storage_num[state_t::Q_mu]				= 2;
-		storage_num[state_t::Q_phi]				= 2;
-		storage_num[state_t::Q_nu]				= 2;
-
-		// create a new state object
-		algo->set_state(
-			rcp::rcp_implicit_cast<GeneralIterationPack::AlgorithmState>(
-				ref_count_ptr<state_t>(
-					new state_t(
-						rcp::rcp_implicit_cast<matrix_creator_t>(
-							ref_count_ptr<matrix_creator_aggr_t>(
-								new matrix_creator_aggr_t(matrix_iqa_creators)
+		state->set_iter_quant(
+			rHL_name
+			,rcp::rcp(
+				new IterQuantityAccessContiguous<MatrixSymWithOp>(
+					1
+					,rHL_name
+					,rcp::rcp(
+						new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
+							MatrixSymPosDefCholFactor::PostMod(
+								nb || mI                                                   // maintain_original (only if we are using a QP solver)
+								,(!nb && !mI && m==r)                                      // maintain_factor   (only if no QP solver needed
+								|| cov_.qp_solver_type_==QP_QPSCHUR                        //                    or using QPSchur
+								|| algo->algo_cntr().check_results()                       //                    or will be checking results)
+								,true                                                      // allow_factor      (always!)
 								)
 							)
-						,storage_num
 						)
 					)
 				)
 			);
 
-		// Now setup the reduced Hessian (this is kind of hacked but oh well)
 		//
-		// Here we will setup the matrix by setting it for the k-1 iteration
-		// and then unsetting it.  This is a little bit of a hack but it should work.
-		if( cov_.quasi_newton_ == QN_LBFGS ) {
-			// Setup the LBFGS matrix.
-			MatrixSymPosDefLBFGS *_rHL
-				= dynamic_cast<MatrixSymPosDefLBFGS*>(&algo->rsqp_state().rHL().set_k(-1));
-			if(_rHL) {
-				_rHL->initial_setup(
-					dof, cov_.num_lbfgs_updates_stored_
-					,true  // Maintain the original matrix for QPOPT, QPSOL and QPSchur (iterative refinement)
-					,cov_.qp_solver_type_==QP_QPSCHUR?true:false  // Maintian the inverse for QPSchur
-					                                              // but now QPOPT or QPSOL
-					,cov_.lbfgs_auto_scaling_
-					);
-				algo->rsqp_state().rHL().set_not_updated(-1);
+		// Set the NLP merit function 
+		//
+
+		if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
+			ref_count_ptr<afp::AbstractFactory<MeritFuncNLP> >
+				merit_func_factory = NULL;
+			switch( cov_.merit_function_type_ ) {
+				case MERIT_FUNC_L1:
+					merit_func_factory = rcp::rcp(
+						new afp::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPL1>());
+					break;
+				case MERIT_FUNC_MOD_L1:
+				case MERIT_FUNC_MOD_L1_INCR:
+					merit_func_factory = rcp::rcp(
+						new afp::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPModL1>());
+					break;
+				default:
+					assert(0);	// local programming error
 			}
-		}
-		else if( cov_.quasi_newton_ == QN_PBFGS || cov_.quasi_newton_ == QN_LPBFGS ) {
-			// Set the storage for the projected hessian for the
-			// super basic variables B_RR.
-			using ResourceManagementPack::ReleaseResource_ref_count_ptr;
-			ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal
-				*_rHL = dynamic_cast<ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal*>(
-					&algo->rsqp_state().rHL().set_k(-1) );
-			assert(_rHL); // Should not happen?
-			ref_count_ptr<const MatrixSymWithOpFactorized>
-				B_RR_ptr = NULL;
-			if( cov_.quasi_newton_ == QN_LPBFGS ) {
-				// Use a limited memory BFGS matrix initially
-				ref_count_ptr<MatrixSymPosDefLBFGS>
-					LB_RR_ptr = new MatrixSymPosDefLBFGS;
-				LB_RR_ptr->initial_setup(
-					dof, cov_.num_lbfgs_updates_stored_
-					,true  // Maintain the original matrix for QPOPT, QPSOL and QPSchur (iterative refinement)
-					,cov_.qp_solver_type_==QP_QPSCHUR?true:false  // Maintian the inverse for QPSchur
-					                                              // but now QPOPT or QPSOL
-					,cov_.lbfgs_auto_scaling_
-					);
-				LB_RR_ptr->init_identity( n-r, 1.0 ); // Must be sized when rHL is initialized
-				B_RR_ptr = rcp::rcp_static_cast<const MatrixSymWithOpFactorized>(LB_RR_ptr);
-			}
-			else {
-				// Go right ahead and use the dense projected BFGS matrix
-				ref_count_ptr<MatrixSymPosDefCholFactor>
-					DB_RR_ptr = new MatrixSymPosDefCholFactor(
-						NULL    // Let it allocate its own memory
-						,NULL,0 // ...
-						,true   // Maintain the original matrix for QPOPT, QPSOL and QPSchur (iterative refinement)
-						,cov_.qp_solver_type_==QP_QPSCHUR?true:false  // Maintian the cholesky factor for QPSchur
-						                                              // but now QPOPT or QPSOL
-						);
-				DB_RR_ptr->init_identity( n-r, 1.0 ); // Must be sized when rHL is initialized
-				B_RR_ptr = rcp::rcp_static_cast<const MatrixSymWithOpFactorized>(DB_RR_ptr);
-			}
-			// Finally initial the rHL matrix
-			_rHL->initialize(
-				dof, dof, NULL, NULL, NULL                     // n, n_R, i_x_free, i_x_fixed, bnd_fixed
-				,B_RR_ptr                                      // B_RR_ptr (given ownership to destroy)
-				,NULL, BLAS_Cpp::no_trans                      // B_RX_ptr, B_RX_trans
-				,rcp::rcp_implicit_cast<const MatrixSymWithOp>(   // B_XX_ptr (sized to 0x0)
-					ref_count_ptr<const SparseLinAlgPack::MatrixSymDiagonalStd>(
-						new SparseLinAlgPack::MatrixSymDiagonalStd() ) )
+			state->set_iter_quant(
+				merit_func_nlp_name
+				,rcp::rcp(
+					new IterQuantityAccessContiguous<MeritFuncNLP>(
+						1
+						,merit_func_nlp_name
+						,merit_func_factory
+						)
+					)
 				);
-			algo->rsqp_state().rHL().set_not_updated(-1);      // Set non updated so that it will be computed.
 		}
-		else if( cov_.quasi_newton_ == QN_BFGS ) {
-			// Setup the dense, no frills, BFGS matrix for the cholesky factor
-			switch( cov_.qp_solver_type_ ) {
-			    case QP_QPSCHUR:
-			    case QP_QPOPT:
-			    case QP_QPSOL:
-			    {
-					MatrixSymPosDefCholFactor
-						*_rHL = dynamic_cast<MatrixSymPosDefCholFactor*>(
-							&algo->rsqp_state().rHL().set_k(-1) );
-					assert(_rHL); // Should not happen?
-					_rHL->init_setup(
-						NULL    // Let it allocate its own memory
-						,NULL,0 // ...
-						,true // Maintain the original matrix for QPOPT, QPSOL and QPSchur (iterative refinement)
-						,cov_.qp_solver_type_==QP_QPSCHUR?true:false // Maintian the cholesky factor for QPSchur
-						                                             // but now QPOPT or QPSOL
-					);
-					
-				}
-			}
-		}
-		else {
-			assert(0); // Local programming error?
-		}
+
+		//
+		// Resize the number of storage locations (these can be changed later)
+		//
+		
+		typedef IterQuantityAccessContiguous<value_type>            IQ_scalar_cngs;
+		typedef IterQuantityAccessContiguous<VectorWithOpMutable>   IQ_vector_cngs;
+
+		dyn_cast<IQ_vector_cngs>(state->x()).resize(2);
+		dyn_cast<IQ_scalar_cngs>(state->f()).resize(2);
+		if(m) dyn_cast<IQ_vector_cngs>(state->c()).resize(2);
+		if(mI) dyn_cast<IQ_vector_cngs>(state->h()).resize(2);
+
+		dyn_cast<IQ_scalar_cngs>(state->opt_kkt_err()).resize(2);
+		dyn_cast<IQ_scalar_cngs>(state->feas_kkt_err()).resize(2);
+		dyn_cast<IQ_vector_cngs>(state->rGL()).resize(2);
+		if(m) dyn_cast<IQ_vector_cngs>(state->lambda()).resize(2);
+		if(mI) dyn_cast<IQ_vector_cngs>(state->lambdaI()).resize(2);
+		dyn_cast<IQ_vector_cngs>(state->nu()).resize(2);
+
+		dyn_cast<IQ_vector_cngs>(state->Ypy()).resize(2);
+		dyn_cast<IQ_vector_cngs>(state->Zpz()).resize(2);
+		dyn_cast<IQ_vector_cngs>(state->d()).resize(2);
+
+		dyn_cast<IQ_vector_cngs>(state->rGf()).resize(2);
+
+		dyn_cast<IQ_scalar_cngs>(state->alpha()).resize(2);
+		dyn_cast<IQ_scalar_cngs>(state->mu()).resize(2);
+		dyn_cast<IQ_scalar_cngs>(state->phi()).resize(2);
+
+		// Set the state object
+		algo->set_state( state );
 	}
 
 	// /////////////////////////////////////////////////////
 	// C.2. Create and set the decomposition system object
 
-	ref_count_ptr<DecompositionSystemVarReductStd>
-		decomp_sys = NULL;
-
-	if( !tailored_approach ) {
-	
-		// Only need a decomposition system object if we are not using the tailored approach
-
-		if(trase_out)
-			*trase_out << "\nCreating and setting the decomposition system object ...\n";
-
-		if( !basis_sys_ptr_.get() ) {
-			ref_count_ptr<SparseCOOSolverCreator>
-				sparse_solver_creator = NULL;
-			if( cov_.direct_linear_solver_type_ == LA_MA28 ) {
-#ifdef SPARSE_SOLVER_PACK_USE_MA28
-				sparse_solver_creator
-					= rcp::rcp_implicit_cast<SparseCOOSolverCreator>(
-						ref_count_ptr<SparseSolverPack::MA28SparseCOOSolverCreator>(
-							new SparseSolverPack::MA28SparseCOOSolverCreator(
-								rcp::rcp_implicit_cast<SparseSolverPack::MA28SparseCOOSolverSetOptions>(
-									ref_count_ptr<SparseSolverPack::MA28SparseCOOSolverSetOptions>(
-										new SparseSolverPack::MA28SparseCOOSolverSetOptions ) )
-								,const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_) ) ) );
-#else
-				throw std::logic_error(
-					"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : MA28 is not supported,"
-					" must define SPARSE_SOLVER_PACK_USE_MA28!" );
-				assert(0);
-#endif
-			}
-			else if ( cov_.direct_linear_solver_type_ == LA_MA48 ) {
-#ifdef SPARSE_SOLVER_PACK_USE_MA48
-				sparse_solver_creator
-					= rcp::rcp_implicit_cast<SparseCOOSolverCreator>(
-						ref_count_ptr<SparseSolverPack::MA48SparseCOOSolverCreator>(
-							new SparseSolverPack::MA48SparseCOOSolverCreator(
-								rcp::rcp_implicit_cast<SparseSolverPack::MA48SparseCOOSolverSetOptions>(
-									ref_count_ptr<SparseSolverPack::MA48SparseCOOSolverSetOptions>(
-										new SparseSolverPack::MA48SparseCOOSolverSetOptions ) )
-							,const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_) ) ) );
-#else
-				throw std::logic_error(
-					"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : MA48 is not supported,"
-					" must define SPARSE_SOLVER_PACK_USE_MA48!" );
-				assert(0);
-#endif
-			}
-			else {
-				assert(0); // Local programming error only!
-			}
-
-			// Note, the switch statement based code for the above if statements would not
-			// compile under MipsPro 7.3.1.1m.
-
-			sparse_solver_creator.release();
-			basis_sys_ptr_ = new COOBasisSystem(sparse_solver_creator.get(), true);
-		}
-
-		ref_count_ptr<DecompositionSystemCoordinate>
-			decomp_sys_aggr = NULL;
-		
-		if ( cov_.null_space_matrix_type_ == NULL_SPACE_MATRIX_EXPLICIT ) {
-			decomp_sys_aggr
-				= rcp::rcp_implicit_cast<DecompositionSystemCoordinate>(
-					ref_count_ptr<DecompositionSystemCoordinateDirect>(
-						new DecompositionSystemCoordinateDirect(
-							basis_sys_ptr_.release(), true ) ) );
-		}
-		else if ( cov_.null_space_matrix_type_ == NULL_SPACE_MATRIX_IMPLICIT ) {
-			decomp_sys_aggr
-				= rcp::rcp_implicit_cast<DecompositionSystemCoordinate>(
-					ref_count_ptr<DecompositionSystemCoordinateAdjoint>(
-						new DecompositionSystemCoordinateAdjoint(
-							basis_sys_ptr_.release(), true ) ) );
-		}
-		else {
-			assert(0);
-		}
-
-		assert(decomp_sys_aggr.get());
-		typedef SparseSolverPack::TestingPack::BasisSystemTester basis_sys_tester_t;
-		ref_count_ptr<basis_sys_tester_t>
-			basis_sys_tester = new basis_sys_tester_t;
-		basis_sys_tester->solve_error_tol(1e+10); // ToDo: Make better documented?
-		SparseSolverPack::TestingPack::BasisSystemTesterSetOptions
-			basis_sys_options_setter( basis_sys_tester.get() );
-		basis_sys_options_setter.set_options( *options_ );
-		decomp_sys_aggr->set_basis_sys_tester( basis_sys_tester ); // gives control to delete!
-
-		// Note, the switch based code for the above if statements would not
-		// compile under MipsPro 7.3.1.1m.
-
-	   	decomp_sys
-			= ref_count_ptr<DecompositionSystemVarReductStd>(
-				new DecompositionSystemVarReductStd(
-					false, algo.get()
-					,rcp::rcp_implicit_cast<DecompositionSystemVarReductImpNode>(decomp_sys_aggr) ) );
-		algo->rsqp_state().set_decomp_sys(rcp::rcp_implicit_cast<DecompositionSystem>(decomp_sys));
-
+	if(!tailored_approach) {
+		assert(0); // ToDo: Create the proper decomp_sys object
 	}
 
 	// /////////////////////////////////////////////////////
@@ -864,40 +569,412 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	if(trase_out)
 		*trase_out << "\nCreating and setting the step objects ...\n";
 
-	typedef ref_count_ptr<MeritFuncNLP> merit_func_ptr_t;
-	merit_func_ptr_t merit_func;
-	typedef ref_count_ptr<QPSolverRelaxed> qp_solver_ptr_t;
-	qp_solver_ptr_t qp_solver;
-	typedef ConstrainedOptimizationPack::QPSolverRelaxedTester QPSolverRelaxedTester;
-	typedef ref_count_ptr<QPSolverRelaxedTester> qp_tester_ptr_t;
-	qp_tester_ptr_t qp_tester;
-	typedef ref_count_ptr<FeasibilityStepReducedStd_Strategy> feasibility_step_strategy_ptr_t;
-	feasibility_step_strategy_ptr_t  feasibility_step_strategy;
+//	typedef ref_count_ptr<QPSolverRelaxed> qp_solver_ptr_t;
+//	qp_solver_ptr_t qp_solver;
+//	typedef ConstrainedOptimizationPack::QPSolverRelaxedTester QPSolverRelaxedTester;
+//	typedef ref_count_ptr<QPSolverRelaxedTester> qp_tester_ptr_t;
+//	qp_tester_ptr_t qp_tester;
+//	typedef ref_count_ptr<FeasibilityStepReducedStd_Strategy> feasibility_step_strategy_ptr_t;
+//	feasibility_step_strategy_ptr_t  feasibility_step_strategy;
 
 	{
-		int step_num = 0;
 
-		// Create the variable bounds testing object.  This will not
-		// be used for algorithms where there are no variable bounds
-		// but who cares.
+		//
+		// Create some standard step objects that will be used by many different
+		// specific algorithms
+		//
+		
+		typedef ref_count_ptr<AlgorithmStep>    algo_step_ptr_t;
 
-		const value_type var_bounds_warning_tol = 1e-10;
-		typedef ConstrainedOptimizationPack::VariableBoundsTester
-			VariableBoundsTester;
-		typedef rcp::ref_count_ptr<VariableBoundsTester> bounds_tester_ptr_t;
+		// Create the variable bounds testing object.
+		typedef rcp::ref_count_ptr<VariableBoundsTester>     bounds_tester_ptr_t;
 		bounds_tester_ptr_t
-			bounds_tester = new VariableBoundsTester(
-				  var_bounds_warning_tol			// default warning tolerance
-				, algo_cntr.max_var_bounds_viol()	// default warning tolerance
-				);
+			bounds_tester = NULL;
+		if(nb) { // has variable bounds?
+			const value_type var_bounds_warning_tol = 1e-10;
+			bounds_tester = rcp::rcp(
+				new VariableBoundsTester(
+					var_bounds_warning_tol              // default warning tolerance
+					, algo_cntr->max_var_bounds_viol()	// default warning tolerance
+					) );
+			if(options_) {
+				ConstrainedOptimizationPack::VariableBoundsTesterSetOptions
+					options_setter( bounds_tester.get() );
+				options_setter.set_options(*options_);
+				}
+		}
+
+		// EvalNewPoint_Step
+		algo_step_ptr_t    eval_new_point_step = NULL;
 		{
-			ConstrainedOptimizationPack::VariableBoundsTesterSetOptions
-				options_setter( bounds_tester.get() );
-			options_setter.set_options(*options_);
+			// Create the step object
+			if( tailored_approach ) {
+				// create and setup the derivative tester
+				typedef NLPInterfacePack::NLPFirstOrderDirectTester     NLPFirstOrderDirectTester;
+				typedef rcp::ref_count_ptr<NLPFirstOrderDirectTester>   deriv_tester_ptr_t;
+				deriv_tester_ptr_t
+					deriv_tester = rcp::rcp(
+						new NLPFirstOrderDirectTester(
+							NLPFirstOrderDirectTester::FD_DIRECTIONAL    // Gf testing
+							,NLPFirstOrderDirectTester::FD_DIRECTIONAL   // -Inv(C)*N testing
+							) );
+				if(options_) {
+					NLPInterfacePack::NLPFirstOrderDirectTesterSetOptions
+						options_setter(deriv_tester.get());
+					options_setter.set_options(*options_);
+				}
+				// create the step
+				typedef rcp::ref_count_ptr<EvalNewPointTailoredApproach_Step>  _eval_new_point_step_ptr_t;
+				_eval_new_point_step_ptr_t
+					_eval_new_point_step = NULL;
+				switch( cov_.range_space_matrix_type_ ) {
+					case RANGE_SPACE_MATRIX_COORDINATE:
+						_eval_new_point_step
+							= rcp::rcp(new EvalNewPointTailoredApproachCoordinate_Step(deriv_tester,bounds_tester));
+						break;
+					case RANGE_SPACE_MATRIX_ORTHOGONAL:
+//						eval_new_point_step
+//							= new EvalNewPointTailoredApproachOrthogonal_Step(deriv_tester,bounds_tester);
+						THROW_EXCEPTION(
+							true, std::logic_error
+							,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+							"the othogonal decomposition is not updated for NLPFirstOrderDirect yet!" );
+						break;
+					default:
+						assert(0);	// only a local error
+				}
+				if(options_) {
+					EvalNewPointTailoredApproach_StepSetOptions
+						options_setter(_eval_new_point_step.get());
+					options_setter.set_options(*options_);
+				}
+				eval_new_point_step = _eval_new_point_step;
+			}
+			else {
+				THROW_EXCEPTION(
+					true, std::logic_error
+					,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+					"NLPFirstOrderInfo is not supported yet!" );
+			}
+		}
+
+		// RangeSpace_Step
+		algo_step_ptr_t    range_space_step_step = NULL;
+		if( !tailored_approach ) {
+			assert(0); // ToDo: Implment!
+		}
+
+		// ReducedGradient_Step
+		algo_step_ptr_t    reduced_gradient_step = NULL;
+		if( !tailored_approach ) {
+			assert(0); // ToDo: Implment!
+		}
+
+		// CheckSkipBFGSUpdate
+		algo_step_ptr_t    check_skip_bfgs_update_step = NULL;
+		if(!cov_.exact_reduced_hessian_) {
+			ref_count_ptr<CheckSkipBFGSUpdateStd_Step>
+				step = rcp::rcp(new CheckSkipBFGSUpdateStd_Step());
+			if(options_) {
+				CheckSkipBFGSUpdateStd_StepSetOptions
+					opt_setter( step.get() );
+				opt_setter.set_options( *options_ );
+			}
+			check_skip_bfgs_update_step = step;
+		}
+
+		// ReducedHessian_Step
+		algo_step_ptr_t    reduced_hessian_step = NULL;
+		{
+			// Get the strategy object that will perform the actual secant update.
+			ref_count_ptr<ReducedHessianSecantUpdate_Strategy>
+				secant_update_strategy = NULL;
+			switch( cov_.quasi_newton_ )
+			{
+			    case QN_BFGS:
+			    case QN_PBFGS:
+			    case QN_LBFGS:
+			    case QN_LPBFGS:
+				{
+					// create and setup the actual BFGS strategy object
+					typedef ref_count_ptr<BFGSUpdate_Strategy> bfgs_strategy_ptr_t;
+					bfgs_strategy_ptr_t
+						bfgs_strategy = rcp::rcp(new BFGSUpdate_Strategy);
+					if(options_) { 
+						BFGSUpdate_StrategySetOptions
+							opt_setter( bfgs_strategy.get() );
+						opt_setter.set_options( *options_ );
+					}
+					switch( cov_.quasi_newton_ ) {
+					    case QN_BFGS:
+					    case QN_LBFGS:
+						{
+							secant_update_strategy = rcp::rcp(new ReducedHessianSecantUpdateBFGSFull_Strategy(bfgs_strategy));
+							break;
+						}
+					    case QN_PBFGS:
+					    case QN_LPBFGS:
+						{
+							THROW_EXCEPTION(
+								true, std::logic_error
+								,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+								"The quansi_newton options of PBFGS and LPBFGS have not been updated yet!" );
+							break;
+						}
+					}
+					break;
+				}
+			    default:
+					assert(0);
+			}
+			
+			// Finally build the step object
+			reduced_hessian_step = rcp::rcp(
+				new ReducedHessianSecantUpdateStd_Step( secant_update_strategy ) );
+			// Add the QuasiNewtonStats iteration quantity
+			algo->state().set_iter_quant(
+				quasi_newton_stats_name
+				,new IterQuantityAccessContiguous<QuasiNewtonStats>(
+					1, quasi_newton_stats_name )
+				);
+		}
+
+		// NullSpace_Step
+		algo_step_ptr_t    null_space_step_step = NULL;
+		{
+			null_space_step_step = rcp::rcp(new NullSpaceStepWithoutBounds_Step());
+		}
+
+		// CalcDFromYPYZPZ_Step
+		algo_step_ptr_t    calc_d_from_Ypy_Zpy_step = NULL;
+		{
+			calc_d_from_Ypy_Zpy_step = rcp::rcp(new CalcDFromYPYZPZ_Step());
+		}
+
+		// CalcReducedGradLagrangianStd_AddedStep
+		algo_step_ptr_t    calc_reduced_grad_lagr_step = NULL;
+		{
+			calc_reduced_grad_lagr_step = rcp::rcp(
+				new CalcReducedGradLagrangianStd_AddedStep() );
+		}
+
+		// CheckConvergence_Step
+		algo_step_ptr_t    check_convergence_step = NULL;
+		{
+			ref_count_ptr<CheckConvergenceStd_AddedStep>
+				_check_convergence_step = rcp::rcp(new CheckConvergenceStd_AddedStep());
+			if(options_) {
+				CheckConvergenceStd_AddedStepSetOptions
+					opt_setter( _check_convergence_step.get() );
+				opt_setter.set_options( *options_ );
+			}
+			check_convergence_step = _check_convergence_step;
+		}
+
+		// MeritFuncPenaltyParamUpdate_Step
+		algo_step_ptr_t    merit_func_penalty_param_update_step = NULL;
+		if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
+			ref_count_ptr<MeritFunc_PenaltyParamUpdate_AddedStep>
+				param_update_step = NULL;
+			switch( cov_.merit_function_type_ ) {
+				case MERIT_FUNC_L1: {
+					switch(cov_.l1_penalty_param_update_) {
+						case L1_PENALTY_PARAM_WITH_MULT:
+//							param_update_step
+//								= rcp::rcp(new  MeritFunc_PenaltyParamUpdateWithMult_AddedStep());
+							THROW_EXCEPTION(
+								true, std::logic_error
+								,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+								"The l1_penalty_parameter_update option of MULT_FREE has not been updated yet!" );
+							break;
+						case L1_PENALTY_PARAM_MULT_FREE:
+							param_update_step
+								= rcp::rcp(new  MeritFunc_PenaltyParamUpdateMultFree_AddedStep());
+							break;
+						default:
+							assert(0);
+					}
+					break;
+				}
+				case MERIT_FUNC_MOD_L1:
+				case MERIT_FUNC_MOD_L1_INCR:
+//					param_update_step = new  MeritFunc_PenaltyParamsUpdateWithMult_AddedStep(
+//											rcp::rcp_implicit_cast<MeritFuncNLP>(merit_func) );
+					THROW_EXCEPTION(
+						true, std::logic_error
+						,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+						"The merit_function_type options of MODIFIED_L1 and MODIFIED_L1_INCR have not been updated yet!" );
+					break;
+				default:
+					assert(0);	// local programming error
+			}
+			if(options_) {
+				MeritFunc_PenaltyParamUpdate_AddedStepSetOptions
+					ppu_options_setter( param_update_step.get() );
+				ppu_options_setter.set_options( *options_ );
+			}
+			merit_func_penalty_param_update_step = param_update_step;
+		}
+
+		// LineSearch_Step
+		algo_step_ptr_t    line_search_full_step_step = NULL;
+		{
+			line_search_full_step_step = rcp::rcp(new LineSearchFullStep_Step(bounds_tester));
+		}
+
+		// LineSearch_Step
+		algo_step_ptr_t    line_search_step = NULL;
+		if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
+			ref_count_ptr<DirectLineSearchArmQuad_Strategy>
+				direct_line_search = rcp::rcp(new  DirectLineSearchArmQuad_Strategy());
+			if(options_) {
+				ConstrainedOptimizationPack::DirectLineSearchArmQuad_StrategySetOptions
+					ls_options_setter( direct_line_search.get(), "DirectLineSearchArmQuadSQPStep" );
+				ls_options_setter.set_options( *options_ );
+			}
+			switch( cov_.line_search_method_ ) {
+				case LINE_SEARCH_DIRECT: {
+					line_search_step = rcp::rcp(new LineSearchDirect_Step(direct_line_search));
+					break;
+				}
+				case LINE_SEARCH_2ND_ORDER_CORRECT: {
+					THROW_EXCEPTION(
+						true, std::logic_error
+						,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+						"The line_search_method option of 2ND_ORDER_CORRECT has not been updated yet!" );
+					break;
+				}
+				case LINE_SEARCH_WATCHDOG: {
+					THROW_EXCEPTION(
+						true, std::logic_error
+						,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+						"The line_search_method option of WATCHDOG has not been updated yet!" );
+					break;
+				}
+			}
+		}
+		
+		//
+		// Create the algorithm depending on the type of NLP we are
+		// trying to solve.
+		//
+		if( m == 0 && mI == 0 ) {
+			if( nb == 0 ) {
+				//
+				// Unconstrained NLP (m == 0, mI == 0, num_bounded_x == 0)
+				//
+				THROW_EXCEPTION(
+					m == 0 && mI == 0 && nb == 0, std::logic_error
+					,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
+					"Unconstrained NLPs are not supported yet!" );
+			}
+			else {
+				//
+				// Simple bound constrained NLP (m == 0, mI == 0, num_bounded_x > 0)
+				//
+				THROW_EXCEPTION(
+					m == 0 && mI == 0 && nb == 0, std::logic_error
+					,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
+					"Bound constrained NLPs are not supported yet!" );
+			}
+		}
+		else if( n == m ) {
+			//
+			// System of Nonlinear equations (n == m)
+			//
+			THROW_EXCEPTION(
+				n == m, std::logic_error
+				,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
+				"Nonlinear equation (NLE) problems are not supported yet!" );
+			assert(0); // ToDo: add the step objects for this algorithm
+		}
+		else if ( m > 0 && mI == 0 && nb == 0 ) {
+			//
+			// Nonlinear equality constrained NLP ( m > 0 && mI == 0 && num_bounded_x == 0 )
+			//
+
+			int step_num = 0;
+	
+			// (1) EvalNewPoint
+			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
+
+			// (2) CalcReducedGradLagrangian
+			algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, calc_reduced_grad_lagr_step );
+
+			// (3) CalcLagrangeMultDecomposed
+			// Compute these here so that in case we converge we can report them
+			if( !tailored_approach ) {
+				assert(0); // ToDo: Insert this step
+			}
+
+			// (4) CheckConvergence
+			algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
+
+			// (5) ReducedHessian
+			algo->insert_step( ++step_num, ReducedHessian_name, reduced_hessian_step );
+
+			// (5.-1) CheckSkipBFGSUpdate
+			algo->insert_assoc_step(
+				step_num
+				,GeneralIterationPack::PRE_STEP
+				,1
+				,CheckSkipBFGSUpdate_name
+				,check_skip_bfgs_update_step
+			  );
+
+			// (6) NullSpaceStep
+			algo->insert_step( ++step_num, NullSpaceStep_name, null_space_step_step );
+
+			// (7) CalcDFromYPYZPZ
+			algo->insert_step( ++step_num, CalcDFromYPYZPZ_name, calc_d_from_Ypy_Zpy_step );
+			// ToDo: Add ths step!
+			
+			// (8) LineSearch
+			if( cov_.line_search_method_ == LINE_SEARCH_NONE ) {
+				algo->insert_step( ++step_num, LineSearch_name, line_search_full_step_step );
+			}
+			else {
+				// (8) Main line search step
+				algo->insert_step( ++step_num, LineSearch_name, line_search_step );
+				// Insert presteps
+				Algorithm::poss_type
+					pre_step_i = 0;
+				// (8.-?) LineSearchFullStep
+				algo->insert_assoc_step(
+					step_num
+					,GeneralIterationPack::PRE_STEP
+					,++pre_step_i
+					,"LineSearchFullStep"
+					,line_search_full_step_step
+					);
+				// (8.-?) MeritFunc_PenaltyPramUpdate
+				algo->insert_assoc_step(
+					step_num
+					,GeneralIterationPack::PRE_STEP
+					,++pre_step_i
+					,"MeritFunc_PenaltyParamUpdate"
+					,merit_func_penalty_param_update_step
+					);
+				// ToDo: Add other LineSearch step objects
+			}
+
+		}
+		else if ( mI > 0 || nb > 0 ) {
+			//
+			// Nonlinear inequality constrained NLP ( mI > 0 || num_bounded_x > 0 )
+			//
+			THROW_EXCEPTION(
+				mI > 0 || nb > 0, std::logic_error
+				,"rSQPAlgo_ConfigMamaJama::config_alg_cntr(...) : Error, "
+				"General inequality constrained NLPS are not supported yet!" );
+		}
+		else {
+			assert(0); // Error, this should not ever be called!
 		}
 
 		// Set the standard set of step objects.
 		// This default algorithm is for NLPs with no variable bounds.
+/*
 
 		// (1) EvalNewPoint
 		if( tailored_approach ) {
@@ -1138,7 +1215,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					// Set the default print level for the newton iterations
 					ls_t::ENewtonOutputLevel
 						newton_olevel;
-					switch( algo_cntr.journal_output_level() ) {
+					switch( algo_cntr->journal_output_level() ) {
 						case PRINT_NOTHING:
 							newton_olevel = ls_t::PRINT_NEWTON_NOTHING;
 							break;
@@ -1305,9 +1382,12 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			}
 		}
 	
+*/
+
+/*
 		// Reconfigure the steps if the NLP has bounds
 
-		if( algo_cntr.nlp().has_bounds() ) {
+		if( algo_cntr->nlp().has_bounds() ) {
 
 			if(trase_out)
 				*trase_out << "\nReconfiguring steps for NLP with bounds ...\n";
@@ -1457,7 +1537,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 		}
 
+*/
+
 	}
+
+/*
 
 	// 8/30/99: Add the iteration quantities for the QPSolverStats and 
 	// ActSetStats and the added step that will calculate the
@@ -1470,7 +1554,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		algo->state().set_iter_quant( qp_solver_stats_name
 			, new IterQuantityAccessContinuous<QPSolverStats>( 1, qp_solver_stats_name ) );
 
-		if( algo_cntr.nlp().has_bounds() ) {
+		if( algo_cntr->nlp().has_bounds() ) {
 
 			// Insert active set computational step into algorithm
 			Algorithm::poss_type
@@ -1623,98 +1707,34 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		// That's it man!
 	}
 
-	// 7/3/00: Adding some steps to correct a bad initial guess.
-	if( cov_.correct_bad_init_guess_ ) {
-		typedef rcp::ref_count_ptr<CorrectBadInitGuessStd_AddedStep>
-			corr_xinit_ptr_t;
-		corr_xinit_ptr_t
-			corr_xinit_ptr = new CorrectBadInitGuessStd_AddedStep;
-		CorrectBadInitGuessStd_AddedStepSetOptions
-			options_setter(corr_xinit_ptr.get());
-		if(options_) options_setter.set_options(*options_);
-
-		Algorithm::poss_type poss;
-
-		// Add it after the computation of the reduced gradient of the Lagrangian
-		assert(poss = algo->get_step_poss( CalcReducedGradLagrangian_name ) );
-		algo->insert_step(
-			  poss+1
-			, "CorrectBadInitGuessFirst"
-			, rcp::rcp_implicit_cast<AlgorithmStep>( corr_xinit_ptr )
-		  );
-
-		// Add it after the line search
-		assert(poss = algo->get_step_poss( LineSearch_name ) );
-		algo->insert_step(
-			  poss+1
-			, "CorrectBadInitGuessSecond"
-			, rcp::rcp_implicit_cast<AlgorithmStep>( corr_xinit_ptr )
-		  );
-	}
-
 	// 4/10/01: Set the QP solver and tester objects.
 	if( feasibility_step_strategy.get() ) {
 		feasibility_step_strategy->set_qp_solver(qp_solver);
 		feasibility_step_strategy->set_qp_tester(qp_tester);
 	}
 
+*/
+
 }
 
-void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
+void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface* _algo)
 {
 	using DynamicCastHelperPack::dyn_cast;
-
 	namespace rcp = ReferenceCountingPack;
 
-	rSQPAlgo
-#ifdef _WINDOWS
-		&algo	= dynamic_cast<rSQPAlgo&>(_algo);
-#else
-		&algo	= dyn_cast<rSQPAlgo>(_algo);
-#endif
-	rSQPState	&state	= algo.rsqp_state();
-	NLP			&nlp = algo.nlp();
+	THROW_EXCEPTION(
+		_algo == NULL, std::invalid_argument
+		,"rSQPAlgo_ConfigMamaJama::init_algo(_algo) : Error, "
+		"_algo can not be NULL" );
+
+	rSQPAlgo             &algo    = dyn_cast<rSQPAlgo>(*_algo);
+	rSQPState	         &state   = algo.rsqp_state();
+	NLP			         &nlp     = algo.nlp();
+	NLPReduced           *nlp_red = dynamic_cast<NLPReduced*>(&nlp);
+	NLPFirstOrderDirect  *nlp_fod = dynamic_cast<NLPFirstOrderDirect*>(&nlp);
 
 	algo.max_iter( algo.algo_cntr().max_iter() );
 	algo.max_run_time( algo.algo_cntr().max_run_time() );
-
-	// (1) Initialize the nlp
-	nlp.initialize();
-
-	// Advance everything two iterations to wipe out any memory to k-1
-	state.next_iteration();
-	state.next_iteration();
-
-	// (2) Set the initial x to the initial guess.
-	state.x().set_k(0).v() = nlp.xinit();
-
-	// (3) Get the initial basis from the nlp.
-
-	const size_type
-		n = nlp.n(),
-		m = nlp.m(),
-		r = nlp.r();
-	state.var_dep()			= Range1D(1, r);
-	state.var_indep()		= Range1D(r + 1, n);
-	state.con_decomp()		= Range1D(1, r);
-	state.con_undecomp()	= (r < m) ? Range1D(r + 1, m) : Range1D(m + 1, m + 1);
-
-	if( NLPReduced	*red_nlp = dynamic_cast<NLPReduced*>(algo.get_nlp()) ) {
-		// The nlp will have a basis
-		// set whether or not nlp.nlp_selects_basis() returns true (See NLPReduced).
-		size_type rank;
-		red_nlp->get_basis( &state.var_perm_new(), &state.con_perm_new(), &rank );
-	}
-	else {
-		// Just set to original order (identity).
-		using LinAlgPack::identity_perm;
-		state.var_perm_new().resize(n);
-		identity_perm(&state.var_perm_new());
-		state.con_perm_new().resize(m);
-		identity_perm(&state.con_perm_new());
-	}
-
-	state.initialize_fast_access();
 
 	// Reset the iteration count to zero
 	state.k(0);
@@ -1733,9 +1753,9 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
 // private
 
 void rSQPAlgo_ConfigMamaJama::readin_options(
-	  const OptionsFromStreamPack::OptionsFromStream& options
-	, SOptionValues *ov
-	, std::ostream* trase_out
+	  const OptionsFromStreamPack::OptionsFromStream     &options
+	, SOptionValues                                      *ov
+	, std::ostream                                       *trase_out
 	)
 {
 	namespace	ofsp = OptionsFromStreamPack;
@@ -2013,9 +2033,10 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 // value is.
 //
 void rSQPAlgo_ConfigMamaJama::set_default_options( 
-	const SOptionValues& uov
-	, SOptionValues *cov
-	, std::ostream* trase_out )
+	const SOptionValues     &uov
+	,SOptionValues          *cov
+	,std::ostream           *trase_out
+	)
 {
 	if(trase_out)
 		*trase_out
