@@ -14,11 +14,6 @@
 // above mentioned "Artistic License" for more details.
 //
 
-// disable VC 5.0 warnings about debugger limitations
-#pragma warning(disable : 4786)	
-// disable VC 5.0 warnings about truncated identifier names (templates).
-#pragma warning(disable : 4503)	
-
 #include <assert.h>
 
 #include <fstream>
@@ -27,23 +22,16 @@
 #include <iomanip>
 
 #include "ExampleNLPDirectRun.hpp"
-#include "ExampleVectorLib/src/MPIDenseVector.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack/src/abstract/tsfl/VectorSpaceTSFL.hpp"
-#include "TSFL/src/interfaces/VectorSpaceSerialDecl.hpp"
-#include "OptionsFromStream.hpp"
+#include "exampleNLPDiagSetup.hpp"
 #include "WorkspacePack.hpp"
 #include "oblackholestream.hpp"
-#include "CommandLineProcessor.hpp"
 
-int main(int argc, char* argv[] ) {
+int main( int argc, char* argv[] ) {
 
 	using std::endl;
 	using std::setw;
 	namespace mmp = MemMngPack;
 	using mmp::ref_count_ptr;
-	namespace ofsp = OptionsFromStreamPack;
-	using ofsp::OptionsFromStream;
 	typedef AbstractLinAlgPack::size_type size_type;
 	typedef AbstractLinAlgPack::value_type value_type;
 	namespace NLPIP = NLPInterfacePack;
@@ -51,12 +39,6 @@ int main(int argc, char* argv[] ) {
 	using rsqp::MoochoSolver;
 
 	using AbstractLinAlgPack::VectorSpace;
-	using AbstractLinAlgPack::Vector;
-	using AbstractLinAlgPack::VectorMutable;
-
-	using AbstractLinAlgPack::VectorSpaceTSFL;
-
-	using CommandLineProcessorPack::CommandLineProcessor;
 
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
@@ -94,42 +76,6 @@ int main(int argc, char* argv[] ) {
 
 	int prog_return = PROG_SUCCESS;
 
-	// Get the size of the problem to solve
-	size_type n = 4;
-	// Get the starting point
-	value_type xo = 0.1;
-	// Determine if the NLP has bounds or not.
-	bool has_bounds = false;
-	// Make the dependent or independent variables bounded.
-	bool dep_bounded = true;
-	// Serial or parallel?
-	bool in_parallel = false;
-	// Use TSFL?
-	bool use_tsfl = false;
-
-	CommandLineProcessor  command_line_processor;
-	
-	command_line_processor.set_option( "n",  &n,   "Global number of dependent (and independent) variables" );
-	command_line_processor.set_option( "xo", &xo,  "Initial guess of the solution" );
-	command_line_processor.set_option(
-		"has-bounds", "no-has-bounds", &has_bounds
-		,"Determine if the NLP has bounds or not" );
-	command_line_processor.set_option(
-		"dep-bounded", "indep-bounded", &dep_bounded
-		,"Determine if the dependent or independent variables are bounded" );
-	command_line_processor.set_option(
-		"in-parallel", "in-serial", &in_parallel
-		,"Determine if computations are performed in parallel or not" );
-	command_line_processor.set_option(
-		"use-tsfl", "no-use-tsfl", &use_tsfl
-		,"Determine whether to use TSFL vectors or not" );
-	
-	CommandLineProcessor::EParseCommandLineReturn
-		parse_return = command_line_processor.parse_command_line(argc,argv,&std::cerr);
-	
-	if( parse_return != CommandLineProcessor::PARSE_SUCCESSFULL )
-		return parse_return;
-
 	// Set the output stream
 	std::ostream &out  = std::cout;
 	std::ostream &eout = std::cerr;
@@ -137,69 +83,51 @@ int main(int argc, char* argv[] ) {
 
 	try {
 	
-	// Create the vector space object to use.
-	VectorSpace::space_ptr_t    vec_space;
+		//
+		// Initialize stuff
+		//
 
-	if(in_parallel) {
-		//
-		// Use parallel vectors!
-		//
-		// Determine the mapping of elements to processors for MPIDenseVectorSpace
-		RTOp_index_type local_dim = n/num_proc; // assume n > num_proc
-		RTOp_index_type *ind_map  = new RTOp_index_type[num_proc];
-		RTOp_index_type i_u = local_dim;
-		for( int p = 0; p < num_proc; ++p, i_u += local_dim )
-			ind_map[p] = i_u;
-		ind_map[num_proc-1] = n; // Make sure we don't go past n
-		local_dim = ( proc_rank > 0
-					  ? ind_map[proc_rank]-ind_map[proc_rank-1]
-					  : ind_map[0] );
-		vec_space = mmp::rcp(new MPIDenseVectorSpace(MPI_COMM_WORLD,ind_map,true,1,n));
-	}
-	else {
-		//
-		// Use serial vectors
-		//
-		if( use_tsfl ) {
-			vec_space = mmp::rcp(new VectorSpaceTSFL(mmp::rcp(new TSFL::VectorSpaceSerial<value_type>(n))));
+		size_type n;
+		value_type xo;
+		bool has_bounds;
+		bool dep_bounded;
+		
+		VectorSpace::space_ptr_t    vec_space;
+		const int err = AbstractLinAlgPack::exampleNLPDiagSetup(argc,argv,MPI_COMM_WORLD,&vec_space,&n,&xo,&has_bounds,&dep_bounded);
+		if(err) return err;
+		
+		// Create and test the NLP using this vector space object
+		const MoochoSolver::ESolutionStatus
+			solve_return = NLPIP::ExampleNLPDirectRun(
+				*vec_space, xo, has_bounds, dep_bounded
+				,proc_rank == 0 ? &out  : &blackhole  // console_out
+				,proc_rank == 0 ? &eout : &blackhole  // error_out
+				,proc_rank == 0 ? false : true        // throw_solve_exception
+				,proc_rank == 0 ? NULL  : &blackhole  // algo_out
+				,proc_rank == 0 ? NULL  : &blackhole  // summary_out
+				,proc_rank == 0 ? NULL  : &blackhole  // journal_out
+				);
+		
+		switch(solve_return) {
+			case MoochoSolver::SOLVE_RETURN_SOLVED:
+				prog_return = PROG_SUCCESS;
+				break;
+			case MoochoSolver::SOLVE_RETURN_MAX_ITER:
+				prog_return = PROG_MAX_ITER_EXEEDED;
+				break;
+			case MoochoSolver::SOLVE_RETURN_MAX_RUN_TIME:
+				prog_return = PROG_MAX_TIME_EXEEDED;
+				break;
+			case MoochoSolver::SOLVE_RETURN_NLP_TEST_FAILED:
+				prog_return = PROG_NLP_TEST_ERR;
+				break;
+			case MoochoSolver::SOLVE_RETURN_EXCEPTION:
+				prog_return = PROG_EXCEPTION;
+				break;
+			default:
+				assert(0);
 		}
-		else {
-			vec_space = mmp::rcp(new AbstractLinAlgPack::VectorSpaceSerial(n));
-		}
-	}
-
-	// Create and test the NLP using this vector space object
-	const MoochoSolver::ESolutionStatus
-		solve_return = NLPIP::ExampleNLPDirectRun(
-			*vec_space, xo, has_bounds, dep_bounded
-			,proc_rank == 0 ? &out  : &blackhole  // console_out
-			,proc_rank == 0 ? &eout : &blackhole  // error_out
-			,proc_rank == 0 ? false : true        // throw_solve_exception
-			,proc_rank == 0 ? NULL  : &blackhole  // algo_out
-			,proc_rank == 0 ? NULL  : &blackhole  // summary_out
-			,proc_rank == 0 ? NULL  : &blackhole  // journal_out
-			);
-
-	switch(solve_return) {
-		case MoochoSolver::SOLVE_RETURN_SOLVED:
-			prog_return = PROG_SUCCESS;
-			break;
-		case MoochoSolver::SOLVE_RETURN_MAX_ITER:
-			prog_return = PROG_MAX_ITER_EXEEDED;
-			break;
-		case MoochoSolver::SOLVE_RETURN_MAX_RUN_TIME:
-			prog_return = PROG_MAX_TIME_EXEEDED;
-			break;
-		case MoochoSolver::SOLVE_RETURN_NLP_TEST_FAILED:
-			prog_return = PROG_NLP_TEST_ERR;
-			break;
-		case MoochoSolver::SOLVE_RETURN_EXCEPTION:
-			prog_return = PROG_EXCEPTION;
-			break;
-		default:
-			assert(0);
-	}
-
+		
 	}	// end try
 	catch(const std::exception& excpt) {
 		eout << "\nCaught a std::exception on process " << proc_rank<< ": " << excpt.what() << endl;
