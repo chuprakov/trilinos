@@ -1,5 +1,5 @@
 Decomposition Info	= method=rcb
-Zoltan Parameters	= RCB_WGTFLAG=0, parmetis_fold=0, imbalance_tol=.8
+Zoltan Parameters	= RCB_WGTFLAG=0, rcb_stats=0, keep_cuts = true
 File Type		= Chaco
 File Name		= film
 Parallel Disk Info	= number=0
