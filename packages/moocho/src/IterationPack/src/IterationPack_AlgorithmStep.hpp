@@ -12,9 +12,6 @@ namespace GeneralIterationPack {
 
 ///
 /** Base type for all objects that perform steps in an #Algorithm#.
-  *
-  *
-  *
   */
 class AlgorithmStep {
 public:
@@ -25,6 +22,9 @@ public:
 	///
 	/** Called by #Algorithm# to perform a main, pre or post step at step_poss and assoc_step_poss.
 	  *
+	  * @return Should return false if this step object has terminated the algorithm or
+	  * redirected control to another step.  In this case it is assumed that #this# called
+	  * #algo.terminate(...)# or #algo.do_step_next(...)#.
 	  */
 	virtual bool do_step( Algorithm& algo, poss_type step_poss, EDoStepType type
 		, poss_type assoc_step_poss ) = 0;

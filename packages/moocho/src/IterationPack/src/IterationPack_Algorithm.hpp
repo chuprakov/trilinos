@@ -456,7 +456,8 @@ public:
 	  *
 	  * If any of the of the pre or post objects or the step object returns false, then this
 	  * operation immediatly returns false.  It is assumed that if any step object returns
-	  * false from do step that it has either also called #terminate(...)# or #do_step_next(...)#.
+	  * false from its #do_step(...)# that it has either also called #terminate(...)#
+	  * or #do_step_next(...)#.
 	  *
 	  * Preconditions:\begin{itemize}
 	  * \item running_state() == RUNNING# (throw #InvalidRunningState#)
