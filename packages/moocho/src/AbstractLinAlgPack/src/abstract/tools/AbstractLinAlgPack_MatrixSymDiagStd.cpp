@@ -109,7 +109,7 @@ void MatrixSymDiagonalStd::V_InvMtV(
 	VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
 	, const VectorWithOp& v_rhs2) const
 {
-	assert(0); // ToDo: Finish!
+	ele_wise_divide( 1.0, v_rhs2, *diag_, v_lhs );
 }
 
 void MatrixSymDiagonalStd::V_InvMtV(
