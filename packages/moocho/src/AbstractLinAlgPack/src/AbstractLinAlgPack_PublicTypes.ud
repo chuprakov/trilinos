@@ -1,5 +1,17 @@
 // ///////////////////////////////////////////////////////////////
-// AbstractLinAlgPackPublicTypes.h
+// AbstractLinAlgPackPublicTypes.ud
+//
+// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+//
+// This is free software; you can redistribute it and/or modify it
+// under the terms of the "Artistic License" (see the web site
+//   http://www.opensource.org/licenses/artistic-license.html).
+// This license is spelled out in the file COPYING.
+//
+// This software is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// above mentioned "Artistic License" for more details.
 
 // Main interface library
 
@@ -22,12 +34,16 @@ using AbstractLinAlgPack::MatrixSpace;
 
 using AbstractLinAlgPack::MatrixBase;
 using AbstractLinAlgPack::MatrixWithOp;
-using AbstractLinAlgPack::MatrixWithOpMutable;
-using AbstractLinAlgPack::MatrixFactorized;
-using AbstractLinAlgPack::MatrixWithOpFactorized;
+using AbstractLinAlgPack::MatrixNonsingular;
+using AbstractLinAlgPack::MatrixWithOpNonsingular;
 using AbstractLinAlgPack::MatrixSymWithOp;
-using AbstractLinAlgPack::MatrixSymFactorized;
-using AbstractLinAlgPack::MatrixSymWithOpFactorized;
+using AbstractLinAlgPack::MatrixSymNonsingular;
+using AbstractLinAlgPack::MatrixSymWithOpNonsingular;
+
+using AbstractLinAlgPack::MultiVector;
+using AbstractLinAlgPack::MultiVectorMutable;
+
+using AbstractLinAlgPack::BasisSystem;
 
 // Tools library
 
@@ -40,6 +56,7 @@ using AbstractLinAlgPack::MatrixSpaceStd;
 
 using AbstractLinAlgPack::VectorSpaceCompositeStd;
 using AbstractLinAlgPack::VectorWithOpMutableCompositeStd;
+using AbstractLinAlgPack::MatrixCompositeStd;
 using AbstractLinAlgPack::MatrixSymIdentity;
 using AbstractLinAlgPack::MatrixSymDiagonalStd;
 

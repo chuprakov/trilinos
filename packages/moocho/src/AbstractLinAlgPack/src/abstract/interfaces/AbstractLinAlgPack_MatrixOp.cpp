@@ -1,5 +1,17 @@
 // //////////////////////////////////////////////////////////////
 // MatrixWithOp.cpp
+//
+// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+//
+// This is free software; you can redistribute it and/or modify it
+// under the terms of the "Artistic License" (see the web site
+//   http://www.opensource.org/licenses/artistic-license.html).
+// This license is spelled out in the file COPYING.
+//
+// This software is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// above mentioned "Artistic License" for more details.
 
 #include <assert.h>
 
@@ -7,7 +19,7 @@
 #include <stdexcept>
 
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpMutable.h"
+#include "AbstractLinAlgPack/include/MultiVectorMutable.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
@@ -30,6 +42,9 @@ MatrixWithOp::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 		)
 		return mat_ptr_t(this,false); // don't clean up memory
 	return NULL; // requested a view that was not the entire matrix!
+	// ToDo: create a matrix subclass that can simulate such a view!
+	// We should be able to do this using VectorSpaceSubView and
+	// VectorWithOp::sub_view(...).
 }
 
 MatrixWithOp& MatrixWithOp::zero_out()
@@ -63,7 +78,7 @@ std::ostream& MatrixWithOp::output(std::ostream& out) const
 
 // rhs matrix argument
 
-void MatrixWithOp::Mp_StM(
+bool MatrixWithOp::Mp_StM(
 	MatrixWithOp* m_lhs, value_type alpha
 	, BLAS_Cpp::Transp trans_rhs) const
 {
@@ -80,37 +95,40 @@ void MatrixWithOp::Mp_StM(
 		,"MatrixWithOp::Mp_StM(m_lhs,...): Error, m_lhs of type \'"<<typeid(*m_lhs).name()<<"\' "
 		<<"is not compatible with this of type \'"<<typeid(*m_lhs).name()<<"\'" );
 #endif
-	MatrixWithOpMutable
-		*m_mut_lhs = dynamic_cast<MatrixWithOpMutable*>(m_lhs);
+	MultiVectorMutable
+		*m_mut_lhs = dynamic_cast<MultiVectorMutable*>(m_lhs);
 	if(!m_mut_lhs)
 		return m_lhs->Mp_StM(alpha,*this,trans_rhs);
 		
 	const size_type
-		rows = BLAS_Cpp::rows( m_mut_lhs->rows(), m_mut_lhs->cols(), trans_rhs ),
-		cols = BLAS_Cpp::cols( m_mut_lhs->rows(), m_mut_lhs->cols(), trans_rhs );
+		rows = BLAS_Cpp::rows( m_lhs->rows(), m_lhs->cols(), trans_rhs ),
+		cols = BLAS_Cpp::cols( m_lhs->rows(), m_lhs->cols(), trans_rhs );
 	for( size_type j = 1; j <= cols; ++j )
 		AbstractLinAlgPack::Vp_StMtV( m_mut_lhs->col(j).get(), alpha, *this, trans_rhs, EtaVector(j,cols)() );
+	// ToDo: consider row and or diagonal access!
 }
 
-void MatrixWithOp::Mp_StMtP(
+bool MatrixWithOp::Mp_StMtP(
 	MatrixWithOp* m_lhs, value_type alpha
 	, BLAS_Cpp::Transp M_trans
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	) const
 {
 	assert(0); // ToDo: Implement!
+	return false;
 }
 
-void MatrixWithOp::Mp_StPtM(
+bool MatrixWithOp::Mp_StPtM(
 	MatrixWithOp* m_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	, BLAS_Cpp::Transp M_trans
 	) const
 {
 	assert(0); // ToDo: Implement!
+	return false;
 }
 
-void MatrixWithOp::Mp_StPtMtP(
+bool MatrixWithOp::Mp_StPtMtP(
 	MatrixWithOp* m_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 	, BLAS_Cpp::Transp M_trans
@@ -118,42 +136,43 @@ void MatrixWithOp::Mp_StPtMtP(
 	) const
 {
 	assert(0); // ToDo: Implement!
+	return false;
 }
 
 // lhs matrix argument
 
-void MatrixWithOp::Mp_StM(
+bool MatrixWithOp::Mp_StM(
 	value_type alpha,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs)
 {
-	assert(0); // ToDo: Implement!
+	return false;
 }
 
-void MatrixWithOp::Mp_StMtP(
+bool MatrixWithOp::Mp_StMtP(
 	value_type alpha
 	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
 	,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	)
 {
-	assert(0); // ToDo: Implement!
+	return false;
 }
 
-void MatrixWithOp::Mp_StPtM(
+bool MatrixWithOp::Mp_StPtM(
 	value_type alpha
 	,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
 	)
 {
-	assert(0); // ToDo: Implement!
+	return false;
 }
 
-void MatrixWithOp::Mp_StPtMtP(
+bool MatrixWithOp::Mp_StPtMtP(
 	value_type alpha
 	,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
 	,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 	)
 {
-	assert(0); // ToDo: Implement!
+	return false;
 }
 
 // Level-2 BLAS
@@ -217,29 +236,32 @@ void MatrixWithOp::syr2k(
 
 // Level-3 BLAS
 
-void MatrixWithOp::Mp_StMtM(
+bool MatrixWithOp::Mp_StMtM(
 	MatrixWithOp* m_lhs, value_type alpha
 	, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOp& mwo_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta) const
 {
 	assert(0); // ToDo: Implement!
+	return false;
 }
 
-void MatrixWithOp::Mp_StMtM(
+bool MatrixWithOp::Mp_StMtM(
 	MatrixWithOp* m_lhs, value_type alpha
 	, const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta ) const
 {
 	assert(0); // ToDo: Implement!
+	return false;
 }
 
-void MatrixWithOp::Mp_StMtM(
+bool MatrixWithOp::Mp_StMtM(
 	value_type alpha
 	,const MatrixWithOp& mvw_rhs1, BLAS_Cpp::Transp trans_rhs1
 	,const MatrixWithOp& mwo_rhs2,BLAS_Cpp::Transp trans_rhs2
 	,value_type beta )
 {
 	assert(0); // ToDo: Implement!
+	return false;
 }
 
 void MatrixWithOp::syrk(
@@ -262,3 +284,78 @@ size_type MatrixWithOp::cols() const
 }
 
 } // end namespace AbstractLinAlgPack
+
+// Non-member functions
+
+// level-1 BLAS
+
+void AbstractLinAlgPack::Mp_StM(
+	MatrixWithOp* mwo_lhs, value_type alpha, const MatrixWithOp& M_rhs
+	, BLAS_Cpp::Transp trans_rhs)
+{
+	const bool success = M_rhs.Mp_StM(mwo_lhs,alpha,trans_rhs);
+	THROW_EXCEPTION(
+		!success, MatrixWithOp::MethodNotImplemented
+		,"MatrixWithOp::Mp_StM(...) : Error, mwo_lhs of type \'"
+		<< typeid(*mwo_lhs).name() << "\' does not support the "
+		"\'MultiVectorMutable\' interface!" );
+}
+
+void AbstractLinAlgPack::Mp_StMtP(
+	MatrixWithOp* mwo_lhs, value_type alpha
+	, const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
+	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
+	)
+{
+	const bool success = M_rhs.Mp_StMtP(mwo_lhs,alpha,M_trans,P_rhs,P_rhs_trans);
+	THROW_EXCEPTION(
+		!success, MatrixWithOp::MethodNotImplemented
+		,"MatrixWithOp::Mp_StMtP(...) : Error, mwo_lhs of type \'"
+		<< typeid(*mwo_lhs).name() << "\' does not support the "
+		"\'MultiVectorMutable\' interface!" );
+}
+
+void AbstractLinAlgPack::Mp_StPtM(
+	MatrixWithOp* mwo_lhs, value_type alpha
+	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
+	, const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
+	)
+{
+	const bool success = M_rhs.Mp_StPtM(mwo_lhs,alpha,P_rhs,P_rhs_trans,M_trans);
+	THROW_EXCEPTION(
+		!success, MatrixWithOp::MethodNotImplemented
+		,"MatrixWithOp::Mp_StPtM(...) : Error, mwo_lhs of type \'"
+		<< typeid(*mwo_lhs).name() << "\' does not support the "
+		"\'MultiVectorMutable\' interface!" );
+}
+
+void AbstractLinAlgPack::Mp_StPtMtP(
+	MatrixWithOp* mwo_lhs, value_type alpha
+	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+	, const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs
+	, const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
+	)
+{
+	const bool success = M_rhs.Mp_StPtMtP(mwo_lhs,alpha,P_rhs1,P_rhs1_trans,trans_rhs,P_rhs2,P_rhs2_trans);
+	THROW_EXCEPTION(
+		!success, MatrixWithOp::MethodNotImplemented
+		,"MatrixWithOp::Mp_StPtMtP(...) : Error, mwo_lhs of type \'"
+		<< typeid(*mwo_lhs).name() << "\' does not support the "
+		"\'MultiVectorMutable\' interface!" );
+}
+
+// level-3 blas
+
+void AbstractLinAlgPack::Mp_StMtM(
+	MatrixWithOp* mwo_lhs, value_type alpha
+	,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+	,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+	, value_type beta )
+{
+	const bool success = mwo_rhs1.Mp_StMtM(mwo_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2,beta);
+	THROW_EXCEPTION(
+		!success, MatrixWithOp::MethodNotImplemented
+		,"MatrixWithOp::Mp_StMtM(...) : Error, mwo_lhs of type \'"
+		<< typeid(*mwo_lhs).name() << "\' does not support the "
+		"\'MultiVectorMutable\' interface!" );
+}

@@ -1,5 +1,5 @@
-// ///////////////////////////////////////////////////////////
-// VectorWithOpOut.h
+// /////////////////////////////////////////////////////////////////////////////
+// MatrixSymNonsingular.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,24 +13,18 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifndef VECTOR_WITH_OP_OUT_H
-#define VECTOR_WITH_OP_OUT_H
+#include <assert.h>
 
-#include <iosfwd>
-
-#include "AbstractLinAlgPackTypes.h"
+#include "AbstractLinAlgPack/include/MatrixSymNonsingular.h"
+#include "AbstractLinAlgPack/include/EtaVector.h"
 
 namespace AbstractLinAlgPack {
 
-///
-/** Output operator for \Ref{VectorWithOp} objects.
- */
-inline
-std::ostream& operator<<( std::ostream& o, const VectorWithOp& v )
+void MatrixSymNonsingular::M_StMtInvMtM(
+	  MatrixSymWithOp* S, value_type a, const MatrixWithOp& B
+	, BLAS_Cpp::Transp B_trans, EMatrixDummyArg ) const
 {
-	return v.output(o);
+	assert(0); // ToDo: Implement!
 }
 
-} // end namespace AbstractLinAlgPack
-
-#endif // VECTOR_WITH_OP_OUT_H
+}	// end namespace AbstractLinAlgPack

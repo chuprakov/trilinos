@@ -26,7 +26,6 @@ typedef AbstractLinAlgPack::value_type value_type;
 using AbstractLinAlgPack::VectorWithOp;
 using AbstractLinAlgPack::VectorWithOpMutable;
 using AbstractLinAlgPack::MatrixWithOp;
-using AbstractLinAlgPack::MatrixWithOpMutable;
 
 // //////////////////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////////////////

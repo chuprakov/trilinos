@@ -439,14 +439,12 @@ MatrixCompositeStd::matrices_end() const
 
 size_type MatrixCompositeStd::rows() const
 {
-	assert_fully_constructed();
-	return rows_;
+	return fully_constructed_ ? rows_ : 0;
 }
 
 size_type MatrixCompositeStd::cols() const
 {
-	assert_fully_constructed();
-	return cols_;
+	return fully_constructed_ ? cols_ : 0;
 }
 
 // Overridden from MatrixWithOp

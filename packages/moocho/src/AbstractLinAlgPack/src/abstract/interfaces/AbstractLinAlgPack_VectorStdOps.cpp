@@ -1,5 +1,17 @@
 // ////////////////////////////////////////////////////////////////////
 // VectorStdOps.cpp
+//
+// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+//
+// This is free software; you can redistribute it and/or modify it
+// under the terms of the "Artistic License" (see the web site
+//   http://www.opensource.org/licenses/artistic-license.html).
+// This license is spelled out in the file COPYING.
+//
+// This software is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// above mentioned "Artistic License" for more details.
 
 #include <assert.h>
 
@@ -9,7 +21,9 @@
 #include "RTOpStdOpsLib/include/RTOp_ROp_max_near_feas_step.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_num_bounded.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_sum.h"
+#include "RTOpStdOpsLib/include/RTOp_TOp_add_scalar.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_axpy.h"
+#include "RTOpStdOpsLib/include/RTOp_TOp_ele_wise_divide.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_ele_wise_prod.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_force_in_bounds.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_random_vector.h"
@@ -31,12 +45,16 @@ static RTOpPack::ReductTarget   max_near_feas_step_targ;
 // number of bounded elements
 static RTOpPack::RTOpC          num_bounded_op;
 static RTOpPack::ReductTarget   num_bounded_targ;
+// add scalar to vector
+static RTOpPack::RTOpC          add_scalar_op;
 // scale vector
 static RTOpPack::RTOpC          scale_vector_op;
 // axpy
 static RTOpPack::RTOpC          axpy_op;
 // random vector
 static RTOpPack::RTOpC          random_vector_op;
+// element-wise division
+static RTOpPack::RTOpC          ele_wise_divide_op;
 // element-wise product
 static RTOpPack::RTOpC          ele_wise_prod_op;
 // force in bounds
@@ -82,6 +100,14 @@ public:
 			   ,&RTOp_ROp_num_bounded_vtbl
 			   ))
 			assert(0);
+		// Operator add_scalar
+		if(0>RTOp_TOp_add_scalar_construct( 0.0, &add_scalar_op.op() ))
+			assert(0);
+		if(0>RTOp_Server_add_op_name_vtbl(
+			   RTOp_TOp_add_scalar_name
+			   ,&RTOp_TOp_add_scalar_vtbl
+			   ))
+			assert(0);
 		// Operator scale_vector
 		if(0>RTOp_TOp_scale_vector_construct( 0.0, &scale_vector_op.op() ))
 			assert(0);
@@ -104,6 +130,14 @@ public:
 		if(0>RTOp_Server_add_op_name_vtbl(
 			   RTOp_TOp_random_vector_name
 			   ,&RTOp_TOp_random_vector_vtbl
+			   ))
+			assert(0);
+		// Operator ele_wise_divide
+		if(0>RTOp_TOp_ele_wise_divide_construct( 0.0, &ele_wise_divide_op.op() ))
+			assert(0);
+		if(0>RTOp_Server_add_op_name_vtbl(
+			   RTOp_TOp_ele_wise_divide_name
+			   ,&RTOp_TOp_ele_wise_divide_vtbl
 			   ))
 			assert(0);
 		// Operator ele_wise_prod
@@ -187,6 +221,16 @@ AbstractLinAlgPack:: num_bounded(
 	return RTOp_ROp_num_bounded_val(num_bounded_targ.obj());
 }
 
+void AbstractLinAlgPack::Vp_S(
+	VectorWithOpMutable* v_lhs, const value_type& alpha )
+{
+#ifdef _DEBUG
+	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
+#endif
+	assert(0==RTOp_TOp_add_scalar_set_alpha( alpha, &add_scalar_op.op() ));
+	v_lhs->apply_transformation(add_scalar_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL);
+}
+
 void AbstractLinAlgPack::Vt_S(
 	VectorWithOpMutable* v_lhs, const value_type& alpha )
 {
@@ -223,6 +267,21 @@ void AbstractLinAlgPack::ele_wise_prod(
 		vecs[num_vecs] = { &v_rhs1, &v_rhs2 };
 	v_lhs->apply_transformation(
 		ele_wise_prod_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
+}
+
+void AbstractLinAlgPack::ele_wise_divide(
+	const value_type& alpha, const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2
+	, VectorWithOpMutable* v_lhs )
+{
+#ifdef _DEBUG
+	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"force_in_bounds(...), Error");
+#endif
+	assert(0==RTOp_TOp_ele_wise_divide_set_alpha(alpha,&ele_wise_divide_op.op()));
+	const int num_vecs = 2;
+	const VectorWithOp*
+		vecs[num_vecs] = { &v_rhs1, &v_rhs2 };
+	v_lhs->apply_transformation(
+		ele_wise_divide_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
 }
 
 void AbstractLinAlgPack::seed_random_vector_generator( unsigned int s )

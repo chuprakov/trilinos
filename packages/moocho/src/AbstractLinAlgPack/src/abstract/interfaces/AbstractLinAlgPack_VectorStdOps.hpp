@@ -1,5 +1,17 @@
 // ////////////////////////////////////////////////////////////////////
 // VectorStdOps.h
+//
+// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+//
+// This is free software; you can redistribute it and/or modify it
+// under the terms of the "Artistic License" (see the web site
+//   http://www.opensource.org/licenses/artistic-license.html).
+// This license is spelled out in the file COPYING.
+//
+// This software is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// above mentioned "Artistic License" for more details.
 
 #ifndef ABSTRACT_LINALG_PACK_VECTOR_STD_OPS_H
 #define ABSTRACT_LINALG_PACK_VECTOR_STD_OPS_H
@@ -65,6 +77,11 @@ size_type num_bounded(
 //@{
 
 ///
+/** v_lhs += alpha
+ */
+void Vp_S( VectorWithOpMutable* v_lhs, const value_type& alpha );
+
+///
 /** v_lhs *= alpha
  */
 void Vt_S( VectorWithOpMutable* v_lhs, const value_type& alpha );
@@ -78,6 +95,13 @@ void Vp_StV( VectorWithOpMutable* v_lhs, const value_type& alpha, const VectorWi
 /** v_lhs(i) = alpha * v_rhs1(i) * v_rhs2(i), i = 1,,,dim.
  */
 void ele_wise_prod(
+	const value_type& alpha, const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2
+	,VectorWithOpMutable* v_lhs );
+
+///
+/** v_lhs(i) = alpha * v_rhs1(i) / v_rhs2(i), i = 1,,,dim.
+ */
+void ele_wise_divide(
 	const value_type& alpha, const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2
 	,VectorWithOpMutable* v_lhs );
 

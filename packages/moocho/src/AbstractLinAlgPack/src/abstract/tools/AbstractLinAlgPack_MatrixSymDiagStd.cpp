@@ -15,36 +15,48 @@
 
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
 #include "AbstractLinAlgPack/include/MatrixSpaceStd.h"
-#include "AbstractLinAlgPack/include/MatrixWithOpMutable.h"
+#include "AbstractLinAlgPack/include/MultiVectorMutable.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
+#include "ThrowException.h"
 
 namespace AbstractLinAlgPack {
 
-MatrixSymDiagonalStd::MatrixSymDiagonalStd()
-{}
+MatrixSymDiagonalStd::MatrixSymDiagonalStd( const VectorSpace::vec_mut_ptr_t& diag )
+{
+	this->initialize(diag);
+}
+
+void MatrixSymDiagonalStd::initialize( const VectorSpace::vec_mut_ptr_t& diag )
+{
+	diag_ = diag;
+}
 
 VectorWithOpMutable& MatrixSymDiagonalStd::diag()
 {
-	return *diag_;
+	VectorWithOpMutable *diag = diag_.get();
+	THROW_EXCEPTION(
+		!diag, std::logic_error
+		,"MatrixSymDiagonalStd::diag(): Error, the diagonal vector has not been set! " );
+	return *diag;;
 }
 
 const VectorWithOp& MatrixSymDiagonalStd::diag() const
 {
-	return *diag_;
+	return const_cast<MatrixSymDiagonalStd*>(this)->diag();
 }
 
 // Overridden from Matrix
 
 size_type MatrixSymDiagonalStd::rows() const
 {
-	return diag_->dim();
+	return diag_.get() ? diag_->dim() : 0;
 }
 
 size_type MatrixSymDiagonalStd::nz() const
 {
-	return diag_->nz();
+	return diag_.get() ? diag_->nz() : 0;
 }
 
 // Overridden from MatrixWithOp
@@ -57,10 +69,19 @@ const VectorSpace& MatrixSymDiagonalStd::space_cols() const {
 	return diag_->space();
 }
 
-void MatrixSymDiagonalStd::Mp_StM(
+bool MatrixSymDiagonalStd::Mp_StM(
 	MatrixWithOp* M_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs) const
 {
-	MatrixWithOp::Mp_StM(M_lhs,alpha,trans_rhs); // ToDo: Implement specialized!
+	// ToDo: validate the vector spaces for the matrices!
+	MultiVectorMutable
+		*M_mv_lhs = dynamic_cast<MultiVectorMutable*>(M_lhs);
+	if(!M_mv_lhs)
+		return false;
+	VectorSpace::vec_mut_ptr_t
+		M_diag = M_mv_lhs->diag(0);
+	if(!M_diag.get())
+		return false; // Access to the diagonal is not supported!
+	Vp_StV( M_diag.get(), alpha, *diag_ );
 }
 
 void MatrixSymDiagonalStd::Vp_StMtV(
@@ -77,7 +98,7 @@ void MatrixSymDiagonalStd::Vp_StMtV(
 	MatrixWithOp::Vp_StMtV(v_lhs,alpha,trans_rhs1,sv_rhs2,beta); // ToDo: Implement specialized!
 }
 
-// Overridden from MatrixFactorized
+// Overridden from MatrixNonsingular
 
 void MatrixSymDiagonalStd::V_InvMtV(
 	VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
@@ -90,7 +111,7 @@ void MatrixSymDiagonalStd::V_InvMtV(
 	VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2) const
 {
-	MatrixFactorized::V_InvMtV(v_lhs,trans_rhs1,sv_rhs2 ); // ToDo: Implement specialized!
+	MatrixNonsingular::V_InvMtV(v_lhs,trans_rhs1,sv_rhs2 ); // ToDo: Implement specialized!
 }
 
 // Overridden from MatrixSymInitDiagonal

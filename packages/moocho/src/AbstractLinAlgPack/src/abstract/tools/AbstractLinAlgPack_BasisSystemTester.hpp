@@ -1,5 +1,17 @@
 // ///////////////////////////////////////////////////////////
 // BasisSystemTester.h
+//
+// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+//
+// This is free software; you can redistribute it and/or modify it
+// under the terms of the "Artistic License" (see the web site
+//   http://www.opensource.org/licenses/artistic-license.html).
+// This license is spelled out in the file COPYING.
+//
+// This software is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// above mentioned "Artistic License" for more details.
 
 #ifndef BASIS_SYSTEM_TESTER_H
 #define BASIS_SYSTEM_TESTER_H
@@ -19,7 +31,7 @@ namespace AbstractLinAlgPack {
  * The method \c test_basis_system() should only be called after
  * <tt>basis_sys\ref BasisSystem::update_basis ".update_basis(...)"</tt> is called on the <tt>BasisSystem</tt>
  * object <tt>basis_sys</tt>.  The output basis matrix \a C and/or direct sensitivity matrix \a D are passed through
- * a series of tests using the testing classes <tt>MatrixWithOpFactorizedTester</tt> and <tt>MatrixWithOpTester</tt>
+ * a series of tests using the testing classes <tt>MatrixWithOpNonsingularTester</tt> and <tt>MatrixWithOpTester</tt>
  * respectively.  The compatibility of the matrices \c Gc, \c Gh, \c C and/or \c D are also checked in a series of
  * tests.  If the method \c test_basis_system() returns true, then the client can feel fairly confident that the
  * basis matrix object is functioning properly.
@@ -89,7 +101,7 @@ public:
 		BasisSystem                     *basis_sys
 		,const MatrixWithOp             *Gc
 		,const MatrixWithOp             *Gh
-		,const MatrixWithOpFactorized   *C
+		,const MatrixWithOpNonsingular  *C
 		,const MatrixWithOp             *D
 		,bool                           print_all_warnings
 		,std::ostream                   *out

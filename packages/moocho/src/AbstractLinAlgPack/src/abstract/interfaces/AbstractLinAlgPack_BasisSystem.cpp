@@ -1,5 +1,5 @@
-// ///////////////////////////////////////////////////////////
-// VectorWithOpOut.h
+// //////////////////////////////////////////////////////////////
+// BasisSystem.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,24 +13,29 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifndef VECTOR_WITH_OP_OUT_H
-#define VECTOR_WITH_OP_OUT_H
-
-#include <iosfwd>
-
-#include "AbstractLinAlgPackTypes.h"
+#include "AbstractLinAlgPack/include/BasisSystem.h"
+#include "Range1D.h"
 
 namespace AbstractLinAlgPack {
 
-///
-/** Output operator for \Ref{VectorWithOp} objects.
- */
-inline
-std::ostream& operator<<( std::ostream& o, const VectorWithOp& v )
+const Range1D& BasisSystem::equ_decomp() const
 {
-	return v.output(o);
+	return Range1D::Invalid;
+}
+
+const Range1D& BasisSystem::equ_undecomp() const
+{
+	return Range1D::Invalid;
+}
+
+const Range1D& BasisSystem::inequ_decomp() const
+{
+	return Range1D::Invalid;
+}
+
+const Range1D& BasisSystem::inequ_undecomp() const
+{
+	return Range1D::Invalid;
 }
 
 } // end namespace AbstractLinAlgPack
-
-#endif // VECTOR_WITH_OP_OUT_H

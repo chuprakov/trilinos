@@ -17,7 +17,7 @@
 #define MATRIX_SYM_DIAGONAL_STD_H
 
 #include "MatrixSymInitDiagonal.h"
-#include "MatrixSymWithOpFactorized.h"
+#include "MatrixSymWithOpNonsingular.h"
 #include "VectorSpace.h"
 
 namespace AbstractLinAlgPack {
@@ -27,14 +27,17 @@ namespace AbstractLinAlgPack {
  */
 class MatrixSymDiagonalStd
 	: public virtual MatrixSymInitDiagonal
-	, public virtual MatrixSymWithOpFactorized
+	, public virtual MatrixSymWithOpNonsingular
 {
 public:
 
-	/// Initialized with the diagonal vector NULL.
-	MatrixSymDiagonalStd();
+	/// Calls <tt>this->initialize()</tt>.
+	MatrixSymDiagonalStd( const VectorSpace::vec_mut_ptr_t& diag = NULL );
 
-	/// Give access to the diagonal VectorSlice
+	/// Initialize given the diagonal vector (or no vector at all).
+	void initialize( const VectorSpace::vec_mut_ptr_t& diag );
+
+	/// Give access to the diagonal vector (or NULL if not initialized)
 	VectorWithOpMutable& diag();
 	///
 	const VectorWithOp& diag() const;
@@ -42,7 +45,7 @@ public:
 	/** @name Overridden from MatrixBase */
 	//@{
 
-	///
+	/// Returns 0 if not initalized (this->diag() == NULL).
 	size_type rows() const;
 	///
 	size_type nz() const;
@@ -60,10 +63,10 @@ public:
 	/** Add to a mutable matrix lhs.
 	 *
 	 * Preconditions:<ul>
-	 * <li> #dynamic_cast<MatrixWithOpMutable*>(m_lhs) != NULL# (throw ???).
+	 * <li> #dynamic_cast<MultiVectorMutable*>(m_lhs) != NULL#.
 	 * </ul>
 	 */
-	void Mp_StM(MatrixWithOp* g_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs) const;
+	bool Mp_StM(MatrixWithOp* g_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs) const;
 	///
 	void Vp_StMtV(VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const VectorWithOp& v_rhs2, value_type beta) const;
@@ -73,7 +76,7 @@ public:
 
 	//@}
 
-	/** Overridden from MatrixWithOpFactorized */
+	/** Overridden from MatrixWithOpNonsingular */
 	//@{
 
 	///

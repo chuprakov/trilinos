@@ -1,10 +1,23 @@
 // ////////////////////////////////////////////////////////////
 // BasisSystem.h
+//
+// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+//
+// This is free software; you can redistribute it and/or modify it
+// under the terms of the "Artistic License" (see the web site
+//   http://www.opensource.org/licenses/artistic-license.html).
+// This license is spelled out in the file COPYING.
+//
+// This software is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// above mentioned "Artistic License" for more details.
 
 #ifndef ABSTRACT_LIN_ALG_PACK_BASIS_SYSTEM_H
 #define ABSTRACT_LIN_ALG_PACK_BASIS_SYSTEM_H
 
 #include "AbstractLinAlgPackTypes.h"
+#include "ref_count_ptr.h"
 
 namespace AbstractLinAlgPack {
 
@@ -91,6 +104,8 @@ namespace AbstractLinAlgPack {
  * \c space_C() and \c space_D().  These methods return smart pointers to these
  * <tt>%MatrixSpace</tt> objects and these objects are ment to have a lifetime that extends
  * up to and beyond the lifetime of the <tt>%BasisSystem</tt> object that created them.
+ * Note that the matrix objects returned by this matrix space objects are not to be
+ * considered usable until they have passed through \c update_basis().
  *
  * The ranges of the dependent and independent variables, decomposed and undecomposed
  * equality constriants and decomposed and undecomposed inequality constriants are returned
@@ -116,7 +131,7 @@ namespace AbstractLinAlgPack {
  *
  * The method \c update_basis() is used by the client to update the basis matrix \a C and
  * perhaps the direct sensitivity matrix \a D.  Strictly speaking, it would be possible to
- * form the matrix \a D externally through the <tt>MatrixFactorized</tt> interface using
+ * form the matrix \a D externally through the <tt>MatrixNonsingular</tt> interface using
  * the returned \a C and an \a N matrix object, but this may not take advantage of any
  * special application specific tricks that
  * can be used to form \a D.  Note that this interface does not return a nonbasis matrix
@@ -159,6 +174,9 @@ namespace AbstractLinAlgPack {
  *
  * <b>Subclass developer's notes:</b>
  *
+ * The default implementation (of the methods that have default implementations) assume
+ * that there are no undecomposed equality constriants and no general inequality constriants at all.
+ * 
  * ToDo: Finish documentation!
  *
  */
@@ -167,10 +185,10 @@ public:
 
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<
-		const AbstractLinAlgPack::MatrixSpace<MatrixWithOpFactorized> >     space_C_ptr_t;
+		const AbstractLinAlgPack::MatrixSpace<MatrixWithOpNonsingular> >     space_C_ptr_t;
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<
-		const AbstractLinAlgPack::MatrixSpace<MatrixWithOp> >               space_D_ptr_t;
+		const AbstractLinAlgPack::MatrixSpace<MatrixWithOp> >                space_D_ptr_t;
 
 	///
 	virtual ~BasisSystem() {}
@@ -217,29 +235,37 @@ public:
 	 *
 	 * If there are no decomposed general equality constriants then
 	 * <tt>return.size() == 0</tt>.  Otherwise, <tt>return.size() > 0</tt>.
+	 *
+	 * The default implementation return <tt>Range1D(1,this->var_dep().size())</tt>
 	 */
-	virtual const Range1D& equ_decomp() const = 0;
+	virtual const Range1D& equ_decomp() const;
 	///
 	/** Range of undecomposed general equality constriants.
 	 *
 	 * If there are no undecomposed equality constriants then
 	 * <tt>return.size() == 0</tt>.  Otherwise, <tt>return.size() > 0</tt>.
+	 *
+	 * The default implementation return <tt>Range1D::Invalid</tt>
 	 */
-	virtual const Range1D& equ_undecomp() const = 0;
+	virtual const Range1D& equ_undecomp() const;
 	///
 	/** Range for decomposed general inequality constraints.
 	 *
 	 * If there are no decomposed general inequality constriants then
 	 * <tt>return.size() == 0</tt>.  Otherwise, <tt>return.size() > 0</tt>.
+	 *
+	 * The default implementation return <tt>Range1D::Invalid</tt>
 	 */
-	virtual const Range1D& inequ_decomp() const = 0;
+	virtual const Range1D& inequ_decomp() const;
 	///
 	/** Range for undecomposed general inequality constraints.
 	 *
 	 * If there are no undecomposed general inequality constriants then
 	 * <tt>return.size() == 0</tt>.  Otherwise, <tt>return.size() > 0</tt>.
+	 *
+	 * The default implementation return <tt>Range1D::Invalid</tt>
 	 */
-	virtual const Range1D& inequ_undecomp() const = 0;
+	virtual const Range1D& inequ_undecomp() const;
 
 	//@}
 
@@ -301,12 +327,12 @@ public:
 	 * This method is declared non-const because it may change what is returned by the partitioning function such as
 	 * \c var_dep().
 	 */
-	void update_basis(
+	virtual void update_basis(
 		const MatrixWithOp*         Gc
 		,const MatrixWithOp*        Gh
-		,MatrixWithOpFactorized*    C
+		,MatrixWithOpNonsingular*   C
 		,MatrixWithOp*              D
-		);
+		) = 0;
 
 	//@}
 
