@@ -1383,6 +1383,8 @@ void MatrixSymPosDefCholFactor::serialize( std::ostream &out ) const
 {
 	// Write key words on top line
 	out << build_serialization_string() << std::endl;
+	// Set the precision (very important!)
+	out.precision(std::numeric_limits<value_type>::digits10+4);
 	// Write the dimmension
 	out << M_size_ << std::endl;
 	if(M_size_) {
@@ -1420,10 +1422,12 @@ void MatrixSymPosDefCholFactor::unserialize( std::istream &in )
 	allocate_storage(M_size_);
 	// Read in the matrix into storage
 	if(maintain_original_) {
+		M_l_r_ = M_l_c_ = 1;
 		DMatrixSliceSym M = this->M();
 		read_matrix( in, M.uplo(), &M.gms() );
 	}
 	else {
+		U_l_r_ = U_l_c_ = 1;
 		DMatrixSliceTri U = this->U();
 		read_matrix( in, U.uplo(), &U.gms() );
 	}
