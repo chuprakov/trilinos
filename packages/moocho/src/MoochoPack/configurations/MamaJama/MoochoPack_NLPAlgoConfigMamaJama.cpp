@@ -342,6 +342,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		n == m, std::logic_error
 		,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
 		"can not currently solve a square system of equations!" );
+	THROW_EXCEPTION(
+		mI, std::logic_error
+		,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+		"can not currently solve an NLP with general inequalities!" );
+	THROW_EXCEPTION(
+		nb, std::logic_error
+		,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+		"can not currently solve an NLP with bounds on the variables!" );
 	
 	// //////////////////////////////////////////////////////
 	// C.1.  Sort out the options
