@@ -159,9 +159,9 @@ void PermutationSerial::permute(
 	}
 	if( p ) {
 		if( call_inv_perm )
-			LinAlgPack::perm_ele( x_d(), *p, &y_d() );
-		else
 			LinAlgPack::inv_perm_ele( x_d(), *p, &y_d() );
+		else
+			LinAlgPack::perm_ele( x_d(), *p, &y_d() );
 	}
 	else {
 		// Just the identity permutation, nothing to do!
