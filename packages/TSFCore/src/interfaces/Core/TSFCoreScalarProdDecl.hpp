@@ -41,11 +41,26 @@ namespace TSFCore {
  * 
  * This interface is not considered a user-level interface.  Instead,
  * this interface is designed to subclassed off of and used with
- * <tt>VectorSpaceStdBase</tt> subclasses.
+ * <tt>VectorSpaceStdBase</tt> subclasses.  Applications should create
+ * subclasses of this interface to define application-specific scalar
+ * products (i.e. such as PDE code often do).
  *
  * This interface requires subclasses to override the multi-vector
  * version of scalar product since this will yield the most efficient
  * implementation in a distributed memory environment.
+ *
+ * Note that one of the preconditions on the vector and multi-vector
+ * arguments in <tt>scalarProd()</tt> and <tt>scalarProds()</tt> is a
+ * little vague in stating that the vector or multi-vector objects
+ * must be "compatible" with the underlying implementation of
+ * <tt>*this</tt>.  The reason that this precondition must be vague is
+ * that we can not expose a method to return a <tt>VectorSpace</tt>
+ * object that could be checked for compatibility since
+ * <tt>%ScalarProd</tt> is used to define a <tt>VectorSpace</tt>
+ * object (through the <tt>VectorSpaceStdBase</tt> node subclass).
+ * Also, some definitions of <tt>%ScalarProd</tt>
+ * (i.e. <tt>DotProd</tt>) can work for any vector space
+ * implementation since they only rely on <tt>RTOp</tt> operators.
  */
 template<class Scalar>
 class ScalarProd {

@@ -71,6 +71,10 @@ void Mp_MtM_assert_compatibility(
 
 //@}
 
+#ifdef _DEBUG
+#define TSFCORE_ASSERT_COMPATIBILITY
+#endif
+
 #ifndef TSFCORE_ASSERT_COMPATIBILITY
 
 // inline definitions that do nothing

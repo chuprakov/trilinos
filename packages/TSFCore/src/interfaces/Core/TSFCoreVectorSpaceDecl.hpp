@@ -149,6 +149,41 @@ public:
 	 */
 	virtual Teuchos::RefCountPtr< Vector<Scalar> > createMember() const = 0;
 
+	///
+	/** Return the scalar product of two vectors in the vector space.
+	 *
+	 * Preconditions:<ul>
+	 * <li><tt>x.space()->isCompatible(*this)</tt> (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
+	 * <li><tt>y.space()->isCompatible(*this)</tt> (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li>The scalar product is returned.
+	 * </ul>
+	 */
+	virtual Scalar scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const = 0;
+
+	///
+	/** Return the scalar product of each column in two multi-vectors in the vector space.
+	 *
+	 * @param  X            [in] Multi-vector.
+	 * @param  Y            [in] Multi-vector.
+	 * @param  scalar_prod  [out] Array (length <tt>X.domain()->dim()</tt>) containing the
+	 *                      scalar products <tt>scalar_prod[j-1] = this->scalarProd(*X.col(j),*Y.col(j))</tt>,
+	 *                      for <tt>j = 1 ... X.domain()->dim()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li><tt>X.range()->isCompatible(*this)</tt> (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
+	 * <li><tt>Y.range()->isCompatible(*this)</tt> (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
+	 * <li><tt>X.domain()->isCompatible(*Y.domain())</tt> (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li><tt>scalar_prod[j-1] = this->scalarProd(*X.col(j),*Y.col(j))</tt>, for <tt>j = 1 ... X.domain()->dim()</tt>
+	 * </ul>
+	 */
+	virtual void scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const = 0;
+
 	//@}
 
 	/** @name Virtual functions with default implementations */
@@ -196,46 +231,6 @@ public:
 	 * <tt>dynamic_cast<MultiVectorCols>(return.get())!=NULL</tt>.
 	 */
 	virtual Teuchos::RefCountPtr< MultiVector<Scalar> > createMembers(int numMembers) const;
-
-	///
-	/** Return the scalar product of two vectors in the vector space.
-	 *
-	 * Preconditions:<ul>
-	 * <li>The vectors <tt>X</tt> and <tt>Y</tt> are compatible with this implementation or
-	 *     an exception will be thrown.
-	 * <li><tt>x.space()->isCompatible(*y.space())</tt> (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li>The scalar product is returned.
-	 * </ul>
-	 */
-	virtual Scalar scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const = 0;
-
-	///
-	/** Return the scalar product of each column in two multi-vectors in the vector space.
-	 *
-	 * @param  X            [in] Multi-vector.
-	 * @param  Y            [in] Multi-vector.
-	 * @param  scalar_prod  [out] Array (length <tt>X.domain()->dim()</tt>) containing the
-	 *                      scalar products <tt>scalar_prod[j-1] = this->scalarProd(*X.col(j),*Y.col(j))</tt>,
-	 *                      for <tt>j = 1 ... X.domain()->dim()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li><tt>X.domain()->isCompatible(*Y.domain())</tt> (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
-	 * <li><tt>X.range()->isCompatible(*Y.range())</tt> (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li><tt>scalar_prod[j-1] = this->scalarProd(*X.col(j),*Y.col(j))</tt>, for <tt>j = 1 ... X.domain()->dim()</tt>
-	 * </ul>
-	 *
-	 * The default implementation returns the dot products using the
-	 * reduction operator constructed by
-	 * <tt>RTOp_ROp_dot_prod_construct</tt> and is performed as one
-	 * reduction operation using <tt>MultiVector::applyOp()</tt>.
-	 */
-	virtual void scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const = 0;
 
 	///
 	/** Clone this object (if supported).

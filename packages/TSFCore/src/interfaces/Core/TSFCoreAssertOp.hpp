@@ -43,9 +43,9 @@
 namespace {
 
 template<class Scalar>
-struct dump_vec_spaces {
+struct dump_vec_spaces_t {
 public:
-	dump_vec_spaces(
+	dump_vec_spaces_t(
 		const TSFCore::VectorSpace<Scalar>& _vec_space1, const char _vec_space1_name[]
 		,const TSFCore::VectorSpace<Scalar>& _vec_space2, const char _vec_space2_name[]
 		)
@@ -53,16 +53,25 @@ public:
 		,vec_space2(_vec_space2),vec_space2_name(_vec_space2_name)
 		{}
 	const TSFCore::VectorSpace<Scalar> &vec_space1;
-	const char              *vec_space1_name;
+	const char                         *vec_space1_name;
 	const TSFCore::VectorSpace<Scalar> &vec_space2;
-	const char              *vec_space2_name;
+	const char                         *vec_space2_name;
 }; // end dum_vec_spaces
+
+template<class Scalar>
+inline dump_vec_spaces_t<Scalar> dump_vec_spaces(
+	const TSFCore::VectorSpace<Scalar>& vec_space1, const char vec_space1_name[]
+	,const TSFCore::VectorSpace<Scalar>& vec_space2, const char vec_space2_name[]
+	)
+{
+	return dump_vec_spaces(vec_space1,vec_space1_name,vec_space2,vec_space2_name);
+}
 
 // Notice!!!!!!!  Place a breakpoint in following function in order to halt the
 // program just before an exception is thrown!
 
 template<class Scalar>
-std::ostream& operator<<( std::ostream& o, const dump_vec_spaces<Scalar>& d )
+std::ostream& operator<<( std::ostream& o, const dump_vec_spaces_t<Scalar>& d )
 {
 	o << "Error, " << d.vec_space1_name << " at address " << &d.vec_space1
 	  << " of type \'" << typeid(d.vec_space1).name()
@@ -104,14 +113,14 @@ const TSFCore::VectorSpace<Scalar>& op(
 		);
 
 // Notice!!!!!!!  Setting a breakpoint a the line number that is printed by this macro
-// and then trying to set the condition !is_compatible does not work (at least not
+// and then trying to set the condition !isCompatible does not work (at least not
 // in gdb).
 
 #define ASSERT_VEC_SPACES_NAMES(FUNC_NAME,VS1,VS1_NAME,VS2,VS2_NAME) \
 { \
-	const bool is_compatible = (VS1).is_compatible(VS2); \
+	const bool isCompatible = (VS1).isCompatible(VS2); \
 	TEST_FOR_EXCEPTION( \
-		!is_compatible, Exceptions::IncompatibleVectorSpaces \
+		!isCompatible, Exceptions::IncompatibleVectorSpaces \
 		,FUNC_NAME << " : "	<< dump_vec_spaces(VS1,VS1_NAME,VS2,VS2_NAME) \
 		) \
 }
@@ -122,12 +131,12 @@ ASSERT_VEC_SPACES_NAMES(FUNC_NAME,VS1,#VS1,VS2,#VS2)
 #define ASSERT_MAT_VEC_SPACES(FUNC_NAME,M,M_T,M_VS,VS) \
 { \
 	std::ostringstream M_VS_name; \
-	M_VS_name << "(" #M << ( M_T == NOTRANS ? "" : "'" ) << ")" \
-			   << "." << ( M_VS == VS_RANGE ? "range()" : "domain()" ); \
+	M_VS_name << "(" #M << ( (M_T) == NOTRANS ? "" : "'" ) << ")" \
+			   << "." << ( (M_VS) == VS_RANGE ? "range()" : "domain()" ); \
 	ASSERT_VEC_SPACES_NAMES( \
 		FUNC_NAME \
 		,op(M,M_T,M_VS),M_VS_name.str().c_str() \
-		,VS,#VS \
+		,(VS),#VS \
 		) \
 }
 

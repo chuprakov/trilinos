@@ -40,14 +40,27 @@ namespace TSFCore {
 /** Node base class for <tt>VectorSpace</tt> that allows the
  * definition of scalar products to be swapped in and out.
  *
- * The idea is that almost every concrete <tt>VectorSpace</tt>
- * subclass should inherit from this subclass since it makes it easy
- * to redefine the scalar product.  However, the reason that this
- * functionality is separated out from the base <tt>VectorSpace</tt>
- * interface class is that first it clutters the interface since this
- * is an implementation artifact and second since every
- * <tt>VectorSpace</tt> subclass will not utilize the feature.
+ * This subclass defines machinery for extracting out the definition
+ * of a scalar product as an object that can be replaced.  The default
+ * implementation of scalar product is the dot product.  The idea is
+ * that in most cases, the definition of a scalar product may be more
+ * general that for a specific concrete vector implementation (i.e.
+ * all serial or all MPI-based vectors).  This subclass allows an
+ * application code to set a specialized scalar product without having
+ * marry a particular concrete vector (vector space) implementation.
  *
+ * Almost every concrete <tt>VectorSpace</tt> subclass should inherit
+ * from this subclass since it makes it easy for application
+ * developers to to redefine the scalar product without having to
+ * create a VectorSpace subclass which can have many repercussions.
+ *
+ * The reason that this machinery is separated out from the base
+ * <tt>VectorSpace</tt> interface class is that first it would clutter
+ * the base interface since this machinery an implementation artifact
+ * and second since every <tt>VectorSpace</tt> subclass will not
+ * utilize this machinery.
+ *
+ * 
  */
 template<class Scalar>
 class VectorSpaceStdBase : virtual public VectorSpace<Scalar> {
@@ -66,14 +79,14 @@ public:
 	VectorSpaceStdBase();
 
 	///
-	/** Constructs with a different scalar product.
+	/** Construct with a different scalar product.
 	 *
 	 * Preconditions:<ul>
 	 * <li><tt>scalarProd.get()!=NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li><tt>&*this->getScalarProd() == &*scalarProd</tt>
+	 * <li><tt>this->getScalarProd().get() == scalarProd.get()</tt>
 	 * </ul>
 	 */
 	VectorSpaceStdBase( const Teuchos::RefCountPtr<const ScalarProd<Scalar> > &scalarProd );
@@ -91,7 +104,7 @@ public:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li><tt>&*this->getScalarProd() == &*scalarProd</tt>
+	 * <li><tt>this->getScalarProd().get() == scalarProd.get()</tt>
 	 * </ul>
 	 */
 	virtual void setScalarProd( const Teuchos::RefCountPtr<const ScalarProd<Scalar> > &scalarProd );
@@ -105,12 +118,13 @@ public:
 
 	/** @name Overridden from VectorSpace */
 	//@{
-
-	///
+	
+	/// Calls <tt>getScalarProd()->scalarProd(x,y)</tt>
 	Scalar scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const;
-	///
+	
+	/// Calls <tt>getScalarProd()->scalarProds(X,Y,scalar_prods)</tt>
 	void scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const;
-
+	
 	//@}
 
 private:
