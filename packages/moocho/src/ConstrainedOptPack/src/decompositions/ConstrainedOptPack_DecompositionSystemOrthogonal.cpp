@@ -105,10 +105,10 @@ DecompositionSystemOrthogonal::uninitialize_matrices(
 		*Y_orth = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y)    : NULL;
 	MatrixDecompRangeOrthog
 		*R_orth = R ? &dyn_cast<MatrixDecompRangeOrthog>(*R) : NULL;
-	MatrixCompositeStd
-		*Uy_cpst = Uy ? &dyn_cast<MatrixCompositeStd>(*Uy)      : NULL;			
-	MatrixCompositeStd
-		*Vy_cpst = Vy ? &dyn_cast<MatrixCompositeStd>(*Vy)      : NULL;
+	MatrixWithOpSubView
+		*Uy_cpst = Uy ? &dyn_cast<MatrixWithOpSubView>(*Uy)  : NULL;			
+	MatrixWithOpSubView
+		*Vy_cpst = Vy ? &dyn_cast<MatrixWithOpSubView>(*Vy)  : NULL;
 
 	//
 	// Get the smart pointer to the basis matrix object C and the
@@ -130,9 +130,9 @@ DecompositionSystemOrthogonal::uninitialize_matrices(
 	if(R_orth)
 		R_orth->set_uninitialized();
 	if(Uy_cpst)
-		Uy_cpst->reinitialize();
+		Uy_cpst->initialize(rcp::null);
 	if(Vy_cpst)
-		Vy_cpst->reinitialize();
+		Vy_cpst->initialize(rcp::null);
 
 	//
 	// Return the owned? basis matrix object C
@@ -179,10 +179,10 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 		*Y_orth = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y)    : NULL;
 	MatrixDecompRangeOrthog
 		*R_orth = R ? &dyn_cast<MatrixDecompRangeOrthog>(*R) : NULL;
-	MatrixCompositeStd
-		*Uy_cpst = Uy ? &dyn_cast<MatrixCompositeStd>(*Uy)      : NULL;			
-	MatrixCompositeStd
-		*Vy_cpst = Vy ? &dyn_cast<MatrixCompositeStd>(*Vy)      : NULL;
+	MatrixWithOpSubView
+		*Uy_cpst = Uy ? &dyn_cast<MatrixWithOpSubView>(*Uy)      : NULL;			
+	MatrixWithOpSubView
+		*Vy_cpst = Vy ? &dyn_cast<MatrixWithOpSubView>(*Vy)      : NULL;
 
 	//
 	// Initialize the matrices
@@ -235,9 +235,7 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 		var_reduct_orthog_strategy().update_S(*D_ptr,S_ptr_.get());
 		R_orth->initialize(C_ptr,D_ptr,S_ptr_);
 	}
-	assert(Uy_cpst == NULL); // ToDo: Implement for undecomposed equalities
-	assert(Vy_cpst == NULL); // ToDo: Implement for general inequalities
-
+	// ToDo: Implement for undecomposed equalities and general inequalities
 }
 
 void DecompositionSystemOrthogonal::print_update_matrices(

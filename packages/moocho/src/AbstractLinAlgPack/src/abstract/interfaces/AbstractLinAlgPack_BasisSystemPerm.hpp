@@ -73,7 +73,7 @@ public:
 		,MatrixWithOp              *GhUP
 		,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
 		,std::ostream               *out    = NULL
-		) const = 0;
+		) = 0;
 
 	///
 	/** Select a basis.
@@ -97,7 +97,7 @@ public:
 		,MatrixWithOp               *GhUP
 		,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
 		,std::ostream               *out    = NULL
-		) const = 0;
+		) = 0;
 	
 	//@}
 

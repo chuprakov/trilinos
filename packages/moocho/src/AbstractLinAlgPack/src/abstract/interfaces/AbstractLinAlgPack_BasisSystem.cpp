@@ -21,7 +21,8 @@ namespace AbstractLinAlgPack {
 
 Range1D BasisSystem::equ_decomp() const
 {
-	return Range1D(1,this->var_dep().size());
+	const size_type r = this->var_dep().size();
+	return r ? Range1D(1,r) : Range1D::Invalid;
 }
 
 Range1D BasisSystem::equ_undecomp() const

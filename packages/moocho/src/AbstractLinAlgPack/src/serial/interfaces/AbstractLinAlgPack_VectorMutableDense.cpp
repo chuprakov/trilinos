@@ -239,7 +239,6 @@ void VectorWithOpMutableDense::apply_op(
 	,const index_type first_ele_in, const index_type sub_dim_in, const index_type global_offset_in
 	) const
 {
-	const index_type this_dim = this->dim();
 #ifdef _DEBUG
 	AbstractLinAlgPack::apply_op_validate_input(
 		NULL, "VectorWithOpMutableDense::apply_op(...)"

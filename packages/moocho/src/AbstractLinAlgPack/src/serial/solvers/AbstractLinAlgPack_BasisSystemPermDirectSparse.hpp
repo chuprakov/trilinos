@@ -111,7 +111,7 @@ public:
 		,MatrixWithOp              *GhUP
 		,EMatRelations              mat_rel
 		,std::ostream               *out
-		) const;
+		);
 	///
 	void select_basis(
 		const VectorWithOp          *nu
@@ -130,7 +130,7 @@ public:
 		,MatrixWithOp               *GhUP
 		,EMatRelations              mat_rel
 		,std::ostream               *out
-		) const;
+		);
 	
 	//@}
 

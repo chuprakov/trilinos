@@ -257,11 +257,14 @@ public:
 		,EOutputLevel                                              olevel
 		,ERunTests                                                 test_what
 		,const MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>  &C_ptr
-		,const MemMngPack::ref_count_ptr<MatrixWithOp>             *D_ptr
+		,const MemMngPack::ref_count_ptr<MatrixWithOp>             &D_ptr
 		,MatrixWithOp                                              *Uz
 		,MatrixWithOp                                              *Vz
 		,const basis_sys_ptr_t                                     &basis_sys   = MemMngPack::null
 		);
+
+	/// Get the type of D matrix to be used or is being used (returns MAT_IMP_EXPLICIT or MAT_IMP_IMPLICIT only).
+	EExplicitImplicit D_imp_used() const;	
 
 	//@}
 
@@ -383,14 +386,27 @@ private:
 	VectorSpace::space_ptr_t              space_h_;
 	VectorSpace::space_ptr_t              space_range_;
 	VectorSpace::space_ptr_t              space_null_;
+	mutable MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>  C_ptr_;
+	mutable MemMngPack::ref_count_ptr<MatrixWithOp>             D_ptr_;
+	mutable EExplicitImplicit                                   D_imp_used_;
 #endif
 	// //////////////////////////////////
 	// Private member functions
 
+	/// Update D_imp_used
+	void update_D_imp_used() const; // Will have to add arugments to this at some point!
+
+	/// Allocate a new D_ptr matrix
+	void alloc_new_D_matrix( 
+		std::ostream                             *out
+		,EOutputLevel                            olevel
+		,MemMngPack::ref_count_ptr<MatrixWithOp> *D_ptr
+		) const;
+	
 	// not defined and not to be called!
 	DecompositionSystemVarReductImp(const DecompositionSystemVarReductImp&);
 	DecompositionSystemVarReductImp& operator=(const DecompositionSystemVarReductImp&);
-
+	
 };	// end class DecompositionSystemVarReductImp
 
 // //////////////////////////////////////////
@@ -422,6 +438,14 @@ const DecompositionSystemVarReductImp::basis_sys_ptr_t&
 DecompositionSystemVarReductImp::basis_sys() const
 {
 	return basis_sys_;
+}
+
+inline
+DecompositionSystemVarReductImp::EExplicitImplicit
+DecompositionSystemVarReductImp::D_imp_used() const
+{
+	update_D_imp_used();
+	return D_imp_used_;
 }
 
 }	// end namespace ConstrainedOptimizationPack

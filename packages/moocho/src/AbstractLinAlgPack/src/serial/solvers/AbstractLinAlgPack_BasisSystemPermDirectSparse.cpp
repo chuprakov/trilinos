@@ -79,7 +79,7 @@ BasisSystemPermDirectSparse::factory_GhUP() const
 
 Range1D BasisSystemPermDirectSparse::var_dep() const
 {
-	return Range1D(1,r_);
+	return r_ ? Range1D(1,r_) : Range1D::Invalid;
 }
 
 Range1D BasisSystemPermDirectSparse::var_indep() const
@@ -98,7 +98,9 @@ void BasisSystemPermDirectSparse::update_basis(
 	,std::ostream               *out
 	) const
 {
-	assert(0); // ToDo: Implement!
+	THROW_EXCEPTION(
+		true, std::logic_error
+		,"BasisSystemPermDirectSparse::update_basis(...) : Error, not implemented yet!" );
 }
 
 // Overridded from BasisSystemPerm
@@ -139,7 +141,7 @@ void BasisSystemPermDirectSparse::set_basis(
 	,MatrixWithOp              *GhUP
 	,EMatRelations              mat_rel
 	,std::ostream               *out
-	) const
+	)
 {
 	namespace mmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
@@ -242,6 +244,11 @@ void BasisSystemPermDirectSparse::set_basis(
 		,C_bm
 		,BLAS_Cpp::no_trans
 		);
+	// Set the basis system dimensions
+	n_  = Gc->rows();
+	m_  = Gc->cols();
+	mI_ = Gh ? Gh->cols() : 0;
+	r_  = rank;
 }
 
 void BasisSystemPermDirectSparse::select_basis(
@@ -261,7 +268,7 @@ void BasisSystemPermDirectSparse::select_basis(
 	,MatrixWithOp               *GhUP
 	,EMatRelations              mat_rel
 	,std::ostream               *out
-	) const
+	)
 {
 	assert(0); // ToDo: Implement!
 }

@@ -28,8 +28,8 @@ VectorSpaceSubSpace::VectorSpaceSubSpace( const space_ptr_t& full_space, const R
 
 void VectorSpaceSubSpace::initialize( const space_ptr_t& full_space, const Range1D& rng )
 {
-#ifdef _DEBUG
 	const index_type n = full_space.get() ? full_space->dim() : 0;
+#ifdef _DEBUG
 	THROW_EXCEPTION(
 		full_space.get() && !rng.full_range() && rng.ubound() > n, std::out_of_range
 		,"VectorSpaceSubSpace::initialize(...): Error, "
@@ -37,7 +37,10 @@ void VectorSpaceSubSpace::initialize( const space_ptr_t& full_space, const Range
 		"[1,vec->dim()] = [1," << n << "]" );
 #endif
 	full_space_ = full_space;
-	rng_        = full_space.get() && rng.full_range() ? Range1D(1,full_space->dim()) : rng;
+	if( full_space_.get() )
+		rng_ = rng.full_range() ? Range1D(1,n) : rng;
+	else
+		rng_ = Range1D::Invalid;
 }
 
 #ifdef _DEBUG

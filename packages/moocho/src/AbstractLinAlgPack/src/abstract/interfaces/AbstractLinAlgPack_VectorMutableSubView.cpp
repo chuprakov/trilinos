@@ -81,10 +81,14 @@ void VectorWithOpMutableSubView::set_ele( index_type i, value_type val )
 }
 
 VectorWithOpMutable::vec_mut_ptr_t
-VectorWithOpMutableSubView::sub_view( const Range1D& rng )
+VectorWithOpMutableSubView::sub_view( const Range1D& rng_in )
 {
 	namespace rcp = MemMngPack;
+	const size_type this_dim = this->dim();
+	const Range1D rng = RangePack::full_range( rng_in, 1, this_dim );
 	space_impl().validate_range(rng);
+	if( rng.lbound() == 1 && rng.ubound() == this_dim )
+		return rcp::rcp(this,false); // Do not own memory!
 	const index_type this_offset = space_impl().rng().lbound() - 1;
 	return rcp::rcp(
 		new VectorWithOpMutableSubView(

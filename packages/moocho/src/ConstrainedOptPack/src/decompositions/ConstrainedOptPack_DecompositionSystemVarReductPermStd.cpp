@@ -209,14 +209,14 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 			out, olevel, test_what
 			,Z, Y, R, Uz, Uy, Vz, Vy
 			,&C_ptr
-			,this->D_imp() == MAT_IMP_EXPLICIT ? &D_ptr : NULL
+			,&D_ptr // May return D_ptr.get() == NULL if not explicit chosen
 			);
 	}
 	else {
 		// It is assumed that the decomposition has not been
 		// previously updated so we must allocate new storage.
 		C_ptr = basis_sys_->factory_C()->create();
-		if(this->D_imp() == MAT_IMP_EXPLICIT)
+		if( decomp_sys_imp_->D_imp_used() == MAT_IMP_EXPLICIT ) // will not return MAT_IMP_AUTO
 			D_ptr = basis_sys_->factory_D()->create();
 	}
 	// Tell the basis system object to set this basis
@@ -227,7 +227,7 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 			,NULL, NULL
 			,&Gc, Gh
 			,C_ptr.get()
-			,D_ptr.get()
+			,D_ptr.get() // May be NULL
 			,this->Uz_imp() == MAT_IMP_EXPLICIT ? Uz : NULL
 			,this->Vz_imp() == MAT_IMP_EXPLICIT ? Vz : NULL
 			,(mat_rel == MATRICES_INDEP_IMPS
@@ -246,28 +246,30 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 	}
 	// If we get here the passed in basis selection is nonsingular and the basis matrices
 	// are updated.  If the basis_sys object has not been set to the implementation then
-	// do it.
-	if( decomp_sys_imp_->basis_sys().get() == NULL ) {
-		decomp_sys_imp_->initialize(
-			decomp_sys_imp_->space_x()
-			,decomp_sys_imp_->space_c()
-			,decomp_sys_imp_->space_h()
-			,basis_sys_
-			);
-	}
-	// Now give them back to the decomp_sys_imp object and update the rest
+	// do it.  Now give them back to the decomp_sys_imp object and update the rest
 	// of the decomposition matrices.
+	const size_type
+		n  = Gc.rows(),
+		m  = Gc.cols(),
+		mI = Gh ? Gh->cols() : 0,
+		r  = C_ptr->rows();
 	decomp_sys_imp_->set_basis_matrices(
 		out, olevel, test_what
 		,C_ptr
-		,this->D_imp() == MAT_IMP_EXPLICIT ? &D_ptr : NULL
-		,this->Uz_imp() == MAT_IMP_EXPLICIT ? Uz : NULL
-		,this->Vz_imp() == MAT_IMP_EXPLICIT ? Vz : NULL
+		,D_ptr // D_ptr.get() may be NULL
+		,r > m ? Uz : NULL
+		,mI    ? Vz : NULL
 		,decomp_sys_imp_->basis_sys().get() == NULL ? basis_sys_ : MemMngPack::null
 		);
+	C_ptr = MemMngPack::null;
+	D_ptr = MemMngPack::null;
 	decomp_sys_imp()->update_decomp(
-		out,olevel,test_what,Gc,Gh,Z,Y
-		,R,Uz,Uy,Vz,Vy,mat_rel
+		out,olevel,test_what,Gc,Gh,Z,Y,R
+		,r > m ? Uz : NULL
+		,r > m ? Uy : NULL
+		,mI    ? Vz : NULL
+		,mI    ? Vy : NULL
+		,mat_rel
 		);
 }
 

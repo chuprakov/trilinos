@@ -38,6 +38,7 @@ DecompositionSystemVarReductImp::DecompositionSystemVarReductImp(
 	)
 	:DecompositionSystemVarReduct(D_imp,Uz_imp,Vz_imp)
 	,basis_sys_tester_(basis_sys_tester)
+	,D_imp_used_(MAT_IMP_AUTO)
 {
 	this->initialize(space_x,space_c,space_h,basis_sys);
 }
@@ -113,7 +114,161 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
 	,MemMngPack::ref_count_ptr<MatrixWithOp>              *D_ptr
 	)
 {
-	assert(0); // ToDo: Implement!
+
+	// ToDo: Implement undecomposed general equalities and general inequalities
+
+	namespace rcp = MemMngPack;
+	using DynamicCastHelperPack::dyn_cast;
+
+	if( out && olevel >= PRINT_BASIC_INFO )
+		*out << "\n****************************************************************"
+			 << "\n*** DecompositionSystemVarReductImp::get_basis_matrices(...) ***"
+			 << "\n****************************************************************\n";
+
+	// ToDo: Validate input!
+
+	//
+	// Get references to concrete matrix objects
+	//
+
+	MatrixIdentConcatStd
+		*Z_vr = Z ? &dyn_cast<MatrixIdentConcatStd>(*Z) : NULL;
+
+	//
+	// Make all matrices but Z uninitialized to determine if we can
+	// reuse the Z.D matrix object (explicit or implicit).
+	// Also, return a reference to the basis matrix C from the
+	// R object.
+	//
+
+	(*C_ptr) = uninitialize_matrices(out,olevel,Y,R,Uy,Vy);
+
+	//
+	// Determine if we should be using an explicit or implicit D = -inv(C)*N object
+	// (if we are allowed to choose).
+	//
+	update_D_imp_used();
+
+	//
+	// Determine if we need to allocate a new matrix object for Z.D.
+	// Also, get a reference to the explicit D matrix (if one exits)
+	// and remove any reference to the basis matrix C by Z.D.
+	//
+
+	bool                              new_D_mat_object; // compiler should warn if used before initialized!
+	if( Z_vr ) {
+		if( Z_vr->D_ptr().get() == NULL ) {
+			if( out && olevel >= PRINT_BASIC_INFO )
+				*out << "\nMust allocate a new matrix object for D = -inv(C)*N since "
+					 << "one has not been allocated yet ...\n";
+			new_D_mat_object = true;
+		}
+		else {
+			MatrixVarReductImplicit
+				*D_vr = dynamic_cast<MatrixVarReductImplicit*>(
+					const_cast<MatrixWithOp*>(Z_vr->D_ptr().get()) );
+			// We may have to reallocate a new object if someone is sharing it or
+			// if we are switching from implicit to explicit or visa-versa.
+			if( Z_vr->D_ptr().count() > 1 ) {
+				if( out && olevel >= PRINT_BASIC_INFO )
+					*out << "\nMust allocate a new matrix object for D = -inv(C)*N since someone "
+						 << "else is using the current one ...\n";
+				new_D_mat_object = true;
+			}
+			else if( D_vr != NULL ) {
+				if( D_imp_used_ == MAT_IMP_EXPLICIT ) {
+					if( out && olevel >= PRINT_BASIC_INFO )
+						*out << "\nMust allocate a new matrix object for D = -inv(C)*N since we "
+							 << "are switching from implicit to explicit ...\n";
+					new_D_mat_object = true;
+				}
+			}
+			else if( D_imp_used_ == MAT_IMP_IMPLICIT ) {
+				if( out && olevel >= PRINT_BASIC_INFO )
+					*out << "\nMust allocate a new matrix object for D = -inv(C)*N since we "
+						 << "are switching from explicit to implicit ...\n";
+				new_D_mat_object = true;
+			}
+			// Remove the reference to the basis matrix C
+			if(D_vr)
+				D_vr->set_uninitialized();
+		}
+	}
+	else {
+		if( out && olevel >= PRINT_BASIC_INFO )
+			*out << "\nMust allocate a new matrix object for D = -inv(C)*N since "
+				 << " Z == NULL was passed in ...\n";
+		new_D_mat_object = true;
+	}
+
+	//
+	// Get the matrix object of D and allocate a new matrix object if needed.
+	//
+
+	rcp::ref_count_ptr<MatrixWithOp> _D_ptr;
+	if( new_D_mat_object) {
+		// Create a new matrix object!
+		alloc_new_D_matrix( out, olevel, &_D_ptr );
+	}
+	else {
+		// Use current matrix object!
+		_D_ptr = rcp::rcp_const_cast<MatrixWithOp>(Z_vr->D_ptr());
+	}
+
+	// Set cached implicit D matrix or external explicit D matrix
+	if(D_imp_used_ == MAT_IMP_IMPLICIT) {
+		D_ptr_ = _D_ptr;     // Need to remember this for when update_decomp() is called!
+		if(D_ptr)
+			(*D_ptr) = rcp::null;  // No explicit D matrix
+	}
+	else {
+		D_ptr_ = rcp::null;  // This matrix will be passed back in set_basis_matrices(...) before update_decomp(...) is called.
+		if(D_ptr)
+			(*D_ptr) = _D_ptr;  // Externalize explicit D matrix.
+	}
+
+	//
+	// Determine if we need to allocate a new basis matrix object C.
+	//
+	// At this point, if a matrix object for C already exits and noone
+	// outside has a reference to this basis matrix object then the only
+	// references to it should be in C_ptr
+	//
+
+	bool new_C_mat_object; // compiler should warn if used before initialized!
+	if( (*C_ptr).get() == NULL ) {
+		if( out && olevel >= PRINT_BASIC_INFO )
+			*out << "\nMust allocate a new basis matrix object for C since "
+				 << "one has not been allocated yet ...\n";
+		new_C_mat_object = true;
+	}
+	else {
+		if( (*C_ptr).count() > 1 ) {
+			if( out && olevel >= PRINT_BASIC_INFO )
+				*out << "\nMust allocate a new basis matrix object C since someone "
+					 << "else is using the current one ...\n";
+			new_C_mat_object = true;
+		}
+		else {
+			new_C_mat_object = false; // The current C matrix is owned only by us!
+		}
+	}
+	
+	//
+	// Get the basis matrix object C and allocate a new object for if we have to.
+	//
+
+	if( new_C_mat_object) {
+		(*C_ptr) = basis_sys_->factory_C()->create();
+		if( out && olevel >= PRINT_BASIC_INFO )
+			*out << "\nAllocated a new basis matrix object C "
+				 << "of type \'" << typeid(*(*C_ptr)).name() << "\' ...\n";
+	}
+
+
+	if( out && olevel >= PRINT_BASIC_INFO )
+		*out << "\nEnd DecompositionSystemVarReductImp::get_basis_matrices(...)\n";
+
 }
 
 void DecompositionSystemVarReductImp::set_basis_matrices(
@@ -121,13 +276,17 @@ void DecompositionSystemVarReductImp::set_basis_matrices(
 	,EOutputLevel                                              olevel
 	,ERunTests                                                 test_what
 	,const MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>  &C_ptr
-	,const MemMngPack::ref_count_ptr<MatrixWithOp>             *D_ptr
+	,const MemMngPack::ref_count_ptr<MatrixWithOp>             &D_ptr
 	,MatrixWithOp                                              *Uz
 	,MatrixWithOp                                              *Vz
 	,const basis_sys_ptr_t                                     &basis_sys
 	)
 {
-	assert(0); // ToDo: Implement!
+	C_ptr_ = C_ptr;
+	if( D_ptr.get() )
+		D_ptr_ = D_ptr;
+	if(basis_sys.get())
+		basis_sys_ = basis_sys;
 }
 
 // Overridden from DecompositionSystem
@@ -213,9 +372,9 @@ void DecompositionSystemVarReductImp::update_decomp(
 	using DynamicCastHelperPack::dyn_cast;
 
 	if( out && olevel >= PRINT_BASIC_INFO ) {
-		*out << "\n********************************************************"
+		*out << "\n***********************************************************"
 			 << "\n*** DecompositionSystemVarReductImp::update_decomp(...) ***"
-			 << "\n********************************************************\n";
+			 << "\n************************************************************\n";
 
 		if(mat_rel != MATRICES_INDEP_IMPS)
 			*out << "\nWarning!!! mat_rel != MATRICES_INDEP_IMPS; The decompsition matrix "
@@ -275,170 +434,73 @@ void DecompositionSystemVarReductImp::update_decomp(
 	assert(Vz == NULL); // ToDo: Implement general inequalities
 
 	//
-	// Make all matrices but Z uninitialized to determine if we can
-	// reuse the Z.D matrix object (explicit or implicit).
-	// Also, return a reference to the basis matrix C from the
-	// R object.
+	// Get smart pointers to unreferenced C and D matrix objects.
 	//
 
-	rcp::ref_count_ptr<MatrixWithOpNonsingular>
-		C_ptr = uninitialize_matrices(out,olevel,Y,R,Uy,Vy);
-	assert(Uz == NULL); // ToDo: Implement for undecomposed general equalities
-	assert(Vz == NULL); // ToDo: Implement for general inequalities
+	rcp::ref_count_ptr<MatrixWithOpNonsingular>    C_ptr;
+	rcp::ref_count_ptr<MatrixWithOp>               D_ptr;
 
-	//
-	// Determine if we should be using an explicit or implicit D = -inv(C)*N object
-	// (if we are allowed to choose).
-	//
-
-	EExplicitImplicit
-		D_imp_used = ( D_imp() == MAT_IMP_AUTO
-					   ? MAT_IMP_IMPLICIT     // Without better info, use implicit by default!
-					   : D_imp() );
-
-	//
-	// Determine if we need to allocate a new matrix object for Z.D.
-	// Also, get a reference to the explicit D matrix (if one exits)
-	// and remove any reference to the basis matrix C by Z.D.
-	//
-
-	bool                              new_D_mat_object; // compiler should warn if used before initialized!
-	rcp::ref_count_ptr<MatrixWithOp>  D_ptr;            // ""
-	if( Z_vr ) {
-		if( Z_vr->D_ptr().get() == NULL ) {
-			if( out && olevel >= PRINT_BASIC_INFO )
-				*out << "\nMust allocate a new matrix object for D = -inv(C)*N since "
-					 << "one has not been allocated yet ...\n";
-			new_D_mat_object = true;
-		}
-		else {
-			MatrixVarReductImplicit
-				*D_vr = dynamic_cast<MatrixVarReductImplicit*>(
-					const_cast<MatrixWithOp*>(Z_vr->D_ptr().get()) );
-			// We may have to reallocate a new object if someone is sharing it or
-			// if we are switching from implicit to explicit or visa-versa.
-			if( Z_vr->D_ptr().count() > 1 ) {
-				if( out && olevel >= PRINT_BASIC_INFO )
-					*out << "\nMust allocate a new matrix object for D = -inv(C)*N since someone "
-						 << "else is using the current one ...\n";
-				new_D_mat_object = true;
-			}
-			else if( D_vr != NULL ) {
-				if( D_imp_used == MAT_IMP_EXPLICIT ) {
-					if( out && olevel >= PRINT_BASIC_INFO )
-						*out << "\nMust allocate a new matrix object for D = -inv(C)*N since we "
-							 << "are switching from implicit to explicit ...\n";
-					new_D_mat_object = true;
-				}
-			}
-			else if( D_imp_used == MAT_IMP_IMPLICIT ) {
-				if( out && olevel >= PRINT_BASIC_INFO )
-					*out << "\nMust allocate a new matrix object for D = -inv(C)*N since we "
-						 << "are switching from explicit to implicit ...\n";
-				new_D_mat_object = true;
-			}
-			// Remove the reference to the basis matrix C
-			if(D_vr)
-				D_vr->set_uninitialized();
-		}
+	if( C_ptr_.get() ) {
+		//
+		// The function get_basis_matrices() was called by external client
+		// so we don't need to call it here or update the decomposition matrices.
+		//
+		C_ptr = C_ptr_; // This was set by set_basis_matrices()
 	}
 	else {
-		if( out && olevel >= PRINT_BASIC_INFO )
-			*out << "\nMust allocate a new matrix object for D = -inv(C)*N since "
-				 << " Z == NULL was passed in ...\n";
-		new_D_mat_object = true;
+		//
+		// Make all matrices uninitialized and get unreferenced smart
+		// pointers to C and D (explicit only!).
+		//
+		const_cast<DecompositionSystemVarReductImp*>(this)->get_basis_matrices(
+			out,olevel,test_what,Z,Y,R,Uz,Uy,Vz,Vy,&C_ptr,&D_ptr);
 	}
 
-	//
-	// Get the matrix object of D and allocate a new matrix object if needed.
-	//
-
-	if( new_D_mat_object) {
-		// Create a new matrix object!
-		if(D_imp_used == MAT_IMP_IMPLICIT) {
-			D_ptr = rcp::rcp(new MatrixVarReductImplicit());
-			if( out && olevel >= PRINT_BASIC_INFO )
-				*out << "\nAllocated a new implicit matrix object for D = -inv(C)*N "
-					 << "of type \'MatrixVarReductImplicit\' ...\n";
-		}
-		else {
-			D_ptr = basis_sys_->factory_D()->create();
-			if( out && olevel >= PRINT_BASIC_INFO )
-				*out << "\nAllocated a new explicit matrix object for D = -inv(C)*N "
-					 << "of type \'" << typeid(*D_ptr).name() << "\' ...\n";
-		}
-	}
-	else {
-		// Use current matrix object!
-		D_ptr = rcp::rcp_const_cast<MatrixWithOp>(Z_vr->D_ptr());
+	// Get the D matrix created by get_basis_matrices() and set by
+	// get_basis_matrices() if implicit or set by set_basis_matrices()
+	// if explicit.  This matrix may not be allocated yet in which
+	// case we need to allocate it.
+	if( D_ptr.get() == NULL ) {
+		// D_ptr was not set in get_basis_matrix() in code above but
+		// it may be cashed (if explicit) in D_ptr.
+		if( D_ptr_.get() != NULL )
+			D_ptr = D_ptr_;
+		else
+			alloc_new_D_matrix( out, olevel, &D_ptr );
 	}
 
-	//
-	// Determine if we need to allocate a new basis matrix object C.
-	//
-	// At this point, if a matrix object for C already exits and noone
-	// outside has a reference to this basis matrix object then the only
-	// references to it should be in C_ptr
-	//
+	if( C_ptr_.get() == NULL ) {
 
-	bool new_C_mat_object; // compiler should warn if used before initialized!
-	if( C_ptr.get() == NULL ) {
-		if( out && olevel >= PRINT_BASIC_INFO )
-			*out << "\nMust allocate a new basis matrix object for C since "
-				 << "one has not been allocated yet ...\n";
-		new_C_mat_object = true;
-	}
-	else {
-		if( C_ptr.count() > 1 ) {
-			if( out && olevel >= PRINT_BASIC_INFO )
-				*out << "\nMust allocate a new basis matrix object C since someone "
-					 << "else is using the current one ...\n";
-			new_C_mat_object = true;
-		}
-		else {
-			new_C_mat_object = false; // The current C matrix is owned only by us!
-		}
-	}
+		//
+		// The basis matrices were not updated by an external client
+		// so we must do it ourselves here using basis_sys.
+		//
 	
-	//
-	// Get the basis matrix object C and allocate a new object for if we have to.
-	//
-
-	if( new_C_mat_object) {
-		C_ptr = basis_sys_->factory_C()->create();
 		if( out && olevel >= PRINT_BASIC_INFO )
-			*out << "\nAllocated a new basis matrix object C "
-				 << "of type \'" << typeid(*C_ptr).name() << "\' ...\n";
+			*out << "\nUpdating the basis matrix C and other matices using the BasisSystem object ...\n";
+	
+		assert( D_ptr.get() ); // local programming error only!
+		assert( C_ptr.get() ); // local programming error only!
+	
+		basis_sys_->update_basis(
+			&Gc                                                      // Gc
+			,Gh                                                      // Gh?
+			,C_ptr.get()                                             // C
+			,D_imp_used_ == MAT_IMP_EXPLICIT ? D_ptr.get() : NULL     // D?
+			,NULL                                                    // GcUP == Uz
+			,NULL                                                    // GhUP == Vz
+			,(mat_rel == mat_rel == MATRICES_INDEP_IMPS
+			  ? BasisSystem::MATRICES_INDEP_IMPS
+			  : BasisSystem::MATRICES_ALLOW_DEP_IMPS )
+			);
 	}
-
-	//
-	// Update the basis matrix C and the other matrices using basis_sys.
-	//
-	
-	if( out && olevel >= PRINT_BASIC_INFO )
-		*out << "\nUpdating the basis matrix C and other matices using the BasisSystem object ...\n";
-	
-	assert( D_ptr.get() ); // local programming error only!
-	assert( C_ptr.get() ); // local programming error only!
-
-	basis_sys_->update_basis(
-		&Gc                                                      // Gc
-		,Gh                                                      // Gh?
-		,C_ptr.get()                                             // C
-		,D_imp_used == MAT_IMP_EXPLICIT ? D_ptr.get() : NULL     // D?
-		,NULL                                                    // GcUP == Uz
-		,NULL                                                    // GhUP == Vz
-		,(mat_rel == mat_rel == MATRICES_INDEP_IMPS
-		  ? BasisSystem::MATRICES_INDEP_IMPS
-		  : BasisSystem::MATRICES_ALLOW_DEP_IMPS )
-		);
-
+		
 	//
 	// Create the matrix object: N = Gc(var_indep,cond_decomp)' 
 	//
 	rcp::ref_count_ptr<const MatrixWithOp>
 		N_ptr = rcp::null;
-	if( D_imp_used == MAT_IMP_IMPLICIT ) {
+	if( D_imp_used_ == MAT_IMP_IMPLICIT ) {
 		rcp::ref_count_ptr<const MatrixWithOp>
 			GcDd_ptr = Gc.sub_view(var_indep,con_decomp);
 		THROW_EXCEPTION(
@@ -502,7 +564,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 			,Gh                                                      // Gh?
 			,C_ptr.get()                                             // C
 			,N_ptr.get()                                             // N
-			,D_imp_used == MAT_IMP_EXPLICIT ? D_ptr.get() : NULL     // D?
+			,D_imp_used_ == MAT_IMP_EXPLICIT ? D_ptr.get() : NULL     // D?
 			,NULL                                                    // GcUP == Uz
 			,NULL                                                    // GhUP == Vz
 			,out                                                     // out
@@ -518,7 +580,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 	//
 
 	assert(D_ptr.get()); // local programming error only?
-	if( D_imp_used == MAT_IMP_IMPLICIT ) {
+	if( D_imp_used_ == MAT_IMP_IMPLICIT ) {
 		if( !C_ptr.has_ownership() && mat_rel == MATRICES_INDEP_IMPS ) {
 			C_ptr = C_ptr->clone_mwons();
 			THROW_EXCEPTION(
@@ -564,9 +626,12 @@ void DecompositionSystemVarReductImp::update_decomp(
 	assert(Uz == NULL); // ToDo: Implement for undecomposed general equalities
 	assert(Vz == NULL); // ToDo: Implement for general inequalities
 
+	// Clear cache for basis matrices.
+	C_ptr_ = rcp::null;
+	D_ptr_ = rcp::null;
+
 	if( out && olevel >= PRINT_BASIC_INFO )
 		*out << "\nEnd DecompositionSystemVarReductImp::update_decomp(...)\n";
-
 }
 
 void DecompositionSystemVarReductImp::print_update_decomp(
@@ -590,6 +655,35 @@ void DecompositionSystemVarReductImp::print_update_decomp(
 	out
 		<< L << "end update of Y, R, Uy, and Vy\n"
 		;
+}
+
+// private
+
+void DecompositionSystemVarReductImp::update_D_imp_used() const
+{
+	D_imp_used_ = ( D_imp() == MAT_IMP_AUTO
+					? MAT_IMP_IMPLICIT     // Without better info, use implicit by default!
+					: D_imp() );
+}
+
+void DecompositionSystemVarReductImp::alloc_new_D_matrix( 
+	std::ostream                             *out
+	,EOutputLevel                            olevel
+	,MemMngPack::ref_count_ptr<MatrixWithOp> *D_ptr
+	) const
+{
+	if(D_imp_used_ == MAT_IMP_IMPLICIT) {
+		(*D_ptr) = MemMngPack::rcp(new MatrixVarReductImplicit());
+		if( out && olevel >= PRINT_BASIC_INFO )
+			*out << "\nAllocated a new implicit matrix object for D = -inv(C)*N "
+				 << "of type \'MatrixVarReductImplicit\' ...\n";
+	}
+	else {
+		(*D_ptr) = basis_sys_->factory_D()->create();
+		if( out && olevel >= PRINT_BASIC_INFO )
+			*out << "\nAllocated a new explicit matrix object for D = -inv(C)*N "
+				 << "of type \'" << typeid(*(*D_ptr)).name() << "\' ...\n";
+	}
 }
 
 }	// end namespace ConstrainedOptimizationPack

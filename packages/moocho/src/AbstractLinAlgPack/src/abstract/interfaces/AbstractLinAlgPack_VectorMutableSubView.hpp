@@ -31,9 +31,9 @@ namespace AbstractLinAlgPack {
  * operator is not allowed since it does not have the correct sematics.
  *
  * There is really not much to this vector subclass.  The subclass is only possible
- * because of the <tt>global_offset < 0</tt> option with apply_transforamtion().  The
- * vector space object returned by <tt>this->space()</tt> is of type VectorSpaceSubSpace
- * which in turn relys on VectorSpace::sub_space().
+ * because of the \c first_ele, \c sub_dim, and \c global_offset options with apply_transforamtion().  The
+ * vector space object returned by <tt>this->space()</tt> is of type \c VectorSpaceSubSpace
+ * which in turn relys on \c VectorSpace::sub_space().
  */
 class VectorWithOpMutableSubView
 	: virtual public VectorWithOpMutable

@@ -55,7 +55,7 @@ public:
 	 * <li> [<tt>full_vec.get() != NULL && rng.full_range() == false</tt>] <tt>this->dim() == rng.size()</tt>
 	 * </ul>
 	 *
-	 * @param  full_space  [in] The original full vector space.  It is allowd for <tt>full_space.get()==NULL</tt>
+	 * @param  full_space  [in] The original full vector space.  It is allowed for <tt>full_space.get()==NULL</tt>
 	 *                     in which case <tt>this</tt> is uninitialized (i.e. <tt>this->dim() == 0</tt>).
 	 * @param  rng         [in] The range of element that <tt>this</tt> vector sub-space will represent.
 	 */

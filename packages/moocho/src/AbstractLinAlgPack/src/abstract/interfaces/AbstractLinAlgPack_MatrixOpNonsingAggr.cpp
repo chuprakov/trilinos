@@ -45,32 +45,31 @@ void MatrixWithOpNonsingularAggr::initialize(
 	)
 {
 #ifdef _DEBUG
-	const size_type
-		mwo_rows = mwo_->rows(),
-		mwo_cols = mwo_->cols(),
-		mns_rows = mns_->rows(),
-		mns_cols = mns_->cols();
 	THROW_EXCEPTION(
 		mwo.get() == NULL, std::invalid_argument
 		,"MatrixWithOpNonsingularAggr::initialize(...): Error!" );
 	THROW_EXCEPTION(
 		mns.get() == NULL, std::invalid_argument
 		,"MatrixWithOpNonsingularAggr::initialize(...): Error!" );
+	const size_type
+		mwo_rows = mwo->rows(),
+		mwo_cols = mwo->cols(),
+		mns_rows = mns->rows(),
+		mns_cols = mns->cols();
 	THROW_EXCEPTION(
-		mwo_rows == (mwo_trans == mns_trans ? mns_rows : mns_cols), std::invalid_argument
+		mwo_rows != mwo_cols, std::invalid_argument
 		,"MatrixWithOpNonsingularAggr::initialize(...): Error!" );
 	THROW_EXCEPTION(
-		mwo_cols == (mwo_trans == mns_trans ? mns_cols : mns_rows), std::invalid_argument
+		mns_rows != mns_cols, std::invalid_argument
+		,"MatrixWithOpNonsingularAggr::initialize(...): Error!" );
+	THROW_EXCEPTION(
+		mwo_rows != mns_rows, std::invalid_argument
 		,"MatrixWithOpNonsingularAggr::initialize(...): Error!" );
 #endif
 	mwo_       = mwo;
 	mwo_trans_ = mwo_trans;
 	mns_       = mns;
 	mns_trans_ = mns_trans;
-	THROW_EXCEPTION(
-		mwo_trans_ == BLAS_Cpp::trans || mns_trans_ == BLAS_Cpp::trans, std::logic_error
-		,"MatrixWithOpNonsingularAggr::initialize(...): Error, "
-		"Can't handle transposed matrices yet!" );
 }
 
 void MatrixWithOpNonsingularAggr::set_uninitialized()
@@ -91,7 +90,7 @@ size_type MatrixWithOpNonsingularAggr::rows() const
 
 size_type MatrixWithOpNonsingularAggr::cols() const
 {
-	return mwo_->cols(); // square matrix!
+	return mwo_->rows(); // square matrix!
 }
 
 size_type MatrixWithOpNonsingularAggr::nz() const
@@ -139,13 +138,11 @@ std::ostream& MatrixWithOpNonsingularAggr::output(std::ostream& out) const
 	return out;
 }
 
-// ToDo: Update below code for transposed matrices!
-
 bool MatrixWithOpNonsingularAggr::Mp_StM(
 	MatrixWithOp* mwo_lhs, value_type alpha
 	, BLAS_Cpp::Transp trans_rhs) const
 {
-	return mwo_->Mp_StM(mwo_lhs,alpha,trans_rhs);
+	return mwo_->Mp_StM(mwo_lhs,alpha,BLAS_Cpp::trans_trans(mwo_trans_,trans_rhs));
 }
 
 bool MatrixWithOpNonsingularAggr::Mp_StMtP(
@@ -154,7 +151,8 @@ bool MatrixWithOpNonsingularAggr::Mp_StMtP(
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	) const
 {
-	return mwo_->Mp_StMtP(mwo_lhs,alpha,M_trans,P_rhs,P_rhs_trans);
+	return mwo_->Mp_StMtP(
+		mwo_lhs,alpha,BLAS_Cpp::trans_trans(mwo_trans_,M_trans),P_rhs,P_rhs_trans);
 }
 
 bool MatrixWithOpNonsingularAggr::Mp_StPtM(
@@ -163,7 +161,8 @@ bool MatrixWithOpNonsingularAggr::Mp_StPtM(
 	, BLAS_Cpp::Transp M_trans
 	) const
 {
-	return mwo_->Mp_StPtM(mwo_lhs,alpha,P_rhs,P_rhs_trans,M_trans);
+	return mwo_->Mp_StPtM(
+		mwo_lhs,alpha,P_rhs,P_rhs_trans,BLAS_Cpp::trans_trans(mwo_trans_,M_trans));
 }
 
 bool MatrixWithOpNonsingularAggr::Mp_StPtMtP(
@@ -173,21 +172,22 @@ bool MatrixWithOpNonsingularAggr::Mp_StPtMtP(
 	,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 	) const
 {
-	return mwo_->Mp_StPtMtP(mwo_lhs,alpha,P_rhs1,P_rhs1_trans,M_trans,P_rhs2,P_rhs2_trans);
+	return mwo_->Mp_StPtMtP(
+		mwo_lhs,alpha,P_rhs1,P_rhs1_trans,BLAS_Cpp::trans_trans(mwo_trans_,M_trans),P_rhs2,P_rhs2_trans);
 }
 
 void MatrixWithOpNonsingularAggr::Vp_StMtV(
 	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp M_trans
 	, const VectorWithOp& x, value_type b) const
 {
-	mwo_->Vp_StMtV(y,a,M_trans,x,b);
+	mwo_->Vp_StMtV(y,a,BLAS_Cpp::trans_trans(mwo_trans_,M_trans),x,b);
 }
 
 void MatrixWithOpNonsingularAggr::Vp_StMtV(
 	VectorWithOpMutable* y, value_type a, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type b) const
 {
-	mwo_->Vp_StMtV(y,a,M_trans,x,b);
+	mwo_->Vp_StMtV(y,a,BLAS_Cpp::trans_trans(mwo_trans_,M_trans),x,b);
 }
 
 void MatrixWithOpNonsingularAggr::Vp_StPtMtV(
@@ -196,7 +196,8 @@ void MatrixWithOpNonsingularAggr::Vp_StPtMtV(
 	, BLAS_Cpp::Transp M_rhs2_trans
 	, const VectorWithOp& v_rhs3, value_type beta) const
 {
-	mwo_->Vp_StPtMtV(vs_lhs,alpha,P_rhs1,P_rhs1_trans,M_rhs2_trans,v_rhs3,beta);
+	mwo_->Vp_StPtMtV(
+		vs_lhs,alpha,P_rhs1,P_rhs1_trans,BLAS_Cpp::trans_trans(mwo_trans_,M_rhs2_trans),v_rhs3,beta);
 }
 
 void MatrixWithOpNonsingularAggr::Vp_StPtMtV(
@@ -205,21 +206,22 @@ void MatrixWithOpNonsingularAggr::Vp_StPtMtV(
 	, BLAS_Cpp::Transp M_rhs2_trans
 	, const SpVectorSlice& sv_rhs3, value_type beta) const
 {
-	mwo_->Vp_StPtMtV(vs_lhs,alpha,P_rhs1,P_rhs1_trans,M_rhs2_trans,sv_rhs3,beta);
+	mwo_->Vp_StPtMtV(
+		vs_lhs,alpha,P_rhs1,P_rhs1_trans,BLAS_Cpp::trans_trans(mwo_trans_,M_rhs2_trans),sv_rhs3,beta);
 }
 
 value_type MatrixWithOpNonsingularAggr::transVtMtV(
 	const VectorWithOp& v_rhs1, BLAS_Cpp::Transp trans_rhs2
 	, const VectorWithOp& v_rhs3) const
 {
-	return mwo_->transVtMtV(v_rhs1,trans_rhs2,v_rhs3);
+	return mwo_->transVtMtV(v_rhs1,BLAS_Cpp::trans_trans(mwo_trans_,trans_rhs2),v_rhs3);
 }
 
 value_type MatrixWithOpNonsingularAggr::transVtMtV(
 	const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
 	, const SpVectorSlice& sv_rhs3) const
 {
-	return mwo_->transVtMtV(sv_rhs1,trans_rhs2,sv_rhs3);
+	return mwo_->transVtMtV(sv_rhs1,BLAS_Cpp::trans_trans(mwo_trans_,trans_rhs2),sv_rhs3);
 }
 
 void MatrixWithOpNonsingularAggr::syr2k(
@@ -228,7 +230,7 @@ void MatrixWithOpNonsingularAggr::syr2k(
 	, const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
 	, value_type beta, MatrixSymWithOp* symwo_lhs ) const
 {
-	mwo_->syr2k(M_trans,alpha,P1,P1_trans,P2,P2_trans,beta,symwo_lhs);
+	mwo_->syr2k(BLAS_Cpp::trans_trans(mwo_trans_,M_trans),alpha,P1,P1_trans,P2,P2_trans,beta,symwo_lhs);
 }
 
 bool MatrixWithOpNonsingularAggr::Mp_StMtM(
@@ -236,7 +238,7 @@ bool MatrixWithOpNonsingularAggr::Mp_StMtM(
 	, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOp& mwo_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta ) const
 {
-	return mwo_->Mp_StMtM(mwo_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2,beta);
+	return mwo_->Mp_StMtM(mwo_lhs,alpha,trans_rhs1,mwo_rhs2,BLAS_Cpp::trans_trans(mwo_trans_,trans_rhs2),beta);
 }
 
 bool MatrixWithOpNonsingularAggr::Mp_StMtM(
@@ -244,46 +246,44 @@ bool MatrixWithOpNonsingularAggr::Mp_StMtM(
 	, const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta ) const
 {
-	return mwo_->Mp_StMtM(mwo_lhs,alpha,mwo_rhs1,trans_rhs1,trans_rhs2,beta);
+	return mwo_->Mp_StMtM(mwo_lhs,alpha,mwo_rhs1,trans_rhs1,BLAS_Cpp::trans_trans(mwo_trans_,trans_rhs2),beta);
 }
 
 void MatrixWithOpNonsingularAggr::syrk(
 	BLAS_Cpp::Transp M_trans, value_type alpha
 	, value_type beta, MatrixSymWithOp* sym_lhs ) const
 {
-		mwo_->syrk(M_trans,alpha,beta,sym_lhs);
+		mwo_->syrk(BLAS_Cpp::trans_trans(mwo_trans_,M_trans),alpha,beta,sym_lhs);
 }
 
 // Overridden from MatrixNonsingular */
-
-// ToDo: Update below code for transposed matrices!
 
 void MatrixWithOpNonsingularAggr::V_InvMtV(
 	VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
 	,const VectorWithOp& v_rhs2) const
 {
-	mns_->V_InvMtV(v_lhs,trans_rhs1,v_rhs2);
+	mns_->V_InvMtV(v_lhs,BLAS_Cpp::trans_trans(mns_trans_,trans_rhs1),v_rhs2);
 }
 
 void MatrixWithOpNonsingularAggr::V_InvMtV(
 	VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2) const
 {
-	mns_->V_InvMtV(v_lhs,trans_rhs1,sv_rhs2);
+	mns_->V_InvMtV(v_lhs,BLAS_Cpp::trans_trans(mns_trans_,trans_rhs1),sv_rhs2);
 }
 
 value_type MatrixWithOpNonsingularAggr::transVtInvMtV(
 	const VectorWithOp& v_rhs1
 	,BLAS_Cpp::Transp trans_rhs2, const VectorWithOp& v_rhs3) const
 {
-	return mns_->transVtInvMtV(v_rhs1,trans_rhs2,v_rhs3);
+	return mns_->transVtInvMtV(v_rhs1,BLAS_Cpp::trans_trans(mns_trans_,trans_rhs2),v_rhs3);
 }
 
 value_type MatrixWithOpNonsingularAggr::transVtInvMtV(
 	const SpVectorSlice& sv_rhs1
 	,BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3) const
 {
-	return mns_->transVtInvMtV(sv_rhs1,trans_rhs2,sv_rhs3);
+	return mns_->transVtInvMtV(sv_rhs1,BLAS_Cpp::trans_trans(mns_trans_,trans_rhs2),sv_rhs3);
 }
 
 void MatrixWithOpNonsingularAggr::M_StInvMtM(
@@ -292,7 +292,7 @@ void MatrixWithOpNonsingularAggr::M_StInvMtM(
 	,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
 	) const
 {
-	mns_->M_StInvMtM(m_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2);
+	mns_->M_StInvMtM(m_lhs,alpha,BLAS_Cpp::trans_trans(mns_trans_,trans_rhs1),mwo_rhs2,trans_rhs2);
 }
 
 void MatrixWithOpNonsingularAggr::M_StMtInvM(
@@ -301,7 +301,7 @@ void MatrixWithOpNonsingularAggr::M_StMtInvM(
 	,BLAS_Cpp::Transp trans_rhs2
 	) const
 {
-	mns_->M_StMtInvM(m_lhs,alpha,mwo_rhs1,trans_rhs1,trans_rhs2);
+	mns_->M_StMtInvM(m_lhs,alpha,mwo_rhs1,trans_rhs1,BLAS_Cpp::trans_trans(mns_trans_,trans_rhs1));
 }
 
 } // end namespace AbstractLinAlgPack

@@ -221,7 +221,7 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 	fs.irn_.resize(fs.nz_);   // perminatly stores nz row indexes (needed for matrix scaling)
 	fs.icn_.resize(fs.licn_); // first nz entries stores the column indexes
 	fn.a_.resize(fs.licn_);
-	fs.ikeep_.resize(5*fs.max_n_);
+	fs.ikeep_.resize( fs.ma28_.lblock() ? 5*fs.max_n_ :  4*fs.max_n_ + 1 );
 	std::valarray<index_type>   irn_tmp_(fs.lirn_), iw(8*fs.max_n_);  // ToDo: use Workspace<>
 	std::valarray<value_type>   w(fs.max_n_);     // ToDo: use Workspace<>
 
@@ -253,8 +253,25 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 	// Todo : deal with resizing for insufficient storage when needed.  Write a loop!
 
 	// Extract the basis matrix selection
-	assert(0); // ToDo: Implement!
 
+	row_perm->resize(fs.m_);
+	index_type
+		*row_perm_ikeep = &fs.ikeep_[fs.max_n_],
+		*row_perm_itr   = &(*row_perm)(1),
+		*row_perm_last  = row_perm_itr + fs.m_;
+	for(; row_perm_itr != row_perm_last;)
+		*row_perm_itr++ = abs(*row_perm_ikeep++);
+
+	col_perm->resize(fs.n_);
+	index_type
+		*col_perm_ikeep = &fs.ikeep_[2*fs.max_n_],
+		*col_perm_itr   = &(*col_perm)(1),
+		*col_perm_last  = col_perm_itr + fs.n_;
+	for(; col_perm_itr != col_perm_last;)
+		*col_perm_itr++ = abs(*col_perm_ikeep++);
+
+	*rank = fs.ma28_.irank();
+	
 	// Check for errors and throw exception if you have to.
 	ThrowIFlagException(fs.iflag_);
 
