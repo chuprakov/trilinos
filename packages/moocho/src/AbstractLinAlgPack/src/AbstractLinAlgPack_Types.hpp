@@ -51,6 +51,7 @@ class MatrixWithOpNonsingular;
 class MatrixSymWithOp;
 class MatrixSymNonsingular;
 class MatrixSymWithOpNonsingular;
+class MatrixSymDiagonal;
 
 class MultiVector;
 class MultiVectorMutable;

@@ -33,6 +33,7 @@ using AbstractLinAlgPack::MatrixWithOpNonsingular;
 using AbstractLinAlgPack::MatrixSymWithOp;
 using AbstractLinAlgPack::MatrixSymNonsingular;
 using AbstractLinAlgPack::MatrixSymWithOpNonsingular;
+using AbstractLinAlgPack::MatrixSymDiagonal;
 
 using AbstractLinAlgPack::MultiVector;
 using AbstractLinAlgPack::MultiVectorMutable;
