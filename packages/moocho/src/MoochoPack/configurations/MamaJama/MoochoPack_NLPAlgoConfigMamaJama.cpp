@@ -2,9 +2,9 @@
 // rSQPAlgo_ConfigMamaJama.cpp
 
 // disable VC 5.0 warnings about debugger limitations
-#pragma warning(disable : 4786)	
+#pragma warning(disable : 4786)
 // disable VC 5.0 warnings about truncated identifier names (templates).
-#pragma warning(disable : 4503)	
+#pragma warning(disable : 4503)
 
 #include <assert.h>
 
@@ -496,51 +496,69 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			matrix_iqa_creators[matrix_creator_t::num_MatrixWithOp];
 		// HL
 		matrix_iqa_creators[matrix_creator_t::Q_HL]
-			= HL_iq_creator_ptr_.get()
+			= ( HL_iq_creator_ptr_.get()
 				? HL_iq_creator_ptr_
-				: new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>();
+				: rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+					ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass> >(
+						new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>() ) )
+				);
 		// Gc
 		matrix_iqa_creators[matrix_creator_t::Q_Gc]
-			= Gc_iq_creator_ptr_.get()
+			= ( Gc_iq_creator_ptr_.get()
 				? Gc_iq_creator_ptr_
-				: new IterQuantMatrixWithOpCreatorContinuous<COOMatrixWithPartitionedViewSubclass>();
+				: rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+					ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<COOMatrixWithPartitionedViewSubclass> >(
+						new IterQuantMatrixWithOpCreatorContinuous<COOMatrixWithPartitionedViewSubclass>() ) )
+				);
 		// Y
 		matrix_iqa_creators[matrix_creator_t::Q_Y]
-			= new IterQuantMatrixWithOpCreatorContinuous<IdentZeroVertConcatMatrixSubclass>();
+			= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+				ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<IdentZeroVertConcatMatrixSubclass> >(
+					new IterQuantMatrixWithOpCreatorContinuous<IdentZeroVertConcatMatrixSubclass>() ) );
 		// Z
 		switch(cov_.null_space_matrix_type_) {
 			case NULL_SPACE_MATRIX_EXPLICIT:
 				matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_Z]
-					= new IterQuantMatrixWithOpCreatorContinuous<DenseIdentVertConcatMatrixSubclass>();
+					= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+						ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<DenseIdentVertConcatMatrixSubclass> >(
+							new IterQuantMatrixWithOpCreatorContinuous<DenseIdentVertConcatMatrixSubclass>() ) );
 				break;
-			case NULL_SPACE_MATRIX_IMPLICIT:
+		    case NULL_SPACE_MATRIX_IMPLICIT:
 				matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_Z]
-					= new IterQuantMatrixWithOpCreatorContinuous<ZAdjointFactMatrixSubclass>();
+					= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+						ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<ZAdjointFactMatrixSubclass> >(
+							new IterQuantMatrixWithOpCreatorContinuous<ZAdjointFactMatrixSubclass>() ) );
 				break;
-			default:
+		    default:
 				assert(0);
 		}
 		// U
 		matrix_iqa_creators[matrix_creator_t::Q_U]
-			= U_iq_creator_ptr_.get()
+			= ( U_iq_creator_ptr_.get()
 				? U_iq_creator_ptr_
-				: new IterQuantMatrixWithOpCreatorContinuous<COOMatrixPartitionViewSubclass>();
+				: rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+					ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<COOMatrixPartitionViewSubclass> >(
+						new IterQuantMatrixWithOpCreatorContinuous<COOMatrixPartitionViewSubclass>() ) )
+				);
 		// V
 		matrix_iqa_creators[matrix_creator_t::Q_V]
-			= new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>();
+			= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+				ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass> >(
+					new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>() ) );
 		// rHL
 		if( ! algo->nlp().has_bounds() ) {
 			// Here we just need to solve for linear systems with rHL
 			// and we can use a limited memory method or update the dense
 			// factors directly.
 			matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
-				= cov_.quasi_newton_==QN_LBFGS
-				? static_cast<IterQuantMatrixWithOpCreator*>(
-					new IterQuantMatrixWithOpCreatorContinuous<
-					MatrixSymPosDefLBFGS>() )
-				: static_cast<IterQuantMatrixWithOpCreator*>( 
-					new IterQuantMatrixWithOpCreatorContinuous<
-					MatrixSymPosDefInvCholFactor>() );
+				= ( cov_.quasi_newton_==QN_LBFGS
+					? rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+						ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefLBFGS> >(
+							new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefLBFGS>() ) )
+					: rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+						ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefInvCholFactor> >(
+							new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefInvCholFactor>() ) )
+					);
 		}
 		else {
 			switch(cov_.qp_solver_type_) {
@@ -549,30 +567,31 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			    case QP_QPSCHUR: {
 					if( cov_.quasi_newton_==QN_LBFGS ) {
 						matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
-							= static_cast<IterQuantMatrixWithOpCreator*>(
-								new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefLBFGS>()
-								);
+							= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+								ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefLBFGS> >(
+									new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefLBFGS>() ) );
 					}
 					else if( cov_.quasi_newton_ == QN_PBFGS || cov_.quasi_newton_ == QN_LPBFGS ) {
 						matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
-							= static_cast<IterQuantMatrixWithOpCreator*>( 
-								new IterQuantMatrixWithOpCreatorContinuous<
-								ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal>()
-								);
+							= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+								ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<
+								ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal> >(
+									new IterQuantMatrixWithOpCreatorContinuous<
+									ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal>() ) );
 					}
 					else {
 						matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
-							= static_cast<IterQuantMatrixWithOpCreator*>( 
-								new IterQuantMatrixWithOpCreatorContinuous<
-								MatrixSymPosDefCholFactor>()
-								);
+							= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+								ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefCholFactor> >(
+									new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefCholFactor>() ) );
 					}
 					break;
 				}
 				case QP_QPKWIK:
 					matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
-						= new IterQuantMatrixWithOpCreatorContinuous<
-									MatrixSymPosDefInvCholFactor>();
+						= rcp::rcp_implicit_cast<IterQuantMatrixWithOpCreator>(
+							ref_count_ptr<IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefInvCholFactor> >(
+								new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefInvCholFactor>() ) );
 					break;
 				default:
 					assert(0);
@@ -606,7 +625,20 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		storage_num[state_t::Q_nu]				= 2;
 
 		// create a new state object
-		algo->set_state( new state_t( new matrix_creator_aggr_t(matrix_iqa_creators), storage_num ) );
+		algo->set_state(
+			rcp::rcp_implicit_cast<GeneralIterationPack::AlgorithmState>(
+				ref_count_ptr<state_t>(
+					new state_t(
+						rcp::rcp_implicit_cast<matrix_creator_t>(
+							ref_count_ptr<matrix_creator_aggr_t>(
+								new matrix_creator_aggr_t(matrix_iqa_creators)
+								)
+							)
+						,storage_num
+						)
+					)
+				)
+			);
 
 		// Now setup the reduced Hessian (this is kind of hacked but oh well)
 		//
@@ -669,7 +701,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				dof, dof, NULL, NULL, NULL                     // n, n_R, i_x_free, i_x_fixed, bnd_fixed
 				,B_RR_ptr                                      // B_RR_ptr (given ownership to destroy)
 				,NULL, BLAS_Cpp::no_trans                      // B_RX_ptr, B_RX_trans
-				,new SparseLinAlgPack::MatrixSymDiagonalStd()  // B_XX_ptr (sized to 0x0)
+				,rcp::rcp_implicit_cast<const MatrixSymWithOp>(   // B_XX_ptr (sized to 0x0)
+					ref_count_ptr<const SparseLinAlgPack::MatrixSymDiagonalStd>(
+						new SparseLinAlgPack::MatrixSymDiagonalStd() ) )
 				);
 			algo->rsqp_state().rHL().set_not_updated(-1);      // Set non updated so that it will be computed.
 		}
@@ -703,7 +737,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	// /////////////////////////////////////////////////////
 	// C.2. Create and set the decomposition system object
 
-	DecompositionSystemVarReductStd*
+	ref_count_ptr<DecompositionSystemVarReductStd>
 		decomp_sys = NULL;
 
 	if( !tailored_approach ) {
@@ -714,21 +748,27 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			*trase_out << "\nCreating and setting the decomposition system object ...\n";
 
 		if( !basis_sys_ptr_.get() ) {
-			SparseCOOSolverCreator
-				*sparse_solver_creator = NULL;
+			ref_count_ptr<SparseCOOSolverCreator>
+				sparse_solver_creator = NULL;
 			if( cov_.direct_linear_solver_type_ == LA_MA28 ) {
 				sparse_solver_creator
-					= new SparseSolverPack::MA28SparseCOOSolverCreator(
-							new SparseSolverPack::MA28SparseCOOSolverSetOptions
-							, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
-						);
+					= rcp::rcp_implicit_cast<SparseCOOSolverCreator>(
+						ref_count_ptr<SparseSolverPack::MA28SparseCOOSolverCreator>(
+							new SparseSolverPack::MA28SparseCOOSolverCreator(
+								rcp::rcp_implicit_cast<SparseSolverPack::MA28SparseCOOSolverSetOptions>(
+									ref_count_ptr<SparseSolverPack::MA28SparseCOOSolverSetOptions>(
+										new SparseSolverPack::MA28SparseCOOSolverSetOptions ) )
+								,const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_) ) ) );
 			}
 			else if ( cov_.direct_linear_solver_type_ == LA_MA48 ) {
 				sparse_solver_creator
-					= new SparseSolverPack::MA48SparseCOOSolverCreator(
-							new SparseSolverPack::MA48SparseCOOSolverSetOptions
-							, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
-						);
+					= rcp::rcp_implicit_cast<SparseCOOSolverCreator>(
+						ref_count_ptr<SparseSolverPack::MA48SparseCOOSolverCreator>(
+							new SparseSolverPack::MA48SparseCOOSolverCreator(
+								rcp::rcp_implicit_cast<SparseSolverPack::MA48SparseCOOSolverSetOptions>(
+									ref_count_ptr<SparseSolverPack::MA48SparseCOOSolverSetOptions>(
+										new SparseSolverPack::MA48SparseCOOSolverSetOptions ) )
+							,const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_) ) ) );
 			}
 			else {
 				assert(0);
@@ -737,39 +777,50 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			// Note, the switch statement based code for the above if statements would not
 			// compile under MipsPro 7.3.1.1m.
 
-			basis_sys_ptr_ = new COOBasisSystem(sparse_solver_creator, true);
+			sparse_solver_creator.release();
+			basis_sys_ptr_ = new COOBasisSystem(sparse_solver_creator.get(), true);
 		}
 
-		DecompositionSystemCoordinate* decomp_sys_aggr = 0;
+		ref_count_ptr<DecompositionSystemCoordinate>
+			decomp_sys_aggr = NULL;
 		
 		if ( cov_.null_space_matrix_type_ == NULL_SPACE_MATRIX_EXPLICIT ) {
-			decomp_sys_aggr = new DecompositionSystemCoordinateDirect(
-									basis_sys_ptr_.release(), true);
+			decomp_sys_aggr
+				= rcp::rcp_implicit_cast<DecompositionSystemCoordinate>(
+					ref_count_ptr<DecompositionSystemCoordinateDirect>(
+						new DecompositionSystemCoordinateDirect(
+							basis_sys_ptr_.release(), true ) ) );
 		}
 		else if ( cov_.null_space_matrix_type_ == NULL_SPACE_MATRIX_IMPLICIT ) {
-			decomp_sys_aggr = new DecompositionSystemCoordinateAdjoint(
-									basis_sys_ptr_.release(), true);
+			decomp_sys_aggr
+				= rcp::rcp_implicit_cast<DecompositionSystemCoordinate>(
+					ref_count_ptr<DecompositionSystemCoordinateAdjoint>(
+						new DecompositionSystemCoordinateAdjoint(
+							basis_sys_ptr_.release(), true ) ) );
 		}
 		else {
 			assert(0);
 		}
 
-		assert(decomp_sys_aggr);
+		assert(decomp_sys_aggr.get());
 		typedef SparseSolverPack::TestingPack::BasisSystemTester basis_sys_tester_t;
-		basis_sys_tester_t
-			*basis_sys_tester = new basis_sys_tester_t;
+		ref_count_ptr<basis_sys_tester_t>
+			basis_sys_tester = new basis_sys_tester_t;
 		basis_sys_tester->solve_error_tol(1e+10); // ToDo: Make better documented?
 		SparseSolverPack::TestingPack::BasisSystemTesterSetOptions
-			basis_sys_options_setter( basis_sys_tester );
+			basis_sys_options_setter( basis_sys_tester.get() );
 		basis_sys_options_setter.set_options( *options_ );
 		decomp_sys_aggr->set_basis_sys_tester( basis_sys_tester ); // gives control to delete!
 
 		// Note, the switch based code for the above if statements would not
 		// compile under MipsPro 7.3.1.1m.
 
-	   	decomp_sys = new DecompositionSystemVarReductStd( false, algo.get(), decomp_sys_aggr );
-
-		algo->rsqp_state().set_decomp_sys(decomp_sys);
+	   	decomp_sys
+			= ref_count_ptr<DecompositionSystemVarReductStd>(
+				new DecompositionSystemVarReductStd(
+					false, algo.get()
+					,rcp::rcp_implicit_cast<DecompositionSystemVarReductImpNode>(decomp_sys_aggr) ) );
+		algo->rsqp_state().set_decomp_sys(rcp::rcp_implicit_cast<DecompositionSystem>(decomp_sys));
 
 	}
 
@@ -1139,14 +1190,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			}
 
 			algo->insert_step(
-				  ++step_num
+				++step_num
 				, LineSearch_name
 				, new LineSearchFailureNewBasisSelection_Step( 
-					  line_search_step
-					, new NewBasisSelectionStd_Strategy(decomp_sys)
-				  )
-			  );
-
+					line_search_step
+					,new NewBasisSelectionStd_Strategy(decomp_sys.get()) // Just aggregation, okay!
+					)
+				);
+			
 			Algorithm::poss_type
 				pre_step_i = 0;
 
@@ -1451,10 +1502,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		// 3/7/01: Added another test also
 		CheckBasisFromCPy_Step
 			*basis_check_step1 = new CheckBasisFromCPy_Step(
-				new NewBasisSelectionStd_Strategy(decomp_sys) );
+				new NewBasisSelectionStd_Strategy(decomp_sys.get()) );
 		CheckBasisFromPy_Step
 			*basis_check_step2 = new CheckBasisFromPy_Step(
-				new NewBasisSelectionStd_Strategy(decomp_sys) );
+				new NewBasisSelectionStd_Strategy(decomp_sys.get()) );
 		if( cov_.max_basis_cond_change_frac_ > 0.0 ) {
 			basis_check_step1->max_basis_cond_change_frac( cov_.max_basis_cond_change_frac_ );
 			basis_check_step2->max_basis_cond_change_frac( cov_.max_basis_cond_change_frac_ );

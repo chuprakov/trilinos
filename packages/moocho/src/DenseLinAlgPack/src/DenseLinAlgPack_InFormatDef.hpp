@@ -6,6 +6,8 @@
 #ifndef LINALGPACK_IN_FORMAT_DEF_H
 #define LINALGPACK_IN_FORMAT_DEF_H
 
+#include <istream>
+
 #include "LinAlgPackInFormatDecl.h"
 
 namespace LinAlgPack {

@@ -971,6 +971,7 @@ inline
 void GenMatrix::resize(size_type rows, size_type cols, value_type val)
 {
 	v_.resize(rows*cols,val);
+	v_ = val;
 	rows_ = rows;
 }
 

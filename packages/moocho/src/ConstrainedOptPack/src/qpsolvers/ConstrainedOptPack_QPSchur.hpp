@@ -502,6 +502,12 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, iter_refine_at_solution )
 		
 	///
+	/** Set whether a singular initial schur complement will attempted to be
+	 * salvaged by adding as many nonsingular rows/cols as possible.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, salvage_init_schur_comp )
+
+	///
 	/** Set the tolerances to use when updating the schur complement.
 	 */
 	void pivot_tols( MSADU::PivotTolerances pivot_tols );
@@ -524,6 +530,7 @@ public:
 		,value_type               iter_refine_opt_tol  = 1e-12
 		,value_type               iter_refine_feas_tol = 1e-12
 		,bool                     iter_refine_at_solution = true
+		,bool                     salvage_init_schur_comp = true
 		,MSADU::PivotTolerances   pivot_tols = MSADU::PivotTolerances( 1e-8,1e-11,1e-11 )
 		);
 
@@ -751,7 +758,7 @@ public:
 		  */
 		void initialize( 
 			QP& qp, size_type num_act_change, const int ij_act_change[]
-			, const EBounds bnds[], bool test
+			, const EBounds bnds[], bool test, bool salvage_init_schur_comp
 			, std::ostream *out, EOutputLevel output_level );
 
 		///

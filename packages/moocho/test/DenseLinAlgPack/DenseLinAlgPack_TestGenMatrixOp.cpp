@@ -20,7 +20,7 @@
 
 namespace {
 
-#if !defined(_MIPS_CXX) && !defined(_PG_CXX)
+#if !defined(_MIPS_CXX) && !defined(_PG_CXX) && !defined(_KAI_CXX)
 
 // 2/10/00: See TestVectorClass.cpp
 inline
@@ -195,7 +195,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 	char				str_diag[2][10]		= { "unit",		"nonunit"	};
 
 	BLAS_Cpp::Transp	a_trans[2]			= { trans,		no_trans	};
-	char				str_trans[2][10]	= { "trans",	"no_trans"	};
+//	char				str_trans[2][10]	= { "trans",	"no_trans"	};
 
 	try {
 

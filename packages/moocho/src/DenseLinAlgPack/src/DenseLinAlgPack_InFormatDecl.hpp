@@ -20,10 +20,10 @@ namespace LinAlgPack {
   * \end{enumeration}
   *
   * The original formating state of #is# is preserved even if an exception
-  * is thrown. 
+  * is thrown.
   */
 template<class T>
-std::istream& operator>>(std::istream& is, LinAlgPackIO::bound_format<T>& bf);
+std::istream& operator>>(std::istream& is, const LinAlgPackIO::bound_format<T>& bf);
 
 }	// end namespace LinAlgPack
 

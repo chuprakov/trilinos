@@ -1,4 +1,4 @@
-// //////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////
 // QPSchur.cpp
 
 // disable VC 5.0 warnings about debugger limitations
@@ -32,8 +32,8 @@
 #include "Misc/include/doubledouble.h"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Vp_StMtV;
+using SparseLinAlgPack::Vp_StV;
+using SparseLinAlgPack::Vp_StMtV;
 }
 
 namespace {
@@ -1143,9 +1143,9 @@ QPSchur::ActiveSet::ActiveSet(
 {}
 
 void QPSchur::ActiveSet::initialize(
-	  QP& qp, size_type num_act_change, const int ij_act_change[]
-	, const EBounds bnds[], bool test
-	, std::ostream *out, EOutputLevel output_level )
+	QP& qp, size_type num_act_change, const int ij_act_change[]
+	,const EBounds bnds[], bool test,  bool salvage_init_schur_comp
+	,std::ostream *out, EOutputLevel output_level )
 {
 	using LinAlgOpPack::V_mV;
 	using SparseLinAlgPack::V_MtV;
@@ -1520,9 +1520,35 @@ void QPSchur::ActiveSet::initialize(
 					<< std::endl;
 			}
 		}
-		// ToDo: Think about how to deal with the case where we may want to
-		// selectively remove some rows/columns of S in order to
-		// get a nonsingular schur complement.  This may be complicated though.
+		catch(const MSADU::SingularUpdateException& excpt) {
+			if( out && (int)output_level >= QPSchur::OUTPUT_BASIC_INFO ) {
+				*out
+				<< "\nActiveSet::initialize(...) : " << excpt.what()
+				<< std::endl;
+			}
+			if(salvage_init_schur_comp) {
+				if( out && (int)output_level >= QPSchur::OUTPUT_BASIC_INFO ) {
+					*out
+						<< "\nsalvage_init_schur_comp == true\n"
+						<< "We will attempt to add as many rows/cols of the "
+						<< "initial Schur complement as possible ...\n";
+				}
+				// ToDo: We will build the schur complement one row/col at a time
+				// skipping those updates that cause it to become singular.  For each
+				// update that causes the schur compplement to become singular we
+				// will remove the corresponding change.
+
+				throw; // For now just rethrow the exception!
+			}
+			else {
+				if( out && (int)output_level >= QPSchur::OUTPUT_BASIC_INFO ) {
+					*out
+						<< "\nsalvage_init_schur_comp == false\n"
+						<< "We will just throw this singularity exception out of here ...\n";
+				}
+				throw;
+			}
+		}
 		if( out && (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 			*out
 				<< "\nSchur Complement after factorization:\n"
@@ -2333,6 +2359,7 @@ QPSchur::QPSchur(
 	,value_type               iter_refine_opt_tol
 	,value_type               iter_refine_feas_tol
 	,bool                     iter_refine_at_solution
+	,bool                     salvage_init_schur_comp
 	,MSADU::PivotTolerances   pivot_tols
 	)
 	:schur_comp_(schur_comp)
@@ -2349,16 +2376,16 @@ QPSchur::QPSchur(
 	,iter_refine_opt_tol_(iter_refine_opt_tol)
 	,iter_refine_feas_tol_(iter_refine_feas_tol)
 	,iter_refine_at_solution_(iter_refine_at_solution)
+	,salvage_init_schur_comp_(salvage_init_schur_comp)
 	,act_set_(schur_comp,pivot_tols)
 {}
 
 QPSchur::ESolveReturn QPSchur::solve_qp(
-	  QP& qp
-	, size_type num_act_change, const int ij_act_change[]
-		, const EBounds bnds[]
-	, std::ostream *out, EOutputLevel output_level, ERunTests test_what
-	, VectorSlice* x, SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve
-	, size_type* iter, size_type* num_adds, size_type* num_drops
+	QP& qp
+	,size_type num_act_change, const int ij_act_change[], const EBounds bnds[]
+	,std::ostream *out, EOutputLevel output_level, ERunTests test_what
+	,VectorSlice* x, SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve
+	,size_type* iter, size_type* num_adds, size_type* num_drops
 	)
 {
 	using std::setw;
@@ -2446,7 +2473,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	// Initialize the active set.
 	try {
 		act_set_.initialize( qp, num_act_change, ij_act_change, bnds
-			, test_what == RUN_TESTS, out, output_level );
+			, test_what == RUN_TESTS, salvage_init_schur_comp(), out, output_level );
 		// If this throws a WrongInteriaUpdateExecption it will be
 		// thrown clean out of here!
 	}
@@ -2458,7 +2485,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 				<< "\nSetting num_act_change = 0 and proceeding with a cold start...\n";
 		}
 		act_set_.initialize( qp, num_act_change = 0, ij_act_change, bnds
-			, test_what == RUN_TESTS, out, output_level );
+			, test_what == RUN_TESTS, salvage_init_schur_comp(), out, output_level );
 	}
 
 	// Compute vo =  inv(Ko) * fo
