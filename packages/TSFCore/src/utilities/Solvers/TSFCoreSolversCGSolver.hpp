@@ -257,6 +257,8 @@ CGSolver<Scalar>::clone() const
 
 // private
 
+#define TSFCORE_CG_SOLVER_ERR_MSG "CGSolver<Scalar>::solve(...): iteration = " << currIteration_ << ": Error, "
+
 template<class Scalar>
 void CGSolver<Scalar>::doIteration(
 	const LinearOp<Scalar> &M, ETransp opM_notrans, ETransp opM_trans, MultiVector<Scalar> *X, Scalar a
@@ -285,11 +287,11 @@ void CGSolver<Scalar>::doIteration(
 	for(j=0;j<m;++j) { 	// Check indefinite operator
 		THROW_EXCEPTION(
 			RTOp_is_nan_inf(rho_[j]), Exceptions::SolverBreakdown
-			,"CGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = " << rho_[j] << " is not valid number, the method has failed!"
+			,TSFCORE_CG_SOLVER_ERR_MSG << "rho["<<j<<"] = " << rho_[j] << " is not valid number, the method has failed!"
 			);
 		THROW_EXCEPTION(
 			rho_[j] <= 0.0, Exceptions::Indefinite
-			,"CGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = " << rho_[j] << " <= 0, the preconditioner is indefinite!"
+			,TSFCORE_CG_SOLVER_ERR_MSG << "rho["<<j<<"] = " << rho_[j] << " <= 0, the preconditioner is indefinite!"
 			);
 	}
 	if(get_out().get() && dump_all()) {
@@ -298,7 +300,7 @@ void CGSolver<Scalar>::doIteration(
 	for(j=0;j<m;++j) { // Check for failure: rho_{i-1} = 0
 		THROW_EXCEPTION(
 			rho_[j] == 0.0, Exceptions::SolverBreakdown
-			,"CGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = 0.0, the method has failed!"
+			,TSFCORE_CG_SOLVER_ERR_MSG << "rho["<<j<<"] = 0.0, the method has failed!"
 			);
 	}
 	if( currIteration_ == 1 ) {
@@ -319,23 +321,17 @@ void CGSolver<Scalar>::doIteration(
 	for(j=0;j<m;++j) { 	// Check indefinite operator
 		THROW_EXCEPTION(
 			RTOp_is_nan_inf(gamma_[j]), Exceptions::SolverBreakdown
-			,"CGSolver<Scalar>::solve(...): Error, gamma["<<j<<"] = " << gamma_[j] << " is not valid number, the method has failed!"
+			,TSFCORE_CG_SOLVER_ERR_MSG << "gamma["<<j<<"] = " << gamma_[j] << " is not valid number, the method has failed!"
 			);
 		THROW_EXCEPTION(
 			gamma_[j] <= 0.0, Exceptions::Indefinite
-			,"CGSolver<Scalar>::solve(...): Error, gamma["<<j<<"] = " << gamma_[j] << " <= 0, the operator is indefinite!"
+			,TSFCORE_CG_SOLVER_ERR_MSG << "gamma["<<j<<"] = " << gamma_[j] << " <= 0, the operator is indefinite!"
 			);
 	}
 	for(j=0;j<m;++j) alpha_[j] = rho_[j]/gamma_[j];        // rho_{i-1}[j] / gamma_{i-1}[j]           -> alpha_{i}[j]
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\ngamma =\n"; for(j=0;j<m;++j) *get_out() << " " << gamma_[j]; *get_out() << std::endl;
 		*get_out() << "\nalpha =\n"; for(j=0;j<m;++j) *get_out() << " " << alpha_[j]; *get_out() << std::endl;
-	}
-	for(j=0;j<m;++j) { 	// Check for failure: alpha_{i-1} = 0 or NaN or Inf
-		THROW_EXCEPTION(
-			alpha_[j] == 0.0 || RTOp_is_nan_inf(alpha_[j]), Exceptions::SolverBreakdown
-			,"CGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = 0.0, the method has failed!"
-			);
 	}
 	update( &alpha_[0], +1.0, *P_, X );                    // +alpha_{i}[j] * P^{i}[j] + X^{i-1}      -> X^{i} 
 	update( &alpha_[0], -1.0, *Q_, R_.get() );             // -alpha_{i}[j] * Q^{i}[j] + R^{i-1}      -> R^{i} 
@@ -344,6 +340,8 @@ void CGSolver<Scalar>::doIteration(
 		*get_out() << "\nR =\n" << *R_;
 	}
 }
+
+#undef TSFCORE_CG_SOLVER_ERR_MSG
 
 template<class Scalar>
 void CGSolver<Scalar>::compress( bool isConverged[],  MultiVector<Scalar>* X  ) const

@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
 	mmp::ref_count_ptr<Epetra_Vector> bb = mmp::rcp( new Epetra_Vector(Copy, Map, b) );
 	// Solution vector, initialize to zero.
 	mmp::ref_count_ptr<Epetra_Vector> x = mmp::rcp( new Epetra_Vector(Map) ); 
-	x.get()->PutScalar( 0.0 ); 
+	x->PutScalar( 0.0 ); 
 	// 
 	// Add rows one-at-a-time
 	//
@@ -118,15 +118,15 @@ int main(int argc, char *argv[]) {
 		row_vals = val + bindx[i];
 		col_inds = bindx + bindx[i];
 		NumEntries = bindx[i+1] - bindx[i];
-		assert(A.get()->InsertGlobalValues(update[i], NumEntries, row_vals, col_inds)==0);
-		assert(A.get()->InsertGlobalValues(update[i], 1, val+i, update+i)==0);
+		assert(A->InsertGlobalValues(update[i], NumEntries, row_vals, col_inds)==0);
+		assert(A->InsertGlobalValues(update[i], 1, val+i, update+i)==0);
 	}
 	//
 	// Finish up
 	//
-	assert(A.get()->TransformToLocal()==0);
+	assert(A->TransformToLocal()==0);
 	//
-	A.get()->SetTracebackMode(1); // Shutdown Epetra Warning tracebacks
+	A->SetTracebackMode(1); // Shutdown Epetra Warning tracebacks
 	//
 	// Create the TSFCore Linear Operator and Vectors
 	//

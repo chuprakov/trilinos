@@ -66,8 +66,8 @@ GMRESSolver<Scalar>::GMRESSolver( int			default_max_iter,
       isConverged(false), curr_iter(0), ptr_H(0), z(0), r0( 1.0 ), curr_res( 1.0 )
 {	
     H_ = MemMngPack::rcp( new Teuchos::DenseMatrix<int,Scalar>() );
-    H_.get()->shape( max_iter+1, max_iter );
-    ptr_H = H_.get()->values();
+    H_->shape( max_iter+1, max_iter );
+    ptr_H = H_->values();
     z = new Scalar[max_iter+1];
     cs.resize(max_iter); sn.resize(max_iter); 
 }
@@ -99,9 +99,9 @@ void GMRESSolver<Scalar>::solve( const LinearOp<Scalar> &Op,
     if ( tol_in != tol ) { tol = tol_in; }
     if ( max_iter_in != max_iter ) {
       max_iter = max_iter_in;
-      H_.get()->shape( max_iter+1, max_iter );
+      H_->shape( max_iter+1, max_iter );
       delete [] z;
-      ptr_H = H_.get()->values();
+      ptr_H = H_->values();
       z = new Scalar[max_iter+1];
       cs.resize(max_iter); sn.resize(max_iter);
     }    
@@ -117,7 +117,7 @@ void GMRESSolver<Scalar>::solve( const LinearOp<Scalar> &Op,
     //
     r0 = norm_2( *r );
     z[0] = r0;
-    w = V_.get()->col(1);		// get a mutable view of the first column of V_.
+    w = V_->col(1);		// get a mutable view of the first column of V_.
     assign( w.get(), *r );		// copy r to the first column of V_.
     Vt_S( w.get(), 1.0/r0 );		// v_1 = r_0 / ||r_0||
     w = MemMngPack::null;
@@ -153,7 +153,7 @@ void GMRESSolver<Scalar>::doIteration( const LinearOp<Scalar> &Op, const ETransp
     Teuchos::BLAS<int, Scalar> blas;
     Teuchos::DenseMatrix<int, Scalar> &H = *H_;
     // 
-    w = V_.get()->col(curr_iter+2);				// w = v_{j+1}
+    w = V_->col(curr_iter+2);                             // w = v_{j+1}
     Op.apply( Op_trans, *V_->col(curr_iter+1), w.get() ); // w = Op * v_{j}	
     //
     // Perform MGS to orthogonalize new Krylov vector.
