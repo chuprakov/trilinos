@@ -39,6 +39,7 @@
 #include "TSFCoreMultiVector.hpp"
 #include "TSFCoreSolversNorm.hpp"
 #include "TSFCoreSolversConvergenceTester.hpp"
+#include "TSFCoreSolversNormedConvergenceTester.hpp"
 #include "TSFCoreTestingTools.hpp"
 #include "check_nan_inf.h"
 #include "Teuchos_TestForException.hpp"
@@ -200,7 +201,11 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 	//
 	// Resolve default parameters
 	//
+	const NormedConvergenceTester<Scalar>
+		*normedConvTester = dynamic_cast<const NormedConvergenceTester<Scalar>*>(convTester);
 	const int max_iter = ( max_iter_in == DEFAULT_MAX_ITER ? default_max_iter() : max_iter_in );
+	const Scalar tol = ( normedConvTester ? normedConvTester->minTol() : default_tol_ );
+	
 //	if (convTester) norm_ = convTester->norm(); else norm_ = Teuchos::rcp(new Solvers::Norm<Scalar>());
 	//
 	// Solve each linear system one at a time
@@ -220,7 +225,7 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 				,&*x                    // curr_soln
 				,M_trans                // Op_trans
 				,max_iter               // max_iter_in
-				,default_tol_           // tol_in
+				,tol                    // tol_in
 				);
 		if( single_solve_return.solve_status == MAX_ITER_EXCEEDED ) all_solved = false;
 		if( single_solve_return.num_iter > max_iter_taken ) max_iter_taken = single_solve_return.num_iter;
