@@ -137,10 +137,13 @@ private:
 	// cache
 	int numBlocks_;
 
-	// //////////////////////////////
-	// Private member functions
 
-	ProductVector(); // Not defined and not to be called!
+protected:
+
+	// //////////////////////////////
+	// Protected member functions
+  // Added to allow TSFExtended ProductVector to derive from this.
+  ProductVector();
 
 };
 

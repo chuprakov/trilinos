@@ -258,10 +258,11 @@ private:
 	Index     dim_;
 	bool      isInCore_;
 	
+protected:
 	// ///////////////////////////////////
-	// Private member functions
-
-	ProductVectorSpace(); // Not defined and not to be called!
+	// Protected member functions
+  // Added to allow TSFExtended ProductVectorSpace to derive from this 
+  ProductVectorSpace(){;}
 
 };
 
@@ -282,6 +283,11 @@ const Index* ProductVectorSpace<Scalar>::vecSpacesOffsets() const
 {
 	return ( dim_ ? &vecSpacesOffsets_[0] : NULL );
 }
+
+  // The following was changed by ptboggs so that 
+  // TSFExtended ProductVectorSpace
+  // could derive from this.
+
 
 
 } // namespace TSFCore
