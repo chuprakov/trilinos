@@ -19,6 +19,7 @@
 #include <valarray>
 
 #include "LinAlgPackTypes.h"
+#include "ThrowException.h"
 
 namespace LinAlgPack {
 ///
@@ -48,9 +49,12 @@ public:
 	///
 	IVector(const value_type* p, size_type n);
 
-	/// 1-based element access
+	/// Resize on assignment
+	IVector& operator=(const IVector&);
+
+	/// 1-based element access (range checked if _DEBUG is defined)
 	reference operator()(size_type i);
-	/// 1-based element access
+	/// 1-based element access (range checked if _DEBUG is defined)
 	const_reference operator()(size_type i) const;
 
 	/// STL iterator
@@ -78,11 +82,28 @@ inline IVector::IVector(const value_type& val, size_type n) : std::valarray<size
 inline IVector::IVector(const value_type* p, size_type n) : std::valarray<size_type>(p,n)
 {}
 
+inline IVector& IVector::operator=(const IVector& iv)
+{
+	this->resize(iv.size());
+	std::valarray<LinAlgPack::size_type>::operator=(iv);
+	return *this;
+}
+
 inline IVector::reference IVector::operator()(size_type i)
-{	return operator[](i-1);	}
+{
+#ifdef _DEBUG
+	assert( 1 <= i && i <= size() );
+#endif
+	return operator[](i-1);
+}
 
 inline IVector::const_reference IVector::operator()(size_type i) const
-{	return const_cast<IVector*>(this)->operator[](i-1);		}
+{
+#ifdef _DEBUG
+	assert( 1 <= i && i <= size() );
+#endif
+	return const_cast<IVector*>(this)->operator[](i-1);
+}
 
 inline IVector::iterator IVector::begin()
 {	return &operator[](0); }
