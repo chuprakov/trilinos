@@ -370,6 +370,7 @@ AC_CONFIG_FILES([
 		Makefile 
 		src/Makefile
 		test/Makefile
+		test/unary_rtop/Makefile
 		])
 
 AC_OUTPUT()

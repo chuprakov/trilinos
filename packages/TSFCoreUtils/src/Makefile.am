@@ -64,9 +64,9 @@ $(srcdir)/RTOpPack/RTOp_reduct_sum_value.c\
 $(srcdir)/RTOpPack/RTOp_reduct_sum_values.c
 
 RTOp_CXX_SOURCES_H=\
+$(srcdir)/RTOpPack/RTOpCppDecl.hpp\
 $(srcdir)/RTOpPack/RTOpCpp.hpp\
 $(srcdir)/RTOpPack/RTOpCppC.hpp\
-$(srcdir)/RTOpPack/RTOpCppDecl.hpp\
 $(srcdir)/RTOpPack/RTOpCppToC.hpp\
 $(srcdir)/RTOpPack/RTOpCppToMPI.hpp\
 $(srcdir)/RTOpPack/RTOpFactoryTmpl.hpp\
@@ -74,7 +74,9 @@ $(srcdir)/RTOpPack/RTOpPackTypes.hpp\
 $(srcdir)/RTOpPack/RTOp_get_reduct_op.hpp\
 $(srcdir)/RTOpPack/print_sub_vector.hpp\
 $(srcdir)/RTOpPack/RTOpServerDecl.hpp\
-$(srcdir)/RTOpPack/RTOpServer.hpp
+$(srcdir)/RTOpPack/RTOpServer.hpp\
+$(srcdir)/RTOpPack/RTOpUnaryFuncPtrDecl.hpp\
+$(srcdir)/RTOpPack/RTOpUnaryFuncPtr.hpp
 
 RTOp_CXX_SOURCES=\
 $(srcdir)/RTOpPack/RTOpCppC.cpp\

@@ -7609,7 +7609,7 @@ fi
 #  of tests.  New package comes only with src and example.
 #  You will need to change AC_CONFIG_FILES below and Makefile.am
 #  to add a new directory.
-                              ac_config_files="$ac_config_files Makefile src/Makefile test/Makefile"
+                                        ac_config_files="$ac_config_files Makefile src/Makefile test/Makefile test/unary_rtop/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -8198,6 +8198,7 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
+  "test/unary_rtop/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/unary_rtop/Makefile" ;;
   "depfiles" ) CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
   "src/TSFCoreUtilsConfig.h" ) CONFIG_HEADERS="$CONFIG_HEADERS src/TSFCoreUtilsConfig.h:src/TSFCoreUtilsConfig.h.in" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
