@@ -1,6 +1,6 @@
 /*
 
-This is the main documentation file for rSQP++.
+This is the main documentation file for MOOCHO.
 For this to work properly doxygen must be run in this
 directory for these include paths to work.  The paths
 must always be relative to the directory that doc++
@@ -9,13 +9,14 @@ running through doc++ in the debugger.
 
 */
 
-/** \mainpage rSQP++: C++ framework for building Successive Quadratic Programming (SQP) algorithms.
+/** \mainpage MOOCHO: Object-Oriented arCHitecture for Optimization
 
-This is a reference for the projects of C++ classes and functions that comprise
-rSQP++.
+This is a reference for the projects of C++ classes and functions that
+comprise MOOCHO.
 
-Warning!  The documentation and code is still under construction and is not fully functional.
-In the future this docuentation will be much more extensive.
+Warning!  The documentation is still under construction and is not
+fully functional.  In the future this documentation will be more
+extensive.
 
 <ul>
 
@@ -35,7 +36,7 @@ In the future this docuentation will be much more extensive.
     Packages for abstract, sparse and dense linear algebra, linear solvers,
     QP solvers and range / null space decompositions.
     These are packages that are used to perform numerical computations within
-    and algorithm.  They range from low level dense BLAS linear algebra to
+    an algorithm.  They range from low level dense BLAS linear algebra to
     high level operations like the solution of complex Quadratic Programms.
     Packages are listed in assending order based on dependencies.  No package is
     dependent on any package below it but it may be dependent on a package above
@@ -45,17 +46,13 @@ In the future this docuentation will be much more extensive.
 		reduction/transformation operators.
 	<li> <A HREF="../RTOpStdOpsLib/html/index.html">RTOpStdOpsLib</A>: C implementations
 		of general vector (and array) reduction/transformation operators.
-	<li> <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>: C++ interfaces
-		for vectors, matrices and related linear algebra objects based on 
-		<tt>%RTOpPack</tt>.
 	<li> <A HREF="../DenseLinAlgPack/html/index.html">DenseLinAlgPack</A>: Concreate C++ classes
 		for dense BLAS compatible linear algebra . *** Not updated yet!
-	<li> <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>: Concreate C++ classes
-		for sparse linear algebra with implementations of abstract interfaces
-		in  <tt>%AbstractLinAlgPack</tt>.
-	<li> <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>: Abstract C++ interfaces
-		and subclasses for serial linear solvers with implementations of abstract interfaces
-		in  <tt>%AbstractLinAlgPack</tt>.
+	<li> <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>: C++ interfaces
+		for vectors, matrices and related linear algebra objects based on 
+		<tt>%RTOpPack</tt>.  Also contains	concreate C++ classes
+		for sparse linear algebra with implementations of abstract interfaces and abstract C++ interfaces
+		and subclasses for serial linear solvers with implementations of abstract interfaces.
 	<li> <A HREF="../ConstrainedOptPack/html/index.html">ConstrainedOptPack</A>:
 		C++ classes and interfaces for utilities for constrained optimization based on the
 		interfaces in <tt>%AbstractLinAlgPack</tt>.
@@ -67,7 +64,7 @@ In the future this docuentation will be much more extensive.
 	<li> <A HREF="../NLPInterfacePack/html/index.html">NLPInterfacePack</A>
 	</ul>
 
-<li> Succesive Quadratic Programming (SQP) Algorithms:
+<li> NLP Algorithms:
 	<ul>
 	<li> <A HREF="../MoochoPack/html/index.html">MoochoPack</A>.
 	</ul>

@@ -23,8 +23,8 @@
 namespace ConstrainedOptPack {
 
 ///
-/** Set options for \Ref{VariableBoundsTester} from an
-  * OptionsFromStream object.
+/** Set options for VariableBoundsTester from an OptionsFromStream
+  * object.
   *
   * The default options group name is VariableBoundsTester.
   *

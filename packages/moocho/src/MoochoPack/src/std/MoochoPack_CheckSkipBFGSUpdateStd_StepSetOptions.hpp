@@ -23,7 +23,7 @@
 namespace MoochoPack {
 
 ///
-/** Set options for \Ref{CheckSkipBFGSUpdateStd_Step} from a
+/** Set options for CheckSkipBFGSUpdateStd_Step from a
   * OptionsFromStream object.
   *
   * The options group is:

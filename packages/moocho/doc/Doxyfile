@@ -1,5 +1,5 @@
 #
-# Doxygen options specific to rSQPpp main page
+# Doxygen options specific to MOOCHO main page
 #
 
 # Doxyfile 1.2.8.1
@@ -9,7 +9,7 @@
 #---------------------------------------------------------------------------
 #SEARCHENGINE           = YES
 SEARCHENGINE           = NO
-CGI_NAME               = rSQPpp.cgi
+CGI_NAME               = MOOCHO.cgi
 
 @INCLUDE = ./Doxyfile.env
 @INCLUDE = ./Doxyfile.doc
@@ -18,13 +18,13 @@ CGI_NAME               = rSQPpp.cgi
 # General configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = rSQP++
-PROJECT_NUMBER         = 0.1 (beta)
+PROJECT_NUMBER         = 1.0
 OUTPUT_DIRECTORY       = $(MOOCHO_BASE_DIR)/doc
 EXTRACT_ALL            = YES
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = rSQPpp.dxx
+INPUT                  = Moocho.dxx
 RECURSIVE              = NO
 EXCLUDE                = 
 EXCLUDE_PATTERNS       = 
@@ -36,11 +36,12 @@ FILTER_SOURCE_FILES    = NO
 #---------------------------------------------------------------------------
 # Configuration options related to the preprocessor   
 #---------------------------------------------------------------------------
-INCLUDE_PATH           = ../core/Misc/include
+INCLUDE_PATH           = ../core/Misc/src
 #---------------------------------------------------------------------------
 # Configuration::addtions related to external references   
 #---------------------------------------------------------------------------
 TAGFILES               = $(MOOCHO_BASE_DIR)/doc/Misc/Misc.tag=./Misc/html \
+                         $(MOOCHO_BASE_DIR)/doc/IterationPack/IterationPack.tag=./IterationPack/html \
                          $(MOOCHO_BASE_DIR)/doc/RTOpPack/RTOpPack.tag=./RTOpPack/html \
                          $(MOOCHO_BASE_DIR)/doc/RTOpStdOpsLib/RTOpStdOpsLib.tag=./RTOpStdOpsLib/html \
                          $(MOOCHO_BASE_DIR)/doc/AbstractLinAlgPack/AbstractLinAlgPack.tag=./AbstractLinAlgPack/html \

@@ -24,21 +24,23 @@
 namespace ConstrainedOptPack {
 
 ///
-/** This class abstracts a decomposition choice for the range space \a Y,
- * and null space \a Z, matrices for a linearly independent set of columns of \a Gc.
+/** This class abstracts a decomposition choice for the quasi-range
+ * space \a Y and null space \a Z matrices for a linearly independent
+ * set of columns of \a Gc.
  *
  * <tt>Gc = [ Gc(:,equ_decomp),  Gc(:,equ_undecomp) ]</tt>
  *
  * where \c Gc is <tt>n x m</tt>, \c Gc(:,equ_decomp) is <tt>n x r</tt> and
  * \c Gc(:,equ_undecomp) is <tt>n x (m - r)</tt>.
  *
- * Note that the columns in <tt>Gc(:,equ_undecomp)</tt> may be linearly dependent with
- * the columns in <tt>Gc(:,equ_undecomp)</tt> but they may just be undecomposed
- * linearly independent equality constraints.
+ * Note that the columns in <tt>Gc(:,equ_undecomp)</tt> may be
+ * linearly dependent with the columns in <tt>Gc(:,equ_undecomp)</tt>
+ * or they may just be undecomposed linearly independent equality
+ * constraints.
  *
  * The decomposition formed by subclasses must have the properties:
  \verbatim
-	 Z s.t. Gc(:,equ_deomp)' * Z = 0
+	 Z s.t. Gc(:,equ_decomp)' * Z = 0
 	 Y s.t. [Z  Y] is nonsingular
 	 R = Gc(:,equ_decomp)' * Y is nonsingular
 	 Uz = Gc(:,equ_undecomp)' * Z

@@ -23,7 +23,7 @@
 namespace MoochoPack {
 
 ///
-/** Set options for \Ref{MeritFunc_ModifiedL1LargerSteps_AddedStep} from a
+/** Set options for MeritFunc_ModifiedL1LargerSteps_AddedStep from a
   * OptionsFromStream object.
   *
   * The options group is:

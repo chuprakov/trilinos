@@ -23,8 +23,8 @@
 namespace MoochoPack {
 
 ///
-/** Set options for \Ref{ReducedHessianSecantUpdateBFGSProjected_Strategy} from a
-  * OptionsFromStream object.
+/** Set options for ReducedHessianSecantUpdateBFGSProjected_Strategy
+  * from a OptionsFromStream object.
   *
   * The options group is (with the default name):
   *

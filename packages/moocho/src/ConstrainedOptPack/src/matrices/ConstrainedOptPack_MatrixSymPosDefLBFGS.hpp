@@ -208,6 +208,8 @@ public:
 	 */
 	size_type num_secant_updates() const;
 
+	//@}
+
 	/** @name Overridden from MatrixOp */
 	//@{
 

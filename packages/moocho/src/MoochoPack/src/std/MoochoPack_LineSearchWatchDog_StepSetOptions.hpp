@@ -23,8 +23,8 @@
 namespace MoochoPack {
 
 ///
-/** Set options for \Ref{LineSearchWatchDog_Step} from a
-  * OptionsFromStream object.
+/** Set options for LineSearchWatchDog_Step from a OptionsFromStream
+  * object.
   *
   * The options group is:
   *

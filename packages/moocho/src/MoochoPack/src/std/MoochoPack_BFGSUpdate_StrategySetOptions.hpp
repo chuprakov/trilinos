@@ -23,8 +23,8 @@
 namespace MoochoPack {
 
 ///
-/** Set options for \Ref{BFGSUpdate_Strategy} from an
-  * OptionsFromStream object.
+/** Set options for BFGSUpdate_Strategy from an OptionsFromStream
+  * object.
   *
   * The default options group name is BFGSUpdate.
   *

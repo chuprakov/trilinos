@@ -349,6 +349,7 @@ public:
 	 *			general inequality constraints by computing  r = op(E)*d+b*eta then
 	 *			add the most violated variable bound.  This option is always the most
 	 *			expensive but may result in less QP iterations.
+	 *		</ul>
 	 * </ul>
 	 *
 	 * As a side effect, the vector pointed to by <tt>Ed</tt> which was passed to
@@ -357,9 +358,9 @@ public:
 	 * <ul>
 	 * <li> <tt>j_viol == 0</tt>
 	 * <li> <tt>this->pick_violated_policy() == ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY</tt>
-	 * <li> <tt>this->pick_violated_policy() == ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY</tt>
-	 *		<tt>&& j_viol > this->n()</tt>
-	 *	</ul>
+	 * <li> <tt>this->pick_violated_policy() == ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY
+	 *		&& j_viol > this->n()</tt>
+	 * </ul>
 	 * If none of the above criteria applies then the client can not assume that
 	 * <tt>Ed</tt> was updated and therefore the client must compute this value on its own.
 	 */
