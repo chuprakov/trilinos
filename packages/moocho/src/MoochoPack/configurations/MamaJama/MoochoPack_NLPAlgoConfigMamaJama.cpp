@@ -420,41 +420,79 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	if( !basis_sys_ptr_.get() ) {
 		SparseCOOSolverCreator
 			*sparse_solver_creator = NULL;
-		switch(linear_solver_type_) {
-			case MA28: {
-				sparse_solver_creator
-					= new SparseSolverPack::MA28SparseCOOSolverCreator(
-							new SparseSolverPack::MA28SparseCOOSolverSetOptions
-							, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
-						);
-				break;
-			}
-			case MA48: {
-				sparse_solver_creator
-					= new SparseSolverPack::MA48SparseCOOSolverCreator(
-							new SparseSolverPack::MA48SparseCOOSolverSetOptions
-							, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
-						);
-				break;
-			}
-			default:
-				assert(0);
-		}		
+		if( linear_solver_type_ == MA28 ) {
+			sparse_solver_creator
+				= new SparseSolverPack::MA28SparseCOOSolverCreator(
+						new SparseSolverPack::MA28SparseCOOSolverSetOptions
+						, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
+					);
+		}
+		else if ( linear_solver_type_ == MA48 ) {
+			sparse_solver_creator
+				= new SparseSolverPack::MA48SparseCOOSolverCreator(
+						new SparseSolverPack::MA48SparseCOOSolverSetOptions
+						, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
+					);
+		}
+		else {
+			assert(0);
+		}
+		
+// The following code would not compile under MipsPro 7.3.1.1m so it was replaced
+// with the above code.
+//
+//		switch(linear_solver_type_) {
+//			case MA28:
+//			{
+//				sparse_solver_creator
+//					= new SparseSolverPack::MA28SparseCOOSolverCreator(
+//							new SparseSolverPack::MA28SparseCOOSolverSetOptions
+//							, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
+//						);
+//				break;
+//			}
+//			case MA48:
+//			{
+//				sparse_solver_creator
+//					= new SparseSolverPack::MA48SparseCOOSolverCreator(
+//							new SparseSolverPack::MA48SparseCOOSolverSetOptions
+//							, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
+//						);
+//				break;
+//			}
+//			default:
+//				assert(0);
+//		}		
 		basis_sys_ptr_ = new COOBasisSystem(sparse_solver_creator, true);
 	}
 
 	DecompositionSystemVarReductImpNode* decomp_sys_aggr = 0;
 	
-	switch(fact_type_) {
-		case DIRECT_FACT:
-			decomp_sys_aggr = new DecompositionSystemCoordinateDirect(
-									basis_sys_ptr_.release(), true);
-			break;
-		case ADJOINT_FACT:
-			decomp_sys_aggr = new DecompositionSystemCoordinateAdjoint(
-									basis_sys_ptr_.release(), true);
-			break;
+	if ( fact_type_ == DIRECT_FACT ) {
+		decomp_sys_aggr = new DecompositionSystemCoordinateDirect(
+								basis_sys_ptr_.release(), true);
 	}
+	else if ( fact_type_ == ADJOINT_FACT ) {
+		decomp_sys_aggr = new DecompositionSystemCoordinateAdjoint(
+								basis_sys_ptr_.release(), true);
+	}
+	else {
+		assert(0);
+	}
+
+// The following code would not compile with MipsPro 7.3.1.1m and was replaced
+// with the above code.
+// 
+//	switch(fact_type_) {
+//		case DIRECT_FACT:
+//			decomp_sys_aggr = new DecompositionSystemCoordinateDirect(
+//									basis_sys_ptr_.release(), true);
+//			break;
+//		case ADJOINT_FACT:
+//			decomp_sys_aggr = new DecompositionSystemCoordinateAdjoint(
+//									basis_sys_ptr_.release(), true);
+//			break;
+//	}
 	
 	DecompositionSystemVarReductStd*
 		decomp_sys = new DecompositionSystemVarReductStd( false, algo.get(), decomp_sys_aggr );

@@ -5,6 +5,7 @@
 #pragma warning(disable : 4786)	
 
 #include <assert.h>
+#include <math.h>
 
 #include "../../include/std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.h"
 #include "Misc/include/StringToBool.h"

@@ -5,6 +5,7 @@
 #pragma warning(disable : 4786)	
 
 #include <assert.h>
+#include <math.h>
 
 #include "../../include/std/LineSearch2ndOrderCorrect_StepSetOptions.h"
 #include "Misc/include/StringToBool.h"

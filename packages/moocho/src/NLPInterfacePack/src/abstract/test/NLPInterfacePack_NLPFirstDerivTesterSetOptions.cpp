@@ -5,6 +5,7 @@
 #pragma warning(disable : 4786)	
 
 #include <assert.h>
+#include <math.h>
 
 #include "NLPFirstDerivativesTesterSetOptions.h"
 

@@ -5,6 +5,7 @@
 #pragma warning(disable : 4786)	
 
 #include <assert.h>
+#include <math.h>
 
 #include "../include/rSQPSolverClientInterfaceSetOptions.h"
 #include "Misc/include/StringToBool.h"
