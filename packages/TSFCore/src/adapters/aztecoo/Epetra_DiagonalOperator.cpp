@@ -101,7 +101,7 @@ double DiagonalOperator::NormInf() const
 	return nrm[0];
 }
 
-char* DiagonalOperator::Label() const
+const char* DiagonalOperator::Label() const
 {
 	return NULL;
 }

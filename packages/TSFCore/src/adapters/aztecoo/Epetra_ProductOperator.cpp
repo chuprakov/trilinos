@@ -198,7 +198,7 @@ double ProductOperator::NormInf() const
 	return -1.0;
 }
 
-char* ProductOperator::Label() const
+const char* ProductOperator::Label() const
 {
 	assertInitialized();
 	return NULL;

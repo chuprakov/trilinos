@@ -84,7 +84,7 @@ public:
 	///
 	double NormInf() const;
 	///
-	char * Label() const;
+	const char * Label() const;
 	///
 	bool UseTranspose() const;
 	///
