@@ -35,7 +35,8 @@ my $g_use_msg_opts =
 #
 # This is a perl program for running an NLP while
 # varying a set of options for rSQP++.  This program will print
-# lots of nice output and give lots of nice statistics.
+# lots of nice output and give lots of nice statistics.  The program will return 0 if
+# none of the NLP runs throws an exception.
 #
 # Now the format of the above input files will be defined:
 #
@@ -343,4 +344,4 @@ if( $g_remove_output_files ) {
 #
 $g_vary_options->print_all_opt_values_stats($g_output_fh);
 
-exit 0; # Success?
+exit ($g_vary_options->total_num_except() ? -1 : 0);

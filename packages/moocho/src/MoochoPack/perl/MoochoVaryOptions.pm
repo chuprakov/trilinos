@@ -181,7 +181,11 @@ use constant SUM_OPT_VALUES => 4;
 #  |  |
 #  |   - {V_OPT_VALUE_ABBR}   (ref to array)
 #  |
-#  |- {TOTAL_NLP_RUNS} (integer)
+#  |- {TOTAL_NLP_RUNS}    (integer)
+#  |
+#  |- {TOTAL_NLPS_SOLVED} (integer)
+#  |
+#  |- {TOTAL_NLPS_EXCEPT} (integer)
 #  |
 #   - {OPT_VAL_STATS} (ref to hash)
 #     |
@@ -295,6 +299,16 @@ use constant V_OPT_VALUE_ABBR  => "v_opt_value_abbr";
 use constant TOTAL_NLP_RUNS => "total_nlp_runs";
 
 #
+# Total number of problems solved
+#
+use constant TOTAL_NLPS_SOLVED => "total_nlps_solved";
+
+#
+# Total number of problems resulting in exceptions
+#
+use constant TOTAL_NLPS_EXCEPT => "total_nlps_except";
+
+#
 # Declare a hash of storage arrays for the cummutaltive statistics
 # for each opion value.
 #
@@ -365,9 +379,10 @@ sub new {
 								   V_OPT_VALUE()        => [],
 								   V_OPT_VALUE_ABBR()   => []
 								  },
-			  TOTAL_NLP_RUNS()=> 0,
-			  OPT_VAL_STATS() => {
-								  
+			  TOTAL_NLP_RUNS()   => 0,
+			  TOTAL_NLPS_SOLVED()=> 0,
+			  TOTAL_NLPS_EXCEPT()=> 0,
+			  OPT_VAL_STATS()  => {
 								  STATS_MIN_IT()       => [],
 								  STATS_MIN_FN()       => [],
 								  STATS_MIN_T()        => [],
@@ -544,7 +559,9 @@ sub reset_stats {
   my $max_it             = $self->{OPT_VAL_STATS()}->{STATS_MAX_IT()};  # ref to array
   my $except             = $self->{OPT_VAL_STATS()}->{STATS_EXCEPT()};  # ref to array
   #
-  $self->{TOTAL_NLP_RUNS()} = 0;
+  $self->{TOTAL_NLP_RUNS()}    = 0;
+  $self->{TOTAL_NLPS_SOLVED()} = 0;
+  $self->{TOTAL_NLPS_EXCEPT()} = 0;
   my @zero_array;
   for( my $i = 0; $i <= 11; ++$i ) { 
 	$zero_array[$i] = 0;
@@ -611,9 +628,11 @@ sub print_all_opt_values_stats {
   my $v_opt_value_abbr   = $self->{VARY_OPTS()}->{V_OPT_VALUE_ABBR()};  # ref to array
   #
   print $out
-	"\n\n**********************************************",
+	"\n\n********************************************************",
 	"\n*** Summary of performance of varied options\n",
-	"\nTotal number of NLP runs = ", $self->{TOTAL_NLP_RUNS()}, "\n";	
+	"\nTotal number of NLP runs                 = ", $self->{TOTAL_NLP_RUNS()}, "\n",	
+	"\nTotal number of NLP runs solved          = ", $self->{TOTAL_NLPS_SOLVED()}, "\n",	
+	"\nTotal number of NLP runs with exceptions = ", $self->{TOTAL_NLPS_EXCEPT()}, "\n";	
   my ($opt_grp_i, $opt_abs_j, $opt_val_abs_k);
   for( $opt_grp_i = 0; $opt_grp_i < @$v_opt_grp; $opt_grp_i++ ) {
 	my $opt_grp_name = $v_opt_grp->[$opt_grp_i];
@@ -630,6 +649,30 @@ sub print_all_opt_values_stats {
 		$self->_print_opt_values_stats($opt_abs_j,STATS_MIN_T(),$out);
 	  }
   }
+}
+
+#
+# Return the total number of runs
+#
+sub total_num_runs {
+  my $self       = shift;
+  return $self->{TOTAL_NLP_RUNS()};
+}
+
+#
+# Return the number of runs solved
+#
+sub total_num_solved {
+  my $self       = shift;
+  return $self->{TOTAL_NLPS_SOLVED()};
+}
+
+#
+# Return the number of runs with exceptions
+#
+sub total_num_except {
+  my $self       = shift;
+  return $self->{TOTAL_NLPS_EXCEPT()};
 }
 
 ##########################################
@@ -960,6 +1003,7 @@ sub _add_best_runs_lines {
 	  $self->_add_sol_stats( $num_fn_ratio, $run_opt_values->[$k], $stats_min_fn );
 	  my $num_t_ratio = ($run_CPU->[$k] - $min_t) / ($min_t + $g_real_small);
 	  $self->_add_sol_stats( $num_t_ratio, $run_opt_values->[$k], $stats_min_t );
+	  $self->{TOTAL_NLPS_SOLVED()}++
 	}
 	elsif( $run_status->[$k] eq "max_it" ) {
 	  my $abs_opt_val_k;
@@ -971,6 +1015,7 @@ sub _add_best_runs_lines {
 	  my $abs_opt_val_k;
 	  foreach $abs_opt_val_k (@{$run_opt_values->[$k]}) {
 		$stats_except->[$abs_opt_val_k]++;
+		$self->{TOTAL_NLPS_EXCEPT()}++
 	  }
 	}
   }
