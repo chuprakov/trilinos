@@ -28,54 +28,41 @@ namespace AbstractLinAlgPack {
  *
  * <b>Overview:</b>
  *
- * This interface is designed to take the Jacobian for a sub-set of
- * equality and inequality constraints and to create a basis matrix.
- * Assume we have the folloing linealrized equality and inequality constraints:
+ * This interface is designed to take the Jacobian for a sub-set of equality constraints
+ * \f$ \nabla c \f$ and to create a basis matrix.
+ * Assume we have the folloing linealrized equality constraints:
  *
  \f[ \nabla c^T d + c = 0 \f]
- \f[ h^l \le \nabla h^T d + h \le h^u \f]
  *
- * The C++ identifiers given to \f$ \nabla c \f$ and \f$ \nabla h \f$ are <tt>Gc</tt> and <tt>Gh</tt>
- * respectively.
+ * The C++ identifiers given to \f$ \nabla c \f$ is <tt>Gc</tt>.
  *
  * In this basis interface we will assume that <tt>d</tt>, <tt>c</tt> and <tt>h</tt> are
  * sorted such that we define the following sets (given the partitioning matrices
- * \f$ Q^{x} = \left[\begin{array}{cc} Q^{xD} & Q^{xI} \end{array}\right] \f$,
- * \f$ Q^{c} = \left[\begin{array}{cc} Q^{cD} & Q^{cU} \end{array}\right] \f$,
- * \f$ Q^{h} = \left[\begin{array}{cc} Q^{hD} & Q^{hU} \end{array}\right] \f$
+ * \f$ Q^{x} = \left[\begin{array}{c} Q^{xD} \\ Q^{xI} \end{array}\right] \f$,
+ * \f$ Q^{c} = \left[\begin{array}{c} Q^{cD} \\ Q^{cU} \end{array}\right] \f$,
  * ):
  * <ul>
- * <li> <tt>d(var_dep)</tt> (\f$ d^D = (Q^{xD})^T d\f$) : Dependent (i.e. basis) variables.
- * <li> <tt>d(var_indep)</tt> (\f$ d^I = (Q^{xI})^T d\f$) : Independent (i.e. nonbasic) variables.
- * <li> <tt>c(equ_decomp)</tt> (\f$ c^D = (Q^{cD})^T c\f$) : Decomposed equality constriants.
- * <li> <tt>c(equ_undecomp)</tt> (\f$ c^U = (Q^{cU})^T c\f$): Undecomposed equality constriants.
- * <li> <tt>h(inequ_decomp)</tt> (\f$ h^D = (Q^{hD})^T h\f$) : Decomposed inequality constriants.
- * <li> <tt>h(inequ_undecomp)</tt> (\f$ h^U = (Q^{hU})^T h\f$) : Undecomposed inequality constriants.
+ * <li> <tt>d(var_dep)</tt> (\f$ d^D = Q^{xD} d\f$) : Dependent (i.e. basis) variables.
+ * <li> <tt>d(var_indep)</tt> (\f$ d^I = Q^{xI} d\f$) : Independent (i.e. nonbasic) variables.
+ * <li> <tt>c(equ_decomp)</tt> (\f$ c^D = Q^{cD} c\f$) : Decomposed equality constriants.
+ * <li> <tt>c(equ_undecomp)</tt> (\f$ c^U = Q^{cU} c\f$): Undecomposed equality constriants.
  * </ul>
  * Given these partitionings we can define a basis matrix \a C for the
  * following Jacobian sub-matrices (in mathematical and Matlab-like notation):
  \f[
-    C = \left[\begin{array}{c}
-            (Q^{cD})^T \nabla c^T Q^{xD} \\
-            (Q^{hD})^T \nabla h^T Q^{xD}
-	    \end{array}\right]
+    C = Q^{cD} \nabla c^T (Q^{xD})^T
  \f]
  \verbatim
 
- C = [ Gc(var_dep,equ_decomp)'   ]
-     [ Gh(var_dep,inequ_decomp)' ]
+ C = Gc(var_dep,equ_decomp)'
  \endverbatim
  * We can also define a nonbasis matrix \a N for the decomposed constraints as:
  \f[
-    N = \left[\begin{array}{c}
-            (Q^{cD})^T \nabla c^T Q^{xI} \\
-            (Q^{hD})^T \nabla h^T Q^{xI}
-	    \end{array}\right]
+    N = Q^{cD} \nabla c^T (Q^{xI})^T
  \f]
  \verbatim
 
- N = [ Gc(var_indep,equ_decomp)'   ]
-     [ Gh(var_indep,inequ_decomp)' ]
+ N = Gc(var_indep,equ_decomp)'
  \endverbatim
  * Given the definitions of \a C and \a N above, we can define the following
  * matrix <tt>D</tt>:
@@ -86,23 +73,22 @@ namespace AbstractLinAlgPack {
 
   D = -inv(C)*N
  \endverbatim
- * Given this matrix \a D, we can define some other projected sensistivity matrices:
+ * Given this matrix \a D, we can define another projected sensistivity matrix:
  * <ul>
  * <li> <tt>GcUP = Gc(var_indep,equ_undecomp)'   + Gc(var_dep,equ_undecomp)'   * D</tt>
- * <li> <tt>GhUP = Gh(var_indep,inequ_undecomp)' + Gh(var_dep,inequ_undecomp)' * D</tt>
  * </ul>
  *
  * This interface allows a client to create the basis matrix <tt>C</tt> and optionally
  * the direct sensitivity matrix <tt>D = -inv(C)*N</tt> and the auxiliary projected
- * sensistivity matrices <tt>GcUP</tt> and <tt>GhUP</tt> (shown above).  These matrix
- * objects are independent from \c this \c BasisSystem object or from other \a C, \a D, \c GcUP
- * or \c GhUP objects.  Therefore, a <tt>BasisSystem</tt> object can be thought of
+ * sensistivity matrix <tt>GcUP</tt> (shown above).  These matrix
+ * objects are independent from \c this \c BasisSystem object or from other \a C, \a D,
+ * or \c GcUP.  Therefore, a <tt>BasisSystem</tt> object can be thought of
  * as an "Abstract Factory" for basis matrices and auxillary matrices.  Note that
- * a <tt>%BasisSystem</tt> object is not obligated to compute matrices \c D, \c GcUP
- * and/or \c GhUP.
+ * a <tt>%BasisSystem</tt> object will not compute the matrices \c D, \c GcUP
+ * unless specifically asked.
  *
  * Note that the purpose of this interface is to abstract client code away from the
- * details of how the matrices \c Gc and \c Gh are represented and implemented and how
+ * details of how the matrix \c Gc is represented and implemented and how
  * the basis matrix \a C is formed and implemented.  The complexity of these matrices could
  * vary from simple dense serial matrices all the way up massively parallel matrices using
  * iterative solvers for \a C running on computers with thousands of nodes.
@@ -120,78 +106,69 @@ namespace AbstractLinAlgPack {
  * Note that the matrix objects returned by these matrix factory objects are not to be
  * considered usable until they have passed through \c update_basis().
  *
- * The ranges of the dependent and independent variables, decomposed and undecomposed
- * equality constriants and decomposed and undecomposed inequality constriants are returned
- * by the methods \c var_dep(), \c var_indep(), \c equ_decomp(), \c equ_undecomp(),
- * \c inequ_decomp() and \c inequ_undecomp() respectively.  There are a few obvious assertions
+ * The ranges of the dependent and independent variables, and decomposed and undecomposed
+ * equality constriants are returned  * by the methods \c var_dep(), \c var_indep(),
+ * \c equ_decomp() and\c equ_undecomp() respectively.  There are a few obvious assertions
  * for the values that these ranges can take on.  Assuming that \c Gc and \c Gh are non-null
  * when passed to \c update_basis(), the following assertions apply:
  *
  * <A NAME="ranges_assertions"></A>
  * Assertions:<ul>
  * <li> <tt>var_dep().size() == equ_decomp().size() + inequ_decomp().size()</tt>
- * <li> <tt>var_dep().size() + var_indep().size() == Gc.rows() == Gh.rows()</tt>
+ * <li> <tt>var_dep().size() + var_indep().size() == Gc.rows()</tt>
  * <li> <tt>equ_decomp().size() + equ_undecomp().size() == Gc.cols()</tt>
- * <li> <tt>inequ_decomp().size() + inequ_undecomp().size() == Gh.cols()</tt>
  * </ul>
  *
- * Note that the client should not rely on \c var_dep(), \c var_indep(), \c equ_decomp(),
- * \c equ_undecomp(), \c inequ_decomp() or \c inequ_undecomp() until after the first
- * call to \c update_basis().  This allows a <tt>%BasisSystem</tt> object to adjust itself
- * to accommodate the input matrices \c Gc and \c Gh.
+ * Note that the client should not rely on \c var_dep(), \c
+ * var_indep(), \c equ_decomp(), or \c equ_undecomp() until after the
+ * first call to \c update_basis().  This allows a
+ * <tt>%BasisSystem</tt> object to adjust itself to accommodate the
+ * input matrix \c Gc.
  *
- * A fully initialized <tt>%BasisSystem</tt> object will be setup to work with specific
- * types and sizes of input matrices \c Gc and \c Gh.  Therefore, the client should be
- * able to get accrate values from \c var_dep(), \c var_indep(), \c equ_decomp(),
- * \c equ_undecomp(), \c inequ_decomp() or \c inequ_undecomp() even before the first
- * call to \c update_basis().  The <tt>%BasisSystem</tt> object must therefore be
- * initialized in some way to accommodate input matrices \c Gc and \c Gh of a specific
- * dimension.
+ * A fully initialized <tt>%BasisSystem</tt> object will be setup to
+ * work with specific types and sizes of input matrices \c Gc and \c
+ * Gh.  Therefore, the client should be able to get accrate values
+ * from \c var_dep(), \c var_indep(), \c equ_decomp(), or \c
+ * equ_undecomp() even before the first call to \c update_basis().
+ * The <tt>%BasisSystem</tt> object must therefore be initialized in
+ * some way to accommodate input matrices \c Gc and \c Gh of a
+ * specific dimension.
  *
- * Note that This interface is completely worthless unless \c var_dep() returns
- * some valid range (i.e. a basis matrix exists).  If <tt>var_dep().size() == 0</tt>
- * then this is an indication that \c this is uninitialzed and therefore only
- * the factory methods can be called!
+ * Note that This interface is completely worthless unless
+ * \c var_dep() returns some valid range (i.e. a basis matrix exists).
+ * If <tt>var_dep().size() == 0</tt> then this is an indication that
+ * \c this is uninitialzed and therefore only the factory methods can
+ * be called!
  *
- * The method \c update_basis() is used by the client to update the basis matrix \a C and
- * perhaps the direct sensitivity matrix \a D and it's auxillary projected sensistivity
- * matrices \c GcUP and \c GhUP.  Strictly speaking, it would be possible to
- * form the matrix \a D externally through the <tt>MatrixNonsingular</tt> interface using
- * the returned \a C and an \a N matrix object, but this may not take advantage of any
- * special application specific tricks that
- * can be used to form \a D.  Note that this interface does not return a nonbasis matrix
- * object for \a N.  However, this matrix object will be needed for an implicit \a D matrix
- * object that the client will undoubtably want to create.  Creating such a matrix object
- * is simple given the <tt>MatrixCompositeStd</tt> subclass.  The following code example
- * shows how to create a matrix object for \a N (given the matrices \c Gc and \c Gh input to
- * <tt>bs.update_basis(Gc,Gh,...)</tt> and \c bs):
+ * The method \c update_basis() is used by the client to update the
+ * basis matrix \a C and perhaps the direct sensitivity matrix \a D
+ * and it's auxillary projected sensistivity matrix \c GcUP
+ * Strictly speaking, it would be possible to form the matrix
+ * \a D externally through the <tt>MatrixNonsingular</tt> interface
+ * using the returned \a C and an \a N matrix object, but this may not
+ * take advantage of any special application specific tricks that can
+ * be used to form \a D.  Note that this interface does not return a
+ * nonbasis matrix object for \a N.  However, this matrix object will
+ * be needed for an implicit \a D matrix object that the client will
+ * undoubtably want to create.  Creating such a matrix object is
+ * simple given the method <tt>MatrixWithOp::sub_view()</tt>.  The
+ * following code example shows how to create a matrix object for \a N
+ * (given the matrix \c Gc input to <tt>bs.update_basis(Gc,...)</tt> and \c bs):
  \code
-
- MemMngPack::ref_count_ptr<const MatrixWithOp>
- create_N(
-     const AbstractLinAlgPack::MatrixWithOp*   Gc
-     ,const AbstractLinAlgPack::MatrixWithOp*  Gh
-     ,const AbstractLinAlgPack::BasisSystem&   bs
-     )
- {
-     namespace rcp = MemMngPack;
-     rcp::ref_count_ptr<AbstractLinAlgPack::MatrixCompositeStd>
-         N = new AbstractLinAlgPack::MatrixCompositeStd(bs.var_dep().size(),bs.var_indep().size());
-	 if( Gc && bs.equ_decomp().size() )
-         N->add_matrix( 0, 0, 1.0, bs.equ_decomp(), Gc, NULL, BLAS_Cpp::trans, bs.var_indep() );
-	 if( Gh && bs.inequ_decomp().size() )
-         N->add_matrix( bs.equ_decomp().size(), 0, 1.0, bs.inequ_decomp(), Gh, NULL, BLAS_Cpp::trans, bs.var_indep() );
-     N->finish_construction(
-         Gc->space_rows().sub_space(bs.equ_decomp())->clone()
-         ,Gc->space_cols().sub_space(bs.var_indep())->clone()
-         );
-     return N;
- }
+MemMngPack::ref_count_ptr<const MatrixWithOp>
+create_N(
+    const AbstractLinAlgPack::MatrixWithOp*   Gc
+    ,const AbstractLinAlgPack::BasisSystem&   bs
+    )
+{
+    namespace mmp = MemMngPack;
+	return mmp::rcp(
+        new MatrixWithOpSubView(
+            Gc->sub_view(bs.var_indep(),bs.equ_decomp()), BLAS_Cpp::trans
+            )
+        );
+}
  \endcode
- * Note that the above nonbasis matrix object \a N returned from the above function depends the matrix objects
- * \c Gc and \c Gh not being modified while \a N is in use.  To make \c N independnet of \c Gc and \c Gh we would
- * of had to clone them (which is not part of the <tt>MatrixWithOp</tt> interface) and may have resulted in a 
- * large allocation of memory. 
  * Given the nonbasis matrix object for \a N returned by the above function, this matrix object could be used
  * to form an explicit \a D matrix object (but perhaps not very efficiently) or be used to implicitly implement
  * matrix vector products with \a D as:
@@ -200,7 +177,7 @@ namespace AbstractLinAlgPack {
  op(D)*v = op(-inv(C)*N)*v = -inv(C)*(N*v) or -N'*(inv(C')*v)
  \endverbatim
  *
- * The client can form matrices of the form <tt>S = I + D'*D</tt> as follows:
+ * The client can also form matrices of the form <tt>S = I + D'*D</tt> as follows:
  \code
  MemMngPack::ref_count_ptr<MatrixSymWithOpNonsingular>
      S = basis_sys.factory_S()->create();
@@ -212,7 +189,7 @@ namespace AbstractLinAlgPack {
  * <b>Subclass developer's notes:</b>
  *
  * The default implementation (of the methods that have default implementations) assume
- * that there are no undecomposed equality constriants and no general inequality constriants at all.
+ * that there are no undecomposed equality constriants.
  * 
  * ToDo: Finish documentation!
  *
