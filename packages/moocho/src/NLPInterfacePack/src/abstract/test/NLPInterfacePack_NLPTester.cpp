@@ -140,49 +140,43 @@ bool NLPTester::test_interface(
 
 		assert_print_nan_inf(xinit,"xinit",true,out); 
 
-		if( nlp->num_bounded_x() ) {
-			if(out)
-				*out << "\n*** Validate that the initial starting point is in bounds ...\n";
-			const VectorWithOp
-				&xl = nlp->xl(),
-				&xu = nlp->xu();
-			if(out && print_all())
-				*out << "\nnlp->xl() =\n" << xl
-					 << "\nnlp->xu() =\n" << xu;
-			assert_print_nan_inf(xl,"xl",true,out); 
-			assert_print_nan_inf(xu,"xu",true,out); 
+		if(out)
+			*out << "\n*** Validate that the initial starting point is in bounds ...\n";
+		const VectorWithOp
+			&xl = nlp->xl(),
+			&xu = nlp->xu();
+		if(out && print_all())
+			*out << "\nnlp->xl() =\n" << xl
+				 << "\nnlp->xu() =\n" << xu;
+		assert_print_nan_inf(xl,"xl",true,out); 
+		assert_print_nan_inf(xu,"xu",true,out); 
 
-			// Validate that xl <= xinit <= xu.
-			VectorSpace::vec_mut_ptr_t
-				d = nlp->space_x()->create_member();
-			*d = 1.0;
-			std::pair<value_type,value_type>
-				u = AbstractLinAlgPack::max_near_feas_step(
-					xinit, *d, nlp->xl(), nlp->xu(), 0.0
-					);
-			result = u.first >= 0.0;
-			update_success( result, &success );
-			if(out) {
-				*out << "\ncheck: xl <= x <= xu : " << result;
-				if(result)
-					*out << "\nxinit is in bounds with { max |u| | xl <= x + u <= xu } -> "
-						 << ( u.first > -u.second ? u.first : u.second  ) << std::endl;
-			}
+		// Validate that xl <= xinit <= xu.
+		VectorSpace::vec_mut_ptr_t
+			d = nlp->space_x()->create_member();
+		*d = 1.0;
+		std::pair<value_type,value_type>
+			u = AbstractLinAlgPack::max_near_feas_step(
+				xinit, *d, nlp->xl(), nlp->xu(), 0.0
+				);
+		result = u.first >= 0.0;
+		update_success( result, &success );
+		if(out) {
+			*out << "\ncheck: xl <= x <= xu : " << result;
+			if(result)
+				*out << "\nxinit is in bounds with { max |u| | xl <= x + u <= xu } -> "
+					 << ( u.first > -u.second ? u.first : u.second  ) << std::endl;
+		}
 			
-			size_type 
-				num_bounded_x = AbstractLinAlgPack::num_bounded(
-					nlp->xl(), nlp->xu(), NLP::infinite_bound() );
-			result = (num_bounded_x == nlp->num_bounded_x());
-			update_success( result, &success );
-			if(out)
-				*out << "\ncheck: num_bounded(nlp->xl(),nlp->xu()) = " << num_bounded_x
-					 << " == nlp->num_bounded_x() = " << nlp->num_bounded_x()
-					 << ": " << result << std::endl;
-		}
-		else {
-			if(out)
-				*out << "\nnlp->num_bounded_x() == 0, there are no bounds on x!\n";
-		}
+		size_type 
+			num_bounded_x = AbstractLinAlgPack::num_bounded(
+				nlp->xl(), nlp->xu(), NLP::infinite_bound() );
+		result = (num_bounded_x == nlp->num_bounded_x());
+		update_success( result, &success );
+		if(out)
+			*out << "\ncheck: num_bounded(nlp->xl(),nlp->xu()) = " << num_bounded_x
+				 << " == nlp->num_bounded_x() = " << nlp->num_bounded_x()
+				 << ": " << result << std::endl;
 
 		// Validate bounds on the general inequalities
 		if( nlp->mI() ) {
