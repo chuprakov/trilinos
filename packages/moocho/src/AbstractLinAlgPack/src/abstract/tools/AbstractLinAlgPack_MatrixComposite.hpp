@@ -473,13 +473,15 @@ public:
 
 	//@}
 
-	/** @name Overridden from Matrix */
+	/** @name Overridden from MatrixBase */
 	//@{
 
 	///
 	size_type rows() const;
 	///
 	size_type cols() const;
+	///
+	size_type nz() const;
 
 	//@}
 

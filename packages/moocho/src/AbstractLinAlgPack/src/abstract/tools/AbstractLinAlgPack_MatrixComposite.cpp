@@ -617,6 +617,25 @@ size_type MatrixCompositeStd::cols() const
 	return fully_constructed_ ? cols_ : 0;
 }
 
+size_type MatrixCompositeStd::nz() const
+{
+	if(fully_constructed_) {
+		size_type nz = 0;
+		{for(matrix_list_t::const_iterator itr = matrix_list_.begin(); itr != matrix_list_.end(); ++itr) {
+			if( itr->A_ != NULL )
+				nz += itr->A_->nz();
+			else
+				nz += (*itr->P_).nz();
+		}}
+		{for(vector_list_t::const_iterator itr = vector_list_.begin(); itr != vector_list_.end(); ++itr) {
+			nz += itr->v_->nz();
+		}}
+		// ToDo: Update the above code to consider GenMatrixSlice and Range1D views
+		return nz;
+	}
+	return 0;
+}
+
 // Overridden from MatrixWithOp
 
 const VectorSpace& MatrixCompositeStd::space_rows() const
