@@ -1,6 +1,11 @@
 // ///////////////////////////////////////////////////////
 // BFGSUpdate_Strategy.cpp
 
+// disable VC 5.0 warnings about debugger limitations
+#pragma warning(disable : 4786)	
+// disable VC 5.0 warnings about truncated identifier names (templates).
+#pragma warning(disable : 4503)	
+
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
 #include "../../include/ReducedSpaceSQPPackExceptions.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymSecantUpdateable.h"
@@ -13,6 +18,10 @@
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorOut.h"
 #include "Misc/include/dynamic_cast_verbose.h"
+
+namespace LinAlgOpPack {
+	using SparseLinAlgPack::Vp_StMtV;
+}
 
 namespace ReducedSpaceSQPPack {
 

@@ -11,6 +11,10 @@
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/LinAlgPackAssertOp.h"
 
+namespace LinAlgOpPack {
+	using SparseLinAlgPack::Vp_StMtV;
+}
+
 namespace ConstrainedOptimizationPack {
 
 MatrixHessianSuperBasic::MatrixHessianSuperBasic()

@@ -1,6 +1,11 @@
 // ///////////////////////////////////////////////////////
 // ReducedHessianSecantUpdateBFGSProjected_Strategy.cpp
 
+// disable VC 5.0 warnings about debugger limitations
+#pragma warning(disable : 4786)	
+// disable VC 5.0 warnings about truncated identifier names (templates).
+#pragma warning(disable : 4503)	
+
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
 #include "ReducedSpaceSQPPack/include/rSQPState.h"
@@ -12,6 +17,10 @@
 #include "SparseLinAlgPack/include/MatrixSymInitDiagonal.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "Misc/include/dynamic_cast_verbose.h"
+
+namespace LinAlgOpPack {
+	using SparseLinAlgPack::Vp_StMtV;
+}
 
 namespace ReducedSpaceSQPPack {
 

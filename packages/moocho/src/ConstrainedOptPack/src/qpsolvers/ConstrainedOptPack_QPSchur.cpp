@@ -2083,7 +2083,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 
 	// Put these here because they need to be remembered between iterations if a linearly
 	// dependent constriant is dropped.
-	size_type				ja = 0;		// indice of violated constraint to add to active set
+	size_type				ja = 0;		// + indice of violated constraint to add to active set
 	value_type				con_ja_val;	// value of violated constraint.
 	value_type				b_a; // value of the violated bound
 	value_type				norm_2_constr;	// norm of violated constraint
@@ -2094,8 +2094,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 										// constraint.
 	const int				summary_lines_counter_max = 15;
 	int						summary_lines_counter = 0;
-	size_type				jd = 0;	// indice of constraint to delete from active set.
-	size_type				last_jd = 0; // indice of the last constraint actually dropped.
+	int						jd = 0;	// + indice of constraint to delete from active set.
+									// - indice of intially fixed variable to be freed
+	int						last_jd = 0; // Last jd change to the active set
 	value_type				t_P;	// Primal step length (constraint ja made active)
 	value_type				t_D;	// Dual step length ( longest step without violating dual
 									// feasibility of currently active constraints ).
@@ -2357,7 +2358,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						assert(0);	// ToDo: Finish this!
 					}
 					else {
-						// Add a constraint this is not for an initially fixed
+						// Add a constraint that is not an initially fixed
 						// variable bound.
 						// 
 						// p_z_hat = inv(S_hat) * ( - v_a + U_hat' * inv(Ko) * u_a )

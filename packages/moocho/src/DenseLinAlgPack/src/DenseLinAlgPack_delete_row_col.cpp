@@ -1,6 +1,8 @@
 // ///////////////////////////////////////////////////////
 // delete_row_col.cpp
 
+#include <assert.h>
+
 #include "LinAlgPack/include/delete_row_col.h"
 #include "LinAlgPack/include/GenMatrixClass.h"
 #include "LinAlgPack/include/GenMatrixAsTriSym.h"

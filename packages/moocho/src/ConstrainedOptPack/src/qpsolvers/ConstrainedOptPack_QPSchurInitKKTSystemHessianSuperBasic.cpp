@@ -8,6 +8,10 @@
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "Misc/include/dynamic_cast_verbose.h"
 
+namespace LinAlgOpPack {
+	using SparseLinAlgPack::Vp_StMtV;
+}
+
 namespace ConstrainedOptimizationPack {
 
 void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(

@@ -1,6 +1,8 @@
 // //////////////////////////////////////////////////////////
 // MatrixSymAddDelBunchKaufman.cpp
 
+#include <assert.h>
+
 #include "ConstrainedOptimizationPack/include/MatrixSymAddDelBunchKaufman.h"
 #include "LinAlgLAPack/include/LinAlgLAPack.h"
 #include "LinAlgPack/include/GenMatrixOut.h"
