@@ -54,7 +54,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 		r  = s->equ_decomp().size();
 
 	// Compute the quasi-range space step Ywy
-	wsp::Workspace<value_type> Ywy_ws(wss,xo.size());
+	Workspace<value_type> Ywy_ws(wss,xo.size());
 	DVectorSlice                Ywy(&Ywy_ws[0],Ywy_ws.size());
 	if(!quasi_range_space_step().solve_quasi_range_space_step(
 		out,olevel,algo,s,xo,c_xo,&Ywy ))
@@ -200,7 +200,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 	// Solve the null space subproblem
 	//
 
-	wsp::Workspace<value_type>  wz_ws(wss,n-r),Zwz_ws(wss,n);
+	Workspace<value_type>  wz_ws(wss,n-r),Zwz_ws(wss,n);
 	DVectorSlice                 wz(&wz_ws[0],wz_ws.size());
 	DVectorSlice                 Zwz(&Zwz_ws[0],Zwz_ws.size());
 	value_type                  qp_eta      = 0;

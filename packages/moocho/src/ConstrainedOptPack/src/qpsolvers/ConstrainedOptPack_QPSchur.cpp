@@ -50,7 +50,7 @@
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DVectorOut.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace LinAlgOpPack {
@@ -175,10 +175,10 @@ void calc_z(
 {
 	using LinAlgOpPack::Vp_StMtV;
 	using LinAlgOpPack::V_InvMtV;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
-	wsp::Workspace<DenseLinAlgPack::value_type> t_ws(wss,d_hat.dim());
+	Workspace<DenseLinAlgPack::value_type> t_ws(wss,d_hat.dim());
 	DenseLinAlgPack::DVectorSlice                t(&t_ws[0],t_ws.size());
 	t = d_hat;
 	if(vo)
@@ -200,10 +200,10 @@ void calc_v(
 	using DenseLinAlgPack::norm_inf;
 	using LinAlgOpPack::Vp_StMtV;
 	using LinAlgOpPack::V_InvMtV;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
-	wsp::Workspace<DenseLinAlgPack::value_type> t_ws(wss,v->dim());
+	Workspace<DenseLinAlgPack::value_type> t_ws(wss,v->dim());
 	DenseLinAlgPack::DVectorSlice                t(&t_ws[0],t_ws.size());
 	if(fo) {	
 		t = *fo;
@@ -240,8 +240,8 @@ void calc_mu_D(
 	using LinAlgOpPack::Vp_StPtMtV;
 	using AbstractLinAlgPack::V_MtV;
 	using AbstractLinAlgPack::Vp_MtV;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	const ConstrainedOptPack::QPSchurPack::QP
 		&qp = act_set.qp();
@@ -291,8 +291,8 @@ void calc_p_mu_D(
 	using AbstractLinAlgPack::V_MtV;
 	using AbstractLinAlgPack::Vp_MtV;
 	using LinAlgOpPack::Vp_StPtMtV;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	const ConstrainedOptPack::QPSchurPack::QP
 		&qp = act_set.qp();
@@ -428,8 +428,8 @@ void calc_resid(
 	using LinAlgOpPack::Vp_StMtV;
 	using LinAlgOpPack::Vp_StPtMtV;
 	namespace COP = ConstrainedOptPack;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	
 	const COP::QPSchurPack::QP
 		&qp = act_set.qp();
@@ -459,11 +459,11 @@ void calc_resid(
 		roR = (*ro)(1,n_R),
 		rom = ( m ? (*ro)(n_R+1,n_R+m) : DenseLinAlgPack::VectorSliceTmpl<val_type>() );
 
-	wsp::Workspace<DenseLinAlgPack::value_type>
+	Workspace<DenseLinAlgPack::value_type>
 		x_free_ws(wss,n);
 	DenseLinAlgPack::DVectorSlice
 		x_free(&x_free_ws[0],x_free_ws.size());
-	wsp::Workspace<val_type>
+	Workspace<val_type>
 		t1_ws(wss,n),
 		t2_ws(wss,n),
 		t3_ws(wss,n),
@@ -789,8 +789,8 @@ void QPSchur::U_hat_t::Vp_StMtV(
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_StMtV;
 	using LinAlgOpPack::Vp_StPtMtV;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	LinAlgOpPack::Vp_MtV_assert_sizes(y->dim(),rows(),cols(),M_trans,x.dim());
 
@@ -898,8 +898,8 @@ void QPSchur::U_hat_t::Vp_StMtV(
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_StMtV;
 	using LinAlgOpPack::Vp_StPtMtV;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	LinAlgOpPack::Vp_MtV_assert_sizes(y->dim(),rows(),cols(),M_trans,x.dim());
 
@@ -1025,8 +1025,8 @@ void QPSchur::ActiveSet::initialize(
 	using DenseLinAlgPack::sym;
 	typedef MatrixSymAddDelUpdateable MSADU;
 	namespace GPMSTP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	
 	const size_type
 		n		= qp.n(),
@@ -1462,8 +1462,8 @@ bool QPSchur::ActiveSet::add_constraint(
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::Vp_StPtMtV;
 	using LinAlgOpPack::V_InvMtV;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	
 	typedef AbstractLinAlgPack::EtaVector eta_t;
 
@@ -1533,7 +1533,7 @@ bool QPSchur::ActiveSet::add_constraint(
 		
 		value_type			d_p = 0.0;
 		const size_type		q_hat = this->q_hat();
-		wsp::Workspace<value_type> t_hat_ws(wss,q_hat);
+		Workspace<value_type> t_hat_ws(wss,q_hat);
 		DVectorSlice t_hat(t_hat_ws.size()?&t_hat_ws[0]:NULL,t_hat_ws.size());
 		value_type			alpha_hat = 0.0;
 		bool				changed_bounds = false;
@@ -1702,8 +1702,8 @@ bool QPSchur::ActiveSet::drop_constraint(
 	using LinAlgOpPack::Vp_StPtMtV;
 	using LinAlgOpPack::V_InvMtV;
 	using AbstractLinAlgPack::transVtMtV;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	
 	typedef AbstractLinAlgPack::EtaVector eta_t;
 
@@ -1775,7 +1775,7 @@ bool QPSchur::ActiveSet::drop_constraint(
 			V_InvMtV( &r, Ko, no_trans, u_p() );
 		// t_hat = v_p - U_hat'*r
 		// where: v_p = P_XF_hat'*G*e_id + P_plus_hat'*A_bar'*e_id <: R^(q_hat)
-		wsp::Workspace<value_type>
+		Workspace<value_type>
 			t_hat_ws(wss,q_hat);
 		DVectorSlice
 			t_hat(&t_hat_ws[0],q_hat);
@@ -2266,8 +2266,8 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	using DenseLinAlgPack::norm_inf;
 	using AbstractLinAlgPack::norm_inf;
 	using LinAlgOpPack::V_InvMtV;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	using StopWatchPack::stopwatch;
 
 	const value_type inf = std::numeric_limits<value_type>::max();
@@ -2367,7 +2367,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	}
 
 	// Compute vo =  inv(Ko) * fo
-	wsp::Workspace<value_type> vo_ws(wss,qp.n_R()+qp.m());
+	Workspace<value_type> vo_ws(wss,qp.n_R()+qp.m());
 	DVectorSlice vo(&vo_ws[0],vo_ws.size());
 	V_InvMtV( &vo, qp.Ko(), BLAS_Cpp::no_trans, qp.fo() );
 
@@ -2509,7 +2509,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	}
 
 	// Compute v
-	wsp::Workspace<value_type> v_ws(wss,qp.n_R()+qp.m());
+	Workspace<value_type> v_ws(wss,qp.n_R()+qp.m());
 	DVectorSlice v(&v_ws[0],v_ws.size());
 	if( act_set_.q_hat() > 0 ) {
 		calc_v( qp.Ko(), &qp.fo(), act_set_.U_hat(), act_set_.z_hat(), &v );
@@ -2851,8 +2851,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	using LinAlgOpPack::V_InvMtV;
 	using LinAlgOpPack::Vp_StMtV;
 	using LinAlgOpPack::Vp_StPtMtV;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	// Print header for "Starting Primal-Dual Iterations"
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
@@ -2873,7 +2873,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 		m		= qp.m(),
 		m_breve	= qp.constraints().m_breve();
 
-	wsp::Workspace<value_type>
+	Workspace<value_type>
 		v_plus_ws(wss,v->dim()),
 		z_hat_plus_ws(wss,(n-m)+(n-n_R)),
 		p_v_ws(wss,v->dim());
@@ -2974,7 +2974,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								<< "\nComputing: mu_D_hat_calc = -Q_XD_hat'*g - Q_XD_hat'*G*x\n"
 								<< "    - Q_XD_hat'*A*v(n_R+1:n_R+m) - Q_XD_hat'*A_bar*P_plus_hat*z_hat ...\n";
 						}
-						wsp::Workspace<value_type> mu_D_hat_calc_ws( wss, act_set->q_D_hat() );
+						Workspace<value_type> mu_D_hat_calc_ws( wss, act_set->q_D_hat() );
 						DVectorSlice mu_D_hat_calc( &mu_D_hat_calc_ws[0], mu_D_hat_calc_ws.size() );
 						calc_mu_D( *act_set, *x, *v, &mu_D_hat_calc );
 						if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
@@ -3469,7 +3469,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						assert(sa);
 						assert(la);
 						// v_a = e(sa) <: R^q_hat
-						wsp::Workspace<value_type> v_a_ws(wss,act_set->q_hat());
+						Workspace<value_type> v_a_ws(wss,act_set->q_hat());
 						DVectorSlice v_a(&v_a_ws[0],v_a_ws.size());
 						v_a = 0.0;
 						v_a(sa) = 1.0;
@@ -3573,7 +3573,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								summary_lines_counter = 0;
 								// [   Ko     U_hat ] [   p_v   ] = [ -u_a ]
 								// [ U_hat'   V_hat ] [ p_z_hat ]   [   0  ]
-								wsp::Workspace<value_type> dense_u_a_ws(wss,u_a().dim());
+								Workspace<value_type> dense_u_a_ws(wss,u_a().dim());
 								DVectorSlice dense_u_a(&dense_u_a_ws[0],dense_u_a_ws.size());
 								dense_u_a = 0.0; // Make a dense copy of u_a!
 								dense_u_a(u_a().begin()->index()+u_a().offset()) = 1.0;
@@ -3600,9 +3600,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							//
 							// d_a = b_a - b_X' * (Q_X' * A_bar * e_ja) <: R
 							//
-							wsp::Workspace<value_type> u_a_ws( wss, n_R + m );
+							Workspace<value_type> u_a_ws( wss, n_R + m );
 							DVectorSlice u_a( &u_a_ws[0], u_a_ws.size() );
-							wsp::Workspace<value_type> v_a_ws( wss, act_set->q_hat() );
+							Workspace<value_type> v_a_ws( wss, act_set->q_hat() );
 							DVectorSlice v_a( &v_a_ws[0], v_a_ws.size() );
 							// u_a(1:n_R) =  Q_R' * A_bar * e(ja)
 							Vp_StPtMtV( &u_a(1,n_R), 1.0, qp.Q_R(), trans
@@ -3611,7 +3611,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							if(m)
 								u_a(n_R+1,n_R+m) = 0.0;
 							// t0 = Q_X' * A_bar * e_ja
-							wsp::Workspace<value_type> t0_ws( wss, n-n_R );
+							Workspace<value_type> t0_ws( wss, n-n_R );
 							DVectorSlice t0( &t0_ws[0], t0_ws.size() );
 							if( n > n_R )
 								Vp_StPtMtV( &t0(), 1.0, qp.Q_X(), trans
@@ -3620,12 +3620,12 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							const value_type
 								d_a = b_a - ( n > n_R ? dot( qp.b_X(), t0() ) : 0.0 );
 							// t1 = inv(Ko) * u_a
-							wsp::Workspace<value_type> t1_ws( wss, n_R + m );
+							Workspace<value_type> t1_ws( wss, n_R + m );
 							DVectorSlice t1( &t1_ws[0], t1_ws.size() );
 							V_InvMtV( &t1, qp.Ko(), no_trans, u_a );
 							if( act_set->q_hat() ) {
 								// t2 = U_hat'*t1
-								wsp::Workspace<value_type> t2_ws( wss, act_set->q_hat() );
+								Workspace<value_type> t2_ws( wss, act_set->q_hat() );
 								DVectorSlice t2( &t2_ws[0], t2_ws.size() );
 								V_MtV( &t2, act_set->U_hat(), trans, t1() );
 								// v_a = P_XF_hat' * A_bar * e_ja
@@ -4514,8 +4514,8 @@ void QPSchur::set_multipliers(
 	using AbstractLinAlgPack::V_MtV;
 	using AbstractLinAlgPack::Vp_MtV;
 	namespace GPMSTP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	const size_type
 		n       = act_set.qp().n(),
@@ -4601,8 +4601,8 @@ QPSchur::iter_refine(
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::Vp_StMtV;
 	using LinAlgOpPack::V_InvMtV;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	typedef DenseLinAlgPack::value_type           extra_value_type;
 
@@ -4630,13 +4630,13 @@ QPSchur::iter_refine(
 		fo    = qp.fo(),
 		d_hat = (q_hat ? act_set.d_hat() : DVectorSlice());
 
-	wsp::Workspace<extra_value_type>
+	Workspace<extra_value_type>
 		ext_ro_ws(wss,n_R+m),
 		ext_ra_ws(wss,q_hat);
 	DenseLinAlgPack::VectorSliceTmpl<extra_value_type>
 		ext_ro(&ext_ro_ws[0],ext_ro_ws.size()),
 		ext_ra(ext_ra_ws.size()?&ext_ra_ws[0]:NULL,ext_ra_ws.size());
-	wsp::Workspace<value_type>
+	Workspace<value_type>
 		ro_ws(wss,n_R+m),
 		ra_ws(wss,q_hat),
 		t1_ws(wss,n_R+m),
@@ -4999,8 +4999,8 @@ void QPSchurPack::QP::dump_qp( std::ostream& out )
 	using std::setw;
 	using std::left;
 	using std::right;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	const Constraints
 		&constraints = this->constraints();

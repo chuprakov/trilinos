@@ -20,7 +20,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutableSubView.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
 #include "Range1D.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 // Uncomment to ignore cache of reduction data
@@ -82,8 +82,8 @@ void VectorMutableBlocked::apply_op(
 	,const index_type first_ele_in, const index_type sub_dim_in, const index_type global_offset_in
 	) const
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	
 	const index_type
 		n = this->dim();
@@ -130,7 +130,7 @@ void VectorMutableBlocked::apply_op(
 #endif
 	
 	// Dynamic cast the pointers for the vector arguments
-	wsp::Workspace<const VectorMutableBlocked*>
+	Workspace<const VectorMutableBlocked*>
 		vecs_args(wss,num_vecs);
 	{for(int k = 0; k < num_vecs; ++k) {
 		vecs_args[k] = dynamic_cast<const VectorMutableBlocked*>(vecs[k]);
@@ -143,7 +143,7 @@ void VectorMutableBlocked::apply_op(
 			);
 #endif
 	}}
-	wsp::Workspace<VectorMutableBlocked*>
+	Workspace<VectorMutableBlocked*>
 		targ_vecs_args(wss,num_targ_vecs);
 	{for(int k = 0; k < num_targ_vecs; ++k) {
 		targ_vecs_args[k] = dynamic_cast<VectorMutableBlocked*>(targ_vecs[k]);
@@ -165,9 +165,9 @@ void VectorMutableBlocked::apply_op(
 								  : sub_dim_in );
 	index_type num_elements_remaining = sub_dim;
 	const int  num_vec_spaces = vec_space_->num_vector_spaces();
-	wsp::Workspace<const Vector*>
+	Workspace<const Vector*>
 		sub_vecs(wss,num_vecs);
-	wsp::Workspace<VectorMutable*>
+	Workspace<VectorMutable*>
 		sub_targ_vecs(wss,num_targ_vecs);
 	index_type g_off = -first_ele_in + 1;
 	for(int k = 0; k < num_vec_spaces; ++k) {

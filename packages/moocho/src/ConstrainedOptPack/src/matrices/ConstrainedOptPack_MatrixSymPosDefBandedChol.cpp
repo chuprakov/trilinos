@@ -226,8 +226,8 @@ void MatrixSymPosDefBandedChol::V_InvMtV(
 	DVectorSlice* y, BLAS_Cpp::Transp M_trans
 	, const DVectorSlice& x) const
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	assert_initialized();
 
@@ -235,7 +235,7 @@ void MatrixSymPosDefBandedChol::V_InvMtV(
 
 	update_factorization();
 
-	wsp::Workspace<value_type>  t_ws(wss,y->size());
+	Workspace<value_type>  t_ws(wss,y->size());
 	DVectorSlice                 t(&t_ws[0],t_ws.size());
 
 	t = x;

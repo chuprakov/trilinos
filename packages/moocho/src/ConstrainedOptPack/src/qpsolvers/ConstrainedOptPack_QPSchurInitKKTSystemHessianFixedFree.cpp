@@ -54,8 +54,8 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 	using Teuchos::dyn_cast;
 	using LinAlgOpPack::V_mV;
 	namespace rcp = MemMngPack;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 #ifdef PROFILE_HACK_ENABLED
 	ProfileHackPack::ProfileTiming profile_timing( "QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(...)" );
@@ -73,7 +73,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 	const size_type nd = g.size();
 
 	// Determine the number of initially fixed variables
-	wsp::Workspace<EBounds> x_frfx(wss,nd);
+	Workspace<EBounds> x_frfx(wss,nd);
 	std::fill_n( &x_frfx[0], nd, FREE ); // make all free initially
 	size_type
 		num_init_fixed = 0;
@@ -165,7 +165,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 	j_f_decomp->resize(0);
 
 	// Initialize temporary Q_R and Q_X (not including extra relaxation variable)
-	wsp::Workspace<size_type>
+	Workspace<size_type>
 		Q_R_row_i(wss,*n_R),
 		Q_R_col_j(wss,*n_R),
 		Q_X_row_i(wss,num_init_fixed),

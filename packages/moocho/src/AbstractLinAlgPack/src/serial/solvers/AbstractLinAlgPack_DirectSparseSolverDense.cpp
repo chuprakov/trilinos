@@ -24,7 +24,7 @@
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace {
@@ -71,8 +71,8 @@ void DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(
 	) const 
 {
 	using Teuchos::dyn_cast;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	size_type k;
 
 	// Get concrete objects
@@ -91,7 +91,7 @@ void DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(
 		);
 
 	// Get temp storage for rhs and solution to communicate with xGESTRS
-	wsp::Workspace<value_type>   B_store(wss,xd().dim());
+	Workspace<value_type>   B_store(wss,xd().dim());
 	DMatrixSlice  B(&B_store[0],B_store.size(),B_store.size(),B_store.size(),1);
 
 	//
@@ -209,8 +209,8 @@ void DirectSparseSolverDense::imp_analyze_and_factor(
 	namespace mmp = MemMngPack;
 	using Teuchos::dyn_cast;
 	typedef MatrixConvertToSparse MCTS;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	if(out)
 		*out << "\nUsing LAPACK xGETRF to analyze and factor a new matrix ...\n";
@@ -233,9 +233,9 @@ void DirectSparseSolverDense::imp_analyze_and_factor(
 		,"DirectSparseSolverDense::imp_analyze_and_factor(...) : Error!" );
 
 	// Extract the matrix in coordinate format
-	wsp::Workspace<value_type>   a_val(wss,nz);
-	wsp::Workspace<index_type>   a_row_i(wss,nz);
-	wsp::Workspace<index_type>   a_col_j(wss,nz);
+	Workspace<value_type>   a_val(wss,nz);
+	Workspace<index_type>   a_row_i(wss,nz);
+	Workspace<index_type>   a_col_j(wss,nz);
 	A.coor_extract_nonzeros(
 		MCTS::EXTRACT_FULL_MATRIX
 		,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM
@@ -291,7 +291,7 @@ void DirectSparseSolverDense::imp_analyze_and_factor(
 	// Form fs.col_perm_
 	fs.col_perm_.resize(n);
 	DenseLinAlgPack::identity_perm(&fs.col_perm_);
-	wsp::Workspace<index_type> col_perm_unsorted(wss,fs.rank_);
+	Workspace<index_type> col_perm_unsorted(wss,fs.rank_);
 	if( m == n && n == fs.rank_ ) {
 		// Leave fs.col_perm_ as identity
 		fn.rect_analyze_and_factor_ = false;
@@ -340,8 +340,8 @@ void DirectSparseSolverDense::imp_factor(
 	namespace mmp = MemMngPack;
 	using Teuchos::dyn_cast;
 	typedef MatrixConvertToSparse MCTS;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	if(out)
 		*out << "\nUsing LAPACK xGETRF to refactor the basis matrix ...\n";
@@ -365,9 +365,9 @@ void DirectSparseSolverDense::imp_factor(
 		);
 
 	// Extract the matrix in coordinate format
-	wsp::Workspace<value_type>   a_val(wss,nz);
-	wsp::Workspace<index_type>   a_row_i(wss,nz);
-	wsp::Workspace<index_type>   a_col_j(wss,nz);
+	Workspace<value_type>   a_val(wss,nz);
+	Workspace<index_type>   a_row_i(wss,nz);
+	Workspace<index_type>   a_col_j(wss,nz);
 	A.coor_extract_nonzeros(
 		MCTS::EXTRACT_FULL_MATRIX
 		,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM

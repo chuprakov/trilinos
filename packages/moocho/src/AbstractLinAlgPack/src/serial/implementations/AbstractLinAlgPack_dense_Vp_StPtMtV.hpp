@@ -60,8 +60,8 @@ void dense_Vp_StPtMtV(
 	using AbstractLinAlgPack::Vp_StMtV;
 	using AbstractLinAlgPack::GenPermMatrixSlice;
 	typedef AbstractLinAlgPack::EtaVector eta;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	
 	// Validate the sizes
 	// 
@@ -94,7 +94,7 @@ void dense_Vp_StPtMtV(
 	}
 	else if( opM_rows > P.nz() || P.is_identity() ) {
 		// t = op(M)*x
-		wsp::Workspace<value_type> t_ws(wss,opM_rows);
+		Workspace<value_type> t_ws(wss,opM_rows);
 		DVectorSlice t(&t_ws[0],t_ws.size());
 		LinAlgOpPack::V_MtV( &t, M, M_trans, x );
 		// y = b*y + a*op(P)*t
@@ -105,7 +105,7 @@ void dense_Vp_StPtMtV(
 		if(b==0.0)       *y = 0.0;
 		else if(b!=1.0)  Vt_S(y,b);
 		// Compute t' = e(j)' * op(M) then y(i) += a*t'*x where op(P)(i,j) = 1.0
-		wsp::Workspace<value_type> t_ws(wss,opM_cols);
+		Workspace<value_type> t_ws(wss,opM_cols);
 		DVectorSlice t(&t_ws[0],t_ws.size());
 		if( P.is_identity() ) {
 			for( size_type k = 1; k <= P.nz(); ++k ) {

@@ -23,7 +23,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpaceFactory.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "Range1D.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
@@ -109,13 +109,13 @@ VectorSpace::vec_mut_ptr_t
 VectorSpaceBlocked::create_member() const
 {
 	namespace rcp = MemMngPack;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	const int num_vec_spaces = this->num_vector_spaces();
 
 	// Create the vector objects array.
-	wsp::Workspace<VectorMutable::vec_mut_ptr_t>
+	Workspace<VectorMutable::vec_mut_ptr_t>
 		vecs(wss,num_vec_spaces);
 	for( int k = 0; k < num_vec_spaces; ++k )
 		vecs[k] = vector_spaces_[k]->create_member();

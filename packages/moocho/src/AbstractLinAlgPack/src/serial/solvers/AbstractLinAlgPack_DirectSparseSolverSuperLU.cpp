@@ -25,7 +25,7 @@
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace {
@@ -111,8 +111,8 @@ void DirectSparseSolverSuperLU::BasisMatrixSuperLU::V_InvMtV(
 	) const 
 {
 	using Teuchos::dyn_cast;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	size_type k;
 
 	// Get concrete objects
@@ -196,8 +196,8 @@ void DirectSparseSolverSuperLU::imp_analyze_and_factor(
 	namespace mmp = MemMngPack;
 	using Teuchos::dyn_cast;
 	typedef MatrixConvertToSparse MCTS;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	if(out)
 		*out << "\nUsing SuperLU to analyze and factor a new matrix ...\n";
@@ -226,9 +226,9 @@ void DirectSparseSolverSuperLU::imp_analyze_and_factor(
 		,"DirectSparseSolverSuperLU::imp_analyze_and_factor(...) : Error!" );
 
 	// Extract the matrix in coordinate format
-	wsp::Workspace<value_type>   a_val(wss,nz);
-	wsp::Workspace<index_type>   a_row_i(wss,nz);
-	wsp::Workspace<index_type>   a_col_j(wss,nz);
+	Workspace<value_type>   a_val(wss,nz);
+	Workspace<index_type>   a_row_i(wss,nz);
+	Workspace<index_type>   a_col_j(wss,nz);
 	A.coor_extract_nonzeros(
 		MCTS::EXTRACT_FULL_MATRIX
 		,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM
@@ -245,9 +245,9 @@ void DirectSparseSolverSuperLU::imp_analyze_and_factor(
 	// SuperLU for factorization).
 	//
 
-	wsp::Workspace<double>   acsr_val(wss,nz);
-	wsp::Workspace<int>      acsr_col_j(wss,nz);    // Zero-based for SuperLU
-	wsp::Workspace<int>      acsr_row_ptr(wss,m+1);
+	Workspace<double>   acsr_val(wss,nz);
+	Workspace<int>      acsr_col_j(wss,nz);    // Zero-based for SuperLU
+	Workspace<int>      acsr_row_ptr(wss,m+1);
 	
 	convet_to_csr(
 		n,m,nz,&a_val[0],&a_row_i[0],&a_col_j[0]
@@ -261,8 +261,8 @@ void DirectSparseSolverSuperLU::imp_analyze_and_factor(
 	// That DirectSparseSolver works with.
 	//
 	
-	wsp::Workspace<int>    perm_r(wss,m); // Zero-based for SuperLU
-	wsp::Workspace<int>    perm_c(wss,n); // Zero-based for SuperLU
+	Workspace<int>    perm_r(wss,m); // Zero-based for SuperLU
+	Workspace<int>    perm_c(wss,n); // Zero-based for SuperLU
 	int                    slu_rank = 0;
 
 	fs.superlu_solver_->analyze_and_factor(
@@ -308,8 +308,8 @@ void DirectSparseSolverSuperLU::imp_factor(
 	namespace mmp = MemMngPack;
 	using Teuchos::dyn_cast;
 	typedef MatrixConvertToSparse MCTS;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	if(out)
 		*out << "\nUsing SuperLU to refactor the basis matrix ...\n";
@@ -341,9 +341,9 @@ void DirectSparseSolverSuperLU::imp_factor(
 		,"DirectSparseSolverSuperLU::imp_factor(...) : Error!" );
 
 	// Extract the matrix in coordinate format
-	wsp::Workspace<value_type>   a_val(wss,nz);
-	wsp::Workspace<index_type>   a_row_i(wss,nz);
-	wsp::Workspace<index_type>   a_col_j(wss,nz);
+	Workspace<value_type>   a_val(wss,nz);
+	Workspace<index_type>   a_row_i(wss,nz);
+	Workspace<index_type>   a_col_j(wss,nz);
 	A.coor_extract_nonzeros(
 		MCTS::EXTRACT_FULL_MATRIX
 		,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM
@@ -360,9 +360,9 @@ void DirectSparseSolverSuperLU::imp_factor(
 	// SuperLU for factorization).
 	//
 
-	wsp::Workspace<double>   acsr_val(wss,nz);
-	wsp::Workspace<int>      acsr_col_j(wss,nz);    // Zero-based for SuperLU
-	wsp::Workspace<int>      acsr_row_ptr(wss,m+1);
+	Workspace<double>   acsr_val(wss,nz);
+	Workspace<int>      acsr_col_j(wss,nz);    // Zero-based for SuperLU
+	Workspace<int>      acsr_row_ptr(wss,m+1);
 	
 	convet_to_csr(
 		n,m,nz,&a_val[0],&a_row_i[0],&a_col_j[0]

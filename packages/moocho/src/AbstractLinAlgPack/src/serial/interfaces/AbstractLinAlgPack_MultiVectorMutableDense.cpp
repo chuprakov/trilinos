@@ -22,7 +22,7 @@
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {

@@ -227,8 +227,8 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 		, DVectorSlice* lambda, DVectorSlice* Fd
 	)
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = wsp::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = wsp::default_workspace_store.get();
 
 	const value_type inf_bnd  = std::numeric_limits<value_type>::max();
 //	const value_type real_big = 1e+20;
@@ -264,7 +264,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 	//
 	// , for k = 1...num_inequal
 	//
-	wsp::Workspace<int>               loqo_b_stat_ws(wss,m_in); // May not use all of this
+	Workspace<int>               loqo_b_stat_ws(wss,m_in); // May not use all of this
 	DenseLinAlgPack::VectorSliceTmpl<int>  loqo_b_stat(&loqo_b_stat_ws[0],loqo_b_stat_ws.size());
 	std::fill( loqo_b_stat.begin(), loqo_b_stat.end(), 0 ); // Initialize to zero
 

@@ -30,7 +30,7 @@
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace LinAlgOpPack {
@@ -121,10 +121,10 @@ void MatrixOpSerial::Vp_StPtMtV(DVectorSlice* y, value_type a
 	, BLAS_Cpp::Transp M_trans
 	, const DVectorSlice& x, value_type b) const
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
-	wsp::Workspace<value_type> t_ws(wss,BLAS_Cpp::cols(P.rows(),P.cols(),P_trans));
+	Workspace<value_type> t_ws(wss,BLAS_Cpp::cols(P.rows(),P.cols(),P_trans));
 	DVectorSlice                t(&t_ws[0],t_ws.size());
     LinAlgOpPack::V_StMtV(&t,a,*this,M_trans,x);
 	LinAlgOpPack::Vp_MtV( y, P, P_trans, t, b ); 
@@ -135,10 +135,10 @@ void MatrixOpSerial::Vp_StPtMtV(DVectorSlice* y, value_type a
 	, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type b) const
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
-	wsp::Workspace<value_type> t_ws(wss,BLAS_Cpp::cols(P.rows(),P.cols(),P_trans));
+	Workspace<value_type> t_ws(wss,BLAS_Cpp::cols(P.rows(),P.cols(),P_trans));
 	DVectorSlice                t(&t_ws[0],t_ws.size());
     LinAlgOpPack::V_StMtV(&t,a,*this,M_trans,x);
 	LinAlgOpPack::Vp_MtV( y, P, P_trans, t, b ); 
@@ -363,8 +363,8 @@ void MatrixOpSerial:: syrk(
 	using BLAS_Cpp::trans_not;
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	//
 	// S = b*S + a*op(M)*op(M')
 	//
@@ -387,7 +387,7 @@ void MatrixOpSerial:: syrk(
 	//
 	//    j = 1 ... opM_rows
 	//
-	wsp::Workspace<value_type> t1_ws(wss,opM_cols),
+	Workspace<value_type> t1_ws(wss,opM_cols),
 		                       t2_ws(wss,opM_rows);
 	DVectorSlice                t1(&t1_ws[0],t1_ws.size()),
 		                       t2(&t2_ws[0],t2_ws.size());

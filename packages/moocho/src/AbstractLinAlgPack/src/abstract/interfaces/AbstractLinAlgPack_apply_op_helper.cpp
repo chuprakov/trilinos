@@ -6,7 +6,7 @@
 #include "apply_op_helper.hpp"
 #include "VectorSpace.hpp"
 #include "VectorMutable.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 void AbstractLinAlgPack::apply_op_validate_input(
@@ -65,8 +65,8 @@ void AbstractLinAlgPack::apply_op_serial(
 	,const index_type first_ele_in, const index_type sub_dim_in, const index_type global_offset_in
 	)
 {
- 	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+ 	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	
 	// Dimension of global sub-vector
 	const VectorSpace
@@ -81,8 +81,8 @@ void AbstractLinAlgPack::apply_op_serial(
 	// Get explicit views of the vector elements
 	//
 
-	wsp::Workspace<RTOpPack::SubVector >         local_vecs(wss,num_vecs);
-	wsp::Workspace<RTOpPack::MutableSubVector>  local_targ_vecs(wss,num_targ_vecs);
+	Workspace<RTOpPack::SubVector >         local_vecs(wss,num_vecs);
+	Workspace<RTOpPack::MutableSubVector>  local_targ_vecs(wss,num_targ_vecs);
 	int k;
 	for(k = 0; k < num_vecs; ++k) {
 		RTOpPack::SubVector &v = local_vecs[k];

@@ -20,7 +20,7 @@
 #include "RTOp_TOp_assign_vectors.h"
 #include "RTOp_TOp_scale_vector.h"
 #include "RTOpPack_RTOpC.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace {

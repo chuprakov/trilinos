@@ -42,7 +42,7 @@
 #include "MoochoMoreUtilities/src/stpwatch.hpp"
 #include "MoochoMoreUtilities/src/StringToIntMap.hpp"
 #include "MoochoMoreUtilities/src/StringToBool.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_oblackholestream.hpp"
 
@@ -417,9 +417,9 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 			<< "\nNumber of megabytes of preallocated workspace                = "
 			<< workspace_MB_
 			<< "\nNumber of allocations using preallocated workspace           = "
-			<< WorkspacePack::default_workspace_store->num_static_allocations()
+			<< Teuchos::get_default_workspace_store()->num_static_allocations()
 			<< "\nNumber of dynamic allocations beyond preallocated workspace  = "
-			<< WorkspacePack::default_workspace_store->num_dyn_allocations();
+			<< Teuchos::get_default_workspace_store()->num_dyn_allocations();
 	
 	// Print which options groups were not read
 	if( do_algo_outputting() && print_opt_grp_not_accessed_ ) {
@@ -731,8 +731,9 @@ void MoochoSolver::update_solver() const
 			*summary_out_used_
 				<< "\nAllocating workspace_MB = " << workspace_MB_ << " megabytes of temporary "
 				"workspace for autmatic arrays only ...\n";
-		WorkspacePack::default_workspace_store
-			= Teuchos::rcp(new WorkspacePack::WorkspaceStoreInitializeable(static_cast<size_t>(1e+6*workspace_MB_)));
+		Teuchos::set_default_workspace_store(
+			Teuchos::rcp(new Teuchos::WorkspaceStoreInitializeable(static_cast<size_t>(1e+6*workspace_MB_)))
+      );
 		
 		//
 		// Reconfigure the algorithm

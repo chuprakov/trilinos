@@ -24,7 +24,7 @@
 #include "ExampleNLPFirstOrderRun.hpp"
 #include "ExampleNLPDirect/exampleNLPDiagSetup.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_oblackholestream.hpp"
 
 int main(int argc, char* argv[] ) {
@@ -41,8 +41,8 @@ int main(int argc, char* argv[] ) {
 
 	using AbstractLinAlgPack::VectorSpace;
 
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	int err = 0;
 

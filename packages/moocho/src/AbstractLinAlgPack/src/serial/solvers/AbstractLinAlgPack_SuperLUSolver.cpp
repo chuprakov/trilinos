@@ -21,7 +21,7 @@
 
 #include "AbstractLinAlgPack/src/serial/solvers/SuperLUSolver.hpp"
 #include "Teuchos_dyn_cast.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 // SuperLU
@@ -213,8 +213,8 @@ void SuperLUSolverImpl::analyze_and_factor(
 	)
 {
 	using Teuchos::dyn_cast;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	FactorizationStructureImpl
 		&fs = dyn_cast<FactorizationStructureImpl>(*fact_struct);
@@ -289,9 +289,9 @@ void SuperLUSolverImpl::analyze_and_factor(
 		fs.perm_r_orig_ = fs.perm_r_;
 		fs.perm_c_orig_ = fs.perm_c_;
 		// Copy the nonzeros for the sqare factor into new storage
-		wsp::Workspace<double>       b_val(wss,nz);
-		wsp::Workspace<int>          b_row_i(wss,nz);
-		wsp::Workspace<int>          b_col_ptr(wss,n+1);
+		Workspace<double>       b_val(wss,nz);
+		Workspace<int>          b_row_i(wss,nz);
+		Workspace<int>          b_col_ptr(wss,n+1);
 		copy_basis_nonzeros(
 			m,n,nz,a_val,a_row_i,a_col_ptr
 			,&fs.perm_r_orig_[0],&fs.perm_c_orig_[0],fs.rank_
@@ -332,8 +332,8 @@ void SuperLUSolverImpl::factor(
 	)
 {
 	using Teuchos::dyn_cast;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	const FactorizationStructureImpl
 		&fs = dyn_cast<const FactorizationStructureImpl>(fact_struct);
@@ -343,9 +343,9 @@ void SuperLUSolverImpl::factor(
 	char refact[] = "Y";
 
 	// Copy the nonzeros for the sqare factor into new storage
-	wsp::Workspace<double>       b_val(wss,fs.nz_);
-	wsp::Workspace<int>          b_row_i(wss,fs.nz_);
-	wsp::Workspace<int>          b_col_ptr(wss,fs.rank_+1);
+	Workspace<double>       b_val(wss,fs.nz_);
+	Workspace<int>          b_row_i(wss,fs.nz_);
+	Workspace<int>          b_col_ptr(wss,fs.rank_+1);
 	if(fs.m_orig_ > fs.n_orig_) {
 		int b_nz = -1;
 		copy_basis_nonzeros(

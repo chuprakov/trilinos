@@ -56,8 +56,8 @@ bool CheckBasisFromCPy_Step::do_step( Algorithm& _algo, poss_type step_poss
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_V;
 	using Teuchos::dyn_cast;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	NLPAlgo	&algo	= rsqp_algo(_algo);
 	NLPAlgoState	&s		= algo.rsqp_state();
@@ -78,7 +78,7 @@ bool CheckBasisFromCPy_Step::do_step( Algorithm& _algo, poss_type step_poss
 	DVectorSlice                  py_k = s.py().get_k(0)();
 	DVectorSlice                  c_k  = s.c().get_k(0)();
 	DVectorSlice                  c_decomp_k  = c_k(decomp);
-	wsp::Workspace<value_type>   resid_ws(wss,py_k.size());
+	Workspace<value_type>   resid_ws(wss,py_k.size());
 	DVectorSlice                  resid(&resid_ws[0],resid_ws.size());
 	{
 #ifdef _WINDOWS

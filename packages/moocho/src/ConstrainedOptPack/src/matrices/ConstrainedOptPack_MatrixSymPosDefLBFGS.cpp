@@ -56,7 +56,7 @@
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgLAPack.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {
@@ -246,8 +246,8 @@ void MatrixSymPosDefLBFGS::Vp_StMtV(
 	using LinAlgOpPack::V_MtV;
 	typedef VectorDenseEncap         vde;
 	typedef VectorDenseMutableEncap  vdme;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	assert_initialized();
 
@@ -293,9 +293,9 @@ void MatrixSymPosDefLBFGS::Vp_StMtV(
 	const size_type
 		mb = m_bar_;
 
-	wsp::Workspace<value_type>  t1_ws(wss,2*mb);
+	Workspace<value_type>  t1_ws(wss,2*mb);
 	DVectorSlice                 t1(&t1_ws[0],t1_ws.size());
-	wsp::Workspace<value_type>  t2_ws(wss,2*mb);
+	Workspace<value_type>  t2_ws(wss,2*mb);
 	DVectorSlice                 t2(&t2_ws[0],t2_ws.size());
 
 	VectorSpace::vec_mut_ptr_t
@@ -340,8 +340,8 @@ void MatrixSymPosDefLBFGS::V_InvMtV(
 	using DenseLinAlgPack::Vp_StMtV;
 	typedef VectorDenseEncap         vde;
 	typedef VectorDenseMutableEncap  vdme;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	assert_initialized();
 
@@ -390,15 +390,15 @@ void MatrixSymPosDefLBFGS::V_InvMtV(
 
 	// Get workspace
 
-	wsp::Workspace<value_type>    t1_ws(wss,2*mb);
+	Workspace<value_type>    t1_ws(wss,2*mb);
 	DVectorSlice                   t1(&t1_ws[0],t1_ws.size());
-	wsp::Workspace<value_type>    t2_ws(wss,mb);
+	Workspace<value_type>    t2_ws(wss,mb);
 	DVectorSlice                   t2(&t2_ws[0],t2_ws.size());
-	wsp::Workspace<value_type>    t3_ws(wss,mb);
+	Workspace<value_type>    t3_ws(wss,mb);
 	DVectorSlice                   t3(&t3_ws[0],t3_ws.size());
-	wsp::Workspace<value_type>    t4_ws(wss,mb);
+	Workspace<value_type>    t4_ws(wss,mb);
 	DVectorSlice                   t4(&t4_ws[0],t4_ws.size());
-	wsp::Workspace<value_type>    t5_ws(wss,mb);
+	Workspace<value_type>    t5_ws(wss,mb);
 	DVectorSlice                   t5(&t5_ws[0],t5_ws.size());
 
 	VectorSpace::vec_mut_ptr_t
@@ -492,8 +492,8 @@ void MatrixSymPosDefLBFGS::secant_update(
 	using AbstractLinAlgPack::BFGS_sTy_suff_p_d;
 	using AbstractLinAlgPack::dot;
 	using LinAlgOpPack::V_MtV;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	assert_initialized();
 
@@ -581,7 +581,7 @@ void MatrixSymPosDefLBFGS::secant_update(
 	//		t = S'*s(m_bar) = { s(m_bar)' * [ s(1),..,s(m_bar),..,s(m_bar) ]  }'
 	// then set the appropriate rows and columns of S'S.
 
-	wsp::Workspace<value_type>   work_ws(wss,m_bar_);
+	Workspace<value_type>   work_ws(wss,m_bar_);
 	DVectorSlice                  work(&work_ws[0],work_ws.size());
 
 	// work = S'*s(m_bar)

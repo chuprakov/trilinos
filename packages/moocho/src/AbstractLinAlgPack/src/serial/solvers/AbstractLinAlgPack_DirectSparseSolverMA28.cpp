@@ -26,7 +26,7 @@
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "MoochoMoreUtilities/src/f_open_file.hpp"
 
@@ -97,8 +97,8 @@ void DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(
 	) const 
 {
 	using Teuchos::dyn_cast;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	size_type k;
 
 	// Get concrete objects
@@ -127,9 +127,9 @@ void DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(
 	VectorDenseEncap         xd(x);
 
 	// Allocate workspace memory
-	wsp::Workspace<value_type>  xfull_s(wss,fs.max_n_,false);
+	Workspace<value_type>  xfull_s(wss,fs.max_n_,false);
 	DVectorSlice                 xfull(&xfull_s[0],xfull_s.size());
-	wsp::Workspace<value_type>  ws(wss,fs.max_n_,false);
+	Workspace<value_type>  ws(wss,fs.max_n_,false);
 	DVectorSlice                 w(&ws[0],ws.size());
 
 	// Get a context for transpose or no transpose
@@ -238,8 +238,8 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 {
 	using Teuchos::dyn_cast;
 	typedef MatrixConvertToSparse MCTS;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	if(out)
 		*out << "\nUsing MA28 to analyze and factor a new matrix ...\n";
@@ -288,8 +288,8 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 		fs.icn_.resize(fs.licn_); // first nz entries stores the column indexes
  		fn.a_.resize(fs.licn_);
 		fs.ikeep_.resize( fs.ma28_.lblock() ? 5*fs.max_n_ :  4*fs.max_n_ + 1 );
-		wsp::Workspace<index_type>  irn_tmp_(wss,fs.lirn_), iw(wss,8*fs.max_n_);
-		wsp::Workspace<value_type>  w(wss,fs.max_n_);
+		Workspace<index_type>  irn_tmp_(wss,fs.lirn_), iw(wss,8*fs.max_n_);
+		Workspace<value_type>  w(wss,fs.max_n_);
 		
 		// Fill in the matrix information
 		A.coor_extract_nonzeros(
@@ -399,8 +399,8 @@ void DirectSparseSolverMA28::imp_factor(
 {
 	using Teuchos::dyn_cast;
 	typedef MatrixConvertToSparse MCTS;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	if(out)
 		*out << "\nUsing MA28 to factor a new matrix ...\n";
@@ -427,8 +427,8 @@ void DirectSparseSolverMA28::imp_factor(
 
 	// Initialize matrix factorization storage and temporary storage
 	if(fn.a_.size() < fs.licn_)  fn.a_.resize(fs.licn_);
-	wsp::Workspace<index_type>   iw(wss,5*fs.max_n_);
-	wsp::Workspace<value_type>   w(wss,fs.max_n_);
+	Workspace<index_type>   iw(wss,5*fs.max_n_);
+	Workspace<value_type>   w(wss,fs.max_n_);
 
 	// Fill in the matrix nonzeros (we already have the structure)
 	A.coor_extract_nonzeros(

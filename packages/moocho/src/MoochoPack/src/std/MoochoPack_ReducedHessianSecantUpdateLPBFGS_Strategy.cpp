@@ -67,8 +67,8 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 	using AbstractLinAlgPack::norm_inf;
 	using AbstractLinAlgPack::transVtMtV;
 	typedef ConstrainedOptPack::MatrixHessianSuperBasic MHSB_t;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out << "\n*** (LPBFGS) Full limited memory BFGS to projected BFGS ...\n";
@@ -167,8 +167,8 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 					//
 					// Determine the set of initially fixed and free independent variables.
 					//
-					typedef wsp::Workspace<size_type>                              i_x_t;
-					typedef wsp::Workspace<ConstrainedOptPack::EBounds>   bnd_t;
+					typedef Workspace<size_type>                              i_x_t;
+					typedef Workspace<ConstrainedOptPack::EBounds>   bnd_t;
 					i_x_t   i_x_free(wss,n_pz);
 					i_x_t   i_x_fixed(wss,n_pz);
 					bnd_t   bnd_fixed(wss,n_pz);
@@ -187,7 +187,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 						nu_indep, *s_bfgs, *y_bfgs
 						, &n_pz_R, &i_x_free[0], &sRTBRRsR, &sRTyR );
 					sRTBRRsR *= rHL_scale;
-					wsp::Workspace<value_type> rHL_XX_diag_ws(wss,nu_indep.nz());
+					Workspace<value_type> rHL_XX_diag_ws(wss,nu_indep.nz());
 					DVectorSlice rHL_XX_diag(&rHL_XX_diag_ws[0],rHL_XX_diag_ws.size());
 					rHL_XX_diag = rHL_scale;
 					// Sort fixed variables according to |s_X(i)^2*B_XX(i,i)|/|sRTBRRsR| + |s_X(i)*y_X(i)|/|sRTyR|
@@ -270,7 +270,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 							&Q_R = rHL_super.Q_R(),
 							&Q_X = rHL_super.Q_X();
 						// Get projected BFGS update vectors y_bfgs_R, s_bfgs_R
-						wsp::Workspace<value_type>
+						Workspace<value_type>
 							y_bfgs_R_ws(wss,Q_R.cols()),
 							s_bfgs_R_ws(wss,Q_R.cols()),
 							y_bfgs_X_ws(wss,Q_X.cols()),

@@ -19,7 +19,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/VectorMutableBlocked.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
 //#include "AbstractLinAlgPack/src/GenPermMatrixSliceOp.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "MoochoMoreUtilities/src/profile_hack.hpp"

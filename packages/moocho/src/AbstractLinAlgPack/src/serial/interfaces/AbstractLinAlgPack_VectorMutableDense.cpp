@@ -21,7 +21,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/apply_op_helper.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 #ifdef _DEBUG

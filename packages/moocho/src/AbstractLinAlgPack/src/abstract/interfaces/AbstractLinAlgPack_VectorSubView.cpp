@@ -19,7 +19,7 @@
 
 #include "VectorMutableSubView.hpp"
 #include "Teuchos_TestForException.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace AbstractLinAlgPack {
@@ -71,8 +71,8 @@ void VectorSubView::apply_op(
 	) const
 {
 	using Teuchos::dyn_cast;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	// If these are in-core vectors then just let a default implementation
 	// take care of this.
 	if( this->space().is_in_core() ) {
@@ -102,10 +102,10 @@ void VectorSubView::apply_op(
 						 ? sub_dim_in
 						 : space_impl().rng().size() - (first_ele_in - 1)
 			           );
-	wsp::Workspace<const Vector*>    vecs_full(wss,num_vecs);
+	Workspace<const Vector*>    vecs_full(wss,num_vecs);
 	for( k = 0; k < num_vecs; ++k )
 		vecs_full[k] = dyn_cast<const VectorSubView>(*vecs[k]).full_vec().get();
-	wsp::Workspace<VectorMutable*>   targ_vecs_full(wss,num_targ_vecs);
+	Workspace<VectorMutable*>   targ_vecs_full(wss,num_targ_vecs);
 	for( k = 0; k < num_targ_vecs; ++k )
 		targ_vecs_full[k] = dyn_cast<VectorMutableSubView>(*targ_vecs[k]).full_vec().get();
 	AbstractLinAlgPack::apply_op(

@@ -37,8 +37,8 @@ bool QuasiRangeSpaceStepTailoredApproach_Strategy::solve_quasi_range_space_step(
   	)
 {
 	using Teuchos::dyn_cast;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	// Get NLP reference
 #ifdef _WINDOWS

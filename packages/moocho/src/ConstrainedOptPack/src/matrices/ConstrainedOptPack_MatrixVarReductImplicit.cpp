@@ -20,7 +20,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {
@@ -44,8 +44,8 @@ void imp_Vp_StMtV_implicit(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	namespace alap = AbstractLinAlgPack;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	const DenseLinAlgPack::size_type
 		r   = C.rows(),
@@ -137,8 +137,8 @@ void imp_Vp_StPtMtV_by_row(
 	using AbstractLinAlgPack::dot;
 	using AbstractLinAlgPack::Vp_StMtV;
 	using AbstractLinAlgPack::GenPermMatrixSlice;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	
 	const DenseLinAlgPack::size_type
 		D_rows = decomp_sys.C().rows(),
@@ -147,7 +147,7 @@ void imp_Vp_StPtMtV_by_row(
 	if(b==0.0)       *y = 0.0;
 	else if(b!=1.0)  DenseLinAlgPack::Vt_S(y,b);
 	// Compute t = N'*inv(C')*e(j) then y(i) += -a*t'*x where op(P)(i,j) = 1.0
-	wsp::Workspace<DenseLinAlgPack::value_type>   e_j_ws(wss,D_rows);
+	Workspace<DenseLinAlgPack::value_type>   e_j_ws(wss,D_rows);
 	DVectorSlice                              e_j(&e_j_ws[0],e_j_ws.size());
 	e_j = 0.0;
 	for( GenPermMatrixSlice::const_iterator itr = P.begin(); itr != P.end(); ++itr ) {
@@ -279,8 +279,8 @@ void MatrixVarReductImplicit::Vp_StMtV(
 {
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	assert_initialized();
 	AbstractLinAlgPack::Vp_MtV_assert_compatibility(y,*this,D_trans,x);
@@ -305,7 +305,7 @@ void MatrixVarReductImplicit::Vp_StMtV(
 			// We can do something crafty here.  We can generate columns of N'*inv(C')
 			// and then perform y += -a*[N'*inv(C')](:,j)*x(j) for nonzero x(j)
 			//
-			wsp::Workspace<DenseLinAlgPack::value_type>   e_j_ws(wss,D_rows);
+			Workspace<DenseLinAlgPack::value_type>   e_j_ws(wss,D_rows);
 			DVectorSlice                              e_j(&e_j_ws[0],e_j_ws.size());
 			e_j = 0.0;
 			// y = b*y

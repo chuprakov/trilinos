@@ -8,7 +8,7 @@
 #include "VectorMutable.hpp"
 #include "AbstractLinAlgPackAssertOp.hpp"
 #include "LinAlgOpPack.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace {
@@ -139,8 +139,8 @@ void MultiVector::apply_op(
 	,const index_type sec_first_ele_in, const index_type sec_sub_dim_in
 	) const
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	// ToDo: Validate the input!
 
@@ -158,10 +158,10 @@ void MultiVector::apply_op(
 	// vectors and reduce each of the reduction objects.
 	//
 
-	wsp::Workspace<MultiVector::vec_ptr_t>             vecs_s(wss,num_multi_vecs);
-	wsp::Workspace<const Vector*>                      vecs(wss,num_multi_vecs);
-	wsp::Workspace<MultiVectorMutable::vec_mut_ptr_t>  targ_vecs_s(wss,num_targ_multi_vecs);
-	wsp::Workspace<VectorMutable*>                     targ_vecs(wss,num_targ_multi_vecs);
+	Workspace<MultiVector::vec_ptr_t>             vecs_s(wss,num_multi_vecs);
+	Workspace<const Vector*>                      vecs(wss,num_multi_vecs);
+	Workspace<MultiVectorMutable::vec_mut_ptr_t>  targ_vecs_s(wss,num_targ_multi_vecs);
+	Workspace<VectorMutable*>                     targ_vecs(wss,num_targ_multi_vecs);
 
 	{for(size_type j = sec_first_ele_in; j <= sec_first_ele_in - 1 + sec_sub_dim; ++j) {
 		// Fill the arrays of vector arguments 
@@ -198,8 +198,8 @@ void MultiVector::apply_op(
 	,const index_type sec_first_ele_in, const index_type sec_sub_dim_in
 	) const
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	// ToDo: Validate the input!
 
@@ -212,8 +212,8 @@ void MultiVector::apply_op(
 
 	// Create a temporary buffer for the reduction objects of the primary reduction
 	// so that we can call the companion version of this method.
-	wsp::Workspace<Teuchos::RefCountPtr<RTOpPack::ReductTarget> >   rcp_reduct_objs(wss,sec_sub_dim);
-	wsp::Workspace<RTOpPack::ReductTarget*>                         reduct_objs(wss,sec_sub_dim);
+	Workspace<Teuchos::RefCountPtr<RTOpPack::ReductTarget> >   rcp_reduct_objs(wss,sec_sub_dim);
+	Workspace<RTOpPack::ReductTarget*>                         reduct_objs(wss,sec_sub_dim);
 	for(index_type k = 0; k < sec_sub_dim; ++k) {
     rcp_reduct_objs[k] = prim_op.reduct_obj_create();
     reduct_objs[k] = &*rcp_reduct_objs[k];

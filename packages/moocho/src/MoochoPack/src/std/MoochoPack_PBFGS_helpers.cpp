@@ -108,8 +108,8 @@ void PBFGSPack::sort_fixed_max_cond_viol(
 	,size_type                 l_x_fixed_sorted[]
 	)
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	const size_type
 		n_pz = nu_indep.size();
@@ -119,7 +119,7 @@ void PBFGSPack::sort_fixed_max_cond_viol(
 
 	// Initial spare vector so we can sort this stuff
 	typedef SpVector::element_type ele_t;
-	wsp::Workspace<ele_t> sort_array(wss,nu_indep.nz());
+	Workspace<ele_t> sort_array(wss,nu_indep.nz());
 	{
 		SpVectorSlice::const_iterator
 			nu_indep_itr = nu_indep.begin();
@@ -176,15 +176,15 @@ void PBFGSPack::choose_fixed_free(
 	using std::right;
 	using AbstractLinAlgPack::norm_inf;
 	namespace COP = ConstrainedOptPack;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	const size_type
 		n_pz = nu_indep.size();
 
 	// Store the status of the variables so that we can put sorted i_x_free[]
 	// and i_x_fixed[] together at the end
-	wsp::Workspace<long int>  i_x_status(wss,n_pz);  // free if > 0 , fixed if < 0 , error if 0
+	Workspace<long int>  i_x_status(wss,n_pz);  // free if > 0 , fixed if < 0 , error if 0
 	std::fill_n( &i_x_status[0], n_pz, 0 );
 	{for( size_type l = 0; l < (*n_pz_R); ++l ) {
 		i_x_status[i_x_free[l]-1] = +1;

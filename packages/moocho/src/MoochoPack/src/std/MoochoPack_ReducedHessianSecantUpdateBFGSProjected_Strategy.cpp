@@ -62,8 +62,8 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 	using LinAlgOpPack::V_MtV;
 	using AbstractLinAlgPack::norm_inf;
 	typedef ConstrainedOptPack::MatrixHessianSuperBasic MHSB_t;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out << "\n*** (PBFGS) Projected BFGS ...\n";
@@ -135,8 +135,8 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 				//
 				// Determine the set of initially fixed and free independent variables.
 				//
-				typedef wsp::Workspace<size_type>                              i_x_t;
-				typedef wsp::Workspace<ConstrainedOptPack::EBounds>   bnd_t;
+				typedef Workspace<size_type>                              i_x_t;
+				typedef Workspace<ConstrainedOptPack::EBounds>   bnd_t;
 				i_x_t   i_x_free(wss,n_pz);
 				i_x_t   i_x_fixed(wss,n_pz);
 				bnd_t   bnd_fixed(wss,n_pz);
@@ -152,11 +152,11 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 					out	<< "\nScaling for diagonal rHL_XX = rHL_XX_scale*I, rHL_XX_scale = " << rHL_XX_scale << std::endl;
 				}
-				wsp::Workspace<value_type> rHL_XX_diag_ws(wss,nu_indep.nz());
+				Workspace<value_type> rHL_XX_diag_ws(wss,nu_indep.nz());
 				DVectorSlice rHL_XX_diag(&rHL_XX_diag_ws[0],rHL_XX_diag_ws.size());
 				rHL_XX_diag = rHL_XX_scale;
 				// s_R'*B_RR_*s_R
-				wsp::Workspace<value_type> Q_R_Q_RT_s_ws(wss,n_pz);
+				Workspace<value_type> Q_R_Q_RT_s_ws(wss,n_pz);
 				DVectorSlice Q_R_Q_RT_s(&Q_R_Q_RT_s_ws[0],Q_R_Q_RT_s_ws.size());
 				Q_R_Q_RT_s = 0.0;
 				{for( size_type k = 0; k < n_pz_R; ++k ) {
@@ -246,8 +246,8 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 		//
 		// Determine new Q_R and Q_X
 		//
-		typedef wsp::Workspace<size_type>                              i_x_t;
-		typedef wsp::Workspace<ConstrainedOptPack::EBounds>   bnd_t;
+		typedef Workspace<size_type>                              i_x_t;
+		typedef Workspace<ConstrainedOptPack::EBounds>   bnd_t;
 		i_x_t   i_x_free(wss,n_pz);
 		i_x_t   i_x_fixed(wss,n_pz);
 		bnd_t   bnd_fixed(wss,n_pz);
@@ -266,7 +266,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 			out	<< "\nScaling for diagonal rHL_XX = rHL_XX_scale*I, rHL_XX_scale = " << rHL_XX_scale << std::endl;
 		}
-		wsp::Workspace<value_type> rHL_XX_diag_ws(wss,nu_indep.nz());
+		Workspace<value_type> rHL_XX_diag_ws(wss,nu_indep.nz());
 		DVectorSlice rHL_XX_diag(&rHL_XX_diag_ws[0],rHL_XX_diag_ws.size());
 		rHL_XX_diag = rHL_XX_scale;
 		// Initialize rHL_XX = rHL_XX_scale * I so that those variables in the current Q_R
@@ -287,7 +287,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 		rHL_XX.init_identity(rHL_XX.rows(),rHL_XX_scale); // Don't change its size yet!
 		// s_R'*B_RR_*s_R
 		// This will only include those terms for the variable actually free.
-		wsp::Workspace<value_type> Q_R_Q_RT_s_ws(wss,n_pz);
+		Workspace<value_type> Q_R_Q_RT_s_ws(wss,n_pz);
 		DVectorSlice Q_R_Q_RT_s(&Q_R_Q_RT_s_ws[0],Q_R_Q_RT_s_ws.size());
 		Q_R_Q_RT_s = 0.0;
 		{for( size_type k = 0; k < n_pz_R; ++k ) {
@@ -463,7 +463,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 			n_pz_X = Q_X.cols();
 		assert( n_pz_R + n_pz_X == n_pz );
 		// Get projected BFGS update vectors y_bfgs_R, s_bfgs_R
-		wsp::Workspace<value_type>
+		Workspace<value_type>
 			y_bfgs_R_ws(wss,Q_R.cols()),
 			s_bfgs_R_ws(wss,Q_R.cols());
 		DVectorSlice y_bfgs_R(&y_bfgs_R_ws[0],y_bfgs_R_ws.size());
