@@ -47,7 +47,8 @@
 #include "TSFEpetraMatrix.hpp"
 #include "TSFCoreLinearOp.hpp"
 #include "TSFIdentityOperator.hpp"
-//#include "TSFZeroOperator.hpp"
+#include "TSFZeroOperator.hpp"
+#include "TSFBlockOperator.hpp"
 
 
 using namespace Teuchos;
@@ -112,17 +113,23 @@ int main(int argc, void *argv[])
 
 
 //       RefCountPtr<TSFCore::LinearOp<double> > op = 
-// 	rcp(new ZeroOperator<double>(*(space.ptr())));
-//       LinearOperator<double> AI = op;
+// 	rcp(new ZeroOperator<double>(*(space.ptr()), *(space2.ptr()) ));
+//       LinearOperator<double> AZ = op;
+//       cerr << "Created Zero Oprator\n";
+
+      LinearOperator<double> AZZ = new ZeroOperator<double>(space, space2);
+      cerr << "Created ZeroOperator using new\n";
+      
+      
 
       //LinearOperator<double> I = rcp(new IdentityOperator<double>(*(space.ptr())));
       //cerr << "Created IdentityOperator" << endl; 
       //cerr << "Created ZeroOperator" << endl; 
       
       LinearOperator<double> AT = A.transpose();
-      //LinearOperator<double> ATT = rcp(new TransposeOperator<double>(AT));
+      LinearOperator<double> ATT = new TransposeOperator<double>(AT);
 
-      cerr << "Created TransposeOperator" << endl;
+      cerr << "Created TransposeOperator both ways" << endl;
 
       
 

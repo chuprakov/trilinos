@@ -29,31 +29,78 @@
 #ifndef TSFZEROOPERATOR_HPP
 #define TSFZEROOPERATOR_HPP
 
+
+
+
+
+
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreLinearOp.hpp"
-#include "TSFCoreVectorStdOps.hpp"
+ #include "TSFCoreLinearOp.hpp"
+ //#include "TSFCoreVectorStdOps.hpp"
  //#include "TSFVectorSpace.hpp"
-#include "TSFLinearOperatorDecl.hpp"
+ //#include "TSFLinearOperatorDecl.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
+
+
 namespace TSFExtended
 {
+  using namespace Teuchos;
+//   using namespace TSFExtended;
+//   using namespace TSFExtendedOps;
 
   /** 
    * ZeroOperator is the zero operator, which maps any vector in the
    * domain space to the zero vector in the range space.
    */
   template <class Scalar> 
-  class ZeroOperator : public OpDescribableByTypeID<Scalar>
+  class ZeroOperator : public OpDescribableByTypeID<Scalar>,
+		       public Handleable<TSFCore::LinearOp<Scalar> >
   {
   public:
+    GET_RCP(TSFCore::LinearOp<Scalar>);
     /**
      * Construct the domain and range spaces.
      */
-    ZeroOperator(const TSFCore::VectorSpace<Scalar>& domain, 
-		 const TSFCore::VectorSpace<Scalar>& range)
-      : domain_(domain.ptr()), range_(range.ptr()) {;}
+//     ZeroOperator(const TSFCore::VectorSpace<Scalar>& domain, 
+// 		 const TSFCore::VectorSpace<Scalar>& range)
+//     //: domain_(domain.ptr()), range_(range.ptr()) {;}
+//     //: domain_(Teuchos::rcp(domain)), Teuchos::rcp(range_(range)) 
+//     {
+//       domain_ = rcp(&domain);
+//       range_ = rcp(&range);
+//     }
+
+
+    ZeroOperator(const VectorSpace<Scalar>& domain, 
+		 const VectorSpace<Scalar>& range)
+      :domain_(domain),
+	range_(range)
+	{;}
+
+
+
+
+     Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> >  domain() const 
+    {
+//       VectorSpace<Scalar> vs = op_.domain();
+//       return vs.ptr();
+      //return op_.domain();
+      return domain_.ptr();
+    }
+
+
+     Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> >  range() const 
+    {
+//       VectorSpace<Scalar> vs = op_.domain();
+//       return vs.ptr();
+      //return op_.domain();
+      return range_.ptr();
+    }
+     
+    
+		//{TSFCore::LinearOp<Scalar>(domain.ptr(), range.ptr());}
 
     /** Virtual dtor */
     virtual ~ZeroOperator(){;}
@@ -80,22 +127,24 @@ namespace TSFExtended
     }
 
     /** Return the domain of the operator. */
-    virtual RefCountPtr< const VectorSpace<Scalar> > domain() const {return domain_;}
+    //    virtual RefCountPtr< const VectorSpace<Scalar> > domain() const {return domain_;}
+//     virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const {return domain_;}
     
 
-    /** Return the range of the operator. */
-    virtual RefCountPtr< const VectorSpace<Scalar> > range() const {return range_;}
+//     /** Return the range of the operator. */
+//     virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const {return range_;}
 
   protected:
     /**
      * The vector space for the range of the operator.
      */
-    RefCountPtr<const VectorSpace<Scalar> > range_;
- 
+    //RefCountPtr<const TSFCore::VectorSpace<Scalar> > range_;
+	VectorSpace<Scalar>  range_;
     /**
      * The vector space for the domain of the operator.
      */
-    RefCountPtr<const VectorSpace<Scalar> > domain_;  
+    //RefCountPtr<const TSFCore::VectorSpace<Scalar> > domain_; 
+	VectorSpace<Scalar> domain_;
   };
 }
 

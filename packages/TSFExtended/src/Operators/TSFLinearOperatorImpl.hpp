@@ -64,8 +64,15 @@ using namespace TSFExtended;
 template <class Scalar>
 LinearOperator<Scalar>::LinearOperator() : Handle<TSFCore::LinearOp<Scalar> >() {;}
 
+// template <class Scalar>
+// LinearOperator<Scalar>::LinearOperator(const LinearOperator<Scalar>* ptr)
+// {
+//   RefCountPtr<TSFCore::LinearOp> ptr_ = ptr->ptr();
+// }
+
+
 template <class Scalar>
-LinearOperator<Scalar>::LinearOperator(const Handleable<TSFCore::LinearOp<Scalar> >* rawPtr) 
+LinearOperator<Scalar>::LinearOperator(Handleable<TSFCore::LinearOp<Scalar> >* rawPtr) 
   : Handle<TSFCore::LinearOp<Scalar> >(rawPtr) {;}
 
 template <class Scalar>
@@ -131,10 +138,10 @@ LinearOperator<Scalar> LinearOperator<Scalar>::transpose() const
   
 //   LinearOperator<Scalar> op(rt);
 //   return op;
-  // LinearOperator<Scalar> op = new TransposeOperator<Scalar>(*this);
-  RefCountPtr<TSFCore::LinearOp<double> > op = 
-    rcp(new TransposeOperator<Scalar>(*this));
-				      //(ptr()->range())));
+  LinearOperator<Scalar> op = new TransposeOperator<Scalar>(*this);
+//   RefCountPtr<TSFCore::LinearOp<double> > op = 
+//     rcp(new TransposeOperator<Scalar>(*this));
+// 				      //(ptr()->range())));
   return op;
 }
 

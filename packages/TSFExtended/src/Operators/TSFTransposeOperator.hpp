@@ -50,12 +50,22 @@ namespace TSFExtended
    * 
    */
   template <class Scalar>
-  class TransposeOperator : public OpDescribableByTypeID<Scalar>
+  class TransposeOperator : public OpDescribableByTypeID<Scalar>, 
+			    public Handleable<TSFCore::LinearOp<Scalar> >
     //public LoadableMatrix<Scalar>
     //public ExplicitlyTransposeableOp<Scalar>
     //public Formable<Scalar>,
   {
+   
   public:
+    GET_RCP(TSFCore::LinearOp<Scalar>);
+//     virtual RefCountPtr<TransposeOperator<Scalar> > getRcp() 
+//     {return rcp(this);}
+
+
+
+
+
     /** Create with an operator. */
     TransposeOperator(const LinearOperator<Scalar>& op) : op_(op) {;}
 

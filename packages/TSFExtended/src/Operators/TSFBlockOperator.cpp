@@ -137,83 +137,85 @@ void BlockOperator<Scalar>::apply(
 				  ,const Scalar            beta  = 0.0
 				  ) const 
 {
-//   TEST_FOR_EXCEPTION(dynamic_cast<ZeroOperator<Scalar>* >(op_) != 0, runtime_error,
-// 		     "InverseOperator<Scalar>::apply() called on a ZeroOperator.");
-//   TEST_FOR_EXCEPTION(op_->domain().dim() != op_->range().dim(), runtime_error,
-// 		     "InverseOperator<Scalar>::apply() called on a non-square operator.");
-//   SolverState<Scalar> haveSoln;
-//   LinearOperator<Scalar> applyOp;      
-//   if (M_trans == NOTRANS)
-//     {
-//       applyOp = op_;
-//     }
-//   else
-//     {
-//       applyOp = op_.transpose();
-//     }
+  /* make TSFExtended vectors  */
+  RefCountPtr<TSFCore::Vector<Scalar> > xp = rcp(x);
+  Vector<Scalar> xExt = xp;
+
+  RefCountPtr<TSFCore::Vector<Scalar> > yp = y;
+  Vector<Scalar> yExt = yp;
+  
+  if (M_trans == NOTRANS)
+    {
+      apply(xExt, alpha, yExt, beta);  
+    }
+  else
+    {
+      applyTranspose(xExt, alpha, yExt, beta);
+    }
       
-//   if (beta == 0.0)
-//     {
-//       Vt_S(&x, alpha);
-//     }
-//   else
-//     {
-//       applyOp.ptr()->apply(NOTRANS, *y, &x, beta, alpha);
-//     }
-      
-//   DiagonalOperator<Scalar>* val1 = dynamic_cast<DiagonalOperator<Scalar>* >(op_);
-//   IdentityOperator<Scalar>* val2 = dynamic_cast<IdentityOperator<Scalar>* >(op_);
-//   if (val1 != 0 or val2 != 0)
-//     {
-//       haveSoln = applyOp_.ptr()->applyInverse(x, y);
-//     }      
-//   else
-//     {
-//       haveSoln = solver_.solve(applyOp, x, *y);
-//     }
-//   TEST_FOR_EXCEPTION(haveSoln.finalState() != SolveConverged, runtime_error,
-// 		     "InverseOperator<Scalar>::apply() " << haveSoln.stateDescription());
 }
 
 
 
-// /*==================================================================*/
-// template <class Scalar>
-// void BlockOperator<Scalar>::apply(const Vector<Scalar>& arg,
-// 				  Vector<Scalar>& out) const
-// {
-//   TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
-//   for (int i=0; i<nBlockRows_; i++)
-//     {
-//       Vector<Scalar> tmpRow = range().getBlock(i).createMember();
-//       tmpRow.zero();
-//       for (int j=0; j<nBlockCols_; j++)
-// 	{
-// 	  tmpRow = tmpRow + sub_[i][j] * arg.getBlock(j);
-// 	}
-//       out.setBlock(i, tmpRow);
-//     }
-// }
+/*==================================================================*/
+template <class Scalar>
+void BlockOperator<Scalar>::apply(const Vector<Scalar>& arg, 
+				  const Scalar alpha,
+				  Vector<Scalar>& out, 
+				  const Scalar beta) const
+{
+  TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
+  for (int i=0; i<nBlockRows_; i++)
+    {
+      Vector<Scalar> tmp = range().getBlock(i).createMember();
+      tmpRow.zero();
+      for (int j=0; j<nBlockCols_; j++)
+	{
+	  tmp = tmp + sub_[i][j] * arg.getBlock(j);
+	}
+      if (beta == 0.0)
+	{
+	  tmp = alpha * tmp;
+	}
+      else
+	{
+	  tmp = alpha * tmp + beta * out.getBlock(i);
+	}
+      out.setBlock(i, tmp);
+    }
+}
 
 
-// /*==================================================================*/
-// template <class Scalar>
-// void BlockOperator<Scalar>::applyAdjoint(const Vector<Scalar>& arg,
-// 					 Vector<Scalar>& out) const
-// {
-//   TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
-//   for (int i=0; i<nBlockCols_; i++)
-//     {
-//       Vector<Scalar> tmpRow = domain().getBlock(i).createMember();
-//       for (int j=0; j<nBlockRows_; j++)
-// 	{
-// 	  Vector<Scalar> tmp = domain().getBlock(i).createMember();
-// 	  sub_[j][i].applyAdjoint(arg.getBlock(j), tmp);
-// 	  tmpRow.add(tmp, tmpRow);
-// 	}
-//       out.setBlock(i, tmpRow);
-//     }
-// }
+/*==================================================================*/
+template <class Scalar>
+void BlockOperator<Scalar>::applyTranspose(const Vector<Scalar>& arg,
+					   const Scalar alpha,
+					   Vector<Scalar>& out,
+					   const Scalar beta) const
+{
+  TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
+  for (int i=0; i<nBlockCols_; i++)
+    {
+      Vector<Scalar> tmpRow = domain().getBlock(i).createMember();
+      for (int j=0; j<nBlockRows_; j++)
+	{
+	  Vector<Scalar> tmp = domain().getBlock(i).createMember();
+	  tmp.zero();
+	  tmp = tmp + sub_[j][i] * arg.getBlock(j);
+	}
+      if (beta == 0.0)
+	{
+	  tmp = alpha * tmp;
+	}
+      else
+	{
+	  tmp = alpha * tmp + beta * out.getBlock(i);
+	}
+      out.setBlock(i, tmp);
+    }
+}
+
+
 
 /*==================================================================*/
 template <class Scalar>

@@ -70,7 +70,7 @@ namespace TSFExtended
       /** */
       LinearOperator();
       /** */
-      LinearOperator(const Handleable<TSFCore::LinearOp<Scalar> >* rawPtr);
+      LinearOperator(Handleable<TSFCore::LinearOp<Scalar> >* rawPtr);
       /** */
       LinearOperator(const RefCountPtr<TSFCore::LinearOp<Scalar> >& smartPtr);
       //@}

@@ -119,17 +119,21 @@ namespace TSFExtended
                        ) const;
     
 
-//     /** apply operator to a vector in the domain space, returning a vector
-//      * in the range space 
-//      */
-//     void apply(const Vector<Scalar>& in, Vector<Scalar>& out) const ;
+    /** apply operator to a vector in the domain space, returning a vector
+     * in the range space 
+     */
+    void apply(const Vector<Scalar>& in, const Scalar alpha, 
+	       Vector<Scalar>& out, const Scalar beta) const ;
 
 
-//     /** apply adjoint operator to a vector in the domain space, returning
-//      * a vector in the range space. The default implementation throws an
-//      * exception */
-//     virtual void applyAdjoint(const Vector<Scalar>& in, 
-// 			      Vector<Scalar>& out) const ;
+
+    /** apply adjoint operator to a vector in the domain space, returning
+     * a vector in the range space. The default implementation throws an
+     * exception */
+    virtual void applyTranspose(const Vector<Scalar>& in, const Scalar alpha, 
+			      Vector<Scalar>& out, const Scalar beta) const ;
+
+
 
     /**  create the transpose */
     LinearOperator<Scalar>* formTranspose();
