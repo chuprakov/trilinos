@@ -186,7 +186,7 @@ bool BasisSystemTester::test_basis_system(
 	// Create the N matrix if not input
 	rcp::ref_count_ptr<const AbstractLinAlgPack::MatrixWithOp>
 		N = rcp::rcp(N_in,false);
-	if( (Gc || Gh) && C && !N.get() ) {
+	if( (Gc || Gh) && C && N.get() == NULL ) {
 		if(out && print_tests() >= PRINT_BASIC)
 			*out
 				<< "\nCreating the matrix N since it was not input by the client ...";
