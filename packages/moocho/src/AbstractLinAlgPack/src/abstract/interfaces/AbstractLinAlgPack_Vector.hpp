@@ -26,61 +26,61 @@ namespace AbstractLinAlgPack {
 
 ///
 /** Abstract interface for immutable, finite dimensional, coordinate vectors {abstract}.
-  *
-  * This interface contains a mimimal set of operations.  The main feature
-  * of this interface is the operation \c apply_reduction().
-  * Almost every standard (i.e. BLAS) and non-standard element-wise operation that
-  * can be performed on a set of coordinate vectors without changing (mutating)
-  * the vectors can be performed through reduction operators.  More standard
-  * vector operations could be included in this interface and allow
-  * for specialized implementations but in general, assuming the
-  * sub-vectors are large enough, such implementations
-  * would not be significantly faster than those implemented through
-  * reduction/transformation operators.  There are some operations however
-  * that can not always be efficiently with reduction/transforamtion operators
-  * and a few of these important methods are included in this interface.  The
-  * <tt>apply_reduction()</tt> method allows to client to specify a sub-set
-  * of the vector elements to include in reduction/transformation operation.
-  * This greatly increases the generality of this vector interface as vector
-  * objects can be used as sub objects in larger composite vectors and sub-views
-  * of a vector can be created.
-  *
-  * This interface allows clients to create sub-views of a vector using \c sub_view()
-  * that in turn are fully functional <tt>%VectorWithOp</tt> objects.  This functionality
-  * is supported by default by using a default vector subclass \c VectorWithOpSubView which
-  * in turn calls <tt>apply_reduction()</tt> but the client need not ever worry about
-  * how this is done.
-  *
-  * This interface also allows a client to extract a sub-set of elements in an
-  * explicit form as an \c RTOp_SubVector object using the method \c get_sub_vector().
-  * In general, this is very bad thing to do and should be avoided at all costs.
-  * However, there are some applications where this is needed and therefore it is
-  * supported.  The default implementation of this method uses a reduction/transformation
-  * operator with <tt>apply_reduction()</tt> in order to extract the needed elements.
-  *
-  * In order to create a concreate subclass of this interface, only two
-  * methods must be overridden.  The \c space() method must be overridden which in turn
-  * requires defining a concreate \c VectorSpace class (which has only two pure virtual
-  * methods).  And, as mentioned above, the \c apply_reduction() method must be overridden
-  * as well.
-  *
-  * The fact that this interface defines \c space() which returns a \c VectorSpace object
-  * (which in turn can create mutable vectors) implies that for every possible vector object,
-  * it is possible to associate with it a mutable vector object that can be the target
-  * of transformation operations.  This is not a serious limitation.  For any
-  * application area, mutable vectors should be able to defined and should be
-  * usable with the non-mutable vectors.
-  *
-  * This interface includes methods for the common vector norms: \c norm_1(),
-  * \c norm_2(), \c norm_inf().  The default implementation of this class uses reduction
-  * operator classes (See RTOp_ROp_norms.h) and caches away the values of the
-  * norms that are computed since it is common that the norms will be accessed many
-  * times before a vector is changed.  The operations in any subclass that modifies
-  * the underlying vector must call the method <tt>this-></tt>has_changed() in order
-  * to alert this implementation that the norms are no longer valid.
-  *
-  * ToDo: Add example code!
-  */
+ *
+ * This interface contains a mimimal set of operations.  The main feature
+ * of this interface is the operation \c apply_reduction().
+ * Almost every standard (i.e. BLAS) and non-standard element-wise operation that
+ * can be performed on a set of coordinate vectors without changing (mutating)
+ * the vectors can be performed through reduction operators.  More standard
+ * vector operations could be included in this interface and allow
+ * for specialized implementations but in general, assuming the
+ * sub-vectors are large enough, such implementations
+ * would not be significantly faster than those implemented through
+ * reduction/transformation operators.  There are some operations however
+ * that can not always be efficiently with reduction/transforamtion operators
+ * and a few of these important methods are included in this interface.  The
+ * <tt>apply_reduction()</tt> method allows to client to specify a sub-set
+ * of the vector elements to include in reduction/transformation operation.
+ * This greatly increases the generality of this vector interface as vector
+ * objects can be used as sub objects in larger composite vectors and sub-views
+ * of a vector can be created.
+ *
+ * This interface allows clients to create sub-views of a vector using \c sub_view()
+ * that in turn are fully functional <tt>%VectorWithOp</tt> objects.  This functionality
+ * is supported by default by using a default vector subclass \c VectorWithOpSubView which
+ * in turn calls <tt>apply_reduction()</tt> but the client need not ever worry about
+ * how this is done.
+ *
+ * This interface also allows a client to extract a sub-set of elements in an
+ * explicit form as an \c RTOp_SubVector object using the method \c get_sub_vector().
+ * In general, this is very bad thing to do and should be avoided at all costs.
+ * However, there are some applications where this is needed and therefore it is
+ * supported.  The default implementation of this method uses a reduction/transformation
+ * operator with <tt>apply_reduction()</tt> in order to extract the needed elements.
+ *
+ * In order to create a concreate subclass of this interface, only two
+ * methods must be overridden.  The \c space() method must be overridden which in turn
+ * requires defining a concreate \c VectorSpace class (which has only two pure virtual
+ * methods).  And, as mentioned above, the \c apply_reduction() method must be overridden
+ * as well.
+ *
+ * The fact that this interface defines \c space() which returns a \c VectorSpace object
+ * (which in turn can create mutable vectors) implies that for every possible vector object,
+ * it is possible to associate with it a mutable vector object that can be the target
+ * of transformation operations.  This is not a serious limitation.  For any
+ * application area, mutable vectors should be able to defined and should be
+ * usable with the non-mutable vectors.
+ *
+ * This interface includes methods for the common vector norms: \c norm_1(),
+ * \c norm_2(), \c norm_inf().  The default implementation of this class uses reduction
+ * operator classes (See RTOp_ROp_norms.h) and caches away the values of the
+ * norms that are computed since it is common that the norms will be accessed many
+ * times before a vector is changed.  The operations in any subclass that modifies
+ * the underlying vector must call the method <tt>this-></tt>has_changed() in order
+ * to alert this implementation that the norms are no longer valid.
+ *
+ * ToDo: Add example code!
+ */
 class VectorWithOp {
 public:
 
@@ -178,6 +178,27 @@ public:
 	 *              operation.  The value of <tt>sub_dim == 0</tt> means to include all available elements.
 	 * @param  global_offset
 	 *				[in] (default = 0) The offset applied to the included vector elements.
+	 *
+	 * <b> Note the subclass implementors </b>
+	 *
+	 * It is imporatant that all transformed vectors have the method \c has_changed() called on them
+	 * durring the implementation of this function.  This can be done by calling
+	 * \c finalize_apply_reduction(...) just before the \c apply_reduction() method returns.
+	 * For example, the implementation for a vector subclass <tt>MyVector</tt> would look like:
+	 \code
+	 
+	 void MyVector::apply_reduction(
+		const RTOpPack::RTOp& op
+		,const size_t num_vecs, const VectorWithOp** vecs
+		,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		,RTOp_ReductTarget reduct_obj
+		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
+		) const
+	 {
+	     ...
+		 finalize_apply_reduction(num_targ_vecs,targ_vecs);
+	 }
+	 \endcode
 	 */
 	virtual void apply_reduction(
 		const RTOpPack::RTOp& op
@@ -422,6 +443,23 @@ public:
 	 \endverbatim
 	 */
 	virtual void has_changed() const;
+
+protected:
+
+	/** @name Protected helper functions */
+	//@{
+
+	///
+	/** This method usually needs to be called by subclasses at the
+	 * end of the \c apply_reduction() method implementation to
+	 * insure that \c has_changed() is called on the transformed
+	 * vector objects.
+	 */
+	virtual void finalize_apply_reduction(
+		const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		) const;
+
+	//@}
 
 private:
 

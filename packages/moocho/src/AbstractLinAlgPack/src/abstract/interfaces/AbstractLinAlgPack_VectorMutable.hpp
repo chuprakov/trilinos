@@ -23,37 +23,37 @@ namespace AbstractLinAlgPack {
 
 ///
 /** \brief Abstract interface for mutable coordinate vectors {abstract}.
-  *
-  * Objects of this type can act as a target vector of a transformation operation.
-  * Similarly to \c VectorWithOp this interface contains very few (only one extra) pure
-  * virtual methods that must be overridden.  However, more efficient and more general
-  * implementations will choose to override more methods.
-  * 
-  * The most important method is \c apply_transformation() that allows clients to apply
-  * user defined reduction/transformation operators.  Every standard (i.e. BLAS) and
-  * non-standard element-wise vector operation can be performed using a reduction/transformation
-  * operator.  As long as the individual sub-vectors are large enough, reduction/transformation
-  * operators will be nearly as efficient as specialized operations for most vector subclasses.
-  * Similarly to \c VectorWithOp::apply_reduction(), the \c apply_transformation() method allows
-  * clients to include only subsets of elements in a reduction/transformation operation.
-  *
-  * In addition to being able to create non-mutable (\c const) abstract sub-views of a vector
-  * object thorugh the \c VectorWithOp interface, this interface allows the creation of
-  * mutable (non-<tt>const</tt>) sub-views using \c sub_view().  Also, in addition to being
-  * able to extract an explicit non-mutable view of some (small?) sub-set of elements, this
-  * interface allows a client to either extract a explicit mutable sub-views using
-  * \c get_sub_vector() or to set sub-vectors using \c set_sub_vector(). As much
-  * as possible, abstract views should be preferred (i.e. \c sub_view()) over explict views (i.e.
-  * get_sub_vector() and set_sub_vector()).
-  *
-  * There are only three pure virtual methods that a concreate \c VectorWithOpMutable
-  * subclass must override.  The \c space() and \c apply_reduction() methods from the \c VectorWithOp
-  * base class inteface must be defined.  Also, as mentioned above, the \c apply_transforamtion()
-  * method must be overridden and defined.
-  *
-  * The non-mutable (<tt>const</tt>) <tt>sub_view(...)</tt> method from the <tt>VectorWithOp</tt>
-  * interface has a default implementation defined here that will be adequate for most subclasses.
-  */
+ *
+ * Objects of this type can act as a target vector of a transformation operation.
+ * Similarly to \c VectorWithOp this interface contains very few (only one extra) pure
+ * virtual methods that must be overridden.  However, more efficient and more general
+ * implementations will choose to override more methods.
+ * 
+ * The most important method is \c apply_transformation() that allows clients to apply
+ * user defined reduction/transformation operators.  Every standard (i.e. BLAS) and
+ * non-standard element-wise vector operation can be performed using a reduction/transformation
+ * operator.  As long as the individual sub-vectors are large enough, reduction/transformation
+ * operators will be nearly as efficient as specialized operations for most vector subclasses.
+ * Similarly to \c VectorWithOp::apply_reduction(), the \c apply_transformation() method allows
+ * clients to include only subsets of elements in a reduction/transformation operation.
+ *
+ * In addition to being able to create non-mutable (\c const) abstract sub-views of a vector
+ * object thorugh the \c VectorWithOp interface, this interface allows the creation of
+ * mutable (non-<tt>const</tt>) sub-views using \c sub_view().  Also, in addition to being
+ * able to extract an explicit non-mutable view of some (small?) sub-set of elements, this
+ * interface allows a client to either extract a explicit mutable sub-views using
+ * \c get_sub_vector() or to set sub-vectors using \c set_sub_vector(). As much
+ * as possible, abstract views should be preferred (i.e. \c sub_view()) over explict views (i.e.
+ * get_sub_vector() and set_sub_vector()).
+ *
+ * There are only three pure virtual methods that a concreate \c VectorWithOpMutable
+ * subclass must override.  The \c space() and \c apply_reduction() methods from the \c VectorWithOp
+ * base class inteface must be defined.  Also, as mentioned above, the \c apply_transforamtion()
+ * method must be overridden and defined.
+ *
+ * The non-mutable (<tt>const</tt>) <tt>sub_view(...)</tt> method from the <tt>VectorWithOp</tt>
+ * interface has a default implementation defined here that will be adequate for most subclasses.
+ */
 class VectorWithOpMutable : virtual public VectorWithOp
 {
 public:
@@ -121,6 +121,27 @@ public:
 	 *              operation.  The value of <tt>sub_dim == 0</tt> means to include all available elements.
 	 * @param  global_offset
 	 *				[in] (default = 0) The offset applied to the included vector elements.
+	 *
+	 * <b> Note the subclass implementors </b>
+	 *
+	 * It is imporatant that all transformed vectors have the method \c has_changed() called on them
+	 * durring the implementation of this function.  This can be done by calling
+	 * \c finalize_apply_transformation(...) just before the \c apply_transformation() method returns.
+	 * For example, the implementation for a vector subclass <tt>MyVector</tt> would look like:
+	 \code
+	 
+	 void MyVector::apply_transformation(
+		const RTOpPack::RTOp& op
+		,const size_t num_vecs, const VectorWithOp** vecs
+		,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		,RTOp_ReductTarget reduct_obj
+		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
+		)
+	 {
+	     ...
+		 finalize_apply_transformation(num_targ_vecs,targ_vecs);
+	 }
+	 \endcode
 	 */
 	virtual void apply_transformation(
 		const RTOpPack::RTOp& op
@@ -340,6 +361,23 @@ public:
 	 * defined in VectorWithOp.
 	 */
 	vec_ptr_t sub_view( const Range1D& rng ) const;
+
+	//@}
+
+protected:
+
+	/** @name Protected helper functions */
+	//@{
+
+	///
+	/** This method usually needs to be called by subclasses at the
+	 * end of the \c apply_reduction() method implementation to
+	 * insure that \c has_changed() is called on the transformed
+	 * vector objects.
+	 */
+	virtual void finalize_apply_transformation(
+		const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		);
 
 	//@}
 

@@ -235,4 +235,15 @@ VectorWithOpMutable::sub_view( const Range1D& rng ) const
 	return const_cast<VectorWithOpMutable*>(this)->sub_view(rng);
 }
 
+// protected
+
+void VectorWithOpMutable::finalize_apply_transformation(
+	const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+	)
+{
+	this->has_changed();
+	for( int k = 0; k < num_targ_vecs; ++k )
+		targ_vecs[k]->has_changed();
+}
+
 } // end namespace AbstractLinAlgPack

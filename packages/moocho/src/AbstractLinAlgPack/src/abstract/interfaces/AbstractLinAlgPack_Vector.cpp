@@ -18,7 +18,7 @@
 #include <limits>
 #include <ostream>
 
-#include "AbstractLinAlgPack/include/VectorWithOp.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorWithOpSubView.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_dot_prod.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_get_ele.h"
@@ -286,6 +286,16 @@ void VectorWithOp::has_changed() const
 {
 	num_nonzeros_= -1;  // uninitalized;
 	norm_1_ = norm_2_ = norm_inf_ = -1.0;
+}
+
+// protected
+
+void VectorWithOp::finalize_apply_reduction(
+	const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+	) const
+{
+	for( int k = 0; k < num_targ_vecs; ++k )
+		targ_vecs[k]->has_changed();
 }
 
 } // end namespace AbstractLinAlgPack
