@@ -222,10 +222,8 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	
 	// Resize xinit, xl, xu, hl and hu
 	xinit_.initialize(n_);
-	if(has_var_bounds) {
-		xl_.initialize(n_);
-		xu_.initialize(n_);
-	}
+	xl_.initialize(n_);
+	xu_.initialize(n_);
 	if(mI_full_) {
 		hl_.initialize(mI_full_);
 		hu_.initialize(mI_full_);
@@ -342,20 +340,12 @@ size_type NLPSerialPreprocess::num_bounded_x() const
 const VectorWithOp& NLPSerialPreprocess::xl() const 
 {
 	assert_initialized();
-	THROW_EXCEPTION(
-		num_bounded_x_ == 0, NoBounds
-		,"NLPSerialPreprocess::xl() : Error, there are no variable bounds!"
-		);
 	return xl_;
 }
 
 const VectorWithOp& NLPSerialPreprocess::xu() const 
 {
 	assert_initialized();
-	THROW_EXCEPTION(
-		num_bounded_x_ == 0, NoBounds
-		,"NLPSerialPreprocess::xu() : Error, there are no variable bounds!"
-		);
 	return xu_;
 }
 
@@ -863,7 +853,7 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 	
 	// try to find the file giving the basis...
 	char ind[17];
-	sprintf(ind, "%ld", basis_selection_num_);
+	sprintf(ind, "%d", basis_selection_num_);
 	std::string fname = "basis_";
 	fname += ind;
 	fname += ".sel";
@@ -877,47 +867,82 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 
 		int n;
 		basis_file >> tags;
-		THROW_EXCEPTION(tags != "n", std::logic_error, "Incorrect basis file format - \"n\" expected, \"" << tags << "\" found.");
+		THROW_EXCEPTION(
+			tags != "n", std::logic_error
+			,"Incorrect basis file format - \"n\" expected, \"" << tags << "\" found.");
 		basis_file >> n;
-		THROW_EXCEPTION(n == NAN && n == 0, std::logic_error, "Incorrect basis file format - n > 0 \"" << n << "\" found.");
+		THROW_EXCEPTION(
+#ifdef _GNU_GXX
+			n == NAN ||
+#endif
+			n <= 0, std::logic_error
+			, "Incorrect basis file format - n > 0 \"" << n << "\" found.");
 
 		int m;
 		basis_file >> tags;
-		THROW_EXCEPTION(tags != "m", std::logic_error, "Incorrect basis file format - \"m\" expected, \"" << tags << "\" found.");
+		THROW_EXCEPTION(
+			tags != "m", std::logic_error
+			,"Incorrect basis file format - \"m\" expected, \"" << tags << "\" found.");
 		basis_file >> m;
-		THROW_EXCEPTION(m == NAN || m == 0 || m > n , std::logic_error, "Incorrect basis file format - 0 < m <= n expected, \"" << m << "\" found.");
+		THROW_EXCEPTION(
+#ifdef _GNU_GXX
+			m == NAN ||
+#endif
+			m > n , std::logic_error
+			,"Incorrect basis file format - 0 < m <= n expected, \"" << m << "\" found.");
 		
 		int r;
 		basis_file >> tags;
-		THROW_EXCEPTION(tags != "rank", std::logic_error, "Incorrect basis file format - \"rank\" expected, \"" << tags << "\" found.");
+		THROW_EXCEPTION(
+			tags != "rank", std::logic_error
+			,"Incorrect basis file format - \"rank\" expected, \"" << tags << "\" found.");
 		basis_file >> r;
-		THROW_EXCEPTION(r == NAN || r == 0 || r > m, std::logic_error, "Incorrect basis file format - 0 < rank <= m expected, \"" << r << "\" found.");		
+		THROW_EXCEPTION(
+#ifdef _GNU_GXX
+			r == NAN ||
+#endif
+			r > m, std::logic_error
+			,"Incorrect basis file format - 0 < rank <= m expected, \"" << r << "\" found.");		
 		if (rank)
 			{ *rank = r; }
 
 		// var_permutation
 		basis_file >> tags;
-		THROW_EXCEPTION(tags != "var_perm", std::logic_error, "Incorrect basis file format -\"var_perm\" expected, \"" << tags << "\" found.");
+		THROW_EXCEPTION(
+			tags != "var_perm", std::logic_error
+			,"Incorrect basis file format -\"var_perm\" expected, \"" << tags << "\" found.");
 		var_perm->resize(n);
-		for (int i=0; i < n; i++)
+		{for (int i=0; i < n; i++)
 			{
 			int var_index;
 			basis_file >> var_index;
-			THROW_EXCEPTION(var_index == NAN && var_index >= n, std::logic_error, "Incorrect basis file format for var_perm: 0 <= indice <= n expected, \"" << n << "\" found.");
+			THROW_EXCEPTION(
+#ifdef _GNU_GXX
+				var_index == NAN ||
+#endif
+				var_index >= n, std::logic_error
+				,"Incorrect basis file format for var_perm: 0 <= indice <= n expected, \"" << n << "\" found.");
 			(*var_perm)(i) = var_index;
-			}
+			}}
 
 		// eqn_permutation
 		basis_file >> tags;
-		THROW_EXCEPTION(tags != "equ_perm", std::logic_error, "Incorrect basis file format -\"equ_perm\" expected, \"" << tags << "\" found.");
+		THROW_EXCEPTION(
+			tags != "equ_perm", std::logic_error
+			,"Incorrect basis file format -\"equ_perm\" expected, \"" << tags << "\" found.");
 		equ_perm->resize(r);
-		for (int i=0; i < r; i++)
+		{for (int i=0; i < r; i++)
 			{
 			int equ_index;
 			basis_file >> equ_index;
-			THROW_EXCEPTION(equ_index == NAN || equ_index >= m, std::logic_error, "Incorrect basis file format for equ_perm: 0 <= indice <= m expected, \"" << n << "\" found.");
+			THROW_EXCEPTION(
+#ifdef _GNU_GXX
+				equ_index == NAN ||
+#endif
+				equ_index >= m, std::logic_error
+				,"Incorrect basis file format for equ_perm: 0 <= indice <= m expected, \"" << n << "\" found.");
 			(*equ_perm)(i) = equ_index;
-			}
+			}}
 
 		return true;
 		}
@@ -958,7 +983,11 @@ void NLPSerialPreprocess::assert_and_set_basis(
 		var_from_full( xl_full_().begin(), xl_.set_vec().begin() );
 		var_from_full( xu_full_().begin(), xu_.set_vec().begin() );
 		do_force_xinit_in_bounds();
-	};
+	}
+	else {
+		xl_ = -NLP::infinite_bound();
+		xu_ = +NLP::infinite_bound();
+	}
 }
 
 void NLPSerialPreprocess::assert_bounds_on_variables() const

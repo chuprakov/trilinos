@@ -149,8 +149,8 @@ namespace NLPInterfacePack {
  * <tt>space_c()</tt> and <tt>space_h()</tt> respectively.
  *
  * The number of variables \c x with finite bounds is returned by the method <tt>num_bounded_x()</tt>.
- * If <tt>num_bounded_x() > 0</tt> then the methods <tt>xl()</tt> and <tt>xu()</tt> return references
- * to vector objects reprresenting these bounds.  A lower bound is considered infinite if
+ * The methods <tt>xl()</tt> and <tt>xu()</tt> return references
+ * to vector objects representing these bounds.  A lower bound is considered infinite if
  * <tt>xl().get_ele(i) == -infinite_bound()</tt> and an upper bound is considered infinite if
  * <tt>xu().get_ele(i) == +infinite_bound()</tt>.
  *
@@ -309,7 +309,7 @@ public:
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt>
-	 * <li> [<tt>this->force_xinit_in_bounds()==true && this->num_bounded_x() > 0</tt>]
+	 * <li> [<tt>this->force_xinit_in_bounds()==true</tt>]
 	 *      <tt>this->xl() <= this->xinit() <= this->xu()</tt>
 	 * <li> <tt>this->num_f_evals() == 0</tt>
 	 * <li> [<tt>this->m() > 0</tt>] <tt>this->num_c_evals() == 0</tt>
@@ -425,7 +425,6 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->num_bounded_x() > 0</tt> (throw <tt>NoBounds</tt>)
 	 * </ul>
 	 *
 	 * Any bounds that are non-existant will return <tt>this->xl().get_ele(i) == -NLP::infinite_bound()</tt>.
@@ -436,7 +435,6 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->num_bounded_x() > 0</tt> (throw <tt>NoBounds</tt>)
 	 * </ul>
 	 *
 	 * Any bounds that are non-existant will return <tt>this->xu().get_ele(i) == +NLP::infinite_bound()</tt>.
