@@ -322,12 +322,10 @@ namespace TSF
 			/** \name Math operations */
 			//@{
 			/** axpy (this = a*x + y) */
-			inline void axpy(const TSFReal& a, const TSFVector& x, const TSFVector& y)
-				{acceptCopyOf(y); selfModifyingAxpy(a, x);}
+			void axpy(const TSFReal& a, const TSFVector& x, const TSFVector& y);
 
 			/** multiplication by a scalar (this = a*x) */
-			inline void scalarMult(const TSFReal& a, const TSFVector& x) 
-				{acceptCopyOf(x); selfModifyingScalarMult(a);}
+			void scalarMult(const TSFReal& a, const TSFVector& x) ;
 			
 			/** addition (this = x + y) */
 			inline void add(const TSFVector& x, const TSFVector& y) {axpy(1.0, x, y);}
@@ -336,12 +334,11 @@ namespace TSF
 			inline void subtract(const TSFVector& x, const TSFVector& y) {axpy(-1.0, y, x);}
 
 			/** element-by-element multiplication (this = x .* y) */
-			void dotStar(const TSFVector& x, const TSFVector& y) 
-				{acceptCopyOf(x); selfModifyingDotStar(y);}
+			void dotStar(const TSFVector& x, const TSFVector& y) ;
+
 
 			/** element-by-element division (this = x ./ y) */
-			void dotSlash(const TSFVector& x, const TSFVector& y) 
-				{acceptCopyOf(x); selfModifyingDotSlash(y);} 
+			void dotSlash(const TSFVector& x, const TSFVector& y) ;
 
 			/** dot product with another vector */
 			TSFReal dot(const TSFVector& other) const ;

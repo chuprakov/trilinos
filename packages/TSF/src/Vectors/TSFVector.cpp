@@ -331,6 +331,83 @@ void TSFVector::invalidateGhostValues()
 	ptr_->invalidateGhostValues();
 }
 
+void TSFVector::axpy(const TSFReal& a, const TSFVector& x, const TSFVector& y)
+{
+	/* we may copy y into this, so if x==this we need to make a copy of x before
+	 * modifying this */
+	TSFVector w;
+	if (isIdenticalTo(x))
+		{
+			w = x.copy();
+		}
+	else
+		{
+			w = x;
+		}
+	
+	/* save a copy if this==y */
+	if (!isIdenticalTo(y))
+		{
+			acceptCopyOf(y);
+		}
+	selfModifyingAxpy(a, w);
+}
+
+void TSFVector::dotStar(const TSFVector& x, const TSFVector& y)
+{
+	/* we may copy y into this, so if x==this we need to make a copy of x before
+	 * modifying this */
+	TSFVector w;
+	if (isIdenticalTo(x))
+		{
+			w = x.copy();
+		}
+	else
+		{
+			w = x;
+		}
+	
+	/* save a copy if this==y */
+	if (!isIdenticalTo(y))
+		{
+			acceptCopyOf(y);
+		}
+	selfModifyingDotStar(w);
+}
+
+void TSFVector::dotSlash(const TSFVector& x, const TSFVector& y)
+{
+	/* we may copy y into this, so if x==this we need to make a copy of x before
+	 * modifying this */
+	TSFVector w;
+	if (isIdenticalTo(x))
+		{
+			w = x.copy();
+		}
+	else
+		{
+			w = x;
+		}
+	
+	/* save a copy if this==y */
+	if (!isIdenticalTo(y))
+		{
+			acceptCopyOf(y);
+		}
+	selfModifyingDotSlash(w);
+}
+
+void TSFVector::scalarMult(const TSFReal& a, const TSFVector& x)
+{
+	/* save a copy if this==x */
+	if (!isIdenticalTo(x))
+		{
+			acceptCopyOf(x);
+		}
+	selfModifyingScalarMult(a);
+}
+
+
 void TSFVector::acceptCopyOf(const TSFVector& x)
 {
 	if (ptr_.isNull())
