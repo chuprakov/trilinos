@@ -85,7 +85,8 @@ EXPAND_AS_DEFINED      =
 # Links to other packages
 #
 TAGFILES               = ../../../../Trilinos/packages/teuchos/doc/teuchos.tag=../../../../../Trilinos/packages/teuchos/doc/html \
-                         ../../../../Trilinos/packages/TSFCoreUtils/doc/TSFCoreUtils.tag=../../../../../Trilinos/packages/TSFCoreUtils/doc/html
+                         ../../../../Trilinos/packages/TSFCoreUtils/doc/TSFCoreUtils.tag=../../../../../Trilinos/packages/TSFCoreUtils/doc/html \
+                         ../../../../Trilinos/packages/epetra/doc/epetra.tag=../../../../../Trilinos/packages/epetra/doc/html
 GENERATE_TAGFILE       = TSFCore.tag
 ALLEXTERNALS           = NO
 #

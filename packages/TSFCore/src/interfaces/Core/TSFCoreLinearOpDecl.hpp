@@ -42,8 +42,8 @@ namespace TSFCore {
  * A linear operator can perform the following operations:
  *
  * <ul>
- * <li><tt>y = alpha*op(M)*x + beta*y</tt>
- * <li><tt>Y = alpha*op(M)*X + beta*Y</tt>
+ * <li><tt>y = alpha*op(M)*x + beta*y</tt>  (vector version)
+ * <li><tt>Y = alpha*op(M)*X + beta*Y</tt>  (multi-vector version)
  * </ul>
  *
  * through the <tt>apply()</tt> methods where <tt>y</tt> and
