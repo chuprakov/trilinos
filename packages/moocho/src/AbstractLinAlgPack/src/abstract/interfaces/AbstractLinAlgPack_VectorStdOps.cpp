@@ -154,6 +154,19 @@ AbstractLinAlgPack::dot( const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2 
 	return RTOp_ROp_dot_prod_val(dot_prod_targ.obj());
 }
 
+AbstractLinAlgPack::value_type
+AbstractLinAlgPack::dot( const VectorWithOp& v_rhs1, const SpVectorSlice& sv_rhs2 )
+{
+	VopV_assert_compatibility(v_rhs1,sv_rhs2 );
+	if( sv_rhs2.nz() ) {
+		VectorSpace::vec_mut_ptr_t
+			v_rhs2 = v_rhs1.space().create_member();
+		v_rhs2->set_sub_vector(sub_vec_view(sv_rhs2));
+		return dot(v_rhs1,*v_rhs2);
+	}
+	return 0.0;
+}
+
 void AbstractLinAlgPack::Vp_S(
 	VectorWithOpMutable* v_lhs, const value_type& alpha )
 {

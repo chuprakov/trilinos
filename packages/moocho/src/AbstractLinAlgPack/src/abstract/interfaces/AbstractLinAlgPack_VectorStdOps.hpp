@@ -37,6 +37,16 @@ value_type sum( const VectorWithOp& v_rhs );
  */
 value_type dot( const VectorWithOp& v_rhs1, const VectorWithOp& v_rhs2 );
 
+///
+/** result = v_rhs1' * sv_rhs2
+ */
+value_type dot( const VectorWithOp& v_rhs1, const SpVectorSlice& sv_rhs2 );
+
+///
+/** result = sv_rhs1' * v_rhs2
+ */
+value_type dot( const SpVectorSlice& sv_rhs1, const VectorWithOp& v_rhs2 );
+
 //@}
 
 /** \defgroup VectorStdOps_TOp_grp Transformation operations */
@@ -98,5 +108,15 @@ void random_vector( value_type l, value_type u, VectorWithOpMutable* v );
 //@}
 
 } // end namespace AbstractLinAlgPack
+
+// /////////////////////////////////////
+// Inline members
+
+inline
+AbstractLinAlgPack::value_type
+AbstractLinAlgPack::dot( const SpVectorSlice& sv_rhs1, const VectorWithOp& v_rhs2 )
+{
+	return dot(v_rhs2,sv_rhs1);
+}
 
 #endif // ABSTRACT_LINALG_PACK_VECTOR_STD_OPS_H
