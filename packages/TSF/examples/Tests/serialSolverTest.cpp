@@ -1,5 +1,4 @@
 #include "TSF.h"
-#include "BICGSTABSolver.h"
 #include <iostream>
 #include <fstream>
 
@@ -18,47 +17,42 @@ public:
   TSFReal solution(TSFReal x) const {return x*(1.0-x*x);}
 };
 
+
 int main(int argc, void** argv)
 {
   TSFMPI::init(&argc, &argv);
-
-  ofstream fout("petraPoissonTest.csv");
   
+  ofstream fout("serialSolverTest.csv");
+
   try
     {
-      int n = 3;
+      char matrixFile [] = "matrices/fourbyfour.mtx";
+      int n = 4;
+
       TSFVectorType petra = new PetraVectorType();
       TSFVectorSpace space = petra.createSpace(n);
-      TSFMatrixOperator* mat = petra.createMatrix(space, space);
-      
-      TSFLinearProblem prob = new PoissonTest1D(space.dim(), mat);
-      
-      TSFLinearOperator A = prob.getOperator();
-      
-      TSFVector b = prob.getRHS();
-      cerr << "RHS: " << endl << b << endl;
-      cerr << "A: " << endl << A << endl;
-      
-      TSFVector soln = prob.getKnownSolution();
-      
+
+      MatrixMarketReader reader(matrixFile);
+      TSFLinearOperator A = reader.read(petra);
+
+      TSFVector soln = space.createMember();
+      soln.randomize();
+      TSFVector b = A * soln;
+
       TSFLinearSolver solver = new AZTECSolver();
-      // TSFPreconditionerFactory prec = new ILUKPreconditionerFactory(1);
-      // TSFLinearSolver solver = new BICGSTABSolver(prec, 1.0e-10, 100);
-      
       TSFLinearOperator aInv = A.inverse(solver);
+      TSFVector x = aInv * b;
 
-      TSFVector x = aInv*b;
-
-      TSFLinearOperator At = A.adjoint();
-			
+      cerr << "A: " << endl;
+      A.getMatrix()->print(cout);
       cerr << "RHS: " << endl << b << endl;
       cerr << "Solution: " << endl << soln << endl;
       cerr << "Result: " << endl << x << endl;
-      
+
       TSFReal error = (x-soln).norm2();
       cerr << "error norm = " << error << endl;
 
-      double tol = 1.0e-10;
+      TSFReal tol = 1.0e-10;
       if(error < tol)
 	{
 	  fout << " PASSED" << endl;
@@ -73,6 +67,7 @@ int main(int argc, void** argv)
       cerr << e.what() << endl;
       fout << " EXCEPTION" << endl;
     }
+
   fout.close();
 
   TSFMPI::finalize();

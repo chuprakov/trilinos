@@ -33,9 +33,9 @@ EXE = $(OBJ:%.o=%.e)
 
 # rule to run serial and parallel tests
 
-TESTS = $(SOURCES:%.cpp=Results/%.tst)
+TESTS = $(SOURCES:%.cpp=%.tst)
 
-PTESTS = $(PSOURCES:%.cpp=ParallelResults/%.ptst)
+PTESTS = $(PSOURCES:%.cpp=%.ptst)
 
 
 
@@ -95,6 +95,8 @@ LINKLIB = $(TARGETLIB) $(EXTERNAL_LIB_PATH) $(EXTERNAL_LIB) $(ARCH_LIB)
 
 %.tst : %.e
 	$(SERIAL_RUN) ./$< $(SERIAL_ARGS) >& $@
+	echo -n $* > tmp
+	cat tmp $*.csv >> results.csv
 	echo "done" $@
 
 %.ptst : %.e

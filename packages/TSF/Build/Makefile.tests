@@ -21,28 +21,17 @@ include ../../Build/Makefile.tsf
 
 
 tests:
-	(cd Results; $(MKDIR) $(BUILD_NAME))
-	(cd Results; $(CP) processTestResults.sh $(BUILD_NAME))
+	$(RM) -f *.tst
+	$(RM) results.csv
 	gmake $(TESTS)
-	(cd Results/$(BUILD_NAME); ./processTestResults.sh)
+	./processTestResults.sh
+	cat results.csv
 
-parallelTests:
-	(cd ParallelResults; $(MKDIR) $(BUILD_NAME); $(CP) processPTestResults.sh $(BUILD_NAME))
-	gmake $(PTESTS)
-	(cd ParallelResults/$(BUILD_NAME); processPTestResults.sh)	
 
 clean:
-	$(RM) Results/$(BUILD_NAME)/*.tst
-	$(RM) ParallelResults/$(BUILD_NAME)/*.ptst
 	$(RM) *.e 
 	$(RM) *.o
+	$(RM) *.tst
+	$(RM) *.csv
 	$(ADDITIONAL_CLEAN_REMOVES)
-
-spotless:
-	$(RM) Results/*/*.tst
-	$(RM) ParallelResults/*/*.ptst
-	$(RM) *.e 
-	$(RM) *.o
-	$(ADDITIONAL_CLEAN_REMOVES)
-	$(ADDITIONAL_SPOTLESS_REMOVES)
 

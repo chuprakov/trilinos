@@ -1,6 +1,5 @@
 include ../../Build/Makefile.tests
 
 
-SOURCES = matrixFreePoisson1D.cpp petraPoissonTest.cpp
-
-
+SOURCES = cgTest.cpp findMin.cpp fitSine.cpp petraPoissonTest.cpp \
+          powerMethodTest.cpp serialSolverTest.cpp
