@@ -60,13 +60,9 @@ const VectorSpace& MatrixSymIdentity::space_cols() const {
 	return *vec_space_;
 }
 
-const VectorSpace& MatrixSymIdentity::space_rows() const {
-	return *vec_space_;
-}
-
 std::ostream& MatrixSymIdentity::output(std::ostream& out) const
 {
-	out << "Identity matrix of size " << rows() << " x " << rows() << std::endl;
+	out << "Identity matrix of dimension " << rows() << " x " << rows() << std::endl;
 	return out;
 }
 
@@ -75,7 +71,7 @@ void MatrixSymIdentity::Vp_StMtV(
 	,const VectorWithOp& x, value_type b
 	) const
 {
-	AbstractLinAlgPack::Vp_MtV_assert_sizes( y->dim(), rows(), cols(), BLAS_Cpp::no_trans, x.dim() );
+	AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, BLAS_Cpp::no_trans, x );
 	Vt_S(y,b);
     Vp_StV(y,a*scale_,x);
 }
@@ -86,7 +82,7 @@ void MatrixSymIdentity::V_InvMtV(
 	VectorWithOpMutable* y, BLAS_Cpp::Transp M_trans, const VectorWithOp& x
 	) const
 {
-	AbstractLinAlgPack::Vp_MtV_assert_sizes( y->dim(), rows(), cols(), BLAS_Cpp::no_trans, x.dim() );
+	AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, BLAS_Cpp::no_trans, x );
 	LinAlgOpPack::V_StV(y,1.0/scale_,x);
 }
 

@@ -68,8 +68,6 @@ public:
 	//@{
 
 	///
-	const VectorSpace& space_rows() const;
-	///
 	const VectorSpace& space_cols() const;
 	///
 	std::ostream& output(std::ostream& out) const;
