@@ -12,9 +12,9 @@ $success = 0 if (!$result);
 $result = system ('./TSFCoreSolversGmresTest.exe ../../../../../packages/belos/test/BlockCG/bcsstk15.hb 2100 1e-10 -v');
 $success = 0 if (!$result);
 if($success) {
-  printf "\nFinal: Congraduations! all of the linear systems where solved the the given tolerances!\n";
+  printf "\nFinal: Congratulations! all of the linear systems where solved to the given tolerances!\n";
 }
 else {
-  printf "\nFinal: Congraduations! all of the linear systems where solved the the given tolerances!\n";
+  printf "\nFinal: Oh no! at least one of the linear systems was not solved to the given tolerances!\n";
 }
 exit ($success ? 0 : -1 );

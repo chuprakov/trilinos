@@ -170,7 +170,7 @@ int main(int argc, char *argv[]) {
 
 	if (verbose) {
 		if(success)
-			std::cout << "\nCongradualtions! the system was solved to the specified tolerance!\n";
+			std::cout << "\nCcongratulations! the system was solved to the specified tolerance!\n";
 		else
 			std::cout << "\nOh no! the system was not solved to the specified tolerance!\n";
 	}
