@@ -33,6 +33,7 @@
 #include "TSFHandle.hpp"
 #include "TSFCoreVector.hpp"
 #include "TSFCoreVectorSpace.hpp"
+#include "TSFVectorSpace.hpp"
 #include "TSFLoadableVector.hpp"
 #include "TSFAccessibleVector.hpp"
 #include "TSFCoreVectorStdOps.hpp"
@@ -47,8 +48,6 @@ namespace TSFExtendedOps
 namespace TSFExtended
 {
   using TSFCore::Index;
-
-  
 
   /** 
    * User-level vector class. 
@@ -118,7 +117,7 @@ namespace TSFExtended
       //@}
 
       /** */
-      RefCountPtr<const TSFCore::VectorSpace<Scalar> > space() const 
+      VectorSpace<Scalar> space() const 
       {return ptr()->space();}
 
       /** \name Math operations */
@@ -350,7 +349,7 @@ namespace TSFExtended
   template <class Scalar> inline 
   Vector<Scalar> Vector<Scalar>::copy() const 
   {
-    Vector<Scalar> rtn = space()->createMember();
+    Vector<Scalar> rtn = space().createMember();
     {
       TimeMonitor t(*opTimer());
       rtn.acceptCopyOf(*this);
@@ -361,7 +360,7 @@ namespace TSFExtended
   template <class Scalar> inline 
   Vector<Scalar> Vector<Scalar>::dotStar(const Vector<Scalar>& other) const 
   {
-    Vector<Scalar> rtn = space()->createMember();
+    Vector<Scalar> rtn = space().createMember();
     {
       TimeMonitor t(*opTimer());
       TSFCore::ele_wise_prod(1.0, *ptr(), *(other.ptr()), rtn.ptr().get());
@@ -372,7 +371,7 @@ namespace TSFExtended
   template <class Scalar> inline 
   Vector<Scalar> Vector<Scalar>::dotSlash(const Vector<Scalar>& other) const 
   {
-    Vector<Scalar> rtn = space()->createMember();
+    Vector<Scalar> rtn = space().createMember();
     {
       TimeMonitor t(*opTimer());
       TSFCore::ele_wise_divide(1.0, *ptr(), *(other.ptr()), rtn.ptr().get());
@@ -383,7 +382,7 @@ namespace TSFExtended
   template <class Scalar> inline 
   Vector<Scalar> Vector<Scalar>::abs() const 
   {
-    Vector<Scalar> rtn = space()->createMember();
+    Vector<Scalar> rtn = space().createMember();
     {
       TimeMonitor t(*opTimer());
       rtn.acceptCopyOf(*this);
@@ -395,7 +394,7 @@ namespace TSFExtended
   template <class Scalar> inline 
   Vector<Scalar> Vector<Scalar>::reciprocal() const 
   {
-    Vector<Scalar> rtn = space()->createMember();
+    Vector<Scalar> rtn = space().createMember();
     {
       TimeMonitor t(*opTimer());
       rtn.acceptCopyOf(*this);

@@ -105,15 +105,15 @@ namespace TSFExtended
     /* check for trivial case of zero rhs */
     if (normOfB < tol) 
       {
-        soln = b.space()->createMember();
+        soln = b.space().createMember();
         soln.zero();
         return SolverState<Scalar>(SolveConverged, "RHS was zero", 0, 0.0);
       }
 
     /* check for initial zero residual */
     Vector<Scalar> x0 = b.copy();
-    Vector<Scalar> r0 = b.space()->createMember();
-    Vector<Scalar> tmp = b.space()->createMember();
+    Vector<Scalar> r0 = b.space().createMember();
+    Vector<Scalar> tmp = b.space().createMember();
 
     // r0 =  b - op*x0;
     op.apply(x0, tmp);
@@ -129,13 +129,13 @@ namespace TSFExtended
     Vector<Scalar> p0 = r0.copy();
     //    p0.randomize();
     Vector<Scalar> r0Hat = r0.copy();
-    Vector<Scalar> xMid = b.space()->createMember();
-    Vector<Scalar> rMid = b.space()->createMember();
-    Vector<Scalar> ArMid = b.space()->createMember();
-    Vector<Scalar> x = b.space()->createMember();
-    Vector<Scalar> r = b.space()->createMember();
-    Vector<Scalar> s = b.space()->createMember();
-    Vector<Scalar> ap = b.space()->createMember();
+    Vector<Scalar> xMid = b.space().createMember();
+    Vector<Scalar> rMid = b.space().createMember();
+    Vector<Scalar> ArMid = b.space().createMember();
+    Vector<Scalar> x = b.space().createMember();
+    Vector<Scalar> r = b.space().createMember();
+    Vector<Scalar> s = b.space().createMember();
+    Vector<Scalar> ap = b.space().createMember();
 
     int myRank = MPIComm::world().getRank();
 

@@ -36,6 +36,7 @@
 #include "TSFLoadableMatrix.hpp"
 #include "Teuchos_TimeMonitor.hpp"
 #include "TSFVector.hpp"
+#include "TSFVectorSpace.hpp"
 
 namespace TSFExtended
 {
@@ -56,11 +57,11 @@ namespace TSFExtended
       //@}
 
       /** */
-      RefCountPtr<const VectorSpace<Scalar> > domain() const 
+      VectorSpace<Scalar> domain() const 
       {return ptr()->domain();}
 
       /** */
-      RefCountPtr<const VectorSpace<Scalar> > range() const 
+      VectorSpace<Scalar> range() const 
       {return ptr()->range();}
 
       /** */
@@ -105,7 +106,7 @@ namespace TSFExtended
      * create a new vector in the range space */
     if (out.ptr().get()==0)
       {
-        out = range()->createMember();
+        out = range().createMember();
       }
     ptr()->apply(TSFCore::NOTRANS, *(in.ptr().get()),
                  out.ptr().get());
