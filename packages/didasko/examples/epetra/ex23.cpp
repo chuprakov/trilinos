@@ -30,7 +30,8 @@
 // This code should be run with at least two processes
 
 #include "Didasko_ConfigDefs.h"
-#if defined(HAVE_DIDASKO_EPETRA)
+
+#ifdef HAVE_DIDASKO_EPETRA
 
 #include "Epetra_ConfigDefs.h"
 #ifdef HAVE_MPI
@@ -43,11 +44,20 @@
 #include "Epetra_Vector.h"
 #include "Epetra_FECrsMatrix.h"
 
+#endif
+
 // =========== //
 // main driver //
 // ----------- //
 
 int main(int argc, char *argv[]) {
+
+#ifndef HAVE_DIDASKO_EPETRA
+  puts("Please configure Didasko with:\n"
+       "--enable-epetra");
+
+  return 0;
+#endif
 
 #ifdef HAVE_MPI
   MPI_Init(&argc, &argv);
@@ -56,20 +66,37 @@ int main(int argc, char *argv[]) {
   Epetra_SerialComm Comm;
 #endif
 
-  // create a linear map of size 5 (could be any number > 1)
-  int NumGlobalElements = 5;
+  // Create a linear map of size 10 (could be any number > 1)
+  //
+  // Note that a linear map is distributed approximately evenly over
+  // all processors.
+  //
+  int NumGlobalElements = 10;
   Epetra_Map Map(NumGlobalElements,0,Comm);
 
   // create a diagonal FE crs matrix (one nonzero per row)
-  Epetra_FECrsMatrix A(Copy,Map,2);
+  Epetra_FECrsMatrix A(Copy,Map,1);
   
-  // set the entries
+  // Next, set the matrix entries.
+  //
+  // Note 1: Matrix entries are only contributed from processor
+  // 0, regardless of how many processors the program is running on.
+  // Proc 0 fills the entire global matrix. Data that belongs in
+  // matrix rows owned by procs 1 .. numprocs-1 gets sent to those
+  // processors during the call to 'A.GlobalAssemble()' below.
+  // 
+  // Note 2: We fill the matrix using 'InsertGlobalValues'. An
+  // alternative approach that would be more efficient for large
+  // matrices in most cases would be to first create and fill a
+  // graph (Epetra_FECrsGraph), then construct the matrix with the
+  // graph (after calling graph.FillComplete) and fill the matrix
+  // using the method 'SumIntoGlobalValues'.
+  // 
   if( Comm.MyPID() == 0 ) {
     for( int i=0 ; i<NumGlobalElements ; ++i ) {
-      int indices[2];
-      indices[0] = i; indices[1] = i;
+      int index = i;
       double value = 1.0*i;
-      A.SumIntoGlobalValues(1,indices,&value);
+      A.InsertGlobalValues(1,&index,&value);
     }
   }
   
@@ -84,18 +111,4 @@ int main(int argc, char *argv[]) {
   return(EXIT_SUCCESS);
 
 }
-
-#else
-
-#include <stdlib.h>
-#include <stdio.h>
-
-int main(int argc, char *argv[])
-{
-  puts("Please configure Didasko with:\n"
-       "--enable-epetra");
-
-  return 0;
-}
-#endif
 
