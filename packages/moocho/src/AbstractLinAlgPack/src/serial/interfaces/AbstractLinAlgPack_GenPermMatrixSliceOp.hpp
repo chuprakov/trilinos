@@ -85,9 +85,10 @@ void V_MtV( SpVector* sv_lhs, const GenPermMatrixSlice& P_rhs1
   * This function will not resize the sparse vector rhs and will add
   * new elements for the nonzero elements in the rhs.  Therefore it is
   * up to the client to ensure that there is sufficient storage for
-  * these elements.  This function
-  * will not check to see if elements with duplicate indices are added.
-  * It is up to the client to determine that.
+  * these elements.  This function will not check to see if elements
+  * with duplicate indices are added. It is up to the client to determine
+  * that.  If sv_lhs is sorted on input and op(P_rhs1) is sorted by row,
+  * then sv_lhs->is_sorted() == true on output.
   * 
   * This function will execute in O(P_rhs1.nz()) time.
   */ 

@@ -341,27 +341,40 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 				// y == A.row(i)'
 				// y' = e_k' * op(E) => y = op(E')*e_k
 				VectorSlice y = A_.row(i);
-				EtaVector e_k(k,N_);
+				EtaVector e_k(k,eL->size());
 				V_MtV( &y( 1, N_ ), *E, BLAS_Cpp::trans_not(trans_E), e_k() ); // op(E')*e_k
 			}
 		}
 		else {
+			//
 			// Initialize BL, BU, YPY and A for dense bounds on general inequalities
-			if( M2_ > 0 ) {
-				Range1D rng( M1_+1, M1_+M2_ );
-				// BL = eL
-				assign( &BL_(rng), *eL );
-				// BU = eU
-				assign( &BU_(rng),  *eU );
-				// IBND(M1+1:M1+M2) = identity (only for my record, not used by QPKWIK)
-				IBND_t::iterator itr = IBND_.begin() + M1_;
-				for(size_type i = 1; i <= M2_; ++i)
-					*itr++ = i;
-				// A(1:M2,1:N) = op(E)
-				assign( &A_(1,M2_,1,N_), *E, trans_E );
-				// YPY
-				YPY_(M1_+1,M1_+M2_) = *b;
-			}
+			//
+			// Initialize BL(M1+1:M1+M2), BU(M1+1:M1+M2)
+			// and IBND(M1+1:M1+M2) = identity (only for my record, not used by QPKWIK)
+			SparseLinAlgPack::sparse_bounds_itr
+				eLU_itr( eL->begin(), eL->end(), eL->offset()
+						 , eU->begin(), eU->end(), eU->offset(), infinite_bound() );
+			Vector::iterator
+				BL_itr		= BL_.begin() + M1_,
+				BU_itr		= BU_.begin() + M1_;
+			IBND_t::iterator
+				ibnds_itr	= IBND_.begin() + M1_;
+			{for(size_type i = 1; i <= M2_; ++i ) {
+				if( !eLU_itr.at_end() && eLU_itr.indice() == i ) {
+					*BL_itr++ = eLU_itr.lbound();
+					*BU_itr++ = eLU_itr.ubound();
+					++eLU_itr;
+				}
+				else {
+					*BL_itr++ = -infinite_bound();
+					*BU_itr++ = +infinite_bound();
+				}
+				*ibnds_itr++ = i;
+			}}
+			// A(1:M2,1:N) = op(E)
+			assign( &A_(1,M2_,1,N_), *E, trans_E );
+			// YPY
+			YPY_(M1_+1,M1_+M2_) = *b;
 		}
 	}
 
@@ -476,9 +489,11 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	else {
 		assert(0); // Unknown return value!
 	}
-	qp_stats_.set_stats( solution_type, ITER_, NUM_ADDS_, NUM_DROPS_
+	qp_stats_.set_stats(
+		solution_type, QPSolverStats::CONVEX
+		,ITER_, NUM_ADDS_, NUM_DROPS_
 		,warm_start, *eta > 0.0 );
-
+ 
 	return qp_stats_.solution_type();
 }
 

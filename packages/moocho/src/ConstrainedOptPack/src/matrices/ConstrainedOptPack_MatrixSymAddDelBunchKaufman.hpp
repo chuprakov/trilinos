@@ -111,11 +111,15 @@ private:
 	// Private data members
 
 	size_type S_size_;      // The size of the current symmetric matrix.  Size == 0 if flag for uninitialized.
+	bool      S_indef_;     // True if the current matrix is indefinite.
+	bool      fact_updated_;// True if the factorization for the current matrix is updated.  Only meaningful
+	                        // if S_indef_==true.
 	bool      fact_in1_;    // If true then the current factorization is in S_store1_
-	                        // otherwise it is in S_store2_
-	bool      S_indef_;     // True if the current matrix is indefinite
+	                        // otherwise it is in S_store2_.  Only meaningful if S_indef_==true and
+	                        // fact_updated_==true
 	MatrixSymAddDelUpdateable::Inertia
-	          inertia_;     // This quantity must be computed with the indefinite L*D*L' factorization
+	          inertia_;     // Inertial for the indefinite L*D*L' factorization.  If fact_updated_ == false
+	                        // then this will be UNKNOWN.  IF S_indef_==false then this is meaningless.
 	GenMatrix S_store1_;    // Storage for the factored matrix in the
 	                        // upper triangle as well as the original matrix
 	                        // in the lower triangle.  This uses the same storage scheme as

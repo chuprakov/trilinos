@@ -34,29 +34,31 @@ const char* solution_type_str( ConstrainedOptimizationPack::QPSolverStats::ESolu
 	return "";	// will never be executed.
 }
 
-// Compute complementarity conditions.
+// Compute the scaled complementarity conditions.
 // 
 // If uplo == upper then:
 // 
-//                / gamma(i) * constr_resid(i), for gamma(i) > 0
+//                / gamma(i) * constr_resid(i) / ( 1 + |constr(i)| + opt_scale ), for gamma(i) > 0
 // comp_err(i) = |
 //                \ 0 otherwise
 // 
 // If uplo == lower then:
 // 
-//                / gamma(i) * constr_resid(i), for gamma(i) < 0
+//                / gamma(i) * constr_resid(i) /  ( 1 + |constr(i)| + opt_scale ), for gamma(i) < 0
 // comp_err(i) = |
 //                \ 0 otherwise
 // 
 // 
 void set_complementarity(
-	  const SparseLinAlgPack::SpVector	&gamma
+	const SparseLinAlgPack::SpVector	&gamma
 	, const LinAlgPack::VectorSlice		&constr_resid
+	, const LinAlgPack::VectorSlice     &constr
+	, const LinAlgPack::value_type      opt_scale
 	, BLAS_Cpp::Uplo					uplo
 	, LinAlgPack::Vector			 	*comp_err
 	)
 {
-	assert( gamma.size() == constr_resid.size() );
+	assert( gamma.size() == constr_resid.size() && gamma.size() == constr.size() );
 	comp_err->resize( gamma.size() );
 	*comp_err = 0.0;
 	const SparseLinAlgPack::SpVector::difference_type o = gamma.offset();
@@ -64,9 +66,9 @@ void set_complementarity(
 		for( SparseLinAlgPack::SpVector::const_iterator itr = gamma.begin(); itr != gamma.end(); ++itr ) {
 			const LinAlgPack::size_type i = itr->indice() + o;
 			if( itr->value() > 0 && uplo == BLAS_Cpp::upper )
-				(*comp_err)(i) = itr->value() * constr_resid(i);
+				(*comp_err)(i) = itr->value() * constr_resid(i) / ( 1.0 + ::fabs(constr(i)) + opt_scale );
 			else if( itr->value() < 0 && uplo == BLAS_Cpp::lower )
-				(*comp_err)(i) = itr->value() * constr_resid(i);
+				(*comp_err)(i) = itr->value() * constr_resid(i) / ( 1.0 + ::fabs(constr(i)) + opt_scale );
 		}
 	}
 }
@@ -235,7 +237,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 
 	const value_type really_big_error_tol = std::numeric_limits<value_type>::max();
 
-	value_type scale = 0.0;
+	value_type opt_scale = 0.0;
 	Vector
 		u,	// hold the result to pass to comparison function
 		c,	// hold complementarity conditions
@@ -279,14 +281,14 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		*out
 			<< "The optimality error tolerance will not be enforced ...\n";
 
-	scale = 1.0;
+	opt_scale = 0.0;
 
 	u = g;
-	scale += norm_inf(g);
+	opt_scale += norm_inf(g);
 	
 	V_MtV( &t, G, no_trans, *d );
 	Vp_V( &u(), t() );
-	scale += norm_inf(t);
+	opt_scale += norm_inf(t);
 
 	if(out) {
 		*out << "||g + G*d||inf = " << norm_inf(u()) << endl;
@@ -296,13 +298,13 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 
 	if( nu ) {
 		Vp_V( &u(), (*nu)() );
-		scale += norm_inf((*nu)());
+		opt_scale += norm_inf((*nu)());
 	}
 
 	if(E) {
 		V_MtV( &t, *E, trans_not(trans_E), (*mu)() );
 		Vp_V( &u(), t() );
-		scale += norm_inf(t);
+		opt_scale += norm_inf(t);
 		if(out) {
 			*out << "||op(E)'*mu||inf = " << norm_inf(t()) << endl;
 			if(print_vectors)
@@ -313,7 +315,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	if(F) {
 		V_MtV( &t, *F, trans_not(trans_F), *lambda );
 		Vp_V( &u(), t() );
-		scale += norm_inf(t);
+		opt_scale += norm_inf(t);
 		if(out && print_vectors)
 			*out
 				<< "\nop(F)'*lambda =\n" << t();
@@ -328,13 +330,13 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		*out
 			<< "g + G*d + nu + op(E)'*mu - op(F)'*lambda =\n" << u();
 
-	Vt_S( &u(), 1.0/scale );
+	Vt_S( &u(), 1.0/(1.0+opt_scale) );
 
 	if(out) {
 		*out
 			<< "Comparing:\n"
-			<< "u = | g + G*d + nu + op(E)'*mu - op(F)'*lambda | / scale\n"
-			<< "scale = " << scale << endl
+			<< "u = | g + G*d + nu + op(E)'*mu - op(F)'*lambda | / (1+opt_scale)\n"
+			<< "opt_scale = " << opt_scale << endl
 			<< "v = 0 ...\n";
 	}
 
@@ -409,14 +411,14 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 			*out
 				<< sep_line
 				<< "\nChecking nuL(i) * (dL - d)(i) = 0  ...\n";
-		set_complementarity( *nu, u(), lower, &c );
+		set_complementarity( *nu, u(), *d, opt_scale, lower, &c );
 		if(out && print_vectors)
 			*out
-				<< "nuL(i) * (dL - d)(i) =\n" << c();
+				<< "nuL(i) * (dL - d)(i) / ( 1 + |d(i)| + opt_scale ) =\n" << c();
 		if(out) {
 			*out
 				<< "Comparing:\n"
-				<< "u(i) = nuL(i) * (dL - d)(i), v = 0 ...\n";
+				<< "u(i) = nuL(i) * (dL - d)(i) / ( 1 + |d(i)| + opt_scale ), v = 0 ...\n";
 		}
 		if(!comp_v.comp( c(), 0.0, opt_warning_tol()
 			, force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
@@ -437,7 +439,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	Vt_S( &u(), 1.0/(1.0+d_norm_inf) );
 	if(out) {
 		*out
-			<< "Comparing: u - v <= 0\n"
+			<< "Comparing: u - v <= 0:\n"
 			<< "u = (d - dU) | / (1 + ||d||inf ), v = 0 ...\n";
 	}
 	if(!comp_v.comp_less( u(), 0.0, opt_warning_tol()
@@ -448,14 +450,14 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 			*out
 				<< sep_line
 				<< "\nChecking nuU(i) * (d - dU)(i) = 0  ...\n";
-		set_complementarity( *nu, u(), upper, &c );
+		set_complementarity( *nu, u(), *d, opt_scale, upper, &c );
 		if(out && print_vectors)
 			*out
-				<< "nuU(i) * (d - dU)(i) =\n" << c();
+				<< "nuU(i) * (d - dU)(i) / ( 1 + |d(i)| + opt_scale ) =\n" << c();
 		if(out) {
 			*out
 				<< "Comparing:\n"
-				<< "u(i) = nuU(i) * (dL - d)(i), v = 0 ...\n";
+				<< "u(i) = nuU(i) * (dL - d)(i) / ( 1 + |d(i)| + opt_scale ), v = 0 ...\n";
 		}
 		if(!comp_v.comp( c(), 0.0, opt_warning_tol()
 			, force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
@@ -501,14 +503,14 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 			*out
 				<< sep_line
 				<< "\nChecking muL(i) * (eL - e)(i) = 0  ...\n";
-		set_complementarity( *mu, u(), lower, &c );
+		set_complementarity( *mu, u(), e(), opt_scale, lower, &c );
 		if(out && print_vectors)
 			*out
-				<< "muL(i) * (eL - e)(i) =\n" << c();
+				<< "muL(i) * (eL - e)(i) / ( 1 + |e(i)| + opt_scale ) =\n" << c();
 			if(out) {
 				*out
 					<< "Comparing:\n"
-					<< "u(i) = muL(i) * (eL - e)(i), v = 0 ...\n";
+					<< "u(i) = muL(i) * (eL - e)(i) / ( 1 + |e(i)| + opt_scale ), v = 0 ...\n";
 			}
 			if(!comp_v.comp( c(), 0.0, opt_warning_tol()
 				, force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
@@ -539,14 +541,14 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 			*out
 				<< sep_line
 				<< "\nChecking muU(i) * (e - eU)(i) = 0  ...\n";
-		set_complementarity( *mu, u(), upper, &c );
+		set_complementarity( *mu, u(), e(), opt_scale, upper, &c );
 		if(out && print_vectors)
 			*out
-				<< "\nmuU(i) * (e - eU)(i) =\n" << c();
+				<< "\nmuU(i) * (e - eU)(i) / ( 1 + |e(i)| + opt_scale ) =\n" << c();
 			if(out) {
 				*out
 					<< "\nComparing:\n"
-					<< "u(i) = muU(i) * (e - eU)(i)\n"
+					<< "u(i) = muU(i) * (e - eU)(i) / ( 1 + |e(i)| + opt_scale )\n"
 					<< "v = 0 ...\n";
 			}
 			if(!comp_v.comp( c(), 0.0, opt_warning_tol()

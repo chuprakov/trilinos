@@ -9,7 +9,7 @@
 namespace ConstrainedOptimizationPack {
 
 ///
-/** Class for storing statistics about the active-set QP solver.
+/** Class for storing statistics about a run of a (active set?) QP solver.
   */
 class QPSolverStats {
 public:
@@ -27,34 +27,47 @@ public:
 		DUAL_FEASIBLE_POINT		= 2,
 		SUBOPTIMAL_POINT		= 3
 		};
+	/// Enumeration for the type of projected QP on output
+	enum EConvexity {
+		CONVEXITY_NOT_KNOWN = static_cast<int>(NOT_KNOWN),
+		CONVEX              = 0,
+		NONCONVEX           = 1
+	};
 
 	// Public interface
 
 	/// Construct all unknowns
 	QPSolverStats()
-		: solution_type_(SOLUTION_TYPE_NOT_KNOWN), num_qp_iter_(NOT_KNOWN)
-			, num_adds_(NOT_KNOWN), num_drops_(NOT_KNOWN)
-			, warm_start_(false), infeasible_qp_(false)
+		: solution_type_(SOLUTION_TYPE_NOT_KNOWN)
+		, convexity_(CONVEXITY_NOT_KNOWN)
+		, num_qp_iter_(NOT_KNOWN)
+		, num_adds_(NOT_KNOWN), num_drops_(NOT_KNOWN)
+		, warm_start_(false), infeasible_qp_(false)
 	{}
-
 	/// Initialize the statistics
-	void set_stats( ESolutionType solution_type, int num_qp_iter
-		, int num_adds, int num_drops, bool warm_start, bool	infeasible_qp )
+	void set_stats(
+		ESolutionType solution_type, EConvexity convexity
+		,int num_qp_iter, int num_adds, int num_drops
+		, bool warm_start, bool infeasible_qp )
 	{
 		solution_type_	= solution_type;
+		convexity_      = convexity;
 		num_qp_iter_	= num_qp_iter; 
 		num_adds_		= num_adds;
 		num_drops_		= num_drops;
 		warm_start_		= warm_start;
 		infeasible_qp_	= infeasible_qp;
 	}
-
 	///
 	ESolutionType solution_type() const
 	{
 		return solution_type_;
 	}
-
+	///
+	EConvexity convexity() const
+	{
+		return convexity_;
+	}
 	///
 	int num_qp_iter() const
 	{
@@ -83,6 +96,7 @@ public:
 
 private:
 	ESolutionType	solution_type_;
+	EConvexity      convexity_;
 	int				num_qp_iter_;
 	int				num_adds_;
 	int				num_drops_;

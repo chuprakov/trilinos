@@ -9,6 +9,7 @@
 #include "QPInitFixedFreeStd.h"
 #include "MatrixHessianRelaxed.h"
 #include "ConstraintsRelaxedStd.h"
+#include "MatrixSymAddDelBunchKaufman.h"
 #include "Misc/include/StandardCompositionMacros.h"
 #include "Misc/include/StandardMemberCompositionMacros.h"
 
@@ -214,6 +215,12 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, dual_infeas_tol )
 
 	///
+	/** <<std member comp>> members for the relative pivot tolerance for the
+	 * factors of the schur complement.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, pivot_tol )
+
+	///
 	/** Set the tolerence for the size of the step in the primal space that is considered
 	  * to be a near infinite step.  This is used to determine if the KKT
 	  * system is near singular.
@@ -255,6 +262,7 @@ public:
 		,value_type                  equality_tol       = -1.0	          // use default
 		,value_type                  loose_feas_tol     = -1.0	          // use default
 		,value_type                  dual_infeas_tol    = -1.0	          // use default
+		,value_type                  pivot_tol          = 1e-8
 		,value_type                  huge_primal_step   = -1.0	          // use defalut
 		,value_type                  huge_dual_step     = -1.0	          // use default
 		,value_type                  bigM               = 1e+10
@@ -306,6 +314,7 @@ private:
 	MatrixHessianRelaxed	         G_relaxed_;
 	QPSchurPack::ConstraintsRelaxedStd
 							         constraints_;
+	MatrixSymAddDelBunchKaufman      schur_comp_;
 	Vector					         g_relaxed_;
 	Vector					         b_X_;
 	InitKKTSystem::Ko_ptr_t          Ko_;

@@ -31,7 +31,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Ypy(
 {
 	const size_type
 		n = D.rows()+D.cols(),
-		r = D.cols(),
+		r = D.rows(),
 		dof = n-r;
 
 	//
@@ -113,8 +113,8 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Ypy(
 	// rhs and lhs is fine.
 	// 
 	LinAlgPack::V_InvMtV( &t(), L, BLAS_Cpp::no_trans, t() );
-	LinAlgPack::V_InvMtV( &t(), L, BLAS_Cpp::trans, t() ); 	
-	
+	LinAlgPack::V_InvMtV( &t(), L, BLAS_Cpp::trans, t() );
+
 	// py = py - D * t
 	LinAlgPack::Vp_StMtV( py, -1.0, D, BLAS_Cpp::no_trans, t() );
 	

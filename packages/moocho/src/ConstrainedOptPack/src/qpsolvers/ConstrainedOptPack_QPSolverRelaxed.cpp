@@ -252,7 +252,7 @@ void QPSolverRelaxed::print_qp_input(
 		*out<< "\ndU.nz()   = " << dU.nz() << std::endl
 			<< "||dU||inf = " << norm_inf(dU) << std::endl;
 		if( (int)olevel >= (int)PRINT_ITER_VECTORS )
-			*out<< "dU =\n" << dL;
+			*out<< "dU =\n" << dU;
 		// d
 		*out << "\n||d||inf = " << norm_inf(*d) << std::endl;
 		if( (int)olevel >= (int)PRINT_ITER_VECTORS )

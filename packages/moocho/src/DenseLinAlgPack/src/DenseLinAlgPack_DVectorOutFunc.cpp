@@ -15,9 +15,11 @@ std::ostream& LinAlgPack::output(std::ostream& os, const VectorSlice& vs
 	if( !(extra_flags & LinAlgPackIO::ignore_dim_bit) )
 		os << std::setw(0) << std::left << vs.size() << std::endl << std::right;
 
-	for(VectorSlice::const_iterator itr = vs.begin(); itr != vs.end();++itr)
-		os << " " << std::setw(w) << *itr;	// insert a space to be sure there is white space
-											// inbetween adjacent elements.
+	VectorSlice::const_iterator itr = vs.begin();
+	for( size_type i = 1; itr != vs.end(); ++i, ++itr ) {
+		os << " " << std::setw(w) << (*itr) << ":" << i; // insert a space to be sure there is white space
+		                                                 // inbetween adjacent elements.
+	}
 
 	if( !(extra_flags & LinAlgPackIO::no_insert_newlines_bit) )
 		os << std::endl;

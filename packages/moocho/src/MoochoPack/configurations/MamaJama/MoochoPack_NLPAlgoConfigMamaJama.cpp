@@ -661,7 +661,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					assert(_rHL); // Should not happen?
 					_rHL->init_setup(
 						NULL    // Let it allocate its own memory
-						,NULL   // ...
+						,NULL,0 // ...
 						,cov_.qp_solver_type_==QP_QPSCHUR?false:true // Maintain the original matrix for
 						                                             // QPOPT or QPSOL but not QPSchur
 						,cov_.qp_solver_type_==QP_QPSCHUR?true:false // Maintian the cholesky factor for QPSchur

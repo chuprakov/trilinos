@@ -22,7 +22,7 @@ namespace ConstrainedOptimizationPack {
 	Linear dependence of gradients:
 	  
 	(2)  d(L)/d(d) = g + G*d - nuL + nuU + op(E)'*(- muL + muU) + op(F)'*lambda
-	               = g + G*d + nu + op(E)'*mu - op(F)'*lambda = 0
+	               = g + G*d + nu + op(E)'*mu + op(F)'*lambda = 0
 	  
 	     where: nu = nuU - nuL, mu = muU - muL
 
@@ -47,15 +47,16 @@ namespace ConstrainedOptimizationPack {
   * tolerances:
   \begin{verbatim}
   
-    opt_err = | g + G*d + nu + op(E)'*mu - op(F)'*lambda |
-               / ( 1 + ||g||inf + ||G*d||inf + ||nu||inf + ||op(E)'*mu||inf
-                  + ||op(F)'*lambda||inf )
+    opt_err = | g + G*d + nu + op(E)'*mu + op(F)'*lambda | / (1 + opt_scale)
                   
     feas_err = ( b - op(A)*x ) / ( 1 + ||op(A)*x||inf )
 
-    comp_err(i) = gamma(i) * ( op(A)*x - b )(i), for gamma(i) != 0
+    comp_err(i) = gamma(i) * ( op(A)*x - b )(i) / ( 1 + opt_scale + ||op(A).row(i)'*x||inf )
+        ,for gamma(i) != 0
 
-    	where: op(A)*x <= b
+   	where:
+	    op(A)*x <= b
+	    opt_scale = ||g||inf + ||G*d||inf + ||nu||inf + ||op(E)'*mu||inf + ||op(F)'*lambda||inf
 
   \end{verbatim}
   *
@@ -76,15 +77,32 @@ namespace ConstrainedOptimizationPack {
   * will cause the checks to stop and false to be returned from the function
   * check_optimiality_conditions(...).
   *
-  * The complementarity conditions (5.1)-(5.4) are also checked.  These will should
-  * be satisfied for any solution type other than a SUBOPTIMAL_POINT return value from
-  * solve_qp(...).  Checking the complementarity conditions for an active set
-  * QP solver is just checking that the active constraints are satisfied.
-  * By scaling this violation by the Langrange multiplier you emphasis the
-  * feasibility of those constraints that have the greatest impact on the
-  * objective function.  In other words, all things being equal, we are
+  * The goal of these tests is to first and foremost to catch gross programming
+  * errors.  These tests can also be used to help flag and catch illconditioning
+  * in the problem or instability in the QP solver.  The importance of such tests
+  * can not be overestimated.  The scalings above are done to try to adjust for
+  * the scaling of the problem.  Note that we are accounting for very big numbers
+  * but not for very small numbers very well and therefore tests may be conserative
+  * in some cases.  At the very least we account for loss of precision due to 
+  * catastrophic cancelation that occurs when adding large numbers and expecting
+  * to get zero. 
+  *
+  * As shown above, the complementarity conditions (5.1)-(5.4) are specifically checked.
+  * These should be satisfied for any solution type other than a SUBOPTIMAL_POINT
+  * return value from solve_qp(...).  Checking the complementarity conditions for
+  * an active set QP solver is just checking that the active constraints are satisfied.
+  * Checking them for an Iterior Point solver is critical to ensure that the system was
+  * solved to satisfactory tolerance.
+  * By scaling the active constraint violation by the Langrange multiplier
+  * we emphasis the feasibility of those constraints that have the greatest
+  * impact on the objective function.  In other words, all things being equal, we are
   * more concerned with a tight feasibility tolerance for constraints with
   * larger lagrange multipliers than for those with smaller multipliers.
+  * The complementarity error is also scaled by the inverse of the sums
+  * of the optimality scaling opt_scale and the size of the constraint residual.
+  * By scaling by the max term opt_scale in the linear dependence of gradients we are
+  * trying to adjust the effect of the lagrange multiplier.  Therefore if the gradient
+  * of the objective g+G*d is large then opt_scale will account for this.
   */
 class QPSolverRelaxedTester {
 public:

@@ -22,10 +22,12 @@ std::ostream& LinAlgPack::output(std::ostream& os, const GenMatrixSlice& gms
 
 	if( gms.rows() && gms.cols() ) {
 		for(size_type i = 1; i <= gms.rows();++i) {
-			output( os << std::setw(w) , gms.row(i)
-				, (LinAlgPackIO::fmtflags)(extra_flags | LinAlgPackIO::ignore_dim_bit) );
-				// If LinAlgPackIO::no_insert_newlines_bit was set then it will be carried over.
-				// To output rows you must not output the vector slice size.
+			const VectorSlice& vs =gms.row(i); 
+			VectorSlice::const_iterator itr = vs.begin();
+			for( size_type j = 1; itr != vs.end(); ++j, ++itr ) {
+				os << " " << std::setw(w) << (*itr) << ":" << i << ":" << j;
+			}
+			os << std::endl;
 		}
 	}
 	

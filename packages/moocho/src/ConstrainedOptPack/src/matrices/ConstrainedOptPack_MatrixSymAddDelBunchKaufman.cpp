@@ -13,7 +13,7 @@
 namespace ConstrainedOptimizationPack {
 
 MatrixSymAddDelBunchKaufman::MatrixSymAddDelBunchKaufman()
-	: S_size_(0), fact_in1_(true), inertia_(0,0,0)
+	: S_size_(0), S_indef_(false), fact_updated_(false), fact_in1_(true), inertia_(0,0,0)
 {}
 
 void MatrixSymAddDelBunchKaufman::pivot_tol( value_type pivot_tol )
@@ -59,10 +59,8 @@ void MatrixSymAddDelBunchKaufman::initialize(
 		S_chol_.init_setup(&S_store1_(),NULL,0,true,true,true,false,0.0);
 		S_chol_.initialize(alpha,max_size);
 		// Set the state variables:
-		S_size_   = 1;
-		fact_in1_ = true;
-		S_indef_  = false;
-		inertia_  = S_chol_.inertia();
+		S_size_  = 1;
+		S_indef_ = false; // fact_updated_, fact_in1_ and inertia are meaningless!
 	}
 	catch(...) {
 		S_size_ = 0;
@@ -106,10 +104,8 @@ void MatrixSymAddDelBunchKaufman::initialize(
 			S_chol_.init_setup(&S_store1_(),NULL,0,true,true,true,false,0.0);
 			S_chol_.initialize(A,max_size,force_factorization,expected_inertia);
 			// Set the state variables:
-			S_size_   = n;
-			fact_in1_ = true;
-			S_indef_  = false;
-			inertia_  = S_chol_.inertia();
+			S_size_       = n;
+			S_indef_      = false; // fact_updated_, fact_in1_ and inertia are meaningless!
 		}
 		else {
 			//
@@ -145,10 +141,11 @@ void MatrixSymAddDelBunchKaufman::initialize(
 				LinAlgPack::assign(	&LinAlgPack::nonconst_tri_ele( S(n).gms(), BLAS_Cpp::lower)
 									, tri_ele( A.gms(), A.uplo() ) );
 				// Update the state variables:
-				S_size_   = n;
-				fact_in1_ = fact_in1;
-				S_indef_  = true;
-				inertia_  = inertia;
+				S_size_       = n;
+				S_indef_      = true;
+				fact_updated_ = true;
+				fact_in1_     = fact_in1;
+				inertia_      = inertia;
 			}
 		}
 	}
@@ -166,7 +163,7 @@ size_type MatrixSymAddDelBunchKaufman::max_size() const
 MatrixSymAddDelUpdateable::Inertia
 MatrixSymAddDelBunchKaufman::inertia() const
 {
-	return inertia_;
+	return S_indef_ ? inertia_ : S_chol_.inertia();
 }
 
 void MatrixSymAddDelBunchKaufman::set_uninitialized()
@@ -181,6 +178,9 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 	,EEigenValType     add_eigen_val
 	)
 {
+	using BLAS_Cpp::no_trans;
+	using LinAlgPack::norm_inf;
+	using SparseLinAlgPack::transVtInvMtV;
 	typedef MatrixSymAddDelUpdateable  MSADU;
 
 	assert_initialized();
@@ -194,7 +194,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 		throw std::length_error(
 			"MatrixSymAddDelBunchKaufman::augment_update(...): "
 			"Error, t.size() must be equal to this->rows()." );
-	if( !(add_eigen_val == MSADU::EIGEN_VAL_UNKNOWN || add_eigen_val != MSADU::EIGEN_VAL_ZERO ) )
+	if( !(add_eigen_val == MSADU::EIGEN_VAL_UNKNOWN || add_eigen_val != MSADU::EIGEN_VAL_ZERO) )
 		throw SingularUpdateException(
 			"MatrixSymAddDelBunchKaufman::augment_update(...): "
 			"Error, the client has specified a singular update in add_eigen_val." );
@@ -247,57 +247,111 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 	//
 	const size_type n     = S_size_;
 	GenMatrixSlice  S_bar = this->S(n+1).gms();
+	//
+	// Validate that the new matrix will be nonsingular.
+	//
+	// Given any nonsingular matrix S (even unsymmetric) it is easy to show that
+	// gamma = alpha - t'*inv(S)*t != 0.0 if [ S, t; t', alpha ] is nonsingular.
+	// This is a cheap O(n^2) way to check that the update is nonsingular before
+	// we go through the O(n^3) refactorization.
+	// In fact, the sign of gamma even tells us the sign of the new eigen value
+	// of the updated matrix even before we perform the refactorization.
+	// If the current matrix is not factored then we will just skip this
+	// test and let the full factorization take place to find this out.
+	//
+	if( force_refactorization && fact_updated_ ) {
+		const value_type
+			gamma       = alpha - ( t ? transVtInvMtV(*t,*this,no_trans,*t) : 0.0 ),
+			abs_gamma   = ::fabs(gamma),
+			nrm_D_diag  = norm_inf(DU(n,fact_in1_).gms().diag()); // ToDo: Consider 2x2 blocks also!
+		if( abs_gamma / nrm_D_diag < S_chol_.pivot_tol() ) {
+			std::ostringstream omsg;
+			omsg
+				<< "MatrixSymAddDelBunchKaufman::augment_update(...): "
+				<< "Singular update! |alpha-t'*inv(S)*t)|/||diag(D)||inf = |" <<  gamma << "|/" << nrm_D_diag
+				<< " = " << (abs_gamma/nrm_D_diag) << " < pivot_tol = " << S_chol_.pivot_tol();
+			throw SingularUpdateException( omsg.str() );
+		}
+		// ToDo: check that gamma is the right sign based on add_eigen_val
+	}
+
 	// Add new row to the lower part of the original symmetric matrix.
 	if(t)
 		S_bar.row(n+1)(1,n) = *t;
 	else
 		S_bar.row(n+1)(1,n) = 0.0;
 	S_bar(n+1,n+1) = alpha;
-	// Determine where to copy the original matrix to
-	bool fact_in1 = false;
-	if( S_indef_ ) {
-		// S is already indefinite so let's copy the original into the storage
-		// location other than the current one in case the newly factorized matrix
-		// is singular or has the wrong inertia.
-		fact_in1 = !fact_in1_;
+
+	//
+	// Update the factorization
+	//
+	if( force_refactorization ) {
+		// Determine where to copy the original matrix to
+		bool fact_in1 = false;
+		if( S_indef_ ) {
+			// S is already indefinite so let's copy the original into the storage
+			// location other than the current one in case the newly factorized matrix
+			// is singular or has the wrong inertia.
+			fact_in1 = !fact_in1_;
+		}
+		else {
+			// S is currently p.d. or n.d. so let's copy the new matrix
+			// into the second storage location so as not to overwrite
+			// the current cholesky factor in case the new matrix is singular
+			// or has the wrong inertia.
+			fact_in1 = false;
+		}
+		// Copy and factor the new matrix
+		try {
+			copy_and_factor_matrix(n+1,fact_in1);
+		}
+		catch( const LinAlgLAPack::FactorizationException& excpt ) {
+			std::ostringstream omsg;
+			omsg
+				<< "MatrixSymAddDelBunchKaufman::augment_update(...): "
+				<< "Error, singular update but the original matrix was be maintianed:\n"
+				<< excpt.what();
+			throw SingularUpdateException( omsg.str() );
+		}
+		// Compute the expected inertia
+		Inertia expected_inertia = this->inertia();
+		if( expected_inertia.zero_eigens == Inertia::UNKNOWN || add_eigen_val == MSADU::EIGEN_VAL_UNKNOWN )
+			expected_inertia = Inertia(); // Unknow inertia!
+		else if( add_eigen_val == MSADU::EIGEN_VAL_NEG )
+			++expected_inertia.neg_eigens;
+		else if( add_eigen_val == MSADU::EIGEN_VAL_POS )
+			++expected_inertia.pos_eigens;
+		else
+			assert(0); // Should not happen!
+		// Compute the actually inertia and validate that it is what is expected
+		Inertia inertia = compute_assert_inertia(n+1,fact_in1,expected_inertia,"augment_update");
+		// Unset S_chol so that there is no chance of accedental modification.
+		if(!S_indef_)
+			S_chol_.init_setup(NULL);
+		// Update the state variables
+		++S_size_;
+		S_indef_      = true;
+		fact_updated_ = true;
+		fact_in1_     = fact_in1;
+		inertia_      = inertia;
 	}
 	else {
-		// S is currently p.d. or n.d. so let's copy the new matrix
-		// into the second storage location so as not to overwrite
-		// the current cholesky factor in case the new matrix is singular
-		// or has the wrong inertia.
-		fact_in1 = false;
+		//
+		// Don't update the factorization yet
+		//
+		++S_size_;
+		S_indef_      = true;
+		fact_updated_ = false;  // fact_in1_ is meaningless now
+		// We need to keep track of the expected inertia!
+		if( inertia_.zero_eigens == Inertia::UNKNOWN || add_eigen_val == MSADU::EIGEN_VAL_UNKNOWN )
+			inertia_ = Inertia(); // Unknow inertia!
+		else if( add_eigen_val == MSADU::EIGEN_VAL_NEG )
+			++inertia_.neg_eigens;
+		else if( add_eigen_val == MSADU::EIGEN_VAL_POS )
+			++inertia_.pos_eigens;
+		else
+			assert(0); // Should not happen!
 	}
-	// Copy and factor the new matrix
-	try {
-		copy_and_factor_matrix(n+1,fact_in1);
-	}
-	catch( const LinAlgLAPack::FactorizationException& excpt ) {
-		std::ostringstream omsg;
-		omsg
-			<< "MatrixSymAddDelBunchKaufman::augment_update(...): "
-			<< "Error, singular update but the original matrix was be maintianed:\n"
-			<< excpt.what();
-		throw SingularUpdateException( omsg.str() );
-	}
-	// Compute the expected inertia
-	Inertia expected_inertia = inertia_;
-	if( add_eigen_val == MSADU::EIGEN_VAL_POS )
-		++expected_inertia.pos_eigens;
-	else if( add_eigen_val == MSADU::EIGEN_VAL_NEG )
-		++expected_inertia.neg_eigens;
-	else
-		expected_inertia = Inertia(); // unknown
-	// Compute the actually inertia and validate that it is what is expected
-	Inertia inertia = compute_assert_inertia(n+1,fact_in1,expected_inertia,"augment_update");
-	// Unset S_chol so that there is no chance of accedental modification.
-	if(!S_indef_)
-		S_chol_.init_setup(NULL);
-	// Update the state variables
-	++S_size_;
-	fact_in1_ = fact_in1;
-	S_indef_  = true;
-	inertia_  = inertia;
 }
 
 void MatrixSymAddDelBunchKaufman::delete_update(
@@ -325,7 +379,6 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 		//
 		S_chol_.delete_update( jd, force_refactorization, drop_eigen_val );
 		--S_size_;
-		inertia_ = S_chol_.inertia();
 	}
 	else {
 		//
@@ -343,6 +396,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 		// might get away with?
 		//
 		// Update the factorization
+		//
 		if( (drop_eigen_val == MSADU::EIGEN_VAL_POS && inertia_.pos_eigens == 1 )
 			|| (drop_eigen_val == MSADU::EIGEN_VAL_NEG && inertia_.neg_eigens == 1 ) )
 		{
@@ -382,48 +436,73 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 			// If we get here the update succeeded and the new matrix is p.d. or n.d.
 			--S_size_;
 			S_indef_ = false;
-			inertia_ = S_chol_.inertia();
 		}
 		else {
 			// 
 			// We have been given no indication that the new matrix is p.d. or n.d.
 			// so we will assume it is indefinite and go from there.
 			//
-			const bool fact_in1 = !fact_in1_;
-			// Copy the original into the unused storage location
 			GenMatrixSlice  S  = this->S(S_size_).gms();
-			tri_ele_gms     DU = this->DU(S_size_,fact_in1);
-			LinAlgPack::assign(	&DU, tri_ele(S,lower) );
-			// Delete row and column jd from the storage location for DU
-			LinAlgPack::delete_row_col( jd, &DU );
-			// Now factor the matrix inplace
-			try {
-				factor_matrix(S_size_-1,fact_in1);
+			if( force_refactorization ) {
+				// 
+				// Perform the refactorization carefully
+				//
+				const bool fact_in1 = !fact_in1_;
+				// Copy the original into the unused storage location
+				tri_ele_gms  DU = this->DU(S_size_,fact_in1);
+				LinAlgPack::assign(	&DU, tri_ele(S,lower) );
+				// Delete row and column jd from the storage location for DU
+				LinAlgPack::delete_row_col( jd, &DU );
+				// Now factor the matrix inplace
+				try {
+					factor_matrix(S_size_-1,fact_in1);
+				}
+				catch( const LinAlgLAPack::FactorizationException& excpt ) {
+					std::ostringstream omsg;
+					omsg
+						<< "MatrixSymAddDelBunchKaufman::delete_update(...): "
+						<< "Error, singular update but the original matrix was be maintianed:\n"
+						<< excpt.what();
+					throw SingularUpdateException( omsg.str() );
+				}
+				// Compute the expected inertia
+				Inertia expected_inertia = this->inertia();
+				if( expected_inertia.zero_eigens == Inertia::UNKNOWN || drop_eigen_val == MSADU::EIGEN_VAL_UNKNOWN )
+					expected_inertia = Inertia(); // Unknow inertia!
+				else if( drop_eigen_val == MSADU::EIGEN_VAL_NEG )
+					--expected_inertia.neg_eigens;
+				else if( drop_eigen_val == MSADU::EIGEN_VAL_POS )
+					--expected_inertia.pos_eigens;
+				else
+					assert(0); // Should not happen!
+				// Compute the exacted inertia and validate that it is what is expected
+				Inertia inertia = compute_assert_inertia(S_size_-1,fact_in1,expected_inertia,"delete_update");
+				// If we get here the factorization worked out.
+				--S_size_;
+				S_indef_      = true;
+				fact_updated_ = true;
+				fact_in1_     = fact_in1;
+				inertia_      = inertia;
 			}
-			catch( const LinAlgLAPack::FactorizationException& excpt ) {
-				std::ostringstream omsg;
-				omsg
-					<< "MatrixSymAddDelBunchKaufman::delete_update(...): "
-					<< "Error, singular update but the original matrix was be maintianed:\n"
-					<< excpt.what();
-				throw SingularUpdateException( omsg.str() );
+			// Delete the row and column jd from the original
+			LinAlgPack::delete_row_col( jd, &nonconst_tri_ele(S,lower) );
+			if( !force_refactorization ) {
+				//
+				// The refactorization was not forced
+				//
+				--S_size_;
+				S_indef_      = true;
+				fact_updated_ = false;  // fact_in1_ is meaningless now
+				// We need to keep track of the expected inertia!
+				if( inertia_.zero_eigens == Inertia::UNKNOWN || drop_eigen_val == MSADU::EIGEN_VAL_UNKNOWN )
+					inertia_ = Inertia(); // Unknow inertia!
+				else if( drop_eigen_val == MSADU::EIGEN_VAL_NEG )
+					--inertia_.neg_eigens;
+				else if( drop_eigen_val == MSADU::EIGEN_VAL_POS )
+					--inertia_.pos_eigens;
+				else
+					assert(0); // Should not happen!
 			}
-			// Compute the expected inertia
-			Inertia expected_inertia = inertia_;
-			if( drop_eigen_val == MSADU::EIGEN_VAL_POS )
-				--expected_inertia.pos_eigens;
-			else if( drop_eigen_val == MSADU::EIGEN_VAL_NEG )
-				--expected_inertia.neg_eigens;
-			else
-				expected_inertia = Inertia(); // unknown
-			// Compute the exacted inertia and validate that it is what is expected
-			Inertia inertia = compute_assert_inertia(S_size_-1,fact_in1,expected_inertia,"delete_update");
-			// If we get here the factorization worked out and we are ready to set
-			// everything.
-			--S_size_;
-			fact_in1_ = fact_in1;
-			S_indef_  = true;
-			inertia_  = inertia;
 		}
 	}
 }
@@ -476,6 +555,15 @@ void MatrixSymAddDelBunchKaufman::V_InvMtV(
 	const size_type n = S_size_;
 	LinAlgPack::Vp_MtV_assert_sizes( y->size(), n, n, M_trans, x.size() );
 	if( S_indef_ ) {
+		// Update the factorzation if needed
+		if(!fact_updated_) {
+			const bool fact_in1 = true;
+			MatrixSymAddDelBunchKaufman
+				*nc_this = const_cast<MatrixSymAddDelBunchKaufman*>(this);
+			nc_this->copy_and_factor_matrix(S_size_,fact_in1); // May throw exceptions!
+			nc_this->fact_updated_ = true;
+			nc_this->fact_in1_     = fact_in1;
+		}
 		*y = x;
 		LinAlgLAPack::sytrs(
 			DU(S_size_,fact_in1_), &const_cast<IPIV_t&>(IPIV_)[0]
@@ -565,8 +653,8 @@ MatrixSymAddDelBunchKaufman::compute_assert_inertia(
 		omsg
 			<< "MatrixSymAddDelBunchKaufman::" << func_name << "(...): "
 			<< "Error, inertia = ("
-			<< inertia.neg_eigens << "," << inertia.zero_eigens << "," << inertia.pos_eigens << ") "
-			<< " != expected_inertia = ("
+			<< inertia.neg_eigens << "," << inertia.zero_eigens << "," << inertia.pos_eigens
+			<< ") != expected_inertia = ("
 			<< exp_inertia.neg_eigens << "," << exp_inertia.zero_eigens << "," << exp_inertia.pos_eigens << ")";
 		throw WrongInertiaUpdateException( omsg.str() );
 	}

@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchur.h"
-#include "ConstrainedOptimizationPack/include/MatrixSymAddDelBunchKaufman.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "SparseLinAlgPack/include/SortByDescendingAbsValue.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
@@ -29,6 +28,7 @@ QPSolverRelaxedQPSchur::QPSolverRelaxedQPSchur(
 		, value_type 		equality_tol
 		, value_type		loose_feas_tol
 		, value_type		dual_infeas_tol
+		, value_type        pivot_tol
 		, value_type		huge_primal_step
 		, value_type		huge_dual_step
 		, value_type		bigM
@@ -45,12 +45,12 @@ QPSolverRelaxedQPSchur::QPSolverRelaxedQPSchur(
 	,equality_tol_(equality_tol)
 	,loose_feas_tol_(loose_feas_tol)
 	,dual_infeas_tol_(dual_infeas_tol)
+	,pivot_tol_(pivot_tol)
 	,huge_primal_step_(huge_primal_step)
 	,huge_dual_step_(huge_dual_step)
 	,bigM_(bigM)
 	,warning_tol_(warning_tol)
 	,error_tol_(error_tol)
-	,qp_solver_(new MatrixSymAddDelBunchKaufman)
 {}
 
 QPSolverRelaxedQPSchur::~QPSolverRelaxedQPSchur()
@@ -335,19 +335,24 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// 
 	qp_solver_.max_iter( max_qp_iter_frac() * nd );
 	qp_solver_.feas_tol( constraints_.bounds_tol() );	// Let's assume the bound tolerance is the tightest
-	if(loose_feas_tol() > 0)
+	if(loose_feas_tol() > 0.0)
 		qp_solver_.loose_feas_tol( loose_feas_tol() );
 	else
 		qp_solver_.loose_feas_tol( 10.0 * qp_solver_.feas_tol() );
-	if(dual_infeas_tol() > 0)
+	if(dual_infeas_tol() > 0.0)
 		qp_solver_.dual_infeas_tol( dual_infeas_tol() );
-	if(huge_primal_step() > 0)
+	if(huge_primal_step() > 0.0)
 		qp_solver_.huge_primal_step( huge_primal_step() );
-	if(huge_dual_step() > 0)
+	if(huge_dual_step() > 0.0)
 		qp_solver_.huge_dual_step( huge_dual_step() );
+	if(pivot_tol() > 0.0)
+		schur_comp_.pivot_tol(pivot_tol());
+	qp_solver_.set_schur_comp( QPSchur::schur_comp_ptr_t( &schur_comp_, false ) );
+	qp_solver_.warning_tol( warning_tol() );
+	qp_solver_.error_tol( error_tol() );
 	
 	//
-	// Solve the QP with QP Schur
+	// Solve the QP with QPSchur
 	// 
 	Vector _x(nd+1);		// solution vector [ d; eta ]
 	SpVector _mu;			// lagrange multipliers for variable bounds [ nu; kappa ]
@@ -431,6 +436,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	}
 	// Set the QP statistics
 	QPSolverStats::ESolutionType solution_type;
+	QPSolverStats::EConvexity convexity = QPSolverStats::CONVEX;
 	switch( solve_returned ) {
 		case QPSchur::OPTIMAL_SOLUTION:
 			solution_type = QPSolverStats::OPTIMAL_SOLUTION;
@@ -442,6 +448,8 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 			solution_type = QPSolverStats::DUAL_FEASIBLE_POINT;
 			break;
 		case QPSchur::INFEASIBLE_CONSTRAINTS:
+		case QPSchur::NONCONVEX_QP:
+			convexity = QPSolverStats::NONCONVEX;
 		case QPSchur::DUAL_INFEASIBILITY:
 		case QPSchur::SUBOPTIMAL_POINT:
 			solution_type = QPSolverStats::SUBOPTIMAL_POINT;
@@ -449,7 +457,8 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		default:
 			assert(0);
 	}
-	qp_stats_.set_stats(solution_type,qp_iter,num_adds,num_drops
+	qp_stats_.set_stats(
+		solution_type,convexity,qp_iter,num_adds,num_drops
 		, num_act_change > 0 || n_X > 1, *eta > 0.0 );
 
 	return qp_stats_.solution_type();

@@ -29,6 +29,7 @@ namespace ConstrainedOptimizationPack {
 	*    equality_tol      = 1e-10;  *** (+dbl) feasibility tolerance for general equality constriants
 	*    loose_feas_tol    = 1e-9;   *** (+dbl) (Expert use only)
 	*    dual_infeas_tol   = 1e-12;  *** (+dbl) allowable dual infeasiblity before error
+	*    pivot_tol         = 1e-8;   *** (+dbl) Minimum tolerance for a pivot element in the schur complement
 	*    huge_primal_step  = 1e+20;  *** (+dbl) value of a near infinite primal step
 	*    huge_dual_step    = 1e+20;  *** (+dbl) value of a near infinite dual step
 	*    bigM              = 1e+10;  *** (+dbl) value or relaxation penalty in objective

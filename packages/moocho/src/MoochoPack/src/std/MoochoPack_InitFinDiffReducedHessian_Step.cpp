@@ -9,9 +9,9 @@
 #include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_Step.h"
 #include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/include/MatrixSymSecantUpdateable.h"
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
+#include "SparseLinAlgPack/include/MatrixSymInitDiagonal.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "SparseLinAlgPack/include/max_near_feas_step.h"
@@ -24,24 +24,6 @@
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;
 }
-
-namespace {
-
-void assert_rHL( void* rHL_ptr, std::ostream& out )
-{
-	if( !rHL_ptr ) {
-		std::ostringstream omsg;
-		omsg
-			<< "InitFinDiffReducedHessian_Step::do_step(...) : "
-			<< "Error, the implementation of the reduced Hessian rHL "
-			<< "does not support the interface MatrixSymSecantUpdateable";
-		out << omsg.str();
-		throw std::invalid_argument( omsg.str() );
-	}
-}
-
-}	// end namespace
-
 
 ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::InitFinDiffReducedHessian_Step(
 		  EInitializationMethod		initialization_method
@@ -67,13 +49,14 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
-	NLPFirstOrderInfo
 #ifdef _WINDOWS
+	NLPFirstOrderInfo
 		&nlp = dynamic_cast<NLPFirstOrderInfo&>(algo.nlp());
 #else
+	NLPFirstOrderInfo
 		&nlp = dyn_cast<NLPFirstOrderInfo>(algo.nlp());
 #endif
-
+	
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
 
@@ -105,9 +88,13 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 			out << "\nReinitializing the reduced Hessain using a finite difference\n";
 		}
 
-		MatrixSymSecantUpdateable
-			*rHL_updatable = dynamic_cast<MatrixSymSecantUpdateable*>(&s.rHL().set_k(0));
-		assert_rHL( rHL_updatable , out );
+#ifdef _WINDOWS
+		MatrixSymInitDiagonal
+			&rHL_diag = dynamic_cast<MatrixSymInitDiagonal&>(s.rHL().set_k(0));
+#else
+		MatrixSymInitDiagonal
+			&rHL_diag = dyn_cast<MatrixSymInitDiagonal>(s.rHL().set_k(0));
+#endif
 
 		// problem size
 		size_type	n		= algo.nlp().n(),
@@ -211,7 +198,7 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 						<< " < min_diag = " << min_diag() << std::endl
 					<< "\nScale by min_diag ... \n";
 			}
-			rHL_updatable->init_identity(nind,min_diag());
+			rHL_diag.init_identity(nind,min_diag());
 		}
 		else {
 			switch( initialization_method() ) {
@@ -219,7 +206,7 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 					if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 						out << "\nScale the identity matrix by ||(rGf_fd - rGf_k)/u||inf ... \n";
 					}
-					rHL_updatable->init_identity(nind,nrm_rGf_fd);
+					rHL_diag.init_identity(nind,nrm_rGf_fd);
 					break;
 				}
 				case SCALE_DIAGONAL:
@@ -249,7 +236,7 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 					if( (int)olevel >= (int)PRINT_VECTORS ) {
 						out << "\ndiag =\n" << rGf_fd();
 					}
-					rHL_updatable->init_diagonal(rGf_fd());
+					rHL_diag.init_diagonal(rGf_fd());
 					break;
 				}
 				default:
@@ -275,6 +262,9 @@ void ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::print_step( const Algo
 {
 	out
 		<< L << "*** Initialize the reduced Hessian using a single finite difference.\n"
+		<< L << "*** Where the nlp must support the NLPFirstOrderInfo interface and\n"
+		<< L << "*** rHL_k must support the MatrixSymInitDiagonal interface or exceptions\n"
+		<< L << "*** will be thrown.\n"
 		<< L << "default: num_basis_remembered = NO_BASIS_UPDATED_YET\n"
 		<< L << "         initialization_method = SCALE_DIAGONAL\n"
 		<< L << "         max_cond              = " << max_cond() << std::endl

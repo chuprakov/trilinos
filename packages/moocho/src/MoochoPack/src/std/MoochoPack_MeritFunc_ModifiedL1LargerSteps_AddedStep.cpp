@@ -164,7 +164,7 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
 		// where:
 		//		a < max_pos_penalty_increase ( >= 0 )
 		//		b = pos_to_neg_penalty_increase ( >= 0 )
-		//		mu_max = ||mu||inf
+		//		mu_max = (1.0 + incr_mult_factor) * ||mu||inf
 		//		0 < a < max_pos_penalty_increase : The length to be determined
 		//			so that (1) can be satsified.
 		//
@@ -194,7 +194,7 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
 		// Compute the terms in (4)
 
 		const value_type
-			mu_max = norm_inf( mu );
+			mu_max = norm_inf( mu ) * (1.0 + incr_mult_factor());
 
 		value_type
 			num_term = 0.0,
@@ -267,9 +267,6 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
 				out << "\n0 <= a <= max_pos_penalty_increase = " << max_pos_penalty_increase()
 					<< "\nWe should be able to take a full SQP step ...\n";
 			}
-			a *= (1 + incr_mult_factor() );
-			if( a > max_pos_penalty_increase() )
-				a = max_pos_penalty_increase();
 		}
 
 		// Update the penalty parameters using (3)
@@ -321,7 +318,7 @@ void MeritFunc_ModifiedL1LargerSteps_AddedStep::print_step( const Algorithm& alg
 		<< L << "if (f_kp1-f_k)/abs(f_kp1+f_k+very_small) >= obj_increase_threshold then\n"
 		<< L << "    mu = phi.mu()\n"
 		<< L << "    *** Try to increase to penalty parameters mu(j) to allow for a full step.\n"
-		<< L << "    mu_max = norm(mu,inf)\n"
+		<< L << "    mu_max = norm(mu,inf) * (1.0+incr_mult_factor)\n"
 		<< L << "    num_term = 0\n"
 		<< L << "    pos_denom_term = 0\n"
 		<< L << "    neg_denom_term = 0\n"
@@ -350,8 +347,6 @@ void MeritFunc_ModifiedL1LargerSteps_AddedStep::print_step( const Algorithm& alg
 		<< L << "    else\n"
 		<< L << "        *** We can increase mu(j) and take a full SQP step\n"
 		<< L << "    end\n"
-		<< L << "    *** Increase \'a\' a little more to account for roundoff\n"
-		<< L << "    a = (1 + incr_mult_factor) * a\n"
 		<< L << "    *** Increase the multipliers\n"
 		<< L << "    for j = 1...m\n"
 		<< L << "        if del_pos(j) == true then\n"

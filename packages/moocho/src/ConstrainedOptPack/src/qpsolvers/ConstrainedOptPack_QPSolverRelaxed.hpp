@@ -26,7 +26,7 @@ namespace ConstrainedOptimizationPack {
   
   \end{verbatim}
   * The relaxation is used to ensure that the QP will have a solution
-  * (eta = 1, d = 0 guarrentted if dL <= 0 <= dU and eL <= b <= eU).
+  * (eta = 1, d = 0 guaranteed if dL <= 0 <= dU and eL <= b <= eU).
   * If the function M(eta) in the objective is large enough, then
   * the constraint etaL <= eta will be active if a feasible region
   * exists.  The form of the function M(eta) is not specified by this
@@ -51,7 +51,7 @@ namespace ConstrainedOptimizationPack {
 	Linear dependence of gradients:
 	  
 	(2)  d(L)/d(d) = g + G*d - nuL + nuU + op(E)'*(- muL + muU) + op(F)'*lambda
-	               = g + G*d + nu + op(E)'*mu - op(F)'*lambda = 0
+	               = g + G*d + nu + op(E)'*mu + op(F)'*lambda = 0
 	  
 	     where: nu = nuU - nuL, mu = muU - muL
 

@@ -398,6 +398,7 @@ public:
 		,MAX_ITER_EXCEEDED
 		,MAX_ALLOWED_STORAGE_EXCEEDED
 		,INFEASIBLE_CONSTRAINTS
+		,NONCONVEX_QP
 		,DUAL_INFEASIBILITY
 		,SUBOPTIMAL_POINT
 	};
@@ -459,6 +460,16 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, huge_dual_step )
 
 	///
+	/** <<std member comp>> members for the warning tolerance for tests.
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
+
+	///
+	/** <<std member comp>> members for the error tolerance for tests.
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
+
+	///
 	QPSchur(
 		  const schur_comp_ptr_t& 	schur_comp 			= NULL
 		, size_type					max_iter			= 100
@@ -467,10 +478,17 @@ public:
 		, value_type				dual_infeas_tol		= 1e-12
 		, value_type				huge_primal_step	= 1e+20
 		, value_type				huge_dual_step		= 1e+20
+		,value_type                 warning_tol         = 1e-10
+		,value_type                 error_tol           = 1e-5
 		);
 
 	///
 	/** Solve a QP.
+	  *
+	  * If the initial schur complement turns out to have the wrong inertia then
+	  * the QP is nonconvex, and the exception WrongInteriaUpdateExecption will be thrown.
+	  * Otherwise, unless some other strange exception is thrown, this function
+	  * will return normally (see return).
 	  *
 	  * @param	qp	[in] The abstraction for the QP being solved
 	  * @param	num_act_change
@@ -520,6 +538,8 @@ public:
 	  *	@param	num_drops [out] The number of updates to the active set where a constraint
 	  *					was dropped.  These include constraints dropped during a warm start
 	  *					as well as during the primal-dual QP iterations.
+	  *
+	  * @return  Returns the type of point that x, mu , lambda and lambda_breve represents.
 	  */
 	virtual
 	ESolveReturn solve_qp(
@@ -647,14 +667,6 @@ public:
 		///
 		typedef QPSchurPack::QP          QP;
 
-		/// Thrown if the update failed
-		class BadUpdateException : public std::logic_error
-		{public: BadUpdateException(const std::string& what_arg) : std::logic_error(what_arg) {}};
-
-		/// Thrown if you attempt to add a constraint to the active set that is linearly dependent.
-		class LDConstraintException : public BadUpdateException
-		{public: LDConstraintException(const std::string& what_arg) : BadUpdateException(what_arg) {}};
-
 		// /////////////////////
 		// Public interface
 
@@ -688,8 +700,7 @@ public:
 		///
 		/** Reinitialize the schur complement factorization for the current active set
 		  *
-		  * If the freashly computed schur complement is still nonsingular (or indefinite)
-		  * then an #LDConstraintException# exception will be thrown.
+		  * ToDo: Finish documentation
 		  */
 		void refactorize_schur_comp();
 
@@ -699,9 +710,14 @@ public:
 		  *
 		  * ToDo: Finish documentation
 		  *
-		  * If the constraint is linearly dependent this function will throw
-		  * the exception #LDConstraintException# and the active set will not
-		  * be updated.
+		  * If the new KKT system is singular then the exeption
+		  * MatrixSymAddDelUpdateable::SingularUpdateException will be thrown
+		  * but the old KKT system will be kept intact.
+		  *
+		  * If the reduced Hessian for the new KKT system does not have the
+		  * correct inertia then the exception
+		  * MatrixSymAddDelUpdateable::WrongInertiaUpdateException
+		  * will be thrown but the old KKT system will be kept intact.
 		  */
 		void add_constraint( size_type ja, EBounds bnd_ja
 			, bool update_steps, bool force_refactorization = true );

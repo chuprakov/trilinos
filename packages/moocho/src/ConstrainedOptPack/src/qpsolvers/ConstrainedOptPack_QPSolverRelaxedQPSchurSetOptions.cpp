@@ -12,7 +12,7 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 13;
+	const int local_num_options = 14;
 
 	enum local_EOptions {
 		MAX_QP_ITER_FRAC
@@ -22,6 +22,7 @@ namespace {
 		,EQUALITY_TOL
 		,LOOSE_FEAS_TOL
 		,DUAL_INFEAS_TOL
+		,PIVOT_TOL
 		,HUGE_PRIMAL_STEP
 		,HUGE_DUAL_STEP
 		,BIGM
@@ -38,6 +39,7 @@ namespace {
 		,"equality_tol"
 		,"loose_feas_tol"
 		,"dual_infeas_tol"
+		,"pivot_tol"
 		,"huge_primal_step"
 		,"huge_dual_step"
 		,"bigM"
@@ -97,6 +99,9 @@ void QPSolverRelaxedQPSchurSetOptions::set_option(
 			break;
 		case DUAL_INFEAS_TOL:
 			target().dual_infeas_tol(::fabs(::atof(option_value.c_str())));
+			break;
+		case PIVOT_TOL:
+			target().pivot_tol(::fabs(::atof(option_value.c_str())));
 			break;
 		case HUGE_PRIMAL_STEP:
 			target().huge_primal_step(::fabs(::atof(option_value.c_str())));
