@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+
 #ifndef ABSTRACT_LINALG_PACK_MATRIX_SYM_WITH_OP_NONSINGULAR_H
 #define ABSTRACT_LINALG_PACK_MATRIX_SYM_WITH_OP_NONSINGULAR_H
 
@@ -23,9 +24,9 @@ namespace AbstractLinAlgPack {
 
 ///
 /** Abstract base class for all polymorphic symmetrix nonsingular matrices that
-  * can be used to compute matrix-vector products and solve for
-  * linear systems relatively efficently.
-  */
+ * can be used to compute matrix-vector products and solve for
+ * linear systems relatively efficently.
+ */
 class MatrixSymWithOpNonsingular 
 	: virtual public MatrixSymWithOp
 	, virtual public MatrixSymNonsingular
