@@ -131,23 +131,23 @@ bool VectorSpaceTester::check_vector_space(
 			}
 			
 			result = vec->space().is_compatible(space);
-			if(*out && (print_all_tests() || !result))
+			if(out && (print_all_tests() || !result))
 				*out << "\ncheck: " << v_name << "->space().is_compatible(space) : " << result << std::endl;
 			check_test( result ? 0.0 : -10.0 , out, &success );
 			
 			result = space.is_compatible(vec->space());
-			if(*out && (print_all_tests() || !result))
+			if(out && (print_all_tests() || !result))
 				*out << "check: space.is_compatible(" << v_name << "->space()) : " << result << std::endl;
 			check_test( result ? 0.0 : -10.0 , out, &success );
 			
 			err = vec->dim() - space.dim();
-			if(*out && (print_all_tests() || !result))
+			if(out && (print_all_tests() || !result))
 				*out << "check: " << v_name << "->dim() - space.dim() = " << vec->dim() << " - "
 					 << space.dim() << " = " << err << std::endl;
 			check_test( err , out, &success );
 
 			result = vec->nz() <= space.dim();
-			if(*out && (print_all_tests() || !result))
+			if(out && (print_all_tests() || !result))
 				*out << "check: " << v_name << "->nz() <= space.dim() = " << vec->nz() << " <= " << space.dim()
 					 << " : " << result << std::endl;
 			check_test( result ? 0.0 : -10.0 , out, &success );
@@ -272,12 +272,12 @@ bool VectorSpaceTester::check_vector_space(
 				sub_space = space.sub_space(i1,i2);
 
 			result = sub_vec_mut->space().is_compatible(*sub_space);
-			if(*out && (print_all_tests() || !result))
+			if(out && (print_all_tests() || !result))
 				*out << "check: sub_vec_mut->space().is_compatible(*sub_space) : " << result << std::endl;
 			check_test( result ? 0.0 : -10.0 , out, &success );
 			
 			result = sub_space->is_compatible(sub_vec_mut->space());
-			if(*out && (print_all_tests() || !result))
+			if(out && (print_all_tests() || !result))
 				*out << "check: sub_space->is_compatible(*sub_vec_mut->space()) : " << result << std::endl;
 			check_test( result ? 0.0 : -10.0 , out, &success );
 				
