@@ -58,6 +58,7 @@ class MultiVector;
 class MultiVectorMutable;
 
 class BasisSystem;
+class BasisSystemPerm;
 
 class Permutation;
 
@@ -103,6 +104,7 @@ class MatrixSymIdentity;
 class MatrixSymDiagonalStd;
 class MatrixZero;
 class MatrixPermAggr;
+class MatrixWithOpNonsingularAggr;
 
 // testing classes
 

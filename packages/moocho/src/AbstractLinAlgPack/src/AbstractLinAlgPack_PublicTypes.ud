@@ -41,6 +41,7 @@ using AbstractLinAlgPack::MultiVector;
 using AbstractLinAlgPack::MultiVectorMutable;
 
 using AbstractLinAlgPack::BasisSystem;
+using AbstractLinAlgPack::BasisSystemPerm;
 
 using AbstractLinAlgPack::Permutation;
 
@@ -73,6 +74,7 @@ using AbstractLinAlgPack::MatrixSymIdentity;
 using AbstractLinAlgPack::MatrixSymDiagonalStd;
 using AbstractLinAlgPack::MatrixZero;
 using AbstractLinAlgPack::MatrixPermAggr;
+using AbstractLinAlgPack::MatrixWithOpNonsingularAggr;
 
 using AbstractLinAlgPack::VectorSpaceTester;
 using AbstractLinAlgPack::VectorSpaceTesterSetOptions;
