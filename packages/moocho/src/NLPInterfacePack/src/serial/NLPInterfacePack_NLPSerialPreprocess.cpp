@@ -403,7 +403,7 @@ void NLPSerialPreprocess::report_final_solution(
 	}
 	// Report the final solution
 	VectorSlice
-		lambda_orig   = lambda ? lambda_full(1,m_orig_) : VectorSlice(),
+		lambda_orig   = lambda && m_orig_ ? lambda_full(1,m_orig_) : VectorSlice(),
 		lambdaI_orig  = ( lambdaI
 						  ? lambdaI_full()
 						  : ( lambda && m_full_ > m_orig_ 
