@@ -26,5 +26,44 @@
 # ************************************************************************
 #@HEADER
 
-SUBDIRS = amesos anasazi aztecoo epetra epetraext \
-	  ifpack ml teuchos triutils HBMatrices
+if HAVE_DIDASKO_AMESOS
+AMESOS_SUBDIR = amesos
+endif
+
+if HAVE_DIDASKO_ANASAZI
+ANASAZI_SUBDIR = anasazi
+endif
+
+if HAVE_DIDASKO_AZTECOO
+AZTECOO_SUBDIR = aztecoo
+endif
+
+if HAVE_DIDASKO_EPETRA
+EPETRA_SUBDIR = epetra
+endif
+
+if HAVE_DIDASKO_EPETRAEXT
+EPETRAEXT_SUBDIR = epetraext
+endif
+
+if HAVE_DIDASKO_IFPACK
+IFPACK_SUBDIR = ifpack
+endif
+
+if HAVE_DIDASKO_ML
+ML_SUBDIR = ml
+endif
+
+if HAVE_DIDASKO_TEUCHOS
+TEUCHOS_SUBDIR = teuchos
+endif
+
+if HAVE_DIDASKO_TRIUTILS
+TRIUTILS_SUBDIR = triutils
+endif
+
+
+SUBDIRS = $(AMESOS_SUBDIR) $(ANASAZI_SUBDIR) $(AZTECOO_SUBDIR) \
+	  $(EPETRA_SUBDIR) $(EPETRAEXT_SUBDIR) $(IFPACK_SUBDIR) \
+	  $(ML_SUBDIR) $(TEUCHOS_SUBDIR) $(TRIUTILS_SUBDIR) \
+	  HBMatrices
