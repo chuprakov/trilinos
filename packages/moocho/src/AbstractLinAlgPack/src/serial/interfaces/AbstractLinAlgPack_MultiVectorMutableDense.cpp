@@ -122,7 +122,7 @@ void MultiVectorMutableDense::commit_gms_view(GenMatrixSlice* gms_view)
 MultiVectorMutableDense::access_by_t
 MultiVectorMutableDense::access_by() const
 {
-	return ROW_ACCESS & COL_ACCESS & DIAG_ACCESS; // row, column and diagonal access is available!
+	return ROW_ACCESS | COL_ACCESS | DIAG_ACCESS; // row, column and diagonal access is available!
 }
 
 // Overridden from MultiVectorMutable
