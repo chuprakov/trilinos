@@ -38,7 +38,7 @@ namespace TSF
       /**
        * Create an empty TSFHashtable
        */
-      inline TSFHashtable(int capacity=101);
+      inline TSFHashtable(int capacity=101, double rehashDensity = 0.8);
 
       /**
        * Check for the presence of a key
@@ -68,17 +68,37 @@ namespace TSF
        */
       inline void arrayify(TSFArray<Key>& keys, TSFArray<Value>& values) const ;
 
+      /**
+       * Return the average degeneracy (average number of entries per hash code).
+       */
+      inline double avgDegeneracy() const {return avgDegeneracy_;}
+
+      /**
+       * Return the density of the hashtable (num entries / capacity)
+       */
+      inline double density() const {return ((double)count_)/((double) capacity_);}
+
+
+      /**
+       * Set the density at which to do a rehash
+       */
+      inline void setRehashDensity(double rehashDensity);
+
     private:
 
       inline void rehash();
       inline int nextPrime(int newCap) const ;
-
+      inline void accumulateAvgFill(int n) const ;
 
       TSFArray<TSFArray<HashPair<Key, Value> > > data_;
       int count_;
       int capacity_;
       mutable Value mostRecentValue_;
       mutable Key mostRecentKey_;
+
+      mutable int nHits_;
+      mutable double avgDegeneracy_;
+      double rehashDensity_;
     };
 
   /*
@@ -90,10 +110,11 @@ namespace TSF
     ostream& operator<<(ostream& os, const TSFHashtable<Key, Value>& h);
 
   template<class Key, class Value> inline
-    TSFHashtable<Key, Value>::TSFHashtable(int capacity)
-    : data_(), count_(0), capacity_(TSFHashUtils::nextPrime(capacity))
+    TSFHashtable<Key, Value>::TSFHashtable(int capacity, double rehashDensity)
+    : data_(), count_(0), capacity_(TSFHashUtils::nextPrime(capacity)),
+    nHits_(0), avgDegeneracy_(0), rehashDensity_(rehashDensity)
     {
-      data_.resize(capacity);
+      data_.resize(capacity_);
     }
 
   template<class Key, class Value> inline
@@ -103,6 +124,8 @@ namespace TSF
         {
           const TSFArray<HashPair<Key, Value> >& candidates
             = data_[hashCode(key) % capacity_];
+
+          accumulateAvgFill(candidates.length());
 
           for (int i=0; i<candidates.length(); i++)
             {
@@ -145,7 +168,7 @@ namespace TSF
           count_++;
 
           // check for need to resize.
-          if (count_ > capacity_)
+          if ((double) count_ > rehashDensity_ * (double) capacity_)
             {
               capacity_ = TSFHashUtils::nextPrime(capacity_+1);
               rehash();
@@ -234,6 +257,8 @@ namespace TSF
           const TSFArray<HashPair<Key, Value> >& candidates
             = data_[hashCode(key) % capacity_];
 
+          accumulateAvgFill(candidates.length());
+
           for (int i=0; i<candidates.length(); i++)
             {
               const HashPair<Key, Value>& c = candidates[i];
@@ -271,7 +296,12 @@ namespace TSF
         }
     }
 
-
+  template<class Key, class Value> inline
+    void TSFHashtable<Key, Value>::accumulateAvgFill(int n) const
+    {
+      avgDegeneracy_ = ((double) nHits_)/(nHits_ + 1.0) * avgDegeneracy_ + ((double) n)/(nHits_ + 1.0);
+      nHits_++;
+    }
 
   template<class Key, class Value>  inline
     ostream& operator<<(ostream& os, const TSFHashtable<Key, Value>& h)

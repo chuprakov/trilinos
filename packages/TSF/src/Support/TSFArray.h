@@ -184,22 +184,11 @@ namespace TSF
 
   inline int bump(int start, int finish)
     {
-      if (finish < 10000)
-        {
-          if (start == 0)
-            start = 1;
-          while (start < finish)
-            start *= 2;
-          return start;
-        }
-      else
-        {
-          while (start < finish)
-            {
-              start += 10000;
-            }
-          return start;
-        }
+      if (start == 0)
+        start = 1;
+      while (start < finish)
+        start *= 2;
+      return start;
     }
 
 
@@ -447,7 +436,7 @@ namespace TSF
       return rtn;
     }
 
- template<class T> inline
+  template<class T> inline
     TSFArray<T> tuple(const T& a, const T& b, const T& c, const T& d, const T& e,
                       const T& f, const T& g, const T& h, const T& i)
     {
@@ -465,7 +454,7 @@ namespace TSF
     }
 
 
- template<class T> inline
+  template<class T> inline
     TSFArray<T> tuple(const T& a, const T& b, const T& c, const T& d, const T& e,
                       const T& f, const T& g, const T& h, const T& i, const T& j)
     {
