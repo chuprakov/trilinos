@@ -328,7 +328,7 @@ const VectorWithOp& NLPSerialPreprocess::xl() const
 {
 	assert_initialized();
 	THROW_EXCEPTION(
-		!has_var_bounds_, NoBounds
+		num_bounded_x_ == 0, NoBounds
 		,"NLPSerialPreprocess::xl() : Error, there are no variable bounds!"
 		);
 	return xl_;
@@ -338,7 +338,7 @@ const VectorWithOp& NLPSerialPreprocess::xu() const
 {
 	assert_initialized();
 	THROW_EXCEPTION(
-		!has_var_bounds_, NoBounds
+		num_bounded_x_ == 0, NoBounds
 		,"NLPSerialPreprocess::xu() : Error, there are no variable bounds!"
 		);
 	return xu_;
