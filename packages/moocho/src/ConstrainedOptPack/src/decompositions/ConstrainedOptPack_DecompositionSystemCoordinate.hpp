@@ -22,7 +22,7 @@
 namespace ConstrainedOptimizationPack {
 
 ///
-/** Coordiante variable reduction subclass.
+/** Coordinate variable reduction subclass.
  *
  * This is the interface for the coordinate variable reduction decomposition
  * where:
