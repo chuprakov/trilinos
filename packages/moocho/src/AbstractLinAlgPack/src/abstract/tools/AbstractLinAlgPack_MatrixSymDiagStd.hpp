@@ -17,7 +17,7 @@
 #define MATRIX_SYM_DIAGONAL_STD_H
 
 #include "MatrixSymInitDiagonal.h"
-#include "MatrixSymWithOpNonsingular.h"
+#include "MatrixSymDiagonal.h"
 #include "VectorSpace.h"
 
 namespace AbstractLinAlgPack {
@@ -31,7 +31,7 @@ namespace AbstractLinAlgPack {
  */
 class MatrixSymDiagonalStd
 	: public virtual MatrixSymInitDiagonal
-	, public virtual MatrixSymWithOpNonsingular
+	, public virtual MatrixSymDiagonal
 {
 public:
 
@@ -89,8 +89,6 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	VectorWithOpMutable& diag();
-	///
-	const VectorWithOp& diag() const;
 	///
 	const VectorSpace::vec_mut_ptr_t& diag_ptr() const;
 	///
@@ -153,6 +151,14 @@ public:
 	void init_identity( const VectorSpace& space_diag, value_type alpha );
 	///
 	void init_diagonal( const VectorWithOp& diag );
+
+	//@}
+
+	/** @name Overridden from MatrixSymDiagonal */
+	//@{
+
+	///
+	const VectorWithOp& diag() const;
 
 	//@}
 

@@ -55,11 +55,6 @@ VectorWithOpMutable& MatrixSymDiagonalStd::diag()
 	return *diag;;
 }
 
-const VectorWithOp& MatrixSymDiagonalStd::diag() const
-{
-	return const_cast<MatrixSymDiagonalStd*>(this)->diag();
-}
-
 const VectorSpace::vec_mut_ptr_t&
 MatrixSymDiagonalStd::diag_ptr() const
 {
@@ -171,6 +166,13 @@ void MatrixSymDiagonalStd::init_diagonal( const VectorWithOp& diag )
 {
 	diag_ = diag.space().create_member();
 	*diag_ = diag;
+}
+
+// Overridden from MatrixSymDiagonal
+
+const VectorWithOp& MatrixSymDiagonalStd::diag() const
+{
+	return const_cast<MatrixSymDiagonalStd*>(this)->diag();
 }
 
 // private
