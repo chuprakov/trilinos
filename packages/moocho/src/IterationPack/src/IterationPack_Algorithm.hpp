@@ -667,11 +667,17 @@ private:
 
 	// aggregate members
 
+#ifdef DOXYGEN_COMPILE
+	AlgorithmState       *state;
+	AlgorithmTrack       *track;
+	AlgorithmStep        *steps;
+#else
 	state_ptr_t				state_;
 	// ref_count_ptr<...> object for the aggragate AlgorithmState object.
 
 	track_ptr_t				track_;
 	// ref_count_ptr<...> object for the aggragate AlgorithmTrack object.
+#endif
 
 	// algorithm control etc.
 	

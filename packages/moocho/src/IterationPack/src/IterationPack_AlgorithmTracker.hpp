@@ -105,7 +105,9 @@ public:
 
 private:
 
+#ifndef DOXYGEN_COMPILE
 	ostream_ptr_t   journal_out_;
+#endif
 
 	// not defined and not to be called
 	AlgorithmTrack();

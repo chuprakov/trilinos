@@ -254,7 +254,7 @@ private:
 	// IQ object with this abandonded iq_id, the dereferencing operator for
 	// ref_count_ptr<...> will throw an exception.
 #ifdef DOXYGEN_COMPILE
-	IterQuantity  *iter_quantity_list; ///< We just want to show this relationship!
+	IterQuantity  *iteration_quantities;
 #endif
 
 	iq_name_to_id_t			iq_name_to_id_;
