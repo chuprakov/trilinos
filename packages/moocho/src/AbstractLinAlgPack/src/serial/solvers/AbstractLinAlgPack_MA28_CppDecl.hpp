@@ -24,17 +24,17 @@ using FortranTypes::f_logical;		// LOGICAL
 extern "C" {
 
 // analyze and factorize a matrix
-FORTRAN_FUNC_DECL(void,MA28AD) (const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
+FORTRAN_FUNC_DECL_UL(void,MA28AD,ma28ad) (const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
 	, f_int irn[], const f_int& lirn, f_int icn[], const f_dbl_prec& u, f_int ikeep[], f_int iw[]
 	, f_dbl_prec w[], f_int& iflag);
 	
 // factor using previous analyze
-FORTRAN_FUNC_DECL(void,MA28BD) (const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
+FORTRAN_FUNC_DECL_UL(void,MA28BD,ma28bd) (const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
 	, const f_int ivect[], const f_int jvect[], const f_int icn[], const f_int ikeep[], f_int iw[]
 	, f_dbl_prec w[], f_int& iflag);
 
 // solve for rhs using internally stored factorized matrix
-FORTRAN_FUNC_DECL(void,MA28CD) (const f_int& n, f_dbl_prec a[], const f_int& licn, const f_int icn[]
+FORTRAN_FUNC_DECL_UL(void,MA28CD,ma28) (const f_int& n, f_dbl_prec a[], const f_int& licn, const f_int icn[]
 	, const f_int ikeep[], f_dbl_prec rhs[], f_dbl_prec w[], const f_int& mtype);
 
 // /////////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ struct MA28ED_struct {
 	f_logical	lblock;
 	f_logical	grow;
 };
-extern MA28ED_struct FORTRAN_NAME(MA28ED); // link to fortan common block
+extern MA28ED_struct FORTRAN_NAME_UL(MA28ED,ma28ed); // link to fortan common block
 
 //  COMMON /MA28FD/ EPS, RMIN, RESID, IRNCP, ICNCP, MINIRN, MINICN,
 // * IRANK, ABORT1, ABORT2
@@ -76,7 +76,7 @@ struct MA28FD_struct {
 	f_logical	abort1;
 	f_logical	abort2;
 };
-extern MA28FD_struct FORTRAN_NAME(MA28FD); // link to fortan common block
+extern MA28FD_struct FORTRAN_NAME_UL(MA28FD,ma28fd); // link to fortan common block
 
 
 //  COMMON /MA28GD/ IDISP
@@ -84,7 +84,7 @@ extern MA28FD_struct FORTRAN_NAME(MA28FD); // link to fortan common block
 struct MA28GD_struct {
 	f_int		idisp[2];
 };
-extern MA28GD_struct FORTRAN_NAME(MA28GD); // link to fortan common block
+extern MA28GD_struct FORTRAN_NAME_UL(MA28GD,ma28gd); // link to fortan common block
 
 //  COMMON /MA28HD/ TOL, THEMAX, BIG, DXMAX, ERRMAX, DRES, CGCE,
 // * NDROP, MAXIT, NOITER, NSRCH, ISTART, LBIG
@@ -106,7 +106,7 @@ struct MA28HD_struct {
 	f_int		istart;
 	f_logical	lbig;
 };
-extern MA28HD_struct FORTRAN_NAME(MA28HD); // link to fortan common block
+extern MA28HD_struct FORTRAN_NAME_UL(MA28HD,ma28hd); // link to fortan common block
 
 //  COMMON /MA30ED/ LP, ABORT1, ABORT2, ABORT3
 //  INTEGER LP
@@ -117,7 +117,7 @@ struct MA30ED_struct {
 	f_logical	abort2;
 	f_logical	abort3;
 };
-extern MA30ED_struct FORTRAN_NAME(MA30ED); // link to fortan common block
+extern MA30ED_struct FORTRAN_NAME_UL(MA30ED,ma30ed); // link to fortan common block
 
 //  COMMON /MA30FD/ IRNCP, ICNCP, IRANK, IRN, ICN
 //  INTEGER IRNCP, ICNCP, IRANK, IRN, ICN
@@ -128,7 +128,7 @@ struct MA30FD_struct {
 	f_int		minirn;
 	f_int		minicn;
 };
-extern MA30FD_struct FORTRAN_NAME(MA30FD); // link to fortan common block
+extern MA30FD_struct FORTRAN_NAME_UL(MA30FD,ma30fd); // link to fortan common block
 
 //  COMMON /MA30GD/ EPS, RMIN
 //  DOUBLE PRECISION EPS, RMIN
@@ -136,14 +136,14 @@ struct MA30GD_struct {
 	f_dbl_prec	eps;
 	f_dbl_prec	rmin;
 };
-extern MA30GD_struct FORTRAN_NAME(MA30GD); // link to fortan common block
+extern MA30GD_struct FORTRAN_NAME_UL(MA30GD,ma30gd); // link to fortan common block
 
 //  COMMON /MA30HD/ RESID
 //  DOUBLE PRECISION RESID
 struct MA30HD_struct {
 	f_dbl_prec	resid;
 };
-extern MA30HD_struct FORTRAN_NAME(MA30HD); // link to fortan common block
+extern MA30HD_struct FORTRAN_NAME_UL(MA30HD,ma30hd); // link to fortan common block
 
 //  COMMON /MA30ID/ TOL, BIG, NDROP, NSRCH, LBIG
 //  INTEGER NDROP, NSRCH
@@ -156,7 +156,7 @@ struct MA30ID_struct {
 	f_int		nsrch;
 	f_logical	lbig;
 };
-extern MA30ID_struct FORTRAN_NAME(MA30ID); // link to fortan common block
+extern MA30ID_struct FORTRAN_NAME_UL(MA30ID,ma30id); // link to fortan common block
 
 //  COMMON /MC23BD/ LP,NUMNZ,NUM,LARGE,ABORT
 //  INTEGER LP, NUMNZ, NUM, LARGE
@@ -168,7 +168,7 @@ struct MC23BD_struct {
 	f_int		large;
 	f_logical	abort;
 };
-extern MC23BD_struct FORTRAN_NAME(MC23BD); // link to fortan common block
+extern MC23BD_struct FORTRAN_NAME_UL(MC23BD,mc23bd); // link to fortan common block
 
 
 } // end extern "C"
@@ -483,7 +483,7 @@ static MC23BD_struct &mc23bd_cb = FORTRAN_COMMMON_BLOCK_NAME(MC23BD);
 inline void ma28ad(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
 	, f_int irn[], const f_int& lirn, f_int icn[], const f_dbl_prec& u, f_int ikeep[], f_int iw[]
 	, f_dbl_prec w[], f_int& iflag)
-{	FORTRAN_FUNC_CALL(MA28AD) (n,nz,a,licn,irn,lirn,icn,u,ikeep,iw,w,iflag);	}
+{	FORTRAN_FUNC_CALL_UL(MA28AD,ma28ad) (n,nz,a,licn,irn,lirn,icn,u,ikeep,iw,w,iflag);	}
 
 // /
 /* * Factor a sparse matrix using previous analyze pivots.
@@ -525,7 +525,7 @@ inline void ma28ad(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int&
 inline void ma28bd(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
 	, const f_int ivect[], const f_int jvect[], const f_int icn[], const f_int ikeep[], f_int iw[]
 	, f_dbl_prec w[], f_int& iflag)
-{	FORTRAN_FUNC_CALL(MA28BD) (n,nz,a,licn,ivect,jvect,icn,ikeep,iw,w,iflag);	}
+{	FORTRAN_FUNC_CALL_UL(MA28BD,ma28bd) (n,nz,a,licn,ivect,jvect,icn,ikeep,iw,w,iflag);	}
 
 // /
 /* * Solve for a rhs using a factorized matrix.
@@ -560,7 +560,7 @@ inline void ma28bd(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int&
   */
 inline void ma28cd(const f_int& n, f_dbl_prec a[], const f_int& licn, const f_int icn[]
 	, const f_int ikeep[], f_dbl_prec rhs[], f_dbl_prec w[], const f_int& mtype)
-{	FORTRAN_FUNC_CALL(MA28CD) (n,a,licn,icn,ikeep,rhs,w,mtype);	}
+{	FORTRAN_FUNC_CALL_UL(MA28CD,ma28cd) (n,a,licn,icn,ikeep,rhs,w,mtype);	}
 
 //		end MA28 C++ Declarations
 // @}

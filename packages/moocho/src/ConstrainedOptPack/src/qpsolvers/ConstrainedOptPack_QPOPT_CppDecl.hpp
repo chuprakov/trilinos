@@ -106,7 +106,7 @@ void set_real_option(EQPOPT_real_option option, const f_dbl_prec&);
 
 extern "C" {
 
-FORTRAN_FUNC_DECL(void,QPOPT) ( const f_int& N, const f_int& NCLIN
+FORTRAN_FUNC_DECL_UL(void,QPOPT,qpopt) ( const f_int& N, const f_int& NCLIN
 	, const f_int& LDA, const f_int& LDH, const f_dbl_prec* A
 	, const f_dbl_prec* BL, const f_dbl_prec* BU, const f_dbl_prec* CVEC
 	, const f_dbl_prec* H, qphess_func QPHESS, f_int* ISTATE, f_dbl_prec* X
@@ -114,17 +114,17 @@ FORTRAN_FUNC_DECL(void,QPOPT) ( const f_int& N, const f_int& NCLIN
 	, f_dbl_prec* CLAMDA, f_int* IW, const f_int& LENIW, f_dbl_prec* W
 	, const f_int& LENW );
 
-FORTRAN_FUNC_DECL(void,QPHESS) ( const f_int& N, const f_int& LDH
+FORTRAN_FUNC_DECL_UL(void,QPHESS,qphess) ( const f_int& N, const f_int& LDH
 	, const f_int& JTHCOL, const f_dbl_prec* H, const f_dbl_prec* X, f_dbl_prec* HX
 	, f_int* IW, const f_int& LENIW, f_dbl_prec* W, const f_int& LENW );
 
-FORTRAN_FUNC_DECL(void,QPOPT_SET_DEFAULTS) ();
+FORTRAN_FUNC_DECL_UL(void,QPOPT_SET_DEFAULTS,qpopt_set_defaults) ();
 
-FORTRAN_FUNC_DECL(void,QPOPT_INT_OPT) (const f_int& option, const f_int& );
+FORTRAN_FUNC_DECL_UL(void,QPOPT_INT_OPT,qpopt_ini_opt) (const f_int& option, const f_int& );
 
-FORTRAN_FUNC_DECL(void,QPOPT_LOG_OPT) (const f_int& option, const f_logical& );
+FORTRAN_FUNC_DECL_UL(void,QPOPT_LOG_OPT,qpopt_log_opt) (const f_int& option, const f_logical& );
 
-FORTRAN_FUNC_DECL(void,QPOPT_REAL_OPT) (const f_int& option, const f_dbl_prec& );
+FORTRAN_FUNC_DECL_UL(void,QPOPT_REAL_OPT,qpopt_real_opt) (const f_int& option, const f_dbl_prec& );
 
 } // end extern "C"
 
@@ -140,25 +140,25 @@ void qpopt( const f_int& N, const f_int& NCLIN
 	, f_dbl_prec* CLAMDA, f_int* IW, const f_int& LENIW, f_dbl_prec* W
 	, const f_int& LENW )
 {
-	FORTRAN_FUNC_CALL(QPOPT) ( N, NCLIN, LDA, LDH, A, BL, BU, CVEC, H, QPHESS
+	FORTRAN_FUNC_CALL_UL(QPOPT,qpopt) ( N, NCLIN, LDA, LDH, A, BL, BU, CVEC, H, QPHESS
 		, ISTATE, X, INFORM, ITER, OBJ, AX, CLAMDA, IW, LENIW, W, LENW );
 }
 
 inline
 void reset_defaults()
-{	FORTRAN_FUNC_CALL(QPOPT_SET_DEFAULTS) (); }
+{	FORTRAN_FUNC_CALL_UL(QPOPT_SET_DEFAULTS,qpopt_set_defaults) (); }
 
 inline
 void set_int_option(EQPOPT_int_option option, const f_int& val)
-{	FORTRAN_FUNC_CALL(QPOPT_INT_OPT) ( option, val ); }
+{	FORTRAN_FUNC_CALL_UL(QPOPT_INT_OPT,qpopt_int_opt) ( option, val ); }
 
 inline
 void set_logical_option(EQPOPT_logical_option option, const f_logical& val)
-{	FORTRAN_FUNC_CALL(QPOPT_LOG_OPT) ( option, val ); }
+{	FORTRAN_FUNC_CALL_UL(QPOPT_LOG_OPT,qpopt_log_opt) ( option, val ); }
 
 inline
 void set_real_option(EQPOPT_real_option option, const f_dbl_prec& val)
-{	FORTRAN_FUNC_CALL(QPOPT_REAL_OPT) ( option, val ); }
+{	FORTRAN_FUNC_CALL_UL(QPOPT_REAL_OPT,qpopt_real_opt) ( option, val ); }
 
 //@}
 
