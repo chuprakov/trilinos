@@ -49,7 +49,7 @@ A Package of Light-Weight Object-Oriented Abstractions for the
 Development of Abstract Numerical Algorithms and Interfacing
 to Linear Algebra Libraries and Applications.
 }
-\author{Roscoe A. Bartlett, Mike Heroux and Kevin R. Long \\
+\author{Roscoe A. Bartlett, Michael A. Heroux and Kevin R. Long \\
 Sandia National Laboratories\footnote{
 Sandia is a multiprogram laboratory operated by Sandia Corporation, a
 Lockheed-Martin Company, for the United States Department of Energy
@@ -96,24 +96,31 @@ uncertainty quantification methods and nonlinear programming solvers
 for optimization.  In this paper we propose the use of a new stripped
 down version of the Trilinos Solver Framework (TSF) called TSFCore as
 the common interface for the development of abstract numerical
-algorithms (ANAs) and their integration to applications (APPs) and
+algorithms (ANAs) and their integration into applications (APPs) and
 linear algebra libraries (LALs).  By agreeing on a simple minimal
 common interface layer such as TSFCore, we get around the many-to-many
-problem of ANA/application interfaces.  The goal of TSFCore is not to
+problem of ANA/APP interfaces.  The goal of TSFCore is not to
 replace the use of other types of more established linear algebra
 interfaces such as TSF \cite{ref:TSF}, \textit{AbstractLinAlgPack}
 (the linear algebra interfaces in MOOCHO \cite{ref:moochouserguide}),
 or HCL \cite{ref:hcl} as the interfaces that are directly used in the
 development of ANAs.  Instead, TSFCore is designed to make it easier
 for developers to provide the basic functionality from APPs and LALs
-required by these existing ANA-specific interfaces.  While TSFCore
-provides all of the functionality required to be directly used in ANA
-development it lacks a lot of nonessential but convenient functionality that is
-very helpful in developing ANA code.  This nonessential but convenient
-functionality can be built on top of the core functionality which is
-precisely the type of extra functionality that TSF and
-\textit{AbstractLinAlgPack} provide (see Section
-\ref{tsfcore:sec:convenience_functionality}).
+required by these existing ANA-specific interfaces.  
+
+While TSFCore provides a mechanism to express 
+all of the functionality required to be directly used in ANA
+development it does not attempt to provide a full collection of 
+methods that directly support the anticipated functionality
+needs of ANAs.  Instead TSFCore relies on a simple but powerful 
+reduction and transformation operator mechanism~\cite{ref:rtop_toms}
+that can be used to express any vector reduction or transformation 
+operation.  More direct and convenient access to functionality that might be 
+required by a given ANA is 
+provided by interfaces such as TSF and \textit{AbstractLinAlgPack}. 
+This direct access can be very helpful in developing ANA code.
+Section \ref{tsfcore:sec:convenience_functionality} discusses this topic
+in detail.
 
 It is difficult to describe a set of linear algebra interfaces outside
 of the context of some class of numerical problems.  For this purpose,
@@ -145,6 +152,31 @@ Section \ref{tsfcore:sec:adapters}.
 %
 \section{Background}
 \label{tsfcore:sec:background}
+%
+
+%
+\subsection{APPs, ANAs and LALs}
+\label{tsfcore:sec:component_overview}
+Although we will discuss APPs, ANAs and LALs in detail later in this section, we 
+want to briefly introduce these terms here to make them clear.  A typical
+numerical simulation application can be partitioned into three categories of software:
+\begin{itemize}
+\item Application (APP):  The code that is unique to the application itself.  This 
+typically includes the code that formulates and generates the discrete problem.
+\item Abstract Numerical Algorithm (ANA):  Software that drives the solution process,
+e.g., a nonlinear solver.  This type of package provides solutions to and requires services from
+the APP, and utilizes services from one or more LALs.  It can usually be written so that
+it does not depend on the details of how the APP and LALs are implemented, so that an ANA
+can be used across many APPs and with many LALs.
+\item Linear Algebra Library (LAL): Software that provides the ability to construct
+concrete linear algebra objects such as matrices and vectors.  A LAL can also be a
+specific linear solver or preconditioner.
+\end{itemize}
+
+An important focus of this paper is to clearly define the interfaces between APPs, ANAs 
+and LALs and to provide minimal interface that supports the APP/ANA connection, Namely,
+TSFCore.
+
 %
 
 %
@@ -223,7 +255,7 @@ equations of the form (\ref{tsfcore:eqn:c_newton}) that generate
 Newton steps for ANAs for solving the nonlinear equations [???] in
 (\ref{tsfcore:eqn:c}).  The solution of linear systems is also
 required in stability anaysis and bifurcation methods [???], implicit
-DAE and ODE solvers [???], uncertantiy quantification methods
+DAE and ODE solvers [???], uncertainty quantification methods
 (i.e.~SFE [???]) and many different types of optimization methods
 [???].  In addition, various types numerical analysis methods such as
 for eigenvalue problems [???] that can be applied, for example, to
@@ -231,7 +263,7 @@ matrices such as the Jacobian $\frac{\partial c}{\partial y}$, can be
 consisered to be ANAs.  TSFCore is designed to provide functionality
 for the intersection of all of the requriements for all of these
 different types of ANAs.  Requirements for more specific types is
-defered [???].
+deferred [???].
 
 %
 \subsection{Classification of linear algebra interfaces}
