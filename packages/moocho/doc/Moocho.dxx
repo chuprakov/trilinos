@@ -32,6 +32,11 @@ extensive.
 	<li> <A HREF="../IterationPack/html/index.html">IterationPack</A>.
 	</ul>
 
+<li> General Abstractions Linear Algebra
+	<ul>
+	<li> <A HREF="../TSFL/html/index.html">TSFL</A>.
+	</ul>
+
 <li> Numerical Packages:
     Packages for abstract, sparse and dense linear algebra, linear solvers,
     QP solvers and range / null space decompositions.
