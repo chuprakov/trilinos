@@ -23,7 +23,10 @@ namespace AbstractLinAlgPack {
 ///
 /** Create an RTOp_SubVector view object from a SpVectorSlice object.
  */
-RTOp_SubVector sub_vec_view( const SpVectorSlice& sv );
+RTOp_SubVector sub_vec_view(
+	const SpVectorSlice&   sv
+	,const Range1D&        rng = Range1D()
+	);
 
 } // end namespace AbstractLinAlgPack
 
