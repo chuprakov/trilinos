@@ -32,7 +32,7 @@ algorithms.
     * @memo Packages that are used in the implementation of the other packages.
     */
   //@{
-    /** @name 1.\URL[namespace Misc]{../Misc/doc++/index.html}
+    /** @name 1.\URL[namespace Misc]{Misc/index.html}
       * @memo Single DOC++ collection.
       */
     //@{
@@ -43,7 +43,7 @@ algorithms.
     * @memo Package framework for iterative algorithms.
     */
   //@{
-    /** @name 1.\URL[namespace GeneralIterationPack]{../GeneralIterationPack/doc++/index.html}
+    /** @name 1.\URL[namespace GeneralIterationPack]{GeneralIterationPack/index.html}
       * @memo Single DOC++ collection.
       */
     //@{
@@ -67,22 +67,22 @@ algorithms.
     * and range / null space decompositions.
     */
   //@{
-    /** @name 1. \URL[Dense Linear Algebra]{../LinAlgPack/doc++/index.html}.
+    /** @name 1. \URL[Dense Linear Algebra]{LinAlgPack/index.html}.
       * @memo Single DOC++ collection.
       */
     //@{
     //@}
-    /** @name 2. \URL[namespace SparseLinAlgPack]{../SparseLinAlgPack/doc++/index.html}
+    /** @name 2. \URL[namespace SparseLinAlgPack]{SprseLinAlgPack/index.html}
       * @memo Single DOC++ collection.
       */
     //@{
     //@} 
-    /** @name 3. \URL[namespace SparseSolverPack]{../SparseSolverPack/doc++/index.html}
+    /** @name 3. \URL[namespace SparseSolverPack]{SparseSolverPack/index.html}
       * @memo Single DOC++ collection.
       */
     //@{
     //@} 
-    /** @name 4. \URL[namespace ConstrainedOptimizationPack]{../ConstrainedOptimizationPack/doc++/index.html}
+    /** @name 4. \URL[namespace ConstrainedOptimizationPack]{ConstrainedOptimizationPack/index.html}
       * @memo Single DOC++ collection.
       */
     //@{
@@ -93,7 +93,7 @@ algorithms.
     * @memo Package of NLP interfaces and node (implementation classes).
     */
   //@{
-    /** @name 1. \URL[namespace NLPInterfacePack]{../NLPInterfacePack/doc++/index.html}
+    /** @name 1. \URL[namespace NLPInterfacePack]{NLPInterfacePack/index.html}
 	  * @memo Single DOC++ collection.
 	  */
 	//@{
@@ -102,7 +102,7 @@ algorithms.
   /** @name 5. Succesive Quadratic Programming (SQP) Algorithms.
     */
   //@{
-    /** @name 1.\URL[namespace ReducedSpaceSQPPack]{../ReducedSpaceSQPPack/doc++/index.html}
+    /** @name 1.\URL[namespace ReducedSpaceSQPPack]{ReducedSpaceSQPPack/index.html}
 	  * @memo Single DOC++ collection.
 	  */
 	//@{
