@@ -13,7 +13,7 @@
 #include "PetraMatrix.h"
 #include "PetraVector.h"
 
-#if HAVE_ML
+#ifdef HAVE_ML
 #include "ml_include.h"
 #include "ml_epetra_utils.h"
 #include "ml_epetra_operator.h"
