@@ -45,30 +45,30 @@ void convet_to_csr(
 {
 	// Count the number of entries per row and put in acsr_row_ptr[1...m+1]
 	std::fill_n( &acsr_row_ptr[0], m+1, 0 );
-	for( int k = 0; k < nz; ++k ) {
+	{for( int k = 0; k < nz; ++k ) {
 		++acsr_row_ptr[a_row_i[k]]; // a_row_i[] is 1-based so this works out.
-	}
+	}}
 
 	// Transform the counts of entries per row into the start pointers for the rows.
 	// We will make acsr_row_ptr[0] = 0 and then add form there.  We will then
 	// shift this data so that acsr_row_ptr[1] = 0. This data
 	// structure will be used to fill the entries per row.
 	acsr_row_ptr[0] = 0;
-	for( int i = 2; i < m + 1; ++i ) {
+	{for( int i = 2; i < m + 1; ++i ) {
 		acsr_row_ptr[i] += acsr_row_ptr[i-1];
-	}
-	for( int i = m; i > 0; --i ) {
+	}}
+	{for( int i = m; i > 0; --i ) {
 		acsr_row_ptr[i] = acsr_row_ptr[i-1];
-	}
+	}}
 
 	// Now copy into the compressed sparse row data structure
-	for( int k = 0; k < nz; ++k ) {
+	{for( int k = 0; k < nz; ++k ) {
 		const int row_i   = a_row_i[k];            // one-based
 		const int row_ptr = acsr_row_ptr[row_i];  // returned value is zero-based
 		acsr_val[row_ptr]   = a_val[k];
 		acsr_col_j[row_ptr] = a_col_j[row_ptr] - 1; // from one-based to zero-based
 		++acsr_row_ptr[row_i];
-	}
+	}}
 	assert( acsr_row_ptr[m] == nz );
 
 }

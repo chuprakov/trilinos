@@ -24,6 +24,16 @@
 #include "dsp_defs.h"
 #include "util.h"
 
+namespace {
+	// A cast to const is needed because the standard does not return a reference from
+	// valarray<>::operator[]() const.
+	template <class T>
+	std::valarray<T>& cva(const std::valarray<T>& va )
+	{
+		return const_cast<std::valarray<T>&>(va);
+	}
+}
+
 namespace SuperLUPack {
 
 class SuperLUSolverImpl;
@@ -258,8 +268,8 @@ void SuperLUSolverImpl::factor(
 	SuperMatrix AC;
 	sp_preorder(
 		refact,&A
-		,const_cast<int*>(&fs.perm_c_[0])
-		,const_cast<int*>(&fs.etree_[0])
+		,&cva(fs.perm_c_)[0]
+		,&cva(fs.etree_)[0]
 		,&AC
 		);
 
@@ -271,11 +281,11 @@ void SuperLUSolverImpl::factor(
 		,0.0    /* drop_tol */
 		,relax
 		,panel_size
-		,const_cast<int*>(&fs.etree_[0])
+		,&cva(fs.etree_)[0]
 		,NULL   /* work */
 		,0      /* lwork */
-		,const_cast<int*>(&fs.perm_r_[0])
-		,const_cast<int*>(&fs.perm_c_[0])
+		,&cva(fs.perm_r_)[0]
+		,&cva(fs.perm_c_)[0]
 		,&fn.L_
 		,&fn.U_
 		,&info
@@ -319,8 +329,8 @@ void SuperLUSolverImpl::solve(
 		transc
 		,const_cast<SuperMatrix*>(&fn.L_)
 		,const_cast<SuperMatrix*>(&fn.U_)
-		,const_cast<int*>(&fs.perm_r_[0])
-		,const_cast<int*>(&fs.perm_c_[0])
+		,&cva(fs.perm_r_)[0]
+		,&cva(fs.perm_c_)[0]
 		,&B, &info
 		);
 
