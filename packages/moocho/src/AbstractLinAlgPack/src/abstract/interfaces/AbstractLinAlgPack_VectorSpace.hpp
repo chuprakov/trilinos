@@ -24,10 +24,13 @@ namespace AbstractLinAlgPack {
 ///
 /** Abstract interface for objects that represent a space for mutable coordinate vectors.
  *
- * This class is primary an "Abstract Factory" interface for creating \c VectorWithOpMutable
+ * This interface acts primarily as an "Abstract Factory" interface for creating \c VectorWithOpMutable
  * objects using the \c create_member() method.  A <tt>%VectorSpace</tt> object may also be able
- * to create \c MultiVectorMutable objects.  A secondary role for  <tt>%VectorSpace</tt> object
- * to to act a test of compatibility of vector objects using the \c is_compatible() method.
+ * to create \c MultiVectorMutable objects which represent a compact collection of vectors.
+ * Every application area should be able to define a <tt>%MultiVectorMutable</tt> subclass if
+ * it can define a <tt>%VectorWithOpMutable</tt> subclass.
+ * A secondary role for <tt>%VectorSpace</tt> objects is to test for compatibility of vector and matrix
+ * objects using the \c is_compatible() method.
  *
  * Given a <tt>%VectorSpace</tt> object is may also be possible to create sub-spaces using the
  * \c sub_space() method.
@@ -59,6 +62,7 @@ public:
 	/** Create a vector member from the vector space.
 	 *
 	 * Postconditions:<ul>
+	 * <li> <tt>return.get() != NULL</tt>
 	 * <li> <tt>return->dim() == this->dim()</tt>
 	 * <li> <tt>return->space().is_compatible(*this) == true</tt>
 	 * </ul>
@@ -79,9 +83,9 @@ public:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>return->dim() == this->dim()</tt>
-	 * <li> <tt>return->space_cols().is_compatible(*this) == true</tt>
-	 * <li> <tt>return->space_rows().dim() == num_vecs</tt>
+	 * <li> [<tt>return.get() != NULL</tt>] <tt>return->space_cols().is_compatible(*this) == true</tt>
+	 * <li> [<tt>return.get() != NULL</tt>] <tt>return->space_rows().dim() == num_vecs</tt>
+	 * <li> [<tt>return.get() != NULL</tt>] <tt>(return->access_by() & MultiVector::COL_ACCESS) == true</tt>
 	 * </ul>
 	 *
 	 * @return  Returns a smart reference counted pointer to a dynamically
@@ -102,7 +106,12 @@ public:
 	 * The returned vector space object is expected to be independent from \c this
 	 * and have a lifetime that extends beyond \c this.  This makes a vector space
 	 * class a little hander to implement by makes for much better flexibility
-	 * for the client.
+	 * for the client.  A complete implementation of <tt>%VectorSpace</tt> is not
+	 * allowed to return \c NULL from this method.
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>return.get() != NULL</tt>
+	 * </ul>
 	 */
 	virtual space_ptr_t clone() const = 0;
 
@@ -114,7 +123,7 @@ public:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>return->dim() == rng->size()</tt>
+	 * <li> [<tt>return.get() != NULL</tt>] <tt>return->dim() == rng->size()</tt>
 	 * </ul>
 	 *
 	 * @param  rng  [in] The range of the elements to extract a vector sub-space.
@@ -128,20 +137,21 @@ public:
 	 * for arbitrary values of <tt>rng</tt>.  Only some <tt>rng</tt> ranges may be allowed
 	 * but they will be appropriate for the application at hand.  However, a
 	 * very good implementation should be able to accomidate any valid <tt>rng</tt>
-	 * that meets the basic preconditions.  The default implementation uses
-	 * the subclass VectorSpaceSubSpace to represent any arbitrary
-	 * sub-space but this can be very inefficient if the sub-space is
-	 * very small compared this this full vector space.
+	 * that meets the basic preconditions.
 	 *
-	 * Note that if two vector space objects <tt>X</tt> and <tt>Y</tt> are compatible (i.e.
-	 * <tt>X.is_compatible(Y) == true</tt>, then it is also expected that
-	 * <tt>X.sub_space(rng)->is_compatible(*Y.sub_space(rng))</tt> will also be true.
+	 * Note that if two vector space objects <tt>X</tt> and <tt>Y</tt> are compatible
+	 * (i.e. <tt>X.is_compatible(Y) == true</tt>, then it is also expected that
+	 * <tt>X.sub_space(rng)->is_compatible(*Y.sub_space(rng))</tt> will also be \c true.
 	 * However, in general it can not be expected that
-	 * <tt>X.sub_space(rng1)->is_compatible(*X.sub_space(rng2))</tt>, with
-	 * <tt>rng1.size() == rng2.size()</tt> true.  For serial vectors, it may
+	 * <tt>X.sub_space(rng1)->is_compatible(*X.sub_space(rng2)) == true</tt>, even if
+	 * <tt>rng1.size() == rng2.size()</tt>.  For serial vectors, it may
 	 * be but for parallel vectors it will most certainly not be.  Therefore, in
 	 * general, don't assume that arbitrary subsets of the vector spaces will be
 	 * compatible, even if the sizes of these subspaces are the same.
+	 *
+	 * The default implementation uses the subclass \c VectorSpaceSubSpace to
+	 * represent any arbitrary sub-space but this can be very inefficient if the
+	 * sub-space is very small compared this this full vector space.
 	 */
 	virtual space_ptr_t sub_space(const Range1D& rng) const;
 
