@@ -52,7 +52,7 @@ void imp_Vp_StMtV_implicit(
 		// y += a * inv(C) * ( N * x )
 		//
 		wsp::Workspace<LinAlgPack::value_type> t1_ws(wss,r), t2_ws(wss,r);
-		LinAlgPack::VectorSlice t1(&t1_ws[0],t1.size()), t2(&t2_ws[0],t2.size());
+		LinAlgPack::VectorSlice t1(&t1_ws[0],t1_ws.size()), t2(&t2_ws[0],t2_ws.size());
 		// t1 = N*x
 		LinAlgOpPack::V_MtV( &t1, decomp_sys.N(), no_trans, x );
 		// t2 = inv(C) * t1
@@ -68,7 +68,7 @@ void imp_Vp_StMtV_implicit(
 		// y = b*y + a * N' * ( inv(C') * x )
 		//
 		wsp::Workspace<LinAlgPack::value_type> t1_ws(wss,r);
-		LinAlgPack::VectorSlice t1(&t1_ws[0],t1.size());
+		LinAlgPack::VectorSlice t1(&t1_ws[0],t1_ws.size());
 		// t1 = inv(C')*x
 		decomp_sys.solve_C( x, trans, &t1 );
 		// y = b*y + a*N'*t1

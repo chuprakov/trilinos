@@ -41,7 +41,7 @@
 #include "LinAlgPack/include/VectorOut.h"
 #include "LinAlgPack/include/GenMatrixOut.h"
 #include "Misc/include/WorkspacePack.h"
-#include "Misc/include/doubledouble.h"
+//#include "Misc/include/doubledouble.h" // 2001/08/31: RAB: watch out for typedef int bool;
 
 namespace LinAlgOpPack {
 using SparseLinAlgPack::Vp_StV;

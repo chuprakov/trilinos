@@ -43,6 +43,7 @@ void Vp_StPtMtV_imp(
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
 	using SparseLinAlgPack::GenPermMatrixSlice;
+	using SparseLinAlgPack::MatrixWithOp;
 	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 	const LinAlgPack::size_type
