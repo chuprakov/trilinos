@@ -1,0 +1,349 @@
+\documentclass[12pt,relax]{SANDreport}
+\usepackage{fancyvrb}
+\usepackage{fullpage}
+\usepackage{latexsym}
+\usepackage{fancyheadings}
+\usepackage{epsf,psfrag}    % Include Postscript files
+\usepackage{times}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{moreverb}
+\usepackage{epsfig}
+
+
+\setcounter{secnumdepth}{4}
+
+
+
+\title{TSFExtended User's Guide}
+\author{Kevin Long\\
+Roscoe A. Bartlett\\
+Paul T. Boggs\\
+Michael A. Heroux\\
+Patricia A. Howard\\
+Victoria E. Howle\\
+Jill P. Reese
+}
+
+    % There is a "Printed" date on the title page of a SAND report, so
+    % the generic \date should generally be empty.
+    \date{} % Remove ``\today'' in final version 
+
+
+\SANDnum{SAND2004-ZZZZ}
+\SANDprintDate{Printed August 2004} 
+\SANDauthor{Kevin Long\\ 
+Paul T. Boggs\\ 
+Patricia A. Howard\\
+Victoria E. Howle\\
+Jill P. Reese\\
+\\
+Computational Science and Mathematics Research Department \\
+Sandia National Laboratories \\
+Livermore CA, 94553\\
+\\
+Roscoe A. Bartlett\\
+\\
+Optimization and Uncertainty Quantification Department\\
+Sandia National Laboratories\\
+Albuquerque, NM\\
+\\
+Michael A. Heroux\\
+\\
+Computational Mathematics and Algorithms Department\\
+Sandia National Laboratories\\
+Albuquerque, NM}
+
+
+\SANDreleaseType{Unlimited Release}  
+
+
+% New commands
+\newcommand{\Az}  {{\bf Aztec}}
+
+
+%
+% define boxes for describing variables, etc
+%
+
+\def\optionbox#1#2{\noindent$\hphantom{hix}${\parbox[t]{2.10in}{\it #1}}{\parbox[t]{3.9in}{#2}} \\[1.1em]}
+
+\def\choicebox#1#2{\noindent$\hphantom{hixthere}$\parbox[t]{2.10in}{\sf #1}\parbox[t]{3.5in}{#2}\\[0.8em]}
+
+\def\structbox#1#2{\noindent$\hphantom{hix}${\parbox[t]{2.10in}{\it #1}}{\parbox[t]{3.9in}{#2}} \\[.02cm]}
+
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+TSFExtended
+\end{abstract}
+
+
+\section*{Acknowledgement}
+
+
+\clearpage
+\tableofcontents
+\listoffigures
+%\listoftables
+
+\clearpage
+
+\SANDmain
+\chapter{Introduction}
+\label{Section:Introduction}
+
+\section{Creating Vectors}
+
+\subsection{VectorSpace and VectorType}
+
+\section{Vector Operations}
+
+\subsection{Multiplication by Scalars}
+
+The \verb+scale()+ method multiplies a vector by a scalar. For example,
+\begin{verbatim}
+x.scale(3.14159);
+\end{verbatim}
+replaces $x$ by $3.14159 x$. The operation is done in place, so that 
+no additional memory is used beyond that required to store $x$. 
+Alternatively, the overloaded multiplication operator can be used,
+\begin{verbatim}
+y = 3.14159*x;
+\end{verbatim}
+or
+\begin{verbatim}
+y = x*3.14159;
+\end{verbatim}
+
+
+\subsection{Updates/Axpys}
+
+The various \verb+update()+ methods carry out generalized axpy operations.
+\begin{itemize}
+\item The operation
+\begin{equation}
+y = y + \alpha x
+\end{equation}
+is accomplished with
+\begin{verbatim}
+y.update(alpha, x);
+\end{verbatim}
+\item The operation
+\begin{equation}
+y = \gamma y + \alpha x
+\end{equation}
+is accomplished with
+\begin{verbatim}
+y.update(alpha, x, gamma);
+\end{verbatim}
+\item The operation
+\begin{equation}
+z = \gamma z + \alpha x + \beta y
+\end{equation}
+is accomplished with
+\begin{verbatim}
+z.update(alpha, x, beta, y, gamma);
+\end{verbatim}
+\end{itemize}
+Any of these can be written using overloaded operations, for example,
+\begin{verbatim}
+z = z + alpha*x + beta*y;
+\end{verbatim}
+
+\subsection{Element-by-element Operations}
+
+Element-by-element operations are rarely used in linear solvers, but
+appear frequently in nonlinear solvers and optimizers. TSFExtended provides
+methods for several common element-by-element operations; however, if an
+arbitrary element-by-element operation is required it can be provided
+through the RTOp mechanism.
+
+The built-in element-by-element methods are multiplication, division, 
+reciprocal, and absolute value. All these methods come in two versions, a
+self-modifying method that replaces \verb+*this+ with the result of the 
+operation, and a method that creates a new vector into which the result is
+written. 
+The methods are
+\begin{itemize}
+\item Element-by-element multiplication $z_i = x_i y_i$ 
+\begin{verbatim}
+z = x.dotStar(y);
+\end{verbatim}
+\item In-place element-by-element multiplication $x_i \leftarrow x_i y_i$ 
+\begin{verbatim}
+x.dotStar(y);
+\end{verbatim}
+\item Element-by-element division $z_i = x_i / y_i$ 
+\begin{verbatim}
+z = x.dotSlash(y);
+\end{verbatim}
+\item In-place element-by-element division $x_i \leftarrow x_i / y_i$ 
+\begin{verbatim}
+x.dotSlash(y);
+\end{verbatim}
+\item Element-by-element reciprocal $z_i = 1 / x_i$ 
+\begin{verbatim}
+z = x.reciprocal();
+\end{verbatim}
+\item In-place element-by-element reciprocal $x_i \leftarrow 1 / x_i$ 
+\begin{verbatim}
+x.reciprocal();
+\end{verbatim}
+\item Element-by-element absolute value $z_i = \vert x_i \vert$ 
+\begin{verbatim}
+z = x.abs();
+\end{verbatim}
+\item In-place element-by-element reciprocal $x_i \leftarrow \vert x_i \vert$ 
+\begin{verbatim}
+x.reciprocal();
+\end{verbatim}
+\end{itemize}
+
+
+\subsection{Dot Product}
+
+The dot product can be computed with either the \verb+dot()+ method or
+the overloaded multiplication operator,
+\begin{verbatim}
+double xDotY = x.dot(y);
+\end{verbatim}
+or
+\begin{verbatim}
+double xDotY = x*y;
+\end{verbatim}
+
+\subsection{Vector Norms}
+
+Methods exist for the 1, 2, and $\infty$ norms of vectors and for the
+weighted two norm:
+\begin{itemize}
+\item The \verb+norm1()+ method computes the 1-norm
+\begin{equation}
+\| x \|_1 = \sum_{i=1}^N \vert x_i \vert
+\end{equation}
+\item The \verb+norm2()+ method computes the 2-norm
+\begin{equation}
+\| x \|_2 = \left[\sum_{i=1}^N x_i^2\right]^{1/2}
+\end{equation}
+\item The \verb+normInf()+ method computes the $\infty$-norm
+\begin{equation}
+\| x \|_\infty = \max x_i
+\end{equation}
+\end{itemize}
+
+
+\section{Linear Operators}
+
+\subsection{Creating Matrix Operators}
+
+\subsection{Implicit Operator Composition}
+
+The overloaded multiplication operator is used to create compositions of
+operators without actually forming the product of the two operators. 
+\begin{verbatim}
+// Form a composed operator using the * operator
+LinearOperator<double> A = B*C;
+// Apply the composed operator
+Vector<double> y = A*x;
+\end{verbatim}
+The application of a composed operator first applies the right operand
+\verb+C+ to \verb+x+, and then applies the left operand \verb+B+
+to the result.  
+
+
+\subsection{Implicit Transpose Operators}
+
+The \verb+transpose()+ method is used to create an implicit transpose 
+operator, which when applied will do a transpose apply on the original
+operator. For example,
+\begin{verbatim}
+// Form an implicit transpose operator
+LinearOperator<double> At = A.transpose();
+// Apply the transposed operator
+Vector<double> y = At*x;
+\end{verbatim}
+
+\subsection{Forming Transposes}
+
+In some cases it may be useful to form a transpose explicitly. This is done
+using the \verb+formTranspose()+ method. For example,
+\begin{verbatim}
+// Form an implicit transpose operator
+LinearOperator<double> At = A.formTranspose();
+// Apply the transposed operator
+Vector<double> y = At*x;
+\end{verbatim}
+It is not possible to form explicit transpose operators for arbitrary
+operators; explicit transposition works only for operators that implement
+the \verb+ExplicitlyTransposeableOp+ interface. If called on an operator
+that does not implement that interface, an exception will be thrown.
+
+
+
+\subsection{Implicit Inverse Operators}
+
+\subsection{Diagonal Operators}
+
+\subsection{Identity and Zero Operators}
+
+
+
+
+
+\chapter{Solver Options and Parameters\label{Section:OptionsAndParams}}
+
+\section{TSF Solver Options\label{optionI}}
+
+\vspace{2em}
+{\flushleft{\bf Specifications} \hrulefill}
+\optionbox{``Method''}{Specifies solution
+  algorithm. DEFAULT: ``GMRES''}
+
+\choicebox{``GMRES''}{Restarted generalized minimal residual.}
+\choicebox{``BICGSTAB''}{Bi-conjugate gradient with
+  stabilization.}
+
+\optionbox{``Precond''}{Specifies preconditioner. DEFAULT: ``ILUK''}
+
+\choicebox{``ILUK''}{Incomplete LU}
+
+\section{Aztec Solver Options\label{optionII}}
+
+\vspace{2em}
+{\flushleft{\bf Specifications} \hrulefill}
+\nopagebreak \\[0.5em]
+%
+\optionbox{``Method''}{Specifies solution
+  algorithm. DEFAULT: ``GMRES''}
+\choicebox{``CG''}{Conjugate gradient (only
+  applicable to symmetric positive definite matrices).}
+\choicebox{``GMRES''}{Restarted generalized minimal residual.}
+\choicebox{``CGS''}{Conjugate gradient squared.}
+\choicebox{``TFQMR''}{Transpose-free quasi-minimal residual.}
+\choicebox{``BICGSTAB''}{Bi-conjugate gradient with
+  stabilization.}
+\choicebox{``Direct''}{Sparse direct solver (single processor only).
+{\bf Note: This option is available only when --enable-aztecoo-azlu is
+specified on the AztecOO configure script invocation command}}
+
+\input{ConfigureOptions}
+%\section{Troubleshooting}
+%\label{Section:Troubleshooting}
+%\subsection{Conditional Code, Incorrect Results and Stalled Programs}
+%Many methods in AztecOO distributed classes (those derive from the
+%\distobject{} class) require all processors to
+%participate in the method call.  For example, to compute the update of
+%an \vector{}, all processors that own a portion of the vector must
+%call the Update() method.  When calling a Norm2() method or something
+%similar, all processors, regardless of whether they own any portion of
+%a vector, must participate in the Norm2() call.  
+%Figure~\ref{Figure:HungCode} illustrates
+%several versions of a code segment that computes the 2-norm of a residual
+%and prints it from processor 0.  Only the final version is correct.
+
+\end{document}
+
