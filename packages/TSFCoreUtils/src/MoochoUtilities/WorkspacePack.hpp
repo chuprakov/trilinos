@@ -342,7 +342,7 @@ const T& Workspace<T>::operator[](size_t i) const
 	return const_cast<Workspace<T>*>(this)->operator[](i);
 }
 
-#ifdef _PG_CXX // Should not have to define this but pgCC is complaining!
+#ifdef __PGI // Should not have to define this but pgCC is complaining!
 template<class T>
 inline
 void* Workspace<T>::operator new(size_t)

@@ -99,7 +99,7 @@ RawWorkspace::~RawWorkspace()
 	}
 }
 
-#ifdef _PG_CXX // Should not have to define this since it should not be called!
+#ifdef __PGI // Should not have to define this since it should not be called!
 void* RawWorkspace::operator new(size_t)
 {
 	assert(0);
