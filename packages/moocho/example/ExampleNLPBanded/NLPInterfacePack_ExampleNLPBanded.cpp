@@ -136,7 +136,7 @@ bool ExampleNLPBanded::nlp_selects_basis() const
 	return nlp_selects_basis_;
 }
 
-// Overridden protected methods from NLPSerialPreprocess */
+// Overridden protected methods from NLPSerialPreprocess
 
 bool ExampleNLPBanded::imp_nlp_has_changed() const
 {
@@ -335,7 +335,7 @@ void ExampleNLPBanded::imp_report_orig_final_solution(
 	// ToDo: Do something with the final soltuion?
 }
 
-// Overridden protected methods from NLPSerialPreprocessExplJac */
+// Overridden protected methods from NLPSerialPreprocessExplJac
 
 size_type ExampleNLPBanded::imp_Gc_nz_orig() const
 {
