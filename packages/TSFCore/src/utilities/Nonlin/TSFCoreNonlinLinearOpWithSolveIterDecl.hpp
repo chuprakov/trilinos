@@ -66,13 +66,18 @@ public:
 
 	//@}
 
-	/** @name Overridden from LinearOp */
+	/** @name Overridden from OpBase */
+	//@{
 	///
 	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > domain() const;
 	///
 	MemMngPack::ref_count_ptr<const VectorSpace<Scalar> > range() const;
 	///
 	bool opSupported(ETransp M_trans) const;
+	//@}
+
+	/** @name Overridden from LinearOp */
+	//@{
 	///
 	void apply(
 		const ETransp             M_trans
@@ -92,7 +97,7 @@ public:
 
 	//@}
 
-	/** @name Overridden from LinearOpInverible */
+	/** @name Overridden from LinearOpWithSolve */
 	//@{
 
 	///
