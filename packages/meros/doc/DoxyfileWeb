@@ -53,3 +53,5 @@
 ############################################################################
 
 INPUT                  = ../../../../Trilinos/packages/meros/src
+
+EXAMPLE_PATH           = ../../../../Trilinos/packages/meros/example
