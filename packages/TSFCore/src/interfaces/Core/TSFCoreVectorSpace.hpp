@@ -37,8 +37,6 @@
 #include "TSFCoreSerialVectorSpaceFactory.hpp"
 #include "TSFCoreMultiVectorStdOps.hpp"
 #include "TSFCoreMultiVectorCols.hpp"
-#include "RTOp_ROp_dot_prod.h"
-#include "RTOpCppC.hpp"
 
 namespace TSFCore {
 

@@ -80,7 +80,6 @@ static int RTOp_ROp_sum_abs_apply_op(
 		return RTOp_ERR_INVALID_NUM_TARG_VECS;
 	assert(reduct_obj);
 
-
 	/* */
 	/* Get pointers to data */
 	/* */
@@ -89,23 +88,19 @@ static int RTOp_ROp_sum_abs_apply_op(
 	v0_val        = vecs[0].values;
 	v0_val_s      = vecs[0].values_stride;
 
-
 	/* */
 	/* Apply the operator: */
 	/* */
 	for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s )
 	{
 		/* Element-wise reduction */
-		abs_sum_ith = abs((*v0_val));
+		abs_sum_ith = fabs((*v0_val));
 		/* Reduction of intermediates */
 		(*abs_sum) += abs_sum_ith;
 	}
 
 	return 0; /* success? */
 }
-
-
-
 
 /* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_sum_abs_vtbl =

@@ -32,7 +32,7 @@
 #include <assert.h>
 
 #include "initRTOpStdOpsLibCpp.hpp"
-#include "RTOpCPostMod.hpp"
+#include "RTOpPack_RTOpCPostMod.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "RTOp_ROp_combined_nu_comp_err.h"
 #include "RTOp_ROp_max_rel_step.h"

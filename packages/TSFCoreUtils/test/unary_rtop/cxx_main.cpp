@@ -91,13 +91,13 @@ int main( int argc, char* argv[] ) {
 
 		unary_rtop.initialize( MyDumbPack::sin, "sin" );
 
-		unary_rtop.apply_op( 1, sub_vecs, 1, targ_sub_vecs, RTOp_REDUCT_OBJ_NULL );
+		unary_rtop.apply_op( 1, sub_vecs, 1, targ_sub_vecs, NULL );
 
 		// ToDo: Test the output!
 
 		unary_rtop.initialize( MyDumbPack::sqrt, "sqrt" );
 
-		unary_rtop.apply_op( 1, sub_vecs, 1, targ_sub_vecs, RTOp_REDUCT_OBJ_NULL );
+		unary_rtop.apply_op( 1, sub_vecs, 1, targ_sub_vecs, NULL );
 
 		// ToDo: Test the output!
 

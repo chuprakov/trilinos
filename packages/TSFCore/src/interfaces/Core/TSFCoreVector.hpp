@@ -36,8 +36,11 @@
 #include "TSFCoreVectorSpace.hpp"
 #include "RTOp_ROp_get_sub_vector.h"
 #include "RTOp_TOp_set_sub_vector.h"
-#include "RTOpCppC.hpp"
+#include "RTOpPack_RTOpC.hpp"
 #include "Teuchos_TestForException.hpp"
+
+// RAB: 3/24/2004: Write direct templated RTOpT<> subclasses for  get_sub_vector and set_sub_vector
+// operators!
 
 namespace TSFCore {
 
@@ -57,24 +60,28 @@ void Vector<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::SubVectorT<S
 	}
 	// Initialize the operator
 	RTOpPack::RTOpC get_sub_vector_op;
-	if(0>RTOp_ROp_get_sub_vector_construct( rng.lbound(), rng.ubound(),&get_sub_vector_op.op()))
-		assert(0);
+  TEST_FOR_EXCEPTION(
+    0!=RTOp_ROp_get_sub_vector_construct( rng.lbound(), rng.ubound(),&get_sub_vector_op.op())
+    ,std::logic_error,"Error!"
+    );
 	// Create the reduction object (another sub_vec)
-	RTOp_ReductTarget reduct_obj = RTOp_REDUCT_OBJ_NULL;
-	get_sub_vector_op.reduct_obj_create_raw(&reduct_obj); // This is really of type RTOpPack::SubVectorT<Scalar>!
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget>
+    reduct_obj = get_sub_vector_op.reduct_obj_create(); // This is really of type RTOpPack::SubVectorT<Scalar>!
 	// Perform the reduction (get the sub-vector requested)
 	const size_t  num_vecs = 1;
 	const Vector* sub_vecs[num_vecs] = { this };
 	applyOp(
-		get_sub_vector_op,num_vecs,sub_vecs,0,NULL,reduct_obj
+		get_sub_vector_op,num_vecs,sub_vecs,0,NULL,&*reduct_obj
 		,rng.lbound(),rng.size(),rng.lbound()-1 // first_ele, sub_dim, global_offset
 		);
 	// Set the sub-vector.  Note reduct_obj will go out of scope so the sub_vec parameter will
 	// own the memory allocated within get_sub_vector_op.create_reduct_obj_raw(...).  This is okay
 	// since the client is required to call release_sub_vector(...) so release memory!
-	RTOp_SubVector sub_vec = RTOp_ROp_get_sub_vector_val(reduct_obj);
+  RTOp_ReductTarget reduct_obj_raw = get_sub_vector_op(*reduct_obj);
+	RTOp_SubVector sub_vec = RTOp_ROp_get_sub_vector_val(reduct_obj_raw);
 	sub_vec_inout->initialize(sub_vec.global_offset,sub_vec.sub_dim,sub_vec.values,sub_vec.values_stride);
-	free(reduct_obj); // Now *sub_vec owns the values[] and indices[] arrays!
+  reduct_obj.release(); // Don't let the operator delete this storage!
+	free(reduct_obj_raw); // Now *sub_vec owns the values[] and indices[] arrays!
 }
 
 template<class Scalar>
@@ -128,11 +135,13 @@ void Vector<Scalar>::setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub
 		,&spc_sub_vec
 		);
 	RTOpPack::RTOpC  set_sub_vector_op;
-	if(0>RTOp_TOp_set_sub_vector_construct( &spc_sub_vec, &set_sub_vector_op.op() ))
-		assert(0);
+  TEST_FOR_EXCEPTION(
+    0!=RTOp_TOp_set_sub_vector_construct( &spc_sub_vec, &set_sub_vector_op.op() )
+    ,std::invalid_argument,"Error!"
+    );
 	Vector* targ_vecs[1] = { this };
 	this->applyOp(
-		set_sub_vector_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL
+		set_sub_vector_op,0,NULL,1,targ_vecs,NULL
 		,sub_vec.globalOffset()+1,sub_vec.subDim(),sub_vec.globalOffset() // first_ele, sub_dim, global_offset
 		);
 }

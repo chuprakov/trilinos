@@ -1,0 +1,348 @@
+// @HEADER
+// ***********************************************************************
+// 
+//      TSFCoreUtils: Trilinos Solver Framework Utilities Package 
+//                 Copyright (2004) Sandia Corporation
+// 
+// Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
+// license for use of this work by or on behalf of the U.S. Government.
+// 
+// This library is free software; you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as
+// published by the Free Software Foundation; either version 2.1 of the
+// License, or (at your option) any later version.
+//  
+// This library is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Lesser General Public License for more details.
+//  
+// You should have received a copy of the GNU Lesser General Public
+// License along with this library; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+// USA
+// Questions? Contact Michael A. Heroux (maherou@sandia.gov)
+// 
+// ***********************************************************************
+// @HEADER
+
+// //////////////////////////////////////
+// RTOpPack_RTOpTDecl.hpp
+
+#ifndef RTOPPACK_RTOP_NEW_T_DECL_HPP
+#define RTOPPACK_RTOP_NEW_T_DECL_HPP
+
+#include "RTOpPackTypes.hpp"
+#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_PrimitiveTypeTraits.hpp"
+
+namespace RTOpPack {
+
+// ToDo: Change the names from ReductTarget and RTOpT to
+// ReductTarget and RTOpT once this class is finished and tested.
+
+/** \defgroup RTOpCpp_grp Templated interfaces for generalized vector
+ * reduction/transformation operators in C++.
+ */
+//@{
+
+///
+/** Base class for reduction object.
+ */
+class ReductTarget {
+public:
+  virtual ~ReductTarget() {}
+};
+
+///
+/** Templated interface to vector reduction/transformation operators {abstract}.
+ *
+ * ToDo: Finish documentation!
+ */
+template<class Scalar>
+class RTOpT {
+public:
+
+  /** @name public types */
+  //@{
+
+  ///
+  typedef typename Teuchos::PrimitiveTypeTraits<Scalar>::primitiveType  primitive_value_type;
+
+  //@}
+
+  /** @name Reduction object functions */
+  //@{
+
+	///
+	/** Get the number of entries of each basic data type in the externalized state for
+	 * a reduction object for this operator.
+	 *
+	 * Note that a specific reduction object is not passed in as an
+	 * argument.  This is because the structure of a reduction object is
+	 * completely determined by its associated operator object and this
+	 * structure can not change as a result of a reduction operation
+	 * (this is needed to simplyfy global communication code when used *
+	 * with MPI).
+	 *
+	 * The default implementation returns zeros for
+	 * <tt>*num_values</tt>, <tt>*num_indexes</tt> and
+	 * <tt>*num_chars</tt> (i.e. by default there is no reduction
+	 * operation performed).
+	 */
+	virtual void get_reduct_type_num_entries(
+		int*   num_values
+		,int*  num_indexes
+		,int*  num_chars
+		) const;
+	///
+	/** Creates a new reduction target object initalized and ready to be used in
+   * a reduction.
+	 *
+	 * To delete this object simply let the returned
+	 * <tt>RefCountPtr<></tt> object go out of scope.
+   *
+	 *
+	 * The default implementation returns <tt>return.get()==NULL</tt>
+	 * (i.e. by default there is no reduction operation performed).
+	 */
+	virtual Teuchos::RefCountPtr<ReductTarget> reduct_obj_create() const;
+	///
+	/** Reduce intermediate reduction target objects.
+	 *
+	 * The default implementation does not do anything (i.e. by default
+	 * there is no reduction operation performed).
+	 */
+	virtual void reduce_reduct_objs(
+		const ReductTarget& in_reduct_obj, ReductTarget* inout_reduct_obj
+		) const;
+	///
+	/** Reinitialize an already created reduction object.
+	 *
+	 * The default implementation does nothing (i.e. by default there is
+	 * no reduction operation performed).
+	 *
+	 * @param  reduct_obj  [in/out] Reduction object is reinitalized on output.
+	 */
+	virtual void reduct_obj_reinit( ReductTarget* reduct_obj ) const;
+	///
+	/** Extract the state of an already created reduction object.
+	 *
+	 * This method allows the state of a reduction target object to be
+	 * externalized so that it can be passed over a heterogeneous
+	 * network of computers.
+	 *
+	 * The default implementation does nothing (i.e. by default there is
+	 * no reduction operation performed).
+	 */
+	virtual void extract_reduct_obj_state(
+		const ReductTarget     &reduct_obj
+		,int                      num_values
+		,primitive_value_type     value_data[]
+		,int                      num_indexes
+		,RTOp_index_type          index_data[]
+		,int                      num_chars
+		,RTOp_char_type           char_data[]
+		) const;
+	///
+	/** Load the state of an already created reduction object given
+   * arrays of primitive objects.
+	 *
+	 * The default implementation does nothing.
+	 */
+	virtual void load_reduct_obj_state(
+		int                            num_values
+		,const primitive_value_type    value_data[]
+		,int                           num_indexes
+		,const RTOp_index_type         index_data[]
+		,int                           num_chars
+		,const RTOp_char_type          char_data[]
+		,ReductTarget               *reduct_obj
+		) const;
+
+	//@}
+
+  /** @name Operator functions */
+  //@{
+
+	/// Mandatory virtual destructor.
+	virtual ~RTOpT() {}
+	///
+	/** Return the name (as a null-terminated C-style string) of the operator.
+	 *
+	 * This name is used to differentate an operator subclass from all
+	 * other operator subclasses.  This is an important property needed
+	 * for a client/server or master/slave runtime configuration.
+	 */
+	virtual const char* op_name() const = 0;
+	///
+	/** Copy the state of another operator object into this one.
+	 *
+	 * This default version uses <tt>op->ref extract_op_state()</tt> and
+	 * <tt>this->\ref load_op_state()</tt> to perform the copy.  No
+	 * override should be needed by subclasses (unless a slightly more
+	 * efficient implementation is desired).
+	 */
+	virtual RTOpT<Scalar>& operator=(const RTOpT<Scalar>& op);
+	///
+	/** Return the number of entries of each type of basic data type in
+	 * the externalized state for the operator object.
+	 *
+	 * The default implementation returns zeros for
+	 * <tt>*num_values</tt>, <tt>*num_indexes</tt> and
+	 * <tt>*num_chars</tt> (i.e. the default reduction/transformation
+	 * operator has no state).
+	 */
+	virtual void get_op_type_num_entries(
+		int*  num_values
+		,int* num_indexes
+		,int* num_chars
+		) const;
+	///
+	/** Extract the state of the object in a portable format.
+	 *
+	 * This method allows the state of a reduction/transformation
+	 * operator to be externalized so that it can be passed over a
+	 * heterogeneous network of computers.
+	 *
+	 * The default implemenation does nothing (i.e. the default
+	 * reduction/transformation operator has no state).
+	 *
+	 * @param  num_values
+	 *              [in] Value returned from <tt>this->get_op_type_num_entries()</tt>.
+	 * @param  value_data
+	 *              [out] Array (size <tt>num_values</tt>) of floating point data.
+	 * @param  num_indexes
+	 *              [in] Value returned from <tt>this->get_op_type_num_entries()</tt>.
+	 * @param  index_data
+	 *              [out] Array (size <tt>num_indexes</tt>) of integral data.
+	 * @param  num_chars
+	 *              [in] Value returned from <tt>this->get_op_type_num_entries()</tt>.
+	 * @param  char_data
+	 *              [out] Array (size <tt>num_chars</tt>) of character data.
+	 */
+	virtual void extract_op_state(
+		int                             num_values
+		,primitive_value_type           value_data[]
+		,int                            num_indexes
+		,RTOp_index_type                index_data[]
+		,int                            num_chars
+		,RTOp_char_type                 char_data[]
+		) const;
+	///
+	/** Load the state of the object from a portable format.
+	 *
+	 * This method allows the state of the operator object to be set given an the externalized
+	 * state as extracted using <tt>\ref extract_op_state "extract_op_state(...)"</tt>
+	 * called on a compatible operator object (possibly on a different heterogeneous computer).
+	 *
+	 * The default implementation does nothing (i.e. the default reduction/transformation
+	 * operator has no state).
+	 *
+	 * @param  num_values
+	 *              [in] Value returned from <tt>this->get_op_type_num_entries()</tt>.
+	 * @param  value_data
+	 *              [out] Array (size <tt>num_values</tt>) of floating point data.
+	 * @param  num_indexes
+	 *              [in] Value returned from <tt>this->get_op_type_num_entries()</tt>.
+	 * @param  index_data
+	 *              [out] Array (size <tt>num_indexes</tt>) of integral data.
+	 * @param  num_chars
+	 *              [in] Value returned from <tt>this->get_op_type_num_entries()</tt>.
+	 * @param  char_data
+	 *              [out] Array (size <tt>num_chars</tt>) of character data.
+	 */
+	virtual void load_op_state(
+		int                           num_values
+		,const primitive_value_type   value_data[]
+		,int                          num_indexes
+		,const RTOp_index_type        index_data[]
+		,int                          num_chars
+		,const RTOp_char_type         char_data[]
+		);
+	///
+	/** Returns <tt>true</tt> if this operator is coordinate invariant.
+	 *
+	 * The default implementation returns <tt>true</tt> as most vector
+	 * operators are coordinate invariant.
+	 */
+	virtual bool coord_invariant() const;
+	///
+	/** Apply the reduction/transformation operator to a set of
+	 * sub-vectors.
+	 *
+	 * <tt>op(sub_vecs[],targ_sub_vecs[]),reduct_obj) -> targ_sub_vecs[],reduct_obj</tt>.
+	 *
+	 * This is the bread and butter of the whole design.  Through this
+	 * method, a vector implementation applies a
+	 * reduction/transformation operator to a set of sub-vectors.
+	 *
+	 *	@param	num_vecs
+	 *             [in] Number of non-mutable sub-vectors in <tt>sub_vec[]</tt>.
+	 *	@param	sub_vecs
+	 *             [in] Array (length <tt>num_vecs</tt>) of non-mutable vectors to apply the
+	 *             operator over.  The ordering of these sub-vectors
+	 *             <tt>sub_vecs[k], for k = 0...num_vecs-1</tt>, is significant to the this operator object.
+	 *             If <tt>num_vecs == 0</tt> then <tt>sub_vecs</tt> can be <tt>NULL</tt>.
+	 *	@param	num_targ_vecs
+	 *             [in] Number of mutable sub-vectors in <tt>targ_sub_vec[]</tt>.
+	 *	@param	targ_sub_vecs
+	 *             [in] Array (length <tt>num_targ_vecs</tt>) of mutable vectors to apply the
+	 *             operator over and be mutated.  The ordering of these sub-vectors
+	 *             <tt>targ_sub_vecs[k], for k = 0...num_targ_vecs-1</tt>, is significant to this
+	 *             operator object.  If <tt>num_targ_vecs == 0</tt> then <tt>targ_sub_vecs</tt> can be <tt>NULL</tt>.
+	 *	@param	reduct_obj
+	 *             [in/out] This reduction object must have been created by
+	 *              a <tt>this->reduct_obj_create()</tt> call and it may have
+   *              already passed through one or more other
+	 *              reduction operations (accumulating the reductions along the way).
+	 *              If <tt>this->get_reduct_type_num_entries()</tt>
+	 *              returns <tt>num_values==0</tt>, <tt>num_indexes==0</tt> and <tt>num_chars==0</tt>,
+	 *              then <tt>reduct_obj</tt> should be set to <tt>NULL</tt>
+	 *              as no reduction will be performed.
+	 *
+	 * Preconditions:<ul>
+	 *	<li> <tt>num_vecs > 0 || num_targ_vecs > 0</tt>
+	 *	<li> <tt>[num_vecs > 0] sub_vecs != NULL</tt>
+	 *	<li> <tt>[num_targ_vecs > 0] targ_sub_vecs != NULL</tt>
+	 *	<li> <tt>[num_vecs > 0] global_offset==sub_vecs[k].global_offset</tt>
+	 *        , for <tt>k = 0,...,num_vecs-1</tt>
+	 *	<li> <tt>[num_targ_vecs > 0] global_offset==targ_sub_vecs[k].global_offset</tt>
+	 *        , for <tt>k = 0,...,num_targ_vecs-1</tt>
+	 *	<li> <tt>[num_vecs > 0] sub_dim==sub_vecs[k].sub_dim</tt>
+	 *       , for <tt>k = 0,...,num_vecs-1</tt>
+	 *	<li> <tt>[num_targ_vecs > 0] sub_dim==targ_sub_vecs[k].sub_dim</tt>
+	 *       , for <tt>k = 0,...,num_targ_vecs-1</tt>
+	 *	</ul>
+	 *
+	 * If <tt>reduct_obj != NULL</tt> then the reduction operation will be accumlated as:
+	 \verbatim
+     op(op(sub_vecs[],targ_sub_vecs[]),reduct_obj) -> reduct_obj
+	 \endverbatim
+	 * By allowing an in/out <tt>reduct_obj</tt> and an accumulation
+	 * of the reduction, the maximum reuse of memory is achieved.
+	 * If <tt>this->reduct_obj_create()</tt>
+	 * or <tt>this->reduct_obj_reinit(reduct_obj)</tt> was called
+	 * immediately before this function, then <tt>reduct_obj</tt> will contain
+	 * only the reduction from this function call.
+	 *
+	 * If <tt>num_vecs</tt> is incompatible with the underlying operator object then
+	 * <tt>InvalidNumVecs</tt> is thrown.  If the sub-vectors are not compatible
+	 * (i.e. <tt>global_offset</tt> and/or <tt>sub_dim</tt> not the same) then
+	 * IncompatibleVecs is thrown.
+	 */
+	virtual void apply_op(
+		const int   num_vecs,       const SubVectorT<Scalar>         sub_vecs[]
+		,const int  num_targ_vecs,  const MutableSubVectorT<Scalar>  targ_sub_vecs[]
+		,ReductTarget *reduct_obj
+		) const = 0;
+
+  //@}
+
+}; // end class RTOpT
+
+} // end namespace RTOpPack
+
+//@}
+
+#endif // RTOPPACK_RTOP_NEW_T_DECL_HPP

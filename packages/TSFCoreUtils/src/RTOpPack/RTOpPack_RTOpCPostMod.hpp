@@ -26,38 +26,44 @@
 // ***********************************************************************
 // @HEADER
 
-#include "RTOpCppToC.hpp"
-#include "RTOpCppC.hpp"
-#include "RTOp_RTOp_C_Cpp.h"
+// /////////////////////////////////////////////////////////////////////////
+// RTOpPack_RTOpCPostMod.hpp
+
+#ifndef RTOPPACK_RTOP_C_POST_MOD_HPP
+#define RTOPPACK_RTOP_C_POST_MOD_HPP
+
+#include "RTOpPack_RTOpC.hpp"
 
 namespace RTOpPack {
 
-RTOpCppToC::RTOpCppToC( const RTOp &op_cpp )
-	: op_cpp_(op_cpp), op_c_(NULL), op_vtbl_(NULL)
-{
-	if( const RTOpC *op_cpp_c = dynamic_cast<const RTOpC*>(&op_cpp_) ) {
-		op_c_ = const_cast<RTOp_RTOp*>(&op_cpp_c->op());
-	} else {
-		op_vtbl_ = new RTOp_RTOp_vtbl_t;
-	    RTOp_create_C_Cpp_vtbl(
-			op_cpp_.get_op_create_func()
-			,op_cpp_.get_op_free_func()
-			,op_vtbl_
-			);
-		op_vtbl_->op_name    = op_cpp.op_name();
-		op_c_                = new RTOp_RTOp;
-		op_c_->vtbl          = op_vtbl_;
-		op_c_->obj_data      = (void*)&op_cpp;
-	}
-}
+class RTOpCPostMod {
+public:
 
-RTOpCppToC::~RTOpCppToC()
-{
-	if(op_vtbl_) {
-		RTOp_free_C_Cpp_vtbl( op_vtbl_ );
-		delete op_vtbl_;
-		delete op_c_;
-	}
-}
+	///
+	RTOpCPostMod( const RTOp_RTOp_vtbl_t *vtbl ) : vtbl_(vtbl)
+		{
+#ifdef _DEBUG
+			TEST_FOR_EXCEPTION(
+        !(vtbl && vtbl->obj_data_vtbl && vtbl->obj_data_vtbl->obj_create)
+        ,std::logic_error, "Error!"
+        );
+#endif			
+		}
+	///
+	void initialize(RTOpC *op) const
+		{
+			op->op().vtbl = vtbl_;
+			op->op().vtbl->obj_data_vtbl->obj_create(NULL,NULL,&op->op().obj_data);
+		}
+	
+private:
+	
+	const RTOp_RTOp_vtbl_t *vtbl_;
+	
+	RTOpCPostMod(); // Not defined and not to be called.
 
-} // end namspace RTOpPack
+};
+
+} // namespace RTOpPack
+
+#endif // RTOPPACK_RTOP_C_POST_MOD_HPP

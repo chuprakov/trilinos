@@ -87,12 +87,12 @@ template<class Scalar>
 void RTOpUnaryFuncPtr<Scalar>::apply_op(
 	const int   num_vecs,       const SubVectorT<Scalar>         sub_vecs[]
 	,const int  num_targ_vecs,  const MutableSubVectorT<Scalar>  targ_sub_vecs[]
-	,RTOp_ReductTarget reduct_obj
+	,ReductTarget *reduct_obj
 	) const
 {
 	TEST_FOR_EXCEPTION( num_vecs != 1 || sub_vecs == NULL, std::invalid_argument, "Error!" );
 	TEST_FOR_EXCEPTION( num_targ_vecs != 1 || targ_sub_vecs == NULL, std::invalid_argument, "Error!" );
-	TEST_FOR_EXCEPTION( reduct_obj != RTOp_REDUCT_OBJ_NULL, std::invalid_argument, "Error!" );
+	TEST_FOR_EXCEPTION( reduct_obj != NULL, std::invalid_argument, "Error!" );
 	TEST_FOR_EXCEPTION( sub_vecs[0].stride() != 1, std::invalid_argument, "Error, can't handle nonunit strides here!" );
 	TEST_FOR_EXCEPTION( targ_sub_vecs[0].stride() != 1, std::invalid_argument, "Error, can't handle nonunit strides here!" );
 	TEST_FOR_EXCEPTION( sub_vecs[0].subDim() != targ_sub_vecs[0].subDim(), std::invalid_argument, "Error!" );

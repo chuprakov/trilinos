@@ -32,7 +32,7 @@
 #ifndef RTOP_SERVER_DECL_HPP
 #define RTOP_SERVER_DECL_HPP
 
-#include "RTOpCpp.hpp"
+#include "RTOpPack_RTOpT.hpp"
 #include "AbstractFactory.hpp"
 
 namespace RTOpPack {

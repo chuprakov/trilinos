@@ -32,7 +32,7 @@
 #ifndef RTOPPACK_UNARY_FUNC_PTR_DECL_HPP
 #define RTOPPACK_UNARY_FUNC_PTR_DECL_HPP
 
-#include "RTOpCpp.hpp"
+#include "RTOpPack_RTOpT.hpp"
 
 namespace RTOpPack {
 
@@ -98,7 +98,7 @@ public:
 	void apply_op(
 		const int   num_vecs,       const SubVectorT<Scalar>         sub_vecs[]
 		,const int  num_targ_vecs,  const MutableSubVectorT<Scalar>  targ_sub_vecs[]
-		,RTOp_ReductTarget reduct_obj
+		,ReductTarget *reduct_obj
 		) const;
 
 	//@}

@@ -162,7 +162,7 @@ public:
 		,const MultiVector<Scalar>*     multi_vecs[]
 		,const size_t                   num_targ_multi_vecs
 		,MultiVector<Scalar>*           targ_multi_vecs[]
-		,RTOp_ReductTarget              reduct_objs[]
+		,RTOpPack::ReductTarget*        reduct_objs[]
 		,const Index                    primary_first_ele
 		,const Index                    primary_sub_dim
 		,const Index                    primary_global_offset

@@ -46,7 +46,7 @@ void TSFCore::apply_op_validate_input(
 	,const Vector<Scalar>*          vecs[]
 	,const size_t                   num_targ_vecs
 	,Vector<Scalar>*                targ_vecs[]
-	,RTOp_ReductTarget              reduct_obj
+	,RTOpPack::ReductTarget         *reduct_obj
 	,const Index                    first_ele_in
 	,const Index                    sub_dim_in
 	,const Index                    global_offset_in
@@ -97,7 +97,7 @@ void TSFCore::apply_op_serial(
 	,const Vector<Scalar>*         vecs[]
 	,const size_t                  num_targ_vecs
 	,Vector<Scalar>*               targ_vecs[]
-	,RTOp_ReductTarget             reduct_obj
+	,RTOpPack::ReductTarget        *reduct_obj
 	,const Index                   first_ele_in
 	,const Index                   sub_dim_in
 	,const Index                   global_offset_in

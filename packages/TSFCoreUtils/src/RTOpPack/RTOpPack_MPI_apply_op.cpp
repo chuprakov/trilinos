@@ -21,59 +21,46 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
-// Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
+// Questions? Contact Michael A. Heroux (maherou@sandia.gov)
 // 
 // ***********************************************************************
 // @HEADER
 
-#ifndef RTOP_CPP_TO_C_H
-#define RTOP_CPP_TO_C_H
+// //////////////////////////////////////////////
+// RTOpPack_MPI_apply_op.cpp
 
-#include "RTOpCpp.hpp"
+#include "RTOpPack_MPI_apply_op.hpp"
 
-namespace RTOpPack {
+extern "C" {
 
-///
-/** Small utility class that will get (or create) a <tt>RTOp_RTOp</tt> interface
- * from an <tt>RTOpPack::RTOp</tt> operator object.
- *
- * ToDo: Finish documentation!
- */
-class RTOpCppToC {
-public:
-	///
-	RTOpCppToC( const RTOp &op_cpp );
-	///
-	~RTOpCppToC();
-	///
-	const RTOpPack::RTOp& op_cpp() const;
-	///
-	const RTOp_RTOp& op_c() const;
-private:
-	const RTOp        &op_cpp_;
-	RTOp_RTOp         *op_c_;
-	RTOp_RTOp_vtbl_t  *op_vtbl_;
-	// Not defined and not to be called!
-	RTOpCppToC();
-	RTOpCppToC(const RTOpCppToC&);
-	RTOpCppToC& operator=(const RTOpCppToC&);
-}; // end class RTOpCppToC
-
-// //////////////////////////
-// Inline members
-
-inline
-const RTOpPack::RTOp& RTOpCppToC::op_cpp() const
+void RTOpPack_MPI_apply_op_reduction_op(
+  void              *invec
+  ,void             *inoutvec
+  ,int              *len
+  ,RTOp_Datatype    *datatype
+  )
 {
-	return op_cpp_;
+  RTOpPack::get_reduct_op()->reduce_reduct_objs(invec,inoutvec,len,datatype);
 }
 
-inline
-const RTOp_RTOp& RTOpCppToC::op_c() const
-{
-	return *op_c_;
+} // extern "C"
+
+//
+// This implementation of handling the reduction operator
+// will work just fine in a single threaded program.
+// For multithreaded program this has to be reworked!
+//
+
+namespace {
+Teuchos::RefCountPtr<const RTOpPack::MPIReductionOpBase> the_reduct_op = Teuchos::null;
 }
 
-} // end namspace RTOpPack
+void RTOpPack::set_reduct_op( const Teuchos::RefCountPtr<const MPIReductionOpBase>& reduct_op )
+{
+  the_reduct_op = reduct_op;
+}
 
-#endif // RTOP_CPP_TO_C_H
+Teuchos::RefCountPtr<const RTOpPack::MPIReductionOpBase> RTOpPack::get_reduct_op()
+{
+  return the_reduct_op;
+}

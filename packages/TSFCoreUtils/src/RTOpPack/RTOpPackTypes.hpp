@@ -38,6 +38,17 @@
 namespace RTOpPack {
 
 //
+// Basic types
+//
+
+///
+typedef RTOp_value_type value_type;
+///
+typedef RTOp_index_type index_type;
+///
+typedef RTOp_char_type  char_type;
+
+//
 // Exceptions
 //
 
@@ -141,7 +152,7 @@ public:
 	///
 	MutableSubVectorT() {}
 	///
-	MutableSubVectorT(RTOp_index_type globalOffset, RTOp_index_type subDim, Scalar *values, ptrdiff_t strid)
+	MutableSubVectorT(RTOp_index_type globalOffset, RTOp_index_type subDim, Scalar *values, ptrdiff_t stride)
 		:SubVectorT<Scalar>(globalOffset, subDim, values, stride)
 		{}
 	///
@@ -474,8 +485,6 @@ public:
 //
 
 ///
-template<class Scalar>  class ReductTargetT;
-///
 template<class Scalar>  class RTOpT;
 
 //
@@ -492,8 +501,6 @@ typedef SparseSubVectorT<RTOp_value_type>        SparseSubVector;
 typedef SubMultiVectorT<RTOp_value_type>         SubMultiVector;
 ///
 typedef MutableSubMultiVectorT<RTOp_value_type>  MutableSubMultiVector;
-///
-typedef ReductTargetT<RTOp_value_type>           ReductTarget;
 ///
 typedef RTOpT<RTOp_value_type>                   RTOp;
 

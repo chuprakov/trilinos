@@ -37,7 +37,7 @@
 #include "TSFCoreMPIMultiVectorBaseDecl.hpp"
 #include "TSFCoreMPIVectorSpaceBase.hpp"
 #include "TSFCoreExplicitMultiVectorView.hpp"
-#include "RTOpCppToMPI.hpp"
+#include "RTOpPack_MPI_apply_op.hpp"
 #include "RTOp_parallel_helpers.h"
 #include "WorkspacePack.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -347,7 +347,7 @@ void MPIMultiVectorBase<Scalar>::applyOp(
 	,const MultiVector<Scalar>*     multi_vecs[]
 	,const size_t                   num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
-	,RTOp_ReductTarget              reduct_objs[]
+	,RTOpPack::ReductTarget*        reduct_objs[]
 	,const Index                    pri_first_ele_in
 	,const Index                    pri_sub_dim_in
 	,const Index                    pri_global_offset_in

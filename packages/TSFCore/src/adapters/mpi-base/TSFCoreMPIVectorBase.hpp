@@ -36,7 +36,7 @@
 
 #include "TSFCoreMPIVectorBaseDecl.hpp"
 #include "RTOp_parallel_helpers.h"
-#include "RTOpCppToMPI.hpp"
+#include "RTOpPack_MPI_apply_op.hpp"
 #include "WorkspacePack.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -75,7 +75,7 @@ void MPIVectorBase<Scalar>::applyOp(
 	,const Vector<Scalar>*          vecs[]
 	,const size_t                   num_targ_vecs
 	,Vector<Scalar>*                targ_vecs[]
-	,RTOp_ReductTarget              reduct_obj
+	,RTOpPack::ReductTarget         *reduct_obj
 	,const Index                    first_ele_in
 	,const Index                    sub_dim_in
 	,const Index                    global_offset_in

@@ -40,7 +40,6 @@
 #include "TSFCoreAssertOp.hpp"
 #include "TSFCoreMultiVectorCols.hpp"
 #include "RTOp_TOp_assign_vectors.h"
-#include "RTOpCppC.hpp"
 #include "WorkspacePack.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -145,7 +144,7 @@ void MultiVector<Scalar>::applyOp(
 	,const MultiVector<Scalar>*     multi_vecs[]
 	,const size_t                   num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
-	,RTOp_ReductTarget              reduct_objs[]
+	,RTOpPack::ReductTarget*        reduct_objs[]
 	,const Index                    prim_first_ele_in
 	,const Index                    prim_sub_dim_in
 	,const Index                    prim_global_offset_in
@@ -216,7 +215,7 @@ void MultiVector<Scalar>::applyOp(
 	,const MultiVector<Scalar>*     multi_vecs[]
 	,const size_t                   num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
-	,RTOp_ReductTarget              reduct_obj
+	,RTOpPack::ReductTarget         *reduct_obj
 	,const Index                    prim_first_ele_in
 	,const Index                    prim_sub_dim_in
 	,const Index                    prim_global_offset_in
@@ -247,10 +246,14 @@ void MultiVector<Scalar>::applyOp(
 
 	// Create a temporary buffer for the reduction objects of the primary reduction
 	// so that we can call the companion version of this method.
-	wsp::Workspace<RTOp_ReductTarget>   reduct_objs(wss,reduct_obj!=RTOp_REDUCT_OBJ_NULL?sec_sub_dim:0);
-	if(reduct_obj!=RTOp_REDUCT_OBJ_NULL) {
+	wsp::Workspace<Teuchos::RefCountPtr<RTOpPack::ReductTarget> >
+    rcp_reduct_objs(wss,reduct_obj!=NULL?sec_sub_dim:0);
+	wsp::Workspace<RTOpPack::ReductTarget*>
+    reduct_objs(wss,reduct_obj!=NULL?sec_sub_dim:0);
+	if(reduct_obj) {
 		for(Index k = 0; k < sec_sub_dim; ++k) {
-			prim_op.reduct_obj_create_raw( &(reduct_objs[k]=RTOp_REDUCT_OBJ_NULL) );
+      rcp_reduct_objs[k] = prim_op.reduct_obj_create();
+      reduct_objs[k] = &*rcp_reduct_objs[k];
 		}
 	}
 	
@@ -259,17 +262,16 @@ void MultiVector<Scalar>::applyOp(
 		prim_op
 		,num_multi_vecs,       multi_vecs
 		,num_targ_multi_vecs,  targ_multi_vecs
-		,reduct_obj!=RTOp_REDUCT_OBJ_NULL ? &reduct_objs[0] : NULL
+		,reduct_obj ? &reduct_objs[0] : NULL
 		,prim_first_ele_in, prim_sub_dim_in, prim_global_offset_in
 		,sec_first_ele_in,  sec_sub_dim_in
 		);
 
 	// Reduce all the reduction objects using the secondary reduction operator
 	// into one reduction object and free the intermedate reduction objects.
-	if(reduct_obj!=RTOp_REDUCT_OBJ_NULL) {
+	if(reduct_obj) {
 		for(Index k = 0; k < sec_sub_dim; ++k) {
-			sec_op.reduce_reduct_objs( reduct_objs[k] ,reduct_obj );
-			prim_op.reduct_obj_free( &reduct_objs[k] );
+			sec_op.reduce_reduct_objs( *reduct_objs[k], reduct_obj );
 		}
 	}
 }

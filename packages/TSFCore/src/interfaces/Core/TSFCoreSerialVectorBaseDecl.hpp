@@ -72,7 +72,7 @@ public:
 		,const Vector<Scalar>*          vecs[]
 		,const size_t                   num_targ_vecs
 		,Vector<Scalar>*                targ_vecs[]
-		,RTOp_ReductTarget              reduct_obj
+		,RTOpPack::ReductTarget         *reduct_obj
 		,const Index                    first_ele
 		,const Index                    sub_dim
 		,const Index                    global_offset

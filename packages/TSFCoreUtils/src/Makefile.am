@@ -48,7 +48,6 @@ $(srcdir)/MoochoUtilities/ObjectDB.cpp
 RTOp_C_SOURCES_H=\
 $(srcdir)/RTOpPack/RTOp.h\
 $(srcdir)/RTOpPack/RTOpToMPI.h\
-$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.h\
 $(srcdir)/RTOpPack/RTOp_SparseSubVector.h\
 $(srcdir)/RTOpPack/RTOp_apply_op_mpi.h\
 $(srcdir)/RTOpPack/RTOp_apply_op_serial.h\
@@ -89,11 +88,6 @@ $(srcdir)/RTOpPack/RTOp_reduct_sum_value.c\
 $(srcdir)/RTOpPack/RTOp_reduct_sum_values.c
 
 RTOp_CXX_SOURCES_H=\
-$(srcdir)/RTOpPack/RTOpCppDecl.hpp\
-$(srcdir)/RTOpPack/RTOpCpp.hpp\
-$(srcdir)/RTOpPack/RTOpCppC.hpp\
-$(srcdir)/RTOpPack/RTOpCppToC.hpp\
-$(srcdir)/RTOpPack/RTOpCppToMPI.hpp\
 $(srcdir)/RTOpPack/RTOpFactoryTmpl.hpp\
 $(srcdir)/RTOpPack/RTOpPackTypes.hpp\
 $(srcdir)/RTOpPack/RTOp_get_reduct_op.hpp\
@@ -101,16 +95,19 @@ $(srcdir)/RTOpPack/print_sub_vector.hpp\
 $(srcdir)/RTOpPack/RTOpServerDecl.hpp\
 $(srcdir)/RTOpPack/RTOpServer.hpp\
 $(srcdir)/RTOpPack/RTOpUnaryFuncPtrDecl.hpp\
-$(srcdir)/RTOpPack/RTOpUnaryFuncPtr.hpp
+$(srcdir)/RTOpPack/RTOpUnaryFuncPtr.hpp\
+$(srcdir)/RTOpPack/RTOpPack_RTOpT.hpp\
+$(srcdir)/RTOpPack/RTOpPack_RTOpTHelpers.hpp\
+$(srcdir)/RTOpPack/RTOpPack_RTOpC.hpp\
+$(srcdir)/RTOpPack/RTOpPack_RTOpCPostMod.hpp\
+$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op_decl.hpp\
+$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.hpp
 
 RTOp_CXX_SOURCES=\
-$(srcdir)/RTOpPack/RTOpCppC.cpp\
-$(srcdir)/RTOpPack/RTOpCppToC.cpp\
-$(srcdir)/RTOpPack/RTOpCppToMPI.cpp\
-$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp\
 $(srcdir)/RTOpPack/print_sub_vector.cpp\
-$(srcdir)/RTOpPack/check_nan_inf.cpp
-
+$(srcdir)/RTOpPack/check_nan_inf.cpp\
+$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp\
+$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp
 
 RTOp_STDOPS_SOURCES=\
 $(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c\
@@ -197,7 +194,9 @@ RTOp_STDOPS_SOURCES_CPP=\
 $(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp
 
 RTOp_STDOPS_SOURCES_HPP=\
-$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.hpp
+$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_ROpSum.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_TOpAssignScalar.hpp
 
 AM_CPPFLAGS = -I$(top_builddir)/src \
   -I$(top_srcdir)/src/MoochoUtilities \

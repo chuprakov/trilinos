@@ -47,6 +47,7 @@ extern "C" {
 typedef int MPI_Datatype;
 #define MPI_CHAR           ((MPI_Datatype)1)
 #define MPI_INT            ((MPI_Datatype)6)
+#define MPI_FLOAT          ((MPI_Datatype)10)
 #define MPI_DOUBLE         ((MPI_Datatype)11)
 typedef int MPI_Comm;
 #define MPI_COMM_WORLD 91

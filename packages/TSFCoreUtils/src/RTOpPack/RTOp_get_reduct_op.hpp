@@ -68,7 +68,7 @@ static void external_reduct_op( void* in_targ_array, void* inout_targ_array     
 			,num_values,  num_values  ? (RTOp_value_type*)(inout_array + values_off) : NULL                           \
 			,num_indexes, num_indexes ? (RTOp_index_type*)(inout_array + values_off) : NULL                           \
 			,num_chars,   num_chars   ? (RTOp_char_type*) (inout_array + values_off) : NULL                           \
-            );                                                                                                        \
+      );                                                                                                        \
 	}                                                                                                                 \
 }                                                                                                                     \
 static int get_reduct_op(                                                                                             \
@@ -79,4 +79,4 @@ static int get_reduct_op(                                                       
 	return 0;                                                                                                         \
 }
 
-#endif // RTOP_GET_REDUCT_OP_H
+#endif

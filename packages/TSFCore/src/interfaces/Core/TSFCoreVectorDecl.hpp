@@ -33,7 +33,7 @@
 #define TSFCORE_VECTOR_DECL_HPP
 
 #include "TSFCoreTypes.hpp"
-#include "RTOpCpp.hpp"
+#include "RTOpPack_RTOpT.hpp"
 #include "RTOp_SparseSubVector.h"
 
 namespace TSFCore {
@@ -138,7 +138,7 @@ public:
 		,const Vector<Scalar>*           vecs[]
 		,const size_t                    num_targ_vecs
 		,Vector<Scalar>*                 targ_vecs[]
-		,RTOp_ReductTarget               reduct_obj
+		,RTOpPack::ReductTarget          *reduct_obj
 		,const Index                     first_ele
 		,const Index                     sub_dim
 		,const Index                     global_offset
@@ -451,7 +451,7 @@ void applyOp(
 	,const Vector<Scalar>*          vecs[]
 	,const size_t                   num_targ_vecs
 	,Vector<Scalar>*                targ_vecs[]
-	,RTOp_ReductTarget              reduct_obj
+	,RTOpPack::ReductTarget         *reduct_obj
 	,const Index                    first_ele     = 1
 	,const Index                    sub_dim       = 0
 	,const Index                    global_offset = 0

@@ -80,6 +80,9 @@ int MPI_Type_struct(int count , int *array_of_blocklengths, MPI_Aint *array_of_d
       case MPI_INT:
         len = sizeof(int);
         break;
+      case MPI_FLOAT:
+        len = sizeof(float);
+        break;
       case MPI_DOUBLE:
         len = sizeof(double);
         break;

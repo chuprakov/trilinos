@@ -26,4 +26,26 @@
 # ************************************************************************
 #@HEADER
 
-SUBDIRS = unary_rtop RTOpT
+EXEEXT = .exe
+
+noinst_PROGRAMS = test_RTOpT
+
+test_RTOpT_SOURCES = $(srcdir)/cxx_main.cpp
+
+test_RTOpT_DEPENDENCIES = \
+  $(top_builddir)/src/libTSFCoreUtils.a
+
+test_RTOpT_LDFLAGS = \
+  -L$(top_builddir)/../teuchos/src \
+  -L$(top_builddir)/src
+
+test_RTOpT_CXXFLAGS = \
+  -I$(top_builddir)/src \
+  -I$(top_srcdir)/src/RTOpPack \
+  -I$(top_srcdir)/src/RTOpStdOps \
+  -I$(top_srcdir)/src/MoochoUtilities \
+  -I$(top_srcdir)/src \
+  -I$(top_builddir)/../teuchos/src \
+  -I$(top_srcdir)/../teuchos/src
+
+test_RTOpT_LDADD = $(test_RTOpT_LDFLAGS) -L$(top_builddir)/src -lTSFCoreUtils -lteuchos $(FLIBS)

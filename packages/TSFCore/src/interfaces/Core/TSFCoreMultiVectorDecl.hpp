@@ -33,7 +33,7 @@
 #define TSFCORE_MULTI_VECTOR_DECL_HPP
 
 #include "TSFCoreLinearOp.hpp"
-#include "RTOpCpp.hpp"
+#include "RTOpPack_RTOpT.hpp"
 
 namespace TSFCore {
 
@@ -302,7 +302,7 @@ public:
 		,const MultiVector<Scalar>*     multi_vecs[]
 		,const size_t                   num_targ_multi_vecs
 		,MultiVector<Scalar>*           targ_multi_vecs[]
-		,RTOp_ReductTarget              reduct_objs[]
+		,RTOpPack::ReductTarget*        reduct_objs[]
 		,const Index                    primary_first_ele
 		,const Index                    primary_sub_dim
 		,const Index                    primary_global_offset
@@ -338,7 +338,7 @@ public:
 		,const MultiVector<Scalar>*     multi_vecs[]
 		,const size_t                   num_targ_multi_vecs
 		,MultiVector<Scalar>*           targ_multi_vecs[]
-		,RTOp_ReductTarget              reduct_obj
+		,RTOpPack::ReductTarget         *reduct_obj
 		,const Index                    primary_first_ele
 		,const Index                    primary_sub_dim
 		,const Index                    primary_global_offset
@@ -604,7 +604,7 @@ void applyOp(
 	,const MultiVector<Scalar>*     multi_vecs[]
 	,const size_t                   num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
-	,RTOp_ReductTarget              reduct_objs[]
+	,RTOpPack::ReductTarget*        reduct_objs[]
 	,const Index                    primary_first_ele      = 1
 	,const Index                    primary_sub_dim        = 0
 	,const Index                    primary_global_offset  = 0
@@ -643,7 +643,7 @@ void applyOp(
 	,const MultiVector<Scalar>*     multi_vecs[]
 	,const size_t                   num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
-	,RTOp_ReductTarget              reduct_obj
+	,RTOpPack::ReductTarget         *reduct_obj
 	,const Index                    primary_first_ele      = 1
 	,const Index                    primary_sub_dim        = 0
 	,const Index                    primary_global_offset  = 0

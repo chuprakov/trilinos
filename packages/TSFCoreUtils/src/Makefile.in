@@ -111,9 +111,8 @@ am__objects_2 = RTOp.$(OBJEXT) RTOpToMPI.$(OBJEXT) \
 	RTOp_reduct_min_value.$(OBJEXT) \
 	RTOp_reduct_sum_value.$(OBJEXT) \
 	RTOp_reduct_sum_values.$(OBJEXT)
-am__objects_3 = RTOpCppC.$(OBJEXT) RTOpCppToC.$(OBJEXT) \
-	RTOpCppToMPI.$(OBJEXT) RTOp_RTOp_C_Cpp.$(OBJEXT) \
-	print_sub_vector.$(OBJEXT) check_nan_inf.$(OBJEXT)
+am__objects_3 = print_sub_vector.$(OBJEXT) check_nan_inf.$(OBJEXT) \
+	RTOpPack_RTOpC.$(OBJEXT) RTOpPack_MPI_apply_op.$(OBJEXT)
 am__objects_4 = RTOp_ROp_combined_nu_comp_err.$(OBJEXT) \
 	RTOp_ROp_comp_err_with_mu.$(OBJEXT) \
 	RTOp_ROp_dot_prod.$(OBJEXT) RTOp_ROp_find_nan_inf.$(OBJEXT) \
@@ -151,8 +150,8 @@ DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ObjectDB.Po ./$(DEPDIR)/RTOp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/RTOpCppC.Po ./$(DEPDIR)/RTOpCppToC.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/RTOpCppToMPI.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOpPack_MPI_apply_op.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOpPack_RTOpC.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOpToMPI.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_ROp_combined_nu_comp_err.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_ROp_comp_err_with_mu.Po \
@@ -174,7 +173,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_ROp_num_nonzeros.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_ROp_sum.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_ROp_sum_abs.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/RTOp_RTOp_C_Cpp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_SparseSubVector.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_TOp_add_scalar.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_TOp_assign_scalar.Po \
@@ -364,7 +362,6 @@ $(srcdir)/MoochoUtilities/ObjectDB.cpp
 RTOp_C_SOURCES_H = \
 $(srcdir)/RTOpPack/RTOp.h\
 $(srcdir)/RTOpPack/RTOpToMPI.h\
-$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.h\
 $(srcdir)/RTOpPack/RTOp_SparseSubVector.h\
 $(srcdir)/RTOpPack/RTOp_apply_op_mpi.h\
 $(srcdir)/RTOpPack/RTOp_apply_op_serial.h\
@@ -405,11 +402,6 @@ $(srcdir)/RTOpPack/RTOp_reduct_sum_value.c\
 $(srcdir)/RTOpPack/RTOp_reduct_sum_values.c
 
 RTOp_CXX_SOURCES_H = \
-$(srcdir)/RTOpPack/RTOpCppDecl.hpp\
-$(srcdir)/RTOpPack/RTOpCpp.hpp\
-$(srcdir)/RTOpPack/RTOpCppC.hpp\
-$(srcdir)/RTOpPack/RTOpCppToC.hpp\
-$(srcdir)/RTOpPack/RTOpCppToMPI.hpp\
 $(srcdir)/RTOpPack/RTOpFactoryTmpl.hpp\
 $(srcdir)/RTOpPack/RTOpPackTypes.hpp\
 $(srcdir)/RTOpPack/RTOp_get_reduct_op.hpp\
@@ -417,15 +409,19 @@ $(srcdir)/RTOpPack/print_sub_vector.hpp\
 $(srcdir)/RTOpPack/RTOpServerDecl.hpp\
 $(srcdir)/RTOpPack/RTOpServer.hpp\
 $(srcdir)/RTOpPack/RTOpUnaryFuncPtrDecl.hpp\
-$(srcdir)/RTOpPack/RTOpUnaryFuncPtr.hpp
+$(srcdir)/RTOpPack/RTOpUnaryFuncPtr.hpp\
+$(srcdir)/RTOpPack/RTOpPack_RTOpT.hpp\
+$(srcdir)/RTOpPack/RTOpPack_RTOpTHelpers.hpp\
+$(srcdir)/RTOpPack/RTOpPack_RTOpC.hpp\
+$(srcdir)/RTOpPack/RTOpPack_RTOpCPostMod.hpp\
+$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op_decl.hpp\
+$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.hpp
 
 RTOp_CXX_SOURCES = \
-$(srcdir)/RTOpPack/RTOpCppC.cpp\
-$(srcdir)/RTOpPack/RTOpCppToC.cpp\
-$(srcdir)/RTOpPack/RTOpCppToMPI.cpp\
-$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp\
 $(srcdir)/RTOpPack/print_sub_vector.cpp\
-$(srcdir)/RTOpPack/check_nan_inf.cpp
+$(srcdir)/RTOpPack/check_nan_inf.cpp\
+$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp\
+$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp
 
 RTOp_STDOPS_SOURCES = \
 $(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c\
@@ -512,7 +508,9 @@ RTOp_STDOPS_SOURCES_CPP = \
 $(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp
 
 RTOp_STDOPS_SOURCES_HPP = \
-$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.hpp
+$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_ROpSum.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_TOpAssignScalar.hpp
 
 AM_CPPFLAGS = -I$(top_builddir)/src \
   -I$(top_srcdir)/src/MoochoUtilities \
@@ -672,9 +670,8 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ObjectDB.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOpCppC.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOpCppToC.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOpCppToMPI.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOpPack_MPI_apply_op.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOpPack_RTOpC.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOpToMPI.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_ROp_combined_nu_comp_err.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_ROp_comp_err_with_mu.Po@am__quote@
@@ -696,7 +693,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_ROp_num_nonzeros.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_ROp_sum.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_ROp_sum_abs.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_RTOp_C_Cpp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_SparseSubVector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_TOp_add_scalar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_TOp_assign_scalar.Po@am__quote@
@@ -1747,70 +1743,6 @@ ObjectDB.obj: $(srcdir)/MoochoUtilities/ObjectDB.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ObjectDB.obj `if test -f '$(srcdir)/MoochoUtilities/ObjectDB.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoUtilities/ObjectDB.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoUtilities/ObjectDB.cpp'; fi`
 
-RTOpCppC.o: $(srcdir)/RTOpPack/RTOpCppC.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOpCppC.o -MD -MP -MF "$(DEPDIR)/RTOpCppC.Tpo" -c -o RTOpCppC.o `test -f '$(srcdir)/RTOpPack/RTOpCppC.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpCppC.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOpCppC.Tpo" "$(DEPDIR)/RTOpCppC.Po"; else rm -f "$(DEPDIR)/RTOpCppC.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/RTOpCppC.cpp' object='RTOpCppC.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOpCppC.Po' tmpdepfile='$(DEPDIR)/RTOpCppC.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpCppC.o `test -f '$(srcdir)/RTOpPack/RTOpCppC.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpCppC.cpp
-
-RTOpCppC.obj: $(srcdir)/RTOpPack/RTOpCppC.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOpCppC.obj -MD -MP -MF "$(DEPDIR)/RTOpCppC.Tpo" -c -o RTOpCppC.obj `if test -f '$(srcdir)/RTOpPack/RTOpCppC.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/RTOpCppC.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/RTOpCppC.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOpCppC.Tpo" "$(DEPDIR)/RTOpCppC.Po"; else rm -f "$(DEPDIR)/RTOpCppC.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/RTOpCppC.cpp' object='RTOpCppC.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOpCppC.Po' tmpdepfile='$(DEPDIR)/RTOpCppC.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpCppC.obj `if test -f '$(srcdir)/RTOpPack/RTOpCppC.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/RTOpCppC.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/RTOpCppC.cpp'; fi`
-
-RTOpCppToC.o: $(srcdir)/RTOpPack/RTOpCppToC.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOpCppToC.o -MD -MP -MF "$(DEPDIR)/RTOpCppToC.Tpo" -c -o RTOpCppToC.o `test -f '$(srcdir)/RTOpPack/RTOpCppToC.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpCppToC.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOpCppToC.Tpo" "$(DEPDIR)/RTOpCppToC.Po"; else rm -f "$(DEPDIR)/RTOpCppToC.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/RTOpCppToC.cpp' object='RTOpCppToC.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOpCppToC.Po' tmpdepfile='$(DEPDIR)/RTOpCppToC.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpCppToC.o `test -f '$(srcdir)/RTOpPack/RTOpCppToC.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpCppToC.cpp
-
-RTOpCppToC.obj: $(srcdir)/RTOpPack/RTOpCppToC.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOpCppToC.obj -MD -MP -MF "$(DEPDIR)/RTOpCppToC.Tpo" -c -o RTOpCppToC.obj `if test -f '$(srcdir)/RTOpPack/RTOpCppToC.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/RTOpCppToC.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/RTOpCppToC.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOpCppToC.Tpo" "$(DEPDIR)/RTOpCppToC.Po"; else rm -f "$(DEPDIR)/RTOpCppToC.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/RTOpCppToC.cpp' object='RTOpCppToC.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOpCppToC.Po' tmpdepfile='$(DEPDIR)/RTOpCppToC.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpCppToC.obj `if test -f '$(srcdir)/RTOpPack/RTOpCppToC.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/RTOpCppToC.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/RTOpCppToC.cpp'; fi`
-
-RTOpCppToMPI.o: $(srcdir)/RTOpPack/RTOpCppToMPI.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOpCppToMPI.o -MD -MP -MF "$(DEPDIR)/RTOpCppToMPI.Tpo" -c -o RTOpCppToMPI.o `test -f '$(srcdir)/RTOpPack/RTOpCppToMPI.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpCppToMPI.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOpCppToMPI.Tpo" "$(DEPDIR)/RTOpCppToMPI.Po"; else rm -f "$(DEPDIR)/RTOpCppToMPI.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/RTOpCppToMPI.cpp' object='RTOpCppToMPI.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOpCppToMPI.Po' tmpdepfile='$(DEPDIR)/RTOpCppToMPI.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpCppToMPI.o `test -f '$(srcdir)/RTOpPack/RTOpCppToMPI.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpCppToMPI.cpp
-
-RTOpCppToMPI.obj: $(srcdir)/RTOpPack/RTOpCppToMPI.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOpCppToMPI.obj -MD -MP -MF "$(DEPDIR)/RTOpCppToMPI.Tpo" -c -o RTOpCppToMPI.obj `if test -f '$(srcdir)/RTOpPack/RTOpCppToMPI.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/RTOpCppToMPI.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/RTOpCppToMPI.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOpCppToMPI.Tpo" "$(DEPDIR)/RTOpCppToMPI.Po"; else rm -f "$(DEPDIR)/RTOpCppToMPI.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/RTOpCppToMPI.cpp' object='RTOpCppToMPI.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOpCppToMPI.Po' tmpdepfile='$(DEPDIR)/RTOpCppToMPI.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpCppToMPI.obj `if test -f '$(srcdir)/RTOpPack/RTOpCppToMPI.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/RTOpCppToMPI.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/RTOpCppToMPI.cpp'; fi`
-
-RTOp_RTOp_C_Cpp.o: $(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOp_RTOp_C_Cpp.o -MD -MP -MF "$(DEPDIR)/RTOp_RTOp_C_Cpp.Tpo" -c -o RTOp_RTOp_C_Cpp.o `test -f '$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOp_RTOp_C_Cpp.Tpo" "$(DEPDIR)/RTOp_RTOp_C_Cpp.Po"; else rm -f "$(DEPDIR)/RTOp_RTOp_C_Cpp.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp' object='RTOp_RTOp_C_Cpp.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOp_RTOp_C_Cpp.Po' tmpdepfile='$(DEPDIR)/RTOp_RTOp_C_Cpp.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOp_RTOp_C_Cpp.o `test -f '$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp
-
-RTOp_RTOp_C_Cpp.obj: $(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOp_RTOp_C_Cpp.obj -MD -MP -MF "$(DEPDIR)/RTOp_RTOp_C_Cpp.Tpo" -c -o RTOp_RTOp_C_Cpp.obj `if test -f '$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOp_RTOp_C_Cpp.Tpo" "$(DEPDIR)/RTOp_RTOp_C_Cpp.Po"; else rm -f "$(DEPDIR)/RTOp_RTOp_C_Cpp.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp' object='RTOp_RTOp_C_Cpp.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOp_RTOp_C_Cpp.Po' tmpdepfile='$(DEPDIR)/RTOp_RTOp_C_Cpp.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOp_RTOp_C_Cpp.obj `if test -f '$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp'; fi`
-
 print_sub_vector.o: $(srcdir)/RTOpPack/print_sub_vector.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT print_sub_vector.o -MD -MP -MF "$(DEPDIR)/print_sub_vector.Tpo" -c -o print_sub_vector.o `test -f '$(srcdir)/RTOpPack/print_sub_vector.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/print_sub_vector.cpp; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/print_sub_vector.Tpo" "$(DEPDIR)/print_sub_vector.Po"; else rm -f "$(DEPDIR)/print_sub_vector.Tpo"; exit 1; fi
@@ -1842,6 +1774,38 @@ check_nan_inf.obj: $(srcdir)/RTOpPack/check_nan_inf.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/check_nan_inf.Po' tmpdepfile='$(DEPDIR)/check_nan_inf.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o check_nan_inf.obj `if test -f '$(srcdir)/RTOpPack/check_nan_inf.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/check_nan_inf.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/check_nan_inf.cpp'; fi`
+
+RTOpPack_RTOpC.o: $(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOpPack_RTOpC.o -MD -MP -MF "$(DEPDIR)/RTOpPack_RTOpC.Tpo" -c -o RTOpPack_RTOpC.o `test -f '$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOpPack_RTOpC.Tpo" "$(DEPDIR)/RTOpPack_RTOpC.Po"; else rm -f "$(DEPDIR)/RTOpPack_RTOpC.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp' object='RTOpPack_RTOpC.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOpPack_RTOpC.Po' tmpdepfile='$(DEPDIR)/RTOpPack_RTOpC.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpPack_RTOpC.o `test -f '$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp
+
+RTOpPack_RTOpC.obj: $(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOpPack_RTOpC.obj -MD -MP -MF "$(DEPDIR)/RTOpPack_RTOpC.Tpo" -c -o RTOpPack_RTOpC.obj `if test -f '$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOpPack_RTOpC.Tpo" "$(DEPDIR)/RTOpPack_RTOpC.Po"; else rm -f "$(DEPDIR)/RTOpPack_RTOpC.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp' object='RTOpPack_RTOpC.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOpPack_RTOpC.Po' tmpdepfile='$(DEPDIR)/RTOpPack_RTOpC.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpPack_RTOpC.obj `if test -f '$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/RTOpPack_RTOpC.cpp'; fi`
+
+RTOpPack_MPI_apply_op.o: $(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOpPack_MPI_apply_op.o -MD -MP -MF "$(DEPDIR)/RTOpPack_MPI_apply_op.Tpo" -c -o RTOpPack_MPI_apply_op.o `test -f '$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOpPack_MPI_apply_op.Tpo" "$(DEPDIR)/RTOpPack_MPI_apply_op.Po"; else rm -f "$(DEPDIR)/RTOpPack_MPI_apply_op.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp' object='RTOpPack_MPI_apply_op.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOpPack_MPI_apply_op.Po' tmpdepfile='$(DEPDIR)/RTOpPack_MPI_apply_op.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpPack_MPI_apply_op.o `test -f '$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp
+
+RTOpPack_MPI_apply_op.obj: $(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT RTOpPack_MPI_apply_op.obj -MD -MP -MF "$(DEPDIR)/RTOpPack_MPI_apply_op.Tpo" -c -o RTOpPack_MPI_apply_op.obj `if test -f '$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/RTOpPack_MPI_apply_op.Tpo" "$(DEPDIR)/RTOpPack_MPI_apply_op.Po"; else rm -f "$(DEPDIR)/RTOpPack_MPI_apply_op.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp' object='RTOpPack_MPI_apply_op.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/RTOpPack_MPI_apply_op.Po' tmpdepfile='$(DEPDIR)/RTOpPack_MPI_apply_op.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpPack_MPI_apply_op.obj `if test -f '$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp'; then $(CYGPATH_W) '$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpPack/RTOpPack_MPI_apply_op.cpp'; fi`
 
 initRTOpStdOpsLibCpp.o: $(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT initRTOpStdOpsLibCpp.o -MD -MP -MF "$(DEPDIR)/initRTOpStdOpsLibCpp.Tpo" -c -o initRTOpStdOpsLibCpp.o `test -f '$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp; \

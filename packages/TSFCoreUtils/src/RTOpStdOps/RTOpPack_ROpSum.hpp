@@ -26,43 +26,47 @@
 // ***********************************************************************
 // @HEADER
 
-// /////////////////////////////////////////////////////////////////////////
-// RTOpCPostMod.hpp
+// ///////////////////////////////
+// RTOpPack_ROpSum.hpp
 
-#ifndef RTOP_C_POST_MOD_HPP
-#define RTOP_C_POST_MOD_HPP
+#ifndef RTOPPACK_ROP_SUM_HPP
+#define RTOPPACK_ROP_SUM_HPP
 
-#include "RTOpCppC.hpp"
+#include "RTOpPack_RTOpTHelpers.hpp"
 
 namespace RTOpPack {
 
-class RTOpCPostMod {
+///
+/** Simple reduction operator that sums the elements of an input vector.
+ */
+template<class Scalar>
+class ROpSum : public ROpScalarReductionBase<Scalar> {
 public:
-
-	///
-	RTOpCPostMod( const RTOp_RTOp_vtbl_t *vtbl ) : vtbl_(vtbl)
-		{
-#ifdef _DEBUG
-			TEST_FOR_EXCEPTION( !(vtbl && vtbl->obj_data_vtbl && vtbl->obj_data_vtbl->obj_create)
-							 , std::logic_error
-							 , "Error!"	);
-#endif			
-		}
-	///
-	void initialize(RTOpC *op) const
-		{
-			op->op().vtbl = vtbl_;
-			op->op().vtbl->obj_data_vtbl->obj_create(NULL,NULL,&op->op().obj_data);
-		}
-	
-private:
-	
-	const RTOp_RTOp_vtbl_t *vtbl_;
-	
-	RTOpCPostMod(); // Not defined and not to be called.
-
-};
+  ///
+  Scalar operator()(const ReductTarget& reduct_obj ) const { return getRawVal(reduct_obj); }
+  /** @name Overridden from RTOpT */
+  //@{
+  ///
+  const char* op_name() const { return "TOpAssignScalar"; }
+  ///
+	void apply_op(
+		const int   num_vecs,       const SubVectorT<Scalar>         sub_vecs[]
+		,const int  num_targ_vecs,  const MutableSubVectorT<Scalar>  targ_sub_vecs[]
+		,ReductTarget *_reduct_obj
+		) const
+    {
+      using DynamicCastHelperPack::dyn_cast;
+      ReductTargetScalar<Scalar> &reduct_obj = dyn_cast<ReductTargetScalar<Scalar> >(*_reduct_obj); 
+      RTOP_APPLY_OP_1_0(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
+      Scalar sum(0.0);
+      for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s ) {
+        sum += *v0_val;
+      }
+      reduct_obj.set( reduct_obj.get() + sum );
+    }
+  //@}
+}; // class ROpSum
 
 } // namespace RTOpPack
 
-#endif // RTOP_C_POST_MOD_HPP
+#endif // RTOPPACK_ROP_SUM_HPP

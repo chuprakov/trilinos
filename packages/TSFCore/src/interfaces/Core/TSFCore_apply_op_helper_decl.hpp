@@ -33,7 +33,7 @@
 #define TSFCORE_APPLY_OP_HELPER_DECL_HPP
 
 #include "TSFCoreTypes.hpp"
-#include "RTOpCpp.hpp"
+#include "RTOpPack_RTOpT.hpp"
 
 namespace TSFCore {
 
@@ -52,7 +52,7 @@ void apply_op_validate_input(
 	,const Vector<Scalar>*          vecs[]
 	,const size_t                   num_targ_vecs
 	,Vector<Scalar>*                targ_vecs[]
-	,RTOp_ReductTarget              reduct_obj
+	,RTOpPack::ReductTarget         *reduct_obj
 	,const Index                    first_ele
 	,const Index                    sub_dim
 	,const Index                    global_offset
@@ -74,7 +74,7 @@ void apply_op_serial(
 	,const Vector<Scalar>*         vecs[]
 	,const size_t                  num_targ_vecs
 	,Vector<Scalar>*               targ_vecs[]
-	,RTOp_ReductTarget             reduct_obj
+	,RTOpPack::ReductTarget        *reduct_obj
 	,const Index                   first_ele
 	,const Index                   sub_dim
 	,const Index                   global_offset

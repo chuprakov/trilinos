@@ -322,6 +322,7 @@ AC_CONFIG_FILES([
 		src/Makefile
 		test/Makefile
 		test/unary_rtop/Makefile
+		test/RTOpT/Makefile
 		])
 
 AC_OUTPUT()
