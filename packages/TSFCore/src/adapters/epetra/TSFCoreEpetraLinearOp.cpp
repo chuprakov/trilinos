@@ -71,6 +71,18 @@ EpetraLinearOp::epetraDomain() const
   return domain_;
 }
 
+const Teuchos::RefCountPtr<Epetra_Operator>&
+EpetraLinearOp::epetra_op() const 
+{
+  return op_;
+}
+
+Teuchos::RefCountPtr<Epetra_Operator>
+EpetraLinearOp::epetra_op() 
+{
+  return op_;
+}
+
 // Overridden from OpBase
 
 Teuchos::RefCountPtr<const VectorSpace<EpetraLinearOp::Scalar> >

@@ -100,7 +100,15 @@ public:
 	 * <li> [<tt>this->domain().get() == NULL</tt>] <tt>return.get() == NULL</tt>
 	 */
 	Teuchos::RefCountPtr<const EpetraVectorSpace> epetraDomain() const;
-	
+
+  ///
+  /** Return a smart pointer to the Epetra_Operator object. Added by KL
+   * to support operator loading in TSFExtended */
+	Teuchos::RefCountPtr<Epetra_Operator> epetra_op();
+
+  /** Return a smart pointer to the Epetra_Operator object. Added by KL
+   * to support operator loading in TSFExtended */
+	const Teuchos::RefCountPtr<Epetra_Operator>& epetra_op() const ;
 	//@}
 	
 	/** @name Overridden from OpBase */
