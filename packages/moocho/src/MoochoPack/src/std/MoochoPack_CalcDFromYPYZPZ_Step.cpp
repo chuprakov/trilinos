@@ -46,10 +46,10 @@ bool ReducedSpaceSQPPack::CalcDFromYPYZPZ_Step::do_step(Algorithm& _algo
 
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 		const value_type very_small = std::numeric_limits<value_type>::min();
-		out << "\n(Ypy_k'*Zpz_k)/((eps+||Ypy_k||2)*(eps+||Zpz_k||2)) = "
+		out << "\n(Ypy_k'*Zpz_k)/(||Ypy_k||2 * ||Zpz_k||2 + eps) = "
 			<< dot( s.Ypy().get_k(0)(), s.Zpz().get_k(0)() )
-				/ ((very_small + s.Ypy().get_k(0).norm_2())
-					* (very_small + s.Zpz().get_k(0).norm_2() ) );
+				/ ( s.Ypy().get_k(0).norm_2() * s.Zpz().get_k(0).norm_2()
+					+ very_small );
 		out	<< "\n||d||inf = " << d.norm_inf() << std::endl;
 		ConstrainedOptimizationPack::print_vector_change_stats(
 			s.x().get_k(0)(), "x", s.d().get_k(0)(), "d", out );

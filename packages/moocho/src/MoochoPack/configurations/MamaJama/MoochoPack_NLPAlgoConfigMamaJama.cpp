@@ -52,6 +52,7 @@
 #include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateAdjoint.h"
 #include "ConstrainedOptimizationPack/include/DirectLineSearchArmQuad_StrategySetOptions.h"
 
+#include "SparseSolverPack/test/BasisSystemTesterSetOptions.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurRangeSpace.h"
@@ -295,12 +296,18 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			break;
 		case NULL_SPACE_MATRIX_AUTO:
 		{
-			if( ! algo->nlp().has_bounds() || cov_.qp_solver_type_ == QPSCPD )
+			if( !algo->nlp().has_bounds() || cov_.qp_solver_type_ == QPSCHUR )
 			{
-				if(trase_out)
-					*trase_out << "\nnull_sapce_matrix == AUTO:\n"
-									"The NLP has bounds or qp_solver == QPSCPD: "
-									"setting null_space_matrix = IMPLICIT ...\n";
+				if(trase_out) {
+					*trase_out << "\nnull_sapce_matrix == AUTO:\n";
+					if(!algo->nlp().has_bounds())
+						*trase_out << "The NLP does not have bounds: ";
+					else if( cov_.qp_solver_type_ == QPSCHUR )
+						*trase_out << "qp_solver == QPSCHUR: ";
+					else
+						assert(0);
+					*trase_out << "setting null_space_matrix = IMPLICIT ...\n";
+				}
 				cov_.null_space_matrix_type_used_ = NULL_SPACE_MATRIX_IMPLICIT;
 			}
 			else {
@@ -578,7 +585,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			basis_sys_ptr_ = new COOBasisSystem(sparse_solver_creator, true);
 		}
 
-		DecompositionSystemVarReductImpNode* decomp_sys_aggr = 0;
+		DecompositionSystemCoordinate* decomp_sys_aggr = 0;
 		
 		if ( cov_.null_space_matrix_type_used_ == NULL_SPACE_MATRIX_EXPLICIT ) {
 			decomp_sys_aggr = new DecompositionSystemCoordinateDirect(
@@ -591,6 +598,15 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		else {
 			assert(0);
 		}
+
+		assert(decomp_sys_aggr);
+		typedef SparseSolverPack::TestingPack::BasisSystemTester basis_sys_tester_t;
+		basis_sys_tester_t
+			*basis_sys_tester = new basis_sys_tester_t;
+		SparseSolverPack::TestingPack::BasisSystemTesterSetOptions
+			basis_sys_options_setter( basis_sys_tester );
+		basis_sys_options_setter.set_options( *options_ );
+		decomp_sys_aggr->set_basis_sys_tester( basis_sys_tester ); // gives control to delete!
 
 		// Note, the switch based code for the above if statements would not
 		// compile under MipsPro 7.3.1.1m.

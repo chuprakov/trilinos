@@ -241,6 +241,21 @@ void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 		o() << " " << right << setw(w_i4_) << s.nu().get_k(0).nz();
 	else
 		o()	<< " " << right << setw(w_i4_) << "-";
+	// ||Ypy||2
+	if( s.Ypy().updated_k(0) )
+		o() << " "<< setprecision(p2_)  << right << setw(w_p2_) << s.Ypy().get_k(0).norm_2();
+	else
+		o() << " " << right << setw(w_p2_) << "-";
+	// ||Zpz||2
+	if( s.Zpz().updated_k(0) )
+		o() << " " << setprecision(p2_) << right << setw(w_p2_) << s.Zpz().get_k(0).norm_2();
+	else
+		o() << " " << right << setw(w_p2_) << "-";
+	// ||d||inf
+	if( s.d().updated_k(0) )
+		o() << " " << setprecision(p2_) << right << setw(w_p2_) << s.d().get_k(0).norm_inf();
+	else
+		o() << " " << right << setw(w_p2_) << "-";
 
 	o() << endl;
 

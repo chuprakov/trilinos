@@ -96,8 +96,9 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 	assert_print_nan_inf( feas_err,"||c_k||inf",true,&out);
 
 	// kkt_err
-	s.opt_kkt_err().set_k(0) = opt_err;
-	s.feas_kkt_err().set_k(0) = feas_err;
+	const value_type
+		opt_kkt_err_k  = s.opt_kkt_err().set_k(0) = opt_err/scale_kkt_factor,
+		feas_kkt_err_k = s.feas_kkt_err().set_k(0) = feas_err/scale_kkt_factor;
 
 	// step_err
 	value_type
@@ -118,8 +119,8 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\nscale_kkt_factor = " << scale_kkt_factor
 			<< "\nopt_scale_factor = " << opt_scale_factor
-			<< "\nopt_err_k        = " << opt_err
-			<< "\nfeas_err_k       = " << feas_err
+			<< "\nopt_kkt_err_k    = " << opt_kkt_err_k
+			<< "\nfeas_kkt_err_k   = " << feas_kkt_err_k
 			<< "\nstep_err         = " << step_err << std::endl;
 	}
 
@@ -128,11 +129,7 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 		feas_tol	= algo.algo_cntr().feas_tol(),
 		step_tol	= algo.algo_cntr().step_tol();
 
-	if(    opt_err/scale_kkt_factor < opt_tol
-		&& feas_err/scale_kkt_factor < feas_tol
-		&& step_err < step_tol )
-	{
-
+	if( opt_kkt_err_k < opt_tol && feas_kkt_err_k < feas_tol && step_err < step_tol ) {
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) ) {
 			out	<< "\nFound the solution!!!!!! (k = " << algo.state().k() << ")"
 				<< "\nopt_err/scale_kkt_factor   = " << opt_err/scale_kkt_factor	<< " < opt_tol = "	<< opt_tol
@@ -172,19 +169,24 @@ void CheckConvergenceStd_AddedStep::print_step( const Algorithm& algo
 		<< L << "    opt_scale_factor = 1.0 + norm_inf(Gf_k)\n"
 		<< L << "else\n"
 		<< L << "    opt_scale_factor = 1.0\n"
-		<< L << "end\n"
-		<< L << "opt_err = (norm_inf(rGL_k) or norm_inf(GL_k))\n"
-		<< L << "    / opt_scale_factor\n"
+		<< L << "end\n";
+	if( opt_error_check() == OPT_ERROR_REDUCED_GRADIENT_LAGR )
+		out
+			<< L << "opt_err = norm_inf(rGL_k)/opt_scale_factor\n";
+	else
+		out
+			<< L << "opt_err = norm_inf(GL_k)/opt_scale_factor\n";
+	out
 		<< L << "feas_err = norm_inf_c_k\n"
-		<< L << "opt_kkt_err_k = opt_err\n"
-		<< L << "feas_kkt_err_k = feas_err\n"
+		<< L << "opt_kkt_err_k = opt_err/scale_kkt_factor\n"
+		<< L << "feas_kkt_err_k = feas_err/scale_kkt_factor\n"
 		<< L << "if d_k is updated then\n"
 		<< L << "    step_err = max( |d_k(i)|/(1+|x_k(i)|), i=1..n )\n"
 		<< L << "else\n"
 		<< L << "    step_err = 0\n"
 		<< L << "end\n"
-		<< L << "if opt_err/scale_kkt_factor < opt_tol\n"
-		<< L << "       and feas_err/scale_kkt_factor < feas_tol\n"
+		<< L << "if opt_kkt_err_k < opt_tol\n"
+		<< L << "       and feas_kkt_err_k < feas_tol\n"
 		<< L << "       and step_err < step_tol then\n"
 		<< L << "   report optimal x_k, lambda_k and nu_k to the nlp\n"
 		<< L << "   terminate, the solution has beed found!\n"
