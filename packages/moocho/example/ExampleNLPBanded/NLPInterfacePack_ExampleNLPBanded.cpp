@@ -43,6 +43,7 @@ ExampleNLPBanded::ExampleNLPBanded(
 	,bool         sym_basis
 	,value_type   f_offset
 	,value_type   co
+	,bool         ignore_constraints
 	)
 	:is_initialized_(false)
 	,nlp_selects_basis_(nlp_selects_basis)
@@ -55,6 +56,7 @@ ExampleNLPBanded::ExampleNLPBanded(
 	,bw_(bw)
 	,mU_(mU)
 	,mI_(mI)
+	,ignore_constraints_(ignore_constraints)
 	,diag_scal_(diag_scal)
 	,diag_vary_(diag_vary)
 	,fu_( sym_basis ? 3 : 6 )
@@ -162,11 +164,13 @@ size_type ExampleNLPBanded::imp_n_orig() const
 
 size_type ExampleNLPBanded::imp_m_orig() const
 {
+	if(ignore_constraints_) return 0;
 	return nD_ + mU_;
 }
 
 size_type ExampleNLPBanded::imp_mI_orig() const
 {
+	if(ignore_constraints_) return 0;
 	return mI_;
 }
 

@@ -60,6 +60,7 @@ int main( int argc, char* argv[] )
 		bool     sym_basis = false;
 		double   f_offset  = 0.0;
 		double   co        = 0.0;
+		bool     ignore_constraints = false;
 		
 		CommandLineProcessor  command_line_processor;
 
@@ -85,6 +86,9 @@ int main( int argc, char* argv[] )
 			,"Determine if the basis is symmetric" );
 		command_line_processor.set_option( "f_offset", &f_offset, "Constant offset for objective function" );
 		command_line_processor.set_option( "co", &co, "Constant term in general equalities" );
+		command_line_processor.set_option(
+			"ignore-constraints", "no-ignore-constraints", &ignore_constraints
+			,"Determine if constraints are ignored or not" );
 	
 		CommandLineProcessor::EParseCommandLineReturn
 			parse_return = command_line_processor.parse_command_line(argc,argv,&std::cerr);
@@ -97,7 +101,10 @@ int main( int argc, char* argv[] )
 		//
 
 		ExampleNLPBanded
-			nlp(nD,nI,bw,mU,mI,xo,xDl,xDu,xIl,xIu,hl,hu,nlp_selects_basis,diag_scal,diag_vary,sym_basis,f_offset,co);
+			nlp(nD,nI,bw,mU,mI,xo,xDl,xDu,xIl,xIu,hl,hu
+				,nlp_selects_basis,diag_scal,diag_vary
+				,sym_basis,f_offset,co,ignore_constraints
+				);
 
 		rSQPppSolver  solver;
 

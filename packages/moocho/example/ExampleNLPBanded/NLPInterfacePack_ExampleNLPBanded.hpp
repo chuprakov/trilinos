@@ -160,6 +160,7 @@ public:
 		,bool         sym_basis         = false
 		,value_type   f_offset          = 0.0
 		,value_type   co                = 0.0
+		,bool         ignore_constraints = false
 		);
 
 	//@}
@@ -308,6 +309,8 @@ private:
 	size_type    bw_;
 	size_type    mU_;
 	size_type    mI_;
+
+	bool         ignore_constraints_;
 
 	size_type    Gc_orig_nz_;
 	size_type    Gh_orig_nz_;
