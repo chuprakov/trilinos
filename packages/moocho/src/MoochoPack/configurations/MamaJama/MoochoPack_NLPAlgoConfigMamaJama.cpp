@@ -74,11 +74,11 @@
 
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
-//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchur.h"
-//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurSetOptions.h"
-//#include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianFull.h"
+#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchur.h"
+#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurSetOptions.h"
+#include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianFull.h"
 //#include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianSuperBasic.h"
-//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPKWIK.h"
+#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPKWIK.h"
 #ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
 //#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPOPT.h"
 #endif
@@ -90,8 +90,8 @@
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachCoordinate_Step.h"
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedGradientStd_Step.h"
-//#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_Step.h"
-//#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_StepSetOptions.h"
+#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_Step.h"
+#include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateStd_Step.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSFull_Strategy.h"
 //#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
@@ -346,10 +346,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		mI, std::logic_error
 		,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
 		"can not currently solve an NLP with general inequalities!" );
-	THROW_EXCEPTION(
-		nb, std::logic_error
-		,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
-		"can not currently solve an NLP with bounds on the variables!" );
 	
 	// //////////////////////////////////////////////////////
 	// C.1.  Sort out the options
@@ -466,6 +462,15 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		cov_.line_search_method_ = LINE_SEARCH_DIRECT;
 	}
 	
+	// Adjust the Quasi-Newton if QPKWIK is used!
+	if( cov_.qp_solver_type_ == QP_QPKWIK && ( nb || mI ) ) {
+		if(trase_out)
+			*trase_out
+				<< "\nqp_solver == QPKWIK and nlp.num_bounded_x() == " << nb << " and nlp.mI() == " << mI << ":\n"
+				<< "Setting quasi_newton == BFGS...\n";
+		cov_.quasi_newton_ = QN_BFGS;
+	}
+
 	// Create a default VarReductOrthog_Strategy object for serial applications!
 	if( cov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_ORTHOGONAL && var_reduct_orthog_strategy_.get() == NULL ) {
 		if(trase_out)
@@ -837,7 +842,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				abstract_factory_rHL = mmp::null;
 			// Only maintain the orginal matrix if we have inequality constraints and therefore will be
 			// needing a QP solver (which may be QPSchur which needs an accurate original matrix for
-			// iterative refinment).
+			// iterative refinement).
 			const bool
 				maintain_original = ( nb || mI );
 			// Maintain the factor if a QP solver is needed, QPSchur is being used, or we are checking
@@ -933,6 +938,21 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		  }
 
 		if( nb || mI ) {
+			// Add bounds on d
+			state->set_iter_quant(
+				dl_name
+				,mmp::rcp(
+					new IterQuantityAccessContiguous<VectorWithOpMutable>(
+						2, dl_name
+						, nlp.space_x() ) )
+				);
+			state->set_iter_quant(
+				du_name
+				,mmp::rcp(
+					new IterQuantityAccessContiguous<VectorWithOpMutable>(
+						2, du_name
+						, nlp.space_x() ) )
+				);
 			// Add active-set iteration quantity
 			state->set_iter_quant(
 				act_set_stats_name
@@ -1278,6 +1298,36 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				));
 		}
 
+		// InitFinDiffReducedHessian_Step
+		algo_step_ptr_t  init_red_hess_step = mmp::null;
+		if( cov_.hessian_initialization_ != INIT_HESS_IDENTITY ) {
+				Algorithm::poss_type poss;
+			assert(poss = algo->get_step_poss( ReducedHessian_name ) );
+			InitFinDiffReducedHessian_Step::EInitializationMethod
+				init_hess;
+			switch( cov_.hessian_initialization_ ) {
+				case INIT_HESS_FIN_DIFF_SCALE_IDENTITY:
+					init_hess = InitFinDiffReducedHessian_Step::SCALE_IDENTITY;
+					break;
+				case INIT_HESS_FIN_DIFF_SCALE_DIAGONAL:
+					init_hess = InitFinDiffReducedHessian_Step::SCALE_DIAGONAL;
+					break;
+				case INIT_HESS_FIN_DIFF_SCALE_DIAGONAL_ABS:
+					init_hess = InitFinDiffReducedHessian_Step::SCALE_DIAGONAL_ABS;
+					break;
+				default:
+					assert(0);	// only local programming error?
+			}
+			mmp::ref_count_ptr<InitFinDiffReducedHessian_Step>
+				_init_red_hess_step = mmp::rcp(new InitFinDiffReducedHessian_Step(init_hess));
+			if(options_.get()) {
+				InitFinDiffReducedHessian_StepSetOptions
+					opt_setter( _init_red_hess_step.get() );
+				opt_setter.set_options( *options_ );
+			}
+			init_red_hess_step = _init_red_hess_step;
+		}
+
 		// NullSpace_Step
 		algo_step_ptr_t    set_d_bounds_step    = mmp::null;
 		algo_step_ptr_t    null_space_step_step = mmp::null;
@@ -1289,7 +1339,63 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			set_d_bounds_step = mmp::rcp(new SetDBoundsStd_AddedStep());
 			// QP Solver object
 			mmp::ref_count_ptr<QPSolverRelaxed>  qp_solver = mmp::null;
-				// ToDo: Create the QP solver!
+			switch( cov_.qp_solver_type_ ) {
+				case QP_QPSCHUR: {
+					using ConstrainedOptimizationPack::QPSolverRelaxedQPSchur;
+					using ConstrainedOptimizationPack::QPSolverRelaxedQPSchurSetOptions;
+					using ConstrainedOptimizationPack::QPSchurInitKKTSystemHessianFull;
+//					using ConstrainedOptimizationPack::QPSchurInitKKTSystemHessianSuperBasic;
+					mmp::ref_count_ptr<ConstrainedOptimizationPack::QPSolverRelaxedQPSchur::InitKKTSystem>
+						init_kkt_sys = mmp::null;
+					switch( cov_.quasi_newton_ ) {
+						case QN_BFGS:
+						case QN_LBFGS:
+							init_kkt_sys = mmp::rcp(new QPSchurInitKKTSystemHessianFull());
+							break;
+						case QN_PBFGS:
+						case QN_LPBFGS:
+							THROW_EXCEPTION(true,std::logic_error,"Error! PBFGS and LPBFGS are not updated yet!");
+/*
+							init_kkt_sys = new QPSchurInitKKTSystemHessianSuperBasic();
+*/
+							break;
+						default:
+							assert(0);
+					}
+					mmp::ref_count_ptr<QPSolverRelaxedQPSchur>
+						_qp_solver = mmp::rcp(new QPSolverRelaxedQPSchur(init_kkt_sys));
+					QPSolverRelaxedQPSchurSetOptions
+						qp_options_setter(_qp_solver.get());
+					qp_options_setter.set_options( *options_ );
+					qp_solver = _qp_solver; // give ownership to delete!
+					break;
+				}
+				case QP_QPKWIK: {
+					using ConstrainedOptimizationPack::QPSolverRelaxedQPKWIK;
+					mmp::ref_count_ptr<QPSolverRelaxedQPKWIK>
+						_qp_solver = mmp::rcp(new QPSolverRelaxedQPKWIK());
+					qp_solver = _qp_solver; // give ownership to delete!
+					break;
+				}
+				case QP_QPOPT: {
+					THROW_EXCEPTION(true,std::logic_error,"Error! QPKWIK interface is not updated yet!");
+/*
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
+					using ConstrainedOptimizationPack::QPSolverRelaxedQPOPT;
+					QPSolverRelaxedQPOPT
+						*_qp_solver = new QPSolverRelaxedQPOPT();
+					qp_solver = _qp_solver; // give ownership to delete!
+#else
+					throw std::logic_error(
+						"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : QPOPT is not supported,"
+						" must define CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT!" );
+#endif
+*/
+					break;
+				}
+				default:
+					assert(0);
+			}
 			// QP solver tester
 			mmp::ref_count_ptr<QPSolverRelaxedTester> 
 				qp_solver_tester = mmp::rcp(new QPSolverRelaxedTester());
@@ -1578,6 +1684,15 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 			// ReducedHessian
 			algo->insert_step( ++step_num, ReducedHessian_name, reduced_hessian_step );
+
+			// (.-1) Initialize reduced Hessian
+			if(init_red_hess_step.get()) {
+				algo->insert_assoc_step(
+					step_num, GeneralIterationPack::PRE_STEP, 1
+					,"InitFiniteDiffReducedHessian"
+					,init_red_hess_step
+					);
+			}
 
 			// (.-1) CheckSkipBFGSUpdate
 			algo->insert_assoc_step(
@@ -2083,8 +2198,14 @@ void rSQPAlgo_ConfigMamaJama::set_default_options(
 	if( cov->qp_solver_type_ == QP_AUTO && uov.qp_solver_type_ == QP_AUTO ) {
 		if(trase_out)
 			*trase_out
+				<< "\nqp_solver_type == AUTO: setting qp_solver_type = QPKWIK\n";
+		cov->qp_solver_type_ = QP_QPKWIK;
+/*
+		if(trase_out)
+			*trase_out
 				<< "\nqp_solver_type == AUTO: setting qp_solver_type = QPSCHUR\n";
 		cov->qp_solver_type_ = QP_QPSCHUR;
+*/
 	}
 	else if(cov->qp_solver_type_ == QP_AUTO) {
 		cov->qp_solver_type_ = uov.qp_solver_type_;

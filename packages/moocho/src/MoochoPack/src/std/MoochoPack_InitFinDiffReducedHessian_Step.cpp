@@ -18,53 +18,46 @@
 #include "ReducedSpaceSQPPack/include/std/InitFinDiffReducedHessian_Step.h"
 #include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "NLPInterfacePack/include/NLPObjGradient.h"
-#include "SparseLinAlgPack/include/MatrixSymInitDiagonal.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/max_near_feas_step.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "Misc/include/dynamic_cast_verbose.h"
+#include "AbstractLinAlgPack/include/MatrixSymInitDiagonal.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
+//#include "AbstractLinAlgPack/include/SpVectorClass.h"
+//#include "SparseLinAlgPack/include/max_near_feas_step.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
+#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "dynamic_cast_verbose.h"
 
-namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
-}
+namespace ReducedSpaceSQPPack {
 
-ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::InitFinDiffReducedHessian_Step(
-		  EInitializationMethod		initialization_method
-		, value_type				max_cond
-		, value_type				min_diag
-		, value_type				step_scale			)
-	: num_basis_(NO_BASIS_UPDATED_YET)
-		, initialization_method_(initialization_method)
-		, max_cond_(max_cond), min_diag_(min_diag), step_scale_(step_scale)
+InitFinDiffReducedHessian_Step::InitFinDiffReducedHessian_Step(
+	EInitializationMethod   initialization_method
+	,value_type             max_cond
+	,value_type             min_diag
+	,value_type             step_scale
+	)
+	:initialization_method_(initialization_method)
+	,max_cond_(max_cond)
+	,min_diag_(min_diag)
+	,step_scale_(step_scale)
 {}
 
-bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
+bool InitFinDiffReducedHessian_Step::do_step(
+	Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	,poss_type assoc_step_poss
+	)
 {
 	using DynamicCastHelperPack::dyn_cast;
-	using LinAlgPack::norm_inf;
-	using LinAlgPack::Vt_S;
-	using LinAlgPack::Vp_StV;
-	using LinAlgPack::norm_inf;
+	using LinAlgOpPack::Vt_S;
+	using LinAlgOpPack::Vp_StV;
 	using LinAlgOpPack::V_MtV;
-	using SparseLinAlgPack::max_near_feas_step;
-	using NLPInterfacePack::NLPObjGradient;
+	using AbstractLinAlgPack::max_near_feas_step;
 
-	rSQPAlgo	&algo	= rsqp_algo(_algo);
-	rSQPState	&s		= algo.rsqp_state();
-#ifdef _WINDOWS
-	NLPObjGradient
-		&nlp = dynamic_cast<NLPObjGradient&>(algo.nlp());
-#else
-	NLPObjGradient
-		&nlp = dyn_cast<NLPObjGradient>(algo.nlp());
-#endif
+	rSQPAlgo          &algo  = rsqp_algo(_algo);
+	rSQPState         &s     = algo.rsqp_state();
+	NLPObjGradient    &nlp   = dyn_cast<NLPObjGradient>(algo.nlp());
 	
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -75,15 +68,12 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
-	// Initialize basis counter
-	if( num_basis_ == NO_BASIS_UPDATED_YET ) num_basis_ = s.num_basis();
+	// Get the iteration quantity container objects
+	IterQuantityAccess<index_type>
+		&num_basis_iq = s.num_basis();
 
-	// See if a new basis has been selected
-	bool new_basis;
-	if( new_basis = ( num_basis_ != s.num_basis() ) )
-		num_basis_ = s.num_basis();
-
-	int k_last_offset = s.rHL().last_updated();
+	const bool new_basis     = num_basis_iq.updated_k(0);
+	const int  k_last_offset = s.rHL().last_updated();
 
 	// If the basis has changed or there is no previous matrix to use
 	// then reinitialize.
@@ -93,30 +83,29 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 		// Compute a finite difference along the null space of the
 		// constraints
 
+		IterQuantityAccess<VectorWithOpMutable>
+			&x_iq     = s.x(),
+			&rGf_iq   = s.rGf();
+		IterQuantityAccess<MatrixWithOp>
+			&Z_iq     = s.Z();
+		IterQuantityAccess<MatrixSymWithOp>
+			&rHL_iq   = s.rHL();
+
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 			out << "\nReinitializing the reduced Hessain using a finite difference\n";
 		}
 
-#ifdef _WINDOWS
-		MatrixSymInitDiagonal
-			&rHL_diag = dynamic_cast<MatrixSymInitDiagonal&>(s.rHL().set_k(0));
-#else
-		MatrixSymInitDiagonal
-			&rHL_diag = dyn_cast<MatrixSymInitDiagonal>(s.rHL().set_k(0));
-#endif
-
-		// problem size
-		size_type	n		= algo.nlp().n(),
-					r		= algo.nlp().r(),
-					nind	= n - r;
+		MatrixSymInitDiagonal &rHL_diag = dyn_cast<MatrixSymInitDiagonal>(rHL_iq.set_k(0));
+		const MatrixWithOp    &Z_k      = Z_iq.get_k(0);
+		const VectorWithOp    &x_k      = x_iq.get_k(0);
+		const VectorWithOp    &rGf_k    = rGf_iq.get_k(0);
 
 		// one vector
-		Vector e(nind);
-		e = 1.0;
+		VectorSpace::vec_mut_ptr_t  e = Z_k.space_rows().create_member(1.0);
 
 		// Ze
-		Vector Ze;
-		V_MtV( &Ze, s.Z().get_k(0), BLAS_Cpp::no_trans, e() );
+		VectorSpace::vec_mut_ptr_t Ze = x_k.space().create_member();
+		V_MtV( Ze.get(), Z_k, BLAS_Cpp::no_trans, *e );
 		
 		// This does not have to be an accurate finite difference so lets just
 		// take step_scale/||Ze|| as the step size unless it is out of bounds
@@ -125,7 +114,7 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 		// should not be near the solution so the reduced gradient should not
 		// be near zero.
 
-		const value_type nrm_Ze = norm_inf( Ze() );
+		const value_type nrm_Ze = Ze->norm_inf();
 		value_type u = step_scale() / nrm_Ze;
 
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
@@ -133,10 +122,10 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 		}
 
 		if( (int)olevel >= (int)PRINT_VECTORS ) {
-			out << "\nZe =\n" << Ze();
+			out << "\nZe =\n" << *Ze;
 		}
 
-		if( algo.nlp().has_bounds() ) {
+		if( algo.nlp().num_bounded_x() ) {
 
 			// Find the maximum step u
 			// we can take along x_fd = x_k + u*Ze
@@ -144,9 +133,11 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 			// If a positive step can't be found then this may be a negative step.
 			
 			std::pair<value_type,value_type>
-				u_steps = max_near_feas_step( s.x().get_k(0)(), Ze()
-					, algo.nlp().xl(), algo.nlp().xu()
-					, algo.algo_cntr().max_var_bounds_viol() );
+				u_steps = max_near_feas_step(
+					x_k, *Ze
+					,nlp.xl(), nlp.xu()
+					,nlp.max_var_bounds_viol()
+					);
 			
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 				out << "\nMaximum steps ( possitive, negative ) in bounds u = ("
@@ -168,37 +159,37 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 		// rGf_fd = ( Z_k'*Gf(x_k + u*Ze) - rGf_k ) / u
 		//
 
-		Vector x_fd = s.x().get_k(0)();
-		Vp_StV( &x_fd(), u, Ze() );
+		VectorSpace::vec_mut_ptr_t x_fd = x_k.space().create_member();
+		Vp_StV( x_fd.get(), u, *Ze );
 
 		// Gf_fd = Gf(x_fd)
-		Vector Gf_fd;
-		nlp.set_Gf(	&Gf_fd );
+		VectorSpace::vec_mut_ptr_t Gf_fd = x_k.space().create_member();
+		nlp.set_Gf(	Gf_fd.get() );
 		nlp.set_multi_calc( false );
-		nlp.calc_Gf( x_fd );
+		nlp.calc_Gf( *x_fd );
 
 		if( (int)olevel >= (int)PRINT_VECTORS ) {
-			out << "\nGf_fd =\n" << Gf_fd();
+			out << "\nGf_fd =\n" << *Gf_fd;
 		}
 
 		// rGf_fd = Z'*Gf_fd
-		Vector rGf_fd;
-		V_MtV( &rGf_fd, s.Z().get_k(0), BLAS_Cpp::trans, Gf_fd() );
+		VectorSpace::vec_mut_ptr_t rGf_fd = Z_k.space_rows().create_member();
+		V_MtV( rGf_fd.get(), Z_k, BLAS_Cpp::trans, *Gf_fd );
 
 		// rGf_fd = rGf_fd - rGf_k
-		Vp_StV( &rGf_fd(), -1.0, s.rGf().get_k(0)() );
+		Vp_StV( rGf_fd.get(), -1.0, rGf_k );
 
 		// rGf_fd = rGf_fd / u
-		Vt_S( &rGf_fd(), 1.0 / u );
+		Vt_S( rGf_fd.get(), 1.0 / u );
 
 		const value_type
-			nrm_rGf_fd = norm_inf( rGf_fd() );
+			nrm_rGf_fd = rGf_fd->norm_inf();
 
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 			out << "\n||(rGf_fd - rGf_k)/u||inf = " << nrm_rGf_fd << std::endl;
 		}
 		if( (int)olevel >= (int)PRINT_VECTORS ) {
-			out << "\n(rGf_fd - rGf_k)/u =\n" << rGf_fd();
+			out << "\n(rGf_fd - rGf_k)/u =\n" << *rGf_fd;
 		}
 
 		if( nrm_rGf_fd <= min_diag() ) {
@@ -207,7 +198,7 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 						<< " < min_diag = " << min_diag() << std::endl
 					<< "\nScale by min_diag ... \n";
 			}
-			rHL_diag.init_identity(nind,min_diag());
+			rHL_diag.init_identity(Z_k.space_rows(),min_diag());
 		}
 		else {
 			switch( initialization_method() ) {
@@ -215,7 +206,7 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 					if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 						out << "\nScale the identity matrix by ||(rGf_fd - rGf_k)/u||inf ... \n";
 					}
-					rHL_diag.init_identity(nind,nrm_rGf_fd);
+					rHL_diag.init_identity(Z_k.space_rows(),nrm_rGf_fd);
 					break;
 				}
 				case SCALE_DIAGONAL:
@@ -231,21 +222,18 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 					const value_type
 						min_ele = std::_MAX( nrm_rGf_fd / max_cond(), min_diag() );
 
-					if( initialization_method() == SCALE_DIAGONAL ) {
-						for( Vector::iterator itr = rGf_fd.begin(); itr != rGf_fd.end(); ++itr )
-							*itr = std::_MAX( *itr, min_ele );
-					}
-					else {
-						for( Vector::iterator itr = rGf_fd.begin(); itr != rGf_fd.end(); ++itr )
-							*itr = std::_MAX( ::fabs(*itr), min_ele );
-					}
+					if( initialization_method() == SCALE_DIAGONAL )
+						AbstractLinAlgPack::max_vec_scalar( min_ele, rGf_fd.get() );
+					else
+						AbstractLinAlgPack::max_abs_vec_scalar( min_ele, rGf_fd.get() );
+
 					if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-						out << "\n||diag||inf = " << norm_inf(rGf_fd()) << std::endl;
+						out << "\n||diag||inf = " << rGf_fd->norm_inf() << std::endl;
 					}
 					if( (int)olevel >= (int)PRINT_VECTORS ) {
-						out << "\ndiag =\n" << rGf_fd();
+						out << "\ndiag =\n" << *rGf_fd;
 					}
-					rHL_diag.init_diagonal(rGf_fd());
+					rHL_diag.init_diagonal(*rGf_fd);
 					break;
 				}
 				default:
@@ -257,7 +245,7 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 			QuasiNewtonStats::REINITIALIZED );
 
 		if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
-			s.rHL().get_k(0).output( out << "\nrHL_k = \n" );
+			out << "\nrHL_k =\n" << rHL_iq.get_k(0);
 		}
 
 	}
@@ -265,9 +253,11 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 	return true;
 }
 
-void ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::print_step( const Algorithm& algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
-	, std::ostream& out, const std::string& L ) const
+void InitFinDiffReducedHessian_Step::print_step(
+	const Algorithm& algo
+	,poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+	,std::ostream& out, const std::string& L
+	) const
 {
 	out
 		<< L << "*** Initialize the reduced Hessian using a single finite difference.\n"
@@ -279,12 +269,10 @@ void ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::print_step( const Algo
 		<< L << "         max_cond              = " << max_cond() << std::endl
 		<< L << "         min_diag              = " << min_diag() << std::endl
 		<< L << "         step_scale            = " << step_scale() << std::endl
-		<< L << "if num_basis_remembered = NO_BASIS_UPDATED_YET then\n"
-		<< L << "    num_basis_remembered = num_basis\n"
-		<< L << "end\n"
-		<< L << "if num_basis_remembered != num_basis then\n"
-		<< L << "    num_basis_remembered = num_basis\n"
+		<< L << "if num_basis_k is updated then\n"
 		<< L << "    new_basis = true\n"
+		<< L << "else\n"
+		<< L << "    new_basis = false\n"
 		<< L << "end\n"
 		<< L << "if new_basis == true or no past rHL as been updated then\n"
 		<< L << "    *** Reinitialize the reduced Hessian using finite differences\n"
@@ -331,3 +319,5 @@ void ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::print_step( const Algo
 		<< L << "    end\n"
 		<< L << "end\n";
 }
+
+} // end namespace ReducedSpaceSQPPack

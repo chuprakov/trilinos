@@ -343,11 +343,11 @@ bool EvalNewPointStd_Step::do_step(
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out	<< "\nGf = \n" << Gf_iq.get_k(0);
+		out	<< "\nGf_k = \n" << Gf_iq.get_k(0);
 		if(m)
-			out	<< "\nc = \n" << c_iq->get_k(0);
+			out	<< "\nc_k = \n" << c_iq->get_k(0);
 		if(mI)
-			out	<< "\nh = \n" << h_iq->get_k(0);
+			out	<< "\nh_k = \n" << h_iq->get_k(0);
 		out << std::endl;
 	}
 

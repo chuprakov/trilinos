@@ -235,7 +235,7 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(
 	}
 	else {
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-			out	<< "The matrix rHL_k has already been updated.\n";
+			out	<< "\nThe matrix rHL_k has already been updated so leave it\n";
 		}
 	}
 

@@ -122,7 +122,6 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 	
 	// Accessed/modified/updated (just some)
 	VectorWithOpMutable  &Ypy_k = Ypy_iq.get_k(0);
-	VectorWithOpMutable  &nu_k  = nu_iq.get_k(0);
 	const MatrixWithOp   &Z_k   = Z_iq.get_k(0);
 	VectorWithOpMutable  &pz_k  = pz_iq.set_k(0);
 	VectorWithOpMutable  &Zpz_k = Zpz_iq.set_k(0);
@@ -206,12 +205,12 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 	// ToDo: If the selection of dependent and independent variables changes
 	// then you will have to adjust this or not perform a warm start at all!
 	if( do_warm_start ) {
-		const VectorWithOp &nu_km1 = nu_iq.get_k(-1);
-		nu_iq.set_k(0) = nu_km1;
+		nu_iq.set_k(0,-1);
 	}
 	else {
 		nu_iq.set_k(0) = 0.0; // No guess of the active set
 	}
+	VectorWithOpMutable  &nu_k  = nu_iq.get_k(0);
 
 	//
 	// Setup the reduced QP subproblem
@@ -227,7 +226,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 
 	// The numeric arguments for the QP solver (in the nomenclatrue of QPSolverRelaxed)
 
-	const value_type  qp_bnd_inf = QPSolverRelaxed::infinite_bound();
+	const value_type  qp_bnd_inf = NLP::infinite_bound();
 
 	const VectorWithOp      &qp_g       = qp_grad_k;
 	const MatrixSymWithOp   &qp_G       = rHL_iq.get_k(0);
@@ -272,7 +271,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 
 	const MatrixIdentConcat
 		*Zvr = dynamic_cast<const MatrixIdentConcat*>( &Z_k );
-	Range1D
+	const Range1D
 		var_dep   = Zvr ? Zvr->D_rng() : Range1D(),
 		var_indep = Zvr ? Zvr->I_rng() : Range1D();
 
@@ -288,14 +287,14 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 	else if( !mI && use_simple_pz_bounds ) {
 		// Set simple bound constraints on pz
 		qp_dL = bl->sub_view(var_indep);
-		qp_dU = bu->sub_view(var_dep);
+		qp_dU = bu->sub_view(var_indep);
 		qp_nu = nu_k.sub_view(var_indep); // nu_k(var_indep) will be updated directly!
 		// Set general inequality constraints for D*pz
 		qp_E   = mmp::rcp(&Zvr->D(),false);
 		qp_b   = Ypy_k.sub_view(var_dep);
 		qp_eL  = bl->sub_view(var_dep);
 		qp_eU  = bu->sub_view(var_dep);
-		qp_mu  = nu_k.sub_view(var_dep); // nu_k(var_dep) will be updated directly!
+		qp_mu  = nu_k.sub_view(var_dep);  // nu_k(var_dep) will be updated directly!
 		qp_Ed  = Zpz_k.sub_view(var_dep); // Zpz_k(var_dep) will be updated directly!
 	}
 	else if( !mI && !use_simple_pz_bounds ) {
@@ -321,7 +320,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 		Vp_V( qp_f.get(), *c_iq->get_k(0).sub_view(equ_undecomp) );
 		// Must resize for the undecomposed constriants if it has not already been
 		qp_F       = mmp::rcp(&Uy_iq->get_k(0),false);
-		qp_lambda  = lambda_iq->set_k(0).sub_view(equ_undecomp); // lambda_k(equ_undecomp) // will be updated directly!
+		qp_lambda  = lambda_iq->set_k(0).sub_view(equ_undecomp); // lambda_k(equ_undecomp), will be updated directly!
 	}
 
 	// Setup the rest of the arguments
@@ -354,6 +353,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 	//
 	// Solve the QP
 	// 
+	qp_solver().infinite_bound(qp_bnd_inf);
 	const QPSolverStats::ESolutionType
 		solution_type =
 		qp_solver().solve_qp(
@@ -385,7 +385,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 			out	<< "\nChecking the optimality conditions of the reduced QP subproblem ...\n";
 		}
 		if(!qp_tester().check_optimality_conditions(
-			solution_type
+			solution_type,qp_solver().infinite_bound()
 			,int(olevel) == int(PRINT_NOTHING) ? NULL : &out
 			,int(olevel) >= int(PRINT_VECTORS) ? true : false
 			,int(olevel) >= int(PRINT_ITERATION_QUANTITIES) ? true : false
@@ -418,10 +418,10 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 	else if( mI && !use_simple_pz_bounds ) {	
 		assert(0); // ToDo: Implement general inequalities!
 	}
-	else if( !mI && use_simple_pz_bounds ) {
+	else if( !mI && !use_simple_pz_bounds ) {
 		// Everything is already updated!
 	}
-	else if( !mI && !use_simple_pz_bounds ) {
+	else if( !mI && use_simple_pz_bounds ) {
 		// Just have to set Zpz_k(var_indep) = pz_k
 		*Zpz_k.sub_view(var_indep) = pz_k;
 	}

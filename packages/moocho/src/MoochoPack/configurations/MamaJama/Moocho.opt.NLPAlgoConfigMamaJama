@@ -87,6 +87,30 @@ options_group rSQPAlgo_ConfigMamaJama {
      *** [quasi_newton == LBFGS] If true then auto scaling of initial
      *** hessian approximation will be use for LBFGS.
 
+*    hessian_initialization = AUTO;                       *** Let the solver decide dynamically (default)
+*    hessian_initialization = IDENTITY;                   *** rHL_{0} = I
+*    hessian_initialization = FINITE_DIFF_SCALE_IDENTITY; *** rHL_{0} = ||fd|| * I
+*    hessian_initialization = FINITE_DIFF_DIAGONAL;       *** rHL_{0} = diag(max(fd(i),small),i)
+*    hessian_initialization = FINITE_DIFF_DIAGONAL_ABS;   *** rHL_{0} = diag(abs(fd(i))
+     *** [exact_reduced_hessian == false] Determines how the quasi-newton hessian is initialized.
+     *** ToDo: Finis documentation!
+
+*** QP solvers
+
+*    qp_solver = AUTO;    *** Let the solver decide dynamically
+*    qp_solver = QPKWIK;  *** Primal-dual, active set, QR
+*    qp_solver = QPOPT;   *** Primal, active set, null space, Gill et. al.
+*    qp_solver = QPSOL;   *** Primal, active set, null space, Gill et. al.
+*    qp_solver = QPSCHUR; *** Primal-dual, active set, schur complement 
+     *** QP solver to use to solve the reduced space QP subproblem (NUll
+     *** space step).
+
+*    reinit_hessian_on_qp_fail = true; *** (default)
+*    reinit_hessian_on_qp_fail = false;
+     *** If true, then if a QPFailure exception is thrown (see printed algorithm)
+     *** then the Hessian approximation will be reinitialized and the QP will
+     *** will attempted to be solved again.
+
 *** Line search methods
 
 *    line_search_method = AUTO;               *** Let the solver decide dynamically (default)
@@ -314,6 +338,20 @@ options_group InitFinDiffReducedHessian {
 *    initialization_method	= SCALE_IDENTITY;
 *    initialization_method	= SCALE_DIAGONA;
 *    initialization_method	= SCALE_DIAGONAL_ABS;
+*    max_cond			= 1e+1;
+*    min_diag			= 1e-8;
+*    step_scale			= 1e-1;
+}
+
+*********************************************************************
+*** Options for finite difference initialization of reduced hessian.
+*** 
+*** [rSQPAlgo_ConfigMamaJama::hessian_initialization == FINITE_DIFF_*]
+***
+options_group InitFinDiffReducedHessian {
+*    initialization_method	= SCALE_IDENTITY;
+*    initialization_method	= SCALE_DIAGONAL;
+*    initialization_method	= SCALE_DIAGONAL_ABS; *** (default)
 *    max_cond			= 1e+1;
 *    min_diag			= 1e-8;
 *    step_scale			= 1e-1;
