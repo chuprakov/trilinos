@@ -76,17 +76,19 @@ namespace ReducedSpaceSQPPack {
 // rSQPState
 
 rSQPState::rSQPState(
-	const space_x_ptr_t&  space_x
-	,const space_x_ptr_t&  space_c
-	,const space_x_ptr_t&  space_h
-	,const space_x_ptr_t&  space_py
-	,const space_x_ptr_t&  space_pz
+	const decomp_sys_ptr_t& decomp_sys
+	,const space_x_ptr_t&   space_x
+	,const space_x_ptr_t&   space_c
+	,const space_x_ptr_t&   space_h
+	,const space_x_ptr_t&   space_range
+	,const space_x_ptr_t&   space_null
 	)
-	:space_x_(space_x)
+	:decomp_sys_(decomp_sys)
+	,space_x_(space_x)
 	,space_c_(space_c)
 	,space_h_(space_h)
-	,space_py_(space_py)
-	,space_pz_(space_pz)
+	,space_range_(space_range)
+	,space_null_(space_null)
 {}
 
 // Iteration Info
@@ -116,20 +118,20 @@ RSQP_STATE_IQ_DEF(        rSQPState, MatrixWithOp,            Vz, Vz_name       
 
 // Search Direction Info
 
-RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  py,  py_name,   get_space_py() )
-RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  Ypy, Ypy_name,  get_space_x()  )
-RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  pz,  pz_name,   get_space_pz() )
-RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  Zpz, Zpz_name,  get_space_x()  )
-RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  d,   d_name,    get_space_x()  )
+RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  py,  py_name,   get_space_range() )
+RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  Ypy, Ypy_name,  get_space_x()     )
+RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  pz,  pz_name,   get_space_null()  )
+RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  Zpz, Zpz_name,  get_space_x()     )
+RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  d,   d_name,    get_space_x()     )
 
 // QP Subproblem Info
 
-RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  rGf,     rGf_name,      get_space_pz() )
-RSQP_STATE_IQ_DEF(        rSQPState, MatrixSymWithOp, rHL,     rHL_name                      )
-RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  w,       w_name,        get_space_pz() ) 
-RSQP_STATE_SCALAR_IQ_DEF( rSQPState,                  zeta,    zeta_name                     )
-RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  qp_grad, qp_grad_name,  get_space_pz() )
-RSQP_STATE_SCALAR_IQ_DEF( rSQPState,                  eta,     eta_name                      )
+RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  rGf,     rGf_name,      get_space_null() )
+RSQP_STATE_IQ_DEF(        rSQPState, MatrixSymWithOp, rHL,     rHL_name                        )
+RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  w,       w_name,        get_space_null() ) 
+RSQP_STATE_SCALAR_IQ_DEF( rSQPState,                  zeta,    zeta_name                       )
+RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  qp_grad, qp_grad_name,  get_space_null() )
+RSQP_STATE_SCALAR_IQ_DEF( rSQPState,                  eta,     eta_name                        )
 
 // Global Convergence Info
 
@@ -140,13 +142,13 @@ RSQP_STATE_SCALAR_IQ_DEF( rSQPState,                  phi,            phi_name  
 
 // KKT Info
 
-RSQP_STATE_SCALAR_IQ_DEF( rSQPState,                  opt_kkt_err,    opt_kkt_err_name                  )
-RSQP_STATE_SCALAR_IQ_DEF( rSQPState,                  feas_kkt_err,   feas_kkt_err_name                 )
-RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  GL,             GL_name,           get_space_x()  )
-RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  rGL,            rGL_name,          get_space_pz() )
-RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  lambda,         lambda_name,       get_space_c()  )
-RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  lambdaI,        lambdaI_name,      get_space_h()  )
-RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  nu,             nu_name,           get_space_x()  )
+RSQP_STATE_SCALAR_IQ_DEF( rSQPState,                  opt_kkt_err,    opt_kkt_err_name                     )
+RSQP_STATE_SCALAR_IQ_DEF( rSQPState,                  feas_kkt_err,   feas_kkt_err_name                    )
+RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  GL,             GL_name,           get_space_x()     )
+RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  rGL,            rGL_name,          get_space_null()  )
+RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  lambda,         lambda_name,       get_space_c()     )
+RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  lambdaI,        lambdaI_name,      get_space_h()     )
+RSQP_STATE_VECTOR_IQ_DEF( rSQPState,                  nu,             nu_name,           get_space_x()     )
 
 // protected
 

@@ -22,7 +22,7 @@
 #include "GeneralIterationPack/include/cast_iq.h"
 #include "GeneralIterationPack/include/IterQuantityAccessContiguous.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
-//#include "ConstrainedOptimizationPack/include/DecompositionSystem.h"
+#include "ConstrainedOptimizationPack/include/DecompositionSystem.h"
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
 //#include "LinAlgPack/include/IVector.h"
 #include "StandardCompositionMacros.h"
@@ -275,16 +275,18 @@ public:
 	/** @name Constructors/initializers */
 	//@{
 
-	/// <<std comp>> members for the VectorSpace of x
+	/// Set the DecompositionSystem object that all share
+	STANDARD_COMPOSITION_MEMBERS( DecompositionSystem, decomp_sys )
+	/// Set the VectorSpace of x
 	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_x )
-	/// <<std comp>> members for the VectorSpace of c
+	/// Set the VectorSpace of c
 	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_c )
-	/// <<std comp>> members for the VectorSpace of h
+	/// Set the VectorSpace of h
 	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_h )
-	/// <<std comp>> members for the VectorSpace of py
-	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_py )
-	/// <<std comp>> members for the VectorSpace of pz
-	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_pz )
+	/// Set the VectorSpace of py
+	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_range )
+	/// Set the VectorSpace of pz
+	STANDARD_CONST_COMPOSITION_MEMBERS( VectorSpace, space_null )
 
 	///
 	/** Construct
@@ -292,11 +294,12 @@ public:
 	 * Initializes num_basis() == 0
 	 */
 	rSQPState(
-		const space_x_ptr_t&   space_x   = NULL
-		,const space_x_ptr_t&  space_c   = NULL
-		,const space_x_ptr_t&  space_h   = NULL
-		,const space_x_ptr_t&  space_py  = NULL
-		,const space_x_ptr_t&  space_pz  = NULL
+		const decomp_sys_ptr_t& decomp_sys   = NULL
+		,const space_x_ptr_t&   space_x      = NULL
+		,const space_x_ptr_t&   space_c      = NULL
+		,const space_x_ptr_t&   space_h      = NULL
+		,const space_x_ptr_t&   space_range  = NULL
+		,const space_x_ptr_t&   space_null   = NULL
 		);
 
 	///
@@ -357,11 +360,11 @@ public:
 	/** @name Search Direction Info */
 	//@{
 
-	/// py:  Range space (dependent) QP solution component ( space_py, m x 1 )
+	/// py:  Range space (dependent) QP solution component ( \c space_range, m x 1 )
 	RSQP_STATE_VECTOR_IQ_DECL(py)
 	/// Ypy:  Range space (dependent) contribution to search direction (Ypy = Y * py) ( n x 1 )
 	RSQP_STATE_VECTOR_IQ_DECL(Ypy)
-	/// pz:  Null space (independent) QP solution component ( (n-m) x 1 )
+	/// pz:  Null space (independent) QP solution component ( \c space_null, (n-m) x 1 )
 	RSQP_STATE_VECTOR_IQ_DECL(pz)
 	/// Zpz:  Null space (independent) contribution to the search direction (Zpz = Z * pz) ( n x 1)
 	RSQP_STATE_VECTOR_IQ_DECL(Zpz)
@@ -373,11 +376,11 @@ public:
 	/** @name QP Subproblem Info */
 	//@{
 
-	/// rGf:  Reduced gradient of the objective function ( (n-r) x 1 )
+	/// rGf:  Reduced gradient of the objective function ( \c space_null, (n-r) x 1 )
 	RSQP_STATE_VECTOR_IQ_DECL(rGf)
-	/// rHL:  Reduced Hessian of the Lagrangian function ( (n-r) x (n-r) )
+	/// rHL:  Reduced Hessian of the Lagrangian function ( <tt>space_null|space_null</tt>, (n-r) x (n-r) )
 	RSQP_STATE_IQ_DECL(MatrixSymWithOp,rHL)
-	/// w:  QP gradient crossterm correction (Z' * HL * Y * py) ( (n-r) x 1 )
+	/// w:  QP gradient crossterm correction (Z' * HL * Y * py) ( \c space_null, (n-r) x 1 )
 	RSQP_STATE_VECTOR_IQ_DECL(w)
 	/// zeta:  QP crossterm dampening parameter [0, 1]
 	RSQP_STATE_SCALAR_IQ_DECL(zeta)
