@@ -4,6 +4,7 @@
 #ifndef SORT_BY_DESCENDING_ABS_VALUE_H
 #define SORT_BY_DESCENDING_ABS_VALUE_H
 
+#include <math.h>
 #include "SpVectorClass.h"
 
 namespace SparseLinAlgPack {
