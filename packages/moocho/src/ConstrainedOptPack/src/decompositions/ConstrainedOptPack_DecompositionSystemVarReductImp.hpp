@@ -43,10 +43,10 @@ namespace ConstrainedOptimizationPack {
   Vz  = Gh(var_indep,:)' + Gh(var_dep,:)'*D
 
       where:
-           C = Gc(var_dep,con_decomp)'     [nonsingular]
-           N = Gc(var_indep,con_decomp)'
-           E = Gc(var_dep,con_undecomp)'
-           F = Gc(var_indep,con_undecomp)'
+           C = Gc(var_dep,equ_decomp)'     [nonsingular]
+           N = Gc(var_indep,equ_decomp)'
+           E = Gc(var_dep,equ_undecomp)'
+           F = Gc(var_indep,equ_undecomp)'
            D = -inv(C) * N
  \endverbatim
  *
@@ -318,7 +318,20 @@ public:
 
 	//@}
 
+	/** @name Overridden from DecompositionSystemVarReduct */
+	//@{
+
+	///
+	Range1D var_indep() const;
+	///
+	Range1D var_dep() const;
+
+	//@}
+
 protected:
+
+	/// Update D_imp_used
+	virtual void update_D_imp_used(EExplicitImplicit *D_imp_used) const;
 
 	///
 	/** Overridden by subclasses to uninitialized Y, R, Uy and Vy and return C if referenced.
@@ -393,9 +406,6 @@ private:
 	// //////////////////////////////////
 	// Private member functions
 
-	/// Update D_imp_used
-	void update_D_imp_used() const; // Will have to add arugments to this at some point!
-
 	/// Allocate a new D_ptr matrix
 	void alloc_new_D_matrix( 
 		std::ostream                             *out
@@ -444,7 +454,7 @@ inline
 DecompositionSystemVarReductImp::EExplicitImplicit
 DecompositionSystemVarReductImp::D_imp_used() const
 {
-	update_D_imp_used();
+	update_D_imp_used(&D_imp_used_);
 	return D_imp_used_;
 }
 
