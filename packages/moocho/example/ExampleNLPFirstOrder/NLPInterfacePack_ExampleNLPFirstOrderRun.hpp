@@ -20,6 +20,7 @@
 #include <iosfwd>
 
 #include "NLPInterfacePack/include/NLPInterfacePackTypes.h"
+#include "ReducedSpaceSQPPack/Configurations/rSQPppSolver.h"
 
 namespace NLPInterfacePack {
 
@@ -28,7 +29,7 @@ namespace NLPInterfacePack {
 
 ///
 /** Function accepts a VectorSpace object and then uses it to define
- * an example NLP and run a whole battery of tests.
+ * an example NLP and run <tt>ReducedSpaceSQPPack::rSQPppSolver</tt> on it.
  *
  * @param  vec_space   [in] The vector space object used to create all of the
  *                     needed vector spaces and vectors.  This vector space and
@@ -39,26 +40,29 @@ namespace NLPInterfacePack {
  * @param  dep_bounded [in] (valid only if has_bounds == true) If true, then
  *                     the dependent variables will be bounded, if false the
  *                     independent variables will be bounded.
- * @param  out         [in/out] If != NULL then *out gets the output (see the
- *                     options file "ExampleNLPFirstOrderInfoRun.opt").
- * @param  eout        [in/out] If != NULL then *eout gets minimal summary output.
+ * @param  console_out [in/out] If != NULL then *console_out gets the output.
+ * @param  error_out   [in/out] If != NULL then *eout gets minimal summary output.
+ * @param  throw_solve_exception
+ *                     [in] If true then solver will not throw exception (but other code may).
+ * @param  algo_out    [in/out] If != NULL then it gets algo outptut, otherwise goes to 'rSQPppAlgo.out'
+ * @param  summary_out [in/out] If != NULL then it gets summary outptut, otherwise goes to 'rSQPppSummary.out'
+ * @param  journal_out [in/out] If != NULL then it gets journal outptut, otherwise goes to 'rSQPppJournal.out'
  *
- * @returns true if the tests were successful, returns false otherwise.
- *
- * This function will read the file "ExampleNLPFirstOrderInfoRun.opt" in the
- * current directory to get the options to use.  The following is an example
- * of this file.
- * \verbinclude ExampleNLPFirstOrderInfoRun.opt
- * See <tt>\ref NLPInterfacePack::test_nlp_first_order_direct "test_nlp_first_order_direct()"</tt>
- * for descriptions of the options in this file.
+ * @returns Returns the return value from <tt>ReducedSpaceSQPPack::rsqp_mama_jama_solve()</tt>
+ * (see this function for most of the documentation).
  */
-bool ExampleNLPFirstOrderInfoRun(
+ReducedSpaceSQPPack::rSQPppSolver::ESolutionStatus
+ExampleNLPFirstOrderInfoRun(
 	const VectorSpace&   vec_space
 	,value_type          xo
 	,bool                has_bounds
 	,bool                dep_bounded
-	,std::ostream*       out
-	,std::ostream*       eout
+	,std::ostream*       console_out
+	,std::ostream*       error_out
+	,bool                throw_solve_exception = false
+	,std::ostream*       algo_out              = NULL
+	,std::ostream*       summary_out           = NULL
+	,std::ostream*       journal_out           = NULL
 	);
 
 //@}

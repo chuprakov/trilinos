@@ -1,4 +1,4 @@
-// //////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////
 // ExampleNLPFirstOrderInfoRun.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-// disable VC 5.0 warnings about debugger limitations
-#pragma warning(disable : 4786)	
-// disable VC 5.0 warnings about truncated identifier names (templates).
-#pragma warning(disable : 4503)	
+#ifdef _INTEL_CXX
+// disable Intel C++ 5.0 warnings about debugger limitations
+#pragma warning(disable : 985)
+#endif
 
 #include <assert.h>
 
@@ -29,19 +29,24 @@
 #include "ExampleNLPFirstOrderInfoRun.h"
 #include "ExampleNLPFirstOrderInfo.h"
 #include "ExampleBasisSystem.h"
-#include "NLPInterfacePack/test/test_nlp_first_order_info.h"
-#include "NLPInterfacePack/test/test_basis_system.h"
+#include "ReducedSpaceSQPPack/Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.h"
+#include "GeneralIterationPack/include/AlgorithmTrack.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "AbstractLinAlgPack/include/BasisSystem.h"
 #include "OptionsFromStream.h"
-#include "StringToBool.h"
 
-bool NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
+ReducedSpaceSQPPack::rSQPppSolver::ESolutionStatus
+NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
 	const VectorSpace&   vec_space
 	,value_type          xo
 	,bool                has_bounds
 	,bool                dep_bounded
-	,std::ostream*       out_in
-	,std::ostream*       eout_in
+	,std::ostream*       console_out
+	,std::ostream*       error_out
+	,bool                throw_solve_exception
+	,std::ostream*       algo_out
+	,std::ostream*       summary_out
+	,std::ostream*       journal_out
 	)
 {
 	using std::endl;
@@ -50,84 +55,56 @@ bool NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
 	using rcp::ref_count_ptr;
 	namespace ofsp = OptionsFromStreamPack;
 	using ofsp::OptionsFromStream;
-	using ofsp::StringToBool;
+	namespace rsqp = ReducedSpaceSQPPack;
+	using rsqp::rSQPppSolver;
+	using rsqp::rSQPAlgo_ConfigMamaJama;
 
-	bool prog_return = true;
+	rSQPppSolver::ESolutionStatus
+		solve_return = rSQPppSolver::SOLVE_RETURN_EXCEPTION;
 
 	int err = 0;
 	
 	int w = 15;
 	int prec = 8;
 
-	if(out_in)
-		*out_in
+	if(console_out)
+		*console_out
 			<< std::setprecision(prec)
 			<< std::scientific
-			<< "************************************************************************\n"
-			<< "*** Running Tests on ExampleNLPFirstOrderInfo and ExampleBasisSystem ***\n"
-			<< "************************************************************************\n"
+			<< "*************************************************\n"
+			<< "*** Running Tests on ExampleNLPFirstOrderInfo ***\n"
+			<< "*************************************************\n"
 			<< "\nUsing a vector space of type \'" << typeid(vec_space).name() << "\'"
 			<< "\nwith a dimension of vec_space.dim() = " << vec_space.dim()
 			<< std::endl;
-
-	// Read in the options
-	std::ifstream      options_in_file("ExampleNLPFirstOrderInfoRun.opt");	
-	OptionsFromStream  options(options_in_file);
-
-	bool suppress_output = false;
-	const std::string                    optgrp_name = "ExampleNLPFirstOrderInfoRun";
-	OptionsFromStream::options_group_t   optgrp = options.options_group( optgrp_name );
-	if( OptionsFromStream::options_group_exists( optgrp ) ) {
-		const std::string val = optgrp.option_value("suppress_output");
-		if(OptionsFromStream::options_group_t::option_exists(val))
-			suppress_output = StringToBool( "suppress_output", val.c_str() );
-	}
-
-	std::ostream
-		*out  = NULL,
-		*eout = NULL;
-	if(suppress_output) {
-		if(out_in)
-			*out_in << "\nOption ExampleNLPFirstOrdeInfoRun::suppress_out = true was set, suppressing all future output!\n";
-		out  = NULL;
-		eout = NULL;
-	}
-	else {
-		out  = out_in;
-		eout = eout_in;
-	}
 
 	// Create the nlp
 	ExampleNLPFirstOrderInfo
 		nlp(VectorSpace::space_ptr_t(&vec_space,false),xo,has_bounds,dep_bounded);
 
-	// Test the NLPFirstOrderInfo interface!
-	bool
-		result = NLPInterfacePack::test_nlp_first_order_info(&nlp,&options,out);
-	if(!result)
-		prog_return = false;
-
 	// Create the basis system
 	ExampleBasisSystem
 		basis_sys(rcp::rcp(&vec_space,false));
 
-	// Test the basis system
-	result = NLPInterfacePack::test_basis_system(&nlp,&basis_sys,&options,out);
-	if(!result)
-		prog_return = false;
+	// Create the solver object and set it up
+	rSQPppSolver solver;
+	solver.set_config(
+		rcp::rcp(new rSQPAlgo_ConfigMamaJama(
+			rcp::rcp(&basis_sys,false)) )
+		 );                                                // Set config with basis_sys
+	solver.set_nlp(rcp::rcp(&nlp,false));                  // Set nlp
+	// set up outputting
+	solver.set_error_handling(
+		throw_solve_exception
+		,rcp::rcp(error_out,false)
+		);
+	solver.set_console_out(rcp::rcp(console_out,false));
+	solver.set_summary_out(rcp::rcp(summary_out,false));
+	solver.set_journal_out(rcp::rcp(journal_out,false));
+	solver.set_algo_out(   rcp::rcp(algo_out,false)   );
 
-	if(prog_return == true) {
-		if(eout_in && eout_in != out_in)
-			*eout_in   << "Congradulations! The VectorSpace, NLP and BasisSystem objects check out!\n";
-		if(out_in)
-			*out_in    << "\nCongradulations! The VectorSpace, NLP and BasisSystem objects check out!\n";
-	}
-	else {
-		if(eout_in && eout_in!= out_in)
-			*eout_in   << "Oh No!  Something did not check out!\n";
-		if(out_in)
-			*out_in    << "\nOh No!  Something did not check out!\n";
-	}
+	// Run rSQP++ using the MamaJama configuration
+	solve_return = solver.solve_nlp();
 
-	return prog_return;
+	return solve_return;
 }
