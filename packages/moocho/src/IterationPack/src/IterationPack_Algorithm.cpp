@@ -727,7 +727,9 @@ void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const
 	if(print_steps) {
 		out
 			<< step_i << ". \"Major Loop\" :\n"
-			<< "    if k >= max_iter\n"
+			<< "    if k >= max_iter then\n"
+			<< "        terminate the algorithm\n"
+			<< "    elseif run_time() >= max_run_time then\n"
 			<< "        terminate the algorithm\n"
 			<< "    else\n"
 			<< "        k = k + 1\n"
