@@ -162,8 +162,10 @@ bool NLPFirstDerivativesTester::fd_check_all(
 			*out
 				<< "\nComparing derivatives of constraints c(x)\n"
 				<< "where D(i,j) = finite_d(c(j))/d(x(i)), M(i,j) = d(c(j))/d(x(i)) ...\n";
-		result = comp_Gc().comp( FDGc, *Gc, BLAS_Cpp::no_trans
+		result = comp_Gc().comp(
+			FDGc, *Gc, BLAS_Cpp::no_trans
 			, CompareDenseSparseMatrices::FULL_MATRIX
+			, CompareDenseSparseMatrices::REL_ERR_BY_COL
 			, warning_tol(), error_tol(), print_all_warnings, out );
 		update_success( result, &success );
 	}
@@ -214,7 +216,7 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 
 	const value_type
 		rand_y_l = -1.0, rand_y_u = 1.0,
-		small_num = ::sqrt(std::numeric_limits<value_type>::epsilon());
+		small_num = ::pow(std::numeric_limits<value_type>::epsilon(),0.25);
 
 	if(out)
 		*out
@@ -230,6 +232,12 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 	}
 	for( int direc_i = 1; direc_i <= num_fd_directions(); ++direc_i ) {
 		random_vector( rand_y_l, rand_y_u, &y() );
+		if(out)
+			*out
+				<< "\n****"
+				<< "\n**** Random directional vector " << direc_i << " ( ||y||_1 / n = "
+				<< LinAlgPack::norm_1(y()) / y.size() << " )"
+				<< "\n***\n";
 		// Compute exact??? values
 		value_type
 			Gf_y = Gf ? dot( *Gf, y() ) : 0.0;
@@ -248,7 +256,12 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 		// Compare the quantities
 		assert_print_nan_inf(FDGf_y, "FDGf'*y",true,out);
 		const value_type
-			Gf_err = ::fabs( ( Gf_y - FDGf_y )/( Gf_y + FDGf_y + small_num ) );
+			Gf_err = ::fabs( Gf_y - FDGf_y ) / ( ::fabs(Gf_y) + ::fabs(FDGf_y) + small_num );
+		if(out)
+			*out
+				<< "\nrel_err(Gf'*y,FDGf'*y) = "
+				<< "rel_err(" << Gf_y << "," << FDGf_y << ") = "
+				<< Gf_err << endl;
 		if( Gf_err >= warning_tol() ) {
 			max_Gf_warning_viol = std::_MAX( max_Gf_warning_viol, Gf_err );
 			++num_Gf_warning_viol;
@@ -256,10 +269,7 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 		if( Gf_err >= error_tol() ) {
 			if(out)
 				*out
-					<< "\nError, rel_err(Gf'*y,FDGf'*y) = "
-					<< "rel_err(" << Gf_y << "," << FDGf_y << ") = "
-					<< Gf_err << endl
-					<< "exceeded Gf_error_tol = " << error_tol() << endl
+					<< "\nError, exceeded Gf_error_tol = " << error_tol() << endl
 					<< "Stoping the tests!\n";
 			return false;
 		}
@@ -281,6 +291,10 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 			<< " computations of FDGf'*y\n"
 			<< "and the maximum violation was " << max_Gf_warning_viol
 			<< " > Gf_waring_tol = " << warning_tol() << endl;
+
+	if(out)
+		*out
+			<< "\nCongradulations!  All of the computed errors were within the specified error tolerance!\n";
 
 	return true;
 }
