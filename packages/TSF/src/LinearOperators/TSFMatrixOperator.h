@@ -99,6 +99,18 @@ namespace TSF
                                          TSFPreconditioner& rtn) const ;
       //@}
 
+      // VEH added a get method for a right ILUK preconditioner.
+      // The getILUKPreconditioner method remains a left preconditioner
+      // so it will not break existing code.
+      /** \name incomplete factorization (right) preconditioning interface */
+      //@{
+      /** create a k-level incomplete factorization. Default is to throw
+       * an error. */
+      virtual void getILUKRightPreconditioner(int fillLevels,
+                                              int overlapFill,
+                                              TSFPreconditioner& rtn) const ;
+      //@}
+
       /** \name factoring interface */
       //@{
       /** indicate whether the matrix is now stored in factored form */

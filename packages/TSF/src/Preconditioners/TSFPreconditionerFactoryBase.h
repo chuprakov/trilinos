@@ -5,6 +5,8 @@
 #include "TSFSmartPtr.h"
 #include "TSFPreconditioner.h"
 #include "TSFPreconditionerBase.h"
+#include "TSFOperatorSource.h"
+#include "TSFOperatorSourceBase.h"
 #include "TSFArray.h"
 #include <iostream>
 #include <string>
@@ -30,6 +32,9 @@ namespace TSF
 
       /** create a concrete preconditioner */
       virtual TSFPreconditioner createPreconditioner(const TSFLinearOperator& A) const = 0 ;
+
+      /* VEH Create a concrete preconditioner from an OperatorSource*/
+      virtual TSFPreconditioner createPreconditioner(const TSFOperatorSource& S) const = 0 ;
 
       /** write to a string */
       virtual string toString() const = 0 ;

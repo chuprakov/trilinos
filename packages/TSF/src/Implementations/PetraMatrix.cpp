@@ -16,6 +16,7 @@
 #include "PetraVector.h"
 #include "TSFOut.h"
 #include "TSFTimeMonitor.h"
+#include "TSFRightPreconditioner.h"
 
 #if HAVE_PETRA_MPI
 #include <mpi.h>
@@ -387,6 +388,46 @@ void PetraMatrix::getILUKPreconditioner(int fillLevels, int overlapFill,
 																									precond, precondGraph);
 			
 			p = new TSFLeftPreconditioner(left);
+			cachedPreconditioner_ = p;
+			hasCachedPreconditioner_ = true;
+		}
+}
+
+
+void PetraMatrix::getILUKRightPreconditioner(int fillLevels, int overlapFill,
+                                             TSFPreconditioner& p) const 
+{
+	if (hasCachedPreconditioner_)
+		{
+			p = cachedPreconditioner_;
+		}
+	else
+		{
+			ptrCheck("getILUKRightPreconditioner");
+			TSFTimeMonitor t(iluTimer());
+			double relaxValue = 0.0;
+			
+			const Epetra_CrsGraph& matrixGraph = matrix_->Graph();
+			
+			Ifpack_IlukGraph* precondGraph 
+			  = new Ifpack_IlukGraph(matrixGraph, fillLevels, overlapFill);
+			
+			petraCheck(precondGraph->ConstructFilledGraph(), 
+								 "ILUK graph construct graph");
+			
+			Ifpack_CrsRiluk* precond 
+			  = new Ifpack_CrsRiluk(*precondGraph);
+			
+			precond->SetRelaxValue(relaxValue);
+			precond->SetRelativeThreshold(1.0);
+			precond->SetAbsoluteThreshold(0.0);
+			petraCheck(precond->InitValues(*matrix_), "Riluk init values");
+			petraCheck(precond->Factor(), "Riluk factor");
+			
+			TSFLinearOperator right = new IfpackOperator(range(), domain(),
+                                                   precond, precondGraph);
+			
+			p = new TSFRightPreconditioner(right);
 			cachedPreconditioner_ = p;
 			hasCachedPreconditioner_ = true;
 		}

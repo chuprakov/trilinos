@@ -7,6 +7,7 @@
 #include "TSFPreconditioner.h"
 #include "TSFPreconditionerBase.h"
 #include "TSFPreconditionerFactoryBase.h"
+#include "TSFOperatorSourceBase.h"
 #include "TSFArray.h"
 #include <iostream>
 #include <string>
@@ -34,6 +35,9 @@ namespace TSF
 
       /** create a concrete preconditioner */
       TSFPreconditioner createPreconditioner(const TSFLinearOperator& A) const;
+
+      /* VEH Create a concrete preconditioner from an OperatorSource */
+      TSFPreconditioner createPreconditioner(const TSFOperatorSource& S) const;
 
       /** write to a string */
       string toString() const ;

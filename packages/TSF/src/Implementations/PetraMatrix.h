@@ -117,10 +117,29 @@ namespace TSF
 
       //@}
 
+      // VEH
+      /** create a k-level incomplete factorization for a right preconditioner.
+       * Default is to throw
+       * an error. */
+      virtual void getILUKRightPreconditioner(int fillLevels,
+                                              int overlapFill,
+                                              TSFPreconditioner& rtn) const ;
+
+      //@}
+
+
       /** append my timings to a list of timings */
       static void collectTimings(TSFArray<TSFTimer>& timers) ;
 
       static Epetra_CrsMatrix* getConcrete(const TSFLinearOperator& A);
+
+      /* VEH/RST */
+      /* Insert an epetra matrix into a TSF PetraMatrix. */
+      void setPetraMatrix(Epetra_CrsMatrix* A, bool ownership)
+        {
+          matrix_ = TSFSmartPtr<Epetra_CrsMatrix>(A,ownership);
+        }
+
 
       /** timer for matrix-vector multiplies */
       static TSFTimer& mvMultTimer();

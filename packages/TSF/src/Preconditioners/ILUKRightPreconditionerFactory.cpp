@@ -1,4 +1,4 @@
-#include "ILUKPreconditionerFactory.h"
+#include "ILUKRightPreconditionerFactory.h"
 
 #include "TSFVectorSpaceBase.h"
 #include "TSFVectorBase.h"
@@ -9,13 +9,13 @@
 using namespace TSF;
 using std::string;
 
-ILUKPreconditionerFactory::ILUKPreconditionerFactory(int fillLevels,
-																										 int overlapFill)
+ILUKRightPreconditionerFactory::ILUKRightPreconditionerFactory(int fillLevels,
+                                                               int overlapFill)
 	: TSFPreconditionerFactoryBase(), fillLevels_(fillLevels),
 		overlapFill_(overlapFill)
 {}
 
-TSFPreconditioner ILUKPreconditionerFactory
+TSFPreconditioner ILUKRightPreconditionerFactory
 ::createPreconditioner(const TSFLinearOperator& A) const
 {
 	TSFPreconditioner rtn;
@@ -23,27 +23,24 @@ TSFPreconditioner ILUKPreconditionerFactory
 	if (A.isMatrixOperator())
 		{
 			const TSFSmartPtr<const TSFMatrixOperator> matrix = A.getMatrix();
-			matrix->getILUKPreconditioner(fillLevels_, overlapFill_, rtn);
+			matrix->getILUKRightPreconditioner(fillLevels_, overlapFill_, rtn);
 		}
 	else
 		{
-			TSFError::raise("ILUKPreconditionerFactory::createPreconditioner called "
+			TSFError::raise("ILUKRightPreconditionerFactory::createPreconditioner called "
 											"for a matrix-free operator");
 		}
 	return rtn;
 }
 
-/* VEH createPreconditioner method using a TSFOperatorSource factory */
-/* Not yet implemented */
-TSFPreconditioner ILUKPreconditionerFactory
+TSFPreconditioner ILUKRightPreconditionerFactory
 ::createPreconditioner(const TSFOperatorSource& S) const
 {
-  TSFError::raise("ILUKPreconditionerFactory::createPreconditioner called "
+  TSFError::raise("ILUKRightPreconditionerFactory::createPreconditioner called "
                   "for a TSFOperatorSource. Not implemented yet.");
 }
 
-
-string ILUKPreconditionerFactory::toString() const 
+string ILUKRightPreconditionerFactory::toString() const 
 {
 	return "ILUK factory (fill level=" + TSFUtils::toString(fillLevels_)
 		+ ")";

@@ -1,5 +1,5 @@
-#ifndef ILUKPRECONDITIONERFACTORY_H
-#define ILUKPRECONDITIONERFACTORY_H
+#ifndef ILUKRIGHTPRECONDITIONERFACTORY_H
+#define ILUKRIGHTPRECONDITIONERFACTORY_H
 
 #include "TSFDefs.h"
 #include "TSFSmartPtr.h"
@@ -14,25 +14,25 @@ namespace TSF
   using std::string;
   using std::ostream;
 
-
+  // VEH
   /** \ingroup Preconditioner
-   * ILUKPreconditionerFactory builds a k-level incomplete factorization
-   * preconditioner for a linear operator.
+   * ILUKRightPreconditionerFactory builds a k-level incomplete factorization
+   * (right) preconditioner for a linear operator.
    */
 
-  class ILUKPreconditionerFactory : public TSFPreconditionerFactoryBase
+  class ILUKRightPreconditionerFactory : public TSFPreconditionerFactoryBase
     {
     public:
       /** construct with the number of levels of fill allowed in
        * the incomplete factorization */
-      ILUKPreconditionerFactory(int fillLevels, int overlapFill=0);
+      ILUKRightPreconditionerFactory(int fillLevels, int overlapFill=0);
       /** TUVD */
-      virtual ~ILUKPreconditionerFactory(){;}
+      virtual ~ILUKRightPreconditionerFactory(){;}
 
       /** create a concrete preconditioner */
       virtual TSFPreconditioner createPreconditioner(const TSFLinearOperator& A) const;
 
-      /* VEH Create a concrete preconditioner from an OperatorSource */
+      /** create a concrete preconditioner from an OperatorSource*/
       virtual TSFPreconditioner createPreconditioner(const TSFOperatorSource& S) const;
 
       /** write to a string */

@@ -24,6 +24,13 @@ TSFPreconditioner TSFPreconditionerFactory::createPreconditioner(const TSFLinear
 	return ptr_->createPreconditioner(A);
 }
 
+/* VEH Create a concrete preconditioner from an OperatorSource */
+TSFPreconditioner TSFPreconditionerFactory::createPreconditioner(const TSFOperatorSource& S) const
+{
+	if (ptr_.get()==0) return TSFPreconditioner(); 
+	return ptr_->createPreconditioner(S);
+}
+
 string TSFPreconditionerFactory::toString() const
 {
 	return ptr_->toString();

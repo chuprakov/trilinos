@@ -41,6 +41,8 @@ $(srcdir)/LinearOperators/TSFLinearOperator.h\
 $(srcdir)/LinearOperators/TSFMatrixOperator.h\
 $(srcdir)/LinearOperators/TSFMatrixView.h\
 $(srcdir)/LinearOperators/TSFMultiVectorOperator.h\
+$(srcdir)/LinearOperators/TSFOperatorSourceBase.h\
+$(srcdir)/LinearOperators/TSFOperatorSource.h\
 $(srcdir)/LinearOperators/TSFScaledOperator.h\
 $(srcdir)/LinearOperators/TSFSumOperator.h\
 $(srcdir)/LinearOperators/TSFZeroOperator.h 
@@ -61,6 +63,8 @@ $(srcdir)/LinearOperators/TSFLinearOperator.cpp\
 $(srcdir)/LinearOperators/TSFMatrixOperator.cpp\
 $(srcdir)/LinearOperators/TSFMatrixView.cpp\
 $(srcdir)/LinearOperators/TSFMultiVectorOperator.cpp\
+$(srcdir)/LinearOperators/TSFOperatorSourceBase.cpp\
+$(srcdir)/LinearOperators/TSFOperatorSource.cpp\
 $(srcdir)/LinearOperators/TSFScaledOperator.cpp\
 $(srcdir)/LinearOperators/TSFSumOperator.cpp\
 $(srcdir)/LinearOperators/TSFZeroOperator.cpp 
@@ -160,6 +164,7 @@ Preconditioners_SOURCES_H =\
 $(srcdir)/Preconditioners/GenericLeftPreconditioner.h\
 $(srcdir)/Preconditioners/GenericRightPreconditioner.h\
 $(srcdir)/Preconditioners/ILUKPreconditionerFactory.h\
+$(srcdir)/Preconditioners/ILUKRightPreconditionerFactory.h\
 $(srcdir)/Preconditioners/ILUPreconditioner.h\
 $(srcdir)/Preconditioners/StokesRightPreconditionerFactory.h\
 $(srcdir)/Preconditioners/TSFAdjointPreconditioner.h\
@@ -168,11 +173,13 @@ $(srcdir)/Preconditioners/TSFPreconditionerBase.h\
 $(srcdir)/Preconditioners/TSFPreconditionerFactoryBase.h\
 $(srcdir)/Preconditioners/TSFPreconditionerFactory.h\
 $(srcdir)/Preconditioners/TSFPreconditioner.h\
+$(srcdir)/Preconditioners/TSFRightPreconditioner.h\
 $(srcdir)/Preconditioners/TSFTwoSidedPreconditioner.h 
  
  
 Preconditioners_SOURCES =\
 $(srcdir)/Preconditioners/ILUKPreconditionerFactory.cpp\
+$(srcdir)/Preconditioners/ILUKRightPreconditionerFactory.cpp\
 $(srcdir)/Preconditioners/StokesRightPreconditionerFactory.cpp\
 $(srcdir)/Preconditioners/TSFAdjointPreconditioner.cpp\
 $(srcdir)/Preconditioners/TSFLeftPreconditioner.cpp\
@@ -180,6 +187,7 @@ $(srcdir)/Preconditioners/TSFPreconditionerBase.cpp\
 $(srcdir)/Preconditioners/TSFPreconditioner.cpp\
 $(srcdir)/Preconditioners/TSFPreconditionerFactoryBase.cpp\
 $(srcdir)/Preconditioners/TSFPreconditionerFactory.cpp\
+$(srcdir)/Preconditioners/TSFRightPreconditioner.cpp\
 $(srcdir)/Preconditioners/TSFTwoSidedPreconditioner.cpp 
  
  

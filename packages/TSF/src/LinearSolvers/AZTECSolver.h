@@ -5,6 +5,7 @@
 #include "TSFLinearSolverBase.h"
 #include "TSFTimeMonitor.h"
 #include "TSFHashtable.h"
+#include "TSFSmartPtr.h"
 
 
 
@@ -28,6 +29,12 @@ namespace TSF
       AZTECSolver(const TSFHashtable<int, int>& aztecOptions,
                   const TSFHashtable<int, double>& aztecParameters);
 
+      /* VEH/RST - construct AZTEC solver with given options, parameters, */
+      /* and preconditioner. */
+      AZTECSolver(const TSFHashtable<int, int>& aztecOptions,
+                  const TSFHashtable<int, double>& aztecParameters,
+                  const TSFSmartPtr<Epetra_Operator>& prec);
+
       /** TUVD */
       virtual ~AZTECSolver();
 
@@ -49,7 +56,10 @@ namespace TSF
       /** Aztec parameters */
       mutable TSFArray<double> parameters_;
 
-    };
+      /* preconditioner for Aztec solver */
+      TSFSmartPtr<Epetra_Operator> prec_;
+
+   };
 
 }
 

@@ -65,6 +65,18 @@ void TSFMatrixOperator::getILUKPreconditioner(int fillLevels,
 									"for base class");
 }
 
+// VEH added a get method for a right ILUK preconditioner.
+// The getILUKPreconditioner method remains a left preconditioner
+// so it will not break existing code.
+void TSFMatrixOperator::getILUKRightPreconditioner(int fillLevels,
+                                                   int overlapFill,
+                                                   TSFPreconditioner& rtn) const
+{
+	TSFError::raise("TSFMatrixOperator::getILUKRightPreconditioner not avaliable "
+									"for base class");
+}
+
+
 void TSFMatrixOperator::factor()
 {
 	TSFError::raise("TSFMatrixOperator::factor not avaliable "

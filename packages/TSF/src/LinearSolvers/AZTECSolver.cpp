@@ -38,6 +38,7 @@ AZTECSolver::AZTECSolver(const TSFHashtable<int, int>& inputOptions,
 
 	/* initialize the options and parameters with Aztec's defaults */
 	AZ_defaults((int*) &(options_[0]), (double*) &(parameters_[0]));
+  prec_ = NULL;
 
 	/* set user-specified options  */
 	TSFArray<int> optionKeys;
@@ -58,6 +59,44 @@ AZTECSolver::AZTECSolver(const TSFHashtable<int, int>& inputOptions,
 		}
 
 }
+
+
+AZTECSolver::AZTECSolver(const TSFHashtable<int, int>& inputOptions,
+												 const TSFHashtable<int, double>& inputParameters,
+                         const TSFSmartPtr<Epetra_Operator>& prec)
+	: TSFLinearSolverBase(),
+		options_(AZ_OPTIONS_SIZE),
+		parameters_(AZ_PARAMS_SIZE)
+{
+  /* VEH/RST contructor for AZTECSolver that allows an Epetra_Operator */
+  /* as a preconditioner. Can be used to include an ML preconditioner. */
+	TSFHashtable<int, int> userOptions = inputOptions;
+	TSFHashtable<int, double> userParameters = inputParameters;
+  prec_ = prec;
+
+	/* initialize the options and parameters with Aztec's defaults */
+	AZ_defaults((int*) &(options_[0]), (double*) &(parameters_[0]));
+
+	/* set user-specified options  */
+	TSFArray<int> optionKeys;
+	TSFArray<int> optionVals;
+	userOptions.arrayify(optionKeys, optionVals);
+	for (int i=0; i<optionKeys.length(); i++)
+		{
+			options_[optionKeys[i]] = optionVals[i];
+		}
+	
+	/* set user-specified params  */
+	TSFArray<int> paramKeys;
+	TSFArray<double> paramVals;
+	userParameters.arrayify(paramKeys, paramVals);
+	for (int i=0; i<paramKeys.length(); i++)
+		{
+			parameters_[paramKeys[i]] = paramVals[i];
+		}
+
+}
+
 
 AZTECSolver::~AZTECSolver(){;}
 
@@ -83,8 +122,16 @@ bool AZTECSolver::solve(const TSFLinearOperator& op,
 	int maxIters = options_[AZ_max_iter];
 	double tol = parameters_[AZ_tol];
 
-	aztec.Iterate(maxIters, tol);
-
+  /* VEH/RST - need to use recursiveIterate if we are using */
+  /* an Epetra_Operator as a preconditioner */
+	if (prec_.get() != 0) {
+    aztec.SetPrecOperator(prec_.get());
+    aztec.recursiveIterate(maxIters, tol);
+  }
+  
+  else
+  	aztec.Iterate(maxIters, tol);
+  
 	soln = xCopy;
 	return true;
 }

@@ -68,8 +68,13 @@ void TSFBlockLinearOperator::apply(const TSFVector& arg,
 {
 	for (int i=0; i<nBlockRows_; i++)
 		{
-			TSFVector tmpRow = range().getBlock(i).createMember();
-            tmpRow.zero();
+      // VEH/RST changed apply so it doesn't reallocate space unless necessary
+		  TSFVector tmpRow = out.getBlock(i);
+		  if (tmpRow.isNull()) 
+        {
+          tmpRow = range().getBlock(i).createMember();
+        }
+      tmpRow.zero();
 			for (int j=0; j<nBlockCols_; j++)
 				{
 					TSFVector tmp = range().getBlock(i).createMember();

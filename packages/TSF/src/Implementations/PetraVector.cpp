@@ -227,6 +227,12 @@ Epetra_Vector& PetraVector::getLocalValues(TSFVector& v)
 	return getConcrete(v).localValues();
 }
 
+/* VEH/RST get the pointer to an epetra vector from a PetraVector */
+TSFSmartPtr<Epetra_Vector> PetraVector::getPetraPtr(const TSFVector& v)
+{
+  return getConcrete(v).localValues_;
+}
+
 const PetraVector& PetraVector::getConcrete(const TSFVector& x)
 {
 	const PetraVector* v = dynamic_cast<const PetraVector*>(x.ptr());
