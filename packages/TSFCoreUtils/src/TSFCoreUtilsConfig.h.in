@@ -1,4 +1,4 @@
-/* src/MoochoUtilities/TSFCoreUtilsConfig.h.in.  Generated from configure.ac by autoheader.  */
+/* src/TSFCoreUtilsConfig.h.in.  Generated from configure.ac by autoheader.  */
 
 /* Define to dummy `main' function (if any) required to link to the Fortran 77
    libraries. */
@@ -38,14 +38,26 @@
 /* Define to 1 if you have the <iomanip.h> header file. */
 #undef HAVE_IOMANIP_H
 
+/* Define to 1 if you have the <iosfwd> header file. */
+#undef HAVE_IOSFWD
+
 /* Define to 1 if you have the <iostream> header file. */
 #undef HAVE_IOSTREAM
 
 /* Define to 1 if you have the <iostream.h> header file. */
 #undef HAVE_IOSTREAM_H
 
+/* Define to 1 if you have the <limits.h> header file. */
+#undef HAVE_LIMITS_H
+
+/* Define to 1 if you have the <malloc.h> header file. */
+#undef HAVE_MALLOC_H
+
 /* Define to 1 if you have the <math.h> header file. */
 #undef HAVE_MATH_H
+
+/* Define to 1 if you have the <memory> header file. */
+#undef HAVE_MEMORY
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
@@ -59,11 +71,23 @@
 /* define if the compiler implements namespaces */
 #undef HAVE_NAMESPACES
 
+/* Define to 1 if you have the <new> header file. */
+#undef HAVE_NEW
+
 /* Define if want to build with newp_swahili enabled */
 #undef HAVE_NEWP_SWAHILI
 
 /* define if the compiler accepts the new for scoping rules */
 #undef HAVE_NEW_FOR_SCOPING
+
+/* Define to 1 if you have the <ostream> header file. */
+#undef HAVE_OSTREAM
+
+/* Define to 1 if you have the <sstream> header file. */
+#undef HAVE_SSTREAM
+
+/* Define to 1 if you have the <stdexcept> header file. */
+#undef HAVE_STDEXCEPT
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -94,6 +118,9 @@
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <typeinfo> header file. */
+#undef HAVE_TYPEINFO
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
