@@ -46,6 +46,8 @@ std_ops_CXXFLAGS = \
   -I$(top_srcdir)/src \
   -I$(top_srcdir)/src/interfaces/Core \
   -I$(top_srcdir)/src/utilities/Core \
+  -I$(top_srcdir)/src/adapters/mpi-base \
+  -I$(top_srcdir)/src/adapters/epetra \
   -I$(top_srcdir)/example/Core \
   -I$(top_builddir)/../TSFCoreUtils/src \
   -I$(top_srcdir)/../TSFCoreUtils/src/RTOpPack \
