@@ -291,6 +291,14 @@ protected:
 
 	//@}
 
+private:
+	
+#ifdef DOXYGEN_COMPILE
+	VectorWithOp         *rows;
+	VectorWithOp         *columns;
+	VectorWithOp         *diagonals;
+#endif	
+
 }; // end class MultiVector
 
 // //////////////////////////////////////////////////
