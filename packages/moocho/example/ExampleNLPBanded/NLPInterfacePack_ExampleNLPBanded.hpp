@@ -41,17 +41,17 @@ namespace NLPInterfacePack {
 
     min    f(x) = (1/2) * sum( x(i)^2, for i = 1..n )
     s.t.
-           c(j) = ( 10*x(j)                              \
-                    - sum( 10/(k)*x(j-k), k=kll...klu )  |
-                    - sum( 10/(k)*x(j+k), k=kul...kuu )  | for j  = 1...nD
-                   ) * (x(nD+q(j)) + 1)^2                |
-                   + co(j) == 0                          /
+           c(j) = ( 10*x(j)                                    \
+                    - sum( 3/(k)*x(j-k), k=1...klu(j) )        |
+                    - sum( 3/(k)*x(j+k), k=1...kuu(j) )        | for j  = 1...nD
+                   ) * (x(nD+q(j)) + 1)^2                      |
+                   + co(j) == 0                                /
 
-            c(nD+jU) = c(jU) + co(nD+jU)  == 0           } for jU = 1...mU
+            c(nD+jU) = c(jU) + co(nD+jU)  == 0                 } for jU = 1...mU
 
-            hl(jI) <= x(jI) - x(nD+q(jI)) <= hu(jI)      } for jI = 1...mI
+            hl(jI) <= x(jI) - x(nD+q(jI)) <= hu(jI)            } for jI = 1...mI
 
-            xl(i) <= x(i) <= xu(i)                       } for i  = 1...n
+            xl(i) <= x(i) <= xu(i)                             } for i  = 1...n
 
     where:
 
@@ -65,24 +65,17 @@ namespace NLPInterfacePack {
         q(j) = floor((j-1)/nI) + |
                                  \ 1  : if floor((j-1)/nI) >= nD % nI
 
-               / 1    : if j > 1                                  \
-        kll =  |                                                  |
-               \ 0    : if j == 1                                 |
-                                                                  |
-               / bw-1 : if j - bw > 1                             |
-        klu =  |                                                  |
-               \ j-1  : if j - bw <= 1                            |
+                                                                  
+                  / bw-1 : if j - bw >= 0                         \
+        klu(j) =  |                                               |
+                  \ j-1  : if j - bw <= 1                         |
                                                                   | for j=1...nD
-               / 1    : if j < nD                                 |
-        kul =  |                                                  |
-               \ 0    : if j == nD                                |
-                                                                  |
-               / bw-1 : if j + bw-1 <= nD                         |
-        kuu =  |                                                  |
-               \ nD-j : if j - bw <= 1                            /
+                  / bw-1 : if j + bw-1 <= nD                      |
+        kuu(j) =  |                                               |
+                  \ nD-j : if j - bw <= 1                         /
  \endverbatim
- * In the above formuation, the sums are not computed if the upper and lower bounds
- * on \c k are zero.  The term <tt>co(j)</tt> is an adjustable term that can be used
+ * In the above formuation, the sums are not computed if the upper bounds on \c k
+ * are zero.  The term <tt>co(j)</tt> is an adjustable term that can be used
  * to manipulate the solution.  Note that if <tt>co(nD+jI) != 0</tt> above, then
  * the undecomposed dependent equality constraints are inconsistent with the
  * decomposed equalities and therefore the NLP is infeasible.  An infeasible NLP
@@ -92,22 +85,24 @@ namespace NLPInterfacePack {
  * For the above NLP, the Jacobian of the decomposed equalities has Jacobian elements:
  \verbatim
     
-                      /  10/(j-i) * (x(nD+q(j)) + 1)^2         : i < j
+                      /  -3/(j-i) * (x(nD+q(j)) + 1)^2         : i - klu(i) <= j < i
                       |
                       |  10 * (x(nD+q(j)) + 1)^2               : i == j
    d(c(j))/d(x(i)) =  |
-                      |  10/(i-j) * (x(nD+q(j)) + 1)^2         : i > j
+                      |  -3/(i-j) * (x(nD+q(j)) + 1)^2         : i < j <= i + kuu(i)
                       |
-                      \  2 * (c(j) - co(j)) * (x(nD+q(j)) + 1) : i == nD + q
+                      |  2 * (c(j) - co(j)) / (x(nD+q(j)) + 1) : i == nD + q
+                      | 
+                      \  0                                     : otherwise
                       
-                      , for j = 1...nD
+                      , for j = 1...nD, i = 1...nD+nI
  \endverbatim
  * The above definition shows that for the independent variables, the Jacobian
  * elements are written in terms of the constraint \c c(j).  This fact
  * is exploited in the computational routines when <tt>this->multi_calc() == true</tt>.
  *
  * For <tt>nD == 7, nI == 2, bw = 2</tt> with <tt>floor(nD/nI) = 3</tt> and
- * <tt>nD%nI = 1</tt>, the Jacobian <tt>Gc'</tt> looks like:
+ * <tt>nD \% nI = 1</tt>, the Jacobian <tt>Gc'</tt> looks like:
  \verbatim
 
    1 | x  x                 x    |
@@ -139,14 +134,15 @@ public:
 	ExampleNLPBanded(
 		size_type     nD
 		,size_type    nI
-		,size_type    bw = 1
-		,size_type    mU = 0
-		,size_type    mI = 0
-		,value_type   xo = 0.1
-		,value_type   xl = -NLP::infinite_bound()
-		,value_type   xu = +NLP::infinite_bound()
-		,value_type   hl = -NLP::infinite_bound()
-		,value_type   hu = +NLP::infinite_bound()
+		,size_type    bw                = 1
+		,size_type    mU                = 0
+		,size_type    mI                = 0
+		,value_type   xo                = 0.1
+		,value_type   xl                = -NLP::infinite_bound()
+		,value_type   xu                = +NLP::infinite_bound()
+		,value_type   hl                = -NLP::infinite_bound()
+		,value_type   hu                = +NLP::infinite_bound()
+		,bool         nlp_selects_basis = false
 		);
 
 	//@}
@@ -281,6 +277,7 @@ private:
 	bool         is_initialized_;
 
 	bool         nlp_selects_basis_;
+	bool         basis_selection_was_given_;
 
 	mutable bool multi_calc_;
 
@@ -299,11 +296,18 @@ private:
 	Vector       hl_full_;
 	Vector       hu_full_;
 
+	Vector       co_full_;
+
+	mutable bool  c_full_updated_;
+
 	// /////////////////////////////////////////
 	// Private member functions
 
 	///
 	void assert_is_initialized() const;
+
+	///
+	void inform_new_point(bool newx) const;
 
 	// Not defined and not to be called
 	ExampleNLPBanded();

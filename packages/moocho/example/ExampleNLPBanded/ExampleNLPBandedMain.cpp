@@ -18,7 +18,7 @@
 #include "ExampleNLPBanded.h"
 #include "ReducedSpaceSQPPack/Configurations/rSQPppSolver.h"
 
-int main( int argc, char argv[] )
+int main( int argc, char* argv[] )
 {
 	namespace rcp   = MemMngPack;
 	namespace rsqp  = ReducedSpaceSQPPack;
@@ -36,17 +36,31 @@ int main( int argc, char argv[] )
 		size_type    nD = 2;
 		size_type    nI = 1;
 		size_type    bw = 1;
-		size_type    mU = 0;
-		size_type    mI = 0;
+		value_type   xo = 0.1;
+		bool         nlp_selects_basis = false;
 		value_type   xl = -NLP::infinite_bound();
 		value_type   xu = +NLP::infinite_bound();
+		size_type    mU = 0;
+		size_type    mI = 0;
 		value_type   hl = -NLP::infinite_bound();
 		value_type   hu = +NLP::infinite_bound();
 		
-		// ToDo: readin the arguments from argv[]
+		// Read from the arguments
+		if(argc > 1)
+			nD = ::atoi(argv[1]);
+		if(argc > 2)
+			nI = ::atoi(argv[2]);
+		if(argc > 3)
+			bw = ::atoi(argv[3]);
+		if(argc > 4)
+			xo = ::atof(argv[4]);
+		if(argc > 5)
+			nlp_selects_basis = (::atoi(argv[5]) != 0 );
+
+		// ToDo: readin more the arguments from argv[] when options are supported
 		
 		ExampleNLPBanded
-			nlp(nD,nI,bw,mU,mI,xl,xu,hl,hu);
+			nlp(nD,nI,bw,mU,mI,xo,xl,xu,hl,hu,nlp_selects_basis);
 
 		rSQPppSolver  solver;
 
