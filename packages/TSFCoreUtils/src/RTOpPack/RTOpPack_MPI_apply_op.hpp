@@ -362,7 +362,7 @@ void RTOpPack::MPI_apply_op(
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
   typedef typename RTOpT<Scalar>::primitive_value_type primitive_value_type;
   // See if we need to do any global communication at all?
-  if( comm != MPI_COMM_NULL || reduct_objs == NULL ) {
+  if( comm == MPI_COMM_NULL || reduct_objs == NULL ) {
     if( sub_vecs || sub_targ_vecs ) {
       for( int kc = 0; kc < num_cols; ++kc ) {
         op.apply_op(
@@ -504,7 +504,7 @@ void RTOpPack::MPI_apply_op(
         ,&i_reduct_objs_tmp[0]+kc*reduct_obj_ext_size
         );
     }
-#define HACK_TESTING
+//#define HACK_TESTING
 #ifdef HACK_TESTING
     int dummy_len = num_cols;
     RTOpPack_MPI_apply_op_reduction_op( &i_reduct_objs_ext[0], &i_reduct_objs_tmp[0], &dummy_len, &mpi_reduct_ext_type );

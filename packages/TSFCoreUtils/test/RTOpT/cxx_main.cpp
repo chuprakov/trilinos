@@ -75,7 +75,7 @@ void test_do_stuff( MPI_Comm mpiComm, const int n, std::ostream &out )
     ,0,(const RTOpPack::MutableSubVectorT<Scalar>*)NULL
     ,&*sum_targ
     );
-  cout << sum_op(*sum_targ) << std::endl;
+  out << sum_op(*sum_targ) << std::endl;
   out << "\n*** Leaving test_do_stuff<"<<typeid(Scalar).name()<<"> ...\n";
 }
 
@@ -187,7 +187,7 @@ int main( int argc, char* argv[] ) {
         ,0,(const RTOpPack::MutableSubVectorT<Scalar>*)NULL
         ,&*sum_targ
         );
-      cout << RTOp_ROp_sum_val(sum_op(*sum_targ)) << std::endl;
+      out << RTOp_ROp_sum_val(sum_op(*sum_targ)) << std::endl;
     }
 
     // Do more stuff, Blah blah blah ...
