@@ -10,6 +10,9 @@
 #include "TSFHandleable.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
+
+#ifndef DOXYGEN_DEVELOPER_ONLY
+
 namespace TSFExtended
 {
   using namespace Teuchos;
@@ -90,4 +93,8 @@ ostream& operator<<(ostream& os, const TSFExtended::Handle<PointerType>& h)
   return os;
 }
 
+
+#endif  /* DOXYGEN_DEVELOPER_ONLY */
+
 #endif
+

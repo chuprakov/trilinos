@@ -369,6 +369,10 @@ AC_CONFIG_FILES([
 		src/Makefile
 		test/Makefile
 		test/VectorTests/Makefile
+  doc/Makefile  
+  doc/Doxygen/Makefile
+  doc/Doxygen/Doxyfile.user
+  doc/Doxygen/Doxyfile.developer
 		])
 
 AC_OUTPUT()

@@ -7,6 +7,10 @@
 #include "TSFConfigDefs.hpp"
 #include "TSFCoreTypes.hpp"
 
+
+
+#ifndef DOXYGEN_DEVELOPER_ONLY
+
 namespace TSFExtended
 {
   using TSFCore::Index;
@@ -31,5 +35,7 @@ namespace TSFExtended
       virtual const Scalar& getElement(Index globalIndex) const = 0 ;
     };
 }
+
+#endif  /* DOXYGEN_DEVELOPER_ONLY */
 
 #endif

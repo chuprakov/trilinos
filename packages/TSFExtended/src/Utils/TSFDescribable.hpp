@@ -7,6 +7,10 @@
 #include "TSFConfigDefs.hpp"
 #include "TSFCoreTypes.hpp"
 
+
+
+#ifndef DOXYGEN_DEVELOPER_ONLY
+
 namespace TSFExtended
 {
   /**
@@ -21,5 +25,7 @@ namespace TSFExtended
       virtual string describe() const = 0 ;
     };
 }
+
+#endif  /* DOXYGEN_DEVELOPER_ONLY */
 
 #endif

@@ -7,9 +7,12 @@
 #include "TSFConfigDefs.hpp"
 #include "TSFVector.hpp"
 
-namespace TSFExtended
+#ifndef DOXYGEN_DEVELOPER_ONLY
+
+namespace TSFExtendedOps
 {
-  
+  using TSFExtended::Vector;
+
   /** 
    *
    */
@@ -190,9 +193,12 @@ namespace TSFExtended
     
     return result;
   }
+}
 
+namespace TSFExtended
+{
   template <class Scalar>
-  Vector<Scalar>& Vector<Scalar>::operator=(const LC1<Scalar>& x)
+  Vector<Scalar>& Vector<Scalar>::operator=(const TSFExtendedOps::LC1<Scalar>& x)
   {
     if (ptr().get()==0)
       {
@@ -214,7 +220,7 @@ namespace TSFExtended
   
   template <class Scalar>
   template <class Node1, class Node2>
-  Vector<Scalar>& Vector<Scalar>::operator=(const LCN<Scalar, Node1, Node2>& x)
+  Vector<Scalar>& Vector<Scalar>::operator=(const TSFExtendedOps::LCN<Scalar, Node1, Node2>& x)
   {
     if (ptr().get()==0)
       {
@@ -233,6 +239,8 @@ namespace TSFExtended
   }
 
 }
+
+#endif  /* DOXYGEN_DEVELOPER_ONLY */
 
 
 #endif

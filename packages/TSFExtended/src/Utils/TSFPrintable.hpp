@@ -7,6 +7,9 @@
 #include "TSFConfigDefs.hpp"
 #include "TSFCoreTypes.hpp"
 
+
+#ifndef DOXYGEN_DEVELOPER_ONLY
+
 namespace TSFExtended
 {
   /**
@@ -21,4 +24,6 @@ namespace TSFExtended
     };
 }
 
+
+#endif  /* DOXYGEN_DEVELOPER_ONLY */
 #endif

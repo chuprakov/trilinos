@@ -12,15 +12,57 @@
 #include "TSFAccessibleVector.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 
+namespace TSFExtendedOps
+{
+  template <class Scalar, class Node1, class Node2> class LCN;
+  template <class Scalar> class LC1;
+}
+
 namespace TSFExtended
 {
   using TSFCore::Index;
 
-  template <class Scalar, class Node1, class Node2> class LCN;
-  template <class Scalar> class LC1;
+  
 
   /** 
    * User-level vector class. 
+   *
+   * <h2> Creating vectors </h2>
+   *
+   * Ordinarily, you will never construct a Vector directly
+   * from a derived type.  Rather, the createMember() method of
+   * VectorSpace is used to build a vector of the appropriate
+   * type, for example,
+   * \code 
+   * VectorType<double> vecType = new EpetraVectorType();
+   * int dimension = 100;
+   * VectorSpace<double> space = vecType.createSpace(dimension);
+   * Vector<double> x = space.createMember(); 
+   * Vector<double> y = space.createMember(); 
+   * \endcode 
+   * This hides from you all the ugly
+   * details of creating a particular concrete type.
+   *
+   * You will frequently create an empty vector to be filled in later, 
+   * for example,
+   * \code
+   * Vector<double> y;
+   * \endcode
+   * Note that this vector isn't just empty, it's null. Not only does 
+   * it have no values assigned, it does not have a concrete type. An 
+   * call a method on a null vector will result in an error. What you 
+   * <it>can</it> do with a null vector is
+   * <ul>
+   * <li> assign another vector to it
+   * \code
+   * Vector<double> x = space.createVector();
+   * Vector<Scalar> y;
+   * y = x.copy();
+   * \endcode
+   * <li> assign the result of a vector operation to it
+   * \code
+   * Vector<Scalar> z = a*x + b*y;
+   * \endcode
    */
   template <class Scalar>
   class Vector : public Handle<TSFCore::Vector<Scalar> >
@@ -34,12 +76,16 @@ namespace TSFExtended
       /** Construct with an existing smart pointer */
       Vector(const RefCountPtr<TSFCore::Vector<Scalar> >& smartPtr);
 
-      /** */
-      Vector& operator=(const LC1<Scalar>& x);
+#ifndef DOXYGEN_DEVELOPER_ONLY
+      /** Assign a one-term linear combination 
+       * (i.e., a scalar times a vector) 
+       * to this vector */
+      Vector& operator=(const TSFExtendedOps::LC1<Scalar>& x);
 
-      /** */
+      /** Assign a linear combination of vectors to this vector */
       template<class Node1, class Node2>
-      Vector& operator=(const LCN<Scalar, Node1, Node2>& x);
+      Vector& operator=(const TSFExtendedOps::LCN<Scalar, Node1, Node2>& x);
+#endif
       //@}
 
       /** */
@@ -113,11 +159,13 @@ namespace TSFExtended
       
       
     private:
+#ifndef DOXYGEN_DEVELOPER_ONLY
       /** Cross-cast vector pointer to an accessible vector */
       const AccessibleVector<Scalar>* castToAccessible() const ;
 
       /** Cross-cast vector to a loadable vector */
       LoadableVector<Scalar>* castToLoadable()  ;
+#endif
     };
 
   template <class Scalar> inline 

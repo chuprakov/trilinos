@@ -11,6 +11,7 @@
 
 using namespace Teuchos;
 using namespace TSFExtended;
+using namespace TSFExtendedOps;
 
 void timeStats(const vector<double>& opTimings, double& avgTOp,
                double& stdDev)

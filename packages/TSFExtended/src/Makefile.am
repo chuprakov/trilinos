@@ -45,6 +45,7 @@
 
 VECTORS_H = \
 	$(srcdir)/Vectors/TSFLoadableVector.hpp\
+	$(srcdir)/Vectors/TSFLinearCombination.hpp\
 	$(srcdir)/Vectors/TSFAccessibleVector.hpp\
 	$(srcdir)/Vectors/TSFVector.hpp
 	$(srcdir)/Vectors/TSFVectorSpace.hpp

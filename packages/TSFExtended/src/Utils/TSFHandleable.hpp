@@ -7,6 +7,8 @@
 #include "TSFConfigDefs.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
+#ifndef DOXYGEN_DEVELOPER_ONLY
+
 namespace TSFExtended
 {
   using namespace Teuchos;
@@ -40,6 +42,9 @@ namespace TSFExtended
   };
   
 }
+
+
+#endif  /* DOXYGEN_DEVELOPER_ONLY */
 
 
 #endif

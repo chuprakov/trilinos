@@ -104,7 +104,17 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 autom4te.cache/* \
 #endif
 
 #SUBDIRS = src $(TEST_SUBDIR
-SUBDIRS = src test
+SUBDIRS = src test doc
+
+## #######################################################################
+## Documentation
+## #######################################################################
+
+dox: 
+	cd doc/Doxygen;	$(MAKE) dox; 
+
+
+
 
 
 
