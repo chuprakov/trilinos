@@ -21,7 +21,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsingAggr.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixPermAggr.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/MultiVectorMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MultiVectorMutableDense.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "ThrowException.hpp"
 #include "dynamic_cast_verbose.hpp"

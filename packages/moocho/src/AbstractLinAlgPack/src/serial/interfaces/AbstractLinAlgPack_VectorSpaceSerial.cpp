@@ -18,7 +18,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceFactorySerial.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpMutableDense.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/MultiVectorMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MultiVectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"

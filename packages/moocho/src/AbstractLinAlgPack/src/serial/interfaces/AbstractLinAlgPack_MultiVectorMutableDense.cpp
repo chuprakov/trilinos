@@ -15,7 +15,7 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/serial/implementations/MultiVectorMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MultiVectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpMutableDense.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSymMutable.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
