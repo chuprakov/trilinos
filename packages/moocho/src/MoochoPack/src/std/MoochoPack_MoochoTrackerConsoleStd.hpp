@@ -88,6 +88,9 @@ public:
 
 protected:
 
+	/// Print the top header to the output
+	void print_top_header(const rSQPState &s, const rSQPAlgo& algo) const;
+
 	/// Print the header to the output
 	void print_header(const rSQPState &s, const rSQPAlgo& algo) const;
 
@@ -95,8 +98,18 @@ protected:
 	{	return *const_cast<rSQPTrackConsoleStd*>(this)->o_; }
 
 private:
+
+	// ///////////////////////////////////////////
+	// Private types
+
+	enum { NUM_PRINT_LINES = 10 };
+	
+	// ///////////////////////////////////////////
+	// Private data members
+
 	std::ostream*						o_;
 	mutable StopWatchPack::stopwatch	timer_;
+	mutable int							printed_lines_;
 
 	// Static formating info.
 	static int		w_i2_;
@@ -109,6 +122,9 @@ private:
 	static int		p3_;
 	static int		w_p3_;
 	static char		ul_p3_[];
+
+	// ///////////////////////////////////////////
+	// Private member funcitons
 
 	// Not defined and not to be called
 	rSQPTrackConsoleStd();

@@ -42,7 +42,7 @@ int		rSQPTrackConsoleStd::w_p3_		= 9;
 char	rSQPTrackConsoleStd::ul_p3_[]	= "---------";
 
 rSQPTrackConsoleStd::rSQPTrackConsoleStd(std::ostream& o, std::ostream& journal_out)
-	: rSQPTrack(journal_out), o_(&o)
+	: rSQPTrack(journal_out), o_(&o), printed_lines_(NUM_PRINT_LINES)
 {
 	timer_.start();
 }
@@ -58,9 +58,15 @@ void rSQPTrackConsoleStd::output_iteration(const Algorithm& p_algo) const
 {
 	const rSQPAlgo &algo = rsqp_algo(p_algo);
 	const rSQPState &s =algo.rsqp_state();
-	
-	// Output the table's header for the first iteration
+
 	if(s.k() == 0) {
+		print_top_header(s,algo);
+		printed_lines_ = NUM_PRINT_LINES;
+	}
+	
+	// Output the table's header
+	if(printed_lines_ == NUM_PRINT_LINES) {
+		printed_lines_ = 0;
 		print_header(s,algo);
 	}
 
@@ -145,6 +151,7 @@ void rSQPTrackConsoleStd::output_iteration(const Algorithm& p_algo) const
 
 	o() << std::endl;
 
+	++printed_lines_;
 }
 
 void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
@@ -158,6 +165,7 @@ void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 
 	// Output the table's header for the first iteration
 	if(s.k() == 0) {
+		print_top_header(s,algo);
 		print_header(s,algo);
 	}
 	else {
@@ -260,7 +268,7 @@ void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 		<< "Gc(x) : " << nlp.num_Gc_evals() << endl;
 }
 
-void rSQPTrackConsoleStd::print_header(const rSQPState &s
+void rSQPTrackConsoleStd::print_top_header(const rSQPState &s
 	, const rSQPAlgo &algo) const
 {
 	o()	<< "\n\n********************************\n"
@@ -275,7 +283,11 @@ void rSQPTrackConsoleStd::print_header(const rSQPState &s
 	if( algo.nlp().scale_f() != 1.0 ) {
 		o()	<< "f(x) is scaled by : " << algo.nlp().scale_f() << endl;
 	}
-		
+}
+
+void rSQPTrackConsoleStd::print_header(const rSQPState &s
+	, const rSQPAlgo &algo) const
+{
 	o()
 		<< endl
 		<< " " << left << setw(w_i4_) << "k"

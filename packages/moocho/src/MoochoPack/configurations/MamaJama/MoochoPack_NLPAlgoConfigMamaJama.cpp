@@ -256,7 +256,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 	}
 	else {
-		if( NULL != dynamic_cast<NLPReduced*>(algo->get_nlp()) ) {
+		// If it is not a tailored approach NLP then it better
+		// support the NLPReduced interface!
+		if( NULL == dynamic_cast<NLPReduced*>(algo->get_nlp()) ) {
 			std::ostringstream omsg;
 			omsg
 				<< "rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : "
