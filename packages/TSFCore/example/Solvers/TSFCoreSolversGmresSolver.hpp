@@ -87,6 +87,7 @@ SolveReturn GMRESSolver<Scalar>::solve(
     //
     //  Initialize internal data structures
     //		
+	curr_iter = 0;
     V_ = Op_domain.createMembers(max_iter+1);
     r = Op_domain.createMember();
     //
@@ -97,44 +98,54 @@ SolveReturn GMRESSolver<Scalar>::solve(
 		z.resize(max_iter+1);
 		cs.resize(max_iter); sn.resize(max_iter);
     }
-    //
-    // Determine the residual from the current solution: r = b - Op*curr_soln 
-    //
-    assign( r.get(), b );
-    Op.apply( Op_trans, *curr_soln, r.get(), 1.0, -1.0 );
-    curr_res = norm_2( *r ) / norm_2( b ); 	        
-    if (curr_res < tol) { isConverged = true; }
-    //
-    // Set up initial vector.
-    //
-    r0 = norm_2( *r );
-    z[0] = r0;
-	MemMngPack::ref_count_ptr<Vector<Scalar> >
-		w = V_->col(1);		    // get a mutable view of the first column of V_.
-    assign( w.get(), *r );      // copy r to the first column of V_.
-    Vt_S( w.get(), 1.0/r0 );    // v_1 = r_0 / ||r_0||
-    w = MemMngPack::null;       // Forces V_ to be modified
-//
-// Calls doIteration() using the current linear system parameters.
-//
-	curr_iter = 0;
-    while( !isConverged && (curr_iter < max_iter) ) { doIteration( Op, Op_trans ); }
-//
-// Solve least squares problem.
-//
-	Teuchos::BLAS<int, Scalar> blas;
-	blas.TRSM(Teuchos::LEFT_SIDE, Teuchos::UPPER_TRI, Teuchos::NO_TRANS, Teuchos::NON_UNIT_DIAG, 
-			  curr_iter, 1, 1.0, H_.values(), max_iter+1, &z[0], max_iter+1 );
-//
-// Compute the new solution.
-//
-	if( curr_iter > 0 ) {
-		MemMngPack::ref_count_ptr<MultiVector<Scalar> > V = V_->subView(Range1D(1,curr_iter));
-		SerialVector<Scalar> z_vec( &z[0], 1, curr_iter, false );
-		V->apply( NOTRANS, z_vec, curr_soln, -1.0, 1.0 );
+	//
+	// Check if the RHS is zero
+	//
+	isConverged = false;
+	const Scalar norm_2_b = norm_2( b );
+    if(norm_2_b == 0.0) {
+		isConverged = true;
+		assign( curr_soln, 0.0 );
 	}
-//	for( int i = 0; i < curr_iter; i++ )
-//		Vp_StV( curr_soln, -z[i], *V_->col(i+1) );
+	if(!isConverged) {
+		//
+		// Determine the residual from the current solution: r = b - Op*curr_soln 
+		//
+		assign( r.get(), b );
+		Op.apply( Op_trans, *curr_soln, r.get(), 1.0, -1.0 );
+		curr_res = norm_2( *r ) / ( 1.0 + norm_2( b ) );
+		if (curr_res < tol) isConverged = true;
+		//
+		// Set up initial vector.
+		//
+		r0 = norm_2( *r );
+		z[0] = r0;
+		MemMngPack::ref_count_ptr<Vector<Scalar> >
+			w = V_->col(1);		    // get a mutable view of the first column of V_.
+		assign( w.get(), *r );      // copy r to the first column of V_.
+		Vt_S( w.get(), 1.0/r0 );    // v_1 = r_0 / ||r_0||
+		w = MemMngPack::null;       // Forces V_ to be modified
+		//
+		// Calls doIteration() using the current linear system parameters.
+		//
+		while( !isConverged && (curr_iter < max_iter) ) { doIteration( Op, Op_trans ); }
+		//
+		// Solve least squares problem.
+		//
+		Teuchos::BLAS<int, Scalar> blas;
+		blas.TRSM(Teuchos::LEFT_SIDE, Teuchos::UPPER_TRI, Teuchos::NO_TRANS, Teuchos::NON_UNIT_DIAG, 
+				  curr_iter, 1, 1.0, H_.values(), max_iter+1, &z[0], max_iter+1 );
+		//
+		// Compute the new solution.
+		//
+		if( curr_iter > 0 ) {
+			MemMngPack::ref_count_ptr<MultiVector<Scalar> > V = V_->subView(Range1D(1,curr_iter));
+			SerialVector<Scalar> z_vec( &z[0], 1, curr_iter, false );
+			V->apply( NOTRANS, z_vec, curr_soln, -1.0, 1.0 );
+		}
+		//for( int i = 0; i < curr_iter; i++ )
+		//	Vp_StV( curr_soln, -z[i], *V_->col(i+1) );
+	}
 	return SolveReturn( curr_iter >= max_iter ? MAX_ITER_EXCEEDED : SOLVED_TO_TOL, curr_iter );
 }
 
