@@ -79,6 +79,9 @@ bool LineSearchFullStep_Step::do_step(Algorithm& _algo
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\n||x_kp1||inf   = " << s.x().get_k(+1).norm_inf() << std::endl;
 	}
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+		out << "\nx_kp1 =\n" << s.x().get_k(+1);
+	}
 
 	if(algo.algo_cntr().check_results()) {
 		assert_print_nan_inf(
@@ -115,14 +118,13 @@ bool LineSearchFullStep_Step::do_step(Algorithm& _algo
 			<< "\n||c_kp1||inf = " << s.c().get_k(+1).norm_inf() << std::endl;
 	}
 
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+		out << "\nc_kp1 =\n" << s.c().get_k(+1); 
+	}
+
 	if(algo.algo_cntr().check_results()) {
 		assert_print_nan_inf( s.f().get_k(+1), "f(x_kp1)", true, &out );
 		assert_print_nan_inf( s.c().get_k(+1), "c(x_kp1)", true, &out );
-	}
-
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out << "\nx_kp1 =\n" << s.x().get_k(+1)
-			<< "\nc_kp1 =\n" << s.c().get_k(+1); 
 	}
 
 	return true;
