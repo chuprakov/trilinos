@@ -37,7 +37,6 @@
 
 namespace TSFCore {
 
-///
 /** \brief Concrete <tt>Vector</tt> adapter subclass for
  * <tt>Epetra_Vector</tt>.
  *
@@ -67,14 +66,12 @@ public:
 	/** @name Constructors/initializers */
 	//@{
 
-	///
 	/** Construct to uninitialized.
 	 *
 	 * Has the same postconditions as <tt>setUninitialized()</tt>.
 	 */
 	EpetraVector();
 
-	///
 	/** Calls <tt>this->initialize()</tt>.
 	 */
 	EpetraVector(
@@ -82,7 +79,6 @@ public:
 		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_vec_spc
 		);
 
-	///
 	/** Initialize given <tt>Epetra_Vector</tt> and <tt>EpetraVectorSpace</tt> objects.
 	 *
 	 * @param  epetra_vec
@@ -107,7 +103,6 @@ public:
 		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_vec_spc
 		);
 
-	///
 	/** Set uninitialized and return the (possibly) owned
 	 * <tt>Epetra_Vector</tt> object.
 	 *
@@ -121,12 +116,10 @@ public:
 		,Teuchos::RefCountPtr<const EpetraVectorSpace>   *epetra_vec_spc = NULL
 		);
 
-	///
 	/** Return a smart pointer object to a <tt>const</tt> <tt>Epetra_Vector</tt> object.
 	 */
 	Teuchos::RefCountPtr<const Epetra_Vector> epetra_vec() const;
 
-  ///
 	/** Return a modifiable smart pointer object to a <tt>Epetra_Vector</tt> object. (Added by KL to support the LoadableVector interface in TSFExtended).
 	 */
 	Teuchos::RefCountPtr<Epetra_Vector> epetra_vec();
@@ -136,15 +129,15 @@ public:
 	/** @name Overridden from MPIVectorBase */
 	//@{
 
-	///
+	/// Overridden
 	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
-	///
+	/// Overridden
 	void getLocalData( Scalar** localValues, Index* stride );
-	///
+	/// Overridden
 	void commitLocalData( Scalar* localValues );
-	///
+	/// Overridden
 	void getLocalData( const Scalar** localValues, Index* stride ) const;
-	///
+	/// Overridden
 	void freeLocalData( const Scalar* localValues ) const;
 
 	//@}

@@ -37,7 +37,6 @@
 
 namespace TSFCore {
 
-///
 /** \briefe Concrete <tt>LinearOp</tt> adapter subclass for
  * <tt>Epetra_Operator</tt> object.
  *
@@ -64,7 +63,6 @@ public:
 	/** @name Constructors / initializers / accessors */
 	//@{
 
-	///
 	/** Construct to uninitialized.
 	 *
 	 * See the postconditions for <tt>setUninitialized()</tt>
@@ -81,7 +79,6 @@ public:
 		,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetraDomain   = Teuchos::null
 		);
 
-	///
 	/** Initialize
 	 *
 	 * @param  op       [in] The <tt>Epetra_Operator</tt> this <tt>*this</tt> will wrap.
@@ -130,7 +127,6 @@ public:
 		,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetraDomain   = Teuchos::null
 		);
 	
-	///
 	/** Set to uninitialized and return the current state.
 	 *
 	 * Postconditions:<ul>
@@ -147,7 +143,6 @@ public:
 		,Teuchos::RefCountPtr<const EpetraVectorSpace>   *epetraDomain   = NULL
 		);
 
-  ///
   /** Return a smart pointer to the EpetraVectorSpace object for range.
    *
 	 * Postconditions:<ul>
@@ -156,7 +151,6 @@ public:
 	 */
 	Teuchos::RefCountPtr<const EpetraVectorSpace> epetraRange() const;
 
-  ///
   /** Return a smart pointer to the EpetraVectorSpace object for domain.
    *
 	 * Postconditions:<ul>
@@ -165,12 +159,10 @@ public:
 	 */
 	Teuchos::RefCountPtr<const EpetraVectorSpace> epetraDomain() const;
 
-  ///
   /** Return a smart pointer to the Epetra_Operator object.
 	 */
 	Teuchos::RefCountPtr<Epetra_Operator> epetra_op();
 
-	///
   /** Return a smart pointer to the Epetra_Operator object.
 	 */
 	const Teuchos::RefCountPtr<Epetra_Operator>& epetra_op() const ;
@@ -180,7 +172,7 @@ public:
 	/** @name Overridden from OpBase */
 	//@{
 
-	///
+	/// Overridden
 	bool opSupported(ETransp M_trans) const;
 	
 	//@}
@@ -192,7 +184,7 @@ public:
 	Teuchos::RefCountPtr< const ScalarProdVectorSpaceBase<Scalar> > rangeScalarProdVecSpc() const;
 	/// Returns <tt>this->epetraDomain()</tt>
 	Teuchos::RefCountPtr< const ScalarProdVectorSpaceBase<Scalar> > domainScalarProdVecSpc() const;
-	///
+	/// Overridden
 	void euclideanApply(
 		const ETransp            M_trans
 		,const Vector<Scalar>    &x
@@ -200,7 +192,7 @@ public:
 		,const Scalar            alpha
 		,const Scalar            beta
 		) const;
-	///
+	/// Overridden
 	void euclideanApply(
 		const ETransp                 M_trans
 		,const MultiVector<Scalar>    &X

@@ -126,8 +126,6 @@ public:
 	//@{
 
 	///
-	Index dim() const;
-	///
 	Teuchos::RefCountPtr<Vector<Scalar> > createMember() const;
   ///
 	Teuchos::RefCountPtr<MultiVector<Scalar> > createMembers(int numMembers) const;

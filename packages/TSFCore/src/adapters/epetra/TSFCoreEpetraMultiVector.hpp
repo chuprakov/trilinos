@@ -37,7 +37,6 @@
 
 namespace TSFCore {
 
-///
 /** \brief Concrete <tt>MultiVector</tt> adapter subclass for
  * <tt>Epetra_MultiVector</tt>.
  *
@@ -58,7 +57,6 @@ public:
 	/** @name Constructors/Initializers */
 	//@{
 
-	///
 	/** Construct to initialized.
 	 *
 	 * Postconditions:<ul>
@@ -79,7 +77,6 @@ public:
 #endif
 		);
 	
-	///
 	/** Initialize given the <tt>Epetra_multi_vec</tt>.
    *
    * ToDo: Finish documentation!
@@ -94,7 +91,6 @@ public:
 #endif
 		);
 	
-	///
   /** Set uninitalized.
    *
    * ToDo: Finish documentation!
@@ -109,7 +105,6 @@ public:
 #endif
 		);
 
-	///
 	/** Get a smart pointer to non-<tt>const</tt> <tt>Epetra_MultiVector</tt> object.
 	 *
 	 * Note: Only the numerical values of the Epetra vector should be changed by the
@@ -117,7 +112,6 @@ public:
 	 */
  	Teuchos::RefCountPtr<Epetra_MultiVector> epetra_multi_vec();
 
-	///
 	/** Get a smart pointer to <tt>const</tt> <tt>Epetra_MultiVector</tt> object.
 	 *
 	 * This gives access to read the <tt>Epetra_MultiVector</tt> object only
@@ -129,10 +123,10 @@ public:
 
 	/** @name Overridden from EuclideanLinearOpBase */
 	//@{
-	///
+	/// Overridden
 	Teuchos::RefCountPtr< const ScalarProdVectorSpaceBase<Scalar> > domainScalarProdVecSpc() const;
 #if defined(TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR_MULTIPLY) && defined(TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE)
-	///
+	/// Overridden
 	void euclideanApply(
 		const ETransp                 M_trans
 		,const MultiVector<Scalar>    &X
@@ -145,25 +139,25 @@ public:
 
 	/** @name Overridden from MultiVector */
 	//@{
-	///
+	/// Overridden
 	Teuchos::RefCountPtr<Vector<Scalar> > col(Index j);
-	///
+	/// Overridden
 	Teuchos::RefCountPtr<MultiVector<Scalar> > subView( const Range1D& col_rng );
-	///
+	/// Overridden
 	Teuchos::RefCountPtr<MultiVector<Scalar> > subView( const int numCols, const int cols[] );
 	//@}
 
 	/** @name Overridden from MPIMultiVectorBase */
 	//@{
-	///
+	/// Overridden
 	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
-	///
+	/// Overridden
 	void getLocalData( const Scalar **values, Index *leadingDim ) const;
-	///
+	/// Overridden
 	void freeLocalData( const Scalar *values ) const;
-	///
+	/// Overridden
 	void getLocalData( Scalar **values, Index *leadingDim );
-	///
+	/// Overridden
 	void commitLocalData( Scalar *values );
 	//@}
 

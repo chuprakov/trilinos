@@ -37,7 +37,6 @@
 
 namespace TSFCore {
 
-///
 /** \brief Concrete <tt>VectorSpace</tt> adapter subclass for
  * <tt>Epetra_Map</tt> that creates <tt>Epetra</tt> adapted vectors
  * and multi-vectors.
@@ -75,21 +74,18 @@ public:
 	/** @name Constructors / initializers */
 	//@{
 
-	///
 	/** Constructs to an uninitialized state.
 	 *
 	 * See the postconditions for <tt>setUninitialized()</tt>.
 	 */
 	EpetraVectorSpace();
 
-	///
 	/** Calls <tt>initialize()</tt>.
 	 */
 	EpetraVectorSpace(
 		const Teuchos::RefCountPtr<const Epetra_Map>  &epetra_map
 		);
 
-	///
 	/** Initialize given an <tt>Epetra_Map</tt>.
 	 *
 	 * @param  epetra_map  [in] Smart pointer to <tt>const Epetra_Map</tt> object.
@@ -113,7 +109,6 @@ public:
 		const Teuchos::RefCountPtr<const Epetra_Map>  &epetra_map
 		);
 
-	///
 	/** Set uninitialized and return the underlying <tt>Epetra_Map</tt>
 	 *
 	 * @param  epetra_map  [in/out]  If <tt>epetra_map!=NULL</tt> on input then
@@ -131,7 +126,6 @@ public:
 		Teuchos::RefCountPtr<const Epetra_Map> *epetra_map = NULL
 		);
 
-	///
 	/** Return a smart pointer to the underlying <tt>Epetra_Map</tt> object.
 	 */
 	Teuchos::RefCountPtr<const Epetra_Map> epetra_map() const;
@@ -141,8 +135,6 @@ public:
 	/** @name Overridden from VectorSpece */
 	//@{
 
-	/// Returns 0 if uninitialized.
-	Index dim() const;
 	/// Returns an allocated <tt>EpetraVector</tt> object. 
 	Teuchos::RefCountPtr<Vector<Scalar> > createMember() const;
 #ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
@@ -159,9 +151,9 @@ public:
 	/** @name Overriddend from MPIVectorSpaceBase */
 	//@{
 	
-	///
+	/// Overridden
 	MPI_Comm mpiComm() const;
-	///
+	/// Overridden
 	Index localSubDim() const;
 
 	//@}

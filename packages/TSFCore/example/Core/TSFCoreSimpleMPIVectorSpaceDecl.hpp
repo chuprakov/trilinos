@@ -59,8 +59,6 @@ public:
 	//@{
 
 	///
-	Index dim() const;
-	///
 	Teuchos::RefCountPtr<Vector<Scalar> > createMember() const;
 	///
 	Teuchos::RefCountPtr< const VectorSpace<Scalar> > clone() const;
@@ -73,8 +71,6 @@ public:
 	///
 	MPI_Comm mpiComm() const;
 	///
-	Index localOffset() const;
-	///
  	Index localSubDim() const;
 
 	//@}
@@ -86,10 +82,6 @@ private:
 
 	MPI_Comm           mpiComm_;
 	Index              localSubDim_;
-	Index              globalDim_;
-	Index              localOffset_;
-	int                numProc_;
-	int                procRank_;
 
 	// Not defined and not to be called
 	SimpleMPIVectorSpace();

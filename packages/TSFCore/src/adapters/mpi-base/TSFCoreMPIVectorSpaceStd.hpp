@@ -42,14 +42,14 @@ namespace TSFCore {
 
 template<class Scalar>
 MPIVectorSpaceStd<Scalar>::MPIVectorSpaceStd()
-  :mpiComm_(MPI_COMM_NULL),localSubDim_(0),globalDim_(0),numProc_(0),procRank_(0)
+  :mpiComm_(MPI_COMM_NULL),localSubDim_(0),numProc_(0),procRank_(0)
 {
 	updateState();
 }
 
 template<class Scalar>
 MPIVectorSpaceStd<Scalar>::MPIVectorSpaceStd( MPI_Comm mpiComm, const Index localSubDim, const Index globalDim )
-  :mpiComm_(MPI_COMM_NULL),localSubDim_(0),globalDim_(0),numProc_(0),procRank_(0)
+  :mpiComm_(MPI_COMM_NULL),localSubDim_(0),numProc_(0),procRank_(0)
 {
   initialize(mpiComm,localSubDim,globalDim);
 }
@@ -66,32 +66,15 @@ void MPIVectorSpaceStd<Scalar>::initialize( MPI_Comm mpiComm, const Index localS
   if( mpiComm != MPI_COMM_NULL ) {
 		MPI_Comm_size( mpiComm_, &numProc_  );
 		MPI_Comm_rank( mpiComm_, &procRank_ );
-    if(globalDim < 0) {
-			MPI_Allreduce(
-				&localSubDim_                           // sendbuf
-				,&globalDim_                            // recvbuf
-				,1                                      // count
-				,Teuchos::RawMPITraits<Index>::type()   // datatype
-				,MPI_SUM                                // op
-				,mpiComm                                // comm
-				);
-    }
-    else {
-#ifdef _DEBUG
-      TEST_FOR_EXCEPT( globalDim == 0 );
-#endif
-      globalDim_ = globalDim; // Danger! we are taking the client's word for this!
-    }
 	}
 	else {
 #endif // RTOp_USE_MPI
 		numProc_  = 1;
 		procRank_ = 0;
-    globalDim_ = localSubDim_;
 #ifdef RTOp_USE_MPI
 	}
 #endif
-	updateState();
+	updateState(globalDim);
 }
 
 template<class Scalar>
@@ -99,20 +82,13 @@ void MPIVectorSpaceStd<Scalar>::uninitialize( MPI_Comm *mpiComm, Index *localSub
 {
   if(mpiComm)     *mpiComm      = mpiComm_;
   if(localSubDim) *localSubDim  = localSubDim_;
-  if(globalDim)   *globalDim    = globalDim_;
+  if(globalDim)   *globalDim    = this->dim();
 
   mpiComm_      = MPI_COMM_NULL;
   localSubDim_  = 0;
-  globalDim_    = 0;
 }
 
 // Overridden from VectorSpece
-
-template<class Scalar>
-Index MPIVectorSpaceStd<Scalar>::dim() const
-{
-	return globalDim_;
-}
 
 template<class Scalar>
 Teuchos::RefCountPtr<Vector<Scalar> >

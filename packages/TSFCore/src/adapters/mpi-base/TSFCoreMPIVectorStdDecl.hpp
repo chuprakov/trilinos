@@ -57,7 +57,7 @@ template<class Scalar>
 class MPIVectorStd : virtual public MPIVectorBase<Scalar> {
 public:
 
-	/** @name Constructors/initializers/accessors */
+	/** @name Constructors/initializers */
 	//@{
 
 
@@ -89,6 +89,12 @@ public:
    * <li><tt>localValues.get()!=NULL</tt>
    * <li><tt>stride != 0</tt>
    * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->getRCptr().get() == localValues.get()</tt>
+	 * <li> <tt>this->getPtr() == &*localValues</tt>
+	 * <li> <tt>this->getStride() == stride</tt>
+	 * </ul>
    */
 	void initialize(
     const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >    &mpiSpace
@@ -108,6 +114,22 @@ public:
     ,Index                                                     *stride        = NULL
     );
 
+	//@}
+
+	/** @name Accessors (inlined for minimal overhead) */
+	//@{
+
+	///
+	Teuchos::RefCountPtr<Scalar> getRCPtr();
+	///
+	Teuchos::RefCountPtr<const Scalar> getRCPtr() const;
+	///
+	Scalar* getPtr();
+	///
+	const Scalar* getPtr() const;
+	///
+	Index getStride() const;
+	
 	//@}
 
 	/** @name Overridden from MPIVectorBase */
@@ -136,6 +158,44 @@ private:
 	Index                                                     stride_;
 
 }; // end class MPIVectorStd
+
+// /////////////////////////////////////////////////////
+// Inline members
+
+template<class Scalar>
+inline
+Teuchos::RefCountPtr<Scalar> MPIVectorStd<Scalar>::getRCPtr()
+{
+	return localValues_;
+}
+
+template<class Scalar>
+inline
+Teuchos::RefCountPtr<const Scalar> MPIVectorStd<Scalar>::getRCPtr() const
+{
+	return localValues_;
+}
+
+template<class Scalar>
+inline
+Scalar* MPIVectorStd<Scalar>::getPtr()
+{
+	return localValues_.get();
+}
+
+template<class Scalar>
+inline
+const Scalar* MPIVectorStd<Scalar>::getPtr() const
+{
+	return localValues_.get();
+}
+
+template<class Scalar>
+inline
+Index MPIVectorStd<Scalar>::getStride() const
+{
+	return stride_;
+}	
 
 } // end namespace TSFCore
 

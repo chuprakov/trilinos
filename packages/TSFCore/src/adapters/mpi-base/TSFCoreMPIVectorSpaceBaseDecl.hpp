@@ -221,6 +221,11 @@ public:
 	//@{
 
 	///
+	/** Returns the sum of the local number of elements on every process.
+	 */
+	Index dim() const;
+
+	///
 	/** Returns true if all of the elements are stored on one processor.
 	 *
 	 * Postconditions:<ul>
@@ -269,6 +274,13 @@ protected:
 	/** This function must be called whenever the state of
 	 * <tt>this</tt> changes and some internal state must be updated.
 	 *
+	 * @param  globalDim  [in] If <tt>globalDim > 0</tt> then this determines
+	 *                    the global dimension of the vector space.  If <tt>globalDim==this->localSubDim()</tt>
+	 *                    then this is a locally replicated vector space.  If <tt>globalDim < 0</tt> then
+	 *                    the global dimension is computed using a global reduction.
+	 *                    If <tt>MPI_Comm_size(this->mpiComm(),&numProc)</tt> returns <tt>numProc==1</tt>
+	 *                    then this argument is ignored.
+	 *
 	 * Note that calling this function will involve one or more global
 	 * reductions being called if this is parallel vector space so it
 	 * should only be called when needed by subclasses.
@@ -277,7 +289,7 @@ protected:
 	 * *new* parallel vector space constructed and very few parallel
 	 * vector spaces will be created per application usually.
 	 */
-	virtual void updateState();
+	virtual void updateState( const Index globalDim );
 
 private:
 
@@ -287,6 +299,7 @@ private:
 	Index     mapCode_;    // < 0 is a flag that everything needs initialized
 	bool      isInCore_;
 	Index     defaultLocalOffset_;
+	Index     defaultGlobalDim_;
 
   Teuchos::RefCountPtr< const VectorSpaceFactory<Scalar> >  smallVecSpcFcty_;
 	

@@ -54,7 +54,7 @@ namespace TSFCore {
 
 EpetraVectorSpace::EpetraVectorSpace()
 {
-	updateState();
+	updateState(-1);
 }
 
 EpetraVectorSpace::EpetraVectorSpace(
@@ -104,7 +104,7 @@ void EpetraVectorSpace::initialize(
 			)
 		);
 #endif
-	updateState();
+	updateState(epetra_map_->NumGlobalElements());
 }
 
 void EpetraVectorSpace::setUninitialized(
@@ -118,15 +118,10 @@ void EpetraVectorSpace::setUninitialized(
 #ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
 	smallVecSpcFcty_ = Teuchos::null;
 #endif
-	updateState();
+	updateState(-1);
 }
 
 // Overridden from VectorSpace
-
-Index EpetraVectorSpace::dim() const
-{
-	return epetra_map_.get() ? epetra_map_->NumGlobalElements() : 0;
-}
 
 Teuchos::RefCountPtr<Vector<EpetraVectorSpace::Scalar> >
 EpetraVectorSpace::createMember() const

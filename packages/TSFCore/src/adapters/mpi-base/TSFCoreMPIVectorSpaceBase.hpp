@@ -44,7 +44,7 @@ namespace TSFCore {
 ///
 template<class Scalar>
 MPIVectorSpaceBase<Scalar>::MPIVectorSpaceBase()
-	:mapCode_(-1),isInCore_(false),defaultLocalOffset_(-1)
+	:mapCode_(-1),isInCore_(false),defaultLocalOffset_(-1),defaultGlobalDim_(-1)
 {}
 
 // Virtual methods with default implementations
@@ -62,6 +62,12 @@ Index MPIVectorSpaceBase<Scalar>::mapCode() const
 }
 
 // Overridden from VectorSpace
+
+template<class Scalar>
+Index MPIVectorSpaceBase<Scalar>::dim() const
+{
+	return defaultGlobalDim_;
+}
 
 template<class Scalar>
 bool MPIVectorSpaceBase<Scalar>::isInCore() const
@@ -91,21 +97,20 @@ bool MPIVectorSpaceBase<Scalar>::isCompatible( const VectorSpace<Scalar>& vecSpc
 // protected
 
 template<class Scalar>
-void MPIVectorSpaceBase<Scalar>::updateState()
+void MPIVectorSpaceBase<Scalar>::updateState( const Index globalDim )
 {
 	const Index localSubDim = this->localSubDim(); 
   const MPI_Comm mpiComm  = MPI_COMM_NULL;
 	if( localSubDim > 0 ) {
 #ifdef RTOp_USE_MPI
 		MPI_Comm mpiComm = this->mpiComm();
-		const Index globalDim = this->dim(); 
 		int numProc = 1;
 		int procRank = 0;
 		if( mpiComm != MPI_COMM_NULL ) {
 			MPI_Comm_size( mpiComm, &numProc );
 			MPI_Comm_rank( mpiComm, &procRank );
 		}
-		if( numProc > 1 && localSubDim < globalDim ) {
+		if( numProc > 1 && (localSubDim < globalDim || globalDim < 0) ) {
 			//
 			// Here we will make a map code out of just the local
 			// sub-dimension on each processor.  If each processor
@@ -139,25 +144,21 @@ void MPIVectorSpaceBase<Scalar>::updateState()
 			//std::cout << "\nMPIVectorSpaceBase<Scalar>::updateState(): procRank = " << procRank << ", defaultLocalOffset = " << defaultLocalOffset_ << std::endl;
 			// 
 			isInCore_ = false;  // This is not an inCore vector
-#ifdef _DEBUG
-			// Check that the vector does not have any ghost elements
-			Index computedGlobalDim = 0;
-			MPI_Allreduce(
-				(void*)&localSubDim                     // sendbuf
-				,&computedGlobalDim                     // recvbuf
-				,1                                      // count
-				,Teuchos::RawMPITraits<Index>::type()   // datatype
-				,MPI_SUM                                // op
-				,mpiComm                                // comm
-				);
-			TEST_FOR_EXCEPTION(
-				computedGlobalDim != globalDim, std::logic_error
-				,"MPIVectorSpaceBase<Scalar>::updateState(): Error, the computed "
-				"global dimension of computedGlobalDim = " << computedGlobalDim
-				<< " is not equal to the reported global dimension of globalDim = this->dim() = "
-				<< globalDim << "!"
-				);
-#endif // _DEBUG
+			// Determine the global dimension
+			if( globalDim < 0 ) {
+				MPI_Allreduce(
+					(void*)&localSubDim                     // sendbuf
+					,&defaultGlobalDim_                     // recvbuf
+					,1                                      // count
+					,Teuchos::RawMPITraits<Index>::type()   // datatype
+					,MPI_SUM                                // op
+					,mpiComm                                // comm
+					);
+			}
+			else {
+				defaultGlobalDim_ = globalDim;
+				// ToDo: Perform global reduction to check that this is correct in debug build
+			}
 		}
 		else {
 #endif // RTOp_USE_MPI
@@ -166,6 +167,7 @@ void MPIVectorSpaceBase<Scalar>::updateState()
 			mapCode_ = localSubDim;
 			isInCore_ = true;
 			defaultLocalOffset_ = 0;
+			defaultGlobalDim_ = localSubDim;
 #ifdef RTOp_USE_MPI
 		}
 #endif
@@ -174,6 +176,7 @@ void MPIVectorSpaceBase<Scalar>::updateState()
 		mapCode_  = -1;     // Uninitialized!
 		isInCore_ = false;
 		defaultLocalOffset_ = -1;
+		defaultGlobalDim_ = -1;
 	}
   smallVecSpcFcty_ = Teuchos::rcp(new MPIVectorSpaceFactoryStd<Scalar>(mpiComm));
 }
