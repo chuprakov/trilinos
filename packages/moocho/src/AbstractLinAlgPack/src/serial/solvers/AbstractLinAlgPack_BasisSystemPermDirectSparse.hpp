@@ -18,6 +18,7 @@
 
 #include "DirectSparseSolver.h"
 #include "AbstractLinAlgPack/include/BasisSystemPerm.h"
+#include "LinAlgPack/include/IVector.h"
 
 namespace SparseSolverPack {
 
@@ -136,11 +137,56 @@ public:
 
 private:
 
+	// ///////////////////////////////
+	// Private data members
+
 	direct_solver_ptr_t   direct_solver_;
-	size_type             n_,
-		                  m_,
-		                  mI_,
-		                  r_;
+	size_type             n_;
+	size_type	          m_;
+	size_type             mI_;
+	size_type             r_;
+	size_type             Gc_nz_;
+	Range1D               init_var_rng_;
+	IVector               init_var_inv_perm_;  // If init_var_rng is full range then this is ignored
+    Range1D               init_equ_rng_;
+	IVector               init_equ_inv_perm_;  // If init_equ_rng is full range then this is ignored
+	Range1D               var_dep_;       // used by factor()
+	Range1D               var_indep_;     // used by factor()
+    Range1D               equ_decomp_;    // used by factor()
+    Range1D               equ_undecomp_;  // used by factor()
+
+	// ///////////////////////////////
+	// Private member functions
+
+	///
+	MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>
+	get_basis_matrix( MatrixWithOpNonsingularAggr &C_aggr ) const;
+
+	///
+	void set_A_mctse(
+		size_type                    n
+		,size_type                   m
+		,const MatrixPermAggr        &Gc_pa
+		,MatrixConvertToSparseEncap  *A_mctse
+		) const;
+
+	///
+	void update_basis_and_auxiliary_matrices(
+		const MatrixWithOp& Gc
+		,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
+		,MatrixWithOpNonsingularAggr *C_aggr
+		,MatrixWithOp* D, MatrixWithOp* GcUP, MatrixWithOp* GhUp
+		) const;
+
+	///
+	void do_some_basis_stuff(
+		const MatrixWithOp& Gc, const MatrixWithOp* Gh
+		,const Range1D& var_dep, const Range1D& equ_decomp
+		,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
+		,MatrixWithOpNonsingularAggr *C_aggr
+		,MatrixWithOp* D, MatrixWithOp* GcUP, MatrixWithOp* GhUP
+		);
+
 
 }; // end class BasisSystemPermDirectSparse
 

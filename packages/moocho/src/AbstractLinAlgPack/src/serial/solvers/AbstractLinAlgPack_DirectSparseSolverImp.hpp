@@ -271,6 +271,7 @@ private:
 		FactorizationStructure           *fact_struc;
 #else
 		BasisMatrix::fact_struc_ptr_t    fact_struc_;
+		size_type                        rank_;
 #endif
 
 };	// end class DirectSparseSolverImp 

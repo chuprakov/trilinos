@@ -154,16 +154,51 @@ void DirectSparseSolverImp::analyze_and_factor(
 		);
 	// Setup the basis matrix
 	basis_matrix_imp.initialize(*rank,fact_struc,fact_nonzeros);
+	// Remember rank and factorization structure
+	rank_       = *rank;
+	fact_struc_ = fact_struc;
 }
 
 void DirectSparseSolverImp::factor(
 	const SparseLinAlgPack::MatrixConvertToSparse   &A
 	,BasisMatrix                                    *basis_matrix
-	,const BasisMatrix::fact_struc_ptr_t            &fact_struc
+	,const BasisMatrix::fact_struc_ptr_t            &fact_struc_in
 	,std::ostream                                   *out
 	)
 {
-	assert(0); // ToDo: Implement!
+	namespace mmp = MemMngPack;
+	using DynamicCastHelperPack::dyn_cast;
+#ifdef _DEBUG
+	const char msg_err[] = "DirectSparseSolverImp::analyze_and_factor(...): Error!";
+	// ToDo: Validate that A is compatible!
+	THROW_EXCEPTION( basis_matrix == NULL, std::logic_error, msg_err );
+#endif
+	BasisMatrixImp
+		&basis_matrix_imp = dyn_cast<BasisMatrixImp>(*basis_matrix);
+	// Get reference to factorization structure object
+	const BasisMatrix::fact_struc_ptr_t        &this_fact_struc = this->get_fact_struc();
+	BasisMatrix::fact_struc_ptr_t              fact_struc;
+#ifdef _DEBUG
+	THROW_EXCEPTION(
+		fact_struc_in.get() == NULL && this_fact_struc.get() == NULL
+		,std::logic_error
+		,msg_err );
+#endif
+	if( fact_struc_in.get() != NULL )
+		fact_struc = fact_struc_in;
+	else
+		fact_struc = this_fact_struc;
+	// Get references to factorization nonzeros object or allocate a new factorization nonzeros object.
+	const BasisMatrixImp::fact_nonzeros_ptr_t    &bm_fact_nonzeros  = basis_matrix_imp.get_fact_nonzeros();
+	BasisMatrixImp::fact_nonzeros_ptr_t          fact_nonzeros;
+	if( bm_fact_nonzeros.count() == 1 )
+		fact_nonzeros = bm_fact_nonzeros;
+	else
+		fact_nonzeros = this->create_fact_nonzeros();
+	// Now ask the subclass to do the work
+	this->imp_factor(A,fact_struc,fact_nonzeros,out);
+	// Setup the basis matrix
+	basis_matrix_imp.initialize(rank_,fact_struc,fact_nonzeros);
 }
 
 const DirectSparseSolver::BasisMatrix::fact_struc_ptr_t&

@@ -57,7 +57,7 @@ public:
 	///
 	void ma28ad(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
 		, f_int irn[], const f_int& lirn, f_int icn[], const f_dbl_prec& u
-		, f_int ikeep[], f_int iw[], f_dbl_prec w[], f_int& iflag)
+		, f_int ikeep[], f_int iw[], f_dbl_prec w[], f_int* iflag)
 	{	
 		set_common_block_data();
 		MA28_CppDecl::ma28ad(n,nz,a,licn,irn,lirn,icn,u,ikeep,iw,w,iflag);
@@ -67,7 +67,7 @@ public:
 	///
 	void ma28bd(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
 		, const f_int ivect[], const f_int jvect[], const f_int icn[]
-		, const f_int ikeep[], f_int iw[], f_dbl_prec w[], f_int& iflag)
+		, const f_int ikeep[], f_int iw[], f_dbl_prec w[], f_int* iflag)
 	{	
 		set_common_block_data();
 		MA28_CppDecl::ma28bd(n,nz,a,licn,ivect,jvect,icn,ikeep,iw,w,iflag);
@@ -75,7 +75,7 @@ public:
 	}
 
 	///
-	void ma28cd(const f_int& n, f_dbl_prec a[], const f_int& licn, const f_int icn[]
+	void ma28cd(const f_int& n, const f_dbl_prec a[], const f_int& licn, const f_int icn[]
 		, const f_int ikeep[], f_dbl_prec rhs[], f_dbl_prec w[], const f_int& mtype)
 	{	
 		set_common_block_data();

@@ -40,15 +40,15 @@ extern "C" {
 // analyze and factorize a matrix
 FORTRAN_FUNC_DECL_UL(void,MA28AD,ma28ad) (const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
 	, f_int irn[], const f_int& lirn, f_int icn[], const f_dbl_prec& u, f_int ikeep[], f_int iw[]
-	, f_dbl_prec w[], f_int& iflag);
+	, f_dbl_prec w[], f_int* iflag);
 	
 // factor using previous analyze
 FORTRAN_FUNC_DECL_UL(void,MA28BD,ma28bd) (const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
 	, const f_int ivect[], const f_int jvect[], const f_int icn[], const f_int ikeep[], f_int iw[]
-	, f_dbl_prec w[], f_int& iflag);
+	, f_dbl_prec w[], f_int* iflag);
 
 // solve for rhs using internally stored factorized matrix
-FORTRAN_FUNC_DECL_UL(void,MA28CD,ma28cd) (const f_int& n, f_dbl_prec a[], const f_int& licn, const f_int icn[]
+FORTRAN_FUNC_DECL_UL(void,MA28CD,ma28cd) (const f_int& n, const f_dbl_prec a[], const f_int& licn, const f_int icn[]
 	, const f_int ikeep[], f_dbl_prec rhs[], f_dbl_prec w[], const f_int& mtype);
 
 // /////////////////////////////////////////////////////////////////////////////////////////
@@ -496,7 +496,7 @@ static MC23BD_struct &mc23bd_cb = FORTRAN_COMMMON_BLOCK_NAME_UL(MC23BD,mc23bd);
   */
 inline void ma28ad(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
 	, f_int irn[], const f_int& lirn, f_int icn[], const f_dbl_prec& u, f_int ikeep[], f_int iw[]
-	, f_dbl_prec w[], f_int& iflag)
+	, f_dbl_prec w[], f_int* iflag)
 {	FORTRAN_FUNC_CALL_UL(MA28AD,ma28ad) (n,nz,a,licn,irn,lirn,icn,u,ikeep,iw,w,iflag);	}
 
 // /
@@ -538,7 +538,7 @@ inline void ma28ad(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int&
   */
 inline void ma28bd(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int& licn
 	, const f_int ivect[], const f_int jvect[], const f_int icn[], const f_int ikeep[], f_int iw[]
-	, f_dbl_prec w[], f_int& iflag)
+	, f_dbl_prec w[], f_int* iflag)
 {	FORTRAN_FUNC_CALL_UL(MA28BD,ma28bd) (n,nz,a,licn,ivect,jvect,icn,ikeep,iw,w,iflag);	}
 
 // /
@@ -572,7 +572,7 @@ inline void ma28bd(const f_int& n, const f_int& nz, f_dbl_prec a[], const f_int&
   *					\item[#* mtype != 1#] Solve using the transposed matrix.
   *					\end{description} 
   */
-inline void ma28cd(const f_int& n, f_dbl_prec a[], const f_int& licn, const f_int icn[]
+inline void ma28cd(const f_int& n, const f_dbl_prec a[], const f_int& licn, const f_int icn[]
 	, const f_int ikeep[], f_dbl_prec rhs[], f_dbl_prec w[], const f_int& mtype)
 {	FORTRAN_FUNC_CALL_UL(MA28CD,ma28cd) (n,a,licn,icn,ikeep,rhs,w,mtype);	}
 

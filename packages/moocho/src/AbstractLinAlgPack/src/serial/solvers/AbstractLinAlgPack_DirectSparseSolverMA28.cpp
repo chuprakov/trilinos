@@ -21,52 +21,47 @@
 
 #include "SparseSolverPack/include/DirectSparseSolverMA28.h"
 #include "SparseSolverPack/include/MatrixScaling_Strategy.h"
+#include "SparseLinAlgPack/include/VectorDenseEncap.h"
+#include "LinAlgPack/include/PermVecMat.h"
 #include "AbstractFactoryStd.h"
 #include "ThrowException.h"
+#include "WorkspacePack.h"
 #include "dynamic_cast_verbose.h"
 
-#ifdef SPARSE_SOLVER_PACK_USE_MC29
-
-// Declarations to call MC29AD to scale matrix.
-namespace MC29AD_C_Decl {
-
-typedef FortranTypes::f_int			f_int;
-typedef FortranTypes::f_dbl_prec	f_dbl_prec;
-
-extern "C" {
-	FORTRAN_FUNC_DECL_UL(void,MC29AD,mc29ad) ( const f_int& M, const f_int& N
-		, const f_int& NE, const f_dbl_prec A[], const f_int IRN[]
-		, const f_int ICN[], f_dbl_prec R[], f_dbl_prec C[]
-		, f_dbl_prec W[], const f_int& LP, f_int* IFAIL );
-}
-
-}  // end namespace MC29AD_C_Decl
-
-namespace {
-
-typedef FortranTypes::f_int			f_int;
-typedef FortranTypes::f_dbl_prec	f_dbl_prec;
-
-inline 
-void mc29ad( const f_int& m, const f_int& n
-	, const f_int& ne, const f_dbl_prec a[], const f_int irn[]
-	, const f_int icn[], f_dbl_prec r[], f_dbl_prec c[]
-	, f_dbl_prec w[], const f_int& lp, f_int* ifail )
-{
-	MC29AD_C_Decl::FORTRAN_FUNC_CALL_UL(MC29AD,mc29ad)(m,n,ne,a,irn,icn,r,c,w,lp,ifail);
-}
-
-}	// end namespace
-
-#endif // SPARSE_SOLVER_PACK_USE_MC29
-
 namespace SparseSolverPack {
+
+//
+// Implementation of DirectSparseSolver(Imp) interface using MA28.
+//
+// Here are some little bits of knowledge about MA28 that I need
+// to record after many hours of hard work.
+//
+// * The 1979 paper in ACM TOMS (Vol. 5, No. 1, pages 27), seems
+// to suggest that MA28 pivots by column for numerical stability
+// but I am not sure about this.
+//
+// * When factoring a rectangular matrix, you must set 
+// LBLOCK = .FALSE. or the row and column permutations
+// extracted from IKEEP(:,2) and IKEEP(:,3) respectivly
+// are meaningless.
+//
+// ToDo: Finish this discussion!
+//
+
+// ToDo:
+// a) Add an option for printing the values of the common
+//    block parameters to out or to a file.  This can
+//    be used to get a feel for the performance of
+//    ma28
+// b) Add provisions for an external client to change
+//    the control options of MA28.  Most of these are
+//    stored as common block variables.
 
 // //////////////////////////////////////////////////
 // DirectSparseSolverMA28::FactorizationStructureMA28
 
 DirectSparseSolverMA28::FactorizationStructureMA28::FactorizationStructureMA28()
-	:m_(0),n_(0),max_n_(0),nz_(0),licn_(0),lirn_(0),iflag_(0)
+	:m_(0),n_(0),max_n_(0),nz_(0),licn_(0),lirn_(0)
 	 ,u_(0.1),scaling_(NO_SCALING)
 	 ,cntr_var_changed_(false)
 {}
@@ -83,12 +78,15 @@ DirectSparseSolverMA28::BasisMatrixMA28::create_matrix() const
 }
 
 void DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(
-	VectorWithOpMutable* y, BLAS_Cpp::Transp trans_rhs1, const VectorWithOp& x
+	VectorWithOpMutable* y, BLAS_Cpp::Transp M_trans, const VectorWithOp& x
 	) const 
 {
 	using DynamicCastHelperPack::dyn_cast;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	size_type k;
 
-	// Get the concrete factorization and nonzeros objects
+	// Get concrete objects
 	const FactorizationStructureMA28
 		&fs = dyn_cast<const FactorizationStructureMA28>(*this->get_fact_struc());
 	const FactorizationNonzerosMA28
@@ -97,41 +95,68 @@ void DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(
 	// Validate input
 #ifdef _DEBUG
 	THROW_EXCEPTION(
+		y == NULL, std::invalid_argument
+		,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...) : Error! " );
+	THROW_EXCEPTION(
 		fs.cntr_var_changed_, std::logic_error
 		,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...), Error, "
 		"You can't change control variables between calls of \'analyze_and factorize\' and \'solve\'");	
 #endif
-
-	assert(0); // Update the below code!
-
-/*
-	// Check for consistancy
-	const size_type y_dim = y->dim(); x_dim = x.dim();
+	const size_type y_dim = y->dim(), x_dim = x.dim();
+#ifdef _DEBUG
 	THROW_EXCEPTION(
-		fs.m_ != 
-	if(m != m_ || n != n_ )
-		throw InputException("m, and n must be the same as in the call to \'analyze_and_factorize\'");
+		fs.rank_ != y_dim, std::invalid_argument
+		,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...) : Error! " );
+	THROW_EXCEPTION(
+		fs.rank_ != x_dim, std::invalid_argument
+		,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...) : Error! " );
+#endif
+
+	VectorDenseMutableEncap  yd(*y);
+	VectorDenseEncap         xd(x);
 
 	// Allocate workspace memory
-	std::valarray<f_dbl_prec>	w(max_n_);
+	wsp::Workspace<value_type>  xfull_s(wss,fs.max_n_,false);
+	VectorSlice                 xfull(&xfull_s[0],xfull_s.size());
+	wsp::Workspace<value_type>  ws(wss,fs.max_n_,false);
+	VectorSlice                 w(&ws[0],ws.size());
 
-	f_int mtype = ( (trans_matrix == BLAS_Cpp::no_trans) ? 1 : 0 );
+	// Get a context for transpose or no transpose
+	const IVector
+		&row_perm = (M_trans == BLAS_Cpp::no_trans) ? fs.row_perm_ : fs.col_perm_,
+		&col_perm = (M_trans == BLAS_Cpp::no_trans) ? fs.col_perm_ : fs.row_perm_;
 
-	// Copy rhs into x since ma28 operates this way, but only if they are different vectors.
-	if(rhs != x)
-		std::copy(rhs, rhs+max_n_, x);
-
+	// Copy x into positions in full w
+	// Here, the rhs vector is set with only those equations that
+	// are part of the nonsingular set.  It is important that the
+	// ordering be the same as the original ordering sent to
+	// MA28AD().
+	xfull = 0.0;
+	for( k = 1; k <= x_dim; ++k ) 
+		xfull(row_perm(k)) = xd()(k);
+	
 	// Scale the rhs
-	scale_rhs( trans_matrix, x ); 
+	if( fs.matrix_scaling_.get() )
+		fs.matrix_scaling_->scale_rhs( M_trans, xfull.raw_ptr() );
 
 	// Solve for the rhs
-	ma28_.ma28cd(max_n_, &a_[0], licn_, &icn_[0], &ikeep_[0], x, &w[0], mtype);
+	FortranTypes::f_int mtype = ( (M_trans == BLAS_Cpp::no_trans) ? 1 : 0 );
+	fs.ma28_.ma28cd(
+		fs.max_n_, &fn.a_[0], fs.licn_, &fs.icn_[0], &fs.ikeep_[0]
+		,xfull.raw_ptr(), w.raw_ptr(), mtype );
 
 	// Scale the lhs
-	scale_lhs( trans_matrix, x ); 
+	if( fs.matrix_scaling_.get() )
+		fs.matrix_scaling_->scale_rhs( M_trans, xfull.raw_ptr() );
 
-*/
-	assert(0); // ToDo: Implement!
+	// Copy the solution into y
+	// Here, the solution vector is set with only those variables that
+	// are in the basis.  It is important that the
+	// ordering be the same as the original ordering sent to
+	// MA28AD().
+	for( k = 1; k <= y_dim; ++k )
+		yd()(k) = xfull(col_perm(k));
+	
 }
 
 // //////////////////////////////////////////////////
@@ -185,6 +210,8 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 {
 	using DynamicCastHelperPack::dyn_cast;
 	typedef MatrixConvertToSparse MCTS;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	if(out)
 		*out << "\nUsing MA28 to analyze and factor a new matrix ...\n";
@@ -194,6 +221,10 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 		&fs = dyn_cast<FactorizationStructureMA28>(*fact_struc);
 	FactorizationNonzerosMA28
 		&fn = dyn_cast<FactorizationNonzerosMA28>(*fact_nonzeros);
+
+	// Set MA28 parameters
+	fs.ma28_.nsrch(4);  // This is a well known trick to increase speed!
+	fs.ma28_.lblock(0); // Do not permute to block triangular form (*** This is critical!)
 
 	// Get the dimensions of things.
 	const index_type
@@ -218,12 +249,13 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 	if( fs.lirn_ < fs.nz_ ) fs.lirn_ = estimated_fillin_ratio_ * fs.nz_;
 
 	// Initialize matrix factorization storage and temporary storage
-	fs.irn_.resize(fs.nz_);   // perminatly stores nz row indexes (needed for matrix scaling)
+	fs.ivect_.resize(fs.nz_); // perminatly stores nz row indexes
+	fs.jvect_.resize(fs.nz_); // perminatly stores nz column indexes
 	fs.icn_.resize(fs.licn_); // first nz entries stores the column indexes
 	fn.a_.resize(fs.licn_);
 	fs.ikeep_.resize( fs.ma28_.lblock() ? 5*fs.max_n_ :  4*fs.max_n_ + 1 );
-	std::valarray<index_type>   irn_tmp_(fs.lirn_), iw(8*fs.max_n_);  // ToDo: use Workspace<>
-	std::valarray<value_type>   w(fs.max_n_);     // ToDo: use Workspace<>
+	wsp::Workspace<index_type>  irn_tmp_(wss,fs.lirn_), iw(wss,8*fs.max_n_);
+	wsp::Workspace<value_type>  w(wss,fs.max_n_);
 
 	// Fill in the matrix information
 	A.coor_extract_nonzeros(
@@ -232,48 +264,74 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 		,fs.nz_
 		,&fn.a_[0]
 		,fs.nz_
-		,&fs.irn_[0]
-		,&fs.icn_[0]
+		,&fs.ivect_[0]
+		,&fs.jvect_[0]
 		);
-	std::copy( &fs.irn_[0], &fs.irn_[0] + fs.nz_, &irn_tmp_[0] );
+	std::copy( &fs.ivect_[0], &fs.ivect_[0] + fs.nz_, &irn_tmp_[0] );
+	std::copy( &fs.jvect_[0], &fs.jvect_[0] + fs.nz_, &fs.icn_[0] );
 
 	// Scale the matrix
 	if( fs.matrix_scaling_.get() )
 		fs.matrix_scaling_->scale_matrix(
-			fs.m_, fs.n_, fs.nz_, &fs.irn_[0], &fs.icn_[0], true
+			fs.m_, fs.n_, fs.nz_, &fs.ivect_[0], &fs.jvect_[0], true
 			,&fn.a_[0]
 			);
 
-	// Factor the matrix
+	// Analyze and factor the matrix
+	index_type iflag = 0;
 	fs.ma28_.ma28ad(
 		fs.max_n_, fs.nz_, &fn.a_[0], fs.licn_, &irn_tmp_[0], fs.lirn_, &fs.icn_[0], fs.u_
-		,&fs.ikeep_[0], &iw[0], &w[0], fs.iflag_
+		,&fs.ikeep_[0], &iw[0], &w[0], &iflag
 		);
 
 	// Todo : deal with resizing for insufficient storage when needed.  Write a loop!
 
+	if(iflag != 0 && out)
+		*out << "\nMA28AD returned iflag = " << iflag << " != 0!\n";
+
+	// Check for errors and throw exception if you have to.
+	ThrowIFlagException(iflag);
+
 	// Extract the basis matrix selection
 
+	*rank = fs.ma28_.irank();
+
 	row_perm->resize(fs.m_);
-	index_type
-		*row_perm_ikeep = &fs.ikeep_[fs.max_n_],
-		*row_perm_itr   = &(*row_perm)(1),
-		*row_perm_last  = row_perm_itr + fs.m_;
-	for(; row_perm_itr != row_perm_last;)
-		*row_perm_itr++ = abs(*row_perm_ikeep++);
+	if( *rank < fs.m_ ) {
+		index_type
+			*row_perm_ikeep = &fs.ikeep_[fs.max_n_],
+			*row_perm_itr   = &(*row_perm)(1),
+			*row_perm_last  = row_perm_itr + fs.m_;
+		for(; row_perm_itr != row_perm_last;)
+			*row_perm_itr++ = abs(*row_perm_ikeep++);
+		// Sort partitions in assending order (required!)
+		std::sort(&(*row_perm)[0]           , &(*row_perm)[0] + (*rank) );
+		std::sort(&(*row_perm)[0] + (*rank)	, &(*row_perm)[0] + m       );
+	}
+	else {
+		LinAlgPack::identity_perm( row_perm );
+	}
 
 	col_perm->resize(fs.n_);
-	index_type
-		*col_perm_ikeep = &fs.ikeep_[2*fs.max_n_],
-		*col_perm_itr   = &(*col_perm)(1),
-		*col_perm_last  = col_perm_itr + fs.n_;
-	for(; col_perm_itr != col_perm_last;)
-		*col_perm_itr++ = abs(*col_perm_ikeep++);
+	if( *rank < fs.n_ ) {
+		index_type
+			*col_perm_ikeep = &fs.ikeep_[2*fs.max_n_],
+			*col_perm_itr   = &(*col_perm)(1),
+			*col_perm_last  = col_perm_itr + fs.n_;
+		for(; col_perm_itr != col_perm_last;)
+			*col_perm_itr++ = abs(*col_perm_ikeep++);
+		// Sort partitions in assending order (required!)
+		std::sort(&(*col_perm)[0]           , &(*col_perm)[0] + (*rank) );
+		std::sort(&(*col_perm)[0] + (*rank)	, &(*col_perm)[0] + n       );
+	}
+	else {
+		LinAlgPack::identity_perm( col_perm );
+	}
 
-	*rank = fs.ma28_.irank();
-	
-	// Check for errors and throw exception if you have to.
-	ThrowIFlagException(fs.iflag_);
+	// Set internal copy of basis selection
+	fs.row_perm_ = *row_perm;
+	fs.col_perm_ = *col_perm;
+	fs.rank_     = *rank;
 
 }
 
@@ -285,16 +343,69 @@ void DirectSparseSolverMA28::imp_factor(
 	)
 {
 	using DynamicCastHelperPack::dyn_cast;
+	typedef MatrixConvertToSparse MCTS;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+
 	if(out)
-		*out << "\nUsing MA28 to analyze and factor a new matrix ...\n";
+		*out << "\nUsing MA28 to factor a new matrix ...\n";
+
 	// Get the concrete factorization and nonzeros objects
 	const FactorizationStructureMA28
-		&fs = dyn_cast<const FactorizationStructureMA28>(*fact_struc);
+		&fs = dyn_cast<FactorizationStructureMA28>(*fact_struc);
 	FactorizationNonzerosMA28
 		&fn = dyn_cast<FactorizationNonzerosMA28>(*fact_nonzeros);
-	// Extract the nonzeros out of A
-	assert(0); // ToDo: Implement!
-	// ...
+
+	// Get the dimensions of things.
+	const index_type
+		m = A.rows(),
+		n = A.cols(),
+		nz = A.num_nonzeros( MCTS::EXTRACT_FULL_MATRIX ,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM );
+
+	// Validate input
+#ifdef _DEBUG
+	THROW_EXCEPTION(
+		m != fs.m_ || n != fs.n_ || fs.nz_ != nz, std::invalid_argument
+		,"DirectSparseSolverMA28::imp_factor(...) : Error, "
+		"A is not compatible with matrix passed to imp_analyze_and_factor()!" );
+#endif
+
+	// Initialize matrix factorization storage and temporary storage
+	if(fn.a_.size() < fs.licn_)  fn.a_.resize(fs.licn_);
+	wsp::Workspace<index_type>   iw(wss,5*fs.max_n_);
+	wsp::Workspace<value_type>   w(wss,fs.max_n_);
+
+	// Fill in the matrix nonzeros (we already have the structure)
+	A.coor_extract_nonzeros(
+		MCTS::EXTRACT_FULL_MATRIX
+		,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM
+		,fs.nz_
+		,&fn.a_[0]
+		,0
+		,NULL
+		,NULL
+		);
+
+	// Scale the matrix
+	if( fs.matrix_scaling_.get() )
+		fs.matrix_scaling_->scale_matrix(
+			fs.m_, fs.n_, fs.nz_, &fs.ivect_[0], &fs.jvect_[0], false
+			,&fn.a_[0]
+			);
+
+	// Factor the matrix
+	index_type iflag = 0;
+	fs.ma28_.ma28bd(
+		fs.max_n_, fs.nz_, &fn.a_[0], fs.licn_, &fs.ivect_[0], &fs.jvect_[0], &fs.icn_[0]
+		,&fs.ikeep_[0], &iw[0], &w[0], &iflag
+		);
+
+	if(iflag != 0 && out)
+		*out << "\nMA28BD returned iflag = " << iflag << " != 0!\n";
+
+	// Check for errors and throw exception if you have to.
+	ThrowIFlagException(iflag);
+
 }
 
 // private

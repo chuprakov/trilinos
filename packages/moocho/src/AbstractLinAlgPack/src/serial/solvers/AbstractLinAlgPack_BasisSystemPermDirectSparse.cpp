@@ -17,7 +17,6 @@
 #include "SparseLinAlgPack/include/PermutationSerial.h"
 #include "SparseLinAlgPack/include/MatrixConvertToSparseEncap.h"
 #include "SparseLinAlgPack/include/MatrixExtractSparseElements.h"
-#include "LinAlgPack/include/IVector.h"
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpNonsingularAggr.h"
 #include "AbstractLinAlgPack/include/MatrixPermAggr.h"
@@ -40,7 +39,15 @@ void BasisSystemPermDirectSparse::initialize(
 	)
 {
 	direct_solver_ = direct_solver;
-	// ToDo: Reinitialze things if we need to?
+	n_ = m_ = mI_ = r_ = Gc_nz_ = 0;
+	init_var_inv_perm_.resize(0);
+	init_equ_inv_perm_.resize(0);
+	init_var_rng_    = Range1D::Invalid;
+    init_equ_rng_    = Range1D::Invalid;
+	var_dep_         = Range1D::Invalid;
+	var_indep_       = Range1D::Invalid;
+    equ_decomp_      = Range1D::Invalid;
+    equ_undecomp_    = Range1D::Invalid;
 }
 
 // Overridden from BasisSystem
@@ -79,12 +86,12 @@ BasisSystemPermDirectSparse::factory_GhUP() const
 
 Range1D BasisSystemPermDirectSparse::var_dep() const
 {
-	return r_ ? Range1D(1,r_) : Range1D::Invalid;
+	return var_dep_;
 }
 
 Range1D BasisSystemPermDirectSparse::var_indep() const
 {
-	return r_ < n_ ? Range1D(r_+1,n_) : Range1D::Invalid;
+	return var_indep_;
 }
 
 void BasisSystemPermDirectSparse::update_basis(
@@ -98,9 +105,67 @@ void BasisSystemPermDirectSparse::update_basis(
 	,std::ostream               *out
 	) const
 {
+	namespace mmp = MemMngPack;
+	using DynamicCastHelperPack::dyn_cast;
+	if(out)
+		*out << "\nUsing a direct sparse solver to update basis ...\n";
+#ifdef _DEBUG
+	// Validate input
 	THROW_EXCEPTION(
-		true, std::logic_error
-		,"BasisSystemPermDirectSparse::update_basis(...) : Error, not implemented yet!" );
+		Gc == NULL, std::invalid_argument
+		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
+		"Must have equality constriants in this current implementation! " );
+#endif
+	const size_type
+		n  = Gc->rows(),
+		m  = Gc->cols(),
+		mI = Gh ? Gh->cols() : 0;
+#ifdef _DEBUG
+	const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc->nz()
+		,Gh_rows = Gh ? Gh->rows() : 0, Gh_cols = mI;
+	THROW_EXCEPTION(
+		Gc_rows != n_ || Gc_cols != m_ || Gc_nz != Gc_nz_, std::invalid_argument
+		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
+		"This matrix object is not compatible with last call to set_basis() or select_basis()!" );
+	THROW_EXCEPTION(
+		Gh != NULL && (Gh_rows != Gc_rows), std::invalid_argument
+		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
+		"Gc and Gh are not compatible!" )
+	THROW_EXCEPTION(
+		C == NULL, std::invalid_argument
+		,"BasisSystemPermDirectSparse::set_basis(...) : Error!" );
+#endif
+	// Get the aggregate matrix object for Gc
+	const MatrixPermAggr	
+		&Gc_pa = dyn_cast<const MatrixPermAggr>(*Gc);
+	// Get the basis matrix object from the aggregate or allocate one
+	MatrixWithOpNonsingularAggr
+		&C_aggr = dyn_cast<MatrixWithOpNonsingularAggr>(*C);
+	mmp::ref_count_ptr<DirectSparseSolver::BasisMatrix>
+		C_bm = get_basis_matrix(C_aggr);
+	// Setup the encapulated convert-to-sparse matrix object
+	MatrixConvertToSparseEncap A_mctse;
+	set_A_mctse( n, m, Gc_pa, &A_mctse );
+	// Refactor this basis (it had better be full rank)!
+	try {
+		direct_solver_->factor(
+			A_mctse
+			,C_bm.get()
+			,mmp::null // Same factorization structure as before
+			,out
+			);
+	}
+	catch(const DirectSparseSolver::FactorizationFailure& excpt) {
+		if(out)
+			*out << "\nCurrent basis is singular : " << excpt.what() << std::endl
+				 << "Throwing SingularBasis exception to client ...\n";
+		THROW_EXCEPTION(
+			true, SingularBasis
+			,"BasisSystemPermDirectSparse::update_basis(...) : Error, the current basis "
+			"is singular : " << excpt.what() );
+	}
+	// Update the aggregate basis matrix and compute the auxiliary projected matrices
+	update_basis_and_auxiliary_matrices( *Gc, C_bm, &C_aggr, D, GcUP, GhUP );
 }
 
 // Overridded from BasisSystemPerm
@@ -146,18 +211,31 @@ void BasisSystemPermDirectSparse::set_basis(
 	namespace mmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 	if(out)
-		*out << "\nUsing a direct sparse solver to set the basis ...\n";
+		*out << "\nUsing a direct sparse solver to set a new basis ...\n";
 #ifdef _DEBUG
 	// Validate input
 	THROW_EXCEPTION(
 		Gc == NULL, std::invalid_argument
 		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
 		"Must have equality constriants in this current implementation! " );
+#endif
+	const size_type
+		n  = Gc->rows(),
+		m  = Gc->cols(),
+		mI = Gh ? Gh->cols() : 0;
+#ifdef _DEBUG
+	const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc->nz()
+		,Gh_rows = Gh ? Gh->rows() : 0, Gh_cols = mI;
 	THROW_EXCEPTION(
 		P_equ == NULL || equ_decomp == NULL, std::invalid_argument
 		,"BasisSystemPermDirectSparse::set_basis(...) : Error!" );
-	if(Gh) THROW_EXCEPTION(
-		P_inequ != NULL && inequ_decomp != NULL, std::invalid_argument
+	THROW_EXCEPTION(
+		Gh != NULL && (Gh_rows != Gc_rows), std::invalid_argument
+		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
+		"Gc and Gh are not compatible!" )
+	THROW_EXCEPTION(
+		Gh != NULL && (P_inequ != NULL || inequ_decomp != NULL)
+		,std::invalid_argument
 		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
 		"Can not handle decomposed inequalities yet!" );
 	THROW_EXCEPTION(
@@ -174,41 +252,23 @@ void BasisSystemPermDirectSparse::set_basis(
 	MatrixWithOpNonsingularAggr
 		&C_aggr = dyn_cast<MatrixWithOpNonsingularAggr>(*C);
 	mmp::ref_count_ptr<DirectSparseSolver::BasisMatrix>
-		C_bm;
-	if( C_aggr.mns().get() ) {
-		C_bm = mmp::rcp_dynamic_cast<DirectSparseSolver::BasisMatrix>(
-			mmp::rcp_const_cast<MatrixNonsingular>(C_aggr.mns() ) );
-		if(C_bm.get() == NULL)
-			dyn_cast<const DirectSparseSolver::BasisMatrix>(*C_aggr.mns()); // Throws exception!
-	}
-	else {
-		C_bm = direct_solver_->basis_matrix_factory()->create();
-	}
-	// Get the concreate type of the direct sensitivity matrix (if one was passed in)
-	MultiVectorMutableDense
-		*D_mvd = NULL;
-	if( D ) {
-		D_mvd = &dyn_cast<MultiVectorMutableDense>(*D);
-	}
+		C_bm = get_basis_matrix(C_aggr);
 	// Get at the concreate permutation vectors
 	const PermutationSerial
 		&P_var_s = dyn_cast<const PermutationSerial>(P_var),
 		&P_equ_s = dyn_cast<const PermutationSerial>(*P_equ);
 	// Setup the encapulated convert-to-sparse matrix object
-	MatrixConvertToSparseEncap
-		C_mctse(
-			mmp::rcp_dynamic_cast<const MatrixExtractSparseElements>(Gc_pa.mat_orig())
-			,P_var_s.inv_perm()
-			,var_dep
-			,P_equ_s.inv_perm()
-			,*equ_decomp
-			,BLAS_Cpp::trans
-			);
+	init_var_inv_perm_  = *P_var_s.inv_perm();
+	init_var_rng_       = var_dep;
+	init_equ_inv_perm_  = *P_equ_s.inv_perm();
+    init_equ_rng_       = *equ_decomp;
+	MatrixConvertToSparseEncap A_mctse;
+	set_A_mctse( n, m, Gc_pa, &A_mctse );
 	// Analyze and factor this basis (it had better be full rank)!
 	IVector row_perm_ds, col_perm_ds; // Must store these even though we don't want them!
 	size_type rank = 0;
 	direct_solver_->analyze_and_factor(
-		C_mctse
+		A_mctse
 		,&row_perm_ds
 		,&col_perm_ds
 		,&rank
@@ -218,37 +278,8 @@ void BasisSystemPermDirectSparse::set_basis(
 	if( rank < var_dep.size() ) {
 		assert(0); // ToDo: Throw an exception with a good error message!
 	}
-	// Compute the auxiliary projected matrices
-	if( D_mvd ) {
-		// D = -inv(C) * N
-		Range1D
-			var_indep = ( var_dep.lbound() == 1
-						  ? Range1D(var_dep.size()+1,P_var.dim())
-						  : Range1D(1,P_var.dim()-var_dep.size()) ); 
-		D_mvd->initialize(var_dep.size(),var_indep.size());
-		AbstractLinAlgPack::M_StInvMtM(
-			D_mvd, -1.0, *C_bm, BLAS_Cpp::no_trans
-			,*Gc->sub_view(var_indep,*equ_decomp),BLAS_Cpp::trans // N = Gc(var_indep,equ_decomp)'
-			);
-	}
-	if( GcUP ) {
-		assert(0); // ToDo: Implement!
-	}
-	if( GhUP ) {
-		assert(0); // ToDo: Implement!
-	}
-	// Initialize the aggregate basis matrix object.
-	C_aggr.initialize(
-		Gc->sub_view(var_dep,*equ_decomp) // handled by the MatrixPermAggr subclass!
-		,BLAS_Cpp::trans
-		,C_bm
-		,BLAS_Cpp::no_trans
-		);
-	// Set the basis system dimensions
-	n_  = Gc->rows();
-	m_  = Gc->cols();
-	mI_ = Gh ? Gh->cols() : 0;
-	r_  = rank;
+	// Update the rest of the basis stuff
+	do_some_basis_stuff(*Gc,Gh,var_dep,*equ_decomp,C_bm,&C_aggr,D,GcUP,GhUP);
 }
 
 void BasisSystemPermDirectSparse::select_basis(
@@ -270,7 +301,206 @@ void BasisSystemPermDirectSparse::select_basis(
 	,std::ostream               *out
 	)
 {
-	assert(0); // ToDo: Implement!
+	namespace mmp = MemMngPack;
+	using DynamicCastHelperPack::dyn_cast;
+	if(out)
+		*out << "\nUsing a direct sparse solver to select a new basis ...\n";
+#ifdef _DEBUG
+	// Validate input
+	const char msg_err_head[] = "BasisSystemPermDirectSparse::set_basis(...) : Error!";
+	THROW_EXCEPTION(
+		Gc == NULL, std::invalid_argument
+		,msg_err_head << " Must have equality constriants in this current implementation! " );
+#endif
+	const size_type
+		n  = Gc->rows(),
+		m  = Gc->cols(),
+		mI = Gh ? Gh->cols() : 0;
+#ifdef _DEBUG
+	// Validate input
+	const size_type Gc_rows = Gc->rows(), Gc_cols = Gc->cols(), Gc_nz = Gc->nz()
+		,Gh_rows = Gh ? Gh->rows() : 0, Gh_cols = Gh ? Gh->cols() : 0;
+	THROW_EXCEPTION(
+		P_var == NULL || var_dep == NULL, std::invalid_argument, msg_err_head );
+	THROW_EXCEPTION(
+		P_equ == NULL || equ_decomp == NULL, std::invalid_argument, msg_err_head );
+	THROW_EXCEPTION(
+		Gh != NULL && (Gh_rows != Gc_rows), std::invalid_argument
+		,msg_err_head << " Gc and Gh are not compatible!" )
+	THROW_EXCEPTION(
+		Gh != NULL && (P_inequ != NULL || inequ_decomp != NULL), std::invalid_argument
+		,msg_err_head << "Can not handle decomposed inequalities yet!" );
+	THROW_EXCEPTION(
+		C == NULL, std::invalid_argument, msg_err_head );
+#endif
+	// Get the aggreate matrix object for Gc
+	MatrixPermAggr	
+		&Gc_pa = dyn_cast<MatrixPermAggr>(*Gc);
+	// Get the basis matrix object from the aggregate or allocate one
+	MatrixWithOpNonsingularAggr
+		&C_aggr = dyn_cast<MatrixWithOpNonsingularAggr>(*C);
+	mmp::ref_count_ptr<DirectSparseSolver::BasisMatrix>
+		C_bm = get_basis_matrix(C_aggr);
+	// Setup the encapulated convert-to-sparse matrix object
+	// ToDo: Use nu to exclude variables that are at a bound!
+	init_var_rng_       = Range1D(1,n);
+	init_var_inv_perm_.resize(0); // Not used since above is full range
+	init_equ_rng_       = Range1D(1,m);
+	init_equ_inv_perm_.resize(0); // Not used since above is full range
+	MatrixConvertToSparseEncap A_mctse;
+	set_A_mctse( n, m, Gc_pa, &A_mctse );
+	// Analyze and factor this basis (it had better be full rank)!
+	mmp::ref_count_ptr<IVector>
+		var_perm_ds = mmp::rcp(new IVector),
+		equ_perm_ds = mmp::rcp(new IVector);
+	size_type rank = 0;
+	direct_solver_->analyze_and_factor(
+		A_mctse
+		,equ_perm_ds.get()
+		,var_perm_ds.get()
+		,&rank
+		,C_bm.get()
+		,out
+		);
+	if( rank == 0 ) {
+		assert( rank == 0 ); // ToDo: Throw exception with good error message!
+	}
+	// Return the selected basis
+	// ToDo: Use var_perm_ds and equ_perm_ds together with nu to
+	// get the overall permuations for all of the variables.
+	PermutationSerial
+		&P_var_s = dyn_cast<PermutationSerial>(*P_var),
+		&P_equ_s = dyn_cast<PermutationSerial>(*P_equ);
+	// Create the overall permutations to set to the permutation matrices!
+	*var_dep = Range1D(1,rank);
+	P_var_s.initialize( var_perm_ds, mmp::null ); 
+	*equ_decomp = Range1D(1,rank);
+	P_equ_s.initialize( equ_perm_ds, mmp::null );
+	// Setup Gc_aggr with Gc_perm
+	const int          num_row_part = 2;
+	const int          num_col_part = 2;
+	const index_type   row_part[3]  = { 1, rank, n+1 };
+	const index_type   col_part[3]  = { 1, rank, m+1 };
+	Gc_pa.initialize(
+		Gc_pa.mat_orig()
+		,mmp::rcp(new PermutationSerial(var_perm_ds,mmp::null)) // var_perm_ds reuse is okay!
+		,mmp::rcp(new PermutationSerial(equ_perm_ds,mmp::null)) // equ_perm_ds resue is okay!
+		,Gc_pa.mat_orig()->perm_view(
+			P_var,row_part,num_row_part
+			,P_equ,col_part,num_col_part
+			)
+		);
+	// Update the rest of the basis stuff
+	do_some_basis_stuff(*Gc,Gh,*var_dep,*equ_decomp,C_bm,&C_aggr,D,GcUP,GhUP);
+}
+
+// private
+
+MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>
+BasisSystemPermDirectSparse::get_basis_matrix( MatrixWithOpNonsingularAggr &C_aggr ) const
+{
+	namespace mmp = MemMngPack;
+	using DynamicCastHelperPack::dyn_cast;
+	mmp::ref_count_ptr<DirectSparseSolver::BasisMatrix> C_bm;
+	if( C_aggr.mns().get() ) {
+		C_bm = mmp::rcp_dynamic_cast<DirectSparseSolver::BasisMatrix>(
+			mmp::rcp_const_cast<MatrixNonsingular>(C_aggr.mns() ) );
+		if(C_bm.get() == NULL)
+			dyn_cast<const DirectSparseSolver::BasisMatrix>(*C_aggr.mns()); // Throws exception!
+	}
+	else {
+		C_bm = direct_solver_->basis_matrix_factory()->create();
+	}
+	return C_bm;
+}
+
+void BasisSystemPermDirectSparse::set_A_mctse(
+	size_type                    n
+	,size_type                   m
+	,const MatrixPermAggr        &Gc_pa
+	,MatrixConvertToSparseEncap  *A_mctse
+	) const
+{
+	namespace mmp = MemMngPack;
+	A_mctse->initialize(
+		mmp::rcp_dynamic_cast<const MatrixExtractSparseElements>(Gc_pa.mat_orig())
+		,mmp::rcp( init_var_rng_.size()    < n ? &init_var_inv_perm_ : NULL, false )
+		,init_var_rng_
+		,mmp::rcp( init_equ_rng_.size() < m ? &init_equ_inv_perm_ : NULL, false )
+		,init_equ_rng_
+		,BLAS_Cpp::trans
+		);
+}
+
+void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
+	const MatrixWithOp& Gc
+	,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
+	,MatrixWithOpNonsingularAggr *C_aggr
+	,MatrixWithOp* D, MatrixWithOp* GcUP, MatrixWithOp* GhUP
+	) const
+{
+	namespace mmp = MemMngPack;
+	using DynamicCastHelperPack::dyn_cast;
+	// Initialize the aggregate basis matrix object.
+	C_aggr->initialize(
+		Gc.sub_view(var_dep_,equ_decomp_)
+		,BLAS_Cpp::trans
+		,C_bm
+		,BLAS_Cpp::no_trans
+		);
+	// Compute the auxiliary projected matrices
+	// Get the concreate type of the direct sensitivity matrix (if one was passed in)
+	if( D ) {
+		MultiVectorMutableDense *D_mvd = &dyn_cast<MultiVectorMutableDense>(*D);
+		assert( D ); // ToDo: Throw exception!
+		// D = -inv(C) * N
+		D_mvd->initialize(var_dep_.size(),var_indep_.size());
+		AbstractLinAlgPack::M_StInvMtM(
+			D_mvd, -1.0, *C_bm, BLAS_Cpp::no_trans
+			,*Gc.sub_view(var_indep_,equ_decomp_),BLAS_Cpp::trans // N = Gc(var_indep,equ_decomp)'
+			);
+	}
+	if( GcUP ) {
+		assert(0); // ToDo: Implement!
+	}
+	if( GhUP ) {
+		assert(0); // ToDo: Implement!
+	}
+}
+
+void BasisSystemPermDirectSparse::do_some_basis_stuff(
+	const MatrixWithOp& Gc, const MatrixWithOp* Gh
+	,const Range1D& var_dep, const Range1D& equ_decomp
+	,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
+	,MatrixWithOpNonsingularAggr *C_aggr
+	,MatrixWithOp* D, MatrixWithOp* GcUP, MatrixWithOp* GhUP
+	)
+{
+	const size_type
+		n  = Gc.rows(),
+		m  = Gc.cols(),
+		mI = Gh ? Gh->cols() : 0;
+	// Set the ranges
+	var_dep_      = var_dep;
+	var_indep_   = ( var_dep.size() == n
+					  ? Range1D::Invalid
+					  : ( var_dep.lbound() == 1
+						  ? Range1D(var_dep.size()+1,n)
+						  : Range1D(1,n-var_dep.size()) ) );
+	equ_decomp_   = equ_decomp;
+	equ_undecomp_ = ( equ_decomp.size() == m
+					  ? Range1D::Invalid
+					  : ( equ_decomp.lbound() == 1
+						  ? Range1D(equ_decomp.size()+1,m)
+						  : Range1D(1,m-equ_decomp.size()) ) );
+	// Set the basis system dimensions
+	n_     = n;
+	m_     = m;
+	mI_    = mI;
+	r_     = var_dep.size();
+	Gc_nz_ = Gc.nz();
+	// Update the aggregate basis matrix and compute the auxiliary projected matrices
+	update_basis_and_auxiliary_matrices( Gc, C_bm, C_aggr, D, GcUP, GhUP );
 }
 	
 } // end namespace SparseSolverPack

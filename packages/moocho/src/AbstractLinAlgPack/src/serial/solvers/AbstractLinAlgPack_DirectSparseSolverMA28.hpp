@@ -103,7 +103,7 @@ protected:
 		typedef MemMngPack::ref_count_ptr<MatrixScaling_Strategy>    matrix_scaling_ptr_t;
 		// /////////////////////////////////////////
 		// Private data members
-		MA28_Cpp::MA28Solver ma28_; // Management of common block data
+		mutable MA28_Cpp::MA28Solver ma28_; // Management of common block data
 		value_type	fillin_ratio_;
 		// Keep a memory of the size of the system to check for consistent usage.
 		index_type  m_;     // number of rows (keep for checks on consistancy)
@@ -112,14 +112,14 @@ protected:
 		index_type  nz_;    // numner of non-zero elements in unfactorized matrix ("")
 		index_type  licn_;  // size of icn_ and a_ (default = 3 * nz_)
 		index_type  lirn_;  // size of irn_ (default = 3 * nz_)
-		index_type  iflag_; // memory of iflag for retrival
 		// Control parameters
 		value_type	u_; // fill-in vs. stability ratio (default = 0.1)
 		EScalingMethod	scaling_; // Scaling method
 		// Matrix scaling
 		matrix_scaling_ptr_t   matrix_scaling_;
 		// Memory for factorization structure
-		std::valarray<index_type>  irn_;
+		std::valarray<index_type>  ivect_;
+		std::valarray<index_type>  jvect_;
 		std::valarray<index_type>  icn_;
 		std::valarray<index_type>  ikeep_;
 		// Basis matrix selection
