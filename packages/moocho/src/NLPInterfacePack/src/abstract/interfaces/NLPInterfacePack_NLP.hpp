@@ -551,7 +551,7 @@ public:
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * <li> [<tt>c != NULL</tt>] <tt>c->space().is_compatible(*this->space_c()) == true</tt>
-	 *      (throw <tt>VectorBase::IncompatibleVectors</tt>)
+	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -595,7 +595,7 @@ public:
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * <li> [<tt>h != NULL</tt>] <tt>h->space().is_compatible(*this->space_h()) == true</tt>
-	 *      (throw <tt>VectorBase::IncompatibleVectors</tt>)
+	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -692,7 +692,7 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorBase::IncompatibleVectors</tt>)
+	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
 	 * <li> <tt>this->get_f() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 *
@@ -716,7 +716,7 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorBase::IncompatibleVectors</tt>)
+	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
 	 * <li> <tt>this->get_c() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 *
@@ -740,7 +740,7 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorBase::IncompatibleVectors</tt>)
+	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
 	 * <li> <tt>this->get_h() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 *
@@ -779,7 +779,7 @@ public:
 		,const VectorWithOp*   lambda
 		,const VectorWithOp*   lambdaI
 		,const VectorWithOp*   nu
-		,bool                  optimal
+		,bool                  is_optimal
 		) const;
 
 	//@}

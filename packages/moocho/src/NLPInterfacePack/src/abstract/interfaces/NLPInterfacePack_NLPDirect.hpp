@@ -266,34 +266,35 @@ public:
 	 *              have been created by <tt>this->space_x()->create_member()</tt>.
 	 *	@param	f 	[out] Value of <tt>f(x)</tt>.
 	 *				If f == NULL then this quantity is not computed.
-	 *	@param	c 	[out] (dim == m()) Value of the equality constraints <tt>c(x)</tt>.
-	 *				If c == NULL then this quantity is not computed.
-	 *				If c != NULL and recalc_c == true on input then this quantity is
-	 *				not recomputed and is used in the computation of
-	 *				py if requested (i.e. py != NULL).  If <tt>!=NULL</tt> this this vector
-	 *              should have been created by <tt>this->space_c()->create_member()</tt>.
+	 *	@param	c 	[in/out] (dim == m()) Value of the equality constraints \a c(x).
+	 *				If <tt>c == NULL</tt> then this quantity is not computed.
+	 *				If </tt>c != NULL and <tt>recalc_c == true</tt> then this quantity is recomputed.
+	 *				If </tt>c != NULL and <tt>recalc_c == false</tt> then this quantity is not
+	 *				recomputed and is used in the computation of \c py if requested (i.e. <tt>py != NULL</tt>).
+	 *				If <tt>c != NULL</tt> this this vector should have been created by
+	 *				<tt>this->space_c()->create_member()</tt>.
 	 *	@param  recalc_c
-	 *				[in] If true then c(x) will be recomputed at x.
-	 *              If false then <tt>c</tt> will not be recomputed but will be used as stated above.
-	 *  @param  h   [out] (dim == mI()) Value of the general inequality constraints h(x).
-	 *              If mI() == 0 then <tt>h</tt> should be set to <tt>NULL</tt> on input.
-	 *              If h == NULL then this value will not be computed.  If <tt>!=NULL</tt> this
+	 *				[in] If \c true then \c c will be recomputed at \c x.
+	 *              If \c false then <tt>c</tt> will not be recomputed but will be used as stated above.
+	 *  @param  h   [out] (dim == mI()) Value of the general inequality constraints \a h(x).
+	 *              If <tt>mI() == 0</tt> then \c h should be set to \c NULL on input.
+	 *              If <tt>h == NULL</tt> then this value will not be computed.  If <tt>h!=NULL</tt> this
 	 *              this vector should have been created by <tt>this->space_h()->create_member()</tt>.
 	 *
 	 *	@param	Gf	[out] (dim == n()) Gradient of <tt>f(x)</tt>.
-	 *				If Gf == NULL then this quantity is not computed.  If <tt>!=NULL</tt> this this vector
-	 *              should have been created by <tt>this->space_x()->create_member()</tt>.
+	 *				If <tt>Gf == NULL</tt> then this quantity is not computed.  If <tt>Gf!=NULL</tt> this
+	 *				this vector should have been created by <tt>this->space_x()->create_member()</tt>.
 	 *	@param	py
-	 *				[out] (dim == r()) <tt>py = -inv(C)*c(con_decomp)</tt>
-	 *				If py == NULL then this quantity is not computed.
-	 *				If recalc_c == false on input then this c may be used
-	 *				in the computation of py.  If <tt>!=NULL</tt> this this vector should have been
-	 *              created by <tt>this->space_x()->sub_space(this->var_dep())->create_member()</tt>.
+	 *				[out] (dim == r()) <tt>py = -inv(C)*c(con_decomp)</tt>.
+	 *				If <tt>py == NULL</tt> then this quantity is not computed.
+	 *				If <tt>recalc_c == false</tt> on input then the input <tt>c != NULL</tt> argument may
+	 *				be used	in the computation of \c py.  If <tt>py!=NULL</tt> this this vector should have
+	 *				been created by <tt>this->space_x()->sub_space(this->var_dep())->create_member()</tt>.
 	 *	@param	rGf
-	 *				[out] (dim == n()-r()) <tt>rGf = Gf(1,n()-r()) + D'*Gf(n()-r()+1,n())</tt>
-	 *              , which is the reduced gradient of the objective function projected
-	 *              into the manifold of the decomposed equality constraints.  If <tt>NULL</tt>, this
-	 *              vector is not computed.  If <tt>!=NULL</tt> this this vector
+	 *				[out] (dim == n()-r()) <tt>rGf = Gf(var_indep()) + D'*Gf(var_dep())</tt>,
+	 *				which is the reduced gradient of the objective function projected
+	 *				into the manifold of the decomposed equality constraints.  If <tt>rGf==NULL</tt>,
+	 *				this vector is not computed.  If <tt>rGf!=NULL</tt> then this vector
 	 *              should have been created by <tt>this->space_x(this->var_indep())->create_member()</tt>.
 	 *  @param  GcU [out] (dim = n x (m()-r())) Auxiliary jacobian matrix <tt>del(c(con_undecomp),x)</tt>.
 	 *              If m() == r() then <tt>GcU</tt> should be set to <tt>NULL</tt> on input.

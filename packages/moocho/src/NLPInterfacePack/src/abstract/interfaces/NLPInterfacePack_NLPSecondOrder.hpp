@@ -57,7 +57,7 @@ public:
 
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<
-		AbstractLinAlgPack::MatrixSpace<const MatrixSymWithOp> >    mat_sym_space_ptr_t;
+		const AbstractLinAlgPack::MatrixSpace<MatrixSymWithOp> >    mat_sym_space_ptr_t;
 
 	/** @name Constructors */
 	//@{
@@ -112,7 +112,7 @@ public:
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * <li> [<tt>HL != NULL</tt>] <tt>HL->space().is_compatible(*this->space_HL(),no_trans) == true</tt>
-	 *      (throw <tt>VectorBase::IncompatibleVectors</tt>)
+	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -175,7 +175,7 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorBase::IncompatibleVectors</tt>)
+	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
 	 * <li> <tt>this->get_HL() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * <li> [<tt>this->m() == 0</tt>] <tt>lambda == NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> [<tt>this->m() != 0 && lambda != 0</tt>] <tt>lambda->space().is_compatible(*this->space_c()) == true)</tt>
