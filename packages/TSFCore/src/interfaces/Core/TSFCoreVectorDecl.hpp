@@ -126,9 +126,8 @@ public:
 	 *
 	 * @param  rng      [in] The range of the elements to extract the sub-vector view.
 	 * @param  sub_vec  [in/out] View of the sub-vector.  Prior to the
-	 *                  first call <tt>RTOp_sub_vector_null(sub_vec)</tt> must
-	 *                  have been called for the correct behavior.  Technically
-	 *                  <tt>*sub_vec</tt> owns the memory but this memory can be freed
+	 *                  first call <tt>sub_vec->set_uninitialized()</tt> must be called first.
+	 *                  Technically <tt>*sub_vec</tt> owns the memory but this memory can be freed
 	 *                  only by calling <tt>this->freeSubVector(sub_vec)</tt>.
 	 *
 	 * Preconditions:<ul>
@@ -148,7 +147,7 @@ public:
 	 *
 	 * Note that calling this operation might require some dynamic
 	 * memory allocations and temporary memory.  Therefore, it is
-	 * critical that <tt>this->freeSubSector(sub_vec)</tt> is called
+	 * critical that <tt>this->freeSubVector(sub_vec)</tt> is called
 	 * to clean up memory and avoid memory leaks after the sub-vector
 	 * is used.
 	 *
@@ -157,14 +156,13 @@ public:
 	 * this memory if it is sufficiently sized.  The user is
 	 * encouraged to make multiple calls to
 	 * <tt>this->getSubVector(...,sub_vec)</tt> before
-	 * <tt>this->freeSubSector(sub_vec)</tt> to finally clean up all
-	 * of the memory.  Of course the same <tt>sub_vec</tt> object must
+	 * <tt>this->freeSubVector(sub_vec)</tt> to finally clean up all
+	 * of the memory.  Of course, the same <tt>sub_vec</tt> object must
 	 * be passed to the same vector object for this to work correctly.
 	 *
 	 * This method has a default implementation based on a vector
-	 * reduction operator class (see
-	 * <tt>RTOp_ROp_get_sub_vector.h</tt>) and calls
-	 * <tt>applyOp()</tt>.  Note that the footprint of the reduction
+	 * reduction operator class (see <tt>RTOp_ROp_get_sub_vector.h</tt>)
+	 * and calls <tt>applyOp()</tt>.  Note that the footprint of the reduction
 	 * object (both internal and external state) will be
 	 * O(<tt>rng.size()</tt>).  For serial applications this is faily
 	 * reasonable and will not be a major performance penalty.  For
@@ -173,7 +171,7 @@ public:
 	 * large at all.  Although, this method should not even be used in
 	 * case where the vector is very large.  If a subclass does
 	 * override this method, it must also override
-	 * <tt>freeSubSector()</tt> which has a default implementation
+	 * <tt>freeSubVector()</tt> which has a default implementation
 	 * which is a companion to this method's default implementation.
 	 */
 	virtual void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
@@ -184,7 +182,7 @@ public:
 	 * @param  sub_vec
 	 *				[in/out] The memory refered to by <tt>sub_vec->values</tt>
 	 *				will be released if it was allocated and <tt>*sub_vec</tt>
-	 *              will be zeroed out using <tt>RTOp_sub_vector_null(sub_vec)</tt>.
+	 *              will be zeroed out using <tt>sub_vec->set_uninitialized()</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->space().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
@@ -193,15 +191,16 @@ public:
 	 * </ul>
  	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>sub_vec->values == NULL</tt>, <tt>sub_vec->sub_dim == 0</tt> 
+	 * <li> See <tt>RTOpPack::SubVectorT::set_uninitialized()</tt> for <tt>sub_vec</tt>
 	 * </ul>
 	 *
-	 * The sub-vector view must have been allocated by this->getSubVector() first.
+	 * The sub-vector view must have been allocated by <tt>this->getSubVector()</tt> first.
 	 *
 	 * This method has a default implementation which is a companion
-	 * to the default implementation for <tt>getSubVector()</tt>.  If
-	 * <tt>getSubVector()</tt> is overridden by a subclass then this
-	 * method must be overridden also!
+	 * to the default implementation for the non-<tt>const</tt>
+	 * version of <tt>getSubVector()</tt>.  If <tt>getSubVector()</tt>
+	 * is overridden by a subclass then this method must be overridden
+	 * also!
 	 */
 	virtual void freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
 
@@ -210,10 +209,10 @@ public:
 	 *
 	 * @param  rng      [in] The range of the elements to extract the sub-vector view.
 	 * @param  sub_vec  [in/out] Mutable view of the sub-vector.  Prior to the
-	 *                  first call <tt>RTOp_mutable_sub_vector_null(sub_vec)</tt> must
+	 *                  first call <tt>sub_vec->set_uninitialized()</tt> must
 	 *                  have been called for the correct behavior.  Technically
-	 *                  <tt>*sub_vec</tt> owns the memory but this memory can be freed
-	 *                  only by calling <tt>this->commitSubVector(sub_vec)</tt>.
+	 *                  <tt>*sub_vec</tt> owns the memory but this memory must be commited
+	 *                  and freed only by calling <tt>this->commitSubVector(sub_vec)</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->space().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
@@ -262,7 +261,6 @@ public:
 	 * a subclass does override this method, it must also override
 	 * <tt>commitSubVector()</tt> which has a default implementation
 	 * which is a companion to this method's default implementation.
-	 *
 	 */
 	virtual void getSubVector( const Range1D& rng, RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
 
@@ -270,11 +268,11 @@ public:
 	/** Commit changes for a mutable explicit view of a sub-vector.
 	 *
 	 * @param sub_vec
-	 *				[in/out] The data in <tt>sub_vec->values</tt> will be written
+	 *				[in/out] The data in <tt>sub_vec->values()</tt> will be written
 	 *              back internal storage and the memory refered to by
-	 *              <tt>sub_vec->values</tt> will be released if it was allocated
+	 *              <tt>sub_vec->values()</tt> will be released if it was allocated
 	 *				and <tt>*sub_vec</tt> will be zeroed out using
-	 *				<tt>RTOp_mutable_sub_vector_null(sub_vec)</tt>.
+	 *				<tt>sub_vec->set_uninitialized()</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->space().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
@@ -283,7 +281,8 @@ public:
 	 * </ul>
  	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>sub_vec->values == NULL</tt>, <tt>sub_vec->sub_dim == 0</tt> 
+	 * <li> See <tt>RTOpPack::MutableSubVectorT::set_uninitialized()</tt> for <tt>sub_vec</tt>
+	 * <li> <tt>*this</tt> will be updated according the the changes made to <tt>sub_vec</tt>
 	 * </ul>
 	 *
 	 * The sub-vector view must have been allocated by
@@ -318,11 +317,13 @@ public:
 	 *      = vec.values[vec.value_stride*(k-1)]</tt>, for <tt>k = 1..sub_vec.sub_nz</tt>
 	 * </ul>
 	 *
-	 * The default implementation of this operation uses a transformation operator class
-	 * (see RTOp_TOp_setSubVector.h) and calls <tt>applyOp()</tt>.  Be forewarned
-	 * however, that the operator objects state data (both internal and external) will be 
-	 * O(<tt>sub_vec.sub_nz</tt>).  For serial applications, this is entirely adequate.  For parallel
-	 * applications this will be very bad!
+	 * The default implementation of this operation uses a
+	 * transformation operator class (see RTOp_TOp_setSubVector.h) and
+	 * calls <tt>applyOp()</tt>.  Be forewarned however, that the
+	 * operator objects state data (both internal and external) will
+	 * be O(<tt>sub_vec.subNz</tt>).  For serial applications, this
+	 * is entirely adequate.  For parallel applications this will be
+	 * very bad!
 	 *
 	 * @param  sub_vec  [in] Represents the elements in the subvector to be set.
 	 */
