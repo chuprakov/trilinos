@@ -190,7 +190,8 @@ AC_CXX_STD_SPRINTF
 # ------------------------------------------------------------------------
 
 TAC_ARG_ENABLE_FEATURE(examples, [Build examples for all Trilinos packages (not all packages are sensitive to this option)], EXAMPLES, yes)
-AM_CONDITIONAL(BUILD_EXAMPLES, test "X$ac_cv_use_examples" != "Xno")
+TAC_ARG_ENABLE_FEATURE_SUB_CHECK( meros, examples, [Build Meros examples], MEROS_EXAMPLES)
+AM_CONDITIONAL(BUILD_EXAMPLES, test "X$ac_cv_use_meros_examples" != "Xno")
 
 TAC_ARG_ENABLE_FEATURE(libcheck, [Check for some third-party libraries including BLAS and LAPACK.  (Cannot be disabled unless tests and examples are also disabled.)], LIBCHECK, yes)
 
@@ -213,7 +214,7 @@ TAC_ARG_WITH_INCDIRS
 # If tests, examples and libcheck are disabled, we don't have to check
 # for these libraries.
 #if test "X$ac_cv_use_tests" != "Xno" || test "X$ac_cv_use_examples" != "Xno" || test "X$ac_cv_use_libcheck" != "Xno"; then
-if test "X$ac_cv_use_examples" != "Xno" || test "X$ac_cv_use_libcheck" != "Xno"; then
+if test "X$ac_cv_use_meros_examples" != "Xno" || test "X$ac_cv_use_libcheck" != "Xno"; then
 
 # To add any libraries that you want to check for, replace pow below 
 # with the name of an entry point in that library.
