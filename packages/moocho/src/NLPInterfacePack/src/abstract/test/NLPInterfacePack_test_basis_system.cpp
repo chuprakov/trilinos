@@ -53,10 +53,14 @@ bool NLPInterfacePack::test_basis_system(
 		nlp->calc_Gh(xo,m==0);
 
 	// Create the matrices C and D
-	BasisSystem::space_C_ptr_t::element_type::mat_ptr_t
+	BasisSystem::mat_nonsing_space_ptr_t::element_type::mat_ptr_t
 		C = ( m ? basis_sys->space_C()->create_member() : NULL);
-	BasisSystem::space_D_ptr_t::element_type::mat_ptr_t
-		D = ( m && n > m ? basis_sys->space_C()->create_member() : NULL);
+	BasisSystem::mat_space_ptr_t::element_type::mat_ptr_t
+		D = ( m && n > m && basis_sys->space_C().get() ? basis_sys->space_C()->create_member() : NULL);
+	BasisSystem::mat_space_ptr_t::element_type::mat_ptr_t
+		GcUP = ( m && n > m && basis_sys->space_GcUP().get()  ? basis_sys->space_GcUP()->create_member() : NULL);
+	BasisSystem::mat_space_ptr_t::element_type::mat_ptr_t
+		GhUP = ( mI && n > m && basis_sys->space_GhUP().get() ? basis_sys->space_GhUP()->create_member() : NULL);
 
 	// Initialize C and D with basis_sys
 	basis_sys->update_basis(
@@ -64,6 +68,8 @@ bool NLPInterfacePack::test_basis_system(
 		,Gh.get()
 		,C.get()
 		,D.get()
+		,GcUP.get()
+		,GhUP.get()
 		);
 
 	// Test the basis and basis system objects.
@@ -80,7 +86,10 @@ bool NLPInterfacePack::test_basis_system(
 		,Gc.get()
 		,Gh.get()
 		,C.get()
+		,NULL    // Create the N matrix internally
 		,D.get()
+		,GcUP.get()
+		,GhUP.get()
 		,print_all_warnings
 		,out
 		);
