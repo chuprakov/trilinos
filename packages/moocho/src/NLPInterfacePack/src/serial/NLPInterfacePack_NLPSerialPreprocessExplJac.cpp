@@ -38,30 +38,30 @@ namespace NLPInterfacePack {
 // Constructors / initializers
 
 NLPSerialPreprocessExplJac::NLPSerialPreprocessExplJac(
-	const factory_mat_ptr_t     &factory_Gc_orig
-	,const factory_mat_ptr_t    &factory_Gh_orig
+	const factory_mat_ptr_t     &factory_Gc_full
+	,const factory_mat_ptr_t    &factory_Gh_full
 	)
 	:initialized_(false)
 {
-	this->set_mat_factories(factory_Gc_orig,factory_Gh_orig);
+	this->set_mat_factories(factory_Gc_full,factory_Gh_full);
 }
 
 void NLPSerialPreprocessExplJac::set_mat_factories(
-	const factory_mat_ptr_t     &factory_Gc_orig
-	,const factory_mat_ptr_t    &factory_Gh_orig
+	const factory_mat_ptr_t     &factory_Gc_full
+	,const factory_mat_ptr_t    &factory_Gh_full
 	)
 {
 	namespace rcp = MemMngPack;
 	namespace afp = MemMngPack;
-	if(factory_Gc_orig.get())
-		factory_Gc_orig_ = factory_Gc_orig;
+	if(factory_Gc_full.get())
+		factory_Gc_full_ = factory_Gc_full;
 	else 
-		factory_Gc_orig_ = rcp::rcp(
+		factory_Gc_full_ = rcp::rcp(
 			new afp::AbstractFactoryStd<MatrixWithOp,MatrixSparseCOORSerial>() );
-	if(factory_Gh_orig.get())
-		factory_Gh_orig_ = factory_Gh_orig;
+	if(factory_Gh_full.get())
+		factory_Gh_full_ = factory_Gh_full;
 	else 
-		factory_Gc_orig_ = rcp::rcp(
+		factory_Gc_full_ = rcp::rcp(
 			new afp::AbstractFactoryStd<MatrixWithOp,MatrixSparseCOORSerial>() );
 	factory_Gc_ = rcp::rcp( new afp::AbstractFactoryStd<MatrixWithOp,MatrixPermAggr>() );
 	factory_Gh_ = rcp::rcp( new afp::AbstractFactoryStd<MatrixWithOp,MatrixPermAggr>() );
@@ -91,15 +91,15 @@ void NLPSerialPreprocessExplJac::initialize()
 		space_h = this->space_h();
 
 	// Initialize the storage for the intermediate quanities
-	Gc_nz_full_ = imp_Gc_nz_full();			// Get the estimated number of nonzeros in Gc
-	Gc_val_full_.resize(Gc_nz_full_);
-	Gc_ivect_full_.resize(Gc_nz_full_);
-	Gc_jvect_full_.resize(Gc_nz_full_);
+	Gc_nz_orig_ = imp_Gc_nz_full();         // Get the estimated number of nonzeros in Gc
+	Gc_val_orig_.resize(Gc_nz_orig_);
+	Gc_ivect_orig_.resize(Gc_nz_orig_);
+	Gc_jvect_orig_.resize(Gc_nz_orig_);
 	Gc_perm_new_basis_updated_ = false;
-	Gh_nz_full_ = imp_Gh_nz_full();			// Get the estimated number of nonzeros in Gh
-	Gh_val_full_.resize(Gh_nz_full_);
-	Gh_ivect_full_.resize(Gh_nz_full_);
-	Gh_jvect_full_.resize(Gh_nz_full_);
+	Gh_nz_orig_ = imp_Gh_nz_orig();			// Get the estimated number of nonzeros in Gh
+	Gh_val_orig_.resize(Gh_nz_orig_);
+	Gh_ivect_orig_.resize(Gh_nz_orig_);
+	Gh_jvect_orig_.resize(Gh_nz_orig_);
 	Gh_perm_new_basis_updated_ = false;
 
 	// If you get here then the initialization went Ok.
@@ -227,13 +227,19 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 		var_dep      = this->var_dep(),
 		equ_decomp   = this->equ_decomp(),
 		inequ_decomp = this->equ_decomp();
+	// Get the dimensions of the original NLP
+	const bool
+		cinequtoequ = this->convert_inequ_to_equ();
 	const size_type
 		n       = this->n(),
-		n_full  = this->imp_n_full(),
-		m_full  = this->imp_m_full(),
-		mI_full = this->imp_mI_full(),
-		num_cols = (calc_Gc ? m_full : mI_full);
-
+		n_orig  = this->imp_n_orig(),
+		m_orig  = this->imp_m_orig(),
+		mI_orig = this->imp_mI_orig();
+	// Get the dimensions of the full matrix
+	const size_type
+		num_cols = (calc_Gc
+					 ? m_orig + ( cinequtoequ ? mI_orig : 0       )
+					 :          ( cinequtoequ ? 0       : mI_orig ) );
 
 	//
 	// Get references to the constituent objects
@@ -246,7 +252,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 											: *first_order_info.Gh );
 	// Get smart pointers to the constituent members
 	rcp::ref_count_ptr<MatrixWithOp>
-		G_orig = rcp::rcp_const_cast<MatrixWithOp>( G_aggr.mat_orig() );
+		G_full = rcp::rcp_const_cast<MatrixWithOp>( G_aggr.mat_orig() );
 	rcp::ref_count_ptr<PermutationSerial>
 		P_row = rcp::rcp_dynamic_cast<PermutationSerial>(
 			rcp::rcp_const_cast<Permutation>( G_aggr.row_perm() ) );  // variable permutation
@@ -255,29 +261,35 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 			rcp::rcp_const_cast<Permutation>( G_aggr.col_perm() ) );  // constraint permutation
 	rcp::ref_count_ptr<const MatrixWithOp>
 		G_perm = G_aggr.mat_perm();
-	// Remove references to G_orig, G_perm, P_row and P_col.
+	// Remove references to G_full, G_perm, P_row and P_col.
 	G_aggr.set_uninitialized();
 	// Allocate the original matrix object if not done so yet
-	if( G_orig.get() == NULL || G_orig.count() > 1 )
-		G_orig = (calc_Gc ? factory_Gc_orig_ : factory_Gh_orig_)->create();
+	if( G_full.get() == NULL || G_full.count() > 1 )
+		G_full = (calc_Gc ? factory_Gc_full_ : factory_Gh_full_)->create();
 	// Get reference to the MatrixLoadSparseElements interface
 	MatrixLoadSparseElements
-		&G_lse = dyn_cast<MatrixLoadSparseElements>(*G_orig);
+		&G_lse = dyn_cast<MatrixLoadSparseElements>(*G_full);
 
 	//
 	// Calcuate the full explicit Jacobian
 	//
 
 	set_x_full( VectorDenseEncap(x)(), newx, &x_full() );
-	if(calc_Gc)
+	if(calc_Gc) {
 		imp_calc_Gc_full( x_full(), newx, first_order_expl_info() );
-	else
+		if( cinequtoequ && mI_orig )
+			imp_calc_Gh_full( x_full(), newx, first_order_expl_info() );
+	}
+	else { // Should not get here if convert_inequ_to_equ == true or mI_orig == 0
 		imp_calc_Gh_full( x_full(), newx, first_order_expl_info() );
+	}
 
 	// Now get the actual number of nonzeros
-	const size_type nz_full = (calc_Gc ? Gc_nz_full_ : Gh_nz_full_);
+	const size_type nz_full = (calc_Gc
+								? Gc_nz_orig_ + (cinequtoequ ? Gh_nz_orig_ + mI_orig : 0 ) // Gc_orig, Gh_orig, -I
+								:               (cinequtoequ ? 0 : Gh_nz_orig_ ) );        // Gh_orig
 
-	// Determine if we need to set the structure and the nonzeros or just the nonzeros
+	// Determine if we need to set the structure and the nonzeros or just the nonzero values
 	const bool load_struct = (G_lse.nz() == 0);
 
 	size_type G_nz_previous;
@@ -306,9 +318,14 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 		,load_struct ? &jvect : NULL
 		);
 
-	// Remove the variables fixed by bounds and adjust the row indices accordingly
-	// Note: only update the row and column indices the first time since these
-	// will never change and are independent of basis choose.
+	assert(0);
+	// ToDo: Factor out the below loops into a private function that
+	// you can used to fill Gc_full with Gc_orig, Gh_orig and -I
+	// if cinequtoequ == true && mI_orig > 0
+
+	// Remove the variables fixed by bounds and adjust the row indexes accordingly
+	// Note: only update the row and column indexes the first time since these
+	// will never change and are independent of basis choise.
 
 	value_type  *val_itr    = val;
  	index_type  *ivect_itr  = ivect,
@@ -430,13 +447,13 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 		}
 	}
 	if( G_perm.get() == NULL || (calc_Gc ? !Gc_perm_new_basis_updated_ : !Gh_perm_new_basis_updated_) ) {
-		G_perm = G_orig->perm_view(
+		G_perm = G_full->perm_view(
 			P_row.get(),row_part,num_row_part
 			,P_col.get(),col_part,num_col_part
 			);
 	}
 	else {
-		G_perm = G_orig->perm_view_update(
+		G_perm = G_full->perm_view_update(
 			P_row.get(),row_part,num_row_part
 			,P_col.get(),col_part,num_col_part
 			,G_perm
@@ -448,7 +465,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 	// Reinitialize the aggregate matrix object.
 	//
 
-	G_aggr.initialize(G_orig,P_row,P_col,G_perm);
+	G_aggr.initialize(G_full,P_row,P_col,G_perm);
 
 }
 

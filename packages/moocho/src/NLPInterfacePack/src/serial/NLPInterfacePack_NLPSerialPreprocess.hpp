@@ -85,17 +85,23 @@ namespace NLPInterfacePack {
                              [ hu_orig ]
  \endverbatim
  * Note that in this case, the Jacobian of the new equality constraints
- * becomes:
+ * becomes and the gradient of the new objective becomes:
  \verbatim
 
     Gc_full = [  Gc_orig    Gh_orig   ]
               [     0          -I     ]
+
+    Gf_full = [ Gf_orig ]
+              [    0    ]
  \endverbatim
- *
  * Note that it is up to the subclass to implement \c imp_calc_Gc()
  * and \c imp_calc_Gh() in a way that is consistent with the above
  * transformation while also considering basis permutations (see 
- * \c NLPSerialPreprocessExplJac for example).
+ * \c NLPSerialPreprocessExplJac for example).  As for the gradient
+ * \c Gc_full, the subclass can actually include terms for the slack
+ * variables in the objective function.
+ *
+ * <b>Preprocessing and basis manipulaiton</b>
  *
  * The initial basis selection is the original order (<tt>x_full = [ x_orig; s_orig ]</tt>
  * if <tt>convert_inequ_to_equ == true</tt>) with the variables fixed by bounds being removed,
@@ -103,11 +109,6 @@ namespace NLPInterfacePack {
  *
  * The implementations of the Jacobian matrices \c Gc and \c Gh are not determined here and
  * must be defined by an %NLP subclass (see \c NLPSerialPreprocessExplJac for example).
- *
- * <b>Preprocessing and basis manipulaiton</b>
- *
- * Given that we are working with either <tt>x_full = [ 
- *
  *
  * This class stores the variable permutations and processing information two parts.  The
  * stage removed fixed variables:
@@ -450,7 +451,7 @@ protected:
 	/** Calculate the objective function for the original %NLP.
 	 */
 	virtual void imp_calc_f_orig(
-		const VectorSlice            &x_orig
+		const VectorSlice            &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const = 0;
@@ -458,7 +459,7 @@ protected:
 	/** Calculate the vector for all of the general equality constaints in the original %NLP.
 	 */
 	virtual void imp_calc_c_orig(
-		const VectorSlice            &x_orig
+		const VectorSlice            &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const = 0;
@@ -466,15 +467,24 @@ protected:
 	/** Calculate the vector for all of the general inequality constaints in the original %NLP.
 	 */
 	virtual void imp_calc_h_orig(
-		const VectorSlice            &x_orig
+		const VectorSlice            &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const = 0;
 	///
 	/** Calculate the vector for the gradient of the objective in the original NLP.
+	 *
+	 * Note that the dimension of <tt>obj_grad_info.Gf->dim()</tt> is
+	 * <tt>n_orig + ( convert_inequ_to_equ ? mI_orig : 0)</tt>.
+	 *
+	 * On input, if <tt>convert_inequ_to_equ == true && mI_orig > 0</tt>
+	 * then <tt><tt>(*obj_grad_info.Gf)(n_orig+1,n_orig+mI_orig)</tt> is
+	 * initialized to 0.0 (since slacks do not ordinarily do not appear
+	 * in the objective function).  However, the subclass can assign
+	 * (smooth) contributions for the slacks if desired.
 	 */
 	virtual void imp_calc_Gf_orig(
-		const VectorSlice            &x_orig
+		const VectorSlice            &x_full
 		,bool                        newx
 		,const ObjGradInfoSerial     &obj_grad_info
 		) const = 0;
@@ -529,7 +539,7 @@ protected:
 	 * The default implementation of this function is to do nothing.
 	 */
 	virtual void imp_report_orig_final_solution(
-		const VectorSlice      &x_orig
+		const VectorSlice      &x_full
 		,const VectorSlice     *lambda_orig
 		,const VectorSlice     *lambdaI_orig
 		,const VectorSlice     *nu_orig
@@ -555,10 +565,10 @@ protected:
 	VectorSlice x_full() const;
 
 	///
-	const ZeroOrderInfoSerial zero_order_full_info() const;
+	const ZeroOrderInfoSerial zero_order_orig_info() const;
 
 	///
-	const ObjGradInfoSerial obj_grad_full_info() const;
+	const ObjGradInfoSerial obj_grad_orig_info() const;
 	
 	///
 	/** Permutation vector for partitioning free and fixed variables.
@@ -625,7 +635,7 @@ protected:
 	const IVector& inv_equ_perm() const;
 
 	// Perform the mapping from a full variable vector to the reduced permuted variable vector
-	void var_from_full(VectorSlice::const_iterator vec_full, VectorSlice::iterator vec) const;
+	void var_from_full( VectorSlice::const_iterator vec_full, VectorSlice::iterator vec ) const;
 
 	// Perform the mapping from a reduced permuted variable vector the full variable vector
 	void var_to_full(VectorSlice::const_iterator vec, VectorSlice::iterator vec_full) const;
@@ -650,7 +660,7 @@ private:
 	mutable value_type					f_orig_;    // Filled by subclasses as needed
 	mutable Vector						c_orig_;    // ...
 	mutable Vector						h_orig_;    // ...
-	mutable Vector						Gf_orig_;   // ...
+	mutable Vector						Gf_full_;   // ...
 
 	bool initialized_;
 	// Flag for if the NLP has has been properly initialized
@@ -695,6 +705,7 @@ private:
 	//
 
 	mutable Vector x_full_;
+	Vector         xinit_full_;
 	Vector         xl_full_;
 	Vector         xu_full_;
 	// The full vector (length = n_full_).  This vector may include
@@ -774,16 +785,16 @@ VectorSlice NLPSerialPreprocess::x_full() const
 
 inline
 const NLPSerialPreprocess::ZeroOrderInfoSerial
-NLPSerialPreprocess::zero_order_full_info() const
+NLPSerialPreprocess::zero_order_orig_info() const
 {
-	return ZeroOrderInfoSerial( &f_full_, &c_full_, &h_full_ );
+	return ZeroOrderInfoSerial( &f_orig_, &c_orig_, &h_orig_ );
 }
 
 inline
 const NLPSerialPreprocess::ObjGradInfoSerial
-NLPSerialPreprocess::obj_grad_full_info() const
+NLPSerialPreprocess::obj_grad_orig_info() const
 {
-	return ObjGradInfoSerial( &Gf_full_, zero_order_full_info() );
+	return ObjGradInfoSerial( &Gf_full_, zero_order_orig_info() );
 }
 
 inline
@@ -808,6 +819,12 @@ inline
 const IVector& NLPSerialPreprocess::equ_perm() const
 {
 	return equ_perm_;
+}
+
+inline
+const IVector& NLPSerialPreprocess::inv_equ_perm() const
+{
+	return inv_equ_perm_;
 }
 
 }	// end namespace NLPInterfacePack 

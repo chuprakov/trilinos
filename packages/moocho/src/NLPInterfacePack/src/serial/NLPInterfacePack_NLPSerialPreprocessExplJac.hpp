@@ -28,6 +28,28 @@ namespace NLPInterfacePack {
 ///
 /** NLP node subclass for explicit Jacobians.
  *
+ * This subclass does a lot of work.  It has to consider several different
+ * types of variability.  The matrices Gc and Gh that are computed must
+ * take into consideratiion whether or not inequalities are converted
+ * to equalities (<tt>convert_inequ_to_equ</tt>) and then permute
+ * the entries according to the current basis selection.
+ *
+ *  When <tt>convert_inequ_to_equ == false</tt> then:
+ \verbatim
+    
+    Gc = P_var * Gc_orig * P_equ'   (only if m_orig  > 0)
+
+    Gh = P_var * Gh_orig            (only if mI_orig > 0)
+ \endverbatim
+ * However, then <tt>convert_inequ_to_equ == true</tt> then:
+ \verbatim
+
+    Gc = P_var * [  Gc_orig    Gh_orig   ] * P_equ'
+                 [     0          -I     ]
+
+    Gf_full = Empty
+ \endverbatim
+ *
  * ToDo: Finish documentation!
  */
 class NLPSerialPreprocessExplJac
@@ -52,8 +74,8 @@ public:
 	/** Calls <tt>this->set_mat_factories()</tt>.
 	 */
 	NLPSerialPreprocessExplJac(
-		const factory_mat_ptr_t     &factory_Gc_orig = MemMngPack::null
-		,const factory_mat_ptr_t    &factory_Gh_orig = MemMngPack::null
+		const factory_mat_ptr_t     &factory_Gc_full = MemMngPack::null
+		,const factory_mat_ptr_t    &factory_Gh_full = MemMngPack::null
 		);
 
 	///
@@ -62,17 +84,17 @@ public:
 	 * These matrix types will be used for \c AbstractLinAlgPack::MatrixPermAggr::mat_orig()
 	 * returned by the initialized \c Gc and \c Gh objects respectively.
 	 *
-	 * @param  factory_Gc_orig
-	 *                [in] Smart pointer to matrix factory for \c Gc_orig.  If
-	 *                <tt>factory_Gc_orig.get() == NULL</tt> then the concrete matrix
+	 * @param  factory_Gc_full
+	 *                [in] Smart pointer to matrix factory for \c Gc_full.  If
+	 *                <tt>factory_Gc_full.get() == NULL</tt> then the concrete matrix
 	 *                type ??? will be used as the default.
-	 * @param  factory_Gh_orig
-	 *                [in] Smart pointer to matrix factory for \c Gh_orig.  If
-	 *                <tt>factory_Gh_orig.get() == NULL</tt> then the concrete matrix
+	 * @param  factory_Gh_full
+	 *                [in] Smart pointer to matrix factory for \c Gh_full.  If
+	 *                <tt>factory_Gh_full.get() == NULL</tt> then the concrete matrix
 	 *                type ??? will be used as the default. */
 	void set_mat_factories(
-		const factory_mat_ptr_t     &factory_Gc_orig
-		,const factory_mat_ptr_t    &factory_Gh_orig
+		const factory_mat_ptr_t     &factory_Gc_full
+		,const factory_mat_ptr_t    &factory_Gh_full
 		);
 
 	//@}
@@ -149,11 +171,11 @@ protected:
 	 */
 	struct FirstOrderExplInfo {
 		///
-		typedef std::valarray<value_type>    val_full_t;
+		typedef std::valarray<value_type>    val_t;
 		///
-		typedef std::valarray<index_type>    ivect_full_t;
+		typedef std::valarray<index_type>    ivect_t;
 		//
-		typedef std::valarray<index_type>    jvect_full_t;
+		typedef std::valarray<index_type>    jvect_t;
 		///
 		FirstOrderExplInfo()
 			:Gc_val(NULL), Gc_ivect(NULL), Gc_jvect(NULL)
@@ -162,8 +184,8 @@ protected:
 		{}
 		///
 		FirstOrderExplInfo(
-			index_type* Gc_nz_in, val_full_t* Gc_val_in, ivect_full_t* Gc_ivect_in, jvect_full_t* Gc_jvect_in
-			,index_type* Gh_nz_in, val_full_t* Gh_val_in, ivect_full_t* Gh_ivect_in, jvect_full_t* Gh_jvect_in
+			index_type* Gc_nz_in, val_t* Gc_val_in, ivect_t* Gc_ivect_in, jvect_t* Gc_jvect_in
+			,index_type* Gh_nz_in, val_t* Gh_val_in, ivect_t* Gh_ivect_in, jvect_t* Gh_jvect_in
 			,const ObjGradInfoSerial& obj_grad
 			)
 			:Gc_nz(Gc_nz_in), Gc_val(Gc_val_in), Gc_ivect(Gc_ivect_in), Gc_jvect(Gc_jvect_in)
@@ -173,19 +195,19 @@ protected:
 		///
 		size_type*    Gc_nz;
 		///
-		val_full_t*   Gc_val;
+		val_t*        Gc_val;
 		///
-		ivect_full_t* Gc_ivect;
+		ivect_t*      Gc_ivect;
 		///
-		jvect_full_t* Gc_jvect;
+		jvect_t*      Gc_jvect;
 		///
 		size_type*    Gh_nz;
 		///
-		val_full_t*   Gh_val;
+		val_t*        Gh_val;
 		///
-		ivect_full_t* Gh_ivect;
+		ivect_t*      Gh_ivect;
 		///
-		jvect_full_t* Gh_jvect;
+		jvect_t*      Gh_jvect;
 		///
 		Vector*       Gf;
 		///
@@ -208,7 +230,7 @@ protected:
 	  * is an upper estimate of the number of nonzeros.  To get the actual number
 	  * of nonzeros, call this function again after \c imp_calc_Gc() has been called.
 	  */
-	virtual size_type imp_Gc_nz_full() const = 0;
+	virtual size_type imp_Gc_nz_orig() const = 0;
 
 	///
 	/** Return the number of nonzero elements in \c Gh before elements are removed for fixed variables.
@@ -217,10 +239,10 @@ protected:
 	  * is an upper estimate of the number of nonzeros.  To get the actual number
 	  * of nonzeros, call this function again after \c imp_calc_Gh() has been called.
 	  */
-	virtual size_type imp_Gh_nz_full() const = 0;
+	virtual size_type imp_Gh_nz_orig() const = 0;
 
 	///
-	/** Calculate the COOR matrix for the gradient for all of the \a c(x) constaints in the full %NLP.
+	/** Calculate the COOR matrix for the gradient for all of the \a c(x) constaints in the orig %NLP.
 	 *
 	 * @param x       [in]  Unknown vector (size n_full).
 	 * @param newx    [in]  True if is a new point.
@@ -256,13 +278,13 @@ protected:
 	 * Note that duplicate entires with the same row and column indexes are allowed.  In this case, the
 	 * matrix entries are considered to be summed.
 	 */
-	virtual void imp_calc_Gc_full(
+	virtual void imp_calc_Gc_orig(
 		const VectorSlice& x_full, bool newx
 		, const FirstOrderExplInfo& first_order_expl_info
 		) const = 0;
 
 	///
-	/** Calculate the COOR matrix for the gradient for all of the \c h(x) constaints in the full %NLP.
+	/** Calculate the COOR matrix for the gradient for all of the \c h(x) constaints in the orig %NLP.
 	 *
 	 * @param x       [in]  Unknown vector (size n_full).
 	 * @param newx    [in]  True if is a new point.
@@ -298,7 +320,7 @@ protected:
 	 * Note that duplicate entires with the same row and column indexes are allowed.  In this case, the
 	 * matrix entries are considered to be summed.
 	 */
-	virtual void imp_calc_Gh_full(
+	virtual void imp_calc_Gh_orig(
 		const VectorSlice& x_full, bool newx
 		, const FirstOrderExplInfo& first_order_expl_info
 		) const = 0;
@@ -323,24 +345,26 @@ private:
 	
 	bool initialized_;              // Flag for if the NLP has has been properly initialized
 
-	factory_mat_ptr_t   factory_Gc_orig_;
-	factory_mat_ptr_t   factory_Gh_orig_;
+	factory_mat_ptr_t   factory_Gc_full_;
+	factory_mat_ptr_t   factory_Gh_full_;
 	mat_fcty_ptr_t      factory_Gc_;
 	mat_fcty_ptr_t      factory_Gh_;
 
-//	mutable size_type	Gc_nz_;        // Number of nonzeros in the shrunken NLP Gc
-//	mutable size_type	Gh_nz_;        // Number of nonzeros in the shrunken NLP Gh
-	mutable size_type                         Gc_nz_full_;    // Number of nonzeros in the full NLP Gc
-	mutable FirstOrderExplInfo::val_full_t    Gc_val_full_;   // Storage for explicit nonzeros of full Gc
-	mutable FirstOrderExplInfo::ivect_full_t  Gc_ivect_full_;
-	mutable FirstOrderExplInfo::jvect_full_t  Gc_jvect_full_;
-	mutable size_type                         Gh_nz_full_;    // Number of nonzeros in the full NLP Gc
-	mutable FirstOrderExplInfo::val_full_t    Gh_val_full_;   // Storage for explicit nonzeros of full Gh
-	mutable FirstOrderExplInfo::ivect_full_t  Gh_ivect_full_;
-	mutable FirstOrderExplInfo::jvect_full_t  Gh_jvect_full_;
+//	mutable size_type	Gc_nz_;        // Number of nonzeros in the transformed NLP Gc
+//	mutable size_type	Gh_nz_;        // Number of nonzeros in the transformed NLP Gh
+	mutable size_type   Gc_nz_orig_;    // Number of nonzeros in the original NLP Gc
+	mutable size_type   Gh_nz_orig_;    // Number of nonzeros in the original NLP Gh
+	mutable size_type                    Gc_nz_full_;    // Number of nonzeros in the full NLP Gc
+	mutable size_type                    Gh_nz_full_;    // Number of nonzeros in the full NLP Gh
+	mutable FirstOrderExplInfo::val_t    Gc_val_orig_;   // Storage for explicit nonzeros of full Gc
+	mutable FirstOrderExplInfo::ivect_t  Gc_ivect_orig_;
+	mutable FirstOrderExplInfo::jvect_t  Gc_jvect_orig_;
+	mutable FirstOrderExplInfo::val_t    Gh_val_orig_;   // Storage for explicit nonzeros of orig Gh
+	mutable FirstOrderExplInfo::ivect_t  Gh_ivect_orig_;
+	mutable FirstOrderExplInfo::jvect_t  Gh_jvect_orig_;
 
-	mutable bool                              Gc_perm_new_basis_updated_;      // Flag for if a new basis was set!
-	mutable bool                              Gh_perm_new_basis_updated_;      // Flag for if a new basis was set!
+	mutable bool                         Gc_perm_new_basis_updated_;  // Flag for if a new basis was set!
+	mutable bool                         Gh_perm_new_basis_updated_;  // Flag for if a new basis was set!
 
 	// ////////////////////////////
 	// Private member functions
@@ -362,9 +386,9 @@ const NLPSerialPreprocessExplJac::FirstOrderExplInfo
 NLPSerialPreprocessExplJac::first_order_expl_info() const
 {
 	return FirstOrderExplInfo(
-		&Gc_nz_full_,&Gc_val_full_,&Gc_ivect_full_,&Gc_jvect_full_
-		,&Gh_nz_full_,&Gh_val_full_,&Gh_ivect_full_,&Gh_jvect_full_
-		,obj_grad_full_info()
+		&Gc_nz_orig_,&Gc_val_orig_,&Gc_ivect_orig_,&Gc_jvect_orig_
+		,&Gh_nz_orig_,&Gh_val_orig_,&Gh_ivect_orig_,&Gh_jvect_orig_
+		,obj_grad_orig_info()
 		);
 }
 
