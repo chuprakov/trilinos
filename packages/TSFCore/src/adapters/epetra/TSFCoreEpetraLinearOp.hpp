@@ -173,6 +173,40 @@ public:
 
 	//@}
 
+  
+protected:
+  // ////////////////////////////////////
+  // protected methods
+
+
+  /** \name Allocators for domain and range spaces */
+  //@{
+  /** Allocate the domain space of the operator. Purpose: In
+   * TSFExtended, both EpetraLinearOp and EpetraVectorSpace are
+   * extended from the TSFCore versions by inheritance, and the
+   * TSFExtended operator subclasses expect to work with an extended
+   * vector space subclass. Thus, it is necessary for the base
+   * operator class to never directly allocate vector space objects,
+   * and allocation is delegated to a virtual allocator function. 
+   * KRL and RAB, 2/18/04. */
+  virtual Teuchos::RefCountPtr<const EpetraVectorSpace> 
+  allocateDomain(const Teuchos::RefCountPtr<Epetra_Operator>  &op 
+                 ,ETransp  op_trans 
+                 )  const ; 
+  
+  /** Allocate the range space of the operator.Purpose: In
+   * TSFExtended, both EpetraLinearOp and EpetraVectorSpace are
+   * extended from the TSFCore versions by inheritance, and the
+   * TSFExtended operator subclasses expect to work with an extended
+   * vector space subclass. Thus, it is necessary for the base
+   * operator class to never directly allocate vector space objects,
+   * and allocation is delegated to a virtual allocator function. 
+   * KRL and RAB, 2/18/04. */
+  virtual Teuchos::RefCountPtr<const EpetraVectorSpace> allocateRange( 
+    const Teuchos::RefCountPtr<Epetra_Operator>  &op 
+    ,ETransp  op_trans 
+    )  const ; 
+  //@}
 private:
 
 	// ////////////////////////////////////

@@ -67,8 +67,10 @@ void EpetraLinearOp::initialize(
 #endif
 	op_      = op;
 	opTrans_ = opTrans;
-	domain_  = Teuchos::rcp( new EpetraVectorSpace( Teuchos::rcp(&op->OperatorDomainMap(),false) ) );
-	range_   = Teuchos::rcp( new EpetraVectorSpace( Teuchos::rcp(&op->OperatorRangeMap(),false) ) );
+  /* KRL: call allocators to create domain and range space objects. 
+   * This ensures that the correct subtype is created. */
+	domain_  = allocateDomain(op, opTrans);
+	range_   = allocateRange(op, opTrans);
 }
 
 void EpetraLinearOp::setUninitialized(
@@ -124,6 +126,7 @@ EpetraLinearOp::domain() const
 {
 	return domain_;
 }
+
 
 // Overridden from LinearOp
 
@@ -218,5 +221,26 @@ void EpetraLinearOp::apply(
       );
 	}
 }
+
+
+// --------- KRL: allocator methods for domain and range spaces ---- 
+
+Teuchos::RefCountPtr<const EpetraVectorSpace> 
+EpetraLinearOp::allocateDomain(const Teuchos::RefCountPtr<Epetra_Operator>  &op 
+                               ,ETransp  op_trans 
+                               )  const
+{
+  return Teuchos::rcp( new EpetraVectorSpace( Teuchos::rcp(&op->OperatorDomainMap(),false) ) );
+}
+
+Teuchos::RefCountPtr<const EpetraVectorSpace> 
+EpetraLinearOp::allocateRange(const Teuchos::RefCountPtr<Epetra_Operator>  &op 
+                              ,ETransp  op_trans 
+                               )  const
+{
+  return Teuchos::rcp( new EpetraVectorSpace( Teuchos::rcp(&op->OperatorRangeMap(),false) ) );
+}
+
+
 
 }	// end namespace TSFCore
