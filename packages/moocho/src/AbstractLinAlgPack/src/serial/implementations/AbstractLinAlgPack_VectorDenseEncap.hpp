@@ -89,6 +89,7 @@ private:
 
 // VectorDenseEncap
 
+inline
 VectorDenseEncap::VectorDenseEncap( const VectorWithOp&  vec )
 	:vec_(vec)
 {
@@ -102,11 +103,13 @@ VectorDenseEncap::VectorDenseEncap( const VectorWithOp&  vec )
 		);
 }
 
+inline
 VectorDenseEncap::~VectorDenseEncap()
 {
 	vec_.free_sub_vector(&sub_vec_);
 }
 
+inline
 const VectorSlice VectorDenseEncap::operator()() const
 {
 	return vs_;
@@ -114,6 +117,7 @@ const VectorSlice VectorDenseEncap::operator()() const
 
 // VectorDenseMutableEncap
 
+inline
 VectorDenseMutableEncap::VectorDenseMutableEncap( VectorWithOpMutable&  vec )
 	:vec_(vec)
 {
@@ -127,16 +131,19 @@ VectorDenseMutableEncap::VectorDenseMutableEncap( VectorWithOpMutable&  vec )
 		);
 }
 
+inline
 VectorDenseMutableEncap::~VectorDenseMutableEncap()
 {
 	vec_.free_sub_vector(&sub_vec_);
 }
 
+inline
 VectorSlice VectorDenseMutableEncap::operator()()
 {
 	return vs_;
 }
 
+inline
 const VectorSlice VectorDenseMutableEncap::operator()() const
 {
 	return vs_;
