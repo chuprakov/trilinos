@@ -28,9 +28,6 @@
 // @HEADER
 */
 
-#include <assert.h>
-#include <malloc.h>
-
 #include "RTOp_TOp_force_in_bounds.h"
 #include "RTOp_obj_null_vtbl.h"
 #include "RTOp_obj_value_value_vtbl.h"  /* vtbl for operator object instance data */

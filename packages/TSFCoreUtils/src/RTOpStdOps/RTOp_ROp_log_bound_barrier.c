@@ -33,9 +33,6 @@
 /*       on 6/26/2002 at 21:9 */
 /* */
 
-#include <assert.h>
-#include <math.h>
-
 #define max(a,b) ( (a) > (b) ? (a) : (b) )
 #define min(a,b) ( (a) < (b) ? (a) : (b) )
 

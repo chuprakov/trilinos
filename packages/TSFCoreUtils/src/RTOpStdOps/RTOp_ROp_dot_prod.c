@@ -28,8 +28,6 @@
 // @HEADER
 */
 
-#include <assert.h>
-
 #include "RTOp_ROp_dot_prod.h"
 #include "RTOp_obj_null_vtbl.h"
 #include "RTOp_obj_value_vtbl.h"

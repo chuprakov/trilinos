@@ -28,9 +28,6 @@
 // @HEADER
 */
 
-#include <stdlib.h>
-#include <assert.h>
-
 #include "RTOp_ROp_get_sub_vector.h"
 #include "RTOp_obj_free_free.h"
 

@@ -29,8 +29,6 @@
 // ////////////////////////////////////////////////
 // initRTOpStdOpsLibCpp.cpp
 
-#include <assert.h>
-
 #include "initRTOpStdOpsLibCpp.hpp"
 #include "RTOpPack_RTOpCPostMod.hpp"
 #include "AbstractFactoryStd.hpp"

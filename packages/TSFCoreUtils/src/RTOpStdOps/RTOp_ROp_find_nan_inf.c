@@ -28,10 +28,6 @@
 // @HEADER
 */
 
-#include <assert.h>
-#include <string.h>
-#include <malloc.h>
-
 #include "RTOp_ROp_find_nan_inf.h"
 #include "RTOp_obj_null_vtbl.h"
 #include "RTOp_obj_value_index_vtbl.h"
