@@ -1,22 +1,22 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_max_rel_step.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_max_rel_step.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
-//
-// Note: This file was created automatically by 'new_rtop.pl'
-//       on 6/24/2002 at 21:2
-*/
+/* */
+/* Note: This file was created automatically by 'new_rtop.pl' */
+/*       on 6/24/2002 at 21:2 */
+/* */
 
 #include <assert.h>
 #include <math.h>
@@ -36,9 +36,9 @@ static int RTOp_ROp_max_rel_step_apply_op(
   , const int num_targ_vecs, const struct RTOp_MutableSubVector targ_vecs[]
   , RTOp_ReductTarget reduct_obj )
 {
-  /*
-  // Declare local variables
-  */
+  /* */
+  /* Declare local variables */
+  /* */
 
     /* Access to the reduction object data */
     RTOp_value_type *gamma = (RTOp_value_type*)reduct_obj;
@@ -54,9 +54,9 @@ static int RTOp_ROp_max_rel_step_apply_op(
     register RTOp_index_type  k;
     register RTOp_value_type  gamma_i;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
     if( num_vecs != 2 || ( num_vecs && vecs == NULL ) )
         return RTOp_ERR_INVALID_NUM_VECS;
     if( num_targ_vecs != 0 || ( num_targ_vecs && targ_vecs == NULL ) )
@@ -67,9 +67,9 @@ static int RTOp_ROp_max_rel_step_apply_op(
         return RTOp_ERR_INCOMPATIBLE_VECS;
     assert(reduct_obj);
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
     sub_dim      = vecs[0].sub_dim;
     /* v0 */
     v0_val        = vecs[0].values;
@@ -78,11 +78,11 @@ static int RTOp_ROp_max_rel_step_apply_op(
     v1_val        = vecs[1].values;
     v1_val_s      = vecs[1].values_stride;
 
-  /*
-  // Apply the operator:
-  //
-    //    element-wise reduction      : gamma = max( gamma, fabs(v1) / ( 1.0 + fabs(v0) ) );
-    */
+  /* */
+  /* Apply the operator: */
+  /* */
+    /*    element-wise reduction      : gamma = max( gamma, fabs(v1) / ( 1.0 + fabs(v0) ) ); */
+    /* */
     for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s, v1_val += v1_val_s )
     {
         /* Element-wise reduction */
@@ -93,14 +93,12 @@ static int RTOp_ROp_max_rel_step_apply_op(
   return 0; /* success? */
 }
 
-/* Name of this transformation operator class */
-const char RTOp_ROp_max_rel_step_name[] = "ROp_max_rel_step";
-
 /* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_rel_step_vtbl =
 {
   &RTOp_obj_null_vtbl
   ,&RTOp_obj_value_vtbl
+  ,"ROp_max_rel_step"
   ,NULL
   ,RTOp_ROp_max_rel_step_apply_op
   ,RTOp_reduct_max_value

@@ -20,6 +20,18 @@
 
 namespace DynamicCastHelperPack {
 
+/** We create this class so that we may throw a bad_cast when appropriate
+	and still use the THROW_EXCEPTION macro.  
+	We recommend users try to catch a bad_cast.
+*/
+class m_bad_cast : public std::bad_cast {
+	std::string msg;
+public:
+	explicit m_bad_cast(const std::string&  what_arg ) : msg(what_arg) {}
+	virtual ~m_bad_cast() throw() {}
+	virtual const char* what() const throw() { return msg.data(); }
+};
+
 // Throw the exception <tt>std::invalid_argument</tt> for below functions
 void dyn_cast_throw_exception( const char type_from_name[], const char type_to_name[] );
 

@@ -16,8 +16,8 @@
 #ifndef WORK_SPACE_PACK_H
 #define WORK_SPACE_PACK_H
 
-#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "ref_count_ptr.hpp"
+#include "ThrowException.hpp"
 
 namespace WorkspacePack {
 
@@ -66,10 +66,15 @@ public:
 	 * <tt>workspace_store->num_bytes_remaining() < num_bytes</tt> then this memory
 	 * will have to be dynamically allocated.
 	 *
+	 * Preconditons:<ul>
+	 * <li> <tt>num_bytes >= 0</tt> (throw <tt>std::invalid_arguemnt)
+	 * </ul>
+	 *
 	 * Postconditons:<ul>
 	 * <li> <tt>this-></tt>num_bytes() == <tt>num_bytes</tt>
-	 * <li> <tt>this-></tt>workspace_ptr() <tt>+ i</tt> for <tt>i = 0,..num_bytes-1</tt>
+	 * <li> [<tt>num_bytes > 0</tt>] <tt>this-></tt>workspace_ptr() <tt>+ i</tt> for <tt>i = 0,..num_bytes-1</tt>
 	 *      points to valid raw ininitialized allocated memory.
+	 * <li> [<tt>num_bytes == 0</tt>] <tt>this-></tt>workspace_ptr() == NULL</tt>
 	 * </ul>
 	 *
 	 * @param  workspace_store  [in] Pointer to the workspace object to get the memory from.
@@ -87,12 +92,11 @@ public:
 	///
 	const char* workspace_ptr() const;
 private:
-	WorkspaceStore
-		*workspace_store_;
-	char     *workspace_begin_;
-	char     *workspace_end_;
-	bool     owns_memory_;  // If true then the pointed to memory was allocated with
-	                        // new so we need to call delete on it when we are destroyed.
+	WorkspaceStore   *workspace_store_;
+	char             *workspace_begin_;
+	char             *workspace_end_;
+	bool             owns_memory_;  // If true then the pointed to memory was allocated with
+	                                // new so we need to call delete on it when we are destroyed.
 	// not defined and not to be called
 	RawWorkspace();
 	RawWorkspace(const RawWorkspace&);
@@ -131,6 +135,27 @@ class Workspace {
 public:
 	///
 	/** Allocates a num_elements array of temporary objects.
+	 *
+	 * @param  workspace_store  [in] Pointer to the workspace object to get the memory from.
+	 *                          This can be <tt>NULL</tt> in which case <tt>new T[]</tt> and 
+	 *                          <tt>delete []</tt> will be used instead.
+	 * @param  num_elements     [in] The number of bytes to allocate.
+	 * @param  call_consructors [in] If <tt>true</tt> then constructors and destructors will be
+	 *                          called on the allocated memory.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>num_element >= 0</tt> (throw <tt>std::invalid_argument)
+	 * </ul>
+	 *
+	 * Postconditons:<ul>
+	 * <li> <tt>this-></tt>size() == <tt>num_elements</tt>
+	 * <li> [<tt>num_elements > 0</tt>] <tt>this-></tt>operator[i], for <tt>i = 0,..num_elements-1</tt>
+	 *      points to valid allocated object of type <tt>T</tt>.
+	 * <li> [num_elements > 0 && call_constructors==true</tt>] <tt>this-></tt>operator[i],
+	 *      for <tt>i = 0,..num_elements-1</tt> was allocated as
+	 *      <tt>new (&this->operator[i]) T()</tt>.
+	 * </ul>
+	 *
 	 * When this object is created the <tt>workspace_store</tt> object
 	 * will be used to get the raw memory if <tt>workspace_store != NULL</tt>.
 	 * If <tt>workspace_store == NULL || workspace_store->num_bytes_remaining()</tt>
@@ -139,22 +164,6 @@ public:
 	 * constructor will only be called with placement new if <tt>call_constructor == ture</tt>.
 	 * Otherwise, the memory will be left uninitlaized.  This is okay for integral types
 	 * like <tt>double</tt> and <tt>int</tt> but not okay for class types like <tt>std::string</tt> etc.
-	 *
-	 * Postconditons:<ul>
-	 * <li> <tt>this-></tt>size() == <tt>num_elements</tt>
-	 * <li> <tt>this-></tt>operator[i], for <tt>i = 0,..num_elements-1</tt>
-	 *      points to valid allocated object of type <tt>T</tt>.
-	 * <li> [<tt>call_constructors==true</tt>] <tt>this-></tt>operator[i],
-	 *      for <tt>i = 0,..num_elements-1</tt> was allocated as
-	 *      <tt>new (&this->operator[i]) T()</tt>.
-	 * </ul>
-	 *
-	 * @param  workspace_store  [in] Pointer to the workspace object to get the memory from.
-	 *                          This can be <tt>NULL</tt> in which case <tt>new T[]</tt> and 
-	 *                          <tt>delete []</tt> will be used instead.
-	 * @param  num_elements     [in] The number of bytes to allocate.
-	 * @param  call_consructors [in] If <tt>true</tt> then constructors and destructors will be
-	 *                          called on the allocated memory.
 	 */
 	Workspace(WorkspaceStore* workspace_store, size_t num_elements, bool call_constructors = true);
 	///
@@ -164,9 +173,21 @@ public:
 	~Workspace();
 	/// Return the number of elements in the array.
 	size_t size() const;
-	/// Zero based element access
+	///
+	/** Non-const zero based element access.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>0 <= i && i < size()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * </ul>
+	 */
 	T& operator[](size_t i);
 	///
+	/** Const zero based element access.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>0 <= i && i < size()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * </ul>
+	 */
 	const T& operator[](size_t i) const;
 private:
 	RawWorkspace  raw_workspace_;
@@ -308,6 +329,9 @@ template<class T>
 inline
 T& Workspace<T>::operator[](size_t i)
 {
+#ifdef _DEBUG
+	THROW_EXCEPTION( !( 0 <= i && i < this->size() ), std::invalid_argument, "Workspace<T>::operator[](i): Error!" );
+#endif	
 	return reinterpret_cast<T*>(raw_workspace_.workspace_ptr())[i];
 }
 
@@ -315,7 +339,7 @@ template<class T>
 inline
 const T& Workspace<T>::operator[](size_t i) const
 {
-	return reinterpret_cast<const T*>(raw_workspace_.workspace_ptr())[i];
+	return const_cast<Workspace<T>*>(this)->operator[](i);
 }
 
 #ifdef _PG_CXX // Should not have to define this but pgCC is complaining!

@@ -1,11 +1,10 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_comp_err_with_mu.c
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_comp_err_with_mu.c */
 
-//
-// Note: This file was created automatically by 'new_rtop.pl'
-//       on 7/24/2002 at 23:46
-//
-*/
+/* */
+/* Note: This file was created automatically by 'new_rtop.pl' */
+/*       on 7/24/2002 at 23:46 */
+/* */
 
 #include <assert.h>
 #include <math.h>
@@ -26,9 +25,9 @@ static int RTOp_ROp_comp_err_with_mu_apply_op(
   , const int num_targ_vecs, const struct RTOp_MutableSubVector targ_vecs[]
   , RTOp_ReductTarget reduct_obj )
 {
-  /*
-  // Declare local variables
-  */
+  /* */
+  /* Declare local variables */
+  /* */
 
   /* Access to the operator object instance data */
   struct RTOp_value_value_type *data_cntr = (struct RTOp_value_value_type*)obj_data;
@@ -59,9 +58,9 @@ static int RTOp_ROp_comp_err_with_mu_apply_op(
   /* Temporary element-wise reduction object */
   RTOp_value_type comp_err_ith;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 5 || ( num_vecs && vecs == NULL ) )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 || ( num_targ_vecs && targ_vecs == NULL ) )
@@ -77,9 +76,9 @@ static int RTOp_ROp_comp_err_with_mu_apply_op(
   assert(reduct_obj);
 
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
   sub_dim       = vecs[0].sub_dim;
   /* v0 */
   v0_val        = vecs[0].values;
@@ -98,9 +97,9 @@ static int RTOp_ROp_comp_err_with_mu_apply_op(
   v4_val_s      = vecs[4].values_stride;
 
 
-  /*
-  // Apply the operator:
-  */
+  /* */
+  /* Apply the operator: */
+  /* */
   for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s, v1_val += v1_val_s, v2_val += v2_val_s, v3_val += v3_val_s, v4_val += v4_val_s )
   {
     /* Element-wise reduction */
@@ -118,16 +117,12 @@ static int RTOp_ROp_comp_err_with_mu_apply_op(
   return 0; /* success? */
 }
 
-
-
-/* Name of this transformation operator class */
-const char RTOp_ROp_comp_err_with_mu_name[] = "ROp_comp_err_with_mu";
-
 /* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_comp_err_with_mu_vtbl =
 {
   &RTOp_obj_value_value_vtbl
   ,&RTOp_obj_value_vtbl
+  ,"ROp_comp_err_with_mu"
   ,NULL
   ,RTOp_ROp_comp_err_with_mu_apply_op
   ,RTOp_reduct_max_value

@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////
-// RTOp_obj_value_value_vtbl.h
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////// */
+/* RTOp_obj_value_value_vtbl.h */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #ifndef RTOP_OBJ_VALUE_VALUE_VTBL_H
 #define RTOP_OBJ_VALUE_VALUE_VTBL_H
@@ -86,20 +85,20 @@ extern "C" {
   *		</ul>
   * </ul>
   */
-/*@{*/
+/*@{ */
 
-/*!< Virtual function table */
+/* Virtual function table */
 extern const struct RTOp_obj_type_vtbl_t   RTOp_obj_value_value_vtbl;
 
-/*!< Object type structure for a value, index pair. */
+/* Object type structure for a value, index pair. */
 struct RTOp_value_value_type {
-	/*!<*/
+	/* */
 	RTOp_value_type  value1;
-	/*!<*/
+	/* */
 	RTOp_value_type  value2;
 };
 
-/*@}*/
+/*@} */
 
 #ifdef __cplusplus
 }

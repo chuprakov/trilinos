@@ -83,6 +83,10 @@ public:
 	void set_yt2( const Scalar yt2);
 	///
 	Scalar get_yt2() const;
+	///
+	void set_y0( const Scalar y01, const Scalar y02 );
+	///
+	void set_u0( const Scalar u01, const Scalar u02 );
 
 	//@}
 
@@ -295,6 +299,13 @@ inline
 Scalar NP4DOpt<Scalar>::get_yt2() const
 {
 	return yt2_;
+}
+
+template<class Scalar>
+inline
+void NP4DOpt<Scalar>::set_y0( const Scalar y01, const Scalar y02 )
+{
+	np2dsim_.set_y0(y01,y02);
 }
 
 } // namespace Nonlin

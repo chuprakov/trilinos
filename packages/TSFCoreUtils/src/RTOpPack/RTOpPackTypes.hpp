@@ -55,61 +55,6 @@ class IncompatibleVecs : public std::logic_error
  * have been warned!
  */
 template<class Scalar>
-class MutableSubVectorT {
-public:
-	///
-	MutableSubVectorT() : globalOffset_(0), subDim_(0), values_(NULL), stride_(0) {}
-	///
-	MutableSubVectorT(RTOp_index_type globalOffset, RTOp_index_type subDim, Scalar *values, ptrdiff_t stride)
-		:globalOffset_(globalOffset), subDim_(subDim), values_(values), stride_(stride) 
-		{}
-	///
-	void initialize(RTOp_index_type globalOffset, RTOp_index_type subDim, Scalar *values, ptrdiff_t stride)
-		{ globalOffset_=globalOffset; subDim_=subDim; values_=values; stride_=stride;  }
-	///
-	void set_uninitialized()
-		{ globalOffset_ = 0; subDim_=0; values_=NULL; stride_ = 0; }
-	///
-	void setGlobalOffset(RTOp_index_type globalOffset) { globalOffset_ = globalOffset; } 
-	///
-	RTOp_index_type   globalOffset() const { return globalOffset_; }
-	///
-	RTOp_index_type   subDim()       const { return subDim_;  }
-	///
-	Scalar*           values()       const { return values_;  }
-	///
-	ptrdiff_t         stride()       const { return stride_;  }
-	/// Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>
-	Scalar& operator()(RTOp_index_type i) const { return values_[ stride_*(i-1) ]; }
-private:
-	RTOp_index_type     globalOffset_;
-	RTOp_index_type     subDim_;
-	Scalar              *values_;
-	ptrdiff_t           stride_;
-};
-
-///
-/** Class for a non-mutable sub-vector.
- *
- * For a sub-vector <tt>vec</tt>, the corresponding entries
- *	in the global vector <tt>x(j)</tt> (one based) are as follows:
- \verbatim
-
-	x( vec.globalOffset() + k ) = v.(k), for k = 1,...,vec.subDim()
-  \endverbatim
- * The stride <tt>vec.stride()</tt> may be positive (>0), negative (<0)
- * or even zero (0).  A negative stride <tt>vec.stride() < 0</tt> allows a
- * reverse traversal of the elements.  A zero stride
- * <tt>vec.stride()</tt> allows a sub-vector with all the elements the same.
- *
- * The raw pointer to the start of the memory can be obtained as
- * <tt>&vec(1)</tt>.
- *
- * Warning! the default copy constructor and assignement operators are
- * allowed which results in only pointer copy, not deep copy!  You
- * have been warned!
- */
-template<class Scalar>
 class SubVectorT {
 public:
 	///
@@ -119,7 +64,7 @@ public:
 		:globalOffset_(globalOffset), subDim_(subDim), values_(values), stride_(stride) 
 		{}
 	///
-	SubVectorT( const MutableSubVectorT<Scalar>& sv )
+	SubVectorT( const SubVectorT<Scalar>& sv )
 		:globalOffset_(sv.globalOffset()), subDim_(sv.subDim()), values_(sv.values()), stride_(sv.stride()) 
 		{}
 	///
@@ -140,12 +85,66 @@ public:
 	ptrdiff_t         stride()       const { return stride_;  }
 	/// Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>
 	const Scalar& operator()(RTOp_index_type i) const { return values_[ stride_*(i-1) ]; }
-private:
+protected:
 	RTOp_index_type     globalOffset_;
 	RTOp_index_type     subDim_;
-	const Scalar        *values_;
 	ptrdiff_t           stride_;
+	const Scalar        *values_;
 };
+
+
+///
+/** Class for a mutable sub-vector.
+ *
+ * For a sub-vector <tt>vec</tt>, the corresponding entries
+ *	in the global vector <tt>x(j)</tt> (one based) are as follows:
+ \verbatim
+
+	x( vec.globalOffset() + k ) = v.(k), for k = 1,...,vec.subDim()
+  \endverbatim
+ * The stride <tt>vec.stride()</tt> may be positive (>0), negative (<0)
+ * or even zero (0).  A negative stride <tt>vec.stride() < 0</tt> allows a
+ * reverse traversal of the elements.  A zero stride
+ * <tt>vec.stride()</tt> allows a sub-vector with all the elements the same.
+ *
+ * The raw pointer to the start of the memory can be obtained as
+ * <tt>&vec(1)</tt>.
+ *
+ * Warning! the default copy constructor and assignement operators are
+ * allowed which results in only pointer copy, not deep copy!  You
+ * have been warned!
+ */
+template<class Scalar>
+class MutableSubVectorT : public SubVectorT<Scalar> {
+public:
+	///
+	MutableSubVectorT() {}
+	///
+	MutableSubVectorT(RTOp_index_type globalOffset, RTOp_index_type subDim, Scalar *values, ptrdiff_t strid)
+		: SubVectorT<Scalar>(globalOffset, subDim, values, stride)
+		{}
+	///
+	MutableSubVectorT( const MutableSubVectorT<Scalar> & s)
+		: SubVectorT<Scalar>(s) {}
+	///
+	void initialize(RTOp_index_type globalOffset, RTOp_index_type subDim, Scalar *values, ptrdiff_t stride)
+		{ 
+			SubVectorT<Scalar>::initialize(globalOffset, subDim, values, stride);  
+		}
+	///
+	void set_uninitialized()
+		{ 
+			SubVectorT<Scalar>::set_uninitialized(); 
+		}
+
+	///
+	Scalar*           values()       const { return const_cast<Scalar*>(values_);  }
+
+	/// Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>
+	virtual Scalar& operator()(RTOp_index_type i) const { return const_cast<Scalar*>(values_)[ stride_*(i-1) ]; }
+
+};
+
 
 ///
 /** Class for a (sparse or dense) sub-vector.

@@ -1,19 +1,18 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_max_near_feas_step.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-//
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_max_near_feas_step.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
+/* */
 
 #include <assert.h>
 #include <malloc.h>
@@ -23,9 +22,9 @@
 #include "RTOp_obj_free_free.h"
 #include "RTOp_get_reduct_op.hpp"
 
-/*
-// Implementation functions
-*/
+/* */
+/* Implementation functions */
+/* */
 
 /* Functions for the reduction target object */
 
@@ -149,9 +148,9 @@ static int RTOp_ROp_max_near_feas_step_apply_op(
   register RTOp_index_type  k;
   RTOp_value_type  alpha;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 4 )
     return RTOp_ERR_INVALID_NUM_VECS;
   assert(vecs);
@@ -166,9 +165,9 @@ static int RTOp_ROp_max_near_feas_step_apply_op(
     )
     return RTOp_ERR_INCOMPATIBLE_VECS;
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
 
   /* beta */
   beta = *(RTOp_value_type*)obj_data;
@@ -189,17 +188,17 @@ static int RTOp_ROp_max_near_feas_step_apply_op(
   xu_val         = vecs[3].values;
   xu_val_s       = vecs[3].values_stride;
 
-  /*
-  // If x has already been found to be infeasible just return
-  */
+  /* */
+  /* If x has already been found to be infeasible just return */
+  /* */
   if(targ->alpha_pos < 0.0)
     return 0; /* success! */
 
-  /*
-  // Perform the reduction operation.
-  //
-  // max alpha_pos, min alpha_neg s.t. xl - beta <= x + alpha*d <= xu + beta
-  */
+  /* */
+  /* Perform the reduction operation. */
+  /* */
+  /* max alpha_pos, min alpha_neg s.t. xl - beta <= x + alpha*d <= xu + beta */
+  /* */
   for( k = 0; k < sub_dim; ++k, xl_val += xl_val_s, x_val += x_val_s, d_val += d_val_s, xu_val += xu_val_s ) {
     if( *x_val < *xl_val - beta || *x_val > *xu_val + beta ) {
       targ->alpha_pos = -1.0; /* x is infeasible as is */
@@ -248,14 +247,12 @@ INSERT_GET_REDUCT_OP_FUNCS(
   ,targ_load_state,targ_extract_state
   ,external_reduct_op,get_reduct_op)
 
-/** Name of this reduction operator class */
-const char RTOp_ROp_max_near_feas_step_name[] = "ROp_max_near_feas_step";
-
-/** Virtual function table */
+/* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_near_feas_step_vtbl =
 {
   &RTOp_obj_value_vtbl /* use simple scalar value type for object instance data */
   ,&targ_obj_vtbl
+  ,"ROp_max_near_feas_step"
   ,NULL
   ,RTOp_ROp_max_near_feas_step_apply_op
   ,reduce_reduct_objs

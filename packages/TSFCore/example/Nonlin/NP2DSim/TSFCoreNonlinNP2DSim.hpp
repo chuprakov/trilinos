@@ -41,6 +41,13 @@ NP2DSim<Scalar>::NP2DSim(
 	factory_DcDy_ = mmp::rcp(new mmp::AbstractFactoryStd<LinearOpWithSolve<Scalar>,LinearOpWithSolveIter<Scalar> >());
 }
 
+template<class Scalar>
+void NP2DSim<Scalar>::set_y0( const Scalar y01, const Scalar y02 )
+{
+	TSFCore::set_ele( 1, y01, &*y0_ );
+	TSFCore::set_ele( 2, y02, &*y0_ );
+}
+
 // Overridden from NonlinearProblem
 
 template<class Scalar>

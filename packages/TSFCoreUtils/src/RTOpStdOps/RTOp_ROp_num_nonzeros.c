@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_num_nonzeros.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_num_nonzeros.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #include <assert.h>
 #include <string.h>
@@ -23,13 +22,12 @@
 #include "RTOp_obj_value_vtbl.h"
 #include "RTOp_reduct_sum_value.h"
 
-/* Note that the reduction quantity that we are accumulating (num_bounded)
-// is an integral type and really should be delcared as RTOp_index_type.
-// However, the machinary is already there for accumulating an RTOp_value_type
-// reduction object so this implementation is just lazy and uses a double
-// for an integer.  This should not slow things down very much and does
-// not really waste any memory.
-*/
+/* Note that the reduction quantity that we are accumulating (num_bounded) */
+/* is an integral type and really should be delcared as RTOp_index_type. */
+/* However, the machinary is already there for accumulating an RTOp_value_type */
+/* reduction object so this implementation is just lazy and uses a double */
+/* for an integer.  This should not slow things down very much and does */
+/* not really waste any memory. */
 
 /* Implementation functions */
 
@@ -45,48 +43,46 @@ static int RTOp_ROp_num_nonzeros_apply_op(
   register RTOp_index_type k;
   RTOp_index_type          nz = 0;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   assert( vecs );
   if( num_targ_vecs != 0 )
     return RTOp_ERR_INVALID_NUM_TARG_VECS;
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
 
   /* v0 */
   v0_sub_dim     = vecs[0].sub_dim;
   v0_val         = vecs[0].values;
   v0_val_s       = vecs[0].values_stride;
 
-  /*
-  // Count the number of nonzeros
-  */
+  /* */
+  /* Count the number of nonzeros */
+  /* */
 
   for( k = 0; k < v0_sub_dim; ++k, v0_val += v0_val_s )
     if(*v0_val != 0.0)
       ++nz;
 
-  /*
-  // Add this to the result
-  */
+  /* */
+  /* Add this to the result */
+  /* */
   *((RTOp_value_type*)targ_obj) += nz;
 
   return 0; /* success? */
 }
-
-/* Name of this reduction operator class */
-const char RTOp_ROp_num_nonzeros_name[] = "ROp_num_nonzeros";
 
 /* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_num_nonzeros_vtbl =
 {
   &RTOp_obj_null_vtbl   /* use null type for instance data */
   ,&RTOp_obj_value_vtbl /* use simple scalar type for target object */
+  ,"ROp_num_nonzeros"
   ,NULL
   ,RTOp_ROp_num_nonzeros_apply_op
   ,RTOp_reduct_sum_value

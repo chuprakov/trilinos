@@ -1,22 +1,21 @@
-/* /////////////////////////////////////////////
-// RTOp_mpi.h
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-//
-// MPI declarations used by RTOp example program.
-// These where taken from mpich for Windows NT.
-//
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_mpi.h */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
+/* */
+/* MPI declarations used by RTOp example program. */
+/* These where taken from mpich for Windows NT. */
+/* */
 
 #ifndef MPI_H
 #define MPI_H
@@ -25,9 +24,8 @@
 extern "C" {
 #endif
 
-/* //////////////////////////
-// MPI declarations
-*/
+/* ////////////////////////// */
+/* MPI declarations */
 
 #define MPI_Aint int
 typedef int MPI_Datatype;
@@ -42,9 +40,8 @@ typedef int MPI_Op;
 #define MPI_DATATYPE_NULL  ((MPI_Datatype)0)
 typedef void (MPI_User_function) ( void *, void *, int *, MPI_Datatype * ); 
 
-/* //////////////////////////
-// MPI functions
-*/
+/* ////////////////////////// */
+/* MPI functions */
 
 #define EXPORT_MPI_API
 EXPORT_MPI_API int MPI_Init(int *, char ***);

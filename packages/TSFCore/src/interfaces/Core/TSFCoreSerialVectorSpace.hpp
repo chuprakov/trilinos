@@ -4,7 +4,6 @@
 #ifndef TSFCORE_VECTOR_SPACE_SERIAL_HPP
 #define TSFCORE_VECTOR_SPACE_SERIAL_HPP
 
-#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreSerialVectorSpaceDecl.hpp"
 #include "TSFCoreSerialVectorSpaceBase.hpp"
 #include "TSFCoreSerialVector.hpp"

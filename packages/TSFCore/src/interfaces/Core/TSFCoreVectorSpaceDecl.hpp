@@ -41,10 +41,10 @@ namespace TSFCore {
  *
  * A vector space is also where the scalar product for the space is
  * defined which is computed by the <tt>scalarProd()</tt> method.  A
- * scalar product allows the vector space to introduce scalaing into
+ * scalar product allows the vector space to introduce scaling into
  * many different types of numerical algorithms.
  *
- * If the underlying object is not initiaized, then <tt>dim()==0</tt>
+ * If the underlying object is not initialized, then <tt>dim()==0</tt>
  * will be true and none of the other methods should be called
  * or exceptions will be thrown.
  *
@@ -53,13 +53,13 @@ namespace TSFCore {
  * A subclass is only required to override three methods:
  * <tt>dim()</tt>, <tt>isCompatible()</tt> and
  * <tt>createMember()</tt>.  Note that implementing the
- * <tt>createMember()</tt> method also entails defining a concreate
+ * <tt>createMember()</tt> method also entails defining a concrete
  * <tt>Vector</tt> subclass.
  *
  * If a subclass can support specialized multi-vectors, then the
  * <tt>createMembers()</tt> should be need to be overridden.  Note
  * that implementing the <tt>createMembers()</tt> also entails
- * defining a concreate <tt>MultiVector</tt> subclass.  For some types
+ * defining a concrete <tt>MultiVector</tt> subclass.  For some types
  * of concrete <tt>MultiVector</tt> subclass implementations
  * (e.g. serial multi-vectors), the same default
  * <tt>VectorSpaceFactory</tt> typed object returned from the default
@@ -87,9 +87,9 @@ public:
 	//@{
 
 	///
-	/** Return the dimmension of the vector space.
+	/** Return the dimension of the vector space.
 	 *
-	 * If the underlying object is not initiaized, then <tt>dim()==0</tt>
+	 * If the underlying object is not initialized, then <tt>dim()==0</tt>
 	 * will be true and none of the other methods should be called.
 	 */
 	virtual Index dim() const = 0;
@@ -185,7 +185,7 @@ public:
 	virtual Scalar scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const;
 
 	///
-	/** Return the scalar product of each column in two mult-vectors in the vector space.
+	/** Return the scalar product of each column in two multi-vectors in the vector space.
 	 *
 	 * @param  X            [in] Multi-vector.
 	 * @param  Y            [in] Multi-vector.

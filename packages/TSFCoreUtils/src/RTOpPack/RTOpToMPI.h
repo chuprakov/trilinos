@@ -1,18 +1,17 @@
-/* //////////////////////////////////////////////
-// RTOpToMPI.h
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ////////////////////////////////////////////// */
+/* RTOpToMPI.h */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 /* Define this macro if you want to print profiling results with clock() */
 #define RTOP_TO_MPI_SHOW_TIMES 1
@@ -29,9 +28,10 @@ extern "C" {
 /** \defgroup RTOpToMPI_grp Helper fuctions for applying
  * reduction/transformation operations in C with MPI.
  */
-/*@{*/
+/*@{ */
 
-/*!<* Initialize MPI compatible type signature arrays for
+/* */
+/** Initialize MPI compatible type signature arrays for
  * reduction/transformation operator object instance data and
  * reduction target object data.
  *
@@ -55,7 +55,8 @@ void RTOp_MPI_type_signature(
 	,MPI_Datatype datatypes[]
 	);
 
-/*!<* Fill a compacted representation for a reduction object.
+/* */
+/** Fill a compacted representation for a reduction object.
  *
  * @param op          [in] RTOp operator object
  * @param reduct_obj  [in] Reduction object
@@ -79,7 +80,8 @@ int RTOp_extract_reduct_obj_ext_state(
 	,void*                    reduct_obj_ext
 	);
 
-/*!<* Copy from a compacted representation for a reduction object.
+/* */
+/** Copy from a compacted representation for a reduction object.
  *
  * @param op          [in] RTOp operator object
  * @param reduct_obj_ext
@@ -98,7 +100,8 @@ int RTOp_load_reduct_obj_ext_state(
 	,RTOp_ReductTarget        reduct_obj
 	);
 
-/*!<* Apply a reduction operation over a set of local sub-vectors using MPI.
+/* */
+/** Apply a reduction operation over a set of local sub-vectors using MPI.
  *
  *	@param	comm
  *				[in] MPI communicator
@@ -183,7 +186,7 @@ int  RTOp_MPI_apply_op(
 	,RTOp_ReductTarget reduct_objs[]
 	);
 
-/*@}*/
+/*@} */
 
 #ifdef RTOP_TO_MPI_SHOW_TIMES
 	/* For use in profiling only */

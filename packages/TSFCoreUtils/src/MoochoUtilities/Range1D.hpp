@@ -263,11 +263,13 @@ Range1D& Range1D::operator-=( size_t incr ) {
 }
 
 // See Range1D.cpp
-#ifndef _DEBUG
-inline
-void Range1D::assert_valid_range(size_t lbound, size_t ubound) const
-{}
-#endif
+//#ifndef _DEBUG
+//inline
+//void Range1D::assert_valid_range(size_t lbound, size_t ubound) const
+//{}
+//#endif
+
+// RAB: 2003/09/11: ToDo: Figure out how configure scripts set a debug macro
 
 } // end namespace RangePack
 

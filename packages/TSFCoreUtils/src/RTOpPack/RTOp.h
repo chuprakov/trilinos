@@ -1,23 +1,22 @@
-/* /////////////////////////////////////////////////////
-// RTOp.h
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-//
-// If the macro RTOp_USE_MPI is defined, then these
-// declarations will be MPI compatible.  If not then
-// dummy MPI declarations will be used.
-//
-*/
+/* ///////////////////////////////////////////////////// */
+/* RTOp.h */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
+/* */
+/* If the macro RTOp_USE_MPI is defined, then these */
+/* declarations will be MPI compatible.  If not then */
+/* dummy MPI declarations will be used. */
+/* */
 
 #ifndef REDUCT_TRANS_VECTOR_OPERATORS_H
 #define REDUCT_TRANS_VECTOR_OPERATORS_H
@@ -141,20 +140,20 @@ extern "C" {
  * to deal with.  This set of datatypes will benefit the largest number
  * of users.
  */
-/*@{*/
+/*@{ */
 
 /** \defgroup RTOp_grp_1 Public declarations, typedefs and misc functions.
  *
  * See \c RTOp_config.h for the definition of platform specific data types
  * \c RTOp_value_type, \c RTOp_index_type and \c RTOp_char_type.
  */
-/*@{*/
+/*@{ */
 
-typedef void*   RTOp_ReductTarget;     /*!< The type for reduction target objects. */
-#define         RTOp_REDUCT_OBJ_NULL 0 /*!< Value given to a a \c NULL reduction target object */
-#define         RTOp_NUM_DATA_TYPES 3  /*!< Number of primative data types used in \c RTOp */
-
-/*!<* The prototype for an external reduction operator function (MPI
+typedef void*   RTOp_ReductTarget;     /*< The type for reduction target objects. */
+#define         RTOp_REDUCT_OBJ_NULL 0 /*< Value given to a a \c NULL reduction target object */
+#define         RTOp_NUM_DATA_TYPES 3  /*< Number of primative data types used in \c RTOp */
+/* */
+/** The prototype for an external reduction operator function (MPI
  * complient).
  *
  * This is a typedef for a function pointer that gets past to
@@ -178,15 +177,15 @@ typedef void*   RTOp_ReductTarget;     /*!< The type for reduction target object
  * reduct_obj_ext as follows:
  \verbatim
  RTOp_value_type
-   *num_values  = (RTOp_value_type*)reduct_obj_ext,      // Number of elements in values[]
-   *num_indexes = num_values  + sizeof(RTOp_value_type), // Number of elements in indexes[]
-   *num_chars   = num_indexes + sizeof(RTOp_value_type); // Number of elements in chars[]
+   *num_values  = (RTOp_value_type*)reduct_obj_ext,      // Number of elements in values[] 
+   *num_indexes = num_values  + sizeof(RTOp_value_type), // Number of elements in indexes[] 
+   *num_chars   = num_indexes + sizeof(RTOp_value_type); // Number of elements in chars[] 
  RTOp_value_type
-   *values  = num_chars + sizeof(RTOp_value_type);       // Array of num_values values
+   *values  = num_chars + sizeof(RTOp_value_type);       // Array of num_values values 
  RTOp_index_type
-   *indexes = (RTOp_index_type*)(values+num_values);     // Array of num_indexes indexes
+   *indexes = (RTOp_index_type*)(values+num_values);     // Array of num_indexes indexes 
  RTOp_char_type
-   *chars   = (RTOp_char_type*)(indexes+num_indexes);    // Array of num_char characters
+   *chars   = (RTOp_char_type*)(indexes+num_indexes);    // Array of num_char characters 
  \endverbatim
  * It may seem silly to delcare integer numbers as floating point
  * numbers but the above specification should ensure that the object
@@ -219,21 +218,21 @@ typedef void*   RTOp_ReductTarget;     /*!< The type for reduction target object
 typedef void (*RTOp_reduct_op_func_ptr_t) ( void *, void *, int *, RTOp_Datatype * ); 
 /** @name Error codes returned from various RTOp functions and interfaces.
  */
-/*@{*/
-/*!<*/
+/*@{ */
+/* */
 #define RTOp_ERR_INVALID_USAGE            -1
-/*!<*/
+/* */
 #define RTOp_ERR_INVALID_NUM_VECS         -2
-/*!<*/
+/* */
 #define RTOp_ERR_INVALID_NUM_TARG_VECS    -3
-/*!<*/
+/* */
 #define RTOp_ERR_INCOMPATIBLE_VECS        -5
-/*!<*/
+/* */
 #define RTOp_SERVER_INCOMPATIBLE_OPS      -6
-/*!<*/
+/* */
 #define RTOp_SERVER_OP_NAME_TOO_LONG      -7
-/*@}*/
-/*!<*/
+/*@} */
+/* */
 /** Struct for a non-mutable sub-vector.
  *
  * For a sub-vector <tt>vec</tt>, the corresponding entries
@@ -255,16 +254,16 @@ typedef void (*RTOp_reduct_op_func_ptr_t) ( void *, void *, int *, RTOp_Datatype
  * or <tt>RTOp_sub_vector_null()</tt>.
  */
 struct RTOp_SubVector {
-	/** Offset for the sub-vector into the global vector */
+	/* Offset for the sub-vector into the global vector */
 	RTOp_index_type                  global_offset;
-	/** Dimension of the sub-vector */
+	/* Dimension of the sub-vector */
 	RTOp_index_type                  sub_dim;
-	/** Array (size min{|<tt>value_stride*sub_nz</tt>|,1}) for the values in the vector */
+	/* Array (size min{|<tt>value_stride*sub_nz</tt>|,1}) for the values in the vector */
 	const RTOp_value_type            *values;
-	/** Stride between elements in <tt>values[]</tt> */
+	/* Stride between elements in <tt>values[]</tt> */
 	ptrdiff_t                        values_stride;
 };
-/*!<*/
+/* */
 /** Struct for a mutable sub-vector.
  *
  *	The corresponding entries in the global vector
@@ -288,16 +287,16 @@ struct RTOp_SubVector {
  * or <tt>RTOp_mutable_sub_vector_null()</tt>.
  */
 struct RTOp_MutableSubVector {
-	/** Offset for the sub-vector into the global vector */
+	/* Offset for the sub-vector into the global vector */
 	RTOp_index_type                  global_offset;
-	/** Dimension of the sub-vector */
+	/* Dimension of the sub-vector */
 	RTOp_index_type                  sub_dim;
-	/** Array (size min{|<tt>value_stride*sub_dim</tt>|,1}) for the values in the vector */
+	/* Array (size min{|<tt>value_stride*sub_dim</tt>|,1}) for the values in the vector */
 	RTOp_value_type	                 *values;
-	/** Stride between elements in <tt>values[]</tt> */
+	/* Stride between elements in <tt>values[]</tt> */
 	ptrdiff_t                        values_stride;
 };
-/*!<*/
+/* */
 /** Set the members for a non-mutable sub-vector.
  */
 void RTOp_sub_vector(
@@ -305,11 +304,11 @@ void RTOp_sub_vector(
 	,const RTOp_value_type values[], ptrdiff_t values_stride
 	,struct RTOp_SubVector *sub_vec
 	);
-/*!<*/
+/* */
 /** Initialize a sub-vector argument to null.
  */
 void RTOp_sub_vector_null( struct RTOp_SubVector *sub_vec );
-/*!<*/
+/* */
 /** Set the members for a mutable dense sub-vector.
  */
 void RTOp_mutable_sub_vector(
@@ -317,12 +316,12 @@ void RTOp_mutable_sub_vector(
 	,RTOp_value_type values[], ptrdiff_t values_stride
 	,struct RTOp_MutableSubVector *sub_vec
 	);
-/*!<*/
+/* */
 /** Initialize a sub-vector argument to null.
  */
 void RTOp_mutable_sub_vector_null( struct RTOp_MutableSubVector *sub_vec );
 
-/*@}*/
+/*@} */
 
 /** \defgroup RTOp_grp_2 Reduction/Transformation Operator Interface Functions (virtual).
  *
@@ -364,11 +363,30 @@ void RTOp_mutable_sub_vector_null( struct RTOp_MutableSubVector *sub_vec );
  * implementations.
  *
  */
-/*@{*/
+/*@{ */
 
 struct RTOp_RTOp;
 
-/*!<* Get the number of members of each datatype in the object's externalized state data.
+/* */
+/** Return the name (as a null-terminated C-style string) of the operator.
+ *
+ * This name is used to differentate an operator subclass from all
+ * other operator subclasses.  This is an important property
+ * needed for a client/server and other advanced computing
+ * configurations.
+ *
+ *	@param op        [in] The polymorphic reduction/transformation operator object
+ *	@param op_name   [out] Null-terminated string for the name of the operator type
+ *
+ *	@return Returns <tt>0</tt> if successful and <tt>!=0</tt> otherwise.
+ */
+int RTOp_get_op_name(
+	const struct RTOp_RTOp* op
+	,const char** op_name
+	);
+
+/* */
+/** Get the number of members of each datatype in the object's externalized state data.
  *
  * See RTOp_obj_type_vtbl_t for a description of this function.
  *
@@ -386,7 +404,8 @@ int RTOp_get_op_type_num_entries(
 	,int* num_chars
 	);
 
-/*!<* Externalize the state of the operator object to a portable format.
+/* */
+/** Externalize the state of the operator object to a portable format.
  *
  * This function allows the state of an arbitrary reduction/transformation
  * operator to be transported across a hetergeneous network and have
@@ -405,7 +424,8 @@ int RTOp_extract_op_state(
 	,int                      num_chars
 	,RTOp_char_type           char_data[]
 	);
-/*!<* Load the state of the operator object from a portable format.
+/* */
+/** Load the state of the operator object from a portable format.
  *
  * Note that this function can be called on an uninitilized operator object (i.e.
  * <tt>op->obj_data == NULL</tt>) and in this case, the state data will be dynamicallly
@@ -427,7 +447,8 @@ int RTOp_load_op_state(
 	,const RTOp_char_type     char_data[]
 	,struct RTOp_RTOp*        op
 	);
-/*!<* Destroy the state data for this object.
+/* */
+/** Destroy the state data for this object.
  *
  * @param  op  [in/out] On input, if <tt>op->obj_data != NULL</tt> then this data
  *             will be freed in a way that is compatible with the classes
@@ -438,8 +459,8 @@ int RTOp_load_op_state(
  *	@return Returns <tt>0</tt> if successful and <tt>!=0</tt> otherwise.
  */
 int RTOp_free_op( struct RTOp_RTOp* op );
-
-/*!<* Get the number of members of each datatype in the reduction object.
+/* */
+/** Get the number of members of each datatype in the reduction object.
  *
  * See RTOp_obj_type_vtbl_t for a description of this function.
  *
@@ -456,8 +477,8 @@ int RTOp_get_reduct_type_num_entries(
 	,int                       *num_indexes
 	,int                       *num_chars
 	);
-
-/*!<* Allocate and initialize the reduction object that will be used
+/* */
+/** Allocate and initialize the reduction object that will be used
  * in the reduction operations.
  *
  * If ::RTOp_get_reduct_type_num_entries<tt>(...)</tt> returns <tt>num_values == 0</tt>
@@ -480,8 +501,8 @@ int RTOp_reduct_obj_create(
 	const struct RTOp_RTOp   *op
 	,RTOp_ReductTarget       *reduct_obj
 	);
-
-/*!<* Reinitialize an already allocated target object.
+/* */
+/** Reinitialize an already allocated target object.
  *
  * If ::RTOp_get_reduct_type_num_entries<tt>(...)</tt> returns <tt>num_values == 0</tt>
  * , <tt>num_indexes == 0</tt> and <tt>num_chars == 0</tt> then this function should not
@@ -503,8 +524,8 @@ int RTOp_reduct_obj_reinit(
 	const struct RTOp_RTOp    *op
 	,RTOp_ReductTarget        reduct_obj
 	);
-
-/*!<* Free a target object that was previously allocated.
+/* */
+/** Free a target object that was previously allocated.
  *
  * If ::RTOp_get_reduct_type_num_entries<tt>(...)</tt> returns <tt>num_values == 0</tt>
  * , <tt>num_indexes == 0</tt> and <tt>num_chars == 0</tt> then this function should not
@@ -525,8 +546,8 @@ int RTOp_reduct_obj_reinit(
  */
 int RTOp_reduct_obj_free( const struct RTOp_RTOp* op
 	, RTOp_ReductTarget* reduct_obj );
-
-/*!<* Externalize the state of the reduction object to a portable format.
+/* */
+/** Externalize the state of the reduction object to a portable format.
  *
  * This allows the state of a reduction object to be transported across
  * a heterogeneous network and also allows the use in MPI global
@@ -546,8 +567,8 @@ int RTOp_extract_reduct_obj_state(
 	,int                      num_chars
 	,RTOp_char_type           char_data[]
 	);
-
-/*!<* Load the state of the reduction object from a portable format.
+/* */
+/** Load the state of the reduction object from a portable format.
  *
  * Note that <tt>reduct_obj</tt> must be constructed prior to this and therefore the
  * input data must be compatible with the already constructed <tt>reduct_obj</tt> object.
@@ -566,8 +587,8 @@ int RTOp_load_reduct_obj_state(
 	,const RTOp_char_type    char_data[]
 	,RTOp_ReductTarget       reduct_obj
 	);
-
-/*!<* Return if the operator is coordinate invariant.
+/* */
+/** Return if the operator is coordinate invariant.
  *
  * @param  coord_invarient  [out] If <tt>op</tt> is coordinate invarient then
  *                          <tt>*coord_invariant</tt> will be true.
@@ -578,8 +599,8 @@ int RTOp_coord_invariant(
 	const struct RTOp_RTOp   *op
 	,int                     *coord_invariant
 	);
-
-/*!<* <tt>op(sub_vecs[],targ_sub_vecs[]),reduct_obj) -> targ_sub_vecs[],reduct_obj</tt>.
+/* */
+/** <tt>op(sub_vecs[],targ_sub_vecs[]),reduct_obj) -> targ_sub_vecs[],reduct_obj</tt>.
  *
  * This is the bread and butter of the whole design.  Through this method, a
  * vector implementation applies a reduction/transformation operator to a
@@ -650,8 +671,8 @@ int RTOp_apply_op(
 	,const struct RTOp_MutableSubVector     targ_sub_vecs[]
 	,RTOp_ReductTarget                      reduct_obj
 	);
-
-/*!<* <tt>op(in_reduct_obj,inout_reduct_obj) -> inout_reduct_obj</tt>.
+/* */
+/** <tt>op(in_reduct_obj,inout_reduct_obj) -> inout_reduct_obj</tt>.
  *
  * This function reduces the reduction objects from reduced sub-vectors
  * by the RTOp_apply_op<tt>(op...)</tt> function or those
@@ -680,8 +701,8 @@ int RTOp_reduce_reduct_objs(
 	,RTOp_ReductTarget         in_reduct_obj
 	,RTOp_ReductTarget         inout_reduct_obj
 	);
-
-/*!<* Externalize the reduction operation for intermediate target objects.
+/* */
+/** Externalize the reduction operation for intermediate target objects.
  *
  * @param	op	[in] The reduction operation used in the calls
  *				to RTOp_apply_op<tt>(op,...)</tt>.
@@ -708,18 +729,19 @@ int RTOp_get_reduct_op(
 	,RTOp_reduct_op_func_ptr_t   *reduct_op_func_ptr
 	);
 
-/*@}*/
+/*@} */
 
 /** \defgroup RTOp_grp_3 Implementation of Reduction/Transformation Operators.
  *
  * These are the structs that must be filled in, in order
  * to create user defined reduction/transformation operators.
  */
-/*@{*/
+/*@{ */
 
 struct RTOp_RTOp_vtbl_t;
 
-/*!<* Reduction/transformation operation class (struct).
+/* */
+/** Reduction/transformation operation class (struct).
  *
  * Instantiations of this type are used as polymorphic
  * objects for applying reduction/transformation operations
@@ -733,13 +755,14 @@ struct RTOp_RTOp_vtbl_t;
  * in C.
  */
 struct RTOp_RTOp {
-	/*!< Pointer to the object data for an instantiation */
+	/* Pointer to the object data for an instantiation */
 	void                           *obj_data;
-	/*!< Pointer to the virtual function table */
+	/* Pointer to the virtual function table */
 	const struct RTOp_RTOp_vtbl_t  *vtbl;
 };
 
-/*!<* Struct for the virtual function table for RTOp_RTOp.
+/* */
+/** Struct for the virtual function table for RTOp_RTOp.
  *
  * This is the table that the user must fill up in order to
  * implement the functions for a reduction operator class.
@@ -751,12 +774,16 @@ struct RTOp_RTOp {
  * different situations.
  */
 struct RTOp_RTOp_vtbl_t {
-	/*!< Pointer to the virtual function table for the operator object instance data. */
+	/* Pointer to the virtual function table for the operator object instance data. */
 	const struct RTOp_obj_type_vtbl_t  *obj_data_vtbl;
-	/*!< Pointer to the virtual function table for the manipulation of the reduction object. */
+	/* Pointer to the virtual function table for the manipulation of the reduction object. */
 	const struct RTOp_obj_type_vtbl_t  *reduct_vtbl;
-	
-	/*!<* Used to overide the initialization or reinitialization of a reduction object
+	/* */
+	/** Pointer to a null-terminated string that contains the name of the operator.
+	 */
+	const char* op_name;
+	/* */
+	/** Used to overide the initialization or reinitialization of a reduction object
 	 * before it is passed through a series of reductions.
 	 *
 	 * This function pointer should be made <tt>NULL</tt> if the default initialization performed
@@ -766,28 +793,28 @@ struct RTOp_RTOp_vtbl_t {
 	int (*reduct_obj_reinit)(
 		const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
 		,RTOp_ReductTarget reduct_obj );
-/*	/// Called by <tt>RTOp_coord_invariant()</tt>
-//	int (*coord_invariant) (
-//		const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
-//		,int *coord_invariant );
-*/
-	/*!< Called by <tt>RTOp_apply_op()</tt> */
+/*	/// Called by <tt>RTOp_coord_invariant()</tt> */
+/*	int (*coord_invariant) ( */
+/*		const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data */
+/*		,int *coord_invariant ); */
+	/* Called by <tt>RTOp_apply_op()</tt> */
 	int (*apply_op)(
 		const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
 		,const int num_vecs, const struct RTOp_SubVector sub_vecs[]
 		,const int num_targ_vecs, const struct RTOp_MutableSubVector targ_sub_vecs[]
 		,RTOp_ReductTarget reduct_obj );
-	/*!< Called by <tt>RTOp_reduce_reduct_objs()</tt> */
+	/* Called by <tt>RTOp_reduce_reduct_objs()</tt> */
 	int (*reduce_reduct_objs)(
 		const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
 		,RTOp_ReductTarget in_reduct_obj, RTOp_ReductTarget inout_reduct_obj );
-	/*!< Called by <tt>RTOp_get_reduct_op()</tt> */
+	/* Called by <tt>RTOp_get_reduct_op()</tt> */
 	int (*get_reduct_op)(
 		const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
 		,RTOp_reduct_op_func_ptr_t* reduct_op_func_ptr );
 };
 
-/*!<* Vitual function table for manipulating a simple object and externalizing its structure.
+/* */
+/** Vitual function table for manipulating a simple object and externalizing its structure.
  *
  * The functions pointed to in this table create, initialize and destroy a simple object
  * (some struct) and also the structure of the object.  Functions are also declared
@@ -802,8 +829,8 @@ struct RTOp_RTOp_vtbl_t {
  * context of where the vtbl is used.
  */
 struct RTOp_obj_type_vtbl_t {
-
-	/*!<* Returns the number of entries of each type of member that defines the 
+	/* */
+	/** Returns the number of entries of each type of member that defines the 
 	 * externalized object state.
 	 *
 	 * This function returns the number of entries of values, indexes and characters
@@ -843,8 +870,8 @@ struct RTOp_obj_type_vtbl_t {
 		,int*                                num_indexes
 		,int*                                num_chars
 		);
-
-	/*!<* Create (dynamically) an object of this type.
+	/* */
+	/** Create (dynamically) an object of this type.
 	 *
 	 * When this vtbl is used to handle the instance data for an
 	 * <tt>RTOp_RTOp</tt> class, the function arguments have the following meaning:
@@ -875,8 +902,8 @@ struct RTOp_obj_type_vtbl_t {
 		,const void                         *instance_data
 		,void                               ** obj
 		);
-
-	/*!<* Reinitialize an object of this type.
+	/* */
+	/** Reinitialize an object of this type.
 	 *
 	 * If <tt>get_obj_type_num_entries(ob,...)</tt> returns <tt>num_values = 0</tt>,
 	 * <tt>num_indexes = 0</tt> and <tt>num_chars = 0</tt> then this function does nothing
@@ -913,8 +940,8 @@ struct RTOp_obj_type_vtbl_t {
 		,const void                          *instance_data
 		,void                                *obj
 		);
-
-	/*!<* Destroy an object of this type.
+	/* */
+	/** Destroy an object of this type.
 	 *
 	 * If <tt>get_obj_type_num_entries(ob,...)</tt> returns <tt>num_values = 0</tt>,
 	 * <tt>num_indexes = 0</tt> and <tt>num_chars = 0</tt> then this function does nothing
@@ -953,8 +980,8 @@ struct RTOp_obj_type_vtbl_t {
 		,const void                         *instance_data
 		,void                               **obj
 		);
-
-	/*!<* Externalize the state of the object to a portable format.
+	/* */
+	/** Externalize the state of the object to a portable format.
 	 *
 	 * This function must be called on an initalized object.  It is very
 	 * important that these data contain all the information needed
@@ -992,8 +1019,8 @@ struct RTOp_obj_type_vtbl_t {
 		,int                                 num_chars
 		,RTOp_char_type                      char_data[]
 		);
-
-	/*!<* Load the state of the object from a portable format.
+	/* */
+	/** Load the state of the object from a portable format.
 	 *
 	 * This function can be called on an already constructed object (<tt>*instance_data != NULL</tt>)
 	 * or a NULL object (<tt>*instance_data == NULL</tt>).
@@ -1039,7 +1066,7 @@ struct RTOp_obj_type_vtbl_t {
 		);
 };
 
-/*@}*/
+/*@} */
 
 /** \defgroup RTOp_Server RTOp_Server.
  *
@@ -1063,9 +1090,10 @@ struct RTOp_obj_type_vtbl_t {
  * objects needs to be instantiated in each process.
  *
  */
-/*@{*/
+/*@{ */
 
-/*!<* Function for adding an operator class name and virtual function table pointer.
+/* */
+/** Function for adding an operator class name and virtual function table pointer.
  *
  * The user or client of an abstract vector is responsible for calling these functions
  * to setup the RTOp_Server object with the names and <tt>vtbl</tt> pointers for each of the
@@ -1113,7 +1141,8 @@ int RTOp_Server_add_op_name_vtbl(
 	,const struct RTOp_RTOp_vtbl_t   *op_class_vtbl
 	);
 
-/*!<* Function for lookup up an operator class name given its <tt>vtbl</tt> pointer.
+/* */
+/** Function for lookup up an operator class name given its <tt>vtbl</tt> pointer.
  *
  * This function is used by a vector implementation to lookup the name of a
  * reduction/transformation operator class given a pointer to its <tt>vtbl</tt>.
@@ -1140,7 +1169,8 @@ int RTOp_Server_lookup_op_name(
 	,char                           op_class_name[]
 	);
 
-/*!<* Function for constructing an operator given its class name and instance data.
+/* */
+/** Function for constructing an operator given its class name and instance data.
  *
  * This function is used by the vector implementation to reconstruct reduction
  * /transformation operators on remote processors where they need to be
@@ -1175,14 +1205,15 @@ int RTOp_Server_construct_op(
 	,struct RTOp_RTOp        *op
 	);
 
-/*!<* Dump the contents of the name/vtbl pairs for the reduction/transformation
+/* */
+/** Dump the contents of the name/vtbl pairs for the reduction/transformation
  * operator classes to a C stream (debugging purposes).
  */
 void RTOp_Server_dump( FILE* file );
 
-/*@}*/
+/*@} */
 
-/*@}*/
+/*@} */
 
 #ifdef __cplusplus
 }

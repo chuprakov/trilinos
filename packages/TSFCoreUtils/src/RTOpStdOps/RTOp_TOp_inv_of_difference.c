@@ -1,23 +1,22 @@
-/* /////////////////////////////////////////////
-// RTOp_TOp_inv_of_difference.c
-//
-// Copyright (C) 2001
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
+/* ///////////////////////////////////////////// */
+/* RTOp_TOp_inv_of_difference.c */
+/* */
+/* Copyright (C) 2001 */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
-//
-// Note: This file was created automatically by 'new_rtop.pl'
-//       on 6/27/2002 at 20:41
-//
-*/
+/* */
+/* Note: This file was created automatically by 'new_rtop.pl' */
+/*       on 6/27/2002 at 20:41 */
+/* */
 
 #include <assert.h>
 #include <math.h>
@@ -38,9 +37,9 @@ static int RTOp_TOp_inv_of_difference_apply_op(
   , const int num_targ_vecs, const struct RTOp_MutableSubVector targ_vecs[]
   , RTOp_ReductTarget reduct_obj )
 {
-  /*
-  // Declare local variables
-  */
+  /* */
+  /* Declare local variables */
+  /* */
 
     /* Access to the operator object instance data */
     RTOp_value_type *alpha = (RTOp_value_type*)obj_data;
@@ -58,9 +57,9 @@ static int RTOp_TOp_inv_of_difference_apply_op(
 
     register RTOp_index_type  k;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
     if( num_vecs != 2 || ( num_vecs && vecs == NULL ) )
         return RTOp_ERR_INVALID_NUM_VECS;
     if( num_targ_vecs != 1 || ( num_targ_vecs && targ_vecs == NULL ) )
@@ -73,9 +72,9 @@ static int RTOp_TOp_inv_of_difference_apply_op(
     assert(obj_data);
 
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
     sub_dim       = vecs[0].sub_dim;
     /* z0 */
     z0_val        = targ_vecs[0].values;
@@ -88,35 +87,29 @@ static int RTOp_TOp_inv_of_difference_apply_op(
     v1_val_s      = vecs[1].values_stride;
 
 
-  /*
-  // Apply the operator:
-  //
-    //    element-wise transformation : z0 = alpha/(v0-v1);
-    */
+  /* */
+  /* Apply the operator: */
+  /* */
+    /*    element-wise transformation : z0 = alpha/(v0-v1); */
+    /* */
     for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s, v1_val += v1_val_s, z0_val += z0_val_s )
     {
         /* Element-wise transformation */
-/*        if (fabs((*v0_val)-(*v1_val)) > 5.562685e-309) 
-*/
+/*        if (fabs((*v0_val)-(*v1_val)) > 5.562685e-309) */
     { (*z0_val) = (*alpha)/((*v0_val)-(*v1_val)); }
-/*  else
-    { (*z0_val) = 1.797693e+308; } 
-*/
+/*  else */
+/*    { (*z0_val) = 1.797693e+308; } */
     }
 
   return 0; /* success? */
 }
-
-
-
-/* Name of this transformation operator class */
-const char RTOp_TOp_inv_of_difference_name[] = "TOp_inv_of_difference";
 
 /* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_inv_of_difference_vtbl =
 {
   &RTOp_obj_value_vtbl
   ,&RTOp_obj_null_vtbl
+  ,"TOp_inv_of_difference"
   ,NULL
   ,RTOp_TOp_inv_of_difference_apply_op
   ,NULL

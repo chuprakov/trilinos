@@ -4,7 +4,6 @@
 #ifndef TSFCORE_NONLIN_LINEAR_SOLVE_OP_HPP
 #define TSFCORE_NONLIN_LINEAR_SOLVE_OP_HPP
 
-#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreNonlinLinearSolveOpDecl.hpp"
 #include "TSFCoreMultiVector.hpp"
 #include "TSFCoreVector.hpp"

@@ -4,7 +4,6 @@
 #ifndef TSF_MULTI_VECTOR_COlS_DECL_HPP
 #define TSF_MULTI_VECTOR_COlS_DECL_HPP
 
-#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreMultiVector.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"

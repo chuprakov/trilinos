@@ -38,17 +38,19 @@ namespace RTOpPack {
  *	@param	num_vecs
  *				[in] See <tt>RTOpPack::RTOp::apply_op()</tt>
  *	@param	sub_vecs
- *				[in] Array (size <tt>num_targ_vecs * num_cols</tt>)
- *				of nonmutable subvectors.  The vectors for each column kc
- *              begin at sub_vecs+kc*num_cols where kc=0...num_cols-1
- *              Can be \c NULL if there are no local vector elements.
+ *				[in] Array (size <tt>num_vecs*num_cols</tt>)
+ *				of nonmutable subvectors.  The vectors for each column <tt>kc</tt>
+ *              begin at <tt>sub_vecs+kc*num_cols</tt> where <tt>kc=0...num_cols-1</tt>.
+ *              Can be <tt>NULL</tt> if <tt>num_vecs==0</tt> or if there are no local
+ *              vector elements that participate in the RTOp operation.
  *	@param	num_targ_vecs
  *				[in] See <tt>%RTOpPack::RTOp::apply_op()</tt>
  *	@param	sub_targ_vecs
- *				[in] Array (size <tt>num_targ_vecs * num_cols</tt>)
- *				of mutable subvectors.  The vectors for each column kc
- *              begin at sub_vecs+kc*num_cols where kc=0...num_cols-1
- *              Can be \c NULL if there are no local vector elements.
+ *				[in] Array (size <tt>num_targ_vecs*num_cols</tt>)
+ *				of mutable subvectors.  The vectors for each column <tt>kc</tt>
+ *              begin at <tt>sub_targ_vecs+kc*num_cols</tt> where <tt>kc=0...num_cols-1</tt>
+ *              Can be <tt>NULL</tt> if <tt>num_targ_vecs==0</tt> or if there are no local
+ *              vector elements that participate in the RTOp operation.
  *	@param	reduct_objs
  *				[in/out] Array (size <tt>num_cols</tt>) See below.
  *				If <tt>reduct_objs != NULL</tt>

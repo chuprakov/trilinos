@@ -1,7 +1,6 @@
 // ////////////////////////////////////////////////////////////////////////
 // RTOpCppC.cpp
 
-#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "RTOpCppC.hpp"
 #include "ThrowException.hpp"
 
@@ -23,6 +22,17 @@ RTOpC::~RTOpC()
 }
 
 // Overridden from RTOp
+
+const char* RTOpC::op_name() const
+{
+	const char* op_name = NULL;
+	const int err = RTOp_get_op_name(&op_,&op_name);
+	THROW_EXCEPTION(
+		err != 0, UnknownError
+		,"RTOpC::get_op_name(...): Error, "
+		"RTOp_op_name(...) returned != 0" );
+	return op_name;
+}
 
 op_create_func_t RTOpC::get_op_create_func() const
 {

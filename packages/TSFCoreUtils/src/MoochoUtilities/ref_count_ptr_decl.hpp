@@ -621,9 +621,10 @@ public:
 	// This is a very bad breach of encapsulation that is needed since MS VC++ 5.0 will
 	// not allow me to declare template functions as friends.
 #ifndef DOXYGEN_COMPILE
+	ref_count_ptr( T* p, node_t* node);
 	T*&           access_ptr();
 	node_t*&      access_node();
-	const node_t* access_node() const;
+	node_t*       access_node() const;
 #endif
 
 };	// end class ref_count_ptr<...>

@@ -19,36 +19,34 @@ namespace TSFCore {
  * an <tt>MPIVectorSpaceBase<></tt> object through the virtual
  * <tt>mpiSpace()</tt> method.
  *
- * This node subclass contains an implementation of
- * <tt>applyOp()</tt> that relies on implementations of the methods
- * (<tt>const</tt>) <tt>getSubVector()</tt>, <tt>freeSubVector()</tt>,
+ * This node subclass contains an implementation of <tt>applyOp()</tt>
+ * that relies on implementations of the methods (<tt>const</tt>)
+ * <tt>getSubVector()</tt>, <tt>freeSubVector()</tt>,
  * (non-<tt>const</tt>) <tt>getSubVector()</tt> and
- * <tt>commitSubVector()</tt>.  In essense, this implemenation will
- * only call the <tt>getSubVector()</tt> methods using a range of
- * (global) indexes for elements that exist on the local processor.
- * As long as the number of local elements on each processor is fairly
- * large, the virtual function call overhead will be minimal and this
- * will result in a near optimal implementation.
+ * <tt>commitSubVector()</tt> (which also have default implementations
+ * in this subclass).  In essense, this implemenation will only call
+ * the <tt>getSubVector()</tt> methods using a range of (global)
+ * indexes for elements that exist on the local processor.  As long as
+ * the number of local elements on each processor is fairly large, the
+ * virtual function call overhead will be minimal and this will result
+ * in a near optimal implementation.
  *
  * The only methods that a subclass must override in order to
  * implement a fully-functional vector subclass of which who's vector
  * objects can be seemlessly used with any other MPI-based vector
- * objects are the methods (<tt>const</tt>) <tt>getSubVector()</tt>,
- * <tt>freeSubVector()</tt>, (non-<tt>const</tt>)
- * <tt>getSubVector()</tt> and <tt>commitSubVector()</tt> and
- * <tt>mpiSpace()</tt>.
+ * object are the methods (non-<tt>const</tt>) <tt>getLocalData()</tt>
+ * and <tt>mpiSpace</tt>.  All of the other methods have good default
+ * implementations.
  *
  * If the <tt>getSubVector()</tt> methods are ever called with index
  * ranges outside of those of the local processor, then the default
- * implementations of all of the methods (<tt>const</tt>)
- * <tt>getSubVector()</tt>, <tt>freeSubVector()</tt>,
+ * implementations in <tt>Vector</tt> of all of the methods
+ * (<tt>const</tt>) <tt>getSubVector()</tt>, <tt>freeSubVector()</tt>,
  * (non-<tt>const</tt>) <tt>getSubVector()</tt> and
- * <tt>commitSubVector()</tt> should be called in instead (see the
- * vector subclass <tt>EpetraVector</tt> for an example).
- * Alternatively, a subclass could provide more specialized
- * implemenations of these methods (for more efficient gather/scatter
- * operations) if desired but this should not be needed for most use
- * cases.
+ * <tt>commitSubVector()</tt> are called in instead.  Alternatively, a
+ * subclass could provide more specialized implemenations of these
+ * methods (for more efficient gather/scatter operations) if desired
+ * but this should not be needed for most use cases.
  *
  * It is interesting to note that is case the explicit subvector
  * access methods call on its default implementation defined in
@@ -81,6 +79,27 @@ public:
 	 */
 	virtual MemMngPack::ref_count_ptr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const = 0;
 
+	///
+	/** Returns a pointer to the beginning of the local vector data (and its stride).
+	 *
+	 * @param  values  [out] On output <tt>*values</tt> will point to an array of the local values.
+	 * @param  stride  [out] On output <tt>*stride</tt> will be the stride between elements in <tt>(*values)[]</tt>
+	 */
+	virtual void getLocalData( Scalar** values, ptrdiff_t* stride ) = 0;
+
+	//@}
+
+	/** @name Virtual methods with default implementations. */
+	//@{
+
+	///
+	/** Returns a <tt>const</tt> pointer to the beginning of the local vector data.
+	 *
+	 * The default implementation performs a <tt>const_cast</tt> of <tt>this</tt> and
+	 * then calls the non-<tt>const</tt> version.
+	 */
+	virtual void getLocalData( const Scalar** values, ptrdiff_t* stride ) const;
+
 	//@}
 
 	/** @name Overridden from Vector */
@@ -111,6 +130,14 @@ public:
 		,const Index                    sub_dim
 		,const Index                    global_offset
 		) const;
+	///
+	void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
+	///
+	void freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
+	///
+	void getSubVector( const Range1D& rng, RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
+	///
+	void commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
 
 	//@}
 
@@ -121,7 +148,33 @@ private:
 	
 	mutable bool in_applyOp_;
 
+	// cached
+	mutable Index  globalDim_;
+	mutable Index  localOffset_;
+	mutable Index  localSubDim_;
+
+	// /////////////////////////////////////
+	// Private member functions
+
+	void update_cache() const;
+	Range1D validateRange( const Range1D& rng_in ) const;
+
 }; // end class MPIVectorBase
+
+// ///////////////////////////////
+// Inline definitions
+
+template<class Scalar>
+inline
+void MPIVectorBase<Scalar>::update_cache() const
+{
+	if(globalDim_ < 0) {
+		const MPIVectorSpaceBase<Scalar> &mpiSpace = *this->mpiSpace();
+		globalDim_    = mpiSpace.dim();
+		localOffset_  = mpiSpace.localOffset();
+		localSubDim_  = mpiSpace.localSubDim();
+	}
+}
 
 } // end namespace TSFCore
 

@@ -4,12 +4,13 @@
 #ifndef TSFCORE_MULTI_VECTOR_STD_OPS_HPP
 #define TSFCORE_MULTI_VECTOR_STD_OPS_HPP
 
-#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreMultiVectorStdOpsDecl.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreMultiVector.hpp"
 #include "RTOp_ROp_dot_prod.h"
+#include "RTOp_ROp_max.h"
+#include "RTOp_ROp_sum_abs.h"
 #include "RTOp_TOp_assign_scalar.h"
 #include "RTOp_TOp_assign_vectors.h"
 #include "RTOp_TOp_axpy.h"
@@ -32,6 +33,25 @@ void TSFCore::dot( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2,
         dot[kc] = RTOp_ROp_dot_prod_val(dot_targs[kc]);
         dot_op.reduct_obj_free(&(dot_targs[kc]));
     }
+}
+
+template<class Scalar>
+Scalar TSFCore::norm_1( const MultiVector<Scalar>& V )
+{
+	// Primary column-wise reduction (sum of absolute values)
+	RTOpPack::RTOpC sum_abs_op;
+	RTOp_ROp_sum_construct(&sum_abs_op.op());
+	// Secondaary reduction (max over all columns = norm_1)
+	RTOpPack::RTOpC max_op;
+	RTOp_ROp_sum_construct(&max_op.op());
+	// Reduction object (must be same for both sum_abs and max_targ objects)
+	RTOpPack::ReductTarget max_targ;
+	max_op.reduct_obj_create(&max_targ);
+	// Perform the reductions
+    const MultiVector<Scalar>* multi_vecs[] = { &V };
+    applyOp<Scalar>(sum_abs_op,max_op,1,multi_vecs,0,NULL,max_targ.obj());
+	// Return the final value
+	return RTOp_ROp_max_val(max_targ.obj());
 }
 
 template<class Scalar>

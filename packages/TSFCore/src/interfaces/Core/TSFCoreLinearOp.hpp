@@ -4,7 +4,6 @@
 #ifndef TSFCORE_LINEAR_OP_HPP
 #define TSFCORE_LINEAR_OP_HPP
 
-#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreLinearOpDecl.hpp"
 #include "TSFCoreMultiVector.hpp"
 #include "TSFCoreVectorSpace.hpp"

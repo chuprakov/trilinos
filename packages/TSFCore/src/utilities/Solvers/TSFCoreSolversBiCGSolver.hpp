@@ -4,7 +4,6 @@
 #ifndef TSFCORE_SOLVERS_BICG_SOLVER_HPP
 #define TSFCORE_SOLVERS_BICG_SOLVER_HPP
 
-#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreSolversBiCGSolverDecl.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"
@@ -13,7 +12,7 @@
 #include "TSFCoreSolversNorm.hpp"
 #include "TSFCoreSolversConvergenceTester.hpp"
 #include "TSFCoreTestingTools.hpp"
-#include "check_nan_inf.hpp"
+#include "check_nan_inf.h"
 #include "ThrowException.hpp"
 
 namespace {

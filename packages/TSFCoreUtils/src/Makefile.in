@@ -103,7 +103,8 @@ $(srcdir)/MoochoUtilities/dynamic_cast_verbose.hpp\
 $(srcdir)/MoochoUtilities/ref_count_ptr.hpp\
 $(srcdir)/MoochoUtilities/ref_count_ptr_decl.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource_ref_count_ptr.hpp\
-$(srcdir)/MoochoUtilities/ReleaseResource.hpp
+$(srcdir)/MoochoUtilities/ReleaseResource.hpp \
+$(srcdir)/MoochoUtilities/ObjectDB.hpp
 
 
 MoochoUtilities_SOURCES = \
@@ -111,7 +112,8 @@ $(srcdir)/MoochoUtilities/Range1D.cpp\
 $(srcdir)/MoochoUtilities/ThrowException.cpp\
 $(srcdir)/MoochoUtilities/WorkspacePack.cpp\
 $(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp\
-$(srcdir)/MoochoUtilities/ref_count_ptr.cpp
+$(srcdir)/MoochoUtilities/ref_count_ptr.cpp\
+$(srcdir)/MoochoUtilities/ObjectDB.cpp
 
 
 RTOp_C_SOURCES_H = \
@@ -134,7 +136,8 @@ $(srcdir)/RTOpPack/RTOp_parallel_helpers.h\
 $(srcdir)/RTOpPack/RTOp_reduct_max_value.h\
 $(srcdir)/RTOpPack/RTOp_reduct_min_value.h\
 $(srcdir)/RTOpPack/RTOp_reduct_sum_value.h\
-$(srcdir)/RTOpPack/RTOp_reduct_sum_values.h
+$(srcdir)/RTOpPack/RTOp_reduct_sum_values.h\
+$(srcdir)/RTOpPack/check_nan_inf.h
 
 
 RTOp_C_SOURCES = \
@@ -168,7 +171,8 @@ $(srcdir)/RTOpPack/RTOpFactoryTmpl.hpp\
 $(srcdir)/RTOpPack/RTOpPackTypes.hpp\
 $(srcdir)/RTOpPack/RTOp_get_reduct_op.hpp\
 $(srcdir)/RTOpPack/print_sub_vector.hpp\
-$(srcdir)/RTOpPack/check_nan_inf.hpp
+$(srcdir)/RTOpPack/RTOpServerDecl.hpp\
+$(srcdir)/RTOpPack/RTOpServer.hpp
 
 
 RTOp_CXX_SOURCES = \
@@ -200,6 +204,7 @@ $(srcdir)/RTOpStdOps/RTOp_ROp_norms.c\
 $(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.c\
 $(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.c\
 $(srcdir)/RTOpStdOps/RTOp_ROp_sum.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_sum_abs.c\
 $(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c\
 $(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.c\
 $(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.c\
@@ -241,6 +246,7 @@ $(srcdir)/RTOpStdOps/RTOp_ROp_norms.h\
 $(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.h\
 $(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.h\
 $(srcdir)/RTOpStdOps/RTOp_ROp_sum.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_sum_abs.h\
 $(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.h\
 $(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.h\
 $(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.h\
@@ -259,6 +265,14 @@ $(srcdir)/RTOpStdOps/RTOp_TOp_scale_vector.h\
 $(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.h\
 $(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.h\
 $(srcdir)/RTOpStdOps/RTOp_TOp_sign.h
+
+
+RTOp_STDOPS_SOURCES_CPP = \
+$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp
+
+
+RTOp_STDOPS_SOURCES_HPP = \
+$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.hpp
 
 
 AM_CPPFLAGS = -I$(top_builddir)/src \
@@ -280,7 +294,8 @@ libTSFCoreUtils_a_SOURCES = \
   $(MoochoUtilities_SOURCES)\
   $(RTOp_C_SOURCES)\
   $(RTOp_CXX_SOURCES)\
-	$(RTOp_STDOPS_SOURCES)
+  $(RTOp_STDOPS_SOURCES)\
+  $(RTOp_STDOPS_SOURCES_CPP)
 
 
 
@@ -339,7 +354,7 @@ LIBRARIES = $(lib_LIBRARIES)
 libTSFCoreUtils_a_DEPENDENCIES =
 am__objects_1 = Range1D.$(OBJEXT) ThrowException.$(OBJEXT) \
 	WorkspacePack.$(OBJEXT) dynamic_cast_verbose.$(OBJEXT) \
-	ref_count_ptr.$(OBJEXT)
+	ref_count_ptr.$(OBJEXT) ObjectDB.$(OBJEXT)
 am__objects_2 = RTOp.$(OBJEXT) RTOpToMPI.$(OBJEXT) \
 	RTOp_SparseSubVector.$(OBJEXT) RTOp_apply_op_mpi.$(OBJEXT) \
 	RTOp_apply_op_serial.$(OBJEXT) RTOp_mpi.$(OBJEXT) \
@@ -367,7 +382,8 @@ am__objects_4 = RTOp_ROp_combined_nu_comp_err.$(OBJEXT) \
 	RTOp_ROp_max_rel_step.$(OBJEXT) RTOp_ROp_max_step.$(OBJEXT) \
 	RTOp_ROp_norms.$(OBJEXT) RTOp_ROp_num_bounded.$(OBJEXT) \
 	RTOp_ROp_num_nonzeros.$(OBJEXT) RTOp_ROp_sum.$(OBJEXT) \
-	RTOp_TOp_add_scalar.$(OBJEXT) RTOp_TOp_assign_scalar.$(OBJEXT) \
+	RTOp_ROp_sum_abs.$(OBJEXT) RTOp_TOp_add_scalar.$(OBJEXT) \
+	RTOp_TOp_assign_scalar.$(OBJEXT) \
 	RTOp_TOp_assign_vectors.$(OBJEXT) RTOp_TOp_axpy.$(OBJEXT) \
 	RTOp_TOp_correct_multipliers.$(OBJEXT) \
 	RTOp_TOp_ele_wise_divide.$(OBJEXT) \
@@ -382,8 +398,9 @@ am__objects_4 = RTOp_ROp_combined_nu_comp_err.$(OBJEXT) \
 	RTOp_TOp_scale_vector.$(OBJEXT) RTOp_TOp_set_ele.$(OBJEXT) \
 	RTOp_TOp_set_sub_vector.$(OBJEXT) RTOp_TOp_sign.$(OBJEXT) \
 	init_RTOpStdOpsLib.$(OBJEXT)
+am__objects_5 = initRTOpStdOpsLibCpp.$(OBJEXT)
 am_libTSFCoreUtils_a_OBJECTS = $(am__objects_1) $(am__objects_2) \
-	$(am__objects_3) $(am__objects_4)
+	$(am__objects_3) $(am__objects_4) $(am__objects_5)
 libTSFCoreUtils_a_OBJECTS = $(am_libTSFCoreUtils_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -393,8 +410,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/RTOp.Po ./$(DEPDIR)/RTOpCppC.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/RTOpCppToC.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/ObjectDB.Po ./$(DEPDIR)/RTOp.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOpCppC.Po ./$(DEPDIR)/RTOpCppToC.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOpCppToMPI.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOpToMPI.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_ROp_combined_nu_comp_err.Po \
@@ -416,6 +433,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_ROp_num_bounded.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_ROp_num_nonzeros.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_ROp_sum.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/RTOp_ROp_sum_abs.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_RTOp_C_Cpp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_SparseSubVector.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_TOp_add_scalar.Po \
@@ -456,6 +474,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/WorkspacePack.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/check_nan_inf.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dynamic_cast_verbose.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/initRTOpStdOpsLibCpp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/init_RTOpStdOpsLib.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/print_sub_vector.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/ref_count_ptr.Po
@@ -542,6 +561,7 @@ WorkspacePack.$(OBJEXT): $(srcdir)/MoochoUtilities/WorkspacePack.cpp
 dynamic_cast_verbose.$(OBJEXT): \
 	$(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp
 ref_count_ptr.$(OBJEXT): $(srcdir)/MoochoUtilities/ref_count_ptr.cpp
+ObjectDB.$(OBJEXT): $(srcdir)/MoochoUtilities/ObjectDB.cpp
 RTOp.$(OBJEXT): $(srcdir)/RTOpPack/RTOp.c
 RTOpToMPI.$(OBJEXT): $(srcdir)/RTOpPack/RTOpToMPI.c
 RTOp_SparseSubVector.$(OBJEXT): \
@@ -608,6 +628,7 @@ RTOp_ROp_num_bounded.$(OBJEXT): \
 RTOp_ROp_num_nonzeros.$(OBJEXT): \
 	$(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.c
 RTOp_ROp_sum.$(OBJEXT): $(srcdir)/RTOpStdOps/RTOp_ROp_sum.c
+RTOp_ROp_sum_abs.$(OBJEXT): $(srcdir)/RTOpStdOps/RTOp_ROp_sum_abs.c
 RTOp_TOp_add_scalar.$(OBJEXT): \
 	$(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c
 RTOp_TOp_assign_scalar.$(OBJEXT): \
@@ -642,6 +663,8 @@ RTOp_TOp_set_sub_vector.$(OBJEXT): \
 	$(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.c
 RTOp_TOp_sign.$(OBJEXT): $(srcdir)/RTOpStdOps/RTOp_TOp_sign.c
 init_RTOpStdOpsLib.$(OBJEXT): $(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c
+initRTOpStdOpsLibCpp.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp
 libTSFCoreUtils.a: $(libTSFCoreUtils_a_OBJECTS) $(libTSFCoreUtils_a_DEPENDENCIES) 
 	-rm -f libTSFCoreUtils.a
 	$(libTSFCoreUtils_a_AR) libTSFCoreUtils.a $(libTSFCoreUtils_a_OBJECTS) $(libTSFCoreUtils_a_LIBADD)
@@ -653,6 +676,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ObjectDB.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOpCppC.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOpCppToC.Po@am__quote@
@@ -677,6 +701,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_ROp_num_bounded.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_ROp_num_nonzeros.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_ROp_sum.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_ROp_sum_abs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_RTOp_C_Cpp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_SparseSubVector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_TOp_add_scalar.Po@am__quote@
@@ -717,6 +742,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WorkspacePack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_nan_inf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dynamic_cast_verbose.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/initRTOpStdOpsLibCpp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/init_RTOpStdOpsLib.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/print_sub_vector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ref_count_ptr.Po@am__quote@
@@ -1180,6 +1206,18 @@ RTOp_ROp_sum.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_sum.c
 @AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_sum.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_sum.c`
 
+RTOp_ROp_sum_abs.o: $(srcdir)/RTOpStdOps/RTOp_ROp_sum_abs.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_sum_abs.c' object='RTOp_ROp_sum_abs.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_sum_abs.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_sum_abs.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_sum_abs.o `test -f '$(srcdir)/RTOpStdOps/RTOp_ROp_sum_abs.c' || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_sum_abs.c
+
+RTOp_ROp_sum_abs.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_sum_abs.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_sum_abs.c' object='RTOp_ROp_sum_abs.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_sum_abs.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_sum_abs.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_sum_abs.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_sum_abs.c`
+
 RTOp_TOp_add_scalar.o: $(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c
 @AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c' object='RTOp_TOp_add_scalar.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_add_scalar.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_add_scalar.TPo' @AMDEPBACKSLASH@
@@ -1481,6 +1519,18 @@ ref_count_ptr.obj: $(srcdir)/MoochoUtilities/ref_count_ptr.cpp
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ref_count_ptr.obj `cygpath -w $(srcdir)/MoochoUtilities/ref_count_ptr.cpp`
 
+ObjectDB.o: $(srcdir)/MoochoUtilities/ObjectDB.cpp
+@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/ObjectDB.cpp' object='ObjectDB.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/ObjectDB.Po' tmpdepfile='$(DEPDIR)/ObjectDB.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ObjectDB.o `test -f '$(srcdir)/MoochoUtilities/ObjectDB.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/ObjectDB.cpp
+
+ObjectDB.obj: $(srcdir)/MoochoUtilities/ObjectDB.cpp
+@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/ObjectDB.cpp' object='ObjectDB.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/ObjectDB.Po' tmpdepfile='$(DEPDIR)/ObjectDB.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ObjectDB.obj `cygpath -w $(srcdir)/MoochoUtilities/ObjectDB.cpp`
+
 RTOpCppC.o: $(srcdir)/RTOpPack/RTOpCppC.cpp
 @AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOpCppC.cpp' object='RTOpCppC.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@	depfile='$(DEPDIR)/RTOpCppC.Po' tmpdepfile='$(DEPDIR)/RTOpCppC.TPo' @AMDEPBACKSLASH@
@@ -1552,6 +1602,18 @@ check_nan_inf.obj: $(srcdir)/RTOpPack/check_nan_inf.cpp
 @AMDEP_TRUE@	depfile='$(DEPDIR)/check_nan_inf.Po' tmpdepfile='$(DEPDIR)/check_nan_inf.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o check_nan_inf.obj `cygpath -w $(srcdir)/RTOpPack/check_nan_inf.cpp`
+
+initRTOpStdOpsLibCpp.o: $(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp' object='initRTOpStdOpsLibCpp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/initRTOpStdOpsLibCpp.Po' tmpdepfile='$(DEPDIR)/initRTOpStdOpsLibCpp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o initRTOpStdOpsLibCpp.o `test -f '$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp' || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp
+
+initRTOpStdOpsLibCpp.obj: $(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp' object='initRTOpStdOpsLibCpp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/initRTOpStdOpsLibCpp.Po' tmpdepfile='$(DEPDIR)/initRTOpStdOpsLibCpp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o initRTOpStdOpsLibCpp.obj `cygpath -w $(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp`
 CXXDEPMODE = @CXXDEPMODE@
 uninstall-info-am:
 includeHEADERS_INSTALL = $(INSTALL_HEADER)

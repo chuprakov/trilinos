@@ -15,14 +15,16 @@ $(srcdir)/MoochoUtilities/dynamic_cast_verbose.hpp\
 $(srcdir)/MoochoUtilities/ref_count_ptr.hpp\
 $(srcdir)/MoochoUtilities/ref_count_ptr_decl.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource_ref_count_ptr.hpp\
-$(srcdir)/MoochoUtilities/ReleaseResource.hpp
+$(srcdir)/MoochoUtilities/ReleaseResource.hpp \
+$(srcdir)/MoochoUtilities/ObjectDB.hpp
 
 MoochoUtilities_SOURCES=\
 $(srcdir)/MoochoUtilities/Range1D.cpp\
 $(srcdir)/MoochoUtilities/ThrowException.cpp\
 $(srcdir)/MoochoUtilities/WorkspacePack.cpp\
 $(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp\
-$(srcdir)/MoochoUtilities/ref_count_ptr.cpp
+$(srcdir)/MoochoUtilities/ref_count_ptr.cpp\
+$(srcdir)/MoochoUtilities/ObjectDB.cpp
 
 RTOp_C_SOURCES_H=\
 $(srcdir)/RTOpPack/RTOp.h\
@@ -44,7 +46,8 @@ $(srcdir)/RTOpPack/RTOp_parallel_helpers.h\
 $(srcdir)/RTOpPack/RTOp_reduct_max_value.h\
 $(srcdir)/RTOpPack/RTOp_reduct_min_value.h\
 $(srcdir)/RTOpPack/RTOp_reduct_sum_value.h\
-$(srcdir)/RTOpPack/RTOp_reduct_sum_values.h
+$(srcdir)/RTOpPack/RTOp_reduct_sum_values.h\
+$(srcdir)/RTOpPack/check_nan_inf.h
 
 RTOp_C_SOURCES=\
 $(srcdir)/RTOpPack/RTOp.c\
@@ -76,7 +79,8 @@ $(srcdir)/RTOpPack/RTOpFactoryTmpl.hpp\
 $(srcdir)/RTOpPack/RTOpPackTypes.hpp\
 $(srcdir)/RTOpPack/RTOp_get_reduct_op.hpp\
 $(srcdir)/RTOpPack/print_sub_vector.hpp\
-$(srcdir)/RTOpPack/check_nan_inf.hpp
+$(srcdir)/RTOpPack/RTOpServerDecl.hpp\
+$(srcdir)/RTOpPack/RTOpServer.hpp
 
 RTOp_CXX_SOURCES=\
 $(srcdir)/RTOpPack/RTOpCppC.cpp\
@@ -107,6 +111,7 @@ $(srcdir)/RTOpStdOps/RTOp_ROp_norms.c\
 $(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.c\
 $(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.c\
 $(srcdir)/RTOpStdOps/RTOp_ROp_sum.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_sum_abs.c\
 $(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c\
 $(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.c\
 $(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.c\
@@ -147,6 +152,7 @@ $(srcdir)/RTOpStdOps/RTOp_ROp_norms.h\
 $(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.h\
 $(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.h\
 $(srcdir)/RTOpStdOps/RTOp_ROp_sum.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_sum_abs.h\
 $(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.h\
 $(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.h\
 $(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.h\
@@ -166,9 +172,11 @@ $(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.h\
 $(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.h\
 $(srcdir)/RTOpStdOps/RTOp_TOp_sign.h
 
+RTOp_STDOPS_SOURCES_CPP=\
+$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp
 
-
-
+RTOp_STDOPS_SOURCES_HPP=\
+$(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.hpp
 
 AM_CPPFLAGS = -I$(top_builddir)/src \
   -I$(top_srcdir)/src/MoochoUtilities\
@@ -188,7 +196,8 @@ libTSFCoreUtils_a_SOURCES = \
   $(MoochoUtilities_SOURCES)\
   $(RTOp_C_SOURCES)\
   $(RTOp_CXX_SOURCES)\
-	$(RTOp_STDOPS_SOURCES)
+  $(RTOp_STDOPS_SOURCES)\
+  $(RTOp_STDOPS_SOURCES_CPP)
 
 # ------------------------------------------------------------------------
 # For using a special archiver

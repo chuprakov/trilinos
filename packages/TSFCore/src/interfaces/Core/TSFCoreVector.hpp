@@ -4,7 +4,6 @@
 #ifndef TSFCORE_VECTOR_HPP
 #define TSFCORE_VECTOR_HPP
 
-#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreVectorDecl.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "RTOp_ROp_get_sub_vector.h"

@@ -1,11 +1,10 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_fraction_to_zero_boundary.c
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_fraction_to_zero_boundary.c */
 
-//
-// Note: This file was created automatically by 'new_rtop.pl'
-//       on 7/8/2002 at 19:19
-//
-*/
+/* */
+/* Note: This file was created automatically by 'new_rtop.pl' */
+/*       on 7/8/2002 at 19:19 */
+/* */
 
 #include <assert.h>
 #include <math.h>
@@ -27,9 +26,9 @@ static int RTOp_ROp_fraction_to_zero_boundary_apply_op(
   , const int num_targ_vecs, const struct RTOp_MutableSubVector targ_vecs[]
   , RTOp_ReductTarget reduct_obj )
 {
-  /*
-  // Declare local variables
-  */
+  /* */
+  /* Declare local variables */
+  /* */
 
   /* Access to the operator object instance data */
   RTOp_value_type *tau = (RTOp_value_type*)obj_data;
@@ -49,9 +48,9 @@ static int RTOp_ROp_fraction_to_zero_boundary_apply_op(
   /* Temporary element-wise reduction object */
   RTOp_value_type alpha_max_ith;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 2 || ( num_vecs && vecs == NULL ) )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 || ( num_targ_vecs && targ_vecs == NULL ) )
@@ -63,9 +62,9 @@ static int RTOp_ROp_fraction_to_zero_boundary_apply_op(
   assert(obj_data);
   assert(reduct_obj);
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
   sub_dim       = vecs[0].sub_dim;
   /* v0 */
   v0_val        = vecs[0].values;
@@ -74,9 +73,9 @@ static int RTOp_ROp_fraction_to_zero_boundary_apply_op(
   v1_val        = vecs[1].values;
   v1_val_s      = vecs[1].values_stride;
 
-  /*
-  // Apply the operator:
-  */
+  /* */
+  /* Apply the operator: */
+  /* */
   for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s, v1_val += v1_val_s )
   {
     /* Element-wise reduction */
@@ -98,15 +97,12 @@ static int RTOp_ROp_fraction_to_zero_boundary_reduct_obj_reinit(
   return 0;
 }
 
-
-/* Name of this transformation operator class */
-const char RTOp_ROp_fraction_to_zero_boundary_name[] = "ROp_fraction_to_zero_boundary";
-
 /* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_fraction_to_zero_boundary_vtbl =
 {
   &RTOp_obj_value_vtbl
   ,&RTOp_obj_value_vtbl
+  ,"ROp_fraction_to_zero_boundary"
   ,RTOp_ROp_fraction_to_zero_boundary_reduct_obj_reinit
   ,RTOp_ROp_fraction_to_zero_boundary_apply_op
   ,RTOp_reduct_min_value

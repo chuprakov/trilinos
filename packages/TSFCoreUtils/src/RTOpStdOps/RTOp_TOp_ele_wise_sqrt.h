@@ -1,11 +1,10 @@
-/* /////////////////////////////////////////////
-// RTOp_TOp_ele_wise_sqrt.h
+/* ///////////////////////////////////////////// */
+/* RTOp_TOp_ele_wise_sqrt.h */
 
-//
-// Note: This file was created automatically by 'new_rtop.pl'
-//       on 7/2/2002 at 19:1
-//
-*/
+/* */
+/* Note: This file was created automatically by 'new_rtop.pl' */
+/*       on 7/2/2002 at 19:1 */
+/* */
 
 #ifndef RTOp_TOp_ele_wise_sqrt_H
 #define RTOp_TOp_ele_wise_sqrt_H
@@ -32,24 +31,21 @@ element-wise transformation:
  *
  * ToDo: Write the documentation for this class!
  */
-/*@{*/
+/*@{ */
 
-/** Name of this transformation operator class */
-extern const char RTOp_TOp_ele_wise_sqrt_name[];
-
-/** Virtual function table */
+/* Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_ele_wise_sqrt_vtbl;
 
-/** Constructor */
+/* Constructor */
 int RTOp_TOp_ele_wise_sqrt_construct(  struct RTOp_RTOp* op );
 
-/** Destructor */
+/* Destructor */
 int RTOp_TOp_ele_wise_sqrt_destroy( struct RTOp_RTOp* op );
 
 
 
 
-/*@}*/
+/*@} */
 
 #ifdef __cplusplus
 }

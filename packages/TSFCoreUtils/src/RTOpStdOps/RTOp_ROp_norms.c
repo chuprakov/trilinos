@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_norms.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_norms.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #include <assert.h>
 #include <math.h>
@@ -39,9 +38,9 @@ static int RTOp_ROp_norms_apply_op_norm_1(
   register RTOp_index_type k;
   RTOp_value_type        *norm = NULL;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
@@ -49,18 +48,18 @@ static int RTOp_ROp_norms_apply_op_norm_1(
   assert(targ_obj);
   assert(vecs);
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
 
   /* v0 */
   sub_dim        = vecs[0].sub_dim;
   v0_val         = vecs[0].values;
   v0_val_s       = vecs[0].values_stride;
 
-  /*
-  // Perform the reduction
-  */
+  /* */
+  /* Perform the reduction */
+  /* */
   norm = (RTOp_value_type*)targ_obj;
   for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s ) {
     *norm += fabs(*v0_val);  /* ||v[0]||_1 */
@@ -69,12 +68,11 @@ static int RTOp_ROp_norms_apply_op_norm_1(
   return 0; /* success? */
 }
 
-const char RTOp_ROp_norm_1_name[] = "RTOp_ROp_norm_1";
-
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_norm_1_vtbl =
 {
   &RTOp_obj_null_vtbl   /* use null type for instance data */
   ,&RTOp_obj_value_vtbl /* use simple scalar type for target object */
+  ,"RTOp_ROp_norm_1"
   ,NULL
   ,RTOp_ROp_norms_apply_op_norm_1
   ,RTOp_reduct_sum_value
@@ -110,9 +108,9 @@ static int RTOp_ROp_norms_apply_op_norm_2(
   register RTOp_index_type k;
   RTOp_value_type        *norm = NULL;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
@@ -120,18 +118,18 @@ static int RTOp_ROp_norms_apply_op_norm_2(
   assert(targ_obj);
   assert(vecs);
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
 
   /* v0 */
   sub_dim        = vecs[0].sub_dim;
   v0_val         = vecs[0].values;
   v0_val_s       = vecs[0].values_stride;
 
-  /*
-  // Perform the reduction
-  */
+  /* */
+  /* Perform the reduction */
+  /* */
   norm = (RTOp_value_type*)targ_obj;
   for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s )
     *norm += (*v0_val)*(*v0_val);  /* (||v[0]||_2)^2 */
@@ -139,12 +137,11 @@ static int RTOp_ROp_norms_apply_op_norm_2(
   return 0; /* success? */
 }
 
-const char RTOp_ROp_norm_2_name[] = "RTOp_ROp_norm_2";
-
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_norm_2_vtbl =
 {
   &RTOp_obj_null_vtbl   /* use null type for instance data */
   ,&RTOp_obj_value_vtbl /* use simple scalar type for target object */
+  ,"RTOp_ROp_norm_2"
   ,NULL
   ,RTOp_ROp_norms_apply_op_norm_2
   ,RTOp_reduct_sum_value
@@ -180,9 +177,9 @@ static int RTOp_ROp_norms_apply_op_norm_inf(
   register RTOp_index_type k;
   RTOp_value_type        *norm = NULL;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
@@ -190,18 +187,18 @@ static int RTOp_ROp_norms_apply_op_norm_inf(
   assert(targ_obj);
   assert(vecs);
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
 
   /* v0 */
   sub_dim        = vecs[0].sub_dim;
   v0_val         = vecs[0].values;
   v0_val_s       = vecs[0].values_stride;
 
-  /*
-  // Perform the reduction
-  */
+  /* */
+  /* Perform the reduction */
+  /* */
   norm = (RTOp_value_type*)targ_obj;
   for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s )
     *norm = MY_MAX( fabs(*v0_val), (*(RTOp_value_type*)targ_obj) );  /* ||v[0]||_inf */
@@ -209,16 +206,15 @@ static int RTOp_ROp_norms_apply_op_norm_inf(
   return 0; /* success? */
 }
 
-const char RTOp_ROp_norm_inf_name[] = "RTOp_ROp_norm_inf";
-
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_norm_inf_vtbl =
 {
-   &RTOp_obj_null_vtbl  /* use null type for instance data */
-  ,&RTOp_obj_value_vtbl /* use simple scalar type for target object */
-  ,NULL
-  ,RTOp_ROp_norms_apply_op_norm_inf
-  ,RTOp_reduct_max_value
-  ,RTOp_get_reduct_max_value_op
+	&RTOp_obj_null_vtbl  /* use null type for instance data */
+	,&RTOp_obj_value_vtbl /* use simple scalar type for target object */
+	,"RTOp_ROp_norm_inf"
+	,NULL
+	,RTOp_ROp_norms_apply_op_norm_inf
+	,RTOp_reduct_max_value
+	,RTOp_get_reduct_max_value_op
 };
 
 int RTOp_ROp_norm_inf_construct( struct RTOp_RTOp* op )

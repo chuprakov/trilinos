@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////////////////////////////////
-// RTOp_ROp_get_sub_vector.h
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////////////////////////////////// */
+/* RTOp_ROp_get_sub_vector.h */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #ifndef RTOP_ROP_GET_SUB_VECTOR_H
 #define RTOP_ROP_GET_SUB_VECTOR_H
@@ -43,25 +42,23 @@ extern "C" {
  * the zero elements are removed if present) by the ::RTOp_ROp_get_sub_vector_val<tt>(...)</tt>
  * function.
  */
-/*@{*/
+/*@{ */
 
-/** Name of this reduction operator class */
-extern const char RTOp_ROp_get_sub_vector_name[];
-
-/** Virtual function table */
+/* Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_ROp_get_sub_vector_vtbl;
 
-/** Constructor */
+/* Constructor */
 int RTOp_ROp_get_sub_vector_construct(
   RTOp_index_type l, RTOp_index_type u, struct RTOp_RTOp* op );
 
-/** Reinitialize the range for the sub-vector to extract */
+/* Reinitialize the range for the sub-vector to extract */
 int RTOp_ROp_get_sub_vector_set_range(
   RTOp_index_type l, RTOp_index_type u, struct RTOp_RTOp* op );
 
-/** Destructor */
+/* Destructor */
 int RTOp_ROp_get_sub_vector_destroy( struct RTOp_RTOp* op );
 
+/* */
 /** Get the sub-vector.
  *
  * This function should only be called after the complete reduction
@@ -82,7 +79,7 @@ struct RTOp_SubVector RTOp_ROp_get_sub_vector_val(
   RTOp_ReductTarget  reduct_obj
   );
 
-/*@}*/
+/*@} */
 
 #ifdef __cplusplus
 }

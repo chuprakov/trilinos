@@ -30,7 +30,7 @@ namespace TSFCore {
  * processor and let <tt>g</tt> be the global vector.  Then these two
  * vectors are related (using one-based indexing) as:
  *
- *<tt>v(k) == g(k + this->localOffset()), for k = 1...this->localSubDim()</tt>
+ * <tt>v(k) == g(k + this->localOffset()), for k = 1...this->localSubDim()</tt>
  *
  * Any type of mapping of vector data to processors that can not be
  * interpreted in this way can not rely on this base class

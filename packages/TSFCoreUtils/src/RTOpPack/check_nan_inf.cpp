@@ -14,27 +14,27 @@
 // above mentioned "Artistic License" for more details.
 
 #include "TSFCoreUtils_ConfigDefs.hpp"
-#include "check_nan_inf.hpp"
+#include "check_nan_inf.h"
 
 // Computed values to compare to
-static RTOp_value_type
-    pos_inf = +1.0/sin(0.0),
-    neg_inf = -1.0/sin(0.0),
-    pos_nan = +0.0/sin(0.0),
-    neg_nan = -0.0/sin(0.0);
+RTOp_value_type
+    RTOp_pos_inf = +1.0/sin(0.0),
+    RTOp_neg_inf = -1.0/sin(0.0),
+    RTOp_pos_nan = +0.0/sin(0.0),
+    RTOp_neg_nan = -0.0/sin(0.0);
 
 int RTOp_is_nan( RTOp_value_type val )
 {
 #if defined(_INTEL_CXX)
   return _isnan(val) != 0;
 #else
-  return val == pos_nan || val == neg_nan || val != val;
+  return val == RTOp_pos_nan || val == RTOp_neg_nan || val != val;
 #endif
 }
 
 int RTOp_is_inf( RTOp_value_type val )
 {
-    return val == pos_inf || val == neg_inf; // IEEE math
+    return val == RTOp_pos_inf || val == RTOp_neg_inf; // IEEE math
 }
 
 int RTOp_is_nan_inf( RTOp_value_type val )
@@ -43,7 +43,7 @@ int RTOp_is_nan_inf( RTOp_value_type val )
 #if defined(_INTEL_CXX)
     _isnan(val) != 0
 #else
-	  val == pos_nan || val == neg_nan || val != val
+	  val == RTOp_pos_nan || val == RTOp_neg_nan || val != val
 #endif
-	  || val == pos_inf || val == neg_inf;
+	  || val == RTOp_pos_inf || val == RTOp_neg_inf;
 }

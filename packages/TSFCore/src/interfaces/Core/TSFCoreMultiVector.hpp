@@ -152,8 +152,8 @@ void MultiVector<Scalar>::applyOp(
 	const Index
 		prim_dim     = range.dim(),
 		sec_dim      = domain.dim(),
-		prim_sub_dim = ( prim_sub_dim_in != 0     ? prim_sub_dim_in : prim_dim ),
-		sec_sub_dim  = ( sec_sub_dim_in != 0      ? sec_sub_dim_in  : sec_dim  );
+		prim_sub_dim = ( prim_sub_dim_in != 0     ? prim_sub_dim_in : prim_dim - prim_first_ele_in + 1 ),
+		sec_sub_dim  = ( sec_sub_dim_in != 0      ? sec_sub_dim_in  : sec_dim  -  sec_first_ele_in + 1  );
 #ifdef _DEBUG
 	const char err_msg[] = "MultiVector<Scalar>::applyOp(...): Error!";
 	THROW_EXCEPTION( !(0 < prim_sub_dim && prim_sub_dim <= prim_dim), std::invalid_argument, err_msg );
@@ -223,8 +223,8 @@ void MultiVector<Scalar>::applyOp(
 	const Index
 		prim_dim     = range.dim(),
 		sec_dim      = domain.dim(),
-		prim_sub_dim = ( prim_sub_dim_in != 0     ? prim_sub_dim_in : prim_dim ),
-		sec_sub_dim  = ( sec_sub_dim_in != 0      ? sec_sub_dim_in  : sec_dim  );
+		prim_sub_dim = ( prim_sub_dim_in != 0     ? prim_sub_dim_in : prim_dim - prim_first_ele_in + 1 ),
+		sec_sub_dim  = ( sec_sub_dim_in != 0      ? sec_sub_dim_in  : sec_dim  -  sec_first_ele_in + 1  );
 #ifdef _DEBUG
 	const char err_msg[] = "MultiVector<Scalar>::applyOp(...): Error!";
 	THROW_EXCEPTION( !(0 < prim_sub_dim && prim_sub_dim <= prim_dim), std::invalid_argument, err_msg );

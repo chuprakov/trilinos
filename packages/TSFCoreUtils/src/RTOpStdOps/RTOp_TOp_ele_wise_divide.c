@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////
-// RTOp_TOp_ele_wise_divide.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_TOp_ele_wise_divide.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #include <assert.h>
 #include <malloc.h>
@@ -39,9 +38,9 @@ static int RTOp_TOp_ele_wise_divide_apply_op(
   ptrdiff_t              v1_val_s;
   register RTOp_index_type k;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 2 || vecs == NULL )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 1 || targ_vecs == NULL )
@@ -52,9 +51,9 @@ static int RTOp_TOp_ele_wise_divide_apply_op(
   assert(obj_data);
 
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
 
   /* alpha */
   alpha = *(RTOp_value_type*)obj_data;
@@ -69,9 +68,9 @@ static int RTOp_TOp_ele_wise_divide_apply_op(
   v1_val         = vecs[1].values;
   v1_val_s       = vecs[1].values_stride;
 
-  /*
-  // Force in bounds
-  */
+  /* */
+  /* Force in bounds */
+  /* */
 
   if( z_val_s == 1 && v0_val_s == 1 && v1_val_s == 1 ) {
     /* Slightly faster loop for unit stride vectors */
@@ -87,14 +86,12 @@ static int RTOp_TOp_ele_wise_divide_apply_op(
   return 0; /* success? */
 }
 
-/* Name of this transformation operator class */
-const char RTOp_TOp_ele_wise_divide_name[] = "TOp_ele_wise_divide";
-
 /* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_ele_wise_divide_vtbl =
 {
   &RTOp_obj_value_vtbl /* alpha */
   ,&RTOp_obj_null_vtbl /* use null type for target object */
+  ,"TOp_ele_wise_divide"
   ,NULL /* use default from reduct_vtbl */
   ,RTOp_TOp_ele_wise_divide_apply_op
   ,NULL

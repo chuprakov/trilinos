@@ -1,18 +1,17 @@
-/* //////////////////////////////////////////////////////////////
-// RTOp_parallel_helpers.h
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ////////////////////////////////////////////////////////////// */
+/* RTOp_parallel_helpers.h */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #ifndef RTOP_PARALLEL_HELPERS_H
 #define RTOP_PARALLEL_HELPERS_H
@@ -23,7 +22,8 @@
 extern "C" {
 #endif
 
-/*!<* This function helps to implement vector method <tt>apply_op(...)</tt> for any type of parallel vector.
+/* */
+/** This function helps to implement vector method <tt>apply_op(...)</tt> for any type of parallel vector.
  *
  * To understand what this function computes first consider the what
  * an <tt>apply_op(...)</tt> method might look like from a vector

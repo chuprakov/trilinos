@@ -456,9 +456,9 @@ public:
 	 *               auxiliary variables.  It is allowed for <tt>u==NULL</tt> in which
 	 *               interpreted as <tt>u[l-1] == &u0(l)</tt>, for <tt>l=1...this->Nu()</tt>.
 	 * @param  newPoint
-	 *               [in] (default <tt>true</tt>) If <tt>true</tt>, the values in <tt>y</tt>
+	 *               [in] (default <tt>true</tt>) If <tt>false</tt>, the values in <tt>y</tt>
 	 *               and <tt>u[]</tt> are assumed to be the same as the last call to
-	 *               a <tt>this->calc_*(y,u,newPoint)</tt> member.  If <tt>false</tt>, the
+	 *               a <tt>this->calc_*(y,u,newPoint)</tt> member.  If <tt>true</tt>, the
 	 *               values in <tt>y</tt> and/or <tt>u[]</tt> are not the same as the
 	 *               last call to a <tt>this->calc_*(y,u,newPoint)</tt> member.
 	 *
@@ -471,7 +471,7 @@ public:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>this->c()</tt> is updated to <tt>c(x,{u(l)})</tt>.
+	 * <li> <tt>*this->get_c()</tt> is updated to <tt>c(x,{u(l)})</tt>.
 	 * </ul>
 	 *
 	 * The storage reference for <tt>g</tt> may also be updated at
@@ -493,9 +493,9 @@ public:
 	 *               auxiliary variables.  It is allowed for <tt>u==NULL</tt> in which
 	 *               interpreted as <tt>u[l-1] == &u0(l)</tt>, for <tt>l=1...this->Nu()</tt>.
 	 * @param  newPoint
-	 *               [in] (default <tt>true</tt>) If <tt>true</tt>, the values in <tt>y</tt>
+	 *               [in] (default <tt>true</tt>) If <tt>false</tt>, the values in <tt>y</tt>
 	 *               and <tt>u[]</tt> are assumed to be the same as the last call to
-	 *               a <tt>this->calc_*(y,u,newPoint)</tt> member.  If <tt>false</tt>, the
+	 *               a <tt>this->calc_*(y,u,newPoint)</tt> member.  If <tt>true</tt>, the
 	 *               values in <tt>y</tt> and/or <tt>u[]</tt> are not the same as the
 	 *               last call to a <tt>this->calc_*(y,u,newPoint)</tt> member.
 	 *
@@ -508,7 +508,7 @@ public:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>this->g()</tt> is updated to <tt>c(x,{u(l)})</tt>.
+	 * <li> <tt>*this->get_g()</tt> is updated to <tt>g(x,{u(l)})</tt>.
 	 * </ul>
 	 *
 	 * The storage reference for <tt>c</tt> may also be updated at

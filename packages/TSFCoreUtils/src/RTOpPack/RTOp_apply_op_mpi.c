@@ -1,18 +1,18 @@
-/* //////////////////////////////////////////////////////////////
-// RTOp_apply_op_mpi.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ////////////////////////////////////////////////////////////// */
+/* RTOp_apply_op_mpi.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
+
 #include <assert.h>
 #include <malloc.h>
 
@@ -63,22 +63,22 @@ int RTOp_apply_op_mpi(
         RTOp_mutable_sub_vector_null(&local_targ_vecs[kc*num_cols+k]);
     }
   }
-  /* Get the overlap in the current process with the input logical sub-vector
-     from (first_ele_in,sub_dim_in,global_offset_in) */
+  /* Get the overlap in the current process with the input logical sub-vector */
+  /* from (first_ele_in,sub_dim_in,global_offset_in) */
   RTOp_parallel_calc_overlap(
     global_dim_in, local_sub_dim_in, local_offset_in, first_ele_in, sub_dim_in, global_offset_in
     ,&overlap_first_local_ele, &overalap_local_sub_dim, &overlap_global_offset
     );
   if( overlap_first_local_ele != 0 ) {
-    /* Sub-vector structs for the local elements that are to participate in the
-       reduction/transforamtion operation. */
+    /* Sub-vector structs for the local elements that are to participate in the */
+    /* reduction/transforamtion operation. */
     for( kc = 0; kc < num_cols; ++kc ) {
       for(k = 0; k < num_vecs; ++k) {
         RTOp_sub_vector(
           overlap_global_offset                                                  /* global_offset */
           ,overalap_local_sub_dim                                                /* sub_dim */
           ,l_vec_ptrs[k]+(overlap_first_local_ele-1)*l_vec_strides[k]
-          + ( num_cols > 1 ? kc*l_vec_leading_dim[k] : 0 )                       /* value */
+          + ( num_cols > 1 ? kc*l_vec_leading_dim[k] : 0 )                       /* values */
           ,l_vec_strides[k]                                                      /* values_stride */
           ,&local_vecs[kc*num_cols+k]
           );
@@ -95,14 +95,14 @@ int RTOp_apply_op_mpi(
       }
     }
   }
-  /*
-  // Apply the reduction operation over the sub-vectors in
-  // this process then collect the reductions over
-  // all the processes and return the result
-  // to all the processes (including this one of course).
-  // If all of the sub-svectors are empty then this will
-  // just call the reduction operation with NULL sub-vectors
-  */
+  /* */
+  /* Apply the reduction operation over the sub-vectors in */
+  /* this process then collect the reductions over */
+  /* all the processes and return the result */
+  /* to all the processes (including this one of course). */
+  /* If all of the sub-svectors are empty then this will */
+  /* just call the reduction operation with NULL sub-vectors */
+  /* */
   err = RTOp_MPI_apply_op(
     comm, op, -1 /* MPI_Allreduce(...) */
     ,num_cols

@@ -1,6 +1,5 @@
-/* /////////////////////////////////////////////
-// RTOp_TOp_sign.h
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_TOp_sign.h */
 
 #ifndef RTOp_TOp_sign_H
 #define RTOp_TOp_sign_H
@@ -25,24 +24,21 @@ extern "C" {
                 \  +1.0 : if alpha  > 0.0
  \endverbatim
  */
-/*@{*/
+/*@{ */
 
-/** Name of this transformation operator class */
-extern const char RTOp_TOp_sign_name[];
-
-/** Virtual function table */
+/* Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_sign_vtbl;
 
-/** Constructor */
+/* Constructor */
 int RTOp_TOp_sign_construct(  struct RTOp_RTOp* op );
 
-/** Destructor */
+/* Destructor */
 int RTOp_TOp_sign_destroy( struct RTOp_RTOp* op );
 
 
 
 
-/*@}*/
+/*@} */
 
 #ifdef __cplusplus
 }

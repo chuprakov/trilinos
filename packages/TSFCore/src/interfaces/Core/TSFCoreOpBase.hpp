@@ -4,7 +4,6 @@
 #ifndef TSFCORE_OP_BASE_HPP
 #define TSFCORE_OP_BASE_HPP
 
-#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreOpBaseDecl.hpp"
 
 namespace TSFCore {

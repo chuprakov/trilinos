@@ -18,7 +18,18 @@ namespace TSFCore {
 template<class Scalar>
 MPIVectorBase<Scalar>::MPIVectorBase()
 	:in_applyOp_(false)
+	,globalDim_(-1)
+	,localOffset_(-1)
+	,localSubDim_(-1)
 {}
+
+// Virtual methods with default implementations
+
+template<class Scalar>
+void MPIVectorBase<Scalar>::getLocalData( const Scalar** values, ptrdiff_t* stride ) const
+{
+	const_cast<MPIVectorBase<Scalar>*>(this)->getLocalData((Scalar**)values,stride);
+}
 
 // Overridden from Vector
 
@@ -119,6 +130,86 @@ void MPIVectorBase<Scalar>::applyOp(
 	}}
 	// Flag that we are leaving applyOp()
 	in_applyOp_ = false;
+}
+
+template<class Scalar>
+void MPIVectorBase<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::SubVectorT<Scalar>* sub_vec ) const
+{
+	const Range1D rng = validateRange(rng_in);
+	if( rng.lbound() < localOffset_+1 || localOffset_+localSubDim_ < rng.ubound() ) {
+		// rng consists of off-processor elements so use the default implementation!
+		Vector<Scalar>::getSubVector(rng_in,sub_vec);
+		return;
+	}
+	// rng consists of all local data so get it!
+	const Scalar *localValues = NULL;
+	ptrdiff_t stride = 0;
+	this->getLocalData(&localValues,&stride);
+	sub_vec->initialize(
+		rng.lbound()-1                             // globalOffset
+		,rng.size()                                // subDim
+		,localValues+(rng.lbound()-localOffset_-1) // values
+		,stride                                    // stride
+		);
+}
+
+template<class Scalar>
+void MPIVectorBase<Scalar>::freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const
+{
+	if( sub_vec->globalOffset() < localOffset_ || localOffset_+localSubDim_ < sub_vec->globalOffset()+sub_vec->subDim() ) {
+		// Let the default implementation handle it!
+		Vector<Scalar>::freeSubVector(sub_vec);
+		return;
+	}
+	sub_vec->set_uninitialized();  // Nothing to deallocate!
+}
+
+void MPIVectorBase<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::MutableSubVectorT<Scalar>* sub_vec )
+{
+	const Range1D rng = validateRange(rng_in);
+	if( rng.lbound() < localOffset_+1 || localOffset_+localSubDim_ < rng.ubound() ) {
+		// rng consists of off-processor elements so use the default implementation!
+		Vector<Scalar>::getSubVector(rng_in,sub_vec);
+		return;
+	}
+	// rng consists of all local data so get it!
+	Scalar *localValues = NULL;
+	ptrdiff_t stride = 0;
+	this->getLocalData(&localValues,&stride);
+	sub_vec->initialize(
+		rng.lbound()-1                             // globalOffset
+		,rng.size()                                // subDim
+		,localValues+(rng.lbound()-localOffset_-1) // values
+		,stride                                    // stride
+		);
+}
+
+template<class Scalar>
+void MPIVectorBase<Scalar>::commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec )
+{
+	if( sub_vec->globalOffset() < localOffset_ || localOffset_+localSubDim_ < sub_vec->globalOffset()+sub_vec->subDim() ) {
+		// Let the default implementation handle it!
+		Vector<Scalar>::commitSubVector(sub_vec);
+		return;
+	}
+	sub_vec->set_uninitialized();  // Nothing to deallocate!
+}
+
+// private
+
+template<class Scalar>
+Range1D MPIVectorBase<Scalar>::validateRange( const Range1D &rng_in ) const
+{
+	update_cache();
+	const Range1D rng = RangePack::full_range(rng_in,1,globalDim_);
+#ifdef _DEBUG
+	THROW_EXCEPTION(
+		rng.lbound() < 1 || globalDim_ < rng.ubound(), std::invalid_argument
+		,"EpetraVector::getLocalData(...): Error, the range ["<<rng.lbound()<<","<<rng.ubound()<<"] is not "
+		"in the range [1,"<<globalDim_<<"]!"
+		);
+#endif
+	return rng;
 }
 
 } // end namespace TSFCore

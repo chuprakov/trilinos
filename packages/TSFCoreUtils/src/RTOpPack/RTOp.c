@@ -1,18 +1,18 @@
-/* ///////////////////////////////////////////////////////////////
-// RTOp.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* /////////////////////////////////////////////////////////////// */
+/* RTOp.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
+
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
@@ -77,12 +77,27 @@ void RTOp_mutable_sub_vector_null( struct RTOp_MutableSubVector *sub_vec )
 
 /* RTOp_RTOp */
 
+int RTOp_get_op_name(
+	const struct RTOp_RTOp* op
+	,const char** op_name
+	)
+{
+#ifdef RTOp_DEBUG
+  assert( op );
+  assert( op->vtbl );
+  assert( op->vtbl->op_name );
+  assert( op_name );
+#endif
+  *op_name = op->vtbl->op_name;
+  return 0;
+}
+
 int RTOp_get_op_type_num_entries(
-  const struct RTOp_RTOp* op
-  ,int* num_values
-  ,int* num_indexes
-  ,int* num_chars
-  )
+	const struct RTOp_RTOp* op
+	,int* num_values
+	,int* num_indexes
+	,int* num_chars
+	)
 {
 #ifdef RTOp_DEBUG
   assert( op );
@@ -350,9 +365,9 @@ int RTOp_get_reduct_op( const struct RTOp_RTOp* op
   return op->vtbl->get_reduct_op(op->vtbl,op->obj_data,reduct_op_func_ptr);
 }
 
-/*
-// RTOp_Server
-*/
+/* */
+/* RTOp_Server */
+/* */
 
 /* RTOp_Server data */
 
@@ -368,15 +383,15 @@ typedef const struct RTOp_RTOp_vtbl_t* RTOp_RTOp_vtbl_t_ptr;
 static RTOp_RTOp_vtbl_t_ptr
   RTOp_Server_op_vtbl[RTOp_SERVER_MAX_NUM_ENTRIES];
 
-/*
-// Private RTOp_Server functions
-//
-// In this simplistic implementation the names and vtbl pointers
-// are stored an accessed in unsorted tables.
-*/
+/* */
+/* Private RTOp_Server functions */
+/* */
+/* In this simplistic implementation the names and vtbl pointers */
+/* are stored an accessed in unsorted tables. */
+/* */
 
-/* returns the position in the table where this name is found.
-   otherwise it returns < 0. */
+/* returns the position in the table where this name is found. */
+/* otherwise it returns < 0. */
 static int find_op_name( const struct RTOp_Server_op_class_name op_name_tbl[]
   , int num_entries, const char op_name[] )
 {
@@ -389,8 +404,8 @@ static int find_op_name( const struct RTOp_Server_op_class_name op_name_tbl[]
   return -1; /* Did not find the name */
 }
 
-/* returns the position in the table where this reduct vtbl is found.
-   otherwise it returns < 0. */
+/* returns the position in the table where this reduct vtbl is found. */
+/* otherwise it returns < 0. */
 static int find_op_vtbl( const RTOp_RTOp_vtbl_t_ptr op_vtbl_tbl[]
   , int num_entries, RTOp_RTOp_vtbl_t_ptr op_vtbl )
 {
@@ -403,9 +418,9 @@ static int find_op_vtbl( const RTOp_RTOp_vtbl_t_ptr op_vtbl_tbl[]
   return -1; /* Did not find the name */
 }
 
-/*
-// Public RTOp_Server functions
-*/
+/* */
+/* Public RTOp_Server functions */
+/* */
 
 int RTOp_Server_add_op_name_vtbl( const char op_class_name[]
   , const struct RTOp_RTOp_vtbl_t* op_class_vtbl )

@@ -31,9 +31,10 @@ RTOpCppToC::RTOpCppToC( const RTOp &op_cpp )
 			,op_cpp_.get_op_free_func()
 			,op_vtbl_
 			);
-		op_c_ = new RTOp_RTOp;
-		op_c_->vtbl     = op_vtbl_;
-		op_c_->obj_data = (void*)&op_cpp;
+		op_vtbl_->op_name    = op_cpp.op_name();
+		op_c_                = new RTOp_RTOp;
+		op_c_->vtbl          = op_vtbl_;
+		op_c_->obj_data      = (void*)&op_cpp;
 	}
 }
 

@@ -1,11 +1,10 @@
-/* /////////////////////////////////////////////
-// RTOp_TOp_max_abs_vec_scalar.h
+/* ///////////////////////////////////////////// */
+/* RTOp_TOp_max_abs_vec_scalar.h */
 
-//
-// Note: This file was created automatically by 'new_rtop.pl'
-//       on 7/13/2002 at 13:48
-//
-*/
+/* */
+/* Note: This file was created automatically by 'new_rtop.pl' */
+/*       on 7/13/2002 at 13:48 */
+/* */
 
 #ifndef RTOp_TOp_max_abs_vec_scalar_H
 #define RTOp_TOp_max_abs_vec_scalar_H
@@ -32,26 +31,23 @@ element-wise transformation:
  *
  * ToDo: Write the documentation for this class!
  */
-/*@{*/
+/*@{ */
 
-/** Name of this transformation operator class */
-extern const char RTOp_TOp_max_abs_vec_scalar_name[];
-
-/** Virtual function table */
+/* Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_max_abs_vec_scalar_vtbl;
 
-/** Constructor */
+/* Constructor */
 int RTOp_TOp_max_abs_vec_scalar_construct( RTOp_value_type min_ele,  struct RTOp_RTOp* op );
 
-/** Destructor */
+/* Destructor */
 int RTOp_TOp_max_abs_vec_scalar_destroy( struct RTOp_RTOp* op );
 
-/** Initialize the state of the operator object */
+/* Initialize the state of the operator object */
 int RTOp_TOp_max_abs_vec_scalar_init( RTOp_value_type min_ele, struct RTOp_RTOp* op );
 
 
 
-/*@}*/
+/*@} */
 
 #ifdef __cplusplus
 }

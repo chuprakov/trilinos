@@ -25,6 +25,14 @@ template<class Scalar>
 void dot( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2, Scalar dot[] );
 
 ///
+/** Take the one norm of a multi-vector.
+ *
+ * @param V  [in]
+ */
+template<class Scalar>
+Scalar norm_1( const MultiVector<Scalar>& V );
+
+///
 /** V = alpha
  */
 template<class Scalar>

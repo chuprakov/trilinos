@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////
-// RTOp_TOp_set_ele.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_TOp_set_ele.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #include <assert.h>
 #include <malloc.h>
@@ -37,17 +36,17 @@ static int RTOp_TOp_set_ele_apply_op(
   RTOp_value_type  *z_val = NULL;
   ptrdiff_t        z_val_s;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 0 || vecs != NULL )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 1 || targ_vecs == NULL )
     return RTOp_ERR_INVALID_NUM_TARG_VECS;
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
 
   /* alpha, i */
   val_ind  = (const struct RTOp_value_index_type*)obj_data;
@@ -60,9 +59,9 @@ static int RTOp_TOp_set_ele_apply_op(
   z_val         = targ_vecs[0].values;
   z_val_s       = targ_vecs[0].values_stride;
 
-  /*
-  // Set the element?
-  */
+  /* */
+  /* Set the element? */
+  /* */
 
   if( i < global_offset + 1 || global_offset + z_sub_dim < i )
     return 0; /* The element we are looking for is not here. */
@@ -73,14 +72,12 @@ static int RTOp_TOp_set_ele_apply_op(
   return 0; /* success? */
 }
 
-/** Name of this transformation operator class */
-const char RTOp_TOp_set_ele_name[] = "TOp_set_ele";
-
-/** Virtual function table */
+/* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_set_ele_vtbl =
 {
   &RTOp_obj_value_index_vtbl
   ,&RTOp_obj_null_vtbl /* use null type for reduction target object */
+  ,"TOp_set_ele"
   ,NULL /* use default from reduct_vtbl */
   ,RTOp_TOp_set_ele_apply_op
   ,NULL

@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////
-// RTOp_TOp_assign_vectors.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_TOp_assign_vectors.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #include <assert.h>
 #include <malloc.h>
@@ -41,9 +40,9 @@ static int RTOp_TOp_assign_vectors_apply_op(
   RTOp_index_type i;
 #endif
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 1 || vecs == NULL )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 1 || targ_vecs == NULL )
@@ -51,9 +50,9 @@ static int RTOp_TOp_assign_vectors_apply_op(
   if( targ_vecs[0].sub_dim != vecs[0].sub_dim )
     return RTOp_ERR_INCOMPATIBLE_VECS;
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
 
   /* z */
   z_sub_dim     = targ_vecs[0].sub_dim;
@@ -67,9 +66,9 @@ static int RTOp_TOp_assign_vectors_apply_op(
 
   z_val_tmp = z_val;
 
-  /*
-  // Assign the elements
-  */
+  /* */
+  /* Assign the elements */
+  /* */
 
   if( z_val_s == 1 && v0_val_s == 1 ) {
     /* Slightly faster loop for unit stride vectors */
@@ -85,14 +84,12 @@ static int RTOp_TOp_assign_vectors_apply_op(
   return 0; /* success? */
 }
 
-/* Name of this transformation operator class */
-const char RTOp_TOp_assign_vectors_name[] = "TOp_assign_vectors";
-
 /* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_assign_vectors_vtbl =
 {
   &RTOp_obj_null_vtbl  /* Use a null object for instance data */
   ,&RTOp_obj_null_vtbl /* use null type for target object */
+  ,"TOp_assign_vectors"
   ,NULL /* use default from reduct_vtbl */
   ,RTOp_TOp_assign_vectors_apply_op
   ,NULL

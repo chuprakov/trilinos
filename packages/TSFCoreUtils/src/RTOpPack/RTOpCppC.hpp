@@ -41,6 +41,8 @@ public:
 	//@{
 
 	///
+	const char* op_name() const;
+	///
 	op_create_func_t get_op_create_func() const;
 	///
 	op_free_func_t get_op_free_func() const;

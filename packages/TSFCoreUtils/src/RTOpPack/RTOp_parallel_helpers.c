@@ -1,18 +1,17 @@
-/* //////////////////////////////////////////////////////////////
-// RTOp_parallel_helpers.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ////////////////////////////////////////////////////////////// */
+/* RTOp_parallel_helpers.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #include <assert.h>
 
@@ -37,38 +36,38 @@ void RTOp_parallel_calc_overlap(
 #endif
   /* Dimension of global sub-vector */
   global_sub_dim = sub_dim_in ? sub_dim_in : global_dim_in - (first_ele_in-1);
-  /*
-  // We need to determine if the local elements stored in this process overlap
-  // with the global sub-vector that the client has requested.
-  */
+  /* */
+  /* We need to determine if the local elements stored in this process overlap */
+  /* with the global sub-vector that the client has requested. */
+  /* */
   if( !( local_offset_in + local_sub_dim_in < first_ele_in
        || (first_ele_in-1) + global_sub_dim < local_offset_in + 1 ) )
   {
-    /*
-    // Determine how much of the local sub-vector stored in this process gets operated on.
-    // If (first_ele_in-1) <= local_offset_in, then we start at the first element
-    // in this process.  Otherwise, we need to to increment by first_ele_in - local_offset_in
-    */
+    /* */
+    /* Determine how much of the local sub-vector stored in this process gets operated on. */
+    /* If (first_ele_in-1) <= local_offset_in, then we start at the first element */
+    /* in this process.  Otherwise, we need to to increment by first_ele_in - local_offset_in */
+    /* */
     *overlap_first_local_ele = (first_ele_in-1) <= local_offset_in ? 1 : first_ele_in - local_offset_in;
-    /*
-    // Deterime the number of elements in the local sub-vector that overlap with the
-    // requested logical sub-vector.
-    */
+    /* */
+    /* Deterime the number of elements in the local sub-vector that overlap with the */
+    /* requested logical sub-vector. */
+    /* */
     *overalap_local_sub_dim  = (
       MY_MIN((first_ele_in-1)+global_sub_dim,local_offset_in+local_sub_dim_in) /* last overlap element in process */
       -
       MY_MAX(first_ele_in,local_offset_in+1)                                   /* first overlap element in process */
       + 1
       );
-    /*
-    // Finally, figure out where this local sub-vectors fit into the logical vector that the
-    // client has specified with global_offset_in and first_ele_in.  Note that the element
-    // this->(first_ele) acts as the the first element in the logical vector defined by the client
-    // if gloabal_offset_in == 0.  Therefore, we need to subtract (first_ele_in - 1) from
-    // local_offset_in to get the true offset into the logicl vector defined by the client.  Then
-    // we can adjust it by adding global_offset_in to place it into the clients actual logical
-    // vector..
-    */
+    /* */
+    /* Finally, figure out where this local sub-vectors fit into the logical vector that the */
+    /* client has specified with global_offset_in and first_ele_in.  Note that the element */
+    /* this->(first_ele) acts as the the first element in the logical vector defined by the client */
+    /* if gloabal_offset_in == 0.  Therefore, we need to subtract (first_ele_in - 1) from */
+    /* local_offset_in to get the true offset into the logicl vector defined by the client.  Then */
+    /* we can adjust it by adding global_offset_in to place it into the clients actual logical */
+    /* vector.. */
+    /* */
     *overlap_global_offset   = (
       ( first_ele_in - 1 > local_offset_in
         ? 0

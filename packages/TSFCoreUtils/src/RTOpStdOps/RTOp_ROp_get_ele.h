@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_get_ele.h
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_get_ele.h */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #ifndef RTOP_ROP_GET_ELE_H
 #define RTOP_ROP_GET_ELE_H
@@ -41,27 +40,24 @@ extern "C" {
   * be very inefficient.  This is what reduction operators where
   * designed to avoid.
   */
-/*@{*/
+/*@{ */
 
-/** Name of this reduction operator class */
-extern const char RTOp_ROp_get_ele_name[];
-
-  /** Virtual function table */
+/* Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_ROp_get_ele_vtbl;
 
-  /** Constructor */
+/* Constructor */
 int RTOp_ROp_get_ele_construct( RTOp_index_type i, struct RTOp_RTOp* op );
 
-  /** Reinitialize the index of the element being looked for */
+/* Reinitialize the index of the element being looked for */
 int RTOp_ROp_get_ele_set_i( RTOp_index_type i, struct RTOp_RTOp* op );
 
-  /** Destructor */
+/* Destructor */
 int RTOp_ROp_get_ele_destroy( struct RTOp_RTOp* op );
 
-  /**  Extract the value of the element */
+/* Extract the value of the element */
 RTOp_value_type RTOp_ROp_get_ele_val(RTOp_ReductTarget targ_obj);
 
-  /*@} */
+/*@} */
 
 #ifdef __cplusplus
 }

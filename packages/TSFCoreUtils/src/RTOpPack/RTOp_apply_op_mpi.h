@@ -1,18 +1,17 @@
-/* //////////////////////////////////////////////////////////////
-// RTOp_apply_op_mpi.h
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ////////////////////////////////////////////////////////////// */
+/* RTOp_apply_op_mpi.h */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #ifndef RTOP_APPLY_OP_MPI_H
 #define RTOP_APPLY_OP_MPI_H
@@ -23,6 +22,7 @@
 extern "C" {
 #endif
 
+/* */
 /** Function that implements the guts an <tt>apply_op()</tt> method for dense MPI vectors.
  *
  * @param  comm        [in] MPI communicator
@@ -97,8 +97,8 @@ int RTOp_apply_op_mpi(
 	MPI_Comm comm
 	,RTOp_index_type global_dim, RTOp_index_type local_sub_dim, RTOp_index_type local_offset
 	,const int num_cols
-	,const int      num_vecs,  const RTOp_value_type*      local_vec_ptrs[],  const ptrdiff_t      local_vec_strides[], const ptrdiff_t      local_vec_leading_dim[]
-	,const int num_targ_vecs,  RTOp_value_type*       local_targ_vec_ptrs[],  const ptrdiff_t local_targ_vec_strides[], const ptrdiff_t local_targ_vec_leading_dim[]
+	,const int num_vecs,       const RTOp_value_type*   local_vec_ptrs[],       const ptrdiff_t local_vec_strides[],      const ptrdiff_t local_vec_leading_dim[]
+	,const int num_targ_vecs,  RTOp_value_type*         local_targ_vec_ptrs[],  const ptrdiff_t local_targ_vec_strides[], const ptrdiff_t local_targ_vec_leading_dim[]
 	,const RTOp_index_type first_ele, const RTOp_index_type sub_dim, const RTOp_index_type global_offset
 	,const struct RTOp_RTOp* op
 	,RTOp_ReductTarget reduct_objs[]

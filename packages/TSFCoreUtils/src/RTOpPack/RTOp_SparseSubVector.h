@@ -1,19 +1,18 @@
-/* /////////////////////////////////////////////////////
-// RTOp_SparseSubVector.h
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-//
-*/
+/* ///////////////////////////////////////////////////// */
+/* RTOp_SparseSubVector.h */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
+/* */
 
 #ifndef RTOP_SPARSE_SUB_VECTOR_H
 #define RTOP_SPARSE_SUB_VECTOR_H
@@ -27,7 +26,8 @@
 extern "C" {
 #endif
 
-/*!<* Struct for a (sparse or dense) sub-vector.
+/* */
+/** Struct for a (sparse or dense) sub-vector.
  *
  *	Sparse and dense local vectors are supported as follows:
   *
@@ -103,30 +103,31 @@ extern "C" {
  * <tt>RTOp_sparse_sub_vector()</tt> or <tt>RTOp_sub_vector_null()</tt>.
  */
 struct RTOp_SparseSubVector {
-	/*!< Offset for the sub-vector into the global vector */
+	/* Offset for the sub-vector into the global vector */
 	RTOp_index_type                  global_offset;
-	/*!< Dimension of the sub-vector */
+	/* Dimension of the sub-vector */
 	RTOp_index_type                  sub_dim;
-	/*!< Number of nonzero elements (<tt>sub_nz == sub_dim</tt> for dense vectors) */
+	/* Number of nonzero elements (<tt>sub_nz == sub_dim</tt> for dense vectors) */
 	RTOp_index_type                  sub_nz;
-	/*!< Array (size min{|<tt>value_stride*sub_nz</tt>|,1}) for the values in the vector */
+	/* Array (size min{|<tt>value_stride*sub_nz</tt>|,1}) for the values in the vector */
 	const RTOp_value_type            *values;
-	/*!< Stride between elements in <tt>values[]</tt> */
+	/* Stride between elements in <tt>values[]</tt> */
 	ptrdiff_t                        values_stride;
-	/*!<*/
+	/* */
 	/** Array (size min{|<tt>indices_stride*sub_nz</tt>|,1} if not <tt>NULL</tt>) for the
 	  * indices of the nonzero elements in the vector (sparse vectors only)
 	  */
 	const RTOp_index_type            *indices;
-	/*!< Stride between indices in indices[] (sparse vectors only) */
+	/* Stride between indices in indices[] (sparse vectors only) */
 	ptrdiff_t                        indices_stride;
-	/*!< Offset of indices[] into local sub-vector (sparse vectors only) */
+	/* Offset of indices[] into local sub-vector (sparse vectors only) */
 	ptrdiff_t                        local_offset;
-	/*!< If <tt>is_sorted == 0</tt> then the vector is not sorted, otherwise it is sorted (sparse vectors only) */
+	/* If <tt>is_sorted == 0</tt> then the vector is not sorted, otherwise it is sorted (sparse vectors only) */
 	int                              is_sorted;
 };
 
-/*!<* Set the members for sparse sub-vector.
+/* */
+/** Set the members for sparse sub-vector.
   */
 void RTOp_sparse_sub_vector(
 	RTOp_index_type global_offset, RTOp_index_type sub_dim, RTOp_index_type sub_nz
@@ -135,11 +136,13 @@ void RTOp_sparse_sub_vector(
 	,ptrdiff_t local_offset, int is_sorted
 	,struct RTOp_SparseSubVector *sub_vec
 	);
-/*!<* Initialize a sub-vector argument to null.
+/* */
+/** Initialize a sub-vector argument to null.
   */
 void RTOp_sparse_sub_vector_null( struct RTOp_SparseSubVector *sub_vec );
 
-/*!<* Copy the elements from a RTOp_SubVector to a RTOp_SparseSubVector.
+/* */
+/** Copy the elements from a RTOp_SubVector to a RTOp_SparseSubVector.
   */
 void RTOp_sparse_sub_vector_from_dense(
 	const struct RTOp_SubVector     *sub_vec

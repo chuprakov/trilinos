@@ -13,14 +13,21 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#include <stdexcept>
+#include <sstream>
+
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
+/** We throw a m_bad_cast, which is a subclass of bad_cast.  
+	This is necessary, since bad_cast lacks the appropriate
+	constructor for use with the THROW_EXCEPTION macro.
+*/
 void DynamicCastHelperPack::dyn_cast_throw_exception(
 	const char T_from[], const char T_to[] )
 {
 	THROW_EXCEPTION(
-		true, std::invalid_argument
+		true, m_bad_cast
 		,"dyn_cast<" << T_to << ">(" << T_from
 		<< ") : Error, the object with the concrete type \'"
 		<< T_from << "\' does not support the interface \'"

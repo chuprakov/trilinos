@@ -4,7 +4,6 @@
 #ifndef TSFCORE_APPLY_OP_HELPER_HPP
 #define TSFCORE_APPLY_OP_HELPER_HPP
 
-#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCore_apply_op_helper_decl.hpp"
 #include "TSFCoreVector.hpp"
 #include "TSFCoreVectorSpace.hpp"
@@ -98,12 +97,12 @@ void TSFCore::apply_op_serial(
 	for(k = 0; k < num_vecs; ++k) {
 		RTOpPack::SubVectorT<Scalar> &v = local_vecs[k];
 		vecs[k]->getSubVector( global_sub_rng, &v );
-		v.setGlobalOffset( v.globalOffset() + global_offset_in );
+		v.setGlobalOffset( global_offset_in );
 	}
 	for(k = 0; k < num_targ_vecs; ++k) {
 		RTOpPack::MutableSubVectorT<Scalar> &v = local_targ_vecs[k];
 		targ_vecs[k]->getSubVector( global_sub_rng, &v );
-		v.setGlobalOffset( v.globalOffset() + global_offset_in );
+		v.setGlobalOffset( global_offset_in );
 	}
 
 	//
@@ -124,12 +123,12 @@ void TSFCore::apply_op_serial(
 
 	for(k = 0; k < num_vecs; ++k) {
 		RTOpPack::SubVectorT<Scalar> &v = local_vecs[k];
-		v.setGlobalOffset( global_sub_rng.lbound() );
+		v.setGlobalOffset( global_sub_rng.lbound() - 1);
 		vecs[k]->freeSubVector(&v);
 	}
 	for(k = 0; k < num_targ_vecs; ++k) {
 		RTOpPack::MutableSubVectorT<Scalar> &v = local_targ_vecs[k];
-		v.setGlobalOffset( global_sub_rng.lbound() );
+		v.setGlobalOffset( global_sub_rng.lbound() - 1);
 		targ_vecs[k]->commitSubVector(&v);
 	}
 

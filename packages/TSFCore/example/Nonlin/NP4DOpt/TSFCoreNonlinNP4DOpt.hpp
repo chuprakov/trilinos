@@ -46,6 +46,13 @@ NP4DOpt<Scalar>::NP4DOpt(
 	factory_DcDu_ = mmp::rcp(new mmp::AbstractFactoryStd<LO,MV,PMN,MVA>(PMN(),MVA(np2dsim_.space_c(),2)));
 }
 
+template<class Scalar>
+void NP4DOpt<Scalar>::set_u0( const Scalar u01, const Scalar u02 )
+{
+	TSFCore::set_ele( 1, u01, &*u0_ );
+	TSFCore::set_ele( 2, u02, &*u0_ );
+}
+
 // Overridden from NonlinearProblem
 
 template<class Scalar>
@@ -115,7 +122,7 @@ template<class Scalar>
 const Vector<Scalar>&
 NP4DOpt<Scalar>::yU() const
 {
-	return np2dsim_.yL();
+	return np2dsim_.yU();
 }
 
 template<class Scalar>

@@ -18,7 +18,7 @@ namespace Nonlin {
 template<class Scalar>
 Scalar NonlinearProblem<Scalar>::infiniteBound()
 {
-	return 1e+50; // This should be large enough!
+	return std::numeric_limits<Scalar>::max();
 }
 
 //

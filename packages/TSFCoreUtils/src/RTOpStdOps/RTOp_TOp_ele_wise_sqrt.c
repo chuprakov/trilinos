@@ -1,11 +1,10 @@
-/* /////////////////////////////////////////////
-// RTOp_TOp_ele_wise_sqrt.c
+/* ///////////////////////////////////////////// */
+/* RTOp_TOp_ele_wise_sqrt.c */
 
-//
-// Note: This file was created automatically by 'new_rtop.pl'
-//       on 7/2/2002 at 19:1
-//
-*/
+/* */
+/* Note: This file was created automatically by 'new_rtop.pl' */
+/*       on 7/2/2002 at 19:1 */
+/* */
 
 #include <assert.h>
 #include <math.h>
@@ -26,9 +25,9 @@ static int RTOp_TOp_ele_wise_sqrt_apply_op(
   , const int num_targ_vecs, const struct RTOp_MutableSubVector targ_vecs[]
   , RTOp_ReductTarget reduct_obj )
 {
-  /*
-  // Declare local variables
-  */
+  /* */
+  /* Declare local variables */
+  /* */
 
   /* Vector data */
   RTOp_index_type           sub_dim;
@@ -39,27 +38,27 @@ static int RTOp_TOp_ele_wise_sqrt_apply_op(
   /* Automatic temporary variables */
   register RTOp_index_type  k;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 0 || ( num_vecs && vecs == NULL ) )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 1 || ( num_targ_vecs && targ_vecs == NULL ) )
     return RTOp_ERR_INVALID_NUM_TARG_VECS;
 
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
   sub_dim       = targ_vecs[0].sub_dim;
   /* z0 */
   z0_val        = targ_vecs[0].values;
   z0_val_s      = targ_vecs[0].values_stride;
 
 
-  /*
-  // Apply the operator:
-  */
+  /* */
+  /* Apply the operator: */
+  /* */
   for( k = 0; k < sub_dim; ++k, z0_val += z0_val_s )
     {
     /* Element-wise transformation */
@@ -70,16 +69,12 @@ static int RTOp_TOp_ele_wise_sqrt_apply_op(
   return 0; /* success? */
 }
 
-
-
-/* Name of this transformation operator class */
-const char RTOp_TOp_ele_wise_sqrt_name[] = "TOp_ele_wise_sqrt";
-
 /* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_ele_wise_sqrt_vtbl =
 {
   &RTOp_obj_null_vtbl
   ,&RTOp_obj_null_vtbl
+  ,"TOp_ele_wise_sqrt"
   ,NULL
   ,RTOp_TOp_ele_wise_sqrt_apply_op
   ,NULL

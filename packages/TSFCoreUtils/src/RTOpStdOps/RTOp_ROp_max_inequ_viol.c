@@ -1,19 +1,18 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_max_inequ_viol.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-//
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_max_inequ_viol.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
+/* */
 
 #include <assert.h>
 #include <malloc.h>
@@ -27,9 +26,9 @@
 #include "RTOp_obj_free_free.h"
 #include "RTOp_get_reduct_op.hpp"
 
-/*
-// Implementation functions
-*/
+/* */
+/* Implementation functions */
+/* */
 
 /* Functions for the reduction target object */
 
@@ -143,9 +142,9 @@ static int RTOp_ROp_max_inequ_viol_apply_op(
   ,RTOp_ReductTarget targ_obj
   )
 {
-  /*
-  // Declare local variables
-  */
+  /* */
+  /* Declare local variables */
+  /* */
 
   /* targ */
   struct RTOp_ROp_max_inequ_viol_reduct_obj_t
@@ -170,9 +169,9 @@ static int RTOp_ROp_max_inequ_viol_apply_op(
   RTOp_value_type  violL;
   RTOp_value_type  violU;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 3 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
@@ -183,9 +182,9 @@ static int RTOp_ROp_max_inequ_viol_apply_op(
     || vecs[0].sub_dim       != vecs[2].sub_dim )
     return RTOp_ERR_INCOMPATIBLE_VECS;
 
-  /*
-  // Get pointers to the data
-  */
+  /* */
+  /* Get pointers to the data */
+  /* */
 
   /* targ */
   targ            = (struct RTOp_ROp_max_inequ_viol_reduct_obj_t*)targ_obj;
@@ -203,9 +202,9 @@ static int RTOp_ROp_max_inequ_viol_apply_op(
   vU_val          = vecs[2].values;
   vU_val_s        = vecs[2].values_stride;
 
-  /*
-  // Perform the reduction operation.
-  */
+  /* */
+  /* Perform the reduction operation. */
+  /* */
 
   i = global_offset + 1;
   for( k = 0; k < sub_dim; ++k, ++i, v_val += v_val_s, vL_val += vL_val_s, vU_val += vU_val_s ) {
@@ -267,12 +266,11 @@ INSERT_GET_REDUCT_OP_FUNCS(
   ,targ_load_state,targ_extract_state
   ,external_reduct_op,get_reduct_op)
 
-const char RTOp_ROp_max_inequ_viol_name[] = "ROp_max_inequ_viol";
-
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_inequ_viol_vtbl =
 {
   &RTOp_obj_null_vtbl
   ,&targ_obj_vtbl
+  ,"ROp_max_inequ_viol"
   ,NULL
   ,RTOp_ROp_max_inequ_viol_apply_op
   ,reduce_reduct_objs

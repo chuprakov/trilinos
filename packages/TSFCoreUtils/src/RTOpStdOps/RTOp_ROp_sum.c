@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_sum.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_sum.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #include <assert.h>
 #include <string.h>
@@ -37,46 +36,44 @@ static int RTOp_ROp_sum_apply_op(
   register RTOp_index_type k;
   RTOp_value_type sum = 0.0;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
     return RTOp_ERR_INVALID_NUM_TARG_VECS;
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
 
   /* v0 */
   v0_sub_dim      = vecs[0].sub_dim;
   v0_val         = vecs[0].values;
   v0_val_s       = vecs[0].values_stride;
 
-  /*
-  // Sum the vector elements!
-  */
+  /* */
+  /* Sum the vector elements! */
+  /* */
 
   for( k = 0; k < v0_sub_dim; ++k, v0_val += v0_val_s )
     sum += *v0_val;
 
-  /*
-  // Add this to the result
-  */
+  /* */
+  /* Add this to the result */
+  /* */
   *((RTOp_value_type*)targ_obj) += sum;
 
   return 0; /* success? */
 }
-
-/* Name of this reduction operator class */
-const char RTOp_ROp_sum_name[] = "ROp_sum";
 
 /* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_sum_vtbl =
 {
   &RTOp_obj_null_vtbl   /* use null type for instance data */
   ,&RTOp_obj_value_vtbl /* use simple scalar type for target object */
+  ,"ROp_sum"
   ,NULL
   ,RTOp_ROp_sum_apply_op
   ,RTOp_reduct_sum_value

@@ -1,19 +1,18 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_max_abs_ele.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-//
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_max_abs_ele.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
+/* */
 
 #include <assert.h>
 
@@ -23,9 +22,9 @@
 #include "RTOp_obj_free_free.h"
 #include "RTOp_get_reduct_op.hpp"
 
-/*
-// Implementation functions
-*/
+/* */
+/* Implementation functions */
+/* */
 
 /* Selected functions that are used to implement exteral_reduct_op */
 
@@ -89,9 +88,9 @@ static int RTOp_ROp_max_abs_ele_apply_op(
   ,RTOp_ReductTarget targ_obj
   )
 {
-  /*
-  // Declare local variables
-  */
+  /* */
+  /* Declare local variables */
+  /* */
 
   /* targ */
   struct RTOp_value_index_type
@@ -108,17 +107,17 @@ static int RTOp_ROp_max_abs_ele_apply_op(
   RTOp_index_type  i;
   RTOp_value_type  abs_v_i;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
     return RTOp_ERR_INVALID_NUM_TARG_VECS;
 
-  /*
-  // Get pointers to the data
-  */
+  /* */
+  /* Get pointers to the data */
+  /* */
 
   /* targ */
   targ            = (struct RTOp_value_index_type*)targ_obj;
@@ -130,9 +129,9 @@ static int RTOp_ROp_max_abs_ele_apply_op(
   v_val           = vecs[0].values;
   v_val_s         = vecs[0].values_stride;
 
-  /*
-  // Perform the reduction operation.
-  */
+  /* */
+  /* Perform the reduction operation. */
+  /* */
 
   i = global_offset + 1;
   for( k = 0; k < sub_dim; ++k, ++i, v_val += v_val_s ) {
@@ -174,12 +173,11 @@ INSERT_GET_REDUCT_OP_FUNCS(
   ,targ_load_state,targ_extract_state
   ,external_reduct_op,get_reduct_op)
 
-const char RTOp_ROp_max_abs_ele_name[] = "ROp_max_abs_ele";
-
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_abs_ele_vtbl =
 {
   &RTOp_obj_null_vtbl
   ,&RTOp_obj_value_index_vtbl
+  ,"ROp_max_abs_ele"
   ,NULL
   ,RTOp_ROp_max_abs_ele_apply_op
   ,reduce_reduct_objs

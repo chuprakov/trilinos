@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////
-// RTOp_TOp_force_in_bounds.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_TOp_force_in_bounds.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #include <assert.h>
 #include <malloc.h>
@@ -41,9 +40,9 @@ static int RTOp_TOp_force_in_bounds_apply_op(
   ptrdiff_t              xu_val_s;
   register RTOp_index_type k;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 2 || vecs == NULL )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 1 || targ_vecs == NULL )
@@ -52,9 +51,9 @@ static int RTOp_TOp_force_in_bounds_apply_op(
     || targ_vecs[0].sub_dim != vecs[1].sub_dim )
     return RTOp_ERR_INCOMPATIBLE_VECS;
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
 
   /* x */
   sub_dim       = targ_vecs[0].sub_dim;
@@ -67,9 +66,9 @@ static int RTOp_TOp_force_in_bounds_apply_op(
   xu_val         = vecs[1].values;
   xu_val_s       = vecs[1].values_stride;
 
-  /*
-  // Force in bounds
-  */
+  /* */
+  /* Force in bounds */
+  /* */
 
   if( x_val_s == 1 && xl_val_s == 1 && xu_val_s == 1 ) {
     /* Slightly faster loop for unit stride vectors */
@@ -93,14 +92,12 @@ static int RTOp_TOp_force_in_bounds_apply_op(
   return 0; /* success? */
 }
 
-/* Name of this transformation operator class */
-const char RTOp_TOp_force_in_bounds_name[] = "TOp_force_in_bounds";
-
 /* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_force_in_bounds_vtbl =
 {
   &RTOp_obj_null_vtbl  /* Use a null object for instance data */
   ,&RTOp_obj_null_vtbl /* use null type for target object */
+  ,"TOp_force_in_bounds"
   ,NULL /* use default from reduct_vtbl */
   ,RTOp_TOp_force_in_bounds_apply_op
   ,NULL
@@ -131,9 +128,9 @@ static int RTOp_TOp_force_in_bounds_buffer_apply_op(
   , const int num_targ_vecs, const struct RTOp_MutableSubVector targ_vecs[]
   , RTOp_ReductTarget reduct_obj )
 {
-  /*
-  // Declare local variables
-  */
+  /* */
+  /* Declare local variables */
+  /* */
 
   /* Access to the operator object instance data */
   struct RTOp_value_value_type *data_cntr = (struct RTOp_value_value_type*)obj_data;
@@ -157,9 +154,9 @@ static int RTOp_TOp_force_in_bounds_buffer_apply_op(
   RTOp_value_type xl_sb;
   RTOp_value_type xu_sb;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 2 || ( num_vecs && vecs == NULL ) )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 1 || ( num_targ_vecs && targ_vecs == NULL ) )
@@ -172,9 +169,9 @@ static int RTOp_TOp_force_in_bounds_buffer_apply_op(
   assert(obj_data);
 
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
   sub_dim       = vecs[0].sub_dim;
   /* z0 */
   z0_val        = targ_vecs[0].values;
@@ -187,9 +184,9 @@ static int RTOp_TOp_force_in_bounds_buffer_apply_op(
   v1_val_s      = vecs[1].values_stride;
 
 
-  /*
-  // Apply the operator:
-  */
+  /* */
+  /* Apply the operator: */
+  /* */
   for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s, v1_val += v1_val_s, z0_val += z0_val_s )
   {
     /* Element-wise transformation */
@@ -209,16 +206,12 @@ static int RTOp_TOp_force_in_bounds_buffer_apply_op(
   return 0; /* success? */
 }
 
-
-
-/* Name of this transformation operator class */
-const char RTOp_TOp_force_in_bounds_buffer_name[] = "TOp_force_in_bounds_buffer";
-
 /* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_force_in_bounds_buffer_vtbl =
 {
   &RTOp_obj_value_value_vtbl
   ,&RTOp_obj_null_vtbl
+  ,"TOp_force_in_bounds_buffer"
   ,NULL
   ,RTOp_TOp_force_in_bounds_buffer_apply_op
   ,NULL

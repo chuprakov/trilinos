@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////////////////////////////////
-// RTOp_TOp_set_sub_vector.h
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////////////////////////////////// */
+/* RTOp_TOp_set_sub_vector.h */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #ifndef RTOP_TOP_SET_SUB_VECTOR_H
 #define RTOP_TOP_SET_SUB_VECTOR_H
@@ -43,14 +42,12 @@ extern "C" {
  * state data.
  *
  */
-/*@{*/
+/*@{ */
 
-/** Name of this transformation operator class */
-extern const char RTOp_TOp_set_sub_vector_name[];
-
-/** Virtual function table */
+/* Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_set_sub_vector_vtbl;
 
+/* */
 /** Constructor.
  *
  * Note that a copy of sub_vec is not made.  Therefore, the client must
@@ -59,6 +56,7 @@ extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_set_sub_vector_vtbl;
 int RTOp_TOp_set_sub_vector_construct(
   const struct RTOp_SparseSubVector* sub_vec, struct RTOp_RTOp* op );
 
+/* */
 /** Reinitialize the range for the sub-vector to extract.
  *
  * Note that a copy of sub_vec is not made.  Therefore, the client must
@@ -67,10 +65,12 @@ int RTOp_TOp_set_sub_vector_construct(
 int RTOp_TOp_set_sub_vector_set_sub_vec(
   const struct RTOp_SparseSubVector* sub_vec, struct RTOp_RTOp* op );
 
-/** Destructor. */
+/* */
+/** Destructor.
+ */
 int RTOp_TOp_set_sub_vector_destroy( struct RTOp_RTOp* op );
 
-/*@}*/
+/*@} */
 
 #ifdef __cplusplus
 }

@@ -1,23 +1,22 @@
-/* /////////////////////////////////////////////
-// RTOp_TOp_random_vector.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-//
-// RAB: 1/22/01: Warning, this implementation based
-// on the struct may not be portable in a heterogeneous
-// environment!  The user has been warned!
-//
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_TOp_random_vector.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
+/* */
+/* RAB: 1/22/01: Warning, this implementation based */
+/* on the struct may not be portable in a heterogeneous */
+/* environment!  The user has been warned! */
+/* */
 
 #include <assert.h>
 #include <malloc.h>
@@ -46,6 +45,14 @@ static int get_op_type_num_entries(
   *num_indexes = 0;
   *num_chars   = 0;
   return 0;
+}
+
+static int op_create(
+  const struct RTOp_obj_type_vtbl_t* vtbl, const void* instance_data
+  , RTOp_ReductTarget* obj )
+{
+	*obj = malloc(sizeof(struct RTOp_TOp_random_vector_bnd_t));
+	return 0;
 }
 
 static int extract_op_state(
@@ -99,7 +106,7 @@ static int load_op_state(
 static struct RTOp_obj_type_vtbl_t  instance_obj_vtbl =
 {
   get_op_type_num_entries
-  ,NULL
+  ,op_create
   ,NULL
   ,RTOp_obj_free_free
   ,extract_op_state
@@ -114,9 +121,9 @@ static int RTOp_TOp_random_vector_apply_op(
   , const int num_targ_vecs, const struct RTOp_MutableSubVector targ_vecs[]
   , RTOp_ReductTarget targ_obj )
 {
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
 
   /* lbnd, ubnd */
   const struct RTOp_TOp_random_vector_bnd_t *bnd = (const struct RTOp_TOp_random_vector_bnd_t*)obj_data;
@@ -128,9 +135,9 @@ static int RTOp_TOp_random_vector_apply_op(
 
   register RTOp_index_type k;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 0 || vecs != NULL )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 1 || targ_vecs == NULL )
@@ -141,9 +148,9 @@ static int RTOp_TOp_random_vector_apply_op(
   z_val         = targ_vecs[0].values;
   z_val_s       = targ_vecs[0].values_stride;
 
-  /*
-  // Assign the elements to random values
-  */
+  /* */
+  /* Assign the elements to random values */
+  /* */
 
   for( k = 0; k < z_sub_dim; ++k, z_val += z_val_s )
     *z_val = bnd->l + ((RTOp_value_type)rand())/RAND_MAX * (bnd->u - bnd->l);
@@ -151,14 +158,12 @@ static int RTOp_TOp_random_vector_apply_op(
   return 0; /* success? */
 }
 
-/** Name of this transformation operator class */
-const char RTOp_TOp_random_vector_name[] = "TOp_random_vector";
-
-/** Virtual function table */
+/* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_random_vector_vtbl =
 {
   &instance_obj_vtbl
   ,&RTOp_obj_null_vtbl /* use null type for target object */
+  ,"TOp_random_vector"
   ,NULL /* use default from reduct_vtbl */
   ,RTOp_TOp_random_vector_apply_op
   ,NULL
@@ -172,8 +177,8 @@ int RTOp_TOp_random_vector_construct( RTOp_value_type lbnd, RTOp_value_type ubnd
 {
   const int mem_size = sizeof(struct RTOp_TOp_random_vector_bnd_t);
   struct RTOp_TOp_random_vector_bnd_t *bnd = NULL;
-  op->obj_data  = malloc( mem_size );
   op->vtbl      = &RTOp_TOp_random_vector_vtbl;
+  op->vtbl->obj_data_vtbl->obj_create(NULL,NULL,&op->obj_data);
   bnd = (struct RTOp_TOp_random_vector_bnd_t*)op->obj_data;
   bnd->l = lbnd;
   bnd->u = ubnd;

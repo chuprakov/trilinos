@@ -1,8 +1,6 @@
-// /////////////////////////////////////////////
+// //////////////////////////////////////////////////
 // RTOp_RTOp_C_Cpp.cpp
-//
 
-#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "RTOp_RTOp_C_Cpp.h"
 #include "RTOpCpp.hpp"
 
@@ -313,6 +311,7 @@ int RTOp_create_C_Cpp_vtbl(
 	obj_data_vtbl->load_state                  = load_op_state;   
 	vtbl->obj_data_vtbl      = obj_data_vtbl;
 	vtbl->reduct_vtbl        = &reduct_obj_vtbl;
+	vtbl->op_name            = NULL;
 	vtbl->reduct_obj_reinit  = NULL;
 	vtbl->apply_op           = apply_op;
 	vtbl->reduce_reduct_objs = reduce_reduct_objs;

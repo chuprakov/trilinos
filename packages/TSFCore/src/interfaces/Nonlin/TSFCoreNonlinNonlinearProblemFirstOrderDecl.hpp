@@ -366,9 +366,9 @@ public:
 	 *               auxiliary variables.  It is allowed for <tt>u==NULL</tt> in which
 	 *               interpreted as <tt>u[l-1] == &u0(l)</tt>, for <tt>l=1...this->Nu()</tt>.
 	 * @param  newPoint
-	 *               [in] (default <tt>true</tt>) If <tt>true</tt>, the values in <tt>y</tt>
+	 *               [in] (default <tt>true</tt>) If <tt>false</tt>, the values in <tt>y</tt>
 	 *               and <tt>u[]</tt> are assumed to be the same as the last call to
-	 *               a <tt>this->calc_*(y,u,newPoint)</tt> member.  If <tt>false</tt>, the
+	 *               a <tt>this->calc_*(y,u,newPoint)</tt> member.  If <tt>true</tt>, the
 	 *               values in <tt>y</tt> and/or <tt>u[]</tt> are not the same as the
 	 *               last call to a <tt>this->calc_*(y,u,newPoint)</tt> member.
 	 *
@@ -405,9 +405,9 @@ public:
 	 *               auxiliary variables.  It is allowed for <tt>u==NULL</tt> in which
 	 *               interpreted as <tt>u[l-1] == &u0(l)</tt>, for <tt>l=1...this->Nu()</tt>.
 	 * @param  newPoint
-	 *               [in] (default <tt>true</tt>) If <tt>true</tt>, the values in <tt>y</tt>
+	 *               [in] (default <tt>true</tt>) If <tt>false</tt>, the values in <tt>y</tt>
 	 *               and <tt>u[]</tt> are assumed to be the same as the last call to
-	 *               a <tt>this->calc_*(y,u,newPoint)</tt> member.  If <tt>false</tt>, the
+	 *               a <tt>this->calc_*(y,u,newPoint)</tt> member.  If <tt>true</tt>, the
 	 *               values in <tt>y</tt> and/or <tt>u[]</tt> are not the same as the
 	 *               last call to a <tt>this->calc_*(y,u,newPoint)</tt> member.
 	 *
@@ -450,9 +450,9 @@ public:
 	 *               auxiliary variables.  It is allowed for <tt>u==NULL</tt> in which
 	 *               interpreted as <tt>u[l-1] == &u0(l)</tt>, for <tt>l=1...this->Nu()</tt>.
 	 * @param  newPoint
-	 *               [in] (default <tt>true</tt>) If <tt>true</tt>, the values in <tt>y</tt>
+	 *               [in] (default <tt>true</tt>) If <tt>false</tt>, the values in <tt>y</tt>
 	 *               and <tt>u[]</tt> are assumed to be the same as the last call to
-	 *               a <tt>this->calc_*(y,u,newPoint)</tt> member.  If <tt>false</tt>, the
+	 *               a <tt>this->calc_*(y,u,newPoint)</tt> member.  If <tt>true</tt>, the
 	 *               values in <tt>y</tt> and/or <tt>u[]</tt> are not the same as the
 	 *               last call to a <tt>this->calc_*(y,u,newPoint)</tt> member.
 	 *
@@ -491,9 +491,9 @@ public:
 	 *               auxiliary variables.  It is allowed for <tt>u==NULL</tt> in which
 	 *               interpreted as <tt>u[l-1] == &u0(l)</tt>, for <tt>l=1...this->Nu()</tt>.
 	 * @param  newPoint
-	 *               [in] (default <tt>true</tt>) If <tt>true</tt>, the values in <tt>y</tt>
+	 *               [in] (default <tt>true</tt>) If <tt>false</tt>, the values in <tt>y</tt>
 	 *               and <tt>u[]</tt> are assumed to be the same as the last call to
-	 *               a <tt>this->calc_*(y,u,newPoint)</tt> member.  If <tt>false</tt>, the
+	 *               a <tt>this->calc_*(y,u,newPoint)</tt> member.  If <tt>true</tt>, the
 	 *               values in <tt>y</tt> and/or <tt>u[]</tt> are not the same as the
 	 *               last call to a <tt>this->calc_*(y,u,newPoint)</tt> member.
 	 *

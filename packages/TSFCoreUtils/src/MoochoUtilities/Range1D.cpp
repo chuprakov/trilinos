@@ -20,7 +20,7 @@ namespace RangePack {
 
 const Range1D Range1D::Invalid(Range1D::INVALID);
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 
 void Range1D::assert_valid_range(size_t lbound, size_t ubound) const {
 	THROW_EXCEPTION(
@@ -31,6 +31,6 @@ void Range1D::assert_valid_range(size_t lbound, size_t ubound) const {
 		,"Range1D::assert_valid_range(): Error, lbound = "<<lbound<<" > ubound = "<<ubound );
 }
 
-#endif // _DEBUG
+//#endif // _DEBUG
 
 } // end namespace RangePack

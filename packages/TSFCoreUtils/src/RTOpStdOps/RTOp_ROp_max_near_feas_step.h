@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_max_near_feas_step.h
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_max_near_feas_step.h */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #ifndef RTOP_ROP_MAX_NEAR_FEAS_STEP_H
 #define RTOP_ROP_MAX_NEAR_FEAS_STEP_H
@@ -40,37 +39,35 @@ extern "C" {
  * This operator is defined to allow exactly four vector arguments
  * (<tt>num_vecs == 2</tt>) <tt>v[0]</tt>, <tt>v[1]</tt>, and can only handle dense vectors.
  */
-/*@{*/
+/*@{ */
 
+/* */
 /** Reduction target object for this max_step operation.
   */
 struct RTOp_ROp_max_near_feas_step_reduct_obj_t {
-
+  /* */
   RTOp_value_type   alpha_pos;
-
+  /* */
   RTOp_value_type   alpha_neg;
 };
 
-/** Name of this reduction operator class */
-extern const char RTOp_ROp_max_near_feas_step_name[];
-
-/** Virtual function table */
+/* Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_near_feas_step_vtbl;
 
-/** Constructor */
+/* Constructor */
 int RTOp_ROp_max_near_feas_step_construct( RTOp_value_type beta, struct RTOp_RTOp* op );
 
-/** Destructor */
+/* Destructor */
 int RTOp_ROp_max_near_feas_step_destroy( struct RTOp_RTOp* op );
 
-/** Reset beta */
+/* Reset beta */
 int RTOp_ROp_max_near_feas_step_set_beta( RTOp_value_type beta, struct RTOp_RTOp* op );
 
-/** Extract the concrete reduction target object from its pointer (handle). */
+/* Extract the concrete reduction target object from its pointer (handle). */
 struct RTOp_ROp_max_near_feas_step_reduct_obj_t
 RTOp_ROp_max_near_feas_step_val(RTOp_ReductTarget targ_obj);
 
-/*@}*/
+/*@} */
 
 #ifdef __cplusplus
 }

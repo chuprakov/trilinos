@@ -70,6 +70,9 @@ namespace TSFCore {
 template<class Scalar>
 class MultiVector : virtual public LinearOp<Scalar> {
 public:
+
+	/// Inject MultiVector version into this interface as well.
+	using LinearOp<Scalar>::apply;
 	
 	/** @name Provide access to the columns as <tt>Vector</tt> objects */
 	//@{

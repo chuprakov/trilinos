@@ -89,25 +89,13 @@ public:
 	
 	//@}
 
-	/** @name Overridden from Vector */
-	//@{
-
-	///
-	void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
-	///
-	void freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
-	///
-	void getSubVector( const Range1D& rng, RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
-	///
-	void commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
-
-	//@}
-
 	/** @name Overridden from MPIVectorBase */
 	//@{
 
 	///
 	MemMngPack::ref_count_ptr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
+	///
+	void getLocalData( Scalar** values, ptrdiff_t* stride );
 
 	//@}
 
@@ -119,15 +107,8 @@ private:
 	MemMngPack::ref_count_ptr<Epetra_Vector>            epetra_vec_;
 	MemMngPack::ref_count_ptr<const EpetraVectorSpace>  epetra_vec_spc_;
 
-	Index                                               globalDim_;
-	Index                                               localOffset_;
-	Index                                               localSubDim_;
-
 	// ///////////////////////////////////////
 	// Private member functions
-
-	///
-	Range1D validateRange( const Range1D& rng_in ) const;
 
 	// Not defined and not to be called
 	EpetraVector& operator=(const EpetraVector&);

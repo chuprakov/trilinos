@@ -72,6 +72,8 @@ public:
 	void set_d( const Scalar d );
 	///
 	Scalar get_d() const;
+	///
+	void set_y0( const Scalar y01, const Scalar y02 );
 
 	//@}
 

@@ -1,11 +1,10 @@
-/* /////////////////////////////////////////////
-// RTOp_TOp_multiplier_step.h
+/* ///////////////////////////////////////////// */
+/* RTOp_TOp_multiplier_step.h */
 
-//
-// Note: This file was created automatically by 'new_rtop.pl'
-//       on 7/10/2002 at 1:19
-//
-*/
+/* */
+/* Note: This file was created automatically by 'new_rtop.pl' */
+/*       on 7/10/2002 at 1:19 */
+/* */
 
 #ifndef RTOp_TOp_multiplier_step_H
 #define RTOp_TOp_multiplier_step_H
@@ -33,26 +32,23 @@ element-wise transformation:
  * This operator calculates the multiplier steps for
  *  an interior point algorithm
  */
-/*@{*/
+/*@{ */
 
-/** Name of this transformation operator class */
-extern const char RTOp_TOp_multiplier_step_name[];
-
-/** Virtual function table */
+/* Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_multiplier_step_vtbl;
 
-/** Constructor */
+/* Constructor */
 int RTOp_TOp_multiplier_step_construct( RTOp_value_type mu, RTOp_value_type alpha,  struct RTOp_RTOp* op );
 
-/** Destructor */
+/* Destructor */
 int RTOp_TOp_multiplier_step_destroy( struct RTOp_RTOp* op );
 
-/** Initialize the state of the operator object */
+/* Initialize the state of the operator object */
 int RTOp_TOp_multiplier_step_init( RTOp_value_type mu, RTOp_value_type alpha, struct RTOp_RTOp* op );
 
 
 
-/*@}*/
+/*@} */
 
 #ifdef __cplusplus
 }

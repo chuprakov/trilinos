@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_max_step.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_max_step.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #include "RTOp_ROp_max_step.h"
 #include "RTOp_obj_value_vtbl.h"
@@ -59,14 +58,12 @@ static int ROp_max_step_apply_op(
   return 0; /* success! */
 }
 
-/** Name of this reduction operator class */
-const char RTOp_ROp_max_step_name[] = "ROp_max_step";
-
-/** Virtual function table */
+/* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_step_vtbl =
 {
   &RTOp_obj_value_vtbl
   ,&RTOp_obj_value_vtbl
+  ,"ROp_max_step"
   ,RTOp_ROp_max_step_reduct_obj_reinit
   ,ROp_max_step_apply_op
   ,RTOp_reduct_min_value

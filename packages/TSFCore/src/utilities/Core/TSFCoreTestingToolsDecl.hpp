@@ -4,7 +4,6 @@
 #ifndef TSFCORE_TESTING_TOOLS_DECL_HPP
 #define TSFCORE_TESTING_TOOLS_DECL_HPP
 
-#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreTypes.hpp"
 
 namespace TSFCore {

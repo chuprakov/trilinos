@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_num_bounded.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_num_bounded.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #include <assert.h>
 #include <malloc.h>
@@ -21,13 +20,12 @@
 #include "RTOp_obj_value_vtbl.h"
 #include "RTOp_reduct_sum_value.h"
 
-/* Note that the reduction quantity that we are accumulating (num_bounded)
-// is an integral type and really should be delcared as RTOp_index_type.
-// However, the machinary is already there for accumulating an RTOp_value_type
-// reduction object so this implementation is just lazy and uses a double
-// for an integer.  This should not slow things down very much and does
-// not really waste any memory.
-*/
+/* Note that the reduction quantity that we are accumulating (num_bounded) */
+/* is an integral type and really should be delcared as RTOp_index_type. */
+/* However, the machinary is already there for accumulating an RTOp_value_type */
+/* reduction object so this implementation is just lazy and uses a double */
+/* for an integer.  This should not slow things down very much and does */
+/* not really waste any memory. */
 
 /* Implementation functions */
 
@@ -46,9 +44,9 @@ static int RTOp_ROp_num_bounded_apply_op(
   RTOp_index_type        num_bounded = 0;
   register RTOp_index_type k;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 2 )
     return RTOp_ERR_INVALID_NUM_VECS;
   assert( vecs );
@@ -57,9 +55,9 @@ static int RTOp_ROp_num_bounded_apply_op(
   if( vecs[0].sub_dim != vecs[1].sub_dim )                 /* Same sizes */
     return RTOp_ERR_INCOMPATIBLE_VECS;
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
 
   /* inf_bnd */
   inf_bnd = *((RTOp_value_type*)obj_data);
@@ -72,30 +70,28 @@ static int RTOp_ROp_num_bounded_apply_op(
   xu_val         = vecs[1].values;
   xu_val_s       = vecs[1].values_stride;
 
-  /*
-  // Count the number of bounded variables
-  */
+  /* */
+  /* Count the number of bounded variables */
+  /* */
   for( k = 0; k < sub_dim; ++k, xl_val += xl_val_s, xu_val += xu_val_s ) {
     if( *xl_val > -inf_bnd || *xu_val < +inf_bnd )
       ++num_bounded;
   }
 
-  /*
-  // Add this to the result
-  */
+  /* */
+  /* Add this to the result */
+  /* */
   *((RTOp_value_type*)targ_obj) += num_bounded;
 
   return 0; /* success? */
 }
 
-/** Name of this reduction operator class */
-const char RTOp_ROp_num_bounded_name[] = "ROp_num_bounded";
-
-/** Virtual function table pointer */
+/* Virtual function table pointer */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_num_bounded_vtbl =
 {
   &RTOp_obj_value_vtbl  /* use simple scalar value type for object instance data */
   ,&RTOp_obj_value_vtbl /* use simple scalar value type for target object */
+  ,"ROp_num_bounded"
   ,NULL
   ,RTOp_ROp_num_bounded_apply_op
   ,RTOp_reduct_sum_value

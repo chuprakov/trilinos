@@ -90,11 +90,14 @@ template<class T_itfc, class T_impl, class T_PostMod = PostModNothing<T_impl>, c
 class AbstractFactoryStd : public AbstractFactory<T_itfc> {
 public:
 
+	typedef typename MemMngPack::AbstractFactory<T_itfc>::obj_ptr_t   obj_ptr_t;  // RAB: 20030916: G++ 3.2 complains without this
+/*
 #ifdef _MIPS_CXX
 	typedef typename MemMngPack::AbstractFactory<T_itfc>::obj_ptr_t   obj_ptr_t;
     typedef T_PostMod                                                 post_mod_t;
     typedef T_Allocator                                               allocator_t;
 #endif
+*/
 
     ///
     AbstractFactoryStd( const T_PostMod& post_mod = T_PostMod(), const T_Allocator& alloc = T_Allocator() );
@@ -102,7 +105,7 @@ public:
 	/** @name Overriden from AbstractFactory */
 	//@{
 	///
-    obj_ptr_t create() const;
+	obj_ptr_t create() const;
 	//@}
 
 private:
@@ -139,7 +142,7 @@ AbstractFactoryStd<T_itfc,T_impl,T_PostMod,T_Allocator>::AbstractFactoryStd(
 
 template<class T_itfc, class T_impl, class T_PostMod, class T_Allocator>
 inline
-AbstractFactoryStd<T_itfc,T_impl,T_PostMod,T_Allocator>::obj_ptr_t
+typename AbstractFactoryStd<T_itfc,T_impl,T_PostMod,T_Allocator>::obj_ptr_t
 AbstractFactoryStd<T_itfc,T_impl,T_PostMod,T_Allocator>::create() const
 {
 	namespace rcp = MemMngPack;

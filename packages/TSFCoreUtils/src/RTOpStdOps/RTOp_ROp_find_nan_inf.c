@@ -1,18 +1,17 @@
-/* /////////////////////////////////////////////
-// RTOp_ROp_find_nan_inf.c
-//
-// Copyright (C) 2001 Roscoe Ainsworth Bartlett
-//
-// This is free software; you can redistribute it and/or modify it
-// under the terms of the "Artistic License" (see the web site
-//   http://www.opensource.org/licenses/artistic-license.html).
-// This license is spelled out in the file COPYING.
-//
-// This software is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// above mentioned "Artistic License" for more details.
-*/
+/* ///////////////////////////////////////////// */
+/* RTOp_ROp_find_nan_inf.c */
+/* */
+/* Copyright (C) 2001 Roscoe Ainsworth Bartlett */
+/* */
+/* This is free software; you can redistribute it and/or modify it */
+/* under the terms of the "Artistic License" (see the web site */
+/*   http://www.opensource.org/licenses/artistic-license.html). */
+/* This license is spelled out in the file COPYING. */
+/* */
+/* This software is distributed in the hope that it will be useful, */
+/* but WITHOUT ANY WARRANTY; without even the implied warranty of */
+/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
+/* above mentioned "Artistic License" for more details. */
 
 #include <assert.h>
 #include <string.h>
@@ -21,7 +20,7 @@
 #include "RTOp_ROp_find_nan_inf.h"
 #include "RTOp_obj_null_vtbl.h"
 #include "RTOp_obj_value_index_vtbl.h"
-#include "check_nan_inf.hpp"
+#include "check_nan_inf.h"
 #include "RTOp_get_reduct_op.hpp"
 
 /* Implementation functions */
@@ -40,9 +39,9 @@ static int RTOp_ROp_find_nan_inf_apply_op(
   ptrdiff_t              v0_val_s;
   RTOp_index_type        i;
 
-  /*
-  // Validate the input
-  */
+  /* */
+  /* Validate the input */
+  /* */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
@@ -50,9 +49,9 @@ static int RTOp_ROp_find_nan_inf_apply_op(
   assert(targ_obj);
   assert(vecs);
 
-  /*
-  // Get pointers to data
-  */
+  /* */
+  /* Get pointers to data */
+  /* */
 
   /* {value,index} */
   targ = (struct RTOp_value_index_type*)targ_obj;
@@ -63,9 +62,9 @@ static int RTOp_ROp_find_nan_inf_apply_op(
   v0_val         = vecs[0].values;
   v0_val_s       = vecs[0].values_stride;
 
-  /*
-  // Find a NaN or Inf element!
-  */
+  /* */
+  /* Find a NaN or Inf element! */
+  /* */
 
   for( i = global_offset + 1; i <= global_offset + sub_dim; ++i, v0_val += v0_val_s ) {
     if( RTOp_is_nan_inf(*v0_val) && ( targ->index == 0 || i < targ->index ) ) {
@@ -99,14 +98,12 @@ INSERT_GET_REDUCT_OP_FUNCS(
   ,RTOp_obj_value_index_vtbl.extract_state
   ,external_reduct_op,get_reduct_op)
 
-/* Name of this reduction operator class */
-const char RTOp_ROp_find_nan_inf_name[] = "ROp_find_nan_inf";
-
 /* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_find_nan_inf_vtbl =
 {
   &RTOp_obj_null_vtbl         /* use null type for instance data */
   ,&RTOp_obj_value_index_vtbl /* use {value,index} type for target object */
+  ,"ROp_find_nan_inf"
   ,NULL
   ,RTOp_ROp_find_nan_inf_apply_op
   ,reduce_reduct_objs

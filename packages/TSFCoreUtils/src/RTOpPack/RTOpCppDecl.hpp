@@ -16,7 +16,6 @@
 #ifndef RTOPPACK_RTOP_CPP_DECL_HPP
 #define RTOPPACK_RTOP_CPP_DECL_HPP
 
-#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "RTOpPackTypes.hpp"
 #include "RTOp.h"
 
@@ -54,6 +53,15 @@ public:
 
 	///
 	virtual ~RTOpT() {}
+	///
+	/** Return the name (as a null-terminated C-style string) of the operator.
+	 *
+	 * This name is used to differentate an operator subclass from all
+	 * other operator subclasses.  This is an important property
+	 * needed for a client/server and other advanced computing
+	 * configurations.
+	 */
+	virtual const char* op_name() const = 0;
 	///
 	/** Return a function pointer to a function that will create an
 	 * RTOp object.

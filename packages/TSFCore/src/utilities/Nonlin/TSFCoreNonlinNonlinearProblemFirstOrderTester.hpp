@@ -4,7 +4,6 @@
 #ifndef TSFCORE_NONLIN_NONLINEAR_PROBLEM_FIRST_ORDER_TESTER_HPP
 #define TSFCORE_NONLIN_NONLINEAR_PROBLEM_FIRST_ORDER_TESTER_HPP
 
-#include "TSFCore_ConfigDefs.hpp"
 #include "TSFCoreNonlinNonlinearProblemFirstOrderTesterDecl.hpp"
 #include "TSFCoreTestingTools.hpp"
 #include "TSFCoreNonlinNonlinearProblem.hpp"
@@ -26,7 +25,7 @@ NonlinearProblemFirstOrderTester<Scalar>::doTest(
 	namespace mmp = MemMngPack;
 	using std::endl;
 
-	if(o) *o << "Entering NonlinearProblemFirstOrderTester<Scalar>::do_test(prob,...)\n\n";
+	if(o) *o << "Entering NonlinearProblemFirstOrderTester<Scalar>::do_test(prob,...)\n\n" << std::boolalpha;
 
 	bool result, success = true;
 	int l;

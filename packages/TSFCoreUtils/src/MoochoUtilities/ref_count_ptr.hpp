@@ -147,12 +147,9 @@ ref_count_ptr<T>::ref_count_ptr(const ref_count_ptr<T>& r_ptr)
 
 template<class T>
 REF_COUNT_PTR_INLINE
-ref_count_ptr<T>::~ref_count_ptr() {
-	if(node_) {
-		if( node_->deincr_count() == 0 ) {
-			delete node_;
-		}
-	}
+ref_count_ptr<T>::~ref_count_ptr()
+{
+	if(node_ && node_->deincr_count() == 0 ) delete node_;
 }
 
 template<class T>
@@ -240,6 +237,14 @@ void ref_count_ptr<T>::assert_not_null() const {
 
 template<class T>
 inline
+ref_count_ptr<T>::ref_count_ptr( T* p, node_t* node)
+	: ptr_(p), node_(node)
+{
+	if(node_) node_->incr_count();
+}
+
+template<class T>
+inline
 T*& ref_count_ptr<T>::access_ptr()
 {	return ptr_; }
 
@@ -250,7 +255,7 @@ typename ref_count_ptr<T>::node_t*& ref_count_ptr<T>::access_node()
 
 template<class T>
 inline
-const typename ref_count_ptr<T>::node_t* ref_count_ptr<T>::access_node() const
+typename ref_count_ptr<T>::node_t* ref_count_ptr<T>::access_node() const
 {	return node_; }
 
 }	// end namespace MemMngPack
