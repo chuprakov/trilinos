@@ -28,19 +28,27 @@ VectorSpaceSubSpace::VectorSpaceSubSpace( const space_ptr_t& full_space, const R
 
 void VectorSpaceSubSpace::initialize( const space_ptr_t& full_space, const Range1D& rng )
 {
-	const index_type n = full_space.get() ? full_space->dim() : 0;
 #ifdef _DEBUG
 	THROW_EXCEPTION(
-		full_space.get() && !rng.full_range() && rng.ubound() > n, std::out_of_range
+		full_space.get() == NULL, std::invalid_argument
+		,"VectorSpaceSubSpace::initialize(...): Error!" );
+#endif
+	const index_type n = full_space->dim();
+#ifdef _DEBUG
+	THROW_EXCEPTION(
+		!rng.full_range() && rng.ubound() > n, std::out_of_range
 		,"VectorSpaceSubSpace::initialize(...): Error, "
 		"rng = [" << rng.lbound() << "," << rng.ubound() << "] is not in the range "
 		"[1,vec->dim()] = [1," << n << "]" );
 #endif
 	full_space_ = full_space;
-	if( full_space_.get() )
-		rng_ = rng.full_range() ? Range1D(1,n) : rng;
-	else
-		rng_ = Range1D::Invalid;
+	rng_ = rng.full_range() ? Range1D(1,n) : rng;
+}
+
+void VectorSpaceSubSpace::set_uninitialized()
+{
+	full_space_ = MemMngPack::null;
+	rng_        = Range1D::Invalid;
 }
 
 #ifdef _DEBUG
@@ -67,7 +75,10 @@ bool VectorSpaceSubSpace::is_compatible(const VectorSpace& another_space) const
 		*a_space = dynamic_cast<const VectorSpaceSubSpace*>(&another_space);
 	if(!a_space)
 		return false;
-	return this->rng_ == a_space->rng_ && this->full_space_->is_compatible(*a_space->full_space_);
+	return
+		( this->full_space_.get() == NULL && a_space->full_space_.get() == NULL )
+		||
+		( this->rng_ == a_space->rng_ && this->full_space_->is_compatible(*a_space->full_space_) );
 }
 
 // Overridden form VectorSpace
@@ -80,21 +91,27 @@ index_type VectorSpaceSubSpace::dim() const
 VectorSpace::vec_mut_ptr_t VectorSpaceSubSpace::create_member() const
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(
-		new VectorWithOpMutableSubView(
-			full_space_->create_member(), rng_ 
-			) );
+	if( full_space_.get() )
+		return rcp::rcp(
+			new VectorWithOpMutableSubView(
+				full_space_->create_member(), rng_ 
+				) );
+	return rcp::null;
 }
 
 VectorSpace::space_ptr_t VectorSpaceSubSpace::clone() const
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(new VectorSpaceSubSpace( full_space_->clone(), rng_ ));
+	if( full_space_.get() )
+		return rcp::rcp(new VectorSpaceSubSpace( full_space_->clone(), rng_ ));
+	return rcp::rcp(new VectorSpaceSubSpace());
 }
 
 VectorSpace::space_ptr_t VectorSpaceSubSpace::sub_space(const Range1D& rng_in) const
 {
 	namespace rcp = MemMngPack;
+	if( full_space_.get() == NULL && rng_in == Range1D::Invalid )
+		return rcp::rcp(this,false);
 	validate_range(rng_in);
 	const index_type dim         = this->dim();
 	const Range1D    rng         = rng_in.full_range() ? Range1D(1,dim) : rng_in;

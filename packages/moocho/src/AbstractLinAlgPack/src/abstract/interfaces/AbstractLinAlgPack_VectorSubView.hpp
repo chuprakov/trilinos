@@ -40,6 +40,12 @@ class VectorWithOpSubView : virtual public VectorWithOp {
 public:
 
 	///
+	/** Constructs to uninitialized.
+	 *
+	 * Postconditions: see \c set_uninitialized().
+	 */
+	VectorWithOpSubView();
+	///
 	/** Calls <tt>this->initialize()</tt>.
 	 */
 	VectorWithOpSubView( const vec_ptr_t& full_vec, const Range1D& rng );
@@ -49,21 +55,28 @@ public:
 	 * Constructs a view of the vector <tt>this = vec(rng)</tt>.
 	 *
 	 * Preconditions:<ul>
-	 * <li> [<tt>full_vec.get() != NULL && rng.full_range() == false</tt>]
-	 *      <tt>rng.lbound() <= full_vec->dim()</tt> (throw <tt>std::out_of_range</tt>).
+	 * <li> <tt>full_vec.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>rng.full_range() == false</tt>] <tt>rng.lbound() <= full_vec->dim()</tt> (throw <tt>std::out_of_range</tt>).
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> [<tt>full_vec.get() != NULL</tt>]
-	 *      <tt>this->get_ele(i) == full_vec->get_ele(rng.lbound()-1+i)</tt>,
+	 * <li> <tt>this->get_ele(i) == full_vec->get_ele(rng.lbound()-1+i)</tt>,
 	 *      for <tt>i = 1...rng.size()</tt>
 	 * </ul>
 	 *
-	 * @param  full_vec  [in] The original full vector.  It is allowed for <tt>full_vec.get() == NULL</tt>
-	 *                   in which case <tt>this</tt> is uninitialized (i.e. <tt>this->dim() == 0</tt>).
+	 * @param  full_vec  [in] The original full vector.
 	 * @param  rng       [in] The range of elements in <tt>full_vec</tt> that <tt>this</tt> vector will represent.
 	 */
 	void initialize( const vec_ptr_t& full_vec, const Range1D& rng );
+	///
+	/** Set uninitialized()
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->dim() == 0</tt>
+	 * <li> <tt>this->full_vec() = NULL</tt>
+	 * </ul>
+	 */
+	void set_uninitialized();
 	///
 	const VectorWithOp* full_vec() const;
 	///
@@ -108,6 +121,10 @@ private:
 
 // /////////////////////////////////////////////
 // Inline members
+
+inline
+VectorWithOpSubView::VectorWithOpSubView()
+{}
 
 inline
 const VectorWithOp* VectorWithOpSubView::full_vec() const

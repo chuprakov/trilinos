@@ -30,12 +30,22 @@ VectorWithOpSubView::VectorWithOpSubView( const vec_ptr_t& vec, const Range1D& r
 
 void VectorWithOpSubView::initialize( const vec_ptr_t& vec, const Range1D& rng )
 {
+	namespace rcp = MemMngPack;
+#ifdef _DEBUG
+	THROW_EXCEPTION(
+		vec.get() == NULL, std::invalid_argument
+		,"VectorWithOpSubView::initialize(...) : Error!" );
+#endif
 	typedef VectorSpace::space_ptr_t   space_ptr_t;
-	space_.initialize(
-		vec.get() ? space_ptr_t(&vec->space(),false) : space_ptr_t( NULL )
-		,rng
-		);
+	space_.initialize( rcp::rcp(&vec->space(),false), rng );
 	full_vec_ = vec;
+	this->has_changed();
+}
+
+void VectorWithOpSubView::set_uninitialized()
+{
+	space_.set_uninitialized();
+	full_vec_ = MemMngPack::null;
 	this->has_changed();
 }
 

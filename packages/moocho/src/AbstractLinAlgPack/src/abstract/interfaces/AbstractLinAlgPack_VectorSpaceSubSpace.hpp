@@ -37,6 +37,13 @@ class VectorSpaceSubSpace : public virtual VectorSpace {
 public:
 
 	///
+	/** Constructs to uninitialized.
+	 *
+	 * Postconditions: see \c set_uninitialized().
+	 */
+	VectorSpaceSubSpace();
+
+	///
 	/** Calls <tt>this->initialize()</tt>.
 	 */
 	VectorSpaceSubSpace( const space_ptr_t& full_space, const Range1D& rng );
@@ -47,19 +54,29 @@ public:
 	 * Constructs a sub-space of the vector space this = space.sub_space(rng).
 	 *
 	 * Preconditions:<ul>
-	 * <li> [<tt>full_space.get() != NULL && rng.full_range() == false</tt>]
-	 *      <tt>rng.lbound() <= full_space->dim()</tt> (throw <tt>std::out_of_range</tt>).
+	 * <li> <tt>full_space.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>).
+	 * <li> [rng.full_range() == false</tt>] <tt>rng.lbound() <= full_space->dim()</tt> (throw <tt>std::out_of_range</tt>).
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> [<tt>full_vec.get() != NULL && rng.full_range() == false</tt>] <tt>this->dim() == rng.size()</tt>
+	 * <li> [&& rng.full_range() == true</tt>] <tt>this->dim() == full_space->dim()</tt>
+	 * <li> [&& rng.full_range() == false</tt>] <tt>this->dim() == rng.size()</tt>
 	 * </ul>
 	 *
-	 * @param  full_space  [in] The original full vector space.  It is allowed for <tt>full_space.get()==NULL</tt>
-	 *                     in which case <tt>this</tt> is uninitialized (i.e. <tt>this->dim() == 0</tt>).
+	 * @param  full_space  [in] The original full vector space (must be <tt>full_space.get() != NULL</tt>).
 	 * @param  rng         [in] The range of element that <tt>this</tt> vector sub-space will represent.
 	 */
 	void initialize( const space_ptr_t& full_space, const Range1D& rng );
+
+	///
+	/** Set uninitilized.
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->dim() == 0</tt>
+	 * <li> <tt>this->create_member().get() == NULL</tt>
+	 * </ul>
+	 */
+	void set_uninitialized();
 
 	///
 	const space_ptr_t& full_space() const;
@@ -101,6 +118,11 @@ private:
 
 // //////////////////////////////
 // Inline members
+
+inline
+VectorSpaceSubSpace::VectorSpaceSubSpace()
+	: rng_(Range1D::Invalid)
+{}
 
 inline
 const VectorSpace::space_ptr_t& VectorSpaceSubSpace::full_space() const

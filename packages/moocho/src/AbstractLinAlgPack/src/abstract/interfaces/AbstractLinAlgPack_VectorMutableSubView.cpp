@@ -32,6 +32,13 @@ void VectorWithOpMutableSubView::initialize( const vec_mut_ptr_t& vec, const Ran
 	this->has_changed();
 }
 
+void VectorWithOpMutableSubView::set_uninitialized()
+{
+	VectorWithOpSubView::set_uninitialized();
+	full_vec_ = MemMngPack::null;
+	this->has_changed();
+}
+
 // Overriddend form VectorWithOp
 
 VectorWithOp::vec_ptr_t VectorWithOpMutableSubView::sub_view( const Range1D& rng ) const

@@ -42,6 +42,13 @@ class VectorWithOpMutableSubView
 public:
 
 	///
+	/** Constructs to uninitialized.
+	 *
+	 * Postconditions: see \c set_uninitialized().
+	 */
+	VectorWithOpMutableSubView();
+
+	///
 	/** Calls <tt>this->initialize()</tt>.
 	 */
 	VectorWithOpMutableSubView( const vec_mut_ptr_t& full_vec, const Range1D& rng );
@@ -56,6 +63,16 @@ public:
 	 * @param  rng       [in] The range of elements in <tt>full_vec</tt> that <tt>this</tt> vector will represent.
 	 */
 	void initialize( const vec_mut_ptr_t& vec, const Range1D& rng );
+
+	///
+	/** Set uninitialized()
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->dim() == 0</tt>
+	 * <li> <tt>this->full_vec() = NULL</tt>
+	 * </ul>
+	 */
+	void set_uninitialized();
 
 	/** @name Overridden from VectorWithOp */
 	//@{
@@ -93,6 +110,13 @@ private:
 	VectorWithOpMutableSubView& operator=(const VectorWithOpMutableSubView&);
 
 }; // end class VectorWithOpMutableSubView
+
+// //////////////////////////////////
+// Inline members
+
+inline
+VectorWithOpMutableSubView::VectorWithOpMutableSubView()
+{}
 
 } // end namespace AbstractLinAlgPack
 
