@@ -29,7 +29,7 @@
 #include "ExampleNLPFirstOrderInfoRun.h"
 #include "ExampleNLPFirstOrderInfo.h"
 #include "ExampleBasisSystem.h"
-#include "ExampleVarReductOrthog_Strategy.h"
+#include "ExampleNLPFirstOrderDirect/ExampleVarReductOrthog_Strategy.h"
 #include "ReducedSpaceSQPPack/Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.h"
 #include "GeneralIterationPack/include/AlgorithmTrack.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
