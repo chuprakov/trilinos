@@ -77,9 +77,9 @@ public:
 	/// Overridden to check the concrete type of Gc
 	void set_Gc(MatrixWithOp* Gc);
 	///
-	const NLPFirstOrderInfo::mat_space_ptr_t& space_Gc() const;
+	const NLPFirstOrderInfo::mat_space_ptr_t space_Gc() const;
 	/// Return NULL
-	const NLPFirstOrderInfo::mat_space_ptr_t& space_Gh() const;
+	const NLPFirstOrderInfo::mat_space_ptr_t space_Gh() const;
 
 	//@}
 

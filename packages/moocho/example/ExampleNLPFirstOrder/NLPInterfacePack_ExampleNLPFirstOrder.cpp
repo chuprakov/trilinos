@@ -49,13 +49,13 @@ void ExampleNLPFirstOrderInfo::set_Gc(MatrixWithOp* Gc)
 	NLPFirstOrderInfo::set_Gc(Gc);
 }
 
-const NLPFirstOrderInfo::mat_space_ptr_t&
+const NLPFirstOrderInfo::mat_space_ptr_t
 ExampleNLPFirstOrderInfo::space_Gc() const
 {
 	return space_Gc_;
 }
 
-const NLPFirstOrderInfo::mat_space_ptr_t&
+const NLPFirstOrderInfo::mat_space_ptr_t
 ExampleNLPFirstOrderInfo::space_Gh() const
 {
 	return ExampleNLPFirstOrderDirect::space_Gh();

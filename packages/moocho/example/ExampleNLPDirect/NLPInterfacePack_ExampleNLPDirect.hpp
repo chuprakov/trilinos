@@ -163,7 +163,7 @@ public:
 	///
 	Range1D var_indep() const;
 	///
-	const mat_space_ptr_t& space_D() const;
+	const mat_space_ptr_t space_D() const;
 	///
 	void calc_point(
 		const VectorWithOp     &x

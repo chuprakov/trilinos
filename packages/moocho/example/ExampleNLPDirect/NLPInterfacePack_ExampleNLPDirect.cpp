@@ -259,7 +259,7 @@ Range1D ExampleNLPFirstOrderDirect::var_indep() const
 	return var_indep_;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t&
+const NLPFirstOrderDirect::mat_space_ptr_t
 ExampleNLPFirstOrderDirect::space_D() const
 {
 	return space_D_;
