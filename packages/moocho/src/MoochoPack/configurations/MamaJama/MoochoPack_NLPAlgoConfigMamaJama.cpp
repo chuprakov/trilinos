@@ -386,7 +386,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	else
 		cov_.max_dof_quasi_newton_dense_ = uov_.max_dof_quasi_newton_dense_;
 
-	// Decide what type of quasi newton update to use
+	// Decide what type of quasi-newton update to use
 	switch( uov_.quasi_newton_ ) {
 		case QN_AUTO: {
 			if(trase_out)
@@ -421,7 +421,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			assert(0); // Invalid option!
 	}
 
-	// Decide what type of range space matrix to use
+	// Decide what type of range-space matrix to use
 	if( uov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_AUTO ) {
 		const bool use_orth = dof*dof*r	<= cov_.max_dof_quasi_newton_dense_*cov_.max_dof_quasi_newton_dense_;
 		if(trase_out)
@@ -438,6 +438,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			( use_orth
 			  ? RANGE_SPACE_MATRIX_ORTHOGONAL
 			  : RANGE_SPACE_MATRIX_COORDINATE );
+	}
+
+	if( uov_.qp_solver_type_ == QP_AUTO && nb == 0 && mI == 0 ) {
+		cov_.qp_solver_type_ = QP_AUTO;
 	}
 
 	// ToDo: Sort out the rest of the options!
