@@ -1795,11 +1795,11 @@ b) Locally replicated multi-vectors
 
 \end{center}
 \caption{
-\label{tsfcore:fig:SPMD_Dist_MVs_P4}
-Carton of disturbed-memory and locally replicated multi-vectors which
-are used in the example compact LBFGS sub-ANA when run in SPMD mode on
+\label{tsfcore:fig:SPMD_MVs_P4}
+Carton of disturbed and locally replicated multi-vectors which are
+used in the example compact LBFGS sub-ANA when run in SPMD mode on
 four processors.  The process boundaries are shown as dotted lines.
-The numbers for rows and columns of each multi-vector are shown.}
+The numbers for rows and columns of each multi-vector are also shown.}
 \end{figure}
 \esinglespace}
 
@@ -1808,26 +1808,26 @@ the ANA runs in duplicate and in parallel on each processor.  Here,
 the elements for the multi-vector objects {}\texttt{S\_store} (and
 view {}\texttt{S}) , {}\texttt{Y\_store} (and view {}\texttt{Y}),
 {}\texttt{V} and {}\texttt{U} are distributed across many different
-processors as Figure {}\ref{tsfcore:fig:SPMD_Dist_MVs_P4} shows.  The
+processors as Figure {}\ref{tsfcore:fig:SPMD_MVs_P4} shows.  The
 case shown\footnote{The aspect ratio of the number of rows to number
-of columns in Figure {}\ref{tsfcore:fig:SPMD_Dist_MVs_P4} is
+of columns in Figure {}\ref{tsfcore:fig:SPMD_MVs_P4} is
 exaggerated in that in a realistic case the number of rows usually
 numbers in the tens to hundreds of thousands while the number of
 columns usually numbers in only the ten.  This was done for
 illustrative purposes.  If the true aspect ratio where shown in Figure
-{}\ref{tsfcore:fig:SPMD_Dist_MVs_P4} then all of these multi-vectors
+{}\ref{tsfcore:fig:SPMD_MVs_P4} then all of these multi-vectors
 would appear to be just vertical lines and would not show a distiction
 between different multi-vectors.} in Figure
-{}\ref{tsfcore:fig:SPMD_Dist_MVs_P4} is for the situation where $p <
+{}\ref{tsfcore:fig:SPMD_MVs_P4} is for the situation where $p <
 m$.  In SPMD mode, all of the elements in the multi-vector objects
 {}\texttt{Q\_ss}, {}\texttt{Q\_sy}, {}\texttt{Q\_yy}, {}\texttt{T\_1},
 {}\texttt{T\_2}, {}\texttt{T\_3} and {}\texttt{T\_4} are stored
 locally and in duplicate (i.e.~locally replicated) on each processor
 as shown\footnote{The same unrealistic aspect ratio shown in Figure
-{}\ref{tsfcore:fig:SPMD_Locally_Replicated_MVs_P4} is the same as
-shown in Figure {}\ref{tsfcore:fig:SPMD_Dist_MVs_P4}, again for
+{}\ref{tsfcore:fig:SPMD_MVs_P4} is the same as
+shown in Figure {}\ref{tsfcore:fig:SPMD_MVs_P4}.a, again for
 illustrative purposes.} in Figure
-{}\ref{tsfcore:fig:SPMD_Locally_Replicated_MVs_P4}.  Now let us
+{}\ref{tsfcore:fig:SPMD_MVs_P4}.b.  Now let us
 consider the performance of this set of operations in this context.
 Note that there are principally three different types of operations
 with multi-vectors that are performed through the
@@ -1893,14 +1893,32 @@ matrix-matrix products of small local
   Q_yy.apply(NOTRANS,*T_2,T_4->get(),g,1.0);
 \end{verbatim}}
 
-{}\noindent{}Note that these types of local computations classify as
-serial overhead and therefore it is critical that the cost of these
-operations be kept to a minimum or they could cripple the parallel
-scalability of the overall ANA.  Each of these four matrix-matrix
-multiplications involve only one virtual function call and the
-matrix-matrix multiplication itself can be performed with level-3
-BLAS, achieving the fastest possible flop rate attainable on most
-processors {}\cite{ref:demmel_1997}.
+{\bsinglespace
+\begin{figure}
+\begin{center}
+%\fbox{
+\includegraphics*[angle=0,scale=0.60]{SPMD_Local_Matrix_Matrix_Prod_P4}
+%}%fbox
+\end{center}
+\caption{
+\label{tsfcore:fig:SPMD_Local_Matrix_Matrix_Prod_P4}
+Carton of local matrix-matrix product $T_3 = Q_{ss} T_1$ involving
+locally replicated multi-vectors run in SPMD mode on four processors.
+In SPMD mode this operation involves no processor-to-processor
+communciation at all.}
+\end{figure}
+\esinglespace}
+
+{}\noindent{}where the operation $T_3 = Q_{ss} T_1$ is shown, for
+example, in Figure
+{}\ref{tsfcore:fig:SPMD_Local_Matrix_Matrix_Prod_P4}.  Note that these
+types of local computations classify as serial overhead and therefore
+it is critical that the cost of these operations be kept to a minimum
+or they could cripple the parallel scalability of the overall ANA.
+Each of these four matrix-matrix multiplications involve only one
+virtual function call and the matrix-matrix multiplication itself can
+be performed with level-3 BLAS, achieving the fastest possible flop
+rate attainable on most processors {}\cite{ref:demmel_1997}.
 
 The third type of operation performed by
 {}\texttt{\textit{Multi\-Vector\-::apply(\-...)}} is local/parallel
@@ -1911,12 +1929,35 @@ matrix-matrix multiplications performed in the lines
   Y->apply(NOTRANS,*T_4,U,alpha*g,1.0);
 \end{verbatim}}
 
-{}\noindent{}This type of operation involves fully scalable work with
-no communication or synchronization required.  Here, a
-vector-by-vector implementation will not be a bottleneck from a
-standpoint of global communication.  However, this operation will
-utilize level-3 BLAS and yield near-optimal local cache performance
-where a vector-by-vector implementation would not.
+{\bsinglespace
+\begin{figure}
+\begin{center}
+%\fbox{
+\includegraphics*[angle=0,scale=0.60]{SPMD_Dist_Local_Matrix_Matrix_Prod_P4}
+%}%fbox
+\end{center}
+\caption{
+\label{tsfcore:fig:SPMD_Dist_Local_Matrix_Matrix_Prod_P4}
+Carton of distributed-local matrix-matrix product $U = S T_3$
+involving both distributed and locally multi-vectors run in SPMD mode
+on four processors.  To perform this operation, the local elements in
+the distributed multi-vector $S$ are multiplied with the locally
+replicated multi-vector $T_3$ and the result of the matrix-matrix
+product are set to the local elements of the distributed multi-vector
+$U$.  In SPMD mode this operation requires no processor-to-processor
+communication at all.}
+\end{figure}
+\esinglespace}
+
+{}\noindent{}where the operation $U = S T_3$ is shown, for
+example, in Figure
+{}\ref{tsfcore:fig:SPMD_Dist_Local_Matrix_Matrix_Prod_P4}.  This type of
+operation involves fully scalable work with no communication or
+synchronization required.  Here, a vector-by-vector implementation
+will not be a bottleneck from a standpoint of global communication.
+However, this operation will utilize level-3 BLAS and yield
+near-optimal local cache performance where a vector-by-vector
+implementation would not.
 
 The last type of operation performed in the above
 {}\texttt{LBFGS\_solve(...)}  function does not involve
