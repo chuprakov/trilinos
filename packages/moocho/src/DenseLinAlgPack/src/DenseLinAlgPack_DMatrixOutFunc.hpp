@@ -55,7 +55,7 @@ namespace LinAlgPack {
   *
   * If any of the output operations fails then a #std::ios_base::failure# exception is thrown. 
   */
-std::ostream& output(std::ostream& os, const GenMatrixSlice& vs, LinAlgPackIO::fmtflags extra_flags);
+std::ostream& output(std::ostream& os, const GenMatrixSlice& gms, LinAlgPackIO::fmtflags extra_flags);
 
 }	// end namespace LinAlgPack
 
