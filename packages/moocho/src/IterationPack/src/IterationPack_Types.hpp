@@ -50,6 +50,7 @@ class Algorithm;
 class AlgorithmStep;
 class AlgorithmState;
 class AlgorithmTrack;
+class AlgorithmTrackComposite;
 template<class T> class CastIQMember;
 
 }	// end namespace GeneralIterationPack
