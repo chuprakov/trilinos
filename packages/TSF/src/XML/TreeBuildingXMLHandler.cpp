@@ -20,7 +20,7 @@ void TreeBuildingXMLHandler::characters(const string& chars,
 			if (StrUtils::isWhite(chars)) return;
 			if (!current_.isEmpty())
 				{
-					current_.addContent(chars);
+					current_.addContent(StrUtils::fixUnprintableCharacters(chars));
 				}
 			else
 				{

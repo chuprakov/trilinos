@@ -71,6 +71,9 @@ namespace TSF
       /** returns true if a string consists entirely of whitespace */
       static bool isWhite(const string& str);
 
+      /** returns true if a string consists entirely of whitespace */
+      static string fixUnprintableCharacters(const string& str);
+
       /** returns true if a string has any non-whitespace */
       static bool isNonWhite(const string& str) {return !isWhite(str);}
 

@@ -264,12 +264,33 @@ int StrUtils::find(const string& str, const string& sub)
 
 bool StrUtils::isWhite(const string& str)
 {
-// look for non-white characters
-  int nWhite = (int) strspn(str.c_str(), " \n\t\r");
-  //int n = (int) strcspn(str.c_str(), " \n\t\r");
-  //if (n==0) return true;
-  if (nWhite < str.length()) return false;
-  return true;
+	int nWhite = 0;
+	for (int i=0; i<str.length(); i++)
+		{
+			unsigned char c = str[i];
+			if (c >= 33 || c <= 126)
+				{
+					return false;
+				}
+		}
+	return true;
+}
+
+string StrUtils::fixUnprintableCharacters(const string& str)
+{
+	string rtn = str;
+	for (int i=0; i<rtn.length(); i++)
+		{
+			unsigned char c = rtn[i];
+			if (c < 33 || c > 126)
+				{
+					if (c != '\t' && c != '\n'&& c != '\r' && c != '\f' && c != ' ')
+						{
+							rtn[i] = ' ';
+						}
+				}
+		}
+	return rtn;
 }
 
 string StrUtils::between(const string& str, const string& begin,
