@@ -55,7 +55,7 @@ static int get_op_type_num_entries(
   assert( num_indexes );
   assert( num_chars );
   *num_values  = 0;
-  *num_indexes = 2; /* l and u */
+  *num_indexes = 2; /* l, u */
   *num_chars   = 0;
   return 0;
 }
@@ -240,7 +240,7 @@ static int targ_extract_state(
   register RTOp_index_type k;
   assert(obj_data);
   /* Get the range of the sub-vector */
-    rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
+  rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
   sub_dim = rng->u - rng->l + 1;
   /* Get the target sub-vector */
   assert( targ_obj  );
@@ -367,7 +367,7 @@ static int RTOp_ROp_get_sub_vector_apply_op(
   /* */
 
   if( rng->u < global_offset + 1 || global_offset + sub_dim < rng->l )
-    return 0; /* The sub-vector that we are looking for is not in this vector chunk! */
+    return 0; /* None of the sub-vector that we are looking for is not in this vector chunk! */
 
   i_l = ( rng->l <= ( global_offset + 1 )       ? 1       : rng->l - global_offset  );
   i_u = ( rng->u >= ( global_offset + sub_dim ) ? sub_dim : rng->u - global_offset  );
@@ -375,15 +375,8 @@ static int RTOp_ROp_get_sub_vector_apply_op(
   for( i = i_l; i <= i_u; ++i )
     ((RTOp_value_type*)sub_vec_targ->values)[i-1+(global_offset-(rng->l-1))] = v0_val[(i-1)*v0_val_s];
 
-/*
-  i_l = ( rng->l <= ( global_offset + 1 )       ? rng->l - global_offset + 1       : rng->l );
-  i_u = ( rng->u >= ( global_offset + sub_dim ) ? rng->u - global_offset + sub_dim : rng->u );
-  for( i = i_l; i <= i_u; ++i )
-    ((RTOp_value_type*)sub_vec_targ->values)[ i - rng->l ]
-      = v0_val[ (i - global_offset - 1) * v0_val_s ];
-*/
-
   return 0; /* success? */
+
 }
 
 static int reduce_reduct_objs(
