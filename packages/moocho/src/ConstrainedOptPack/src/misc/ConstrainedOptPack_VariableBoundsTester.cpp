@@ -1,4 +1,4 @@
-// ///////////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////////
 // VariableBoundsTester.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -14,40 +14,35 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/include/VariableBoundsTester.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "SparseLinAlgPack/test/CompareDenseVectors.h"
-#include "SparseLinAlgPack/include/sparse_bounds_diff.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-
-namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Vp_StMtV;
-}
+//#include "SparseLinAlgPack/include/SpVectorClass.h"
+//#include "SparseLinAlgPack/include/SpVectorOp.h"
+//#include "SparseLinAlgPack/test/CompareDenseVectors.h"
+//#include "SparseLinAlgPack/include/sparse_bounds_diff.h"
+//#include "LinAlgPack/include/VectorClass.h"
+//#include "LinAlgPack/include/VectorOp.h"
+//#include "LinAlgPack/include/VectorOut.h"
+//#include "LinAlgPack/include/LinAlgOpPack.h"
 
 namespace ConstrainedOptimizationPack {
 
 // public
 
 VariableBoundsTester::VariableBoundsTester(
-		  value_type	warning_tol
-		, value_type	error_tol
-		)
-	:
-		warning_tol_(warning_tol)
-		,error_tol_(error_tol)
+	value_type   warning_tol
+	,value_type  error_tol
+	)
+	:warning_tol_(warning_tol)
+	,error_tol_(error_tol)
 {}
 
 bool VariableBoundsTester::check_in_bounds(
-	  std::ostream* out, bool print_all_warnings, bool print_vectors
-	, const SpVectorSlice& xL, const char xL_name[]
-	, const SpVectorSlice& xU, const char xU_name[]
-	, const VectorSlice& x, const char x_name[]
+	std::ostream* out, bool print_all_warnings, bool print_vectors
+	,const VectorWithOp& xL, const char xL_name[]
+	,const VectorWithOp& xU, const char xU_name[]
+	,const VectorWithOp& x,  const char x_name[]
 	)
 {
+/*
 	using std::endl;
 	using BLAS_Cpp::trans_not;
 	using BLAS_Cpp::no_trans;
@@ -112,9 +107,10 @@ bool VariableBoundsTester::check_in_bounds(
 		*out
 			<< "\n*** Congradulations, the variables are within the bounds by the specified"
 			<< "\n*** error tolerances!\n";
+*/
+	assert(0); // Todo: use max_near_feas_step() to validate that vector is within bounds.
 
 	return true;	// If we get here then success
-
 }
 
 }	// end namespace ConstrainedOptimizationPack

@@ -1,4 +1,4 @@
-// ///////////////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////
 // VariableBoundsTester.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -24,9 +24,9 @@ namespace ConstrainedOptimizationPack {
 ///
 /** Tests that a set of variables are within their bounds.
   *
-  \begin{verbatim}
+  \verbatim
     xL <= x <= xU
-  \end{verbatim}
+  \endverbatim
   *
   * The relative error for each comparison is
   * rel_err(i) = (xL(i)-x(i))/(1+||x||inf)
@@ -54,25 +54,28 @@ public:
 
 	///
 	/** Check that the variables are within bounds.
-	  *
-	  *	@param	print_all_warnings
-	  *						[I]	If true, then all errors greater than warning_tol will
-	  *							be printed.
-	  *	@param	xL			[I]	Sparse lower bound vector (xL.size()==x.size())
-	  *	@param	xL_name		[I]	The name of the vector xL (null terminated string).
-	  *	@param	xU			[I]	Sparse upper bound vector (xU.size()==x.size())
-	  *	@param	xU_name		[I]	The name of the vector xU (null terminated string).
-	  *	@param	x 			[I]	Variable to test that it is in bounds.
-	  *	@param	x_name		[I]	The name of the vector x (null terminated string).
-	  *
-	  * @return #true# if all of the errors are greater than the error tolerances
-	  * 	, otherwise it returns #false#
-	  */
+	 *
+	 * @param  print_all_warnings
+	 *              [in] If true, then all errors greater than warning_tol will
+	 *              be printed.
+	 * @param  xL   [in] Sparse lower bound vector (xL.size()==x.size())
+	 * @param  xL_name
+	 *              [in] The name of the vector xL (null terminated string).
+	 * @param  xU   [in] Sparse upper bound vector (xU.size()==x.size())
+	 * @param  xU_name
+	 *              [in] The name of the vector xU (null terminated string).
+	 * @param  x    [in] Variable to test that it is in bounds.
+	 * @param  x_name
+	 *              [in] The name of the vector x (null terminated string).
+	 *
+	 * @return \c true if all of the errors are greater than the error tolerances,
+	 * otherwise it returns \c false
+	 */
 	virtual bool check_in_bounds(
-		  std::ostream* out, bool print_all_warnings, bool print_vectors
-		, const SpVectorSlice& xL, const char xL_name[]
-		, const SpVectorSlice& xU, const char xU_name[]
-		, const VectorSlice& x, const char x_name[]
+		std::ostream* out, bool print_all_warnings, bool print_vectors
+		,const VectorWithOp& xL, const char xL_name[]
+		,const VectorWithOp& xU, const char xU_name[]
+		,const VectorWithOp& x,  const char x_name[]
 		);
 
 };	// end class VariableBoundsTester
