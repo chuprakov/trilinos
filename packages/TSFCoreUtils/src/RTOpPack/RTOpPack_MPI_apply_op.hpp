@@ -244,8 +244,7 @@ void RTOpPack::extract_reduct_obj_ext_state(
 		num_chars_off   = num_indexes_off + sizeof(primitive_value_type),
 		values_off      = num_chars_off   + sizeof(primitive_value_type),
 		indexes_off     = values_off      + num_values  * sizeof(primitive_value_type),
-		chars_off       = indexes_off     + num_indexes * sizeof(index_type),
-		size            = chars_off       + num_chars   * sizeof(char_type);
+		chars_off       = indexes_off     + num_indexes * sizeof(index_type);
 	*reinterpret_cast<primitive_value_type*>(reduct_obj_ext + num_values_off)  = static_cast<const primitive_value_type>(num_values);
 	*reinterpret_cast<primitive_value_type*>(reduct_obj_ext + num_indexes_off) = static_cast<const primitive_value_type>(num_indexes);
 	*reinterpret_cast<primitive_value_type*>(reduct_obj_ext + num_chars_off)   = static_cast<const primitive_value_type>(num_chars);

@@ -86,11 +86,11 @@ void MPIVectorSpaceBase<Scalar>::updateState()
 {
 	const Index localSubDim = this->localSubDim(); 
 	if( localSubDim > 0 ) {
+#ifdef RTOp_USE_MPI
 		const MPI_Comm mpiComm = this->mpiComm();
 		const Index globalDim = this->dim(); 
 		int numProc = 1;
 		int procRank = 0;
-#ifdef RTOp_USE_MPI
 		if( mpiComm != MPI_COMM_NULL ) {
 			MPI_Comm_size( mpiComm, &numProc );
 			MPI_Comm_rank( mpiComm, &procRank );

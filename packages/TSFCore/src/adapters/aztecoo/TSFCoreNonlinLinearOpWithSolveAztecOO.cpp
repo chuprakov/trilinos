@@ -351,7 +351,7 @@ void LinearOpWithSolveAztecOO::solve(
 			<< "\nSolving the linear system (M_trans = "
 			<< (M_trans==NOTRANS ? "NOTRANS" : "TRANS") << ") with AztecOO ...\n";
 	timer.start(true);
-	int aztecStatus = solver_used.Iterate( maxIter(), relTol() );
+	solver_used.Iterate( maxIter(), relTol() ); // We ignore the returned status (see below)
 	timer.stop();
 	if(get_trace_out().get())
 		trace_out()

@@ -345,7 +345,6 @@ const struct RTOp_RTOp_vtbl_t RTOp_TOp_set_sub_vector_vtbl =
 int RTOp_TOp_set_sub_vector_construct(
   const struct RTOp_SparseSubVector* sub_vec, struct RTOp_RTOp* op )
 {
-  struct RTOp_TOp_set_sub_vector_state_t *state = NULL;
 #ifdef RTOp_DEBUG
   assert(sub_vec);
   assert(op);

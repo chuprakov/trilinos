@@ -126,8 +126,6 @@ int RTOp_apply_op_mpi(
     ,reduct_objs
     );
 
-ERR_LABEL:
-
   if(local_vecs)      free(local_vecs);
   if(local_targ_vecs) free(local_targ_vecs);
 

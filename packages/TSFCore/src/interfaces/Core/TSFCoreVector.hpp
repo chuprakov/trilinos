@@ -68,7 +68,7 @@ void Vector<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::SubVectorT<S
   Teuchos::RefCountPtr<RTOpPack::ReductTarget>
     reduct_obj = get_sub_vector_op.reduct_obj_create(); // This is really of type RTOpPack::SubVectorT<Scalar>!
 	// Perform the reduction (get the sub-vector requested)
-	const size_t  num_vecs = 1;
+	const int  num_vecs = 1;
 	const Vector* sub_vecs[num_vecs] = { this };
 	applyOp(
 		get_sub_vector_op,num_vecs,sub_vecs,0,NULL,&*reduct_obj

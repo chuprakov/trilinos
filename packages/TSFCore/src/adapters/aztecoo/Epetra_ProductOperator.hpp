@@ -403,7 +403,7 @@ inline
 void ProductOperator::validateIndex(int k) const
 {
 	TEST_FOR_EXCEPTION(
-		k < 0 || Op_.size()-1 < k, std::logic_error
+		k < 0 || static_cast<int>(Op_.size())-1 < k, std::logic_error
 		,"Epetra::ProductOperator: Error, k = "<<k<< " is not in the range [0,"<<Op_.size()-1<<"]!"
 		);
 }

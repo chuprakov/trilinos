@@ -47,9 +47,9 @@ SerialVectorBase<Scalar>::SerialVectorBase()
 template<class Scalar>
 void SerialVectorBase<Scalar>::applyOp(
 	const RTOpPack::RTOpT<Scalar>   &op
-	,const size_t                   num_vecs
+	,const int                   num_vecs
 	,const Vector<Scalar>*          vecs[]
-	,const size_t                   num_targ_vecs
+	,const int                   num_targ_vecs
 	,Vector<Scalar>*                targ_vecs[]
 	,RTOpPack::ReductTarget         *reduct_obj
 	,const Index                    first_ele

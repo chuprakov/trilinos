@@ -30,6 +30,7 @@
 
 #include <assert.h>
 #include <malloc.h>
+#include <math.h>
 
 #define max(a,b) ( (a) > (b) ? (a) : (b) )
 #define min(a,b) ( (a) < (b) ? (a) : (b) )
@@ -80,7 +81,6 @@ static int targ_obj_create(
   )
 {
   const int mem_size = sizeof(struct RTOp_ROp_max_inequ_viol_reduct_obj_t);
-  struct RTOp_ROp_max_inequ_viol_reduct_obj_t *targ = NULL;
   *targ_obj = malloc( mem_size );
   return targ_obj_reinit(vtbl,obj_data,*targ_obj);
 }

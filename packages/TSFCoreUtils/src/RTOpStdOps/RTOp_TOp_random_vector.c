@@ -191,7 +191,6 @@ const struct RTOp_RTOp_vtbl_t RTOp_TOp_random_vector_vtbl =
 int RTOp_TOp_random_vector_construct( RTOp_value_type lbnd, RTOp_value_type ubnd
   , struct RTOp_RTOp* op )
 {
-  const int mem_size = sizeof(struct RTOp_TOp_random_vector_bnd_t);
   struct RTOp_TOp_random_vector_bnd_t *bnd = NULL;
   op->vtbl      = &RTOp_TOp_random_vector_vtbl;
   op->vtbl->obj_data_vtbl->obj_create(NULL,NULL,&op->obj_data);

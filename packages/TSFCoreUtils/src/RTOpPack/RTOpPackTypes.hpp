@@ -129,8 +129,8 @@ public:
 private:
 	RTOp_index_type     globalOffset_;
 	RTOp_index_type     subDim_;
-	ptrdiff_t           stride_;
 	const Scalar        *values_;
+	ptrdiff_t           stride_;
 };
 
 ///

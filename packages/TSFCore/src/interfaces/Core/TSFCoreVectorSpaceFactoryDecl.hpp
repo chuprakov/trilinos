@@ -51,6 +51,9 @@ template<class Scalar>
 class VectorSpaceFactory {
 public:
 
+  ///
+  virtual ~VectorSpaceFactory() {}
+
 	/** @name Pure virtual functions that must be overridden */
 	//@{
 

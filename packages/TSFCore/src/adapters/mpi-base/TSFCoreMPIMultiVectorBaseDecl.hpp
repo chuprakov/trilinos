@@ -158,9 +158,9 @@ public:
 	///
 	void applyOp(
 		const RTOpPack::RTOpT<Scalar>   &primary_op
-		,const size_t                   num_multi_vecs
+		,const int                   num_multi_vecs
 		,const MultiVector<Scalar>*     multi_vecs[]
-		,const size_t                   num_targ_multi_vecs
+		,const int                   num_targ_multi_vecs
 		,MultiVector<Scalar>*           targ_multi_vecs[]
 		,RTOpPack::ReductTarget*        reduct_objs[]
 		,const Index                    primary_first_ele

@@ -90,8 +90,7 @@ int RTOp_extract_reduct_obj_ext_state(
 		num_chars_off   = num_indexes_off + sizeof(RTOp_value_type),
 		values_off      = num_chars_off   + sizeof(RTOp_value_type),
 		indexes_off     = values_off      + num_values  * sizeof(RTOp_value_type),
-		chars_off       = indexes_off     + num_indexes * sizeof(RTOp_index_type),
-		size            = chars_off       + num_chars   * sizeof(RTOp_char_type);
+		chars_off       = indexes_off     + num_indexes * sizeof(RTOp_index_type);
 	*(RTOp_value_type*)((char*)reduct_obj_ext + num_values_off)  = num_values;
 	*(RTOp_value_type*)((char*)reduct_obj_ext + num_indexes_off) = num_indexes;
 	*(RTOp_value_type*)((char*)reduct_obj_ext + num_chars_off)   = num_chars;
@@ -157,7 +156,7 @@ int RTOp_MPI_apply_op(
 	int                         kc;
 #ifdef RTOP_TO_MPI_SHOW_TIMES
     const double secs_per_tick = ((double)1.0) / CLOCKS_PER_SEC;
-	clock_t ticks_start_start, ticks_start, ticks_end, ticks_total = 0;
+	clock_t ticks_start_start, ticks_start=0, ticks_end = 0;
 #endif
 
 	if( comm == MPI_COMM_NULL ) {

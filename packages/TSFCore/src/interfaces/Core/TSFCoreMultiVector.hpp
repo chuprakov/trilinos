@@ -88,7 +88,7 @@ MultiVector<Scalar>::subView( const Range1D& col_rng_in )
 	const VectorSpace<Scalar>  &range    = *this->range();
 	const Index                dimDomain = domain.dim();
 	const Range1D              col_rng   = RangePack::full_range(col_rng_in,1,dimDomain);
-	if( col_rng.lbound() == 1 && col_rng.ubound() == dimDomain )
+	if( col_rng.lbound() == 1 && static_cast<Index>(col_rng.ubound()) == dimDomain )
 		return Teuchos::rcp(this,false); // Takes all of the colunns!
 	if( col_rng.size() ) {
 		// We have to create a view of a subset of the columns
@@ -115,8 +115,8 @@ MultiVector<Scalar>::subView( const int numCols, const int cols[] )
 	wsp::WorkspaceStore        *wss      = WorkspacePack::default_workspace_store.get();
 	const VectorSpace<Scalar>  &domain   = *this->domain();
 	const VectorSpace<Scalar>  &range    = *this->range();
-	const Index                dimDomain = domain.dim();
 #ifdef _DEBUG
+	const Index                dimDomain = domain.dim();
 	const char msg_err[] = "MultiVector<Scalar>::subView(numCols,cols[]): Error!";
  	TEST_FOR_EXCEPTION( numCols < 1 || dimDomain < numCols, std::invalid_argument, msg_err );
 #endif
@@ -140,9 +140,9 @@ MultiVector<Scalar>::subView( const int numCols, const int cols[] )
 template<class Scalar>
 void MultiVector<Scalar>::applyOp(
 	const RTOpPack::RTOpT<Scalar>   &prim_op
-	,const size_t                   num_multi_vecs
+	,const int                   num_multi_vecs
 	,const MultiVector<Scalar>*     multi_vecs[]
-	,const size_t                   num_targ_multi_vecs
+	,const int                   num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
 	,RTOpPack::ReductTarget*        reduct_objs[]
 	,const Index                    prim_first_ele_in
@@ -157,16 +157,15 @@ void MultiVector<Scalar>::applyOp(
 
 	// ToDo: Validate the input!
 
-	const VectorSpace<Scalar>
-		&domain = *this->domain(),
-		&range  = *this->range();
+	const VectorSpace<Scalar>  &domain = *this->domain();
+  const VectorSpace<Scalar>  &range  = *this->range();
 
 	// Get the primary and secondary dimmensions.
-	const Index
-		prim_dim     = range.dim(),
-		sec_dim      = domain.dim(),
-		prim_sub_dim = ( prim_sub_dim_in != 0     ? prim_sub_dim_in : prim_dim - prim_first_ele_in + 1 ),
-		sec_sub_dim  = ( sec_sub_dim_in != 0      ? sec_sub_dim_in  : sec_dim  -  sec_first_ele_in + 1  );
+
+	const Index	prim_dim = range.dim();
+  const Index sec_dim = domain.dim();
+	const Index prim_sub_dim = ( prim_sub_dim_in != 0     ? prim_sub_dim_in : prim_dim - prim_first_ele_in + 1 );
+	const Index sec_sub_dim  = ( sec_sub_dim_in != 0      ? sec_sub_dim_in  : sec_dim  -  sec_first_ele_in + 1  );
 #ifdef _DEBUG
 	const char err_msg[] = "MultiVector<Scalar>::applyOp(...): Error!";
 	TEST_FOR_EXCEPTION( !(0 < prim_sub_dim && prim_sub_dim <= prim_dim), std::invalid_argument, err_msg );
@@ -185,11 +184,11 @@ void MultiVector<Scalar>::applyOp(
 
 	for(Index j = sec_first_ele_in; j <= sec_first_ele_in - 1 + sec_sub_dim; ++j) {
 		// Fill the arrays of vector arguments
-		{for(Index k = 0; k < num_multi_vecs; ++k) {
+		{for(Index k = 0; k < static_cast<Index>(num_multi_vecs); ++k) {
 			vecs_s[k] = multi_vecs[k]->col(j);
 			vecs[k] = vecs_s[k].get();
 		}}
-		{for(Index k = 0; k < num_targ_multi_vecs; ++k) {
+		{for(Index k = 0; k < static_cast<Index>(num_targ_multi_vecs); ++k) {
 			targ_vecs_s[k] = targ_multi_vecs[k]->col(j);
 			targ_vecs[k] = targ_vecs_s[k].get();
 		}}
@@ -211,9 +210,9 @@ template<class Scalar>
 void MultiVector<Scalar>::applyOp(
 	const RTOpPack::RTOpT<Scalar>   &prim_op
 	,const RTOpPack::RTOpT<Scalar>  &sec_op
-	,const size_t                   num_multi_vecs
+	,const int                   num_multi_vecs
 	,const MultiVector<Scalar>*     multi_vecs[]
-	,const size_t                   num_targ_multi_vecs
+	,const int                   num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
 	,RTOpPack::ReductTarget         *reduct_obj
 	,const Index                    prim_first_ele_in
@@ -228,16 +227,14 @@ void MultiVector<Scalar>::applyOp(
 
 	// ToDo: Validate the input!
 
-	const VectorSpace<Scalar>
-		&domain = *this->domain(),
-		&range  = *this->range();
+	const VectorSpace<Scalar> &domain = *this->domain();
+  const VectorSpace<Scalar> &range = *this->range();
 
 	// Get the primary and secondary dimmensions.
-	const Index
-		prim_dim     = range.dim(),
-		sec_dim      = domain.dim(),
-		prim_sub_dim = ( prim_sub_dim_in != 0     ? prim_sub_dim_in : prim_dim - prim_first_ele_in + 1 ),
-		sec_sub_dim  = ( sec_sub_dim_in != 0      ? sec_sub_dim_in  : sec_dim  -  sec_first_ele_in + 1  );
+  const Index prim_dim = range.dim();
+  const Index sec_dim = domain.dim();
+  const Index prim_sub_dim = ( prim_sub_dim_in != 0     ? prim_sub_dim_in : prim_dim - prim_first_ele_in + 1 );
+	const Index sec_sub_dim  = ( sec_sub_dim_in != 0      ? sec_sub_dim_in  : sec_dim  -  sec_first_ele_in + 1  );
 #ifdef _DEBUG
 	const char err_msg[] = "MultiVector<Scalar>::applyOp(...): Error!";
 	TEST_FOR_EXCEPTION( !(0 < prim_sub_dim && prim_sub_dim <= prim_dim), std::invalid_argument, err_msg );

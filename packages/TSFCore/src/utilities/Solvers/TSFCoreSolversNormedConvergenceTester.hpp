@@ -128,7 +128,7 @@ void NormedConvergenceTester<Scalar>::convStatus(
 		,"NormedConvergenceTester<Scalar>::convStatus(...): Error!"
 		);
 #endif
-	if(activeSystems_.size() != totalNumSystems) {
+	if(static_cast<Index>(activeSystems_.size()) != totalNumSystems) {
 		activeSystems_.resize(totalNumSystems);
 		norms_.resize(totalNumSystems);
 	}

@@ -147,8 +147,7 @@ $(srcdir)/RTOpStdOps/RTOp_TOp_random_vector.c\
 $(srcdir)/RTOpStdOps/RTOp_TOp_scale_vector.c\
 $(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.c\
 $(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.c\
-$(srcdir)/RTOpStdOps/RTOp_TOp_sign.c\
-$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c
+$(srcdir)/RTOpStdOps/RTOp_TOp_sign.c
 
 RTOp_STDOPS_SOURCES_H=\
 $(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.h\

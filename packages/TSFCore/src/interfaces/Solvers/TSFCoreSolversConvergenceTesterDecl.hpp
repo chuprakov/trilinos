@@ -46,6 +46,9 @@ template<class Scalar>
 class ConvergenceTester {
 public:
 
+  ///
+  virtual ~ConvergenceTester() {}
+
 	/** @name Pure virtual functions that must be overridden */
 	//@{
 

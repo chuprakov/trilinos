@@ -56,8 +56,7 @@ void test_do_stuff( MPI_Comm mpiComm, const int n, std::ostream &out )
   using RTOpPack::MutableSubVectorT;
   using RTOpPack::ReductTarget;
   out << "\n*** Entering test_do_stuff<"<<typeid(Scalar).name()<<"> ...\n";
-  std::vector<Scalar>  v0_store(n), z0_store(n);
-  SubVectorT<Scalar>        v0(0,n,&v0_store[0],1);
+  std::vector<Scalar> z0_store(n);
   MutableSubVectorT<Scalar> z0(0,n,&z0_store[0],1);
   out << "\nPerforming: z0 = 1.0\n";
   RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op(Scalar(1.0));
@@ -115,10 +114,8 @@ int main( int argc, char* argv[] ) {
     //
     // Get basic MPI information
 		MPI_Comm mpiComm = MPI_COMM_NULL;
-		int numProc = 1;
 #ifdef RTOp_USE_MPI
 		mpiComm = MPI_COMM_WORLD;
-		MPI_Comm_size( mpiComm, &numProc );
 		MPI_Comm_rank( mpiComm, &procRank );
 #endif
 
@@ -163,8 +160,7 @@ int main( int argc, char* argv[] ) {
       using RTOpPack::MutableSubVectorT;
       using RTOpPack::ReductTarget;
       out << "\n*** Testing with RTOpC wrapped RTOp_RTOp subclasses ...\n";
-      std::vector<Scalar>  v0_store(n), z0_store(n);
-      SubVectorT<Scalar>        v0(0,n,&v0_store[0],1);
+      std::vector<Scalar>  z0_store(n);
       MutableSubVectorT<Scalar> z0(0,n,&z0_store[0],1);
       out << "\nPerforming: z0 = 1.0\n";
       RTOpPack::RTOpC  assign_scalar_op;

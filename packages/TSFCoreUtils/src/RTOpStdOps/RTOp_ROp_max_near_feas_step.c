@@ -61,7 +61,6 @@ static int targ_obj_create(
   , RTOp_ReductTarget* targ_obj )
 {
   const int mem_size = sizeof(struct RTOp_ROp_max_near_feas_step_reduct_obj_t);
-  struct RTOp_ROp_max_near_feas_step_reduct_obj_t *targ = NULL;
   *targ_obj = malloc( mem_size );
   return vtbl->obj_reinit(vtbl,obj_data,*targ_obj);
 }

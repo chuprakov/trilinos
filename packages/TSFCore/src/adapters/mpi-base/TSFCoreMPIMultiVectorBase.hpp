@@ -128,17 +128,16 @@ void MPIMultiVectorBase<Scalar>::apply(
 	// Get spaces and validate compatibility
 	//
 
-	const VectorSpace<Scalar>
-		&Y_range = *Y->range(),
-		&M_range = *this->range(),
-		&X_range = *X.range();
-
 	// Get the MPIVectorSpace
 	const MPIVectorSpaceBase<Scalar> &mpiSpc = *this->mpiSpace();
 
 	// Get the MPI communicator
 	MPI_Comm mpiComm = mpiSpc.mpiComm();
 #ifdef _DEBUG
+	const VectorSpace<Scalar>
+		&Y_range = *Y->range(),
+		&M_range = *this->range(),
+		&X_range = *X.range();
 //	std::cout << "MPIMultiVectorBase<Scalar>::apply(...): mpiComm = " << mpiComm << std::endl;
 	TEST_FOR_EXCEPTION(
 		( globalDim_ > localSubDim_ ) && mpiComm == MPI_COMM_NULL, std::logic_error
@@ -343,9 +342,9 @@ void MPIMultiVectorBase<Scalar>::apply(
 template<class Scalar>
 void MPIMultiVectorBase<Scalar>::applyOp(
 	const RTOpPack::RTOpT<Scalar>   &pri_op
-	,const size_t                   num_multi_vecs
+	,const int                   num_multi_vecs
 	,const MultiVector<Scalar>*     multi_vecs[]
-	,const size_t                   num_targ_multi_vecs
+	,const int                   num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
 	,RTOpPack::ReductTarget*        reduct_objs[]
 	,const Index                    pri_first_ele_in
@@ -397,14 +396,14 @@ void MPIMultiVectorBase<Scalar>::applyOp(
 	wsp::Workspace<RTOpPack::SubMultiVectorT<Scalar> > sub_multi_vecs(wss,num_multi_vecs);
 	wsp::Workspace<RTOpPack::MutableSubMultiVectorT<Scalar> > targ_sub_multi_vecs(wss,num_targ_multi_vecs);
 	if( overlap_first_local_ele != 0 ) {
-		if(1){for(int k = 0; k < num_multi_vecs; ++k ) {
+		for(int k = 0; k < num_multi_vecs; ++k ) {
 			multi_vecs[k]->getSubMultiVector( local_rng, col_rng, &sub_multi_vecs[k] );
 			sub_multi_vecs[k].setGlobalOffset( overlap_global_offset );
-		}}
-		if(1){for(int k = 0; k < num_targ_multi_vecs; ++k ) {
+		}
+		for(int k = 0; k < num_targ_multi_vecs; ++k ) {
 			targ_multi_vecs[k]->getSubMultiVector( local_rng, col_rng, &targ_sub_multi_vecs[k] );
 			targ_sub_multi_vecs[k].setGlobalOffset( overlap_global_offset );
-		}}
+		}
 	}
 	// Apply the RTOp operator object (all processors must participate)
 	RTOpPack::MPI_apply_op(
@@ -419,14 +418,14 @@ void MPIMultiVectorBase<Scalar>::applyOp(
 		,reduct_objs                                                                       // reduct_objs
 		);
 	// Free and commit the local data
-	if(1){for(int k = 0; k < num_multi_vecs; ++k ) {
+	for(int k = 0; k < num_multi_vecs; ++k ) {
 		sub_multi_vecs[k].setGlobalOffset(local_rng.lbound()-1);
 		multi_vecs[k]->freeSubMultiVector( &sub_multi_vecs[k] );
-	}}
-	if(1){for(int k = 0; k < num_targ_multi_vecs; ++k ) {
+	}
+	for(int k = 0; k < num_targ_multi_vecs; ++k ) {
 		targ_sub_multi_vecs[k].setGlobalOffset(local_rng.lbound()-1);
 		targ_multi_vecs[k]->commitSubMultiVector( &targ_sub_multi_vecs[k] );
-	}}
+	}
 	// Flag that we are leaving applyOp()
 	in_applyOp_ = false;
 }

@@ -460,8 +460,7 @@ int RTOp_Server_lookup_op_name( const struct RTOp_RTOp_vtbl_t* op_class_vtbl
   , char op_class_name[] )
 {
   int k = 0;
-  if( k = find_op_vtbl( RTOp_Server_op_vtbl
-    , RTOp_Server_num_ops, op_class_vtbl ) >= 0 )
+  if( ( k = find_op_vtbl(RTOp_Server_op_vtbl,RTOp_Server_num_ops,op_class_vtbl) ) >= 0 )
   {
     strcpy( op_class_name, RTOp_Server_op_names[k].name );
     return 0; /* Success */
@@ -484,8 +483,7 @@ int RTOp_Server_construct_op(
   int err = 0; /* success? */
   if( strlen( op_class_name ) > RTOp_MAX_REDUCT_TRANS_OP_CLASS_NAME )
     return RTOp_SERVER_OP_NAME_TOO_LONG;
-  if( k = find_op_name( RTOp_Server_op_names
-    , RTOp_Server_num_ops, op_class_name ) >= 0 )
+  if( ( k = find_op_name(RTOp_Server_op_names,RTOp_Server_num_ops, op_class_name) ) >= 0 )
   {
     op->obj_data = NULL; /* Will be dyn allocated below! */
     op->vtbl     = RTOp_Server_op_vtbl[k];
@@ -514,8 +512,8 @@ void RTOp_Server_dump( FILE* file )
         "    looked up vtbl        = %#x\n"
       , RTOp_Server_op_names[k].name
       , RTOp_Server_op_names[jn].name
-      , RTOp_Server_op_vtbl[k]
-      , RTOp_Server_op_vtbl[jv]
+      , (unsigned int)RTOp_Server_op_vtbl[k]
+      , (unsigned int)RTOp_Server_op_vtbl[jv]
       );
   }
 }

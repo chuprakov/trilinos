@@ -42,9 +42,9 @@ template<class Scalar>
 void TSFCore::apply_op_validate_input(
 	const char                      func_name[]
 	,const RTOpPack::RTOpT<Scalar>  &op
-	,const size_t                   num_vecs
+	,const int                   num_vecs
 	,const Vector<Scalar>*          vecs[]
-	,const size_t                   num_targ_vecs
+	,const int                   num_targ_vecs
 	,Vector<Scalar>*                targ_vecs[]
 	,RTOpPack::ReductTarget         *reduct_obj
 	,const Index                    first_ele_in
@@ -93,9 +93,9 @@ void TSFCore::apply_op_validate_input(
 template<class Scalar>
 void TSFCore::apply_op_serial(
 	const RTOpPack::RTOpT<Scalar>  &op
-	,const size_t                  num_vecs
+	,const int                  num_vecs
 	,const Vector<Scalar>*         vecs[]
-	,const size_t                  num_targ_vecs
+	,const int                  num_targ_vecs
 	,Vector<Scalar>*               targ_vecs[]
 	,RTOpPack::ReductTarget        *reduct_obj
 	,const Index                   first_ele_in

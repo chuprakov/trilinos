@@ -51,7 +51,6 @@ static int RTOp_ROp_dot_prod_apply_op(
   RTOp_index_type        v0_sub_dim;
   const RTOp_value_type  *v0_val;
   ptrdiff_t              v0_val_s;
-  const RTOp_index_type *v0_ind;
 
   /* v1 */
   RTOp_index_type        v1_sub_dim;
@@ -62,13 +61,7 @@ static int RTOp_ROp_dot_prod_apply_op(
   RTOp_value_type        dot_prod       = 0.0;
 
   /* Some temporary values */
-  RTOp_index_type        size_t_tmp;
-  const RTOp_value_type  *v_val_tmp;
-  const RTOp_index_type *v_ind_tmp;
-  ptrdiff_t              stride_tmp;
-  int                    int_tmp;
   register RTOp_index_type k;
-  const RTOp_value_type *v0_val_end, *v1_val_end;
   RTOp_index_type sub_dim;
 
   /* */

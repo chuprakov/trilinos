@@ -158,7 +158,7 @@ static int targ_obj_create(
   RTOp_index_type sub_dim = 0;
   /* Get the range of the sub-vector */
   assert(obj_data);
-    rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
+  rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
   sub_dim = rng->u - rng->l + 1;
   /* Allocate the sub-vector target object */
   *targ_obj = malloc(mem_size);
@@ -204,7 +204,6 @@ static int targ_obj_free(
   , RTOp_ReductTarget* targ_obj )
 {
   const struct RTOp_ROp_get_sub_vector_rng_t *rng = NULL;
-  const int mem_size = sizeof(struct RTOp_SubVector);
   struct RTOp_SubVector *sub_vec_targ = NULL;
   RTOp_index_type sub_dim = 0;
   assert(obj_data);
@@ -327,7 +326,6 @@ static int RTOp_ROp_get_sub_vector_apply_op(
   RTOp_index_type        sub_dim;
   const RTOp_value_type  *v0_val;
   ptrdiff_t              v0_val_s;
-  register RTOp_index_type k;
   RTOp_index_type i, i_l, i_u;
 
   /* */
@@ -344,9 +342,9 @@ static int RTOp_ROp_get_sub_vector_apply_op(
   /* Get pointers to data */
   /* */
 
-  /* Get the range of the sub-vector */
+  /* Get the range of the sub-vector that we are trying to extract */
   assert(obj_data);
-    rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
+  rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
 
   /* Get the sub-vector target object */
   assert( targ_obj );
@@ -371,11 +369,19 @@ static int RTOp_ROp_get_sub_vector_apply_op(
   if( rng->u < global_offset + 1 || global_offset + sub_dim < rng->l )
     return 0; /* The sub-vector that we are looking for is not in this vector chunk! */
 
-  i_l = ( rng->l <= global_offset + 1       ? i_l = global_offset + 1       : rng->l );
-  i_u = ( rng->u >= global_offset + sub_dim ? i_u = global_offset + sub_dim : rng->u );
+  i_l = ( rng->l <= ( global_offset + 1 )       ? 1       : rng->l - global_offset  );
+  i_u = ( rng->u >= ( global_offset + sub_dim ) ? sub_dim : rng->u - global_offset  );
+
+  for( i = i_l; i <= i_u; ++i )
+    ((RTOp_value_type*)sub_vec_targ->values)[i-1+(global_offset-(rng->l-1))] = v0_val[(i-1)*v0_val_s];
+
+/*
+  i_l = ( rng->l <= ( global_offset + 1 )       ? rng->l - global_offset + 1       : rng->l );
+  i_u = ( rng->u >= ( global_offset + sub_dim ) ? rng->u - global_offset + sub_dim : rng->u );
   for( i = i_l; i <= i_u; ++i )
     ((RTOp_value_type*)sub_vec_targ->values)[ i - rng->l ]
       = v0_val[ (i - global_offset - 1) * v0_val_s ];
+*/
 
   return 0; /* success? */
 }

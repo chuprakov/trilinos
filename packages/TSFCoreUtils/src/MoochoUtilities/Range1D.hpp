@@ -107,29 +107,29 @@ public:
 	  * <li> <tt>this->ubound() == ubound</tt>
 	  *	</ul>
 	  */
-    Range1D(size_t lbound, size_t ubound);
+    Range1D(int lbound, int ubound);
 	/// Returns \c true if the range represents the entire region (constructed from \c Range1D())
 	bool full_range() const;
 	/// Return lower bound of the range
-    size_t lbound() const;
+    int lbound() const;
 	/// Return upper bound of the range
-    size_t ubound() const;
+    int ubound() const;
 	/// Return the size of the range (<tt>ubound() - lbound() + 1</tt>)
-	size_t size() const;
+	int size() const;
 	/// Return true if the index is in range
-	bool in_range(size_t i) const;
+	bool in_range(int i) const;
 	/// Increment the range by a constant
-	Range1D& operator+=( size_t incr );
+	Range1D& operator+=( int incr );
 	/// Deincrement the range by a constant
-	Range1D& operator-=( size_t incr );
+	Range1D& operator-=( int incr );
 
 private:
-    size_t lbound_;
-    size_t ubound_;	// = UINT_MAX flag for entire range
+    int lbound_;
+    int ubound_;	// = INT_MAX flag for entire range
 	// lbound == ubound == 0 flag for invalid range.
 
 	// assert that the range is valid
-	void assert_valid_range(size_t lbound, size_t ubound) const;
+	void assert_valid_range(int lbound, int ubound) const;
 	
 };	// end class Range1D
 
@@ -160,7 +160,7 @@ inline bool operator==(const Range1D& rng1, const Range1D& rng2 )
   *	<li> <tt>rng_lhs.ubound() == rng_rhs.ubound() + i</tt>
   *	</ul>
   */
-inline Range1D operator+(const Range1D &rng_rhs, size_t i)
+inline Range1D operator+(const Range1D &rng_rhs, int i)
 {
     return Range1D(i+rng_rhs.lbound(), i+rng_rhs.ubound());
 }
@@ -175,7 +175,7 @@ inline Range1D operator+(const Range1D &rng_rhs, size_t i)
   *	<li> <tt>rng_lhs.ubound() == i + rng_rhs.ubound()</tt>
   *	</ul>
   */
-inline Range1D operator+(size_t i, const Range1D &rng_rhs)
+inline Range1D operator+(int i, const Range1D &rng_rhs)
 {
     return Range1D(i+rng_rhs.lbound(), i+rng_rhs.ubound());
 }
@@ -190,7 +190,7 @@ inline Range1D operator+(size_t i, const Range1D &rng_rhs)
   *	<li> <tt>rng_lhs.ubound() == rng_rhs.ubound() - 1</tt>
   *	</ul>
   */
-inline Range1D operator-(const Range1D &rng_rhs, size_t i)
+inline Range1D operator-(const Range1D &rng_rhs, int i)
 {
     return Range1D(rng_rhs.lbound()-i, rng_rhs.ubound()-i);
 }
@@ -208,7 +208,7 @@ inline Range1D operator-(const Range1D &rng_rhs, size_t i)
   *	<li> [<tt>rng.full_range() == false</tt>] <tt>return.ubound() == rng.ubound()</tt>
   *	</ul>
   */
-inline Range1D full_range(const Range1D &rng, size_t lbound, size_t ubound)
+inline Range1D full_range(const Range1D &rng, int lbound, int ubound)
 {	return rng.full_range() ? Range1D(lbound,ubound) : rng; }
 
 //@}
@@ -218,7 +218,7 @@ inline Range1D full_range(const Range1D &rng, size_t lbound, size_t ubound)
 
 inline
 Range1D::Range1D()
-	: lbound_(1), ubound_(UINT_MAX)
+	: lbound_(1), ubound_(INT_MAX)
 {}
 
 inline
@@ -228,7 +228,7 @@ Range1D::Range1D( EInvalidRange )
 
 
 inline
-Range1D::Range1D(size_t lbound, size_t ubound)
+Range1D::Range1D(int lbound, int ubound)
 	: lbound_(lbound), ubound_(ubound)
 {
 	assert_valid_range(lbound,ubound);
@@ -236,31 +236,31 @@ Range1D::Range1D(size_t lbound, size_t ubound)
 
 inline
 bool Range1D::full_range() const {
-	return ubound_ == UINT_MAX;
+	return ubound_ == INT_MAX;
 }
 
 inline
-size_t Range1D::lbound() const {
+int Range1D::lbound() const {
 	return lbound_;
 }
 
 inline
-size_t Range1D::ubound() const {
+int Range1D::ubound() const {
 	return ubound_;
 }
 
 inline
-size_t Range1D::size() const {
+int Range1D::size() const {
 	return 1 + ubound_ - lbound_;
 }
 
 inline
-bool Range1D::in_range(size_t i) const {
+bool Range1D::in_range(int i) const {
 	return lbound_ <= i && i <= ubound_;
 }
 
 inline
-Range1D& Range1D::operator+=( size_t incr ) {
+Range1D& Range1D::operator+=( int incr ) {
 	assert_valid_range( lbound_ + incr, ubound_ + incr );
 	lbound_ += incr;
 	ubound_ += incr;
@@ -268,7 +268,7 @@ Range1D& Range1D::operator+=( size_t incr ) {
 }
 
 inline
-Range1D& Range1D::operator-=( size_t incr ) {
+Range1D& Range1D::operator-=( int incr ) {
 	assert_valid_range( lbound_ - incr, ubound_ - incr );
 	lbound_ -= incr;
 	ubound_ -= incr;
@@ -278,7 +278,7 @@ Range1D& Range1D::operator-=( size_t incr ) {
 // See Range1D.cpp
 //#ifndef _DEBUG
 //inline
-//void Range1D::assert_valid_range(size_t lbound, size_t ubound) const
+//void Range1D::assert_valid_range(int lbound, int ubound) const
 //{}
 //#endif
 

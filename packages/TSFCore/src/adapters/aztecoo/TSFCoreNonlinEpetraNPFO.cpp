@@ -86,9 +86,9 @@ EpetraNPFO::EpetraNPFO(
 	,relLinSolveTol_(relLinSolveTol)
 	,usePrec_(usePrec)
 	,testOperators_(testOperators)
-	,isInitialized_(false)
 	,yGuessFileNameBase_(yGuessFileNameBase)
 	,yFinalFileNameBase_(yFinalFileNameBase)
+	,isInitialized_(false)
 	,numProc_(1)
 	,procRank_(0)
 {
@@ -117,10 +117,9 @@ void EpetraNPFO::initialize(
   // Make sure that the Epetra Nonlinear Problem is initialized
   epetra_np_->initialize(false);
 
-  // Get the the number of auxiliary variables and response functions
+  // Get the the number of auxiliary variables
   const int
-    Nu  = epetra_np_->Nu(),
-    nrf = epetra_np_->numResponseFunctions();
+    Nu  = epetra_np_->Nu();
 
   // Setup cache arrays for dealing with DcDu
   DcDu_op_.resize(Nu);
@@ -530,7 +529,7 @@ EpetraNPFO::set_u( const Vector<Scalar>* u_in[], bool newPoint ) const
 	using DynamicCastHelperPack::dyn_cast;
   updateNewPoint(newPoint);
   if( u_in && newPoint ) {
-    for( int l = 1; l <= u_unscaled_.size(); ++l ) {
+    for( int l = 1; l <= static_cast<int>(u_unscaled_.size()); ++l ) {
       if(u_in[l-1]) {
         u_unscaled_[l-1] = &*(dyn_cast<const EpetraVector>(*u_in[l-1]).epetra_vec());
       }
@@ -611,7 +610,6 @@ void EpetraNPFO::computeScaling()
 		const Epetra_Vector **u = set_u( NULL, true );
 
 		Teuchos::RefCountPtr<Epetra_Operator>  epetra_DcDy_op = epetra_np_->create_DcDy_op();
-		bool epetra_DcDy_op_recomputed = true;
 		Epetra_RowMatrix &epetra_DcDy_rm = dyn_cast<Epetra_RowMatrix>(*epetra_DcDy_op); // Must support this interface!
 
 		// ToDo: Save this jacobian object for the first Jacobian returned

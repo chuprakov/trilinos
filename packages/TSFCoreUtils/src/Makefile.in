@@ -140,8 +140,7 @@ am__objects_4 = RTOp_ROp_combined_nu_comp_err.$(OBJEXT) \
 	RTOp_TOp_multiplier_step.$(OBJEXT) \
 	RTOp_TOp_random_vector.$(OBJEXT) \
 	RTOp_TOp_scale_vector.$(OBJEXT) RTOp_TOp_set_ele.$(OBJEXT) \
-	RTOp_TOp_set_sub_vector.$(OBJEXT) RTOp_TOp_sign.$(OBJEXT) \
-	init_RTOpStdOpsLib.$(OBJEXT)
+	RTOp_TOp_set_sub_vector.$(OBJEXT) RTOp_TOp_sign.$(OBJEXT)
 am__objects_5 = initRTOpStdOpsLibCpp.$(OBJEXT)
 am_libTSFCoreUtils_a_OBJECTS = $(am__objects_1) $(am__objects_2) \
 	$(am__objects_3) $(am__objects_4) $(am__objects_5)
@@ -212,7 +211,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/check_nan_inf.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/dynamic_cast_verbose.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/initRTOpStdOpsLibCpp.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/init_RTOpStdOpsLib.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/print_sub_vector.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -461,8 +459,7 @@ $(srcdir)/RTOpStdOps/RTOp_TOp_random_vector.c\
 $(srcdir)/RTOpStdOps/RTOp_TOp_scale_vector.c\
 $(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.c\
 $(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.c\
-$(srcdir)/RTOpStdOps/RTOp_TOp_sign.c\
-$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c
+$(srcdir)/RTOpStdOps/RTOp_TOp_sign.c
 
 RTOp_STDOPS_SOURCES_H = \
 $(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.h\
@@ -732,7 +729,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_nan_inf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dynamic_cast_verbose.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/initRTOpStdOpsLibCpp.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/init_RTOpStdOpsLib.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/print_sub_vector.Po@am__quote@
 
 .c.o:
@@ -1646,22 +1642,6 @@ RTOp_TOp_sign.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_sign.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/RTOp_TOp_sign.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_sign.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_sign.obj `if test -f '$(srcdir)/RTOpStdOps/RTOp_TOp_sign.c'; then $(CYGPATH_W) '$(srcdir)/RTOpStdOps/RTOp_TOp_sign.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpStdOps/RTOp_TOp_sign.c'; fi`
-
-init_RTOpStdOpsLib.o: $(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT init_RTOpStdOpsLib.o -MD -MP -MF "$(DEPDIR)/init_RTOpStdOpsLib.Tpo" -c -o init_RTOpStdOpsLib.o `test -f '$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c' || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/init_RTOpStdOpsLib.Tpo" "$(DEPDIR)/init_RTOpStdOpsLib.Po"; else rm -f "$(DEPDIR)/init_RTOpStdOpsLib.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c' object='init_RTOpStdOpsLib.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/init_RTOpStdOpsLib.Po' tmpdepfile='$(DEPDIR)/init_RTOpStdOpsLib.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o init_RTOpStdOpsLib.o `test -f '$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c' || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c
-
-init_RTOpStdOpsLib.obj: $(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c
-@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT init_RTOpStdOpsLib.obj -MD -MP -MF "$(DEPDIR)/init_RTOpStdOpsLib.Tpo" -c -o init_RTOpStdOpsLib.obj `if test -f '$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c'; then $(CYGPATH_W) '$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c'; fi`; \
-@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/init_RTOpStdOpsLib.Tpo" "$(DEPDIR)/init_RTOpStdOpsLib.Po"; else rm -f "$(DEPDIR)/init_RTOpStdOpsLib.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c' object='init_RTOpStdOpsLib.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/init_RTOpStdOpsLib.Po' tmpdepfile='$(DEPDIR)/init_RTOpStdOpsLib.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o init_RTOpStdOpsLib.obj `if test -f '$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c'; then $(CYGPATH_W) '$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c'; fi`
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \

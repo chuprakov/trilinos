@@ -35,7 +35,7 @@ const Range1D Range1D::Invalid(Range1D::INVALID);
 
 //#ifdef _DEBUG
 
-void Range1D::assert_valid_range(size_t lbound, size_t ubound) const {
+void Range1D::assert_valid_range(int lbound, int ubound) const {
 	TEST_FOR_EXCEPTION(
 		lbound < 1, std::range_error
 		,"Range1D::assert_valid_range(): Error, lbound ="<<lbound<<" must be greater than 0." );

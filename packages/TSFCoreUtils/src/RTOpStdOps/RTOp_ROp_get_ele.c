@@ -50,8 +50,6 @@ static int RTOp_ROp_get_ele_apply_op(
   RTOp_index_type        sub_dim;
   const RTOp_value_type  *v0_val;
   ptrdiff_t              v0_val_s;
-  register RTOp_index_type k;
-  RTOp_index_type i_look;
 
   /* */
   /* Validate the input */

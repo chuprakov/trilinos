@@ -139,7 +139,7 @@ Teuchos::RefCountPtr<Vector<Scalar> >
 MultiVectorCols<Scalar>::col(Index j)
 {
 	TEST_FOR_EXCEPTION(
-		!(  1 <= j  && j <= col_vecs_.size() ), std::logic_error
+		!(  1 <= j  && j <= static_cast<Index>(col_vecs_.size()) ), std::logic_error
 		,"Error, j = " << j << " does not fall in the range [1,"<<col_vecs_.size()<< "]!"
 		);
 	return col_vecs_[j-1];
