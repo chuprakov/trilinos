@@ -16,8 +16,8 @@
 #ifndef ALAP_MATRIX_SYM_IDENTITY_H
 #define ALAP_MATRIX_SYM_IDENTITY_H
 
-#include "MatrixSymOpNonsing.hpp"
-#include "VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
 

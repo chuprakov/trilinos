@@ -17,7 +17,7 @@
 
 #include "SparseLinAlgPack/src/MatrixConvertToSparseEncap.hpp"
 #include "SparseLinAlgPack/src/MatrixExtractSparseElements.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"
 #include "ThrowException.hpp"
 

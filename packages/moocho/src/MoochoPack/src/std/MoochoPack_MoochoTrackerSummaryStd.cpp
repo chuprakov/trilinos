@@ -21,8 +21,8 @@
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
-#include "AbstractLinAlgPack/src/Vector.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 using std::endl;

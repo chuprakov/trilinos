@@ -23,10 +23,10 @@
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcat.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace {

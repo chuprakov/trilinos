@@ -18,8 +18,8 @@
 #include <limits>
 #include <ostream>
 
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorSubView.hpp"
+#include "VectorMutable.hpp"
+#include "VectorSubView.hpp"
 #include "RTOpStdOpsLib/src/RTOp_ROp_dot_prod.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_get_ele.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_norms.h"

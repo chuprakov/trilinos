@@ -17,7 +17,7 @@
 #define ABSTRACT_LIN_ALG_PACK_BASIS_PERM_DIRECT_SPARSE_SYSTEM_H
 
 #include "DirectSparseSolver.hpp"
-#include "AbstractLinAlgPack/src/BasisSystemPerm.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemPerm.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"
 
 namespace SparseSolverPack {

@@ -15,8 +15,8 @@
 
 #include "SparseLinAlgPack/src/MultiVectorMutableCols.hpp"
 #include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 

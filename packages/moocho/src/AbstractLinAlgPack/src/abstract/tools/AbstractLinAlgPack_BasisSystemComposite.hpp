@@ -16,8 +16,8 @@
 #ifndef BASIS_SYSTEM_COMPOSITE_STD_H
 #define BASIS_SYSTEM_COMPOSITE_STD_H
 
-#include "BasisSystem.hpp"
-#include "VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystem.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "Range1D.hpp"
 
 namespace AbstractLinAlgPack {

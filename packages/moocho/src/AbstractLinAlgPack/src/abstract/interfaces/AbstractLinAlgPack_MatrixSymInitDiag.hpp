@@ -16,7 +16,7 @@
 #ifndef MATRIX_SYM_INIT_DIAGONAL_H
 #define MATRIX_SYM_INIT_DIAGONAL_H
 
-#include "AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
 namespace AbstractLinAlgPack {
 

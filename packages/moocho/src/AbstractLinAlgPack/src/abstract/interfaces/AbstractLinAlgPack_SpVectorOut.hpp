@@ -18,7 +18,7 @@
 #ifndef SP_VECTOR_OUT_H
 #define SP_VECTOR_OUT_H
 
-#include "AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
 namespace AbstractLinAlgPack {
 

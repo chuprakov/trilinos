@@ -17,7 +17,7 @@
 #define VECTOR_SPACE_SERIAL_H
 
 #include "SparseLinAlgPack/src/SparseLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -18,7 +18,7 @@
 
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -31,7 +31,7 @@
 #define SPARSE_VECTOR_OP_DEF_H
 
 #include "SparseLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/SparseVectorClass.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/SparseVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"	// also included in SparseVectorOpDef.hpp
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"

@@ -17,7 +17,7 @@
 #define SP_VECTOR_OP_H
 
 #include "SparseVectorSliceOp.hpp"
-#include "AbstractLinAlgPack/src/SparseElement.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/SparseElement.hpp"
 
 namespace SparseLinAlgPack {
 

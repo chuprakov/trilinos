@@ -14,9 +14,9 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 
 namespace ConstrainedOptimizationPack {
 

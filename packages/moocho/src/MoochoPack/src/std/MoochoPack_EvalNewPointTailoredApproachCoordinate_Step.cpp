@@ -16,9 +16,9 @@
 #include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixZero.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/MatrixZero.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace ReducedSpaceSQPPack {

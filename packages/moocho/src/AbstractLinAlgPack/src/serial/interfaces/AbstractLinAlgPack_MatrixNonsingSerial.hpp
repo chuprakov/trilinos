@@ -17,7 +17,7 @@
 #define SLAP_MATRIX_NONSINGULAR_SERIAL_H
 
 #include "SparseLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixNonsing.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/InnerProductDot.hpp"
-#include "AbstractLinAlgPack/src/Vector.hpp"
+#include "InnerProductDot.hpp"
+#include "Vector.hpp"
 #include "RTOpStdOpsLib/src/RTOp_ROp_dot_prod.h"
 #include "RTOpPack/src/RTOpCppC.hpp"
 

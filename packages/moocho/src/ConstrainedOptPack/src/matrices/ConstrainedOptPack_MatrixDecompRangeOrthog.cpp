@@ -14,12 +14,12 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/src/MatrixDecompRangeOrthog.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 
 namespace ConstrainedOptimizationPack {

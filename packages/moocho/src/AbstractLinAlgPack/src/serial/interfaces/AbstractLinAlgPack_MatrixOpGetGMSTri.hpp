@@ -17,7 +17,7 @@
 #define MATRIX_WITH_OP_GET_GMS_TRI_H
 
 #include "SparseLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "dynamic_cast_verbose.hpp"
 

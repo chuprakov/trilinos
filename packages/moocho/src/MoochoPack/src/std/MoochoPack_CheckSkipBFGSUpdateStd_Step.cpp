@@ -20,8 +20,8 @@
 #include "ReducedSpaceSQPPack/src/std/CheckSkipBFGSUpdateStd_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 
 namespace ReducedSpaceSQPPack {
 

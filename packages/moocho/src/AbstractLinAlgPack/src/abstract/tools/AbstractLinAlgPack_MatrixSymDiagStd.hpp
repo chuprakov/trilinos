@@ -16,9 +16,9 @@
 #ifndef MATRIX_SYM_DIAGONAL_STD_H
 #define MATRIX_SYM_DIAGONAL_STD_H
 
-#include "MatrixSymInitDiag.hpp"
-#include "MatrixSymDiag.hpp"
-#include "VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymInitDiag.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymDiag.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
 

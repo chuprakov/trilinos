@@ -15,10 +15,10 @@
 
 #include "test_basis_system.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
-#include "AbstractLinAlgPack/src/BasisSystem.hpp"
-#include "AbstractLinAlgPack/src/BasisSystemTester.hpp"
-#include "AbstractLinAlgPack/src/BasisSystemTesterSetOptions.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystem.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTester.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTesterSetOptions.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 
 bool NLPInterfacePack::test_basis_system(
  	NLPFirstOrderInfo*                             nlp

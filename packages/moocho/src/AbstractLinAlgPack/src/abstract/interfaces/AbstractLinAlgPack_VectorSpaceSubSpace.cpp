@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/VectorSpaceSubSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorMutableSubView.hpp"
+#include "VectorSpaceSubSpace.hpp"
+#include "VectorMutableSubView.hpp"
 #include "ThrowException.hpp"
 
 namespace AbstractLinAlgPack {

@@ -18,7 +18,7 @@
 
 #include <utility>
 
-#include "VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 
 namespace AbstractLinAlgPack {
 

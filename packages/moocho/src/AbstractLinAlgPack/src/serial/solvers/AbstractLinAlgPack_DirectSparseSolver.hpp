@@ -18,7 +18,7 @@
 
 #include "SparseSolverPackTypes.hpp"
 #include "SparseLinAlgPack/src/MatrixConvertToSparse.hpp"
-#include "AbstractLinAlgPack/src/MatrixNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixNonsing.hpp"
 #include "ref_count_ptr.hpp"
 #include "AbstractFactory.hpp"
 

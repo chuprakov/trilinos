@@ -16,10 +16,10 @@
 #include <assert.h>
 
 #include "ConstrainedOptimizationPack/src/MatrixSymHessianRelaxNonSing.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
-#include "AbstractLinAlgPack/src/VectorSpaceBlock.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlock.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "profile_hack.hpp"
 #include "ThrowException.hpp"
 

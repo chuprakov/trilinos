@@ -22,9 +22,9 @@
 #include "ReducedSpaceSQPPack/src/std/CheckConvergenceIP_Strategy.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/VectorOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "dynamic_cast_verbose.hpp"
 

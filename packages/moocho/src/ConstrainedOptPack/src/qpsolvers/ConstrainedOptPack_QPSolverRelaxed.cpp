@@ -18,11 +18,11 @@
 #include <limits>
 
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxed.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "profile_hack.hpp"
 #include "ThrowException.hpp"
 

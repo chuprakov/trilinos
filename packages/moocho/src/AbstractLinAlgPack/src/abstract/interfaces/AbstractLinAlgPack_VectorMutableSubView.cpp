@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/VectorMutableSubView.hpp"
+#include "VectorMutableSubView.hpp"
 #include "ThrowException.hpp"
 #include "WorkspacePack.hpp"
 #include "dynamic_cast_verbose.hpp"

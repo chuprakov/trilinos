@@ -22,8 +22,8 @@
 #include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncPenaltyParam.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncNLPDirecDeriv.hpp"
-#include "AbstractLinAlgPack/src/Vector.hpp"
-#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 
 namespace {
 template< class T >

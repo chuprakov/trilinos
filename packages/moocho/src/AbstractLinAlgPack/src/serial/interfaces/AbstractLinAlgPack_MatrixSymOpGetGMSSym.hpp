@@ -17,7 +17,7 @@
 #define MATRIX_SYM_WITH_OP_GET_GMS_SYM_H
 
 #include "SparseLinAlgPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "dynamic_cast_verbose.hpp"
 

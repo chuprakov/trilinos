@@ -20,8 +20,8 @@
 #include <list>
 
 #include "ConstrainedOptimizationPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "ref_count_ptr.hpp"
 
 namespace ConstrainedOptimizationPack {

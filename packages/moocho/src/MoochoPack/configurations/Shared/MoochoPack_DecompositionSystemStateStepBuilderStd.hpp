@@ -18,7 +18,7 @@
 
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
-#include "AbstractLinAlgPack/src/BasisSystemPerm.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemPerm.hpp"
 #endif
 #include "ReducedSpaceSQPPack/src/std/NewDecompositionSelection_Strategy.hpp"
 

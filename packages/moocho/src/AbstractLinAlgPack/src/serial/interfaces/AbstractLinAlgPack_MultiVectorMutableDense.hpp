@@ -18,7 +18,7 @@
 
 #include "MatrixWithOpSerial.hpp"
 #include "MatrixWithOpGetGMSMutable.hpp"
-#include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "ReleaseResource.hpp"
 

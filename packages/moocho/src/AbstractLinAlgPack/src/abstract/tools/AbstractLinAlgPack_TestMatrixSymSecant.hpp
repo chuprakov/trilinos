@@ -3,7 +3,7 @@
 
 #include <iosfwd>
 
-#include "AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
 namespace AbstractLinAlgPack {
 

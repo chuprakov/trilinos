@@ -18,9 +18,9 @@
 #include <limits>
 
 #include "NLPInterfacePack/src/BarrierNLP.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/VectorOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "ThrowException.hpp"
 
 namespace NLPInterfacePack {

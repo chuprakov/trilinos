@@ -19,10 +19,10 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPackTypes.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymSecant.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymSecant.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 

@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/src/ComputeMinMult.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 
 namespace {

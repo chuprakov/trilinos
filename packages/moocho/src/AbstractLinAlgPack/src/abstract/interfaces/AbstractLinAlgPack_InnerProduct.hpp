@@ -16,7 +16,7 @@
 #ifndef ALAP_INNER_PRODUCT_H
 #define ALAP_INNER_PRODUCT_H
 
-#include "AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
 namespace AbstractLinAlgPack {
 

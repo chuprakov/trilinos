@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/BasisSystemTesterSetOptions.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTesterSetOptions.hpp"
 #include "StringToBool.hpp"
 #include "ThrowException.hpp"
 

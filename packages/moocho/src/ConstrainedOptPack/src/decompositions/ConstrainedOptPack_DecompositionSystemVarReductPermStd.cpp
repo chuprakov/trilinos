@@ -15,10 +15,10 @@
 
 #include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPermStd.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductImp.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/BasisSystemPerm.hpp"
-#include "AbstractLinAlgPack/src/PermutationOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemPerm.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/PermutationOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "ThrowException.hpp"
 
 namespace ConstrainedOptimizationPack {

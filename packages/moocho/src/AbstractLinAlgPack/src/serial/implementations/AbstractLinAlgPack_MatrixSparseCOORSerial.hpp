@@ -16,7 +16,7 @@
 #ifndef MATRIX_SPARSE_COOR_SERIAL_H
 #define MATRIX_SPARSE_COOR_SERIAL_H
 
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "VectorSpaceSerial.hpp"
 #include "MatrixLoadSparseElements.hpp"
 #include "MatrixExtractSparseElements.hpp"

@@ -26,8 +26,8 @@
 #include "ExampleNLPFirstOrderDirect.hpp"
 #include "ReducedSpaceSQPPack/Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.hpp"
 #include "IterationPack/src/AlgorithmTracker.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/BasisSystem.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystem.hpp"
 #include "OptionsFromStream.hpp"
 
 ReducedSpaceSQPPack::rSQPppSolver::ESolutionStatus

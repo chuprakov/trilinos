@@ -17,8 +17,8 @@
 #define DECOMPOSITION_SYSTEM_VAR_REDUCT_IMP_H
 
 #include "DecompositionSystemVarReduct.hpp"
-#include "AbstractLinAlgPack/src/BasisSystemTester.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTester.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 

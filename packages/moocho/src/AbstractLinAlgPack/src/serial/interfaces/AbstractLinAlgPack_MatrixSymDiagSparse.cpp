@@ -18,10 +18,10 @@
 #include <fstream>		// For debugging only
 
 #include "SparseLinAlgPack/src/MatrixSymDiagonalSparse.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/EtaVector.hpp"
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
-#include "AbstractLinAlgPack/src/SpVectorOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorOut.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixAssign.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"

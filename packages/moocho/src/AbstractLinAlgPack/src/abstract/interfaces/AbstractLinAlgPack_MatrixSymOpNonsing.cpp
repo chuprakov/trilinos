@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
+#include "MatrixSymOpNonsing.hpp"
 
 namespace AbstractLinAlgPack {
 

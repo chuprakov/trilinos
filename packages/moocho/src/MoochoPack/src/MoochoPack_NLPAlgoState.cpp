@@ -18,8 +18,8 @@
 
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 #include "IterationPack/src/IterQuantityAccess.hpp"

@@ -17,7 +17,7 @@
 #define MERIT_FUNC_PENALTY_PARAMS_H
 
 #include "ConstrainedOptimizationPackTypes.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 
 namespace ConstrainedOptimizationPack {
 

@@ -16,7 +16,7 @@
 #ifndef ABSTRACT_LIN_ALG_OP_PACK_DECL_H
 #define ABSTRACT_LIN_ALG_OP_PACK_DECL_H
 
-#include "AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "MatrixOpNonsing.hpp"
 #include "VectorMutable.hpp"
 #include "VectorStdOps.hpp"

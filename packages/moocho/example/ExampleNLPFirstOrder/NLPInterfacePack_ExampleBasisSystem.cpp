@@ -14,9 +14,9 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ExampleBasisSystem.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
-#include "AbstractLinAlgPack/src/MatrixComposite.hpp"
-#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "RTOpPack/src/RTOpCppC.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "dynamic_cast_verbose.hpp"

@@ -18,10 +18,10 @@
 #include "ReducedSpaceSQPPack/src/std/ReducedGradientStd_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 
 namespace ReducedSpaceSQPPack {
 

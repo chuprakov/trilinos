@@ -18,7 +18,7 @@
 #include "SparseLinAlgPack/src/MatrixSymNonsingularSerial.hpp"
 #include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
 #include "SparseLinAlgPack/src/MatrixWithOpSerial.hpp"
-#include "AbstractLinAlgPack/src/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"

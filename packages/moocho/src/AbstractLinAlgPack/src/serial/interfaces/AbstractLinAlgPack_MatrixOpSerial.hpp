@@ -20,7 +20,7 @@
 
 #include "SparseLinAlgPackTypes.hpp"
 #include "VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -25,15 +25,15 @@
 
 // Basis system and direct sparse solvers
 
-#include "AbstractLinAlgPack/src/BasisSystemTester.hpp"
-#include "AbstractLinAlgPack/src/BasisSystemTesterSetOptions.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTester.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTesterSetOptions.hpp"
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 #include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPermStd.hpp"
 #endif
 
 // Range/null decomposition
 
-#include "AbstractLinAlgPack/src/MatrixSymIdent.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymIdent.hpp"
 #include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.hpp"
 #include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerStd_Strategy.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystemTester.hpp"
@@ -44,7 +44,7 @@
 // Iteration quantities
 
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"               // Y, Z
-#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
 
 // Eval new point
 

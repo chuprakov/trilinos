@@ -17,7 +17,7 @@
 #define NLP_INTERFACE_PACK_TYPES_H
 
 #include "SparseSolverPack/src/SparseSolverPackTypes.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp" // Needed for doxygen?
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp" // Needed for doxygen?
 
 namespace NLPInterfacePack {
 

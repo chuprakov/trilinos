@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "Range1D.hpp"
 #include "ThrowException.hpp"
 

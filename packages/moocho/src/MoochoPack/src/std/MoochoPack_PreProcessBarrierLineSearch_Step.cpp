@@ -18,11 +18,11 @@
 #include <iostream>
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
-#include "AbstractLinAlgPack/src/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "NLPInterfacePack/src/BarrierNLP.hpp"
 #include "ReducedSpaceSQPPack/src/std/PreProcessBarrierLineSearch_Step.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"

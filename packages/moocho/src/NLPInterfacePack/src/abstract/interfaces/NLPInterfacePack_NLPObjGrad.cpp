@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "NLPInterfacePack/src/NLPObjGradient.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 
 namespace {
 	const char name_Gf[] = "Gf";

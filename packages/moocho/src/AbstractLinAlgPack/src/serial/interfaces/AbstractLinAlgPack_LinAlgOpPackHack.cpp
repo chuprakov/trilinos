@@ -18,12 +18,12 @@
 #include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
 #include "SparseLinAlgPack/src/MatrixWithOpGetGMS.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
 
 void LinAlgOpPack::Mp_StM(

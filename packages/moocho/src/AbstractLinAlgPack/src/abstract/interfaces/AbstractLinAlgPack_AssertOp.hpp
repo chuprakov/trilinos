@@ -16,7 +16,7 @@
 #ifndef ABSTRACT_LIN_ALG_PACK_ASSERT_OP_H
 #define ABSTRACT_LIN_ALG_PACK_ASSERT_OP_H
 
-#include "AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
 namespace AbstractLinAlgPack {
 

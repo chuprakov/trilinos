@@ -18,10 +18,10 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPKWIK.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/EtaVector.hpp"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "SparseLinAlgPack/src/MatrixExtractInvCholFactor.hpp"
 #include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"

@@ -30,7 +30,7 @@
 //#include "ConstrainedOptimizationPack/src/MatrixSymPosDefInvCholFactor.hpp"		// .
 #include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"				// .
 //#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasicInitDiagonal.hpp"// | rHL (super basics)
-#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"                          // |
+#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"                          // |
 
 #include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
 #include "NLPInterfacePack/src/NLPVarReductPerm.hpp"

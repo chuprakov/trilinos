@@ -16,7 +16,7 @@
 #ifndef MATRIX_SYM_DENSE_INITIALIZE_H
 #define MATRIX_SYM_DENSE_INITIALIZE_H
 
-#include "AbstractLinAlgPack/src/MatrixBase.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixBase.hpp"
 
 namespace SparseLinAlgPack {
 

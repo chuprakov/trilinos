@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorMutableSubView.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "VectorMutable.hpp"
+#include "VectorMutableSubView.hpp"
+#include "VectorSpace.hpp"
 #include "RTOpStdOpsLib/src/RTOp_TOp_assign_scalar.h"
 #include "RTOpStdOpsLib/src/RTOp_TOp_assign_vectors.h"
 #include "RTOpStdOpsLib/src/RTOp_TOp_axpy.h"

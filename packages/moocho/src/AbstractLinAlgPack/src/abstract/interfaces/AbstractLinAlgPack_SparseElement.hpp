@@ -16,7 +16,7 @@
 #ifndef SPARSE_ELEMENT_H
 #define SPARSE_ELEMENT_H
 
-#include "AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -20,8 +20,8 @@
 
 #include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "AbstractLinAlgPack/src/Vector.hpp"
-#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 
 namespace ReducedSpaceSQPPack {
 

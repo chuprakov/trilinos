@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/VectorSpaceTesterSetOptions.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceTesterSetOptions.hpp"
 #include "StringToBool.hpp"
 
 // Define the options

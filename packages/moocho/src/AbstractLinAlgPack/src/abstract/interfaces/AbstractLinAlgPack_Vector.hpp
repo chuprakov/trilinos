@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "RTOpPack/src/RTOpCpp.hpp"
 #include "Range1D.hpp"
 

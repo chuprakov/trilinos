@@ -19,7 +19,7 @@
 #include "SparseLinAlgPack/src/MatrixCOORTmplItfc.hpp"
 #include "SparseLinAlgPack/src/COOMatrixTmplOp.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 #include "dynamic_cast_verbose.hpp"

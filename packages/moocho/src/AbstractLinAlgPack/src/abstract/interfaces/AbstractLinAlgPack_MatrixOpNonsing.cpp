@@ -15,9 +15,9 @@
 
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "MatrixOpNonsing.hpp"
+#include "VectorSpace.hpp"
+#include "LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 
 namespace AbstractLinAlgPack {

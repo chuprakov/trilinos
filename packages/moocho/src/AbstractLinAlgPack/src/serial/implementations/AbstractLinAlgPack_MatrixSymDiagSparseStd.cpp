@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "SparseLinAlgPack/src/MatrixSymDiagonalSparseStd.hpp"
-#include "AbstractLinAlgPack/src/SpVectorOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorOut.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "ThrowException.hpp"

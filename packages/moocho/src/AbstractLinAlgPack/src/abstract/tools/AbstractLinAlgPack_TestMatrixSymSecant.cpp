@@ -18,15 +18,15 @@
 
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/TestMatrixSymSecant.hpp"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixNonsing.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorOut.hpp"
-#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
-#include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/TestMatrixSymSecant.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 
 bool AbstractLinAlgPack::TestMatrixSymSecant(
 	const MatrixOp        &B

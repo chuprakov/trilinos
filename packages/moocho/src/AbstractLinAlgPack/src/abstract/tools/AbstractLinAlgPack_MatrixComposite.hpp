@@ -18,9 +18,9 @@
 
 #include <deque>
 
-#include "MatrixOp.hpp"
-#include "GenPermMatrixSlice.hpp"
-#include "VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "ref_count_ptr.hpp"
 #include "ReleaseResource.hpp"
 

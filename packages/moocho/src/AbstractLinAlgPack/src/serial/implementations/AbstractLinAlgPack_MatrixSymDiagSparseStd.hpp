@@ -17,7 +17,7 @@
 #define SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_STD_H
 
 #include "MatrixSymDiagonalSparse.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 
 namespace SparseLinAlgPack {
 

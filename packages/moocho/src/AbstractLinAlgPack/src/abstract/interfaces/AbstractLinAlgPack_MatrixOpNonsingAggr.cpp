@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/MatrixOpNonsingAggr.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "MatrixOpNonsingAggr.hpp"
+#include "MatrixOpOut.hpp"
+#include "VectorSpace.hpp"
+#include "LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 #include "dynamic_cast_verbose.hpp"
 

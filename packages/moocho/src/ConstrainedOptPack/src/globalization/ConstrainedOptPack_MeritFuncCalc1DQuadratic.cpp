@@ -15,8 +15,8 @@
 
 #include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncCalc.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "ThrowException.hpp"
 
 namespace ConstrainedOptimizationPack {

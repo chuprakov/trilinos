@@ -14,8 +14,8 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/src/MeritFuncNLPL1.hpp"
-#include "AbstractLinAlgPack/src/Vector.hpp"
-#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "ThrowException.hpp"
 #include "dynamic_cast_verbose.hpp"
 

@@ -16,8 +16,8 @@
 #ifndef ALAP_MATRIX_ZERO_H
 #define ALAP_MATRIX_ZERO_H
 
-#include "MatrixOp.hpp"
-#include "VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
 

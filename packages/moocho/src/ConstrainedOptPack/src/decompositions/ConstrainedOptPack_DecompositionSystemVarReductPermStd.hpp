@@ -19,7 +19,7 @@
 #include <stdexcept>
 
 #include "DecompositionSystemVarReductPerm.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 
 namespace ConstrainedOptimizationPack {
 

@@ -17,7 +17,7 @@
 #define VECTOR_WITH_OP_MUTABLE_DENSE_H
 
 #include "VectorSpaceSerial.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "ref_count_ptr.hpp"
 #include "ReleaseResource.hpp"

@@ -18,8 +18,8 @@
 #include <ostream>
 
 #include "SparseLinAlgPack/src/BFGS_helpers.hpp"
-#include "AbstractLinAlgPack/src/Vector.hpp"
-#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 
 bool SparseLinAlgPack::BFGS_sTy_suff_p_d(
 	const Vector    &s

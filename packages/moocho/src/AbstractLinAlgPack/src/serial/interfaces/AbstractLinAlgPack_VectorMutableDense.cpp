@@ -19,7 +19,7 @@
 #include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
-#include "AbstractLinAlgPack/src/apply_op_helper.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/apply_op_helper.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "WorkspacePack.hpp"
 #include "ThrowException.hpp"

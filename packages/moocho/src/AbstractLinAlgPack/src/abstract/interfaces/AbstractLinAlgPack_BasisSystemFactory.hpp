@@ -16,7 +16,7 @@
 #ifndef ABSTRACT_LIN_ALG_PACK_BASIS_SYSTEM_FACTORY_H
 #define ABSTRACT_LIN_ALG_PACK_BASIS_SYSTEM_FACTORY_H
 
-#include "AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractFactory.hpp"
 #include "ref_count_ptr.hpp"
 

@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
 namespace AbstractLinAlgPack {

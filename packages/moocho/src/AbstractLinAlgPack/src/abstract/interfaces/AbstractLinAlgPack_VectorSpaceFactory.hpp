@@ -16,7 +16,7 @@
 #ifndef VECTOR_SPACE_FACTORY_H
 #define VECTOR_SPACE_FACTORY_H
 
-#include "AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "ref_count_ptr.hpp"
 
 namespace AbstractLinAlgPack {

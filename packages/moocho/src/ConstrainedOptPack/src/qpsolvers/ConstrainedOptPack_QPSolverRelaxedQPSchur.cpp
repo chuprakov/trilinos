@@ -18,8 +18,8 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchur.hpp"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
 #include "SparseLinAlgPack/src/VectorSpaceSerial.hpp"

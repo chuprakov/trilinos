@@ -19,17 +19,17 @@
 #include <typeinfo>
 #include <stdexcept>
 
-#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpSubView.hpp"
-#include "AbstractLinAlgPack/src/MatrixPermAggr.hpp"
-#include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/Permutation.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/SpVectorView.hpp"
-#include "AbstractLinAlgPack/src/EtaVector.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "MatrixSymOp.hpp"
+#include "MatrixOpSubView.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/MatrixPermAggr.hpp"
+#include "MultiVectorMutable.hpp"
+#include "VectorSpace.hpp"
+#include "VectorMutable.hpp"
+#include "Permutation.hpp"
+#include "SpVectorClass.hpp"
+#include "SpVectorView.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
+#include "LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 
 namespace AbstractLinAlgPack {

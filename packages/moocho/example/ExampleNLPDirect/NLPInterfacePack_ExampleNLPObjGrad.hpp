@@ -17,9 +17,9 @@
 #define EXAMPLE_NLP_OBJ_GRADIENT_H
 
 #include "NLPInterfacePack/src/NLPObjGradient.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/VectorSpaceBlock.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlock.hpp"
 
 namespace NLPInterfacePack {
 

@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "RTOpStdOpsLib/src/RTOp_ROp_max.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_max_near_feas_step.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_max_rel_step.h"

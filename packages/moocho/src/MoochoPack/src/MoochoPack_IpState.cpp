@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 //
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
 
 // Iteration Quantity Strings
 extern const std::string ReducedSpaceSQPPack::barrier_parameter_name = "barrier_parameter";

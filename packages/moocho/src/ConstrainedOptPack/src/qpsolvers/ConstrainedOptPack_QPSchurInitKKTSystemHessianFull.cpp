@@ -14,8 +14,8 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianFull.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"

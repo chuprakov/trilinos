@@ -15,9 +15,9 @@
 
 #include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepStd_Strategy.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
-#include "AbstractLinAlgPack/src/MatrixOpNonsing.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 
 namespace ReducedSpaceSQPPack {
 

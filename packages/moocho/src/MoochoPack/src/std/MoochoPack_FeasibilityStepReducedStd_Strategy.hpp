@@ -22,9 +22,9 @@
 #include "IterationPack/src/CastIQMember.hpp"
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxed.hpp"
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.hpp"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 

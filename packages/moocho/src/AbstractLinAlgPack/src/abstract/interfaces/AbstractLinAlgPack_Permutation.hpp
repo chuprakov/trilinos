@@ -16,7 +16,7 @@
 #ifndef ALAP_PERMUTATION_H
 #define ALAP_PERMUTATION_H
 
-#include "AbstractLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
 namespace AbstractLinAlgPack {
 

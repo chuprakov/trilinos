@@ -21,8 +21,8 @@
 #include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncNLPDirecDeriv.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
-#include "AbstractLinAlgPack/src/VectorMutable.hpp"
-#include "AbstractLinAlgPack/src/VectorOut.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace ReducedSpaceSQPPack {

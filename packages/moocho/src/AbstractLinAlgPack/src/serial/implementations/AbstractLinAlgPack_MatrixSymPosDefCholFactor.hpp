@@ -22,7 +22,7 @@
 #include "MatrixSymWithOpNonsingularSerial.hpp"
 #include "MatrixSymDenseInitialize.hpp"
 #include "MatrixSymWithOpGetGMSSymMutable.hpp"
-#include "AbstractLinAlgPack/src/MatrixSymSecant.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymSecant.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "ref_count_ptr.hpp"
