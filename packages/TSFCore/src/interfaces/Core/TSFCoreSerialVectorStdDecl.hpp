@@ -77,20 +77,17 @@ public:
 	/** @name Constructors/initializers */
 	//@{
 
-	///
-	/** Calls <tt>this->initialize(vecSpc)</tt>.
+	/** \brief Calls <tt>this->initialize(vecSpc)</tt>.
 	 */
 	SerialVectorStd(
 		const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc
 		);
-	///
-	/** Calls <tt>this->initialize(dim)</tt>.
+	/** \brief Calls <tt>this->initialize(dim)</tt>.
 	 */
 	SerialVectorStd(
 		const Index dim = 0
 		);
-	///
-	/** Calls <tt>this->initialize(v,vs,dim,vecSpc)</tt>.
+	/** \brief Calls <tt>this->initialize(v,vs,dim,vecSpc)</tt>.
 	 */
 	SerialVectorStd(
 		const Teuchos::RefCountPtr<Scalar>                      &v
@@ -98,20 +95,17 @@ public:
 		,const Index                                            dim
 		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc = Teuchos::null
 		);
-	///
-	/** Call <tt>this->initialize(v,vs,vecSpc)</tt> with internally dynamically allocated data <tt>v</tt>.
+	/** \brief Call <tt>this->initialize(v,vs,vecSpc)</tt> with internally dynamically allocated data <tt>v</tt>.
 	 */
 	void initialize(
 		const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc
 		);
-	///
-	/** Call <tt>this->initialize(v,vs,true)</tt> with internally dynamically allocated data <tt>v</tt>.
+	/** \brief Call <tt>this->initialize(v,vs,true)</tt> with internally dynamically allocated data <tt>v</tt>.
 	 */
 	void initialize(
 		const Index dim
 		);
-	///
-	/** Initialize with storage.
+	/** \brief Initialize with storage.
 	 *
 	 * @param  v      [in] Smart pointer to array of storage that <tt>*this</tt> will represent.
 	 * @param  vs     [in] Stride for the storage in <tt>v[]</tt> (see Postconditions).
