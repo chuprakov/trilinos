@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   try {
     tol = My_List.template get<float>("Tolerance");
   }
-  catch (exception& e) {
+  catch (std::exception& e) {
     tol = 1e-6;
   }
 
@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
   try {
     tol = Teuchos::getParameter<float>(My_List, "Tolerance");
   }
-  catch (exception& e) {
+  catch (std::exception& e) {
     tol = 1e-6;
   }
 
