@@ -221,7 +221,7 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-EXTRA_DIST = bcsstk14.rsa  fidap005.rua  orsirr_2.rua
+EXTRA_DIST = fidap005.rua  orsirr_2.rua
 all: all-am
 
 .SUFFIXES:
@@ -447,7 +447,6 @@ uninstall-am: uninstall-info-am
 
 
 GetNecessaryFiles: $(EXTRA_DIST)
-	cp -f $(srcdir)/bcsstk14.rsa .
 	cp -f $(srcdir)/fidap005.rua .
 	cp -f $(srcdir)/orsirr_2.rua .
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
