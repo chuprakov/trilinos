@@ -70,6 +70,7 @@
 #include "../../include/std/InitFinDiffReducedHessian_Step.h"
 #include "../../include/std/InitFinDiffReducedHessian_StepSetOptions.h"
 #include "../../include/std/ReducedHessianBFGSStd_Step.h"
+#include "../../include/std/ReducedHessianBFGSStd_StepSetOptions.h"
 #include "../../include/std/DepDirecStd_Step.h"
 #include "../../include/std/CheckBasisFromPy_Step.h"
 #include "../../include/std/IndepDirecWithoutBounds_Step.h"
@@ -143,7 +144,6 @@ rSQPAlgo_ConfigMamaJama::SOptionValues::SOptionValues()
 		, num_lbfgs_updates_stored_(7)
 		, lbfgs_auto_scaling_(true)
 		, hessian_initialization_(INIT_HESS_FIN_DIFF_SCALE_DIAGONAL_ABS)
-		, quasi_newton_dampening_(false)
 		, qp_solver_type_(QPKWIK)
 		, warm_start_frac_(-1.0)
 		, line_search_method_(LINE_SEARCH_DIRECT)
@@ -193,7 +193,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	}
 
 	// Readin the options
-	if( options_ ) {
+	if(options_) {
 		readin_options( *options_, &cov_, trase_out );
 	}
 	else {
@@ -603,7 +603,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 			{
 				NLPrSQPTailoredApproachTesterSetOptions options_setter(deriv_tester.get());
-				options_setter.set_options(*options_);
+				if(options_) options_setter.set_options(*options_);
 			}		
 
 			EvalNewPointTailoredApproach_Step
@@ -622,7 +622,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			}
 			{
 				EvalNewPointTailoredApproach_StepSetOptions options_setter(eval_new_point_step);
-				options_setter.set_options(*options_);
+				if(options_) options_setter.set_options(*options_);
 			}		
 
 			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
@@ -642,7 +642,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 			{
 				NLPFirstDerivativesTesterSetOptions options_setter(deriv_tester.get());
-				options_setter.set_options(*options_);
+				if(options_) options_setter.set_options(*options_);
 			}		
 
 			EvalNewPointStd_Step
@@ -650,7 +650,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 			{
 				EvalNewPointStd_StepSetOptions options_setter(eval_new_point_step);
-				options_setter.set_options(*options_);
+				if(options_) options_setter.set_options(*options_);
 			}		
 
 			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
@@ -676,17 +676,23 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 			CheckConvergenceStd_AddedStepSetOptions
 				opt_setter( check_convergence_step );
-			opt_setter.set_options( *options_ );
+			if(options_) opt_setter.set_options( *options_ );
 
 			algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
 		}
 
 
 		// (6) ReducedHessian
-		ref_count_ptr<ReducedHessianBFGSStd_Step>
-			bfgs_updater = new ReducedHessianBFGSStd_Step(cov_.quasi_newton_dampening_);
-		algo->insert_step( ++step_num, ReducedHessian_name
-			, rcp::rcp_implicit_cast<AlgorithmStep>(bfgs_updater) );
+		{
+			ReducedHessianBFGSStd_Step
+				*bfgs_update_step = new ReducedHessianBFGSStd_Step();
+
+			ReducedHessianBFGSStd_StepSetOptions
+				opt_setter( bfgs_update_step );
+			if(options_) opt_setter.set_options( *options_ );
+
+			algo->insert_step( ++step_num, ReducedHessian_name, bfgs_update_step );
+		}
 
 		// (6.-1) CheckSkipBFGSUpdate
 		{
@@ -694,7 +700,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				*step = new CheckSkipBFGSUpdateStd_Step;
 			CheckSkipBFGSUpdateStd_StepSetOptions
 				opt_setter( step );
-			opt_setter.set_options( *options_ );
+			if(options_) opt_setter.set_options( *options_ );
 			
 			algo->insert_assoc_step(
 				  step_num
@@ -751,7 +757,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 			ConstrainedOptimizationPack::DirectLineSearchArmQuad_StrategySetOptions
 				ls_options_setter( direct_line_search, "DirectLineSearchArmQuadSQPStep" );
-			ls_options_setter.set_options( *options_ );
+			if(options_) ls_options_setter.set_options( *options_ );
 			LineSearch_Step
 				*line_search_step = 0;
 
@@ -793,7 +799,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					ConstrainedOptimizationPack::DirectLineSearchArmQuad_StrategySetOptions
 						direct_ls_opt_setter( direct_ls_newton
 							, "DirectLineSearchArmQuad2ndOrderCorrectNewton" );
-					direct_ls_opt_setter.set_options( *options_ );
+					if(options_) direct_ls_opt_setter.set_options( *options_ );
 					// Create the step object and set its options from the options object.
 					LineSearch2ndOrderCorrect_Step
 						*_line_search_step = new LineSearch2ndOrderCorrect_Step(
@@ -805,7 +811,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 						);
 					LineSearch2ndOrderCorrect_StepSetOptions
 						ls_opt_setter( _line_search_step );
-					ls_opt_setter.set_options( *options_ );
+					if(options_) ls_opt_setter.set_options( *options_ );
 					//
 					line_search_step = _line_search_step;
 					break;
@@ -820,7 +826,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 							);
 					LineSearchWatchDog_StepSetOptions
 						ls_opt_setter( _line_search_step );
-					ls_opt_setter.set_options( *options_ );
+					if(options_) ls_opt_setter.set_options( *options_ );
 					//
 					line_search_step = _line_search_step;
 					break;
@@ -872,7 +878,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			// Set the options from the stream
 			MeritFunc_PenaltyParamUpdate_AddedStepSetOptions
 				ppu_options_setter( param_update_step );
-			ppu_options_setter.set_options( *options_ );
+			if(options_) ppu_options_setter.set_options( *options_ );
 
 			algo->insert_assoc_step(	  step_num
 										, GeneralIterationPack::PRE_STEP
@@ -898,7 +904,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 				MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions
 					options_setter( _added_step );
-				options_setter.set_options( *options_ );
+				if(options_) options_setter.set_options( *options_ );
 
 				algo->insert_assoc_step(	  step_num
 											, GeneralIterationPack::PRE_STEP
@@ -1038,10 +1044,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					break;
 			}
 			qp_solver->set_print_level( qp_olevel );
-			if( options_ ) {
+			if(options_) {
 				ReducedSpaceSQPPack::QPSCPDPack::QPMixedFullReducedQPSCPDSolverSetOptions
 					option_setter( qp_solver );
-				option_setter.set_options( *options_ );
+				if(options_) option_setter.set_options( *options_ );
 			}
 
 			QPMixedFullReducedSolverCheckOptimality
@@ -1181,7 +1187,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			*init_red_hess_step = new InitFinDiffReducedHessian_Step(init_hess);
 		InitFinDiffReducedHessian_StepSetOptions
 			opt_setter( init_red_hess_step );
-		opt_setter.set_options( *options_ );
+		if(options_) opt_setter.set_options( *options_ );
 		algo->insert_assoc_step( poss, GeneralIterationPack::PRE_STEP, 1
 			, "InitFiniteDiffReducedHessian"
 			, init_red_hess_step  );
@@ -1240,7 +1246,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			corr_xinit_ptr = new CorrectBadInitGuessStd_AddedStep;
 		CorrectBadInitGuessStd_AddedStepSetOptions
 			options_setter(corr_xinit_ptr.get());
-		options_setter.set_options(*options_);
+		if(options_) options_setter.set_options(*options_);
 
 		Algorithm::poss_type poss;
 
@@ -1350,7 +1356,7 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 	if( OptionsFromStream::options_group_exists( optgrp ) ) {
 
 		// Define map for options group "MamaJama".
-		const int num_opts = 16;
+		const int num_opts = 15;
 		enum EMamaJama {
 			DIRECT_LINEAR_SOLVER
 			,NULL_SPACE_MATRIX
@@ -1362,7 +1368,6 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 			,NUM_LBFGS_UPDATES_STORED
 			,LBFGS_AUTO_SCALING
 			,HESSIAN_INITIALIZATION
-			,QUASI_NEWTON_DAMPENING
 			,QP_SOLVER
 			,WARM_START_FRAC
 			,LINE_SEARCH_METHOD
@@ -1380,7 +1385,6 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 			,"num_lbfgs_updates_stored"
 			,"lbfgs_auto_scaling"
 			,"hessian_initialization"
-			,"quasi_newton_dampening"
 			,"qp_solver"
 			,"warm_start_frac"
 			,"line_search_method"
@@ -1486,10 +1490,6 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 							" are available"  );
 					break;
 				}
-				case QUASI_NEWTON_DAMPENING:
-					ov->quasi_newton_dampening_
-						= StringToBool( "quasi_newton_dampening", ofsp::option_value(itr).c_str() );
-					break;
 				case QP_SOLVER:
 				{
 					const std::string &qp_solver = ofsp::option_value(itr);

@@ -64,7 +64,6 @@ public:
 	    num_lbfgs_updates_stored = 7;
 	    lbfgs_auto_scaling = true;
 	    hessian_initialization = FINITE_DIFF_DIAGONAL_ABS;
-	    quasi_newton_dampening = false;
 
 	*** QP subproblem solver
 	    qp_solver = QPKWIK;
@@ -241,7 +240,6 @@ private:
 		int						num_lbfgs_updates_stored_;
 		bool					lbfgs_auto_scaling_;
 		EHessianInitialization	hessian_initialization_;
-		bool					quasi_newton_dampening_;
 		// QP subproblem solvers
 		EQPSolverType			qp_solver_type_;
 		value_type				warm_start_frac_;				// default = -1.0, don't change default
