@@ -19,7 +19,7 @@ ARCXX = $(AR)
 ARCXXFLAGS = $(ARFLAGS) 
 
 # Specify any platform-specific libraries
-ARCH_LIB = -lpthread $(DYNAMIC_LIB)
+ARCH_LIB = 
 
 # List architecture/compiler dependent flags (such as ARCHCXXFLAGS, ARCHCFLAGS,
 # ARCHDEPENDSFLAG, DEBUGFLAG, OPTFLAG, WARNINGFLAG) below:
