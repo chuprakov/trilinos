@@ -28,6 +28,7 @@
 
 #include "kay.h"
 #include "Epetra2TSFutils.h"
+#include "TSFHashtable.h"
 
 using namespace TSF;
 using namespace SPP;
@@ -97,19 +98,36 @@ int main(int argc, void** argv)
  // 4) Make the preconditioner and get a TSFLinearOperator representing the prec. 
 
  // 1) Build inv(F) so that it corresponds to using GMRES with ML.
-  TSFLinearSolver FSolver;
-  ML_solverData   Fsolver_data;
-  bool symmetric = false;
-  ML_TSF_defaults(FSolver, &Fsolver_data, symmetric, F_crs);
+  TSFHashtable<int, int> azOptionsF;
+  TSFHashtable<int, double> azParamsF;
+  azOptionsF.put(AZ_solver, AZ_gmres);
+  azOptionsF.put(AZ_ml, 1);
+  azOptionsF.put(AZ_ml_levels, 4);
+  azOptionsF.put(AZ_precond, AZ_dom_decomp);
+  azOptionsF.put(AZ_subdomain_solve, AZ_ilu);
+  azParamsF.put(AZ_tol, 1e-6);
+  azOptionsF.put(AZ_max_iter, 200);
+  azOptionsF.put(AZ_recursive_iterate, 1);
+  azOptionsF.put(AZ_output, 1);
+  TSFLinearSolver FSolver = new AZTECSolver(azOptionsF,azParamsF);
   FSolver.setVerbosityLevel(4);
 
  // 2) Build a Schur complement factory for getting inv(X) approximation.
  // 2 a) Build solver for inv(Ap) 
- //      using TSF's GMRES solver
-   TSFLinearSolver ApSolver;
-   ML_solverData   Apsolver_data;
-   symmetric = true;
-   ML_TSF_defaults(ApSolver, &Apsolver_data, symmetric, Ap_crs);
+ //      using CG solver with ML
+  TSFHashtable<int, int> azOptionsAp;
+  TSFHashtable<int, double> azParamsAp;
+  azOptionsAp.put(AZ_solver, AZ_cg);
+  azOptionsAp.put(AZ_ml, 1);
+  azOptionsAp.put(AZ_ml_sym, 1);
+  azOptionsAp.put(AZ_ml_levels, 4);
+  azOptionsAp.put(AZ_precond, AZ_dom_decomp);
+  azOptionsAp.put(AZ_subdomain_solve, AZ_ilu);
+  azParamsAp.put(AZ_tol, 1e-6);
+  azOptionsAp.put(AZ_max_iter, 200);
+  azOptionsAp.put(AZ_recursive_iterate, 1);
+  azOptionsAp.put(AZ_output, 1);
+  TSFLinearSolver ApSolver = new AZTECSolver(azOptionsAp,azParamsAp);
    ApSolver.setVerbosityLevel(4);
 
  // 2 b) Build a Schur complement factory of type KayLoghinSchurFactory.
@@ -153,6 +171,7 @@ int main(int argc, void** argv)
  AztecOO solver(problem);
  solver.SetPrecOperator(saddlePrec_epet);
  solver.SetAztecOption(AZ_solver,AZ_GMRESR);
+ solver.SetAztecOption(AZ_output,1);
  solver.Iterate(30, 1.0E-6);
  
  delete saddlePrec_epet;
