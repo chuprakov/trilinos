@@ -33,6 +33,7 @@
 #define TSFCORE_OP_BASE_DECL_HPP
 
 #include "TSFCoreTypes.hpp"
+#include "Teuchos_Describable.hpp"
 
 namespace TSFCore {
 
@@ -47,7 +48,7 @@ namespace TSFCore {
  * \ingroup TSFCore_fundamental_interfaces_code_grp
  */
 template<class Scalar>
-class OpBase {
+class OpBase : virtual public Teuchos::Describable {
 public:
 
 	///

@@ -126,6 +126,9 @@ template<class Scalar>
 class LinearOp : virtual public OpBase<Scalar> {
 public:
 
+	///
+	using Teuchos::Describable::describe;
+
 	/** @name Pure virtual functions (must be overridden by subclass) */
 	//@{
 
@@ -242,6 +245,43 @@ public:
 		,MultiVector<Scalar>          *Y
 		,const Scalar                 alpha = Teuchos::ScalarTraits<Scalar>::one()
 		,const Scalar                 beta  = Teuchos::ScalarTraits<Scalar>::zero()
+		) const;
+
+	//@}
+
+  /** @name Overridden from Teuchos::Describable */
+  //@{
+
+	/** \breif Generates a default outputting for all linear operators.
+	 *
+	 * Calls on the <tt>this->describe(void)</tt> function for the name
+	 * of the class (and possibly its instance name) and then if
+	 * <tt>verbLevel >= VERB_EXTREME</tt>, then the linear operators
+	 * elements themselves are printed as well.  The format of the
+	 * output is as follows:
+	 *
+	 \verbatim
+
+   type = 'this->describe()', rangeDim = m, domainDim = n
+     1:1:a11 1:2:a12 ... 1:n:a1n
+     2:1:a21 2:2:a22 ... 1:n:a2n
+     .       .           .
+     .       .           .
+     .       .           .
+     m:1:am1 m:2:am2 ... m:n:amn
+	 \endverbatim
+	 *
+	 * Before <tt>type = 'this->describe()'</tt> is printed and after
+	 * each newline, <tt>leadingIndent</tt> is output.  The
+	 * <tt>index:value</tt> lines are offset an additional
+	 * <tt>indentSpacer</tt> amount.  A newline is printed after the
+	 * last <tt>m:n:amn</tt> entry.
+	 */
+	std::ostream& describe(
+		std::ostream                         &out
+		,const Teuchos::EVerbosityLevel      verbLevel      = Teuchos::Describable::verbLevel_default
+		,const std::string                   leadingIndent  = Teuchos::Describable::leadingIndent_default
+		,const std::string                   indentSpacer   = Teuchos::Describable::indentSpacer_default
 		) const;
 
 	//@}

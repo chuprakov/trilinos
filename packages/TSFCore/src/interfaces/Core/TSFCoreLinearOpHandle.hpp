@@ -155,6 +155,34 @@ public:
 
 	//@}
 
+	/** @name Teuchos::Describable wrappers */
+	//@{
+																								
+	/** \brief Calls <tt>this->op()->describe()</tt>.
+	 */
+	std::string describe() const;
+
+	/** \breif Modifies output for a <tt>LinearOp</tt> object by
+	 * printing transpose and scaling info.
+	 *
+	 * This function simply appends
+	 
+	 \verbatim
+
+   defaultTrans = defaultTrans, defaultAlpha = defaultAlpha
+	 \endverbatim
+
+	 * before calling <tt>op()->describe(out,verbLevel,leadingIndent,indentSpacer)</tt>.
+	 */
+	std::ostream& describe(
+		std::ostream                         &out
+		,const Teuchos::EVerbosityLevel      verbLevel      = Teuchos::Describable::verbLevel_default
+		,const std::string                   leadingIndent  = Teuchos::Describable::leadingIndent_default
+		,const std::string                   indentSpacer   = Teuchos::Describable::indentSpacer_default
+		) const;
+
+	//@}
+
 	/** @name LinearOp wrappers */
 	//@{
 
@@ -325,6 +353,30 @@ inline
 LinearOpHandle<Scalar> LinearOpHandle<Scalar>::transpose() const
 {
 	return LinearOpHandle<Scalar>(this->op(),this->defaultTrans()==NOTRANS?TRANS:NOTRANS,this->defaultAlpha());
+}
+
+template<class Scalar>
+inline
+std::string LinearOpHandle<Scalar>::describe() const
+{
+	return op()->describe();
+}
+
+template<class Scalar>
+std::ostream& LinearOpHandle<Scalar>::describe(
+	std::ostream                         &out
+	,const Teuchos::EVerbosityLevel      verbLevel
+	,const std::string                   leadingIndent
+	,const std::string                   indentSpacer
+	) const
+{
+	out << leadingIndent << indentSpacer;
+	if( !this->op().get() ) {
+		out << "NULL\n";
+		return out;
+	}
+	out << "defaultTrans = " << toString(this->defaultTrans()) << ", defaultAlpha = " << this->defaultAlpha() << std::endl;
+	return this->op()->describe(out,verbLevel);
 }
 
 template<class Scalar>

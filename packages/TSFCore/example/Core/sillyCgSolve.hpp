@@ -60,8 +60,8 @@ bool sillyCgSolve(
 	// Validate input
 	TEST_FOR_EXCEPT(x==NULL);
 	TSFCORE_ASSERT_LINEAR_OP_VEC_APPLY_SPACES("sillyCgSolve()",*A.op(),A.defaultTrans(),*x,&b); // A*x - b agree?
-	if(out) *out << "\nStarting CG solver ...\n" << std::scientific << "\n  Type of A = \'"<<typeid(*A.op()).name()<<"\'"
-							 << "\n  Type of b = \'"<<typeid(b).name()<<"\'" << "\n  Type of x = \'"<<typeid(*x).name()<<"\'\n\n";
+	if(out) *out << "\nStarting CG solver ...\n" << std::scientific << "\n  Type of A = \'"<<A.op()->describe()<<"\'"
+							 << "\n  Type of b = \'"<<b.describe()<<"\'" << "\n  Type of x = \'"<<x->describe()<<"\'\n\n";
 	// Get the vector space (domain and range spaces should be the same)
 	RefCountPtr<const TSFCore::VectorSpace<Scalar> > space = A.domain();
 	// Compute initial residual : r = b - A*x

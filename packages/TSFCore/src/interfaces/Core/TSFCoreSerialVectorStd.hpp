@@ -36,6 +36,7 @@
 #include "TSFCoreSerialVectorBase.hpp"
 #include "TSFCoreSerialVectorSpaceStd.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "Teuchos_ScalarTraits.hpp"
 
 namespace TSFCore {
 
@@ -163,6 +164,14 @@ Teuchos::RefCountPtr< const VectorSpace<Scalar> >
 SerialVectorStd<Scalar>::space() const
 {
 	return space_serial_;
+}
+
+// Overridden from Teuchos::Describable
+
+template<class Scalar>
+std::string SerialVectorStd<Scalar>::describe() const
+{
+	return (std::string("SerialVectorStd<") + Teuchos::ScalarTraits<Scalar>::name() + std::string(">"));
 }
 
 } // end namespace TSFCore

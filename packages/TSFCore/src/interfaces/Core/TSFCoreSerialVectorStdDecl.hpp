@@ -182,6 +182,12 @@ public:
 	Teuchos::RefCountPtr< const VectorSpace<Scalar> > space() const;
 	//@}
 
+  /** @name Overridden from Teuchos::Describable */
+  //@{
+	///
+	std::string describe() const;
+	//@}
+
 private:
 
 	// ///////////////////////////////////////

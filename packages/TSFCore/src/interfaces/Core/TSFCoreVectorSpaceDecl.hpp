@@ -33,6 +33,7 @@
 #define TSFCORE_VECTOR_SPACE_DECL_HPP
 
 #include "TSFCoreTypes.hpp"
+#include "Teuchos_Describable.hpp"
 
 namespace TSFCore {
 
@@ -101,7 +102,7 @@ namespace TSFCore {
  * \ingroup TSFCore_fundamental_interfaces_code_grp
  */
 template<class Scalar>
-class VectorSpace {
+class VectorSpace : virtual public Teuchos::Describable {
 public:
 
 	///

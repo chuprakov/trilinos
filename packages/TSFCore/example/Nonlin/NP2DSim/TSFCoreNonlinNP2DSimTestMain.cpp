@@ -43,7 +43,7 @@ int main()
 	try {
 		
 		std::cout
-			<< std::endl
+			<< std::endl << std::scientific
 			<< "************************************************\n"
 			<< "*** Testing TSFCore::Nonlin::NP2DSim<> class ***\n"
 			<< "************************************************\n";

@@ -128,6 +128,28 @@ void Vector<Scalar>::setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub
 		);
 }
 
+// Overridden from Teuchos::Describable
+
+template<class Scalar>
+std::ostream& Vector<Scalar>::describe(
+		std::ostream                         &out
+		,const Teuchos::EVerbosityLevel      verbLevel
+		,const std::string                   leadingIndent
+		,const std::string                   indentSpacer
+		) const
+{
+	out << leadingIndent << indentSpacer << "type = \'" << this->describe()
+			<< "\', size = " << this->space()->dim() << "\n";
+	if(verbLevel >= Teuchos::VERB_HIGH) {
+		RTOpPack::SubVectorT<Scalar> sv;
+		this->getSubVector(Range1D(),&sv);
+		for( Index i = 1; i <= sv.subDim(); ++i )
+			out << leadingIndent << indentSpacer << indentSpacer << i << ":" << sv(i) << std::endl;
+		this->freeSubVector(&sv);
+	}
+	return out;
+}
+
 // Overridden from OpBase
 
 template<class Scalar>

@@ -126,6 +126,8 @@ class Vector : virtual public MultiVector<Scalar> {
 public:
 
 	///
+	using Teuchos::Describable::describe;
+	///
 	using MultiVector<Scalar>::applyOp;
 	///
 	using MultiVector<Scalar>::col;
@@ -403,6 +405,42 @@ public:
 	 */
 	virtual void setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub_vec );
 
+	//@}
+
+  /** @name Overridden from Teuchos::Describable */
+  //@{
+	///
+	/** \breif Generates a default outputting for all vectors.
+	 *
+	 * Calls on the <tt>this->describe(void)</tt> function for the name
+	 * of the class (and possibly its instance name) and then if
+	 * <tt>verbLevel >= VERB_HIGH</tt>, then the vector elements
+	 * themselves are printed as well.  The format of the output is
+	 * as follows:
+	 *
+	 \verbatim
+
+   type = 'this->describe()', size = n
+     1:x1
+     2:x2
+     .
+     .
+     .
+     n:xn
+	 \endverbatim
+	 *
+	 * Before <tt>type = 'this->describe()'</tt> is printed and after
+	 * each newline, <tt>leadingIndent</tt> is output.  The
+	 * <tt>index:value</tt> lines are offset an additional
+	 * <tt>indentSpacer</tt> amount.  A newline is printed after the
+	 * last <tt>n:xn</tt> entry.
+	 */
+	std::ostream& describe(
+		std::ostream                         &out
+		,const Teuchos::EVerbosityLevel      verbLevel      = Teuchos::Describable::verbLevel_default
+		,const std::string                   leadingIndent  = Teuchos::Describable::leadingIndent_default
+		,const std::string                   indentSpacer   = Teuchos::Describable::indentSpacer_default
+		) const;
 	//@}
 
   /** @name Overridden from OpBase (should never need to be overridden is subclasses) */
