@@ -18,6 +18,7 @@
 #include "ml_epetra_utils.h"
 #include "ml_epetra_operator.h"
 #include "ml_aztec_utils.h"
+using namespace Epetra_ML;
 #endif
 
 using namespace TSF;
@@ -176,7 +177,7 @@ void AZTECSolver::setupML(Epetra_RowMatrix* F) const
   
   ML_Gen_Solver    (ml_handle, ML_MGV, 0, mlLevels_-1);
   
-  Epetra_ML_Operator  *MLop = new Epetra_ML_Operator(ml_handle,
+  MultiLevelOperator  *MLop = new MultiLevelOperator(ml_handle,
                                                      (F->OperatorDomainMap().Comm()),
                                                      (F->OperatorDomainMap()),
                                                      (F->OperatorDomainMap()));
