@@ -17,7 +17,7 @@
 
 #include "../std/CalcLambdaIndepStd_AddedStep.hpp"
 #include "../rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/ComputeMinMult.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
@@ -32,7 +32,7 @@ namespace LinAlgOpPack {
 }
 
 bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
+	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
 
 	using BLAS_Cpp::no_trans;
@@ -58,7 +58,7 @@ bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
@@ -109,7 +109,7 @@ bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 }
 
 void ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::print_step( const Algorithm& algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {
 	out

@@ -17,7 +17,7 @@
 #define CHECK_DECOMPOSITION_FROM_R_PY_STEP_H
 
 #include "NewDecompositionSelection_Strategy.hpp"
-#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
@@ -46,7 +46,7 @@ namespace ReducedSpaceSQPPack {
  * printout for a more detailed description what what is going on.
  */
 class CheckDecompositionFromRPy_Step
-	: public GeneralIterationPack::AlgorithmStep // doxygen needs full name
+	: public IterationPack::AlgorithmStep // doxygen needs full name
 {
 public:
 
@@ -71,10 +71,10 @@ public:
 	/** @name Overridden from AlgorithmStep */
 	//@{
 	///
-	bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 		, poss_type assoc_step_poss);
 	///
-	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 	//@}
 

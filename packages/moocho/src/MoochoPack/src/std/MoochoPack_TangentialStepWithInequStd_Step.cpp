@@ -21,7 +21,7 @@
 #include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithInequStd_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcat.hpp"
 #include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
 #include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
@@ -59,7 +59,7 @@ NullSpaceStepWithInequStd_Step::NullSpaceStepWithInequStd_Step(
 {}
 
 bool NullSpaceStepWithInequStd_Step::do_step(
-	Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
 	,poss_type assoc_step_poss
 	)
 {
@@ -85,7 +85,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
@@ -580,7 +580,7 @@ bool NullSpaceStepWithInequStd_Step::do_step(
 }
 
 void NullSpaceStepWithInequStd_Step::print_step(
-	const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 	,poss_type assoc_step_poss, std::ostream& out, const std::string& L
 	) const
 {

@@ -22,7 +22,7 @@
 #include "ReducedSpaceSQPPack/src/std/LineSearchFilter_Step.hpp"
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
@@ -95,12 +95,12 @@ LineSearchFilter_Step::~LineSearchFilter_Step()
   
 bool LineSearchFilter_Step::do_step(
   Algorithm& _algo, poss_type step_poss, 
-  GeneralIterationPack::EDoStepType type
+  IterationPack::EDoStepType type
   ,poss_type assoc_step_poss)
 	{
 	// Namespace Declarations
 	using DynamicCastHelperPack::dyn_cast;
-	using GeneralIterationPack::print_algorithm_step;
+	using IterationPack::print_algorithm_step;
 	using LinAlgOpPack::Vp_StV;
 	using std::setw;
     
@@ -114,7 +114,7 @@ bool LineSearchFilter_Step::do_step(
     // print step header
     if (static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS)) 
 		{ 
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 		}
     
@@ -425,7 +425,7 @@ bool LineSearchFilter_Step::do_step(
 	}
   
 void LineSearchFilter_Step::print_step(
-  const Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+  const Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
 	{
@@ -677,7 +677,7 @@ bool LineSearchFilter_Step::CheckFilterAcceptability(
 	}
 
 
-void LineSearchFilter_Step::UpdateFilter( GeneralIterationPack::AlgorithmState& s ) const
+void LineSearchFilter_Step::UpdateFilter( IterationPack::AlgorithmState& s ) const
 	{
     IterQuantityAccess<Filter_T>& filter_iq = filter_(s);
     
@@ -700,7 +700,7 @@ void LineSearchFilter_Step::UpdateFilter( GeneralIterationPack::AlgorithmState& 
 void LineSearchFilter_Step::AugmentFilter( 
   value_type f,
   value_type theta,
-  GeneralIterationPack::AlgorithmState& s ) const
+  IterationPack::AlgorithmState& s ) const
 	{
     value_type f_with_boundary = f-gamma_f_*theta;
     value_type theta_with_boundary = (1.0-gamma_theta_)*theta;

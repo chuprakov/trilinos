@@ -17,11 +17,11 @@
 #include <iomanip>
 #include <vector>
 
-#include "GeneralIterationPack/test/TestGeneralIterationPack.hpp"
-#include "GeneralIterationPack/src/IterQuantityAccessContiguous.hpp"
+#include "IterationPack/test/TestGeneralIterationPack.hpp"
+#include "IterationPack/src/IterQuantityAccessContiguous.hpp"
 #include "update_success.hpp"
 
-bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::ostream* out)
+bool IterationPack::TestingPack::TestIterQuantityAccessContiguous(std::ostream* out)
 {
 	namespace rcp = MemMngPack;
 

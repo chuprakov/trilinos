@@ -20,7 +20,7 @@
 #include "ReducedSpaceSQPPack/src/std/CalcD_vStep_Step.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 //#include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
 #include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
@@ -32,10 +32,10 @@
 
 
 bool ReducedSpaceSQPPack::CalcD_vStep_Step::do_step(Algorithm& _algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
+	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 	{
 	using DynamicCastHelperPack::dyn_cast;
-	using GeneralIterationPack::print_algorithm_step;
+	using IterationPack::print_algorithm_step;
 	using AbstractLinAlgPack::ele_wise_prod;
 	using AbstractLinAlgPack::lowerbound_multipliers_step;
 	using AbstractLinAlgPack::upperbound_multipliers_step;
@@ -50,7 +50,7 @@ bool ReducedSpaceSQPPack::CalcD_vStep_Step::do_step(Algorithm& _algo
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
 		{
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 		}
 
@@ -107,7 +107,7 @@ bool ReducedSpaceSQPPack::CalcD_vStep_Step::do_step(Algorithm& _algo
 	}
 
 void ReducedSpaceSQPPack::CalcD_vStep_Step::print_step( const Algorithm& algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {
 	out

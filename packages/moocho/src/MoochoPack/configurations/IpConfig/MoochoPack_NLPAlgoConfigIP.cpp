@@ -1120,14 +1120,14 @@ void Algo_ConfigIP::config_algo_cntr(
 
 			//* EvalNewPoint pre steps
 			// PreEvalNewPointBarrier
-			algo->insert_assoc_step( step_num, GeneralIterationPack::PRE_STEP, 1, "PreEvalNewPointBarrier", preEvalNewPointBarrier_step);
+			algo->insert_assoc_step( step_num, IterationPack::PRE_STEP, 1, "PreEvalNewPointBarrier", preEvalNewPointBarrier_step);
 
 			//* EvalNewPoint post steps
 			if( check_descent_range_space_step_step.get() && tailored_approach && algo->algo_cntr().check_results() )
 				{
 				algo->insert_assoc_step(
 				  step_num
-				  ,GeneralIterationPack::POST_STEP
+				  ,IterationPack::POST_STEP
 				  ,++assoc_step_num
 				  ,"CheckDescentRangeSpaceStep"
 				  ,check_descent_range_space_step_step
@@ -1135,7 +1135,7 @@ void Algo_ConfigIP::config_algo_cntr(
 				}
 
 			// PostEvalNewPointBarrier
-			algo->insert_assoc_step( step_num, GeneralIterationPack::POST_STEP, ++assoc_step_num, "PostEvalNewPointBarrier", postEvalNewPointBarrier_step);
+			algo->insert_assoc_step( step_num, IterationPack::POST_STEP, ++assoc_step_num, "PostEvalNewPointBarrier", postEvalNewPointBarrier_step);
 			assoc_step_num = 0;
 			
 			// ReducedGradient
@@ -1170,7 +1170,7 @@ void Algo_ConfigIP::config_algo_cntr(
 				if( check_decomp_from_py_step.get() )
 					algo->insert_assoc_step(
 						step_num
-						,GeneralIterationPack::POST_STEP
+						,IterationPack::POST_STEP
 						,++assoc_step_num
 						,"CheckDecompositionFromPy"
 						,check_decomp_from_py_step
@@ -1178,7 +1178,7 @@ void Algo_ConfigIP::config_algo_cntr(
 				if( check_decomp_from_Rpy_step.get() )
 					algo->insert_assoc_step(
 						step_num
-						,GeneralIterationPack::POST_STEP
+						,IterationPack::POST_STEP
 						,++assoc_step_num
 						,"CheckDecompositionFromRPy"
 						,check_decomp_from_Rpy_step
@@ -1186,7 +1186,7 @@ void Algo_ConfigIP::config_algo_cntr(
 				if( check_descent_range_space_step_step.get() )
 					algo->insert_assoc_step(
 						step_num
-						,GeneralIterationPack::POST_STEP
+						,IterationPack::POST_STEP
 						,++assoc_step_num
 						,"CheckDescentRangeSpaceStep"
 						,check_descent_range_space_step_step
@@ -1219,7 +1219,7 @@ void Algo_ConfigIP::config_algo_cntr(
 			// (.-1) CheckSkipBFGSUpdate
 			/*algo->insert_assoc_step(
 				step_num
-				,GeneralIterationPack::PRE_STEP
+				,IterationPack::PRE_STEP
 				,1
 				,CheckSkipBFGSUpdate_name
 				,check_skip_bfgs_update_step
@@ -1235,7 +1235,7 @@ void Algo_ConfigIP::config_algo_cntr(
 				// SetDBoundsStd
 				algo->insert_assoc_step(
 					step_num
-					,GeneralIterationPack::PRE_STEP
+					,IterationPack::PRE_STEP
 					,1
 					,"SetDBoundsStd"
 					,set_d_bounds_step
@@ -1279,7 +1279,7 @@ void Algo_ConfigIP::config_algo_cntr(
 				// (.-?) LineSearchFullStep
 				//algo->insert_assoc_step(
 				//	step_num
-				//	,GeneralIterationPack::PRE_STEP
+				//	,IterationPack::PRE_STEP
 				//	,++pre_step_i
 				//	,"LineSearchFullStep"
 				//	,line_search_full_step_step
@@ -1288,7 +1288,7 @@ void Algo_ConfigIP::config_algo_cntr(
 				if(merit_func_penalty_param_update_step.get()) {
 				  algo->insert_assoc_step(
 					  step_num
-					  ,GeneralIterationPack::PRE_STEP
+					  ,IterationPack::PRE_STEP
 					  ,++pre_step_i
 					  ,"MeritFunc_PenaltyParamUpdate"
 					  ,merit_func_penalty_param_update_step

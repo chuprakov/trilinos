@@ -26,7 +26,7 @@
 #include "ReducedSpaceSQPPack/src/std/PostProcessBarrierLineSearch_Step.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
@@ -50,12 +50,12 @@ PostProcessBarrierLineSearch_Step::PostProcessBarrierLineSearch_Step(
 	
 
 bool PostProcessBarrierLineSearch_Step::do_step(
-  Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+  Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
   ,poss_type assoc_step_poss
   )
 	{
 	using DynamicCastHelperPack::dyn_cast;
-	using GeneralIterationPack::print_algorithm_step;
+	using IterationPack::print_algorithm_step;
 	using AbstractLinAlgPack::Vp_StV;
 
 	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
@@ -67,7 +67,7 @@ bool PostProcessBarrierLineSearch_Step::do_step(
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
 		{
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( _algo, step_poss, type, assoc_step_poss, out );
 		}
 
@@ -96,7 +96,7 @@ bool PostProcessBarrierLineSearch_Step::do_step(
 
 
 void PostProcessBarrierLineSearch_Step::print_step(
-  const Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+  const Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
 	{

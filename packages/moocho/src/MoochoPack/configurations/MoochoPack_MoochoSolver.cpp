@@ -33,7 +33,7 @@
 #include "ReducedSpaceSQPPack/src/std/rSQPTrackSummaryStd.hpp"
 #include "ReducedSpaceSQPPack/src/std/rSQPTrackConsoleStd.hpp"
 #include "ReducedSpaceSQPPack/src/std/rSQPTrackStatsStd.hpp"
-#include "GeneralIterationPack/src/AlgorithmTrackComposite.hpp"
+#include "IterationPack/src/AlgorithmTrackerComposite.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
 #include "NLPInterfacePack/test/test_nlp_first_order_info.hpp"
@@ -758,8 +758,8 @@ void rSQPppSolver::update_solver() const
 	//
 		
 	if( solver_.get_track().get() == NULL ) {
-		ref_count_ptr<AlgorithmTrackComposite>
-			composite_track = mmp::rcp(new AlgorithmTrackComposite(journal_out_used_));
+		ref_count_ptr<AlgorithmTrackerComposite>
+			composite_track = mmp::rcp(new AlgorithmTrackerComposite(journal_out_used_));
 		if(do_console_outputting())
 			composite_track->tracks().push_back(
 				mmp::rcp(new rSQPTrackConsoleStd(console_out_used_,journal_out_used_)) );

@@ -28,7 +28,7 @@ NewDecompositionSelectionStd_Strategy::NewDecompositionSelectionStd_Strategy(
 
 bool NewDecompositionSelectionStd_Strategy::new_decomposition(
 	rSQPAlgo& algo, Algorithm::poss_type step_poss
-	,GeneralIterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
+	,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
 	)
 {
 	rSQPState               &s     = algo.rsqp_state();
@@ -76,7 +76,7 @@ bool NewDecompositionSelectionStd_Strategy::new_decomposition(
 
 void NewDecompositionSelectionStd_Strategy::print_new_decomposition(
 	const rSQPAlgo& algo, Algorithm::poss_type step_poss
-	,GeneralIterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
+	,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
 	,std::ostream& out, const std::string& L
 	) const
 {

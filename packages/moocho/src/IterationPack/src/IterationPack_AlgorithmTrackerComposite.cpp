@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////
-// AlgorithmTrackComposite.cpp
+// AlgorithmTrackerComposite.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,15 +15,15 @@
 
 #include <algorithm>
 
-#include "GeneralIterationPack/src/AlgorithmTrackComposite.hpp"
+#include "IterationPack/src/AlgorithmTrackerComposite.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
-AlgorithmTrackComposite::AlgorithmTrackComposite(const ostream_ptr_t& journal_out)
-	: AlgorithmTrack(journal_out)
+AlgorithmTrackerComposite::AlgorithmTrackerComposite(const ostream_ptr_t& journal_out)
+	: AlgorithmTracker(journal_out)
 {}
 
-void AlgorithmTrackComposite::initialize()
+void AlgorithmTrackerComposite::initialize()
 {
 	track_list_t::const_iterator
 		itr = tracks_.begin(), itr_end = tracks_.end();
@@ -31,7 +31,7 @@ void AlgorithmTrackComposite::initialize()
 		(*itr)->initialize();
 }
 
-void AlgorithmTrackComposite::output_iteration(
+void AlgorithmTrackerComposite::output_iteration(
 	const Algorithm& algo
 	) const
 {
@@ -41,7 +41,7 @@ void AlgorithmTrackComposite::output_iteration(
 		(*itr)->output_iteration(algo);
 }
 
-void AlgorithmTrackComposite::output_final(
+void AlgorithmTrackerComposite::output_final(
 	const Algorithm& algo, EAlgoReturn algo_return
 	) const
 {
@@ -51,4 +51,4 @@ void AlgorithmTrackComposite::output_final(
 		(*itr)->output_final(algo,algo_return);
 }
 
-} // end namespace GeneralIterationPack
+} // end namespace IterationPack

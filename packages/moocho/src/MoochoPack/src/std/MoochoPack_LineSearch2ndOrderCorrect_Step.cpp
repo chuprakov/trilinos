@@ -18,7 +18,7 @@
 
 #include "ReducedSpaceSQPPack/src/std/LineSearch2ndOrderCorrect_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncCalcNLP.hpp"
@@ -70,7 +70,7 @@ LineSearch2ndOrderCorrect_Step::LineSearch2ndOrderCorrect_Step(
 {}
 
 bool LineSearch2ndOrderCorrect_Step::do_step(
-	Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
 	,poss_type assoc_step_poss
 	)
 {
@@ -105,7 +105,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
@@ -666,7 +666,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 
 void LineSearch2ndOrderCorrect_Step::print_step(
 	const Algorithm& algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {
 	out	<< L << "*** Calculate a second order correction when near solution.\n"

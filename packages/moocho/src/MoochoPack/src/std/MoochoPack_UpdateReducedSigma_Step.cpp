@@ -27,7 +27,7 @@
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixIdentConcat.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/std/UpdateReducedSigma_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
@@ -46,12 +46,12 @@ UpdateReducedSigma_Step::UpdateReducedSigma_Step(
 	{}
 
 bool UpdateReducedSigma_Step::do_step(
-  Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+  Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
   ,poss_type assoc_step_poss
   )
 	{
 	using DynamicCastHelperPack::dyn_cast;
-	using GeneralIterationPack::print_algorithm_step;
+	using IterationPack::print_algorithm_step;
 
 	rSQPAlgo            &algo   = dyn_cast<rSQPAlgo>(_algo);
 	ipState             &s      = dyn_cast<ipState>(_algo.state());
@@ -62,7 +62,7 @@ bool UpdateReducedSigma_Step::do_step(
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
 		{
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( _algo, step_poss, type, assoc_step_poss, out );
 		}
 
@@ -99,7 +99,7 @@ bool UpdateReducedSigma_Step::do_step(
 
 
 void UpdateReducedSigma_Step::print_step(
-  const Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+  const Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
 	{

@@ -16,7 +16,7 @@
 #ifndef INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_H
 #define INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_H
 
-#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "IterationPack/src/AlgorithmStep.hpp"
 #include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
@@ -55,7 +55,7 @@ namespace ReducedSpaceSQPPack {
  * to limit the smallest diagonal as diag(i) > max(diag(i)) / max_cond.
  */
 class InitFinDiffReducedHessian_Step
-	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+	: public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
@@ -90,10 +90,10 @@ public:
 	/** @name Overridden from AlgorithmStep */
 	//@{
 	///
-	bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 		, poss_type assoc_step_poss);
 	///
-	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 	//@}
 

@@ -21,7 +21,7 @@
 #include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.hpp"
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPerm.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
 #include "NLPInterfacePack/src/NLPVarReductPerm.hpp"

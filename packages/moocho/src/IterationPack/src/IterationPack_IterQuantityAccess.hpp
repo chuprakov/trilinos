@@ -18,7 +18,7 @@
 
 #include "IterQuantity.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 ///
 /** Interface to typed iteration quantities.
@@ -178,6 +178,6 @@ public:
 
 };	// end class IterQuantityAccess 
 
-}	// end namespace GeneralIterationPack
+}	// end namespace IterationPack
 
 #endif	// ITER_QUANTITY_ACCESS_H

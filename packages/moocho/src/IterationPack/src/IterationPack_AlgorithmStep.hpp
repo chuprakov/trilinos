@@ -18,9 +18,9 @@
 
 #include <iosfwd>
 
-#include "GeneralIterationPackTypes.hpp"
+#include "IterationPackTypes.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 ///
 /** Base type for all objects that perform steps in an <tt>Algorithm</tt>.
@@ -72,6 +72,6 @@ public:
 
 };	// end class AlgorithmStep
 
-}	// end namespace GeneralIterationPack 
+}	// end namespace IterationPack 
 
 #endif // ALGORITHM_STEP_H

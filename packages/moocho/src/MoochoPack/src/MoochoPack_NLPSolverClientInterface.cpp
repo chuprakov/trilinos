@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ReducedSpaceSQPPack/src/rSQPSolverClientInterface.hpp"
-#include "GeneralIterationPack/src/AlgorithmTrack.hpp"
+#include "IterationPack/src/AlgorithmTracker.hpp"
 
 ReducedSpaceSQPPack::rSQPSolverClientInterface::rSQPSolverClientInterface(
 	int                      max_iter

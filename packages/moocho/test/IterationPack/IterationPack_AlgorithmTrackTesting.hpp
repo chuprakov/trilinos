@@ -16,17 +16,17 @@
 #ifndef ALGORITHM_TRACK_TESTING_H
 #define ALGORITHM_TRACK_TESTING_H
 
-#include "GeneralIterationPack/src/AlgorithmTrack.hpp"
+#include "IterationPack/src/AlgorithmTracker.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 ///
 /** Testing class.
   */
-class AlgorithmTrackTesting : public AlgorithmTrack {
+class AlgorithmTrackTesting : public AlgorithmTracker {
 public:
 
-	AlgorithmTrackTesting(const ostream_ptr_t& journal_out) : AlgorithmTrack(journal_out)
+	AlgorithmTrackTesting(const ostream_ptr_t& journal_out) : AlgorithmTracker(journal_out)
 	{}
 
 	// Overriden
@@ -39,6 +39,6 @@ public:
 
 };	// end class AlgorithmTrackTesting
 
-}	// end namespace GeneralIterationPack 
+}	// end namespace IterationPack 
 
 #endif // ALGORITHM_TRACK_TESTING_H

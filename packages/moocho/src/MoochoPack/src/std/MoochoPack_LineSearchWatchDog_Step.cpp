@@ -19,7 +19,7 @@
 #include "../std/LineSearchWatchDog_Step.hpp"
 #include "../std/rSQPAlgorithmStepNames.hpp"
 #include "../rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncCalcNLP.hpp"
 #include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
@@ -55,7 +55,7 @@ ReducedSpaceSQPPack::LineSearchWatchDog_Step::LineSearchWatchDog_Step(
 {}
 
 bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
+	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
 	using DenseLinAlgPack::norm_inf;
 	using DenseLinAlgPack::V_VpV;
@@ -77,7 +77,7 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 
 	// print step header.
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
@@ -405,7 +405,7 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 }
 
 void ReducedSpaceSQPPack::LineSearchWatchDog_Step::print_step( const Algorithm& algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {
 	out	<< L << "*** Use the Watchdog linesearch when near solution.\n"

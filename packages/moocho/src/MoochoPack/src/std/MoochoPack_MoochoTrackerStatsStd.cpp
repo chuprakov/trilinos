@@ -120,16 +120,16 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 	o << left << setw(stat_w) << "status" << "= "
 		<< right << setw(val_w);
 	switch( algo_return ) {
-		case GeneralIterationPack::TERMINATE_TRUE:
+		case IterationPack::TERMINATE_TRUE:
 			o << "solved";
 			break;
-		case GeneralIterationPack::TERMINATE_FALSE:
+		case IterationPack::TERMINATE_FALSE:
 			o << "except";
 			break;
-		case GeneralIterationPack::MAX_ITER_EXCEEDED:
+		case IterationPack::MAX_ITER_EXCEEDED:
 			o << "max_iter";
 			break;
-		case GeneralIterationPack::MAX_RUN_TIME_EXCEEDED:
+		case IterationPack::MAX_RUN_TIME_EXCEEDED:
 			o << "max_run_time";
 			break;
 		default:

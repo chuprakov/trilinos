@@ -16,10 +16,10 @@
 #include <iomanip>
 
 #include "AlgorithmStepTesting.hpp"
-#include "GeneralIterationPack/src/Algorithm.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/Algorithm.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 bool AlgorithmStepTesting::do_step(Algorithm& algo, poss_type step_poss, EDoStepType type
 		, poss_type assoc_step_poss)
@@ -54,4 +54,4 @@ void AlgorithmStepTesting::print_step( const Algorithm& algo, poss_type step_pos
 		<< "\" : print_step(algo,step_poss,type,assoc_step_poss,out) called\n";
 }
 
-}	// end namespace GeneralIterationPack 
+}	// end namespace IterationPack 

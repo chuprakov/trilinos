@@ -17,7 +17,7 @@
 #define LINE_SEARCH_FAILURE_NEW_DECOMPOSITION_SELECTION_H
 
 #include "NewDecompositionSelection_Strategy.hpp"
-#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
@@ -31,12 +31,12 @@ namespace ReducedSpaceSQPPack {
   * failure then we must quit.
   */
 class LineSearchFailureNewDecompositionSelection_Step
-	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+	: public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
 	/// <<std comp>> members for LineSearch object.
-	STANDARD_COMPOSITION_MEMBERS( GeneralIterationPack::AlgorithmStep, line_search_step )
+	STANDARD_COMPOSITION_MEMBERS( IterationPack::AlgorithmStep, line_search_step )
 
 	/// <<std comp>> members for Decomposition Select Strategy object.
 	STANDARD_COMPOSITION_MEMBERS( NewDecompositionSelection_Strategy, new_decomp_strategy )
@@ -50,10 +50,10 @@ public:
 	/** @name Overridden from AlgorithmStep */
 	//@{
 	///
-	bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 		, poss_type assoc_step_poss);
 	///
-	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 	//@}
 

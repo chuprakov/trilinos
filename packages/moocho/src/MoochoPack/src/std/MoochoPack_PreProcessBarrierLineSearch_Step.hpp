@@ -20,7 +20,7 @@
 
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
 #include "ReducedSpaceSQPPack/src/std/LineSearchFilter_Step.hpp"
-#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
@@ -39,7 +39,7 @@ namespace ReducedSpaceSQPPack {
  */
 
 class PreProcessBarrierLineSearch_Step
-	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+	: public IterationPack::AlgorithmStep // doxygen needs full path
 	{
 	public:
 
@@ -65,11 +65,11 @@ class PreProcessBarrierLineSearch_Step
 		/** @name Overridden from AlgorithmStep */
 		//@{
 		///
-		bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+		bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 					 , poss_type assoc_step_poss);
 		
 		
-		void print_step( const GeneralIterationPack::Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+		void print_step( const IterationPack::Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 						 , poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 		//@}
 

@@ -25,12 +25,12 @@
 #include <algorithm>
 
 #include "AlgorithmState.hpp"
-#include "AlgorithmTrack.hpp"
+#include "AlgorithmTracker.hpp"
 #include "AlgorithmStep.hpp"
 #include "ref_count_ptr.hpp"
 #include "ThrowException.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 // ToDo: 7/31/98: Finish documentation.
 
@@ -91,7 +91,7 @@ public:
 	///
 	typedef MemMngPack::ref_count_ptr<AlgorithmState>		state_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<AlgorithmTrack>		track_ptr_t;
+	typedef MemMngPack::ref_count_ptr<AlgorithmTracker>		track_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<AlgorithmStep>			step_ptr_t;
 	///
@@ -163,9 +163,9 @@ public:
 	///
 	const track_ptr_t& get_track() const;
 	///
-	AlgorithmTrack& track();
+	AlgorithmTracker& track();
 	///
-	const AlgorithmTrack& track() const;
+	const AlgorithmTracker& track() const;
 
 	//@}
 
@@ -669,14 +669,14 @@ private:
 
 #ifdef DOXYGEN_COMPILE
 	AlgorithmState       *state;
-	AlgorithmTrack       *track;
+	AlgorithmTracker       *track;
 	AlgorithmStep        *steps;
 #else
 	state_ptr_t				state_;
 	// ref_count_ptr<...> object for the aggragate AlgorithmState object.
 
 	track_ptr_t				track_;
-	// ref_count_ptr<...> object for the aggragate AlgorithmTrack object.
+	// ref_count_ptr<...> object for the aggragate AlgorithmTracker object.
 #endif
 
 	// algorithm control etc.
@@ -873,11 +873,11 @@ const Algorithm::track_ptr_t& Algorithm::get_track() const
 {	return track_; }
 
 inline
-AlgorithmTrack& Algorithm::track()
+AlgorithmTracker& Algorithm::track()
 {	assert(track_.get()); return *track_; }
 
 inline
-const AlgorithmTrack& Algorithm::track() const
+const AlgorithmTracker& Algorithm::track() const
 {	assert(track_.get()); return *track_; }
 
 // running state
@@ -928,6 +928,6 @@ EDoStepType Algorithm::do_step_type(EAssocStepType assoc_step_type) {
 	return DO_PRE_STEP;	// will never execute.
 }
 
-}	// end namespace GeneralIterationPack 
+}	// end namespace IterationPack 
 
 #endif // ALGORITHM_H

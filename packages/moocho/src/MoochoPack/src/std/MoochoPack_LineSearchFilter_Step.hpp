@@ -19,12 +19,12 @@
 #include <list>
 
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
-#include "GeneralIterationPack/src/AlgorithmStep.hpp"
-#include "GeneralIterationPack/src/CastIQMember.hpp"
+#include "IterationPack/src/AlgorithmStep.hpp"
+#include "IterationPack/src/CastIQMember.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-#include "GeneralIterationPack/src/AlgorithmState.hpp"
+#include "IterationPack/src/AlgorithmState.hpp"
 
 namespace ReducedSpaceSQPPack {
  
@@ -50,7 +50,7 @@ const std::string FILTER_IQ_STRING = "LS_FilterEntries";
  * Todo: Finish documentataion.
  */
 class LineSearchFilter_Step
-    : public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+    : public IterationPack::AlgorithmStep // doxygen needs full path
 	{
 	public:
 		
@@ -157,11 +157,11 @@ class LineSearchFilter_Step
 		//@{
 		///
 		bool do_step( Algorithm& algo, poss_type step_poss,
-					  GeneralIterationPack::EDoStepType type,
+					  IterationPack::EDoStepType type,
 					  poss_type assoc_step_poss);
 		///
 		void print_step( const Algorithm& algo, poss_type step_poss,
-						 GeneralIterationPack::EDoStepType type,
+						 IterationPack::EDoStepType type,
 						 poss_type assoc_step_poss, std::ostream& out,
 						 const std::string& leading_str ) const;
 		//@}
@@ -240,13 +240,13 @@ class LineSearchFilter_Step
 								   value_type theta_small) const;
 
 		// Update the filter from the last iteration
-		void UpdateFilter( GeneralIterationPack::AlgorithmState& s ) const;
+		void UpdateFilter( IterationPack::AlgorithmState& s ) const;
 
 		// Update the filter from the last iteration and Augment it with
 		// the new point
 		void AugmentFilter( value_type f_with_boundary,
 							value_type theta_with_boundary,
-							GeneralIterationPack::AlgorithmState& s ) const;
+							IterationPack::AlgorithmState& s ) const;
 
 	};	// end class LineSearchFilter_Step
 

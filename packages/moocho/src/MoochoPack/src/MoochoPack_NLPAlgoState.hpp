@@ -19,10 +19,10 @@
 #include <deque>
 
 #include "ReducedSpaceSQPPackTypes.hpp"
-#include "GeneralIterationPack/src/IterQuantityAccess.hpp"
-#include "GeneralIterationPack/src/AlgorithmState.hpp"
-#include "GeneralIterationPack/src/cast_iq.hpp"
-#include "GeneralIterationPack/src/IterQuantityAccessContiguous.hpp"
+#include "IterationPack/src/IterQuantityAccess.hpp"
+#include "IterationPack/src/AlgorithmState.hpp"
+#include "IterationPack/src/cast_iq.hpp"
+#include "IterationPack/src/IterQuantityAccessContiguous.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/Permutation.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystem.hpp"
@@ -93,7 +93,7 @@ extern const std::string nu_name;
  *
  * These macros make it easy to add and remove iteration quantities of any type
  * to the state class.  These macros can even be used by subclasses of rSQPState
- * (only any <tt>GeneralIterationPack::AlgorithmState</tt> subclass) to add
+ * (only any <tt>IterationPack::AlgorithmState</tt> subclass) to add
  * iteration quantities.  Since scalars and vectors are so pervasive they have
  * there own special macros that take care of actually instantiating the
  * iteration quantities.
@@ -141,7 +141,7 @@ IterQuantityAccess<TYPE>&                                                 \
 CLASS::NAME()                                                             \
 {                                                                         \
 	update_iq_id( NAME_STR, &NAME ## _iq_id_ );                           \
-	return GeneralIterationPack::cast_iq<TYPE>(                           \
+	return IterationPack::cast_iq<TYPE>(                           \
         *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
 }                                                                         \
 const IterQuantityAccess<TYPE>&                                           \
@@ -160,7 +160,7 @@ IterQuantityAccess<index_type>&                                           \
 CLASS::NAME()                                                             \
 {                                                                         \
 	update_index_type_iq_id( NAME_STR, &NAME ## _iq_id_ );                \
-	return GeneralIterationPack::cast_iq<index_type>(                     \
+	return IterationPack::cast_iq<index_type>(                     \
         *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
 }                                                                         \
 const IterQuantityAccess<index_type>&                                     \
@@ -179,7 +179,7 @@ IterQuantityAccess<value_type>&                                           \
 CLASS::NAME()                                                             \
 {                                                                         \
 	update_value_type_iq_id( NAME_STR, &NAME ## _iq_id_ );                \
-	return GeneralIterationPack::cast_iq<value_type>(                     \
+	return IterationPack::cast_iq<value_type>(                     \
         *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
 }                                                                         \
 const IterQuantityAccess<value_type>&                                     \
@@ -203,7 +203,7 @@ IterQuantityAccess<VectorWithOpMutable>&                                  \
 CLASS::NAME()                                                             \
 {                                                                         \
     update_vector_iq_id( NAME_STR, VEC_SPC, VEC_RN, &NAME ## _iq_id_ );   \
-	return GeneralIterationPack::cast_iq<VectorWithOpMutable>(            \
+	return IterationPack::cast_iq<VectorWithOpMutable>(            \
         *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
 }                                                                         \
 const IterQuantityAccess<VectorWithOpMutable>&                            \
@@ -250,7 +250,7 @@ CLASS::NAME() const                                                       \
  * ToDo: Finish documentation.
  */
 class rSQPState
-	: public GeneralIterationPack::AlgorithmState // doxygen needs full path
+	: public IterationPack::AlgorithmState // doxygen needs full path
 {
 public:
 

@@ -17,7 +17,7 @@
 #define MERIT_FUNC_PENALTY_PARAM_UPDATE_ADDED_STEP_H
 
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
-#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "IterationPack/src/AlgorithmStep.hpp"
 
 namespace ReducedSpaceSQPPack {
 
@@ -29,7 +29,7 @@ namespace ReducedSpaceSQPPack {
  * determine how the penalty parameters are updated.
  */
 class MeritFunc_PenaltyParamUpdate_AddedStep
-	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+	: public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 

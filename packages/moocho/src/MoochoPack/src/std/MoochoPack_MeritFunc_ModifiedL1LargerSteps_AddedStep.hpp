@@ -68,12 +68,12 @@ public:
 	// Overridden from AlgorithmStep
 
 	///
-	bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 		, poss_type assoc_step_poss);
 
 	///
 	void print_step( const Algorithm& algo, poss_type step_poss
-		, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+		, IterationPack::EDoStepType type, poss_type assoc_step_poss
 		, std::ostream& out, const std::string& leading_str ) const;
 
 private:

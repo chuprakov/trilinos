@@ -36,13 +36,13 @@ const rSQPState& rSQPAlgo::retrieve_state() const
 rSQPSolverClientInterface::EFindMinReturn
 rSQPAlgo::dispatch() {
 	switch( do_algorithm(first_step_poss_) ) {
-		case GeneralIterationPack::TERMINATE_TRUE:
+		case IterationPack::TERMINATE_TRUE:
 			return rSQPSolverClientInterface::SOLUTION_FOUND;
-		case GeneralIterationPack::TERMINATE_FALSE:
+		case IterationPack::TERMINATE_FALSE:
 			return rSQPSolverClientInterface::ALGORITHMIC_ERROR;
-		case GeneralIterationPack::MAX_ITER_EXCEEDED:
+		case IterationPack::MAX_ITER_EXCEEDED:
 			return rSQPSolverClientInterface::MAX_ITER_EXCEEDED;
-		case GeneralIterationPack::MAX_RUN_TIME_EXCEEDED:
+		case IterationPack::MAX_RUN_TIME_EXCEEDED:
 			return rSQPSolverClientInterface::MAX_RUN_TIME_EXCEEDED;
 		default:
 			assert(0);

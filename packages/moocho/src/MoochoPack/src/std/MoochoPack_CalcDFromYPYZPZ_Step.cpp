@@ -18,7 +18,7 @@
 
 #include "ReducedSpaceSQPPack/src/std/CalcDFromYPYZPZ_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 //#include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
 #include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
 #include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
@@ -31,7 +31,7 @@ namespace LinAlgOpPack {
 }
 
 bool ReducedSpaceSQPPack::CalcDFromYPYZPZ_Step::do_step(Algorithm& _algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
+	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
 	using AbstractLinAlgPack::dot;
 	using LinAlgOpPack::V_VpV;
@@ -44,7 +44,7 @@ bool ReducedSpaceSQPPack::CalcDFromYPYZPZ_Step::do_step(Algorithm& _algo
 
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
@@ -74,7 +74,7 @@ bool ReducedSpaceSQPPack::CalcDFromYPYZPZ_Step::do_step(Algorithm& _algo
 }
 
 void ReducedSpaceSQPPack::CalcDFromYPYZPZ_Step::print_step( const Algorithm& algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {
 	out

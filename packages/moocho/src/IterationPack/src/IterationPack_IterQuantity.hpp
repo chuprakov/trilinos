@@ -26,9 +26,9 @@
 #include <iomanip>
 #include <limits>
 
-#include "GeneralIterationPackTypes.hpp"
+#include "IterationPackTypes.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 ///
 /** Iterface for information about Iteration Quantities.
@@ -228,6 +228,6 @@ public:
 
 };	// end class IterQuantity 
 
-}	// end namespace GeneralIterationPack
+}	// end namespace IterationPack
 
 #endif	// ITER_QUANTITY_H

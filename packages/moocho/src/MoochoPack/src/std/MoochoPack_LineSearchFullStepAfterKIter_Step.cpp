@@ -17,10 +17,10 @@
 
 #include "../std/LineSearchFullStepAfterKIter_Step.hpp"
 #include "../rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 
 bool ReducedSpaceSQPPack::LineSearchFullStepAfterKIter_Step::do_step(Algorithm& _algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
+	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
@@ -32,7 +32,7 @@ bool ReducedSpaceSQPPack::LineSearchFullStepAfterKIter_Step::do_step(Algorithm& 
 
 	// print step header.
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
@@ -56,7 +56,7 @@ bool ReducedSpaceSQPPack::LineSearchFullStepAfterKIter_Step::do_step(Algorithm& 
 }
 
 void ReducedSpaceSQPPack::LineSearchFullStepAfterKIter_Step::print_step( const Algorithm& algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {
 	out	<< L << "*** Start using full steps after full_steps_after_k iterations.\n"

@@ -33,7 +33,7 @@ void report_final_failure( const ReducedSpaceSQPPack::rSQPState& s, NLPInterface
 		m  = nlp->m(),
 		mI = nlp->mI(),
 		nb = nlp->num_bounded_x();
-	const GeneralIterationPack::IterQuantityAccess<AbstractLinAlgPack::VectorWithOpMutable>
+	const IterationPack::IterQuantityAccess<AbstractLinAlgPack::VectorWithOpMutable>
 		&x_iq = s.x();
 	if( x_iq.updated_k(0) ) {
 		nlp->report_final_solution(

@@ -23,7 +23,7 @@
 #include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
 #include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"

@@ -19,7 +19,7 @@
 
 #include "../std/DampenCrossTermStd_Step.hpp"
 #include "../rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
 #include "SparseLinAlgPack/src/MatrixWithOpFactorized.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
@@ -31,7 +31,7 @@ ReducedSpaceSQPPack::DampenCrossTermStd_Step::DampenCrossTermStd_Step(const valu
 {}
 
 bool ReducedSpaceSQPPack::DampenCrossTermStd_Step::do_step(Algorithm& _algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
+	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
 	using SparseLinAlgPack::V_InvMtV;
 	using DenseLinAlgPack::norm_inf;
@@ -45,7 +45,7 @@ bool ReducedSpaceSQPPack::DampenCrossTermStd_Step::do_step(Algorithm& _algo
 
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( _algo, step_poss, type, assoc_step_poss, out );
 	}
 
@@ -104,7 +104,7 @@ bool ReducedSpaceSQPPack::DampenCrossTermStd_Step::do_step(Algorithm& _algo
 }
 
 void ReducedSpaceSQPPack::DampenCrossTermStd_Step::print_step( const Algorithm& algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {
 	out

@@ -17,7 +17,7 @@
 #include <iomanip>
 #include <typeinfo>
 
-#include "GeneralIterationPack/src/AlgorithmState.hpp"
+#include "IterationPack/src/AlgorithmState.hpp"
 #include "ThrowException.hpp"
 
 namespace {
@@ -30,7 +30,7 @@ inline void output_spaces(std::ostream& out, int spaces)
 {	for(int i = 0; i < spaces; ++i) out << ' '; }
 }
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 AlgorithmState::iq_id_type AlgorithmState::set_iter_quant(
 	const std::string& iq_name, const IQ_ptr& iq)
@@ -157,4 +157,4 @@ AlgorithmState::iq_name_to_id_t::const_iterator AlgorithmState::find_and_assert(
 	return itr;
 }
 
-}	// end namespace GeneralIterationPack
+}	// end namespace IterationPack

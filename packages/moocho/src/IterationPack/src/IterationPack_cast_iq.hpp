@@ -22,7 +22,7 @@
 #include "AlgorithmState.hpp"
 #include "IterQuantityAccess.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 ///
 /** Lookup an iteration quantity by name and cast it
@@ -150,6 +150,6 @@ const IterQuantityAccess<T>& cast_iq(
 	return *p;
 }
 
-}	// namespace GeneralIterationPack
+}	// namespace IterationPack
 
 #endif	// GIP_CAST_IQ_H

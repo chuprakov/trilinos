@@ -17,7 +17,7 @@
 #include "ReducedSpaceSQPPack/src/std/CalcReducedGradLagrangianStd_AddedStep.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
@@ -33,7 +33,7 @@ namespace LinAlgOpPack {
 namespace ReducedSpaceSQPPack {
 
 bool CalcReducedGradLagrangianStd_AddedStep::do_step(
-	Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
 	,poss_type assoc_step_poss
 	)
 {
@@ -51,7 +51,7 @@ bool CalcReducedGradLagrangianStd_AddedStep::do_step(
 
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
@@ -100,7 +100,7 @@ bool CalcReducedGradLagrangianStd_AddedStep::do_step(
 
 void CalcReducedGradLagrangianStd_AddedStep::print_step(
 	const Algorithm& algo
-	,poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+	,poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	,std::ostream& out, const std::string& L
 	) const
 {

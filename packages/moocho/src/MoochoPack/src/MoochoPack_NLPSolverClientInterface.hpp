@@ -53,7 +53,7 @@ public:
 	STANDARD_COMPOSITION_MEMBERS( NLP, nlp )
 
 	/// <<std comp>> members for the track
-	STANDARD_COMPOSITION_MEMBERS( AlgorithmTrack, track )
+	STANDARD_COMPOSITION_MEMBERS( AlgorithmTracker, track )
 
 	///
 	/** Construct with no references set to nlp or track objects.
@@ -220,7 +220,7 @@ private:
 	///
 	NLPInterfacePack::NLP                  *nlp;
 	///
-	GeneralIterationPack::AlgorithmTrack   *track;
+	IterationPack::AlgorithmTracker   *track;
 #endif
 
 }; // end class rSQPSolverClientInterface

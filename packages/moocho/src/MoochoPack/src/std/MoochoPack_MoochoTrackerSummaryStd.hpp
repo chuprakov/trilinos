@@ -19,7 +19,7 @@
 #include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
 #include "ReducedSpaceSQPPack/src/std/qp_solver_stats.hpp"
 #include "ReducedSpaceSQPPack/src/std/act_set_stats.hpp"
-#include "GeneralIterationPack/src/AlgorithmTrack.hpp"
+#include "IterationPack/src/AlgorithmTracker.hpp"
 
 namespace ReducedSpaceSQPPack {
 
@@ -28,7 +28,7 @@ namespace ReducedSpaceSQPPack {
   * for each iteration.
   */
 class rSQPTrackSummaryStd
-	: public GeneralIterationPack::AlgorithmTrack
+	: public IterationPack::AlgorithmTracker
 {
 public:
 
@@ -55,7 +55,7 @@ public:
 	int num_total_qp_iter() const
 	{	return num_total_qp_iter_;	}
 
-	/** @name Overridden from AlgorithmTrack */
+	/** @name Overridden from AlgorithmTracker */
 	//@{
 
 	///

@@ -31,7 +31,7 @@
 #include "IterQuantityAccess.hpp"
 #include "AbstractFactoryStd.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 // ToDo: Use an implementation subclass for the operations to avoid code blot.
 
@@ -235,6 +235,6 @@ int IterQuantityAccessContiguous<T_info>::num_quantities() const
 	return num_quantities_; 
 }
 
-}	// end namespace GeneralIterationPack
+}	// end namespace IterationPack
 
 #endif	// ITER_QUANITY_ACCESS_CONTIGUOUS_DECL_H

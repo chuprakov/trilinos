@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////////////////
-// GeneralIterationPackTypes.hpp
+// IterationPackTypes.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <stdexcept>
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 ///
 enum EAssocStepType {
@@ -49,10 +49,10 @@ template<class T_Base, class T_Derived> class IterQuantityAccessDerivedToBase;
 class Algorithm;
 class AlgorithmStep;
 class AlgorithmState;
-class AlgorithmTrack;
-class AlgorithmTrackComposite;
+class AlgorithmTracker;
+class AlgorithmTrackerComposite;
 template<class T> class CastIQMember;
 
-}	// end namespace GeneralIterationPack
+}	// end namespace IterationPack
 
 #endif	// GENERAL_ITERATION_PACK_TYPES_H

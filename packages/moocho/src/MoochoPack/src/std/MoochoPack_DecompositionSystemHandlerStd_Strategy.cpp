@@ -19,7 +19,7 @@
 #include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerStd_Strategy.hpp"
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystem.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
 #include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"

@@ -26,7 +26,7 @@
 #include "IterQuantity.hpp"
 #include "ref_count_ptr.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 ///
 /** Abstacts a set of iteration quantities for an iterative algorithm.
@@ -330,6 +330,6 @@ const IterQuantity& AlgorithmState::iter_quant(const std::string& iq_name ) cons
 	return *iq_[(*find_and_assert(iq_name)).second];
 }
 
-}	// end namespace GeneralIterationPack 
+}	// end namespace IterationPack 
 
 #endif // ALGORITHM_STATE_H

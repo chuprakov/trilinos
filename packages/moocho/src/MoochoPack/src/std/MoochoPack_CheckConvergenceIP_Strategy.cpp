@@ -25,7 +25,7 @@
 #include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace ReducedSpaceSQPPack {

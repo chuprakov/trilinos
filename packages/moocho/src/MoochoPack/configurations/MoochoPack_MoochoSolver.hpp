@@ -76,17 +76,17 @@ namespace ReducedSpaceSQPPack {
  * <ol>
  * <li> Base default implementation on <tt>rSQPAlgo_ConfigMamaJama</tt> and require
  *   minimal effort to quickly solve an NLP.  This includes setting up standard
- *   <tt>GeneralIterationPack::AlgorithmTrack</tt> objects and taking care of
+ *   <tt>IterationPack::AlgorithmTracker</tt> objects and taking care of
  *   exceptions etc.<br>
  *   <b>Enabler</b>: The client can simply not call <tt>this->set_config()</tt>
  *   or call <tt>this->set_config(NULL)</tt> which will result in the default
  *   configuration object being used.
- * <li> Allow clients the ability to insert a customized <tt>AlgorithmTrack</tt>
+ * <li> Allow clients the ability to insert a customized <tt>AlgorithmTracker</tt>
  *   object, in addition to the other standard track objects.<br>
  *   <b>Enabler</b>: An extra user defined track object can be set using
  *   <tt>this->set_extra_track()</tt> and can be unset using
  *   <tt>this->set_extra_track(NULL)</tt>.  Multiple track objects can be handled
- *   using the <tt>GeneralIterationPack::AlgorithmTrackComposite</tt> subclass.
+ *   using the <tt>IterationPack::AlgorithmTrackerComposite</tt> subclass.
  * <li> Allow clients to set the targets for standard output streams (i.e.
  *   <tt>summary_out</tt>, <tt>journal_out</tt> and <tt>console_out</tt>)
  *   at all times (i.e. between successive solves) or just use default output
@@ -141,7 +141,7 @@ public:
 		NLPInterfacePack::NLP>                                       nlp_ptr_t; // full path needed by doxygen
 	///
 	typedef MemMngPack::ref_count_ptr<
-		GeneralIterationPack::AlgorithmTrack>                        track_ptr_t; // full path needed by doxygen
+		IterationPack::AlgorithmTracker>                        track_ptr_t; // full path needed by doxygen
 	///
 	typedef MemMngPack::ref_count_ptr<rSQPAlgo_Config>    config_ptr_t;
 	///
@@ -202,7 +202,7 @@ public:
 	 */
 	const nlp_ptr_t& get_nlp() const;
 	
-	/** Set an extra user defined <tt>AlgorithmTrack</tt> object to monitor the algorithm.
+	/** Set an extra user defined <tt>AlgorithmTracker</tt> object to monitor the algorithm.
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>this->get_track().get() == track.get()</tt>
@@ -211,7 +211,7 @@ public:
 	void set_track(const track_ptr_t& track);
 	
 	///
-	/** Get the non-const smart pointer to the set <tt>AlgorithmTrack</tt> object.
+	/** Get the non-const smart pointer to the set <tt>AlgorithmTracker</tt> object.
 	 *
 	 * @return Returns the track object pointer set by <tt>this->set_track()</tt>.
 	 */

@@ -23,7 +23,7 @@
 #include "AlgorithmState.hpp"
 #include "IterQuantityAccess.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 ///
 /** Base class for some of the implementation features of \c CastIQMember.
@@ -186,6 +186,6 @@ CastIQMember<T>::operator()( const AlgorithmState& s ) const
 	return *p;	
 }
 
-}	// namespace GeneralIterationPack
+}	// namespace IterationPack
 
 #endif	// CAST_IQ_MEMBER_H

@@ -291,16 +291,16 @@ void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 	o << "\nTotal time = " << timer_.read() << " sec\n";
 
 	switch( algo_return ) {
-		case GeneralIterationPack::TERMINATE_TRUE:
+		case IterationPack::TERMINATE_TRUE:
 			o << "\nJackpot! You have found the solution!!!!!!\n";
 			break;
-		case GeneralIterationPack::TERMINATE_FALSE:
+		case IterationPack::TERMINATE_FALSE:
 			o << "\nOops!  Not the solution.  Some error has occured!\n";
 			break;
-		case GeneralIterationPack::MAX_ITER_EXCEEDED:
+		case IterationPack::MAX_ITER_EXCEEDED:
 			o << "\nOops!  Not the solution.  Maximum number of SQP iteration exceeded!\n";
 			break;
-		case GeneralIterationPack::MAX_RUN_TIME_EXCEEDED:
+		case IterationPack::MAX_RUN_TIME_EXCEEDED:
 			o << "\nOops!  Not the solution.  Maximum runtime exceeded!\n";
 			break;
 		default:

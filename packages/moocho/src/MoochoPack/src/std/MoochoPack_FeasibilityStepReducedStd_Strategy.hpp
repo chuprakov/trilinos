@@ -19,7 +19,7 @@
 #include "FeasibilityStep_Strategy.hpp"
 #include "QuasiRangeSpaceStep_Strategy.hpp"
 #include "d_bounds_iter_quant.hpp"
-#include "GeneralIterationPack/src/CastIQMember.hpp"
+#include "IterationPack/src/CastIQMember.hpp"
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxed.hpp"
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.hpp"
 #include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
@@ -101,8 +101,8 @@ public:
 
 private:
 
-	GeneralIterationPack::CastIQMember<VectorWithOpMutable>  dl_iq_;
-	GeneralIterationPack::CastIQMember<VectorWithOpMutable>  du_iq_;
+	IterationPack::CastIQMember<VectorWithOpMutable>  dl_iq_;
+	IterationPack::CastIQMember<VectorWithOpMutable>  du_iq_;
 	int                                                      current_k_;
 	MemMngPack::ref_count_ptr<const MatrixWithOp>            Hess_ptr_;
 	VectorSpace::vec_mut_ptr_t                               grad_store_;

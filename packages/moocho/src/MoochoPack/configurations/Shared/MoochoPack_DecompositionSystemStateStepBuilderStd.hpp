@@ -148,7 +148,7 @@ public:
 		,NLPFirstOrderDirect                                              *nlp_fod
 		,bool                                                             tailored_approach
 		,const MemMngPack::ref_count_ptr<DecompositionSystem>             &decomp_sys
-		,MemMngPack::ref_count_ptr<GeneralIterationPack::AlgorithmStep>   *eval_new_point_step
+		,MemMngPack::ref_count_ptr<IterationPack::AlgorithmStep>   *eval_new_point_step
 		,MemMngPack::ref_count_ptr<CalcFiniteDiffProd>                    *calc_fd_prod
 		,MemMngPack::ref_count_ptr<VariableBoundsTester>                  *bounds_tester
 		,MemMngPack::ref_count_ptr<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy

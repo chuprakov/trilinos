@@ -17,7 +17,7 @@
 #define CALC_REDUCED_GRAD_LAGRANGIAN_STD_ADDED_STEP_H
 
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
-#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "IterationPack/src/AlgorithmStep.hpp"
 
 namespace ReducedSpaceSQPPack {
 
@@ -26,7 +26,7 @@ namespace ReducedSpaceSQPPack {
  * <tt>rGL = rGf + Z' * nu + GcUP' * lambda(equ_undecomp) + GhUP' * lambdaI(inequ_undecomp)</tt> 
  */
 class CalcReducedGradLagrangianStd_AddedStep
-	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+	: public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
@@ -34,11 +34,11 @@ public:
 	// Overridden
 
 	///
-	bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 		, poss_type assoc_step_poss);
 
 	///
-	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 
 };	// end class CalcReducedGradLagrangianStd_AddedStep

@@ -18,7 +18,7 @@
 
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
 #include "ConstrainedOptimizationPack/src/QPSolverStats.hpp"
-#include "GeneralIterationPack/src/CastIQMember.hpp"
+#include "IterationPack/src/CastIQMember.hpp"
 
 namespace ReducedSpaceSQPPack {
 

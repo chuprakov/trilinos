@@ -17,8 +17,8 @@
 #define NULL_SPACE_STEP_WITH_INEQU_STD_STEP_H
 
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
-#include "GeneralIterationPack/src/AlgorithmStep.hpp"
-#include "GeneralIterationPack/src/CastIQMember.hpp"
+#include "IterationPack/src/AlgorithmStep.hpp"
+#include "IterationPack/src/CastIQMember.hpp"
 #include "ReducedSpaceSQPPack/src/std/d_bounds_iter_quant.hpp"
 #include "ReducedSpaceSQPPack/src/std/qp_solver_stats.hpp"
 #include "ReducedSpaceSQPPack/src/std/act_set_stats.hpp"
@@ -36,7 +36,7 @@ namespace ReducedSpaceSQPPack {
  * ToDo: Finish documentation.
  */
 class NullSpaceStepWithInequStd_Step
-	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+	: public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
@@ -87,16 +87,16 @@ public:
 	/** @name Overridden from AlgorithmStep */
 	//@{
 	///
-	bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 		, poss_type assoc_step_poss);
 	///
-	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 	//@}
 
 private:
-	GeneralIterationPack::CastIQMember<VectorWithOpMutable>  dl_iq_;
-	GeneralIterationPack::CastIQMember<VectorWithOpMutable>  du_iq_;
+	IterationPack::CastIQMember<VectorWithOpMutable>  dl_iq_;
+	IterationPack::CastIQMember<VectorWithOpMutable>  du_iq_;
 	qp_solver_stats_iq_member                                qp_solver_stats_;
 	act_set_stats_iq_member                                  act_set_stats_;
 

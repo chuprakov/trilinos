@@ -16,10 +16,10 @@
 #include <string>
 #include <sstream>
  
-#include "GeneralIterationPack/src/CastIQMember.hpp"
+#include "IterationPack/src/CastIQMember.hpp"
 #include "ThrowException.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 CastIQMemberBase::CastIQMemberBase( const std::string iq_name )
 	:  iq_name_(iq_name), iq_id_(NOT_SET_YET)
@@ -52,10 +52,10 @@ void CastIQMemberBase::throw_cast_error( const AlgorithmState::iq_id_type iq_id,
 		,"CastIQMember<T>::operator()(...) : Error, the iteration quantity \""
 		<< iq_name_ << "\" does not exist in this state object." );
 	THROW_EXCEPTION(
-		true, GeneralIterationPack::InvalidTypeCastException
+		true, IterationPack::InvalidTypeCastException
 		,"CastIQMember<T>::operator()(state) : Error, the iteration quantity \""
 		<< iq_name_ << "\" exists but it is not of the type IterQuantityAccess<"
 		<< iqa_name << ">" );
 }
 
-}	// namespace GeneralIterationPack
+}	// namespace IterationPack

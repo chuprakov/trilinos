@@ -17,7 +17,7 @@
 
 #include "print_algorithm_step.hpp"
 
-void GeneralIterationPack::print_algorithm_step( const Algorithm& algo
+void IterationPack::print_algorithm_step( const Algorithm& algo
 	, Algorithm::poss_type step_poss, EDoStepType type
 	, Algorithm::poss_type assoc_step_poss, std::ostream& out )
 {

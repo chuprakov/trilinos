@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// AlgorithmTrack.hpp
+// AlgorithmTracker.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,10 +18,10 @@
 
 #include <iosfwd>
 
-#include "GeneralIterationPackTypes.hpp"
+#include "IterationPackTypes.hpp"
 #include "ref_count_ptr.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 ///
 /** Used to ouput iteration results and other information.
@@ -31,7 +31,7 @@ namespace GeneralIterationPack {
   *
   * ToDo: Write more documentation!
   */
-class AlgorithmTrack {
+class AlgorithmTracker {
 public:
 
 	/** @name Public types */
@@ -52,7 +52,7 @@ public:
 	 * <li> <tt>journal_out.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>).
 	 * </ul>
 	 */
-	AlgorithmTrack(const ostream_ptr_t& journal_out);
+	AlgorithmTracker(const ostream_ptr_t& journal_out);
 	
 	//@}
 	
@@ -110,10 +110,10 @@ private:
 #endif
 
 	// not defined and not to be called
-	AlgorithmTrack();
+	AlgorithmTracker();
 	
-};	// end class AlgorithmTrack
+};	// end class AlgorithmTracker
 
-}	// end namespace GeneralIterationPack 
+}	// end namespace IterationPack 
 
 #endif // ALGORITHM_TRACK_H

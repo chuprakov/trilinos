@@ -30,7 +30,7 @@
 #include "ExampleNLPFirstOrderInfo.hpp"
 #include "ExampleBasisSystem.hpp"
 #include "ReducedSpaceSQPPack/Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.hpp"
-#include "GeneralIterationPack/src/AlgorithmTrack.hpp"
+#include "IterationPack/src/AlgorithmTracker.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/BasisSystem.hpp"
 #include "OptionsFromStream.hpp"

@@ -20,7 +20,7 @@
 #include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.hpp"
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 
 namespace ReducedSpaceSQPPack {
 
@@ -32,7 +32,7 @@ QPFailureReinitReducedHessian_Step::QPFailureReinitReducedHessian_Step(
 {}
 
 bool QPFailureReinitReducedHessian_Step::do_step(
-	Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
 	,poss_type assoc_step_poss
 	)
 {
@@ -86,7 +86,7 @@ bool QPFailureReinitReducedHessian_Step::do_step(
 
 void QPFailureReinitReducedHessian_Step::print_step(
 	const Algorithm& algo
-	,poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+	,poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	,std::ostream& out, const std::string& L
 	) const
 {

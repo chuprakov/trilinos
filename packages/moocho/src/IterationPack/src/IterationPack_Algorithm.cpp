@@ -19,7 +19,7 @@
 #include <numeric>
 #include <typeinfo>
 
-#include "GeneralIterationPack/src/Algorithm.hpp"
+#include "IterationPack/src/Algorithm.hpp"
 #include "stpwatch.hpp"
 #include "ThrowException.hpp"
 
@@ -32,7 +32,7 @@ T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
 // ToDo: change step_itr and assoc_step_itr to just return iterators without
 // asserting if the names exist.  This will be more useful.
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 // constructors / destructor
 
@@ -806,4 +806,4 @@ Algorithm::poss_type Algorithm::validate(const assoc_steps_ele_list_t& assoc_lis
 	return assoc_step_poss;
 }
 
-} // end namespace GeneralIterationPack
+} // end namespace IterationPack

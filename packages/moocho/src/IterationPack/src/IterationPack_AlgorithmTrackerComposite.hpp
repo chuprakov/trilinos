@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// AlgorithmTrackComposite.hpp
+// AlgorithmTrackerComposite.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,34 +18,34 @@
 
 #include <list>
 
-#include "AlgorithmTrack.hpp"
+#include "AlgorithmTracker.hpp"
 #include "ref_count_ptr.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 ///
-/** This class acts a composite container for other \c AlgorithmTrack objects.
+/** This class acts a composite container for other \c AlgorithmTracker objects.
  *
- * This class exposes a <tt>std::list<AlgorithmTrack*></tt> object and lets the client
+ * This class exposes a <tt>std::list<AlgorithmTracker*></tt> object and lets the client
  * manipulate the list.  It is up to the client to maintain this list.
  *
  * See the "Composite" pattern in "Design Patterns", Gama et al, 1995.
  */
-class AlgorithmTrackComposite : public AlgorithmTrack {
+class AlgorithmTrackerComposite : public AlgorithmTracker {
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<AlgorithmTrack>      track_ptr_t;
+	typedef MemMngPack::ref_count_ptr<AlgorithmTracker>      track_ptr_t;
 	///
 	typedef std::list<track_ptr_t>                                    track_list_t;
 	///
-	AlgorithmTrackComposite(const ostream_ptr_t& journal_out);
-	/// Give access to the list of \c AlgorithmTrack object pointers.
+	AlgorithmTrackerComposite(const ostream_ptr_t& journal_out);
+	/// Give access to the list of \c AlgorithmTracker object pointers.
 	track_list_t& tracks();
 	///
 	const track_list_t& tracks() const;
 
-	/**  @name Overridden from AlgorithmTrack */
+	/**  @name Overridden from AlgorithmTracker */
 	//@{
 
 	///
@@ -60,30 +60,30 @@ public:
 private:
 
 #ifdef DOXYGEN_COMPILE
-	AlgorithmTrack  *tracks;
+	AlgorithmTracker  *tracks;
 #else
 	track_list_t    tracks_;
 #endif
 
-};	// end class AlgorithmTrackComposite
+};	// end class AlgorithmTrackerComposite
 
 // ///////////////////////////////////
 // Inline members
 
 inline
-AlgorithmTrackComposite::track_list_t&
-AlgorithmTrackComposite::tracks()
+AlgorithmTrackerComposite::track_list_t&
+AlgorithmTrackerComposite::tracks()
 { 
 	return tracks_;
 }
 
 inline
-const AlgorithmTrackComposite::track_list_t&
-AlgorithmTrackComposite::tracks() const
+const AlgorithmTrackerComposite::track_list_t&
+AlgorithmTrackerComposite::tracks() const
 { 
 	return tracks_;
 }
 
-}	// end namespace GeneralIterationPack 
+}	// end namespace IterationPack 
 
 #endif	// ALGORITHM_TRACK_COMPOSITE_H

@@ -17,15 +17,15 @@
 #define REDUCED_SPACE_SQP_PACK_TYPES_H
 
 #include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackTypes.hpp"
-#include "GeneralIterationPack/src/GeneralIterationPackTypes.hpp"
+#include "IterationPack/src/IterationPackTypes.hpp"
 
 namespace ReducedSpaceSQPPack {
 
 // using types from ConstrainedOptimizationPack
 #include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackPublicTypes.ud"
 
-// using types from GeneralIterationPack
-#include "GeneralIterationPack/src/GeneralIterationPackPublicTypes.ud"
+// using types from IterationPack
+#include "IterationPack/src/IterationPackPublicTypes.ud"
 
 // enum for rSQP output.
 enum EJournalOutputLevel {
@@ -47,9 +47,9 @@ class rSQPAlgo_Config;
 //
 
 class rSQPAlgo;
-typedef GeneralIterationPack::AlgorithmStep             rSQPStep;
-typedef GeneralIterationPack::AlgorithmTrack            rSQPTrack;
-typedef GeneralIterationPack::AlgorithmTrackComposite   rSQPTrackComposite;
+typedef IterationPack::AlgorithmStep             rSQPStep;
+typedef IterationPack::AlgorithmTracker            rSQPTrack;
+typedef IterationPack::AlgorithmTrackerComposite   rSQPTrackComposite;
 
 }	// end namespace ReducedSpaceSQPPack 
 

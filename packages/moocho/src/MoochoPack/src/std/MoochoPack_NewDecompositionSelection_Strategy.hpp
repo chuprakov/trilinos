@@ -17,7 +17,7 @@
 #define NEW_DECOMPOSITION_SELECTION_STRATEGY_H
 
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
-#include "GeneralIterationPack/src/Algorithm.hpp"
+#include "IterationPack/src/Algorithm.hpp"
 
 namespace ReducedSpaceSQPPack {
 
@@ -34,13 +34,13 @@ public:
 	///
 	virtual bool new_decomposition(
 		rSQPAlgo& algo, Algorithm::poss_type step_poss
-		,GeneralIterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
+		,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
 		) = 0;
 
 	///
 	virtual void print_new_decomposition(
 		const rSQPAlgo& algo, Algorithm::poss_type step_poss
-		,GeneralIterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
+		,IterationPack::EDoStepType type, Algorithm::poss_type assoc_step_poss
 		,std::ostream& out, const std::string& leading_str
 		) const = 0;
 

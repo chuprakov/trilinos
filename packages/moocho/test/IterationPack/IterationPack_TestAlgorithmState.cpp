@@ -17,9 +17,9 @@
 #include <iomanip>
 #include <typeinfo>
 
-#include "GeneralIterationPack/test/TestGeneralIterationPack.hpp"
-#include "GeneralIterationPack/src/AlgorithmState.hpp"
-#include "GeneralIterationPack/src/IterQuantityAccessContiguous.hpp"
+#include "IterationPack/test/TestGeneralIterationPack.hpp"
+#include "IterationPack/src/AlgorithmState.hpp"
+#include "IterationPack/src/IterQuantityAccessContiguous.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "update_success.hpp"
 #include "ThrowException.hpp"
@@ -28,7 +28,7 @@
 //template MemMngPack::ref_count_ptr<double>;
 //class B {};
 //class D : public B {};
-//template GeneralIterationPack::IterQuantityAccessDerivedToBase<B,D>;
+//template IterationPack::IterQuantityAccessDerivedToBase<B,D>;
 
 namespace {
 
@@ -62,7 +62,7 @@ private:
 
 }	// end namespace
 
-bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
+bool IterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 
 	using std::endl;
 	using std::setw;

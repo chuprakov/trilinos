@@ -16,9 +16,9 @@
 #ifndef ALGORITHM_STEP_TESTING_H
 #define ALGORITHM_STEP_TESTING_H
 
-#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "IterationPack/src/AlgorithmStep.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 ///
 /** Testing class
@@ -39,6 +39,6 @@ public:
 
 };	// end class AlgorithmStepTesting
 
-}	// end namespace GeneralIterationPack 
+}	// end namespace IterationPack 
 
 #endif // ALGORITHM_STEP_TESTING_H

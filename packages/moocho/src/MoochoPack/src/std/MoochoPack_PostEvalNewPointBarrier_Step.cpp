@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/std/PostEvalNewPointBarrier_Step.hpp"
@@ -35,12 +35,12 @@
 namespace ReducedSpaceSQPPack {
 
 bool PostEvalNewPointBarrier_Step::do_step(
-  Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+  Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
   ,poss_type assoc_step_poss
   )
 	{
 	using DynamicCastHelperPack::dyn_cast;
-	using GeneralIterationPack::print_algorithm_step;
+	using IterationPack::print_algorithm_step;
 	using AbstractLinAlgPack::inv_of_difference;
 	using AbstractLinAlgPack::correct_upper_bound_multipliers;
 	using AbstractLinAlgPack::correct_lower_bound_multipliers;
@@ -59,7 +59,7 @@ bool PostEvalNewPointBarrier_Step::do_step(
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
 		{
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( _algo, step_poss, type, assoc_step_poss, out );
 		}
 
@@ -180,7 +180,7 @@ if ( /*!Vl_iq.updated_k(0) */ Vl_iq.last_updated() == IterQuantity::NONE_UPDATED
 
 
 void PostEvalNewPointBarrier_Step::print_step(
-  const Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+  const Algorithm& _algo, poss_type step_poss, IterationPack::EDoStepType type
   ,poss_type assoc_step_poss, std::ostream& out, const std::string& L
   ) const
 	{

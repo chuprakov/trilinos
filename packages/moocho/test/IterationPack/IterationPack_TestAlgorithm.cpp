@@ -19,11 +19,11 @@
 #include "TestGeneralIterationPack.hpp"
 #include "AlgorithmStepTesting.hpp"
 #include "AlgorithmTrackTesting.hpp"
-#include "GeneralIterationPack/src/Algorithm.hpp"
-#include "GeneralIterationPack/src/AlgorithmState.hpp"
+#include "IterationPack/src/Algorithm.hpp"
+#include "IterationPack/src/AlgorithmState.hpp"
 #include "debug.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 // Implement minor loop 1
 class MinorLoop1Step : public AlgorithmStepTesting {
@@ -112,9 +112,9 @@ private:
 	bool called_;
 };
 
-}	// end namespace GeneralIterationPack
+}	// end namespace IterationPack
 
-bool GeneralIterationPack::TestingPack::TestAlgorithm(std::ostream* out) {
+bool IterationPack::TestingPack::TestAlgorithm(std::ostream* out) {
 
 	using std::endl;
 	using std::setw;

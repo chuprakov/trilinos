@@ -28,7 +28,7 @@ In the future this docuentation will be much more extensive.
 <li> Abstractions for General Iterative Algorithms:
     Package framework for iterative algorithms.
 	<ul>
-	<li> <A HREF="../GeneralIterationPack/html/index.html">GeneralIterationPack</A>.
+	<li> <A HREF="../IterationPack/html/index.html">IterationPack</A>.
 	</ul>
 
 <li> Numerical Packages:

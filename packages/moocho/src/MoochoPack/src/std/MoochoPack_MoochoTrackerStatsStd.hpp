@@ -17,7 +17,7 @@
 #define RSQP_TRACK_STATS_STD_H
 
 #include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
-#include "GeneralIterationPack/src/AlgorithmTrack.hpp"
+#include "IterationPack/src/AlgorithmTracker.hpp"
 #include "stpwatch.hpp"
 
 namespace ReducedSpaceSQPPack {
@@ -52,7 +52,7 @@ namespace ReducedSpaceSQPPack {
  * from what is shown above.
  */
 class rSQPTrackStatsStd
-	: public GeneralIterationPack::AlgorithmTrack
+	: public IterationPack::AlgorithmTracker
  {
 public:
 
@@ -67,7 +67,7 @@ public:
 	/// Get the output stream for statistics outputting.
 	const ostream_ptr_t& get_output_stream() const;
 
-	/** @name Overridden from AlgorithmTrack */
+	/** @name Overridden from AlgorithmTracker */
 	//@{
 
 	/// Restarts the timer

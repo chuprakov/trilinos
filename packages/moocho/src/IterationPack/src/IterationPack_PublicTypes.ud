@@ -1,25 +1,25 @@
 // //////////////////////////////////////////////////////////////
-// GeneralIterationPackPublicTypes.ud
+// IterationPackPublicTypes.ud
 //
-// This is a set of using declarations for the types that GeneralIterationPack
+// This is a set of using declarations for the types that IterationPack
 // exposes publicly.  A namespace that wants to included these
 // names should use:
 //
 // namespace MyNamespace {
-//     #include "GeneralIterationPackPublicTypes.ud"
+//     #include "IterationPackPublicTypes.ud"
 // }
 
-using GeneralIterationPack::EAssocStepType;
-using GeneralIterationPack::EDoStepType;
-using GeneralIterationPack::EAlgoReturn;
-using GeneralIterationPack::InvalidTypeCastException;
-using GeneralIterationPack::IterQuantity;
-using GeneralIterationPack::IterQuantityAccess;
-using GeneralIterationPack::IterQuantityAccessContiguous;
-using GeneralIterationPack::IterQuantityAccessDerivedToBase;
-using GeneralIterationPack::Algorithm;
-using GeneralIterationPack::AlgorithmStep;
-using GeneralIterationPack::AlgorithmState;
-using GeneralIterationPack::AlgorithmTrack;
-using GeneralIterationPack::AlgorithmTrackComposite;
-using GeneralIterationPack::CastIQMember;
+using IterationPack::EAssocStepType;
+using IterationPack::EDoStepType;
+using IterationPack::EAlgoReturn;
+using IterationPack::InvalidTypeCastException;
+using IterationPack::IterQuantity;
+using IterationPack::IterQuantityAccess;
+using IterationPack::IterQuantityAccessContiguous;
+using IterationPack::IterQuantityAccessDerivedToBase;
+using IterationPack::Algorithm;
+using IterationPack::AlgorithmStep;
+using IterationPack::AlgorithmState;
+using IterationPack::AlgorithmTracker;
+using IterationPack::AlgorithmTrackerComposite;
+using IterationPack::CastIQMember;

@@ -17,7 +17,7 @@
 
 #include "ReducedSpaceSQPPack/src/std/CheckBasisFromCPy_Step.h"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystemVarReduct.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
 #include "SparseLinAlgPack/src/MatrixWithOp.hpp"
@@ -50,7 +50,7 @@ void CheckBasisFromCPy_Step::reset() {
 // Overridden
 
 bool CheckBasisFromCPy_Step::do_step( Algorithm& _algo, poss_type step_poss
-	, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss )
+	, IterationPack::EDoStepType type, poss_type assoc_step_poss )
 {
 	using DenseLinAlgPack::norm_inf;
 	using LinAlgOpPack::V_MtV;
@@ -68,7 +68,7 @@ bool CheckBasisFromCPy_Step::do_step( Algorithm& _algo, poss_type step_poss
 
 	// print step header.
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		using GeneralIterationPack::print_algorithm_step;
+		using IterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
@@ -134,7 +134,7 @@ bool CheckBasisFromCPy_Step::do_step( Algorithm& _algo, poss_type step_poss
 }
 
 void CheckBasisFromCPy_Step::print_step( const Algorithm& algo, poss_type step_poss
-	, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
+	, IterationPack::EDoStepType type, poss_type assoc_step_poss
 	, std::ostream& out, const std::string& L ) const
 {
 	out

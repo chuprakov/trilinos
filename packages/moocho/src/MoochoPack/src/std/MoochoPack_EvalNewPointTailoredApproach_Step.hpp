@@ -17,7 +17,7 @@
 #define EVAL_NEW_POINT_TAILORED_APPROACH_STEP_H
 
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
-#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "IterationPack/src/AlgorithmStep.hpp"
 #include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
 #include "NLPInterfacePack/test/NLPFirstOrderDirectTester.hpp"
 #include "StandardCompositionMacros.hpp"
@@ -33,7 +33,7 @@ namespace ReducedSpaceSQPPack {
  * <tt>py</tt> and <tt>Y</tt> are updated.
  */
 class EvalNewPointTailoredApproach_Step
-	: public GeneralIterationPack::AlgorithmStep // doxygen needs full path
+	: public IterationPack::AlgorithmStep // doxygen needs full path
 {
 public:
 
@@ -71,10 +71,10 @@ public:
 	/** @name Overridden from AlgorithmStep */
 	//@{
 	///
-	bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	bool do_step(Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 		, poss_type assoc_step_poss);
 	///
-	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	void print_step( const Algorithm& algo, poss_type step_poss, IterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 	//@}
 

@@ -16,9 +16,9 @@
 #include <iomanip>
 
 #include "../test/AlgorithmTrackTesting.hpp"
-#include "GeneralIterationPack/src/Algorithm.hpp"
+#include "IterationPack/src/Algorithm.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 void AlgorithmTrackTesting::output_iteration(const Algorithm& algo) const {
 	journal_out()
@@ -34,4 +34,4 @@ void AlgorithmTrackTesting::output_final(const Algorithm& algo, EAlgoReturn algo
 			<< std::endl;
 }
 
-}	// end namespace GeneralIterationPack 
+}	// end namespace IterationPack 

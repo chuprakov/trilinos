@@ -25,7 +25,7 @@
 #include "IterQuantityAccessContiguousDecl.hpp"
 #include "ThrowException.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 // Constructors/initializers
 
@@ -280,6 +280,6 @@ void IterQuantityAccessContiguous<T_info>::release_mem() {
 	quantities_.resize(0);
 }
 
-}	// end namespace GeneralIterationPack
+}	// end namespace IterationPack
 
 #endif	// ITER_QUANITY_ACCESS_CONTINUOUS_DEF_H

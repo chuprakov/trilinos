@@ -17,7 +17,7 @@
 #define RSQP_TRACK_CONSOLE_STD_H
 
 #include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
-#include "GeneralIterationPack/src/AlgorithmTrack.hpp"
+#include "IterationPack/src/AlgorithmTracker.hpp"
 #include "stpwatch.hpp"
 
 namespace ReducedSpaceSQPPack {
@@ -82,7 +82,7 @@ namespace ReducedSpaceSQPPack {
   * the moment this object is created or when set_output_stream(...) is called.
   */
 class rSQPTrackConsoleStd
-	: public GeneralIterationPack::AlgorithmTrack
+	: public IterationPack::AlgorithmTracker
 {
 public:
 
@@ -95,7 +95,7 @@ public:
 	/// Get the output stream for console outputting.
 	const ostream_ptr_t& get_output_stream() const;
 
-	/** @name Overridden from AlgorithmTrack */
+	/** @name Overridden from AlgorithmTracker */
 	//@{
 
 	/// Restarts the timer

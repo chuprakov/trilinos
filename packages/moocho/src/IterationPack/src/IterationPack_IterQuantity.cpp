@@ -1,10 +1,10 @@
 // /////////////////////////////////////////////////////
 // IterQuantity.cpp
 
-#include "GeneralIterationPack/src/IterQuantity.hpp"
+#include "IterationPack/src/IterQuantity.hpp"
 #include "ThrowException.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
 void IterQuantity::assert_has_storage_k(int offset) const {
 	if(!has_storage_k(offset))
@@ -23,4 +23,4 @@ void IterQuantity::assert_updated_k(int offset) const {
 			<< " iteration yet." );
 }
 
-} // end namespace GeneralIterationPack
+} // end namespace IterationPack

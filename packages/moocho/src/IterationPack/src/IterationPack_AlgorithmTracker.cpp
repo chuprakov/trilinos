@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// AlgorithmTrack.cpp
+// AlgorithmTracker.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,38 +13,38 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "GeneralIterationPack/src/AlgorithmTrack.hpp"
+#include "IterationPack/src/AlgorithmTracker.hpp"
 
-namespace GeneralIterationPack {
+namespace IterationPack {
 
-AlgorithmTrack::AlgorithmTrack(const ostream_ptr_t& journal_out)
+AlgorithmTracker::AlgorithmTracker(const ostream_ptr_t& journal_out)
 	: journal_out_(journal_out)
 {}
 
-void AlgorithmTrack::initialize()
+void AlgorithmTracker::initialize()
 {}
 	
-void AlgorithmTrack::output_iteration(const Algorithm& algo) const
+void AlgorithmTracker::output_iteration(const Algorithm& algo) const
 {}
 
-void AlgorithmTrack::output_final(const Algorithm& algo, EAlgoReturn algo_return) const
+void AlgorithmTracker::output_final(const Algorithm& algo, EAlgoReturn algo_return) const
 {}
 
-void AlgorithmTrack::set_journal_out(const ostream_ptr_t& journal_out)
+void AlgorithmTracker::set_journal_out(const ostream_ptr_t& journal_out)
 {
 	journal_out_ = journal_out;
 }
 
-const AlgorithmTrack::ostream_ptr_t&
-AlgorithmTrack::get_journal_out() const
+const AlgorithmTracker::ostream_ptr_t&
+AlgorithmTracker::get_journal_out() const
 {
 	return journal_out_;
 }
 
 std::ostream&
-AlgorithmTrack::journal_out() const
+AlgorithmTracker::journal_out() const
 {
 	return *journal_out_;
 }
 
-}	// end namespace GeneralIterationPack 
+}	// end namespace IterationPack 

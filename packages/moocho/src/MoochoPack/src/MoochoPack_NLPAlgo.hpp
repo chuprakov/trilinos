@@ -19,7 +19,7 @@
 #include "rSQPAlgoInterface.hpp"
 #include "rSQPAlgoContainer.hpp"
 #include "rSQPState.hpp"
-#include "GeneralIterationPack/src/Algorithm.hpp"
+#include "IterationPack/src/Algorithm.hpp"
 #include "StandardAggregationMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
@@ -29,7 +29,7 @@ namespace ReducedSpaceSQPPack {
   */
 class rSQPAlgo
 	: public rSQPAlgoInterface
-	, public GeneralIterationPack::Algorithm
+	, public IterationPack::Algorithm
 {
 public:
 

@@ -22,9 +22,9 @@
 #include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-#include "GeneralIterationPack/src/IterQuantityAccess.hpp"
-#include "GeneralIterationPack/src/cast_iq.hpp"
-#include "GeneralIterationPack/src/IterQuantityAccessContiguous.hpp"
+#include "IterationPack/src/IterQuantityAccess.hpp"
+#include "IterationPack/src/cast_iq.hpp"
+#include "IterationPack/src/IterQuantityAccessContiguous.hpp"
 
 // rSQPState iteration quantities names
 
