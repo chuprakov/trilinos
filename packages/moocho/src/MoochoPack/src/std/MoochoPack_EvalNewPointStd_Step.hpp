@@ -16,13 +16,13 @@
 #ifndef EVAL_NEW_POINT_STD_STEP_H
 #define EVAL_NEW_POINT_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackTypes.h"
+#include "DecompositionSystemHandler_Strategy.h"
 #include "GeneralIterationPack/include/AlgorithmStep.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemTester.h"
 #include "ConstrainedOptimizationPack/include/VariableBoundsTester.h"
 #include "NLPInterfacePack/test/NLPFirstDerivativesTester.h"
-#include "Misc/include/StandardCompositionMacros.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "StandardCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -43,22 +43,20 @@ public:
 
 	///
 	enum EFDDerivTesting   { FD_DEFAULT,  FD_TEST,  FD_NO_TEST  };
-	///
-	enum EDecompSysTesting { DST_DEFAULT, DST_TEST, DST_NO_TEST };
-	///
-	enum EDecompSysPrintLevel { DSPL_USE_GLOBAL, DSPL_LEAVE_DEFAULT };
 
 	//@}
 
 	/** @name Constructors / initializers */
 	//@{
 
+	/// «std comp» members for range/null decomposition handler
+	STANDARD_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy, decomp_sys_handler )
 	/// «std comp» members for first derivative tester object
 	STANDARD_COMPOSITION_MEMBERS( NLPFirstDerivativesTester, deriv_tester )
-	/// «std comp» members for decomp_sys tester tester object
-	STANDARD_COMPOSITION_MEMBERS( DecompositionSystemTester, decomp_sys_tester )
 	/// «std comp» Members for variable bounds tester object
 	STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
+	/// «std comp» members for decomp_sys tester tester object
+	STANDARD_COMPOSITION_MEMBERS( DecompositionSystemTester, decomp_sys_tester )
 	///
 	/** Set how and if finite derivatives are tested.
 	  *
@@ -70,35 +68,28 @@ public:
 	  *
 	  * ToDo: Finish documentation.
 	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( EDecompSysTesting, decomp_sys_testing )
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy::EDecompSysTesting, decomp_sys_testing )
 	///
 	/** Set how to set the print level for decomp_sys_tester (only if testing).
 	  *
 	  * ToDo: Finish documentation.
 	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( EDecompSysPrintLevel, decomp_sys_testing_print_level )
-
-	/// set new_point == true by default.
-	EvalNewPointStd_Step(
-		const deriv_tester_ptr_t&         deriv_tester
-		,const decomp_sys_tester_ptr_t&   decomp_sys_tester
-		,const bounds_tester_ptr_t&       bounds_tester
-		,EFDDerivTesting                  fd_deriv_testing               = FD_DEFAULT
-		,EDecompSysTesting                decomp_sys_testing             = DST_DEFAULT
-		,EDecompSysPrintLevel             decomp_sys_testing_print_level = DSPL_USE_GLOBAL
-		);
-
-	//@}
-
-	/** @name Basis selection */
-	//@{
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy::EDecompSysPrintLevel, decomp_sys_testing_print_level )
 
 	///
-	/** Force selection of a new basis.
+	/** Constructor.
 	 *
-	 * Tells the step object to select a new basis the next time \c do_step() is called.
+	 * new_point == true by default.
 	 */
-	void select_new_basis();
+	EvalNewPointStd_Step(
+		const decomp_sys_handler_ptr_t                              &decomp_sys_handler
+		,const deriv_tester_ptr_t                                   &deriv_tester
+		,const decomp_sys_tester_ptr_t                              &decomp_sys_tester
+		,const bounds_tester_ptr_t                                  &bounds_tester
+		,EFDDerivTesting                                            fd_deriv_testing               = FD_DEFAULT
+		,DecompositionSystemHandler_Strategy::EDecompSysTesting     decomp_sys_testing             = DecompositionSystemHandler_Strategy::DST_DEFAULT
+		,DecompositionSystemHandler_Strategy::EDecompSysPrintLevel  decomp_sys_testing_print_level = DecompositionSystemHandler_Strategy::DSPL_USE_GLOBAL
+		);
 
 	//@}
 
@@ -114,21 +105,10 @@ public:
 
 private:
 
-	bool				select_new_basis_;	// flag to select a new basis
-
 	// Not defined and not to be called
 	EvalNewPointStd_Step();
 
 };	// end class EvalNewPointStd_Step
-
-// ////////////////////////////////////////////
-// Inline members
-
-inline
-void EvalNewPointStd_Step::select_new_basis()
-{
-	select_new_basis_ = true;
-}
 
 }	// end namespace ReducedSpaceSQPPack 
 

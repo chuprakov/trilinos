@@ -78,11 +78,11 @@ void EvalNewPointStd_StepSetOptions::set_option(
 		{
 			const std::string &option = option_value.c_str();
 			if( option == "DST_DEFAULT" )
-				target().decomp_sys_testing( target_t::DST_DEFAULT );
+				target().decomp_sys_testing( DecompositionSystemHandler_Strategy::DST_DEFAULT );
 			else if( option == "DST_TEST" )
-				target().decomp_sys_testing( target_t::DST_TEST );
+				target().decomp_sys_testing( DecompositionSystemHandler_Strategy::DST_TEST );
 			else if( option == "DST_NO_TEST" )
-				target().decomp_sys_testing( target_t::DST_NO_TEST );
+				target().decomp_sys_testing( DecompositionSystemHandler_Strategy::DST_NO_TEST );
 			else
 				THROW_EXCEPTION(
 					true, std::invalid_argument
@@ -96,9 +96,9 @@ void EvalNewPointStd_StepSetOptions::set_option(
 		{
 			const std::string &option = option_value.c_str();
 			if( option == "DSPL_USE_GLOBAL" )
-				target().decomp_sys_testing_print_level( target_t::DSPL_USE_GLOBAL);
+				target().decomp_sys_testing_print_level( DecompositionSystemHandler_Strategy::DSPL_USE_GLOBAL);
 			else if( option == "DSPL_LEAVE_DEFAULT" )
-				target().decomp_sys_testing_print_level( target_t::DSPL_LEAVE_DEFAULT);
+				target().decomp_sys_testing_print_level( DecompositionSystemHandler_Strategy::DSPL_LEAVE_DEFAULT);
 			else
 				THROW_EXCEPTION(
 					true, std::invalid_argument

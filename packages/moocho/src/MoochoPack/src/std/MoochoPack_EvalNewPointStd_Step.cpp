@@ -20,11 +20,8 @@
 #include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"
 #include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-#include "ConstrainedOptimizationPack/include/DecompositionSystemVarReductPerm.h"
-#endif
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
-#include "NLPInterfacePack/include/NLPVarReductPerm.h"
+#include "AbstractLinAlgPack/include/PermutationOut.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
@@ -32,26 +29,31 @@
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
 #include "AbstractLinAlgPack/include/assert_print_nan_inf.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
-#include "Misc/include/dynamic_cast_verbose.h"
+#include "dynamic_cast_verbose.h"
 #include "ThrowException.h"
+
+#ifdef _DEBUG
+#include "LinAlgPack/include/PermVecMat.h"
+#endif
 
 namespace ReducedSpaceSQPPack {
 
 EvalNewPointStd_Step::EvalNewPointStd_Step(
-	const deriv_tester_ptr_t&         deriv_tester
-	,const decomp_sys_tester_ptr_t&   decomp_sys_tester
-	,const bounds_tester_ptr_t&       bounds_tester
-	,EFDDerivTesting                  fd_deriv_testing
-	,EDecompSysTesting                decomp_sys_testing
-	,EDecompSysPrintLevel             decomp_sys_testing_print_level
+	const decomp_sys_handler_ptr_t                              &decomp_sys_handler
+	,const deriv_tester_ptr_t                                   &deriv_tester
+	,const decomp_sys_tester_ptr_t                              &decomp_sys_tester
+	,const bounds_tester_ptr_t                                  &bounds_tester
+	,EFDDerivTesting                                            fd_deriv_testing
+	,DecompositionSystemHandler_Strategy::EDecompSysTesting     decomp_sys_testing
+	,DecompositionSystemHandler_Strategy::EDecompSysPrintLevel  decomp_sys_testing_print_level
 	)
-	:deriv_tester_(deriv_tester)
+	:decomp_sys_handler_(decomp_sys_handler)
+	,deriv_tester_(deriv_tester)
 	,decomp_sys_tester_(decomp_sys_tester)
 	,bounds_tester_(bounds_tester)
 	,fd_deriv_testing_(fd_deriv_testing)
 	,decomp_sys_testing_(decomp_sys_testing)
 	,decomp_sys_testing_print_level_(decomp_sys_testing_print_level)
-	,select_new_basis_(false)
 {}
 
 bool EvalNewPointStd_Step::do_step(
@@ -78,7 +80,7 @@ bool EvalNewPointStd_Step::do_step(
 	}
 
 	if(!nlp.is_initialized())
-		nlp.initialize();
+		nlp.initialize(algo.algo_cntr().check_results());
 
 	const size_type
 		n  = nlp.n(),
@@ -87,45 +89,6 @@ bool EvalNewPointStd_Step::do_step(
 		mI = nlp.mI();
 	size_type
 		r  = s.decomp_sys().equ_decomp().size();
-
-	bool decomp_updated     = false;
-	bool get_new_basis      = false;
-	bool new_basis_selected = false;
-
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-	// See if the permutable decomp_sys and nlp interfaces are supported.
-	DecompositionSystemVarReductPerm
-		*decomp_sys_perm = NULL;
-	NLPVarReductPerm
-		*nlp_vrp = NULL;
-	// Determine if we need a new decomposition selection or not.
-	if(m) {
-		decomp_sys_perm = dynamic_cast<DecompositionSystemVarReductPerm*>(&s.decomp_sys());
-		if(decomp_sys_perm) {
-			if( select_new_basis_ ) {
-				if( olevel >= PRINT_ALGORITHM_STEPS )
-					out << "\nSome client called select_new_basis() so we will select a new basis ...\n";
-				get_new_basis = true;
-				select_new_basis_ = false;
-			}
-			else if( !decomp_sys_perm->has_basis() ) {
-				if( olevel >= PRINT_ALGORITHM_STEPS )
-					out << "\nDecompositionSystemVarReductPerm object currently does not have a basis so we must select one ...\n";
-				get_new_basis = true;
-			}
-			if(get_new_basis) {
-				nlp_vrp = dynamic_cast<NLPVarReductPerm*>(&nlp);
-				THROW_EXCEPTION(
-					!nlp_vrp, TestFailed
-					,"EvalNewPointStd_Step::do_step(...) : Error, "
-					"The decomp_sys object supports the DecompositionSystemVarReductPerm interface, "
-					"a new basis must be selected and "
-					"the NLP with concrete type \'" << typeid(nlp).name() << "\' does not support "
-					"the NLPVarReductPerm interface!" );
-			}
-		}
-	}
-#endif
 
 	// Get the iteration quantity container objects
 	IterQuantityAccess<index_type>
@@ -139,16 +102,16 @@ bool EvalNewPointStd_Step::do_step(
 		*h_iq   = mI > 0 ? &s.h() : NULL,
 		&Gf_iq  = s.Gf();
 	IterQuantityAccess<MatrixWithOp>
-		*Gc_iq  = m  > 0                                   ? &s.Gc() : NULL,
-		*Gh_iq  = mI > 0                                   ? &s.Gh() : NULL,
-		*Z_iq   = ( n > m && r > 0 )    || get_new_basis   ? &s.Z()  : NULL,
-		*Y_iq   = ( r > 0 )             || get_new_basis   ? &s.Y()  : NULL,
-		*Uz_iq  = ( m  > 0 && m  > r )  || get_new_basis   ? &s.Uz() : NULL,
-		*Uy_iq  = ( m  > 0 && m  > r )  || get_new_basis   ? &s.Uy() : NULL,
-		*Vz_iq  = ( mI > 0 ) && ( m > 0 || get_new_basis ) ? &s.Vz() : NULL,
-		*Vy_iq  = ( mI > 0 ) && ( m > 0 || get_new_basis ) ? &s.Vy() : NULL;
+		*Gc_iq  = m  > 0 ? &s.Gc() : NULL,
+		*Gh_iq  = mI > 0 ? &s.Gh() : NULL,
+		*Z_iq   = NULL,
+		*Y_iq   = NULL,
+		*Uz_iq  = NULL,
+		*Uy_iq  = NULL,
+		*Vz_iq  = NULL,
+		*Vy_iq  = NULL;
 	IterQuantityAccess<MatrixWithOpNonsingular>
-		*R_iq  = m   > 0           ? &s.R()  : NULL;
+		*R_iq   = NULL;
 	
 	if( x_iq.last_updated() == IterQuantity::NONE_UPDATED ) {
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
@@ -197,33 +160,15 @@ bool EvalNewPointStd_Step::do_step(
 	const bool h_k_updated  = mI > 0 ? h_iq->updated_k(0)  : false;
 	const bool Gc_k_updated = m  > 0 ? Gc_iq->updated_k(0) : false;
 	const bool Gh_k_updated = mI > 0 ? Gh_iq->updated_k(0) : false;
-	if(f_k_updated)
-		nlp.set_f( NULL );
-	else
-		nlp.set_f( &f_iq.set_k(0) );
-	if(Gf_k_updated)
-		nlp.set_Gf( NULL );
-	else
-		nlp.set_Gf( &Gf_iq.set_k(0) );
+	nlp.set_f( &f_iq.set_k(0) );
+	nlp.set_Gf( &Gf_iq.set_k(0) );
 	if( m > 0 ) {
-		if( c_k_updated )
-			nlp.set_c( NULL );
-		else
-			nlp.set_c( &c_iq->set_k(0) );
-		if( Gc_k_updated )
-			nlp.set_Gc( NULL );
-		else
-			nlp.set_Gc( &Gc_iq->set_k(0) );
+		nlp.set_c( &c_iq->set_k(0) );
+		nlp.set_Gc( &Gc_iq->set_k(0) );
 	}
 	if( mI > 0 ) {
-		if( h_k_updated )
-			nlp.set_h( NULL );
-		else
-			nlp.set_h( &h_iq->set_k(0) );
-		if( Gh_k_updated )
-			nlp.set_Gh( NULL );
-		else
-			nlp.set_Gh( &Gh_iq->set_k(0) );
+		nlp.set_h( &h_iq->set_k(0) );
+		nlp.set_Gh( &Gh_iq->set_k(0) );
 	}
 
 	// Allow multiple updates as defined in NLP and NLPFirstOrderInfo interfaces
@@ -243,12 +188,29 @@ bool EvalNewPointStd_Step::do_step(
 	//
 	// Update (or select a new) range/null decomposition
 	//
+	bool new_decomp_selected = false;
 	if( m > 0 ) {
 		
+		// Update the range/null decomposition
+		decomp_sys_handler().update_decomposition(
+			algo, s, nlp, decomp_sys_testing(), decomp_sys_testing_print_level()
+			,&new_decomp_selected
+			);
+
+		r  = s.decomp_sys().equ_decomp().size();
+
+		Z_iq   = ( n > m && r > 0 )      ? &s.Z()  : NULL;
+		Y_iq   = ( r > 0 )               ? &s.Y()  : NULL;
+		Uz_iq  = ( m  > 0 && m  > r )    ? &s.Uz() : NULL;
+		Uy_iq  = ( m  > 0 && m  > r )    ? &s.Uy() : NULL;
+		Vz_iq  = ( mI > 0 ) && ( m > 0 ) ? &s.Vz() : NULL;
+		Vy_iq  = ( mI > 0 ) && ( m > 0 ) ? &s.Vy() : NULL;
+		R_iq   = ( m > 0 )               ? &s.R()  : NULL;
+
 		// Determine if we will test the decomp_sys or not
 		const DecompositionSystem::ERunTests
-			ds_test_what = ( ( decomp_sys_testing() == DST_TEST
-							   || ( decomp_sys_testing() == DST_DEFAULT
+			ds_test_what = ( ( decomp_sys_testing() == DecompositionSystemHandler_Strategy::DST_TEST
+							   || ( decomp_sys_testing() == DecompositionSystemHandler_Strategy::DST_DEFAULT
 									&& algo.algo_cntr().check_results() ) )
 							 ? DecompositionSystem::RUN_TESTS
 							 : DecompositionSystem::NO_TESTS );
@@ -273,218 +235,6 @@ bool EvalNewPointStd_Step::do_step(
 			default:
 				assert(0); // Should not get here!
 		};
-
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-		if( !decomp_sys_perm || !get_new_basis ) {
-#endif
-			THROW_EXCEPTION(
-				select_new_basis_, std::runtime_error
-				,"EvalNewPointStd_Step::do_step(...) : Error, "
-				"Some client has called select_new_basis() but the decomp_sys object does "
-				"not support the DecompositionSystemVarReductPerm interface.  Therefore, no new "
-				"basis for the decompositon can be selected and therefore the algorithm is terminated!"
-				);
-			// Form the decomposition of Gc and Gh and update the decomposition system matrices
-			if( olevel >= PRINT_ALGORITHM_STEPS ) {
-				out << "\nUpdating the range/null decompostion matrices ...\n";
-			}
-			try {
-				s.decomp_sys().update_decomp(
-					&out                               // out
-					,ds_olevel                         // olevel
-					,ds_test_what                      // test_what
-					,Gc_iq->get_k(0)                   // Gc
-					,Gh_iq ? &Gh_iq->get_k(0) : NULL   // Gh
-					,&Z_iq->set_k(0)                   // Z
-					,&Y_iq->set_k(0)                   // Y
-					,&R_iq->set_k(0)                   // R
-					,Uz_iq ? &Uz_iq->set_k(0) : NULL   // Uz
-					,Uy_iq ? &Uy_iq->set_k(0) : NULL   // Uy
-					,Vz_iq ? &Vz_iq->set_k(0) : NULL   // Vz
-					,Vy_iq ? &Vy_iq->set_k(0) : NULL   // Vy
-					,DecompositionSystem::MATRICES_ALLOW_DEP_IMPS // ToDo: Change this!
-					);
-				s.equ_decomp(   s.decomp_sys().equ_decomp()   );
-				s.equ_undecomp( s.decomp_sys().equ_undecomp() );
-				decomp_updated = true;
-			}
-			catch( const DecompositionSystem::SingularDecomposition& except) {
-				if( olevel >= PRINT_BASIC_ALGORITHM_INFO )
-					out
-						<< "\nOops!  This decomposition was singular; must select a new basis!\n"
-						<< except.what() << std::endl;
-			}
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-		}
-#endif
-
-		if( !decomp_updated ) {
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-			if( decomp_sys_perm ) {
-				if( get_new_basis ) {
-					MemMngPack::ref_count_ptr<Permutation>
-						P_var = nlp_vrp->factory_P_var()->create(),
-						P_equ = nlp_vrp->factory_P_equ()->create();
-					Range1D
-						var_dep,
-						equ_decomp;
-					bool nlp_selected_basis = false;
-					if( nlp_vrp->nlp_selects_basis() ) {
-						// The nlp may select the new (or first) basis.
-						
-						// If this is the first basis, the NLPVarReductPerm interface specifies that it
-						// will already be set for the nlp.  Check to see if this is the first basis
-						// and if not, ask the nlp to give you the next basis.
-						// I must form a loop here to deal with the
-						// possibility that the basis the nlp selects will be singular.
-						if( olevel >= PRINT_BASIC_ALGORITHM_INFO )
-							out
-								<< "\nThe NLP will attempt to select a basis "
-								<< "(k = " << s.k() << ")...\n";
-						// If decomp_sys_per->has_basis() == false, the first execution of the while()
-						// statement will not execute get_next_basis(...).		
-						nlp_selected_basis = false;
-						bool very_first_basis = !decomp_sys_perm->has_basis();
-						if(very_first_basis)
-							nlp_vrp->get_basis(
-								P_var.get(), &var_dep, P_equ.get(), &equ_decomp, NULL, NULL );
-						while( very_first_basis
-							   || nlp_vrp->get_next_basis(
-								   P_var.get(), &var_dep, P_equ.get(), &equ_decomp, NULL, NULL )
-							)
-						{
-							try {
-								very_first_basis = false;
-								decomp_sys_perm->set_decomp(
-									&out                               // out
-									,ds_olevel                         // olevel
-									,ds_test_what                      // test_what
-									,*P_var                            // P_var
-									,var_dep                           // var_dep
-									,P_equ.get()                       // P_equ
-									,&equ_decomp                       // equ_decomp
-									,Gc_iq->get_k(0)                   // Gc
-									,Gh_iq ? &Gh_iq->get_k(0) : NULL   // Gh
-									,&Z_iq->set_k(0)                   // Z
-									,&Y_iq->set_k(0)                   // Y
-									,&R_iq->set_k(0)                   // R
-									,Uz_iq ? &Uz_iq->set_k(0) : NULL   // Uz
-									,Uy_iq ? &Uy_iq->set_k(0) : NULL   // Uy
-									,Vz_iq ? &Vz_iq->set_k(0) : NULL   // Vz
-									,Vy_iq ? &Vy_iq->set_k(0) : NULL   // Vy
-									,DecompositionSystem::MATRICES_ALLOW_DEP_IMPS // ToDo: Change this to MATRICES_INDEP_IMPS
-									);
-								// If you get here the basis was not singular.
-								nlp_selected_basis = true;
-								break; // break out of the while(...) loop
-							}
-							// Catch the singularity exceptions and loop around
-							catch( const DecompositionSystem::SingularDecomposition& except )
-							{
-								if( olevel >= PRINT_BASIC_ALGORITHM_INFO )
-									out
-										<< "\nOops!  This decomposition was singular; ask the NLP for another basis!\n"
-										<< except.what() << std::endl;
-							}
-							// Any other exception gets thrown clean out of here.
-						}
-						
-						if( olevel >= PRINT_BASIC_ALGORITHM_INFO && !nlp_selected_basis )
-							out
-								<< "\nThe NLP was unable to provide a nonsigular basis "
-								<< "(k = " << s.k() << ")\n";
-						
-					}
-					if(!nlp_selected_basis) {
-						// If you get into here then the nlp could not select a nonsingular
-						// basis so we will let the decomposition system select a basis.
-						// and give it to the nlp.
-						
-						if( static_cast<int>(olevel) >= static_cast<int>(PRINT_BASIC_ALGORITHM_INFO) )
-						{
-							out
-								<< "\nThe decomposition system object is selecting the basis "
-								<< "(k = " << s.k() << ")...\n";
-						}
-						decomp_sys_perm->select_decomp(
-							&out                                        // out
-							,ds_olevel                                  // olevel
-							,ds_test_what                               // test_what
-							,nu_iq.updated_k(0)?&nu_iq.get_k(0):NULL    // nu
-							,&Gc_iq->get_k(0)                           // Gc
-							,Gh_iq ? &Gh_iq->get_k(0) : NULL            // Gh
-							,P_var.get()                                // P_var
-							,&var_dep                                   // var_dep
-							,P_equ.get()                                // P_equ
-							,&equ_decomp                                // equ_decomp
-							,&Z_iq->set_k(0)                            // Z
-							,&Y_iq->set_k(0)                            // Y
-							,&R_iq->set_k(0)                            // R
-							,Uz_iq ? &Uz_iq->set_k(0) : NULL            // Uz
-							,Uy_iq ? &Uy_iq->set_k(0) : NULL            // Uy
-							,Vz_iq ? &Vz_iq->set_k(0) : NULL            // Vz
-							,Vy_iq ? &Vy_iq->set_k(0) : NULL            // Vy
-							,DecompositionSystem::MATRICES_ALLOW_DEP_IMPS // ToDo: Change this to MATRICES_INDEP_IMPS
-							);
-						nlp_vrp->set_basis(	*P_var, var_dep, P_equ.get(), &equ_decomp, NULL, NULL );
-					}
-
-					// If you get here (no unexpected exceptions where thrown) then a new
-					// basis has been selected.
-					
-					new_basis_selected = true;
-					r                  = s.decomp_sys().equ_decomp().size();
-
-					// Record this basis change
-
-					const int
-						last_updated_k = num_basis_iq.last_updated();
-					const index_type
-						num_basis = ( last_updated_k != IterQuantity::NONE_UPDATED ? num_basis_iq.get_k(last_updated_k) : 0 ) + 1;
-					num_basis_iq.set_k(0) = num_basis;
-
-					s.var_dep(      decomp_sys_perm->var_dep()      );
-					s.var_indep(    decomp_sys_perm->var_indep()    );
-					s.equ_decomp(   decomp_sys_perm->equ_decomp()   );
-					s.equ_undecomp( decomp_sys_perm->equ_undecomp() );
-					
-					s.set_P_var_last( s.get_P_var_current() );
-					s.set_P_equ_last( s.get_P_equ_current() );
-
-					s.set_P_var_current( P_var );
-					s.set_P_equ_current( P_equ );
-					
-					// Sort x according to this new basis.
-					VectorWithOpMutable &x = x_iq.get_k(0);
-					if( s.get_P_var_last().get() )
-						s.P_var_last().permute(  BLAS_Cpp::trans,    &x ); // Permute back to original order
-					s.P_var_current().permute(   BLAS_Cpp::no_trans, &x ); // Permute to new (current) order
-					if( olevel >= PRINT_VECTORS ) {
-						out	<< "\nx resorted to new basis "
-							<< "(k = " << s.k() << ")\n" << x;
-					}
-					
-					// Set the new range and null spaces (these will update all of the set vectors!)
-					s.set_space_range( decomp_sys_perm->space_range() );
-					s.set_space_null(  decomp_sys_perm->space_null()  );
-				}
-			}
-			else {
-				THROW_EXCEPTION(
-					true, std::runtime_error
-					,"EvalNewPointStd_Step::do_step(...) : Error, "
-					"The current decomposition is singular and the decomp_sys object does "
-					"not support the DecompositionSystemVarReductPerm interface.  Therefore, no new "
-					"basis for the decompositon can be selected and therefore the algorithm is terminated!"	);
-			}
-#else
-			THROW_EXCEPTION(
-				true, std::runtime_error
-				,"EvalNewPointStd_Step::do_step(...) : Error, "
-				"The current decomposition is singular and a new basis can not be determined "
-				"since the preprocessor macros RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS is defined!" );
-#endif
-		}
 
 		// Test the decomposition system
 		if( ds_test_what == DecompositionSystem::RUN_TESTS ) {
@@ -542,11 +292,11 @@ bool EvalNewPointStd_Step::do_step(
 	// basis selection and will permute these quantities to that basis.
 	// Note that x will already be permuted to the current basis.
 	nlp.calc_Gf( x, new_point ); new_point = false;
-	if( m && (!c_k_updated || new_basis_selected ) )
+	if( m && (!c_k_updated || new_decomp_selected ) )
 		nlp.calc_c( x, false);
-	if( mI && (!h_k_updated || new_basis_selected ) )
+	if( mI && (!h_k_updated || new_decomp_selected ) )
 		nlp.calc_h( x, false);
-	if( !f_k_updated  || new_basis_selected )
+	if( !f_k_updated || new_decomp_selected )
 		nlp.calc_f( x, false);
 
 	// Check for NaN and Inf
@@ -645,7 +395,6 @@ void EvalNewPointStd_Step::print_step(
 		<< L << "if m > 0 and Gc_k is not updated Gc_k = Gc(x_k) <: space_x|space_c\n"
 		<< L << "if mI > 0 Gh_k is not updated Gh_k = Gh(x_k) <: space_x|space_h\n"
 		<< L << "if m > 0 then\n"
-		<< L << "  *** ToDo: Work on variable and constraint permutations!\n"
 		<< L << "  For Gc_k = [ Gc_k(:,equ_decomp), Gc_k(:,equ_undecomp) ] where:\n"
 		<< L << "    Gc_k(:,equ_decomp) <: space_x|space_c(equ_decomp) has full column rank r\n"
 		<< L << "  Find:\n"
@@ -661,9 +410,9 @@ void EvalNewPointStd_Step::print_step(
 		<< L << "                                  s.t. Vz_k = Gh_k' * Z_k\n"
 		<< L << "    if mI > 0 : Vy_k <: space_h|space_range\n"
 		<< L << "                                  s.t. Vy_k = Gh_k' * Y_k\n"
-		<< L << "  begin update decomposition (class \'" << typeid(s.decomp_sys()).name() << "\')\n"
+		<< L << "  begin update decomposition (class \'" << typeid(decomp_sys_handler()).name() << "\')\n"
 		;
-	s.decomp_sys().print_update_decomp( out, L + "    " );
+	decomp_sys_handler().print_update_decomposition( algo, s, out, L + "    " );
 	out
 		<< L << "  end update decomposition\n"
 		<< L << "  if ( (decomp_sys_testing==DST_TEST)\n"
