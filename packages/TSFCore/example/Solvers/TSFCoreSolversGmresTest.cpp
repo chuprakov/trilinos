@@ -183,10 +183,10 @@ int main(int argc, char *argv[]) {
 		//
 		// Compute actual residual norm.
 		//
-		double bnorm = norm_2( RHS );
+		double bnorm = TSFCore::norm_2( RHS );
 		ELOp.apply( TSFCore::NOTRANS, Soln, &RHS, 1.0, -1.0 );
 		//
-		double final_rel_err = norm_2( RHS )/bnorm;
+		double final_rel_err = TSFCore::norm_2( RHS )/bnorm;
 		if (verbose) {
 			cout << "******************* Results ************************"<<endl;
 			cout << "Iteration "<< MySolver.currIteration()<<" of "<<max_iter<< endl;
