@@ -1,0 +1,6 @@
+Decomposition Info	= method=rcb, tol=0.9
+#Zoltan Parameters	= 0=1.0, 1=0.
+File Type		= NemesisI
+File Name		= ti_300-m6-r.par
+Parallel Disk Info	= number=2,offset=1,zeros
+Parallel file location  = root=ti_, subdir=.

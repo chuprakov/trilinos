@@ -1,0 +1,7 @@
+-------------------------------------------------------------------------------
+ch_film
+  Film graph included with Chaco distribution.
+  Small finite element grid with quadrilateral elements.
+  Graph and coordinates included.
+  No vertex weights.
+-------------------------------------------------------------------------------
