@@ -46,7 +46,6 @@ class MeritFuncNLPDirecDeriv;
 class MeritFuncPenaltyParam;
 class MeritFuncPenaltyParams;
 class DirectLineSearch_Strategy;
-class VarReductOrthog_Strategy;
 
 // concrete subclasses
 

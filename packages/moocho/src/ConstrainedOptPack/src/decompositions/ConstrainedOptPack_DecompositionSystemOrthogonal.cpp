@@ -20,7 +20,6 @@
 #include "ConstrainedOptimizationPack/include/DecompositionSystemOrthogonal.h"
 #include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"
 #include "ConstrainedOptimizationPack/include/MatrixDecompRangeOrthog.h"
-#include "ConstrainedOptimizationPack/include/VarReductOrthog_Strategy.h"
 #include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
 #include "AbstractLinAlgPack/include/MatrixSymInitDiagonal.h"
 #include "AbstractLinAlgPack/include/MatrixCompositeStd.h"

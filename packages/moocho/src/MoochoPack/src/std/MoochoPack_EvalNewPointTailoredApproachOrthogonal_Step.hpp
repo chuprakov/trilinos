@@ -17,7 +17,6 @@
 #define EVAL_NEW_POINT_TAILORED_APPROACH_ORTHOGONAL_STEP_H
 
 #include "EvalNewPointTailoredApproach_Step.h"
-#include "ConstrainedOptimizationPack/include/VarReductOrthog_Strategy.h"
 #include "StandardCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {

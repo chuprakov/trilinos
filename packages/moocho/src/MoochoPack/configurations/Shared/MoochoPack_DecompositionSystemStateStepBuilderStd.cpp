@@ -39,7 +39,6 @@
 #include "ConstrainedOptimizationPack/include/DecompositionSystemTesterSetOptions.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinate.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemOrthogonal.h"
-#include "ConstrainedOptimizationPack/include/VarReductOrthogDenseStd_Strategy.h"
 
 // Iteration quantities
 
