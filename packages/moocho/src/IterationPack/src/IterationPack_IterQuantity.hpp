@@ -91,6 +91,11 @@ public:
 	  */
 	virtual void set_not_updated(int offset) = 0;
 
+	///
+	/** Causes #updated_k(k)# to return false for all #k#.
+	  */
+	virtual void set_all_not_updated() = 0;
+
 	/// Assert #has_storage_k(offset) == true# (throw #NoStorageAvailable#).
 	void assert_has_storage_k(int offset) const {
 		if(!has_storage_k(offset)) {
