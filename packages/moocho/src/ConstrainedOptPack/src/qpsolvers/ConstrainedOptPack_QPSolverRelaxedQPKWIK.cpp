@@ -341,7 +341,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 				// y == A.row(i)'
 				// y' = e_k' * op(E) => y = op(E')*e_k
 				VectorSlice y = A_.row(i);
-				EtaVector e_k(N_,k);
+				EtaVector e_k(k,N_);
 				V_MtV( &y( 1, N_ ), *E, BLAS_Cpp::trans_not(trans_E), e_k() ); // op(E')*e_k
 			}
 		}

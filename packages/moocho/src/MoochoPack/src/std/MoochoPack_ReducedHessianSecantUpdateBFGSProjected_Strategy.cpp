@@ -11,6 +11,7 @@
 #include "ReducedSpaceSQPPack/include/rSQPState.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymAddDelUpdateable.h"
 #include "SparseLinAlgPack/include/SpVectorClass.h"
+#include "SparseLinAlgPack/include/SpVectorOp.h"
 #include "SparseLinAlgPack/include/MatrixWithOpOut.h"
 #include "SparseLinAlgPack/include/GenPermMatrixSlice.h"
 #include "SparseLinAlgPack/include/GenPermMatrixSliceOp.h"
@@ -26,11 +27,11 @@ namespace ReducedSpaceSQPPack {
 
 ReducedHessianSecantUpdateBFGSProjected_Strategy::ReducedHessianSecantUpdateBFGSProjected_Strategy(
 	const bfgs_update_ptr_t&      bfgs_update
-	,value_type                   proj_start_frac
+	,value_type                   proj_start_act_set_frac
 	,value_type                   super_basic_mult_drop_tol
 	)
 	: bfgs_update_(bfgs_update)
-	, proj_start_frac_(proj_start_frac)
+	, proj_start_act_set_frac_(proj_start_act_set_frac)
 	, super_basic_mult_drop_tol_(super_basic_mult_drop_tol)
 {}
 
@@ -45,6 +46,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 	using std::right;
 	using DynamicCastHelperPack::dyn_cast;
 	using LinAlgOpPack::V_MtV;
+	using SparseLinAlgPack::norm_inf;
 	typedef ConstrainedOptimizationPack::MatrixHessianSuperBasic MHSB_t;
 
 #ifdef _WINDOWS
@@ -58,7 +60,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 		&Q_X = rHL_super.Q_X();
 	const size_type
 		r    = algo->nlp().r(),
-		pz_n = Q_R.rows();
+		n_pz = Q_R.rows();
 
 	bool do_projected_rHL_RR = false;
 
@@ -82,7 +84,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 				= ( num_adds == ActSetStats::NOT_KNOWN || num_active_indep == 0
 					? 0.0
 					: std::_MAX(((double)(num_active_indep)-num_adds-num_drops) / num_active_indep, 0.0 ) );
-			do_projected_rHL_RR = ( num_active_indep > 0 && frac_same >= proj_start_frac() );
+			do_projected_rHL_RR = ( num_active_indep > 0 && frac_same >= proj_start_act_set_frac() );
 			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 				out << "\nnum_active_indep = " << num_active_indep;
 				if( num_active_indep ) {
@@ -93,7 +95,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 						out << " >= ";
 					else
 						out << " < ";
-					out << "proj_start_frac = " << proj_start_frac();
+					out << "proj_start_act_set_frac = " << proj_start_act_set_frac();
 				}
 				if( do_projected_rHL_RR )
 					out << "\nStart performing projected BFGS updating of superbasic variables only!\n";
@@ -104,14 +106,21 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 				//
 				// Eliminate those rows/cols from rHL_RR for fixed variables and reinitialize rHL
 				//
-				if( i_x_free_.size() < pz_n ) { // Only need to resize these once
-					i_x_free_.resize(pz_n); 
-					i_x_fixed_.resize(pz_n);
-					bnd_fixed_.resize(pz_n);
+				if( i_x_free_.size() < n_pz ) { // Only need to resize these once
+					i_x_free_.resize(n_pz); 
+					i_x_fixed_.resize(n_pz);
+					bnd_fixed_.resize(n_pz);
 				}
 				// Loop through and set i_x_free and i_x_fixed
 				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-					out << "\nDetermining which fixed variables to remove from rHL_RR...\n";
+					out << "\nDetermining which fixed variables to remove from rHL_RR (can remove all but one)...\n";
+				}
+				const value_type
+					max_nu_indep = norm_inf(nu_indep);
+				const bool
+					all_fixed = n_pz == nu_indep.nz();
+				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+					out << "\nmax{|nu_k(indep)|,i=r+1...n} = " << max_nu_indep << std::endl;
 				}
 				const int prec = out.precision();
 				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ACTIVE_SET) ) {
@@ -136,33 +145,41 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 				bnd_fixed_t::iterator
 					bnd_fixed_itr = bnd_fixed_.begin();
 				size_type
-					pz_n_X = 0, // We will count these
-					pz_n_R = 0;
-				{for( size_type i = 1; i <= pz_n; ++i ) {
-					if( nu_itr != nu_end && (nu_itr->indice() + nu_o) == i ) {
-						const bool drop = ::fabs(nu_itr->value()) >= super_basic_mult_drop_tol();
+					n_pz_X = 0, // We will count these
+					n_pz_R = 0;
+				bool kept_one = false;
+                {for( size_type i_indep = 1; i_indep <= n_pz; ++i_indep ) {
+					if( nu_itr != nu_end && (nu_itr->indice() + nu_o) == i_indep ) {
+						const value_type
+							abs_val = ::fabs(nu_itr->value());
+						const bool
+							keep = ( (all_fixed && abs_val == max_nu_indep && !kept_one)
+									 || abs_val > super_basic_mult_drop_tol() );
 						if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ACTIVE_SET) ) {
-							out << right << setw(10)      << i + r
+							out << right << setw(10)      << i_indep + r
 								<< right << setw(prec+12) << nu_itr->value()
-								<< right << setw(8)       << (drop ? "drop" : "keep")
+								<< right << setw(8)       << (keep ? "keep" : "drop")
 								<< endl;
 						}
-						if(drop) {
-							*i_x_fixed_itr++ = i;
+						if(!keep) {
+							*i_x_fixed_itr++ = i_indep;
 							*bnd_fixed_itr++
 								= ( nu_itr->value() > 0.0 ? MHSB_t::UPPER : MHSB_t::LOWER );
 							// ToDo: Consider fixed variable bounds
-							++nu_itr;
-							++pz_n_X;
-							continue;
+							++n_pz_X;
 						}
+						else {
+							kept_one = true;
+						}
+						++nu_itr;
+						if(!keep) continue;
 					}
-					*i_x_free_itr++ = i;
-					++pz_n_R;
+					*i_x_free_itr++ = i_indep;
+					++n_pz_R;
 				}}
-				assert( i_x_free_itr  - i_x_free_.begin()  == pz_n_R );
-				assert( i_x_fixed_itr - i_x_fixed_.begin() == pz_n_X );
-				assert( bnd_fixed_itr - bnd_fixed_.begin() == pz_n_X );
+				assert( i_x_free_itr  - i_x_free_.begin()  == n_pz_R );
+				assert( i_x_fixed_itr - i_x_fixed_.begin() == n_pz_X );
+				assert( bnd_fixed_itr - bnd_fixed_.begin() == n_pz_X );
 				// Delete rows/cols from rHL_RR for fixed variables
 #ifdef _WINDOWS
 				MatrixSymAddDelUpdateable
@@ -175,14 +192,14 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 						const_cast<MatrixSymWithOpFactorized&>(*rHL_super.B_RR_ptr())
 						);
 #endif
-				if( pz_n_R < pz_n ) {
+				if( n_pz_R < n_pz ) {
 					if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-						out << "\nDeleting rows from rHL_RR for fixed variables...\n";
+						out << "\nDeleting n_pz_X = " << n_pz_X << " rows/columns from rHL_RR for fixed independent variables...\n";
 					}
-					{for( size_type k = 0; k < pz_n_X; ++k ) {
+					{for( size_type k = 0; k < n_pz_X; ++k ) {
 						rHL_RR.delete_update( i_x_fixed_[k]-k, false );
 					}}
-					assert( rHL_RR.rows() == pz_n_R );
+					assert( rHL_RR.rows() == n_pz_R );
 					if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
 						out << "\nrHL_RR after variables where removed =\n" << *rHL_super.B_RR_ptr();
 					}
@@ -198,10 +215,10 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 							const_cast<MatrixSymWithOp&>(*rHL_super.B_XX_ptr())
 							);
 #endif
-					B_XX.init_identity( pz_n_X ); // ToDo: We may want scaled element?
+					B_XX.init_identity( n_pz_X ); // ToDo: We may want scaled element?
 					// Reinitialize rHL for new active set
 					rHL_super.initialize(
-						pz_n, pz_n_R, &i_x_free_[0], &i_x_fixed_[0], &bnd_fixed_[0]
+						n_pz, n_pz_R, &i_x_free_[0], &i_x_fixed_[0], &bnd_fixed_[0]
 						,rHL_super.B_RR_ptr(),NULL,BLAS_Cpp::no_trans,rHL_super.B_XX_ptr()
 						);
 					if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
@@ -232,9 +249,9 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 			&Q_R = rHL_super.Q_R(),
 			&Q_X = rHL_super.Q_X();
 		const size_type
-			pz_n_R = Q_R.cols(),
-			pz_n_X = Q_X.cols();
-		assert( pz_n_R + pz_n_X == pz_n );
+			n_pz_R = Q_R.cols(),
+			n_pz_X = Q_X.cols();
+		assert( n_pz_R + n_pz_X == n_pz );
 		// Get projected BFGS update vectors y_bfgs_R, s_bfgs_R
 		Vector y_bfgs_R; // y_bfgs_R = Q_R'*y_bfgs
 		V_MtV( &y_bfgs_R, Q_R, BLAS_Cpp::trans, *y_bfgs );
@@ -242,7 +259,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 		V_MtV( &s_bfgs_R, Q_R, BLAS_Cpp::trans, *s_bfgs );
 		// Update rHL_RR
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-			out << "\nPerform BFGS update on only the reduced Hessian for the superbasic variables where B = rHL_RR...\n";
+			out << "\nPerform BFGS update on " << n_pz_R << " x " << n_pz_R << " projected reduced Hessian for the superbasic variables where B = rHL_RR...\n";
 		}
 		bfgs_update().perform_update(
 			&s_bfgs_R(),&y_bfgs_R(),first_update,out,olevel,algo->algo_cntr().check_results()

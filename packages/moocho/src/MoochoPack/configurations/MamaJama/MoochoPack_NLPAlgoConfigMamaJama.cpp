@@ -83,6 +83,7 @@
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateStd_Step.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSFull_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
+#include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_StrategySetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/DepDirecStd_Step.h"
@@ -852,8 +853,13 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 						}
 					    case QN_BFGS_PROJECTED:
 						{
-							secant_update_strategy
+							ReducedHessianSecantUpdateBFGSProjected_Strategy
+								*prog_bfgs_strategy
 								= new ReducedHessianSecantUpdateBFGSProjected_Strategy(bfgs_strategy);
+							ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions
+								opt_setter( prog_bfgs_strategy );
+							if(options_) opt_setter.set_options( *options_ );
+							secant_update_strategy = prog_bfgs_strategy;
 							break;
 						}
 					}

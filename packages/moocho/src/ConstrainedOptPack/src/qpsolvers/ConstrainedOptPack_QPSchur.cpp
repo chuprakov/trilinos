@@ -76,6 +76,37 @@ void deincrement_indices(
 	}
 }
 
+// Insert the element (r_v,c_v) into r[] and c[] sorted by r[]
+void insert_pair_sorted(
+	LinAlgPack::size_type  r_v
+	,LinAlgPack::size_type c_v
+	,size_t len_vector                       // length of the new vector
+	,std::vector<LinAlgPack::size_type> *r
+	,std::vector<LinAlgPack::size_type> *c
+	)
+{
+	typedef std::vector<LinAlgPack::size_type> rc_t;
+	assert( r->size() >= len_vector && c->size() >= len_vector );
+	// find the insertion point in r[]
+	rc_t::iterator
+		itr = std::lower_bound( r->begin(), r->begin() + len_vector-1, r_v );
+	const LinAlgPack::size_type p = itr - r->begin();
+	// Shift all of the stuff out of the way to make room for the insert
+	{for( rc_t::iterator itr_last = r->begin() + len_vector-1;
+			itr_last > r->begin() + p; --itr_last )
+	{
+		*itr_last = *(itr_last-1);
+	}}
+	{for( rc_t::iterator itr_last = c->begin() + len_vector-1;
+			itr_last > c->begin() + p; --itr_last )
+	{
+		*itr_last = *(itr_last-1);
+	}}
+	// Insert the new elements
+	(*r)[p] = r_v;
+	(*c)[p] = c_v;
+}
+	
 // z_hat = inv(S_hat) * ( d_hat - U_hat'*vo )
 void calc_z( const SparseLinAlgPack::MatrixFactorized& S_hat
 	, const LinAlgPack::VectorSlice& d_hat, const SparseLinAlgPack::MatrixWithOp& U_hat
@@ -333,15 +364,23 @@ void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M
 		// P_plus_hat_P = P_plus_hat * x
 		if(P_plus_hat().nz())
 			V_MtV( &P_plus_hat_P, P_plus_hat(), no_trans, x );
-		// y1 = b * y1 + a * Q_R' * G * P_XF_hat_P
+		// y1 = b * y1
+		if(b==0.0)      y1=0.0;
+		else if(b!=1.0) Vt_S(&y1,b);
+		// y1 += a * Q_R' * G * P_XF_hat_P
 		if(P_XF_hat().nz())
-			Vp_StPtMtV( &y1, a, Q_R(), trans, G(), no_trans, P_XF_hat_P(), b );
+			Vp_StPtMtV( &y1, a, Q_R(), trans, G(), no_trans, P_XF_hat_P() );
 		// y1 += a * Q_R' * A_bar * P_plus_hat_P
 		if(P_plus_hat().nz())
 			Vp_StPtMtV( &y1, a, Q_R(), trans, A_bar(), no_trans, P_plus_hat_P() );
-		// y2 = b * y2 + a * A' * P_XF_hat_P
-		if( m && P_XF_hat().nz() )
-			Vp_StMtV( &y2, a, *A(), trans, P_XF_hat_P(), b );
+		if(m) {
+			// y2 = b * y2
+			if(b==0.0)      y2=0.0;
+			else if(b!=1.0) Vt_S(&y2,b);
+			// y2 +=  a * A' * P_XF_hat_P
+			if( P_XF_hat().nz() )
+				Vp_StMtV( &y2, a, *A(), trans, P_XF_hat_P() );
+		}
 	}
 	else if( M_trans == BLAS_Cpp::trans ) {
 		//
@@ -362,10 +401,8 @@ void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M
 		// Q_R_x1 = Q_R * x1
 		V_MtV( &Q_R_x1, Q_R(), no_trans, x1 );
 		// y = b*y
-		if( b == 0.0 )
-			*y = 0.0;
-		else if( b != 1.0 )
-			Vt_S( y, b );
+		if(b==0.0)      *y = 0.0;
+		else if(b!=1.0) Vt_S( y, b );
 		// y += a * P_XF_hat' * G * Q_R_x1
 		if(P_XF_hat().nz())
 			Vp_StPtMtV( y, a, P_XF_hat(), trans, G(), no_trans, Q_R_x1() );
@@ -430,15 +467,23 @@ void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M
 		// P_plus_hat_P = P_plus_hat * x
 		if(P_plus_hat().nz())
 			V_MtV( &P_plus_hat_P, P_plus_hat(), no_trans, x );
-		// y1 = b * y1 + a * Q_R' * G * P_XF_hat_P
+		// y1 = b * y1
+		if(b==0.0)      y1=0.0;
+		else if(b!=1.0) Vt_S(&y1,b);
+		// y1 += a * Q_R' * G * P_XF_hat_P
 		if(P_XF_hat().nz())
-			Vp_StPtMtV( &y1, a, Q_R(), trans, G(), no_trans, P_XF_hat_P(), b );
+			Vp_StPtMtV( &y1, a, Q_R(), trans, G(), no_trans, P_XF_hat_P() );
 		// y1 += a * Q_R' * A_bar * P_plus_hat_P
 		if(P_plus_hat().nz())
 			Vp_StPtMtV( &y1, a, Q_R(), trans, A_bar(), no_trans, P_plus_hat_P() );
-		// y2 = b * y2 + a * A' * P_XF_hat_P
-		if( m && P_XF_hat().nz() )
-			Vp_StMtV( &y2, a, *A(), trans, P_XF_hat_P(), b );
+		if(m) {
+			// y2 = b * y2
+			if(b==0.0)      y2=0.0;
+			else if(b!=1.0) Vt_S(&y2,b);
+			// y2 += a * A' * P_XF_hat_P
+			if(P_XF_hat().nz())
+				Vp_StMtV( &y2, a, *A(), trans, P_XF_hat_P() );
+		}
 	}
 	else if( M_trans == BLAS_Cpp::trans ) {
 		//
@@ -459,10 +504,8 @@ void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M
 		// Q_R_x1 = Q_R * x1
 		V_MtV( &Q_R_x1, Q_R(), no_trans, x1 );
 		// y = b*y
-		if( b == 0.0 )
-			*y = 0.0;
-		else if( b != 1.0 )
-			Vt_S( y, b );
+		if(b ==0.0)     *y = 0.0;
+		else if(b!=1.0) Vt_S( y, b );
 		// y += a * P_XF_hat' * G * Q_R_x1
 		if(P_XF_hat().nz())
 			Vp_StPtMtV( y, a, P_XF_hat(), trans, G(), no_trans, Q_R_x1() );
@@ -892,12 +935,16 @@ void QPSchur::ActiveSet::add_constraint(
 		&constraints = qp_->constraints();
 
 	if( is_init_fixed(ja) && (*x_init_)(ja) == bnd_ja ) {
+		//
 		// This is a variable that was initially fixed, then freed and now
 		// is being fixed back to its original bound.
+		//
 		assert(0);	// ToDo: implement
 	}
 	else {
+		//
 		// Expand the size of the schur complement to add the new constraint
+		//
 		 
 		// Compute the terms for the update
 		
@@ -908,6 +955,7 @@ void QPSchur::ActiveSet::add_constraint(
 		bool				changed_bounds = false;
 				
 		if( ja <= n_ && !is_init_fixed(ja) ) {
+			//
 			// Fix an initially free variable is being fixed
 			// 
 			// u_p = e(ja) <: R^(n_R+m)
@@ -934,6 +982,7 @@ void QPSchur::ActiveSet::add_constraint(
 			changed_bounds = true;
 		}
 		else {	// ja > n
+			//
 			// Add an extra equality or inequality constraint.
 			//
 			// u_p = [ Q_R' * A_bar * e(ja) ] n_R
@@ -948,8 +997,8 @@ void QPSchur::ActiveSet::add_constraint(
 			Vector r;	// ToDo: Make this sparse!
 			V_InvMtV( &r, qp_->Ko(), no_trans, u_p() );
 			if(q_hat) {
-				// v_p = P_XF_hat' * A_bar * e(ja)
 				// t_hat = v_p - U_hat' * r
+				//    where: v_p = P_XF_hat' * A_bar * e(ja)
 				V_StMtV( &t_hat(), -1.0, U_hat_, trans, r() );
 				Vp_StPtMtV( &t_hat(), 1.0, P_XF_hat_, trans, A_bar, no_trans, e_ja() );
 			}
@@ -1013,28 +1062,8 @@ void QPSchur::ActiveSet::add_constraint(
 			p_z_hat_(q_hat_new) = 1.0;
 		}
 		if( !changed_bounds ) {
-			// Update P_plus_hat
-			// 
 			// Insert (ja, q_hat_new) into P_plus_hat, sorted by row
-			// 
-			// find the insertion point
-			P_row_t::iterator
-				itr = std::lower_bound( P_plus_hat_row_.begin(), P_plus_hat_row_.begin() + q_plus_hat_-1, ja );
-			const size_type p = itr - P_plus_hat_row_.begin();
-			// Shift all of the stuff out of the way to make room for the insert
-			{for(	P_row_t::iterator itr_last =  P_plus_hat_row_.begin() + q_plus_hat_-1;
-					itr_last > P_plus_hat_row_.begin() + p; --itr_last )
-			{
-				*itr_last = *(itr_last-1);
-			}}
-			{for(	P_col_t::iterator itr_last =  P_plus_hat_col_.begin() + q_plus_hat_-1;
-					itr_last > P_plus_hat_col_.begin() + p; --itr_last )
-			{
-				*itr_last = *(itr_last-1);
-			}}
-			// Insert the new elements
-			P_plus_hat_row_[p] = ja;
-			P_plus_hat_col_[p] = q_hat_new;
+			insert_pair_sorted(ja,q_hat_new,q_plus_hat_,&P_plus_hat_row_,&P_plus_hat_col_);
 		}
 	}
 	// Update the permutation matrices and U_hat
@@ -1074,10 +1103,11 @@ void QPSchur::ActiveSet::drop_constraint(
 		assert( 1 <= id && id <= n_ );
 		const size_type ld = qp_->l_x_X_map()(-jd);
 		assert( 1 <= ld && ld <= n_ - n_R_ );
-		size_type kd = 0; // Find kd
-		{for( size_type kd = 1; kd <= q_D_hat; ++kd ) {
+		size_type kd; // Find kd
+		{for( kd = 1; kd <= q_D_hat; ++kd ) {
 			if( l_fxfx_[kd-1] == ld ) break;
 		}}
+		assert( kd < q_D_hat + 1 );
 		// Get references
 		const MatrixSymWithOp
 			&G           = qp_->G();
@@ -1112,7 +1142,7 @@ void QPSchur::ActiveSet::drop_constraint(
 		const value_type
 			sigma = transVtMtV( e_id(), G, no_trans, e_id() );
 		// d_p = - g(id) - b_X'*(Q_X'*G*e_id) <: R
-		Vector Q_X_G_e_id(q_D_hat);
+		Vector Q_X_G_e_id(Q_X.cols());
 		Vp_StPtMtV( &Q_X_G_e_id(), 1.0, Q_X, trans, G, no_trans, e_id(), 0.0 );
 		const value_type
 			d_p = -g(id) - dot( b_X, Q_X_G_e_id() );
@@ -1124,9 +1154,10 @@ void QPSchur::ActiveSet::drop_constraint(
 		// where: v_p = P_XF_hat'*G*e_id + P_plus_hat'*A_bar'*e_id <: R^(q_hat)
 		Vector t_hat(q_hat);
 		if(q_hat) {
-			// t_hat = v_p
+			t_hat = 0.0;
+			// t_hat += v_p
 			if(q_F_hat_)
-				Vp_StPtMtV( &t_hat(), 1.0, P_XF_hat, trans, G, no_trans, e_id(), 0.0 );
+				Vp_StPtMtV( &t_hat(), 1.0, P_XF_hat, trans, G, no_trans, e_id() );
 			if(q_plus_hat_)
 				Vp_StPtMtV( &t_hat(), 1.0, P_plus_hat, trans, A_bar, trans, e_id() );
 			// t_hat += U_hat'*r
@@ -1193,12 +1224,13 @@ void QPSchur::ActiveSet::drop_constraint(
 		d_hat_[q_hat-1] = d_p;
 		// add p_X(ld) == 0 to the end of z_hat(...)
 		z_hat_[q_hat-1] = 0.0; // This is needed so that (z_hat + beta*t_D*p_z_hat)(q_hat) == 0
-		// add [P_XF_hat](:,q_hat) = e(id) to P_XF_hat
-		P_XF_hat_row_[q_F_hat_-1] = id;
-		P_XF_hat_col_[q_F_hat_-1] = q_hat;
+		// Insert (id,q_hat) into P_XF_hat sorted by row
+		insert_pair_sorted(id,q_hat,q_F_hat_,&P_XF_hat_row_,&P_XF_hat_col_);
 	}
 	else {
+		//
 		// Shrink the dimension of the augmented KKT system to remove the constraint!
+		//
 		const size_type q_hat = this->q_hat();
 		const size_type sd = s_map(jd);
 		assert(sd);
@@ -1231,8 +1263,6 @@ void QPSchur::ActiveSet::drop_constraint(
 		}
 		else {
 			// We must remove (jd,sd) from P_plus_hat
-			// 
-			// 
 			P_row_t::iterator
 				itr = std::lower_bound( P_plus_hat_row_.begin(), P_plus_hat_row_.begin()+q_plus_hat_, jd );
 			assert( itr != P_plus_hat_row_.end() );
@@ -2446,7 +2476,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							Vector u_a( n_R + m );  // ToDo: Use workspace!
 							// u_a(1:n_R) =  Q_R' * A_bar * e(ja)
 							Vp_StPtMtV( &u_a(1,n_R), 1.0, qp.Q_R(), trans
-										, qp.constraints().A_bar(), no_trans, e_ja() );
+										, qp.constraints().A_bar(), no_trans, e_ja(), 0.0 );
 							// u_a(n_R+1:n_R+m) = 0.0
 							if(m)
 								u_a(n_R+1,n_R+m) = 0.0;
@@ -2988,6 +3018,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						*out << "\nv = \n" << *v << endl;
 						dump_act_set_quantities( *act_set, *out );
 					}
+					assume_lin_dep_ja = false;
 					next_step = COMPUTE_SEARCH_DIRECTION;
 					continue;
 				}

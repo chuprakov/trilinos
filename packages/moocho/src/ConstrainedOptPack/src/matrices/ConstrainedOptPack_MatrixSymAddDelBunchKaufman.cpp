@@ -132,7 +132,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
 				throw SingularUpdateException( omsg.str() );
 			}
 			// Compute the inertia and validate that it is correct.
-			Inertia inertia = compute_assert_inertia(fact_in1,expected_inertia);
+			Inertia inertia = compute_assert_inertia(n,fact_in1,expected_inertia,"initialize");
 			// If the client did not know the inertia of the
 			// matrix but it turns out to be p.d. or n.d. then modify the
 			// DU factor appropriatly and switch to cholesky factorization.
@@ -288,7 +288,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 	else
 		expected_inertia = Inertia(); // unknown
 	// Compute the actually inertia and validate that it is what is expected
-	Inertia inertia = compute_assert_inertia(fact_in1,expected_inertia);
+	Inertia inertia = compute_assert_inertia(n+1,fact_in1,expected_inertia,"augment_update");
 	// Unset S_chol so that there is no chance of accedental modification.
 	if(!S_indef_)
 		S_chol_.init_setup(NULL);
@@ -415,7 +415,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 			else
 				expected_inertia = Inertia(); // unknown
 			// Compute the exacted inertia and validate that it is what is expected
-			Inertia inertia = compute_assert_inertia(fact_in1,expected_inertia);
+			Inertia inertia = compute_assert_inertia(S_size_-1,fact_in1,expected_inertia,"delete_update");
 			// If we get here the factorization worked out and we are ready to set
 			// everything.
 			--S_size_;
@@ -522,12 +522,54 @@ void MatrixSymAddDelBunchKaufman::factor_matrix( size_type S_size, bool fact_in1
 }
 
 MatrixSymAddDelUpdateable::Inertia
-MatrixSymAddDelBunchKaufman::compute_assert_inertia(  bool fact_in1, const Inertia& expected_inertia )
+MatrixSymAddDelBunchKaufman::compute_assert_inertia(
+	size_type S_size, bool fact_in1, const Inertia& exp_inertia, const char func_name[] )
 {
-	assert( expected_inertia.neg_eigens != Inertia::UNKNOWN ); // ToDo: handle this in the future
-	return expected_inertia;
-	// ToDo: Compute the inertia using D and then compare with what the
-	// user says it should be.
+	// Here we will compute the inertia given IPIV[] and D[] as described in the documentation
+	// for dsytrf(...) (see the source code).
+	const GenMatrixSlice DU = this->DU(S_size,fact_in1).gms();
+	const size_type      n = DU.rows();
+	Inertia inertia(0,0,0);
+	for( size_type k = 1; k <= n; ) {
+		const FortranTypes::f_int k_p = IPIV_[k-1];
+		if( k_p > 0 ) {
+			// D(k,k) is a 1x1 matrix.
+			// Lets get the eigen value from the sign of D(k,k)
+			if( DU(k,k) > 0.0 )
+				++inertia.pos_eigens;
+			else
+				++inertia.neg_eigens;
+			k++;
+		}
+		else {
+			// D(k-1:k,k-1:k) is a 2x2 matrix.
+			// This represents one positive eigen value and
+			// on negative eigen value
+			assert( IPIV_[k] == k_p ); // This is what the documentation says!
+			++inertia.pos_eigens;
+			++inertia.neg_eigens;
+			k+=2;
+		}
+	}
+	// Now validate that the inertia is what is expected
+    const bool
+		wrong_inertia =
+		( exp_inertia.neg_eigens != Inertia::UNKNOWN
+		  && exp_inertia.neg_eigens != inertia.neg_eigens )
+		|| ( exp_inertia.pos_eigens != Inertia::UNKNOWN
+			 && exp_inertia.pos_eigens != inertia.pos_eigens ) ;
+	if(wrong_inertia) {
+		std::ostringstream omsg;
+		omsg
+			<< "MatrixSymAddDelBunchKaufman::" << func_name << "(...): "
+			<< "Error, inertia = ("
+			<< inertia.neg_eigens << "," << inertia.zero_eigens << "," << inertia.pos_eigens << ") "
+			<< " != expected_inertia = ("
+			<< exp_inertia.neg_eigens << "," << exp_inertia.zero_eigens << "," << exp_inertia.pos_eigens << ")";
+		throw WrongInertiaUpdateException( omsg.str() );
+	}
+	// The inertia checked out
+	return inertia;
 }
 
 } // end namespace ConstrainedOptimizationPack

@@ -168,7 +168,9 @@ private:
 	 * If the expected inertia does not match the computed inertia then a
 	 * WrongInertiaUpdateException will be thrown.
 	 */
-	Inertia compute_assert_inertia( bool fact_in1, const Inertia& expected_inertia );
+	Inertia compute_assert_inertia(
+		size_type S_size, bool fact_in1
+		,const Inertia& expected_inertia, const char func_name[] );
 
 	/// Not defined and not to be called.
 	MatrixSymAddDelBunchKaufman( const MatrixSymAddDelBunchKaufman& );

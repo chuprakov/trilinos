@@ -34,7 +34,7 @@ public:
 	  * active-set of the last two calls before a projected updating
 	  * for superbasic variables only is started.
 	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, proj_start_frac )
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, proj_start_act_set_frac )
 
 	///
 	/** Set the tolerance for Langrange multipliers for fixed variables
@@ -45,7 +45,7 @@ public:
 	///
     ReducedHessianSecantUpdateBFGSProjected_Strategy(
 		const bfgs_update_ptr_t&      bfgs_update                = NULL
-		,value_type                   proj_start_frac            = 0.8
+		,value_type                   proj_start_act_set_frac    = 0.8
 		,value_type                   super_basic_mult_drop_tol  = 1e-5
 		);      
 
