@@ -19,9 +19,9 @@
 #include <vector>
 
 #include "MatrixSymAddDelUpdateableWithOpNonsingular.hpp"
-#include "SparseLinAlgPack/src/MatrixSymAddDelUpdateable.hpp"
-#include "SparseLinAlgPack/src/MatrixSymPosDefCholFactor.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOpNonsingularSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymAddDelUpdateable.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpNonsingularSerial.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 
 namespace ConstrainedOptimizationPack {

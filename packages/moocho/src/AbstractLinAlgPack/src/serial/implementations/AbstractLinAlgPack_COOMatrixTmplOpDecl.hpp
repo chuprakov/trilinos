@@ -16,9 +16,9 @@
 #ifndef COO_MATRIX_TMPL_OP_DECL_H
 #define COO_MATRIX_TMPL_OP_DECL_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 /** \defgroup COOMatrixTmplOp_grp Linear algebra operations for coordinate matrices.
  *
@@ -135,6 +135,6 @@ void Mp_StMtCOOM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gm
 
 //@}
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif	// COO_MATRIX_TMPL_OP_DECL_H

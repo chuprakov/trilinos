@@ -15,13 +15,13 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/MatrixConvertToSparseEncap.hpp"
-#include "SparseLinAlgPack/src/MatrixExtractSparseElements.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixConvertToSparseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractSparseElements.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"
 #include "ThrowException.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 // Constructors/initializers
 
@@ -220,4 +220,4 @@ void MatrixConvertToSparseEncap::coor_extract_nonzeros(
 		);
 }
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 

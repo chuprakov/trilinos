@@ -19,7 +19,7 @@
 #include "MatrixConvertToSparse.hpp"
 #include "ref_count_ptr.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Sparse conversion subclass based on views of a \c MatrixExtractSparseElements object.
@@ -224,6 +224,6 @@ const value_type MatrixConvertToSparseEncap::alpha() const
 	return alpha_;
 }
 	
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// MATRIX_CONVERT_TO_SPARSE_ENCAP_H

@@ -118,7 +118,7 @@ DirectSparseSolverImp::BasisMatrixImp::get_fact_struc() const
 // Overridden from DirectSparseSolver
 
 void DirectSparseSolverImp::analyze_and_factor(
-	const SparseLinAlgPack::MatrixConvertToSparse   &A
+	const AbstractLinAlgPack::MatrixConvertToSparse   &A
 	,DenseLinAlgPack::IVector                            *row_perm
 	,DenseLinAlgPack::IVector                            *col_perm
 	,size_type                                      *rank
@@ -172,7 +172,7 @@ void DirectSparseSolverImp::analyze_and_factor(
 }
 
 void DirectSparseSolverImp::factor(
-	const SparseLinAlgPack::MatrixConvertToSparse   &A
+	const AbstractLinAlgPack::MatrixConvertToSparse   &A
 	,BasisMatrix                                    *basis_matrix
 	,const BasisMatrix::fact_struc_ptr_t            &fact_struc_in
 	,std::ostream                                   *out

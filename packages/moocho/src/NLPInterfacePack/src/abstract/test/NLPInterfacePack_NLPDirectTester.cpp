@@ -101,8 +101,8 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 
 	typedef VectorSpace::vec_mut_ptr_t  vec_mut_ptr_t;
 
-//	using SparseLinAlgPack::TestingPack::CompareDenseVectors;
-//	using SparseLinAlgPack::TestingPack::CompareDenseSparseMatrices;
+//	using AbstractLinAlgPack::TestingPack::CompareDenseVectors;
+//	using AbstractLinAlgPack::TestingPack::CompareDenseSparseMatrices;
 
 	using TestingHelperPack::update_success;
 

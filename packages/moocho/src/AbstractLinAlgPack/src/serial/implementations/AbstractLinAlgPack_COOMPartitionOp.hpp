@@ -18,7 +18,7 @@
 
 #include "COOMatrixTmplOp.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 // ///////////////////////////////////////////////////////////////////////////
 /** @name {\bf Linear algebra operations for Partition<> (Level 2,3 BLAS)}.
@@ -298,6 +298,6 @@ void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const M1& M1_rhs1
 
 //@}
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif	// COOM_PARTITION_OP_H

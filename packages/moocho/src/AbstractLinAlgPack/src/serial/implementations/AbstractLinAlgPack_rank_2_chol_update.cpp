@@ -13,14 +13,14 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseLinAlgPack/src/rank_2_chol_update.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/rank_2_chol_update.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
 
-void SparseLinAlgPack::rank_2_chol_update(
+void AbstractLinAlgPack::rank_2_chol_update(
 	const value_type     a
 	,DVectorSlice         *u
 	,const DVectorSlice   &v

@@ -20,7 +20,7 @@
 #include "TransSparseCOOElementViewIter.hpp"
 #include "MiRefCount.h"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 namespace COOMatrixPartitionedViewUtilityPack {
 template <class T_Indice, class T_Value> class Partition;
@@ -172,7 +172,7 @@ public:
 	///
 	typedef T_Indice										indice_type;
 	///
-	typedef SparseLinAlgPack::size_type						size_type;
+	typedef AbstractLinAlgPack::size_type						size_type;
 	///
 	typedef ptrdiff_t										difference_type;
 	///
@@ -624,7 +624,7 @@ public:
 	//@{
 	
 	///
-	typedef SparseLinAlgPack::size_type				size_type;
+	typedef AbstractLinAlgPack::size_type				size_type;
 	///
 	typedef Partition<T_Indice,T_Value>				partition_type;
 	///
@@ -790,7 +790,7 @@ public:
 	///
 	typedef Partition<T_Indice,T_Value>				partition_type;
 	///
-	typedef SparseLinAlgPack::size_type				size_type;
+	typedef AbstractLinAlgPack::size_type				size_type;
 	///
 	typedef ptrdiff_t								difference_type;
 	///
@@ -1312,6 +1312,6 @@ COOMatrixPartitionedView<T_Indice,T_Value>::overall_p_from_ij(const vector_size_
 								 , part_num(col_part,j) );
 }
 
-} // end namespace SparseLinAlgPack 
+} // end namespace AbstractLinAlgPack 
 
 #endif // COO_MATRIX_PARTITIONED_VIEW_CLASS_DECL_H

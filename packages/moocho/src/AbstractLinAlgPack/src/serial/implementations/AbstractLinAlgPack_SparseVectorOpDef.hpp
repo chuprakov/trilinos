@@ -30,7 +30,7 @@
 #ifndef SPARSE_VECTOR_OP_DEF_H
 #define SPARSE_VECTOR_OP_DEF_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SparseVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"	// also included in SparseVectorOpDef.hpp
@@ -46,7 +46,7 @@ inline
 T my_my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
 } // end namespace
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 using DenseLinAlgPack::VopV_assert_sizes;
 using DenseLinAlgPack::Vp_V_assert_sizes;
@@ -334,6 +334,6 @@ value_type imp_dot2_V_V_SV(const DVectorSlice& vs1, const DVectorSlice& vs2, con
 
 }	// end namespace SparseVectorUtilityPack
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack
 
 #endif // SPARSE_VECTOR_OP_DEF_H

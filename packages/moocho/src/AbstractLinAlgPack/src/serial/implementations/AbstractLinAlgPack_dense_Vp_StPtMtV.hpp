@@ -16,18 +16,18 @@
 #ifndef DENSE_V_P_S_T_P_T_M_T_V_H
 #define DENSE_V_P_S_T_P_T_M_T_V_H
 
-#include "SparseLinAlgPack/src/SpVectorClass.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "SparseLinAlgPack/src/EtaVector.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "MiWorkspacePack.h"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Implements y = b*y + a*op(P)*op(M)*x where it is assumed that
@@ -56,10 +56,10 @@ void dense_Vp_StPtMtV(
 	using DenseLinAlgPack::dot;
 	using DenseLinAlgPack::DVector;
 	using DenseLinAlgPack::Vt_S;
-	using SparseLinAlgPack::dot;
-	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::GenPermMatrixSlice;
-	typedef SparseLinAlgPack::EtaVector eta;
+	using AbstractLinAlgPack::dot;
+	using AbstractLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::GenPermMatrixSlice;
+	typedef AbstractLinAlgPack::EtaVector eta;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
@@ -132,6 +132,6 @@ void dense_Vp_StPtMtV(
 	}
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // DENSE_V_P_S_T_P_T_M_T_V_H

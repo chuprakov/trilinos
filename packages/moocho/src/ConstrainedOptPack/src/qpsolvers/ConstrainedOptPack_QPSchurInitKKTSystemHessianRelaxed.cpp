@@ -15,15 +15,15 @@
 
 #include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianRelaxed.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixSymHessianRelaxNonSing.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StV;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 namespace ConstrainedOptimizationPack {

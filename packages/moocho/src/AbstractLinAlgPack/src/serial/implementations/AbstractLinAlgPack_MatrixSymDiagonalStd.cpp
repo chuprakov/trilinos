@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseLinAlgPack/src/MatrixSymDiagStd.hpp"
-#include "SparseLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 MatrixSymDiagStd::MatrixSymDiagStd()
 {}
@@ -232,4 +232,4 @@ void MatrixSymDiagStd::V_InvMtV(
 	}
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack

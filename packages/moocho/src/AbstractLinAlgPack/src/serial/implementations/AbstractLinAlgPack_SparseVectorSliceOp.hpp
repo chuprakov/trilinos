@@ -21,7 +21,7 @@
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 /** @name Inline functions to call linear algebra operations for SparseVectoSlice<> objects.
   *
@@ -192,6 +192,6 @@ void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSliceSym& sym
 
 //@} end Sparse BLAS Operations
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // SPARSE_VECTOR_SLICE_OP_H

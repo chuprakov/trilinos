@@ -16,13 +16,13 @@
 #ifndef MULTI_VECTOR_MUTABLE_DENSE_H
 #define MULTI_VECTOR_MUTABLE_DENSE_H
 
-#include "MatrixWithOpSerial.hpp"
-#include "MatrixWithOpGetGMSMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpGetGMSMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "ReleaseResource.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** <tt>MultiVectorMutable</tt> "Adapter" subclass for <tt>DenseLinAlgPack::DMatrixSlice</tt>
@@ -305,6 +305,6 @@ MultiVectorMutableDense::gms_release() const
 	return gms_release_;
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // MULTI_VECTOR_MUTABLE_DENSE_H

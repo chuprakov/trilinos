@@ -23,9 +23,9 @@
 
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPOPT.hpp"
 #include "ConstrainedOptimizationPack/src/QPOPT_CppDecl.hpp"
-#include "SparseLinAlgPack/src/MatrixOp.hpp"
-#include "SparseLinAlgPack/src/SpVectorClass.hpp"
-#include "SparseLinAlgPack/src/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/EtaVector.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "DenseLinAlgPack/src/DVectorOut.hpp"
@@ -54,7 +54,7 @@ void qphess_server_relax( const f_int& N, const f_int& LDH
 	, f_int* IW, const f_int& LENIW, f_dbl_prec* W, const f_int& LENW )
 {
 	using DenseLinAlgPack::DVectorSlice;
-	using SparseLinAlgPack::SpVector;
+	using AbstractLinAlgPack::SpVector;
 	using LinAlgOpPack::V_MtV;
 	using ConstrainedOptimizationPack::QPSolverRelaxedQPOPT;
 
@@ -81,7 +81,7 @@ void qphess_server_relax( const f_int& N, const f_int& LDH
 		}
 		else {
 			// G(:,JTHCOL)
-			SparseLinAlgPack::EtaVector e_j(JTHCOL,N-1);
+			AbstractLinAlgPack::EtaVector e_j(JTHCOL,N-1);
 			V_MtV( &hx(1,N-1), *qp_solver->G(), BLAS_Cpp::no_trans, e_j() );
 			// 0
 			hx(N) = 0.0;
@@ -112,8 +112,8 @@ FORTRAN_FUNC_DECL_UL( void, QPHESS_SERVER_RELAX2, qphess_server_relax2 ) ( const
 }	// end extern "C"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Mp_StM;
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Mp_StM;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 // ///////////////////////////////////////

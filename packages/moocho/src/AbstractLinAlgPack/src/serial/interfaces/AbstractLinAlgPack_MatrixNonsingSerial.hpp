@@ -16,10 +16,10 @@
 #ifndef SLAP_MATRIX_NONSINGULAR_SERIAL_H
 #define SLAP_MATRIX_NONSINGULAR_SERIAL_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixNonsing.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract base class for all <tt>AbstractLinAlgPack::MatrixNonsing</tt> objects
@@ -289,6 +289,6 @@ inline void M_StMtInvM(
 //		end Inline non-member operation functions
 //@}
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack
 
 #endif	// SLAP_MATRIX_NONSINGULAR_SERIAL_H

@@ -19,9 +19,9 @@
 #include <algorithm>
 
 #include "NLPInterfacePack/src/NLPSerialPreprocessExplJac.hpp"
-#include "SparseLinAlgPack/src/MatrixSparseCOORSerial.hpp"
-#include "SparseLinAlgPack/src/PermutationSerial.hpp"
-#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/MatrixSparseCOORSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixPermAggr.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemFactory.hpp"

@@ -18,7 +18,7 @@
 
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixBase.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Mix-in Interface for initializing a matrix with a dense symmetric matrix.
@@ -40,6 +40,6 @@ public:
 
 };	// end class MatrixSymDenseInitialize
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// MATRIX_SYM_DENSE_INITIALIZE_H

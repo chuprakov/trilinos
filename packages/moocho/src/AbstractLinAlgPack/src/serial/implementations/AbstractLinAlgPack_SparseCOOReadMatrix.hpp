@@ -22,9 +22,9 @@
 #include <istream>
 #include <valarray>
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Read in a Coordinate Matrix from a C++ input stream and store it in valarrays.
@@ -55,6 +55,6 @@ void read_coo_into_valarrays(std::istream& istrm, size_type& m, size_type& n, si
 	, std::valarray<value_type>& a, std::valarray<indice_type>& ivect
 	, std::valarray<indice_type>& jvect);
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif // SPARSECOOREADMATRIX_H

@@ -15,17 +15,17 @@
 
 #include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianFixedFree.hpp"
 #include "ConstrainedOptimizationPack/src/initialize_Q_R_Q_X.hpp"
-#include "SparseLinAlgPack/src/MatrixSymOp.hpp"
-#include "SparseLinAlgPack/src/sparse_bounds.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
 #include "Miprofile_hack.h"
 
 namespace LinAlgOpPack {
-    using SparseLinAlgPack::Vp_StMtV;
+    using AbstractLinAlgPack::Vp_StMtV;
 }
 
 namespace ConstrainedOptimizationPack {
@@ -79,7 +79,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 		num_init_fixed = 0;
 	{
 		const value_type inf_bnd = std::numeric_limits<value_type>::max();
-		SparseLinAlgPack::sparse_bounds_itr
+		AbstractLinAlgPack::sparse_bounds_itr
 			dLU_itr(
 				dL.begin(), dL.end(), dL.offset(),
 				dU.begin(), dU.end(), dU.offset(), inf_bnd );
@@ -120,7 +120,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 	b_X->resize(num_init_fixed+1);
 	{
 		const value_type inf_bnd = std::numeric_limits<value_type>::max();
-		SparseLinAlgPack::sparse_bounds_itr
+		AbstractLinAlgPack::sparse_bounds_itr
 			dLU_itr(
 				dL.begin(), dL.end(), dL.offset(),
 				dU.begin(), dU.end(), dU.offset(), inf_bnd );
@@ -185,7 +185,7 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 	// Compute the dense matrix G_RR
 	DMatrix G_RR_dense(*n_R,*n_R);
 	DMatrixSliceSym sym_G_RR_dense(G_RR_dense(),BLAS_Cpp::lower);
-	SparseLinAlgPack::Mp_StPtMtP(
+	AbstractLinAlgPack::Mp_StPtMtP(
 		&sym_G_RR_dense, 1.0, MatrixSymOp::DUMMY_ARG
 		,G_sym, Q_R, BLAS_Cpp::no_trans, 0.0 );
 	// Initialize a factorization object for this matrix
@@ -203,8 +203,8 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 	LinAlgOpPack::V_StMtV( fo, -1.0, Q_R, BLAS_Cpp::trans, g );
 	if( num_init_fixed ) {
 		SpVector b_XX;
-		SparseLinAlgPack::V_MtV( &b_XX, Q_X, BLAS_Cpp::no_trans, (*b_X)(1,num_init_fixed) );
-		SparseLinAlgPack::Vp_StPtMtV( &(*fo)(), -1.0, Q_R, BLAS_Cpp::trans, G, BLAS_Cpp::no_trans, b_XX() );
+		AbstractLinAlgPack::V_MtV( &b_XX, Q_X, BLAS_Cpp::no_trans, (*b_X)(1,num_init_fixed) );
+		AbstractLinAlgPack::Vp_StPtMtV( &(*fo)(), -1.0, Q_R, BLAS_Cpp::trans, G, BLAS_Cpp::no_trans, b_XX() );
 	}
 
 }

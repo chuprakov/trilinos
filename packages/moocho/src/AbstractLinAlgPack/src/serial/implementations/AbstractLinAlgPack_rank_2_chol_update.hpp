@@ -16,9 +16,9 @@
 #ifndef RANK_2_CHOL_UPDATE_H
 #define RANK_2_CHOL_UPDATE_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Update the cholesky factor of symmetric positive definite matrix for a rank-2 update.
@@ -87,6 +87,6 @@ void rank_2_chol_update(
 	,BLAS_Cpp::Transp    R_trans
 	);
 
-}  // end namespace SparseLinAlgPack
+}  // end namespace AbstractLinAlgPack
 
 #endif // RANK_2_CHOL_UPDATE_H

@@ -17,11 +17,11 @@
 #include <limits>
 #include <ostream>
 
-#include "SparseLinAlgPack/src/BFGS_helpers.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/BFGS_helpers.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 
-bool SparseLinAlgPack::BFGS_sTy_suff_p_d(
+bool AbstractLinAlgPack::BFGS_sTy_suff_p_d(
 	const Vector    &s
 	,const Vector   &y
 	,const value_type     *sTy_in

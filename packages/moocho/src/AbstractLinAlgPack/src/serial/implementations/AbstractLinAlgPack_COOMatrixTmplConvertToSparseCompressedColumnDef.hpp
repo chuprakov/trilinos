@@ -18,7 +18,7 @@
 
 #include "COOMatrixTmplConvertToSparseCompressedColumnDecl.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 template<class T_COOM>
 size_type COOM_num_in_column(
@@ -116,6 +116,6 @@ value_type COOM_insert_scaled_nonzeros(
 	return alpha;
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif	// COO_MATRIX_TMPL_CONVERT_TO_SPARSE_COMPRESSED_COLUMN_DEF_H

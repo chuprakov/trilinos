@@ -127,7 +127,7 @@ protected:
 	const MemMngPack::ref_count_ptr<FactorizationNonzeros> create_fact_nonzeros() const;
 	///
 	void imp_analyze_and_factor(
-		const SparseLinAlgPack::MatrixConvertToSparse   &A
+		const AbstractLinAlgPack::MatrixConvertToSparse   &A
 		,FactorizationStructure                         *fact_struc
 		,FactorizationNonzeros                          *fact_nonzeros
 		,DenseLinAlgPack::IVector                            *row_perm
@@ -137,7 +137,7 @@ protected:
 		);
 	///
 	void imp_factor(
-		const SparseLinAlgPack::MatrixConvertToSparse   &A
+		const AbstractLinAlgPack::MatrixConvertToSparse   &A
 		,const FactorizationStructure                   &fact_struc
 		,FactorizationNonzeros                          *fact_nonzeros
 		,std::ostream                                   *out

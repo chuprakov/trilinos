@@ -19,19 +19,19 @@
 #include "ReducedSpaceSQPPack/src/rSQPState.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixSymAddDelUpdateable.hpp"
 #include "ConstrainedOptimizationPack/src/BFGS_helpers.hpp"
-#include "SparseLinAlgPack/src/SpVectorClass.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "SparseLinAlgPack/src/MatrixOpOut.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOut.hpp"
-#include "SparseLinAlgPack/src/MatrixSymInitDiag.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSliceOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymInitDiag.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 namespace ReducedSpaceSQPPack {
@@ -60,7 +60,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 	using DynamicCastHelperPack::dyn_cast;
 	using DenseLinAlgPack::dot;
 	using LinAlgOpPack::V_MtV;
-	using SparseLinAlgPack::norm_inf;
+	using AbstractLinAlgPack::norm_inf;
 	typedef ConstrainedOptimizationPack::MatrixHessianSuperBasic MHSB_t;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
@@ -163,7 +163,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 					const size_type i = i_x_free[k];
 					Q_R_Q_RT_s(i) = (*s_bfgs)(i);
 				}}
-				sRTBRRsR = SparseLinAlgPack::transVtMtV( Q_R_Q_RT_s, *rHL_k, BLAS_Cpp::no_trans,  Q_R_Q_RT_s );
+				sRTBRRsR = AbstractLinAlgPack::transVtMtV( Q_R_Q_RT_s, *rHL_k, BLAS_Cpp::no_trans,  Q_R_Q_RT_s );
 				// Sort fixed variables according to |s_X(i)^2*B_XX(i,i)|/|sRTBRRsR| + |s_X(i)*y_X(i)|/|sRTyR|
 				// and initialize s_X'*B_XX*s_X and s_X*y_X
 				PBFGSPack::sort_fixed_max_cond_viol(
@@ -294,7 +294,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 			const size_type i = i_x_free[k];
 			Q_R_Q_RT_s(i) = (*s_bfgs)(i);
 		}}
-		sRTBRRsR = SparseLinAlgPack::transVtMtV( Q_R_Q_RT_s, *rHL_k, BLAS_Cpp::no_trans,  Q_R_Q_RT_s );
+		sRTBRRsR = AbstractLinAlgPack::transVtMtV( Q_R_Q_RT_s, *rHL_k, BLAS_Cpp::no_trans,  Q_R_Q_RT_s );
 		// Sort fixed variables according to |s_X(i)^2*B_XX(i,i)|/|sRTBRRsR| + |s_X(i)*y_X(i)|/|sRTyR|
 		PBFGSPack::sort_fixed_max_cond_viol(
 			nu_indep,*s_bfgs,*y_bfgs,rHL_XX_diag,sRTBRRsR,sRTyR

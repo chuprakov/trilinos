@@ -19,7 +19,7 @@
 #include <algorithm>
 
 #include "SparseSolverPack/src/DirectSparseSolverDense.hpp"
-#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
@@ -197,7 +197,7 @@ DirectSparseSolverDense::create_fact_nonzeros() const
 }
 
 void DirectSparseSolverDense::imp_analyze_and_factor(
-	const SparseLinAlgPack::MatrixConvertToSparse   &A
+	const AbstractLinAlgPack::MatrixConvertToSparse   &A
 	,FactorizationStructure                         *fact_struc
 	,FactorizationNonzeros                          *fact_nonzeros
 	,DenseLinAlgPack::IVector                            *row_perm
@@ -330,7 +330,7 @@ void DirectSparseSolverDense::imp_analyze_and_factor(
 }
 
 void DirectSparseSolverDense::imp_factor(
-	const SparseLinAlgPack::MatrixConvertToSparse   &A
+	const AbstractLinAlgPack::MatrixConvertToSparse   &A
 	,const FactorizationStructure                   &fact_struc
 	,FactorizationNonzeros                          *fact_nonzeros
 	,std::ostream                                   *out

@@ -16,10 +16,10 @@
 #ifndef MATRIX_EXTRACT_INV_CHOL_FACTOR_H
 #define MATRIX_EXTRACT_INV_CHOL_FACTOR_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixBase.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Mix-in Interface for extracting the inverse cholesky factor of a dense symmetric
@@ -40,6 +40,6 @@ public:
 
 };	// end class MatrixExtractInvCholFactor
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack
 
 #endif // MATRIX_EXTRACT_INV_CHOL_FACTOR_H

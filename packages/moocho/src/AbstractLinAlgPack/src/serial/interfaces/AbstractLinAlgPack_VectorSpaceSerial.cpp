@@ -15,10 +15,10 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/VectorSpaceSerial.hpp"
-#include "SparseLinAlgPack/src/VectorSpaceFactorySerial.hpp"
-#include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
-#include "SparseLinAlgPack/src/MultiVectorMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceFactorySerial.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/MultiVectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
@@ -32,7 +32,7 @@ const size_type *_dim = &dim_;
 #define CLASS_MEMBER_PTRS
 #endif
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 VectorSpaceSerial::VectorSpaceSerial( size_type dim )
 {
@@ -120,4 +120,4 @@ VectorSpaceSerial::space(
 	return MemMngPack::rcp( new VectorSpaceSerial( BLAS_Cpp::rows( P.rows(), P.cols(), P_trans ) ) ); 
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack

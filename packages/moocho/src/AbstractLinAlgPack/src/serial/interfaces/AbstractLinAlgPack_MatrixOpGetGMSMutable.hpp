@@ -16,9 +16,9 @@
 #ifndef MATRIX_WITH_OP_GET_GMS_MUTABLE_H
 #define MATRIX_WITH_OP_GET_GMS_MUTABLE_H
 
-#include "SparseLinAlgPack/src/MatrixWithOpGetGMS.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpGetGMS.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract interface that allows the extraction of a non-const <tt>DMatrixSlice</tt>
@@ -167,6 +167,6 @@ const DMatrixSlice MatrixDenseMutableEncap::operator()() const
 	return gms_view_;
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // MATRIX_WITH_OP_GET_GMS_MUTABLE_H

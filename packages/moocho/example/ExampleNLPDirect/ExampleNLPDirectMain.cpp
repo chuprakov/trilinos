@@ -28,7 +28,7 @@
 
 #include "ExampleNLPFirstOrderDirectRun.hpp"
 #include "ExampleVectorLib/src/MPIDenseVector.hpp"
-#include "SparseLinAlgPack/src/VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorSpaceSerial.hpp"
 #include "OptionsFromStream.hpp"
 #include "WorkspacePack.hpp"
 #include "oblackholestream.hpp"
@@ -151,7 +151,7 @@ int main(int argc, char* argv[] ) {
 		//
 		// Use serial vectors
 		//
-		vec_space = rcp::rcp(new SparseLinAlgPack::VectorSpaceSerial(n));
+		vec_space = rcp::rcp(new AbstractLinAlgPack::VectorSpaceSerial(n));
 	}
 
 	// Create and test the NLP using this vector space object

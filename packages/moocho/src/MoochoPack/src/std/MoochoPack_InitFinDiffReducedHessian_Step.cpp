@@ -25,7 +25,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 //#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-//#include "SparseLinAlgPack/src/max_near_feas_step.hpp"
+//#include "AbstractLinAlgPack/src/max_near_feas_step.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"

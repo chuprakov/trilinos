@@ -21,17 +21,17 @@
 
 namespace LinAlgOpPack {
 
-using SparseLinAlgPack::MatrixWithOpSerial;
-using SparseLinAlgPack::MatrixNonsingularSerial;
-using SparseLinAlgPack::MatrixWithOpNonsingularSerial;
-using SparseLinAlgPack::MatrixSymWithOpSerial;
-using SparseLinAlgPack::MatrixSymWithOpNonsingularSerial;
+using AbstractLinAlgPack::MatrixWithOpSerial;
+using AbstractLinAlgPack::MatrixNonsingularSerial;
+using AbstractLinAlgPack::MatrixWithOpNonsingularSerial;
+using AbstractLinAlgPack::MatrixSymWithOpSerial;
+using AbstractLinAlgPack::MatrixSymWithOpNonsingularSerial;
 
-using SparseLinAlgPack::Vp_StMtV;
-using SparseLinAlgPack::V_InvMtV;
-using SparseLinAlgPack::Mp_StM;
-using SparseLinAlgPack::Mp_StMtM;
-using SparseLinAlgPack::M_StInvMtM;
+using AbstractLinAlgPack::Vp_StMtV;
+using AbstractLinAlgPack::V_InvMtV;
+using AbstractLinAlgPack::Mp_StM;
+using AbstractLinAlgPack::Mp_StMtM;
+using AbstractLinAlgPack::M_StInvMtM;
 
 } // end namespace LinAlgOpPack
 

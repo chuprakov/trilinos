@@ -25,10 +25,10 @@
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Mp_StM;
+	using AbstractLinAlgPack::Mp_StM;
 }
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 void ConvertToSparseCompressedColumnPack::vector_insert_nonzeros(
 	  const DVectorSlice&				vs
@@ -180,4 +180,4 @@ value_type ConvertToSparseCompressedColumnPack::insert_scaled_nonzeros(
 	}
 }
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack

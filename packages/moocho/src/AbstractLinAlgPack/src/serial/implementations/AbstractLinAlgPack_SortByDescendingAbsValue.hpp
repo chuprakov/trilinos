@@ -20,7 +20,7 @@
 
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Function object class for sorting a sparse vectors in descending order
@@ -28,14 +28,14 @@ namespace SparseLinAlgPack {
   */
 class SortByDescendingAbsValue {
 public:
-	bool operator()( const SparseLinAlgPack::SpVector::element_type& x
-		, const SparseLinAlgPack::SpVector::element_type& y ) const
+	bool operator()( const AbstractLinAlgPack::SpVector::element_type& x
+		, const AbstractLinAlgPack::SpVector::element_type& y ) const
 	{
 		return ::fabs(x.value()) > ::fabs(y.value());
 	}
 };	// end class AbsMultVal
 
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif 	// SORT_BY_DESCENDING_ABS_VALUE_H

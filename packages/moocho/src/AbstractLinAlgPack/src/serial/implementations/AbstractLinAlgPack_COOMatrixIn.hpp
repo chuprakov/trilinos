@@ -18,9 +18,9 @@
 
 #include <istream>
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Inputstream stream operator for COOMatrix.
@@ -43,6 +43,6 @@ inline std::istream& operator>>(std::istream& istrm, COOMatrix& coom) {
 	coom.initialize(istrm); return istrm;
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // COO_MATRIX_IN_H

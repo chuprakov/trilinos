@@ -30,7 +30,7 @@
 // ///////////////////////////////////////////////////////////////////////////////////
 // COOMatrix
 
-SparseLinAlgPack::COOMatrix& SparseLinAlgPack::COOMatrix::operator=(const COOMatrix& coom)
+AbstractLinAlgPack::COOMatrix& AbstractLinAlgPack::COOMatrix::operator=(const COOMatrix& coom)
 {
 	if(this == &coom) return *this;	// assignment to self
 
@@ -47,7 +47,7 @@ SparseLinAlgPack::COOMatrix& SparseLinAlgPack::COOMatrix::operator=(const COOMat
 	return *this;
 }
 
-void SparseLinAlgPack::COOMatrix::resize(size_type rows, size_type cols, size_type nz)
+void AbstractLinAlgPack::COOMatrix::resize(size_type rows, size_type cols, size_type nz)
 {
 	 // don't resize if you don't have to to presearve row and column access just in case.
 	if(rows == rows_ && cols == cols_ && nz == nz_) return;
@@ -60,7 +60,7 @@ void SparseLinAlgPack::COOMatrix::resize(size_type rows, size_type cols, size_ty
 	jvect_ref_.obj().resize(nz);
 }
 
-void SparseLinAlgPack::COOMatrix::initialize(std::istream& istrm) {
+void AbstractLinAlgPack::COOMatrix::initialize(std::istream& istrm) {
 	// Read COO matrix into val, ivect, jvect
 	read_coo_into_valarrays(istrm,rows_,cols_,nz_,val_,ivect_ref_.obj()
 		,jvect_ref_.obj());

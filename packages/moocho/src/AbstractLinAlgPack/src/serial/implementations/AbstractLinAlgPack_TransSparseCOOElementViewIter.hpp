@@ -18,9 +18,9 @@
 
 #include <iterator>
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Templateded iterator for iterating through a set of COO Matix 
@@ -290,6 +290,6 @@ operator+(Diff n, const TransSparseCOOElementViewIter<Iter,Cat,Indice,ValRef,Dif
 	return itr + n;
 }
 
-} // end namespace SparseLinAlgPack 
+} // end namespace AbstractLinAlgPack 
 
 #endif // TRANS_SPARSE_COO_ELEMENT_VIEW_ITER_H

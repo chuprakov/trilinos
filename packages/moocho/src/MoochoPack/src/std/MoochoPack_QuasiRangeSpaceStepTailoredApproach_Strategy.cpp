@@ -20,13 +20,13 @@
 #include "ReducedSpaceSQPPack/src/NLPrSQPTailoredApproach.h"
 #include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
 #include "ConstrainedOptimizationPack/src/DenseIdentVertConcatMatrixSubclass.h"
-#include "SparseLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "MiWorkspacePack.h"
 #include "Midynamic_cast_verbose.h"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 namespace ReducedSpaceSQPPack {

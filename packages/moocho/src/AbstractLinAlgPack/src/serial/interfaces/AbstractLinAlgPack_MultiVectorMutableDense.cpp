@@ -15,17 +15,17 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/MultiVectorMutableDense.hpp"
-#include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/MultiVectorMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "WorkspacePack.hpp"
 #include "ThrowException.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 // Constructors / initializers
 
@@ -263,7 +263,7 @@ void MultiVectorMutableDense::Vp_StMtV(
 	DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2, value_type beta) const
 {
-	SparseLinAlgPack::Vp_StMtV(
+	AbstractLinAlgPack::Vp_StMtV(
 		vs_lhs,alpha,gms_,BLAS_Cpp::trans_trans(gms_trans(),trans_rhs1),sv_rhs2,beta);
 }
 
@@ -303,4 +303,4 @@ void MultiVectorMutableDense::apply_op(
 		); // ToDo: Provide Specialized implementation if needed?
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack

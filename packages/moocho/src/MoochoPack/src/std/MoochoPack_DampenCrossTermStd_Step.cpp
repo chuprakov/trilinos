@@ -21,7 +21,7 @@
 #include "../rsqp_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
-#include "SparseLinAlgPack/src/MatrixWithOpFactorized.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpFactorized.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOut.hpp"
@@ -33,7 +33,7 @@ ReducedSpaceSQPPack::DampenCrossTermStd_Step::DampenCrossTermStd_Step(const valu
 bool ReducedSpaceSQPPack::DampenCrossTermStd_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, IterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
-	using SparseLinAlgPack::V_InvMtV;
+	using AbstractLinAlgPack::V_InvMtV;
 	using DenseLinAlgPack::norm_inf;
 	using DenseLinAlgPack::dot;
 

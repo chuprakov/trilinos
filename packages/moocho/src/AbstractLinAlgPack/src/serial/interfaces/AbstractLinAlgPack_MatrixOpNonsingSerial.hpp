@@ -19,7 +19,7 @@
 #include "MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixNonsing.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract base class for all serial nonsingular polymorphic matrices
@@ -32,6 +32,6 @@ class MatrixWithOpNonsingularSerial
 	, virtual public AbstractLinAlgPack::MatrixOpNonsing  // doxygen needs full name
 {};
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack
 
 #endif	// SLAP_MATRIX_WITH_OP_NONSINGULAR_SERIAL_H

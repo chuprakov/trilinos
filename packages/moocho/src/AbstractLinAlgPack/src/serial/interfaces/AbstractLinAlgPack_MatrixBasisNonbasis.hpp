@@ -18,7 +18,7 @@
 
 #include "MatrixWithOpFactorized.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** This is the interface to a basis and an nonbasis matrix.
@@ -82,6 +82,6 @@ public:
 
 };	// end class MatrixBasisNonbasis
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// MATRIX_BASIS_NON_BASIS_H

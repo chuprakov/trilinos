@@ -20,7 +20,7 @@
 
 #include "SparseElement.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 class SparsePtrVector;
 
@@ -41,6 +41,6 @@ inline std::ostream& operator<<(std::ostream& o, const SparseElement<T_Indice,T_
 	return o << ele.value() << ":" << ele.indice();
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // SPARSE_ELEMENT_OUT_H

@@ -17,8 +17,8 @@
 #include <iomanip>
 
 #include "ReducedSpaceSQPPack/src/std/get_init_fixed_free_indep.hpp"
-#include "SparseLinAlgPack/src/SpVectorClass.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 
 void ReducedSpaceSQPPack::get_init_fixed_free_indep(
 	const size_type                        n
@@ -37,7 +37,7 @@ void ReducedSpaceSQPPack::get_init_fixed_free_indep(
 	using std::setw;
 	using std::endl;
 	using std::right;
-	using SparseLinAlgPack::norm_inf;
+	using AbstractLinAlgPack::norm_inf;
 
 	const size_type
 		n_pz = n-r;

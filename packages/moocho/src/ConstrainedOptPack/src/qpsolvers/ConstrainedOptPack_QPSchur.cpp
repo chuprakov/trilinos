@@ -32,10 +32,10 @@
 
 #include "ConstrainedOptimizationPack/src/QPSchur.hpp"
 #include "ConstrainedOptimizationPack/src/ComputeMinMult.hpp"
-#include "SparseLinAlgPack/src/MatrixSymPosDefCholFactor.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
-#include "SparseLinAlgPack/src/LinAlgOpPackHack.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPackHack.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSliceOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
@@ -53,8 +53,8 @@
 #include "ThrowException.hpp"
 
 namespace LinAlgOpPack {
-using SparseLinAlgPack::Vp_StV;
-using SparseLinAlgPack::Vp_StMtV;
+using AbstractLinAlgPack::Vp_StV;
+using AbstractLinAlgPack::Vp_StMtV;
 using AbstractLinAlgPack::Vp_StV;
 using AbstractLinAlgPack::Vp_StMtV;
 }
@@ -237,8 +237,8 @@ void calc_mu_D(
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::Vp_StPtMtV;
-	using SparseLinAlgPack::V_MtV;
-	using SparseLinAlgPack::Vp_MtV;
+	using AbstractLinAlgPack::V_MtV;
+	using AbstractLinAlgPack::Vp_MtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
@@ -287,8 +287,8 @@ void calc_p_mu_D(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	using SparseLinAlgPack::V_MtV;
-	using SparseLinAlgPack::Vp_MtV;
+	using AbstractLinAlgPack::V_MtV;
+	using AbstractLinAlgPack::Vp_MtV;
 	using LinAlgOpPack::Vp_StPtMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
@@ -417,7 +417,7 @@ void calc_resid(
 	using DenseLinAlgPack::norm_inf;
 	using DenseLinAlgPack::DVectorSlice;
 	using DenseLinAlgPack::Vp_StV;
-	using SparseLinAlgPack::V_MtV;
+	using AbstractLinAlgPack::V_MtV;
 	using AbstractLinAlgPack::SpVector;
 	using AbstractLinAlgPack::GenPermMatrixSlice;
 	using LinAlgOpPack::Vp_V;
@@ -783,8 +783,8 @@ void QPSchur::U_hat_t::Vp_StMtV(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using DenseLinAlgPack::Vt_S;
-	using SparseLinAlgPack::V_MtV;
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::V_MtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_StMtV;
 	using LinAlgOpPack::Vp_StPtMtV;
@@ -892,8 +892,8 @@ void QPSchur::U_hat_t::Vp_StMtV(
 	using BLAS_Cpp::trans;
 	using DenseLinAlgPack::Vt_S;
 	using LinAlgOpPack::V_MtV;
-	using SparseLinAlgPack::V_MtV;
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::V_MtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_StMtV;
 	using LinAlgOpPack::Vp_StPtMtV;
@@ -1018,7 +1018,7 @@ void QPSchur::ActiveSet::initialize(
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::V_InvMtV;
 	using LinAlgOpPack::Vp_StPtMtV;
-	using SparseLinAlgPack::V_MtV;
+	using AbstractLinAlgPack::V_MtV;
 	using AbstractLinAlgPack::Mp_StPtMtP;
 	using AbstractLinAlgPack::M_StMtInvMtM;
 	using DenseLinAlgPack::sym;
@@ -1456,7 +1456,7 @@ bool QPSchur::ActiveSet::add_constraint(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using DenseLinAlgPack::dot;
-	using SparseLinAlgPack::dot;
+	using AbstractLinAlgPack::dot;
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::Vp_StPtMtV;
 	using LinAlgOpPack::V_InvMtV;
@@ -1694,7 +1694,7 @@ bool QPSchur::ActiveSet::drop_constraint(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using DenseLinAlgPack::dot;
-	using SparseLinAlgPack::dot;
+	using AbstractLinAlgPack::dot;
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_MtV;
@@ -2263,7 +2263,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	using std::endl;
 	using std::right;
 	using DenseLinAlgPack::norm_inf;
-	using SparseLinAlgPack::norm_inf;
+	using AbstractLinAlgPack::norm_inf;
 	using LinAlgOpPack::V_InvMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
@@ -2842,9 +2842,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_StMtV;
-	using SparseLinAlgPack::dot;
-	using SparseLinAlgPack::norm_inf;
-	using SparseLinAlgPack::V_MtV;
+	using AbstractLinAlgPack::dot;
+	using AbstractLinAlgPack::norm_inf;
+	using AbstractLinAlgPack::V_MtV;
 	using AbstractLinAlgPack::EtaVector;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::V_InvMtV;
@@ -4510,8 +4510,8 @@ void QPSchur::set_multipliers(
 	using LinAlgOpPack::Vp_StMtV;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_MtV;
-	using SparseLinAlgPack::V_MtV;
-	using SparseLinAlgPack::Vp_MtV;
+	using AbstractLinAlgPack::V_MtV;
+	using AbstractLinAlgPack::Vp_MtV;
 	namespace GPMSTP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();

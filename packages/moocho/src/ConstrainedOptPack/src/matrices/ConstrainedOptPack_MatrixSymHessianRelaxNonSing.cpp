@@ -31,7 +31,7 @@ namespace {
 template<class V>
 void Vp_StPtMtV_imp( 
 	DenseLinAlgPack::DVectorSlice* y, DenseLinAlgPack::value_type a
-	, const SparseLinAlgPack::GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	, const AbstractLinAlgPack::GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	, const ConstrainedOptimizationPack::MatrixSymHessianRelaxNonSing& H, BLAS_Cpp::Transp H_trans
 	, const V& x, DenseLinAlgPack::value_type b
 	)
@@ -39,11 +39,11 @@ void Vp_StPtMtV_imp(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using BLAS_Cpp::trans_not;
-	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::Vp_StPtMtV;
-	using SparseLinAlgPack::GenPermMatrixSlice;
-	using SparseLinAlgPack::MatrixOp;
-	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	using AbstractLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StPtMtV;
+	using AbstractLinAlgPack::GenPermMatrixSlice;
+	using AbstractLinAlgPack::MatrixOp;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 	const DenseLinAlgPack::size_type
 		no = H.G().rows(),  // number of original variables
@@ -78,7 +78,7 @@ void Vp_StPtMtV_imp(
 	const DenseLinAlgPack::Range1D
 		o_rng(1,no),
 		r_rng(no+1,no+nr);
-	const SparseLinAlgPack::GenPermMatrixSlice
+	const AbstractLinAlgPack::GenPermMatrixSlice
 		P1 = ( P.is_identity() 
 			   ? GenPermMatrixSlice(
 				   P_trans == no_trans ? nd : no 
@@ -100,10 +100,10 @@ void Vp_StPtMtV_imp(
 	DenseLinAlgPack::Vt_S(y,b);
 	// y += a*op(P1)*G*x1
 	if( P1.nz() )
-		SparseLinAlgPack::Vp_StPtMtV( y, a, P1, P_trans, H.G(), H_trans, x1, b );
+		AbstractLinAlgPack::Vp_StPtMtV( y, a, P1, P_trans, H.G(), H_trans, x1, b );
 	// y2 += a*op(P2)*M*x2
 	if( P2.nz() )
-		SparseLinAlgPack::Vp_StPtMtV( y, a, P2, P_trans, H.M(), H_trans, x2, 1.0 );
+		AbstractLinAlgPack::Vp_StPtMtV( y, a, P2, P_trans, H.M(), H_trans, x2, 1.0 );
 }
 
 */
@@ -178,8 +178,8 @@ bool MatrixSymHessianRelaxNonSing::Mp_StM(
 	const size_type
 		nG = G_ptr_->rows(),
 		nM = M_.rows();
-	SparseLinAlgPack::Mp_StM( &(*C)(1,nG,1,nG), a, *G_ptr_, H_trans);
-	SparseLinAlgPack::Mp_StM( &(*C)(nG+1,nG+nM,nG+1,nG+nM), a, M_, H_trans);
+	AbstractLinAlgPack::Mp_StM( &(*C)(1,nG,1,nG), a, *G_ptr_, H_trans);
+	AbstractLinAlgPack::Mp_StM( &(*C)(nG+1,nG+nM,nG+1,nG+nM), a, M_, H_trans);
 */
 }
 
@@ -303,7 +303,7 @@ void MatrixSymHessianRelaxNonSing::Mp_StPtMtP(
 	const DenseLinAlgPack::Range1D
 		o_rng(1,no),
 		r_rng(no+1,no+nr);
-	const SparseLinAlgPack::GenPermMatrixSlice
+	const AbstractLinAlgPack::GenPermMatrixSlice
 		P1 = ( P.is_identity() 
 			   ? GenPermMatrixSlice(
 				   P_trans == no_trans ? nd : no 
@@ -323,12 +323,12 @@ void MatrixSymHessianRelaxNonSing::Mp_StPtMtP(
 
 	// S1 += a*op(P1)'*G*op(P1)
 	if( P1.nz() )
-		SparseLinAlgPack::Mp_StPtMtP(
+		AbstractLinAlgPack::Mp_StPtMtP(
 			&DMatrixSliceSym( S->gms()(1,no,1,no), S->uplo() )
 			, a, dummy_place_holder, G(), P1, P_trans );
 	// S2 += a*op(P2)'*M*op(P2)
 	if( P2.nz() )
-		SparseLinAlgPack::Mp_StPtMtP(
+		AbstractLinAlgPack::Mp_StPtMtP(
 			&DMatrixSliceSym( S->gms()(no+1,nd,no+1,nd), S->uplo() )
 			, a, dummy_place_holder, M(), P2, P_trans );
 */

@@ -16,10 +16,10 @@
 #ifndef MATRIX_SYM_ADD_DEL_UPDATEABLE_H
 #define MATRIX_SYM_ADD_DEL_UPDATEABLE_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixBase.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Mix-in Interface for updating a serial symmetric matrix by adding and deleting
@@ -355,6 +355,6 @@ public:
 
 }; // end class MatrixSymAddDelUpdateable
 
-}  // namespace SparseLinAlgPack 
+}  // namespace AbstractLinAlgPack 
 
 #endif // MATRIX_SYM_ADD_DEL_UPDATEABLE_H

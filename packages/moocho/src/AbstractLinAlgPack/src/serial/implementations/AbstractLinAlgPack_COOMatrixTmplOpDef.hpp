@@ -22,7 +22,7 @@
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 using BLAS_Cpp::trans_not;
 
@@ -186,6 +186,6 @@ void imp_Mp_StMtCOOM(DMatrixSlice* gms_lhs, BLAS_Cpp::Transp trans_lhs, value_ty
 
 }	// end namespace UtilityPack
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif	// COO_MATRIX_TMPL_OP_DEF_H

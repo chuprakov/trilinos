@@ -18,13 +18,13 @@
 #include <limits>
 #include <vector>
 
-#include "SparseLinAlgPack/src/MatrixSymPosDefCholFactor.hpp"
-#include "SparseLinAlgPack/src/BFGS_helpers.hpp"
-#include "SparseLinAlgPack/src/rank_2_chol_update.hpp"
-#include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
-#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
-#include "SparseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/BFGS_helpers.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/rank_2_chol_update.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
@@ -61,7 +61,7 @@ inline
 T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
 } // end namespace
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 // Constructors/initalizers
 
@@ -1408,4 +1408,4 @@ void MatrixSymPosDefCholFactor::update_factorization() const
 	nc_this->factor_is_updated_ = true;
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack

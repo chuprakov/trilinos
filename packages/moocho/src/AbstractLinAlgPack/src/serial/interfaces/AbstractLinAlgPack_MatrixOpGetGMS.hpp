@@ -16,12 +16,12 @@
 #ifndef MATRIX_WITH_OP_GET_GMS_H
 #define MATRIX_WITH_OP_GET_GMS_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract interface that allows the extraction of a const <tt>DMatrixSlice</tt>
@@ -158,6 +158,6 @@ const DMatrixSlice MatrixDenseEncap::operator()() const
 	return gms_view_;
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // MATRIX_WITH_OP_GET_GMS_H

@@ -19,7 +19,7 @@
 #include "MatrixSymDiagonalSparse.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Concrete subclass for a serial symmetric diagonal matrix with many zeros on the diagonal.
@@ -73,6 +73,6 @@ private:
 
 };	// end class MatrixDiagonalSparse
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack
 
 #endif	// SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_STD_H

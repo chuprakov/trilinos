@@ -20,7 +20,7 @@
 
 #include "MatrixSymSecant.hpp"
 #include "MatrixSymAddDelUpdateable.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 

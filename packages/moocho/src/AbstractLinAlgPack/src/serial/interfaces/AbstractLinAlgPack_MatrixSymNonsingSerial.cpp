@@ -15,9 +15,9 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/MatrixSymNonsingularSerial.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOpSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymNonsingularSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
@@ -27,11 +27,11 @@
 #include "dynamic_cast_verbose.hpp"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::Mp_StMtM;
+	using AbstractLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Mp_StMtM;
 }
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 void MatrixSymNonsingularSerial::M_StMtInvMtM(
 	  DMatrixSliceSym* S, value_type a, const MatrixWithOpSerial& B
@@ -40,7 +40,7 @@ void MatrixSymNonsingularSerial::M_StMtInvMtM(
 	using BLAS_Cpp::trans;
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans_not;
-	using SparseLinAlgPack::M_StInvMtM;
+	using AbstractLinAlgPack::M_StInvMtM;
 	using DenseLinAlgPack::nonconst_tri_ele;
 	using DenseLinAlgPack::tri_ele;
 	using DenseLinAlgPack::assign;
@@ -74,7 +74,7 @@ void MatrixSymNonsingularSerial::M_StMtInvMtM(
 	for( size_type j = 1; j <= m; ++j ) {
 		EtaVector e_j(j,opBT_cols);                               // e(j)
 		LinAlgOpPack::V_MtV( &t1, B, trans_not(B_trans), e_j() ); // t1 = op(B')*e(j)
-		SparseLinAlgPack::V_InvMtV( &t2, *this, no_trans, t1() ); // t2 = inv(M)*t1
+		AbstractLinAlgPack::V_InvMtV( &t2, *this, no_trans, t1() ); // t2 = inv(M)*t1
 		LinAlgOpPack::V_StMtV( &t3, a, B, B_trans, t2() );        // t3 = a*op(B)*t2
 		Range1D
 			rng = ( S->uplo() == BLAS_Cpp::upper ? Range1D(1,j) : Range1D(j,m) );
@@ -97,4 +97,4 @@ void MatrixSymNonsingularSerial::M_StMtInvMtM(
 		,dummy );
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack

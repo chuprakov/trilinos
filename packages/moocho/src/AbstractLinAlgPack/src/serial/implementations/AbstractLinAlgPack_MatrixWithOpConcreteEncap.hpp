@@ -18,7 +18,7 @@
 
 #include "MatrixOp.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** This template class defines the storage for a concrete matrix
@@ -101,6 +101,6 @@ MatrixOp& MatrixWithOpConcreteEncap<M>::operator=(const MatrixOp& m) {
 	return *this;
 }
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// MATRIX_WITH_OP_CONCRETE_ENCAP_H

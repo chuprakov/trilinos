@@ -18,10 +18,10 @@
 
 #include <stdexcept>
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "ThrowException.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 template<class T_Scalar, class T_Index>
 class MatrixCOORTmplItfcItrEleView;
@@ -163,6 +163,6 @@ MatrixCOORTmplItfc<T_Scalar,T_Index>::end() const
 	return MatrixCOORTmplItfcItr<T_Scalar,T_Index>(values_+nz_,row_i_+nz_,col_j_+nz_,0);
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // SLAP_MATRIX_COOR_TMPL_ITFC_H

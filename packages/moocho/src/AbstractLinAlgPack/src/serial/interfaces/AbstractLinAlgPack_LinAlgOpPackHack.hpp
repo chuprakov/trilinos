@@ -17,7 +17,7 @@
 #ifndef LIN_ALG_OP_PACK_HACK_H
 #define LIN_ALG_OP_PACK_HACK_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {

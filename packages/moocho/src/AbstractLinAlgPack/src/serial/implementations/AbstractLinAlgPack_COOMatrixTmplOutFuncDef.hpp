@@ -21,7 +21,7 @@
 
 #include "COOMatrixTmplOutFuncDecl.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 template <class T_COOM>
 std::ostream& output_COOM(std::ostream& os, const T_COOM& coom
@@ -61,6 +61,6 @@ std::ostream& output_COOM(std::ostream& os, const T_COOM& coom
 	return os;
 }
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// COO_MATRIX_TMPL_OUT_FUNC_DEF_H

@@ -22,7 +22,7 @@
 
 #include "COOMatrixPartitionedViewClassDecl.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 // /////////////////////////////////////////////////////////////////////////////
 // Template function definitions for COOMatrixPartitionedView
@@ -289,6 +289,6 @@ COOMatrixPartitionedView<T_Indice,T_Value>::create_partition(Range1D rng_overall
 	return partition_type(rows,cols,nz,ele,row_offset,col_offset);
 }
 
-} // end namespace SparseLinAlgPack 
+} // end namespace AbstractLinAlgPack 
 
 #endif // COO_MATRIX_PARTITIONED_VIEW_CLASS_DEF_H

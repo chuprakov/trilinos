@@ -18,11 +18,11 @@
 
 #include <iosfwd>
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Base class for all matrices implemented in a shared memory address space.
@@ -447,6 +447,6 @@ inline void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice
 
 //@}
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// SPARSE_LINALG_PACK_MATRIX_WITH_OP_SERIAL_H

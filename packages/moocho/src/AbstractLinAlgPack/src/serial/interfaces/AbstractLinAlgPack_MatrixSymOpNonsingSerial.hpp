@@ -20,7 +20,7 @@
 #include "MatrixSymNonsingularSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOpNonsing.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract base class for all serial polymorphic symmetric nonsingular matrices that
@@ -34,6 +34,6 @@ class MatrixSymWithOpNonsingularSerial
 	, virtual public AbstractLinAlgPack::MatrixSymOpNonsing   // ""
 {};
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack
 
 #endif	// SLAP_MATRIX_SYM_WITH_OP_NONSINGULAR_SERIAL_H

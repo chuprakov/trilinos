@@ -18,7 +18,7 @@
 
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixBase.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Mix-in interface for loading nonzero elements into a sparse matrix data structure.
@@ -169,6 +169,6 @@ public:
 
 };	// end class MatrixLoadSparseElements
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// MATRIX_LOAD_SPARSE_FORTRAN_COMPATIBLE_ELEMENTS_H

@@ -15,14 +15,14 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/PermutationSerial.hpp"
-#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "DenseLinAlgPack/src/PermOut.hpp"
 #include "ThrowException.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 // Constructors / initializers
 
@@ -183,4 +183,4 @@ void PermutationSerial::permute(
 	this->permute(P_trans,*t,y);
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack

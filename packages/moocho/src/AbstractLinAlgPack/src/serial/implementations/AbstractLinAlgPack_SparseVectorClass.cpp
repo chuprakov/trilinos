@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseLinAlgPack/src/SparseVectorClassDecl.hpp"
+#include "AbstractLinAlgPack/src/SparseVectorClassDecl.hpp"
 
-void SparseLinAlgPack::SparseVectorUtilityPack::assert_is_sorted(bool is_sorted)
+void AbstractLinAlgPack::SparseVectorUtilityPack::assert_is_sorted(bool is_sorted)
 {
 	if(!is_sorted)
 		throw NotSortedException("SparseVector***<> : The sparse vector is not sorted.");

@@ -16,9 +16,9 @@
 #ifndef BFGS_HELPERS_H
 #define BFGS_HELPERS_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** @name Functions to be used in BFGS updating.
@@ -56,6 +56,6 @@ bool BFGS_sTy_suff_p_d(
 
 //@}
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // BFGS_HELPERS_H

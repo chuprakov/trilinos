@@ -15,14 +15,14 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
-void SparseLinAlgPack::V_StMtV(
+void AbstractLinAlgPack::V_StMtV(
 	  SpVector* y, value_type a, const GenPermMatrixSlice& P
 	, BLAS_Cpp::Transp P_trans, const DVectorSlice& x )
 {
@@ -72,7 +72,7 @@ void SparseLinAlgPack::V_StMtV(
 	}
 }
 
-void SparseLinAlgPack::V_StMtV(
+void AbstractLinAlgPack::V_StMtV(
 	  SpVector* y, value_type a, const GenPermMatrixSlice& P
 	, BLAS_Cpp::Transp P_trans, const SpVectorSlice& x )
 {
@@ -88,8 +88,8 @@ void SparseLinAlgPack::V_StMtV(
 	const SpVectorSlice::element_type *ele_ptr;
 
 	if( P.is_identity() ) {
-		SparseLinAlgPack::add_elements( y, 1.0, x(1,P.nz()) );
-		SparseLinAlgPack::Vt_S( &(*y)(), a );
+		AbstractLinAlgPack::add_elements( y, 1.0, x(1,P.nz()) );
+		AbstractLinAlgPack::Vt_S( &(*y)(), a );
 	}		
 	else if( x.is_sorted() ) {
 		if( P_trans == no_trans ) {
@@ -122,7 +122,7 @@ void SparseLinAlgPack::V_StMtV(
 	}
 }
 
-void SparseLinAlgPack::Vp_StMtV(
+void AbstractLinAlgPack::Vp_StMtV(
 	  SpVector* y, value_type a, const GenPermMatrixSlice& P
 	, BLAS_Cpp::Transp P_trans, const DVectorSlice& x )
 {
@@ -173,7 +173,7 @@ void SparseLinAlgPack::Vp_StMtV(
 	}
 }
 
-void SparseLinAlgPack::Vp_StMtV(
+void AbstractLinAlgPack::Vp_StMtV(
 	  DVectorSlice* y, value_type a, const GenPermMatrixSlice& P
 	, BLAS_Cpp::Transp P_trans, const DVectorSlice& x, value_type b )
 {
@@ -211,7 +211,7 @@ void SparseLinAlgPack::Vp_StMtV(
 	}
 }
 
-void SparseLinAlgPack::Vp_StMtV(
+void AbstractLinAlgPack::Vp_StMtV(
 	  DVectorSlice* y, value_type a, const GenPermMatrixSlice& P
 	, BLAS_Cpp::Transp P_trans, const SpVectorSlice& x, value_type b )
 {
@@ -232,7 +232,7 @@ void SparseLinAlgPack::Vp_StMtV(
 	// y += a*op(P)*x
 	if( P.is_identity() ) {
 		DenseLinAlgPack::Vt_S( y, b ); // takes care of b == 0.0 and y == NaN
-		SparseLinAlgPack::Vp_StV( &(*y)(1,P.nz()), a, x(1,P.nz()) );
+		AbstractLinAlgPack::Vp_StV( &(*y)(1,P.nz()), a, x(1,P.nz()) );
 	}		
 	else if( x.is_sorted() ) {
 		const SpVectorSlice::difference_type x_off = x.offset();
@@ -311,7 +311,7 @@ ordered_by(
 
 } // end namespace
 
-void SparseLinAlgPack::intersection(
+void AbstractLinAlgPack::intersection(
 	const GenPermMatrixSlice     &P1
 	,BLAS_Cpp::Transp            P1_trans
 	,const GenPermMatrixSlice    &P2

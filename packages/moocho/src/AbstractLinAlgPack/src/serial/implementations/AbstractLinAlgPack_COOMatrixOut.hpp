@@ -18,7 +18,7 @@
 
 #include "COOMatrixOutFunc.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Output stream operator for COOMatrix.
@@ -36,6 +36,6 @@ inline std::ostream& operator<<(std::ostream& o, const COOMatrix& coom) {
 	return output(o,coom);
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // COO_MATRIX_OUT_H

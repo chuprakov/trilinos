@@ -22,7 +22,7 @@
 #include "MatrixConvertToSparseFortranCompatible.hpp"
 #include "COOMPartitionOut.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Implementation of MatrixOp abstract interface for COOMatrixWithPartitionedView.
@@ -159,6 +159,6 @@ public:
 
 };	// end class COOMatrixWithPartitionedViewSubclass
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// COO_MATRIX_WITH_PARTITIONED_VIEW_SUBCLASS_H

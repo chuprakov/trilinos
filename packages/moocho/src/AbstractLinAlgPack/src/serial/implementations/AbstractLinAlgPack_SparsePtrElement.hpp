@@ -16,9 +16,9 @@
 #ifndef SPARSE_PTR_ELEMENT_H
 #define SPARSE_PTR_ELEMENT_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Sparse pointer element type.
@@ -92,6 +92,6 @@ private:
 
 };	// end class SparsePtrElement
 
-} // end namespace SparseLinAlgPack 
+} // end namespace AbstractLinAlgPack 
 
 #endif // SPARSE_PTR_ELEMENT_H

@@ -24,7 +24,7 @@
 #include "ConstrainedOptimizationPack/src/MeritFuncCalcNLP.hpp"
 #include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
-#include "SparseLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/DVectorOut.hpp"
@@ -35,7 +35,7 @@ namespace {
 }
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 ReducedSpaceSQPPack::LineSearchWatchDog_Step::LineSearchWatchDog_Step(

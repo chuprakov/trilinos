@@ -16,9 +16,9 @@
 #include <typeinfo>
 #include <stdexcept>
 
-#include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
-#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/apply_op_helper.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "WorkspacePack.hpp"
@@ -34,7 +34,7 @@ const VectorSpaceSerial          *_space;
 #define CLASS_MEMBER_PTRS
 #endif
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 VectorWithOpMutableDense::VectorWithOpMutableDense(
 	const size_type                   dim
@@ -289,7 +289,7 @@ void VectorWithOpMutableDense::Vp_StMtV(
 {
 	CLASS_MEMBER_PTRS
 	VectorDenseEncap  x_de(x);
-	SparseLinAlgPack::Vp_StMtV( &v_, alpha, P, P_trans, x_de(), beta );
+	AbstractLinAlgPack::Vp_StMtV( &v_, alpha, P, P_trans, x_de(), beta );
 }
 
 // private
@@ -314,4 +314,4 @@ void VectorWithOpMutableDense::apply_op(
 		,first_ele_in,sub_dim_in,global_offset_in );
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack

@@ -4,11 +4,11 @@
 #ifndef SLAP_VECTOR_DENSE_ENCAP_H
 #define SLAP_VECTOR_DENSE_ENCAP_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Extract a constant <tt>DenseLinAlgPack::DVectorSlice</tt> view of a <tt>Vector</tt> object.

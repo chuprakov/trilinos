@@ -16,15 +16,15 @@
 #include <assert.h>
 
 #include "ConstrainedOptimizationPack/src/MatrixHessianRelaxed.hpp"
-#include "SparseLinAlgPack/src/MatrixSymOp.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
-#include "SparseLinAlgPack/src/SpVectorClass.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StV;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 namespace ConstrainedOptimizationPack {
@@ -61,7 +61,7 @@ void MatrixHessianRelaxed::Vp_StMtV(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 	//
 	// y = b*y + a * M * x
 	// 
@@ -102,7 +102,7 @@ void MatrixHessianRelaxed::Vp_StMtV(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 	//
 	// y = b*y + a * M * x
 	// 
@@ -147,7 +147,7 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 	//
 	// y = b*y + a * op(P) * M * x
 	// 
@@ -196,7 +196,7 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
 	const value_type
 		x2 = x(n_+1);
 	// y = b*y + a*op(P1)*H*x1
-	SparseLinAlgPack::Vp_StPtMtV( y, a, P1, P_trans, *H_, no_trans, x1, b );
+	AbstractLinAlgPack::Vp_StPtMtV( y, a, P1, P_trans, *H_, no_trans, x1, b );
 	// y += a*op(P2)*bigM*x2
 	if( P2.nz() ){
 		assert(P2.nz() == 1);
@@ -214,7 +214,7 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 	//
 	// y = b*y + a * op(P) * M * x
 	// 
@@ -265,7 +265,7 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
 	const value_type
 		x2 = x2_ele ? x2_ele->value() : 0.0;
 	// y = b*y + a*op(P1)*H*x1
-	SparseLinAlgPack::Vp_StPtMtV( y, a, P1, P_trans, *H_, no_trans, x1, b );
+	AbstractLinAlgPack::Vp_StPtMtV( y, a, P1, P_trans, *H_, no_trans, x1, b );
 	// y += a*op(P2)*bigM*x2
 	if( P2.nz() ){
 		assert(P2.nz() == 1);
@@ -300,7 +300,7 @@ value_type MatrixHessianRelaxed::transVtMtV(
 			*x12_ele = x1.lookup_element(n_+1);
 		const value_type
 			x12 = x12_ele ? x12_ele->value() : 0.0;
-		return SparseLinAlgPack::transVtMtV( x11, *H_, no_trans, x11) 
+		return AbstractLinAlgPack::transVtMtV( x11, *H_, no_trans, x11) 
 			+ x12 * bigM_ * x12;
 	}
 	else {

@@ -24,11 +24,11 @@
 #include "rSQPAlgo_ConfigMamaJama.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
-#include "SparseLinAlgPack/src/MatrixSymPosDefCholFactor.hpp"                     // rHL 
+#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"                     // rHL 
 //#include "ConstrainedOptimizationPack/src/MatrixSymPosDefInvCholFactor.hpp"		// .
 #include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"				// .
 //#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasicInitDiagonal.hpp"// | rHL (super basics)
-//#include "SparseLinAlgPack/src/MatrixSymDiagStd.hpp"                          // |
+//#include "AbstractLinAlgPack/src/MatrixSymDiagStd.hpp"                          // |
 
 #include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
 
@@ -125,7 +125,7 @@
 #include "ReducedSpaceSQPPack/src/std/qp_solver_stats.hpp"
 #include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
 
-//#include "SparseLinAlgPack/src/sparse_bounds.hpp"
+//#include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
 
 // Misc utilities
 #include "AbstractFactoryStd.hpp"

@@ -19,7 +19,7 @@
 #include "MatrixWithOpSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract base class for all <tt>AbstractLinAlgPack::MatrixSymOp</tt> objects
@@ -126,6 +126,6 @@ void Mp_StMtMtM(
 
 //@}
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// SLAP_MATRIX_SYM_WITH_OP_SERIAL_H

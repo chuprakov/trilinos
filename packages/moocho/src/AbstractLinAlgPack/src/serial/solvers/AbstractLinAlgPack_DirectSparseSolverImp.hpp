@@ -17,7 +17,7 @@
 #define DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_IMP_H
 
 #include "DirectSparseSolver.hpp"
-#include "SparseLinAlgPack/src/VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorSpaceSerial.hpp"
 
 namespace SparseSolverPack {
 
@@ -206,7 +206,7 @@ public:
 
 	///
 	void analyze_and_factor(
-		const SparseLinAlgPack::MatrixConvertToSparse   &A
+		const AbstractLinAlgPack::MatrixConvertToSparse   &A
 		,DenseLinAlgPack::IVector                            *row_perm
 		,DenseLinAlgPack::IVector                            *col_perm
 		,size_type                                      *rank
@@ -215,7 +215,7 @@ public:
 		);
 	///
 	void factor(
-		const SparseLinAlgPack::MatrixConvertToSparse   &A
+		const AbstractLinAlgPack::MatrixConvertToSparse   &A
 		,BasisMatrix                                    *basis_matrix
 		,const BasisMatrix::fact_struc_ptr_t            &fact_struc
 		,std::ostream                                   *out
@@ -249,7 +249,7 @@ protected:
 	 * ToDo: Finish documentation!
 	 */	
 	virtual void imp_analyze_and_factor(
-		const SparseLinAlgPack::MatrixConvertToSparse   &A
+		const AbstractLinAlgPack::MatrixConvertToSparse   &A
 		,FactorizationStructure                         *fact_struc
 		,FactorizationNonzeros                          *fact_nonzeros
 		,DenseLinAlgPack::IVector                            *row_perm
@@ -265,7 +265,7 @@ protected:
 	 * ToDo: Finish documentation!
 	 */	
 	virtual void imp_factor(
-		const SparseLinAlgPack::MatrixConvertToSparse   &A
+		const AbstractLinAlgPack::MatrixConvertToSparse   &A
 		,const FactorizationStructure                   &fact_struc
 		,FactorizationNonzeros                          *fact_nonzeros
 		,std::ostream                                   *out            = NULL

@@ -19,7 +19,7 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.hpp"
-#include "SparseLinAlgPack/src/MatrixSymInitDiag.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymInitDiag.hpp"
 
 namespace ConstrainedOptimizationPack {
 

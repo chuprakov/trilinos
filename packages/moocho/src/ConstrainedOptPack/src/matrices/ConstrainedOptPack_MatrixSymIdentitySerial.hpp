@@ -17,8 +17,8 @@
 #define COP_MATRIX_SYM_IDENTITY_SERIAL_H
 
 #include "ConstrainedOptimizationPackTypes.hpp"
-#include "SparseLinAlgPack/src/MatrixExtractInvCholFactor.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOpNonsingularSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractInvCholFactor.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpNonsingularSerial.hpp"
 
 namespace ConstrainedOptimizationPack {
 
@@ -28,8 +28,8 @@ namespace ConstrainedOptimizationPack {
  * More operations will be overridden as they are needed by various applications.
  */
 class MatrixSymIdentitySerial
-	: virtual public SparseLinAlgPack::MatrixSymWithOpNonsingularSerial // doxygen needs full name
-	, virtual public SparseLinAlgPack::MatrixExtractInvCholFactor
+	: virtual public AbstractLinAlgPack::MatrixSymWithOpNonsingularSerial // doxygen needs full name
+	, virtual public AbstractLinAlgPack::MatrixExtractInvCholFactor
 {
 public:
 	

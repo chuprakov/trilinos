@@ -16,12 +16,12 @@
 #ifndef MATRIX_WITH_OP_GET_GMS_TRI_H
 #define MATRIX_WITH_OP_GET_GMS_TRI_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Mix-in interface that allows the extraction of a const <tt>DenseLinAlgPack::DMatrixSliceTri</tt>
@@ -158,6 +158,6 @@ const DenseLinAlgPack::DMatrixSliceTri MatrixDenseTriEncap::operator()() const
 	return tri_gms_view_;
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // MATRIX_WITH_OP_GET_GMS_TRI_H

@@ -16,9 +16,9 @@
 #ifndef MATRIX_SYM_WITH_OP_GET_GMS_SYM_MUTABLE_H
 #define MATRIX_SYM_WITH_OP_GET_GMS_SYM_MUTABLE_H
 
-#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSym.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSym.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract interface that allows the extraction of a non-const <tt>DenseLinAlgPack::DMatrixSliceSym</tt>
@@ -164,6 +164,6 @@ const DenseLinAlgPack::DMatrixSliceSym MatrixDenseSymMutableEncap::operator()() 
 	return sym_gms_view_;
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // MATRIX_SYM_WITH_OP_GET_GMS_SYM_MUTABLE_H

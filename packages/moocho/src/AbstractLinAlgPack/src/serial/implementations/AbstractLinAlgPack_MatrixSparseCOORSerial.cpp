@@ -15,16 +15,16 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/MatrixSparseCOORSerial.hpp"
-#include "SparseLinAlgPack/src/MatrixCOORTmplItfc.hpp"
-#include "SparseLinAlgPack/src/COOMatrixTmplOp.hpp"
-#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/MatrixSparseCOORSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/MatrixCOORTmplItfc.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/COOMatrixTmplOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 MatrixSparseCOORSerial::ReleaseValRowColArrays::~ReleaseValRowColArrays()
 {
@@ -619,4 +619,4 @@ void MatrixSparseCOORSerial::make_storage_unique()
 	}
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack

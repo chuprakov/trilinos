@@ -18,7 +18,7 @@
 
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Iterate through a set of sparse bounds.
@@ -108,6 +108,6 @@ private:
 
 };	// end class sparse_bounds_itr
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack
 
 #endif // SPARSE_LIN_ALG_PACK_SPARSE_BOUNDS_H

@@ -20,7 +20,7 @@
 
 #include "COOMatrixTmplOutFunc.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Partition<> output stream operator.
@@ -45,6 +45,6 @@ inline std::ostream& operator<<(std::ostream& os
 	return output_COOM(os,trans_part,0);	
 }
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack
 
 #endif // VECTOROUT_H

@@ -16,9 +16,9 @@
 #ifndef SPARSE_BOUNDS_DIFF_H
 #define SPARSE_BOUNDS_DIFF_H
 
-#include "SparseLinAlgPackTypes.hpp" 
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp" 
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Take the difference between a spare lower bound vector and a dense vector.
@@ -40,6 +40,6 @@ void imp_sparse_bnd_diff(
 	, DVectorSlice				*r
 	);
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack
 
 #endif  // SPARSE_BOUNDS_DIFF_H

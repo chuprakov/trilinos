@@ -9,7 +9,7 @@
 //     #include "NLPInterfacePackPublicTypes.ud"
 // }
 
-// Include the types from SparseLinAlgPack
+// Include the types from AbstractLinAlgPack
 #include "SparseSolverPack/src/SparseSolverPackPublicTypes.ud"
 
 using NLPInterfacePack::NLP;

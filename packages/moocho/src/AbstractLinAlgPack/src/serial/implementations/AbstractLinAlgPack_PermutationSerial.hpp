@@ -19,7 +19,7 @@
 #include "VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Permutation.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Subclass for permutations of serial vectors.
@@ -220,6 +220,6 @@ PermutationSerial::inv_perm() const
 	return inv_perm_;
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // SLAP_PERMUTATION_SERIAL_H

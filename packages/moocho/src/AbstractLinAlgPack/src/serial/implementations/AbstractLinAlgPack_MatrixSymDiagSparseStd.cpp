@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseLinAlgPack/src/MatrixSymDiagonalSparseStd.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymDiagonalSparseStd.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorOut.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "ThrowException.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 MatrixSymDiagonalSparseStd::MatrixSymDiagonalSparseStd( const SpVectorSlice& diag )
 	: diag_(diag)
@@ -59,4 +59,4 @@ const SpVectorSlice MatrixSymDiagonalSparseStd::diag() const
 }
 
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack

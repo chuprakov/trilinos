@@ -15,7 +15,7 @@
 
 #include "MatrixSymPosDefInvCholFactor.hpp"
 #include "SymInvCholMatrixOp.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
@@ -23,9 +23,9 @@
 
 namespace LinAlgOpPack {
 
-using SparseLinAlgPack::Vp_StV;
-using SparseLinAlgPack::Vp_StMtV;
-using SparseLinAlgPack::Mp_StM;
+using AbstractLinAlgPack::Vp_StV;
+using AbstractLinAlgPack::Vp_StMtV;
+using AbstractLinAlgPack::Mp_StM;
 using ConstrainedOptimizationPack::Vp_StMtV;
 
 }	// end namespace LinAlgOpPack
@@ -133,7 +133,7 @@ void MatrixSymPosDefInvCholFactor::M_StMtInvMtM(
 	using BLAS_Cpp::trans_not;
 	using BLAS_Cpp::upper;
 	using BLAS_Cpp::nonunit;
-	using SparseLinAlgPack::M_StInvMtM;
+	using AbstractLinAlgPack::M_StInvMtM;
 	using DenseLinAlgPack::tri;
 	using DenseLinAlgPack::syrk;
 	using DenseLinAlgPack::M_StInvMtM;

@@ -18,7 +18,7 @@
 
 #include "MatrixConvertToSparse.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Interface for extracting nonzero elements from a banded subregion
@@ -380,6 +380,6 @@ private:
 
 };	// end class MatrixExtractSparseElements
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// MATRIX_EXTRACT_SPARSE_FORTRAN_COMPATIBLE_ELEMENTS_H

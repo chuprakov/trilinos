@@ -20,10 +20,10 @@
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchur.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
-#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "SparseLinAlgPack/src/VectorSpaceSerial.hpp"
-#include "SparseLinAlgPack/src/sparse_bounds.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "profile_hack.hpp"
@@ -240,7 +240,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		VectorDenseEncap dL_de(*dL);
 		VectorDenseEncap dU_de(*dU);
 		// read iterators
-		SparseLinAlgPack::sparse_bounds_itr
+		AbstractLinAlgPack::sparse_bounds_itr
 			dLU_itr( dL_de().begin(), dL_de().end()
 					,dU_de().begin(), dU_de().end()
 					,inf_bnd );
@@ -291,7 +291,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 			}
 		}
 		std::sort( gamma.begin(), gamma.end()
-			, SparseLinAlgPack::SortByDescendingAbsValue() );
+			, AbstractLinAlgPack::SortByDescendingAbsValue() );
 		// Now add the inequality constraints in decreasing order (if they are
 		// not already initially fixed variables)
 		const QPSchurPack::QP::x_init_t &x_init = qp_.x_init();

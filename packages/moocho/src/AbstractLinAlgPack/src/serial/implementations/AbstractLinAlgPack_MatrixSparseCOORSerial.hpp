@@ -22,7 +22,7 @@
 #include "MatrixExtractSparseElements.hpp"
 #include "ReleaseResource.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Coordinate matrix subclass.
@@ -370,7 +370,7 @@ MatrixSparseCOORSerial::release_resource() const
 	return self_allocate_ ? release_resource_null_ : release_resource_;
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // MATRIX_SPARSE_COOR_SERIAL_H
 

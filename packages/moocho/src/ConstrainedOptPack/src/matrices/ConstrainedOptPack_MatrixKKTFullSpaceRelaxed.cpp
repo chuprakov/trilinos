@@ -22,8 +22,8 @@
 
 #include "ConstrainedOptimizationPack/src/MatrixKKTFullSpaceRelaxed.hpp"
 #include "SparseSolverPack/src/DirectSparseFortranCompatibleSolver.h"
-#include "SparseLinAlgPack/src/MatrixConvertToSparseFortranCompatible.hpp"
-#include "SparseLinAlgPack/test/TestMatrixConvertToSparseFortranCompatible.hpp"
+#include "AbstractLinAlgPack/src/MatrixConvertToSparseFortranCompatible.hpp"
+#include "AbstractLinAlgPack/test/TestMatrixConvertToSparseFortranCompatible.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
@@ -125,7 +125,7 @@ void MatrixKKTFullSpaceRelaxed::Vp_StMtV(
 	  DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const DVectorSlice& vs_rhs2, value_type beta) const
 {
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 
 	assert_initialized();
 
@@ -228,7 +228,7 @@ void MatrixKKTFullSpaceRelaxed::coor_extract_nonzeros(
 
 		typedef MatrixConvertToSparseFortranCompatible
 			MCTSFC_t;
-		namespace slaptp = SparseLinAlgPack::TestingPack;
+		namespace slaptp = AbstractLinAlgPack::TestingPack;
 		using slaptp::TestMatrixConvertToSparseFortranCompatible;
 
 		const value_type

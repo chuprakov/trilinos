@@ -18,7 +18,7 @@
 
 #include "SparseLinAlgPackIOBasic.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** @name COO matrix output stream function.
@@ -57,6 +57,6 @@ template <class T_COOM>
 std::ostream& output_COOM(std::ostream& os, const T_COOM& coom
 	, SparseLinAlgPackIO::fmtflags extra_flags);
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack
 
 #endif	// COO_MATRIX_TMPL_OUT_FUNC_DECL_H

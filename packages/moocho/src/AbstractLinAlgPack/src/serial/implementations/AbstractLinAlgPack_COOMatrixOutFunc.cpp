@@ -16,7 +16,7 @@
 #include "COOMatrixOutFunc.hpp"
 #include "COOMatrixClass.hpp"
 
-std::ostream& SparseLinAlgPack::output(std::ostream& o, const COOMatrix& coom) {
+std::ostream& AbstractLinAlgPack::output(std::ostream& o, const COOMatrix& coom) {
 
 	o	<< coom.rows() << " " << coom.cols() << " " << coom.nz() << "\n";
 

@@ -16,10 +16,10 @@
 #ifndef VECTOR_SPACE_FACTORY_SERIAL_H
 #define VECTOR_SPACE_FACTORY_SERIAL_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpaceFactory.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract interface for objects that can create vector spaces of a specified dimension.
@@ -44,6 +44,6 @@ public:
 	
 }; // end class VectorSpaceFactorySerial
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif  // VECTOR_SPACE_FACTORY_SERIAL_H

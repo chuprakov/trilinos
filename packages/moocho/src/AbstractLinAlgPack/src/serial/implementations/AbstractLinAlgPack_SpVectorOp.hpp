@@ -19,7 +19,7 @@
 #include "SparseVectorSliceOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SparseElement.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Add elements from a dense vector to a sparse vector.
@@ -69,14 +69,14 @@ inline
 ///
 const DVectorSlice dense_view( const SpVectorSlice& sv_rhs );
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 // /////////////////////////////////////////
 // Inline function definitions
 
 inline
 DenseLinAlgPack::DVectorSlice
-SparseLinAlgPack::dense_view( SpVectorSlice& sv_rhs )
+AbstractLinAlgPack::dense_view( SpVectorSlice& sv_rhs )
 {
 	return sv_rhs.nz()
 		? DVectorSlice( &sv_rhs.begin()->value(), sv_rhs.nz(), 2 )
@@ -85,7 +85,7 @@ SparseLinAlgPack::dense_view( SpVectorSlice& sv_rhs )
 
 inline
 const DenseLinAlgPack::DVectorSlice
-SparseLinAlgPack::dense_view( const SpVectorSlice& sv_rhs )
+AbstractLinAlgPack::dense_view( const SpVectorSlice& sv_rhs )
 {
 	return sv_rhs.nz()
 		? DVectorSlice( &const_cast<SpVectorSlice&>(sv_rhs).begin()->value(), sv_rhs.nz(), 2 )

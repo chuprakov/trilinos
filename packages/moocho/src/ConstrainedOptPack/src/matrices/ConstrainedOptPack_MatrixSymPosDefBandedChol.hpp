@@ -17,7 +17,7 @@
 #define MATRIX_SYM_POS_DEF_BANDED_CHOL_H
 
 #include "ConstrainedOptimizationPackTypes.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "Miref_count_ptr.h"
 #include "MiReleaseResource.h"

@@ -19,7 +19,7 @@
 #include "MatrixNonsingularSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymNonsing.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract base class for all serial polymorphic symmetrix nonsingular matrices that
@@ -89,6 +89,6 @@ void M_StMtInvMtM(
 
 //@}
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif	// SLAP_MATRIX_SYM_NONSINGULAR_SERIAL_H

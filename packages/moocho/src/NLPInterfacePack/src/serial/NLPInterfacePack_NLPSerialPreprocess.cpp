@@ -25,9 +25,9 @@
 #include <fstream>
 
 #include "NLPInterfacePack/src/NLPSerialPreprocess.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "SparseLinAlgPack/src/PermutationSerial.hpp"
-#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
@@ -39,7 +39,7 @@
 #include "dynamic_cast_verbose.hpp"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StV;
+	using AbstractLinAlgPack::Vp_StV;
 }
 
 namespace NLPInterfacePack {

@@ -16,10 +16,10 @@
 #ifndef VECTOR_SPACE_SERIAL_H
 #define VECTOR_SPACE_SERIAL_H
 
-#include "SparseLinAlgPack/src/SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Subclass for serial vector space objects that create <tt>VectorWithOpMutableDense</tt>
@@ -86,6 +86,6 @@ private:
 
 }; // end class VectorSpaceSerial
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // VECTOR_SPACE_SERIAL_H

@@ -16,9 +16,9 @@
 #ifndef COO_MATRIX_TMPL_CONVERT_TO_SPARSE_COMPRESSED_COLUMN_DECL_H
 #define COO_MATRIX_TMPL_CONVERT_TO_SPARSE_COMPRESSED_COLUMN_DECL_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 /** @name {\bf Conversion to Fortran compatable sparse compressed column 
   * operations for COOMatrixTemplateInterface (Level 2,3 BLAS)}.
@@ -66,6 +66,6 @@ value_type COOM_insert_scaled_nonzeros(
 
 //@}
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif	// COO_MATRIX_TMPL_CONVERT_TO_SPARSE_COMPRESSED_COLUMN_DECL_H

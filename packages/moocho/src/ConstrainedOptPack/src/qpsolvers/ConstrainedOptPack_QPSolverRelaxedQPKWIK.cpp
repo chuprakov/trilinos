@@ -22,13 +22,13 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "SparseLinAlgPack/src/MatrixExtractInvCholFactor.hpp"
-#include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
-#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "SparseLinAlgPack/src/LinAlgOpPackHack.hpp"
-#include "SparseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "SparseLinAlgPack/src/sparse_bounds.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractInvCholFactor.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPackHack.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
@@ -219,7 +219,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	using LinAlgOpPack::assign;
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;
-	using SparseLinAlgPack::EtaVector;
+	using AbstractLinAlgPack::EtaVector;
 	using AbstractLinAlgPack::transVtMtV;
 	using AbstractLinAlgPack::num_bounded;
 	using ConstrainedOptimizationPack::MatrixExtractInvCholFactor;
@@ -297,7 +297,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 		VectorDenseEncap dL_de(*dL);
 		VectorDenseEncap dU_de(*dU);
 		// read iterators
-		SparseLinAlgPack::sparse_bounds_itr
+		AbstractLinAlgPack::sparse_bounds_itr
 			dLU_itr( dL_de().begin(), dL_de().end()
 					,dU_de().begin(), dU_de().end()
 					,inf );
@@ -325,7 +325,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 		VectorDenseEncap eL_de(*eL);
 		VectorDenseEncap eU_de(*eU);
 		VectorDenseEncap b_de(*b);
-		SparseLinAlgPack::sparse_bounds_itr
+		AbstractLinAlgPack::sparse_bounds_itr
 			eLU_itr( eL_de().begin(), eL_de().end()
 					,eU_de().begin(), eU_de().end()
 					,inf );
@@ -473,7 +473,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 			}
 		}
 		std::sort( gamma.begin(), gamma.end()
-			, SparseLinAlgPack::SortByDescendingAbsValue() );
+			, AbstractLinAlgPack::SortByDescendingAbsValue() );
 		// Now add the inequality constraints in decreasing order
 		const SpVector::difference_type o = gamma.offset();
 		for( SpVector::const_iterator itr = gamma.begin(); itr != gamma.end(); ++itr ) {

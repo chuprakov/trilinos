@@ -20,18 +20,18 @@
 #include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixSymPosDefCholFactor.hpp"
 #include "ConstrainedOptimizationPack/src/BFGS_helpers.hpp"
-#include "SparseLinAlgPack/src/SpVectorClass.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "SparseLinAlgPack/src/MatrixOpOut.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
-#include "SparseLinAlgPack/src/MatrixSymInitDiag.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOpOut.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymInitDiag.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 namespace ReducedSpaceSQPPack {
@@ -64,8 +64,8 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 	using rcp::ref_count_ptr;
 	using LinAlgOpPack::V_MtV;
 	using DenseLinAlgPack::dot;
-	using SparseLinAlgPack::norm_inf;
-	using SparseLinAlgPack::transVtMtV;
+	using AbstractLinAlgPack::norm_inf;
+	using AbstractLinAlgPack::transVtMtV;
 	typedef ConstrainedOptimizationPack::MatrixHessianSuperBasic MHSB_t;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();

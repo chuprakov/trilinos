@@ -217,7 +217,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 #else
 		const MatrixFactorized &Hess = dyn_cast<const MatrixFactorized>(*Hess_ptr_);
 #endif
-		SparseLinAlgPack::V_InvMtV( &wz, Hess, BLAS_Cpp::no_trans, grad );
+		AbstractLinAlgPack::V_InvMtV( &wz, Hess, BLAS_Cpp::no_trans, grad );
 		DenseLinAlgPack::Vt_S(&wz,-1.0);
 		// Zwz = Z*wz
 		LinAlgOpPack::V_MtV( &Zwz, Z_k, BLAS_Cpp::no_trans, wz );

@@ -14,8 +14,8 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/src/MatrixVarReductImplicit.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
-//#include "SparseLinAlgPack/src/dense_Vp_StPtMtV.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+//#include "AbstractLinAlgPack/src/serial/implementations/dense_Vp_StPtMtV.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
@@ -136,9 +136,9 @@ void imp_Vp_StPtMtV_by_row(
 	using BLAS_Cpp::cols;
 	using DenseLinAlgPack::dot;
 	using DenseLinAlgPack::DVectorSlice;
-	using SparseLinAlgPack::dot;
-	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::GenPermMatrixSlice;
+	using AbstractLinAlgPack::dot;
+	using AbstractLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::GenPermMatrixSlice;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
@@ -298,7 +298,7 @@ void MatrixVarReductImplicit::Vp_StMtV(
 	}
 	else {
 		if( x.nz() == x.size() ) {  // This is B.S.  Should use MatrixWithOpFactorized object for C!
-			DVectorSlice dx = SparseLinAlgPack::dense_view(x);
+			DVectorSlice dx = AbstractLinAlgPack::dense_view(x);
 			imp_Vp_StMtV_implicit( y, -a, *decomp_sys_, D_trans, dx, b );
 		}
 		else if( D_trans == BLAS_Cpp::trans && x.nz() < D_cols ) {
@@ -349,7 +349,7 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 	DenseLinAlgPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans,opD_rows);
 	DenseLinAlgPack::Vp_MtV_assert_sizes(cols(P.rows(),P.cols(),P_trans),D_rows,D_cols,D_trans,x.size());
 	if( D_dense_.rows() > 0 ) {
-		SparseLinAlgPack::dense_Vp_StPtMtV(y,a,P,P_trans,D_dense_,D_trans,x,b);
+		AbstractLinAlgPack::dense_Vp_StPtMtV(y,a,P,P_trans,D_dense_,D_trans,x,b);
 	}
 	else if( P.nz() > D_cols || D_trans == BLAS_Cpp::trans ) {
 		// Just use the default implementation
@@ -379,7 +379,7 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 	DenseLinAlgPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans,opD_rows);
 	DenseLinAlgPack::Vp_MtV_assert_sizes(cols(P.rows(),P.cols(),P_trans),D_rows,D_cols,D_trans,x.size());
 	if( D_dense_.rows() > 0 ) {
-		SparseLinAlgPack::dense_Vp_StPtMtV(y,a,P,P_trans,D_dense_,D_trans,x,b);
+		AbstractLinAlgPack::dense_Vp_StPtMtV(y,a,P,P_trans,D_dense_,D_trans,x,b);
 	}
 	else if( P.nz() > D_cols || D_trans == BLAS_Cpp::trans ) {
 		// Just use the default implementation

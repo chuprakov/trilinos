@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/MatrixSymWithOpSerial.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSymMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
@@ -25,7 +25,7 @@
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 void MatrixSymWithOpSerial::Mp_StPtMtP(
 	DMatrixSliceSym* S, value_type a
@@ -88,7 +88,7 @@ void MatrixSymWithOpSerial::Mp_StPtMtP(
 		EtaVector
 			e_i_k(i_k,n);
 		// y_k = op(P')*M*e(i(k))
-		SparseLinAlgPack::Vp_StPtMtV( &y_k, 1.0, P, trans_not(P_trans), *this, no_trans, e_i_k(), 0.0 );
+		AbstractLinAlgPack::Vp_StPtMtV( &y_k, 1.0, P, trans_not(P_trans), *this, no_trans, e_i_k(), 0.0 );
 		// S(:,j(k)) += a*y_k
 		if( S->uplo() == BLAS_Cpp::upper )
 			DenseLinAlgPack::Vp_StV( &S->gms().col(j_k)(1,j_k), a, y_k(1,j_k) );
@@ -142,4 +142,4 @@ void MatrixSymWithOpSerial::Mp_StMtMtM(
 		,beta );
 }
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 

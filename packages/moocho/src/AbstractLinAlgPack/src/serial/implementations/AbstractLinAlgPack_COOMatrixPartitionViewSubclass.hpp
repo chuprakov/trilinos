@@ -19,7 +19,7 @@
 #include "MatrixOp.hpp"
 #include "COOMatrixWithPartitionedView.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 // Could not derive this class form MatrixWithOpConcreteEncap because the assignment
 // operator is not defined for the partition class.
@@ -152,6 +152,6 @@ private:
 
 };	// end class COOMatrixPartitionViewSubclass
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// COO_MATRIX_PARTITION_VIEW_SUBCLASS_H

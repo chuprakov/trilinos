@@ -211,7 +211,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 {
 	using BLAS_Cpp::no_trans;
 	using DenseLinAlgPack::norm_inf;
-	using SparseLinAlgPack::transVtInvMtV;
+	using AbstractLinAlgPack::transVtInvMtV;
 	typedef MatrixSymAddDelUpdateable  MSADU;
 
 	assert_initialized();
@@ -676,7 +676,7 @@ void MatrixSymAddDelBunchKaufman::V_InvMtV(
 			, &DMatrixSlice(y->raw_ptr(),n,n,n,1), &WORK_() );
 	}
 	else {
-		SparseLinAlgPack::V_InvMtV( y, S_chol_, M_trans, x );
+		AbstractLinAlgPack::V_InvMtV( y, S_chol_, M_trans, x );
 	}
 }
 

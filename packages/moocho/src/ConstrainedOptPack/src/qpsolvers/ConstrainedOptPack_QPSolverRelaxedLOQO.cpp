@@ -59,12 +59,12 @@
 
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedLOQO.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixExtractInvCholFactor.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "SparseLinAlgPack/src/MatrixOp.hpp"
-#include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
-#include "SparseLinAlgPack/src/sparse_bounds.hpp"
-#include "SparseLinAlgPack/src/EtaVector.hpp"
-#include "SparseLinAlgPack/src/sparse_bounds.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
+#include "AbstractLinAlgPack/src/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
@@ -75,9 +75,9 @@ extern "C" {
 } // end extern "C"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Mp_StM;
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StV;
+	using AbstractLinAlgPack::Mp_StM;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 namespace ConstrainedOptimizationPack {
@@ -272,7 +272,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 	size_type num_inequal = 0; // The actual number of bouned general inequalities
 	if(E) {
 		// Read iterators
-		SparseLinAlgPack::sparse_bounds_itr
+		AbstractLinAlgPack::sparse_bounds_itr
 			eLU_itr( eL->begin(), eL->end(), eL->offset()
 					 , eU->begin(), eU->end(), eU->offset(), inf_bnd );
 		// written iterators

@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseLinAlgPack/src/sparse_bounds_diff.hpp"
-#include "SparseLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds_diff.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
-void SparseLinAlgPack::imp_sparse_bnd_diff(
+void AbstractLinAlgPack::imp_sparse_bnd_diff(
 	  int						sign
 	, const SpVectorSlice		&sv
 	, BLAS_Cpp::Uplo			uplo
@@ -33,8 +33,8 @@ void SparseLinAlgPack::imp_sparse_bnd_diff(
 	const value_type
 		inf = std::numeric_limits<value_type>::max();
 	*r = ( uplo == BLAS_Cpp::upper ? inf : -inf );
-	const SparseLinAlgPack::SpVectorSlice::difference_type o = sv.offset();
-	for( SparseLinAlgPack::SpVectorSlice::const_iterator itr = sv.begin();
+	const AbstractLinAlgPack::SpVectorSlice::difference_type o = sv.offset();
+	for( AbstractLinAlgPack::SpVectorSlice::const_iterator itr = sv.begin();
 			itr != sv.end(); ++itr )
 	{
 		(*r)(itr->indice() + o) = itr->value();

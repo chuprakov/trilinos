@@ -19,7 +19,7 @@
 #include "MatrixBasisNonbasis.hpp"
 #include "Miref_count_ptr.h"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** This is the interface to a basis and an nonbasis matrix.
@@ -136,6 +136,6 @@ private:
 
 };	// end class MatrixBasisNonbasisStd
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// MATRIX_BASIS_NON_BASIS_STD_H

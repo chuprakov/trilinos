@@ -16,10 +16,10 @@
 #ifndef GEN_PERM_MATRIX_SLICE_OP_H
 #define GEN_PERM_MATRIX_SLICE_OP_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 /** @name Operations for GenPermMatrixSlice.
  *
@@ -200,6 +200,6 @@ void intersection(
 
 //@}
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif   // GEN_PERM_MATRIX_SLICE_OP_H

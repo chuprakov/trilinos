@@ -16,10 +16,10 @@
 #ifndef MATRIX_CONVERT_TO_SPARSE_H
 #define MATRIX_CONVERT_TO_SPARSE_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixBase.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Mix-in interface for extracing explicit elements from a sparse matrix
@@ -308,6 +308,6 @@ public:
 
 };	// end class MatrixConvertToSparse
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 
 
 #endif	// MATRIX_CONVERT_TO_SPARSE_H

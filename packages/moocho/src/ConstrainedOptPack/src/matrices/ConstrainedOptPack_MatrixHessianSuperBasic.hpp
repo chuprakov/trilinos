@@ -19,8 +19,8 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackTypes.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "Miref_count_ptr.h"
 
 namespace ConstrainedOptimizationPack {

@@ -19,8 +19,8 @@
 #include "SymInvCholMatrixClass.hpp"
 #include "MatrixSymSecant.hpp"
 #include "MatrixExtractInvCholFactor.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOpConcreteEncap.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/MatrixWithOpConcreteEncap.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
 
 namespace ConstrainedOptimizationPack {
 

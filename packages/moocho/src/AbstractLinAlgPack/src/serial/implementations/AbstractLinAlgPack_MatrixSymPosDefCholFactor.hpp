@@ -16,7 +16,7 @@
 #ifndef MATRIX_SYM_POS_DEF_CHOL_FACTOR_H
 #define MATRIX_SYM_POS_DEF_CHOL_FACTOR_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "MatrixExtractInvCholFactor.hpp"
 #include "MatrixSymAddDelUpdateable.hpp"
 #include "MatrixSymWithOpNonsingularSerial.hpp"
@@ -28,7 +28,7 @@
 #include "ref_count_ptr.hpp"
 #include "ReleaseResource.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 ///
 /** A do all class for dense symmetric positive definite matrices
  * that stores the original matrix and/or its upper cholesky factor.
@@ -91,9 +91,9 @@ namespace SparseLinAlgPack {
  * More operations will be overridden as they are needed by various applications.
  */
 class MatrixSymPosDefCholFactor
-	: virtual public SparseLinAlgPack::MatrixSymWithOpNonsingularSerial  // doxygen needs full name
-	, virtual public SparseLinAlgPack::MatrixSymDenseInitialize          // ""
-	, virtual public SparseLinAlgPack::MatrixSymWithOpGetGMSSymMutable   // ""
+	: virtual public AbstractLinAlgPack::MatrixSymWithOpNonsingularSerial  // doxygen needs full name
+	, virtual public AbstractLinAlgPack::MatrixSymDenseInitialize          // ""
+	, virtual public AbstractLinAlgPack::MatrixSymWithOpGetGMSSymMutable   // ""
 	, virtual public MatrixExtractInvCholFactor
 	, virtual public MatrixSymSecant
 	, virtual public MatrixSymAddDelUpdateable
@@ -617,6 +617,6 @@ const DMatrixSliceSym MatrixSymPosDefCholFactor::M() const
 		);
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // MATRIX_SYM_POS_DEF_CHOL_FACTOR_H

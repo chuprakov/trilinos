@@ -17,9 +17,9 @@
 #define MATRIX_VECTOR_TEMPLATE_OP_H
 
 #include <stdexcept>
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 /** @name {\bf Templated Matrix-DVector Operations}.
   *

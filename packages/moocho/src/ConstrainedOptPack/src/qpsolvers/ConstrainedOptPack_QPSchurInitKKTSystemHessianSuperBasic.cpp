@@ -15,13 +15,13 @@
 
 #include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianSuperBasic.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 namespace ConstrainedOptimizationPack {
@@ -51,7 +51,7 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 	using DynamicCastHelperPack::dyn_cast;
 	using LinAlgOpPack::V_mV;
 	using LinAlgOpPack::V_StMtV;
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 
 	// Validate type of and convert G
 	const MatrixHessianSuperBasic

@@ -19,7 +19,7 @@
 #include "MatrixConvertToSparse.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract base class for all serial symmetric diagonal matrices with
@@ -132,6 +132,6 @@ public:
 
 };	// end class MatrixSymDiagonalSparse
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack
 
 #endif	// SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_H

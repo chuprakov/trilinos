@@ -21,7 +21,7 @@
 
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 /** @name Template operations for sparse vectors.
   *
@@ -153,6 +153,6 @@ void Vp_StMtSV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSliceSym& sy
 
 //@}
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // SPARSE_VECTOR_OP_DECL_H

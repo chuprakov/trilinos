@@ -17,7 +17,7 @@
 #define DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_H
 
 #include "SparseSolverPackTypes.hpp"
-#include "SparseLinAlgPack/src/MatrixConvertToSparse.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixConvertToSparse.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixNonsing.hpp"
 #include "ref_count_ptr.hpp"
 #include "AbstractFactory.hpp"
@@ -345,7 +345,7 @@ public:
 	 * </ul>
 	 *
 	 * This function extracts the nonzero elements from the matrix \c A (using the
-	 * \c SparseLinAlgPack::MatrixConvertToSparse interface) and then finds a nonsingular
+	 * \c AbstractLinAlgPack::MatrixConvertToSparse interface) and then finds a nonsingular
 	 * basis matrix and factors it (see intro).
 	 *
 	 * Given the <tt>m x n</tt> matrix \c A (<tt>m <= n</tt>), this method finds the
@@ -468,7 +468,7 @@ public:
 	 * </ul>
 	 */
 	virtual void analyze_and_factor(
-		const SparseLinAlgPack::MatrixConvertToSparse   &A
+		const AbstractLinAlgPack::MatrixConvertToSparse   &A
 		,DenseLinAlgPack::IVector                            *row_perm
 		,DenseLinAlgPack::IVector                            *col_perm
 		,size_type                                      *rank
@@ -560,7 +560,7 @@ public:
 	 *
 	 */
 	virtual void factor(
-		const SparseLinAlgPack::MatrixConvertToSparse   &A
+		const AbstractLinAlgPack::MatrixConvertToSparse   &A
 		,BasisMatrix                                    *basis_matrix
 		,const BasisMatrix::fact_struc_ptr_t            &fact_struc    = MemMngPack::null
 		,std::ostream                                   *out           = NULL

@@ -17,7 +17,7 @@
 
 #include <fstream>		// For debugging only
 
-#include "SparseLinAlgPack/src/MatrixSymDiagonalSparse.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDiagonalSparse.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
@@ -36,7 +36,7 @@ inline
 T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
 } // end namespace
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 MatrixSymDiagonalSparse::MatrixSymDiagonalSparse()
 	: num_updates_at_once_(0)	// Flag that it is to be determined internally.
@@ -275,4 +275,4 @@ void MatrixSymDiagonalSparse::coor_extract_nonzeros(
 	}
 }
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack

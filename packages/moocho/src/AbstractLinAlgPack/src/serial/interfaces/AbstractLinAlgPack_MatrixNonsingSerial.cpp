@@ -18,14 +18,14 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/MatrixNonsingularSerial.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOpSerial.hpp"
-#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "SparseLinAlgPack/src/VectorWithOpGetSparse.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOpGetGMSMutable.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOpGetGMSTri.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixNonsingularSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpGetSparse.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpGetGMSMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpGetGMSTri.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
@@ -33,12 +33,12 @@
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Mp_StM;
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StV;
+	using AbstractLinAlgPack::Mp_StM;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 //  Level-2 BLAS
 
@@ -94,7 +94,7 @@ value_type MatrixNonsingularSerial::transVtInvMtV(
 	DenseLinAlgPack::Vp_MtV_assert_sizes( sv_rhs1.dim(), n, n, trans_rhs2, sv_rhs3.dim() );
 	DVector tmp;
 	this->V_InvMtV( &tmp, trans_rhs2, sv_rhs3 );
-	return SparseLinAlgPack::dot( sv_rhs1, tmp() );
+	return AbstractLinAlgPack::dot( sv_rhs1, tmp() );
 }
 
 // Level-3 BLAS
@@ -128,7 +128,7 @@ void MatrixNonsingularSerial::M_StInvMtM(
 	//
 
 	for( size_type j = 1; j <= C->cols(); ++j )
-		SparseLinAlgPack::V_InvMtV( &C->col(j), *this, A_trans
+		AbstractLinAlgPack::V_InvMtV( &C->col(j), *this, A_trans
 			, DenseLinAlgPack::col( B, B_trans, j ) );
 	if( a != 1.0 )
 		LinAlgOpPack::Mt_S( C, a );
@@ -163,7 +163,7 @@ void MatrixNonsingularSerial::M_StInvMtM(
 		  BLAS_Cpp::rows( rows(), cols(), A_trans )
 		, BLAS_Cpp::cols( B.rows(), B.cols(), B_trans )
 		);
-	SparseLinAlgPack::M_StInvMtM( &(*C)(), a, *this, A_trans, B, B_trans );
+	AbstractLinAlgPack::M_StInvMtM( &(*C)(), a, *this, A_trans, B, B_trans );
 }
 
 void MatrixNonsingularSerial::M_StInvMtM(
@@ -177,7 +177,7 @@ void MatrixNonsingularSerial::M_StInvMtM(
 		, rows(), cols(), A_trans, B.rows(), B.cols(), B_trans );
 	DMatrix B_dense;
 	assign( &B_dense, B, BLAS_Cpp::no_trans );
-	SparseLinAlgPack::M_StInvMtM( C, a, *this, A_trans, B_dense(), B_trans );
+	AbstractLinAlgPack::M_StInvMtM( C, a, *this, A_trans, B_dense(), B_trans );
 }
 
 void MatrixNonsingularSerial::M_StMtInvM(
@@ -260,4 +260,4 @@ void MatrixNonsingularSerial::M_StMtInvM(
 	this->M_StMtInvM(&gms_lhs(),alpha,dyn_cast<const MatrixWithOpSerial>(mwo_rhs1),trans_rhs1,trans_rhs2);
 }
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack

@@ -16,9 +16,9 @@
 #include <stdexcept>
 #include <string>
 
-#include "SparseLinAlgPack/src/MatrixBasisNonbasisStd.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/MatrixBasisNonbasisStd.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 MatrixBasisNonbasisStd::MatrixBasisNonbasisStd()
 	: C_(NULL), C_nonsingular_(NULL), N_(NULL)
@@ -102,4 +102,4 @@ const MatrixOp& MatrixBasisNonbasisStd::N() const
 	return *N_;
 }
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 

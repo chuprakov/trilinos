@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseLinAlgPack/src/VectorSpaceFactorySerial.hpp"
-#include "SparseLinAlgPack/src/VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceFactorySerial.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorSpaceSerial.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 // Constructors / initializers
 
@@ -32,4 +32,4 @@ VectorSpaceFactorySerial::create_vec_spc(index_type dim) const
 	return MemMngPack::rcp(new VectorSpaceSerial(dim));
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack

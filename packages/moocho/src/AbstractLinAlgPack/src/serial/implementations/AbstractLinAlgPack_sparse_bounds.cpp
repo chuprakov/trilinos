@@ -19,8 +19,8 @@
 /** Count the number of sparse bounds where at least one bound is
   * finite.
   */
-SparseLinAlgPack::size_type
-SparseLinAlgPack::num_bounds( const SpVectorSlice& bl, const SpVectorSlice& bu )
+AbstractLinAlgPack::size_type
+AbstractLinAlgPack::num_bounds( const SpVectorSlice& bl, const SpVectorSlice& bu )
 {
 	SpVectorSlice::const_iterator
 		bl_itr			= bl.begin(),

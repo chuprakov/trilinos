@@ -15,10 +15,10 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/MatrixExtractSparseElements.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractSparseElements.hpp"
 #include "Range1D.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 // Overridden from MatrixConvertToSparseFortranCompatible
 
@@ -84,4 +84,4 @@ void MatrixExtractSparseElements::get_dl_du(
 }
 
 
-}	// end namespace SparseLinAlgPack 
+}	// end namespace AbstractLinAlgPack 

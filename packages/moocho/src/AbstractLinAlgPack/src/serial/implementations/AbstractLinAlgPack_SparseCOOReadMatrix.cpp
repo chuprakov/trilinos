@@ -21,15 +21,15 @@
 namespace {
 inline void assert_sep_char(char c) {
 	if(c != ':')
-		throw SparseLinAlgPack::InputException("Sparse COO matrix input stream error:  The seperator between the element, row indice and column indice must be a \':\'");
+		throw AbstractLinAlgPack::InputException("Sparse COO matrix input stream error:  The seperator between the element, row indice and column indice must be a \':\'");
 }
 inline void assert_eof(std::istream& istrm) {
 	if(istrm.eof())
-		throw SparseLinAlgPack::InputException("Sparse COO matrix input stream error:  Premature end to the input file.");
+		throw AbstractLinAlgPack::InputException("Sparse COO matrix input stream error:  Premature end to the input file.");
 }
 }
 
-void SparseLinAlgPack::read_coo_into_valarrays(std::istream& istrm, size_type& m, size_type& n, size_type& nz
+void AbstractLinAlgPack::read_coo_into_valarrays(std::istream& istrm, size_type& m, size_type& n, size_type& nz
 	, std::valarray<value_type>& a, std::valarray<indice_type>& ivect
 	, std::valarray<indice_type>& jvect)
 {

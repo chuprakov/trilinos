@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 
 namespace {
 // Setup some template classes to check at complile time that
@@ -41,21 +41,21 @@ assert_compile_time()
 };
 // Validate that there is an integer stride between values
 assert_compile_time<
-    ((int)sizeof(SparseLinAlgPack::SpVectorSlice::element_type)
+    ((int)sizeof(AbstractLinAlgPack::SpVectorSlice::element_type)
 	 % (int)sizeof(DenseLinAlgPack::value_type))
 	, double
 	>
     validate_value_stride;
 // Validate that there is an integer stride between indexes
 assert_compile_time<
-    ((int)sizeof(SparseLinAlgPack::SpVectorSlice::element_type)
+    ((int)sizeof(AbstractLinAlgPack::SpVectorSlice::element_type)
 	 % (int)sizeof(DenseLinAlgPack::index_type))
 	, double
 	>
     validate_index_stride;
 } // end namespace
 
-void SparseLinAlgPack::add_elements( SpVector* sv_lhs, value_type alpha, const DVectorSlice& vs_rhs
+void AbstractLinAlgPack::add_elements( SpVector* sv_lhs, value_type alpha, const DVectorSlice& vs_rhs
 									 , size_type offset, bool add_zeros )
 {
 	typedef SpVector::element_type ele_t;
@@ -74,7 +74,7 @@ void SparseLinAlgPack::add_elements( SpVector* sv_lhs, value_type alpha, const D
 	sv_lhs->assume_sorted(assume_sorted);
 }
 
-void SparseLinAlgPack::add_elements( SpVector* sv_lhs, value_type alpha, const SpVectorSlice& sv_rhs
+void AbstractLinAlgPack::add_elements( SpVector* sv_lhs, value_type alpha, const SpVectorSlice& sv_rhs
 									 , size_type offset, bool add_zeros )
 {
 	typedef SpVector::element_type ele_t;

@@ -20,7 +20,7 @@
 #include "COOMatrixPartitionedViewClass.hpp"
 #include "DenseLinAlgPack/src/Range1D.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Aggregation of a COO matrix and a partitioned view of it.
@@ -199,6 +199,6 @@ private:
 };	// end class COOMatrixWithPartitionedView
 
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // COO_MATRIX_WITH_PARTITIONED_VIEW_H

@@ -26,7 +26,7 @@
 #include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
-#include "SparseLinAlgPack/src/MatrixSymPosDefCholFactor.hpp"                     // rHL 
+#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"                     // rHL 
 //#include "ConstrainedOptimizationPack/src/MatrixSymPosDefInvCholFactor.hpp"		// .
 #include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"				// .
 //#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasicInitDiagonal.hpp"// | rHL (super basics)

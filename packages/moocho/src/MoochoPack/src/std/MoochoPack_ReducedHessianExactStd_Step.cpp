@@ -19,11 +19,11 @@
 
 #include "ReducedSpaceSQPPack/src/std/ReducedHessianExactStd_Step.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
-#include "SparseLinAlgPack/src/MatrixSymDenseInitialize.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDenseInitialize.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
 #include "NLPInterfacePack/src/NLPSecondOrderInfo.hpp"
-#include "SparseLinAlgPack/src/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
@@ -40,9 +40,9 @@ bool ReducedHessianExactStd_Step::do_step(
 {
 	using DynamicCastHelperPack::dyn_cast;
 	using DenseLinAlgPack::nonconst_sym;
-	using SparseLinAlgPack::Mp_StMtMtM;
-	typedef SparseLinAlgPack::MatrixSymDenseInitialize	MatrixSymDenseInitialize;
-	typedef SparseLinAlgPack::MatrixSymOp			MatrixSymOp;
+	using AbstractLinAlgPack::Mp_StMtMtM;
+	typedef AbstractLinAlgPack::MatrixSymDenseInitialize	MatrixSymDenseInitialize;
+	typedef AbstractLinAlgPack::MatrixSymOp			MatrixSymOp;
 	using ConstrainedOptimizationPack::NLPSecondOrderInfo;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);

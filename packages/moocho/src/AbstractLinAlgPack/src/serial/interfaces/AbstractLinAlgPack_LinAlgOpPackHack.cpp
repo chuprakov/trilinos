@@ -14,10 +14,10 @@
 // above mentioned "Artistic License" for more details.
 //
 
-#include "SparseLinAlgPack/src/LinAlgOpPackHack.hpp"
-#include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
-#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOpGetGMS.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/LinAlgOpPackHack.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpGetGMS.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
@@ -32,9 +32,9 @@ void LinAlgOpPack::Mp_StM(
 	)
 {
 	using AbstractLinAlgPack::VectorSpace;
-	using SparseLinAlgPack::VectorDenseEncap;
-	using SparseLinAlgPack::MatrixWithOpGetGMS;
-	using SparseLinAlgPack::MatrixDenseEncap;
+	using AbstractLinAlgPack::VectorDenseEncap;
+	using AbstractLinAlgPack::MatrixWithOpGetGMS;
+	using AbstractLinAlgPack::MatrixDenseEncap;
 	const MatrixWithOpGetGMS
 		*B_get_gms = dynamic_cast<const MatrixWithOpGetGMS*>(&B);
 	if(B_get_gms) {
@@ -59,7 +59,7 @@ void LinAlgOpPack::Vp_StMtV(
 	)
 {
 	using BLAS_Cpp::no_trans;
-	using SparseLinAlgPack::VectorDenseMutableEncap;
+	using AbstractLinAlgPack::VectorDenseMutableEncap;
 	VectorSpace::vec_mut_ptr_t
 		ay = ( M_trans == no_trans ? M.space_cols() : M.space_rows() ).create_member(),
 		ax = ( M_trans == no_trans ? M.space_rows() : M.space_cols() ).create_member();
@@ -75,7 +75,7 @@ void LinAlgOpPack::Vp_StMtV(
 	)
 {
 	using BLAS_Cpp::no_trans;
-	using SparseLinAlgPack::VectorDenseMutableEncap;
+	using AbstractLinAlgPack::VectorDenseMutableEncap;
 	VectorSpace::vec_mut_ptr_t
 		ay = ( M_trans == no_trans ? M.space_cols() : M.space_rows() ).create_member();
 	(VectorDenseMutableEncap(*ay))() = *y;
@@ -89,7 +89,7 @@ void LinAlgOpPack::V_InvMtV(
 	)
 {
 	using BLAS_Cpp::trans;
-	using SparseLinAlgPack::VectorDenseMutableEncap;
+	using AbstractLinAlgPack::VectorDenseMutableEncap;
 	VectorSpace::vec_mut_ptr_t
 		ay = ( M_trans == trans ? M.space_cols() : M.space_rows() ).create_member(),
 		ax = ( M_trans == trans ? M.space_rows() : M.space_cols() ).create_member();
@@ -105,7 +105,7 @@ void LinAlgOpPack::V_InvMtV(
 	)
 {
 	using BLAS_Cpp::trans;
-	using SparseLinAlgPack::VectorDenseMutableEncap;
+	using AbstractLinAlgPack::VectorDenseMutableEncap;
 	VectorSpace::vec_mut_ptr_t
 		ay = ( M_trans == trans ? M.space_cols() : M.space_rows() ).create_member(),
 		ax = ( M_trans == trans ? M.space_rows() : M.space_cols() ).create_member();
@@ -120,7 +120,7 @@ void LinAlgOpPack::V_InvMtV(
 	)
 {
 	using BLAS_Cpp::trans;
-	using SparseLinAlgPack::VectorDenseMutableEncap;
+	using AbstractLinAlgPack::VectorDenseMutableEncap;
 	VectorSpace::vec_mut_ptr_t
 		ay = ( M_trans == trans ? M.space_cols() : M.space_rows() ).create_member();
 	AbstractLinAlgPack::V_InvMtV( ay.get(), M, M_trans, x );
@@ -151,8 +151,8 @@ void LinAlgOpPack::Vp_StPtMtV(
 {
 	namespace mmp = MemMngPack;
 	using BLAS_Cpp::no_trans;
-	using SparseLinAlgPack::VectorWithOpMutableDense;
-	using SparseLinAlgPack::VectorDenseMutableEncap;
+	using AbstractLinAlgPack::VectorWithOpMutableDense;
+	using AbstractLinAlgPack::VectorDenseMutableEncap;
 	using AbstractLinAlgPack::Vp_StPtMtV;
 	VectorSpace::space_ptr_t
 		ay_space = ( M_trans == no_trans ? M.space_cols() : M.space_rows() ).space(P,P_trans);
@@ -177,8 +177,8 @@ void LinAlgOpPack::Vp_StPtMtV(
 	)
 {
 	using BLAS_Cpp::no_trans;
-	using SparseLinAlgPack::VectorWithOpMutableDense;
-	using SparseLinAlgPack::VectorDenseMutableEncap;
+	using AbstractLinAlgPack::VectorWithOpMutableDense;
+	using AbstractLinAlgPack::VectorDenseMutableEncap;
 	using AbstractLinAlgPack::Vp_StPtMtV;
 	VectorSpace::vec_mut_ptr_t
 		ay = ( M_trans == no_trans ? M.space_cols() : M.space_rows() ).space(P,P_trans)->create_member();

@@ -18,12 +18,12 @@
 
 #include <vector>
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Default subclass for <tt>MultiVectorMutable</tt> implemented using columns
@@ -174,6 +174,6 @@ private:
 	
 }; // end class MultiVectorMutableCols
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // SLAP_MULTI_VECTOR_MUTABLE_COlS_H

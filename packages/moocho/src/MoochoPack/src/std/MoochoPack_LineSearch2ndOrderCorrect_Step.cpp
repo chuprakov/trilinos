@@ -25,16 +25,16 @@
 #include "ConstrainedOptimizationPack/src/MeritFuncCalcNLE.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncNLESqrResid.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
-#include "SparseLinAlgPack/src/MatrixOp.hpp"
-#include "SparseLinAlgPack/src/SpVectorClass.hpp"
-#include "SparseLinAlgPack/src/max_near_feas_step.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/max_near_feas_step.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/DVectorOut.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 namespace ReducedSpaceSQPPack {
@@ -89,7 +89,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_MtV;
 
-	using SparseLinAlgPack::max_near_feas_step;
+	using AbstractLinAlgPack::max_near_feas_step;
 
 	using ConstrainedOptimizationPack::print_vector_change_stats;
 

@@ -18,9 +18,9 @@
 
 #include <ostream>
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Output stream function for COOMatrix.
@@ -39,6 +39,6 @@ namespace SparseLinAlgPack {
   */
 std::ostream& output(std::ostream& o, const COOMatrix& coom);
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // COO_MATRIX_OUT_FUNC_H

@@ -19,11 +19,11 @@
 
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPOPTSOL.hpp"
 #include "ConstrainedOptimizationPack/src/MatrixExtractInvCholFactor.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "SparseLinAlgPack/src/MatrixOp.hpp"
-#include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
-#include "SparseLinAlgPack/src/sparse_bounds.hpp"
-#include "SparseLinAlgPack/src/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
+#include "AbstractLinAlgPack/src/EtaVector.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "Miprofile_hack.h"
@@ -76,9 +76,9 @@
 //
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Mp_StM;
-	using SparseLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StV;
+	using AbstractLinAlgPack::Mp_StM;
+	using AbstractLinAlgPack::Vp_StMtV;
 }
 
 // ///////////////////////////////////////
@@ -153,7 +153,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 	N_ = n + 1; // With relaxation
 
 	// NCLIN
-	n_inequ_bnds_ = E ? SparseLinAlgPack::num_bounds(*eL,*eU) : 0;
+	n_inequ_bnds_ = E ? AbstractLinAlgPack::num_bounds(*eL,*eU) : 0;
 	NCLIN_ = n_inequ_bnds_ + (F ? f->size() : 0);
 
 	// A, BL, BU
@@ -176,7 +176,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 			// Initialize BL, BU, and A for sparse bounds on general inequalities
 			//
 			// read iterators
-			SparseLinAlgPack::sparse_bounds_itr
+			AbstractLinAlgPack::sparse_bounds_itr
 				eLU_itr( eL->begin(), eL->end(), eL->offset()
 						 , eU->begin(), eU->end(), eU->offset(), inf_bnd );
 			// written iterators
@@ -196,7 +196,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 				// y == A.row(i)
 				// y(1,n) = op(E')*e_k
 				DVectorSlice y = A_.row(i);
-				SparseLinAlgPack::EtaVector e_k(k,eL->size());
+				AbstractLinAlgPack::EtaVector e_k(k,eL->size());
 				LinAlgOpPack::V_MtV( &y(1,n), *E, BLAS_Cpp::trans_not(trans_E), e_k() ); // op(E')*e_k
 				// y(n+1) = -b(k)
 				y(n+1) = -(*b)(k);
@@ -207,7 +207,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 			//
 			// Initialize BL(N+1:N+n_inequ_bnds), BU(N+1:N+n_inequ_bnds)
 			// and i_inequ_bnds_ = identity (only for my record, not used by QPKWIK)
-			SparseLinAlgPack::sparse_bounds_itr
+			AbstractLinAlgPack::sparse_bounds_itr
 				eLU_itr( eL->begin(), eL->end(), eL->offset()
 						 , eU->begin(), eU->end(), eU->offset(), inf_bnd );
 			DVector::iterator

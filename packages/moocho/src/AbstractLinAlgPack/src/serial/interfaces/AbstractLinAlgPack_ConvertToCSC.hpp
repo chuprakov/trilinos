@@ -16,7 +16,7 @@
 #ifndef CONVERT_TO_SPARSE_COMPRESSED_COLUMN_H
 #define CONVERT_TO_SPARSE_COMPRESSED_COLUMN_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"
 
 /** @name Conversion utilites / interfaces for a Fortran compatable sparse compressed column matrix format.
@@ -63,7 +63,7 @@
   */
 //@{
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract interface for inserting a matrix into
@@ -242,7 +242,7 @@ value_type insert_scaled_nonzeros(
 
 }	// end namespace ConvertToSparseCompressedColumnPack
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack
 
 //	end Conversion utilities
 //@}

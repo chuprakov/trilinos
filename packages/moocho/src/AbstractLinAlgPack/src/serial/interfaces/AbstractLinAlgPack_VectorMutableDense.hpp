@@ -22,7 +22,7 @@
 #include "ref_count_ptr.hpp"
 #include "ReleaseResource.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** DVector "Adaptor" subclass for <tt>DenseLinAlgPack::DVectorSlice</tt>
@@ -247,6 +247,6 @@ VectorWithOpMutableDense::vec_release() const
 	return v_release_;
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // VECTOR_WITH_OP_MUTABLE_DENSE_H

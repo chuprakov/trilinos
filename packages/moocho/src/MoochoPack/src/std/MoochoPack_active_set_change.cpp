@@ -19,7 +19,7 @@
 #include <ostream>
 
 #include "../std/active_set_change.hpp"
-#include "SparseLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 
 void ReducedSpaceSQPPack::active_set_change(
 	const SpVectorSlice& nu_k, const SpVectorSlice& nu_km1, Range1D indep

@@ -17,9 +17,9 @@
 #include <iomanip>
 
 #include "ReducedSpaceSQPPack/src/std/PBFGS_helpers.hpp"
-#include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
-#include "SparseLinAlgPack/src/SpVectorClass.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "MiWorkspacePack.h"
 
 namespace ReducedSpaceSQPPack {
@@ -141,7 +141,7 @@ void PBFGSPack::sort_fixed_max_cond_viol(
 	// Sort this sparse vector in decending order
 	std::sort(
 		&sort_array[0], &sort_array[0] + sort_array.size()
-		, SparseLinAlgPack::SortByDescendingAbsValue()
+		, AbstractLinAlgPack::SortByDescendingAbsValue()
 		);
 	// Extract this ordering
 	{
@@ -174,7 +174,7 @@ void PBFGSPack::choose_fixed_free(
 	using std::setw;
 	using std::endl;
 	using std::right;
-	using SparseLinAlgPack::norm_inf;
+	using AbstractLinAlgPack::norm_inf;
 	namespace COP = ConstrainedOptimizationPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();

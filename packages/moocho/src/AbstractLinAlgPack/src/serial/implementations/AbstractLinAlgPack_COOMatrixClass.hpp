@@ -19,10 +19,10 @@
 #include <valarray>
 #include <vector>
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "MiRefCount.h"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Sparse Coordinate Matrix abstraction storage class.
@@ -44,11 +44,11 @@ public:
 	/** @name {\bf Public Typedefs} */
 	//@{
 	///
-	typedef	SparseLinAlgPack::size_type					size_type;
+	typedef	AbstractLinAlgPack::size_type					size_type;
 	///
-	typedef	SparseLinAlgPack::indice_type				indice_type;
+	typedef	AbstractLinAlgPack::indice_type				indice_type;
 	///
-	typedef SparseLinAlgPack::value_type				value_type;
+	typedef AbstractLinAlgPack::value_type				value_type;
 
 	//@}
 
@@ -214,6 +214,6 @@ inline const COOMatrix::indice_type* COOMatrix::const_jvect() const {
 	return &const_cast<va_indice_type&>(jvect_ref_.const_obj())[0];
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // COO_MATRIX_CLASS_H

@@ -17,14 +17,14 @@
 
 #include <typeinfo>
 
-#include "SparseLinAlgPack/src/MatrixWithOpSerial.hpp"
-#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "SparseLinAlgPack/src/VectorWithOpGetSparse.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOpGetGMSMutable.hpp"
-#include "SparseLinAlgPack/src/MatrixWithOpGetGMSTri.hpp"
-#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorWithOpGetSparse.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpGetGMSMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixWithOpGetGMSTri.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
@@ -35,12 +35,12 @@
 #include "dynamic_cast_verbose.hpp"
 
 namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::Mp_StM;
+	using AbstractLinAlgPack::Vp_StV;
+	using AbstractLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Mp_StM;
 }
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 // Level-1 BLAS
 
@@ -106,7 +106,7 @@ void MatrixWithOpSerial::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha
 	else {
 		// Convert to dense by default.
 		if( sv_rhs2.dim() == sv_rhs2.nz() && sv_rhs2.is_sorted() ) {
-			const DVectorSlice vs_rhs2 = SparseLinAlgPack::dense_view(sv_rhs2);
+			const DVectorSlice vs_rhs2 = AbstractLinAlgPack::dense_view(sv_rhs2);
 			this->Vp_StMtV( vs_lhs, alpha, trans_rhs1, vs_rhs2, beta );
 		}
 		else {
@@ -163,12 +163,12 @@ value_type MatrixWithOpSerial::transVtMtV(const SpVectorSlice& x1
 	}
 	else {
 		if( x1.overlap(x2) == DenseLinAlgPack::SAME_MEM && x1.dim() == x1.nz() && x1.is_sorted()  ) {
-			const DVectorSlice x1_d = SparseLinAlgPack::dense_view(x1);
+			const DVectorSlice x1_d = AbstractLinAlgPack::dense_view(x1);
 			return this->transVtMtV( x1_d, M_trans, x1_d );
 		}
 		DVector tmp(x1.dim());
 		this->Vp_StMtV( &tmp(), 1.0, M_trans, x2, 0.0 );
-		return SparseLinAlgPack::dot( x1, tmp() );
+		return AbstractLinAlgPack::dot( x1, tmp() );
 	}
 }
 
@@ -253,7 +253,7 @@ void MatrixWithOpSerial::syr2k(
 		EtaVector
 			e_i_k(i_k,n);
 		// y_k = op(P2')*op(M')*e(i(k))
-		SparseLinAlgPack::Vp_StPtMtV( &y_k, 1.0, P2, trans_not(P2_trans), *this, trans_not(M_trans), e_i_k(), 0.0 );
+		AbstractLinAlgPack::Vp_StPtMtV( &y_k, 1.0, P2, trans_not(P2_trans), *this, trans_not(M_trans), e_i_k(), 0.0 );
 		// S(j(k),:) += a*y_k'
 		if( S->uplo() == BLAS_Cpp::upper )
 			DenseLinAlgPack::Vp_StV( &S->gms().row(j_k)(1,j_k), a, y_k(1,j_k) );
@@ -284,7 +284,7 @@ void MatrixWithOpSerial::Mp_StMtM(DMatrixSlice* C, value_type a
 	// ToDo: Add the ability to also perform by row if faster
 
 	for( size_type j = 1; j <= C->cols(); ++j )
-		SparseLinAlgPack::Vp_StMtV( &C->col(j), a, *this, A_trans, DenseLinAlgPack::col( B, B_trans, j ), b );
+		AbstractLinAlgPack::Vp_StMtV( &C->col(j), a, *this, A_trans, DenseLinAlgPack::col( B, B_trans, j ), b );
 }
 
 void MatrixWithOpSerial::Mp_StMtM(DMatrixSlice* C, value_type a, const DMatrixSlice& A
@@ -301,7 +301,7 @@ void MatrixWithOpSerial::Mp_StMtM(DMatrixSlice* C, value_type a, const DMatrixSl
 	// ToDo: Add the ability to also perform by column if faster
 
 	for( size_type i = 1; i <= C->rows(); ++i )
-		SparseLinAlgPack::Vp_StMtV( &C->row(i), a, *this, BLAS_Cpp::trans_not(A_trans)
+		AbstractLinAlgPack::Vp_StMtV( &C->row(i), a, *this, BLAS_Cpp::trans_not(A_trans)
 			, DenseLinAlgPack::row(A,A_trans,i) , b );
 }
 
@@ -320,12 +320,12 @@ void MatrixWithOpSerial::Mp_StMtM(DMatrixSlice* C, value_type a
 	if( size_A < size_B ) {
 		DMatrix A_dense;
 		assign( &A_dense, *this, BLAS_Cpp::no_trans );
-		SparseLinAlgPack::Mp_StMtM( C, a, A_dense(), A_trans, B, B_trans, b );
+		AbstractLinAlgPack::Mp_StMtM( C, a, A_dense(), A_trans, B, B_trans, b );
 	}
 	else {
 		DMatrix B_dense;
 		assign( &B_dense, B, BLAS_Cpp::no_trans );
-		SparseLinAlgPack::Mp_StMtM( C, a, *this, A_trans, B_dense(), B_trans, b );
+		AbstractLinAlgPack::Mp_StMtM( C, a, *this, A_trans, B_dense(), B_trans, b );
 	}
 }
 
@@ -608,4 +608,4 @@ bool MatrixWithOpSerial::syrk(
 	return true;
 }
 
-}	// end namespace SparseLinAlgPack
+}	// end namespace AbstractLinAlgPack

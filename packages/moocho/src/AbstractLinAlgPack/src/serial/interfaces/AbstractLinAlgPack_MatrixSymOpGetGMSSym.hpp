@@ -16,12 +16,12 @@
 #ifndef MATRIX_SYM_WITH_OP_GET_GMS_SYM_H
 #define MATRIX_SYM_WITH_OP_GET_GMS_SYM_H
 
-#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "dynamic_cast_verbose.hpp"
 
-namespace SparseLinAlgPack {
+namespace AbstractLinAlgPack {
 
 ///
 /** Abstract interface that allows the extraction of a const <tt>DenseLinAlgPack::DMatrixSliceSym</tt>
@@ -158,6 +158,6 @@ const DenseLinAlgPack::DMatrixSliceSym MatrixDenseSymEncap::operator()() const
 	return sym_gms_view_;
 }
 
-} // end namespace SparseLinAlgPack
+} // end namespace AbstractLinAlgPack
 
 #endif // MATRIX_SYM_WITH_OP_GET_GMS_SYM_H

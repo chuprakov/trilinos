@@ -121,7 +121,7 @@ public:
 	const MatrixSymOpNonsing& G() const;
 
 	///
-	const SparseLinAlgPack::MatrixSymDiagStd& M() const;
+	const AbstractLinAlgPack::MatrixSymDiagStd& M() const;
 
 	//@}
 	

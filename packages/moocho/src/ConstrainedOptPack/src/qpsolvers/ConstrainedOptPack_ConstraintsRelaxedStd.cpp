@@ -25,12 +25,12 @@
 #include <limits>
 
 #include "ConstrainedOptimizationPack/src/ConstraintsRelaxedStd.hpp"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
@@ -57,11 +57,11 @@ convert_bnd_type( int bnd_type )
 
 // Get an element from a sparse vector and return zero if it does not exist
 DenseLinAlgPack::value_type get_sparse_element(
-	const SparseLinAlgPack::SpVectorSlice& v
+	const AbstractLinAlgPack::SpVectorSlice& v
 	,DenseLinAlgPack::size_type i
 	)
 {
-	const SparseLinAlgPack::SpVectorSlice::element_type
+	const AbstractLinAlgPack::SpVectorSlice::element_type
 		*ele_ptr = v.lookup_element(i);
 	return ele_ptr ? ele_ptr->value() : 0.0;
 }
@@ -331,7 +331,7 @@ void ConstraintsRelaxedStd::pick_violated(
 					A_bar_.m_eq(),1,1,0,0,GPMSIP::BY_ROW_AND_COL
 					,&(e_k_mat_row=k),&e_k_mat_col,false );
 				DVectorSlice Fd_k_vec(&Fd_k,1);
-				SparseLinAlgPack::Vp_StPtMtV(   // ToDo: Use transVtMtV(...) instead!
+				AbstractLinAlgPack::Vp_StPtMtV(   // ToDo: Use transVtMtV(...) instead!
 					&Fd_k_vec, 1.0, e_k_mat, BLAS_Cpp::trans
 					,*A_bar_.F(), A_bar_.trans_F(), d, 0.0 );
 				const value_type
@@ -690,10 +690,10 @@ void ConstraintsRelaxedStd::MatrixConstraints::Mp_StPtMtP(
 	)const
 {
 	using BLAS_Cpp::trans_not;
-	using SparseLinAlgPack::dot;
-	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::Vp_StPtMtV;
-	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+	using AbstractLinAlgPack::dot;
+	using AbstractLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StPtMtV;
+	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 	//	
 	//	A_bar = [  I   0  op(E')   op(F')  ]
@@ -880,9 +880,9 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using BLAS_Cpp::trans_not;
- 	using SparseLinAlgPack::dot;
-	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::Vp_StPtMtV;
+ 	using AbstractLinAlgPack::dot;
+	using AbstractLinAlgPack::Vp_StMtV;
+	using AbstractLinAlgPack::Vp_StPtMtV;
 	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 
 	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans
