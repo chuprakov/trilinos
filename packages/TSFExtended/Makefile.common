@@ -92,6 +92,9 @@ AZTECOO_INCLUDES = \
 TEUCHOS_INCLUDES = \
 -I$(top_srcdir)/../teuchos/src -I$(top_builddir)/../teuchos/src
 
+IFPACK_INCLUDES = \
+-I$(top_srcdir)/../ifpack/src -I$(top_builddir)/../ifpack/src
+
 
 TSF_EXTENDED_LIBS = $(top_builddir)/src/libTSFExtended.a
 
@@ -104,6 +107,9 @@ TEUCHOS_LIBS = \
 
 EPETRA_LIBS = \
 	$(top_builddir)/../epetra/src/libepetra.a
+
+IFPACK_LIBS = \
+	$(top_builddir)/../ifpack/src/libifpack.a
 
 
 AZTECOO_LIBS = \
