@@ -11,6 +11,15 @@
 using namespace TSF;
 
 
+TSFLinearSolverBase::TSFLinearSolverBase(const TSFParameterList& params)
+  : verbosity_(1), params_(defaultParameters().overrideWith(params))
+{;}
+
 TSFLinearSolverBase::~TSFLinearSolverBase()
 {;}
+
+TSFParameterList TSFLinearSolverBase::defaultParameters() const 
+{
+  return TSFParameterList("Empty");
+}
 

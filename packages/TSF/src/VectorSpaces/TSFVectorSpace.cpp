@@ -82,9 +82,9 @@ TSFVectorSpace TSFVectorSpace::getBlock(int i) const
 }
 
 
-ostream& TSFVectorSpace::print(ostream& os) const 
+void TSFVectorSpace::print(ostream& os) const 
 {
-	return ptr_->print(os);
+	ptr_->print(os);
 }
 
 void TSFVectorSpace::describe() const

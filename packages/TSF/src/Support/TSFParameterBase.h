@@ -5,288 +5,312 @@
 #include <string>
 #include "TSFArray.h"
 
-namespace TSF 
+namespace TSF
 {
 
-	using namespace std;
-	/** 
-	 *	TSFParameterImplem:  low-level implementation of TSF parameter class.
-	 */
-	class TSFParameterBase
-		{
-		public:
-			/** construct with a label */
-			TSFParameterBase(const string& label);
-
-			/** virtual dtor */
-			virtual ~TSFParameterBase(){}
+  using namespace std;
+  /**
+   *  TSFParameterImplem:  low-level implementation of TSF parameter class.
+   */
+  class TSFParameterBase
+    {
+    public:
+      /** construct with a label */
+      TSFParameterBase(const string& label);
 
-			/** set character value */
-			virtual void set(char parameter);
+      /** virtual dtor */
+      virtual ~TSFParameterBase(){}
 
-			/** set string value */
-			virtual void set(const string& parameter);
+      /** set character value */
+      virtual void set(char parameter);
 
-			/** set integer value */
-			virtual void set(int parameterImplem);
+      /** set string value */
+      virtual void set(const string& parameter);
 
-			/** set int array value */
-			virtual void set(const TSFArray<int>& parameter);
+      /** set integer value */
+      virtual void set(int parameterImplem);
 
-			/** set double value */
-			virtual void set(double parameter);
+      /** set int array value */
+      virtual void set(const TSFArray<int>& parameter);
 
-			/** set double array value */
-			virtual void set(const TSFArray<double>& parameter);
-
-			/** True if parameter is character */
-			virtual bool isChar() const {return false;}
-			/** True if parameter is character string */
-			virtual bool isCharString() const {return false;}
-			/** True if parameter is integer */
-			virtual bool isInt() const {return false;}
-			/** True if parameter is integer array */
-			virtual bool isIntArray() const {return false;}
-			/** True if parameter is double */
-			virtual bool isDouble() const {return false;}
-			/** True if parameter is double array */
-			virtual bool isDoubleArray() const {return false;}
+      /** set double value */
+      virtual void set(double parameter);
 
-			/** Return character parameter. */
-			virtual char getChar() const ;
+      /** set double array value */
+      virtual void set(const TSFArray<double>& parameter);
 
-			/** Return character string parameter. */
-			virtual string getCharString() const ;
+      /** True if parameter is character */
+      virtual bool isChar() const {return false;}
+      /** True if parameter is character string */
+      virtual bool isCharString() const {return false;}
+      /** True if parameter is integer */
+      virtual bool isInt() const {return false;}
+      /** True if parameter is integer array */
+      virtual bool isIntArray() const {return false;}
+      /** True if parameter is double */
+      virtual bool isDouble() const {return false;}
+      /** True if parameter is double array */
+      virtual bool isDoubleArray() const {return false;}
 
-			/** Return integer parameter. */
-			virtual int  getInt() const ;
+      /** Return character parameter. */
+      virtual char getChar() const ;
 
-			/** Return integer array parameter. */
-			virtual TSFArray<int>  getIntArray() const ;
+      /** Return character string parameter. */
+      virtual string getCharString() const ;
 
-			/** Return double parameter. */
-			virtual double getDouble() const ;
+      /** Return integer parameter. */
+      virtual int  getInt() const ;
 
-			/** Return double array parameter. */
-			virtual TSFArray<double> getDoubleArray() const ;
+      /** Return integer array parameter. */
+      virtual TSFArray<int>  getIntArray() const ;
 
+      /** Return double parameter. */
+      virtual double getDouble() const ;
 
-			/** Returns the label associated with this parameterImplem.  A label is 
-			 * a description of the parameterImplem, used
-			 * both to describe the variable and identify it to any 
-			 * prospective Trilinos solver component.
-			 */
-			const string& getLabel() const {return label_;}
+      /** Return double array parameter. */
+      virtual TSFArray<double> getDoubleArray() const ;
 
-			/** return a string indicating the type */
-			virtual string type() const = 0 ;
+      /** Return string representation of value */
+      virtual string getValueString() const = 0 ;
 
-			/** virtual copy ctor */
-			virtual TSFParameterBase* clone() const = 0 ;
-		protected:
-			/** report a call to a get method with a mismatched type */
-			void typeAccessError(const string& wrongType) const ;
 
-			/** report a call to a set method with a mismatched type */
-			void typeChangeError(const string& wrongType) const ;
+      /** Returns the label associated with this parameterImplem.  A label is
+       * a description of the parameterImplem, used
+       * both to describe the variable and identify it to any
+       * prospective Trilinos solver component.
+       */
+      const string& getLabel() const {return label_;}
 
-			/* the label */
-			string label_;
+      /** return a string indicating the type */
+      virtual string type() const = 0 ;
 
-		};
+      /** virtual copy ctor */
+      virtual TSFParameterBase* clone() const = 0 ;
 
-	
+    protected:
+      /** report a call to a get method with a mismatched type */
+      void typeAccessError(const string& wrongType) const ;
 
-	/** \ingroup Support 
-	 * Character parameter type
-	 */
-	class TSFCharParameter : public TSFParameterBase
-		{
-		public:
-			/** construct with a label and value */
-			TSFCharParameter(const string& label, char value);
+      /** report a call to a set method with a mismatched type */
+      void typeChangeError(const string& wrongType) const ;
 
-			/** virtual dtor */
-			virtual ~TSFCharParameter(){;}
+      /* the label */
+      string label_;
 
-			/** set the value */
-			virtual void set(char value) {value_ = value;}
+    };
 
-			/** inform the world that I am a character */
-			virtual bool isChar() const {return true;}
 
-			/** return my value */
-			virtual char getChar() const {return value_;}
 
-			/** return type name */
-			virtual string type() const {return "char";}
 
-			/** virtual copy ctor */
-			virtual TSFParameterBase* clone() const {return new TSFCharParameter(*this);}
 
-		private:
-			char value_;
-		};
+  /** \ingroup Support
+   * Character parameter type
+   */
+  class TSFCharParameter : public TSFParameterBase
+    {
+    public:
+      /** construct with a label and value */
+      TSFCharParameter(const string& label, char value);
 
-	
+      /** virtual dtor */
+      virtual ~TSFCharParameter(){;}
 
-	/** \ingroup Support 
-	 * Character string parameter type
-	 */
-	class TSFCharStringParameter : public TSFParameterBase
-		{
-		public:
-			/** construct with a label and value */
-			TSFCharStringParameter(const string& label, const string& value);
+      /** set the value */
+      virtual void set(char value) {value_ = value;}
 
-			/** virtual dtor */
-			virtual ~TSFCharStringParameter(){;}
+      /** inform the world that I am a character */
+      virtual bool isChar() const {return true;}
 
-			/** set the value */
-			virtual void set(const string& value) {value_ = value;}
+      /** return my value */
+      virtual char getChar() const {return value_;}
 
-			/** inform the world that I am a character string */
-			virtual bool isCharString() const {return true;}
+      /** return type name */
+      virtual string type() const {return "char";}
 
-			/** return my value */
-			virtual string getCharString() const {return value_;}
+      /** Return string representation of value */
+      virtual string getValueString() const {return string(1, value_);}
 
-			/** return type name */
-			virtual string type() const {return "char string";}
+      /** virtual copy ctor */
+      virtual TSFParameterBase* clone() const {return new TSFCharParameter(*this);}
 
-			/** virtual copy ctor */
-			virtual TSFParameterBase* clone() const {return new TSFCharStringParameter(*this);}
+    private:
+      char value_;
+    };
 
-		private:
-			string value_;
-		};
 
 
-	/** \ingroup Support 
-	 * Integer parameter type
-	 */
-	class TSFIntParameter : public TSFParameterBase
-		{
-		public:
-			/** construct with a label and value */
-			TSFIntParameter(const string& label, int value);
+  /** \ingroup Support
+   * Character string parameter type
+   */
+  class TSFCharStringParameter : public TSFParameterBase
+    {
+    public:
+      /** construct with a label and value */
+      TSFCharStringParameter(const string& label, const string& value);
 
-			/** virtual dtor */
-			virtual ~TSFIntParameter(){;}
+      /** virtual dtor */
+      virtual ~TSFCharStringParameter(){;}
 
-			/** set the value */
-			virtual void set(int value) {value_ = value;}
+      /** set the value */
+      virtual void set(const string& value) {value_ = value;}
 
-			/** inform the world that I am an integer */
-			virtual bool isInt() const {return true;}
+      /** inform the world that I am a character string */
+      virtual bool isCharString() const {return true;}
 
-			/** return my value */
-			virtual int getInt() const {return value_;}
+      /** return my value */
+      virtual string getCharString() const {return value_;}
 
-			/** return type name */
-			virtual string type() const {return "int";}
+      /** return type name */
+      virtual string type() const {return "char string";}
 
-			/** virtual copy ctor */
-			virtual TSFParameterBase* clone() const {return new TSFIntParameter(*this);}
+      /** Return string representation of value */
+      virtual string getValueString() const {return value_;}
 
-		private:
-			int value_;
-		};
+      /** virtual copy ctor */
+      virtual TSFParameterBase* clone() const {return new TSFCharStringParameter(*this);}
 
-	
-	/** \ingroup Support 
-	 * Integer array parameter type
-	 */
-	class TSFIntArrayParameter : public TSFParameterBase
-		{
-		public:
-			/** construct with a label and value */
-			TSFIntArrayParameter(const string& label, const TSFArray<int>& value);
+    private:
+      string value_;
+    };
 
-			/** virtual dtor */
-			virtual ~TSFIntArrayParameter(){;}
 
-			/** set the value */
-			virtual void set(const TSFArray<int>& value) {value_ = value;}
+  /** \ingroup Support
+   * Integer parameter type
+   */
+  class TSFIntParameter : public TSFParameterBase
+    {
+    public:
+      /** construct with a label and value */
+      TSFIntParameter(const string& label, int value);
 
-			/** inform the world that I am an integer array */
-			virtual bool isIntArray() const {return true;}
+      /** virtual dtor */
+      virtual ~TSFIntParameter(){;}
 
-			/** return my value */
-			virtual TSFArray<int> getIntArray() const {return value_;}
+      /** set the value */
+      virtual void set(int value) {value_ = value;}
 
-			/** return type name */
-			virtual string type() const {return "int array";}
+      /** inform the world that I am an integer */
+      virtual bool isInt() const {return true;}
 
-			/** virtual copy ctor */
-			virtual TSFParameterBase* clone() const {return new TSFIntArrayParameter(*this);}
+      /** return my value */
+      virtual int getInt() const {return value_;}
 
-		private:
-			TSFArray<int> value_;
-		};
+      /** return type name */
+      virtual string type() const {return "int";}
 
+      /** Return string representation of value */
+      virtual string getValueString() const {return TSF::toString(value_);}
 
-	/** \ingroup Support 
-	 * Double parameter type
-	 */
-	class TSFDoubleParameter : public TSFParameterBase
-		{
-		public:
-			/** construct with a label and value */
-			TSFDoubleParameter(const string& label, const double& value);
+      /** virtual copy ctor */
+      virtual TSFParameterBase* clone() const {return new TSFIntParameter(*this);}
 
-			/** virtual dtor */
-			virtual ~TSFDoubleParameter(){;}
+    private:
+      int value_;
+    };
 
-			/** set the value */
-			virtual void set(double value) {value_ = value;}
 
-			/** inform the world that I am a double */
-			virtual bool isDouble() const {return true;}
+  /** \ingroup Support
+   * Integer array parameter type
+   */
+  class TSFIntArrayParameter : public TSFParameterBase
+    {
+    public:
+      /** construct with a label and value */
+      TSFIntArrayParameter(const string& label, const TSFArray<int>& value);
 
-			/** return my value */
-			virtual double getDouble() const {return value_;}
+      /** virtual dtor */
+      virtual ~TSFIntArrayParameter(){;}
 
-			/** return type name */
-			virtual string type() const {return "double";}
+      /** set the value */
+      virtual void set(const TSFArray<int>& value) {value_ = value;}
 
-			/** virtual copy ctor */
-			virtual TSFParameterBase* clone() const {return new TSFDoubleParameter(*this);}
+      /** inform the world that I am an integer array */
+      virtual bool isIntArray() const {return true;}
 
-		private:
-			double value_;
-		};
+      /** return my value */
+      virtual TSFArray<int> getIntArray() const {return value_;}
 
-	/** \ingroup Support 
-	 * Double array parameter type
-	 */
-	class TSFDoubleArrayParameter : public TSFParameterBase
-		{
-		public:
-			/** construct with a label and value */
-			TSFDoubleArrayParameter(const string& label, const TSFArray<double>& value);
+      /** return type name */
+      virtual string type() const {return "int array";}
 
-			/** virtual dtor */
-			virtual ~TSFDoubleArrayParameter(){;}
+      /** Return string representation of value */
+      virtual string getValueString() const {return TSF::toString(value_);}
 
-			/** set the value */
-			virtual void set(const TSFArray<double>& value) {value_ = value;}
+      /** virtual copy ctor */
+      virtual TSFParameterBase* clone() const {return new TSFIntArrayParameter(*this);}
 
-			/** inform the world that I am an double array */
-			virtual bool isDoubleArray() const {return true;}
+    private:
+      TSFArray<int> value_;
+    };
 
-			/** return my value */
-			virtual TSFArray<double> getDoubleArray() const {return value_;}
 
-			/** return type name */
-			virtual string type() const {return "double array";}
+  /** \ingroup Support
+   * Double parameter type
+   */
+  class TSFDoubleParameter : public TSFParameterBase
+    {
+    public:
+      /** construct with a label and value */
+      TSFDoubleParameter(const string& label, const double& value);
 
-			/** virtual copy ctor */
-			virtual TSFParameterBase* clone() const {return new TSFDoubleArrayParameter(*this);}
+      /** virtual dtor */
+      virtual ~TSFDoubleParameter(){;}
 
-		private:
-			TSFArray<double> value_;
-		};
-} 
+      /** set the value */
+      virtual void set(double value) {value_ = value;}
+
+      /** inform the world that I am a double */
+      virtual bool isDouble() const {return true;}
+
+      /** return my value */
+      virtual double getDouble() const {return value_;}
+
+      /** return type name */
+      virtual string type() const {return "double";}
+
+      /** Return string representation of value */
+      virtual string getValueString() const {return TSF::toString(value_);}
+
+      /** virtual copy ctor */
+      virtual TSFParameterBase* clone() const {return new TSFDoubleParameter(*this);}
+
+    private:
+      double value_;
+    };
+
+  /** \ingroup Support
+   * Double array parameter type
+   */
+  class TSFDoubleArrayParameter : public TSFParameterBase
+    {
+    public:
+      /** construct with a label and value */
+      TSFDoubleArrayParameter(const string& label, const TSFArray<double>& value);
+
+      /** virtual dtor */
+      virtual ~TSFDoubleArrayParameter(){;}
+
+      /** set the value */
+      virtual void set(const TSFArray<double>& value) {value_ = value;}
+
+      /** inform the world that I am an double array */
+      virtual bool isDoubleArray() const {return true;}
+
+      /** return my value */
+      virtual TSFArray<double> getDoubleArray() const {return value_;}
+
+      /** return type name */
+      virtual string type() const {return "double array";}
+
+      /** Return string representation of value */
+      virtual string getValueString() const {return TSF::toString(value_);}
+
+      /** virtual copy ctor */
+      virtual TSFParameterBase* clone() const {return new TSFDoubleArrayParameter(*this);}
+
+    private:
+      TSFArray<double> value_;
+    };
+}
 
 #endif /* TSFPARAMETERBASE_H */

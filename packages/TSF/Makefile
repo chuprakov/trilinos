@@ -66,7 +66,7 @@ cleanjunk:
 
 # make emacs tags
 tags:
-	etags src/*/*.h src/*/*.inl src/*/*.cpp examples/*/*.cpp
+	etags src/*/*.h src/*/*.cpp examples/*/*.cpp
 
 # make the reference manual
 manual:

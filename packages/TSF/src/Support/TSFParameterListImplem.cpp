@@ -12,27 +12,6 @@ TSFParameterListImplem::TSFParameterListImplem(const string& label)
 	: label_(label), children_(), parameters_()
 {}
 
-TSFParameterList TSFParameterListImplem::deepCopy() const 
-{
-	TSFParameterList rtn(label_);
-
-	/* copy parameters */
-	TSFArray<TSFParameter> params = listParameters();
-	for (int i=0; i<params.size(); i++)
-		{
-			rtn.addParameter(params[i].deepCopy());
-		}
-
-	/* copy children */
-	TSFArray<TSFParameterList> children = listChildren();
-	for (int i=0; i<children.size(); i++)
-		{
-			rtn.addChild(children[i].deepCopy());
-		}
-
-	return rtn;
-}
-
 void TSFParameterListImplem::addChild(const TSFParameterList& list) 
 {
 	/* check that the key does not already exist in the list */
@@ -44,6 +23,11 @@ void TSFParameterListImplem::addChild(const TSFParameterList& list)
 		{
 			TSFError::raise("key=" + list.getLabel() + " previously defined");
 		}
+}
+
+void TSFParameterListImplem::setChild(const TSFParameterList& list) 
+{
+  children_.put(list.getLabel(), list);
 }
 
 void TSFParameterListImplem::getChild(const string& name, TSFParameterList& list) const 
@@ -111,6 +95,11 @@ void TSFParameterListImplem::addParameter(const TSFParameter& parameter)
 		}
 }
 
+void TSFParameterListImplem::setParameter(const TSFParameter& parameter)
+{
+  parameters_.put(parameter.getLabel(), parameter);
+}
+
 
 TSFParameter TSFParameterListImplem::getParameter(const string& name) const 
 {
@@ -150,4 +139,18 @@ void TSFParameterListImplem::setValue(const string& name, const TSFArray<double>
 	getParameter(name).set(value);
 }
 
-
+void TSFParameterListImplem::print(ostream& os, int indentDepth) const 
+{
+  os << TSFObject::spaces(indentDepth) << label_ << endl;
+  TSFArray<TSFParameter> p = listParameters();
+  for (int i=0; i<p.length(); i++)
+    {
+      p[i].printIndented(os, indentDepth+1);
+    }
+  TSFArray<TSFParameterList> c = listChildren();
+  
+  for (int i=0; i<c.length(); i++)
+    {
+      c[i].printIndented(os, indentDepth+1);
+    }
+}

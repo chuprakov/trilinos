@@ -5,37 +5,37 @@
 
 namespace TSF
 {
-	
-	using std::string;
 
-	/** \ingroup DenseSerial
-	 * DenseSerialVectorSpace is a vector space that generates TSFSerialVector
-	 * objects. 
-	 */
-	class DenseSerialVectorSpace : public TSFVectorSpaceBase
-		{
-		public:
-			/** construct a DenseSerialVectorSpace of the given dimension */
-			DenseSerialVectorSpace(int dim) : dim_(dim) {;}
+  using std::string;
 
-			/** virtual dtor */
-			virtual ~DenseSerialVectorSpace(){;}
+  /** \ingroup DenseSerial
+   * DenseSerialVectorSpace is a vector space that generates TSFSerialVector
+   * objects.
+   */
+  class DenseSerialVectorSpace : public TSFVectorSpaceBase
+    {
+    public:
+      /** construct a DenseSerialVectorSpace of the given dimension */
+      DenseSerialVectorSpace(int dim) : dim_(dim) {;}
 
-			/** deep copy */
-			virtual TSFVectorSpaceBase* deepCopy() const ;
+      /** virtual dtor */
+      virtual ~DenseSerialVectorSpace(){;}
 
-			/** return dimension */
-			virtual int dim() const {return dim_;}
+      /** deep copy */
+      virtual TSFVectorSpaceBase* deepCopy() const ;
 
-			/** factory method */
-			virtual TSFVectorBase* createMember(const TSFVectorSpace& handle) const ;
+      /** return dimension */
+      virtual int dim() const {return dim_;}
 
-			/** write to stream */
-			virtual ostream& print(ostream& os) const ;
+      /** factory method */
+      virtual TSFVectorBase* createMember(const TSFVectorSpace& handle) const ;
 
-		private:
-			/* dimension of the space */
-			int dim_;
-		};
+      /** write to stream */
+      virtual void print(ostream& os) const ;
+
+    private:
+      /* dimension of the space */
+      int dim_;
+    };
 }
 #endif

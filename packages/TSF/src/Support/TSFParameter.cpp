@@ -40,10 +40,9 @@ TSFParameter::TSFParameter(const string& label, const TSFArray<double>& paramete
 	: ptr_(new TSFDoubleArrayParameter(label, parameter))
 {}
 
-TSFParameter TSFParameter::deepCopy() const 
+void TSFParameter::print(ostream& os) const 
 {
-	TSFParameter rtn;
-	rtn.ptr_ = ptr_->clone();
-	if (rtn.ptr_.get()==0) TSFError::raise("allocation failure in TSFParameter::deepCopy()");
-	return rtn;
+  os << getType() << " " << getLabel() << " " << getValueString();
 }
+
+

@@ -6,7 +6,6 @@
 #include "TSFVectorBase.h"
 #include "TSFVector.h"
 #include "TSFVectorSpace.h"
-
 #include "TSFBlas.h"
 #include "TSFError.h"
 #include "TSFOut.h"
@@ -18,18 +17,45 @@
 using namespace TSF;
 
 
-BICGSTABSolver::BICGSTABSolver(const TSFReal& tol, int maxIters)
-	: TSFLinearSolverBase(), 
-		tol_(tol), maxIters_(maxIters), preconditionerFactory_()
+BICGSTABSolver::BICGSTABSolver(const TSFParameterList& params)
+	: TSFLinearSolverBase(params), 
+  preconditionerFactory_()
 {;}
 
 BICGSTABSolver::BICGSTABSolver(const TSFPreconditionerFactory& pf,
-															 const TSFReal& tol, int maxIters)
-	: TSFLinearSolverBase(),
-		tol_(tol), maxIters_(maxIters), preconditionerFactory_(pf)
+															 const TSFParameterList& params)
+	: TSFLinearSolverBase(params),
+		preconditionerFactory_(pf)
 {;}
 
+BICGSTABSolver::BICGSTABSolver(const double& tol, int maxiters)
+	: TSFLinearSolverBase(), 
+  preconditionerFactory_()
+{
+  params_ = defaultParameters();
+  params_.setValue("max iterations", maxiters);
+  params_.setValue("convergence tolerance", tol);
+}
+
+BICGSTABSolver::BICGSTABSolver(const TSFPreconditionerFactory& pf,
+                               const double& tol, int maxiters)
+	: TSFLinearSolverBase(), 
+  preconditionerFactory_(pf)
+{
+  params_ = defaultParameters();
+  params_.setValue("max iterations", maxiters);
+  params_.setValue("convergence tolerance", tol);
+}
+
 BICGSTABSolver::~BICGSTABSolver(){;}
+
+TSFParameterList BICGSTABSolver::defaultParameters() const 
+{
+  TSFParameterList rtn("BICGSTAB Parameters");
+  rtn.addParameter(TSFParameter("max iterations", 500));
+  rtn.addParameter(TSFParameter("convergence tolerance", 1.0e-10));
+  return rtn;
+}
 
 bool BICGSTABSolver::solve(const TSFLinearOperator& op,
 													 const TSFVector& b,
@@ -72,10 +98,13 @@ bool BICGSTABSolver::solveUnpreconditioned(const TSFLinearOperator& op,
 																					 const TSFVector& b,
 																					 TSFVector& soln) const 
 {
+  int maxiters = params_.getParameter("max iterations").getInt();
+  double tol = params_.getParameter("convergence tolerance").getDouble();
+
 	TSFReal normOfB = sqrt(b.dot(b));
 
 	/* check for trivial case of zero rhs */
-	if (normOfB < tol_) 
+	if (normOfB < tol) 
 		{
 			soln = b.space().createMember();
 			soln.zero();
@@ -91,7 +120,7 @@ bool BICGSTABSolver::solveUnpreconditioned(const TSFLinearOperator& op,
 	op.apply(x0, tmp);
 	r0.subtract(b, tmp);
 	
-	if (sqrt(r0.dot(r0)) < tol_*normOfB) 
+	if (sqrt(r0.dot(r0)) < tol*normOfB) 
 		{
 			soln = x0;
 			return true;
@@ -110,7 +139,7 @@ bool BICGSTABSolver::solveUnpreconditioned(const TSFLinearOperator& op,
 
 	int myRank = TSFMPI::getRank();
 
-	for (int k=1; k<=maxIters_; k++)
+	for (int k=1; k<=maxiters; k++)
 		{
 			// ap = A*p0
 			op.apply(p0, ap);
@@ -119,7 +148,7 @@ bool BICGSTABSolver::solveUnpreconditioned(const TSFLinearOperator& op,
 			if (TSFUtils::chop(sqrt(fabs(den))/normOfB)==0) 
 				{
 					TSFOut::rootPrintf("BICGSTAB solver failure mode 1 on iteration %d of %d: Ap*r0Hat=%g normOfB=%g\n",
-												 k, maxIters_, den, normOfB);
+												 k, maxiters, den, normOfB);
 					TSFError::raise("BICGSTAB::solve failure mode 1");
 				}
 			
@@ -133,7 +162,7 @@ bool BICGSTABSolver::solveUnpreconditioned(const TSFLinearOperator& op,
 
 			// check for convergence
 			TSFReal resid = rMid.norm2()/normOfB;
-			if (resid < tol_) 
+			if (resid < tol) 
 				{
 					soln = xMid; 
 					if (myRank==0 && verbosity_ > 0)
@@ -163,7 +192,7 @@ bool BICGSTABSolver::solveUnpreconditioned(const TSFLinearOperator& op,
 
 			// check for convergence
 			resid = sqrt(r.dot(r))/normOfB;
-			if (resid < tol_) 
+			if (resid < tol) 
 				{
 					soln = x;
 					if (myRank==0 && verbosity_ > 0)

@@ -7,6 +7,7 @@
 #include "TSFVector.h"
 #include "TSFVectorSpace.h"
 
+#include "TSFParameterListImplem.h"
 #include "TSFBlas.h"
 #include "TSFError.h"
 #include "TSFOut.h"
@@ -16,18 +17,30 @@
 using namespace TSF;
 
 
-CGSolver::CGSolver(const TSFReal& tol, int maxIters)
-	: tol_(tol), maxIters_(maxIters)
+CGSolver::CGSolver(const TSFParameterList& params)
+	: TSFLinearSolverBase(params)
 {;}
+
+TSFParameterList CGSolver::defaultParameters() const 
+{
+  TSFParameterList rtn("CG Parameters");
+  rtn.addParameter(TSFParameter("max iterations", 500));
+  rtn.addParameter(TSFParameter("convergence tolerance", 1.0e-10));
+  return rtn;
+}
 
 bool CGSolver::solve(const TSFLinearOperator& A,
 										 const TSFVector& b,
 										 TSFVector& soln) const 
 {
+  
+  int maxiters = params_.getParameter("max iterations").getInt();
+  double tol = params_.getParameter("convergence tolerance").getInt();
+
 	TSFReal normOfB = sqrt(b.dot(b));
 
 	/* check for trivial case of zero rhs */
-	if (normOfB < tol_) 
+	if (normOfB < tol) 
 		{
 			soln = b.space().createMember();
 			soln.zero();
@@ -42,7 +55,7 @@ bool CGSolver::solve(const TSFLinearOperator& A,
 
 	int myRank = TSFMPI::getRank();
 
-	for (int k=1; k<=maxIters_; k++)
+	for (int k=1; k<=maxiters; k++)
 		{
           //if (myRank==0) TSFOut::printf("iteration %d\n", k);
 			TSFVector Ap = A*p;
@@ -58,9 +71,8 @@ bool CGSolver::solve(const TSFLinearOperator& A,
 			x0 = x0 + alpha*p;
 			r = r - alpha*Ap;
 			TSFReal r21 = r*r;
-            //TSFReal conv = sqrt(r21);
-            //cerr << "alpha = "  << alpha << "  conv = " << conv << endl;
-			if (sqrt(r21) < tol_*normOfB) 
+
+			if (sqrt(r21) < tol*normOfB) 
 				{
 					soln = x0.copy();
 					return true;

@@ -16,9 +16,9 @@ TSFVectorBase* DenseSerialVectorSpace::createMember(const TSFVectorSpace& space)
 	return new TSFSerialVector(space);
 }
 
-ostream& DenseSerialVectorSpace::print(ostream& os) const 
+void DenseSerialVectorSpace::print(ostream& os) const 
 {
-	return os << "DenseSerialVectorSpace[" << dim() << "]";
+	os << "DenseSerialVectorSpace[" << dim() << "]";
 }
 
 

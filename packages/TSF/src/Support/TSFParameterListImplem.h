@@ -7,112 +7,122 @@
 #include "TSFArray.h"
 #include "TSFHashtable.h"
 
-namespace TSF 
+namespace TSF
 {
 
-	using namespace std;
+  using std::string;
+  using std::ostream;
 
-	class TSFParameterListImplem
-		{
-		public:
-			/** construct with a descriptive label */
-			TSFParameterListImplem(const string& label);
-			
-			/** return descriptive label */
-			const string& getLabel() const {return label_;}
+  class TSFParameterListImplem
+    {
+    public:
+      /** construct with a descriptive label */
+      TSFParameterListImplem(const string& label);
 
-			/** make a deep copy */
-			TSFParameterList deepCopy() const ;
+      /** return descriptive label */
+      const string& getLabel() const {return label_;}
 
-			//@{ \name Child lists
-			/** Add a new child list. The child's name is expected to be unique. */
-			void addChild(const TSFParameterList& list);
+      //@{ \name Child lists
+      /** Add a new child list. The child's name is expected to be unique. */
+      void addChild(const TSFParameterList& list);
 
-			/** Look up a child list by name */
-			void getChild(const string& name, TSFParameterList& list) const ;
+      /** Add a new child list. The child's name is expected to be unique. */
+      void setChild(const TSFParameterList& list);
 
-			/** get list of all children */
-			TSFArray<TSFParameterList> listChildren() const ;
-			//@}
+      /** Look up a child list by name */
+      void getChild(const string& name, TSFParameterList& list) const ;
 
-
-			//@{ \name Creating parameters 
-
-			/** Add a new parameter to the list. The parameter's name is checked against
-			 * the list of existing names to ensure that each name appears only once.
-			 * If the parameter's name already appears, an error is thrown. To change the
-			 * value of an existing parameter, use the setValue() method instead. */
-			void addParameter(const TSFParameter& parameter);
-			
-			//@}
+      /** get list of all children */
+      TSFArray<TSFParameterList> listChildren() const ;
+      //@}
 
 
-			//@{ \name Setting parameter values
+      //@{ \name Creating parameters
 
-			/** set the value of an existing character parameter.  The
-			 * parameter's name is expected to be in the list; if not, an
-			 * error is thrown. To add a new parameter to the list, use the
-			 * add() method instead. */
-			void setValue(const string& name, char value);
+      /** Add a new parameter to the list. The parameter's name is checked against
+       * the list of existing names to ensure that each name appears only once.
+       * If the parameter's name already appears, an error is thrown. To change the
+       * value of an existing parameter, use the setValue() method instead. */
+      void addParameter(const TSFParameter& parameter);
 
-			/** set the value of an existing string parameter.  The
-			 * parameter's name is expected to be in the list; if not, an
-			 * error is thrown. To add a new parameter to the list, use the
-			 * add() method instead. */
-			void setValue(const string& name, const string& value);
+      /** Add a new parameter to the list. The parameter's name is checked against
+       * the list of existing names to ensure that each name appears only once.
+       * If the parameter's name already appears, an error is thrown. To change the
+       * value of an existing parameter, use the setValue() method instead. */
+      void setParameter(const TSFParameter& parameter);
 
-			/** set the value of an existing integer parameter.  The
-			 * parameter's name is expected to be in the list; if not, an
-			 * error is thrown. To add a new parameter to the list, use the
-			 * add() method instead. */
-			void setValue(const string& name, int value);
+      //@}
 
-			/** set the value of an existing double parameter.  The
-			 * parameter's name is expected to be in the list; if not, an
-			 * error is thrown. To add a new parameter to the list, use the
-			 * add() method instead. */
-			void setValue(const string& name, double value);
 
-				/** set the value of an existing int array parameter.  The
-			 * parameter's name is expected to be in the list; if not, an
-			 * error is thrown. To add a new parameter to the list, use the
-			 * add() method instead. */
-			void setValue(const string& name, const TSFArray<int>& value);
+      //@{ \name Setting parameter values
 
-			/** set the value of an existing double parameter.  The
-			 * parameter's name is expected to be in the list; if not, an
-			 * error is thrown. To add a new parameter to the list, use the
-			 * add() method instead. */
-			void setValue(const string& name, const TSFArray<double>& value);
+      /** set the value of an existing character parameter.  The
+       * parameter's name is expected to be in the list; if not, an
+       * error is thrown. To add a new parameter to the list, use the
+       * add() method instead. */
+      void setValue(const string& name, char value);
 
-			//@}
-			
-			//@{ \name Getting parameters 
-			/** Look up a parameter by name */
-			TSFParameter getParameter(const string& name) const ;
+      /** set the value of an existing string parameter.  The
+       * parameter's name is expected to be in the list; if not, an
+       * error is thrown. To add a new parameter to the list, use the
+       * add() method instead. */
+      void setValue(const string& name, const string& value);
 
-			/** Return a list of all parameters */
-			TSFArray<TSFParameter> listParameters() const ;
-			//@}
+      /** set the value of an existing integer parameter.  The
+       * parameter's name is expected to be in the list; if not, an
+       * error is thrown. To add a new parameter to the list, use the
+       * add() method instead. */
+      void setValue(const string& name, int value);
 
-			//@{ \name Getting information about labels
-			/** Return a list of all parameter names */
-			TSFArray<string> listParameterNames() const ;
+      /** set the value of an existing double parameter.  The
+       * parameter's name is expected to be in the list; if not, an
+       * error is thrown. To add a new parameter to the list, use the
+       * add() method instead. */
+      void setValue(const string& name, double value);
 
-			/** Return a list of all child names */
-			TSFArray<string> listChildNames() const ;
-			//@}
-			
-		private:
-			/* the label */
-			string label_;
+      /** set the value of an existing int array parameter.  The
+       * parameter's name is expected to be in the list; if not, an
+       * error is thrown. To add a new parameter to the list, use the
+       * add() method instead. */
+      void setValue(const string& name, const TSFArray<int>& value);
 
-			/* child lists of this list, keyed by label. */
-			TSFHashtable<string, TSFParameterList> children_;
+      /** set the value of an existing double parameter.  The
+       * parameter's name is expected to be in the list; if not, an
+       * error is thrown. To add a new parameter to the list, use the
+       * add() method instead. */
+      void setValue(const string& name, const TSFArray<double>& value);
 
-			/* parameters, keyed by label. */
-			TSFHashtable<string, TSFParameter> parameters_;
-		};
+      //@}
+
+      //@{ \name Getting parameters
+      /** Look up a parameter by name */
+      TSFParameter getParameter(const string& name) const ;
+
+      /** Return a list of all parameters */
+      TSFArray<TSFParameter> listParameters() const ;
+      //@}
+
+      //@{ \name Getting information about labels
+      /** Return a list of all parameter names */
+      TSFArray<string> listParameterNames() const ;
+
+      /** Return a list of all child names */
+      TSFArray<string> listChildNames() const ;
+      //@}
+
+      /** */
+      void print(ostream& os, int indentDepth) const ;
+
+    private:
+      /* the label */
+      string label_;
+
+      /* child lists of this list, keyed by label. */
+      TSFHashtable<string, TSFParameterList> children_;
+
+      /* parameters, keyed by label. */
+      TSFHashtable<string, TSFParameter> parameters_;
+    };
 }
 
 #endif

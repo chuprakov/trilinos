@@ -96,7 +96,7 @@ void TSFProductSpace::getBlock(int i, const TSFVectorSpace& /* self */,
 	sub = blocks_[i];
 }
 
-ostream& TSFProductSpace::print(ostream& os) const 
+void TSFProductSpace::print(ostream& os) const 
 {
-	return os << "ProductSpace";
+  os << "ProductSpace";
 }

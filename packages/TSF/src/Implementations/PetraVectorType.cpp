@@ -100,7 +100,7 @@ TSFMatrixOperator* PetraVectorType::createMatrix(const TSFVectorSpace& domain,
 TSFLinearSolver PetraVectorType::defaultSolver() const
 {
 	TSFPreconditionerFactory precond = new ILUKPreconditionerFactory(2);
-	TSFLinearSolver solver = new BICGSTABSolver(precond, 1.e-14, 2000);
+	TSFLinearSolver solver = new BICGSTABSolver(precond);
 	return solver;
 }
 

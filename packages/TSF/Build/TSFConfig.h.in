@@ -64,16 +64,10 @@ typedef double TSFReal;
 
 /* do we use sstream, strstream, or strstream.h ? */
 
-#define HAVE_STRSTREAM 0
+#define HAVE_SSTREAM 0
 
 
-#if HAVE_STRSTREAM
-#if USE_NEW_HEADERS
-#include <strstream>
-#else
-#include <strstream.h>
-#endif
-#else
+#if HAVE_SSTREAM
 #include <sstream>
 #endif
 

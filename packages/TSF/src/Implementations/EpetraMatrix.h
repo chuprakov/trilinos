@@ -20,109 +20,109 @@
 
 namespace TSF
 {
-	using std::string;
+  using std::string;
 
-	/** \ingroup Petra
-	 * Wrapper for Petra matrices
-	 */
+  /** \ingroup Petra
+   * Wrapper for Petra matrices
+   */
 
-	class PetraMatrix : public TSFMatrixOperator
-		{
-		public:
-			/** construct with domain and range space. These must be Petra vector
-			 * spaces, or else an error will be thrown */
-			PetraMatrix(const TSFVectorSpace& domain, 
-									const TSFVectorSpace& range);
+  class PetraMatrix : public TSFMatrixOperator
+    {
+    public:
+      /** construct with domain and range space. These must be Petra vector
+       * spaces, or else an error will be thrown */
+      PetraMatrix(const TSFVectorSpace& domain,
+                  const TSFVectorSpace& range);
 
-			/** the usual virtual dtor */
-			virtual ~PetraMatrix(){;}
+      /** the usual virtual dtor */
+      virtual ~PetraMatrix(){;}
 
-			/** apply operator to a vector in the domain space, returning a vector
-			 * in the range space */
-			virtual void apply(const TSFVector& in, 
-												 TSFVector& out) const ;
+      /** apply operator to a vector in the domain space, returning a vector
+       * in the range space */
+      virtual void apply(const TSFVector& in,
+                         TSFVector& out) const ;
 
-			/** apply adjoint operator to a vector in the range space, returning
-			 * a vector in the domain space. The default implementation throws an
-			 * exception */
-			virtual void applyAdjoint(const TSFVector& in,
-																TSFVector& out) const ;
+      /** apply adjoint operator to a vector in the range space, returning
+       * a vector in the domain space. The default implementation throws an
+       * exception */
+      virtual void applyAdjoint(const TSFVector& in,
+                                TSFVector& out) const ;
 
-			/** \name matrix configuration interface */
-			//@{
+      /** \name matrix configuration interface */
+      //@{
 
-			/** inform caller if a graph is needed to configure this matrix */
-			virtual bool requiresGraph() const {return false;}
+      /** inform caller if a graph is needed to configure this matrix */
+      virtual bool requiresGraph() const {return false;}
 
-			/** inform caller if row bandwidth is needed to configure this matrix */
-			virtual bool requiresBandwidth() const {return true;}
-			
-			/** inform caller if this matrix type can handle non-square matrices */
-			virtual bool supportsNonSquare() const {return true;}
+      /** inform caller if row bandwidth is needed to configure this matrix */
+      virtual bool requiresBandwidth() const {return true;}
 
-			/** set the columns to be used in a given row */
-			virtual void setRowStructure(int globalRowIndex, int bandwidth,
-																	 const int* columnIndices);
+      /** inform caller if this matrix type can handle non-square matrices */
+      virtual bool supportsNonSquare() const {return true;}
 
-			/** set the bandwith of all rows */
-			virtual void setBandwidth(int nLocalRows, const int* bandwidth) ;
+      /** set the columns to be used in a given row */
+      virtual void setRowStructure(int globalRowIndex, int bandwidth,
+                                   const int* columnIndices);
 
-			/** finalize values. This makes a call to Petra's TransformToLocal(). */
-			virtual void freezeValues();
+      /** set the bandwith of all rows */
+      virtual void setBandwidth(int nLocalRows, const int* bandwidth) ;
 
-			/** finalize structure. The Petra matrix object is actually constructed
-			 * at this point */
-			virtual void freezeStructure();
-			//@}
+      /** finalize values. This makes a call to Petra's TransformToLocal(). */
+      virtual void freezeValues();
 
-			/** \name matrix loading interface */
-			//@{
-			
-			/** add to selected elements of a row in the matrix */
-			virtual void addToRow(int globalRowIndex,
-														int nCols,
-														const int* globalColumnIndices,
-														const TSFReal* a);
+      /** finalize structure. The Petra matrix object is actually constructed
+       * at this point */
+      virtual void freezeStructure();
+      //@}
 
-			/** set all elements to zero */
-			virtual void zero();
+      /** \name matrix loading interface */
+      //@{
 
-			//@}
+      /** add to selected elements of a row in the matrix */
+      virtual void addToRow(int globalRowIndex,
+                            int nCols,
+                            const int* globalColumnIndices,
+                            const TSFReal* a);
 
-			virtual void print(ostream& os) const ;
+      /** set all elements to zero */
+      virtual void zero();
 
-			virtual TSFLinearOperatorBase* deepCopy() const ;
+      //@}
 
-			/** \name incomplete factorization preconditioning interface */
-			//@{
+      virtual void print(ostream& os) const ;
 
-			/** create a k-level incomplete factorization. Default is to throw
-			 * an error. */
-			virtual void getILUKPreconditioner(int fillLevels,
-																				 int overlapFill,
-																				 TSFPreconditioner& rtn) const ;
+      virtual TSFLinearOperatorBase* deepCopy() const ;
 
-			//@}
+      /** \name incomplete factorization preconditioning interface */
+      //@{
 
-			/** append my timings to a list of timings */
-			static void collectTimings(TSFArray<TSFTimer>& timers) ;
+      /** create a k-level incomplete factorization. Default is to throw
+       * an error. */
+      virtual void getILUKPreconditioner(int fillLevels,
+                                         int overlapFill,
+                                         TSFPreconditioner& rtn) const ;
 
-			static Epetra_CrsMatrix* getConcrete(const TSFLinearOperator& A);
-		private:
-			void petraCheck(int ierr, const string& methodName) const ;
+      //@}
 
-			void ptrCheck(const string& methodName) const ;
-			TSFSmartPtr<Epetra_Map> rowMap_;
-			TSFSmartPtr<Epetra_Map> columnMap_;
-			TSFSmartPtr<Epetra_CrsMatrix> matrix_;
-			TSFArray<int> nCols_;
-			TSFSmartPtr<Epetra_Comm> petraComm_;
-			bool transposed_;
-			mutable bool hasCachedPreconditioner_;
-			mutable TSFPreconditioner cachedPreconditioner_;
-			static TSFTimer mvMultTimer_;
-			static TSFTimer ILUTimer_;
-		};
+      /** append my timings to a list of timings */
+      static void collectTimings(TSFArray<TSFTimer>& timers) ;
+
+      static Epetra_CrsMatrix* getConcrete(const TSFLinearOperator& A);
+    private:
+      void petraCheck(int ierr, const string& methodName) const ;
+
+      void ptrCheck(const string& methodName) const ;
+      TSFSmartPtr<Epetra_Map> rowMap_;
+      TSFSmartPtr<Epetra_Map> columnMap_;
+      TSFSmartPtr<Epetra_CrsMatrix> matrix_;
+      TSFArray<int> nCols_;
+      TSFSmartPtr<Epetra_Comm> petraComm_;
+      bool transposed_;
+      mutable bool hasCachedPreconditioner_;
+      mutable TSFPreconditioner cachedPreconditioner_;
+      static TSFTimer mvMultTimer_;
+      static TSFTimer ILUTimer_;
+    };
 
 
 }

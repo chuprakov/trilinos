@@ -14,21 +14,24 @@ TSFParameterList::TSFParameterList(const string& label)
 	: ptr_(new TSFParameterListImplem(label))
 {}
 
+TSFParameterList::~TSFParameterList() {;}
+
 const string& TSFParameterList::getLabel() const
 {
 	return ptr_->getLabel();
 }
 
-TSFParameterList TSFParameterList::deepCopy() const 
-{
-	return ptr_->deepCopy();
-}
 
 /* ------------- setting and getting children  ------------------------------*/
 
 void TSFParameterList::addChild(const TSFParameterList& list)
 {
 	ptr_->addChild(list);
+}
+
+void TSFParameterList::setChild(const TSFParameterList& list)
+{
+	ptr_->setChild(list);
 }
 
 TSFParameterList TSFParameterList::getChild(const string& name) const
@@ -43,6 +46,11 @@ TSFParameterList TSFParameterList::getChild(const string& name) const
 void TSFParameterList::addParameter(const TSFParameter& parameter)
 {
 	ptr_->addParameter(parameter);
+}
+
+void TSFParameterList::setParameter(const TSFParameter& parameter)
+{
+	ptr_->setParameter(parameter);
 }
 
 void TSFParameterList::setValue(const string& name, char value)
@@ -102,6 +110,30 @@ TSFArray<string> TSFParameterList::listParameterNames() const
 TSFArray<string> TSFParameterList::listChildNames() const 
 {
 	return ptr_->listChildNames();
+}
+
+void TSFParameterList::print(ostream& os) const 
+{
+  ptr_->print(os, 0);
+}
+
+TSFParameterList TSFParameterList::overrideWith(const TSFParameterList& newParams) const
+{
+  TSFParameterList rtn(*this);
+
+  TSFArray<TSFParameter> p = newParams.listParameters();
+  TSFArray<TSFParameterList> c = newParams.listChildren();
+
+  for (int i=0; i<p.length(); i++)
+    {
+      rtn.setParameter(p[i]);
+    }
+  for (int i=0; i<c.length(); i++)
+    {
+      rtn.setChild(c[i]);
+    }
+  
+  return rtn;
 }
 
 

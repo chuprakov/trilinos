@@ -14,7 +14,7 @@ SRCDIR = $(TSF_ROOT)/src
 
 SRC_SUBDIRS = Support Vectors VectorSpaces LinearOperators NonlinearOperators \
 Implementations LinearSolvers TestProblems Preconditioners NonlinearSolvers \
-LinearProblem Readers
+LinearProblem Readers Writers
 
 SRC_INCLUDE_PATH = $(foreach SUBDIR, $(SRC_SUBDIRS), -I$(SRCDIR)/$(SUBDIR))
 

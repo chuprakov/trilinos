@@ -2353,20 +2353,20 @@ cat conftest.$ac_ext >&5
 fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
 
-#stringstream flavor: strstream or sstream. If strstream exists, use it,
-# because gnu 2.95's sstream is botched.
+# stringstream flavor: strstream or sstream.
+#
 ac_ext=cc
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
-echo "$as_me:2364: checking for strstream" >&5
-echo $ECHO_N "checking for strstream... $ECHO_C" >&6
+echo "$as_me:2364: checking for sstream" >&5
+echo $ECHO_N "checking for sstream... $ECHO_C" >&6
 cat >conftest.$ac_ext <<_ACEOF
 #line 2367 "configure"
 #include "confdefs.h"
-#include <strstream>
+#include <sstream>
 int
 main ()
 {
@@ -2391,52 +2391,7 @@ if { (eval echo "$as_me:2379: \"$ac_link\"") >&5
   echo "$as_me:2391: result: yes" >&5
 echo "${ECHO_T}yes" >&6
   cat >>confdefs.h <<\EOF
-#define HAVE_STRSTREAM 1
-EOF
-
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-
-ac_ext=cc
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-echo "$as_me:2409: checking for strstream.h" >&5
-echo $ECHO_N "checking for strstream.h... $ECHO_C" >&6
-cat >conftest.$ac_ext <<_ACEOF
-#line 2412 "configure"
-#include "confdefs.h"
-#include <strstream.h>
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:2424: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:2427: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:2430: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:2433: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-
-  echo "$as_me:2436: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-  cat >>confdefs.h <<\EOF
-#define HAVE_STRSTREAM 1
+#define HAVE_SSTREAM 1
 EOF
 
 else
@@ -2452,10 +2407,10 @@ ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
-echo "$as_me:2455: checking whether \"using std::ostream\" is okay" >&5
+echo "$as_me:2410: checking whether \"using std::ostream\" is okay" >&5
 echo $ECHO_N "checking whether \"using std::ostream\" is okay... $ECHO_C" >&6
 cat >conftest.$ac_ext <<_ACEOF
-#line 2458 "configure"
+#line 2413 "configure"
 #include "confdefs.h"
 
 #ifdef HAVE_IOSTREAM
@@ -2473,24 +2428,24 @@ using std::ostream;
 }
 _ACEOF
 rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:2476: \"$ac_link\"") >&5
+if { (eval echo "$as_me:2431: \"$ac_link\"") >&5
   (eval $ac_link) 2>&5
   ac_status=$?
-  echo "$as_me:2479: \$? = $ac_status" >&5
+  echo "$as_me:2434: \$? = $ac_status" >&5
   (exit $ac_status); } &&
          { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:2482: \"$ac_try\"") >&5
+  { (eval echo "$as_me:2437: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
-  echo "$as_me:2485: \$? = $ac_status" >&5
+  echo "$as_me:2440: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  echo "$as_me:2487: result: yes" >&5
+  echo "$as_me:2442: result: yes" >&5
 echo "${ECHO_T}yes" >&6
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
 
-  echo "$as_me:2493: result: no" >&5
+  echo "$as_me:2448: result: no" >&5
 echo "${ECHO_T}no" >&6
   cat >>confdefs.h <<\EOF
 #define NO_USING_STD_OSTREAM 1
@@ -2521,14 +2476,14 @@ fi;
 
 if test "X${USE_PKGDIR}" = "Xyes"; then
 
-   echo "$as_me:2524: checking whether package directory is valid" >&5
+   echo "$as_me:2479: checking whether package directory is valid" >&5
 echo $ECHO_N "checking whether package directory is valid... $ECHO_C" >&6
    if test -d ${PKGDIR}; then
-      echo "$as_me:2527: result: yes" >&5
+      echo "$as_me:2482: result: yes" >&5
 echo "${ECHO_T}yes" >&6
    else
  #     AC_MSG_NOTICE(no)
-      { { echo "$as_me:2531: error: Specified package directory does not exist" >&5
+      { { echo "$as_me:2486: error: Specified package directory does not exist" >&5
 echo "$as_me: error: Specified package directory does not exist" >&2;}
    { (exit 1); exit 1; }; }
    fi
@@ -2602,7 +2557,7 @@ if test -n "$ac_tool_prefix"; then
   do
     # Extract the first word of "$ac_tool_prefix$ac_prog", so it can be a program name with args.
 set dummy $ac_tool_prefix$ac_prog; ac_word=$2
-echo "$as_me:2605: checking for $ac_word" >&5
+echo "$as_me:2560: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_prog_F77+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2617,7 +2572,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   $as_executable_p "$ac_dir/$ac_word" || continue
 ac_cv_prog_F77="$ac_tool_prefix$ac_prog"
-echo "$as_me:2620: found $ac_dir/$ac_word" >&5
+echo "$as_me:2575: found $ac_dir/$ac_word" >&5
 break
 done
 
@@ -2625,10 +2580,10 @@ fi
 fi
 F77=$ac_cv_prog_F77
 if test -n "$F77"; then
-  echo "$as_me:2628: result: $F77" >&5
+  echo "$as_me:2583: result: $F77" >&5
 echo "${ECHO_T}$F77" >&6
 else
-  echo "$as_me:2631: result: no" >&5
+  echo "$as_me:2586: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
@@ -2641,7 +2596,7 @@ if test -z "$F77"; then
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
-echo "$as_me:2644: checking for $ac_word" >&5
+echo "$as_me:2599: checking for $ac_word" >&5
 echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6
 if test "${ac_cv_prog_ac_ct_F77+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2656,7 +2611,7 @@ for ac_dir in $ac_dummy; do
   test -z "$ac_dir" && ac_dir=.
   $as_executable_p "$ac_dir/$ac_word" || continue
 ac_cv_prog_ac_ct_F77="$ac_prog"
-echo "$as_me:2659: found $ac_dir/$ac_word" >&5
+echo "$as_me:2614: found $ac_dir/$ac_word" >&5
 break
 done
 
@@ -2664,10 +2619,10 @@ fi
 fi
 ac_ct_F77=$ac_cv_prog_ac_ct_F77
 if test -n "$ac_ct_F77"; then
-  echo "$as_me:2667: result: $ac_ct_F77" >&5
+  echo "$as_me:2622: result: $ac_ct_F77" >&5
 echo "${ECHO_T}$ac_ct_F77" >&6
 else
-  echo "$as_me:2670: result: no" >&5
+  echo "$as_me:2625: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 
@@ -2678,30 +2633,30 @@ done
 fi
 
 # Provide some information about the compiler.
-echo "$as_me:2681:" \
+echo "$as_me:2636:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
-{ (eval echo "$as_me:2684: \"$ac_compiler --version </dev/null >&5\"") >&5
+{ (eval echo "$as_me:2639: \"$ac_compiler --version </dev/null >&5\"") >&5
   (eval $ac_compiler --version </dev/null >&5) 2>&5
   ac_status=$?
-  echo "$as_me:2687: \$? = $ac_status" >&5
+  echo "$as_me:2642: \$? = $ac_status" >&5
   (exit $ac_status); }
-{ (eval echo "$as_me:2689: \"$ac_compiler -v </dev/null >&5\"") >&5
+{ (eval echo "$as_me:2644: \"$ac_compiler -v </dev/null >&5\"") >&5
   (eval $ac_compiler -v </dev/null >&5) 2>&5
   ac_status=$?
-  echo "$as_me:2692: \$? = $ac_status" >&5
+  echo "$as_me:2647: \$? = $ac_status" >&5
   (exit $ac_status); }
-{ (eval echo "$as_me:2694: \"$ac_compiler -V </dev/null >&5\"") >&5
+{ (eval echo "$as_me:2649: \"$ac_compiler -V </dev/null >&5\"") >&5
   (eval $ac_compiler -V </dev/null >&5) 2>&5
   ac_status=$?
-  echo "$as_me:2697: \$? = $ac_status" >&5
+  echo "$as_me:2652: \$? = $ac_status" >&5
   (exit $ac_status); }
 
 # If we don't use `.F' as extension, the preprocessor is not run on the
 # input file.
 ac_save_ext=$ac_ext
 ac_ext=F
-echo "$as_me:2704: checking whether we are using the GNU Fortran 77 compiler" >&5
+echo "$as_me:2659: checking whether we are using the GNU Fortran 77 compiler" >&5
 echo $ECHO_N "checking whether we are using the GNU Fortran 77 compiler... $ECHO_C" >&6
 if test "${ac_cv_f77_compiler_gnu+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2715,16 +2670,16 @@ else
       end
 _ACEOF
 rm -f conftest.$ac_objext
-if { (eval echo "$as_me:2718: \"$ac_compile\"") >&5
+if { (eval echo "$as_me:2673: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
-  echo "$as_me:2721: \$? = $ac_status" >&5
+  echo "$as_me:2676: \$? = $ac_status" >&5
   (exit $ac_status); } &&
          { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:2724: \"$ac_try\"") >&5
+  { (eval echo "$as_me:2679: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
-  echo "$as_me:2727: \$? = $ac_status" >&5
+  echo "$as_me:2682: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   ac_compiler_gnu=yes
 else
@@ -2736,14 +2691,14 @@ rm -f conftest.$ac_objext conftest.$ac_ext
 ac_cv_f77_compiler_gnu=$ac_compiler_gnu
 
 fi
-echo "$as_me:2739: result: $ac_cv_f77_compiler_gnu" >&5
+echo "$as_me:2694: result: $ac_cv_f77_compiler_gnu" >&5
 echo "${ECHO_T}$ac_cv_f77_compiler_gnu" >&6
 ac_ext=$ac_save_ext
 G77=`test $ac_compiler_gnu = yes && echo yes`
 ac_test_FFLAGS=${FFLAGS+set}
 ac_save_FFLAGS=$FFLAGS
 FFLAGS=
-echo "$as_me:2746: checking whether $F77 accepts -g" >&5
+echo "$as_me:2701: checking whether $F77 accepts -g" >&5
 echo $ECHO_N "checking whether $F77 accepts -g... $ECHO_C" >&6
 if test "${ac_cv_prog_f77_g+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2755,16 +2710,16 @@ cat >conftest.$ac_ext <<_ACEOF
       end
 _ACEOF
 rm -f conftest.$ac_objext
-if { (eval echo "$as_me:2758: \"$ac_compile\"") >&5
+if { (eval echo "$as_me:2713: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
-  echo "$as_me:2761: \$? = $ac_status" >&5
+  echo "$as_me:2716: \$? = $ac_status" >&5
   (exit $ac_status); } &&
          { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:2764: \"$ac_try\"") >&5
+  { (eval echo "$as_me:2719: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
-  echo "$as_me:2767: \$? = $ac_status" >&5
+  echo "$as_me:2722: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   ac_cv_prog_f77_g=yes
 else
@@ -2775,7 +2730,7 @@ fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 
 fi
-echo "$as_me:2778: result: $ac_cv_prog_f77_g" >&5
+echo "$as_me:2733: result: $ac_cv_prog_f77_g" >&5
 echo "${ECHO_T}$ac_cv_prog_f77_g" >&6
 if test "$ac_test_FFLAGS" = set; then
   FFLAGS=$ac_save_FFLAGS
@@ -2801,7 +2756,7 @@ ac_ext=f
 ac_compile='$F77 -c $FFLAGS conftest.$ac_ext >&5'
 ac_link='$F77 -o conftest$ac_exeext $FFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_f77_compiler_gnu
-echo "$as_me:2804: checking how to get verbose linking output from $F77" >&5
+echo "$as_me:2759: checking how to get verbose linking output from $F77" >&5
 echo $ECHO_N "checking how to get verbose linking output from $F77... $ECHO_C" >&6
 if test "${ac_cv_prog_f77_v+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2813,16 +2768,16 @@ cat >conftest.$ac_ext <<_ACEOF
       end
 _ACEOF
 rm -f conftest.$ac_objext
-if { (eval echo "$as_me:2816: \"$ac_compile\"") >&5
+if { (eval echo "$as_me:2771: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
-  echo "$as_me:2819: \$? = $ac_status" >&5
+  echo "$as_me:2774: \$? = $ac_status" >&5
   (exit $ac_status); } &&
          { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:2822: \"$ac_try\"") >&5
+  { (eval echo "$as_me:2777: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
-  echo "$as_me:2825: \$? = $ac_status" >&5
+  echo "$as_me:2780: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   ac_cv_prog_f77_v=
 # Try some options frequently used verbose output
@@ -2844,7 +2799,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:2847: \"$ac_link\") >&5
+(eval echo $as_me:2802: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -2876,21 +2831,21 @@ fi
   done
 done
 if test -z "$ac_cv_prog_f77_v"; then
-   { echo "$as_me:2879: WARNING: cannot determine how to obtain linking information from $F77" >&5
+   { echo "$as_me:2834: WARNING: cannot determine how to obtain linking information from $F77" >&5
 echo "$as_me: WARNING: cannot determine how to obtain linking information from $F77" >&2;}
 fi
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-{ echo "$as_me:2885: WARNING: compilation failed" >&5
+{ echo "$as_me:2840: WARNING: compilation failed" >&5
 echo "$as_me: WARNING: compilation failed" >&2;}
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 
 fi
-echo "$as_me:2891: result: $ac_cv_prog_f77_v" >&5
+echo "$as_me:2846: result: $ac_cv_prog_f77_v" >&5
 echo "${ECHO_T}$ac_cv_prog_f77_v" >&6
-echo "$as_me:2893: checking for Fortran 77 libraries" >&5
+echo "$as_me:2848: checking for Fortran 77 libraries" >&5
 echo $ECHO_N "checking for Fortran 77 libraries... $ECHO_C" >&6
 if test "${ac_cv_flibs+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -2916,7 +2871,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:2919: \"$ac_link\") >&5
+(eval echo $as_me:2874: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -3071,7 +3026,7 @@ esac
 fi # test "x$FLIBS" = "x"
 
 fi
-echo "$as_me:3074: result: $ac_cv_flibs" >&5
+echo "$as_me:3029: result: $ac_cv_flibs" >&5
 echo "${ECHO_T}$ac_cv_flibs" >&6
 FLIBS="$ac_cv_flibs"
 
@@ -3105,62 +3060,62 @@ if test "X${HAVE_PETRA}" = "Xyes"; then
     TRILINOS_COMM="SERIAL"
   fi
 
-	echo "$as_me:3108: checking whether TRILINOS_HOME is defined" >&5
+	echo "$as_me:3063: checking whether TRILINOS_HOME is defined" >&5
 echo $ECHO_N "checking whether TRILINOS_HOME is defined... $ECHO_C" >&6
 
 	if test -n "${TRILINOS_HOME}"; then
-     echo "$as_me:3112: result: yes (${TRILINOS_HOME})" >&5
+     echo "$as_me:3067: result: yes (${TRILINOS_HOME})" >&5
 echo "${ECHO_T}yes (${TRILINOS_HOME})" >&6
   else
-       echo "$as_me:3115: result: no (using ${HOME}/Trilinos)" >&5
+       echo "$as_me:3070: result: no (using ${HOME}/Trilinos)" >&5
 echo "${ECHO_T}no (using ${HOME}/Trilinos)" >&6
        TRILINOS_HOME=${HOME}/Trilinos
   fi
 
-    echo "$as_me:3120: checking whether TRILINOS_HOME is valid" >&5
+    echo "$as_me:3075: checking whether TRILINOS_HOME is valid" >&5
 echo $ECHO_N "checking whether TRILINOS_HOME is valid... $ECHO_C" >&6
     if test -d ${TRILINOS_HOME}; then
-       echo "$as_me:3123: result: yes" >&5
+       echo "$as_me:3078: result: yes" >&5
 echo "${ECHO_T}yes" >&6
     else
-       echo "$as_me:3126: result: no" >&5
+       echo "$as_me:3081: result: no" >&5
 echo "${ECHO_T}no" >&6
-       { { echo "$as_me:3128: error: TRILINOS_HOME is invalid" >&5
+       { { echo "$as_me:3083: error: TRILINOS_HOME is invalid" >&5
 echo "$as_me: error: TRILINOS_HOME is invalid" >&2;}
    { (exit 1); exit 1; }; }
     fi
 
-    echo "$as_me:3133: checking whether TRILINOS_ARCH is defined" >&5
+    echo "$as_me:3088: checking whether TRILINOS_ARCH is defined" >&5
 echo $ECHO_N "checking whether TRILINOS_ARCH is defined... $ECHO_C" >&6
     if test -n "${TRILINOS_ARCH}"; then
-       echo "$as_me:3136: result: yes (${TRILINOS_ARCH})" >&5
+       echo "$as_me:3091: result: yes (${TRILINOS_ARCH})" >&5
 echo "${ECHO_T}yes (${TRILINOS_ARCH})" >&6
     else
-       echo "$as_me:3139: result: no" >&5
+       echo "$as_me:3094: result: no" >&5
 echo "${ECHO_T}no" >&6
-       { { echo "$as_me:3141: error: TRILINOS_ARCH is invalid" >&5
+       { { echo "$as_me:3096: error: TRILINOS_ARCH is invalid" >&5
 echo "$as_me: error: TRILINOS_ARCH is invalid" >&2;}
    { (exit 1); exit 1; }; }
     fi
 
-    echo "$as_me:3146: checking whether TRILINOS_ID is defined" >&5
+    echo "$as_me:3101: checking whether TRILINOS_ID is defined" >&5
 echo $ECHO_N "checking whether TRILINOS_ID is defined... $ECHO_C" >&6
     if test -n "${TRILINOS_ID}"; then
-       echo "$as_me:3149: result: yes (${TRILINOS_ID})" >&5
+       echo "$as_me:3104: result: yes (${TRILINOS_ID})" >&5
 echo "${ECHO_T}yes (${TRILINOS_ID})" >&6
     else
-       echo "$as_me:3152: result: no" >&5
+       echo "$as_me:3107: result: no" >&5
 echo "${ECHO_T}no" >&6
     fi
 
-    echo "$as_me:3156: checking whether TRILINOS_TARGET is defined" >&5
+    echo "$as_me:3111: checking whether TRILINOS_TARGET is defined" >&5
 echo $ECHO_N "checking whether TRILINOS_TARGET is defined... $ECHO_C" >&6
     if test -n "${TRILINOS_TARGET}"; then
-       echo "$as_me:3159: result: yes (${TRILINOS_TARGET})" >&5
+       echo "$as_me:3114: result: yes (${TRILINOS_TARGET})" >&5
 echo "${ECHO_T}yes (${TRILINOS_TARGET})" >&6
     else
        TRILINOS_TARGET="${TRILINOS_ARCH}.${TRILINOS_COMM}${TRILINOS_ID}"
-       echo "$as_me:3163: result: no (using ${TRILINOS_TARGET})" >&5
+       echo "$as_me:3118: result: no (using ${TRILINOS_TARGET})" >&5
 echo "${ECHO_T}no (using ${TRILINOS_TARGET})" >&6
     fi
 
@@ -3272,7 +3227,7 @@ DEFS=-DHAVE_CONFIG_H
 : ${CONFIG_STATUS=./config.status}
 ac_clean_files_save=$ac_clean_files
 ac_clean_files="$ac_clean_files $CONFIG_STATUS"
-{ echo "$as_me:3275: creating $CONFIG_STATUS" >&5
+{ echo "$as_me:3230: creating $CONFIG_STATUS" >&5
 echo "$as_me: creating $CONFIG_STATUS" >&6;}
 cat >$CONFIG_STATUS <<_ACEOF
 #! $SHELL
@@ -3444,7 +3399,7 @@ cat >>$CONFIG_STATUS <<\EOF
     echo "$ac_cs_version"; exit 0 ;;
   --he | --h)
     # Conflict between --help and --header
-    { { echo "$as_me:3447: error: ambiguous option: $1
+    { { echo "$as_me:3402: error: ambiguous option: $1
 Try \`$0 --help' for more information." >&5
 echo "$as_me: error: ambiguous option: $1
 Try \`$0 --help' for more information." >&2;}
@@ -3463,7 +3418,7 @@ Try \`$0 --help' for more information." >&2;}
     ac_need_defaults=false;;
 
   # This is an error.
-  -*) { { echo "$as_me:3466: error: unrecognized option: $1
+  -*) { { echo "$as_me:3421: error: unrecognized option: $1
 Try \`$0 --help' for more information." >&5
 echo "$as_me: error: unrecognized option: $1
 Try \`$0 --help' for more information." >&2;}
@@ -3502,7 +3457,7 @@ do
   "Build/Makefile.export" ) CONFIG_FILES="$CONFIG_FILES Build/Makefile.export:Build/Makefile.export.in" ;;
   "doc/Doxygen/Doc.cfg" ) CONFIG_FILES="$CONFIG_FILES doc/Doxygen/Doc.cfg:doc/Doxygen/Doc.cfg.in" ;;
   "include/TSFConfig.h" ) CONFIG_HEADERS="$CONFIG_HEADERS include/TSFConfig.h:Build/TSFConfig.h.in" ;;
-  *) { { echo "$as_me:3505: error: invalid argument: $ac_config_target" >&5
+  *) { { echo "$as_me:3460: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
   esac
@@ -3728,7 +3683,7 @@ done; }
   esac
 
   if test x"$ac_file" != x-; then
-    { echo "$as_me:3731: creating $ac_file" >&5
+    { echo "$as_me:3686: creating $ac_file" >&5
 echo "$as_me: creating $ac_file" >&6;}
     rm -f "$ac_file"
   fi
@@ -3746,7 +3701,7 @@ echo "$as_me: creating $ac_file" >&6;}
       -) echo $tmp/stdin ;;
       [\\/$]*)
          # Absolute (can't be DOS-style, as IFS=:)
-         test -f "$f" || { { echo "$as_me:3749: error: cannot find input file: $f" >&5
+         test -f "$f" || { { echo "$as_me:3704: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          echo $f;;
@@ -3759,7 +3714,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
            echo $srcdir/$f
          else
            # /dev/null tree
-           { { echo "$as_me:3762: error: cannot find input file: $f" >&5
+           { { echo "$as_me:3717: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          fi;;
@@ -3819,7 +3774,7 @@ for ac_file in : $CONFIG_HEADERS; do test "x$ac_file" = x: && continue
   * )   ac_file_in=$ac_file.in ;;
   esac
 
-  test x"$ac_file" != x- && { echo "$as_me:3822: creating $ac_file" >&5
+  test x"$ac_file" != x- && { echo "$as_me:3777: creating $ac_file" >&5
 echo "$as_me: creating $ac_file" >&6;}
 
   # First look for the input files in the build tree, otherwise in the
@@ -3830,7 +3785,7 @@ echo "$as_me: creating $ac_file" >&6;}
       -) echo $tmp/stdin ;;
       [\\/$]*)
          # Absolute (can't be DOS-style, as IFS=:)
-         test -f "$f" || { { echo "$as_me:3833: error: cannot find input file: $f" >&5
+         test -f "$f" || { { echo "$as_me:3788: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          echo $f;;
@@ -3843,7 +3798,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
            echo $srcdir/$f
          else
            # /dev/null tree
-           { { echo "$as_me:3846: error: cannot find input file: $f" >&5
+           { { echo "$as_me:3801: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          fi;;
@@ -3960,7 +3915,7 @@ cat >>$CONFIG_STATUS <<\EOF
   rm -f $tmp/in
   if test x"$ac_file" != x-; then
     if cmp -s $ac_file $tmp/config.h 2>/dev/null; then
-      { echo "$as_me:3963: $ac_file is unchanged" >&5
+      { echo "$as_me:3918: $ac_file is unchanged" >&5
 echo "$as_me: $ac_file is unchanged" >&6;}
     else
       ac_dir=`$as_expr X"$ac_file" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \

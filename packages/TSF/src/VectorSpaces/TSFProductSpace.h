@@ -9,64 +9,64 @@
 
 namespace TSF
 {
-	class TSFVectorBase;
-	using std::string;
-	
-	using std::ostream;
+  class TSFVectorBase;
+  using std::string;
 
-	/** \ingroup VectorSpaceSubtypes
-	 * A product space represents a cartesian product of vector spaces 
-	 */
+  using std::ostream;
 
-	class TSFProductSpace : public TSFVectorSpaceBase
-		{
-		public: 
-			/** */
-			TSFProductSpace(const TSFVectorSpace& space);
+  /** \ingroup VectorSpaceSubtypes
+   * A product space represents a cartesian product of vector spaces
+   */
 
-			/** */
-			TSFProductSpace(const TSFVectorSpace& space0, 
-											const TSFVectorSpace& space1);
-			/** */
-			TSFProductSpace(const TSFVectorSpace& space0, 
-											const TSFVectorSpace& space1, 
-											const TSFVectorSpace& space2);
+  class TSFProductSpace : public TSFVectorSpaceBase
+    {
+    public:
+      /** */
+      TSFProductSpace(const TSFVectorSpace& space);
 
-			/** */
-			TSFProductSpace(const TSFArray<TSFVectorSpace>& spaces);
-			
-			/** the usual virtual dtor */
-			virtual ~TSFProductSpace(){;}
-	
-			/** virtual copy ctor */
-			virtual TSFVectorSpaceBase* deepCopy() const ;
-	
-			/** return dimension of space */
-			virtual int dim() const ;
+      /** */
+      TSFProductSpace(const TSFVectorSpace& space0,
+                      const TSFVectorSpace& space1);
+      /** */
+      TSFProductSpace(const TSFVectorSpace& space0,
+                      const TSFVectorSpace& space1,
+                      const TSFVectorSpace& space2);
 
-			/** create a vector that is a member of this space */
-			virtual TSFVectorBase* createMember(const TSFVectorSpace& handle) const;
+      /** */
+      TSFProductSpace(const TSFArray<TSFVectorSpace>& spaces);
 
-			/** test equality */
-			virtual bool checkEquality(const TSFVectorSpaceBase* other) const ;
+      /** the usual virtual dtor */
+      virtual ~TSFProductSpace(){;}
 
-            /** returns true since this is a ProductSpace  */
-            virtual bool isProductSpace() const
-              {
-                return true;
-              }
+      /** virtual copy ctor */
+      virtual TSFVectorSpaceBase* deepCopy() const ;
 
-			/** */
-			virtual int numBlocks() const ;
+      /** return dimension of space */
+      virtual int dim() const ;
 
-			/** */
-			virtual void getBlock(int i, const TSFVectorSpace& self,
-														TSFVectorSpace& sub) const ;
-			/** write to stream */
-			virtual ostream& print(ostream& os) const ;
-		protected:
-			TSFArray<TSFVectorSpace> blocks_;
-		};
+      /** create a vector that is a member of this space */
+      virtual TSFVectorBase* createMember(const TSFVectorSpace& handle) const;
+
+      /** test equality */
+      virtual bool checkEquality(const TSFVectorSpaceBase* other) const ;
+
+      /** returns true since this is a ProductSpace  */
+      virtual bool isProductSpace() const
+        {
+          return true;
+        }
+
+      /** */
+      virtual int numBlocks() const ;
+
+      /** */
+      virtual void getBlock(int i, const TSFVectorSpace& self,
+                            TSFVectorSpace& sub) const ;
+      /** write to stream */
+      virtual void print(ostream& os) const ;
+    protected:
+      TSFArray<TSFVectorSpace> blocks_;
+    };
 }
 
 #endif

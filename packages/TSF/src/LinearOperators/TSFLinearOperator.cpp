@@ -386,10 +386,10 @@ const TSFSmartPtr<const TSFMatrixOperator> TSFLinearOperator::getMatrix() const
 string TSFLinearOperator::toString() const 
 {
 	/* BVBW changed from strstream to std::ostringstream */
-#if HAVE_STRSTREAM
-			std::ostrstream ost;
-#else
+#if HAVE_SSTREAM
 			std::ostringstream ost;
+#else
+			std::ostrstream ost;
 #endif
             ost.clear();
 	ptr_->print(ost);

@@ -266,10 +266,10 @@ TSFReal DenseSerialVector::maxNorm() const
 string DenseSerialVector::toString() const
 {
 	/* BVBW changed from strstream to std::ostringstream */
-#if HAVE_STRSTREAM
-	std::ostrstream str;
-#else
+#if HAVE_SSTREAM
 	std::ostringstream str;
+#else
+	std::ostrstream str;
 #endif
 	str << *this << ends;
 	return str.str();

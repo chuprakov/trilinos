@@ -68,7 +68,7 @@ TSFVectorBase* PetraVectorSpace::createMember(const TSFVectorSpace& handle) cons
 }
 
 
-ostream& PetraVectorSpace::print(ostream& os) const 
+void PetraVectorSpace::print(ostream& os) const 
 {
 	string rtn = "PetraVectorSpace[";
 	if (ghostMap_.get()==0) 
@@ -89,7 +89,7 @@ ostream& PetraVectorSpace::print(ostream& os) const
 		}
 	rtn += "]";
 
-	return os << rtn;
+	os << rtn;
 }
 
 
