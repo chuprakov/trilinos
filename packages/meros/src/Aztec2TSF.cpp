@@ -256,7 +256,7 @@ int ML_TSF_defaults(TSF::TSFLinearSolver &FSolver,
 
 
 
-   int N_levels = 10;
+  int N_levels = 10;
    ML_Set_PrintLevel(10);
    ML_Create(&ml_handle, N_levels);
    solver_data->ml = ml_handle;
@@ -270,7 +270,6 @@ int ML_TSF_defaults(TSF::TSFLinearSolver &FSolver,
    N_levels = ML_Gen_MGHierarchy_UsingAggregation(ml_handle, 0,
                                                   ML_INCREASING, agg_object);
    if (symmetric != true) {
-     //          ML_Gen_Smoother_SymGaussSeidel(ml_handle, ML_ALL_LEVELS, ML_BOTH, 2, .2);
      if (solver_data->aztec_status.get() == 0) {
        double *dtemp = new double[AZ_STATUS_SIZE];
        solver_data->aztec_status = TSFSmartPtr<double>(dtemp, true);
@@ -290,7 +289,6 @@ int ML_TSF_defaults(TSF::TSFLinearSolver &FSolver,
 #endif
      AZ_defaults(options, params);
      options[AZ_precond] = AZ_dom_decomp;
-     options[AZ_precond] = AZ_none;
      options[AZ_subdomain_solve] = AZ_ilut;
      options[AZ_overlap] = 1;
      params[AZ_ilut_fill] = 2.;
@@ -303,7 +301,7 @@ int ML_TSF_defaults(TSF::TSFLinearSolver &FSolver,
      }
    }
 
-   else
+   else 
      ML_Gen_Smoother_SymGaussSeidel(ml_handle, ML_ALL_LEVELS, ML_BOTH, 1, 1);
 
    ML_Gen_Solver    (ml_handle, ML_MGV, 0, N_levels-1);
@@ -316,9 +314,9 @@ int ML_TSF_defaults(TSF::TSFLinearSolver &FSolver,
    ML_Aggregate_Destroy(&agg_object);
 
    if (symmetric == true)
-     solver_data->azOptions.put(AZ_solver, AZ_gmres);
-   else
      solver_data->azOptions.put(AZ_solver, AZ_cg);
+   else
+     solver_data->azOptions.put(AZ_solver, AZ_gmres);
 
    solver_data->azOptions.put(AZ_kspace, 50);
    solver_data->azOptions.put(AZ_conv, AZ_r0);
