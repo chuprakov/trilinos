@@ -54,4 +54,7 @@ using ConstrainedOptimizationPack::DecompositionSystemCoordinateDirect;
 using ConstrainedOptimizationPack::DecompositionSystemCoordinateAdjoint;
 
 using ConstrainedOptimizationPack::QPSolverWithBounds;
+using ConstrainedOptimizationPack::QPSolverRelaxed;
 using ConstrainedOptimizationPack::QPSCPD;
+using ConstrainedOptimizationPack::QPSchur;
+using ConstrainedOptimizationPack::QPSolverRelaxedQPSchurRangeSpace;
