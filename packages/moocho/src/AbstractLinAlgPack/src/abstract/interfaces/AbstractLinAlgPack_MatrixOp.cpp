@@ -283,21 +283,33 @@ void MatrixWithOp::Vp_StMtV(
 }
 
 void MatrixWithOp::Vp_StPtMtV(
-	VectorWithOpMutable* v_lhs, value_type alpha
-	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-	, BLAS_Cpp::Transp M_rhs2_trans
-	, const VectorWithOp& vs_rhs3, value_type beta) const
+	VectorWithOpMutable* y, value_type a
+	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	,BLAS_Cpp::Transp M_trans
+	,const VectorWithOp& x, value_type b
+	) const
 {
-	assert(0); // ToDo: Implement!
+	VectorSpace::vec_mut_ptr_t
+		t = ( M_trans == BLAS_Cpp::no_trans
+				? this->space_cols()
+				: this->space_rows() ).create_member();
+	LinAlgOpPack::V_MtV( t.get(), *this, M_trans, x );
+	AbstractLinAlgPack::Vp_StMtV( y, a, P, P_trans, *t, b );
 }
 
 void MatrixWithOp::Vp_StPtMtV(
-	VectorWithOpMutable* v_lhs, value_type alpha
-	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-	, BLAS_Cpp::Transp M_rhs2_trans
-	, const SpVectorSlice& sv_rhs3, value_type beta) const
+	VectorWithOpMutable* y, value_type a
+	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	,BLAS_Cpp::Transp M_trans
+	,const SpVectorSlice& x, value_type b
+	) const
 {
-	assert(0); // ToDo: Implement!
+	VectorSpace::vec_mut_ptr_t
+		t = ( M_trans == BLAS_Cpp::no_trans
+				? this->space_cols()
+				: this->space_rows() ).create_member();
+	LinAlgOpPack::V_MtV( t.get(), *this, M_trans, x );
+	AbstractLinAlgPack::Vp_StMtV( y, a, P, P_trans, *t, b );
 }
 
 value_type MatrixWithOp::transVtMtV(
