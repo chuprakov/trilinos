@@ -33,7 +33,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
@@ -119,15 +119,15 @@ void ConstraintsRelaxedStd::initialize(
 	assert( m_undecomp == (F ? f->dim() : 0) ); // ToDo: support decomposed equalities in future.
 
 	// Validate that the correct sets of constraints are selected
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		dL && !dU, std::invalid_argument
 		,"ConstraintsRelaxedStd::initialize(...) : Error, "
 		"If dL!=NULL then dU!=NULL must also be true." );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		E && ( !b || !eL || !eU ), std::invalid_argument
 		,"ConstraintsRelaxedStd::initialize(...) : Error, "
 		"If E!=NULL then b!=NULL, eL!=NULL and eU!=NULL must also be true." );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		F && !f, std::invalid_argument
 		,"ConstraintsRelaxedStd::initialize(...) : Error, "
 		"If F!=NULL then f!=NULL must also be true." );
@@ -135,11 +135,11 @@ void ConstraintsRelaxedStd::initialize(
 	// Validate input argument sizes
 	if(dL) {
 		const size_type dL_dim = dL->dim(), dU_dim = dU->dim();
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			dL_dim != nd, std::invalid_argument
 			,"ConstraintsRelaxedStd::initialize(...) : Error, "
 			"dL.dim() != d->dim()." );
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			dU_dim != nd, std::invalid_argument 
 			,"ConstraintsRelaxedStd::initialize(...) : Error, "
 			"dU.dim() != d->dim()." );
@@ -154,23 +154,23 @@ void ConstraintsRelaxedStd::initialize(
 			eU_dim = eU->dim(),
 			Ed_dim = Ed ? Ed->dim() : 0;
 		m_in = BLAS_Cpp::rows( E_rows, E_cols, trans_E );
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			opE_cols != nd, std::invalid_argument
 			,"ConstraintsRelaxedStd::initialize(...) : Error, "
 			"op(E).cols() != nd." );
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			b_dim != m_in, std::invalid_argument
 			,"ConstraintsRelaxedStd::initialize(...) : Error, "
 			"b->dim() != op(E).rows()." );
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			eL_dim != m_in, std::invalid_argument
 			,"ConstraintsRelaxedStd::initialize(...) : Error, "
 			"eL->dim() != op(E).rows()." );
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			eU_dim != m_in, std::invalid_argument
 			,"ConstraintsRelaxedStd::initialize(...) : Error, "
 			"eU->dim() != op(E).rows()." );
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			Ed && Ed_dim != m_in, std::invalid_argument
 			,"ConstraintsRelaxedStd::initialize(...) : Error, "
 			"Ed->dim() != op(E).rows()." );
@@ -182,11 +182,11 @@ void ConstraintsRelaxedStd::initialize(
 			opF_cols = BLAS_Cpp::cols( F_rows, F_cols, trans_F ),
 			f_dim = f->dim();
 		m_eq = BLAS_Cpp::rows( F_rows, F_cols, trans_F );
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			opF_cols != nd, std::invalid_argument
 			,"QPSolverRelaxed::solve_qp(...) : Error, "
 			"op(F).cols() != nd." );
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			f_dim != m_eq, std::invalid_argument
 			,"QPSolverRelaxed::solve_qp(...) : Error, "
 			"f->dim() != op(F).rows()." );
@@ -272,7 +272,7 @@ void ConstraintsRelaxedStd::pick_violated(
 	using AbstractLinAlgPack::max_inequ_viol;
 	using LinAlgOpPack::V_VmV;
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		x_in.dim() != A_bar_.nd()+1, std::length_error
 		,"ConstraintsRelaxedStd::pick_violated(...) : Error, "
 		"x is the wrong length" );
@@ -420,7 +420,7 @@ void ConstraintsRelaxedStd::pick_violated(
 	if( inequality_pick_policy_ == ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY ) {
 		// Find the first general inequality violated by more than
 		// the defined tolerance.
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			true, std::logic_error
 			,"ConstraintsRelaxedStd::pick_violated(...) : Error,\n"
 			"The option ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY has not been implemented yet\n" );
@@ -481,7 +481,7 @@ void ConstraintsRelaxedStd::pick_violated(
 
 void ConstraintsRelaxedStd::ignore( size_type j )
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true, std::logic_error
 		,"ConstraintsRelaxedStd::ignore(...) : Error, "
 		"This operation is not supported yet!" );
@@ -491,7 +491,7 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 {
 	const value_type inf = std::numeric_limits<value_type>::max();
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		j > A_bar_.cols(), std::range_error
 		,"ConstraintsRelaxedStd::get_bnd(j,bnd) : Error, "
 		"j = " << j << " is not in range [1," << A_bar_.cols() << "]" );
@@ -577,7 +577,7 @@ ConstraintsRelaxedStd::MatrixConstraints::MatrixConstraints()
 	,F_(NULL)
 	,trans_F_(BLAS_Cpp::no_trans)
 	,f_(NULL)
-	,space_cols_(MemMngPack::null)
+	,space_cols_(Teuchos::null)
 	,space_rows_(NULL,0)
 {}
 
@@ -631,13 +631,13 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 	int num_row_spaces = 1;
 	row_spaces[0] = space_d_eta;
 	if(m_in)
-		row_spaces[num_row_spaces++] = mmp::rcp(
+		row_spaces[num_row_spaces++] = Teuchos::rcp(
 			trans_E == BLAS_Cpp::no_trans ? &E->space_cols() : &E->space_rows()
 			,false
 			);
 	if(m_eq) {
 		VectorSpace::space_ptr_t
-			vs = mmp::rcp(
+			vs = Teuchos::rcp(
 				trans_F == BLAS_Cpp::no_trans ? &F->space_cols() : &F->space_rows()
 				,false
 				);
@@ -803,8 +803,8 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 		const value_type
 			x2 = x.get_ele(nd()+1);
 		Vector::vec_ptr_t
-			x3 = m_in() ? x.sub_view(E_rng) : mmp::null,
-			x4 = m_eq() ? x.sub_view(F_rng) : mmp::null;
+			x3 = m_in() ? x.sub_view(E_rng) : Teuchos::null,
+			x4 = m_eq() ? x.sub_view(F_rng) : Teuchos::null;
 		
 		// [ y1 ]  += [ a * x1 + a * op(E') * x3 + a * op(F') * x4 ]
 		Vp_StV( y1.get(), a, *x1 );
@@ -839,8 +839,8 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 		value_type
 			y2 = y->get_ele(nd()+1);
 		VectorMutable::vec_mut_ptr_t
-			y3 = m_in() ? y->sub_view(E_rng) : mmp::null,
-			y4 = m_eq() ? y->sub_view(F_rng) : mmp::null;
+			y3 = m_in() ? y->sub_view(E_rng) : Teuchos::null,
+			y4 = m_eq() ? y->sub_view(F_rng) : Teuchos::null;
 		Vector::vec_ptr_t
 			x1 = x.sub_view(d_rng);
 		const value_type

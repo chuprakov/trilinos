@@ -40,7 +40,7 @@ public:
 	//@{
 	
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		MemMngPack::ReleaseResource>     release_resource_ptr_t;
 	///
 	/** Subclass to delete dynamically allocated memory with \c delete[].
@@ -110,7 +110,7 @@ public:
 	 *                 is finished with them.  It is allowed for <tt>release_resource.get() == NULL</tt> in which
 	 *                 case the client will be responsible to free this memory.  The client can use the
 	 *                 subclass \c ReleaseValRowColArrays to allow \c this to delete memory created with
-	 *                 \c new[] by setting <tt>release_resource = MemMngPack::rcp(
+	 *                 \c new[] by setting <tt>release_resource = Teuchos::rcp(
 	 *                 new ReleaseValRowColArrays(val,row_i,col_j) )</tt> where \c val, \c row_i and \c col_j
 	 *                 where allocated with \c new[].  The \c release_resource object represents the sharing
 	 *                 of the data \c val[], \c row_i[] and \c col_j[].

@@ -19,7 +19,7 @@
 #include <iosfwd>
 
 #include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace NLPInterfacePack {
 
@@ -35,12 +35,12 @@ namespace NLPInterfacePack {
 class NLPTester {
 public:
 
-	/// Members for option \c print_all() (see StandardMemberCompositionMacros.hpp).
+	/// Members for option \c print_all() (see Teuchos_StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_all )
 #ifdef DOXYGEN_COMPILE
 		;
 #endif		
-	/// Members for option \c throw_exception() (see StandardMemberCompositionMacros.hpp).
+	/// Members for option \c throw_exception() (see Teuchos_StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, throw_exception )
 #ifdef DOXYGEN_COMPILE
 		;

@@ -23,7 +23,7 @@ StringToIntMap::StringToIntMap(  const std::string& name, int n, const char* str
 	typedef map_t::value_type val_t;
 	for( int i = 0; i < n; ++i ) {
 		const bool unique = map_.insert( val_t( strings[i], i ) ).second;
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!unique,AlreadyExists
 			,"StringToIntMap::StringToIntMap(...): "
 			<< "Error, the option \"" << strings[i] << "\" is a duplicate for options_group \""
@@ -34,7 +34,7 @@ StringToIntMap::StringToIntMap(  const std::string& name, int n, const char* str
 int StringToIntMap::operator()( const std::string& str ) const
 {
 	map_t::const_iterator itr = map_.find( str );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		itr == map_.end(), DoesNotExist
 		,"StringToIntMap::operator(...): "
 		<< "Error, the option \"" << str << "\" is not recongnised for options_group \""

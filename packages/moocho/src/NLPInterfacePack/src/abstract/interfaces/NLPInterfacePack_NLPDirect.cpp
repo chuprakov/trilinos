@@ -19,7 +19,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "Range1D.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {
 
@@ -60,19 +60,19 @@ Range1D NLPDirect::con_undecomp() const
 const NLPDirect::mat_fcty_ptr_t
 NLPDirect::factory_GcU() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 const NLPDirect::mat_fcty_ptr_t
 NLPDirect::factory_Uz() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 const NLPDirect::mat_fcty_ptr_t
 NLPDirect::factory_GcUD() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 const NLPDirect::mat_sym_fcty_ptr_t

@@ -19,7 +19,7 @@
 #include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
@@ -47,7 +47,7 @@ class PostProcessBarrierLineSearch_Step
 		/** Constructor.
 		 */
 		PostProcessBarrierLineSearch_Step(
-		  MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp
+		  Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp
 		  );
 		//@}
 
@@ -63,7 +63,7 @@ class PostProcessBarrierLineSearch_Step
 		//@}
 
 	private:
-		MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
+		Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
 
 	}; // end class PostProcessBarrierLineSearch_Step
 

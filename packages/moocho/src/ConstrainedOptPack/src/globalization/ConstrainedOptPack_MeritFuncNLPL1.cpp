@@ -19,7 +19,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace ConstrainedOptPack {
@@ -86,7 +86,7 @@ value_type MeritFuncNLPL1::calc_deriv(
 	)
 {
 	using AbstractLinAlgPack::dot;
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		h_k || hl || hu, std::logic_error
 		,"MeritFuncNLPL1::value(...) : Error! general inequalities are not supported yet" );
 	return deriv_ = dot( Gf_k, d_k ) - ( c_k ? mu_ * c_k->norm_1() : 0.0 );

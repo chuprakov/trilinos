@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 #ifdef _DEBUG
 #define CLASS_MEMBER_PTRS \
@@ -64,7 +64,7 @@ VectorSpace::space_fcty_ptr_t
 VectorSpaceSerial::small_vec_spc_fcty() const
 {
 	CLASS_MEMBER_PTRS
-	return MemMngPack::rcp(new VectorSpaceFactorySerial());
+	return Teuchos::rcp(new VectorSpaceFactorySerial());
 }
 
 VectorSpace::space_ptr_t
@@ -72,7 +72,7 @@ VectorSpaceSerial::clone() const
 {
 	CLASS_MEMBER_PTRS
 	namespace mmp = MemMngPack;
-	return mmp::rcp( new VectorSpaceSerial( dim_	) );
+	return Teuchos::rcp( new VectorSpaceSerial( dim_	) );
 }
 
 VectorSpace::vec_mut_ptr_t
@@ -80,7 +80,7 @@ VectorSpaceSerial::create_member() const
 {
 	CLASS_MEMBER_PTRS
 	namespace mmp = MemMngPack;
-	return mmp::rcp(new VectorMutableDense(dim_));
+	return Teuchos::rcp(new VectorMutableDense(dim_));
 }
 
 VectorSpace::multi_vec_mut_ptr_t
@@ -88,7 +88,7 @@ VectorSpaceSerial::create_members(size_type num_vecs) const
 {
 	CLASS_MEMBER_PTRS
 	namespace mmp = MemMngPack;
-	return mmp::rcp(new MultiVectorMutableDense(dim_,num_vecs));
+	return Teuchos::rcp(new MultiVectorMutableDense(dim_,num_vecs));
 }
 
 VectorSpace::space_ptr_t
@@ -99,15 +99,15 @@ VectorSpaceSerial::sub_space(const Range1D& rng_in) const
 	const size_type this_dim = this->dim();
 	const Range1D rng = RangePack::full_range( rng_in, 1, this_dim );
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rng.ubound() > this_dim, std::out_of_range
 		,"VectorSpaceSerial::sub_view(...) : Error, "
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
 		"is not in the range [1,this->dim()] = [1," << this_dim );
 #endif
 	if( rng == Range1D(1,this_dim) )
-		return mmp::rcp( this, false );
-	return mmp::rcp( new VectorSpaceSerial( rng.size() ) ); 
+		return Teuchos::rcp( this, false );
+	return Teuchos::rcp( new VectorSpaceSerial( rng.size() ) ); 
 }
 
 VectorSpace::space_ptr_t
@@ -117,7 +117,7 @@ VectorSpaceSerial::space(
 	) const
 {
 	CLASS_MEMBER_PTRS
-	return MemMngPack::rcp( new VectorSpaceSerial( BLAS_Cpp::rows( P.rows(), P.cols(), P_trans ) ) ); 
+	return Teuchos::rcp( new VectorSpaceSerial( BLAS_Cpp::rows( P.rows(), P.cols(), P_trans ) ) ); 
 }
 
 } // end namespace AbstractLinAlgPack

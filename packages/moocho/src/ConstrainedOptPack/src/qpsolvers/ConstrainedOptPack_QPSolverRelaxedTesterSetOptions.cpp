@@ -54,7 +54,7 @@ QPSolverRelaxedTesterSetOptions::QPSolverRelaxedTesterSetOptions(
 			QPSolverRelaxedTester >( target )
 {}
 
-void QPSolverRelaxedTesterSetOptions::set_option(
+void QPSolverRelaxedTesterSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	typedef QPSolverRelaxedTester target_t;

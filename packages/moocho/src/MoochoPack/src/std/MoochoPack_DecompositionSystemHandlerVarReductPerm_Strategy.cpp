@@ -34,7 +34,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace MoochoPack {
 
@@ -170,7 +170,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 
 	if( !decomp_updated ) {
 		if( s.get_P_var_current().get() == NULL ) {
-			MemMngPack::ref_count_ptr<Permutation>
+			Teuchos::RefCountPtr<Permutation>
 				P_var = nlp_vrp.factory_P_var()->create(),
 				P_equ = nlp_vrp.factory_P_equ()->create();
 			Range1D
@@ -181,7 +181,7 @@ bool DecompositionSystemHandlerVarReductPerm_Strategy::update_decomposition(
 			s.set_P_var_current( P_var );
 			s.set_P_equ_current( P_equ );
 		}
-		MemMngPack::ref_count_ptr<Permutation>
+		Teuchos::RefCountPtr<Permutation>
 			P_var = nlp_vrp.factory_P_var()->create(),
 			P_equ = nlp_vrp.factory_P_equ()->create();
 		Range1D

@@ -26,7 +26,7 @@ namespace {
 
 	enum local_EOptions {
 		PRINT_ALL
-		,THROW_EXCEPTION
+		,TEST_FOR_EXCEPTION
 	};
 
 	const char* local_SOptions[local_num_options]	= {
@@ -47,7 +47,7 @@ NLPTesterSetOptions::NLPTesterSetOptions(
 			NLPTester >( target )
 {}
 
-void NLPTesterSetOptions::set_option(
+void NLPTesterSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	namespace ofsp = OptionsFromStreamPack;
@@ -60,7 +60,7 @@ void NLPTesterSetOptions::set_option(
 				StringToBool( "print_all", option_value.c_str() )
 				);
 			break;
-		case THROW_EXCEPTION:
+		case TEST_FOR_EXCEPTION:
 			target().throw_exception(
 				StringToBool( "throw_exception", option_value.c_str() )
 				);

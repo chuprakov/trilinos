@@ -22,7 +22,7 @@
 #include "ConstrainedOptPack/src/misc/VariableBoundsTester.hpp"
 #include "NLPInterfacePack/src/abstract/test/NLPFirstDerivTester.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 

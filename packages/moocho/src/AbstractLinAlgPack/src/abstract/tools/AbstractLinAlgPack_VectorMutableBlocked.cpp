@@ -21,7 +21,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
 #include "Range1D.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 template< class T >
@@ -48,7 +48,7 @@ void VectorMutableBlocked::initialize(
 	,const vec_space_comp_ptr_t&         vec_space
 	)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		vec_space.get() == NULL, std::logic_error
 		,"VectorMutableBlocked::initialize(...): Error, Must be constructed from "
 		"a non-null block vector space!" );
@@ -87,19 +87,19 @@ void VectorMutableBlocked::apply_op(
 
 	// Validate the compatibility of the vectors!
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!(1 <= first_ele_in && first_ele_in <= n), std::out_of_range
 		,"VectorMutableBlocked::apply_op(...): Error, "
 		"first_ele_in = " << first_ele_in << " is not in range [1,"<<n<<"]" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		sub_dim_in < 0, std::invalid_argument
 		,"VectorMutableBlocked::apply_op(...): Error, "
 		"sub_dim_in = " << sub_dim_in << " is not acceptable" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		global_offset_in < 0, std::invalid_argument
 		,"VectorMutableBlocked::apply_op(...): Error, "
 		"global_offset_in = " << global_offset_in << " is not acceptable" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		sub_dim_in > 0 && sub_dim_in - (first_ele_in - 1) > n, std::length_error
 		,"VectorMutableBlocked::apply_op(...): Error, "
 		"global_offset_in = " << global_offset_in << ", sub_dim_in = " << sub_dim_in
@@ -108,7 +108,7 @@ void VectorMutableBlocked::apply_op(
 	bool test_failed;
 	{for(int k = 0; k < num_vecs; ++k) {
 		test_failed = !this->space().is_compatible(vecs[k]->space());
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			test_failed, VectorSpace::IncompatibleVectorSpaces
 			,"VectorMutableBlocked::apply_op(...): Error vecs["<<k<<"]->space() "
 			<<"of type \'"<<typeid(vecs[k]->space()).name()<<"\' is not compatible with this "
@@ -117,7 +117,7 @@ void VectorMutableBlocked::apply_op(
 	}}
 	{for(int k = 0; k < num_targ_vecs; ++k) {
 		test_failed = !this->space().is_compatible(targ_vecs[k]->space());
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			test_failed, VectorSpace::IncompatibleVectorSpaces
 			,"VectorMutableBlocked::apply_op(...): Error targ_vecs["<<k<<"]->space() "
 			<<"of type \'"<<typeid(vecs[k]->space()).name()<<"\' is not compatible with this "
@@ -132,7 +132,7 @@ void VectorMutableBlocked::apply_op(
 	{for(int k = 0; k < num_vecs; ++k) {
 		vecs_args[k] = dynamic_cast<const VectorMutableBlocked*>(vecs[k]);
 #ifdef _DEBUG
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			vecs_args[k] == NULL, VectorSpace::IncompatibleVectorSpaces
 			,"VectorMutableBlocked::apply_op(...): Error vecs["<<k<<"] "
 			<<"of type \'"<<typeid(*vecs[k]).name()<<"\' does not support the "
@@ -145,7 +145,7 @@ void VectorMutableBlocked::apply_op(
 	{for(int k = 0; k < num_targ_vecs; ++k) {
 		targ_vecs_args[k] = dynamic_cast<VectorMutableBlocked*>(targ_vecs[k]);
 #ifdef _DEBUG
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			targ_vecs_args[k] == NULL, VectorSpace::IncompatibleVectorSpaces
 			,"VectorMutableBlocked::apply_op(...): Error targ_vecs["<<k<<"] "
 			<<"of type \'"<<typeid(*targ_vecs[k]).name()<<"\' does not support the "
@@ -333,7 +333,7 @@ VectorMutableBlocked::sub_view( const Range1D& rng_in )
 	const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
 	// Validate the preconditions
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		dim < rng.ubound(), std::out_of_range
 		,"VectorMutableBlocked::sub_view(...): Error, rng = "
 		<< "["<<rng.lbound()<<","<<rng.ubound()<<"] is not in range [1,"<<dim<<"]" );
@@ -341,7 +341,7 @@ VectorMutableBlocked::sub_view( const Range1D& rng_in )
 	vecs_t &vecs = this->vecs_; // Need to examine in debugger!
 	if( rng.lbound() == 1 && rng.ubound() == dim ) {
 		if( vecs.size() == 1 )   return vecs[0]->sub_view(Range1D());
-		else                     return rcp::rcp(this,false);
+		else                     return Teuchos::rcp(this,false);
 	}
 	// Get the position of the vector space object of interest
 	int           kth_vector_space  = -1;
@@ -369,10 +369,10 @@ VectorMutableBlocked::sub_view( const Range1D& rng_in )
 	assert( end_kth_vector_space > kth_vector_space );
 #endif
 	// Create a VectorWithOpMutableCompsiteStd object containing the relavant constituent vectors
-	rcp::ref_count_ptr<VectorMutableBlocked>
-		vec_comp = rcp::rcp(new VectorMutableBlocked(
+	Teuchos::RefCountPtr<VectorMutableBlocked>
+		vec_comp = Teuchos::rcp(new VectorMutableBlocked(
 			&vecs[kth_vector_space]
-			,rcp::rcp(new VectorSpaceBlocked(
+			,Teuchos::rcp(new VectorSpaceBlocked(
 				&vector_spaces[kth_vector_space]
 				,end_kth_vector_space - kth_vector_space + 1 ))
 			));
@@ -381,7 +381,7 @@ VectorMutableBlocked::sub_view( const Range1D& rng_in )
 		// The client selected exactly a contigous set of vectors
 		return vec_comp;
 	// The client selected some sub-set of elements in the contigous set of vectors
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new VectorMutableSubView(
 			vec_comp
 			,Range1D( 
@@ -446,7 +446,7 @@ void VectorMutableBlocked::set_sub_vector( const RTOpPack::SparseSubVector& sub_
 void VectorMutableBlocked::assert_in_range(int k) const
 {
 	assert_initialized();
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		k >= vec_space_->num_vector_spaces(), std::logic_error
 		,"VectorMutableBlocked::assert_in_range(k) : Error, k = " << k << " is not "
 		"in range [0," << vec_space_->num_vector_spaces() << "]" );
@@ -454,7 +454,7 @@ void VectorMutableBlocked::assert_in_range(int k) const
 
 void VectorMutableBlocked::assert_initialized() const
 {
-	THROW_EXCEPTION(!vec_space_.get(),std::logic_error,"Error, this is not initalized!");
+	TEST_FOR_EXCEPTION(!vec_space_.get(),std::logic_error,"Error, this is not initalized!");
 }
 
 } // end namespace AbstractLinAlgPack

@@ -240,24 +240,24 @@ bool TangentialStepWithInequStd_Step::do_step(
 	const Vector      &qp_g       = qp_grad_k;
 	const MatrixSymOp   &qp_G       = rHL_iq.get_k(0);
 	const value_type		qp_etaL     = 0.0;
-	vec_mut_ptr_t           qp_dL       = mmp::null;
-	vec_mut_ptr_t           qp_dU       = mmp::null;
-	mmp::ref_count_ptr<const MatrixOp>
-                            qp_E        = mmp::null;
+	vec_mut_ptr_t           qp_dL       = Teuchos::null;
+	vec_mut_ptr_t           qp_dU       = Teuchos::null;
+	Teuchos::RefCountPtr<const MatrixOp>
+                            qp_E        = Teuchos::null;
 	BLAS_Cpp::Transp        qp_trans_E  = BLAS_Cpp::no_trans;
-	vec_mut_ptr_t           qp_b        = mmp::null;
-	vec_mut_ptr_t           qp_eL       = mmp::null;
-	vec_mut_ptr_t           qp_eU       = mmp::null;
-	mmp::ref_count_ptr<const MatrixOp>
-	                        qp_F        = mmp::null;
+	vec_mut_ptr_t           qp_b        = Teuchos::null;
+	vec_mut_ptr_t           qp_eL       = Teuchos::null;
+	vec_mut_ptr_t           qp_eU       = Teuchos::null;
+	Teuchos::RefCountPtr<const MatrixOp>
+	                        qp_F        = Teuchos::null;
 	BLAS_Cpp::Transp        qp_trans_F  = BLAS_Cpp::no_trans;
-	vec_mut_ptr_t           qp_f        = mmp::null;
+	vec_mut_ptr_t           qp_f        = Teuchos::null;
 	value_type				qp_eta      = 0.0;
 	VectorMutable     &qp_d       = pz_k;  // pz_k will be updated directly!
-	vec_mut_ptr_t           qp_nu       = mmp::null;
-	vec_mut_ptr_t           qp_mu       = mmp::null;
-	vec_mut_ptr_t           qp_Ed       = mmp::null;
-	vec_mut_ptr_t           qp_lambda   = mmp::null;
+	vec_mut_ptr_t           qp_nu       = Teuchos::null;
+	vec_mut_ptr_t           qp_mu       = Teuchos::null;
+	vec_mut_ptr_t           qp_Ed       = Teuchos::null;
+	vec_mut_ptr_t           qp_lambda   = Teuchos::null;
 
 	//
 	// Determine if we can use simple bounds on pz.
@@ -307,7 +307,7 @@ bool TangentialStepWithInequStd_Step::do_step(
 		qp_nu = nu_k.sub_view(var_indep); // nu_k(var_indep) will be updated directly!
 		if(m) {
 			// Set general inequality constraints for D*pz
-			qp_E   = mmp::rcp(&Zvr->D(),false);
+			qp_E   = Teuchos::rcp(&Zvr->D(),false);
 			qp_b   = Ypy_k->sub_view(var_dep);
 			qp_eL  = bl->sub_view(var_dep);
 			qp_eU  = bu->sub_view(var_dep);
@@ -318,12 +318,12 @@ bool TangentialStepWithInequStd_Step::do_step(
 	else if( !use_simple_pz_bounds ) {
 		// There are no simple bounds! (leave qp_dL, qp_dU and qp_nu as null)
 		// Set general inequality constraints for Z*pz
-		qp_E   = mmp::rcp(&Z_k,false);
-		qp_b   = mmp::rcp(Ypy_k,false);
+		qp_E   = Teuchos::rcp(&Z_k,false);
+		qp_b   = Teuchos::rcp(Ypy_k,false);
 		qp_eL  = bl;
 		qp_eU  = bu;
-		qp_mu  = mmp::rcp(&nu_k,false);
-		qp_Ed  = mmp::rcp(&Zpz_k,false); // Zpz_k will be updated directly!
+		qp_mu  = Teuchos::rcp(&nu_k,false);
+		qp_Ed  = Teuchos::rcp(&Zpz_k,false); // Zpz_k will be updated directly!
 	}
 	else {
 		assert(0);
@@ -337,7 +337,7 @@ bool TangentialStepWithInequStd_Step::do_step(
 		V_MtV( qp_f.get(), Uy_iq->get_k(0), BLAS_Cpp::no_trans, py_iq.get_k(0) );
 		Vp_V( qp_f.get(), *c_iq->get_k(0).sub_view(equ_undecomp) );
 		// Must resize for the undecomposed constriants if it has not already been
-		qp_F       = mmp::rcp(&Uy_iq->get_k(0),false);
+		qp_F       = Teuchos::rcp(&Uy_iq->get_k(0),false);
 		qp_lambda  = lambda_iq->set_k(0).sub_view(equ_undecomp); // lambda_k(equ_undecomp), will be updated directly!
 	}
 

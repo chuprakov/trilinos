@@ -18,7 +18,7 @@
 
 #include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -40,11 +40,11 @@ class MatrixSymHessianRelaxNonSing
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixSymOpNonsing>  G_ptr_t;
+	typedef Teuchos::RefCountPtr<const MatrixSymOpNonsing>  G_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<VectorMutable>               vec_mut_ptr_t;
+	typedef Teuchos::RefCountPtr<VectorMutable>               vec_mut_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const VectorSpace>                 space_ptr_t;
+	typedef Teuchos::RefCountPtr<const VectorSpace>                 space_ptr_t;
 	
 	/** @name Constructors/initializers */
 	//@{
@@ -67,7 +67,7 @@ public:
 	MatrixSymHessianRelaxNonSing(
 		const G_ptr_t         &G_ptr
 		,const vec_mut_ptr_t  &M_diag_ptr
-		,const space_ptr_t    &space = MemMngPack::null
+		,const space_ptr_t    &space = Teuchos::null
 		);
 
 	///
@@ -102,7 +102,7 @@ public:
 	void initialize(
 		const G_ptr_t         &G_ptr
 		,const vec_mut_ptr_t  &M_diag_ptr
-		,const space_ptr_t    &space = MemMngPack::null
+		,const space_ptr_t    &space = Teuchos::null
 		);
 
 	///

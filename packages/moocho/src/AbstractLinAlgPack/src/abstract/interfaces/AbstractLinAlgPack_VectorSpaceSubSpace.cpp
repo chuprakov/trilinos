@@ -17,7 +17,7 @@
 
 #include "VectorSpaceSubSpace.hpp"
 #include "VectorMutableSubView.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -29,13 +29,13 @@ VectorSpaceSubSpace::VectorSpaceSubSpace( const space_ptr_t& full_space, const R
 void VectorSpaceSubSpace::initialize( const space_ptr_t& full_space, const Range1D& rng )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		full_space.get() == NULL, std::invalid_argument
 		,"VectorSpaceSubSpace::initialize(...): Error!" );
 #endif
 	const index_type n = full_space->dim();
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!rng.full_range() && rng.ubound() > n, std::out_of_range
 		,"VectorSpaceSubSpace::initialize(...): Error, "
 		"rng = [" << rng.lbound() << "," << rng.ubound() << "] is not in the range "
@@ -47,7 +47,7 @@ void VectorSpaceSubSpace::initialize( const space_ptr_t& full_space, const Range
 
 void VectorSpaceSubSpace::set_uninitialized()
 {
-	full_space_ = MemMngPack::null;
+	full_space_ = Teuchos::null;
 	rng_        = Range1D::Invalid;
 }
 
@@ -55,10 +55,10 @@ void VectorSpaceSubSpace::set_uninitialized()
 void VectorSpaceSubSpace::validate_range(const Range1D& rng) const
 {
 	const index_type n = this->dim();
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		full_space_.get() == NULL, std::logic_error
 		,"VectorSpaceSubSpace::validate_range(rng): Error, Uninitialized" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		full_space_.get() && !rng.full_range() && rng.ubound() > n, std::logic_error
 		,"VectorSpaceSubSpace::validate_range(rng): Error, "
 		"rng = [" << rng.lbound() << "," << rng.ubound() << "] is not in the range "
@@ -92,33 +92,33 @@ VectorSpace::vec_mut_ptr_t VectorSpaceSubSpace::create_member() const
 {
 	namespace rcp = MemMngPack;
 	if( full_space_.get() )
-		return rcp::rcp(
+		return Teuchos::rcp(
 			new VectorMutableSubView(
 				full_space_->create_member(), rng_ 
 				) );
-	return rcp::null;
+	return Teuchos::null;
 }
 
 VectorSpace::space_ptr_t VectorSpaceSubSpace::clone() const
 {
 	namespace rcp = MemMngPack;
 	if( full_space_.get() )
-		return rcp::rcp(new VectorSpaceSubSpace( full_space_->clone(), rng_ ));
-	return rcp::rcp(new VectorSpaceSubSpace());
+		return Teuchos::rcp(new VectorSpaceSubSpace( full_space_->clone(), rng_ ));
+	return Teuchos::rcp(new VectorSpaceSubSpace());
 }
 
 VectorSpace::space_ptr_t VectorSpaceSubSpace::sub_space(const Range1D& rng_in) const
 {
 	namespace rcp = MemMngPack;
 	if( full_space_.get() == NULL && rng_in == Range1D::Invalid )
-		return rcp::rcp(this,false);
+		return Teuchos::rcp(this,false);
 	validate_range(rng_in);
 	const index_type dim         = this->dim();
 	const Range1D    rng         = rng_in.full_range() ? Range1D(1,dim) : rng_in;
 	if( rng.lbound() == 1 && rng.ubound() == dim )
 		return space_ptr_t( this, false );
 	const index_type this_offset = rng_.lbound() - 1;
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new VectorSpaceSubSpace(
 			full_space_
 			,Range1D( 

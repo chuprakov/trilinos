@@ -61,7 +61,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 	using std::right;
 	using DynamicCastHelperPack::dyn_cast;
 	namespace rcp = MemMngPack;
-	using rcp::ref_count_ptr;
+	using Teuchos::RefCountPtr;
 	using LinAlgOpPack::V_MtV;
 	using DenseLinAlgPack::dot;
 	using AbstractLinAlgPack::norm_inf;
@@ -88,9 +88,9 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 	bool do_projected_rHL_RR = false;
 
 	// See if we still have a limited memory BFGS update matrix
-	ref_count_ptr<MatrixSymPosDefLBFGS> // We don't want this to be deleted until we are done with it
-		lbfgs_rHL_RR = rcp::rcp_const_cast<MatrixSymPosDefLBFGS>(
-			rcp::rcp_dynamic_cast<const MatrixSymPosDefLBFGS>(rHL_super.B_RR_ptr()) );
+	RefCountPtr<MatrixSymPosDefLBFGS> // We don't want this to be deleted until we are done with it
+		lbfgs_rHL_RR = Teuchos::rcp_const_cast<MatrixSymPosDefLBFGS>(
+			Teuchos::rcp_dynamic_cast<const MatrixSymPosDefLBFGS>(rHL_super.B_RR_ptr()) );
 
 	if( lbfgs_rHL_RR.get() && rHL_super.Q_R().is_identity()  ) {
 		//
@@ -219,7 +219,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 									);
 						}
 						// Create new matrix to use for rHL_RR initialized to rHL_RR = rHL_scale*I
-						ref_count_ptr<MatrixSymSecant>
+						RefCountPtr<MatrixSymSecant>
 							rHL_RR = NULL;
 						if( low_num_super_basics ) {
 							rHL_RR = new MatrixSymPosDefCholFactor(
@@ -257,8 +257,8 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 						// Reinitialize rHL
 						rHL_super.initialize(
 							n_pz, n_pz_R, &i_x_free[0], &i_x_fixed[0], &bnd_fixed[0]
-							,rcp::rcp_const_cast<const MatrixSymWithOpFactorized>(
-								rcp::rcp_dynamic_cast<MatrixSymWithOpFactorized>(rHL_RR))
+							,Teuchos::rcp_const_cast<const MatrixSymWithOpFactorized>(
+								Teuchos::rcp_dynamic_cast<MatrixSymWithOpFactorized>(rHL_RR))
 							,NULL,BLAS_Cpp::no_trans,rHL_super.B_XX_ptr()
 							);
 						//

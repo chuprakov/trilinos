@@ -198,8 +198,8 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	bigM_vec_.initialize(1); // dim == 1
 	bigM_vec_ = bigM();	
 	G_relaxed_.initialize(
-		mmp::rcp(&dyn_cast<const MatrixSymOpNonsing>(G),false)
-		,mmp::rcp(&bigM_vec_,false)
+		Teuchos::rcp(&dyn_cast<const MatrixSymOpNonsing>(G),false)
+		,Teuchos::rcp(&bigM_vec_,false)
 		,space_d_eta
 		);
 	

@@ -17,7 +17,7 @@
 
 #include "MoochoPack/src/std/LineSearchFilter_StepSetOptions.hpp"
 #include "StringToBool.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 // Define the options
 namespace {
@@ -66,7 +66,7 @@ LineSearchFilter_StepSetOptions::LineSearchFilter_StepSetOptions(
 	{
 	}
 
-void LineSearchFilter_StepSetOptions::set_option( 
+void LineSearchFilter_StepSetOptions::setOption( 
   int option_num, const std::string& option_value )
 	{
 	using OptionsFromStreamPack::StringToBool;

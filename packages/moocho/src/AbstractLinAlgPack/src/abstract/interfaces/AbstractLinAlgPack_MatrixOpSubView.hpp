@@ -19,7 +19,7 @@
 #include <iosfwd>
 
 #include "MatrixOp.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 #include "VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
@@ -39,7 +39,7 @@ class MatrixOpSubView : public virtual MatrixOp {
 public:
 	
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixOp>   mat_ptr_t;
+	typedef Teuchos::RefCountPtr<MatrixOp>   mat_ptr_t;
 
 	/** @name Constructors/initalizers */
 	//@{
@@ -48,7 +48,7 @@ public:
 	/** Calls <tt>this->initialize(...)</tt>
 	 */
 	MatrixOpSubView(
-		const mat_ptr_t&   M_full    = MemMngPack::null
+		const mat_ptr_t&   M_full    = Teuchos::null
 		,const Range1D&    rng_rows  = Range1D()
 		,const Range1D&    rng_cols  = Range1D()
 		,BLAS_Cpp::Transp   M_trans  = BLAS_Cpp::no_trans

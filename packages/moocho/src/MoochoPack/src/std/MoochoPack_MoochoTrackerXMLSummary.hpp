@@ -37,7 +37,7 @@ public:
 
 	/// Construct with an output stream
 	MoochoTrackerXMLSummary(
-	  const MemMngPack::ref_count_ptr<std::ostream> &journal_out
+	  const Teuchos::RefCountPtr<std::ostream> &journal_out
 	  ,const std::string xml_filename
 	  ,const std::string problem_name
 	  ,const std::string algorithm_description

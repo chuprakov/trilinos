@@ -133,7 +133,7 @@
 #include "AbstractFactoryStd.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 // Stuff to read in options
 #include "StringToIntMap.hpp"
@@ -196,7 +196,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 {
 	namespace afp = MemMngPack;
 	namespace mmp = MemMngPack;
-	using mmp::ref_count_ptr;
+	using Teuchos::RefCountPtr;
 	using DynamicCastHelperPack::dyn_cast;
 
 	if(trase_out) {
@@ -221,8 +221,8 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 	if(trase_out)
 		*trase_out << "\n*** Creating the NLPAlgo algo object ...\n";
 
-	typedef mmp::ref_count_ptr<NLPAlgo>	algo_ptr_t;
-	algo_ptr_t algo = mmp::rcp(new NLPAlgo);
+	typedef Teuchos::RefCountPtr<NLPAlgo>	algo_ptr_t;
+	algo_ptr_t algo = Teuchos::rcp(new NLPAlgo);
 	assert(algo.get());
 	algo_cntr->set_algo(algo);
 	algo->set_algo_cntr(algo_cntr);
@@ -399,7 +399,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 	// /////////////////////////////////////////////////////
 	// C.1. Create the decomposition system object
 
-	typedef ref_count_ptr<DecompositionSystem> decomp_sys_ptr_t;
+	typedef RefCountPtr<DecompositionSystem> decomp_sys_ptr_t;
 	decomp_sys_ptr_t decomp_sys;
 	if(
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
@@ -416,8 +416,8 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 	}
 
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
-	ref_count_ptr<DecompositionSystemVarReductPerm>
-		decomp_sys_perm = mmp::rcp_dynamic_cast<DecompositionSystemVarReductPerm>(decomp_sys);
+	RefCountPtr<DecompositionSystemVarReductPerm>
+		decomp_sys_perm = Teuchos::rcp_dynamic_cast<DecompositionSystemVarReductPerm>(decomp_sys);
 #endif
 
 	// /////////////////////////////////////////////////////
@@ -432,9 +432,9 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		// Create the state object with the vector spaces
 		//
 
-		typedef ref_count_ptr<NLPAlgoState>   state_ptr_t;
+		typedef RefCountPtr<NLPAlgoState>   state_ptr_t;
 		state_ptr_t
-			state = mmp::rcp(
+			state = Teuchos::rcp(
 				new NLPAlgoState(
 					decomp_sys
 					,nlp.space_x()
@@ -443,16 +443,16 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					   ? ( tailored_approach
 						   ? ( nlp_fod->var_dep().size() 
 							   ? nlp.space_x()->sub_space(nlp_fod->var_dep())->clone()
-							   : mmp::null )
+							   : Teuchos::null )
 						   : decomp_sys->space_range() // could be NULL for BasisSystemPerm
 						   )
-					   : mmp::null
+					   : Teuchos::null
 						)
 					,( m
 					   ? ( tailored_approach
 						   ?( nlp_fod->var_indep().size()
 							  ? nlp.space_x()->sub_space(nlp_fod->var_indep())->clone()
-							  : mmp::null )
+							  : Teuchos::null )
 						   : decomp_sys->space_null() // could be NULL for BasisSystemPerm
 						   )
 					   : nlp.space_x()
@@ -472,8 +472,8 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		// Add reduced Hessian
 
 		if( !cov_.exact_reduced_hessian_ ) {
-			ref_count_ptr<afp::AbstractFactory<MatrixSymOp> >
-				abstract_factory_rHL = mmp::null;
+			RefCountPtr<afp::AbstractFactory<MatrixSymOp> >
+				abstract_factory_rHL = Teuchos::null;
 			// Only maintain the orginal matrix if we have inequality constraints and therefore will be
 			// needing a QP solver (which may be QPSchur which needs an accurate original matrix for
 			// iterative refinement).
@@ -486,7 +486,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 									 || algo->algo_cntr().check_results() );
 			switch( cov_.quasi_newton_ ) {
 				case QN_BFGS:
-					abstract_factory_rHL = mmp::rcp(
+					abstract_factory_rHL = Teuchos::rcp(
 						new afp::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
 							MatrixSymPosDefCholFactor::PostMod(
 								maintain_original      // maintain_original
@@ -497,7 +497,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 						);
 					break;
 				case QN_LBFGS:
-					abstract_factory_rHL = mmp::rcp(
+					abstract_factory_rHL = Teuchos::rcp(
 						new afp::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefLBFGS,MatrixSymPosDefLBFGS::PostMod>(
 							MatrixSymPosDefLBFGS::PostMod(
 								cov_.num_lbfgs_updates_stored_  //
@@ -514,7 +514,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			
 			state->set_iter_quant(
 				rHL_name
-				,mmp::rcp(
+				,Teuchos::rcp(
 					new IterQuantityAccessContiguous<MatrixSymOp>(
 						1
 						,rHL_name
@@ -533,16 +533,16 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 
 		if( cov_.line_search_method_ != LINE_SEARCH_NONE 
 			 && cov_.line_search_method_ != LINE_SEARCH_FILTER) {
-			ref_count_ptr<afp::AbstractFactory<MeritFuncNLP> >
-				merit_func_factory = mmp::null;
+			RefCountPtr<afp::AbstractFactory<MeritFuncNLP> >
+				merit_func_factory = Teuchos::null;
 			switch( cov_.merit_function_type_ ) {
 				case MERIT_FUNC_L1:
-					merit_func_factory = mmp::rcp(
+					merit_func_factory = Teuchos::rcp(
 						new afp::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPL1>());
 					break;
 				case MERIT_FUNC_MOD_L1:
 				case MERIT_FUNC_MOD_L1_INCR:
-					merit_func_factory = mmp::rcp(
+					merit_func_factory = Teuchos::rcp(
 						new afp::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPModL1>());
 					break;
 				default:
@@ -550,7 +550,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			}
 			state->set_iter_quant(
 				merit_func_nlp_name
-				,mmp::rcp(
+				,Teuchos::rcp(
 					new IterQuantityAccessContiguous<MeritFuncNLP>(
 						1
 						,merit_func_nlp_name
@@ -565,7 +565,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		    // Add the filter iteration quantity
 		    state->set_iter_quant(
 				FILTER_IQ_STRING
-				,mmp::rcp(
+				,Teuchos::rcp(
 				     new IterQuantityAccessContiguous<Filter_T>(1,FILTER_IQ_STRING)
 				)
 		    );
@@ -575,14 +575,14 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			// Add bounds on d
 			state->set_iter_quant(
 				dl_name
-				,mmp::rcp(
+				,Teuchos::rcp(
 					new IterQuantityAccessContiguous<VectorMutable>(
 						2, dl_name
 						, nlp.space_x() ) )
 				);
 			state->set_iter_quant(
 				du_name
-				,mmp::rcp(
+				,Teuchos::rcp(
 					new IterQuantityAccessContiguous<VectorMutable>(
 						2, du_name
 						, nlp.space_x() ) )
@@ -590,13 +590,13 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			// Add active-set iteration quantity
 			state->set_iter_quant(
 				act_set_stats_name
-				,mmp::rcp(
+				,Teuchos::rcp(
 					new IterQuantityAccessContiguous<ActSetStats>( 1, act_set_stats_name ) )
 				);
 			// Add QP solver stats iteration quantity
 			state->set_iter_quant(
 				qp_solver_stats_name
-				,mmp::rcp(
+				,Teuchos::rcp(
 					new IterQuantityAccessContiguous<QPSolverStats>( 1, qp_solver_stats_name ) )
 				);
 		}
@@ -662,12 +662,12 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 	if(trase_out)
 		*trase_out << "\n*** Creating and setting the step objects ...\n";
 
-//	typedef ref_count_ptr<QPSolverRelaxed> qp_solver_ptr_t;
+//	typedef RefCountPtr<QPSolverRelaxed> qp_solver_ptr_t;
 //	qp_solver_ptr_t qp_solver;
 //	typedef ConstrainedOptPack::QPSolverRelaxedTester QPSolverRelaxedTester;
-//	typedef ref_count_ptr<QPSolverRelaxedTester> qp_tester_ptr_t;
+//	typedef RefCountPtr<QPSolverRelaxedTester> qp_tester_ptr_t;
 //	qp_tester_ptr_t qp_tester;
-//	typedef ref_count_ptr<FeasibilityStepReducedStd_Strategy> feasibility_step_strategy_ptr_t;
+//	typedef RefCountPtr<FeasibilityStepReducedStd_Strategy> feasibility_step_strategy_ptr_t;
 //	feasibility_step_strategy_ptr_t  feasibility_step_strategy;
 
 	{
@@ -677,34 +677,34 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		// specific algorithms
 		//
 		
-		typedef ref_count_ptr<AlgorithmStep>   algo_step_ptr_t;
+		typedef RefCountPtr<AlgorithmStep>   algo_step_ptr_t;
 
 		// Create the EvalNewPoint step and associated objects
-		algo_step_ptr_t                                    eval_new_point_step           = mmp::null;
-		ref_count_ptr<CalcFiniteDiffProd>                  calc_fd_prod                  = mmp::null;
-		ref_count_ptr<VariableBoundsTester>                bounds_tester                 = mmp::null;
-		ref_count_ptr<NewDecompositionSelection_Strategy>  new_decomp_selection_strategy = mmp::null;
+		algo_step_ptr_t                                    eval_new_point_step           = Teuchos::null;
+		RefCountPtr<CalcFiniteDiffProd>                  calc_fd_prod                  = Teuchos::null;
+		RefCountPtr<VariableBoundsTester>                bounds_tester                 = Teuchos::null;
+		RefCountPtr<NewDecompositionSelection_Strategy>  new_decomp_selection_strategy = Teuchos::null;
 		decomp_sys_step_builder_.create_eval_new_point(
 			trase_out, nlp, nlp_foi, nlp_soi, nlp_fod, tailored_approach, decomp_sys
 			,&eval_new_point_step, &calc_fd_prod, &bounds_tester, &new_decomp_selection_strategy
 			);
 
 		// QuasiNormal_Step
-		algo_step_ptr_t    quansi_normal_step_step = mmp::null;
+		algo_step_ptr_t    quansi_normal_step_step = Teuchos::null;
 		if( !tailored_approach ) {
-			quansi_normal_step_step = mmp::rcp(new QuasiNormalStepStd_Step());
+			quansi_normal_step_step = Teuchos::rcp(new QuasiNormalStepStd_Step());
 		}
 
 		// Check and change decomposition 
-		algo_step_ptr_t    check_decomp_from_py_step  = mmp::null;
-		algo_step_ptr_t    check_decomp_from_Rpy_step = mmp::null;
+		algo_step_ptr_t    check_decomp_from_py_step  = Teuchos::null;
+		algo_step_ptr_t    check_decomp_from_Rpy_step = Teuchos::null;
 		if( new_decomp_selection_strategy.get() && cov_.max_basis_cond_change_frac_ < INF_BASIS_COND_CHANGE_FRAC ) {
-			check_decomp_from_py_step = mmp::rcp(
+			check_decomp_from_py_step = Teuchos::rcp(
 				new CheckDecompositionFromPy_Step(
 					new_decomp_selection_strategy
 					,cov_.max_basis_cond_change_frac_
 					) );
-			check_decomp_from_Rpy_step = mmp::rcp(
+			check_decomp_from_Rpy_step = Teuchos::rcp(
 				new CheckDecompositionFromRPy_Step(
 					new_decomp_selection_strategy
 					,cov_.max_basis_cond_change_frac_
@@ -712,22 +712,22 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		}
 
 		// CheckDescentQuasiNormalStep
-		algo_step_ptr_t    check_descent_quansi_normal_step_step = mmp::null;
+		algo_step_ptr_t    check_descent_quansi_normal_step_step = Teuchos::null;
 		if( algo->algo_cntr().check_results() ) {
-			check_descent_quansi_normal_step_step = mmp::rcp(new CheckDescentQuasiNormalStep_Step(calc_fd_prod));
+			check_descent_quansi_normal_step_step = Teuchos::rcp(new CheckDescentQuasiNormalStep_Step(calc_fd_prod));
 		}
 
 		// ReducedGradient_Step
-		algo_step_ptr_t    reduced_gradient_step = mmp::null;
+		algo_step_ptr_t    reduced_gradient_step = Teuchos::null;
 		if( !tailored_approach ) {
-			reduced_gradient_step = mmp::rcp(new ReducedGradientStd_Step());
+			reduced_gradient_step = Teuchos::rcp(new ReducedGradientStd_Step());
 		}
 
 		// CheckSkipBFGSUpdate
-		algo_step_ptr_t    check_skip_bfgs_update_step = mmp::null;
+		algo_step_ptr_t    check_skip_bfgs_update_step = Teuchos::null;
 		if(!cov_.exact_reduced_hessian_) {
-			ref_count_ptr<CheckSkipBFGSUpdateStd_Step>
-				step = mmp::rcp(new CheckSkipBFGSUpdateStd_Step());
+			RefCountPtr<CheckSkipBFGSUpdateStd_Step>
+				step = Teuchos::rcp(new CheckSkipBFGSUpdateStd_Step());
 			if(options_.get()) {
 				CheckSkipBFGSUpdateStd_StepSetOptions
 					opt_setter( step.get() );
@@ -737,11 +737,11 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		}
 
 		// ReducedHessian_Step
-		algo_step_ptr_t    reduced_hessian_step = mmp::null;
+		algo_step_ptr_t    reduced_hessian_step = Teuchos::null;
 		{
 			// Get the strategy object that will perform the actual secant update.
-			ref_count_ptr<ReducedHessianSecantUpdate_Strategy>
-				secant_update_strategy = mmp::null;
+			RefCountPtr<ReducedHessianSecantUpdate_Strategy>
+				secant_update_strategy = Teuchos::null;
 			switch( cov_.quasi_newton_ )
 			{
 			    case QN_BFGS:
@@ -750,9 +750,9 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			    case QN_LPBFGS:
 				{
 					// create and setup the actual BFGS strategy object
-					typedef ref_count_ptr<BFGSUpdate_Strategy> bfgs_strategy_ptr_t;
+					typedef RefCountPtr<BFGSUpdate_Strategy> bfgs_strategy_ptr_t;
 					bfgs_strategy_ptr_t
-						bfgs_strategy = mmp::rcp(new BFGSUpdate_Strategy);
+						bfgs_strategy = Teuchos::rcp(new BFGSUpdate_Strategy);
 					if(options_.get()) { 
 						BFGSUpdate_StrategySetOptions
 							opt_setter( bfgs_strategy.get() );
@@ -762,13 +762,13 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					    case QN_BFGS:
 					    case QN_LBFGS:
 						{
-							secant_update_strategy = mmp::rcp(new ReducedHessianSecantUpdateBFGSFull_Strategy(bfgs_strategy));
+							secant_update_strategy = Teuchos::rcp(new ReducedHessianSecantUpdateBFGSFull_Strategy(bfgs_strategy));
 							break;
 						}
 					    case QN_PBFGS:
 					    case QN_LPBFGS:
 						{
-							THROW_EXCEPTION(
+							TEST_FOR_EXCEPTION(
 								true, std::logic_error
 								,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
 								"The quansi_newton options of PBFGS and LPBFGS have not been updated yet!" );
@@ -782,16 +782,16 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			}
 			
 			// Finally build the step object
-			reduced_hessian_step = mmp::rcp(
+			reduced_hessian_step = Teuchos::rcp(
 				new ReducedHessianSecantUpdateStd_Step( secant_update_strategy ) );
 			// Add the QuasiNewtonStats iteration quantity
 			algo->state().set_iter_quant(
 				quasi_newton_stats_name
-				,mmp::rcp(new IterQuantityAccessContiguous<QuasiNewtonStats>(
+				,Teuchos::rcp(new IterQuantityAccessContiguous<QuasiNewtonStats>(
 					1
 					,quasi_newton_stats_name
 #ifdef _MIPS_CXX
-					,mmp::ref_count_ptr<MemMngPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats> >(
+					,Teuchos::RefCountPtr<MemMngPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats> >(
 						new MemMngPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats>())
 #endif
 					)
@@ -799,7 +799,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		}
 
 		// InitFinDiffReducedHessian_Step
-		algo_step_ptr_t  init_red_hess_step = mmp::null;
+		algo_step_ptr_t  init_red_hess_step = Teuchos::null;
 		if( cov_.hessian_initialization_ != INIT_HESS_IDENTITY ) {
 				Algorithm::poss_type poss;
 			assert(poss = algo->get_step_poss( ReducedHessian_name ) );
@@ -818,8 +818,8 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 				default:
 					assert(0);	// only local programming error?
 			}
-			mmp::ref_count_ptr<InitFinDiffReducedHessian_Step>
-				_init_red_hess_step = mmp::rcp(new InitFinDiffReducedHessian_Step(init_hess));
+			Teuchos::RefCountPtr<InitFinDiffReducedHessian_Step>
+				_init_red_hess_step = Teuchos::rcp(new InitFinDiffReducedHessian_Step(init_hess));
 			if(options_.get()) {
 				InitFinDiffReducedHessian_StepSetOptions
 					opt_setter( _init_red_hess_step.get() );
@@ -829,32 +829,32 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		}
 
 		// NullSpace_Step
-		algo_step_ptr_t    set_d_bounds_step    = mmp::null;
-		algo_step_ptr_t    tangential_step_step = mmp::null;
+		algo_step_ptr_t    set_d_bounds_step    = Teuchos::null;
+		algo_step_ptr_t    tangential_step_step = Teuchos::null;
 		if( nb == 0 ) {
-			tangential_step_step = mmp::rcp(new TangentialStepWithoutBounds_Step());
+			tangential_step_step = Teuchos::rcp(new TangentialStepWithoutBounds_Step());
 		}
 		else {
 			// Step object that sets bounds for QP subproblem
-			set_d_bounds_step = mmp::rcp(new SetDBoundsStd_AddedStep());
+			set_d_bounds_step = Teuchos::rcp(new SetDBoundsStd_AddedStep());
 			// QP Solver object
-			mmp::ref_count_ptr<QPSolverRelaxed>  qp_solver = mmp::null;
+			Teuchos::RefCountPtr<QPSolverRelaxed>  qp_solver = Teuchos::null;
 			switch( cov_.qp_solver_type_ ) {
 				case QP_QPSCHUR: {
 					using ConstrainedOptPack::QPSolverRelaxedQPSchur;
 					using ConstrainedOptPack::QPSolverRelaxedQPSchurSetOptions;
 					using ConstrainedOptPack::QPSchurInitKKTSystemHessianFull;
 //					using ConstrainedOptPack::QPSchurInitKKTSystemHessianSuperBasic;
-					mmp::ref_count_ptr<ConstrainedOptPack::QPSolverRelaxedQPSchur::InitKKTSystem>
-						init_kkt_sys = mmp::null;
+					Teuchos::RefCountPtr<ConstrainedOptPack::QPSolverRelaxedQPSchur::InitKKTSystem>
+						init_kkt_sys = Teuchos::null;
 					switch( cov_.quasi_newton_ ) {
 						case QN_BFGS:
 						case QN_LBFGS:
-							init_kkt_sys = mmp::rcp(new QPSchurInitKKTSystemHessianFull());
+							init_kkt_sys = Teuchos::rcp(new QPSchurInitKKTSystemHessianFull());
 							break;
 						case QN_PBFGS:
 						case QN_LPBFGS:
-							THROW_EXCEPTION(true,std::logic_error,"Error! PBFGS and LPBFGS are not updated yet!");
+							TEST_FOR_EXCEPTION(true,std::logic_error,"Error! PBFGS and LPBFGS are not updated yet!");
 /*
 							init_kkt_sys = new QPSchurInitKKTSystemHessianSuperBasic();
 */
@@ -862,8 +862,8 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 						default:
 							assert(0);
 					}
-					mmp::ref_count_ptr<QPSolverRelaxedQPSchur>
-						_qp_solver = mmp::rcp(new QPSolverRelaxedQPSchur(init_kkt_sys));
+					Teuchos::RefCountPtr<QPSolverRelaxedQPSchur>
+						_qp_solver = Teuchos::rcp(new QPSolverRelaxedQPSchur(init_kkt_sys));
 					QPSolverRelaxedQPSchurSetOptions
 						qp_options_setter(_qp_solver.get());
 					qp_options_setter.set_options( *options_ );
@@ -872,13 +872,13 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 				}
 				case QP_QPKWIK: {
 					using ConstrainedOptPack::QPSolverRelaxedQPKWIK;
-					mmp::ref_count_ptr<QPSolverRelaxedQPKWIK>
-						_qp_solver = mmp::rcp(new QPSolverRelaxedQPKWIK());
+					Teuchos::RefCountPtr<QPSolverRelaxedQPKWIK>
+						_qp_solver = Teuchos::rcp(new QPSolverRelaxedQPKWIK());
 					qp_solver = _qp_solver; // give ownership to delete!
 					break;
 				}
 				case QP_QPOPT: {
-					THROW_EXCEPTION(true,std::logic_error,"Error! QPKWIK interface is not updated yet!");
+					TEST_FOR_EXCEPTION(true,std::logic_error,"Error! QPKWIK interface is not updated yet!");
 /*
 #ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
 					using ConstrainedOptPack::QPSolverRelaxedQPOPT;
@@ -897,16 +897,16 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					assert(0);
 			}
 			// QP solver tester
-			mmp::ref_count_ptr<QPSolverRelaxedTester> 
-				qp_solver_tester = mmp::rcp(new QPSolverRelaxedTester());
+			Teuchos::RefCountPtr<QPSolverRelaxedTester> 
+				qp_solver_tester = Teuchos::rcp(new QPSolverRelaxedTester());
 			if(options_.get()) {
 				QPSolverRelaxedTesterSetOptions
 					opt_setter( qp_solver_tester.get() );
 				opt_setter.set_options( *options_ );
 			}
 			// The null-space step
-			mmp::ref_count_ptr<TangentialStepWithInequStd_Step>
-				tangential_step_with_inequ_step = mmp::rcp(
+			Teuchos::RefCountPtr<TangentialStepWithInequStd_Step>
+				tangential_step_with_inequ_step = Teuchos::rcp(
 					new TangentialStepWithInequStd_Step(
 						qp_solver, qp_solver_tester ) );
 			if(options_.get()) {
@@ -916,30 +916,30 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			}
 			tangential_step_step = tangential_step_with_inequ_step;
 			// Step for reinitialization reduced Hessian on QP failure
-			tangential_step_step = mmp::rcp(
+			tangential_step_step = Teuchos::rcp(
 				new QPFailureReinitReducedHessian_Step(tangential_step_step)
 				);
 		}
 
 		// CalcDFromYPYZPZ_Step
-		algo_step_ptr_t    calc_d_from_Ypy_Zpy_step = mmp::null;
+		algo_step_ptr_t    calc_d_from_Ypy_Zpy_step = Teuchos::null;
 		{
-			calc_d_from_Ypy_Zpy_step = mmp::rcp(new CalcDFromYPYZPZ_Step());
+			calc_d_from_Ypy_Zpy_step = Teuchos::rcp(new CalcDFromYPYZPZ_Step());
 		}
 
 		// CalcReducedGradLagrangianStd_AddedStep
-		algo_step_ptr_t    calc_reduced_grad_lagr_step = mmp::null;
+		algo_step_ptr_t    calc_reduced_grad_lagr_step = Teuchos::null;
 		{
-			calc_reduced_grad_lagr_step = mmp::rcp(
+			calc_reduced_grad_lagr_step = Teuchos::rcp(
 				new CalcReducedGradLagrangianStd_AddedStep() );
 		}
 
 		// CheckConvergence_Step
-		algo_step_ptr_t    check_convergence_step = mmp::null;
+		algo_step_ptr_t    check_convergence_step = Teuchos::null;
 			{
 			// Create the strategy object
-			ref_count_ptr<CheckConvergenceStd_Strategy>
-				check_convergence_strategy = mmp::rcp(new CheckConvergenceStd_Strategy());
+			RefCountPtr<CheckConvergenceStd_Strategy>
+				check_convergence_strategy = Teuchos::rcp(new CheckConvergenceStd_Strategy());
 
 			if(options_.get()) 
 				{
@@ -948,34 +948,34 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 				opt_setter.set_options( *options_ );
 				}
 			
-			ref_count_ptr<CheckConvergenceStd_AddedStep>
-				_check_convergence_step = mmp::rcp(new CheckConvergenceStd_AddedStep(check_convergence_strategy));
+			RefCountPtr<CheckConvergenceStd_AddedStep>
+				_check_convergence_step = Teuchos::rcp(new CheckConvergenceStd_AddedStep(check_convergence_strategy));
 			
 			check_convergence_step = _check_convergence_step;
 			}
 
 		// MeritFuncPenaltyParamUpdate_Step
-		algo_step_ptr_t    merit_func_penalty_param_update_step = mmp::null;
+		algo_step_ptr_t    merit_func_penalty_param_update_step = Teuchos::null;
 		if( cov_.line_search_method_ == LINE_SEARCH_FILTER ) {
 		  // We don't need to update a penalty parameter for the filter method :-)
 		}
 		else if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
-			ref_count_ptr<MeritFunc_PenaltyParamUpdate_AddedStep>
-				param_update_step = mmp::null;
+			RefCountPtr<MeritFunc_PenaltyParamUpdate_AddedStep>
+				param_update_step = Teuchos::null;
 			switch( cov_.merit_function_type_ ) {
 				case MERIT_FUNC_L1: {
 					switch(cov_.l1_penalty_param_update_) {
 						case L1_PENALTY_PARAM_WITH_MULT:
 //							param_update_step
-//								= mmp::rcp(new  MeritFunc_PenaltyParamUpdateWithMult_AddedStep());
-							THROW_EXCEPTION(
+//								= Teuchos::rcp(new  MeritFunc_PenaltyParamUpdateWithMult_AddedStep());
+							TEST_FOR_EXCEPTION(
 								true, std::logic_error
 								,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
 								"The l1_penalty_parameter_update option of MULT_FREE has not been updated yet!" );
 							break;
 						case L1_PENALTY_PARAM_MULT_FREE:
 							param_update_step
-								= mmp::rcp(new  MeritFunc_PenaltyParamUpdateMultFree_AddedStep());
+								= Teuchos::rcp(new  MeritFunc_PenaltyParamUpdateMultFree_AddedStep());
 							break;
 						default:
 							assert(0);
@@ -985,8 +985,8 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 				case MERIT_FUNC_MOD_L1:
 				case MERIT_FUNC_MOD_L1_INCR:
 //					param_update_step = new  MeritFunc_PenaltyParamsUpdateWithMult_AddedStep(
-//											mmp::rcp_implicit_cast<MeritFuncNLP>(merit_func) );
-					THROW_EXCEPTION(
+//											Teuchos::rcp_implicit_cast<MeritFuncNLP>(merit_func) );
+					TEST_FOR_EXCEPTION(
 						true, std::logic_error
 						,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
 						"The merit_function_type options of MODIFIED_L1 and MODIFIED_L1_INCR have not been updated yet!" );
@@ -1003,16 +1003,16 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 		}
 
 		// LineSearchFull_Step
-		algo_step_ptr_t    line_search_full_step_step = mmp::null;
+		algo_step_ptr_t    line_search_full_step_step = Teuchos::null;
 		{
-			line_search_full_step_step = mmp::rcp(new LineSearchFullStep_Step(bounds_tester));
+			line_search_full_step_step = Teuchos::rcp(new LineSearchFullStep_Step(bounds_tester));
 		}
 
 		// LineSearch_Step
-		algo_step_ptr_t    line_search_step = mmp::null;
+		algo_step_ptr_t    line_search_step = Teuchos::null;
 		if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
-			ref_count_ptr<DirectLineSearchArmQuad_Strategy>
-				direct_line_search = mmp::rcp(new  DirectLineSearchArmQuad_Strategy());
+			RefCountPtr<DirectLineSearchArmQuad_Strategy>
+				direct_line_search = Teuchos::rcp(new  DirectLineSearchArmQuad_Strategy());
 			if(options_.get()) {
 				ConstrainedOptPack::DirectLineSearchArmQuad_StrategySetOptions
 					ls_options_setter( direct_line_search.get(), "DirectLineSearchArmQuadSQPStep" );
@@ -1021,26 +1021,26 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			if( n > m ) {
 				switch( cov_.line_search_method_ ) {
 					case LINE_SEARCH_DIRECT: {
-						line_search_step = mmp::rcp(new LineSearchDirect_Step(direct_line_search));
+						line_search_step = Teuchos::rcp(new LineSearchDirect_Step(direct_line_search));
 						break;
 					}
 					case LINE_SEARCH_2ND_ORDER_CORRECT: {
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::logic_error
 							,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
 							"The line_search_method option of 2ND_ORDER_CORRECT has not been updated yet!" );
 						break;
 					}
 					case LINE_SEARCH_WATCHDOG: {
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::logic_error
 							,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
 							"The line_search_method option of WATCHDOG has not been updated yet!" );
 						break;
 					}
 					case LINE_SEARCH_FILTER: {
-						mmp::ref_count_ptr<LineSearchFilter_Step> 
-							line_search_filter_step = mmp::rcp(
+						Teuchos::RefCountPtr<LineSearchFilter_Step> 
+							line_search_filter_step = Teuchos::rcp(
 								new LineSearchFilter_Step(algo_cntr->get_nlp())
 								);
 						
@@ -1056,13 +1056,13 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 				}
 			}
 			else {
-				line_search_step = mmp::rcp( new LineSearchNLE_Step(direct_line_search) );
+				line_search_step = Teuchos::rcp( new LineSearchNLE_Step(direct_line_search) );
 			}
 		}
 		
 		// LineSearchFailure
 		if( new_decomp_selection_strategy.get() ) {
-			line_search_step = mmp::rcp(
+			line_search_step = Teuchos::rcp(
 				new LineSearchFailureNewDecompositionSelection_Step(
 					line_search_step
 					,new_decomp_selection_strategy
@@ -1140,7 +1140,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			}
 
 			// CalcDFromZPZ
-			algo->insert_step( ++step_num, "CalcDFromZpz", mmp::rcp(new CalcDFromZPZ_Step()) );
+			algo->insert_step( ++step_num, "CalcDFromZpz", Teuchos::rcp(new CalcDFromZPZ_Step()) );
 
 			if( nb > 0 ) {
 				
@@ -1176,7 +1176,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					,IterationPack::PRE_STEP
 					,++pre_step_i
 					,"MeritFunc_DummyUpdate"
-					,mmp::rcp(new MeritFunc_DummyUpdate_Step())
+					,Teuchos::rcp(new MeritFunc_DummyUpdate_Step())
 					);
 			}
 			
@@ -1242,7 +1242,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 			algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
 
 			// CalcDFromYPY
-			algo->insert_step( ++step_num, "CalcDFromYpy", mmp::rcp(new CalcDFromYPY_Step()) );
+			algo->insert_step( ++step_num, "CalcDFromYpy", Teuchos::rcp(new CalcDFromYPY_Step()) );
 			
 			// LineSearch
 			if( cov_.line_search_method_ == LINE_SEARCH_NONE ) {
@@ -1449,7 +1449,7 @@ void NLPAlgoConfigMamaJama::init_algo(NLPAlgoInterface* _algo)
 	using DynamicCastHelperPack::dyn_cast;
 	namespace mmp = MemMngPack;
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		_algo == NULL, std::invalid_argument
 		,"NLPAlgoConfigMamaJama::init_algo(_algo) : Error, "
 		"_algo can not be NULL" );
@@ -1551,7 +1551,7 @@ void NLPAlgoConfigMamaJama::readin_options(
 					else if( opt_val == "LPBFGS" )
 						ov->quasi_newton_ = QN_LPBFGS;
 					else
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::invalid_argument
 							,"NLPAlgoConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"quasi_newton\" "
@@ -1581,7 +1581,7 @@ void NLPAlgoConfigMamaJama::readin_options(
 					else if( opt_val == "AUTO" )
 						ov->hessian_initialization_ = INIT_HESS_AUTO;
 					else
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::invalid_argument
 							,"NLPAlgoConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"hessian_initialization\" "
@@ -1601,7 +1601,7 @@ void NLPAlgoConfigMamaJama::readin_options(
 #ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
 						ov->qp_solver_type_ = QP_QPOPT;
 #else
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::invalid_argument
 							,"NLPAlgoConfigMamaJama::readin_options(...) : QPOPT is not supported,"
 							" must define CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT!" );
@@ -1611,7 +1611,7 @@ void NLPAlgoConfigMamaJama::readin_options(
 					} else if( qp_solver == "QPSCHUR" ) {
 						ov->qp_solver_type_ = QP_QPSCHUR;
 					} else {
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::invalid_argument
 							,"NLPAlgoConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"qp_solver\" "
@@ -1638,7 +1638,7 @@ void NLPAlgoConfigMamaJama::readin_options(
 					} else if( option == "FILTER" ) {
 						ov->line_search_method_ = LINE_SEARCH_FILTER;
 					} else {
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::invalid_argument
 							,"NLPAlgoConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"line_search_method\".\n"
@@ -1659,7 +1659,7 @@ void NLPAlgoConfigMamaJama::readin_options(
 					else if( option == "AUTO" )
 						ov->merit_function_type_ = MERIT_FUNC_AUTO;
 					else
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::invalid_argument
 							,"NLPAlgoConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"merit_function_type\".\n"
@@ -1680,7 +1680,7 @@ void NLPAlgoConfigMamaJama::readin_options(
 						ov->l1_penalty_param_update_
 							= L1_PENALTY_PARAM_AUTO;
 					else
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::invalid_argument
 							,"NLPAlgoConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"l1_penalty_param_update\".\n"

@@ -81,7 +81,7 @@ void print_timings( std::ostream& out );
 
  void g() {
  #ifdef USE_PROFILE_HACK
-     ProfileHackPack::ProfileTiming profile_timing("f()");
+     ProfileHackPack::ProfileTiming profile_timing("g()");
  #endif
      ...
      //  When g() exists, the destructor for profile_timing will record the

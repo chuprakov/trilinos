@@ -35,7 +35,7 @@
 #include "RTOp_TOp_max_vec_scalar.h"
 #include "RTOp_TOp_max_abs_vec_scalar.h"
 #include "RTOpCppC.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
@@ -406,7 +406,7 @@ void AbstractLinAlgPack::force_in_bounds(
 	)
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(x==NULL,std::logic_error,"force_in_bounds(...), Error");
+	TEST_FOR_EXCEPTION(x==NULL,std::logic_error,"force_in_bounds(...), Error");
 #endif
 	const Vector*  vecs[2]      = { &xl, &xu };
 	VectorMutable* targ_vecs[1] = { x };

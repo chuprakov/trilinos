@@ -17,7 +17,7 @@
 #define CHECK_CONVERGENCE_STRATEGY_H
 
 #include "MoochoPack/src/MoochoPackTypes.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
@@ -147,7 +147,7 @@ class CheckConvergence_StrategySetOptions
 	protected:
 		
 		/// Overridden from SetOptionsFromStreamNode
-		void set_option( int option_num, const std::string& option_value );
+		void setOption( int option_num, const std::string& option_value );
 
 	};	// end class CheckConvergence_Strategy
 

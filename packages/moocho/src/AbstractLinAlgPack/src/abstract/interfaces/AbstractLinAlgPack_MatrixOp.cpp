@@ -30,13 +30,13 @@
 #include "SpVectorView.hpp"
 #include "EtaVector.hpp"
 #include "LinAlgOpPack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
 
 void MatrixOp::zero_out()
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true, std::logic_error, "MatrixOp::zero_out(): "
 		"Error, this method as not been defined by the subclass \'"
 		<<typeid(*this).name()<<"\'" );
@@ -44,7 +44,7 @@ void MatrixOp::zero_out()
 
 void MatrixOp::Mt_S(value_type alpha)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true, std::logic_error, "MatrixOp::Mt_S(): "
 		"Error, this method as not been defined by the subclass \'"
 		<<typeid(*this).name()<<"\'" );
@@ -53,7 +53,7 @@ void MatrixOp::Mt_S(value_type alpha)
 MatrixOp& MatrixOp::operator=(const MatrixOp& M)
 {
 	const bool assign_to_self = dynamic_cast<const void*>(this) == dynamic_cast<const void*>(&M);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!assign_to_self, std::logic_error
 		,"MatrixOp::operator=(M) : Error, this is not assignment "
 		"to self and this method is not overridden for the subclass \'"
@@ -79,13 +79,13 @@ std::ostream& MatrixOp::output(std::ostream& out) const
 MatrixOp::mat_mut_ptr_t
 MatrixOp::clone()
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 MatrixOp::mat_ptr_t
 MatrixOp::clone() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 // Norms
@@ -105,7 +105,7 @@ MatrixOp::calc_norm(
 	const index_type
 		num_rows = space_cols.dim(),
 		num_cols = space_rows.dim();
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!(requested_norm_type == MAT_NORM_1 || requested_norm_type == MAT_NORM_INF), MethodNotImplemented
 		,"MatrixOp::calc_norm(...): Error, This default implemenation can only "
 		"compute the one norm or the infinity norm!"
@@ -160,11 +160,11 @@ MatrixOp::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 		  || row_rng.full_range() )
 		) 
 	{
-		return rcp::rcp(this,false); // don't clean up memory
+		return Teuchos::rcp(this,false); // don't clean up memory
 	}
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new MatrixOpSubView(
-			rcp::rcp(const_cast<MatrixOp*>(this),false) // don't clean up memory
+			Teuchos::rcp(const_cast<MatrixOp*>(this),false) // don't clean up memory
 			,row_rng,col_rng ) );
 }
 
@@ -181,12 +181,12 @@ MatrixOp::perm_view(
 	) const
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new MatrixPermAggr(
-			rcp::rcp(this,false)
-			,rcp::rcp(P_row,false)
-			,rcp::rcp(P_col,false)
-			,rcp::null
+			Teuchos::rcp(this,false)
+			,Teuchos::rcp(P_row,false)
+			,Teuchos::rcp(P_col,false)
+			,Teuchos::null
 			) );
 }
 
@@ -432,7 +432,7 @@ void AbstractLinAlgPack::Mp_StM(
 	// We must try to implement the method
 	MultiVectorMutable
 		*m_mut_lhs = dynamic_cast<MultiVectorMutable*>(mwo_lhs);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!m_mut_lhs || !(m_mut_lhs->access_by() & MultiVector::COL_ACCESS)
 		,MatrixOp::MethodNotImplemented
 		,"MatrixOp::Mp_StM(...) : Error, mwo_lhs of type \'"
@@ -443,7 +443,7 @@ void AbstractLinAlgPack::Mp_StM(
 		<< "\' could not implement the operation!" );
 		
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!mwo_lhs->space_rows().is_compatible(
 			trans_rhs == no_trans ? M_rhs.space_rows() : M_rhs.space_cols() )
 		|| !mwo_lhs->space_cols().is_compatible(
@@ -479,7 +479,7 @@ void AbstractLinAlgPack::Mp_StMtP(
 	// We must try to implement the method
 	MultiVectorMutable
 		*m_mut_lhs = dynamic_cast<MultiVectorMutable*>(mwo_lhs);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!m_mut_lhs, MatrixOp::MethodNotImplemented
 		,"MatrixOp::Mp_StMtP(...) : Error, mwo_lhs of type \'"
 		<< typeid(*mwo_lhs).name() << "\' does not support the "
@@ -506,7 +506,7 @@ void AbstractLinAlgPack::Mp_StPtM(
 	// We must try to implement the method
 	MultiVectorMutable
 		*m_mut_lhs = dynamic_cast<MultiVectorMutable*>(mwo_lhs);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!m_mut_lhs, MatrixOp::MethodNotImplemented
 		,"MatrixOp::Mp_StPtM(...) : Error, mwo_lhs of type \'"
 		<< typeid(*mwo_lhs).name() << "\' does not support the "
@@ -535,7 +535,7 @@ void AbstractLinAlgPack::Mp_StPtMtP(
 	// We must try to implement the method
 	MultiVectorMutable
 		*m_mut_lhs = dynamic_cast<MultiVectorMutable*>(mwo_lhs);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!m_mut_lhs, MatrixOp::MethodNotImplemented
 		,"MatrixOp::Mp_StPtMtP(...) : Error, mwo_lhs of type \'"
 		<< typeid(*mwo_lhs).name() << "\' does not support the "
@@ -579,7 +579,7 @@ void AbstractLinAlgPack::Mp_StMtM(
 	//
 	Mp_MtM_assert_compatibility(C,BLAS_Cpp::no_trans,A,A_trans,B,B_trans);
 	MultiVectorMutable *Cmv = dynamic_cast<MultiVectorMutable*>(C);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!Cmv || !(Cmv->access_by() & MultiVector::COL_ACCESS)
 		,MatrixOp::MethodNotImplemented
 		,"AbstractLinAlgPack::Mp_StMtM(...) : Error, mwo_lhs of type \'"
@@ -614,7 +614,7 @@ void AbstractLinAlgPack::syrk(
 	if(B->syrk(A,A_trans,a,b))
 		return;
 	
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true, MatrixOp::MethodNotImplemented
 		,"AbstractLinAlgPack::syrk(...) : Error, neither the right-hand-side matrix "
 		"argument mwo_rhs of type \'" << typeid(A).name() << " nore the left-hand-side matrix "

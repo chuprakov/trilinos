@@ -19,7 +19,7 @@
 #include <list>
 
 #include "AlgorithmTracker.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace IterationPack {
 
@@ -35,7 +35,7 @@ class AlgorithmTrackerComposite : public AlgorithmTracker {
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<AlgorithmTracker>      track_ptr_t;
+	typedef Teuchos::RefCountPtr<AlgorithmTracker>      track_ptr_t;
 	///
 	typedef std::list<track_ptr_t>                                    track_list_t;
 	///

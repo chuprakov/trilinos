@@ -48,7 +48,7 @@ LineSearchWatchDog_StepSetOptions::LineSearchWatchDog_StepSetOptions(
 			LineSearchWatchDog_Step >( target )
 {}
 
-void LineSearchWatchDog_StepSetOptions::set_option(
+void LineSearchWatchDog_StepSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	switch( (local_EOptions)option_num ) {

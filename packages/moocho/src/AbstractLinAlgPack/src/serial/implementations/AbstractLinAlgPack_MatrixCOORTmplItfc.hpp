@@ -19,7 +19,7 @@
 #include <stdexcept>
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -131,7 +131,7 @@ private:
 	T_Index   nz_left_;
 	void assert_nz() const
 	{
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			nz_left_ <= 0, std::logic_error
 			,"MatrixCOORTmplItfcItr<>::assert_nz: Error, trying to access past storage!" );
 	}

@@ -20,7 +20,7 @@
 #include "VectorSpace.hpp"
 #include "Permutation.hpp"
 #include "PermutationOut.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace AbstractLinAlgPack {
@@ -48,7 +48,7 @@ void MatrixPermAggr::initialize(
 	)
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		mat_orig.get() == NULL, std::invalid_argument
 		,"MatrixPermAggr::initialize(...): Error!" );
 #endif
@@ -56,14 +56,14 @@ void MatrixPermAggr::initialize(
 	bool is_compatible = false;
 	if(row_perm.get()) {
 		is_compatible = mat_orig->space_cols().is_compatible(row_perm->space());
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!is_compatible, VectorSpace::IncompatibleVectorSpaces
 			,"MatrixPermAggr::initialize(...): Error, " 
 			"mat_orig->space_cols().is_compatible(row_perm->space()) == false" );
 	}
 	if(col_perm.get()) {
 		is_compatible = mat_orig->space_rows().is_compatible(col_perm->space());
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!is_compatible, VectorSpace::IncompatibleVectorSpaces
 			,"MatrixPermAggr::initialize(...): Error, " 
 			"mat_orig->space_rows().is_compatible(col_perm->space()) == false" );
@@ -78,10 +78,10 @@ void MatrixPermAggr::initialize(
 void MatrixPermAggr::set_uninitialized()
 {
 	namespace rcp = MemMngPack;
-	mat_orig_   = rcp::null;
-	row_perm_   = rcp::null;
-	col_perm_   = rcp::null;
-	mat_perm_   = rcp::null;
+	mat_orig_   = Teuchos::null;
+	row_perm_   = Teuchos::null;
+	col_perm_   = Teuchos::null;
+	mat_perm_   = Teuchos::null;
 }
 
 // Overridden from MatrixBase

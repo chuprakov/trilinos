@@ -19,7 +19,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemPerm.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/PermutationOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -205,8 +205,8 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 	// Get smart pointers to the basis matrix and the direct sensistivity matrices
 	// and remove references to these matrix objects from the other decomposition
 	// matrices by uninitializing them.
-	MemMngPack::ref_count_ptr<MatrixOpNonsing>  C_ptr;
-	MemMngPack::ref_count_ptr<MatrixOp>             D_ptr;
+	Teuchos::RefCountPtr<MatrixOpNonsing>  C_ptr;
+	Teuchos::RefCountPtr<MatrixOp>             D_ptr;
 	const bool unintialized_basis = decomp_sys_imp_->basis_sys()->var_dep().size() == 0;
 	decomp_sys_imp_->get_basis_matrices(
 		out, olevel, test_what
@@ -232,7 +232,7 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 		if(out && olevel >= PRINT_BASIC_INFO)
 			*out << "Passed in basis is singular, throwing SingularDecomposition: "
 				 << except.what() << std::endl;
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			true, SingularDecomposition
 			,"DecompositionSystemVarReductPermStd::set_decomp(...): Passed in basis selection "
 			"gave a singular basis matrix! : " << except.what() );
@@ -251,8 +251,8 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 		,r > m ? Uz : NULL
 		,basis_sys_ // Always reset
 		);
-	C_ptr = MemMngPack::null;
-	D_ptr = MemMngPack::null;
+	C_ptr = Teuchos::null;
+	D_ptr = Teuchos::null;
 	decomp_sys_imp()->update_decomp(
 		out,olevel,test_what,Gc,Z,Y,R
 		,r > m ? Uz : NULL
@@ -287,8 +287,8 @@ void DecompositionSystemVarReductPermStd::select_decomp(
 	// Get smart pointers to the basis matrix and the direct sensistivity matrices
 	// and remove references to these matrix objects from the other decomposition
 	// matrices by uninitializing them.
-	MemMngPack::ref_count_ptr<MatrixOpNonsing>  C_ptr;
-	MemMngPack::ref_count_ptr<MatrixOp>             D_ptr;
+	Teuchos::RefCountPtr<MatrixOpNonsing>  C_ptr;
+	Teuchos::RefCountPtr<MatrixOp>             D_ptr;
 	const bool unintialized_basis = decomp_sys_imp_->basis_sys()->var_dep().size() == 0;
 	decomp_sys_imp_->get_basis_matrices(
 		out, olevel, test_what
@@ -345,8 +345,8 @@ void DecompositionSystemVarReductPermStd::select_decomp(
 		,r > m ? Uz : NULL
 		,basis_sys_ // Always reset
 		);
-	C_ptr = MemMngPack::null;
-	D_ptr = MemMngPack::null;
+	C_ptr = Teuchos::null;
+	D_ptr = Teuchos::null;
 	decomp_sys_imp()->update_decomp(
 		out,olevel,test_what,*Gc,Z,Y,R
 		,r > m ? Uz : NULL
@@ -361,7 +361,7 @@ void DecompositionSystemVarReductPermStd::select_decomp(
 
 void DecompositionSystemVarReductPermStd::assert_basis_selected() const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!basis_selected_, std::logic_error
 		,"DecompositionSystemVarReductPermStd::assert_basis_selected(): Error, "
 		"the methods set_decomp() or select_decomp() must be called first!" );

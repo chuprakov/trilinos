@@ -79,7 +79,7 @@ CheckConvergence_StrategySetOptions::CheckConvergence_StrategySetOptions(
 	{}
 
 
-void CheckConvergence_StrategySetOptions::set_option(
+void CheckConvergence_StrategySetOptions::setOption(
   int option_num,
   const std::string& option_value )
 	{
@@ -124,7 +124,7 @@ void CheckConvergence_StrategySetOptions::set_option(
 				}
 			else
 				{
-				THROW_EXCEPTION( true,
+				TEST_FOR_EXCEPTION( true,
 								 std::logic_error,
 								 "Unaccounted for option_num in CheckConvergence_Strategy.cpp"
 				  );

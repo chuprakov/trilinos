@@ -120,16 +120,16 @@ bool DecompositionSystemTester::test_decomp_system(
 	}
 
 	// validate input matrices
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 	    Z==NULL&&Y==NULL&&R==NULL&&Uz==NULL&&Uy==NULL
 		, std::invalid_argument
 		,"DecompositionSystemTester::test_decomp_system(...) : Error, "
 		"at least one of Z, Y, R, Uz or Uy can not be NULL!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		m == r && Uz != NULL, std::invalid_argument
 		,"DecompositionSystemTester::test_decomp_system(...) : Error, "
 		"Uz must be NULL if m==r is NULL!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		m == r && Uy != NULL, std::invalid_argument
 		,"DecompositionSystemTester::test_decomp_system(...) : Error, "
 		"Uy must be NULL if m==r is NULL!" );

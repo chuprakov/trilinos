@@ -53,7 +53,7 @@ class NLPSecondOrder : virtual public NLPFirstOrder {
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<MatrixSymOp> >    mat_sym_fcty_ptr_t;
 
 	/** @name Constructors */

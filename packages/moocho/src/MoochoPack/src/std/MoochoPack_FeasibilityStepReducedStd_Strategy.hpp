@@ -26,7 +26,7 @@
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 
@@ -104,7 +104,7 @@ private:
 	IterationPack::CastIQMember<VectorMutable>  dl_iq_;
 	IterationPack::CastIQMember<VectorMutable>  du_iq_;
 	int                                                      current_k_;
-	MemMngPack::ref_count_ptr<const MatrixOp>            Hess_ptr_;
+	Teuchos::RefCountPtr<const MatrixOp>            Hess_ptr_;
 	VectorSpace::vec_mut_ptr_t                               grad_store_;
 	DMatrix                                                Hess_store_;
 

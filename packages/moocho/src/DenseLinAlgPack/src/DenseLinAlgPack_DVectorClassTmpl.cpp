@@ -16,12 +16,12 @@
 #include <iomanip>
 
 #include "DenseLinAlgPack/src/DVectorClassTmpl.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 #ifdef LINALGPACK_CHECK_SLICE_SETUP
 DenseLinAlgPack::size_type DenseLinAlgPack::vector_validate_sized(size_type size)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!size, std::invalid_argument
 		,"vector_validate_sized(...) : Error, A vector region can not be created from an unsized vector.\n"
 		);
@@ -32,7 +32,7 @@ DenseLinAlgPack::size_type DenseLinAlgPack::vector_validate_sized(size_type size
 #ifdef LINALGPACK_CHECK_RANGE
 void DenseLinAlgPack::vector_validate_range(size_type ubound, size_type max_ubound)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		ubound > max_ubound, std::out_of_range
 		,"vector_validate_range(...) : The upper bound is out of range.\n");
 }
@@ -41,7 +41,7 @@ void DenseLinAlgPack::vector_validate_range(size_type ubound, size_type max_ubou
 #ifdef LINALGPACK_CHECK_RANGE
 void DenseLinAlgPack::vector_validate_subscript(size_type size, size_type i)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		i < 1 || i > size, std::out_of_range
 		,"vector_validate_subscript(size,i) : Error, Subscript i out of bounds.\n");
 }
@@ -50,7 +50,7 @@ void DenseLinAlgPack::vector_validate_subscript(size_type size, size_type i)
 #ifdef LINALGPACK_CHECK_RHS_SIZES
 void DenseLinAlgPack::assert_vs_sizes(size_type size1, size_type size2)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		size1 != size2, std::length_error
 		,"assert_vs_sizes(...) : Error, size1 = " << size1 << " != size2 = " << size2 << "\n");
 }

@@ -28,7 +28,7 @@
 #include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 #define min(a,b) ( (a < b) ? a : b )
 #define max(a,b) ( (a > b) ? a : b )
@@ -36,12 +36,12 @@
 namespace MoochoPack {
 
 PostProcessBarrierLineSearch_Step::PostProcessBarrierLineSearch_Step(
-  MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp
+  Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp
   )
 	:
 	barrier_nlp_(barrier_nlp)
 	{
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 	  !barrier_nlp_.get(),
 	  std::logic_error,
 	  "PostProcessBarrierLineSearch_Step given NULL NLPBarrier."

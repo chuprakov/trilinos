@@ -43,7 +43,7 @@
 #include "StringToIntMap.hpp"
 #include "StringToBool.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "oblackholestream.hpp"
 
 namespace MoochoPack {
@@ -64,7 +64,7 @@ MoochoSolver::MoochoSolver()
 	,do_summary_outputting_(true)
 	,do_journal_outputting_(true)
 	,do_algo_outputting_(true)
-	,error_out_used_(MemMngPack::rcp(&std::cerr,false))
+	,error_out_used_(Teuchos::rcp(&std::cerr,false))
 	 ,configuration_(MAMA_JAMA)
 {}
 
@@ -84,7 +84,7 @@ void MoochoSolver::set_track(const track_ptr_t& track)
 {
 	namespace mmp = MemMngPack;
 	track_ = track;
-	solver_.set_track(mmp::null); // Force the track objects to be rebuilt and added!
+	solver_.set_track(Teuchos::null); // Force the track objects to be rebuilt and added!
 }
 	
 const MoochoSolver::track_ptr_t&
@@ -97,7 +97,7 @@ void MoochoSolver::set_config( const config_ptr_t& config )
 {
 	namespace mmp = MemMngPack;
 	config_ = config;
-	solver_.set_config(mmp::null); // Must unset the config object.
+	solver_.set_config(Teuchos::null); // Must unset the config object.
 	reconfig_solver_ = true;
 }
 
@@ -114,7 +114,7 @@ void MoochoSolver::set_options( const options_ptr_t& options )
 	const config_ptr_t                   // have to the current options.  That includes
 		&config = solver_.get_config();  // removing the options object for the configuration
 	if(config.get())                     // object.
-		config->set_options(mmp::null);  // ...
+		config->set_options(Teuchos::null);  // ...
 	options_used_ = options;
 	reconfig_solver_ = true;
 }
@@ -134,7 +134,7 @@ void MoochoSolver::set_error_handling(
 	namespace mmp = MemMngPack;
 	if( error_out_.get() != NULL ) {
 		if( error_out.get() == NULL )
-			error_out_used_ = mmp::rcp(&std::cerr,false);
+			error_out_used_ = Teuchos::rcp(&std::cerr,false);
 		else 
 			error_out_used_ = error_out;
 	}
@@ -160,8 +160,8 @@ void MoochoSolver::set_console_out( const ostream_ptr_t& console_out )
 {
 	namespace mmp = MemMngPack;
 	console_out_      = console_out;
-	console_out_used_ = mmp::null;  // Remove every reference to this ostream object!
-	solver_.set_track(mmp::null);
+	console_out_used_ = Teuchos::null;  // Remove every reference to this ostream object!
+	solver_.set_track(Teuchos::null);
 }
 
 const MoochoSolver::ostream_ptr_t&
@@ -174,8 +174,8 @@ void MoochoSolver::set_summary_out( const ostream_ptr_t& summary_out )
 {
 	namespace mmp = MemMngPack;
 	summary_out_      = summary_out;
-	summary_out_used_ = mmp::null;
-	solver_.set_track(mmp::null);     // Remove every reference to this ostream object!
+	summary_out_used_ = Teuchos::null;
+	solver_.set_track(Teuchos::null);     // Remove every reference to this ostream object!
 }
 	
 const MoochoSolver::ostream_ptr_t&
@@ -188,8 +188,8 @@ void MoochoSolver::set_journal_out( const ostream_ptr_t& journal_out )
 {
 	namespace mmp = MemMngPack;
 	journal_out_      = journal_out;
-	journal_out_used_ = mmp::null;
-	solver_.set_track(mmp::null);     // Remove every reference to this ostream object!
+	journal_out_used_ = Teuchos::null;
+	solver_.set_track(Teuchos::null);     // Remove every reference to this ostream object!
 }
 	
 const MoochoSolver::ostream_ptr_t&
@@ -202,7 +202,7 @@ void MoochoSolver::set_algo_out( const ostream_ptr_t& algo_out )
 {
 	namespace mmp = MemMngPack;
 	algo_out_      = algo_out;
-	algo_out_used_ = mmp::null;
+	algo_out_used_ = Teuchos::null;
 }
 	
 const MoochoSolver::ostream_ptr_t&
@@ -219,7 +219,7 @@ MoochoSolver::ESolutionStatus MoochoSolver::solve_nlp() const
 	using std::setw;
 	using StopWatchPack::stopwatch;
 	namespace mmp = MemMngPack;
-	using mmp::ref_count_ptr;
+	using Teuchos::RefCountPtr;
 	typedef MoochoPack::NLPSolverClientInterface    solver_interface_t;
 
 	stopwatch                             timer;
@@ -440,7 +440,7 @@ void MoochoSolver::update_solver() const
 	using std::setw;
 	using StopWatchPack::stopwatch;
 	namespace mmp = MemMngPack;
-	using mmp::ref_count_ptr;
+	using Teuchos::RefCountPtr;
 	namespace ofsp = OptionsFromStreamPack;
 	using ofsp::OptionsFromStream;
 	using ofsp::StringToIntMap;
@@ -450,7 +450,7 @@ void MoochoSolver::update_solver() const
 	// Validate the input
 	//
 	
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		nlp_.get() == NULL, std::logic_error
 		,"MoochoSolver::update_solver() : Error, this->get_nlp().get() can not be NULL!" );
 		
@@ -462,9 +462,9 @@ void MoochoSolver::update_solver() const
 		if( options_.get() == NULL ) {
 			std::ifstream options_in("Moocho.opt");
 			if(options_in)
-				options_used_ = mmp::rcp(new OptionsFromStream(options_in));
+				options_used_ = Teuchos::rcp(new OptionsFromStream(options_in));
 			else
-				options_used_ = mmp::null;
+				options_used_ = Teuchos::null;
 		}
 		else
 			options_used_ = options_;
@@ -582,26 +582,26 @@ void MoochoSolver::update_solver() const
 		if( console_out_.get() != NULL )
 			console_out_used_ = console_out_;
 		else
-			console_out_used_ = mmp::rcp(&std::cout,false);
+			console_out_used_ = Teuchos::rcp(&std::cout,false);
 	}
 	if( do_summary_outputting() && summary_out_used_.get()==NULL ) {
 		if( summary_out_.get() == NULL )
-			summary_out_used_ = mmp::rcp(new std::ofstream("MoochoSummary.out"));
+			summary_out_used_ = Teuchos::rcp(new std::ofstream("MoochoSummary.out"));
 		else
 			summary_out_used_ = summary_out_;
 	}
 	if( do_journal_outputting() && journal_out_used_.get() == NULL ) {
 		if( journal_out_.get() == NULL )
-			journal_out_used_ = mmp::rcp(new std::ofstream("MoochoJournal.out"));
+			journal_out_used_ = Teuchos::rcp(new std::ofstream("MoochoJournal.out"));
 		else
 			journal_out_used_ = journal_out_;
 	}
 	else {
-		journal_out_used_ = mmp::rcp(new IOStreamHelperPack::oblackholestream());
+		journal_out_used_ = Teuchos::rcp(new IOStreamHelperPack::oblackholestream());
 	}
 	if( do_algo_outputting() && algo_out_used_.get() == NULL ) {
 		if( algo_out_.get() == NULL )
-			algo_out_used_ = mmp::rcp(new std::ofstream("MoochoAlgo.out"));
+			algo_out_used_ = Teuchos::rcp(new std::ofstream("MoochoAlgo.out"));
 		else
 			algo_out_used_ = algo_out_;
 	}
@@ -705,7 +705,7 @@ void MoochoSolver::update_solver() const
 				<< "\nAllocating workspace_MB = " << workspace_MB_ << " megabytes of temporary "
 				"workspace for autmatic arrays only ...\n";
 		WorkspacePack::default_workspace_store
-			= mmp::rcp(new WorkspacePack::WorkspaceStoreInitializeable(1e+6*workspace_MB_));
+			= Teuchos::rcp(new WorkspacePack::WorkspaceStoreInitializeable(1e+6*workspace_MB_));
 		
 		//
 		// Reconfigure the algorithm
@@ -715,10 +715,10 @@ void MoochoSolver::update_solver() const
 		config_ptr_t _config;
 		if(config_.get() == NULL) {
 			if (configuration_ == (EConfigOptions) INTERIOR_POINT) {
-			    _config = mmp::rcp(new NLPAlgoConfigIP());
+			    _config = Teuchos::rcp(new NLPAlgoConfigIP());
             }
 			else {
-			    _config = mmp::rcp(new NLPAlgoConfigMamaJama());
+			    _config = Teuchos::rcp(new NLPAlgoConfigMamaJama());
 			}
         }
 		else
@@ -758,20 +758,20 @@ void MoochoSolver::update_solver() const
 	//
 		
 	if( solver_.get_track().get() == NULL ) {
-		ref_count_ptr<AlgorithmTrackerComposite>
-			composite_track = mmp::rcp(new AlgorithmTrackerComposite(journal_out_used_));
+		RefCountPtr<AlgorithmTrackerComposite>
+			composite_track = Teuchos::rcp(new AlgorithmTrackerComposite(journal_out_used_));
 		if(do_console_outputting())
 			composite_track->tracks().push_back(
-				mmp::rcp(new MoochoTrackerConsoleStd(console_out_used_,journal_out_used_)) );
+				Teuchos::rcp(new MoochoTrackerConsoleStd(console_out_used_,journal_out_used_)) );
 		if(do_summary_outputting())
 			composite_track->tracks().push_back(
-				mmp::rcp(new MoochoTrackerSummaryStd(summary_out_used_,journal_out_used_)) );
+				Teuchos::rcp(new MoochoTrackerSummaryStd(summary_out_used_,journal_out_used_)) );
 		if(generate_stats_file_) {
 			ostream_ptr_t
-				stats_out = mmp::rcp(new std::ofstream("MoochoStats.out"));
+				stats_out = Teuchos::rcp(new std::ofstream("MoochoStats.out"));
 			assert( !stats_out->eof() );
 			composite_track->tracks().push_back(
-				mmp::rcp(new MoochoTrackerStatsStd(stats_out,stats_out)) );
+				Teuchos::rcp(new MoochoTrackerStatsStd(stats_out,stats_out)) );
 		}
 		if( track_.get() ) {
 			track_->set_journal_out(journal_out_used_);

@@ -75,7 +75,7 @@ public:
 	//@{
 	
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<MatrixOp> >    factory_mat_ptr_t;
 
 	//@}
@@ -90,8 +90,8 @@ public:
 	/** Calls <tt>this->set_basis_sys_fcty()</tt> and <tt>this->set_mat_factories()</tt> methods.
 	 */
 	NLPSerialPreprocessExplJac(
-		const basis_sys_fcty_ptr_t  &basis_sys_fcty  = MemMngPack::rcp(new BasisSystemFactoryStd())
-		,const factory_mat_ptr_t    &factory_Gc_full = MemMngPack::null
+		const basis_sys_fcty_ptr_t  &basis_sys_fcty  = Teuchos::rcp(new BasisSystemFactoryStd())
+		,const factory_mat_ptr_t    &factory_Gc_full = Teuchos::null
 		);
 
 	///

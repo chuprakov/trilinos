@@ -46,7 +46,7 @@ CheckSkipBFGSUpdateStd_StepSetOptions::CheckSkipBFGSUpdateStd_StepSetOptions(
 			CheckSkipBFGSUpdateStd_Step >( target )
 {}
 
-void CheckSkipBFGSUpdateStd_StepSetOptions::set_option(
+void CheckSkipBFGSUpdateStd_StepSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	switch( (local_EOptions)option_num ) {

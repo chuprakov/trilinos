@@ -184,7 +184,7 @@ PreEvalNewPointBarrier_StepSetOptions::PreEvalNewPointBarrier_StepSetOptions(
 	{
 	}
 
-void PreEvalNewPointBarrier_StepSetOptions::set_option( 
+void PreEvalNewPointBarrier_StepSetOptions::setOption( 
   int option_num, const std::string& option_value )
 	{
 	using OptionsFromStreamPack::StringToBool;

@@ -21,7 +21,7 @@
 #include "VectorSpace.hpp"
 #include "VectorMutable.hpp"
 #include "MatrixOp.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 // boilerplate code
 
@@ -80,7 +80,7 @@ const AbstractLinAlgPack::VectorSpace& op(
 } // end namespace
 
 #define ASSERT_LHS_ARG(FUNC_NAME,LHS_ARG)                                              \
-	THROW_EXCEPTION(                                                                   \
+	TEST_FOR_EXCEPTION(                                                                   \
 		(LHS_ARG) == NULL, std::invalid_argument                                       \
 		,FUNC_NAME << " : Error!"                                                      \
 		);
@@ -92,7 +92,7 @@ const AbstractLinAlgPack::VectorSpace& op(
 #define ASSERT_VEC_SPACES_NAMES(FUNC_NAME,VS1,VS1_NAME,VS2,VS2_NAME)                   \
 {                                                                                      \
 	const bool is_compatible = (VS1).is_compatible(VS2);                               \
-	THROW_EXCEPTION(                                                                   \
+	TEST_FOR_EXCEPTION(                                                                   \
 		!is_compatible, VectorSpace::IncompatibleVectorSpaces                          \
 		,FUNC_NAME << " : "	<< dump_vec_spaces(VS1,VS1_NAME,VS2,VS2_NAME)              \
 		)                                                                              \

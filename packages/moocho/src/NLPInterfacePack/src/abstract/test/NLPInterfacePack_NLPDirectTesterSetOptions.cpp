@@ -56,7 +56,7 @@ NLPDirectTesterSetOptions::NLPDirectTesterSetOptions(
 			NLPDirectTester >( target )
 {}
 
-void NLPDirectTesterSetOptions::set_option(
+void NLPDirectTesterSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	typedef NLPDirectTester target_t;

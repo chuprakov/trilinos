@@ -19,7 +19,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractSparseElements.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -61,11 +61,11 @@ void MatrixConvertToSparseEncap::initialize(
 	const Range1D col_rng = RangePack::full_range(col_rng_in,1,mese_cols);
 #ifdef _DEBUG
 	const char msg_head[] = "MatrixConvertToSparseEncap::initialize(...): Error!";
-	THROW_EXCEPTION( mese.get() == NULL, std::logic_error, msg_head );
-	THROW_EXCEPTION( inv_row_perm.get() != NULL && inv_row_perm->size() != mese_rows, std::logic_error, msg_head );
-	THROW_EXCEPTION( row_rng.ubound() > mese_rows, std::logic_error, msg_head );
-	THROW_EXCEPTION( inv_col_perm.get() != NULL && inv_col_perm->size() != mese_cols, std::logic_error, msg_head );
-	THROW_EXCEPTION( col_rng.ubound() > mese->cols(), std::logic_error, msg_head );
+	TEST_FOR_EXCEPTION( mese.get() == NULL, std::logic_error, msg_head );
+	TEST_FOR_EXCEPTION( inv_row_perm.get() != NULL && inv_row_perm->size() != mese_rows, std::logic_error, msg_head );
+	TEST_FOR_EXCEPTION( row_rng.ubound() > mese_rows, std::logic_error, msg_head );
+	TEST_FOR_EXCEPTION( inv_col_perm.get() != NULL && inv_col_perm->size() != mese_cols, std::logic_error, msg_head );
+	TEST_FOR_EXCEPTION( col_rng.ubound() > mese->cols(), std::logic_error, msg_head );
 #endif
 	mese_           = mese;
 	mese_trans_     = mese_trans;
@@ -86,10 +86,10 @@ void MatrixConvertToSparseEncap::initialize(
 void MatrixConvertToSparseEncap::set_uninitialized()
 {
 	namespace mmp   = MemMngPack;
-	mese_           = mmp::null;
-	inv_row_perm_   = mmp::null;
+	mese_           = Teuchos::null;
+	inv_row_perm_   = Teuchos::null;
 	row_rng_        = Range1D::Invalid;
-	inv_col_perm_   = mmp::null;
+	inv_col_perm_   = Teuchos::null;
 	col_rng_        = Range1D::Invalid;
 	mese_trans_     = BLAS_Cpp::no_trans;
 	alpha_          = 0.0;

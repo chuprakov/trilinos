@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include "ConstrainedOptPack/src/matrices/MatrixIdentConcatStd.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -37,15 +37,15 @@ void MatrixIdentConcatStd::initialize(
 	)
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_cols.get() == NULL, std::invalid_argument
 		,"MatrixIdentConcatStd::initialize(...): Error, "
 		"space_cols.get() can not be NULL!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_rows.get() == NULL, std::invalid_argument
 		,"MatrixIdentConcatStd::initialize(...): Error, "
 		"space_rows.get() can not be NULL!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		D_ptr.get() == NULL, std::invalid_argument
 		,"MatrixIdentConcatStd::initialize(...): Error, "
 		"D_ptr.get() can not be NULL!" );
@@ -68,10 +68,10 @@ void MatrixIdentConcatStd::initialize(
 void MatrixIdentConcatStd::set_uninitialized()
 {
 	namespace rcp = MemMngPack;
-	space_cols_ = rcp::null;
-	space_rows_ = rcp::null;
+	space_cols_ = Teuchos::null;
+	space_rows_ = Teuchos::null;
 	alpha_      = 0.0;
-	D_ptr_      = rcp::null;
+	D_ptr_      = Teuchos::null;
 	D_trans_    = BLAS_Cpp::no_trans;
 	D_rng_      = Range1D::Invalid;
 	I_rng_      = Range1D::Invalid;
@@ -130,7 +130,7 @@ MatrixOp& MatrixIdentConcatStd::operator=(const MatrixOp& m)
 // private
 
 void MatrixIdentConcatStd::assert_initialized() const {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_cols_.get() == NULL, std::logic_error
 		,"Error, the MatrixIdentConcatStd object has not been initialized!" );
 }

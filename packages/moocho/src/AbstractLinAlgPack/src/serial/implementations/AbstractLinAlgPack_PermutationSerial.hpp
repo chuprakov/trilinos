@@ -40,7 +40,7 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<const IVector>  i_vector_ptr_t;
+	typedef Teuchos::RefCountPtr<const IVector>  i_vector_ptr_t;
 
 	//@}
 

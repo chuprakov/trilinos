@@ -21,7 +21,7 @@
 
 #include "GenPermMatrixSlice.hpp"
 #include "Range1D.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 #ifdef _WINDOWS
 
@@ -153,7 +153,7 @@ void GenPermMatrixSlice::initialize(
 		const size_type *ordered_sequence = NULL;
 		if( ordered_by == GPMSIP::BY_ROW || ordered_by == GPMSIP::BY_ROW_AND_COL ) {
 			for( size_type k = 1; k < nz; ++k ) {
-				THROW_EXCEPTION(
+				TEST_FOR_EXCEPTION(
 					row_i[k-1] >= row_i[k], std::invalid_argument
 					,"GenPermMatrixSlice::initialize(...) : Error: "
 					"row_i[" << k-1 << "] = " << row_i[k-1]
@@ -163,7 +163,7 @@ void GenPermMatrixSlice::initialize(
 		}
 		if( ordered_by == GPMSIP::BY_COL || ordered_by == GPMSIP::BY_ROW_AND_COL ) {
 			for( size_type k = 1; k < nz; ++k ) {
-				THROW_EXCEPTION(
+				TEST_FOR_EXCEPTION(
 					col_j[k-1] >= col_j[k], std::invalid_argument
 					,"GenPermMatrixSlice::initialize(...) : Error: "
 					"col_j[" << k-1 << "] = " << col_j[k-1]
@@ -196,7 +196,7 @@ void GenPermMatrixSlice::initialize_and_sort(
 	)
 {
 	namespace GPMSIP = GenPermMatrixSliceIteratorPack;
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		ordered_by == GPMSIP::BY_ROW_AND_COL, std::invalid_argument
 		,"GenPermMatrixSlice::initialize_and_sort(...) : Error, "
 		"ordered_by == GPMSIP::BY_ROW_AND_COL, we can not sort by row and column!" );
@@ -290,23 +290,23 @@ const GenPermMatrixSlice GenPermMatrixSlice::create_submatrix(
 	validate_not_identity();
 
 	// Validate the input
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		ordered_by == GPMSIP::BY_ROW_AND_COL, std::invalid_argument
 		,"GenPermMatrixSlice::initialize_and_sort(...) : Error, "
 		"ordered_by == GPMSIP::BY_ROW_AND_COL, we can not sort by row and column!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rng.full_range(), std::logic_error,
 		"GenPermMatrixSlice::create_submatrix(...) : Error, "
 		"The range argument can not be rng.full_range() == true" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		ordered_by == GPMSIP::BY_ROW && rng.ubound() > rows(), std::logic_error
 		,"GenPermMatrixSlice::create_submatrix(...) : Error, "
 		"rng.ubound() can not be larger than this->rows()" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		ordered_by == GPMSIP::BY_COL && rng.ubound() > cols(), std::logic_error
 		,"GenPermMatrixSlice::create_submatrix(...) : Error, "
 		"rng.ubound() can not be larger than this->cols()" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		ordered_by == GPMSIP::UNORDERED, std::logic_error
 		,"GenPermMatrixSlice::create_submatrix(...) : Error, "
 		"You can have ordered_by == GPMSIP::UNORDERED" );
@@ -325,7 +325,7 @@ const GenPermMatrixSlice GenPermMatrixSlice::create_submatrix(
 		case GPMSIP::BY_ROW:
 		case GPMSIP::BY_COL:
 		{
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				this->ordered_by() != GPMSIP::BY_ROW_AND_COL
 				&& ( nz() > 1 && ordered_by != this->ordered_by() )
 				,std::logic_error
@@ -416,19 +416,19 @@ void GenPermMatrixSlice::validate_input_data(
 {
 	namespace GPMSIP = GenPermMatrixSliceIteratorPack;
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		nz > rows * cols, std::invalid_argument
 		,omsg.str() << "nz = " << nz << " can not be greater than rows * cols = "
 		<< rows << " * " << cols << " = " << rows * cols );
 	
 	// First see if everything is in range.
 	for( size_type k = 0; k < nz; ++k ) {
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			row_i[k] + row_off < 1 || rows < row_i[k] + row_off, std::invalid_argument
 			,omsg.str() << "row_i[" << k << "] + row_off = " << row_i[k] << " + " << row_off
 			<< " = " << (row_i[k] + row_off)
 			<< " is out of range [1,rows] = [1," << rows << "]" );
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			col_j[k] + col_off < 1 || cols < col_j[k] + col_off, std::invalid_argument
 			,omsg.str() << "col_j[" << k << "] + col_off = " << col_j[k] << " + " << col_off
 			<< " = " << (col_j[k] + col_off)
@@ -444,7 +444,7 @@ void GenPermMatrixSlice::validate_input_data(
 
 void GenPermMatrixSlice::validate_not_identity() const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		is_identity(), std::logic_error
 		,"GenPermMatrixSlice::validate_not_identity() : "
 		"Error, this->is_identity() is true" );

@@ -24,7 +24,7 @@
 #include <iosfwd>
 
 #include "IterQuantity.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace IterationPack {
 
@@ -41,7 +41,7 @@ namespace IterationPack {
   * IQ objects are given to the state object by clients through the \c set_iter_quant()
   * method at which point the IQ object will be given a unique id that will never change
   * change until the IQ object is removed using \c erase_iter_quant().  Memory management
-  * is performed using the <tt>MemMngPack::ref_count_ptr</tt> smart reference
+  * is performed using the <tt>Teuchos::RefCountPtr</tt> smart reference
   * counting poiner class.
   * The id of any IQ object (\c iq_id) can be obtained from its name by calling
   * <tt>iq_id = get_iter_quant_id(iq_name)</tt>.  If an IQ object with the name \c iq_name
@@ -74,7 +74,7 @@ public:
 	///
 	typedef size_t													iq_id_type;
 	///
-	typedef MemMngPack::ref_count_ptr<IterQuantity>		IQ_ptr;
+	typedef Teuchos::RefCountPtr<IterQuantity>		IQ_ptr;
 	///
 	enum { DOES_NOT_EXIST = INT_MAX }; // should not ever be this many insertions.
 
@@ -119,7 +119,7 @@ public:
 	virtual size_t num_iter_quant() const;
 
 	///
-	/** Inserts the iteration quantity through a ref_count_ptr<...> object.
+	/** Inserts the iteration quantity through a RefCountPtr<...> object.
 	  *
 	  * Time = O(log(num_iter_quant)), Space = O(1).
 	  *
@@ -160,7 +160,7 @@ public:
 	virtual iq_id_type get_iter_quant_id(const std::string& iq_name) const;
 
 	///
-	/** Returns the ref_count_ptr<...> for the iteration quantiy with iq_id
+	/** Returns the RefCountPtr<...> for the iteration quantiy with iq_id
 	  *
 	  * If this iq_id does not correspond to a valid iteration quantity
 	  * object then a DoesNotExist exception will be thrown.  If iq_id
@@ -246,14 +246,14 @@ private:
 	int k_;		// Iteration counter.
 
 	iq_t					iq_;
-	// Array of ref_count_ptr objects that point to set iteration quantities.
+	// Array of RefCountPtr objects that point to set iteration quantities.
 	// The index into this array is the iq_id for an IQ object.  This array
 	// is filled sequantially from the beginning using push_back(...).
 	// When erase_iter_quant(...) is called the iq_[iq_id] is set to null which
 	// reduces the reference count of the IQ object (possible deleing it if
 	// there are no other references).  Then if the user tries to access and
 	// IQ object with this abandonded iq_id, the dereferencing operator for
-	// ref_count_ptr<...> will throw an exception.
+	// RefCountPtr<...> will throw an exception.
 #ifdef DOXYGEN_COMPILE
 	IterQuantity  *iteration_quantities;
 #endif

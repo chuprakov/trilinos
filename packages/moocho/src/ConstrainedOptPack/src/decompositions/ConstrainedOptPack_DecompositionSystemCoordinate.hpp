@@ -50,10 +50,10 @@ public:
 
 	///
 	DecompositionSystemCoordinate(
-		const VectorSpace::space_ptr_t     &space_x          = MemMngPack::null
-		,const VectorSpace::space_ptr_t    &space_c          = MemMngPack::null
-		,const basis_sys_ptr_t             &basis_sys        = MemMngPack::null
-		,const basis_sys_tester_ptr_t      &basis_sys_tester = MemMngPack::null
+		const VectorSpace::space_ptr_t     &space_x          = Teuchos::null
+		,const VectorSpace::space_ptr_t    &space_c          = Teuchos::null
+		,const basis_sys_ptr_t             &basis_sys        = Teuchos::null
+		,const basis_sys_tester_ptr_t      &basis_sys_tester = Teuchos::null
 		,EExplicitImplicit                 D_imp             = MAT_IMP_AUTO
 		,EExplicitImplicit                 Uz_imp            = MAT_IMP_AUTO
 		);

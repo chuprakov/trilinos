@@ -21,7 +21,7 @@
 #include "RTOp_ROp_find_nan_inf.h"
 #include "RTOpCppC.hpp"
 #include "check_nan_inf.h"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
@@ -55,7 +55,7 @@ bool AbstractLinAlgPack::assert_print_nan_inf( const value_type& val, char name[
 			<< "\" = " << val << " is not a valid bounded number";
 		if(out)
 			*out << omsg.str() << std::endl;
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			throw_excpt,NaNInfException
 			,"assert_print_nan_inf(...) : Error, " << omsg.str() );
 		return false;
@@ -78,7 +78,7 @@ bool AbstractLinAlgPack::assert_print_nan_inf(
 			<< "The vector \"" << name << "\" has the first following NaN or Inf element\n"
 			<< name << "(" << ele.i << ") = " << ele.v0_i << std::endl;
 	}
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		ele.i && throw_excpt, NaNInfException
 		,"assert_print_nan_inf(...) : Error, the vector named "
 		<< name << " has at least one element which is NaN or Inf" );

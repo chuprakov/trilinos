@@ -20,7 +20,7 @@
 #include "MoochoPack/src/std/quasi_newton_stats.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 
@@ -46,7 +46,7 @@ public:
 
 	///
 	ReducedHessianSecantUpdateStd_Step(
-		const secant_update_ptr_t& secant_update = MemMngPack::null
+		const secant_update_ptr_t& secant_update = Teuchos::null
 		);
 
 	/** @name Overridden from AlgorithmStep */

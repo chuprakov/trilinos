@@ -9,7 +9,7 @@
 #include "AbstractLinAlgPackAssertOp.hpp"
 #include "LinAlgOpPack.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
@@ -118,7 +118,7 @@ namespace AbstractLinAlgPack {
 MultiVector::multi_vec_ptr_t
 MultiVector::mv_clone() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 MultiVector::multi_vec_ptr_t
@@ -127,7 +127,7 @@ MultiVector::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 	assert(0); // ToDo: return a MultiVectorSubView object.
 	// Note that the MultiVectorSubView class should derive from MatrixOpSubView
 	// so that a client can rely on the MatrixOpSubView interface.
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 void MultiVector::apply_op(

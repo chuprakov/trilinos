@@ -25,7 +25,7 @@
 #include "SpVectorView.hpp"
 #include "EtaVector.hpp"
 #include "LinAlgOpPack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace AbstractLinAlgPack {
@@ -35,7 +35,7 @@ namespace AbstractLinAlgPack {
 MatrixNonsing::mat_mns_mut_ptr_t
 MatrixNonsing::clone_mns()
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 MatrixNonsing::mat_mns_ptr_t
@@ -105,7 +105,7 @@ void MatrixNonsing::M_StInvMtM(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		C_lhs == NULL, std::invalid_argument
 		,"MatrixNonsing::M_StInvMtM(...) : Error!" );
 	
@@ -123,7 +123,7 @@ void MatrixNonsing::M_StInvMtM(
 		M_rows    = this->rows(),
 		M_cols    = this->cols(),
 		op_B_rows = BLAS_Cpp::rows( B.rows(), B.cols(), B_trans );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		C_rows != M_rows || M_rows != M_cols || M_cols != op_B_rows || C_cols != op_B_cols
 		, std::invalid_argument
 		,"MatrixNonsing::M_StInvMtM(...) : Error!" );

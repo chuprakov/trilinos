@@ -18,7 +18,7 @@
 
 #include "MoochoPack/src/std/quasi_newton_stats.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 

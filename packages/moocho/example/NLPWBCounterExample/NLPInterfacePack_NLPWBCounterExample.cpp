@@ -18,7 +18,7 @@
 #include "NLPWBCounterExample.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {
 
@@ -32,10 +32,10 @@ NLPWBCounterExample::NLPWBCounterExample(
 {
 #ifdef _DEBUG	
 	const char msg_err_head[] = "NLPWBCounterExample::NLPWBCounterExample(...) : Error";
-	THROW_EXCEPTION( !(b >= 0),        std::invalid_argument, msg_err_head<<"!" );
-	THROW_EXCEPTION( !(a + b*b != 0),  std::invalid_argument, msg_err_head<<"!" );
-	THROW_EXCEPTION( !(xinit[1] >= 0), std::invalid_argument, msg_err_head<<"!" );
-	THROW_EXCEPTION( !(xinit[2] >= 0), std::invalid_argument, msg_err_head<<"!" );
+	TEST_FOR_EXCEPTION( !(b >= 0),        std::invalid_argument, msg_err_head<<"!" );
+	TEST_FOR_EXCEPTION( !(a + b*b != 0),  std::invalid_argument, msg_err_head<<"!" );
+	TEST_FOR_EXCEPTION( !(xinit[1] >= 0), std::invalid_argument, msg_err_head<<"!" );
+	TEST_FOR_EXCEPTION( !(xinit[2] >= 0), std::invalid_argument, msg_err_head<<"!" );
 #endif
 	// Set the inital guess and the variable bounds
 	xinit_orig_.resize(n_orig_); xl_orig_.resize(n_orig_); xu_orig_.resize(n_orig_);

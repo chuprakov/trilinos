@@ -18,7 +18,7 @@
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractFactory.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;
@@ -39,7 +39,7 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
 
 	//@}

@@ -20,7 +20,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTester.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -73,7 +73,7 @@ public:
 	///
 	typedef DecompositionSystem	                               inherited;
 	///
-	typedef MemMngPack::ref_count_ptr<const BasisSystem>       basis_sys_ptr_t;
+	typedef Teuchos::RefCountPtr<const BasisSystem>       basis_sys_ptr_t;
 
 	//@}
 
@@ -198,8 +198,8 @@ public:
 		,MatrixOpNonsing                                  *R
 		,MatrixOp                                         *Uz
 		,MatrixOp                                         *Uy
-		,MemMngPack::ref_count_ptr<MatrixOpNonsing>       *C_ptr
-		,MemMngPack::ref_count_ptr<MatrixOp>              *D_ptr
+		,Teuchos::RefCountPtr<MatrixOpNonsing>       *C_ptr
+		,Teuchos::RefCountPtr<MatrixOp>              *D_ptr
 		);
 
 	///
@@ -235,10 +235,10 @@ public:
 		std::ostream                                       *out
 		,EOutputLevel                                      olevel
 		,ERunTests                                         test_what
-		,const MemMngPack::ref_count_ptr<MatrixOpNonsing>  &C_ptr
-		,const MemMngPack::ref_count_ptr<MatrixOp>         &D_ptr
+		,const Teuchos::RefCountPtr<MatrixOpNonsing>  &C_ptr
+		,const Teuchos::RefCountPtr<MatrixOp>         &D_ptr
 		,MatrixOp                                          *Uz
-		,const basis_sys_ptr_t                             &basis_sys   = MemMngPack::null
+		,const basis_sys_ptr_t                             &basis_sys   = Teuchos::null
 		);
 
 	/// Get the type of D matrix to be used or is being used (returns MAT_IMP_EXPLICIT or MAT_IMP_IMPLICIT only).
@@ -367,8 +367,8 @@ private:
 	VectorSpace::space_ptr_t              space_c_;
 	VectorSpace::space_ptr_t              space_range_;
 	VectorSpace::space_ptr_t              space_null_;
-	mutable MemMngPack::ref_count_ptr<MatrixOpNonsing>  C_ptr_;
-	mutable MemMngPack::ref_count_ptr<MatrixOp>             D_ptr_;
+	mutable Teuchos::RefCountPtr<MatrixOpNonsing>  C_ptr_;
+	mutable Teuchos::RefCountPtr<MatrixOp>             D_ptr_;
 	mutable EExplicitImplicit                                   D_imp_used_;
 #endif
 	// //////////////////////////////////
@@ -378,7 +378,7 @@ private:
 	void alloc_new_D_matrix( 
 		std::ostream                             *out
 		,EOutputLevel                            olevel
-		,MemMngPack::ref_count_ptr<MatrixOp> *D_ptr
+		,Teuchos::RefCountPtr<MatrixOp> *D_ptr
 		) const;
 	
 	// not defined and not to be called!

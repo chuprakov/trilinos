@@ -23,7 +23,7 @@
 #include "QPSolverRelaxed.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "StandardCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {

@@ -21,7 +21,7 @@
 #include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
 #include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace NLPInterfacePack {
 
@@ -125,7 +125,7 @@ public:
 
 	/// Constructor
 	NLPFirstDerivTester(
-		const calc_fd_prod_ptr_t  &calc_fd_prod      = MemMngPack::rcp(new CalcFiniteDiffProd())
+		const calc_fd_prod_ptr_t  &calc_fd_prod      = Teuchos::rcp(new CalcFiniteDiffProd())
 		,ETestingMethod           fd_testing_method  = FD_DIRECTIONAL
 		,size_type                num_fd_directions  = 3
 		,value_type               warning_tol        = 1e-8

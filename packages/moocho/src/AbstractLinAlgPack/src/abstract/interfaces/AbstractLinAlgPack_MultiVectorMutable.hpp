@@ -65,9 +65,9 @@ public:
 	using MultiVector::diag;
 
 	///
-	typedef MemMngPack::ref_count_ptr<VectorMutable>       vec_mut_ptr_t;
+	typedef Teuchos::RefCountPtr<VectorMutable>       vec_mut_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MultiVectorMutable>  multi_vec_mut_ptr_t;
+	typedef Teuchos::RefCountPtr<MultiVectorMutable>  multi_vec_mut_ptr_t;
 
 	/** @name Clone */
 	//@{

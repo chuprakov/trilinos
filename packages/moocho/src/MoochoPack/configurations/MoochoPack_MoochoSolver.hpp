@@ -18,7 +18,7 @@
 
 #include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "MoochoPack/src/NLPAlgoContainer.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;
@@ -139,18 +139,18 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		NLPInterfacePack::NLP>                                       nlp_ptr_t; // full path needed by doxygen
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		IterationPack::AlgorithmTracker>                        track_ptr_t; // full path needed by doxygen
 	///
-	typedef MemMngPack::ref_count_ptr<NLPAlgoConfig>    config_ptr_t;
+	typedef Teuchos::RefCountPtr<NLPAlgoConfig>    config_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		OptionsFromStreamPack::OptionsFromStream>                    options_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<std::ostream>       ostream_ptr_t;
+	typedef Teuchos::RefCountPtr<std::ostream>       ostream_ptr_t;
 	///
 	enum ESolutionStatus {
 		SOLVE_RETURN_SOLVED            =  0
@@ -627,7 +627,7 @@ private:
 	// Private types
 
 	///
-	typedef MemMngPack::ref_count_ptr<NLPSolverClientInterface>    solver_ptr_t;
+	typedef Teuchos::RefCountPtr<NLPSolverClientInterface>    solver_ptr_t;
 		
 	// ////////////////////////////////////
 	// Private data members

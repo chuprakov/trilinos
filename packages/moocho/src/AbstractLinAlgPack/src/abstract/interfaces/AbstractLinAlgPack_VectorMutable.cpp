@@ -22,7 +22,7 @@
 #include "RTOp_TOp_set_sub_vector.h"
 #include "RTOpCppC.hpp"
 #include "Range1D.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
@@ -110,16 +110,16 @@ VectorMutable::sub_view( const Range1D& rng_in )
 	const index_type dim = this->dim();
 	const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rng.ubound() > dim, std::out_of_range
 		,"VectorMutable::sub_view(rng): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
 		"is not in the range [1,this->dim()] = [1,"<<dim<<"]" );
 #endif	
 	if( rng.lbound() == 1 && rng.ubound() == dim )
-		return rcp::rcp( this, false );
-	return rcp::rcp(
+		return Teuchos::rcp( this, false );
+	return Teuchos::rcp(
 		new VectorMutableSubView(
-			rcp::rcp( this, false )
+			Teuchos::rcp( this, false )
 			,rng ) );
 }
 

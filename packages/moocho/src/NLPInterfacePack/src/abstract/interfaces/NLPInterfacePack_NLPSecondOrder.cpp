@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "NLPInterfacePack/src/abstract/interfaces/NLPSecondOrder.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 	const char name_HL[] = "HL";
@@ -69,7 +69,7 @@ void NLPSecondOrder::calc_HL(
 	) const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( lambda  && this->m()  == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( lambda  && this->m()  == 0, std::logic_error, "" );
 #endif
 	StandardCompositionRelationshipsPack::assert_role_name_set(HL_, "NLP::calc_HL()", name_HL);
 	imp_calc_HL(x,lambda,newpoint,second_order_info());

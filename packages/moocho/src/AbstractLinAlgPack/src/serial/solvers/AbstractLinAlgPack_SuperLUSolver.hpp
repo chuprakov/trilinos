@@ -18,7 +18,7 @@
 #ifndef SSP_SUPERLU_SOLVER_H
 #define SSP_SUPERLU_SOLVER_H
 
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace SuperLUPack {
 
@@ -68,11 +68,11 @@ public:
 	//@{
 
 	///
-	static MemMngPack::ref_count_ptr<SuperLUSolver>                         create_solver();
+	static Teuchos::RefCountPtr<SuperLUSolver>                         create_solver();
 	///
-	static MemMngPack::ref_count_ptr<SuperLUSolver::FactorizationStructure> create_fact_struct();
+	static Teuchos::RefCountPtr<SuperLUSolver::FactorizationStructure> create_fact_struct();
 	///
-	static MemMngPack::ref_count_ptr<SuperLUSolver::FactorizationNonzeros>  create_fact_nonzeros();
+	static Teuchos::RefCountPtr<SuperLUSolver::FactorizationNonzeros>  create_fact_nonzeros();
 
 	//@}
 

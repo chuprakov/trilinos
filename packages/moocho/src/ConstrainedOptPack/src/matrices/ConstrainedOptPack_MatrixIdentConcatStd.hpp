@@ -19,7 +19,7 @@
 #include "MatrixIdentConcat.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "Range1D.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -48,7 +48,7 @@ public:
 	///
 	enum ETopBottom { TOP, BOTTOM };
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixOp> D_ptr_t;
+	typedef Teuchos::RefCountPtr<const MatrixOp> D_ptr_t;
 	//@}
 
 	/** @name Constructors/initializers. */

@@ -59,7 +59,7 @@ LineSearch2ndOrderCorrect_StepSetOptions::LineSearch2ndOrderCorrect_StepSetOptio
 			LineSearch2ndOrderCorrect_Step >( target )
 {}
 
-void LineSearch2ndOrderCorrect_StepSetOptions::set_option(
+void LineSearch2ndOrderCorrect_StepSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	typedef LineSearch2ndOrderCorrect_Step target_t;

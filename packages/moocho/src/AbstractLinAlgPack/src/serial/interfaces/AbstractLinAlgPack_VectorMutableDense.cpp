@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/apply_op_helper.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 #ifdef _DEBUG
 #define CLASS_MEMBER_PTRS \
@@ -62,11 +62,11 @@ void VectorMutableDense::initialize(
 	CLASS_MEMBER_PTRS
 	namespace rcp = MemMngPack;
 	namespace rmp = MemMngPack;
-	typedef rcp::ref_count_ptr<DVector> vec_ptr_t;
-	vec_ptr_t vec_ptr = rcp::rcp(new DVector(dim));
+	typedef Teuchos::RefCountPtr<DVector> vec_ptr_t;
+	vec_ptr_t vec_ptr = Teuchos::rcp(new DVector(dim));
 	this->initialize(
 		(*vec_ptr)()
-		,rcp::rcp(
+		,Teuchos::rcp(
 			new rmp::ReleaseResource_ref_count_ptr<DVector>(
 				vec_ptr
 				)
@@ -131,7 +131,7 @@ void VectorMutableDense::get_sub_vector(
 	CLASS_MEMBER_PTRS
 	const size_type  this_dim = v_.dim();
 	const Range1D    rng = RangePack::full_range(rng_in,1,this_dim);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rng.ubound() > this_dim, std::out_of_range
 		,"VectorMutableDense::get_sub_vector(...) : Error, "
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
@@ -200,16 +200,16 @@ VectorMutableDense::sub_view( const Range1D& rng_in )
 	const size_type this_dim = this->dim();
 	const Range1D rng = RangePack::full_range( rng_in, 1, this_dim );
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rng.ubound() > this_dim, std::out_of_range
 		,"VectorMutableDense::sub_view(...) : Error, "
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
 		"is not in the range [1,this->dim()] = [1," << this_dim << "]!" );
 #endif
 	if( rng == Range1D(1,this_dim) )
-		return rcp::rcp( this, false );
+		return Teuchos::rcp( this, false );
 	this->has_changed(); // This will result in a change in the vector
-	return rcp::rcp( new VectorMutableDense( v_(rng), rcp::null ) ); 
+	return Teuchos::rcp( new VectorMutableDense( v_(rng), Teuchos::null ) ); 
 }
 
 void VectorMutableDense::get_sub_vector(
@@ -219,7 +219,7 @@ void VectorMutableDense::get_sub_vector(
 	const size_type  this_dim = v_.dim();
 	const Range1D    rng = RangePack::full_range(rng_in,1,this_dim);
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rng.ubound() > this_dim, std::out_of_range
 		,"VectorMutableDense::get_sub_vector(...) : Error, "
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "

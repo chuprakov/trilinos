@@ -72,9 +72,9 @@ public:
 	//@{
 	
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixOpNonsing>   mat_nonsing_ptr_t;
+	typedef Teuchos::RefCountPtr<const MatrixOpNonsing>   mat_nonsing_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixOp>              mat_ptr_t;
+	typedef Teuchos::RefCountPtr<const MatrixOp>              mat_ptr_t;
 
 	//@}
 

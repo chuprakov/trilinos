@@ -115,22 +115,22 @@ public:
 	class IncompatibleVectorSpaces : public std::logic_error
 	{public: IncompatibleVectorSpaces(const std::string& what_arg) : std::logic_error(what_arg) {}};
 	///
-	typedef MemMngPack::ref_count_ptr<const InnerProduct>          inner_prod_ptr_t;
+	typedef Teuchos::RefCountPtr<const InnerProduct>          inner_prod_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const VectorSpace>           space_ptr_t;
+	typedef Teuchos::RefCountPtr<const VectorSpace>           space_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const VectorSpaceFactory>    space_fcty_ptr_t;
+	typedef Teuchos::RefCountPtr<const VectorSpaceFactory>    space_fcty_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<VectorMutable>               vec_mut_ptr_t;
+	typedef Teuchos::RefCountPtr<VectorMutable>               vec_mut_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MultiVectorMutable>          multi_vec_mut_ptr_t;
+	typedef Teuchos::RefCountPtr<MultiVectorMutable>          multi_vec_mut_ptr_t;
 
 
 	/** @name Constructors / initializers */
 	//@{
 
 	/// Calls \c inner_prod()
-	VectorSpace( const inner_prod_ptr_t& inner_prod = MemMngPack::null );
+	VectorSpace( const inner_prod_ptr_t& inner_prod = Teuchos::null );
 
 	///
 	/** Initialize with an inner product object.

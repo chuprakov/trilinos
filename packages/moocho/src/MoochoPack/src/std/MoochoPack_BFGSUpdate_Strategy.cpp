@@ -27,7 +27,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace MoochoPack {
 
@@ -130,7 +130,7 @@ void BFGSUpdate_Strategy::perform_update(
 	// ////////////////////////////////////////////////////
 	// Modify the s_bfgs and y_bfgs vectors for dampening?
 	VectorSpace::vec_mut_ptr_t
-		Bs = rcp::null;
+		Bs = Teuchos::null;
 	if( use_dampening() ) {
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
 		{
@@ -191,8 +191,8 @@ void BFGSUpdate_Strategy::perform_update(
 	// Perform the update if it is defined (s_bfgs' * y_bfgs > 0.0)
 				
 	VectorSpace::vec_mut_ptr_t
-		s_bfgs_save = rcp::null,
-		y_bfgs_save = rcp::null;
+		s_bfgs_save = Teuchos::null,
+		y_bfgs_save = Teuchos::null;
 	if( check_results ) {
 		// Save s and y since they may be overwritten in the update.
 		s_bfgs_save = s_bfgs->clone();
@@ -235,7 +235,7 @@ void BFGSUpdate_Strategy::perform_update(
 				msg[] =	"Error, the secant property for the BFGS update failed\n"
 				"Stopping the algorithm ...\n";
 			out << msg;
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, TestFailed
 				," BFGSUpdate_Strategy::perform_update(...) : " << msg );
 		}

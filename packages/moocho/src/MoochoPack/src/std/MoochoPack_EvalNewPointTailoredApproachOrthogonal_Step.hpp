@@ -83,7 +83,7 @@ private:
 	// Private types
 
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixSymOpNonsing>  S_ptr_t;
+	typedef Teuchos::RefCountPtr<MatrixSymOpNonsing>  S_ptr_t;
 
 	// ///////////////////////////////
 	// Private data members

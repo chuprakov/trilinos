@@ -24,7 +24,7 @@
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "WorkspacePack.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -100,10 +100,10 @@ namespace AbstractLinAlgPack {
 
 // Overridden from BasisMatrixImp
 
-MemMngPack::ref_count_ptr<DirectSparseSolverImp::BasisMatrixImp>
+Teuchos::RefCountPtr<DirectSparseSolverImp::BasisMatrixImp>
 DirectSparseSolverSuperLU::BasisMatrixSuperLU::create_matrix() const
 {
-	return MemMngPack::rcp(new BasisMatrixSuperLU);
+	return Teuchos::rcp(new BasisMatrixSuperLU);
 }
 
 void DirectSparseSolverSuperLU::BasisMatrixSuperLU::V_InvMtV(
@@ -159,7 +159,7 @@ const DirectSparseSolver::basis_matrix_factory_ptr_t
 DirectSparseSolverSuperLU::basis_matrix_factory() const
 {
 	namespace mmp = MemMngPack;
-	return mmp::rcp(new mmp::AbstractFactoryStd<BasisMatrix,BasisMatrixSuperLU>());
+	return Teuchos::rcp(new mmp::AbstractFactoryStd<BasisMatrix,BasisMatrixSuperLU>());
 }
 
 void DirectSparseSolverSuperLU::estimated_fillin_ratio(
@@ -171,16 +171,16 @@ void DirectSparseSolverSuperLU::estimated_fillin_ratio(
 
 // Overridden from DirectSparseSolverImp
 
-const MemMngPack::ref_count_ptr<DirectSparseSolver::FactorizationStructure>
+const Teuchos::RefCountPtr<DirectSparseSolver::FactorizationStructure>
 DirectSparseSolverSuperLU::create_fact_struc() const
 {
-	return MemMngPack::rcp(new FactorizationStructureSuperLU);
+	return Teuchos::rcp(new FactorizationStructureSuperLU);
 }
 
-const MemMngPack::ref_count_ptr<DirectSparseSolverImp::FactorizationNonzeros>
+const Teuchos::RefCountPtr<DirectSparseSolverImp::FactorizationNonzeros>
 DirectSparseSolverSuperLU::create_fact_nonzeros() const
 {
-	return MemMngPack::rcp(new FactorizationNonzerosSuperLU);
+	return Teuchos::rcp(new FactorizationNonzerosSuperLU);
 }
 
 void DirectSparseSolverSuperLU::imp_analyze_and_factor(
@@ -221,7 +221,7 @@ void DirectSparseSolverSuperLU::imp_analyze_and_factor(
 		nz = A.num_nonzeros( MCTS::EXTRACT_FULL_MATRIX ,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM );
 
 	// Validate input
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		n <= 0 || m <= 0 || m > n, std::invalid_argument
 		,"DirectSparseSolverSuperLU::imp_analyze_and_factor(...) : Error!" );
 
@@ -321,7 +321,7 @@ void DirectSparseSolverSuperLU::imp_factor(
 		&fn = dyn_cast<FactorizationNonzerosSuperLU>(*fact_nonzeros);
 
 	// Allocate new storage if not done so already
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!fs.fact_struct_.get(), std::logic_error
 		,"DirectSparseSolverSuperLU::imp_factor(...): Error, the factorization sturcture must "
 		"have already been computed!"
@@ -336,7 +336,7 @@ void DirectSparseSolverSuperLU::imp_factor(
 		nz = A.num_nonzeros( MCTS::EXTRACT_FULL_MATRIX ,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM );
 
 	// Validate input
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		n <= 0 || m <= 0 || m > n, std::invalid_argument
 		,"DirectSparseSolverSuperLU::imp_factor(...) : Error!" );
 

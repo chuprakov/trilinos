@@ -17,7 +17,7 @@
 
 #include "MatrixSymOpSerial.hpp"
 #include "MatrixConvertToSparse.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -63,7 +63,7 @@ NLPSolverClientInterfaceSetOptions::NLPSolverClientInterfaceSetOptions(
 			NLPSolverClientInterface >( target )
 {}
 
-void NLPSolverClientInterfaceSetOptions::set_option(
+void NLPSolverClientInterfaceSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	namespace ofsp = OptionsFromStreamPack;
@@ -104,7 +104,7 @@ void NLPSolverClientInterfaceSetOptions::set_option(
 			else if( option_value == "PRINT_ITERATION_QUANTITIES" )
 				target().journal_output_level(PRINT_ITERATION_QUANTITIES);
 			else
-				throw std::invalid_argument( "NLPSolverClientInterfaceSetOptions::set_option(...) : "
+				throw std::invalid_argument( "NLPSolverClientInterfaceSetOptions::setOption(...) : "
 					"Error, incorrect value for \"journal_output_level\"." );
 			break;
 		}

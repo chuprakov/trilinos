@@ -23,7 +23,7 @@
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -53,12 +53,12 @@ void MultiVectorMutableDense::initialize(
 {
 	namespace rcp = MemMngPack;
 	namespace rmp = MemMngPack;
-	typedef rcp::ref_count_ptr<DMatrix> vec_ptr_t;
-	vec_ptr_t gms_ptr = rcp::rcp(new DMatrix(rows,cols));
+	typedef Teuchos::RefCountPtr<DMatrix> vec_ptr_t;
+	vec_ptr_t gms_ptr = Teuchos::rcp(new DMatrix(rows,cols));
 	this->initialize(
 		(*gms_ptr)()
 		,BLAS_Cpp::no_trans
-		,rcp::rcp(
+		,Teuchos::rcp(
 			new rmp::ReleaseResource_ref_count_ptr<DMatrix>(
 				gms_ptr
 				)
@@ -131,43 +131,43 @@ MultiVectorMutableDense::vec_mut_ptr_t
 MultiVectorMutableDense::col(index_type j)
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new VectorMutableDense(
 			DenseLinAlgPack::col( set_gms(), gms_trans(), j )
-			,rcp::null ) );
+			,Teuchos::null ) );
 }
 
 MultiVectorMutableDense::vec_mut_ptr_t
 MultiVectorMutableDense::row(index_type i)
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new VectorMutableDense(
 			DenseLinAlgPack::row( set_gms(), gms_trans(), i )
-			,rcp::null ) );
+			,Teuchos::null ) );
 }
 
 MultiVectorMutableDense::vec_mut_ptr_t
 MultiVectorMutableDense::diag(int k)
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new VectorMutableDense(
 			gms_.diag( gms_trans() == BLAS_Cpp::no_trans ? k : -k )
-			,rcp::null ) );
+			,Teuchos::null ) );
 }
 
 MultiVectorMutableDense::multi_vec_mut_ptr_t
 MultiVectorMutableDense::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng)
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new MultiVectorMutableDense(
 			gms_(
 				gms_trans() == BLAS_Cpp::no_trans   ? row_rng : col_rng
 				,gms_trans() == BLAS_Cpp::no_trans  ? col_rng : row_rng )
 			,gms_trans()
-			,rcp::null ) );
+			,Teuchos::null ) );
 }
 
 // Overridden from MatrixBase
@@ -228,7 +228,7 @@ bool MultiVectorMutableDense::syrk(
 	) const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		sym_lhs == NULL, std::invalid_argument
 		,"MultiVectorMutableDense::syrk(...) : Error!" );
 #endif

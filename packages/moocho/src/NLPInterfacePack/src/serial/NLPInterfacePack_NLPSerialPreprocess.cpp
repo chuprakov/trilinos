@@ -34,7 +34,7 @@
 #include "DenseLinAlgPack/src/IVector.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -118,8 +118,8 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	space_c_.initialize(m_full_);
 	space_c_breve_.initialize(m_orig_);
 	space_h_breve_.initialize(mI_orig_);
-	factory_P_var_   = mmp::rcp( new mmp::AbstractFactoryStd<Permutation,PermutationSerial>() );
-	factory_P_equ_   = mmp::rcp( new mmp::AbstractFactoryStd<Permutation,PermutationSerial>() );
+	factory_P_var_   = Teuchos::rcp( new mmp::AbstractFactoryStd<Permutation,PermutationSerial>() );
+	factory_P_equ_   = Teuchos::rcp( new mmp::AbstractFactoryStd<Permutation,PermutationSerial>() );
 
 	// Intialize xinit_full_, xl_full_ and xu_full_ for the initial point which will set the
 	// fixed elements which will not change during the optimization.
@@ -137,9 +137,9 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	// Force the initial point in bounds if it is not.
 	if( force_xinit_in_bounds() && has_var_bounds ) {
 		AbstractLinAlgPack::force_in_bounds(
-			VectorMutableDense( xl_full_(), mmp::null )
-			,VectorMutableDense( xu_full_(), mmp::null )
-			,&VectorMutableDense( x_full_(), mmp::null )
+			VectorMutableDense( xl_full_(), Teuchos::null )
+			,VectorMutableDense( xu_full_(), Teuchos::null )
+			,&VectorMutableDense( x_full_(), Teuchos::null )
 			);
 	}
 	
@@ -157,7 +157,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 		n_ = 0;
 		size_type num_fixed = 0;
 		for(int i = 1; i <= n_full_; ++i, ++xl_full, ++xu_full) {
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				*xl_full > *xu_full, InconsistantBounds
 				,"NLPSerialPreprocess::initialize() : Error, Inconsistant bounds: xl_full("
 				<< i << ") > xu_full(" << i << ")" ); 
@@ -201,7 +201,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	num_bounded_x_ = num_bnd_x;
 
 	// Validate that we still have a solvable problem
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		n_ < m_full_, InvalidInitialization
 		,"NLPSerialPreprocess::initialize() : Error, after removing fixed "
 		<< "variables, n = " << n_ << " < m = " << m_full_
@@ -258,7 +258,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 				size_type rank;
 				const bool 
  					get_next_basis_return = get_next_basis_remove_fixed( &var_perm_, &equ_perm_, &rank );
-				THROW_EXCEPTION(
+				TEST_FOR_EXCEPTION(
 					!get_next_basis_return, std::logic_error
 					,"NLPSerialPreprocess::initialize():  "
 					" If nlp_selects_basis() is true then imp_get_next_basis() "
@@ -324,13 +324,13 @@ size_type NLPSerialPreprocess::m() const
 NLP::vec_space_ptr_t NLPSerialPreprocess::space_x() const
 {
 	namespace mmp = MemMngPack;
-	return mmp::rcp(&space_x_,false);
+	return Teuchos::rcp(&space_x_,false);
 }
 
 NLP::vec_space_ptr_t NLPSerialPreprocess::space_c() const
 {
 	namespace mmp = MemMngPack;
-	return ( m_full_ ? mmp::rcp(&space_c_,false) : mmp::null );
+	return ( m_full_ ? Teuchos::rcp(&space_c_,false) : Teuchos::null );
 }
 
 size_type NLPSerialPreprocess::num_bounded_x() const 
@@ -438,14 +438,14 @@ NLPSerialPreprocess::space_c_breve() const
 {
 	namespace mmp = MemMngPack;
 	assert_initialized();
-	return ( m_orig_ ? mmp::rcp(&space_c_breve_,false) : mmp::null );
+	return ( m_orig_ ? Teuchos::rcp(&space_c_breve_,false) : Teuchos::null );
 } 
 NLP::vec_space_ptr_t
 NLPSerialPreprocess::space_h_breve() const
 {
 	namespace mmp = MemMngPack;
 	assert_initialized();
-	return ( mI_orig_ ? mmp::rcp(&space_h_breve_,false) : mmp::null );
+	return ( mI_orig_ ? Teuchos::rcp(&space_h_breve_,false) : Teuchos::null );
 }
 
 const Vector& NLPSerialPreprocess::hl_breve() const
@@ -552,11 +552,11 @@ void NLPSerialPreprocess::set_basis(
 {
 	namespace mmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		(m_full_ > 0 && (P_equ == NULL || equ_decomp == NULL))
 		,std::invalid_argument
 		,"NLPSerialPreprocess::set_basis(...) : Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		m_full_ > 0 && var_dep.size() != equ_decomp->size()
 		,InvalidBasis
 		,"NLPSerialPreprocess::set_basis(...) : Error!" );
@@ -565,12 +565,12 @@ void NLPSerialPreprocess::set_basis(
 		&P_var_s   = dyn_cast<const PermutationSerial>(P_var),
 		*P_equ_s   = m_full_  ? &dyn_cast<const PermutationSerial>(*P_equ)   : NULL;
 	// Get the underlying permutation vectors
-	mmp::ref_count_ptr<IVector>
-		var_perm   = mmp::rcp_const_cast<IVector>(P_var_s.perm()),
+	Teuchos::RefCountPtr<IVector>
+		var_perm   = Teuchos::rcp_const_cast<IVector>(P_var_s.perm()),
 		equ_perm   = ( m_full_
-					   ? mmp::rcp_const_cast<IVector>(P_equ_s->perm())
-					   : mmp::null );
-	THROW_EXCEPTION(
+					   ? Teuchos::rcp_const_cast<IVector>(P_equ_s->perm())
+					   : Teuchos::null );
+	TEST_FOR_EXCEPTION(
 		(m_full_ > 0 && equ_perm.get() == NULL)
 		,std::invalid_argument
 		,"NLPSerialPreprocess::set_basis(...) : Error, P_equ is not initialized properly!" );
@@ -586,7 +586,7 @@ void NLPSerialPreprocess::get_basis(
 	namespace mmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 	assert_initialized();
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		P_var == NULL || var_dep == NULL
 		|| (m_full_ > 0 && (P_equ == NULL || equ_decomp == NULL))
 		,std::invalid_argument
@@ -596,16 +596,16 @@ void NLPSerialPreprocess::get_basis(
 		&P_var_s   = dyn_cast<PermutationSerial>(*P_var),
 		*P_equ_s   = m_full_  ? &dyn_cast<PermutationSerial>(*P_equ)   : NULL;
 	// Get the underlying permutation vectors
-	mmp::ref_count_ptr<IVector>
-		var_perm   = mmp::rcp_const_cast<IVector>(P_var_s.perm()),
+	Teuchos::RefCountPtr<IVector>
+		var_perm   = Teuchos::rcp_const_cast<IVector>(P_var_s.perm()),
 		equ_perm   = ( m_full_
-					   ? mmp::rcp_const_cast<IVector>(P_equ_s->perm())
-					   : mmp::null );
+					   ? Teuchos::rcp_const_cast<IVector>(P_equ_s->perm())
+					   : Teuchos::null );
 	// Allocate permutation vectors if none allocated yet or someone else has reference to them
 	if( var_perm.get() == NULL || var_perm.count() > 2 ) // P_var reference and my reference
-		var_perm = mmp::rcp( new IVector(n_) );
+		var_perm = Teuchos::rcp( new IVector(n_) );
 	if( m_full_ && ( equ_perm.get() == NULL || equ_perm.count() > 2 ) ) // P_equ reference and my reference
-		equ_perm = mmp::rcp( new IVector(m_full_) );
+		equ_perm = Teuchos::rcp( new IVector(m_full_) );
 	// Copy the basis selection
 	(*var_perm)   = var_perm_;
 	(*var_dep)    = Range1D(1,r_);
@@ -614,9 +614,9 @@ void NLPSerialPreprocess::get_basis(
 		(*equ_decomp) = Range1D(1,r_);
 	}
 	// Reinitialize the Permutation arguments.
-	P_var_s.initialize( var_perm, mmp::null, true );  // Allocate the inverse permuation as well!
+	P_var_s.initialize( var_perm, Teuchos::null, true );  // Allocate the inverse permuation as well!
 	if(m_full_)
-		P_equ_s->initialize( equ_perm, mmp::null, true );
+		P_equ_s->initialize( equ_perm, Teuchos::null, true );
 }
 
 // Overridden protected members from NLP
@@ -722,7 +722,7 @@ bool NLPSerialPreprocess::imp_get_next_basis(
 
 void NLPSerialPreprocess::assert_initialized() const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!initialized_, UnInitialized
 		,"NLPSerialPreprocess : The nlp has not been initialized yet" );
 }
@@ -881,31 +881,31 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 
 		int n;
 		basis_file >> tags;
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			tags != "n", std::logic_error
 			,"Incorrect basis file format - \"n\" expected, \"" << tags << "\" found.");
 		basis_file >> n;
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			n <= 0, std::logic_error
 			, "Incorrect basis file format - n > 0 \"" << n << "\" found.");
 
 		int m;
 		basis_file >> tags;
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			tags != "m", std::logic_error
 			,"Incorrect basis file format - \"m\" expected, \"" << tags << "\" found.");
 		basis_file >> m;
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			m > n , std::logic_error
 			,"Incorrect basis file format - 0 < m <= n expected, \"" << m << "\" found.");
 		
 		int r;
 		basis_file >> tags;
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			tags != "rank", std::logic_error
 			,"Incorrect basis file format - \"rank\" expected, \"" << tags << "\" found.");
 		basis_file >> r;
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			r > m, std::logic_error
 			,"Incorrect basis file format - 0 < rank <= m expected, \"" << r << "\" found.");		
 		if (rank)
@@ -913,7 +913,7 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 
 		// var_permutation
 		basis_file >> tags;
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			tags != "var_perm", std::logic_error
 			,"Incorrect basis file format -\"var_perm\" expected, \"" << tags << "\" found.");
 		var_perm->resize(n);
@@ -921,7 +921,7 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 			{
 			int var_index;
 			basis_file >> var_index;
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				var_index < 1 || var_index > n, std::logic_error
 				,"Incorrect basis file format for var_perm: 1 <= indice <= n expected, \"" << n << "\" found.");
 			(*var_perm)[i] = var_index;
@@ -929,7 +929,7 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 
 		// eqn_permutation
 		basis_file >> tags;
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			tags != "equ_perm", std::logic_error
 			,"Incorrect basis file format -\"equ_perm\" expected, \"" << tags << "\" found.");
 		equ_perm->resize(r);
@@ -937,7 +937,7 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 			{
 			int equ_index;
 			basis_file >> equ_index;
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				equ_index < 1 || equ_index > m, std::logic_error
 				,"Incorrect basis file format for equ_perm: 1 <= indice <= m expected, \"" << m << "\" found.");
 			(*equ_perm)[i] = equ_index;
@@ -962,11 +962,11 @@ void NLPSerialPreprocess::assert_and_set_basis(
 	const value_type inf_bnd = NLPSerialPreprocess::infinite_bound();
 
 	// Assert the preconditions
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		var_perm.size() != n_ || equ_perm.size() != m_full_, std::length_error
 		,"NLPSerialPreprocess::set_basis():  The sizes "
 		"of the permutation vectors does not match the size of the NLP" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rank > m_full_, InvalidBasis
 		,"NLPSerialPreprocess::set_basis():  The rank "
 		"of the basis can not be greater that the number of constraints" );
@@ -989,13 +989,13 @@ void NLPSerialPreprocess::assert_and_set_basis(
 		xl_ = -NLP::infinite_bound();
 		xu_ = +NLP::infinite_bound();
 	}
-	P_var_.initialize(mmp::rcp(new IVector(var_perm)),mmp::null);
-	P_equ_.initialize(mmp::rcp(new IVector(equ_perm)),mmp::null);
+	P_var_.initialize(Teuchos::rcp(new IVector(var_perm)),Teuchos::null);
+	P_equ_.initialize(Teuchos::rcp(new IVector(equ_perm)),Teuchos::null);
 }
 
 void NLPSerialPreprocess::assert_bounds_on_variables() const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!(imp_has_var_bounds() || n_full_ > n_orig_), NLP::NoBounds
 		,"There are no bounds on the variables for this NLP" );
 }

@@ -19,7 +19,7 @@
 #include <iosfwd>
 
 #include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {
 

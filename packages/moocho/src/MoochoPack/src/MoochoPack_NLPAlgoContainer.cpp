@@ -23,7 +23,7 @@
 #include "MoochoPack/src/NLPAlgoInterface.hpp"
 #include "MoochoPack/src/NLPAlgoState.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
@@ -52,7 +52,7 @@ namespace MoochoPack {
 
 void NLPAlgoContainer::set_config(const config_ptr_t& config)
 {
-	algo_ = algo_ptr_t(NULL); // Remove our reference to the current (configured?) algorithm.
+	algo_ = Teuchos::null; // Remove our reference to the current (configured?) algorithm.
 	config_ = config;
 }
 
@@ -127,13 +127,13 @@ void NLPAlgoContainer::print_algorithm_times(
 }
 
 void NLPAlgoContainer::assert_valid_setup() const {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!get_nlp().get(), NLPSolverClientInterface::InvalidSetup
 		,"NLPAlgoContainer::assert_valid_setup() : The NLP object has not been set" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!get_track().get(), NLPSolverClientInterface::InvalidSetup
 		,"NLPAlgoContainer::assert_valid_setup() : The rSQPTrack object has not been set" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!get_config().get(), NLPSolverClientInterface::InvalidSetup
 		,"NLPAlgoContainer::assert_valid_setup() : The NLPAlgoConfig object has not been set" );
 }

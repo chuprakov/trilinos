@@ -22,7 +22,7 @@
 #include "ConstrainedOptPack/src/globalization/DirectLineSearch_Strategy.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 

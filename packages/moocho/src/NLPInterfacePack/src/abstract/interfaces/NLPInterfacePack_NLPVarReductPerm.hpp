@@ -85,7 +85,7 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
 
 	/// Thrown if an invalid basis selection is made

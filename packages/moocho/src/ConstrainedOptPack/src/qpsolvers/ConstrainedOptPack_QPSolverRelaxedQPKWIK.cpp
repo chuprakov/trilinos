@@ -31,7 +31,7 @@
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace QPKWIKNEW_CppDecl {
 
@@ -571,7 +571,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 		solution_type = QPSolverStats::OPTIMAL_SOLUTION;
 	}
 	else if( INF_ == -1 ) { // Infeasible constraints
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			true, QPSolverRelaxed::Infeasible
 			,"QPSolverRelaxedQPKWIK::solve_qp(...) : Error, QP is infeasible" );
 	}

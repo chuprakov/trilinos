@@ -165,9 +165,9 @@ class Vector {
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<const Vector>   vec_ptr_t;
+	typedef Teuchos::RefCountPtr<const Vector>   vec_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<VectorMutable>  vec_mut_ptr_t;
+	typedef Teuchos::RefCountPtr<VectorMutable>  vec_mut_ptr_t;
 
 	///
 	friend
@@ -306,7 +306,7 @@ public:
 	/** Create an abstract view of a vector object .
 	 *
 	 * This is only a transient view of a sub-vector that is to be immediately used
-	 * and then released by <tt>ref_count_ptr<></tt>.
+	 * and then released by <tt>RefCountPtr<></tt>.
 	 *
 	 * It is important to understand what the minimum postconditions are for the sub vector objects
 	 * returned from this method.  If two vector objects <tt>x</tt> and <tt>y</tt> are compatible (possibly of

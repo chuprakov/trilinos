@@ -27,7 +27,7 @@ namespace {
 	enum local_EOptions {
 		PRINT_ALL_TESTS
 		,PRINT_VECTORS
-		,THROW_EXCEPTION
+		,TEST_FOR_EXCEPTION
 		,NUM_RANDOM_TESTS
 	    ,WARNING_TOL
 	    ,ERROR_TOL
@@ -55,7 +55,7 @@ VectorSpaceTesterSetOptions::VectorSpaceTesterSetOptions(
 			VectorSpaceTester >( target )
 {}
 
-void VectorSpaceTesterSetOptions::set_option(
+void VectorSpaceTesterSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	using OptionsFromStreamPack::StringToBool;
@@ -71,7 +71,7 @@ void VectorSpaceTesterSetOptions::set_option(
 				StringToBool( "print_vectors", option_value.c_str() )
 				);
 			break;
-		case THROW_EXCEPTION:
+		case TEST_FOR_EXCEPTION:
 			target().throw_exception(
 				StringToBool( "throw_exception", option_value.c_str() )
 				);

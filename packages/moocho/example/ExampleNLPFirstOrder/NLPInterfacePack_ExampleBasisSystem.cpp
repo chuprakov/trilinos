@@ -20,7 +20,7 @@
 #include "RTOpCppC.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {
  
@@ -34,13 +34,13 @@ ExampleBasisSystem::ExampleBasisSystem(
 		,var_dep
 		,var_indep
 		,space_x->sub_space(var_dep)
-		,MemMngPack::rcp(
+		,Teuchos::rcp(
 			new MemMngPack::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())       // C
-		,MemMngPack::rcp(
+		,Teuchos::rcp(
 			new MemMngPack::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())           // D'*D
-		,MemMngPack::rcp(
+		,Teuchos::rcp(
 			new MemMngPack::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())    // S
-		,MemMngPack::rcp(
+		,Teuchos::rcp(
 			new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())              // D
 		)
 {}
@@ -52,7 +52,7 @@ void ExampleBasisSystem::initialize(
 	)
 {
 	namespace mmp = MemMngPack;
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_x.get() == NULL, std::invalid_argument
 		,"ExampleBasisSystem::initialize(...) : Error, space_x must be specified!"
 		);
@@ -61,10 +61,10 @@ void ExampleBasisSystem::initialize(
 		,var_dep
 		,var_indep
 		,space_x->sub_space(var_dep)
-		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())      // C
-		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())          // D'*D
-		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())   // S
-		,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())             // D
+		,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixOpNonsing,MatrixSymDiagStd>())      // C
+		,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())          // D'*D
+		,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())   // S
+		,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>())             // D
 		);
 }
 
@@ -77,7 +77,7 @@ void ExampleBasisSystem::update_D(
 {
 	using DynamicCastHelperPack::dyn_cast;
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		D == NULL, std::logic_error
 		,"ExampleBasisSystem::update_D(...): Error!" );
 

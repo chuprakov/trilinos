@@ -21,7 +21,7 @@
 #include <valarray>
 
 #include "DenseLinAlgPackTypes.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace DenseLinAlgPack {
 ///

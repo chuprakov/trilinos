@@ -39,7 +39,7 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<DirectSparseSolver>   direct_solver_ptr_t;
+	typedef Teuchos::RefCountPtr<DirectSparseSolver>   direct_solver_ptr_t;
 
 	//@}
 
@@ -48,7 +48,7 @@ public:
 
 	/// Calls <tt>this->initialize()</tt>
 	BasisSystemPermDirectSparse(
-		const direct_solver_ptr_t&   direct_solver = MemMngPack::null
+		const direct_solver_ptr_t&   direct_solver = Teuchos::null
 		);
 	
 	/// Initialize given a direct sparse solver object.
@@ -149,7 +149,7 @@ private:
 	// Private member functions
 
 	///
-	MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>
+	Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>
 	get_basis_matrix( MatrixOpNonsingAggr &C_aggr ) const;
 
 	///
@@ -163,7 +163,7 @@ private:
 	///
 	void update_basis_and_auxiliary_matrices(
 		const MatrixOp& Gc
-		,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
+		,const Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>& C_bm
 		,MatrixOpNonsingAggr *C_aggr
 		,MatrixOp* D, MatrixOp* GcUP
 		) const;
@@ -172,7 +172,7 @@ private:
 	void do_some_basis_stuff(
 		const MatrixOp& Gc
 		,const Range1D& var_dep, const Range1D& equ_decomp
-		,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
+		,const Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>& C_bm
 		,MatrixOpNonsingAggr *C_aggr
 		,MatrixOp* D, MatrixOp* GcUP
 		);

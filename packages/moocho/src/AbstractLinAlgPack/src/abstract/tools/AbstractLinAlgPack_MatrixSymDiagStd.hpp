@@ -57,7 +57,7 @@ public:
 
 	/// Calls <tt>this->initialize()</tt>.
 	MatrixSymDiagStd(
-		const VectorSpace::vec_mut_ptr_t& diag   = MemMngPack::null
+		const VectorSpace::vec_mut_ptr_t& diag   = Teuchos::null
 		,bool                             unique = true
 		);
 

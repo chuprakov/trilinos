@@ -32,7 +32,7 @@ class VectorSpaceFactorySerial
 public:
 
 	///
-	VectorSpaceFactorySerial( const inner_prod_ptr_t& inner_prod = MemMngPack::null );
+	VectorSpaceFactorySerial( const inner_prod_ptr_t& inner_prod = Teuchos::null );
 
 	/** @name Overridden from VectorSpaceFactory */
 	//@{

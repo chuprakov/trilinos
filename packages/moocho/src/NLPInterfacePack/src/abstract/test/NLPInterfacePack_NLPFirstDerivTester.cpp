@@ -32,7 +32,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "Range1D.hpp"
 #include "update_success.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 template< class T >
@@ -77,7 +77,7 @@ bool NLPFirstDerivTester::finite_diff_check(
 	// ///////////////////////////////////
 	// Validate the input
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!m && Gc, std::invalid_argument
 		,"NLPFirstDerivTester::finite_diff_check(...) : "
 		"Error, Gc must be NULL if m == 0" );
@@ -170,8 +170,8 @@ bool NLPFirstDerivTester::fd_check_all(
 
 	VectorSpace::vec_mut_ptr_t
 		e_i       = space_x->create_member(),
-		Gc_i      = ( Gc ? space_c->create_member()  : rcp::null ),
-		FDGc_i    = ( Gc ? space_c->create_member()  : rcp::null );
+		Gc_i      = ( Gc ? space_c->create_member()  : Teuchos::null ),
+		FDGc_i    = ( Gc ? space_c->create_member()  : Teuchos::null );
 	*e_i = 0.0;
 
 	for( size_type i = 1; i <= n; ++ i ) {
@@ -347,8 +347,8 @@ bool NLPFirstDerivTester::fd_directional_check(
 
 	VectorSpace::vec_mut_ptr_t
 		y         = space_x->create_member(),
-		Gc_prod   = ( Gc ? space_c->create_member()  : rcp::null ),
-		FDGc_prod = ( Gc ? space_c->create_member()  : rcp::null );
+		Gc_prod   = ( Gc ? space_c->create_member()  : Teuchos::null ),
+		FDGc_prod = ( Gc ? space_c->create_member()  : Teuchos::null );
 
 	for( int direc_i = 1; direc_i <= num_fd_directions(); ++direc_i ) {
 		random_vector( rand_y_l, rand_y_u, y.get() );

@@ -21,7 +21,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "profile_hack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
@@ -113,7 +113,7 @@ void Vp_StPtMtV_imp(
 namespace ConstrainedOptPack {
 
 MatrixSymHessianRelaxNonSing::MatrixSymHessianRelaxNonSing()
-	: vec_space_(MemMngPack::null)
+	: vec_space_(Teuchos::null)
 {}
 
 MatrixSymHessianRelaxNonSing::MatrixSymHessianRelaxNonSing(
@@ -121,7 +121,7 @@ MatrixSymHessianRelaxNonSing::MatrixSymHessianRelaxNonSing(
 	,const vec_mut_ptr_t  &M_diag_ptr
 	,const space_ptr_t    &space
 	)
-	: vec_space_(MemMngPack::null)
+	: vec_space_(Teuchos::null)
 {
 	initialize(G_ptr,M_diag_ptr,space);
 }
@@ -135,23 +135,23 @@ void MatrixSymHessianRelaxNonSing::initialize(
 	namespace mmp = MemMngPack;
 #ifdef _DEBUG
 	const char err_msg_head[] = "MatrixSymHessianRelaxNonSing::initialize(...) : Error!";
-	THROW_EXCEPTION(G_ptr.get()==NULL, std::invalid_argument, err_msg_head);
-	THROW_EXCEPTION(M_diag_ptr.get()==NULL, std::invalid_argument, err_msg_head);
+	TEST_FOR_EXCEPTION(G_ptr.get()==NULL, std::invalid_argument, err_msg_head);
+	TEST_FOR_EXCEPTION(M_diag_ptr.get()==NULL, std::invalid_argument, err_msg_head);
 	const size_type G_rows = G_ptr->rows(), M_diag_dim = M_diag_ptr->dim();
-	THROW_EXCEPTION(G_rows==0, std::invalid_argument, err_msg_head);
-	THROW_EXCEPTION(M_diag_dim==0, std::invalid_argument, err_msg_head);
+	TEST_FOR_EXCEPTION(G_rows==0, std::invalid_argument, err_msg_head);
+	TEST_FOR_EXCEPTION(M_diag_dim==0, std::invalid_argument, err_msg_head);
 #endif
 	if( space.get() ) {
 #ifdef _DEBUG
 		const size_type space_dim = space->dim();
-		THROW_EXCEPTION(space_dim != G_rows + M_diag_dim, std::invalid_argument, err_msg_head);
+		TEST_FOR_EXCEPTION(space_dim != G_rows + M_diag_dim, std::invalid_argument, err_msg_head);
 #endif
 		vec_space_ = space;
 	}
 	else {
 		VectorSpace::space_ptr_t spaces[]
-			= { mmp::rcp(&G_ptr->space_cols(),false), mmp::rcp(&M_diag_ptr->space(),false) };
-		vec_space_ = mmp::rcp(new VectorSpaceBlocked( spaces, 2 ) );
+			= { Teuchos::rcp(&G_ptr->space_cols(),false), Teuchos::rcp(&M_diag_ptr->space(),false) };
+		vec_space_ = Teuchos::rcp(new VectorSpaceBlocked( spaces, 2 ) );
 	}
 	G_ptr_ = G_ptr;
 	M_.initialize(M_diag_ptr);
@@ -370,7 +370,7 @@ void MatrixSymHessianRelaxNonSing::V_InvMtV(
 
 void MatrixSymHessianRelaxNonSing::assert_initialized() const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		G_ptr_.get() == NULL, std::logic_error
 		,"MatrixSymHessianRelaxNonSing::assert_initialized(): Error, Not initalized yet!" );
 }

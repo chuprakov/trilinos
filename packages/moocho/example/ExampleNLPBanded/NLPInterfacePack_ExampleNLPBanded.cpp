@@ -18,7 +18,7 @@
 #include "ExampleNLPBanded.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {
 
@@ -62,22 +62,22 @@ ExampleNLPBanded::ExampleNLPBanded(
 {
 #ifdef _DEBUG	
 	const char msg_err_head[] = "ExampleNLPBanded::ExampleNLPBanded(...) : Error";
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		nD <= 0, std::invalid_argument
 		,msg_err_head<<"!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		nI <= 0 || nD < nI, std::invalid_argument
 		,msg_err_head<<"!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		bw < 1 || nD < bw, std::invalid_argument
 		,msg_err_head<<"!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		mU < 0, std::invalid_argument
 		,msg_err_head<<"!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		mI < 0, std::invalid_argument
 		,msg_err_head<<"!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		mU != 0, std::invalid_argument
 		,msg_err_head<<", can't handle undecomposed equalities yet!" );
 #endif

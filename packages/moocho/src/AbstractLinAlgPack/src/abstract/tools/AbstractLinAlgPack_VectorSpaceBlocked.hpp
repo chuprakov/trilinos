@@ -82,7 +82,7 @@ public:
 	VectorSpaceBlocked(
 		const VectorSpace::space_ptr_t          vector_spaces[]
 		,int                                    num_vector_spaces
-		,const VectorSpace::space_fcty_ptr_t   &small_vec_spc_fcty = MemMngPack::null
+		,const VectorSpace::space_fcty_ptr_t   &small_vec_spc_fcty = Teuchos::null
 		);
 	
 	///
@@ -114,7 +114,7 @@ public:
 	void initialize(
 		const VectorSpace::space_ptr_t         vec_spaces[]
 		,int                                   num_vector_spaces
-		,const VectorSpace::space_fcty_ptr_t   &small_vec_spc_fcty = MemMngPack::null
+		,const VectorSpace::space_fcty_ptr_t   &small_vec_spc_fcty = Teuchos::null
 		);
 
 	/// Return the value of <tt>num_vec_spaces</tt> passed to <tt>this->initialize()</tt>.

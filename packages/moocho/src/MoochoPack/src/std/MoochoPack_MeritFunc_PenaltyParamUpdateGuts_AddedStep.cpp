@@ -82,14 +82,14 @@ bool MeritFunc_PenaltyParamUpdateGuts_AddedStep::do_step(
 			&merit_func_nlp_k = merit_func_nlp_iq.get_k(0);
 		MeritFuncPenaltyParam
 			*param = dynamic_cast<MeritFuncPenaltyParam*>(&merit_func_nlp_k);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!param, std::logic_error
 			,"MeritFunc_PenaltyParamUpdateGuts_AddedStep::do_step(...), Error "
 			<< "The class " << typeid(merit_func_nlp_k).name() << " does not support the "
 			<< "MeritFuncPenaltyParam iterface" );
 		MeritFuncNLPDirecDeriv
 			*direc_deriv = dynamic_cast<MeritFuncNLPDirecDeriv*>(&merit_func_nlp_k);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!direc_deriv, std::logic_error
 			,"MeritFunc_PenaltyParamUpdateGuts_AddedStep::do_step(...), Error "
 			<< "The class " << typeid(merit_func_nlp_k).name() << " does not support the "

@@ -53,9 +53,9 @@ public:
 
 	/// Calls <tt>initalize()</tt>.
 	MultiVectorMutableCols(
-		const  MemMngPack::ref_count_ptr<const VectorSpace>   &space_cols
-		,const  MemMngPack::ref_count_ptr<const VectorSpace>  &space_rows
-		,MemMngPack::ref_count_ptr<VectorMutable>       col_vecs[] = NULL
+		const  Teuchos::RefCountPtr<const VectorSpace>   &space_cols
+		,const  Teuchos::RefCountPtr<const VectorSpace>  &space_rows
+		,Teuchos::RefCountPtr<VectorMutable>       col_vecs[] = NULL
 		);
 	
 	///
@@ -92,9 +92,9 @@ public:
 	 * </ul>
 	 */
 	void initialize(
-		const  MemMngPack::ref_count_ptr<const VectorSpace>   &space_cols
-		,const  MemMngPack::ref_count_ptr<const VectorSpace>  &space_rows
-		,MemMngPack::ref_count_ptr<VectorMutable>       col_vecs[] = NULL
+		const  Teuchos::RefCountPtr<const VectorSpace>   &space_cols
+		,const  Teuchos::RefCountPtr<const VectorSpace>  &space_rows
+		,Teuchos::RefCountPtr<VectorMutable>       col_vecs[] = NULL
 		);
 
 	/// Set uninitalized.
@@ -167,9 +167,9 @@ private:
 	const VectorSpace                  *space_rows;
 	VectorMutable                *column_vectors;
 #else
-	MemMngPack::ref_count_ptr<const VectorSpace>                  space_cols_;
-	MemMngPack::ref_count_ptr<const VectorSpace>                  space_rows_;
-	std::vector< MemMngPack::ref_count_ptr<VectorMutable> > col_vecs_;
+	Teuchos::RefCountPtr<const VectorSpace>                  space_cols_;
+	Teuchos::RefCountPtr<const VectorSpace>                  space_rows_;
+	std::vector< Teuchos::RefCountPtr<VectorMutable> > col_vecs_;
 #endif
 	
 }; // end class MultiVectorMutableCols

@@ -35,7 +35,7 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<const Permutation>   perm_ptr_t;
+	typedef Teuchos::RefCountPtr<const Permutation>   perm_ptr_t;
 
 	//@}
 

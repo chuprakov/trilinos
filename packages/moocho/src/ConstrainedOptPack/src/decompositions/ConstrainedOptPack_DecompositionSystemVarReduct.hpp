@@ -17,7 +17,7 @@
 #define DECOMPOSITION_SYSTEM_VAR_REDUCT_H
 
 #include "DecompositionSystem.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystem.hpp"
 
 namespace ConstrainedOptPack {

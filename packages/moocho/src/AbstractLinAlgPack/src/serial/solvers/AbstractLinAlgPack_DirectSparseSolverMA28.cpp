@@ -25,7 +25,7 @@
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "WorkspacePack.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "f_open_file.hpp"
@@ -86,10 +86,10 @@ DirectSparseSolverMA28::FactorizationStructureMA28::FactorizationStructureMA28()
 
 // Overridden from BasisMatrixImp
 
-MemMngPack::ref_count_ptr<DirectSparseSolverImp::BasisMatrixImp>
+Teuchos::RefCountPtr<DirectSparseSolverImp::BasisMatrixImp>
 DirectSparseSolverMA28::BasisMatrixMA28::create_matrix() const
 {
-	return MemMngPack::rcp(new BasisMatrixMA28);
+	return Teuchos::rcp(new BasisMatrixMA28);
 }
 
 void DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(
@@ -109,16 +109,16 @@ void DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(
 
 	// Validate input
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		y == NULL, std::invalid_argument
 		,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...) : Error! " );
 #endif
 	const size_type y_dim = y->dim(), x_dim = x.dim();
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		fs.rank_ != y_dim, std::invalid_argument
 		,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...) : Error! " );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		fs.rank_ != x_dim, std::invalid_argument
 		,"DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(...) : Error! " );
 #endif
@@ -202,7 +202,7 @@ const DirectSparseSolver::basis_matrix_factory_ptr_t
 DirectSparseSolverMA28::basis_matrix_factory() const
 {
 	namespace mmp = MemMngPack;
-	return mmp::rcp(new mmp::AbstractFactoryStd<BasisMatrix,BasisMatrixMA28>());
+	return Teuchos::rcp(new mmp::AbstractFactoryStd<BasisMatrix,BasisMatrixMA28>());
 }
 
 void DirectSparseSolverMA28::estimated_fillin_ratio(
@@ -214,16 +214,16 @@ void DirectSparseSolverMA28::estimated_fillin_ratio(
 
 // Overridden from DirectSparseSolverImp
 
-const MemMngPack::ref_count_ptr<DirectSparseSolver::FactorizationStructure>
+const Teuchos::RefCountPtr<DirectSparseSolver::FactorizationStructure>
 DirectSparseSolverMA28::create_fact_struc() const
 {
-	return MemMngPack::rcp(new FactorizationStructureMA28);
+	return Teuchos::rcp(new FactorizationStructureMA28);
 }
 
-const MemMngPack::ref_count_ptr<DirectSparseSolverImp::FactorizationNonzeros>
+const Teuchos::RefCountPtr<DirectSparseSolverImp::FactorizationNonzeros>
 DirectSparseSolverMA28::create_fact_nonzeros() const
 {
-	return MemMngPack::rcp(new FactorizationNonzerosMA28);
+	return Teuchos::rcp(new FactorizationNonzerosMA28);
 }
 
 void DirectSparseSolverMA28::imp_analyze_and_factor(
@@ -260,7 +260,7 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 		nz = A.num_nonzeros( MCTS::EXTRACT_FULL_MATRIX ,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM );
 
 	// Validate input
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		n <= 0 || m <= 0 || m > n, std::invalid_argument
 		,"DirectSparseSolverMA28::imp_analyze_and_factor(...) : Error!" );
 
@@ -419,7 +419,7 @@ void DirectSparseSolverMA28::imp_factor(
 
 	// Validate input
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		m != fs.m_ || n != fs.n_ || fs.nz_ != nz, std::invalid_argument
 		,"DirectSparseSolverMA28::imp_factor(...) : Error, "
 		"A is not compatible with matrix passed to imp_analyze_and_factor()!" );
@@ -529,67 +529,67 @@ void DirectSparseSolverMA28::ThrowIFlagException(index_type iflag)
 	const char msg_err_head[] = "DirectSparseSolverMA28::ThrowIFlagException(iflag) : Error";
 	switch(e_iflag) {
 		case SLOW_ITER_CONV :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, std::runtime_error
 				,msg_err_head << ", Convergence to slow" );
 		case MAXIT_REACHED :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, std::runtime_error
 				,msg_err_head << ", Maximum iterations exceeded");
 		case MA28BD_CALLED_WITH_DROPPED :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, std::logic_error
 				,msg_err_head << ", ma28bd called with elements dropped in ma28ad");
 		case DUPLICATE_ELEMENTS :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, FactorizationFailure
 				,msg_err_head << ", Duplicate elements have been detected");
 		case NEW_NONZERO_ELEMENT :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, FactorizationFailure
 				,msg_err_head << ", A new non-zero element has be passed to ma28bd that was not ot ma28ad");
 		case N_OUT_OF_RANGE :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, FactorizationFailure
 				,msg_err_head << ", 1 <=max(n,m) <= 32767 has been violated");
 		case NZ_LE_ZERO :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, std::logic_error
 				,msg_err_head << ", nz <= 0 has been violated");
 		case LICN_LE_NZ :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, std::logic_error
 				,msg_err_head << ", licn <= nz has been violated");
 		case LIRN_LE_NZ :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, std::logic_error
 				,msg_err_head << ", lirn <= nz has been violated");
 		case ERROR_DURRING_BLOCK_TRI :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, FactorizationFailure
 				,msg_err_head << ", An error has occured durring block triangularization");
 		case LICN_AND_LIRN_TOO_SMALL :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, FactorizationFailure
 				,msg_err_head << ", licn and lirn are to small to hold matrix factorization");
 		case LICN_TOO_SMALL :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, FactorizationFailure
 				,msg_err_head << ", licn is to small to hold matrix factorization");
 		case LICN_FAR_TOO_SMALL :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, FactorizationFailure
 				,msg_err_head << ", licn is to far small to hold matrix factorization");
 		case LIRN_TOO_SMALL :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, FactorizationFailure
 				,msg_err_head << ", lirn is to small to hold matrix factorization");
 		case NUMERICALLY_SINGULAR :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, FactorizationFailure
 				,msg_err_head << ", matrix is numerically singular, see \'abort2\'");
 		case STRUCTURALLY_SINGULAR :
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, FactorizationFailure
 				,msg_err_head << ", matrix is structurally singular, see \'abort1\'");
 		default:

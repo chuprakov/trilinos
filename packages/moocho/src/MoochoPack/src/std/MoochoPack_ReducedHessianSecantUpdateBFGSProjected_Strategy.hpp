@@ -22,7 +22,7 @@
 #include "MoochoPack/src/std/act_set_stats.hpp"
 #include "ConstrainedOptPack/src/matrices/MatrixHessianSuperBasic.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 

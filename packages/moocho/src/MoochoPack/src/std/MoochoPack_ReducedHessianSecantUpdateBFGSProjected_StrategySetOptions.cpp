@@ -48,7 +48,7 @@ ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions::ReducedHessianSecant
 	, OptionsFromStreamPack::SetOptionsToTargetBase< ReducedHessianSecantUpdateBFGSProjected_Strategy >( target )
 {}
 
-void ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions::set_option(
+void ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	switch( (local_EOptions)option_num ) {

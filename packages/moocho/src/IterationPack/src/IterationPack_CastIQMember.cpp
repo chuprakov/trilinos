@@ -17,7 +17,7 @@
 #include <sstream>
  
 #include "IterationPack/src/CastIQMember.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace IterationPack {
 
@@ -47,11 +47,11 @@ void CastIQMemberBase::cache_iq_id( const AlgorithmState& s ) const
 
 void CastIQMemberBase::throw_cast_error( const AlgorithmState::iq_id_type iq_id, const std::string& iqa_name ) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		iq_id == AlgorithmState::DOES_NOT_EXIST, AlgorithmState::DoesNotExist
 		,"CastIQMember<T>::operator()(...) : Error, the iteration quantity \""
 		<< iq_name_ << "\" does not exist in this state object." );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true, IterationPack::InvalidTypeCastException
 		,"CastIQMember<T>::operator()(state) : Error, the iteration quantity \""
 		<< iq_name_ << "\" exists but it is not of the type IterQuantityAccess<"

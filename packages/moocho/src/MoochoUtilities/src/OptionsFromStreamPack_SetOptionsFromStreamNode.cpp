@@ -17,7 +17,7 @@
 
 #include "SetOptionsFromStreamNode.hpp"
 #include "OptionsFromStream.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace OptionsFromStreamPack {
 
@@ -31,7 +31,7 @@ void SetOptionsFromStreamNode::set_options( const OptionsFromStream& options )
 {
 	OptionsFromStream::options_group_t optgrp = options.options_group( name_map_.name() );
 	if( !OptionsFromStream::options_group_exists( optgrp ) ) {
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!exists_optional_, std::invalid_argument
 			,"SetOptionsFromStreamNode::set_options(...) : "
 			<< "Error, The options group " << name_map_.name()
@@ -42,7 +42,7 @@ void SetOptionsFromStreamNode::set_options( const OptionsFromStream& options )
 		
 	OptionsFromStream::options_group_t::const_iterator itr = optgrp.begin();
 	for( ; itr != optgrp.end(); ++itr ) {
-		set_option( name_map_( option_name(itr) ), option_value(itr).c_str() );
+		setOption( name_map_( option_name(itr) ), option_value(itr).c_str() );
 	}
 }
 

@@ -18,7 +18,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -28,18 +28,18 @@ MultiVectorMutableCols::MultiVectorMutableCols()
 {}
 
 MultiVectorMutableCols::MultiVectorMutableCols(
-	const  MemMngPack::ref_count_ptr<const VectorSpace>   &space_cols
-	,const  MemMngPack::ref_count_ptr<const VectorSpace>  &space_rows
-	,MemMngPack::ref_count_ptr<VectorMutable>       col_vecs[]
+	const  Teuchos::RefCountPtr<const VectorSpace>   &space_cols
+	,const  Teuchos::RefCountPtr<const VectorSpace>  &space_rows
+	,Teuchos::RefCountPtr<VectorMutable>       col_vecs[]
 	)
 {
 	this->initialize(space_cols,space_rows,col_vecs);
 }
 	
 void MultiVectorMutableCols::initialize(
-	const  MemMngPack::ref_count_ptr<const VectorSpace>   &space_cols
-	,const  MemMngPack::ref_count_ptr<const VectorSpace>  &space_rows
-	,MemMngPack::ref_count_ptr<VectorMutable>       col_vecs[]
+	const  Teuchos::RefCountPtr<const VectorSpace>   &space_cols
+	,const  Teuchos::RefCountPtr<const VectorSpace>  &space_rows
+	,Teuchos::RefCountPtr<VectorMutable>       col_vecs[]
 	)
 {
 	space_cols_ = space_cols;
@@ -59,8 +59,8 @@ void MultiVectorMutableCols::initialize(
 void MultiVectorMutableCols::set_uninitialized()
 {
 	col_vecs_.resize(0);
-	space_cols_ = MemMngPack::null;
-	space_rows_ = MemMngPack::null;
+	space_cols_ = Teuchos::null;
+	space_rows_ = Teuchos::null;
 }
 
 // Overridden from MatrixBase
@@ -115,14 +115,14 @@ MatrixOp::mat_mut_ptr_t
 MultiVectorMutableCols::clone()
 {
 	assert(0); // ToDo: Implement!
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 MatrixOp::mat_ptr_t
 MultiVectorMutableCols::clone() const
 {
 	assert(0); // ToDo: Implement!
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 void MultiVectorMutableCols::Vp_StMtV(
@@ -218,7 +218,7 @@ bool MultiVectorMutableCols::syrk(
 	}
 	MatrixDenseSymMutableEncap  DMatrixSliceSym(symwo_gms_lhs);
 	const int num_vecs = this->col_vecs_.size();
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		num_vecs != DMatrixSliceSym().rows(), std::logic_error
 		,"MultiVectorMutableCols::syrk(...) : Error, sizes do not match up!" );
 	// Fill the upper or lower triangular region.
@@ -252,20 +252,20 @@ MultiVectorMutableCols::access_by() const
 MultiVectorMutable::vec_mut_ptr_t
 MultiVectorMutableCols::col(index_type j)
 {
-	THROW_EXCEPTION( !(  1 <= j  && j <= col_vecs_.size() ), std::logic_error, "Error!" );
+	TEST_FOR_EXCEPTION( !(  1 <= j  && j <= col_vecs_.size() ), std::logic_error, "Error!" );
 	return col_vecs_[j-1];
 }
 
 MultiVectorMutable::vec_mut_ptr_t
 MultiVectorMutableCols::row(index_type i)
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 MultiVectorMutable::vec_mut_ptr_t
 MultiVectorMutableCols::diag(int k)
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 MultiVectorMutable::multi_vec_mut_ptr_t
@@ -273,11 +273,11 @@ MultiVectorMutableCols::mv_sub_view(const Range1D& row_rng, const Range1D& col_r
 {
 #ifdef _DEBUG
 	const size_type rows = this->rows();
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!( row_rng.full_range() || (row_rng.lbound() == 1 && row_rng.ubound() == rows) )
 		,std::logic_error, "Error, can't handle subrange on vectors yet!" );
 #endif
-	return MemMngPack::rcp(
+	return Teuchos::rcp(
 		new MultiVectorMutableCols(
 			space_cols_,space_rows_->sub_space(col_rng),&col_vecs_[col_rng.lbound()-1]
 			) );

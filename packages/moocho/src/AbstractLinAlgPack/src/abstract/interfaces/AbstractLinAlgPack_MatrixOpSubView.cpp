@@ -26,8 +26,8 @@
 #include "SpVectorView.hpp"
 #include "EtaVector.hpp"
 #include "LinAlgOpPack.hpp"
-#include "ref_count_ptr.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -57,12 +57,12 @@ void MatrixOpSubView::initialize(
 		const Range1D
 			rng_rows = RangePack::full_range(rng_rows_in,1,M_rows),
 			rng_cols = RangePack::full_range(rng_cols_in,1,M_cols);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			rng_rows.ubound() > M_rows, std::invalid_argument
 			,"MatrixOpSubView::initialize(...): Error, "
 			"rng_rows = ["<<rng_rows.lbound()<<","<<rng_rows.ubound()<<"] is of range of "
 			"[1,M_full->rows()] = [1,"<<M_rows<<"]" );
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			rng_cols.ubound() > M_cols, std::invalid_argument
 			,"MatrixOpSubView::initialize(...): Error, "
 			"rng_cols = ["<<rng_cols.lbound()<<","<<rng_cols.ubound()<<"] is of range of "
@@ -79,12 +79,12 @@ void MatrixOpSubView::initialize(
 						: M_full->space_cols().sub_space(rng_rows)->clone() );
 	}
 	else {
-		M_full_     = rcp::null;
+		M_full_     = Teuchos::null;
 		rng_rows_   = Range1D::Invalid;
 		rng_cols_   = Range1D::Invalid;
 		M_trans_    = BLAS_Cpp::no_trans;
-		space_cols_ = rcp::null;
-		space_rows_ = rcp::null;
+		space_cols_ = Teuchos::null;
+		space_rows_ = Teuchos::null;
 	}
 }
 
@@ -132,7 +132,7 @@ MatrixOpSubView::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
 	assert_initialized();
 	assert(0); // ToDo: Implement!
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 void MatrixOpSubView::zero_out()
@@ -142,7 +142,7 @@ void MatrixOpSubView::zero_out()
 		M_full_->zero_out();
 		return;
 	}
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true, std::logic_error, "MatrixOpSubView::zero_out(): "
 		"Error, this method can not be implemented with a sub-view" );
 }
@@ -154,7 +154,7 @@ void MatrixOpSubView::Mt_S( value_type alpha )
 		M_full_->Mt_S(alpha);
 		return;
 	}
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true, std::logic_error, "MatrixOpSubView::Mt_S(alpha): "
 		"Error, this method can not be implemented with a sub-view" );
 }
@@ -409,7 +409,7 @@ bool MatrixOpSubView::syrk(
 // private
 
 void MatrixOpSubView::assert_initialized() const {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		M_full_.get() == NULL, std::logic_error
 		,"Error, the MatrixOpSubView object has not been initialize!" );
 }

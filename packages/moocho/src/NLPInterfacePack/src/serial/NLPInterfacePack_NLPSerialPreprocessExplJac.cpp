@@ -28,7 +28,7 @@
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "OptionsFromStream.hpp"
@@ -58,9 +58,9 @@ void NLPSerialPreprocessExplJac::set_factory_Gc_full(
 	if(factory_Gc_full.get())
 		factory_Gc_full_ = factory_Gc_full;
 	else 
-		factory_Gc_full_ = mmp::rcp(
+		factory_Gc_full_ = Teuchos::rcp(
 			new afp::AbstractFactoryStd<MatrixOp,MatrixSparseCOORSerial>() );
-	factory_Gc_ = mmp::rcp( new afp::AbstractFactoryStd<MatrixOp,MatrixPermAggr>() );
+	factory_Gc_ = Teuchos::rcp( new afp::AbstractFactoryStd<MatrixOp,MatrixPermAggr>() );
 }
 
 // Overridden public members from NLP
@@ -204,15 +204,15 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
 	MatrixPermAggr
 		&G_aggr = dyn_cast<MatrixPermAggr>( *first_order_info.Gc );
 	// Get smart pointers to the constituent members
-	mmp::ref_count_ptr<MatrixOp>
-		G_full = mmp::rcp_const_cast<MatrixOp>( G_aggr.mat_orig() );
-	mmp::ref_count_ptr<PermutationSerial>
-		P_row = mmp::rcp_dynamic_cast<PermutationSerial>(
-			mmp::rcp_const_cast<Permutation>( G_aggr.row_perm() ) );  // variable permutation
-	mmp::ref_count_ptr<PermutationSerial>
-		P_col = mmp::rcp_dynamic_cast<PermutationSerial>(
-			mmp::rcp_const_cast<Permutation>( G_aggr.col_perm() ) );  // constraint permutation
-	mmp::ref_count_ptr<const MatrixOp>
+	Teuchos::RefCountPtr<MatrixOp>
+		G_full = Teuchos::rcp_const_cast<MatrixOp>( G_aggr.mat_orig() );
+	Teuchos::RefCountPtr<PermutationSerial>
+		P_row = Teuchos::rcp_dynamic_cast<PermutationSerial>(
+			Teuchos::rcp_const_cast<Permutation>( G_aggr.row_perm() ) );  // variable permutation
+	Teuchos::RefCountPtr<PermutationSerial>
+		P_col = Teuchos::rcp_dynamic_cast<PermutationSerial>(
+			Teuchos::rcp_const_cast<Permutation>( G_aggr.col_perm() ) );  // constraint permutation
+	Teuchos::RefCountPtr<const MatrixOp>
 		G_perm = G_aggr.mat_perm();
 	// Remove references to G_full, G_perm, P_row and P_col.
 	G_aggr.set_uninitialized();
@@ -336,7 +336,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
 
 	if( !load_struct ) {
 		// Check that the number of nonzeros added matches the number of nonzeros in G
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			G_nz_previous != nz, std::runtime_error
 			,"NLPSerialPreprocessExplJac::imp_calc_Gc(...): Error, "
 			"The number of added nonzeros does not match the number of nonzeros "
@@ -358,20 +358,20 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
 
 	// Setup row (variable) permutation
 	if( P_row.get() == NULL || P_col.count() > 1 )
-	    P_row = mmp::rcp(new PermutationSerial());
-	mmp::ref_count_ptr<IVector>        var_perm;
-	if( P_row->perm().get() == NULL )  var_perm = mmp::rcp(new IVector(n_full));
-	else                               var_perm = mmp::rcp_const_cast<IVector>(P_row->perm());
+	    P_row = Teuchos::rcp(new PermutationSerial());
+	Teuchos::RefCountPtr<IVector>        var_perm;
+	if( P_row->perm().get() == NULL )  var_perm = Teuchos::rcp(new IVector(n_full));
+	else                               var_perm = Teuchos::rcp_const_cast<IVector>(P_row->perm());
 	*var_perm = this->var_perm();
-	P_row->initialize(var_perm,mmp::null);
+	P_row->initialize(var_perm,Teuchos::null);
 	// Setup column (constraint) permutation
 	if( P_col.get() == NULL || P_col.count() > 1 )
-	    P_col = mmp::rcp(new PermutationSerial());
-	mmp::ref_count_ptr<IVector>        con_perm;
-	if( P_col->perm().get() == NULL )  con_perm = mmp::rcp(new IVector(m_full));
-	else                               con_perm = mmp::rcp_const_cast<IVector>(P_col->perm());
+	    P_col = Teuchos::rcp(new PermutationSerial());
+	Teuchos::RefCountPtr<IVector>        con_perm;
+	if( P_col->perm().get() == NULL )  con_perm = Teuchos::rcp(new IVector(m_full));
+	else                               con_perm = Teuchos::rcp_const_cast<IVector>(P_col->perm());
 	*con_perm = this->equ_perm();
-	P_col->initialize(con_perm,mmp::null);
+	P_col->initialize(con_perm,Teuchos::null);
 	// Setup G_perm
 	int num_row_part, num_col_part;
 	index_type row_part[3], col_part[3];
@@ -423,7 +423,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc(
 
 void NLPSerialPreprocessExplJac::assert_initialized() const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!initialized_, UnInitialized
 		,"NLPSerialPreprocessExplJac : The nlp has not been initialized yet" );
 }

@@ -21,7 +21,7 @@
 //#include "AbstractLinAlgPack/src/GenPermMatrixSliceOp.hpp"
 #include "WorkspacePack.hpp"
 #include "Range1D.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "profile_hack.hpp"
 
 namespace {
@@ -47,7 +47,7 @@ get_element( const AbstractLinAlgPack::SpVectorSlice& v, AbstractLinAlgPack::ind
 // Get a view of a vector (two versions)
 
 inline
-MemMngPack::ref_count_ptr<const AbstractLinAlgPack::Vector>
+Teuchos::RefCountPtr<const AbstractLinAlgPack::Vector>
 get_view(
 	const AbstractLinAlgPack::Vector& v
 	,AbstractLinAlgPack::index_type l
@@ -58,15 +58,14 @@ get_view(
 }
 
 inline
-MemMngPack::ref_count_ptr<const AbstractLinAlgPack::SpVectorSlice>
+Teuchos::RefCountPtr<const AbstractLinAlgPack::SpVectorSlice>
 get_view(
 	const AbstractLinAlgPack::SpVectorSlice& v
 	,AbstractLinAlgPack::index_type l
 	,AbstractLinAlgPack::index_type u
 	)
 {
-	return MemMngPack::ref_count_ptr<const AbstractLinAlgPack::SpVectorSlice>(
-		new AbstractLinAlgPack::SpVectorSlice( v(l,u) ) );
+	return Teuchos::rcp( new AbstractLinAlgPack::SpVectorSlice( v(l,u) ) );
 }
 
 // Perform a matrix vector multiplication
@@ -247,8 +246,8 @@ void MatrixComposite::reinitialize( size_type rows, size_type cols )
 	if(vector_list_.size()) {
 		vector_list_.erase(vector_list_.begin(),vector_list_.end());
 	}
-	space_rows_  = rcp::null;
-	space_cols_  = rcp::null;
+	space_rows_  = Teuchos::null;
+	space_cols_  = Teuchos::null;
 }
 
 void MatrixComposite::add_vector(
@@ -307,7 +306,7 @@ void MatrixComposite::add_vector(
 	vector_list_.push_back(
 		SubVectorEntry(
 			row_offset+1,col_offset+1,beta,Range1D()
-			,rcp::null,rcp::null,BLAS_Cpp::no_trans
+			,Teuchos::null,Teuchos::null,BLAS_Cpp::no_trans
 			,v,v_release,v_trans ) );
 }
 
@@ -386,10 +385,10 @@ void MatrixComposite::add_matrix(
 	using BLAS_Cpp::cols;
 	using RangePack::full_range;
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		alpha == 0.0, std::invalid_argument
 		,"MatrixComposite::add_matrix(...) : Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		A == NULL, std::invalid_argument
 		,"MatrixComposite::add_matrix(...) : Error!" );
 
@@ -405,10 +404,10 @@ void MatrixComposite::add_matrix(
 		opPopAopQ_rows = rng_P.size(),
 		opPopAopQ_cols = rng_Q.size();
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		row_offset + opPopAopQ_rows > rows_, std::invalid_argument
 		,"MatrixComposite::add_matrix(...) : Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		col_offset + opPopAopQ_cols > cols_, std::invalid_argument
 		,"MatrixComposite::add_matrix(...) : Error!" );
 
@@ -420,10 +419,10 @@ void MatrixComposite::add_matrix(
 			,col_offset+1,col_offset+opPopAopQ_cols
 			,alpha
 			,rng_P
-			,rcp::null,rcp::null,BLAS_Cpp::no_trans
+			,Teuchos::null,Teuchos::null,BLAS_Cpp::no_trans
 			,A,A_release,A_trans
 			,rng_Q
-			,rcp::null,rcp::null,BLAS_Cpp::no_trans
+			,Teuchos::null,Teuchos::null,BLAS_Cpp::no_trans
 			)
 		);
 
@@ -446,10 +445,10 @@ void MatrixComposite::add_matrix(
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		alpha == 0.0, std::invalid_argument
 		,"MatrixComposite::add_matrix(...) : Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		A == NULL, std::invalid_argument
 		,"MatrixComposite::add_matrix(...) : Error!" );
 
@@ -459,10 +458,10 @@ void MatrixComposite::add_matrix(
 		opA_rows = rows(A_rows,A_cols,A_trans),
 		opA_cols = cols(A_rows,A_cols,A_trans);
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		row_offset + opA_rows > rows_, std::invalid_argument
 		,"MatrixComposite::add_matrix(...) : Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		col_offset + opA_cols > cols_, std::invalid_argument
 		,"MatrixComposite::add_matrix(...) : Error!" );
 
@@ -474,10 +473,10 @@ void MatrixComposite::add_matrix(
 			,col_offset+1,col_offset+opA_cols
 			,alpha
 			,Range1D()
-			,rcp::null,rcp::null,BLAS_Cpp::no_trans
+			,Teuchos::null,Teuchos::null,BLAS_Cpp::no_trans
 			,A,A_release,A_trans
 			,Range1D()
-			,rcp::null,rcp::null,BLAS_Cpp::no_trans
+			,Teuchos::null,Teuchos::null,BLAS_Cpp::no_trans
 			)
 		);
 }
@@ -513,10 +512,10 @@ void MatrixComposite::add_matrix(
 		SubMatrixEntry(
 			row_offset+1,row_offset+opP_rows,col_offset+1,col_offset+opP_cols,alpha
 			,Range1D::Invalid
-			,rcp::rcp(new GenPermMatrixSlice(*P)),P_release,P_trans
-			,NULL,rcp::null,BLAS_Cpp::no_trans
+			,Teuchos::rcp(new GenPermMatrixSlice(*P)),P_release,P_trans
+			,NULL,Teuchos::null,BLAS_Cpp::no_trans
 			,Range1D()
-			,rcp::null,rcp::null,BLAS_Cpp::no_trans
+			,Teuchos::null,Teuchos::null,BLAS_Cpp::no_trans
 			)
 		);
 }
@@ -532,17 +531,17 @@ void MatrixComposite::finish_construction(
 	,const VectorSpace::space_ptr_t& space_rows
 	)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!space_cols.get(), std::invalid_argument
 		,"MatrixComposite::finish_construction(...): Error, space_cols.get() can not be NULL" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!space_rows.get(), std::invalid_argument
 		,"MatrixComposite::finish_construction(...): Error, space_rows.get() can not be NULL" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_cols->dim() != rows_, std::invalid_argument
 		,"MatrixComposite::finish_construction(...): Error, space_colss->dim() = " << space_cols->dim()
 		<< " != rows = " << rows_ << " where cols was passed to this->reinitialize(...)" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_rows->dim() != cols_, std::invalid_argument
 		,"MatrixComposite::finish_construction(...): Error, space_rows->dim() = " << space_rows->dim()
 		<< " != cols = " << cols_ << " where cols was passed to this->reinitialize(...)" );
@@ -730,7 +729,7 @@ void MatrixComposite::Vp_StPtMtV(
 void MatrixComposite::assert_fully_constructed() const
 {
 	const bool fully_constructed = fully_constructed_;
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!fully_constructed, std::logic_error
 		,"MatrixComposite::assert_fully_constructed() : Error, not fully constructed!");
 }

@@ -19,7 +19,7 @@
 
 #include "OptionsFromStream.hpp"
 #include "EatInputComment.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
@@ -116,7 +116,7 @@ void OptionsFromStream::read_options( std::istream& in )
 		in >> curr_word;
 		if( curr_word == "end_options" )
 			return;
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			curr_word != "options_group", InputStreamError
 			,"OptionsFromStream::read_options(...) : "
 			"Error, curr_word = \'" << curr_word << " != \'options_group\'" );

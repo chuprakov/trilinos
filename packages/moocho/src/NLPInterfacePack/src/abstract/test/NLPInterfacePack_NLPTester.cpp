@@ -82,7 +82,7 @@ bool NLPTester::test_interface(
 		if( n < m ) {
 			if(*out)
 				*out << "Error! n = " << n << " < m = " << m << " is not allowed!\n";
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				throw_exception_, std::logic_error
 				,"NLPTester::test_interface(...): Error! n = " << n << " < m = " << m << " is not allowed!"
 				);

@@ -87,7 +87,7 @@ bool CheckConvergenceIP_Strategy::Converged(
 	// scaling
 	value_type scale_1 = 1 + x_k.norm_1()/x_k.dim();
 
-	MemMngPack::ref_count_ptr<VectorMutable> temp = Gf_k.clone();
+	Teuchos::RefCountPtr<VectorMutable> temp = Gf_k.clone();
 	temp->axpy(-1.0, vl_k);
 	temp->axpy(1.0, vu_k);
 	value_type scale_2 = temp->norm_1();

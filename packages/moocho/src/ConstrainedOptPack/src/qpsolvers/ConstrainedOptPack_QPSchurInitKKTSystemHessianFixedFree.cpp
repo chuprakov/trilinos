@@ -189,12 +189,12 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 		&sym_G_RR_dense, 1.0, MatrixSymOp::DUMMY_ARG
 		,G_sym, Q_R, BLAS_Cpp::no_trans, 0.0 );
 	// Initialize a factorization object for this matrix
-	typedef rcp::ref_count_ptr<MatrixSymPosDefCholFactor> G_RR_ptr_t;
+	typedef Teuchos::RefCountPtr<MatrixSymPosDefCholFactor> G_RR_ptr_t;
 	G_RR_ptr_t
 		G_RR_ptr = new MatrixSymPosDefCholFactor();
 	G_RR_ptr->initialize(sym_G_RR_dense);
 	
-	*Ko = rcp::rcp_implicit_cast<Ko_ptr_t::element_type>(G_RR_ptr); // Ko is initialized!
+	*Ko = Teuchos::rcp_implicit_cast<Ko_ptr_t::element_type>(G_RR_ptr); // Ko is initialized!
 
 	// ToDo: (2001/07/05) We could be more carefull about how memory is initialized and reused
 	// in the future but this implementation is just easier.

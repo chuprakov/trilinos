@@ -56,9 +56,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixSymNonsing>    mat_msns_ptr_t;
+	typedef Teuchos::RefCountPtr<const MatrixSymNonsing>    mat_msns_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixSymNonsing>          mat_msns_mut_ptr_t;
+	typedef Teuchos::RefCountPtr<MatrixSymNonsing>          mat_msns_mut_ptr_t;
 #endif
 	///
 	enum EMatrixDummyArg { DUMMY_ARG };

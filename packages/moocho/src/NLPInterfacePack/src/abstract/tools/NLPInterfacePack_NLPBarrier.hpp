@@ -42,10 +42,10 @@ public:
 	value_type objective_term() const;
 
 	/// Get the value of the gradient of the barrier term.  Must be called after <tt>calc_Gf()</tt>
-	const MemMngPack::ref_count_ptr<Vector> grad_barrier_term() const;
+	const Teuchos::RefCountPtr<Vector> grad_barrier_term() const;
 
 	/// Get the value of the gradient of the true objective term.  Must be called after <tt>calc_Gf()</tt>.
-	const MemMngPack::ref_count_ptr<Vector> grad_objective_term() const;
+	const Teuchos::RefCountPtr<Vector> grad_objective_term() const;
 		
 	//@}
 			
@@ -59,7 +59,7 @@ public:
 
 	///
 	void InitializeFromNLP(
-	  MemMngPack::ref_count_ptr<NLP> original_nlp
+	  Teuchos::RefCountPtr<NLP> original_nlp
 	  );
 
 	//@}
@@ -287,13 +287,13 @@ protected:
 
 private:
 
-	MemMngPack::ref_count_ptr<NLPObjGrad> nlp_;
+	Teuchos::RefCountPtr<NLPObjGrad> nlp_;
 	value_type                                           mu_;
 	mutable value_type                                   barrier_term_;
 	mutable value_type                                   objective_term_;
-	mutable MemMngPack::ref_count_ptr<VectorMutable>     grad_barrier_term_;
-	mutable MemMngPack::ref_count_ptr<VectorMutable>     grad_barrier_term_temp_;
-	mutable MemMngPack::ref_count_ptr<VectorMutable>     grad_objective_term_;
+	mutable Teuchos::RefCountPtr<VectorMutable>     grad_barrier_term_;
+	mutable Teuchos::RefCountPtr<VectorMutable>     grad_barrier_term_temp_;
+	mutable Teuchos::RefCountPtr<VectorMutable>     grad_objective_term_;
 
 	value_type CalculateBarrierTerm(const Vector& x) const;
 

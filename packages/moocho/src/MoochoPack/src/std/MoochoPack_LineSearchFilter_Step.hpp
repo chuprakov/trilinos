@@ -22,7 +22,7 @@
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "IterationPack/src/CastIQMember.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 #include "IterationPack/src/AlgorithmState.hpp"
 
@@ -137,7 +137,7 @@ class LineSearchFilter_Step
 		/** Constructor.
 		 */
 		LineSearchFilter_Step(
-		  MemMngPack::ref_count_ptr<NLPInterfacePack::NLP> nlp
+		  Teuchos::RefCountPtr<NLPInterfacePack::NLP> nlp
 		  ,const std::string obj_iq_name = "f"
 		  ,const std::string grad_obj_iq_name = "Gf"
 		  ,const value_type           &gamma_theta      = 1e-5
@@ -191,7 +191,7 @@ class LineSearchFilter_Step
 		
 
 		// nlp to use for calculations
-		MemMngPack::ref_count_ptr<NLPInterfacePack::NLP> nlp_;
+		Teuchos::RefCountPtr<NLPInterfacePack::NLP> nlp_;
 
 		// Validate input parameters - fix if possible
 		bool ValidatePoint( IterQuantityAccess<VectorMutable>& x,

@@ -21,7 +21,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
@@ -176,22 +176,22 @@ void MatrixVarReductImplicit::initialize(
 {
 	namespace rcp = MemMngPack;
 	// Validate the inputs
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		C.get() == NULL, std::invalid_argument
 		,"MatrixVarReductImplicit::initialize(...): Error, "
 		"C.get() must not be NULL" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		N.get() == NULL, std::invalid_argument
 		,"MatrixVarReductImplicit::initialize(...): Error, "
 		"N.get() must not be NULL" );
 	if( D_direct.get() ) {
 		const bool is_compatible_cols = D_direct->space_cols().is_compatible(C->space_cols());
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!is_compatible_cols, VectorSpace::IncompatibleVectorSpaces
 			,"MatrixVarReductImplicit::initialize(...): Error, "
 			"D_direct->space_cols() is not compatible with C->space_cols()" );
 		const bool is_compatible_rows = D_direct->space_rows().is_compatible(N->space_rows());
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!is_compatible_rows, VectorSpace::IncompatibleVectorSpaces
 			,"MatrixVarReductImplicit::initialize(...): Error, "
 			"D_direct->space_rows() is not compatible with N->space_rows()" );
@@ -204,7 +204,7 @@ void MatrixVarReductImplicit::initialize(
 		for( InvCtN_rows_set_list_t::iterator itr = InvCtN_rows_set_list_.begin();
 			 itr != InvCtN_rows_set_list_.end(); ++itr )
         {
-			InvCtN_rows_[*itr] = rcp::null;
+			InvCtN_rows_[*itr] = Teuchos::null;
 		}
 		InvCtN_rows_set_list_.clear();
 	}
@@ -213,9 +213,9 @@ void MatrixVarReductImplicit::initialize(
 void MatrixVarReductImplicit::set_uninitialized()
 {
 	namespace rcp = MemMngPack;
-	C_        = rcp::null;
-	N_        = rcp::null;
-	D_direct_ = rcp::null;
+	C_        = Teuchos::null;
+	N_        = Teuchos::null;
+	D_direct_ = Teuchos::null;
 }
 
 // Overridden from MatrixBase
@@ -393,7 +393,7 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 
 void MatrixVarReductImplicit::assert_initialized() const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		C_.get() == NULL, std::logic_error
 		,"MatrixVarReductImplicit::assert_initialized(): Error, "
 		"initialize(...) has not been called yet!" );

@@ -23,7 +23,7 @@
 #include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "WorkspacePack.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -60,10 +60,10 @@ namespace AbstractLinAlgPack {
 
 // Overridden from BasisMatrixImp
 
-MemMngPack::ref_count_ptr<DirectSparseSolverImp::BasisMatrixImp>
+Teuchos::RefCountPtr<DirectSparseSolverImp::BasisMatrixImp>
 DirectSparseSolverDense::BasisMatrixDense::create_matrix() const
 {
-	return MemMngPack::rcp(new BasisMatrixDense);
+	return Teuchos::rcp(new BasisMatrixDense);
 }
 
 void DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(
@@ -84,7 +84,7 @@ void DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(
 	VectorDenseMutableEncap  yd(*y);
 	VectorDenseEncap         xd(x);
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		yd().dim() != xd().dim(), std::invalid_argument
 		,"DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(...) : Error, "
 		" y.dim() = " << yd().dim() << " != x.dim() = " << xd().dim() << "!"
@@ -172,7 +172,7 @@ const DirectSparseSolver::basis_matrix_factory_ptr_t
 DirectSparseSolverDense::basis_matrix_factory() const
 {
 	namespace mmp = MemMngPack;
-	return mmp::rcp(new mmp::AbstractFactoryStd<BasisMatrix,BasisMatrixDense>());
+	return Teuchos::rcp(new mmp::AbstractFactoryStd<BasisMatrix,BasisMatrixDense>());
 }
 
 void DirectSparseSolverDense::estimated_fillin_ratio(
@@ -184,16 +184,16 @@ void DirectSparseSolverDense::estimated_fillin_ratio(
 
 // Overridden from DirectSparseSolverImp
 
-const MemMngPack::ref_count_ptr<DirectSparseSolver::FactorizationStructure>
+const Teuchos::RefCountPtr<DirectSparseSolver::FactorizationStructure>
 DirectSparseSolverDense::create_fact_struc() const
 {
-	return MemMngPack::rcp(new FactorizationStructureDense);
+	return Teuchos::rcp(new FactorizationStructureDense);
 }
 
-const MemMngPack::ref_count_ptr<DirectSparseSolverImp::FactorizationNonzeros>
+const Teuchos::RefCountPtr<DirectSparseSolverImp::FactorizationNonzeros>
 DirectSparseSolverDense::create_fact_nonzeros() const
 {
-	return MemMngPack::rcp(new FactorizationNonzerosDense);
+	return Teuchos::rcp(new FactorizationNonzerosDense);
 }
 
 void DirectSparseSolverDense::imp_analyze_and_factor(
@@ -228,7 +228,7 @@ void DirectSparseSolverDense::imp_analyze_and_factor(
 		nz = A.num_nonzeros( MCTS::EXTRACT_FULL_MATRIX ,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM );
 
 	// Validate input
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		n <= 0 || m <= 0 || m > n, std::invalid_argument
 		,"DirectSparseSolverDense::imp_analyze_and_factor(...) : Error!" );
 
@@ -359,7 +359,7 @@ void DirectSparseSolverDense::imp_factor(
 		nz = A.num_nonzeros( MCTS::EXTRACT_FULL_MATRIX ,MCTS::ELEMENTS_ALLOW_DUPLICATES_SUM );
 
 	// Validate input
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		(m != fs.m_ || n != fs.n_ || nz != fs.nz_), std::invalid_argument
 		,"DirectSparseSolverDense::imp_factor(...): Error!"
 		);
@@ -407,7 +407,7 @@ void DirectSparseSolverDense::imp_factor(
 	FortranTypes::f_int B_rank = 0;
 	DenseLinAlgLAPack::getrf( &fn.LU_(), &fn.ipiv_[0], &B_rank );
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		B_rank != fs.rank_, FactorizationFailure
 		,"DirectSparseSolverDense::imp_factor(...): Error, the basis matrix is no "
 		"longer full rank with B_rank = " << B_rank << " != fs.rank = " << fs.rank_ << "!"

@@ -18,7 +18,7 @@
 
 #include "MoochoPack/src/std/TangentialStepWithInequStd_StepSetOptions.hpp"
 #include "StringToBool.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 // Define the options
 namespace {
@@ -53,7 +53,7 @@ TangentialStepWithInequStd_StepSetOptions::TangentialStepWithInequStd_StepSetOpt
 		TangentialStepWithInequStd_Step >( target )
 {}
 
-void TangentialStepWithInequStd_StepSetOptions::set_option(
+void TangentialStepWithInequStd_StepSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	using OptionsFromStreamPack::StringToBool;
@@ -73,7 +73,7 @@ void TangentialStepWithInequStd_StepSetOptions::set_option(
 			else if( option == "QP_NO_TEST" )
 				target().qp_testing( target_t::QP_NO_TEST );
 			else
-				THROW_EXCEPTION(
+				TEST_FOR_EXCEPTION(
 					true, std::invalid_argument
 					,"Error, incorrect value \'" << option << "\' for "
 					"\"qp_testing\".  Only the options "

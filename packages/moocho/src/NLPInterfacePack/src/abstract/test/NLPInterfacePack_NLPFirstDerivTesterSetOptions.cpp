@@ -50,7 +50,7 @@ NLPFirstDerivTesterSetOptions::NLPFirstDerivTesterSetOptions(
 			NLPFirstDerivTester >( target )
 {}
 
-void NLPFirstDerivTesterSetOptions::set_option(
+void NLPFirstDerivTesterSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	typedef NLPFirstDerivTester target_t;

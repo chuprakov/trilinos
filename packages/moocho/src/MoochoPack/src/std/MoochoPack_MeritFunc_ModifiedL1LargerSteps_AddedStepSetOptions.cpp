@@ -54,7 +54,7 @@ MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions::MeritFunc_ModifiedL1LargerS
 			MeritFunc_ModifiedL1LargerSteps_AddedStep >( target )
 {}
 
-void MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions::set_option(
+void MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	switch( (local_EOptions)option_num ) {

@@ -16,7 +16,7 @@
 #include "ConstrainedOptPack/src/globalization/MeritFuncNLPModL1.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -34,7 +34,7 @@ value_type MeritFuncNLPModL1::value(
 	,const Vector    *hu
 	) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		h || hl || hu, std::logic_error
 		,"MeritFuncNLPModL1::value(...) : Error! general inequalities are not supported!" );
 /*
@@ -73,7 +73,7 @@ value_type MeritFuncNLPModL1::calc_deriv(
 	,const Vector   &d_k
 	)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		h_k || hl || hu, std::logic_error
 		,"MeritFuncNLPModL1::value(...) : Error! general inequalities are not supported!" );
 /*

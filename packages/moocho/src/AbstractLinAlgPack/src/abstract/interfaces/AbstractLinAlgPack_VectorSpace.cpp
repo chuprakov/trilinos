@@ -20,7 +20,7 @@
 #include "MultiVectorMutable.hpp"
 #include "InnerProductDot.hpp"
 #include "GenPermMatrixSlice.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -36,7 +36,7 @@ void VectorSpace::inner_prod( const inner_prod_ptr_t& inner_prod )
 	if(inner_prod.get()) {
 		inner_prod_ = inner_prod;
 	} else {
-		inner_prod_ = MemMngPack::rcp(new InnerProductDot());
+		inner_prod_ = Teuchos::rcp(new InnerProductDot());
 	}
 }
 
@@ -51,7 +51,7 @@ VectorSpace::inner_prod() const
 VectorSpace::space_fcty_ptr_t
 VectorSpace::small_vec_spc_fcty() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 VectorSpace::vec_mut_ptr_t
@@ -66,7 +66,7 @@ VectorSpace::create_member(const value_type& alpha) const
 VectorSpace::multi_vec_mut_ptr_t
 VectorSpace::create_members(size_type num_vecs) const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 VectorSpace::space_ptr_t
@@ -76,16 +76,16 @@ VectorSpace::sub_space(const Range1D& rng_in) const
 	const index_type dim = this->dim();
 	const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rng.ubound() > dim, std::out_of_range
 		,"VectorSpace::sub_space(rng): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
 		"is not in the range [1,this->dim()] = [1,"<<dim<<"]" );
 #endif	
 	if( rng.lbound() == 1 && rng.ubound() == dim )
 		return space_ptr_t( this, false );
-	return mmp::rcp(
+	return Teuchos::rcp(
 		new VectorSpaceSubSpace(
-			mmp::rcp( this, false )
+			Teuchos::rcp( this, false )
 			,rng ) );
 }
 
@@ -100,7 +100,7 @@ VectorSpace::space(
 	space_fcty_ptr_t  vec_spc_fcty = this->small_vec_spc_fcty();
 	if(vec_spc_fcty.get())
 		return vec_spc_fcty->create_vec_spc(dim);
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 // Overridden from AbstractFactory<>

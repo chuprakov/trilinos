@@ -19,7 +19,7 @@
 #include <iosfwd>
 
 #include "IterationPackTypes.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace IterationPack {
 
@@ -38,7 +38,7 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<std::ostream>    ostream_ptr_t;
+	typedef Teuchos::RefCountPtr<std::ostream>    ostream_ptr_t;
 
 	//@}
 

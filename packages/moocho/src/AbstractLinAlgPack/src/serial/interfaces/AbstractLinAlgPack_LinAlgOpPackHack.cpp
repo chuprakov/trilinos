@@ -159,8 +159,8 @@ void LinAlgOpPack::Vp_StPtMtV(
 	VectorSpace::vec_mut_ptr_t
 		ay =  ( ay_space.get()
 				? ay_space->create_member()
-				: mmp::rcp_implicit_cast<VectorMutable>(
-					mmp::rcp(new VectorMutableDense(BLAS_Cpp::rows(P.rows(),P.cols(),P_trans)))
+				: Teuchos::rcp_implicit_cast<VectorMutable>(
+					Teuchos::rcp(new VectorMutableDense(BLAS_Cpp::rows(P.rows(),P.cols(),P_trans)))
 					) ),
 		ax = ( M_trans == no_trans ? M.space_rows() : M.space_cols() ).create_member();
 	(VectorDenseMutableEncap(*ay))() = *y;

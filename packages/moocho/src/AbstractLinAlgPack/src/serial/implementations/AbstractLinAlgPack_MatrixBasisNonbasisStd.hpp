@@ -34,13 +34,13 @@ class MatrixBasisNonbasisStd
 public:
 	
     ///
-	typedef MemMngPack::ref_count_ptr<const MatrixOp>
+	typedef Teuchos::RefCountPtr<const MatrixOp>
 		C_ptr_t;
     ///
-	typedef MemMngPack::ref_count_ptr<const MatrixFactorized>
+	typedef Teuchos::RefCountPtr<const MatrixFactorized>
 		C_nonsingular_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixOp>
+	typedef Teuchos::RefCountPtr<const MatrixOp>
 		N_ptr_t;
 
 	///

@@ -19,7 +19,7 @@
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixConvertToSparse.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixNonsing.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 #include "AbstractFactory.hpp"
 
 namespace AbstractLinAlgPack {
@@ -179,7 +179,7 @@ namespace AbstractLinAlgPack {
 
 	// Analyze and factor another matrix A3 with an all new structure and recycle storage of C1.
 	C_ptr_t  C3_ptr = C1_ptr;
-	C1_ptr = MemMngPack::null;
+	C1_ptr = Teuchos::null;
 	direct_solver.analyze_and_factor( A3, &row_perm1, &col_perm1, &rank1, C3_ptr.get() );
 
 	// Solve for x3 = inv(C3)*b3
@@ -200,7 +200,7 @@ namespace AbstractLinAlgPack {
 	// not change by this operation.  Therefore, a new factorization structure
 	// must be allocated in this case.
 	C_ptr_t  C5_ptr = C4_ptr;
-	C4_ptr = MemMngPack::null;
+	C4_ptr = Teuchos::null;
 	direct_solver.analyze_and_factor( A5, &row_perm5, &col_perm5, &rank5, C4_ptr.get() );
 
  \endcode
@@ -240,21 +240,21 @@ public:
 	class BasisMatrix : public AbstractLinAlgPack::MatrixNonsing {
 	public:
 		///
-		typedef MemMngPack::ref_count_ptr<FactorizationStructure>  fact_struc_ptr_t;
+		typedef Teuchos::RefCountPtr<FactorizationStructure>  fact_struc_ptr_t;
 		///
 		/** Return a reference to a smart pointer to the object that represents
 		 * the factorization structure.
 		 *
-		 * Returning a reference to a \c ref_count_ptr<> object verses returning
-		 * a \c ref_count_ptr<> object itself is critical so that we can rely on
-		 * \c ref_count_ptr<>::count() to tell us how many clients have a reference
+		 * Returning a reference to a \c RefCountPtr<> object verses returning
+		 * a \c RefCountPtr<> object itself is critical so that we can rely on
+		 * \c RefCountPtr<>::count() to tell us how many clients have a reference
 		 * to this object.
 		 */
 		virtual const fact_struc_ptr_t&  get_fact_struc() const = 0;
 	};
 
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<BasisMatrix> >   basis_matrix_factory_ptr_t;
 
 	///
@@ -562,7 +562,7 @@ public:
 	virtual void factor(
 		const AbstractLinAlgPack::MatrixConvertToSparse   &A
 		,BasisMatrix                                    *basis_matrix
-		,const BasisMatrix::fact_struc_ptr_t            &fact_struc    = MemMngPack::null
+		,const BasisMatrix::fact_struc_ptr_t            &fact_struc    = Teuchos::null
 		,std::ostream                                   *out           = NULL
 		) = 0;
 

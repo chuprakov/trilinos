@@ -37,9 +37,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixOpNonsing>    mat_mwons_ptr_t;
+	typedef Teuchos::RefCountPtr<const MatrixOpNonsing>    mat_mwons_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixOpNonsing>          mat_mwons_mut_ptr_t;
+	typedef Teuchos::RefCountPtr<MatrixOpNonsing>          mat_mwons_mut_ptr_t;
 #endif
 
 	//@}

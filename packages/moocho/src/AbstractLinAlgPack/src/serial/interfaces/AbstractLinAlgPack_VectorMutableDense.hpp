@@ -19,7 +19,7 @@
 #include "VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 #include "ReleaseResource.hpp"
 
 namespace AbstractLinAlgPack {
@@ -61,7 +61,7 @@ class VectorMutableDense
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
 	/** @name Constructors/initializers */
@@ -117,7 +117,7 @@ public:
 	 */
 	const DVectorSlice get_vec() const;
 	///
-	/** Return a <tt>ref_count_ptr<></tt> pointer to the object that will
+	/** Return a <tt>RefCountPtr<></tt> pointer to the object that will
 	 * release the associated resource.
 	 */
 	const release_resource_ptr_t& vec_release() const;

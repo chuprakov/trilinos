@@ -24,7 +24,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "Range1D.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -57,7 +57,7 @@ void VectorSpaceBlocked::get_vector_space_position(
 {
 	// Validate the preconditions
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		i < 1 || this->dim() < i, std::out_of_range
 		,"VectorSpaceBlocked::get_vector_space_position(...): Error, i = "
 		<< i << " is not in range [1,"<<this->dim()<<"]"
@@ -120,10 +120,10 @@ VectorSpaceBlocked::create_member() const
 	for( int k = 0; k < num_vec_spaces; ++k )
 		vecs[k] = vector_spaces_[k]->create_member();
 
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new VectorMutableBlocked(
 			&vecs[0]
-			,rcp::rcp(new VectorSpaceBlocked(*this))
+			,Teuchos::rcp(new VectorSpaceBlocked(*this))
 			) );
 }
 
@@ -131,13 +131,13 @@ VectorSpace::multi_vec_mut_ptr_t
 VectorSpaceBlocked::create_members(size_type num_vecs) const
 {
 	assert(0); // ToDo: Implement using MultiVectorMutableCompositeStd!
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 VectorSpace::space_ptr_t
 VectorSpaceBlocked::clone() const
 {
-	return MemMngPack::rcp(new VectorSpaceBlocked(*this)); // ToDo: Fix the behavior when needed!
+	return Teuchos::rcp(new VectorSpaceBlocked(*this)); // ToDo: Fix the behavior when needed!
 }
 
 VectorSpace::space_ptr_t
@@ -148,7 +148,7 @@ VectorSpaceBlocked::sub_space(const Range1D& rng_in) const
 	const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
 	// Validate the preconditions
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		dim < rng.ubound(), std::out_of_range
 		,"VectorSpaceBlocked::sub_space(...): Error, rng = "
 		<< "["<<rng.lbound()<<","<<rng.ubound()<<"] is not in range [1,"<<dim<<"]" );
@@ -181,8 +181,8 @@ VectorSpaceBlocked::sub_space(const Range1D& rng_in) const
 	assert( end_kth_vector_space > kth_vector_space );
 #endif
 	// Create a VectorSpaceComposite object containing the relavant constituent vector spaces
-	rcp::ref_count_ptr<VectorSpaceBlocked>
-		vec_space_comp = rcp::rcp(
+	Teuchos::RefCountPtr<VectorSpaceBlocked>
+		vec_space_comp = Teuchos::rcp(
 			new VectorSpaceBlocked(
 				&vector_spaces[kth_vector_space]
 				,end_kth_vector_space - kth_vector_space + 1 )
@@ -192,7 +192,7 @@ VectorSpaceBlocked::sub_space(const Range1D& rng_in) const
 		// The client selected exactly a contigous set of vector spaces
 		return vec_space_comp;
 	// The client selected some sub-set of elements in the contigous set of vector spaces
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new VectorSpaceSubSpace(
 			vec_space_comp
 			,Range1D( 

@@ -70,7 +70,7 @@ public:
 	//@}
 	
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const OptionsFromStreamPack::OptionsFromStream>             options_ptr_t;
 
 	///
@@ -117,7 +117,7 @@ public:
 		,NLPSecondOrder                                              *nlp_soi
 		,NLPDirect                                             *nlp_fod
 		,bool                                                            tailored_approach
-		,MemMngPack::ref_count_ptr<DecompositionSystem>                  *decomp_sys
+		,Teuchos::RefCountPtr<DecompositionSystem>                  *decomp_sys
 		);
 	///
 	/** Add the common iteration quantities to the state object.
@@ -131,8 +131,8 @@ public:
 		,NLPSecondOrder                                              *nlp_soi
 		,NLPDirect                                             *nlp_fod
 		,bool                                                            tailored_approach
-		,const MemMngPack::ref_count_ptr<DecompositionSystem>            &decomp_sys
-		,const MemMngPack::ref_count_ptr<NLPAlgoState>                      &state
+		,const Teuchos::RefCountPtr<DecompositionSystem>            &decomp_sys
+		,const Teuchos::RefCountPtr<NLPAlgoState>                      &state
 		);
 
 	///
@@ -147,11 +147,11 @@ public:
 		,NLPSecondOrder                                               *nlp_soi
 		,NLPDirect                                              *nlp_fod
 		,bool                                                             tailored_approach
-		,const MemMngPack::ref_count_ptr<DecompositionSystem>             &decomp_sys
-		,MemMngPack::ref_count_ptr<IterationPack::AlgorithmStep>   *eval_new_point_step
-		,MemMngPack::ref_count_ptr<CalcFiniteDiffProd>                    *calc_fd_prod
-		,MemMngPack::ref_count_ptr<VariableBoundsTester>                  *bounds_tester
-		,MemMngPack::ref_count_ptr<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy
+		,const Teuchos::RefCountPtr<DecompositionSystem>             &decomp_sys
+		,Teuchos::RefCountPtr<IterationPack::AlgorithmStep>   *eval_new_point_step
+		,Teuchos::RefCountPtr<CalcFiniteDiffProd>                    *calc_fd_prod
+		,Teuchos::RefCountPtr<VariableBoundsTester>                  *bounds_tester
+		,Teuchos::RefCountPtr<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy
 		);
 
 	///
@@ -172,7 +172,7 @@ private:
 	SOptionValues       cov_; // current option values actually used
 
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
-	MemMngPack::ref_count_ptr<BasisSystemPerm> basis_sys_perm_;
+	Teuchos::RefCountPtr<BasisSystemPerm> basis_sys_perm_;
 #endif
 
 	// /////////////////////////

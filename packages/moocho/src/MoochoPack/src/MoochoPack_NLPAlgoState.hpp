@@ -29,7 +29,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 //#include "DenseLinAlgPack/src/IVector.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "Range1D.hpp"
 
 namespace MoochoPack {
@@ -258,7 +258,7 @@ public:
 	{public: InvalidType(const std::string& what_arg) : std::logic_error(what_arg) {}};
 	
 	///
-	typedef MemMngPack::ref_count_ptr<const VectorSpace>    vec_space_ptr_t;
+	typedef Teuchos::RefCountPtr<const VectorSpace>    vec_space_ptr_t;
 
 	//@}
 
@@ -316,11 +316,11 @@ public:
 	 * Initializes num_basis() == 0
 	 */
 	NLPAlgoState(
-		const decomp_sys_ptr_t& decomp_sys   = MemMngPack::null
-		,const vec_space_ptr_t& space_x      = MemMngPack::null
-		,const vec_space_ptr_t& space_c      = MemMngPack::null
-		,const vec_space_ptr_t& space_range  = MemMngPack::null
-		,const vec_space_ptr_t& space_null   = MemMngPack::null
+		const decomp_sys_ptr_t& decomp_sys   = Teuchos::null
+		,const vec_space_ptr_t& space_x      = Teuchos::null
+		,const vec_space_ptr_t& space_c      = Teuchos::null
+		,const vec_space_ptr_t& space_range  = Teuchos::null
+		,const vec_space_ptr_t& space_null   = Teuchos::null
 		);
 
 	///

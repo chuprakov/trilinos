@@ -18,14 +18,14 @@
 #include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 const char name_f[] = "f";
 const char name_c[] = "c";
 const char name_c_breve[] = "c_breve";
 const char name_h_breve[] = "h_breve";
-NLPInterfacePack::NLP::options_ptr_t  null_options = MemMngPack::null;
+NLPInterfacePack::NLP::options_ptr_t  null_options = Teuchos::null;
 } // end namespace
 
 namespace NLPInterfacePack {
@@ -85,18 +85,18 @@ void NLP::get_init_lagrange_mult(
 	) const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( lambda  && this->m()  == 0,            std::logic_error, "" );
-	THROW_EXCEPTION( nu      && this->num_bounded_x() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( lambda  && this->m()  == 0,            std::logic_error, "" );
+	TEST_FOR_EXCEPTION( nu      && this->num_bounded_x() == 0, std::logic_error, "" );
 #endif
 	if(lambda) {
 #ifdef _DEBUG
-		THROW_EXCEPTION( !this->space_c()->is_compatible(lambda->space()), VectorSpace::IncompatibleVectorSpaces, "" );
+		TEST_FOR_EXCEPTION( !this->space_c()->is_compatible(lambda->space()), VectorSpace::IncompatibleVectorSpaces, "" );
 #endif
 		*lambda = 0.0;
 	}
 	if(nu) {
 #ifdef _DEBUG
-		THROW_EXCEPTION( !this->space_x()->is_compatible(nu->space()), VectorSpace::IncompatibleVectorSpaces, "" );
+		TEST_FOR_EXCEPTION( !this->space_x()->is_compatible(nu->space()), VectorSpace::IncompatibleVectorSpaces, "" );
 #endif
 		*nu = 0.0;
 	}
@@ -129,8 +129,8 @@ const value_type& NLP::f() const
 void NLP::set_c(VectorMutable* c)
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
-	THROW_EXCEPTION( c && !this->space_c()->is_compatible(c->space()), VectorSpace::IncompatibleVectorSpaces, "" );
+	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( c && !this->space_c()->is_compatible(c->space()), VectorSpace::IncompatibleVectorSpaces, "" );
 #endif
 	first_order_info_.c = c;
 }
@@ -138,7 +138,7 @@ void NLP::set_c(VectorMutable* c)
 VectorMutable* NLP::get_c()
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
 	return StandardCompositionRelationshipsPack::get_role_name(first_order_info_.c, false, name_c);
 }
@@ -146,7 +146,7 @@ VectorMutable* NLP::get_c()
 VectorMutable& NLP::c()
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
 	return StandardCompositionRelationshipsPack::role_name(first_order_info_.c, false, name_c);
 }
@@ -154,7 +154,7 @@ VectorMutable& NLP::c()
 const Vector& NLP::c() const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
 	return StandardCompositionRelationshipsPack::role_name(first_order_info_.c, false, name_c);
 }
@@ -181,7 +181,7 @@ void NLP::calc_f(const Vector& x, bool newx) const
 void NLP::calc_c(const Vector& x, bool newx) const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
 	StandardCompositionRelationshipsPack::assert_role_name_set(first_order_info_.c, "NLP::calc_c()", name_c);
 	imp_calc_c(x,newx,zero_order_info());
@@ -206,7 +206,7 @@ size_type NLP::num_f_evals() const
 size_type NLP::num_c_evals() const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
 	return num_c_evals_;
 }
@@ -226,19 +226,19 @@ NLP::vec_space_ptr_t NLP::space_c_breve() const
 
 NLP::vec_space_ptr_t NLP::space_h_breve() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 const Vector& NLP::hl_breve() const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true, std::logic_error
 		,"NLP::hl_breve(): Error, this method must be overridden if space_h_breve is defined" );
 }
 
 const Vector& NLP::hu_breve() const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true, std::logic_error
 		,"NLP::hl_breve(): Error, this method must be overridden if space_h_breve is defined" );
 }
@@ -246,8 +246,8 @@ const Vector& NLP::hu_breve() const
 void NLP::set_c_breve(VectorMutable* c_breve)
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
-	THROW_EXCEPTION( c_breve && !this->space_c_breve()->is_compatible(c_breve->space()), VectorSpace::IncompatibleVectorSpaces, "" );
+	TEST_FOR_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( c_breve && !this->space_c_breve()->is_compatible(c_breve->space()), VectorSpace::IncompatibleVectorSpaces, "" );
 #endif
 	first_order_info_breve_.c = c_breve;
 }
@@ -255,7 +255,7 @@ void NLP::set_c_breve(VectorMutable* c_breve)
 VectorMutable* NLP::get_c_breve()
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
 #endif
 	return first_order_info_breve_.c;
 }
@@ -263,7 +263,7 @@ VectorMutable* NLP::get_c_breve()
 VectorMutable& NLP::c_breve()
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
 #endif
 	return StandardCompositionRelationshipsPack::role_name(first_order_info_breve_.c, false, name_c_breve);
 }
@@ -271,7 +271,7 @@ VectorMutable& NLP::c_breve()
 const Vector& NLP::c_breve() const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
 #endif
 	return StandardCompositionRelationshipsPack::role_name(first_order_info_breve_.c, false, name_c_breve);
 }
@@ -279,8 +279,8 @@ const Vector& NLP::c_breve() const
 void NLP::set_h_breve(VectorMutable* h_breve)
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
-	THROW_EXCEPTION( h_breve && !this->space_h_breve()->is_compatible(h_breve->space()), VectorSpace::IncompatibleVectorSpaces, "" );
+	TEST_FOR_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( h_breve && !this->space_h_breve()->is_compatible(h_breve->space()), VectorSpace::IncompatibleVectorSpaces, "" );
 #endif
 	first_order_info_breve_.c = h_breve;
 }
@@ -288,7 +288,7 @@ void NLP::set_h_breve(VectorMutable* h_breve)
 VectorMutable* NLP::get_h_breve()
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
 #endif
 	return first_order_info_breve_.h;
 }
@@ -296,7 +296,7 @@ VectorMutable* NLP::get_h_breve()
 VectorMutable& NLP::h_breve()
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
 #endif
 	return StandardCompositionRelationshipsPack::role_name(first_order_info_breve_.c, false, name_h_breve);
 }
@@ -304,7 +304,7 @@ VectorMutable& NLP::h_breve()
 const Vector& NLP::h_breve() const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() - this->ns() == 0, std::logic_error, "" );
 #endif
 	return StandardCompositionRelationshipsPack::role_name(first_order_info_breve_.c, false, name_h_breve);
 }
@@ -312,21 +312,21 @@ const Vector& NLP::h_breve() const
 const Permutation& NLP::P_var() const
 {
 	assert(0);
-//	if(!P_var_.get()) P_var_ = MemMngPack::rcp(new PermutationSerial(this->space_x());
+//	if(!P_var_.get()) P_var_ = Teuchos::rcp(new PermutationSerial(this->space_x());
 	return *P_var_;
 }
 
 const Permutation& NLP::P_equ() const
 {
 	assert(0);
-//	if(!P_equ_.get()) P_equ = MemMngPack::rcp(new PermutationSerial(this->space_c());
+//	if(!P_equ_.get()) P_equ = Teuchos::rcp(new PermutationSerial(this->space_c());
 	return *P_equ_;
 }
 
 void NLP::calc_c_breve(const Vector& x, bool newx) const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() == 0 || this->ns() > 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() == 0 || this->ns() > 0, std::logic_error, "" );
 #endif
 	StandardCompositionRelationshipsPack::assert_role_name_set(first_order_info_breve_.c, "NLP::calc_c_breve()", name_c_breve);
 	imp_calc_c_breve(x,newx,zero_order_info_breve());
@@ -336,7 +336,7 @@ void NLP::calc_c_breve(const Vector& x, bool newx) const
 void NLP::calc_h_breve(const Vector& x, bool newx) const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->ns() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->ns() == 0, std::logic_error, "" );
 #endif
 	StandardCompositionRelationshipsPack::assert_role_name_set(first_order_info_breve_.h, "NLP::calc_h_breve()", name_h_breve);
 	imp_calc_c_breve(x,newx,zero_order_info_breve());
@@ -360,7 +360,7 @@ void NLP::imp_calc_h_breve(
 	,const ZeroOrderInfo   &zero_order_info_breve
 	) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true, std::logic_error
 		,"NLP::hl_breve(): Error, this method must be overridden if space_h_breve is defined" );
 }

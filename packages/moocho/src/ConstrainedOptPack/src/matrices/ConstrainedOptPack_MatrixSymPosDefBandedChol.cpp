@@ -269,19 +269,19 @@ void MatrixSymPosDefBandedChol::assert_initialized() const
 void MatrixSymPosDefBandedChol::update_factorization() const
 {
 	namespace rcp = MemMngPack;
-	using rcp::ref_count_ptr;
+	using Teuchos::RefCountPtr;
 	namespace rmp = MemMngPack;
 
 	if( !factor_updated_ ) {
 		if(UB_.rows() == 0) {
 			// Allocate our own storage for the banded cholesky factor!
-			typedef rcp::ref_count_ptr<DMatrix>                  UB_ptr_t;
+			typedef Teuchos::RefCountPtr<DMatrix>                  UB_ptr_t;
 			typedef rmp::ReleaseResource_ref_count_ptr<DMatrix>  UB_rel_ptr_t;
-			typedef rcp::ref_count_ptr<UB_rel_ptr_t>               UB_rel_ptr_ptr_t;
+			typedef Teuchos::RefCountPtr<UB_rel_ptr_t>               UB_rel_ptr_ptr_t;
 			UB_rel_ptr_ptr_t  UB_rel_ptr_ptr = new UB_rel_ptr_t(new DMatrix);
 			UB_rel_ptr_ptr->ptr->resize(kd_+1,n_);
 			UB_.bind( (*UB_rel_ptr_ptr->ptr)() );
-			UB_release_resource_ptr_ = rcp::rcp_implicit_cast<rmp::ReleaseResource>(UB_rel_ptr_ptr);
+			UB_release_resource_ptr_ = Teuchos::rcp_implicit_cast<rmp::ReleaseResource>(UB_rel_ptr_ptr);
 		}
 		// Update the cholesky factor
 		LinAlgOpPack::M_StM( &UB_, scale_, MB_, BLAS_Cpp::no_trans );

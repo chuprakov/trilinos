@@ -26,7 +26,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 #include "StringToBool.hpp"
 
@@ -218,7 +218,7 @@ UpdateBarrierParameter_StepSetOptions::UpdateBarrierParameter_StepSetOptions(
 	{
 	}
 
-void UpdateBarrierParameter_StepSetOptions::set_option( 
+void UpdateBarrierParameter_StepSetOptions::setOption( 
   int option_num, const std::string& option_value )
 	{
 	using OptionsFromStreamPack::StringToBool;

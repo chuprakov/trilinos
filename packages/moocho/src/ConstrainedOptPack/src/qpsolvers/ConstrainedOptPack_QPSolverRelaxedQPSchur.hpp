@@ -24,7 +24,7 @@
 #include "ConstrainedOptPack/src/matrices/MatrixSymAddDelBunchKaufman.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -55,7 +55,7 @@ public:
 		///
 		typedef std::vector<size_type> j_f_decomp_t;
 		///
-		typedef MemMngPack::ref_count_ptr<const MatrixSymOpNonsing>
+		typedef Teuchos::RefCountPtr<const MatrixSymOpNonsing>
 			Ko_ptr_t;
 		///
 		virtual ~InitKKTSystem() {}
@@ -327,8 +327,8 @@ public:
 
 	///
 	QPSolverRelaxedQPSchur(
-		const init_kkt_sys_ptr_t&    init_kkt_sys       = MemMngPack::null
-		,const constraints_ptr_t&    constraints        = MemMngPack::rcp(new QPSchurPack::ConstraintsRelaxedStd)
+		const init_kkt_sys_ptr_t&    init_kkt_sys       = Teuchos::null
+		,const constraints_ptr_t&    constraints        = Teuchos::rcp(new QPSchurPack::ConstraintsRelaxedStd)
 		,value_type                  max_qp_iter_frac   = 10.0
 		,value_type                  max_real_runtime   = 1e+20
 		,QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy

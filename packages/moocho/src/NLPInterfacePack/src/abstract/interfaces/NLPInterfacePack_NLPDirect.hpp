@@ -84,13 +84,13 @@ class NLPDirect : virtual public NLPObjGrad
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<MatrixSymOp> >            mat_sym_fcty_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
 
 	///

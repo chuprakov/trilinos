@@ -59,7 +59,7 @@ DirectSparseSolverMA28SetOptions::DirectSparseSolverMA28SetOptions(
 			DirectSparseSolverMA28 >( qp_solver )
 {}
 
-void DirectSparseSolverMA28SetOptions::set_option(
+void DirectSparseSolverMA28SetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	using OptionsFromStreamPack::StringToBool;

@@ -18,7 +18,7 @@
 
 #include "ConstrainedOptPack/src/decompositions/DecompositionSystemTesterSetOptions.hpp"
 #include "StringToBool.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 // Define the options
 namespace {
@@ -28,7 +28,7 @@ namespace {
 	enum local_EOptions {
 		PRINT_TESTS
 		,DUMP_ALL
-		,THROW_EXCEPTION
+		,TEST_FOR_EXCEPTION
 		,NUM_RANDOM_TESTS
 	    ,MULT_WARNING_TOL
 	    ,MULT_ERROR_TOL
@@ -60,7 +60,7 @@ DecompositionSystemTesterSetOptions::DecompositionSystemTesterSetOptions(
 			DecompositionSystemTester >( target )
 {}
 
-void DecompositionSystemTesterSetOptions::set_option(
+void DecompositionSystemTesterSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	using OptionsFromStreamPack::StringToBool;
@@ -78,7 +78,7 @@ void DecompositionSystemTesterSetOptions::set_option(
 		    else if( option == "PRINT_ALL" )
 				target().print_tests( target_t::PRINT_ALL );
 			else
-				THROW_EXCEPTION(
+				TEST_FOR_EXCEPTION(
 					true, std::invalid_argument
 					,"Error, incorrect value for "
 					"\"print_tests\".  Only the options "
@@ -90,7 +90,7 @@ void DecompositionSystemTesterSetOptions::set_option(
 				StringToBool( "dump_all", option_value.c_str() )
 				);
 			break;
-		case THROW_EXCEPTION:
+		case TEST_FOR_EXCEPTION:
 			target().throw_exception(
 				StringToBool( "throw_exception", option_value.c_str() )
 				);

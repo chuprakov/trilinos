@@ -87,7 +87,7 @@ QPSolverRelaxedQPSchurSetOptions::QPSolverRelaxedQPSchurSetOptions(
 			QPSolverRelaxedQPSchur >( target )
 {}
 
-void QPSolverRelaxedQPSchurSetOptions::set_option(
+void QPSolverRelaxedQPSchurSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	using OptionsFromStreamPack::StringToBool;
@@ -109,7 +109,7 @@ void QPSolverRelaxedQPSchurSetOptions::set_option(
 				target().inequality_pick_policy( constr_t::ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY );
 			else
 				throw std::invalid_argument( "QPSolverRelaxedQPSchurSetOptions::"
-					"set_option(...) : Error, only the values of\n"
+					"setOption(...) : Error, only the values of\n"
 					" ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY\n"
 					", ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY and"
 					" ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY \nare valid for the option"
@@ -187,7 +187,7 @@ void QPSolverRelaxedQPSchurSetOptions::set_option(
 				target().print_level( target_t::OUTPUT_ITER_QUANTITIES );
 			else
 				throw std::invalid_argument( "QPSolverRelaxedQPSchurSetOptions::"
-					"set_option(...) : Error, only the values of USE_INPUT_ARG, NO_OUTPUT"
+					"setOption(...) : Error, only the values of USE_INPUT_ARG, NO_OUTPUT"
 					", OUTPUT_BASIC_INFO, OUTPUT_ITER_SUMMARY\n"
 					", OUTPUT_ITER_STEPS, OUTPUT_ACT_SET and"
 					" OUTPUT_ITER_QUANTITIES \nare valid for the option"

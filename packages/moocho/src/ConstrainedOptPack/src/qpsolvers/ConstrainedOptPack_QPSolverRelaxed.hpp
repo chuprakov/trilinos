@@ -17,7 +17,7 @@
 #define QP_SOLVER_RELAXED_H
 
 #include "QPSolverStats.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {
 

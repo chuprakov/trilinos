@@ -53,7 +53,7 @@ ReducedHessianBFGSStd_StepSetOptions::ReducedHessianBFGSStd_StepSetOptions(
 			ReducedHessianBFGSStd_Step >( target )
 {}
 
-void ReducedHessianBFGSStd_StepSetOptions::set_option(
+void ReducedHessianBFGSStd_StepSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	using OptionsFromStreamPack::StringToBool;

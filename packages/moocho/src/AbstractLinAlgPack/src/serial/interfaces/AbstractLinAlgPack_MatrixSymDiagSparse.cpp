@@ -29,7 +29,7 @@
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"
 #include "DenseLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 template< class T >
@@ -244,11 +244,11 @@ void MatrixSymDiagSparse::coor_extract_nonzeros(
 	const SpVectorSlice
 		&diag = this->diag();
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		(len_Aval != 0 ? len_Aval != diag.nz() : Aval != NULL)
 		,std::invalid_argument
 		,"MatrixSymDiagSparse::coor_extract_nonzeros(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		(len_Aij != 0 ? len_Aij != diag.nz() : (Acol != NULL || Acol != NULL) )
 		,std::invalid_argument
 		,"MatrixSymDiagSparse::coor_extract_nonzeros(...): Error!" );

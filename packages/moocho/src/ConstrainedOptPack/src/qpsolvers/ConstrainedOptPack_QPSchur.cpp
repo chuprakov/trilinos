@@ -51,7 +51,7 @@
 #include "DenseLinAlgPack/src/DVectorOut.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace LinAlgOpPack {
 using AbstractLinAlgPack::Vp_StV;
@@ -2999,7 +2999,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								<< "\n||mu_D_hat_calc-mu_D_hat||inf/(1.0+||mu_D_hat_calc||inf) = "
 								<< mu_D_hat_err << std::endl;
 						}
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							mu_D_hat_err >= error_tol(), TestFailed
 							,"QPSchur::qp_algo(...) : Error, "
 							"||mu_D_hat_calc-mu_D_hat||inf/(1.0+||mu_D_hat_calc||inf) = "

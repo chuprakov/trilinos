@@ -26,7 +26,7 @@
 #include "Range1D.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {
 
@@ -39,7 +39,7 @@ ExampleNLPFirstOrder::ExampleNLPFirstOrder(
 	:ExampleNLPObjGrad(vec_space,xo,has_bounds,dep_bounded)
 	,initialized_(false)
 {
-	basis_sys_ = MemMngPack::rcp(
+	basis_sys_ = Teuchos::rcp(
 		new ExampleBasisSystem(
 			this->space_x()
 			,this->var_dep()
@@ -113,16 +113,16 @@ void ExampleNLPFirstOrder::imp_calc_Gc(
 		first_order_info.Gc, &C_aggr, &N_aggr ); // Will return NULLs if Gc is not initialized
 
 	// Allocate C and N matrix objects if not done yet!
-	rcp::ref_count_ptr<MatrixOpNonsing>
-		C_ptr = rcp::null;
-	rcp::ref_count_ptr<MatrixOp>
-		N_ptr = rcp::null;
+	Teuchos::RefCountPtr<MatrixOpNonsing>
+		C_ptr = Teuchos::null;
+	Teuchos::RefCountPtr<MatrixOp>
+		N_ptr = Teuchos::null;
 	if( C_aggr == NULL ) {
 		const VectorSpace::space_ptr_t
 			space_x  = this->space_x(),
 			space_xD = space_x->sub_space(var_dep);
-		C_ptr  = rcp::rcp(new MatrixSymDiagStd(space_xD->create_member()));
-		N_ptr  = rcp::rcp(new MatrixSymDiagStd(space_xD->create_member()));
+		C_ptr  = Teuchos::rcp(new MatrixSymDiagStd(space_xD->create_member()));
+		N_ptr  = Teuchos::rcp(new MatrixSymDiagStd(space_xD->create_member()));
 		C_aggr = C_ptr.get();
 		N_aggr = N_ptr.get();
 	}

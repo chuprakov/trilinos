@@ -46,7 +46,7 @@ CheckConvergenceStd_AddedStepSetOptions::CheckConvergenceStd_AddedStepSetOptions
 			CheckConvergenceStd_AddedStep >( target )
 {}
 
-void CheckConvergenceStd_AddedStepSetOptions::set_option(
+void CheckConvergenceStd_AddedStepSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	using OptionsFromStreamPack::StringToBool;

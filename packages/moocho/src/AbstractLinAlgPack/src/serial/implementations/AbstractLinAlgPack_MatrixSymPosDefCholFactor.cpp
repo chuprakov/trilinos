@@ -42,7 +42,7 @@
 #include "DenseLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "profile_hack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 // Helper functions
 extern "C" {
@@ -110,7 +110,7 @@ void MatrixSymPosDefCholFactor::init_setup(
 		maintain_factor_   = maintain_factor;
 		factor_is_updated_ = false;
 		allocates_storage_ = true; // We will be able to allocate our own storage!
-		release_resource_ptr_ = MemMngPack::null; // Free any bound resource
+		release_resource_ptr_ = Teuchos::null; // Free any bound resource
 		MU_store_.bind( DMatrixSlice(NULL,0,0,0,0) ); // Unbind this!
 		max_size_ = max_size;
 		M_size_ = 0;
@@ -263,7 +263,7 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
 	value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
 	)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!maintain_original_, std::logic_error
 		,"MatrixSymPosDefCholFactor::Mp_StM(alpha,M_rhs,trans_rhs): Error, Current implementation "
 		"can not perform this operation unless the original matrix is being maintained." );
@@ -296,7 +296,7 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
 	if(did_op) {
 		if( diag_op && is_diagonal_ )
 			init_diagonal( VectorMutableDense(
-				this->M().gms().diag(), MemMngPack::null ) );
+				this->M().gms().diag(), Teuchos::null ) );
 		else
 			initialize( this->M() );
 		return true;
@@ -628,7 +628,7 @@ void MatrixSymPosDefCholFactor::initialize( const DMatrixSliceSym& M )
 
 const DenseLinAlgPack::DMatrixSliceSym MatrixSymPosDefCholFactor::get_sym_gms_view() const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!maintain_original_, std::logic_error
 		,"MatrixSymPosDefCholFactor::get_sym_gms_view(): Error, maintain_original must be "
 		"true in order to call this method!" );
@@ -637,7 +637,7 @@ const DenseLinAlgPack::DMatrixSliceSym MatrixSymPosDefCholFactor::get_sym_gms_vi
 
 void MatrixSymPosDefCholFactor::free_sym_gms_view(const DenseLinAlgPack::DMatrixSliceSym* sym_gms_view) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!maintain_original_, std::logic_error
 		,"MatrixSymPosDefCholFactor::free_sym_gms_view(...): Error, maintain_original must be "
 		"true in order to call this method!" );
@@ -648,7 +648,7 @@ void MatrixSymPosDefCholFactor::free_sym_gms_view(const DenseLinAlgPack::DMatrix
 
 DenseLinAlgPack::DMatrixSliceSym MatrixSymPosDefCholFactor::get_sym_gms_view()
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!maintain_original_, std::logic_error
 		,"MatrixSymPosDefCholFactor::get_sym_gms_view(): Error, maintain_original must be "
 		"true in order to call this method!" );
@@ -657,7 +657,7 @@ DenseLinAlgPack::DMatrixSliceSym MatrixSymPosDefCholFactor::get_sym_gms_view()
 
 void MatrixSymPosDefCholFactor::commit_sym_gms_view(DenseLinAlgPack::DMatrixSliceSym* sym_gms_view)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!maintain_original_, std::logic_error
 		,"MatrixSymPosDefCholFactor::commit_sym_gms_view(...): Error, maintain_original must be "
 		"true in order to call this method!" );
@@ -689,7 +689,7 @@ void MatrixSymPosDefCholFactor::extract_inv_chol( DMatrixSliceTriEle* InvChol ) 
 	// Lower cholesky:
 	//    sqrt(scale) * L * LInv = I => InvChol = LInv = (1/sqrt(scale))*inv(U) * inv(U') * I
 	//
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		scale_ < 0.0, std::logic_error
 		,"MatrixSymPosDefCholFactor::extract_inv_chol(...) : "
 		"Error, we can not compute the inverse cholesky factor "
@@ -792,8 +792,8 @@ void MatrixSymPosDefCholFactor::secant_update(
 		sTy_scale = sTy*scale_;
 	std::ostringstream omsg;
 	if( !BFGS_sTy_suff_p_d(
-			VectorMutableDense((*s)(),rcp::null)
-			,VectorMutableDense((*y)(),rcp::null)
+			VectorMutableDense((*s)(),Teuchos::null)
+			,VectorMutableDense((*y)(),Teuchos::null)
 			,&sTy_scale,&omsg,"\nMatrixSymPosDefCholFactor::secant_update(...)"
 			)
 		)
@@ -810,11 +810,11 @@ void MatrixSymPosDefCholFactor::secant_update(
 	}
 	// Check that s'*Bs is positive and if not then throw exception
 	const value_type sTBs = dot(*s,*Bs);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		scale_*sTBs <= 0.0 && scale_ > 0.0, std::invalid_argument
 		,"MatrixSymPosDefCholFactor::secant_update(...) : "
 		"Error, B can't be positive definite if s'*Bs <= 0.0" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		scale_*sTBs <= 0.0 && scale_ <= 0.0, std::invalid_argument
 		,"MatrixSymPosDefCholFactor::secant_update(...) : "
 		"Error, B can't be negative definite if s'*Bs >= 0.0" );
@@ -1095,11 +1095,11 @@ void MatrixSymPosDefCholFactor::augment_update(
 	assert_initialized();
 
 	// Validate the input
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rows() >= max_size(), MaxSizeExceededException
 		,"MatrixSymPosDefCholFactor::augment_update(...) : "
 		"Error, the maximum size would be exceeded." );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		t && t->dim() != M_size_, std::length_error
 		,"MatrixSymPosDefCholFactor::augment_update(...): "
 		"Error, t.dim() must be equal to this->rows()." );
@@ -1274,7 +1274,7 @@ void MatrixSymPosDefCholFactor::delete_update(
 #endif
 	typedef MatrixSymAddDelUpdateable MSADU;
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		jd < 1 || M_size_ < jd, std::out_of_range
 		,"MatrixSymPosDefCholFactor::delete_update(jd,...): "
 		"Error, the indice jd must be 1 <= jd <= rows()" );
@@ -1385,10 +1385,10 @@ void MatrixSymPosDefCholFactor::allocate_storage(size_type max_size) const
 	namespace rcp = MemMngPack;
 	if( allocates_storage_ && MU_store_.rows() < max_size + 1 ) {
 		// We have the right to allocate storage so lets just do it.
-		rcp::ref_count_ptr<DMatrix>
-			MU_store = rcp::rcp(new DMatrix( max_size + 1, max_size + 1 ));
+		Teuchos::RefCountPtr<DMatrix>
+			MU_store = Teuchos::rcp(new DMatrix( max_size + 1, max_size + 1 ));
 		typedef MemMngPack::ReleaseResource_ref_count_ptr<DMatrix> ptr_t;
-		const_cast<MatrixSymPosDefCholFactor*>(this)->release_resource_ptr_ = rcp::rcp(new ptr_t(MU_store));
+		const_cast<MatrixSymPosDefCholFactor*>(this)->release_resource_ptr_ = Teuchos::rcp(new ptr_t(MU_store));
 		const_cast<MatrixSymPosDefCholFactor*>(this)->MU_store_.bind( (*MU_store)() );
 		const_cast<MatrixSymPosDefCholFactor*>(this)->max_size_ = max_size;
 	}
@@ -1429,7 +1429,7 @@ void MatrixSymPosDefCholFactor::update_factorization() const
 		return; // The factor should already be updated.
 	assert( maintain_original_ ); // This should never be false here since
 	                              // (maintain_factor || matinatain_original) == true
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		U_l_r_ == 0, std::logic_error
 		,"MatrixSymPosDefCholFactor::update_factorization() : "
 		"Error, U_l_r == 0 was set in MatrixSymPosDefCholFactor::set_view(...) "

@@ -22,7 +22,7 @@
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 

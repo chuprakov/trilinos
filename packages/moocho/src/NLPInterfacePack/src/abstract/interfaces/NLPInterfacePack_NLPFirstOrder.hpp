@@ -65,10 +65,10 @@ class NLPFirstOrder : virtual public NLPObjGrad {
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<MatrixOp> >        mat_fcty_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<BasisSystem>           basis_sys_ptr_t;
+	typedef Teuchos::RefCountPtr<BasisSystem>           basis_sys_ptr_t;
 
 	/** @name Constructors */
 	//@{

@@ -18,20 +18,20 @@
 #include "MatrixOpNonsing.hpp"
 #include "VectorSpace.hpp"
 #include "LinAlgOpPack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
 
 MatrixOpNonsing::mat_mwons_mut_ptr_t
 MatrixOpNonsing::clone_mwons()
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 MatrixOpNonsing::mat_mwons_ptr_t
 MatrixOpNonsing::clone_mwons() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 const MatrixOp::MatNorm
@@ -48,7 +48,7 @@ MatrixOpNonsing::calc_cond_num(
 		&space_rows = this->space_rows();
 	const index_type
 		num_cols = space_rows.dim();
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!(requested_norm_type == MAT_NORM_1 || requested_norm_type == MAT_NORM_INF), MethodNotImplemented
 		,"MatrixOp::calc_norm(...): Error, This default implemenation can only "
 		"compute the one norm or the infinity norm!"

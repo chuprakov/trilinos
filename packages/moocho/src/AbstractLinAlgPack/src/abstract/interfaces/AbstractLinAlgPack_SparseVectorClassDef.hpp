@@ -20,7 +20,7 @@
 
 #include "SparseVectorClassDecl.hpp"
 #include "compare_element_indexes.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -293,7 +293,7 @@ void SparseVector<T_Element,T_Alloc>::uninitialized_resize(size_type size, size_
 	, difference_type offset)
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		nz > max_nz, std::length_error
 		,"SparseVector<...>::uninitialized_resize(...) : nz can not be greater"
 		" than max_nz" );
@@ -316,7 +316,7 @@ void SparseVector<T_Element,T_Alloc>::insert_element(element_type ele)
 					 : SpVecIndexLookup::poss_type(0,SpVecIndexLookup::BEFORE_ELE) );
 		// Make sure this element does not already exist!
 #ifdef _DEBUG
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			nz() && poss.rel == SpVecIndexLookup::EQUAL_TO_ELE, std::length_error
 			,"SparseVector<...>::insert_element(...) : Error, this index"
 			" all ready exists!" );
@@ -358,7 +358,7 @@ void SparseVector<T_Element,T_Alloc>::assert_valid_and_sorted() const
 	{
 		typename T_Element::index_type curr_index = p->index() + offset();
 #ifdef _DEBUG
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			(1 > curr_index) || (curr_index > dim()), std::out_of_range
 			,"SparseVector<...>::assert_valid_and_sorted():"
 			<< " Error, not in range:  element (0-based) " << p - index_lookup_.ele() - 1
@@ -370,12 +370,12 @@ void SparseVector<T_Element,T_Alloc>::assert_valid_and_sorted() const
 			continue;
 		}
 #ifdef _DEBUG
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			curr_index < last_index, NotSortedException
 			,"SparseVector<...>::assert_valid_and_sorted():"
 			<< " Error, not sorted:  element (0-based) " << p - index_lookup_.ele() - 1
 			<< " and " << p - index_lookup_.ele() << " are not in assending order" );
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			curr_index == last_index, DuplicateIndexesException
 			,"SparseVector<...>::assert_valid_and_sorted():"
 			<< " Error, duplicate indexes:  element (0-based) " << p - index_lookup_.ele() - 1

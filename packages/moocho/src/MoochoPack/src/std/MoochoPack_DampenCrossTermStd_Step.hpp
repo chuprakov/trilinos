@@ -17,7 +17,7 @@
 #define DAMPEN_CROSS_TERM_STD_STEP_H
 
 #include "../rSQPAlgo_Step.h"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 

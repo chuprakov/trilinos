@@ -42,11 +42,11 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<const MemMngPack::AbstractFactory<MatrixOp> >  fcty_Gc_ptr_t;
+	typedef Teuchos::RefCountPtr<const MemMngPack::AbstractFactory<MatrixOp> >  fcty_Gc_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixOpNonsing>                               C_ptr_t;
+	typedef Teuchos::RefCountPtr<MatrixOpNonsing>                               C_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixOp>                                      N_ptr_t;
+	typedef Teuchos::RefCountPtr<MatrixOp>                                      N_ptr_t;
 
 	//@}
 
@@ -221,7 +221,7 @@ public:
 		,const mat_nonsing_fcty_ptr_t        &factory_C
 		,const mat_sym_fcty_ptr_t            &factory_transDtD
 		,const mat_sym_nonsing_fcty_ptr_t    &factory_S
-		,const mat_fcty_ptr_t                &factory_D        = MemMngPack::null
+		,const mat_fcty_ptr_t                &factory_D        = Teuchos::null
 		);
 	
 	///
@@ -269,7 +269,7 @@ public:
 		,const mat_nonsing_fcty_ptr_t        &factory_C
 		,const mat_sym_fcty_ptr_t            &factory_transDtD
 		,const mat_sym_nonsing_fcty_ptr_t    &factory_S
-		,const mat_fcty_ptr_t                &factory_D        = MemMngPack::null
+		,const mat_fcty_ptr_t                &factory_D        = Teuchos::null
 		);
 
 	///

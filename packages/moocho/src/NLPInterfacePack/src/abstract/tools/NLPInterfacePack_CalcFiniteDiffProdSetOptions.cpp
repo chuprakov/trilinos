@@ -17,7 +17,7 @@
 #include <math.h>
 
 #include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProdSetOptions.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 // Define the options
 namespace {
@@ -54,7 +54,7 @@ CalcFiniteDiffProdSetOptions::CalcFiniteDiffProdSetOptions(
 	,OptionsFromStreamPack::SetOptionsToTargetBase<CalcFiniteDiffProd>(target)
 {}
 
-void CalcFiniteDiffProdSetOptions::set_option(
+void CalcFiniteDiffProdSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	typedef CalcFiniteDiffProd target_t;
@@ -77,9 +77,9 @@ void CalcFiniteDiffProdSetOptions::set_option(
 			else if( option == "FD_ORDER_FOUR_AUTO" )
 				target().fd_method_order( target_t::FD_ORDER_FOUR_AUTO );
 			else
-				THROW_EXCEPTION(
+				TEST_FOR_EXCEPTION(
 					true, std::invalid_argument
-					,"CalcFiniteDiffProdSetOptions::set_option(...) : Error, incorrect value for "
+					,"CalcFiniteDiffProdSetOptions::setOption(...) : Error, incorrect value for "
 					"\"fd_method_order\".  Only the options FD_ORDER_ONE, FD_ORDER_TWO, "
 					"FD_ORDER_TWO_CENTRAL, FD_ORDER_TWO_AUTO, FD_ORDER_FOUR, FD_ORDER_FOUR_CENTRAL "
 					"and FD_ORDER_FOUR_AUTO are available" );
@@ -93,9 +93,9 @@ void CalcFiniteDiffProdSetOptions::set_option(
 			else if( option == "FD_STEP_RELATIVE" )
 				target().fd_step_select( target_t::FD_STEP_RELATIVE );
 			else
-				THROW_EXCEPTION(
+				TEST_FOR_EXCEPTION(
 					true, std::invalid_argument
-					,"CalcFiniteDiffProdSetOptions::set_option(...) : Error, incorrect value for "
+					,"CalcFiniteDiffProdSetOptions::setOption(...) : Error, incorrect value for "
 					"\"fd_step_select\".  Only the options are available" );
 			break;
 		}

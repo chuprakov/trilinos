@@ -28,7 +28,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace MoochoPack {
 
@@ -74,7 +74,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 		m  = nlp.m(),
 		r  = nlp.var_dep().size();
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		m > r, TestFailed
 		,"EvalNewPointTailoredApproach_Step::do_step(...) : Error, "
 		"Undecomposed equalities are supported yet!" );
@@ -105,7 +105,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 				   ,x_iq.get_k(0),   "x_k"
 				   ))
 			{
-				THROW_EXCEPTION(
+				TEST_FOR_EXCEPTION(
 					true, TestFailed
 					,"EvalNewPointTailoredApproach_Step::do_step(...) : Error, "
 					"the variables bounds xl <= x_k <= xu where violated!" );
@@ -146,15 +146,15 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	// If Z has not been initialized or Z.D is being shared by someone else we need to reconstruct Z.D
 	bool reconstruct_Z_D = (cZ_k.rows() == n || cZ_k.cols() != n-r || cZ_k.D_ptr().count() > 1);
 	MatrixIdentConcatStd::D_ptr_t
-		D_ptr = rcp::null;
+		D_ptr = Teuchos::null;
 	if( reconstruct_Z_D )
 		D_ptr = nlp.factory_D()->create();
 	else
 		D_ptr = cZ_k.D_ptr();
 
 	// Compute all the quantities.
-	rcp::ref_count_ptr<MatrixOp>
-		GcU = (m > r) ? nlp.factory_GcU()->create() : rcp::null; // ToDo: Reuse GcU somehow? 
+	Teuchos::RefCountPtr<MatrixOp>
+		GcU = (m > r) ? nlp.factory_GcU()->create() : Teuchos::null; // ToDo: Reuse GcU somehow? 
 	VectorMutable
 		&py_k  = s.py().set_k(0);
 	nlp.unset_quantities();
@@ -227,7 +227,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 			,olevel >= PRINT_VECTORS
 			,( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : (std::ostream*)NULL
 			);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!nlp_passed, TestFailed
 			,"EvalNewPointTailoredApproach_Step::do_step(...) : Error, "
 			"the tests of the nlp derivatives failed!" );

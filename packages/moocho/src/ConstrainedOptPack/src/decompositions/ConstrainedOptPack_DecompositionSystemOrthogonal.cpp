@@ -27,7 +27,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -50,7 +50,7 @@ const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_Y() const
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>()
 		);
 }
@@ -59,7 +59,7 @@ const DecompositionSystem::mat_nonsing_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_R() const
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new MemMngPack::AbstractFactoryStd<MatrixOpNonsing,MatrixDecompRangeOrthog>()
 		);
 }
@@ -67,7 +67,7 @@ DecompositionSystemOrthogonal::factory_R() const
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_Uy() const
 {
-	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
+	return Teuchos::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
 // Overridden from DecompositionSystemVarReductImp
@@ -107,10 +107,10 @@ DecompositionSystemOrthogonal::uninitialize_matrices(
 	// matrix S = I + D'*D
 	//
 	
-	C_ptr_t C_ptr = rcp::null;
+	C_ptr_t C_ptr = Teuchos::null;
 	if(R_orth) {
-		C_ptr  = rcp::rcp_const_cast<MatrixOpNonsing>(    R_orth->C_ptr() ); // This could be NULL!
-		S_ptr_ = rcp::rcp_const_cast<MatrixSymOpNonsing>( R_orth->S_ptr() ); // ""
+		C_ptr  = Teuchos::rcp_const_cast<MatrixOpNonsing>(    R_orth->C_ptr() ); // This could be NULL!
+		S_ptr_ = Teuchos::rcp_const_cast<MatrixSymOpNonsing>( R_orth->S_ptr() ); // ""
 	}
 	
 	//
@@ -122,7 +122,7 @@ DecompositionSystemOrthogonal::uninitialize_matrices(
 	if(R_orth)
 		R_orth->set_uninitialized();
 	if(Uy_cpst)
-		Uy_cpst->initialize(rcp::null);
+		Uy_cpst->initialize(Teuchos::null);
 
 	//
 	// Return the owned? basis matrix object C
@@ -180,7 +180,7 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 		D_ptr_t  D_ptr = D;
 		if(mat_rel == MATRICES_INDEP_IMPS) {
 			D_ptr = D->clone();
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				D_ptr.get() == NULL, std::logic_error
 				,"DecompositionSystemOrthogonal::update_decomp(...) : Error, "
 				"The matrix class used for the direct sensitivity matrix D = inv(C)*N of type \'"
@@ -200,7 +200,7 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 		C_ptr_t  C_ptr = C;
 		if(mat_rel == MATRICES_INDEP_IMPS) {
 			C_ptr = C->clone_mwons();
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				C_ptr.get() == NULL, std::logic_error
 				,"DecompositionSystemOrthogonal::update_decomp(...) : Error, "
 				"The matrix class used for the basis matrix C of type \'"
@@ -210,7 +210,7 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 		D_ptr_t  D_ptr = D;
 		if(mat_rel == MATRICES_INDEP_IMPS) {
 			D_ptr = D->clone();
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				D_ptr.get() == NULL, std::logic_error
 				,"DecompositionSystemOrthogonal::update_decomp(...) : Error, "
 				"The matrix class used for the direct sensitivity matrix D = inv(C)*N of type \'"
@@ -226,7 +226,7 @@ void DecompositionSystemOrthogonal::initialize_matrices(
 			syrk(*D_ptr,BLAS_Cpp::trans,1.0,1.0,S_ptr_.get());
 		}
 		catch( const MatrixNonsing::SingularMatrix& except ) {
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, SingularDecomposition
 				,"DecompositionSystemOrthogonal::initialize_matrices(...) : Error, update of S failed : "
 				<< except.what() );

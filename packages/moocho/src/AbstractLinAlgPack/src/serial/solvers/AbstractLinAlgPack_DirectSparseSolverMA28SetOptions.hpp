@@ -59,7 +59,7 @@ public:
 protected:
 
 	/// Overridden from SetOptionsFromStreamNode
-	void set_option( int option_num, const std::string& option_value );
+	void setOption( int option_num, const std::string& option_value );
 
 };	// end class DirectSparseSolverMA28SetOptions
 

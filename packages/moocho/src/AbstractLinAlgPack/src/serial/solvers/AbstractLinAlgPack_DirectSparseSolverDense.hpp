@@ -23,7 +23,7 @@
 #include "DirectSparseSolverImp.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -69,7 +69,7 @@ protected:
 		//@{
 
 		///
-		MemMngPack::ref_count_ptr<BasisMatrixImp> create_matrix() const;
+		Teuchos::RefCountPtr<BasisMatrixImp> create_matrix() const;
 		///
 		void V_InvMtV(
 			VectorMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
@@ -117,9 +117,9 @@ protected:
 	//@{
 
 	///
-	const MemMngPack::ref_count_ptr<FactorizationStructure> create_fact_struc() const;
+	const Teuchos::RefCountPtr<FactorizationStructure> create_fact_struc() const;
 	///
-	const MemMngPack::ref_count_ptr<FactorizationNonzeros> create_fact_nonzeros() const;
+	const Teuchos::RefCountPtr<FactorizationNonzeros> create_fact_nonzeros() const;
 	///
 	void imp_analyze_and_factor(
 		const AbstractLinAlgPack::MatrixConvertToSparse   &A

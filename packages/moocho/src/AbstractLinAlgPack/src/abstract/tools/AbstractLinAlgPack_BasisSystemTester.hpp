@@ -19,7 +19,7 @@
 #include <iosfwd>
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -50,7 +50,7 @@ ReducedHessianSecantUpdateLPBFGS_StrategySetOptions::ReducedHessianSecantUpdateL
 	, OptionsFromStreamPack::SetOptionsToTargetBase< ReducedHessianSecantUpdateLPBFGS_Strategy >( target )
 {}
 
-void ReducedHessianSecantUpdateLPBFGS_StrategySetOptions::set_option(
+void ReducedHessianSecantUpdateLPBFGS_StrategySetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	switch( (local_EOptions)option_num ) {

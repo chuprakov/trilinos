@@ -23,7 +23,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -46,7 +46,7 @@ const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemCoordinate::factory_Y() const
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>()
 		);
 }
@@ -56,13 +56,13 @@ DecompositionSystemCoordinate::factory_R() const
 {
 	if( basis_sys().get() )
 		return basis_sys()->factory_C();
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemCoordinate::factory_Uy() const
 {
-	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
+	return Teuchos::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
 // Overridden from DecompositionSystemVarReductImp
@@ -93,7 +93,7 @@ DecompositionSystemCoordinate::uninitialize_matrices(
 	//
 
 	if(Uy_sv)
-		Uy_sv->initialize(rcp::null);
+		Uy_sv->initialize(Teuchos::null);
 
 	//
 	// Return the basis matrix object R == C as a smart pointer that is
@@ -103,7 +103,7 @@ DecompositionSystemCoordinate::uninitialize_matrices(
 	//     DecompositionSystemVarReductImp::update_decomp(...)
 	//
 
-	return rcp::rcp(R,false);
+	return Teuchos::rcp(R,false);
 
 }
 
@@ -150,7 +150,7 @@ void DecompositionSystemCoordinate::initialize_matrices(
 			,space_x()->sub_space(var_dep)->clone()           // space_rows
 			,MatrixIdentConcatStd::BOTTOM                     // top_or_bottom
 			,0.0                                              // alpha
-			,rcp::rcp(
+			,Teuchos::rcp(
 				new MatrixZero(
 					space_x()->sub_space(var_indep)->clone()
 					,space_x()->sub_space(var_dep)->clone()

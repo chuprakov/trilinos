@@ -165,7 +165,7 @@ void NLPAlgoState::update_iq_id(
 	namespace rcp = MemMngPack;
 	if(iq_id->iq_id == DOES_NOT_EXIST)
 		iq_id->iq_id = this->get_iter_quant_id(iq_name);
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		iq_id->iq_id == DOES_NOT_EXIST, DoesNotExist
 		,"NLPAlgoState::update_iq_id(iq_name,iq_id) : Error, "
 		" The iteration quantity with name \'" << iq_name <<
@@ -184,12 +184,12 @@ void NLPAlgoState::update_index_type_iq_id(
 		if(_iq_id == DOES_NOT_EXIST) {
 			iq_id->iq_id = this->set_iter_quant(
 				iq_name
-				,rcp::rcp(
+				,Teuchos::rcp(
 					new IterQuantityAccessContiguous<index_type>(
 						1
 						,iq_name
 #ifdef _MIPS_CXX
-						,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<index_type,index_type> >(
+						,Teuchos::RefCountPtr<MemMngPack::AbstractFactoryStd<index_type,index_type> >(
 							new MemMngPack::AbstractFactoryStd<index_type,index_type>())
 #endif
 						)
@@ -214,12 +214,12 @@ void NLPAlgoState::update_value_type_iq_id(
 		if(_iq_id == DOES_NOT_EXIST) {
 			iq_id->iq_id = this->set_iter_quant(
 				iq_name
-				,rcp::rcp(
+				,Teuchos::rcp(
 					new IterQuantityAccessContiguous<value_type>(
 						1
 						,iq_name
 #ifdef _MIPS_CXX
-						,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<value_type,value_type> >(
+						,Teuchos::RefCountPtr<MemMngPack::AbstractFactoryStd<value_type,value_type> >(
 							new MemMngPack::AbstractFactoryStd<value_type,value_type>())
 #endif
 						)
@@ -246,7 +246,7 @@ void NLPAlgoState::update_vector_iq_id(
 		if(_iq_id == DOES_NOT_EXIST) {
 			iq_id->iq_id = this->set_iter_quant(
 				iq_name
-				,rcp::rcp(
+				,Teuchos::rcp(
 					new IterQuantityAccessContiguous<VectorMutable>(
 						1
 						,iq_name

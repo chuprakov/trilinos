@@ -17,7 +17,7 @@
 #include "MatrixOpOut.hpp"
 #include "VectorSpace.hpp"
 #include "LinAlgOpPack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace AbstractLinAlgPack {
@@ -45,10 +45,10 @@ void MatrixOpNonsingAggr::initialize(
 	)
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		mwo.get() == NULL, std::invalid_argument
 		,"MatrixOpNonsingAggr::initialize(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		mns.get() == NULL, std::invalid_argument
 		,"MatrixOpNonsingAggr::initialize(...): Error!" );
 	const size_type
@@ -56,13 +56,13 @@ void MatrixOpNonsingAggr::initialize(
 		mwo_cols = mwo->cols(),
 		mns_rows = mns->rows(),
 		mns_cols = mns->cols();
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		mwo_rows != mwo_cols, std::invalid_argument
 		,"MatrixOpNonsingAggr::initialize(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		mns_rows != mns_cols, std::invalid_argument
 		,"MatrixOpNonsingAggr::initialize(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		mwo_rows != mns_rows, std::invalid_argument
 		,"MatrixOpNonsingAggr::initialize(...): Error!" );
 #endif
@@ -75,9 +75,9 @@ void MatrixOpNonsingAggr::initialize(
 void MatrixOpNonsingAggr::set_uninitialized()
 {
 	namespace rcp = MemMngPack;
-	mwo_       = rcp::null;
+	mwo_       = Teuchos::null;
 	mwo_trans_ = BLAS_Cpp::no_trans;
-	mns_       = rcp::null;
+	mns_       = Teuchos::null;
 	mns_trans_ = BLAS_Cpp::no_trans;
 }
 

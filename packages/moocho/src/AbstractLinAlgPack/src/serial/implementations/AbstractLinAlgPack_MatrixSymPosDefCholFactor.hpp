@@ -25,7 +25,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymSecant.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 #include "ReleaseResource.hpp"
 
 namespace AbstractLinAlgPack {
@@ -78,7 +78,7 @@ namespace AbstractLinAlgPack {
  * diagonal of <tt>MU_store</tt> open for use as workspace.
  *
  * To allow for more flexible resourse management, this class maintains a
- * <tt>ref_count_ptr<ReleaseResource></tt> object so whatever memory needs to be released
+ * <tt>RefCountPtr<ReleaseResource></tt> object so whatever memory needs to be released
  * will be released when <tt>MU_store</tt> is no longer needed.  This class will also
  * allocate its own memory if none is set through the constructor or the
  * init_setup(...) method.
@@ -104,7 +104,7 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
 	///
@@ -126,7 +126,7 @@ public:
 		void initialize(MatrixSymPosDefCholFactor* p) const
 		{
 			p->init_setup(
-				NULL,MemMngPack::null,0 // Allocate own storage
+				NULL,Teuchos::null,0 // Allocate own storage
 				,maintain_original_,maintain_factor_,allow_factor_
 				);
 		}
@@ -157,7 +157,7 @@ public:
 	 */
 	MatrixSymPosDefCholFactor(
 		DMatrixSlice                    *MU_store
-		,const release_resource_ptr_t&    release_resource_ptr = MemMngPack::null
+		,const release_resource_ptr_t&    release_resource_ptr = Teuchos::null
 		,size_type                        max_size             = 0
 		,bool                             maintain_original    = true
 		,bool                             maintain_factor      = false
@@ -222,7 +222,7 @@ public:
 	 */
 	void init_setup(
 		DMatrixSlice                    *MU_store
-		,const release_resource_ptr_t&    release_resource_ptr = MemMngPack::null
+		,const release_resource_ptr_t&    release_resource_ptr = Teuchos::null
 		,size_type                        max_size             = 0
 		,bool                             maintain_original    = true
 		,bool                             maintain_factor      = false

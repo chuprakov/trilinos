@@ -69,7 +69,7 @@ void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 	b_X->resize(1);
 	(*b_X)[0] = etaL;
 	// Ko = G
-	*Ko = mmp::rcp(&G_sym,false); // Not dynamically allocated so don't delete!
+	*Ko = Teuchos::rcp(&G_sym,false); // Not dynamically allocated so don't delete!
 	// fo = -g
 	V_mV(fo,VectorDenseEncap(g)());
 }

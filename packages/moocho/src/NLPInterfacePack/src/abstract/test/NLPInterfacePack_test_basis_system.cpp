@@ -35,7 +35,7 @@ bool NLPInterfacePack::test_basis_system(
 
 	// Create the matrices Gc and Gh
 	NLPFirstOrder::mat_fcty_ptr_t::element_type::obj_ptr_t
-		Gc = ( m  ? nlp->factory_Gc()->create() : mmp::null );
+		Gc = ( m  ? nlp->factory_Gc()->create() : Teuchos::null );
 	
 	// Compute the matrices at xinit
 	const Vector
@@ -47,11 +47,11 @@ bool NLPInterfacePack::test_basis_system(
 
 	// Create the matrices C and D
 	BasisSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
-		C = ( m ? basis_sys->factory_C()->create() : mmp::null);
+		C = ( m ? basis_sys->factory_C()->create() : Teuchos::null);
 	BasisSystem::mat_fcty_ptr_t::element_type::obj_ptr_t
-		D = ( m && n > m && basis_sys->factory_C().get() ? basis_sys->factory_C()->create() : mmp::null);
+		D = ( m && n > m && basis_sys->factory_C().get() ? basis_sys->factory_C()->create() : Teuchos::null);
 	BasisSystem::mat_fcty_ptr_t::element_type::obj_ptr_t
-		GcUP = ( m && n > m && basis_sys->factory_GcUP().get()  ? basis_sys->factory_GcUP()->create() : mmp::null);
+		GcUP = ( m && n > m && basis_sys->factory_GcUP().get()  ? basis_sys->factory_GcUP()->create() : Teuchos::null);
 
 	// Initialize C and D with basis_sys
 	basis_sys->update_basis(

@@ -29,7 +29,7 @@
 #include "MoochoPack/src/moocho_algo_conversion.hpp"
 #include "IterationPack/src/print_algorithm_step.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 #define min(a,b) ( (a < b) ? a : b )
 #define max(a,b) ( (a > b) ? a : b )
@@ -37,7 +37,7 @@
 namespace MoochoPack {
 
 PreProcessBarrierLineSearch_Step::PreProcessBarrierLineSearch_Step(
-	MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp,
+	Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp,
 	const value_type tau_boundary_frac
 	)
 	:
@@ -45,7 +45,7 @@ PreProcessBarrierLineSearch_Step::PreProcessBarrierLineSearch_Step(
 	tau_boundary_frac_(tau_boundary_frac),
 	filter_(FILTER_IQ_STRING)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!barrier_nlp_.get(),
 		std::logic_error,
 		"PreProcessBarrierLineSearch_Step given NULL NLPBarrier."
@@ -236,7 +236,7 @@ PreProcessBarrierLineSearch_StepSetOptions::PreProcessBarrierLineSearch_StepSetO
 	OptionsFromStreamPack::SetOptionsToTargetBase< PreProcessBarrierLineSearch_Step >( target )
 {}
 
-void PreProcessBarrierLineSearch_StepSetOptions::set_option( 
+void PreProcessBarrierLineSearch_StepSetOptions::setOption( 
 	int option_num, const std::string& option_value )
 {
 	typedef PreProcessBarrierLineSearch_Step target_t;

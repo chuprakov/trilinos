@@ -17,7 +17,7 @@
 
 #include "ExampleNLPBanded.hpp"
 #include "MoochoPack/configurations/MoochoSolver.hpp"
-#include "CommandLineProcessor.hpp"
+#include "Teuchos_CommandLineProcessor.hpp"
 
 int main( int argc, char* argv[] )
 {
@@ -29,7 +29,7 @@ int main( int argc, char* argv[] )
 	using nlpip::ExampleNLPBanded;
 	typedef nlpip::size_type  size_type;
 	typedef nlpip::value_type value_type;
-	using CommandLineProcessorPack::CommandLineProcessor;
+	using Teuchos::CommandLineProcessor;
 
 	try {
 	
@@ -64,34 +64,34 @@ int main( int argc, char* argv[] )
 		
 		CommandLineProcessor  command_line_processor;
 
-		command_line_processor.set_option( "nD",  &nD, "Number of dependent variables" );
-		command_line_processor.set_option( "nI",  &nI, "Number of independent variables" );
-		command_line_processor.set_option( "bw",  &bw, "Band width of the basis matrix" );
-		command_line_processor.set_option( "mI",  &mI, "Number of general inequality constriants" );
-		command_line_processor.set_option( "xo",  &xo, "Initial guess for x" );
-		command_line_processor.set_option( "xDl", &xDl, "Lower bounds on xD" );
-		command_line_processor.set_option( "xDu", &xDu, "Upper bounds on xD" );
-		command_line_processor.set_option( "xIl", &xIl, "Lower bounds on xI" );
-		command_line_processor.set_option( "xIu", &xIu, "Upper bounds on xI" );
-//		command_line_processor.set_option( "mU",  &mU,  "Number of dependent equality constriants" );
-		command_line_processor.set_option( "hl", &hl, "Lower bounds on general inequalities" );
-		command_line_processor.set_option( "hu", &hu, "Upper bounds on general inequalities" );
-		command_line_processor.set_option( "diag-scal", &diag_scal, "Scaling of the basis diagonal" );
-		command_line_processor.set_option( "diag-vary", &diag_vary, "Variation of the basis diagonal scaling" );
-		command_line_processor.set_option(
+		command_line_processor.setOption( "nD",  &nD, "Number of dependent variables" );
+		command_line_processor.setOption( "nI",  &nI, "Number of independent variables" );
+		command_line_processor.setOption( "bw",  &bw, "Band width of the basis matrix" );
+		command_line_processor.setOption( "mI",  &mI, "Number of general inequality constriants" );
+		command_line_processor.setOption( "xo",  &xo, "Initial guess for x" );
+		command_line_processor.setOption( "xDl", &xDl, "Lower bounds on xD" );
+		command_line_processor.setOption( "xDu", &xDu, "Upper bounds on xD" );
+		command_line_processor.setOption( "xIl", &xIl, "Lower bounds on xI" );
+		command_line_processor.setOption( "xIu", &xIu, "Upper bounds on xI" );
+//		command_line_processor.setOption( "mU",  &mU,  "Number of dependent equality constriants" );
+		command_line_processor.setOption( "hl", &hl, "Lower bounds on general inequalities" );
+		command_line_processor.setOption( "hu", &hu, "Upper bounds on general inequalities" );
+		command_line_processor.setOption( "diag-scal", &diag_scal, "Scaling of the basis diagonal" );
+		command_line_processor.setOption( "diag-vary", &diag_vary, "Variation of the basis diagonal scaling" );
+		command_line_processor.setOption(
 			"nlp-selects-basis", "no-nlp-selects-basis", &nlp_selects_basis
 			,"Determine if the NLP will select basis" );
-		command_line_processor.set_option(
+		command_line_processor.setOption(
 			"sym-basis", "unsym-basis", &sym_basis
 			,"Determine if the basis is symmetric" );
-		command_line_processor.set_option( "f_offset", &f_offset, "Constant offset for objective function" );
-		command_line_processor.set_option( "co", &co, "Constant term in general equalities" );
-		command_line_processor.set_option(
+		command_line_processor.setOption( "f_offset", &f_offset, "Constant offset for objective function" );
+		command_line_processor.setOption( "co", &co, "Constant term in general equalities" );
+		command_line_processor.setOption(
 			"ignore-constraints", "no-ignore-constraints", &ignore_constraints
 			,"Determine if constraints are ignored or not" );
 	
 		CommandLineProcessor::EParseCommandLineReturn
-			parse_return = command_line_processor.parse_command_line(argc,argv,&std::cerr);
+			parse_return = command_line_processor.parse(argc,argv,&std::cerr);
 
 		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFULL )
 			return parse_return;
@@ -108,7 +108,7 @@ int main( int argc, char* argv[] )
 
 		MoochoSolver  solver;
 
-		solver.set_nlp( mmp::rcp(&nlp,false) );
+		solver.set_nlp( Teuchos::rcp(&nlp,false) );
 
 		const MoochoSolver::ESolutionStatus
 			solution_status = solver.solve_nlp();

@@ -107,10 +107,10 @@ bool NLPInterfacePack::test_nlp_first_order(
 		n  = nlp->n(),
 		m  = nlp->m();
 	VectorSpace::vec_mut_ptr_t
-		c   = m  ? nlp->space_c()->create_member() : rcp::null,
+		c   = m  ? nlp->space_c()->create_member() : Teuchos::null,
 		Gf  =      nlp->space_x()->create_member();
 	NLPFirstOrder::mat_fcty_ptr_t::element_type::obj_ptr_t
-		Gc  = m  ? nlp->factory_Gc()->create() : rcp::null;
+		Gc  = m  ? nlp->factory_Gc()->create() : Teuchos::null;
 
 	if(m) {
 		if(out)
@@ -136,7 +136,7 @@ bool NLPInterfacePack::test_nlp_first_order(
 		options_setter.set_options(*options);
 	}
 	NLPFirstDerivTester
-		nlp_first_derivatives_tester(rcp::rcp(&calc_fd_prod,false));
+		nlp_first_derivatives_tester(Teuchos::rcp(&calc_fd_prod,false));
 	if(options) {
 		NLPFirstDerivTesterSetOptions
 			nlp_tester_opt_setter(&nlp_first_derivatives_tester);

@@ -18,7 +18,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixZero.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -37,7 +37,7 @@ void MatrixZero::initialize(
 	,const VectorSpace::space_ptr_t&   space_rows
 	)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		(space_cols.get() == NULL && space_rows.get() != NULL)
 		|| (space_cols.get() != NULL && space_rows.get() == NULL)
 		, std::invalid_argument
@@ -243,7 +243,7 @@ bool MatrixZero::syrk(
 // private
 
 void MatrixZero::assert_initialized() const {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_cols_.get() == NULL, std::logic_error
 		,"Error, the MatrixZero object has not been initialized!" );
 }

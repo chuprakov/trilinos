@@ -25,7 +25,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace MoochoPack {
 
@@ -98,7 +98,7 @@ void EvalNewPointTailoredApproachOrthogonal_Step::calc_py_Y_Uy(
 		D_ptr_t  D_ptr = D;
 //		if(mat_rel == MATRICES_INDEP_IMPS) {
 //			D_ptr = D->clone();
-//			THROW_EXCEPTION(
+//			TEST_FOR_EXCEPTION(
 //				D_ptr.get() == NULL, std::logic_error
 //				,"DecompositionSystemOrthogonal::update_decomp(...) : Error, "
 //				"The matrix class used for the direct sensitivity matrix D = inv(C)*N of type \'"

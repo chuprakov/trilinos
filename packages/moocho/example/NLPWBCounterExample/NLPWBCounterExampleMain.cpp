@@ -17,13 +17,13 @@
 
 #include "NLPWBCounterExample.hpp"
 #include "MoochoPack/configurations/MoochoSolver.hpp"
-#include "CommandLineProcessor.hpp"
+#include "Teuchos_CommandLineProcessor.hpp"
 
 int main( int argc, char* argv[] )
 {
 	using MoochoPack::MoochoSolver;
 	using NLPInterfacePack::NLPWBCounterExample;
-	using CommandLineProcessorPack::CommandLineProcessor;
+	using Teuchos::CommandLineProcessor;
 
 	try {
 	
@@ -39,20 +39,20 @@ int main( int argc, char* argv[] )
 
 		CommandLineProcessor  command_line_processor;
 
-		command_line_processor.set_option( "x1-init",  &xinit[0], "Initail guess for x(1)" );
-		command_line_processor.set_option( "x2-init",  &xinit[1], "Initail guess for x(2)" );
-		command_line_processor.set_option( "x3-init",  &xinit[2], "Initail guess for x(3)" );
-		command_line_processor.set_option( "a",  &a, "Constant for c(1)" );
-		command_line_processor.set_option( "b",  &b, "Constant for c(2)" );
-		command_line_processor.set_option(
+		command_line_processor.setOption( "x1-init",  &xinit[0], "Initail guess for x(1)" );
+		command_line_processor.setOption( "x2-init",  &xinit[1], "Initail guess for x(2)" );
+		command_line_processor.setOption( "x3-init",  &xinit[2], "Initail guess for x(3)" );
+		command_line_processor.setOption( "a",  &a, "Constant for c(1)" );
+		command_line_processor.setOption( "b",  &b, "Constant for c(2)" );
+		command_line_processor.setOption(
 			"nlp-selects-basis", "no-nlp-selects-basis", &nlp_selects_basis
 			,"Determine if NLP will select basis" );
-		command_line_processor.set_option(
+		command_line_processor.setOption(
 			"linear-obj", "nonlinear-obj", &linear_obj
 			,"Determine if objective is linear" );
 	
 		CommandLineProcessor::EParseCommandLineReturn
-			parse_return = command_line_processor.parse_command_line(argc,argv,&std::cerr);
+			parse_return = command_line_processor.parse(argc,argv,&std::cerr);
 
 		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFULL )
 			return parse_return;
@@ -66,7 +66,7 @@ int main( int argc, char* argv[] )
 		// Create the solver object
 		MoochoSolver  solver;
 		// Set the NLP
-		solver.set_nlp( MemMngPack::rcp(&nlp,false) );
+		solver.set_nlp( Teuchos::rcp(&nlp,false) );
 		// Solve the NLP
 		const MoochoSolver::ESolutionStatus	solution_status = solver.solve_nlp();
 		

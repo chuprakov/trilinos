@@ -52,7 +52,7 @@ NLPInterfacePack::ExampleNLPFirstOrderRun(
 	using std::endl;
 	using std::setw;
 	namespace rcp = MemMngPack;
-	using rcp::ref_count_ptr;
+	using Teuchos::RefCountPtr;
 	namespace ofsp = OptionsFromStreamPack;
 	using ofsp::OptionsFromStream;
 	namespace rsqp = MoochoPack;
@@ -81,16 +81,16 @@ NLPInterfacePack::ExampleNLPFirstOrderRun(
 
 	// Create the solver object and set it up
 	MoochoSolver solver;
-	solver.set_nlp(rcp::rcp(&nlp,false));                  // Set nlp
+	solver.set_nlp(Teuchos::rcp(&nlp,false));                  // Set nlp
 	// set up outputting
 	solver.set_error_handling(
 		throw_solve_exception
-		,rcp::rcp(error_out,false)
+		,Teuchos::rcp(error_out,false)
 		);
-	solver.set_console_out(rcp::rcp(console_out,false));
-	solver.set_summary_out(rcp::rcp(summary_out,false));
-	solver.set_journal_out(rcp::rcp(journal_out,false));
-	solver.set_algo_out(   rcp::rcp(algo_out,false)   );
+	solver.set_console_out(Teuchos::rcp(console_out,false));
+	solver.set_summary_out(Teuchos::rcp(summary_out,false));
+	solver.set_journal_out(Teuchos::rcp(journal_out,false));
+	solver.set_algo_out(   Teuchos::rcp(algo_out,false)   );
 
 	// Run MOOCHO using the MamaJama configuration
 	solve_return = solver.solve_nlp();

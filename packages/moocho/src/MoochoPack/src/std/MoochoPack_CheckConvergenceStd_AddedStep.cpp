@@ -25,7 +25,7 @@
 namespace MoochoPack {
 
 CheckConvergenceStd_AddedStep::CheckConvergenceStd_AddedStep(
-  MemMngPack::ref_count_ptr<CheckConvergence_Strategy> convergence_strategy
+  Teuchos::RefCountPtr<CheckConvergence_Strategy> convergence_strategy
 	)
 	:
 	convergence_strategy_(convergence_strategy)
@@ -37,7 +37,7 @@ bool CheckConvergenceStd_AddedStep::do_step(
 	)
 	{
 	
-    THROW_EXCEPTION(!convergence_strategy_.get(),
+    TEST_FOR_EXCEPTION(!convergence_strategy_.get(),
 					std::logic_error,
 					"Don't have a valid convergence_strategy in CheckConvergenceStd_AddedStep\n"
 	  );
@@ -90,7 +90,7 @@ void CheckConvergenceStd_AddedStep::print_step( const Algorithm& algo
 	, std::ostream& out, const std::string& L ) const
 	{
 
-    THROW_EXCEPTION(!convergence_strategy_.get(),
+    TEST_FOR_EXCEPTION(!convergence_strategy_.get(),
 					std::logic_error,
 					"Don't have a valid convergence_strategy in CheckConvergenceStd_AddedStep\n"
 	  );

@@ -102,7 +102,7 @@ public:
 	/** Create a mutable abstract view of a vector object.
 	 *
 	 * This is only a transient view of a sub-vector that is to be immediately used
-	 * and then released by <tt>ref_count_ptr<></tt>.  This function is declared as
+	 * and then released by <tt>RefCountPtr<></tt>.  This function is declared as
 	 * non-constant because the object returned has the capacity to alter <tt>this</tt>
 	 * object.
 	 *

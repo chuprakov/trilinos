@@ -29,7 +29,7 @@
 #include "print_sub_vector.hpp"
 #include "Range1D.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
@@ -188,14 +188,14 @@ Vector::sub_view( const Range1D& rng_in ) const
 	const index_type dim = this->dim();
 	const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rng.ubound() > dim, std::out_of_range
 		,"Vector::sub_view(rng): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
 		"is not in the range [1,this->dim()] = [1,"<<dim<<"]" );
 #endif	
 	if( rng.lbound() == 1 && rng.ubound() == dim )
 		return vec_ptr_t( this, false );
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new VectorSubView(
 			vec_ptr_t( this, false )
 			,rng ) );
@@ -205,7 +205,7 @@ void Vector::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec
 {
 	const Range1D rng = rng_in.full_range() ? Range1D(1,this->space().dim()) : rng_in;
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		this->space().dim() < rng.ubound(), std::out_of_range
 		,"Vector::get_sub_vector(rng,...): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()
 		<<"] is not in range = [1,"<<this->space().dim()<<"]" );

@@ -20,7 +20,7 @@
 
 #include "MatrixBase.hpp"
 #include "Range1D.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -211,9 +211,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixOp>    mat_ptr_t;
+	typedef Teuchos::RefCountPtr<const MatrixOp>    mat_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixOp>          mat_mut_ptr_t;
+	typedef Teuchos::RefCountPtr<MatrixOp>          mat_mut_ptr_t;
 #endif
 
 	/// Type of matrix norm

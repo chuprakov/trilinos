@@ -34,7 +34,7 @@ public:
 
 	/// Calls <tt>this->initialize()</tt>.
 	MatrixSymIdent(
-		const VectorSpace::space_ptr_t&          vec_space = VectorSpace::space_ptr_t(NULL)
+		const VectorSpace::space_ptr_t&          vec_space = Teuchos::null
 		,const value_type                        scale     = 1.0
 		);
 

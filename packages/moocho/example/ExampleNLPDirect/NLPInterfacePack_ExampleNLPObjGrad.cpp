@@ -28,7 +28,7 @@
 #include "RTOpCppC.hpp"
 #include "Range1D.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "AbstractFactoryStd.hpp"
 
 namespace {
@@ -58,14 +58,14 @@ ExampleNLPObjGrad::ExampleNLPObjGrad(
 	,bool                            has_bounds
 	,bool                            dep_bounded
 	)
-	:vec_space_(vec_space), vec_space_comp_(MemMngPack::null)
+	:vec_space_(vec_space), vec_space_comp_(Teuchos::null)
 	,initialized_(false), obj_scale_(1.0)
 	,has_bounds_(has_bounds), force_xinit_in_bounds_(true), n_(2*vec_space->dim())
 {
 	namespace rcp = MemMngPack;
 
 	// Assert the size of the NLP
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		vec_space->dim() <= 0, std::logic_error
 		,"ExampleNLPObjGrad::ExampleNLPObjGrad(...) Error!" );
 
@@ -226,7 +226,7 @@ void ExampleNLPObjGrad::imp_calc_f(const Vector& x, bool newx
 	using AbstractLinAlgPack::dot;
 	assert_is_initialized();
 	f(); // assert f is set
-	THROW_EXCEPTION( n() != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_f(...)"  );
+	TEST_FOR_EXCEPTION( n() != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_f(...)"  );
 	// f(x) = (obj_scale/2) * sum( x(i)^2, for i = 1..n )
 	*zero_order_info.f = obj_scale_ / 2.0 * dot(x,x);
 }
@@ -236,7 +236,7 @@ void ExampleNLPObjGrad::imp_calc_c(const Vector& x, bool newx
 {
 	assert_is_initialized();
 	const size_type n = this->n();
-	THROW_EXCEPTION( n != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_c(...)"  );
+	TEST_FOR_EXCEPTION( n != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_c(...)"  );
 
 	// c(x)(j) = x(j) * (x(m+j) -1) - 10 * x(m+j) = 0, for j = 1...m
 
@@ -262,7 +262,7 @@ void ExampleNLPObjGrad::imp_calc_Gf(const Vector& x, bool newx
 	, const ObjGradInfo& obj_grad_info) const
 {
 	assert_is_initialized();
-	THROW_EXCEPTION( n() != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_Gf(...)"  );
+	TEST_FOR_EXCEPTION( n() != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_Gf(...)"  );
 	// Gf = obj_scale * x
 	LinAlgOpPack::V_StV(obj_grad_info.Gf,obj_scale_,x);
 }

@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpSubView.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -50,7 +50,7 @@ void DecompositionSystemVarReductImp::initialize(
 	namespace rcp = MemMngPack;
 	size_type num_vars = 0;
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		basis_sys.get() != NULL && (space_x.get() == NULL || space_c.get() == NULL)
 		,std::invalid_argument
 		,"DecompositionSystemVarReductImp::initialize(...) : Error, "
@@ -63,7 +63,7 @@ void DecompositionSystemVarReductImp::initialize(
 			space_x_dim = space_x->dim(),
 			space_c_dim = space_c->dim(),
 			num_equ     = basis_sys->equ_decomp().size() + basis_sys->equ_undecomp().size();
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			num_vars != 0 && (space_x_dim != num_vars || space_c_dim != num_equ)
 			, std::invalid_argument
 			,"DecompositionSystemVarReductImp::initialize(...) : Error, "
@@ -78,8 +78,8 @@ void DecompositionSystemVarReductImp::initialize(
 		space_null_  = space_x_->sub_space(basis_sys->var_indep())->clone();
 	}
 	else {
-		space_range_ = rcp::null;
-		space_null_  = rcp::null;
+		space_range_ = Teuchos::null;
+		space_null_  = Teuchos::null;
 	}
 }
 
@@ -94,8 +94,8 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
 	,MatrixOpNonsing                                  *R
 	,MatrixOp                                         *Uz
 	,MatrixOp                                         *Uy
-	,MemMngPack::ref_count_ptr<MatrixOpNonsing>       *C_ptr
-	,MemMngPack::ref_count_ptr<MatrixOp>              *D_ptr
+	,Teuchos::RefCountPtr<MatrixOpNonsing>       *C_ptr
+	,Teuchos::RefCountPtr<MatrixOp>              *D_ptr
 	)
 {
 
@@ -189,24 +189,24 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
 	// Get the matrix object of D and allocate a new matrix object if needed.
 	//
 
-	rcp::ref_count_ptr<MatrixOp> _D_ptr;
+	Teuchos::RefCountPtr<MatrixOp> _D_ptr;
 	if( new_D_mat_object ) {
 		// Create a new matrix object!
 		alloc_new_D_matrix( out, olevel, &_D_ptr );
 	}
 	else {
 		// Use current matrix object!
-		_D_ptr = rcp::rcp_const_cast<MatrixOp>(Z_vr->D_ptr());
+		_D_ptr = Teuchos::rcp_const_cast<MatrixOp>(Z_vr->D_ptr());
 	}
 
 	// Set cached implicit D matrix or external explicit D matrix
 	if(D_imp_used_ == MAT_IMP_IMPLICIT) {
 		D_ptr_ = _D_ptr;     // Need to remember this for when update_decomp() is called!
 		if(D_ptr)
-			(*D_ptr) = rcp::null;  // No explicit D matrix
+			(*D_ptr) = Teuchos::null;  // No explicit D matrix
 	}
 	else {
-		D_ptr_ = rcp::null;  // This matrix will be passed back in set_basis_matrices(...) before update_decomp(...) is called.
+		D_ptr_ = Teuchos::null;  // This matrix will be passed back in set_basis_matrices(...) before update_decomp(...) is called.
 		if(D_ptr)
 			(*D_ptr) = _D_ptr;  // Externalize explicit D matrix.
 	}
@@ -259,8 +259,8 @@ void DecompositionSystemVarReductImp::set_basis_matrices(
 	std::ostream                                           *out
 	,EOutputLevel                                          olevel
 	,ERunTests                                             test_what
-	,const MemMngPack::ref_count_ptr<MatrixOpNonsing>      &C_ptr
-	,const MemMngPack::ref_count_ptr<MatrixOp>             &D_ptr
+	,const Teuchos::RefCountPtr<MatrixOpNonsing>      &C_ptr
+	,const Teuchos::RefCountPtr<MatrixOp>             &D_ptr
 	,MatrixOp                                              *Uz
 	,const basis_sys_ptr_t                                 &basis_sys
 	)
@@ -321,7 +321,7 @@ const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemVarReductImp::factory_Z() const
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>()
 		);
 }
@@ -329,7 +329,7 @@ DecompositionSystemVarReductImp::factory_Z() const
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemVarReductImp::factory_Uz() const
 {
-	return MemMngPack::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
+	return Teuchos::rcp(	new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixOpSubView>() );
 }
 
 void DecompositionSystemVarReductImp::update_decomp(
@@ -360,7 +360,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 
 #ifdef _DEBUG
 	// Validate setup
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		basis_sys_.get() == NULL, std::logic_error
 		,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
 		"a BasisSystem object has not been set yet!" );
@@ -378,16 +378,16 @@ void DecompositionSystemVarReductImp::update_decomp(
 
 #ifdef _DEBUG
 	// Validate input
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 	    Z==NULL&&Y==NULL&&R==NULL&&Uz==NULL&&Uy==NULL
 		, std::invalid_argument
 		,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
 		"at least one of Z, Y, R, Uz and Uycan not be NULL!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		m == r && Uz != NULL, std::invalid_argument
 		,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
 		"Uz must be NULL if m==r is NULL!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		m == r && Uy != NULL, std::invalid_argument
 		,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
 		"Uy must be NULL if m==r is NULL!" );
@@ -405,8 +405,8 @@ void DecompositionSystemVarReductImp::update_decomp(
 	// Get smart pointers to unreferenced C and D matrix objects.
 	//
 
-	rcp::ref_count_ptr<MatrixOpNonsing>    C_ptr;
-	rcp::ref_count_ptr<MatrixOp>               D_ptr;
+	Teuchos::RefCountPtr<MatrixOpNonsing>    C_ptr;
+	Teuchos::RefCountPtr<MatrixOp>               D_ptr;
 
 	if( C_ptr_.get() ) {
 		//
@@ -465,12 +465,12 @@ void DecompositionSystemVarReductImp::update_decomp(
 	//
 	// Create the matrix object: N = Gc(var_indep,cond_decomp)' 
 	//
-	rcp::ref_count_ptr<const MatrixOp>
-		N_ptr = rcp::null;
+	Teuchos::RefCountPtr<const MatrixOp>
+		N_ptr = Teuchos::null;
 	if( D_imp_used_ == MAT_IMP_IMPLICIT ) {
-		rcp::ref_count_ptr<const MatrixOp>
+		Teuchos::RefCountPtr<const MatrixOp>
 			GcDd_ptr = Gc.sub_view(var_indep,equ_decomp);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			GcDd_ptr.get() == NULL, std::logic_error
 			,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
 			"The matrix class used for the gradient of constraints matrix Gc of type \'"
@@ -478,16 +478,16 @@ void DecompositionSystemVarReductImp::update_decomp(
 			"Gc.sub_view(var_indep,equ_decomp)!" );
 		if(mat_rel == MATRICES_INDEP_IMPS) {
 			GcDd_ptr = GcDd_ptr->clone();
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				GcDd_ptr.get() == NULL, std::logic_error
 				,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
 				"The matrix class used for the gradient of constraints matrix Gc.sub_view(var_indep,equ_decomp) "
 				"of type \'" << typeid(*GcDd_ptr).name() << "\' must return return.get() != NULL from \n"
 				"Gc.sub_view(var_indep,equ_decomp)->clone() since mat_rel == MATRICES_INDEP_IMPS!" );
 		}
-		N_ptr = rcp::rcp(
+		N_ptr = Teuchos::rcp(
 			new MatrixOpSubView(
-				rcp::rcp_const_cast<MatrixOp>(GcDd_ptr)  // M_full
+				Teuchos::rcp_const_cast<MatrixOp>(GcDd_ptr)  // M_full
 				,Range1D()                                   // rng_rows
 				,Range1D()                                   // rng_cols
 				,BLAS_Cpp::trans                             // M_trans
@@ -502,7 +502,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 	if( test_what == RUN_TESTS ) {
 		if( out && olevel >= PRINT_BASIC_INFO )
 			*out << "\nTesting the basis matrix C and other matices updated using the BasisSystem object ...\n";
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			basis_sys_tester_.get() == NULL, std::logic_error
 			,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
 			"test_what == RUN_TESTS but this->basis_sys_tester().get() == NULL!" );
@@ -536,7 +536,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 			,NULL                                                    // GcUP == Uz
 			,out                                                     // out
 			);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!passed, TestFailed
 			,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
 			"Test of the basis system failed!" );
@@ -550,7 +550,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 	if( D_imp_used_ == MAT_IMP_IMPLICIT ) {
 		if( !C_ptr.has_ownership() && mat_rel == MATRICES_INDEP_IMPS ) {
 			C_ptr = C_ptr->clone_mwons();
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				C_ptr.get() == NULL, std::logic_error
 				,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
 				"The matrix class used for the basis matrix C (from the BasisSystem object) "
@@ -560,7 +560,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 		dyn_cast<MatrixVarReductImplicit>(*D_ptr).initialize(
 			C_ptr       // C
 			,N_ptr      // N
-			,rcp::null  // D_direct
+			,Teuchos::null  // D_direct
 			);
 		// Above, if the basis matrix object C is not owned by the smart
 		// reference counted pointer object C_ptr, then we need to make the
@@ -592,8 +592,8 @@ void DecompositionSystemVarReductImp::update_decomp(
 	assert(Uz == NULL); // ToDo: Implement for undecomposed general equalities
 
 	// Clear cache for basis matrices.
-	C_ptr_ = rcp::null;
-	D_ptr_ = rcp::null;
+	C_ptr_ = Teuchos::null;
+	D_ptr_ = Teuchos::null;
 
 	if( out && olevel >= PRINT_BASIC_INFO )
 		*out << "\nEnd DecompositionSystemVarReductImp::update_decomp(...)\n";
@@ -648,11 +648,11 @@ void DecompositionSystemVarReductImp::update_D_imp_used(EExplicitImplicit *D_imp
 void DecompositionSystemVarReductImp::alloc_new_D_matrix( 
 	std::ostream                             *out
 	,EOutputLevel                            olevel
-	,MemMngPack::ref_count_ptr<MatrixOp> *D_ptr
+	,Teuchos::RefCountPtr<MatrixOp> *D_ptr
 	) const
 {
 	if(D_imp_used_ == MAT_IMP_IMPLICIT) {
-		(*D_ptr) = MemMngPack::rcp(new MatrixVarReductImplicit());
+		(*D_ptr) = Teuchos::rcp(new MatrixVarReductImplicit());
 		if( out && olevel >= PRINT_BASIC_INFO )
 			*out << "\nAllocated a new implicit matrix object for D = -inv(C)*N "
 				 << "of type \'MatrixVarReductImplicit\' ...\n";

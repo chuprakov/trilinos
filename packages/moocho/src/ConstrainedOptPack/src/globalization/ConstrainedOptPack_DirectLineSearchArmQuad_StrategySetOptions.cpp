@@ -50,7 +50,7 @@ DirectLineSearchArmQuad_StrategySetOptions::DirectLineSearchArmQuad_StrategySetO
 			DirectLineSearchArmQuad_Strategy >( qp_solver )
 {}
 
-void DirectLineSearchArmQuad_StrategySetOptions::set_option(
+void DirectLineSearchArmQuad_StrategySetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	switch( (local_EOptions)option_num ) {

@@ -32,7 +32,7 @@
 #include "RTOp_TOp_scale_vector.h"
 #include "RTOp_TOp_sign.h"
 #include "RTOpCppC.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
@@ -147,7 +147,7 @@ void AbstractLinAlgPack::max_abs_ele(
 void AbstractLinAlgPack::Vp_S( VectorMutable* v_lhs, const value_type& alpha )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_S(...), Error!");
+	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_S(...), Error!");
 #endif
 	if(0!=RTOp_TOp_add_scalar_set_alpha( alpha, &add_scalar_op.op() )) assert(0);
 	VectorMutable* targ_vecs[1] = { v_lhs };
@@ -157,7 +157,7 @@ void AbstractLinAlgPack::Vp_S( VectorMutable* v_lhs, const value_type& alpha )
 void AbstractLinAlgPack::Vt_S( VectorMutable* v_lhs, const value_type& alpha )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
+	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
 #endif
 	if( alpha == 0.0 ) {
 		*v_lhs = 0.0;
@@ -173,7 +173,7 @@ void AbstractLinAlgPack::Vp_StV(
 	VectorMutable* v_lhs, const value_type& alpha, const Vector& v_rhs)
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_StV(...), Error!");
+	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_StV(...), Error!");
 #endif
 	if(0!=RTOp_TOp_axpy_set_alpha( alpha, &axpy_op.op() )) assert(0);
 	const Vector*  vecs[1]      = { &v_rhs };
@@ -198,7 +198,7 @@ void AbstractLinAlgPack::ele_wise_prod(
 	, VectorMutable* v_lhs )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_prod(...), Error");
+	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_prod(...), Error");
 #endif
 	if(0!=RTOp_TOp_ele_wise_prod_set_alpha(alpha,&ele_wise_prod_op.op())) assert(0);
 	const Vector*   vecs[2]      = { &v_rhs1, &v_rhs2 };
@@ -211,7 +211,7 @@ void AbstractLinAlgPack::ele_wise_divide(
 	, VectorMutable* v_lhs )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_divide(...), Error");
+	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_divide(...), Error");
 #endif
 	if(0!=RTOp_TOp_ele_wise_divide_set_alpha(alpha,&ele_wise_divide_op.op())) assert(0);
 	const int num_vecs = 2;
@@ -228,7 +228,7 @@ void AbstractLinAlgPack::seed_random_vector_generator( unsigned int s )
 void AbstractLinAlgPack::random_vector( value_type l, value_type u, VectorMutable* v )
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(v==NULL,std::logic_error,"Vt_S(...), Error");
+	TEST_FOR_EXCEPTION(v==NULL,std::logic_error,"Vt_S(...), Error");
 #endif
 	if(0!=RTOp_TOp_random_vector_set_bounds( l, u, &random_vector_op.op() )) assert(0);
 	VectorMutable* targ_vecs[1] = { v };

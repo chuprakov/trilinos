@@ -46,7 +46,7 @@ FeasibilityStepReducedStd_StrategySetOptions::FeasibilityStepReducedStd_Strategy
 			FeasibilityStepReducedStd_Strategy >( target )
 {}
 
-void FeasibilityStepReducedStd_StrategySetOptions::set_option(
+void FeasibilityStepReducedStd_StrategySetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	typedef FeasibilityStepReducedStd_Strategy target_t;

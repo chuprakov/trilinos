@@ -162,9 +162,9 @@ bool NLPInterfacePack::test_nlp_direct(
 		py  =      nlp->space_x()->sub_space(var_dep)->create_member(),
 		rGf =      nlp->space_x()->sub_space(var_indep)->create_member();
 	NLPDirect::mat_fcty_ptr_t::element_type::obj_ptr_t
-		GcU = con_decomp.size() < m ? nlp->factory_GcU()->create() : rcp::null,
+		GcU = con_decomp.size() < m ? nlp->factory_GcU()->create() : Teuchos::null,
 		D   =                         nlp->factory_D()->create(),
-		Uz   = con_decomp.size() < m ? nlp->factory_Uz()->create()   : rcp::null;
+		Uz   = con_decomp.size() < m ? nlp->factory_Uz()->create()   : Teuchos::null;
 	nlp->calc_point(
 		nlp->xinit(), NULL, c.get(), true, Gf.get(), py.get(), rGf.get()
 		,GcU.get(), D.get(), Uz.get() );
@@ -193,7 +193,7 @@ bool NLPInterfacePack::test_nlp_direct(
 		options_setter.set_options(*options);
 	}
 	NLPDirectTester
-		nlp_first_order_direct_tester(rcp::rcp(&calc_fd_prod,false));
+		nlp_first_order_direct_tester(Teuchos::rcp(&calc_fd_prod,false));
 	if(options) {
 		NLPDirectTesterSetOptions
 			nlp_tester_opt_setter(&nlp_first_order_direct_tester);

@@ -20,7 +20,7 @@
 #include "DenseLinAlgPack/src/IVector.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "DenseLinAlgPack/src/PermOut.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -44,8 +44,8 @@ void PermutationSerial::initialize_identity( size_type dim )
 {
 	namespace rcp = MemMngPack;
 	space_.initialize(dim);
-	perm_     = rcp::null;
-	inv_perm_ = rcp::null;
+	perm_     = Teuchos::null;
+	inv_perm_ = Teuchos::null;
 }
 
 void PermutationSerial::initialize(
@@ -55,11 +55,11 @@ void PermutationSerial::initialize(
 	,bool                     check_inv_perm
 	)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		perm.get() == NULL && inv_perm.get() == NULL, std::invalid_argument
 		,"PermutationSerial::initialize(...) : Error!" );
 	if( perm.get() != NULL && inv_perm.get() != NULL ) {
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			perm->size() != inv_perm->size(), std::invalid_argument
 			,"PermutationSerial::initialize(...) : Error!" );
 		if(check_inv_perm) {
@@ -70,14 +70,14 @@ void PermutationSerial::initialize(
 	perm_     = perm;
 	inv_perm_ = inv_perm;
 	if( allocate_missing_perm && perm_.get() == NULL ) {
-		MemMngPack::ref_count_ptr<IVector>
-			_perm(new IVector(inv_perm_->size()));
+		Teuchos::RefCountPtr<IVector>
+			_perm = Teuchos::rcp(new IVector(inv_perm_->size()));
 		DenseLinAlgPack::inv_perm( *inv_perm_, _perm.get() );
 		perm_ = _perm;
 	}
 	if( allocate_missing_perm && inv_perm_.get() == NULL ) {
-		MemMngPack::ref_count_ptr<IVector>
-			_inv_perm(new IVector(perm_->size()));
+		Teuchos::RefCountPtr<IVector>
+			_inv_perm = Teuchos::rcp(new IVector(perm_->size()));
 		DenseLinAlgPack::inv_perm( *perm_, _inv_perm.get() );
 		inv_perm_ = _inv_perm;
 	}
@@ -124,19 +124,19 @@ void PermutationSerial::permute(
 	) const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		y == NULL, std::invalid_argument
 		,"PermutationSerial::permute(P_trans,x,y) : Error!" );
 #endif
 #ifdef ABSTRACTLINALGPACK_ASSERT_COMPATIBILITY
 	bool is_compatible;
 	is_compatible = space_.is_compatible(x.space());
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_compatible, std::invalid_argument
 		,"PermutationSerial::permute(P_trans,x,y) : Error, "
 		"this->space().is_compatible(x.space()) returned false!" );
 	is_compatible = space_.is_compatible(y->space());
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_compatible, std::invalid_argument
 		,"PermutationSerial::permute(P_trans,x,y) : Error, "
 		"this->space().is_compatible(y->space()) returned false!" );
@@ -174,7 +174,7 @@ void PermutationSerial::permute(
 	) const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		y == NULL, std::invalid_argument
 		,"PermutationSerial::permute(P_trans,y) : Error!" );
 #endif

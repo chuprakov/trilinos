@@ -63,7 +63,7 @@ class MultiVectorMutableDense
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
 	/** @name Constructors / initializers */
@@ -132,7 +132,7 @@ public:
 	 */
 	BLAS_Cpp::Transp gms_trans() const;
 	///
-	/** Return a <tt>ref_count_ptr<></tt> pointer to the object that will
+	/** Return a <tt>RefCountPtr<></tt> pointer to the object that will
 	 * release the associated resource.
 	 */
 	const release_resource_ptr_t& gms_release() const;

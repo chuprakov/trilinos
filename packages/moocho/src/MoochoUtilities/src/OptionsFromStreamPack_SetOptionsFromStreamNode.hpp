@@ -46,7 +46,7 @@ public:
 		, bool exists_optional = true );
 
 	///
-	/** Overridden from SetOptionsFromStream and calls set_option(...).
+	/** Overridden from SetOptionsFromStream and calls setOption(...).
 	  *
 	  * The options group #options_group# is used.  If this options
 	  * group does not exist and #exists_optional# == false then
@@ -63,7 +63,7 @@ protected:
 	  * The integer possition returned is the possition of the option
 	  * in option_names[option_num] that was passed to the constructor.
 	  */
-	virtual void set_option( int option_num, const std::string& option_value ) = 0;
+	virtual void setOption( int option_num, const std::string& option_value ) = 0;
 
 private:
 	StringToIntMap	name_map_;

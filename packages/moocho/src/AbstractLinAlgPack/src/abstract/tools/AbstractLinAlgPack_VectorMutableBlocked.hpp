@@ -57,7 +57,7 @@ class VectorMutableBlocked : virtual public VectorMutable
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<const VectorSpaceBlocked>  vec_space_comp_ptr_t;
+	typedef Teuchos::RefCountPtr<const VectorSpaceBlocked>  vec_space_comp_ptr_t;
 
 	///
 	/** Calls <tt>this->initialize()</tt>.

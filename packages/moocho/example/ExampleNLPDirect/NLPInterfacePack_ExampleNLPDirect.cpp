@@ -28,7 +28,7 @@
 #include "RTOpCppC.hpp"
 #include "Range1D.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "AbstractFactoryStd.hpp"
 
 namespace {
@@ -63,11 +63,11 @@ ExampleNLPDirect::ExampleNLPDirect(
 	namespace rcp = MemMngPack;
 
 	// Create the factory object for D
-	factory_D_ = rcp::rcp(new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>());
+	factory_D_ = Teuchos::rcp(new MemMngPack::AbstractFactoryStd<MatrixOp,MatrixSymDiagStd>());
 	NLPDirect::set_factories(
-		MemMngPack::rcp(
+		Teuchos::rcp(
 			new MemMngPack::AbstractFactoryStd<MatrixSymOp,MatrixSymDiagStd>())               // D'*D
-		,MemMngPack::rcp(
+		,Teuchos::rcp(
 			new MemMngPack::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymDiagStd>())    // S
 		);
 }
@@ -137,29 +137,29 @@ void ExampleNLPDirect::calc_point(
 	// Validate the input
 
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		x.dim() != n, std::invalid_argument
 		,"ExampleNLPDirect::calc_point(...), Error x.dim() = " << x.dim()
 		<< " != n = " << n );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		c && !this->space_c()->is_compatible(c->space()), std::invalid_argument
 		,"ExampleNLPDirect::calc_point(...), Error c is not compatible" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		Gf && !this->space_x()->is_compatible(Gf->space()), std::invalid_argument
 		,"ExampleNLPDirect::calc_point(...), Error, Gf is not compatible" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		py && !this->space_x()->sub_space(this->var_dep())->is_compatible(py->space()), std::invalid_argument
 		,"ExampleNLPDirect::calc_point(...), Error, py is not compatible" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		rGf && !this->space_x()->sub_space(this->var_dep())->is_compatible(rGf->space()), std::invalid_argument
 		,"ExampleNLPDirect::calc_point(...), Error, py is not compatible" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		GcU, std::invalid_argument
 		,"ExampleNLPDirect::calc_point(...), Error, there are no undecomposed equalities" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		D && !dynamic_cast<MatrixSymDiagStd*>(D), std::invalid_argument
 		,"ExampleNLPDirect::calc_point(...), Error, D is not compatible" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		py!=NULL && c==NULL, std::invalid_argument
 		,"ExampleNLPDirect::calc_point(...) : "
 		"Error, if py!=NULL then c!=NULL must also be true" );

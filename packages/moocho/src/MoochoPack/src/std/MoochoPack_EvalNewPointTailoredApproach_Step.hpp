@@ -21,7 +21,7 @@
 #include "ConstrainedOptPack/src/misc/VariableBoundsTester.hpp"
 #include "NLPInterfacePack/src/abstract/test/NLPDirectTester.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 
@@ -47,7 +47,7 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixOp> D_ptr_t;
+	typedef Teuchos::RefCountPtr<const MatrixOp> D_ptr_t;
 	/// <<std comp>> members for testing object for NLPDirect
 	STANDARD_COMPOSITION_MEMBERS( NLPDirectTester, deriv_tester )
 	/// <<std comp>> Members for variable bounds tester object

@@ -22,7 +22,7 @@
 #include "MoochoPack/src/std/LineSearchFilter_Step.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
@@ -57,7 +57,7 @@ class PreProcessBarrierLineSearch_Step
 		/** Constructor.
 		 */
 		PreProcessBarrierLineSearch_Step(
-		  MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp,
+		  Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp,
 		  const value_type tau_boundary_frac = 0.99
 		  );
 		//@}
@@ -74,7 +74,7 @@ class PreProcessBarrierLineSearch_Step
 		//@}
 
 	private:
-		MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
+		Teuchos::RefCountPtr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
 
 		// Private Data
 		CastIQMember< Filter_T > filter_;
@@ -94,7 +94,7 @@ class PreProcessBarrierLineSearch_StepSetOptions
 	protected:
 
 		/// Overridden from SetOptionsFromStreamNode
-		void set_option( int option_num, const std::string& option_value );
+		void setOption( int option_num, const std::string& option_value );
 	
 	};	// end class PreProcessBarrierLineSearch_StepSetOptions
 

@@ -46,7 +46,7 @@ VariableBoundsTesterSetOptions::VariableBoundsTesterSetOptions(
 			VariableBoundsTester >( target )
 {}
 
-void VariableBoundsTesterSetOptions::set_option(
+void VariableBoundsTesterSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	typedef VariableBoundsTester target_t;

@@ -70,7 +70,7 @@ void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y_Uy(
 		,space_xD                                              // space_rows
 		,MatrixIdentConcatStd::BOTTOM                          // top_or_bottom
 		,1.0                                                   // alpha
-		,rcp::rcp(
+		,Teuchos::rcp(
 			new MatrixZero(
 				space_xI    // space_cols
 				,space_xD   // space_rows

@@ -19,7 +19,7 @@
 #include <iosfwd>
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -42,32 +42,32 @@ namespace AbstractLinAlgPack {
 class VectorSpaceTester {
 public:
 
-	/// Members for option \c print_all_tests() (see StandardMemberCompositionMacros.hpp).
+	/// Members for option \c print_all_tests() (see Teuchos_StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_all_tests )
 #ifdef DOXYGEN_COMPILE
 		;
 #endif		
-	/// Members for option \c print_vectors() (see StandardMemberCompositionMacros.hpp).
+	/// Members for option \c print_vectors() (see Teuchos_StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_vectors )
 #ifdef DOXYGEN_COMPILE
 		;
 #endif		
-	/// Members for option \c throw_exception() (see StandardMemberCompositionMacros.hpp).
+	/// Members for option \c throw_exception() (see Teuchos_StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, throw_exception )
 #ifdef DOXYGEN_COMPILE
 		;
 #endif		
-	/// Members for option \c num_random_tests() (see StandardMemberCompositionMacros.hpp).
+	/// Members for option \c num_random_tests() (see Teuchos_StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_random_tests )
 #ifdef DOXYGEN_COMPILE
 		;
 #endif		
-	/// Members for option \c () warning_tol(see StandardMemberCompositionMacros.hpp).
+	/// Members for option \c () warning_tol(see Teuchos_StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
 #ifdef DOXYGEN_COMPILE
 		;
 #endif		
-	/// Members for option \c error_tol() (see StandardMemberCompositionMacros.hpp).
+	/// Members for option \c error_tol() (see Teuchos_StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 #ifdef DOXYGEN_COMPILE
 		;

@@ -19,7 +19,7 @@
 #include "../rSQPAlgo_Step.h"
 #include "ConstrainedOptPack/src/globalization/MeritFuncNLP.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 

@@ -24,7 +24,7 @@
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
@@ -40,7 +40,7 @@ public:
 		:vec_space_(vec_space)
 		,num_vecs_(num_vecs)
 	{}
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		AbstractLinAlgPack::MultiVectorMutable>               ptr_t;
 	ptr_t allocate() const
 	{
@@ -67,16 +67,16 @@ void BasisSystemComposite::initialize_space_x(
 {
 	namespace mmp = MemMngPack;
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_xD.get() == NULL, std::invalid_argument
 		,"BasisSystemComposite::initialize_space_x(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 	    var_dep == NULL, std::invalid_argument
 		,"BasisSystemComposite::initialize_space_x(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_xI.get() != NULL && var_indep == NULL, std::invalid_argument
 		,"BasisSystemComposite::initialize_space_x(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_x == NULL, std::invalid_argument
 		,"BasisSystemComposite::initialize_space_x(...): Error!" );
 #endif
@@ -86,7 +86,7 @@ void BasisSystemComposite::initialize_space_x(
 	if(space_xI.get()) {
 		const VectorSpace::space_ptr_t
 			vec_spaces[2] = { space_xD, space_xI };
-		*space_x   = mmp::rcp(new VectorSpaceBlocked(vec_spaces,2));
+		*space_x   = Teuchos::rcp(new VectorSpaceBlocked(vec_spaces,2));
 	}
 	else {
 		*space_x = space_xD;
@@ -97,7 +97,7 @@ const BasisSystemComposite::fcty_Gc_ptr_t
 BasisSystemComposite::factory_Gc()
 {
 	namespace mmp = MemMngPack;
-	return mmp::rcp( new mmp::AbstractFactoryStd<MatrixOp,MatrixComposite>() );
+	return Teuchos::rcp( new mmp::AbstractFactoryStd<MatrixOp,MatrixComposite>() );
 }
 
 void BasisSystemComposite::initialize_Gc(
@@ -113,10 +113,10 @@ void BasisSystemComposite::initialize_Gc(
 	namespace mmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_x.get() == NULL, std::invalid_argument
 		,"BasisSystemComposite::initialize_Gc(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_c.get() == NULL, std::invalid_argument
 		,"BasisSystemComposite::initialize_Gc(...): Error!" );
 #endif
@@ -125,13 +125,13 @@ void BasisSystemComposite::initialize_Gc(
 		m            = space_c->dim(),
 		var_dep_size = var_dep.size();
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		C.get() == NULL, std::invalid_argument
 		,"BasisSystemComposite::initialize_Gc(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		var_dep_size < n && N.get() == NULL, std::invalid_argument
 		,"BasisSystemComposite::initialize_Gc(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		Gc == NULL, std::invalid_argument
 		,"BasisSystemComposite::initialize_Gc(...): Error!" );
 #endif
@@ -145,9 +145,9 @@ void BasisSystemComposite::initialize_Gc(
 	
 	Gc_comp.reinitialize(n,m);
 	// Add the C matrix object
-	typedef mmp::ref_count_ptr<mmp::ReleaseResource_ref_count_ptr<MatrixOpNonsing> > C_rr_ptr_ptr_t;
+	typedef Teuchos::RefCountPtr<mmp::ReleaseResource_ref_count_ptr<MatrixOpNonsing> > C_rr_ptr_ptr_t;
 	C_rr_ptr_ptr_t
-		C_rr_ptr_ptr = mmp::rcp(new mmp::ReleaseResource_ref_count_ptr<MatrixOpNonsing>(C));
+		C_rr_ptr_ptr = Teuchos::rcp(new mmp::ReleaseResource_ref_count_ptr<MatrixOpNonsing>(C));
 	Gc_comp.add_matrix(
 		var_dep.lbound()-1, 0    // row_offset, col_offset
 		,1.0                     // alpha
@@ -157,9 +157,9 @@ void BasisSystemComposite::initialize_Gc(
 		);
 	if( n > m ) {
 		// Add the N matrix object
-		typedef mmp::ref_count_ptr<mmp::ReleaseResource_ref_count_ptr<MatrixOp> > N_rr_ptr_ptr_t;
+		typedef Teuchos::RefCountPtr<mmp::ReleaseResource_ref_count_ptr<MatrixOp> > N_rr_ptr_ptr_t;
 		N_rr_ptr_ptr_t
-			N_rr_ptr_ptr = mmp::rcp(new mmp::ReleaseResource_ref_count_ptr<MatrixOp>(N));
+			N_rr_ptr_ptr = Teuchos::rcp(new mmp::ReleaseResource_ref_count_ptr<MatrixOp>(N));
 		Gc_comp.add_matrix(
 			var_indep.lbound()-1, 0  // row_offset, col_offset
 			,1.0                     // alpha
@@ -180,7 +180,7 @@ void BasisSystemComposite::get_C_N(
 {
 	using DynamicCastHelperPack::dyn_cast;
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		Gc == NULL, std::invalid_argument
 		,"BasisSystemComposite::get_C_N(...): Error!" );
 #endif
@@ -188,10 +188,10 @@ void BasisSystemComposite::get_C_N(
 		n = Gc->rows(),
 		m = Gc->cols();
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		C == NULL, std::invalid_argument
 		,"BasisSystemComposite::get_C_N(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		n > m && N == NULL, std::invalid_argument
 		,"BasisSystemComposite::get_C_N(...): Error!" );
 #endif
@@ -229,10 +229,10 @@ void BasisSystemComposite::get_C_N(
 		n = Gc.rows(),
 		m = Gc.cols();
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		C == NULL, std::invalid_argument
 		,"BasisSystemComposite::get_C_N(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		n > m && N == NULL, std::invalid_argument
 		,"BasisSystemComposite::get_C_N(...): Error!" );
 #endif
@@ -253,7 +253,7 @@ void BasisSystemComposite::get_C_N(
 		assert(mat_itr == mat_end);
 	}
 	else {
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			true, std::invalid_argument
 			,"BasisSystemComposite::get_C_N(...): Error, "
 			"The Gc matrix object has not been initialized with C and N!" );
@@ -263,7 +263,7 @@ void BasisSystemComposite::get_C_N(
 // Constructors / initializers
 
 BasisSystemComposite::BasisSystemComposite()
-	:BasisSystem(MemMngPack::null,MemMngPack::null)
+	:BasisSystem(Teuchos::null,Teuchos::null)
 {}
 
 BasisSystemComposite::BasisSystemComposite(
@@ -273,7 +273,7 @@ BasisSystemComposite::BasisSystemComposite(
 	,const mat_sym_fcty_ptr_t            &factory_transDtD
 	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
 	)
-	:BasisSystem(MemMngPack::null,MemMngPack::null)
+	:BasisSystem(Teuchos::null,Teuchos::null)
 {
 	namespace mmp = MemMngPack;
 	const size_type n = space_x->dim(), m = space_c->dim();
@@ -293,7 +293,7 @@ BasisSystemComposite::BasisSystemComposite(
 	,const mat_sym_nonsing_fcty_ptr_t    &factory_S
 	,const mat_fcty_ptr_t                &factory_D
 	)
-	:BasisSystem(MemMngPack::null,MemMngPack::null)
+	:BasisSystem(Teuchos::null,Teuchos::null)
 {
 	this->initialize(
 		space_x,var_dep,var_indep,space_c,factory_C,factory_transDtD,factory_S
@@ -314,27 +314,27 @@ void BasisSystemComposite::initialize(
 {
 	namespace mmp = MemMngPack;
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_x.get() == NULL, std::invalid_argument
 		,"BasisSystemComposite::initialize(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		space_c.get() == NULL, std::invalid_argument
 		,"BasisSystemComposite::initialize(...): Error!" );
 #endif
 	const size_type n = space_x->dim(), m = space_c->dim();
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		var_dep.size() + var_indep.size() != space_x->dim(), std::invalid_argument
 		,"BasisSystemComposite::initialize(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		n > m && var_dep.lbound() < var_indep.lbound() && (var_dep.lbound() != 1 || var_dep.ubound()+1 != var_indep.lbound())
 		, std::invalid_argument
 		,"BasisSystemComposite::initialize(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		n > m && var_dep.lbound() >= var_indep.lbound() && (var_indep.lbound() != 1 || var_indep.ubound()+1 != var_dep.lbound())
 		, std::invalid_argument
 		,"BasisSystemComposite::initialize(...): Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		factory_C.get() == NULL, std::invalid_argument
 		,"BasisSystemComposite::initialize(...): Error!" );
 #endif
@@ -356,11 +356,11 @@ void BasisSystemComposite::set_uninitialized()
 {
 	namespace mmp = MemMngPack;
 
-	space_x_         = mmp::null;
+	space_x_         = Teuchos::null;
 	var_dep_         = Range1D::Invalid;
 	var_indep_       = Range1D::Invalid;
-	factory_C_       = mmp::null;
-	factory_D_       = mmp::null;
+	factory_C_       = Teuchos::null;
+	factory_D_       = Teuchos::null;
 }
 
 const VectorSpace::space_ptr_t&
@@ -425,10 +425,10 @@ void BasisSystemComposite::update_basis(
 	const index_type
 		n  = var_dep_.size() + var_indep_.size(),
 		m  = var_dep_.size();
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		n == 0, std::logic_error
 		,"BasisSystemComposite::update_basis(...): Error, this must be initialized first!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		C == NULL && ( n > m ? D == NULL : false ), std::logic_error
 		,"BasisSystemComposite::update_basis(...): Error, C or D must be non-NULL!" );
 	// Get references to the aggregate C and N matrices

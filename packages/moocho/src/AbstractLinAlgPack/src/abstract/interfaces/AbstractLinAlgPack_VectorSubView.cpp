@@ -19,7 +19,7 @@
 
 #include "VectorMutableSubView.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace AbstractLinAlgPack {
@@ -33,12 +33,12 @@ void VectorSubView::initialize( const vec_ptr_t& vec, const Range1D& rng )
 {
 	namespace rcp = MemMngPack;
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		vec.get() == NULL, std::invalid_argument
 		,"VectorSubView::initialize(...) : Error!" );
 #endif
 	typedef VectorSpace::space_ptr_t   space_ptr_t;
-	space_.initialize( rcp::rcp(&vec->space(),false), rng );
+	space_.initialize( Teuchos::rcp(&vec->space(),false), rng );
 	full_vec_ = vec;
 	this->has_changed();
 }
@@ -46,7 +46,7 @@ void VectorSubView::initialize( const vec_ptr_t& vec, const Range1D& rng )
 void VectorSubView::set_uninitialized()
 {
 	space_.set_uninitialized();
-	full_vec_ = MemMngPack::null;
+	full_vec_ = Teuchos::null;
 	this->has_changed();
 }
 
@@ -76,7 +76,7 @@ void VectorSubView::apply_op(
 	int k;
 	const index_type this_dim = this->dim();
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		sub_dim_in < 0
 		|| !(1 <= first_ele_in && first_ele_in <= this_dim)
 		|| ( sub_dim_in > 0 && (sub_dim_in - (first_ele_in - 1) > this_dim) )
@@ -123,7 +123,7 @@ VectorSubView::sub_view( const Range1D& rng_in ) const
 	const Range1D rng = RangePack::full_range(rng_in,1,this_dim);
 	space_.validate_range(rng);
 	const index_type this_offset = space_.rng().lbound() - 1;
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new VectorSubView(
 			full_vec_
 			,Range1D( 
@@ -135,7 +135,7 @@ VectorSubView::sub_view( const Range1D& rng_in ) const
 void VectorSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec ) const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!sub_vec, std::logic_error
 		,"VectorSubView::get_sub_vector(...): Error!" ) ;
 #endif
@@ -150,7 +150,7 @@ void VectorSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* 
 void VectorSubView::free_sub_vector( RTOpPack::SubVector* sub_vec ) const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!sub_vec, std::logic_error
 		,"VectorSubView::free_sub_vector(...): Error!" ) ;
 #endif

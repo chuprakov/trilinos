@@ -36,9 +36,9 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<DecompositionSystemVarReductImp>    decomp_sys_imp_ptr_t;
+	typedef Teuchos::RefCountPtr<DecompositionSystemVarReductImp>    decomp_sys_imp_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<BasisSystemPerm>                    basis_sys_ptr_t;
+	typedef Teuchos::RefCountPtr<BasisSystemPerm>                    basis_sys_ptr_t;
 
 	//@}
 
@@ -47,8 +47,8 @@ public:
 
 	/// Calls \c this->initialize().
 	DecompositionSystemVarReductPermStd(
-		const decomp_sys_imp_ptr_t&        decomp_sys_imp  = MemMngPack::null
-		,const basis_sys_ptr_t&            basis_sys       = MemMngPack::null
+		const decomp_sys_imp_ptr_t&        decomp_sys_imp  = Teuchos::null
+		,const basis_sys_ptr_t&            basis_sys       = Teuchos::null
 		,bool                              basis_selected  = false
 		,EExplicitImplicit                 D_imp           = MAT_IMP_AUTO
 		,EExplicitImplicit                 Uz_imp          = MAT_IMP_AUTO

@@ -19,7 +19,7 @@
 #include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverMA28.hpp"
 #include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverMA28SetOptions.hpp"
 #include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverSuperLU.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "OptionsFromStream.hpp"
 #include "StringToIntMap.hpp"
 #include "StringToBool.hpp"
@@ -64,18 +64,18 @@ BasisSystemFactoryStd::create() const
 	read_options();
 
 	// Create the direct sparse solver
-	mmp::ref_count_ptr<DirectSparseSolver>  direct_sparse_solver;
+	Teuchos::RefCountPtr<DirectSparseSolver>  direct_sparse_solver;
 	switch(direct_linear_solver_type_) {
 		case LA_DENSE: {
-			mmp::ref_count_ptr<DirectSparseSolverDense>
-				dss_dense = mmp::rcp(new DirectSparseSolverDense());
+			Teuchos::RefCountPtr<DirectSparseSolverDense>
+				dss_dense = Teuchos::rcp(new DirectSparseSolverDense());
 			direct_sparse_solver = dss_dense;
 			break;
 		}
 		case LA_MA28: {
 #ifdef SPARSE_SOLVER_PACK_USE_MA28
-			mmp::ref_count_ptr<DirectSparseSolverMA28>
-				dss_ma28 = mmp::rcp(new DirectSparseSolverMA28());
+			Teuchos::RefCountPtr<DirectSparseSolverMA28>
+				dss_ma28 = Teuchos::rcp(new DirectSparseSolverMA28());
 			if(options_.get()) {
 				AbstractLinAlgPack::DirectSparseSolverMA28SetOptions
 					opt_setter(dss_ma28.get());
@@ -83,26 +83,26 @@ BasisSystemFactoryStd::create() const
 			}
 			direct_sparse_solver = dss_ma28;
 #else
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, std::logic_error
 				,"Error, SPARSE_SOLVER_PACK_USE_MA28 is not defined and therefore MA28 is not supported!" );
 #endif
 			break;
 		}
 		case LA_MA48: {
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, std::logic_error
 				,"Error, MA48 is not supported yet!" );
 			break;
 		}
 		case LA_SUPERLU: {
 #ifdef SPARSE_SOLVER_PACK_USE_SUPERLU
-			mmp::ref_count_ptr<DirectSparseSolverSuperLU>
-				dss_slu = mmp::rcp(new DirectSparseSolverSuperLU());
+			Teuchos::RefCountPtr<DirectSparseSolverSuperLU>
+				dss_slu = Teuchos::rcp(new DirectSparseSolverSuperLU());
 			// ToDo: Set options from stream!
 			direct_sparse_solver = dss_slu;
 #else
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, std::logic_error
 				,"Error, SPARSE_SOLVER_PACK_USE_SUPERLU is not defined and therefore SuperLU is not supported!" );
 #endif
@@ -113,7 +113,7 @@ BasisSystemFactoryStd::create() const
 	}
 
 	// Return the basis system
-	return mmp::rcp(new BasisSystemPermDirectSparse(direct_sparse_solver));
+	return Teuchos::rcp(new BasisSystemPermDirectSparse(direct_sparse_solver));
 
 }
 
@@ -155,7 +155,7 @@ void BasisSystemFactoryStd::read_options() const
 #ifdef SPARSE_SOLVER_PACK_USE_MA28
 						direct_linear_solver_type_ = LA_MA28;
 #else
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::logic_error
 							,"BasisSystemFactoryStd::read_options(...) : MA28 is not supported,"
 							" must define SPARSE_SOLVER_PACK_USE_MA28!" );
@@ -164,7 +164,7 @@ void BasisSystemFactoryStd::read_options() const
 #ifdef SPARSE_SOLVER_PACK_USE_MA48
 						direct_linear_solver_type_ = LA_MA48;
 #else
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::logic_error
 							,"BasisSystemFactoryStd::read_options(...) : MA48 is not supported,"
 							" must define SPARSE_SOLVER_PACK_USE_MA48!" );
@@ -173,13 +173,13 @@ void BasisSystemFactoryStd::read_options() const
 #ifdef SPARSE_SOLVER_PACK_USE_SUPERLU
 						direct_linear_solver_type_ = LA_SUPERLU;
 #else
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::logic_error
 							,"BasisSystemFactoryStd::read_options(...) : SUPERLU is not supported,"
 							" must define SPARSE_SOLVER_PACK_USE_SUPERLU!" );
 #endif
 					} else {
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::invalid_argument
 							,"BasisSystemFactoryStd::read_options(...) : "
 							"Error, incorrect value for \"direct_linear_solver\" "

@@ -79,7 +79,7 @@ public:
 		//@{
 
 		///
-		typedef MemMngPack::ref_count_ptr<FactorizationNonzeros> fact_nonzeros_ptr_t;
+		typedef Teuchos::RefCountPtr<FactorizationNonzeros> fact_nonzeros_ptr_t;
 
 		//@}
 
@@ -90,9 +90,9 @@ public:
 		/** Return a reference to a smart pointer to the object that represents
 		 * the factorization nonzeros.
 		 *
-		 * Returning a reference to a \c ref_count_ptr<> object verses returning
-		 * a \c ref_count_ptr<> object itself is critical so that we can rely on
-		 * \c ref_count_ptr<>::count() to tell us how many clients have a reference
+		 * Returning a reference to a \c RefCountPtr<> object verses returning
+		 * a \c RefCountPtr<> object itself is critical so that we can rely on
+		 * \c RefCountPtr<>::count() to tell us how many clients have a reference
 		 * to this object.
 		 */
 		virtual const fact_nonzeros_ptr_t&  get_fact_nonzeros() const;
@@ -174,7 +174,7 @@ public:
 		//@{
 
 		/// Called by \c this->clone-mns(). 
-		virtual MemMngPack::ref_count_ptr<BasisMatrixImp> create_matrix() const = 0;
+		virtual Teuchos::RefCountPtr<BasisMatrixImp> create_matrix() const = 0;
 
 		//@}
 
@@ -235,12 +235,12 @@ protected:
 	///
 	/** Create a new, uninitialized \c FactorizationStructure object.
 	 */
-	virtual const MemMngPack::ref_count_ptr<FactorizationStructure> create_fact_struc() const = 0;
+	virtual const Teuchos::RefCountPtr<FactorizationStructure> create_fact_struc() const = 0;
 
 	///
 	/** Create a new, uninitialized \c FactorizationNonzeros object.
 	 */
-	virtual const MemMngPack::ref_count_ptr<FactorizationNonzeros> create_fact_nonzeros() const = 0;
+	virtual const Teuchos::RefCountPtr<FactorizationNonzeros> create_fact_nonzeros() const = 0;
 
 	///
 	/** Called to implement the \c analyze_and_factor() without having to worry about

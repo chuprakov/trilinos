@@ -30,7 +30,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "Range1D.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {
 
@@ -137,17 +137,17 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 	// /////////////////////////////////////////
 	// Validate the input
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		m==0 && Gc_prod, std::invalid_argument
 		,"CalcFiniteDiffProd::calc_deriv(...) : "
 		"Error, if nlp->m() == 0, then Gc_prod must equal NULL" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		Gc_prod && !Gc_prod->space().is_compatible(*nlp->space_c())
 		,std::invalid_argument
 		,"CalcFiniteDiffProd::calc_deriv(...) : "
 		"Error, Gc_prod (type \' "<<typeid(*Gc_prod).name()<<"\' "
 		"is not compatible with the NLP" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		(xl && !xu) || (!xl && xu), std::invalid_argument
 		,"CalcFiniteDiffProd::calc_deriv(...) : "
 		"Error, both xl = "<<xl<<" and xu = "<<xu
@@ -339,7 +339,7 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 	vec_mut_ptr_t
 		x = nlp->space_x()->create_member();
 	vec_mut_ptr_t
-		c = m  && Gc_prod ? nlp->space_c()->create_member() : rcp::null;
+		c = m  && Gc_prod ? nlp->space_c()->create_member() : Teuchos::null;
 	
 	// Set the quanitities used to compute with
 

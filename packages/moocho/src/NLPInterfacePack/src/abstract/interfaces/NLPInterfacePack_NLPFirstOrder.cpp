@@ -16,7 +16,7 @@
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "Range1D.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 	const char name_Gc[] = "Gc";
@@ -40,7 +40,7 @@ void NLPFirstOrder::initialize(bool test_setup) {
 const NLPFirstOrder::basis_sys_ptr_t
 NLPFirstOrder::basis_sys() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 // <<std aggr>> members for Gc
@@ -48,7 +48,7 @@ NLPFirstOrder::basis_sys() const
 void NLPFirstOrder::set_Gc(MatrixOp* Gc)
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
 	Gc_ = Gc;
 }
@@ -56,7 +56,7 @@ void NLPFirstOrder::set_Gc(MatrixOp* Gc)
 MatrixOp* NLPFirstOrder::get_Gc()
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
 	return StandardCompositionRelationshipsPack::get_role_name(Gc_, false, name_Gc);
 }
@@ -64,7 +64,7 @@ MatrixOp* NLPFirstOrder::get_Gc()
 MatrixOp& NLPFirstOrder::Gc()
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
 	return StandardCompositionRelationshipsPack::role_name(Gc_, false, name_Gc);
 }
@@ -72,7 +72,7 @@ MatrixOp& NLPFirstOrder::Gc()
 const MatrixOp& NLPFirstOrder::Gc() const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
 	return StandardCompositionRelationshipsPack::role_name(Gc_, false, name_Gc);
 }
@@ -88,7 +88,7 @@ void NLPFirstOrder::unset_quantities()
 void NLPFirstOrder::calc_Gc(const Vector& x, bool newx) const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
 	StandardCompositionRelationshipsPack::assert_role_name_set(Gc_, "NLP::calc_Gc()", name_Gc);
 	imp_calc_Gc(x,newx,first_order_info());
@@ -98,7 +98,7 @@ void NLPFirstOrder::calc_Gc(const Vector& x, bool newx) const
 size_type NLPFirstOrder::num_Gc_evals() const
 {
 #ifdef _DEBUG
-	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
+	TEST_FOR_EXCEPTION( this->m() == 0, std::logic_error, "" );
 #endif
 	return num_Gc_evals_;
 }

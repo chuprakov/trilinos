@@ -21,7 +21,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {
 
@@ -29,24 +29,24 @@ NLPBarrier::NLPBarrier()
 	:
 	barrier_term_(0.0),
 	objective_term_(0.0),
-	nlp_(MemMngPack::null)
+	nlp_(Teuchos::null)
 	{
 	}
 
 
 void NLPBarrier::InitializeFromNLP(
-  MemMngPack::ref_count_ptr<NLP> original_nlp
+  Teuchos::RefCountPtr<NLP> original_nlp
   )
 	{
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 	  !original_nlp.get(),
 	  std::logic_error,
 	  "null nlp passed to NLPBarrier decorator"
 	  );
 
-	nlp_ = MemMngPack::rcp_dynamic_cast<NLPObjGrad>(original_nlp);
+	nlp_ = Teuchos::rcp_dynamic_cast<NLPObjGrad>(original_nlp);
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 	  !nlp_.get(),
 	  std::logic_error,
 	  "non NLPObjGrad NLP passed to NLPBarrier decorator"
@@ -68,12 +68,12 @@ value_type NLPBarrier::objective_term() const
 	return objective_term_;
 	}
 
-const MemMngPack::ref_count_ptr<Vector> NLPBarrier::grad_barrier_term() const
+const Teuchos::RefCountPtr<Vector> NLPBarrier::grad_barrier_term() const
 	{
 	return grad_barrier_term_;
 	}
 
-const MemMngPack::ref_count_ptr<Vector>  NLPBarrier::grad_objective_term() const
+const Teuchos::RefCountPtr<Vector>  NLPBarrier::grad_objective_term() const
 	{
 	return grad_objective_term_;
 	}

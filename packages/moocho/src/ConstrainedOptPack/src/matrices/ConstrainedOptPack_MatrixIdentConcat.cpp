@@ -30,7 +30,7 @@ namespace {
 // Get a view of a vector (two versions)
 
 inline
-MemMngPack::ref_count_ptr<const AbstractLinAlgPack::Vector>
+Teuchos::RefCountPtr<const AbstractLinAlgPack::Vector>
 get_view(
 	const AbstractLinAlgPack::Vector  &v
 	,const RangePack::Range1D         &rng
@@ -40,14 +40,13 @@ get_view(
 }
 
 inline
-MemMngPack::ref_count_ptr<const AbstractLinAlgPack::SpVectorSlice>
+Teuchos::RefCountPtr<const AbstractLinAlgPack::SpVectorSlice>
 get_view(
 	const AbstractLinAlgPack::SpVectorSlice &v
 	,const RangePack::Range1D               &rng
 	)
 {
-	return MemMngPack::ref_count_ptr<const AbstractLinAlgPack::SpVectorSlice>(
-		new AbstractLinAlgPack::SpVectorSlice( v(rng) ) );
+	return Teuchos::rcp( new AbstractLinAlgPack::SpVectorSlice( v(rng) ) );
 }
 
 // Matrix-vector multiplication

@@ -82,7 +82,7 @@ bool UpdateReducedSigma_Step::do_step(
 		case BFGS_DUAL_EXPLICIT_CORRECTION:
 		case BFGS_DUAL_SCALING_CORRECTION:
 			{
-			THROW_EXCEPTION(true, std::logic_error, "Option BFGS_primal not handled yet in UpdateReducedSigma\n");
+			TEST_FOR_EXCEPTION(true, std::logic_error, "Option BFGS_primal not handled yet in UpdateReducedSigma\n");
 			}
 			break;
 		default:
@@ -180,7 +180,7 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
 	// Calculate Reduced Sigma
 	// Try sigma^1/2 making use of dependent and independent variables
 
-	mmp::ref_count_ptr<const VectorMutable>
+	Teuchos::RefCountPtr<const VectorMutable>
 		Sigma_D_diag = Sigma.diag().sub_view(Z.D_rng()),
 		Sigma_I_diag = Sigma.diag().sub_view(Z.I_rng());
 	const size_type
@@ -211,7 +211,7 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
 				out << "\nSigma_D_sqrt =\n" << Sigma_D_sqrt;
 				}
 	
-			mmp::ref_count_ptr<MultiVectorMutable>
+			Teuchos::RefCountPtr<MultiVectorMutable>
 				J = Sigma_D_sqrt.space_cols().create_members(Z.cols());
 			M_MtM(
 				static_cast<MatrixOp*>(J.get())
@@ -231,7 +231,7 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
 			{
 
 			const MatrixSymDiagStd Sigma_I(
-				mmp::rcp_const_cast<VectorMutable>(Sigma_I_diag)
+				Teuchos::rcp_const_cast<VectorMutable>(Sigma_I_diag)
 				);
 
 			if(Sigma_D_nz)
@@ -311,7 +311,7 @@ UpdateReducedSigma_StepSetOptions::UpdateReducedSigma_StepSetOptions(
 	{
 	}
 
-void UpdateReducedSigma_StepSetOptions::set_option( 
+void UpdateReducedSigma_StepSetOptions::setOption( 
   int option_num, const std::string& option_value )
 	{
 	using OptionsFromStreamPack::StringToIntMap;

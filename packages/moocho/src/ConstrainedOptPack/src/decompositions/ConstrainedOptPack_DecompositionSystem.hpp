@@ -68,10 +68,10 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<MatrixOp> >               mat_fcty_ptr_t;
 	///
 	class SingularDecomposition : public std::logic_error

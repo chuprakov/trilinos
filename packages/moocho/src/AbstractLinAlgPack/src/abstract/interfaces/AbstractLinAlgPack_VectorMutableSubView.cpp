@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "VectorMutableSubView.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "WorkspacePack.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -36,7 +36,7 @@ void VectorMutableSubView::initialize( const vec_mut_ptr_t& vec, const Range1D& 
 void VectorMutableSubView::set_uninitialized()
 {
 	VectorSubView::set_uninitialized();
-	full_vec_ = MemMngPack::null;
+	full_vec_ = Teuchos::null;
 	this->has_changed();
 }
 
@@ -63,9 +63,9 @@ VectorMutableSubView::sub_view( const Range1D& rng_in )
 	const Range1D rng = RangePack::full_range( rng_in, 1, this_dim );
 	space_impl().validate_range(rng);
 	if( rng.lbound() == 1 && rng.ubound() == this_dim )
-		return rcp::rcp(this,false); // Do not own memory!
+		return Teuchos::rcp(this,false); // Do not own memory!
 	const index_type this_offset = space_impl().rng().lbound() - 1;
-	return rcp::rcp(
+	return Teuchos::rcp(
 		new VectorMutableSubView(
 			full_vec_
 			,Range1D( 

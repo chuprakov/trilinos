@@ -66,7 +66,7 @@
 #include "StringToIntMap.hpp"
 #include "StringToBool.hpp"
 #include "OptionsFromStream.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace {
@@ -141,7 +141,7 @@ void DecompositionSystemStateStepBuilderStd::process_nlp_and_options(
 			*tailored_approach = true;
 		}
 		else {
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, std::logic_error
 				,"NLPAlgoConfigMamaJama::config_algo_cntr(...) : Error, "
 				"the NLP object of type \'" << typeid(nlp).name() <<
@@ -207,34 +207,34 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 	,NLPSecondOrder                                        *nlp_soi
 	,NLPDirect                                             *nlp_fod
 	,bool                                                  tailored_approach
-	,MemMngPack::ref_count_ptr<DecompositionSystem>        *decomp_sys
+	,Teuchos::RefCountPtr<DecompositionSystem>        *decomp_sys
 	)
 {
 	namespace mmp = MemMngPack;
-	using mmp::ref_count_ptr;
+	using Teuchos::RefCountPtr;
 
 	const size_type
 		m  = nlp.m();
 
 	if( m == 0 ) {
-		*decomp_sys = mmp::null;
+		*decomp_sys = Teuchos::null;
 		return;
 	}
 
-	ref_count_ptr<BasisSystem> basis_sys = mmp::null;
+	RefCountPtr<BasisSystem> basis_sys = Teuchos::null;
 	if(!tailored_approach) {
 		// Set the default basis system if one is not set
 		basis_sys = nlp_foi->basis_sys();
 		if( basis_sys.get() == NULL ) {
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				true, std::logic_error
 				,"\nA basis system object was not specified by the NLPFirstOrder object of type \'"
 				<< typeid(nlp).name() << "\' and we can not build a rSQP algorithm without one!" );
 
 		}
 		// Create the testing object for the basis system and set it up.
-		ref_count_ptr<BasisSystemTester>
-			basis_sys_tester = mmp::rcp(new BasisSystemTester());
+		RefCountPtr<BasisSystemTester>
+			basis_sys_tester = Teuchos::rcp(new BasisSystemTester());
 		if(options_.get()) {
 			BasisSystemTesterSetOptions
 				opt_setter(basis_sys_tester.get());
@@ -258,15 +258,15 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 		}
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 		// See if the basis system object supports basis permutations
-		basis_sys_perm_ = mmp::rcp_dynamic_cast<BasisSystemPerm>(basis_sys);
+		basis_sys_perm_ = Teuchos::rcp_dynamic_cast<BasisSystemPerm>(basis_sys);
 #endif
 		// Create the DecompositionSystem implementation object
-		typedef ref_count_ptr<DecompositionSystemVarReductImp> decomp_sys_imp_ptr_t;
+		typedef RefCountPtr<DecompositionSystemVarReductImp> decomp_sys_imp_ptr_t;
 		decomp_sys_imp_ptr_t decomp_sys_imp;
 		switch( cov_.range_space_matrix_type_ ) {
 			case RANGE_SPACE_MATRIX_COORDINATE:
 				decomp_sys_imp
-					= mmp::rcp(new DecompositionSystemCoordinate(
+					= Teuchos::rcp(new DecompositionSystemCoordinate(
 						nlp.space_x()
 						,nlp.space_c()
 						,basis_sys  // Will have basis_sys_->var_dep().size() == 0 if permutation
@@ -276,7 +276,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 				break;
 			case RANGE_SPACE_MATRIX_ORTHOGONAL: {
 				decomp_sys_imp
-					= mmp::rcp(new DecompositionSystemOrthogonal(
+					= Teuchos::rcp(new DecompositionSystemOrthogonal(
 						nlp.space_x()
 						,nlp.space_c()
 						,basis_sys  // Will have basis_sys_->var_dep().size() == 0 if permutation
@@ -295,7 +295,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 					<< "\nThe BasisSystem object with concreate type \'" << typeid(*basis_sys).name()
 					<< "\' supports the BasisSystemPerm interface.\n"
 					<< "Using DecompositionSystemVarReductPermStd to support basis permutations ...\n";
-			*decomp_sys = mmp::rcp(
+			*decomp_sys = Teuchos::rcp(
 				new DecompositionSystemVarReductPermStd(
 					decomp_sys_imp
 					,basis_sys_perm_
@@ -329,8 +329,8 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 	,NLPSecondOrder                                        *nlp_soi
 	,NLPDirect                                             *nlp_fod
 	,bool                                                  tailored_approach
-	,const MemMngPack::ref_count_ptr<DecompositionSystem>  &decomp_sys
-	,const MemMngPack::ref_count_ptr<NLPAlgoState>         &state
+	,const Teuchos::RefCountPtr<DecompositionSystem>  &decomp_sys
+	,const Teuchos::RefCountPtr<NLPAlgoState>         &state
 	)
 {
 	namespace mmp = MemMngPack;
@@ -350,7 +350,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 		if(m)
 			state->set_iter_quant(
 				Gc_name
-				,mmp::rcp(
+				,Teuchos::rcp(
 					new IterQuantityAccessContiguous<MatrixOp>(
 						1
 						,Gc_name
@@ -361,7 +361,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 		if(nlp_soi)
 			state->set_iter_quant(
 				HL_name
-				,mmp::rcp(
+				,Teuchos::rcp(
 					new IterQuantityAccessContiguous<MatrixSymOp>(
 						1
 						,HL_name
@@ -382,22 +382,22 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 			// Z
 			state->set_iter_quant(
 				Z_name
-				,mmp::rcp(
+				,Teuchos::rcp(
 					new IterQuantityAccessContiguous<MatrixOp>(
 						1
 						,Z_name
-						,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>)
+						,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>)
 						)
 					)
 				);
 			// Y
 			state->set_iter_quant(
 				Y_name
-				,mmp::rcp(
+				,Teuchos::rcp(
 					new IterQuantityAccessContiguous<MatrixOp>(
 						1
 						,Y_name
-						,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>)
+						,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixIdentConcatStd>)
 						)
 					)
 				);
@@ -409,7 +409,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 				// Z
 				state->set_iter_quant(
 					Z_name
-					,mmp::rcp(
+					,Teuchos::rcp(
 						new IterQuantityAccessContiguous<MatrixOp>(
 							1
 							,Z_name
@@ -420,7 +420,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 				// Y
 				state->set_iter_quant(
 					Y_name
-					,mmp::rcp(
+					,Teuchos::rcp(
 						new IterQuantityAccessContiguous<MatrixOp>(
 							1
 							,Y_name
@@ -431,7 +431,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 				// R
 				state->set_iter_quant(
 					R_name
-					,mmp::rcp(
+					,Teuchos::rcp(
 						new IterQuantityAccessContiguous<MatrixOpNonsing>(
 							1
 							,R_name
@@ -442,7 +442,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 				// Uz
 				state->set_iter_quant(
 					Uz_name
-					,mmp::rcp(
+					,Teuchos::rcp(
 						new IterQuantityAccessContiguous<MatrixOp>(
 							1
 							,Uz_name
@@ -453,7 +453,7 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 				// Uy
 				state->set_iter_quant(
 					Uy_name
-					,mmp::rcp(
+					,Teuchos::rcp(
 						new IterQuantityAccessContiguous<MatrixOp>(
 							1
 							,Uy_name
@@ -466,18 +466,18 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 				// Y
 				state->set_iter_quant(
 					Y_name
-					,mmp::rcp(
+					,Teuchos::rcp(
 						new IterQuantityAccessContiguous<MatrixOp>(
 							1
 							,Y_name
-							,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymIdent>())
+							,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymIdent>())
 							)
 						)
 					);
 				// R
 				state->set_iter_quant(
 					R_name
-					,mmp::rcp(
+					,Teuchos::rcp(
 						new IterQuantityAccessContiguous<MatrixOpNonsing>(
 							1
 							,R_name
@@ -492,11 +492,11 @@ void DecompositionSystemStateStepBuilderStd::add_iter_quantities(
 		// Z
 		state->set_iter_quant(
 			Z_name
-			,mmp::rcp(
+			,Teuchos::rcp(
 				new IterQuantityAccessContiguous<MatrixOp>(
 					1
 					,Z_name
-					,mmp::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymIdent>())
+					,Teuchos::rcp(new mmp::AbstractFactoryStd<MatrixOp,MatrixSymIdent>())
 					)
 				)
 			);
@@ -511,32 +511,32 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 	,NLPSecondOrder                                                   *nlp_soi
 	,NLPDirect                                                        *nlp_fod
 	,bool                                                             tailored_approach
-	,const MemMngPack::ref_count_ptr<DecompositionSystem>             &decomp_sys
-	,MemMngPack::ref_count_ptr<IterationPack::AlgorithmStep>          *eval_new_point_step
-	,MemMngPack::ref_count_ptr<CalcFiniteDiffProd>                    *calc_fd_prod
-	,MemMngPack::ref_count_ptr<VariableBoundsTester>                  *bounds_tester
-	,MemMngPack::ref_count_ptr<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy
+	,const Teuchos::RefCountPtr<DecompositionSystem>             &decomp_sys
+	,Teuchos::RefCountPtr<IterationPack::AlgorithmStep>          *eval_new_point_step
+	,Teuchos::RefCountPtr<CalcFiniteDiffProd>                    *calc_fd_prod
+	,Teuchos::RefCountPtr<VariableBoundsTester>                  *bounds_tester
+	,Teuchos::RefCountPtr<NewDecompositionSelection_Strategy>    *new_decomp_selection_strategy
 	)
 {
 	namespace mmp = MemMngPack;
-	using mmp::ref_count_ptr;
+	using Teuchos::RefCountPtr;
 
 	const size_type
 		m  = nlp.m(),
 		nb = nlp.num_bounded_x();
 
-	typedef ref_count_ptr<DecompositionSystemHandler_Strategy>           decomp_sys_handler_ptr_t;
-	decomp_sys_handler_ptr_t             decomp_sys_handler               = mmp::null;
+	typedef RefCountPtr<DecompositionSystemHandler_Strategy>           decomp_sys_handler_ptr_t;
+	decomp_sys_handler_ptr_t             decomp_sys_handler               = Teuchos::null;
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
-	typedef ref_count_ptr<DecompositionSystemHandlerSelectNew_Strategy>  decomp_sys_handler_select_new_ptr_t;
-	decomp_sys_handler_select_new_ptr_t  decomp_sys_handler_select_new   = mmp::null;
+	typedef RefCountPtr<DecompositionSystemHandlerSelectNew_Strategy>  decomp_sys_handler_select_new_ptr_t;
+	decomp_sys_handler_select_new_ptr_t  decomp_sys_handler_select_new   = Teuchos::null;
 #endif
 
 	// Create the variable bounds testing object.
 	if(nb) { // has variable bounds?
 		const value_type var_bounds_warning_tol = 1e-10;
 		const value_type var_bounds_error_tol   = 1e-5;
-		*bounds_tester = mmp::rcp(
+		*bounds_tester = Teuchos::rcp(
 			new VariableBoundsTester(
 				var_bounds_warning_tol      // default warning tolerance
 				,var_bounds_error_tol       // default error tolerance
@@ -549,7 +549,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 	}
 
 	// Create the finite difference class
-	*calc_fd_prod = mmp::rcp(new CalcFiniteDiffProd());
+	*calc_fd_prod = Teuchos::rcp(new CalcFiniteDiffProd());
 	if(options_.get()) {
 		ConstrainedOptPack::CalcFiniteDiffProdSetOptions
 			options_setter( calc_fd_prod->get() );
@@ -563,27 +563,27 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 			if( basis_sys_perm_.get() )
 				decomp_sys_handler = decomp_sys_handler_select_new
-					= mmp::rcp( new DecompositionSystemHandlerVarReductPerm_Strategy );
+					= Teuchos::rcp( new DecompositionSystemHandlerVarReductPerm_Strategy );
 			else
 #endif
-				decomp_sys_handler = mmp::rcp( new DecompositionSystemHandlerStd_Strategy );
+				decomp_sys_handler = Teuchos::rcp( new DecompositionSystemHandlerStd_Strategy );
 		}
 	
 #ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 		// NewDecompositionSelectionStd_Strategy
 		if( decomp_sys_handler_select_new.get() ) {
-			*new_decomp_selection_strategy = mmp::rcp(
+			*new_decomp_selection_strategy = Teuchos::rcp(
 				new NewDecompositionSelectionStd_Strategy(decomp_sys_handler_select_new)
 				);
 		}
 #else
-		*new_decomp_selection_strategy = mmp::null;
+		*new_decomp_selection_strategy = Teuchos::null;
 #endif
 
 	}
 	else {
-		decomp_sys_handler             = mmp::null;
-		*new_decomp_selection_strategy = mmp::null;
+		decomp_sys_handler             = Teuchos::null;
+		*new_decomp_selection_strategy = Teuchos::null;
 	}
 
 	//
@@ -593,9 +593,9 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 	// Create the step object
 	if( tailored_approach ) {
 		// create and setup the derivative tester
-		typedef mmp::ref_count_ptr<NLPDirectTester>   deriv_tester_ptr_t;
+		typedef Teuchos::RefCountPtr<NLPDirectTester>   deriv_tester_ptr_t;
 		deriv_tester_ptr_t
-			deriv_tester = mmp::rcp(
+			deriv_tester = Teuchos::rcp(
 				new NLPDirectTester(
 					*calc_fd_prod
 					,NLPDirectTester::FD_DIRECTIONAL    // Gf testing
@@ -607,17 +607,17 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 			options_setter.set_options(*options_);
 		}
 		// create the step
-		typedef mmp::ref_count_ptr<EvalNewPointTailoredApproach_Step>  _eval_new_point_step_ptr_t;
+		typedef Teuchos::RefCountPtr<EvalNewPointTailoredApproach_Step>  _eval_new_point_step_ptr_t;
 		_eval_new_point_step_ptr_t
-			_eval_new_point_step = mmp::null;
+			_eval_new_point_step = Teuchos::null;
 		switch( cov_.range_space_matrix_type_ ) {
 			case RANGE_SPACE_MATRIX_COORDINATE:
 				_eval_new_point_step
-					= mmp::rcp(new EvalNewPointTailoredApproachCoordinate_Step(deriv_tester,*bounds_tester));
+					= Teuchos::rcp(new EvalNewPointTailoredApproachCoordinate_Step(deriv_tester,*bounds_tester));
 				break;
 			case RANGE_SPACE_MATRIX_ORTHOGONAL:
 				_eval_new_point_step
-					= mmp::rcp(new EvalNewPointTailoredApproachOrthogonal_Step(deriv_tester,*bounds_tester) );
+					= Teuchos::rcp(new EvalNewPointTailoredApproachOrthogonal_Step(deriv_tester,*bounds_tester) );
 				break;
 			default:
 				assert(0);	// only a local error
@@ -631,9 +631,9 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 	}
 	else {
 		// create and setup the derivative tester
-		typedef mmp::ref_count_ptr<NLPFirstDerivTester>   deriv_tester_ptr_t;
+		typedef Teuchos::RefCountPtr<NLPFirstDerivTester>   deriv_tester_ptr_t;
 		deriv_tester_ptr_t
-			deriv_tester = mmp::rcp(
+			deriv_tester = Teuchos::rcp(
 				new NLPFirstDerivTester(
 					*calc_fd_prod
 					,NLPFirstDerivTester::FD_DIRECTIONAL
@@ -644,16 +644,16 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 				options_setter.set_options(*options_);
 		}
 			// create and setup the decomposition system tester
-		typedef mmp::ref_count_ptr<DecompositionSystemTester>   decomp_sys_tester_ptr_t;
+		typedef Teuchos::RefCountPtr<DecompositionSystemTester>   decomp_sys_tester_ptr_t;
 		decomp_sys_tester_ptr_t
-			decomp_sys_tester = mmp::rcp( new DecompositionSystemTester() );
+			decomp_sys_tester = Teuchos::rcp( new DecompositionSystemTester() );
 		if(options_.get()) {
 			DecompositionSystemTesterSetOptions
 				options_setter(decomp_sys_tester.get());
 			options_setter.set_options(*options_);
 		}
-		mmp::ref_count_ptr<EvalNewPointStd_Step>
-			_eval_new_point_step = mmp::rcp(
+		Teuchos::RefCountPtr<EvalNewPointStd_Step>
+			_eval_new_point_step = Teuchos::rcp(
 				new EvalNewPointStd_Step(
 					decomp_sys_handler
 					,deriv_tester
@@ -714,7 +714,7 @@ void DecompositionSystemStateStepBuilderStd::readin_options(
 					} else if( opt_val == "AUTO" ) {
 						ov->null_space_matrix_type_ = NULL_SPACE_MATRIX_AUTO;
 					} else {
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::invalid_argument
 							,"NLPAlgoConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"null_space_matrix\" "
@@ -733,7 +733,7 @@ void DecompositionSystemStateStepBuilderStd::readin_options(
 					else if( opt_val == "AUTO" )
 						ov->range_space_matrix_type_ = RANGE_SPACE_MATRIX_AUTO;
 					else
-						THROW_EXCEPTION(
+						TEST_FOR_EXCEPTION(
 							true, std::invalid_argument
 							,"NLPAlgoConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"range_space_matrix\" "

@@ -23,7 +23,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "update_success.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 template< class T >
@@ -460,7 +460,7 @@ bool VectorSpaceTester::check_vector_space(
 			vec_clone = vec->clone();
 		if(out && print_all_tests())
 			*out << "vec = NULL\n";
-		vec = rcp::null;
+		vec = Teuchos::null;
 		const value_type
 			sum_vec       = sum(*v[0]),
 			sum_vec_clone = sum(*vec_clone);
@@ -502,7 +502,7 @@ void VectorSpaceTester::check_test(value_type err, std::ostream* out, bool* succ
 			*out << "Warning!  |" << err << "| = " << ::fabs(err) << " >= warning_tol = "
 						 << warning_tol() << std::endl;
 	}
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!*success && this->throw_exception(), std::logic_error
 		,"VectorSpaceTester::check_test(...): Error!  |" << err << "| = " << ::fabs(err) << " >= error_tol = "
 		<< error_tol() << std::endl );

@@ -17,7 +17,7 @@
 #define VECTOR_SPACE_FACTORY_H
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -31,15 +31,15 @@ class VectorSpaceFactory
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<const InnerProduct>   inner_prod_ptr_t;
+	typedef Teuchos::RefCountPtr<const InnerProduct>   inner_prod_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const VectorSpace>    space_ptr_t;
+	typedef Teuchos::RefCountPtr<const VectorSpace>    space_ptr_t;
 
 	/** @name Constructors / initializers */
 	//@{
 
 	/// Calls \c inner_prod()
-	VectorSpaceFactory( const inner_prod_ptr_t& inner_prod = MemMngPack::null );
+	VectorSpaceFactory( const inner_prod_ptr_t& inner_prod = Teuchos::null );
 
 	///
 	/** Initialize with an inner product object that will be given to vector.

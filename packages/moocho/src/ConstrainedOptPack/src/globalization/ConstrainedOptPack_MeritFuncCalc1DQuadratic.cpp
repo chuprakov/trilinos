@@ -17,7 +17,7 @@
 #include "ConstrainedOptPack/src/globalization/MeritFuncCalc.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -29,7 +29,7 @@ MeritFuncCalc1DQuadratic::MeritFuncCalc1DQuadratic(
 	)
 	: phi_(phi), p_(p), x_(x)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!(1 <= p && p <= 2 ), std::invalid_argument
 		,"MeritFuncCalc1DQuadratic::MeritFuncCalc1DQuadratic(...) : Error! "
 		"p = " << p << " must be in the range 1 <= p <= 2"

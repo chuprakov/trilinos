@@ -25,7 +25,7 @@
 #include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxed.hpp"
 #include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedTester.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 

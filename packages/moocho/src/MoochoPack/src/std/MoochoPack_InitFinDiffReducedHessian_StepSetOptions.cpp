@@ -51,7 +51,7 @@ InitFinDiffReducedHessian_StepSetOptions::InitFinDiffReducedHessian_StepSetOptio
 			InitFinDiffReducedHessian_Step >( target )
 {}
 
-void InitFinDiffReducedHessian_StepSetOptions::set_option(
+void InitFinDiffReducedHessian_StepSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	typedef InitFinDiffReducedHessian_Step target_t;

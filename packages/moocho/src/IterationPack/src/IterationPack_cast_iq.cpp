@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "IterationPack/src/cast_iq.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 void IterationPack::imp_cast_iq_throw_error(
 	const std::string&                 iq_name
@@ -22,7 +22,7 @@ void IterationPack::imp_cast_iq_throw_error(
 	,const std::string&                iq_want_type_name
 	)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true, IterationPack::InvalidTypeCastException
 		,"cast_id<T>(state,iq_name) : Error, the iteration quantity \'"
 		<< iq_name << "\' exists with type \'" << iq_is_type_name << "\' but does not "
@@ -36,7 +36,7 @@ void IterationPack::imp_cast_iq_throw_error(
 	,const std::string&                iq_want_type_name
 	)
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		true, IterationPack::InvalidTypeCastException
 		,"cast_id<T>(state,iq_id,iq_name) : Error, the iteration quantity \'"
 		<< iq_name << "\' with iq_id = \'" << iq_id

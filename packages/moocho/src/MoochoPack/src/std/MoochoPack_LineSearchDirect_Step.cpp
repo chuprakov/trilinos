@@ -27,7 +27,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace MoochoPack {
 
@@ -102,7 +102,7 @@ bool LineSearchDirect_Step::do_step(
 	if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 		out	<< "\nDphi_k = "	<< Dphi_k << std::endl;
 	}
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		Dphi_k >= 0, LineSearchFailure
 		,"LineSearch2ndOrderCorrect_Step::do_step(...) : " 
 		"Error, d_k is not a descent direction for the merit function "
@@ -158,7 +158,7 @@ bool LineSearchDirect_Step::do_step(
 				<< "(k = " << algo.state().k() << ")\n"
 				<< "(phi_k - phi_kp1)/phi_k = " << ((phi_k - phi_kp1)/phi_k)
 				<< "\nso we will reject the step and declare a line search failure.\n";
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			true, LineSearchFailure
 			,"LineSearchDirect_Step::do_step(): Line search failure" );
 	}

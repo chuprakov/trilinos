@@ -118,7 +118,6 @@ bool IterationPack::TestingPack::TestAlgorithm(std::ostream* out) {
 
 	using std::endl;
 	using std::setw;
-	namespace rcp = MemMngPack;
 	
 	std::ostream& _out = *out;
 	// ToDo: RAB: 7/1/99: Modify for optional output when out == 0;
@@ -135,14 +134,14 @@ bool IterationPack::TestingPack::TestAlgorithm(std::ostream* out) {
 
 	Algorithm algo;
 	
-	Algorithm::state_ptr_t			state		= rcp::rcp(new AlgorithmState);
-	Algorithm::track_ptr_t			track		= rcp::rcp(new AlgorithmTrackTesting(rcp::rcp(&_out,false)));
+	Algorithm::state_ptr_t			state		= Teuchos::rcp(new AlgorithmState);
+	Algorithm::track_ptr_t			track		= Teuchos::rcp(new AlgorithmTrackTesting(Teuchos::rcp(&_out,false)));
 
 	algo.set_state( state );
 	algo.set_track( track );
 
-	Algorithm::step_ptr_t			step		= rcp::rcp(new AlgorithmStepTesting);
-	Algorithm::step_ptr_t			assoc_step	= rcp::rcp(new AlgorithmStepTesting);
+	Algorithm::step_ptr_t			step		= Teuchos::rcp(new AlgorithmStepTesting);
+	Algorithm::step_ptr_t			assoc_step	= Teuchos::rcp(new AlgorithmStepTesting);
 
 	algo.insert_step( 1, "Step_1", step );
 
@@ -180,7 +179,7 @@ bool IterationPack::TestingPack::TestAlgorithm(std::ostream* out) {
 	algo.remove_assoc_step( 4, PRE_STEP, 2 );
 
 	_out	<< "\nalgo.insert_assoc_step( 4, PRE_STEP, 2, \"Step_4_m1\", new MinorLoop1Step );\n";
-	algo.insert_assoc_step( 4, PRE_STEP, 2, "Step_4_m1", rcp::rcp(new MinorLoop1Step) );
+	algo.insert_assoc_step( 4, PRE_STEP, 2, "Step_4_m1", Teuchos::rcp(new MinorLoop1Step) );
 
 	_out	<< "\nalgo.state().k(0);\n";
 	algo.state().k(0);
@@ -208,7 +207,7 @@ bool IterationPack::TestingPack::TestAlgorithm(std::ostream* out) {
 	algo.remove_assoc_step( 4, PRE_STEP, 1 );
 
 	_out	<< "\nalgo.insert_assoc_step( 4, PRE_STEP, 1 , \"Step_4_m2\", new ControledLoop1Step );\n";
-	algo.insert_assoc_step( 4, PRE_STEP, 1 , "Step_4_m2", rcp::rcp(new ControledLoop1Step) );
+	algo.insert_assoc_step( 4, PRE_STEP, 1 , "Step_4_m2", Teuchos::rcp(new ControledLoop1Step) );
 
 	_out	<< "\n\nalgo.print_steps(_out)\n\n";
 	algo.print_steps(_out);
@@ -227,7 +226,7 @@ bool IterationPack::TestingPack::TestAlgorithm(std::ostream* out) {
 	algo.remove_assoc_step( 4, PRE_STEP, 1 );
 
 	_out	<< "\nalgo.insert_assoc_step( 4, PRE_STEP, 1, \"Step_4_m2\", new  RuntimeConfigChangeStep );\n";
-	algo.insert_assoc_step( 4, PRE_STEP, 1, "Step_4_m2", rcp::rcp(new  RuntimeConfigChangeStep) );
+	algo.insert_assoc_step( 4, PRE_STEP, 1, "Step_4_m2", Teuchos::rcp(new  RuntimeConfigChangeStep) );
 
 	_out	<< "\n\nalgo.print_steps(_out)\n\n";
 	algo.print_steps(_out);

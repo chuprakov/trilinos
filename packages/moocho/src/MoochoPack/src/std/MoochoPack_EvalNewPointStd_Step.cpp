@@ -31,7 +31,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 #ifdef _DEBUG
 #include "DenseLinAlgPack/src/PermVecMat.hpp"
@@ -134,7 +134,7 @@ bool EvalNewPointStd_Step::do_step(
 				   ,x_iq.get_k(0),   "x_k"
 				   ))
 			{
-				THROW_EXCEPTION(
+				TEST_FOR_EXCEPTION(
 					true, TestFailed
 					,"EvalNewPointStd_Step::do_step(...) : Error, "
 					"the variables bounds xl <= x_k <= xu where violated!" );
@@ -261,7 +261,7 @@ bool EvalNewPointStd_Step::do_step(
 					,m > r  ? &Uy_iq->get_k(0) : NULL  // Uy
 					,( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : NULL
 					);
-			THROW_EXCEPTION(
+			TEST_FOR_EXCEPTION(
 				!decomp_sys_passed, TestFailed
 				,"EvalNewPointStd_Step::do_step(...) : Error, "
 				"the tests of the decomposition system failed!" );
@@ -365,7 +365,7 @@ bool EvalNewPointStd_Step::do_step(
 				,olevel >= PRINT_VECTORS
 				,( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : NULL
 				);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			!nlp_passed, TestFailed
 			,"EvalNewPointStd_Step::do_step(...) : Error, "
 			"the tests of the nlp derivatives failed!" );

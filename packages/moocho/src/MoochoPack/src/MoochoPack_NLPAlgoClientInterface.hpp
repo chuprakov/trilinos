@@ -33,7 +33,7 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<NLPAlgoConfig>	config_ptr_t;
+	typedef Teuchos::RefCountPtr<NLPAlgoConfig>	config_ptr_t;
 
 	//@}
 

@@ -18,7 +18,7 @@
 
 #include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "MoochoPack/src/std/QuasiNewtonStats.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace MoochoPack {
 

@@ -44,7 +44,7 @@ EvalNewPointTailoredApproach_StepSetOptions::EvalNewPointTailoredApproach_StepSe
 			EvalNewPointTailoredApproach_Step >( target )
 {}
 
-void EvalNewPointTailoredApproach_StepSetOptions::set_option(
+void EvalNewPointTailoredApproach_StepSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	using OptionsFromStreamPack::StringToBool;

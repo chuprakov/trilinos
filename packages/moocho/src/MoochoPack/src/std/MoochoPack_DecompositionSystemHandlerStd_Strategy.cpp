@@ -32,7 +32,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymIdent.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace MoochoPack {
 

@@ -21,7 +21,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 #include "ReleaseResource.hpp"
 
 namespace AbstractLinAlgPack {
@@ -105,7 +105,7 @@ public:
 	// Public types
 
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
 	///
@@ -115,7 +115,7 @@ public:
 	 */
 	struct SubVectorEntry {
 		///
-		typedef MemMngPack::ref_count_ptr<const GenPermMatrixSlice> GPMS_ptr_t;
+		typedef Teuchos::RefCountPtr<const GenPermMatrixSlice> GPMS_ptr_t;
 		///
 		SubVectorEntry(
 			size_type r_l, size_type c_l, value_type beta
@@ -166,7 +166,7 @@ public:
 	 */
 	struct SubMatrixEntry {
 		///
-		typedef MemMngPack::ref_count_ptr<const GenPermMatrixSlice> GPMS_ptr_t;
+		typedef Teuchos::RefCountPtr<const GenPermMatrixSlice> GPMS_ptr_t;
 		///
 		SubMatrixEntry(
 			size_type r_l, size_type r_u, size_type c_l, size_type c_u, value_type alpha

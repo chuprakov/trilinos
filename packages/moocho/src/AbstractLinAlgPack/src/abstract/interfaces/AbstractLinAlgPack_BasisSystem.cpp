@@ -49,7 +49,7 @@ Range1D BasisSystem::equ_undecomp() const
 
 const BasisSystem::mat_fcty_ptr_t BasisSystem::factory_GcUP() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 const BasisSystem::mat_sym_fcty_ptr_t

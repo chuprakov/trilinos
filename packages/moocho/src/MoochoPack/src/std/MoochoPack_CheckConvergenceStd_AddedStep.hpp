@@ -39,7 +39,7 @@ class CheckConvergenceStd_AddedStep
 
 		///
 		CheckConvergenceStd_AddedStep(
-		  MemMngPack::ref_count_ptr<CheckConvergence_Strategy> convergence_strategy
+		  Teuchos::RefCountPtr<CheckConvergence_Strategy> convergence_strategy
 		  );
 
 		/** @name Overridden from AlgorithmStep */

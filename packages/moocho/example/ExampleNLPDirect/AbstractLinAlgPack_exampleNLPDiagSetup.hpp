@@ -12,7 +12,7 @@
 #include <iomanip>
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -22,7 +22,7 @@ namespace AbstractLinAlgPack {
  */
 int exampleNLPDiagSetup(
 	int argc, char* argv[], MPI_Comm comm
-	,MemMngPack::ref_count_ptr<const VectorSpace> *vec_space
+	,Teuchos::RefCountPtr<const VectorSpace> *vec_space
 	,size_type *n, value_type *xo, bool *has_bounds, bool *dep_bounded
 	);
 

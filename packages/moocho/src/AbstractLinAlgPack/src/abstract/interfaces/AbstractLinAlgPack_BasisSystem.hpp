@@ -18,7 +18,7 @@
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractFactory.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -161,14 +161,14 @@ namespace AbstractLinAlgPack {
  * following code example shows how to create a matrix object for \a N
  * (given the matrix \c Gc input to <tt>bs.update_basis(Gc,...)</tt> and \c bs):
  \code
-MemMngPack::ref_count_ptr<const MatrixOp>
+Teuchos::RefCountPtr<const MatrixOp>
 create_N(
     const AbstractLinAlgPack::MatrixOp       &Gc
     ,const AbstractLinAlgPack::BasisSystem   &bs
     )
 {
     namespace mmp = MemMngPack;
-	return mmp::rcp(
+	return Teuchos::rcp(
         new MatrixOpSubView(
             Gc.sub_view(bs.var_indep(),bs.equ_decomp()), BLAS_Cpp::trans
             )
@@ -185,7 +185,7 @@ create_N(
  *
  * The client can also form matrices of the form <tt>S = I + D'*D</tt> as follows:
  \code
- MemMngPack::ref_count_ptr<MatrixSymOpNonsing>
+ Teuchos::RefCountPtr<MatrixSymOpNonsing>
      S = basis_sys.factory_S()->create();
  DynamicCastHelperPack::dyn_cast<MatrixSymInitDiag>(*S).init_identity(D.space_rows());
  syrk(D,BLAS_Cpp::trans,1.0,1.0,S.get();
@@ -207,16 +207,16 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<MatrixOpNonsing> >    mat_nonsing_fcty_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<MatrixOp> >           mat_fcty_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<MatrixSymOp> >        mat_sym_fcty_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<
+	typedef Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<MatrixSymOpNonsing> > mat_sym_nonsing_fcty_ptr_t;
 	///
 	class SingularBasis : public std::runtime_error

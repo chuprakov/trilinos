@@ -22,7 +22,7 @@
 #include <sstream>
 
 #include "OptionsFromStreamExceptions.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace OptionsFromStreamPack {
 

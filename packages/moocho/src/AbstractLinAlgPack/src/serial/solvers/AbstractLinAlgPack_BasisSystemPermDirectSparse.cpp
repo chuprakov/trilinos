@@ -23,7 +23,7 @@
 #include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
 #include "AbstractFactoryStd.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace AbstractLinAlgPack {
@@ -32,9 +32,9 @@ BasisSystemPermDirectSparse::BasisSystemPermDirectSparse(
 	const direct_solver_ptr_t&   direct_solver
 	)
 	:BasisSystemPerm(
-		MemMngPack::rcp(
+		Teuchos::rcp(
 			new MemMngPack::AbstractFactoryStd<MatrixSymOp,MatrixSymPosDefCholFactor>())         // D'*D
-		,MemMngPack::rcp(
+		,Teuchos::rcp(
 			new MemMngPack::AbstractFactoryStd<MatrixSymOpNonsing,MatrixSymPosDefCholFactor>())  // S
 		)
 {
@@ -62,7 +62,7 @@ void BasisSystemPermDirectSparse::initialize(
 const BasisSystem::mat_nonsing_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_C() const
 {
-	return MemMngPack::rcp(
+	return Teuchos::rcp(
 		new MemMngPack::AbstractFactoryStd<MatrixOpNonsing,MatrixOpNonsingAggr>()
 		);
 }
@@ -70,7 +70,7 @@ BasisSystemPermDirectSparse::factory_C() const
 const BasisSystem::mat_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_D() const
 {
-	return MemMngPack::rcp(
+	return Teuchos::rcp(
 		new MemMngPack::AbstractFactoryStd<MatrixOp,MultiVectorMutableDense>()
 		);
 }
@@ -78,7 +78,7 @@ BasisSystemPermDirectSparse::factory_D() const
 const BasisSystem::mat_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_GcUP() const
 {
-	return MemMngPack::rcp(
+	return Teuchos::rcp(
 		new MemMngPack::AbstractFactoryStd<MatrixOp,MultiVectorMutableDense>()
 		);
 }
@@ -121,11 +121,11 @@ void BasisSystemPermDirectSparse::update_basis(
 		m  = Gc.cols();
 #ifdef _DEBUG
 	const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc.nz();
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		Gc_rows != n_ || Gc_cols != m_ || Gc_nz != Gc_nz_, std::invalid_argument
 		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
 		"This matrix object is not compatible with last call to set_basis() or select_basis()!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		C == NULL, std::invalid_argument
 		,"BasisSystemPermDirectSparse::set_basis(...) : Error!" );
 #endif
@@ -135,7 +135,7 @@ void BasisSystemPermDirectSparse::update_basis(
 	// Get the basis matrix object from the aggregate or allocate one
 	MatrixOpNonsingAggr
 		&C_aggr = dyn_cast<MatrixOpNonsingAggr>(*C);
-	mmp::ref_count_ptr<DirectSparseSolver::BasisMatrix>
+	Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>
 		C_bm = get_basis_matrix(C_aggr);
 	// Setup the encapulated convert-to-sparse matrix object
 	MatrixConvertToSparseEncap A_mctse;
@@ -145,7 +145,7 @@ void BasisSystemPermDirectSparse::update_basis(
 		direct_solver_->factor(
 			A_mctse
 			,C_bm.get()
-			,mmp::null // Same factorization structure as before
+			,Teuchos::null // Same factorization structure as before
 			,out
 			);
 	}
@@ -153,7 +153,7 @@ void BasisSystemPermDirectSparse::update_basis(
 		if(out)
 			*out << "\nCurrent basis is singular : " << excpt.what() << std::endl
 				 << "Throwing SingularBasis exception to client ...\n";
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			true, SingularBasis
 			,"BasisSystemPermDirectSparse::update_basis(...) : Error, the current basis "
 			"is singular : " << excpt.what() );
@@ -168,21 +168,21 @@ const AbstractLinAlgPack::BasisSystemPerm::perm_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_P_var() const
 {
 	assert(0); // ToDo: Implement using PermutationSerial
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 const AbstractLinAlgPack::BasisSystemPerm::perm_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_P_equ() const
 {
 	assert(0); // ToDo: Implement using PermutationSerial
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 const AbstractLinAlgPack::BasisSystemPerm::perm_fcty_ptr_t
 BasisSystemPermDirectSparse::factory_P_inequ() const
 {
 	assert(0); // ToDo: Implement using PermutationSerial
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 void BasisSystemPermDirectSparse::set_basis(
@@ -207,10 +207,10 @@ void BasisSystemPermDirectSparse::set_basis(
 		m  = Gc.cols();
 #ifdef _DEBUG
 	const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc.nz();
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		P_equ == NULL || equ_decomp == NULL, std::invalid_argument
 		,"BasisSystemPermDirectSparse::set_basis(...) : Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		C == NULL, std::invalid_argument
 		,"BasisSystemPermDirectSparse::set_basis(...) : Error!" );
 #endif
@@ -220,7 +220,7 @@ void BasisSystemPermDirectSparse::set_basis(
 	// Get the basis matrix object from the aggregate or allocate one
 	MatrixOpNonsingAggr
 		&C_aggr = dyn_cast<MatrixOpNonsingAggr>(*C);
-	mmp::ref_count_ptr<DirectSparseSolver::BasisMatrix>
+	Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>
 		C_bm = get_basis_matrix(C_aggr);
 	// Get at the concreate permutation vectors
 	const PermutationSerial
@@ -272,7 +272,7 @@ void BasisSystemPermDirectSparse::select_basis(
 #ifdef _DEBUG
 	// Validate input
 	const char msg_err_head[] = "BasisSystemPermDirectSparse::set_basis(...) : Error!";
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		Gc == NULL, std::invalid_argument
 		,msg_err_head << " Must have equality constriants in this current implementation! " );
 #endif
@@ -282,11 +282,11 @@ void BasisSystemPermDirectSparse::select_basis(
 #ifdef _DEBUG
 	// Validate input
 	const size_type Gc_rows = Gc->rows(), Gc_cols = Gc->cols(), Gc_nz = Gc->nz();
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		P_var == NULL || var_dep == NULL, std::invalid_argument, msg_err_head );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		P_equ == NULL || equ_decomp == NULL, std::invalid_argument, msg_err_head );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		C == NULL, std::invalid_argument, msg_err_head );
 #endif
 	// Get the aggreate matrix object for Gc
@@ -295,7 +295,7 @@ void BasisSystemPermDirectSparse::select_basis(
 	// Get the basis matrix object from the aggregate or allocate one
 	MatrixOpNonsingAggr
 		&C_aggr = dyn_cast<MatrixOpNonsingAggr>(*C);
-	mmp::ref_count_ptr<DirectSparseSolver::BasisMatrix>
+	Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>
 		C_bm = get_basis_matrix(C_aggr);
 	// Setup the encapulated convert-to-sparse matrix object
 	// ToDo: Use nu to exclude variables that are at a bound!
@@ -306,9 +306,9 @@ void BasisSystemPermDirectSparse::select_basis(
 	MatrixConvertToSparseEncap A_mctse;
 	set_A_mctse( n, m, Gc_pa, &A_mctse );
 	// Analyze and factor this basis (it had better be full rank)!
-	mmp::ref_count_ptr<IVector>
-		var_perm_ds = mmp::rcp(new IVector),
-		equ_perm_ds = mmp::rcp(new IVector);
+	Teuchos::RefCountPtr<IVector>
+		var_perm_ds = Teuchos::rcp(new IVector),
+		equ_perm_ds = Teuchos::rcp(new IVector);
 	size_type rank = 0;
 	direct_solver_->analyze_and_factor(
 		A_mctse
@@ -329,9 +329,9 @@ void BasisSystemPermDirectSparse::select_basis(
 		&P_equ_s = dyn_cast<PermutationSerial>(*P_equ);
 	// Create the overall permutations to set to the permutation matrices!
 	*var_dep = Range1D(1,rank);
-	P_var_s.initialize( var_perm_ds, mmp::null ); 
+	P_var_s.initialize( var_perm_ds, Teuchos::null ); 
 	*equ_decomp = Range1D(1,rank);
-	P_equ_s.initialize( equ_perm_ds, mmp::null );
+	P_equ_s.initialize( equ_perm_ds, Teuchos::null );
 	// Setup Gc_aggr with Gc_perm
 	const int          num_row_part = 2;
 	const int          num_col_part = 2;
@@ -339,8 +339,8 @@ void BasisSystemPermDirectSparse::select_basis(
 	const index_type   col_part[3]  = { 1, rank, m+1 };
 	Gc_pa.initialize(
 		Gc_pa.mat_orig()
-		,mmp::rcp(new PermutationSerial(var_perm_ds,mmp::null)) // var_perm_ds reuse is okay!
-		,mmp::rcp(new PermutationSerial(equ_perm_ds,mmp::null)) // equ_perm_ds resue is okay!
+		,Teuchos::rcp(new PermutationSerial(var_perm_ds,Teuchos::null)) // var_perm_ds reuse is okay!
+		,Teuchos::rcp(new PermutationSerial(equ_perm_ds,Teuchos::null)) // equ_perm_ds resue is okay!
 		,Gc_pa.mat_orig()->perm_view(
 			P_var,row_part,num_row_part
 			,P_equ,col_part,num_col_part
@@ -352,15 +352,15 @@ void BasisSystemPermDirectSparse::select_basis(
 
 // private
 
-MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>
+Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>
 BasisSystemPermDirectSparse::get_basis_matrix( MatrixOpNonsingAggr &C_aggr ) const
 {
 	namespace mmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
-	mmp::ref_count_ptr<DirectSparseSolver::BasisMatrix> C_bm;
+	Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix> C_bm;
 	if( C_aggr.mns().get() ) {
-		C_bm = mmp::rcp_dynamic_cast<DirectSparseSolver::BasisMatrix>(
-			mmp::rcp_const_cast<MatrixNonsing>(C_aggr.mns() ) );
+		C_bm = Teuchos::rcp_dynamic_cast<DirectSparseSolver::BasisMatrix>(
+			Teuchos::rcp_const_cast<MatrixNonsing>(C_aggr.mns() ) );
 		if(C_bm.get() == NULL)
 			dyn_cast<const DirectSparseSolver::BasisMatrix>(*C_aggr.mns()); // Throws exception!
 	}
@@ -379,10 +379,10 @@ void BasisSystemPermDirectSparse::set_A_mctse(
 {
 	namespace mmp = MemMngPack;
 	A_mctse->initialize(
-		mmp::rcp_dynamic_cast<const MatrixExtractSparseElements>(Gc_pa.mat_orig())
-		,mmp::rcp( init_var_rng_.size()    < n ? &init_var_inv_perm_ : NULL, false )
+		Teuchos::rcp_dynamic_cast<const MatrixExtractSparseElements>(Gc_pa.mat_orig())
+		,Teuchos::rcp( init_var_rng_.size()    < n ? &init_var_inv_perm_ : NULL, false )
 		,init_var_rng_
-		,mmp::rcp( init_equ_rng_.size() < m ? &init_equ_inv_perm_ : NULL, false )
+		,Teuchos::rcp( init_equ_rng_.size() < m ? &init_equ_inv_perm_ : NULL, false )
 		,init_equ_rng_
 		,BLAS_Cpp::trans
 		);
@@ -390,7 +390,7 @@ void BasisSystemPermDirectSparse::set_A_mctse(
 
 void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
 	const MatrixOp& Gc
-	,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
+	,const Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>& C_bm
 	,MatrixOpNonsingAggr *C_aggr
 	,MatrixOp* D, MatrixOp* GcUP
 	) const
@@ -424,7 +424,7 @@ void BasisSystemPermDirectSparse::update_basis_and_auxiliary_matrices(
 void BasisSystemPermDirectSparse::do_some_basis_stuff(
 	const MatrixOp& Gc
 	,const Range1D& var_dep, const Range1D& equ_decomp
-	,const MemMngPack::ref_count_ptr<DirectSparseSolver::BasisMatrix>& C_bm
+	,const Teuchos::RefCountPtr<DirectSparseSolver::BasisMatrix>& C_bm
 	,MatrixOpNonsingAggr *C_aggr
 	,MatrixOp* D, MatrixOp* GcUP
 	)

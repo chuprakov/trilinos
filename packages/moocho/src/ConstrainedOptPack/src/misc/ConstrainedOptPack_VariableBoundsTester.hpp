@@ -17,7 +17,7 @@
 #define VARIABLE_BOUNDS_TESTER_H
 
 #include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {
 

@@ -18,7 +18,7 @@
 
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 #include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
@@ -108,7 +108,7 @@ class UpdateReducedSigma_StepSetOptions
 	protected:
 
 		/// Overridden from SetOptionsFromStreamNode
-		void set_option( int option_num, const std::string& option_value );
+		void setOption( int option_num, const std::string& option_value );
 	
 	};	// end class UpdateReducedSigma_StepSetOptions
 

@@ -28,7 +28,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutableSubView.hpp"
 #include "dynamic_cast_verbose.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 //#define FILTER_DEBUG_OUT 1
 
@@ -43,7 +43,7 @@ value_type MAX(value_type x, value_type y)
 	{ return (x > y) ? x : y; }
 
 LineSearchFilter_Step::LineSearchFilter_Step( 
-  MemMngPack::ref_count_ptr<NLPInterfacePack::NLP> nlp
+  Teuchos::RefCountPtr<NLPInterfacePack::NLP> nlp
   ,const std::string obj_iq_name
   ,const std::string grad_obj_iq_name
   ,const value_type &gamma_theta
@@ -73,7 +73,7 @@ LineSearchFilter_Step::LineSearchFilter_Step(
 	back_track_frac_(back_track_frac),
 	filter_(FILTER_IQ_STRING)
 	{
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 	  !nlp_.get(),
 	  std::logic_error,
 	  "Null nlp passed to LineSearchFilter_Step constructor"
@@ -138,14 +138,14 @@ bool LineSearchFilter_Step::do_step(
     if (!s.d().updated_k(0) || !x_iq.updated_k(0))
 		{
 		// Dead in the water
-		THROW_EXCEPTION( true, std::logic_error, "Error, d_k or x_k not updated." ); 		
+		TEST_FOR_EXCEPTION( true, std::logic_error, "Error, d_k or x_k not updated." ); 		
 		return false;
 		}
     
     if (!alpha_iq.updated_k(0) || alpha_iq.get_k(0) > 1 || alpha_iq.get_k(0) <= 0)
 		{
 		// if alpha_k is not known then we would need to calculate all the new points
-		THROW_EXCEPTION( true, std::out_of_range, "Error, alpha_k not updated or out of range [0, 1)." ); 		
+		TEST_FOR_EXCEPTION( true, std::out_of_range, "Error, alpha_k not updated or out of range [0, 1)." ); 		
 		return false;
 		}
 
@@ -240,7 +240,7 @@ bool LineSearchFilter_Step::do_step(
 	
 			// Really, we do not need to throw an exception here, we can try and backtrack
 			// alpha to get into an acceptable region
-			THROW_EXCEPTION( true, std::out_of_range, "Point Not Valid." );	
+			TEST_FOR_EXCEPTION( true, std::out_of_range, "Point Not Valid." );	
 			}
 	    
 		// Check if point satisfies filter
@@ -362,9 +362,9 @@ bool LineSearchFilter_Step::do_step(
 		//	out << "\nCould not find acceptable alpha_k - going to restoration phase.\n"; 
 		//  }
 			
-		//THROW_EXCEPTION( true, std::out_of_range, "Tried to go to restoration phase." );	
+		//TEST_FOR_EXCEPTION( true, std::out_of_range, "Tried to go to restoration phase." );	
 		
-			THROW_EXCEPTION( true, LineSearchFailure
+			TEST_FOR_EXCEPTION( true, LineSearchFailure
 							 ,"FilterLineSearchFailure : Should go to restoration"
 			  );
 		}
@@ -597,7 +597,7 @@ value_type LineSearchFilter_Step::CalculateTheta_k(
 
     if (h)
 		{
-		THROW_EXCEPTION( true, std::out_of_range, "Error, do not support inequalities yet" );
+		TEST_FOR_EXCEPTION( true, std::out_of_range, "Error, do not support inequalities yet" );
 		}
 
     if (c)

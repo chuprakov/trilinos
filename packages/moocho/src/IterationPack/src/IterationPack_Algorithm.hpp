@@ -27,8 +27,8 @@
 #include "AlgorithmState.hpp"
 #include "AlgorithmTracker.hpp"
 #include "AlgorithmStep.hpp"
-#include "ref_count_ptr.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace IterationPack {
 
@@ -75,7 +75,7 @@ namespace IterationPack {
   * possitions.
   *
   * In addition, access is given to the step objects themselves through
-  * the ref_count_ptr<...> objects that are used to manage thier memory.
+  * the RefCountPtr<...> objects that are used to manage thier memory.
   * Using this type of direct access allows clients to take over memory
   * management if needed and to call the step objects in any order
   * and thereby taking over control of the algorithm.
@@ -89,11 +89,11 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<AlgorithmState>		state_ptr_t;
+	typedef Teuchos::RefCountPtr<AlgorithmState>		state_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<AlgorithmTracker>		track_ptr_t;
+	typedef Teuchos::RefCountPtr<AlgorithmTracker>		track_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<AlgorithmStep>			step_ptr_t;
+	typedef Teuchos::RefCountPtr<AlgorithmStep>			step_ptr_t;
 	///
 	typedef size_t														poss_type;
 	///
@@ -217,7 +217,7 @@ public:
 	virtual const std::string& get_step_name(poss_type step_poss) const;
 
 	///
-	/** Return the ref_count_ptr<...> object for the step object at step_poss.
+	/** Return the RefCountPtr<...> object for the step object at step_poss.
 	  *
 	  * Preconditions:<ul>
 	  * <li> <tt>1 <= step_poss && step_poss <= num_steps()</tt> (throw <tt>DoesNotExist</tt>)
@@ -268,7 +268,7 @@ public:
 		, poss_type assoc_step_poss) const;
 
 	///
-	/** Return the ref_count_ptr<...> object for the associated step object at step_poss
+	/** Return the RefCountPtr<...> object for the associated step object at step_poss
 	  * and assoc_step_poss.
 	  *
 	  * Preconditions:<ul>
@@ -708,10 +708,10 @@ private:
 	AlgorithmStep        *steps;
 #else
 	state_ptr_t				state_;
-	// ref_count_ptr<...> object for the aggragate AlgorithmState object.
+	// RefCountPtr<...> object for the aggragate AlgorithmState object.
 
 	track_ptr_t				track_;
-	// ref_count_ptr<...> object for the aggragate AlgorithmTracker object.
+	// RefCountPtr<...> object for the aggragate AlgorithmTracker object.
 #endif
 
 	// algorithm control etc.
@@ -768,7 +768,7 @@ private:
 	// step and associated step object data structures
 
 	steps_t					steps_;
-	// Array of std::pair<ref_count_ptr<step_ptr_t>,std::string> objects.
+	// Array of std::pair<RefCountPtr<step_ptr_t>,std::string> objects.
 	//
 	// *steps_[step_poss].first returns the step object for step_poss = 1...steps_.size().
 	// steps_[step_poss].second returns the name of the step for step_poss = 1...steps_.size().

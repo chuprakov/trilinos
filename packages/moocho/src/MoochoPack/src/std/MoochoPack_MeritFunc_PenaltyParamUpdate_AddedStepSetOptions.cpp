@@ -51,7 +51,7 @@ MeritFunc_PenaltyParamUpdate_AddedStepSetOptions::MeritFunc_PenaltyParamUpdate_A
 			MeritFunc_PenaltyParamUpdate_AddedStep >( target )
 {}
 
-void MeritFunc_PenaltyParamUpdate_AddedStepSetOptions::set_option(
+void MeritFunc_PenaltyParamUpdate_AddedStepSetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	switch( (local_EOptions)option_num ) {

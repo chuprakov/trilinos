@@ -20,7 +20,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace NLPInterfacePack {
 
@@ -185,7 +185,7 @@ inline
 void ExampleNLPObjGrad::assert_is_initialized() const
 {
     using NLPInterfacePack::NLP;
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_initialized(), NLP::UnInitialized
 		,"ExampleNLPObjGrad::assert_is_initialized() : Error, "
 		"ExampleNLPObjGrad::initialize() has not been called yet." );

@@ -65,13 +65,13 @@ class MatrixHessianSuperBasic
 public:
 
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixSymWithOpFactorized>
+	typedef Teuchos::RefCountPtr<const MatrixSymWithOpFactorized>
 		B_RR_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixOp>
+	typedef Teuchos::RefCountPtr<const MatrixOp>
 		B_RX_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixSymOp>
+	typedef Teuchos::RefCountPtr<const MatrixSymOp>
 		B_XX_ptr_t;
 	///
 	typedef std::vector<EBounds>

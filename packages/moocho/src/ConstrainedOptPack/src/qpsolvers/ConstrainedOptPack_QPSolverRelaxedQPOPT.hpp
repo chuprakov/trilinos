@@ -19,7 +19,7 @@
 #define QP_SOLVER_RELAXED_QPOPT_H
 
 #include "QPSolverRelaxedQPOPTSOL.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {
 

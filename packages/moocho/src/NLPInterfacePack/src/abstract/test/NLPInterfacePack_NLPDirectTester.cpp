@@ -31,7 +31,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "Range1D.hpp"
 #include "update_success.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 template< class T >
@@ -124,7 +124,7 @@ bool NLPDirectTester::finite_diff_check(
 	// //////////////////////////////////////////////
 	// Validate the input
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		py && !c, std::invalid_argument
 		,"NLPDirectTester::finite_diff_check(...) : "
 		"Error, if py!=NULL then c!=NULL must also be true!" );

@@ -24,7 +24,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MultiVectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -92,7 +92,7 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<const MultiVector>   multi_vec_ptr_t;
+	typedef Teuchos::RefCountPtr<const MultiVector>   multi_vec_ptr_t;
 
 	///
 	/** PostMod class to use with <tt>MemMngPack::AbstractFactorStd</tt>.

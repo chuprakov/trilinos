@@ -20,7 +20,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace ConstrainedOptPack {
 
@@ -45,22 +45,22 @@ void MatrixDecompRangeOrthog::initialize(
 	)
 {
 	const char func_name[] = "MatrixDecompRangeOrthog::initialize(...)";
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		C_ptr.get() == NULL, std::invalid_argument
 		,func_name << " : Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		D_ptr.get() == NULL, std::invalid_argument
 		,func_name << " : Error!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		S_ptr.get() == NULL, std::invalid_argument
 		,func_name << " : Error!" );
 #ifdef ABSTRACT_LIN_ALG_PACK_CHECK_VEC_SPCS
 	bool is_compatible = C_ptr->space_rows().is_compatible(D_ptr->space_cols());
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_compatible, VectorSpace::IncompatibleVectorSpaces
 		,func_name << " : Error, C_ptr->space_rows().is_compatible(D_ptr->space_cols()) == false!" );
 	is_compatible = S_ptr->space_cols().is_compatible(D_ptr->space_rows());
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!is_compatible, VectorSpace::IncompatibleVectorSpaces
 		,func_name << " : Error, S_ptr->space_cols().is_compatible(D_ptr->space_rows()) == false!" );
 #endif	
@@ -72,9 +72,9 @@ void MatrixDecompRangeOrthog::initialize(
 void MatrixDecompRangeOrthog::set_uninitialized()
 {
 	namespace rcp = MemMngPack;
-	C_ptr_ = rcp::null;
-	D_ptr_ = rcp::null;
-	S_ptr_ = rcp::null;
+	C_ptr_ = Teuchos::null;
+	D_ptr_ = Teuchos::null;
+	S_ptr_ = Teuchos::null;
 }
 
 // Overridden from MatrixOp
@@ -241,7 +241,7 @@ void MatrixDecompRangeOrthog::V_InvMtV(
 
 void MatrixDecompRangeOrthog::assert_initialized(const char func_name[]) const
 {
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		C_ptr_.get() == NULL, std::logic_error
 		,func_name << " : Error, Must call initialize(...) first!" );
 }

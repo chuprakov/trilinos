@@ -17,7 +17,7 @@
 
 #include "AbstractLinAlgPack/src/serial/solvers/DirectSparseSolverImp.hpp"
 #include "AbstractFactoryStd.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace AbstractLinAlgPack {
@@ -46,9 +46,9 @@ void DirectSparseSolverImp::BasisMatrixImp::initialize(
 {
 #ifdef _DEBUG
 	const char msg_err[] = "DirectSparseSolverImp::BasisMatrixImp::initialize(...): Error!";
-	THROW_EXCEPTION( dim < 0, std::logic_error, msg_err );
-	THROW_EXCEPTION( fact_struc.get() == NULL, std::logic_error, msg_err );
-	THROW_EXCEPTION( fact_nonzeros.get() == NULL, std::logic_error, msg_err );
+	TEST_FOR_EXCEPTION( dim < 0, std::logic_error, msg_err );
+	TEST_FOR_EXCEPTION( fact_struc.get() == NULL, std::logic_error, msg_err );
+	TEST_FOR_EXCEPTION( fact_nonzeros.get() == NULL, std::logic_error, msg_err );
 #endif
 	dim_            = dim;
 	fact_struc_     = fact_struc;
@@ -59,8 +59,8 @@ void DirectSparseSolverImp::BasisMatrixImp::initialize(
 void DirectSparseSolverImp::BasisMatrixImp::set_uninitialized()
 {
 	dim_            = 0;
-	fact_struc_     = MemMngPack::null;
-	fact_nonzeros_  = MemMngPack::null;
+	fact_struc_     = Teuchos::null;
+	fact_nonzeros_  = Teuchos::null;
 	vec_space_.initialize(0);
 }
 
@@ -98,7 +98,7 @@ MatrixNonsing::mat_mns_mut_ptr_t
 DirectSparseSolverImp::BasisMatrixImp::clone_mns()
 {
 	namespace rcp = MemMngPack;
-	rcp::ref_count_ptr<BasisMatrixImp> bm = this->create_matrix();
+	Teuchos::RefCountPtr<BasisMatrixImp> bm = this->create_matrix();
 	// A shallow copy is okay if the educated client DirectSparseSolverImp is careful!
 	bm->initialize(dim_,fact_struc_,fact_nonzeros_);
 	return bm;
@@ -130,10 +130,10 @@ void DirectSparseSolverImp::analyze_and_factor(
 	using DynamicCastHelperPack::dyn_cast;
 #ifdef _DEBUG
 	const char msg_err[] = "DirectSparseSolverImp::analyze_and_factor(...): Error!";
-	THROW_EXCEPTION( row_perm == NULL, std::logic_error, msg_err );
-	THROW_EXCEPTION( col_perm == NULL, std::logic_error, msg_err );
-	THROW_EXCEPTION( rank == NULL, std::logic_error, msg_err );
-	THROW_EXCEPTION( basis_matrix == NULL, std::logic_error, msg_err );
+	TEST_FOR_EXCEPTION( row_perm == NULL, std::logic_error, msg_err );
+	TEST_FOR_EXCEPTION( col_perm == NULL, std::logic_error, msg_err );
+	TEST_FOR_EXCEPTION( rank == NULL, std::logic_error, msg_err );
+	TEST_FOR_EXCEPTION( basis_matrix == NULL, std::logic_error, msg_err );
 #endif
 	BasisMatrixImp
 		&basis_matrix_imp = dyn_cast<BasisMatrixImp>(*basis_matrix);
@@ -183,7 +183,7 @@ void DirectSparseSolverImp::factor(
 #ifdef _DEBUG
 	const char msg_err[] = "DirectSparseSolverImp::analyze_and_factor(...): Error!";
 	// ToDo: Validate that A is compatible!
-	THROW_EXCEPTION( basis_matrix == NULL, std::logic_error, msg_err );
+	TEST_FOR_EXCEPTION( basis_matrix == NULL, std::logic_error, msg_err );
 #endif
 	BasisMatrixImp
 		&basis_matrix_imp = dyn_cast<BasisMatrixImp>(*basis_matrix);
@@ -191,7 +191,7 @@ void DirectSparseSolverImp::factor(
 	const BasisMatrix::fact_struc_ptr_t        &this_fact_struc = this->get_fact_struc();
 	BasisMatrix::fact_struc_ptr_t              fact_struc;
 #ifdef _DEBUG
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		fact_struc_in.get() == NULL && this_fact_struc.get() == NULL
 		,std::logic_error
 		,msg_err );
@@ -221,7 +221,7 @@ DirectSparseSolverImp::get_fact_struc() const
 
 void DirectSparseSolverImp::set_uninitialized()
 {
-	fact_struc_ = MemMngPack::null;
+	fact_struc_ = Teuchos::null;
 }
 
 }	// end namespace AbstractLinAlgPack 

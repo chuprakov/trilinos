@@ -22,10 +22,10 @@
 #include "IterationPack/src/IterQuantityAccessContiguous.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "update_success.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 // explicit instantiation for testing compilation only
-//template MemMngPack::ref_count_ptr<double>;
+//template Teuchos::RefCountPtr<double>;
 //class B {};
 //class D : public B {};
 //template IterationPack::IterQuantityAccessDerivedToBase<B,D>;
@@ -67,7 +67,6 @@ bool IterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 	using std::endl;
 	using std::setw;
 	using TestingHelperPack::update_success;
-	namespace rcp = MemMngPack;
 
 	try {
 
@@ -97,21 +96,21 @@ bool IterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 	if(out) *out << "\n*** Set three types of iteration quantity access objects.\n";
 
 	if(out) *out << "set IterQuantityAccessContiguous<double>(2,\"alpha\")\n";
-	state.set_iter_quant( "alpha", rcp::rcp(
+	state.set_iter_quant( "alpha", Teuchos::rcp(
 		new alpha_t(
 			2,"alpha"
 #ifdef _MIPS_CXX
-			,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<alpha_k_t,alpha_k_t> >(
+			,Teuchos::RefCountPtr<MemMngPack::AbstractFactoryStd<alpha_k_t,alpha_k_t> >(
 				new MemMngPack::AbstractFactoryStd<alpha_k_t,alpha_k_t>())
 #endif			
 			)) );
 
 	if(out) *out << "set IterQuantityAccessContiguous<std::vector<double> >(2,\"x\")\n";
-	state.set_iter_quant( "x", rcp::rcp(
+	state.set_iter_quant( "x", Teuchos::rcp(
 		new x_t(
 			2,"x"
 #ifdef _MIPS_CXX
-			,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<x_k_t,x_k_t> >(
+			,Teuchos::RefCountPtr<MemMngPack::AbstractFactoryStd<x_k_t,x_k_t> >(
 				new MemMngPack::AbstractFactoryStd<x_k_t,x_k_t>())
 #endif			
 			)) );
@@ -119,11 +118,11 @@ bool IterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 	if(out) *out << "set IterQuantityAccessDerivedToBase<B,D>(1,\"V\")\n";
 	state.set_iter_quant(
 		"V"
-		,rcp::rcp(
+		,Teuchos::rcp(
 			new V_t(
 				1
 				,"V"
-				,rcp::rcp( new MemMngPack::AbstractFactoryStd<V_k_t,D> )
+				,Teuchos::rcp( new MemMngPack::AbstractFactoryStd<V_k_t,D> )
 				)
 		    )
 		);
@@ -132,11 +131,11 @@ bool IterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 
 	if(out) *out << "\nTry to add \"x\" (should throw execption) : ";
 	try {
-		state.set_iter_quant( "x", rcp::rcp(
+		state.set_iter_quant( "x", Teuchos::rcp(
 			new x_t(
 				2,"x"
 #ifdef _MIPS_CXX
-				,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<x_k_t,x_k_t> >(
+				,Teuchos::RefCountPtr<MemMngPack::AbstractFactoryStd<x_k_t,x_k_t> >(
 					new MemMngPack::AbstractFactoryStd<x_k_t,x_k_t>())
 #endif			
 				)) );

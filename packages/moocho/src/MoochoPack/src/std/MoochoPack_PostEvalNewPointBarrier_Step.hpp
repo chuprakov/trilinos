@@ -19,7 +19,7 @@
 
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 #include "MoochoPack/src/MoochoPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"

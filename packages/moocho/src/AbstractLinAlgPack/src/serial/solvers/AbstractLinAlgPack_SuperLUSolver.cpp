@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/serial/solvers/SuperLUSolver.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 // SuperLU
 #include "dsp_defs.h"
@@ -174,22 +174,22 @@ private:
 // SuperLUSolver
 //
 
-MemMngPack::ref_count_ptr<SuperLUSolver>
+Teuchos::RefCountPtr<SuperLUSolver>
 SuperLUSolver::create_solver()
 {
-	return MemMngPack::rcp(new SuperLUSolverImpl());
+	return Teuchos::rcp(new SuperLUSolverImpl());
 }
 
-MemMngPack::ref_count_ptr<SuperLUSolver::FactorizationStructure>
+Teuchos::RefCountPtr<SuperLUSolver::FactorizationStructure>
 SuperLUSolver::create_fact_struct()
 {
-	return MemMngPack::rcp(new SuperLUSolverImpl::FactorizationStructureImpl());
+	return Teuchos::rcp(new SuperLUSolverImpl::FactorizationStructureImpl());
 }
 
-MemMngPack::ref_count_ptr<SuperLUSolver::FactorizationNonzeros>
+Teuchos::RefCountPtr<SuperLUSolver::FactorizationNonzeros>
 SuperLUSolver::create_fact_nonzeros()
 {
-	return MemMngPack::rcp(new SuperLUSolverImpl::FactorizationNonzerosImpl());
+	return Teuchos::rcp(new SuperLUSolverImpl::FactorizationNonzerosImpl());
 }
 
 //
@@ -269,7 +269,7 @@ void SuperLUSolverImpl::analyze_and_factor(
 		,&info
 		);
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		info != 0, std::runtime_error
 		,"SuperLUSolverImpl::analyze_and_factor(...): Error, dgstrf(...) returned info = " << info
 		);
@@ -305,7 +305,7 @@ void SuperLUSolverImpl::analyze_and_factor(
 			,fact_struct, fact_nonzeros
 			,&fs.perm_r_[0], &fs.perm_c_[0], &b_rank
 			);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			(b_rank != *rank), std::runtime_error
 			,"SuperLUSolverImpl::analyze_and_factor(...): Error, the rank determined by "
 			"the factorization of the rectangular " << m << " x " << n << " matrix of "
@@ -354,7 +354,7 @@ void SuperLUSolverImpl::factor(
 			,&b_val[0],&b_row_i[0],&b_col_ptr[0]
 			,&b_nz
 			);
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			(b_nz != fs.nz_), std::runtime_error
 			,"SuperLUSolverImpl::factor(...): Error!"
 			);
@@ -402,7 +402,7 @@ void SuperLUSolverImpl::factor(
 		,&info
 		);
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		info != 0, std::runtime_error
 		,"SuperLUSolverImpl::factor(...): Error, dgstrf(...) returned info = " << info
 		);
@@ -427,7 +427,7 @@ void SuperLUSolverImpl::solve(
 	const FactorizationNonzerosImpl
 		&fn = dyn_cast<const FactorizationNonzerosImpl>(fact_nonzeros);
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		n != fs.rank_, std::runtime_error
 		,"SuperLUSolverImpl::solve(...): Error, the dimmensions n = " << n << " and fs.rank = " << fs.rank_
 		<< " do not match up!"
@@ -449,7 +449,7 @@ void SuperLUSolverImpl::solve(
 		,&B, &info
 		);
 
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		info != 0, std::runtime_error
 		,"SuperLUSolverImpl::solve(...): Error, dgssv(...) returned info = " << info
 		);

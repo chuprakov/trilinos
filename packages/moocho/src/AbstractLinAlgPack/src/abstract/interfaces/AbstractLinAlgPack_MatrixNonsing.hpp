@@ -17,7 +17,7 @@
 #define ABSTRACT_LINALG_PACK_MATRIX_NONSINGULAR_H
 
 #include "MatrixBase.hpp"
-#include "ref_count_ptr.hpp"
+#include "Teuchos_RefCountPtr.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -115,9 +115,9 @@ public:
 
 #ifndef DOXYGEN_COMPILE
 	///
-	typedef MemMngPack::ref_count_ptr<const MatrixNonsing>    mat_mns_ptr_t;
+	typedef Teuchos::RefCountPtr<const MatrixNonsing>    mat_mns_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixNonsing>          mat_mns_mut_ptr_t;
+	typedef Teuchos::RefCountPtr<MatrixNonsing>          mat_mns_mut_ptr_t;
 #endif
 
 	///

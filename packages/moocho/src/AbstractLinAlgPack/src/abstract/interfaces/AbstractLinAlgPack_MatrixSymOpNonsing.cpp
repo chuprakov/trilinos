@@ -20,13 +20,13 @@ namespace AbstractLinAlgPack {
 MatrixSymOpNonsing::mat_mswons_mut_ptr_t
 MatrixSymOpNonsing::clone_mswons()
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 MatrixSymOpNonsing::mat_mswons_ptr_t
 MatrixSymOpNonsing::clone_mswons() const
 {
-	return MemMngPack::null;
+	return Teuchos::null;
 }
 
 // Overridden from MatrixOp

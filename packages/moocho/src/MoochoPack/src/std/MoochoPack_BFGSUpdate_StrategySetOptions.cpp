@@ -53,7 +53,7 @@ BFGSUpdate_StrategySetOptions::BFGSUpdate_StrategySetOptions(
 			BFGSUpdate_Strategy >( target )
 {}
 
-void BFGSUpdate_StrategySetOptions::set_option(
+void BFGSUpdate_StrategySetOptions::setOption(
 	int option_num, const std::string& option_value )
 {
 	using OptionsFromStreamPack::StringToBool;

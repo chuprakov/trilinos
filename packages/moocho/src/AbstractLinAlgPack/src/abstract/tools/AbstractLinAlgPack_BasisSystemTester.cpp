@@ -175,8 +175,8 @@ bool BasisSystemTester::test_basis_system(
 		*out << " : " << ( lresult ? "passed" : "failed" );
 
 	// Create the N matrix if not input
-	rcp::ref_count_ptr<const AbstractLinAlgPack::MatrixOp>
-		N = rcp::rcp(N_in,false);
+	Teuchos::RefCountPtr<const AbstractLinAlgPack::MatrixOp>
+		N = Teuchos::rcp(N_in,false);
 	if( Gc && C && N.get() == NULL ) {
 		if(out && print_tests >= PRINT_BASIC)
 			*out
@@ -184,10 +184,10 @@ bool BasisSystemTester::test_basis_system(
 		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< std::endl;
-		rcp::ref_count_ptr<AbstractLinAlgPack::MatrixComposite>
-			N_comp = rcp::rcp(new AbstractLinAlgPack::MatrixComposite(var_dep.size(),var_indep.size()));
+		Teuchos::RefCountPtr<AbstractLinAlgPack::MatrixComposite>
+			N_comp = Teuchos::rcp(new AbstractLinAlgPack::MatrixComposite(var_dep.size(),var_indep.size()));
 		if( equ_decomp.size() )
-			N_comp->add_matrix( 0, 0, 1.0, equ_decomp, Gc, rcp::null, BLAS_Cpp::trans, var_indep );
+			N_comp->add_matrix( 0, 0, 1.0, equ_decomp, Gc, Teuchos::null, BLAS_Cpp::trans, var_indep );
 		N_comp->finish_construction(
 			Gc->space_rows().sub_space(equ_decomp)->clone()
 			,Gc->space_cols().sub_space(var_indep)->clone()

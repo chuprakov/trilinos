@@ -31,7 +31,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixOpSerial.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "StandardCompositionMacros.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 #include "stpwatch.hpp"
 
 namespace ConstrainedOptPack {
@@ -527,7 +527,7 @@ public:
 
 	///
 	QPSchur(
-		const schur_comp_ptr_t&   schur_comp           = MemMngPack::null
+		const schur_comp_ptr_t&   schur_comp           = Teuchos::null
 		,size_type                max_iter             = 100
 		,value_type               max_real_runtime     = 1e+20
 		,value_type               feas_tol             = 1e-8

@@ -57,7 +57,7 @@
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
 #include "WorkspacePack.hpp"
-#include "ThrowException.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace {
 
@@ -151,15 +151,15 @@ void MatrixSymPosDefLBFGS::initial_setup(
 	)
 {
 	// Validate input
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		!maintain_original && !maintain_inverse, std::invalid_argument
 		,"MatrixSymPosDefLBFGS::initial_setup(...) : "
 		"Error, both maintain_original and maintain_inverse can not both be false!" );
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		m < 1, std::invalid_argument
 		,"MatrixSymPosDefLBFGS::set_num_updates_stored(m) : "
 		"Error, the number of storage locations must be > 0" );
-	vec_spc_           = MemMngPack::null;
+	vec_spc_           = Teuchos::null;
 	maintain_original_ = maintain_original;
 	maintain_inverse_  = maintain_inverse;
 	m_                 = m;
@@ -209,7 +209,7 @@ MatrixOp& MatrixSymPosDefLBFGS::operator=(const MatrixOp& mwo)
 		original_is_updated_ = p_m->original_is_updated_;
 		maintain_inverse_    = p_m->maintain_inverse_;
 		inverse_is_updated_  = p_m->inverse_is_updated_;
-		vec_spc_             = p_m->vec_spc_.get() ? p_m->vec_spc_->clone() : MemMngPack::null;
+		vec_spc_             = p_m->vec_spc_.get() ? p_m->vec_spc_->clone() : Teuchos::null;
 		n_	 		         = p_m->n_;
 		m_			         = p_m->m_;
 		m_bar_		         = p_m->m_bar_;
@@ -223,7 +223,7 @@ MatrixOp& MatrixSymPosDefLBFGS::operator=(const MatrixOp& mwo)
 		QJ_			         = p_m->QJ_;
 	}
 	else {
-		THROW_EXCEPTION(
+		TEST_FOR_EXCEPTION(
 			true,std::invalid_argument
 			,"MatrixSymPosDefLBFGS::operator=(const MatrixOp& mwo) : Error, "
 			"The concrete type of mwo \'" << typeid(mwo).name() << "\' is not "
@@ -451,7 +451,7 @@ void MatrixSymPosDefLBFGS::V_InvMtV(
 void MatrixSymPosDefLBFGS::init_identity( const VectorSpace& space_diag, value_type alpha )
 {
 	// Validate input
-	THROW_EXCEPTION(
+	TEST_FOR_EXCEPTION(
 		alpha <= 0.0, std::invalid_argument
 		,"MatrixSymPosDefLBFGS::init_identity(n,alpha) : Error, "
 		"alpha = " << alpha << " <= 0 is not allowed!" );

@@ -22,7 +22,7 @@
 #include "MatrixSymAddDelUpdateable.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
-#include "StandardMemberCompositionMacros.hpp"
+#include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptPack {
 
