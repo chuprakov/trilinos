@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
    
   if( MyPID == root ) dvalue = 12.0;
 
-  // on input, the root processor contains the list of values
+  // On input, the root processor contains the list of values
   // (in this case, a single value). On exit, all processes will
   // have he same list of values. Note that all values must be allocated
   // vefore the broadcast
