@@ -92,7 +92,7 @@ void PetraVector::apply_transformation(
 		}
 	}
 	// Call the implementation to invoke the operator
-	localValues_->apply_reduction(
+	localValues_->apply_transforamtion(
 		op,num_vecs,vecs,num_targ_vecs,targ_vecs
 		,&reduct_obj // First element in an array of one RTOp_ReductTarget objects
 		,first_ele,sub_dim,global_offset
