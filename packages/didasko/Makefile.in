@@ -108,7 +108,7 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	uninstall-recursive
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = $(SUBDIRS)
+DIST_SUBDIRS = examples test doc
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -257,15 +257,16 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 AUTOMAKE_OPTIONS = foreign
-
-#EXTRA_DIST =
+EXTRA_DIST = src/Didasko_ConfigDefs.h
 AUX_DIST = config/install-sh config/missing config/mkinstalldirs 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 autom4te.cache/* \
 	configure config.status config.log \
 	src/common/config-h.in src/common/stamp-h.in \
 	$(AUX_DIST) 
 
-SUBDIRS = examples
+@BUILD_TESTS_TRUE@TEST_SUBDIR = test
+@BUILD_EXAMPLES_TRUE@EXAMPLE_SUBDIR = examples
+SUBDIRS = $(EXAMPLE_SUBDIR) $(TEST_SUBDIR) doc
 all: all-recursive
 
 .SUFFIXES:
@@ -467,7 +468,7 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
-	list='$(SUBDIRS)'; for subdir in $$list; do \
+	list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
 	  if test "$$subdir" = .; then :; else \
 	    test -d "$(distdir)/$$subdir" \
 	    || mkdir "$(distdir)/$$subdir" \

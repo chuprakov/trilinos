@@ -102,7 +102,7 @@ RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	uninstall-recursive
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = amesos anasazi aztecoo epetra epetraext ifpack ml \
+DIST_SUBDIRS = amesos anasazi aztecoo epetra epetraext ifpack ml nox \
 	teuchos triutils HBMatrices
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
@@ -248,12 +248,13 @@ target_vendor = @target_vendor@
 @HAVE_DIDASKO_EPETRAEXT_TRUE@EPETRAEXT_SUBDIR = epetraext
 @HAVE_DIDASKO_IFPACK_TRUE@IFPACK_SUBDIR = ifpack
 @HAVE_DIDASKO_ML_TRUE@ML_SUBDIR = ml
+@HAVE_DIDASKO_NOX_TRUE@NOX_SUBDIR = nox
 @HAVE_DIDASKO_TEUCHOS_TRUE@TEUCHOS_SUBDIR = teuchos
 @HAVE_DIDASKO_TRIUTILS_TRUE@TRIUTILS_SUBDIR = triutils
 SUBDIRS = $(AMESOS_SUBDIR) $(ANASAZI_SUBDIR) $(AZTECOO_SUBDIR) \
 	  $(EPETRA_SUBDIR) $(EPETRAEXT_SUBDIR) $(IFPACK_SUBDIR) \
-	  $(ML_SUBDIR) $(TEUCHOS_SUBDIR) $(TRIUTILS_SUBDIR) \
-	  HBMatrices
+	  $(ML_SUBDIR) $(NOX_SUBDIR) $(TEUCHOS_SUBDIR) \
+	  $(TRIUTILS_SUBDIR) HBMatrices
 
 all: all-recursive
 

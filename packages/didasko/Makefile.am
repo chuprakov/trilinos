@@ -40,7 +40,7 @@ ACLOCAL	= aclocal -I config
 ## #######################################################################
 ## Additional files to be included in distribution for 'make dist'
 ## #######################################################################
-#EXTRA_DIST =
+EXTRA_DIST = src/Didasko_ConfigDefs.h
 
 ## #######################################################################
 ## Tools in the auxillary directory 
@@ -59,6 +59,13 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 autom4te.cache/* \
 ## Subdirectories to be make'd recursively
 ## #######################################################################
 
-SUBDIRS = examples doc
-
+if BUILD_TESTS
+TEST_SUBDIR=test
+endif
+                                                                                
+if BUILD_EXAMPLES
+EXAMPLE_SUBDIR=examples
+endif
+                                                                                
+SUBDIRS = $(EXAMPLE_SUBDIR) $(TEST_SUBDIR) doc
 
