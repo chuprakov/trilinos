@@ -1,5 +1,5 @@
 Decomposition Method 	= hsfc
-Zoltan Parameters       = 
+Zoltan Parameters       = keep_cuts=1
 File Type		= NemesisI
 File Name		= ti_300-m6-r.par
 Parallel Disk Info	= number=2,offset=1,zeros
