@@ -34,6 +34,7 @@
 #include "NLPInterfacePack/include/NLPReduced.h"
 #include "SparseSolverPack/include/COOBasisSystem.h"
 #include "SparseSolverPack/include/MA28SparseCOOSolverCreator.h"
+#include "SparseSolverPack/include/MA48SparseCOOSolverCreator.h"
 #include "ConstrainedOptimizationPack/include/DirectLineSearchArmQuad_Strategy.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPL1.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPModL1.h"
@@ -58,6 +59,7 @@
 
 #include "../../include/std/DecompositionSystemVarReductStd.h"
 #include "../../include/std/EvalNewPointStd_Step.h"
+#include "../../include/std/EvalNewPointStd_StepSetOptions.h"
 #include "../../include/std/ReducedGradientStd_Step.h"
 #include "../../include/std/InitFinDiffReducedHessian_Step.h"
 #include "../../include/std/InitFinDiffReducedHessian_StepSetOptions.h"
@@ -121,6 +123,7 @@ rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
 		, U_iq_creator_ptr_(U_iq_creator_ptr)
 		, HL_iq_creator_ptr_(HL_iq_creator_ptr)
 		, qp_solver_type_(QPOPT)
+		, linear_solver_type_(MA28)
 		, factorization_type_(AUTO_FACT)
 		, bigM_(-1.0)
 		, max_basis_cond_change_frac_(-1.0)
@@ -410,15 +413,29 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	// constructors.
 
 	if( !basis_sys_ptr_.get() ) {
-
-		MA28SparseCOOSolverCreator*
-			solver_creator = new MA28SparseCOOSolverCreator(
-					new SparseSolverPack::MA28SparseCOOSolverSetOptions
-					, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
-				);
-		
-		basis_sys_ptr_ = new COOBasisSystem(solver_creator, true);
-
+		SparseCOOSolverCreator
+			*sparse_solver_creator = NULL;
+		switch(linear_solver_type_) {
+			case MA28: {
+				sparse_solver_creator
+					= new SparseSolverPack::MA28SparseCOOSolverCreator(
+							new SparseSolverPack::MA28SparseCOOSolverSetOptions
+							, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
+						);
+				break;
+			}
+			case MA48: {
+				sparse_solver_creator
+					= new SparseSolverPack::MA48SparseCOOSolverCreator(
+							new SparseSolverPack::MA48SparseCOOSolverSetOptions
+							, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
+						);
+				break;
+			}
+			default:
+				assert(0);
+		}		
+		basis_sys_ptr_ = new COOBasisSystem(sparse_solver_creator, true);
 	}
 
 	DecompositionSystemVarReductImpNode* decomp_sys_aggr = 0;
@@ -469,12 +486,20 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			nonconst_deriv_tester_ptr_t
 				deriv_tester = new NLPFirstDerivativesTester();
 
-			NLPFirstDerivativesTesterSetOptions options_setter(deriv_tester.get());
-			options_setter.set_options(*options_);			
+			{
+				NLPFirstDerivativesTesterSetOptions options_setter(deriv_tester.get());
+				options_setter.set_options(*options_);
+			}		
 
-			algo->insert_step( ++step_num, EvalNewPoint_name
-				, new EvalNewPointStd_Step(deriv_tester)
-				);
+			EvalNewPointStd_Step
+				*eval_new_point_step = new EvalNewPointStd_Step(deriv_tester);
+
+			{
+				EvalNewPointStd_StepSetOptions options_setter(eval_new_point_step);
+				options_setter.set_options(*options_);
+			}		
+
+			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
 		}
 
 		// (2) ReducedGradient
@@ -1048,6 +1073,10 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
 	// (1) Initialize the nlp
 	nlp.initialize();
 
+	// Advance everything two iterations to wipe out any memory to k-1
+	state.next_iteration();
+	state.next_iteration();
+
 	// (2) Set the initial x to the initial guess.
 	state.x().set_k(0).v() = nlp.xinit();
 
@@ -1067,6 +1096,11 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
 
 	// Reset the iteration count to zero
 	state.k(0);
+
+	// Get organized output of vectors and matrices even if setw is not used.
+	algo.track().journal_out()
+		<< std::setprecision(algo.algo_cntr().print_digits())
+		<< std::scientific;
 
 	// set the first step
 	algo.do_step_first(1);

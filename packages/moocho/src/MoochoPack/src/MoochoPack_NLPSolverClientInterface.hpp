@@ -77,6 +77,11 @@ public:
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( EJournalOutputLevel, journal_output_level )
 
+	///
+	/** Set the precesion of the output.
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, print_digits )
+
 	//@}
 
 	/** @name Public Types */
@@ -99,6 +104,7 @@ public:
 	rSQPSolverClientInterface()
 		: max_iter_(100), opt_tol_(1e-6), feas_tol_(1e-6), step_tol_(1e-6)
 			, max_var_bounds_viol_(1e-8), journal_output_level_(PRINT_NOTHING)
+			, print_digits_(6)
 	{}
 
 	///

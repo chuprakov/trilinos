@@ -38,6 +38,9 @@ public:
 	enum EQPSolverType { QPSOL, QPOPT, QPKWIK, VE09, QPSCPD };
 
 	///
+	enum ELinearSolverType { MA28, MA48 };
+
+	///
 	enum EFactorizationType { DIRECT_FACT, ADJOINT_FACT, AUTO_FACT };
 
 	///
@@ -70,6 +73,10 @@ public:
 	/// Set the QPSolver type
 	void qp_solver_type( EQPSolverType qp_solver_type )
 	{	qp_solver_type_ = qp_solver_type; }
+
+	/// Set the Linear Solver type
+	void linear_solver_type( ELinearSolverType linear_solver_type )
+	{	linear_solver_type_ = linear_solver_type; }
 
 	/// Set the Factorzation type
 	void factorization_type( EFactorizationType factorization_type )
@@ -221,6 +228,7 @@ protected:
 	HL_iq_creator_ptr_t	HL_iq_creator_ptr_;	// IQA creator for HL
 
 	EQPSolverType		qp_solver_type_;
+	ELinearSolverType	linear_solver_type_;
 	EFactorizationType	factorization_type_;	// choosen by user
 	EFactorizationType	fact_type_;				// actual type used.
 	bool				check_results_;		// If true we will check all the results we can.
