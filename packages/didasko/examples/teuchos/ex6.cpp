@@ -2,7 +2,7 @@
 #ifdef HAVE_MPI
 #include "mpi.h"
 #endif
-#if defined(HAVE_DIDASKO_TEUCHOS)
+#if defined(HAVE_DIDASKO_TEUCHOS) && defined(FIXME)
 
 #include "Teuchos_TimeMonitor.hpp"
 
