@@ -416,7 +416,7 @@ void NP4DOpt<Scalar>::calc_DgDu(
 	ExplicitVectorView<Scalar> u(*u_in[0]);
 	ExplicitMutableMultiVectorView<Scalar> DgDu_t(*DgDu_);
 	// Fill nonzeros in DgDu'
-	DgDu_t(1,2) = 1.0;  DgDu_t(2,4) = 1.0;
+	DgDu_t(1,3) = 1.0;  DgDu_t(2,4) = 1.0;
 }
 
 // private
