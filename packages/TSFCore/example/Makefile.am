@@ -31,5 +31,5 @@ EXTRA_DIST = $(srcdir)/Core/TSFCoreSimpleMPIVectorSpace.hpp \
 	$(srcdir)/Core/TSFCoreSimpleMPIVectorDecl.hpp \
 	$(srcdir)/Core/TSFCoreSimpleMPIVectorSpaceDecl.hpp \
 	$(srcdir)/Core/TSFCoreSimpleMPIVector.hpp
-	
-SUBDIRS = Nonlin Solvers
+
+SUBDIRS = Core Solvers Nonlin

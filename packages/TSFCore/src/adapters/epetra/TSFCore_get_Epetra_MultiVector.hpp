@@ -43,6 +43,12 @@ namespace TSFCore {
  * Preconditions:<ul>
  * <li> <tt>vs.isCompatible(*mv->range()) == true</tt>
  * </ul>
+ *
+ * Note: the <tt>mv</tt> object is not guaranteed to be modified until
+ * the last smart pointer to the returned <tt>Epetra_MultiVector</tt>
+ * object is destroyed.
+ *
+ * \ingroup TSFCore_adapters_Epetra_support_grp
  */
 Teuchos::RefCountPtr<Epetra_MultiVector>
 get_Epetra_MultiVector(
@@ -57,6 +63,8 @@ get_Epetra_MultiVector(
  * Preconditions:<ul>
  * <li> <tt>vs.isCompatible(*mv->range()) == true</tt>
  * </ul>
+ *
+ * \ingroup TSFCore_adapters_Epetra_support_grp
  */
 Teuchos::RefCountPtr<const Epetra_MultiVector>
 get_Epetra_MultiVector(

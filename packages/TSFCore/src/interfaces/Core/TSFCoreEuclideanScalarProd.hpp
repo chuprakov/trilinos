@@ -26,61 +26,50 @@
 // ***********************************************************************
 // @HEADER
 
-// ////////////////////////////////////////////////////////////////////////////
-// TSFCoreSerialVectorSpaceDecl.hpp
+// ///////////////////////////////////////////////////////////////
+// TSFCoreEuclideanScalarProd.hpp
 
-#ifndef TSFCORE_VECTOR_SPACE_SERIAL_DECL_HPP
-#define TSFCORE_VECTOR_SPACE_SERIAL_DECL_HPP
+#ifndef TSFCORE_EUCLIDEAN_SCALAR_PROD_HPP
+#define TSFCORE_EUCLIDEAN_SCALAR_PROD_HPP
 
-#include "TSFCoreSerialVectorSpaceBase.hpp"
+#include "TSFCoreEuclideanScalarProdDecl.hpp"
+#include "TSFCoreMultiVectorStdOps.hpp"
+#include "TSFCoreEuclideanLinearOpBase.hpp"
 
 namespace TSFCore {
 
-///
-/** <tt>%VectorSpace</tt> Subclass for serial vectors and multi-vectors.
- *
- * The default copy constructor and assignment operators are allowed
- * since they have the correct semantics.
- */
 template<class Scalar>
-class SerialVectorSpace : public SerialVectorSpaceBase<Scalar> {
-public:
+void EuclideanScalarProd<Scalar>::scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const
+{
+	dots(X,Y,scalar_prods);
+}
 
-	/** @name Constructors / initializers */
-	//@{
+template<class Scalar>
+void EuclideanScalarProd<Scalar>::apply(
+	const EuclideanLinearOpBase<Scalar>   &M
+	,const ETransp                        M_trans
+	,const Vector<Scalar>                 &x
+	,Vector<Scalar>                       *y
+	,const Scalar                         alpha
+	,const Scalar                         beta
+	) const
+{
+	M.euclideanApply(M_trans,x,y,alpha,beta);
+}
 
-	///
-	/** Calls <tt>this->initialize()</tt>.
-	 */
-	SerialVectorSpace( int dim = 0 );
-
-	///
-	/** Initialize given the dimension of the vector space.
-	 *
-	 * @param  dim   [in] The dimension of the vector space.
-	 */
-	void initialize( int dim );
-
-	//@}
-
-	/** @name Overridden from VectorSpece */
-	//@{
-
-	/// Returns 0 if uninitialized
-	Index dim() const;
-	/// Returns a <tt>SerialVector</tt> object.
-	Teuchos::RefCountPtr<Vector<Scalar> > createMember() const;
-	///
-	Teuchos::RefCountPtr< const VectorSpace<Scalar> > clone() const;
-
-	//@}
-
-private:
-
-	int   dim_;
-
-}; // end class SerialVectorSpace
+template<class Scalar>
+void EuclideanScalarProd<Scalar>::apply(
+	const EuclideanLinearOpBase<Scalar>   &M
+	,const ETransp                        M_trans
+	,const MultiVector<Scalar>            &X
+	,MultiVector<Scalar>                  *Y
+	,const Scalar                         alpha
+	,const Scalar                         beta
+	) const
+{
+	M.euclideanApply(M_trans,X,Y,alpha,beta);
+}
 
 } // end namespace TSFCore
 
-#endif // TSFCORE_VECTOR_SPACE_SERIAL_DECL_HPP
+#endif  // TSFCORE_EUCLIDEAN_SCALAR_PROD_HPP

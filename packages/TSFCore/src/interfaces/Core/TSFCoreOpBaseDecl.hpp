@@ -39,9 +39,12 @@ namespace TSFCore {
 ///
 /** Base class for all operators.
  *
- * It is not expected that clients will manipulate objects directly through this
- * interface.  This interface is just ment to provide common declarations
- * the methods <tt>domain()</tt>, <tt>range()</tt> and <tt>opSupported()</tt>.
+ * It is not expected that clients will manipulate objects directly
+ * through this interface.  This interface is just ment to provide
+ * common declarations the functions <tt>domain()</tt>,
+ * <tt>range()</tt> and <tt>opSupported()</tt>.
+ *
+ * \ingroup TSFCore_fundamental_interfaces_code_grp
  */
 template<class Scalar>
 class OpBase {
@@ -53,34 +56,42 @@ public:
 	/** @name Pure virtual methods (must be overridden by subclass) */
 
 	///
-	/** Domain space for <tt>this</tt> operator.
+	/** Return a smart pointer for the range space for <tt>this</tt> operator.
 	 *
-	 * Note that a return value of <tt>return.get()==NULL</tt> is a flag that <tt>*this</tt>
-	 * is not fully initialized.
-	 *
-	 * If <tt>return.get()!=NULL</tt>, it is required that the object
-	 * referenced by <tt>*return.get()</tt> must have lifetime that
-	 * extends past the lifetime of the returned smart pointer object.
-	 * However, the object referenced by <tt>*return.get()</tt> my
-	 * change if <tt>*this</tt> modified so this reference should not
-	 * be maintained for too long.
-	 */
-	virtual Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const = 0;
-
-	///
-	/** Range space for <tt>this</tt> operator.
-	 *
-	 * Note that a return value of <tt>return.get()==NULL</tt> is a flag that <tt>*this</tt>
-	 * is not fully initialized.
+	 * Note that a return value of <tt>return.get()==NULL</tt> is a flag
+	 * that <tt>*this</tt> is not fully initialized.
 	 *
 	 * If <tt>return.get()!=NULL</tt>, it is required that the object
 	 * referenced by <tt>*return.get()</tt> must have lifetime that
 	 * extends past the lifetime of the returned smart pointer object.
-	 * However, the object referenced by <tt>*return.get()</tt> my
+	 * However, the object referenced by <tt>*return.get()</tt> may
 	 * change if <tt>*this</tt> modified so this reference should not
 	 * be maintained for too long.
+	 *
+	 * Once more, the client should not expect the <tt>%VectorSpace</tt>
+	 * object embedded in <tt>return</tt> to be valid past the lifetime
+	 * of <tt>*this</tt>.
 	 */
 	virtual Teuchos::RefCountPtr< const VectorSpace<Scalar> > range() const = 0;
+
+	///
+	/** Return a smart pointer for the domain space for <tt>this</tt> operator.
+	 *
+	 * Note that a return value of <tt>return.get()==NULL</tt> is a flag
+	 * that <tt>*this</tt> is not fully initialized.
+	 *
+	 * If <tt>return.get()!=NULL</tt>, it is required that the object
+	 * referenced by <tt>*return.get()</tt> must have lifetime that
+	 * extends past the lifetime of the returned smart pointer object.
+	 * However, the object referenced by <tt>*return.get()</tt> may
+	 * change if <tt>*this</tt> modified so this reference should not
+	 * be maintained for too long.
+	 *
+	 * Once more, the client should not expect the <tt>%VectorSpace</tt>
+	 * object embedded in <tt>return</tt> to be valid past the lifetime
+	 * of <tt>*this</tt>.
+	 */
+	virtual Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const = 0;
 
 	//@}
 
@@ -88,7 +99,7 @@ public:
 	//@{
 
 	///
-	/** Return if the <tt>M_trans</tt> operation is supported.
+	/** Return if the <tt>M_trans</tt> operation is supported or not.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->domain().get()!=NULL && this->range().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
@@ -103,11 +114,6 @@ public:
 	virtual bool opSupported(ETransp M_trans) const;
 
 	//@}
-
-#ifdef DOXYGEN_COMPILE
-	const VectorSpace<Scalar>*  domain; // doxygen only!
-	const VectorSpace<Scalar>*  range;  // doxygen only!
-#endif
 
 };	// end class OpBase
 

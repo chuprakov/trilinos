@@ -32,9 +32,6 @@
 #ifndef TSFCORE_VECTOR_DECL_HPP
 #define TSFCORE_VECTOR_DECL_HPP
 
-// Define to have Vector derive from MultiVector
-#define TSFCORE_VECTOR_DERIVE_FROM_MULTI_VECTOR
-
 #include "TSFCoreTypes.hpp"
 #include "TSFCoreMultiVectorDecl.hpp"
 #include "RTOpPack_RTOpT.hpp"
@@ -58,34 +55,46 @@ namespace TSFCore {
  * some operations however that can not always be efficiently
  * implemented with reduction/transforamtion operators and a few of
  * these important operations are included in this interface.  The
- * <tt>applyOp()</tt> operation allows to client to specify a sub-set of
- * the vector elements to include in reduction/transformation
+ * <tt>applyOp()</tt> function allows to client to specify a sub-set
+ * of the vector elements to include in reduction/transformation
  * operation.  This greatly increases the generality of this vector
  * interface as vector objects can be used as sub objects in larger
  * composite vectors and sub-views of a vector can be created.
  *
- * <b>Heads Up !!!!!!</b>
+ * <b>Heads Up!</b>
  * There already exists reduction/transformation operator-based
- * implementatations of several standard vector operations and
+ * implementations of several standard vector operations and
  * some convenience functions that wrap these operators and call
  * <tt>applyOp()</tt> can be found \ref TSFCore_VectorStdOps_grp "here".
  *
  * This interface also allows a client to extract a sub-set of
- * elements in an explicit form non-mutable
- * <tt>RTOpPack::SubVectorT<Scalar></tt> non-mutable
+ * elements in an explicit form as non-mutable
+ * <tt>RTOpPack::SubVectorT<Scalar></tt> or mutable
  * <tt>RTOpPack::MutableSubVectorT<Scalar></tt> objects using the
- * operations <tt>getSubVector()</tt>.  In general, this is very bad
+ * operations <tt>getSubVector()</tt>.  In general, this is a very bad
  * thing to do and should be avoided at all costs.  However, there are
  * some situations where this is needed and therefore it is supported.
  * The default implementation of these operations use
  * reduction/transformation operators with <tt>applyOp()</tt> in order
- * to extract and set the needed elements.
+ * to extract and set the needed elements and therefore all
+ * <tt>%Vector</tt> subclasses automatically support these operations
+ * (even if it is a bad idea to use them).  <b>Heads Up!</b> Note that
+ * client code in general should not directly call the above explicit
+ * sub-vector access functions but should use the utility classes
+ * <tt>ExplicitVectorView</tt> and <tt>ExplicitMutableVectorView</tt>
+ * instead since these are easier an safer in the event that an
+ * exception is thrown.
  *
- * In addition to being able to extract an explicit non-mutable view
- * of some (small?) sub-set of elements, this interface allows a
- * client to either extract a explicit mutable sub-views using
- * <tt>getSubVector()</tt> or to set sub-vectors using
- * <tt>setSubVector()</tt>.
+ * In addition to being able to extract an explicit non-mutable and
+ * mutable views of some (small?) sub-set of elements, this interface
+ * allows a client to set sub-vectors using <tt>setSubVector()</tt>.
+ *
+ * It is also worth mentioning that that this <tt>%Vector</tt>
+ * interface class also inherits from <tt>MultiVector</tt> so that
+ * every <tt>%Vector</tt> object is also a <tt>%MultiVector</tt>
+ * object.  This allows any piece of code that accepts
+ * <tt>%MultiVector</tt> objects to automatically accept
+ * <tt>%Vector</tt> objects as well.
  *
  * <b>Notes for subclass developers</b>
  *
@@ -96,11 +105,21 @@ namespace TSFCore {
  * only three pure virtual operations).
  *
  * A subclass should only bother overidding the explicit sub-vector
- * access operations <tt>getSubVector()</tt>, <tt>freeSubVector()</tt>,
- * <tt>commitSubVector()</tt> and <tt>setSubVector()</tt> if profiling
- * shows that these operations are taking too much time.  In most use
- * cases, these default implementations will not impact the overall
- * runtime for a numerical algorithm in any significant way.
+ * access operations <tt>getSubVector()</tt>,
+ * <tt>freeSubVector()</tt>, <tt>commitSubVector()</tt> and
+ * <tt>setSubVector()</tt> if profiling shows that these operations
+ * are taking too much time.  In most use cases, these default
+ * implementations will not impact the overall runtime for a numerical
+ * algorithm in any significant way and in most algorithms these
+ * functions will not even be called.
+ *
+ * Note that all of the inherited <tt>OpBase</tt>, <tt>LinearOp</tt>
+ * and <tt>MultiVector</tt> functions are overridden in this subclass
+ * and are given perfectly good implementations.  Therefore, a
+ * concrete subclass of <tt>%Vector</tt> should not have to override
+ * any of these functions.
+ *
+ * \ingroup TSFCore_fundamental_interfaces_code_grp
  */
 template<class Scalar>
 class Vector : virtual public MultiVector<Scalar> {
@@ -115,10 +134,21 @@ public:
 	//@{
 
 	///
-	/** Returns a smart pointer to the vector space that this vector belongs to.
+	/** Return a smart pointer to the vector space that this vector belongs to.
 	 *
 	 * A return value of <tt>space().get()==NULL</tt> is a flag that
 	 * <tt>*this</tt> is not fully initialized.
+	 *
+	 * If <tt>return.get()!=NULL</tt>, it is required that the object
+	 * referenced by <tt>*return.get()</tt> must have lifetime that
+	 * extends past the lifetime of the returned smart pointer object.
+	 * However, the object referenced by <tt>*return.get()</tt> may
+	 * change if <tt>*this</tt> modified so this reference should not be
+	 * maintained for too long.
+	 *
+	 * Once more, the client should not expect the <tt>%VectorSpace</tt>
+	 * object embedded in <tt>return</tt> to be valid past the lifetime
+	 * of <tt>*this</tt>.
 	 */
 	virtual Teuchos::RefCountPtr< const VectorSpace<Scalar> > space() const = 0;
 
@@ -185,6 +215,11 @@ public:
 	 * critical that <tt>this->freeSubVector(sub_vec)</tt> is called
 	 * to clean up memory and avoid memory leaks after the sub-vector
 	 * is used.
+	 *
+	 * <b>Heads Up!</b> Note that client code in general should not
+	 * directly call this function but should use the utility class
+	 * <tt>ExplicitVectorView</tt> which will also take care
+	 * of calling <tt>freeSubVector()</tt>.
 	 *
 	 * If <tt>this->getSubVector(...,sub_vec)</tt> was previously
 	 * called on <tt>sub_vec</tt> then it may be possible to reuse
@@ -269,6 +304,11 @@ public:
 	 * that <tt>this->commitSubVector(sub_vec)</tt> is called to
 	 * commit the changed entires and clean up memory and avoid memory
 	 * leaks after the sub-vector is modified.
+	 *
+	 * <b>Heads Up!</b> Note that client code in general should not
+	 * directly call this function but should use the utility class
+	 * <tt>ExplicitMutableVectorView</tt> which will also take care
+	 * of calling <tt>commitSubVector</tt>.
 	 *
 	 * If <tt>this->getSubVector(...,sub_vec)</tt> was previously
 	 * called on <tt>sub_vec</tt> then it may be possible to reuse
@@ -365,15 +405,15 @@ public:
 
 	//@}
 
-  /** @name Overridden from OpBase */
+  /** @name Overridden from OpBase (should never need to be overridden is subclasses) */
   //@{
-	/// Returns a <tt>SerialVectorSpace</tt> object with dimension 1.
-	Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const;
 	/// Returns <tt>this->space()</tt>
 	Teuchos::RefCountPtr< const VectorSpace<Scalar> > range() const;
+	/// Returns a <tt>SerialVectorSpace</tt> object with dimension 1.
+	Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const;
   //@}
 
-  /** @name Overridden from LinearOp */
+  /** @name Overridden from LinearOp (should never need to be overridden is subclasses) */
   //@{
   ///
 	void apply(
@@ -385,7 +425,7 @@ public:
 		) const;
   //@}
 
-  /** @name Overridden from MultiVector */
+  /** @name Overridden from MultiVector (should never need to be overridden is subclasses) */
   //@{
   ///
 	Teuchos::RefCountPtr<Vector<Scalar> > col(Index j);

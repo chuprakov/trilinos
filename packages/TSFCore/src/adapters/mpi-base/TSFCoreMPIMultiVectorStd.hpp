@@ -36,7 +36,8 @@
 //#define TSFCORE_MPI_MULTI_VECTOR_STD_VERBOSE_TO_ERROR_OUT
 
 #include "TSFCoreMPIMultiVectorStdDecl.hpp"
-#include "TSFCoreVectorMultiVector.hpp"
+#include "TSFCoreMPIVectorStd.hpp"
+//#include "TSFCoreVectorMultiVector.hpp"
 
 namespace TSFCore {
 
@@ -49,65 +50,65 @@ MPIMultiVectorStd<Scalar>::MPIMultiVectorStd()
 
 template<class Scalar>
 MPIMultiVectorStd<Scalar>::MPIMultiVectorStd(
-  const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >    &mpiRangeSpace
-  ,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >          &domainSpace
-  ,const Teuchos::RefCountPtr<Scalar>                              &values
-  ,const Index                                                     leadingDim
+  const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >          &mpiRangeSpace
+  ,const Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> >  &domainSpace
+  ,const Teuchos::RefCountPtr<Scalar>                                    &localValues
+  ,const Index                                                           leadingDim
   )
 {
-  initialize(mpiRangeSpace,domainSpace,values,leadingDim);
+  initialize(mpiRangeSpace,domainSpace,localValues,leadingDim);
 }
 
 template<class Scalar>
 void MPIMultiVectorStd<Scalar>::initialize(
-  const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >    &mpiRangeSpace
-  ,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >          &domainSpace
-  ,const Teuchos::RefCountPtr<Scalar>                              &values
-  ,const Index                                                     leadingDim
+  const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >          &mpiRangeSpace
+  ,const Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> >  &domainSpace
+  ,const Teuchos::RefCountPtr<Scalar>                                    &localValues
+  ,const Index                                                           leadingDim
   )
 {
 #ifdef _DEBUG
   TEST_FOR_EXCEPT(mpiRangeSpace.get()==NULL);
   TEST_FOR_EXCEPT(domainSpace.get()==NULL);
-  TEST_FOR_EXCEPT(values.get()==NULL);
+  TEST_FOR_EXCEPT(localValues.get()==NULL);
   TEST_FOR_EXCEPT(leadingDim < mpiRangeSpace->localSubDim());
 #endif
   mpiRangeSpace_ = mpiRangeSpace;
   domainSpace_   = domainSpace;
-  values_        = values;
+  localValues_   = localValues;
   leadingDim_    = leadingDim;
   updateMpiSpace();
 }
 
 template<class Scalar>
 void MPIMultiVectorStd<Scalar>::uninitialize(
-  Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >    *mpiRangeSpace
-  ,Teuchos::RefCountPtr<const VectorSpace<Scalar> >          *domainSpace
-  ,Teuchos::RefCountPtr<Scalar>                              *values
-  ,Index                                                     *leadingDim
+  Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >          *mpiRangeSpace
+  ,Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> >  *domainSpace
+  ,Teuchos::RefCountPtr<Scalar>                                    *localValues
+  ,Index                                                           *leadingDim
   )
 {
   if(mpiRangeSpace) *mpiRangeSpace = mpiRangeSpace_;
   if(domainSpace)   *domainSpace   = domainSpace_;
-  if(values)        *values        = values_;
+  if(localValues)   *localValues   = localValues_;
   if(leadingDim)    *leadingDim    = leadingDim_;
 
   mpiRangeSpace_  = Teuchos::null;
   domainSpace_    = Teuchos::null;
-  values_         = Teuchos::null;
+  localValues_    = Teuchos::null;
   leadingDim_     = 0;
 
   updateMpiSpace();
 }
 
-// Overridden from OpBase
+// Overridden from EuclideanLinearOpBase
 
 template<class Scalar>
-Teuchos::RefCountPtr< const VectorSpace<Scalar> >
-MPIMultiVectorStd<Scalar>::domain() const
+Teuchos::RefCountPtr< const ScalarProdVectorSpaceBase<Scalar> >
+MPIMultiVectorStd<Scalar>::domainScalarProdVecSpc() const
 {
 #ifdef TSFCORE_MPI_MULTI_VECTOR_STD_VERBOSE_TO_ERROR_OUT
-  std::cerr << "\nMPIMultiVectorStd<Scalar>::domain() const called!\n";
+  std::cerr << "\nMPIMultiVectorStd<Scalar>::domainScalarProdVecSpc() const called!\n";
 #endif
   return domainSpace_;
 }
@@ -121,7 +122,17 @@ MPIMultiVectorStd<Scalar>::col(Index j)
 #ifdef TSFCORE_MPI_MULTI_VECTOR_STD_VERBOSE_TO_ERROR_OUT
   std::cerr << "\nMPIMultiVectorStd<Scalar>::col() called!\n";
 #endif
-  return Teuchos::rcp(new VectorMultiVector<Scalar>(subView(Range1D(j,j))));
+#ifdef _DEBUG
+	TEST_FOR_EXCEPT( j < 1 || this->domain()->dim() < j );
+#endif
+  return Teuchos::rcp(
+    new MPIVectorStd<Scalar>(
+      mpiRangeSpace_
+      ,Teuchos::rcp( (&*localValues_) + (j-1)*leadingDim_, false )
+      ,1
+      )
+    );
+  //return Teuchos::rcp(new VectorMultiVector<Scalar>(subView(Range1D(j,j))));
 }
 
 template<class Scalar>
@@ -135,8 +146,10 @@ MPIMultiVectorStd<Scalar>::subView( const Range1D& col_rng_in )
   return Teuchos::rcp(
     new MPIMultiVectorStd<Scalar>(
       mpiRangeSpace_
-      ,mpiRangeSpace_->smallVecSpcFcty()->createVecSpc(colRng.size())
-      ,Teuchos::rcp( (&*values_) + (colRng.lbound()-1)*leadingDim_, false )
+      ,Teuchos::rcp_dynamic_cast<const ScalarProdVectorSpaceBase<Scalar> >(
+				mpiRangeSpace_->smallVecSpcFcty()->createVecSpc(colRng.size())
+				,true)
+      ,Teuchos::rcp( (&*localValues_) + (colRng.lbound()-1)*leadingDim_, false )
       ,leadingDim_
       )
     );
@@ -155,39 +168,55 @@ MPIMultiVectorStd<Scalar>::mpiSpace() const
 }
 
 template<class Scalar>
-void MPIMultiVectorStd<Scalar>::getLocalData( const Scalar **values, Index *leadingDim ) const
-{
-#ifdef TSFCORE_MPI_MULTI_VECTOR_STD_VERBOSE_TO_ERROR_OUT
-  std::cerr << "\nMPIMultiVectorStd<Scalar>::getLocalData() const called!\n";
-#endif
-  *values     = &*values_;
-  *leadingDim = leadingDim_;
-}
-
-template<class Scalar>
-void MPIMultiVectorStd<Scalar>::freeLocalData( const Scalar *values ) const
-{
-#ifdef TSFCORE_MPI_MULTI_VECTOR_STD_VERBOSE_TO_ERROR_OUT
-  std::cerr << "\nMPIMultiVectorStd<Scalar>::freeLocalData() called!\n";
-#endif
-}
-
-template<class Scalar>
-void MPIMultiVectorStd<Scalar>::getLocalData( Scalar **values, Index *leadingDim )
+void MPIMultiVectorStd<Scalar>::getLocalData( Scalar **localValues, Index *leadingDim )
 {
 #ifdef TSFCORE_MPI_MULTI_VECTOR_STD_VERBOSE_TO_ERROR_OUT
   std::cerr << "\nMPIMultiVectorStd<Scalar>::getLocalData() called!\n";
 #endif
-  *values     = &*values_;
-  *leadingDim = leadingDim_;
+#ifdef _DEBUG
+	TEST_FOR_EXCEPT( localValues==NULL );
+	TEST_FOR_EXCEPT( leadingDim==NULL );
+#endif
+  *localValues = &*localValues_;
+  *leadingDim  = leadingDim_;
 }
 
 template<class Scalar>
-void MPIMultiVectorStd<Scalar>::commitLocalData( Scalar *values )
+void MPIMultiVectorStd<Scalar>::commitLocalData( Scalar *localValues )
 {
 #ifdef TSFCORE_MPI_MULTI_VECTOR_STD_VERBOSE_TO_ERROR_OUT
   std::cerr << "\nMPIMultiVectorStd<Scalar>::commitLocalData() called!\n";
 #endif
+#ifdef _DEBUG
+	TEST_FOR_EXCEPT( localValues!=&*localValues_ );
+#endif
+	// Nothing to commit!
+}
+
+template<class Scalar>
+void MPIMultiVectorStd<Scalar>::getLocalData( const Scalar **localValues, Index *leadingDim ) const
+{
+#ifdef TSFCORE_MPI_MULTI_VECTOR_STD_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nMPIMultiVectorStd<Scalar>::getLocalData() called!\n";
+#endif
+#ifdef _DEBUG
+	TEST_FOR_EXCEPT( localValues==NULL );
+	TEST_FOR_EXCEPT( leadingDim==NULL );
+#endif
+  *localValues = &*localValues_;
+  *leadingDim  = leadingDim_;
+}
+
+template<class Scalar>
+void MPIMultiVectorStd<Scalar>::freeLocalData( const Scalar *localValues ) const
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPT( localValues!=&*localValues_ );
+#endif
+#ifdef TSFCORE_MPI_MULTI_VECTOR_STD_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nMPIMultiVectorStd<Scalar>::commitLocalData() called!\n";
+#endif
+	// Nothing to free
 }
 
 } // end namespace TSFCore

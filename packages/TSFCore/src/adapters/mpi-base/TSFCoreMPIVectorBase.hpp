@@ -33,6 +33,7 @@
 #define TSFCORE_MPI_VECTOR_BASE_HPP
 
 #include "TSFCoreMPIVectorBaseDecl.hpp"
+#include "TSFCoreMPIVectorSpaceBase.hpp"
 #include "RTOp_parallel_helpers.h"
 #include "RTOpPack_MPI_apply_op.hpp"
 #include "Teuchos_Workspace.hpp"
@@ -52,9 +53,15 @@ MPIVectorBase<Scalar>::MPIVectorBase()
 // Virtual methods with default implementations
 
 template<class Scalar>
-void MPIVectorBase<Scalar>::getLocalData( const Scalar** values, ptrdiff_t* stride ) const
+void MPIVectorBase<Scalar>::getLocalData( const Scalar** values, Index* stride ) const
 {
 	const_cast<MPIVectorBase<Scalar>*>(this)->getLocalData(const_cast<Scalar**>(values),stride);
+}
+
+template<class Scalar>
+void MPIVectorBase<Scalar>::freeLocalData( const Scalar* values ) const
+{
+	const_cast<MPIVectorBase<Scalar>*>(this)->commitLocalData(const_cast<Scalar*>(values));
 }
 
 // Overridden from Vector
@@ -69,9 +76,9 @@ MPIVectorBase<Scalar>::space() const
 template<class Scalar>
 void MPIVectorBase<Scalar>::applyOp(
 	const RTOpPack::RTOpT<Scalar>   &op
-	,const int                   num_vecs
+	,const int                      num_vecs
 	,const Vector<Scalar>*          vecs[]
-	,const int                   num_targ_vecs
+	,const int                      num_targ_vecs
 	,Vector<Scalar>*                targ_vecs[]
 	,RTOpPack::ReductTarget         *reduct_obj
 	,const Index                    first_ele_in
@@ -90,6 +97,10 @@ void MPIVectorBase<Scalar>::applyOp(
 		,"MPIVectorBase<>::applyOp(...): Error, this method is being entered recursively which is a "
 		"clear sign that one of the methods getSubVector(...), freeSubVector(...) or commitSubVector(...) "
 		"was not implemented properly!"
+		);
+	TSFCore::apply_op_validate_input(
+		"MPIVectorBase<>::applyOp(...)",*space()
+		,op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele_in,sub_dim_in,global_offset_in
 		);
 #endif
 	// Flag that we are in applyOp()
@@ -159,7 +170,7 @@ void MPIVectorBase<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::SubVe
 	}
 	// rng consists of all local data so get it!
 	const Scalar *localValues = NULL;
-	ptrdiff_t stride = 0;
+	Index stride = 0;
 	this->getLocalData(&localValues,&stride);
 	sub_vec->initialize(
 		rng.lbound()-1                             // globalOffset
@@ -199,7 +210,7 @@ void MPIVectorBase<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::Mutab
 	}
 	// rng consists of all local data so get it!
 	Scalar *localValues = NULL;
-	ptrdiff_t stride = 0;
+	Index stride = 0;
 	this->getLocalData(&localValues,&stride);
 	sub_vec->initialize(
 		rng.lbound()-1                             // globalOffset

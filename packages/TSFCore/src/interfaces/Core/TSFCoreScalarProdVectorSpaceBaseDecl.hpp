@@ -27,43 +27,49 @@
 // @HEADER
 
 // ///////////////////////////////////////////////////////////////
-// TSFCoreVectorSpaceStdBaseDecl.hpp
+// TSFCoreScalarProdVectorSpaceBaseDecl.hpp
 
-#ifndef TSFCORE_VECTOR_SPACE_STD_BASE_DECL_HPP
-#define TSFCORE_VECTOR_SPACE_STD_BASE_DECL_HPP
+#ifndef TSFCORE_SCALAR_PROD_VECTOR_SPACE_BASE_DECL_HPP
+#define TSFCORE_SCALAR_PROD_VECTOR_SPACE_BASE_DECL_HPP
 
-#include "TSFCoreVectorSpace.hpp"
+#include "TSFCoreVectorSpaceDecl.hpp"
 
 namespace TSFCore {
 
 ///
-/** Node base class for <tt>VectorSpace</tt> that allows the
- * definition of scalar products to be swapped in and out.
+/** \brief Base subclass for <tt>VectorSpace</tt> that allows the
+ * definition of an application-specific scalar product to be swapped
+ * in and out.
  *
  * This subclass defines machinery for extracting out the definition
  * of a scalar product as an object that can be replaced.  The default
- * implementation of scalar product is the dot product.  The idea is
- * that in most cases, the definition of a scalar product may be more
- * general than a specific concrete vector implementation (i.e. a
- * single scalar product may work with all serial and all MPI-based
- * vectors if, for example, it is implemented through an
- * <tt>RTOpPack::RTOpT</tt> object).  This subclass allows an
- * application code to set a specialized scalar product without having
- * marry a particular concrete vector (vector space) implementation.
+ * implementation of scalar product is the Euclidean scalar product
+ * (i.e. dot product).  The idea is that, in most cases, the
+ * definition of a scalar product may be more general than a specific
+ * concrete vector implementation (i.e. a single scalar product may
+ * work with all serial and all MPI-based vectors if, for example, it
+ * is implemented through an <tt>RTOpPack::RTOpT</tt> object).  Or, a
+ * scalar product way work with any MPI SPMD vector or multi-vector.
+ * This subclass allows an application code to set a specialized
+ * scalar product without having marry a particular concrete vector
+ * (vector space) implementation.
  *
  * Almost every concrete <tt>VectorSpace</tt> subclass should inherit
  * from this subclass since it makes it easy for application
- * developers to to redefine the scalar product without having to
- * create a VectorSpace subclass which can have many repercussions.
+ * developers to redefine the scalar product without having to create
+ * a new <tt>VectorSpace</tt> subclass which can have many
+ * repercussions.
  *
  * The reason that this machinery in this base subclass is separated
  * out from the base <tt>VectorSpace</tt> interface class is that,
  * first it would clutter the base interface since this machinery is
  * an implementation artifact and, second every <tt>VectorSpace</tt>
  * subclass will not utilize this machinery.
+ *
+ * \ingroup TSFCore_basic_adapter_support_grp
  */
 template<class Scalar>
-class VectorSpaceStdBase : virtual public VectorSpace<Scalar> {
+class ScalarProdVectorSpaceBase : virtual public VectorSpace<Scalar> {
 public:
 
 	/** @name Constructors / initializers */
@@ -76,7 +82,7 @@ public:
 	 * <li><tt>dynamic_cast<const DotProd<Scalar>*>(&*this->getScalarProd()) != NULL</tt>
 	 * </ul>
 	 */
-	VectorSpaceStdBase();
+	ScalarProdVectorSpaceBase();
 
 	///
 	/** Construct with a different scalar product.
@@ -89,7 +95,7 @@ public:
 	 * <li><tt>this->getScalarProd().get() == scalarProd.get()</tt>
 	 * </ul>
 	 */
-	VectorSpaceStdBase( const Teuchos::RefCountPtr<const ScalarProd<Scalar> > &scalarProd );
+	ScalarProdVectorSpaceBase( const Teuchos::RefCountPtr<const ScalarProd<Scalar> > &scalarProd );
 
 	///
 	/** Set a different scalar product.
@@ -131,8 +137,8 @@ private:
 
 	Teuchos::RefCountPtr<const ScalarProd<Scalar> > scalarProd_;
 
-}; // end class VectorSpaceStdBase
+}; // end class ScalarProdVectorSpaceBase
 
 } // end namespace TSFCore
 
-#endif  // TSFCORE_VECTOR_SPACE_STD_BASE_DECL_HPP
+#endif  // TSFCORE_SCALAR_PROD_VECTOR_SPACE_BASE_DECL_HPP

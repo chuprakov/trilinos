@@ -48,23 +48,22 @@ TSFCore::get_Epetra_MultiVector(
 	)
 {
 #ifdef _DEBUG
-	TEST_FOR_EXCEPTION(
-		!vs.isCompatible(*mv->range()), Exceptions::IncompatibleVectorSpaces
-		,"TSFCore::get_Epetra_MultiVector(vs,mv): Error, must have compatible vector spaces!"
-		);
+	TSFCORE_ASSERT_VEC_SPACES( "TSFCore::get_Epetra_MultiVector(vs,mv)", vs, *mv->range() );
 #endif
 	//
 	// First, try to dynamic_cast to get the Epetra object directly
-	// since this has proven to be the fastest way.  Note, it is not
-	// trivial to create an Epetra view of an object and a lot of
-	// dynamic memory allocations have to be performed to make this
-	// work.  One must be very careful not to create
-	// Epetra_MultiVector or Epetra_Vector objects on the fly!
+	// since this has proven to be the fastest way since we don't have
+	// to create a temporary Epetra_MultiVector which has some overhead
+	// even if it is just a view of data.  Note, it is not trivial to
+	// create an Epetra view of an object and a lot of dynamic memory
+	// allocations have to be performed to make this work.  One must be
+	// very careful not to create Epetra_MultiVector or Epetra_Vector
+	// objects on the fly if it can be avoided!
 	//
 	EpetraMultiVector
 		*epetra_mv_adapter = dynamic_cast<EpetraMultiVector*>(&*mv);
 	if(epetra_mv_adapter)
-		return epetra_mv_adapter->epetra_multi_vec(); // Note, this is dangerous!
+		return epetra_mv_adapter->epetra_multi_vec(); // Note, this is dangerous!!!
 #ifdef TSFCORE_EPETRA_USE_TSFCORE_EPETRA_VECTOR
   //
   // Second, try to dynamic_cast to EpetraVector (which derives from
@@ -100,21 +99,15 @@ TSFCore::get_Epetra_MultiVector(
 	const Index localSubDim = vs.localSubDim();
 	//
 	// Here we will extract a view of the local elements in the
-	// underlying MultiVector.  Note, that we even do this if mv is a
-	// direct subclass of EpetraMultiVector.  The reason that we don't
-	// do a dynamic_cast is that the by explicitly calling the
-	// SubMultiVector(...) access methods we insure that only the
-	// elements of the underlying Epetra MultiVector are changed and
-	// when the update is complete the commitSubMultiVector(...)
-	// method will give the subclass a chance to update anything else
-	// that it needs to update.  In most cases, no data will be
-	// allocated or copy and only some small objects will be created
-	// and a few virtual functions will be called so the overhead is
-	// low and fixed.
+	// underlying MultiVector.  In most cases, no data will be allocated
+	// or copied and only some small objects will be created and a few
+	// virtual functions will be called so the overhead should be low
+	// and fixed.
 	//
-	// Create a *mutable* view of the local elements, this view will
-	// be set on the RefCountPtr that is returned and then view will
-	// be relased when the returned Epetra_MultiVector is returned.
+	// Create a *mutable* view of the local elements, this view will be
+	// set on the RefCountPtr that is returned.  As a result this view
+	// will be relased when the returned Epetra_MultiVector is released.
+	//
 	Teuchos::RefCountPtr<ExplicitMutableMultiVectorView<double> >
 		emmvv = Teuchos::rcp(
 			new ExplicitMutableMultiVectorView<double>(
@@ -134,13 +127,12 @@ TSFCore::get_Epetra_MultiVector(
 				,emmvv->numSubCols()                    // NumVectors
 				)
 			);
-	// Give the explict view object to the above
-	// Epetra_MultiVector smart pointer object.  In this way, When
-	// the client is finished with the Epetra_MultiVector view The
-	// destructor from the object in emmvv will automatically
-	// commit the changes to the elements in the input mv
-	// MultiVector object (reguardless of its implementation).
-	// This is truly an elegant result!
+	// Give the explict view object to the above Epetra_MultiVector
+	// smart pointer object.  In this way, when the client is finished
+	// with the Epetra_MultiVector view the destructor from the object
+	// in emmvv will automatically commit the changes to the elements in
+	// the input mv MultiVector object (reguardless of its
+	// implementation).  This is truly an elegant result!
 	Teuchos::set_extra_data( emmvv, "emmvv", &epetra_mv );
 	return epetra_mv;
 }
@@ -152,18 +144,15 @@ TSFCore::get_Epetra_MultiVector(
 	)
 {
 #ifdef _DEBUG
-	TEST_FOR_EXCEPTION(
-		!vs.isCompatible(*mv->range()), Exceptions::IncompatibleVectorSpaces
-		,"TSFCore::get_Epetra_MultiVector(vs,mv): Error, must have compatible vector spaces!"
-		);
+	TSFCORE_ASSERT_VEC_SPACES( "TSFCore::get_Epetra_MultiVector(vs,mv)", vs, *mv->range() );
 #endif
 	//
-	// First try to dynamic_cast to get the Epetra object directly
-	// since this has proven to be the fastest way.  Note, it is not
-	// trivial to create an Epetra view of an object and a lot of
-	// dynamic memory allocations have to be performed to make this
-	// work.  One must be very careful not to create
-	// Epetra_MultiVector or Epetra_Vector objects on the fly!
+	// First try to dynamic_cast to get the Epetra object directly since
+	// this has proven to be the fastest way.  Note, it is not trivial
+	// to create an Epetra view of an object and a lot of dynamic memory
+	// allocations have to be performed to make this work.  One must be
+	// very careful not to create Epetra_MultiVector or Epetra_Vector
+	// objects on the fly of one can avoid it!
 	//
 	const EpetraMultiVector
 		*epetra_mv_adapter = dynamic_cast<const EpetraMultiVector*>(&*mv);
@@ -219,11 +208,11 @@ TSFCore::get_Epetra_MultiVector(
 				,emvv->numSubCols()                     // NumVectors
 				)
 			);
-	// This will cause the destructor to free the view if needed (see
-	// above function).  Since this view is non-mutable, only a
-	// freeSubMultiVector(...)  and not a commit will be called.  This
-	// is the whole reason there is a seperate implementation for the
-	// const and non-const cases.
+	// This next statement will cause the destructor to free the view if
+	// needed (see above function).  Since this view is non-mutable,
+	// only a freeSubMultiVector(...) and not a commit will be called.
+	// This is the whole reason there is a seperate implementation for
+	// the const and non-const cases.
 	Teuchos::set_extra_data( emvv, "emvv", &epetra_mv );
 	return epetra_mv;
 }

@@ -32,13 +32,13 @@
 #ifndef TSFCORE_MPI_VECTOR_SPACE_BASE_DECL_HPP
 #define TSFCORE_MPI_VECTOR_SPACE_BASE_DECL_HPP
 
-#include "TSFCoreVectorSpaceStdBase.hpp"
+#include "TSFCoreScalarProdVectorSpaceBaseDecl.hpp"
 
 namespace TSFCore {
 
 ///
-/** <tt>%VectorSpace</tt> node subclass for all MPI-based vectors with
- * contiguous local storage.
+/** \brief Base <tt>%VectorSpace</tt> class for all MPI-based vector
+ * spaces with contiguous local storage.
  *
  * This interface collaborates with the classes <tt>MPIVetorBase</tt>
  * and <tt>MPIMultiVetorBase</tt> to implement MPI-based parallel (or
@@ -137,10 +137,11 @@ namespace TSFCore {
  * called by the subclass.  Clients should never need to worry about
  * this function and that is why <tt>%updateState()</tt> is declared
  * protected.
- * 
+ *
+ * \ingroup TSFCore_adapters_MPI_support_grp
  */
 template<class Scalar>
-class MPIVectorSpaceBase : public VectorSpaceStdBase<Scalar> {
+class MPIVectorSpaceBase : public ScalarProdVectorSpaceBase<Scalar> {
 public:
 
 	///

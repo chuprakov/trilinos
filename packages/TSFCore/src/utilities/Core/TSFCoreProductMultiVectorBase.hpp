@@ -47,6 +47,8 @@ namespace TSFCore {
  * <tt>ProductMultiVector</tt>.
  *
  * ToDo: Finish documentation!
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 template<class Scalar>
 class ProductMultiVectorBase : virtual public MultiVector<Scalar> {

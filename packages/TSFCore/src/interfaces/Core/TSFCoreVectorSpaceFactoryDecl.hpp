@@ -43,9 +43,7 @@ namespace TSFCore {
  * is defined in the documentation for the class <tt>VectorSpace</tt>
  * and is related to the domain space of <tt>MultiVector</tt> objects.
  *
- * <b>Notes to subclass developers</b>
- * 
- * 
+ * \ingroup TSFCore_fundamental_interfaces_code_grp
  */
 template<class Scalar>
 class VectorSpaceFactory {

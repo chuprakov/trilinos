@@ -75,6 +75,8 @@ namespace TSFCore {
  * This class is only an interface.  A standard implementation of this
  * interface that should be sufficient for 99% or so of use cases is
  * provided in the concrete subclass <tt>ProductVectorSpace</tt>.
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 template<class Scalar>
 class ProductVectorSpaceBase : virtual public VectorSpace<Scalar> {

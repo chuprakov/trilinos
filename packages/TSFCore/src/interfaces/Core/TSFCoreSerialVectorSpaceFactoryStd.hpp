@@ -27,23 +27,23 @@
 // @HEADER
 
 // //////////////////////////////////////////////////////////////////////
-// TSFCoreSerialVectorSpaceFactory.hpp
+// TSFCoreSerialVectorSpaceFactoryStd.hpp
 
-#ifndef TSFCORE_VECTOR_SPACE_FACTORY_SERIAL_HPP
-#define TSFCORE_VECTOR_SPACE_FACTORY_SERIAL_HPP
+#ifndef TSFCORE_SERIAL_VECTOR_SPACE_FACTORY_STD_HPP
+#define TSFCORE_SERIAL_VECTOR_SPACE_FACTORY_STD_HPP
 
-#include "TSFCoreSerialVectorSpaceFactoryDecl.hpp"
-#include "TSFCoreSerialVectorSpace.hpp"
+#include "TSFCoreSerialVectorSpaceFactoryStdDecl.hpp"
+#include "TSFCoreSerialVectorSpaceStd.hpp"
 
 namespace TSFCore {
 
 template<class Scalar>
 Teuchos::RefCountPtr<const VectorSpace<Scalar> >
-SerialVectorSpaceFactory<Scalar>::createVecSpc(int dim) const
+SerialVectorSpaceFactoryStd<Scalar>::createVecSpc(int dim) const
 {
-	return Teuchos::rcp(new SerialVectorSpace<Scalar>(dim));
+	return Teuchos::rcp(new SerialVectorSpaceStd<Scalar>(dim));
 }
 
 } // end namespace TSFCore
 
-#endif // TSFCORE_VECTOR_SPACE_FACTORY_SERIAL_HPP
+#endif // TSFCORE_SERIAL_VECTOR_SPACE_FACTORY_STD_HPP

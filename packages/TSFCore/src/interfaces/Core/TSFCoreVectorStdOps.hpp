@@ -53,6 +53,7 @@
 #include "RTOpPack_TOpReciprocal.hpp"
 #include "RTOpPack_TOpRandomize.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "Teuchos_arrayArg.hpp"
 
 // Reduction operations
 
@@ -67,7 +68,8 @@ Scalar TSFCore::sum( const Vector<Scalar>& v_rhs )
 }
 
 template<class Scalar>
-Scalar TSFCore::norm_1( const Vector<Scalar>& v_rhs )
+typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+TSFCore::norm_1( const Vector<Scalar>& v_rhs )
 {
   RTOpPack::ROpNorm1<Scalar> norm_1_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> norm_1_targ = norm_1_op.reduct_obj_create();
@@ -77,7 +79,8 @@ Scalar TSFCore::norm_1( const Vector<Scalar>& v_rhs )
 }
 
 template<class Scalar>
-Scalar TSFCore::norm_2( const Vector<Scalar>& v_rhs )
+typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+TSFCore::norm_2( const Vector<Scalar>& v_rhs )
 {
   RTOpPack::ROpNorm2<Scalar> norm_2_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> norm_2_targ = norm_2_op.reduct_obj_create();
@@ -87,7 +90,8 @@ Scalar TSFCore::norm_2( const Vector<Scalar>& v_rhs )
 }
 
 template<class Scalar>
-Scalar TSFCore::norm_2( const Vector<Scalar>& w, const Vector<Scalar>& v )
+typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+TSFCore::norm_2( const Vector<Scalar>& w, const Vector<Scalar>& v )
 {
   RTOpPack::ROpWeightedNorm2<Scalar> wght_norm_2_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> wght_norm_2_targ = wght_norm_2_op.reduct_obj_create();
@@ -97,7 +101,8 @@ Scalar TSFCore::norm_2( const Vector<Scalar>& w, const Vector<Scalar>& v )
 }
 
 template<class Scalar>
-Scalar TSFCore::norm_inf( const Vector<Scalar>& v_rhs )
+typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+TSFCore::norm_inf( const Vector<Scalar>& v_rhs )
 {
   RTOpPack::ROpNormInf<Scalar> norm_inf_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> norm_inf_targ = norm_inf_op.reduct_obj_create();
@@ -191,6 +196,15 @@ void TSFCore::Vt_S(
 }
 
 template<class Scalar>
+void TSFCore::V_StV( Vector<Scalar>* y, const Scalar& alpha, const Vector<Scalar> &x )
+{
+	linear_combination(
+		1,Teuchos::arrayArg<Scalar>(alpha)(),Teuchos::arrayArg<const Vector<Scalar>*>(&x)()
+		,Teuchos::ScalarTraits<Scalar>::zero(),y
+		);
+}
+
+template<class Scalar>
 void TSFCore::Vp_StV( Vector<Scalar>* v_lhs, const Scalar& alpha, const Vector<Scalar>& v_rhs )
 {
 #ifdef _DEBUG
@@ -202,6 +216,15 @@ void TSFCore::Vp_StV( Vector<Scalar>* v_lhs, const Scalar& alpha, const Vector<S
 	applyOp<Scalar>(axpy_op,1,vecs,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
 }
 
+template<class Scalar>
+void TSFCore::Vp_V( Vector<Scalar>* y, const Vector<Scalar>& x, const Scalar& beta )
+{
+	linear_combination(
+		1,Teuchos::arrayArg<Scalar>(Teuchos::ScalarTraits<Scalar>::one())()
+		,Teuchos::arrayArg<const Vector<Scalar>*>(&x)()
+		,beta,y
+		);
+}
 
 template<class Scalar>
 void TSFCore::abs( Vector<Scalar>* y, const Vector<Scalar>& x )

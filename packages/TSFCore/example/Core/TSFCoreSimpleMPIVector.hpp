@@ -60,6 +60,13 @@ void SimpleMPIVector<Scalar>::getLocalData( Scalar** values, ptrdiff_t* stride )
 	*stride = 1;
 }
 
+template<class Scalar>
+void SimpleMPIVector<Scalar>::commitLocalData( Scalar** values )
+{
+	// Nothing to commit!
+	*values = NULL;
+}
+
 } // end namespace TSFCore
 
 #endif // TSFCORE_SIMPLE_MPI_VECTOR_HPP

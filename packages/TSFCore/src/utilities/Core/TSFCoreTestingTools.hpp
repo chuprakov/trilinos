@@ -35,7 +35,7 @@
 #include "TSFCoreTestingToolsDecl.hpp"
 #include "TSFCoreVector.hpp"
 #include "TSFCoreVectorStdOps.hpp"
-#include "TSFCoreLinearOp.hpp"
+#include "TSFCoreLinOp.hpp"
 
 template <class Scalar>
 Scalar TSFCore::relErr( const Scalar &s1, const Scalar &s2 )
@@ -89,10 +89,22 @@ std::ostream& TSFCore::operator<<( std::ostream& o, const Vector<Scalar>& v )
 template<class Scalar>
 std::ostream& TSFCore::operator<<( std::ostream& o, const LinearOp<Scalar>& M )
 {
-	namespace mmp = MemMngPack;
+	return o << TSFCore::LinOpNonPersisting<Scalar>(M);
+}
+
+template<class Scalar>
+std::ostream& TSFCore::operator<<( std::ostream& o, const LinOpPersisting<Scalar>& M )
+{
+	return o << TSFCore::LinOpNonPersisting<Scalar>(M);
+}
+
+template<class Scalar>
+std::ostream& TSFCore::operator<<( std::ostream& o, const LinOpNonPersisting<Scalar>& M )
+{
+	typedef Teuchos::ScalarTraits<Scalar> ST;
 	const Index dimDomain = M.domain()->dim(), dimRange = M.range()->dim();
 	// We will extract by column if op==NOTRANS is supported and by row otherwise
-	const ETransp opM = M.opSupported(NOTRANS) ? NOTRANS : TRANS;
+	const ETransp opM = ( M.opSupported(NOTRANS) ? NOTRANS : TRANS );
 	// Copy into dense matrix (by column or row)
 	Teuchos::RefCountPtr<Vector<Scalar> >
 		e_j = ( opM==NOTRANS ? M.domain() : M.range()  )->createMember(),
@@ -107,8 +119,8 @@ std::ostream& TSFCore::operator<<( std::ostream& o, const LinearOp<Scalar>& M )
 		rs = ( opM==NOTRANS ? dimRange  : 1        );  // stride for rows or columns
 	Index i, j;
 	for( j = 1; j <= dimOpMDomain; ++j ) {
-		TSFCore::assign( e_j.get(), 0.0 );
-		TSFCore::set_ele( j, 1.0, e_j.get() );
+		TSFCore::assign( e_j.get(), ST::zero() );
+		TSFCore::set_ele( j, ST::one(), e_j.get() );
 		M.apply(opM,*e_j,t.get());  // extract the ith column or row
 		t->getSubVector(Range1D(),&sv);
 		for( i = 1; i <= dimOpMRange; ++i ) Md[ (i-1)*cs + (j-1)*rs ] = sv(i);
@@ -122,5 +134,6 @@ std::ostream& TSFCore::operator<<( std::ostream& o, const LinearOp<Scalar>& M )
 	}
 	return o;
 }
+
 
 #endif // TSFCORE_TESTING_TOOLS_HPP

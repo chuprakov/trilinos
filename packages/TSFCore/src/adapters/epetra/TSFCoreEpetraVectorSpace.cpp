@@ -30,6 +30,7 @@
 // TSFCoreEpetraVectorSpace.cpp
 
 #include "TSFCoreEpetraVectorSpace.hpp"
+#include "TSFCoreMPIVectorSpaceBase.hpp"
 #include "TSFCoreEpetraVectorSpaceFactory.hpp"
 #ifdef TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR
 #  include "TSFCoreEpetraMultiVector.hpp"

@@ -41,8 +41,8 @@ namespace TSFCore {
 
 template<class Scalar>
 LinearOpTester<Scalar>::LinearOpTester(
-	const double      warning_tol
-	,const double     error_tol
+	const ScalarMag      warning_tol
+	,const ScalarMag     error_tol
 	)
 	:warning_tol_(warning_tol)
 	,error_tol_(error_tol)
@@ -54,7 +54,10 @@ bool LinearOpTester<Scalar>::check(
 	,std::ostream               *out
 	) const
 {
+	typedef Teuchos::ScalarTraits<Scalar> ST;
 	bool success = true, result;
+	const Scalar one = ST::one();
+	const Scalar half = Scalar(0.5)*one;
 	if(out) {
 		*out
 			<< "\n*** Entering LinearOpTester<Scalar>::check(...)\n"
@@ -81,40 +84,40 @@ bool LinearOpTester<Scalar>::check(
 	if(out)
 		*out
 			<< "\nChecking that the transpose agrees with the non-transpose operator as:"
-			<< "\n  (v2'*op*0.5)*v1 == v2'*(0.5*op*v1)"
-			<< "\n  \\___________/          \\_________/"
-			<< "\n       v4'                    v3"
+			<< "\n  <0.5*op*v2,v1> == <v2,0.5*op*v1>"
+			<< "\n   \\_______/            \\_______/"
+			<< "\n      v4                   v3"
 			<< "\n"
-			<< "\n  v4'*v2 == v2'*v3"
+			<< "\n         <v4,v2> == <v2,v3>"
 			<< std::endl;
-	
+
 	if(out) *out << "\nv1 = randomize(-1,+1); ...\n" ;
 	Teuchos::RefCountPtr<Vector<Scalar> >	v1 = domain->createMember();
-	TSFCore::randomize( -1.0, +1.0, &*v1 );
+	TSFCore::randomize( -one, +one, &*v1 );
 
 	if(out) *out << "\nv2 = randomize(-1,+1); ...\n" ;
 	Teuchos::RefCountPtr<Vector<Scalar> >	v2 = range->createMember();
-	TSFCore::randomize( -1.0, +1.0, &*v2 );
+	TSFCore::randomize( -one, +one, &*v2 );
 
 	if(out) *out << "\nv3 = 0.5*op*v1 ...\n" ;
 	Teuchos::RefCountPtr<Vector<Scalar> >	v3 = range->createMember();
-	op.apply( NOTRANS, *v1, &*v3, 0.5 );
+	op.apply( NOTRANS, *v1, &*v3, half );
 
 	if(out) *out << "\nv4 = 0.5*op'*v2 ...\n" ;
 	Teuchos::RefCountPtr<Vector<Scalar> >	v4 = domain->createMember();
-	op.apply( TRANS, *v2, &*v4, 0.5 );
+	op.apply( TRANS, *v2, &*v4, half );
 
 	const Scalar
-		prod1 = dot( *v1, *v4 ),
-		prod2 = dot( *v2, *v3 );
+		prod1 = domain->scalarProd(*v1,*v4),
+		prod2 = range->scalarProd(*v2,*v3);
 	
 	if(out)
 		*out
-			<< "\nprod1 = dot(v1,v4) = " << prod1
-			<< "\nprod2 = dot(v2,v3) = " << prod2 << std::endl;
+			<< "\nprod1 = <v1,v4> = " << prod1
+			<< "\nprod2 = <v2,v3> = " << prod2 << std::endl;
 		
 	const Scalar
-		rel_err = std::fabs(prod2 - prod1) / (std::fabs(prod2) + std::fabs(prod1));
+		rel_err = relErr(prod1,prod2);
 	
 	if(out)
 		*out << "\nrel_err(prod1,prod2) = " << rel_err;
@@ -124,14 +127,13 @@ bool LinearOpTester<Scalar>::check(
 
 	if( !result ) {
 		if(out)
-			*out << " > error_tol() = " << error_tol() << ": Error!";
+			*out << " > error_tol() = " << error_tol() << ": Error!\n";
 	}
 	else {
 		result = rel_err <= warning_tol();
-
 		if(out) {
 			if(!result)
-				*out << " > warning_tol() = " << warning_tol() << ": Warning!";
+				*out << " > warning_tol() = " << warning_tol() << ": Warning!\n";
 			else
 				*out << ": passed!\n";
 		}

@@ -1,0 +1,41 @@
+#
+# Include the global look and feel options
+#
+@INCLUDE               = ../../../../Trilinos/packages/TSFCore/doc/Doxyfile.options
+#
+# Package options
+#
+PROJECT_NAME           = "TSFCore::Nonlin"
+PROJECT_NUMBER         = "Version of the Day"
+OUTPUT_DIRECTORY       = ./nonlin
+#
+# What and how documentation is extracted
+#
+INPUT                  = ../../../../Trilinos/packages/TSFCore/doc/index_nonlin.doc \
+                         ../../../../Trilinos/packages/TSFCore/src/interfaces/Solvers \
+                         ../../../../Trilinos/packages/TSFCore/src/interfaces/Nonlin \
+                         ../../../../Trilinos/packages/TSFCore/src/utilities/Solvers \
+                         ../../../../Trilinos/packages/TSFCore/src/utilities/Nonlin
+FILE_PATTERNS          = *.h *.hpp *.cpp
+RECURSIVE              = YES
+EXCLUDE                = 
+EXCLUDE_PATTERNS       = *.x *.o *.out
+EXAMPLE_PATH           = ../../../../Trilinos/packages/TSFCore/example\Nonlin \
+                         ../../../../Trilinos/packages/TSFCore/example\Nonlin\NP2DSim \
+                         ../../../../Trilinos/packages/TSFCore/example\Nonlin\NP2DOpt
+EXAMPLE_PATTERNS       = *.cpp *.hpp
+IMAGE_PATH             = ../../../../Trilinos/packages/TSFCore/doc/images 
+INPUT_FILTER           = 
+ALPHABETICAL_INDEX     = YES
+IGNORE_PREFIX          = 
+#
+#
+# Links to other packages
+#
+TAGFILES               = ../../../../Trilinos/packages/teuchos/doc/teuchos.tag=../../../../../Trilinos/packages/teuchos/doc/html \
+                         ../../../../Trilinos/packages/TSFCoreUtils/doc/TSFCoreUtils.tag=../../../../../Trilinos/packages/TSFCoreUtils/doc/html \
+                         ../../../../Trilinos/packages/TSFCore/doc/TSFCore.tag=../../../../../Trilinos/packages/TSFCore/doc/html \
+                         ../../../../Trilinos/packages/epetra/doc/epetra.tag=../../../../../Trilinos/packages/epetra/doc/html
+GENERATE_TAGFILE       = TSFCoreNonlin.tag
+ALLEXTERNALS           = NO
+EXTERNAL_GROUPS        = NO

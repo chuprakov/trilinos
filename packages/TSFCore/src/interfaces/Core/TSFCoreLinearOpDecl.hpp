@@ -47,49 +47,71 @@ namespace TSFCore {
  * <li><tt>Y = alpha*op(M)*X + beta*Y</tt>  (multi-vector version)
  * </ul>
  *
- * through the <tt>apply()</tt> methods where <tt>y</tt> and
+ * through the <tt>apply()</tt> functions where <tt>y</tt> and
  * <tt>x</tt> are <tt>Vector</tt> objects while <tt>Y</tt> and
  * <tt>X</tt> are <tt>MultiVector</tt> objects.  The reason for the
  * exact form of the above operations is that there are direct BLAS
- * and equivalent versions of these operations.
+ * and equivalent versions of these operations and performing a
+ * sum-into multiplication is more efficient in general.
  *
- * A linear operator has <tt>domain()</tt> and <tt>range()</tt> vector
- * spaces associated with it for the vectors <tt>x</tt> and <tt>y</tt>
- * that lie in the domain and the range spaces of the non-transposed
- * linear operator <tt> y = M*x </tt>.
+ * A linear operator has vector spaces associated with it for the
+ * vectors <tt>x</tt> and <tt>y</tt> that lie in the domain and the
+ * range spaces of the non-transposed linear operator <tt>y = M*x</tt>
+ * and these spaces are returned by <tt>domain()</tt> and
+ * <tt>range()</tt>.
+ *
+ * Note that the vector spaces returned from <tt>domain()</tt> and
+ * <tt>range()</tt> may have specialized implementations of the scalar
+ * product \f$<u,w>\f$ (i.e. \f$<u,w> \neq u^T w\f$ in general).  As a
+ * result, the operator and adjoint operator must obey the defined
+ * scalar product.  Specifically, for any two vectors \f$w\f$ (in the
+ * domain space \f$\mathcal{D}\f$) and \f$u\f$ (in the range space
+ * \f$\mathcal{R}\f$) the adjoint operation must obey:
+ *
+ \f[
+  <u,A v>_{\mathcal{R}} = <A^T u, v>_{\mathcal{D}}
+ \f]
+ *
+ * where \f$<.,.>_{\mathcal{R}}\f$ is the scalar product defined by
+ * <tt>this->range()->scalarProd()</tt> and \f$<.,.>_{\mathcal{D}}\f$
+ * is the scalar product defined by
+ * <tt>this->domain()->scalarProd()</tt>.  This property of the
+ * adjoint can be checked numerically, if adjoints are supported,
+ * using the testing utility class <tt>LinearOpTester</tt>.
  *
  * Note that it is strictly forbidden to alias the input/output
  * objects <tt>y</tt> and <tt>Y</tt> with the input objects <tt>x</tt>
  * and <tt>X</tt>.
  *
- * If a <tt>%LinearOp</tt> subclass can not support a particular
- * value of <tt>M_tans</tt> in the <tt>apply()</tt> methods, then the
- * method <tt>opSupported()</tt> returns <tt>false</tt> for that
+ * If a <tt>%LinearOp</tt> subclass can not support a particular value
+ * of <tt>M_tans</tt> in the <tt>apply()</tt> functions, then the function
+ * <tt>opSupported()</tt> must return <tt>false</tt> for that
  * particular value of <tt>M_trans</tt>.
  *
  * <b>Notes for subclass developers</b>
  *
- * There are only three methods that a subclass is required to
+ * There are only three functions that a subclass is required to
  * override: <tt>domain()</tt>, <tt>range()</tt> and <tt>apply()</tt>.
- * Note that the methods <tt>domain()</tt> and <tt>range()</tt> should
+ * Note that the functions <tt>domain()</tt> and <tt>range()</tt> should
  * simply return <tt>VectorSpace</tt> objects for subclasses that are
  * already defined for the vectors that the linear operator interacts
- * with through the method <tt>apply()</tt>.  Therefore, given that
+ * with through the function <tt>apply()</tt>.  Therefore, given that
  * approprate <tt>VectorSpace</tt> and <tt>Vector</tt> subclasses exist,
- * The only real work involved in implementing a <tt>LinearOp</tt> 
- * is defining a single method <tt>apply()</tt>.
+ * the only real work involved in implementing a <tt>LinearOp</tt> 
+ * is defining a single function <tt>apply()</tt>.
  *
  * If a <tt>LinearOp</tt> subclass can not support a particular value
  * of the transpose argument <tt>M_trans</tt> in the <tt>apply()</tt>
- * methods, then the method <tt>opSuported(M_trans)</tt> must be
+ * functions, then the function <tt>opSuported(M_trans)</tt> must be
  * overriden to return <tt>false</tt> for this value of
  * <tt>M_trans</tt>.
  *
  * If possible, the subclass should also override the <tt>clone()</tt>
- * method with allows clients to create copies of a <tt>LinearOp</tt>
- * object.  This functionality is very important in some
- * circumstances.  However, this functionality is not required and
- * <tt>clone()</tt> returns a null smart pointer object.
+ * function with allows clients to create copies of a
+ * <tt>LinearOp</tt> object.  This functionality is very important in
+ * some circumstances.  However, this functionality is not required
+ * and the default <tt>clone()</tt> implementation returns a null
+ * smart pointer object.
  *
  * If multi-vectors are supported in general by the application and
  * linear algebra library then, if possible, the subclass should also
@@ -97,12 +119,14 @@ namespace TSFCore {
  * cases, a specialized multi-vector version will outperform the
  * default implementation (which is based on the single vector
  * version) in this class.
+ *
+ * \ingroup TSFCore_fundamental_interfaces_grp
  */
 template<class Scalar>
 class LinearOp : virtual public OpBase<Scalar> {
 public:
 
-	/** @name Pure virtual methods (must be overridden by subclass) */
+	/** @name Pure virtual functions (must be overridden by subclass) */
 	//@{
 
 	///
@@ -137,7 +161,7 @@ public:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> Is it not obvious?  After the method returns the vector <tt>y</tt>
+	 * <li> Is it not obvious?  After the function returns the vector <tt>y</tt>
 	 *      is transformed as indicated above.
 	 * </ul>
 	 */
@@ -145,8 +169,8 @@ public:
 		const ETransp            M_trans
 		,const Vector<Scalar>    &x
 		,Vector<Scalar>          *y
-		,const Scalar            alpha = 1.0
-		,const Scalar            beta  = 0.0
+		,const Scalar            alpha = Teuchos::ScalarTraits<Scalar>::one()
+		,const Scalar            beta  = Teuchos::ScalarTraits<Scalar>::zero()
 		) const = 0;
 
 	//@}
@@ -157,7 +181,7 @@ public:
 	///
 	/** Clone the linear operator object (if supported).
 	 *
-	 * The primary purpose for this method is to allow a client to
+	 * The primary purpose for this function is to allow a client to
 	 * capture the current state of a linear operator object and be
 	 * guaranteed that some other client will not alter its behavior.
 	 * A smart implementation will use reference counting and lazy
@@ -205,19 +229,19 @@ public:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> Is it not obvious?  After the method returns the multi-vector <tt>Y</tt>
+	 * <li> Is it not obvious?  After the function returns the multi-vector <tt>Y</tt>
 	 *      is transformed as indicated above.
 	 * </ul>
 	 *
-	 * This method has a default implementation in terms of the
-	 * <tt>apply()</tt> method for vectors.
+	 * This function has a default implementation in terms of the
+	 * <tt>apply()</tt> function for vectors.
 	 */
 	virtual void apply(
 		const ETransp                 M_trans
 		,const MultiVector<Scalar>    &X
 		,MultiVector<Scalar>          *Y
-		,const Scalar                 alpha = 1.0
-		,const Scalar                 beta  = 0.0
+		,const Scalar                 alpha = Teuchos::ScalarTraits<Scalar>::one()
+		,const Scalar                 beta  = Teuchos::ScalarTraits<Scalar>::zero()
 		) const;
 
 	//@}

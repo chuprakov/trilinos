@@ -27,13 +27,14 @@
 // @HEADER
 
 // ///////////////////////////////////////////////////////////////
-// TSFCoreVectorSpaceStdBase.hpp
+// TSFCoreScalarProdVectorSpaceBase.hpp
 
 #ifndef TSFCORE_VECTOR_SPACE_STD_BASE_HPP
 #define TSFCORE_VECTOR_SPACE_STD_BASE_HPP
 
-#include "TSFCoreVectorSpaceStdBaseDecl.hpp"
-#include "TSFCoreDotProd.hpp"
+#include "TSFCoreScalarProdVectorSpaceBaseDecl.hpp"
+#include "TSFCoreVectorSpace.hpp"
+#include "TSFCoreEuclideanScalarProd.hpp"
 #include "TSFCoreAssertOp.hpp"
 
 namespace TSFCore {
@@ -41,19 +42,19 @@ namespace TSFCore {
 // Constructors / initializers
 
 template<class Scalar>
-VectorSpaceStdBase<Scalar>::VectorSpaceStdBase()
-	:scalarProd_(Teuchos::rcp(new DotProd<Scalar>()))
+ScalarProdVectorSpaceBase<Scalar>::ScalarProdVectorSpaceBase()
+	:scalarProd_(Teuchos::rcp(new EuclideanScalarProd<Scalar>()))
 {}
 	
 template<class Scalar>
-VectorSpaceStdBase<Scalar>::VectorSpaceStdBase( const Teuchos::RefCountPtr<const ScalarProd<Scalar> > &scalarProd )
+ScalarProdVectorSpaceBase<Scalar>::ScalarProdVectorSpaceBase( const Teuchos::RefCountPtr<const ScalarProd<Scalar> > &scalarProd )
 	:scalarProd_(scalarProd)
 {
 	TEST_FOR_EXCEPT( scalarProd.get()==NULL );
 }
 
 template<class Scalar>
-void VectorSpaceStdBase<Scalar>::setScalarProd( const Teuchos::RefCountPtr<const ScalarProd<Scalar> > &scalarProd )
+void ScalarProdVectorSpaceBase<Scalar>::setScalarProd( const Teuchos::RefCountPtr<const ScalarProd<Scalar> > &scalarProd )
 {
 	TEST_FOR_EXCEPT( scalarProd.get()==NULL );
 	scalarProd_ = scalarProd;
@@ -61,7 +62,7 @@ void VectorSpaceStdBase<Scalar>::setScalarProd( const Teuchos::RefCountPtr<const
 
 template<class Scalar>
 Teuchos::RefCountPtr<const ScalarProd<Scalar> >
-VectorSpaceStdBase<Scalar>::getScalarProd() const
+ScalarProdVectorSpaceBase<Scalar>::getScalarProd() const
 {
 	return scalarProd_;
 }
@@ -69,22 +70,22 @@ VectorSpaceStdBase<Scalar>::getScalarProd() const
 // Overridden from VectorSpace
 
 template<class Scalar>
-Scalar VectorSpaceStdBase<Scalar>::scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const
+Scalar ScalarProdVectorSpaceBase<Scalar>::scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const
 {
 #ifdef _DEBUG
-	TSFCORE_ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProd(...)",*x.space(),*this);
-	TSFCORE_ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProd(...)",*y.space(),*this);
+	TSFCORE_ASSERT_VEC_SPACES("ScalarProdVectorSpaceBase<Scalar>::scalarProd(...)",*x.space(),*this);
+	TSFCORE_ASSERT_VEC_SPACES("ScalarProdVectorSpaceBase<Scalar>::scalarProd(...)",*y.space(),*this);
 #endif
 	return scalarProd_->scalarProd(x,y);
 }
 
 template<class Scalar>
-void VectorSpaceStdBase<Scalar>::scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const
+void ScalarProdVectorSpaceBase<Scalar>::scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const
 {
 #ifdef _DEBUG
-	TSFCORE_ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProds(...)",*X.range(),*this);
-	TSFCORE_ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProds(...)",*Y.range(),*this);
-	TSFCORE_ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProds(...)",*X.domain(),*Y.domain());
+	TSFCORE_ASSERT_VEC_SPACES("ScalarProdVectorSpaceBase<Scalar>::scalarProds(...)",*X.range(),*this);
+	TSFCORE_ASSERT_VEC_SPACES("ScalarProdVectorSpaceBase<Scalar>::scalarProds(...)",*Y.range(),*this);
+	TSFCORE_ASSERT_VEC_SPACES("ScalarProdVectorSpaceBase<Scalar>::scalarProds(...)",*X.domain(),*Y.domain());
 #endif
 	scalarProd_->scalarProds(X,Y,scalar_prods);
 }

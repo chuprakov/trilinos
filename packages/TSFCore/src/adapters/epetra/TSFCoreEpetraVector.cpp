@@ -30,7 +30,9 @@
 // TSFCoreEpetraVector.cpp
 
 #include "TSFCoreEpetraVector.hpp"
+#include "TSFCoreMPIVectorBase.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
+#include "TSFCoreMPIVectorBase.hpp"
 #include "Teuchos_TestForException.hpp"
 
 #include "Epetra_Vector.h"
@@ -88,10 +90,38 @@ EpetraVector::mpiSpace() const
 	return epetra_vec_spc_; // will be null if this is uninitialized!
 }
 
-void EpetraVector::getLocalData( Scalar** values, ptrdiff_t* stride )
+void EpetraVector::getLocalData( Scalar** localValues, Index* stride )
 {
-	*values = &(*epetra_vec_)[0];
+#ifdef _DEBUG
+	TEST_FOR_EXCEPT( localValues==NULL || stride==NULL );
+#endif
+	*localValues = &(*epetra_vec_)[0];
 	*stride = 1;
+}
+
+void EpetraVector::commitLocalData( Scalar* localValues )
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPT( localValues != &(*epetra_vec_)[0] );
+#endif
+	// Nothing to commit!
+}
+
+void EpetraVector::getLocalData( const Scalar** localValues, Index* stride ) const
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPT( localValues==NULL || stride==NULL );
+#endif
+	*localValues = &(*epetra_vec_)[0];
+	*stride = 1;
+}
+
+void EpetraVector::freeLocalData( const Scalar* localValues ) const
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPT( localValues != &(*epetra_vec_)[0] );
+#endif
+	// Nothing to commit!
 }
 
 } // end namespace TSFCore

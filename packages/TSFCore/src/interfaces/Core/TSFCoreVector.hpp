@@ -36,10 +36,10 @@
 //#define TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
 
 #include "TSFCoreVectorDecl.hpp"
-#include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreMultiVector.hpp"
 #include "TSFCoreAssertOp.hpp"
+#include "TSFCoreSerialVectorSpaceStd.hpp"
 #include "RTOpPack_ROpGetSubVector.hpp"
 #include "RTOpPack_TOpSetSubVector.hpp"
 #include "Teuchos_TestForException.hpp"
@@ -132,24 +132,24 @@ void Vector<Scalar>::setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub
 
 template<class Scalar>
 Teuchos::RefCountPtr< const VectorSpace<Scalar> >
-Vector<Scalar>::domain() const
-{
-#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
-  std::cerr << "\nVector<Scalar>::domain() called!\n";
-#endif
-  if(!domain_.get())
-    const_cast<Vector<Scalar>*>(this)->domain_ = Teuchos::rcp(new SerialVectorSpace<Scalar>(1));
-  return domain_;
-}
-
-template<class Scalar>
-Teuchos::RefCountPtr< const VectorSpace<Scalar> >
 Vector<Scalar>::range() const
 {
 #ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
   std::cerr << "\nVector<Scalar>::range() called!\n";
 #endif
   return this->space();
+}
+
+template<class Scalar>
+Teuchos::RefCountPtr< const VectorSpace<Scalar> >
+Vector<Scalar>::domain() const
+{
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nVector<Scalar>::domain() called!\n";
+#endif
+  if(!domain_.get())
+    const_cast<Vector<Scalar>*>(this)->domain_ = Teuchos::rcp(new SerialVectorSpaceStd<Scalar>(1));
+  return domain_;
 }
 
 // Overridden from LinearOp
@@ -166,15 +166,7 @@ void Vector<Scalar>::apply(
   typedef Teuchos::ScalarTraits<Scalar> ST;
   // Validate input
 #ifdef _DEBUG
-  TEST_FOR_EXCEPT( y==NULL );
-  if( M_trans == NOTRANS ) {
-    TEST_FOR_EXCEPT( x.space()->dim() != 1 );
-    VopV_assert_compatibility( *y, *this );
-  }
-  else {
-    VopV_assert_compatibility( x, *this );
-    TEST_FOR_EXCEPT( y->space()->dim() != 1 );
-  }
+	TSFCORE_ASSERT_LINEAR_OP_VEC_APPLY_SPACES("Vector<Scalar>::apply()",*this,M_trans,x,y);
 #endif
   // Here M = m (where m is a column vector)
   if( M_trans == NOTRANS ) {
@@ -185,16 +177,14 @@ void Vector<Scalar>::apply(
     Vt_S( y, beta );
     Vp_StV( y, get_ele(x,1), *this );
   }
-  else {
-    // y = beta*y + m'*x  (y is a scalar!)
+  else {    // y = beta*y + m'*x  (y is a scalar!)
 #ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
     std::cerr << "\nVector<Scalar>::apply(...) : y = beta*y + m'*x  (y is a scalar!)\n";
 #endif
     Scalar y_inout = get_ele(*y,1);
-    if( beta == ST::zero() )
-      y_inout = dot(*this,x);
-    else
-      y_inout = beta*y_inout + dot(*this,x);
+    if( beta == ST::zero() )    y_inout = ST::zero();
+    else                        y_inout = beta*y_inout;
+		y_inout += space()->scalarProd(*this,x);
     set_ele(1,y_inout,y);
   }
 }

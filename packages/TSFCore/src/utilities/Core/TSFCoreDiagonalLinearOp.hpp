@@ -80,14 +80,14 @@ void DiagonalLinearOp<Scalar>::uninitialize(
 
 template<class Scalar>
 Teuchos::RefCountPtr< const VectorSpace<Scalar> >
-DiagonalLinearOp<Scalar>::domain() const
+DiagonalLinearOp<Scalar>::range() const
 {
 	return diag_->space();
 }
 
 template<class Scalar>
 Teuchos::RefCountPtr< const VectorSpace<Scalar> >
-DiagonalLinearOp<Scalar>::range() const
+DiagonalLinearOp<Scalar>::domain() const
 {
 	return diag_->space();
 }

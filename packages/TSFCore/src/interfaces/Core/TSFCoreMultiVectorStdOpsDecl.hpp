@@ -40,6 +40,8 @@
 namespace TSFCore {
 
 /** \defgroup TSFCore_MultiVectorStdOps_grp Collection of standard multi-vector operations.
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 //@{
 

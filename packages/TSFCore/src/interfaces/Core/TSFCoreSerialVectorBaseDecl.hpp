@@ -37,9 +37,9 @@
 namespace TSFCore {
 
 ///
-/** Node subclass of serial vectors.
+/** \brief Efficient base subclass of serial vectors.
  *
- * This node subclass contains the an implementation of
+ * This base subclass contains the an implementation of
  * <tt>applyOp()</tt> that relies on implementations of the methods
  * <tt>getSubVector()</tt>, <tt>freeSubVector()</tt> and
  * <tt>commitSubVector()</tt>.  This class also contains default
@@ -49,9 +49,10 @@ namespace TSFCore {
  * <b>Notes to subclass develoeprs</b>
  *
  * All that is needed to develop a concrete subclass is to define the
- * pure virtual functions <tt>space()</tt> (for which a subclass of
- * <tt>SerialVectorSpaceBase</tt> should be usee) and
- * <tt>getData()</tt>.
+ * pure virtual functions <tt>getData()</tt> and <tt>space()</tt> (for
+ * which a subclass of <tt>SerialVectorSpaceBase</tt> should be used).
+ *
+ * \ingroup TSFCore_adapters_serial_support_grp
  */
 template<class Scalar>
 class SerialVectorBase : virtual public Vector<Scalar> {
@@ -60,15 +61,20 @@ public:
 	///
 	using Vector<Scalar>::applyOp;
 
+	/** @name Constructors */
+	//@{
+
 	///
 	SerialVectorBase();
+
+	///@}
 
 	/** @name Pure virtual methods to be overridden by subclasses */
 	//@{
 
 	///
-	/** Returns a non-<tt>const</tt> pointer to the beginning of the
-	 * local vector data (and its stride).
+	/** \brief Sets a non-<tt>const</tt> pointer to the beginning of the
+	 * vector data (and its stride).
 	 *
 	 * @param  values  [out] On output <tt>*values</tt> will point to an array of the values.
 	 * @param  stride  [out] On output <tt>*stride</tt> will be the stride between elements in <tt>(*values)[]</tt>
@@ -77,8 +83,37 @@ public:
 	 * <li> <tt>values!=NULL</tt>
 	 * <li> <tt>stride!=NULL</tt>
 	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>*values!=NULL</tt>
+	 * <li> <tt>*stride!=0</tt>
+	 * </ul>
+	 *
+	 * Note, the data view returned from this function must be commited
+	 * back by a call to <tt>this->commitData()</tt> in case dynamic
+	 * memory allocation had to be used and therefore the pointer
+	 * returned does not point to interal storage.
 	 */
 	virtual void getData( Scalar** values, Index* stride ) = 0;
+
+	///
+	/** \brief Commits updated vector data that was accessed using <tt>this->getData()</tt>.
+	 *
+	 * @param  values  [in/out] On input <tt>*values</tt> must have been set by
+	 *                 a previous call to <tt>this->getData()</tt>.  On output
+	 *                 <tt>*values==NULL</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>values!=NULL</tt>
+	 * <li> <tt>*values!=NULL</tt>
+	 * </ul>
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>*this</tt> will be updated to the entires in <tt>*values</tt>.
+	 * <li> <tt>*values==NULL</tt>
+	 * </ul>
+	 */
+	virtual void commitData( Scalar** values ) = 0;
 
 	//@}
 
@@ -86,8 +121,7 @@ public:
 	//@{
 
 	///
-	/** Returns a <tt>const</tt> pointer to the beginning of the local
-	 * vector data.
+	/** \brief Returns a <tt>const</tt> pointer to the beginning of the vector data.
 	 *
 	 * @param  values  [out] On output <tt>*values</tt> will point to an array of the values.
 	 * @param  stride  [out] On output <tt>*stride</tt> will be the stride between elements in <tt>(*values)[]</tt>
@@ -97,12 +131,49 @@ public:
 	 * <li> <tt>stride!=NULL</tt>
 	 * </ul>
 	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>*values!=NULL</tt>
+	 * <li> <tt>*stride!=0</tt>
+	 * </ul>
+	 *
+	 * Note, the data view returned from this function must be freed by
+	 * a call to <tt>this->freeData()</tt> in case dynamic memory
+	 * allocation had to be used and therefore the pointer returned does
+	 * not point to interal storage.
+	 *
 	 * The default implementation performs a <tt>const_cast</tt> of
 	 * <tt>this</tt> and then calls the non-<tt>const</tt> version of
 	 * this function.  An override of this function should only be
-	 * performed to save on an extra virtual function call.
+	 * provided if dynamic memory allocation is used and data copies
+	 * have to be performed.  If this function is overridden then the
+	 * function <tt>freeData()</tt> must be overridden as well!
 	 */
 	virtual void getData( const Scalar** values, Index* stride ) const;
+
+	///
+	/** \brief Frees a <tt>const</tt> view of vector data that was
+	 * accessed using <tt>this->getData()</tt>.
+	 *
+	 * @param  values  [in/out] On input <tt>*values</tt> must have been set by
+	 *                 a previous call to <tt>this->getData()</tt>.  On output
+	 *                 <tt>*values==NULL</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>values!=NULL</tt>
+	 * <li> <tt>*values!=NULL</tt>
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>*values==NULL</tt>
+	 * </ul>
+	 *
+	 * The default implementation performs a <tt>const_cast</tt> of
+	 * <tt>this</tt> and then calls the non-<tt>const</tt> function
+	 * <tt>this->commitData()</tt>.  If the <tt>const</tt> version of the
+	 * <tt>getData()</tt> function is overridden then this function must
+	 * be overridden also.
+	 */
+	virtual void freeData( const Scalar** values ) const;
 
 	//@}
 

@@ -35,7 +35,7 @@
 #define TSFCORE_NONLIN_NP_2D_SIM_HPP
 
 #include "TSFCoreNonlinNP2DSimDecl.hpp"
-#include "TSFCoreSerialVectorSpace.hpp"
+#include "TSFCoreSerialVectorSpaceStd.hpp"
 #include "TSFCoreMultiVector.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreExplicitVectorView.hpp"
@@ -75,7 +75,7 @@ NP2DSim<Scalar>::NP2DSim(
 		space_y_c_ = space_y_c;
 	}
 	else {
-		space_y_c_ = Teuchos::rcp(new SerialVectorSpace<Scalar>(2));
+		space_y_c_ = Teuchos::rcp(new SerialVectorSpaceStd<Scalar>(2));
 	}
 	factory_DcDy_ = Teuchos::rcp(new MemMngPack::AbstractFactoryStd<LinearOpWithSolve<Scalar>,LinearOpWithSolveIter<Scalar> >());
 }

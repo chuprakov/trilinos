@@ -33,6 +33,7 @@
 #define TSFCORE_SERIAL_VECTOR_SPACE_BASE_HPP
 
 #include "TSFCoreSerialVectorSpaceBaseDecl.hpp"
+#include "TSFCoreScalarProdVectorSpaceBase.hpp"
 
 namespace TSFCore {
 

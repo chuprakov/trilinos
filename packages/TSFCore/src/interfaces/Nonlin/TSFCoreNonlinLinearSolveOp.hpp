@@ -63,7 +63,10 @@ void LinearSolveOp<Scalar>::solve(
 	,Solvers::ConvergenceTester<Scalar>    *convTester
 	) const
 {
-	Mp_MtM_assert_compatibility(X,NOTRANS,*this,M_trans==NOTRANS?TRANS:NOTRANS,Y,NOTRANS);
+#ifdef _DEBUG
+	TEST_FOR_EXCEPT(X==NULL);
+	TSFCORE_ASSERT_LINEAR_OP_MULTIVEC_APPLY_SPACES("Vector<Scalar>::apply()",*this,M_trans,*X,&Y);
+#endif
 	const VectorSpace<Scalar> &space_mv_rows = *Y.domain();
 	const Index               num_mv_cols    = space_mv_rows.dim();
 	//

@@ -27,19 +27,20 @@
 // @HEADER
 
 // /////////////////////////////////////////////////////////////////
-// TSFCoreSerialVector.hpp
+// TSFCoreSerialVectorStd.hpp
 
-#ifndef TSFCORE_VECTOR_SERIAL_HPP
-#define TSFCORE_VECTOR_SERIAL_HPP
+#ifndef TSFCORE_VECTOR_SERIAL_STD_HPP
+#define TSFCORE_VECTOR_SERIAL_STD_HPP
 
-#include "TSFCoreSerialVectorDecl.hpp"
+#include "TSFCoreSerialVectorStdDecl.hpp"
 #include "TSFCoreSerialVectorBase.hpp"
+#include "TSFCoreSerialVectorSpaceStd.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace TSFCore {
 
 template<class Scalar>
-SerialVector<Scalar>::SerialVector(
+SerialVectorStd<Scalar>::SerialVectorStd(
 	const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc
 	)
 {
@@ -47,7 +48,7 @@ SerialVector<Scalar>::SerialVector(
 }
 
 template<class Scalar>
-SerialVector<Scalar>::SerialVector(
+SerialVectorStd<Scalar>::SerialVectorStd(
 	const Index dim
 	)
 {
@@ -55,7 +56,7 @@ SerialVector<Scalar>::SerialVector(
 }
 
 template<class Scalar>
-SerialVector<Scalar>::SerialVector(
+SerialVectorStd<Scalar>::SerialVectorStd(
 	const Teuchos::RefCountPtr<Scalar>                      &v
 	,const Index                                            vs
 	,const Index                                            dim
@@ -66,7 +67,7 @@ SerialVector<Scalar>::SerialVector(
 }
 
 template<class Scalar>
-void SerialVector<Scalar>::initialize(
+void SerialVectorStd<Scalar>::initialize(
 	const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc
 	)
 {
@@ -80,7 +81,7 @@ void SerialVector<Scalar>::initialize(
 }
 
 template<class Scalar>
-void SerialVector<Scalar>::initialize(
+void SerialVectorStd<Scalar>::initialize(
 	const Index dim
 	)
 {
@@ -92,7 +93,7 @@ void SerialVector<Scalar>::initialize(
 }
 
 template<class Scalar>
-void SerialVector<Scalar>::initialize(
+void SerialVectorStd<Scalar>::initialize(
 	const Teuchos::RefCountPtr<Scalar>                      &v
 	,const Index                                            vs
 	,const Index                                            dim
@@ -101,12 +102,12 @@ void SerialVector<Scalar>::initialize(
 {
 	if(vecSpc.get()) {
 #ifdef _DEBUG
-		TEST_FOR_EXCEPTION( vecSpc.get()!=NULL && dim != vecSpc->dim(), std::invalid_argument, "SerialVector<Scalar>::initialize(...): Error!" );
+		TEST_FOR_EXCEPTION( vecSpc.get()!=NULL && dim != vecSpc->dim(), std::invalid_argument, "SerialVectorStd<Scalar>::initialize(...): Error!" );
 #endif
 		space_serial_ = vecSpc;
 	}
 	else {
-		space_serial_ = Teuchos::rcp(new SerialVectorSpace<Scalar>(dim));
+		space_serial_ = Teuchos::rcp(new SerialVectorSpaceStd<Scalar>(dim));
 	}
 	v_       = v;
 	vs_      = vs;
@@ -116,7 +117,7 @@ void SerialVector<Scalar>::initialize(
 // Overridden from SerialVectorBase
 
 template<class Scalar>
-void SerialVector<Scalar>::getData( Scalar** values, Index* stride )
+void SerialVectorStd<Scalar>::getData( Scalar** values, Index* stride )
 {
 #ifdef _DEBUG
 	TEST_FOR_EXCEPT(values==NULL || stride==NULL);
@@ -126,24 +127,44 @@ void SerialVector<Scalar>::getData( Scalar** values, Index* stride )
 }
 
 template<class Scalar>
-void SerialVector<Scalar>::getData( const Scalar** values, Index* stride ) const
+void SerialVectorStd<Scalar>::commitData( Scalar** values )
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPT( values==NULL || *values==NULL );
+#endif
+	// There is nothing to commit, the client had direct pointer access to internal data!
+	*values = NULL;
+}
+
+template<class Scalar>
+void SerialVectorStd<Scalar>::getData( const Scalar** values, Index* stride ) const
 {
 #ifdef _DEBUG
 	TEST_FOR_EXCEPT(values==NULL || stride==NULL);
 #endif
 	*values = v_.get();
 	*stride = vs_;
+}
+
+template<class Scalar>
+void SerialVectorStd<Scalar>::freeData( const Scalar** values ) const
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPT( values==NULL || *values==NULL );
+#endif
+	// There is nothing to free!
+	*values = NULL;
 }
 
 // Overridden from Vector
 
 template<class Scalar>
 Teuchos::RefCountPtr< const VectorSpace<Scalar> >
-SerialVector<Scalar>::space() const
+SerialVectorStd<Scalar>::space() const
 {
 	return space_serial_;
 }
 
 } // end namespace TSFCore
 
-#endif // TSFCORE_VECTOR_SERIAL_HPP
+#endif // TSFCORE_VECTOR_SERIAL_STD_HPP

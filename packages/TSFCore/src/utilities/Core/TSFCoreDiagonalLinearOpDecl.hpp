@@ -61,6 +61,8 @@ namespace TSFCore {
  * where <tt>n = this->domain()->dim()</tt>.
  *
  * That is all there is to this subclass.
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 template<class Scalar>
 class DiagonalLinearOp : virtual public LinearOp<Scalar> {
@@ -142,15 +144,6 @@ public:
 
 	/** @name Overridden from OpBase */
 	//@{
-
-	///
-	/** Returns <tt>this->getDiag()->space()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li><tt>this->getDiag().get()!=NULL</tt>
-	 * </ul>
-	 */
-	Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const;
 	///
 	/** Returns <tt>this->getDiag()->space()</tt>.
 	 *
@@ -160,10 +153,17 @@ public:
 	 */
 	Teuchos::RefCountPtr< const VectorSpace<Scalar> > range() const;
 	///
+	/** Returns <tt>this->getDiag()->space()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li><tt>this->getDiag().get()!=NULL</tt>
+	 * </ul>
+	 */
+	Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const;
+	///
 	/** Returns <tt>true</tt>.
 	 */
 	bool opSupported(ETransp M_trans) const;
-
 	//@}
 
 	/** @name Overridden from LinearOp */

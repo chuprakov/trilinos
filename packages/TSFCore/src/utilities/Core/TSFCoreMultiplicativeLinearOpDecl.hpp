@@ -70,7 +70,34 @@ namespace TSFCore {
  \endverbatim
  *
  * for the case where <tt>M_trans!=NOTRANS</tt> (where the transpose
- * <tt>'</tt> either defines <tt>TRANS</t> or <tt>CONJTRANS</tt>).
+ * <tt>'</tt> either defines <tt>TRANS</tt> or <tt>CONJTRANS</tt>).
+ *
+ * Constructing a multiplicative operator is easy.  For example, suppose one
+ * wants to construct the multiplicative operator <tt>D = gamma * A * B' * C</tt>.
+ * To do so one would do:
+
+ \code
+ template<class Scalar>
+ void constructD(
+    const Scalar                                                   &gamma
+    ,const Teuchos::RefCountPtr<const TSFCore::LinearOp<Scalar> >  &A
+    ,const Teuchos::RefCountPtr<const TSFCore::LinearOp<Scalar> >  &B
+    ,const Teuchos::RefCountPtr<const TSFCore::LinearOp<Scalar> >  &C
+    ,Teuchos::RefCountPtr<const TSFCore::LinearOp<Scalar> >        *D
+    )
+ {
+   typedef TSFCore::LinOpPersisting<Scalar> LOP;
+   *D = Teuchos::rcp(
+     new TSFCore::MultiplicativeLinearOp<Scalar>(
+       3, Teuchos::arrayArg<LOP>(LOP(A),LOP(B,TSFCore::TRANS),LOP(C))(), gamma
+       )
+     );
+ }
+ \endcode
+ *
+
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 template<class Scalar>
 class MultiplicativeLinearOp : virtual public LinearOp<Scalar> {
@@ -171,15 +198,6 @@ public:
 
 	/** @name Overridden from OpBase */
 	//@{
-
-	///
-	/** Returns <tt>this->getOp(this->numOps()-1).domain()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li><tt>this->numOps()==0</tt>
-	 * </ul>
-	 */
-	Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const;
 	///
 	/** Returns <tt>this->getOp(0).range()</tt>.
 	 *
@@ -189,11 +207,18 @@ public:
 	 */
 	Teuchos::RefCountPtr< const VectorSpace<Scalar> > range() const;
 	///
+	/** Returns <tt>this->getOp(this->numOps()-1).domain()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li><tt>this->numOps()==0</tt>
+	 * </ul>
+	 */
+	Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const;
+	///
 	/** Returns <tt>true</tt> only if all constituent opeators support
 	 * <tt>M_trans</tt>.
 	 */
 	bool opSupported(ETransp M_trans) const;
-
 	//@}
 
 	/** @name Overridden from LinearOp */

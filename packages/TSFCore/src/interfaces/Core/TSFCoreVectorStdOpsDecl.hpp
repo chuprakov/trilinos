@@ -15,8 +15,7 @@
 // This library is distributed in the hope that it will be useful, but
 // WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//  
+// Lesser General Public License for more details//  
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
@@ -37,6 +36,8 @@
 namespace TSFCore {
 
 /** \defgroup TSFCore_VectorStdOps_grp Collection of standard vector operations.
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 //@{
 
@@ -49,73 +50,78 @@ Scalar sum( const Vector<Scalar>& v );
 ///
 /** Natural norm: <tt>result = sqrt(<v,v>)</tt>.
  *
- * Returns <tt>Teuchos::ScalarTraits<Scalar>::squareroot(v.space()->scalarProd(v,v))</tt>
+ * Returns <tt>Teuchos::ScalarTraits<Scalar>::squareroot(v.space()->scalarProd(v,v))</tt>.
  */
 template<class Scalar>
-Scalar norm( const Vector<Scalar>& v );
+typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+norm( const Vector<Scalar>& v );
 
 ///
-/** One (1) norm: <tt>result = ||v||1</tt>
+/** One (1) norm: <tt>result = ||v||1</tt>.
  */
 template<class Scalar>
-Scalar norm_1( const Vector<Scalar>& v );
+typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+norm_1( const Vector<Scalar>& v );
 
 ///
-/** Euclidean (2) norm: <tt>result = ||v||2</tt>
+/** Euclidean (2) norm: <tt>result = ||v||2</tt>.
  */
 template<class Scalar>
-Scalar norm_2( const Vector<Scalar>& v );
+typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+norm_2( const Vector<Scalar>& v );
 
 ///
-/** Weighted Euclidean (2) norm: <tt>result = sqrt( sum( w(i)*v(i)^2) )</tt>
+/** Weighted Euclidean (2) norm: <tt>result = sqrt( sum( w(i)*conj(v(i))*v(i)) )</tt>.
  */
 template<class Scalar>
-Scalar norm_2( const Vector<Scalar> &w, const Vector<Scalar>& v );
+typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+norm_2( const Vector<Scalar> &w, const Vector<Scalar>& v );
 
 ///
-/** Infinity norm: <tt>result = ||v||inf</tt>
+/** Infinity norm: <tt>result = ||v||inf</tt>.
  */
 template<class Scalar>
-Scalar norm_inf( const Vector<Scalar>& v_rhs );
+typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+norm_inf( const Vector<Scalar>& v_rhs );
 
 ///
-/** Dot product: <tt>result = x'*y</tt>
+/** Dot product: <tt>result = conj(x)'*y</tt>.
  */
 template<class Scalar>
 Scalar dot( const Vector<Scalar>& x, const Vector<Scalar>& y );
 
 ///
-/** Get single element: <tt>result = v(i)</tt>
+/** Get single element: <tt>result = v(i)</tt>.
  */
 template<class Scalar>
 Scalar get_ele( const Vector<Scalar>& v, Index i );
 
 ///
-/** Set single element: <tt>v(i) = alpha</tt>
+/** Set single element: <tt>v(i) = alpha</tt>.
  */
 template<class Scalar>
 void set_ele( Index i, Scalar alpha, Vector<Scalar>* v );
 
 ///
-/** Assign all elements to a scalar: <tt>y(i) = alpha, i = 1...y->space()->dim()</tt>
+/** Assign all elements to a scalar: <tt>y(i) = alpha, i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void assign( Vector<Scalar>* y, const Scalar& alpha );
 
 ///
-/** Vector assignment: <tt>y(i) = x(i), i = 1...y->space()->dim()</tt>
+/** Vector assignment: <tt>y(i) = x(i), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void assign( Vector<Scalar>* y, const Vector<Scalar>& x );
 
 ///
-/** Add a scalar to all elements: <tt>y(i) += alpha, i = 1...y->space()->dim()</tt>
+/** Add a scalar to all elements: <tt>y(i) += alpha, i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void Vp_S( Vector<Scalar>* y, const Scalar& alpha );
 
 ///
-/** Scale all elements by a scalar: <tt>y(i) *= alpha, i = 1...y->space()->dim()</tt>
+/** Scale all elements by a scalar: <tt>y(i) *= alpha, i = 1...y->space()->dim()</tt>.
  *
  * This takes care of the special cases of <tt>alpha == 0.0</tt>
  * (set <tt>y = 0.0</tt>) and <tt>alpha == 1.0</tt> (don't
@@ -125,37 +131,49 @@ template<class Scalar>
 void Vt_S( Vector<Scalar>* y, const Scalar& alpha );
 
 ///
-/** AXPY update: <tt>y(i) = alpha * x(i) + y(i), i = 1...y->space()->dim()</tt>
+/** Assign scaled vector: <tt>y(i) = alpha * x(i), i = 1...y->space()->dim()</tt>.
+ */
+template<class Scalar>
+void V_StV( Vector<Scalar>* y, const Scalar& alpha, const Vector<Scalar> &x );
+
+///
+/** AXPY update: <tt>y(i) = alpha * x(i) + y(i), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void Vp_StV( Vector<Scalar>* y, const Scalar& alpha, const Vector<Scalar>& x );
 
 ///
-/** <tt>y(i) = abs(x(i)), i = 1...y->space()->dim()</tt>
+/** Scale and update: <tt>y(i) = x(i) + beta*y(i), i = 1...y->space()->dim()</tt>.
+ */
+template<class Scalar>
+void Vp_V( Vector<Scalar>* y, const Vector<Scalar>& x, const Scalar& beta );
+
+///
+/** Element-wise absolute value<tt>y(i) = abs(x(i)), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void abs( Vector<Scalar>* y, const Vector<Scalar>& x );
 
 ///
-/** <tt>y(i) = 1/x(i), i = 1...y->space()->dim()</tt>
+/** Element-wise reciprocal: <tt>y(i) = 1/x(i), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void reciprocal( Vector<Scalar>* y, const Vector<Scalar>& x );
 
 ///
-/** <tt>y(i) += alpha * x(i) * v(i), i = 1...y->space()->dim()</tt>
+/** Element-wise product update: <tt>y(i) += alpha * x(i) * v(i), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void ele_wise_prod( const Scalar& alpha, const Vector<Scalar>& x, const Vector<Scalar>& v, Vector<Scalar>* y );
 
 ///
-/** <tt>y(i) = alpha * x(i) / v(i), i = 1...y->space()->dim()</tt>
+/** Element-wise division update: <tt>y(i) = alpha * x(i) / v(i), i = 1...y->space()->dim()</tt>.
  */
 template<class Scalar>
 void ele_wise_divide( const Scalar& alpha, const Vector<Scalar>& x, const Vector<Scalar>& v, Vector<Scalar>* y );
 
 ///
-/** <tt>y(i) = beta*y(i) + sum( alpha[k]*x[k](i), k=0...m-1 ), i = 1...y->space()->dim()</tt>.
+/** Linear combination: <tt>y(i) = beta*y(i) + sum( alpha[k]*x[k](i), k=0...m-1 ), i = 1...y->space()->dim()</tt>.
  *
  * @param  m          [in] Number of vectors x[]
  * @param  alpha      [in] Array (length <tt>m</tt>) of input scalars.
@@ -166,7 +184,6 @@ void ele_wise_divide( const Scalar& alpha, const Vector<Scalar>& x, const Vector
  * This function implements a general linear combination:
  \verbatim
  y(i) = beta*y(i) + alpha[0]*x[0](i) + alpha[1]*x[1](i) + ... + alpha[m-1]*x[m-1](i), i = 1...y->space()->dim()
-
  \endverbatim
  */
 template<class Scalar>
@@ -179,19 +196,22 @@ void linear_combination(
 	);
 
 ///
-/** Seed the random number generator used in <tt>randomize()</tt>
+/** Seed the random number generator used in <tt>randomize()</tt>.
+ *
+ * @param  s  [in] The seed for the random number generator.
+ *
+ * Note, this just calls <tt>Teuchos::ScalarTraits<Scalar>::seedrandom(s)</tt>.
  */
 template<class Scalar>
-void seed_randomize( unsigned int );
+void seed_randomize( unsigned int s );
 
 ///
-/** Generate a random vector with elements uniformly distrubuted
- * elements.
+/** Random vector generation: <tt>v(i) = rand(l,u), , i = 1...v->space()->dim()</tt>.
  * 
  * The elements <tt>v->getEle(i)</tt> are randomly generated between
  * <tt>[l,u]</tt>.
  *
- * The seed is set using <tt>seed_randomize()</tt>
+ * The seed is set using the above <tt>seed_randomize()</tt> function.
  */
 template<class Scalar>
 void randomize( Scalar l, Scalar u, Vector<Scalar>* v );
@@ -205,9 +225,11 @@ void randomize( Scalar l, Scalar u, Vector<Scalar>* v );
 
 template<class Scalar>
 inline
-Scalar TSFCore::norm( const Vector<Scalar>& v )
+typename Teuchos::ScalarTraits<Scalar>::magnitudeType
+TSFCore::norm( const Vector<Scalar>& v )
 {
-	return Teuchos::ScalarTraits<Scalar>::squareroot(v.space()->scalarProd(v,v));
+	typedef Teuchos::ScalarTraits<Scalar> ST;
+	return ST::magnitude(ST::squareroot(v.space()->scalarProd(v,v)));
 }
 
 

@@ -32,12 +32,13 @@
 #ifndef TSFCORE_MPI_VECTOR_SPACE_STD_DECL_HPP
 #define TSFCORE_MPI_VECTOR_SPACE_STD_DECL_HPP
 
-#include "TSFCoreMPIVectorSpaceBase.hpp"
+#include "TSFCoreMPIVectorSpaceBaseDecl.hpp"
 
 namespace TSFCore {
 
 ///
-/** MPI-based vector space subclass.
+/** \brief Concrete implementation of a MPI-based SPMD vector space subclass which creates
+ * <tt>MPIMultiVectorStd</tt> objects.
  *
  * This is a simple but yet fully general and functional concrete
  * subclass of <tt>MPIVectorSpace</tt> that creates <tt>MPIMultiVectorStd</tt>
@@ -46,10 +47,15 @@ namespace TSFCore {
  *
  * See the function <tt>initialize()</tt> that describes the different
  * kinds of distributions this class can handle.
+ *
+ * \ingroup TSFCore_adapters_MPI_concrete_std_grp
  */
 template<class Scalar>
 class MPIVectorSpaceStd : virtual public MPIVectorSpaceBase<Scalar> {
 public:
+
+	/** @name Constructors and initializers */
+	//@{
  
   /// Construct to uninitialized (see postconditions from <tt>uninitialize()</tt>)
   MPIVectorSpaceStd();
@@ -113,6 +119,8 @@ public:
    * </ul>
    */
 	void uninitialize( MPI_Comm *mpiComm = NULL, Index *localSubDim = NULL, Index *globalDim=NULL );
+
+	//@}
 
 	/** @name Overridden from VectorSpece */
 	//@{

@@ -1,517 +1,2337 @@
-/*! \mainpage TSFCore : Interfaces for the development of Abstract Numerical Algorithms
+/*! \mainpage TSFCore : Fundamental interfaces for the development of Abstract Numerical Algorithms (ANAs)
 
 <b>Warning!</b> Clicking on the above links (i.e. "Class List", "File
 List" etc.)  can be a bit overwhelming and not recommended as a way to
 "browse" what is in the Trilinos "package" %TSFCore.  Instead, it is
-recommended that one uses the below outline to browse the classes and
-various functions in %TSFCore.  The below presentation is designed to
-expose developers to %TSFCore in manageable chunks as to not
-overwhelm.
+recommended that one use the below outline to browse the classes and
+various functions in this package.  The one exception is the <a
+href="./modules.html">"Modules"</a> link which is essentially an
+outline of what is presented below.  The following presentation is
+designed to expose developers to the contents of the %TSFCore package
+in manageable chunks as to not overwhelm.  However, the above links
+are very useful as a developer's reference and should only be used as
+such.
 
-The base namespace C++ <tt>TSFCore</tt> contains abstract interfaces
-to linear objects such as vectors and linear operators.  This
-namespace as well as subnamespaces also contain a host of other
-related software.  This interfaces are designed to provide only the
-very basic functionality needed to implement advanced abstract
-numerical algorithms (ANAs).  For example, a numerical optimization or
-equation solver algorithm can be written in such a way that it can be
-used with serial, parallel and other specialized conditioins with
-different linear algebra libraries and computing environments.  All of
-the interfaces are templated on the scalar type <tt>Scalar</tt>.  The
-code in <tt>TSFCore</tt> is logically broken up into seperate pieces
-(by namespace) and compiled into a single library called
-<tt>libTSFCore</tt>.
+The base C++ namespace <tt>TSFCore</tt> contains abstract interfaces
+to linear algebra objects such as vectors and linear operators and its
+most fundamental interfaces are shown in the below UML class diagram.
+A detailed discussion of the motivation, requirements and basic design
+issues associated with %TSFCore are described in <a
+href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this
+report</a>.  The purpose of this online documentation is not to
+restate what is in <A
+HREF="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this
+report</A>.  Instead, this online documentation is ment to provide a
+roadmap to the Doxygen-generated C++ code documentation and provide
+convient access to helpful examples.
+
+This main page provides the starting point for all of the
+documentation for the %TSFCore package.  The section \ref
+fundamental_TSFCore_interfaces_sec defines the most fundamental
+interfaces that the %TSFCore package is all about.  The section \ref
+TSFCore_use_cases_sec outlines three primary categories of use
+cases and provides the main categorization and presentation for all of
+the code in the %TSFCore package.  The section \ref
+TSFCore_examples_sec provides links to examples that are designed to
+be approachable by non-C++ experts.  The section \ref
+TSFCore_configuration_src mentions some of the more important
+configuation options that affect the %TSFCore package and what code is
+built.  The section \ref TSFCore_technicalities_sec mentions some of
+the technicalities related to all %TSFCore software.  The last section
+\ref TSFCore_related_software_sec provides some linkes to %TSFCore
+related software.
+
+\section fundamental_TSFCore_interfaces_sec Fundamental TSFCore Interfaces
 
 \image html TSFCoreSimple.gif "Fundamental vector and linear operator interfaces (Note: above graphic not hyperlinked!)"
 
+The most fundumental abstract interfaces contained in the %TSFCore package
+(and shown in the above UML class diagram) are:
+
+<ul>
+<li><tt>TSFCore::VectorSpace</tt> is the fundamental abstract interface for a vector space that defines
+    the scalar product and factory functions for creating <tt>TSFCore::Vector</tt> and <tt>TSFCore::MultiVector</tt> objects.
+<li><tt>TSFCore::Vector</tt> is the fundamental abstract interface for finite-dimensional vectors.
+<li><tt>TSFCore::OpBase</tt> is a base intreface that defines functions for returning domain and range spaces for operators.
+<li><tt>TSFCore::LinearOp</tt> is the fundamental abstract interface for linear operators.
+<li><tt>TSFCore::MultiVector</tt> is the fundamental abstract interface for collections of column vectors.
+<li><tt>RTOpPack::RTOpT</tt> is the fundamental abstract interface to all diagonal vector reduction/transformation operations.
+</ul>
+
+From here on out, the abstract C++ classes
+<tt>TSFCore::VectorSpace</tt>, <tt>TSFCore::Vector</tt>,
+<tt>TSFCore::MultiVector</tt> and <tt>TSFCore::LinearOp</tt> will be
+refereed to as the <b><em>fundamental %TSFCore interfaces</em></b>.
+
+The rest of the C++ classes and non-member functions in the TSFCore
+package which are documented in this Doxygen collection are designed
+to support one of a number of different use cases associated with
+the above fundamental %TSFCore interfaces.
+
+\section TSFCore_use_cases_sec Use Cases for Fundamental TSFCore Interfaces
+
+Here we outline three common use cases related to the \ref
+fundamental_TSFCore_interfaces_sec
+
+There are primarily three different use cases related the fundamental
+%TSFCore interfaces shown above.  The first, and by far the most
+important, is the use of %TSFCore as a basic and minimal \ref
+TSFCore_ANA_Iteroperability_grp "interoperability" layer for abstract
+numerical algorithms (ANAs).  This use case is really the main reason
+for the creation of %TSFCore in the first place.  The second most
+important use case associated with the fundamental %TSFCore interfaces
+is the development of concrete subclass \ref TSFCore_Adapters_grp
+"implementations" of vectors, multi-vectors and linear operators.
+These types of subclass implementations may also known as "adapter"
+subclasses if they "adapt" some pre-existing interface.  The third,
+and perhaps the least important, use case for the fundamental %TSFCore
+interfaces is as a direct \ref TSFCore_ANA_Development_grp "API" for
+the development of ANA implementations.  While the fundamental
+%TSFCore iterface classes were not primarily designed with this thrid
+use case in mind, with some minimal helper functions and classes,
+directly writing ANA implementations in terms of %TSFCore objects is
+quite straightforward.
+
+Click on the below links for a discussion of each of these three use
+cases and a description of additional supporting code.
+
 <ol>
 
-<li> Basic interfaces
+<li> \ref TSFCore_ANA_Iteroperability_grp
 
-These are interfaces that are designed to be standardized upon to
-provide "glue" for different types of ANA software.
+<li> \ref TSFCore_Adapters_grp
 
-<ol>
-
-<li> \ref TSFCore_Interfaces_Core_grp "Fundamental vector and linear operator interfaces" (in namespace <tt>TSFCore</tt>)
-
-These are the bread and butter interfaces for <tt>%TSFCore</tt>.
-Included are vector and linear operator interfaces and bare minimum
-support software needed for default method implementations.  The
-vector interface is <tt>TSFCore::Vector</tt>.  The basic interface for
-linear operators is <tt>TSFCore::LinearOp</tt>.  These interfaces are
-described in detail in <a
-href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this</a>
-SAND report.
+<li> \ref TSFCore_ANA_Development_grp
 
 </ol>
 
-<li> Adapters
-
-There are adapter subclasses that implement the basic and extended
-TSFCore interfaces.  These provide hooks to actual implementations of
-the interfaces described above.
-
-<ol>
-
-<li> \ref TSFCore_Adapters_MPI_Base_grp "Sublasses for MPI-based vectors, multi-vectors and vector spaces" (in namespace <tt>TSFCore</tt>)
-
-<li> \ref TSFCore_Adapters_Epetra_grp "Concrete subclasses that adapt Epetra objects" (in namespace <tt>TSFCore</tt>)
-
-</ol>
+\section TSFCore_examples_sec Assorted TSFCore Examples
 
 
-<li> Utilities
-
-The software described here is a mixed collection of different types
-of software.  Included are some abstract intefaces, concrete classes
-and helper functions that are ment to make the use of TSFCore somehow
-easier.  For the most part what interfaces are included here are not
-central to interoperability.
+Below are links to example code that demonstrate various use caases
+for the code in the %TSFCore package:
 
 <ol>
 
-<li> \ref TSFCore_Utilities_Core_grp "Utilities based on TSFCore interfaces" (in namespace <tt>TSFCore</tt>)
+<li>\ref TSFCore_examples_power_method_grp
+
+<li>\ref TSFCore_examples_cg_grp
+
+<li>\ref TSFCore_epetra_adapters_testing_prg_grp
+
+<li>\ref TSFCore_product_vec_spc_prg_grp
 
 </ol>
 
-<li> Examples
+\section TSFCore_configuration_src Configuration of the TSFCore Package
 
-These are examples and test programs for some or all of the software
-categories described above.
+The %TSFCore package's <tt>configure</tt> script responds to a number
+of options that affect that code is built.  Some of the more important
+options are:
+
+<ul>
+
+<li><b><tt>--(dis/en)able-tsfcore-epetra</tt></b>: Determines if the
+\ref TSFCore_adapters_Epetra_grp "Epetra adapter subclasses", example
+code and testing code are built or not.  Disabling support for Epetra
+means that the the %TSFCore package can be built without a dependency
+on the %Epetra pacakge.
+
+</ul>
+
+See the output form <tt>./configure --help</tt> (where <tt>./</tt> is
+the base soruce directory) for a listing of all of the configure
+options.
+
+The %TSFCore package is also affected by configure options passed to
+other packages and some of the these options are:
+
+<ul>
+
+<li><b><tt>--(dis/en)able-teuchos-complex</tt></b>: If enabled then
+the <tt>std::complex<></tt> scalar type are used in templated examples
+and tests.
+
+<li><b><tt>--(dis/en)able-teuchos-gmp</tt></b>: If enabled then the
+extended-precision <tt>mpf_class</tt> scalar type is used in templated
+examples and tests.
+
+</ul>
+
+\section TSFCore_technicalities_sec Some Technicalities about TSFCore Software
+
+A few things about the software in the %TSFCore package are worth
+mentioning up front here in the introduction:
+
+<ul>
+
+<li><b>Scalar and Index (Ordinal) data types</b>
+
+All of these interfaces are templated on a <b><tt>Scalar</tt></b>
+(i.e.  floating-point) type and therefore almost all of %TSFCore
+supports arbitrary scalar types such as complex types
+(e.g. <tt>std::complex<double></tt>), automatic differentiation types,
+interval types and extended precision types (i.e. <tt>gmf_class</tt>)
+in addition to simpler real types such as <tt>double</tt> and
+<tt>float</tt>.  The only requirement for the <tt>Scalar</tt> data
+type is that it have value semantics (i.e. default constructor, copy
+constructor, assignment operators) and define the basic overloaded
+operators <tt>operator+(...)</tt>, <tt>operator-(...)</tt>,
+<tt>operator*(...)</tt> and <tt>operator/(...)</tt>.  The traits class
+<tt>Teuchos::ScalarTraits</tt> provides a means to write <em>type
+independent</em> code and all of the %TSFCore software uses this
+traits class.  Any scalar type that is to be used with as
+<tt>Scalar</tt> must provide a specialization of this traits class
+(see source code for <tt>Teuchos_ScalarTraits.hpp</tt> for examples of
+how to do this).
+
+The fundamental %TSFCore interfaces and related software are not
+templated on an index (ordinal) type.  Instead, the type
+<tt>TSFCore::Index</tt> is used which is just a typedef that is
+defined at configure time to be an unsigned integral type that can
+hold the value of the largest dimension of a lspace that will be used
+by an exectuable.  For most platforms and use cases
+<b><tt>int</tt></b> is sufficient but in other cases <b><tt>long
+int</tt></b> may be necessary on some 64 bit platforms.  Not
+templating on the index (ordinal) type does not result in any
+significant degration in usability, runtime speed or storage usage in
+any use case.  However, certain types of subclasses of the %TSFCore
+interfaces, such as sparse matrix subclasses, may need to be templated
+on a local index (ordinal) type.
+
+<li><b>Dynamic memory mangament using <tt>%Teuchos::RefCountPtr</tt></b>
+
+All of the code in the %TSFCore package almost exclusively uses the
+<tt>Teuchos</tt> smart reference counted pointer class
+<tt>Teuchos::RefCountPtr</tt> to handle dynamically allocated memory
+with object-oriented programming.  %TSFCore also uses the convension for
+passing object to and from functions that involves
+<tt>Teuchos::RefCountPtr</tt> that is described in <a
+href="http://software.sandia.gov/Trilinos/RefCountPtrBeginnersGuideSAND.pdf">this
+report</a>.
+
+<li><b>Error (exception) handling</b>
+
+All error and general exception handling in the fundamental %TSFCore
+interfaces and related software is performed using the built-in C++
+exception handling mechanisms (i.e. <tt>try</tt>, <tt>throw</tt> and
+<tt>catch</tt>) and all thrown exceptions should inherit from the
+standard base class <tt>std::exception</tt>.  All exceptions in
+%TSFCore software are thrown using the macros
+<tt>TEST_FOR_EXCEPTION()</tt> or <tt>TEST_FOR_EXCEPT()</tt>.  By
+consistently using these macros is is easy to set a breakpoint in a
+debugger just before an exception is thrown by setting a breakpoint on
+<tt>TestForException_break()</tt>.
+
+</ul>
+
+
+\section TSFCore_related_software_sec Other Software related to TSFCore
+
+<ul>
+
+<li> <a href="./../nonlin/html/index.html">TSFCore::Nonlin</a> :
+Interfaces based on TSFCore for the development of steady-state
+nonlinear ANAs.
+
+</ul>
+
+
+*/
+
+/** \defgroup TSFCore_use_cases_grp Use Cases for the Fundamental TSFCore Interfaces
+
+\brief Here we outline three common use cases related to the \ref
+fundamental_TSFCore_interfaces_sec.
+
+Click on the below links for a discussion of each of these three use
+cases and a description of additional supporting C++ classes and
+non-member functions.
+
+<ol>
+
+<li> \ref TSFCore_ANA_Iteroperability_grp
+
+<li> \ref TSFCore_Adapters_grp
+
+<li> \ref TSFCore_ANA_Development_grp
 
 </ol>
 
 */
-//@{
 
-/** \defgroup TSFCore_Interfaces_Core_grp Fundamental Vector and Linear Operator Interfaces.
+/** \defgroup TSFCore_ANA_Iteroperability_grp TSFCore as an Interoperability Layer for Abstract Numerical Algorithms (ANAs)
+
+\ingroup TSFCore_use_cases_grp
+
+\brief As stated in the \ref index "introduction", the primary purpose
+of %TSFCore is to define a set of basic and minimal abstract
+interfaces to support the interoperability of abstract numerical
+algorithms (ANAs).
 
 \image html TSFCore.gif "Fundamental vector and linear operator interfaces (Note: above graphic not hyperlinked!)"
 
+The above UML class diagram is a more detailed version of the UML
+class diagram shown in the \ref index "introduction" for the
+fundamental interface classes.  The fundamental interface classes
+shown in the above UML class diagram are described below.
+
+<ul>
+<li><tt>TSFCore::VectorSpaceFactory</tt> is basic factory interface for creating
+    <tt>TSFCore::VectorSpace</tt> objects given a dimension.
+<li><tt>TSFCore::VectorSpace</tt> is the fundamental abstract interface for a vector space that defines
+    the scalar product and factory functions for creating <tt>TSFCore::Vector</tt> and <tt>TSFCore::MultiVector</tt> objects.
+<li><tt>TSFCore::Vector</tt> is the fundamental abstract interface for finite-dimensional vectors.
+<li><tt>TSFCore::OpBase</tt> is a base intreface that defines functions for returning domain and range spaces for operators.
+<li><tt>TSFCore::LinearOp</tt> is the fundamental abstract interface for linear operators.
+<li><tt>TSFCore::MultiVector</tt> is the fundamental abstract interface for collections of column vectors.
+</ul>
+
+These interface classes rely on a few \ref TSFCoreBasicTypes_grp "basic types"
+and \ref TSFCoreExceptions_grp "basic exception classes".
+
 The details behind the design of these interfaces are described in
 detail in <a
-href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this SAND report</a>
-.
+href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this
+report</a> and in the documentation for each individual C++ class.
+One important paper describing the RTOp approach which provides the
+foundation for <tt>RTOpPack::RTOpT</tt> can be found <a
+href="http://software.sandia.gov/RTOp/RTOpTOMS.pdf">here</a>.  Note
+that <tt>RTOpPack::RTOpT</tt> is a refinement of the C and C++ RTOp
+interfaces described in <a
+href="http://software.sandia.gov/RTOp/RTOpTOMS.pdf">this paper</a>.
+
+\section TSFCore_ANA_Iteroperability_other_sec Other Use Cases
 
 <ul>
 
-<li> Types:
+<li> \ref TSFCore_Adapters_grp
 
-  <ul>
-  <li> \ref TSFCoreBasicTypes_grp "Basic types"
-  <li> \ref TSFCoreExceptions_grp "Basic exception classes"
-  </ul>
-
-.
-
-<li> Classes:
-
-  <ul>
-  <li> Core abstract interface classes
-
-    <ul>
-    <li><tt>TSFCore::VectorSpaceFactory</tt> is basic factory interface for creating
-        <tt>TSFCore::VectorSpace</tt> objects given a dimension.
-    <li><tt>TSFCore::VectorSpace</tt> is the fundamental abstract interface for a vector space that defines
-        the spaces scalar product and factory functions for creating <tt>TSFCore::Vector</tt> and <tt>TSFCore::MultiVector</tt> objects.
-    <li><tt>TSFCore::Vector</tt> is the fundamental abstract interface for finite-dimensional vectors.
-    <li><tt>TSFCore::OpBase</tt> is a base intreface that defines functions for domain and range spaces for operators.
-    <li><tt>TSFCore::LinearOp</tt> is the fundamental abstract interface for applying linear operators.
-    <li><tt>TSFCore::MultiVector</tt> is the fundamental abstract interface for collections of column vectors.
-    </ul>
-
-  <li> Other interface classes
-
-    <ul>
-    <li><tt>TSFCore::ScalarProd</tt> is a simple interface for the definition of a scalar product independent from
-        a <tt>TSFCore::VectorSpace</tt> object (see <tt>TSFCore::VectorSpaceStdBase</tt>).
-    </ul>
-
-  <li> Basic node support subclasses
-
-    <ul>
-    <li><tt>TSFCore::VectorSpaceStdBase</tt> is a almost universal base class for concrete <tt>TSFCore::VectorSpace</tt> subclasses
-        that allows the defintion of the scalar product to be swapped in and out.
-    <li><tt>TSFCore::SerialVectorSpaceBase</tt> is a uesful node base calss for defining serial vector space subclasses.
-    <li><tt>TSFCore::SerialVectorBase</tt> is a useful node base class for defining serial vector space subclasses.
-    </ul>
-
-  <li> Concrete subclasses
-
-    <ul>
-    <li><tt>TSFCore::SerialVectorSpaceFactory</tt> is a general concrete implementation of a factory for serial vector spacees.
-    <li><tt>TSFCore::SerialVectorSpace</tt> is a general concrete implementation for serial vector spaces.
-    <li><tt>TSFCore::SerialVector</tt> is a general concrete implementaion for serial vectors.
-    <li><tt>TSFCore::DotProd</tt> is a simple <tt>TSFCore::ScalarProd</tt> subclass for a scaled dot product.
-    </ul>
-
-  <li> Concrete adapter subclasses for <tt>TSFCore::Vector</tt> and <tt>TSFCore::MultiVector</tt> 
-
-    <ul>
-    <li><tt>TSFCore::VectorMultiVector</tt> is a concrete subclass that takes any <tt>TSFCore::MultiVector</tt> with
-        one column and turns it into a <tt>TSFCore::Vector</tt>.
-    <li><tt>TSFCore::MultiVectorCols</tt> is a concrete subclass that takes an array of <tt>TSFCore::Vector</tt>
-        objects with the same space and simulates a multi-vector.
-    </ul>
-
-  <li> Miscellaneous utilities
-
-    <ul>
-    <li><tt>TSFCore::LinOpPersisting</tt> is a simple concrete handle class that aggregates
-         a <tt>LinearOp</tt> and its natural transpose and scalar multiplier arguments (for
-         persisting relationships)
-    <li><tt>TSFCore::LinOpNonPersisting</tt> is a simple concrete handle class that aggregates
-         a <tt>LinearOp</tt> and its natural transpose and scalar multiplier arguments (for
-         persisting relationships)
-    </ul>
-
-  </ul>
-
-.
-
-<li> Vector interfaces:
-
-Finite-dimensional vectors are abstracted by the interface
-<tt>TSFCore::Vector</tt>.  Every vector is a member of a vector
-space.  %Vector spaces are represented in software as objects with
-their own abstract interface.  A vector space is represented through
-the base interface <tt>TSFCore::VectorSpace</tt>.  In software
-terms, a vector space object primarily acts as an "Abstract Factory"
-[Design Patterns, Gamma, et. al., 1995] where the products are vector
-objects from the vector space.  In addition to acting as abstact
-factories, vector space objects are responsible for determining the
-compatibility of vector objects which is useful in debugging an
-application.  %Vector spaces also provide the definition of the scalar
-product for a vector space (and therefore is natural norm).
-
-These finite dimensional vector and vector space objects admit a
-finite dimension (i.e. <tt>TSFCore::VectorSpace::dim()</tt>).
-While any arbibrary vector operation can be implemented if direct
-access to the individual elements of vectors are granted, to do so
-through virtual function calls on an element-wise basis is
-unacceptable slow and would not even be correct in may environments
-(i.e. parallel programs).  What is needed is a different way to
-represent and implement vector reduction and transformation operations
-that puts the client (i.e. abstract numerical algorithm developer) in
-charge while still allowing efficient implementation in a variety of
-environments.
-
-The solution to this problem which has been embraced by %TSFCore is to
-adopt a <tt>RTOpPack</tt>.  This design is based on the "Visitor"
-design pattern.  A detailed discussion of the underlying design
-concepts for this idea can be found <A
-HREF="http://software.sandia.gov/RTOp/RTOpTOMS.pdf">here</A>.  These
-vector interfaces accept operator objects through to the templated C++
-<tt>RTOpPack::RTOpT</tt> interface.  The vector interface
-<tt>TSFCore::Vector</tt> declares a method
-<tt>TSFCore::Vector::applyOp()</tt> that accepts <tt>RTOpT</tt>
-objects and uses them to perform the desired reduction/transformation
-operations.  These methods allow great flexibility in how vectors are
-used in an application.
-
-<b>Heads Up !!!!!!</b>
-There already exists reduction/transformation operator-based
-implementatations of several standard vector operations and
-some convenience functions that wrap these operators and call
-<tt>applyOp()</tt> can be found \ref TSFCore_VectorStdOps_grp "here".
-
-<li> Linear operator interfaces:
-
-Linear operators are abstracted behind the <tt>TSFCore::LinearOp</tt>
-interface which really only defines one non-trivial method,
-<tt>TSFCore::LinearOp::apply()</tt>, for applying the operator.
-
-<li> Multi-vector interfaces:
-
-A multi-vector can be thought of as a tall thin matrix where each
-column is a vector.  In TSFCore, the <tt>TSFCore::MultiVector</tt>
-interface class inherits from the <tt>TSFCore::LinearOp</tt>.  This
-means that every multi-vector can act as a linear operator.  Another
-interesting feature of the TSFCore design is that
-<tt>TSFCore::Vector</tt> inherits from <tt>TSFCore::MultiVector</tt>.
-What this means is that every <tt>TSFCore::Vector</tt> is a
-<tt>TSFCore::MultiVector</tt> which has one column.  The motivation
-for this so that any piece of code that accepts
-<tt>TSFCore::MultiVector</tt> objects should also automatically accept
-<tt>TSFCore::Vector</tt> objects.
-
-Just as for <tt>TSFCore::Vector</tt>, <tt>TSFCore::MultiVector</tt>
-also accepts user-defined vector reduction/transformation operators
-through <tt>RTOpPack::RTOpT</tt>.
-
-<b>Heads Up !!!!!!</b> There already exists reduction/transformation
-operator-based implementatations of several standard vector
-(multi-vector) operations and some convenience functions that wrap
-these operators and call <tt>applyOp()</tt> can be found
-\ref TSFCore_MultiVectorStdOps_grp "here".
-
+<li> \ref TSFCore_ANA_Development_grp
 
 </ul>
 
 */
 
-/** \defgroup TSFCore_Interfaces_Solvers_grp Extended Interfaces for Iterative Linear Solvers.
+/** \defgroup TSFCore_fundamental_interfaces_code_grp C++ code for fundamental TSFCore interfaces
+
+\ingroup TSFCore_ANA_Iteroperability_grp
+
+\brief These are the
+\ref fundamental_TSFCore_interfaces_sec "fundamental TSFCore interfaces"
+that provide the foundation for all ANAs.
+
+*/
+
+/** \defgroup TSFCore_Adapters_grp Development of Concrete TSFCore Subclass Implementations
+
+\ingroup TSFCore_use_cases_grp
+
+\brief In order for abstract numerical algorithms (ANAs)
+\ref TSFCore_ANA_Development_grp "developed with TSFCore" or
+\ref TSFCore_ANA_Iteroperability_grp "accessed using TSFCore" to be useful,
+concrete implementations of the
+\ref fundamental_TSFCore_interfaces_sec "fundamental TSFCore interfaces"
+must be provided.  However, because of a number of convenient C++ subclasses described
+here, a developer of such implementation subclasses does not really need to understand much at all
+about the philosophy or details behind the fundamental %TSFCore
+interfaces in order to provide implementations for the most come use
+cases.
+
+One of the main motivations behind the design of the \ref
+fundamental_TSFCore_interfaces_sec "fundamental TSFCore interfaces" is
+the uniform support for many different computing environments such as
+serial shared-memory (i.e. SMP) and a varienty of distributed-memory
+models (e.g. SPMD (single program, multiple data), client-server,
+master-slave and client-server/master-slave).  While this is the case,
+the overwhelming majority of concrete implementations of these types
+will be in more typical SMP serial shared-memory or SPMD
+distributed-memory environments.  Because of this, the Trilinos
+package %TSFCore contains a set of base subclasses that makes the
+development of concrete vector space, vector, multi-vector and linear
+operator subclasses as easy as possible.  However, the \ref
+fundamental_TSFCore_interfaces_sec "fundamental TSFCore interfaces"
+allow for almost limitless possibilities with respect to the types of
+possible implementations so it is not possible to provide pre-pacakged
+support for all of the possibilities.
+
+<b>Heads Up!</b> In case you think you will have to develop concrete
+<tt>TSFCore::VectorSpace</tt>, <tt>TSFCore::Vector</tt> or
+<tt>TSFCore::MultiVector</tt> subclasses in addition to whatever
+<tt>TSFCore::LinearOp</tt> subclasses that you need for you
+application you are probably wrong!  You most likely will not need to
+create any concrete <tt>TSFCore::VectorSpace</tt>,
+<tt>TSFCore::Vector</tt> or <tt>TSFCore::MultiVector</tt> subclasses
+and instead should only need to develop a concrete
+<tt>TSFCore::LinearOp</tt> subclass(es) by deriving from
+<tt>TSFCore::SerialLinearOpBase</tt> for serial platforms or
+<tt>TSFCore::MPILinearOpBase</tt> for MPI SPMD platforms.  As
+described below, general yet efficient implementations of concrete
+concrete <tt>TSFCore::VectorSpace</tt>, <tt>TSFCore::Vector</tt> or
+<tt>TSFCore::MultiVector</tt> subclasses for SMP and MPI SPMD
+platforms are already available.
+
+Next, we provide a description of the various types of subclasses that
+are available.  Just browse the categories that you are interested in.
+
+\section TSFCore_Adapters_overview_sec Overview of Concrete TSFCore Subclass Implementations
+
+<ol>
+
+<li><b>\ref TSFCore_basic_adapter_support_grp</b>
+
+Click on the above link if you want to know about high-level support
+subclasses for seperating out the definition of the scalar product
+from the data structures and factory methods for specific computing
+platforms.  All of the concrete %TSFCore implementation subclasses
+outlined below derive from and use these base interface.  However,
+knowing the details of these base interfaces is not critical to
+developing concrete implementations in most situations unless
+application-defined scalar products are needed.
+
+<li><b>Support subclasses for specific types of computing platforms</b>
+
+Below we outline support code contained in the %TSFCore package for
+different categories of computing platforms.
+
+<b>Note!</b> Before attempting to create your own concrete subclasses of the 
+\ref fundamental_TSFCore_interfaces_sec "fundamental TSFCore interfaces"
+please browse the below links in depth so that you know what support
+is already available.  In many cases, most of the concrete implementation
+software that you need for %TSFCore is already provided.
+
+<ol>
+
+<li>\ref <b>\ref TSFCore_serial_adpaters_grp</b>
+
+Click on the above link if you want to know about support for
+developing %TSFCore subclass implementations for serial shared-memory
+platforms.  Since these are the most commonly used computing platform
+by applied mathematicians and academic researchs, these subclasses
+should be the most commonly used.  Note, the above link also
+describes concrete serial subclasses.
+
+<li>\ref <b>\ref TSFCore_mpi_adpaters_grp</b>
+
+Click on the above link if you want to know about support for
+developing %TSFCore subclass implementations for SPMD
+distributed-memory platforms.  These platforms are the most commonly
+used in large-scale scientific computing.  Note, the above link also
+describes various refined concrete adapter subclasses.  For example,
+subclasses that adapt <tt>Epetra</tt> objects to form %TSFCore objects
+are described.
+
+</ol>
+
+</ol>
+
+\section TSFCore_Adapters_other_sec Other Use Cases
 
 <ul>
 
-<li> Classes:
+<li> \ref TSFCore_ANA_Iteroperability_grp
 
-  <ul>
-  <li> Abstract interface classes
-    <ul>
-    <li><tt>TSFCore::Solvers::Norm</tt>
-    <li><tt>TSFCore::Solvers::SolverState</tt>
-    <li><tt>TSFCore::Solvers::ConvergenceTester</tt>
-    <li><tt>TSFCore::Solvers::IterativeLinearSolver</tt>
-    </ul>
-  </ul>
-.
+<li> \ref TSFCore_ANA_Development_grp
 
 </ul>
 
 */
 
-/** \defgroup TSFCore_Interfaces_Nonlin_grp Extended Interfaces to Nonlinear Problems
+/** \defgroup TSFCore_general_adater_support_code_grp Miscellaneous Support Code for Developing TSFCore Subclass Implementations
 
-<ul>
+\ingroup TSFCore_Adapters_grp
 
-<li> Classes:
-
-  <ul>
-  <li> Abstract interface classes
-
-    <ul>
-    <li><tt>TSFCore::Nonlin::LinearSolveOp</tt>
-    <li><tt>TSFCore::Nonlin::LinearOpWithSolve</tt>
-    <li><tt>TSFCore::Nonlin::NonlinearProblem</tt>
-    <li><tt>TSFCore::Nonlin::NonlinearProblemFirstOrder</tt>
-    </ul>
-
-  </ul>
-.
-
-</ul>
-
-These abstract classes provide interfaces for more general nonlinear
-problems (see the definition in
-<tt>TSFCore::Nonlin::NonlinearProblem</tt>) and an interface for a
-linear operator with a solve operation (see
-<tt>TSFCore::Nonlin::LinearOpWithSolve</tt>) .
+\brief This is some basic C++ code to support the development of TSFCore subclass implementations.
 
 */
 
-/** \defgroup TSFCore_Adapters_MPI_Base_grp Generic Subclasses for MPI-based Vectors and MultiVectors.
+
+/** \defgroup TSFCore_general_adater_support_code_utils_grp Internal Helper Code not ment for General Use
+
+\brief Some support code that is not ment for general programmers to access.
+
+\ingroup TSFCore_general_adater_support_code_grp
+
+*/
+
+/** \defgroup TSFCore_basic_adapter_support_grp Basic Support Subclasses Abstracting Application-Specific Scalar Products
+
+\ingroup TSFCore_Adapters_grp
+
+\brief The \ref fundamental_TSFCore_interfaces_sec define an interface
+for providing ANAs with the functionality they need concerning
+application-specific scalar products without concern for how such
+scalar products are implemented or how such scalar products relate to
+the implementation of vectors, multi-vectors or linear operators.
+While this is most straightforward for clients of these interfaces, it
+is not the most convienent for subclass implementation developers.
+The first level of basic subclasses for supporting the development of
+concrete %TSFCore implementations involves separating out the
+definition of the scalar product from the basic vector and
+multi-vector data structures and the factory methods for creating
+them.  The basic infrasturcture base subclasses for performing this
+are shown in the UML class diagram below.
+
+\image html ScalarProdVectorSpaceBase.gif "Support base subclasses for abstracting application-specific scalar products (Note: above graphic not hyperlinked!)"
+
+The classes shown in the above UML class diagram are described below:
 
 <ul>
 
-<li> Node Base Classes:
+<li><tt>TSFCore::ScalarProd</tt> defines an interface for a
+application-specific scalar product indeppendent from a vector space.
 
-  <ul>
-  <li><tt>TSFCore::MPIVectorSpaceBase</tt> is an general abstract node base subclass for all SPMD MPI-based vector spaces.
-  <li><tt>TSFCore::MPIVectorBase</tt> is a general abstract node base subcalss for all SPMD MPI-based vectors.
-  <li><tt>TSFCore::MPIMultiVectorBase</tt> is a general abstract node base subclass for all SPMD MPI-based multi-vectors.
-  </ul>
+<li><tt>TSFCore::ScalarProdVectorSpaceBase</tt> is subclass of
+<tt>%TSFCore::%VectorSpace</tt> that defines the scalar product
+functions in terms of an aggregate <tt>%TSFCore::%ScalarProd</tt>
+object that can be swapped in and out (see the C++ code for the
+<tt>TSFCore::ScalarProdVectorSpaceBase::scalarProd()</tt> function as
+an example).
 
-.
+<li><tt>TSFCore::EuclideanScalarProd</tt> is a standard implementation
+subclass of <tt>%TSFCore::%ScalarProd</tt> for Euclidean scalar product
+(i.e. using the dot) product.  This is the default scalar product
+definition used by <tt>%TSFCore::%ScalarProdVectorSpaceBase</tt> and all
+of its subclass objects.
 
-<li> Standard Implementations:
+<li><tt>TSFCore::LinearOpScalarProd</tt> is a more general
+implementation of a scalar product that uses an arbitrary symmetric
+positive-definite <tt>%TSFCore::%LinearOp</tt> object (shown using the
+<tt>op</tt> relationship in the above UML class diagram).
 
-  <ul>
-  <li><tt>TSFCore::MPIVectorSpaceFactoryStd</tt> is a concrete <tt>TSFCore::VectorSpaceFactory</tt> subclas that creates locally replicated
-      <tt>TSFCore::MPIVectorSpaceStd</tt> objects given their dimension.
-  <li><tt>TSFCore::MPIVectorSpaceStd</tt> is a general concrete <tt>TSFCore::VectorSpace</tt> subclass for SPMD MPI-based vector spaces which
-      creates <tt>MPIMultiVector</tt> objects.
-  <li><tt>TSFCore::MPIMultiVectorStd</tt> is a very general, highly optimized <tt>TSFCore::MultiVector</tt> subclass for SPMD MPI-based
-      multi-vectors. 
-  </ul>
-
-.
-
-<li> Miscellaneous utilities:
-
-  <ul>
-  <li><tt>TSFCore::MultiVectorSerialization</tt> is a concrete utility class that performs ASCII and binary
-      <tt>std::stream</tt> based input and output of any <tt>TSFCore::MultiVector</tt> object who's range space
-      supports the <tt>TSFCore::MPIVectorSpaceBase</tt> interface.
-  </ul>
-
-.
+<li><tt>TSFCore::EuclideanLinearOpBase</tt> is a base subclass that
+allows the development of general concrete implementations of
+<tt>%TSFCore::%LinearOp</tt> subclasses that are independent of an
+application-specific scalar product.  This base subclass defines the
+functions <tt>TSFCore::EuclideanLinearOpBase::euclideanApply()</tt>
+which are called by <tt>TSFCore::ScalarProd::apply()</tt> to modify
+the application of a Euclidean linear operator for the definition of
+the sclar product (see the C++ code for the overridden
+<tt>TSFCore::EuclideanLinearOpBase::apply()</tt> functions).  More
+specialized linear operators that already define the operator with
+respect to application-specific scalar product should not derive from
+this subclass but should instead derived directly from
+<tt>%TSFCore:%LinearOp</tt>.
 
 </ul>
 
-The first set of subclasses (Node Base Classes) are designed to be
-standard base classes for adapters for <tt>TSFCore::Vector</tt>,
-<tt>TSFCore::VectorSpace</tt> and <tt>TSFCore::MultiVector</tt> for
-all SPMD-based implementations.  These classes are all fully templated
-on the <tt>Scalar</tt> type and should work with arbitrary scalar
-types (such as <tt>std::complex</tt> and extended precision types) if
-a fully SPMD (single program multiple data) MPP (massively parallel
-platform) environment.  These subclasses are also carfully designed to
-allow interoperability between various concrete implementations of
-MPI-based <tt>TSFCore::Vector</tt> and <tt>TSFCore::MultiVector</tt>
+The base subclasses <tt>TSFCore::ScalarProdVectorSpaceBase</tt> and
+<tt>TSFCore::EuclideanLinearOpBase</tt> are used for almost all of the
+concrete TSFCore subclass implementations in the %TSFCore package.
+
+*/
+
+/** \defgroup TSFCore_serial_adpaters_grp TSFCore Subclasses for Serial Shared-Memory Platforms
+
+\ingroup TSFCore_Adapters_grp
+
+\brief The package %TSFCore includes subclasses for common serial
+shared-memory vector spaces, vectors and multi-vectors which are
+described here.
+
+When interfacing to most other well designed packages, there should be
+no need to create new such subclasses for concrete serial
+shared-memory vector spaces, vectors or multi-vectors given the
+subclasses descirbed below.
+
+\section TSFCore_serial_adpaters_classes_sec Subclasses for Serial TSFCore Implementations
+
+<ol>
+
+<li> <b>\ref TSFCore_adapters_serial_support_grp</b>
+
+Click on the above link if you want to know about the basic support
+base subclasses for a common type of serial vector and multi-vector
+implementation that all of the concrete implementations described
+below depend on.
+
+<li> <b>Concrete Serial Subclasses</b>
+
+Below are some concrete implementations of %TSFCore classes that are
+derived from the
+\ref TSFCore_adaptersserial_support_grp "basic serial base subclasses"
+mentioned above.
+
+<ol>
+
+<li> <b>\ref TSFCore_adapters_serial_concrete_std_grp</b>
+
+Click on the above link if you want to know about some general, yet
+very efficient, concrete implementations of serial vector
+spaces, vectors and multi-vectors.
+
+</ol>
+
+</ol>
+
+\section TSFCore_serial_adpaters_examples_sec Example Subclasses for Serial Shared-Memory Platforms
+
+The only example that one should need for how to provide a serial
+implementation for the
+\ref fundamental_TSFCore_interfaces_sec "fundamental TSFCore interfaces"
+is provided below:
+
+<ul>
+
+<li><tt>SerialTridiagLinearOp</tt> is a simple templated
+concrete linear operator subclass for tridiagonal matrices that
+derives from <tt>TSFCore::SerialLinearOpBase</tt>.
+
+</ul>
+
+To create a new specialized serial <tt>TSFCore::LinearOp</tt> subclass
+one should just have to copy the source code for the above example
+<tt>SerialTridiagLinearOp</tt> subclass into a new file(s), change the
+name and then modify the new subclass as needed.
+
+*/
+
+/** \defgroup TSFCore_serial_adpaters_support_code_grp Support code for TSFCore Subclasses for Serial Shared-Memory Platforms
+
+\ingroup TSFCore_serial_adpaters_grp
+
+*/
+
+/** \defgroup TSFCore_adapters_serial_support_grp TSFCore Base Support Subclasses for Serial Shared-Memory TSFCore Implementations
+
+\ingroup TSFCore_serial_adpaters_grp
+
+\brief The package %TSFCore includes base subclasses for serial vector
+spaces, vectors, multi-vectors and linear operators.
+
+The below UML class diagram shows the subclasses described here:
+
+\image html SerialVectorSpaceBase.gif "Support base subclasses for serial shared-memory TSFCore implementations (Note: above graphic not hyperlinked!)"
+
+\section TSFCore_serial_adapters_classes_sec Base Subclasses for Serial Shared-Memory Platforms
+
+The following subclasses represent general yet very efficient base
+subclasses that almost all serial shared-memory vector space, vector
+and multi-vector subclasses can and should inherit from:
+
+<ul>
+
+<li><tt>TSFCore::SerialVectorSpaceBase</tt> is a useful base subclass
+for defining concrete serial vector space subclasses.  This subclass
+simply overrides <tt>%TSFCore::VectorSpace::isCompatible()</tt> to
+return <tt>true</tt> if the other vector space is in core and is the
+same dimension since this should all that should be required for
+serial vectors and multi-vectors to be 100\% compatible.
+
+<li><tt>TSFCore::SerialVectorBase</tt> is a useful base subclass for
+defining concrete serial vector subclasses.  This base class provides
+a very general implementation for
+<tt>%TSFCore::%Vector::%applyOp()</tt> that relies on explict vector
+element access.  All that a concrete subclass must do to is to provide
+explicit access to vector data in overriddes of the
+virtual <tt>%TSFCore::%SerialVectorBase::%getData()</tt> functions.
+
+<li><tt>TSFCore::SerialMultiVectorBase</tt> is a useful base subclass
+for defining concrete serial multi-vector subclasses.  This base class
+provides implementations for both
+<tt>%TSFCore::%MultiVector::%applyOp()</tt> and
+<tt>%TSFCore::%MultiVector::%apply()</tt> that relies on explicit
+multi-vector element access.  All that a concrete subclass must do is
+to provide explicit access to mulit-vector data in overrides of the
+<tt>%TSFCore::SerialMultiVectorBase::getData()</tt> functions.  Note
+in general that the override of
+<tt>%TSFCore::MultiVector::apply()</tt> is a level-3 BLAS operation
+and this base class uses <tt>Teuchos::BLAS::GEMM()</tt> to access
+optimized level-3 BLAS.  This assumes that the %Teuchos package has
+been configured to use optimized BLAS (for the data types
+<tt>float</tt>, <tt>double</tt>, <tt>std::complex<float></tt> and
+<tt>std::complex<double></tt> of course).
+
+</ul>
+
+The above base subclasses <tt>TSFCore::SerialVectorBase</tt> and
+<tt>TSFCore::SerialMultiVectorBase</tt> should provide very efficient
+implementations of all of the operations defined on
+<tt>TSFCore::Vector</tt> and <tt>TSFCore::SerialVector</tt> for serial
+shared-memory platforms.  All that concrete subclasses must provide is
+explicit access to vector and multi-vector data.
+
+\section TSFCore_serial_adpaters_linear_op_sec Base Subclasses for Serial TSFCore::LinearOp Implementations
+
+To facilitate the creation of concrete serial linear operators the
+following simple but very general base class is supplied:
+
+<ul> <li><tt>TSFCore::SerialLinearOpBase</tt> is a general base
+subclass for serial shared-memory platforms that only requires
+concrete subclass implementations to overide one function that accepts
+explict vector data.  </ul>
+
+*/
+
+/** \defgroup TSFCore_adapters_serial_concrete_std_grp Efficient Generic Serial Concrete TSFCore Subclass Implementations
+
+\ingroup TSFCore_serial_adpaters_grp
+
+\brief The package %TSFCore includes general, yet very efficient
+concrete subclass implementations for serial vector spaces, vectors,
+multi-vectors and linear operators.
+
+The below UML class diagram shows the subclasses described here:
+
+\image html SerialVectorSpaceStd.gif "Concrete subclasses for serial shared-memory TSFCore implementations (Note: above graphic not hyperlinked!)"
+
+<ul>
+
+<li><tt>TSFCore::SerialVectorSpaceFactoryStd</tt> is a general concrete
+implementation of a factory for serial vector spaces that creates
+<tt>%TSFCore::SerialVectorSpaceStd</tt> objects of any given dimension.
+This subclass is used to provide the default implementation of
+<tt>%TSFCore::VectorSpace::smallVecSpcFcty()</tt>.  As a result,
+<tt>%TSFCore::SerialVectorSpaceStd</tt> is the default implementation of
+the domain space of the default multi-vectors returned from
+<tt>%TSFCore::VectorSpace::createMembers()</tt>.
+
+<li><tt>TSFCore::SerialVectorSpaceStd</tt> is a general concrete
+implementation for serial vector spaces that creates
+<tt>%TSFCore::SerialVectorStd</tt> and
+<tt>%TSFCore::SerialMultiVectorStd</tt> objects.  All this subclass
+really does is provide trival implementations for the factory methods
+<tt>%TSFCore::VectorSpace::createMember()</tt> and
+<tt>%TSFCore::VectorSpace::createMembers()</tt>.
+
+<li><tt>TSFCore::SerialVectorStd</tt> is an efficient general concrete
+implementaion for serial vectors.  All this subclass does is provide
+storage for a serial vector and return pointers to that storage to the
+<tt>%TSFCore::SerialVectorBase</tt> base class through the overridden
+<tt>%TSFCore::SerialVectorStd::getData()</tt> functions.  This concrete
+subclass has constructors that accept arbitrary strided data and can
+trivially handle any underlying data storage format due to the magic
+of <tt>%Teuchos::RefCountPtr</tt>.
+
+<li><tt>TSFCore::SerialMultiVectorStd</tt> is an efficient general
+concrete implementaion for serial multi-vectors.  All this subclass
+does is provide storage for a serial multi-vector and return pointers
+to that storage (and leading dimension) to the
+<tt>%TSFCore::SerialMultiVectorBase</tt> base class through the
+overridden <tt>%TSFCore::SerialMultiVectorStd::getData()</tt> functions.
+This concrete subclass has constructors that accept column-major data
+and can trivially handle any underlying data storage format due to the
+magic of <tt>%Teuchos::RefCountPtr</tt>.
+
+</ul>
+
+The above concrete subclasses provide very general and very efficient
+implementations for serial vector space, vector and multi-vector
+objects.  There should almost never be a need to develop any other
+serial subclasses for these objects.  However, if for some reason one
+decides that one wants to develop new such subclasses then the above
+concrete subclasses should provide an adequate example for how to do
+so.
+
+*/
+
+/** \defgroup TSFCore_mpi_adpaters_grp TSFCore Subclasses for MPI-based SPMD Distributed-Memory Platforms
+
+\ingroup TSFCore_Adapters_grp
+
+\brief The package %TSFCore includes subclasses for common MPI-based
+SPMD vector spaces, vectors and multi-vectors which are described
+here.
+
+When interfacing to most other well designed packages, there should be
+no need to create new such subclasses for concrete MPI-based SPMD
+vector spaces, vectors or multi-vectors given the subclasses descirbed
+below.
+
+\section TSFCore_mpi_adpaters_classes_sec Subclasses for MPI SPMD TSFCore Implementations
+
+<ol>
+
+<li> <b>\ref TSFCore_adapters_MPI_support_grp</b>
+
+Click on the above link if you want to know about the basic support
+base subclasses for a common type of MPI-based SPMD vector and
+multi-vector implementation that all of the concrete implementations
+described below depend on.
+
+<li> <b>Concrete MPI-based SPMD subclasses</b>
+
+Below are some concrete implementations of %TSFCore classes that are
+derived from the
+\ref TSFCore_adapters_MPI_support_grp "basic MPI-support base subclasses"
+mentioned above.
+
+<ol>
+
+<li> <b>\ref TSFCore_adapters_MPI_concrete_std_grp</b>
+
+Click on the above link if you want to know about some general, yet
+very efficient, concrete implementations of MPI-based SPMD vector
+spaces, vectors and multi-vectors.
+
+<li> <b>\ref TSFCore_adapters_Epetra_grp</b>
+
+Click on the above link if you want to know about the
+%TSFCore adaper subclasses for <tt>Epetra</tt>.
+
+</ol>
+
+</ol>
+
+*/
+
+/** \defgroup TSFCore_adapters_MPI_support_grp TSFCore Base Support Subclasses for MPI-based SPMD TSFCore Implementations
+
+\ingroup TSFCore_mpi_adpaters_grp
+
+\brief The package %TSFCore contains base subclasses that support a
+common type of MPI-based SPMD implementation of vectors and
+mulit-vectors that are described here.
+
+The below UML class diagram shows the subclasses described here:
+
+\image html MPIVectorSpaceBase.gif "Support base subclasses for MPI SPMD distributed-memory TSFCore implementations (Note: above graphic not hyperlinked!)"
+
+The base subclasses described here provide support for a simple, yet
+general, category of MPI-based SPMD vectors, multi-vectors and vector
+spaces.
+
+<ul>
+
+<li><tt>TSFCore::MPIVectorSpaceBase</tt> abstracts the the types of
+SPMD distributed-memory data distributions supported by these base
+subclasses.  This vector space base class assumes a unique
+partitioning of vector and multi-vector elements to a set of
+processors where there exists no ghost elments.
+
+<li><tt>TSFCore::MPIVectorBase</tt> is a base subclass for MPI-based
+SPMD <tt>%TSFCore::%Vector</tt> objects.  This class defines concrete
+implementations for the <tt>%TSFCore::%Vector</tt> virtual functions
+<tt>%applyOp()</tt>, <tt>%getSubVector() const</tt>, <tt>%freeSubVector()
+const</tt>, <tt>%getSubVector()</tt> and <tt>%commitSubVector()</tt>.
+These functions are implemented given expicit access to local processor
+elements as returned by the <tt>getLocalData()</tt> functions overridden
+in a subclass object.
+
+<li><tt>TSFCore::MPIMultiVectorBase</tt> is a base subclass for
+MPI-based SPMD <tt>%TSFCore::%MultiVector</tt> objects.  This class
+defines concrete implementations for the
+<tt>%TSFCore::%MultiVector</tt> virtual functions <tt>%applyOp()</tt>,
+<tt>%getSubMultiVector() const</tt>, <tt>%freeSubMultiVector()
+const</tt>, <tt>%getSubMultiVector()</tt> and
+<tt>%commitSubMultiVector()</tt>.  These functions are implemented
+given expicit access to local processor elements as returned by the
+<tt>getLocalData()</tt> functions overridden in a subclass object.  In
+addition, this subclass derives from
+<tt>TSFCore::EuclideanLinearOpBase</tt> so that any
+application-specific scalar product is automatically supported.  The
+multi-vector version of
+<tt>TSFCore::MPIMultiVectorBase::euclideanApply()</tt> is implemented
+by calling <tt>Teuchos::BLAS::GEMM()</tt> on each local processor to
+access level-3 BLAS.  Therefore, if %Teuchos is configured to link to
+optimized BLAs then this base subclass will provided a near optimial
+implementation of a MPI SPMD multi-vector.
+
+</ul>
+
+One of the big advantages of deriving concrete MPI-based SPMD
+implementations from these base subclasses is that they provide automatic
+interoperability between different concrete subclasses.  This type of
+automatic interoperability is demonstrated in 
+\ref TSFCore_epetra_adapters_testing_prg_grp "this testing program".
+
+
+*/
+
+/** \defgroup TSFCore_adapters_MPI_concrete_std_grp Efficient Generic MPI-based SPMD Concrete TSFCore Subclass Implementations
+
+\ingroup TSFCore_mpi_adpaters_grp
+
+\brief The package %TSFCore contains highly efficient concrete
+implementations of MPI-based vector space, vector and multi-vector
+subclasses.
+
+\image html MPIVectorSpaceStd.gif "Concrete subclasses for MPI-based SPMD distributed-memory TSFCore implementations (Note: above graphic not hyperlinked!)"
+
+\section TSFCore_adapters_MPI_concrete_std_classes_grp Concrete MPI-based SPMD Subclasses
+
+The concrete subclasses described here derive directly from the \ref
+\ref TSFCore_adapters_MPI_support_grp.
+
+<ul>
+
+<li><tt>TSFCore::MPIVectorSpaceFactoryStd</tt> is a concrete
+<tt>%TSFCore::%VectorSpaceFactory</tt> subclass implementation that
+creates locally replicated <tt>%TSFCore::%MPIVectorSpaceStd</tt> objects
+given their dimension.  This class is ment to create domain spaces for
+any MPI-based SPMD multi-vector object it is is used as such (for
+example, see <tt>TSFCore::MPIVectorSpaceBase::smallVecSpcFcty()</tt>).
+
+<li><tt>TSFCore::MPIVectorSpaceStd</tt> is a general
+<tt>%TSFCore::%VectorSpace</tt> subclass implementation for MPI-based
+SPMD vector spaces which creates <tt>%TSFCore::%MPIVectorStd</tt> and
+<tt>%TSFCore::%MPIMultiVectorStd</tt> objects.
+
+<li><tt>TSFCore::MPIVectorStd</tt> is a very general, highly
+efficient <tt>%TSFCore::%Vector</tt> subclass implementation for
+MPI-based SPMD vectors.  Objects of this type can be constructed
+from a variety of data sources due to the magic of
+<tt>%Teuchos::%RefCountPtr</tt>.
+
+<li><tt>TSFCore::MPIMultiVectorStd</tt> is a very general, highly
+efficient <tt>%TSFCore::%MultiVector</tt> subclass implementation for
+MPI-based SPMD multi-vectors.  Objects of this type can be constructed
+from a variety of data sources due to the magic of
+<tt>%Teuchos::%RefCountPtr</tt>.
+
+</ul>
+
+Together, these concrete subclasses provide a complete and highy
+efficient implemenation for MPI-based SPMD vector, multi-vector and
+vector space objects.  From the standpoint of the needs of an ANA,
+there is really no need for any other concrete implementations of
+these subclasses for MPI SPMD platforms.
+
+*/
+
+/** \defgroup TSFCore_adapters_Epetra_grp Concrete TSFCore Adapter Subclasses for Epetra
+
+\ingroup TSFCore_mpi_adpaters_grp
+
+\brief Here we describe a collection of %TSFCore adapters subclasses for
+Epetra.
+
+\image html EpetraVectorSpace.gif "Concrete TSFCore/Epetra adapter subclasses that take Epetra objects and turn them into TSFCore objects (Note: above graphic not hyperlinked!)"
+
+\section TSFCore_Epetra_adpaters_classes_sec Concrete TSFCore/Epetra Adpater Subclasses
+
+The subclasses shown in the above UML class diagram and described
+below represent classic "adapter" subclasses (see the GoF book "Design
+Patterns") that take <tt>Epetra</tt> objects and turn them into
+<tt>%TSFCore</tt> objects.
+
+<ul>
+
+<li><tt>TSFCore::EpetraVectorSpaceFactory</tt> adapts an
+<tt>Epetra_Comm</tt> object to form a
+<tt>%TSFCore::%VectorSpaceFactory</tt> object and creates
+<tt>%TSFCore::%EpetraVectorSpace</tt> objects.
+
+<li><tt>TSFCore::EpetraVectorSpace</tt> adapts an <tt>Epetra_Map</tt>
+object to form a <tt>%TSFCore::%VectorSpace</tt> object and creates
+<tt>%TSFCore::%EpetraVector</tt> and <tt>%TSFCore::%EpetraMultiVector</tt>
 objects.
 
-The second set of subclasses (Standard Implementations) provide
-general and highly optimized implementations for
-<tt>TSFCore::MultiVector</tt>, <tt>TSFCore::VectorSpace</tt> and
-<tt>TSFCore::VectorSpaceFactory</tt> for SPMD MPP implementations.  As
-far as abstract numerical algorithms (ANAs) go, these concrete
-subclasses are all that are really needed irregardless of how the
-<tt>TSFCore::LinearOp</tt> objects are implemented.
+<li><tt>TSFCore::EpetraVector</tt> adapts an <tt>Epetra_Vector</tt>
+object to form a <tt>%TSFCore::%Vector</tt> object.
 
-*/
+<li><tt>TSFCore::EpetraMultiVector</tt> adapts an
+<tt>Epetra_MultiVector</tt> object to form a
+<tt>%TSFCore::%MultiVector</tt> object.
 
-/** \defgroup TSFCore_Adapters_Epetra_grp Generic concrete adapter subclasses for Epetra objects
-
-<ul>
-
-<li> Concrete Classes:
-
-  <ul>
-  <li><tt>TSFCore::EpetraVectorSpaceFactory</tt> adapts an <tt>Epetra_Comm</tt>
-      object to form a <tt>TSFCore::VectorSpaceFactory</tt> object and creates <tt>TSFCore::EpetraVectorSpace</tt> objects.
-  <li><tt>TSFCore::EpetraVectorSpace</tt> adapts an <tt>Epetra_Map</tt>
-      object to form a <tt>TSFCore::VectorSpace</tt> object and creates <tt>TSFCore::EpetraVector</tt> and
-      <tt>TSFCore::EpetraMultiVector</tt> objects.
-  <li><tt>TSFCore::EpetraVector</tt> adapts an <tt>Epetra_Vector</tt> object
-      to form a <tt>TSFCore::Vector</tt> object.
-  <li><tt>TSFCore::EpetraMultiVector</tt> adapts an <tt>Epetra_MultiVector</tt> object
-      to form a <tt>TSFCore::MultiVector</tt> object.
-  <li><tt>TSFCore::EpetraLinearOp</tt> adapts an <tt>Epetra_Operator</tt> object to form a <tt>TSFCore::LinearOp</tt> object.
-  </ul>
-
-.
-
-<li> Basic support software
-
-  <ul>
-  <li><tt>TSFCore::get_Epetra_MultiVector()</tt> gets an <tt>Epetra_MultiVector</tt> view of
-      any compatible <tt>TSFCore::MultiVector</tt> object even if it is not derived from
-      <tt>TSFCore::EpetraMultiVector</tt>.
-  </ul>
+<li><tt>TSFCore::EpetraLinearOp</tt> adapts an
+<tt>Epetra_Operator</tt> object to form a <tt>%TSFCore::%LinearOp</tt>
+object.
 
 </ul>
 
-These are completely general-purpose subclasses that adapt Epetra
-objects to form <tt>%TSFCore</tt> objects.
+The above adapter subclasses derive directly from the general \ref
+\ref TSFCore_adapters_MPI_support_grp.  Therefore these Epetra objects
+are automatically compatible with any other such MPI-based SPMD
+adapter subclasses.
+
+It should also be noted that <tt>TSFCore::MPIVectorSpaceStd</tt> is
+used as the locally replicated domain space for
+<tt>TSFCore::EpetraMultiVector</tt>.  This provides for sightly better
+performance that if when <tt>TSFCore::EpetraVectorSpace</tt> where
+used instead.
+
+There is, however, one issue that requires a little care and that is
+using arbitrary <tt>TSFCore::Vector</tt> and
+<tt>TSFCore::MultiVector</tt> objects with the vector and multi-vector
+versions of <tt>TSFCore::EpetraLinearOp::apply()</tt>.  The issue is
+that the underlying <tt>Epetra_Operator::Apply()</tt> function can
+only accept <tt>Epetra_MultiVector</tt> objects.  What is needed in
+the case where the concrete <tt>TSFCore::MultiVector</tt> objects are
+not derived from <tt>%TSFCore::EpetraMultiVector</tt> is that an
+<tt>%Epetra_MultiVector</tt> view must be created.  The utility
+functions <tt>TSFCore::get_Epetra_MultiVector()</tt> perform this
+little bit of magic.  Studying the implementations of these utility functions
+will show you how simple it is to provide for this type of
+interoperabiity.  This type of interoperabiity machinary should also
+be used for other types of concrete adapter subclasses.
+
+The utility functions <tt>TSFCore:get_Epetra_Operator()</tt> are also
+provided that encapsulate the extraction of an "adapted"
+<tt>Epetra_Operator</tt> object out of a
+<tt>TSFCore::EpetraLinearOp</tt> object through its
+<tt>TSFCore::LinearOp</tt> base interface.  This is a common type of
+activity in object-oriented programming.
+
+\section TSFCore_Epetra_adpaters_examples_sec Epetra Examples
+
+<ul>
+<li> \ref TSFCore_examples_power_method_epetra_grp
+<li> \ref TSFCore_epetra_adapters_testing_prg_grp
+</ul>
 
 */
 
-/** \defgroup TSFCore_Utilities_Core_grp Utility software based on TSFCore interfaces.
+/** \defgroup TSFCore_adapters_Epetra_support_grp Support Code for TSFCore/Epetra Adapters
+
+\ingroup TSFCore_adapters_Epetra_grp
+
+*/
+
+/** \defgroup TSFCore_ANA_Development_grp TSFCore as an API for the Development of Abstract Numerical Algorithms (ANAs)
+
+\ingroup TSFCore_use_cases_grp
+
+\brief While the \ref fundamental_TSFCore_interfaces_sec "fundamental TSFCore
+interfaces" where not principally designed to provide a direct API for
+the development of ANA software, with some minimal helper functions
+and classes, directly writing even sophisticated ANA implementations
+directly in terms of %TSFCore objects is quite straightforward.
+
+It turns out that using %TSFCore for the development of simple ANAs,
+as described below, really does not require any deep understanding of
+the \ref fundamental_TSFCore_interfaces_sec "fundamental TSFCore interfaces".
+
+\section TSFCore_ANA_Development_overview_sec Overview of Using TSFCore Software for Development of ANA Software
+
+There are several different types of helper classes and functions that
+simplify the use of %TSFCore for the development of ANAs.
+
+<ol>
+
+<li> <b>"Standard" non-member wrapper functions for vector (and multi-vector) reduction/transformation operations</b>
+
+While the use of the <tt>RTOpPack::RTOpT</tt> interface class and the
+single <tt>TSFCore::Vector::applyOp()</tt> function provide an elegant
+and efficient solution for the iteroperability of vector
+interfaces, it is not the easiest API for developing ANAs.  However,
+a number of easy to use C++ wrapper functions for many different
+ vector and multi-vector operations is already provided:
+
+<ul>
+<li> \ref TSFCore_VectorStdOps_grp
+<li> \ref TSFCore_MultiVectorStdOps_grp
+</ul>
+
+These C++ wrapper functions rely on pre-implemented
+<tt>RTOpPack::RTOpT</tt> subclasses.  Adding new
+<tt>RTOpPack::RTOpT</tt> subclasses and new wrapper functions for new
+vector and multi-vector reduction/transformatin operations is an easy
+matter for an experienced C++ developer who understands
+<tt>RTOpPack::RTOpT</tt> (please contact rabartl@sandia.gov if you
+need a new vector or mulit-vector operation that is not already
+supported).
+
+<li> <b>Handles for LinearOp which aggregate mathematical defintions of transpose and scalar multiplier</b>
+
+A <tt>TSFCore::LinearOp</tt> object should be regarded as an
+implementation of a linear operator and not as the full mathematical
+definition of a linear operator.  For example, a single
+<tt>TSFCore::LinearOp</tt> object <tt>A</tt> may be used to solve the
+linear systems <tt>M1*x1 = b1</tt> and <tt>M2*x2 = b2</tt> where
+<tt>M1 = gamma1*A</tt> and <tt>M2 = gamma2*A'</tt> are scaled
+non-transposed and scaled transposed mathematical operators of the
+operator implementation <tt>A</tt> respectivly.  The aggregation of
+the default transpose argument and scalar multiplier along with a
+<tt>TSFCore::LinearOp</tt> object is given in the following trivial
+concrete handle-like classes:
+
+<ul>
+<li><tt>TSFCore::LinOpPersisting</tt> is a simple concrete handle class that aggregates
+     a <tt>LinearOp</tt> and its natural transpose and scalar multiplier arguments (for
+     persisting relationships).
+<li><tt>TSFCore::LinOpNonPersisting</tt> is a simple concrete handle class that aggregates
+     a <tt>LinearOp</tt> and its natural transpose and scalar multiplier arguments (for
+     non-persisting relationships).
+</ul>
+
+The reason that there are two different aggregate handle classes is to
+support the notion of <em>persisting</em> and <em>non-persisting</em>
+relationships as defined in <a
+href="http://software.sandia.gov/Trilinos/RefCountPtrBeginnersGuideSAND.pdf">this
+report</a>.
+
+<li> <b>Creating explicit views of vector and multi-vector elements</b>
+
+<b>Warning!</b> using the below utility classes it is very easy to
+obtain direct access to vector and multi-vector elements but in
+general, this is a very bad idea.  However, as described in <a
+href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this
+report</a>, there are some types of ANAs that require direct element
+access to certain kinds of vectors and multi-vectors (for example,
+vectors and multi-vectors that lie is the domain space of a
+multi-vector).  The following utility classes streamline creating and
+using explicit views.
+
+<ul>
+<li><tt>TSFCore::ExplicitVectorView</tt> creates a (<tt>const</tt>) non-mutable explicit view of a <tt>const %TSFCore::Vector</tt> object,
+    allows direct access to vector elements and then frees the view in the destructor.
+<li><tt>TSFCore::ExplicitMutableVectorView</tt> creates a (non-<tt>const</tt>) mutable explicit view of a <tt>%TSFCore::Vector</tt> object,
+    allows direct access to vector elements and then frees the view in the destructor.
+<li><tt>TSFCore::ExplicitMultiVectorView</tt> creates a (<tt>const</tt>) non-mutable explicit view of a <tt>const %TSFCore::MultiVector</tt> object,
+    allows direct access to multi-vector elements and then frees the view in the destructor.
+<li><tt>TSFCore::ExplicitMutableMultiVectorView</tt> creates a (non-<tt>const</tt>) mutable explicit view of a <tt>%TSFCore::MultiVector</tt> object,
+    allows direct access to multi-vector elements and then frees the view in the destructor.
+</ul>
+
+One of the big advantages of using the above utility classes in
+addition to their convenience is that views are freed in destructors
+and these view will be freed even in the event that an exception is
+thrown.  The use of these view classes is quite straightforward.
+
+<li> <b>Composite vector space, vector, multi-vector and linear operator objects</b>
+
+One of the big advantages of having a set of abstract interfaces to
+linear algebra objects is that it is quite easy to define some very
+useful composite subclasses that allow one or more individual objects
+be treated as a single object (see the "Composite" design pattern in
+the GoF's "Design Patterns" book).
+
+<ol>
+
+<li> <b>Product vector spaces, vectors and multi-vectors</b>
+
+One particularly useful category of composite linear algebra objects
+is the product vector space \f$\mathcal{X} = \mathcal{V}_1 {}\times
+\mathcal{V}_2 {}\times {}\ldots {}\times \mathcal{V}_m\f$ where
+\f$\mathcal{V}_k\f$, for \f$k = 1 {}\ldots m\f$, are different constituent
+vector spaces.  Product vector spaces give rise to product vectors
+
+\f[
+x = \left[\begin{array}{c} v_1 \\ v_2 \\ \vdots \\ v_m \end{array}\right]
+\f]
+
+(where \f$v_1 \in \mathcal{V}_1, v_2 \in \mathcal{V}_2, \ldots, v_m
+\in \mathcal{V}_m\f$) and product multi-vectors
+
+\f[
+X = \left[\begin{array}{c} V_1 \\ V_2 \\ \vdots \\ V_m \end{array}\right].
+\f]
+
+(where \f$V_1 \in \mathcal{V}_1 | \mathcal{D}, V_2 \in \mathcal{V}_2 | \mathcal{D},
+\ldots, V_m \in \mathcal{V}_m | \mathcal{D}\f$ and \f$\mathcal{D}\f$ is the
+domain space for the multi-vectors).
+
+Basic abstract interfaces to product vector spaces, vectors and
+multi-vectors are shown below:
+
+<ul>
+<li><tt>TSFCore::ProductVectorSpaceBase</tt> defines an interface for a composite product vector space composed out of one
+    or more constituent <tt>TSFCore::VectorSpace</tt> objects.
+<li><tt>TSFCore::ProductVectorBase</tt> defines an interface for a composite product vector composed out of one
+    or more constituent <tt>TSFCore::Vector</tt> objects.
+<li><tt>TSFCore::ProductMultiVectorBase</tt>  defines an interface for a composite product multi-vector composed out of one
+    or more constituent <tt>TSFCore::MultiVector</tt> objects.
+</ul>
+
+Very general concrete implementations of the above product vector
+space, vector and multi-vector interfaces classes are provided
+and are shown below:
+
+<ul>
+<li><tt>TSFCore::ProductVectorSpace</tt> is a general concrete implementation of <tt>TSFCore::ProductVectorSpaceBase</tt>
+    that should be sufficient for most use cases.
+<li><tt>TSFCore::ProductVector</tt> is a general concrete implementation of <tt>TSFCore::ProductVectorBase</tt>
+    that should be sufficient for most use cases.
+<li><tt>TSFCore::ProductMultiVector</tt> is a general concrete implementation of <tt>TSFCore::ProductMultiVectorBase</tt>
+    that should be sufficient for most use cases. (ToDo: This needs to be implemented!)
+</ul>
+
+Note that the above concrete subclasses are very efficient for must,
+but not all, possible use cases for such composite objects.
+
+When using product vector spaces, product vectors and product
+multi-vectors it is generally the case where a concrete
+<tt>TSFCore::ProductVectorSpace</tt> object is first created and then
+<tt>TSFCore::ProductVector</tt> and
+<tt>TSFCore::ProductMultiVector</tt> objects are created by the
+functions <tt>TSFCore::ProductVectorSpace::createMember()</tt> and
+<tt>TSFCore::ProductVectorSpace::createMembers()</tt>.  See
+\ref TSFCore_product_vec_spc_prg_grp "this example"
+of how product vector spaces are used.
+
+<li> <b>Miscellaneous composite linear operators</b>
+
+There are several different types of useful composite
+<tt>TSFCore::LinearOp</tt> subclasses that one can define.  A few
+useful composite linear operator subclasses are shown below:
+
+<ul>
+<li><tt>TSFCore::DiagonalLinearOp</tt> is a simple concrete subclass that defines a diagonal <tt>TSFCore::LinearOp</tt>
+    \f$M = \gamma \; \mbox{diag}(d) \in \Re^{n \times n}\f$
+    out of any <tt>TSFCore::Vector</tt> object for the diagonal \f$d \in \Re^n\f$.
+<li><tt>TSFCore::MultiplicativeLinearOp</tt> is a simple concrete subclass that defines a composite  multipliciative
+    <tt>TSFCore::LinearOp</tt> of the form \f$M = \gamma \; A_1 A_2 \ldots A_m}\f$ composed out of one or more
+    constituent linear operators \f$A_1, A_2 \ldots A_m\f$.
+</ul>
+
+</ol>
+
+<li> <b>Tools for testing and debugging</b>
+
+There is software included in the TSFCore package to support basic
+testing and debugging.
+
+First, 100/% general output stream operators for any
+<tt>TSFCore::Vector</tt> or <tt>TSFCore::LinearOp</tt> object are
+provided in the following operator functions:
+
+<ul>
+<li><tt>TSFCore::operator<<(std::ostream& o, const TSFCore::Vector<Scalar>& v)</tt>
+    is an output stream operator for printing <tt>TSFCore::Vector</tt> objects.
+<li><tt>TSFCore::operator<<(std::ostream& o, const TSFCore::LinearOp<Scalar>& M)</tt>
+    is an output stream operator for printing <tt>TSFCore::LinearOp</tt> (and therefore
+also <tt>TSFCore::MultiVector</tt>) objects.
+</ul>
+
+Also provided is the following testing class:
+
+<ul>
+<li><tt>TSFCore::LinearOpTester</tt> is a simple testing class that validates the implemenation
+    of a <tt>TSFCore::LinearOp</tt> object.
+</ul>
+
+\section TSFCore_ANA_Development_examples_sec Examples of Abstract Numerical Algorithms
+
+There are several code examples that one can study to see how to use
+the code described here as an API for developing ANAs.
 
 <ul>
 
-<li> Concrete classes for explicit views of vector and multi-vector elements:
+<li><tt>sillyPowerMethod()</tt> is a simple example ANA that
+implements the power method for estimating the dominiate eigenvalue
+of a linear operator.
 
-  <ul>
-  <li><tt>TSFCore::ExplicitVectorView</tt> creates a non-mutable (<tt>const</tt>) explicit view of a <tt>const TSFCore::Vector</tt> object,
-      allows direct access to vector elements and then frees the view in the destructor.
-  <li><tt>TSFCore::ExplicitMutableVectorView</tt> creates a mutable (non-<tt>const</tt>) explicit view of a <tt>TSFCore::Vector</tt> object,
-      allows direct access to vector elements and then frees the view in the destructor.
-  <li><tt>TSFCore::ExplicitMultiVectorView</tt> creates a non-mutable (<tt>const</tt>) explicit view of a <tt>const TSFCore::MultiVector</tt> object,
-      allows direct access to multi-vector elements and then frees the view in the destructor.
-  <li><tt>TSFCore::ExplicitMutableMultiVectorView</tt> creates a mutable (non-<tt>const</tt>) explicit view of a <tt>TSFCore::MultiVector</tt> object,
-      allows direct access to multi-vector elements and then frees the view in the destructor.
-  </ul>
+<li><tt>sillyCgSolve()</tt> is a simple example ANA that
+implements the conjugate gradient method for solving a symmetric
+possitive definite linear system.
 
-.
-
-<li> Product vector spaces, vectors and multi-vectors:
-
-  <ul>
-  <li> Node interface classes:
-
-    <ul>
-    <li><tt>TSFCore::ProductVectorSpaceBase</tt> defines an interface for a composite product vector space composed out of one
-        or more constituent <tt>TSFCore::VectorSpace</tt> objects.
-    <li><tt>TSFCore::ProductVectorBase</tt> defines an interface for a composite product vector composed out of one
-        or more constituent <tt>TSFCore::Vector</tt> objects.
-    <li><tt>TSFCore::ProductMultiVectorBase</tt>  defines an interface for a composite product multi-vector composed out of one
-        or more constituent <tt>TSFCore::MultiVector</tt> objects.
-    </ul>
-
-  <li> Standard concrete implementations:
-
-    <ul>
-    <li><tt>TSFCore::ProductVectorSpace</tt> is a general concrete implementation of <tt>TSFCore::ProductVectorSpaceBase</tt>
-        that should be sufficient for most use cases.
-    <li><tt>TSFCore::ProductVector</tt> is a general concrete implementation of <tt>TSFCore::ProductVectorBase</tt>
-        that should be sufficient for most use cases.
-    <li><tt>TSFCore::ProductMultiVector</tt> is a general concrete implementation of <tt>TSFCore::ProductMultiVectorBase</tt>
-        that should be sufficient for most use cases. (ToDo: This needs to be implemented!)
-    </ul>
-
-  </ul>
-
-.
-
-<li> Miscellaneous composite linear operators:
-
-  <ul>
-	<li><tt>TSFCore::DiagonalLinearOp</tt> is a simple concrete subclass that defines a diagonal <tt>TSFCore::LinearOp</tt>
-       \f$M = \gamma \; \mbox{diag}(d) \in \Re^{n \times n}\f$
-      out of any <tt>TSFCore::Vector</tt> object for the diagonal \f$d \in \Re^n\f$.
-	<li><tt>TSFCore::MultiplicativeLinearOp</tt> is a simple concrete subclass that defines a composite  multipliciative
-      <tt>TSFCore::LinearOp</tt> of the form \f$M = \gamma \; A^1 A^2 \ldots A^m}\f$ composed out of one or more
-      constituent <tt>TSFCore::LinearOp</tt> objects \f$A^1, A^2 \ldots A^m\f$.
-  </ul>
-
-.
-
-<li> Testing:
-
-  <ul>
-  <li><tt>TSFCore::LinearOpTester</tt> is a concrete class that tests any generic <tt>TSFCore::LinearOp</tt> object
-      to see if its <tt>TSFCore::LinearOp::apply()</tt> function works correctly.
-  </ul>
-
-.
-
-<li> Miscellaneous:
-
-  <ul>
-  <li><tt>TSFCore::MultiVectorAllocator</tt> is an allocator class to be used with
-      <t>MemMngPack::AbstractFactoryStd</tt> to create <tt>TSFCore::MultiVector</tt> objects of a given size.
-  </ul>
-.
+<li><tt>TSFCore::LinearOpTester::check()</tt> (Note: click on the link
+near the bottom of the documentation that says "Definition at line
+... of the file %TSFCoreLinearOpTester.hpp"): This function shows how
+to access a <tt>TSFCore::LinearOp</tt> objects domain and range
+spaces, how to use these spaces to create vectors and multi-vectors
+and how to perform various types of operations involving vectors,
+multi-vectors and linear operators.
 
 </ul>
 
-All of this software only has dependencies on the basic
-<tt>%TSFCore</tt> interfaces described \ref TSFCore_Interfaces_Core_grp "here".
+\section TSFCore_ANA_Development_other_sec Other Use Cases
 
-This is a mixed bag of software and is divided into the categories
-shown above.
+<ul>
 
-The first category of software is concrete classes to help create
-explicit views of constant and non-constant vectors and multi-vectors.
-The concrete classes <tt>TSFCore::ExplicitVectorView</tt>,
-<li><tt>TSFCore::ExplicitMutableVectorView</tt>,
-<li><tt>TSFCore::ExplicitMultiVectorView</tt> and
-<li><tt>TSFCore::ExplicitMutableMultiVectorView</tt> have constructors
-and destructors that greatly simplify getting at the explicit elements
-of any vector or multi-vector object.  Note, it is generally not a
-good idea to ask for explicit access to vector or multi-vector
-elements but there are some special cases where this type of access is
-absoluting critical (see the TSFCore design document).
+<li> \ref TSFCore_ANA_Iteroperability_grp
 
-Another important category of software is for supporting interfaces
-and implementations to product vectors and product multi-vectors that
-are created by product vector spaces.  There are abstract interface
-classes to these types of objects provided in
-<tt>TSFCore::ProductVectorBase</tt>,
-<tt>TSFCore::ProductMultiVectorBase</tt> and
-<tt>TSFCore::ProductVectorSpaceBase</tt> which are appropriate for
-some client software but need not be tied to a particular
-implementation.  There are also very general default implementations
-in <tt>TSFCore::ProductVector</tt>,
-<tt>TSFCore::ProductMultiVector</tt> and
-<tt>TSFCore::ProductVectorSpace</tt> that should have all of the
-functionality needed for most use cases.  These subclasses represent
-true "Composite" (in the lingo of design patterns) objects where
-multiple objects can be composed to represent a single object.
+<li> \ref TSFCore_Adapters_grp
 
-ToDo: Finish discussion.
+</ul>
+
+*/
+
+//
+// Examples
+//
+
+
+/** \defgroup TSFCore_examples_grp Assorted TSFCore Example Code
+
+\brief Below are links to example code that demonstrate various use
+caases for the code in the %TSFCore package:
+
+<ol>
+
+<li>\ref TSFCore_examples_power_method_grp
+
+<li>\ref TSFCore_examples_cg_grp
+
+<li>\ref TSFCore_epetra_adapters_testing_prg_grp
+
+<li>\ref TSFCore_product_vec_spc_prg_grp
+
+</ol>
+
+*/
+
+//
+// Silly power method example
+//
+
+/** \defgroup TSFCore_examples_power_method_grp Power Method Exmaples
+
+\ingroup TSFCore_examples_grp
+
+\brief Here we show some simple examples of using code in the %TSFCore
+package with an example linear ANA algorithm for the power method for
+estimating the dominate eigen value of a matrix.
+
+These example programs are ment to mimic the power method example
+program shown in the <a href="../../../epetra/doc/html/index.html#example">Epetra
+documentation</a>.
+
+The power method ANA is implemented in the function
+<tt>sillyPowerMethod()</tt> and its implementation is shown below:
+
+\dontinclude sillyPowerMethod.hpp
+
+\skip template
+\until end sillyPowerMethod
+
+The above templated function <tt>%sillyPowerMethod()</tt> is used in
+the following various example implementations which use several
+different scalar types:
+
+<ol>
+
+<li>\ref TSFCore_examples_power_method_serial_grp
+
+<li>\ref TSFCore_examples_power_method_epetra_grp
+
+</ol>
+
+*/
+
+/** \example sillyPowerMethod.hpp
+
+Click \ref TSFCore_examples_power_method_grp "here" for a more
+detailed discussion of this example function.
+
+*/
+
+/** \defgroup TSFCore_examples_power_method_serial_grp Templated Serial Implemenation of the Power Method
+
+\ingroup TSFCore_examples_power_method_grp
+
+\brief Here is an example program that shows the use of the example
+serial templated matrix class <tt>SerialTridiagLinearOp</tt>
+with the example linear ANA implementation <tt>sillyPowerMethod()</tt>.
+
+This example program is contained in the source file:
+
+\verbatim ./example/Core/sillyPowerMethod_serial.cpp \endverbatim
+
+where <tt>./</tt> is the base source directory for %TSFCore
+(i.e. <tt>???/Trilinos/packages/TSFCore</tt>).
+
+The class <tt>SerialTridiagLinearOp</tt> that derives from the
+base class <tt>TSFCore::SerialLinearOpBase</tt> is quite simple and
+its complete implementation looks like:
+
+\dontinclude SerialTridiagLinearOp.hpp
+\skip template
+\until end class SerialTridiagLinearOp
+
+\dontinclude sillyPowerMethod_serial.cpp
+
+The above serial matrix class is used in an example program (see
+<tt>runPowerMethodExample()</tt> below) that calls <tt>%sillyPowerMethod()</tt>.
+In this example program, the matrix constructed and used is the
+well-known tridiagonal matrix
+
+\f[
+
+A=
+\left[\begin{array}{rrrrrrrrrr}
+2      & -1 \\
+-1     &  2      & -1 \\
+       & \ddots  & \ddots  & \ddots \\
+       &         & -1      & 2       & -1 \\
+       &         &         &  -1     & 2
+\end{array}\right].
+\f]
+
+The power method is then run on the matrix \f$A\f$ run for a number of
+iterations (or until convergence to some tolerance).
+
+After this, the first diagonal element \f$A_{(1,1)}=2\f$ is then
+scaled to \f$A_{(1,1)}=20\f$ and the power method is run again (which
+much faster convergence).
+
+The following templated function implements the example described
+above:
+
+\skip template
+\until end runPowerMethodExample
+
+The above templated function <tt>runPowerMethodExample()</tt> is
+instantiated with the following scalar types:
+
+<ul>
+<li> Real types <b><tt>float</tt></b> and <b><tt>double</tt></b>
+<li> Complex real types <b><tt>std::complex<float></tt></b> and
+     <b><tt>std::complex<double></tt></b> (if <tt>--enable-teuchos-complex</tt>
+     was used at configuration time)
+<li> Real extended-precision type <b><tt>mpf_class</tt></b>
+     (if <tt>--enable-teuchos-gmp</tt> was used at configuration time)
+<li> Complex extended-precision type <b><tt>std::complex<mpf_class></tt></b>
+     (if <tt>--enable-teuchos-complex</tt> and <tt>--enable-teuchos-gmp</tt>
+     where used at configuration time)
+</ul>
+
+and is called multiple times from within the following <tt>main()</tt>
+program function:
+
+\skip int main
+\until end main
+
+The above example program is built as part of the %TSFCore package
+(unless examples where disabled at configure time) and the executable
+can be found at:
+
+\verbatim ./example/Core/sillyPowerMethod_serial.exe \endverbatim
+
+where <tt>./</tt> is the base build directory for %TSFCore
+(e.g. <tt>???/Trilinos/$BUILD_DIR/packages/TSFCore</tt>).
+
+This example program should run successfully with no arguments and, at the
+time of this writing, produces the following output:
+
+\verbatim
+
+$ ./sillyPowerMethod_serial.exe
+
+***
+*** Running power method example using scalar type = 'float' ...
+***
+
+(1) Constructing tridagonal matrix A of dimmension = 4 ...
+
+(2) Running the power method on matrix A ...
+
+Starting power method ...
+
+Iter = 0, lambda = 2.634806e+00, ||A*q-lambda*q|| = 9.051834e-01
+Iter = 4, lambda = 3.552294e+00, ||A*q-lambda*q|| = 2.496006e-01
+Iter = 8, lambda = 3.612831e+00, ||A*q-lambda*q|| = 7.194513e-02
+Iter = 12, lambda = 3.617640e+00, ||A*q-lambda*q|| = 1.981858e-02
+Iter = 16, lambda = 3.618005e+00, ||A*q-lambda*q|| = 5.435463e-03
+Iter = 20, lambda = 3.618032e+00, ||A*q-lambda*q|| = 1.490343e-03
+Iter = 24, lambda = 3.618034e+00, ||A*q-lambda*q|| = 4.085834e-04
+
+  Estimate of dominate eigenvalue lambda = 3.618034e+00
+
+(3) Increasing first diagonal entry by factor of 10 ...
+
+(4) Running the power method again on matrix A ...
+
+Starting power method ...
+
+Iter = 0, lambda = 1.791493e+01, ||A*q-lambda*q|| = 5.881544e+00
+Iter = 4, lambda = 2.005555e+01, ||A*q-lambda*q|| = 3.251727e-03
+Iter = 8, lambda = 2.005556e+01, ||A*q-lambda*q|| = 2.788594e-06
+
+  Estimate of dominate eigenvalue lambda = 2.005556e+01
+
+***
+*** Running power method example using scalar type = 'double' ...
+***
+
+(1) Constructing tridagonal matrix A of dimmension = 4 ...
+
+(2) Running the power method on matrix A ...
+
+Starting power method ...
+
+Iter = 0, lambda = 2.634806e+00, ||A*q-lambda*q|| = 9.051834e-01
+Iter = 4, lambda = 3.552293e+00, ||A*q-lambda*q|| = 2.496007e-01
+Iter = 8, lambda = 3.612831e+00, ||A*q-lambda*q|| = 7.194514e-02
+Iter = 12, lambda = 3.617641e+00, ||A*q-lambda*q|| = 1.981868e-02
+Iter = 16, lambda = 3.618004e+00, ||A*q-lambda*q|| = 5.435543e-03
+Iter = 20, lambda = 3.618032e+00, ||A*q-lambda*q|| = 1.490271e-03
+Iter = 24, lambda = 3.618034e+00, ||A*q-lambda*q|| = 4.085797e-04
+
+  Estimate of dominate eigenvalue lambda = 3.618034e+00
+
+(3) Increasing first diagonal entry by factor of 10 ...
+
+(4) Running the power method again on matrix A ...
+
+Starting power method ...
+
+Iter = 0, lambda = 1.791493e+01, ||A*q-lambda*q|| = 5.881543e+00
+Iter = 4, lambda = 2.005555e+01, ||A*q-lambda*q|| = 3.251777e-03
+Iter = 8, lambda = 2.005556e+01, ||A*q-lambda*q|| = 2.681092e-06
+
+  Estimate of dominate eigenvalue lambda = 2.005556e+01
+
+***
+*** Running power method example using scalar type = 'std::complex<float>' ...
+***
+
+(1) Constructing tridagonal matrix A of dimmension = 4 ...
+
+(2) Running the power method on matrix A ...
+
+Starting power method ...
+
+Iter = 0, lambda = (1.885460e+00,2.235174e-08), ||A*q-lambda*q|| = 8.366854e-01
+Iter = 4, lambda = (2.908303e+00,1.490116e-08), ||A*q-lambda*q|| = 4.634469e-01
+Iter = 8, lambda = (3.465825e+00,-5.960464e-08), ||A*q-lambda*q|| = 3.592391e-01
+Iter = 12, lambda = (3.604720e+00,-2.980232e-08), ||A*q-lambda*q|| = 1.146174e-01
+Iter = 16, lambda = (3.617021e+00,-9.778887e-09), ||A*q-lambda*q|| = 3.181574e-02
+Iter = 20, lambda = (3.617958e+00,9.010546e-08), ||A*q-lambda*q|| = 8.730849e-03
+Iter = 24, lambda = (3.618028e+00,1.565786e-08), ||A*q-lambda*q|| = 2.393888e-03
+Iter = 28, lambda = (3.618034e+00,9.727955e-09), ||A*q-lambda*q|| = 6.563177e-04
+
+  Estimate of dominate eigenvalue lambda = (3.618034e+00,9.727955e-09)
+
+(3) Increasing first diagonal entry by factor of 10 ...
+
+(4) Running the power method again on matrix A ...
+
+Starting power method ...
+
+Iter = 0, lambda = (1.316405e+01,-1.341105e-07), ||A*q-lambda*q|| = 8.828070e+00
+Iter = 4, lambda = (2.005556e+01,1.859358e-07), ||A*q-lambda*q|| = 4.617708e-03
+Iter = 8, lambda = (2.005555e+01,5.564779e-08), ||A*q-lambda*q|| = 4.349416e-06
+
+  Estimate of dominate eigenvalue lambda = (2.005555e+01,5.564779e-08)
+
+***
+*** Running power method example using scalar type = 'std::complex<double>' ...
+***
+
+(1) Constructing tridagonal matrix A of dimmension = 4 ...
+
+(2) Running the power method on matrix A ...
+
+Starting power method ...
+
+Iter = 0, lambda = (1.885459e+00,1.387779e-17), ||A*q-lambda*q|| = 8.366853e-01
+Iter = 4, lambda = (2.908303e+00,-2.775558e-17), ||A*q-lambda*q|| = 4.634469e-01
+Iter = 8, lambda = (3.465825e+00,-1.040834e-16), ||A*q-lambda*q|| = 3.592392e-01
+Iter = 12, lambda = (3.604720e+00,1.249001e-16), ||A*q-lambda*q|| = 1.146174e-01
+Iter = 16, lambda = (3.617021e+00,-1.058181e-16), ||A*q-lambda*q|| = 3.181573e-02
+Iter = 20, lambda = (3.617958e+00,6.179952e-17), ||A*q-lambda*q|| = 8.730912e-03
+Iter = 24, lambda = (3.618028e+00,-4.602438e-17), ||A*q-lambda*q|| = 2.393871e-03
+Iter = 28, lambda = (3.618034e+00,-8.632960e-18), ||A*q-lambda*q|| = 6.563170e-04
+
+  Estimate of dominate eigenvalue lambda = (3.618034e+00,-8.632960e-18)
+
+(3) Increasing first diagonal entry by factor of 10 ...
+
+(4) Running the power method again on matrix A ...
+
+Starting power method ...
+
+Iter = 0, lambda = (1.316405e+01,-5.551115e-16), ||A*q-lambda*q|| = 8.828069e+00
+Iter = 4, lambda = (2.005555e+01,-3.814166e-16), ||A*q-lambda*q|| = 4.617726e-03
+Iter = 8, lambda = (2.005556e+01,-1.371085e-17), ||A*q-lambda*q|| = 3.719354e-06
+
+  Estimate of dominate eigenvalue lambda = (2.005556e+01,-1.371085e-17)
+
+***
+*** Running power method example using scalar type = 'mpf_class' ...
+***
+
+(1) Constructing tridagonal matrix A of dimmension = 4 ...
+
+(2) Running the power method on matrix A ...
+
+Starting power method ...
+
+Iter = 0, lambda = 9.402176e-01, ||A*q-lambda*q|| = 1.103226e+00
+Iter = 4, lambda = 3.577075e+00, ||A*q-lambda*q|| = 1.999005e-01
+Iter = 8, lambda = 3.614877e+00, ||A*q-lambda*q|| = 5.609685e-02
+Iter = 12, lambda = 3.617796e+00, ||A*q-lambda*q|| = 1.542336e-02
+Iter = 16, lambda = 3.618016e+00, ||A*q-lambda*q|| = 4.229461e-03
+Iter = 20, lambda = 3.618033e+00, ||A*q-lambda*q|| = 1.159585e-03
+Iter = 24, lambda = 3.618034e+00, ||A*q-lambda*q|| = 3.179170e-04
+
+  Estimate of dominate eigenvalue lambda = 3.618034e+00
+
+(3) Increasing first diagonal entry by factor of 10 ...
+
+(4) Running the power method again on matrix A ...
+
+Starting power method ...
+
+Iter = 0, lambda = 1.102725e+01, ||A*q-lambda*q|| = 9.675451e+00
+Iter = 4, lambda = 2.005556e+01, ||A*q-lambda*q|| = 1.920248e-03
+Iter = 8, lambda = 2.005556e+01, ||A*q-lambda*q|| = 1.572132e-06
+
+  Estimate of dominate eigenvalue lambda = 2.005556e+01
+
+Congratulations! All of the tests checked out!
+
+\endverbatim
+
+This example program also takes a number of command-line options.  To
+see what the command-line options are, use the <tt>--help</tt> option.
+At the time of this writing, the command-line options returned from
+<tt>./sillyPowerMethod_serial.exe --help</tt> are:
+
+\verbatim
+$ ./sillyPowerMethod_serial.exe --help
+Usage: ./sillyPowerMethod_serial [options]
+  options:
+  --help                         Prints this help message
+  --pause-for-debugging          Pauses for user input to allow attaching a debugger
+  --verbose              bool    Determines if any output is printed or not.
+  --quiet                        (default: --verbose)
+  --dim                  int     Dimension of the linear system.
+                                 (default: --dim=4)
+  --dump-all             bool    Determines if quantities are dumped or not.
+  --no-dump                      (default: --no-dump)
+\endverbatim
+
+To see the full listing of this example program click: <a
+href="sillyPowerMethod__serial_8cpp-example.html">
+sillyPowerMethod_serial.cpp </a>
+
+*/
+
+/** \example SerialTridiagLinearOp.hpp
+
+Click \ref TSFCore_examples_power_method_serial_grp "here" and for
+\ref TSFCore_examples_cg_serial_grp "here" for example programs that
+use this example class.
+
+*/
+
+/** \example sillyPowerMethod_serial.cpp
+
+Click \ref TSFCore_examples_power_method_serial_grp "here" for a more
+detailed discussion of this example program.
+
+*/
+
+/** \defgroup TSFCore_examples_power_method_epetra_grp Epetra Implemenation of the Power Method
+
+\ingroup TSFCore_examples_power_method_grp
+
+\brief Here is an example program that shows the use of the \ref
+TSFCore_adapters_Epetra_grp "Epetra adapter subclasses" with the
+example linear ANA implementation <tt>sillyPowerMethod()</tt>.
+
+This example program is contained in the source file
+
+\verbatim ./example/Core/sillyPowerMethod_epetra.cpp \endverbatim
+
+where <tt>./</tt> is the base source directory for %TSFCore
+(i.e. <tt>???/Trilinos/packages/TSFCore</tt>).
+
+This example program is broken down into a few pieces in an attempt to
+be more understandable.
+
+\dontinclude createTridiagEpetraLinearOp.cpp
+
+The first piece of example code we show is the function
+<tt>TSFCore::createTridiagEpetraLinearOp()</tt>.  This function creates
+an <tt>Epetra_CrsMatrix</tt> object that represents the well-known
+tridiagonal matrix
+
+\f[
+
+A=
+\left[\begin{array}{rrrrrrrrrr}
+2      & -1 \\
+-1     &  2      & -1 \\
+       & \ddots  & \ddots  & \ddots \\
+       &         & -1      & 2       & -1 \\
+       &         &         &  -1     & 2
+\end{array}\right].
+\f]
+
+After the <tt>%Epetra_CrsMatrix</tt> object is created, it is used to
+create a <tt>TSFCore::EpetraLinearOp</tt> object that adapts it into a
+<tt>TSFCore::LinearOp</tt> object.
+
+The implementation of the function
+<tt>TSFCore::createTridiagEpetraLinearOp()</tt> is shown below:
+
+\skip Teuchos::RefCountPtr<TSFCore::LinearOp<double> >
+\until end createTridiagEpetraLinearOp
+
+\dontinclude sillyPowerMethod_epetra.cpp
+
+The above matrix-building function
+<tt>%TSFCore::%createTridiagEpetraLinearOp()</tt> is then called
+in the following MPI-enabled <tt>main()</tt> driver program:
+
+\skip int main
+\until end main
+
+The above driver program should be very strightforward to follow and
+generates the exact same numerical results as in the <tt>double</tt>
+case in the
+\ref TSFCore_examples_power_method_serial_grp "tempalted serial version".
+
+\dontinclude sillyPowerMethod_epetra.cpp
+
+Notice however that the above driver program calls a helper function
+called <tt>scaleFirstDiagElement()</tt> which hides the details of
+scaling the first diagonal entry of the tridiagonal matrix operator.
+This helper function is not too tricking and takes the form:
+
+\skip void scaleFirstDiagElement
+\until end scaleFirstDiagElement
+
+One important thing to notice about the above helper function is how
+the underlying <tt>Epetra_CrsMatrix</tt> object is accessed given the
+<tt>TSFCore::LinearOp</tt> interface to the
+<tt>TSFCore::EpetraLinearOp</tt> object that was created by
+<tt>TSFCore::createTridiagEpetraLinearOp()</tt>.  Actually, most of the C++
+magic is performed in the helper function
+<tt>TSFCore::get_Epetra_Operator()</tt> which is then followed by a
+simple dynamic cast.
+
+The above example program is built as part of the %TSFCore package
+(unless examples where disabled at configure time) and the executable
+can be found at:
+
+\verbatim ./example/Core/sillyPowerMethod_epetra.exe \endverbatim
+
+where <tt>./</tt> is the base build directory for %TSFCore
+(e.g. <tt>???/Trilinos/$BUILD_DIR/packages/TSFCore</tt>).
+
+This example program should run successfully with no arguments and, at
+the time of this writing, produces the following output:
+
+\verbatim
+
+$ ./sillyPowerMethod_epetra.exe
+
+***
+*** Running power method example using Epetra implementation
+***
+
+(1) Constructing tridagonal Epetra matrix A of global dimension = 4 ...
+
+Creating Epetra_SerialComm ...
+
+(2) Running the power method on matrix A ...
+
+Starting power method ...
+
+Iter = 0, lambda = 2.634806e+00, ||A*q-lambda*q|| = 9.051834e-01
+Iter = 4, lambda = 3.552293e+00, ||A*q-lambda*q|| = 2.496007e-01
+Iter = 8, lambda = 3.612831e+00, ||A*q-lambda*q|| = 7.194514e-02
+Iter = 12, lambda = 3.617641e+00, ||A*q-lambda*q|| = 1.981868e-02
+Iter = 16, lambda = 3.618004e+00, ||A*q-lambda*q|| = 5.435543e-03
+Iter = 20, lambda = 3.618032e+00, ||A*q-lambda*q|| = 1.490271e-03
+Iter = 24, lambda = 3.618034e+00, ||A*q-lambda*q|| = 4.085797e-04
+
+  Estimate of dominate eigenvalue lambda = 3.618034e+00
+
+(4) Running the power method again on matrix A ...
+
+Starting power method ...
+
+Iter = 0, lambda = 1.791493e+01, ||A*q-lambda*q|| = 5.881543e+00
+Iter = 4, lambda = 2.005555e+01, ||A*q-lambda*q|| = 3.251777e-03
+Iter = 8, lambda = 2.005556e+01, ||A*q-lambda*q|| = 2.681092e-06
+
+  Estimate of dominate eigenvalue lambda = 2.005556e+01
+
+Congratulations! All of the tests checked out!
+
+\endverbatim
+
+This example program also takes a number of command-line options.  To
+see what the command-line options are, use the <tt>--help</tt> option.
+At the time of this writing, the command-line options returned from
+<tt>./sillyPowerMethod_epetra.exe --help</tt> are:
+
+\verbatim
+$ ./sillyPowerMethod_epetra.exe --help
+Usage: ./sillyPowerMethod_epetra [options]
+  options:
+  --help                         Prints this help message
+  --pause-for-debugging          Pauses for user input to allow attaching a debugger
+  --verbose              bool    Determines if any output is printed or not.
+  --quiet                        (default: --verbose)
+  --global-dim           int     Global dimension of the linear system.
+                                 (default: --global-dim=4)
+  --dump-all             bool    Determines if quantities are dumped or not.
+  --no-dump                      (default: --no-dump)
+\endverbatim
+
+To see the full listing of this example program click: <a
+href="sillyPowerMethod__epetra_8cpp-example.html">
+sillyPowerMethod_epetra.cpp </a>
+
+*/
+
+/** \example createTridiagEpetraLinearOp.cpp
+
+Click \ref TSFCore_examples_power_method_epetra_grp "here" and \ref
+TSFCore_examples_cg_epetra_grp "here" for example programs that call
+the function.
+
+*/
+
+/** \example sillyPowerMethod_epetra.cpp
+
+Click \ref TSFCore_examples_power_method_epetra_grp "here" for a more
+detailed discussion of this example program.
+
+*/
+
+//
+// Silly CG examle
+//
+
+/** \defgroup TSFCore_examples_cg_grp CG Examples
+
+\ingroup TSFCore_examples_grp
+
+\brief Here we show some simple examples of using code in the %TSFCore
+package with an example ANA algorithm for the iterative solution of
+symmetric positive-definite linear systems using the conjugate
+gradient (CG) method.
+
+The CG ANA is implemented in the function <tt>sillyCgSolve()</tt> and
+its implementation is shown below:
+
+\dontinclude sillyCgSolve.hpp
+
+\skip template
+\until end sillyCgSolve
+
+This above templated function is used in the following various example
+implementations which use several different scalar types:
+
+<ol>
+
+<li>\ref TSFCore_examples_cg_serial_grp
+
+<li>\ref TSFCore_examples_cg_epetra_grp
+
+</ol>
+
+*/
+
+/** \example sillyCgSolve.hpp
+
+Click \ref TSFCore_examples_cg_grp "here" for a more
+detailed discussion of this example function.
+
+*/
+
+/** \defgroup TSFCore_examples_cg_serial_grp Templated Serial Implemenation of the CG Method
+
+\ingroup TSFCore_examples_cg_grp
+
+\brief Here is an example program that shows the use of the example
+serial templated matrix class <tt>SerialTridiagLinearOp</tt>
+with the example linear ANA implementation <tt>sillyCgSolve()</tt>.
+
+The class <tt>SerialTridiagLinearOp</tt> that derives from the
+base class <tt>TSFCore::SerialLinearOpBase</tt> is quite simple and
+its complete implementation looks like:
+
+\dontinclude SerialTridiagLinearOp.hpp
+\skip template
+\until end class SerialTridiagLinearOp
+
+\dontinclude sillyCgSolve_serial.cpp
+
+The above serial matrix class is used in an example program (see
+<tt>runCgSolveExample()</tt> below) that calls <tt>%sillyCgSolve()</tt>.
+In this example program, the matrix constructed and used is the
+well-known tridiagonal matrix
+
+\f[
+
+A=
+\left[\begin{array}{rrrrrrrrrr}
+2 a    & -1 \\
+-1     &  2 a    & -1 \\
+       & \ddots  & \ddots  & \ddots \\
+       &         & -1      & 2 a     & -1 \\
+       &         &         &  -1     & 2 a
+\end{array}\right]
+\f]
+
+where \f$a\f$ is an adjustable diagonal scale factor that makes the
+matrix \f$A\f$ more or less well conditioned.
+
+The CG method is then run on the matrix \f$A\f$ for a number of
+iterations or until convergence to some tolerance is achieved.
+
+The following templated function <tt>runCgSolveExample()</tt>
+implements the example described above:
+
+\skip template
+\until end runCgSolveExample
+
+The above templated function <tt>runCgSolveExample()</tt> is then
+instantiated with the following scalar types:
+
+<ul>
+<li> Real types <b><tt>float</tt></b> and <b><tt>double</tt></b>
+<li> Complex real types <b><tt>std::complex<float></tt></b> and
+     <b><tt>std::complex<double></tt></b> (if <tt>--enable-teuchos-complex</tt>
+     was used at configuration time)
+<li> Real extended-precision type <b><tt>mpf_class</tt></b>
+     (if <tt>--enable-teuchos-gmp</tt> was used at configuration time)
+<li> Complex extended-precision type <b><tt>std::complex<mpf_class></tt></b>
+     (if <tt>--enable-teuchos-complex</tt> and <tt>--enable-teuchos-gmp</tt>
+     where used at configuration time)
+</ul>
+
+and is called multiple times from within the following <tt>main()</tt>
+program function:
+
+\skip int main
+\until end main
+
+The above example program is built as part of the %TSFCore package
+(unless examples where disabled at configure time) and the executable
+can be found at:
+
+\verbatim ./example/Core/sillyCgSolve_serial.exe \endverbatim
+
+where <tt>./</tt> is the base build directory for %TSFCore
+(e.g. <tt>???/Trilinos/$BUILD_DIR/packages/TSFCore</tt>).
+
+This example program should run successfully with no arguments and, at the time
+of this writing, produces the following output:
+
+\verbatim
+
+$ ./sillyCgSolve_serial.exe
+
+***
+*** Running silly CG solver using scalar type = 'float' ...
+***
+
+Constructing tridagonal matrix A of dimmension = 500 and diagonal multiplier = 1.001 ...
+
+Starting CG solver ...
+
+  Type of A = '21SerialTridiagLinearOpIfE'
+  Type of b = 'N7TSFCore12SerialVectorIfEE'
+  Type of x = 'N7TSFCore12SerialVectorIfEE'
+
+Iter = 0, ||b-A*x||/||b-A*x0|| = 1.000000e+00
+Iter = 31, ||b-A*x||/||b-A*x0|| = 2.788467e-01
+Iter = 62, ||b-A*x||/||b-A*x0|| = 6.551621e-02
+Iter = 93, ||b-A*x||/||b-A*x0|| = 1.358551e-02
+Iter = 124, ||b-A*x||/||b-A*x0|| = 3.630138e-03
+Iter = 155, ||b-A*x||/||b-A*x0|| = 1.010328e-03
+Iter = 186, ||b-A*x||/||b-A*x0|| = 1.903257e-04
+Iter = 204, ||b-A*x||/||b-A*x0|| = 9.827065e-05
+
+||b-A*x||/||b|| = 1.414628e-03/1.299397e+01 = 1.088680e-04 <= 10.0*tolerance = 9.999999e-04: passed
+
+Total time = 3.330000e-01 sec
+
+***
+*** Running silly CG solver using scalar type = 'double' ...
+***
+
+Constructing tridagonal matrix A of dimmension = 500 and diagonal multiplier = 1.001000e+00 ...
+
+Starting CG solver ...
+
+  Type of A = '21SerialTridiagLinearOpIdE'
+  Type of b = 'N7TSFCore12SerialVectorIdEE'
+  Type of x = 'N7TSFCore12SerialVectorIdEE'
+
+Iter = 0, ||b-A*x||/||b-A*x0|| = 1.000000e+00
+Iter = 31, ||b-A*x||/||b-A*x0|| = 2.788549e-01
+Iter = 62, ||b-A*x||/||b-A*x0|| = 6.552082e-02
+Iter = 93, ||b-A*x||/||b-A*x0|| = 1.358681e-02
+Iter = 124, ||b-A*x||/||b-A*x0|| = 3.630606e-03
+Iter = 155, ||b-A*x||/||b-A*x0|| = 1.010494e-03
+Iter = 186, ||b-A*x||/||b-A*x0|| = 1.903637e-04
+Iter = 204, ||b-A*x||/||b-A*x0|| = 9.829223e-05
+
+||b-A*x||/||b|| = 1.293549e-03/1.299397e+01 = 9.954993e-05 <= 10.0*tolerance = 1.000000e-03: passed
+
+Total time = 1.660000e-01 sec
+
+***
+*** Running silly CG solver using scalar type = 'std::complex<float>' ...
+***
+
+Constructing tridagonal matrix A of dimmension = 500 and diagonal multiplier = (1.001000e+00,0.000000e+00) ...
+
+Starting CG solver ...
+
+  Type of A = '21SerialTridiagLinearOpISt7complexIfEE'
+  Type of b = 'N7TSFCore12SerialVectorISt7complexIfEEE'
+  Type of x = 'N7TSFCore12SerialVectorISt7complexIfEEE'
+
+Iter = 0, ||b-A*x||/||b-A*x0|| = 1.000000e+00
+Iter = 31, ||b-A*x||/||b-A*x0|| = 2.674720e-01
+Iter = 62, ||b-A*x||/||b-A*x0|| = 7.215633e-02
+Iter = 93, ||b-A*x||/||b-A*x0|| = 1.695249e-02
+Iter = 124, ||b-A*x||/||b-A*x0|| = 4.661479e-03
+Iter = 155, ||b-A*x||/||b-A*x0|| = 9.411839e-04
+Iter = 186, ||b-A*x||/||b-A*x0|| = 2.173253e-04
+Iter = 207, ||b-A*x||/||b-A*x0|| = 9.702092e-05
+
+||b-A*x||/||b|| = 1.860036e-03/1.800947e+01 = 1.032810e-04 <= 10.0*tolerance = 9.999999e-04: passed
+
+Total time = 2.670000e-01 sec
+
+***
+*** Running silly CG solver using scalar type = 'std::complex<double>' ...
+***
+
+Constructing tridagonal matrix A of dimmension = 500 and diagonal multiplier = (1.001000e+00,0.000000e+00) ...
+
+Starting CG solver ...
+
+  Type of A = '21SerialTridiagLinearOpISt7complexIdEE'
+  Type of b = 'N7TSFCore12SerialVectorISt7complexIdEEE'
+  Type of x = 'N7TSFCore12SerialVectorISt7complexIdEEE'
+
+Iter = 0, ||b-A*x||/||b-A*x0|| = 1.000000e+00
+Iter = 31, ||b-A*x||/||b-A*x0|| = 2.674805e-01
+Iter = 62, ||b-A*x||/||b-A*x0|| = 7.216156e-02
+Iter = 93, ||b-A*x||/||b-A*x0|| = 1.695422e-02
+Iter = 124, ||b-A*x||/||b-A*x0|| = 4.662121e-03
+Iter = 155, ||b-A*x||/||b-A*x0|| = 9.413428e-04
+Iter = 186, ||b-A*x||/||b-A*x0|| = 2.173687e-04
+Iter = 207, ||b-A*x||/||b-A*x0|| = 9.704284e-05
+
+||b-A*x||/||b|| = 1.763439e-03/1.800948e+01 = 9.791726e-05 <= 10.0*tolerance = 1.000000e-03: passed
+
+Total time = 2.640000e-01 sec
+
+***
+*** Running silly CG solver using scalar type = 'mpf_class' ...
+***
+
+Constructing tridagonal matrix A of dimmension = 500 and diagonal multiplier = 1.001000e+00 ...
+
+Starting CG solver ...
+
+  Type of A = '21SerialTridiagLinearOpI10__gmp_exprI12__gmpf_valueS1_EE'
+  Type of b = 'N7TSFCore12SerialVectorI10__gmp_exprI12__gmpf_valueS2_EEE'
+  Type of x = 'N7TSFCore12SerialVectorI10__gmp_exprI12__gmpf_valueS2_EEE'
+
+Iter = 0, ||b-A*x||/||b-A*x0|| = 1.000000e+00
+Iter = 31, ||b-A*x||/||b-A*x0|| = 7.546385e-01
+Iter = 62, ||b-A*x||/||b-A*x0|| = 1.865285e-01
+Iter = 93, ||b-A*x||/||b-A*x0|| = 4.594147e-02
+Iter = 124, ||b-A*x||/||b-A*x0|| = 9.723110e-03
+Iter = 155, ||b-A*x||/||b-A*x0|| = 2.841298e-03
+Iter = 186, ||b-A*x||/||b-A*x0|| = 5.131951e-04
+Iter = 217, ||b-A*x||/||b-A*x0|| = 1.099351e-04
+Iter = 219, ||b-A*x||/||b-A*x0|| = 9.509284e-05
+
+||b-A*x||/||b|| = 1.224754e-03/1.295755e+01 = 9.452049e-05 <= 10.0*tolerance = 1.000000e-03: passed
+
+Total time = 2.640000e+00 sec
+
+Congratulations! All of the tests checked out!
+
+\endverbatim
+
+This exaple program also takes a number of command-line options.  To
+see what the command-line options are, use the <tt>--help</tt> option.
+At the time of this writing, the command-line options returned from
+<tt>./sillyCgSolve_serial.exe --help</tt> are:
+
+\verbatim
+$ ./sillyCgSolve_serial.exe --help
+Usage: ./sillyCgSolve_serial [options]
+  options:
+  --help                         Prints this help message
+  --pause-for-debugging          Pauses for user input to allow attaching a debugger
+  --verbose              bool    Determines if any output is printed or not.
+  --quiet                        (default: --verbose)
+  --dim                  int     Dimension of the linear system.
+                                 (default: --dim=500)
+  --diag-scale           double  Scaling of the diagonal to improve conditioning.
+                                 (default: --diag-scale=1.001)
+  --tol                  double  Relative tolerance for linear system solve.
+                                 (default: --tol=0.0001)
+  --max-num-iters        int     Maximum of CG iterations.
+                                 (default: --max-num-iters=300)
+\endverbatim
+
+To see the full listing of this example program click: <a
+href="sillyCgSolve__serial_8cpp-example.html">
+sillyCgSolve_serial.cpp </a>
+
+*/
+
+/** \example sillyCgSolve_serial.cpp
+
+Click \ref TSFCore_examples_cg_serial_grp "here" for a more
+detailed discussion of this example program.
+
+*/
+
+/** \defgroup TSFCore_examples_cg_epetra_grp Epetra Implemenation of the CG Method
+
+\ingroup TSFCore_examples_cg_grp
+
+\brief Here is an example program that shows the use of the \ref
+TSFCore_adapters_Epetra_grp "Epetra adapter subclasses" with the
+example linear ANA implementation <tt>sillyCgSolve()</tt>.
+
+This example program is contained in the source file
+
+\verbatim ./example/Core/sillyCgSolve_epetra.cpp \endverbatim
+
+where <tt>./</tt> is the base source directory for %TSFCore
+(i.e. <tt>???/Trilinos/packages/TSFCore</tt>).
+
+This example program is broken down into a few pieces in an attempt to
+be more understandable.
+
+\dontinclude createTridiagEpetraLinearOp.cpp
+
+The first piece of example code we show is the function
+<tt>TSFCore::createTridiagEpetraLinearOp()</tt>.  This function creates
+an <tt>Epetra_CrsMatrix</tt> object that represents the well-known
+tridiagonal matrix
+
+\f[
+
+A=
+\left[\begin{array}{rrrrrrrrrr}
+2 a    & -1 \\
+-1     &  2 a    & -1 \\
+       & \ddots  & \ddots  & \ddots \\
+       &         & -1      & 2 a     & -1 \\
+       &         &         &  -1     & 2 a
+\end{array}\right]
+\f]
+
+where \f$a\f$ is an adjustable diagonal scale factor that makes the
+matrix \f$A\f$ more or less well conditioned.
+
+The implementation of the function
+<tt>TSFCore::createTridiagEpetraLinearOp()</tt> is shown below:
+
+\skip Teuchos::RefCountPtr<TSFCore::LinearOp<double> >
+\until end createTridiagEpetraLinearOp
+
+\dontinclude sillyCgSolve_epetra.cpp
+
+The above matrix-building function
+<tt>%TSFCore::%createTridiagEpetraLinearOp()</tt> is then called along with
+the <tt>sillyCgSolve()</tt> function in the following MPI-enabled
+<tt>main()</tt> driver program:
+
+\skip int main
+\until end main
+
+The above driver program should be very strightforward to follow and
+generates the exact same numerical results as in the <tt>double</tt>
+case in the
+\ref TSFCore_examples_cg_serial_grp "tempalted serial version".
+
+The above example program is built as part of the %TSFCore package
+(unless examples where disabled at configure time) and the executable
+can be found at:
+
+\verbatim ./example/Core/sillyCgSolve_epetra.exe \endverbatim
+
+where <tt>./</tt> is the base build directory for %TSFCore
+(e.g. <tt>???/Trilinos/$BUILD_DIR/packages/TSFCore</tt>).
+
+This example program should run successfully with no arguments and, at
+the time of this writing, produces the following output:
+
+\verbatim
+
+$ ./sillyCgSolve_epetra.exe
+
+***
+*** Running power method example using Epetra implementation
+***
+
+(1) Constructing tridagonal Epetra matrix A of global dimension = 500 ...
+
+Creating Epetra_SerialComm ...
+
+Starting CG solver ...
+
+  Type of A = 'N7TSFCore14EpetraLinearOpE'
+  Type of b = 'N7TSFCore12EpetraVectorE'
+  Type of x = 'N7TSFCore12EpetraVectorE'
+
+Iter = 0, ||b-A*x||/||b-A*x0|| = 1.000000e+00
+Iter = 31, ||b-A*x||/||b-A*x0|| = 2.812612e-01
+Iter = 62, ||b-A*x||/||b-A*x0|| = 6.590140e-02
+Iter = 93, ||b-A*x||/||b-A*x0|| = 1.382036e-02
+Iter = 124, ||b-A*x||/||b-A*x0|| = 3.547269e-03
+Iter = 155, ||b-A*x||/||b-A*x0|| = 9.842233e-04
+Iter = 186, ||b-A*x||/||b-A*x0|| = 1.892296e-04
+Iter = 204, ||b-A*x||/||b-A*x0|| = 9.615059e-05
+
+||b-A*x||/||b|| = 1.249378e-03/1.299397e+01 = 9.615059e-05 <= 2.0*tolerance = 2.000000e-04: passed
+
+Congratulations! All of the tests checked out!
+
+\endverbatim
+
+This example program also takes a number of command-line options.  To
+see what the command-line options are, use the <tt>--help</tt> option.
+At the time of this writing, the command-line options returned from
+<tt>./sillyCgSolve_epetra.exe --help</tt> are:
+
+\verbatim
+$ ./sillyCgSolve_epetra.exe --help
+Usage: ./sillyCgSolve_epetra [options]
+  options:
+  --help                                 Prints this help message
+  --pause-for-debugging                  Pauses for user input to allow attaching a debugger
+  --verbose                      bool    Determines if any output is printed or not.
+  --quiet                                (default: --verbose)
+  --global-dim                   int     Global dimension of the linear system.
+                                         (default: --global-dim=500)
+  --diag-scale                   double  Scaling of the diagonal to improve conditioning.
+                                         (default: --diag-scale=1.001)
+  --use-with-non-epetra-vectors  bool    Use non-epetra vectors with Epetra operator or not.
+  --use-with-epetra-vectors              (default: --use-with-epetra-vectors)
+  --tol                          double  Relative tolerance for linear system solve.
+                                         (default: --tol=0.0001)
+  --max-num-iters                int     Maximum of CG iterations.
+                                         (default: --max-num-iters=300)
+\endverbatim
+
+One interesting feature of this example program is that it
+demonstrates how the MPI base subclasses allow interoperability of
+different concrete implementations of SPMD vectors and multi-vectors.
+Running this example program with the option
+<tt>--use-with-non-epetra-vectors</tt> will cause the vector space for
+the RHS <tt>b</tt> based to the CG solver to be different (but
+compatible) from the vector space used by the operator <tt>A</tt>.
+Notice the different types '<tt>Type of b</tt>' and '<tt>Type of
+x</tt>' in the following ouput from this program using this option:
+
+\verbatim
+
+$ ./sillyCgSolve_epetra.exe --use-with-non-epetra-vectors
+
+***
+*** Running power method example using Epetra implementation
+***
+
+(1) Constructing tridagonal Epetra matrix A of global dimension = 500 ...
+
+Creating Epetra_SerialComm ...
+
+Starting CG solver ...
+
+  Type of A = 'N7TSFCore14EpetraLinearOpE'
+  Type of b = 'N7TSFCore12MPIVectorStdIdEE'
+  Type of x = 'N7TSFCore12EpetraVectorE'
+
+Iter = 0, ||b-A*x||/||b-A*x0|| = 1.000000e+00
+Iter = 31, ||b-A*x||/||b-A*x0|| = 2.812612e-01
+Iter = 62, ||b-A*x||/||b-A*x0|| = 6.590140e-02
+Iter = 93, ||b-A*x||/||b-A*x0|| = 1.382036e-02
+Iter = 124, ||b-A*x||/||b-A*x0|| = 3.547269e-03
+Iter = 155, ||b-A*x||/||b-A*x0|| = 9.842233e-04
+Iter = 186, ||b-A*x||/||b-A*x0|| = 1.892296e-04
+Iter = 204, ||b-A*x||/||b-A*x0|| = 9.615059e-05
+
+||b-A*x||/||b|| = 1.249378e-03/1.299397e+01 = 9.615059e-05 <= 2.0*tolerance = 2.000000e-04: passed
+
+Congratulations! All of the tests checked out!
+
+\endverbatim
+
+
+To see the full listing of this example program click: <a
+href="sillyCgSolve__epetra_8cpp-example.html">
+sillyCgSolve_epetra.cpp </a>
+
+*/
+
+/** \example sillyCgSolve_epetra.cpp
+
+Click \ref TSFCore_examples_cg_epetra_grp "here" for a more
+detailed discussion of this example program.
+
+*/
+
+
+//
+// Misc examples
+//
+
+/** \defgroup TSFCore_epetra_adapters_testing_prg_grp Testing Program for TSFCore/Epetra Adapters
+
+\ingroup TSFCore_examples_grp
+
+\brief Here we show the testing program that is used to perform
+regression tests on the \ref TSFCore_adapters_Epetra_grp "Epetra adapter subclasses"
+and tests a number of other classes as well.
+
+This testing program is contained in the source file
+
+\verbatim ./test/epetra-adapters/cxx_main.cpp \endverbatim
+
+where <tt>./</tt> is the base source directory for %TSFCore.
+
+\dontinclude epetra-adapters/cxx_main.cpp
+
+This testing program will be shown in its entirety below but first we
+will point out some of the more significant parts of the program and
+highlight some intersting functionality.
+
+First, the testing program reads in a number of options as shown below:
+
+\skip local_dim
+\until return parse_return
+
+Next, some MPI functions are called to get the context of the parallel
+program (if built with MPI support and <tt>RTOp_USE_MPI</tt> is
+defined):
+
+\skip RTOp_USE_MPI
+\until endif
+
+This program then creates two different (parallel or serial) vector
+spaces where one is of type <tt>TSFCore::EpetraVectorSpace</tt> and
+the other is some non-Epetra vector space:
+
+\skip RefCountPtr
+\until end create
+
+Given these vector spaces a couple %Epetra and non-Epetra vectors
+and multi-vectors are created:
+
+\skip RefCountPtr
+\until neV2
+
+Most of the operations performed in this testing program are fairly
+mundane but we will show a few of these simpler examples before going
+onto some more interesting ones.
+
+These vectors and multi-vectors are then initialized using the
+<tt>TSFCore::assign()</tt> wrapper functions:
+
+\skip assign
+\until neV2
+
+To see the full listing of this click: <a
+href="epetra-adapters_2cxx__main_8cpp-example.html">
+epetra-adapters/cxx_main.cpp </a>.
+
+*/
+
+/** \example epetra-adapters/cxx_main.cpp
+
+Click \ref TSFCore_epetra_adapters_testing_prg_grp "here" for a more
+detailed discusion of this example/test program.
+
+*/
+
+/** \defgroup TSFCore_product_vec_spc_prg_grp Testing Program for Composite Product Vector Spaces and Product Vectors
+
+\ingroup TSFCore_examples_grp
+
+To see the full listing of this click: <a
+href="product-space_2cxx__main_8cpp-example.html">
+product-space/cxx_main.cpp </a>.
+
+*/
+
+/** \example product-space/cxx_main.cpp
+
+Click \ref TSFCore_product_vec_spc_prg_grp "here" for a more
+detailed discusion of this example/test program.
 
 */

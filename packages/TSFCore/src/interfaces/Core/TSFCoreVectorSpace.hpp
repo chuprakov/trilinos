@@ -34,7 +34,7 @@
 
 #include "TSFCoreVectorSpaceDecl.hpp"
 #include "TSFCoreVector.hpp"
-#include "TSFCoreSerialVectorSpaceFactory.hpp"
+#include "TSFCoreSerialVectorSpaceFactoryStd.hpp"
 #include "TSFCoreMultiVectorStdOps.hpp"
 #include "TSFCoreMultiVectorCols.hpp"
 
@@ -90,7 +90,7 @@ template<class Scalar>
 Teuchos::RefCountPtr<const VectorSpaceFactory<Scalar> >
 VectorSpace<Scalar>::smallVecSpcFcty() const
 {
-	return Teuchos::rcp(new SerialVectorSpaceFactory<Scalar>());
+	return Teuchos::rcp(new SerialVectorSpaceFactoryStd<Scalar>());
 }
 
 template<class Scalar>

@@ -33,7 +33,8 @@
 #define TSFCORE_SCALAR_PROD_HPP
 
 #include "TSFCoreScalarProdDecl.hpp"
-#include "TSFCoreMultiVectorCols.hpp"
+#include "TSFCoreAssertOp.hpp"
+#include "TSFCoreLinearOp.hpp"
 
 namespace TSFCore {
 
@@ -54,6 +55,24 @@ Scalar ScalarProd<Scalar>::scalarProd( const Vector<Scalar>& x, const Vector<Sca
 	this->scalarProds(X,Y,scalar_prods);
 #endif
 	return scalar_prods[0];
+}
+
+template<class Scalar>
+void ScalarProd<Scalar>::apply(
+	const EuclideanLinearOpBase<Scalar>   &M
+	,const ETransp                        M_trans
+	,const MultiVector<Scalar>            &X
+	,MultiVector<Scalar>                  *Y
+	,const Scalar                         alpha
+	,const Scalar                         beta
+	) const
+{
+#ifdef _DEBUG
+	TSFCORE_ASSERT_LINEAR_OP_MULTIVEC_APPLY_SPACES("EuclideanLinearOpBase<Scalar>::euclideanApply(...)",M,M_trans,X,Y);
+#endif
+	const Index numMv = X.domain()->dim();
+	for( int j = 1; j <= numMv; ++j )
+		this->apply( M, M_trans, *X.col(j), &*Y->col(j), alpha, beta );
 }
 
 } // end namespace TSFCore

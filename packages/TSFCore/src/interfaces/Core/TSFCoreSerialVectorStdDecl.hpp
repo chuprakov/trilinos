@@ -29,11 +29,10 @@
 // /////////////////////////////////////////////////////////////////
 // TSFCoreSerialVectorDecl.hpp
 
-#ifndef TSFCORE_VECTOR_SERIAL_DECL_HPP
-#define TSFCORE_VECTOR_SERIAL_DECL_HPP
+#ifndef TSFCORE_SERIAL_VECTOR_STD_DECL_HPP
+#define TSFCORE_SERIAL_VECTOR_STD_DECL_HPP
 
-#include "TSFCoreSerialVectorBase.hpp"
-#include "TSFCoreSerialVectorSpace.hpp"
+#include "TSFCoreSerialVectorBaseDecl.hpp"
 
 namespace TSFCore {
 
@@ -44,12 +43,12 @@ namespace TSFCore {
  * storage for vector data (with any underlying storage type).
  *
  * To create with storage with the dimension of <tt>dim</tt> just call
- * the constructor <tt>SerialVector(dim)</tt> or after construction
+ * the constructor <tt>SerialVectorStd(dim)</tt> or after construction
  * you can call <tt>this->initialize(dim)</tt>.
  *
  * To simply create a view of a vector <tt>v</tt> with stride
  * <tt>vs</tt>, without ownership just call
- * <tt>SerialVector(Teuchos::rcp(v,false),vs)</tt> or after
+ * <tt>SerialVectorStd(Teuchos::rcp(v,false),vs)</tt> or after
  * construction call
  * <tt>this->initialize(Teuchos::rcp(v,false),vs)</tt>.
  *
@@ -64,13 +63,15 @@ namespace TSFCore {
    Teuchos::RefCountPtr<std::vector<Scalar> > stl_v = Teuchos::rcp( new std::vector<Scalar>(dim_) );
    Teuchos::RefCountPtr<Scalar> v = Teuchos::rcp(&(*stl_v)[0],false);
 	 Teuchos::set_extra_data( stl_v, "stl::vector", &v );
-	 return Teuchos::rcp( new SerialVector<Scalar>( v, 1, dim_, Teuchos::rcp(this,false) ) );
+	 return Teuchos::rcp( new SerialVectorStd<Scalar>( v, 1, dim_, Teuchos::rcp(this,false) ) );
  }
 
  \endcode
+ *
+ * \ingroup TSFCore_adapters_serial_concrete_std_grp
  */
 template<class Scalar>
-class SerialVector : public SerialVectorBase<Scalar> {
+class SerialVectorStd : public SerialVectorBase<Scalar> {
 public:
 
 	/** @name Constructors/initializers */
@@ -79,19 +80,19 @@ public:
 	///
 	/** Calls <tt>this->initialize(vecSpc)</tt>.
 	 */
-	SerialVector(
+	SerialVectorStd(
 		const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &vecSpc
 		);
 	///
 	/** Calls <tt>this->initialize(dim)</tt>.
 	 */
-	SerialVector(
+	SerialVectorStd(
 		const Index dim = 0
 		);
 	///
 	/** Calls <tt>this->initialize(v,vs,dim,vecSpc)</tt>.
 	 */
-	SerialVector(
+	SerialVectorStd(
 		const Teuchos::RefCountPtr<Scalar>                      &v
 		,const Index                                            vs
 		,const Index                                            dim
@@ -130,7 +131,7 @@ public:
 	 *
 	 * Postconditions:<ul>
 	 * <li> [<tt>vecSpc.get()!=NULL</tt>] <tt>vecSpc.get() == this->space().get()</tt>
-	 * <li> [<tt>vecSpc.get()==NULL</tt>] <tt>dynamic_cast<const SerialVectorSpace<Scalar>*>(this->space().get()) != NULL</tt>
+	 * <li> [<tt>vecSpc.get()==NULL</tt>] <tt>dynamic_cast<const SerialVectorSpaceStd<Scalar>*>(this->space().get()) != NULL</tt>
 	 * <li> <tt>this->space()->dim() == dim</tt>
 	 * <li> <tt>this->getRCPtr().get() == v.get()</tt>
 	 * <li> <tt>this->getPtr() == v.get()</tt>
@@ -140,7 +141,7 @@ public:
 	 * Note that this function is declared virtual so that subclasses
 	 * can override it to be informed whenever <tt>*this</tt> vector
 	 * is resized.  An override should call this function as
-	 * <tt>this->SerialVector<Scalar>::initialize(...)</tt>.
+	 * <tt>this->SerialVectorStd<Scalar>::initialize(...)</tt>.
 	 */
 	virtual void initialize(
 		const Teuchos::RefCountPtr<Scalar>                      &v
@@ -174,7 +175,11 @@ public:
 	///
 	void getData( Scalar** values, Index* stride );
 	///
+	void commitData( Scalar** values );
+	///
 	void getData( const Scalar** values, Index* stride ) const;
+	///
+	void freeData( const Scalar** values ) const;
 	//@}
 
 	/** @name Overridden from Vector */
@@ -199,56 +204,56 @@ private:
 	void free_mem();
 
 	// Not defined and not to be called
-	SerialVector(const SerialVector&);
-	SerialVector& operator=(const SerialVector&);
+	SerialVectorStd(const SerialVectorStd&);
+	SerialVectorStd& operator=(const SerialVectorStd&);
 
-}; // end class SerialVector
+}; // end class SerialVectorStd
 
 // /////////////////////////////////////////////////////
 // Inline members
 
 template<class Scalar>
 inline
-Teuchos::RefCountPtr<Scalar> SerialVector<Scalar>::getRCPtr()
+Teuchos::RefCountPtr<Scalar> SerialVectorStd<Scalar>::getRCPtr()
 {
 	return v_;
 }
 
 template<class Scalar>
 inline
-Teuchos::RefCountPtr<const Scalar> SerialVector<Scalar>::getRCPtr() const
+Teuchos::RefCountPtr<const Scalar> SerialVectorStd<Scalar>::getRCPtr() const
 {
 	return v_;
 }
 
 template<class Scalar>
 inline
-Scalar* SerialVector<Scalar>::getPtr()
+Scalar* SerialVectorStd<Scalar>::getPtr()
 {
 	return v_.get();
 }
 
 template<class Scalar>
 inline
-const Scalar* SerialVector<Scalar>::getPtr() const
+const Scalar* SerialVectorStd<Scalar>::getPtr() const
 {
 	return v_.get();
 }
 
 template<class Scalar>
 inline
-Index SerialVector<Scalar>::getStride() const
+Index SerialVectorStd<Scalar>::getStride() const
 {
 	return vs_;
 }	
 
 template<class Scalar>
 inline
-Index SerialVector<Scalar>::getDim() const
+Index SerialVectorStd<Scalar>::getDim() const
 {
 	return dim_;
 }	
 
 } // end namespace TSFCore
 
-#endif // TSFCORE_VECTOR_SERIAL_DECL_HPP
+#endif // TSFCORE_SERIAL_VECTOR_STD_DECL_HPP

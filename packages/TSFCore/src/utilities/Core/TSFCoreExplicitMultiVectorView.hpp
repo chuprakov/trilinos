@@ -38,6 +38,8 @@ namespace TSFCore {
 
 ///
 /** Create an explicit non-mutable (const) view of a <tt>MultiVector</tt> object.
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 template<class Scalar>
 class ExplicitMultiVectorView {
@@ -76,6 +78,8 @@ private:
  
 ///
 /** Create an explicit mutable (non-const) view of a <tt>MultiVector</tt> object.
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 template<class Scalar>
 class ExplicitMutableMultiVectorView {

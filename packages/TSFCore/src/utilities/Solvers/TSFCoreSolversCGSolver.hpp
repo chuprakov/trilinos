@@ -321,7 +321,7 @@ void CGSolver<Scalar>::doIteration(
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\nZ =\n" << *Z_;
 	}
-	space.scalarProds( *Z_, *R_, &rho_[0] );                       // rho_{i-1}[j] = Z^{i-1}[j]' * R^{i-1}[j]
+	space.scalarProds( *Z_, *R_, &rho_[0] );                       // rho_{i-1}[j] = <Z^{i-1}[j],R^{i-1}[j]>
 	for(j=0;j<m;++j) { 	// Check indefinite operator
 		TEST_FOR_EXCEPTION(
 			RTOp_is_nan_inf(rho_[j]), Exceptions::SolverBreakdown

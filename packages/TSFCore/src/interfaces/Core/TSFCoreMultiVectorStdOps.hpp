@@ -33,14 +33,17 @@
 #define TSFCORE_MULTI_VECTOR_STD_OPS_HPP
 
 #include "TSFCoreMultiVectorStdOpsDecl.hpp"
+#include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreMultiVector.hpp"
 #include "RTOpPack_ROpDotProd.hpp"
 #include "RTOpPack_ROpNorm1.hpp"
 #include "RTOpPack_ROpNormInf.hpp"
+#include "RTOpPack_TOpAssignScalar.hpp"
 #include "RTOpPack_TOpAssignVectors.hpp"
 #include "RTOpPack_TOpAXPY.hpp"
+#include "RTOpPack_TOpLinearCombination.hpp"
 #include "RTOpPack_TOpScaleVector.hpp"
 #include "Teuchos_TestForException.hpp"
 

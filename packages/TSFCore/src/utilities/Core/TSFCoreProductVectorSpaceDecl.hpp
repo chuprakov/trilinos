@@ -60,23 +60,42 @@ namespace TSFCore {
      [ V[p-1] ]
  \endverbatim
 
- * Such a vector space can be constructed as shown in the following
- * function:
+ * Such a vector space can be constructed out of an array of
+ * <tt>p</tt> constituent <tt>VectorSpace</tt> objects as shown in the
+ * following function:
 
  \code
- void construct(
+ void constructProductSpace(
    const Teuchos::RefCountPtr<const VectorSpace<Scalar> > V[], int p
-   ,ProductVectorSpace* Z
+   ,Teuchos::RefCountPtr<const VectorSpace<Scalar> > *Z
    )
  {
-     Z->initialize( V, p );
+   *Z = Teuchos::rcp(new ProductVectorSpace<Scalar>(V,p));
+ }
+ \endcode
+
+ * Or, a product space can be constructed out of <tt>p</tt>
+ * copies of the same <tt>VectorSpace</tt> object as follows:
+
+ \code
+ void constructProductSpace(
+   const Teuchos::RefCountPtr<const VectorSpace<Scalar> > V, int p
+   ,Teuchos::RefCountPtr<const VectorSpace<Scalar> > *Z
+   )
+ {
+   std::vector<Teuchos::RefCountPtr<const VectorSpace<Scalar> > > vecSpaces(p);
+   for( int k = 0; k < p; ++k ) vecSpaces[k] = V;
+   *Z = Teuchos::rcp(new ProductVectorSpace<Scalar>(&vecSpaces[0],p);
  }
  \endcode
 
  * Once a <tt>%ProductVectorSpace</tt> object is initialized, it can
  * be used just like any other <tt>%VectorSpace</tt> object.  The
  * method <tt>createMember()</tt> will create <tt>ProductVector</tt>
- * objects containing members from the constituent vector spaces.
+ * objects containing vector members from the constituent vector
+ * spaces.  The method <tt>createMembers()</tt> will create
+ * <tt>ProductMultiVector</tt> objects containing multi-vector members
+ * from the constitient vector spaces.
  *
  * There are several methods that can be used by clients that need to
  * work with the individual constituent vector spaces.  The method
@@ -90,15 +109,18 @@ namespace TSFCore {
  * <tt>kth</tt> vector space <tt>this->%vecSpaces()[k]</tt> owns the
  * element indexes <tt>this->%vecSpacesOffsets()[k]+1</tt> to
  * <tt>this->%vecSpacesOffsets()[k+1]</tt>.  Determining which
- * constitient vector space owns a element index can be determined by
- * calling <tt>getVecSpcPoss()</tt>.
+ * constitient vector space owns a particual element index can be
+ * found out by calling <tt>getVecSpcPoss()</tt>.
  *
  * The default assignment operator is allowed since it has the correct
- * semantics.  The default copy constructor is also allowed but only
- * performs a shallow copy of the constituent vector space objects.
- * If you want to copy the constituent vector space objects also you
- * need to use the <tt>clone()</tt> method.  The default constructor
- * is not allowed (declared private) to avoid accidents.
+ * semantics for shallow copy.  The default copy constructor is also
+ * allowed but only performs a shallow copy of the constituent vector
+ * space objects.  If you want to copy the constituent vector space
+ * objects also you need to use the <tt>clone()</tt> method.  The
+ * default constructor is not allowed (declared private) to avoid
+ * accidents.
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 template<class Scalar>
 class ProductVectorSpace : virtual public ProductVectorSpaceBase<Scalar> {
@@ -138,6 +160,7 @@ public:
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
+	 * <li> <tt>this->dim() == sum( vecSpaces[i]->dim(), i=0,...,numBlocks-1 )</tt>
 	 * <li> <tt>this->numBlocks()==numBlocks</tt>
 	 * <li> <tt>getBlock(i).get() == vecSpaces[i].get(), i=0,...,numBlocks-1</tt>
 	 * <li> <tt>vecSpaces()[i].get() == vecSpaces[i].get(), i=0,...,numBlocks-1</tt>
@@ -197,18 +220,19 @@ public:
 	 * composite vector.
 	 *
 	 * Preconditions:<ul>
-	 * <li> <tt>1 <= k <= this->dim()</tt>
+	 * <li> <tt>1 <= i <= this->dim()</tt>
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>kth_global_offset + 1 <= i <= kth_global_offset + this->getBlock()[kth_vector_space]->dim()</tt>
+	 * <li> <tt>kth_global_offset == this->vecSpacesoffsets()[kth_vector-space]</tt>
+	 * <li> <tt>kth_global_offset + 1 <= i <= kth_global_offset + this->vecSpaces()[kth_vector_space]->dim()</tt>
 	 * </ul>
 	 *
 	 * @param  i    [in] The index of the element to find the vector space object for.
 	 * @param  kth_vector_space
-	 *              [out] The index for <tt>this->vector_spaces()[kth_vector_space]</tt> that owns the element <tt>i</tt>.
+	 *              [out] The index for <tt>this->vectorSpaces()[kth_vector_space]</tt> that owns the element <tt>i</tt>.
 	 * @param  kth_global_offset
-	 *              [out] The global offset for <tt>this->vector_spaces()[kth_vector_space]</tt> in the composite
+	 *              [out] The global offset for <tt>this->vectorSpaces()[kth_vector_space]</tt> in the composite
 	 *              vector.
 	 */
 	void getVecSpcPoss( Index i, int* kth_vector_space, Index* kth_global_offset ) const;
@@ -228,21 +252,21 @@ public:
 	/** @name Overridden from VectorSpace */
 	//@{
 	
-	///
+	/// Returns the summation of the constituent vector spaces.
 	Index dim() const;
-	///
+	/// Returns true only if also a product vector space and all constituent vectors are compatible
 	bool isCompatible( const VectorSpace<Scalar>& vecSpc ) const;
-	///
+	/// Returns a <tt>ProductVector</tt> object
 	Teuchos::RefCountPtr< Vector<Scalar> > createMember() const;
-	///
+	/// Returns the sum of the scalar products of the constituent vectors
 	Scalar scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const;
-	///
+	/// Returns the sum of the scalar products of each of the columns of the constituent multi-vectors
 	void scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const;
-	///
+	/// Returns true if all of the constituent vector spaces return true
 	bool isInCore() const;
-	///
+	/// Returns <tt>getBlock(0)->smallVecSpcFcty()</tt>
 	Teuchos::RefCountPtr< const VectorSpaceFactory<Scalar> > smallVecSpcFcty() const;
-	///
+	/// Returns a <tt>ProductMultiVector</tt> object
 	Teuchos::RefCountPtr< MultiVector<Scalar> > createMembers(int numMembers) const;
 	//@}
 

@@ -26,33 +26,20 @@
 // ***********************************************************************
 // @HEADER
 
-// ///////////////////////////////////////////////////////////////
-// TSFCoreDotProdDecl.hpp
+#include "TSFCore_get_Epetra_Operator.hpp"
+#include "TSFCoreEpetraLinearOp.hpp"
+#include "Teuchos_dyn_cast.hpp"
 
-#ifndef TSFCORE_DOT_PROD_DECL_HPP
-#define TSFCORE_DOT_PROD_DECL_HPP
+Teuchos::RefCountPtr<Epetra_Operator>
+TSFCore::get_Epetra_Operator( LinearOp<double> &op )
+{
+	EpetraLinearOp &tsfcore_epetra_op = Teuchos::dyn_cast<EpetraLinearOp>(op);
+	return tsfcore_epetra_op.epetra_op();
+}
 
-#include "TSFCoreScalarProd.hpp"
-
-namespace TSFCore {
-
-///
-/** Implementation of a scalar product using the dot product divided by the size of the space.
- */
-template<class Scalar>
-class DotProd : public ScalarProd<Scalar> {
-public:
-	
-	/** @name Overridden from ScalarProd */
-	//@{
-
-	///
-	void scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const;
-
-	//@}
-
-}; // end class DotProd
-
-} // end namespace TSFCore
-
-#endif  // TSFCORE_DOT_PROD_DECL_HPP
+Teuchos::RefCountPtr<const Epetra_Operator>
+TSFCore::get_Epetra_Operator( const LinearOp<double> &op )
+{
+	const EpetraLinearOp &tsfcore_epetra_op = Teuchos::dyn_cast<const EpetraLinearOp>(op);
+	return tsfcore_epetra_op.epetra_op();
+}

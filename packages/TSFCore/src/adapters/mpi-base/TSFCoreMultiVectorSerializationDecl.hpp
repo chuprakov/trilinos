@@ -38,15 +38,18 @@
 namespace TSFCore {
 
 ///
-/** Utility class reading and writing MultiVector objects to and from streams.
+/** \brief Concrete utility class for reading and writing MPI-based
+ * SPMD MultiVector objects to and from standard streams.
  *
  * ToDo: Finish documentation!
+ *
+ * \ingroup TSFCore_adapters_MPI_support_grp
  */
 template<class Scalar>
 class MultiVectorSerialization {
 public:
 
-  ///
+  /// Set to true if to use binary IO and to false if using ASCII.
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, binaryMode )
 
   ///

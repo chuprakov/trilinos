@@ -33,6 +33,8 @@
 #define TSFCORE_MPI_MULTI_VECTOR_BASE_HPP
 
 #include "TSFCoreMPIMultiVectorBaseDecl.hpp"
+#include "TSFCoreMultiVector.hpp"
+#include "TSFCoreEuclideanLinearOpBase.hpp"
 #include "TSFCoreMPIVectorSpaceBase.hpp"
 #include "TSFCoreExplicitMultiVectorView.hpp"
 #include "RTOpPack_MPI_apply_op.hpp"
@@ -58,19 +60,17 @@ MPIMultiVectorBase<Scalar>::MPIMultiVectorBase()
 	,numCols_(0)
 {}
 
-// Overridden form OpBase
+// Overridden from EuclideanLinearOpBase
 
 template<class Scalar>
-Teuchos::RefCountPtr< const VectorSpace<Scalar> >
-MPIMultiVectorBase<Scalar>::range() const
+Teuchos::RefCountPtr< const ScalarProdVectorSpaceBase<Scalar> >
+MPIMultiVectorBase<Scalar>::rangeScalarProdVecSpc() const
 {
 	return mpiSpace();
 }
 
-// Overridden from LinearOp
-
 template<class Scalar>
-void MPIMultiVectorBase<Scalar>::apply(
+void MPIMultiVectorBase<Scalar>::euclideanApply(
 	const ETransp            M_trans
 	,const Vector<Scalar>    &x
 	,Vector<Scalar>          *y
@@ -78,18 +78,11 @@ void MPIMultiVectorBase<Scalar>::apply(
 	,const Scalar            beta
 	) const
 {
-#ifdef TSFCORE_VECTOR_DERIVE_FROM_MULTI_VECTOR
 	apply(M_trans,static_cast<const MultiVector<Scalar>&>(x),static_cast<MultiVector<Scalar>*>(y),alpha,beta);
-#else
-	MultiVectorCols<Scalar>
-		X(Teuchos::rcp(const_cast<Vector<Scalar>*>(&x),false)),
-		Y(Teuchos::rcp(y,false));
-	apply(M_trans,X,&Y,alpha,beta);
-#endif
 }
 
 template<class Scalar>
-void MPIMultiVectorBase<Scalar>::apply(
+void MPIMultiVectorBase<Scalar>::euclideanApply(
 	const ETransp                 M_trans
 	,const MultiVector<Scalar>    &X
 	,MultiVector<Scalar>          *Y
@@ -99,7 +92,6 @@ void MPIMultiVectorBase<Scalar>::apply(
 {
 	using Teuchos::Workspace;
 	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
-
 
 #ifdef TSFCORE_MPI_MULTI_VECTOR_BASE_PRINT_TIMES
 	Teuchos::Time timerTotal("dummy",true);
@@ -338,6 +330,32 @@ void MPIMultiVectorBase<Scalar>::apply(
 
 }
 
+// Overridden from LinearOp
+
+template<class Scalar>
+void MPIMultiVectorBase<Scalar>::apply(
+	const ETransp            M_trans
+	,const Vector<Scalar>    &x
+	,Vector<Scalar>          *y
+	,const Scalar            alpha
+	,const Scalar            beta
+	) const
+{
+	this->apply(M_trans,static_cast<const MultiVector<Scalar>&>(x),static_cast<MultiVector<Scalar>*>(y),alpha,beta);
+}
+
+template<class Scalar>
+void MPIMultiVectorBase<Scalar>::apply(
+	const ETransp                 M_trans
+	,const MultiVector<Scalar>    &X
+	,MultiVector<Scalar>          *Y
+	,const Scalar                 alpha
+	,const Scalar                 beta
+	) const
+{
+	this->EuclideanLinearOpBase<Scalar>::apply(M_trans,X,Y,alpha,beta);
+}
+
 // Overridden from MultiVector
 
 template<class Scalar>
@@ -361,12 +379,17 @@ void MPIMultiVectorBase<Scalar>::applyOp(
 	const Index numCols = this->domain()->dim();
 	const MPIVectorSpaceBase<Scalar> &mpiSpc = *mpiSpace();
 #ifdef _DEBUG
-	// ToDo: Validate input!
 	TEST_FOR_EXCEPTION(
 		in_applyOp_, std::invalid_argument
 		,"MPIMultiVectorBase<>::applyOp(...): Error, this method is being entered recursively which is a "
 		"clear sign that one of the methods getSubMultiVector(...), freeSubMultiVector(...) or commitSubMultiVector(...) "
 		"was not implemented properly!"
+		);
+	apply_op_validate_input(
+		"MPIMultiVectorBase<>::applyOp(...)", *domain(), *range()
+		,pri_op,num_multi_vecs,multi_vecs,num_targ_multi_vecs,targ_multi_vecs
+		,reduct_objs,pri_first_ele_in,pri_sub_dim_in,pri_global_offset_in
+		,sec_first_ele_in,sec_sub_dim_in
 		);
 #endif
 	// Flag that we are in applyOp()

@@ -82,16 +82,16 @@ void VectorMultiVector<Scalar>::uninitialize(
 
 template<class Scalar>
 Teuchos::RefCountPtr< const VectorSpace<Scalar> >
-VectorMultiVector<Scalar>::domain() const
+VectorMultiVector<Scalar>::range() const
 {
-  return (mv_.get() ? mv_->domain() : Teuchos::null );
+  return (mv_.get() ? mv_->range() : Teuchos::null );
 }
 
 template<class Scalar>
 Teuchos::RefCountPtr< const VectorSpace<Scalar> >
-VectorMultiVector<Scalar>::range() const
+VectorMultiVector<Scalar>::domain() const
 {
-  return (mv_.get() ? mv_->range() : Teuchos::null );
+  return (mv_.get() ? mv_->domain() : Teuchos::null );
 }
 
 template<class Scalar>

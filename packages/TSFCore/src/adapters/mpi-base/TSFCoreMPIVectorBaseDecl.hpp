@@ -33,12 +33,12 @@
 #define TSFCORE_MPI_VECTOR_BASE_DECL_HPP
 
 #include "TSFCoreVector.hpp"
-#include "TSFCoreMPIVectorSpaceBase.hpp"
+#include "TSFCoreMPIVectorSpaceBaseDecl.hpp"
 
 namespace TSFCore {
 
 ///
-/** Interface base subclass for  MPI-based vectors.
+/** Base class for MPI-based SPMD vectors.
  *
  * By inheriting from this base class, vector implementations allow
  * their vector objects to be seamlessly combined with other MPI-based
@@ -47,7 +47,7 @@ namespace TSFCore {
  * an <tt>MPIVectorSpaceBase</tt> object through the virtual function
  * <tt>mpiSpace()</tt>.
  *
- * This node subclass contains an implementation of <tt>applyOp()</tt>
+ * This base class contains an implementation of <tt>applyOp()</tt>
  * that relies on implementations of the methods (<tt>const</tt>)
  * <tt>getSubVector()</tt>, <tt>freeSubVector()</tt>,
  * (non-<tt>const</tt>) <tt>getSubVector()</tt> and
@@ -59,14 +59,16 @@ namespace TSFCore {
  * virtual function call overhead will be minimal and this will result
  * in a near optimal implementation.
  *
- * The only methods that a subclass must override in order to
- * implement a fully-functional vector subclass of which who's vector
- * objects can be seemlessly used with any other MPI-based vector
- * object are the methods <tt>getLocalData()</tt> and
- * <tt>mpiSpace()</tt>.  All of the other methods have good default
- * implementations.  Providing an implementation for <tt>mpiSpace</tt>
- * of course means having the define a <tt>MPIVectorSpaceBase</tt>
- * subclass appropriately.
+ * <b>Notes to subclass developers</b>
+ *
+ * Concrete subclasses must overide only two functions:
+ * <tt>mpiSpace()</tt> and <tt>getLocalData(Scalar**,Index*)</tt>.
+ * The default implementation of <tt>getLocalData(cons
+ * Scalar**,Index*)</tt> should rarely need to be overridden as it
+ * just calls the pure-virtual non-<tt>const</tt> version.  Note that
+ * providing an implementation for <tt>mpiSpace()</tt> of course means
+ * having to implement or use a pre-implemented
+ * <tt>MPIVectorSpaceBase</tt> subclass.
  *
  * If the <tt>getSubVector()</tt> methods are ever called with index
  * ranges outside of those of the local processor, then the default
@@ -97,6 +99,8 @@ namespace TSFCore {
  *
  * Note that vector subclass derived from this node interface class
  * must only be directly used in SPMD mode for this to work properly.
+ *
+ * \ingroup TSFCore_adapters_MPI_support_grp
  */
 template<class Scalar>
 class MPIVectorBase : virtual public Vector<Scalar> {
@@ -120,10 +124,41 @@ public:
 	/** Returns a non-<tt>const</tt> pointer to the beginning of the
 	 * local vector data (and its stride).
 	 *
-	 * @param  values  [out] On output <tt>*values</tt> will point to an array of the local values.
-	 * @param  stride  [out] On output <tt>*stride</tt> will be the stride between elements in <tt>(*values)[]</tt>
+	 * @param  localValues  [out] On output <tt>*localValues</tt> will point to an array of the local values.
+	 * @param  stride  [out] On output <tt>*stride</tt> will be the stride between elements in <tt>(*localValues)[]</tt>
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>localValues!=NULL</tt>
+	 * <li> <tt>stride!=NULL</tt>
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>*localValues!=NULL</tt>
+	 * <li> <tt>*stride!=0</tt>
+	 * </ul>
+	 *
+	 * Note, the data view returned from this function must be commited
+	 * back by a call to <tt>this->commitLocalData()</tt> in case dynamic
+	 * memory allocation had to be used and therefore the pointer return
+	 * does not point to interal storage.
 	 */
-	virtual void getLocalData( Scalar** values, ptrdiff_t* stride ) = 0;
+	virtual void getLocalData( Scalar** localValues, Index* stride ) = 0;
+
+	///
+	/** Commits updated local vector data that was accessed using <tt>this->getLocalData()</tt>.
+	 *
+	 * @param  localValues  [in/out] On input <tt>localValues</tt> must have been set by
+	 *                      a previous call to <tt>this->getData()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>localValues!=NULL</tt>
+	 * </ul>
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>*this</tt> will be updated to the entires in <tt>*localValues</tt>.
+	 * </ul>
+	 */
+	virtual void commitLocalData( Scalar* localValues ) = 0;
 
 	//@}
 
@@ -131,24 +166,65 @@ public:
 	//@{
 
 	///
-	/** Returns a <tt>const</tt> pointer to the beginning of the local
+	/** \brief Returns a <tt>const</tt> pointer to the beginning of the local
 	 * vector data.
 	 *
-	 * The default implementation performs a <tt>const_cast</tt> of <tt>this</tt> and
-	 * then calls the non-<tt>const</tt> version.
+	 * @param  localValues  [out] On output <tt>*localValues</tt> will point to an array of the local values.
+	 * @param  stride  [out] On output <tt>*stride</tt> will be the stride between elements in <tt>(*localValues)[]</tt>
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>localValues!=NULL</tt>
+	 * <li> <tt>stride!=NULL</tt>
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>*localValues!=NULL</tt>
+	 * <li> <tt>*stride!=0</tt>
+	 * </ul>
+	 *
+	 * Note, the data view returned from this function must be freed by
+	 * a call to <tt>this->freeLocalData()</tt> in case dynamic memory
+	 * allocation had to be used and therefore the pointer returned does
+	 * not point to interal storage.
+	 *
+	 * The default implementation performs a <tt>const_cast</tt> of
+	 * <tt>this</tt> and then calls the non-<tt>const</tt> version of
+	 * this function.  An override of this function should only be
+	 * provided if dynamic memory allocation is used and data copies
+	 * have to be performed.  If this function is overridden then the
+	 * function <tt>freeLocalData()</tt> must be overridden as well!
 	 */
-	virtual void getLocalData( const Scalar** values, ptrdiff_t* stride ) const;
+	virtual void getLocalData( const Scalar** localValues, Index* stride ) const;
+
+	///
+	/** \brief Frees a <tt>const</tt> view of local vector data that was
+	 * accessed using <tt>this->getLocalData()</tt>.
+	 *
+	 * @param  localValues  [in/out] On input <tt>localValues</tt> must have been set by
+	 *                 a previous call to <tt>this->getLocalData()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>localValues!=NULL</tt>
+	 * </ul>
+	 *
+	 * The default implementation performs a <tt>const_cast</tt> of
+	 * <tt>this</tt> and then calls the non-<tt>const</tt> function
+	 * <tt>this->commitLocalData()</tt>.  If the <tt>const</tt> version of the
+	 * <tt>getData()</tt> function is overridden then this function must
+	 * be overridden also.
+	 */
+	virtual void freeLocalData( const Scalar* localValues ) const;
 
 	//@}
 
 	/** @name Overridden from MultiVector */
 	//@{
 
-	/// Calls <tt>mpiSpace()</tt>
+	/// Returns <tt>this->mpiSpace()</tt>
 	Teuchos::RefCountPtr<const VectorSpace<Scalar> > space() const;
 	///
-	/** Implements the <tt>%applyOp()</tt> method through the methods
-	 * <tt>getSubVector()</tt>, <tt>freeSubVector()</tt> and
+	/** \brief Implements the <tt>%applyOp()</tt> method through the
+	 * methods <tt>getSubVector()</tt>, <tt>freeSubVector()</tt> and
 	 * <tt>commitSubVector()</tt> as described above.
 	 *
 	 * Note that if this method is entered again before a call has
@@ -159,22 +235,22 @@ public:
 	 */
 	void applyOp(
 		const RTOpPack::RTOpT<Scalar>   &op
-		,const int                   num_vecs
+		,const int                      num_vecs
 		,const Vector<Scalar>*          vecs[]
-		,const int                   num_targ_vecs
+		,const int                      num_targ_vecs
 		,Vector<Scalar>*                targ_vecs[]
 		,RTOpPack::ReductTarget         *reduct_obj
 		,const Index                    first_ele
 		,const Index                    sub_dim
 		,const Index                    global_offset
 		) const;
-	///
+	/// Implemented through <tt>this->getLocalData()</tt>
 	void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
-	///
+	/// Implemented through <tt>this->freeLocalData()</tt>
 	void freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
-	///
+	/// Implemented through <tt>this->getLocalData()</tt>
 	void getSubVector( const Range1D& rng, RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
-	///
+	/// Implemented through <tt>this->commitLocalData()</tt>
 	void commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
 
 	//@}
@@ -182,7 +258,8 @@ public:
 protected:
 
 	///
-	/** Subclasses should call whenever the structure of the VectorSpace changes.
+	/** \brief Subclasses must should call this function whenever the
+	 * structure of the VectorSpace changes.
 	 */
 	virtual void updateMpiSpace();
 

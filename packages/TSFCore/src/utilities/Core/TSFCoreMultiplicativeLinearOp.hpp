@@ -96,18 +96,18 @@ void MultiplicativeLinearOp<Scalar>::uninitialize(
 
 template<class Scalar>
 Teuchos::RefCountPtr< const VectorSpace<Scalar> >
-MultiplicativeLinearOp<Scalar>::domain() const
-{
-	assertInitialized();
-	return Ops_[numOps()-1].domain();
-}
-
-template<class Scalar>
-Teuchos::RefCountPtr< const VectorSpace<Scalar> >
 MultiplicativeLinearOp<Scalar>::range() const
 {
 	assertInitialized();
 	return Ops_[0].range();
+}
+
+template<class Scalar>
+Teuchos::RefCountPtr< const VectorSpace<Scalar> >
+MultiplicativeLinearOp<Scalar>::domain() const
+{
+	assertInitialized();
+	return Ops_[numOps()-1].domain();
 }
 
 template<class Scalar>

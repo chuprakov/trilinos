@@ -37,10 +37,7 @@
 namespace TSFCore {
 
 ///
-template<class Scalar> class MPIVectorSpaceBase;
-
-///
-/** Highly optimized concrete implementation subclass for SPMD-MPI-based multi-vectors.
+/** Efficient concrete implementation subclass for SPMD-MPI-based multi-vectors.
  *
  * This subclass provides a very efficient and very general concrete
  * implementation of a <tt>TSFCore::MultiVector</tt> object.
@@ -53,6 +50,8 @@ template<class Scalar> class MPIVectorSpaceBase;
  * The storage type can be anything since a
  * <tt>Teuchos::RefCountPtr</tt> is used to pass in the local values
  * pointer into the constructor and <tt>initialize()</tt>.
+ *
+ * \ingroup TSFCore_adapters_MPI_concrete_std_grp
  */
 template<class Scalar>
 class MPIMultiVectorStd : virtual public MPIMultiVectorBase<Scalar> {
@@ -71,10 +70,10 @@ public:
 
   /// Calls <tt>initialize()</tt>
 	MPIMultiVectorStd(
-    const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >    &mpiRangeSpace
-    ,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >          &domainSpace
-    ,const Teuchos::RefCountPtr<Scalar>                              &values
-    ,const Index                                                     leadingDim
+    const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >           &mpiRangeSpace
+    ,const Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> >   &domainSpace
+    ,const Teuchos::RefCountPtr<Scalar>                                     &localValues
+    ,const Index                                                            leadingDim
     );
 
   ///
@@ -86,25 +85,28 @@ public:
    * @param  domainSpace
    *                   [in] Smart pointer to <tt>VectorSpace</tt> object
    *                   that defines <tt>domain()</tt> space.
-   * @param  values    [in] Smart pointer to beginning of Fortran-style column-major
-   *                   array that defines the local values in the multi-vector.
-   *                   This array must be at least of dimension <tt>mpiRangeSpace->leadingDim()*domainSpace->dim()</tt>
-   *                   and <tt>(&*values)[ (i-1) + (j-1)*leadingDim ]</tt> gives the local value
-   *                   of the one-based <tt>(i,j)</tt> entry where <tt>i=1...mpiSpace()->localSubDim()</tt>
+   * @param  localValues
+	 *                   [in] Smart pointer to beginning of Fortran-style column-major
+   *                   array that defines the local localValues in the multi-vector.
+   *                   This array must be at least of dimension <tt>mpiRangeSpace->localSubDim()*domainSpace->dim()</tt>
+   *                   and <tt>(&*localValues)[ (i-1) + (j-1)*leadingDim ]</tt> gives the local value
+   *                   of the one-based entry <tt>(i,j)</tt> where <tt>i=1...mpiSpace()->localSubDim()</tt>
    *                   and <tt>j=1...domainSpace->dim()</tt>.
+	 * @param  leadingDim
+	 *                   [in] The leading dimension of the multi-vector.
    *
    * Preconditions:<ul>
    * <li><tt>mpiRangeSpace.get()!=NULL</tt>
    * <li><tt>domainSpace.get()!=NULL</tt>
-   * <li><tt>values.get()!=NULL</tt>
+   * <li><tt>localValues.get()!=NULL</tt>
    * <li><tt>leadingDim >= mpiRangeSpace->localSubDim()</tt>
    * </ul>
    */
 	void initialize(
-    const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >    &mpiRangeSpace
-    ,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >          &domainSpace
-    ,const Teuchos::RefCountPtr<Scalar>                              &values
-    ,const Index                                                     leadingDim
+    const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >          &mpiRangeSpace
+    ,const Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> >  &domainSpace
+    ,const Teuchos::RefCountPtr<Scalar>                                    &localValues
+    ,const Index                                                           leadingDim
     );
 
   ///
@@ -114,18 +116,18 @@ public:
    * <li><tt>this->mpiSpace().get() == NULL</tt>.
    */
 	void uninitialize(
-    Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >    *mpiRangeSpace = NULL
-    ,Teuchos::RefCountPtr<const VectorSpace<Scalar> >          *domainSpace   = NULL
-    ,Teuchos::RefCountPtr<Scalar>                              *values        = NULL
-    ,Index                                                     *leadingDim    = NULL
+    Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >                  *mpiRangeSpace = NULL
+    ,Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> >          *domainSpace   = NULL
+    ,Teuchos::RefCountPtr<Scalar>                                            *localValues   = NULL
+    ,Index                                                                   *leadingDim    = NULL
     );
 
   //@}
 
-	/** @name Overridden from OpBase */
+	/** @name Overridden from EuclideanLinearOpBase */
 	//@{
 	///
-	Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const;
+	Teuchos::RefCountPtr< const ScalarProdVectorSpaceBase<Scalar> > domainScalarProdVecSpc() const;
   //@}
 
 	/** @name Overridden from MultiVector */
@@ -142,13 +144,13 @@ public:
 	///
 	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
 	///
-	void getLocalData( const Scalar **values, Index *leadingDim ) const;
+	void getLocalData( Scalar **localValues, Index *leadingDim );
 	///
-	void freeLocalData( const Scalar *values ) const;
+	void commitLocalData( Scalar *localValues );
 	///
-	void getLocalData( Scalar **values, Index *leadingDim );
+	void getLocalData( const Scalar **localValues, Index *leadingDim ) const;
 	///
-	void commitLocalData( Scalar *values );
+	void freeLocalData( const Scalar *localValues ) const;
 	//@}
 	
 private:
@@ -157,8 +159,8 @@ private:
 	// Private data members
 
   Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >    mpiRangeSpace_;
-  Teuchos::RefCountPtr<const VectorSpace<Scalar> >           domainSpace_;
-  Teuchos::RefCountPtr<Scalar>                               values_;
+  Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> >           domainSpace_;
+  Teuchos::RefCountPtr<Scalar>                               localValues_;
   Index                                                      leadingDim_;
 	
 }; // end class MPIMultiVectorStd

@@ -226,7 +226,7 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-SUBDIRS = scripts epetra-adapters product-space std-ops
+SUBDIRS = scripts epetra-adapters product-space scalar-product std-ops
 all: all-recursive
 
 .SUFFIXES:

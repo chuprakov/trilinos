@@ -1,0 +1,31 @@
+/*! \mainpage TSFCore::Nonlin : Fundamental interfaces for the development of steady-state nonlinear abstract numerical algorithms (ANAs)
+
+<b>Warning!</b> Clicking on the above links (i.e. "Class List", "File
+List" etc.)  can be a bit overwhelming and not recommended as a way to
+"browse" what is in the Trilinos "package" %TSFCore.  Instead, it is
+recommended that one use the below outline to browse the classes and
+various functions in this package.  The one exception is the <a
+href="./modules.html">"Modules"</a> link which is essentially an
+outline of what is presented below.  The following presentation is
+designed to expose developers to the contents of the %TSFCore package
+in manageable chunks as to not overwhelm.  However, the above links
+are very useful as a developer's reference and should only be used as
+such.
+
+<ul>
+<li> Abstract interfaces for linear equation solver (just a placeholder until Belos is finished)
+  <ul>
+  <li><tt>TSFCore::Solvers::SolverState</tt>
+  <li><tt>TSFCore::Solvers::ConvergenceTester</tt>
+  <li><tt>TSFCore::Solvers::IterativeLinearSolver</tt>
+  </ul>
+<li> Abstract interfaces to nonlinear problems
+  <ul>
+  <li><tt>TSFCore::Nonlin::LinearSolveOp</tt>
+  <li><tt>TSFCore::Nonlin::LinearOpWithSolve</tt>
+  <li><tt>TSFCore::Nonlin::NonlinearProblem</tt>
+  <li><tt>TSFCore::Nonlin::NonlinearProblemFirstOrder</tt>
+  </ul>
+</ul>
+
+*/

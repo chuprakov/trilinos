@@ -44,7 +44,6 @@
 
 INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCoreAssertOp.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreAssertOpDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreLinearOp.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreLinearOpDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreMultiVector.hpp\
@@ -55,27 +54,33 @@ INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCoreMultiVectorStdOpsDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreOpBase.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreOpBaseDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreDotProd.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreDotProdDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreScalarProd.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreScalarProdDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreSerialVector.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProdDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreLinearOpScalarProd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreLinearOpScalarProdDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanLinearOpBase.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanLinearOpBaseDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorBase.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorBaseDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpace.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialMultiVectorBase.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialMultiVectorBaseDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorStd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorStdDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceStd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceStdDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceBase.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceBaseDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceFactory.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceFactoryDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceFactoryStd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceFactoryStdDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreTypes.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVector.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorMultiVector.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorMultiVectorDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceStdBase.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceStdBaseDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreScalarProdVectorSpaceBase.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreScalarProdVectorSpaceBaseDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpace.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceFactory.hpp\
@@ -86,9 +91,9 @@ INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCore_apply_op_helper_decl.hpp
 
 UTILITIES_CORE_H = \
+	$(srcdir)/utilities/Core/TSFCoreMultiVectorAllocator.hpp\
 	$(srcdir)/utilities/Core/TSFCoreExplicitMultiVectorView.hpp\
 	$(srcdir)/utilities/Core/TSFCoreExplicitVectorView.hpp\
-	$(srcdir)/utilities/Core/TSFCoreMultiVectorAllocator.hpp\
 	$(srcdir)/utilities/Core/TSFCoreLinearOpTesterDecl.hpp\
 	$(srcdir)/utilities/Core/TSFCoreLinearOpTester.hpp\
 	$(srcdir)/utilities/Core/TSFCoreProductVectorSpaceBase.hpp\
@@ -160,12 +165,18 @@ NONLIN_H = $(INTERFACES_NONLIN_H) $(UTILITIES_NONLIN_H)
 
 NONLIN =
 
+ADAPTERS_SERIAL_H = \
+	$(srcdir)/adapters/serial/TSFCoreSerialLinearOpBaseDecl.hpp\
+	$(srcdir)/adapters/serial/TSFCoreSerialLinearOpBase.hpp
+
 EXTRA_ADAPTERS_MPI_H = \
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorBaseDecl.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorBase.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorStdDecl.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorStd.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBaseDecl.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorStd.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorStdDecl.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBase.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBaseDecl.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBase.hpp\
@@ -183,7 +194,8 @@ EXTRA_ADAPTERS_EPETRA_H = \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.hpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.hpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.hpp\
-	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.hpp
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.hpp\
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.hpp
 
 EXTRA_ADAPTERS_EPETRA = \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp\
@@ -191,7 +203,8 @@ EXTRA_ADAPTERS_EPETRA = \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp\
-	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp\
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp
 
 EXTRA_ADAPTERS_AZTECOO_H = \
 	$(srcdir)/adapters/aztecoo/Epetra_DiagonalOperator.hpp \
@@ -255,6 +268,7 @@ AM_CPPFLAGS = \
 -I$(srcdir)/interfaces/Solvers \
 -I$(srcdir)/interfaces/Nonlin \
 -I$(srcdir)/utilities/Core \
+-I$(srcdir)/adapters/serial \
 -I$(srcdir)/adapters/mpi-base \
 -I$(srcdir)/adapters/epetra \
 -I$(srcdir)/adapters/aztecoo \
@@ -287,6 +301,7 @@ TSFCORE_H = \
 	$(CORE_H) \
 	$(SOLVERS_H) \
 	$(NONLIN_H) \
+	$(ADAPTERS_SERIAL_H)\
 	$(ADAPTERS_MPI_H) \
 	$(ADAPTERS_EPETRA_H)\
   $(ADAPTERS_AZTECOO_H)
@@ -367,5 +382,3 @@ nodist_execinclude_HEADERS = TSFCoreConfig.h $(TSFCORE_H)
 # --------------------------------------------------------------------
 
 MAINTAINERCLEANFILES = Makefile.in 
-
-

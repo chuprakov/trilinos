@@ -42,12 +42,13 @@ namespace TSFCore {
 /** Interface for a collection of column vectors called a multi-vector.
  *
  * The primary purpose for this interface is to allow for convienent
- * aggregations of column vectors.  Such an orderly arrangement allows
- * for better optimized linear algebra operations such as
- * matrix-matrix multiplication and the solution of linear systems for
- * multiple right hand sides.  Every application area (serial
- * parallel, out-of-core etc.) should be able to define at least one
- * reasonbly efficient implementation of <tt>%MultiVector</tt>.
+ * aggregations of column vectors.  Such an orderly arrangement of
+ * column vectors into a single aggregate object allows for better
+ * optimized linear algebra operations such as matrix-matrix
+ * multiplication and the solution of linear systems for multiple
+ * right hand sides.  Every computing environment (serial, parallel,
+ * out-of-core etc.) should be able to define at least one reasonbly
+ * efficient implementation of <tt>%MultiVector</tt>.
  *
  * The <tt>%MultiVector</tt> interface is derived from the
  * <tt>LinearOp</tt> interface and therefore a <tt>%MultiVector</tt>
@@ -55,64 +56,85 @@ namespace TSFCore {
  * implications.
  *
  * Note that since, this interface is derived from <tt>LinearOp</tt>
- * that it must support the methods <tt>domain()</tt> and
+ * that it must support the functions <tt>domain()</tt> and
  * <tt>range()</tt>.
  *
  * Another very powerful feature of this interface is the ability to
  * apply reduction/transformation operators over a sub-set of rows and
  * columns in a set of multi-vector objects.  The behavior is
- * identical as if the client extracted the rows or columns in a set
- * of multi-vectors and called <tt>Vector::applyOp()</tt> itself.
- * However, the advantage of using the multi-vector methods is that
- * there may be greater opportunities to exploit parallelism.  Also,
- * the intermediate reduction objects over a set of rows or columns
- * can be reduced by a secondary reduction object.
+ * identical to the client extracted the rows or columns in a set of
+ * multi-vectors and called <tt>Vector::applyOp()</tt> itself.
+ * However, the advantage of using the multi-vector functions is that
+ * there may be greater opportunities for increased performance in a
+ * number of respects.  Also, the intermediate reduction objects over
+ * a set of rows or columns can be reduced by a secondary reduction
+ * object.
+ *
+ * This interface also allows a client to extract a sub-set of
+ * elements in an explicit form as non-mutable
+ * <tt>RTOpPack::SubMultiVectorT<Scalar></tt> or mutable
+ * <tt>RTOpPack::MutableSubMultiVectorT<Scalar></tt> objects using the
+ * operations <tt>getSubMultiVector()</tt>.  In general, this is a
+ * very bad thing to do and should be avoided at all costs.  However,
+ * there are some situations where this is needed and therefore it is
+ * supported.  The default implementation of these operations use
+ * reduction/transformation operators with <tt>applyOp()</tt> in order
+ * to extract and set the needed elements and therefore all
+ * <tt>%MultiVector</tt> subclasses automatically support these
+ * operations (even if it is a bad idea to use them).  <b>Heads
+ * Up!</b> Note that client code in general should not directly call
+ * the above explicit sub-vector access functions but should use the
+ * utility classes <tt>ExplicitMultiVectorView</tt> and
+ * <tt>ExplicitMutableMultiVectorView</tt> instead since these are
+ * easier an safer in the event that an exception is thrown.
  *
  * <b>Notes for subclass developers</b>
  *
- * Only one method override is required (in addition to the methods
+ * Only one function override is required (in addition to the functions
  * that must be overridden from <tt>LinearOp</tt>, except
  * <tt>apply()</tt>, see below) to create a concrete
- * <tt>MultiVector<Scalar></tt> subclass which is the non-constant
- * version of <tt>col()</tt>.  All of the other methods have default
- * implementations that are quite good in most cases.
+ * <tt>MultiVector</tt> subclass and that is the non-constant version
+ * of <tt>col()</tt>.  All of the other functions have default
+ * implementations that are quite good in many use cases.
  *
- * Note that through the magic of the <tt>applyOp()</tt> methods that
+ * Note that through the magic of the <tt>applyOp()</tt> functions that
  * this interface is able to implement the pure virtual
- * <tt>apply()</tt> method from the <tt>LinearOp</tt> interface.  This
+ * <tt>apply()</tt> function from the <tt>LinearOp</tt> interface.  This
  * implementation is not optimal, but will be sufficient in many
  * different contexts.
  *
- * The <tt>applyOp()</tt> methods should only be overridden if the
+ * The <tt>applyOp()</tt> functions should only be overridden if the
  * subclass can do something more efficient than simply applying the
  * reduction/transformation operators one column at a time.
  *
  * The non-const versions of <tt>subView()</tt> should be overridden
- * if the performance of these methods are important.  The default
+ * if the performance of these functions are important.  The default
  * implementation will not achieve near-optimal performance.
  *
- * Methods that subclasses should almost never need (or want) to
+ * Functions that subclasses should almost never need (or want) to
  * override are the const version of <tt>col()</tt> or the the const
  * versions of <tt>subView()</tt>.
+ *
+ * \ingroup TSFCore_fundamental_interfaces_code_grp
  */
 template<class Scalar>
 class MultiVector : virtual public LinearOp<Scalar> {
 public:
 
-	/// Inject MultiVector version into this interface as well.
+	/// Inject MultiVector version into this interface as well
 	using LinearOp<Scalar>::apply;
 	
 	/** @name Provide access to the columns as Vector objects */
 	//@{
 
 	///
-	/** Get a non-mutable view of column vector.
+	/** Get a non-mutable view of a constituent column vector.
 	 *
-	 * \param  j  [in] Index the view column to return.
+	 * \param  j  [in] One-based index the view column to return.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->domain().get()!=NULL && this->range().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
-	 * <li> <tt>1 <= j && j <= this->range()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> <tt>1 <= j && j <= this->domain()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -120,20 +142,20 @@ public:
 	 * <li> <tt>this->range()->isCompatible(*return->space()) == true</tt>
 	 * </ul>
 	 *
-	 * The default implementation of this method (which is the only
-	 * implementaion needed by any subclass) is based on the non-const
-	 * version <tt>col()</tt>.
+	 * The default implementation of this function (which is the only
+	 * implementaion needed by most subclasses) is based on the
+	 * non-const version <tt>col()</tt>.
 	 */
 	virtual Teuchos::RefCountPtr<const Vector<Scalar> > col(Index j) const;
 
 	///
-	/** Get a mutable view of column vector.
+	/** Get a mutable view of a column vector.
 	 *
-	 * \param  j  [in] Index the view column to return.
+	 * \param  j  [in] One-based Index the view column to return.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->domain().get()!=NULL && this->range().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
-	 * <li> <tt>1 <= j && j <= this->range()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> <tt>1 <= j && j <= this->domain()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -157,26 +179,26 @@ public:
 	 * The default implementation uses the vector space to create a
 	 * new multi-vector object and then uses a transformation operator
 	 * to assign the vector elements.  A subclass should only override
-	 * this method if it can do something more sophisticated
+	 * this function if it can do something more sophisticated
 	 * (i.e. lazy evaluation) but in general, this is not needed.
 	 */
 	virtual Teuchos::RefCountPtr<MultiVector<Scalar> > clone_mv() const;
 
 	//@}
 
-	/** @name Sub-view methods */
+	/** @name Sub-view functions */
 	//@{
 
 	///
-	/** Returns a const sub-view of a contiguous set of columns of the this multi-vector.
+	/** Return a const sub-view of a contiguous set of columns of the this multi-vector.
 	 *
-	 * @param  colRng  [in] Range of columns to create a view of.  Not that it is valid for
+	 * @param  colRng  [in] Range of columns to create a view of.  Note that it is valid for
 	 *                  <tt>colRng.full_range()==true</tt> in which case the view of the entire
-	 *                  multi-vector is taken (not very useful).
+	 *                  multi-vector is taken.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->domain().get()!=NULL && this->range().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
-	 * <li> [<tt>!colRng.full_range()</tt>] <tt>colRng.ubound() <= this->range()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>!colRng.full_range()</tt>] <tt>colRng.ubound() <= this->domain()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -186,21 +208,22 @@ public:
 	 *      for <tt>k=0...RangePack::full_range(colRng,1,this->domain()->dim()).ubound()</tt>
 	 * </ul>
 	 *
-	 * The default implementation (which is the only implementation needed by subclasses)
-	 * is to return object from the non-const verstion <tt>subView()</tt>.
+	 * The default implementation (which is the only implementation
+	 * needed by most subclasses) is to return object from the non-const
+	 * verstion <tt>subView()</tt>.
 	 */
 	virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > subView( const Range1D& colRng ) const;
 	
 	///
-	/** Returns a non-const sub-view of a contiguous set of columns of the this multi-vector.
+	/** Return a non-const sub-view of a contiguous set of columns of the this multi-vector.
 	 *
-	 * @param  colRng  [in] Range of columns to create a view of.  Not that it is valid for
+	 * @param  colRng  [in] Range of columns to create a view of.  Note that it is valid for
 	 *                  <tt>colRng.full_range()==true</tt> in which case the view of the entire
-	 *                  multi-vector is taken (not very useful).
+	 *                  multi-vector is taken.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->domain().get()!=NULL && this->range().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
-	 * <li> [<tt>!colRng.full_range()</tt>] <tt>colRng.ubound() <= this->range()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>!colRng.full_range()</tt>] <tt>colRng.ubound() <= this->domain()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -219,7 +242,7 @@ public:
 	virtual Teuchos::RefCountPtr<MultiVector<Scalar> > subView( const Range1D& colRng );
 
 	///
-	/** Returns a const sub-view of a non-contiguous set of columns of this multi-vector.
+	/** Return a const sub-view of a non-contiguous set of columns of this multi-vector.
 	 *
 	 * @param  numCols  [in] The number of columns to extract a view for.
 	 * @param  cols     [in] Array (length <tt>numCols</tt>) of the columns indices to use in the
@@ -239,13 +262,14 @@ public:
 	 *      for <tt>k=0...numCols</tt>
 	 * </ul>
 	 *
-	 * The default implementation (which is the only implementation needed by subclasses)
-	 * is to return object from the non-const verstion <tt>subView()</tt>.
+	 * The default implementation (which is the only implementation
+	 * needed by most subclasses) is to return object from the non-const
+	 * verstion <tt>subView()</tt>.
 	 */
 	virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > subView( const int numCols, const int cols[] ) const;
 
 	///
-	/** Returns a non-const sub-view of a non-contiguous set of columns of this multi-vector.
+	/** Return a non-const sub-view of a non-contiguous set of columns of this multi-vector.
 	 *
 	 * @param  numCols  [in] The number of columns to extract a view for.
 	 * @param  cols     [in] Array (length <tt>numCols</tt>) of the columns indices to use in the
@@ -276,7 +300,7 @@ public:
 	
 	//@}
 
-	/** @name Collective applyOp() methods */
+	/** @name Collective applyOp() functions */
 	//@{
 
 	///
@@ -288,10 +312,10 @@ public:
 	 * <li> See the preconditions for <tt>TSFCore::applyOp()</tt>
 	 * </ul>
 	 *
-	 * See the documentation for the method <tt>TSFCore::applyOp()</tt>
+	 * See the documentation for the function <tt>TSFCore::applyOp()</tt>
 	 * for a description of the arguments.
 	 *
-	 * This method is not to be called directly by the client but instead
+	 * This function is not to be called directly by the client but instead
 	 * through the nonmember function <tt>TSFCore::applyOp()</tt>.
 	 *
 	 * It is expected that <tt>this</tt> will be one of the multi-vector
@@ -324,10 +348,10 @@ public:
 	 * <li> See the preconditions for <tt>TSFCore::applyOp()</tt>
 	 * </ul>
 	 *
-	 * See the documentation for the method <tt>TSFCore::applyOp()</tt>
+	 * See the documentation for the function <tt>TSFCore::applyOp()</tt>
 	 * for a description of the arguments.
 	 *
-	 * This method is not to be called directly by the client but instead
+	 * This function is not to be called directly by the client but instead
 	 * through the nonmember function <tt>TSFCore::applyOp()</tt>.
 	 *
 	 * It is expected that <tt>this</tt> will be one of the multi-vector
@@ -390,6 +414,11 @@ public:
 	 * clean up memory and avoid memory leaks after the
 	 * sub-multi-vector is used.
 	 *
+	 * <b>Heads Up!</b> Note that client code in general should not
+	 * directly call this function but should use the utility class
+	 * <tt>ExplicitMultiVectorView</tt> which will also take care of
+	 * calling <tt>freeSubMultiVector()</tt>.
+	 *
 	 * If <tt>this->getSubMultiVector(...,sub_mv)</tt> was previously
 	 * called on <tt>sub_mv</tt> then it may be possible to reuse this
 	 * memory if it is sufficiently sized.  The user is encouraged to
@@ -399,7 +428,7 @@ public:
 	 * the memory.  Of course, the same <tt>sub_mv</tt> object must be
 	 * passed to the same multi-vector object for this to work correctly.
 	 *
-	 * This method has a default implementation based on the vector
+	 * This function has a default implementation based on the vector
 	 * operation <tt>Vector::getSubVector()</tt> called on the
 	 * non-mutable vector objects returned from <tt>col()</tt>.  Note
 	 * that the footprint of the reduction object (both internal and
@@ -408,11 +437,11 @@ public:
 	 * applications this is faily reasonable and will not be a major
 	 * performance penalty.  For parallel applications, however, this
 	 * is a terrible implementation and must be overridden if
-	 * <tt>rowRng.size()</tt> is large at all.  Although, this method
+	 * <tt>rowRng.size()</tt> is large at all.  Although, this function
 	 * should not even be used in case where the multi-vector is very
-	 * large.  If a subclass does override this method, it must also
+	 * large.  If a subclass does override this function, it must also
 	 * override <tt>freeSubMultiVector()</tt> which has a default
-	 * implementation which is a companion to this method's default
+	 * implementation which is a companion to this function's default
 	 * implementation.
 	 */
 	virtual void getSubMultiVector(
@@ -442,10 +471,10 @@ public:
 	 * The sub-multi-vector view must have been allocated by
 	 * <tt>this->getSubMultiVector()</tt> first.
 	 *
-	 * This method has a default implementation which is a companion
+	 * This function has a default implementation which is a companion
 	 * to the default implementation for <tt>getSubMultiVector()</tt>.  If
 	 * <tt>getSubMultiVector()</tt> is overridden by a subclass then this
-	 * method must be overridden also!
+	 * function must be overridden also!
 	 */
 	virtual void freeSubMultiVector( RTOpPack::SubMultiVectorT<Scalar>* sub_mv ) const;
 
@@ -484,6 +513,11 @@ public:
 	 * commit the changed entires and clean up memory and avoid memory
 	 * leaks after the sub-multi-vector is modified.
 	 *
+	 * <b>Heads Up!</b> Note that client code in general should not
+	 * directly call this function but should use the utility class
+	 * <tt>ExplicitMutableMultiVectorView</tt> which will also take care
+	 * of calling <tt>commitSubMultiVector</tt>.
+	 *
 	 * If <tt>this->getSubMultiVector(...,sub_mv)</tt> was previously
 	 * called on <tt>sub_mv</tt> then it may be possible to reuse this
 	 * memory if it is sufficiently sized.  The user is encouraged to
@@ -499,7 +533,7 @@ public:
 	 * is called agian, or <tt>this->commitSubMultiVector(sub_mv)</tt> is
 	 * called.
 	 *
-	 * This method has a default implementation based on the vector
+	 * This function has a default implementation based on the vector
 	 * operation <tt>Vector::getSubVector()</tt> called on the mutable
 	 * vector objects returned from <tt>col()</tt>.  Note that the
 	 * footprint of the reduction object (both internal and external
@@ -507,11 +541,11 @@ public:
 	 * serial applications this is faily reasonable and will not be a
 	 * major performance penalty.  For parallel applications, however,
 	 * this is a terrible implementation and must be overridden if
-	 * <tt>rowRng.size()</tt> is large at all.  Although, this method
+	 * <tt>rowRng.size()</tt> is large at all.  Although, this function
 	 * should not even be used in case where the multi-vector is very
-	 * large.  If a subclass does override this method, it must also
+	 * large.  If a subclass does override this function, it must also
 	 * override <tt>commitSubMultiVector()</tt> which has a default
-	 * implementation which is a companion to this method's default
+	 * implementation which is a companion to this function's default
 	 * implementation.
 	 */
 	virtual void getSubMultiVector(
@@ -544,20 +578,20 @@ public:
 	 * The sub-multi-vector view must have been allocated by
 	 * <tt>this->getSubMultiVector()</tt> first.
 	 *
-	 * This method has a default implementation which is a companion
+	 * This function has a default implementation which is a companion
 	 * to the default implementation for <tt>getSubMultiVector()</tt>.  If
 	 * <tt>getSubMultiVector()</tt> is overridden by a subclass then this
-	 * method must be overridden also!
+	 * function must be overridden also!
 	 */
 	virtual void commitSubMultiVector( RTOpPack::MutableSubMultiVectorT<Scalar>* sub_mv );
 
 	//@}
 
-	/** @name Overridden methods from LinearOp */
+	/** @name Overridden functions from LinearOp */
 	//@{
 
 	///
-	/** This method is implemented in terms of the mulit-vector <tt>applyOp()</tt> method.
+	/** This function is implemented in terms of the mulit-vector <tt>applyOp()</tt> function.
 	 *
 	 * The implementation takes care of two types of operations.  One
 	 * (<tt>M_trans==TRANS</tt>) is the block dot product of two
@@ -582,7 +616,7 @@ public:
 		,const Scalar            beta
 		) const;
 
-	/// This method is simply overridden to return <tt>this->clone_mv()</tt>.
+	/// This function is simply overridden to return <tt>this->clone_mv()</tt>.
 	Teuchos::RefCountPtr<const LinearOp<Scalar> > clone() const;
 
 	//@}

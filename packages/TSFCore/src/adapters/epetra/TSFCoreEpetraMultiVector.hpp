@@ -33,14 +33,17 @@
 #define TSFCORE_EPETRA_MULTI_VECTOR_HPP
 
 #include "TSFCoreEpetraTypes.hpp"
-#include "TSFCoreMPIMultiVectorBase.hpp"
+#include "TSFCoreMPIMultiVectorBaseDecl.hpp"
 
 namespace TSFCore {
 
 ///
-/** Optimized <tt>MultiVector</tt> subclass for <tt>Epetra_MultiVector</tt>.
+/** \brief Concrete <tt>MultiVector</tt> adapter subclass for
+ * <tt>Epetra_MultiVector</tt>.
  *
  * ToDo: Finish documentation!
+ *
+ * \ingroup TSFCore_adapters_Epetra_grp
  */
 class EpetraMultiVector : virtual public MPIMultiVectorBase<RTOp_value_type> {
 public:
@@ -67,12 +70,12 @@ public:
 
 	/// Calls <tt>initalize()</tt>.
 	EpetraMultiVector(
-		const Teuchos::RefCountPtr<Epetra_MultiVector>          &epetra_multi_vec
-		,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetra_range
+		const Teuchos::RefCountPtr<Epetra_MultiVector>                        &epetra_multi_vec
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>                  &epetra_range
 #ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
-		,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetra_domain     = Teuchos::null
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>                  &epetra_domain     = Teuchos::null
 #else
-		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &domain            = Teuchos::null
+		,const Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> > &domain            = Teuchos::null
 #endif
 		);
 	
@@ -82,12 +85,12 @@ public:
    * ToDo: Finish documentation!
 	 */
 	void initialize(
-		const Teuchos::RefCountPtr<Epetra_MultiVector>          &epetra_multi_vec
-		,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetra_range
+		const Teuchos::RefCountPtr<Epetra_MultiVector>                        &epetra_multi_vec
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>                  &epetra_range
 #ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
-		,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetra_domain     = Teuchos::null
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>                  &epetra_domain     = Teuchos::null
 #else
-		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &domain            = Teuchos::null
+		,const Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> > &domain            = Teuchos::null
 #endif
 		);
 	
@@ -97,12 +100,12 @@ public:
    * ToDo: Finish documentation!
    */
 	void setUninitialized(
-		Teuchos::RefCountPtr<Epetra_MultiVector>          *epetra_multi_vec = NULL
-		,Teuchos::RefCountPtr<const EpetraVectorSpace>    *epetra_range     = NULL
+		Teuchos::RefCountPtr<Epetra_MultiVector>                        *epetra_multi_vec = NULL
+		,Teuchos::RefCountPtr<const EpetraVectorSpace>                  *epetra_range     = NULL
 #ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
-		,Teuchos::RefCountPtr<const EpetraVectorSpace>    *epetra_domain    = NULL
+		,Teuchos::RefCountPtr<const EpetraVectorSpace>                  *epetra_domain    = NULL
 #else
-		,Teuchos::RefCountPtr<const VectorSpace<Scalar> > *domain           = NULL
+		,Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> > *domain           = NULL
 #endif
 		);
 
@@ -124,17 +127,17 @@ public:
 
 	//@}
 
-	/** @name Overridden from OpBase */
+	/** @name Overridden from EuclideanLinearOp */
 	//@{
 	///
-	Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const;
+	Teuchos::RefCountPtr< const ScalarProdVectorSpaceBase<Scalar> > domainScalarProdVecSpc() const;
 	//@}
 
 	/** @name Overridden from LinearOp */
 	//@{
 #if defined(TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR_MULTIPLY) && defined(TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE)
 	///
-	void apply(
+	void euclideanApply(
 		const ETransp                 M_trans
 		,const MultiVector<Scalar>    &X
 		,MultiVector<Scalar>          *Y
@@ -170,12 +173,12 @@ public:
 
 private:
 	
-	Teuchos::RefCountPtr<Epetra_MultiVector>           epetra_multi_vec_;
-	Teuchos::RefCountPtr<const EpetraVectorSpace>      epetra_range_;
+	Teuchos::RefCountPtr<Epetra_MultiVector>                         epetra_multi_vec_;
+	Teuchos::RefCountPtr<const EpetraVectorSpace>                    epetra_range_;
 #ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
-	Teuchos::RefCountPtr<const EpetraVectorSpace>      epetra_domain_;
+	Teuchos::RefCountPtr<const EpetraVectorSpace>                    epetra_domain_;
 #else
-	Teuchos::RefCountPtr<const VectorSpace<Scalar> >   domain_;
+	Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> >   domain_;
 #endif
 	
 }; // end class EpetraMultiVector

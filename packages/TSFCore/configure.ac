@@ -370,6 +370,7 @@ AC_CONFIG_FILES([
 		Makefile 
 		src/Makefile
 		example/Makefile
+		example/Core/Makefile
 		example/Nonlin/Makefile
 		example/Nonlin/NP2DSim/Makefile
 		example/Nonlin/NP4DOpt/Makefile
@@ -377,6 +378,7 @@ AC_CONFIG_FILES([
 		test/Makefile
 		test/epetra-adapters/Makefile
 		test/product-space/Makefile
+		test/scalar-product/Makefile
 		test/std-ops/Makefile
 		test/scripts/Makefile
 		test/scripts/daily/Makefile

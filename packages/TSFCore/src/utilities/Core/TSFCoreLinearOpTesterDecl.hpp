@@ -33,6 +33,7 @@
 #define TSFCORE_LINEAR_OP_TESTER_DECL_HPP
 
 #include "TSFCoreTypes.hpp"
+#include "Teuchos_ScalarTraits.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace TSFCore {
@@ -40,23 +41,74 @@ namespace TSFCore {
 ///
 /** Testing class for <tt>LinearOp</tt>.
  *
+ * This testing class performs a many tests as possible just given a
+ * <tt>LinearOp</tt> object using the function <tt>check()</tt>.
+ *
+ * ToDo: Finish documentation!
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 template<class Scalar>
 class LinearOpTester {
 public:
 
+	///
+	typedef typename Teuchos::ScalarTraits<Scalar>::magnitudeType ScalarMag;
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, warning_tol )
+	/** Set the tolerance above which a relative error will generate a warning message.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( ScalarMag, warning_tol )
   ///
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, error_tol )
+	/** Set the tolerance above which a relative error will generate a error message and result in test failure.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( ScalarMag, error_tol )
 
 	///
+	/** Default constructor.
+	 */
 	LinearOpTester(
-		const double      warning_tol = 1e-13
-		,const double     error_tol   = 1e-10
+		const ScalarMag      warning_tol = 1e-13
+		,const ScalarMag     error_tol   = 1e-10
 		);
 
 	///
+	/** Check out a linear operator.
+	 *
+	 * @param  op    [in] The linear operator to check out
+	 * @param  out   [in/out] If <tt>out!=NULL</tt> then trace output
+	 *               about the tests performed will be sent to <tt>*out</tt>.
+	 *
+	 * This function performs a number of tests on <tt>op</tt>:<ul>
+	 *
+	 * <li>Checks that the domain and range spaces are valid
+	 *
+	 * <li>Creates temporary vectors using the domain and range spaces
+	 *
+	 * <li>Checks that the non-transposed and the transposed operator agree.
+	 *     The operator and adjoint operator must obey the defined
+	 *     scalar product.  Specifically, for any two vectors \f$w\f$ (in the
+	 *     domain space \f$\mathcal{D}\f$) and \f$u\f$ (in the range space
+	 *     \f$\mathcal{R}\f$) the adjoint operation must obey:
+	 *     \f[<u,A v>_{\mathcal{R}} = <A^T u, v>_{\mathcal{D}}\f]
+   *     where \f$<.,.>_{\mathcal{R}}\f$ is the scalar product defined by
+	 *     <tt>op.range()->scalarProd()</tt> and \f$<.,.>_{\mathcal{D}}\f$
+	 *     is the scalar product defined by
+	 *     <tt>op.domain()->scalarProd()</tt>.
+	 *
+	 * </ul>
+	 *
+	 * All relative errors that exceed <tt>warning_tol()</tt> but do not
+	 * exceed <tt>error_tol</tt> will result in special warning messages
+	 * printed to <tt>*out</tt> (if <tt>out!=NULL</tt>).
+	 *
+	 * @return The function returns <tt>true</tt> if all of the tests
+	 * where within the <tt>error_tol()</tt> and returns <tt>false</tt>
+	 * if not.
+	 *
+	 * The best way to see what this testing function is doing is to run
+	 * the test with <tt>out!=NULL</tt> and to look at the
+	 * implementation by clicking on the following link to the source code:
+	 */
 	bool check(
 		const LinearOp<Scalar>      &op
 		,std::ostream               *out

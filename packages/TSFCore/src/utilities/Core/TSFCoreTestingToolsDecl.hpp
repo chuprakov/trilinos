@@ -36,19 +36,40 @@
 
 namespace TSFCore {
 
-///
-inline
-const char* toString(ETransp transp) { return transp == NOTRANS ? "NOTRANS" : "TRANS"; }
+/** \defgroup TSFCore_test_tools_code_grp Miscellaneous C++ utility code for testing and debugging.
+
+\ingroup TSFCore_ANA_Development_grp
+
+Here is some assorted C++ code to aid in testing and debugging
+%TSFCore code.
+
+*/
 
 ///
+/** Return "passed" or "failed".
+ *
+ * \ingroup TSFCore_test_tools_code_grp
+ */
 inline
 const char* passfail(bool pass) { return pass ? "passed" : "failed"; }
 
 ///
+/** Return relative error of two scalars.
+ *
+ * ToDo: Finish documentation!
+ *
+ * \ingroup TSFCore_test_tools_code_grp
+ */
 template <class Scalar>
 Scalar relErr( const Scalar &s1, const Scalar &s2 );
 
 ///
+/** Compute, check and optionally print the relative error in two scalars.
+ *
+ * ToDo: Finish documentation!
+ *
+ * \ingroup TSFCore_test_tools_code_grp
+ */
 template<class Scalar>
 bool testRelErr(
 	const std::string    &v1_name
@@ -61,12 +82,44 @@ bool testRelErr(
 	);
 
 ///
+/** Output operator to pretty print any <tt>TSFCore::Vector</tt> object.
+ *
+ * ToDo: Finish documentation!
+ *
+ * \ingroup TSFCore_test_tools_code_grp
+ */
 template<class Scalar>
 std::ostream& operator<<( std::ostream& o, const Vector<Scalar>& v );
 
 ///
+/** Output operator to pretty print any <tt>TSFCore::LinearOp</tt> object.
+ *
+ * Calls <tt>operator<<( std::ostream, const LinOpNonPersisting<Scalar> )</tt>
+ *
+ * \ingroup TSFCore_test_tools_code_grp
+ */
 template<class Scalar>
 std::ostream& operator<<( std::ostream& o, const LinearOp<Scalar>& M );
+
+///
+/** Output operator to pretty print any <tt>TSFCore::LinOpNonPersisting</tt> object.
+ *
+ * Calls <tt>operator<<( std::ostream, const LinOpNonPersisting<Scalar> )</tt>
+ *
+ * \ingroup TSFCore_test_tools_code_grp
+ */
+template<class Scalar>
+std::ostream& operator<<( std::ostream& o, const LinOpPersisting<Scalar>& M );
+
+///
+/** Output operator to pretty print any <tt>TSFCore::LinOpNonPersisting</tt> object.
+ *
+ * ToDo: Finish documentation!
+ *
+ * \ingroup TSFCore_test_tools_code_grp
+ */
+template<class Scalar>
+std::ostream& operator<<( std::ostream& o, const LinOpNonPersisting<Scalar>& M );
 
 } // namespace TSFCore
 

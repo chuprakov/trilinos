@@ -26,26 +26,39 @@
 // ***********************************************************************
 // @HEADER
 
-// ///////////////////////////////////////////////////////////////
-// TSFCoreDotProd.hpp
+#ifndef TSFCORE_CREATE_TRIDIAG_EPETRA_LINEAR_OP_HPP
+#define TSFCORE_CREATE_TRIDIAG_EPETRA_LINEAR_OP_HPP
 
-#ifndef TSFCORE_DOT_PROD_HPP
-#define TSFCORE_DOT_PROD_HPP
+#include "TSFCoreTypes.hpp"
 
-#include "TSFCoreDotProdDecl.hpp"
-#include "TSFCoreMultiVectorStdOps.hpp"
+///
+/** \brief This function generates a tridiagonal linear operator using Epetra.
+ *
+ * Specifically, this function returns a smart pointer to the matrix:
+\f[
 
-namespace TSFCore {
+A=
+\left[\begin{array}{rrrrrrrrrr}
+2 a    & -1 \\
+-1     &  2 a    & -1 \\
+       & \ddots  & \ddots  & \ddots \\
+       &         & -1      & 2 a     & -1 \\
+       &         &         &  -1     & 2 a
+\end{array}\right]
+\f]
+ *
+ * where <tt>diagScale</tt> is \f$a\f$ and <tt>globalDim</tt> is the
+ * glboal dimension of the matrix.
+ */
+Teuchos::RefCountPtr<TSFCore::LinearOp<double> >
+createTridiagEpetraLinearOp(
+	const int      globalDim
+#ifdef RTOp_USE_MPI
+	,MPI_Comm      mpiComm
+#endif
+	,const double  diagScale
+	,const bool    verbose
+	,std::ostream  &out
+	);
 
-template<class Scalar>
-void DotProd<Scalar>::scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const
-{
-	dots(X,Y,scalar_prods);
-	const Index m = X.domain()->dim();
-	const Scalar one_over_n = Scalar(1.0) / Scalar(X.range()->dim());
-	for( Index j = 0; j < m; ++j ) scalar_prods[j] *= one_over_n;
-}
-
-} // end namespace TSFCore
-
-#endif  // TSFCORE_DOT_PROD_HPP
+#endif // TSFCORE_CREATE_TRIDIAG_EPETRA_LINEAR_OP_HPP

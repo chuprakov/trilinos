@@ -125,6 +125,7 @@ am__libTSFCore_a_SOURCES_DIST =  \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp \
 	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp \
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp \
 	$(srcdir)/adapters/aztecoo/Epetra_DiagonalOperator.cpp \
 	$(srcdir)/adapters/aztecoo/Epetra_ProductOperator.cpp \
 	$(srcdir)/adapters/aztecoo/Epetra_LinearSystemScaler.cpp \
@@ -138,7 +139,8 @@ am__objects_1 = TSFCoreEpetraLinearOp.$(OBJEXT) \
 	TSFCoreEpetraVector.$(OBJEXT) \
 	TSFCoreEpetraVectorSpace.$(OBJEXT) \
 	TSFCoreEpetraVectorSpaceFactory.$(OBJEXT) \
-	TSFCore_get_Epetra_MultiVector.$(OBJEXT)
+	TSFCore_get_Epetra_MultiVector.$(OBJEXT) \
+	TSFCore_get_Epetra_Operator.$(OBJEXT)
 @HAVE_TSFCORE_EPETRA_TRUE@am__objects_2 = $(am__objects_1)
 am__objects_3 = Epetra_DiagonalOperator.$(OBJEXT) \
 	Epetra_ProductOperator.$(OBJEXT) \
@@ -167,7 +169,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreEpetraVectorSpaceFactory.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreNonlinEpetraNPFO.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFCoreNonlinLinearOpWithSolveAztecOO.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/TSFCore_get_Epetra_MultiVector.Po
+@AMDEP_TRUE@	./$(DEPDIR)/TSFCore_get_Epetra_MultiVector.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TSFCore_get_Epetra_Operator.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
@@ -182,7 +185,6 @@ DIST_SOURCES = $(am__libTSFCore_a_SOURCES_DIST) \
 	$(EXTRA_libTSFCore_a_SOURCES)
 am__include_HEADERS_DIST = $(srcdir)/TSFCore_ConfigDefs.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreAssertOp.hpp \
-	$(srcdir)/interfaces/Core/TSFCoreAssertOpDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreLinearOp.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreLinearOpDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreMultiVector.hpp \
@@ -193,27 +195,27 @@ am__include_HEADERS_DIST = $(srcdir)/TSFCore_ConfigDefs.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreMultiVectorStdOpsDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreOpBase.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreOpBaseDecl.hpp \
-	$(srcdir)/interfaces/Core/TSFCoreDotProd.hpp \
-	$(srcdir)/interfaces/Core/TSFCoreDotProdDecl.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProd.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProdDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreScalarProd.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreScalarProdDecl.hpp \
-	$(srcdir)/interfaces/Core/TSFCoreSerialVector.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorBase.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorBaseDecl.hpp \
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorDecl.hpp \
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpace.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorStd.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorStdDecl.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceStd.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceStdDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceBase.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceBaseDecl.hpp \
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceDecl.hpp \
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceFactory.hpp \
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceFactoryDecl.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceFactoryStd.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceFactoryStdDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreTypes.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreVector.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreVectorDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreVectorMultiVector.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreVectorMultiVectorDecl.hpp \
-	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceStdBase.hpp \
-	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceStdBaseDecl.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreScalarProdVectorSpaceBase.hpp \
+	$(srcdir)/interfaces/Core/TSFCoreScalarProdVectorSpaceBaseDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpace.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceFactory.hpp \
@@ -222,9 +224,9 @@ am__include_HEADERS_DIST = $(srcdir)/TSFCore_ConfigDefs.hpp \
 	$(srcdir)/interfaces/Core/TSFCoreVectorStdOpsDecl.hpp \
 	$(srcdir)/interfaces/Core/TSFCore_apply_op_helper.hpp \
 	$(srcdir)/interfaces/Core/TSFCore_apply_op_helper_decl.hpp \
+	$(srcdir)/utilities/Core/TSFCoreMultiVectorAllocator.hpp \
 	$(srcdir)/utilities/Core/TSFCoreExplicitMultiVectorView.hpp \
 	$(srcdir)/utilities/Core/TSFCoreExplicitVectorView.hpp \
-	$(srcdir)/utilities/Core/TSFCoreMultiVectorAllocator.hpp \
 	$(srcdir)/utilities/Core/TSFCoreLinearOpTesterDecl.hpp \
 	$(srcdir)/utilities/Core/TSFCoreLinearOpTester.hpp \
 	$(srcdir)/utilities/Core/TSFCoreProductVectorSpaceBase.hpp \
@@ -275,11 +277,15 @@ am__include_HEADERS_DIST = $(srcdir)/TSFCore_ConfigDefs.hpp \
 	$(srcdir)/utilities/Nonlin/TSFCoreNonlinNonlinearProblemTester.hpp \
 	$(srcdir)/utilities/Nonlin/TSFCoreNonlinSimpleNewtonSolverDecl.hpp \
 	$(srcdir)/utilities/Nonlin/TSFCoreNonlinSimpleNewtonSolver.hpp \
+	$(srcdir)/adapters/serial/TSFCoreSerialLinearOpBaseDecl.hpp \
+	$(srcdir)/adapters/serial/TSFCoreSerialLinearOpBase.hpp \
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorBaseDecl.hpp \
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorBase.hpp \
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorStdDecl.hpp \
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorStd.hpp \
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBaseDecl.hpp \
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorStd.hpp \
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorStdDecl.hpp \
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBase.hpp \
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBaseDecl.hpp \
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBase.hpp \
@@ -296,6 +302,7 @@ am__include_HEADERS_DIST = $(srcdir)/TSFCore_ConfigDefs.hpp \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.hpp \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.hpp \
 	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.hpp \
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.hpp \
 	$(srcdir)/adapters/aztecoo/Epetra_DiagonalOperator.hpp \
 	$(srcdir)/adapters/aztecoo/Epetra_ProductOperator.hpp \
 	$(srcdir)/adapters/aztecoo/Epetra_LinearSystemScaler.hpp \
@@ -436,7 +443,6 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCoreAssertOp.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreAssertOpDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreLinearOp.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreLinearOpDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreMultiVector.hpp\
@@ -447,27 +453,27 @@ INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCoreMultiVectorStdOpsDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreOpBase.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreOpBaseDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreDotProd.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreDotProdDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreEuclideanScalarProdDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreScalarProd.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreScalarProdDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreSerialVector.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorBase.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorBaseDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpace.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorStd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorStdDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceStd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceStdDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceBase.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceBaseDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceFactory.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceFactoryDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceFactoryStd.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreSerialVectorSpaceFactoryStdDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreTypes.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVector.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorMultiVector.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorMultiVectorDecl.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceStdBase.hpp\
-	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceStdBaseDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreScalarProdVectorSpaceBase.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreScalarProdVectorSpaceBaseDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpace.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceFactory.hpp\
@@ -478,9 +484,9 @@ INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCore_apply_op_helper_decl.hpp
 
 UTILITIES_CORE_H = \
+	$(srcdir)/utilities/Core/TSFCoreMultiVectorAllocator.hpp\
 	$(srcdir)/utilities/Core/TSFCoreExplicitMultiVectorView.hpp\
 	$(srcdir)/utilities/Core/TSFCoreExplicitVectorView.hpp\
-	$(srcdir)/utilities/Core/TSFCoreMultiVectorAllocator.hpp\
 	$(srcdir)/utilities/Core/TSFCoreLinearOpTesterDecl.hpp\
 	$(srcdir)/utilities/Core/TSFCoreLinearOpTester.hpp\
 	$(srcdir)/utilities/Core/TSFCoreProductVectorSpaceBase.hpp\
@@ -546,12 +552,18 @@ UTILITIES_NONLIN_H = \
 
 NONLIN_H = $(INTERFACES_NONLIN_H) $(UTILITIES_NONLIN_H)
 NONLIN = 
+ADAPTERS_SERIAL_H = \
+	$(srcdir)/adapters/serial/TSFCoreSerialLinearOpBaseDecl.hpp\
+	$(srcdir)/adapters/serial/TSFCoreSerialLinearOpBase.hpp
+
 EXTRA_ADAPTERS_MPI_H = \
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorBaseDecl.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorBase.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorStdDecl.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorStd.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBaseDecl.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorStd.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorStdDecl.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBase.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBaseDecl.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBase.hpp\
@@ -569,7 +581,8 @@ EXTRA_ADAPTERS_EPETRA_H = \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.hpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.hpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.hpp\
-	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.hpp
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.hpp\
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.hpp
 
 EXTRA_ADAPTERS_EPETRA = \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraLinearOp.cpp\
@@ -577,7 +590,8 @@ EXTRA_ADAPTERS_EPETRA = \
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVector.cpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpace.cpp\
 	$(srcdir)/adapters/epetra/TSFCoreEpetraVectorSpaceFactory.cpp\
-	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp\
+	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp
 
 EXTRA_ADAPTERS_AZTECOO_H = \
 	$(srcdir)/adapters/aztecoo/Epetra_DiagonalOperator.hpp \
@@ -617,6 +631,7 @@ AM_CPPFLAGS = \
 -I$(srcdir)/interfaces/Solvers \
 -I$(srcdir)/interfaces/Nonlin \
 -I$(srcdir)/utilities/Core \
+-I$(srcdir)/adapters/serial \
 -I$(srcdir)/adapters/mpi-base \
 -I$(srcdir)/adapters/epetra \
 -I$(srcdir)/adapters/aztecoo \
@@ -648,6 +663,7 @@ TSFCORE_H = \
 	$(CORE_H) \
 	$(SOLVERS_H) \
 	$(NONLIN_H) \
+	$(ADAPTERS_SERIAL_H)\
 	$(ADAPTERS_MPI_H) \
 	$(ADAPTERS_EPETRA_H)\
   $(ADAPTERS_AZTECOO_H)
@@ -816,6 +832,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreNonlinEpetraNPFO.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCoreNonlinLinearOpWithSolveAztecOO.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCore_get_Epetra_MultiVector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFCore_get_Epetra_Operator.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	if $(CXXCOMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" -c -o $@ $<; \
@@ -928,6 +945,22 @@ TSFCore_get_Epetra_MultiVector.obj: $(srcdir)/adapters/epetra/TSFCore_get_Epetra
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/TSFCore_get_Epetra_MultiVector.Po' tmpdepfile='$(DEPDIR)/TSFCore_get_Epetra_MultiVector.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCore_get_Epetra_MultiVector.obj `if test -f '$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp'; then $(CYGPATH_W) '$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp'; fi`
+
+TSFCore_get_Epetra_Operator.o: $(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT TSFCore_get_Epetra_Operator.o -MD -MP -MF "$(DEPDIR)/TSFCore_get_Epetra_Operator.Tpo" -c -o TSFCore_get_Epetra_Operator.o `test -f '$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/TSFCore_get_Epetra_Operator.Tpo" "$(DEPDIR)/TSFCore_get_Epetra_Operator.Po"; else rm -f "$(DEPDIR)/TSFCore_get_Epetra_Operator.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp' object='TSFCore_get_Epetra_Operator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/TSFCore_get_Epetra_Operator.Po' tmpdepfile='$(DEPDIR)/TSFCore_get_Epetra_Operator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCore_get_Epetra_Operator.o `test -f '$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp
+
+TSFCore_get_Epetra_Operator.obj: $(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT TSFCore_get_Epetra_Operator.obj -MD -MP -MF "$(DEPDIR)/TSFCore_get_Epetra_Operator.Tpo" -c -o TSFCore_get_Epetra_Operator.obj `if test -f '$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp'; then $(CYGPATH_W) '$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/TSFCore_get_Epetra_Operator.Tpo" "$(DEPDIR)/TSFCore_get_Epetra_Operator.Po"; else rm -f "$(DEPDIR)/TSFCore_get_Epetra_Operator.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp' object='TSFCore_get_Epetra_Operator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/TSFCore_get_Epetra_Operator.Po' tmpdepfile='$(DEPDIR)/TSFCore_get_Epetra_Operator.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFCore_get_Epetra_Operator.obj `if test -f '$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp'; then $(CYGPATH_W) '$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/adapters/epetra/TSFCore_get_Epetra_Operator.cpp'; fi`
 
 Epetra_DiagonalOperator.o: $(srcdir)/adapters/aztecoo/Epetra_DiagonalOperator.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Epetra_DiagonalOperator.o -MD -MP -MF "$(DEPDIR)/Epetra_DiagonalOperator.Tpo" -c -o Epetra_DiagonalOperator.o `test -f '$(srcdir)/adapters/aztecoo/Epetra_DiagonalOperator.cpp' || echo '$(srcdir)/'`$(srcdir)/adapters/aztecoo/Epetra_DiagonalOperator.cpp; \
@@ -1139,7 +1172,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/../example/Solvers $(distdir)/adapters/aztecoo $(distdir)/adapters/epetra $(distdir)/adapters/mpi-base $(distdir)/interfaces/Core $(distdir)/interfaces/Nonlin $(distdir)/interfaces/Solvers $(distdir)/utilities/Core $(distdir)/utilities/Nonlin $(distdir)/utilities/Solvers
+	$(mkdir_p) $(distdir)/../example/Solvers $(distdir)/adapters/aztecoo $(distdir)/adapters/epetra $(distdir)/adapters/mpi-base $(distdir)/adapters/serial $(distdir)/interfaces/Core $(distdir)/interfaces/Nonlin $(distdir)/interfaces/Solvers $(distdir)/utilities/Core $(distdir)/utilities/Nonlin $(distdir)/utilities/Solvers
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \

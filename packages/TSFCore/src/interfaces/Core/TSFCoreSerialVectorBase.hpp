@@ -52,6 +52,12 @@ void SerialVectorBase<Scalar>::getData( const Scalar** values, Index* stride ) c
 	const_cast<SerialVectorBase<Scalar>*>(this)->getData(const_cast<Scalar**>(values),stride);
 }
 
+template<class Scalar>
+void SerialVectorBase<Scalar>::freeData( const Scalar** values ) const
+{
+	const_cast<SerialVectorBase<Scalar>*>(this)->commitData(const_cast<Scalar**>(values));
+}
+
 // Overridden from Vector
 
 template<class Scalar>
@@ -68,17 +74,18 @@ void SerialVectorBase<Scalar>::applyOp(
 	) const
 {
 #ifdef _DEBUG
-	TSFCore::apply_op_validate_input(
-		"SerialVectorBase::applyOp(...)"
-		,op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele,sub_dim,global_offset
-		);
 	TEST_FOR_EXCEPTION(
 		in_applyOp_, std::logic_error
 		,"SerialVectorBase::applyOp(...): Error, something is not right here!" );
+	TSFCore::apply_op_validate_input(
+		"SerialVectorBase<>::applyOp(...)",*space()
+		,op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele,sub_dim,global_offset
+		);
 #endif
 	in_applyOp_ = true;
 	TSFCore::apply_op_serial(
-		op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj
+		*space()
+		,op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj
 		,first_ele,sub_dim,global_offset
 		);
 	in_applyOp_ = false;

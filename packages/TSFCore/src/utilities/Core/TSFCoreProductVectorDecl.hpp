@@ -42,10 +42,16 @@ template <class Scalar> class ProductVectorSpace;
 ///
 /** Concrete implementation of a product vector.
  *
- * Objects of this type
+ * Note that clients should almost never be creating objects of this
+ * type explicitly and should insteady use <tt>ProductVectorSpace</tt>
+ * as a factory.
+ *
+ * ToDo: Finish documentation!
  *
  * The default constructor is made private to avoid accidental default
  * construction.
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 template<class Scalar>
 class ProductVector : virtual public ProductVectorBase<Scalar> {

@@ -33,12 +33,13 @@
 #define TSFCORE_EPETRA_VECTOR_HPP
 
 #include "TSFCoreEpetraTypes.hpp"
-#include "TSFCoreMPIVectorBase.hpp"
+#include "TSFCoreMPIVectorBaseDecl.hpp"
 
 namespace TSFCore {
 
 ///
-/** Wrapper for Epetra vectors.
+/** \brief Concrete <tt>Vector</tt> adapter subclass for
+ * <tt>Epetra_Vector</tt>.
  *
  * The implementation of this class is quite trivial once you
  * understand the implications of the base class
@@ -51,6 +52,8 @@ namespace TSFCore {
  *
  * Note: the default copy constructor is allowed but the default
  * assignment operator is not.
+ *
+ * \ingroup TSFCore_adapters_Epetra_grp
  */
 class EpetraVector : public MPIVectorBase<RTOp_value_type> {
 public:
@@ -136,7 +139,13 @@ public:
 	///
 	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
 	///
-	void getLocalData( Scalar** values, ptrdiff_t* stride );
+	void getLocalData( Scalar** localValues, Index* stride );
+	///
+	void commitLocalData( Scalar* localValues );
+	///
+	void getLocalData( const Scalar** localValues, Index* stride ) const;
+	///
+	void freeLocalData( const Scalar* localValues ) const;
 
 	//@}
 

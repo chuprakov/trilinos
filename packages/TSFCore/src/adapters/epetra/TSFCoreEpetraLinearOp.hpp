@@ -33,12 +33,13 @@
 #define TSFCORE_EPETRA_LINEAR_OP_HPP
 
 #include "TSFCoreEpetraTypes.hpp"
-#include "TSFCoreLinearOp.hpp"
+#include "TSFCoreLinearOpDecl.hpp"
 
 namespace TSFCore {
 
 ///
-/** Implementation of <tt>LinearOp</tt> using an <tt>Epetra_Operator</tt> object.
+/** \briefe Concrete <tt>LinearOp</tt> adapter subclass for
+ * <tt>Epetra_Operator</tt> object.
  *
  * This subclass can be used to represent the non-transposed operator
  * or transposed operator defined by an <tt>Epetra_Operator</tt>
@@ -46,6 +47,8 @@ namespace TSFCore {
  * <tt>Epetra_Operator::Apply()</tt> or
  * <tt>Epetra_Operator::ApplyInverse()</tt>.  In addition, the user
  * can specify whether adjoints are supported or not.
+ *
+ * \ingroup TSFCore_adapters_Epetra_grp
  */
 class EpetraLinearOp : public LinearOp<RTOp_value_type> {
 public:

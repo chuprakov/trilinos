@@ -55,6 +55,8 @@ public:
 	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
 	///
 	void getLocalData( Scalar** values, ptrdiff_t* stride );
+	///
+	void commitLocalData( Scalar** values );
 
 	//@}
 
@@ -64,7 +66,7 @@ private:
 	// Private data members
 	
 	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >   mpiSpace_;
-	std::vector<Scalar>                                            localValues_;
+	std::vector<Scalar>                                       localValues_;
 
 	// not defined and not to be called
 	SimpleMPIVector();

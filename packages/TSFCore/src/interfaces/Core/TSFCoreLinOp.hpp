@@ -52,6 +52,8 @@ namespace TSFCore {
  * assigned.  These operations are supplied by the compiler
  * automatically since the compiler-supplied versions have the correct
  * behavior.
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 template<class Scalar>
 class LinOpBase {
@@ -233,6 +235,8 @@ private:
  * Objects of this type also should be used a private data member to
  * aggregate a <tt>LinearOp</tt> object, its mathematical defintion
  * of the non-transposed operator and its natural scalar multiplier.
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 template<class Scalar>
 class LinOpPersisting : public LinOpBase<Scalar> {
@@ -304,6 +308,8 @@ public:
  * a <tt>LinOpPersisting</tt> object.
  *
  * This class has value semantics!
+ *
+ * \ingroup TSFCore_ANA_Development_grp
  */
 template<class Scalar>
 class LinOpNonPersisting : public LinOpBase<Scalar> {
@@ -404,7 +410,7 @@ LinOpBase<Scalar>::LinOpBase(
 
 template<class Scalar>
 inline
-void LinOpBase<Scalar>::LinOpBase<Scalar>::defaultTrans( const ETransp defaultTrans )
+void LinOpBase<Scalar>::defaultTrans( const ETransp defaultTrans )
 {
 	defaultTrans_ = defaultTrans;
 }

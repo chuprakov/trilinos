@@ -10785,7 +10785,7 @@ fi
 # Output files
 # ------------------------------------------------------------------------
 
-                                                                                                                                                                                    ac_config_files="$ac_config_files Makefile src/Makefile example/Makefile example/Nonlin/Makefile example/Nonlin/NP2DSim/Makefile example/Nonlin/NP4DOpt/Makefile example/Solvers/Makefile test/Makefile test/epetra-adapters/Makefile test/product-space/Makefile test/std-ops/Makefile test/scripts/Makefile test/scripts/daily/Makefile test/scripts/daily/mpi/Makefile test/scripts/daily/serial/Makefile test/scripts/weekly/Makefile test/scripts/weekly/mpi/Makefile test/scripts/weekly/serial/Makefile"
+                                                                                                                                                                                                        ac_config_files="$ac_config_files Makefile src/Makefile example/Makefile example/Core/Makefile example/Nonlin/Makefile example/Nonlin/NP2DSim/Makefile example/Nonlin/NP4DOpt/Makefile example/Solvers/Makefile test/Makefile test/epetra-adapters/Makefile test/product-space/Makefile test/scalar-product/Makefile test/std-ops/Makefile test/scripts/Makefile test/scripts/daily/Makefile test/scripts/daily/mpi/Makefile test/scripts/daily/serial/Makefile test/scripts/weekly/Makefile test/scripts/weekly/mpi/Makefile test/scripts/weekly/serial/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -11431,6 +11431,7 @@ do
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
   "example/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/Makefile" ;;
+  "example/Core/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/Core/Makefile" ;;
   "example/Nonlin/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/Nonlin/Makefile" ;;
   "example/Nonlin/NP2DSim/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/Nonlin/NP2DSim/Makefile" ;;
   "example/Nonlin/NP4DOpt/Makefile" ) CONFIG_FILES="$CONFIG_FILES example/Nonlin/NP4DOpt/Makefile" ;;
@@ -11438,6 +11439,7 @@ do
   "test/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
   "test/epetra-adapters/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/epetra-adapters/Makefile" ;;
   "test/product-space/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/product-space/Makefile" ;;
+  "test/scalar-product/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/scalar-product/Makefile" ;;
   "test/std-ops/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/std-ops/Makefile" ;;
   "test/scripts/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/scripts/Makefile" ;;
   "test/scripts/daily/Makefile" ) CONFIG_FILES="$CONFIG_FILES test/scripts/daily/Makefile" ;;

@@ -26,44 +26,46 @@
 // ***********************************************************************
 // @HEADER
 
-// ///////////////////////////////
-// cxx_main.cpp
-
 #include "TSFCoreProductVectorSpace.hpp"
-#include "TSFCoreSerialVectorSpace.hpp"
+#include "TSFCoreSerialVectorSpaceStd.hpp"
 #include "TSFCoreTestingTools.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 
-namespace TSFCore {
-
 ///
-/** Main test driver
+/** Main test driver function for composite product spaces
  */
 template <class Scalar>
-bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostream* out )
+bool run_product_space_tests(
+	const int                                                     n
+	,const int                                                    numBlocks
+	,const typename Teuchos::ScalarTraits<Scalar>::magnitudeType  &tol
+	,const bool                                                   dumpAll
+	,std::ostream                                                 *out
+	)
 {
 
 	using TSFCore::relErr;
 
 	typedef Teuchos::ScalarTraits<Scalar> ST;
 
-	if(out) *out << "\n*** Entering run_tests<"<<ST::name()<<">) ...\n";
+	if(out) *out << "\n*** Entering run_product_space_tests<"<<ST::name()<<">) ...\n";
 
 	bool success = true, result;
 	Scalar sresult1, sresult2;
 
-	std::vector<Teuchos::RefCountPtr<const VectorSpace<Scalar> > >
+	std::vector<Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> > >
 		vecSpaces(numBlocks);
-	for( int i = 0; i < numBlocks; ++i ) {
-		vecSpaces[i] = Teuchos::rcp(new SerialVectorSpace<Scalar>(n));
-	}
+	Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> >
+		spaceBlock = Teuchos::rcp(new TSFCore::SerialVectorSpaceStd<Scalar>(n));
+	for( int i = 0; i < numBlocks; ++i )
+		vecSpaces[i] = spaceBlock;
 
 	if(out) *out
 		<< "\nA) Performing basic tests on product vectors with serial contituent vectors ...\n";
 
 	if(out) *out << "\nCreating a product space ps with numBlocks="<<numBlocks<<" and n="<<n<<"vector elements per block ...\n";
 
-	ProductVectorSpace<Scalar> ps(numBlocks,&vecSpaces[0]);
+	TSFCore::ProductVectorSpace<Scalar> ps(numBlocks,&vecSpaces[0]);
 
 	if(out) *out << "\nps.numBlocks()=";
 	result = ps.numBlocks() == numBlocks;
@@ -87,7 +89,7 @@ bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostre
 		<< " : " << ( result ? "passed" : "failed" ) << std::endl;
 
 	if(out) *out << "\nCreating product vectors; pv1, pv2 ...\n";
-	Teuchos::RefCountPtr<Vector<Scalar> >
+	Teuchos::RefCountPtr<TSFCore::Vector<Scalar> >
 		pv1 = ps.createMember(),
 		pv2 = ps.createMember();
 
@@ -103,7 +105,7 @@ bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostre
 	sresult1 = sum(*pv1);
 	sresult2 = two*Scalar(ps.dim());
 	result = ( ST::magnitude( relErr( sresult1, sresult2 ) )
-						 < ST::magnitude( Scalar(10)*ST::eps() ) );
+						 < ST::magnitude( tol ) );
 	if(!result) success = false;
 	if(out) *out
 		<< sresult1 << " == 2*ps.dim()=" << sresult2
@@ -119,7 +121,7 @@ bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostre
 	sresult1 = sum(*pv2);
 	sresult2 = three*Scalar(ps.dim());
 	result = ( ST::magnitude( relErr( sresult1, sresult2 ) )
-						 < ST::magnitude( Scalar(10)*ST::eps() ) );
+						 < ST::magnitude( tol ) );
 	if(!result) success = false;
 	if(out) *out
 		<< sresult1 << " == 3*ps.dim()=" << sresult2
@@ -130,26 +132,26 @@ bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostre
 
 	if(out) *out << "\nps.scalarProd(*pv1,*pv2)=";
 	const Scalar
-		scalarProdTarget  = two*three*Scalar(numBlocks),
+		scalarProdTarget  = two*three*Scalar(n)*Scalar(numBlocks),
 		scalarProd        = ps.scalarProd(*pv1,*pv2);
 	result = ( ST::magnitude( relErr( scalarProd, scalarProdTarget ) )
-						 < ST::magnitude( Scalar(10)*ST::eps() ) );
+						 < ST::magnitude( tol ) );
 	if(!result) success = false;
 	if(out) *out
-		<< scalarProd << " == 2*3*numBlocks=" << scalarProdTarget
+		<< scalarProd << " == 2*3*n*numBlocks=" << scalarProdTarget
 		<< " : " << ( result ? "passed" : "failed" ) << std::endl;
 
 	if(out) *out
 		<< "\nCreating a serial vector space ss with numBlocks*n=" << numBlocks*n << " vector elements ...\n";
 
-	SerialVectorSpace<Scalar> ss(numBlocks*n);
+	TSFCore::SerialVectorSpaceStd<Scalar> ss(numBlocks*n);
 
 	if(out) *out
 		<< "\nB) Test the compatibility of serial vectors and product vectors with serial blocks."
 		<< "\n   These tests demonstrate the principle of how all incore vectors are compatible ...\n";
 
 	if(out) *out << "\nCreating serial vectors; sv1, sv2 ...\n";
-	Teuchos::RefCountPtr<Vector<Scalar> >
+	Teuchos::RefCountPtr<TSFCore::Vector<Scalar> >
 		sv1 = ss.createMember(),
 		sv2 = ss.createMember();
 
@@ -160,7 +162,7 @@ bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostre
 	sresult1 = sum(*sv1);
 	sresult2 = two*Scalar(ps.dim());
 	result = ( ST::magnitude( relErr( sresult1, sresult2 ) )
-						 < ST::magnitude( Scalar(10)*ST::eps() ) );
+						 < ST::magnitude( tol ) );
 	if(!result) success = false;
 	if(out) *out
 		<< sresult1 << " == 2*ps.dim()=" << sresult2
@@ -176,7 +178,7 @@ bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostre
 	sresult1 = sum(*pv2);
 	sresult2 = two*Scalar(ps.dim());
 	result = ( ST::magnitude( relErr( sresult1, sresult2 ) )
-						 < ST::magnitude( Scalar(10)*ST::eps() ) );
+						 < ST::magnitude( tol ) );
 	if(!result) success = false;
 	if(out) *out
 		<< sresult1 << " == 2*ps.dim()=" << sresult2
@@ -188,20 +190,17 @@ bool run_tests( const int n, const int numBlocks, const bool dumpAll, std::ostre
 	// ToDo: Finish tests!
 
   if(out) *out
-		<< "\n*** Leaving run_tests<"<<ST::name()<<">) ...\n";
+		<< "\n*** Leaving run_product_space_tests<"<<ST::name()<<">) ...\n";
 
 	return success;
 
-}
-
-} // namespace TSFCore
+} // end run_product_space_tests() [Doxygen looks for this!]
 
 int main( int argc, char* argv[] ) {
 
 	using Teuchos::CommandLineProcessor;
 
 	bool success = true;
-
 	bool verbose = true;
 
 	std::ostream &out = std::cout;
@@ -213,7 +212,7 @@ int main( int argc, char* argv[] ) {
 		//
 
 		int n         = 4;
-		int numBlocks = 4; // RAB: 2004/06/06: Segfaults on g++ version 3.2.x with numBlocks=2
+		int numBlocks = 4;
 		bool dumpAll  = false;
 
 		CommandLineProcessor  clp(false); // Don't throw exceptions
@@ -228,11 +227,15 @@ int main( int argc, char* argv[] ) {
 		// Run the tests
 		//
 
-		if( !TSFCore::run_tests<float>(n,numBlocks,dumpAll,verbose?&out:NULL) ) success = false;
-		if( !TSFCore::run_tests<double>(n,numBlocks,dumpAll,verbose?&out:NULL) ) success = false;
+		if( !run_product_space_tests<float>(n,numBlocks,float(1e-7),dumpAll,verbose?&out:NULL) ) success = false;
+		if( !run_product_space_tests<double>(n,numBlocks,double(1e-15),dumpAll,verbose?&out:NULL) ) success = false;
 #if defined(HAVE_COMPLEX) && defined(HAVE_TEUCHOS_COMPLEX)
-		if( !TSFCore::run_tests<std::complex<float> >(n,numBlocks,dumpAll,verbose?&out:NULL) ) success = false;
-		if( !TSFCore::run_tests<std::complex<double> >(n,numBlocks,dumpAll,verbose?&out:NULL) ) success = false;
+		if( !run_product_space_tests<std::complex<float> >(n,numBlocks,float(1e-7),dumpAll,verbose?&out:NULL) ) success = false;
+		if( !run_product_space_tests<std::complex<double> >(n,numBlocks,double(1e-15),dumpAll,verbose?&out:NULL) ) success = false;
+#endif
+#ifdef HAVE_TEUCHOS_GNU_MP
+		//if( !run_product_space_tests<mpf_class>(n,numBlocks,mpf_class(1e-15),dumpAll,verbose?&out:NULL) ) success = false;
+		// Above commented out code will not compile because its ScalarTraits specializatioin does not support eps()
 #endif
 
 	} // end try
@@ -256,4 +259,4 @@ int main( int argc, char* argv[] ) {
 	
 	return success ? 0 : 1;
 
-}
+} // end main() [Doxygen looks for this!]

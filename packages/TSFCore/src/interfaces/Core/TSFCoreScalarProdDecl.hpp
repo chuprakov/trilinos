@@ -46,8 +46,10 @@ namespace TSFCore {
  * products (i.e. such as PDE code often do).
  *
  * This interface requires subclasses to override the multi-vector
- * version of scalar product since this will yield the most efficient
- * implementation in a distributed memory environment.
+ * version of scalar product function <tt>scalarProds()</tt> since
+ * this will yield the most efficient implementation in a distributed
+ * memory environment by requiring only a single global reduction
+ * operation and a single communication.
  *
  * Note that one of the preconditions on the vector and multi-vector
  * arguments in <tt>scalarProd()</tt> and <tt>scalarProds()</tt> is a
@@ -60,16 +62,74 @@ namespace TSFCore {
  * object (through the <tt>VectorSpaceStdBase</tt> node subclass).
  * Also, some definitions of <tt>%ScalarProd</tt>
  * (i.e. <tt>DotProd</tt>) can work for any vector space
- * implementation since they only rely on <tt>RTOp</tt> operators.
+ * implementation since they only rely on <tt>RTOp</tt> operators.  In
+ * other cases, however, an application-specific scalar product may
+ * a have dependancy of the data-structure of vector and multi-vector
+ * objects.
+ *
+ * This interface class also defines functions to modify the
+ * application of a Euclidean linear operator to insert the definition
+ * of the application specific scalar product.
+ *
+ * \ingroup TSFCore_basic_adapter_support_grp
  */
 template<class Scalar>
 class ScalarProd {
 public:
 	
+	/** @name Destructor */
+	//@{
+	
 	///
 	virtual ~ScalarProd() {}
+
+	//@}
 	
 	/** @name Pure virtual functions that must be overridden */
+	//@{
+
+	///
+	/** Return the scalar product of each column in two multi-vectors in the vector space.
+	 *
+	 * @param  X            [in] Multi-vector.
+	 * @param  Y            [in] Multi-vector.
+	 * @param  scalar_prod  [out] Array (length <tt>X.domain()->dim()</tt>) containing the
+	 *                      scalar products <tt>scalar_prod[j-1] = this->scalarProd(*X.col(j),*Y.col(j))</tt>,
+	 *                      for <tt>j = 1 ... X.domain()->dim()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li><tt>X.domain()->isCompatible(*Y.domain())</tt> (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
+	 * <li><tt>X.range()->isCompatible(*Y.range())</tt> (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
+	 * <li>The MultiVectors <tt>X</tt> and <tt>Y</tt> are compatible with this implementation or
+	 *     an exception will be thrown.
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li><tt>scalar_prod[j-1] = this->scalarProd(*X.col(j),*Y.col(j))</tt>, for <tt>j = 1 ... X.domain()->dim()</tt>
+	 * </ul>
+	 */
+	virtual void scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const = 0;
+
+	///
+	/** \brief Modify the application of a Euclidean linear operator by
+	 * inserting the vector spaces scalar product.
+	 *
+	 *
+	 * The default implementation calls the single-vector version of
+	 * this function.
+	 */
+	virtual void apply(
+		const EuclideanLinearOpBase<Scalar>   &M
+		,const ETransp                        M_trans
+		,const Vector<Scalar>                 &x
+		,Vector<Scalar>                       *y
+		,const Scalar                         alpha
+		,const Scalar                         beta
+		) const = 0;
+
+	//@}
+
+	/** @name Virtual functions with default implementations */
 	//@{
 
 	///
@@ -91,29 +151,21 @@ public:
 	virtual Scalar scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const;
 
 	///
-	/** Return the scalar product of each column in two multi-vectors in the vector space.
+	/** \brief Modify the application of a Euclidean linear operator by
+	 * inserting the vector spaces scalar product.
 	 *
-	 * @param  X            [in] Multi-vector.
-	 * @param  Y            [in] Multi-vector.
-	 * @param  scalar_prod  [out] Array (length <tt>X.domain()->dim()</tt>) containing the
-	 *                      scalar products <tt>scalar_prod[j-1] = this->scalarProd(*X.col(j),*Y.col(j))</tt>,
-	 *                      for <tt>j = 1 ... X.domain()->dim()</tt>.
 	 *
-	 * Preconditions:<ul>
-	 * <li><tt>X.domain()->isCompatible(*Y.domain())</tt> (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
-	 * <li><tt>X.range()->isCompatible(*Y.range())</tt> (throw <tt>Exceptions::IncompatibleVectorSpaces</tt>)
-	 * <li>The MultiVectors <tt>X</tt> and <tt>Y</tt> are compatible with this implementation or
-	 *     an exception will be thrown.
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li><tt>scalar_prod[j-1] = this->scalarProd(*X.col(j),*Y.col(j))</tt>, for <tt>j = 1 ... X.domain()->dim()</tt>
-	 * </ul>
-	 *
-	 * The default implementation calls the single-vector version
-	 * <tt>scalarProd()</tt>.
+	 * The default implementation calls the single-vector version of
+	 * this function.
 	 */
-	virtual void scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const = 0;
+	virtual void apply(
+		const EuclideanLinearOpBase<Scalar>   &M
+		,const ETransp                        M_trans
+		,const MultiVector<Scalar>            &X
+		,MultiVector<Scalar>                  *Y
+		,const Scalar                         alpha
+		,const Scalar                         beta
+		) const;
 
 	//@}
 

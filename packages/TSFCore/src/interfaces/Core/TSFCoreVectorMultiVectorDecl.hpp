@@ -37,28 +37,40 @@
 namespace TSFCore {
 
 ///
-/** Generic adapter subclass that takes any <tt>MultiVector</tt> that
- * has only one column and turns it into a <tt>Vector</tt>.
+/** \brief Generic adapter subclass that takes any
+ * <tt>MultiVector</tt> that into a <tt>Vector</tt> object where
+ * columns vectors are stacked on top of one another to make
+ * one big vector.
  *
- * The purpose of this concrete subclass is to provide an
- * implementation for <tt>Vector</tt> given that a concrete
- * implementation for a <tt>MultiVector</tt> is already provided.  A
- * linear algebra library implementation should have to do almost
- * nothing to get a <tt>Vector</tt> implementation if a
- * <tt>MultiVector</tt> is already supported.  The primary purpose for
- * the use of this subclass is to implement the override of
- * <tt>VectorSpace::createMember()</tt> function as:
+ * There are two primary purposes for this concrete subclass.  The
+ * first purpose of this subclass is to provide an implementation for
+ * <tt>Vector</tt> given that a concrete implementation for a
+ * <tt>MultiVector</tt> is already provided.  A linear algebra library
+ * implementation should have to do almost nothing to get a
+ * <tt>Vector</tt> implementation if a <tt>MultiVector</tt> is already
+ * supported.  The second purpose of this subclass is to take any
+ * <tt>MultiVector</tt> object with multiple columns and make it look
+ * like one big vector.
+ *
+ * To use this subclass for the primary purpose providing an
+ * implementation for <tt>Vector</tt> use of this subclass is to
+ * implement the override of <tt>VectorSpace::createMember()</tt>
+ * function as:
  *
  \code
 
   template<class Scalar>
   Teuchos::RefCountPtr<MultiVector<Scalar> > SomeVectorSpace::createMember()
   {
-    return this->createMembers(1);
+    return Teuchos::rcp(new VectorMultiVector<Scalar>(this->createMembers(1)));
   }
  \endcode
  *
- * and that is all there is to it.
+ * where <tt>SomeVectorSpace::createMembers(int)</tt> is overridden to
+ * create the multi-vector object.
+ *
+ * ToDo: the functionality to support the second and more general use
+ * case is not finished yet but can be put together when needed.
  */
 template<class Scalar>
 class VectorMultiVector : virtual public Vector<Scalar> {
@@ -84,12 +96,12 @@ public:
    * Preconditions:<ul>
    * <li><tt>mv.get()!=NULL</tt> (throw <tt>std::invalid_argument</tt>)
    * <li><tt>mv->domain().get()!=NULL</tt> (throw <tt>std::invalid_argument</tt>)
-   * <li><tt>mv->domain()->dim()==1</tt> (throw <tt>std::invalid_argument</tt>)
    * </ul>
    *
    * Postconditions:<ul>
    * <li><tt>this->mv().get() == mv.get()</tt>
-   * <tt><tt>this->space().get() == mv->range().get()</tt>
+   * <tt>[<tt>mv->domain()->dim()==1</tt>] <tt>this->space().get() == mv->range().get()</tt>
+	 * </ul>
    */
   void initialize(
     const Teuchos::RefCountPtr<MultiVector<Scalar> > &mv
@@ -101,6 +113,7 @@ public:
    * Postconditions:<ul>
    * <li><tt>this->mv().get() == NULL</tt>
    * <tt><tt>this->space().get() == NULL</tt>
+	 * </ul>
    */
   void uninitialize(
     Teuchos::RefCountPtr<MultiVector<Scalar> > *mv = NULL
@@ -117,9 +130,9 @@ public:
   /** @name Overridden from OpBase (forwarded to this->mv()) */
   //@{
 	///
-	Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const;
-	///
 	Teuchos::RefCountPtr< const VectorSpace<Scalar> > range() const;
+	///
+	Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const;
   ///
 	bool opSupported(ETransp M_trans) const;
   //@}

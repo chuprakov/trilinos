@@ -33,6 +33,7 @@
 #include "TSFCoreEpetraLinearOp.hpp"
 #include "TSFCoreEpetraMultiVector.hpp"
 #include "TSFCoreTestingTools.hpp"
+#include "TSFCoreLinearOpTester.hpp"
 #include "TSFCoreMPIVectorSpaceStd.hpp"
 #include "Epetra_SerialComm.h"
 #include "Epetra_LocalMap.h"
@@ -46,15 +47,6 @@
 #  include "TSFCoreSimpleMPIVectorSpace.hpp"
 #  include "Epetra_MpiComm.h"
 #endif
-
-// Define this if you want to see only Epetra-based computations
-//#define EPETRA_ADAPTERS_EPETRA_ONLY
-
-// Define this if you want to exclude opeations with Epetra_Operator
-//#define EPETRA_ADAPTERS_EXCLUDE_EPETRA_OPERATOR
-
-// Define this if you want to use MPIVectorSpaceStd
-#define EPETRA_ADAPTERS_USE_MPI_VECTOR_SPACE_STD
 
 //
 // Some helper functions
@@ -82,10 +74,7 @@ void print_performance_stats(
 
 } // namespace
 
-namespace TSFCore {
-
-///
-/** Testing program for TSFCore/Epetra adpaters.
+/* Testing program for TSFCore/Epetra adpaters.
  *
  * This testing program shows how you can easily mix and match
  * different implementations of vectors and multi-vectors for serial
@@ -98,7 +87,7 @@ namespace TSFCore {
  * would be possible to put in more exactly component-wise tests if
  * that is needed in the future.
  */
-int main_body( int argc, char* argv[] ) {
+int main( int argc, char* argv[] ) {
 
 	typedef double Scalar;
 	typedef Teuchos::ScalarTraits<Scalar> ST;
@@ -111,13 +100,13 @@ int main_body( int argc, char* argv[] ) {
 	using Teuchos::rcp_const_cast;
 
 	using TSFCore::testRelErr;
+	using TSFCore::NOTRANS;
+	using TSFCore::TRANS;
 	
 	bool verbose = true;
 	bool dumpAll = false;
-#ifdef RTOp_USE_MPI
-	bool useMPI  = true; // ToDo: Make a commandline argument?
-#endif
 	bool success = true;
+	bool result;
 
 	int procRank = 0;
 
@@ -131,19 +120,30 @@ int main_body( int argc, char* argv[] ) {
 		// Read options from the commandline
 		//
 
-		int     local_dim         = 1000;
-		int     num_mv_cols       = 4;
-		double  max_rel_err       = 1e-13;
-		double  scalar            = 1.5;
-		double  max_flop_rate     = 2.0e8;
+		int     local_dim            = 1000;
+		int     num_mv_cols          = 4;
+		double  max_rel_err          = 1e-13;
+		double  max_rel_warn         = 1e-15;
+		double  scalar               = 1.5;
+		double  max_flop_rate        = 2.0e8;
+		bool    use_mpi_vec_spc_std  = true;
+#ifdef RTOp_USE_MPI
+		bool    useMPI               = true;
+#endif
 		CommandLineProcessor  clp(false); // Don't throw exceptions
 		clp.setOption( "verbose", "quiet", &verbose, "Determines if any output is printed or not." );
 		clp.setOption( "dump-all", "no-dump", &dumpAll, "Determines if quantities are dumped or not." );
 		clp.setOption( "local-dim", &local_dim, "Number of vector elements per process." );
 		clp.setOption( "num-mv-cols", &num_mv_cols, "Number columns in each multi-vector (>=4)." );
-		clp.setOption( "max-rel-err", &max_rel_err, "Maximum relative error for tests." );
+		clp.setOption( "max-rel-err-tol", &max_rel_err, "Maximum relative error tolerance for tests." );
+		clp.setOption( "max-rel-warn-tol", &max_rel_warn, "Maximum relative warning tolerance for tests." );
 		clp.setOption( "scalar", &scalar, "A scalar used in all computations." );
 		clp.setOption( "max-flop-rate", &max_flop_rate, "Approx flop rate used for loop timing." );
+		clp.setOption( "use-mpi-vec-spc-std", "no-use-mpi-vec-spc-std", &use_mpi_vec_spc_std
+									 ,"Use MPIVectorSpaceStd or SerialVectorSpaceStd (serial), SimpleMPIVectorSpace (parallel)." );
+#ifdef RTOp_USE_MPI
+		clp.setOption( "use-mpi", "no-use-mpi", &useMPI, "Actually use MPI or just run independent serial programs." );
+#endif
 		CommandLineProcessor::EParseCommandLineReturn parse_return = clp.parse(argc,argv);
 		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL ) return parse_return;
 
@@ -156,11 +156,19 @@ int main_body( int argc, char* argv[] ) {
 		// Get basic MPI info
 		//
 
-		int numProc = 1;
 #ifdef RTOp_USE_MPI
-		MPI_Comm mpiComm = MPI_COMM_WORLD;
-		MPI_Comm_size( mpiComm, &numProc );
-		MPI_Comm_rank( mpiComm, &procRank );
+		MPI_Comm mpiComm;
+		int numProc;
+		if(useMPI) {
+			mpiComm = MPI_COMM_WORLD;
+			MPI_Comm_size( mpiComm, &numProc );
+			MPI_Comm_rank( mpiComm, &procRank );
+		}
+		else {
+			mpiComm = MPI_COMM_NULL;
+			numProc = 1;
+			procRank = 0;
+		}
 #endif
 
 		//
@@ -177,37 +185,32 @@ int main_body( int argc, char* argv[] ) {
 				<< "\n***\n";
 
 		//
-		// Create two different vector spaces (one Epetra and one non-Epetra)
-		// that should be compatible
+		// Create two different vector spaces (one Epetra and one
+		// non-Epetra) that should be compatible.
 		//
 		RefCountPtr<const Epetra_Comm> epetra_comm;
 		RefCountPtr<const Epetra_Map> epetra_map;
-		RefCountPtr<const VectorSpace<Scalar> > epetra_vs;
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
-		RefCountPtr<const VectorSpace<Scalar> > non_epetra_vs;
-#endif
+		RefCountPtr<const TSFCore::VectorSpace<Scalar> > epetra_vs;
+		RefCountPtr<const TSFCore::VectorSpace<Scalar> > non_epetra_vs;
 #ifdef RTOp_USE_MPI
 		if(useMPI) {
 			//
-			// Create parallel vector spaces using compatible maps
+			// Create parallel vector spaces with compatible maps
 			//
-			if(verbose)
-				out << "\nCreating TSFCore::EpetraVectorSpace using Epetra_MpiComm ...\n";
+			// Epetra vector space
+			if(verbose) out << "\nCreating TSFCore::EpetraVectorSpace using Epetra_MpiComm ...\n";
 			epetra_comm = rcp(new Epetra_MpiComm(mpiComm));
 			epetra_map = rcp(new Epetra_Map(-1,local_dim,0,*epetra_comm));
-			epetra_vs = rcp(new EpetraVectorSpace(epetra_map));
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
+			epetra_vs = rcp(new TSFCore::EpetraVectorSpace(epetra_map));
 			// Non-Epetra vector space
-#ifdef EPETRA_ADAPTERS_USE_MPI_VECTOR_SPACE_STD
-			if(verbose)
-				out << "\nCreating TSFCore::MPIVectorSpaceStd ...\n";
-			non_epetra_vs = rcp(new MPIVectorSpaceStd<Scalar>(mpiComm,local_dim,-1));
-#else
-			if(verbose)
-				out << "\nCreating TSFCore::SimpleMPIVectorSpace ...\n";
-			non_epetra_vs = rcp(new SimpleMPIVectorSpace<Scalar>(mpiComm,local_dim));
-#endif
-#endif // RTOp_USE_MPI
+			if(use_mpi_vec_spc_std) {
+				if(verbose) out << "\nCreating TSFCore::MPIVectorSpaceStd ...\n";
+				non_epetra_vs = rcp(new MPIVectorSpaceStd<Scalar>(mpiComm,local_dim,-1));
+			}
+			else {
+				if(verbose) out << "\nCreating TSFCore::SimpleMPIVectorSpace ...\n";
+				non_epetra_vs = rcp(new SimpleMPIVectorSpace<Scalar>(mpiComm,local_dim));
+			}
 		}
 		else {
 #endif
@@ -215,27 +218,28 @@ int main_body( int argc, char* argv[] ) {
 			// Create serial vector spaces (i.e. VectorSpace::isInCore()==true)
 			//
 			// Epetra vector space
-			if(verbose)
-				out << "\nCreating TSFCore::EpetraVectorSpace using Epetra_SerialComm ...\n";
+			if(verbose) out << "\nCreating TSFCore::EpetraVectorSpace using Epetra_SerialComm ...\n";
 			epetra_comm = rcp(new Epetra_SerialComm);
 			epetra_map = rcp(new Epetra_LocalMap(local_dim,0,*epetra_comm));
-			epetra_vs = rcp(new EpetraVectorSpace(epetra_map));
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
-#  ifdef EPETRA_ADAPTERS_USE_MPI_VECTOR_SPACE_STD
-			if(verbose)
-				out << "\nCreating TSFCore::MPIVectorSpaceStd ...\n";
-			non_epetra_vs = rcp(new MPIVectorSpaceStd<Scalar>(MPI_COMM_NULL,local_dim,-1));
-#  else
-			if(verbose)
-				out << "\nCreating TSFCore::SerialVectorSpace ...\n";
-			non_epetra_vs = rcp(new SerialVectorSpace<Scalar>(local_dim));
-#  endif
-#endif
+			epetra_vs = rcp(new TSFCore::EpetraVectorSpace(epetra_map));
+			// Non-Epetra vector space
+			if(use_mpi_vec_spc_std) {
+				if(verbose) out << "\nCreating TSFCore::MPIVectorSpaceStd ...\n";
+				non_epetra_vs = rcp(new TSFCore::MPIVectorSpaceStd<Scalar>(MPI_COMM_NULL,local_dim,-1));
+			}
+			else {
+				if(verbose) out << "\nCreating TSFCore::SerialVectorSpaceStd ...\n";
+				non_epetra_vs = rcp(new TSFCore::SerialVectorSpaceStd<Scalar>(local_dim));
+			}
 #ifdef RTOp_USE_MPI
 		}
-#endif
+#endif // end create vector spacdes [Doxygen looks for this!]
 
+#ifdef RTOp_USE_MPI
 		const int global_dim = local_dim * numProc;
+#else
+		const int global_dim = local_dim;
+#endif
 
 		if(verbose)
 			out
@@ -251,23 +255,19 @@ int main_body( int argc, char* argv[] ) {
 		// Create vectors and multi-vectors from each vector space
 		//
 
-		RefCountPtr<Vector<Scalar> >
+		RefCountPtr<TSFCore::Vector<Scalar> >
 			ev1 = epetra_vs->createMember(),
 			ev2 = epetra_vs->createMember();
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
-		RefCountPtr<Vector<Scalar> >
+		RefCountPtr<TSFCore::Vector<Scalar> >
 			nev1 = non_epetra_vs->createMember(),
 			nev2 = non_epetra_vs->createMember();
-#endif
 
-		RefCountPtr<MultiVector<Scalar> >
+		RefCountPtr<TSFCore::MultiVector<Scalar> >
 			eV1 = epetra_vs->createMembers(num_mv_cols),
 			eV2 = epetra_vs->createMembers(num_mv_cols);
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
-		RefCountPtr<MultiVector<Scalar> >
+		RefCountPtr<TSFCore::MultiVector<Scalar> >
 			neV1 = non_epetra_vs->createMembers(num_mv_cols),
 			neV2 = non_epetra_vs->createMembers(num_mv_cols);
-#endif
 
 		if(verbose)
 			out
@@ -280,35 +280,26 @@ int main_body( int argc, char* argv[] ) {
 		// w.r.t. RTOps
 		//
 
-		if(verbose)
-			out
-				<< "\n*** (B.1) Testing individual vector/multi-vector RTOps\n";
+		if(verbose) out << "\n*** (B.1) Testing individual vector/multi-vector RTOps\n";
 
 		assign( &*ev1, 0.0 );
 		assign( &*ev2, scalar );
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 		assign( &*nev1, 0.0 );
 		assign( &*nev2, scalar );
-#endif
 		assign( &*eV1, 0.0 );
 		assign( &*eV2, scalar );
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 		assign( &*neV1, 0.0 );
 		assign( &*neV2, scalar );
-#endif
 
 		Scalar
 			ev1_nrm = norm_1(*ev1),
 			ev2_nrm = norm_1(*ev2),
 			eV1_nrm = norm_1(*eV1),
-			eV2_nrm = norm_1(*eV2);
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
-		Scalar
+			eV2_nrm = norm_1(*eV2),
 			nev1_nrm = norm_1(*nev1),
 			nev2_nrm = norm_1(*nev2),
 			neV1_nrm = norm_1(*neV1),
 			neV2_nrm = norm_1(*neV2);
-#endif
 
 		const std::string s1_n = "fabs(scalar)*global_dim";
 		const Scalar s1 = fabs(scalar)*global_dim;
@@ -317,26 +308,20 @@ int main_body( int argc, char* argv[] ) {
 		if(verbose && dumpAll) out << "\nev1 =\n" << *ev1;
 		if(!testRelErr("norm_1(ev2)",ev2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nev2 =\n" << *ev2;
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 		if(!testRelErr("norm_1(nev1)",nev1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nnev2 =\n" << *ev1;
 		if(!testRelErr("norm_1(nev2)",nev2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nnev2 =\n" << *nev2;
-#endif
 		if(!testRelErr("norm_1(eV1)",eV1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV1 =\n" << *eV1;
 		if(!testRelErr("norm_1(eV2)",eV2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV2 =\n" << *eV2;
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 		if(!testRelErr("norm_1(neV1)",neV1_nrm,"0",Scalar(0),"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV1 =\n" << *neV1;
 		if(!testRelErr("norm_1(neV2)",neV2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV2 =\n" << *neV2;
-#endif
 
-		if(verbose)
-			out
-				<< "\n*** (B.2) Test RTOps with two or more arguments\n";
+		if(verbose) out << "\n*** (B.2) Test RTOps with two or more arguments\n";
 
 		if(verbose) out << "\nPerforming ev1 = ev2 ...\n";
 		timer.start(true);
@@ -353,8 +338,6 @@ int main_body( int argc, char* argv[] ) {
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(!testRelErr("norm_1(eV1)",norm_1(*eV1),"norm_1(eV2)",eV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV1 =\n" << *eV1;
-
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 
 		if(verbose) out << "\nPerforming ev1 = nev2 ...\n";
 		timer.start(true);
@@ -404,17 +387,35 @@ int main_body( int argc, char* argv[] ) {
 		if(!testRelErr("norm_1(neV1)",norm_1(*neV1),"norm_1(neV2)",neV2_nrm,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV1 =\n" << *neV1;
 
-#endif
+		TSFCore::LinearOpTester<Scalar> linearOpTester(max_rel_warn,max_rel_err);
+
+		if(verbose) out << "\n*** (B.3) Test Vector linear operator interface\n";
+
+		if(verbose) out << "\nChecking out linear operator interface of ev1 ...\n";
+		result = linearOpTester.check(*ev1,verbose?&out:NULL);
+		if(!result) success = false;
+
+		if(verbose) out << "\nChecking out linear operator interface of nev1 ...\n";
+		result = linearOpTester.check(*nev1,verbose?&out:NULL);
+		if(!result) success = false;
+
+		if(verbose) out << "\n*** (B.4) Test MultiVector linear operator interface\n";
+
+		if(verbose) out << "\nChecking out linear operator interface of eV1 ...\n";
+		result = linearOpTester.check(*eV1,verbose?&out:NULL);
+		if(!result) success = false;
+
+		if(verbose) out << "\nChecking out linear operator interface of neV1 ...\n";
+		result = linearOpTester.check(*neV1,verbose?&out:NULL);
+		if(!result) success = false;
 
 		const std::string s2_n = "scalar^2*global_dim*num_mv_cols";
 		const Scalar s2 = scalar*scalar*global_dim*num_mv_cols;
 
-		RefCountPtr<MultiVector<Scalar> >
+		RefCountPtr<TSFCore::MultiVector<Scalar> >
 			T = eV1->domain()->createMembers(num_mv_cols);
 
-		if(verbose)
-			out
-				<< "\n*** (B.3) Test MultiVector::apply(...)\n";
+		if(verbose) out << "\n*** (B.5) Test MultiVector::apply(...)\n";
 
 		if(verbose) out << "\nPerforming eV1'*eV2 ...\n";
 		timer.start(true);
@@ -423,8 +424,6 @@ int main_body( int argc, char* argv[] ) {
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(!testRelErr("norm_1(eV1'*eV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\neV1'*eV2 =\n" << *T;
-
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 
 		if(verbose) out << "\nPerforming neV1'*eV2 ...\n";
 		timer.start(true);
@@ -450,13 +449,7 @@ int main_body( int argc, char* argv[] ) {
 		if(!testRelErr("norm_1(neV1'*neV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 		if(verbose && dumpAll) out << "\nneV1'*neV2 =\n" << *T;
 
-#endif
-
-#ifndef EPETRA_ADAPTERS_EXCLUDE_EPETRA_OPERATOR
-
-		if(verbose)
-			out
-				<< "\n*** (B.4) Creating a diagonal Epetra_Operator\n";
+		if(verbose) out << "\n*** (B.6) Creating a diagonal Epetra_Operator Op\n";
 
 		RefCountPtr<Epetra_Operator>  epetra_op;
 
@@ -480,24 +473,25 @@ int main_body( int argc, char* argv[] ) {
 			epetra_op = epetra_mat;
 		}
 
-		RefCountPtr<const LinearOp<Scalar> >
-			Op = rcp(new EpetraLinearOp(epetra_op));
+		RefCountPtr<const TSFCore::LinearOp<Scalar> >
+			Op = rcp(new TSFCore::EpetraLinearOp(epetra_op));
 
+		if(verbose) out << "\n*** (B.7) Test EpetraLinearOp linear operator interface\n";
 
-		RefCountPtr<Vector<Scalar> >
+		if(verbose) out << "\nChecking out linear operator interface of Op ...\n";
+		result = linearOpTester.check(*Op,verbose?&out:NULL);
+		if(!result) success = false;
+
+		RefCountPtr<TSFCore::Vector<Scalar> >
 			ey  = epetra_vs->createMember();
-		RefCountPtr<MultiVector<Scalar> >
+		RefCountPtr<TSFCore::MultiVector<Scalar> >
 			eY  = epetra_vs->createMembers(num_mv_cols);
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
-		RefCountPtr<Vector<Scalar> >
+		RefCountPtr<TSFCore::Vector<Scalar> >
 			ney = non_epetra_vs->createMember();
-		RefCountPtr<MultiVector<Scalar> >
+		RefCountPtr<TSFCore::MultiVector<Scalar> >
 			neY = non_epetra_vs->createMembers(num_mv_cols);
-#endif
 
-		if(verbose)
-			out
-				<< "\n*** (B.5) Mix and match vector and Multi-vectors with Epetra opeator\n";
+		if(verbose) out << "\n*** (B.8) Mix and match vector and Multi-vectors with Epetra opeator\n";
 
 		const std::string s3_n = "2*scalar^2*global_dim";
 		const Scalar s3 = 2*scalar*scalar*global_dim;
@@ -515,8 +509,6 @@ int main_body( int argc, char* argv[] ) {
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(!testRelErr("norm_1(eY)",norm_1(*eY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
-
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 
 		if(verbose) out << "\nPerforming ney = 2*Op*ev1 ...\n";
 		timer.start(true);
@@ -555,7 +547,7 @@ int main_body( int argc, char* argv[] ) {
 
 		if(verbose) out << "\nPerforming ney = 2*Op*nev1 through MultiVector interface ...\n";
 		timer.start(true);
-		Op->apply( NOTRANS, static_cast<const MultiVector<Scalar>&>(*nev1), static_cast<MultiVector<Scalar>*>(&*ney), 2.0 );
+		Op->apply( NOTRANS, static_cast<const TSFCore::MultiVector<Scalar>&>(*nev1), static_cast<TSFCore::MultiVector<Scalar>*>(&*ney), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(!testRelErr("norm_1(ney)",norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
@@ -567,24 +559,18 @@ int main_body( int argc, char* argv[] ) {
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(!testRelErr("norm_1(neY)",norm_1(*neY),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
-#endif
+		if(verbose) out << "\n*** (B.9) Testing Multi-vector views with Epetra operator\n";
 
-		if(verbose)
-			out
-				<< "\n*** (B.6) Testing Multi-vector views with Epetra operator\n";
-
-		const Range1D col_rng(1,2);
+		const TSFCore::Range1D col_rng(1,2);
 		const int numCols = 2;
 		const int cols[] = { 3, 4 };
 
-		RefCountPtr<const MultiVector<Scalar> >
-			eV1_v1  = rcp_static_cast<const MultiVector<Scalar> >(eV1)->subView(col_rng),
-			eV1_v2  = rcp_static_cast<const MultiVector<Scalar> >(eV1)->subView(numCols,cols);
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
-		RefCountPtr<const MultiVector<Scalar> >
-			neV1_v1  = rcp_static_cast<const MultiVector<Scalar> >(neV1)->subView(col_rng),
-			neV1_v2  = rcp_static_cast<const MultiVector<Scalar> >(neV1)->subView(numCols,cols);
-#endif
+		RefCountPtr<const TSFCore::MultiVector<Scalar> >
+			eV1_v1  = rcp_static_cast<const TSFCore::MultiVector<Scalar> >(eV1)->subView(col_rng),
+			eV1_v2  = rcp_static_cast<const TSFCore::MultiVector<Scalar> >(eV1)->subView(numCols,cols);
+		RefCountPtr<const TSFCore::MultiVector<Scalar> >
+			neV1_v1  = rcp_static_cast<const TSFCore::MultiVector<Scalar> >(neV1)->subView(col_rng),
+			neV1_v2  = rcp_static_cast<const TSFCore::MultiVector<Scalar> >(neV1)->subView(numCols,cols);
 
 		if(verbose) out << "\nPerforming eY_v1 = 2*Op*eV1_v1 ...\n";
 		timer.start(true);
@@ -599,8 +585,6 @@ int main_body( int argc, char* argv[] ) {
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(!testRelErr("norm_1(eY_v2)",norm_1(*eY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
-
-#ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 
 		if(verbose) out << "\nPerforming neY_v1 = 2*Op*eV1_v1 ...\n";
 		timer.start(true);
@@ -630,11 +614,7 @@ int main_body( int argc, char* argv[] ) {
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(!testRelErr("norm_1(eY_v2)",norm_1(*eY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
-#endif
-
-		if(verbose)
-			out
-				<< "\n*** (B.7) View creation functions\n";
+		if(verbose) out << "\n*** (B.10) Testing Vector and MultiVector view creation functions\n";
 
     if(1) {
 
@@ -646,15 +626,15 @@ int main_body( int argc, char* argv[] ) {
 
       std::fill_n( t_raw_values.begin(), t_raw_values.size(), ST::zero() );
 			assign( &*T->range()->createMemberView(t_raw), scalar );
-      Teuchos::RefCountPtr<const Vector<Scalar> > t_view = T->range()->createMemberView(static_cast<RTOpPack::SubVectorT<Scalar>&>(t_raw));
+      Teuchos::RefCountPtr<const TSFCore::Vector<Scalar> > t_view = T->range()->createMemberView(static_cast<RTOpPack::SubVectorT<Scalar>&>(t_raw));
       Scalar t_nrm = norm_1(*t_view);
       if(!testRelErr("norm_1(t_view)",t_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
       if(verbose && dumpAll) out << "\nt_view =\n" << *t_view;
 
 #ifndef __sun // The sun compiler Forte Developer 5.4 does not destory temporaries properly and this does not work
       std::fill_n( t_raw_values.begin(), t_raw_values.size(), ST::zero() );
-      assign( &*T->range()->VectorSpace<Scalar>::createMemberView(t_raw), scalar );
-      t_view = T->range()->VectorSpace<Scalar>::createMemberView(static_cast<RTOpPack::SubVectorT<Scalar>&>(t_raw));
+      assign( &*T->range()->TSFCore::VectorSpace<Scalar>::createMemberView(t_raw), scalar );
+      t_view = T->range()->TSFCore::VectorSpace<Scalar>::createMemberView(static_cast<RTOpPack::SubVectorT<Scalar>&>(t_raw));
       t_nrm = norm_1(*t_view);
       if(!testRelErr("norm_1(t_view)",t_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
       if(verbose && dumpAll) out << "\nt_view =\n" << *t_view;
@@ -665,23 +645,22 @@ int main_body( int argc, char* argv[] ) {
 
       std::fill_n( T_raw_values.begin(), T_raw_values.size(), ST::zero() );
       assign( &*T->range()->createMembersView(T_raw), scalar );
-      Teuchos::RefCountPtr<const MultiVector<Scalar> > T_view = T->range()->createMembersView(static_cast<RTOpPack::SubMultiVectorT<Scalar>&>(T_raw));
+      Teuchos::RefCountPtr<const TSFCore::MultiVector<Scalar> >
+				T_view = T->range()->createMembersView(static_cast<RTOpPack::SubMultiVectorT<Scalar>&>(T_raw));
       Scalar T_nrm = norm_1(*T_view);
       if(!testRelErr("norm_1(T_view)",T_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
       if(verbose && dumpAll) out << "\nT_view =\n" << *T_view;
 
 #ifndef __sun // The sun compiler Forte Developer 5.4 does not destory temporaries properly and this does not work
       std::fill_n( T_raw_values.begin(), T_raw_values.size(), ST::zero() );
-      assign( &*T->range()->VectorSpace<Scalar>::createMembersView(T_raw), scalar );
-      T_view = T->range()->VectorSpace<Scalar>::createMembersView(static_cast<RTOpPack::SubMultiVectorT<Scalar>&>(T_raw));
+      assign( &*T->range()->TSFCore::VectorSpace<Scalar>::createMembersView(T_raw), scalar );
+      T_view = T->range()->TSFCore::VectorSpace<Scalar>::createMembersView(static_cast<RTOpPack::SubMultiVectorT<Scalar>&>(T_raw));
       T_nrm = norm_1(*T_view);
       if(!testRelErr("norm_1(T_view)",T_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
       if(verbose && dumpAll) out << "\nT_view =\n" << *T_view;
 #endif
 
     }
-
-#endif // EPETRA_ADAPTERS_EXCLUDE_EPETRA_OPERATOR
 
 		if(verbose)
 			out
@@ -712,9 +691,7 @@ int main_body( int argc, char* argv[] ) {
 
 		double raw_epetra_time, tsfcore_wrapped_time;
 		
-		if(verbose)
-			out
-				<< "\n*** (C.1) Comparing the speed of RTOp verses raw Epetra_Vector operations\n";
+		if(verbose) out << "\n*** (C.1) Comparing the speed of RTOp verses raw Epetra_Vector operations\n";
 
 		const double flop_adjust_factor_1 = 3.0;
 		const int num_time_loops_1 = int( max_flop_rate / ( flop_adjust_factor_1 * local_dim * num_mv_cols ) ) + 1;
@@ -724,18 +701,18 @@ int main_body( int argc, char* argv[] ) {
 			// Get constant references to Epetra_MultiVector objects in eV1 and eV2
 			const Epetra_MultiVector
 				&eeV2
-				= *dyn_cast<const EpetraMultiVector>(const_cast<const MultiVector<Scalar>&>(*eV2)).epetra_multi_vec();
+				= *dyn_cast<const TSFCore::EpetraMultiVector>(const_cast<const TSFCore::MultiVector<Scalar>&>(*eV2)).epetra_multi_vec();
 			
 			// Get the Epetra_MultiVector object inside of Y to be modified.  Note that the following is the recommended
 			// way to do this since it gives the greatest flexibility in the implementation of TSFCore::EpetraMultiVector.
 			RefCountPtr<Epetra_MultiVector>  eeV1;
-			RefCountPtr<const EpetraVectorSpace> eV1_range;
+			RefCountPtr<const TSFCore::EpetraVectorSpace> eV1_range;
 #ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
-      RefCountPtr<const EpetraVectorSpace> eV1_domain;
+      RefCountPtr<const TSFCore::EpetraVectorSpace> eV1_domain;
 #else
-      RefCountPtr<const VectorSpace<Scalar> > eV1_domain;
+      RefCountPtr<const TSFCore::ScalarProdVectorSpaceBase<Scalar> > eV1_domain;
 #endif
-			dyn_cast<EpetraMultiVector>(*eV1).setUninitialized(&eeV1,&eV1_range,&eV1_domain);
+			dyn_cast<TSFCore::EpetraMultiVector>(*eV1).setUninitialized(&eeV1,&eV1_range,&eV1_domain);
 			
 			if(verbose)
 				out << "\nPerforming eeV1 = eeV2 (using raw Epetra_MultiVector::operator=(...)) " << num_time_loops_1 << " times ...\n";
@@ -747,7 +724,7 @@ int main_body( int argc, char* argv[] ) {
 			raw_epetra_time = timer.totalElapsedTime();
 			if(verbose) out << "  total time = " << raw_epetra_time << " sec\n";
 			
-			dyn_cast<EpetraMultiVector>(*eV1).initialize(eeV1,eV1_range,eV1_domain);
+			dyn_cast<TSFCore::EpetraMultiVector>(*eV1).initialize(eeV1,eV1_range,eV1_domain);
 				
 		}
 		
@@ -763,17 +740,16 @@ int main_body( int argc, char* argv[] ) {
 		
 		print_performance_stats( num_time_loops_1, raw_epetra_time, tsfcore_wrapped_time, verbose, out );
 
-		// RAB: 2004/01/05: Note, the above relative performance is
-		// likely to be the worst of all of the others since RTOp
-		// operators are applied seperately column by column but the
-		// relative performance should go to about 1.0 when local_dim
-		// is sufficiently large!  However, because
-		// Epetra_MultiVector::Assign(...) is implemented with a bad
-		// algorithm (as of this 2004/01/05) with lots of cache misses
-		// for the wrong problem sizes, the column-by-column RTOp
-		// implementation used with the TSFCore adapters is actually
-		// much faster in some cases.  However, the extra overhead of
-		// RTOp is much worse for very very small (order 10) sizes.
+		// RAB: 2004/01/05: Note, the above relative performance is likely
+		// to be the worst of all of the others since RTOp operators are
+		// applied seperately column by column but the relative
+		// performance should go to about 1.0 when local_dim is
+		// sufficiently large!  However, because
+		// Epetra_MultiVector::Assign(...) is implemented using double
+		// pointer indexing, the RTOp implementation used with the TSFCore
+		// adapters is actually faster in some cases.  However, the extra
+		// overhead of RTOp is much worse for very very small (order 10)
+		// sizes.
 
 		if(verbose)
 			out
@@ -787,10 +763,10 @@ int main_body( int argc, char* argv[] ) {
 			// Get constant references to Epetra_MultiVector objects in eV1 and eV2
 			const Epetra_MultiVector
 				&eeV1
-				= *dyn_cast<const EpetraMultiVector>(const_cast<const MultiVector<Scalar>&>(*eV1)).epetra_multi_vec();
+				= *dyn_cast<const TSFCore::EpetraMultiVector>(const_cast<const TSFCore::MultiVector<Scalar>&>(*eV1)).epetra_multi_vec();
 			const Epetra_MultiVector
 				&eeV2
-				= *dyn_cast<const EpetraMultiVector>(const_cast<const MultiVector<Scalar>&>(*eV2)).epetra_multi_vec();
+				= *dyn_cast<const TSFCore::EpetraMultiVector>(const_cast<const TSFCore::MultiVector<Scalar>&>(*eV2)).epetra_multi_vec();
 			
       Epetra_LocalMap eT_map(T->range()->dim(),0,*epetra_comm);
 			Epetra_MultiVector eT(eT_map,T->domain()->dim());
@@ -827,9 +803,7 @@ int main_body( int argc, char* argv[] ) {
 		// Epetra and the TSFCore wrapped computations should give
 		// almost identical times in almost all cases.
 
-		if(verbose)
-			out
-				<< "\n*** (C.3) Comparing TSFCore::EpetraLinearOp::apply() verses raw Epetra_Operator::apply()\n";
+		if(verbose) out << "\n*** (C.3) Comparing TSFCore::EpetraLinearOp::apply() verses raw Epetra_Operator::apply()\n";
 
 		const double flop_adjust_factor_3 = 10.0; // lots of indirect addressing
 		const int num_time_loops_3 = int( max_flop_rate / ( flop_adjust_factor_3 * local_dim * num_mv_cols ) ) + 1;
@@ -839,18 +813,18 @@ int main_body( int argc, char* argv[] ) {
 			// Get constant references to Epetra_MultiVector objects in eV1 and eV2
 			const Epetra_MultiVector
 				&eeV1
-				= *dyn_cast<const EpetraMultiVector>(const_cast<const MultiVector<Scalar>&>(*eV1)).epetra_multi_vec();
+				= *dyn_cast<const TSFCore::EpetraMultiVector>(const_cast<const TSFCore::MultiVector<Scalar>&>(*eV1)).epetra_multi_vec();
 			
 			// Get the Epetra_MultiVector object inside of Y to be modified.  Note that the following is the recommended
 			// way to do this since it gives the greatest flexibility in the implementation of TSFCore::EpetraMultiVector.
 			RefCountPtr<Epetra_MultiVector>  eeY;
-			RefCountPtr<const EpetraVectorSpace> eY_range;
+			RefCountPtr<const TSFCore::EpetraVectorSpace> eY_range;
 #ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
-      RefCountPtr<const EpetraVectorSpace> eY_domain;
+      RefCountPtr<const TSFCore::EpetraVectorSpace> eY_domain;
 #else
-      RefCountPtr<const VectorSpace<Scalar> > eY_domain;
+      RefCountPtr<const TSFCore::ScalarProdVectorSpaceBase<Scalar> > eY_domain;
 #endif
-			dyn_cast<EpetraMultiVector>(*eY).setUninitialized(&eeY,&eY_range,&eY_domain);
+			dyn_cast<TSFCore::EpetraMultiVector>(*eY).setUninitialized(&eeY,&eY_range,&eY_domain);
 			
 			if(verbose)
 				out << "\nPerforming eeY = 2*eOp*eeV1 (using raw Epetra_Operator::apply(...)) " << num_time_loops_3 << " times ...\n";
@@ -864,7 +838,7 @@ int main_body( int argc, char* argv[] ) {
 			raw_epetra_time = timer.totalElapsedTime();
 			if(verbose) out << "  total time = " << raw_epetra_time << " sec\n";
 			
-			dyn_cast<EpetraMultiVector>(*eY).initialize(eeY,eY_range,eY_domain);
+			dyn_cast<TSFCore::EpetraMultiVector>(*eY).initialize(eeY,eY_range,eY_domain);
 			
 		}
 		
@@ -881,16 +855,14 @@ int main_body( int argc, char* argv[] ) {
 		print_performance_stats( num_time_loops_3, raw_epetra_time, tsfcore_wrapped_time, verbose, out );
 
 		// RAB: 2004/01/05: Note, the above Epetra adapter is a true
-		// adapter and simply calls Epetra_Operator::apply(...) so
-		// except for some small overhead, the raw Epetra and the
-		// TSFCore wrapped computations should give about exactly the
-		// same runtime for almost all cases.
+		// adapter and simply calls Epetra_Operator::apply(...) so, except
+		// for some small overhead, the raw Epetra and the TSFCore wrapped
+		// computations should give about exactly the same runtime for
+		// almost all cases.
 
 		if(verbose) {
-			if(success)
-				out << "\nCongratulations! All of the tests seem to have run sucessfully!\n";
-			else
-				out << "\nOh no! at least one of the tests did not check out!\n";
+			if(success) out << "\nCongratulations! All of the tests seem to have run sucessfully!\n";
+			else        out << "\nOh no! at least one of the tests did not check out!\n";
 		}
 
 	} // end try
@@ -909,10 +881,4 @@ int main_body( int argc, char* argv[] ) {
 
 	return (success ? 0 : -1);
 
-}
-
-} // namespace TSFCore
-
-int main( int argc, char* argv[] ) {
-	return TSFCore::main_body(argc,argv);
-}
+} // end main()

@@ -27,52 +27,64 @@
 // @HEADER
 
 // ////////////////////////////////////////////////////////////////////////////
-// TSFCoreSerialVectorSpace.hpp
+// TSFCoreSerialVectorSpaceStdDecl.hpp
 
-#ifndef TSFCORE_VECTOR_SPACE_SERIAL_HPP
-#define TSFCORE_VECTOR_SPACE_SERIAL_HPP
+#ifndef TSFCORE_SERIAL_VECTOR_SPACE_STD_DECL_HPP
+#define TSFCORE_SERIAL_VECTOR_SPACE_STD_DECL_HPP
 
-#include "TSFCoreSerialVectorSpaceDecl.hpp"
-#include "TSFCoreSerialVectorSpaceBase.hpp"
-#include "TSFCoreSerialVector.hpp"
-#include "Teuchos_TestForException.hpp"
+#include "TSFCoreSerialVectorSpaceBaseDecl.hpp"
 
 namespace TSFCore {
 
+///
+/** General concrete <tt>%VectorSpace</tt> subclass for serial vectors and multi-vectors.
+ *
+ * The default copy constructor and assignment operators are allowed
+ * since they have the correct semantics.
+ *
+ * \ingroup TSFCore_adapters_serial_concrete_std_grp
+ */
 template<class Scalar>
-SerialVectorSpace<Scalar>::SerialVectorSpace( int dim )
-{
-	initialize(dim);
-}
+class SerialVectorSpaceStd : public SerialVectorSpaceBase<Scalar> {
+public:
 
-template<class Scalar>
-void SerialVectorSpace<Scalar>::initialize( int dim )
-{
-	dim_ = dim;
-}
+	/** @name Constructors / initializers */
+	//@{
 
-// Overridden from VectorSpace
+	///
+	/** Calls <tt>this->initialize()</tt>.
+	 */
+	SerialVectorSpaceStd( int dim = 0 );
 
-template<class Scalar>
-Index SerialVectorSpace<Scalar>::dim() const
-{
-	return dim_;
-}
+	///
+	/** Initialize given the dimension of the vector space.
+	 *
+	 * @param  dim   [in] The dimension of the vector space.
+	 */
+	void initialize( int dim );
 
-template<class Scalar>
-Teuchos::RefCountPtr<Vector<Scalar> >
-SerialVectorSpace<Scalar>::createMember() const
-{
-	return Teuchos::rcp(new SerialVector<Scalar>(dim_));
-}
+	//@}
 
-template<class Scalar>
-Teuchos::RefCountPtr< const VectorSpace<Scalar> >
-SerialVectorSpace<Scalar>::clone() const
-{
-	return Teuchos::rcp(new SerialVectorSpace<Scalar>(*this));
-}
+	/** @name Overridden from VectorSpece */
+	//@{
+
+	/// Returns 0 if uninitialized
+	Index dim() const;
+	/// Returns a <tt>SerialVector</tt> object.
+	Teuchos::RefCountPtr<Vector<Scalar> > createMember() const;
+	/// Returns a <tt>SerialMultiVector</tt> object.
+	Teuchos::RefCountPtr< MultiVector<Scalar> > createMembers(int numMembers) const;
+	///
+	Teuchos::RefCountPtr< const VectorSpace<Scalar> > clone() const;
+
+	//@}
+
+private:
+
+	int   dim_;
+
+}; // end class SerialVectorSpaceStd
 
 } // end namespace TSFCore
 
-#endif // TSFCORE_VECTOR_SPACE_SERIAL_HPP
+#endif // TSFCORE_SERIAL_VECTOR_SPACE_STD_DECL_HPP

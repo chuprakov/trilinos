@@ -34,7 +34,8 @@
 
 #include "TSFCoreMPIVectorSpaceStdDecl.hpp"
 #include "TSFCoreMPIMultiVectorStd.hpp"
-#include "TSFCoreVectorMultiVector.hpp"
+#include "TSFCoreMPIVectorStd.hpp"
+//#include "TSFCoreVectorMultiVector.hpp"
 
 namespace TSFCore {
 
@@ -116,7 +117,14 @@ template<class Scalar>
 Teuchos::RefCountPtr<Vector<Scalar> >
 MPIVectorSpaceStd<Scalar>::createMember() const
 {
-  return Teuchos::rcp(new VectorMultiVector<Scalar>(createMembers(1)));
+  return Teuchos::rcp(
+    new MPIVectorStd<Scalar>(
+      Teuchos::rcp(this,false)
+      ,Teuchos::rcp( new Scalar[localSubDim_], Teuchos::DeallocArrayDelete<Scalar>(), true )
+      ,1
+      )
+    );
+  //return Teuchos::rcp(new VectorMultiVector<Scalar>(createMembers(1)));
 }
 
 template<class Scalar>
@@ -126,7 +134,7 @@ MPIVectorSpaceStd<Scalar>::createMembers(int numMembers) const
   return Teuchos::rcp(
     new MPIMultiVectorStd<Scalar>(
       Teuchos::rcp(this,false)
-      ,smallVecSpcFcty()->createVecSpc(numMembers)
+      ,Teuchos::rcp_dynamic_cast<const ScalarProdVectorSpaceBase<Scalar> >(smallVecSpcFcty()->createVecSpc(numMembers),true)
       ,Teuchos::rcp( new Scalar[localSubDim_*numMembers], Teuchos::DeallocArrayDelete<Scalar>(), true )
       ,localSubDim_
       )
@@ -137,24 +145,30 @@ template<class Scalar>
 Teuchos::RefCountPtr<Vector<Scalar> >
 MPIVectorSpaceStd<Scalar>::createMemberView( const RTOpPack::MutableSubVectorT<Scalar> &raw_v ) const
 {
-  if(raw_v.stride()!=1)
-    return VectorSpace<Scalar>::createMemberView(raw_v);
-  RTOpPack::MutableSubMultiVectorT<Scalar>
-    raw_mv( raw_v.globalOffset(), raw_v.subDim(), 0, 1, raw_v.values(), raw_v.subDim() );
-  return Teuchos::rcp(new VectorMultiVector<Scalar>(createMembersView(raw_mv)));
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT( localSubDim_ != raw_v.subDim() );
+#endif
+  return Teuchos::rcp(
+    new MPIVectorStd<Scalar>(
+      Teuchos::rcp(this,false)
+      ,Teuchos::rcp( raw_v.values(), false )
+      ,raw_v.stride()
+      )
+    );
 }
 
 template<class Scalar>
 Teuchos::RefCountPtr<const Vector<Scalar> >
 MPIVectorSpaceStd<Scalar>::createMemberView( const RTOpPack::SubVectorT<Scalar> &raw_v ) const
 {
-  if(raw_v.stride()!=1)
-    return VectorSpace<Scalar>::createMemberView(raw_v);
-  RTOpPack::SubMultiVectorT<Scalar>
-    raw_mv( raw_v.globalOffset(), raw_v.subDim(), 0, 1, raw_v.values(), raw_v.subDim() );
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT( localSubDim_ != raw_v.subDim() );
+#endif
   return Teuchos::rcp(
-    new VectorMultiVector<Scalar>(
-      Teuchos::rcp_const_cast<MultiVector<Scalar> >(createMembersView(raw_mv))
+    new MPIVectorStd<Scalar>(
+      Teuchos::rcp(this,false)
+      ,Teuchos::rcp( const_cast<Scalar*>(raw_v.values()), false )
+      ,raw_v.stride()
       )
     );
 }
@@ -169,7 +183,7 @@ MPIVectorSpaceStd<Scalar>::createMembersView( const RTOpPack::MutableSubMultiVec
   return Teuchos::rcp(
     new MPIMultiVectorStd<Scalar>(
       Teuchos::rcp(this,false)
-      ,smallVecSpcFcty()->createVecSpc(raw_mv.numSubCols())
+      ,Teuchos::rcp_dynamic_cast<const ScalarProdVectorSpaceBase<Scalar> >(smallVecSpcFcty()->createVecSpc(raw_mv.numSubCols()),true)
       ,Teuchos::rcp( raw_mv.values(), false )
       ,raw_mv.leadingDim()
       )
@@ -186,7 +200,7 @@ MPIVectorSpaceStd<Scalar>::createMembersView( const RTOpPack::SubMultiVectorT<Sc
   return Teuchos::rcp(
     new MPIMultiVectorStd<Scalar>(
       Teuchos::rcp(this,false)
-      ,smallVecSpcFcty()->createVecSpc(raw_mv.numSubCols())
+      ,Teuchos::rcp_dynamic_cast<const ScalarProdVectorSpaceBase<Scalar> >(smallVecSpcFcty()->createVecSpc(raw_mv.numSubCols()),true)
       ,Teuchos::rcp( const_cast<Scalar*>(raw_mv.values()), false )
       ,raw_mv.leadingDim()
       )

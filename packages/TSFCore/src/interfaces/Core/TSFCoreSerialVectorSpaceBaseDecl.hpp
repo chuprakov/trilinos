@@ -32,18 +32,20 @@
 #ifndef TSFCORE_VECTOR_SPACE_SERIAL_BASE_DECL_HPP
 #define TSFCORE_VECTOR_SPACE_SERIAL_BASE_DECL_HPP
 
-#include "TSFCoreVectorSpaceStdBase.hpp"
+#include "TSFCoreScalarProdVectorSpaceBaseDecl.hpp"
 
 namespace TSFCore {
 
 ///
 /** <tt>%VectorSpace</tt> node subclass for serial vectors and multi-vectors.
  *
- * All a concrete subclass must do is to override the <tt>createMember()</tt>
- * method.
+ * All a concrete serial vector space subclass must do is to override
+ * the <tt>createMember()</tt> and <tt>dim()</tt> functions.
+ *
+ * \ingroup TSFCore_adapters_serial_support_grp
  */
 template<class Scalar>
-class SerialVectorSpaceBase : public VectorSpaceStdBase<Scalar> {
+class SerialVectorSpaceBase : public ScalarProdVectorSpaceBase<Scalar> {
 public:
 
 	/** @name Overridden from VectorSpece */

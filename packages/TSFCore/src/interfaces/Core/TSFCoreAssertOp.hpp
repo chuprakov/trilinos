@@ -26,22 +26,22 @@
 // ***********************************************************************
 // @HEADER
 
-// //////////////////////////////////////////////////////////////////////////////////
-// TSFCoreAssertOp.hpp
-
 #ifndef TSFCORE_ASSERT_OP_HPP
 #define TSFCORE_ASSERT_OP_HPP
 
-#include "TSFCoreAssertOpDecl.hpp"
+#include "TSFCoreTypes.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"
 #include "TSFCoreOpBase.hpp"
 #include "Teuchos_TestForException.hpp"
 
-// boilerplate code
-
 namespace TSFCore {
 
+///
+/** Utility struct for dumping vector space names, dimension etc.
+ *
+ * \ingroup TSFCore_general_adater_support_code_utils_grp
+ */
 template<class Scalar>
 struct dump_vec_spaces_t {
 public:
@@ -53,23 +53,33 @@ public:
 		,vec_space2(_vec_space2),vec_space2_name(_vec_space2_name)
 		{}
 	const TSFCore::VectorSpace<Scalar> &vec_space1;
-	const std::string                  *vec_space1_name;
+	const std::string                  vec_space1_name;
 	const TSFCore::VectorSpace<Scalar> &vec_space2;
-	const std::string                  *vec_space2_name;
+	const std::string                  vec_space2_name;
 }; // end dum_vec_spaces
 
+///
+/** Utility function for dumping vector space names, dimension etc.
+ *
+ * \ingroup TSFCore_general_adater_support_code_utils_grptemplate
+ */
 template<class Scalar>
 inline dump_vec_spaces_t<Scalar> dump_vec_spaces(
 	const TSFCore::VectorSpace<Scalar>& vec_space1, const std::string &vec_space1_name
 	,const TSFCore::VectorSpace<Scalar>& vec_space2, const std::string &vec_space2_name
 	)
 {
-	return dump_vec_spaces(vec_space1,vec_space1_name,vec_space2,vec_space2_name);
+	return dump_vec_spaces_t<Scalar>(vec_space1,vec_space1_name,vec_space2,vec_space2_name);
 }
 
 // Notice!!!!!!!  Place a breakpoint in following function in order to halt the
 // program just before an exception is thrown!
 
+///
+/** Utility ostream operator for dumping vector space names, dimension etc.
+ *
+ * \ingroup TSFCore_general_adater_support_code_utils_grptemplate
+ */
 template<class Scalar>
 std::ostream& operator<<( std::ostream& o, const dump_vec_spaces_t<Scalar>& d )
 {
@@ -83,39 +93,57 @@ std::ostream& operator<<( std::ostream& o, const dump_vec_spaces_t<Scalar>& d )
 	return o;
 }
 
+///
+/** Utility enum for selecting domain or range spaces
+ *
+ * \ingroup TSFCore_general_adater_support_code_utils_grptemplate
+ */
 enum EM_VS { VS_RANGE, VS_DOMAIN };
 
+///
+/** Utility function for selecting domain or range spaces
+ *
+ * \ingroup TSFCore_general_adater_support_code_utils_grptemplate
+ */
 template<class Scalar>
-const TSFCore::VectorSpace<Scalar>& op(
+const TSFCore::VectorSpace<Scalar>& linear_op_op(
 	const TSFCore::OpBase<Scalar>&     M
-	,TSFCore::ETransp            M_trans
-	,EM_VS                    M_VS
+	,TSFCore::ETransp                  M_trans
+	,EM_VS                             M_VS
 	)
 {
-	using TSFCore::NOTRANS;
-	using TSFCore::TRANS;
 	if(M_trans == NOTRANS && M_VS == VS_RANGE)
 		return *M.range();
-	if(M_trans == TRANS && M_VS == VS_RANGE)
+	if((M_trans == TRANS || M_trans == CONJTRANS) && M_VS == VS_RANGE)
 		return *M.domain();
 	if(M_trans == NOTRANS && M_VS == VS_DOMAIN)
 		return *M.domain();
-	// M_trans == TRANS && M_VS == VS_DOMAIN
+	// (M_trans == TRANS || M_trans == CONJTRANS) && M_VS == VS_DOMAIN
 	return *M.range();
 }
 
 } // end namespace TSFCore
 
+///
+/** This macro just asserts that a LHS argument is set
+ *
+ * \ingroup TSFCore_general_adater_support_code_grp
+ */
 #define TSFCORE_ASSERT_LHS_ARG(FUNC_NAME,LHS_ARG) \
 	TEST_FOR_EXCEPTION( \
 		(LHS_ARG) == NULL, std::invalid_argument \
 		,FUNC_NAME << " : Error!" \
 		);
 
-// Notice!!!!!!!  Setting a breakpoint a the line number that is printed by this macro
+// Notice!!!!!!!  Setting a breakpoint at the line number that is printed by this macro
 // and then trying to set the condition !isCompatible does not work (at least not
 // in gdb).
 
+///
+/** Helper assertion macro
+ *
+ * \ingroup TSFCore_general_adater_support_code_utils_grp
+ */
 #define TSFCORE_ASSERT_VEC_SPACES_NAMES(FUNC_NAME,VS1,VS1_NAME,VS2,VS2_NAME) \
 { \
 	const bool isCompatible = (VS1).isCompatible(VS2); \
@@ -125,78 +153,97 @@ const TSFCore::VectorSpace<Scalar>& op(
 		) \
 }
 
+///
+/** \brief This is a very useful macro that should be used to validate
+ * that two vector spaces are compatible.
+ *
+ * If the vector spaces are not compatible then a very helpful error
+ * message is generated (in the std::exception class) along with the
+ * file name and line number where this macro is called.  The error
+ * message string embreaded in the thrown exception gives the concrete
+ * types of the two vector spaces involved as well as their dimensions.
+ *
+ * \ingroup TSFCore_general_adater_support_code_grp
+ */
 #define TSFCORE_ASSERT_VEC_SPACES(FUNC_NAME,VS1,VS2)\
 TSFCORE_ASSERT_VEC_SPACES_NAMES(FUNC_NAME,VS1,#VS1,VS2,#VS2)
 
+///
+/** \brief This macro validates that a linear operator and a vector space
+ * for the domain vector are compatible.
+ *
+ * This macro is not recommended for casual users.
+ *
+ * \ingroup TSFCore_general_adater_support_code_utils_grp
+ */
 #define TSFCORE_ASSERT_MAT_VEC_SPACES(FUNC_NAME,M,M_T,M_VS,VS) \
 { \
 	std::ostringstream M_VS_name; \
-	M_VS_name << "(" #M << ( (M_T) == NOTRANS ? "" : "'" ) << ")" \
-			   << "." << ( (M_VS) == VS_RANGE ? "range()" : "domain()" ); \
+	M_VS_name << "(" #M << ( (M_T) == TSFCore::NOTRANS ? "" : "'" ) << ")" \
+						<< "." << ( (M_VS) == TSFCore::VS_RANGE ? "range()" : "domain()" ); \
 	TSFCORE_ASSERT_VEC_SPACES_NAMES( \
 		FUNC_NAME \
-		,op(M,M_T,M_VS),M_VS_name.str().c_str() \
+		,linear_op_op(M,M_T,M_VS),M_VS_name.str().c_str() \
 		,(VS),#VS \
 		) \
 }
 
+///
+/** \brief This is a very useful macro that should be used to validate
+ * that the spaces for the vector version of the
+ * <tt>LinearOp::apply()</tt> function (or related operations).
+ *
+ * If the vector spaces are not compatible then a very helpful error
+ * message is generated (in the std::exception class) along with the
+ * file name and line number where this macro is called.  The error
+ * message string embreaded in the thrown exception gives the concrete
+ * types of the vector spaces involved as well as their dimensions.
+ *
+ * \ingroup TSFCore_general_adater_support_code_grp
+ */
+#define TSFCORE_ASSERT_LINEAR_OP_VEC_APPLY_SPACES(FUNC_NAME,M,M_T,X,Y) \
+	TSFCORE_ASSERT_LHS_ARG(FUNC_NAME,Y); \
+	TSFCORE_ASSERT_MAT_VEC_SPACES(FUNC_NAME,M,M_T,::TSFCore::VS_RANGE,*(Y)->space()); \
+	TSFCORE_ASSERT_MAT_VEC_SPACES(FUNC_NAME,M,M_T,::TSFCore::VS_DOMAIN,*(X).space());
+
+///
+/** \brief This is a very useful macro that should be used to validate
+ * that the spaces for the multi-vector version of the
+ * <tt>LinearOp::apply()</tt> function (or related operations).
+ *
+ * If the vector spaces are not compatible then a very helpful error
+ * message is generated (in the std::exception class) along with the
+ * file name and line number where this macro is called.  The error
+ * message string embreaded in the thrown exception gives the concrete
+ * types of the vector spaces involved as well as their dimensions.
+ *
+ * \ingroup TSFCore_general_adater_support_code_grp
+ */
+#define TSFCORE_ASSERT_LINEAR_OP_MULTIVEC_APPLY_SPACES(FUNC_NAME,M,M_T,X,Y) \
+	TSFCORE_ASSERT_LHS_ARG(FUNC_NAME,Y); \
+	TSFCORE_ASSERT_VEC_SPACES(FUNC_NAME,*(X).domain(),*(Y)->domain()); \
+	TSFCORE_ASSERT_MAT_VEC_SPACES(FUNC_NAME,M,M_T,::TSFCore::VS_RANGE,*(Y)->range()); \
+	TSFCORE_ASSERT_MAT_VEC_SPACES(FUNC_NAME,M,M_T,::TSFCore::VS_DOMAIN,*(X).range());
+
+///
+/** Helper assertion macro
+ *
+ * This macro is not recommended for casual users.
+ *
+ * \ingroup TSFCore_general_adater_support_code_utils_grp
+ */
 #define TSFCORE_ASSERT_MAT_MAT_SPACES(FUNC_NAME,M1,M1_T,M1_VS,M2,M2_T,M2_VS) \
 { \
 	std::ostringstream M1_VS_name, M2_VS_name; \
-	M1_VS_name << "(" #M1 << ( M1_T == NOTRANS ? "" : "'" ) << ")" \
-			   << "." << ( M1_VS == VS_RANGE ? "range()" : "domain()" ); \
-	M2_VS_name << "(" #M2 << ( M2_T == NOTRANS ? "" : "'" ) << ")" \
-			   << "." << ( M2_VS == VS_RANGE ? "range()" : "domain()" ); \
+	M1_VS_name << "(" #M1 << ( M1_T == ::TSFCore::NOTRANS ? "" : "'" ) << ")" \
+			   << "." << ( M1_VS == ::TSFCore::VS_RANGE ? "range()" : "domain()" ); \
+	M2_VS_name << "(" #M2 << ( M2_T == ::TSFCore::NOTRANS ? "" : "'" ) << ")" \
+			   << "." << ( M2_VS == ::TSFCore::VS_RANGE ? "range()" : "domain()" ); \
 	TSFCORE_ASSERT_VEC_SPACES_NAMES( \
 		FUNC_NAME \
-		,op(M1,M1_T,M1_VS),M1_VS_name.str().c_str() \
-		,op(M2,M2_T,M2_VS),M2_VS_name.str().c_str() \
-		) \
+		,linear_op_op(M1,M1_T,M1_VS),M1_VS_name.str().c_str() \
+		,linear_op_op(M2,M2_T,M2_VS),M2_VS_name.str().c_str() \
+		); \
 }
-
-// function definitions
-
-#ifdef TSFCORE_ASSERT_COMPATIBILITY
-
-template<class Scalar>
-void TSFCore::Vp_V_assert_compatibility(Vector<Scalar>* v_lhs, const Vector<Scalar>& v_rhs)
-{
-	const char func_name[] = "Vp_V_assert_compatibility(v_lhs,v_rhs)";
-	TSFCORE_ASSERT_LHS_ARG(func_name,v_lhs)
-	TSFCORE_ASSERT_VEC_SPACES("Vp_V_assert_compatibility(v_lhs,v_rhs)",*v_lhs->space(),*v_rhs.space());
-}
-
-template<class Scalar>
-void TSFCore::VopV_assert_compatibility(const Vector<Scalar>& v_rhs1, const Vector<Scalar>&  v_rhs2)
-{
-	const char func_name[] = "VopV_assert_compatibility(v_rhs1,v_rhs2)";
-	TSFCORE_ASSERT_VEC_SPACES(func_name,*v_rhs1.space(),*v_rhs2.space());
-}
-
-template<class Scalar>
-void TSFCore::Vp_MtV_assert_compatibility(
-	Vector<Scalar>* v_lhs
-	,const OpBase<Scalar>& m_rhs1, ETransp trans_rhs1, const Vector<Scalar>& v_rhs2 )
-{
-	const char func_name[] = "Vp_MtV_assert_compatibility(v_lhs,m_rhs1,trans_rhs1,v_rhs2)";
-	TSFCORE_ASSERT_LHS_ARG(func_name,v_lhs)
-	TSFCORE_ASSERT_MAT_VEC_SPACES(func_name,m_rhs1,trans_rhs1,VS_RANGE,*v_lhs->space())
-	TSFCORE_ASSERT_MAT_VEC_SPACES(func_name,m_rhs1,trans_rhs1,VS_DOMAIN,*v_rhs2.space())
-}
-
-template<class Scalar>
-void TSFCore::Mp_MtM_assert_compatibility(
-	OpBase<Scalar>* m_lhs, ETransp trans_lhs
-	,const OpBase<Scalar>& m_rhs1, ETransp trans_rhs1
-	,const OpBase<Scalar>& m_rhs2, ETransp trans_rhs2 )
-{
-	const char func_name[] = "Mp_MtM_assert_compatibility(m_lhs,trans_lhsm_rhs1,trans_rhs1,m_rhs2,trans_rhs2)";
-	TSFCORE_ASSERT_LHS_ARG(func_name,m_lhs)
-	TSFCORE_ASSERT_MAT_MAT_SPACES(func_name,(*m_lhs),trans_lhs,VS_RANGE,m_rhs1,trans_rhs1,VS_RANGE)
-	TSFCORE_ASSERT_MAT_MAT_SPACES(func_name,(*m_lhs),trans_lhs,VS_DOMAIN,m_rhs2,trans_rhs2,VS_DOMAIN)
-	TSFCORE_ASSERT_MAT_MAT_SPACES(func_name,m_rhs1,trans_rhs1,VS_DOMAIN,m_rhs2,trans_rhs2,VS_RANGE)
-}
-
-#endif // TSFCORE_ASSERT_COMPATIBILITY
 
 #endif // TSFCORE_ASSERT_OP_HPP

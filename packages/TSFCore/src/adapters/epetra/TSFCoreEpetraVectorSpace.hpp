@@ -33,12 +33,14 @@
 #define TSFCORE_EPETRA_VECTOR_SPACE_HPP
 
 #include "TSFCoreEpetraTypes.hpp"
-#include "TSFCoreMPIVectorSpaceBase.hpp"
+#include "TSFCoreMPIVectorSpaceBaseDecl.hpp"
 
 namespace TSFCore {
 
 ///
-/** <tt>%VectorSpace</tt> Subclass for Epetra vectors and multi-vectors.
+/** \brief Concrete <tt>VectorSpace</tt> adapter subclass for
+ * <tt>Epetra_Map</tt> that creates <tt>Epetra</tt> adapted vectors
+ * and multi-vectors.
  *
  * This uses an <tt>Epetra_Map</tt> object to implement the
  * <tt>MPIVectorSpaceBase</tt> interface.  By implementing the
@@ -61,6 +63,8 @@ namespace TSFCore {
  *
  * The default copy constructor and assignment operators are allowed
  * since they have the correct semantics.
+ *
+ * \ingroup TSFCore_adapters_Epetra_grp
  */
 class EpetraVectorSpace : public MPIVectorSpaceBase<RTOp_value_type> {
 public:

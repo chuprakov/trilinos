@@ -29,7 +29,7 @@
 // ///////////////////////////////
 // cxx_main.cpp
 
-#include "TSFCoreSerialVectorSpace.hpp"
+#include "TSFCoreSerialVectorSpaceStd.hpp"
 #include "TSFCoreTestingTools.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Teuchos_arrayArg.hpp"
@@ -43,7 +43,12 @@ namespace TSFCore {
 /** Main test driver that runs tests on all standard operators
  */
 template <class Scalar>
-bool run_tests( const int n, const Scalar max_rel_err, const bool dumpAll, std::ostream* out )
+bool run_tests(
+	const int                                                       n
+	,const typename Teuchos::ScalarTraits<Scalar>::magnitudeType    max_rel_err
+	,const bool                                                     dumpAll
+	,std::ostream                                                   *out
+	)
 {
 
 	using Teuchos::arrayArg;
@@ -57,7 +62,7 @@ bool run_tests( const int n, const Scalar max_rel_err, const bool dumpAll, std::
 	//Scalar sresult1, sresult2;
 
 	if(out) *out << "\nCreating a serial vector space svp with n="<<n<<" vector elements ...\n";
-	const SerialVectorSpace<Scalar>  svp(n);
+	const SerialVectorSpaceStd<Scalar>  svp(n);
 	if(out) *out << "\nsvp.dim() = " << svp.dim() << std::endl;
 
 	if(out) *out << "\nCreating serial vectors v1, v2, v3 and z ...\n";
@@ -76,21 +81,21 @@ bool run_tests( const int n, const Scalar max_rel_err, const bool dumpAll, std::
 	
 	if(out) *out << "\nabs(&*z,*v1);\n";
 	abs(&*z,*v1);
-	if(!testRelErr("sum(*z)",sum(*z),"2.0*svp.dim()",Scalar(2.0)*Scalar(svp.dim()),"max_rel_err",max_rel_err,out)) success=false;
+	if(!testRelErr<Scalar>("sum(*z)",sum(*z),"2.0*svp.dim()",Scalar(2.0)*Scalar(svp.dim()),"max_rel_err",max_rel_err,out)) success=false;
 	
 	if(out) *out << "\nreciprocal(&*z,*v1);\n";
 	reciprocal(&*z,*v1);
-	if(!testRelErr("sum(*z)",sum(*z),"-0.5*svp.dim()",Scalar(-0.5)*Scalar(svp.dim()),"max_rel_err",max_rel_err,out)) success=false;
+	if(!testRelErr<Scalar>("sum(*z)",sum(*z),"-0.5*svp.dim()",Scalar(-0.5)*Scalar(svp.dim()),"max_rel_err",max_rel_err,out)) success=false;
 
 	if(out) *out << "\nlinear_combination(2,{0.5,0.25},{&*v1,&*v2},0.0,&*z);\n";
 	linear_combination(2,arrayArg<Scalar>(0.5,0.25)(),arrayArg<const Vector<Scalar>*>(&*v1,&*v2)(),Scalar(0.0),&*z);
-	if(!testRelErr("sum(*z)",sum(*z),"(-0.5*2.0-0.25*3.0)*svp.dim()",Scalar(-0.5*2.0-0.25*3.0)*Scalar(svp.dim()),"max_rel_err",max_rel_err,out)) success=false;
+	if(!testRelErr<Scalar>("sum(*z)",sum(*z),"(-0.5*2.0-0.25*3.0)*svp.dim()",Scalar(-0.5*2.0-0.25*3.0)*Scalar(svp.dim()),"max_rel_err",max_rel_err,out)) success=false;
 
 	if(out) *out << "\nassign(&*z,2.0);\n";
 	assign(&*z,Scalar(2.0));
 	if(out) *out << "\nlinear_combination(3,{0.5,0.25,0.125},{&*v1,&*v2,&*v2},0.5,&*z);\n";
 	linear_combination(3,arrayArg<Scalar>(0.5,0.25,0.125)(),arrayArg<const Vector<Scalar>*>(&*v1,&*v2,&*v3)(),Scalar(0.5),&*z);
-	if(!testRelErr(
+	if(!testRelErr<Scalar>(
 			 "sum(*z)",sum(*z)
 			 ,"(0.5*2.0-0.5*2.0-0.25*3.0-0.125*4.0)*svp.dim()",Scalar(0.5*2.0-0.5*2.0-0.25*3.0-0.125*4.0)*Scalar(svp.dim())
 			 ,"max_rel_err",max_rel_err,out
@@ -99,9 +104,9 @@ bool run_tests( const int n, const Scalar max_rel_err, const bool dumpAll, std::
 
 	if(out) *out << "\nassign(&*z,2.0);\n";
 	assign(&*z,Scalar(2.0));
-	if(!testRelErr(
+	if(!testRelErr<Scalar>(
 			 "norm_2(*z,*v2)",norm_2(*z,*v2)
-			 ,"sqrt(2.0*3.0*3.0*svp.dim())",ST::squareroot(Scalar(2.0*3.0*3.0)*Scalar(svp.dim()))
+			 ,"sqrt(2.0*3.0*3.0*svp.dim())",ST::magnitude(ST::squareroot(Scalar(2.0*3.0*3.0)*Scalar(svp.dim())))
 			 ,"max_rel_err",max_rel_err,out
 			 )
 		) success=false;
@@ -150,8 +155,8 @@ int main( int argc, char* argv[] ) {
 		if( !TSFCore::run_tests<float>(local_dim,float(max_rel_err),dumpAll,verbose?&out:NULL) ) success = false;
 		if( !TSFCore::run_tests<double>(local_dim,double(max_rel_err),dumpAll,verbose?&out:NULL) ) success = false;
 #if defined(HAVE_COMPLEX) && defined(HAVE_TEUCHOS_COMPLEX)
-		if( !TSFCore::run_tests<std::complex<float> >(local_dim,std::complex<float>(max_rel_err),dumpAll,verbose?&out:NULL) ) success = false;
-		if( !TSFCore::run_tests<std::complex<double> >(local_dim,std::complex<double>(max_rel_err),dumpAll,verbose?&out:NULL) ) success = false;
+		if( !TSFCore::run_tests<std::complex<float> >(local_dim,float(max_rel_err),dumpAll,verbose?&out:NULL) ) success = false;
+		if( !TSFCore::run_tests<std::complex<double> >(local_dim,double(max_rel_err),dumpAll,verbose?&out:NULL) ) success = false;
 #endif
 
 	} // end try

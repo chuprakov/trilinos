@@ -42,6 +42,7 @@
 namespace TSFCore {
 
 /** \defgroup TSFCoreBasicTypes_grp Basic TSFCore types.
+ * \ingroup TSFCore_fundamental_interfaces_code_grp
  */
 //@{
 
@@ -65,7 +66,13 @@ enum ETransp {
 };
 
 ///
-/** Not an ETransp argument
+/** Return a string name for a <tt>ETransp</tt> value.
+ */
+inline
+const char* toString(ETransp transp) { return ( transp == NOTRANS ? "NOTRANS" : ( transp == TRANS ? "TRANS" : "CONJTRANS" ) ); }
+
+///
+/** Perform a not operation on an ETransp value
  */
 inline
 ETransp not_trans( ETransp trans )
@@ -79,7 +86,7 @@ ETransp not_trans( ETransp trans )
 inline
 ETransp trans_trans( ETransp trans1, ETransp trans2 )
 {
-	return ( trans1 == trans2 ? NOTRANS : TRANS );
+	return ( trans1 == trans2 ? NOTRANS : ( trans1==CONJTRANS || trans2==CONJTRANS ? CONJTRANS : TRANS ) );
 }
 
 //@}
@@ -87,6 +94,7 @@ ETransp trans_trans( ETransp trans1, ETransp trans2 )
 namespace Exceptions {
 
 /** \defgroup TSFCoreExceptions_grp Basic TSFCore exception types.
+ * \ingroup TSFCore_fundamental_interfaces_code_grp
  */
 //@{
 
@@ -129,17 +137,21 @@ template<class Scalar> class LinOpNonPersisting;
 // Basic node support subclasses and interfaces
 
 template<class Scalar> class ScalarProd;
-template<class Scalar> class VectorSpaceStdBase;
+template<class Scalar> class ScalarProdVectorSpaceBase;
+template<class Scalar> class EuclideanLinearOpBase;
 template<class Scalar> class SerialVectorSpaceBase;
 template<class Scalar> class SerialVectorBase;
 
 // Basic concrete support subclasses
 
-template<class Scalar> class DotProd;
-template<class Scalar> class SerialVectorSpaceFactory;
-template<class Scalar> class SerialVectorSpace;
-template<class Scalar> class SerialVector;
+template<class Scalar> class EuclideanScalarProd;
+template<class Scalar> class LinearOpScalarProd;
+template<class Scalar> class SerialVectorSpaceFactoryStd;
+template<class Scalar> class SerialVectorSpaceStd;
+template<class Scalar> class SerialVectorStd;
+template<class Scalar> class SerialMultiVectorStd;
 template<class Scalar> class MultiVectorCols;
+template<class Scalar> class VectorMultiVector;
 
 } // end namespace TSFCore
 

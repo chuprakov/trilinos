@@ -73,9 +73,24 @@ MultiVector<Scalar>::clone_mv() const
 
 template<class Scalar>
 Teuchos::RefCountPtr<const MultiVector<Scalar> >
-MultiVector<Scalar>::subView( const Range1D& colRng ) const
+MultiVector<Scalar>::subView( const Range1D& colRng_in ) const
 {
-	return const_cast<MultiVector<Scalar>*>(this)->subView(colRng);
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore    *wss      = Teuchos::get_default_workspace_store().get();
+	const VectorSpace<Scalar>  &domain   = *this->domain();
+	const VectorSpace<Scalar>  &range    = *this->range();
+	const Index                dimDomain = domain.dim();
+	const Range1D              colRng    = RangePack::full_range(colRng_in,1,dimDomain);
+	if( colRng.lbound() == 1 && static_cast<Index>(colRng.ubound()) == dimDomain )
+		return Teuchos::rcp(this,false); // Takes all of the colunns!
+	if( colRng.size() ) {
+		// We have to create a view of a subset of the columns
+		Workspace< Teuchos::RefCountPtr< Vector<Scalar> > >  col_vecs(wss,colRng.size());
+		for( Index j = colRng.lbound(); j <= colRng.ubound(); ++j )
+			col_vecs[j-colRng.lbound()] = Teuchos::rcp_const_cast<Vector<Scalar> >(this->col(j));
+		return Teuchos::rcp(new MultiVectorCols<Scalar>(this->range(),range.smallVecSpcFcty()->createVecSpc(colRng.size()),&col_vecs[0]));
+	}
+	return Teuchos::null; // There was an empty set in colRng_in!
 }
 
 template<class Scalar>
@@ -83,18 +98,18 @@ Teuchos::RefCountPtr<MultiVector<Scalar> >
 MultiVector<Scalar>::subView( const Range1D& colRng_in )
 {
 	using Teuchos::Workspace;
-	Teuchos::WorkspaceStore        *wss      = Teuchos::get_default_workspace_store().get();
+	Teuchos::WorkspaceStore    *wss      = Teuchos::get_default_workspace_store().get();
 	const VectorSpace<Scalar>  &domain   = *this->domain();
 	const VectorSpace<Scalar>  &range    = *this->range();
 	const Index                dimDomain = domain.dim();
-	const Range1D              colRng   = RangePack::full_range(colRng_in,1,dimDomain);
+	const Range1D              colRng    = RangePack::full_range(colRng_in,1,dimDomain);
 	if( colRng.lbound() == 1 && static_cast<Index>(colRng.ubound()) == dimDomain )
 		return Teuchos::rcp(this,false); // Takes all of the colunns!
 	if( colRng.size() ) {
 		// We have to create a view of a subset of the columns
 		Workspace< Teuchos::RefCountPtr< Vector<Scalar> > >  col_vecs(wss,colRng.size());
 		for( Index j = colRng.lbound(); j <= colRng.ubound(); ++j )
-			col_vecs[j-1] = this->col(j);
+			col_vecs[j-colRng.lbound()] = this->col(j);
 		return Teuchos::rcp(new MultiVectorCols<Scalar>(this->range(),range.smallVecSpcFcty()->createVecSpc(colRng.size()),&col_vecs[0]));
 	}
 	return Teuchos::null; // There was an empty set in colRng_in!
@@ -104,7 +119,28 @@ template<class Scalar>
 Teuchos::RefCountPtr<const MultiVector<Scalar> >
 MultiVector<Scalar>::subView( const int numCols, const int cols[] ) const
 {
-	return const_cast<MultiVector<Scalar>*>(this)->subView(numCols,cols);
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore    *wss      = Teuchos::get_default_workspace_store().get();
+	const VectorSpace<Scalar>  &domain   = *this->domain();
+	const VectorSpace<Scalar>  &range    = *this->range();
+#ifdef _DEBUG
+	const Index                dimDomain = domain.dim();
+	const char msg_err[] = "MultiVector<Scalar>::subView(numCols,cols[]): Error!";
+ 	TEST_FOR_EXCEPTION( numCols < 1 || dimDomain < numCols, std::invalid_argument, msg_err );
+#endif
+	// We have to create a view of a subset of the columns
+	Workspace< Teuchos::RefCountPtr< Vector<Scalar> > > col_vecs(wss,numCols);
+	for( int k = 0; k < numCols; ++k ) {
+		const int col_k = cols[k];
+#ifdef _DEBUG
+		TEST_FOR_EXCEPTION(
+			col_k < 1 || dimDomain < col_k, std::invalid_argument
+			,msg_err << " col["<<k<<"] = " << col_k << " is not in the range [1,"<<dimDomain<<"]!"
+			);
+#endif
+		col_vecs[k] = Teuchos::rcp_const_cast<Vector<Scalar> >(this->col(col_k));
+	}
+	return Teuchos::rcp(new MultiVectorCols<Scalar>(this->range(),range.smallVecSpcFcty()->createVecSpc(numCols),&col_vecs[0]));
 }
 
 template<class Scalar>
@@ -112,7 +148,7 @@ Teuchos::RefCountPtr<MultiVector<Scalar> >
 MultiVector<Scalar>::subView( const int numCols, const int cols[] )
 {
 	using Teuchos::Workspace;
-	Teuchos::WorkspaceStore        *wss      = Teuchos::get_default_workspace_store().get();
+	Teuchos::WorkspaceStore    *wss      = Teuchos::get_default_workspace_store().get();
 	const VectorSpace<Scalar>  &domain   = *this->domain();
 	const VectorSpace<Scalar>  &range    = *this->range();
 #ifdef _DEBUG
@@ -140,9 +176,9 @@ MultiVector<Scalar>::subView( const int numCols, const int cols[] )
 template<class Scalar>
 void MultiVector<Scalar>::applyOp(
 	const RTOpPack::RTOpT<Scalar>   &prim_op
-	,const int                   num_multi_vecs
+	,const int                      num_multi_vecs
 	,const MultiVector<Scalar>*     multi_vecs[]
-	,const int                   num_targ_multi_vecs
+	,const int                      num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
 	,RTOpPack::ReductTarget*        reduct_objs[]
 	,const Index                    prim_first_ele_in
@@ -210,9 +246,9 @@ template<class Scalar>
 void MultiVector<Scalar>::applyOp(
 	const RTOpPack::RTOpT<Scalar>   &prim_op
 	,const RTOpPack::RTOpT<Scalar>  &sec_op
-	,const int                   num_multi_vecs
+	,const int                      num_multi_vecs
 	,const MultiVector<Scalar>*     multi_vecs[]
-	,const int                   num_targ_multi_vecs
+	,const int                      num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
 	,RTOpPack::ReductTarget         *reduct_obj
 	,const Index                    prim_first_ele_in
@@ -390,7 +426,9 @@ void MultiVector<Scalar>::apply(
 	,const Scalar            beta
 	) const
 {
-	Vp_MtV_assert_compatibility(y,*this,M_trans,x);
+#ifdef _DEBUG
+	TSFCORE_ASSERT_LINEAR_OP_VEC_APPLY_SPACES("MultiVector<Scalar>::apply()",*this,M_trans,x,y);
+#endif
 	const Index nc = this->domain()->dim();
 	// y *= beta
 	Vt_S(y,beta);
@@ -404,7 +442,7 @@ void MultiVector<Scalar>::apply(
 		x.getSubVector(Range1D(),&x_sub_vec);
 		// Loop through and add the multiple of each column
 		for(Index j = 1; j <= nc; ++j )
-			Vp_StV( y, alpha*x_sub_vec(j), *this->col(j) );
+			Vp_StV( y, Scalar(alpha*x_sub_vec(j)), *this->col(j) );
 		// Release the view of x
 		x.freeSubVector(&x_sub_vec);
 	}

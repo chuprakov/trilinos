@@ -236,7 +236,7 @@ template<class Scalar>
 Teuchos::RefCountPtr< MultiVector<Scalar> >
 ProductVectorSpace<Scalar>::createMembers(int numMembers) const
 {
-	return VectorSpace<Scalar>::createMembers(numMembers); // ToDo: Specialize when needed!
+	return VectorSpace<Scalar>::createMembers(numMembers); // ToDo: Specialize for ProductMultiVector when needed!
 }
 
 } // namespace TSFCore

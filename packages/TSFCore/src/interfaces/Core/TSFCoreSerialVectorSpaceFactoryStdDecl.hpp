@@ -27,24 +27,26 @@
 // @HEADER
 
 // ///////////////////////////////////////////////////////////////
-// TSFCoreSerialVectorSpaceFactoryDecl.hpp
+// TSFCoreSerialVectorSpaceFactoryStdDecl.hpp
 
-#ifndef TSFCORE_VECTOR_SPACE_FACTORY_SERIAL_DECL_HPP
-#define TSFCORE_VECTOR_SPACE_FACTORY_SERIAL_DECL_HPP
+#ifndef TSFCORE_SERIAL_VECTOR_SPACE_FACTORY_STD_DECL_HPP
+#define TSFCORE_SERIAL_VECTOR_SPACE_FACTORY_STD_DECL_HPP
 
 #include "TSFCoreVectorSpaceFactory.hpp"
 
 namespace TSFCore {
 
 ///
-/** Implementation of a vector-space factory for serial vector spaces.
+/** General concrete implementation of a vector-space factory for serial vector spaces.
+ *
+ * \ingroup TSFCore_adapters_serial_concrete_std_grp
  */
 template<class Scalar>
-class SerialVectorSpaceFactory : public VectorSpaceFactory<Scalar> {
+class SerialVectorSpaceFactoryStd : public VectorSpaceFactory<Scalar> {
 public:
 
 	///
-	SerialVectorSpaceFactory() {};
+	SerialVectorSpaceFactoryStd() {};
 
 	/** @name Overridden from VectorSpaceFactory */
 	//@{
@@ -54,8 +56,8 @@ public:
 
 	//@}
 	
-}; // end class SerialVectorSpaceFactory
+}; // end class SerialVectorSpaceFactoryStd
 
 } // end namespace TSFCore
 
-#endif  // TSFCORE_VECTOR_SPACE_FACTORY_SERIAL_DECL_HPP
+#endif  // TSFCORE_SERIAL_VECTOR_SPACE_FACTORY_STD_DECL_HPP

@@ -56,16 +56,18 @@ namespace TSFCore {
  *
  * Note that a <tt>%VectorSpace</tt> object must also be able to
  * create <tt>MultiVector</tt> objects with any number of column
- * vectors, and <tt>LinearOp::domain()</tt> gives a vector space of
- * that dimension.  An interesting side effect of this design is that
- * the creation of a multi-vector provides a way for clients to create
- * vector spaces of any arbitrary (although small usually) dimension.
- * In order to give the client the same ability without having to
- * create a full multi-vector object first, the method
- * <tt>smallVecSpcFcty()</tt> is included.  The method
- * <tt>smallVecSpcFcty()</tt> returns a <tt>VectorSpaceFactory</tt>
- * object that can create (serial) vector spaces of any small
- * dimension.
+ * vectors using the <tt>createMembers()</tt> function, and
+ * <tt>LinearOp::domain()</tt> of these returned <tt>%MultiVector</tt>
+ * objects returns a vector space of that dimension.  An interesting
+ * side effect of this design is that the creation of a multi-vector
+ * provides a way for clients to create vector spaces of any arbitrary
+ * (although small usually) dimension.  In order to give the client
+ * the same ability without having to create a full multi-vector
+ * object first, the method <tt>smallVecSpcFcty()</tt> is included.
+ * The method <tt>smallVecSpcFcty()</tt> returns a
+ * <tt>VectorSpaceFactory</tt> object that can create (serial) vector
+ * spaces of any small dimension that are compatible with the
+ * domain spaces of so created <tt>%MultiVector</tt> objects.
  *
  * A vector space is also where the scalar product for the space is
  * defined which is computed by the <tt>scalarProd()</tt> method.  A
@@ -85,17 +87,18 @@ namespace TSFCore {
  * <tt>Vector</tt> subclass.
  *
  * If a subclass can support specialized multi-vectors, then the
- * <tt>createMembers()</tt> should be need to be overridden.  Note
- * that implementing the <tt>createMembers()</tt> also entails
- * defining a concrete <tt>MultiVector</tt> subclass.  For some types
- * of concrete <tt>MultiVector</tt> subclass implementations
- * (e.g. serial multi-vectors), the same default
- * <tt>VectorSpaceFactory</tt> typed object returned from the default
- * <tt>smallVecSpcFcty()</tt> method can be used.  However, more
- * specialized <tt>MultiVector</tt> subclasses (e.g. distributed
- * parallel) will require an override of the <tt>smallVecSpcFcty()</tt>
- * method to return a specialized type of <tt>VectorSpaceFactory</tt>
- * object.
+ * <tt>createMembers()</tt> should be overridden as well.  Note that
+ * implementing the <tt>createMembers()</tt> also entails defining a
+ * concrete <tt>MultiVector</tt> subclass.  For some types of concrete
+ * <tt>MultiVector</tt> subclass implementations (e.g. serial
+ * multi-vectors), the same default <tt>VectorSpaceFactory</tt> typed
+ * object returned from the default <tt>smallVecSpcFcty()</tt> method
+ * can be used.  However, more specialized <tt>MultiVector</tt>
+ * subclasses (e.g. distributed memory parallel) will require an
+ * override of the <tt>smallVecSpcFcty()</tt> method to return a
+ * specialized type of <tt>VectorSpaceFactory</tt> object.
+ *
+ * \ingroup TSFCore_fundamental_interfaces_code_grp
  */
 template<class Scalar>
 class VectorSpace {

@@ -38,10 +38,13 @@
 namespace TSFCore {
 
 ///
-/** Subclass of <tt>VectorSpaceFactory</tt> that creates <tt>EpetraVectorSpace</tt>
- * objects given a dimension.
+/** \brief Concrete <tt>VectorSpaceFactory</tt> adapter subclass for
+ * <tt>Epetra_Comm</tt> that creates locally-replicated
+ * <tt>EpetraVectorSpace</tt> objects given a dimension.
  *
  * ToDo: Finish documentation!
+ *
+ * \ingroup TSFCore_adapters_Epetra_grp
  */
 class EpetraVectorSpaceFactory : public VectorSpaceFactory<double> {
 public:

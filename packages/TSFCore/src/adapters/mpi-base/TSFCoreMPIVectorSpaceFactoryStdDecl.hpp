@@ -37,7 +37,9 @@
 namespace TSFCore {
 
 ///
-/** Implementation of a vector-space factory for a <tt>MPIVectorSpaceStd</tt> objects.
+/** \brief Concrete implementation of a vector-space factory for a
+ * serial locally-replicated distributed <tt>MPIVectorSpaceStd</tt>
+ * objects.
  *
  * This will create either serial (<tt>mpiComm==MPI_COMM_NULL</tt>) or
  * locally replicated (<tt>mpiComm!=MPI_COMM_NULL</tt>) vector space
@@ -49,6 +51,8 @@ namespace TSFCore {
  *
  * Note that the default constructor is not allowed to avoid mistakes in using
  * this class.
+ *
+ * \ingroup TSFCore_adapters_MPI_concrete_std_grp
  */
 template<class Scalar>
 class MPIVectorSpaceFactoryStd : public VectorSpaceFactory<Scalar> {

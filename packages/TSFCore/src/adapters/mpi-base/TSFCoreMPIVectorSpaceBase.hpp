@@ -33,6 +33,7 @@
 #define TSFCORE_MPI_VECTOR_SPACE_BASE_HPP
 
 #include "TSFCoreMPIVectorSpaceBaseDecl.hpp"
+#include "TSFCoreScalarProdVectorSpaceBase.hpp"
 #include "TSFCoreMPIVectorSpaceFactoryStd.hpp"
 #ifdef RTOp_USE_MPI
 #  include "Teuchos_RawMPITraits.hpp"
@@ -177,6 +178,6 @@ void MPIVectorSpaceBase<Scalar>::updateState()
   smallVecSpcFcty_ = Teuchos::rcp(new MPIVectorSpaceFactoryStd<Scalar>(mpiComm));
 }
 	
-} // end namespace TSFCoreo
+} // end namespace TSFCore
 
 #endif // TSFCORE_MPI_VECTOR_SPACE_BASE_HPP

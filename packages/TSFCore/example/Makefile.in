@@ -233,7 +233,7 @@ EXTRA_DIST = $(srcdir)/Core/TSFCoreSimpleMPIVectorSpace.hpp \
 	$(srcdir)/Core/TSFCoreSimpleMPIVectorSpaceDecl.hpp \
 	$(srcdir)/Core/TSFCoreSimpleMPIVector.hpp
 
-SUBDIRS = Nonlin Solvers
+SUBDIRS = Core Solvers Nonlin
 all: all-recursive
 
 .SUFFIXES:

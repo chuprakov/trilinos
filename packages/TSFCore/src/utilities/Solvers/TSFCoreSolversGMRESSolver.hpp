@@ -350,7 +350,7 @@ SolveReturn GMRESSolver<Scalar>::localSolve(
 		//
 		if( curr_iter_ > 0 ) {
 			Teuchos::RefCountPtr<MultiVector<Scalar> > V = V_->subView(Range1D(1,curr_iter_));
-			SerialVector<Scalar> z_vec( Teuchos::rcp(&z_[0],false), 1, curr_iter_ );
+			SerialVectorStd<Scalar> z_vec( Teuchos::rcp(&z_[0],false), 1, curr_iter_ );
 			V->apply( NOTRANS, z_vec, x, -one, one );
 		}
 	}
