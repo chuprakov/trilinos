@@ -22,8 +22,30 @@ namespace AbstractLinAlgPack {
 
 ///
 /** Abstract base class for all polymorphic symmetrix nonsingular matrices that
-  * can be used to solve for linear systems relatively efficently.
-  */
+ * can be used to solve for linear systems relatively efficently.
+ *
+ * This interface defines a single addition method to those found in \c MatrixNonsingular:
+ *
+ * <tt>symwo_lhs = alpha * op(mwo) * inv(M) * op(mwo)'</tt><br>
+ *
+ * The reason that this method could not be defined in the \c MatrixNonsingular interface
+ * is that the lhs matrix matrix argument \c symwo_lhs is only guaranteed to be
+ * symmetric if the rhs matrix argument \c M (which is \c this matrix) is guaranteed
+ * to be symmetric.  Since a \c MatrixNonsingular matrix object may be unsymmetric, it
+ * can not implement this operation, only a symmetric nonsingular matrix can.
+ *
+ * Any symmetric nonsingular matrix abstraction that can be used to solve for nonlinear
+ * systems should also be able to support the \c MatrixSymWithOp interface.
+ * Therefore, this interface is more of an implementation artifact than
+ * an a legitimate domain abstraction.  However, some symmetric linear solvers that
+ * can implement this interface, can not easily implement the <tt>%MatrixSymWithOp</tt>
+ * interface and therefore this interface is justified.  A general client should never
+ * use this interface directly.  Instead, the combined interface \c MatrixSymWithOpNonsingular
+ * should be used with fully formed symmetric matrix abstractions.
+ *
+ * Clients should use the \ref MatrixSymNonsingular_func_grp "provided non-member functions"
+ * to call the methods and not the methods themselves.
+ */
 class MatrixSymNonsingular
 	: public virtual MatrixNonsingular
 {
@@ -52,8 +74,12 @@ public:
 
 };	// end class MatrixSymNonsingular
 
-// //////////////////////////////////////////////////////////
-// Inline nonmember helper function.
+// ////////////////////////////////////////////////////////////////////////////////////////////////
+/** \defgroup MatrixSymNonsingular_func_grp MatrixSymNonsingular non-member functions that call virtual functions.
+  *
+  * These allow nonmember functions to act like virtual functions.
+  */
+//@{
 
 inline
 /// sym_gms_lhs = alpha * op(mwo) * inv(mswof) * op(mwo)'
@@ -65,6 +91,8 @@ void M_StMtInvMtM(
 {
 	mswof.M_StMtInvMtM(sym_gms_lhs,alpha,mwo,mwo_trans,mwo_rhs);
 }
+
+//@}
 
 }	// end namespace AbstractLinAlgPack
 
