@@ -133,6 +133,9 @@ EXTRA_ADAPTERS_EPETRA = \
 	$(srcdir)/adapters/epetra/TSFCore_get_Epetra_MultiVector.cpp
 
 EXTRA_ADAPTERS_AZTECOO_H = \
+	$(srcdir)/adapters/aztecoo/Epetra_DiagonalOperator.hpp \
+	$(srcdir)/adapters/aztecoo/Epetra_ProductOperator.hpp \
+	$(srcdir)/adapters/aztecoo/Epetra_LinearSystemScaler.hpp \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.hpp \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.hpp \
 	$(srcdir)/adapters/aztecoo/Ifpack_PrecGenerator.hpp \
@@ -140,6 +143,9 @@ EXTRA_ADAPTERS_AZTECOO_H = \
 	$(srcdir)/adapters/aztecoo/TSFCoreNonlinLinearOpWithSolveAztecOO.hpp
 
 EXTRA_ADAPTERS_AZTECOO = \
+	$(srcdir)/adapters/aztecoo/Epetra_DiagonalOperator.cpp \
+	$(srcdir)/adapters/aztecoo/Epetra_ProductOperator.cpp \
+	$(srcdir)/adapters/aztecoo/Epetra_LinearSystemScaler.cpp \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblem.cpp \
 	$(srcdir)/adapters/aztecoo/Epetra_NonlinearProblemFirstOrder.cpp \
 	$(srcdir)/adapters/aztecoo/Ifpack_PrecGenerator.cpp \
