@@ -110,6 +110,10 @@
 
 #ifdef HAVE_ALGORITHM
 #include <algorithm>
+#elif defined(HAVE_ALGO_H)
+#include <algo.h>
+#else
+#include <algorithm.h>
 #endif
 
 #ifdef HAVE_MEMORY

@@ -157,7 +157,8 @@ TAC_ARG_CHECK_MPI
 
 AC_CHECK_HEADERS([ostream iostream iostream.h iomanip iomanip.h],,,)
 AC_CHECK_HEADERS([valarray stdexcept typeinfo cassert assert.h],,,)
-AC_CHECK_HEADERS([vector algorithm memory string string.h],,,)
+AC_CHECK_HEADERS([vector algorithm algo.h algorithm.h],,,)
+AC_CHECK_HEADERS([memory string string.h],,,)
 
 if test "X$ac_cv_header_ostream" != "Xyes" && test "X$ac_cv_header_iostream" != "Xyes" && "X$ac_cv_header_iostream_h" != "Xyes"; then
   AC_MSG_ERROR([[Cannot find ostream, iostream, or iostream.h.  TSFCore requires at least one or the other.]])
@@ -187,8 +188,8 @@ if test "X$ac_cv_header_vector" != "Xyes"; then
   AC_MSG_ERROR([[Cannot find vector.  TSFCore requires this header file.]])
 fi
 
-if test "X$ac_cv_header_algorithm" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find algorithm.  TSFCore requires this header file.]])
+if test "X$ac_cv_header_algorithm" != "Xyes"  && test "X$ac_cv_header_algo_h" != "Xyes" && test "X$ac_cv_header_algorithm_h" != "Xyes"; then
+  AC_MSG_ERROR([[Cannot find algorithm, algo.h, or algorithm.h.  TSFCore requires at least one of these.]])
 fi
 
 if test "X$ac_cv_header_memory" != "Xyes"; then
