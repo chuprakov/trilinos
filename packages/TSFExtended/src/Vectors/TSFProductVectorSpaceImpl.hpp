@@ -59,13 +59,13 @@ ProductVectorSpace(const Teuchos::Array<const VectorSpace<Scalar> >
 template <class Scalar>
 void ProductVectorSpace<Scalar>::setUpCore()
 {
-  Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> > 
-    coreVecSpaces[numBlocks_];
+  std::vector<Teuchos::RefCountPtr<const TSFCore::VectorSpace<Scalar> > >
+    coreVecSpaces(numBlocks_);
   for (int i = 0; i < numBlocks_; i++)
     {
       coreVecSpaces[i] = vecSpaces_[i].ptr();
     }
-  initialize(numBlocks_, coreVecSpaces);
+  initialize(numBlocks_, &coreVecSpaces[0]);
 }
 
 
