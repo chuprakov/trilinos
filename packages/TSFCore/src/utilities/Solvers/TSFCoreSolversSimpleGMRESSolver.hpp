@@ -152,13 +152,16 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 	const VectorSpace<Scalar> &opM_domain     = ( M_trans == NOTRANS                ? *M.domain() : *M.range()  );
 	const VectorSpace<Scalar> &opM_range      = ( M_trans == NOTRANS                ? *M.range()  : *M.domain() );
 	const ETransp      opM_notrans            = ( M_trans == NOTRANS                ? NOTRANS     : TRANS       );
-	const ETransp      opM_trans              = ( M_trans == NOTRANS                ? TRANS       : NOTRANS     );
-	const ETransp      opM_tilde_inv_notrans  = ( M_tilde_left_inv_trans == NOTRANS ? NOTRANS     : TRANS       );
-	const ETransp      opM_tilde_inv_trans    = ( M_tilde_left_inv_trans == NOTRANS ? TRANS       : NOTRANS     );
+	//const ETransp      opM_trans              = ( M_trans == NOTRANS                ? TRANS       : NOTRANS     );
+	//const ETransp      opM_tilde_inv_notrans  = ( M_tilde_left_inv_trans == NOTRANS ? NOTRANS     : TRANS       );
+	//const ETransp      opM_tilde_inv_trans    = ( M_tilde_left_inv_trans == NOTRANS ? TRANS       : NOTRANS     );
+	//
+	TEST_FOR_EXCEPTION(
+		opM_notrans!=NOTRANS, std::logic_error
+		,"Error, we can not handle the transpose argument yet!";
+		);
 	//
 	const int totalNumSystems = Y.domain()->dim();
-	//
-	int j;
 	//
 	// Validate input
 	//
@@ -201,8 +204,8 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 	//
 	// Resolve default parameters
 	//
-	const NormedConvergenceTester<Scalar>
-		*normedConvTester = dynamic_cast<const NormedConvergenceTester<Scalar>*>(convTester);
+	NormedConvergenceTester<Scalar>
+		*normedConvTester = dynamic_cast<NormedConvergenceTester<Scalar>*>(convTester);
 	const int max_iter = ( max_iter_in == DEFAULT_MAX_ITER ? default_max_iter() : max_iter_in );
 	const Scalar tol = ( normedConvTester ? normedConvTester->minTol() : default_tol_ );
 	
@@ -212,9 +215,10 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 	//
 	bool all_solved = true;
 	int max_iter_taken = 0;
+	Scalar minMaxErr = Scalar(1e+50);
 	Teuchos::RefCountPtr<Vector<Scalar> >
 		y = Y.range()->createMember(),
-		x = X->range()->createMember();
+		x = Teuchos::null;
 	for( int k = 1; k <= totalNumSystems; ++k ) {
 		assign( &*y, *Y.col(k) );  Vt_S( &*y, a );  // y = a*Y.col(k)  (copy)
 		x = X->col(k);                              // x = X.col(k)    (view)
@@ -229,23 +233,24 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 				);
 		if( single_solve_return.solve_status == MAX_ITER_EXCEEDED ) all_solved = false;
 		if( single_solve_return.num_iter > max_iter_taken ) max_iter_taken = single_solve_return.num_iter;
-
+		const Scalar currEstRelResidualNorm = solver_.currEstRelResidualNorm();
+		if(currEstRelResidualNorm < minMaxErr) minMaxErr = currEstRelResidualNorm;
 		if(get_out().get()) {
 			*get_out()
 				<< "\nSimpleGMRESSolver<Scalar>::solve(...) : k = "<< k << " system : "
 				<< ( single_solve_return.solve_status == SOLVED_TO_TOL ? "Solved for x(" : "Did not solve for x(" ) << k << ")"
 				<< "\n  Number of GMRES iteratins taken          = " << single_solve_return.num_iter
-				<< "\n  Final GMRES preconditioned residual norm = " << solver_.currEstRelResidualNorm() << std::endl;
+				<< "\n  Final GMRES preconditioned residual norm = " << currEstRelResidualNorm << std::endl;
 			if(dump_all()) {
 				*get_out() << "\nX =\n" << *X;
 			}
 			*get_out() << "\n*** Leaving SimpleGMRESSolver<Scalar>::solve(...)\n";
 		}
 	}
+	if(normedConvTester) normedConvTester->minMaxErr(minMaxErr);
 	//
 	// Return the solution
 	//
-
 	if(get_out().get()) {
 		*get_out()
 			<< "\nSimpleGMRESSolver<Scalar>::solve(...) : " << ( all_solved ? "Solved for X" : "Did not solve for X" );
@@ -254,7 +259,6 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 		}
 		*get_out() << "\n*** Leaving SimpleGMRESSolver<Scalar>::solve(...)\n";
 	}
-	
 	return SolveReturn( all_solved ? SOLVED_TO_TOL : MAX_ITER_EXCEEDED , max_iter_taken );
 }
 
