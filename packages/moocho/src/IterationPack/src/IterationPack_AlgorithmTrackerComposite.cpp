@@ -22,6 +22,18 @@
 
 namespace GeneralIterationPack {
 
+AlgorithmTrackComposite::AlgorithmTrackComposite(const ostream_ptr_t& journal_out)
+	: AlgorithmTrack(journal_out)
+{}
+
+void AlgorithmTrackComposite::initialize()
+{
+	track_list_t::const_iterator
+		itr = tracks_.begin(), itr_end = tracks_.end();
+	for(; itr != itr_end; ++itr)
+		(*itr)->initialize();
+}
+
 void AlgorithmTrackComposite::output_iteration(
 	const Algorithm& algo
 	) const

@@ -29,7 +29,7 @@ namespace GeneralIterationPack {
  * This class exposes a <tt>std::list<AlgorithmTrack*></tt> object and lets the client
  * manipulate the list.  It is up to the client to maintain this list.
  *
- * See the "Composite" pattern in Gama et al, 1995.
+ * See the "Composite" pattern in "Design Patterns", Gama et al, 1995.
  */
 class AlgorithmTrackComposite : public AlgorithmTrack {
 public:
@@ -39,16 +39,23 @@ public:
 	///
 	typedef std::list<track_ptr_t>                                    track_list_t;
 	///
-	AlgorithmTrackComposite(std::ostream& journal_out) : AlgorithmTrack(journal_out)
-	{}
+	AlgorithmTrackComposite(const ostream_ptr_t& journal_out);
 	/// Give access to the list of \c AlgorithmTrack object pointers.
 	track_list_t& tracks();
 	///
 	const track_list_t& tracks() const;
+
+	/**  @name Overridden from AlgorithmTrack */
+	//@{
+
+	///
+	void initialize();
 	///
 	void output_iteration(const Algorithm& algo) const;
 	///
 	void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
+
+	//@}
 
 private:
 
