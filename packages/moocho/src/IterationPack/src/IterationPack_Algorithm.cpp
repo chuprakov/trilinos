@@ -23,6 +23,7 @@ Algorithm::Algorithm()
 	: running_state_(NOT_RUNNING), max_iter_(100)
 		, max_run_time_(std::numeric_limits<double>::max())
 		, next_step_name_(0), do_step_next_called_(false), reconfigured_(false)
+		, time_stats_computed_(false)
 {}
 
 Algorithm::~Algorithm()
@@ -317,12 +318,14 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 	next_step_name_ = &steps_[step_poss - 1].name;
 	
 	// Prepair for timing algorithm
-	step_times_.resize( algo_timing_ ? (num_steps()+1) * (max_iter()+5) : 0 );
+	step_times_.resize( algo_timing_ ? (num_steps()+1) * (max_iter()+1+NUM_STEP_TIME_STATS) : 0 );
 	if( algo_timing_ ) {
-		step_times_[ max_iter() ] = 0.0;	// flag for statistics not calc. yet.
-		// set iteration totals to zero
-		if( step_times_[(max_iter() + 5) * num_steps()] != 0.0 )
-			std::fill_n( step_times_.begin() + (max_iter() + 5) * num_steps(), max_iter(), 0.0 );
+//		step_times_[ max_iter() ] = 0.0;	// flag for statistics not calc. yet.
+//		// set iteration totals to zero
+//		if( step_times_[(max_iter() + 1 + 5) * num_steps()] != 0.0 )
+//			std::fill_n( step_times_.begin() + (max_iter() + 1 + 5) * num_steps(), max_iter(), 0.0 );
+		std::fill_n( step_times_.begin(), step_times_.size(), 0.0 );	// Try setting everything to zero?
+		time_stats_computed_ = false;
 	}
 	stopwatch step_timer;
 	stopwatch overall_timer;
@@ -346,11 +349,11 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 		keep_on = imp_do_step(curr_step_poss_);
 
 		if( algo_timing_ ) {
-			const double time = std::_MAX(step_timer.stop(),0.0);	// negative somehow (g++ -O2 ?)
+			const double time = std::_MAX(step_timer.stop(),-1e-50);	// negative somehow (g++ -O2 ?)
 			// time for step k for the iteration
-			step_times_[state().k()-first_k_+(curr_step_poss_-1)*(max_iter()+5)] = time;
+			step_times_[state().k()-first_k_+(curr_step_poss_-1)*(max_iter()+1+NUM_STEP_TIME_STATS)] = time;
 			// Add to time for the full iteration
-			step_times_[state().k()-first_k_+(num_steps())*(max_iter()+5)] += time;
+			step_times_[state().k()-first_k_+(num_steps())*(max_iter()+1+NUM_STEP_TIME_STATS)] += time;
 		}
 
 		// See if a step object called terminate(...)
@@ -463,10 +466,10 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 
 	const int w = 10;
 	const int prec = 4;
-	const int n = num_steps();
-	const int m = state().k() - first_k_ + 1;
-	const int mm = max_iter();
-	const int mmm = mm + 5;
+	const int n = num_steps();					// Total steps
+	const int m = state().k() - first_k_ + 1;	// Total number of iterations performed
+	const int mm = max_iter()+1;				// Total number of possible iterations
+	const int mmm = mm + NUM_STEP_TIME_STATS;	// total entries in a step_i row
 	 
 	// Print the header.
 	out	<< "\n\n**********************************\n"
@@ -512,7 +515,8 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 		MAX_OFFSET		= 3,
 		PERCENT_OFFSET	= 4;
 
-	if( step_times_[mm] == 0.0 ) {
+	if( !time_stats_computed_ ) {
+		time_stats_computed_ = true;
 		// compute totals for each step (1...n) and the full iteration (n+1)
 		double &_total_time = const_cast<double&>(total_time_);
 		_total_time = 0.0;
@@ -534,7 +538,8 @@ void Algorithm::print_algorithm_times( std::ostream& out ) const
 		{for( int i = 0; i < n+1; ++i ) {
 			double *step_i_times = &const_cast<step_times_t&>(step_times_)[i*mmm];
 			// compute fractions for each step.
-			step_i_times[ mm + PERCENT_OFFSET ] = step_i_times[ mm ] / total_time_;
+			step_i_times[ mm + PERCENT_OFFSET ]
+				= step_i_times[ mm + TOTALS_OFFSET ] / total_time_;
 		}}
 	}
 

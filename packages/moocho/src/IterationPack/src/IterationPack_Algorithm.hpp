@@ -636,6 +636,9 @@ private:
 
 	typedef std::vector<double> step_times_t;
 
+	///
+	enum { NUM_STEP_TIME_STATS = 5 };
+
 	// /////////////////////////////////////////////////////
 	// Private data members
 
@@ -717,10 +720,11 @@ private:
 	bool algo_timing_;
 	// If true each step will be timed.
 
-	step_times_t step_times_;
-	// Array of step times ( size (max_iter() + 5) * (num_steps() + 1) ).
+	mutable step_times_t step_times_;
+	// Array of step times ( size (max_iter() + 1 + NUM_STEP_TIME_STATS) * (num_steps() + 1) ).
 	//  The time in sec. for step step_i (one based)
-	// for iteration iter_k (zero based) is step_times_[ iter_k + (step_i - 1) * max_iter() ].
+	// for iteration iter_k (zero based) is:
+	// 	step_times_[ iter_k + (step_i - 1) * (max_iter() + 1 + NUM_STEP_TIME_STATS) ].
 	// Therefore the times for each step are stored by column (consecutive elements)
 	// so that statistics will be easy to compute at the end.
 	// The last five elements after max_iter() for each step are reserved for:
@@ -731,9 +735,11 @@ private:
 	// * percentage for each step to the total.
 	// The last column is for the total times for each iteration with the last five
 	// elements being for the statistics for each iteration.	 
-	// step_times_[ max_iter() ] > 0.0 is a flag that the times have already been set.
 
-	double total_time_;
+	mutable bool time_stats_computed_;
+	// A flag for if the timing statistics have already been computed or not.
+	
+	mutable double total_time_;
 	// Records the total computed time for the algorithm.
 
 	// /////////////////////////////////////////////////////
