@@ -50,14 +50,14 @@ void NLPFirstDerivativesTesterSetOptions::set_option(
 	    case FD_TESTING_METHOD:
 		{
 			const std::string &option = option_value.c_str();
-			if( option == "COMPUTE_ALL" )
+			if( option == "FD_COMPUTE_ALL" )
 				target().fd_testing_method( target_t::FD_COMPUTE_ALL );
-			else if( option == "DIRECTIONAL" )
+			else if( option == "FD_DIRECTIONAL" )
 				target().fd_testing_method( target_t::FD_DIRECTIONAL );
 			else
 				throw std::invalid_argument( "Error, incorrect value for "
 					"\"fd_testing_method\".  Only the options "
-					"COMPUTE_ALL and DIRECTIONAL are available" );
+					"FD_COMPUTE_ALL and FD_DIRECTIONAL are available" );
 			break;
 		}
 	    case NUM_FD_DIRECTIONS:

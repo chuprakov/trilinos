@@ -72,6 +72,15 @@ namespace TestingPack {
   * 4) Print out any suspect comparisons by setting epsilon < warning_tol < 1
   *    but also quit if the error is too large by setting error_tol > warning_tol.
   *
+  * There is one minor hitch to this testing.  For many NLPs, there is a
+  * strict region of x where f(x) or c(x) are not defined.  In order to
+  * help ensure that we stay out of these regions, variable bounds can be
+  * included and a scalar max_var_bounds_viol so that the testing software
+  * will never evaluation f(x) or c(x) outside the region:
+  * 
+  * xl - max_var_bounds_viol <= x <= xu + max_var_bounds_viol
+  * 
+  * This is an important agreement made with the user.
   */
 class NLPFirstDerivativesTester {
 public:
@@ -115,12 +124,25 @@ public:
 	  * intro checkout then this function will return true, otherwise it
 	  * will return false.
 	  *
-	  * @param	nlp		NLP object used to compute and test derivatives for.
-	  *	@param	Gc		A matrix object for the Gc computed at x
-	  *	@param	Gf		Gradient of f(x) computed at x
-	  *	@param	x		Point at which the derivatives are computed at.
+	  * @param	nlp		[I]	NLP object used to compute and test derivatives for.
+	  *	@param	xo		[I]	Point at which the derivatives are computed at.
+	  *	@param	xl		[I] If != NULL then this is the lower variable bounds.
+	  *	@param	xu		[I] If != NULL then this is the upper variable bounds.
+	  *						If xl != NULL then xu != NULL must also be true
+	  *						and visa-versa or a std::invalid_arguement exceptions
+	  *						will be thrown.
+	  *	@param	max_var_bounds_viol
+	  *					[I] If the bounds are set then this is the maximum
+	  *						violation in the bounds allowed. when computing
+	  *						points.  If xl==NULL and xu==NULL then this
+	  *						number is not important.
+	  *	@param	Gc		[I] A matrix object for the Gc computed at xo.
+	  *						If Gc==NULL then this is not tested for.
+	  *	@param	Gf		[I] Gradient of f(x) computed at xo.
+	  *						If Gf==NULL then this is not tested for.
 	  *	@param	print_all_warnings
-	  *					
+	  *					[I] If true then all errors greater than warning_tol
+	  *						will be printed if out!=NULL
 	  *	@param	out		If != null then some summary information is printed to it
 	  *					and if a derivative does not match up then it prints which
 	  *					derivative failed.  If #out == 0# then no output is printed.
@@ -129,34 +151,43 @@ public:
 	  *	otherwise.
 	  */
 	bool finite_diff_check(
-		  NLPFirstOrderInfo*					nlp
-		, const MatrixWithOp&					Gc
-		, const VectorSlice&					Gf
-		, const VectorSlice&					x
-		, bool									print_all_warnings
-		, std::ostream*							out
+		  NLP						*nlp
+		, const VectorSlice			&xo
+		, const SpVectorSlice		*xl
+		, const SpVectorSlice		*xu
+		, const value_type			&max_var_bounds_viol
+		, const MatrixWithOp		*Gc
+		, const VectorSlice			*Gf
+		, bool						print_all_warnings
+		, std::ostream				*out
 		) const;
 
 private:
 
 	///
 	bool fd_check_all(
-		  NLPFirstOrderInfo*					nlp
-		, const MatrixWithOp&					Gc
-		, const VectorSlice&					Gf
-		, const VectorSlice&					x
-		, bool									print_all_warnings
-		, std::ostream*							out
+		  NLP						*nlp
+		, const VectorSlice			&xo
+		, const SpVectorSlice		*xl
+		, const SpVectorSlice		*xu
+		, const value_type			&max_var_bounds_viol
+		, const MatrixWithOp		*Gc
+		, const VectorSlice			*Gf
+		, bool						print_all_warnings
+		, std::ostream				*out
 		) const;
 
 	///
 	bool fd_directional_check(
-		  NLPFirstOrderInfo*					nlp
-		, const MatrixWithOp&					Gc
-		, const VectorSlice&					Gf
-		, const VectorSlice&					x
-		, bool									print_all_warnings
-		, std::ostream*							out
+		  NLP						*nlp
+		, const VectorSlice			&xo
+		, const SpVectorSlice		*xl
+		, const SpVectorSlice		*xu
+		, const value_type			&max_var_bounds_viol
+		, const MatrixWithOp		*Gc
+		, const VectorSlice			*Gf
+		, bool						print_all_warnings
+		, std::ostream				*out
 		) const;
 };
 
