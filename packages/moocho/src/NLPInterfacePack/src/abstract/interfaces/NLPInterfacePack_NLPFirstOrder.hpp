@@ -60,6 +60,13 @@ public:
 	/** Initialize the NLP for its first use.
 	  */
 	void initialize();
+
+	///
+	/** Get the initial value of the Lagrange multipliers lambda.
+	  *
+	  * By default this function just sets them to zero.
+	  */
+	virtual void get_lambda_init( Vector* lambda ) const;
 	
 	/** @name <<std comp>> stereotype member functions
 	  */
@@ -133,7 +140,7 @@ public:
 	  * but are not guarentied to be.  But no other quanities from possible subclasses are allowed
 	  * to be updated as a side effect.
 	  */ 
-	virtual void calc_Gf(const Vector& x, bool newx = true) const;
+	virtual void calc_Gf(const VectorSlice& x, bool newx = true) const;
 	///
 	/** Update the matrix for #Gc# at the point #x# and put it in the stored reference.
 	  *
@@ -141,7 +148,7 @@ public:
 	  * but are not guarentied to be.  But no other quanities from possible subclasses are allowed
 	  * to be updated as a side effect.
 	  */ 
-	virtual void calc_Gc(const Vector& x, bool newx = true) const;
+	virtual void calc_Gc(const VectorSlice& x, bool newx = true) const;
 
 	//@}
 
@@ -196,9 +203,9 @@ protected:
 	//@{
 
 	/// Override to update the protected member #Gf_#
-	virtual void imp_calc_Gf(const Vector& x, bool newx) const = 0;
+	virtual void imp_calc_Gf(const VectorSlice& x, bool newx) const = 0;
 	/// Override to update the protected member #Gc_#
-	virtual void imp_calc_Gc(const Vector& x, bool newx) const = 0;
+	virtual void imp_calc_Gc(const VectorSlice& x, bool newx) const = 0;
 
 	//@}
 

@@ -13,6 +13,16 @@ namespace NLPInterfacePack {
   *
   * This class adds second order inforamtion to the first order information
   * and basic information given in the \Ref{NLPFirstOrderInfo} interface class.
+  *
+  * Specifically the Hesssian of the Lagrangian is defined as:
+  *
+  * HL = Hf + sum( Hcj * lambda(j), j = 1...m )
+  *
+  * Where:\\
+  * Hf is the hessian of the objective function\\
+  * Hcj is the hessian of the jth equality constriant cj\\
+  * lambda is the vector of lagrange multipliers for the equality
+  * constraints c(x)
   */
 class NLPSecondOrderInfo : public NLPFirstOrderInfo {
 public:
@@ -44,53 +54,26 @@ public:
 	  */
 	//@{
 
-	/** @name <<std comp>> members for the Hessian if the objective function value, Hf.
+	/** @name <<std comp>> members for the Hessian if the objective Lagrangian function
+	  * value, HL.
 	  *
 	  * The is a reference to a matrix storage location that is updated when
-	  * #calc_Hf(...)# is called or when #Hf# is updated as a side effect
-	  * when another "calc" member funciton is called.  The #same_struct# argument
-	  * is ment to be used by subclasses that override #set_Gc(...)# to exploit the
-	  * structure of the currently set Gc matrix.
+	  * #calc_HL(...)# is called.
 	  */
 	//@{
 
 	///
-	virtual void set_Hf(MatrixWithOp* Hf, bool owns_Hf = false, bool same_struct = true);
+	virtual void set_HL(MatrixWithOp* HL, bool owns_HL = false);
 	///
-	virtual MatrixWithOp* get_Hf();
+	virtual MatrixWithOp* get_HL();
 	///
-	virtual void set_owns_Hf(bool owns_Hf);
+	virtual void set_owns_HL(bool owns_HL);
 	///
-	virtual bool owns_Hf();
+	virtual bool owns_HL();
 	///
-	virtual MatrixWithOp& Hf();
+	virtual MatrixWithOp& HL();
 	///
-	virtual const MatrixWithOp& Hf() const;
-
-	//@}
-
-	/** @name <<std comp>> members for the Hessian if the jth equality constaint function, Hcj.
-	  *
-	  * The is a reference to a matrix storage location that is updated when
-	  * #calc_Hcj(...)# is called or when #Hcj# is updated as a side effect
-	  * when another "calc" member funciton is called.  The #same_struct# argument
-	  * is ment to be used by subclasses that override #set_Hcj(...)# to exploit the
-	  * structure of the currently set Hcj matrix.
-	  */
-	//@{
-
-	///
-	virtual void set_Hcj(MatrixWithOp* Hcj, bool owns_Hcj = false, bool same_struct = true);
-	///
-	virtual MatrixWithOp* get_Hcj();
-	///
-	virtual void set_owns_Hcj(bool owns_Hcj);
-	///
-	virtual bool owns_Hcj();
-	///
-	virtual MatrixWithOp& Hcj();
-	///
-	virtual const MatrixWithOp& Hcj() const;
+	virtual const MatrixWithOp& HL() const;
 
 	//@}
 
@@ -103,27 +86,18 @@ public:
 
 	//@{
 
-	/// Return if #Hf# is calcuated analytically (true) or by some numerical technique (false)
-	virtual bool analytic_Hf() const = 0;
-	/// Return if #Hcj# is calcuated analytically (true) or by some numerical technique (false)
-	virtual bool analytic_Hcj() const = 0;
+	/// Return if #HL# is calcuated analytically (true) or by some numerical technique (false)
+	virtual bool analytic_HL() const = 0;
 
 	///
-	/** Update the matrix for #Hf# at the point #x# and put it in the stored reference.
+	/** Update the matrix for #HL# at the point #x#, #lambda# and put it in the stored reference.
 	  *
 	  * If #set_mult_calc(true)# was called then referenced storage for #f#, #c#, #Gf#, and #Gc# may also be
 	  * changed but are not guarentied to be.  But no other quanities from possible subclasses are allowed
 	  * to be updated as a side effect.
 	  */ 
-	virtual void calc_Hf(const Vector& x, bool newx = true) const;
-	///
-	/** Update the matrix for #Hcj# at the point #x# and put it in the stored reference.
-	  *
-	  * If #set_mult_calc(true)# was called then referenced storage for #f#, #c#, #Gf#, and #Gc# may also be
-	  * changed but are not guarentied to be.  But no other quanities from possible subclasses are allowed
-	  * to be updated as a side effect.
-	  */ 
-	virtual void calc_Hcj(const Vector& x, size_type j, bool newx = true) const;
+	virtual void calc_HL(const VectorSlice& x, const VectorSlice& lambda
+		, bool newx = true) const;
 
 	//@}
 
@@ -132,28 +106,23 @@ protected:
 	/** @name Protected methods to be overridden by subclasses */
 	//@{
 
-	/// Override to update the protected member #Gf_#
-	virtual void imp_calc_Hf(const Vector& x, bool newx) const = 0;
-	/// Override to update the protected member #Gc_#
-	virtual void imp_calc_Hcj(const Vector& x, size_type j, bool newx) const = 0;
+	/// Override to update the protected member #HL_#
+	virtual void imp_calc_HL(const VectorSlice& x, const VectorSlice& lambda
+		, bool newx) const = 0;
 
 	//@}
 
 	/** @name Protected members to be updated by subclasses */
 	//@{
 
-	/// Updated by subclass that implements #imp_calc_Hf(x,newx)#.
-	mutable MatrixWithOp*			Hf_;
-	/// Updated by subclass that implements #imp_calc_Hcj(x,j,newx)#.
-	mutable MatrixWithOp*			Hcj_;
+	/// Updated by subclass that implements #imp_calc_HL(x,lambda,newx)#.
+	mutable MatrixWithOp*			HL_;
 
 	//@}
 
 private:
-	mutable bool					owns_Hf_;
-	static const char				name_Hf_[];
-	mutable bool					owns_Hcj_;
-	static const char				name_Hcj_[];
+	mutable bool					owns_HL_;
+	static const char				name_HL_[];
 
 };	// end class NLPSecondOrderInfo
 

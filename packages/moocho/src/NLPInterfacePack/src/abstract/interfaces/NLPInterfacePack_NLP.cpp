@@ -98,7 +98,7 @@ const NLPInterfacePack::Vector& NLPInterfacePack::NLP::c() const
 
 // calculations
 
-void NLPInterfacePack::NLP::calc_f(const Vector& x, bool newx) const
+void NLPInterfacePack::NLP::calc_f(const VectorSlice& x, bool newx) const
 {
 	StandardCompositionRelationshipsPack::assert_role_name_set(f_, "NLP::calc_f()", name_f_);
 //	std::cout << "calc_f(...): x(1) = " << x(1) << "\n";
@@ -106,7 +106,7 @@ void NLPInterfacePack::NLP::calc_f(const Vector& x, bool newx) const
 	num_f_evals_++;
 }
 
-void NLPInterfacePack::NLP::calc_c(const Vector& x, bool newx) const
+void NLPInterfacePack::NLP::calc_c(const VectorSlice& x, bool newx) const
 {
 	StandardCompositionRelationshipsPack::assert_role_name_set(c_, "NLP::calc_c()", name_c_);
 //	std::cout << "calc_c(...): x(1) = " << x(1) << "\n";

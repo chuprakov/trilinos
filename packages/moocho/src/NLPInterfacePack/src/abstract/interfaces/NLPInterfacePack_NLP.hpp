@@ -225,7 +225,7 @@ public:
 	  * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
 	  * to be updated as a side effect.
 	  */ 
-	virtual void calc_f(const Vector& x, bool newx = true) const;
+	virtual void calc_f(const VectorSlice& x, bool newx = true) const;
 	///
 	/** Update the vector for #c# at the point #x# and put it in the stored reference.
 	  *
@@ -233,7 +233,7 @@ public:
 	  * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
 	  * to be updated as a side effect.
 	  */ 
-	virtual void calc_c(const Vector& x, bool newx = true) const;
+	virtual void calc_c(const VectorSlice& x, bool newx = true) const;
 
 	//@}
 
@@ -288,9 +288,9 @@ protected:
 	//@{
 
 	/// Override to update the protected member #f_#
-	virtual void imp_calc_f(const Vector& x, bool newx) const = 0;
+	virtual void imp_calc_f(const VectorSlice& x, bool newx) const = 0;
 	/// Override to update the protected member #c_#
-	virtual void imp_calc_c(const Vector& x, bool newx) const = 0;
+	virtual void imp_calc_c(const VectorSlice& x, bool newx) const = 0;
 
 	//@}
 
