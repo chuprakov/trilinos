@@ -4797,6 +4797,11 @@ QPSchur::iter_refine(
 				return_status = ITER_REFINE_CONVERGED;
 			break;
 		}
+		// Make sure we have made progress
+		if( roR_nrm_o < roR_nrm && rom_nrm_o < rom_nrm && ra_nrm_o < rom_nrm ) {
+			return_status = ITER_REFINE_NOT_IMPROVED;
+			break; // No progress was make in converging the equations!
+		}
 		//
 		// Solve for the steps
 		//
@@ -4805,7 +4810,7 @@ QPSchur::iter_refine(
 		//
 		++(*iter_refine_num_solves);
 		if( q_hat ) {
-			// del_v = inv(S_hat)*(ra - U_hat'*inv(Ko)*ro)
+			// del_z = inv(S_hat)*(ra - U_hat'*inv(Ko)*ro)
 			V_InvMtV( &t1, Ko, no_trans, ro );
 			calc_z( act_set.S_hat(), ra, act_set.U_hat(), &t1, &del_z );
 		}
@@ -4828,11 +4833,6 @@ QPSchur::iter_refine(
 				<< right << setw(dbl_w) << norm_inf(del_z) / (norm_inf(z_itr) + small_num)
 				<< endl;
 		}
-		// Make sure we have made progress
-		if( roR_nrm_o < roR_nrm && rom_nrm_o < rom_nrm && ra_nrm_o < rom_nrm ) {
-			return_status = ITER_REFINE_NOT_IMPROVED;
-			break; // No progress was make in converging the equations!
-		}
 	}
 	if( iter_refine_max_iter() == 0 ) {
 		if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
@@ -4849,15 +4849,18 @@ QPSchur::iter_refine(
 					<< "\nWarning, iter_refine_max_iter == 1.  Only one step of iterative refinement"
 					<< "was performed and the step is taken which out checking the residual ...\n";
 			}
-			return_status = ITER_REFINE_NOT_PERFORMED;
+			*v = v_itr;
+			if(q_hat)
+				*z = z_itr;
+			return_status = ITER_REFINE_ONE_STEP;
 		}
-		if( roR_nrm_o < roR_nrm && rom_nrm_o < rom_nrm && ra_nrm_o < rom_nrm ) {
+		else if( roR_nrm_o < roR_nrm && rom_nrm_o < rom_nrm && ra_nrm_o < rom_nrm ) {
 			if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
 				*out
 					<< "\nNo progress was made in reducing the residuals."
 					<< "\nLeaving the original solution intact ...\n";
 			}
-			return_status = ITER_REFINE_IMPROVED;
+			return_status = ITER_REFINE_NOT_IMPROVED;
 		}
 		else {
 			// The residuals were at least not increased so let's take the new solution
