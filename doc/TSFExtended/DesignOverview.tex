@@ -34,87 +34,7 @@ Because handles are not to everyone's taste, TSFExtended has been designed
 such that handles can be used or ignored according to the
 taste of the individual solver developer.
 
-\subsubsection{The templated handle class}
 
-Handles are used for many data types in TSFExtended, so it is logical to
-provide a generic handle class implementing the common methods. The
-{\tt Handle} class is templated on contained type, and is essentially
-a wrapper for a {\tt Teuchos::RefCountPtr}. 
-{\scriptsize\begin{verbatim}
-template <class PointerType>
-  class Handle
-  {
-  public:
-    /** Construct from a smart pointer */
-    Handle(const RefCountPtr<PointerType>& ptr);
-
-    /** Read-only access to the underlying smart pointer. */
-    const RefCountPtr<PointerType>& ptr() const {return ptr_;}
-
-    /** Read-write access to the underlying smart pointer. */
-    RefCountPtr<PointerType> ptr() {return ptr_;}
-
-    /** 
-     * Print to a stream using the Printable interface. 
-     * If the contents of the handle cannot be 
-     * downcasted or crosscasted to a Printable*, an exception
-     * will be thrown 
-     */
-    void print(std::ostream& os) const ;
-
-    /** 
-     * Return a short descriptive string using the Describable interface.
-     * If the contents of the handle cannot be 
-     * downcasted or crosscasted to a Describable*, an exception
-     * will be thrown. 
-     */
-    std::string describe() const ;
-
-  private:
-    RefCountPtr<PointerType> ptr_;
-  };
-\end{verbatim}}
-Note that the only constructor takes a reference-counted (``smart'')
-pointer. This is because it is not possible to construct directly and safely
-a smart pointer from a raw pointer~\cite{ref:SmartPtrs}; the Teuchos
-smart pointer requires a call to the {\tt rcp()} method for safe
-construction of a smart pointer. Nonetheless,
-syntax such as 
-{\scriptsize\begin{verbatim}
-Handle<Base> handle = new Derived();
-\end{verbatim}}
-without an intermediate {\tt rcp()} call is often desirable. For class
-heirarchies where this is the desired behavior, all subclasses
-should implement the following {\tt Handleable} interface,
-{\scriptsize\begin{verbatim}
-template <class Base>
-  class Handleable
-  {
-  public:
-    /** Virtual dtor */
-    virtual ~Handleable(){;}
-
-    /** Return a safely-created RefCountPtr to the base type. Any
-     * class can implement this method as {return rcp(this);} */
-    virtual RefCountPtr<Base> getRcp() = 0 ;
-    
-  };
-\end{verbatim}}
-where the {\tt getRcp()} method provides a call to {\tt rcp()} in 
-a polymorphic way. Class heirarchies deriving from {\tt Handleable}
-can then support construction of a handle from a raw pointer. Since
-not all class hierarchies will implement the {\tt Handleable} interface,
-this capability is not in the {\tt Handle} class, but in a subtype
-{\tt HandleConstructableFromRawPointer}.
-{\scriptsize\begin{verbatim}
-template <class PointerType>
-  class HandleConstructableFromRawPointer : public Handle<PointerType>
-  {
-  public:
-    /** */
-    Handle(Handleable<PointerType>* ptr);
-  };
-\end{verbatim}}
 
 
 \subsection{Extended interfaces via multiple inheritance}
@@ -131,7 +51,7 @@ stream output into a {\tt Printable} interface. This partitioning gives
 us the flexibility to decide for each concrete type whether a given
 set of interface extensions will be implemented. For example, an in-core
 vector type such as {\tt Epetra$\_$Vector} supports element access, however, 
-a remotely-stored proxy vector will not; therefore, a 
+a vector object that is a proxy to a full vector on a server will not; therefore, a 
 {\tt TSFExtended::EpetraVector} class will implement the {\tt AccessibleVector}
 interface but a hypothetical {\tt TSFExtended::ProxyVector} would not.
 
@@ -159,16 +79,12 @@ an alternate path.
 
 To illustrate how handles and interface extension are used to
 build TSFExtended objects,
-we describe the design of an extended {\tt EpetraVector} class, 
+we describe some features of the design of an extended {\tt EpetraVector} class, 
 and for contrast, an extended {\tt ProxyVector} class. 
 
 \subsubsection{Building up an extended concrete type}
 
-First, note
-that in TSF vectors are never created directly by the user; they are always 
-created by vector spaces. Thus there is no need for vectors to implement
-the {\tt Handleable} interface. The next issue to decide is:
-what methods might we want to define on a vector? For use in solver
+What methods might we want to define on a vector? For use in solver
 algorithms, clearly we will need
 a comprehensive set of mathematical operations; these have already been
 defined in TSFCore. For use in a simulator, we will want to load and
@@ -221,3 +137,372 @@ Note that both of these types derive from a subclass of {\tt TSFCore::Vector},
 the subclass's implementation of the methods of {\tt TSFCore::Vector}. 
 
 \subsubsection{The Vector handle class}
+
+\section{Utilities}
+
+\subsection{Handles}
+
+Handles are used for many data types in TSFExtended, so it is logical to
+provide a generic handle class implementing the common methods. The
+{\tt Handle} class is templated on contained type, and is essentially
+a wrapper for a {\tt Teuchos::RefCountPtr}. 
+{\scriptsize\begin{verbatim}
+template <class PointerType>
+  class Handle
+  {
+  public: 
+    /** Empty ctor  */
+    Handle() : ptr_() {;}
+    
+    /** Construct from a smart pointer */
+    Handle(const RefCountPtr<PointerType>& ptr);
+
+    /** Construct from a raw pointer to a Handleable.  */
+    Handle(Handleable<PointerType>* rawPtr) : ptr_(rawPtr->getRcp()) {;}
+
+    /** Read-only access to the underlying smart pointer. */
+    const RefCountPtr<PointerType>& ptr() const {return ptr_;}
+
+    /** Read-write access to the underlying smart pointer. */
+    RefCountPtr<PointerType> ptr() {return ptr_;}
+
+    /** 
+     * Print to a stream using the Printable interface. 
+     * If the contents of the handle cannot be 
+     * downcasted or crosscasted to a Printable*, an exception
+     * will be thrown 
+     */
+    void print(std::ostream& os) const ;
+
+    /** 
+     * Return a short descriptive string using the Describable interface.
+     * If the contents of the handle cannot be 
+     * downcasted or crosscasted to a Describable*, an exception
+     * will be thrown. 
+     */
+    std::string describe() const ;
+
+    /** 
+     * Return the verbosity setting using the ObjectWithVerbosity
+     * interface. If the contents of the handle cannot be downcasted
+     * or crosscasted into an ObjectWithVerbosity, an exception will
+     * be thrown. 
+     */
+    VerbositySetting verbosity() const ;
+
+    /** 
+     * Return a writeable reference to 
+     * the verbosity setting using the ObjectWithVerbosity
+     * interface. If the contents of the handle cannot be downcasted
+     * or crosscasted into an ObjectWithVerbosity, an exception will
+     * be thrown. 
+     */
+    VerbositySetting& verbosity() ;
+
+  private:
+    RefCountPtr<PointerType> ptr_;
+  };
+\end{verbatim}}
+Note that the only non-empty constructors take either a reference-counted (``smart'')
+pointer or a pointer to a \verb+Handleable+ object, not a raw pointer. 
+It is not possible to construct directly and safely
+a smart pointer from a raw pointer~\cite{ref:SmartPtrs}; the Teuchos
+smart pointer requires a call to the {\tt rcp()} method for safe
+construction of a smart pointer. Nonetheless,
+syntax such as 
+{\scriptsize\begin{verbatim}
+Handle<Base> handle = new Derived();
+\end{verbatim}}
+without an intermediate {\tt rcp()} call is often desirable. For class
+heirarchies where this is the desired behavior, all subclasses
+should implement the following {\tt Handleable} interface,
+{\scriptsize\begin{verbatim}
+template <class Base>
+  class Handleable
+  {
+  public:
+    /** Virtual dtor */
+    virtual ~Handleable(){;}
+
+    /** Return a safely-created RefCountPtr to the base type. Any
+     * class can implement this method as {return rcp(this);} */
+    virtual RefCountPtr<Base> getRcp() = 0 ;
+    
+  };
+\end{verbatim}}
+where the {\tt getRcp()} method provides a call to {\tt rcp()} in 
+a polymorphic way. Class heirarchies deriving from {\tt Handleable}
+can then support construction of a handle from a raw pointer.
+
+\subsection{Error Handling}
+
+Error checking and reporting in TSFExtended should always be done using the
+\verb+TEST_FOR_EXCEPTION+ macro in Teuchos. This macro takes three
+arguments,
+\begin{itemize}
+\item A predicate to be evaluated. If true, an exception will be thrown.
+\item The type of exception to be thrown.
+\item A helpful message that can be included in an output stream operation.
+\end{itemize}
+For example, to test that the input to a square root function is positive,
+one could write
+{\scriptsize\begin{verbatim}
+double safeSqrt(double x)
+{
+  TEST_FOR_EXCEPTION( x < 0.0, runtime_error, 
+                     ``Input `` << x << `` to safeSqrt() is negative'');
+  return ::sqrt(x);
+}
+\end{verbatim}}
+Given negative input, say $x=-1.23$, 
+the error test will throw a \verb+runtime_error+ exception. The exception's
+message will contain information on the line number at which the error was 
+detected, a literal string showing the error test, and the message
+input to the macro. 
+
+Upon error detection by this means, the global method \verb+TestForException_break()+
+will be called. This method does nothing useful in itself, but serves as a place
+to set a debugger breakpoint so that the call stack can be backtraced in a debugger.
+
+
+\subsection{Diagnostic Output}
+
+It is often useful to be able to vary the amount of diagnostic output from a piece
+of code; in some situations one will want to run a solver silently, in others,
+to print out convergence information, in others, to print out virtually everything. 
+TSFExtended deals with this issue in a unified way by means of the 
+\verb+ObjectWithVerbosity+ base class. This class provides several methods:
+instance-specific \verb+verbosity()+ methods that can get or set the 
+verbosity level for a particular object instance, and a \verb+classVerbosity()+
+static method that can set the verbosity for all instances of a given type.
+
+Verbosity level is represented by the \verb+VerbositySetting+ enum, whose values
+are, in increasing order of verbosity,
+\begin{itemize}
+\item \verb+VerbSilent+
+\item \verb+VerbLow+
+\item \verb+VerbMedium+
+\item \verb+VerbHigh+
+\item \verb+VerbExtreme.+
+\end{itemize}
+To set the verbosity of an object, do, for instance, 
+{\scriptsize\begin{verbatim}
+Vector<double> x = space.createMember();
+x.verbosity() = VerbMedium;
+\end{verbatim}}
+and to set it for all members of a class \verb+Vector<double>+, do, for instance,
+{\scriptsize\begin{verbatim}
+Vector<double>::classVerbosity() = VerbMedium;
+\end{verbatim}}
+The following code fragment shows an example of the use of verbosity settings
+to control diagnostic output. If the verbosity is higher than \verb+VerbLow+,
+a message will be printed before and after a vector addition, and if 
+the verbosity level is higher than \verb+VerbMedium+, the vectors themselves
+will be printed.
+{\scriptsize\begin{verbatim}
+/* show input to vector sum */
+if (verbosity() > VerbLow)
+{
+  cerr << ``adding vectors '' << a.describe() << `` + `` << b.describe() << endl;
+  if (verbosity() > VerbHigh)
+  {
+    cerr << ``first = `` << a << endl;
+    cerr << ``second = `` << b << endl;
+  }
+}
+
+c = a + b;
+
+/* show output of vector sum */
+if (verbosity() > VerbLow)
+{
+  cerr << ``done adding vectors '' << a.describe() << `` + `` << b.describe() << endl;
+  if (verbosity() > VerbHigh)
+  {
+    cerr << ``result = `` << c << endl;
+  }
+}
+\end{verbatim}}
+
+\subsection{Timing}
+
+\subsection{Generic Output Extensions}
+
+TSFExtended provides interfaces for printing either brief descriptions or
+full dumps of objects. Objects for which a brief description (for example,
+the dimension of a vector space) can be printed should implement
+the \verb+Describable+ interface. Objects that can dump more information
+should implement the \verb+Printable+ interface.
+
+\section{Vectors, Vector Spaces, and Vector Types}
+
+\subsection{The Vector handle}
+
+\subsection{Vector Extensions}
+
+\subsubsection{Element Loading}
+
+\verb+LoadableVector+ defines an interface through which elements can be
+loaded into a vector. Element loading is used extensively by
+application codes in creating vectors, but should never be used by
+high-performance solver codes; this capability is therefore in
+\verb+TSFExtended+ rather than \verb+TSFCore+.
+
+   
+A TSFExtended vector type that will be used in a context where
+loading is required should multiply inherit from both
+\verb+TSFCore::Vector+ and \verb+TSFExtended::LoadableVector+.
+    
+Elements can by loaded one at a time or in batches. The methods to
+load single elements are pure virtual and thus must be defined by
+derived classes. Loading in batches will usually be more efficient
+provided the underlying vector implementation supports it. For
+those types not supporting batch loading, \verb+LoadableVector+ provides
+default batch loading functions which delegate to single-element
+loading.
+   
+Elements can by loaded either by setting a value, or adding to an
+existing value. The latter will typically by used in
+finite-element codes.
+
+
+\subsubsection{Element Access}
+
+\verb+TSFExtended::AccessibleVector+ defines an interface through which
+elements for a vector can be accessed. Element loading is occasionally
+used by application codes in probing results vectors, 
+but should rarely be used by high-performance solver codes; this 
+capability is therefore in TSFExtended rather than TSFCore.
+
+\section{Linear Operators}
+
+\subsection{The LinearOperator handle}
+
+\subsection{Matrix-Free LinearOperator Subtypes}
+
+\subsubsection{Composed Operators}
+
+Class \verb+ComposedOperator+ represents a composition of two linear
+operators, $A\cdot B$. The constructor is 
+{\scriptsize\begin{verbatim}
+ComposedOperator(const LinearOperator<Scalar>& A, const LinearOperator<Scalar>& B);
+\end{verbatim}}
+but it will normally be built at the user level by means of the overloaded
+multiplication operator, e.g., 
+{\scriptsize\begin{verbatim}
+LinearOperator C = A*B;
+\end{verbatim}}
+Note that  \verb+A+ and \verb+B+ are stored by reference in \verb+C+, so that 
+if either \verb+A+ or \verb+B+
+is changed,  \verb+C+ will automatically reflect that change.
+
+The matrix product $AB$ is not formed explicitly, rather, the composed
+operator $C=AB$ is applied to a vector $x$ by first carrying out $y=B x$, followed
+by $z=Ay$. If the application of the transpose is requested, it is done by applying
+the transpose of $A$ followed by the transpose of $B$.
+
+If the explicit multiplication of $AB$ is required, it can be gotten by
+calling the \verb+form()+ method, e.g., 
+{\scriptsize\begin{verbatim}
+LinearOperator C = (A*B).form();
+\end{verbatim}}
+Once the product \verb+C+ has been formed explicitly, the relationship to 
+\verb+A+ and  \verb+B+ if forgotten, and 
+changes to \verb+A+ or \verb+B+ will {\it not} be reflected
+in \verb+C+.
+
+\subsubsection{Transpose Operators}
+
+Class \verb+TransposeOperator+ represents the implicit transpose of an operator $A$. 
+At the user level, it is built using the \verb+transpose()+ method,
+e.g.,
+{\scriptsize\begin{verbatim}
+LinearOperator At = A.transpose();
+\end{verbatim}}
+The transpose is never formed, rather, when \verb+At.apply()+ is called,
+the action is delegated to \verb+A.apply()+ with a transpose flag set to true.
+Note that  \verb+A+ is stored by reference in \verb+At+, so that if \verb+A+
+is changed,  \verb+At+ will automatically reflect that change.
+
+If the explicit transposition of $A$ is required, it can be gotten by
+calling the \verb+form()+ method, e.g., 
+{\scriptsize\begin{verbatim}
+LinearOperator B = A.transpose().form();
+\end{verbatim}}
+For this to work, the contents of \verb+A+ must be of a type that implements the 
+\verb+ExplicitlyTransposeableOp+ interface; if not, a runtime error will result.
+Any \verb+RowAccessibleOp+ will implement this interface.
+Once the transpose \verb+B+ has been formed explicitly, the relationship
+between  \verb+A+ and  \verb+B+ if forgotten, 
+and changes to \verb+A+ will {\it not} be reflected
+in \verb+B+. 
+
+\subsubsection{Zero, Identity, and Diagonal Operators}
+
+The zero operator returns zero for any input, the identity returns the input
+without modification. A diagonal operator carries out element-by-element 
+multiplication between the entries on the diagonal and the input vector.
+
+\subsubsection{Scaled Operators}
+
+Class \verb+ScaledOperator+ represents a composition of scalar multiplication with
+the action of an operator, $\alpha \cdot A$. 
+The constructor is 
+{\scriptsize\begin{verbatim}
+ScaledOperator(const Scalar& alpha, const LinearOperator<Scalar>& A);
+\end{verbatim}}
+but it will normally be built at the user level by means of the overloaded
+multiplication operator, e.g., 
+{\scriptsize\begin{verbatim}
+LinearOperator B = alpha*A;
+\end{verbatim}}
+The scaled operator $\alpha A$ is not formed explicitly, rather, the 
+operator is applied to a vector $x$ by first carrying out $y=A x$, followed
+by the scaling $z=\alpha y$. 
+
+\subsubsection{Inverse Operators}
+
+We never form inverse operators explicitly, however, we can represent the
+action of a solver as an operator. The constructor for an inverse operator
+takes both an operator and a linear solver, 
+{\scriptsize\begin{verbatim}
+InverseOperator(const LinearOperator<Scalar>& A, const LinearSolver& solver);
+\end{verbatim}}
+Normally, such an object will be built at user level with the \verb+inverse()+
+method,
+{\scriptsize\begin{verbatim}
+LinearSolver gmres = new GMRESSolver(...);
+LinearOperator AInv = A.inverse(gmres);
+\end{verbatim}}
+The action of an inverse operator on a vector $b$ is to call the solver's \verb+solve()+
+method with the matrix $A$ and the vector $b$, returning as output
+the solution of the equation $Ax=b$. 
+Note that  \verb+A+ is stored by reference in \verb+AInv+, so that if \verb+A+
+is changed,  \verb+AInv+ will automatically reflect that change.
+
+\subsection{Extended Linear Operator Interfaces}
+
+\subsubsection{Matrix Loading}
+
+\subsubsection{Row Access}
+
+Many software packages, including Aztec and ML, can work with arbitrary matrix types
+provided they implement a \verb+getRow()+ method that get retrieve the nonzero
+values in any row of the matrix. Furthermore, many operations such as explicit
+transposition and explicit matrix-matrix multiplication can be written in terms
+of a \verb+getRow()+. 
+
+\subsubsection{Explicit Transposition}
+
+\subsubsection{Explicit Matrix-Matrix Multiplication}
+
+\subsubsection{Incomplete LU Factorization}
+
+\subsubsection{Incomplete Cholesky Factorization}
+
+
+\section{Some Concrete Types}
+
+\section{Preconditioners}
+
+\section{Linear Solvers}

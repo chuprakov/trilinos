@@ -52,4 +52,11 @@
 #
 ############################################################################
 
-INPUT                  = ../../../../Trilinos/packages/TSFExtended/src
+INPUT                  = ../../../../Trilinos/packages/TSFExtended/doc/index.doc \
+                         ../../../../Trilinos/packages/TSFExtended/src/Utils/ \
+                         ../../../../Trilinos/packages/TSFExtended/src/Vectors/ \  
+                         ../../../../Trilinos/packages/TSFExtended/src/Concrete/ \  
+                         ../../../../Trilinos/packages/TSFExtended/src/Operators/ \  
+                         ../../../../Trilinos/packages/TSFExtended/src/LinearSolvers/ \  
+                         ../../../../Trilinos/packages/TSFExtended/src/Preconditioners/  
+

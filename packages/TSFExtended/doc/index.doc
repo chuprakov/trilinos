@@ -1,0 +1,161 @@
+/*! \mainpage TSFExtended : Extended Features for Compund Operators, Application Interfaces, and Interoperability
+
+
+<b>Warning!</b> Clicking on the above links (i.e. "Class List", "File
+List" etc.)  can be a bit overwhelming and not recommended as a way to
+"browse" what is in the Trilinos "package" %TSFExtended.  Instead, it is
+recommended that one uses the below outline to browse the classes and
+various functions in %TSFExtended.  The below presentation is designed to
+expose developers to %TSFExtended in manageable chunks as to not
+overwhelm.
+
+TSFExtended is, as the name implies, a set of extensions to the base 
+capabilities in TSFCore. TSFCore provides the objects and 
+methods needed by designers of 
+abstract solver algorithms; TSFExtended provides, among other things, 
+interfaces through which compound objects can be constructed
+in a simple, intuitive way. Among the features of TSFExtended are 
+<ul> 
+<li> Interfaces for matrix and vector loading and element or row access.
+<li> Extensions for assembling matrix-free
+compound operators through composition,
+block structuring, and implicit adjoints and inverses.
+<li> High-level objects supporting high-performance, no-copy operator 
+overloading, allowing convenient "math-like" syntax.
+<li> Interfaces for printing brief or full diagnostic output, and for
+controlling the verbosity level of a process.
+</ul>
+As with TSFCore, TSFExtended objects are templated on scalar type where
+appropriate.
+
+<h4> Extension via multiple inheritance </h4>
+
+Many TSFExtended classes are ``extensions'' of existing TSFCore classes,
+providing additional capabilities through an extended interface. 
+The appropriate mechanism for extension of an interface in C++ is inheritance.
+We can further partition the extended interface as appropriate for clarity
+of design and flexibility of implementation; 
+for instance, for vectors we might (and do) 
+wish to group all methods associated with loading elements into 
+a TSFExtended::LoadableVector interface, and all methods associated with
+stream output into a TSFExtended::Printable interface. This partitioning gives
+us the flexibility to decide for each concrete type whether a given
+set of interface extensions will be implemented. For example, an in-core
+vector type such as <tt>Epetra_Vector</tt> supports element access, however, 
+a vector object that is a proxy to a full vector on a server will not; therefore, a 
+TSFExtended::EpetraVector class will implement the 
+TSFExtended::AccessibleVector
+interface but a hypothetical <tt> TSFExtended::ProxyVector</tt> would not.
+
+It is worth noting two features of this design: First, 
+that partitioned interfaces naturally use the ``mix-in'' style 
+of multiple inheritance, in which all subclasses but one are abstract and
+serve only to define interfaces. While most C++ programmers are 
+comfortable with multiple inheritance, it is often described (particularly
+in books on Java) as a dangerous feature of C++. Note that the mix-in style
+is the simplest application of multiple inheritance, and indeed is identical
+to using the <tt>interface</tt> keyword to define interface extensions
+in Java; thus, even a Java evangelist should feel comfortable with the present
+use of multiple inheritance.
+Second, it is worth mentioning that to access the extended interface for, 
+say, TSFExtended::LoadableVector it is necessary to cross-cast 
+a TSFCore::Vector to the TSFExtended::LoadableVector type. In standard C++
+cross-casts can be safely done using the <tt>dynamic_cast</tt> mechanism; the
+return value of <tt>dynamic_cast</tt> can be tested for success. 
+For subtypes such as <tt>ProxyVector</tt> for which some extensions
+are unimplemented, the cross-cast will fail if one attempts to use
+one of the unimplemented extensions; an exception can be thrown to trigger
+an alternate path.
+
+<H4> Extended Interfaces </h4>
+
+<ul>
+<li> <b>Vector Extensions</b>
+<ul>
+<li> TSFExtended::LoadableVector defines an interface through which elements can 
+    be loaded into a vector  
+<li> TSFExtended::AccessibleVector defines an interface through which
+     elements for a vector can be accessed.
+</ul>
+<li> <b>Matrix Loading and Access Extensions</b>
+<ul> 
+<li> TSFExtended::LoadableMatrix defines an interface through which a matrix 
+can be configured and filled with elements.
+<li> TSFExtended::RowAccessibleOp defines an interface through which clients
+can access nonzero elements in a row of an operator.
+</ul>
+<li> <b>Matrix Manipulation</b>
+<ul>
+<li> TSFExtended::ExplicitlyTransposeableOp defines an interface for
+explicitly forming the transpose of an operator
+<li> TSFExtended::ILUFactorizableOp defines an interface for obtaining an
+incomplete LU factorization of an operator
+<li> TSFExtended::ICFactorizableOp defines an interface for obtaining
+an incomplete Cholesky factorization of an operator
+</ul>
+</ul>
+
+
+<h4> Matrix-Free Linear Operator Extensions </h4>
+
+Many operators can be implemented implicitly in terms of other operators.
+For example, if used in an iterative solver,
+the matrix product \f$A\cdot B\f$ need not be formed because the application
+of the operator to a vector can be carried out by first multiplying by 
+\f$B\f$, then multiplying the result by \f$A\f$. 
+
+<ul>
+<li> TSFExtended::ComposedOp represents a composition of two linear
+operators, \f$A\cdot B\f$.
+<li> TSFExtended::TransposeOp  represents the implicit transpose 
+\f$A^T\f$ of an operator \f$A\f$. 
+<li> TSFExtended::InverseOp represents the implicit inverse of an operator, given
+some specification of a solver. The explicit inverse is never formed; rather,
+the inverse operator is applied implicitly by solving a system
+\f$A x_{out} = x_{in}\f$ with the specified solver.
+<li> TSFExtended::InverseTransposeOp implicit inverse transpose, returns the result
+of \f$A^T x_{out} = x_{in}\f$ obtained with a specified solver.
+<li> TSFExtended::SumOp represents the sum of two operators, \f$A + B\f$.
+<li> TSFExtended::ScaledOp represents a scalar times an operator, \f$\alpha A\f$.
+<li> TSFExtended::ZeroOp represents the zero operator, and returns zero output 
+for any input. 
+<li> TSFExtended::IdentityOp represents the identity operator, and returns the input
+unmodified.
+<li> TSFExtended::DiagonalOp represents a diagonal operator.
+</ul>
+</ul>
+
+
+<h4> User-Level Handle Classes </h4>
+
+Handle classes
+(also sometimes known as envelope classes) 
+are a well-known idiom in C++.
+Among the uses of handle classes are
+<ul>
+<li> Enabling clean use of operator overloading on polymorphic types.
+<li> Hiding a developer-only interface behind a smaller user interface
+defined by the handle.
+<li> Hiding details of memory management, and making a code appear
+"pointer free."
+</ul>
+Of these, the first is the most important motivator for using handles
+in TSFExtended.
+
+Handles are used for many data types in TSFExtended, so it is logical to
+provide a generic handle class implementing the common methods. The
+TSFExtended::Handle class is templated on contained type, and is essentially
+a wrapper for a Teuchos::RefCountPtr. All user-level handles in TSFExtended,
+such as TSFExtended::Vector and TSFExtended::LinearOperator, are implemented
+in terms of TSFExtended::Handle. 
+
+<h4> Operator Overloading </h4>
+
+Wouldn't it be nice to be able to write code like the following? 
+\code
+Vector<double> x = A*y + B.inverse(gmres)*C.transpose()*z;
+\endcode
+where <tt>x</tt> and <tt>y</tt> are vectors, <tt>A, B,</tt> and <tt>C</tt>
+operators, and <tt>gmres</tt> a solver object? Well, with TSFExtended,
+you can. Better yet, with TSFExtended the code will also be fast!
+*/
