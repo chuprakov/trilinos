@@ -17,6 +17,8 @@
 #include "ConstrainedOptimizationPack/include/DecompositionSystemVarReductImp.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
 #include "AbstractLinAlgPack/include/BasisSystemPerm.h"
+#include "AbstractLinAlgPack/include/PermutationOut.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "ThrowException.h"
 
 namespace ConstrainedOptimizationPack {
@@ -342,6 +344,32 @@ void DecompositionSystemVarReductPermStd::select_decomp(
 		  ? BasisSystem::MATRICES_INDEP_IMPS : BasisSystem::MATRICES_ALLOW_DEP_IMPS )
 		,out
 		);
+
+	if( out && (int)olevel >= (int)PRINT_BASIC_INFO ) {
+		const Range1D var_indep = basis_sys_->var_indep(), equ_undecomp = basis_sys_->equ_undecomp();
+		*out
+			<< "\nSelected a new basis\n"
+			<< "\nbs.var_dep()            = ["<<var_dep->lbound()<<","<<var_dep->ubound()<<"]"
+			<< "\nds.var_indep()          = ["<<var_indep.lbound()<<","<<var_indep.ubound()<<"]"
+			<< "\nds.equ_decomp()         = ["<<equ_decomp->lbound()<<","<<equ_decomp->ubound()<<"]"
+			<< "\nds.equ_undecomp()       = ["<<equ_undecomp.lbound()<<","<<equ_undecomp.ubound()<<"]"
+			<< std::endl;
+	}
+	if( out && (int)olevel >= (int)PRINT_VECTORS ) {
+		*out
+			<< "\nP_var =\n" << *P_var
+			<< "\nP_equ =\n" << *P_equ
+			;
+	}
+	if( out && (int)olevel >= (int)PRINT_EVERY_THING ) {
+		*out
+			<< "\nGc =\n" << *Gc;
+	}
+
+	
+
+
+
 	// If we get here a nonsinguar basis selection has been made and the basis matrices
 	// are updated.  Now give them back to the decomp_sys_imp object and update the rest
 	// of the decomposition matrices.
