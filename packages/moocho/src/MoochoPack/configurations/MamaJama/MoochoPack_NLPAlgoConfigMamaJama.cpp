@@ -98,7 +98,6 @@
 #include "ReducedSpaceSQPPack/include/std/QPFailureReinitReducedHessian_Step.h"
 #include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_Step.h"
 #include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/include/std/IndepDirecExact_Step.h"
 #include "ReducedSpaceSQPPack/include/std/CalcDFromYPYZPZ_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFailureNewBasisSelection_Step.h"
 #include "ReducedSpaceSQPPack/include/std/NewBasisSelectionStd_Strategy.h"
