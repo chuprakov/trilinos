@@ -29,6 +29,14 @@
 
 #include "TSFHandle.hpp"
 #include "TSFLinearSolverBase.hpp"
+#include "Teuchos_TimeMonitor.hpp"
+
+inline static Time& solveTimer() 
+{
+  static RefCountPtr<Time> rtn 
+    = TimeMonitor::getNewTimer("linear solve"); 
+  return *rtn;
+}
 
 namespace TSFExtended
 {
@@ -80,7 +88,7 @@ namespace TSFExtended
 
     TEST_FOR_EXCEPTION(op.ptr().get()==0, std::runtime_error,
                         "null op pointer in LinearSolver<Scalar>::solve()");
-
+    TimeMonitor timer(solveTimer());
     return ptr()->solve(op, rhs, soln);
   }
 
