@@ -58,7 +58,7 @@ Scalar TSFCore::sum( const Vector<Scalar>& v_rhs )
   RTOpPack::ROpSum<Scalar> sum_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> sum_targ = sum_op.reduct_obj_create();
 	const Vector<Scalar>* vecs[] = { &v_rhs };
-	applyOp<Scalar>(sum_op,1,vecs,0,NULL,&*sum_targ);
+	applyOp<Scalar>(sum_op,1,vecs,0,(Vector<Scalar>**)NULL,&*sum_targ);
 	return sum_op(*sum_targ);
 }
 
@@ -68,7 +68,7 @@ Scalar TSFCore::norm_1( const Vector<Scalar>& v_rhs )
   RTOpPack::ROpNorm1<Scalar> norm_1_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> norm_1_targ = norm_1_op.reduct_obj_create();
 	const Vector<Scalar>* vecs[] = { &v_rhs };
-	applyOp<Scalar>(norm_1_op,1,vecs,0,NULL,&*norm_1_targ);
+	applyOp<Scalar>(norm_1_op,1,vecs,0,(Vector<Scalar>**)NULL,&*norm_1_targ);
 	return norm_1_op(*norm_1_targ);
 }
 
@@ -78,7 +78,7 @@ Scalar TSFCore::norm_2( const Vector<Scalar>& v_rhs )
   RTOpPack::ROpNorm2<Scalar> norm_2_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> norm_2_targ = norm_2_op.reduct_obj_create();
 	const Vector<Scalar>* vecs[] = { &v_rhs };
-	applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,&*norm_2_targ);
+	applyOp<Scalar>(norm_2_op,1,vecs,0,(Vector<Scalar>**)NULL,&*norm_2_targ);
 	return norm_2_op(*norm_2_targ);
 }
 
@@ -88,7 +88,7 @@ Scalar TSFCore::norm_inf( const Vector<Scalar>& v_rhs )
   RTOpPack::ROpNormInf<Scalar> norm_inf_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> norm_inf_targ = norm_inf_op.reduct_obj_create();
 	const Vector<Scalar>* vecs[] = { &v_rhs };
-	applyOp<Scalar>(norm_inf_op,1,vecs,0,NULL,&*norm_inf_targ);
+	applyOp<Scalar>(norm_inf_op,1,vecs,0,(Vector<Scalar>**)NULL,&*norm_inf_targ);
 	return norm_inf_op(*norm_inf_targ);
 }
 
@@ -98,7 +98,7 @@ Scalar TSFCore::dot( const Vector<Scalar>& v_rhs1, const Vector<Scalar>& v_rhs2 
   RTOpPack::ROpDotProd<Scalar> dot_prod_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> dot_prod_targ = dot_prod_op.reduct_obj_create();
 	const Vector<Scalar>* vecs[] = { &v_rhs1, &v_rhs2 };
-	applyOp<Scalar>(dot_prod_op,2,vecs,0,NULL,&*dot_prod_targ);
+	applyOp<Scalar>(dot_prod_op,2,vecs,0,(Vector<Scalar>**)NULL,&*dot_prod_targ);
   return dot_prod_op(*dot_prod_targ);
 }
 
@@ -108,7 +108,7 @@ Scalar TSFCore::get_ele( const Vector<Scalar>& v, Index i )
   RTOpPack::ROpSum<Scalar> sum_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> sum_targ = sum_op.reduct_obj_create();
 	const Vector<Scalar>* vecs[] = { &v };
-	applyOp<Scalar>(sum_op,1,vecs,0,NULL,&*sum_targ,i,1);
+	applyOp<Scalar>(sum_op,1,vecs,0,(Vector<Scalar>**)NULL,&*sum_targ,i,1);
 	return sum_op(*sum_targ);
 }
 
@@ -122,7 +122,7 @@ void TSFCore::set_ele( Index i, Scalar alpha, Vector<Scalar>* v )
 #endif
   RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op(alpha);
 	Vector<Scalar>* targ_vecs[] = { v };
-	applyOp<Scalar>(assign_scalar_op,0,NULL,1,targ_vecs,NULL,i,1);
+	applyOp<Scalar>(assign_scalar_op,0,(const Vector<Scalar>**)NULL,1,targ_vecs,(RTOpPack::ReductTarget*)NULL,i,1);
 }
 
 template<class Scalar>
@@ -133,7 +133,7 @@ void TSFCore::assign( Vector<Scalar>* v_lhs, const Scalar& alpha )
 #endif
   RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op(alpha);
 	Vector<Scalar>* targ_vecs[] = { v_lhs };
-	applyOp<Scalar>(assign_scalar_op,0,NULL,1,targ_vecs,NULL);
+	applyOp<Scalar>(assign_scalar_op,0,(const Vector<Scalar>**)NULL,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
 }
 
 template<class Scalar>
@@ -145,7 +145,7 @@ void TSFCore::assign( Vector<Scalar>* v_lhs, const Vector<Scalar>& v_rhs )
   RTOpPack::TOpAssignVectors<Scalar> assign_vectors_op;
 	const Vector<Scalar>* vecs[]      = { &v_rhs };
 	Vector<Scalar>*       targ_vecs[] = { v_lhs  };
-	applyOp<Scalar>(assign_vectors_op,1,vecs,1,targ_vecs,NULL);
+	applyOp<Scalar>(assign_vectors_op,1,vecs,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
 }
 
 template<class Scalar>
@@ -156,7 +156,7 @@ void TSFCore::Vp_S( Vector<Scalar>* v_lhs, const Scalar& alpha )
 #endif
   RTOpPack::TOpAddScalar<Scalar> add_scalar_op(alpha);
 	Vector<Scalar>* targ_vecs[] = { v_lhs };
-	applyOp<Scalar>(add_scalar_op,0,NULL,1,targ_vecs,NULL);
+	applyOp<Scalar>(add_scalar_op,0,(const Vector<Scalar>**)NULL,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
 }
 
 template<class Scalar>
@@ -172,7 +172,7 @@ void TSFCore::Vt_S(
 	else if( alpha != Teuchos::ScalarTraits<Scalar>::one() ) {
     RTOpPack::TOpScaleVector<Scalar> scale_vector_op(alpha);
 		Vector<Scalar>* targ_vecs[] = { v_lhs };
-		applyOp<Scalar>(scale_vector_op,0,NULL,1,targ_vecs,NULL);
+		applyOp<Scalar>(scale_vector_op,0,(const Vector<Scalar>**)NULL,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
 	}
 }
 
@@ -185,7 +185,7 @@ void TSFCore::Vp_StV( Vector<Scalar>* v_lhs, const Scalar& alpha, const Vector<S
   RTOpPack::TOpAXPY<Scalar> axpy_op(alpha);
 	const Vector<Scalar>* vecs[]      = { &v_rhs };
 	Vector<Scalar>*       targ_vecs[] = { v_lhs  };
-	applyOp<Scalar>(axpy_op,1,vecs,1,targ_vecs,NULL);
+	applyOp<Scalar>(axpy_op,1,vecs,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
 }
 
 template<class Scalar>
@@ -200,7 +200,7 @@ void TSFCore::ele_wise_prod(
   RTOpPack::TOpEleWiseProd<Scalar> ele_wise_prod_op(alpha);
 	const Vector<Scalar>* vecs[]      = { &v_rhs1, &v_rhs2 };
 	Vector<Scalar>*       targ_vecs[] = { v_lhs };
-	applyOp<Scalar>(ele_wise_prod_op,2,vecs,1,targ_vecs,NULL);
+	applyOp<Scalar>(ele_wise_prod_op,2,vecs,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
 }
 
 template<class Scalar>
@@ -215,7 +215,7 @@ void TSFCore::ele_wise_divide(
   RTOpPack::TOpEleWiseDivide<Scalar> ele_wise_divide_op(alpha);
 	const Vector<Scalar>* vecs[]      = { &v_rhs1, &v_rhs2 };
 	Vector<Scalar>*       targ_vecs[] = { v_lhs };
-	applyOp<Scalar>(ele_wise_divide_op,2,vecs,1,targ_vecs,NULL);
+	applyOp<Scalar>(ele_wise_divide_op,2,vecs,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
 }
 
 template<class Scalar>
@@ -232,7 +232,10 @@ void TSFCore::randomize( Scalar l, Scalar u, Vector<Scalar>* v )
 #endif
   RTOpPack::TOpRandomize<Scalar> random_vector_op(l,u);
 	Vector<Scalar>* targ_vecs[] = { v };
-	applyOp<Scalar>(random_vector_op,0,NULL,1,targ_vecs,NULL);
+	applyOp<Scalar>(random_vector_op,0,(const Vector<Scalar>**)NULL,1,targ_vecs,(RTOpPack::ReductTarget*)NULL);
 }
 
 #endif // TSFCORE_VECTOR_STD_OPS_HPP
+
+
+

@@ -446,14 +446,20 @@ template<class Scalar>
 inline
 void applyOp(
 	const RTOpPack::RTOpT<Scalar>   &op
-	,const int                   num_vecs
+	,const int                      num_vecs
 	,const Vector<Scalar>*          vecs[]
-	,const int                   num_targ_vecs
+	,const int                      num_targ_vecs
 	,Vector<Scalar>*                targ_vecs[]
 	,RTOpPack::ReductTarget         *reduct_obj
+#ifdef __sun
+	,const Index                    first_ele
+	,const Index                    sub_dim
+	,const Index                    global_offset
+#else
 	,const Index                    first_ele     = 1
 	,const Index                    sub_dim       = 0
 	,const Index                    global_offset = 0
+#endif
 	)
 {
 	if(num_vecs)
@@ -461,6 +467,23 @@ void applyOp(
 	else if (num_targ_vecs)
 		targ_vecs[0]->applyOp(op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,first_ele,sub_dim,global_offset);
 }
+
+#ifdef __sun
+template<class Scalar>
+inline
+void applyOp(
+	const RTOpPack::RTOpT<Scalar>   &op
+	,const int                      num_vecs
+	,const Vector<Scalar>*          vecs[]
+	,const int                      num_targ_vecs
+	,Vector<Scalar>*                targ_vecs[]
+	,RTOpPack::ReductTarget         *reduct_obj
+	)
+{
+	applyOp(op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj,1,0,0);
+}
+#endif
+
 
 } // end namespace TSFCore
 
