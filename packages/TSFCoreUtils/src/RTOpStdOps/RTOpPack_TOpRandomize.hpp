@@ -55,7 +55,7 @@ public:
     const Scalar& l   = -Teuchos::ScalarTraits<Scalar>::one()
     ,const Scalar& u  = +Teuchos::ScalarTraits<Scalar>::one()
     )
-    :ROpScalarScalarTransformationBase<Scalar>(l,u), RTOpT<Scalar>("TOpRandomize")
+    : RTOpT<Scalar>("TOpRandomize"), ROpScalarScalarTransformationBase<Scalar>(l,u)
     {}
   /** @name Overridden from RTOpT */
   //@{

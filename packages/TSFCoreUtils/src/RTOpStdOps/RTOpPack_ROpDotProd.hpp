@@ -59,8 +59,13 @@ public:
       ReductTargetScalar<Scalar> &reduct_obj = dyn_cast<ReductTargetScalar<Scalar> >(*_reduct_obj); 
       RTOP_APPLY_OP_2_0(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
       Scalar dot_prod = reduct_obj.get();
-      for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s, v1_val += v1_s ) {
-        dot_prod += (*v0_val)*(*v1_val);
+      if( v0_s == 1 && v1_s == 1 ) {
+        for( RTOp_index_type i = 0; i < subDim; ++i )
+          dot_prod += (*v0_val++)*(*v1_val++);
+      }
+      else {
+        for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s, v1_val += v1_s )
+          dot_prod += (*v0_val)*(*v1_val);
       }
       reduct_obj.set(dot_prod);
     }

@@ -33,14 +33,12 @@ $(srcdir)/MoochoUtilities/Range1D.hpp\
 $(srcdir)/MoochoUtilities/StandardAggregationMacros.hpp\
 $(srcdir)/MoochoUtilities/StandardCompositionMacros.hpp\
 $(srcdir)/MoochoUtilities/StandardCompositionRelationshipsPack.hpp\
-$(srcdir)/MoochoUtilities/WorkspacePack.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource_ref_count_ptr.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource.hpp \
 $(srcdir)/MoochoUtilities/ObjectDB.hpp
 
 MoochoUtilities_SOURCES=\
 $(srcdir)/MoochoUtilities/Range1D.cpp\
-$(srcdir)/MoochoUtilities/WorkspacePack.cpp\
 $(srcdir)/MoochoUtilities/ObjectDB.cpp
 
 RTOp_C_SOURCES_H=\

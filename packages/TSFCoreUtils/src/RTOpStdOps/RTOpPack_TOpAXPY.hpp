@@ -48,7 +48,7 @@ public:
   Scalar alpha() const { return this->scalarData(); }
   ///
   TOpAXPY( const Scalar &alpha = Teuchos::ScalarTraits<Scalar>::zero() )
-    : ROpScalarTransformationBase<Scalar>(alpha), RTOpT<Scalar>("TOpAXPY")
+    : RTOpT<Scalar>("TOpAXPY"), ROpScalarTransformationBase<Scalar>(alpha)
     {}
   /** @name Overridden from RTOpT */
   //@{
@@ -60,8 +60,14 @@ public:
 		) const
     {
       RTOP_APPLY_OP_1_1(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
-      for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s, z0_val += z0_s ) {
-        *z0_val += alpha() * (*v0_val);
+      const Scalar alpha = this->alpha();
+      if( z0_s==1 && v0_s==1 ) {
+        for( RTOp_index_type i = 0; i < subDim; ++i )
+          *z0_val++ += alpha * (*v0_val++);
+      }
+      else {
+        for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s, z0_val += z0_s )
+          *z0_val += alpha * (*v0_val);
       }
     }
   //@}

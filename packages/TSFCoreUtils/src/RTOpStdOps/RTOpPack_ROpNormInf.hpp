@@ -71,9 +71,17 @@ public:
       ReductTargetScalar<Scalar> &reduct_obj = dyn_cast<ReductTargetScalar<Scalar> >(*_reduct_obj); 
       RTOP_APPLY_OP_1_0(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
       Scalar norm_inf = reduct_obj.get();
-      for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s ) {
-        const Scalar mag = Teuchos::ScalarTraits<Scalar>::magnitude(*v0_val);
-        norm_inf = mag > norm_inf ? mag : norm_inf;
+      if( v0_s == 1 ) {
+        for( RTOp_index_type i = 0; i < subDim; ++i ) {
+          const Scalar mag = Teuchos::ScalarTraits<Scalar>::magnitude(*v0_val++);
+          norm_inf = mag > norm_inf ? mag : norm_inf;
+        }
+      }
+      else {
+        for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s ) {
+          const Scalar mag = Teuchos::ScalarTraits<Scalar>::magnitude(*v0_val);
+          norm_inf = mag > norm_inf ? mag : norm_inf;
+        }
       }
       reduct_obj.set(norm_inf);
     }

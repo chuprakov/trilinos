@@ -229,19 +229,19 @@ void RTOpC::apply_op(
   ,ReductTarget *_reduct_obj
   ) const
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
   RTOp_ReductTarget reduct_obj = RTOp_REDUCT_OBJ_NULL;
   if(_reduct_obj) reduct_obj = (*this)(*_reduct_obj);
 
 	int k;
-	wsp::Workspace<RTOp_SubVector>        c_sub_vecs(wss,num_vecs);
+	Workspace<RTOp_SubVector>        c_sub_vecs(wss,num_vecs,false);
 	for( k = 0; k < num_vecs; ++k ) {
 		const SubVector& v = sub_vecs[k];
 		RTOp_sub_vector(v.globalOffset(),v.subDim(),v.values(),v.stride(),&c_sub_vecs[k]);
 	}
-	wsp::Workspace<RTOp_MutableSubVector>  c_targ_sub_vecs(wss,num_targ_vecs);
+	Workspace<RTOp_MutableSubVector>  c_targ_sub_vecs(wss,num_targ_vecs,false);
 	for( k = 0; k < num_targ_vecs; ++k ) {
 		const MutableSubVector& v = targ_sub_vecs[k];
 		RTOp_mutable_sub_vector(v.globalOffset(),v.subDim(),v.values(),v.stride(),&c_targ_sub_vecs[k]);

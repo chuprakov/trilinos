@@ -33,7 +33,7 @@
 #define RTOPPACK_RTOP_NEW_T_HPP
 
 #include "RTOpPack_RTOpTDecl.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_ScalarTraits.hpp"
 
@@ -127,13 +127,13 @@ const char* RTOpT<Scalar>::op_name() const
 template<class Scalar>
 RTOpT<Scalar>& RTOpT<Scalar>::operator=(const RTOpT<Scalar>& op)
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	int num_values = 0, num_indexes = 0, num_chars = 0;
 	op.get_op_type_num_entries( &num_values, &num_indexes, &num_chars );
-	wsp::Workspace<primitive_value_type> value_data(wss,num_values);
-	wsp::Workspace<index_type>           index_data(wss,num_indexes);
-	wsp::Workspace<char_type>            char_data(wss,num_chars);
+	Workspace<primitive_value_type> value_data(wss,num_values,false);
+	Workspace<index_type>           index_data(wss,num_indexes,false);
+	Workspace<char_type>            char_data(wss,num_chars,false);
 	op.extract_op_state(
 		num_values,   num_values  ? &value_data[0] : NULL
 		,num_indexes, num_indexes ? &index_data[0] : NULL

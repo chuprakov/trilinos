@@ -38,7 +38,7 @@
 #include "RTOpPack_MPI_apply_op_decl.hpp"
 #include "RTOp.h"
 #include "Teuchos_RawMPITraits.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 
 //
 // More interfaces
@@ -317,10 +317,10 @@ void RTOpPack::MPI_apply_op(
 	,RTOpPack::ReductTarget*                           reduct_objs[]
 	)
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	int k, j, off;
-	wsp::Workspace<SubVectorT<Scalar> > c_sub_vecs(wss,num_multi_vecs*num_cols);
+	Workspace<SubVectorT<Scalar> > c_sub_vecs(wss,num_multi_vecs*num_cols);
 	if(sub_multi_vecs) {
 		for( off = 0, j = 0; j < num_cols; ++j ) {
 			for( k = 0; k < num_multi_vecs; ++k ) {
@@ -329,7 +329,7 @@ void RTOpPack::MPI_apply_op(
 			}
 		}
 	}
-  wsp::Workspace<MutableSubVectorT<Scalar> > c_targ_sub_vecs(wss,num_targ_multi_vecs*num_cols);
+  Workspace<MutableSubVectorT<Scalar> > c_targ_sub_vecs(wss,num_targ_multi_vecs*num_cols);
 	if(targ_sub_multi_vecs) {
 		for( off = 0, j = 0; j < num_cols; ++j ) {
 			for( k = 0; k < num_targ_multi_vecs; ++k ) {
@@ -359,8 +359,8 @@ void RTOpPack::MPI_apply_op(
 	,ReductTarget*                            reduct_objs[]
   )
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
   typedef typename RTOpT<Scalar>::primitive_value_type primitive_value_type;
   // See if we need to do any global communication at all?
   if( comm == MPI_COMM_NULL || reduct_objs == NULL ) {
@@ -405,7 +405,7 @@ void RTOpPack::MPI_apply_op(
   // Allocate the intermediate target object and perform the
   // reduction for the vector elements on this processor.
   //
-  wsp::Workspace<Teuchos::RefCountPtr<ReductTarget> >
+  Workspace<Teuchos::RefCountPtr<ReductTarget> >
     i_reduct_objs( wss, num_cols );
   for( int kc = 0; kc < num_cols; ++kc ) {
     i_reduct_objs[kc] = op.reduct_obj_create();
@@ -476,8 +476,8 @@ void RTOpPack::MPI_apply_op(
     = RTOpPack::reduct_obj_ext_size<primitive_value_type>(
       num_reduct_type_values,num_reduct_type_indexes,num_reduct_type_chars
       );
-  wsp::Workspace<char> // This is raw memory for external intermediate reduction object.
-    i_reduct_objs_ext( wss, reduct_obj_ext_size*num_cols );
+  Workspace<char> // This is raw memory for external intermediate reduction object.
+    i_reduct_objs_ext( wss, reduct_obj_ext_size*num_cols, false );
   for( int kc = 0; kc < num_cols; ++kc ) {
     extract_reduct_obj_ext_state(
       op,*i_reduct_objs[kc],num_reduct_type_values,num_reduct_type_indexes,num_reduct_type_chars
@@ -496,8 +496,8 @@ void RTOpPack::MPI_apply_op(
     //
     // Create output argument for MPI call (must be different from input)
     //
-    wsp::Workspace<char> // This is raw memory for external intermediate reduction object.
-      i_reduct_objs_tmp( wss, reduct_obj_ext_size*num_cols );
+    Workspace<char> // This is raw memory for external intermediate reduction object.
+      i_reduct_objs_tmp( wss, reduct_obj_ext_size*num_cols, false );
     Teuchos::RefCountPtr<ReductTarget> i_reduct_obj_tmp_uninit = op.reduct_obj_create(); // Just an unreduced object!
     for( int kc = 0; kc < num_cols; ++kc ) {
       extract_reduct_obj_ext_state( // Initialize to no initial reduction

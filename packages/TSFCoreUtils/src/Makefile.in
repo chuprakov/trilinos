@@ -98,8 +98,7 @@ libLIBRARIES_INSTALL = $(INSTALL_DATA)
 LIBRARIES = $(lib_LIBRARIES)
 am__DEPENDENCIES_1 =
 libTSFCoreUtils_a_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am__objects_1 = Range1D.$(OBJEXT) WorkspacePack.$(OBJEXT) \
-	ObjectDB.$(OBJEXT)
+am__objects_1 = Range1D.$(OBJEXT) ObjectDB.$(OBJEXT)
 am__objects_2 = RTOp.$(OBJEXT) RTOpToMPI.$(OBJEXT) \
 	RTOp_SparseSubVector.$(OBJEXT) RTOp_apply_op_mpi.$(OBJEXT) \
 	RTOp_apply_op_serial.$(OBJEXT) RTOp_mpi.$(OBJEXT) \
@@ -209,7 +208,6 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_reduct_sum_value.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/RTOp_reduct_sum_values.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Range1D.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/WorkspacePack.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/check_nan_inf.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/initRTOpStdOpsLibCpp.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/print_sub_vector.Po
@@ -347,14 +345,12 @@ $(srcdir)/MoochoUtilities/Range1D.hpp\
 $(srcdir)/MoochoUtilities/StandardAggregationMacros.hpp\
 $(srcdir)/MoochoUtilities/StandardCompositionMacros.hpp\
 $(srcdir)/MoochoUtilities/StandardCompositionRelationshipsPack.hpp\
-$(srcdir)/MoochoUtilities/WorkspacePack.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource_ref_count_ptr.hpp\
 $(srcdir)/MoochoUtilities/ReleaseResource.hpp \
 $(srcdir)/MoochoUtilities/ObjectDB.hpp
 
 MoochoUtilities_SOURCES = \
 $(srcdir)/MoochoUtilities/Range1D.cpp\
-$(srcdir)/MoochoUtilities/WorkspacePack.cpp\
 $(srcdir)/MoochoUtilities/ObjectDB.cpp
 
 RTOp_C_SOURCES_H = \
@@ -744,7 +740,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_reduct_sum_value.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RTOp_reduct_sum_values.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Range1D.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/WorkspacePack.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/check_nan_inf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/initRTOpStdOpsLibCpp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/print_sub_vector.Po@am__quote@
@@ -1692,22 +1687,6 @@ Range1D.obj: $(srcdir)/MoochoUtilities/Range1D.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/Range1D.Po' tmpdepfile='$(DEPDIR)/Range1D.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Range1D.obj `if test -f '$(srcdir)/MoochoUtilities/Range1D.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoUtilities/Range1D.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoUtilities/Range1D.cpp'; fi`
-
-WorkspacePack.o: $(srcdir)/MoochoUtilities/WorkspacePack.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT WorkspacePack.o -MD -MP -MF "$(DEPDIR)/WorkspacePack.Tpo" -c -o WorkspacePack.o `test -f '$(srcdir)/MoochoUtilities/WorkspacePack.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/WorkspacePack.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/WorkspacePack.Tpo" "$(DEPDIR)/WorkspacePack.Po"; else rm -f "$(DEPDIR)/WorkspacePack.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/MoochoUtilities/WorkspacePack.cpp' object='WorkspacePack.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/WorkspacePack.Po' tmpdepfile='$(DEPDIR)/WorkspacePack.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WorkspacePack.o `test -f '$(srcdir)/MoochoUtilities/WorkspacePack.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/WorkspacePack.cpp
-
-WorkspacePack.obj: $(srcdir)/MoochoUtilities/WorkspacePack.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT WorkspacePack.obj -MD -MP -MF "$(DEPDIR)/WorkspacePack.Tpo" -c -o WorkspacePack.obj `if test -f '$(srcdir)/MoochoUtilities/WorkspacePack.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoUtilities/WorkspacePack.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoUtilities/WorkspacePack.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/WorkspacePack.Tpo" "$(DEPDIR)/WorkspacePack.Po"; else rm -f "$(DEPDIR)/WorkspacePack.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/MoochoUtilities/WorkspacePack.cpp' object='WorkspacePack.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/WorkspacePack.Po' tmpdepfile='$(DEPDIR)/WorkspacePack.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WorkspacePack.obj `if test -f '$(srcdir)/MoochoUtilities/WorkspacePack.cpp'; then $(CYGPATH_W) '$(srcdir)/MoochoUtilities/WorkspacePack.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/MoochoUtilities/WorkspacePack.cpp'; fi`
 
 ObjectDB.o: $(srcdir)/MoochoUtilities/ObjectDB.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ObjectDB.o -MD -MP -MF "$(DEPDIR)/ObjectDB.Tpo" -c -o ObjectDB.o `test -f '$(srcdir)/MoochoUtilities/ObjectDB.cpp' || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/ObjectDB.cpp; \

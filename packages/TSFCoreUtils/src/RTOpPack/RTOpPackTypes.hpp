@@ -34,6 +34,7 @@
 
 #include "RTOp_config.h"
 #include "TSFCoreUtils_ConfigDefs.hpp"
+#include "Teuchos_TestForException.hpp"
 
 namespace RTOpPack {
 
@@ -347,6 +348,19 @@ private:
 	int                              isSorted_;
 };
 
+
+template<class Scalar>
+void assign_entries( const MutableSubVectorT<Scalar> *msv, const SubVectorT<Scalar> &sv )
+{
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT(msv==NULL);
+  TEST_FOR_EXCEPT(msv->subDim() != sv.subDim());
+#endif
+  for( int i = 1; i <= sv.subDim(); ++i ) {
+    (*msv)(i) = sv(i);
+  }
+}
+
 //
 // MultiVector subviews
 //
@@ -479,6 +493,21 @@ public:
 	Scalar& operator()(RTOp_index_type i, RTOp_index_type j) const
 		{ return const_cast<Scalar&>(SubMultiVectorT<Scalar>::operator()(i,j)); }
 };
+
+template<class Scalar>
+void assign_entries( const MutableSubMultiVectorT<Scalar> *msmv, const SubMultiVectorT<Scalar> &smv )
+{
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT(msmv==NULL);
+  TEST_FOR_EXCEPT(msmv->subDim() != smv.subDim());
+  TEST_FOR_EXCEPT(msmv->numSubCols() != smv.numSubCols());
+#endif
+  for( int j = 1; j <= smv.numSubCols(); ++j ) {
+    for( int i = 1; i <= smv.subDim(); ++i ) {
+      (*msmv)(i,j) = smv(i,j);
+    }
+  }
+}
 
 //
 // Templated types
