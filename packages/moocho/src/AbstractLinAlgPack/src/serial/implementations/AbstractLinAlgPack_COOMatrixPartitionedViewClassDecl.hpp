@@ -33,7 +33,7 @@ template <class T_Indice, class T_Value> class TransposedPartition;
   *		(#num_row_part#,#row_part#(#num_row_part#),#num_col_part#,#col_part#(#num_col_part#))
   *
   * After these function execute successfully the object provides views to
-  * the given partitions (singly or consecutive) of the given permuted COO matrix.
+  * the given partitions (singular or consecutive) of the given permuted COO matrix.
   * The partitions are ordered by column or by row depending on the value of
   * #partition_order#.
   *
@@ -235,7 +235,7 @@ public:
 	  *		(#num_row_part#,#row_part#(#num_row_part#),#num_col_part#,#col_part#(#num_col_part#))
 	  *
 	  * After this function executes successfully #this# object provides views to
-	  * the given partitions (singly or consecutive) of the given permuted COO matrix.
+	  * the given partitions (singular or consecutive) of the given permuted COO matrix.
 	  * The partitions are ordered by column or by row depending on the value of
 	  * #partition_order#.
 	  *

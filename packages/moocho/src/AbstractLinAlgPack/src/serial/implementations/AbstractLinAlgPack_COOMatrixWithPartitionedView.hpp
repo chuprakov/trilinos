@@ -15,13 +15,13 @@ namespace SparseLinAlgPack {
   *
   * This class represents the aggregation of a COOMatrix and a COOMatrixParitionedView.
   * This class is designed to help avoid mistakes that may happen when the underlying
-  * COO matrix is modifed and the partitioned view becomes obsolite.  Therefore, operations
-  * that may make the partitioned view obsolite are encapsulated to delete the paritioned view.
+  * COO matrix is modified and the partitioned view becomes obsolete.  Therefore, operations
+  * that may make the partitioned view obsolete are encapsulated to delete the partitioned view.
   *
   * Therefore, non-const references to the underlying COOMatrix and COOMatrixPartitioned view
   * are not provided.  Analogs for the non-const member functions
   * are provided and keep track of the book keeping for you.  This is a very light weight class
-  * in terms of overhead.  The only acception to this are the rows() and cols() member functions.
+  * in terms of overhead.  The only exception to this are the rows() and cols() member functions.
   * They are included to allow for use with the MatrixWithOpConcreteEncap<M> class.
   *
   * The const interfaces to these objects can be accessed using the coom() and coom_view()
