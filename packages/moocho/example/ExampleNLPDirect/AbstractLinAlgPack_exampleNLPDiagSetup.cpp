@@ -83,7 +83,7 @@ int AbstractLinAlgPack::exampleNLPDiagSetup(
 	CommandLineProcessor::EParseCommandLineReturn
 		parse_return = command_line_processor.parse(argc,argv,&std::cerr);
 	
-	if( parse_return != CommandLineProcessor::PARSE_SUCCESSFULL )
+	if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
 		return parse_return;
 
 	// Create the vector space object to use.

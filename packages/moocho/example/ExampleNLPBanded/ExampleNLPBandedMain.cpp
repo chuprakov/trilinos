@@ -93,7 +93,7 @@ int main( int argc, char* argv[] )
 		CommandLineProcessor::EParseCommandLineReturn
 			parse_return = command_line_processor.parse(argc,argv,&std::cerr);
 
-		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFULL )
+		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL )
 			return parse_return;
 		
 		//
