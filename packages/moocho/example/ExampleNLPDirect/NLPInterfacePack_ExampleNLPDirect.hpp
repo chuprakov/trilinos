@@ -159,6 +159,10 @@ public:
 	//@{
 
 	///
+	Range1D var_dep() const;
+	///
+	Range1D var_indep() const;
+	///
 	const mat_space_ptr_t& space_D() const;
 	///
 	void calc_point(
@@ -216,15 +220,12 @@ protected:
 private:
 
 	// /////////////////////////////////////////
-	// Private types
-
-	typedef ReferenceCountingPack::ref_count_ptr<VectorSpaceCompositeStd>  vec_space_comp_t;
-
-	// /////////////////////////////////////////
 	// Private data members
 
 	VectorSpace::space_ptr_t    vec_space_;       // The vector space for dependent and indepenent variables and c(x).
-	vec_space_comp_t            vec_space_comp_;  // Composite vector space for x = [ xD; xI ]
+	VectorSpace::space_ptr_t    vec_space_comp_;  // Composite vector space for x = [ xD; xI ]
+	Range1D                     var_dep_;         // Range for dependnet variables.
+	Range1D                     var_indep_;       // Range for independent variables.
 	mat_space_ptr_t             space_D_;         // Matrix space object for D
 
 	bool         initialized_;            // flag for if initialized has been called.
@@ -232,7 +233,7 @@ private:
 	bool         has_bounds_;             // default = true
 	bool         force_xinit_in_bounds_;  // default = true.
 
-	size_type	n_;                       // Number of variables in the problem.
+	size_type    n_;                      // Number of variables in the problem.
 	VectorSpace::vec_mut_ptr_t  xinit_;   // Initial guess.
 	VectorSpace::vec_mut_ptr_t  xl_;      // lower bounds.
 	VectorSpace::vec_mut_ptr_t  xu_;      // upper bounds.

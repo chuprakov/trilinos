@@ -17,9 +17,7 @@
 #define EXAMPLE_BASIS_SYSTEM_H
 
 #include "NLPInterfacePack/include/NLPInterfacePackTypes.h"
-#include "AbstractLinAlgPack/include/BasisSystem.h"
-#include "AbstractLinAlgPack/include/VectorSpace.h"
-#include "Range1D.h"
+#include "AbstractLinAlgPack/include/BasisSystemCompositeStd.h"
 
 namespace NLPInterfacePack {
 
@@ -28,55 +26,43 @@ namespace NLPInterfacePack {
  *
  * ToDo: Finish documentation!
  */
-class ExampleBasisSystem : public BasisSystem {
+class ExampleBasisSystem
+	: public AbstractLinAlgPack::BasisSystemCompositeStd
+{
 public:
 
 	/// Calls <tt>this->initialize()</tt>
-	ExampleBasisSystem( const VectorSpace::space_ptr_t& space_x_DI = ReferenceCountingPack::null );
+	ExampleBasisSystem(
+		const VectorSpace::space_ptr_t       &space_x
+		,const Range1D                       &var_dep
+		,const Range1D                       &var_indep
+		);
 	
 	///
 	/** Initialize given the vector space for the dependent and independent variables.
 	 *
-	 * @param  space_x_DI
-	 *
-	 * Postconditions:<ul>
-	 * <li><tt>this->var_dep().size()   == space_x_DI->dim()</tt>
-	 * <li><tt>this->var_indep().size() == space_x_DI->dim()</tt>
-	 * </ul>
+	 * @param  space_x   [in]
+	 * @param  var_dep   [in]
+	 * @param  var_indep [in]
 	 */
-	void initialize( const VectorSpace::space_ptr_t& space_x_DI );
+	void initialize(
+		const VectorSpace::space_ptr_t       &space_x
+		,const Range1D                       &var_dep
+		,const Range1D                       &var_indep
+		);
 
-	/** @name Overridden from BasisSystem */
+	/** @name Overridden from BasisSystemCompositeStd */
 	//@{
 
 	///
-	const mat_nonsing_fcty_ptr_t factory_C() const;
-	///
-	const mat_fcty_ptr_t factory_D() const;
-	///
-	Range1D var_dep() const;
-	///
-	Range1D var_indep() const;
-	///
-	void update_basis(
-		const MatrixWithOp*         Gc
-		,const MatrixWithOp*        Gh
-		,MatrixWithOpNonsingular*   C
-		,MatrixWithOp*              D
-		,MatrixWithOp*              GcUP
-		,MatrixWithOp*              GhUP
-		,EMatRelations              mat_rel
+	void update_D(
+		const MatrixWithOpNonsingular&  C
+		,const MatrixWithOp&            N
+		,MatrixWithOp*                  D
+		,EMatRelations                  mat_rel
 		) const;
 
 	//@}
-
-private:
-	
-	VectorSpace::space_ptr_t   space_x_DI_;
-	Range1D                    var_dep_,
-	                           var_indep_;
-	mat_nonsing_fcty_ptr_t     factory_C_;
-	mat_fcty_ptr_t             factory_D_;
 
 }; // end class ExampleBasisSystem
 

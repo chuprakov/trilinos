@@ -18,6 +18,7 @@
 #include <stdexcept>
 
 #include "ExampleNLPFirstOrderInfo.h"
+#include "AbstractLinAlgPack/include/BasisSystemCompositeStd.h"
 #include "AbstractLinAlgPack/include/MatrixSpaceStd.h"
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
 #include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
@@ -69,11 +70,8 @@ void ExampleNLPFirstOrderInfo::initialize()
 	ExampleNLPFirstOrderDirect::initialize();
 	NLPFirstOrderInfo::initialize();
 
-	space_Gc_ = rcp::rcp_implicit_cast<NLPFirstOrderInfo::mat_space_ptr_t::element_type>(
-		rcp::ref_count_ptr<MatrixSpaceStd<MatrixWithOp,MatrixCompositeStd> >(
-			new MatrixSpaceStd<MatrixWithOp,MatrixCompositeStd>(
-				this->space_c(), this->space_x()
-				) ) );
+	space_Gc_ = BasisSystemCompositeStd::space_Gc(
+		this->space_x(), this->space_c() );
 	
 	initialized_ = true;
 }
@@ -89,71 +87,62 @@ void ExampleNLPFirstOrderInfo::imp_calc_Gc(
 	const VectorWithOp& x, bool newx, const FirstOrderInfo& first_order_info) const
 {
 	namespace rcp = ReferenceCountingPack;
-	namespace rmp = ResourceManagementPack;
 	using DynamicCastHelperPack::dyn_cast;
 	using AbstractLinAlgPack::Vp_S; // Should not have to do this!
 
 	const index_type
 		n = this->n(),
 		m = this->m();
+	const Range1D
+		var_dep   = this->var_dep(),
+		var_indep = this->var_indep();
 
-	assert(first_order_info.Gc);  // Should not be NULL if this member is called but check to be sure!
-	// Get reference to concrete Gc matrix subclass
-	AbstractLinAlgPack::MatrixCompositeStd
-		&Gc_comp = DynamicCastHelperPack::dyn_cast<AbstractLinAlgPack::MatrixCompositeStd>(
-			*first_order_info.Gc );
-	//
-	// Initialize Gc with C and N matrices this has not already been done.
-	//
-	if( Gc_comp.rows() != n || Gc_comp.cols() != m || Gc_comp.num_matrices() != 2 ) {
-		Gc_comp.reinitialize(n,m);
-		// Gc = [ C'; N' ]
-		VectorSpace::space_ptr_t
-			space_x_DI = this->space_c();
-		index_type row_offset = 0;
-		for(int k = 0; k < 2; ++k, row_offset += this->m() ) { // k == 0 -> add C',  k == 1 -> add N'
-			typedef rcp::ref_count_ptr<rmp::ReleaseResource_ref_count_ptr<MatrixSymDiagonalStd> >
-				rr_ptr_ptr_t;
-			// this is a mess of a data structure but it is correct
-			rr_ptr_ptr_t
-				rr_ptr_ptr = rcp::rcp( new rmp::ReleaseResource_ref_count_ptr<MatrixSymDiagonalStd>(
-					rcp::rcp( new MatrixSymDiagonalStd( space_x_DI->create_member() ) ) ) );
-			// Add the matrix object
-			Gc_comp.add_matrix(
-				row_offset, 0         // row_offset, col_offset
-				,1.0                  // alpha
-				,rr_ptr_ptr->ptr.get() // A
-				,rcp::rcp_implicit_cast<MatrixCompositeStd::release_resource_ptr_t::element_type>(
-					rr_ptr_ptr )      // A_release
-				,BLAS_Cpp::trans      // A_trans
-				);
-		}
-		// Create the composite vector spaces	
-		Gc_comp.finish_construction( this->space_c(), this->space_x() );
+	// Get references to aggregate C and N matrices (if allocated)
+	MatrixWithOpNonsingular
+		*C_aggr = NULL;
+	MatrixWithOp
+		*N_aggr = NULL;
+	BasisSystemCompositeStd::get_C_N(
+		first_order_info.Gc, &C_aggr, &N_aggr ); // Will return NULLs if Gc is not initialized
+
+	// Allocate C and N matrix objects if not done yet!
+	rcp::ref_count_ptr<MatrixWithOpNonsingular>
+		C_ptr = rcp::null;
+	rcp::ref_count_ptr<MatrixWithOp>
+		N_ptr = rcp::null;
+	if( C_aggr == NULL ) {
+		const VectorSpace::space_ptr_t
+			space_x  = this->space_x(),
+			space_xD = space_x->sub_space(var_dep);
+		C_ptr  = rcp::rcp(new MatrixSymDiagonalStd(space_xD->create_member()));
+		N_ptr  = rcp::rcp(new MatrixSymDiagonalStd(space_xD->create_member()));
+		C_aggr = C_ptr.get();
+		N_aggr = N_ptr.get();
 	}
-	//
-	// Set the diagonals of the C and N matrices for the current point.
-	//
-	assert( Gc_comp.matrices_begin() != Gc_comp.matrices_end() );
-	// Get references to C and N
-	MatrixCompositeStd::matrix_list_t::iterator
-		mat_itr = Gc_comp.matrices_begin(),
-		mat_end = Gc_comp.matrices_end();
+
+	// Get references to concreate C and N matrices
 	MatrixSymDiagonalStd
-		&C = dyn_cast<MatrixSymDiagonalStd>(*const_cast<MatrixWithOp*>(mat_itr->A_));
-	assert(mat_itr != mat_end);
+		&C = dyn_cast<MatrixSymDiagonalStd>(*C_aggr);
 	MatrixSymDiagonalStd
-		&N = dyn_cast<MatrixSymDiagonalStd>(*const_cast<MatrixWithOp*>((++mat_itr)->A_));
+		&N = dyn_cast<MatrixSymDiagonalStd>(*N_aggr);
 	// Get x = [ x_D' x_I ]
 	VectorWithOp::vec_ptr_t
-		x_D = x.sub_view(this->var_dep()),
-		x_I = x.sub_view(this->var_indep());
+		x_D = x.sub_view(var_dep),
+		x_I = x.sub_view(var_indep);
 	// Set the diagonals of C and N (this is the only computation going on here)
 	C.diag() = *x_I;          // C.diag = x_I - 1.0
 	Vp_S( &C.diag(),  -1.0 ); // ...
 	N.diag() = *x_D;          // N.diag = x_D - 10.0
 	Vp_S( &N.diag(), -10.0 ); // ...
-
+	// Initialize the matrix object Gc if not done so yet
+	if( C_ptr.get() != NULL ) {
+		BasisSystemCompositeStd::initialize_Gc(
+			this->space_x(), var_dep, var_indep
+			,this->space_c()
+			,C_ptr, N_ptr
+			,first_order_info.Gc
+			);
+	}
 }
 
 void ExampleNLPFirstOrderInfo::imp_calc_Gh(

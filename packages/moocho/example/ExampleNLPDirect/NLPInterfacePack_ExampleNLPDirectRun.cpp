@@ -79,7 +79,6 @@ NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	ExampleNLPFirstOrderDirect
 		nlp(VectorSpace::space_ptr_t(&vec_space,false),xo,has_bounds,dep_bounded);
 
-
 	// Create the othogonal decomp object for S = I + D'*D
 	ExampleVarReductOrthog_Strategy
 		var_reduct_orthog_strategy(rcp::rcp(&vec_space,false));
@@ -95,8 +94,7 @@ NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 			)
 		);                                                 // Set config with basis_sys and ...
 	solver.set_nlp(rcp::rcp(&nlp,false));                  // Set the NLP!
-	// set up outputting
-	solver.set_error_handling(
+	solver.set_error_handling(                             // set up outputting
 		throw_solve_exception
 		,rcp::rcp(error_out,false)
 		);

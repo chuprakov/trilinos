@@ -19,6 +19,7 @@
 
 #include "ExampleNLPFirstOrderDirect.h"
 #include "ExampleNLPFirstOrderDirectRTOps.h"
+#include "AbstractLinAlgPack/include/BasisSystemCompositeStd.h"
 #include "AbstractLinAlgPack/include/MatrixSpaceStd.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
@@ -85,9 +86,8 @@ ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect(
 		,"ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect(...) Error!" );
 
 	// Setup the aggregate vector space object
-	const VectorSpace::space_ptr_t
-		vec_spaces[2] = { vec_space, vec_space };
-	vec_space_comp_ = vec_space_comp_t(new VectorSpaceCompositeStd(vec_spaces,2));
+	BasisSystemCompositeStd::initialize_space_x(
+		vec_space, vec_space, &var_dep_, &var_indep_, &vec_space_comp_ );
 
 	// Create the MatrixSpace object for D
 	typedef MatrixSpaceStd<MatrixWithOp,MatrixSymDiagonalStd>  space_D_con_t;
@@ -115,8 +115,12 @@ ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect(
 
 	if(has_bounds) {
 		const Range1D
-			bounded_rng   = ( dep_bounded ? Range1D(1,m)    : Range1D(m+1,n_) ),
-			unbounded_rng = ( dep_bounded ? Range1D(m+1,n_) : Range1D(1,m)    );
+			bounded_rng   = ( dep_bounded 
+							  ? Range1D(var_dep_.lbound()  ,var_dep_.lbound()-1+m)
+							  : Range1D(var_indep_.lbound(),var_dep_.lbound()-1+m) ),
+			unbounded_rng = ( dep_bounded
+							  ? Range1D(var_indep_.lbound(),var_dep_.lbound()-1+m)
+							  : Range1D(var_dep_.lbound()  ,var_dep_.lbound()-1+m) );
 		*xl_->sub_view(bounded_rng)   = 0.01;
 		*xl_->sub_view(unbounded_rng) = -NLP::infinite_bound();
 		*xu_->sub_view(bounded_rng)   = 20.0;
@@ -168,7 +172,6 @@ size_type ExampleNLPFirstOrderDirect::m() const
 	assert_is_initialized();
 	return n_ / 2;
 }
-
 
 NLP::vec_space_ptr_t ExampleNLPFirstOrderDirect::space_x() const
 {
@@ -246,6 +249,16 @@ void ExampleNLPFirstOrderDirect::report_final_solution(
 }
 
 // Overridden public members from NLPFirstOrderDirect
+
+Range1D ExampleNLPFirstOrderDirect::var_dep() const
+{
+	return var_dep_;
+}
+
+Range1D ExampleNLPFirstOrderDirect::var_indep() const
+{
+	return var_indep_;
+}
 
 const NLPFirstOrderDirect::mat_space_ptr_t&
 ExampleNLPFirstOrderDirect::space_D() const

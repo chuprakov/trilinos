@@ -86,7 +86,7 @@ NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
 
 	// Create the basis system
 	ExampleBasisSystem
-		basis_sys(rcp::rcp(&vec_space,false));
+		basis_sys( nlp.space_x(), nlp.var_dep(), nlp.var_indep() );
 
 	// Create the othogonal decomp object for S = I + D'*D
 	ExampleVarReductOrthog_Strategy
