@@ -125,7 +125,7 @@ namespace AbstractLinAlgPack {
  * Note that the client should not call \c var_dep(), \c var_indep(), \c equ_decomp(),
  * \c equ_undecomp(), \c inequ_decomp() or \c inequ_undecomp() until after the first
  * call to \c update_basis().  This allows a <tt>%BasisSystem</tt> object to adjust itself
- * to accomidate input matrices \c Gc and \c Gh.  However, in general, a <tt>%BasisSystem</tt>
+ * to accommodate the input matrices \c Gc and \c Gh.  However, in general, a <tt>%BasisSystem</tt>
  * will be ready to deal with only specific \c Gc and/or \c Gh matrices when it is
  * given to a client.
  *
@@ -156,7 +156,10 @@ namespace AbstractLinAlgPack {
          N->add_matrix( 0, 0, 1.0, bs.equ_decomp(), Gc, NULL, BLAS_Cpp::trans, bs.var_dep() );
 	 if( Gh && bs.inequ_decomp().size() )
          N->add_matrix( bs.equ_decomp().size(), 0, 1.0, bs.inequ_decomp(), Gh, NULL, BLAS_Cpp::trans, bs.var_dep() );
-     N->finish_construction();
+     N->finish_construction(
+         Gc->space_rows().sub_space(bs.var_indep())->clone()
+         ,Gc->space_cols().sub_space(bs.equ_decomp())->clone()
+         );
      return rcp::rcp_implicit_cast<const AbstractLinAlgPack::MatrixWithOp>(N);
  }
  \endcode
@@ -219,7 +222,7 @@ public:
 	 * case this whole interface would be worthless.  Therefore, to be useful
 	 * <tt>return.size() > 0</tt> must be true.
 	 */
-	virtual const Range1D& var_dep() const = 0;
+	virtual Range1D var_dep() const = 0;
 	///
 	/** Range of independnet (nonbasic) variables.
 	 *
@@ -229,7 +232,7 @@ public:
 	 * In this case <tt>return.size() == 0</tt>.  In the more general case
 	 * however, <tt>return.size() > 0</tt>.
 	 */
-	virtual const Range1D& var_indep() const = 0;
+	virtual Range1D var_indep() const = 0;
 	///
 	/** Range of decomposed general equality constraints.
 	 *
@@ -238,7 +241,7 @@ public:
 	 *
 	 * The default implementation return <tt>Range1D(1,this->var_dep().size())</tt>
 	 */
-	virtual const Range1D& equ_decomp() const;
+	virtual Range1D equ_decomp() const;
 	///
 	/** Range of undecomposed general equality constriants.
 	 *
@@ -247,7 +250,7 @@ public:
 	 *
 	 * The default implementation return <tt>Range1D::Invalid</tt>
 	 */
-	virtual const Range1D& equ_undecomp() const;
+	virtual Range1D equ_undecomp() const;
 	///
 	/** Range for decomposed general inequality constraints.
 	 *
@@ -256,7 +259,7 @@ public:
 	 *
 	 * The default implementation return <tt>Range1D::Invalid</tt>
 	 */
-	virtual const Range1D& inequ_decomp() const;
+	virtual Range1D inequ_decomp() const;
 	///
 	/** Range for undecomposed general inequality constraints.
 	 *
@@ -265,7 +268,7 @@ public:
 	 *
 	 * The default implementation return <tt>Range1D::Invalid</tt>
 	 */
-	virtual const Range1D& inequ_undecomp() const;
+	virtual Range1D inequ_undecomp() const;
 
 	//@}
 

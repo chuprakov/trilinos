@@ -45,7 +45,7 @@ class BasisSystemTester {
 public:
 
 	///
-	enum EPrintTestLevel { PRINT_NONE, PRINT_BASIC, PRINT_MORE, PRINT_ALL };
+	enum EPrintTestLevel { PRINT_NONE=0, PRINT_BASIC=1, PRINT_MORE=2, PRINT_ALL=3 };
 	///
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( EPrintTestLevel, print_tests )
 	///
@@ -98,7 +98,7 @@ public:
 	 * </ul>
 	 */
 	bool test_basis_system(
-		BasisSystem                     *basis_sys
+		const BasisSystem               &basis_sys
 		,const MatrixWithOp             *Gc
 		,const MatrixWithOp             *Gh
 		,const MatrixWithOpNonsingular  *C
