@@ -62,7 +62,7 @@ void CreateCoarseGraph(CtrlType *ctrl, GraphType *graph, int cnvtxs, idxtype *ma
 
   iend = xadj[nvtxs];
   auxadj = ctrl->wspace.auxcore; 
-  memcpy(auxadj, adjncy, iend*sizeof(idxtype)); 
+  memcpy((char *)auxadj, (char *)adjncy, iend*sizeof(idxtype)); 
   for (i=0; i<iend; i++)
     auxadj[i] = cmap[auxadj[i]];
 
@@ -232,7 +232,7 @@ void CreateCoarseGraphNoMask(CtrlType *ctrl, GraphType *graph, int cnvtxs, idxty
 
   iend = xadj[nvtxs];
   auxadj = ctrl->wspace.auxcore; 
-  memcpy(auxadj, adjncy, iend*sizeof(idxtype)); 
+  memcpy((char *)auxadj, (char *)adjncy, iend*sizeof(idxtype)); 
   for (i=0; i<iend; i++)
     auxadj[i] = cmap[auxadj[i]];
 
@@ -359,7 +359,7 @@ void CreateCoarseGraph_NVW(CtrlType *ctrl, GraphType *graph, int cnvtxs, idxtype
 
   iend = xadj[nvtxs];
   auxadj = ctrl->wspace.auxcore; 
-  memcpy(auxadj, adjncy, iend*sizeof(idxtype)); 
+  memcpy((char *)auxadj, (char *)adjncy, iend*sizeof(idxtype)); 
   for (i=0; i<iend; i++)
     auxadj[i] = cmap[auxadj[i]];
 
@@ -548,7 +548,7 @@ void ReAdjustMemory(GraphType *graph, GraphType *cgraph, int dovsize)
 
     if (graph->ncon == 1) {
       if (dovsize) {
-        cgraph->gdata = realloc(cgraph->gdata, (5*cgraph->nvtxs+1 + 2*cgraph->nedges)*sizeof(idxtype));
+        cgraph->gdata = (idxtype *)realloc(cgraph->gdata, (5*cgraph->nvtxs+1 + 2*cgraph->nedges)*sizeof(idxtype));
 
         /* Do this, in case everything was copied into new space */
         cgraph->xadj 		= cgraph->gdata;
@@ -560,7 +560,7 @@ void ReAdjustMemory(GraphType *graph, GraphType *cgraph, int dovsize)
         cgraph->adjwgt 		= cgraph->gdata + 5*cgraph->nvtxs+1 + cgraph->nedges;
       }
       else {
-        cgraph->gdata = realloc(cgraph->gdata, (4*cgraph->nvtxs+1 + 2*cgraph->nedges)*sizeof(idxtype));
+        cgraph->gdata = (idxtype *)realloc(cgraph->gdata, (4*cgraph->nvtxs+1 + 2*cgraph->nedges)*sizeof(idxtype));
 
         /* Do this, in case everything was copied into new space */
         cgraph->xadj 	= cgraph->gdata;
@@ -573,7 +573,7 @@ void ReAdjustMemory(GraphType *graph, GraphType *cgraph, int dovsize)
     }
     else {
       if (dovsize) {
-        cgraph->gdata = realloc(cgraph->gdata, (4*cgraph->nvtxs+1 + 2*cgraph->nedges)*sizeof(idxtype));
+        cgraph->gdata = (idxtype *)realloc(cgraph->gdata, (4*cgraph->nvtxs+1 + 2*cgraph->nedges)*sizeof(idxtype));
 
         /* Do this, in case everything was copied into new space */
         cgraph->xadj 		= cgraph->gdata;
@@ -584,7 +584,7 @@ void ReAdjustMemory(GraphType *graph, GraphType *cgraph, int dovsize)
         cgraph->adjwgt 		= cgraph->gdata + 4*cgraph->nvtxs+1 + cgraph->nedges;
       }
       else {
-        cgraph->gdata = realloc(cgraph->gdata, (3*cgraph->nvtxs+1 + 2*cgraph->nedges)*sizeof(idxtype));
+        cgraph->gdata = (idxtype *)realloc(cgraph->gdata, (3*cgraph->nvtxs+1 + 2*cgraph->nedges)*sizeof(idxtype));
 
         /* Do this, in case everything was copied into new space */
         cgraph->xadj 		= cgraph->gdata;

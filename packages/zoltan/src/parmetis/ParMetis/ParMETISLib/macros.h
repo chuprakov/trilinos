@@ -33,8 +33,8 @@
                  do {(a) += (val); (b) -= (val);} while(0)
 
 
-#define scopy(n, a, b) memcpy((b), (a), sizeof(float)*(n))
-#define idxcopy(n, a, b) memcpy((b), (a), sizeof(idxtype)*(n))
+#define scopy(n, a, b) memcpy((char *)(b), (char *)(a), sizeof(float)*(n))
+#define idxcopy(n, a, b) memcpy((char *)(b), (char *)(a), sizeof(idxtype)*(n))
 
 #define HASHFCT(key, size) ((key)%(size))
 
