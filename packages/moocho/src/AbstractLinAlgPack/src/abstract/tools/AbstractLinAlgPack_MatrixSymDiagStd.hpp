@@ -49,6 +49,8 @@ public:
 	VectorWithOpMutable& diag();
 	///
 	const VectorWithOp& diag() const;
+	///
+	const VectorSpace::vec_mut_ptr_t& diag_ptr() const;
 
 	//@}
 

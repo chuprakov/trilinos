@@ -47,6 +47,12 @@ const VectorWithOp& MatrixSymDiagonalStd::diag() const
 	return const_cast<MatrixSymDiagonalStd*>(this)->diag();
 }
 
+const VectorSpace::vec_mut_ptr_t&
+MatrixSymDiagonalStd::diag_ptr() const
+{
+	return diag_;
+}
+
 // Overridden from MatrixBase
 
 size_type MatrixSymDiagonalStd::rows() const
