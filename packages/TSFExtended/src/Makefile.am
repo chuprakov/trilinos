@@ -127,7 +127,8 @@ AM_CPPFLAGS = \
 	$(TSFCORE_INCLUDES)\
 	$(EPETRA_INCLUDES)\
 	$(AZTECOO_INCLUDES)\
-	$(TEUCHOS_INCLUDES)
+	$(TEUCHOS_INCLUDES)\
+	$(ML_INCLUDES)
 
 
 #np# The following section can be duplicated for building multiple libraries -

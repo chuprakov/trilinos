@@ -110,7 +110,7 @@ AZTECOO_LIBS = \
 	$(top_builddir)/../aztecoo/src/libaztecoo.a
 
 if HAVE_TSF_ML
-ML_LIB = -lml
+ML_LIBS = $(top_builddir)/../ml/src/libml.a
 else
-ML_LIB = 
+ML_LIBS = 
 endif

@@ -37,6 +37,7 @@ Poisson_test_SOURCES = $(srcdir)/cxx_main.cpp
 Poisson_test_DEPENDENCIES = \
 $(TSF_EXTENDED_LIBS) \
 $(TSF_CORE_LIBS) \
+$(ML_LIBS) \
 $(TEUCHOS_LIBS) \
 $(AZTECOO_LIBS) \
 $(EPETRA_LIBS) 
@@ -51,6 +52,7 @@ Poisson_test_CXXFLAGS = \
 Poisson_test_LDADD = \
 $(TSF_EXTENDED_LIBS) \
 $(TSF_CORE_LIBS) \
+$(ML_LIBS) \
 $(TEUCHOS_LIBS) \
 $(AZTECOO_LIBS) \
 $(EPETRA_LIBS) \
@@ -66,6 +68,7 @@ AztecPoisson_SOURCES = $(srcdir)/AztecPoisson.cpp
 AztecPoisson_DEPENDENCIES = \
 $(TSF_EXTENDED_LIBS) \
 $(TSF_CORE_LIBS) \
+$(ML_LIBS) \
 $(TEUCHOS_LIBS) \
 $(AZTECOO_LIBS) \
 $(EPETRA_LIBS) 
@@ -80,6 +83,7 @@ AztecPoisson_CXXFLAGS = \
 AztecPoisson_LDADD = \
 $(TSF_EXTENDED_LIBS) \
 $(TSF_CORE_LIBS) \
+$(ML_LIBS) \
 $(TEUCHOS_LIBS) \
 $(AZTECOO_LIBS) \
 $(EPETRA_LIBS) \
