@@ -113,8 +113,8 @@ bool ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::do_line_sear
 					<< setw(w)			<< *phi_kp1
 					<< setw(w)			<< ((*phi_kp1)-frac_phi)	<< endl;
 		
-		// Check that this is a number.
-		if( RTOp_is_nan( *phi_kp1 ) ) {
+		// Check that this is a valid number.
+		if( RTOp_is_nan_inf( *phi_kp1 ) ) {
 			// Cut back the step to min_frac * alpha_k
 			*alpha_k = min_frac()*(*alpha_k);
 			best_alpha = 0.0;
