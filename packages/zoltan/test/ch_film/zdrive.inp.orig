@@ -1,4 +1,4 @@
-Decomposition Info	= method=rcb
+Decomposition Method 	= rcb
 Zoltan Parameters	= keep_cuts = true
 File Type		= Chaco
 File Name		= film

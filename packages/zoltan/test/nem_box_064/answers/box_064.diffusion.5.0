@@ -1,4 +1,4 @@
-Decomposition Info	= method=parmetis
+Decomposition Method 	= parmetis
 Zoltan Parameters       = parmetis_method=repartldiffusion
 File Type		= NemesisI
 File Name		= box_064-m5-r.par

@@ -1,4 +1,4 @@
-Decomposition Info	= method=octpart
+Decomposition Method 	= octpart
 Zoltan Parameters       = 
 File Type		= NemesisI
 File Name		= ti_300-m6-r.par

@@ -1,4 +1,4 @@
-Decomposition Info	= method=octpart
+Decomposition Method 	= octpart
 Zoltan Parameters       = 
 File Type		= NemesisI
 File Name		= box_064-m5-r.par
