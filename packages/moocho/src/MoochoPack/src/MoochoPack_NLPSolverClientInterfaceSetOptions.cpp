@@ -22,45 +22,47 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 10;
+const int local_num_options = 11;
 
-	enum local_EOptions {
-        MAX_ITER,
-        MAX_RUN_TIME,
-        OPT_TOL,
-        FEAS_TOL,
-		COMP_TOL,
-        STEP_TOL,
-		JOURNAL_OUTPUT_LEVEL,
-		JOURNAL_PRINT_DIGITS,
-		CHECK_RESULTS,
-		CALC_CONDITIONING
-	};
+enum local_EOptions {
+	MAX_ITER,
+	MAX_RUN_TIME,
+	OPT_TOL,
+	FEAS_TOL,
+	COMP_TOL,
+	STEP_TOL,
+	JOURNAL_OUTPUT_LEVEL,
+	JOURNAL_PRINT_DIGITS,
+	CHECK_RESULTS,
+	CALC_CONDITIONING,
+	CALC_MATRIX_NORMS
+};
 
-	const char* local_SOptions[local_num_options]	= {
-        ("max_iter"),
-        ("max_run_time"),
-        ("opt_tol"),
-        ("feas_tol"),
-		("comp_tol"),
-        ("step_tol"),
-		("journal_output_level"),
-		("journal_print_digits"),
-		("check_results"),
-		("calc_conditioning")
-	};
+const char* local_SOptions[local_num_options]	= {
+	("max_iter"),
+	("max_run_time"),
+	("opt_tol"),
+	("feas_tol"),
+	("comp_tol"),
+	("step_tol"),
+	("journal_output_level"),
+	("journal_print_digits"),
+	("check_results"),
+	("calc_conditioning"),
+	("calc_matrix_norms")
+};
 
 }
 
 namespace MoochoPack {
 
 NLPSolverClientInterfaceSetOptions::NLPSolverClientInterfaceSetOptions(
-			  NLPSolverClientInterface* target
-			, const char opt_grp_name[] )
+	NLPSolverClientInterface* target
+	, const char opt_grp_name[] )
 	:	OptionsFromStreamPack::SetOptionsFromStreamNode(
-			  opt_grp_name, local_num_options, local_SOptions )
-		, OptionsFromStreamPack::SetOptionsToTargetBase<
-			NLPSolverClientInterface >( target )
+		opt_grp_name, local_num_options, local_SOptions )
+	, OptionsFromStreamPack::SetOptionsToTargetBase<
+	NLPSolverClientInterface >( target )
 {}
 
 void NLPSolverClientInterfaceSetOptions::setOption(
@@ -71,7 +73,7 @@ void NLPSolverClientInterfaceSetOptions::setOption(
 
 	typedef NLPSolverClientInterface target_t;
 	switch( (local_EOptions)option_num ) {
-	    case MAX_ITER:
+		case MAX_ITER:
 			target().max_iter(::abs(::atoi(option_value.c_str())));
 			break;
 		case MAX_RUN_TIME:
@@ -83,9 +85,9 @@ void NLPSolverClientInterfaceSetOptions::setOption(
 		case FEAS_TOL:
 			target().feas_tol(::fabs(::atof(option_value.c_str())));
 			break;
-	    case COMP_TOL:
-		    target().comp_tol(::fabs(::atof(option_value.c_str())));
-		    break;
+		case COMP_TOL:
+			target().comp_tol(::fabs(::atof(option_value.c_str())));
+			break;
 		case STEP_TOL:
 			target().step_tol(::fabs(::atof(option_value.c_str())));
 			break;
@@ -105,10 +107,10 @@ void NLPSolverClientInterfaceSetOptions::setOption(
 				target().journal_output_level(PRINT_ITERATION_QUANTITIES);
 			else
 				throw std::invalid_argument( "NLPSolverClientInterfaceSetOptions::setOption(...) : "
-					"Error, incorrect value for \"journal_output_level\"." );
+																		 "Error, incorrect value for \"journal_output_level\"." );
 			break;
 		}
-	    case JOURNAL_PRINT_DIGITS:
+		case JOURNAL_PRINT_DIGITS:
 			target().journal_print_digits(::abs(::atoi(option_value.c_str())));
 			break;
 		case CHECK_RESULTS:
@@ -119,6 +121,11 @@ void NLPSolverClientInterfaceSetOptions::setOption(
 		case CALC_CONDITIONING:
 			target().calc_conditioning(
 				StringToBool( "calc_conditioning", option_value.c_str() )
+				);
+			break;
+		case CALC_MATRIX_NORMS:
+			target().calc_matrix_norms(
+				StringToBool( "calc_matrix_norms", option_value.c_str() )
 				);
 			break;
 		default:

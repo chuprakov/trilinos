@@ -192,8 +192,17 @@ options_group NLPSolverClientInterface {
 *    calc_conditioning = true;  *** (costly?)
 *    calc_conditioning = false; *** (default?)
      *** If true then estimates of the condition numbers of all of the imporant nonsingular
-     *** matrices used in the algorithm will be computed.  Note that this can be a fairly
-     *** expensive operation so it should be used with care.
+     *** matrices used in the algorithm will be computed and printed.  Note that this can be
+     *** a fairly expensive operation (especially when iterative solvers are being used)
+     *** so it should be used with care.
+
+*    calc_matrix_norms = true;  *** (costly?)
+*    calc_matrix_norms = false; *** (default?)
+     *** If true then estimates of the matrix norms of all of the imporant
+     *** matrices used in the algorithm will be computed and printed.  Note that this can be
+     *** a fairly expensive operation (especially if iterative solvers are being used) so
+     *** it should be used with care.
+
 }
 
 ************************************************************

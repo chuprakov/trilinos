@@ -110,6 +110,7 @@ bool EvalNewPointStd_Step::do_step(
 		*R_iq   = NULL;
 
 	MatrixOp::EMatNormType mat_nrm_inf = MatrixOp::MAT_NORM_INF;
+	const bool calc_matrix_norms = algo.algo_cntr().calc_matrix_norms();
 	
 	if( x_iq.last_updated() == IterQuantity::NONE_UPDATED ) {
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
@@ -305,17 +306,18 @@ bool EvalNewPointStd_Step::do_step(
 		out << "\n||Gf_k||inf = "     << Gf_iq.get_k(0).norm_inf();
 		if(m) {
 			out << "\n||c_k||inf  = " << c_iq->get_k(0).norm_inf();
-			out << "\n||Gc_k||inf = " << Gc_iq->get_k(0).calc_norm(mat_nrm_inf).value;
-			if( n > r )
+			if( calc_matrix_norms )
+				out << "\n||Gc_k||inf = " << Gc_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			if( n > r && calc_matrix_norms )
 				out << "\n||Z||inf    = " << Z_iq->get_k(0).calc_norm(mat_nrm_inf).value;
-			if( r )
+			if( r && calc_matrix_norms )
 				out << "\n||Y||inf    = " << Y_iq->get_k(0).calc_norm(mat_nrm_inf).value;
-			if( r )
+			if( r && calc_matrix_norms )
 				out << "\n||R||inf    = " << R_iq->get_k(0).calc_norm(mat_nrm_inf).value;
-			if(algo.algo_cntr().calc_conditioning()) {
+			if( algo.algo_cntr().calc_conditioning() ) {
 				out << "\ncond_inf(R) = " << R_iq->get_k(0).calc_cond_num(mat_nrm_inf).value;
 			}
-			if( m > r ) {
+			if( m > r && calc_matrix_norms ) {
 				out << "\n||Uz_k||inf = " << Uz_iq->get_k(0).calc_norm(mat_nrm_inf).value;
 				out << "\n||Uy_k||inf = " << Uy_iq->get_k(0).calc_norm(mat_nrm_inf).value;
 			}

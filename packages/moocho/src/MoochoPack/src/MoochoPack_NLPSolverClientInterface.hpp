@@ -70,6 +70,7 @@ public:
 		,int                   journal_print_digits = 6
 		,bool                  check_results        = false
 		,bool                  calc_conditioning    = false
+		,bool                  calc_matrix_norms    = false
 		);
 
 	///
@@ -134,6 +135,11 @@ public:
 	 * computed and printed or not.
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_conditioning )
+
+	///
+	/** Set whether or not matrix norms are computed and printed.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_matrix_norms )
 
 	//@}
 

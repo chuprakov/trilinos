@@ -242,7 +242,8 @@ bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(
 		MatrixOp::EMatNormType mat_nrm_inf = MatrixOp::MAT_NORM_INF;
 
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-			out << "\n||rHL_k||inf    = " << rHL_iq.get_k(0).calc_norm(mat_nrm_inf).value << std::endl;
+			if(algo.algo_cntr().calc_matrix_norms())
+				out << "\n||rHL_k||inf    = " << rHL_iq.get_k(0).calc_norm(mat_nrm_inf).value << std::endl;
 			if(algo.algo_cntr().calc_conditioning()) {
 				const MatrixSymOpNonsing
 					*rHL_ns_k = dynamic_cast<const MatrixSymOpNonsing*>(&rHL_iq.get_k(0));

@@ -878,7 +878,7 @@ void NLPAlgoConfigMamaJama::config_algo_cntr(
 					break;
 				}
 				case QP_QPOPT: {
-					TEST_FOR_EXCEPTION(true,std::logic_error,"Error! QPKWIK interface is not updated yet!");
+					TEST_FOR_EXCEPTION(true,std::logic_error,"Error! QPOPT interface is not updated yet!");
 /*
 #ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
 					using ConstrainedOptPack::QPSolverRelaxedQPOPT;

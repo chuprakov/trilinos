@@ -27,6 +27,7 @@ MoochoPack::NLPSolverClientInterface::NLPSolverClientInterface(
 	,int                     journal_print_digits
 	,bool                    check_results
 	,bool                    calc_conditioning
+	,bool                    calc_matrix_norms
 	)
 	:max_iter_(max_iter)
 	,max_run_time_(max_run_time)
@@ -38,4 +39,5 @@ MoochoPack::NLPSolverClientInterface::NLPSolverClientInterface(
 	,journal_print_digits_(journal_print_digits)
 	,check_results_(check_results)
 	,calc_conditioning_(calc_conditioning)
+	,calc_matrix_norms_(calc_matrix_norms)
 {}
