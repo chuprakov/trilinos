@@ -192,25 +192,17 @@ void GMRESSolver<Scalar>::doIteration( const LinearOp<Scalar> &Op, const ETransp
     Teuchos::SerialDenseMatrix<int, Scalar> &H = H_;
     // 
 	Teuchos::RefCountPtr<Vector<Scalar> >
-		w = V_->col(curr_iter+2);                              // w = v_{j+1}
-    Op.apply( Op_trans, *V_->col(curr_iter+1), w.get() );      // w = Op * v_{j}	
+		w = V_->col(curr_iter+2);                                         // w = v_{j+1}
+    Op.apply( Op_trans, *V_->col(curr_iter+1), w.get() );                 // w = Op * v_{j}	
     //
     // Perform MGS to orthogonalize new Krylov vector.
     //
    for( i=0; i<curr_iter+1; i++ ) {	
-		H( i, curr_iter ) = dot( *w, *V_->col(i+1) );          // h_{i,j} = ( w, v_{i} )
-		Vp_StV( &*w, -H( i, curr_iter ), *V_->col(i+1) );      // w = w - h_{i,j} * v_{i}
+		H( i, curr_iter ) = w->space()->scalarProd( *w, *V_->col(i+1) );  // h_{i,j} = ( w, v_{i} )
+		Vp_StV( &*w, -H( i, curr_iter ), *V_->col(i+1) );                 // w = w - h_{i,j} * v_{i}
     }
-/* RAB: Why not this or a MultiVector version???
-    for( i=0; i<curr_iter+1; i++ ) {
-		H( i, curr_iter ) = dot( *w, *V_->col(i+1) );          // h_{i,j} = ( w, v_{i} )
-    }
-    for( i=0; i<curr_iter+1; i++ ) {
-		Vp_StV( w.get(), -H( i, curr_iter ), *V_->col(i+1) );  // w = w - h_{i,j} * v_{i}
-    }
-*/
-    H( curr_iter+1, curr_iter ) = norm_2( *w );                // h_{j+1,j} = || w ||
-    Vt_S( &*w, 1.0 / H( curr_iter+1, curr_iter ) );            // v_{j+1} = w / h_{j+1,j}			
+    H( curr_iter+1, curr_iter ) = norm_2( *w );                           // h_{j+1,j} = || w ||
+    Vt_S( &*w, 1.0 / H( curr_iter+1, curr_iter ) );                       // v_{j+1} = w / h_{j+1,j}			
     //
     // Apply previous Givens rotations
     //
