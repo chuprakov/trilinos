@@ -140,7 +140,10 @@ void MatrixSymAddDelBunchKaufman::initialize(
 				assert(0); // ToDo Implememnt this!
 			}
 			else {
-				// Indead the new matrix is indefinite.
+				// Indead the new matrix is indefinite
+				// Set the original matrix now
+				LinAlgPack::assign(	&LinAlgPack::nonconst_tri_ele( S(n).gms(), BLAS_Cpp::lower)
+									, tri_ele( A.gms(), A.uplo() ) );
 				// Update the state variables:
 				S_size_   = n;
 				fact_in1_ = fact_in1;
@@ -433,7 +436,8 @@ size_type MatrixSymAddDelBunchKaufman::rows() const
 std::ostream& MatrixSymAddDelBunchKaufman::output(std::ostream& out) const
 {
 	if( S_size_ ) {
-		out << "Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):\n" << S(S_size_).gms();
+		out << "Unfactored symmetric matrix stored as lower triangle (ignore upper nonzeros):\n"
+			<< S(S_size_).gms();
 		if( S_indef_ ) {
 			out << "Upper symmetric indefinite factor DU returned from sytrf(...) (ignore lower nonzeros):\n"
 				<< DU(S_size_,fact_in1_).gms();
@@ -445,6 +449,9 @@ std::ostream& MatrixSymAddDelBunchKaufman::output(std::ostream& out) const
 		else {
 			out << "Upper cholesky factor (ignore lower nonzeros):\n" << DU(S_size_,true).gms();
 		}
+	}
+	else {
+		out << "0 0\n";
 	}
 	return out;
 }

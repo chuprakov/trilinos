@@ -31,7 +31,7 @@ bool ReducedHessianExactStd_Step::do_step(
 {
 	using DynamicCastHelperPack::dyn_cast;
 	using LinAlgPack::nonconst_sym;
-	using SparseLinAlgPack::M_MtMtM;
+	using SparseLinAlgPack::Mp_StMtMtM;
 	typedef SparseLinAlgPack::MatrixSymDenseInitialize	MatrixSymDenseInitialize;
 	typedef SparseLinAlgPack::MatrixSymWithOp			MatrixSymWithOp;
 	using ConstrainedOptimizationPack::NLPSecondOrderInfo;
@@ -111,11 +111,11 @@ bool ReducedHessianExactStd_Step::do_step(
 		// Compute the dense reduced Hessian
 		GenMatrix rHL_sym_store(nind,nind);
 		sym_gms rHL_sym(rHL_sym_store(),BLAS_Cpp::lower);
-		M_MtMtM( &rHL_sym, 1.0, *HL_sym_op, MatrixSymWithOp::DUMMY_ARG
-			, s.Z().get_k(0), BLAS_Cpp::no_trans );
+		Mp_StMtMtM( &rHL_sym, 1.0, MatrixSymWithOp::DUMMY_ARG, *HL_sym_op
+					, s.Z().get_k(0), BLAS_Cpp::no_trans, 0.0 );
 
 		if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
-			out << "\nrHL_dense = \n" << rHL_sym_store(); 
+			out << "\nLower triangular partion of dense reduced Hessian (ignore nonzeros above diagonal):\nrHL_dense = \n" << rHL_sym_store(); 
 		}
 	
 		// Set the reduced Hessain

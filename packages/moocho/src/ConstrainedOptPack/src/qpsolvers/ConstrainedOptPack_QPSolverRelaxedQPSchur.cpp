@@ -119,9 +119,10 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		,&b_X_,&Ko_,&fo_ );
 	const size_type
 		n_R = n_R_tmp,
-		n_X = i_x_fixed.size();
-	assert( n_R + n_X == nd + 1);  // Todo: Make an exception!
-	assert( bnd_fixed.size() == n_X ); // Todo: Make and exception!
+		n_X = nd + 1 - n_R; // fixed variables in d and eta
+	assert( i_x_free.size() == 0 || i_x_free.size()  >= n_R );  // Todo: Make an exception!
+	assert( i_x_fixed.size() >= n_X );  // Todo: Make an exception!
+	assert( bnd_fixed.size() >= n_X ); // Todo: Make and exception!
 
 	// //////////////////////////////
 	// Initialize constraints object
@@ -172,9 +173,10 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 
 	typedef std::vector<int> 					ij_act_change_t;
 	typedef std::vector<QPSchurPack::EBounds>	bnds_t;
-	size_type			num_act_change = 0;	//
-	ij_act_change_t		ij_act_change;		// The default is a cold start
-	bnds_t				bnds;				//
+	size_type			num_act_change = 0; // The default is a cold start
+	const size_type     max_num_act_change = (nu ? nu->nz() : 0) + (mu ? mu->nz() : 0) + n_X;
+	ij_act_change_t		ij_act_change(max_num_act_change);
+	bnds_t				bnds(max_num_act_change);
 
 	// Note that we do not add the general equality constraints to the initial
 	// guess of the active set since they may be linearly dependent!
@@ -209,15 +211,12 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		// Now add the inequality constraints in decreasing order (if they are
 		// not already initially fixed variables)
 		const QPSchurPack::QP::x_init_t &x_init = qp_.x_init();
-		ij_act_change.resize(gamma.nz());  // Resize for max possible storage
-		bnds.resize(gamma.nz());           // ...
-		num_act_change = 0; // We will increment this!
 		if(gamma.nz()) {
 			const SpVector::difference_type o = gamma.offset();
 			for( SpVector::const_iterator itr = gamma.begin(); itr != gamma.end(); ++itr ) {
 				const size_type i =  itr->indice() + o;
 				if( i <= nd && x_init(i) != QPSchurPack::FREE )
-					continue; // This variable is already initially free
+					continue; // This variable is already initially fixed
 				// This is not an initially fixed variable so add it
 				ij_act_change[num_act_change] = i;
 				bnds[num_act_change]
@@ -226,7 +225,48 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 			}
 		}
 	}
-
+	// We need to loop through x_init() and nu() in order and look for variables
+	// that are initially fixed in x_init() but are not present in nu().  For these
+	// variables we need to free them in ij_act_change[].
+	{
+		QPSchurPack::QP::x_init_t::const_iterator
+			x_init_itr = qp_.x_init().begin();
+		const SpVector::difference_type o = nu->offset();
+		SpVector::const_iterator
+			nu_itr = const_cast<const SpVector*>(nu)->begin(), // Okay even if nu.nz() == 0
+			nu_end = const_cast<const SpVector*>(nu)->end();
+		for( size_type i = 1; i <= nd; ++i, ++x_init_itr ) {
+			if( *x_init_itr != QPSchurPack::FREE
+				&& *x_init_itr != QPSchurPack::EQUALITY )
+			{
+				// This is an initially fixed upper or lower bound
+				// Look for lagrange multiplier stating that it is
+				// still fixed.
+				if( nu_itr != nu_end && (nu_itr->indice() + o) < i ) {
+					++nu_itr;
+				}
+				else if( nu_itr != nu_end && (nu_itr->indice() + o) == i ) {
+					// This active bound is present but lets make sure
+					// that it is still the same bound
+					if( ( *x_init_itr == QPSchurPack::LOWER && nu_itr->value() > 0 )
+						|| ( *x_init_itr == QPSchurPack::UPPER && nu_itr->value() < 0 ) )
+					{
+						// The bound has changed from upper to lower or visa-versa!
+						ij_act_change[num_act_change] = i;
+						bnds[num_act_change]
+							= nu_itr->value() > 0.0 ? QPSchurPack::UPPER : QPSchurPack::LOWER;
+						++num_act_change;
+					}
+				}
+				else {
+					// This initially fixed variable is not fixed in nu so lets free it!
+					ij_act_change[num_act_change] = -i;
+					bnds[num_act_change]          = QPSchurPack::FREE;
+					++num_act_change;
+				}
+			}
+		}
+	}
 	// Set the output level
 	QPSchur::EOutputLevel qpschur_olevel;
 	switch( print_level() ) {

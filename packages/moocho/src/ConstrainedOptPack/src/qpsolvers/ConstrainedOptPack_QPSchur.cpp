@@ -8,6 +8,9 @@
 
 #include <assert.h>
 
+#include <ostream>
+#include <iomanip>
+
 #include "ConstrainedOptimizationPack/include/QPSchur.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymAddDelUpdateable.h"
 #include "ConstrainedOptimizationPack/include/ComputeMinMult.h"
@@ -500,8 +503,9 @@ void QPSchur::ActiveSet::initialize(
 	using LinAlgOpPack::V_mV;
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::V_InvMtV;
-	using SparseLinAlgPack::M_StMtInvMtM;
 	using SparseLinAlgPack::Vp_StPtMtV;
+	using SparseLinAlgPack::Mp_StPtMtP;
+	using SparseLinAlgPack::M_StMtInvMtM;
 	using LinAlgPack::sym;
 	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
 	
@@ -597,7 +601,7 @@ void QPSchur::ActiveSet::initialize(
 		q_D_hat = (n - n_R) - q_F_hat,
 		q_D_hat_max = n_X;
 
-	// Now let's set stuff up ij_map, constr_norm, bnds and part of d_hat
+	// Now let's set stuff up: ij_map, constr_norm, bnds and part of d_hat
 	const size_type
 		q_hat = q_plus_hat + q_F_hat + q_C_hat,
 		q_hat_max = n_X + n,	// If all the initially fixed variables where freed
@@ -729,9 +733,8 @@ void QPSchur::ActiveSet::initialize(
 		for( size_type l = 1; l <= n_X; ++l, ++Q_X_itr ) {
 			const size_type i = Q_X_itr->row_i();	// Already sorted by row
 			// Look for i in XF
-			if( XF_search < XF_search_end )
-				for( ; *XF_search < i; ++XF_search ) ;
-			if( XF_search >= XF_search_end || (XF_search < XF_search_end && *XF_search > i) ) {
+			for( ; XF_search != XF_search_end && *XF_search < i; ++XF_search ) ;
+			if( XF_search == XF_search_end || (XF_search < XF_search_end && *XF_search > i) ) {
 				// We went right past i and did not find it so
 				// this variable has not been freed so lets add it!
 				Q_XD_hat_row_[k_XD_hat] = i;
@@ -773,7 +776,7 @@ void QPSchur::ActiveSet::initialize(
 
 	// Setup U_hat
 	U_hat_.initialize( &G, m ? &qp.A() : NULL, &constraints.A_bar()
-		, &qp.Q_R(), &P_XF_hat_, &P_plus_hat_);
+		, &qp.Q_R(), &P_XF_hat_, &P_plus_hat_ );
 
 	// Set the rest of the members
 	test_		= test;
@@ -798,7 +801,7 @@ void QPSchur::ActiveSet::initialize(
 
 	if( out && (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 		*out
-			<< "\n*** Definition of Active-Set before the Schur complement is formed.\n";
+			<< "\nPrint definition of Active-Set before the Schur complement is formed...\n";
 		dump_act_set_quantities( *this, *out, false );
 	}
 
@@ -806,18 +809,22 @@ void QPSchur::ActiveSet::initialize(
 	if( q_hat ) {
 		// Temporary storage for S (dense)
 		GenMatrix S_store(q_hat,q_hat);
-		sym_gms S( S_store, BLAS_Cpp::upper );
+		sym_gms S( S_store, BLAS_Cpp::lower );
 		// S = -1.0 * U_hat' * inv(Ko) * U_hat
 		M_StMtInvMtM( &S, -1.0, U_hat_, BLAS_Cpp::trans, qp.Ko()
 			, MatrixSymFactorized::DUMMY_ARG );
 		// Now add parts of V_hat
 		if( q_F_hat ) {
 			// S += P_XF_hat' * G * P_XF_hat
-			assert(0);	// ToDo: Implement this!
+			Mp_StPtMtP( &S, 1.0, MatrixSymWithOp::DUMMY_ARG, qp_->G(), P_XF_hat_, BLAS_Cpp::no_trans );
 		}
 		if( q_F_hat && q_plus_hat ) {
-			// S += P_XF_hat' * A_bar * P_plus_hat + P_plus_hat' * A_bar * P_XF_hat
-			assert(0);	// ToDo: Implement this!
+			// S += P_XF_hat' * A_bar * P_plus_hat + P_plus_hat' * A_bar' * P_XF_hat
+			qp_->constraints().A_bar().syr2k(
+				BLAS_Cpp::no_trans, 1.0
+				,P_XF_hat_, BLAS_Cpp::no_trans
+				,P_plus_hat_, BLAS_Cpp::no_trans
+				,1.0, &S );
 		}
 		if( q_F_hat && q_C_hat ) {
 			// S += P_F_tilde' * P_C_hat + P_C_hat' * P_F_tilde
@@ -826,16 +833,23 @@ void QPSchur::ActiveSet::initialize(
 
 		if( out && (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 			*out
-				<< "\n*** Upper part of initial Schur Complement before it is factorized.\n";
-			*out << "\nS_hat =\n" << S_store;
+				<< "\nIninitial Schur Complement before it is factorized:\n"
+				<< "\nS_hat =\nLower triangular part (ignore nonzeros above diagonal)\n"
+				<< S_store;
 		}
-
+		// Initialize and factorize the schur complement!
 		schur_comp().update_interface().initialize(
 			S, q_hat_max, true
 			, MatrixSymAddDelUpdateable::Inertia( q_plus_hat + q_C_hat, 0, q_F_hat ) );
 		// ToDo: Think about how to deal with the case where we may want to
 		// selectively remove some rows/columns of S in order to
 		// get a nonsingular schur complement.  This may be complicated though.
+		if( out && (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
+			*out
+				<< "\nSchur Complement after factorization:\n"
+				<< "\nS_hat =\n"
+				 << schur_comp().op_interface();
+		}
 	}
 	else {
 		schur_comp().update_interface().set_uninitialized();
@@ -850,11 +864,6 @@ void QPSchur::ActiveSet::initialize(
 		initialized_ = false;
 		throw;
 	}
-
-	// If you get here then an exception was thrown and
-	// we failed to initialize this stuff properly.
-	initialized_ = false;
-
 }
 
 void QPSchur::ActiveSet::refactorize_schur_comp()
@@ -1235,8 +1244,8 @@ void QPSchur::ActiveSet::drop_constraint(
 			--q_plus_hat_;
 		}
 		// Deincrement all counters in permutation matrices for removed element
-		deincrement_indices( sd, &P_XF_hat_col_, this->q_hat() );
-		deincrement_indices( sd, &P_plus_hat_col_, this->q_hat() );
+		deincrement_indices( sd, &P_XF_hat_col_, q_F_hat_ );
+		deincrement_indices( sd, &P_plus_hat_col_, q_plus_hat_ );
 	}
 	// Update the permutation matrices and U_hat
 	reinitialize_matrices(test_);
@@ -1570,19 +1579,12 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			, test_what == RUN_TESTS, out, output_level );
 	}
 
-	// Print U_hat, S_hat and c_hat.
-	if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
-		*out
-			<< "\n*** Initialized active set\n";
-		dump_act_set_quantities( act_set_, *out );
-	}
-
 	// Compute vo =  inv(Ko) * fo
 	V_InvMtV( &vo_, qp.Ko(), BLAS_Cpp::no_trans, qp.fo() );
 
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		*out
-			<< "\n||vo||inf = " << norm_inf(vo_()) << std::endl;
+			<< "\nSolution to the initial KKT system, vo = inv(Ko)*fo:\n\n||vo||inf = " << norm_inf(vo_()) << std::endl;
 	}
 	if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 		*out
@@ -2045,6 +2047,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	using LinAlgPack::V_VmV;
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_StV;
+	using LinAlgOpPack::V_StMtV;
 	using SparseLinAlgPack::dot;
 	using SparseLinAlgPack::norm_inf;
 	using SparseLinAlgPack::EtaVector;
@@ -2108,7 +2111,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 									// Lagrange multiplier is near degenerate.
 	bool					return_to_init_fixed = false;	// True if the constraint being added
 									// to the active set is a varible returning to its orginally
-									// fixed variable bound.
+	                                // fixed variable bound.
+	bool                    all_dof_used_up; // Used to keep track of when we don't need to compute p_v
 
 	for( itr = 0; itr <= max_iter_; ++itr, ++(*iter) ) {
 
@@ -2199,11 +2203,11 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							*out << "-";
 				}
 				if( ja == 0 ) {
-					// ToDo: (>=1) Print solution found.
+					// Todo: Implement iterative refinement if needed.
 					return OPTIMAL_SOLUTION;	// current point is optimal.
 				}
 				const size_type sa = act_set->s_map(ja);
-				if( sa != 0 || ( sa == 0 && act_set->is_init_fixed(ja) ) )
+				if( sa != 0 || ( act_set->is_init_fixed(ja) && act_set->s_map(-ja) == 0 ) )
 				{
 					// Ohps! This constraint is already in the active set.
 					std::ostringstream omsg;
@@ -2342,6 +2346,13 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					*out
 						<< "\n*** COMPUTE_SEARCH_DIRECTION\n";
 				}
+				// All degrees of freedom used up?
+				all_dof_used_up = act_set->all_dof_used_up();
+				if( all_dof_used_up && (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+					*out
+						<< "\nAll the degrees of freedom are used up.\n"
+						<< "Therefore we don't need to compute p_v (set p_v = 0) and gamma_plus = beta*inf ...\n";
+				}
 				// Print end of row for rank
 				if( (int)output_level == (int)OUTPUT_ITER_SUMMARY ) {
 					*out
@@ -2351,8 +2362,20 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					summary_lines_counter++;
 				}
 				if( assume_lin_dep_ja ) {
+					//
 					// The schur complement is not updated so we must compute
 					// p_z_hat and p_v explicitly.
+					//
+					// If all the degrees of freedom
+					// are used up then we know that the step of the primal variables
+					// will be zero.  However, if m > 0 then v and p_v also contain
+					// terms for the Lagrange multipliers for the equality constriants
+					// but we don't need to compute these during the algorithm.
+					// Therefore we can just set p_v = 0 and save a solve with Ko.
+					// If the QP is feasible then a constraint will be dropped, the
+					// KKT system will be updated and then v_plus will be computed
+					// at the next iteration and be used to compute v so all is good.
+					//
 					if( act_set->is_init_fixed(ja) ) {
 						// Fix a varaible that was fixed and then freed
 						assert(0);	// ToDo: Finish this!
@@ -2365,7 +2388,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						// 
 						// p_v = inv(Ko) * ( -u_a - U_hat * p_z_hat )
 						// 
-						// gamma_plus = ( b_a - u_a'*v - v_a'*z_hat ) / ( u_a'*p_v + v_a'*p_z_hat )
+						// gamma_plus = ( d_a - u_a'*v - v_a'*z_hat ) / ( u_a'*p_v + v_a'*p_z_hat )
 						// 
 						// ToDo: (9/25/00): Make u_a and v_a both sparse and combine the following code.
 						// 
@@ -2374,9 +2397,12 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							//
 							// u_a = e(ja) <: R^(n_R + m)
 							// 
-							// v_a = 0
+							// v_a = 0     <: R^(q_hat)
+							//
+							// d_a = b_a   <: R
 							// 
-							const EtaVector u_a = EtaVector( ja, n_R + m );
+							const EtaVector  u_a = EtaVector( ja, n_R + m );
+							const value_type d_a = b_a;
 							Vector t1;
 							// t1 = inv(Ko) * u_a
 							V_InvMtV( &t1, qp.Ko(), no_trans, u_a() );
@@ -2391,14 +2417,20 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								// t1 += - U_hat * p_z_hat
 								Vp_StMtV( &t1(), -1.0, act_set->U_hat(), no_trans, act_set->p_z_hat() );
 								// p_v = inv(Ko) * t1
-								V_InvMtV( &p_v, qp.Ko(), no_trans, t1() );
+								if(!all_dof_used_up)
+									V_InvMtV( &p_v, qp.Ko(), no_trans, t1() );
+								else
+									p_v = 0.0;
 							}
 							else {
 								// p_v = -t1
 								V_mV( &p_v, t1() );
 							}
-							// gamma_plus = ( b_a - u_a'*v) / ( u_a'*p_v )
-							gamma_plus = ( b_a - dot(u_a(),*v) ) / dot(u_a(),p_v());
+							// gamma_plus = ( d_a - u_a'*v) / ( u_a'*p_v )
+							if(!all_dof_used_up)
+								gamma_plus = ( d_a - dot(u_a(),*v) ) / dot(u_a(),p_v());
+							else
+								gamma_plus = beta * inf;
 						}
 						else {
 							// Add a general inequality (or equality) constraint
@@ -2407,15 +2439,25 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							//       [          0           ]
 							// 
 							// v_a = P_XF_hat' * A_bar * e_ja <: R^(q_hat)
-							// 
+							//
+							// d_a = b_a - b_X' * (Q_X' * A_bar * e_ja) <: R
+							//
 							const EtaVector e_ja = EtaVector( ja, n + m_breve );
-							Vector u_a( n_R + m );
+							Vector u_a( n_R + m );  // ToDo: Use workspace!
 							// u_a(1:n_R) =  Q_R' * A_bar * e(ja)
 							Vp_StPtMtV( &u_a(1,n_R), 1.0, qp.Q_R(), trans
-								, qp.constraints().A_bar(), no_trans, e_ja() );
+										, qp.constraints().A_bar(), no_trans, e_ja() );
 							// u_a(n_R+1:n_R+m) = 0.0
 							if(m)
 								u_a(n_R+1,n_R+m) = 0.0;
+							// t0 = Q_X' * A_bar * e_ja
+							Vector t0(n-n_R);
+							if( n > n_R )
+								Vp_StPtMtV( &t0(), 1.0, qp.Q_X(), trans
+											, qp.constraints().A_bar(), no_trans, e_ja(), 0.0 );
+							// d_a = b_a - b_X'*t0
+							const value_type
+								d_a = b_a - ( n > n_R ? dot( qp.b_X(), t0() ) : 0.0 );
 							// t1 = inv(Ko) * u_a
 							Vector t1;
 							V_InvMtV( &t1, qp.Ko(), no_trans, u_a );
@@ -2423,31 +2465,68 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								// t2 = U_hat'*t1
 								Vector t2;
 								V_MtV( &t2, act_set->U_hat(), trans, t1() );
-								// v_a = - P_XF_hat' * A_bar * e_ja
-								Vector v_a;	// ToDo: Make this a sparse vector!
-								Vp_StPtMtV( &v_a(), -1.0, act_set->P_XF_hat(), trans
-									, qp.constraints().A_bar(), no_trans, e_ja(), 0.0 );
-								// t2 += v_a
-								Vp_V( &t2(), v_a() );
+								// v_a = P_XF_hat' * A_bar * e_ja
+								Vector v_a(act_set->q_hat()); // ToDo: Use workspace for this!
+								Vp_StPtMtV( &v_a(), 1.0, act_set->P_XF_hat(), trans
+											, qp.constraints().A_bar(), no_trans, e_ja(), 0.0 );
+								// t2 += -v_a
+								Vp_StV( &t2(), -1.0, v_a() );
 								// p_z_hat = inv(S_hat) * t2
 								V_InvMtV( &act_set->p_z_hat(), act_set->S_hat(), no_trans, t2() );
-								// t1 = - u_a
-								V_StV( &t1, -1.0, u_a );
-								// t1 += - U_hat * p_z_hat
-								Vp_StMtV( &t1(), -1.0, act_set->U_hat(), no_trans, act_set->p_z_hat() );
-								// p_v = inv(Ko) * t1
-								V_InvMtV( &p_v, qp.Ko(), no_trans, t1() );
-								// gamma_plus = ( b_a - u_a'*v - v_a'*z_hat ) / ( u_a'*p_v + v_a'*p_z_hat )
-								gamma_plus = ( b_a - dot(u_a,*v) - dot(v_a(),act_set->z_hat()) )
-									 / ( dot(u_a,p_v()) + dot(v_a(),act_set->p_z_hat()) );
+								if(!all_dof_used_up) {
+									// t1 = - u_a
+									V_StV( &t1, -1.0, u_a() );
+								    // t1 += - U_hat * p_z_hat
+									Vp_StMtV( &t1(), -1.0, act_set->U_hat(), no_trans, act_set->p_z_hat() );
+								    // p_v = inv(Ko) * t1
+									V_InvMtV( &p_v, qp.Ko(), no_trans, t1() );
+								}
+								else {
+									p_v = 0.0;
+								}
+								// gamma_plus = ( d_a - u_a'*v - v_a'*z_hat ) / ( u_a'*p_v + v_a'*p_z_hat )
+								if(!all_dof_used_up)
+									gamma_plus = ( ( d_a - dot(u_a,*v) - dot(v_a(),act_set->z_hat()) )
+												   / ( dot(u_a,p_v()) + dot(v_a(),act_set->p_z_hat()) ) );
+								else
+									gamma_plus = beta * inf;
 							}
 							else {
 								// p_v = -t1
-								V_mV( &p_v, t1() );
-								// gamma_plus = ( b_a - u_a'*v) / ( u_a'*p_v )
-								gamma_plus = ( b_a - dot(u_a,*v) ) / dot(u_a,p_v());
+								if(!all_dof_used_up)
+									V_mV( &p_v, t1() );
+								else
+									p_v = 0.0;
+								// gamma_plus = ( d_a - u_a'*v) / ( u_a'*p_v )
+								if(!all_dof_used_up)
+									gamma_plus = ( d_a - dot(u_a,*v) ) / dot(u_a,p_v());
+								else
+									gamma_plus = beta * inf;
 							}
 						}
+					}
+					// Print the steps p_v and p_z_hat
+					if(act_set->q_hat()) {
+						if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+							*out
+								<< "\n||p_z_hat||inf = " << norm_inf(act_set->p_z_hat()) << endl;
+						}
+						if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES )
+						{
+							*out << "\np_z_hat =\n" << act_set->p_z_hat();
+						}
+					}
+					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+						*out
+							<< "\n||p_v||inf = " << norm_inf(p_v()) << endl;
+					}
+					if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES )
+					{
+						*out << "\np_v =\n" << p_v();
+					}
+					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+						*out
+							<< "\ngamma_plus = " << gamma_plus << endl;
 					}
 					// Compute step for mu_D_hat
 					if( act_set->q_D_hat() ) {
@@ -2498,10 +2577,10 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					V_VmV( &p_z_hat(), z_hat_plus(), act_set->z_hat() );
 					// p_v = v_plus - v
 					V_VmV( &p_v(), v_plus(), *v );
-					// p_mu_D_hat = ???
+					// p_mu_D_hat
 					if( act_set->q_D_hat() )
 						calc_p_mu_D( *act_set, p_v(), p_z_hat(), &act_set->p_mu_D_hat() );
-					// gamma_plus = ???
+					// gamma_plus
 					if( act_set->is_init_fixed(ja) && act_set->qp().x_init()(ja) == bnd_ja ) {
 						gamma_plus = act_set->p_mu_D_hat()( act_set->q_D_hat() );
 					}
@@ -2509,30 +2588,41 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						gamma_plus = z_hat_plus(q_hat);
 					}
 					// p_z_hat = p_z_hat / gamma_plus
-					Vt_S( &p_z_hat(), 1.0 / gamma_plus ); 
+					Vt_S( &p_z_hat(), 1.0 / gamma_plus );
 					// p_v = p_v / gamma_plus
-					Vt_S( &p_v(), 1.0 / gamma_plus ); 
-					// p_mu_D_hat = p_mu_D_hat / gamma_plus )
-					if( act_set->q_D_hat() )
-						Vt_S( &act_set->p_mu_D_hat(), 1.0 / gamma_plus ); 
+					Vt_S( &p_v(), 1.0 / gamma_plus );
+					// Print gama_plus, p_z_hat, p_v and p_mu_D_hat
 					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 						*out
-							<< "\ngamma_plus        = " << gamma_plus
-							<< "\n||p_z_hat||inf    = " << norm_inf(p_z_hat())
-							<< "\n||p_v||inf        = " << norm_inf(p_v());
-						if( act_set->q_D_hat() )
-							*out
-							<< "\n||p_mu_D_hat||inf =\n" << norm_inf(act_set->p_mu_D_hat());
-						*out << std::endl;
+							<< "\ngamma_plus = " << gamma_plus << std::endl;
+					}
+					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+						*out
+							<< "\n||p_z_hat||inf = " << norm_inf(p_z_hat()) << std::endl;
 					}
 					if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 						*out
-							<< "\ngamma_plus = " << gamma_plus << std::endl
-							<< "\np_z_hat =\n" << p_z_hat()
+							<< "\np_z_hat =\n" << p_z_hat();
+					}
+					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+						*out
+							<< "\n||p_v||inf = " << norm_inf(p_v()) << std::endl;
+					}
+					if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
+						*out
 							<< "\np_v =\n" << p_v();
-						if( act_set->q_D_hat() )
+					}
+					if( act_set->q_D_hat() ) {
+						// p_mu_D_hat = p_mu_D_hat / gamma_plus
+						Vt_S( &act_set->p_mu_D_hat(), 1.0 / gamma_plus ); 
+						if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+							*out
+								<< "\n||p_mu_D_hat||inf =\n" << norm_inf(act_set->p_mu_D_hat()) << std::endl;
+						}
+						if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 							*out
 								<< "\np_mu_D_hat =\n" << act_set->p_mu_D_hat();
+						}
 					}
 				}
 			}
@@ -2886,6 +2976,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					if( (int)output_level >= (int)OUTPUT_ITER_STEPS )
 					{
 						*out
+							<< "\nUpdated primal and dual variables:\n"
 							<< "\n||v||inf           = " << norm_inf(*v)
 							<< "\n||z_hat||inf       = " << norm_inf(act_set->z_hat())
 							<< "\nmax(|mu_D_hat(i)|) = " << norm_inf(act_set->mu_D_hat())

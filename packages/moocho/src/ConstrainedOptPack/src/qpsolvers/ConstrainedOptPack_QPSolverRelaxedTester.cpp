@@ -250,7 +250,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 
 	if(out)
 		*out
-			<< "\n*** Begin checking QP optimality conditions\n"
+			<< "\n*** Begin checking QP optimality conditions ***\n"
 			<< "\nThe solution type is " << solution_type_str(solution_type) << endl;
 
 	bool force_opt_error_check
@@ -266,10 +266,13 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	if(nu) nu->assert_valid_and_sorted();
 	if(mu) mu->assert_valid_and_sorted();
 
+	const char sep_line[] = "\n--------------------------------------------------------------------------------\n";
+
 	////////////////////////////
 	// Checking d(L)/d(d) = 0
 	if(out)
 		*out
+			<< sep_line
 			<< "\nChecking d(L)/d(d) = g + G*d + nu + op(E)'*mu - op(F)'*lambda == 0 ...\n";
 
 	if(out && !force_opt_error_check)
@@ -341,6 +344,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 
 	if(out) {
 		*out
+			<< sep_line
 			<< "\nTesting feasibility of the constraints and the complementarity conditions ...\n";
 		if(!force_inequality_error_check)
 			*out
@@ -357,6 +361,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	// etaL - eta
 	if(out)
 		*out
+			<< sep_line
 			<< "\nChecking etaL - eta <= 0 ...\n";
 	if(out && print_vectors)
 		*out
@@ -383,6 +388,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	// dL - d <= 0
 	if(out)
 		*out
+			<< sep_line
 			<< "\nChecking dL - d <= 0 ...\n";
 	u.resize(d->size());
 	imp_sparse_bnd_diff( +1, dL, lower, *d, &u() );
@@ -401,6 +407,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	if(nu) {
 		if(out)
 			*out
+				<< sep_line
 				<< "\nChecking nuL(i) * (dL - d)(i) = 0  ...\n";
 		set_complementarity( *nu, u(), lower, &c );
 		if(out && print_vectors)
@@ -420,6 +427,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	// d - dU <= 0
 	if(out)
 		*out
+			<< sep_line
 			<< "\nChecking d - dU <= 0 ...\n";
 	u.resize(d->size());
 	imp_sparse_bnd_diff( -1, dU, upper, *d, &u() );
@@ -438,6 +446,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	if(nu) {
 		if(out)
 			*out
+				<< sep_line
 				<< "\nChecking nuU(i) * (d - dU)(i) = 0  ...\n";
 		set_complementarity( *nu, u(), upper, &c );
 		if(out && print_vectors)
@@ -459,6 +468,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		// e = op(E)*d + b*eta
 		if(out)
 			*out
+				<< sep_line
 				<< "\nComputing e = op(E)*d - b*eta ...\n";
 		V_MtV( &e, *E, trans_E, *d );
 		Vp_StV( &e(), -(*eta), *b );
@@ -471,6 +481,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		// eL - e <= 0
 		if(out)
 			*out
+				<< sep_line
 				<< "\nChecking eL - e <= 0 ...\n";
 		u.resize(e.size());
 		imp_sparse_bnd_diff( +1, *eL, lower, e(), &u() );
@@ -488,6 +499,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 			, print_all_warnings, out )) return false;
 		if(out)
 			*out
+				<< sep_line
 				<< "\nChecking muL(i) * (eL - e)(i) = 0  ...\n";
 		set_complementarity( *mu, u(), lower, &c );
 		if(out && print_vectors)
@@ -506,6 +518,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		// e - eU <= 0
 		if(out)
 			*out
+				<< sep_line
 				<< "\nChecking e - eU <= 0 ...\n";
 		u.resize(e.size());
 		imp_sparse_bnd_diff( -1, *eU, upper, e(), &u() );
@@ -524,6 +537,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 			, print_all_warnings, out )) return false;
 		if(out)
 			*out
+				<< sep_line
 				<< "\nChecking muU(i) * (e - eU)(i) = 0  ...\n";
 		set_complementarity( *mu, u(), upper, &c );
 		if(out && print_vectors)
@@ -547,6 +561,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		// r = - op(F)*d + eta * f 
 		if(out)
 			*out
+				<< sep_line
 				<< "\nComputing r = - op(F)*d + eta * f ...\n";
 		V_StMtV( &r, -1.0, *F, trans_F, *d );
 		Vp_StV( &r(), *eta, *f );
@@ -556,6 +571,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 
 		if(out) {
 			*out
+				<< sep_line
 				<< "\nChecking r == f:\n"
 				<< "u = r, v = f ...\n";
 		}
@@ -565,10 +581,15 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 
 	}
 
-	if(out)
+	if(out) {
 		*out
-			<< "\n*** Congradulations, all of the enforced QP optimality conditions were within the specified"
-			<< "\n*** error tolerances!\n";
+			<< sep_line;
+		if(solution_type!=qps_t::SUBOPTIMAL_POINT)
+			*out
+				<< "\nCongradulations!  All of the enforced QP optimality conditions were within the specified error tolerances!\n";
+		*out
+			<< "\n*** End checking QP optimality conditions ***\n";
+	}
 
 	return true;	// If we get here then success
 

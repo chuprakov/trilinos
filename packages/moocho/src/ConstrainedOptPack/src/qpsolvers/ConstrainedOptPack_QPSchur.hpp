@@ -481,12 +481,15 @@ public:
 	  *					starts.
 	  * @param	ij_act_change
 	  * 			[in] Array (size num_act_change): specifying
-	  *					how to initialize the active set.  If i = ij_act_change(s)
-	  *					< 0 then the initially fixed variable x(-i) is to be
+	  *					how to initialize the active set.  If i = -ij_act_change(s)
+	  *					> 0 then the initially fixed variable x(i) is to be
 	  *					freed.  If j = ij_act_change(s) > 0 then the constraint
-	  *					a_bar(j)'*x is to be added to the active set.  The order
-	  *					of these changes can significantly effect the performance
-	  *					of the algorithm if these change.
+	  *					a_bar(j)'*x is to be added to the active set to the
+	  *					bound bnd(s).  The order of these changes can significantly
+	  *					effect the performance of the algorithm if these changes
+	  *					are not part of the optimal active set.  Put changes that
+	  *					you are sure about earlier in the list and those that you
+	  *					are not a sure about later.
 	  *	@param	bnd [in] Array (size num_act_change):  bnd(s) gives which bound to
 	  *					make active.  If ij_act_change(s) < 0 then this is ignored.
 	  * @param	out [out] output stream.  Iteration information is printed according
@@ -1011,8 +1014,7 @@ private:
 	Vector			vo_,			// vo = inv(Ko) * fo
 					v_,				// v = [ x_R; lambda ]
 					z_hat_plus_,	// z_hat for if ja is added to active set.
-					v_plus_,		// v = [ x; lambda ] if ja is added to active set.
-					p_z_hat_;		// Search direction for z_hat for adding ja to active set.
+					v_plus_;		// v = [ x; lambda ] if ja is added to active set.
 
 	// /////////////////////////
 	// Private Member functions.

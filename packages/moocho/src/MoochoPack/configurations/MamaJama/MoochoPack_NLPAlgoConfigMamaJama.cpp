@@ -446,11 +446,29 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				break;
 			case QN_BFGS_PROJECTED:
 				use_limited_memory = false;
-				cov_.quasi_newton_used_ = QN_BFGS_PROJECTED;
+				if( cov_.qp_solver_type_ == QPKWIK ) {
+					if(trase_out)
+						*trase_out
+							<< "\nqp_solver == QPKWIK and quasi_newton == BFGS_PROJECTED:\n"
+							<< "QPKWIK can not use this option, setting quasi_newton = BFGS\n";
+					cov_.quasi_newton_used_ = QN_BFGS;
+				}
+				else
+					cov_.quasi_newton_used_ = QN_BFGS_PROJECTED;
 				break;
 			case QN_LBFGS:
-				use_limited_memory = true;
-				cov_.quasi_newton_used_ = QN_LBFGS;
+				if( cov_.qp_solver_type_ == QPKWIK ) {
+					if(trase_out)
+						*trase_out
+							<< "\nqp_solver == QPKWIK and quasi_newton == LBFGS:\n"
+							<< "QPKWIK can not use this option, setting quasi_newton = BFGS\n";
+					cov_.quasi_newton_used_ = QN_BFGS;
+					use_limited_memory = false;
+				}
+				else {
+					use_limited_memory = true;
+					cov_.quasi_newton_used_ = QN_LBFGS;
+				}
 				break;
 			default:
 				assert(0);	// only local programming error
@@ -473,21 +491,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			switch(cov_.qp_solver_type_) {
 				case QPSOL:
 				case QPOPT:
-					matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
-						= use_limited_memory
-							? static_cast<IterQuantMatrixWithOpCreator*>(
-								new IterQuantMatrixWithOpCreatorContinuous<
-									SymLBFGSMatrixSubclass>() )
-							: static_cast<IterQuantMatrixWithOpCreator*>( 
-								new IterQuantMatrixWithOpCreatorContinuous<
-									MatrixSymPosDefCholFactor>() );
-					break;
-				case QPKWIK:
-					matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
-						= new IterQuantMatrixWithOpCreatorContinuous<
-									SymInvCholMatrixSubclass>();
-					use_limited_memory = false;
-					break;
 			    case QPSCHUR: {
 					if( use_limited_memory ) {
 						matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
@@ -507,12 +510,18 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 							matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
 								= static_cast<IterQuantMatrixWithOpCreator*>( 
 									new IterQuantMatrixWithOpCreatorContinuous<
-									SymInvCholMatrixSubclass>()
+									MatrixSymPosDefCholFactor>()
 									);
 						}
 					}
 					break;
 				}
+				case QPKWIK:
+					matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
+						= new IterQuantMatrixWithOpCreatorContinuous<
+									SymInvCholMatrixSubclass>();
+					use_limited_memory = false;
+					break;
 				default:
 					assert(0);
 			}
@@ -576,8 +585,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					*B_RR_ptr = new MatrixSymPosDefCholFactor(
 						NULL    // Let it allocate its own memory
 						,NULL   // ...
-						,false  // Do not maintain the original matrix
-						,true   // Maintian the cholesky factor
+						,cov_.qp_solver_type_ == QPSCHUR ? false : true  // Do not maintain the original matrix
+						                                                 // QPOPT or QPSOL but not QPSchur
+						,cov_.qp_solver_type_ == QPSCHUR ? true : false  // Maintian the cholesky factor for QPSchur
+						                                                 // but now QPOPT or QPSOL
 						);
 				B_RR_ptr->init_identity( n-r, 1.0 ); // Must be sized when rHL is initialized
 				_rHL->initialize(
@@ -587,6 +598,28 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					,new SparseLinAlgPack::MatrixSymDiagonalStd()  // B_XX_ptr (sized to 0x0)
 					);
 				algo->rsqp_state().rHL().set_not_updated(-1);      // Set non updated so that it will be computed.
+			}
+			else if( cov_.quasi_newton_used_ == QN_BFGS ) {
+				switch( cov_.qp_solver_type_ ) {
+				    case QPSCHUR:
+				    case QPOPT:
+				    case QPSOL:
+					{
+						MatrixSymPosDefCholFactor
+							*_rHL = dynamic_cast<MatrixSymPosDefCholFactor*>(
+								&algo->rsqp_state().rHL().set_k(-1) );
+						assert(_rHL); // Should not happen?
+						_rHL->init_setup(
+							NULL    // Let it allocate its own memory
+							,NULL   // ...
+							,cov_.qp_solver_type_ == QPSCHUR ? false : true  // Do not maintain the original matrix
+								                                             // QPOPT or QPSOL but not QPSchur
+							,cov_.qp_solver_type_ == QPSCHUR ? true : false  // Maintian the cholesky factor for QPSchur
+							                                                 // but now QPOPT or QPSOL
+							);
+
+					}
+				}
 			}
 		}
 	}
