@@ -1,0 +1,1697 @@
+# Makefile.in generated automatically by automake 1.5 from Makefile.am.
+
+# Copyright 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
+# Free Software Foundation, Inc.
+# This Makefile.in is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+@SET_MAKE@
+
+# @HEADER
+# @HEADER
+
+SHELL = @SHELL@
+
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+VPATH = @srcdir@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+bindir = @bindir@
+sbindir = @sbindir@
+libexecdir = @libexecdir@
+datadir = @datadir@
+sysconfdir = @sysconfdir@
+sharedstatedir = @sharedstatedir@
+localstatedir = @localstatedir@
+libdir = @libdir@
+infodir = @infodir@
+mandir = @mandir@
+includedir = @includedir@
+oldincludedir = /usr/include
+pkgdatadir = $(datadir)/@PACKAGE@
+pkglibdir = $(libdir)/@PACKAGE@
+pkgincludedir = $(includedir)/@PACKAGE@
+top_builddir = ..
+
+ACLOCAL = @ACLOCAL@
+AUTOCONF = @AUTOCONF@
+AUTOMAKE = @AUTOMAKE@
+AUTOHEADER = @AUTOHEADER@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_SCRIPT = @INSTALL_SCRIPT@
+INSTALL_HEADER = $(INSTALL_DATA)
+transform = @program_transform_name@
+NORMAL_INSTALL = :
+PRE_INSTALL = :
+POST_INSTALL = :
+NORMAL_UNINSTALL = :
+PRE_UNINSTALL = :
+POST_UNINSTALL = :
+ALTERNATE_AR = @ALTERNATE_AR@
+AMTAR = @AMTAR@
+AWK = @AWK@
+CC = @CC@
+CXX = @CXX@
+DEPDIR = @DEPDIR@
+EXEEXT = @EXEEXT@
+F77 = @F77@
+FLIBS = @FLIBS@
+INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+MAINT = @MAINT@
+MPI_CC_EXISTS = @MPI_CC_EXISTS@
+MPI_CXX = @MPI_CXX@
+MPI_CXX_EXISTS = @MPI_CXX_EXISTS@
+MPI_F77_EXISTS = @MPI_F77_EXISTS@
+OBJEXT = @OBJEXT@
+PACKAGE = @PACKAGE@
+RANLIB = @RANLIB@
+VERSION = @VERSION@
+ac_aux_dir = @ac_aux_dir@
+am__include = @am__include@
+am__quote = @am__quote@
+install_sh = @install_sh@
+
+MoochoUtilities_SOURCES_H = \
+$(srcdir)/MoochoUtilities/AbstractFactory.hpp\
+$(srcdir)/MoochoUtilities/AbstractFactoryStd.hpp\
+$(srcdir)/MoochoUtilities/Range1D.hpp\
+$(srcdir)/MoochoUtilities/StandardAggregationMacros.hpp\
+$(srcdir)/MoochoUtilities/StandardCompositionMacros.hpp\
+$(srcdir)/MoochoUtilities/StandardCompositionRelationshipsPack.hpp\
+$(srcdir)/MoochoUtilities/StandardMemberCompositionMacros.hpp\
+$(srcdir)/MoochoUtilities/ThrowException.hpp\
+$(srcdir)/MoochoUtilities/WorkspacePack.hpp\
+$(srcdir)/MoochoUtilities/dynamic_cast_verbose.hpp\
+$(srcdir)/MoochoUtilities/ref_count_ptr.hpp\
+$(srcdir)/MoochoUtilities/ref_count_ptr_decl.hpp
+
+
+MoochoUtilities_SOURCES = \
+$(srcdir)/MoochoUtilities/Range1D.cpp\
+$(srcdir)/MoochoUtilities/ThrowException.cpp\
+$(srcdir)/MoochoUtilities/WorkspacePack.cpp\
+$(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp\
+$(srcdir)/MoochoUtilities/ref_count_ptr.cpp
+
+
+RTOp_C_SOURCES_H = \
+$(srcdir)/RTOpPack/RTOp.h\
+$(srcdir)/RTOpPack/RTOpToMPI.h\
+$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.h\
+$(srcdir)/RTOpPack/RTOp_SparseSubVector.h\
+$(srcdir)/RTOpPack/RTOp_apply_op_mpi.h\
+$(srcdir)/RTOpPack/RTOp_apply_op_serial.h\
+$(srcdir)/RTOpPack/RTOp_config.h\
+$(srcdir)/RTOpPack/RTOp_mpi.h\
+$(srcdir)/RTOpPack/RTOp_obj_free_free.h\
+$(srcdir)/RTOpPack/RTOp_obj_index_vtbl.h\
+$(srcdir)/RTOpPack/RTOp_obj_null_vtbl.h\
+$(srcdir)/RTOpPack/RTOp_obj_value_index_vtbl.h\
+$(srcdir)/RTOpPack/RTOp_obj_value_value_vtbl.h\
+$(srcdir)/RTOpPack/RTOp_obj_value_vtbl.h\
+$(srcdir)/RTOpPack/RTOp_obj_values_vtbl.h\
+$(srcdir)/RTOpPack/RTOp_parallel_helpers.h\
+$(srcdir)/RTOpPack/RTOp_reduct_max_value.h\
+$(srcdir)/RTOpPack/RTOp_reduct_min_value.h\
+$(srcdir)/RTOpPack/RTOp_reduct_sum_value.h\
+$(srcdir)/RTOpPack/RTOp_reduct_sum_values.h\
+$(srcdir)/RTOpPack/check_nan_inf.h
+
+
+RTOp_C_SOURCES = \
+$(srcdir)/RTOpPack/RTOp.c\
+$(srcdir)/RTOpPack/RTOpToMPI.c\
+$(srcdir)/RTOpPack/RTOp_SparseSubVector.c\
+$(srcdir)/RTOpPack/RTOp_apply_op_mpi.c\
+$(srcdir)/RTOpPack/RTOp_apply_op_serial.c\
+$(srcdir)/RTOpPack/RTOp_mpi.c\
+$(srcdir)/RTOpPack/RTOp_obj_free_free.c\
+$(srcdir)/RTOpPack/RTOp_obj_index_vtbl.c\
+$(srcdir)/RTOpPack/RTOp_obj_null_vtbl.c\
+$(srcdir)/RTOpPack/RTOp_obj_value_index_vtbl.c\
+$(srcdir)/RTOpPack/RTOp_obj_value_value_vtbl.c\
+$(srcdir)/RTOpPack/RTOp_obj_value_vtbl.c\
+$(srcdir)/RTOpPack/RTOp_obj_values_vtbl.c\
+$(srcdir)/RTOpPack/RTOp_parallel_helpers.c\
+$(srcdir)/RTOpPack/RTOp_reduct_max_value.c\
+$(srcdir)/RTOpPack/RTOp_reduct_min_value.c\
+$(srcdir)/RTOpPack/RTOp_reduct_sum_value.c\
+$(srcdir)/RTOpPack/RTOp_reduct_sum_values.c\
+$(srcdir)/RTOpPack/check_nan_inf.c
+
+
+RTOp_CXX_SOURCES_H = \
+$(srcdir)/RTOpPack/RTOpCpp.hpp\
+$(srcdir)/RTOpPack/RTOpCppC.hpp\
+$(srcdir)/RTOpPack/RTOpCppDecl.hpp\
+$(srcdir)/RTOpPack/RTOpCppToC.hpp\
+$(srcdir)/RTOpPack/RTOpCppToMPI.hpp\
+$(srcdir)/RTOpPack/RTOpFactoryTmpl.hpp\
+$(srcdir)/RTOpPack/RTOpPackTypes.hpp\
+$(srcdir)/RTOpPack/RTOp_get_reduct_op.hpp\
+$(srcdir)/RTOpPack/print_sub_vector.hpp
+
+
+RTOp_CXX_SOURCES = \
+$(srcdir)/RTOpPack/RTOpCppC.cpp\
+$(srcdir)/RTOpPack/RTOpCppToC.cpp\
+$(srcdir)/RTOpPack/RTOpCppToMPI.cpp\
+$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp\
+$(srcdir)/RTOpPack/print_sub_vector.cpp
+
+
+RTOp_STDOPS_SOURCES = \
+$(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_comp_err_with_mu.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_dot_prod.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_find_nan_inf.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_boundary.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_zero_boundary.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_get_ele.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_get_sub_vector.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_log_bound_barrier.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_max.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_max_abs_ele.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_max_inequ_viol.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_max_near_feas_step.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_max_rel_step.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_max_step.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_norms.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.c\
+$(srcdir)/RTOpStdOps/RTOp_ROp_sum.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_axpy.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_correct_multipliers.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_divide.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_prod.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_sqrt.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_force_in_bounds.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_inv_of_difference.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_max_abs_vec_scalar.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_max_vec_scalar.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_multiplier_step.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_random_vector.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_scale_vector.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.c\
+$(srcdir)/RTOpStdOps/RTOp_TOp_sign.c\
+$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c
+
+
+RTOp_STDOPS_SOURCES_H = \
+$(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_comp_err_with_mu.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_dot_prod.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_find_nan_inf.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_boundary.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_zero_boundary.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_get_ele.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_get_sub_vector.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_log_bound_barrier.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_max.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_max_abs_ele.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_max_inequ_viol.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_max_near_feas_step.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_max_rel_step.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_max_step.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_norms.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.h\
+$(srcdir)/RTOpStdOps/RTOp_ROp_sum.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_axpy.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_correct_multipliers.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_divide.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_prod.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_sqrt.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_force_in_bounds.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_inv_of_difference.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_max_abs_vec_scalar.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_max_vec_scalar.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_multiplier_step.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_random_vector.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_scale_vector.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.h\
+$(srcdir)/RTOpStdOps/RTOp_TOp_sign.h
+
+
+AM_CPPFLAGS = \
+  -I$(top_srcdir)/src/MoochoUtilities\
+  -I$(top_srcdir)/src/RTOpPack\
+  -I$(top_srcdir)/src/RTOpStdOps
+
+
+SOURCES_H = \
+  $(MoochoUtilities_SOURCES_H)\
+  $(RTOp_C_SOURCES_H)\
+  $(RTOp_CXX_SOURCES_H)\
+	$(RTOp_STDOPS_SOURCES_H)
+
+
+TSFCOREUTILS_LIB = libTSFCoreUtils.a
+
+libTSFCoreUtils_a_SOURCES = \
+  $(MoochoUtilities_SOURCES)\
+  $(RTOp_C_SOURCES)\
+  $(RTOp_CXX_SOURCES)\
+	$(RTOp_STDOPS_SOURCES)
+
+
+
+# ------------------------------------------------------------------------
+# For using a special archiver
+# ------------------------------------------------------------------------
+
+# SPECIAL NOTE: Why is the "else" there?  For some reason, automake
+# fails to define <lib>_AR of USE_ALTERNATE_AR is false, so we have to
+# define it manually.
+@USE_ALTERNATE_AR_TRUE@libTSFCoreUtils_a_AR = $(ALTERNATE_AR)
+@USE_ALTERNATE_AR_FALSE@libTSFCoreUtils_a_AR = $(AR) cru
+
+
+# ------------------------------------------------------------------------
+# Some C++ compilers create extra .o-files for templates. We need to
+# be sure to include these, and this is the hack to do it.
+# ------------------------------------------------------------------------
+libTSFCoreUtils_a_LIBADD = $(XTRALDADD)
+
+
+# ------------------------------------------------------------------------
+# List of all libraries to install in $(libexecdir)
+# ------------------------------------------------------------------------
+lib_LIBRARIES = $(TSFCOREUTILS_LIB)
+
+
+# ------------------------------------------------------------------------
+# List of all headers to install in $(pkgincludedir)
+# ------------------------------------------------------------------------
+pkginclude_HEADERS = $(SOURCES_H)
+
+
+# ------------------------------------------------------------------------
+# Special stuff to install in our special $(pkgexecincludedir)
+# ------------------------------------------------------------------------
+
+# SPECIAL NOTE: TSFCoreUtils_config.h is a machine-dependent file, so we need
+# to install it in the machine-dependent directory. However, that is
+# not a default installation directory, so we had to create it
+# special.
+pkgexecincludedir = $(exec_prefix)/include/TSFCoreUtils
+nodist_pkgexecinclude_HEADERS = MoochoUtilities/TSFCoreUtilsConfig.h
+
+
+# ------------------------------------------------------------------------
+# Files to be deleted by 'make maintainer-clean'
+# ------------------------------------------------------------------------
+MAINTAINERCLEANFILES = Makefile.in 
+subdir = src
+mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
+CONFIG_HEADER = $(top_builddir)/src/MoochoUtilities/TSFCoreUtilsConfig.h
+CONFIG_CLEAN_FILES =
+LIBRARIES = $(lib_LIBRARIES)
+
+libTSFCoreUtils_a_DEPENDENCIES =
+am_libTSFCoreUtils_a_OBJECTS = Range1D.$(OBJEXT) \
+	ThrowException.$(OBJEXT) WorkspacePack.$(OBJEXT) \
+	dynamic_cast_verbose.$(OBJEXT) ref_count_ptr.$(OBJEXT) \
+	RTOp.$(OBJEXT) RTOpToMPI.$(OBJEXT) \
+	RTOp_SparseSubVector.$(OBJEXT) RTOp_apply_op_mpi.$(OBJEXT) \
+	RTOp_apply_op_serial.$(OBJEXT) RTOp_mpi.$(OBJEXT) \
+	RTOp_obj_free_free.$(OBJEXT) RTOp_obj_index_vtbl.$(OBJEXT) \
+	RTOp_obj_null_vtbl.$(OBJEXT) \
+	RTOp_obj_value_index_vtbl.$(OBJEXT) \
+	RTOp_obj_value_value_vtbl.$(OBJEXT) \
+	RTOp_obj_value_vtbl.$(OBJEXT) RTOp_obj_values_vtbl.$(OBJEXT) \
+	RTOp_parallel_helpers.$(OBJEXT) RTOp_reduct_max_value.$(OBJEXT) \
+	RTOp_reduct_min_value.$(OBJEXT) RTOp_reduct_sum_value.$(OBJEXT) \
+	RTOp_reduct_sum_values.$(OBJEXT) check_nan_inf.$(OBJEXT) \
+	RTOpCppC.$(OBJEXT) RTOpCppToC.$(OBJEXT) RTOpCppToMPI.$(OBJEXT) \
+	RTOp_RTOp_C_Cpp.$(OBJEXT) print_sub_vector.$(OBJEXT) \
+	RTOp_ROp_combined_nu_comp_err.$(OBJEXT) \
+	RTOp_ROp_comp_err_with_mu.$(OBJEXT) RTOp_ROp_dot_prod.$(OBJEXT) \
+	RTOp_ROp_find_nan_inf.$(OBJEXT) \
+	RTOp_ROp_fraction_to_boundary.$(OBJEXT) \
+	RTOp_ROp_fraction_to_zero_boundary.$(OBJEXT) \
+	RTOp_ROp_get_ele.$(OBJEXT) RTOp_ROp_get_sub_vector.$(OBJEXT) \
+	RTOp_ROp_log_bound_barrier.$(OBJEXT) RTOp_ROp_max.$(OBJEXT) \
+	RTOp_ROp_max_abs_ele.$(OBJEXT) \
+	RTOp_ROp_max_inequ_viol.$(OBJEXT) \
+	RTOp_ROp_max_near_feas_step.$(OBJEXT) \
+	RTOp_ROp_max_rel_step.$(OBJEXT) RTOp_ROp_max_step.$(OBJEXT) \
+	RTOp_ROp_norms.$(OBJEXT) RTOp_ROp_num_bounded.$(OBJEXT) \
+	RTOp_ROp_num_nonzeros.$(OBJEXT) RTOp_ROp_sum.$(OBJEXT) \
+	RTOp_TOp_add_scalar.$(OBJEXT) RTOp_TOp_assign_scalar.$(OBJEXT) \
+	RTOp_TOp_assign_vectors.$(OBJEXT) RTOp_TOp_axpy.$(OBJEXT) \
+	RTOp_TOp_correct_multipliers.$(OBJEXT) \
+	RTOp_TOp_ele_wise_divide.$(OBJEXT) \
+	RTOp_TOp_ele_wise_prod.$(OBJEXT) \
+	RTOp_TOp_ele_wise_sqrt.$(OBJEXT) \
+	RTOp_TOp_force_in_bounds.$(OBJEXT) \
+	RTOp_TOp_inv_of_difference.$(OBJEXT) \
+	RTOp_TOp_max_abs_vec_scalar.$(OBJEXT) \
+	RTOp_TOp_max_vec_scalar.$(OBJEXT) \
+	RTOp_TOp_multiplier_step.$(OBJEXT) \
+	RTOp_TOp_random_vector.$(OBJEXT) \
+	RTOp_TOp_scale_vector.$(OBJEXT) RTOp_TOp_set_ele.$(OBJEXT) \
+	RTOp_TOp_set_sub_vector.$(OBJEXT) RTOp_TOp_sign.$(OBJEXT) \
+	init_RTOpStdOpsLib.$(OBJEXT)
+libTSFCoreUtils_a_OBJECTS = $(am_libTSFCoreUtils_a_OBJECTS)
+
+DEFS = @DEFS@
+DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/src/MoochoUtilities
+CPPFLAGS = @CPPFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+depcomp = $(SHELL) $(top_srcdir)/config/depcomp
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/RTOp.Po $(DEPDIR)/RTOpCppC.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOpCppToC.Po $(DEPDIR)/RTOpCppToMPI.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOpToMPI.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_combined_nu_comp_err.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_comp_err_with_mu.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_dot_prod.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_find_nan_inf.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_fraction_to_boundary.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_fraction_to_zero_boundary.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_get_ele.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_get_sub_vector.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_log_bound_barrier.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_max.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_max_abs_ele.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_max_inequ_viol.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_max_near_feas_step.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_max_rel_step.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_max_step.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_norms.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_num_bounded.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_num_nonzeros.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_ROp_sum.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_RTOp_C_Cpp.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_SparseSubVector.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_add_scalar.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_assign_scalar.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_assign_vectors.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_axpy.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_correct_multipliers.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_ele_wise_divide.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_ele_wise_prod.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_ele_wise_sqrt.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_force_in_bounds.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_inv_of_difference.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_max_abs_vec_scalar.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_max_vec_scalar.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_multiplier_step.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_random_vector.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_scale_vector.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_set_ele.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_set_sub_vector.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_TOp_sign.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_apply_op_mpi.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_apply_op_serial.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_mpi.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_obj_free_free.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_obj_index_vtbl.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_obj_null_vtbl.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_obj_value_index_vtbl.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_obj_value_value_vtbl.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_obj_value_vtbl.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_obj_values_vtbl.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_parallel_helpers.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_reduct_max_value.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_reduct_min_value.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_reduct_sum_value.Po \
+@AMDEP_TRUE@	$(DEPDIR)/RTOp_reduct_sum_values.Po \
+@AMDEP_TRUE@	$(DEPDIR)/Range1D.Po $(DEPDIR)/ThrowException.Po \
+@AMDEP_TRUE@	$(DEPDIR)/WorkspacePack.Po \
+@AMDEP_TRUE@	$(DEPDIR)/check_nan_inf.Po \
+@AMDEP_TRUE@	$(DEPDIR)/dynamic_cast_verbose.Po \
+@AMDEP_TRUE@	$(DEPDIR)/init_RTOpStdOpsLib.Po \
+@AMDEP_TRUE@	$(DEPDIR)/print_sub_vector.Po \
+@AMDEP_TRUE@	$(DEPDIR)/ref_count_ptr.Po
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+CFLAGS = @CFLAGS@
+CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+CXXLD = $(CXX)
+CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
+CXXFLAGS = @CXXFLAGS@
+DIST_SOURCES = $(libTSFCoreUtils_a_SOURCES)
+HEADERS = $(nodist_pkgexecinclude_HEADERS) $(pkginclude_HEADERS)
+
+DIST_COMMON = $(pkginclude_HEADERS) Makefile.am Makefile.in
+SOURCES = $(libTSFCoreUtils_a_SOURCES)
+
+all: all-am
+
+.SUFFIXES:
+.SUFFIXES: .c .cpp .o .obj
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
+	cd $(top_srcdir) && \
+	  $(AUTOMAKE) --foreign  src/Makefile
+Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
+	cd $(top_builddir) && \
+	  CONFIG_HEADERS= CONFIG_LINKS= \
+	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
+
+AR = ar
+install-libLIBRARIES: $(lib_LIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+	@$(POST_INSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo " $(RANLIB) $(DESTDIR)$(libdir)/$$p"; \
+	    $(RANLIB) $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	@list='$(lib_LIBRARIES)'; for p in $$list; do \
+	  echo " rm -f $(DESTDIR)$(libdir)/$$p"; \
+	  rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+clean-libLIBRARIES:
+	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+Range1D.$(OBJEXT): $(srcdir)/MoochoUtilities/Range1D.cpp
+ThrowException.$(OBJEXT): $(srcdir)/MoochoUtilities/ThrowException.cpp
+WorkspacePack.$(OBJEXT): $(srcdir)/MoochoUtilities/WorkspacePack.cpp
+dynamic_cast_verbose.$(OBJEXT): \
+	$(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp
+ref_count_ptr.$(OBJEXT): $(srcdir)/MoochoUtilities/ref_count_ptr.cpp
+RTOp.$(OBJEXT): $(srcdir)/RTOpPack/RTOp.c
+RTOpToMPI.$(OBJEXT): $(srcdir)/RTOpPack/RTOpToMPI.c
+RTOp_SparseSubVector.$(OBJEXT): \
+	$(srcdir)/RTOpPack/RTOp_SparseSubVector.c
+RTOp_apply_op_mpi.$(OBJEXT): $(srcdir)/RTOpPack/RTOp_apply_op_mpi.c
+RTOp_apply_op_serial.$(OBJEXT): \
+	$(srcdir)/RTOpPack/RTOp_apply_op_serial.c
+RTOp_mpi.$(OBJEXT): $(srcdir)/RTOpPack/RTOp_mpi.c
+RTOp_obj_free_free.$(OBJEXT): $(srcdir)/RTOpPack/RTOp_obj_free_free.c
+RTOp_obj_index_vtbl.$(OBJEXT): $(srcdir)/RTOpPack/RTOp_obj_index_vtbl.c
+RTOp_obj_null_vtbl.$(OBJEXT): $(srcdir)/RTOpPack/RTOp_obj_null_vtbl.c
+RTOp_obj_value_index_vtbl.$(OBJEXT): \
+	$(srcdir)/RTOpPack/RTOp_obj_value_index_vtbl.c
+RTOp_obj_value_value_vtbl.$(OBJEXT): \
+	$(srcdir)/RTOpPack/RTOp_obj_value_value_vtbl.c
+RTOp_obj_value_vtbl.$(OBJEXT): $(srcdir)/RTOpPack/RTOp_obj_value_vtbl.c
+RTOp_obj_values_vtbl.$(OBJEXT): \
+	$(srcdir)/RTOpPack/RTOp_obj_values_vtbl.c
+RTOp_parallel_helpers.$(OBJEXT): \
+	$(srcdir)/RTOpPack/RTOp_parallel_helpers.c
+RTOp_reduct_max_value.$(OBJEXT): \
+	$(srcdir)/RTOpPack/RTOp_reduct_max_value.c
+RTOp_reduct_min_value.$(OBJEXT): \
+	$(srcdir)/RTOpPack/RTOp_reduct_min_value.c
+RTOp_reduct_sum_value.$(OBJEXT): \
+	$(srcdir)/RTOpPack/RTOp_reduct_sum_value.c
+RTOp_reduct_sum_values.$(OBJEXT): \
+	$(srcdir)/RTOpPack/RTOp_reduct_sum_values.c
+check_nan_inf.$(OBJEXT): $(srcdir)/RTOpPack/check_nan_inf.c
+RTOpCppC.$(OBJEXT): $(srcdir)/RTOpPack/RTOpCppC.cpp
+RTOpCppToC.$(OBJEXT): $(srcdir)/RTOpPack/RTOpCppToC.cpp
+RTOpCppToMPI.$(OBJEXT): $(srcdir)/RTOpPack/RTOpCppToMPI.cpp
+RTOp_RTOp_C_Cpp.$(OBJEXT): $(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp
+print_sub_vector.$(OBJEXT): $(srcdir)/RTOpPack/print_sub_vector.cpp
+RTOp_ROp_combined_nu_comp_err.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c
+RTOp_ROp_comp_err_with_mu.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_ROp_comp_err_with_mu.c
+RTOp_ROp_dot_prod.$(OBJEXT): $(srcdir)/RTOpStdOps/RTOp_ROp_dot_prod.c
+RTOp_ROp_find_nan_inf.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_ROp_find_nan_inf.c
+RTOp_ROp_fraction_to_boundary.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_boundary.c
+RTOp_ROp_fraction_to_zero_boundary.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_zero_boundary.c
+RTOp_ROp_get_ele.$(OBJEXT): $(srcdir)/RTOpStdOps/RTOp_ROp_get_ele.c
+RTOp_ROp_get_sub_vector.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_ROp_get_sub_vector.c
+RTOp_ROp_log_bound_barrier.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_ROp_log_bound_barrier.c
+RTOp_ROp_max.$(OBJEXT): $(srcdir)/RTOpStdOps/RTOp_ROp_max.c
+RTOp_ROp_max_abs_ele.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_ROp_max_abs_ele.c
+RTOp_ROp_max_inequ_viol.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_ROp_max_inequ_viol.c
+RTOp_ROp_max_near_feas_step.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_ROp_max_near_feas_step.c
+RTOp_ROp_max_rel_step.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_ROp_max_rel_step.c
+RTOp_ROp_max_step.$(OBJEXT): $(srcdir)/RTOpStdOps/RTOp_ROp_max_step.c
+RTOp_ROp_norms.$(OBJEXT): $(srcdir)/RTOpStdOps/RTOp_ROp_norms.c
+RTOp_ROp_num_bounded.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.c
+RTOp_ROp_num_nonzeros.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.c
+RTOp_ROp_sum.$(OBJEXT): $(srcdir)/RTOpStdOps/RTOp_ROp_sum.c
+RTOp_TOp_add_scalar.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c
+RTOp_TOp_assign_scalar.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.c
+RTOp_TOp_assign_vectors.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.c
+RTOp_TOp_axpy.$(OBJEXT): $(srcdir)/RTOpStdOps/RTOp_TOp_axpy.c
+RTOp_TOp_correct_multipliers.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_correct_multipliers.c
+RTOp_TOp_ele_wise_divide.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_divide.c
+RTOp_TOp_ele_wise_prod.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_prod.c
+RTOp_TOp_ele_wise_sqrt.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_sqrt.c
+RTOp_TOp_force_in_bounds.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_force_in_bounds.c
+RTOp_TOp_inv_of_difference.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_inv_of_difference.c
+RTOp_TOp_max_abs_vec_scalar.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_max_abs_vec_scalar.c
+RTOp_TOp_max_vec_scalar.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_max_vec_scalar.c
+RTOp_TOp_multiplier_step.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_multiplier_step.c
+RTOp_TOp_random_vector.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_random_vector.c
+RTOp_TOp_scale_vector.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_scale_vector.c
+RTOp_TOp_set_ele.$(OBJEXT): $(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.c
+RTOp_TOp_set_sub_vector.$(OBJEXT): \
+	$(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.c
+RTOp_TOp_sign.$(OBJEXT): $(srcdir)/RTOpStdOps/RTOp_TOp_sign.c
+init_RTOpStdOpsLib.$(OBJEXT): $(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c
+libTSFCoreUtils.a: $(libTSFCoreUtils_a_OBJECTS) $(libTSFCoreUtils_a_DEPENDENCIES) 
+	-rm -f libTSFCoreUtils.a
+	$(libTSFCoreUtils_a_AR) libTSFCoreUtils.a $(libTSFCoreUtils_a_OBJECTS) $(libTSFCoreUtils_a_LIBADD)
+	$(RANLIB) libTSFCoreUtils.a
+
+mostlyclean-compile:
+	-rm -f *.$(OBJEXT) core *.core
+
+distclean-compile:
+	-rm -f *.tab.c
+
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOpCppC.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOpCppToC.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOpCppToMPI.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOpToMPI.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_combined_nu_comp_err.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_comp_err_with_mu.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_dot_prod.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_find_nan_inf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_fraction_to_boundary.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_fraction_to_zero_boundary.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_get_ele.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_get_sub_vector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_log_bound_barrier.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_max.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_max_abs_ele.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_max_inequ_viol.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_max_near_feas_step.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_max_rel_step.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_max_step.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_norms.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_num_bounded.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_num_nonzeros.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_ROp_sum.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_RTOp_C_Cpp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_SparseSubVector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_add_scalar.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_assign_scalar.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_assign_vectors.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_axpy.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_correct_multipliers.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_ele_wise_divide.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_ele_wise_prod.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_ele_wise_sqrt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_force_in_bounds.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_inv_of_difference.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_max_abs_vec_scalar.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_max_vec_scalar.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_multiplier_step.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_random_vector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_scale_vector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_set_ele.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_set_sub_vector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_TOp_sign.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_apply_op_mpi.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_apply_op_serial.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_mpi.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_obj_free_free.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_obj_index_vtbl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_obj_null_vtbl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_obj_value_index_vtbl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_obj_value_value_vtbl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_obj_value_vtbl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_obj_values_vtbl.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_parallel_helpers.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_reduct_max_value.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_reduct_min_value.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_reduct_sum_value.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/RTOp_reduct_sum_values.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/Range1D.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ThrowException.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/WorkspacePack.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/check_nan_inf.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/dynamic_cast_verbose.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/init_RTOpStdOpsLib.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/print_sub_vector.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/ref_count_ptr.Po@am__quote@
+
+distclean-depend:
+	-rm -rf $(DEPDIR)
+
+.c.o:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c `test -f $< || echo '$(srcdir)/'`$<
+
+.c.obj:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(COMPILE) -c `cygpath -w $<`
+
+RTOp.o: $(srcdir)/RTOpPack/RTOp.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp.c' object='RTOp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp.Po' tmpdepfile='$(DEPDIR)/RTOp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp.o `test -f $(srcdir)/RTOpPack/RTOp.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp.c
+
+RTOp.obj: $(srcdir)/RTOpPack/RTOp.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp.c' object='RTOp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp.Po' tmpdepfile='$(DEPDIR)/RTOp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp.obj `cygpath -w $(srcdir)/RTOpPack/RTOp.c`
+
+RTOpToMPI.o: $(srcdir)/RTOpPack/RTOpToMPI.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOpToMPI.c' object='RTOpToMPI.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOpToMPI.Po' tmpdepfile='$(DEPDIR)/RTOpToMPI.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOpToMPI.o `test -f $(srcdir)/RTOpPack/RTOpToMPI.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpToMPI.c
+
+RTOpToMPI.obj: $(srcdir)/RTOpPack/RTOpToMPI.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOpToMPI.c' object='RTOpToMPI.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOpToMPI.Po' tmpdepfile='$(DEPDIR)/RTOpToMPI.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOpToMPI.obj `cygpath -w $(srcdir)/RTOpPack/RTOpToMPI.c`
+
+RTOp_SparseSubVector.o: $(srcdir)/RTOpPack/RTOp_SparseSubVector.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_SparseSubVector.c' object='RTOp_SparseSubVector.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_SparseSubVector.Po' tmpdepfile='$(DEPDIR)/RTOp_SparseSubVector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_SparseSubVector.o `test -f $(srcdir)/RTOpPack/RTOp_SparseSubVector.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_SparseSubVector.c
+
+RTOp_SparseSubVector.obj: $(srcdir)/RTOpPack/RTOp_SparseSubVector.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_SparseSubVector.c' object='RTOp_SparseSubVector.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_SparseSubVector.Po' tmpdepfile='$(DEPDIR)/RTOp_SparseSubVector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_SparseSubVector.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_SparseSubVector.c`
+
+RTOp_apply_op_mpi.o: $(srcdir)/RTOpPack/RTOp_apply_op_mpi.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_apply_op_mpi.c' object='RTOp_apply_op_mpi.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_apply_op_mpi.Po' tmpdepfile='$(DEPDIR)/RTOp_apply_op_mpi.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_apply_op_mpi.o `test -f $(srcdir)/RTOpPack/RTOp_apply_op_mpi.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_apply_op_mpi.c
+
+RTOp_apply_op_mpi.obj: $(srcdir)/RTOpPack/RTOp_apply_op_mpi.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_apply_op_mpi.c' object='RTOp_apply_op_mpi.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_apply_op_mpi.Po' tmpdepfile='$(DEPDIR)/RTOp_apply_op_mpi.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_apply_op_mpi.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_apply_op_mpi.c`
+
+RTOp_apply_op_serial.o: $(srcdir)/RTOpPack/RTOp_apply_op_serial.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_apply_op_serial.c' object='RTOp_apply_op_serial.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_apply_op_serial.Po' tmpdepfile='$(DEPDIR)/RTOp_apply_op_serial.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_apply_op_serial.o `test -f $(srcdir)/RTOpPack/RTOp_apply_op_serial.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_apply_op_serial.c
+
+RTOp_apply_op_serial.obj: $(srcdir)/RTOpPack/RTOp_apply_op_serial.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_apply_op_serial.c' object='RTOp_apply_op_serial.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_apply_op_serial.Po' tmpdepfile='$(DEPDIR)/RTOp_apply_op_serial.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_apply_op_serial.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_apply_op_serial.c`
+
+RTOp_mpi.o: $(srcdir)/RTOpPack/RTOp_mpi.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_mpi.c' object='RTOp_mpi.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_mpi.Po' tmpdepfile='$(DEPDIR)/RTOp_mpi.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_mpi.o `test -f $(srcdir)/RTOpPack/RTOp_mpi.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_mpi.c
+
+RTOp_mpi.obj: $(srcdir)/RTOpPack/RTOp_mpi.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_mpi.c' object='RTOp_mpi.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_mpi.Po' tmpdepfile='$(DEPDIR)/RTOp_mpi.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_mpi.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_mpi.c`
+
+RTOp_obj_free_free.o: $(srcdir)/RTOpPack/RTOp_obj_free_free.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_free_free.c' object='RTOp_obj_free_free.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_free_free.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_free_free.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_free_free.o `test -f $(srcdir)/RTOpPack/RTOp_obj_free_free.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_obj_free_free.c
+
+RTOp_obj_free_free.obj: $(srcdir)/RTOpPack/RTOp_obj_free_free.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_free_free.c' object='RTOp_obj_free_free.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_free_free.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_free_free.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_free_free.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_obj_free_free.c`
+
+RTOp_obj_index_vtbl.o: $(srcdir)/RTOpPack/RTOp_obj_index_vtbl.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_index_vtbl.c' object='RTOp_obj_index_vtbl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_index_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_index_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_index_vtbl.o `test -f $(srcdir)/RTOpPack/RTOp_obj_index_vtbl.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_obj_index_vtbl.c
+
+RTOp_obj_index_vtbl.obj: $(srcdir)/RTOpPack/RTOp_obj_index_vtbl.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_index_vtbl.c' object='RTOp_obj_index_vtbl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_index_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_index_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_index_vtbl.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_obj_index_vtbl.c`
+
+RTOp_obj_null_vtbl.o: $(srcdir)/RTOpPack/RTOp_obj_null_vtbl.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_null_vtbl.c' object='RTOp_obj_null_vtbl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_null_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_null_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_null_vtbl.o `test -f $(srcdir)/RTOpPack/RTOp_obj_null_vtbl.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_obj_null_vtbl.c
+
+RTOp_obj_null_vtbl.obj: $(srcdir)/RTOpPack/RTOp_obj_null_vtbl.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_null_vtbl.c' object='RTOp_obj_null_vtbl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_null_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_null_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_null_vtbl.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_obj_null_vtbl.c`
+
+RTOp_obj_value_index_vtbl.o: $(srcdir)/RTOpPack/RTOp_obj_value_index_vtbl.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_value_index_vtbl.c' object='RTOp_obj_value_index_vtbl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_value_index_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_value_index_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_value_index_vtbl.o `test -f $(srcdir)/RTOpPack/RTOp_obj_value_index_vtbl.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_obj_value_index_vtbl.c
+
+RTOp_obj_value_index_vtbl.obj: $(srcdir)/RTOpPack/RTOp_obj_value_index_vtbl.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_value_index_vtbl.c' object='RTOp_obj_value_index_vtbl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_value_index_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_value_index_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_value_index_vtbl.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_obj_value_index_vtbl.c`
+
+RTOp_obj_value_value_vtbl.o: $(srcdir)/RTOpPack/RTOp_obj_value_value_vtbl.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_value_value_vtbl.c' object='RTOp_obj_value_value_vtbl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_value_value_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_value_value_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_value_value_vtbl.o `test -f $(srcdir)/RTOpPack/RTOp_obj_value_value_vtbl.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_obj_value_value_vtbl.c
+
+RTOp_obj_value_value_vtbl.obj: $(srcdir)/RTOpPack/RTOp_obj_value_value_vtbl.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_value_value_vtbl.c' object='RTOp_obj_value_value_vtbl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_value_value_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_value_value_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_value_value_vtbl.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_obj_value_value_vtbl.c`
+
+RTOp_obj_value_vtbl.o: $(srcdir)/RTOpPack/RTOp_obj_value_vtbl.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_value_vtbl.c' object='RTOp_obj_value_vtbl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_value_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_value_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_value_vtbl.o `test -f $(srcdir)/RTOpPack/RTOp_obj_value_vtbl.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_obj_value_vtbl.c
+
+RTOp_obj_value_vtbl.obj: $(srcdir)/RTOpPack/RTOp_obj_value_vtbl.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_value_vtbl.c' object='RTOp_obj_value_vtbl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_value_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_value_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_value_vtbl.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_obj_value_vtbl.c`
+
+RTOp_obj_values_vtbl.o: $(srcdir)/RTOpPack/RTOp_obj_values_vtbl.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_values_vtbl.c' object='RTOp_obj_values_vtbl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_values_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_values_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_values_vtbl.o `test -f $(srcdir)/RTOpPack/RTOp_obj_values_vtbl.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_obj_values_vtbl.c
+
+RTOp_obj_values_vtbl.obj: $(srcdir)/RTOpPack/RTOp_obj_values_vtbl.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_obj_values_vtbl.c' object='RTOp_obj_values_vtbl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_obj_values_vtbl.Po' tmpdepfile='$(DEPDIR)/RTOp_obj_values_vtbl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_obj_values_vtbl.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_obj_values_vtbl.c`
+
+RTOp_parallel_helpers.o: $(srcdir)/RTOpPack/RTOp_parallel_helpers.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_parallel_helpers.c' object='RTOp_parallel_helpers.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_parallel_helpers.Po' tmpdepfile='$(DEPDIR)/RTOp_parallel_helpers.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_parallel_helpers.o `test -f $(srcdir)/RTOpPack/RTOp_parallel_helpers.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_parallel_helpers.c
+
+RTOp_parallel_helpers.obj: $(srcdir)/RTOpPack/RTOp_parallel_helpers.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_parallel_helpers.c' object='RTOp_parallel_helpers.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_parallel_helpers.Po' tmpdepfile='$(DEPDIR)/RTOp_parallel_helpers.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_parallel_helpers.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_parallel_helpers.c`
+
+RTOp_reduct_max_value.o: $(srcdir)/RTOpPack/RTOp_reduct_max_value.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_reduct_max_value.c' object='RTOp_reduct_max_value.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_reduct_max_value.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_max_value.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_max_value.o `test -f $(srcdir)/RTOpPack/RTOp_reduct_max_value.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_reduct_max_value.c
+
+RTOp_reduct_max_value.obj: $(srcdir)/RTOpPack/RTOp_reduct_max_value.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_reduct_max_value.c' object='RTOp_reduct_max_value.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_reduct_max_value.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_max_value.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_max_value.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_reduct_max_value.c`
+
+RTOp_reduct_min_value.o: $(srcdir)/RTOpPack/RTOp_reduct_min_value.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_reduct_min_value.c' object='RTOp_reduct_min_value.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_reduct_min_value.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_min_value.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_min_value.o `test -f $(srcdir)/RTOpPack/RTOp_reduct_min_value.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_reduct_min_value.c
+
+RTOp_reduct_min_value.obj: $(srcdir)/RTOpPack/RTOp_reduct_min_value.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_reduct_min_value.c' object='RTOp_reduct_min_value.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_reduct_min_value.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_min_value.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_min_value.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_reduct_min_value.c`
+
+RTOp_reduct_sum_value.o: $(srcdir)/RTOpPack/RTOp_reduct_sum_value.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_reduct_sum_value.c' object='RTOp_reduct_sum_value.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_reduct_sum_value.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_sum_value.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_sum_value.o `test -f $(srcdir)/RTOpPack/RTOp_reduct_sum_value.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_reduct_sum_value.c
+
+RTOp_reduct_sum_value.obj: $(srcdir)/RTOpPack/RTOp_reduct_sum_value.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_reduct_sum_value.c' object='RTOp_reduct_sum_value.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_reduct_sum_value.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_sum_value.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_sum_value.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_reduct_sum_value.c`
+
+RTOp_reduct_sum_values.o: $(srcdir)/RTOpPack/RTOp_reduct_sum_values.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_reduct_sum_values.c' object='RTOp_reduct_sum_values.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_reduct_sum_values.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_sum_values.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_sum_values.o `test -f $(srcdir)/RTOpPack/RTOp_reduct_sum_values.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_reduct_sum_values.c
+
+RTOp_reduct_sum_values.obj: $(srcdir)/RTOpPack/RTOp_reduct_sum_values.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_reduct_sum_values.c' object='RTOp_reduct_sum_values.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_reduct_sum_values.Po' tmpdepfile='$(DEPDIR)/RTOp_reduct_sum_values.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_reduct_sum_values.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_reduct_sum_values.c`
+
+check_nan_inf.o: $(srcdir)/RTOpPack/check_nan_inf.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/check_nan_inf.c' object='check_nan_inf.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/check_nan_inf.Po' tmpdepfile='$(DEPDIR)/check_nan_inf.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o check_nan_inf.o `test -f $(srcdir)/RTOpPack/check_nan_inf.c || echo '$(srcdir)/'`$(srcdir)/RTOpPack/check_nan_inf.c
+
+check_nan_inf.obj: $(srcdir)/RTOpPack/check_nan_inf.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/check_nan_inf.c' object='check_nan_inf.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/check_nan_inf.Po' tmpdepfile='$(DEPDIR)/check_nan_inf.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o check_nan_inf.obj `cygpath -w $(srcdir)/RTOpPack/check_nan_inf.c`
+
+RTOp_ROp_combined_nu_comp_err.o: $(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c' object='RTOp_ROp_combined_nu_comp_err.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_combined_nu_comp_err.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_combined_nu_comp_err.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_combined_nu_comp_err.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c
+
+RTOp_ROp_combined_nu_comp_err.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c' object='RTOp_ROp_combined_nu_comp_err.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_combined_nu_comp_err.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_combined_nu_comp_err.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_combined_nu_comp_err.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_combined_nu_comp_err.c`
+
+RTOp_ROp_comp_err_with_mu.o: $(srcdir)/RTOpStdOps/RTOp_ROp_comp_err_with_mu.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_comp_err_with_mu.c' object='RTOp_ROp_comp_err_with_mu.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_comp_err_with_mu.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_comp_err_with_mu.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_comp_err_with_mu.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_comp_err_with_mu.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_comp_err_with_mu.c
+
+RTOp_ROp_comp_err_with_mu.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_comp_err_with_mu.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_comp_err_with_mu.c' object='RTOp_ROp_comp_err_with_mu.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_comp_err_with_mu.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_comp_err_with_mu.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_comp_err_with_mu.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_comp_err_with_mu.c`
+
+RTOp_ROp_dot_prod.o: $(srcdir)/RTOpStdOps/RTOp_ROp_dot_prod.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_dot_prod.c' object='RTOp_ROp_dot_prod.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_dot_prod.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_dot_prod.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_dot_prod.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_dot_prod.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_dot_prod.c
+
+RTOp_ROp_dot_prod.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_dot_prod.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_dot_prod.c' object='RTOp_ROp_dot_prod.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_dot_prod.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_dot_prod.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_dot_prod.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_dot_prod.c`
+
+RTOp_ROp_find_nan_inf.o: $(srcdir)/RTOpStdOps/RTOp_ROp_find_nan_inf.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_find_nan_inf.c' object='RTOp_ROp_find_nan_inf.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_find_nan_inf.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_find_nan_inf.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_find_nan_inf.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_find_nan_inf.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_find_nan_inf.c
+
+RTOp_ROp_find_nan_inf.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_find_nan_inf.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_find_nan_inf.c' object='RTOp_ROp_find_nan_inf.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_find_nan_inf.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_find_nan_inf.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_find_nan_inf.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_find_nan_inf.c`
+
+RTOp_ROp_fraction_to_boundary.o: $(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_boundary.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_boundary.c' object='RTOp_ROp_fraction_to_boundary.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_fraction_to_boundary.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_fraction_to_boundary.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_fraction_to_boundary.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_boundary.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_boundary.c
+
+RTOp_ROp_fraction_to_boundary.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_boundary.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_boundary.c' object='RTOp_ROp_fraction_to_boundary.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_fraction_to_boundary.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_fraction_to_boundary.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_fraction_to_boundary.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_boundary.c`
+
+RTOp_ROp_fraction_to_zero_boundary.o: $(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_zero_boundary.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_zero_boundary.c' object='RTOp_ROp_fraction_to_zero_boundary.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_fraction_to_zero_boundary.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_fraction_to_zero_boundary.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_fraction_to_zero_boundary.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_zero_boundary.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_zero_boundary.c
+
+RTOp_ROp_fraction_to_zero_boundary.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_zero_boundary.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_zero_boundary.c' object='RTOp_ROp_fraction_to_zero_boundary.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_fraction_to_zero_boundary.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_fraction_to_zero_boundary.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_fraction_to_zero_boundary.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_fraction_to_zero_boundary.c`
+
+RTOp_ROp_get_ele.o: $(srcdir)/RTOpStdOps/RTOp_ROp_get_ele.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_get_ele.c' object='RTOp_ROp_get_ele.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_get_ele.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_get_ele.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_get_ele.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_get_ele.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_get_ele.c
+
+RTOp_ROp_get_ele.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_get_ele.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_get_ele.c' object='RTOp_ROp_get_ele.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_get_ele.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_get_ele.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_get_ele.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_get_ele.c`
+
+RTOp_ROp_get_sub_vector.o: $(srcdir)/RTOpStdOps/RTOp_ROp_get_sub_vector.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_get_sub_vector.c' object='RTOp_ROp_get_sub_vector.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_get_sub_vector.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_get_sub_vector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_get_sub_vector.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_get_sub_vector.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_get_sub_vector.c
+
+RTOp_ROp_get_sub_vector.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_get_sub_vector.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_get_sub_vector.c' object='RTOp_ROp_get_sub_vector.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_get_sub_vector.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_get_sub_vector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_get_sub_vector.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_get_sub_vector.c`
+
+RTOp_ROp_log_bound_barrier.o: $(srcdir)/RTOpStdOps/RTOp_ROp_log_bound_barrier.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_log_bound_barrier.c' object='RTOp_ROp_log_bound_barrier.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_log_bound_barrier.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_log_bound_barrier.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_log_bound_barrier.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_log_bound_barrier.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_log_bound_barrier.c
+
+RTOp_ROp_log_bound_barrier.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_log_bound_barrier.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_log_bound_barrier.c' object='RTOp_ROp_log_bound_barrier.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_log_bound_barrier.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_log_bound_barrier.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_log_bound_barrier.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_log_bound_barrier.c`
+
+RTOp_ROp_max.o: $(srcdir)/RTOpStdOps/RTOp_ROp_max.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_max.c' object='RTOp_ROp_max.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_max.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_max.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_max.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_max.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_max.c
+
+RTOp_ROp_max.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_max.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_max.c' object='RTOp_ROp_max.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_max.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_max.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_max.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_max.c`
+
+RTOp_ROp_max_abs_ele.o: $(srcdir)/RTOpStdOps/RTOp_ROp_max_abs_ele.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_max_abs_ele.c' object='RTOp_ROp_max_abs_ele.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_max_abs_ele.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_max_abs_ele.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_max_abs_ele.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_max_abs_ele.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_max_abs_ele.c
+
+RTOp_ROp_max_abs_ele.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_max_abs_ele.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_max_abs_ele.c' object='RTOp_ROp_max_abs_ele.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_max_abs_ele.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_max_abs_ele.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_max_abs_ele.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_max_abs_ele.c`
+
+RTOp_ROp_max_inequ_viol.o: $(srcdir)/RTOpStdOps/RTOp_ROp_max_inequ_viol.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_max_inequ_viol.c' object='RTOp_ROp_max_inequ_viol.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_max_inequ_viol.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_max_inequ_viol.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_max_inequ_viol.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_max_inequ_viol.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_max_inequ_viol.c
+
+RTOp_ROp_max_inequ_viol.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_max_inequ_viol.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_max_inequ_viol.c' object='RTOp_ROp_max_inequ_viol.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_max_inequ_viol.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_max_inequ_viol.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_max_inequ_viol.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_max_inequ_viol.c`
+
+RTOp_ROp_max_near_feas_step.o: $(srcdir)/RTOpStdOps/RTOp_ROp_max_near_feas_step.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_max_near_feas_step.c' object='RTOp_ROp_max_near_feas_step.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_max_near_feas_step.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_max_near_feas_step.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_max_near_feas_step.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_max_near_feas_step.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_max_near_feas_step.c
+
+RTOp_ROp_max_near_feas_step.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_max_near_feas_step.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_max_near_feas_step.c' object='RTOp_ROp_max_near_feas_step.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_max_near_feas_step.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_max_near_feas_step.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_max_near_feas_step.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_max_near_feas_step.c`
+
+RTOp_ROp_max_rel_step.o: $(srcdir)/RTOpStdOps/RTOp_ROp_max_rel_step.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_max_rel_step.c' object='RTOp_ROp_max_rel_step.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_max_rel_step.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_max_rel_step.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_max_rel_step.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_max_rel_step.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_max_rel_step.c
+
+RTOp_ROp_max_rel_step.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_max_rel_step.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_max_rel_step.c' object='RTOp_ROp_max_rel_step.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_max_rel_step.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_max_rel_step.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_max_rel_step.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_max_rel_step.c`
+
+RTOp_ROp_max_step.o: $(srcdir)/RTOpStdOps/RTOp_ROp_max_step.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_max_step.c' object='RTOp_ROp_max_step.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_max_step.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_max_step.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_max_step.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_max_step.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_max_step.c
+
+RTOp_ROp_max_step.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_max_step.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_max_step.c' object='RTOp_ROp_max_step.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_max_step.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_max_step.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_max_step.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_max_step.c`
+
+RTOp_ROp_norms.o: $(srcdir)/RTOpStdOps/RTOp_ROp_norms.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_norms.c' object='RTOp_ROp_norms.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_norms.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_norms.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_norms.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_norms.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_norms.c
+
+RTOp_ROp_norms.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_norms.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_norms.c' object='RTOp_ROp_norms.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_norms.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_norms.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_norms.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_norms.c`
+
+RTOp_ROp_num_bounded.o: $(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.c' object='RTOp_ROp_num_bounded.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_num_bounded.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_num_bounded.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_num_bounded.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.c
+
+RTOp_ROp_num_bounded.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.c' object='RTOp_ROp_num_bounded.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_num_bounded.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_num_bounded.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_num_bounded.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_num_bounded.c`
+
+RTOp_ROp_num_nonzeros.o: $(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.c' object='RTOp_ROp_num_nonzeros.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_num_nonzeros.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_num_nonzeros.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_num_nonzeros.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.c
+
+RTOp_ROp_num_nonzeros.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.c' object='RTOp_ROp_num_nonzeros.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_num_nonzeros.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_num_nonzeros.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_num_nonzeros.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_num_nonzeros.c`
+
+RTOp_ROp_sum.o: $(srcdir)/RTOpStdOps/RTOp_ROp_sum.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_sum.c' object='RTOp_ROp_sum.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_sum.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_sum.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_sum.o `test -f $(srcdir)/RTOpStdOps/RTOp_ROp_sum.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_ROp_sum.c
+
+RTOp_ROp_sum.obj: $(srcdir)/RTOpStdOps/RTOp_ROp_sum.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_ROp_sum.c' object='RTOp_ROp_sum.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_ROp_sum.Po' tmpdepfile='$(DEPDIR)/RTOp_ROp_sum.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_ROp_sum.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_ROp_sum.c`
+
+RTOp_TOp_add_scalar.o: $(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c' object='RTOp_TOp_add_scalar.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_add_scalar.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_add_scalar.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_add_scalar.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c
+
+RTOp_TOp_add_scalar.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c' object='RTOp_TOp_add_scalar.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_add_scalar.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_add_scalar.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_add_scalar.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_add_scalar.c`
+
+RTOp_TOp_assign_scalar.o: $(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.c' object='RTOp_TOp_assign_scalar.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_assign_scalar.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_assign_scalar.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_assign_scalar.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.c
+
+RTOp_TOp_assign_scalar.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.c' object='RTOp_TOp_assign_scalar.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_assign_scalar.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_assign_scalar.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_assign_scalar.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_assign_scalar.c`
+
+RTOp_TOp_assign_vectors.o: $(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.c' object='RTOp_TOp_assign_vectors.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_assign_vectors.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_assign_vectors.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_assign_vectors.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.c
+
+RTOp_TOp_assign_vectors.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.c' object='RTOp_TOp_assign_vectors.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_assign_vectors.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_assign_vectors.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_assign_vectors.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_assign_vectors.c`
+
+RTOp_TOp_axpy.o: $(srcdir)/RTOpStdOps/RTOp_TOp_axpy.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_axpy.c' object='RTOp_TOp_axpy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_axpy.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_axpy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_axpy.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_axpy.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_axpy.c
+
+RTOp_TOp_axpy.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_axpy.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_axpy.c' object='RTOp_TOp_axpy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_axpy.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_axpy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_axpy.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_axpy.c`
+
+RTOp_TOp_correct_multipliers.o: $(srcdir)/RTOpStdOps/RTOp_TOp_correct_multipliers.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_correct_multipliers.c' object='RTOp_TOp_correct_multipliers.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_correct_multipliers.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_correct_multipliers.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_correct_multipliers.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_correct_multipliers.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_correct_multipliers.c
+
+RTOp_TOp_correct_multipliers.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_correct_multipliers.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_correct_multipliers.c' object='RTOp_TOp_correct_multipliers.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_correct_multipliers.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_correct_multipliers.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_correct_multipliers.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_correct_multipliers.c`
+
+RTOp_TOp_ele_wise_divide.o: $(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_divide.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_divide.c' object='RTOp_TOp_ele_wise_divide.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_ele_wise_divide.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_ele_wise_divide.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_ele_wise_divide.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_divide.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_divide.c
+
+RTOp_TOp_ele_wise_divide.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_divide.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_divide.c' object='RTOp_TOp_ele_wise_divide.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_ele_wise_divide.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_ele_wise_divide.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_ele_wise_divide.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_divide.c`
+
+RTOp_TOp_ele_wise_prod.o: $(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_prod.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_prod.c' object='RTOp_TOp_ele_wise_prod.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_ele_wise_prod.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_ele_wise_prod.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_ele_wise_prod.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_prod.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_prod.c
+
+RTOp_TOp_ele_wise_prod.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_prod.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_prod.c' object='RTOp_TOp_ele_wise_prod.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_ele_wise_prod.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_ele_wise_prod.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_ele_wise_prod.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_prod.c`
+
+RTOp_TOp_ele_wise_sqrt.o: $(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_sqrt.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_sqrt.c' object='RTOp_TOp_ele_wise_sqrt.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_ele_wise_sqrt.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_ele_wise_sqrt.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_ele_wise_sqrt.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_sqrt.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_sqrt.c
+
+RTOp_TOp_ele_wise_sqrt.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_sqrt.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_sqrt.c' object='RTOp_TOp_ele_wise_sqrt.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_ele_wise_sqrt.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_ele_wise_sqrt.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_ele_wise_sqrt.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_ele_wise_sqrt.c`
+
+RTOp_TOp_force_in_bounds.o: $(srcdir)/RTOpStdOps/RTOp_TOp_force_in_bounds.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_force_in_bounds.c' object='RTOp_TOp_force_in_bounds.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_force_in_bounds.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_force_in_bounds.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_force_in_bounds.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_force_in_bounds.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_force_in_bounds.c
+
+RTOp_TOp_force_in_bounds.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_force_in_bounds.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_force_in_bounds.c' object='RTOp_TOp_force_in_bounds.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_force_in_bounds.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_force_in_bounds.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_force_in_bounds.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_force_in_bounds.c`
+
+RTOp_TOp_inv_of_difference.o: $(srcdir)/RTOpStdOps/RTOp_TOp_inv_of_difference.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_inv_of_difference.c' object='RTOp_TOp_inv_of_difference.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_inv_of_difference.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_inv_of_difference.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_inv_of_difference.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_inv_of_difference.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_inv_of_difference.c
+
+RTOp_TOp_inv_of_difference.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_inv_of_difference.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_inv_of_difference.c' object='RTOp_TOp_inv_of_difference.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_inv_of_difference.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_inv_of_difference.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_inv_of_difference.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_inv_of_difference.c`
+
+RTOp_TOp_max_abs_vec_scalar.o: $(srcdir)/RTOpStdOps/RTOp_TOp_max_abs_vec_scalar.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_max_abs_vec_scalar.c' object='RTOp_TOp_max_abs_vec_scalar.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_max_abs_vec_scalar.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_max_abs_vec_scalar.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_max_abs_vec_scalar.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_max_abs_vec_scalar.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_max_abs_vec_scalar.c
+
+RTOp_TOp_max_abs_vec_scalar.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_max_abs_vec_scalar.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_max_abs_vec_scalar.c' object='RTOp_TOp_max_abs_vec_scalar.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_max_abs_vec_scalar.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_max_abs_vec_scalar.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_max_abs_vec_scalar.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_max_abs_vec_scalar.c`
+
+RTOp_TOp_max_vec_scalar.o: $(srcdir)/RTOpStdOps/RTOp_TOp_max_vec_scalar.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_max_vec_scalar.c' object='RTOp_TOp_max_vec_scalar.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_max_vec_scalar.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_max_vec_scalar.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_max_vec_scalar.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_max_vec_scalar.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_max_vec_scalar.c
+
+RTOp_TOp_max_vec_scalar.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_max_vec_scalar.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_max_vec_scalar.c' object='RTOp_TOp_max_vec_scalar.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_max_vec_scalar.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_max_vec_scalar.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_max_vec_scalar.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_max_vec_scalar.c`
+
+RTOp_TOp_multiplier_step.o: $(srcdir)/RTOpStdOps/RTOp_TOp_multiplier_step.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_multiplier_step.c' object='RTOp_TOp_multiplier_step.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_multiplier_step.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_multiplier_step.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_multiplier_step.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_multiplier_step.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_multiplier_step.c
+
+RTOp_TOp_multiplier_step.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_multiplier_step.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_multiplier_step.c' object='RTOp_TOp_multiplier_step.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_multiplier_step.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_multiplier_step.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_multiplier_step.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_multiplier_step.c`
+
+RTOp_TOp_random_vector.o: $(srcdir)/RTOpStdOps/RTOp_TOp_random_vector.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_random_vector.c' object='RTOp_TOp_random_vector.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_random_vector.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_random_vector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_random_vector.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_random_vector.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_random_vector.c
+
+RTOp_TOp_random_vector.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_random_vector.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_random_vector.c' object='RTOp_TOp_random_vector.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_random_vector.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_random_vector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_random_vector.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_random_vector.c`
+
+RTOp_TOp_scale_vector.o: $(srcdir)/RTOpStdOps/RTOp_TOp_scale_vector.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_scale_vector.c' object='RTOp_TOp_scale_vector.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_scale_vector.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_scale_vector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_scale_vector.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_scale_vector.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_scale_vector.c
+
+RTOp_TOp_scale_vector.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_scale_vector.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_scale_vector.c' object='RTOp_TOp_scale_vector.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_scale_vector.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_scale_vector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_scale_vector.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_scale_vector.c`
+
+RTOp_TOp_set_ele.o: $(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.c' object='RTOp_TOp_set_ele.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_set_ele.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_set_ele.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_set_ele.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.c
+
+RTOp_TOp_set_ele.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.c' object='RTOp_TOp_set_ele.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_set_ele.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_set_ele.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_set_ele.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_set_ele.c`
+
+RTOp_TOp_set_sub_vector.o: $(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.c' object='RTOp_TOp_set_sub_vector.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_set_sub_vector.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_set_sub_vector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_set_sub_vector.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.c
+
+RTOp_TOp_set_sub_vector.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.c' object='RTOp_TOp_set_sub_vector.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_set_sub_vector.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_set_sub_vector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_set_sub_vector.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_set_sub_vector.c`
+
+RTOp_TOp_sign.o: $(srcdir)/RTOpStdOps/RTOp_TOp_sign.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_sign.c' object='RTOp_TOp_sign.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_sign.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_sign.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_sign.o `test -f $(srcdir)/RTOpStdOps/RTOp_TOp_sign.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/RTOp_TOp_sign.c
+
+RTOp_TOp_sign.obj: $(srcdir)/RTOpStdOps/RTOp_TOp_sign.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/RTOp_TOp_sign.c' object='RTOp_TOp_sign.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_TOp_sign.Po' tmpdepfile='$(DEPDIR)/RTOp_TOp_sign.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o RTOp_TOp_sign.obj `cygpath -w $(srcdir)/RTOpStdOps/RTOp_TOp_sign.c`
+
+init_RTOpStdOpsLib.o: $(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c' object='init_RTOpStdOpsLib.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/init_RTOpStdOpsLib.Po' tmpdepfile='$(DEPDIR)/init_RTOpStdOpsLib.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o init_RTOpStdOpsLib.o `test -f $(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c || echo '$(srcdir)/'`$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c
+
+init_RTOpStdOpsLib.obj: $(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c
+@AMDEP_TRUE@	source='$(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c' object='init_RTOpStdOpsLib.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/init_RTOpStdOpsLib.Po' tmpdepfile='$(DEPDIR)/init_RTOpStdOpsLib.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o init_RTOpStdOpsLib.obj `cygpath -w $(srcdir)/RTOpStdOps/init_RTOpStdOpsLib.c`
+CCDEPMODE = @CCDEPMODE@
+
+.cpp.o:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXXCOMPILE) -c -o $@ `test -f $< || echo '$(srcdir)/'`$<
+
+.cpp.obj:
+@AMDEP_TRUE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXXCOMPILE) -c -o $@ `cygpath -w $<`
+
+Range1D.o: $(srcdir)/MoochoUtilities/Range1D.cpp
+@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/Range1D.cpp' object='Range1D.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Range1D.Po' tmpdepfile='$(DEPDIR)/Range1D.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Range1D.o `test -f $(srcdir)/MoochoUtilities/Range1D.cpp || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/Range1D.cpp
+
+Range1D.obj: $(srcdir)/MoochoUtilities/Range1D.cpp
+@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/Range1D.cpp' object='Range1D.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/Range1D.Po' tmpdepfile='$(DEPDIR)/Range1D.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Range1D.obj `cygpath -w $(srcdir)/MoochoUtilities/Range1D.cpp`
+
+ThrowException.o: $(srcdir)/MoochoUtilities/ThrowException.cpp
+@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/ThrowException.cpp' object='ThrowException.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/ThrowException.Po' tmpdepfile='$(DEPDIR)/ThrowException.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ThrowException.o `test -f $(srcdir)/MoochoUtilities/ThrowException.cpp || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/ThrowException.cpp
+
+ThrowException.obj: $(srcdir)/MoochoUtilities/ThrowException.cpp
+@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/ThrowException.cpp' object='ThrowException.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/ThrowException.Po' tmpdepfile='$(DEPDIR)/ThrowException.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ThrowException.obj `cygpath -w $(srcdir)/MoochoUtilities/ThrowException.cpp`
+
+WorkspacePack.o: $(srcdir)/MoochoUtilities/WorkspacePack.cpp
+@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/WorkspacePack.cpp' object='WorkspacePack.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/WorkspacePack.Po' tmpdepfile='$(DEPDIR)/WorkspacePack.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WorkspacePack.o `test -f $(srcdir)/MoochoUtilities/WorkspacePack.cpp || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/WorkspacePack.cpp
+
+WorkspacePack.obj: $(srcdir)/MoochoUtilities/WorkspacePack.cpp
+@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/WorkspacePack.cpp' object='WorkspacePack.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/WorkspacePack.Po' tmpdepfile='$(DEPDIR)/WorkspacePack.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o WorkspacePack.obj `cygpath -w $(srcdir)/MoochoUtilities/WorkspacePack.cpp`
+
+dynamic_cast_verbose.o: $(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp
+@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp' object='dynamic_cast_verbose.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/dynamic_cast_verbose.Po' tmpdepfile='$(DEPDIR)/dynamic_cast_verbose.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dynamic_cast_verbose.o `test -f $(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp
+
+dynamic_cast_verbose.obj: $(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp
+@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp' object='dynamic_cast_verbose.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/dynamic_cast_verbose.Po' tmpdepfile='$(DEPDIR)/dynamic_cast_verbose.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dynamic_cast_verbose.obj `cygpath -w $(srcdir)/MoochoUtilities/dynamic_cast_verbose.cpp`
+
+ref_count_ptr.o: $(srcdir)/MoochoUtilities/ref_count_ptr.cpp
+@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/ref_count_ptr.cpp' object='ref_count_ptr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/ref_count_ptr.Po' tmpdepfile='$(DEPDIR)/ref_count_ptr.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ref_count_ptr.o `test -f $(srcdir)/MoochoUtilities/ref_count_ptr.cpp || echo '$(srcdir)/'`$(srcdir)/MoochoUtilities/ref_count_ptr.cpp
+
+ref_count_ptr.obj: $(srcdir)/MoochoUtilities/ref_count_ptr.cpp
+@AMDEP_TRUE@	source='$(srcdir)/MoochoUtilities/ref_count_ptr.cpp' object='ref_count_ptr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/ref_count_ptr.Po' tmpdepfile='$(DEPDIR)/ref_count_ptr.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ref_count_ptr.obj `cygpath -w $(srcdir)/MoochoUtilities/ref_count_ptr.cpp`
+
+RTOpCppC.o: $(srcdir)/RTOpPack/RTOpCppC.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOpCppC.cpp' object='RTOpCppC.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOpCppC.Po' tmpdepfile='$(DEPDIR)/RTOpCppC.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpCppC.o `test -f $(srcdir)/RTOpPack/RTOpCppC.cpp || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpCppC.cpp
+
+RTOpCppC.obj: $(srcdir)/RTOpPack/RTOpCppC.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOpCppC.cpp' object='RTOpCppC.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOpCppC.Po' tmpdepfile='$(DEPDIR)/RTOpCppC.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpCppC.obj `cygpath -w $(srcdir)/RTOpPack/RTOpCppC.cpp`
+
+RTOpCppToC.o: $(srcdir)/RTOpPack/RTOpCppToC.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOpCppToC.cpp' object='RTOpCppToC.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOpCppToC.Po' tmpdepfile='$(DEPDIR)/RTOpCppToC.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpCppToC.o `test -f $(srcdir)/RTOpPack/RTOpCppToC.cpp || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpCppToC.cpp
+
+RTOpCppToC.obj: $(srcdir)/RTOpPack/RTOpCppToC.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOpCppToC.cpp' object='RTOpCppToC.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOpCppToC.Po' tmpdepfile='$(DEPDIR)/RTOpCppToC.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpCppToC.obj `cygpath -w $(srcdir)/RTOpPack/RTOpCppToC.cpp`
+
+RTOpCppToMPI.o: $(srcdir)/RTOpPack/RTOpCppToMPI.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOpCppToMPI.cpp' object='RTOpCppToMPI.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOpCppToMPI.Po' tmpdepfile='$(DEPDIR)/RTOpCppToMPI.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpCppToMPI.o `test -f $(srcdir)/RTOpPack/RTOpCppToMPI.cpp || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOpCppToMPI.cpp
+
+RTOpCppToMPI.obj: $(srcdir)/RTOpPack/RTOpCppToMPI.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOpCppToMPI.cpp' object='RTOpCppToMPI.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOpCppToMPI.Po' tmpdepfile='$(DEPDIR)/RTOpCppToMPI.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOpCppToMPI.obj `cygpath -w $(srcdir)/RTOpPack/RTOpCppToMPI.cpp`
+
+RTOp_RTOp_C_Cpp.o: $(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp' object='RTOp_RTOp_C_Cpp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_RTOp_C_Cpp.Po' tmpdepfile='$(DEPDIR)/RTOp_RTOp_C_Cpp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOp_RTOp_C_Cpp.o `test -f $(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp || echo '$(srcdir)/'`$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp
+
+RTOp_RTOp_C_Cpp.obj: $(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp' object='RTOp_RTOp_C_Cpp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RTOp_RTOp_C_Cpp.Po' tmpdepfile='$(DEPDIR)/RTOp_RTOp_C_Cpp.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o RTOp_RTOp_C_Cpp.obj `cygpath -w $(srcdir)/RTOpPack/RTOp_RTOp_C_Cpp.cpp`
+
+print_sub_vector.o: $(srcdir)/RTOpPack/print_sub_vector.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/print_sub_vector.cpp' object='print_sub_vector.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/print_sub_vector.Po' tmpdepfile='$(DEPDIR)/print_sub_vector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o print_sub_vector.o `test -f $(srcdir)/RTOpPack/print_sub_vector.cpp || echo '$(srcdir)/'`$(srcdir)/RTOpPack/print_sub_vector.cpp
+
+print_sub_vector.obj: $(srcdir)/RTOpPack/print_sub_vector.cpp
+@AMDEP_TRUE@	source='$(srcdir)/RTOpPack/print_sub_vector.cpp' object='print_sub_vector.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/print_sub_vector.Po' tmpdepfile='$(DEPDIR)/print_sub_vector.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o print_sub_vector.obj `cygpath -w $(srcdir)/RTOpPack/print_sub_vector.cpp`
+CXXDEPMODE = @CXXDEPMODE@
+uninstall-info-am:
+install-nodist_pkgexecincludeHEADERS: $(nodist_pkgexecinclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgexecincludedir)
+	@list='$(nodist_pkgexecinclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(INSTALL_HEADER) $$d$$p $(DESTDIR)$(pkgexecincludedir)/$$f"; \
+	  $(INSTALL_HEADER) $$d$$p $(DESTDIR)$(pkgexecincludedir)/$$f; \
+	done
+
+uninstall-nodist_pkgexecincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(nodist_pkgexecinclude_HEADERS)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(pkgexecincludedir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgexecincludedir)/$$f; \
+	done
+install-pkgincludeHEADERS: $(pkginclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(pkgincludedir)
+	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " $(INSTALL_HEADER) $$d$$p $(DESTDIR)$(pkgincludedir)/$$f"; \
+	  $(INSTALL_HEADER) $$d$$p $(DESTDIR)$(pkgincludedir)/$$f; \
+	done
+
+uninstall-pkgincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(pkginclude_HEADERS)'; for p in $$list; do \
+	  f="`echo $$p | sed -e 's|^.*/||'`"; \
+	  echo " rm -f $(DESTDIR)$(pkgincludedir)/$$f"; \
+	  rm -f $(DESTDIR)$(pkgincludedir)/$$f; \
+	done
+
+tags: TAGS
+
+ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	mkid -fID $$unique $(LISP)
+
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+		$(TAGS_FILES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
+	  || etags $(ETAGS_ARGS) $$tags  $$unique $(LISP)
+
+GTAGS:
+	here=`CDPATH=: && cd $(top_builddir) && pwd` \
+	  && cd $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) $$here
+
+distclean-tags:
+	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH
+
+DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+
+top_distdir = ..
+distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
+
+distdir: $(DISTFILES)
+	$(mkinstalldirs) $(distdir)/$(srcdir)/MoochoUtilities $(distdir)/$(srcdir)/RTOpPack $(distdir)/$(srcdir)/RTOpStdOps
+	@for file in $(DISTFILES); do \
+	  if test -f $$file; then d=.; else d=$(srcdir); fi; \
+	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
+	  if test "$$dir" != "$$file" && test "$$dir" != "."; then \
+	    $(mkinstalldirs) "$(distdir)/$$dir"; \
+	  fi; \
+	  if test -d $$d/$$file; then \
+	    cp -pR $$d/$$file $(distdir) \
+	    || exit 1; \
+	  else \
+	    test -f $(distdir)/$$file \
+	    || cp -p $$d/$$file $(distdir)/$$file \
+	    || exit 1; \
+	  fi; \
+	done
+check-am: all-am
+check: check-am
+all-am: Makefile $(LIBRARIES) $(HEADERS)
+
+installdirs:
+	$(mkinstalldirs) $(DESTDIR)$(libdir) $(DESTDIR)$(pkgexecincludedir) $(DESTDIR)$(pkgincludedir)
+
+install: install-am
+install-exec: install-exec-am
+install-data: install-data-am
+uninstall: uninstall-am
+
+install-am: all-am
+	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
+
+installcheck: installcheck-am
+install-strip:
+	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
+	  `test -z '$(STRIP)' || \
+	    echo "INSTALL_PROGRAM_ENV=STRIPPROG='$(STRIP)'"` install
+mostlyclean-generic:
+
+clean-generic:
+
+distclean-generic:
+	-rm -f Makefile $(CONFIG_CLEAN_FILES) stamp-h stamp-h[0-9]*
+
+maintainer-clean-generic:
+	@echo "This command is intended for maintainers to use"
+	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
+clean: clean-am
+
+clean-am: clean-generic clean-libLIBRARIES mostlyclean-am
+
+distclean: distclean-am
+
+distclean-am: clean-am distclean-compile distclean-depend \
+	distclean-generic distclean-tags
+
+dvi: dvi-am
+
+dvi-am:
+
+info: info-am
+
+info-am:
+
+install-data-am: install-pkgincludeHEADERS
+
+install-exec-am: install-libLIBRARIES \
+	install-nodist_pkgexecincludeHEADERS
+
+install-info: install-info-am
+
+install-man:
+
+installcheck-am:
+
+maintainer-clean: maintainer-clean-am
+
+maintainer-clean-am: distclean-am maintainer-clean-generic
+
+mostlyclean: mostlyclean-am
+
+mostlyclean-am: mostlyclean-compile mostlyclean-generic
+
+uninstall-am: uninstall-info-am uninstall-libLIBRARIES \
+	uninstall-nodist_pkgexecincludeHEADERS \
+	uninstall-pkgincludeHEADERS
+
+.PHONY: GTAGS all all-am check check-am clean clean-generic \
+	clean-libLIBRARIES distclean distclean-compile distclean-depend \
+	distclean-generic distclean-tags distdir dvi dvi-am info \
+	info-am install install-am install-data install-data-am \
+	install-exec install-exec-am install-info install-info-am \
+	install-libLIBRARIES install-man \
+	install-nodist_pkgexecincludeHEADERS install-pkgincludeHEADERS \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic tags uninstall \
+	uninstall-am uninstall-info-am uninstall-libLIBRARIES \
+	uninstall-nodist_pkgexecincludeHEADERS \
+	uninstall-pkgincludeHEADERS
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:
