@@ -322,6 +322,7 @@ AC_CONFIG_FILES([
 		example/Nonlin/Makefile
 		example/Nonlin/NP2DSim/Makefile
 		example/Nonlin/NP4DOpt/Makefile
+		example/Solvers/Makefile
 		])
 
 AC_OUTPUT()

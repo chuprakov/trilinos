@@ -1,4 +1,4 @@
 #@HEADER
 #@HEADER
 
-SUBDIRS = Nonlin
+SUBDIRS = Nonlin Solvers
