@@ -66,12 +66,18 @@ public:
 		bnd_fixed_t;
 
 	///
+	/** Constructs to uninitialized.
+	 */
+	MatrixHessianSuperBasic();
+
+	///
 	/** Initialize the matrix.
 	 *
 	 * Preconditions:\begin{itemize}
-	 * \item #0 < i_x_free[l-1] <= n, l = 1...n_R# (throw ???)
-	 * \item #0 < i_x_fixed[l-1] <= n, l = 1...n-n_R# (throw ???)
-	 * \item #i_x_free[l-1] != i_x_fixed[p-1], l = 1...n_R, p = 1...n-n_X# (throw ???)
+	 * \item [#i_x_free != NULL#] #0 < i_x_free[l-1] <= n, l = 1...n_R# (throw ???)
+	 * \item [#i_x_fixed != NULL#]#0 < i_x_fixed[l-1] <= n, l = 1...n-n_R# (throw ???)
+	 * \item [#i_x_free != NULL && i_x_fixed != NULL#]
+	 *       #i_x_free[l-1] != i_x_fixed[p-1], l = 1...n_R, p = 1...n-n_X# (throw ???)
 	 * \item [#n_R > 0#] #B_RR_ptr.get() != NULL && B_RR_ptr->rows() == n_R && B_RR_ptr->cols() == n_R#
 	 *       (throw #std::invalid_argument#)
 	 * \item [#n_R == 0#] #B_RR_ptr.get() == NULL# (throw #std::invalid_argument#)
@@ -92,21 +98,28 @@ public:
 	 *                   the matrix #Q_R# as:\\
 	 *                   #Q_R(:,l) = e(i_x_free[l-1]), l = 1...n_R#\\
 	 *                   The ordering of these indices is significant.
+	 *                   If #n == n_R# then #i_x_free == NULL# is allowed in which case
+	 *                   it is assumed to be identity.  If #n_R == 0# then of course
+	 *                   #i_x_free == NULL# is allowed.
 	 * @param  i_x_fixed
 	 *              [in] array (size #n_X = n - n_R#):
 	 *                   #i_x_fixed[l-1], l = 1...n_X# defines the matrix #Q_X# as:\\
 	 *                   #Q_X(:,l) = e(i_x_fixed[l-1]), l = 1...n_X#\\
 	 *                   The ordering of these indices is significant.
+	 *                   If #n_R==0# then #i_x_fixed == NULL# is allowed in which case
+	 *                   it is assumed to be identity.  If #n_R == n# then of course
+	 *                   #i_x_fixed == NULL# is allowed.
 	 * @param  bnd_fixed
 	 *              [in] array (size #n_X#):
 	 *                   #bnd_fixed[l-1], l = 1...n_X# defines what bound the variables
 	 *                   in #i_x_fixed[l-1], l = 1...n_X# are fixed at: #LOWER#, #UPPER#
-	 *                   or #EQUALITY#.
+	 *                   or #EQUALITY#.  If #n_R == n# then of course
+	 *                   #bnd_fixed == NULL# is allowed.
 	 * @param  B_RR_ptr
 	 *              [in] Smart pointer to matrix #B_RR# (size #n_R x n_R#) for the
 	 *                   free (super basic) variables. #B_RR_ptr.get() != NULL#
 	 *                   must be true if #n_R > # or an exception will be thrown.
-	 *                   if #n_R == 0# then #B_RR_ptr.get() == NULL# must be true.
+	 *                   if #n_R == 0# then #B_RR_ptr.get() == NULL# may be true.
 	 * @param  B_RX_ptr
 	 *              [in] Smart pointer to matrix #B_RX# (size #n_R x n_X#
 	 *                   if #B_RX_trans==no_trans#  or #n_X x n_R# if #B_RX_trans==trans#)
@@ -119,9 +132,9 @@ public:
 	 *              [in] Smart pointer to matrix B_XX (size #n_X x n_X#) for the
 	 *                   fixed (nonbasic) variables. #B_XX_ptr.get() != NULL#
 	 *                   must be true if #n_R < n# or an exception will be thrown.
-	 *                   If #n_R == n# then #B_XX_ptr.get() == NULL# must be true.
+	 *                   If #n_R == n# then #B_XX_ptr.get() == NULL# may be true.
 	 */
-	void initialize(
+	virtual void initialize(
 		size_type            n
 		,size_type           n_R
 		,const size_type     i_x_free[]
@@ -164,10 +177,6 @@ public:
 	/** @name Overridden from MatrixWithOp */
 	//@{
 
-	///
-	MatrixWithOp& operator=(const MatrixWithOp& m);
-	///
-	std::ostream& output(std::ostream& out) const;
 	/// vs_lhs = alpha * op(M_rhs1) * vs_rhs2 + beta * vs_lhs (BLAS xGEMV)
 	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const VectorSlice& vs_rhs2, value_type beta) const;
@@ -190,6 +199,11 @@ public:
 
 	//@}
 
+protected:
+
+	///
+	void assert_initialized() const;
+
 private:
 
 	// ///////////////////////////////////
@@ -201,6 +215,8 @@ private:
 	// ///////////////////////////////////
 	// Private data members
 
+	size_type               n_;
+	size_type               n_R_;
 	GenPermMatrixSlice		Q_R_;
 	row_i_t					Q_R_row_i_;
 	col_j_t					Q_R_col_j_;
@@ -212,12 +228,6 @@ private:
 	B_RX_ptr_t              B_RX_ptr_;
 	BLAS_Cpp::Transp        B_RX_trans_;
 	B_XX_ptr_t              B_XX_ptr_;
-	
-	// //////////////////////////
-	// Private member functions
-	
-	///
-	void assert_initialized() const;
 
 }; // end class MatrixHessianSuperBasic
 

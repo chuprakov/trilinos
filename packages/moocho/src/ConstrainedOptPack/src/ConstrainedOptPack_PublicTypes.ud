@@ -41,6 +41,8 @@ using ConstrainedOptimizationPack::MeritFuncCalcNLP;
 using ConstrainedOptimizationPack::MeritFuncCalcNLE;
 using ConstrainedOptimizationPack::MeritFuncCalcNLF;
 using ConstrainedOptimizationPack::MatrixSymPosDefAddDel;
+using ConstrainedOptimizationPack::MatrixHessianSuperBasic;
+using ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal;
 using ConstrainedOptimizationPack::SymInvCholMatrixSubclass;
 using ConstrainedOptimizationPack::DenseIdentVertConcatMatrixSubclass;
 using ConstrainedOptimizationPack::ZAdjointFactMatrixSubclass;

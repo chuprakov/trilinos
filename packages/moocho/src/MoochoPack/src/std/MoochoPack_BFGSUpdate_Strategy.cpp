@@ -177,7 +177,7 @@ void BFGSUpdate_Strategy::perform_update(
 									 : static_cast<VectorSlice*>(0) );
 
 		if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
-			out << "\nB = \n" << *B;
+			out << "\nB after the BFGS update = \n" << *B;
 		}
 
 		if( ( check_results && secant_testing() == SECANT_TEST_DEFAULT )

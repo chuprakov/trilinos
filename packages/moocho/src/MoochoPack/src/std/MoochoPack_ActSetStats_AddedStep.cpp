@@ -55,6 +55,6 @@ void ReducedSpaceSQPPack::ActSetStats_AddedStep::print_step( const Algorithm& al
 	, std::ostream& out, const std::string& L ) const
 {
 	out
-		<< L << "*** Updates active set statistics\n"
-		<< L << "update act_set_stats_k\n";
+		<< L << "*** Updates active set statistics for changes from the last iteration\n"
+		<< L << "Given nu_km1 and nu_k update act_set_stats_k (num_active, num_adds, num_drops)\n";
 }

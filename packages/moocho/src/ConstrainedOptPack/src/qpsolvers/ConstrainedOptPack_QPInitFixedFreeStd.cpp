@@ -11,6 +11,7 @@
 #include <sstream>
 
 #include "ConstrainedOptimizationPack/include/QPInitFixedFreeStd.h"
+#include "ConstrainedOptimizationPack/include/initialize_Q_R_Q_X.h"
 
 namespace ConstrainedOptimizationPack {
 namespace QPSchurPack {
@@ -178,40 +179,20 @@ void QPInitFixedFreeStd::initialize(
 		}
 	}
 
-	// Setup Q_R
+	// Setup Q_R and Q_X
 	Q_R_row_i_.resize(n_R);
 	Q_R_col_j_.resize(n_R);
-	if( n_R > 0 ) {
-		const size_type
-			*i_x_R = i_x_free;
-		row_i_t::iterator
-			row_i_itr = Q_R_row_i_.begin();
-		col_j_t::iterator
-			col_j_itr = Q_R_col_j_.begin();
-		for( size_type i = 1; i <= n_R; ++i, ++i_x_R, ++row_i_itr, ++col_j_itr ) {
-			*row_i_itr = *i_x_R;
-			*col_j_itr = i;
-		}
-		Q_R_.initialize_and_sort(n,n_R,n_R,0,0,GPMSTP::BY_ROW
-			,&Q_R_row_i_[0],&Q_R_col_j_[0],test_setup);
-	}
-	// Setup Q_X
 	Q_X_row_i_.resize(n_X);
 	Q_X_col_j_.resize(n_X);
-	if( n_X > 0 ) {
-		const size_type
-			*i_x_X = i_x_fixed;
-		row_i_t::iterator
-			row_i_itr = Q_X_row_i_.begin();
-		col_j_t::iterator
-			col_j_itr = Q_X_col_j_.begin();
-		for( size_type i = 1; i <= n_X; ++i, ++i_x_X, ++row_i_itr, ++col_j_itr ) {
-			*row_i_itr = *i_x_X;
-			*col_j_itr = i;
-		}					
-		Q_X_.initialize_and_sort(n,n_X,n_X,0,0,GPMSTP::BY_ROW
-			,&Q_X_row_i_[0],&Q_X_col_j_[0],test_setup);
-	}
+	initialize_Q_R_Q_X(
+		n_R,n_X,i_x_free,i_x_fixed,test_setup
+		,n_R ? &Q_R_row_i_[0] : NULL
+		,n_R ? &Q_R_col_j_[0] : NULL
+		,&Q_R_
+		,n_X ? &Q_X_row_i_[0] : NULL
+		,n_X ? &Q_X_col_j_[0] : NULL
+		,&Q_X_
+	);
 
 	// Setup other arguments
 	n_				= n;

@@ -137,7 +137,6 @@ void LinAlgPack::V_StV(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rh
 	for(itr_lhs = LHS->begin(), itr_rhs = RHS.begin(); itr_lhs != LHS->end(); ++itr_lhs, ++itr_rhs)			\
 	{	*itr_lhs = FUNC(*itr_rhs); }
 
-
 #define BINARYOP_VEC(LHS, RHS1, RHS2, FUNC)																	\
 	LinAlgPack::assert_vs_sizes(RHS1, RHS2); LHS->resize(RHS1.size());										\
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;								\

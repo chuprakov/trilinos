@@ -20,7 +20,7 @@ namespace LinAlgPack {
 /** Aggregate information for a triangular matrix (element-wise) stored in a GenMatrix.
   *
   * This is the type to be used as lhs and rhs arguments in element-wise
-  * linear algebra operations like assignment and binary arithmetic..
+  * linear algebra operations like assignment and binary arithmetic.
   */
 class tri_ele_gms {
 public:
@@ -32,37 +32,31 @@ public:
 			assert_gms_square(gms);
 		#endif
 	}
-
 	///
 	size_type rows() const {
 		return gms_.rows();
 	}
-
 	///
 	size_type cols() const {
 		return gms_.cols();
 	}
-
 	///
 	GenMatrixSlice& gms() {
 		return gms_;
 	}
-
 	///
 	const GenMatrixSlice& gms() const {
 		return gms_;
 	}
-
 	///
 	BLAS_Cpp::Uplo	uplo() const {
 		return uplo_;
 	}
-
 	/// Allow address to be taken of rvalue of this object
 	tri_ele_gms* operator&() {
 	  return this;
 	}
-
+	///
 	const tri_ele_gms* operator&() const {
 	  return this;
 	}
@@ -70,6 +64,9 @@ public:
 private:	
 	GenMatrixSlice	gms_;
 	BLAS_Cpp::Uplo	uplo_;
+	// Not defined and not to be called
+	tri_ele_gms();
+	tri_ele_gms& operator=(const tri_ele_gms&);
 };	// end class tri_ele_gms
 
 inline
@@ -103,51 +100,46 @@ public:
 			assert_gms_square(gms);
 		#endif
 	}
-
 	///
 	size_type rows() const {
 		return gms_.rows();
 	}
-
 	///
 	size_type cols() const {
 		return gms_.cols();
 	}
-
 	///
 	GenMatrixSlice& gms() {
 		return gms_;
 	}
-
 	///
 	const GenMatrixSlice& gms() const {
 		return gms_;
 	}
-
 	///
 	BLAS_Cpp::Uplo	uplo() const {
 		return uplo_;
 	}
-
 	///
 	BLAS_Cpp::Diag	diag() const {
 		return diag_;
 	}
-
 	/// Allow address to be taken of rvalue of this object
 	tri_gms* operator&() {
 	  return this;
 	}
-
+	///
 	const tri_gms* operator&() const {
 	  return this;
 	}
-
 
 private:	
 	GenMatrixSlice	gms_;
 	BLAS_Cpp::Uplo	uplo_;
 	BLAS_Cpp::Diag	diag_;
+	// not defined and not to be called
+	tri_gms();
+	tri_gms& operator=(const tri_gms&);
 };	// end class tri_gms
 
 inline
@@ -180,37 +172,30 @@ public:
 			assert_gms_square(gms);
 		#endif
 	}
-
 	///
 	size_type rows() const {
 		return gms_.rows();
 	}
-
 	///
 	size_type cols() const {
 		return gms_.cols();
 	}
-
 	///
 	GenMatrixSlice& gms() {
 		return gms_;
 	}
-
 	///
 	const GenMatrixSlice& gms() const {
 		return gms_;
 	}
-
 	///
 	BLAS_Cpp::Uplo	uplo() const {
 		return uplo_;
 	}
-
 	/// Allow address to be taken of rvalue of this object
         sym_gms* operator&() {
 	  return this;
 	}
-
 	const sym_gms* operator&() const {
 	  return this;
 	}
@@ -218,6 +203,9 @@ public:
 private:	
 	GenMatrixSlice	gms_;
 	BLAS_Cpp::Uplo	uplo_;
+	// not defined and not to be called
+	sym_gms();
+	sym_gms& operator=(const tri_gms&);
 };	// end class sym_gms
 
 inline

@@ -17,7 +17,7 @@ namespace SparseLinAlgPack {
 ///
 /** sv_lhs = alpha * op(P_rhs1) * vs_rhs2.
   * 
-  * This function will resize the sparse vector rhs and add only the
+  * This function will resize the sparse vector lhs and add only the
   * nonzero elements in the rhs.
   * 
   * If op(P_rhs1) is sorted by row (i.e. op(P_rhs1) = P_rhs1 sorted by row
@@ -40,7 +40,7 @@ void V_MtV( SpVector* sv_lhs, const GenPermMatrixSlice& P_rhs1
 ///
 /** sv_lhs = alpha * op(P_rhs1) * sv_rhs2.
   * 
-  * This function will resize the sparse vector rhs and add only the
+  * This function will resize the sparse vector lhs and add only the
   * nonzero elements in the rhs.
   * 
   * If op(P_rhs1) is sorted by row (i.e. op(P_rhs1) = P_rhs1 sorted by row

@@ -10,10 +10,10 @@
 #include "../../include/rsqp_algo_conversion.h"
 #include "../../include/ReducedSpaceSQPPackExceptions.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/include/MatrixSymSecantUpdateable.h"
 #include "ConstrainedOptimizationPack/test/TestMatrixSymSecantUpdate.h"
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
+#include "SparseLinAlgPack/include/MatrixSymInitDiagonal.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
@@ -47,8 +47,6 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(Algorithm&
 
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_MtV;
-
-	using ConstrainedOptimizationPack::MatrixSymSecantUpdateable;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
@@ -85,9 +83,9 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(Algorithm&
 				out << "\nBasis changed.  Reinitializing rHL_k = eye(n-r)\n";
 			}
 #ifdef _WINDOWS
-			dynamic_cast<MatrixSymSecantUpdateable&>(s.rHL().set_k(0)).init_identity(nind);
+			dynamic_cast<MatrixSymInitDiagonal&>(s.rHL().set_k(0)).init_identity(nind);
 #else
-			dyn_cast<MatrixSymSecantUpdateable>(s.rHL().set_k(0)).init_identity(nind);
+			dyn_cast<MatrixSymInitDiagonal>(s.rHL().set_k(0)).init_identity(nind);
 #endif
 			quasi_newton_stats_(s).set_k(0).set_updated_stats(
 				QuasiNewtonStats::REINITIALIZED );
@@ -166,9 +164,9 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(Algorithm&
 				// Now I will assume that since I can't perform the BFGS update and rHL has
 				// not been set for this iteration yet, that it is up to me to initialize rHL_k = 0
 #ifdef _WINDOWS
-				dynamic_cast<MatrixSymSecantUpdateable&>(s.rHL().set_k(0)).init_identity(nind);
+				dynamic_cast<MatrixSymInitDiagonal&>(s.rHL().set_k(0)).init_identity(nind);
 #else
-				dyn_cast<MatrixSymSecantUpdateable>(s.rHL().set_k(0)).init_identity(nind);
+				dyn_cast<MatrixSymInitDiagonal>(s.rHL().set_k(0)).init_identity(nind);
 #endif
 				iter_k_rHL_init_ident_ = s.k();	// remember what iteration this was
 				quasi_newton_stats_(s).set_k(0).set_updated_stats(
@@ -207,7 +205,7 @@ void ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::print_step( const 
 	, std::ostream& out, const std::string& L ) const
 {
 	out
-		<< L << "*** Calculate the reduced hessian of the Lagrangian rHL = Z' * HL * Z ***\n"
+		<< L << "*** Calculate the reduced hessian of the Lagrangian rHL = Z' * HL * Z\n"
 		<< L << "default:  num_basis_remembered = NO_BASIS_UPDATED_YET\n"
 		<< L << "          iter_k_rHL_init_ident = -1\n"
 		<< L << "if num_basis_remembered = NO_BASIS_UPDATED_YET then\n"
@@ -220,7 +218,7 @@ void ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::print_step( const 
 		<< L << "if rHL_k is not updated then\n"
 		<< L << "    if new_basis == true then\n"
 		<< L << "        *** Transition rHL to the new basis by just starting over.\n"
-		<< L << "        rHL_k = eye(n-r)\n"
+		<< L << "        rHL_k = eye(n-r) *** must support MatrixSymInitDiagonal interface\n"
 		<< L << "        iter_k_rHL_init_ident = k\n"
 		<< L << "        goto next step\n"
 		<< L << "    end\n"
@@ -244,7 +242,7 @@ void ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::print_step( const 
 		<< L << "       k_last_offset = last iteration rHL was updated for\n"
 		<< L << "       if k_last_offset does not exist then\n"
 		<< L << "            *** We are left with no choise but to initialize rHL\n"
-		<< L << "            rHL_k = eye(n-r)\n"
+		<< L << "            rHL_k = eye(n-r) *** must support MatrixSymInitDiagonal interface\n"
 		<< L << "            iter_k_rHL_init_ident = k\n"
 		<< L << "        else\n"
 		<< L << "            *** No new basis has been selected so we may as well\n"

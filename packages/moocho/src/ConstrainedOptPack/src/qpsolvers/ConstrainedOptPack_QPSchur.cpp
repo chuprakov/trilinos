@@ -743,6 +743,14 @@ void QPSchur::ActiveSet::initialize(
 		,test
 		);
 
+	// Setup l_fxfx
+	l_fxfx_.resize(q_D_hat_max);
+	if(q_D_hat) {
+		for( size_type k = 0; k < q_D_hat; ++k ) {
+			l_fxfx_[k] = l_x_X_map(Q_XD_hat_row_[k]);
+		}
+	}
+
 	// Set the rest of the terms in d_hat involving matrices
 	//
 	// d_hat += - P_XF_hat' * G * b_XX - P_plus_hat' * A_bar' * b_XX
@@ -1019,7 +1027,7 @@ void QPSchur::ActiveSet::add_constraint(
 }
 
 void QPSchur::ActiveSet::drop_constraint(
-	 size_type jd , bool force_refactorization )
+	 int jd , bool force_refactorization )
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
@@ -1036,6 +1044,12 @@ void QPSchur::ActiveSet::drop_constraint(
 	if( jd < 0 ) {
 		// A variable initially fixed is being freed.
 		// Increase the dimension of the augmented the KKT system!
+		
+		throw std::logic_error(
+			"QPSchur::ActiveSet::drop_constraint(jd) : "
+			"dropping an initially fixed variable is not supported yet!"
+			);
+
 		assert(0);	// ToDo: Implement this!
 		--q_F_hat_;
 	}
@@ -1092,7 +1106,7 @@ void QPSchur::ActiveSet::drop_constraint(
 }
 
 void QPSchur::ActiveSet::drop_add_constraints(
-	size_type jd, size_type ja, QPSchurPack::EBounds bnd_ja, bool update_steps )
+	int jd, size_type ja, QPSchurPack::EBounds bnd_ja, bool update_steps )
 {
 	drop_constraint( jd, false );
 	add_constraint( ja, bnd_ja, update_steps, true );
@@ -1144,6 +1158,7 @@ size_type QPSchur::ActiveSet::q_D_hat() const
 
 int QPSchur::ActiveSet::ij_map( size_type s ) const
 {
+	assert( 1 <= s && s <= this->q_hat() );
 	return ij_map_[s-1];
 }
 
@@ -1158,12 +1173,20 @@ size_type QPSchur::ActiveSet::s_map( int ij ) const
 
 value_type QPSchur::ActiveSet::constr_norm( size_type s ) const
 {
+	assert( 1 <= s && s <= this->q_hat() );
 	return constr_norm_(s);
 }
 
 QPSchurPack::EBounds QPSchur::ActiveSet::bnd( size_type s ) const
 {
+	assert( 1 <= s && s <= this->q_hat() );
 	return bnds_[s-1];
+}
+
+size_type QPSchur::ActiveSet::l_fxfx( size_type k ) const
+{
+	assert( 1 <= k && k <= this->q_D_hat() );
+	return l_fxfx_[k-1];
 }
 
 const QPSchur::U_hat_t& QPSchur::ActiveSet::U_hat() const
@@ -1451,7 +1474,8 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	// Print header for removing constraints
 	if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY && num_act_change > 0 ) {
 		*out
-			<< "\n*** Removing constriants until we are dual feasible\n";
+			<< "\n*** Removing constriants until we are dual feasible\n"
+			<< "\n*** Start by removing constraints within the Schur complement first\n\n";
 	}
 	// Print summary header for max_viol and jd.
 	if( (int)OUTPUT_ITER_SUMMARY <= (int)output_level 
@@ -1482,7 +1506,8 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		// Print header for s, z_hat(s), bnd(s), viol, max_viol and jd
 		if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 			*out
-				<< right << setw(5)	<< "s"
+				<< endl
+				<< right << setw(5)		<< "s"
 				<< right << setw(20)	<< "z_hat"
 				<< right << setw(20)	<< "bnd"
 				<< right << setw(20)	<< "viol"
@@ -1566,14 +1591,6 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 
 	if(out) *out << std::setprecision(prec_saved);
 
-	// Print how many constraints where removed from the initial quess
-	if( num_act_change > 0 && (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
-		*out
-			<< "\nThere where " << (*num_drops)
-			<< " constraints dropped from the schur complement for the initial guess"
-			<< " of the active set.\n";
-	}
-
 	// Compute v
 	if( act_set_.q_hat() > 0 ) {
 		v_.resize( qp.n_R() + qp.m() );
@@ -1591,37 +1608,177 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		v_ = vo_;
 	}
 
-	// ToDo: We also have to check to see if an initially fixed variable that
-	// has not already been freed needs to be freed if its multiplier is
-	// not dual feasible.  This requires solves with Ko and is therefore
-	// more expensive than the above algorithm.  The computation of x
-	// and mu_D needs to be enclosed in this loop.
-
-	// x
+	// Set x
 	set_x( act_set_, v_(), x );
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		*out
-			<< "\nInitial x for Primal Dual algorithm\n||x||inf = " << norm_inf(*x);
+			<< "\nCurrent guess for unknowns x\n||x||inf = " << norm_inf(*x);
 	}
 	if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 		*out
-			<< "x =\n" << *x;
+			<< "\nx =\n" << *x;
 	}
 
-	// mu_D_hat = ???
+	//
+	// Determine if any initially fixed variables need to be freed by checking mu_D_hat.
+	//
 	if( act_set_.q_D_hat() ) {
-		calc_mu_D( act_set_, *x, v_(), &act_set_.mu_D_hat() );
-		if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
-			*out
-				<< "\nmax(|mu_D_hat(i)|) = " << norm_inf(act_set_.mu_D_hat())
-				<< "\nmin(|mu_D_hat(i)|) = " << min_abs(act_set_.mu_D_hat()) << std::endl;
+		const QPSchurPack::QP::i_x_X_map_t&  i_x_X_map = act_set_.qp().i_x_X_map();
+		const QPSchurPack::QP::x_init_t&     x_init    = act_set_.qp().x_init();
+		// Print summary header for max_viol and jd.
+		if( (int)OUTPUT_ITER_SUMMARY <= (int)output_level 
+			&& (int)output_level < (int)OUTPUT_ITER_QUANTITIES
+			&& num_act_change > 0  )
+		{
+			*out << std::setprecision(dbl_prec);
+			*out     
+				<< "\nIf max_viol > 0 and jd != 0 then the variable i=-jd will be free from its initial bound\n\n"
+				<< setw(20)	<< "max_viol"
+				<< setw(5)	<< "kd"
+				<< setw(5)	<< "jd"		<< endl
+				<< setw(20)	<< "--------------"
+				<< setw(5)	<< "----"
+				<< setw(5)	<< "----"	<< endl;
 		}
-		if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
-			*out
-				<< "\nmu_D_hat =\n" << act_set_.mu_D_hat();
+		size_type q_D_hat = act_set_.q_D_hat(); // This will be deincremented
+		while( q_D_hat > 0 ) {
+			// mu_D_hat = ???
+			VectorSlice mu_D_hat = act_set_.mu_D_hat();
+			calc_mu_D( act_set_, *x, v_(), &mu_D_hat );
+			// Determine if we are dual feasible.
+			value_type	max_viol = 0.0;	// max scaled violation of dual feasability.
+			int			jd = 0;			// -indice of variable with max scaled violation.
+			size_type   kd = 0;
+			VectorSlice::const_iterator
+				mu_D_itr = const_cast<const VectorSlice&>(mu_D_hat).begin();
+			// Print header for k, mu_D_hat(k), bnd, viol, max_viol and jd
+			if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
+				*out
+					<< endl
+					<< right << setw(5)		<< "k"
+					<< right << setw(20)	<< "mu_D_hat"
+					<< right << setw(20)	<< "bnd"
+					<< right << setw(20)	<< "viol"
+					<< right << setw(20)	<< "max_viol"
+					<< right << setw(5)		<< "jd"	<< endl
+					<< right << setw(5)		<< "----"
+					<< right << setw(20)	<< "--------------"
+					<< right << setw(20)	<< "--------------"
+					<< right << setw(20)	<< "--------------"
+					<< right << setw(20)	<< "--------------"
+					<< right << setw(5)		<< "----"	<< endl;
+			}
+			for( int k = 1; k <= q_D_hat; ++k, ++mu_D_itr ) {
+				int
+					i = i_x_X_map(act_set_.l_fxfx(k));
+				QPSchurPack::EBounds
+					bnd = x_init(i);
+				const value_type inf = std::numeric_limits<value_type>::max();
+				value_type viol = -inf;
+				if( bnd == QPSchurPack::LOWER ) {
+					viol = (*mu_D_itr);
+					if( viol > 0 ) {
+						if( viol < dual_infeas_tol() ) {
+							// We need to fix the sign of this near degenerate multiplier
+							assert(0);
+						}
+						else if( viol > max_viol ) {
+							max_viol = viol;
+							kd = k;
+							jd = -i;
+						}
+					}
+				}
+				else if( bnd == QPSchurPack::UPPER ) {
+					viol = -(*mu_D_itr);
+					if( viol > 0 ) {
+						if( viol < dual_infeas_tol() ) {
+							// We need to fix the sign of this near degenerate multiplier
+							assert(0);
+						}
+						else if( viol > max_viol ) {
+							max_viol = viol;
+							kd = k;
+							jd = -i;
+						}
+					}
+				}
+				// Print row for k, mu_D_hat(k), bnd, viol, max_viol and jd
+				if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
+					*out << std::setprecision(dbl_prec);
+					*out
+						<< right << setw(5)		<< k
+						<< right << setw(20)	<< *mu_D_itr
+						<< right << setw(20)	<< bnd_str(bnd)
+						<< right << setw(20)	<< viol
+						<< right << setw(20)	<< max_viol
+						<< right << setw(5)		<< jd	<< endl;
+				}
+			}
+			// Print row of max_viol and jd
+			if( (int)OUTPUT_ITER_SUMMARY <= (int)output_level 
+				&& (int)output_level < (int)OUTPUT_ITER_QUANTITIES )
+			{
+				*out
+					<< setw(20)	<< max_viol
+					<< setw(5)	<< kd
+					<< setw(5)	<< jd         << endl;
+			}
+			if( jd == 0 ) break;	// We have a dual feasible point w.r.t. these variable bounds
+			// Remove the active constraint with the largest scaled violation.
+			act_set_.drop_constraint( jd );
+			++(*num_drops);
+			--q_D_hat;
+			// Print U_hat, S_hat and d_hat.
+			if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
+				*out << std::setprecision(prec_saved);
+				*out
+					<< "\n*** drop constraint jd\n";
+				dump_act_set_quantities( act_set_, *out );
+			}
+			// Compute z_hat (z_hat = inv(S_hat)*(d_hat - U_hat'*vo))
+			calc_z( act_set_.S_hat(), act_set_.d_hat(), act_set_.U_hat(), vo_()
+					, &act_set_.z_hat() );
+			if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+				*out
+					<< "\n||z_hat||inf = " << norm_inf(act_set_.z_hat()) << std::endl;
+			}
+			if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
+				*out
+					<< "\nz_hat =\n" << act_set_.z_hat();
+			}
+			// Compute v
+			calc_v( qp.Ko(), qp.fo(), act_set_.U_hat(), act_set_.z_hat(), &v_() );
+			if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+				*out
+					<< "\n||v||inf = " << norm_inf(v_()) << std::endl;
+			}
+			if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
+				*out
+					<< "\nv =\n" << v_();
+			}
+			// Set x
+			set_x( act_set_, v_(), x );
+			if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+				*out
+					<< "\nCurrent guess for unknowns x\n||x||inf = " << norm_inf(*x);
+			}
+			if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
+				*out
+					<< "\nx =\n" << *x;
+			}
 		}
 	}
 
+	// Print how many constraints where removed from the initial quess
+	if( num_act_change > 0 && (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+		*out
+			<< "\nThere where " << (*num_drops)
+			<< " constraints dropped from the schur complement for the initial guess"
+			<< " of the active set.\n";
+	}
+
+	// Run the primal dual algorithm
 	solve_return = qp_algo(
 		  PICK_VIOLATED_CONSTRAINT
 		, out, output_level, test_what
@@ -2809,15 +2966,18 @@ void QPSchur::dump_act_set_quantities(
 	const size_type q_D_hat = act_set.q_D_hat();
 	out	<< endl
 		<< right << setw(int_w) << "k"
+		<< right << setw(int_w) << "l_fxfx(k)"
 		<< right << setw(dbl_w) << "mu_D_hat(k)"
 		<< right << setw(dbl_w) << "p_mu_D_hat(s)"
 		<< endl;
 	out	<< right << setw(int_w) << int_ul
+		<< right << setw(int_w) << int_ul
 		<< right << setw(dbl_w) << dbl_ul
 		<< right << setw(dbl_w) << dbl_ul
 		<< endl;
 	{for( size_type k = 1; k <= q_D_hat; ++k ) {
 		out	<< right << setw(int_w) << k
+			<< right << setw(int_w) << act_set.l_fxfx(k)
 			<< right << setw(dbl_w) << act_set.mu_D_hat()(k)
 			<< right << setw(dbl_w) << act_set.p_mu_D_hat()(k)
 			<< endl;

@@ -644,9 +644,9 @@ public:
 		// Public types
 
 		///
-		typedef QPSchurPack::QP																	QP;
+		typedef QPSchurPack::QP          QP;
 		///
-		typedef QPSchurPack::EBounds																EBounds;
+		typedef QPSchurPack::EBounds     EBounds;
 
 		/// Thrown if the update failed
 		class BadUpdateException : public std::logic_error
@@ -713,7 +713,7 @@ public:
 		  *
 		  * ToDo: Finish documentation
 		  */
-		void drop_constraint( size_type jd , bool force_refactorization = true );
+		void drop_constraint( int jd , bool force_refactorization = true );
 
 		///
 		/** Drop a constraint from, then add a constraint to the active set
@@ -721,7 +721,7 @@ public:
 		  *
 		  * ToDo: Finish documentation
 		  */
-		void drop_add_constraints( size_type jd, size_type ja, QPSchurPack::EBounds bnd_ja
+		void drop_add_constraints( int jd, size_type ja, QPSchurPack::EBounds bnd_ja
 			, bool update_steps );
 
 		//@}
@@ -812,6 +812,14 @@ public:
 		QPSchurPack::EBounds bnd( size_type s ) const;
 
 		///
+		/** Returns the indice of x_X(l) of the initially fixed variables
+		 * that are still fixed at their original bounds.
+		 *
+		 * i <= k <= q_D_hat
+		 */
+		size_type l_fxfx( size_type k ) const;
+
+		///
 		const U_hat_t& U_hat() const;
 		///
 		const MatrixSymWithOpFactorized& S_hat() const;
@@ -869,6 +877,8 @@ public:
 		///
 		typedef std::vector<EBounds>		bnds_t;
 		///
+		typedef std::vector<int>			l_fxfx_t;
+		///
 		typedef std::vector<size_type>		P_row_t;
 		///
 		typedef std::vector<size_type>		P_col_t;
@@ -891,6 +901,7 @@ public:
 //		s_map_t				s_map_;
 		Vector				constr_norm_;
 		bnds_t				bnds_;
+		l_fxfx_t            l_fxfx_;
 		U_hat_t				U_hat_;
 		//
 		// for s = 1...q_hat

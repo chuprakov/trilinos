@@ -48,6 +48,8 @@ class MeritFuncCalcNLP;
 class MeritFuncCalcNLE;
 class MeritFuncCalcNLF;
 class MatrixSymPosDefAddDel;
+class MatrixHessianSuperBasic;
+class MatrixHessianSuperBasicInitDiagonal;
 class SymInvCholMatrixSubclass;
 class DenseIdentVertConcatMatrixSubclass;
 class ZAdjointFactMatrixSubclass;

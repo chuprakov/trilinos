@@ -30,6 +30,9 @@
 #include "ConstrainedOptimizationPack/include/SymInvCholMatrixSubclass.h"			// rHL
 #include "ConstrainedOptimizationPack/include/SymLBFGSMatrixSubclass.h"				// .
 #include "ConstrainedOptimizationPack/include/SymMatrixSubclass.h"					// .
+#include "ConstrainedOptimizationPack/include/MatrixHessianSuperBasicInitDiagonal.h"// |
+#include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"          // | rHL (super basics)
+#include "SparseLinAlgPack/include/MatrixSymDiagonalStd.h"                          // |
 
 #include "ConstrainedOptimizationPack/include/VariableBoundsTesterSetOptions.h"
 
@@ -59,6 +62,7 @@
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchur.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurSetOptions.h"
 #include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianFull.h"
+#include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianSuperBasic.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPKWIK.h"
 
 #include "ReducedSpaceSQPPack/include/std/ReducedQPSolverCheckOptimality.h"
@@ -82,6 +86,7 @@
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSFull_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
+#include "ReducedSpaceSQPPack/include/std/BFGSUpdate_StrategySetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/DepDirecStd_Step.h"
 #include "ReducedSpaceSQPPack/include/std/CheckBasisFromPy_Step.h"
 #include "ReducedSpaceSQPPack/include/std/IndepDirecWithoutBounds_Step.h"
@@ -124,6 +129,7 @@
 #include "LinAlgPack/include/PermVecMat.h"
 
 #include "Misc/include/dynamic_cast_verbose.h"
+#include "Misc/include/ReleaseResource_ref_count_ptr.h"
 
 // Stuff to readin options
 #include "Misc/include/StringToIntMap.h"
@@ -282,6 +288,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		}
 	}
 
+	// Get the dimensions of the NLP
+	NLP &nlp = algo->nlp();
+	if(!nlp.is_initialized()) nlp.initialize();
+	using SparseLinAlgPack::num_bounds;
+	const size_type
+		nb = nlp.has_bounds() ? num_bounds( nlp.xl(), nlp.xu() ) : 0,
+		dof = nlp.n() - nlp.r();
+
 	// Determine whether to use direct or adjoint factorization
 	switch(cov_.null_space_matrix_type_) {
 		case NULL_SPACE_MATRIX_EXPLICIT:
@@ -310,16 +324,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				if(trase_out)
 					*trase_out << "\nnull_sapce_matrix == AUTO:\n"
 									"Checking the total number of variable bounds ...\n";
-
 				// If the total number of bounds is less than the number
 				// of degrees of freedom then the adjoint factorization
 				// will be faster.
-				NLP &nlp = algo->nlp();
-				if(!nlp.is_initialized()) nlp.initialize();
-				using SparseLinAlgPack::num_bounds;
-				const size_type
-					nb = num_bounds( nlp.xl(), nlp.xu() ),
-					dof = nlp.n() - nlp.r();
 				if(trase_out)
 					*trase_out << "#bounds = " << nb << ", n-r = " << dof << std::endl;
 				if( nb < dof ) { 
@@ -484,17 +491,31 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 									SymInvCholMatrixSubclass>();
 					use_limited_memory = false;
 					break;
-				case QPSCPD:
-				case QPSCHUR:
-					matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
-						= use_limited_memory
-							? static_cast<IterQuantMatrixWithOpCreator*>(
-								new IterQuantMatrixWithOpCreatorContinuous<
-									SymLBFGSMatrixSubclass>() )
-							: static_cast<IterQuantMatrixWithOpCreator*>( 
-								new IterQuantMatrixWithOpCreatorContinuous<
-									SymInvCholMatrixSubclass>() );
+			    case QPSCHUR: {
+					if( use_limited_memory ) {
+						matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
+							= static_cast<IterQuantMatrixWithOpCreator*>(
+								new IterQuantMatrixWithOpCreatorContinuous<SymLBFGSMatrixSubclass>()
+								);
+					}
+					else {
+						if( cov_.quasi_newton_used_ == QN_BFGS_PROJECTED ) {
+							matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
+								= static_cast<IterQuantMatrixWithOpCreator*>( 
+									new IterQuantMatrixWithOpCreatorContinuous<
+									ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal>()
+									);
+						}
+						else {
+							matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
+								= static_cast<IterQuantMatrixWithOpCreator*>( 
+									new IterQuantMatrixWithOpCreatorContinuous<
+									SymInvCholMatrixSubclass>()
+									);
+						}
+					}
 					break;
+				}
 				default:
 					assert(0);
 			}
@@ -529,8 +550,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		// create a new state object
 		algo->set_state( new state_t( new matrix_creator_aggr_t(matrix_iqa_creators), storage_num ) );
 
-		// Now set the number of LBFGS update vectors
+		// Now setup the rest of the reduced hessian
 		if(use_limited_memory) {
+			// Now set the number of LBFGS update vectors.
+			//
 			// Here we will set the number of update vectors to store by setting
 			// it for the k-1 iteration.  That way the k iteration will still not
 			// be updated and therefore the regular initializations will still
@@ -540,6 +563,29 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			if(_rHL) {
 				_rHL->set_num_updates_stored( cov_.num_lbfgs_updates_stored_ );
 				_rHL->auto_rescaling( cov_.lbfgs_auto_scaling_ );
+				algo->rsqp_state().rHL().set_not_updated(-1);
+			}
+		}
+		else {
+			if( cov_.quasi_newton_used_ == QN_BFGS_PROJECTED ) {
+				// Set the storage for the projected hessian for the
+				// super basic variables B_RR.
+				using ResourceManagementPack::ReleaseResource_ref_count_ptr;
+				ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal
+					*_rHL = dynamic_cast<ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal*>(
+						&algo->rsqp_state().rHL().set_k(-1) );
+				assert(_rHL); // Should not happen?
+				GenMatrix
+					*B_RR_store = new GenMatrix(dof,dof);
+				_rHL->initialize(
+					dof, dof, NULL, NULL, NULL  // n, n_R, i_x_free, i_x_fixed, bnd_fixed
+					,new ConstrainedOptimizationPack::MatrixSymPosDefCholFactor(
+						&(*B_RR_store)()
+						,new ReleaseResource_ref_count_ptr<GenMatrix>(B_RR_store) // Give ownership to clean up
+						)                                          // B_RR_ptr
+					,NULL, BLAS_Cpp::no_trans                      // B_RX_ptr. B_RX_trans
+					,new SparseLinAlgPack::MatrixSymDiagonalStd()  // B_XX_ptr
+					);
 				algo->rsqp_state().rHL().set_not_updated(-1);
 			}
 		}
@@ -758,7 +804,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				{
 					BFGSUpdate_Strategy
 						*bfgs_strategy = new BFGSUpdate_Strategy;
-					// ToDo: Set options from stream
+					BFGSUpdate_StrategySetOptions
+						opt_setter( bfgs_strategy );
+					if(options_) opt_setter.set_options( *options_ );
+					
+
 					switch(  cov_.quasi_newton_ ) {
 					    case QN_BFGS:
 					    case QN_LBFGS:
@@ -1036,11 +1086,23 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 						using ConstrainedOptimizationPack::QPSolverRelaxedQPSchur;
 						using ConstrainedOptimizationPack::QPSolverRelaxedQPSchurSetOptions;
 						using ConstrainedOptimizationPack::QPSchurInitKKTSystemHessianFull;
+						using ConstrainedOptimizationPack::QPSchurInitKKTSystemHessianSuperBasic;
+						ConstrainedOptimizationPack::QPSolverRelaxedQPSchur::InitKKTSystem
+							*init_kkt_sys = NULL;
+						switch( cov_.quasi_newton_used_ ) {
+						    case QN_BFGS:
+								init_kkt_sys = new QPSchurInitKKTSystemHessianFull();
+								break;
+						    case QN_BFGS_PROJECTED:
+								init_kkt_sys = new QPSchurInitKKTSystemHessianSuperBasic();
+								break;
+						    default:
+								assert(0);
+						}
 						QPSolverRelaxedQPSchur
-							*_qp_solver = new QPSolverRelaxedQPSchur(
-								new QPSchurInitKKTSystemHessianFull );
+							*_qp_solver = new QPSolverRelaxedQPSchur(init_kkt_sys);
 						QPSolverRelaxedQPSchurSetOptions
-							qp_options_setter( _qp_solver );
+							qp_options_setter(_qp_solver);
 						qp_options_setter.set_options( *options_ );
 						qp_solver = _qp_solver; // give ownership to delete!
 						break;

@@ -174,20 +174,16 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	ij_act_change_t		ij_act_change;		// The default is a cold start
 	bnds_t				bnds;				//
 
-	// Note, we do not add the general equality constraints to the initial
+	// Note that we do not add the general equality constraints to the initial
 	// guess of the active set since they may be linearly dependent!
 
 	if( ( nu && nu->nz() ) || ( m_in && mu->nz() ) ) {
+		//
 		// Setup num_act_change, ij_act_change, bnds for a warm start!
+		//
 		const size_type
 			nu_nz = nu ? nu->nz() : 0,
 			mu_nz = mu ? mu->nz() : 0;
-		assert( n_X == 1 ); // Todo: Implement support for initialy fixed in the future.
-		                    // Note, that this will effect what ij_act_change[] is!
-		num_act_change = nu_nz + mu_nz;
-		ij_act_change.resize(num_act_change);
-		bnds.resize(num_act_change);
-		size_type num_act_added = 0;
 		// Combine all the multipliers for the bound and general inequality
 		// constraints and sort them from the largest to the smallest.  Hopefully
 		// the constraints with the larger multiplier values will not be dropped
@@ -208,16 +204,25 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		}
 		std::sort( gamma.begin(), gamma.end()
 			, SparseLinAlgPack::SortByDescendingAbsValue() );
-		// Now add the inequality constraints in decreasing order
+		// Now add the inequality constraints in decreasing order (if they are
+		// not already initially fixed variables)
+		const QPSchurPack::QP::x_init_t &x_init = qp_.x_init();
+		ij_act_change.resize(gamma.nz());  // Resize for max possible storage
+		bnds.resize(gamma.nz());           // ...
+		num_act_change = 0; // We will increment this!
 		if(gamma.nz()) {
 			const SpVector::difference_type o = gamma.offset();
-			for( SpVector::const_iterator itr = gamma.begin(); itr != gamma.end(); ++itr, ++num_act_added ) {
-				ij_act_change[num_act_added] = itr->indice() + o;
-				bnds[num_act_added]
+			for( SpVector::const_iterator itr = gamma.begin(); itr != gamma.end(); ++itr ) {
+				const size_type i =  itr->indice() + o;
+				if( i <= nd && x_init(i) != QPSchurPack::FREE )
+					continue; // This variable is already initially free
+				// This is not an initially fixed variable so add it
+				ij_act_change[num_act_change] = i;
+				bnds[num_act_change]
 					= itr->value() > 0.0 ? QPSchurPack::UPPER : QPSchurPack::LOWER;
+				++num_act_change;
 			}
 		}
-		assert( num_act_added == num_act_change );
 	}
 
 	// Set the output level
