@@ -20,7 +20,6 @@
 #include "ExampleNLPFirstOrderDirect.h"
 #include "ExampleNLPFirstOrderDirectRTOps.h"
 #include "AbstractLinAlgPack/include/BasisSystemCompositeStd.h"
-#include "AbstractLinAlgPack/include/MatrixSpaceStd.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
@@ -29,6 +28,7 @@
 #include "Range1D.h"
 #include "dynamic_cast_verbose.h"
 #include "ThrowException.h"
+#include "AbstractFactoryStd.h"
 
 namespace {
 
@@ -89,13 +89,8 @@ ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect(
 	BasisSystemCompositeStd::initialize_space_x(
 		vec_space, vec_space, &var_dep_, &var_indep_, &vec_space_comp_ );
 
-	// Create the MatrixSpace object for D
-	typedef MatrixSpaceStd<MatrixWithOp,MatrixSymDiagonalStd>  space_D_con_t;
-	space_D_ = rcp::rcp_implicit_cast<mat_space_ptr_t::element_type>(
-		rcp::ref_count_ptr< const MatrixSpaceStd<MatrixWithOp,MatrixSymDiagonalStd> >(
-			new MatrixSpaceStd<MatrixWithOp,MatrixSymDiagonalStd>(vec_space,vec_space)
-			)
-		);
+	// Create the factory object for D
+	factory_D_ = rcp::rcp(new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>());
 	
 	// Set the initial starting point.
 	xinit_ = vec_space_comp_->create_member();
@@ -259,10 +254,10 @@ Range1D ExampleNLPFirstOrderDirect::var_indep() const
 	return var_indep_;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t
-ExampleNLPFirstOrderDirect::space_D() const
+const NLPFirstOrderDirect::mat_fcty_ptr_t
+ExampleNLPFirstOrderDirect::factory_D() const
 {
-	return space_D_;
+	return factory_D_;
 }
 
 void ExampleNLPFirstOrderDirect::calc_point(
@@ -346,9 +341,9 @@ void ExampleNLPFirstOrderDirect::calc_point(
 	}
 
 	// Make temp D if needed
-	mat_space_ptr_t::element_type::mat_ptr_t  D_ptr;
+	mat_fcty_ptr_t::element_type::obj_ptr_t  D_ptr;
 	if( rGf && !D ) {
-		D_ptr = this->space_D()->create_member();
+		D_ptr = this->factory_D()->create();
 		D = D_ptr.get();
 	}
 

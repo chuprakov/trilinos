@@ -16,7 +16,6 @@
 #include <assert.h>
 
 #include "AbstractLinAlgPack/include/BasisSystemCompositeStd.h"
-#include "AbstractLinAlgPack/include/MatrixSpaceStd.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
 #include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
 #include "AbstractLinAlgPack/include/MultiVectorMutable.h"
@@ -90,15 +89,11 @@ void BasisSystemCompositeStd::initialize_space_x(
 	*space_x   = rcp::rcp(new VectorSpaceCompositeStd(vec_spaces,2));
 }
 
-const BasisSystemCompositeStd::space_Gc_ptr_t
-BasisSystemCompositeStd::space_Gc(
-	const VectorSpace::space_ptr_t    &space_x
-	,const VectorSpace::space_ptr_t   &space_c
-	)
+const BasisSystemCompositeStd::fcty_Gc_ptr_t
+BasisSystemCompositeStd::factory_Gc()
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(
-		new MatrixSpaceStd<MatrixWithOp,MatrixCompositeStd>(space_x, space_c ) );
+	return rcp::rcp( new MemMngPack::AbstractFactoryStd<MatrixWithOp,MatrixCompositeStd>() );
 }
 
 void BasisSystemCompositeStd::initialize_Gc(

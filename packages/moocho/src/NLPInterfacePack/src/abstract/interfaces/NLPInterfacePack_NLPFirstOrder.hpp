@@ -36,7 +36,7 @@ namespace NLPInterfacePack {
  * As with the <tt>NLP</tt> base interface, the <tt>initialize()</tt> method must be called before
  * the %NLP object can be used.
  *
- * The matrix space objects returned from \c space_Gc() and \c space_Gh() must be used to create
+ * The matrix space objects returned from \c factory_Gc() and \c factory_Gh() must be used to create
  * the matrix objects for \c Gc and \c Gh used with this interface.  Note that the matrix objects
  * returned from these matrix space objects can not be expected to be usable until they are
  * passed to the calculation routines.
@@ -51,7 +51,7 @@ namespace NLPInterfacePack {
  *
  * In addition to the methods that must be overridden by the \c NLPObjGradient interface
  * (<A HREF="classNLPInterfacePack_1_1NLPObjGradient.html#must_override">see</A>) the following methods
- * must also be overridden: \c space_Gc(), \c space_Gh(), \c imp_calc_Gc(), \c imp_calc_Gc().
+ * must also be overridden: \c factory_Gc(), \c factory_Gh(), \c imp_calc_Gc(), \c imp_calc_Gc().
  *
  * In addition to the methods that should be overridden from <tt>%NLPObjGradient</tt> by most subclasses
  * (<A HREF="classNLPInterfacePack_1_1NLPObjGradient.html#should_override">see</A>), the following
@@ -66,7 +66,7 @@ public:
 
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const AbstractLinAlgPack::MatrixSpace<MatrixWithOp> >        mat_space_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixWithOp> >        mat_fcty_ptr_t;
 
 	/** @name Constructors */
 	//@{
@@ -97,30 +97,24 @@ public:
 
 	//@}
 
-	/** @name Matrix space objects */
+	/** @name Matrix factory objects */
 	//@{
 	
 	///
-	/** Return a matrix space object for creating <tt>Gc</tt>.
+	/** Return a matrix factory object for creating <tt>Gc</tt>.
 	 *
 	 * This method may return <tt>return.get() == NULL</tt> if <tt>m() == 0</tt>.
-	 * Otherwise, it must must return a valid matrix space object.
-	 * The returned matrix object may not support the creation of any
-	 * sub-matrix spaces (i.e. <tt>return->sub_space(rrng,crng).get() == NULL</tt>
-	 * for all <tt>rrng</tt> and <tt>crng</tt>).
+	 * Otherwise, it must must return a valid matrix factory object.
 	 */
-	virtual const mat_space_ptr_t space_Gc() const = 0;
+	virtual const mat_fcty_ptr_t factory_Gc() const = 0;
 
 	///
-	/** Return a matrix space object for creating <tt>Gh</tt>.
+	/** Return a matrix factory object for creating <tt>Gh</tt>.
 	 *
 	 * This method may return <tt>return.get() == NULL</tt> if <tt>mI() == 0</tt>.
-	 * Otherwise, it must must return a valid matrix space object.
-	 * The returned matrix object may not support the creation of any
-	 * sub-matrix spaces (i.e. <tt>return->sub_space(rrng,crng).get() == NULL</tt>
-	 * for all <tt>rrng</tt> and <tt>crng</tt>).
+	 * Otherwise, it must must return a valid matrix factory object.
 	 */
-	virtual const mat_space_ptr_t space_Gh() const = 0;
+	virtual const mat_fcty_ptr_t factory_Gh() const = 0;
 
 	//@}
 
@@ -134,7 +128,7 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> [<tt>Gc != NULL</tt>] <tt>Gc->space().is_compatible(*this->space_Gc(),no_trans) == true</tt>
+	 * <li> [<tt>Gc != NULL</tt>] <tt>Gc->space().is_compatible(*this->factory_Gc(),no_trans) == true</tt>
 	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 *
@@ -182,7 +176,7 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> [<tt>Gh != NULL</tt>] <tt>Gh->space().is_compatible(*this->space_Gh(),no_trans) == true</tt>
+	 * <li> [<tt>Gh != NULL</tt>] <tt>Gh->space().is_compatible(*this->factory_Gh(),no_trans) == true</tt>
 	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 *
@@ -382,8 +376,8 @@ protected:
 private:
 
 #ifdef DOXYGEN_COMPILE
-	AbstractLinAlgPack::MatrixSpace<AbstractLinAlgPack::MatrixWithOp>  *space_Gc;
-	AbstractLinAlgPack::MatrixSpace<AbstractLinAlgPack::MatrixWithOp>  *space_Gh;
+	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixWithOp>  *factory_Gc;
+	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixWithOp>  *factory_Gh;
 #endif
 	mutable MatrixWithOp      *Gc_;
 	mutable MatrixWithOp      *Gh_;

@@ -49,16 +49,16 @@ void ExampleNLPFirstOrderInfo::set_Gc(MatrixWithOp* Gc)
 	NLPFirstOrderInfo::set_Gc(Gc);
 }
 
-const NLPFirstOrderInfo::mat_space_ptr_t
-ExampleNLPFirstOrderInfo::space_Gc() const
+const NLPFirstOrderInfo::mat_fcty_ptr_t
+ExampleNLPFirstOrderInfo::factory_Gc() const
 {
-	return space_Gc_;
+	return factory_Gc_;
 }
 
-const NLPFirstOrderInfo::mat_space_ptr_t
-ExampleNLPFirstOrderInfo::space_Gh() const
+const NLPFirstOrderInfo::mat_fcty_ptr_t
+ExampleNLPFirstOrderInfo::factory_Gh() const
 {
-	return ExampleNLPFirstOrderDirect::space_Gh();
+	return ExampleNLPFirstOrderDirect::factory_Gh();
 }
 
 // Overridden public members from NLP
@@ -70,8 +70,7 @@ void ExampleNLPFirstOrderInfo::initialize()
 	ExampleNLPFirstOrderDirect::initialize();
 	NLPFirstOrderInfo::initialize();
 
-	space_Gc_ = BasisSystemCompositeStd::space_Gc(
-		this->space_x(), this->space_c() );
+	factory_Gc_ = BasisSystemCompositeStd::factory_Gc();
 	
 	initialized_ = true;
 }

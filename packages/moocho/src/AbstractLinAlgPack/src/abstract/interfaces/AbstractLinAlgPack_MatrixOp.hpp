@@ -19,8 +19,8 @@
 #include <iosfwd>
 
 #include "MatrixBase.h"
-#include "MatrixSpace.h"
 #include "Range1D.h"
+#include "ref_count_ptr.h"
 
 namespace AbstractLinAlgPack {
 

@@ -49,7 +49,7 @@ public:
 	//@{
 
 	///
-	/** Calls <tt>this->set_mat_spaces()</tt>.
+	/** Calls <tt>this->set_mat_factories()</tt>.
 	 */
 	NLPSerialPreprocessExplJac(
 		const factory_mat_ptr_t     &factory_Gc_orig = MemMngPack::null
@@ -57,7 +57,7 @@ public:
 		);
 
 	///
-	/** Initialize with matrix spaces to \c Gc and \c Gh.
+	/** Initialize with matrix factories for \c Gc and \c Gh.
 	 *
 	 * @param  factory_Gc_orig
 	 *                [in] Smart pointer to matrix factory for \c Gc_orig.  If
@@ -67,7 +67,7 @@ public:
 	 *                [in] Smart pointer to matrix factory for \c Gh_orig.  If
 	 *                <tt>factory_Gh_orig.get() == NULL</tt> then the concrete matrix
 	 *                type ??? will be used as the default. */
-	void set_mat_spaces(
+	void set_mat_factories(
 		const factory_mat_ptr_t     &factory_Gc_orig
 		,const factory_mat_ptr_t    &factory_Gh_orig
 		);
@@ -88,9 +88,9 @@ public:
 	//@{
 	
 	///
-	const mat_space_ptr_t space_Gc() const;
+	const mat_fcty_ptr_t factory_Gc() const;
 	///
-	const mat_space_ptr_t space_Gh() const;
+	const mat_fcty_ptr_t factory_Gh() const;
 	/// Validates the type of Gc is correct
 	void set_Gc(MatrixWithOp* Gc);
 	/// Validates the type of Gh is correct
@@ -255,8 +255,8 @@ private:
 
 	factory_mat_ptr_t   factory_Gc_orig_;
 	factory_mat_ptr_t   factory_Gh_orig_;
-	mat_space_ptr_t     space_Gc_;
-	mat_space_ptr_t     space_Gh_;
+	mat_fcty_ptr_t      factory_Gc_;
+	mat_fcty_ptr_t      factory_Gh_;
 
 //	mutable size_type	Gc_nz_;        // Number of nonzeros in the shrunken NLP Gc
 //	mutable size_type	Gh_nz_;        // Number of nonzeros in the shrunken NLP Gh

@@ -57,7 +57,7 @@ public:
 
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const AbstractLinAlgPack::MatrixSpace<MatrixSymWithOp> >    mat_sym_space_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixSymWithOp> >    mat_sym_fcty_ptr_t;
 
 	/** @name Constructors */
 	//@{
@@ -87,17 +87,17 @@ public:
 
 	//@}
 
-	/** @name Matrix space objects */
+	/** @name Matrix factory objects */
 	//@{
 
 	///
-	/** Return a matrix space object for creating <tt>HL</tt>.
+	/** Return a matrix factory object for creating <tt>HL</tt>.
 	 *
 	 * The returned matrix object may not support the creation of any
 	 * sub-matrix spaces (i.e. <tt>return->sub_space(rrng,crng).get() == NULL</tt>
 	 * for all <tt>rrng</tt> and <tt>crng</tt>).
 	 */
-	virtual const mat_sym_space_ptr_t space_HL() const = 0;
+	virtual const mat_sym_fcty_ptr_t factory_HL() const = 0;
 
 	//@}
 
@@ -111,8 +111,6 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> [<tt>HL != NULL</tt>] <tt>HL->space().is_compatible(*this->space_HL(),no_trans) == true</tt>
-	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -279,7 +277,7 @@ protected:
 private:
 
 #ifdef DOXYGEN_COMPILE
-	AbstractLinAlgPack::MatrixSpace<AbstractLinAlgPack::MatrixSymWithOp>  *space_HL;
+	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixSymWithOp>  *factory_HL;
 #endif
 	mutable MatrixSymWithOp   *HL_;
 	mutable bool              num_HL_evals_;

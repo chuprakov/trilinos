@@ -28,7 +28,6 @@
 #include "AbstractLinAlgPack/include/VectorSpaceTesterSetOptions.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/include/MatrixSpace.h"
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "Range1D.h"
@@ -176,12 +175,12 @@ bool NLPInterfacePack::test_nlp_first_order_direct(
 		Gf  =      nlp->space_x()->create_member(),
 		py  =      nlp->space_x()->sub_space(var_dep)->create_member(),
 		rGf =      nlp->space_x()->sub_space(var_indep)->create_member();
-	NLPFirstOrderDirect::mat_space_ptr_t::element_type::mat_ptr_t
-		GcU = con_decomp.size() < m ? nlp->space_GcU()->create_member() : rcp::null,
-		Gh  = mI                    ? nlp->space_Gh()->create_member()  : rcp::null,
-		D   =                         nlp->space_D()->create_member(),
-		Uz   = con_decomp.size() < m ? nlp->space_Uz()->create_member()   : rcp::null,
-		Vz   = mI                    ? nlp->space_Vz()->create_member()   : rcp::null;
+	NLPFirstOrderDirect::mat_fcty_ptr_t::element_type::obj_ptr_t
+		GcU = con_decomp.size() < m ? nlp->factory_GcU()->create() : rcp::null,
+		Gh  = mI                    ? nlp->factory_Gh()->create()  : rcp::null,
+		D   =                         nlp->factory_D()->create(),
+		Uz   = con_decomp.size() < m ? nlp->factory_Uz()->create()   : rcp::null,
+		Vz   = mI                    ? nlp->factory_Vz()->create()   : rcp::null;
 	nlp->calc_point(
 		nlp->xinit(), NULL, c.get(), true, h.get(), Gf.get(), py.get(), rGf.get()
 		,GcU.get(), Gh.get(), D.get(), Uz.get(), Vz.get() );

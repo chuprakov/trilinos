@@ -14,7 +14,6 @@
 // above mentioned "Artistic License" for more details.
 
 #include "AbstractLinAlgPack/include/BasisSystem.h"
-#include "AbstractLinAlgPack/include/MatrixSpace.h"
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "Range1D.h"
 

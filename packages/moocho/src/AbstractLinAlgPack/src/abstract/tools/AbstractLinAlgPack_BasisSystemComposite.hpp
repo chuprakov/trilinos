@@ -43,12 +43,11 @@ public:
 	//@{
 
 	///
-	typedef MemMngPack::ref_count_ptr<const AbstractLinAlgPack::MatrixSpace<MatrixWithOp> >
-		                                                                           space_Gc_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const MemMngPack::AbstractFactory<MatrixWithOp> >  fcty_Gc_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>          C_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixWithOpNonsingular>                           C_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MatrixWithOp>                     N_ptr_t;
+	typedef MemMngPack::ref_count_ptr<MatrixWithOp>                                      N_ptr_t;
 
 	//@}
 
@@ -94,25 +93,9 @@ public:
 		);
 
 	///
-	/** Return a matrix space object for the composte \c Gc matrix object.
-	 *
-	 * @param  space_x   [in] Vector space for the variables (returned from \c initialize_space_x()).
-	 * @param  space_c   [in] Vector space for the equality constraints.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>space_x.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * <li> <tt>space_c.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
-	 * </ul>
-	 * 
-	 * Postconditions:<ul>
-	 * <li> <tt>&return->space_cols() == space_x.get()</tt>
-	 * <li> <tt>&return->space_rows() == space_c.get()</tt>
-	 * </ul>
+	/** Return a matrix factory object for the composte \c Gc matrix object.
 	 */
-	static const space_Gc_ptr_t space_Gc(
-		const VectorSpace::space_ptr_t    &space_x
-		,const VectorSpace::space_ptr_t   &space_c
-		);
+	static const fcty_Gc_ptr_t factory_Gc();
 	
 	///
 	/** Initialize the Gc matrix object given created from <tt>space_Gc()->create()</tt>.

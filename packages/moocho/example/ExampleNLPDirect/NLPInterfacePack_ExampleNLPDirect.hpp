@@ -163,7 +163,7 @@ public:
 	///
 	Range1D var_indep() const;
 	///
-	const mat_space_ptr_t space_D() const;
+	const mat_fcty_ptr_t factory_D() const;
 	///
 	void calc_point(
 		const VectorWithOp     &x
@@ -226,7 +226,7 @@ private:
 	VectorSpace::space_ptr_t    vec_space_comp_;  // Composite vector space for x = [ xD; xI ]
 	Range1D                     var_dep_;         // Range for dependnet variables.
 	Range1D                     var_indep_;       // Range for independent variables.
-	mat_space_ptr_t             space_D_;         // Matrix space object for D
+	mat_fcty_ptr_t              factory_D_;         // Matrix space object for D
 
 	bool         initialized_;            // flag for if initialized has been called.
 	value_type   obj_scale_;              // default = 1.0;

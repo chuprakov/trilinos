@@ -18,7 +18,6 @@
 #include "AbstractLinAlgPack/include/BasisSystem.h"
 #include "AbstractLinAlgPack/include/BasisSystemTester.h"
 #include "AbstractLinAlgPack/include/BasisSystemTesterSetOptions.h"
-#include "AbstractLinAlgPack/include/MatrixSpace.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
 
 bool NLPInterfacePack::test_basis_system(
@@ -36,9 +35,9 @@ bool NLPInterfacePack::test_basis_system(
 		mI = nlp->mI();
 
 	// Create the matrices Gc and Gh
-	NLPFirstOrderInfo::mat_space_ptr_t::element_type::mat_ptr_t
-		Gc = ( m  ? nlp->space_Gc()->create_member() : rcp::null ),
-		Gh = ( mI ? nlp->space_Gh()->create_member() : rcp::null );
+	NLPFirstOrderInfo::mat_fcty_ptr_t::element_type::obj_ptr_t
+		Gc = ( m  ? nlp->factory_Gc()->create() : rcp::null ),
+		Gh = ( mI ? nlp->factory_Gh()->create() : rcp::null );
 	
 	// Compute the matrices at xinit
 	const VectorWithOp

@@ -46,10 +46,6 @@ class VectorBaseMutable;
 class VectorWithOp;
 class VectorWithOpMutable;
 
-class MatrixSpaceBase;
-template<class M>
-class MatrixSpace;
-
 class MatrixBase;
 class MatrixWithOp;
 class MatrixNonsingular;
@@ -95,10 +91,6 @@ class PermVector;
 
 class MatrixSymInitDiagonal;
 class MatrixSymDiagonal;
-
-// template classes
-
-template <class M_itfc, class M_impl, class T_PostMod, class T_Allocator>  class MatrixSpaceStd;
 
 // concrete subclasses
 

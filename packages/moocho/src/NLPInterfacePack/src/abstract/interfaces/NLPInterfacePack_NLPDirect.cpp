@@ -48,38 +48,38 @@ Range1D NLPFirstOrderDirect::con_undecomp() const
 	return Range1D::Invalid;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t
-NLPFirstOrderDirect::space_GcU() const
+const NLPFirstOrderDirect::mat_fcty_ptr_t
+NLPFirstOrderDirect::factory_GcU() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t
-NLPFirstOrderDirect::space_Gh() const
+const NLPFirstOrderDirect::mat_fcty_ptr_t
+NLPFirstOrderDirect::factory_Gh() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t
-NLPFirstOrderDirect::space_Uz() const
+const NLPFirstOrderDirect::mat_fcty_ptr_t
+NLPFirstOrderDirect::factory_Uz() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t
-NLPFirstOrderDirect::space_Vz() const
+const NLPFirstOrderDirect::mat_fcty_ptr_t
+NLPFirstOrderDirect::factory_Vz() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t
-NLPFirstOrderDirect::space_GcUD() const
+const NLPFirstOrderDirect::mat_fcty_ptr_t
+NLPFirstOrderDirect::factory_GcUD() const
 {
 	return MemMngPack::null;
 }
 
-const NLPFirstOrderDirect::mat_space_ptr_t
-NLPFirstOrderDirect::space_GhD() const
+const NLPFirstOrderDirect::mat_fcty_ptr_t
+NLPFirstOrderDirect::factory_GhD() const
 {
 	return MemMngPack::null;
 }

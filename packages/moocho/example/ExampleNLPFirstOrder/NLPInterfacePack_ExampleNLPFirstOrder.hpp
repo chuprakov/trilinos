@@ -77,9 +77,9 @@ public:
 	/// Overridden to check the concrete type of Gc
 	void set_Gc(MatrixWithOp* Gc);
 	///
-	const NLPFirstOrderInfo::mat_space_ptr_t space_Gc() const;
+	const NLPFirstOrderInfo::mat_fcty_ptr_t factory_Gc() const;
 	/// Return NULL
-	const NLPFirstOrderInfo::mat_space_ptr_t space_Gh() const;
+	const NLPFirstOrderInfo::mat_fcty_ptr_t factory_Gh() const;
 
 	//@}
 
@@ -101,7 +101,7 @@ private:
 	// Private data members
 
 	bool                                    initialized_;  // flag for if initialized has been called.
-	NLPFirstOrderInfo::mat_space_ptr_t      space_Gc_;     // Space for Gc
+	NLPFirstOrderInfo::mat_fcty_ptr_t       factory_Gc_;   // Factory for Gc
 
 	// /////////////////////////////////////////
 	// Private member functions

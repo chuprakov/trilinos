@@ -22,7 +22,7 @@ namespace AbstractLinAlgPack {
 
 ///
 /** Interface for setting and selecting a basis from the Jacobian
- * from a set of equation.
+ * from a set of equations.
  *
  * ToDo: Finish documentation!
  */
@@ -35,6 +35,18 @@ public:
 	///
 	typedef MemMngPack::ref_count_ptr<
 		const MemMngPack::AbstractFactory<Permutation> >         perm_fcty_ptr_t;
+
+	//@}
+
+	/** @name Permutation factories */
+	//@{
+
+	///
+	virtual const perm_fcty_ptr_t   factory_P_var() const = 0;
+	///
+	virtual const perm_fcty_ptr_t   factory_P_equ() const = 0;
+	///
+	virtual const perm_fcty_ptr_t   factory_P_inequ() const = 0;
 
 	//@}
 
@@ -87,8 +99,8 @@ public:
 	
 	//@}
 
-}; // end class BasisSystem
+}; // end class BasisSystemPerm
 
-}; // end namespace AbstractLinAlgPack
+}  // end namespace AbstractLinAlgPack
 
 #endif // ABSTRACT_LIN_ALG_PACK_BASIS_PERM_SYSTEM_H

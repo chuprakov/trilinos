@@ -433,6 +433,6 @@ public:
 
 }; // end class BasisSystem
 
-}; // end namespace AbstractLinAlgPack
+}  // end namespace AbstractLinAlgPack
 
 #endif // ABSTRACT_LIN_ALG_PACK_BASIS_SYSTEM_H

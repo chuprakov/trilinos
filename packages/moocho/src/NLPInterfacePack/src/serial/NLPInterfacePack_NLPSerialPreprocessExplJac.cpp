@@ -25,7 +25,6 @@
 #include "SparseLinAlgPack/include/MatrixSparseCOORSerial.h"
 #include "SparseLinAlgPack/include/PermutationSerial.h"
 #include "SparseLinAlgPack/include/VectorDenseEncap.h"
-#include "AbstractLinAlgPack/include/MatrixSpaceStd.h"
 #include "AbstractLinAlgPack/include/MatrixPermAggr.h"
 #include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
 #include "LinAlgPack/include/VectorOp.h"
@@ -47,10 +46,10 @@ NLPSerialPreprocessExplJac::NLPSerialPreprocessExplJac(
 	)
 	:initialized_(false)
 {
-	this->set_mat_spaces(factory_Gc_orig,factory_Gh_orig);
+	this->set_mat_factories(factory_Gc_orig,factory_Gh_orig);
 }
 
-void NLPSerialPreprocessExplJac::set_mat_spaces(
+void NLPSerialPreprocessExplJac::set_mat_factories(
 	const factory_mat_ptr_t     &factory_Gc_orig
 	,const factory_mat_ptr_t    &factory_Gh_orig
 	)
@@ -92,20 +91,6 @@ void NLPSerialPreprocessExplJac::initialize()
 		space_c = this->space_c(),
 		space_h = this->space_h();
 
-	// Create matrix space objects for Gc and Gh
-
-	if( space_c.get() != NULL )
-		space_Gc_ = rcp::rcp(
-			new MatrixSpaceStd<MatrixWithOp,MatrixCompositeStd>(space_x, space_c ) );
-	else
-		space_Gc_ = rcp::null;
-
-	if( space_h.get() != NULL )
-		space_Gh_ = rcp::rcp(
-			new MatrixSpaceStd<MatrixWithOp,MatrixCompositeStd>(space_x, space_h ) );
-	else
-		space_Gh_ = rcp::null;
-
 	// Initialize the storage for the intermediate quanities
 	Gc_nz_full_ = imp_Gc_nz_full();			// Get the estimated number of nonzeros in Gc
 	Gc_val_full_.resize(Gc_nz_full_);
@@ -128,18 +113,17 @@ bool NLPSerialPreprocessExplJac::is_initialized() const {
 
 // Overridden public members from NLPFirstOrderInfo
 
-const NLPFirstOrderInfo::mat_space_ptr_t
-NLPSerialPreprocessExplJac::space_Gc() const
+const NLPFirstOrderInfo::mat_fcty_ptr_t
+NLPSerialPreprocessExplJac::factory_Gc() const
 {
-	return space_Gc_;
+	return factory_Gc_;
 }
 
-const NLPFirstOrderInfo::mat_space_ptr_t
-NLPSerialPreprocessExplJac::space_Gh() const
+const NLPFirstOrderInfo::mat_fcty_ptr_t
+NLPSerialPreprocessExplJac::factory_Gh() const
 {
-	return space_Gh_;
+	return factory_Gh_;
 }
-
 
 void NLPSerialPreprocessExplJac::set_Gc(MatrixWithOp* Gc)
 {

@@ -29,9 +29,6 @@ using AbstractLinAlgPack::VectorBaseMutable;
 using AbstractLinAlgPack::VectorWithOp;
 using AbstractLinAlgPack::VectorWithOpMutable;
 
-using AbstractLinAlgPack::MatrixSpaceBase;
-using AbstractLinAlgPack::MatrixSpace;
-
 using AbstractLinAlgPack::MatrixBase;
 using AbstractLinAlgPack::MatrixWithOp;
 using AbstractLinAlgPack::MatrixNonsingular;
@@ -66,8 +63,6 @@ using AbstractLinAlgPack::PermVector;
 
 using AbstractLinAlgPack::MatrixSymInitDiagonal;
 using AbstractLinAlgPack::MatrixSymDiagonal;
-
-using AbstractLinAlgPack::MatrixSpaceStd;
 
 using AbstractLinAlgPack::BasisSystemCompositeStd;
 using AbstractLinAlgPack::VectorSpaceCompositeStd;

@@ -28,7 +28,6 @@
 #include "AbstractLinAlgPack/include/VectorSpaceTesterSetOptions.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/include/MatrixSpace.h"
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "Range1D.h"
@@ -125,9 +124,9 @@ bool NLPInterfacePack::test_nlp_first_order_info(
 		c   = m  ? nlp->space_c()->create_member() : rcp::null,
 		h   = mI ? nlp->space_h()->create_member() : rcp::null,
 		Gf  =      nlp->space_x()->create_member();
-	NLPFirstOrderInfo::mat_space_ptr_t::element_type::mat_ptr_t
-		Gc  = m  ? nlp->space_Gc()->create_member() : rcp::null,
-		Gh  = mI ? nlp->space_Gh()->create_member() : rcp::null;
+	NLPFirstOrderInfo::mat_fcty_ptr_t::element_type::obj_ptr_t
+		Gc  = m  ? nlp->factory_Gc()->create() : rcp::null,
+		Gh  = mI ? nlp->factory_Gh()->create() : rcp::null;
 
 	if(m) {
 		if(out)

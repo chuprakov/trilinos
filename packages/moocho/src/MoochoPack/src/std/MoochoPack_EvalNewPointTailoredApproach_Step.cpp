@@ -157,13 +157,13 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	MatrixIdentConcatStd::D_ptr_t
 		D_ptr = rcp::null;
 	if( reconstruct_Z_D )
-		D_ptr = nlp.space_D()->create_member();
+		D_ptr = nlp.factory_D()->create();
 	else
 		D_ptr = cZ_k.D_ptr();
 
 	// Compute all the quantities.
 	rcp::ref_count_ptr<MatrixWithOp>
-		GcU = (m > r) ? nlp.space_GcU()->create_member() : rcp::null; // ToDo: Reuse GcU somehow? 
+		GcU = (m > r) ? nlp.factory_GcU()->create() : rcp::null; // ToDo: Reuse GcU somehow? 
 	VectorWithOpMutable
 		&py_k  = s.py().set_k(0);
 	nlp.calc_point(

@@ -563,7 +563,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						new IterQuantityAccessContiguous<MatrixWithOp>(
 							1
 							,Gc_name
-							,nlp_foi->space_Gc()
+							,nlp_foi->factory_Gc()
 							)
 						)
 					);
@@ -574,7 +574,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						new IterQuantityAccessContiguous<MatrixWithOp>(
 							1
 							,Gh_name
-							,nlp_foi->space_Gh()
+							,nlp_foi->factory_Gh()
 							)
 						)
 					);
@@ -585,7 +585,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						new IterQuantityAccessContiguous<MatrixSymWithOp>(
 							1
 							,HL_name
-							,nlp_soi->space_HL()
+							,nlp_soi->factory_HL()
 							)
 						)
 					);

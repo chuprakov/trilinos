@@ -14,7 +14,6 @@
 // above mentioned "Artistic License" for more details.
 
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/include/MatrixSpaceStd.h"
 #include "AbstractLinAlgPack/include/MultiVectorMutable.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"

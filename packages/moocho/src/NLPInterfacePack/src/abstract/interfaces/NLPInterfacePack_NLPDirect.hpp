@@ -70,8 +70,8 @@ namespace NLPInterfacePack {
  * decomposed and undecomposed equality constraints are \c con_decomp() and \c con_undecomp().
  * Note that \c con_undecomp() will return an invalid range if there are no undecomposed equalities.
  *
- * Note that the matrix objects returned from \c space_GcU(), \c space_D(), \c space_Uz(),
- * \c space_Vz(), \c space_GcUD() and \c space_GhD() can not be expected to be usable until they are
+ * Note that the matrix objects returned from \c factory_GcU(), \c factory_D(), \c factory_Uz(),
+ * \c factory_Vz(), \c factory_GcUD() and \c factory_GhD() can not be expected to be usable until they are
  * passed to the calculation routines or have been intialized in some other way.
  *
  * <b>Subclass Developer's Notes:</b>
@@ -88,7 +88,7 @@ public:
 
 	///
 	typedef MemMngPack::ref_count_ptr<
-		const AbstractLinAlgPack::MatrixSpace<MatrixWithOp> >          mat_space_ptr_t;
+		const MemMngPack::AbstractFactory<MatrixWithOp> >          mat_fcty_ptr_t;
 
 	/** @name Dimensionality */
 	//@{
@@ -154,11 +154,11 @@ public:
 
 	//@}
 
-	/** @name MatrixSpace objects */
+	/** @name Matrix factory objects */
 	//@{
 	
 	///
-	/** Return a matrix space object for creating <tt>GcU</tt>.
+	/** Return a matrix factory object for creating <tt>GcU</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -167,14 +167,14 @@ public:
 	 * The default implementation is to return <tt>return.get() == NULL</tt>.
 	 * This is the proper implementation when <tt>m() == r()</tt>.
 	 * When <tt>m() > r()</tt> then the subclass must override this method to
-	 * return a valid matrix space object.  Moreover, the returned
-	 * matrix object from <tt>this->space_GcU()->create_member()->get_sub_view(rng,Range1D())</tt>
+	 * return a valid matrix factory object.  Moreover, the returned
+	 * matrix object from <tt>this->factory_GcU()->create()->get_sub_view(rng,Range1D())</tt>
 	 * must be non-null for <tt>rng == this->var_dep()</tt> or <tt>rng == this->var_indep()</tt>.
 	 * This gives access to the matrices <tt>E'</tt> and <tt>F'</tt> as shown above.
 	 */
-	virtual const mat_space_ptr_t space_GcU() const;
+	virtual const mat_fcty_ptr_t factory_GcU() const;
 	///
-	/** Return a matrix space object for creating <tt>Gh</tt>.
+	/** Return a matrix factory object for creating <tt>Gh</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -182,34 +182,21 @@ public:
 	 *
 	 * The default implementation is to return <tt>return.get() == NULL</tt>.
 	 * This is the proper implementation when <tt>m() == r()</tt>.  Moreover, the returned
-	 * matrix object from <tt>this->space_Gh()->create_member()->get_sub_view(rng,Range1D())</tt>
+	 * matrix object from <tt>this->factory_Gh()->create()->get_sub_view(rng,Range1D())</tt>
 	 * must be non-null for <tt>rng == this->var_dep()</tt> or <tt>rng == this->var_indep()</tt>.
 	 * This gives access to the matrices <tt>GhD</tt> and <tt>GhI</tt> as shown above.
 	 */
-	virtual const mat_space_ptr_t space_Gh() const;
+	virtual const mat_fcty_ptr_t factory_Gh() const;
 	///
-	/** Return a matrix space object for <tt>D = -inv(C)*N</tt> {abstract}.
+	/** Return a matrix factory object for <tt>D = -inv(C)*N</tt> {abstract}.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 */
-	virtual const mat_space_ptr_t space_D() const = 0;
+	virtual const mat_fcty_ptr_t factory_D() const = 0;
 	///
-	/** Return a matrix space object for <tt>Uz = F + E * D</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * The default implementation is to return <tt>return.get() == NULL</tt>.
-	 * This is the correct implementation when <tt>m() == r()</tt>.  However,
-	 * when <tt>m() > r()</tt> this method must be overridden to return a
-	 * non-null matrix space object.
-	 */
-	virtual const mat_space_ptr_t space_Uz() const;
-	///
-	/** Return a matrix space object for <tt>Vz = GhI' + GhD'* D</tt>.
+	/** Return a matrix factory object for <tt>Uz = F + E * D</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -218,41 +205,54 @@ public:
 	 * The default implementation is to return <tt>return.get() == NULL</tt>.
 	 * This is the correct implementation when <tt>m() == r()</tt>.  However,
 	 * when <tt>m() > r()</tt> this method must be overridden to return a
-	 * non-null matrix space object.
+	 * non-null matrix factory object.
 	 */
-	virtual const mat_space_ptr_t space_Vz() const;
+	virtual const mat_fcty_ptr_t factory_Uz() const;
 	///
-	/** Return a matrix space object for a mutable matrix compatible with <tt>GcU(var_dep)</tt>.
+	/** Return a matrix factory object for <tt>Vz = GhI' + GhD'* D</tt>.
 	 *
-	 * This matrix space object is designed to create mutable matrix objects compatible
-	 * with <tt>GcU(var_dep)</tt>.  For example, a matrix object <tt>Uy</tt> created by this matrix space
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * </ul>
+	 *
+	 * The default implementation is to return <tt>return.get() == NULL</tt>.
+	 * This is the correct implementation when <tt>m() == r()</tt>.  However,
+	 * when <tt>m() > r()</tt> this method must be overridden to return a
+	 * non-null matrix factory object.
+	 */
+	virtual const mat_fcty_ptr_t factory_Vz() const;
+	///
+	/** Return a matrix factory object for a mutable matrix compatible with <tt>GcU(var_dep)</tt>.
+	 *
+	 * This matrix factory object is designed to create mutable matrix objects compatible
+	 * with <tt>GcU(var_dep)</tt>.  For example, a matrix object <tt>Uy</tt> created by this matrix factory
 	 * can be used to compute <tt>Uy = Gc(var_dep,con_undecomp)' - Gc(var_indep,con_undecomp)'*D'</tt>
 	 * (this is needed by a orthogonal range/null decomposition.
 	 *
 	 * The default implementation is to return <tt>return.get() == NULL</tt>.
 	 * This is the correct implementation when <tt>m() == r()</tt>.  However,
 	 * when <tt>m() > r()</tt> this method must be overridden to return a
-	 * non-null matrix space object.
+	 * non-null matrix factory object.
 	 */
-	virtual const mat_space_ptr_t space_GcUD() const;
+	virtual const mat_fcty_ptr_t factory_GcUD() const;
 	///
-	/** Return a matrix space object for a mutable matrix compatible with <tt>Gh(var_dep,:)</tt>.
+	/** Return a matrix factory object for a mutable matrix compatible with <tt>Gh(var_dep,:)</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
 	 *
-	 * This matrix space object is designed to create mutable matrix objects compatible
-	 * with <tt>Gh(var_dep,:)</tt>.  For example, a matrix object <tt>Vy</tt> created by this matrix space
+	 * This matrix factory object is designed to create mutable matrix objects compatible
+	 * with <tt>Gh(var_dep,:)</tt>.  For example, a matrix object <tt>Vy</tt> created by this matrix factory
 	 * can be used to compute <tt>Vy = Gh(var_dep,:)' - Gh(var_indep,:)'*D'</tt> (this is needed
 	 * by a orthogonal range/null decomposition.
 	 *
 	 * The default implementation is to return <tt>return.get() == NULL</tt>.
 	 * This is the correct implementation when <tt>mI() == 0</tt>.  However,
 	 * when <tt>mI() > 0</tt> this method must be overridden to return a
-	 * non-null matrix space object.
+	 * non-null matrix factory object.
 	 */
-	virtual const mat_space_ptr_t space_GhD() const;
+	virtual const mat_fcty_ptr_t factory_GhD() const;
 
 	//@}
 
@@ -299,25 +299,25 @@ public:
 	 *  @param  GcU [out] (dim = n x (m()-r())) Auxiliary jacobian matrix <tt>del(c(con_undecomp),x)</tt>.
 	 *              If m() == r() then <tt>GcU</tt> should be set to <tt>NULL</tt> on input.
 	 *              If GcU == NULL then this quantitiy is not computed.  If <tt>!=NULL</tt> this this matrix
-	 *              should have been created by <tt>this->space_GcU()->create_member()</tt>.
+	 *              should have been created by <tt>this->factory_GcU()->create()</tt>.
 	 *  @param  Gh  [out] (dim = n x (m()-r())) Auxiliary jacobian matrix <tt>del(h,x)</tt>.
 	 *              If mI() == 0 then <tt>Gh</tt> should be set to <tt>NULL</tt> on input.
 	 *              If Gh == NULL then this quantitiy is not computed.  If <tt>!=NULL</tt> this this matrix
-	 *              should have been created by <tt>this->space_Gh()->create_member()</tt>.
+	 *              should have been created by <tt>this->factory_Gh()->create()</tt>.
 	 *	@param	D   [out] (dim = r() x (n()-r())) <tt>D = -inv(C)*N</tt>, which is the direct
 	 *              sensitivity of the constraints to the independent variables.
 	 *				If D == NULL then this quantity is not computed.  If <tt>!=NULL</tt> this this matrix
-	 *              should have been created by <tt>this->space_D()->create_member()</tt>.
+	 *              should have been created by <tt>this->factory_D()->create()</tt>.
 	 *	@param	Uz   [out] (dim = (m()-r()) x (n()-r())) <tt>Uz = F + E * D</tt>, which is the an
 	 *              auxiliary sensitivity matrix.  If <tt>m() == r()</tt> then <tt>Uz</tt> should be set to
 	 *              <tt>NULL</tt> on input.  If <tt>Uz==NULL</tt> then this quantity is not computed.
 	 *              If <tt>!=NULL</tt> this this matrix should have been created by
-	 *              <tt>this->space_Uz()->create_member()</tt>.
+	 *              <tt>this->factory_Uz()->create()</tt>.
 	 *	@param	Vz   [out] (dim = mI() x (n()-r())) <tt>Vz = GhI' + GhD' * D</tt>, which is the an
 	 *              auxiliary sensitivity matrix.  If <tt>mI() == 0</tt> then <tt>Vz</tt> should be set to
 	 *              <tt>NULL</tt> on input.  If <tt>Vz==NULL</tt> then this quantity is not computed.
 	 *              If <tt>!=NULL</tt> this this matrix should have been created by
-	 *              <tt>this->space_Vz()->create_member()</tt>.
+	 *              <tt>this->factory_Vz()->create()</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
