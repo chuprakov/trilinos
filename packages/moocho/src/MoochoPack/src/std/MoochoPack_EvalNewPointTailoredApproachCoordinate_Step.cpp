@@ -19,6 +19,7 @@
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "AbstractLinAlgPack/include/MatrixZero.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "dynamic_cast_verbose.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -32,16 +33,31 @@ EvalNewPointTailoredApproachCoordinate_Step::EvalNewPointTailoredApproachCoordin
 
 // protected
 
-void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y(
-	const NLPFirstOrderDirect &nlp
-	,const D_ptr_t            &D
-	,VectorWithOpMutable      *py
-	,MatrixIdentConcatStd     *Y
-	,EJournalOutputLevel      olevel
-	,std::ostream             &out
+void EvalNewPointTailoredApproachCoordinate_Step::uninitialize_Y_Uv_Uy(
+	MatrixWithOp         *Y
+	,MatrixWithOp        *Uy
+	,MatrixWithOp        *Vy
 	)
 {
-	namespace rcp = ReferenceCountingPack; 
+	// Nothing to free
+}
+
+void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y_Uy_Vy(
+	const NLPFirstOrderDirect   &nlp
+	,const D_ptr_t              &D
+	,VectorWithOpMutable        *py
+	,MatrixWithOp               *Y
+	,MatrixWithOp               *Uy
+	,MatrixWithOp               *Vy
+	,EJournalOutputLevel        olevel
+	,std::ostream               &out
+	)
+{
+	namespace rcp = ReferenceCountingPack;
+	using DynamicCastHelperPack::dyn_cast;
+
+	MatrixIdentConcatStd
+		cY = dyn_cast<MatrixIdentConcatStd>(*Y);
 	//
 	// Y = [      I     ] space_xD  
 	//     [    Zero    ] space_xI
@@ -51,7 +67,7 @@ void EvalNewPointTailoredApproachCoordinate_Step::calc_py_Y(
 		space_x  = nlp.space_x(),
 		space_xD = space_x->sub_space(nlp.var_dep())->clone(),
 		space_xI = space_x->sub_space(nlp.var_indep())->clone();
-	Y->initialize(
+	cY.initialize(
 		space_x                                                // space_cols
 		,space_xD                                              // space_rows
 		,MatrixIdentConcatStd::BOTTOM                          // top_or_bottom
@@ -76,7 +92,7 @@ void EvalNewPointTailoredApproachCoordinate_Step::recalc_py(
 	// py is not altered here!
 }
 
-void EvalNewPointTailoredApproachCoordinate_Step::print_calc_py_Y(
+void EvalNewPointTailoredApproachCoordinate_Step::print_calc_py_Y_Uy_Vy(
 	std::ostream& out, const std::string& L
 	) const
 {
@@ -84,6 +100,8 @@ void EvalNewPointTailoredApproachCoordinate_Step::print_calc_py_Y(
 		<< L << "*** Coordinate decomposition\n"
 		<< L << "py_k = py_k\n"
 		<< L << "Y = [ I ; 0 ] <: R^(n x m) [0 represented using MatrixZero]\n"
+		<< L << "Uy = Gc(var_dep,con_undecomp)\'\n"
+		<< L << "Vy = Gh(var_dep,:)\'\n"
 		;
 }
 

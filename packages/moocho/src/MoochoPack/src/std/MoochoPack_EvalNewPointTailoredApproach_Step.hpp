@@ -82,9 +82,18 @@ public:
 	//@{
 
 	///
-	/** Overridden by subclass to compute \c py and \c Ypy.
+	/** Call to uninitialize the matrices.
 	 *
-	 * The matrix Y is never computed explicity.
+	 * ToDo: Finish documentation!
+	 */
+	virtual void uninitialize_Y_Uv_Uy(
+		MatrixWithOp         *Y
+		,MatrixWithOp        *Uy
+		,MatrixWithOp        *Vy
+		) = 0;
+
+	///
+	/** Overridden by subclass to compute \c py, \c Y, \c Uy and \c Vy.
 	 *
 	 * @param  D    [in/out] Smart pointer to matrix <tt>D = -inv(C)*N</tt>.
 	 *              On output, D->count() may be incremented in order to
@@ -92,12 +101,19 @@ public:
 	 * @param  py   [in/out] On input <tt>py = -inv(C)*c(decomp)</tt>.
 	 *              On output <tt>py = -inv((Gc(decomp)'*Y)*c(decomp)</tt>
 	 * @param  Y    [in/out] On ouput <tt>Y</tt> is initialized properly.
+	 * @param  Uy   [in/out] On ouput <tt>Uy</tt> is initialized properly.
+	 * @param  Vy   [in/out] On ouput <tt>Y</tt> is initialized properly.
+	 * @param  olevel
+	 *              [in] Determines output level.
+	 * @param  out  [out] Journal outputting.
 	 */
-	virtual void calc_py_Y(
+	virtual void calc_py_Y_Uy_Vy(
 		const NLPFirstOrderDirect   &nlp
 		,const D_ptr_t              &D
 		,VectorWithOpMutable        *py
-		,MatrixIdentConcatStd       *Y
+		,MatrixWithOp               *Y
+		,MatrixWithOp               *Uy
+		,MatrixWithOp               *Vy
 		,EJournalOutputLevel        olevel
 		,std::ostream               &out
 		) = 0;
@@ -119,7 +135,7 @@ public:
 	///
 	/** Overridden by subclass to print how \c py and \c Y are computed.
 	 */
-	virtual void print_calc_py_Y(
+	virtual void print_calc_py_Y_Uy_Vy(
 		std::ostream& out, const std::string& leading_str
 		) const = 0;
 

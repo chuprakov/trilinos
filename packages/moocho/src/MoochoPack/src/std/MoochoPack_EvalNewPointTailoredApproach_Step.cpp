@@ -93,8 +93,6 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 		x_iq.set_k(0) = nlp.xinit();
 	}
 
-	// ToDo: Incorporate undecomposed equality constraints in the futrue!
-
 	// Validate x
 	if(algo.algo_cntr().check_results()) {
 		assert_print_nan_inf(
@@ -151,9 +149,9 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 		*Vz_k = mI      ? &s.Vz().set_k(0) : NULL,
 		*Vy_k = mI      ? &s.Vy().set_k(0) : NULL;
 	MatrixIdentConcatStd
-		&cZ_k = dyn_cast<MatrixIdentConcatStd>(Z_k),
-		&cY_k = dyn_cast<MatrixIdentConcatStd>(Y_k);
-	cY_k.set_uninitialized(); // Release reference to D in case Y references it.
+		&cZ_k = dyn_cast<MatrixIdentConcatStd>(Z_k);
+	// Release any references to D in Y, Uy or Vy
+	 uninitialize_Y_Uv_Uy(&Y_k,Uy_k,Vy_k);
 	// If Z has not been initialized or Z.D is being shared by someone else we need to reconstruct Z.D
 	bool reconstruct_Z_D = (cZ_k.rows() == n || cZ_k.cols() != n-r || cZ_k.D_ptr().count() > 1);
 	MatrixIdentConcatStd::D_ptr_t
@@ -271,13 +269,13 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 			);
 	}
 
-	// Compute py and Y
-	calc_py_Y( nlp, D_ptr, &py_k, &cY_k, olevel, out ); 
+	// Compute py, Y, Uy and Vy
+	calc_py_Y_Uy_Vy( nlp, D_ptr, &py_k, &Y_k, Uy_k, Vy_k, olevel, out ); 
 
 	// Compute Ypy = Y*py
 	VectorWithOpMutable
 		&Ypy_k  = s.Ypy().set_k(0);
-	V_MtV( &Ypy_k, cY_k, BLAS_Cpp::no_trans, py_k );
+	V_MtV( &Ypy_k, Y_k, BLAS_Cpp::no_trans, py_k );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\n||py_k||inf   = " << s.py().get_k(0).norm_inf();
@@ -323,7 +321,7 @@ void EvalNewPointTailoredApproach_Step::print_step(
 		<< L << "  ) then\n"
 		<< L << "  check Gf_k, py_k, rGf_k, D, Uz (if m > r) and Vz (if mI > 0) by finite differences.\n"
 		<< L << "end\n";
-	print_calc_py_Y( out, L );
+	print_calc_py_Y_Uy_Vy( out, L );
 	out
 		<< L << "Ypy_k = Y_k * py_k\n"
 		<< L << "if c_k is not updated c_k = c(x_k) <: space_c\n"

@@ -45,13 +45,21 @@ protected:
 	//@{
 
 	///
-	void calc_py_Y(
-		const NLPFirstOrderDirect &nlp
-		,const D_ptr_t            &D
-		,VectorWithOpMutable      *py
-		,MatrixIdentConcatStd     *Y
-		,EJournalOutputLevel      olevel
-		,std::ostream             &out
+	void uninitialize_Y_Uv_Uy(
+		MatrixWithOp         *Y
+		,MatrixWithOp        *Uy
+		,MatrixWithOp        *Vy
+		);
+	///
+	void calc_py_Y_Uy_Vy(
+		const NLPFirstOrderDirect   &nlp
+		,const D_ptr_t              &D
+		,VectorWithOpMutable        *py
+		,MatrixWithOp               *Y
+		,MatrixWithOp               *Uy
+		,MatrixWithOp               *Vy
+		,EJournalOutputLevel        olevel
+		,std::ostream               &out
 		);
 	///
 	void recalc_py(
@@ -61,7 +69,9 @@ protected:
 		,std::ostream            &out
 		);
 	///
-	void print_calc_py_Y( std::ostream& out, const std::string& leading_str ) const;
+	void print_calc_py_Y_Uy_Vy(
+		std::ostream& out, const std::string& leading_str
+		) const;
 
 	//@}
 
