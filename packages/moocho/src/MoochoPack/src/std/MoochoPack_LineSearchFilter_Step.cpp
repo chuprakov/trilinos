@@ -327,9 +327,9 @@ bool LineSearchFilter_Step::do_step(
 		if(static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
 			{
 			if (augment_filter)
-				{ out << "\nPoint was accepted - augmented filter with point."; }
+				{ out << "\nPoint was accepted - augmented filter with point.\n"; }
 			else
-				{ out << "Point was accepted - did NOT augment filter."; }
+				{ out << "Point was accepted - did NOT augment filter.\n"; }
 			}
 		}
     else
@@ -337,7 +337,7 @@ bool LineSearchFilter_Step::do_step(
 		// Could not find an acceptable alpha_k, go to restoration
 		// Print status
 		if(static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) 
-			{ out << "\nCould not find acceptable alpha_k - going to restoration phase."; }
+			{ out << "\nCould not find acceptable alpha_k - going to restoration phase.\n"; }
 
 		THROW_EXCEPTION( true, std::out_of_range, "Tried to go to restoration phase."; );	
 		}
