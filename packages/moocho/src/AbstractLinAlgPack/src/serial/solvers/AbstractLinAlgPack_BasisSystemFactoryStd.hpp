@@ -30,7 +30,7 @@ namespace SparseSolverPack {
  * <ul>
  * <li> MA28
  * <li> MA48 (using MA28 for BasisSystemPerm::select_basis()) (not yet)
- * <li> SuperLU (not yet)
+ * <li> SuperLU
  * </ul>
  *
  * These solvers are supported only if the proper macros are defined.

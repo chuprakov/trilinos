@@ -224,8 +224,8 @@ DirectSparseSolverMA28::create_fact_nonzeros() const
 
 void DirectSparseSolverMA28::imp_analyze_and_factor(
 	const SparseLinAlgPack::MatrixConvertToSparse   &A
-	,const BasisMatrix::fact_struc_ptr_t            &fact_struc
-	,const BasisMatrixImp::fact_nonzeros_ptr_t      &fact_nonzeros
+	,FactorizationStructure                         *fact_struc
+	,FactorizationNonzeros                          *fact_nonzeros
 	,LinAlgPack::IVector                            *row_perm
 	,LinAlgPack::IVector                            *col_perm
 	,size_type                                      *rank
@@ -388,8 +388,8 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 
 void DirectSparseSolverMA28::imp_factor(
 	const SparseLinAlgPack::MatrixConvertToSparse   &A
-	,const BasisMatrix::fact_struc_ptr_t            &fact_struc
-	,const BasisMatrixImp::fact_nonzeros_ptr_t      &fact_nonzeros
+	,const FactorizationStructure                   &fact_struc
+	,FactorizationNonzeros                          *fact_nonzeros
 	,std::ostream                                   *out
 	)
 {
@@ -403,7 +403,7 @@ void DirectSparseSolverMA28::imp_factor(
 
 	// Get the concrete factorization and nonzeros objects
 	const FactorizationStructureMA28
-		&fs = dyn_cast<FactorizationStructureMA28>(*fact_struc);
+		&fs = dyn_cast<const FactorizationStructureMA28>(fact_struc);
 	FactorizationNonzerosMA28
 		&fn = dyn_cast<FactorizationNonzerosMA28>(*fact_nonzeros);
 

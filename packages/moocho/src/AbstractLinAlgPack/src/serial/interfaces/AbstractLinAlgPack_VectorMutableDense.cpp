@@ -138,7 +138,7 @@ void VectorWithOpMutableDense::get_sub_vector(
 		rng.ubound() > this_dim, std::out_of_range
 		,"VectorWithOpMutableDense::get_sub_vector(...) : Error, "
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
-		"is not in the range [1,this->dim()] = [1," << this_dim );
+		"is not in the range [1,this->dim()] = [1," << this_dim << "]!" );
 	// Just return the dense view regardless of spare_or_dense argument
 	RTOp_SubVector _sub_vec;
 	RTOp_sub_vector_dense(
@@ -234,7 +234,7 @@ VectorWithOpMutableDense::sub_view( const Range1D& rng_in )
 		rng.ubound() > this_dim, std::out_of_range
 		,"VectorWithOpMutableDense::sub_view(...) : Error, "
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
-		"is not in the range [1,this->dim()] = [1," << this_dim );
+		"is not in the range [1,this->dim()] = [1," << this_dim << "]!" );
 #endif
 	if( rng == Range1D(1,this_dim) )
 		return rcp::rcp( this, false );
@@ -253,7 +253,7 @@ void VectorWithOpMutableDense::get_sub_vector(
 		rng.ubound() > this_dim, std::out_of_range
 		,"VectorWithOpMutableDense::get_sub_vector(...) : Error, "
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
-		"is not in the range [1,this->dim()] = [1," << this_dim );
+		"is not in the range [1,this->dim()] = [1," << this_dim << "]!" );
 #endif
 	RTOp_MutableSubVector _sub_vec;
 	RTOp_mutable_sub_vector(

@@ -193,8 +193,8 @@ protected:
 	///
 	void imp_analyze_and_factor(
 		const SparseLinAlgPack::MatrixConvertToSparse   &A
-		,const BasisMatrix::fact_struc_ptr_t            &fact_struc
-		,const BasisMatrixImp::fact_nonzeros_ptr_t      &fact_nonzeros
+		,FactorizationStructure                         *fact_struc
+		,FactorizationNonzeros                          *fact_nonzeros
 		,LinAlgPack::IVector                            *row_perm
 		,LinAlgPack::IVector                            *col_perm
 		,size_type                                      *rank
@@ -203,8 +203,8 @@ protected:
 	///
 	void imp_factor(
 		const SparseLinAlgPack::MatrixConvertToSparse   &A
-		,const BasisMatrix::fact_struc_ptr_t            &fact_struc
-		,const BasisMatrixImp::fact_nonzeros_ptr_t      &fact_nonzeros
+		,const FactorizationStructure                   &fact_struc
+		,FactorizationNonzeros                          *fact_nonzeros
 		,std::ostream                                   *out
 		);
 

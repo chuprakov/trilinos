@@ -17,6 +17,7 @@
 #include "SparseSolverPack/include/BasisSystemPermDirectSparse.h"
 #include "SparseSolverPack/include/DirectSparseSolverMA28.h"
 #include "SparseSolverPack/include/DirectSparseSolverMA28SetOptions.h"
+#include "SparseSolverPack/include/DirectSparseSolverSuperLU.h"
 #include "ThrowException.h"
 #include "OptionsFromStream.h"
 #include "StringToIntMap.h"
@@ -65,16 +66,19 @@ BasisSystemFactoryStd::create() const
 			direct_sparse_solver = dss_ma28;
 			break;
 		}
-		case LA_MA48:
+		case LA_MA48: {
 			THROW_EXCEPTION(
 				true, std::logic_error
 				,"Error, MA48 is not supported yet!" );
 			break;
-		case LA_SUPERLU:
-			THROW_EXCEPTION(
-				true, std::logic_error
-				,"Error, SuperLU is not supported yet!" );
+		}
+		case LA_SUPERLU: {
+			mmp::ref_count_ptr<DirectSparseSolverSuperLU>
+				dss_slu = mmp::rcp(new DirectSparseSolverSuperLU());
+			// ToDo: Set options from stream!
+			direct_sparse_solver = dss_slu;
 			break;
+		}
 		default:
 			assert(0); // Should not be called?
 	}
@@ -148,7 +152,7 @@ void BasisSystemFactoryStd::read_options() const
 							true, std::invalid_argument
 							,"BasisSystemFactoryStd::read_options(...) : "
 							"Error, incorrect value for \"direct_linear_solver\" "
-							"Only the options \'MA28\' and \'MA48\' are avalible." );
+							"Only the options \'MA28\' and \'SUPERLU\' are avalible." );
 					}
 					break;
 				}

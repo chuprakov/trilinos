@@ -293,32 +293,45 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		*trase_out
 			<< "\n*** Sorting out some of the options given input options ...\n";
 
-	if( tailored_approach ) {
-		// Change the options for the tailored approach. 
-		if(trase_out) {
-			*trase_out
-				<< "\nThis is a tailored approach NLP (NLPFirstOrderDirect) which forces the following options:\n"
-				<< "merit_function_type         = L1;\n"
-				<< "l1_penalty_parameter_update = MULT_FREE;\n"
-				<< "null_space_matrix           = EXPLICIT;\n"
-				;
+	if( m ) {
+		if( tailored_approach ) {
+			// Change the options for the tailored approach. 
+			if(trase_out) {
+				*trase_out
+					<< "\nThis is a tailored approach NLP (NLPFirstOrderDirect) which forces the following options:\n"
+					<< "merit_function_type         = L1;\n"
+					<< "l1_penalty_parameter_update = MULT_FREE;\n"
+					<< "null_space_matrix           = EXPLICIT;\n"
+					;
+			}
+			cov_.merit_function_type_
+				= MERIT_FUNC_L1;
+			cov_.l1_penalty_param_update_
+				= L1_PENALTY_PARAM_MULT_FREE;
+			decomp_sys_step_builder_.current_option_values().null_space_matrix_type_
+				= DecompositionSystemStateStepBuilderStd::NULL_SPACE_MATRIX_EXPLICIT;
 		}
-		cov_.merit_function_type_
-			= MERIT_FUNC_L1;
-		cov_.l1_penalty_param_update_
-			= L1_PENALTY_PARAM_MULT_FREE;
-		decomp_sys_step_builder_.current_option_values().null_space_matrix_type_
-			= DecompositionSystemStateStepBuilderStd::NULL_SPACE_MATRIX_EXPLICIT;
+		
+		if( !tailored_approach && uov_.merit_function_type_ != MERIT_FUNC_L1  ) {
+			if(trase_out) {
+				*trase_out
+					<< "\nThe only merit function currently supported is:\n"
+					<< "merit_function_type         = L1;\n"
+					;
+			}
+			cov_.merit_function_type_		= MERIT_FUNC_L1;
+		}
 	}
-
-	if( !tailored_approach && uov_.merit_function_type_ != MERIT_FUNC_L1  ) {
+	else {
 		if(trase_out) {
 			*trase_out
-				<< "\nThe only merit function currently supported is:\n"
+				<< "\nThere are now equality constraints (m == 0) which forces the following options:\n"
+				<< "line_search_method          = DIRECT;\n"
 				<< "merit_function_type         = L1;\n"
 				;
 		}
-		cov_.merit_function_type_		= MERIT_FUNC_L1;
+		cov_.line_search_method_       = LINE_SEARCH_DIRECT;
+		cov_.merit_function_type_      = MERIT_FUNC_L1;
 	}
 
 	// Decide what type of quasi-newton update to use

@@ -162,7 +162,7 @@ void DirectSparseSolverImp::analyze_and_factor(
 		fact_nonzeros = this->create_fact_nonzeros();
 	// Now ask the subclass to do the work
 	this->imp_analyze_and_factor(
-		A,fact_struc,fact_nonzeros,row_perm,col_perm,rank,out
+		A,fact_struc.get(),fact_nonzeros.get(),row_perm,col_perm,rank,out
 		);
 	// Setup the basis matrix
 	basis_matrix_imp.initialize(*rank,fact_struc,fact_nonzeros);
@@ -208,7 +208,7 @@ void DirectSparseSolverImp::factor(
 	else
 		fact_nonzeros = this->create_fact_nonzeros();
 	// Now ask the subclass to do the work
-	this->imp_factor(A,fact_struc,fact_nonzeros,out);
+	this->imp_factor(A,*fact_struc,fact_nonzeros.get(),out);
 	// Setup the basis matrix
 	basis_matrix_imp.initialize(rank_,fact_struc,fact_nonzeros);
 }

@@ -82,9 +82,9 @@ rSQPppSolver::get_nlp() const
 
 void rSQPppSolver::set_track(const track_ptr_t& track)
 {
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 	track_ = track;
-	solver_.set_track(rcp::null); // Force the track objects to be rebuilt and added!
+	solver_.set_track(mmp::null); // Force the track objects to be rebuilt and added!
 }
 	
 const rSQPppSolver::track_ptr_t&
@@ -95,9 +95,9 @@ rSQPppSolver::get_track() const
 	
 void rSQPppSolver::set_config( const config_ptr_t& config )
 {
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 	config_ = config;
-	solver_.set_config(rcp::null); // Must unset the config object.
+	solver_.set_config(mmp::null); // Must unset the config object.
 	reconfig_solver_ = true;
 }
 
@@ -109,12 +109,12 @@ rSQPppSolver::get_config() const
 
 void rSQPppSolver::set_options( const options_ptr_t& options )
 {
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 	options_ = options;                  // Must totally free all of the references we
 	const config_ptr_t                   // have to the current options.  That includes
 		&config = solver_.get_config();  // removing the options object for the configuration
 	if(config.get())                     // object.
-		config->set_options(rcp::null);  // ...
+		config->set_options(mmp::null);  // ...
 	options_used_ = options;
 	reconfig_solver_ = true;
 }
@@ -131,10 +131,10 @@ void rSQPppSolver::set_error_handling(
 	)
 
 {
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 	if( error_out_.get() != NULL ) {
 		if( error_out.get() == NULL )
-			error_out_used_ = rcp::rcp(&std::cerr,false);
+			error_out_used_ = mmp::rcp(&std::cerr,false);
 		else 
 			error_out_used_ = error_out;
 	}
@@ -158,10 +158,10 @@ rSQPppSolver::error_out() const
 
 void rSQPppSolver::set_console_out( const ostream_ptr_t& console_out )
 {
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 	console_out_      = console_out;
-	console_out_used_ = rcp::null;  // Remove every reference to this ostream object!
-	solver_.set_track(rcp::null);
+	console_out_used_ = mmp::null;  // Remove every reference to this ostream object!
+	solver_.set_track(mmp::null);
 }
 
 const rSQPppSolver::ostream_ptr_t&
@@ -172,10 +172,10 @@ rSQPppSolver::get_console_out() const
 
 void rSQPppSolver::set_summary_out( const ostream_ptr_t& summary_out )
 {
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 	summary_out_      = summary_out;
-	summary_out_used_ = rcp::null;
-	solver_.set_track(rcp::null);     // Remove every reference to this ostream object!
+	summary_out_used_ = mmp::null;
+	solver_.set_track(mmp::null);     // Remove every reference to this ostream object!
 }
 	
 const rSQPppSolver::ostream_ptr_t&
@@ -186,10 +186,10 @@ rSQPppSolver::get_summary_out() const
 
 void rSQPppSolver::set_journal_out( const ostream_ptr_t& journal_out )
 {
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 	journal_out_      = journal_out;
-	journal_out_used_ = rcp::null;
-	solver_.set_track(rcp::null);     // Remove every reference to this ostream object!
+	journal_out_used_ = mmp::null;
+	solver_.set_track(mmp::null);     // Remove every reference to this ostream object!
 }
 	
 const rSQPppSolver::ostream_ptr_t&
@@ -200,9 +200,9 @@ rSQPppSolver::get_journal_out() const
 
 void rSQPppSolver::set_algo_out( const ostream_ptr_t& algo_out )
 {
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 	algo_out_      = algo_out;
-	algo_out_used_ = rcp::null;
+	algo_out_used_ = mmp::null;
 }
 	
 const rSQPppSolver::ostream_ptr_t&
@@ -218,8 +218,8 @@ rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
 	using std::endl;
 	using std::setw;
 	using StopWatchPack::stopwatch;
-	namespace rcp = MemMngPack;
-	using rcp::ref_count_ptr;
+	namespace mmp = MemMngPack;
+	using mmp::ref_count_ptr;
 	typedef ReducedSpaceSQPPack::rSQPSolverClientInterface    solver_interface_t;
 
 	stopwatch                             timer;
@@ -439,8 +439,8 @@ void rSQPppSolver::update_solver() const
 	using std::endl;
 	using std::setw;
 	using StopWatchPack::stopwatch;
-	namespace rcp = MemMngPack;
-	using rcp::ref_count_ptr;
+	namespace mmp = MemMngPack;
+	using mmp::ref_count_ptr;
 	namespace ofsp = OptionsFromStreamPack;
 	using ofsp::OptionsFromStream;
 	using ofsp::StringToIntMap;
@@ -462,9 +462,9 @@ void rSQPppSolver::update_solver() const
 		if( options_.get() == NULL ) {
 			std::ifstream options_in("rSQPpp.opt");
 			if(options_in)
-				options_used_ = rcp::rcp(new OptionsFromStream(options_in));
+				options_used_ = mmp::rcp(new OptionsFromStream(options_in));
 			else
-				options_used_ = rcp::null;
+				options_used_ = mmp::null;
 		}
 		else
 			options_used_ = options_;
@@ -582,26 +582,26 @@ void rSQPppSolver::update_solver() const
 		if( console_out_.get() != NULL )
 			console_out_used_ = console_out_;
 		else
-			console_out_used_ = rcp::rcp(&std::cout,false);
+			console_out_used_ = mmp::rcp(&std::cout,false);
 	}
 	if( do_summary_outputting() && summary_out_used_.get()==NULL ) {
 		if( summary_out_.get() == NULL )
-			summary_out_used_ = rcp::rcp(new std::ofstream("rSQPppSummary.out"));
+			summary_out_used_ = mmp::rcp(new std::ofstream("rSQPppSummary.out"));
 		else
 			summary_out_used_ = summary_out_;
 	}
 	if( do_journal_outputting() && journal_out_used_.get() == NULL ) {
 		if( journal_out_.get() == NULL )
-			journal_out_used_ = rcp::rcp(new std::ofstream("rSQPppJournal.out"));
+			journal_out_used_ = mmp::rcp(new std::ofstream("rSQPppJournal.out"));
 		else
 			journal_out_used_ = journal_out_;
 	}
 	else {
-		journal_out_used_ = rcp::rcp(new IOStreamHelperPack::oblackholestream());
+		journal_out_used_ = mmp::rcp(new IOStreamHelperPack::oblackholestream());
 	}
 	if( do_algo_outputting() && algo_out_used_.get() == NULL ) {
 		if( algo_out_.get() == NULL )
-			algo_out_used_ = rcp::rcp(new std::ofstream("rSQPppAlgo.out"));
+			algo_out_used_ = mmp::rcp(new std::ofstream("rSQPppAlgo.out"));
 		else
 			algo_out_used_ = algo_out_;
 	}
@@ -705,7 +705,7 @@ void rSQPppSolver::update_solver() const
 				<< "\nAllocating workspace_MB = " << workspace_MB_ << " megabytes of temporary "
 				"workspace for autmatic arrays only ...\n";
 		WorkspacePack::default_workspace_store
-			= rcp::rcp(new WorkspacePack::WorkspaceStoreInitializeable(1e+6*workspace_MB_));
+			= mmp::rcp(new WorkspacePack::WorkspaceStoreInitializeable(1e+6*workspace_MB_));
 		
 		//
 		// Reconfigure the algorithm
@@ -715,10 +715,10 @@ void rSQPppSolver::update_solver() const
 		config_ptr_t _config;
 		if(config_.get() == NULL) {
 			if (configuration_ == (EConfigOptions) INTERIOR_POINT) {
-			    _config = rcp::rcp(new Algo_ConfigIP());
+			    _config = mmp::rcp(new Algo_ConfigIP());
             }
 			else {
-			    _config = rcp::rcp(new rSQPAlgo_ConfigMamaJama());
+			    _config = mmp::rcp(new rSQPAlgo_ConfigMamaJama());
 			}
         }
 		else
@@ -759,19 +759,19 @@ void rSQPppSolver::update_solver() const
 		
 	if( solver_.get_track().get() == NULL ) {
 		ref_count_ptr<AlgorithmTrackComposite>
-			composite_track = rcp::rcp(new AlgorithmTrackComposite(journal_out_used_));
+			composite_track = mmp::rcp(new AlgorithmTrackComposite(journal_out_used_));
 		if(do_console_outputting())
 			composite_track->tracks().push_back(
-				rcp::rcp(new rSQPTrackConsoleStd(console_out_used_,journal_out_used_)) );
+				mmp::rcp(new rSQPTrackConsoleStd(console_out_used_,journal_out_used_)) );
 		if(do_summary_outputting())
 			composite_track->tracks().push_back(
-				rcp::rcp(new rSQPTrackSummaryStd(summary_out_used_,journal_out_used_)) );
+				mmp::rcp(new rSQPTrackSummaryStd(summary_out_used_,journal_out_used_)) );
 		if(generate_stats_file_) {
 			ostream_ptr_t
-				stats_out = rcp::rcp(new std::ofstream("rSQPppStats.out"));
+				stats_out = mmp::rcp(new std::ofstream("rSQPppStats.out"));
 			assert( !stats_out->eof() );
 			composite_track->tracks().push_back(
-				rcp::rcp(new rSQPTrackStatsStd(stats_out,stats_out)) );
+				mmp::rcp(new rSQPTrackStatsStd(stats_out,stats_out)) );
 		}
 		if( track_.get() ) {
 			track_->set_journal_out(journal_out_used_);

@@ -269,7 +269,7 @@ options_group BasisSystemFactoryStd {
 
 *    direct_linear_solver = MA28;    *** Use Harwell MA28 (see options_group DirectSparseSolverMA28)
 *    direct_linear_solver = MA48;    *** Not supported yet
-*    direct_linear_solver = SuperLU; *** Not supported yet
+*    direct_linear_solver = SUPERLU; *** Use SuperLU (see options_group DirectSparseSolverSuperLU)
      *** Direct fortran compatible linear solvers for the  basis of the Jacobian.
      *** When a general NLP is being solved this selects the sparse linear solver used.
      *** When the user specializes the BasisSystem object this option generally means noting.
