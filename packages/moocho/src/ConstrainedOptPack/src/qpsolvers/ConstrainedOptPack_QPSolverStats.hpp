@@ -115,7 +115,31 @@ private:
 	bool			warm_start_;
 	bool			infeasible_qp_;
 
-};	// end class ActSetStats
+};	// end class QPSolverStats
+
+inline
+std::string toString( const QPSolverStats::ESolutionType &solution_type )
+{
+	switch(solution_type) {
+		case QPSolverStats::SOLUTION_TYPE_NOT_KNOWN:
+			return "SOLUTION_TYPE_NOT_KNOWN";
+			break;
+		case QPSolverStats::OPTIMAL_SOLUTION:
+			return "OPTIMAL_SOLUTION";
+			break;
+		case QPSolverStats::PRIMAL_FEASIBLE_POINT:
+			return "PRIMAL_FEASIBLE_POINT";
+			break;
+		case QPSolverStats::DUAL_FEASIBLE_POINT:
+			return "DUAL_FEASIBLE_POINT";
+			break;
+		case QPSolverStats::SUBOPTIMAL_POINT:
+			return "SUBOPTIMAL_POINT";
+			break;
+		default:
+			TEST_FOR_EXCEPT(true);
+	}
+}
 
 }	// end namespace ConstrainedOptPack
 

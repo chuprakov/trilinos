@@ -40,11 +40,11 @@ public:
 	//@{
 
 	///
-	typedef FortranTypes::f_int			f_int;
+	typedef FortranTypes::f_int       f_int;
 	///
-	typedef FortranTypes::f_dbl_prec	f_dbl_prec;
+	typedef FortranTypes::f_dbl_prec  f_dbl_prec;
 	///
-	typedef FortranTypes::f_logical		f_logical;
+	typedef FortranTypes::f_logical   f_logical;
 
 	//@}
 
@@ -76,18 +76,18 @@ protected:
 
 	///
 	QPSolverStats::ESolutionType imp_solve_qp(
-		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, const DVectorSlice& g, const MatrixOp& G
-		, value_type etaL
-		, const SpVectorSlice& dL, const SpVectorSlice& dU
-		, const MatrixOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
-			, const SpVectorSlice* eL, const SpVectorSlice* eU
-		, const MatrixOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
-		, value_type* obj_d
-		, value_type* eta, DVectorSlice* d
-		, SpVector* nu
-		, SpVector* mu, DVectorSlice* Ed
-		, DVectorSlice* lambda, DVectorSlice* Fd
+		std::ostream* out, EOutputLevel olevel, ERunTests test_what
+		,const Vector& g, const MatrixSymOp& G
+		,value_type etaL
+		,const Vector* dL, const Vector* dU
+		,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
+		,const Vector* eL, const Vector* eU
+		,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
+		,value_type* obj_d
+		,value_type* eta, VectorMutable* d
+		,VectorMutable* nu
+		,VectorMutable* mu, VectorMutable* Ed
+		,VectorMutable* lambda, VectorMutable* Fd
 		);
 
 	// //////////////////////////////////////////////////////////////

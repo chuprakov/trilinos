@@ -39,18 +39,20 @@ using FortranTypes::f_logical;		// LOGICAL
 
 //@{
 
-typedef FORTRAN_FUNC_PTR_DECL(void,qphess_func) ( const f_int& N, const f_int& LDH
+typedef FORTRAN_FUNC_PTR_DECL_UL_(void,QPHESS_FUNC,qphess_func) ( const f_int& N, const f_int& LDH
 	, const f_int& JTHCOL, const f_dbl_prec* HESS, const f_dbl_prec* X, f_dbl_prec* HX
 	, f_int* IW, const f_int& LENIW, f_dbl_prec* W, const f_int& LENW );
 
 /// Call QPOPT through C++ declaration.
-void qpopt( const f_int& N, const f_int& NCLIN
-	, const f_int& LDA, const f_int& LDH, const f_dbl_prec* A
-	, const f_dbl_prec* BL, const f_dbl_prec* BU, const f_dbl_prec* CVEC
-	, const f_dbl_prec* H, qphess_func QPHESS, f_int* ISTATE, f_dbl_prec* X
-	, f_int& INFORM, f_int& ITER, f_dbl_prec& OBJ, f_dbl_prec* AX
-	, f_dbl_prec* CLAMDA, f_int* IW, const f_int& LENIW, f_dbl_prec* W
-	, const f_int& LENW );
+void qpopt(
+	const f_int& N, const f_int& NCLIN
+	,const f_int& LDA, const f_int& LDH, const f_dbl_prec* A
+	,const f_dbl_prec* BL, const f_dbl_prec* BU, const f_dbl_prec* CVEC
+	,const f_dbl_prec* H, FORTRAN_NAME_UL_(QPHESS_FUNC,qphess_func) QPHESS, f_int* ISTATE, f_dbl_prec* X
+	,f_int& INFORM, f_int& ITER, f_dbl_prec& OBJ, f_dbl_prec* AX
+	,f_dbl_prec* CLAMDA, f_int* IW, const f_int& LENIW, f_dbl_prec* W
+	,const f_int& LENW
+	);
 
 // //////////////////////////////////////////////////////////
 // Enumerations for QPOPT options
@@ -121,7 +123,7 @@ extern "C" {
 FORTRAN_FUNC_DECL_UL(void,QPOPT,qpopt) ( const f_int& N, const f_int& NCLIN
 	, const f_int& LDA, const f_int& LDH, const f_dbl_prec* A
 	, const f_dbl_prec* BL, const f_dbl_prec* BU, const f_dbl_prec* CVEC
-	, const f_dbl_prec* H, qphess_func QPHESS, f_int* ISTATE, f_dbl_prec* X
+	, const f_dbl_prec* H, FORTRAN_NAME_UL_(QPHESS_FUNC,qphess_func) QPHESS, f_int* ISTATE, f_dbl_prec* X
 	, f_int& INFORM, f_int& ITER, f_dbl_prec& OBJ, f_dbl_prec* AX
 	, f_dbl_prec* CLAMDA, f_int* IW, const f_int& LENIW, f_dbl_prec* W
 	, const f_int& LENW );
@@ -147,7 +149,7 @@ inline
 void qpopt( const f_int& N, const f_int& NCLIN
 	, const f_int& LDA, const f_int& LDH, const f_dbl_prec* A
 	, const f_dbl_prec* BL, const f_dbl_prec* BU, const f_dbl_prec* CVEC
-	, const f_dbl_prec* H, qphess_func QPHESS, f_int* ISTATE, f_dbl_prec* X
+	, const f_dbl_prec* H, FORTRAN_NAME_UL_(QPHESS_FUNC,qphess_func) QPHESS, f_int* ISTATE, f_dbl_prec* X
 	, f_int& INFORM, f_int& ITER, f_dbl_prec& OBJ, f_dbl_prec* AX
 	, f_dbl_prec* CLAMDA, f_int* IW, const f_int& LENIW, f_dbl_prec* W
 	, const f_int& LENW )

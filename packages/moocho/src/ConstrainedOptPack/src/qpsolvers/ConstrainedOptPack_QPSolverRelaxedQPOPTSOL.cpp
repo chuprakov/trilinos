@@ -18,15 +18,15 @@
 #include <vector>
 
 #include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPOPTSOL.hpp"
-#include "ConstrainedOptPack/src/MatrixExtractInvCholFactor.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/sparse_bounds.hpp"
-#include "AbstractLinAlgPack/src/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
-#include "Midynamic_cast_verbose.h"
-#include "Miprofile_hack.h"
+#include "MoochoMoreUtilities/src/profile_hack.hpp"
 
 // /////////////////////////////////////////////////////////////////
 //
@@ -123,27 +123,30 @@ void QPSolverRelaxedQPOPTSOL::release_memory()
 
 QPSolverStats::ESolutionType
 QPSolverRelaxedQPOPTSOL::imp_solve_qp(
-		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, const DVectorSlice& g, const MatrixOp& G
-		, value_type etaL
-		, const SpVectorSlice& dL, const SpVectorSlice& dU
-		, const MatrixOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
-			, const SpVectorSlice* eL, const SpVectorSlice* eU
-		, const MatrixOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
-		, value_type* obj_d
-		, value_type* eta, DVectorSlice* d
-		, SpVector* nu
-		, SpVector* mu, DVectorSlice* Ed
-		, DVectorSlice* lambda, DVectorSlice* Fd
+		std::ostream* out, EOutputLevel olevel, ERunTests test_what
+		,const Vector& g, const MatrixSymOp& G
+		,value_type etaL
+		,const Vector* dL, const Vector* dU
+		,const MatrixOp* E, BLAS_Cpp::Transp trans_E, const Vector* b
+		,const Vector* eL, const Vector* eU
+		,const MatrixOp* F, BLAS_Cpp::Transp trans_F, const Vector* f
+		,value_type* obj_d
+		,value_type* eta, VectorMutable* d
+		,VectorMutable* nu
+		,VectorMutable* mu, VectorMutable* Ed
+		,VectorMutable* lambda, VectorMutable* Fd
 	)
 {
+
+	using AbstractLinAlgPack::VectorDenseEncap;
+	using AbstractLinAlgPack::VectorDenseMutableEncap;
 
 #ifdef PROFILE_HACK_ENABLED
 	ProfileHackPack::ProfileTiming profile_timing( "QPSolverRelaxedQPOPTSOL::imp_solve_qp(...)" );
 #endif
 
-	const size_type n = d->size();
-	const value_type inf_bnd = std::numeric_limits<value_type>::max();
+	const size_type n = d->dim();
+	const value_type inf = this->infinite_bound();
 	
 	//
 	// Map to the input arguments for QPOPT or QPSOL
@@ -153,32 +156,43 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 	N_ = n + 1; // With relaxation
 
 	// NCLIN
-	n_inequ_bnds_ = E ? AbstractLinAlgPack::num_bounds(*eL,*eU) : 0;
-	NCLIN_ = n_inequ_bnds_ + (F ? f->size() : 0);
+	n_inequ_bnds_ = ( E ? AbstractLinAlgPack::num_bounded(*eL,*eU,inf) : 0 );
+	NCLIN_ = n_inequ_bnds_ + (F ? f->dim() : 0);
 
 	// A, BL, BU
 	A_.resize(NCLIN_,N_);
 	BL_.resize(N_+NCLIN_);
 	BU_.resize(N_+NCLIN_);
-	BL_ = -inf_bnd;
-	{for( SpVectorSlice::const_iterator itr = dL.begin(); itr != dL.end(); ++itr) {
-		BL_(dL.offset() + itr->indice()) = itr->value();		
-	}}
-	BU_ = +inf_bnd;
-	{for( SpVectorSlice::const_iterator itr = dU.begin(); itr != dU.end(); ++itr) {
-		BU_(dU.offset() + itr->indice()) = itr->value();		
-	}}
+	if(dL) {
+		VectorDenseEncap dL_de(*dL);
+		BL_(1,n) = dL_de();
+	}
+	else {
+		BL_(1,n) = -inf;
+	}
+	if(dU) {
+		VectorDenseEncap dU_de(*dU);
+		BU_(1,n) = dU_de();
+	}
+	else {
+		BU_(1,n) = -inf;
+	}
 	BL_(N_) = etaL;
-	BU_(N_) = +inf_bnd;
+	BU_(N_) = +inf;
+	TEST_FOR_EXCEPTION(
+		E!=NULL, std::logic_error
+		,"Error, the QPOPT/QPSOL wrapper has not been updated for general inequalities yet!"
+		);
+/* ToDo: Update this when needed!
 	if( E ) {
 		i_inequ_bnds_.resize(n_inequ_bnds_);
-		if( n_inequ_bnds_ < b->size() ) {
+		if( n_inequ_bnds_ < b->dim() ) {
 			// Initialize BL, BU, and A for sparse bounds on general inequalities
 			//
 			// read iterators
 			AbstractLinAlgPack::sparse_bounds_itr
 				eLU_itr( eL->begin(), eL->end(), eL->offset()
-						 , eU->begin(), eU->end(), eU->offset(), inf_bnd );
+						 , eU->begin(), eU->end(), eU->offset(), inf );
 			// written iterators
 			DVector::iterator
 				BL_itr		= BL_.begin() + N_,
@@ -196,7 +210,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 				// y == A.row(i)
 				// y(1,n) = op(E')*e_k
 				DVectorSlice y = A_.row(i);
-				AbstractLinAlgPack::EtaVector e_k(k,eL->size());
+				AbstractLinAlgPack::EtaVector e_k(k,eL->dim());
 				LinAlgOpPack::V_MtV( &y(1,n), *E, BLAS_Cpp::trans_not(trans_E), e_k() ); // op(E')*e_k
 				// y(n+1) = -b(k)
 				y(n+1) = -(*b)(k);
@@ -209,7 +223,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 			// and i_inequ_bnds_ = identity (only for my record, not used by QPKWIK)
 			AbstractLinAlgPack::sparse_bounds_itr
 				eLU_itr( eL->begin(), eL->end(), eL->offset()
-						 , eU->begin(), eU->end(), eU->offset(), inf_bnd );
+						 , eU->begin(), eU->end(), eU->offset(), inf );
 			DVector::iterator
 				BL_itr		= BL_.begin() + N_,
 				BU_itr		= BU_.begin() + N_;
@@ -228,6 +242,12 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 			LinAlgOpPack::V_StV( &A_.col(n+1)(1,n_inequ_bnds_), -1.0, *b );
 		}
 	}
+*/
+	TEST_FOR_EXCEPTION(
+		F!=NULL, std::logic_error
+		,"Error, the QPOPT/QPSOL wrapper has not been updated for general equalities yet!"
+		);
+/* ToDo: Update this when needed!
 	if( F ) {
 		// BL(N+n_inequ_bnds+1:N+NCLIN) = -f
 		LinAlgOpPack::V_StV( &BL_(N_+n_inequ_bnds_+1,N_+NCLIN_), -1.0, *f );
@@ -238,10 +258,11 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 		// A(n_inequ_bnds+1:NCLIN,n+1) = -f
 		LinAlgOpPack::V_StV( &A_.col(n+1)(n_inequ_bnds_+1,NCLIN_), -1.0, *f );
 	}
+*/
 	
 	// CVEC
 	CVEC_.resize(N_);
-	CVEC_(1,n) = g;
+	CVEC_(1,n) = VectorDenseEncap(g)();
 	CVEC_(n+1) = bigM_;
 
 	// HESS
@@ -254,38 +275,42 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 
 	// X
 	X_.resize(N_);
-	X_(1,n) = *d;
+	X_(1,n) = VectorDenseEncap(*d)();
 	X_(n+1) = *eta;
 
 	// AX
-    // will be resized by QPOPT but not QPSOL
+  // will be resized by QPOPT but not QPSOL
 
 	// CLAMBDA
 	CLAMDA_.resize(N_+NCLIN_);
 
 	// LIWORK, IWORK
 	LIWORK_ = liwork(N_,NCLIN_);
-	if(IWORK_.size() < LIWORK_)	IWORK_.resize(LIWORK_);
+	if(static_cast<f_int>(IWORK_.size()) < LIWORK_)	IWORK_.resize(LIWORK_);
 
 	// LWORK, WORK
 	LWORK_ = lrwork(N_,NCLIN_);
-	if(WORK_.size() < LWORK_) WORK_.resize(LWORK_);
+	if(static_cast<f_int>(WORK_.size()) < LWORK_) WORK_.resize(LWORK_);
 
 	// We need to initialize some warm start information if
 	// it was given by the user!
 	bool warm_start = false;
 	if( (nu && nu->nz()) || (mu && mu->nz() ) ) {
 		// Let's try a warm start
-		
 		if(nu) {
-			const SpVectorSlice::difference_type o = nu->offset();
-			for( SpVectorSlice::const_iterator itr = nu->begin(); itr != nu->end(); ++itr ) {
-				if( itr->value() < 0.0 )
-					ISTATE_[ itr->indice() + o - 1 ] = 1; // Lower bound is active
-				else if( itr->value() > 0.0 )
-					ISTATE_[ itr->indice() + o - 1 ] = 2; // Upper bound is active
+			VectorDenseEncap nu_de(*nu);
+			for(int i = 1; i <= n; ++i ) {
+				if( nu_de()(i) < 0.0 )
+					ISTATE_[i-1] = 1; // Lower bound is active
+				else if( nu_de()(i) > 0.0 )
+					ISTATE_[i-1] = 2; // Upper bound is active
 			}
 		}
+		TEST_FOR_EXCEPTION(
+			mu!=NULL, std::logic_error
+			,"Error, the QPOPT/QPSOL wrapper has not been updated for general inequalities yet!"
+			);
+/* ToDo: Update below when needed!
 		if(mu) {
 			const SpVectorSlice::difference_type o = mu->offset();
 			for( SpVectorSlice::const_iterator itr = mu->begin(); itr != mu->end(); ++itr ) {
@@ -295,6 +320,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 					ISTATE_[ itr->indice() + o + n ] = 2; // Upper bound is active
 			}
 		}
+*/
 		warm_start = true;
 	}
 
@@ -309,7 +335,10 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 	//
 
 	// d
-	*d = X_(1,n);
+	if(1) {
+		VectorDenseMutableEncap d_de(*d);
+		d_de() = X_(1,n);
+	}
 	
 	// eta
 	*eta = X_(n+1);
@@ -320,8 +349,8 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 
 	// nu
 	if(nu) {
-		nu->resize(n,n);
-		typedef SpVector::element_type ele_t;
+		VectorDenseMutableEncap nu_de(*nu);
+		nu_de() = 0.0;
 		ISTATE_t::const_iterator
 			istate_itr = ISTATE_.begin();
 		DVector::const_iterator
@@ -329,30 +358,34 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 		for( size_type i = 1; i <= n; ++i, ++istate_itr, ++clamda_itr ) {
 			const f_int state = *istate_itr;
 			switch(state) {
-			    case -2: // The lower bound is violated by more than feas_tol
-			    case -1: // The upper bound is violated by more than feas_tol
+				case -2: // The lower bound is violated by more than feas_tol
+				case -1: // The upper bound is violated by more than feas_tol
 					// What do we do?
 					break;
-			    case 0: // Within bounds by more than feas_tol
+				case 0: // Within bounds by more than feas_tol
 					break;
-			    case 1: // lower bound is active
-			    case 2: // upper bound is active
-			    case 3: // the bounds are equal and are satisfied
-					nu->add_element(ele_t(i,-(*clamda_itr))); // Different sign
+				case 1: // lower bound is active
+				case 2: // upper bound is active
+				case 3: // the bounds are equal and are satisfied
+					nu_de()(i) = -(*clamda_itr); // Different sign convention
 					break;
-			    case 4: // Temporaraly fixed at current value
+				case 4: // Temporaraly fixed at current value
 					// What do we do?
 					break;
-			    default:
-					assert(0); // Should not get here!
+				default:
+					TEST_FOR_EXCEPT(true); // Should not get here!
 			}
 		}
-		nu->assume_sorted(true);
 	}
-
+	
 	// mu
+	TEST_FOR_EXCEPTION(
+		n_inequ_bnds_!=0, std::logic_error
+		,"Error, the QPOPT/QPSOL wrapper has not been updated for general inequalities yet!"
+		);
+/* ToDo: Update below when needed!
 	if( n_inequ_bnds_ ) {
-		mu->resize(b->size(),n_inequ_bnds_);
+		mu->resize(b->dim(),n_inequ_bnds_);
 		typedef SpVector::element_type ele_t;
 		ISTATE_t::const_iterator
 			istate_itr = ISTATE_.begin() + N_;
@@ -386,8 +419,15 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 		mu->assume_sorted(true);
 	}
 	else if(E) {
-		mu->resize( eL->size(), 0 );
+		mu->resize( eL->dim(), 0 );
 	}
+*/
+
+	TEST_FOR_EXCEPTION(
+		F!=NULL, std::logic_error
+		,"Error, the QPOPT/QPSOL wrapper has not been updated for general equalities yet!"
+		);
+/* ToDo: Update this when needed!
 
 	// lambda
 	if( F ) {
@@ -395,13 +435,13 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 		// Validate istate
 		ISTATE_t::const_iterator
 			istate_itr = ISTATE_.begin() + N_ + n_inequ_bnds_;
-		for( size_type k = 1; k <= f->size(); ++k, ++istate_itr ) {
+		for( size_type k = 1; k <= f->dim(); ++k, ++istate_itr ) {
 			assert( *istate_itr == 3 );
 		}
 	}
 
 	// Ed, Fd
-	if( E && AX_.size() && eL->size() == n_inequ_bnds_ ) {
+	if( E && AX_.size() && eL->dim() == n_inequ_bnds_ ) {
 		if( Ed ) { // Ed = AX + b*eta
 			*Ed = AX_(1,n_inequ_bnds_);
 			if( *eta > 0.0 )
@@ -419,6 +459,8 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 		if(Fd)
 			LinAlgOpPack::V_MtV( Fd, *F, trans_F, *d );
 	}
+
+*/
 
 	//
 	// Setup the QP statistics

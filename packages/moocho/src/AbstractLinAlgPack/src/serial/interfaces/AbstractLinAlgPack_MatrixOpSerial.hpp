@@ -19,8 +19,8 @@
 #include <iosfwd>
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
+#include "VectorSpaceSerial.hpp"
 
 namespace AbstractLinAlgPack {
 

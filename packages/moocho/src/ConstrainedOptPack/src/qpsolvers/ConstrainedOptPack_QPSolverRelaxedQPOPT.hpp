@@ -41,7 +41,7 @@ public:
 
 	///
 	QPSolverRelaxedQPOPT(
-		  value_type        max_qp_iter_frac	= 10.0
+		value_type max_qp_iter_frac	= 10.0
 		);
 
 	///
@@ -72,14 +72,14 @@ private:
 
 	///
 	enum EQPOPTInform {
-		STRONG_LOCAL_MIN			= 0,
-		WEAK_LOCAL_MIN				= 1,
-		UNBOUNDED					= 2,
-		INFEASIBLE					= 3,
-		ITMAX_EXCEEDED				= 4,
-		MAX_DOF_TOO_SMALL			= 5,
-		INVALID_INPUT				= 6,
-		PROB_TYPE_NOT_REGOG			= 7
+		STRONG_LOCAL_MIN      = 0,
+		WEAK_LOCAL_MIN        = 1,
+		UNBOUNDED             = 2,
+		INFEASIBLE            = 3,
+		ITMAX_EXCEEDED        = 4,
+		MAX_DOF_TOO_SMALL     = 5,
+		INVALID_INPUT         = 6,
+		PROB_TYPE_NOT_REGOG   = 7
 	};
 
 	// ////////////////////////////
@@ -89,16 +89,16 @@ private:
 
 	// control
 
-	f_int						ITMAX_;
-	f_dbl_prec					BIGBND_;
-	f_dbl_prec					FEATOL_;
+	f_int        ITMAX_;
+	f_dbl_prec   BIGBND_;
+	f_dbl_prec   FEATOL_;
 
 	// input/output
 
-	f_int						LDA_;
-	f_int						LDH_;
-	f_dbl_prec*					H_;
-	f_int						INFORM_;
+	f_int           LDA_;
+	f_int           LDH_;
+	f_dbl_prec*     H_;
+	f_int           INFORM_;
 
 	// ////////////////////////////
 	// Private member functions

@@ -28,16 +28,16 @@
 
 *** Set an option for QPOPT that can be represented using an INTEGER.
 ***
-***		CHECK_FREQUENCY					= 1
-***		EXPAND_FREQUENCY				= 2
-***		FEASIBILITY_PHASE_ITER_LIMIT	= 3
-***		OPTIMALITY_PHASE_ITER_LIMIT		= 4
-***		HESSIAN_ROWS					= 5
-***		ITERATION_LIMIT					= 6
-***		MAXIMUM_DEGREES_OF_FREEDOM		= 7
-***		PRINT_FILE						= 8
-***		PRINT_LEVEL						= 9
-***		PROBLEM_TYPE					= 10
+***		CHECK_FREQUENCY               = 1
+***		EXPAND_FREQUENCY              = 2
+***		FEASIBILITY_PHASE_ITER_LIMIT  = 3
+***		OPTIMALITY_PHASE_ITER_LIMIT   = 4
+***		HESSIAN_ROWS                  = 5
+***		ITERATION_LIMIT               = 6
+***		MAXIMUM_DEGREES_OF_FREEDOM    = 7
+***		PRINT_FILE                    = 8
+***		PRINT_LEVEL                   = 9
+***		PROBLEM_TYPE                  = 10
 ***			values of:
 ***				FP								= 1
 ***				LP								= 2
@@ -45,7 +45,7 @@
 ***				QP2								= 4
 ***				QP3								= 5
 ***				QP4								= 6
-***		SUMMARY_FILE					= 11
+***		SUMMARY_FILE                  = 11
 ***
 *** See the documentation from QPOPT to see a description of
 *** these options.
@@ -103,9 +103,9 @@
 
 *** Set an option for QPOPT that can be represented using a LOGICAL.
 ***
-***		WARM_START						= 1
-***		LIST							= 2
-***		MIN_SUM							= 3
+***		WARM_START  = 1
+***		LIST        = 2
+***		MIN_SUM     = 3
 ***
 *** See the documentation from QPOPT to see a description of
 *** these options.
@@ -147,12 +147,12 @@
 *** Set an option for QPOPT that can be represented using a
 *** DOUBLE PRECISION.
 ***
-***		CRASH_TOLERANCE					= 1
-***		FEASIBILITY_TOLERANCE			= 2
-***		INFINITE_BOUND_SIZE				= 3
-***		INFINITE_STEP_SIZE				= 4
-***		OPTIMALITY_TOLERANCE			= 5
-***		RANK_TOLERANCE					= 6
+***		CRASH_TOLERANCE           = 1
+***		FEASIBILITY_TOLERANCE     = 2
+***		INFINITE_BOUND_SIZE       = 3
+***		INFINITE_STEP_SIZE        = 4
+***		OPTIMALITY_TOLERANCE      = 5
+***		RANK_TOLERANCE            = 6
 ***
 *** See the documentation from QPOPT to see a description of
 *** these options.

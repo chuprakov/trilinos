@@ -23,9 +23,11 @@
 
 #include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPOPT.hpp"
 #include "ConstrainedOptPack/src/qpsolvers/QPOPT_CppDecl.hpp"
-#include "AbstractLinAlgPack/src/MatrixOp.hpp"
-#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/VectorMutableDense.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "DenseLinAlgPack/src/DVectorOut.hpp"
@@ -59,13 +61,17 @@ void qphess_server_relax( const f_int& N, const f_int& LDH
 	// Here we have used some casting to pass on information about the qp solver
 	// that called QPSOL.
 	const QPSolverRelaxedQPOPT* qp_solver = reinterpret_cast<const QPSolverRelaxedQPOPT*>(H);
+	const AbstractLinAlgPack::MatrixOp &G = *qp_solver->G();
 
-	DVectorSlice hx(HX,N);
+	const DVectorSlice x(const_cast<f_dbl_prec*>(X),N);   // Just a view!
+	DVectorSlice hx(HX,N);                                // Just a view!
 
 	if( JTHCOL == 0 ) {
-		const DVectorSlice x( const_cast<DVectorSlice::value_type*>(X), N );
+		// We are performing a dense mat-vec
 		// hx(1,N-1) = G * x(1,N-1)
-		V_MtV( &hx(1,N-1), *qp_solver->G(), BLAS_Cpp::no_trans, x(1,N-1) );
+		AbstractLinAlgPack::VectorMutableDense x_n(x(1,N-1),Teuchos::null);
+		AbstractLinAlgPack::VectorMutableDense hx_n(hx(1,N-1),Teuchos::null);
+		V_MtV( &hx_n, G, BLAS_Cpp::no_trans, x_n );
 		// hx(N) = bigM * x(N)
 		hx(N) = qp_solver->use_as_bigM() * x(N);
 	}
@@ -73,14 +79,15 @@ void qphess_server_relax( const f_int& N, const f_int& LDH
 		// we are extracting the JTHCOL column of G so use sparse x
 		if(JTHCOL == N) {
 			// 0
-			std::fill( HX, HX + (N-1), 0.0 );
+			hx(1,N-1) = 0.0;
 			// bigM
-			HX[N-1] = qp_solver->use_as_bigM();
+			hx(N) = qp_solver->use_as_bigM();
 		}
 		else {
 			// G(:,JTHCOL)
 			AbstractLinAlgPack::EtaVector e_j(JTHCOL,N-1);
-			V_MtV( &hx(1,N-1), *qp_solver->G(), BLAS_Cpp::no_trans, e_j() );
+			AbstractLinAlgPack::VectorMutableDense hx_n(hx(1,N-1),Teuchos::null);
+			V_MtV( &hx_n, G, BLAS_Cpp::no_trans, e_j() );
 			// 0
 			hx(N) = 0.0;
 		}
@@ -124,8 +131,7 @@ QPSolverRelaxedQPOPT::QPSolverRelaxedQPOPT(
 	)
 	:max_qp_iter_frac_(max_qp_iter_frac)
 	,ITMAX_(100)
-	,BIGBND_(std::numeric_limits<value_type>::max())
-	,FEATOL_( 1.0e-10 )
+	,FEATOL_(1.0e-10)
 	,LDH_(1)
 {}
 
@@ -152,28 +158,29 @@ QPSolverRelaxedQPOPT::f_int QPSolverRelaxedQPOPT::lrwork(f_int N, f_int NCLIN) c
 
 QPSolverRelaxedQPOPTSOL::EInform QPSolverRelaxedQPOPT::call_qp_solver(bool warm_start)
 {
+	
+	// Set the rest of the QPOPT inputs that could not be set in the constructor.
+
+	BIGBND_ = this->infinite_bound();
 	ITMAX_ = max_qp_iter_frac() * N_;
+	LDA_	= ( A_.rows() > 0 ? A_.rows() : 1 );
+	H_		= reinterpret_cast<f_dbl_prec*>(this);	// used to implement QPHESS
+	AX_.resize( NCLIN_ > 0 ? NCLIN_ : 1 );
 
 	// Set option parameters
 	{
 		namespace ns = QPOPT_CppDecl;
 		namespace ft = FortranTypes;
 		ns::reset_defaults();
-		ns::set_logical_option( ns::WARM_START				, warm_start ? ft::FALSE : ft::TRUE		);
-		ns::set_real_option(    ns::FEASIBILITY_TOLERANCE	, FEATOL_								);
-		ns::set_real_option(    ns::INFINITE_BOUND_SIZE		, BIGBND_								);
-		ns::set_int_option(     ns::ITERATION_LIMIT			, ITMAX_								);
-		ns::set_int_option(     ns::PRINT_FILE				, 0										);
-		ns::set_int_option(     ns::SUMMARY_FILE			, 0										);
-		ns::set_int_option(     ns::PRINT_LEVEL				, 0										);
-		ns::set_int_option(     ns::PROBLEM_TYPE			, ns::QP2								);
+		ns::set_logical_option( ns::WARM_START            , warm_start ? ft::F_FALSE : ft::F_TRUE		);
+		ns::set_real_option(    ns::FEASIBILITY_TOLERANCE , FEATOL_                                 );
+		ns::set_real_option(    ns::INFINITE_BOUND_SIZE   , BIGBND_                                 );
+		ns::set_int_option(     ns::ITERATION_LIMIT       , ITMAX_                                  );
+		ns::set_int_option(     ns::PRINT_FILE            , 0                                       );
+		ns::set_int_option(     ns::SUMMARY_FILE          , 0                                       );
+		ns::set_int_option(     ns::PRINT_LEVEL           , 0                                       );
+		ns::set_int_option(     ns::PROBLEM_TYPE          , ns::QP2                                 );
 	}
-	
-	// Set the rest of the QPOPT inputs that could not be set in the constructor.
-
-	LDA_	= ( A_.rows() > 0 ? A_.rows() : 1 );
-	H_		= reinterpret_cast<f_dbl_prec*>(this);	// used to implement QPHESS
-	AX_.resize( NCLIN_ > 0 ? NCLIN_ : 1 );
 
 	QPOPT_CppDecl::qpopt(
 		N_, NCLIN_, LDA_, LDH_, NCLIN_ ? &A_(1,1) : NULL, &BL_(1), &BU_(1)
@@ -185,40 +192,45 @@ QPSolverRelaxedQPOPTSOL::EInform QPSolverRelaxedQPOPT::call_qp_solver(bool warm_
 	EInform return_inform;
 	typedef QPSolverRelaxedQPOPTSOL bc;
 	switch(INFORM_) {
-	    case STRONG_LOCAL_MIN:
+		case STRONG_LOCAL_MIN:
 			return_inform = bc::STRONG_LOCAL_MIN;
 			break;
-	    case WEAK_LOCAL_MIN:
+		case WEAK_LOCAL_MIN:
 			return_inform = bc::WEAK_LOCAL_MIN;
 			break;
-	    case UNBOUNDED:
-			throw Unbounded(
-				"QPSolverRelaxedQPOPT::call_qp_solver() : Error,"
+		case UNBOUNDED:
+			TEST_FOR_EXCEPTION(
+				true, Unbounded
+				,"QPSolverRelaxedQPOPT::call_qp_solver() : Error,"
 				" QPOPT returned that the QP is unbounded!" );
-	    case INFEASIBLE:
-			throw Infeasible(
-				"QPSolverRelaxedQPOPT::call_qp_solver() : Error,"
+		case INFEASIBLE:
+			TEST_FOR_EXCEPTION(
+				true, Infeasible
+				,"QPSolverRelaxedQPOPT::call_qp_solver() : Error,"
 				" QPOPT returned that the QP is infeasible!" );
-	    case ITMAX_EXCEEDED:
+		case ITMAX_EXCEEDED:
 			return_inform = bc::MAX_ITER_EXCEEDED;
 			break;
-	    case MAX_DOF_TOO_SMALL:
-			throw std::runtime_error(
+		case MAX_DOF_TOO_SMALL:
+			TEST_FOR_EXCEPTION(
+				true, std::runtime_error,
 				"QPSolverRelaxedQPOPT::call_qp_solver() : Error,"
 				" QPOPT says that the max dof is too small" );
-	    case INVALID_INPUT:
-			throw InvalidInput(
+		case INVALID_INPUT:
+			TEST_FOR_EXCEPTION(
+				true, InvalidInput,
 				"QPSolverRelaxedQPOPT::call_qp_solver() : Error,"
 				" QPOPT returned that the input is invalid" );
-	    case PROB_TYPE_NOT_REGOG:
-			throw std::logic_error(
+		case PROB_TYPE_NOT_REGOG:
+			TEST_FOR_EXCEPTION(
+				true, std::logic_error,
 				"QPSolverRelaxedQPOPT::call_qp_solver() : Error,"
 				" QPOPT says that the problem type is not recognized" );
 			break;
-	    default:
+		default:
 			assert(0); // Should not happen
 	}
-
+	
 	return return_inform;
 }
 
