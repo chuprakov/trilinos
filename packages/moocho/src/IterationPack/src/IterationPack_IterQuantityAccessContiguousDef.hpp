@@ -18,6 +18,7 @@
 #ifndef ITER_QUANITY_ACCESS_CONTINUOUS_DEF_H
 #define ITER_QUANITY_ACCESS_CONTINUOUS_DEF_H
 
+#include <typeinfo>
 #include <algorithm>
 #include <iterator>
 
@@ -141,6 +142,16 @@ void IterQuantityAccessContiguous<T_info>::next_iteration()
 {
 	if( !is_initialized() ) return;
 	--max_offset_;
+}
+
+template<class T_info>
+void IterQuantityAccessContiguous<T_info>::print_concrete_type( std::ostream& out ) const
+{
+	const int last_updated = this->last_updated();
+	if(last_updated != NONE_UPDATED)
+		out << typeid(get_k(last_updated)).name();
+	else
+		out << typeid(*abstract_factory_->create()).name();
 }
 
 // Overridden from IterQuantityAccess

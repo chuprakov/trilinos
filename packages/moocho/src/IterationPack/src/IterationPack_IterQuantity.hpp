@@ -199,6 +199,22 @@ public:
 
 	//@}
 
+	/** @name Runtime information */
+	//@{
+
+	///
+	/** Print to an output stream a description of this iteration quantity.
+	 *
+	 * The purpose if this method is allow the client get information as to what the
+	 * type of the iteration quantity really is for debugging and informational purposes.
+	 * This should just include information on types and nothing else.
+	 *
+	 * The concrete type of \c this can be printed using <tt>typeid(*this).name()</tt>.
+	 */
+	virtual void print_concrete_type( std::ostream& out ) const = 0;
+
+	//@}
+
 	/** @name Assert state */
 	//@{
 

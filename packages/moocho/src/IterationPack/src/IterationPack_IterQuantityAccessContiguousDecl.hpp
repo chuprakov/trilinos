@@ -138,6 +138,8 @@ public:
 	bool will_loose_mem(int offset, int set_offset) const;
 	///
 	void next_iteration();
+	///
+	void print_concrete_type( std::ostream& out ) const;
 
 	//@}
 
