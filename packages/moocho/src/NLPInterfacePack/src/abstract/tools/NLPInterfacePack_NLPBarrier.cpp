@@ -78,7 +78,7 @@ const MemMngPack::ref_count_ptr<VectorWithOp>  BarrierNLP::grad_objective_term()
 	}
 
 
-void BarrierNLP::calc_f(const VectorWithOp& x, bool newx =  true) const
+void BarrierNLP::calc_f(const VectorWithOp& x, bool newx) const
 	{
 	nlp_->calc_f(x, newx);
 	value_type* f_val = nlp_->get_f();
@@ -89,7 +89,7 @@ void BarrierNLP::calc_f(const VectorWithOp& x, bool newx =  true) const
 	(*f_val) += barrier_term_;
 	}
 
-void BarrierNLP::calc_Gf(const VectorWithOp& x, bool newx =  true) const
+void BarrierNLP::calc_Gf(const VectorWithOp& x, bool newx) const
 	{
    	nlp_->calc_Gf(x, newx);
 	grad_objective_term_ = nlp_->get_Gf()->clone();
