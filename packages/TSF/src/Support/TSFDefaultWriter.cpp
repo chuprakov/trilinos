@@ -29,23 +29,27 @@ void TSFDefaultWriter::print(const std::string& msg)
 	unsigned int maxLineSize = 78 - head.length();
 
 	TSFArray<string> tokens = StrUtils::getTokensPlusWhitespace(msg);
-	
+
+	ostrstream ss;
+
 	unsigned int lineSize = 0;
-	os_ << head;
+	ss << head;
 	for (int i=0; i<tokens.length(); i++)
 		{
 			if (lineSize+tokens[i].length() > maxLineSize)
 				{
 					if (StrUtils::isWhite(tokens[i])) continue;
-					os_ << std::endl << head << tokens[i];
+					ss << std::endl << head << tokens[i];
 					lineSize = 0;
 				}
 			else
 				{
-					os_ << tokens[i];
+					ss << tokens[i];
 				}
 			lineSize += tokens[i].length();
 		}
+	ss << ends;
+	os_ << ss.str();
 }
 
 void TSFDefaultWriter::println(const std::string& msg)

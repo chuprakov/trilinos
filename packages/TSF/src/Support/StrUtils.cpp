@@ -12,6 +12,7 @@ TSFArray<string> StrUtils::readFile(istream& is, char comment)
   while (readLine(is, line))
     {
       if (line.length() > 0) rtn.append(before(line, comment));
+      line="";
     }
 	
   return rtn;
