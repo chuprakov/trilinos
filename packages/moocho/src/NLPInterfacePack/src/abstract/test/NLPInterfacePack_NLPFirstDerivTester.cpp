@@ -50,6 +50,8 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 	, std::ostream				*out
 	) const
 {
+	using LinAlgPack::assert_print_nan_inf;
+
 	// ///////////////////////////////////
 	// Validate the input
 
@@ -185,9 +187,11 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 	using std::endl;
 	using std::right;
 
+	using LinAlgPack::dot;
 	using LinAlgPack::Vp_StV;
 	using LinAlgPack::sqrt_eps;
 	using LinAlgPack::assert_print_nan_inf;
+	using LinAlgPack::random_vector;
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;
 

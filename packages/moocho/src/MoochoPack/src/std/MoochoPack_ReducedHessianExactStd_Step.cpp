@@ -34,11 +34,16 @@ bool ReducedHessianExactStd_Step::do_step(
 	using SparseLinAlgPack::M_MtMtM;
 	typedef SparseLinAlgPack::MatrixSymDenseInitialize	MatrixSymDenseInitialize;
 	typedef SparseLinAlgPack::MatrixSymWithOp			MatrixSymWithOp;
+	using ConstrainedOptimizationPack::NLPSecondOrderInfo;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
 	NLPSecondOrderInfo
+#ifdef _WINDOWS
+				&nlp	= dynamic_cast<NLPSecondOrderInfo&>(algo.nlp());
+#else
 				&nlp	= dyn_cast<NLPSecondOrderInfo>(algo.nlp());
+#endif
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();

@@ -48,7 +48,11 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(Algorithm& 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
 	NLPrSQPTailoredApproach
+#ifdef _WINDOWS
+				&nlp	= dynamic_cast<NLPrSQPTailoredApproach&>(algo.nlp());
+#else
 				&nlp	= dyn_cast<NLPrSQPTailoredApproach>(algo.nlp());
+#endif
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -85,7 +89,11 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(Algorithm& 
 	MatrixWithOp
 		&Z_k = s.Z().set_k(0);
 	DenseIdentVertConcatMatrixSubclass
+#ifdef _WINDOWS
+		&cZ_k = dynamic_cast<DenseIdentVertConcatMatrixSubclass&>(Z_k);
+#else
 		&cZ_k = dyn_cast<DenseIdentVertConcatMatrixSubclass>(Z_k);
+#endif
 	cZ_k.m().resize( nlp.n(), nlp.n() - nlp.r(), true);	// Z = [ D; I ]
 	GenMatrixSlice
 		D = cZ_k.m().D();

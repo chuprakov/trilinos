@@ -161,7 +161,12 @@ void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 
 	const rSQPAlgo			&algo = rsqp_algo(p_algo);
 	const rSQPState			&s =algo.rsqp_state();
-	const NLPFirstOrderInfo	&nlp = const_dyn_cast<NLPFirstOrderInfo>(algo.nlp()); 
+	const NLPFirstOrderInfo
+#ifdef _WINDOWS
+		&nlp = dynamic_cast<const NLPFirstOrderInfo&>(algo.nlp()); 
+#else
+		&nlp = const_dyn_cast<NLPFirstOrderInfo>(algo.nlp()); 
+#endif
 
 	// Output the table's header for the first iteration
 	if(s.k() == 0) {

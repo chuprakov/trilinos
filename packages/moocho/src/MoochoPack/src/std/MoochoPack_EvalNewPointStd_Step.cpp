@@ -38,10 +38,16 @@ bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 	using LinAlgPack::norm_inf;
 	using LinAlgPack::assert_print_nan_inf;
 	using GeneralIterationPack::print_algorithm_step;
+	using NLPInterfacePack::NLPReduced;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
-	NLPReduced	&nlp	= dyn_cast<NLPReduced>(algo.nlp());
+	NLPReduced
+#ifdef _WINDOWS
+		&nlp	= dynamic_cast<NLPReduced&>(algo.nlp());
+#else
+		&nlp	= dyn_cast<NLPReduced>(algo.nlp());
+#endif
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();

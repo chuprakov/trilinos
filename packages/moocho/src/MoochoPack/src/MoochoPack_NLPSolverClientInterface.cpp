@@ -1,15 +1,15 @@
 #include "../include/rSQPSolverClientInterface.h"
 
 ReducedSpaceSQPPack::rSQPSolverClientInterface::rSQPSolverClientInterface(
-		  int					max_iter				= 100
-		, double				max_run_time			= 1e+10 // run forever
-		, value_type			opt_tol					= 1e-6
-		, value_type			feas_tol				= 1e-6
-		, value_type			step_tol				= 1e-6
-		, value_type			max_var_bounds_viol		= 0.0
-		, EJournalOutputLevel 	journal_output_level 	= PRINT_NOTHING
-		, int					journal_print_digits	= 6
-		, bool					check_results			= true
+		  int					max_iter
+		, double				max_run_time
+		, value_type			opt_tol
+		, value_type			feas_tol
+		, value_type			step_tol
+		, value_type			max_var_bounds_viol
+		, EJournalOutputLevel 	journal_output_level
+		, int					journal_print_digits
+		, bool					check_results
 		)
 	:
 		  max_iter_(max_iter)

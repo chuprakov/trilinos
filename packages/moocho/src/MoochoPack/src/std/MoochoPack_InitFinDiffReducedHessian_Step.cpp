@@ -64,11 +64,16 @@ bool ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::do_step(Algorithm& _al
 	using LinAlgPack::norm_inf;
 	using LinAlgOpPack::V_MtV;
 	using SparseLinAlgPack::max_near_feas_step;
+	using NLPInterfacePack::NLPFirstOrderInfo;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
 	NLPFirstOrderInfo
-				&nlp	= dyn_cast<NLPFirstOrderInfo>(algo.nlp());
+#ifdef _WINDOWS
+		&nlp = dynamic_cast<NLPFirstOrderInfo&>(algo.nlp());
+#else
+		&nlp = dyn_cast<NLPFirstOrderInfo>(algo.nlp());
+#endif
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();

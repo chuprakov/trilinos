@@ -3,6 +3,8 @@
 
 // disable VC 5.0 warnings about debugger limitations
 #pragma warning(disable : 4786)	
+// disable VC 5.0 warnings about truncated identifier names (templates).
+#pragma warning(disable : 4503)	
 
 #include <assert.h>
 
@@ -1290,7 +1292,12 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
 
 	namespace rcp = ReferenceCountingPack;
 
-	rSQPAlgo	&algo	= dyn_cast<rSQPAlgo>(_algo);
+	rSQPAlgo
+#ifdef _WINDOWS
+		&algo	= dynamic_cast<rSQPAlgo&>(_algo);
+#else
+		&algo	= dyn_cast<rSQPAlgo>(_algo);
+#endif
 	rSQPState	&state	= algo.rsqp_state();
 	NLP			&nlp = algo.nlp();
 

@@ -182,10 +182,10 @@ public:
 	///
 	void init_algo(rSQPAlgoInterface& algo);
 
-private:
+public:
 
 	// ///////////////////////////////////////////////////////////////////////
-	// Private types
+	// These should be private types but MS VC++ 6.0 will not allow it!
 
 	///
 	typedef std::auto_ptr<std::ofstream> mapped_qp_file_ptr_t;
@@ -221,6 +221,9 @@ private:
 	///
 	enum EHessianInitialization { INIT_HESS_IDENTITY, INIT_HESS_FIN_DIFF_SCALE_IDENTITY
 		, INIT_HESS_FIN_DIFF_SCALE_DIAGONAL, INIT_HESS_FIN_DIFF_SCALE_DIAGONAL_ABS };
+
+private:
+
 	///
 	struct SOptionValues {
 		// constructor (default values)
