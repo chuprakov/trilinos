@@ -50,7 +50,7 @@ using ConstrainedOptimizationPack::DecompositionSystemVarReduct;
 using ConstrainedOptimizationPack::DecompositionSystemCoordinate;
 using ConstrainedOptimizationPack::DecompositionSystemOrthogonal;
 using ConstrainedOptimizationPack::DecompositionSystemTester;
-class DecompositionSystemTesterSetOptions;
+using ConstrainedOptimizationPack::DecompositionSystemTesterSetOptions;
 
 //using ConstrainedOptimizationPack::QPSolverRelaxed;
 //using ConstrainedOptimizationPack::QPSchur;
