@@ -18,7 +18,11 @@ cgTest_CXXFLAGS = $(SUNDANCE_INCLUDES)
 
 
 
-
+if HAVE_TSF_ML
+ML_LIB = -lml
+else
+ML_LIB = 
+endif
 
 TSF_INCLUDES = -I$(top_srcdir)/src/Support -I$(top_srcdir)/src/Vectors \
 	-I$(top_srcdir)/src/VectorSpaces -I$(top_srcdir)/src/LinearOperators \
@@ -41,5 +45,5 @@ TSF_LIBS = $(TRILINOS_TEMPLATE_OBJS) -L$(top_builddir)/src \
 	-L$(top_builddir)/../epetra/src \
 	-L$(top_builddir)/../ml/src \
 	-L$(top_builddir)/../triutils/src \
-	-lTSF -lml -laztecoo -lifpack -lepetra -ltriutils 
+	-lTSF $(ML_LIB) -laztecoo -lifpack -lepetra -ltriutils 
 
