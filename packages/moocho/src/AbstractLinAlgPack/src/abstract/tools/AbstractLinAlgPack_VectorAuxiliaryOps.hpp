@@ -95,6 +95,63 @@ value_type log_bound_barrier(
 	,const VectorWithOp   &xu
 	); 
 
+///
+/** Compute the maximum violation from a set of inequality constraints <tt>vL <= v <= vU</tt>.
+ *
+ * @param  v      [in] Inequality value vector.
+ * @param  vL     [in] Lower inequality bounds (may be -infinity (i.e. very large negative number))
+ * @param  vU     [in] Upper inequality bounds (may be +infinity (i.e. very large positive number))
+ * @param  max_viol_i
+ *                [out] Gives the index of the inequality with the maximum (scaled) violation.
+ *                If <tt>*max_viol_i == 0</tt> on output then no inequality was violated.
+ * @param  max_viol
+ *                [out] The maximum (scaled violation).
+ *                Only significant if <tt>*max_viol_i > 0</tt>.  
+ * @param  v_i
+ *                [out] Set to <tt>v.get_ele(*max_viol_i)</tt>.
+ *                Only significant if <tt>*max_viol_i > 0</tt>.
+ * @param  bnd_type
+ *                [out] The type of bound with the maximum violation.
+ *                <ul>
+ *                    <li> -1 : LOWER
+ *                    <li>  0 : EQUALITY
+ *                    <li> +1 : UPPER
+ *                </ul>
+ *                Only significant if <tt>*max_viol_i > 0</tt>.
+ * @param  vLU_i
+ *                [out] Set to:
+ *                <ul>
+ *                    <li><tt>vL.get_ele(*max_viol_i)</tt> if <tt>*bnd_type <= 0</tt>
+ *                    <li><tt>vU.get_ele(*max_viol_i)</tt> if <tt>*bnd_type > 0</tt>
+ *                </ul>
+ *                Only significant if <tt>*max_viol_i > 0</tt>.  
+ *
+ * @return Returns <tt>true</tt> if some constraint was violated.
+ *
+ * Preconditions:<ul>
+ * <li> ToDo: Spell these out!
+ * </ul>
+ *
+ * Postconditions:<ul>
+ * <li> ToDo: Spell these out!
+ * </ul>
+ *
+ * In order to make the result unique if more than one inequality
+ * <tt>vL(i) <= v(i) <= vL(i)</tt> have the same maximum violation
+ * then the inequality with the lowest <tt>i</tt> is returned.
+ *
+ */
+bool max_inequ_viol(
+	const AbstractLinAlgPack::VectorWithOp   &v
+	,const AbstractLinAlgPack::VectorWithOp  &vL
+	,const AbstractLinAlgPack::VectorWithOp  &vU
+	,AbstractLinAlgPack::size_type           *max_viol_i
+	,AbstractLinAlgPack::value_type          *max_viol
+	,AbstractLinAlgPack::value_type          *v_i
+	,int                                     *bnd_type
+	,AbstractLinAlgPack::value_type          *vLU_i
+	); 
+
 //@}
 
 /** \defgroup VectorAuxiliaryOps_TOp_grp Transformation operations */

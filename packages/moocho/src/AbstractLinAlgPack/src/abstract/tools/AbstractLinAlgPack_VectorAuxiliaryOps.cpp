@@ -22,6 +22,7 @@
 #include "RTOpStdOpsLib/include/RTOp_ROp_max_rel_step.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_num_bounded.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_log_bound_barrier.h"
+#include "RTOpStdOpsLib/include/RTOp_ROp_max_inequ_viol.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_force_in_bounds.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_max_vec_scalar.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_max_abs_vec_scalar.h"
@@ -172,6 +173,38 @@ AbstractLinAlgPack::log_bound_barrier(
 		,reduct_obj.obj()
 		);
 	return RTOp_ROp_log_bound_barrier_val(reduct_obj.obj());
+}
+
+bool AbstractLinAlgPack::max_inequ_viol(
+	const AbstractLinAlgPack::VectorWithOp   &v
+	,const AbstractLinAlgPack::VectorWithOp  &vL
+	,const AbstractLinAlgPack::VectorWithOp  &vU
+	,AbstractLinAlgPack::size_type           *max_viol_i
+	,AbstractLinAlgPack::value_type          *max_viol
+	,AbstractLinAlgPack::value_type          *v_i
+	,int                                     *bnd_type
+	,AbstractLinAlgPack::value_type          *vLU_i
+	)
+{
+	RTOpPack::RTOpC          op;
+	RTOpPack::ReductTarget   reduct_obj;
+	RTOp_ROp_max_inequ_viol_construct(&op.op());
+	op.reduct_obj_create(&reduct_obj);
+	const int num_vecs = 2;
+	const VectorWithOp*
+		vecs[num_vecs] = { &vL, &vU };
+	v.apply_reduction(
+		op, num_vecs, vecs, 0, NULL
+		,reduct_obj.obj()
+		);
+	const RTOp_ROp_max_inequ_viol_reduct_obj_t
+		ro = RTOp_ROp_max_inequ_viol_val(reduct_obj.obj());
+	*max_viol_i = ro.max_viol_i;
+	*max_viol   = ro.max_viol;
+	*v_i        = ro.v_i;
+	*bnd_type   = ro.bnd_type;
+	*vLU_i      = ro.vLU_i;
+	return *max_viol_i > 0.0;
 }
 
 void AbstractLinAlgPack::force_in_bounds(
