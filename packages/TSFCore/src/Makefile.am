@@ -104,6 +104,11 @@ INTERFACES_SOLVERS_H = \
 UTILITIES_SOLVERS_H = \
 	$(srcdir)/utilities/Solvers/TSFCoreSolversBiCGSolverDecl.hpp\
 	$(srcdir)/utilities/Solvers/TSFCoreSolversBiCGSolver.hpp\
+	$(srcdir)/utilities/Solvers/TSFCoreSolversCGSolverDecl.hpp\
+	$(srcdir)/utilities/Solvers/TSFCoreSolversCGSolver.hpp\
+	$(srcdir)/utilities/Solvers/TSFCoreSolversSimpleGMRESSolverDecl.hpp\
+	$(srcdir)/utilities/Solvers/TSFCoreSolversSimpleGMRESSolver.hpp\
+	$(srcdir)/../example/Solvers/TSFCoreSolversGmresSolver.hpp\
 	$(srcdir)/utilities/Solvers/TSFCoreSolversNormedConvergenceTesterDecl.hpp\
 	$(srcdir)/utilities/Solvers/TSFCoreSolversNormedConvergenceTester.hpp
 

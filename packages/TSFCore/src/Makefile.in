@@ -230,6 +230,11 @@ am__include_HEADERS_DIST = $(srcdir)/TSFCore_ConfigDefs.hpp \
 	$(srcdir)/interfaces/Solvers/TSFCoreSolversTypes.hpp \
 	$(srcdir)/utilities/Solvers/TSFCoreSolversBiCGSolverDecl.hpp \
 	$(srcdir)/utilities/Solvers/TSFCoreSolversBiCGSolver.hpp \
+	$(srcdir)/utilities/Solvers/TSFCoreSolversCGSolverDecl.hpp \
+	$(srcdir)/utilities/Solvers/TSFCoreSolversCGSolver.hpp \
+	$(srcdir)/utilities/Solvers/TSFCoreSolversSimpleGMRESSolverDecl.hpp \
+	$(srcdir)/utilities/Solvers/TSFCoreSolversSimpleGMRESSolver.hpp \
+	$(srcdir)/../example/Solvers/TSFCoreSolversGmresSolver.hpp \
 	$(srcdir)/utilities/Solvers/TSFCoreSolversNormedConvergenceTesterDecl.hpp \
 	$(srcdir)/utilities/Solvers/TSFCoreSolversNormedConvergenceTester.hpp \
 	$(srcdir)/interfaces/Nonlin/TSFCoreNonlinLinearOpWithSolveDecl.hpp \
@@ -459,6 +464,11 @@ INTERFACES_SOLVERS_H = \
 UTILITIES_SOLVERS_H = \
 	$(srcdir)/utilities/Solvers/TSFCoreSolversBiCGSolverDecl.hpp\
 	$(srcdir)/utilities/Solvers/TSFCoreSolversBiCGSolver.hpp\
+	$(srcdir)/utilities/Solvers/TSFCoreSolversCGSolverDecl.hpp\
+	$(srcdir)/utilities/Solvers/TSFCoreSolversCGSolver.hpp\
+	$(srcdir)/utilities/Solvers/TSFCoreSolversSimpleGMRESSolverDecl.hpp\
+	$(srcdir)/utilities/Solvers/TSFCoreSolversSimpleGMRESSolver.hpp\
+	$(srcdir)/../example/Solvers/TSFCoreSolversGmresSolver.hpp\
 	$(srcdir)/utilities/Solvers/TSFCoreSolversNormedConvergenceTesterDecl.hpp\
 	$(srcdir)/utilities/Solvers/TSFCoreSolversNormedConvergenceTester.hpp
 
@@ -1070,7 +1080,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
-	$(mkdir_p) $(distdir)/adapters/aztecoo $(distdir)/adapters/epetra $(distdir)/adapters/mpi-base $(distdir)/interfaces/Core $(distdir)/interfaces/Nonlin $(distdir)/interfaces/Solvers $(distdir)/utilities/Core $(distdir)/utilities/Nonlin $(distdir)/utilities/Solvers
+	$(mkdir_p) $(distdir)/../example/Solvers $(distdir)/adapters/aztecoo $(distdir)/adapters/epetra $(distdir)/adapters/mpi-base $(distdir)/interfaces/Core $(distdir)/interfaces/Nonlin $(distdir)/interfaces/Solvers $(distdir)/utilities/Core $(distdir)/utilities/Nonlin $(distdir)/utilities/Solvers
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
