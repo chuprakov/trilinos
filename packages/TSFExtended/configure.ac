@@ -148,6 +148,11 @@ AC_PROG_F77(f77 g77 f90 xlf90)
 # ------------------------------------------------------------------------
 
 TAC_ARG_ENABLE_FEATURE(ml, [Enable the ML multilevel solvers and preconditioners in TSF], ML, yes)
+if test "X$ac_cv_use_ml" != "Xno"; then
+  HAVE_ML=true
+else
+  HAVE_ML=false
+fi
 AM_CONDITIONAL(HAVE_ML, test "X$ac_cv_use_ml" != "Xno")
 
 

@@ -38,6 +38,8 @@
 ##########################################################################
 
 
+
+
 TSF_EXPORT_LIBS = -L$(TSF_BUILD_DIRECTORY)/src -lTSFExtended \
                   -L$(TSFCORE_BUILD_DIRECTORY)/src -lTSFCore \
                   -L$(TSFCOREUTILS_BUILD_DIRECTORY)/src  -lTSFCoreUtils \
@@ -85,7 +87,8 @@ TSFCOREUTILS_BUILD_DIRECTORY = $(TSF_BUILD_DIRECTORY)/../TSFCoreUtils
 HAVE_ML = @HAVE_ML@
 
 ifeq ($(HAVE_ML),true)
-ML_LIBS = libml.a
+include $(ML_BUILD_DIRECTORY)/Makefile.export
+ML_LIBS = -lml
 else
 ML_LIBS = 
 endif
