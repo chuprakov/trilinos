@@ -283,15 +283,15 @@ protected:
         ZeroOrderInfoSerial() : f(NULL)
 		{}
 		///
-		ZeroOrderInfoSerial( value_type* f_in, VectorSlice c_in, VectorSlice h_in )
+		ZeroOrderInfoSerial( value_type* f_in, Vector* c_in, Vector* h_in )
 			: f(f_in), c(c_in), h(h_in)
 		{}
-		/// Pointer to objective function <tt>f</tt> (may be NULL if not set)
+		/// Pointer to objective function <tt>f</tt>   (may be NULL if not set)
 		value_type*    f;
-		/// Pointer to constraints residual <tt>c</tt> (may be c.dim() == 0 if not set)
-		VectorSlice    c;
-		/// Pointer to constraints residual <tt>h</tt> (may be h.dim() == 0 if not set)
-		VectorSlice    h;
+		/// Pointer to constraints residual <tt>c</tt> (may be NULL if not set)
+		Vector*        c;
+		/// Pointer to constraints residual <tt>h</tt> (may be NULL if not set)
+		Vector*        h;
 	}; // end struct ZeroOrderInfoSerial
 
 	///
@@ -302,17 +302,17 @@ protected:
 		ObjGradInfoSerial()	: f(NULL)
 		{}
 		///
-		ObjGradInfoSerial( VectorSlice Gf_in, const ZeroOrderInfoSerial& first_order_info_in )
+		ObjGradInfoSerial( Vector* Gf_in, const ZeroOrderInfoSerial& first_order_info_in )
 			: Gf(Gf_in), f(first_order_info_in.f), c(first_order_info_in.c), h(first_order_info_in.h)
 		{}
-		/// Gradient of objective function <tt>Gf</tt> (may be Gf.dim() == 0 if not set)
-		VectorSlice    Gf;
-		/// Pointer to objective function <tt>f</tt> (may be NULL if not set)
+		/// Gradient of objective function <tt>Gf</tt> (may be NULL if not set)
+		Vector*        Gf;
+		/// Pointer to objective function <tt>f</tt>   (may be NULL if not set)
 		value_type*    f;
-		/// Pointer to constraints residual <tt>c</tt> (may be c.dim() == 0 if not set)
-		VectorSlice    c;
-		/// Pointer to constraints residual <tt>h</tt> (may be h.dim() == 0 if not set)
-		VectorSlice    h;
+		/// Pointer to constraints residual <tt>c</tt> (may be NULL if not set)
+		Vector*        c;
+		/// Pointer to constraints residual <tt>h</tt> (may be NULL if not set)
+		Vector*        h;
 	}; // end struct ObjGradInfoSerial
 
 	//@}
@@ -663,14 +663,14 @@ inline
 const NLPSerialPreprocess::ZeroOrderInfoSerial
 NLPSerialPreprocess::zero_order_full_info() const
 {
-	return ZeroOrderInfoSerial( &f_full_, c_full_(), h_full_() );
+	return ZeroOrderInfoSerial( &f_full_, &c_full_, &h_full_ );
 }
 
 inline
 const NLPSerialPreprocess::ObjGradInfoSerial
 NLPSerialPreprocess::obj_grad_full_info() const
 {
-	return ObjGradInfoSerial( Gf_full_(), zero_order_full_info() );
+	return ObjGradInfoSerial( &Gf_full_, zero_order_full_info() );
 }
 
 inline

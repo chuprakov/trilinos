@@ -66,6 +66,8 @@ void NLPSerialPreprocessExplJac::set_mat_factories(
 	else 
 		factory_Gc_orig_ = rcp::rcp(
 			new afp::AbstractFactoryStd<MatrixWithOp,MatrixSparseCOORSerial>() );
+	factory_Gc_ = rcp::rcp( new afp::AbstractFactoryStd<MatrixWithOp,MatrixPermAggr>() );
+	factory_Gh_ = rcp::rcp( new afp::AbstractFactoryStd<MatrixWithOp,MatrixPermAggr>() );
 }
 
 // Overridden public members from NLP

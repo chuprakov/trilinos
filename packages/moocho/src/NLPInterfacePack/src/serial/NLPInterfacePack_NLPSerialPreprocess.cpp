@@ -271,13 +271,13 @@ NLP::vec_space_ptr_t NLPSerialPreprocess::space_x() const
 NLP::vec_space_ptr_t NLPSerialPreprocess::space_c() const
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(&space_c_,false);
+	return ( m_full_ ? rcp::rcp(&space_c_,false) : rcp::null );
 }
 
 NLP::vec_space_ptr_t NLPSerialPreprocess::space_h() const
 {
 	namespace rcp = MemMngPack;
-	return rcp::rcp(&space_h_,false);
+	return ( mI_full_ ? rcp::rcp(&space_h_,false) : rcp::null );
 }
 
 size_type NLPSerialPreprocess::num_bounded_x() const 

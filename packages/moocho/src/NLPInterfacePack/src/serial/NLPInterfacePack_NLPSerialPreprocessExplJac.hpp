@@ -57,7 +57,10 @@ public:
 		);
 
 	///
-	/** Initialize with matrix factories for \c Gc and \c Gh.
+	/** Initialize with matrix factories for original matrices \c Gc and \c Gh.
+	 *
+	 * These matrix types will be used for \c AbstractLinAlgPack::MatrixPermAggr::mat_orig()
+	 * returned by the initialized \c Gc and \c Gh objects respectively.
 	 *
 	 * @param  factory_Gc_orig
 	 *                [in] Smart pointer to matrix factory for \c Gc_orig.  If
@@ -140,6 +143,9 @@ protected:
 
 	///
 	/** Struct for zero and explicit first order quantities that subclass must fill in.
+	 *
+	 * When computing Gc and/or Gh, the subclass can be instructed to set the row and columns
+	 * index arrays by setting \c Gc_ivect==NULL and \c Gh_ivect==NULL or not respecitively.
 	 */
 	struct FirstOrderExplInfo {
 		///
@@ -181,13 +187,13 @@ protected:
 		///
 		jvect_full_t* Gh_jvect;
 		///
-		VectorSlice   Gf;
+		Vector*       Gf;
 		///
 		value_type*   f;
 		///
-		VectorSlice   c;
+		Vector*       c;
 		///
-		VectorSlice   h;
+		Vector*       h;
 	}; // end struct FirstOrderExplInfo
 
 	//@}
@@ -216,7 +222,39 @@ protected:
 	///
 	/** Calculate the COOR matrix for the gradient for all of the \a c(x) constaints in the full %NLP.
 	 *
-	 * ToDo: Finish documentation!
+	 * @param x       [in]  Unknown vector (size n_full).
+	 * @param newx    [in]  True if is a new point.
+	 * @param first_order_expl_info
+	 *                [out] Pointers to zero and first order quantities .
+	 *                On output, <tt>*first_order_expl_info.Gc_nz</tt> must be set to the actual
+	 *                number of nonzero elements in \c Gc and the array of nonzero entry
+	 *                values <tt>*first_order_expl_info.Gc_val</tt> must also be set.  In addition
+	 *                <tt
+	 *                If <tt>this->multi_calc() == true</tt> then
+	 *                any of the other quantities pointed to in \c first_order_expl_info may be set on
+	 *                output, but are not guaranteed to be.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>first_order_expl_info.Gc_nz != NULL</tt>
+	 * <li> <tt>first_order_expl_info.Gc_val != NULL</tt>
+	 * <li> <tt>(first_order_expl_info.Gc_ivect != NULL) == (first_order_expl_info.Gc_jvect != NULL)</tt> 
+	 * </ul>
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>*first_order_expl_info.Gc_nz</tt> is updated to number of nonzero elements set in
+	 *      <tt>*first_order_expl_info.Gc_val</tt>.
+	 * <li> <tt>(*first_order_expl_info.Gc_val)[k]</tt>, for <tt>k = 1...*first_order_expl_info.Gc_nz</tt>
+	 *      is set to the nonzero entry values in \c Gc.
+	 * <li> [<tt>first_order_expl_info.Gc_ivect != NULL</tt>]
+	 *      <tt>(*first_order_expl_info.Gc_ivect)[k]</tt>, for <tt>k = 1...*first_order_expl_info.Gc_nz</tt>
+	 *      is set to the row indexes for the nonzero entires in \c Gc.
+	 * <li> [<tt>first_order_expl_info.Gc_jvect != NULL</tt>]
+	 *      <tt>(*first_order_expl_info.Gc_jvect)[k]</tt>, for <tt>k = 1...*first_order_expl_info.Gc_nz</tt>
+	 *      is set to the column indexes for the nonzero entires in \c Gc.
+	 * </ul>
+	 *
+	 * Note that duplicate entires with the same row and column indexes are allowed.  In this case, the
+	 * matrix entries are considered to be summed.
 	 */
 	virtual void imp_calc_Gc_full(
 		const VectorSlice& x_full, bool newx
@@ -226,7 +264,39 @@ protected:
 	///
 	/** Calculate the COOR matrix for the gradient for all of the \c h(x) constaints in the full %NLP.
 	 *
-	 * ToDo: Finish documentation!
+	 * @param x       [in]  Unknown vector (size n_full).
+	 * @param newx    [in]  True if is a new point.
+	 * @param first_order_expl_info
+	 *                [out] Pointers to zero and first order quantities .
+	 *                On output, <tt>*first_order_expl_info.Gh_nz</tt> must be set to the actual
+	 *                number of nonzero elements in \c Gh and the array of nonzero entry
+	 *                values <tt>*first_order_expl_info.Gh_val</tt> must also be set.  In addition
+	 *                <tt
+	 *                If <tt>this->multi_calc() == true</tt> then
+	 *                any of the other quantities pointed to in \c first_order_expl_info may be set on
+	 *                output, but are not guaranteed to be.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>first_order_expl_info.Gh_nz != NULL</tt>
+	 * <li> <tt>first_order_expl_info.Gh_val != NULL</tt>
+	 * <li> <tt>(first_order_expl_info.Gh_ivect != NULL) == (first_order_expl_info.Gh_jvect != NULL)</tt> 
+	 * </ul>
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>*first_order_expl_info.Gh_nz</tt> is updated to number of nonzero elements set in
+	 *      <tt>*first_order_expl_info.Gh_val</tt>.
+	 * <li> <tt>(*first_order_expl_info.Gh_val)[k]</tt>, for <tt>k = 1...*first_order_expl_info.Gh_nz</tt>
+	 *      is set to the nonzero entry values in \c Gh.
+	 * <li> [<tt>first_order_expl_info.Gh_ivect != NULL</tt>]
+	 *      <tt>(*first_order_expl_info.Gh_ivect)[k]</tt>, for <tt>k = 1...*first_order_expl_info.Gh_nz</tt>
+	 *      is set to the row indexes for the nonzero entires in \c Gh.
+	 * <li> [<tt>first_order_expl_info.Gh_jvect != NULL</tt>]
+	 *      <tt>(*first_order_expl_info.Gh_jvect)[k]</tt>, for <tt>k = 1...*first_order_expl_info.Gh_nz</tt>
+	 *      is set to the column indexes for the nonzero entires in \c Gh.
+	 * </ul>
+	 *
+	 * Note that duplicate entires with the same row and column indexes are allowed.  In this case, the
+	 * matrix entries are considered to be summed.
 	 */
 	virtual void imp_calc_Gh_full(
 		const VectorSlice& x_full, bool newx
