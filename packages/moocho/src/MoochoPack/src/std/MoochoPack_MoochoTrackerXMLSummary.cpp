@@ -48,7 +48,6 @@ MoochoTrackerXMLSummary::MoochoTrackerXMLSummary(
 {
 }	
 
-
 void MoochoTrackerXMLSummary::output_iteration(const Algorithm& algo) const
 {
 
@@ -240,6 +239,14 @@ void MoochoTrackerXMLSummary::output_pre_file() const
 	out << "<Problem name=\"" << problem_name_  << "\" time=\"" << time_str << "\">\n";
 
 	out << ind << "<Dimension n=\"?\" m=\"?\"/>\n";
+
+	TEST_FOR_EXCEPTION(
+		true, std::logic_error
+		,"Error!, this function stopped compiling so RAB commented "
+		"it out on 2/4/2005.  Sorry!"
+		);
+
+	/* RAB: 2005/03/04: This stopped compiling so I disabled this for now
 	
 	// get the machine name - NOTE: this is not portable, may need to
 	// look into a way to do this on multiple platforms
@@ -265,6 +272,8 @@ void MoochoTrackerXMLSummary::output_pre_file() const
 		
 	out.close();	
 
+	*/
+
 }
 
 void MoochoTrackerXMLSummary::open_problem_element( std::ostream& out, const Algorithm& algo) const
@@ -274,6 +283,15 @@ void MoochoTrackerXMLSummary::open_problem_element( std::ostream& out, const Alg
 		const NLP      &nlp    = _algo.nlp(); 
 
 		char ind[] = "   ";
+
+
+	TEST_FOR_EXCEPTION(
+		true, std::logic_error
+		,"Error!, this function stopped compiling so RAB commented "
+		"it out on 2/4/2005.  Sorry!"
+		);
+
+	/* RAB: 2005/03/04: This stopped compiling so I disabled this for now
 
 		// get a string representation of the current date/time
 		time_t current_time = time(NULL);
@@ -303,6 +321,9 @@ void MoochoTrackerXMLSummary::open_problem_element( std::ostream& out, const Alg
 		// output some description of the algorithm and 
 		// its options
 		out << ind << "</Algorithm>\n";
+
+	*/
+
 	}
 
 }
