@@ -121,7 +121,7 @@ options_group rSQPAlgo_ConfigMamaJama {
 *** These options control how finite differences are computed
 *** when testing and for other purposes.
 ***
-options_group CalcFiniteDiffProdSetOptions {
+options_group CalcFiniteDiffProd {
 
 *    fd_method_order = FD_ORDER_ONE;          *** Use O(eps) one sided finite differences
 *  	 fd_method_order = FD_ORDER_TWO;          *** Use O(eps^2) one sided finite differences
