@@ -83,7 +83,7 @@ TSFLinearOperator DiagRightOperatorSource
         // EPETRA_CHK_ERR(ierr);
       }
       
-      PetraMatrix* Dinv_petra = new PetraMatrix(F.range(), F.domain());
+      PetraMatrix* Dinv_petra = new PetraMatrix(F.domain(), F.range());
       Dinv_petra->setPetraMatrix(Dinv_crs,true);
       Dinv_ = Dinv_petra;
 

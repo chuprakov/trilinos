@@ -92,20 +92,24 @@ int Aztec2TSF(	AZ_MATRIX * Amat,
 
   // Convert block matrices to epetra/TSF matrices
 
+  // Note: TSF constructor is PetraMatrix(domain, range)
   PetraMatrix* F_petra = new PetraMatrix(velocitySpace, velocitySpace);
   F_petra->setPetraMatrix(F_crs,true);    // insert the epetra matrix into our TSF
   TSFLinearOperator F_tsf = F_petra; // matrix and make it a TSF linear op
 
+  // Note: TSF constructor is PetraMatrix(domain, range)
   PetraMatrix* B_petra = new PetraMatrix(velocitySpace, pressureSpace);
   B_petra->setPetraMatrix(B_crs,true);
   TSFLinearOperator B_tsf = B_petra;
 
+  // Note: TSF constructor is PetraMatrix(domain, range)
   PetraMatrix* Bt_petra = new PetraMatrix(pressureSpace, velocitySpace);
   Bt_petra->setPetraMatrix(Bt,true);
   TSFLinearOperator Bt_tsf = Bt_petra;
   TSFLinearOperator C_tsf;
 
   if (C != NULL) {
+    // Note: TSF constructor is PetraMatrix(domain, range)
     PetraMatrix* C_petra = new PetraMatrix(pressureSpace, pressureSpace);
     C_petra->setPetraMatrix(C,true);
     C_tsf = C_petra;
@@ -195,7 +199,8 @@ int TSF_MatrixMult(const TSFLinearOperator& B, const TSFLinearOperator& Bt,
   Epetra_CrsMatrix  *Bt_crs = PetraMatrix::getConcrete(Bt);
   Epetra_CrsMatrix *result_crs = Epetra_MatrixMult(B_crs,Bt_crs);
 
-  PetraMatrix* result_petra = new PetraMatrix(B.range(), Bt.domain());
+  // Note: TSF constructor is PetraMatrix(domain, range)
+  PetraMatrix* result_petra = new PetraMatrix(Bt.domain(), B.range());
   result_petra->setPetraMatrix(result_crs,true);  // insert the epetra matrix into our TSF
   result = result_petra;                          // matrix and make it a TSF linear op
 
@@ -239,7 +244,8 @@ int TSF_MatrixAdd(const TSFLinearOperator& B, const TSFLinearOperator& Bt,
   Epetra_CrsMatrix *result_crs = Epetra_MatrixAdd(B_crs,Bt_crs,scalar);
 
 
-  PetraMatrix* result_petra = new PetraMatrix(B.range(), Bt.domain());
+  // Note: TSF constructor is PetraMatrix(domain, range)
+  PetraMatrix* result_petra = new PetraMatrix(Bt.domain(), B.range());
   result_petra->setPetraMatrix(result_crs,true);  // insert the epetra matrix into our TSF
   result = result_petra;                          // matrix and make it a TSF linear op
 

@@ -57,13 +57,31 @@ TSFLinearOperator DiagSchurFactory
   // otherwise, the regular TSF implicit mult is OK and cheaper
 
   TSFLinearOperator schurOp;
-  //  TSFLinearOperator tempOp1;
-  //  TSF_MatrixMult(Dinv, Bt, tempOp1); // tempOp1 = Dinv*Bt
-  //  TSF_MatrixMult(B, tempOp1, schurOp); // tempOp2 = B*tempOp1
+  TSFLinearOperator tempOp1;
+  TSF_MatrixMult(Dinv, Bt, tempOp1); // tempOp1 = Dinv*Bt
+  TSF_MatrixMult(B, tempOp1, schurOp); // tempOp2 = B*tempOp1
+  cerr << "got here after matmult" << endl;
+
+  S.describe();
   
+  Dinv.describe();
+  Bt.describe();
+  tempOp1.describe();
+
+  B.describe();
+  schurOp.describe();
+
+
+  TSFLinearOperator tempOp2;
+  TSF_MatrixMult(B, Bt, tempOp2); // tempOp2 = B*tempOp1
+
+  tempOp2.describe();
+
+
 
   // If not ML, can use TSF's regular deferred multiplications
-  schurOp = B*Dinv*Bt;
+
+  //  schurOp = B*Dinv*Bt;
 
   Xinv = schurOp.inverse(schurSolver_);
 

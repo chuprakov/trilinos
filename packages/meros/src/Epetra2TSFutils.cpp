@@ -32,6 +32,7 @@ TSFVectorSpace EpetraCRS2TSFVspace(Epetra_CrsMatrix *Mx_crs)
 }
 
 // Build TSF vector spaces
+// Be sure to call with TSF style space ordering (i.e., domain, range)
 TSFLinearOperator EpetraCRS2TSF(TSFVectorSpace vSpace,TSFVectorSpace pSpace,Epetra_CrsMatrix *Mx_crs)
 {
  PetraMatrix* Mx_petra = new PetraMatrix(vSpace, pSpace);
