@@ -85,9 +85,9 @@ namespace TSFExtended
       void apply(const Vector<Scalar>& in,
                  Vector<Scalar>& out) const ;
 
-      // /** */
-//       void applyTranspose(const Vector<Scalar>& in,
-//                           Vector<Scalar>& out) const ;
+      /** */
+       void applyTranspose(const Vector<Scalar>& in,
+                           Vector<Scalar>& out) const ;
 
 //       /** */
 //       LinearOperator<Scalar> transpose() const ;

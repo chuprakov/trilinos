@@ -86,11 +86,16 @@ OPERATORS_H = \
 	$(srcdir)/Operators/TSFDiagonalOperator.hpp\
 	$(srcdir)/Operators/TSFExplicitlyTransposeableOp.hpp\
 	$(srcdir)/Operators/TSFIdentityOperator.hpp \
-	$(srcdir)/Operators/TSFLinearOperator.hpp\
+	$(srcdir)/Operators/TSFILUFactorizableOp.hpp \
+	$(srcdir)/Operators/TSFInverseOperator.hpp \
+	$(srcdir)/Operators/TSFLinearOperator.hpp \
+	$(srcdir)/Operators/TSFLinearOperatorDecl.hpp \
+	$(srcdir)/Operators/TSFLinearOperatorImpl.hpp \
 	$(srcdir)/Operators/TSFLoadableMatrix.hpp\
 	$(srcdir)/Operators/TSFNonlinearOperator.hpp\
 	$(srcdir)/Operators/TSFNonlinearOperatorBase.hpp\
 	$(srcdir)/Operators/TSFOpDescribableByTypeID.hpp \
+	$(srcdir)/Operators/TSFRowAccessibleOp.hpp \
 	$(srcdir)/Operators/TSFScaledOperator.hpp\
 	$(srcdir)/Operators/TSFSumOperator.hpp\
 	$(srcdir)/Operators/TSFTransposeOperator.hpp\
@@ -106,6 +111,8 @@ LINEARSOLVERS_H = \
 	$(srcdir)/LinearSolvers/TSFKrylovSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFLinearSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFLinearSolverBase.hpp \
+	$(srcdir)/LinearSolvers/TSFLinearSolverBaseDecl.hpp \
+	$(srcdir)/LinearSolvers/TSFLinearSolverBaseImpl.hpp \
 	$(srcdir)/LinearSolvers/TSFSolverState.hpp 
 
 LINEARSOLVERS = \

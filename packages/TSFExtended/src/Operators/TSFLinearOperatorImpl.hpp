@@ -94,10 +94,20 @@ void LinearOperator<Scalar>::apply(const Vector<Scalar>& in,
 	       out.ptr().get());
 }
 
-//       void applyTranspose(const Vector<Scalar>& in,
-//                           Vector<Scalar>& out) const ;
-
-//       LinearOperator<Scalar> transpose() const ;
+template <class Scalar> inline 
+void LinearOperator<Scalar>::applyTranspose(const Vector<Scalar>& in,
+                                            Vector<Scalar>& out) const
+{
+  /* the result vector might not be initialized. If it's null,
+   * create a new vector in the domain space (i.e., the range space
+   * of the transpose operator */
+  if (out.ptr().get()==0)
+    {
+      out = domain().createMember();
+    }
+  ptr()->apply(TSFCore::TRANS, *(in.ptr().get()),
+	       out.ptr().get());
+}
 
 //       LinearOperator<Scalar> form() const ;
 
