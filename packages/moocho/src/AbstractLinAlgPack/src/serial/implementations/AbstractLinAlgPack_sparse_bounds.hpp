@@ -1,6 +1,9 @@
 // ///////////////////////////////////////////////////////////////
 // sparse_bounds.h
 
+#ifndef SPARSE_LIN_ALG_PACK_SPARSE_BOUNDS_H
+#define SPARSE_LIN_ALG_PACK_SPARSE_BOUNDS_H
+
 #include "SpVectorClass.h"
 
 namespace SparseLinAlgPack {
@@ -119,3 +122,5 @@ private:
 };	// end class sparse_bounds_itr
 
 }	// end namespace SparseLinAlgPack
+
+#endif // SPARSE_LIN_ALG_PACK_SPARSE_BOUNDS_H
