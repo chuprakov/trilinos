@@ -73,9 +73,6 @@ namespace TSFExtended
     TEST_FOR_EXCEPTION(op.ptr().get()==0, std::runtime_error,
                         "null op pointer in LinearSolver<Scalar>::solve()");
 
-    TEST_FOR_EXCEPTION(soln.ptr().get()==0, std::runtime_error,
-                        "null soln pointer in LinearSolver<Scalar>::solve()");
-
     return ptr()->solve(op, rhs, soln);
   }
 
