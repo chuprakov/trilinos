@@ -97,6 +97,29 @@ public:
 	virtual vec_mut_ptr_t create_member() const = 0;
 
 	///
+	/** Create a vector member from the vector space initialized to a scalar.
+	 *
+	 * @param  alpha   [in] Scalar that all elements of allocated vector are
+	 *                 initialized to.
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>return.get() != NULL</tt>
+	 * <li> <tt>return->dim() == this->dim()</tt>
+	 * <li> <tt>return->space().is_compatible(*this) == true</tt>
+	 * </ul>
+	 *
+	 * @return  Returns a smart reference counted pointer to a dynamically
+	 * allocated vector object.  After construction the values returnd by 
+	 * <tt>return->get_ele(i)</tt> are equal to <tt>alpha</tt>.
+	 * Note that <tt>&return->space()</tt> does not have to
+	 * be equal to <tt>this</tt>.
+	 *
+	 * The default implementation just calls \c create_member() and then
+	 * assigns <tt>alpha</tt> before returning the smart pointer object.
+	 */
+	virtual vec_mut_ptr_t create_member(const value_type& alpha) const;
+
+	///
 	/** Create a set of vector members (a \c MultiVector) from the vector space.
 	 *
 	 * Preconditions:<ul>

@@ -21,17 +21,25 @@
 
 namespace AbstractLinAlgPack {
 
+VectorSpace::vec_mut_ptr_t
+VectorSpace::create_member(const value_type& alpha) const
+{
+	namespace mmp = MemMngPack;
+	vec_mut_ptr_t vec = this->create_member();
+	*vec = alpha;
+	return vec;
+}
+
 VectorSpace::multi_vec_mut_ptr_t
 VectorSpace::create_members(size_type num_vecs) const
 {
-	namespace rcp = MemMngPack;
-	return rcp::rcp<multi_vec_mut_ptr_t::element_type>(NULL);
+	return MemMngPack::null;
 }
 
 VectorSpace::space_ptr_t
 VectorSpace::sub_space(const Range1D& rng_in) const
 {
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 	const index_type dim = this->dim();
 	const Range1D    rng = rng_in.full_range() ? Range1D(1,dim) : rng_in;
 #ifdef _DEBUG
@@ -42,9 +50,9 @@ VectorSpace::sub_space(const Range1D& rng_in) const
 #endif	
 	if( rng.lbound() == 1 && rng.ubound() == dim )
 		return space_ptr_t( this, false );
-	return rcp::rcp(
+	return mmp::rcp(
 		new VectorSpaceSubSpace(
-			rcp::rcp( this, false )
+			mmp::rcp( this, false )
 			,rng ) );
 }
 
