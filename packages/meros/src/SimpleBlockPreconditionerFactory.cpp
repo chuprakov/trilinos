@@ -10,6 +10,7 @@
 #include "RightBlockNSOperatorSource.h"
 #include "SimpleOperatorSource.h"
 #include "BlockForwardsolver.h"
+#include "TSFZeroOperator.h"
 
 using namespace SPP;
 using namespace TSF;
@@ -53,12 +54,15 @@ TSFPreconditioner SimpleBlockPreconditionerFactory
   
   TSFLinearOperator Bt = S.getBlock(0,1);
   TSFLinearOperator B = S.getBlock(1,0);
-  //	TSFLinearOperator C = S.getBlock(1,1);
-  
+  TSFLinearOperator C = S.getBlock(1,1);
+  TSFLinearOperator X;
   TSFLinearOperator FinvBt = Finv*Bt;
-  	
-  // Build the Schur complement approx using the SchurFactory
-  TSFLinearOperator X = B*Finv*Bt;
+  
+  if (C.isZeroOperator()) X = C+B*FinvBt;  //DO WE WANT A MINUS C?
+  else
+  { 
+  X = B*Finv*Bt;
+  }
 
   // Make identity matrices on the right spaces
   TSFLinearOperator Iv = new TSFIdentityOperator(F.domain());
