@@ -99,6 +99,12 @@ namespace TSFExtended
   void LinearOperator<Scalar>::apply(const Vector<Scalar>& in,
                                      Vector<Scalar>& out) const
   {
+    /* the result vector might not be initialized. If it's null,
+     * create a new vector in the range space */
+    if (out.ptr().get()==0)
+      {
+        out = range()->createMember();
+      }
     ptr()->apply(TSFCore::NOTRANS, *(in.ptr().get()),
                  out.ptr().get());
   }

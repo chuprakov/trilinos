@@ -73,7 +73,7 @@ int main(int argc, void *argv[])
       //      cerr << A << endl;
 
       Vector<double> x = space.createMember();
-      Vector<double> y = space.createMember();
+      Vector<double> y;
 
       for (int i=0; i<nLocalRows; i++)
         {
