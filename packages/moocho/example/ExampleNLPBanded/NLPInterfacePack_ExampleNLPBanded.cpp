@@ -36,6 +36,9 @@ ExampleNLPBanded::ExampleNLPBanded(
 	,value_type   hl
 	,value_type   hu
 	,bool         nlp_selects_basis
+	,value_type   diag_scal
+	,value_type   diag_vary
+	,bool         sym_basis
 	)
 	:is_initialized_(false)
 	,nlp_selects_basis_(nlp_selects_basis)
@@ -46,6 +49,9 @@ ExampleNLPBanded::ExampleNLPBanded(
 	,bw_(bw)
 	,mU_(mU)
 	,mI_(mI)
+	,diag_scal_(diag_scal)
+	,diag_vary_(diag_vary)
+	,fu_( sym_basis ? 3 : 6 )
 {
 #ifdef _DEBUG	
 	const char msg_err_head[] = "ExampleNLPBanded::ExampleNLPBanded(...) : Error";
@@ -195,6 +201,9 @@ void ExampleNLPBanded::imp_calc_c_full(
 		num_I_per_D = nD_ / nI_,  // Integer division (rounds down)
 		I_remainder = nD_ % nI_;
 	size_type j = 0;
+	const value_type
+		ds_alpha = nD_ > 1 ? diag_scal_ * (diag_vary_ - 1.0)/(nD_ - 1.0) : 0.0,
+		ds_beta = diag_scal_;
 	for( size_type q_i = 1; q_i <= nI_; ++q_i ) {
 		const size_type num_I_per_D_local = num_I_per_D + ( q_i <= I_remainder ? 1 : 0 );
 		for( size_type q_k = 0; q_k < num_I_per_D_local; ++q_k ) {
@@ -202,13 +211,15 @@ void ExampleNLPBanded::imp_calc_c_full(
 			const size_type
 				klu = ( j - bw_     >= 0   ? bw_-1 : j-1   ),
 				kuu = ( j + bw_ - 1 <= nD_ ? bw_-1 : nD_-j );
+			const value_type
+				ds_j = ds_alpha * (j-1) + ds_beta;
 			value_type
-				&c_j = (c(j) = 10.0 * x(j));
+				&c_j = (c(j) = ds_j * x(j));
 			{for( size_type k = 1; k <= klu; ++k ) {
 				c_j -= (3.0 / k) * x(j-k);
 			}}
 			{for( size_type k = 1; k <= kuu; ++k ) {
-				c_j -= (3.0 / k) * x(j+k);
+				c_j -= (fu_ / k) * x(j+k);
 			}}
 			const value_type
 				term = x(nD_ + q_i) + 1;
@@ -311,6 +322,9 @@ void ExampleNLPBanded::imp_calc_Gc_full(
 		I_remainder = nD_ % nI_;
 	Gc_nz = 0;
 	size_type j = 0;
+	const value_type
+		ds_alpha = nD_ > 1 ? diag_scal_ * (diag_vary_ - 1.0)/(nD_ - 1.0) : 0.0,
+		ds_beta = diag_scal_;
 	for( size_type q_i = 1; q_i <= nI_; ++q_i ) {
 		const value_type
 			x_q = x(nD_ + q_i),
@@ -321,6 +335,8 @@ void ExampleNLPBanded::imp_calc_Gc_full(
 			const size_type
 				klu = ( j - bw_     >= 0   ? bw_-1 : j-1   ),
 				kuu = ( j + bw_ - 1 <= nD_ ? bw_-1 : nD_-j );
+			const value_type
+				ds_j = ds_alpha * (j-1) + ds_beta;
 			//
 			{for( index_type k = klu; k >= 1; --k ) {
 				++Gc_nz;
@@ -332,7 +348,7 @@ void ExampleNLPBanded::imp_calc_Gc_full(
 			}}
 			//
 			++Gc_nz;
-			*Gc_val++ = 10.0 * x_q_term;
+			*Gc_val++ = ds_j * x_q_term;
 			if(Gc_ivect) {
 				*Gc_ivect++ = j;
 				*Gc_jvect++ = j;
@@ -340,7 +356,7 @@ void ExampleNLPBanded::imp_calc_Gc_full(
 			//
 			{for( index_type k = 1; k <= kuu; ++k ) {
 				++Gc_nz;
-				*Gc_val++ = -3.0 / k * x_q_term;
+				*Gc_val++ = -fu_ / k * x_q_term;
 				if(Gc_ivect) {
 					*Gc_ivect++ = j + k;
 					*Gc_jvect++ = j;

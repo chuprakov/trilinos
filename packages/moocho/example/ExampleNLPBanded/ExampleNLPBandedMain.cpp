@@ -44,6 +44,9 @@ int main( int argc, char* argv[] )
 		size_type    mI = 0;
 		value_type   hl = -NLP::infinite_bound();
 		value_type   hu = +NLP::infinite_bound();
+		value_type   diag_scal = 1.0;
+		value_type   diag_vary = 1.0;
+		bool         sym_basis = false;
 		
 		// Read from the arguments
 		if(argc > 1)
@@ -56,11 +59,17 @@ int main( int argc, char* argv[] )
 			xo = ::atof(argv[4]);
 		if(argc > 5)
 			nlp_selects_basis = (::atoi(argv[5]) != 0 );
-
+		if(argc > 6)
+			diag_scal  = ::atof(argv[6]);
+		if(argc > 7)
+			diag_scal  = ::atof(argv[7]);
+		if(argc > 8)
+			sym_basis = (::atoi(argv[8]) != 0 );
+		
 		// ToDo: readin more the arguments from argv[] when options are supported
 		
 		ExampleNLPBanded
-			nlp(nD,nI,bw,mU,mI,xo,xl,xu,hl,hu,nlp_selects_basis);
+			nlp(nD,nI,bw,mU,mI,xo,xl,xu,hl,hu,nlp_selects_basis,diag_scal,diag_vary,sym_basis);
 
 		rSQPppSolver  solver;
 

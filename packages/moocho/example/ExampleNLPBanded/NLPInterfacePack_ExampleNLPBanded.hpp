@@ -34,6 +34,10 @@ namespace NLPInterfacePack {
  *              center diagonal i==j that have non-zero element)
  * <li> \c mU : the number of undecomposed dependent constraints
  * <li> \c mI : the number of general constraints
+ * <li> \c diag_scal : Constant scaling factory for the diagonal elements
+ * <li> \c diag_vary : The scaling factor for the diagonal elements (to produce
+ *                     illconditioning) between the largets and the smallest.
+ * <li> \c sym_basis : True if the basis (selected by the NLP) is symmetric or not.
  * </ul>
  *
  * This %NLP is defined as:
@@ -41,9 +45,9 @@ namespace NLPInterfacePack {
 
     min    f(x) = (1/2) * sum( x(i)^2, for i = 1..n )
     s.t.
-           c(j) = ( 10*x(j)                                    \
+           c(j) = ( ds(j)*x(j)                                 \
                     - sum( 3/(k)*x(j-k), k=1...klu(j) )        |
-                    - sum( 3/(k)*x(j+k), k=1...kuu(j) )        | for j  = 1...nD
+                    - sum( fu/(k)*x(j+k), k=1...kuu(j) )       | for j  = 1...nD
                    ) * (x(nD+q(j)) + 1)^2                      |
                    + co(j) == 0                                /
 
@@ -60,6 +64,12 @@ namespace NLPInterfacePack {
         m = nD + mU
 
         mI = mI
+
+        ds(j) = diag_scal * ( (diag_vary - 1)/(nD -1) * (j - 1) + 1 )
+
+             / 3  : if sym_basis = true
+        fu = |
+             \ 6  : if sym_basis = false
 
                                  / 2  : if floor((j-1)/nI) < nD % nI
         q(j) = floor((j-1)/nI) + |
@@ -143,6 +153,9 @@ public:
 		,value_type   hl                = -NLP::infinite_bound()
 		,value_type   hu                = +NLP::infinite_bound()
 		,bool         nlp_selects_basis = false
+		,value_type   diag_scal         = 10.0
+		,value_type   diag_vary         = 1.0
+		,bool         sym_basis         = false
 		);
 
 	//@}
@@ -299,6 +312,10 @@ private:
 	Vector       co_full_;
 
 	mutable bool  c_full_updated_;
+
+	value_type   diag_scal_;
+	value_type   diag_vary_;
+	value_type   fu_;
 
 	// /////////////////////////////////////////
 	// Private member functions
