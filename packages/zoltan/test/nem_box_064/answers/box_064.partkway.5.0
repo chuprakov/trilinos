@@ -1,0 +1,21 @@
+Decomposition Info	= method=parmetis
+Zoltan Parameters       = parmetis_method=partkway
+File Type		= NemesisI
+File Name		= box_064-m5-r.par
+Parallel Disk Info	= number=1,offset=1,zeros
+Parallel file location  = root=pio_, subdir=.
+Global element ids assigned to processor 0
+1
+2
+3
+4
+9
+10
+11
+12
+13
+17
+18
+19
+20
+21
