@@ -176,10 +176,6 @@ if test "X$ac_cv_header_malloc_h" != "Xyes"; then
     AC_MSG_ERROR([[Cannot find malloc.h.  New_Package requires at least one or the other.]])
 fi  
 
-if test "X$ac_cv_header_sstream" != "Xyes"; then
-    AC_MSG_ERROR([[Cannot find sstream.  New_Package requires at least one or the other.]])
-fi  
-
 if test "X$ac_cv_header_stdexcept" != "Xyes"; then
     AC_MSG_ERROR([[Cannot find stdexcept.  New_Package requires at least one or the other.]])
 fi  

@@ -5065,12 +5065,6 @@ echo "$as_me: error: Cannot find malloc.h.  New_Package requires at least one or
    { (exit 1); exit 1; }; }
 fi
 
-if test "X$ac_cv_header_sstream" != "Xyes"; then
-    { { echo "$as_me:$LINENO: error: Cannot find sstream.  New_Package requires at least one or the other." >&5
-echo "$as_me: error: Cannot find sstream.  New_Package requires at least one or the other." >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
 if test "X$ac_cv_header_stdexcept" != "Xyes"; then
     { { echo "$as_me:$LINENO: error: Cannot find stdexcept.  New_Package requires at least one or the other." >&5
 echo "$as_me: error: Cannot find stdexcept.  New_Package requires at least one or the other." >&2;}
@@ -5910,7 +5904,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:5913: \"$ac_link\") >&5
+(eval echo $as_me:5907: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -5990,7 +5984,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:5993: \"$ac_link\") >&5
+(eval echo $as_me:5987: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -6893,7 +6887,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:6896: \"$ac_link\") >&5
+(eval echo $as_me:6890: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -6973,7 +6967,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:6976: \"$ac_link\") >&5
+(eval echo $as_me:6970: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
