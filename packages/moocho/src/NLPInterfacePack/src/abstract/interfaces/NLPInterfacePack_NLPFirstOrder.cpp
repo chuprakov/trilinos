@@ -34,12 +34,6 @@ void NLPFirstOrderInfo::initialize() {
 	NLP::initialize();
 }
 
-void NLPFirstOrderInfo::get_lambda_init( Vector* lambda ) const
-{
-	lambda->resize(n());
-	(*lambda) = 0.0;
-}
-
 // <<std comp>> members for Gf
 
 void NLPFirstOrderInfo::set_Gf(Vector* Gf, bool owns_Gf)
@@ -130,7 +124,6 @@ void NLPFirstOrderInfo::calc_Gf(const VectorSlice& x
 	num_Gf_evals_++;
 }
 
-
 void NLPFirstOrderInfo::calc_Gc(const VectorSlice& x
 	, bool newx) const
 {
@@ -138,16 +131,6 @@ void NLPFirstOrderInfo::calc_Gc(const VectorSlice& x
 	imp_calc_Gc(x,newx);
 	num_Gc_evals_++;
 }
-
-void NLPFirstOrderInfo::report_final_solution(
-	  const VectorSlice&	x
-	, const VectorSlice*	lambda
-	, const SpVectorSlice*	nu
-	, bool					optimal		) const
-{
-	NLP::report_final_x(x,optimal);
-}
-
 
 size_type NLPFirstOrderInfo::num_Gf_evals() const
 {

@@ -28,6 +28,12 @@ void NLPInterfacePack::NLP::initialize() {
 	num_f_evals_ = num_c_evals_ = 0;
 }
 
+void NLPInterfacePack::NLP::get_lambda_init( Vector* lambda ) const
+{
+	lambda->resize(n());
+	(*lambda) = 0.0;
+}
+
 // <<std comp>> members for f
 
 void NLPInterfacePack::NLP::set_f(value_type* f, bool owns_f)
@@ -114,8 +120,10 @@ void NLPInterfacePack::NLP::calc_c(const VectorSlice& x, bool newx) const
 	num_c_evals_++;
 }
 
-void NLPInterfacePack::NLP::report_final_x(
+void NLPInterfacePack::NLP::report_final_solution(
 	  const VectorSlice&	x
+	, const VectorSlice*	lambda
+	, const SpVectorSlice*	nu
 	, bool					optimal		) const
 {
 	// The default behavior is just to ignore this!

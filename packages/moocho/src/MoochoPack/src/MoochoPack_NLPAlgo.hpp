@@ -9,6 +9,7 @@
 #include "rSQPState.h"
 #include "GeneralIterationPack/include/Algorithm.h"
 #include "NLPInterfacePack/include/NLPReduced.h"
+#include "Misc/include/StandardAggregationMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -24,70 +25,13 @@ public:
 	//@}
 
 	/// Constructs with no step, added_step, pre_step, post_step, state, or decomp_sys objects added.
-	rSQPAlgo()
-		: nlp_(0), algo_cntr_(0), trust_region_calc_(false), first_step_poss_(1)
-	{}
+	rSQPAlgo();
 
-	/** @name <<std aggr>> stereotype members for algo_cntr.
-	  */
-	//@{
+	/// <<std aggr>> members for algo_cntr
+	STANDARD_AGGREGATION_MEMBERS( rSQPAlgoContainer, algo_cntr )
 
-	///
-	void set_algo_cntr(rSQPAlgoContainer* algo_cntr);
-	///
-	rSQPAlgoContainer* get_algo_cntr()
-	{	return algo_cntr_; }
-	///
-	rSQPAlgoContainer& algo_cntr()
-	{	return StandardCompositionRelationshipsPack::role_name(algo_cntr_, false, "algo_cntr"); }
-	///
-	const rSQPAlgoContainer& algo_cntr() const
-	{	return StandardCompositionRelationshipsPack::role_name(algo_cntr_, false, "algo_cntr"); }
-
-	//@}
-
-	/** @name <<std aggr>> stereotype members for nlp.
-	  */
-	//@{
-
-	///
-	void set_nlp(NLPReduced* nlp)
-	{	nlp_ = nlp; }
-	///
-	NLPReduced* get_nlp()
-	{	return nlp_; }
-	///
-	const NLPReduced* get_nlp() const
-	{	return nlp_; }
-	///
-	NLPReduced& nlp()
-	{	return StandardCompositionRelationshipsPack::role_name(nlp_, false, "nlp"); }
-	///
-	const NLPReduced& nlp() const
-	{	return StandardCompositionRelationshipsPack::role_name(nlp_, false, "nlp"); }
-
-	//@}
-
-	// ////////////////////////////////////////////////////////////////////////////
-	/** @name Trust region specialty.
-	  *
-	  * These operations apply to rSQP algorithms that use a trust region
-	  * and have to peform trust region reduction minor loops from time to time.
-	  * They are primarily an optimization that allow Stategy objects to be
-	  * skipped if thier output variables or internal state will not change
-	  * for a trust region reduction minor loop.
-	  */
-	//@{
-
-	/// Set a flag for an active trust region reduction minor loop calculation.
-	virtual void set_trust_region_calc(bool trust_region_calc)
-	{	trust_region_calc_ = trust_region_calc; }
-	
-	/// See if a trust region reduction minor loop calculation is being performed.
-	virtual bool is_trust_region_calc()
-	{	return trust_region_calc_; }
-
-	//@}
+	/// <<std aggr>> members for nlp
+	STANDARD_AGGREGATION_MEMBERS( NLP, nlp )
 
 	///
 	rSQPState& rsqp_state()
@@ -150,11 +94,6 @@ public:
 	void print_algorithm(std::ostream& out) const;
 
 protected:
-	NLPReduced*				nlp_;			// reduced NLP being minimized
-	rSQPAlgoContainer*		algo_cntr_;		// algorithm container object
-
-	// Trust region reduction minor loop calculation flag
-	bool trust_region_calc_;
 
 	// First step to execute
 	Algorithm::poss_type first_step_poss_;

@@ -8,6 +8,9 @@
 
 #include <assert.h>
 
+#include <sstream>
+#include <typeinfo>
+
 #include <iostream>
 
 #include "Misc/include/debug.h"
@@ -27,6 +30,10 @@
 #include "ConstrainedOptimizationPack/include/SymInvCholMatrixSubclass.h"			// rHL
 #include "ConstrainedOptimizationPack/include/SymLBFGSMatrixSubclass.h"				// rHL
 #include "ConstrainedOptimizationPack/include/SymMatrixSubclass.h"					// rHL
+
+#include "ReducedSpaceSQPPack/include/NLPrSQPTailoredApproach.h"
+#include "ReducedSpaceSQPPack/include/NLPrSQPTailoredApproachTester.h"
+#include "ReducedSpaceSQPPack/include/NLPrSQPTailoredApproachTesterSetOptions.h"
 
 #include "NLPInterfacePack/test/NLPFirstDerivativesTester.h"
 #include "NLPInterfacePack/test/NLPFirstDerivativesTesterSetOptions.h"
@@ -60,6 +67,8 @@
 #include "../../include/std/DecompositionSystemVarReductStd.h"
 #include "../../include/std/EvalNewPointStd_Step.h"
 #include "../../include/std/EvalNewPointStd_StepSetOptions.h"
+#include "../../include/std/EvalNewPointTailoredApproachStd_Step.h"
+#include "../../include/std/EvalNewPointTailoredApproachStd_StepSetOptions.h"
 #include "../../include/std/ReducedGradientStd_Step.h"
 #include "../../include/std/InitFinDiffReducedHessian_Step.h"
 #include "../../include/std/InitFinDiffReducedHessian_StepSetOptions.h"
@@ -86,6 +95,7 @@
 #include "../../include/std/CheckSkipBFGSUpdateStd_Step.h"
 #include "../../include/std/CheckSkipBFGSUpdateNoPy_Step.h"
 #include "../../include/std/MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.h"
+#include "../../include/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.h"
 #include "../../include/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.h"
 #include "../../include/std/MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.h"
 #include "../../include/std/MeritFunc_ModifiedL1LargerSteps_AddedStep.h"
@@ -100,6 +110,10 @@
 
 #include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateDirect.h"
 #include "SparseLinAlgPack/include/sparse_bounds.h"
+
+#include "LinAlgPack/include/PermVecMat.h"
+
+#include "Misc/include/dynamic_cast_verbose.h"
 
 // Stuff for exact reduced hessian
 #include "../../include/std/ReducedHessianExactStd_Step.h"
@@ -134,6 +148,7 @@ rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
 		, max_basis_cond_change_frac_(-1.0)
 		, warm_start_frac_(-1.0)
 		, merit_function_type_(MERIT_FUNC_MOD_L1_INCR)
+		, merit_function_penalty_param_update_(MERIT_FUNC_PENALTY_PARAM_WITH_MULT)
 		, line_search_method_(LINE_SEARCH_DIRECT)
 		, use_line_search_correct_kkt_tol_(-1.0)
 		, full_steps_after_k_(-1)
@@ -210,6 +225,45 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	algo->set_nlp( algo_cntr.get_nlp().get() );
 	algo->set_track( rcp::rcp_implicit_cast<AlgorithmTrack>(algo_cntr.get_track()) );
 
+	// 7/28/00: Determine if this is a standard NLPReduced nlp or a tailored approach nlp.
+
+	bool tailored_approach
+		= (NULL != dynamic_cast<NLPrSQPTailoredApproach*>(algo->get_nlp()));
+	if( tailored_approach ) {
+		// Change the options for the tailored approach. 
+
+		if(trase_out) {
+			*trase_out
+				<< "\n***********************************************************************************\n"
+				<< "This is a tailored approach NLP and the following options are used or not allowed:\n"
+				<< "merit_function_type = L1;\n"
+				<< "merit_function_penalty_param_update = MULT_FREE;\n"
+				<< "qp_solver != QPSCPD; *** set to QPKWIK if QPSCPD is used\n"
+				<< "fact_type_ = DIRECT_FACT;\n"
+				;
+		}
+
+		merit_function_type_					= MERIT_FUNC_L1;
+		merit_function_penalty_param_update_	= MERIT_FUNC_PENALTY_PARAM_MULT_FREE;
+		if( qp_solver_type_ == QPSCPD )
+			qp_solver_type_ = QPKWIK;
+		factorization_type_ = DIRECT_FACT;
+
+	}
+	else {
+		if( NULL != dynamic_cast<NLPrSQPTailoredApproach*>(algo->get_nlp()) ) {
+			std::ostringstream omsg;
+			omsg
+				<< "rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : "
+				<< "Error, type nlp object with the concrete type "
+				<< typeid(algo->nlp()).name()
+				<< " does not support the NLPReduced interface.";
+			if(trase_out)
+				*trase_out << omsg.str() << std::endl;
+			throw std::logic_error( omsg.str() );
+		}
+	}
+
 	// Determine whether to use direct or adjoint factorization
 	switch(factorization_type_) {
 		case DIRECT_FACT:
@@ -229,7 +283,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				// If the total number of bounds is less than the number
 				// of degrees of freedom then the adjoint factorization
 				// will be faster.
-				NLPReduced &nlp = algo->nlp();
+				NLP &nlp = algo->nlp();
 				if(!nlp.is_initialized()) nlp.initialize();
 				using SparseLinAlgPack::num_bounds;
 				if( num_bounds( nlp.xl(), nlp.xu() ) < nlp.n() - nlp.r() )
@@ -379,6 +433,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		storage_num[state_t::Q_rGL]				= 2;
 		storage_num[state_t::Q_lambda]			= 2;
 
+		storage_num[state_t::Q_Ypy]				= 2;
+		storage_num[state_t::Q_Zpz]				= 2;
+
 		storage_num[state_t::Q_d]				= 2;
 
 		storage_num[state_t::Q_rGf]				= 2;
@@ -414,90 +471,64 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	std::cout << "\n*** Create and set the decomposition system object ...\n";
 #endif
 
-	// ToDo: guard from an exception being thrown from these
-	// constructors.
+	DecompositionSystemVarReductStd*
+		decomp_sys = NULL;
 
-	if( !basis_sys_ptr_.get() ) {
-		SparseCOOSolverCreator
-			*sparse_solver_creator = NULL;
-		if( linear_solver_type_ == MA28 ) {
-			sparse_solver_creator
-				= new SparseSolverPack::MA28SparseCOOSolverCreator(
-						new SparseSolverPack::MA28SparseCOOSolverSetOptions
-						, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
-					);
+	if( !tailored_approach ) {
+	
+		// Only need a decomposition system object if we are not using the tailored approach
+
+		if( !basis_sys_ptr_.get() ) {
+			SparseCOOSolverCreator
+				*sparse_solver_creator = NULL;
+			if( linear_solver_type_ == MA28 ) {
+				sparse_solver_creator
+					= new SparseSolverPack::MA28SparseCOOSolverCreator(
+							new SparseSolverPack::MA28SparseCOOSolverSetOptions
+							, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
+						);
+			}
+			else if ( linear_solver_type_ == MA48 ) {
+				sparse_solver_creator
+					= new SparseSolverPack::MA48SparseCOOSolverCreator(
+							new SparseSolverPack::MA48SparseCOOSolverSetOptions
+							, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
+						);
+			}
+			else {
+				assert(0);
+			}
+
+			// Note, the switch based code for the above if statements would not
+			// compile under MipsPro 7.3.1.1m.
+
+			basis_sys_ptr_ = new COOBasisSystem(sparse_solver_creator, true);
 		}
-		else if ( linear_solver_type_ == MA48 ) {
-			sparse_solver_creator
-				= new SparseSolverPack::MA48SparseCOOSolverCreator(
-						new SparseSolverPack::MA48SparseCOOSolverSetOptions
-						, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
-					);
+
+		DecompositionSystemVarReductImpNode* decomp_sys_aggr = 0;
+		
+		if ( fact_type_ == DIRECT_FACT ) {
+			decomp_sys_aggr = new DecompositionSystemCoordinateDirect(
+									basis_sys_ptr_.release(), true);
+		}
+		else if ( fact_type_ == ADJOINT_FACT ) {
+			decomp_sys_aggr = new DecompositionSystemCoordinateAdjoint(
+									basis_sys_ptr_.release(), true);
 		}
 		else {
 			assert(0);
 		}
-		
-// The following code would not compile under MipsPro 7.3.1.1m so it was replaced
-// with the above code.
-//
-//		switch(linear_solver_type_) {
-//			case MA28:
-//			{
-//				sparse_solver_creator
-//					= new SparseSolverPack::MA28SparseCOOSolverCreator(
-//							new SparseSolverPack::MA28SparseCOOSolverSetOptions
-//							, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
-//						);
-//				break;
-//			}
-//			case MA48:
-//			{
-//				sparse_solver_creator
-//					= new SparseSolverPack::MA48SparseCOOSolverCreator(
-//							new SparseSolverPack::MA48SparseCOOSolverSetOptions
-//							, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
-//						);
-//				break;
-//			}
-//			default:
-//				assert(0);
-//		}		
-		basis_sys_ptr_ = new COOBasisSystem(sparse_solver_creator, true);
+
+		// Note, the switch based code for the above if statements would not
+		// compile under MipsPro 7.3.1.1m.
+
+		DecompositionSystemVarReductStd*
+			decomp_sys = new DecompositionSystemVarReductStd( false, algo.get(), decomp_sys_aggr );
+
+		algo->rsqp_state().set_decomp_sys(decomp_sys);
+
 	}
 
-	DecompositionSystemVarReductImpNode* decomp_sys_aggr = 0;
-	
-	if ( fact_type_ == DIRECT_FACT ) {
-		decomp_sys_aggr = new DecompositionSystemCoordinateDirect(
-								basis_sys_ptr_.release(), true);
-	}
-	else if ( fact_type_ == ADJOINT_FACT ) {
-		decomp_sys_aggr = new DecompositionSystemCoordinateAdjoint(
-								basis_sys_ptr_.release(), true);
-	}
-	else {
-		assert(0);
-	}
-
-// The following code would not compile with MipsPro 7.3.1.1m and was replaced
-// with the above code.
-// 
-//	switch(fact_type_) {
-//		case DIRECT_FACT:
-//			decomp_sys_aggr = new DecompositionSystemCoordinateDirect(
-//									basis_sys_ptr_.release(), true);
-//			break;
-//		case ADJOINT_FACT:
-//			decomp_sys_aggr = new DecompositionSystemCoordinateAdjoint(
-//									basis_sys_ptr_.release(), true);
-//			break;
-//	}
-	
-	DecompositionSystemVarReductStd*
-		decomp_sys = new DecompositionSystemVarReductStd( false, algo.get(), decomp_sys_aggr );
-
-	algo->rsqp_state().set_decomp_sys(decomp_sys);
 
 	// /////////////////////////////////////////////////////
 	// C.3  Create and set the step objects
@@ -516,7 +547,31 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		// This default algorithm is for NLPs with no variable bounds.
 
 		// (1) EvalNewPoint
-		{
+		if( tailored_approach ) {
+			typedef rcp::ref_count_ptr<NLPrSQPTailoredApproachTester>
+				nonconst_deriv_tester_ptr_t;
+			typedef EvalNewPointTailoredApproachStd_Step::deriv_tester_ptr_t
+				deriv_tester_ptr_t;
+			
+			nonconst_deriv_tester_ptr_t
+				deriv_tester = new NLPrSQPTailoredApproachTester();
+
+			{
+				NLPrSQPTailoredApproachTesterSetOptions options_setter(deriv_tester.get());
+				options_setter.set_options(*options_);
+			}		
+
+			EvalNewPointTailoredApproachStd_Step
+				*eval_new_point_step = new EvalNewPointTailoredApproachStd_Step(deriv_tester);
+
+			{
+				EvalNewPointTailoredApproachStd_StepSetOptions options_setter(eval_new_point_step);
+				options_setter.set_options(*options_);
+			}		
+
+			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
+		}
+		else {
 			typedef NLPInterfacePack::TestingPack::NLPFirstDerivativesTester
 				NLPFirstDerivativesTester;
 			typedef NLPInterfacePack::TestingPack::NLPFirstDerivativesTesterSetOptions
@@ -554,7 +609,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		// (4)	Calculate the Lagrange multipliers for the independent constraints.
 		// 		These are computed here just in case the algorithm converges and we need to
 		// 		report these multipliers to the NLP.
-		algo->insert_step( ++step_num, CalcLambdaIndep_name, new  CalcLambdaIndepStd_AddedStep		);
+		if( !tailored_approach ) {
+			algo->insert_step( ++step_num, CalcLambdaIndep_name, new  CalcLambdaIndepStd_AddedStep );
+		}
 
 		// (5) Check for convergence
 		{
@@ -585,7 +642,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		  );
 
 		// (7) DepDirec
-		algo->insert_step( ++step_num, DepDirec_name, new  DepDirecStd_Step );
+		if( !tailored_approach ) {
+			algo->insert_step( ++step_num, DepDirec_name, new  DepDirecStd_Step );
+		}
 
 		// (8) IndepDirec
 		algo->insert_step( ++step_num, IndepDirec_name, new  IndepDirecWithoutBounds_Step );
@@ -718,10 +777,23 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				*param_update_step = 0;
 
 			switch( merit_function_type_ ) {
-				case MERIT_FUNC_L1:
-					param_update_step = new  MeritFunc_PenaltyParamUpdateWithMult_AddedStep(
+				case MERIT_FUNC_L1: {
+					switch(merit_function_penalty_param_update_) {
+						case MERIT_FUNC_PENALTY_PARAM_WITH_MULT:
+							param_update_step
+								= new  MeritFunc_PenaltyParamUpdateWithMult_AddedStep(
 											rcp::rcp_implicit_cast<MeritFuncNLP>(merit_func) );
+							break;
+						case MERIT_FUNC_PENALTY_PARAM_MULT_FREE:
+							param_update_step
+								= new  MeritFunc_PenaltyParamUpdateMultFree_AddedStep(
+											rcp::rcp_implicit_cast<MeritFuncNLP>(merit_func) );
+							break;
+						default:
+							assert(0);
+					}
 					break;
+				}
 				case MERIT_FUNC_MOD_L1:
 				case MERIT_FUNC_MOD_L1_INCR:
 					param_update_step = new  MeritFunc_PenaltyParamsUpdateWithMult_AddedStep(
@@ -833,17 +905,16 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			Algorithm::step_ptr_t calc_rgrad_lagr, calc_lambda, check_conv;
 
 			// Remove and save CalcReducedGradLagr..., CalcLambdaIndep... and CheckConv...
-			
-
-
 
 			poss			= algo->get_step_poss(CalcReducedGradLagrangian_name);
 			calc_rgrad_lagr	= algo->get_step(poss);
 			algo->remove_step(poss);
 
-			poss			= algo->get_step_poss(CalcLambdaIndep_name);
-			calc_lambda		= algo->get_step(poss);
-			algo->remove_step(poss);
+			if(!tailored_approach) {
+				poss			= algo->get_step_poss(CalcLambdaIndep_name);
+				calc_lambda		= algo->get_step(poss);
+				algo->remove_step(poss);
+			}
 
 			poss			= algo->get_step_poss(CheckConvergence_name);
 			check_conv		= algo->get_step(poss);
@@ -853,7 +924,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	
 			poss		= algo->get_step_poss(LineSearch_name);
 			algo->insert_step( poss++, CalcReducedGradLagrangian_name, calc_rgrad_lagr );
-			algo->insert_step( poss++, CalcLambdaIndep_name, calc_lambda );
+			if(!tailored_approach) {
+				algo->insert_step( poss++, CalcLambdaIndep_name, calc_lambda );
+			}
 			algo->insert_step( poss++, CheckConvergence_name, check_conv );
 
 		}
@@ -972,7 +1045,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 	}
 
 	// 10/15/99: Add basis checking step
-	{
+	if( !tailored_approach ) {
 		CheckBasisFromPy_Step
 			*basis_check_step = new CheckBasisFromPy_Step(
 				new NewBasisSelectionStd_Strategy(decomp_sys) );
@@ -1060,10 +1133,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		  );
 
 		// Add the step for the exact computation of the reduced QP cross term
-		assert( (poss = algo->get_step_poss(DepDirec_name))
+		assert( (poss = algo->get_step_poss(IndepDirec_name))
 			!= Algorithm::DOES_NOT_EXIST );
 		algo->insert_step(
-			  poss+1
+			  poss
 			, "ReducedQPCrossTerm"
 			, new CrossTermExactStd_Step
 		  );
@@ -1132,15 +1205,16 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
 //	TRACE0( "\n*** Before algo is initialized\n" );
 //	print_state();
 
+	using DynamicCastHelperPack::dyn_cast;
+
 	namespace rcp = ReferenceCountingPack;
 
-	rSQPAlgo	&algo	= dynamic_cast<rSQPAlgo&>(_algo);
+	rSQPAlgo	&algo	= dyn_cast<rSQPAlgo>(_algo);
 	rSQPState	&state	= algo.rsqp_state();
+	NLP			&nlp = algo.nlp();
 
 	algo.max_iter( algo.algo_cntr().max_iter() );
 	algo.rsqp_state().check_results( check_results_ );
-
-	NLPReduced	&nlp	= algo.nlp();
 
 	// (1) Initialize the nlp
 	nlp.initialize();
@@ -1152,17 +1226,31 @@ void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface& _algo)
 	// (2) Set the initial x to the initial guess.
 	state.x().set_k(0).v() = nlp.xinit();
 
-	// (3) Get the initial basis from the nlp.  The nlp will have a basis
-	// set whether or not nlp.nlp_selects_basis() returns true (See NLPReduced).
-	size_type rank;
-	nlp.get_basis( &state.var_perm_new(), &state.con_perm_new(), &rank );
-	size_type	n = nlp.n(),
-				m = nlp.m(),
-				r = nlp.r();
+	// (3) Get the initial basis from the nlp.
+
+	const size_type
+		n = nlp.n(),
+		m = nlp.m(),
+		r = nlp.r();
 	state.var_dep()		= Range1D(1, r);
 	state.var_indep()	= Range1D(r + 1, n);
 	state.con_indep()	= Range1D(1, r);
 	state.con_dep()		= (r < m) ? Range1D(r + 1, m) : Range1D(m + 1, m + 1);
+
+	if( NLPReduced	*red_nlp = dynamic_cast<NLPReduced*>(algo.get_nlp()) ) {
+		// The nlp will have a basis
+		// set whether or not nlp.nlp_selects_basis() returns true (See NLPReduced).
+		size_type rank;
+		red_nlp->get_basis( &state.var_perm_new(), &state.con_perm_new(), &rank );
+	}
+	else if ( dynamic_cast<NLPrSQPTailoredApproach*>(algo.get_nlp()) ){
+		// Just set to original order (identity).
+		using LinAlgPack::identity_perm;
+		state.var_perm_new().resize(n);
+		identity_perm(&state.var_perm_new());
+		state.con_perm_new().resize(m);
+		identity_perm(&state.con_perm_new());
+	}
 
 	state.initialize_fast_access();
 

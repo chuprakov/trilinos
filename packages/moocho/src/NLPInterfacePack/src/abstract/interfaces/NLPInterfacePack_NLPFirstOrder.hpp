@@ -12,26 +12,6 @@ namespace NLPInterfacePack {
   *
   * This class adds first order inforamtion to the basic information
   * given in the \Ref{NLP} interface class.
-  *
-  * Given first order information it is possible for the NLP
-  * solver to compute Lagrange multipliers and then report
-  * these back to the NLP.
-  *
-  * The Lagrangian for this problem is defined by:\\
-  \begin{verbatim}
-	L = f(x) + lambda' * c(x) + nul * ( xl - x ) + nuu * ( x - xu )
-  \end{verbatim}
-  *
-  * The optimality conditions are given by:
-  \begin{verbatim}
-	del(L,x)      = del(f,x) + del(c,x) * lambda + nu = 0
-	del(L,lambda) = c(x) = 0
-	  where:
-		nu = nuu - nul
-		nul(i) * ( xl(i) - x(i) ) = 0,      for i = 1...n
-		nuu(i) * ( x(i) - xu(i) ) = 0,      for i = 1...n
-  \end{verbatim}
-
   */
 class NLPFirstOrderInfo : public NLP {
 public:
@@ -42,6 +22,10 @@ public:
 	/// Thrown if an invalid matrix type is passed in.
 	class InvalidMatrixType : public std::logic_error
 	{public: InvalidMatrixType(const std::string& what_arg) : std::logic_error(what_arg) {}};
+
+	/// Thrown if the computation of a quantity is not supported.
+	class ComputationNotSupported : public std::logic_error
+	{public: ComputationNotSupported(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
 	//@}
 
@@ -61,13 +45,6 @@ public:
 	  */
 	void initialize();
 
-	///
-	/** Get the initial value of the Lagrange multipliers lambda.
-	  *
-	  * By default this function just sets them to zero.
-	  */
-	virtual void get_lambda_init( Vector* lambda ) const;
-	
 	/** @name <<std comp>> stereotype member functions
 	  */
 	//@{
@@ -151,23 +128,6 @@ public:
 	virtual void calc_Gc(const VectorSlice& x, bool newx = true) const;
 
 	//@}
-
-	///
-	/** Report the final solution and multipliers.
-	  *
-	  * Call this function to report the final solution of the
-	  * unknows x and the Lagrange multipliers for the
-	  * equality constriants #lambda# and the varaible bounds
-	  * #nu#.  If either of the multipliers
-	  * are not known then you can pass null in for them.
-	  * The default action is to call report_final_x(x,optimal)
-	  * on the NLP interface and then to ignore the multipliers.
-	  */
-	virtual void report_final_solution(
-		  const VectorSlice&	x
-		, const VectorSlice*	lambda
-		, const SpVectorSlice*	nu
-		, bool					optimal		) const;
 
 	/** @name Objective and constraint function gradients.
 	  *

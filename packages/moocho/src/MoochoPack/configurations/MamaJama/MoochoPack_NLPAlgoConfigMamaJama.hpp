@@ -31,6 +31,9 @@ public:
 	enum EMeritFunctionType { MERIT_FUNC_L1, MERIT_FUNC_MOD_L1, MERIT_FUNC_MOD_L1_INCR };
 
 	///
+	enum EMeritFuncPenaltyParamUpdate { MERIT_FUNC_PENALTY_PARAM_WITH_MULT, MERIT_FUNC_PENALTY_PARAM_MULT_FREE };
+
+	///
 	enum ELineSearchMethod { LINE_SEARCH_NONE, LINE_SEARCH_DIRECT
 		, LINE_SEARCH_2ND_ORDER_CORRECT, LINE_SEARCH_WATCHDOG };
 
@@ -121,6 +124,10 @@ public:
 	  */
 	void merit_function_type(EMeritFunctionType merit_function_type)
 	{	merit_function_type_ = merit_function_type; }
+
+	/// Set the type of penalty parameter update.
+	void merit_function_penalty_param_update(EMeritFuncPenaltyParamUpdate merit_function_penalty_param_update)
+	{	merit_function_penalty_param_update_ = merit_function_penalty_param_update; }
 
 	///
 	/** Set the line search method to use.
@@ -245,6 +252,8 @@ protected:
 	value_type			max_basis_cond_change_frac_;	// default = 1.0, don't change default.
 	value_type			warm_start_frac_;	// default = -1.0, don't change default
 	EMeritFunctionType	merit_function_type_;
+	EMeritFuncPenaltyParamUpdate
+						merit_function_penalty_param_update_;
 	ELineSearchMethod	line_search_method_;
 	value_type 			use_line_search_correct_kkt_tol_;	// default = -1.0, don't change default
 	int					full_steps_after_k_;	// default = -1, do use this option at all.

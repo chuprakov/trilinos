@@ -25,6 +25,7 @@ namespace LinAlgOpPack {
 bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
+
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 

@@ -12,11 +12,13 @@
 #include "../../include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
+#include "NLPInterfacePack/include/NLPReduced.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorOut.h"
 #include "LinAlgPack/include/assert_print_nan_inf.h"
+#include "Misc/include/dynamic_cast_verbose.h"
 
 ReducedSpaceSQPPack::EvalNewPointStd_Step::EvalNewPointStd_Step(
 		  const deriv_tester_ptr_t& 	deriv_tester
@@ -31,13 +33,14 @@ ReducedSpaceSQPPack::EvalNewPointStd_Step::EvalNewPointStd_Step(
 bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
+	using DynamicCastHelperPack::dyn_cast;
 	using LinAlgPack::norm_inf;
 	using LinAlgPack::assert_print_nan_inf;
 	using GeneralIterationPack::print_algorithm_step;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
-	NLPReduced	&nlp	= algo.nlp();
+	NLPReduced	&nlp	= dyn_cast<NLPReduced>(algo.nlp());
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();

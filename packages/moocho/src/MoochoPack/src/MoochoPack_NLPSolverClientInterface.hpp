@@ -8,7 +8,7 @@
 
 #include "ReducedSpaceSQPPackTypes.h"
 #include "rSQPTrack.h"
-#include "NLPInterfacePack/include/NLPReduced.h"
+#include "NLPInterfacePack/include/NLP.h"
 #include "Misc/include/StandardCompositionMacros.h"
 #include "Misc/include/StandardMemberCompositionMacros.h"
 
@@ -22,7 +22,7 @@ class rSQPSolverClientInterface {
 public:
 	
 	/// «std comp» members for nlp
-	STANDARD_COMPOSITION_MEMBERS( NLPReduced, nlp )
+	STANDARD_COMPOSITION_MEMBERS( NLP, nlp )
 
 	/// «std comp» members for track
 	STANDARD_COMPOSITION_MEMBERS( rSQPTrack, track )

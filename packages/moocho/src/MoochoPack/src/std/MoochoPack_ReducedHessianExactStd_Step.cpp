@@ -13,6 +13,7 @@
 #include "SparseLinAlgPack/include/MatrixSymDenseInitialize.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
+#include "NLPInterfacePack/include/NLPSecondOrderInfo.h"
 #include "SparseLinAlgPack/include/MatrixSymWithOp.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/GenMatrixAsTriSym.h"
@@ -20,6 +21,7 @@
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorOut.h"
+#include "Misc/include/dynamic_cast_verbose.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -27,6 +29,7 @@ bool ReducedHessianExactStd_Step::do_step(
 	  Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 	, poss_type assoc_step_poss)
 {
+	using DynamicCastHelperPack::dyn_cast;
 	using LinAlgPack::nonconst_sym;
 	using SparseLinAlgPack::M_MtMtM;
 	typedef SparseLinAlgPack::MatrixSymDenseInitialize	MatrixSymDenseInitialize;
@@ -34,7 +37,8 @@ bool ReducedHessianExactStd_Step::do_step(
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
-	NLPReduced	&nlp	= algo.nlp();
+	NLPSecondOrderInfo
+				&nlp	= dyn_cast<NLPSecondOrderInfo>(algo.nlp());
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -46,8 +50,8 @@ bool ReducedHessianExactStd_Step::do_step(
 	}
 
 	// problem size
-	size_type	n		= algo.nlp().n(),
-				r		= algo.nlp().r(),
+	size_type	n		= nlp.n(),
+				r		= nlp.r(),
 				nind	= n - r;
 
 	// Compute HL first (You may want to move this into its own step later?)

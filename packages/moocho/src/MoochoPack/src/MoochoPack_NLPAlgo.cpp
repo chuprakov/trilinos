@@ -12,17 +12,9 @@
 
 namespace ReducedSpaceSQPPack {
 
-void rSQPAlgo::set_algo_cntr(rSQPAlgoContainer* algo_cntr) {
-#ifdef RELEASE_TRACE
-	std::cout << "\n*** algo_cntr_ = ";
-	std::cout << algo_cntr_ << "\n";	// Accessing this causes an unknown exception to be thrown.
-	std::cout << "\n*** before algo_cntr_ = algo_cntr ...\n";
-#endif
-	algo_cntr_ = algo_cntr;
-#ifdef RELEASE_TRACE
-	std::cout << "\n*** after algo_cntr_ = algo_cntr ...\n";
-#endif
-}
+rSQPAlgo::rSQPAlgo()
+	: algo_cntr_(NULL), nlp_(NULL), first_step_poss_(1)
+{}
 
 // Overridden form rSQPAlgoInteface
 

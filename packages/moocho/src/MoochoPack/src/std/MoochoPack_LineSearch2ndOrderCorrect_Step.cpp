@@ -58,8 +58,6 @@ LineSearch2ndOrderCorrect_Step::LineSearch2ndOrderCorrect_Step(
 bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
-	// ToDo: This is not finished or ready to compile yet.
-
 	using std::setw;
 
 	using LinAlgPack::dot;
@@ -78,7 +76,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(Algorithm& _algo
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
-	NLPReduced	&nlp	= algo.nlp();
+	NLP			&nlp	= algo.nlp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();

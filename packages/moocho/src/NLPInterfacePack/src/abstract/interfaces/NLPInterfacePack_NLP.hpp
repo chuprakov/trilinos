@@ -28,6 +28,21 @@ namespace NLPInterfacePack {
   \end{verbatim}
   * In the above form, none of the variables are fixed between bounds (strictly
   * xl < xu).
+  *
+  * The Lagrangian for this problem is defined by:\\
+  \begin{verbatim}
+	L = f(x) + lambda' * c(x) + nul * ( xl - x ) + nuu * ( x - xu )
+  \end{verbatim}
+  *
+  * The optimality conditions are given by:
+  \begin{verbatim}
+	del(L,x)      = del(f,x) + del(c,x) * lambda + nu = 0
+	del(L,lambda) = c(x) = 0
+	  where:
+		nu = nuu - nul
+		nul(i) * ( xl(i) - x(i) ) = 0,      for i = 1...n
+		nuu(i) * ( x(i) - xu(i) ) = 0,      for i = 1...n
+  \end{verbatim}
   */
 class NLP {
 public:
@@ -82,6 +97,8 @@ public:
 	virtual size_type n() const = 0;
 	/// Return the number of equality constraints
 	virtual size_type m() const = 0;
+	/// Return the number of possibly decomposed equality constraints
+	virtual size_type r() const = 0;	
 
 	//@}
 
@@ -121,6 +138,12 @@ public:
 	  * \end{itemize}
 	  */
 	virtual const SpVectorSlice xu() const = 0;
+	///
+	/** Get the initial value of the Lagrange multipliers lambda.
+	  *
+	  * By default this function just sets them to zero.
+	  */
+	virtual void get_lambda_init( Vector* lambda ) const;
 
 	//@}
 
@@ -238,16 +261,20 @@ public:
 	//@}
 
 	///
-	/** Used by the solver to report the final solution x.
+	/** Used by the solver to report the final solution and multipliers.
 	  *
-	  * If this is the optimal solution then set
-	  * #optimal = true# otherwise set it to false
-	  * for a nonoptimal solution.
+	  * Call this function to report the final solution of the
+	  * unknows x and the Lagrange multipliers for the
+	  * equality constriants #lambda# and the varaible bounds
+	  * #nu#.  If either of the multipliers
+	  * are not known then you can pass null in for them.
 	  *
 	  * The default behavior is to just ignore this.
 	  */
-	virtual void report_final_x(
+	virtual void report_final_solution(
 		  const VectorSlice&	x
+		, const VectorSlice*	lambda
+		, const SpVectorSlice*	nu
 		, bool					optimal		) const;
 
 	/** @name Objective and constraint function counts.

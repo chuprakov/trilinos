@@ -34,40 +34,57 @@ bool ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::do_step(Algorithm& _algo
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
 
-	if( s.Ypy().updated_k(-1) && s.Zpz().updated_k(-1)
-			&& s.rGL().updated_k(-1) && s.rHL().updated_k(-1)
-			&& s.c().updated_k(-1) )
-	{
-		// The information exists for the update so determine
-		// if we are in the region to perform the BFGS update.
-		
-		// Check if we are to skip the update for this iteration
-		
-		const value_type
-			nrm_rGL_km1 = s.rGL().get_k(-1).norm_2(),
-			nrm_c_km1	= s.c().get_k(-1).norm_2(),
-			nrm_Zpz_km1	= s.Zpz().get_k(-1).norm_2(),
-			nrm_Ypy_km1	= s.Ypy().get_k(-1).norm_2();
+	if( s.rHL().updated_k(-1) )	{
 
-		// ratio = (10.0 / sqrt(||rGL_km1|| + ||c_km1||)) * ( ||Zpz_km1|| / ||Ypy_km1|| )
-		value_type
-			ratio = ( 10.0 / ::sqrt( nrm_rGL_km1 + nrm_c_km1 ) )
-				* ( nrm_Zpz_km1 / nrm_Ypy_km1 );
+		bool skip_update = true;
 
-		// If ratio > 1.0 then skip the update
-		const bool skip_update = ratio < 1.0;
+		if( !s.Ypy().updated_k(-1) || !s.Zpz().updated_k(-1)
+			|| !s.rGL().updated_k(-1) || !s.c().updated_k(-1) )
+		{
+			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+				out
+					<< "*** Warning, rHL_km1 is updated but one or more of the quantities Ypy_km1, Zpz_km1\n"
+						",rGL_km1 and c_km1 are not updated.  Therefore, there is not sufficient information\n"
+						"to determine if to skip the BFGS update or not.  Check storage requirements for\n"
+						" the above quantities\n"
+						"The BFGS wupdate will be skipped in this case ...\n";
+			}	
+			skip_update = true;
+		}
+		else {
 
-		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-			out
-				<< "ratio = (10/sqrt(||rGL_km1||+||c_km1||))*(||Zpz_km1||/||Ypy_km1||)\n"
-				<< "      = (10/sqrt("<<nrm_rGL_km1<<"+"<<nrm_c_km1<<"))\n"
-				<< "        * ("<<nrm_Zpz_km1<<"/"<<nrm_Ypy_km1<<")\n"
-				<< "      = " << ratio << std::endl
-				<< "ratio " << (skip_update ? '<' : '>' ) << " 1\n"
-				<< (skip_update
-						? "Skipping BFGS update ...\n"
-						: "Perform BFGS update if you can ...\n"  );
-		}	
+			// The information exists for the update so determine
+			// if we are in the region to perform the BFGS update.
+			
+			// Check if we are to skip the update for this iteration
+			
+			const value_type
+				nrm_rGL_km1 = s.rGL().get_k(-1).norm_2(),
+				nrm_c_km1	= s.c().get_k(-1).norm_2(),
+				nrm_Zpz_km1	= s.Zpz().get_k(-1).norm_2(),
+				nrm_Ypy_km1	= s.Ypy().get_k(-1).norm_2();
+
+			// ratio = (10.0 / sqrt(||rGL_km1|| + ||c_km1||)) * ( ||Zpz_km1|| / ||Ypy_km1|| )
+			value_type
+				ratio = ( 10.0 / ::sqrt( nrm_rGL_km1 + nrm_c_km1 ) )
+					* ( nrm_Zpz_km1 / nrm_Ypy_km1 );
+
+			// If ratio > 1.0 then skip the update
+			skip_update = ratio < 1.0;
+
+			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+				out
+					<< "ratio = (10/sqrt(||rGL_km1||+||c_km1||))*(||Zpz_km1||/||Ypy_km1||)\n"
+					<< "      = (10/sqrt("<<nrm_rGL_km1<<"+"<<nrm_c_km1<<"))\n"
+					<< "        * ("<<nrm_Zpz_km1<<"/"<<nrm_Ypy_km1<<")\n"
+					<< "      = " << ratio << std::endl
+					<< "ratio " << (skip_update ? '<' : '>' ) << " 1\n"
+					<< (skip_update
+							? "Skipping BFGS update ...\n"
+							: "Perform BFGS update if you can ...\n"  );
+			}	
+
+		}
 
 		if(	skip_update ) {
 
@@ -97,12 +114,18 @@ void ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::print_step( const Algorit
 {
 	out
 		<< L << "*** Check if we should do the BFGS update\n"
-		<< L << "if Ypy, Zpz, rGL, rHL and c are updated for the k-1 iteration\n"
-		<< L << "    *** Check if we are in the proper region\n"
-		<< L << "    ratio = ( 10 / sqrt( norm(rGL_km1,2) + norm(c_km1,2) ) )\n"
-		<< L << "             * ( norm(Zpz_km1,2) / norm(Ypy_km1,2) )\n"
-		<< L << "    if ratio < 1 then \n"
+		<< L << "if rHL_km1 is update then\n"
+		<< L << "    If Ypy_km1, Zpz_km1, rGL_km1, or c_km1 is not updated then\n"
+		<< L << "        *** Warning, insufficient information to determine if we should\n"
+		<< L << "        *** perform the update.  Check for sufficient backward storage.\n"
 		<< L << "        rHL_k = rHL_km1\n"
+		<< L << "    else\n"
+		<< L << "        *** Check if we are in the proper region\n"
+		<< L << "        ratio = ( 10 / sqrt( norm(rGL_km1,2) + norm(c_km1,2) ) )\n"
+		<< L << "                 * ( norm(Zpz_km1,2) / norm(Ypy_km1,2) )\n"
+		<< L << "        if ratio < 1 then \n"
+		<< L << "            rHL_k = rHL_km1\n"
+		<< L << "        end\n"
 		<< L << "    end\n"
 		<< L << "end\n";
 }
