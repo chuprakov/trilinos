@@ -62,7 +62,7 @@ int main( int argc, char* argv[] )
 		if(argc > 6)
 			diag_scal  = ::atof(argv[6]);
 		if(argc > 7)
-			diag_scal  = ::atof(argv[7]);
+			diag_vary  = ::atof(argv[7]);
 		if(argc > 8)
 			sym_basis = (::atoi(argv[8]) != 0 );
 		
