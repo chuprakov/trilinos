@@ -48,7 +48,7 @@ public:
 	/** Calls <tt>this->initialize(...)</tt>
 	 */
 	MatrixWithOpSubView(
-		const mat_ptr_t&   M_full    = mat_ptr_t(NULL)
+		const mat_ptr_t&   M_full    = MemMngPack::null
 		,const Range1D&    rng_rows  = Range1D()
 		,const Range1D&    rng_cols  = Range1D()
 		,BLAS_Cpp::Transp   M_trans  = BLAS_Cpp::no_trans
