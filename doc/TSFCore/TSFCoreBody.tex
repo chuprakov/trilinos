@@ -17,31 +17,28 @@ multiple linear solver packages.
 One category of modules that is becoming increasingly important is
 abstract numerical algorithms (ANAs).  ANAs such as linear and
 nonlinear equation solvers, methods for stability and bifurcation
-analysis, uncertainty quantification methods and nonlinear programming
-solvers for optimization are typically mathematically sophisticated
-but have surprisingly little essential dependence on the details of
-what computer system is being used or how matrices and vectors are
-stored and computed.  Thus, by using abstract interface capabilities
-in languages such as C++, we can implement ANA software such that it
-will work, unchanged, with a variety of applications and linear
-algebra libraries.  Such an approach is often referred to as {\it
-generic programming}~\cite{ref:boost_generic_programming}.
+analysis, transient solvers, uncertainty quantification methods and
+nonlinear programming solvers for optimization are typically
+mathematically sophisticated but have surprisingly little essential
+dependence on the details of what computer system is being used or how
+matrices and vectors are stored and computed.  Thus, by using abstract
+interface capabilities in languages such as C++, we can implement ANA
+software such that it will work, unchanged, with a variety of
+applications and linear algebra libraries.  Such an approach is often
+referred to as {\it generic
+programming}~\cite{ref:boost_generic_programming}.
 
-In this paper we propose the use of a new stripped down and enhanced
-version of the Trilinos Solver Framework (TSF) called TSFCore as the
-common interface for (i) ANA development, (ii) the integration of an
-ANA into an application (APP) and (iii) providing services to the ANA
-from a linear algebra library (LAL).  By agreeing on a simple minimal
-common interface layer such as TSFCore, we eliminate the many-to-many
-dependency problem of ANA/APP interfaces.  The goal of TSFCore is not
-to replace the use of other types of more established linear algebra
-interfaces such as TSF {}\cite{ref:TSF}, {}\textit{AbstractLinAlgPack}
-(the linear algebra interfaces in MOOCHO
-{}\cite{ref:moochouserguide}), or HCL {}\cite{ref:hcl} as the
-interfaces that are directly used in the development of ANAs.
-Instead, TSFCore is designed to make it easier for developers to
-provide the basic functionality from APPs and LALs required by these
-existing ANA-specific interfaces.
+In this paper we describe a set of basic interfaces for the Trilinos
+Solver Framework (TSF) called TSFCore as the common interface for (i)
+ANA development, (ii) the integration of an ANA into an application
+(APP) and (iii) providing services to the ANA from a linear algebra
+library (LAL).  By agreeing on a simple minimal common interface layer
+such as TSFCore, we eliminate the many-to-many dependency problem of
+ANA/APP interfaces.  TSFCore is not primarily designed to be the most
+convenient interface for the direct development of ANAs but it can be
+used in direct ANA development.  Instead, TSFCore is designed to make
+it easier for developers to provide the basic functionality from APPs
+and LALs required for the implementation of ANAs.
 
 While TSFCore provides a mechanism to express all of the functionality
 required to be directly used in ANA development it does not attempt to
@@ -51,20 +48,22 @@ simple but powerful reduction and transformation operator
 mechanism~\cite{ref:rtop_toms} that can be used to express any
 element-wise vector reduction or transformation operation.  More
 direct and convenient access to functionality that might be desired by
-a given ANA is provided by interfaces such as TSF and
-{}\textit{AbstractLinAlgPack}.  This extended functionality can be
-very helpful in developing ANA code.  Section
-{}\ref{tsfcore:sec:convenience_functionality} discusses this topic in
-detail.
+a given ANA is provided in a companion project called TSFExtended
+[???].  Some extra functionality inbetween what is provided in the
+basic TSFCore interfaces described here and TSFExtended is contained
+in utility software that is also contained in the {}\texttt{TSFCore}
+namespace which will be referred to as TSFCore/utilities.  Extended
+functionality can be very helpful in developing ANA code and some
+examples are discussed in Section
+{}\ref{tsfcore:sec:convenience_functionality}.
 
 It is difficult to describe a set of linear algebra interfaces outside
 of the context of some class of numerical problems.  For this purpose,
 we will consider numerical algorithms where it is possible to
 implement all of the required operations exclusively through well
 defined interfaces to vectors, vector spaces and linear operators.
-Here we consider only the type of functionality such as is required in
-the numerical solution of optimal control problems as described in
-{}\cite{ref:opt_ctrl_itfc}.
+The interfaces described here are the common denominator of all
+abstract numerical algorithms.
 
 We assume that the reader has a basic understanding of vector
 reduction/transformation operators (RTOp) (see
@@ -130,9 +129,9 @@ between APPs, ANAs and LALs for the purposes of defining the TSFCore
 interface.
 
 The requirements for the linear algebra objects as imposed by an ANA
-are very different from the requirements imposed by an application
-code.  In order to differentiate the various types of interfaces and
-the requirements associated with each, consider Figure
+are very different from the requirements imposed by an APP code.  In
+order to differentiate the various types of interfaces and the
+requirements associated with each, consider Figure
 {}\ref{tsfcore:fig:ANA_LAL_APP}.  This figure shows the three major
 categories of software modules that make up a complete numerical
 application.  The first category is application (APP) software in
@@ -145,14 +144,14 @@ basic linear algebra operations {}\cite{ref:demmel_1997,
 ref:anderson_1995, ref:blackford_et_al_1997, ref:aztec, ref:petsc,
 ref:trilinos}. These types of software include primarily matrix-vector
 multiplication, the creation of a preconditioner (e.g.~ILU), and may
-even include several different types of linear solvers.  The third
-category is ANA software that drives the main solution process and
-includes such algorithms as iterative methods for linear and nonlinear
-systems; explicit and implicit methods for ODEs and DAEs; and
-nonlinear programming (NLP) solvers {}\cite{ref:nocedal_wright_1999}.
-There are many example software packages
-{}\cite{ref:petsc,ref:aztec,ref:trilinos,ref:pvode,ref:tao} that
-contain ANA software.
+even include several different types of direct linear solvers.  The
+third category is ANA software that drives the main solution process
+and includes such algorithms as iterative methods for linear and
+nonlinear systems; explicit and implicit methods for ODEs and DAEs;
+and nonlinear programming (NLP) solvers
+{}\cite{ref:nocedal_wright_1999}.  There are many example software
+packages {}\cite{ref:petsc,ref:aztec,ref:trilinos,ref:pvode,ref:tao}
+that contain ANA software.
 
 {\bsinglespace
 \begin{figure}[t]
@@ -178,7 +177,7 @@ vector spaces and linear operators.
 
 An application code, however, has the responsibility of populating
 vector and matrix objects and requires the passing of explicit
-function and gradient value entries, sometimes in a distributed
+function and gradient value entries, sometimes in a distributed memory
 parallel environment.  This is the purpose of a APP/LAL interface.
 This involves a very different set of requirements than those
 described above for the ANA/APP and ANA/LAL interfaces.  Examples of
@@ -208,9 +207,9 @@ requirements are stated.
 \begin{enumerate}
 
 \item
-TSFCore interfaces should be portable to all the ASCI
+TSFCore interfaces should be portable to all the ASC
 {}\cite{ref:doe_asci} platforms where SIERRA {}\cite{ref:SIERRA} and
-other ASCI applications might run.  However, a platform where C++
+other ASC applications might run.  However, a platform where C++
 templates are fundamentally broken will not be a supported platform
 for TSFCore.
 
@@ -238,10 +237,7 @@ client/server\footnote{Client/Server: The ANA runs in a process on a
 client computer and the APP and LAL run in processors on a server} and
 out-of-core\footnote{Out-of-core: The data for the problem is stored
 on disk and is read from and written to back disk as needed}
-implementations.  A hand-coded program (e.g.~using Fortran and MPI)
-should not provide any significant gains in performance in any of the
-above categories in any computing environment.  This is critical for
-the use of TSFCore in scientific computing.
+implementations.
 
 \item
 The work required to implement adapter subclasses (see the ``Adapter''
@@ -253,6 +249,15 @@ Section {}\ref{tsfcore:sec:adapters}).  This requirement is
 facilitated by the fact that the TSFCore interfaces are minimal.
 
 \end{enumerate}
+
+A hand-coded program (e.g.~using Fortran 77 and MPI) should not
+provide any significant gains in performance in any of the above
+categories in any computing environment.  If a hand-coded algorithm in
+Fortran 77 with MPI can significantly improvements in storage
+requirements, computational speed or numerial stability.  There are
+many numerical algorithms can can not be considered to be ``abstract''
+and therefore TSFCore and like abstract interfaces should not be used
+for such algorithms.
 
 %
 \section{TSFCore: Overview}
@@ -266,16 +271,16 @@ declarations for these interfaces are given in Appendix
 vector spaces and linear operators.  All of the interfaces are
 templated on the {}\texttt{Scalar} type (the UML notation for
 templated classes is not used in the figure for the sake of improving
-readability).  A vector space is the foundation for all other linear
+readability).  Vector space is the foundation for all other linear
 algebra abstractions.  Vector spaces are abstracted through the
 {}\texttt{\textit{VectorSpace}} interface.  A
-{}\texttt{\textit{VectorSpace}} object acts primarily as an ``abstract
-factory'' {}\cite{ref:gama_et_al_1995} that creates vector objects
-(which are the products in the ``abstract factory'' design pattern).
-Vectors are abstracted through the {}\texttt{\textit{Vector}}
-interface.  The {}\texttt{\textit{Vector}} interface is very minimal
-and really only defines one nontrivial method --
-{}\texttt{\textit{applyOp(\-...)}}.  The
+{}\texttt{\textit{VectorSpace}} object acts primarily as an ``Abstract
+Factory'' {}\cite{ref:gama_et_al_1995} that creates vector objects
+(which are the ``products'' in the ``Abstract Factory'' design
+pattern).  Vectors are abstracted through the
+{}\texttt{\textit{Vector}} interface.  The {}\texttt{\textit{Vector}}
+interface is very minimal and really only defines one nontrivial
+method {}\texttt{\textit{applyOp(\-...)}}.  The
 {}\texttt{\textit{applyOp(\-...)}} method accepts user-defined
 (i.e.~ANA-defined) reduction/transformation operator (RTOp) objects
 through the templated RTOp C++ interface
@@ -418,18 +423,33 @@ the appropriate header files.
 \label{tsfcore:sec:LBFGS}
 %
 
+{\bsinglespace
+\begin{figure}[t]
+\begin{center}
+%\fbox{
+\includegraphics*[angle=0,scale=0.60]{LBFGS}
+%}%fbox
+\end{center}
+\caption{
+\label{tsfcore:fig:LBFGS}
+A compact limited-memory representation of the inverse of a BFGS matrix.
+}
+\end{figure}
+\esinglespace}
+
 To motivate the following discussion and to provide examples, we
 consider the issues involved in using TSFCore to implement an ANA for
 the compact limited-memory BFGS (LBFGS) method described in
 {}\cite{ref:byrd_et_all_lbfgs_1994}.  BFGS and other variable-metric
-quasi-Newton methods are used to approximate a Hessian matrix $B$ of
-second derivatives.  This approximation is then used to generate
-search directions for various types of optimization algorithms.  The
-Hessian matrix $B$ and/or its inverse $H = B^{-1}$ is approximated
-using only changes in the gradient $y = \nabla f(x_{k+1}) - \nabla
-f(x_k)$ of some multi-variable scalar function $f(x)$ for changes in
-the variables $s = x_{k+1} - x_k$.  A set of matrix approximations
-$B_k$ are formed using rank-2 updates where each update takes the form
+quasi-Newton methods are used to approximate a Hessian matrix
+$B\in\RE^{n \times n}$ of second derivatives.  This approximation is
+then used to generate search directions for various types of
+optimization algorithms.  The Hessian matrix $B$ and/or its inverse $H
+= B^{-1}$ is approximated using only changes in the gradient $y =
+\nabla f(x_{k+1}) - \nabla f(x_k) \in \RE^n$ of some multi-variable scalar
+function $f(x)$ for changes in the variables $s = x_{k+1} - x_k \in
+\RE^n$.  A set of matrix approximations $B_k$ are formed using rank-2
+updates where each update takes the form
 %
 \begin{equation}
 B_{k+1} = B_k - \frac{B_k s_k s_k^T B_k}{s_k^T B_k s_k} + \frac{y_k y_k^T}{y_k^T s_k}.
@@ -439,8 +459,8 @@ In a limited-memory BFGS method, only a fixed maximum number
 $m_{\tiny\mbox{max}}$ of updates are stored
 %
 \begin{eqnarray}
-S & = & {\bmat{cccc} s_1 & s_2 & \ldots & s_{m} \emat} \label{tsfcore:eqn:LBSFGS_S}\\
-Y & = & {\bmat{cccc} y_1 & y_2 & \ldots & y_{m} \emat} \label{tsfcore:eqn:LBSFGS_Y}
+S & = & {\bmat{cccc} s_1 & s_2 & \ldots & s_{m} \emat} \label{tsfcore:eqn:LBSFGS_S} \; \in \; \RE^{n \times m}\\
+Y & = & {\bmat{cccc} y_1 & y_2 & \ldots & y_{m} \emat} \label{tsfcore:eqn:LBSFGS_Y} \; \in \; \RE^{n \times m}
 \end{eqnarray}
 %
 where $m \le m_{\tiny\mbox{max}}$ is the current number of stored
@@ -456,34 +476,19 @@ Figure {}\ref{tsfcore:fig:LBFGS}) of the quasi-Newton matrix $B$
 current iteration $B_k$) on is approximated using the tall thin
 multi-vectors $S$ and $Y$ along with a small (serial) coordinating
 matrix $Q$ (which is computed and updated from $S$ and $Y$).  The
-scalar $g$ is chosen for scaling reasons and $H_0 = B_0^{-1} = g I$
-represents the initial matrix approximation from which the updates are
-performed.  A similar compact formula also exists for $B$ which
-involves the same matrices (and requires solves with $Q$).  In an SPMD
-configuration, the multi-vectors $Y$ and $S$ may contain vector
-elements spread over many processors.  However, the number of columns
-$m$ in $S$ and $Y$ is usually less than $40$.  Because of the small
-number of columns in $S$ and $Y$, all of the linear algebra performed
-with the matrix $Q$ is performed serially using dense methods
-(i.e.~BLAS and LAPACK).  A parallel version of the compact LBFGS
-method is implemented, for example, as an option in MOOCHO.  TSFCore
-supports efficient versions of all of the operations needed for a
-near-optimal parallel implementation of this LBFGS method.
-
-{\bsinglespace
-\begin{figure}[t]
-\begin{center}
-%\fbox{
-\includegraphics*[bb= 0.0in 0.0in 7.0in 3.7in,angle=0,scale=0.60
-]{LBFGS}
-%}%fbox
-\end{center}
-\caption{
-\label{tsfcore:fig:LBFGS}
-A compact limited-memory representation of the inverse of a BFGS matrix.
-}
-\end{figure}
-\esinglespace}
+scalar $\gamma$ is chosen for scaling reasons and $H_0 = B_0^{-1} =
+\gamma I$ represents the initial matrix approximation from which the
+updates are performed.  A similar compact formula also exists for $B$
+which involves the same matrices (and requires solves with $Q$).  In
+an SPMD configuration, the multi-vectors $Y$ and $S$ may contain
+vector elements spread over many processors.  However, the number of
+columns $m$ in $S$ and $Y$ is usually less than $40$.  Because of the
+small number of columns in $S$ and $Y$, all of the linear algebra
+performed with the matrix $Q$ is performed serially using dense
+methods (i.e.~BLAS and LAPACK).  A parallel version of the compact
+LBFGS method is implemented, for example, as an option in MOOCHO.
+TSFCore supports efficient versions of all of the operations needed
+for a near-optimal parallel implementation of this LBFGS method.
 
 The requirements for this sub-ANA will be mentioned in several of the
 following sections along with example code.
@@ -494,8 +499,9 @@ following sections along with example code.
 %
 
 The basic design of the {}\texttt{\textit{VectorSpace}} interface was
-taken directly from HCL which is also used in TSF and
-{}\textit{AbstractLinAlgPack}.
+taken directly from HCL which is also used in
+{}\textit{AbstractLinAlgPack} (the basic linear algebra interfaces in
+MOOCHOH [???]).
 
 We now show a simple code example as to the use of the
 {}\texttt{\textit{VectorSpace}} and {}\texttt{\textit{Vector}}
@@ -609,8 +615,8 @@ primitive operations and temporary vectors.
 \item
 ANA-appropriate vector interfaces that desire built-in standard vector
 operations (i.e.~axpy and norms) can use RTOp operators for the
-default implementations of these operations (see
-{}\textit{AbstractLinAlgPack\-::\texttt{Vector}}).
+implementations of these operations (for example, see
+{}\textit{TSFExtended\-::\texttt{Vector}}).
 \end{enumerate}
 
 {\bsinglespace
@@ -1705,9 +1711,9 @@ hierarchy.  The decision adopted for TSFCore was to make
 
 As an example where this is needed, consider using the LBFGS inverse
 matrix $H$ shown in Figure {}\ref{tsfcore:fig:LBFGS} as a linear
-operator which acts on multi-vector arguments $U$ and $V$ in an
-operation of the form
-%
+operator which acts on multi-vector arguments $U\in\RE^{n \times p}$
+and $V\in\RE^{n \times p}$ in an operation of the form
+
 \begin{eqnarray*}
 U & = & \alpha B^{-1} V \\
   & = & \alpha H V \\
@@ -1716,17 +1722,17 @@ U & = & \alpha B^{-1} V \\
                             {\bmat{cc} Q_{ss} & Q_{sy} \\ Q_{sy}^T & Q_{yy} \emat}
                             {\bmat{c} S^T \\ g Y^T \emat} V
 \end{eqnarray*}
-%
+
 where the matrices $Q_{ss}$, $Q_{ys}$ and $Q_{yy}$ are stored as small
 {}\texttt{\textit{Multi\-Vector}} objects.  A multi-vector solve using
 the inverse $H = B^{-1}$ might be used, for instance, in an active-set
-optimization algorithm where $V$ represents the $p$ gradient vectors
-of the active constraints.  This is an important operation in the
-formation of a Schur complement of the KKT system in the QP subproblem
-of an reduced-space SQP method {}\cite{RABartlett_2001}.  This
-multi-vector operation using $H$ can be performed with the following
-operations
-%
+optimization algorithm where $V\in\RE^{n \times p}$ represents the $p$
+gradient vectors of the active constraints.  This is an important
+operation, for instance, in the formation of a Schur complement of the
+KKT system in the QP subproblem of an reduced-space SQP method
+{}\cite{RABartlett_2001}.  This multi-vector operation using $H$ can
+be performed with the following atomic operations
+
 \begin{eqnarray*}
 T_1 & = & S^T V \\
 T_2 & = & Y^T V \\
@@ -1734,11 +1740,11 @@ T_3 & = & Q_{ss} T_1 + g Q_{sy} T_2 \\
 T_4 & = & Q_{sy}^T T_1 + g Q_{yy} T_2 \\
 U   & = & \alpha g V + \alpha S T_3 + \alpha g Y T_4
 \end{eqnarray*}
-%
-where $T_1$, $T_2$, $T_3$ and $T_4$ are all temporary
+
+{}\noindent{}where $T_1$, $T_2$, $T_3$ and $T_4$ are all temporary
 {}\texttt{\textit{Multi\-Vector}} objects of dimension $m \times p$.
 The following function shows how the above operations are performed in
-order to implement the overall multi-vector solve.
+order to implement the overall multi-vector operation.
 
 {\scriptsize\begin{verbatim}
 template<class Scalar>
@@ -1750,39 +1756,81 @@ void TSFCore::LBFGS_solve(
 {
   // validate input
   ...
-  const int p = V.domain()->dim();              // Get number of columns in V and U
+  const int p = V.domain()->dim();               // Get number of columns in V and U
   Teuchos::RefCountPtr<const MultiVector<Scalar> >
-    S = get_updated(S_store,m),                 // Get view of only stored columns in S_store
-    Y = get_updated(Y_store,m);                 // Get view of only stored columns in Y_store
+    S = get_updated(S_store,m),                  // Get view of only stored columns in S_store
+    Y = get_updated(Y_store,m);                  // Get view of only stored columns in Y_store
   Teuchos::RefCountPtr<MultiVector<Scalar> >
-    T_1 = S->domain()->createMembers(p),        // Create the tempoarary multi-vectors
-    T_2 = Y->domain()->createMembers(p),        // ...
-    T_3 = Q_ss->range()->createMembers(p),      // ...
-    T_4 = Q_yy->range()->createMembers(p);      // ...
-  S->apply(TRANS,V,T_1->get());                 // T_1  =  S'*V
-  Y->apply(TRANS,V,T_2->get());                 // T_2  =  Y'*V
-  Q_ss.apply(NOTRANS,*T_1,T_3->get());          // T_3  =  Q_ss*T_1
-  Q_sy.apply(NOTRANS,*T_2,T_3->get(),g,1.0);    // T_3 +=  g*Q_sy*T_2
-  Q_sy.apply(TRANS,  *T_1,T_4->get());          // T_4  =  Q_sy'*T_1
-  Q_yy.apply(NOTRANS,*T_2,T_4->get(),g,1.0);    // T_4 +=  g*Q_yy*T_2
-  S->apply(NOTRANS,*T_3,U,alpha);               // U    =  alpha*S*T_3
-  Y->apply(NOTRANS,*T_4,U,alpha*g,1.0);         // U   +=  alpha*g*Y*T_4
-  axpy(alpha*g,V,U);                            // U   +=  alpha*g*V
+    T_1 = S->domain()->createMembers(p),         // Create the tempoarary multi-vectors
+    T_2 = Y->domain()->createMembers(p),         // ...
+    T_3 = S->domain()->createMembers(p),         // ...
+    T_4 = Y->domain()->createMembers(p);         // ...
+  S->apply(TRANS,V,T_1->get());                  // T_1  =  S'*V
+  Y->apply(TRANS,V,T_2->get());                  // T_2  =  Y'*V
+  Q_ss.apply(NOTRANS,*T_1,T_3->get());           // T_3  =  Q_ss*T_1
+  Q_sy.apply(NOTRANS,*T_2,T_3->get(),gamma,1.0); // T_3 +=  gamma*Q_sy*T_2
+  Q_sy.apply(TRANS,  *T_1,T_4->get());           // T_4  =  Q_sy'*T_1
+  Q_yy.apply(NOTRANS,*T_2,T_4->get(),gamma,1.0); // T_4 +=  gamma*Q_yy*T_2
+  S->apply(NOTRANS,*T_3,U,alpha);                // U    =  alpha*S*T_3
+  Y->apply(NOTRANS,*T_4,U,alpha*gamma,1.0);      // U   +=  alpha*gamma*Y*T_4
+  axpy(alpha*g,V,U);                             // U   +=  alpha*g*V
 }
 \end{verbatim}}
 
+{\bsinglespace
+\begin{figure}
+\begin{center}
+
+%\fbox{
+\includegraphics*[angle=0,scale=0.60]{SPMD_Dist_MVs_P4}
+%}%fbox
+
+a) Disturbed-memory multi-vectors \\[3ex]
+
+%\fbox{
+\includegraphics*[angle=0,scale=0.60]{SPMD_Locally_Replicated_MVs_P4}
+%}%fbox
+
+b) Locally replicated multi-vectors
+
+\end{center}
+\caption{
+\label{tsfcore:fig:SPMD_Dist_MVs_P4}
+Carton of disturbed-memory and locally replicated multi-vectors which
+are used in the example compact LBFGS sub-ANA when run in SPMD mode on
+four processors.  The process boundaries are shown as dotted lines.
+The numbers for rows and columns of each multi-vector are shown.}
+\end{figure}
+\esinglespace}
+
 Consider the use of the above function in an SPMD environment where
 the ANA runs in duplicate and in parallel on each processor.  Here,
-the elements for the multi-vector objects {}\texttt{S\_store},
-{}\texttt{Y\_store}, {}\texttt{V} and {}\texttt{U} are distributed
-across many different processors.  Note that in this case all of the
-elements in the multi-vector objects {}\texttt{Q\_ss},
-{}\texttt{Q\_sy}, {}\texttt{Q\_yy}, {}\texttt{T\_1}, {}\texttt{T\_2},
-{}\texttt{T\_3} and {}\texttt{T\_4} are stored locally and in
-duplicate on each processor.  Now let us consider the performance of
-this set of operations in this context.  Note that there are
-principally three different types of operations with multi-vectors
-that are performed through the
+the elements for the multi-vector objects {}\texttt{S\_store} (and
+view {}\texttt{S}) , {}\texttt{Y\_store} (and view {}\texttt{Y}),
+{}\texttt{V} and {}\texttt{U} are distributed across many different
+processors as Figure {}\ref{tsfcore:fig:SPMD_Dist_MVs_P4} shows.  The
+case shown\footnote{The aspect ratio of the number of rows to number
+of columns in Figure {}\ref{tsfcore:fig:SPMD_Dist_MVs_P4} is
+exaggerated in that in a realistic case the number of rows usually
+numbers in the tens to hundreds of thousands while the number of
+columns usually numbers in only the ten.  This was done for
+illustrative purposes.  If the true aspect ratio where shown in Figure
+{}\ref{tsfcore:fig:SPMD_Dist_MVs_P4} then all of these multi-vectors
+would appear to be just vertical lines and would not show a distiction
+between different multi-vectors.} in Figure
+{}\ref{tsfcore:fig:SPMD_Dist_MVs_P4} is for the situation where $p <
+m$.  In SPMD mode, all of the elements in the multi-vector objects
+{}\texttt{Q\_ss}, {}\texttt{Q\_sy}, {}\texttt{Q\_yy}, {}\texttt{T\_1},
+{}\texttt{T\_2}, {}\texttt{T\_3} and {}\texttt{T\_4} are stored
+locally and in duplicate (i.e.~locally replicated) on each processor
+as shown\footnote{The same unrealistic aspect ratio shown in Figure
+{}\ref{tsfcore:fig:SPMD_Locally_Replicated_MVs_P4} is the same as
+shown in Figure {}\ref{tsfcore:fig:SPMD_Dist_MVs_P4}, again for
+illustrative purposes.} in Figure
+{}\ref{tsfcore:fig:SPMD_Locally_Replicated_MVs_P4}.  Now let us
+consider the performance of this set of operations in this context.
+Note that there are principally three different types of operations
+with multi-vectors that are performed through the
 {}\texttt{\textit{Multi\-Vector\-::apply(\-...)}} method.
 
 The first type of operation performed by
@@ -1795,22 +1843,43 @@ parallel/parallel matrix-matrix products performed in the lines
 \end{verbatim}}
 
 {}\noindent{}where the results are stored in the local multi-vectors
-{}\texttt{T\_1} and {}\texttt{T\_2}.  These two operations only
-require a single global reduction each, independent of the number of
-updates $m$ represented in $S$ and $Y$ or columns $p$ in $V$.  Note
-that if there was no concept of a multi-vector and these matrix-matrix
-products had to be performed one set of vectors at a time, then these
-two parallel matrix-matrix products would require a whopping $2 m p$
-global reductions.  For $m = 40$ and $p = 20$ this would result in $2
-m p = 2(40)(20) = 1600$ global reductions!  Clearly this many global
-reductions would destroy the parallel scalability of the overall ANA.
-It is in this type of operation that the concept of a
+{}\texttt{T\_1} and {}\texttt{T\_2}.  The operation $T_1 = S^T V$ is
+shown in Figure {}\ref{tsfcore:fig:SPMD_Block_Dot_Prod_P4} for the
+SPMD mode on four processors.  This type of operation is also known as
+a block dot product [???].  These two operations only require a single
+global reduction each, independent of the number of updates $m$
+represented in $S$ and $Y$ or columns $p$ in $V$.  Note that if there
+was no concept of a multi-vector and these matrix-matrix products had
+to be performed one set of vectors at a time, then these two parallel
+matrix-matrix products would require a whopping $2 m p$ global
+reductions.  For $m = 40$ and $p = 20$ this would result in $2 m p =
+2(40)(20) = 1600$ global reductions!  Clearly this many global
+reductions would destroy the parallel scalability of the overall ANA
+any many cases.  It is in this type of operation that the concept of a
 {}\texttt{\textit{Multi\-Vector}} is most critical for near-optimal
 performance in parallel programs.  In addition to mimimizing
 communication overhead, the {}\texttt{\textit{Multi\-Vector}}
 implementation can utilize level-3 BLAS to perform the local processor
 matrix-matrix multiplications yielding near-optimal cache performance
 on most systems.
+
+{\bsinglespace
+\begin{figure}
+\begin{center}
+%\fbox{
+\includegraphics*[angle=0,scale=0.60]{SPMD_Block_Dot_Prod_P4}
+%}%fbox
+\end{center}
+\caption{
+\label{tsfcore:fig:SPMD_Block_Dot_Prod_P4}
+Carton of distributed-memory matrix-matrix product (i.e.~block dot
+product) $T_1 = S^T V$ run in SPMD mode on four processors.  This
+operation first performs local matrix-matrix multiplication with the
+entries of $S^T$ and $V$ on each processor using level-3 BLAS and then
+a global reduction summation operation is performed (using MPI) to
+produce $T_1$ which is returned to all of the processors.}
+\end{figure}
+\esinglespace}
 
 The second type of operation performed by
 {}\texttt{\textit{Multi\-Vector\-::apply(\-...)}} is the local/local
@@ -2508,14 +2577,15 @@ example, the default implementation of the
 \label{tsfcore:sec:convenience_functionality}
 %
 
-While TSFCore provides all of the functionality required to be
-directly used in ANA development it lacks much nonessential but
-convenient functionality that is very helpful in developing ANA code.
-This nonessential but convenient functionality can be built on top of
-the core functionality which is precisely the type of extra
-functionality that TSF and {}\textit{AbstractLinAlgPack} provide.  In
-this section, several different examples of nonessential but
-convenient functionality are given along with references to where this
+While the basic TSFCore interfaces described in this paper provide all
+of the functionality required to be directly used in ANA development
+these interfaces lack much of the nonessential but convenient
+functionality that is very helpful in developing ANA code.  This
+nonessential but convenient functionality can be built on top of the
+core functionality which is precisely the type of extra functionality
+that TSFCore/utilities and TSFExtended provide.  In this section,
+several different examples of nonessential but convenient
+functionality are given along with references to where this
 functionality exists in TSF and {}\textit{AbstractLinAlgPack}.
 
 %
@@ -2544,64 +2614,55 @@ method.
 The ideal way to represent composite blocked or product vector
 objects, such as described in Section
 {}\ref{tsfcore:sec:vec_apply_op}, is to create a composite blocked or
-product vector subclass such as {}\texttt{TSF\-::TSF\-Product\-Vector}
-in TSF or {}\texttt{Abstract\-Lin\-Alg\-Pack\-::Vector\-Blocked} in
-{}\textit{Abstract\-Lin\-AlgP\-ack}.  Associated with these product
-(or blocked) vector subclasses are product vector spaces subclasses.
-These subclasses are called {}\texttt{TSF\-::TSF\-Product\-Space} in
-TSF and {}\texttt{Abstract\-Lin\-Alg\-Pack\-::Vector\-Space\-Blocked}
-in {}\textit{Abstract\-Lin\-Alg\-Pack}.  These types of composite
-product {}\texttt{\textit{Vector}} and {}\texttt{\textit{VectorSpace}}
+product vector subclass.  Interfaces and implementations of such
+product objects are provided in TSFCore/utilites (see the classes
+{}\texttt{Product\-Vector\-Space}, {}\texttt{Product\-Vector} and
+{}\texttt{Product\-Multi\-Vector}).  These types of composite product
+{}\texttt{\textit{Vector}} and {}\texttt{\textit{VectorSpace}}
 subclasses are easy to develop because of the specification of
 {}\texttt{\textit{Vector\-::applyOp(\-...)}}.
 
 Note that a product vector such as
-%
+
 \[
 \tilde{x} = {\bmat{c} x_1 \\ x_2 \\ \vdots \\ x_N \emat}
 \]
-%
-with $N$ block vectors is distictly different from a multi-vector
-%
+
+{}\noindent{}with $N$ block vectors is distictly different from a
+multi-vector
+
 \[
 Y = {\bmat{cccc} y_1 & y_2 & \ldots & y_N \emat}
 \]
-%
-with $N$ colunns.  In the multi-vector $Y$, each of the column vectors
-$y_j$ lie in the same vector space (i.e.~the range space of the linear
-operator represented by the multi-vector) which may not be the case
-for the vector blocks $x_j$ of $\tilde{x}$ which may lie in distictly
-different vector spaces $\mathcal{X}_j$.  While it may seem that the
-mathematical differences between a multi-vector and a product vector
-are subtle, they are distictly different from a software implication
-point of view.  Multi-vectors are ment to represent tall, thin dense
-matrices such as for multiple right-hand-sides that are passed to a
-linear solver or for performing mulitple linear operator applications
-(with the same linear operator) while product vectors and product
-vector spaces are ment to represent single vector objects which are
-composed of individual vector blocks such as would be used for the
-composite unknowns in an SFE method or a multi-period design problem.
-For example, a product vector space would be able to create a product
-multi-vector such as
-%
+
+{}\noindent{}with $N$ colunns.  In the multi-vector $Y$, each of the
+column vectors $y_j$ lie in the same vector space (i.e.~the range
+space of the linear operator represented by the multi-vector) which
+may not be the case for the vector blocks $x_j$ of $\tilde{x}$ which
+may lie in distictly different vector spaces $\mathcal{X}_j$.  While
+it may seem that the mathematical differences between a multi-vector
+and a product vector are subtle, they are distictly different from a
+software implication point of view.  Multi-vectors are ment to
+represent tall, thin dense matrices such as for multiple
+right-hand-sides that are passed to a linear solver or for performing
+mulitple linear operator applications (with the same linear operator)
+while product vectors and product vector spaces are ment to represent
+single vector objects which are composed of individual vector blocks
+such as would be used for the composite unknowns in an SFE method or a
+multi-period design problem.  For example, a product vector space
+would be able to create a product multi-vector such as
+
 \[
 \tilde{Y} = {\bmat{c} Y_1 \\ Y_2 \\ \vdots \\ Y_N \emat}
 \]
-%
-where each constituent multi-vector $Y_j$ may have a different range
-space but all must have the same domain space obviously.  For an
-example of a product (or blocked) multi-vector, see
-{}\texttt{Abstract\-Lin\-Alg\-Pack\-::Multi\-Vector\-Mutable\-Blocked}.
 
-Similar generic composition subclasses also exist for linear operators
-in TSF (see {}\texttt{TSF\-::TSF\-Block\-Linear\-Operator} and
-{}\texttt{TSF\-::TSF\-Sum\-Operator}) and
-{}\textit{AbstractLinAlgPack} (see
-{}\texttt{Abstract\-Lin\-Alg\-Pack\-::Matrix\-Op\-Blocked} and
-{}\texttt{Abstract\-Lin\-Alg\-Pack\-::Matrix\-Op\-Composite}).  In
-addition, more application-specific composite
-{}\texttt{\textit{LinearOp}} subclasses can also be developed (for
-example, for the SFE system in {}\cite{ref:sfe}).
+where each constituent multi-vector $Y_j$ may have a different range
+space but all must have the same domain space obviously.  Such a
+product multi-vector is implemented by
+{}\texttt{Product\-Multi\-Vector}.
+
+Similar generic composition subclasses can also exist for linear
+operators (see TSFExtended).
 
 %
 \subsection{Matlab-like notation and handle classes for linear algebra
@@ -2612,17 +2673,17 @@ using operator overloading}
 TSFCore contains abstractions for linear algebra objects.
 Mathematicians use a precise syntax to describe linear algebra
 operations.  Matlab {}\cite{ref:matlab} has established a useful
-convention for mathematical linear algebra syntax using only ASCII
+convention for mathematical linear algebra syntax using only ASC
 characters.  C++ has operator overloading.  When you put all of this
 together it seems obvious, at first glance, that operator overloading
 in C++ should be used to specify linear algebra operations like
-%
+
 \[
 y = A u + \gamma B^T v + \eta C w
 \]
-%
-in C++ as
-%
+
+{}\noindent{}in C++ as
+
 \begin{verbatim}
   y = A*u + gamma*trans(B)*v + eta*w;
 \end{verbatim}
@@ -2632,14 +2693,14 @@ unnecessary temporaries or multiple memory accesses) of operator
 overloading for linear algebra in C++ is nontrivial.  While this type
 of syntax is desirable, it does not provide any new functionality and
 is only nonessential but convenient functionality and is therefore not
-included in TSFCore.  An efficient operator overloading mechanism in
-C++ is hard to implement and is difficult for C++ novices to debug
-through.  If operator overloading is to be built on top of TSFCore
-(e.g.~using TSF for instance) then this implementation must be bullet
-proof and provide unmatched exception handling so that users must
-never need to debug through this code.  TSF has started to implement
-linear algebra operations using operator overloading but at the
-present time only vector-vector operations are supported.
+included in the basic TSFCore interfaces.  If such Matlab-like syntax
+is desired, it can be found in TSFExtended through the use of handle
+classes which include overloaded operators.  However, an efficient
+operator overloading mechanism in C++ is hard to implement and is
+difficult for C++ novices to debug through.  Operator overloading
+built on top of TSFCore must be bullet proof and provide unmatched
+exception handling so that users must never need to debug through this
+code.
 
 Closely associated with operator overloading is the concept of handle
 classes {}\cite{ref:advanced_c++_coplien}.  Handles assume the same
@@ -2649,51 +2710,9 @@ type of role as a smart pointers except all of the method forwarding
 in handle class (which must be written an maintained for every method
 on every class by some developer).  Handles make the implementation of
 linear algebra operations with operator overloading much easier.
-Handles are used extensively in TSF.  Since TSFCore does not implement
-operator overloading, handles classify as nonessential but convenient
-functionality and are therefore not included in TSFCore.
-
-%
-\section{Making the most of TSFCore : Adapters}
-\label{tsfcore:sec:adapters}
-%
-
-To leverage TSFCore to its fullest benefit, TSFCore should be used as
-the standard basic set of linear algebra abstractions that form the
-basis of every ANA/LAL and ANA/APP interface.  In addition, every set
-of compatible linear algebra interfaces like TSF, HCL and
-{}\textit{AbstractLinAlgPack} should provide adapters to and from
-TSFCore.  For example, there already exist adapter subclasses that
-implement the {}\textit{AbstractLinAlgPack} interfaces using TSFCore
-objects (i.e.~TSFCore-to-\textit{AbstractLinAlgPack}).  There are also
-adapter subclasses that implement the TSFCore interfaces using
-{}\textit{AbstractLinAlgPack} objects
-(i.e.~\textit{AbstractLinAlgPack}-to-TSFCore).  TSF is built on top of
-TSFCore so there is no need for TSFCore/TSF adapters.  If these same
-set of adapters are also developed for HCL, and other similar
-interfaces, then scenarios such as the following are possible.
-
-Consider an advanced transient PDE-constrained optimization problem
-where the basic PDE constraints are modeled and discretized (in space)
-using Sundance {}\cite{krlong:Sundance}.  Sundance uses TSF for all of
-its linear algebra needs.  If the adapters from TSFCore-to-HCL are
-available, then the adjoint-sensitivity time integrator described in
-{}\cite{Gockenbach:2002:EAI} could be used to compute transient
-adjoint-sensitivities for objective and auxiliary constraint
-functions.  Then, with HCL-to-TSFCore and
-TSFCore-to-\textit{AbstractLinAlgPack} adapters available, these
-adjoint sensitivities to could be used in an optimization algorithm in
-MOOCHO.  In turn, MOOCHO may solve for Newton steps with the Hessian
-(using a LBFGS matrix as described in Section
-{}\ref{tsfcore:sec:LBFGS}, implemented using
-{}\textit{AbstractLinAlgPack}, as a preconditioner) using an iterative
-conjugate gradient method as implemented using TSF as provided in
-Trilinos.  This would be easy if adapters for
-{}\textit{AbstractLinAlgPack}-to-TSFCore were implemented.  Without
-going into any more detail about the above optimization scenario, it
-should be clear how the adoption of TSFCore as a standard basic
-minimal set of linear algebra interfaces would make such advanced
-examples of reuse possible.
+Handles are used extensively in TSFExtended.  Since TSFCore does not
+implement operator overloading, handles classify as nonessential but
+convenient functionality and are therefore not included in TSFCore.
 
 %
 \section{Summary}
@@ -2709,7 +2728,7 @@ solvers) it is not sufficient for higher-level nonlinear algorithms.
 An extension of the basic TSFCore interfaces for nonlinear problems is
 described in {}\cite{ref:TSFCore::Nonlin}.
 
-By adapting TSFCore as a standard interface layer, interoperability
+By adopting TSFCore as a standard interface layer, interoperability
 between applications, linear algebra libraries and abstract numerical
-algorithms in advanced scientific computing environments can become a
-reality.
+algorithms in advanced scientific computing environments becomes
+automatic to a large extent.
