@@ -17,6 +17,7 @@
 #include "AbstractLinAlgPack/include/VectorWithOp.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "ThrowException.h"
+#include "dynamic_cast_verbose.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -25,6 +26,17 @@ MeritFuncNLPL1::MeritFuncNLPL1()
 {}
 
 // Overridden from MeritFuncNLP
+
+MeritFuncNLP& MeritFuncNLPL1::operator=(const MeritFuncNLP& merit_func)
+{
+	using DynamicCastHelperPack::const_dyn_cast;
+	const MeritFuncNLPL1 &merit_func_l1 = const_dyn_cast<MeritFuncNLPL1>(merit_func);
+	if(this == &merit_func_l1)
+		return *this; // assignment to self
+	this->deriv_   = merit_func_l1.deriv_;
+	this->mu_      = merit_func_l1.mu_;
+	return *this;
+}
 
 value_type MeritFuncNLPL1::value(
 	value_type             f

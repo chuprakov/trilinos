@@ -53,6 +53,8 @@ public:
 	//@{
 
 	///
+	MeritFuncNLP& operator=(const MeritFuncNLP&);
+	///
 	value_type value(
 		value_type             f
 		,const VectorWithOp    *c
@@ -60,10 +62,8 @@ public:
 		,const VectorWithOp    *hl
 		,const VectorWithOp    *hu
 		) const;
-
 	///
 	value_type deriv() const;
-
 	///
 	void print_merit_func(
 		std::ostream& out, const std::string& leading_str ) const;
