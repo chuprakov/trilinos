@@ -1,4 +1,4 @@
-// ///////////////////////////////////////////////////////////////////////////
+/* ///////////////////////////////////////////////////////////////////////////
 // check_nan_inf.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef CHECK_NAN_INF_H
 #define CHECK_NAN_INF_H
@@ -24,21 +25,21 @@ extern "C" {
 
 /** \file check_nan_inf.hpp Utility functions for determining if a number is not a regular floating point number.
  */
-//@{
+/*@{*/
 
-/// Return true if the number is +-NaN if this reprsentation exists.
+/** Return true if the number is +-NaN if this reprsentation exists. */
 int RTOp_is_nan( RTOp_value_type val );
 
-/// Return true if the number is +-infinity if this reprsentation exists.
+/** Return true if the number is +-infinity if this reprsentation exists. */
 int RTOp_is_inf( RTOp_value_type val );
 
-/// Return true if the number is +-NaN or +-infinity if this reprsentation exists.
+/** Return true if the number is +-NaN or +-infinity if this reprsentation exists. */
 int RTOp_is_nan_inf( RTOp_value_type val );
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // CHECK_NAN_INF_H
+#endif /* CHECK_NAN_INF_H */
