@@ -152,7 +152,6 @@ public:
       Scalar *values = NULL;
       try {
         const int subDim = u-l+1;
-        std::fill_n( values, subDim, Teuchos::ScalarTraits<Scalar>::zero() );
         sub_vec.initialize(
           l-1                  // global_offset
           ,subDim              // subDim
