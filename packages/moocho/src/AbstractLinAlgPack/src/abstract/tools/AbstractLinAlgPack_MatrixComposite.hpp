@@ -518,10 +518,17 @@ private:
 
 	bool                       fully_constructed_;
 	size_type                  rows_, cols_;
+#ifdef DOXYGEN_COMPILE
+	MatrixWithOp               *matrices;
+    VectorWithOp               *vectors;
+    VectorSpace                *space_cols;
+    VectorSpace                *space_rows;
+#else
 	matrix_list_t              matrix_list_;
 	vector_list_t              vector_list_;
-	VectorSpace::space_ptr_t   space_rows_;
 	VectorSpace::space_ptr_t   space_cols_;
+	VectorSpace::space_ptr_t   space_rows_;
+#endif
 
 	// ///////////////////////////////
 	// private member functions

@@ -233,28 +233,32 @@ public:
 	 */
 	index_type lookup_col_j(index_type row_i) const;
 
-	/** @name Iterator Access.
-	  *
-	  * These functions return forward iterators for accessing which
-	  * rows and columns each nonzero 1 entry is located at.
-	  * If this->is_identity() == true then these iterators are obviously
-	  * unnecessary and will throw exceptions.
-	  /begin{verbatim}
-	for( GenPermMatrixSlice::const_iterator itr = gpms.begin(); itr != gpms.end(); ++itr )
-	{
-		std::cout << "row_i = " << itr->row_i();
-		std::cout << "col_j = " << itr->col_j();
-	}
-	  /end{verbatim}
-	  *
-	  * You can also take a difference between iterators.
-	  */
+	/** @name Iterator Access. */
 	//@{
 
 	///
+	/** Return a random access iterator for accessing which row and column that each
+	 * nonzero 1.0 entry is located at.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_identity() == false</tt> (throw <tt>???</tt>)
+	 * </ul>
+	 *
+	 * If <tt>this->is_identity() == true</tt> then these iterators are obvoisly unneccesary
+	 * and will throw exceptions.
+	 \verbatim
+	 for( GenPermMatrixSlice::const_iterator itr = gpms.begin(); itr != gpms.end(); ++itr )
+	 {
+	     std::cout << "row_i = " << itr->row_i();
+	     std::cout << "col_j = " << itr->col_j();
+	 }
+	 \endverbatim
+	 *
+	 * You can also take a difference between iterators.
+	 */
 	const_iterator begin() const;
 
-	///
+	/// Return the end of <tt>this->const_iterator_begin()</tt>.
 	const_iterator end() const;
 
 	//@}
@@ -299,6 +303,19 @@ private:
 	EOrderedBy			ordered_by_;
 	const index_type		*row_i_;
 	const index_type		*col_j_;
+
+	// //////////////////////////////
+	// Private static data members
+
+	// ToDo: We could allocate a class-wide array, initialize
+	// it to [1,2,3 ...] and then use it for the iterators
+	// when is_idenity() == true!  This would make implementing
+	// a lot of code a lot easier if we don't care about a little
+	// inefficiency!  We could just allocate a large chunk
+	// of memory by default (or client could do this for us)
+	// and then construct it when needed.  If a client ever
+	// requested an iterator when not enough storage was avalible
+	// then we would throw an exception.
 
 	// //////////////////////////////
 	// Private member functions
