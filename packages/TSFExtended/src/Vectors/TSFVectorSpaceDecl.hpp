@@ -32,6 +32,7 @@
 #include "TSFConfigDefs.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFHandle.hpp"
+#include "TSFDescribableByTypeID.hpp"
 
 
 namespace TSFExtended
@@ -66,8 +67,7 @@ namespace TSFExtended
      * are dereferenced. If the argument is not a handle, then it
      * ends up comparing to the concrete contents of this handle, giving the
      * same results. */
-    bool isCompatible(const VectorSpace<Scalar>& vecSpc) const 
-    {return vecSpc.isCompatible(*ptr());}
+    bool isCompatible(const VectorSpace<Scalar>& vecSpc) const; 
 
 
 

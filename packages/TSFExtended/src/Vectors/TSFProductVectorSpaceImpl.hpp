@@ -145,12 +145,9 @@ bool ProductVectorSpace<Scalar>::operator!=(const VectorSpace<Scalar>& other)
 template <class Scalar>
 RefCountPtr<TSFCore::Vector<Scalar> >ProductVectorSpace<Scalar>::createMember() const
 {
-  cerr << "In ProdVecspace:createMember: numBlocks_ = " << numBlocks_ << endl;
   RefCountPtr<const ProductVectorSpace<Scalar> > me = rcp(this, false);
   VectorSpace<Scalar> vs(me);
-  cerr << "In PVSImpl: createMember: about to create PV" << endl;
   Vector<Scalar> v = new ProductVector<Scalar>(vs);
-  cerr << "   returning the vector" << endl;
   return v.ptr();
 }
 

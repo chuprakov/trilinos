@@ -44,21 +44,7 @@ using std::ostream;
 template <class Scalar>
 bool VectorSpace<Scalar>::operator==(const VectorSpace<Scalar>& other) const 
 {
-  const DescribableByTypeID *descrOther = 
-    dynamic_cast<const DescribableByTypeID* > (other.ptr().get());
-  const DescribableByTypeID *descrThis = 
-    dynamic_cast<const DescribableByTypeID* > (ptr().get());
-
-  TEST_FOR_EXCEPTION(descrOther == 0, runtime_error,
-		     "Operator not describable; "
-		     << "hence not testable for equality" << endl);
-  if (descrOther->typeName() != descrThis->typeName() || other.dim() != dim()
-      || other.isInCore() != isInCore())
-    {
-      return false;
-    }
-  return true;
-  
+  return isCompatible(other);  
 }
 
 
@@ -69,6 +55,31 @@ bool VectorSpace<Scalar>::operator!=(const VectorSpace<Scalar>& other) const
   return !(operator==(other));
 }
     
+
+
+
+//========================================================================
+template <class Scalar>
+bool VectorSpace<Scalar>::isCompatible(const VectorSpace<Scalar>& vecSpc) const 
+{
+  const DescribableByTypeID *descrOther = 
+    dynamic_cast<const DescribableByTypeID* > (vecSpc.ptr().get());
+  const DescribableByTypeID *descrThis = 
+    dynamic_cast<const DescribableByTypeID* > (ptr().get());
+
+  TEST_FOR_EXCEPTION(descrOther == 0, runtime_error,
+		     "Operator not describable; "
+		     << "hence not testable for equality" << endl);
+  if (descrOther->typeName() != descrThis->typeName() 
+      || vecSpc.dim() != dim()
+      || vecSpc.isInCore() != isInCore())
+    {
+      return false;
+    }
+  return true;
+}
+
+
 
 
 
