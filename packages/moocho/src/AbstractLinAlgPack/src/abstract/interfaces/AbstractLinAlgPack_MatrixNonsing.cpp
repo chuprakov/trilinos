@@ -19,7 +19,13 @@
 #include <assert.h>
 
 #include "AbstractLinAlgPack/include/MatrixNonsingular.h"
+#include "AbstractLinAlgPack/include/MultiVectorMutable.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
+#include "AbstractLinAlgPack/include/EtaVector.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "ThrowException.h"
+#include "dynamic_cast_verbose.h"
 
 namespace AbstractLinAlgPack {
 
@@ -65,12 +71,58 @@ value_type MatrixNonsingular::transVtInvMtV(
 // Level-3 BLAS
 
 void MatrixNonsingular::M_StInvMtM(
-	MatrixWithOp* m_lhs, value_type alpha
-	,BLAS_Cpp::Transp trans_rhs1
-	,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+	MatrixWithOp* C_lhs, value_type alpha
+	,BLAS_Cpp::Transp M_trans
+	,const MatrixWithOp& B, BLAS_Cpp::Transp B_trans
 	) const
 {
-	assert(0); // ToDo: Implement!
+	//
+	// C = a * inv(op(M)) * op(B)
+	//
+	using DynamicCastHelperPack::dyn_cast;
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
+#ifdef _DEBUG
+	THROW_EXCEPTION(
+		C_lhs == NULL, std::invalid_argument
+		,"MatrixNonsingular::M_StInvMtM(...) : Error!" );
+	
+#endif
+	const size_type
+		C_rows = C_lhs->rows(),
+		C_cols = C_lhs->cols();
+	const size_type
+		op_B_cols = BLAS_Cpp::cols( B.rows(), B.cols(), B_trans );
+#ifdef _DEBUG
+	// We can't check vector spaces since *this may not support MatrixWithOp
+	// However, we could dynamic cast to see if MatrixWithOp is supported and then
+	// be able to use Mp_MtM_assert_compatibility() but this is okay for now.
+	const size_type
+		M_rows    = this->rows(),
+		M_cols    = this->cols(),
+		op_B_rows = BLAS_Cpp::rows( B.rows(), B.cols(), B_trans );
+	THROW_EXCEPTION(
+		C_rows != M_rows || M_rows != M_cols || M_cols != op_B_rows || C_cols != op_B_cols
+		, std::invalid_argument
+		,"MatrixNonsingular::M_StInvMtM(...) : Error!" );
+#endif
+	//
+	// Compute C = a * inv(op(M)) * op(B) one column at a time:
+	//
+	// C(:,j) = inv(op(M)) * a * op(B) * e(j)    , for j = 1...C.cols()
+	//                       \______________/    
+	//                              t_j
+	//
+	MultiVectorMutable  &C = dyn_cast<MultiVectorMutable>(*C_lhs);
+	VectorSpace::vec_mut_ptr_t
+		t_j = ( B_trans == no_trans ? B.space_cols() : B.space_rows() ).create_member();
+	for( size_type j = 1; j <= C_cols; ++j ) {
+		// t_j = alpha * op(B) * e_j
+		EtaVector e_j( j, op_B_cols );
+		LinAlgOpPack::V_StMtV( t_j.get(), alpha, B, B_trans, e_j() );
+		// C(:,j) = inv(op(M)) * t_j
+		AbstractLinAlgPack::V_InvMtV( C.col(j).get(), *this, M_trans, *t_j );
+	}
 }
 
 void MatrixNonsingular::M_StMtInvM(
