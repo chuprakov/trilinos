@@ -66,9 +66,9 @@ Engineering and scientific applications are becoming increasingly
 modular, utilizing publicly defined interfaces to integrate
 third party tools and libraries for services such as
 mesh generation, data partitioning, equation solvers and optimization.
-As a result, it is important to understand and model the interplay between 
+As a result, it is important to understand and model the interaction between 
 these various modules, and to develop good abstract interfaces between
-the primary modules.  One class of modules that is becoming
+the primary modules.  One category of modules that is becoming
 increasingly important is abstract numerical algorithms (ANAs).  ANAs
 such as linear and nonlinear equation solvers,
 stability and bifurcation methods,
@@ -96,12 +96,14 @@ algebra libraries.
 
 \section{Introduction}
 
-One area of the continual improvement in large-scale engineering 
+One area of steady improvement in large-scale engineering 
 and scientific applications is the increased modularity of application
-design and development,  utilization of publicly defined interfaces,
-and the related integration of third-party software
-to satisfy critical technology needs such as mesh generation, data 
-partitioning and solution optimizatio methods.  Although, 
+design and development.  Specification of publicly-defined interfaces,
+combined with the use of third-party software
+to satisfy critical technology needs in areas 
+such as mesh generation, data 
+partitioning and solution methods have been a 
+generally positive development in application design.  Although, 
 from the application 
 developer's perspective, use of third party software introduces 
 dependencies, it also gives the application access to the latest
@@ -109,7 +111,8 @@ technology in these areas, amortizes library and tool development
 across multiple applications and, if properly designed, gives the
 application easy access to more than one option for each critical
 technology area, e.g., access to multiple linear solver packages.
-One class of modules that is becoming
+
+One category of modules that is becoming
 increasingly important is abstract numerical algorithms (ANAs).  ANAs
 such as linear and nonlinear equation solvers,
 stability and bifurcation methods,
@@ -117,7 +120,7 @@ uncertainty quantification methods and nonlinear programming solvers
 for optimization are typically mathematically 
 sophisticated but have surprisingly little essential dependence on the
 details of what computer system is being used or how matrices and
-vectors are stored and computed.  As a result, using abstract
+vectors are stored and computed.  Thus, by using abstract
 interface capabilities in languages such as C++, we can implement ANA
 software such that it will work, unchanged, with a variety of
 applications and linear algebra libraries.  Such an approach is often
@@ -125,10 +128,10 @@ referred to as {\it generic programming}~\cite{ref:boost_generic_programming}.
 
 In this paper we propose the use of a new stripped
 down version of the Trilinos Solver Framework (TSF) called TSFCore as
-the common interface for the development of ANAs and their 
-integration into applications (APPs) and
-linear algebra libraries (LALs).  By agreeing on a simple minimal
-common interface layer such as TSFCore, we get around the many-to-many
+the common interface for (i) ANA development, (ii) the integration of an
+ANA into an application (APP) and (iii) providing services to the ANA
+from a linear algebra library (LAL).  By agreeing on a simple minimal
+common interface layer such as TSFCore, we eliminate the many-to-many
 problem of ANA/APP interfaces.  The goal of TSFCore is not to
 replace the use of other types of more established linear algebra
 interfaces such as TSF \cite{ref:TSF}, \textit{AbstractLinAlgPack}
@@ -172,7 +175,7 @@ simultaneous systems of linear equations (using a simple block BiCG
 method) is described in Section
 \ref{tsfcore:sec:ANA_iter_solver_example}.  A discussion of some of the
 object-oriented and other general software design concepts and
-principles that have goon into the development of TSFCore is deferred
+principles that have gone into the development of TSFCore is deferred
 to Section \ref{tsfcore:sec:general_software_concepts}.  Some of the
 nonessential but convenient functionality that is useful to direct ANA
 developers that is missing in TSFCore is described in Section
@@ -193,9 +196,11 @@ section, we want to briefly introduce these terms here to make them
 clear.  Also, although there are certainly other types of modules 
 in a large-scale application, we only focus on these three.
 \begin{itemize}
-\item Application (APP):  The code that is unique to the application 
-itself.  This typically includes the code that formulates and
-generates the discrete problem.  In principle it could include other
+\item Application (APP):  The modules of an application that are not
+ANA or LAL modules.  Typically this includes 
+the code that is unique to the application 
+itself such as the code that formulates and
+generates the discrete problem.  In general it would also include other
 third-party software that is not an ANA or LAL module.
 \item Abstract Numerical Algorithm (ANA):  Software that drives a 
 solution process, e.g., a nonlinear solver.  This type of package 
@@ -208,18 +213,17 @@ can be used across many APPs and with many LALs.
 \item Linear Algebra Library (LAL): Software that provides the 
 ability to construct
 concrete linear algebra objects such as matrices and vectors.  
-A LAL can also be aspecific linear solver or preconditioner.
+A LAL can also be a specific linear solver or preconditioner.
 \end{itemize}
 
 An important focus of this paper is to clearly identify the interfaces 
 between APPs, ANAs 
-and LALs for the purposes of defining a minimal interface that 
-supports the APP/ANA connection, Namely, TSFCore.
+and LALs for the purposes of defining the TSFCore interface.
 
 %
 
 %
-\subsection{A mathematical formulation}
+\subsection{A Mathematical Formulation}
 \label{tsfcore:sec:math}
 %
 
@@ -974,7 +978,7 @@ anyway (the sum operator is coordinate invariant).
 Setting a vector element is performed in a similar manner using the
 same transformation RTOp operator subclass for assigning the elements
 of a vector that was used in the \texttt{apply(...)} function shown
-above.  The following function shows how setting a vector element this
+above.  The following function shows how setting a vector element
 is performed using this transformation operator.
 
 {\scriptsize\begin{verbatim}
@@ -992,21 +996,6 @@ Again, since the assignment operator is also coordinate invariant, the
 \texttt{assign\_scalar\_op} object ignores the \texttt{global\_offset}
 argument so it is left at its default value in the call to
 \texttt{TSFCore::applyOp(...)}.
-
-This approach of applying RTOp operators to targeted elements negates
-the need for specialized ``get'' or ``set'' methods in the
-\texttt{\textit{Vector}} interface.  By letting the \texttt{\textit{Vector}}
-object know what elements are involved, the communication overhead can
-be reduced just as it would be for specialized methods.  For example,
-in an master-slave configuration where the ANA runs on a master
-processor and the vector data is distributed across $N_p$ slave
-processors, the targeted operations can be implemented with a single
-set of calls to \texttt{MPI\_Send(...)} and
-\texttt{MPI\_Receive(...)} at a cost which is independent of number of
-processors involved.  If the client used special RTOp operators and
-then asked the \texttt{\texttt{Vector}} implementation to apply to
-operators to the entire vector, then there would be a $O(log(N_p))$
-communication cost involved.
 
 For an example of the third use case (c), where a sub-view of an
 existing vector is treating as a vector in its own right, consider an
@@ -1035,7 +1024,7 @@ sub-vectors given the vector object \texttt{x}.
 
 {\scriptsize\begin{verbatim}
 template<class Scalar>
-void TSFCore::compute_norm_2( const Vector<Scalar>& x, Index n_y, Scalar* nrm_2_y, Saclar* nrm_2_u )
+void TSFCore::compute_norm_2( const Vector<Scalar>& x, Index n_y, Scalar* nrm_2_y, Scalar* nrm_2_u )
 {
     const Index  n_x = x.dim(), n_u = n_x - n_y;                              // Get the dimension of the state and design spaces
     RTOpPack::ROpNorm2<Scalar>        norm_2_op;                              // Create the RTOp operator object
