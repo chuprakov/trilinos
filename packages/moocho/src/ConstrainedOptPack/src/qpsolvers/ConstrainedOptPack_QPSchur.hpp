@@ -116,7 +116,7 @@ enum EBounds { FREE, UPPER, LOWER, EQUALITY };
 		G_RR = Q_R'*G*Q_R    <: R^(n_R x n_R)
 		G_RX = Q_R'*G*Q_X    <: R^(n_R x n_X)
 		G_XX = Q_X'*G*Q_X    <: R^(n_X x n_X)
-		A_R  = Q_R'*A        <: R^(n_R x m) 
+		A_R  = Q_R'*A        <: R^(n_R x m)
 		A_X  = Q_X'*A        <: R^(n_X x m)
 		Q_R                  <: R^(n x n_R)
 		Q_X                  <: R^(n x n_X)

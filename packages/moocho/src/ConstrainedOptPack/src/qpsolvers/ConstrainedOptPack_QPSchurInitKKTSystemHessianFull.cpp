@@ -29,6 +29,15 @@ void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 	using DynamicCastHelperPack::dyn_cast;
 	using LinAlgOpPack::V_mV;
 
+	// Validate type of and convert G
+#ifdef _WINDOWS
+	const MatrixSymWithOpFactorized&
+		G_sym = dynamic_cast<const MatrixSymWithOpFactorized&>(G);
+#else
+	const MatrixSymWithOpFactorized&
+		G_sym = dyn_cast<const MatrixSymWithOpFactorized>(G);
+#endif
+
 	const size_type nd = g.size();
 
 	// i_x_free[i-1] = i, i = 1...nd
@@ -46,13 +55,6 @@ void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 	b_X->resize(1);
 	(*b_X)[0] = etaL;
 	// Ko = G
-#ifdef _WINDOWS
-	const MatrixSymWithOpFactorized&
-		G_sym = dynamic_cast<const MatrixSymWithOpFactorized&>(G);
-#else
-	const MatrixSymWithOpFactorized&
-		G_sym = dyn_cast<const MatrixSymWithOpFactorized>(G);
-#endif
 	*Ko = &G_sym;
 	Ko->release(); // Not dynamically allocated so don't delete!
 	// fo = -g
