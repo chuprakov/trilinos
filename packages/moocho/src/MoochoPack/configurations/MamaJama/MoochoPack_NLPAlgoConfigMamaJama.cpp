@@ -322,6 +322,18 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		}
 	}
 
+	// ToDo: Implement the orthogonal decompositon for general NLPs
+	if( !tailored_approach
+		&& cov_.range_space_matrix_type_ == RANGE_SPACE_MATRIX_ORTHOGONAL )
+	{
+		if(trase_out)
+			*trase_out << "\nrange_space_matrix==ORTHOGONAL:\n"
+							"Sorry, the orthogonal decomposition is not "
+							"supported for general NLPs yet!\n"
+							"setting range_space_matrix = COORDINATE ...\n";
+		cov_.null_space_matrix_type_used_ = NULL_SPACE_MATRIX_EXPLICIT;
+	}
+
 	// /////////////////////////////////////////////////////
 	// C.1. Create and set the state object
 
