@@ -1,0 +1,2 @@
+#!/bin/sh
+cat Doxyfile.options DoxyfileWeb_nonlin.stub > DoxyfileWeb_nonlin
