@@ -71,7 +71,7 @@ Restart Time list	= off
 # A warning is generated if this line is used and restart information
 # was already requested. The two are mutually exclusive.
 #-----------------------------------------------------------------------------
-Reserve space		= nodal=0, elemental=0, global=0
+Reserve space		= nodal=0, elemental=1, global=0
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # Parallel Disk Info = <options>
