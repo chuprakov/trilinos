@@ -4,7 +4,6 @@
 #include "TSFDefs.h"
 #include "XMLInputStream.h"
 #include <string>
-#include <cstdio>
 
 namespace TSF
 {

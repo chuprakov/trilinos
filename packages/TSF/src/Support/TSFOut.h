@@ -3,7 +3,6 @@
 
 #include "TSFDefs.h"
 #include <string>
-#include <cstdarg>
 #include <stdexcept>
 #include "TSFWriterBase.h"
 #include "TSFSmartPtr.h"

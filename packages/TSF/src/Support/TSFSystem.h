@@ -3,7 +3,6 @@
 
 #include "TSFDefs.h"
 
-#include <cstdlib>
 #include "TSFArray.h"
 
 namespace TSF
