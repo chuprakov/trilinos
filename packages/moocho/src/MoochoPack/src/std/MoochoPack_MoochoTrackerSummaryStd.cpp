@@ -31,14 +31,40 @@
 using std::endl;
 using std::setw;
 
-void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_iteration(const Algorithm& algo) const
+namespace ReducedSpaceSQPPack {
+
+rSQPTrackSummaryStd::rSQPTrackSummaryStd(
+	const ostream_ptr_t      &o
+	,const ostream_ptr_t     &journal_out
+	,EOptError               opt_error
+	)
+	:rSQPTrack(journal_out)
+	,o_(o)
+	,opt_error_(opt_error)
+	,num_total_qp_iter_(0)
+{}	
+
+void rSQPTrackSummaryStd::set_output_stream(const ostream_ptr_t& o)
+{	
+	o_ = o;
+}
+
+const rSQPTrackSummaryStd::ostream_ptr_t&
+rSQPTrackSummaryStd::get_output_stream() const
+{
+	return o_;
+}
+
+void rSQPTrackSummaryStd::output_iteration(const Algorithm& algo) const
 {
 
 	const rSQPState &s = rsqp_algo(algo).rsqp_state();
+
+	std::ostream& o = this->o();
 	
 	int w = 15;
 	int prec = 6;
-	o().precision(prec);
+	o.precision(prec);
 
 	// Output the table's header for the first iteration
 	if(s.k() == 0) {
@@ -70,123 +96,123 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_iteration(const Algorithm&
 	if( Zpz_exists = s.Zpz().updated_k(0) )
 		norm_2_Zpz = s.Zpz().get_k(0).norm_2();
 
-	o()	<< std::right
+	o	<< std::right
 		<< setw(5) << s.k();
 
 	if( s.f().updated_k(0) )
-		o() << setw(w) << s.f().get_k(0);
+		o << setw(w) << s.f().get_k(0);
 	else
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 
 	if( s.Gf().updated_k(0) )
-		o() << setw(w) << s.Gf().get_k(0).norm_inf();
+		o << setw(w) << s.Gf().get_k(0).norm_inf();
 	else
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 
 	if( s.c().updated_k(0) )
-		o() << setw(w)
+		o << setw(w)
 			<< s.c().get_k(0).norm_inf();
 	else
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 
 	{
 		const IterQuantityAccess<VectorWithOpMutable>
 			&rGL_GL = ( opt_error_ == OPT_ERROR_REDUCED_GRADIENT_LAGR
 							? s.rGL() : s.GL()  );
 		if( rGL_GL.updated_k(0) )
-			o() << setw(w) << rGL_GL.get_k(0).norm_inf();
+			o << setw(w) << rGL_GL.get_k(0).norm_inf();
 		else
-			o() << setw(w) << "-";
+			o << setw(w) << "-";
 	}
 
 	if( quasi_newt_stats ) {
-		o() << setw(w);
+		o << setw(w);
 		switch( quasi_newt_stats->updated() ) {
 			case QuasiNewtonStats::UNKNOWN:
-				o() << "-";
+				o << "-";
 				break;
 			case QuasiNewtonStats:: REINITIALIZED:
-				o() << "initialized";
+				o << "initialized";
 				break;
 			case QuasiNewtonStats::DAMPENED_UPDATED:
-				o() << "damp.updated";
+				o << "damp.updated";
 				break;
 			case QuasiNewtonStats::UPDATED:
-				o() << "updated";
+				o << "updated";
 				break;
 			case QuasiNewtonStats::SKIPED:
-				o() << "skiped";
+				o << "skiped";
 				break;
 			case QuasiNewtonStats::INDEF_SKIPED:
-				o() << "indef skiped";
+				o << "indef skiped";
 				break;
 			default:
 				assert(0);
 		}
 	}
 	else {
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 	}
 
 	if( act_stats ) {
-		o() << setw(7) << act_stats->num_active();
+		o << setw(7) << act_stats->num_active();
 		// don't know num_add and num_drops on first iteration.
 		if( act_stats->num_adds() == ActSetStats::NOT_KNOWN ) { 
-			o()	<< setw(7) << "-";
+			o	<< setw(7) << "-";
 		}
 		else {		
-			o()	<< setw(7) << act_stats->num_adds();
+			o	<< setw(7) << act_stats->num_adds();
 		}
 		if( act_stats->num_drops() == ActSetStats::NOT_KNOWN ) {
-			o()	<< setw(7) << "-";
+			o	<< setw(7) << "-";
 		}
 	else {		
-		o()	<< setw(7) << act_stats->num_drops();
+		o	<< setw(7) << act_stats->num_drops();
 	}
 	}
 	else {
-		o()	<< setw(7) << "-"
+		o	<< setw(7) << "-"
 			<< setw(7) << "-"
 			<< setw(7) << "-";
 	}
 
 	if( qp_stats ) {
-		o()	<< setw(7) << qp_stats->num_qp_iter()
+		o	<< setw(7) << qp_stats->num_qp_iter()
 			<< setw(3) << ( qp_stats->warm_start() ? 'w' : 'c')
 			<< setw(2) << ( qp_stats->infeasible_qp() ? 'i' : 'f');
 		num_total_qp_iter_ += qp_stats->num_qp_iter();
 	}
 	else {
-	o()	<< setw(7) << "-"
+	o	<< setw(7) << "-"
 		<< setw(3) << "-"
 		<< setw(2) << "-";
 	}
 
 	if(Ypy_exists)
-		o()	<< setw(w) << norm_2_Ypy;
+		o	<< setw(w) << norm_2_Ypy;
 	else
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 
 	if(Zpz_exists)
-		o()	<< setw(w) << norm_2_Zpz;
+		o	<< setw(w) << norm_2_Zpz;
 	else
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 
 	if( s.d().updated_k(0) )
-		o() << setw(w)
+		o << setw(w)
 			<< s.d().get_k(0).norm_inf();
 	else
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 
 	if( s.alpha().updated_k(0) )
-		o() << setw(w) << s.alpha().get_k(0);
+		o << setw(w) << s.alpha().get_k(0);
 	else
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 
-	o() << std::endl;
+	o << std::endl;
 }
 
-void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_final(const Algorithm& algo
+void rSQPTrackSummaryStd::output_final(const Algorithm& algo
 	, EAlgoReturn algo_return) const
 {
 	using DynamicCastHelperPack::const_dyn_cast;
@@ -195,9 +221,12 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_final(const Algorithm& alg
 	const rSQPState           &s      =_algo.rsqp_state();
 	const NLPObjGradient      &nlp    = const_dyn_cast<NLPObjGradient>(_algo.nlp()); 
 	const NLPFirstOrderInfo  *nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
+
+	std::ostream& o = this->o();
+
 	int w = 15;
 	int prec = 6;
-	o().precision(prec);
+	o.precision(prec);
 
 	// Get active set, QP solver and quasi-newton statistics.
 	const ActSetStats		*act_stats =
@@ -218,7 +247,7 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_final(const Algorithm& alg
 		print_header(s);
 	}
 	else {
-		o()	<< " ----"
+		o	<< " ----"
 			<< "   ------------"
 			<< "   ------------"
 			<< "   ------------"
@@ -231,156 +260,158 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::output_final(const Algorithm& alg
 			<< " ----\n";
 	}
 
-	o()	<< std::right
+	o	<< std::right
 		<< setw(5) << s.k();
 
 	if( s.f().updated_k(0) )
-		o() << setw(w) << s.f().get_k(0);
+		o << setw(w) << s.f().get_k(0);
 	else
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 
 	if( s.Gf().updated_k(0) )
-		o() << setw(w) << s.Gf().get_k(0).norm_inf();
+		o << setw(w) << s.Gf().get_k(0).norm_inf();
 	else
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 
 	if( s.c().updated_k(0) )
-		o() << setw(w)
+		o << setw(w)
 			<< s.c().get_k(0).norm_inf();
 	else
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 
 	{
 		const IterQuantityAccess<VectorWithOpMutable>
 			&rGL_GL = ( opt_error_ == OPT_ERROR_REDUCED_GRADIENT_LAGR
 							? s.rGL() : s.GL()  );
 		if( rGL_GL.updated_k(0) )
-			o() << setw(w) << rGL_GL.get_k(0).norm_inf();
+			o << setw(w) << rGL_GL.get_k(0).norm_inf();
 		else
-			o() << setw(w) << "-";
+			o << setw(w) << "-";
 	}
 
-	o() << setw(w);
+	o << setw(w);
 	if( quasi_newt_stats ) {
 		switch( quasi_newt_stats->updated() ) {
 			case QuasiNewtonStats::UNKNOWN:
-				o() << "-";
+				o << "-";
 				break;
 			case QuasiNewtonStats:: REINITIALIZED:
-				o() << "initialized";
+				o << "initialized";
 				break;
 			case QuasiNewtonStats::DAMPENED_UPDATED:
-				o() << "damp.updated";
+				o << "damp.updated";
 				break;
 			case QuasiNewtonStats::UPDATED:
-				o() << "updated";
+				o << "updated";
 				break;
 			case QuasiNewtonStats::SKIPED:
-				o() << "skiped";
+				o << "skiped";
 				break;
 			case QuasiNewtonStats::INDEF_SKIPED:
-				o() << "indef skiped";
+				o << "indef skiped";
 				break;
 			default:
 				assert(0);
 		}
 	}
 	else {
-		o()	<< setw(w) << "-";;
+		o	<< setw(w) << "-";;
 	}
 
 	if( act_stats ) {
-		o()	<< setw(7) << act_stats->num_active()
+		o	<< setw(7) << act_stats->num_active()
 			<< setw(7) << act_stats->num_adds()
 			<< setw(7) << act_stats->num_drops();
 	}
 	else {
-		o()	<< setw(7) << "-"
+		o	<< setw(7) << "-"
 			<< setw(7) << "-"
 			<< setw(7) << "-";
 	}
 	
 	if( qp_stats ) {
-		o() << setw(7) << qp_stats->num_qp_iter()
+		o << setw(7) << qp_stats->num_qp_iter()
 			<< setw(3) << ( qp_stats->warm_start() ? 'w' : 'c')
 			<< setw(2) << ( qp_stats->infeasible_qp() ? 'i' : 'f');
 		num_total_qp_iter_ += qp_stats->num_qp_iter();
 	}
 	else {
-		o() << setw(7) << "-"
+		o << setw(7) << "-"
 			<< setw(3) << "-"
 			<< setw(2) << "-";
 	}
 	
 	if(s.Ypy().updated_k(0))
-		o()	<< setw(w) 
+		o	<< setw(w) 
 			<< s.Ypy().get_k(0).norm_2();
 	else
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 	
 	if(s.Zpz().updated_k(0))
-		o()	<< setw(w)
+		o	<< setw(w)
 			<< s.Zpz().get_k(0).norm_2();
 	else
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 	
 	if( s.d().updated_k(0) )
-		o() << setw(w)
+		o << setw(w)
 			<< s.d().get_k(0).norm_inf();
 	else
-		o() << setw(w) << "-";
+		o << setw(w) << "-";
 	
-	o()	<< "\n\nNumber of function evaluations:\n"
+	o	<< "\n\nNumber of function evaluations:\n"
 		<<     "-------------------------------\n"
 		<< "f(x)  : " << nlp.num_f_evals() << endl
 		<< "c(x)  : " << nlp.num_c_evals() << endl
 		<< "Gf(x) : " << nlp.num_Gf_evals() << endl
 		<< "Gc(x) : ";
 	if( nlp_foi )
-		o() << nlp_foi->num_Gc_evals();
+		o << nlp_foi->num_Gc_evals();
 	else
-		o() << "?";
-	o() << endl;
+		o << "?";
+	o << endl;
 }
 
-void ReducedSpaceSQPPack::rSQPTrackSummaryStd::print_header(const rSQPState &s) const
+void rSQPTrackSummaryStd::print_header(const rSQPState &s) const
 {
 	// Reset the count of total QP iterations
 	num_total_qp_iter_ = 0;
 
+	std::ostream& o = this->o();
+
 	int w = 15;
 	int prec = 6;
 
-	o()	<< "\n\n********************************\n"
+	o	<< "\n\n********************************\n"
 		<< "*** Start of rSQP Iterations ***\n"
 		<< "n = " << s.x().get_k(0).dim()
 		<< ", m = " << (s.c().updated_k(0) ? s.c().get_k(0).dim() : -1 )
 		<< ", nz = ";
 	try {
 		if( s.Gc().updated_k(0) )
-			o()	<< s.Gc().get_k(0).nz() << endl;
+			o	<< s.Gc().get_k(0).nz() << endl;
 		else
-			o()	<< "?\n";
+			o	<< "?\n";
 	}
 	catch( const AlgorithmState::DoesNotExist& ) {
-			o()	<< "?\n";
+			o	<< "?\n";
 	}
-	o()
+	o
 		<< "\n k   "
 		<< "   f           "
 		<< "   ||Gf||inf   "
 		<< "   ||c||inf    ";
 	switch(opt_error_) {
 		case OPT_ERROR_REDUCED_GRADIENT_LAGR:
-			o()	<< "   ||rGL||inf  ";
+			o	<< "   ||rGL||inf  ";
 			break;
 		case OPT_ERROR_GRADIENT_LAGR:
-			o()	<< "   ||GL||inf  ";
+			o	<< "   ||GL||inf  ";
 			break;
 		default:
 			assert(0);
 	}
-	o()	<< "   quasi-Newton"
+	o 	<< "   quasi-Newton"
 		<< " #act  "
 		<< " #adds "
 		<< " #drops"
@@ -406,3 +437,5 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::print_header(const rSQPState &s) 
 		<< "   ------------"
 		<< "   ------------\n";
 }
+
+} // end namespace ReducedSpaceSQPPack

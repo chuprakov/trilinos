@@ -51,36 +51,41 @@ namespace ReducedSpaceSQPPack {
  * can be counted.  However, the spacing and the precision of the numbers may be different
  * from what is shown above.
  */
-class rSQPTrackStatsStd : public rSQPTrack {
+class rSQPTrackStatsStd
+	: public GeneralIterationPack::AlgorithmTrack
+ {
 public:
 
-	/// Construct with an output stream object and start the timer.
-	rSQPTrackStatsStd( std::ostream& o, std::ostream& journal_out );
+	/// Construct with an output stream object.
+	rSQPTrackStatsStd( const ostream_ptr_t& o, const ostream_ptr_t& journal_out );
 
 	///
-	/* Set the output stream for summary outputting.
-	 *
-	 * Calling this function will reset everything and start the timer.
+	/* Set the output stream for statistics outputting.
 	 */
-	void set_output_stream(std::ostream& o);
+	void set_output_stream(const ostream_ptr_t& o);
 
+	/// Get the output stream for statistics outputting.
+	const ostream_ptr_t& get_output_stream() const;
 
-	// /////////////////////////////////////////////////////////
-	// Overridden from AlgorithmTrack
+	/** @name Overridden from AlgorithmTrack */
+	//@{
 
+	/// Restarts the timer
+	void initialize();
 	///
 	void output_iteration(const Algorithm& algo) const;
-
 	///
 	void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
+
+	//@}
 
 protected:
 
 	std::ostream& o() const
-	{	return *const_cast<rSQPTrackStatsStd*>(this)->o_; }
+	{	return *o_; }
 
 private:
-	std::ostream*	                    o_;
+	ostream_ptr_t                       o_;
 	mutable int		                    num_QN_updates_;
 	quasi_newton_stats_iq_member	    quasi_newton_stats_;
 	mutable StopWatchPack::stopwatch    timer_;

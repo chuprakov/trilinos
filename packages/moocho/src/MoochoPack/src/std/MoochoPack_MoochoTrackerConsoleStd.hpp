@@ -81,23 +81,31 @@ namespace ReducedSpaceSQPPack {
   * gradient evaluations will be printed.  Note that the timer is started from
   * the moment this object is created or when set_output_stream(...) is called.
   */
-class rSQPTrackConsoleStd : public rSQPTrack {
+class rSQPTrackConsoleStd
+	: public GeneralIterationPack::AlgorithmTrack
+{
 public:
 
 	/// Construct with an output stream (console presumably)
-	rSQPTrackConsoleStd(std::ostream& o, std::ostream& journal_out);
+	rSQPTrackConsoleStd(const ostream_ptr_t& o, const ostream_ptr_t& journal_out);
 
-	/// Set the output stream for console outputting and restart the timer.
-	void set_output_stream(std::ostream& o);
+	/// Set the output stream for console outputting.
+	void set_output_stream(const ostream_ptr_t& o);
 
-	// /////////////////////////////////////////////////////////
-	// Overridden from AlgorithmTrack
+	/// Get the output stream for console outputting.
+	const ostream_ptr_t& get_output_stream() const;
 
+	/** @name Overridden from AlgorithmTrack */
+	//@{
+
+	/// Restarts the timer
+	void initialize();
 	///
 	void output_iteration(const Algorithm& algo) const;
-
 	///
 	void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
+
+	//@}
 
 protected:
 
@@ -108,7 +116,7 @@ protected:
 	void print_header(const rSQPState &s, const rSQPAlgo& algo) const;
 
 	std::ostream& o() const
-	{	return *const_cast<rSQPTrackConsoleStd*>(this)->o_; }
+	{	return *o_; }
 
 private:
 
@@ -120,10 +128,10 @@ private:
 	// ///////////////////////////////////////////
 	// Private data members
 
-	std::ostream*						o_;
-	mutable StopWatchPack::stopwatch	timer_;
-	mutable int							printed_lines_;
-	quasi_newton_stats_iq_member		quasi_newton_stats_;
+	ostream_ptr_t                       o_;
+	mutable StopWatchPack::stopwatch    timer_;
+	mutable int                         printed_lines_;
+	quasi_newton_stats_iq_member        quasi_newton_stats_;
 
 	// Static formating info.
 	static int		w_i2_;

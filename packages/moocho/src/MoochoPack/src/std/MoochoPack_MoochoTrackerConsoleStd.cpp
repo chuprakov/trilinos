@@ -47,15 +47,28 @@ int		rSQPTrackConsoleStd::p3_		= 3;
 int		rSQPTrackConsoleStd::w_p3_		= 9;
 char	rSQPTrackConsoleStd::ul_p3_[]	= "---------";
 
-rSQPTrackConsoleStd::rSQPTrackConsoleStd(std::ostream& o, std::ostream& journal_out)
-	: rSQPTrack(journal_out), o_(&o), printed_lines_(NUM_PRINT_LINES)
+rSQPTrackConsoleStd::rSQPTrackConsoleStd(
+	const ostream_ptr_t&   o
+	,const ostream_ptr_t&  journal_out
+	)
+	:rSQPTrack(journal_out)
+	,o_(o)
+	,printed_lines_(NUM_PRINT_LINES)
+{}
+
+void rSQPTrackConsoleStd::set_output_stream(const ostream_ptr_t& o)
 {
-	timer_.start();
+	o_ = o;
 }
 
-void rSQPTrackConsoleStd::set_output_stream(std::ostream& o)
+const rSQPTrackConsoleStd::ostream_ptr_t&
+rSQPTrackConsoleStd::get_output_stream() const
 {
-	o_ = &o;
+	return o_;
+}
+
+void rSQPTrackConsoleStd::initialize()
+{
 	timer_.reset();
 	timer_.start();
 }
@@ -85,79 +98,81 @@ void rSQPTrackConsoleStd::output_iteration(const Algorithm& p_algo) const
 		  ? &quasi_newton_stats_(s).get_k(0)
 		  : NULL );
 
+	std::ostream& o = this->o();
+
 	// k
-	o() << " " << right << setw(w_i4_) << s.k();
+	o << " " << right << setw(w_i4_) << s.k();
 	// f
 	if( s.f().updated_k(0) )
-		o() << " " << setprecision(p3_) << right << setw(w_p3_) << s.f().get_k(0);
+		o << " " << setprecision(p3_) << right << setw(w_p3_) << s.f().get_k(0);
 	else
-		o() << " " << right << setw(w_p3_) << "-";
+		o << " " << right << setw(w_p3_) << "-";
 	// ||c||s
 	if( s.feas_kkt_err().updated_k(0) )
-		o() << " " << setprecision(p3_) << right << setw(w_p3_) << s.feas_kkt_err().get_k(0);
+		o << " " << setprecision(p3_) << right << setw(w_p3_) << s.feas_kkt_err().get_k(0);
 	else
-		o() << " " << right << setw(w_p3_) << "-";
+		o << " " << right << setw(w_p3_) << "-";
 	// ||rGL||s
 	if( s.opt_kkt_err().updated_k(0) )
-		o() << " " << setprecision(p3_) << right << setw(w_p3_) << s.opt_kkt_err().get_k(0);
+		o << " " << setprecision(p3_) << right << setw(w_p3_) << s.opt_kkt_err().get_k(0);
 	else
-		o() << " " << right << setw(w_p3_) << "-";
+		o << " " << right << setw(w_p3_) << "-";
 	// QN
 	if( quasi_newt_stats ) {
-		o() << " " << right << setw(w_i2_);
+		o << " " << right << setw(w_i2_);
 		switch( quasi_newt_stats->updated() ) {
 			case QuasiNewtonStats::UNKNOWN:
-				o() << "-";
+				o << "-";
 				break;
 			case QuasiNewtonStats:: REINITIALIZED:
-				o() << "IN";
+				o << "IN";
 				break;
 			case QuasiNewtonStats::DAMPENED_UPDATED:
-				o() << "DU";
+				o << "DU";
 				break;
 			case QuasiNewtonStats::UPDATED:
-				o() << "UP";
+				o << "UP";
 				break;
 			case QuasiNewtonStats::SKIPED:
-				o() << "SK";
+				o << "SK";
 				break;
 			case QuasiNewtonStats::INDEF_SKIPED:
-				o() << "IS";
+				o << "IS";
 				break;
 			default:
 				assert(0);
 		}
 	}
 	else {
-		o() << " " << right << setw(w_i2_) << "-";
+		o << " " << right << setw(w_i2_) << "-";
 	}
 	// #act
 	if( s.nu().updated_k(0) )
-		o() << " " << right << setw(w_i4_) << s.nu().get_k(0).nz();
+		o << " " << right << setw(w_i4_) << s.nu().get_k(0).nz();
 	else
-		o()	<< " " << right << setw(w_i4_) << "-";
+		o	<< " " << right << setw(w_i4_) << "-";
 	// ||Ypy||2
 	if( s.Ypy().updated_k(0) )
-		o() << " "<< setprecision(p2_)  << right << setw(w_p2_) << s.Ypy().get_k(0).norm_2();
+		o << " "<< setprecision(p2_)  << right << setw(w_p2_) << s.Ypy().get_k(0).norm_2();
 	else
-		o() << " " << right << setw(w_p2_) << "-";
+		o << " " << right << setw(w_p2_) << "-";
 	// ||Zpz||2
 	if( s.Zpz().updated_k(0) )
-		o() << " " << setprecision(p2_) << right << setw(w_p2_) << s.Zpz().get_k(0).norm_2();
+		o << " " << setprecision(p2_) << right << setw(w_p2_) << s.Zpz().get_k(0).norm_2();
 	else
-		o() << " " << right << setw(w_p2_) << "-";
+		o << " " << right << setw(w_p2_) << "-";
 	// ||d||inf
 	if( s.d().updated_k(0) )
-		o() << " " << setprecision(p2_) << right << setw(w_p2_) << s.d().get_k(0).norm_inf();
+		o << " " << setprecision(p2_) << right << setw(w_p2_) << s.d().get_k(0).norm_inf();
 	else
-		o() << " " << right << setw(w_p2_) << "-";
+		o << " " << right << setw(w_p2_) << "-";
 	// alpha
 	if( s.alpha().updated_k(0) )
-		o() << " " << setprecision(p2_) << right << setw(w_p2_) << s.alpha().get_k(0);
+		o << " " << setprecision(p2_) << right << setw(w_p2_) << s.alpha().get_k(0);
 	else
-		o() << " " << right << setw(w_p2_) << "-";
+		o << " " << right << setw(w_p2_) << "-";
 
-	o() << std::endl;
+	o << std::endl;
 
 	++printed_lines_;
 }
@@ -172,13 +187,15 @@ void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 	const NLPObjGradient     &nlp     = const_dyn_cast<NLPObjGradient>(algo.nlp()); 
 	const NLPFirstOrderInfo  *nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
 
+	std::ostream& o = this->o();
+
 	// Output the table's header for the first iteration
 	if(s.k() == 0) {
 		print_top_header(s,algo);
 		print_header(s,algo);
 	}
 	else {
-		o()
+		o
 			<< " " << right << ul_i4_ 		// "k"
 			<< " " << right << ul_p3_		// "f"
 			<< " " << right << ul_p3_		// "||c||s"
@@ -198,133 +215,137 @@ void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 		  : NULL );
 
 	// k
-	o() << " " << right << setw(w_i4_) << s.k();
+	o << " " << right << setw(w_i4_) << s.k();
 	// f
 	if( s.f().updated_k(0) )
-		o() << " " << setprecision(p3_) << right << setw(w_p3_) << s.f().get_k(0);
+		o << " " << setprecision(p3_) << right << setw(w_p3_) << s.f().get_k(0);
 	else
-		o() << " " << right << setw(w_p3_) << "-";
+		o << " " << right << setw(w_p3_) << "-";
 	// ||c||s
 	if( s.feas_kkt_err().updated_k(0) )
-		o() << " " << setprecision(p3_) << right << setw(w_p3_) << s.feas_kkt_err().get_k(0);
+		o << " " << setprecision(p3_) << right << setw(w_p3_) << s.feas_kkt_err().get_k(0);
 	else
-		o() << " " << right << setw(w_p3_) << "-";
+		o << " " << right << setw(w_p3_) << "-";
 	// ||rGL||s
 	if( s.opt_kkt_err().updated_k(0) )
-		o() << " " << setprecision(p3_) << right << setw(w_p3_) << s.opt_kkt_err().get_k(0);
+		o << " " << setprecision(p3_) << right << setw(w_p3_) << s.opt_kkt_err().get_k(0);
 	else
-		o() << " " << right << setw(w_p3_) << "-";
+		o << " " << right << setw(w_p3_) << "-";
 	// QN
 	if( quasi_newt_stats ) {
-		o() << " " << right << setw(w_i2_);
+		o << " " << right << setw(w_i2_);
 		switch( quasi_newt_stats->updated() ) {
 			case QuasiNewtonStats::UNKNOWN:
-				o() << "-";
+				o << "-";
 				break;
 			case QuasiNewtonStats:: REINITIALIZED:
-				o() << "IN";
+				o << "IN";
 				break;
 			case QuasiNewtonStats::DAMPENED_UPDATED:
-				o() << "DU";
+				o << "DU";
 				break;
 			case QuasiNewtonStats::UPDATED:
-				o() << "UP";
+				o << "UP";
 				break;
 			case QuasiNewtonStats::SKIPED:
-				o() << "SK";
+				o << "SK";
 				break;
 			case QuasiNewtonStats::INDEF_SKIPED:
-				o() << "IS";
+				o << "IS";
 				break;
 			default:
 				assert(0);
 		}
 	}
 	else {
-		o() << " " << right << setw(w_i2_) << "-";
+		o << " " << right << setw(w_i2_) << "-";
 	}
 	// #act
 	if( s.nu().updated_k(0) )
-		o() << " " << right << setw(w_i4_) << s.nu().get_k(0).nz();
+		o << " " << right << setw(w_i4_) << s.nu().get_k(0).nz();
 	else
-		o()	<< " " << right << setw(w_i4_) << "-";
+		o	<< " " << right << setw(w_i4_) << "-";
 	// ||Ypy||2
 	if( s.Ypy().updated_k(0) )
-		o() << " "<< setprecision(p2_)  << right << setw(w_p2_) << s.Ypy().get_k(0).norm_2();
+		o << " "<< setprecision(p2_)  << right << setw(w_p2_) << s.Ypy().get_k(0).norm_2();
 	else
-		o() << " " << right << setw(w_p2_) << "-";
+		o << " " << right << setw(w_p2_) << "-";
 	// ||Zpz||2
 	if( s.Zpz().updated_k(0) )
-		o() << " " << setprecision(p2_) << right << setw(w_p2_) << s.Zpz().get_k(0).norm_2();
+		o << " " << setprecision(p2_) << right << setw(w_p2_) << s.Zpz().get_k(0).norm_2();
 	else
-		o() << " " << right << setw(w_p2_) << "-";
+		o << " " << right << setw(w_p2_) << "-";
 	// ||d||inf
 	if( s.d().updated_k(0) )
-		o() << " " << setprecision(p2_) << right << setw(w_p2_) << s.d().get_k(0).norm_inf();
+		o << " " << setprecision(p2_) << right << setw(w_p2_) << s.d().get_k(0).norm_inf();
 	else
-		o() << " " << right << setw(w_p2_) << "-";
+		o << " " << right << setw(w_p2_) << "-";
 
-	o() << endl;
+	o << endl;
 
 	// Print total time
-	o() << "\nTotal time = " << timer_.read() << " sec\n";
+	o << "\nTotal time = " << timer_.read() << " sec\n";
 
 	switch( algo_return ) {
 		case GeneralIterationPack::TERMINATE_TRUE:
-			o() << "\nJackpot! You have found the solution!!!!!!\n";
+			o << "\nJackpot! You have found the solution!!!!!!\n";
 			break;
 		case GeneralIterationPack::TERMINATE_FALSE:
-			o() << "\nOops!  Not the solution.  Some error has occured!\n";
+			o << "\nOops!  Not the solution.  Some error has occured!\n";
 			break;
 		case GeneralIterationPack::MAX_ITER_EXCEEDED:
-			o() << "\nOops!  Not the solution.  Maximum number of SQP iteration exceeded!\n";
+			o << "\nOops!  Not the solution.  Maximum number of SQP iteration exceeded!\n";
 			break;
 		case GeneralIterationPack::MAX_RUN_TIME_EXCEEDED:
-			o() << "\nOops!  Not the solution.  Maximum runtime exceeded!\n";
+			o << "\nOops!  Not the solution.  Maximum runtime exceeded!\n";
 			break;
 		default:
 			assert(0);
 	}
 
-	o()	<< "\nNumber of function evaluations:\n"
+	o	<< "\nNumber of function evaluations:\n"
 		<<     "-------------------------------\n"
 		<< "f(x)  : " << nlp.num_f_evals() << endl
 		<< "c(x)  : " << nlp.num_c_evals() << endl
 		<< "Gf(x) : " << nlp.num_Gf_evals() << endl
 		<< "Gc(x) : ";
 	if( nlp_foi )
-		o() << nlp_foi->num_Gc_evals();
+		o << nlp_foi->num_Gc_evals();
 	else
-		o() << "?";
-	o() << endl;
+		o << "?";
+	o << endl;
 }
 
 void rSQPTrackConsoleStd::print_top_header(const rSQPState &s
 	, const rSQPAlgo &algo) const
 {
-	o()	<< "\n\n********************************\n"
+	std::ostream& o = this->o();
+
+	o	<< "\n\n********************************\n"
 		<< "*** Start of rSQP Iterations ***\n"
 		<< "n = " << s.x().get_k(0).dim()
 		<< ", m = " << s.c().get_k(0).dim()
 		<< ", nz = ";
 	try {
 		if( s.Gc().updated_k(0) )
-			o()	<< s.Gc().get_k(0).nz() << endl;
+			o	<< s.Gc().get_k(0).nz() << endl;
 		else
-			o()	<< "?\n";
+			o	<< "?\n";
 	}
 	catch( const AlgorithmState::DoesNotExist& ) {
-			o()	<< "?\n";
+			o	<< "?\n";
 	}
 	if( algo.nlp().scale_f() != 1.0 ) {
-		o()	<< "f(x) is scaled by : " << algo.nlp().scale_f() << endl;
+		o	<< "f(x) is scaled by : " << algo.nlp().scale_f() << endl;
 	}
 }
 
 void rSQPTrackConsoleStd::print_header(const rSQPState &s
 	, const rSQPAlgo &algo) const
 {
-	o()
+	std::ostream& o = this->o();
+
+	o
 		<< endl
 		<< " " << left << setw(w_i4_) << "k"
 		<< " " << left << setw(w_p3_) << "f"

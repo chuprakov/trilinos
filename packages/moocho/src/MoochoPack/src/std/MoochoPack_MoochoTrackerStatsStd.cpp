@@ -36,16 +36,26 @@ using std::right;
 using std::setprecision;
 
 rSQPTrackStatsStd::rSQPTrackStatsStd(
-	std::ostream& o, std::ostream& journal_out
+	const ostream_ptr_t& o, const ostream_ptr_t& journal_out
 	)
 	: rSQPTrack(journal_out)
 {
 	set_output_stream(o);
 }
 
-void rSQPTrackStatsStd::set_output_stream(std::ostream& o)
+void rSQPTrackStatsStd::set_output_stream(const ostream_ptr_t& o)
 {
-	o_ = &o;
+	o_ = o;
+}
+
+const rSQPTrackStatsStd::ostream_ptr_t&
+rSQPTrackStatsStd::get_output_stream() const
+{
+	return o_;
+}
+
+void rSQPTrackStatsStd::initialize()
+{
 	num_QN_updates_ = 0;
 	timer_.reset();
 	timer_.start();
@@ -78,6 +88,8 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 	const NLPObjGradient     &nlp     = const_dyn_cast<NLPObjGradient>(algo.nlp()); 
 	const NLPFirstOrderInfo  *nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
 
+	std::ostream& o = this->o();
+
 	// Stop the timer
 	timer_.stop();
 
@@ -99,91 +111,91 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 	}
 
 	// status
-	o() << left << setw(stat_w) << "status" << "= "
+	o << left << setw(stat_w) << "status" << "= "
 		<< right << setw(val_w);
 	switch( algo_return ) {
 		case GeneralIterationPack::TERMINATE_TRUE:
-			o() << "solved";
+			o << "solved";
 			break;
 		case GeneralIterationPack::TERMINATE_FALSE:
-			o() << "except";
+			o << "except";
 			break;
 		case GeneralIterationPack::MAX_ITER_EXCEEDED:
-			o() << "max_iter";
+			o << "max_iter";
 			break;
 		case GeneralIterationPack::MAX_RUN_TIME_EXCEEDED:
-			o() << "max_run_time";
+			o << "max_run_time";
 			break;
 		default:
 			assert(0);
 	}
-	o() << "; # solved, except, max_iter, max_run_time\n";
+	o << "; # solved, except, max_iter, max_run_time\n";
 	// niter
-	o() << left << setw(stat_w) << "niter" << "= "
+	o << left << setw(stat_w) << "niter" << "= "
 		<< right << setw(val_w) << s.k()
 		<< "; # Number of rSQP iterations (plus 1?)\n";
 	// nfunc
-	o() << left << setw(stat_w) << "nfunc" << "= "
+	o << left << setw(stat_w) << "nfunc" << "= "
 		<< right << setw(val_w) << std::_MAX(nlp.num_f_evals(),nlp.num_c_evals())
 		<< "; # max( number f(x) evals, number c(x) evals )\n";
 	// ngrad
-	o() << left << setw(stat_w) << "ngrad" << "= "
+	o << left << setw(stat_w) << "ngrad" << "= "
 		<< right << setw(val_w) << std::_MAX(nlp.num_Gf_evals(),(nlp_foi?nlp_foi->num_Gc_evals():s.k()+1))
 		<< "; # max( number Gf(x) evals, number Gc(x) evals )\n";
 	// CPU
-	o() << left << setw(stat_w) << "CPU" << "= "
+	o << left << setw(stat_w) << "CPU" << "= "
 		<< right << setw(val_w) << timer_.read()
 		<< "; # Number of CPU seconds total\n";
 	// obj_func
-	o() << left << setw(stat_w) << "obj_func" << "= "
+	o << left << setw(stat_w) << "obj_func" << "= "
 		<< right << setw(val_w);
 	if(s.f().updated_k(0))
-		o() << s.f().get_k(0);
+		o << s.f().get_k(0);
 	else
-		o() << "-";
-	o() << "; # Objective function value f(x) at final point\n";
+		o << "-";
+	o << "; # Objective function value f(x) at final point\n";
 	// feas_kkt_err
-	o() << left << setw(stat_w) << "feas_kkt_err" << "= "
+	o << left << setw(stat_w) << "feas_kkt_err" << "= "
 		<< right << setw(val_w);
 	if(s.feas_kkt_err().updated_k(0))
-		o() << s.feas_kkt_err().get_k(0);
+		o << s.feas_kkt_err().get_k(0);
 	else if(s.c().updated_k(0))
-		o() << s.c().get_k(0).norm_inf();
+		o << s.c().get_k(0).norm_inf();
 	else
-		o() << "-";
-	o() << "; # Feasibility error at final point (scaled ||c(x)||inf, feas_err_k)\n";
+		o << "-";
+	o << "; # Feasibility error at final point (scaled ||c(x)||inf, feas_err_k)\n";
 	// opt_kkt_err
-	o() << left << setw(stat_w) << "opt_kkt_err" << "= "
+	o << left << setw(stat_w) << "opt_kkt_err" << "= "
 		<< right << setw(val_w);
 	if(s.opt_kkt_err().updated_k(0))
-		o() << s.opt_kkt_err().get_k(0);
+		o << s.opt_kkt_err().get_k(0);
 	else if(s.rGL().updated_k(0))
-		o() << s.rGL().get_k(0).norm_inf();
+		o << s.rGL().get_k(0).norm_inf();
 	else if(s.rGL().updated_k(-1))
-		o() << s.rGL().get_k(-1).norm_inf();
+		o << s.rGL().get_k(-1).norm_inf();
 	else
-		o() << "-";
-	o() << "; # Optimality error at final point (scaled ||rGL||inf, opt_err_k)\n";
+		o << "-";
+	o << "; # Optimality error at final point (scaled ||rGL||inf, opt_err_k)\n";
 	// nact
-	o() << left << setw(stat_w) << "nact" << "= "
+	o << left << setw(stat_w) << "nact" << "= "
 		<< right << setw(val_w);
 	if(s.nu().updated_k(0))
-		o() << s.nu().get_k(0).nz();
+		o << s.nu().get_k(0).nz();
 	else if(s.nu().updated_k(-1))
-		o() << s.nu().get_k(-1).nz();
+		o << s.nu().get_k(-1).nz();
 	else
-		o() << "-";
-	o() << "; # Number of total active constraints at the final point\n";
+		o << "-";
+	o << "; # Number of total active constraints at the final point\n";
 	// nbasis_change
 	const IterQuantityAccess<index_type> &num_basis = s.num_basis();
 	const int lu_k = num_basis.last_updated();
-	o() << left << setw(stat_w) << "nbasis_change" << "= "
+	o << left << setw(stat_w) << "nbasis_change" << "= "
 		<< right << setw(val_w) << ( lu_k != IterQuantity::NONE_UPDATED
 									 ? num_basis.get_k(lu_k)
 									 : 0 ) 
 		<< "; # Number of basis changes\n";
 	// nquasi_newton
-	o() << left << setw(stat_w) << "nquasi_newton" << "= "
+	o << left << setw(stat_w) << "nquasi_newton" << "= "
 		<< right << setw(val_w) << num_QN_updates_
 		<< "; # Number of quasi-newton updates\n";
 

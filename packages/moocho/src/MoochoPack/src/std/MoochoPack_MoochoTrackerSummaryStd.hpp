@@ -27,22 +27,26 @@ namespace ReducedSpaceSQPPack {
 /** This class simply outputs the convergence information
   * for each iteration.
   */
-class rSQPTrackSummaryStd : public rSQPTrack {
+class rSQPTrackSummaryStd
+	: public GeneralIterationPack::AlgorithmTrack
+{
 public:
 
 	///
 	enum EOptError { OPT_ERROR_REDUCED_GRADIENT_LAGR, OPT_ERROR_GRADIENT_LAGR };
 
 	/// Construct with an output stream
-	rSQPTrackSummaryStd(std::ostream& o, std::ostream& journal_out
-			, EOptError opt_error = OPT_ERROR_REDUCED_GRADIENT_LAGR)
-		: rSQPTrack(journal_out), o_(&o), opt_error_(opt_error)
-			, num_total_qp_iter_(0)
-	{}
+	rSQPTrackSummaryStd(
+		const ostream_ptr_t      &o
+		,const ostream_ptr_t     &journal_out
+		,EOptError               opt_error = OPT_ERROR_REDUCED_GRADIENT_LAGR
+		);
 
 	/// Set the output stream for summary outputting
-	void set_output_stream(std::ostream& o)
-	{	o_ = &o;	}
+	void set_output_stream(const ostream_ptr_t& o);
+
+	/// Get the output stream for summary outputting.
+	const ostream_ptr_t& get_output_stream() const;
 
 	///
 	/** Output the total number of qp iterations back to and
@@ -51,14 +55,15 @@ public:
 	int num_total_qp_iter() const
 	{	return num_total_qp_iter_;	}
 
-	// /////////////////////////////////////////////////////////
-	// Overridden from AlgorithmTrack
+	/** @name Overridden from AlgorithmTrack */
+	//@{
 
 	///
 	void output_iteration(const Algorithm& algo) const;
-
 	///
 	void output_final(const Algorithm& algo, EAlgoReturn algo_return) const;
+	
+	//@}
 
 protected:
 
@@ -66,18 +71,19 @@ protected:
 	void print_header(const rSQPState &s) const;
 
 	std::ostream& o() const
-	{	return *const_cast<rSQPTrackSummaryStd*>(this)->o_; }
+	{	return *o_; }
 
 private:
-	std::ostream*	o_;
-	EOptError		opt_error_;
-	mutable int		num_total_qp_iter_;
-	quasi_newton_stats_iq_member	quasi_newton_stats_;
-	qp_solver_stats_iq_member		qp_solver_stats_;
-	act_set_stats_iq_member			act_set_stats_;
+	ostream_ptr_t                  o_;
+	EOptError                      opt_error_;
+	mutable int                     num_total_qp_iter_;
+	quasi_newton_stats_iq_member    quasi_newton_stats_;
+	qp_solver_stats_iq_member       qp_solver_stats_;
+	act_set_stats_iq_member		    act_set_stats_;
 
 	// Not defined and not to be called
 	rSQPTrackSummaryStd();
+
 };	// end class rSQPTrackSummaryStd
 
 }	// end namespace ReducedSpaceSQPPack 
