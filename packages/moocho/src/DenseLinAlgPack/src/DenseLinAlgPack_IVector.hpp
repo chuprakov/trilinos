@@ -12,9 +12,6 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
-//
-// Integer vector used for holding pivot information
-//
 
 #ifndef IVECTOR_H
 #define IVECTOR_H
@@ -25,14 +22,14 @@
 
 namespace LinAlgPack {
 ///
-/** Fortran compatable integer vector for holding the 
-  * pivot information for the elements of a vector, or the rows or columns
-  * of a matrix.
-  */
+/** Fortran compatable integer vector for holding the  pivot information for
+ * the elements of a vector, or the rows or columns of a matrix.
+ */
 class IVector : public std::valarray<LinAlgPack::size_type> {
 public:
+
 	// STL typedefs
-	typedef LinAlgPack::size_type		value_type;
+	typedef LinAlgPack::index_type		value_type;
 	typedef LinAlgPack::size_type		size_type;
 	typedef value_type&					reference;
 	typedef value_type*					iterator;
@@ -63,7 +60,8 @@ public:
 	iterator end();
 	/// STL iterator
 	const_iterator end() const;
-};
+
+}; // end class IVector
 
 // Inline definitions
 
