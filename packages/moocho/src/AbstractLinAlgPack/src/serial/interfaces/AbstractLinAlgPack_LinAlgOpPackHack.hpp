@@ -24,8 +24,17 @@ namespace LinAlgOpPack {
 
 using LinAlgPack::Vector;
 using LinAlgPack::VectorSlice;
+using LinAlgPack::GenMatrixSlice;
 using AbstractLinAlgPack::SpVectorSlice;
 using AbstractLinAlgPack::GenPermMatrixSlice;
+
+///
+/** <tt>m_lhs += alpha * op(mwo_rhs1)</tt>.
+ */
+void Mp_StM(
+	GenMatrixSlice* vs_lhs, value_type alpha
+	,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+	);
 
 ///
 /** <tt>vs_lhs = alpha * op(mwo_rhs1) * vs_rhs2 + beta * vs_lhs</tt>.
