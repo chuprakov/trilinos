@@ -845,11 +845,13 @@ bool NLPSerialPreprocess::get_next_basis_remove_fixed(
 
 		var_perm->resize(n_);
 		std::copy(
-			var_perm_full.begin(), var_perm_full.begin() + rank_fixed_removed
+			var_perm_full.begin()
+			,var_perm_full.begin() + rank_fixed_removed
 			,var_perm->begin()
 			);
 		std::copy(
-			var_perm_full.begin() + rank_full, var_perm_full.begin() + rank_full + n_ - count_nonbasic_fixed
+			var_perm_full.begin() + rank_full
+			,var_perm_full.begin() + rank_full + (n_-rank_fixed_removed)
 			,var_perm->begin() + rank_fixed_removed
 			);
 		*rank = rank_fixed_removed;
