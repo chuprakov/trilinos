@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
   subblock_maps = (Epetra_Map **) malloc(sizeof(Epetra_Map *)*2);
   subblock_maps[0] = new Epetra_Map(Nblks*(blk_size-1), 0, *comm);
   subblock_maps[1] = new Epetra_Map(Nblks, 0, *comm);
-  ReadAztecVbr(blk_size, Nnz, Nblks, &Amat, "VbrMatrixFile");
+  ReadAztecVbr(blk_size, Nnz, Nblks, &Amat, "../data/mac-vbr/K_reordered");
 
   Epetra_RowMatrix *saddleA_epet = Aztec2TSF(Amat,comm,(Epetra_BlockMap *&) VbrMap,subblock_maps);
 
@@ -126,8 +126,8 @@ int main(int argc, char *argv[])
    Epetra_Vector *x_epet, *rhs_epet;
    x_epet   = new Epetra_Vector(*VbrMap);
    rhs_epet = new Epetra_Vector(*VbrMap);
-   ReadPetraVector(x_epet  , "VbrVectorFile");
-   ReadPetraVector(rhs_epet, "VbrRhsFile");
+   ReadPetraVector(x_epet  , "../data/mac-vbr/guess_reordered");
+   ReadPetraVector(rhs_epet, "../data/mac-vbr/rhs_reordered");
 
    // Set up the outer iteration
 
@@ -140,15 +140,17 @@ int main(int argc, char *argv[])
 
 
 
-  TSFMPI::finalize(); 
-
   delete saddlePrec_epet;
   delete saddleA_epet;
   delete x_epet;
   delete rhs_epet;
   delete subblock_maps[0];
   delete subblock_maps[1];
+
+#ifndef EPETRA_MPI
   delete comm;
+#endif
+
   delete VbrMap;
 
   free(Amat->data_org);
@@ -160,6 +162,8 @@ int main(int argc, char *argv[])
   free(Amat->indx);
   free(subblock_maps);
   AZ_matrix_destroy(&Amat);
+
+  TSFMPI::finalize(); 
 
 }
 

@@ -66,7 +66,7 @@ int main(int argc, void** argv)
 
   // Read Matrix from file into Aztec VBR matrix
 
-  ReadAztecVbr(blk_size, Nnz, Nblks, &Amat, "VbrMatrixFile");
+  ReadAztecVbr(blk_size, Nnz, Nblks, &Amat, "../data/mac-vbr/K_reordered");
 
   Epetra_RowMatrix *saddleA_epet;
   Aztec2TSF( Amat, comm, VbrMap, saddleA_epet, 
@@ -75,7 +75,7 @@ int main(int argc, void** argv)
  // Read in the 'x' 
  Epetra_Vector *x_epet;
  x_epet = new Epetra_Vector(*VbrMap);
- ReadPetraVector(x_epet, "VbrVectorFile");
+ ReadPetraVector(x_epet, "../data/mac-vbr/guess_reordered");
 
  // Initialize 'rhs'
  Epetra_Vector *rhs_epet;
@@ -91,15 +91,17 @@ int main(int argc, void** argv)
  for (int i = 0; i < rhs_epet->MyLength(); i++)
    printf("%d %e\n",i,dtemp[i]);
 
-  TSFMPI::finalize(); 
 
   delete saddleA_epet;
   delete x_epet;
   delete rhs_epet;
   delete subblock_maps[0];
   delete subblock_maps[1];
-  delete comm;
   delete VbrMap;
+
+#ifndef EPETRA_MPI
+  delete comm;
+#endif
 
   free(Amat->data_org);
   free(Amat->bpntr);
@@ -110,6 +112,9 @@ int main(int argc, void** argv)
   free(Amat->indx);
   free(subblock_maps);
   AZ_matrix_destroy(&Amat);
+
+  TSFMPI::finalize(); 
+
 }
 
 

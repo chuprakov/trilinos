@@ -29,7 +29,7 @@ main() {
   printf("Enter the total number of block rows (256 for mac-vbr and 4131 for salsa)\n");
   scanf("%d",&Nblks);
 
-  ReadAztecVbr( 3, Nnz, Nblks, &Amat, "K_reordered");
+  ReadAztecVbr( 3, Nnz, Nblks, &Amat, "../data/mac-vbr/K_reordered");
 
   /* If the file 'AZ_write_matrix_now' is present, print the */
   /* Aztec matrix to a set of data files                     */
@@ -59,7 +59,7 @@ main() {
   Epetra_Vector *guess_vbr, *velocity, *pressure, *vel_rhs, *pres_rhs, *vel_tmp, *pres_tmp;
   guess_vbr = new Epetra_Vector ( (Epetra_BlockMap &) *VbrMap);
 
-  ReadPetraVector(guess_vbr, "guess_reordered");
+  ReadPetraVector(guess_vbr, "../data/mac-vbr/guess_reordered");
 
   velocity = new Epetra_Vector ( (Epetra_BlockMap &) *FMap);
   pressure = new Epetra_Vector ( (Epetra_BlockMap &) *BrowMap);

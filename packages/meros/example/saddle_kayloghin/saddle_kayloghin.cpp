@@ -57,7 +57,7 @@ int main(int argc, void** argv)
   cerr << "starting saddle_kayloghin" << endl;
   int Nnz = 4228, Nblks = 256, blk_size = 3;
   AZ_MATRIX *Amat;
-  ReadAztecVbr(blk_size, Nnz, Nblks, &Amat, "VbrMatrixFile");
+  ReadAztecVbr(blk_size, Nnz, Nblks, &Amat, "../data/mac-vbr/K_reordered");
 
   // Convert Aztec matrix to a set of 4 block epetra matrices
 
@@ -214,8 +214,8 @@ int main(int argc, void** argv)
  Epetra_Vector *x_epet, *rhs_epet;
  x_epet   = new Epetra_Vector(*VbrMap);
  rhs_epet = new Epetra_Vector(*VbrMap);
- ReadPetraVector(x_epet  , "VbrVectorFile");
- ReadPetraVector(rhs_epet, "VbrRhsFile");
+ ReadPetraVector(x_epet  , "../data/mac-vbr/guess_reordered");
+ ReadPetraVector(rhs_epet, "../data/mac-vbr/rhs_reordered");
  
  // Set up the outer iteration
  
@@ -227,28 +227,33 @@ int main(int argc, void** argv)
  
  solver.Iterate(3, 1.0E-8);
  
+ 
+ delete saddlePrec_epet;
+ delete saddleA_epet;
+ delete x_epet;
+ delete rhs_epet;
+ delete subblock_maps[0];
+ delete subblock_maps[1];
+
+#ifndef EPETRA_MPI
+ delete comm;
+#endif
+
+ delete VbrMap;
+ 
+ 
+ free(Amat->data_org);
+ free(Amat->bpntr);
+ free(Amat->bindx);
+ free(Amat->val);
+ free(Amat->cpntr);
+ free(Amat->rpntr);
+ free(Amat->indx);
+ free(subblock_maps);
+ AZ_matrix_destroy(&Amat);
+ 
+ 
  TSFMPI::finalize(); 
-
-  delete saddlePrec_epet;
-  delete saddleA_epet;
-  delete x_epet;
-  delete rhs_epet;
-  delete subblock_maps[0];
-  delete subblock_maps[1];
-  delete comm;
-  delete VbrMap;
-
-  free(Amat->data_org);
-  free(Amat->bpntr);
-  free(Amat->bindx);
-  free(Amat->val);
-  free(Amat->cpntr);
-  free(Amat->rpntr);
-  free(Amat->indx);
-  free(subblock_maps);
-  AZ_matrix_destroy(&Amat);
-
-
 }
 
 
