@@ -33,7 +33,8 @@
 #include "TSFPreconditionerFactoryBase.hpp"
 #include "TSFLinearOperator.hpp"
 #include "Teuchos_ParameterList.hpp"
-
+#include "TSFILUFactorizableOp.hpp"
+#include "TSFLinearSolverBase.hpp"
 
 namespace TSFExtended
 {
@@ -44,7 +45,7 @@ namespace TSFExtended
    */
   template <class Scalar>
   class ILUKPreconditionerFactory
-    : public Handleable<PreconditionerFactoryBase<Scalar> >
+    : public PreconditionerFactoryBase<Scalar>
   {
   public:
     /** Construct with a parameter list */
@@ -56,15 +57,27 @@ namespace TSFExtended
         absoluteThreshold_(0.0),
         leftOrRight_(Right)
     {
-      SET_PARAMETER(params, int, fillLevels_, "Graph Fill");
+      LinearSolverBase<Scalar>::template setParameter<int>(params, &fillLevels_, 
+                                                  "Graph Fill");
 
-      SET_PARAMETER(params, int, overlapFill_, "Overlap");
+      LinearSolverBase<Scalar>::template setParameter<int>(params, &overlapFill_, 
+                                                  "Overlap");
 
-      SET_PARAMETER(params, double, relaxationValue_, "Relaxation");
+      LinearSolverBase<Scalar>::template setParameter<double>(params, &relaxationValue_, 
+                                                     "Relaxation");
 
-      SET_PARAMETER(params, double, absoluteThreshold_, "Absolute Threshold");
+      LinearSolverBase<Scalar>::template setParameter<double>(params, &absoluteThreshold_, 
+                                                     "Absolute Threshold");
 
-      SET_PARAMETER(params, double, relativeThreshold_, "Relative Threshold");
+      LinearSolverBase<Scalar>::template setParameter<double>(params, &relativeThreshold_, 
+                                                     "Relative Threshold");
+
+      bool isLeft = false;
+
+      LinearSolverBase<Scalar>::template setParameter<bool>(params, &isLeft, "Left");
+
+      if (isLeft) leftOrRight_ = Left;
+      
     }
 
 
@@ -73,7 +86,7 @@ namespace TSFExtended
 
     
     /** */
-    virtual Preconditioner 
+    virtual Preconditioner <Scalar>
     createPreconditioner(const LinearOperator<Scalar>& A) const 
     {
       /* In order for ILU factorization to work, the operator A must
@@ -81,7 +94,7 @@ namespace TSFExtended
        * to a ILUFactorizableOp ptr. If the cast fails, throw a spoke. */
       
       const ILUFactorizableOp<Scalar>* fop 
-        = dynamic_cast<const ILUFactorizableOp*>(A.ptr().get());
+        = dynamic_cast<const ILUFactorizableOp<Scalar>*>(A.ptr().get());
 
       TEST_FOR_EXCEPTION(fop==0, runtime_error,
                          "ILUKPreconditionerFactory attempted to "
@@ -92,7 +105,7 @@ namespace TSFExtended
       
       /* Now we can delegate the construction of the ILU factors to 
       * the factorizable op. */
-      Preconditioner P;
+      Preconditioner<Scalar> P;
       fop->getILUKPreconditioner(fillLevels_,
                                  overlapFill_,
                                  relaxationValue_,
@@ -104,6 +117,8 @@ namespace TSFExtended
       return P;
     }
 
+    /* Handleable boilerplate */
+    GET_RCP(PreconditionerFactoryBase<Scalar>);
   private:
 
     int fillLevels_;

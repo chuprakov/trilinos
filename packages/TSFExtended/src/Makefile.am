@@ -126,8 +126,11 @@ LINEARSOLVERS = \
 PRECONDITIONERS_H = \
 	$(srcdir)/Preconditioners/TSFGenericLeftPreconditioner.hpp \
 	$(srcdir)/Preconditioners/TSFGenericRightPreconditioner.hpp \
+	$(srcdir)/Preconditioners/TSFILUKPreconditionerFactory.hpp \
 	$(srcdir)/Preconditioners/TSFPreconditioner.hpp \
-	$(srcdir)/Preconditioners/TSFPreconditionerBase.hpp 
+	$(srcdir)/Preconditioners/TSFPreconditionerBase.hpp \
+	$(srcdir)/Preconditioners/TSFPreconditionerFactory.hpp \
+	$(srcdir)/Preconditioners/TSFPreconditionerFactoryBase.hpp 
 
 
 PRECONDITIONERS = 

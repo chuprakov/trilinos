@@ -37,7 +37,7 @@
 #include "Teuchos_Time.hpp"
 #include "Teuchos_MPIComm.hpp"
 #include "TSFLinearSolver.hpp"
-#include "TSFBICGSTABSolver.hpp"
+#include "TSFLinearSolverBuilder.hpp"
 
 using namespace Teuchos;
 using namespace TSFExtended;
@@ -134,13 +134,21 @@ int main(int argc, void *argv[])
       cerr << endl << "error 2-norm = " << (y-ans).norm2() << endl;
       cerr << endl << "error inf-norm = " << (y-ans).normInf() << endl;
 
+      ParameterList params;
       ParameterList solverParams;
+      solverParams.set("Type", "TSF");
+      solverParams.set("Method", "BICGSTAB");
+      solverParams.set("Max Iterations", 100);
+      solverParams.set("Tolerance", 1.0e-12);
+      solverParams.set("Precond", "ILUK");
+      solverParams.set("Graph Fill", 1);
+      solverParams.set("Verbosity", 4);
 
-      solverParams.set(LinearSolverBase<double>::verbosityParam(), 2);
-      solverParams.set(IterativeSolver<double>::maxitersParam(), 100);
-      solverParams.set(IterativeSolver<double>::tolParam(), 1.0e-12);
+      params.set("Linear Solver", solverParams);
 
-      LinearSolver<double> solver = new BICGSTABSolver<double>(solverParams);
+
+      LinearSolver<double> solver 
+        = LinearSolverBuilder::createSolver(params);
 
       SolverState<double> state = solver.solve(A, y, ans);
       

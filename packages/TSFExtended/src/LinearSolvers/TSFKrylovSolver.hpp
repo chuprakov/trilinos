@@ -31,6 +31,8 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFIterativeSolver.hpp"
+#include "TSFPreconditionerFactory.hpp"
+#include "TSFILUKPreconditionerFactory.hpp"
 
 namespace TSFExtended
 {
@@ -57,13 +59,27 @@ namespace TSFExtended
     virtual SolverState<Scalar> solveUnprec(const LinearOperator<Scalar>& op,
                                             const Vector<Scalar>& rhs,
                                             Vector<Scalar>& soln) const = 0 ;
+
+    const PreconditionerFactory<Scalar>& precond() const {return precond_;}
+
+  private:
+    PreconditionerFactory<Scalar> precond_;
   };
 
   
   template <class Scalar> inline
   KrylovSolver<Scalar>::KrylovSolver(const ParameterList& params)
-    : IterativeSolver<Scalar>(params)
-  {;}
+    : IterativeSolver<Scalar>(params), precond_()
+  {
+    if (!params.isParameter("Precond")) return;
+
+    const string& precondType = params.template get<string>("Precond");
+
+    if (precondType=="ILUK")
+      {
+        precond_ = new ILUKPreconditionerFactory<Scalar>(params);
+      }
+  }
 
   template <class Scalar> inline
   SolverState<Scalar> KrylovSolver<Scalar>

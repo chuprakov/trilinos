@@ -50,6 +50,20 @@ int LinearSolverBase<Scalar>::getVerbosity() const
 {return parameters().template get<int>(verbosityParam());}
 
 template <class Scalar>
-string LinearSolverBase<Scalar>::verbosityParam() {return "verbosity";}
+string LinearSolverBase<Scalar>::verbosityParam() {return "Verbosity";}
+
+template <class Scalar>
+template <typename T>
+void LinearSolverBase<Scalar>::setParameter(const ParameterList& params,
+                                            T* dataPtr,
+                                            const string& name)
+{
+  if (!params.isParameter(name)) return;
+
+  TEST_FOR_EXCEPTION(!params.template isType<T>(name), runtime_error,
+                     "invalid type for parameter [" << name << "]"); 
+
+  *dataPtr = params.template get<T>(name);
+}
 
 #endif

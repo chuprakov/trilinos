@@ -66,6 +66,12 @@ namespace TSFExtended
 
     /** */
     static string verbosityParam();
+
+    /** */
+    template <typename T>
+    static void setParameter(const ParameterList& params,
+                             T* valuePtr, 
+                             const string& paramName);
   private:
     ParameterList params_;
   };

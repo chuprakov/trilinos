@@ -58,10 +58,10 @@ namespace TSFExtended
     {return parameters().template get<double>(tolParam());}
 
     /** */
-    static string maxitersParam() {return "maxiters";}
+    static string maxitersParam() {return "Max Iterations";}
 
     /** */
-    static string tolParam() {return "tol";}
+    static string tolParam() {return "Tolerance";}
 
     /** */
     static const int defaultMaxiters() {return 500;}

@@ -41,10 +41,7 @@ AztecSolver::AztecSolver(const ParameterList& params)
       const ParameterEntry& entry = params.entry(iter);
       cerr << "Found parameter " << name << " = " << entry << endl;
       /* Check that the param name appears in the table of Aztec params */
-      TEST_FOR_EXCEPTION(paramMap().find(name) == paramMap().end(),
-                         runtime_error,
-                         "Aztec solver ctor: [" << name << "] is not a "
-                         "valid Aztec parameter name");
+      if (paramMap().find(name) == paramMap().end()) continue;
 
       /* find the integer ID used by Aztec to identify this parameter */
       int aztecCode = paramMap()[name];

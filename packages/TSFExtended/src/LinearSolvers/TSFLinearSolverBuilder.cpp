@@ -77,3 +77,33 @@ LinearSolver<double> LinearSolverBuilder::createSolver(const XMLObject& xml)
     
 }
 
+LinearSolver<double> LinearSolverBuilder::createSolver(const ParameterList& params)
+{
+  TEST_FOR_EXCEPTION(!params.isSublist("Linear Solver"), runtime_error,
+                     "did not find Linear Solver sublist in " << params);
+
+
+  ParameterList solverSublist = params.sublist("Linear Solver");
+
+  const string& solverType = getParameter<string>(solverSublist, "Type");
+
+  if (solverType=="Aztec")
+    {
+      return new AztecSolver(solverSublist);
+    }
+  else if (solverType=="TSF")
+    {
+      const string& solverMethod = getParameter<string>(solverSublist, "Method");
+      if (solverMethod=="BICGSTAB") 
+        {
+          return new BICGSTABSolver<double>(solverSublist);
+        }
+    }
+
+  TEST_FOR_EXCEPTION(true, runtime_error, 
+                     "Could not create a solver from parameter list " 
+                     << params);
+  return LinearSolver<double>();
+    
+}
+

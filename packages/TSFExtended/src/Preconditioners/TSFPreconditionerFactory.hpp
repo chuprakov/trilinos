@@ -54,10 +54,10 @@ namespace TSFExtended
   {
   public:
     /* Boilerplate ctors */
-    HANDLE_CTORS(PreconditionerFactory, PreconditionerFactoryBase<Scalar>);
+    HANDLE_CTORS(PreconditionerFactory<Scalar>, PreconditionerFactoryBase<Scalar>);
 
     /** create a concrete preconditioner */
-    Preconditioner createPreconditioner(const LinearOperator<Scalar>& A) const
+    Preconditioner<Scalar> createPreconditioner(const LinearOperator<Scalar>& A) const
     {return ptr()->createPreconditioner(A);}
     
   };

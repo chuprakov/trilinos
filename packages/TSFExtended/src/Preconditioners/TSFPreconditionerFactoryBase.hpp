@@ -32,6 +32,7 @@
 #include "TSFConfigDefs.hpp"
 #include "TSFVector.hpp"
 #include "TSFLinearOperator.hpp"
+#include "TSFPreconditioner.hpp"
 #include "Teuchos_ParameterList.hpp"
 
 
@@ -55,7 +56,7 @@ namespace TSFExtended
 
     
     /** */
-    virtual Preconditioner createPreconditioner(const LinearOperator<Scalar>& A) const = 0 ;
+    virtual Preconditioner<Scalar> createPreconditioner(const LinearOperator<Scalar>& A) const = 0 ;
 
   private:
   };

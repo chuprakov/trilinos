@@ -44,6 +44,8 @@ namespace TSFExtended
   public:
     /** */
     static LinearSolver<double> createSolver(const XMLObject& xml);
+    /** */
+    static LinearSolver<double> createSolver(const ParameterList& params);
   };
   
 }
