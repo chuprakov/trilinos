@@ -76,7 +76,6 @@ namespace ReducedSpaceSQPPack {
 
 // Constructors / initializers
 
-inline
 void rSQPState::set_space_range (const vec_space_ptr_t& space_range )
 {
 	space_range_ = space_range;
@@ -86,7 +85,6 @@ void rSQPState::set_space_range (const vec_space_ptr_t& space_range )
 		);
 }
 
-inline
 void rSQPState::set_space_null (const vec_space_ptr_t& space_null )
 {
 	space_null_ = space_null;
