@@ -23,9 +23,9 @@ namespace ReducedSpaceSQPPack {
 ///
 /** Implements "coordinate" decompostion for "Tailored Appraoch".
   *
-  * Computes:\\
-  * py = py \\
-  * Ypy = [ py; 0 ] \\
+  * Computes:<br>
+  * <tt>py = py</tt><br>
+  * <tt>Y = [ I; 0 ]</tt><br>
   */
 class EvalNewPointTailoredApproachCoordinate_Step
 	: public EvalNewPointTailoredApproach_Step
@@ -41,17 +41,29 @@ public:
 
 protected:
 
-	// ///////////////////////////////
-	// Overridden
+	/** @name Overridden from EvalNewPointTailoredApproach_Step */
+	//@{
 
 	///
-	void calc_py_Ypy( const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
-		, EJournalOutputLevel olevel, std::ostream& out );
+	void calc_py_Y(
+		const NLPFirstOrderDirect &nlp
+		,const D_ptr_t            &D
+		,VectorWithOpMutable      *py
+		,MatrixIdentConcatStd     *Y
+		,EJournalOutputLevel      olevel
+		,std::ostream             &out
+		);
 	///
-	void recalc_py_Ypy( const GenMatrixSlice& D, VectorSlice* py, VectorSlice* Ypy
-		, EJournalOutputLevel olevel, std::ostream& out );
+	void recalc_py(
+		const MatrixWithOp       &D
+		,VectorWithOpMutable     *py
+		,EJournalOutputLevel     olevel
+		,std::ostream            &out
+		);
 	///
-	void print_calc_Y_py_Ypy( std::ostream& out, const std::string& leading_str ) const;
+	void print_calc_py_Y( std::ostream& out, const std::string& leading_str ) const;
+
+	//@}
 
 private:
 	// not defined and not to be called
