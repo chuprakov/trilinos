@@ -179,12 +179,12 @@ int main(int argc, char *argv[])
 #if defined(HAVE_COMPLEX) && defined(HAVE_TEUCHOS_COMPLEX)
 
 		// Run using std::complex<float>
-		//result = runCgSolveExample<std::complex<float> >(mpiComm,procRank,numProc,localDim,diagScale,verbose,tolerance,maxNumIters);
-		//if(!result) success = false;
+		result = runCgSolveExample<std::complex<float> >(mpiComm,procRank,numProc,localDim,diagScale,verbose,tolerance,maxNumIters);
+		if(!result) success = false;
 
 		// Run using std::complex<double>
-		//result = runCgSolveExample<std::complex<double> >(mpiComm,procRank,numProc,localDim,diagScale,verbose,tolerance,maxNumIters);
-		//if(!result) success = false;
+		result = runCgSolveExample<std::complex<double> >(mpiComm,procRank,numProc,localDim,diagScale,verbose,tolerance,maxNumIters);
+		if(!result) success = false;
 
 #endif		
 
