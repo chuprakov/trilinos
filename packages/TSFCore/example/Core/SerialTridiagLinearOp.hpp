@@ -53,12 +53,12 @@
  * <tt>upper[]</tt> of dimension <tt>dim-1</tt>, <tt>dim</tt> and <tt>dim-1</tt>
  * respectively (see <tt>initialize()</tt>).
  *
- * Note, this is just an exmaple class and for the sake if simplifed
+ * Note, this is just an exmaple class and for the sake of simplifed
  * presentation the private members are listed first and inclass
- * declarations are used which are not a good idea in code.  However,
- * in this case, they make the example code easier to read and
- * maintaining encapsulation and a well defined interface are
- * unecessary here.
+ * declarations are used which are not a good idea in production code.
+ * However, in this case, they make the example code easier to read
+ * and maintaining encapsulation and a well defined interface are
+ * unnecessary here.
  *
  * See the source code for this simple example by clicking on the
  * link to the defintion below.
@@ -71,17 +71,19 @@ class SerialTridiagLinearOp : virtual public TSFCore::SerialLinearOpBase<Scalar>
 private:
 
 	TSFCore::Index       dim_;
-	std::vector<Scalar>  lower_;   // size dim - 1    
-	std::vector<Scalar>  diag_;    // size dim
-	std::vector<Scalar>  upper_;   // size dim - 1
+	std::vector<Scalar>  lower_;   // size = dim - 1    
+	std::vector<Scalar>  diag_;    // size = dim
+	std::vector<Scalar>  upper_;   // size = dim - 1
 
 public:
+
+	/// Construct to uninitialized
+	SerialTridiagLinearOp() : dim_(0) {}
 
 	/// Calls <tt>initialize()</tt>.
 	SerialTridiagLinearOp( const TSFCore::Index dim, const Scalar lower[], const Scalar diag[], const Scalar upper[] )
 		{ this->initialize(dim,lower,diag,upper);	}
 	
-	///
 	/** Initialize given lower, diagonal and upper arrays of data.
 	 *
 	 * @param  dim    [in] Dimension of this matrix (must be >= 2).

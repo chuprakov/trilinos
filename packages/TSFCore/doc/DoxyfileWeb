@@ -104,6 +104,7 @@ INPUT                  = ../../../../Trilinos/packages/TSFCore/doc/index.doc \
                          ../../../../Trilinos/packages/TSFCore/src/adapters/epetra \
                          ../../../../Trilinos/packages/TSFCore/src/adapters/mpi-base \
                          ../../../../Trilinos/packages/TSFCore/example/Core/SerialTridiagLinearOp.hpp \
+                         ../../../../Trilinos/packages/TSFCore/example/Core/MPITridiagLinearOp.hpp \
                          ../../../../Trilinos/packages/TSFCore/example/Core/createTridiagEpetraLinearOp.hpp \
                          ../../../../Trilinos/packages/TSFCore/example/Core/sillyCgSolve.hpp \
                          ../../../../Trilinos/packages/TSFCore/example/Core/sillyPowerMethod.hpp

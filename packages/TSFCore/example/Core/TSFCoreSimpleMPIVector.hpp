@@ -54,7 +54,7 @@ SimpleMPIVector<Scalar>::mpiSpace() const
 }
 
 template<class Scalar>
-void SimpleMPIVector<Scalar>::getLocalData( Scalar** values, ptrdiff_t* stride )
+void SimpleMPIVector<Scalar>::getLocalData( Scalar** values, Index* stride )
 {
 	*values = &localValues_[0];
 	*stride = 1;

@@ -137,7 +137,7 @@ namespace TSFCore {
  * called by the subclass.  External clients should never need to
  * worry about this function and that is why <tt>%updateState()</tt>
  * is declared protected.
-x *
+ *
  * \ingroup TSFCore_adapters_MPI_support_grp
  */
 template<class Scalar>

@@ -33,6 +33,7 @@ EXEEXT = .exe
 #
 
 SILLY_CG_SOLVE_SERIAL = sillyCgSolve_serial
+SILLY_CG_SOLVE_MPI = sillyCgSolve_mpi
 SILLY_POWER_METHOD_SERIAL = sillyPowerMethod_serial
 if HAVE_TSFCORE_EPETRA
 SILLY_CG_SOLVE_EPETRA = sillyCgSolve_epetra
@@ -42,12 +43,18 @@ SILLY_CG_SOLVE_EPETRA =
 SILLY_POWER_METHOD_EPETRA = 
 endif
 
-noinst_PROGRAMS = $(SILLY_CG_SOLVE_SERIAL) $(SILLY_CG_SOLVE_EPETRA) $(SILLY_POWER_METHOD_SERIAL) $(SILLY_POWER_METHOD_EPETRA)
+noinst_PROGRAMS = $(SILLY_CG_SOLVE_SERIAL) $(SILLY_CG_SOLVE_MPI) $(SILLY_CG_SOLVE_EPETRA) \
+  $(SILLY_POWER_METHOD_SERIAL) $(SILLY_POWER_METHOD_EPETRA)
 
 sillyCgSolve_serial_SOURCES = $(srcdir)/sillyCgSolve_serial.cpp
 sillyCgSolve_serial_DEPENDENCIES = $(common_dependencies)
 sillyCgSolve_serial_CXXFLAGS = $(common_cxxflags)
 sillyCgSolve_serial_LDADD = $(common_ldadd)
+
+sillyCgSolve_mpi_SOURCES = $(srcdir)/sillyCgSolve_mpi.cpp
+sillyCgSolve_mpi_DEPENDENCIES = $(common_dependencies)
+sillyCgSolve_mpi_CXXFLAGS = $(common_cxxflags)
+sillyCgSolve_mpi_LDADD = $(common_ldadd)
 
 sillyPowerMethod_serial_SOURCES = $(srcdir)/sillyPowerMethod_serial.cpp
 sillyPowerMethod_serial_DEPENDENCIES = $(common_dependencies)

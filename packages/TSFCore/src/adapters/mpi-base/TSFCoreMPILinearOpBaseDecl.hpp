@@ -26,21 +26,24 @@
 // ***********************************************************************
 // @HEADER
 
-#ifndef TSFCORE_SERIAL_LINEAR_OP_BASE_DECL_HPP
-#define TSFCORE_SERIAL_LINEAR_OP_BASE_DECL_HPP
+#ifndef TSFCORE_MPI_LINEAR_OP_BASE_DECL_HPP
+#define TSFCORE_MPI_LINEAR_OP_BASE_DECL_HPP
 
 #include "TSFCoreEuclideanLinearOpBaseDecl.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
 
 namespace TSFCore {
 
+template<class Scalar> class MPIVectorSpaceBase;
+
 ///
-/** Base subclass for simplistic in-core serial linear operators.
+/** Base subclass for simplistic MPI SPMD linear operators.
  *
  * This subclass defines machinery for developing concrete
- * <tt>LinearOp</tt> subclasses for serial vectors where it is assumed
- * that all of the elements in associated vectors and multi-vectors
- * are immediately avaliable.
+ * <tt>LinearOp</tt> subclasses for MPI SPMD vectors where it is
+ * assumed that all of the elements in associated vectors and
+ * multi-vectors are immediately and cheaply avaliable on each
+ * processor.
  *
  * This base subclass derives from <tt>EuclideanLinearOpBase</tt> and
  * therefore any application-specific scalar products can easily be
@@ -53,20 +56,20 @@ namespace TSFCore {
  * \ref apply_expl_vec "euclideanApply()".
  *
  * This function is called on the subclass implementation passing in
- * views of explicit data.  The raw pointers to the input and
+ * views of explicit data.  The raw pointers to the local input and
  * input/output arrays are passed in simple templated classes
  * <tt>RTOpPack::SubVectorT</tt> and
  * <tt>RTOpPack::MutableSubVectorT</tt>.  Getting raw pointers out of
  * these objects is easy.
  *
  * It is very easy to create concrete subclasses of
- * <tt>SerialLinearOpBase</tt> (see <tt>SerialTridiagLinearOp</tt> for
+ * <tt>MPILinearOpBase</tt> (see <tt>MPITridiagLinearOp</tt> for
  * a concrete example).  All one has to do is to create a derived base class
- * (<tt>MySerialLinearOp</tt> for example) of the form:
+ * (<tt>MyMPILinearOp</tt> for example) of the form:
  *
  \code
 template<class Scalar>
-class MySerialLinearOp : virtual public SerialLinearOpBase<Scalar> {
+class MyMPILinearOp : virtual public MPILinearOpBase<Scalar> {
 private:
   // Declare your classes private data
   ...
@@ -77,17 +80,17 @@ protected:
   // Override the version of euclideanApply() that takes explicit data
   void euclideanApply(
     const ETransp                                M_trans
-    ,const RTOpPack::SubVectorT<Scalar>          &x_in
-    ,const RTOpPack::MutableSubVectorT<Scalar>   *y_out
+    ,const RTOpPack::SubVectorT<Scalar>          &local_x_in
+    ,const RTOpPack::MutableSubVectorT<Scalar>   *local_y_out
     ,const Scalar                                alpha
     ,const Scalar                                beta
     ) const
     {
-      // Get raw pointers to vector data to make me feel better!
-      const Scalar *x     = x_in.values();
-      const Index  x_dim  = x_in.subDim();
-      Scalar       *y     = y_out->values();
-      const Index  y_dim  = y_out->subDim();
+      // Get raw pointers to local vector data to make me feel better!
+      const Scalar *local_x     = local_x_in.values();
+      const Index  local_x_dim  = local_x_in.subDim();
+      Scalar       *local_y     = local_y_out->values();
+      const Index  local_y_dim  = local_y_out->subDim();
       // Perform operation the operation
       if( M_trans == ::TSFCore::NOTRANS ) {
         // Perform the non-transposed operator: y = alpha*M*x + beta*y
@@ -100,13 +103,18 @@ protected:
   };
  \endcode
  *
+ * Of course the above function will have to perform some type of
+ * processor-to-processor communication in order to apply any
+ * non-trivial distributed-memory linear operator but that is always
+ * the case.
+ *
  * If you do not need to handle arbitrary scalar data types then you
  * do not have to support them.  For example, to define a subclass
  * that only supports <b><tt>double</tt></b> you would declare a
  * non-templated version of the form:
  *
  \code
-class MySerialLinearOp : virtual public SerialLinearOpBase<double> {
+class MyMPILinearOp : virtual public MPILinearOpBase<double> {
 private:
   // Declare your classes private data
   ...
@@ -117,17 +125,17 @@ protected:
   // Override the version of euclideanApply() that takes explicit data
   void euclideanApply(
     const ETransp                                M_trans
-    ,const RTOpPack::SubVectorT<double>          &x_in
-    ,const RTOpPack::MutableSubVectorT<double>   *y_out
+    ,const RTOpPack::SubVectorT<double>          &local_x_in
+    ,const RTOpPack::MutableSubVectorT<double>   *local_y_out
     ,const double                                alpha
     ,const double                                beta
     ) const
     {
       // Get raw pointers to vector data to make me feel better!
-      const double *x     = x_in.values();
-      const Index  x_dim  = x_in.subDim();
-      double       *y     = y_out->values();
-      const Index  y_dim  = y_out->subDim();
+      const double *local_x     = local_x_in.values();
+      const Index  local_x_dim  = local_x_in.subDim();
+      double       *local_y     = local_y_out->values();
+      const Index  local_y_dim  = local_y_out->subDim();
       // Perform operation the operation
       if( M_trans == ::TSFCore::NOTRANS ) {
         // Perform the non-transposed operator: y = alpha*M*x + beta*y
@@ -141,15 +149,15 @@ protected:
  \endcode
  *
  * By default, pointers to explicit data returned from
- * <tt>x.values()</tt> and <tt>y->values()</tt> above are forced to
- * have unit stride to simplify things.  However, if your subclass can
- * efficiently handle non-unit stride vector data (as the BLAS can for
- * example) then you can allow this by calling the function
- * <tt>this->forceUnitStride()</tt> and passing in <tt>false</tt>.
- * The function <tt>this->forceUnitStride()</tt> can only be called by
- * your subclasses as it is declared <tt>protected</tt> so do not
- * worry about silly users messing with this, it is none of their
- * business.
+ * <tt>local_x.values()</tt> and <tt>local_y->values()</tt> above are
+ * forced to have unit stride to simplify things.  However, if your
+ * subclass can efficiently handle non-unit stride vector data (as the
+ * BLAS can for example) then you can allow this by calling the
+ * function <tt>this->forceUnitStride()</tt> and passing in
+ * <tt>false</tt>.  The function <tt>this->forceUnitStride()</tt> can
+ * only be called by your subclasses as it is declared
+ * <tt>protected</tt> so do not worry about silly users messing with
+ * this, it is none of their business.
  *
  * The explicit multi-vector version of \ref apply_expl_multi_vec "euclideanApply()"
  * has a default implementation that calls the explicit
@@ -157,10 +165,10 @@ protected:
  * time.  A subclass should only override this default multi-vector version
  * if it can do something more efficient.
  *
- * \ingroup TSFCore_adapters_serial_support_grp
+ * \ingroup TSFCore_adapters_MPI_support_grp
  */
 template<class Scalar>
-class SerialLinearOpBase : virtual public EuclideanLinearOpBase<Scalar> {
+class MPILinearOpBase : virtual public EuclideanLinearOpBase<Scalar> {
 public:
 
 	/** @name Overridden from EuclideanLinearOpBase */
@@ -215,48 +223,50 @@ protected:
 	 * <li><tt>this->range().get() == NULL</tt>
 	 * </ul>
 	 */
-	SerialLinearOpBase();
+	MPILinearOpBase();
 
-	/** \brief Initialize vector spaces using pre-formed <tt>ScalarProdVectorSpaceBase</tt> objects.
+	/** \brief Initialize vector spaces using pre-formed <tt>MPIVectorSpaceBase</tt> objects.
 	 *
-	 * @param  range    [in] Smart pointer to range space
 	 * @param  domain   [in] Smart pointer to domain space
+	 * @param  range    [in] Smart pointer to range space
 	 *
 	 * Precondition:<ul>
-	 * <li><tt>range.get()  != NULL</tt>
 	 * <li><tt>domain.get() != NULL</tt>
+	 * <li><tt>range.get()  != NULL</tt>
 	 * </ul>
 	 *
 	 * Postcondition:<ul>
-	 * <li><tt>this->range().get()  == range.get()</tt>
 	 * <li><tt>this->domain().get() == domain.get()</tt>
+	 * <li><tt>this->range().get()  == range.get()</tt>
 	 * </ul>
 	 */
 	virtual void setSpaces(
-		const Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> >      &range
-		,const Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> >     &domain
+		const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >      &range
+		,const Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >     &domain
 		);
 
-	/** \brief Initialize vector spaces given dimensions (uses <tt>SerialVectorSpaceStd</tt>).
+	/** \brief Initialize vector spaces given local dimensions (uses <tt>MPIVectorSpaceStd</tt>).
 	 *
-	 * @param  dimRange   [in] The dimension of the serial range space
-	 * @param  dimDomain  [in] The dimension of the serial domain space
+	 * @param  mpiComm         [in] MPI Communicator
+	 * @param  localDimRange   [in] The local number of vector elements in the domain space.
+	 * @param  localDimDomain  [in] The local number of vector elements in the domain space.
 	 *
 	 * Precondition:<ul>
-	 * <li><tt>dimRange  > 0</tt>
-	 * <li><tt>dimDomain > 0</tt>
+	 * <li><tt>localDimRange  > 0</tt>
+	 * <li><tt>localDimDomain > 0</tt>
 	 * </ul>
 	 *
 	 * Postcondition:<ul>
-	 * <li><tt>this->range()->dim()  == dimRange</tt>
-	 * <li><tt>this->domain()->dim() == dimDomain</tt>
-	 * <li><tt>dynamic_cast<const SerialVectorSpaceStd<Scalar>*>(this->range().get())  != NULL</tt>
-	 * <li><tt>dynamic_cast<const SerialVectorSpaceStd<Scalar>*>(this->domain().get()) != NULL</tt>
+	 * <li><tt>dynamic_cast<MPIVectorSpace<Scalar>&>(*this->range()).localSubDim() == localDimRange</tt>
+	 * <li><tt>dynamic_cast<MPIVectorSpace<Scalar>&>(*this->domain()).localSubDim() == localDimDomain</tt>
+	 * <li><tt>dynamic_cast<const MPIVectorSpaceStd<Scalar>*>(this->range().get())  != NULL</tt>
+	 * <li><tt>dynamic_cast<const MPIVectorSpaceStd<Scalar>*>(this->domain().get()) != NULL</tt>
 	 * </ul>
 	 */
-	virtual void setDimensions(
-		const Index                                                 dimRange
-		,const Index                                                dimDomain
+	virtual void setLocalDimensions(
+		MPI_Comm                                                    mpiComm 
+		,const Index                                                localDimRange
+		,const Index                                                locakDimDomain
 		);
 
 	//@}
@@ -270,16 +280,16 @@ protected:
 	 *
 	 * See <tt>LinearOp::euclideanApply()</tt> for a discussion of the
 	 * arguments to this function.  What differentiates this function is
-	 * that <tt>x</tt> and <tt>y</tt> are passed as objects with
-	 * explicit pointers to vector data.
+	 * that <tt>local_x</tt> and <tt>local_y</tt> are passed as objects
+	 * with explicit pointers to local vector data.
 	 *
 	 * Since this function is protected and does not get directly called by a client.
 	 * Instead, this function is called by the vector version of \ref apply_vec "euclideanApply()".
 	 */
 	virtual void euclideanApply(
 		const ETransp                                M_trans
-		,const RTOpPack::SubVectorT<Scalar>          &x
-		,const RTOpPack::MutableSubVectorT<Scalar>   *y
+		,const RTOpPack::SubVectorT<Scalar>          &local_x
+		,const RTOpPack::MutableSubVectorT<Scalar>   *local_y
 		,const Scalar                                alpha
 		,const Scalar                                beta
 		) const = 0;
@@ -290,8 +300,8 @@ protected:
 	 *
 	 * See <tt>LinearOp::euclideanApply()</tt> for a discussion of the
 	 * arguments to this function.  What differentiates this function is
-	 * that <tt>X</tt> and <tt>Y</tt> are passed as objects with
-	 * explicit pointers to multi-vector data.
+	 * that <tt>local_X</tt> and <tt>local_Y</tt> are passed as objects
+	 * with explicit pointers to local multi-vector data.
 	 *
 	 * Since this function is protected and does not get directly called by a client.
 	 * Instead, this function is called by the multi-vector version of \ref apply_multi_vec "euclideanApply()".
@@ -306,8 +316,8 @@ protected:
 	 */
 	virtual void euclideanApply(
 		const ETransp                                     M_trans
-		,const RTOpPack::SubMultiVectorT<Scalar>          &X
-		,const RTOpPack::MutableSubMultiVectorT<Scalar>   *Y
+		,const RTOpPack::SubMultiVectorT<Scalar>          &local_X
+		,const RTOpPack::MutableSubMultiVectorT<Scalar>   *local_Y
 		,const Scalar                                     alpha
 		,const Scalar                                     beta
 		) const;
@@ -316,11 +326,11 @@ protected:
 
 private:
 
-	Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> >    range_;
-	Teuchos::RefCountPtr<const ScalarProdVectorSpaceBase<Scalar> >    domain_;
+	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >    range_;
+	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> >    domain_;
 
 };	// end class LinearOp
 
 }	// end namespace TSFCore
 
-#endif	// TSFCORE_SERIAL_LINEAR_OP_BASE_DECL_HPP
+#endif	// TSFCORE_MPI_LINEAR_OP_BASE_DECL_HPP

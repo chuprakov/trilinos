@@ -26,7 +26,7 @@
 // ***********************************************************************
 // @HEADER
 
-#include "SerialTridiagLinearOp.hpp"
+#include "MPITridiagLinearOp.hpp"
 #include "sillyCgSolve.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreTestingTools.hpp"
@@ -34,16 +34,19 @@
 #include "Teuchos_Time.hpp"
 
 //
-// This example program is ment to show how easy it is to create
-// serial TSFCore objects and use them with an ANA (CG in this case).
+// This example program is ment to show how easy it is to create MPI
+// TSFCore objects and use them with an ANA (CG in this case).
 //
 // This example uses a silly concrete tridagonal matrix class called
-// SerialTridiagLinearOp that demonstrates how to write and use such
+// MPITridiagLinearOp that demonstrates how to write such
 // subclasses.
 //
 template<class Scalar>
 bool runCgSolveExample(
-	const int                                                      dim
+	MPI_Comm                                                       mpiComm
+	,const int                                                     procRank
+	,const int                                                     numProc
+	,const int                                                     localDim
 	,const Scalar                                                  diagScale
 	,const bool                                                    verbose
 	,const typename Teuchos::ScalarTraits<Scalar>::magnitudeType   tolerance
@@ -70,17 +73,21 @@ bool runCgSolveExample(
 	//       [                 -1   a*2 ]
 	//
 	// (A.1) Create the tridagonal matrix operator
-	if(verbose) std::cout << "\nConstructing tridagonal matrix A of dimmension = " << dim << " and diagonal multiplier = " << diagScale << " ...\n";
-	std::vector<Scalar> lower(dim-1), diag(dim), upper(dim-1);
+	if(verbose) std::cout << "\nConstructing tridagonal matrix A of local dimmension = " << localDim
+												<< " and diagonal multiplier = " << diagScale << " ...\n";
+	const TSFCore::Index
+		lowerDim = ( procRank == 0         ? localDim - 1 : localDim ),
+		upperDim = ( procRank == numProc-1 ? localDim - 1 : localDim );
+	std::vector<Scalar> lower(lowerDim), diag(localDim), upper(upperDim);
 	const Scalar one = ST::one(), diagTerm = Scalar(2)*diagScale*ST::one();
 	int k = 0;
-	diag[k] = diagTerm; upper[k] = -one;                        // First row
-	for( k = 1; k < dim - 1; ++k ) {
-		lower[k-1] = -one; diag[k] = diagTerm; upper[k] = -one;   // Middle rows
+	if(procRank > 0) lower[k] = +one; diag[k] = diagTerm; upper[k] = -one;           // First local row
+	for( k = 1; k < localDim - 1; ++k ) {
+		lower[k-1] = -one; diag[k] = diagTerm; upper[k] = -one;                        // Middle local rows
 	}
-	lower[k-1] = -one; diag[k] = diagTerm;                      // Last row
+	lower[k-1] = -one; diag[k] = diagTerm; if(procRank < numProc-1) upper[k] = -one; // Last local row
 	RefCountPtr<const TSFCore::LinearOp<Scalar> >
-		A = rcp(new SerialTridiagLinearOp<Scalar>(dim,&lower[0],&diag[0],&upper[0]));
+		A = rcp(new MPITridiagLinearOp<Scalar>(mpiComm,localDim,&lower[0],&diag[0],&upper[0]));
 	// (A.2) Create RHS vector b and set to a random value
 	RefCountPtr<TSFCore::Vector<Scalar> > b = A->range()->createMember();
 	TSFCore::seed_randomize<Scalar>(0);
@@ -125,13 +132,18 @@ int main(int argc, char *argv[])
 	bool verbose = true;
 	bool result;
 
+	MPI_Comm mpiComm = MPI_COMM_WORLD;
+	int procRank, numProc;
+	MPI_Comm_size( mpiComm, &numProc );
+	MPI_Comm_rank( mpiComm, &procRank );
+
 	try {
 
 		//
 		// Read in commandline options
 		//
 
-		int    dim         = 500;
+		int    localDim    = 500;
 		double diagScale   = 1.001;
 		double tolerance   = 1e-4;
 		int    maxNumIters = 300;
@@ -139,7 +151,7 @@ int main(int argc, char *argv[])
 		CommandLineProcessor  clp(false); // Don't throw exceptions
 
 		clp.setOption( "verbose", "quiet", &verbose, "Determines if any output is printed or not." );
-		clp.setOption( "dim", &dim, "Dimension of the linear system." );
+		clp.setOption( "local-dim", &localDim, "Local dimension of the linear system." );
 		clp.setOption( "diag-scale", &diagScale, "Scaling of the diagonal to improve conditioning." );
 		clp.setOption( "tol", &tolerance, "Relative tolerance for linear system solve." );
 		clp.setOption( "max-num-iters", &maxNumIters, "Maximum of CG iterations." );
@@ -147,38 +159,38 @@ int main(int argc, char *argv[])
 		CommandLineProcessor::EParseCommandLineReturn parse_return = clp.parse(argc,argv);
 		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL ) return parse_return;
 
-		TEST_FOR_EXCEPTION( dim < 2, std::logic_error, "Error, dim=" << dim << " < 2 is not allowed!" );
+		TEST_FOR_EXCEPTION( localDim < 2, std::logic_error, "Error, localDim=" << localDim << " < 2 is not allowed!" );
 
 		// Run using float
-		result = runCgSolveExample<float>(dim,diagScale,verbose,tolerance,maxNumIters);
+		result = runCgSolveExample<float>(mpiComm,procRank,numProc,localDim,diagScale,verbose,tolerance,maxNumIters);
 		if(!result) success = false;
 
 		// Run using double
-		result = runCgSolveExample<double>(dim,diagScale,verbose,tolerance,maxNumIters);
-		if(!result) success = false;
+		//result = runCgSolveExample<double>(mpiComm,procRank,numProc,localDim,diagScale,verbose,tolerance,maxNumIters);
+		//if(!result) success = false;
 
 #if defined(HAVE_COMPLEX) && defined(HAVE_TEUCHOS_COMPLEX)
 
 		// Run using std::complex<float>
-		result = runCgSolveExample<std::complex<float> >(dim,diagScale,verbose,tolerance,maxNumIters);
-		if(!result) success = false;
+		//result = runCgSolveExample<std::complex<float> >(mpiComm,procRank,numProc,localDim,diagScale,verbose,tolerance,maxNumIters);
+		//if(!result) success = false;
 
 		// Run using std::complex<double>
-		result = runCgSolveExample<std::complex<double> >(dim,diagScale,verbose,tolerance,maxNumIters);
-		if(!result) success = false;
+		//result = runCgSolveExample<std::complex<double> >(mpiComm,procRank,numProc,localDim,diagScale,verbose,tolerance,maxNumIters);
+		//if(!result) success = false;
 
 #endif
 
 #ifdef HAVE_TEUCHOS_GNU_MP
 
 		// Run using mpf_class
-		result = runCgSolveExample<mpf_class>(dim,diagScale,verbose,tolerance,maxNumIters);
-		if(!result) success = false;
+		//result = runCgSolveExample<mpf_class>(mpiComm,procRank,numProc,localDim,diagScale,verbose,tolerance,maxNumIters);
+		//if(!result) success = false;
 
 #if defined(HAVE_COMPLEX) && defined(HAVE_TEUCHOS_COMPLEX)
 
 		// Run using std::complex<mpf_class>
-		//result = runCgSolveExample<std::complex<mpf_class> >(dim,mpf_class(diagScale),verbose,mpf_class(tolerance),maxNumIters);
+		//result = runCgSolveExample<std::complex<mpf_class> >(localDim,mpf_class(diagScale),verbose,mpf_class(tolerance),maxNumIters);
 		//if(!result) success = false;
 		//The above commented-out code throws a floating-point exception?
 

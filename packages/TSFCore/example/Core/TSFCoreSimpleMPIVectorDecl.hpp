@@ -54,7 +54,7 @@ public:
 	///
 	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
 	///
-	void getLocalData( Scalar** values, ptrdiff_t* stride );
+	void getLocalData( Scalar** values, Index* stride );
 	///
 	void commitLocalData( Scalar* values );
 

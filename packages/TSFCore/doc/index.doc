@@ -89,19 +89,19 @@ fundamental_TSFCore_interfaces_sec
 
 There are primarily three different use cases related to the
 fundamental %TSFCore interfaces shown above.  The first, and by far
-the most important, is \ref TSFCore_ANA_Iteroperability_grp.  This use
-case is really the main reason for the creation of %TSFCore in the
-first place.  The second most important use case associated with the
-fundamental %TSFCore interfaces is the \ref TSFCore_Adapters_grp of
-vectors, multi-vectors and linear operators.  These types of subclass
+the most important, is the use of \ref
+TSFCore_ANA_Iteroperability_grp.  This use case is really the main
+reason for the creation of %TSFCore in the first place.  The second
+most important use case associated with the fundamental %TSFCore
+interfaces is the \ref TSFCore_Adapters_grp of vector spaces, vectors,
+multi-vectors and linear operators.  These types of subclass
 implementations may also known as "adapter" subclasses if they "adapt"
-some pre-existing interface.  The third, and perhaps the least
-important, use case for the fundamental %TSFCore interfaces is the use
-of \ref TSFCore_ANA_Development_grp.  While the fundamental %TSFCore
-iterface classes were not primarily designed with this thrid use case
-in mind, with some minimal helper functions and classes, directly
-writing ANA implementations in terms of %TSFCore objects is quite
-straightforward.
+some pre-existing set of classes or interfaces.  The third use case
+for the fundamental %TSFCore interfaces is the use of \ref
+TSFCore_ANA_Development_grp.  While the fundamental %TSFCore iterface
+classes were not directly designed for this use case, with some
+minimal helper functions and classes, directly writing ANA
+implementations in terms of %TSFCore objects is quite straightforward.
 
 Click on the below links for a discussion of each of these three use
 cases and a description of additional supporting code.
@@ -119,24 +119,32 @@ cases and a description of additional supporting code.
 \section TSFCore_examples_sec Assorted TSFCore Examples
 
 
-Below are links to example code that demonstrate various use caases
-for the code in the %TSFCore package:
+Below are links to example code that demonstrate various use cases for
+the code in the %TSFCore package:
 
 <ol>
 
-<li>\ref TSFCore_examples_power_method_grp
+<li>\ref TSFCore_examples_power_method_grp : These are examples that
+use a simple power method ANA and show both templated serial and MPI
+implementations and an Epetra implementation.
 
-<li>\ref TSFCore_examples_cg_grp
+<li>\ref TSFCore_examples_cg_grp : These are examples that use a
+simple CG ANA and show both templated serial and MPI implementations
+and an Epetra implementation.
 
-<li>\ref TSFCore_epetra_adapters_testing_prg_grp
+<li>\ref TSFCore_epetra_adapters_testing_prg_grp : This is a very
+detailed testing program that tests a lot of the functionality of the
+%TSFCore/Epetra adpaters and provides timing comparisons.
 
-<li>\ref TSFCore_product_vec_spc_prg_grp
+<li>\ref TSFCore_product_vec_spc_prg_grp : This is a simple testing
+program that demonstrates how product vectors and product spaces are
+created and used.
 
 </ol>
 \section TSFCore_technicalities_sec Some Technicalities about TSFCore Software
 
 A few things about the software in the %TSFCore package are worth
-mentioning up front here in the introduction:
+mentioning:
 
 <ul>
 
@@ -146,7 +154,7 @@ All of these interfaces are templated on a <b><tt>Scalar</tt></b>
 (i.e.  floating-point) type and therefore almost all of %TSFCore
 supports arbitrary scalar types such as complex types
 (e.g. <tt>std::complex<double></tt>), automatic differentiation types,
-interval types and extended precision types (i.e. <tt>gmf_class</tt>)
+interval types and extended precision types (i.e. <tt>mpf_class</tt>)
 in addition to simpler real types such as <tt>double</tt> and
 <tt>float</tt>.  The only requirement for the <tt>Scalar</tt> data
 type is that it have value semantics (i.e. default constructor, copy
@@ -155,38 +163,37 @@ operators <tt>operator+(...)</tt>, <tt>operator-(...)</tt>,
 <tt>operator*(...)</tt> and <tt>operator/(...)</tt>.  The traits class
 <tt>Teuchos::ScalarTraits</tt> provides a means to write <em>type
 independent</em> code and all of the %TSFCore software uses this
-traits class.  Any scalar type that is to be used with as
-<tt>Scalar</tt> must provide a specialization of this traits class
-(see source code for <tt>Teuchos_ScalarTraits.hpp</tt> for examples of
-how to do this).  In addition, if MPI is to be used then
-specialization for the traits classes
-<tt>Teuchos::PrimitiveTypeTraits</tt> and
+traits class.  Any scalar type that is to be used as a <tt>Scalar</tt>
+must provide a specialization of this traits class (see source code
+for <tt>Teuchos_ScalarTraits.hpp</tt> for examples of how to do this).
+In addition, if MPI is to be used then specializations of the traits
+classes <tt>Teuchos::PrimitiveTypeTraits</tt> and
 <tt>Teuchos::RawMPITraits</tt> must also be provided.
 
 The fundamental %TSFCore interfaces and related software are not
 templated on an index (ordinal) type.  Instead, the type
 <tt>TSFCore::Index</tt> is used which is just a typedef that is
 defined at configure time to be an unsigned integral type that can
-hold the value of the largest dimension of a lspace that will be used
-by an exectuable.  For most platforms and use cases
+hold the value of the largest dimension of a vector space that will be
+used by an exectuable.  For most platforms and use cases,
 <b><tt>int</tt></b> is sufficient but in other cases <b><tt>long
 int</tt></b> may be necessary on some 64 bit platforms.  Not
 templating on the index (ordinal) type does not result in any
-significant degration in usability, runtime speed or storage usage in
-any use case.  However, certain types of subclasses of the %TSFCore
+degration in usability, runtime speed or storage usage for any use
+case.  However, certain types of subclasses of the %TSFCore
 interfaces, such as sparse matrix subclasses, may need to be templated
 on a local index (ordinal) type.
 
 <li><b>Dynamic memory mangament using <tt>%Teuchos::RefCountPtr</tt></b>
 
 All of the code in the %TSFCore package almost exclusively uses the
-<tt>Teuchos</tt> smart reference counted pointer class
+<tt>%Teuchos</tt> smart reference counted pointer class
 <tt>Teuchos::RefCountPtr</tt> to handle dynamically allocated memory
-with object-oriented programming.  %TSFCore also uses the convension for
-passing object to and from functions that involves
-<tt>Teuchos::RefCountPtr</tt> that is described in <a
+with object-oriented programming.  %TSFCore also religiously uses the
+idioms described in <a
 href="http://software.sandia.gov/Trilinos/RefCountPtrBeginnersGuideSAND.pdf">this
-report</a>.
+report</a> for passing object to and from functions that involves
+<tt>Teuchos::RefCountPtr</tt> .
 
 <li><b>Error (exception) handling</b>
 
@@ -201,9 +208,9 @@ consistently using these macros is is easy to set a breakpoint in a
 debugger just before an exception is thrown by setting a breakpoint on
 <tt>TestForException_break()</tt>.  If the code is configured with the
 macro <tt>_DEBUG</tt> defined (i.e. <tt>CPPFLAGS="-D_DEBUG ..."</tt>)
-then a lot of validation is performed.  Whenever development work is
-being performed this option macro should always be enabled since a lot
-of errors will be caught that would be hard to diagnose otherwise.
+then a lot of runtime validation is performed.  Whenever development
+work is being performed this macro should always be enabled since a
+lot of errors will be caught that would be hard to diagnose otherwise.
 
 </ul>
 
@@ -211,36 +218,38 @@ of errors will be caught that would be hard to diagnose otherwise.
 
 The %TSFCore package's <tt>configure</tt> script (which should be
 called from the base Trilinos-level configure script) responds to a
-number of options that affect that code is built.  Some of the more
-important options are:
+number of options that affect the code that is built.
+
+Some of the more important configuration options are:
 
 <ul>
-<li><b>--enable-tsfcore</b>: Causes the %TSFCore package and all of
-its dependent packages to be enabled and built.
-<li><b><tt>--(dis/en)able-tsfcore-epetra</tt></b>: Determines if the
-\ref TSFCore_adapters_Epetra_grp "Epetra adapter subclasses", example
-code and testing code are built or not.  Disabling support for Epetra
-means that the the %TSFCore package can be built without a dependency
-on the %Epetra pacakge.
+<li><b><tt>--enable-tsfcore</tt></b>: Causes the %TSFCore package and all of
+its dependent packages to be enabled and built.  Without this option,
+there will be no %TSFCore header files or libraries included in the
+installation of Trilinos.
+<li><b><tt>--enable-tsfcore-epetra</tt></b>: Causes the \ref
+TSFCore_adapters_Epetra_grp, example code and testing code to build or
+not.  Not selecting this option means that the %TSFCore package can be
+built without a dependency on the %Epetra pacakge.
 </ul>
 
-See the output form <tt>./configure --help</tt> (where <tt>./</tt> is
-the base soruce directory) for a listing of all of the configure
-options.
+See the output from <tt>./configure --help</tt> (where <tt>./</tt> is
+the base soruce directory) for a complete listing of all of the
+configure options that TSFCore responds to.
 
 The %TSFCore package is also affected by configure options passed to
-other packages and some of the these options are:
+other packages and some of these options are:
 
 <ul>
-<li><b><tt>--(dis/en)able-teuchos-complex</tt></b>: If enabled then
-the <tt>std::complex<></tt> scalar type are used in templated examples
+<li><b><tt>--enable-teuchos-complex</tt></b>: Causes the
+<tt>std::complex<></tt> scalar type to be used in templated examples
 and tests.
-<li><b><tt>--(dis/en)able-teuchos-gmp</tt></b>: If enabled then the
-extended-precision <tt>mpf_class</tt> scalar type is used in templated
-examples and tests.
+<li><b><tt>--enable-teuchos-gmp</tt></b>: Causes the GNU MP
+extended-precision <tt>mpf_class</tt> scalar type to be used in
+templated examples and tests.
 </ul>
 
-\section TSFCore_dependencies_src Other Trilinos Packages that TSFCore is Dependent on
+\section TSFCore_dependencies_src Other Trilinos Packages on which TSFCore Depends
 
 The %TSFCore package is dependent on the following Trilinos packages:
 
@@ -254,7 +263,7 @@ important <tt>RTOpPack::RTOpT</tt> interface class as well as many
 different concrete implementations such as
 <tt>RTOpPack::ROpDotProd</tt> and <tt>RTOpPack::TOpAXPY</tt>.
 <li><b>Epetra</b>: If <tt>--enable-tsfcore-epetra</tt> is specified
-with <tt>configure</tt> then \ref TSFCore_adapters_Epetra_grp are
+with <tt>configure</tt> then the \ref TSFCore_adapters_Epetra_grp are
 compiled and included in the output library <tt>libTSFCore.a</tt>.
 </ul>
 
@@ -268,14 +277,15 @@ Trilinos Installation Manual</a>.  The installation directory
 the --prefix option) contains a file called
 <tt>trilinos_make_macros.mak</tt>.  The file contains make macros that
 where used to build Trilinos and these same options should be used to
-build your external code as well.  This file can be included as:
+build your external code as well.  This file can be included in your
+makefile as:
 
 \verbatim
 
 include $(trilinos_install_dir)/include/trilinos_make_macros.mak
 \endverbatim
 
-Link line for any executable should then include the macro:
+The link line for any executable should then include the macro:
 
 \verbatim
 
@@ -296,30 +306,34 @@ Epetra or the Epetra adapters.
 
 <li><b><a
 href="http://software.sandia.gov/trilinos/RefCountPtrBeginnersGuideSAND.pdf">
-Teuchos::RefCountPtr Beginner's Guide </a></b> - An Introduction to the
+Teuchos::RefCountPtr Beginner's Guide : An Introduction to the
 Trilinos Smart Reference-Counted Pointer Class for (Almost) Automatic
-Dynamic Memory Management in C++.  This paper describes the basics of
-<tt>Teuchos::RefCountPtr</tt> and defines outlines a convension for
-passing objects to and from functions that all of the code in
-%TSFCcore adheres to.
+Dynamic Memory Management in C++ </a></b>
+
+This paper describes the basics of <tt>Teuchos::RefCountPtr</tt> and
+outlines a convension for passing objects to and from functions that
+all of the code in %TSFCore adheres to.
 
 <li><b><a href="http://software.sandia.gov/RTOp/RTOpTOMS.pdf"> Vector
-Reduction/Transformation Operators </a></b>.  This paper describes the
-need for and the basic design of <tt>RTOpPack::RTOpT</tt>.  The
-concrete implementation described in this paper used C while the
-current <tt>RTOpPack::RTOpT</tt> is a fully templated C++
-implementation.
+Reduction/Transformation Operators </a></b>
+
+This paper describes the need for, and the basic design of,
+<tt>RTOpPack::RTOpT</tt>.  The concrete implementation described in
+this paper used C while the current <tt>RTOpPack::RTOpT</tt> is a
+fully templated C++ implementation.
 
 <li><b><a
 href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">
-TSFCore </a></b> - A package of light-weight object-oriented abstractions
-for the development of abstract numerical algorithms and interfacing
-to linear algebra libraries and applications.  This paper describes
-the requirements and the use cases for the \ref
+TSFCore : A package of light-weight object-oriented abstractions for
+the development of abstract numerical algorithms and interfacing to
+linear algebra libraries and applications </a></b>
+
+This paper describes the requirements and the use cases for the \ref
 fundamental_TSFCore_interfaces_sec.  This paper contains critical
 design information without which %TSFCore can not be fully
 appreciated.  However, most developer's that interact with TSFCore
-need not know all of this detailed design information.
+need not know all of the detailed design information presented in this
+report.
 
 </ul>
 
@@ -328,7 +342,7 @@ need not know all of this detailed design information.
 <ul>
 <li> Roscoe A. Bartlett (rabartl@sandia.gov): %TSFCore lead develoepr
 <li> Kevin L. Long (krlong@sandia.gov) : %TSFExtended lead developer
-<li> Michael A. Heroux (maherou@sandia.gov): Trilinos leadear
+<li> Michael A. Heroux (maherou@sandia.gov): Trilinos leader
 <li> Heidi Thornquist (hkthorn@sandia.gov): Belos lead developer
 </ul>
 
@@ -401,11 +415,10 @@ detail in <a
 href="http://software.sandia.gov/trilinos/packages/tsfcore/TSFCoreSAND.pdf">this
 report</a> and in the documentation for each individual C++ class.
 One important paper describing the RTOp approach which provides the
-foundation for <tt>RTOpPack::RTOpT</tt> can be found <a
-href="http://software.sandia.gov/RTOp/RTOpTOMS.pdf">here</a>.  Note
-that <tt>RTOpPack::RTOpT</tt> is a refinement of the C and C++ RTOp
-interfaces described in <a
+foundation for <tt>RTOpPack::RTOpT</tt> can be found in <a
 href="http://software.sandia.gov/RTOp/RTOpTOMS.pdf">this paper</a>.
+Note that <tt>RTOpPack::RTOpT</tt> is a refinement of the C and C++
+RTOp interfaces described in the aforementioned paper.
 
 \section TSFCore_ANA_Iteroperability_other_sec Other Use Cases
 
@@ -437,11 +450,11 @@ that provide the foundation for all ANAs.
 \ref TSFCore_ANA_Development_grp "developed with TSFCore" or
 \ref TSFCore_ANA_Iteroperability_grp "accessed using TSFCore" to be useful,
 concrete implementations of the
-\ref fundamental_TSFCore_interfaces_sec "fundamental TSFCore interfaces"
-must be provided.  However, because of a number of convenient C++ subclasses described
+\ref fundamental_TSFCore_interfaces_sec must be provided.
+However, because of a number of convenient C++ subclasses described
 here, a developer of such implementation subclasses does not really need to understand much at all
 about the philosophy or details behind the fundamental %TSFCore
-interfaces in order to provide implementations for the most come use
+interfaces in order to provide implementations for the most common use
 cases.
 
 One of the main motivations behind the design of the \ref
@@ -458,27 +471,29 @@ development of concrete vector space, vector, multi-vector and linear
 operator subclasses as easy as possible.  However, the \ref
 fundamental_TSFCore_interfaces_sec "fundamental TSFCore interfaces"
 allow for almost limitless possibilities with respect to the types of
-possible implementations so it is not possible to provide pre-pacakged
+possible implementations so it is not possible to provide pre-packaged
 support for all of the possibilities.
 
-<b>Heads Up!</b> In case you think you will have to develop concrete
-<tt>TSFCore::VectorSpace</tt>, <tt>TSFCore::Vector</tt> or
+<b>Heads Up!</b> In case you think you will have to develop your own
+concrete <tt>TSFCore::VectorSpace</tt>, <tt>TSFCore::Vector</tt> or
 <tt>TSFCore::MultiVector</tt> subclasses in addition to whatever
 <tt>TSFCore::LinearOp</tt> subclasses that you need for you
-application you are probably wrong!  You most likely will not need to
+application, you are probably wrong!  You most likely will not need to
 create any concrete <tt>TSFCore::VectorSpace</tt>,
 <tt>TSFCore::Vector</tt> or <tt>TSFCore::MultiVector</tt> subclasses
-and instead should only need to develop a concrete
+and instead should only need to develop concrete
 <tt>TSFCore::LinearOp</tt> subclass(es) by deriving from
 <tt>TSFCore::SerialLinearOpBase</tt> for serial platforms or
 <tt>TSFCore::MPILinearOpBase</tt> for MPI SPMD platforms.  As
 described below, general yet efficient implementations of concrete
 concrete <tt>TSFCore::VectorSpace</tt>, <tt>TSFCore::Vector</tt> or
-<tt>TSFCore::MultiVector</tt> subclasses for SMP and MPI SPMD
+<tt>TSFCore::MultiVector</tt> subclasses for serial and MPI SPMD
 platforms are already available.
 
-Next, we provide a description of the various types of subclasses that
-are available.  Just browse the categories that you are interested in.
+Next, we provide a description of the various types of support code
+for creating concrete implementatons as well as concrete
+implementations that are available.  Just browse the categories that
+you are interested in.
 
 \section TSFCore_Adapters_overview_sec Overview of Concrete TSFCore Subclass Implementations
 
@@ -490,21 +505,23 @@ Click on the above link if you want to know about high-level support
 subclasses for seperating out the definition of the scalar product
 from the data structures and factory methods for specific computing
 platforms.  All of the concrete %TSFCore implementation subclasses
-outlined below derive from and use these base interface.  However,
+outlined below derive from and use these base interfaces.  However,
 knowing the details of these base interfaces is not critical to
 developing concrete implementations in most situations unless
-application-defined scalar products are needed.
+application-defined scalar products are needed.  The default euclidean
+scalar product is used automatically by default and if that is all you
+need then you can ignore these base classes.
 
 <li><b>Support subclasses for specific types of computing platforms</b>
 
 Below we outline support code contained in the %TSFCore package for
 different categories of computing platforms.
 
-<b>Note!</b> Before attempting to create your own concrete subclasses of the 
-\ref fundamental_TSFCore_interfaces_sec "fundamental TSFCore interfaces"
-please browse the below links in depth so that you know what support
-is already available.  In many cases, most of the concrete implementation
-software that you need for %TSFCore is already provided.
+<b>Note!</b> Before attempting to create your own concrete subclasses
+of the \ref fundamental_TSFCore_interfaces_sec please browse the below
+links so that you know what support is already available.  In many
+cases, most of the concrete implementation software that you need for
+%TSFCore is already provided.
 
 <ol>
 
@@ -513,19 +530,23 @@ software that you need for %TSFCore is already provided.
 Click on the above link if you want to know about support for
 developing %TSFCore subclass implementations for serial shared-memory
 platforms.  Since these are the most commonly used computing platform
-by applied mathematicians and academic researchs, these subclasses
-should be the most commonly used.  Note, the above link also
-describes concrete serial subclasses.
+by applied mathematicians and academic researchers, these subclasses
+should be the most commonly used by this group.  Note that the above
+link also describes very general and efficient concrete serial
+subclasses for vector spaces, vectors and multi-vectors as well as a
+support class for creating concrete linear operator implementations.
 
 <li>\ref <b>\ref TSFCore_mpi_adpaters_grp</b>
 
 Click on the above link if you want to know about support for
 developing %TSFCore subclass implementations for SPMD
 distributed-memory platforms.  These platforms are the most commonly
-used in large-scale scientific computing.  Note, the above link also
-describes various refined concrete adapter subclasses.  For example,
-subclasses that adapt <tt>Epetra</tt> objects to form %TSFCore objects
-are described.
+used in large-scale scientific computing.  Note that the above link
+also describes very general and efficient concrete MPI SPMD subclasses
+for vector spaces, vectors and multi-vectors as well as a support
+class for creating concrete linear operator implementations.  Also
+note that subclasses that adapt <tt>Epetra</tt> objects to form
+%TSFCore objects are described as well.
 
 </ol>
 
@@ -1682,8 +1703,16 @@ sillyPowerMethod_serial.cpp </a>
 
 /** \example SerialTridiagLinearOp.hpp
 
-Click \ref TSFCore_examples_power_method_serial_grp "here" and for
+Click \ref TSFCore_examples_power_method_serial_grp "here" and
 \ref TSFCore_examples_cg_serial_grp "here" for example programs that
+use this example class.
+
+*/
+
+/** \example MPITridiagLinearOp.hpp
+
+Click \ref TSFCore_examples_power_method_MPI_grp "here" and
+\ref TSFCore_examples_cg_MPI_grp "here" for example programs that
 use this example class.
 
 */
@@ -1894,6 +1923,8 @@ implementations which use several different scalar types:
 <ol>
 
 <li>\ref TSFCore_examples_cg_serial_grp
+
+<li>\ref TSFCore_examples_cg_MPI_grp
 
 <li>\ref TSFCore_examples_cg_epetra_grp
 
@@ -2158,6 +2189,110 @@ detailed discussion of this example program.
 
 */
 
+/** \defgroup TSFCore_examples_cg_MPI_grp Templated MPI Implemenation of the CG Method
+
+\ingroup TSFCore_examples_cg_grp
+
+\brief Here is an example program that shows the use of the example
+serial templated matrix class <tt>MPITridiagLinearOp</tt>
+with the example linear ANA implementation <tt>sillyCgSolve()</tt>.
+
+The class <tt>MPITridiagLinearOp</tt> that derives from the
+base class <tt>TSFCore::MPILinearOpBase</tt> is quite simple and
+its complete implementation looks like:
+
+\dontinclude MPITridiagLinearOp.hpp
+\skip template
+\until end class MPITridiagLinearOp
+
+\dontinclude sillyCgSolve_mpi.cpp
+
+The above MPI matrix class is used in an example program (see
+<tt>runCgSolveExample()</tt> below) that calls
+<tt>%sillyCgSolve()</tt>.  In this example program, the matrix
+constructed and used is the well-known tridiagonal matrix
+
+\f[
+
+A=
+\left[\begin{array}{rrrrrrrrrr}
+2 a    & -1 \\
+-1     &  2 a    & -1 \\
+       & \ddots  & \ddots  & \ddots \\
+       &         & -1      & 2 a     & -1 \\
+       &         &         &  -1     & 2 a
+\end{array}\right]
+\f]
+
+where \f$a\f$ is an adjustable diagonal scale factor that makes the
+matrix \f$A\f$ more or less well conditioned.
+
+The CG method is then run on the matrix \f$A\f$ for a number of
+iterations or until convergence to some tolerance is achieved.
+
+The following templated function <tt>runCgSolveExample()</tt>
+implements the example described above:
+
+\skip template
+\until end runCgSolveExample
+
+The above templated function <tt>runCgSolveExample()</tt> is then
+instantiated with the following scalar types:
+
+<ul>
+<li> Real types <b><tt>float</tt></b> and <b><tt>double</tt></b>
+<li> Complex real types <b><tt>std::complex<float></tt></b> and
+     <b><tt>std::complex<double></tt></b> (if <tt>--enable-teuchos-complex</tt>
+     was used at configuration time)
+</ul>
+
+and is called multiple times from within the following <tt>main()</tt>
+program function:
+
+\skip int main
+\until end main
+
+The above example program is built as part of the %TSFCore package
+(unless examples where disabled at configure time) and the executable
+can be found at:
+
+\verbatim ./example/Core/sillyCgSolve_mpi.exe \endverbatim
+
+where <tt>./</tt> is the base build directory for %TSFCore
+(e.g. <tt>???/Trilinos/$BUILD_DIR/packages/TSFCore</tt>).
+
+This example program should run successfully with no arguments for any
+number of processors and, at the time of this writing, produces the
+following output:
+
+\verbatim
+
+ToDo: Put this in!
+\endverbatim
+
+This exaple program also takes a number of command-line options.  To
+see what the command-line options are, use the <tt>--help</tt> option.
+At the time of this writing, the command-line options returned from
+<tt>./sillyCgSolve_mpi.exe --help</tt> are:
+
+\verbatim
+
+Todo: Put this in!
+\endverbatim
+
+To see the full listing of this example program click: <a
+href="sillyCgSolve__mpi_8cpp-example.html">
+sillyCgSolve_mpi.cpp </a>
+
+*/
+
+/** \example sillyCgSolve_mpi.cpp
+
+Click \ref TSFCore_examples_cg_MPI_grp "here" for a more
+detailed discussion of this example program.
+
+*/
+
 /** \defgroup TSFCore_examples_cg_epetra_grp Epetra Implemenation of the CG Method
 
 \ingroup TSFCore_examples_cg_grp
@@ -2345,7 +2480,6 @@ Click \ref TSFCore_examples_cg_epetra_grp "here" for a more
 detailed discussion of this example program.
 
 */
-
 
 //
 // Misc examples

@@ -164,7 +164,7 @@ public:
 	//@{
 
 	///
-	/** Calls <tt>EuclideanLinearOp::apply()</tt> to disambiguate <tt>apply()</tt>
+	/** Calls <tt>EuclideanLinearOpBase::apply()</tt> to disambiguate <tt>apply()</tt>
 	 */
 	void apply(
 		const ETransp            M_trans
@@ -175,7 +175,7 @@ public:
 		) const;
 
 	///
-	/** Calls <tt>EuclideanLinearOp::apply()</tt> to disambiguate <tt>apply()</tt>
+	/** Calls <tt>EuclideanLinearOpBase::apply()</tt> to disambiguate <tt>apply()</tt>
 	 */
 	void apply(
 		const ETransp                 M_trans
