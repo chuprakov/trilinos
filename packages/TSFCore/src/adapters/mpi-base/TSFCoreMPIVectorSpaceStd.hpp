@@ -61,13 +61,13 @@ void MPIVectorSpaceStd<Scalar>::initialize( MPI_Comm mpiComm, const Index localS
 #endif
   mpiComm_     = mpiComm;
   localSubDim_ = localSubDim;
-#ifdef RTOp_HAVE_MPI
-  if(mpiComm != MPI_COMM_NULL) {
+#ifdef RTOp_USE_MPI
+  if( mpiComm != MPI_COMM_NULL ) {
 		MPI_Comm_size( mpiComm_, &numProc_  );
 		MPI_Comm_rank( mpiComm_, &procRank_ );
     if(globalDim < 0) {
 			MPI_Allreduce(
-				&localSubDim                            // sendbuf
+				&localSubDim_                           // sendbuf
 				,&globalDim_                            // recvbuf
 				,1                                      // count
 				,Teuchos::RawMPITraits<Index>::type()   // datatype
@@ -83,11 +83,11 @@ void MPIVectorSpaceStd<Scalar>::initialize( MPI_Comm mpiComm, const Index localS
     }
 	}
 	else {
-#endif // RTOp_HAVE_MPI
+#endif // RTOp_USE_MPI
 		numProc_  = 1;
 		procRank_ = 0;
     globalDim_ = localSubDim_;
-#ifdef RTOp_HAVE_MPI
+#ifdef RTOp_USE_MPI
 	}
 #endif
 	updateState();

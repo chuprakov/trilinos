@@ -289,39 +289,43 @@ void MPIMultiVectorBase<Scalar>::euclideanApply(
 #endif
 
 #ifdef RTOp_USE_MPI
+	if( mpiComm != MPI_COMM_NULL ) {
 		
-	//
-	// Perform the global reduction of Y_local_tmp back into Y_local
-	//
+		//
+		// Perform the global reduction of Y_local_tmp back into Y_local
+		//
 		
-	if( M_trans==TRANS && globalDim_ > localSubDim_ ) {
-		// Contiguous buffer for local send
-		const Scalar *Y_local_buff = Y_local_tmp.values();
-		// Contiguous buffer for final reduction
-		Workspace<Scalar> Y_local_final_buff(wss,Y_local.subDim()*Y_local.numSubCols(),false);
-		// Perform the reduction
-		MPI_Allreduce(
-			Y_local_tmp.values()                     // sendbuff
-			,&Y_local_final_buff[0]                  // recvbuff
-			,Y_local_final_buff.size()               // count
-			,Teuchos::RawMPITraits<Scalar>::type()   // datatype
-			,MPI_SUM                                 // op
-			,mpiComm                                 // comm
-			);
-		// Load Y_local_final_buff back into Y_local
-		const Scalar *Y_local_final_buff_ptr = &Y_local_final_buff[0];
-		for( int j = 0; j < Y_local.numSubCols(); ++j ) {
-			Scalar *Y_local_ptr = Y_local.values() + Y_local.leadingDim()*j;
-			for( int i = 0; i < Y_local.subDim(); ++i ) {
-				(*Y_local_ptr++) = (*Y_local_final_buff_ptr++);
+		if( M_trans==TRANS && globalDim_ > localSubDim_ ) {
+			// Contiguous buffer for final reduction
+			Workspace<Scalar> Y_local_final_buff(wss,Y_local.subDim()*Y_local.numSubCols(),false);
+			// Perform the reduction
+			MPI_Allreduce(
+				Y_local_tmp.values()                     // sendbuff
+				,&Y_local_final_buff[0]                  // recvbuff
+				,Y_local_final_buff.size()               // count
+				,Teuchos::RawMPITraits<Scalar>::type()   // datatype
+				,MPI_SUM                                 // op
+				,mpiComm                                 // comm
+				);
+			// Load Y_local_final_buff back into Y_local
+			const Scalar *Y_local_final_buff_ptr = &Y_local_final_buff[0];
+			for( int j = 0; j < Y_local.numSubCols(); ++j ) {
+				Scalar *Y_local_ptr = Y_local.values() + Y_local.leadingDim()*j;
+				for( int i = 0; i < Y_local.subDim(); ++i ) {
+					(*Y_local_ptr++) = (*Y_local_final_buff_ptr++);
+				}
 			}
 		}
 	}
-
+	else {
 #endif // RTOp_USE_MPI
 
-	// When you get here the view Y_local will be committed back to Y
-	// in the distructor to Y_local
+		// When you get here the view Y_local will be committed back to Y
+		// in the distructor to Y_local
+
+#ifdef RTOp_USE_MPI
+	}
+#endif
 
 #ifdef TSFCORE_MPI_MULTI_VECTOR_BASE_PRINT_TIMES
 	timer.stop();

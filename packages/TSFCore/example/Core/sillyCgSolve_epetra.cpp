@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
 		//
 		// (E) Solve the linear system with the silly CG solver
 		//
-		result = sillyCgSolve(TSFCore::LinOpNonPersisting<double>(*A),*b,maxNumIters,tolerance,&*x,verbose?&std::cout:0);
+		result = sillyCgSolve(TSFCore::LinOpNonPersisting<double>(*A),*b,maxNumIters,tolerance,&*x,verbose?&out:0);
 		if(!result) success = false;
 		//
 		// (F) Check that the linear system was solved to the specified tolerance
@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
 		result = rel_err <= relaxTol;
 		if(!result) success = false;
 		if(verbose)
-			std::cout
+			out
 				<< "\n||b-A*x||/||b|| = "<<r_nrm<<"/"<<b_nrm<<" = "<<rel_err<<(result?" <= ":" > ")
 				<<"2.0*tolerance = "<<relaxTol<<": "<<(result?"passed":"failed")<<std::endl;
 		
