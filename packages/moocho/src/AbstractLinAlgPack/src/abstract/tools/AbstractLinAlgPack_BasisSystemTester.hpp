@@ -44,16 +44,22 @@ namespace AbstractLinAlgPack {
 class BasisSystemTester {
 public:
 
-	/** @name Set and access options */
+	/** @name Public types */
 	//@{
 
 	///
 	enum EPrintTestLevel {
-		PRINT_NONE=0       ///< Don't print anything
-		,PRINT_BASIC=1     ///< Print only very basic info
-		,PRINT_MORE=2      ///< Print greater detail about the tests.
-		,PRINT_ALL=3       ///< Print everything all the tests in great detail but output is independent of problem size.
+		PRINT_NONE   = 0  ///< Don't print anything
+		,PRINT_BASIC = 1  ///< Print only very basic info
+		,PRINT_MORE  = 2  ///< Print greater detail about the tests.
+		,PRINT_ALL   = 3  ///< Print everything all the tests in great detail but output is independent of problem size.
 	};
+
+	//@}
+
+	/** @name Set and access options */
+	//@{
+
 	/// Set the level of output produced durring tests.
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( EPrintTestLevel, print_tests )
 	/// Set whether matrices, vectors ect. are printed (warning, this may be a lot of output for larger systems).
@@ -69,6 +75,9 @@ public:
 
 	//@}
 
+	/** @name Constructors / initializers */
+	//@{
+
 	///	Constructor (default options)
 	BasisSystemTester(
 		EPrintTestLevel  print_tests      = PRINT_NONE
@@ -78,6 +87,11 @@ public:
 		,value_type      warning_tol      = 1e-14
 		,value_type      error_tol        = 1e-8
 		);
+
+	//@}
+
+	/** @name Test basis system */
+	//@{
  
 	///
 	/** Test a \c BasisSystem object after <tt>BasisSystem::update_basis()</tt> is called.
@@ -102,9 +116,6 @@ public:
 	 *              Actually, this can be any matrix object that the client may want to define that takes the
 	 *              role of \c GhUP.  Such a matrix object can be tested here in this function along with the rest
 	 *              of the matrices.
-	 * @param  print_all_warnings
-	 *              [in] Determines if warnings for all of the comparison tests are printed or not.
-	 *              Warning! may cause as much as <i>O(</i><tt>bs->var_dep().size())<tt><i>)</i> output.
 	 * @param  out  [in/out] If <tt>out != NULL</tt> any and all output will be sent here.  If
 	 *              <tt>out == NULL</tt> then no output will be produced.
 	 *
@@ -114,16 +125,16 @@ public:
 	 * The behavior of this method depends on a set of options and the input arguments.
 	 * <ul>
 	 * <li> <b><tt>throw_exception(bool)</tt></b>:
-	 * If <tt>throw_exception()</tt> == true</tt>, then if any of the objects within
-	 * this function throw exceptions, these exceptions will be be thrown clean
-	 * out of this function for the caller to handle.  If <tt>throw_exception()</tt> == false</tt>,
-	 * then if any object throws an exception, the exception is caught and this this function will
-	 * return <tt>false</tt>.  In any case an error message will be printed
-	 * to <tt>*out</tt> (if <tt>out != NULL</tt) before leaving the function (by \c return or \c throw).
+	 *      If <tt>throw_exception()</tt> == true</tt>, then if any of the objects within
+	 *      this function throw exceptions, these exceptions will be be thrown clean
+	 *      out of this function for the caller to handle.  If <tt>throw_exception()</tt> == false</tt>,
+	 *      then if any object throws an exception, the exception is caught and this this function will
+	 *      return <tt>false</tt>.  In any case an error message will be printed
+	 *      to <tt>*out</tt> (if <tt>out != NULL</tt) before leaving the function (by \c return or \c throw).
 	 * <li> <b><tt>dump_all(bool)</tt></b>:
-	 * If <tt>dump_all() == true</tt> then all of the computed quantities will but dumped to \c out.
-	 * Note that this is a useful option for initial debugging of small systems but not a good idea for
-	 * larger systems as it will result in an excessive amount of output.
+	 *      If <tt>dump_all() == true</tt> then all of the computed quantities will but dumped to \c out.
+	 *      Note that this is a useful option for initial debugging of small systems but not a good idea for
+	 *      larger systems as it will result in an excessive amount of output.
 	 * <li> ToDo: Add rest of options!
 	 * </ul>
 	 */
@@ -136,9 +147,10 @@ public:
 		,const MatrixWithOp             *D
 		,const MatrixWithOp             *GcUP
 		,const MatrixWithOp             *GhUP
-		,bool                           print_all_warnings
 		,std::ostream                   *out
 		);
+
+	//@}
 
 }; // end class BasisSystemTester
 

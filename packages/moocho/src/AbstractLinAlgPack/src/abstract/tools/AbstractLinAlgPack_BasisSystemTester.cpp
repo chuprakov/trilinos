@@ -56,7 +56,6 @@ bool BasisSystemTester::test_basis_system(
 	,const MatrixWithOp             *D
 	,const MatrixWithOp             *GcUP
 	,const MatrixWithOp             *GhUP
-	,bool                           print_all_warnings
 	,std::ostream                   *out
 	)
 {
