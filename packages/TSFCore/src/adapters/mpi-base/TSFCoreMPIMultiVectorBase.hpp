@@ -10,6 +10,7 @@
 #include "TSFCoreMPIVectorSpaceBase.hpp"
 #include "TSFCoreExplicitMultiVectorView.hpp"
 #include "RTOpCppToMPI.hpp"
+#include "RTOp_parallel_helpers.h"
 #include "WorkspacePack.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "Teuchos_Time.hpp"
