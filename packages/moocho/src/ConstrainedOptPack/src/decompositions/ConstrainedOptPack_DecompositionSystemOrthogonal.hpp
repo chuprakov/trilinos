@@ -44,7 +44,8 @@ namespace ConstrainedOptimizationPack {
                                                        [ -D' ]
      =  = Gh(var_dep,:)' -  = Gh(var_indep,:)'*D'
  \endverbatim
- * The solution of the
+ * See the matrix subclass <tt>MatrixDecompRangeOrthog</tt> for
+ * details on how linear systems with <tt>R</tt> are solved for.
  *
  * For now the copy constructor and the assignment operator are not defined.
  */

@@ -29,7 +29,9 @@ namespace ConstrainedOptimizationPack {
 
  R = C*(I + D*D')
 
- inv(R) = (I - D * inv(I + D'*D) * D') * inv(C)
+ inv(R) =  inv(I + D*D') * inv(C)
+
+        = (I - D * inv(I + D'*D) * D') * inv(C)
                        \______/
                           S
  \endverbatim
