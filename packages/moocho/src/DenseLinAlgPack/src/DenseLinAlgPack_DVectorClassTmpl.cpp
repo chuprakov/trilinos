@@ -52,6 +52,6 @@ void LinAlgPack::assert_vs_sizes(size_type size1, size_type size2)
 {
 	THROW_EXCEPTION(
 		size1 != size2, std::length_error
-		,"assert_vs_sizes(...) : Error, Sizes of vector regions must be the same.\n");
+		,"assert_vs_sizes(...) : Error, size1 = " << size1 << " != size2 = " << size2 << "\n");
 }
 #endif
