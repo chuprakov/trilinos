@@ -58,10 +58,11 @@ TSFPreconditioner SimpleBlockPreconditionerFactory
   TSFLinearOperator X;
   TSFLinearOperator FinvBt = Finv*Bt;
   
-  if (C.isZeroOperator()) X = C+B*FinvBt;  //DO WE WANT A MINUS C?
+  if (C.isZeroOperator()) X = B*FinvBt;  //DO WE WANT A MINUS C?
   else
   { 
-  X = B*Finv*Bt;
+  cerr << "Using C stabilizer" << endl;
+  X = C+B*Finv*Bt;
   }
 
   // Make identity matrices on the right spaces
