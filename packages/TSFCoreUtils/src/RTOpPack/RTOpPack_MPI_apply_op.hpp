@@ -353,9 +353,9 @@ void RTOpPack::MPI_apply_op(
   ,const int                                root_rank
 	,const int                                num_cols
 	,const int                                num_vecs
-  ,const struct SubVectorT<Scalar>          sub_vecs[]
+  ,const SubVectorT<Scalar>                 sub_vecs[]
 	,const int                                num_targ_vecs
-  ,const struct MutableSubVectorT<Scalar>   sub_targ_vecs[]
+  ,const MutableSubVectorT<Scalar>          sub_targ_vecs[]
 	,ReductTarget*                            reduct_objs[]
   )
 {
