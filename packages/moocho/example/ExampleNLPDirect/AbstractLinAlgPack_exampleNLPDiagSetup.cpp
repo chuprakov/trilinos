@@ -12,7 +12,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/tsfcore/VectorSpaceTSFCore.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
-#include "TSFCoreSerialVectorSpaceDecl.hpp"
+#include "TSFCoreSerialVectorSpaceStd.hpp"
 #include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
 #include "Epetra_Map.h"
@@ -107,7 +107,7 @@ int AbstractLinAlgPack::exampleNLPDiagSetup(
 		// Use serial vectors
 		//
 		if( use_tsf ) {
-			*vec_space = Teuchos::rcp(new VectorSpaceTSFCore(Teuchos::rcp(new TSFCore::SerialVectorSpace<value_type>(*n))));
+			*vec_space = Teuchos::rcp(new VectorSpaceTSFCore(Teuchos::rcp(new TSFCore::SerialVectorSpaceStd<value_type>(*n))));
 		}
 		else {
 			*vec_space = Teuchos::rcp(new AbstractLinAlgPack::VectorSpaceSerial(*n));
