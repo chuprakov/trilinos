@@ -1411,9 +1411,9 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			, vo_(), &act_set_, &v_()
 			, x, iter, num_adds, num_drops
 			);
-
 			
 	set_multipliers( act_set_, v_(), mu, lambda, lambda_breve );
+
 	// Print Solution x, lambda and mu
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		switch(solve_return) {

@@ -60,12 +60,14 @@ void set_complementarity(
 	comp_err->resize( gamma.size() );
 	*comp_err = 0.0;
 	const SparseLinAlgPack::SpVector::difference_type o = gamma.offset();
-	for( SparseLinAlgPack::SpVector::const_iterator itr = gamma.begin(); itr != gamma.end(); ++itr ) {
-		const LinAlgPack::size_type i = itr->indice() + o;
-		if( itr->value() > 0 && uplo == BLAS_Cpp::upper )
-			(*comp_err)(i) = itr->value() * constr_resid(i);
-		else if( itr->value() < 0 && uplo == BLAS_Cpp::lower )
-			(*comp_err)(i) = itr->value() * constr_resid(i);
+	if( gamma.nz() ) {
+		for( SparseLinAlgPack::SpVector::const_iterator itr = gamma.begin(); itr != gamma.end(); ++itr ) {
+			const LinAlgPack::size_type i = itr->indice() + o;
+			if( itr->value() > 0 && uplo == BLAS_Cpp::upper )
+				(*comp_err)(i) = itr->value() * constr_resid(i);
+			else if( itr->value() < 0 && uplo == BLAS_Cpp::lower )
+				(*comp_err)(i) = itr->value() * constr_resid(i);
+		}
 	}
 }
 
@@ -251,7 +253,6 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 			<< "\n*** Begin checking QP optimality conditions\n"
 			<< "\nThe solution type is " << solution_type_str(solution_type) << endl;
 
-
 	bool force_opt_error_check
 		= solution_type==qps_t::OPTIMAL_SOLUTION || solution_type==qps_t::DUAL_FEASIBLE_POINT;
 	const bool force_inequality_error_check
@@ -260,6 +261,10 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		= solution_type!=qps_t::SUBOPTIMAL_POINT;
 	const bool force_complementarity_error_check
 		= solution_type!=qps_t::SUBOPTIMAL_POINT;
+
+	// Check some postconditions
+	if(nu) nu->assert_valid_and_sorted();
+	if(mu) mu->assert_valid_and_sorted();
 
 	////////////////////////////
 	// Checking d(L)/d(d) = 0
@@ -286,8 +291,10 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 			*out << "g + G*d =\n" << u();
 	}
 
-	Vp_V( &u(), (*nu)() );
-	scale += norm_inf((*nu)());
+	if( nu ) {
+		Vp_V( &u(), (*nu)() );
+		scale += norm_inf((*nu)());
+	}
 
 	if(E) {
 		V_MtV( &t, *E, trans_not(trans_E), (*mu)() );
@@ -391,13 +398,14 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	if(!comp_v.comp_less( u(), 0.0, opt_warning_tol()
 		, force_inequality_error_check ? feas_error_tol() : really_big_error_tol
 		, print_all_warnings, out )) return false;
-	if(out)
-		*out
-			<< "\nChecking nuL(i) * (dL - d)(i) = 0  ...\n";
-	set_complementarity( *nu, u(), lower, &c );
-	if(out && print_vectors)
-		*out
-			<< "nuL(i) * (dL - d)(i) =\n" << c();
+	if(nu) {
+		if(out)
+			*out
+				<< "\nChecking nuL(i) * (dL - d)(i) = 0  ...\n";
+		set_complementarity( *nu, u(), lower, &c );
+		if(out && print_vectors)
+			*out
+				<< "nuL(i) * (dL - d)(i) =\n" << c();
 		if(out) {
 			*out
 				<< "Comparing:\n"
@@ -406,6 +414,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		if(!comp_v.comp( c(), 0.0, opt_warning_tol()
 			, force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
 			, print_all_warnings, out )) return false;
+	}
 
 	///////////////////////////////////
 	// d - dU <= 0
@@ -426,13 +435,14 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	if(!comp_v.comp_less( u(), 0.0, opt_warning_tol()
 		, force_inequality_error_check ? feas_error_tol() : really_big_error_tol
 		, print_all_warnings, out )) return false;
-	if(out)
-		*out
-			<< "\nChecking nuU(i) * (d - dU)(i) = 0  ...\n";
-	set_complementarity( *nu, u(), upper, &c );
-	if(out && print_vectors)
-		*out
-			<< "nuU(i) * (d - dU)(i) =\n" << c();
+	if(nu) {
+		if(out)
+			*out
+				<< "\nChecking nuU(i) * (d - dU)(i) = 0  ...\n";
+		set_complementarity( *nu, u(), upper, &c );
+		if(out && print_vectors)
+			*out
+				<< "nuU(i) * (d - dU)(i) =\n" << c();
 		if(out) {
 			*out
 				<< "Comparing:\n"
@@ -441,6 +451,7 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		if(!comp_v.comp( c(), 0.0, opt_warning_tol()
 			, force_complementarity_error_check ? comp_error_tol() : really_big_error_tol
 			, print_all_warnings, out )) return false;
+	}
 
 	if( E ) {
 
