@@ -1,4 +1,4 @@
-// //////////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////
 // MeritFuncCalcNLP.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -18,15 +18,15 @@
 
 #include "MeritFuncCalc.h"
 #include "MeritFuncNLP.h"
-#include "Misc/include/StandardAggregationMacros.h"
+#include "StandardAggregationMacros.h"
 
 namespace ConstrainedOptimizationPack {
 
 ///
-/** Adds the ability to compute phi(f(x), c(x)) at x
-  * directly instead of having to compute f, and c first.
-  * This class uses an aggregate NLP to perform the computations of f(x)
-  * and c(x).
+/** Adds the ability to compute <tt>phi(f(x),c(x),h(x))</tt> at \c x
+  * directly instead of having to compute f, c and h first.
+  * This class uses an aggregate NLP to perform the computations of \a f(x)
+  * \a c(x) and \a h(x).
   */
 class MeritFuncCalcNLP : public MeritFuncCalc {
 public:
@@ -40,21 +40,23 @@ public:
 	///
 	MeritFuncCalcNLP( const MeritFuncNLP* phi = 0, const NLP* nlp = 0 );
 
-	// ////////////////////////////////////////////
-	// Overridden from MeritFuncCalc
+	/** @name Overridden from MeritFuncCalc */
+	//@{
 
 	///
 	/** Return the value of the merit function at x.
-	  * Here phi(x) is calculated directly using the nlp.
-	  */
-	value_type operator()(const VectorSlice& x) const;
+	 * Here phi(x) is calculated directly using the nlp.
+	 */
+	value_type operator()(const VectorWithOp& x) const;
 
 	/// Calls phi().deriv() on phi.
 	value_type deriv() const;
 
-	/// Calls phi().print_merit_func(....).
-	void print_merit_func(std::ostream& out
-		, const std::string& leading_str) const;
+	/// Calls <tt>phi().print_merit_func()</tt>.
+	void print_merit_func(
+		std::ostream& out, const std::string& leading_str ) const;
+
+	//@}
 
 };	// end class MeritFuncCalcNLP
 

@@ -1,4 +1,4 @@
-// //////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////
 // MeritFuncNLPL1.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -24,19 +24,21 @@ namespace ConstrainedOptimizationPack {
 
 ///
 /** The L1 merit function.
-  *
-  * phi(x) = f(x) + mu * norm(c(x),1)
-  *
-  * Dphi(x_k,d_k) = Gf_k' * d_k - mu * norm(c_k,1)
-  *
-  * Note that the definition of Dphi(x_k,d_k) assumes
-  * that Gc_k'*d_k + c_k = 0.  In otherwords, d_k must
-  * satisfiy the linearized equality constraints at
-  * at x_k.
-  *
-  * Implicit copy constructor and assignment operators
-  * are allowed.
-  */
+ *
+ * phi(x) = f(x) + mu * norm(c(x),1)
+ *
+ * Dphi(x_k,d_k) = Gf_k' * d_k - mu * norm(c_k,1)
+ *
+ * Note that the definition of Dphi(x_k,d_k) assumes
+ * that Gc_k'*d_k + c_k = 0.  In otherwords, d_k must
+ * satisfiy the linearized equality constraints at
+ * at x_k.
+ *
+ * ToDo: Add a term for general inequalities hl <= h <= hu
+ *
+ * Implicit copy constructor and assignment operators
+ * are allowed.
+ */
 class MeritFuncNLPL1
 	: public MeritFuncNLP
 	, public MeritFuncNLPDirecDeriv
@@ -47,34 +49,52 @@ public:
 	/// Initializes deriv() = 0 and mu() = 0
 	MeritFuncNLPL1();
 
-	// ////////////////////////////////
-	// Overridden from MeritFuncNLP
+	/** @name Overridden from MeritFuncNLP */
+	//@{
 
 	///
-	value_type value(value_type f, const VectorSlice& c) const;
+	value_type value(
+		value_type             f
+		,const VectorWithOp    *c
+		,const VectorWithOp    *h
+		,const VectorWithOp    *hl
+		,const VectorWithOp    *hu
+		) const;
 
 	///
 	value_type deriv() const;
 
 	///
-	void print_merit_func(std::ostream& out
-		, const std::string& leading_str) const;
+	void print_merit_func(
+		std::ostream& out, const std::string& leading_str ) const;
 
-	// ////////////////////////////////
-	// Overridden from MeritFuncNLPDirecDeriv
+	//@}
+
+	/** @name Overridden from MeritFuncNLPDirecDeriv */
+	//@{
 
 	///
-	value_type calc_deriv( const VectorSlice& Gf_k, const VectorSlice& c_k
-		, const VectorSlice& d_k );
+	value_type calc_deriv(
+		const VectorWithOp    &Gf_k
+		,const VectorWithOp   *c_k
+		,const VectorWithOp   *h_k
+		,const VectorWithOp   *hl
+		,const VectorWithOp   *hu
+		,const VectorWithOp   &d_k
+		);
 
-	// ////////////////////////////////
-	// Overridden from MeritFuncPenaltyParam
+	//@}
+
+	/** @name Overridden from MeritFuncPenaltyParam */
+	//@{
 
 	///
 	void mu(value_type mu);
 
 	///
 	value_type mu() const;
+
+	//@}
 
 private:
 	value_type deriv_;

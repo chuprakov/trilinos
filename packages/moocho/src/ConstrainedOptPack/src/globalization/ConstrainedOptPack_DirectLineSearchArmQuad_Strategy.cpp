@@ -17,10 +17,9 @@
 #include <iomanip>
 #include <sstream>
 
-#include "../include/DirectLineSearchArmQuad_Strategy.h"
-#include "../include/MeritFuncCalc1D.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "Misc/include/check_nan_inf.h"
+#include "ConstrainedOptimizationPack/include/DirectLineSearchArmQuad_Strategy.h"
+#include "ConstrainedOptimizationPack/include/MeritFuncCalc1D.h"
+#include "RTOpPack/include/check_nan_inf.h"
 
 namespace ConstrainedOptimizationPack {
 inline value_type min(value_type v1, value_type v2) {
@@ -58,11 +57,6 @@ bool ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::do_line_sear
 {
 	using std::setw;
 	using std::endl;
-
-	using NumericHelperPack::is_nan;
-	
-	using LinAlgPack::Vp_StV;
-	using LinAlgOpPack::assign;
 
 	if(*alpha_k < 0.0) {
 		throw std::logic_error(	"DirectLineSearchArmQuad_Strategy::do_line_search(): "
@@ -120,7 +114,7 @@ bool ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy::do_line_sear
 					<< setw(w)			<< ((*phi_kp1)-frac_phi)	<< endl;
 		
 		// Check that this is a number.
-		if( is_nan( *phi_kp1 ) ) {
+		if( RTOp_is_nan( *phi_kp1 ) ) {
 			// Cut back the step to min_frac * alpha_k
 			*alpha_k = min_frac()*(*alpha_k);
 			best_alpha = 0.0;

@@ -1,4 +1,4 @@
-// //////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////
 // MeritFuncNLPModL1.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -13,33 +13,36 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "../include/MeritFuncNLPModL1.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-
-namespace {
-typedef LinAlgPack::value_type	value_type;
-using LinAlgPack::VectorSlice;
-using LinAlgPack::Vector;
-
-// Compute the term sum( mu(j) * abs(c(j)), j = 1,...,m )
-value_type local_constr_term( const Vector& mu, const VectorSlice& c
-	, const char func_name[] );
-
-}	// end namespace
+#include "ConstrainedOptimizationPack/include/MeritFuncNLPModL1.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "ThrowException.h"
 
 namespace ConstrainedOptimizationPack {
 
 MeritFuncNLPModL1::MeritFuncNLPModL1()
-	: deriv_(0.0), mu_(0.0)
+	: deriv_(0.0)
 {}
 
 // Overridden from MeritFuncNLP
 
-value_type MeritFuncNLPModL1::value(value_type f, const VectorSlice& c) const
+value_type MeritFuncNLPModL1::value(
+	value_type             f
+	,const VectorWithOp    *c
+	,const VectorWithOp    *h
+	,const VectorWithOp    *hl
+	,const VectorWithOp    *hu
+	) const
 {
+	THROW_EXCEPTION(
+		h || hl || hu, std::logic_error
+		,"MeritFuncNLPModL1::value(...) : Error! general inequalities are not supported!" );
+/*
 	using LinAlgPack::norm_1;
 	return f + local_constr_term( mu_, c, "calc_deriv" );
+*/
+	assert(0); // ToDo: Write a reduction operator for the above operation
+	return 0.0;
 }
 
 value_type MeritFuncNLPModL1::deriv() const
@@ -47,8 +50,9 @@ value_type MeritFuncNLPModL1::deriv() const
 	return deriv_;
 }
 
-void MeritFuncNLPModL1::print_merit_func(std::ostream& out
-	, const std::string& L ) const
+void MeritFuncNLPModL1::print_merit_func(
+	std::ostream& out, const std::string& L
+	) const
 {
 	out
 		<< L << "*** Define a modified L1 merit funciton that uses different\n"
@@ -60,32 +64,47 @@ void MeritFuncNLPModL1::print_merit_func(std::ostream& out
 
 // Overridden from MeritFuncNLPDirecDeriv
 
-value_type MeritFuncNLPModL1::calc_deriv( const VectorSlice& Gf_k, const VectorSlice& c_k
-	, const VectorSlice& d_k )
+value_type MeritFuncNLPModL1::calc_deriv(
+	const VectorWithOp    &Gf_k
+	,const VectorWithOp   *c_k
+	,const VectorWithOp   *h_k
+	,const VectorWithOp   *hl
+	,const VectorWithOp   *hu
+	,const VectorWithOp   &d_k
+	)
 {
+	THROW_EXCEPTION(
+		h_k || hl || hu, std::logic_error
+		,"MeritFuncNLPModL1::value(...) : Error! general inequalities are not supported!" );
+/*
 	using LinAlgPack::dot; using LinAlgPack::norm_1;
 	return deriv_ = dot( Gf_k, d_k ) - local_constr_term( mu_, c_k, "calc_deriv" );
+*/
+	assert(0); // ToDo: Write a reduction operator for the above operation
+	return 0.0;
 }
 
 // Overridden from MeritFuncPenaltyParam
 
-void MeritFuncNLPModL1::resize(size_type n)
+void MeritFuncNLPModL1::set_space_c( const VectorSpace::space_ptr_t& space_c )
 {
-	mu_.resize(n);
-	mu_ = 0.0;
+	mu_  = space_c->create_member();
+	*mu_ = 0.0;
 }
 
-VectorSlice MeritFuncNLPModL1::mu()
+VectorWithOpMutable& MeritFuncNLPModL1::set_mu()
 {
-	return mu_();
+	return *mu_;
 }
 
-const VectorSlice MeritFuncNLPModL1::mu() const
+const VectorWithOp& MeritFuncNLPModL1::get_mu() const
 {
-	return mu_();
+	return *mu_;
 }
 
 }	// end namespace ConstrainedOptimizationPack
+
+/* ToDo: Write a reduction operator for the following!
 
 namespace {
 
@@ -111,3 +130,5 @@ value_type local_constr_term( const Vector& mu, const VectorSlice& c
 }
 
 }	// end namespace
+
+*/

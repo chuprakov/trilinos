@@ -13,30 +13,38 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "../include/MeritFuncCalc1DQuadratic.h"
-#include "../include/MeritFuncCalc.h"
-#include "LinAlgPack/include/VectorOp.h"
+#include "ConstrainedOptimizationPack/include/MeritFuncCalc1DQuadratic.h"
+#include "ConstrainedOptimizationPack/include/MeritFuncCalc.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/VectorStdOps.h"
+#include "ThrowException.h"
 
 namespace ConstrainedOptimizationPack {
 
-MeritFuncCalc1DQuadratic::MeritFuncCalc1DQuadratic( const MeritFuncCalc& phi, size_type p
-		, const VectorSlice d[], VectorSlice* x )
+MeritFuncCalc1DQuadratic::MeritFuncCalc1DQuadratic(
+	const MeritFuncCalc&      phi
+	,size_type                p
+	,const_VectorWithOp_ptr   d[]
+	,VectorWithOpMutable*     x
+	)
 	: phi_(phi), p_(p), x_(x)
 {
-	if( p < 1 || 2 < p )
-		throw std::invalid_argument( "MeritFuncCalc1DQuadratic::MeritFuncCalc1DQuadratic(...) : "
-			"Error, p must be in the range 1 <= p <= 2"								);
+	THROW_EXCEPTION(
+		!(1 <= p && p <= 2 ), std::invalid_argument
+		,"MeritFuncCalc1DQuadratic::MeritFuncCalc1DQuadratic(...) : Error! "
+		"p = " << p << " must be in the range 1 <= p <= 2"
+		);
 	for( size_type i = 0; i <= p; ++i )
-		const_cast<VectorSlice&>(d_[i]).bind(const_cast<VectorSlice&>(d[i]));
+		d_[i] = d[i];
 }
 
 value_type MeritFuncCalc1DQuadratic::operator()(value_type alpha) const
 {
-	using LinAlgPack::Vp_StV;
-	*x_ = d_[0];
+	using AbstractLinAlgPack::Vp_StV;
+	*x_ = *d_[0];
 	value_type alpha_i = alpha;
 	for( size_type i = 1; i <= p_; ++i, alpha_i *= alpha ) {
-		Vp_StV( x_, alpha_i, d_[i] );
+		Vp_StV( x_, alpha_i, *d_[i] );
 	}
 	return phi_( *x_ );
 }
@@ -46,8 +54,9 @@ value_type  MeritFuncCalc1DQuadratic::deriv() const
 	return phi_.deriv();
 }
 
-void MeritFuncCalc1DQuadratic::print_merit_func( std::ostream& out
-	, const std::string& L ) const
+void MeritFuncCalc1DQuadratic::print_merit_func(
+	std::ostream& out, const std::string& L
+	) const
 {
 	out	<< L << "*** MeritFuncCalc1DQuadratic\n"
 		<< L << "x = xo + alpha*d[1] + alpha^2*d[2]\n";

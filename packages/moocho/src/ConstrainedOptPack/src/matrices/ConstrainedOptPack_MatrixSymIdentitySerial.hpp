@@ -39,7 +39,7 @@ public:
 	MatrixSymIdentitySerial( size_type size = 1, value_type scale = 1.0 );
 
 	///
-	void initalize( size_type size, value_type scale );
+	void initialize( size_type size, value_type scale );
 
 	//@}
 
@@ -88,13 +88,14 @@ public:
 
 	//@}
 
-	/** @name Overridden from MatrixSymNonsingular */
+	/** @name Overridden from MatrixSymNonsingularSerial */
 	//@{
 
 	///
 	void M_StMtInvMtM(
 		sym_gms* sym_gms_lhs, value_type alpha
-		, const MatrixWithOp& mwo, BLAS_Cpp::Transp mwo_trans, EMatrixDummyArg
+		,const MatrixWithOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
+		,EMatrixDummyArg
 		) const;
 
 	//@}

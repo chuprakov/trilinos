@@ -40,7 +40,6 @@ class IdentZeroVertConcatMatrix;
 
 // abstract classes
 
-/*
 class MatrixSymSecantUpdateable;
 class MatrixSymAddDelUpdateable;
 class MatrixSymAddDelUpdateableWithOpFactorized;
@@ -53,8 +52,7 @@ class MeritFuncNLPDirecDeriv;
 class MeritFuncPenaltyParam;
 class MeritFuncPenaltyParams;
 class DirectLineSearch_Strategy;
-class ZVarReductMatrix;
-*/
+//class ZVarReductMatrix;
 
 // concrete subclasses
 

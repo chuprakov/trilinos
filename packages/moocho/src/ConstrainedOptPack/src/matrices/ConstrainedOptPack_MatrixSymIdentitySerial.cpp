@@ -33,7 +33,7 @@ namespace ConstrainedOptimizationPack {
 
 MatrixSymIdentitySerial::MatrixSymIdentitySerial(size_type size, value_type scale)
 {
-	initialize(size,scale);
+	this->initialize(size,scale);
 }
 
 void MatrixSymIdentitySerial::initialize(size_type size, value_type scale)
@@ -87,11 +87,12 @@ void MatrixSymIdentitySerial::V_InvMtV(
 // Overridden from MatrixSymNonsingular
 
 void MatrixSymIdentitySerial::M_StMtInvMtM(
-	  sym_gms* S, value_type a, const MatrixWithOp& B
-	, BLAS_Cpp::Transp B_trans, EMatrixDummyArg dummy_arg
+	  sym_gms* S, value_type a
+	  ,const MatrixWithOpSerial& B, BLAS_Cpp::Transp B_trans
+	  ,EMatrixDummyArg dummy_arg
 	) const
 {
-	MatrixSymNonsingular::M_StMtInvMtM(S,a,B,B_trans,dummy_arg); return;
+	this->MatrixSymNonsingularSerial::M_StMtInvMtM(S,a,B,B_trans,dummy_arg);
 	// ToDo: Implement by calling S = b*S + scale*a*op(B')*op(B)
 }
 

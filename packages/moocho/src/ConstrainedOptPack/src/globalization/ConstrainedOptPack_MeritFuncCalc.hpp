@@ -1,4 +1,4 @@
-// //////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////
 // MeritFuncCalc.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -23,9 +23,9 @@ namespace ConstrainedOptimizationPack {
 ///
 /** Abstract iterface for n-D merit functions {abstract}.
   *
-  * Used to compute the value of the merit at a point x (phi(x)) and
-  * to retrieve the derivative (phi.deriv()) along some direction d from
-  * some base point xo.
+  * Used to compute the value of the merit at a point \a x (\c phi(x)) and
+  * to retrieve the derivative (\c phi.deriv()) along some direction \a d from
+  * some base point \a xo.
   */
 class MeritFuncCalc  {
 public:
@@ -34,16 +34,16 @@ public:
 	virtual ~MeritFuncCalc() {}
 
 	///
-	/** Return the value of the merit function at x.
+	/** Return the value of the merit function at \a x.
 	  */
-	virtual value_type operator()(const VectorSlice& x) const= 0;
+	virtual value_type operator()(const VectorWithOp& x) const= 0;
 
 	/// Calls value(d_k) on aggregate merit_func.
 	virtual value_type deriv() const = 0;
 
 	/// Print what this merit function is
-	virtual void print_merit_func(std::ostream& out
-		, const std::string& leading_str) const = 0;
+	virtual void print_merit_func(
+		std::ostream& out, const std::string& leading_str ) const = 0;
 
 };	// end class MeritFuncCalc
 

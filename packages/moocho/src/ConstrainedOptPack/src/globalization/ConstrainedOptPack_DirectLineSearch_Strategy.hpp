@@ -1,4 +1,4 @@
-// //////////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////////
 // DirectLineSearch_Strategy.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -24,10 +24,11 @@
 namespace ConstrainedOptimizationPack {
 
 ///
-/** This is the interface for strategy objects that
-  * perform a line search from an initial point along
-  * a search direction given a merit function {abstract}.
-  */
+/** Abstract strategy interface for 1D line searches {abstract}.
+ *
+ * This is the interface for strategy objects that perform a line search
+ * from an initial point along a search direction given a merit function.
+ */
 class DirectLineSearch_Strategy {
 public:
 
@@ -54,46 +55,52 @@ public:
 
 	///
 	/** Called to perform the linesearch.
-	  *
-	  * This operaion  computes the
-	  * approximate minimum to a merit function along a search direcation.
-	  * More specifically the following problem is approximatly solved:\\
-	  *
-	  * min  phi(alpha)  s.t. alpha = [0, alpha_upper]\\
-	  *
-	  * Actually, if the initial alpha satisfys an internal descent requirement, then
-	  * it will be choosen over smaller values of alpha that may result in a 
-	  * greater reduction in the given merit funciton.
-	  *
-	  * If the maximum number of iterations is exceeded then the subclass will return
-	  * false and will return the values of alpha_k, x_kp1, and phi_kp1 for the 
-	  * lowest value of phi_kp1 found, and the last call to phi.value(x) will
-	  * be this best x_kp1.
-	  *
-	  * Preconditions: \begin{itemize}
-	  * \item #phi.deriv(d_k) < 0# (throw NotDescentDirection)
-	  * \end{itemize}
-	  *
-	  * @param	phi		[I]		The merit function object that will compute #phi.value(alpha)#
-	  *							and the descent derivative.
-	  * @param	phi_k	[I]		The value of #phi.value(0)#.  Not computed internally
-	  *							for the sake of efficency.
-	  * @param	alpha_k	[I/O]	The initial #alpha_k# to try on input (usually 1).
-	  *							On output #alpha_k# is the accepted value for a successful
-	  *							line search, or it will be the alpha_k for the minimum phi
-	  *							found for a line search failure.
-	  * @param	phi_kp1	[I/O]	Merit function at new point.
-	  *							On input it must be the value of #phi.value(alpha_k)#
-	  *							and on output is set to #phi.value(alpha_k)#.
-	  *	@parm	out		[O]		If != 0 then output is sent to this stream to record
-	  *							the progress of the linesearch iterations.  The default
-	  *							is zero.
-	  *
-	  * @return					true: Successful line search; false: Line search failure.
-	  */
-	virtual bool do_line_search( const MeritFuncCalc1D& phi, value_type phi_k
-		, value_type* alpha_k, value_type* phi_kp1
-		, std::ostream* out = 0 ) = 0;
+	 *
+	 * This operaion  computes the
+	 * approximate minimum to a merit function along a search direcation.
+	 * More specifically the following problem is approximatly solved:<br>
+	 *
+	 * min  phi(alpha)  s.t. alpha = [0, alpha_upper]<br>
+	 *
+	 * Actually, if the initial alpha satisfys an internal descent requirement, then
+	 * it will be choosen over smaller values of alpha that may result in a 
+	 * greater reduction in the given merit funciton.
+	 *
+	 * If the maximum number of iterations is exceeded then the subclass will return
+	 * false and will return the values of alpha_k, x_kp1, and phi_kp1 for the 
+	 * lowest value of phi_kp1 found, and the last call to phi.value(x) will
+	 * be this best x_kp1.
+	 *
+	 * Preconditions: \begin{itemize}
+	 * \item <tt>phi.deriv(d_k) < 0</tt> (throw NotDescentDirection)
+	 * \end{itemize}
+	 *
+	 * @param  phi    [in] The merit function object that will compute <tt>phi.value(alpha)</tt>
+	 *                and the descent derivative.
+	 * @param  phi_k  [in] The value of <tt>phi.value(0)</tt>.  Not computed internally
+	 *                for the sake of efficency.
+	 * @param  alpha_k
+	 *                [in/out] The initial <tt>alpha_k</tt> to try on input (usually 1).
+	 *                On output <tt>alpha_k</tt> is the accepted value for a successful
+	 *                line search, or it will be the alpha_k for the minimum phi
+	 *                found for a line search failure.
+	 * @param  phi_kp1
+	 *                [in/out] Merit function at new point.
+	 *                On input it must be the value of <tt>phi.value(alpha_k)</tt>
+	 *                and on output is set to <tt>phi.value(alpha_k)</tt>.
+	 * @param  out    [in/out] If != 0 then output is sent to this stream to record
+	 *                the progress of the linesearch iterations.  The default
+	 *                is zero.
+	 *
+	 * @return \c true: Successful line search; \c false: Line search failure.
+	 */
+	virtual bool do_line_search(
+		const MeritFuncCalc1D   &phi
+		,value_type             phi_k
+		,value_type             *alpha_k
+		,value_type             *phi_kp1
+		,std::ostream           *out      = 0
+		) = 0;
 
 	///
 	/** Print the direct line search algorithm.

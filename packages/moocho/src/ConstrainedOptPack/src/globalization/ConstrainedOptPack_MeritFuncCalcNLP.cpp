@@ -22,18 +22,30 @@ MeritFuncCalcNLP::MeritFuncCalcNLP( const MeritFuncNLP* phi, const NLP* nlp )
 	: phi_(phi), nlp_(nlp)
 {}
 
-value_type MeritFuncCalcNLP::operator()(const VectorSlice& x) const {
+value_type MeritFuncCalcNLP::operator()(const VectorWithOp& x) const
+{
+	const size_type
+		m  = nlp().m(),
+		mI = nlp().mI();
 	nlp().calc_f(x);
-	nlp().calc_c(x,false);
-	return phi().value( nlp().f(), nlp().c() );
+	if(m)  nlp().calc_c(x,false);
+	if(mI) nlp().calc_h(x,false);
+	return phi().value(
+		nlp().f()
+		,m  ? &nlp().c()  : NULL
+		,mI ? &nlp().h()  : NULL
+		,mI ? &nlp().hl() : NULL
+		,mI ? &nlp().hu() : NULL
+		);
 }
 
 value_type MeritFuncCalcNLP::deriv() const {
 	return phi().deriv();
 }
 
-void MeritFuncCalcNLP::print_merit_func(std::ostream& out
-	, const std::string& L) const
+void MeritFuncCalcNLP::print_merit_func(
+	std::ostream& out, const std::string& L
+	) const
 {
 	out	<< L << "*** MeritFuncCalcNLP\n"
 		<< L << "f = f(x), c = c(x)\n";

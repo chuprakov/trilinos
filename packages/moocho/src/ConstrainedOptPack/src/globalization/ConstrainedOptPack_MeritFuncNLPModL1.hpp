@@ -1,4 +1,4 @@
-// //////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 // MeritFuncNLPModL1.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -19,7 +19,6 @@
 #include "MeritFuncNLP.h"
 #include "MeritFuncNLPDirecDeriv.h"
 #include "MeritFuncPenaltyParams.h"
-#include "LinAlgPack/include/VectorClass.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -48,21 +47,29 @@ public:
 	/// Initializes deriv() = 0 and mu() = 0
 	MeritFuncNLPModL1();
 
-	// ////////////////////////////////
-	// Overridden from MeritFuncNLP
+	/** @name Overridden from MeritFuncNLP */
+	//@{
 
 	///
-	value_type value(value_type f, const VectorSlice& c) const;
+	value_type value(
+		value_type             f
+		,const VectorWithOp    *c
+		,const VectorWithOp    *h
+		,const VectorWithOp    *hl
+		,const VectorWithOp    *hu
+		) const;
 
 	///
 	value_type deriv() const;
 
 	///
-	void print_merit_func(std::ostream& out
-		, const std::string& leading_str) const;
+	void print_merit_func(
+		std::ostream& out, const std::string& leading_str ) const;
 
-	// /////////////////////////////////////////////
-	// Overridden from MeritFuncNLPDirecDeriv
+	//@}
+
+	/** @name Overridden from MeritFuncNLPDirecDeriv */
+	//@{
 
 	///
 	/** If the value n passed to resize(n) does not
@@ -70,24 +77,34 @@ public:
 	  * an exception #MeritFuncNLP::InvalidInitialization#
 	  * will be thrown.
 	  */
-	value_type calc_deriv( const VectorSlice& Gf_k, const VectorSlice& c_k
-		, const VectorSlice& d_k );
+	value_type calc_deriv(
+		const VectorWithOp    &Gf_k
+		,const VectorWithOp   *c_k
+		,const VectorWithOp   *h_k
+		,const VectorWithOp   *hl
+		,const VectorWithOp   *hu
+		,const VectorWithOp   &d_k
+		);
+	
+	//@}
 
-	// //////////////////////////////////////////
-	// Overridden from MeritFuncPenaltyParams
+	/** @name Overridden from MeritFuncPenaltyParams */
+	//@{
 
 	///
-	void resize( size_type n );
+	void set_space_c( const VectorSpace::space_ptr_t& space_c );
 
 	///
-	VectorSlice mu();
+	VectorWithOpMutable& set_mu();
 
 	///
-	const VectorSlice mu() const;
+	const VectorWithOp& get_mu() const;
+
+	//@}
 
 private:
-	value_type	deriv_;
-	Vector		mu_;
+	value_type                   deriv_;
+	VectorSpace::vec_mut_ptr_t   mu_;
 
 };	// end class MeritFuncNLPModL1
 

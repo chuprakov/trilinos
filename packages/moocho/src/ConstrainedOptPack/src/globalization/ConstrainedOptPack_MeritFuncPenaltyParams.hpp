@@ -17,6 +17,7 @@
 #define MERIT_FUNC_PENALTY_PARAMS_H
 
 #include "ConstrainedOptimizationPackTypes.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -34,19 +35,21 @@ public:
 	///
 	virtual ~MeritFuncPenaltyParams() {}
 
+	/** @name To be overridden by subclasses */
+	//@{
+
 	///
-	/** Resize the vector of penalty parameters.
-	  *
-	  * If the subclass can not do this then a #CanNotResize# exception
-	  * will be thrown.
+	/** Set the vector space for \c to use for the penalty parameters.
 	  */
-	virtual void resize( size_type n ) = 0;
+	virtual void set_space_c( const VectorSpace::space_ptr_t& space_c ) = 0;
 
 	/// Get the vector of penalty parameters for setting them
-	virtual VectorSlice mu() = 0;
+	virtual VectorWithOpMutable& set_mu() = 0;
 
 	/// Get the vector of penalty parameters for viewing them
-	virtual const VectorSlice mu() const = 0;
+	virtual const VectorWithOp& get_mu() const = 0;
+
+	//@}
 
 };	// end class MeritFuncPenaltyParams
 

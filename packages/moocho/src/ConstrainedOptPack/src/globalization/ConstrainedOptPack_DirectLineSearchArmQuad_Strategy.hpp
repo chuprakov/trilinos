@@ -1,4 +1,4 @@
-// //////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////
 // DirectLineSearchArmQuad_Strategy.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -46,8 +46,8 @@ public:
 	///
 	value_type max_frac() const;
 
-	// ///////////////////////////////////////////////////
-	// Overridden from DirectLineSearch_Strategy
+	/** @name Overridden from DirectLineSearch_Strategy */
+	//@{
 
 	///
 	void set_max_iter(int max_iter);
@@ -56,35 +56,40 @@ public:
 	///
 	int num_iterations() const;
 	///
-	/** Performs the following line search:\\
-	  *
-	  \begin{verbatim}
-	  num_iter = 0;
-	  while( phi.value(alpha_k) > phi_k + eta * alpha_k * phi.deriv() ) 
-	  {
-	     if(num_iter >= max_iter) return true;
-	     num_iter = num_iter + 1;
-	     alpha_k = [ min_frac * alpha_k <= quadradic interpolation for alpha
-						<= max_frac * alpha_k ];
-	  }
-	  return true;\\
-	  \end{verbatim}
-	  *
-	  * If the maximum number of iterations is exceeded then false will be returned.
-	  *
-	  * The default values for the adjustable parameters (from D&S A6.3.1)
-	  * are:\\
-	  * max_iter = 20\\
-	  * eta = 1.0e-4\\
-	  * min_frac = 0.1\\
-	  * max_frac = 0.5\\
-	  */
-	bool do_line_search( const MeritFuncCalc1D& phi, value_type phi_k
-		, value_type* alpha_k, value_type* phi_kp1
-		, std::ostream* out);
+	/** Performs the following line search:<br>
+	 *
+	 \verbatim
+
+	 num_iter = 0;
+	 while( phi.value(alpha_k) > phi_k + eta * alpha_k * phi.deriv() ) 
+	 {
+	    if(num_iter >= max_iter) return true;
+	    num_iter = num_iter + 1;
+	    alpha_k = [ min_frac * alpha_k <= quadradic interpolation for alpha	<= max_frac * alpha_k ];
+	 }
+	 return true;<br>
+	 \endverbatim
+	 * If the maximum number of iterations is exceeded then false will be returned.
+	 *
+	 * The default values for the adjustable parameters (from D&S A6.3.1)
+	 * are:<br>
+	 * max_iter = 20<br>
+	 * eta = 1.0e-4<br>
+	 * min_frac = 0.1<br>
+	 * max_frac = 0.5<br>
+	 */
+	bool do_line_search(
+		const MeritFuncCalc1D   &phi
+		,value_type             phi_k
+		,value_type             *alpha_k
+		,value_type             *phi_kp1
+		,std::ostream           *out
+		);
 
 	///
 	void print_algorithm(std::ostream& out, const std::string& leading_str) const;
+
+	//@}
 
 private:
 	int	max_iter_;

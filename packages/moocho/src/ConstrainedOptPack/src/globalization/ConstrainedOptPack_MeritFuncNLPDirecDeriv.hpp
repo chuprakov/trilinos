@@ -1,4 +1,4 @@
-// //////////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////////
 // MeritFuncNLPDirecDeriv.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -21,12 +21,12 @@
 namespace ConstrainedOptimizationPack {
 
 ///
-/** This class provides the interface for allowing subclass merit
+/** This class provides a mix-in interface for allowing subclass merit
   * functions to compute the directional 1D derivative at a base point
   * {abstract}.
   *
   * The quantities Gf(xo) (gradient of f(xo))
-  * c(xo) and d are used by several
+  * c(xo), h(xo) and d are used by several
   * types of merit functions to calculate the derivative of:\\
   * d(phi(x_k + alpha_k*d_k))/d(alpha_k) at alpha_k = 0.
   *
@@ -40,6 +40,9 @@ public:
 	///
 	virtual ~MeritFuncNLPDirecDeriv() {}
 
+	/** @name To be overridden by subclasses */
+	//@{
+
 	///
 	/** Calculate d(phi(x_k + alpha_k*d_k))/d(alpha_k) at alpha_k = 0.
 	  *
@@ -50,10 +53,18 @@ public:
 	  * If the sizes of the vectors input do not aggree then
 	  * #std::length_error# exception will be thrown.
 	  */
-	virtual value_type calc_deriv( const VectorSlice& Gf_k, const VectorSlice& c_k
-		, const VectorSlice& d_k ) = 0;
+	virtual value_type calc_deriv(
+		const VectorWithOp    &Gf_k
+		,const VectorWithOp   *c_k
+		,const VectorWithOp   *h_k
+		,const VectorWithOp   *hl
+		,const VectorWithOp   *hu
+		,const VectorWithOp   &d_k
+		) = 0;
 
-};	// end class MeritFuncBase
+	//@}
+
+};	// end class MeritFuncNLPDirecDeriv
 
 }	// end namespace ConstrainedOptimizationPack
 
