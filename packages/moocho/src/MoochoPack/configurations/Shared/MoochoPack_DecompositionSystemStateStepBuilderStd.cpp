@@ -20,8 +20,8 @@
 #include "NLPInterfacePack/src/abstract/interfaces/NLPSecondOrder.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPVarReductPerm.hpp"
-#include "NLPInterfacePack/src/abstract/test/NLPFirstOrderDirectTester.hpp"
-#include "NLPInterfacePack/src/abstract/test/NLPFirstOrderDirectTesterSetOptions.hpp"
+#include "NLPInterfacePack/src/abstract/test/NLPDirectTester.hpp"
+#include "NLPInterfacePack/src/abstract/test/NLPDirectTesterSetOptions.hpp"
 
 // Basis system and direct sparse solvers
 
@@ -59,8 +59,8 @@
 #include "ReducedSpaceSQPPack/src/std/NewDecompositionSelectionStd_Strategy.hpp"
 #include "ConstrainedOptimizationPack/src/VariableBoundsTesterSetOptions.hpp"
 #include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProdSetOptions.hpp"
-#include "NLPInterfacePack/src/abstract/test/NLPFirstDerivativesTester.hpp"
-#include "NLPInterfacePack/src/abstract/test/NLPFirstDerivativesTesterSetOptions.hpp"
+#include "NLPInterfacePack/src/abstract/test/NLPFirstDerivTester.hpp"
+#include "NLPInterfacePack/src/abstract/test/NLPFirstDerivTesterSetOptions.hpp"
 
 // Common utilities
 #include "StringToIntMap.hpp"
@@ -568,16 +568,16 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 	// Create the step object
 	if( tailored_approach ) {
 		// create and setup the derivative tester
-		typedef mmp::ref_count_ptr<NLPFirstOrderDirectTester>   deriv_tester_ptr_t;
+		typedef mmp::ref_count_ptr<NLPDirectTester>   deriv_tester_ptr_t;
 		deriv_tester_ptr_t
 			deriv_tester = mmp::rcp(
-				new NLPFirstOrderDirectTester(
+				new NLPDirectTester(
 					*calc_fd_prod
-					,NLPFirstOrderDirectTester::FD_DIRECTIONAL    // Gf testing
-					,NLPFirstOrderDirectTester::FD_DIRECTIONAL    // -Inv(C)*N testing
+					,NLPDirectTester::FD_DIRECTIONAL    // Gf testing
+					,NLPDirectTester::FD_DIRECTIONAL    // -Inv(C)*N testing
 					) );
 		if(options_.get()) {
-			NLPInterfacePack::NLPFirstOrderDirectTesterSetOptions
+			NLPInterfacePack::NLPDirectTesterSetOptions
 				options_setter(deriv_tester.get());
 			options_setter.set_options(*options_);
 		}
@@ -606,15 +606,15 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 	}
 	else {
 		// create and setup the derivative tester
-		typedef mmp::ref_count_ptr<NLPFirstDerivativesTester>   deriv_tester_ptr_t;
+		typedef mmp::ref_count_ptr<NLPFirstDerivTester>   deriv_tester_ptr_t;
 		deriv_tester_ptr_t
 			deriv_tester = mmp::rcp(
-				new NLPFirstDerivativesTester(
+				new NLPFirstDerivTester(
 					*calc_fd_prod
-					,NLPFirstDerivativesTester::FD_DIRECTIONAL
+					,NLPFirstDerivTester::FD_DIRECTIONAL
 					) );
 		if(options_.get()) {
-			NLPInterfacePack::NLPFirstDerivativesTesterSetOptions
+			NLPInterfacePack::NLPFirstDerivTesterSetOptions
 				options_setter(deriv_tester.get());
 				options_setter.set_options(*options_);
 		}

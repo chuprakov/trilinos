@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// NLPFirstOrderDirectTester.hpp
+// NLPDirectTester.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -140,7 +140,7 @@ namespace NLPInterfacePack {
   \endverbatim
   * This is an important agreement made with the user.
   */
-class NLPFirstOrderDirectTester {
+class NLPDirectTester {
 public:
 
 	///
@@ -171,7 +171,7 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_fd_directions )
 
 	/// Constructor
-	NLPFirstOrderDirectTester(
+	NLPDirectTester(
 		const calc_fd_prod_ptr_t  &calc_fd_prod       = MemMngPack::rcp(new CalcFiniteDiffProd())
 		,ETestingMethod           Gf_testing_method   = FD_DIRECTIONAL
 		,ETestingMethod           Gc_testing_method   = FD_DIRECTIONAL
@@ -261,7 +261,7 @@ public:
 		,std::ostream           *out
 		) const;
 
-};	// end class NLPFirstOrderDirectTester
+};	// end class NLPDirectTester
 
 }	// end namespace NLPInterfacePack
 

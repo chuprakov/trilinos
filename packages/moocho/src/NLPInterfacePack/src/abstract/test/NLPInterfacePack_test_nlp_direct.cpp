@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////
-// test_nlp_first_order_direct.cpp
+// test_nlp_direct.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,13 +15,13 @@
 
 #include <assert.h>
 
-#include "test_nlp_first_order_direct.hpp"
+#include "test_nlp_direct.hpp"
 #include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
 #include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProdSetOptions.hpp"
 #include "NLPTester.hpp"
 #include "NLPTesterSetOptions.hpp"
-#include "NLPFirstOrderDirectTester.hpp"
-#include "NLPFirstOrderDirectTesterSetOptions.hpp"
+#include "NLPDirectTester.hpp"
+#include "NLPDirectTesterSetOptions.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceTester.hpp"
@@ -33,7 +33,7 @@
 #include "Range1D.hpp"
 #include "update_success.hpp"
 
-bool NLPInterfacePack::test_nlp_first_order_direct(
+bool NLPInterfacePack::test_nlp_direct(
 	NLPDirect*                          nlp
 	,OptionsFromStreamPack::OptionsFromStream*    options
 	,std::ostream*                                out
@@ -47,7 +47,7 @@ bool NLPInterfacePack::test_nlp_first_order_direct(
 
 	if(out)
 		*out << "\n****************************************"
-			 << "\n*** test_nlp_first_order_direct(...) ***"
+			 << "\n*** test_nlp_direct(...) ***"
 			 << "\n****************************************\n";
 	
 	nlp->initialize(true);
@@ -211,10 +211,10 @@ bool NLPInterfacePack::test_nlp_first_order_direct(
 			options_setter( &calc_fd_prod );
 		options_setter.set_options(*options);
 	}
-	NLPFirstOrderDirectTester
+	NLPDirectTester
 		nlp_first_order_direct_tester(rcp::rcp(&calc_fd_prod,false));
 	if(options) {
-		NLPFirstOrderDirectTesterSetOptions
+		NLPDirectTesterSetOptions
 			nlp_tester_opt_setter(&nlp_first_order_direct_tester);
 		nlp_tester_opt_setter.set_options(*options);
 	}

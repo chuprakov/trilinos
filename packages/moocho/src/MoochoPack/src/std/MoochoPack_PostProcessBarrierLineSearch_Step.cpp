@@ -22,7 +22,7 @@
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
-#include "NLPInterfacePack/src/abstract/tools/BarrierNLP.hpp"
+#include "NLPInterfacePack/src/abstract/tools/NLPBarrier.hpp"
 #include "ReducedSpaceSQPPack/src/std/PostProcessBarrierLineSearch_Step.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
@@ -36,7 +36,7 @@
 namespace ReducedSpaceSQPPack {
 
 PostProcessBarrierLineSearch_Step::PostProcessBarrierLineSearch_Step(
-  MemMngPack::ref_count_ptr<NLPInterfacePack::BarrierNLP> barrier_nlp
+  MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp
   )
 	:
 	barrier_nlp_(barrier_nlp)
@@ -44,7 +44,7 @@ PostProcessBarrierLineSearch_Step::PostProcessBarrierLineSearch_Step(
 	THROW_EXCEPTION(
 	  !barrier_nlp_.get(),
 	  std::logic_error,
-	  "PostProcessBarrierLineSearch_Step given NULL BarrierNLP."
+	  "PostProcessBarrierLineSearch_Step given NULL NLPBarrier."
 	  );
 	}
 	

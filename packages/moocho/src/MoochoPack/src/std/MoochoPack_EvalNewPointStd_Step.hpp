@@ -20,7 +20,7 @@
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystemTester.hpp"
 #include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
-#include "NLPInterfacePack/src/abstract/test/NLPFirstDerivativesTester.hpp"
+#include "NLPInterfacePack/src/abstract/test/NLPFirstDerivTester.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
@@ -52,7 +52,7 @@ public:
 	/// «std comp» members for range/null decomposition handler
 	STANDARD_COMPOSITION_MEMBERS( DecompositionSystemHandler_Strategy, decomp_sys_handler )
 	/// «std comp» members for first derivative tester object
-	STANDARD_COMPOSITION_MEMBERS( NLPFirstDerivativesTester, deriv_tester )
+	STANDARD_COMPOSITION_MEMBERS( NLPFirstDerivTester, deriv_tester )
 	/// «std comp» Members for variable bounds tester object
 	STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
 	/// «std comp» members for decomp_sys tester tester object

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// NLPFirstDerivativesTester.cpp
+// NLPFirstDerivTester.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,7 +19,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include "NLPFirstDerivativesTester.hpp"
+#include "NLPFirstDerivTester.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
@@ -41,7 +41,7 @@ T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
 
 namespace NLPInterfacePack {
 
-NLPFirstDerivativesTester::NLPFirstDerivativesTester(
+NLPFirstDerivTester::NLPFirstDerivTester(
 	const calc_fd_prod_ptr_t  &calc_fd_prod
 	,ETestingMethod           fd_testing_method
 	,size_type                num_fd_directions
@@ -55,7 +55,7 @@ NLPFirstDerivativesTester::NLPFirstDerivativesTester(
 	,error_tol_(error_tol)
 {}
 
-bool NLPFirstDerivativesTester::finite_diff_check(
+bool NLPFirstDerivTester::finite_diff_check(
 	NLP                     *nlp
 	,const Vector     &xo
 	,const Vector     *xl
@@ -80,11 +80,11 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 
 	THROW_EXCEPTION(
 		!m && Gc, std::invalid_argument
-		,"NLPFirstDerivativesTester::finite_diff_check(...) : "
+		,"NLPFirstDerivTester::finite_diff_check(...) : "
 		"Error, Gc must be NULL if m == 0" );
 	THROW_EXCEPTION(
 		!mI && Gh, std::invalid_argument
-		,"NLPFirstDerivativesTester::finite_diff_check(...) : "
+		,"NLPFirstDerivTester::finite_diff_check(...) : "
 		"Error, Gh must be NULL if mI == 0" );
 
 	assert_print_nan_inf(xo, "xo",true,out);
@@ -119,7 +119,7 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 
 // private
 
-bool NLPFirstDerivativesTester::fd_check_all(
+bool NLPFirstDerivTester::fd_check_all(
 	NLP                     *nlp
 	,const Vector     &xo
 	,const Vector     *xl
@@ -312,7 +312,7 @@ bool NLPFirstDerivativesTester::fd_check_all(
 
 }
 
-bool NLPFirstDerivativesTester::fd_directional_check(
+bool NLPFirstDerivTester::fd_directional_check(
 	NLP                     *nlp
 	,const Vector     &xo
 	,const Vector     *xl

@@ -38,10 +38,10 @@ class CalcFiniteDiffProdSetOptions;
 
 // NLP testing classes
 
-class NLPFirstDerivativesTester;
-class NLPFirstDerivativesTesterSetOptions;
-class NLPFirstOrderDirectTester;
-class NLPFirstOrderDirectTesterSetOptions;
+class NLPFirstDerivTester;
+class NLPFirstDerivTesterSetOptions;
+class NLPDirectTester;
+class NLPDirectTesterSetOptions;
 class NLPTester;
 class NLPTesterSetOptions;
 

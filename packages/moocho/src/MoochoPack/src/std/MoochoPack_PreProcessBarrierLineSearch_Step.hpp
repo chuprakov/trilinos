@@ -57,7 +57,7 @@ class PreProcessBarrierLineSearch_Step
 		/** Constructor.
 		 */
 		PreProcessBarrierLineSearch_Step(
-		  MemMngPack::ref_count_ptr<NLPInterfacePack::BarrierNLP> barrier_nlp,
+		  MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp,
 		  const value_type tau_boundary_frac = 0.99
 		  );
 		//@}
@@ -74,7 +74,7 @@ class PreProcessBarrierLineSearch_Step
 		//@}
 
 	private:
-		MemMngPack::ref_count_ptr<NLPInterfacePack::BarrierNLP> barrier_nlp_;
+		MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
 
 		// Private Data
 		CastIQMember< Filter_T > filter_;

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// BarrierNLP.cpp
+// NLPBarrier.cpp
 //
 // Copyright (C) 2001
 //
@@ -17,7 +17,7 @@
 #include <iostream>
 #include <limits>
 
-#include "NLPInterfacePack/src/abstract/tools/BarrierNLP.hpp"
+#include "NLPInterfacePack/src/abstract/tools/NLPBarrier.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
@@ -25,7 +25,7 @@
 
 namespace NLPInterfacePack {
 
-BarrierNLP::BarrierNLP()
+NLPBarrier::NLPBarrier()
 	:
 	barrier_term_(0.0),
 	objective_term_(0.0),
@@ -34,14 +34,14 @@ BarrierNLP::BarrierNLP()
 	}
 
 
-void BarrierNLP::InitializeFromNLP(
+void NLPBarrier::InitializeFromNLP(
   MemMngPack::ref_count_ptr<NLP> original_nlp
   )
 	{
 	THROW_EXCEPTION(
 	  !original_nlp.get(),
 	  std::logic_error,
-	  "null nlp passed to BarrierNLP decorator"
+	  "null nlp passed to NLPBarrier decorator"
 	  );
 
 	nlp_ = MemMngPack::rcp_dynamic_cast<NLPObjGrad>(original_nlp);
@@ -49,37 +49,37 @@ void BarrierNLP::InitializeFromNLP(
 	THROW_EXCEPTION(
 	  !nlp_.get(),
 	  std::logic_error,
-	  "non NLPObjGrad NLP passed to BarrierNLP decorator"
+	  "non NLPObjGrad NLP passed to NLPBarrier decorator"
 	  );
 	}
 
-void BarrierNLP::mu(const value_type mu)
+void NLPBarrier::mu(const value_type mu)
 	{
 	mu_ = mu;
 	}
 
-value_type BarrierNLP::barrier_term() const
+value_type NLPBarrier::barrier_term() const
 	{
 	return barrier_term_;
 	}
 
-value_type BarrierNLP::objective_term() const
+value_type NLPBarrier::objective_term() const
 	{
 	return objective_term_;
 	}
 
-const MemMngPack::ref_count_ptr<Vector> BarrierNLP::grad_barrier_term() const
+const MemMngPack::ref_count_ptr<Vector> NLPBarrier::grad_barrier_term() const
 	{
 	return grad_barrier_term_;
 	}
 
-const MemMngPack::ref_count_ptr<Vector>  BarrierNLP::grad_objective_term() const
+const MemMngPack::ref_count_ptr<Vector>  NLPBarrier::grad_objective_term() const
 	{
 	return grad_objective_term_;
 	}
 
 
-void BarrierNLP::calc_f(const Vector& x, bool newx) const
+void NLPBarrier::calc_f(const Vector& x, bool newx) const
 	{
 	nlp_->calc_f(x, newx);
 	value_type* f_val = nlp_->get_f();
@@ -90,7 +90,7 @@ void BarrierNLP::calc_f(const Vector& x, bool newx) const
 	(*f_val) += barrier_term_;
 	}
 
-void BarrierNLP::calc_Gf(const Vector& x, bool newx) const
+void NLPBarrier::calc_Gf(const Vector& x, bool newx) const
 	{
 	using AbstractLinAlgPack::inv_of_difference;
 
@@ -125,7 +125,7 @@ void BarrierNLP::calc_Gf(const Vector& x, bool newx) const
 	//nlp_->get_Gf()->output(std::cout);
 	}
 
-void BarrierNLP::imp_calc_f(
+void NLPBarrier::imp_calc_f(
   const Vector& x, 
   bool newx, 
   const ZeroOrderInfo& zero_order_info
@@ -134,7 +134,7 @@ void BarrierNLP::imp_calc_f(
 	assert(false && !"This should never get called.");
 	}
 
-void BarrierNLP::imp_calc_c(
+void NLPBarrier::imp_calc_c(
   const Vector& x, 
   bool newx, 
   const ZeroOrderInfo& zero_order_info
@@ -143,7 +143,7 @@ void BarrierNLP::imp_calc_c(
 	assert(false && !"This should never get called.");
 	}
 
-void BarrierNLP::imp_calc_h(
+void NLPBarrier::imp_calc_h(
   const Vector& x, 
   bool newx, 
   const ZeroOrderInfo& zero_order_info
@@ -152,7 +152,7 @@ void BarrierNLP::imp_calc_h(
 	assert(false && !"This should never get called.");
 	}
 
-void BarrierNLP::imp_calc_Gf(
+void NLPBarrier::imp_calc_Gf(
   const Vector& x,
   bool newx, 
   const ObjGradInfo& obj_grad_info
@@ -162,13 +162,13 @@ void BarrierNLP::imp_calc_Gf(
 	}
 
 
-value_type BarrierNLP::CalculateBarrierTerm(const Vector& x) const
+value_type NLPBarrier::CalculateBarrierTerm(const Vector& x) const
 	{
 	using AbstractLinAlgPack::log_bound_barrier;
 	barrier_term_ = log_bound_barrier(x, xl(), xu());
-//	std::cerr << "BarrierNLP::CalculateBarrierTerm(x) : (1) barrier_term_ = " << barrier_term_ << std::endl;
+//	std::cerr << "NLPBarrier::CalculateBarrierTerm(x) : (1) barrier_term_ = " << barrier_term_ << std::endl;
 	barrier_term_ *= -mu_;
-//	std::cerr << "BarrierNLP::CalculateBarrierTerm(x) : (2) barrier_term_ = " << barrier_term_ << std::endl;
+//	std::cerr << "NLPBarrier::CalculateBarrierTerm(x) : (2) barrier_term_ = " << barrier_term_ << std::endl;
 	return barrier_term_;
 	}
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// NLPFirstDerivativesTester.hpp
+// NLPFirstDerivTester.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -93,7 +93,7 @@ namespace NLPInterfacePack {
  \endverbatim
  * This is an important agreement made with the user.
  */
-class NLPFirstDerivativesTester {
+class NLPFirstDerivTester {
 public:
 
 	///
@@ -114,7 +114,7 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 
 	/// Constructor
-	NLPFirstDerivativesTester(
+	NLPFirstDerivTester(
 		const calc_fd_prod_ptr_t  &calc_fd_prod      = MemMngPack::rcp(new CalcFiniteDiffProd())
 		,ETestingMethod           fd_testing_method  = FD_DIRECTIONAL
 		,size_type                num_fd_directions  = 3

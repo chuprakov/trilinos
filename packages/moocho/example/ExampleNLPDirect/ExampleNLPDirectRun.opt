@@ -27,7 +27,7 @@ options_group NLPTester {
 *    throw_exception = false;
 }
 
-options_group NLPFirstOrderDirectTester {
+options_group NLPDirectTester {
 *    Gf_testing_method = FD_COMPUTE_ALL;
     Gf_testing_method = FD_DIRECTIONAL;
     Gf_warning_tol    = 1e-14;

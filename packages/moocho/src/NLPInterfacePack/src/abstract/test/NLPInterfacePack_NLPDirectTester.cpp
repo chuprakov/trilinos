@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// NLPFirstOrderDirectTester.cpp
+// NLPDirectTester.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,7 +20,7 @@
 #include <iomanip>
 #include <sstream>
 
-#include "NLPFirstOrderDirectTester.hpp"
+#include "NLPDirectTester.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorOut.hpp"
@@ -40,7 +40,7 @@ T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
 
 namespace NLPInterfacePack {
 
-NLPFirstOrderDirectTester::NLPFirstOrderDirectTester(
+NLPDirectTester::NLPDirectTester(
 	const calc_fd_prod_ptr_t  &calc_fd_prod
 	,ETestingMethod           Gf_testing_method
 	,ETestingMethod           Gc_testing_method
@@ -64,7 +64,7 @@ NLPFirstOrderDirectTester::NLPFirstOrderDirectTester(
 	,num_fd_directions_(num_fd_directions)
 {}
 
-bool NLPFirstOrderDirectTester::finite_diff_check(
+bool NLPDirectTester::finite_diff_check(
 	NLPDirect     *nlp
 	,const Vector     &xo
 	,const Vector     *xl
@@ -111,7 +111,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 		*out << std::boolalpha
 			 << std::endl
 			 << "*********************************************************\n"
-			 << "*** NLPFirstOrderDirectTester::finite_diff_check(...) ***\n"
+			 << "*** NLPDirectTester::finite_diff_check(...) ***\n"
 			 << "*********************************************************\n";
 	}
 
@@ -134,7 +134,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 
 	THROW_EXCEPTION(
 		py && !c, std::invalid_argument
-		,"NLPFirstOrderDirectTester::finite_diff_check(...) : "
+		,"NLPDirectTester::finite_diff_check(...) : "
 		"Error, if py!=NULL then c!=NULL must also be true!" );
 
 	const CalcFiniteDiffProd

@@ -205,7 +205,7 @@ options_group CalcFiniteDiffProd {
 
 ***************************************************************
 *** Options for EvalNewPoint for NLPFirstOrder.
-*** See options_group NLPFirstDerivativesTester
+*** See options_group NLPFirstDerivTester
 ***
 options_group EvalNewPointStd {
 
@@ -213,7 +213,7 @@ options_group EvalNewPointStd {
 *    fd_deriv_testing = FD_TEST;    *** Always test
 *    fd_deriv_testing = FD_NO_TEST; *** never test
      *** Determines if the derivatives of the NLP returned from the NLPFirstOrder interface
-     *** are correct using finite differences (see the options_group NLPFirstDerivativesTester).
+     *** are correct using finite differences (see the options_group NLPFirstDerivTester).
      *** Valid options include:
      ***    FD_DEFAULT : Perform the finite difference tests if check_results==true.
      ***    FD_TEST    : Always test, regardless of the value of check_results.
@@ -243,7 +243,7 @@ options_group EvalNewPointStd {
 
 ***************************************************************
 *** Options for EvalNewPointBarrier.
-*** See options_group NLPFirstDerivativesTester
+*** See options_group NLPFirstDerivTester
 ***
 options_group EvalNewPointBarrier {
 
@@ -278,7 +278,7 @@ options_group VariableBoundsTester {
 *** Options for the finite derivative testing for a
 *** standard NLP.
 ***
-options_group NLPFirstDerivativesTester {
+options_group NLPFirstDerivTester {
 *    fd_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(m))
 *    fd_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
 *    num_fd_directions = 1;  *** [fd_testing_method == DIRECTIONAL]
@@ -301,7 +301,7 @@ options_group EvalNewPointTailoredApproach {
 *** Options for the finite difference derivative tester for a 
 *** direct sensistivity NLP.
 ***
-options_group NLPFirstOrderDirectTester {
+options_group NLPDirectTester {
 *    Gf_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n))
 *    Gf_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
 *    Gf_warning_tol   = 1e-10;

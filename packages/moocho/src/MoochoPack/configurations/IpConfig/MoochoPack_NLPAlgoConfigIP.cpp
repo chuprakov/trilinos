@@ -22,7 +22,7 @@
 #include "debug.hpp"
 
 #include "Algo_ConfigIP.hpp"
-#include "NLPInterfacePack/src/abstract/tools/BarrierNLP.hpp"
+#include "NLPInterfacePack/src/abstract/tools/NLPBarrier.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
 #include "ReducedSpaceSQPPack/src/ipState.hpp"
 #include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
@@ -888,7 +888,7 @@ void Algo_ConfigIP::config_algo_cntr(
 		algo_step_ptr_t calc_d_v_step_step = mmp::rcp(new CalcD_vStep_Step());
 
 		// build the barrier nlp decorator to be used by the line search
-		MemMngPack::ref_count_ptr<NLPInterfacePack::BarrierNLP> barrier_nlp = mmp::rcp(new NLPInterfacePack::BarrierNLP());
+		MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp = mmp::rcp(new NLPInterfacePack::NLPBarrier());
 		barrier_nlp->InitializeFromNLP( algo_cntr->get_nlp() );
 
 		// PreProcessBarrierLineSearch_Step

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////
-// test_nlp_first_order_info.hpp
+// test_nlp_first_order.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -52,7 +52,7 @@ namespace NLPInterfacePack {
  * in <tt>*options</tt> (if <tt>options != NULL</tt>) order to extract options to use for this testing function and the other testing
  * objects.
  */
-bool test_nlp_first_order_info(
+bool test_nlp_first_order(
 	NLPFirstOrder*                            nlp
 	,OptionsFromStreamPack::OptionsFromStream*    options
 	,std::ostream*                                out

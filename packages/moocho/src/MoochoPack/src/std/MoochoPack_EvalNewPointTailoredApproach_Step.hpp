@@ -19,7 +19,7 @@
 #include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
 #include "IterationPack/src/AlgorithmStep.hpp"
 #include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
-#include "NLPInterfacePack/src/abstract/test/NLPFirstOrderDirectTester.hpp"
+#include "NLPInterfacePack/src/abstract/test/NLPDirectTester.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
@@ -49,7 +49,7 @@ public:
 	///
 	typedef MemMngPack::ref_count_ptr<const MatrixOp> D_ptr_t;
 	/// <<std comp>> members for testing object for NLPDirect
-	STANDARD_COMPOSITION_MEMBERS( NLPFirstOrderDirectTester, deriv_tester )
+	STANDARD_COMPOSITION_MEMBERS( NLPDirectTester, deriv_tester )
 	/// <<std comp>> Members for variable bounds tester object
 	STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
 	///

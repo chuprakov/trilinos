@@ -134,12 +134,12 @@ The testing class <tt>\ref NLPInterfacePack::NLPTester "NLPTester"</tt> performs
 of the methods are checked.  This class has several options that a user can select to suite the tests and the output to the
 task at had (see the class <tt>\ref NLPInterfacePack::NLPTesterSetOptions "NLPTesterSetOptions"</tt>).
 
-The testing class <tt>\ref NLPInterfacePack::NLPFirstOrderDirectTester "NLPFirstOrderDirectTester"</tt> tests the sensitivity
+The testing class <tt>\ref NLPInterfacePack::NLPDirectTester "NLPDirectTester"</tt> tests the sensitivity
 information computed by the <tt>\ref NLPInterfacePack::NLPDirect "NLPDirect"</tt> interface using finite
 differences.  There are several options that control the behavior of this testing class and they can be set but the user from
-and options file using <tt>\ref NLPInterfacePack::NLPFirstOrderDirectTesterSetOptions "NLPFirstOrderDirectTesterSetOptions"</tt>.
+and options file using <tt>\ref NLPInterfacePack::NLPDirectTesterSetOptions "NLPDirectTesterSetOptions"</tt>.
 
-The testing function <tt>\ref NLPInterfacePack::test_nlp_first_order_direct "test_nlp_first_order_direct()"</tt> puts together
+The testing function <tt>\ref NLPInterfacePack::test_nlp_direct "test_nlp_direct()"</tt> puts together
 some testing components to perform some though tests of a <tt>\ref NLPInterfacePack::NLPDirect "NLPDirect"</tt>
 object.
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////
-// test_nlp_first_order_direct.hpp
+// test_nlp_direct.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -41,19 +41,19 @@ namespace NLPInterfacePack {
  *
  * This function uses the testing classes <tt>\ref AbstractLinAlgPack::VectorSpaceTester "VectorSpaceTester"</tt>
  * <tt>\ref NLPInterfacePack::NLPTester "NLPTester"</tt> and
- * <tt>\ref NLPInterfacePack::NLPFirstOrderDirectTester "NLPFirstOrderDirectTester"</tt> to perform many thorough tests
+ * <tt>\ref NLPInterfacePack::NLPDirectTester "NLPDirectTester"</tt> to perform many thorough tests
  * of an input <tt>\ref NLPInterfacePack::NLPDirect "NLPDirect"</tt> object.
  * The vector spaces exposed by <tt>\ref NLPInterfacePack::NLP "NLP"</tt> are thoroughly tested by the <tt>VectorSpaceTester</tt>
  * class.
  *
  * The options groups "VectorSpaceTester" (see <tt>\ref AbstractLinAlgPack::VectorSpaceTesterSetOptions "VectorSpaceTesterSetOptions"</tt>),
  * "%NLPTester" (see <tt>\ref NLPInterfacePack::NLPTesterSetOptions "NLPTesterSetOptions"</tt>), "%CalcFiniteDiffProd"
- * (see <tt>\ref NLPInterfacePack::CalcFiniteDiffProdSetOptions "CalcFiniteDiffProdSetOptions"</tt>) and "%NLPFirstOrderDirectTester"
- * (see <tt>\ref NLPInterfacePack::NLPFirstOrderDirectTesterSetOptions "NLPFirstOrderDirectTesterSetOptions"</tt>) are looked for in
+ * (see <tt>\ref NLPInterfacePack::CalcFiniteDiffProdSetOptions "CalcFiniteDiffProdSetOptions"</tt>) and "%NLPDirectTester"
+ * (see <tt>\ref NLPInterfacePack::NLPDirectTesterSetOptions "NLPDirectTesterSetOptions"</tt>) are looked for in
  * in <tt>*options</tt> (if <tt>options != NULL</tt>) in order to extract options to use for this testing function and the other testing
  * objects.
  */
-bool test_nlp_first_order_direct(
+bool test_nlp_direct(
 	NLPDirect*                          nlp
 	,OptionsFromStreamPack::OptionsFromStream*    options
 	,std::ostream*                                out

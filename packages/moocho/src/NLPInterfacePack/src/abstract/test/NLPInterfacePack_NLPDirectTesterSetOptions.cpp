@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NLPFirstOrderDirectTesterSetOptions.cpp
+// NLPDirectTesterSetOptions.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "NLPFirstOrderDirectTesterSetOptions.hpp"
+#include "NLPDirectTesterSetOptions.hpp"
 
 // Define the options
 namespace {
@@ -47,19 +47,19 @@ namespace {
 
 namespace NLPInterfacePack {
 
-NLPFirstOrderDirectTesterSetOptions::NLPFirstOrderDirectTesterSetOptions(
-			  NLPFirstOrderDirectTester* target
+NLPDirectTesterSetOptions::NLPDirectTesterSetOptions(
+			  NLPDirectTester* target
 			, const char opt_grp_name[] )
 	:	OptionsFromStreamPack::SetOptionsFromStreamNode(
 			  opt_grp_name, local_num_options, local_SOptions )
 		, OptionsFromStreamPack::SetOptionsToTargetBase<
-			NLPFirstOrderDirectTester >( target )
+			NLPDirectTester >( target )
 {}
 
-void NLPFirstOrderDirectTesterSetOptions::set_option(
+void NLPDirectTesterSetOptions::set_option(
 	int option_num, const std::string& option_value )
 {
-	typedef NLPFirstOrderDirectTester target_t;
+	typedef NLPDirectTester target_t;
 	switch( (local_EOptions)option_num ) {
 	    case GF_TESTING_METHOD:
 		{

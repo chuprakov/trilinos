@@ -47,7 +47,7 @@ class PostProcessBarrierLineSearch_Step
 		/** Constructor.
 		 */
 		PostProcessBarrierLineSearch_Step(
-		  MemMngPack::ref_count_ptr<NLPInterfacePack::BarrierNLP> barrier_nlp
+		  MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp
 		  );
 		//@}
 
@@ -63,7 +63,7 @@ class PostProcessBarrierLineSearch_Step
 		//@}
 
 	private:
-		MemMngPack::ref_count_ptr<NLPInterfacePack::BarrierNLP> barrier_nlp_;
+		MemMngPack::ref_count_ptr<NLPInterfacePack::NLPBarrier> barrier_nlp_;
 
 	}; // end class PostProcessBarrierLineSearch_Step
 

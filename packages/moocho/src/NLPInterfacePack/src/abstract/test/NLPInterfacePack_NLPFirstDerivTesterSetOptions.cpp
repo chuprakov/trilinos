@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NLPFirstDerivativesTesterSetOptions.cpp
+// NLPFirstDerivTesterSetOptions.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "NLPFirstDerivativesTesterSetOptions.hpp"
+#include "NLPFirstDerivTesterSetOptions.hpp"
 
 // Define the options
 namespace {
@@ -41,19 +41,19 @@ namespace {
 
 namespace NLPInterfacePack {
 
-NLPFirstDerivativesTesterSetOptions::NLPFirstDerivativesTesterSetOptions(
-			  NLPFirstDerivativesTester* target
+NLPFirstDerivTesterSetOptions::NLPFirstDerivTesterSetOptions(
+			  NLPFirstDerivTester* target
 			, const char opt_grp_name[] )
 	:	OptionsFromStreamPack::SetOptionsFromStreamNode(
 			  opt_grp_name, local_num_options, local_SOptions )
 		, OptionsFromStreamPack::SetOptionsToTargetBase<
-			NLPFirstDerivativesTester >( target )
+			NLPFirstDerivTester >( target )
 {}
 
-void NLPFirstDerivativesTesterSetOptions::set_option(
+void NLPFirstDerivTesterSetOptions::set_option(
 	int option_num, const std::string& option_value )
 {
-	typedef NLPFirstDerivativesTester target_t;
+	typedef NLPFirstDerivTester target_t;
 	switch( (local_EOptions)option_num ) {
 	    case FD_TESTING_METHOD:
 		{

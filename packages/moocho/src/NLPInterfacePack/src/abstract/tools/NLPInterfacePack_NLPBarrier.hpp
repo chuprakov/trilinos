@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// BarrierNLP.hpp
+// NLPBarrier.hpp
 //
 // Copyright (C) 2001
 //
@@ -25,7 +25,7 @@ namespace NLPInterfacePack {
  *   included.
  *
  */
-class BarrierNLP
+class NLPBarrier
 	: public NLPObjGrad
 	{
 	public:
@@ -61,7 +61,7 @@ class BarrierNLP
 		/** Constructor.
 		 *
 		 */
-		BarrierNLP();
+		NLPBarrier();
 
 		///
 		void InitializeFromNLP(
@@ -349,7 +349,7 @@ class BarrierNLP
 		value_type CalculateBarrierTerm(const Vector& x) 
 const;
 
-	};	// end class BarrierNLP
+	};	// end class NLPBarrier
 
 }	// end namespace NLPInterfacePack
 

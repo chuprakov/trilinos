@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NLPFirstOrderDirectTesterSetOptions.hpp
+// NLPDirectTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,22 +16,22 @@
 #ifndef NLP_FIRST_ORDER_DIRECT_TESTER_SET_OPTIONS_H
 #define NLP_FIRST_ORDER_DIRECT_TESTER_SET_OPTIONS_H
 
-#include "NLPFirstOrderDirectTester.hpp"
+#include "NLPDirectTester.hpp"
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
 namespace NLPInterfacePack {
 
 ///
-/** Set options for <tt>NLPFirstOrderDirectTester</tt> from an
+/** Set options for <tt>NLPDirectTester</tt> from an
   * <tt>\ref OptionsFromStreamPack::OptionsFromStream "OptionsFromStream"</tt> object.
   *
-  * The default options group name is 'NLPFirstOrderDirectTester'.
+  * The default options group name is 'NLPDirectTester'.
   *
   * The options group is:
   \verbatim
 
-	options_group NLPFirstOrderDirectTester {
+	options_group NLPDirectTester {
 	*    Gf_testing_method = FD_COMPUTE_ALL;
 	    Gf_testing_method = FD_DIRECTIONAL;
 	    Gf_warning_tol    = 1e-6;
@@ -44,24 +44,24 @@ namespace NLPInterfacePack {
 	}
   \endverbatim
   */
-class NLPFirstOrderDirectTesterSetOptions
+class NLPDirectTesterSetOptions
 	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
 		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			NLPFirstOrderDirectTester >
+			NLPDirectTester >
 {
 public:
 
 	///
-	NLPFirstOrderDirectTesterSetOptions(
-		  NLPFirstOrderDirectTester* target = 0
-		, const char opt_grp_name[] = "NLPFirstOrderDirectTester" );
+	NLPDirectTesterSetOptions(
+		  NLPDirectTester* target = 0
+		, const char opt_grp_name[] = "NLPDirectTester" );
 
 protected:
 
 	/// Overridden from SetOptionsFromStreamNode
 	void set_option( int option_num, const std::string& option_value );
 
-};	// end class NLPFirstOrderDirectTesterSetOptions
+};	// end class NLPDirectTesterSetOptions
 
 }	// end namespace NLPInterfacePack
 

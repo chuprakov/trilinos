@@ -36,8 +36,8 @@
 #include "IterationPack/src/AlgorithmTrackerComposite.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
-#include "NLPInterfacePack/src/abstract/test/test_nlp_first_order_info.hpp"
-#include "NLPInterfacePack/src/abstract/test/test_nlp_first_order_direct.hpp"
+#include "NLPInterfacePack/src/abstract/test/test_nlp_first_order.hpp"
+#include "NLPInterfacePack/src/abstract/test/test_nlp_direct.hpp"
 #include "OptionsFromStream.hpp"
 #include "stpwatch.hpp"
 #include "StringToIntMap.hpp"
@@ -251,7 +251,7 @@ rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
 				if(do_journal_outputting())
 					*journal_out_used_ << msg;
 				const bool
-					result = NLPInterfacePack::test_nlp_first_order_info(
+					result = NLPInterfacePack::test_nlp_first_order(
 						nlp_foi,options_used_.get()
 						,do_journal_outputting() ? journal_out_used_.get() : NULL
 						);
@@ -272,7 +272,7 @@ rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
 				if(do_journal_outputting())
 					*journal_out_used_ << msg;
 				const bool
-					result = NLPInterfacePack::test_nlp_first_order_direct(
+					result = NLPInterfacePack::test_nlp_direct(
 						nlp_fod,options_used_.get()
 						,do_journal_outputting() ? journal_out_used_.get() : NULL
 						);

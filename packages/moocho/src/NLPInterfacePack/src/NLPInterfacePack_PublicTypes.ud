@@ -22,10 +22,10 @@ using NLPInterfacePack::NLPVarReductPerm;
 using NLPInterfacePack::CalcFiniteDiffProd;
 using NLPInterfacePack::CalcFiniteDiffProdSetOptions;
 
-using NLPInterfacePack::NLPFirstDerivativesTester;
-using NLPInterfacePack::NLPFirstDerivativesTesterSetOptions;
-using NLPInterfacePack::NLPFirstOrderDirectTester;
-using NLPInterfacePack::NLPFirstOrderDirectTesterSetOptions;
+using NLPInterfacePack::NLPFirstDerivTester;
+using NLPInterfacePack::NLPFirstDerivTesterSetOptions;
+using NLPInterfacePack::NLPDirectTester;
+using NLPInterfacePack::NLPDirectTesterSetOptions;
 using NLPInterfacePack::NLPTester;
 using NLPInterfacePack::NLPTesterSetOptions;
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NLPFirstDerivativesTesterSetOptions.hpp
+// NLPFirstDerivTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,22 +16,22 @@
 #ifndef NLP_FIRST_DERIVATIVES_TESTER_SET_OPTIONS_H
 #define NLP_FIRST_DERIVATIVES_TESTER_SET_OPTIONS_H
 
-#include "NLPFirstDerivativesTester.hpp"
+#include "NLPFirstDerivTester.hpp"
 #include "SetOptionsFromStreamNode.hpp"
 #include "SetOptionsToTargetBase.hpp"
 
 namespace NLPInterfacePack {
 
 ///
-/** Set options for NLPFirstDerivativesTester from an
+/** Set options for NLPFirstDerivTester from an
  * OptionsFromStream object.
  *
- * The default options group name is NLPFirstDerivativesTester.
+ * The default options group name is NLPFirstDerivTester.
  *
  * The options group is:
  *
  \verbatim
- options_group NLPFirstDerivativesTester {
+ options_group NLPFirstDerivTester {
  *    fd_testing_method = FD_COMPUTE_ALL;
      fd_testing_method = FD_DIRECTIONAL;
      num_fd_directions = 3;  *** [fd_testing_method == DIRECTIONAL]
@@ -40,24 +40,24 @@ namespace NLPInterfacePack {
  }
  \endverbatim
  */
-class NLPFirstDerivativesTesterSetOptions
+class NLPFirstDerivTesterSetOptions
 	: public OptionsFromStreamPack::SetOptionsFromStreamNode 
 		, public OptionsFromStreamPack::SetOptionsToTargetBase<
-			NLPFirstDerivativesTester >
+			NLPFirstDerivTester >
 {
 public:
 
 	///
-	NLPFirstDerivativesTesterSetOptions(
-		  NLPFirstDerivativesTester* target = 0
-		, const char opt_grp_name[] = "NLPFirstDerivativesTester" );
+	NLPFirstDerivTesterSetOptions(
+		  NLPFirstDerivTester* target = 0
+		, const char opt_grp_name[] = "NLPFirstDerivTester" );
 
 protected:
 
 	/// Overridden from SetOptionsFromStreamNode
 	void set_option( int option_num, const std::string& option_value );
 
-};	// end class NLPFirstDerivativesTesterSetOptions
+};	// end class NLPFirstDerivTesterSetOptions
 
 }	// end namespace NLPInterfacePack
 

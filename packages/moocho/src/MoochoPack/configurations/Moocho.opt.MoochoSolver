@@ -44,7 +44,7 @@ options_group rSQPppSolver {
      *** If true then the NLP will be tested at the initial point.  The
      *** vector spaces (see options_group VectorSpaceTester),
      *** the NLP interface (see options_group NLPTester), and the gradients
-     *** (see options_group NLPFirstOrderDirectTester and options_group
+     *** (see options_group NLPDirectTester and options_group
      *** NLPFirstOrderInfoTester).  With all of the default options in place
      *** these tests are fairly cheap so it is recommended that you perform
      *** these test when first getting started.
@@ -240,7 +240,7 @@ options_group VectorSpaceTester {
 *** Options for the finite derivative testing for a
 *** standard NLP.
 ***
-*** See options_group NLPFirstDerivativesTester in
+*** See options_group NLPFirstDerivTester in
 *** rSQPpp.opt.rSQPAlgo_ConfigMamaJama
 ***
 
@@ -248,7 +248,7 @@ options_group VectorSpaceTester {
 *** Options for the finite difference derivative tester for a 
 *** direct sensistivity NLP.
 ***
-*** See options_group NLPFirstOrderDirectTester in
+*** See options_group NLPDirectTester in
 *** rSQPpp.opt.rSQPAlgo_ConfigMamaJama
 ***
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////
-// test_nlp_first_order_info.cpp
+// test_nlp_first_order.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,13 +15,13 @@
 
 #include <assert.h>
 
-#include "test_nlp_first_order_info.hpp"
+#include "test_nlp_first_order.hpp"
 #include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
 #include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProdSetOptions.hpp"
 #include "NLPTester.hpp"
 #include "NLPTesterSetOptions.hpp"
-#include "NLPFirstDerivativesTester.hpp"
-#include "NLPFirstDerivativesTesterSetOptions.hpp"
+#include "NLPFirstDerivTester.hpp"
+#include "NLPFirstDerivTesterSetOptions.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceTester.hpp"
@@ -33,7 +33,7 @@
 #include "Range1D.hpp"
 #include "update_success.hpp"
 
-bool NLPInterfacePack::test_nlp_first_order_info(
+bool NLPInterfacePack::test_nlp_first_order(
 	NLPFirstOrder*                          nlp
 	,OptionsFromStreamPack::OptionsFromStream*    options
 	,std::ostream*                                out
@@ -47,7 +47,7 @@ bool NLPInterfacePack::test_nlp_first_order_info(
 
 	if(out)
 		*out << "\n**************************************"
-			 << "\n*** test_nlp_first_order_info(...) ***"
+			 << "\n*** test_nlp_first_order(...) ***"
 			 << "\n**************************************\n";
 	
 	nlp->initialize(true);
@@ -159,10 +159,10 @@ bool NLPInterfacePack::test_nlp_first_order_info(
 			options_setter( &calc_fd_prod );
 		options_setter.set_options(*options);
 	}
-	NLPFirstDerivativesTester
+	NLPFirstDerivTester
 		nlp_first_derivatives_tester(rcp::rcp(&calc_fd_prod,false));
 	if(options) {
-		NLPFirstDerivativesTesterSetOptions
+		NLPFirstDerivTesterSetOptions
 			nlp_tester_opt_setter(&nlp_first_derivatives_tester);
 		nlp_tester_opt_setter.set_options(*options);
 	}
