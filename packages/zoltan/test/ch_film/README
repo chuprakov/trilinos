@@ -25,3 +25,10 @@ On linux, rand() returns values in the range 0 to 2147483647; on
 Solaris, it returns values in the range 0 to 32767.  (See definition of
 RAND_MAX in <stdlib.h>.)
 
+- zdrive.inp.rcb-partlocal1:  Answer differ between linux and sun due to
+roundoff in computation of targethi in par_median.c.  On linux, the "upper
+too small" test is satisfied (due to roundoff) in a case for which it is not
+satisfied (i.e., Goldilocks condition is satisfied) on the sun.  Thus, an
+extra point is shifted in linux, changing the subdomain shapes and resulting
+cut directions for subsequent cuts.  This problem goes away when compilation
+flag -g is used instead of -O for linux.
