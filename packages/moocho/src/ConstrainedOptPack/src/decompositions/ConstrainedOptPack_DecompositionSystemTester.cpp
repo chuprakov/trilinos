@@ -89,9 +89,12 @@ bool DecompositionSystemTester::test_decomp_system(
 		alpha     = 2.0,
 		beta      = 3.0;
 
+	EPrintTestLevel
+		print_tests = ( this->print_tests() == PRINT_NOT_SELECTED ? PRINT_NONE : this->print_tests() );
+
 	// Print the input?
-	if( out && print_tests() != PRINT_NONE ) {
-		if( print_tests() >= PRINT_BASIC )
+	if( out && print_tests != PRINT_NONE ) {
+		if( print_tests >= PRINT_BASIC )
 			*out << "\n**********************************************************"
 				 << "\n*** DecompositionSystemTester::test_decomp_system(...) ***"
 				 << "\n**********************************************************\n";
@@ -102,17 +105,17 @@ bool DecompositionSystemTester::test_decomp_system(
 		m = ds.m(),
 		r = ds.r();
 	const Range1D
-		con_decomp       = ds.con_decomp(),
-		con_undecomp     = ds.con_undecomp();
+		equ_decomp       = ds.equ_decomp(),
+		equ_undecomp     = ds.equ_undecomp();
 
 	// print dimensions, ranges
-	if( out && print_tests() >= PRINT_MORE ) {
+	if( out && print_tests >= PRINT_MORE ) {
 		*out
 			<< "\nds.n()                  = " << n
 			<< "\nds.m()                  = " << m
 			<< "\nds.r()                  = " << r
-			<< "\nds.con_decomp()         = ["<<con_decomp.lbound()<<","<<con_decomp.ubound()<<"]"
-			<< "\nds.con_undecomp()       = ["<<con_undecomp.lbound()<<","<<con_undecomp.ubound()<<"]"
+			<< "\nds.equ_decomp()         = ["<<equ_decomp.lbound()<<","<<equ_decomp.ubound()<<"]"
+			<< "\nds.equ_undecomp()       = ["<<equ_undecomp.lbound()<<","<<equ_undecomp.ubound()<<"]"
 			<< "\nds.space_range()->dim() = " << ds.space_range()->dim()
 			<< "\nds.space_null()->dim()  = " << ds.space_null()->dim()
 			<< std::endl;
@@ -142,7 +145,7 @@ bool DecompositionSystemTester::test_decomp_system(
 		"Vy must be NULL if Gh is NULL!" );
 
 	// Print the input?
-	if( out && print_tests() != PRINT_NONE ) {
+	if( out && print_tests != PRINT_NONE ) {
 		if(dump_all()) {
 			*out << "\nGc =\n"       << Gc;
 			if(Gh)
@@ -168,245 +171,245 @@ bool DecompositionSystemTester::test_decomp_system(
 	// Check the dimensions of everything
 	//
 
-	if( out && print_tests() >= PRINT_BASIC )
+	if( out && print_tests >= PRINT_BASIC )
 		*out << "\n1) Check the partitioning ranges and vector space dimensions ...";
 	lresult = true;
 
-	if( out && print_tests() >= PRINT_MORE )
-		*out << "\n\n1.a) check: con_decomp.size() + con_undecomp.size() == ds.m() : ";
-	result = con_decomp.size() + con_undecomp.size() == ds.m();
-	if(out && print_tests() >= PRINT_MORE)
+	if( out && print_tests >= PRINT_MORE )
+		*out << "\n\n1.a) check: equ_decomp.size() + equ_undecomp.size() == ds.m() : ";
+	result = equ_decomp.size() + equ_undecomp.size() == ds.m();
+	if(out && print_tests >= PRINT_MORE)
 		*out << ( result ? "passed" : "failed" );
 	if(!result) lresult = false;
 
-	if( out && print_tests() >= PRINT_MORE )
-		*out << "\n\n1.b) check: con_decomp.size() == ds.r() : ";
-	result = con_decomp.size() == ds.r();
-	if(out && print_tests() >= PRINT_MORE)
+	if( out && print_tests >= PRINT_MORE )
+		*out << "\n\n1.b) check: equ_decomp.size() == ds.r() : ";
+	result = equ_decomp.size() == ds.r();
+	if(out && print_tests >= PRINT_MORE)
 		*out << ( result ? "passed" : "failed" );
 	if(!result) lresult = false;
 
-	if( out && print_tests() >= PRINT_MORE )
+	if( out && print_tests >= PRINT_MORE )
 		*out << "\n\n1.c) check: ds.space_range()->dim() == ds.r() : ";
 	result = ds.space_range()->dim() == ds.r();
-	if(out && print_tests() >= PRINT_MORE)
+	if(out && print_tests >= PRINT_MORE)
 		*out << ( result ? "passed" : "failed" );
 	if(!result) lresult = false;
 
-	if( out && print_tests() >= PRINT_MORE )
+	if( out && print_tests >= PRINT_MORE )
 		*out << "\n\n1.d) check: ds.space_null()->dim() == ds.n() - ds.r() : ";
 	result = ds.space_null()->dim() == ds.n() - ds.r();
-	if(out && print_tests() >= PRINT_MORE)
+	if(out && print_tests >= PRINT_MORE)
 		*out << ( result ? "passed" : "failed" );
 	if(!result) lresult = false;
 
-	if(out && print_tests() >= PRINT_MORE)
+	if(out && print_tests >= PRINT_MORE)
 		*out << std::endl;
 
 	if(!lresult) success = false;
-	if( out && print_tests() == PRINT_BASIC )
+	if( out && print_tests == PRINT_BASIC )
 		*out << " : " << ( lresult ? "passed" : "failed" );
 
 	//
 	// Perform the tests
 	//
 
-	if(out && print_tests() >= PRINT_BASIC)
+	if(out && print_tests >= PRINT_BASIC)
 		*out
 			<< "\n2) Check the compatibility of the vector spaces for Gc, Gh Z, Y, R, Uz, Uy, Vz and Vy  ...";
 	lresult = true;
 	
 	if(Z) {
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< "\n2.a) Check consistency of the vector spaces for:"
 				<< "\n    Z.space_cols() == Gc.space_cols() and Z.space_rows() == ds.space_null()";
 		llresult = true;
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << "\n\n2.a.1) Z->space_cols().is_compatible(Gc.space_cols()) == true : ";
 		result = Z->space_cols().is_compatible(Gc.space_cols());	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << "\n\n2.a.2) Z->space_cols().is_compatible(*ds.space_null()) == true : ";
 		result = Z->space_rows().is_compatible(*ds.space_null());	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
 		if(!llresult) lresult = false;
-		if( out && print_tests() == PRINT_MORE )
+		if( out && print_tests == PRINT_MORE )
 			*out << " : " << ( llresult ? "passed" : "failed" );
 	}
 
 	if(Y) {
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< "\n2.b) Check consistency of the vector spaces for:"
 				<< "\n    Y.space_cols() == Gc.space_cols() and Y.space_rows() == ds.space_range()";
 		llresult = true;
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << "\n\n2.b.1) Y->space_cols().is_compatible(Gc.space_cols()) == true : ";
 		result = Y->space_cols().is_compatible(Gc.space_cols());	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << "\n\n2.b.2) Y->space_cols().is_compatible(*ds.space_range()) == true : ";
 		result = Y->space_rows().is_compatible(*ds.space_range());	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
 		if(!llresult) lresult = false;
-		if( out && print_tests() == PRINT_MORE )
+		if( out && print_tests == PRINT_MORE )
 			*out << " : " << ( llresult ? "passed" : "failed" );
 	}
 
 	if(R) {
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< "\n2.c) Check consistency of the vector spaces for:"
-				<< "\n    R.space_cols() == Gc.space_cols()(con_decomp) and R.space_rows() == ds.space_range()";
+				<< "\n    R.space_cols() == Gc.space_cols()(equ_decomp) and R.space_rows() == ds.space_range()";
 		llresult = true;
-		if(out && print_tests() >= PRINT_ALL)
-			*out << "\n\n2.c.1) R->space_cols().is_compatible(*Gc.space_cols().sub_space(con_decomp)) == true : ";
-		result = R->space_cols().is_compatible(*Gc.space_cols().sub_space(con_decomp));	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
+			*out << "\n\n2.c.1) R->space_cols().is_compatible(*Gc.space_cols().sub_space(equ_decomp)) == true : ";
+		result = R->space_cols().is_compatible(*Gc.space_cols().sub_space(equ_decomp));	
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << "\n\n2.c.2) R->space_cols().is_compatible(*ds.space_range()) == true : ";
 		result = R->space_rows().is_compatible(*ds.space_range());	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
 		if(!llresult) lresult = false;
-		if( out && print_tests() == PRINT_MORE )
+		if( out && print_tests == PRINT_MORE )
 			*out << " : " << ( llresult ? "passed" : "failed" );
 	}
 
 	if(Uz) {
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< "\n2.d) Check consistency of the vector spaces for:"
-				<< "\n    Uz.space_cols() == Gc.space_cols()(con_undecomp) and Uz.space_rows() == ds.space_null()";
+				<< "\n    Uz.space_cols() == Gc.space_cols()(equ_undecomp) and Uz.space_rows() == ds.space_null()";
 		llresult = true;
-		if(out && print_tests() >= PRINT_ALL)
-			*out << "\n\n2.d.1) Uz->space_cols().is_compatible(*Gc.space_cols().sub_space(con_undecomp)) == true : ";
-		result = Uz->space_cols().is_compatible(*Gc.space_cols().sub_space(con_undecomp));	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
+			*out << "\n\n2.d.1) Uz->space_cols().is_compatible(*Gc.space_cols().sub_space(equ_undecomp)) == true : ";
+		result = Uz->space_cols().is_compatible(*Gc.space_cols().sub_space(equ_undecomp));	
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << "\n\n2.d.2) Uz->space_cols().is_compatible(*ds.space_null()) == true : ";
 		result = Uz->space_rows().is_compatible(*ds.space_null());	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
 		if(!llresult) lresult = false;
-		if( out && print_tests() == PRINT_MORE )
+		if( out && print_tests == PRINT_MORE )
 			*out << " : " << ( llresult ? "passed" : "failed" );
 	}
 
 	if(Uy) {
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< "\n2.e) Check consistency of the vector spaces for:"
-				<< "\n    Uy.space_cols() == Gc.space_cols()(con_undecomp) and Uy.space_rows() == ds.space_range()";
+				<< "\n    Uy.space_cols() == Gc.space_cols()(equ_undecomp) and Uy.space_rows() == ds.space_range()";
 		llresult = true;
-		if(out && print_tests() >= PRINT_ALL)
-			*out << "\n\n2.e.1) Uy->space_cols().is_compatible(*Gc.space_cols().sub_space(con_undecomp)) == true : ";
-		result = Uy->space_cols().is_compatible(*Gc.space_cols().sub_space(con_undecomp));	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
+			*out << "\n\n2.e.1) Uy->space_cols().is_compatible(*Gc.space_cols().sub_space(equ_undecomp)) == true : ";
+		result = Uy->space_cols().is_compatible(*Gc.space_cols().sub_space(equ_undecomp));	
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << "\n\n2.e.2) Uy->space_cols().is_compatible(*ds.space_range()) == true : ";
 		result = Uy->space_rows().is_compatible(*ds.space_range());	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
 		if(!llresult) lresult = false;
-		if( out && print_tests() == PRINT_MORE )
+		if( out && print_tests == PRINT_MORE )
 			*out << " : " << ( llresult ? "passed" : "failed" );
 	}
 
 	if(Vz) {
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< "\n2.f) Check consistency of the vector spaces for:"
 				<< "\n    Vz.space_cols() == Gh.space_cols() and Vz.space_rows() == ds.space_null()";
 		llresult = true;
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << "\n\n2.f.1) Vz->space_cols().is_compatible(Gh->space_cols()) == true : ";
 		result = Vz->space_cols().is_compatible(Gh->space_cols());	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << "\n\n2.f.2) Vz->space_cols().is_compatible(*ds.space_null()) == true : ";
 		result = Vz->space_rows().is_compatible(*ds.space_null());	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
 		if(!llresult) lresult = false;
-		if( out && print_tests() == PRINT_MORE )
+		if( out && print_tests == PRINT_MORE )
 			*out << " : " << ( llresult ? "passed" : "failed" );
 	}
 
 	if(Vy) {
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< "\n2.g) Check consistency of the vector spaces for:"
 				<< "\n    Vy.space_cols() == Gh.space_cols() and Vy.space_rows() == ds.space_range()";
 		llresult = true;
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << "\n\n2.g.1) Vy->space_cols().is_compatible(Gh->space_cols()) == true : ";
 		result = Vy->space_cols().is_compatible(Gh->space_cols());	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << "\n\n2.g.2) Vy->space_cols().is_compatible(*ds.space_range()) == true : ";
 		result = Vy->space_rows().is_compatible(*ds.space_range());	
-		if(out && print_tests() >= PRINT_ALL)
+		if(out && print_tests >= PRINT_ALL)
 			*out << ( result ? "passed" : "failed" )
 				 << std::endl;
 		if(!result) llresult = false;
 		if(!llresult) lresult = false;
-		if( out && print_tests() == PRINT_MORE )
+		if( out && print_tests == PRINT_MORE )
 			*out << " : " << ( llresult ? "passed" : "failed" );
 	}
 
 	if(!lresult) success = false;
-	if( out && print_tests() == PRINT_BASIC )
+	if( out && print_tests == PRINT_BASIC )
 		*out << " : " << ( lresult ? "passed" : "failed" );
 
-	if(out && print_tests() >= PRINT_BASIC)
+	if(out && print_tests >= PRINT_BASIC)
 		*out
 			<< "\n3) Check the compatibility of the matrices Gc, Gh Z, Y, R, Uz, Uy, Vz and Vy numerically ...";
 	
 	if(Z) {
 
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< std::endl
 				<< "\n3.a) Check consistency of:"
-				<< "\n     op ( alpha*[ Gc(:,con_decomp)'   ]"
-				<< "\n                [ Gc(:,con_undecomp)' ] * beta*Z ) * v"
+				<< "\n     op ( alpha*[ Gc(:,equ_decomp)'   ]"
+				<< "\n                [ Gc(:,equ_undecomp)' ] * beta*Z ) * v"
 				<< "\n         \\_____________________________________/"
 				<< "\n                         A"
 				<< "\n    ==  op( alpha*beta*[ 0  ]"
@@ -423,43 +426,43 @@ bool DecompositionSystemTester::test_decomp_system(
 			v_z       = ds.space_null()->create_member(),
 			v_z_tmp   = v_z->space().create_member();
 		
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out << "\n\n3.a.1) Testing non-transposed A*v == B*v ...";
-		if(out && print_tests() > PRINT_MORE)
+		if(out && print_tests > PRINT_MORE)
 			*out << std::endl;
 		llresult = true;
 		{for( int k = 1; k <= num_random_tests(); ++k ) {
 			random_vector( rand_y_l, rand_y_u, v_z.get() );
-			if(out && print_tests() >= PRINT_ALL) {
+			if(out && print_tests >= PRINT_ALL) {
 				*out
 					<< "\n3.a.1."<<k<<") random vector " << k << " ( ||v_z||_1 / n = " << (v_z->norm_1() / v_z->dim()) << " )\n";
-				if(dump_all() && print_tests() >= PRINT_ALL)
+				if(dump_all() && print_tests >= PRINT_ALL)
 					*out << "\nv_z =\n" << *v_z;
 			}
 			V_StMtV( v_x.get(), beta, *Z, no_trans, *v_z );
 			V_StMtV( v_c.get(), alpha, Gc, trans, *v_x );
-			*v_c_tmp->sub_view(con_decomp) = 0.0;
-			if(con_undecomp.size()) {
+			*v_c_tmp->sub_view(equ_decomp) = 0.0;
+			if(equ_undecomp.size()) {
 				if(Uz)
-					V_StMtV( v_c_tmp->sub_view(con_undecomp).get(), alpha*beta, *Uz, no_trans, *v_z );
+					V_StMtV( v_c_tmp->sub_view(equ_undecomp).get(), alpha*beta, *Uz, no_trans, *v_z );
 				else
-					*v_c_tmp->sub_view(con_undecomp).get() = *v_c->sub_view(con_undecomp);
+					*v_c_tmp->sub_view(equ_undecomp).get() = *v_c->sub_view(equ_undecomp);
 			}
 			const value_type
-				sum_Bv  = sum(*v_c_tmp), // should be zero if con_undecomp.size() == 0 so scale by 1.0
+				sum_Bv  = sum(*v_c_tmp), // should be zero if equ_undecomp.size() == 0 so scale by 1.0
 				sum_Av  = sum(*v_c);
 			assert_print_nan_inf(sum_Bv, "sum(B*v_z)",true,out);
 			assert_print_nan_inf(sum_Av, "sum(A*v_z)",true,out);
 			const value_type
 				calc_err = ::fabs( ( sum_Av - sum_Bv )
-								   /( ::fabs(sum_Av) + ::fabs(sum_Bv) + (con_undecomp.size() ? small_num : 1.0) ) );
-			if(out && print_tests() >= PRINT_ALL)
+								   /( ::fabs(sum_Av) + ::fabs(sum_Bv) + (equ_undecomp.size() ? small_num : 1.0) ) );
+			if(out && print_tests >= PRINT_ALL)
 				*out
 					<< "\nrel_err(sum(A*v_z),sum(B*v_z)) = "
 					<< "rel_err(" << sum_Av << "," << sum_Bv << ") = "
 					<< calc_err << std::endl;
 			if( calc_err >= mult_warning_tol() ) {
-				if(out && print_tests() >= PRINT_ALL)
+				if(out && print_tests >= PRINT_ALL)
 					*out
 						<< std::endl
 						<< ( calc_err >= mult_error_tol() ? "Error" : "Warning" )
@@ -472,7 +475,7 @@ bool DecompositionSystemTester::test_decomp_system(
 						<< ( calc_err >= mult_error_tol() ? mult_error_tol() : mult_warning_tol() )
 						<< std::endl;
 				if(calc_err >= mult_error_tol()) {
-					if(dump_all() && print_tests() >= PRINT_ALL) {
+					if(dump_all() && print_tests >= PRINT_ALL) {
 						*out << "\nalpha = " << alpha << std::endl;
 						*out << "\nbeta  = " << beta  << std::endl;
 						*out << "\nv_z =\n"           << *v_z;
@@ -485,29 +488,29 @@ bool DecompositionSystemTester::test_decomp_system(
 			}
 		}}
 		if(!llresult) lresult = false;
-		if( out && print_tests() == PRINT_MORE )
+		if( out && print_tests == PRINT_MORE )
 			*out << " : " << ( llresult ? "passed" : "failed" )
 				 << std::endl;
 		
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out << "\n\n3.a.2) Testing transposed A'*v == B'*v ...";
-		if(out && print_tests() > PRINT_MORE)
+		if(out && print_tests > PRINT_MORE)
 			*out << std::endl;
 		llresult = true;
 		{for( int k = 1; k <= num_random_tests(); ++k ) {
 			random_vector( rand_y_l, rand_y_u, v_c.get() );
-			if(out && print_tests() >= PRINT_ALL) {
+			if(out && print_tests >= PRINT_ALL) {
 				*out
 					<< "\n3.a.2."<<k<<") random vector " << k << " ( ||v_c||_1 / n = " << (v_c->norm_1() / v_c->dim()) << " )\n";
-				if(dump_all() && print_tests() >= PRINT_ALL)
+				if(dump_all() && print_tests >= PRINT_ALL)
 					*out << "\nv_c =\n" << *v_c;
 			}
 			V_StMtV( v_x.get(), alpha, Gc, no_trans, *v_c );
 			V_StMtV( v_z.get(), beta,  *Z, trans,    *v_x );
 			*v_z_tmp = 0.0;
-			if(con_undecomp.size()) {
+			if(equ_undecomp.size()) {
 				if(Uz)
-					V_StMtV( v_z_tmp.get(), alpha*beta, *Uz, trans, *v_c->sub_view(con_undecomp) );
+					V_StMtV( v_z_tmp.get(), alpha*beta, *Uz, trans, *v_c->sub_view(equ_undecomp) );
 				else
 					*v_z_tmp = *v_z;
 			}
@@ -518,14 +521,14 @@ bool DecompositionSystemTester::test_decomp_system(
 			assert_print_nan_inf(sum_Av, "sum(A'*v_c)",true,out);
 			const value_type
 				calc_err = ::fabs( ( sum_Av - sum_Bv )
-								   /( ::fabs(sum_Av) + ::fabs(sum_Bv) + (con_undecomp.size() ? small_num : 1.0) ) );
-			if(out && print_tests() >= PRINT_ALL)
+								   /( ::fabs(sum_Av) + ::fabs(sum_Bv) + (equ_undecomp.size() ? small_num : 1.0) ) );
+			if(out && print_tests >= PRINT_ALL)
 				*out
 					<< "\nrel_err(sum(A'*v_c),sum(B'*v_c)) = "
 					<< "rel_err(" << sum_Av << "," << sum_Bv << ") = "
 					<< calc_err << std::endl;
 			if( calc_err >= mult_warning_tol() ) {
-				if(out && print_tests() >= PRINT_ALL)
+				if(out && print_tests >= PRINT_ALL)
 					*out
 						<< std::endl
 						<< ( calc_err >= mult_error_tol() ? "Error" : "Warning" )
@@ -538,7 +541,7 @@ bool DecompositionSystemTester::test_decomp_system(
 						<< ( calc_err >= mult_error_tol() ? mult_error_tol() : mult_warning_tol() )
 						<< std::endl;
 				if(calc_err >= mult_error_tol()) {
-					if(dump_all() && print_tests() >= PRINT_ALL) {
+					if(dump_all() && print_tests >= PRINT_ALL) {
 						*out << "\nalpha = " << alpha << std::endl;
 						*out << "\nbeta  = " << beta  << std::endl;
 						*out << "\nv_c =\n"           << *v_c;
@@ -551,13 +554,13 @@ bool DecompositionSystemTester::test_decomp_system(
 			}
 		}}
 		if(!llresult) lresult = false;
-		if( out && print_tests() == PRINT_MORE )
+		if( out && print_tests == PRINT_MORE )
 			*out << " : " << ( llresult ? "passed" : "failed" )
 				 << std::endl;
 
 	}
 	else {
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< std::endl
 				<< "\n3.a) Warning! Z ==NULL; Z, and Uz are not checked numerically ...\n";
@@ -565,12 +568,12 @@ bool DecompositionSystemTester::test_decomp_system(
 
 	if(Y) {
 
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< std::endl
 				<< "\n3.b) Check consistency of:"
-				<< "\n     op ( alpha*[ Gc(:,con_decomp)'   ]"
-				<< "\n                [ Gc(:,con_undecomp)' ] * beta*Y ) * v"
+				<< "\n     op ( alpha*[ Gc(:,equ_decomp)'   ]"
+				<< "\n                [ Gc(:,equ_undecomp)' ] * beta*Y ) * v"
 				<< "\n         \\_____________________________________/"
 				<< "\n                         A"
 				<< "\n    ==  op( alpha*beta*[ R  ]"
@@ -587,27 +590,27 @@ bool DecompositionSystemTester::test_decomp_system(
 			v_y       = ds.space_range()->create_member(),
 			v_y_tmp   = v_y->space().create_member();
 		
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out << "\n\n3.b.1) Testing non-transposed A*v == B*v ...";
-		if(out && print_tests() > PRINT_MORE)
+		if(out && print_tests > PRINT_MORE)
 			*out << std::endl;
 		llresult = true;
 		{for( int k = 1; k <= num_random_tests(); ++k ) {
 			random_vector( rand_y_l, rand_y_u, v_y.get() );
-			if(out && print_tests() >= PRINT_ALL) {
+			if(out && print_tests >= PRINT_ALL) {
 				*out
 					<< "\n3.b.1."<<k<<") random vector " << k << " ( ||v_y||_1 / n = " << (v_y->norm_1() / v_y->dim()) << " )\n";
-				if(dump_all() && print_tests() >= PRINT_ALL)
+				if(dump_all() && print_tests >= PRINT_ALL)
 					*out << "\nv_y =\n" << *v_y;
 			}
 			V_StMtV( v_x.get(), beta, *Y, no_trans, *v_y );
 			V_StMtV( v_c.get(), alpha, Gc, trans, *v_x );
-			V_StMtV( v_c_tmp->sub_view(con_decomp).get(), alpha*beta, *R, no_trans, *v_y );
-			if(con_undecomp.size()) {
+			V_StMtV( v_c_tmp->sub_view(equ_decomp).get(), alpha*beta, *R, no_trans, *v_y );
+			if(equ_undecomp.size()) {
 				if(Uy)
-					V_StMtV( v_c_tmp->sub_view(con_undecomp).get(), alpha*beta, *Uy, no_trans, *v_y );
+					V_StMtV( v_c_tmp->sub_view(equ_undecomp).get(), alpha*beta, *Uy, no_trans, *v_y );
 				else
-					*v_c_tmp->sub_view(con_undecomp) = *v_c->sub_view(con_undecomp);
+					*v_c_tmp->sub_view(equ_undecomp) = *v_c->sub_view(equ_undecomp);
 			}
 			const value_type
 				sum_Bv  = sum(*v_c_tmp),
@@ -617,13 +620,13 @@ bool DecompositionSystemTester::test_decomp_system(
 			const value_type
 				calc_err = ::fabs( ( sum_Av - sum_Bv )
 								   /( ::fabs(sum_Av) + ::fabs(sum_Bv) + small_num ) );
-			if(out && print_tests() >= PRINT_ALL)
+			if(out && print_tests >= PRINT_ALL)
 				*out
 					<< "\nrel_err(sum(A*v_y),sum(B*v_y)) = "
 					<< "rel_err(" << sum_Av << "," << sum_Bv << ") = "
 					<< calc_err << std::endl;
 			if( calc_err >= mult_warning_tol() ) {
-				if(out && print_tests() >= PRINT_ALL)
+				if(out && print_tests >= PRINT_ALL)
 					*out
 						<< std::endl
 						<< ( calc_err >= mult_error_tol() ? "Error" : "Warning" )
@@ -636,7 +639,7 @@ bool DecompositionSystemTester::test_decomp_system(
 						<< ( calc_err >= mult_error_tol() ? mult_error_tol() : mult_warning_tol() )
 						<< std::endl;
 				if(calc_err >= mult_error_tol()) {
-					if(dump_all() && print_tests() >= PRINT_ALL) {
+					if(dump_all() && print_tests >= PRINT_ALL) {
 						*out << "\nalpha = " << alpha << std::endl;
 						*out << "\nbeta  = " << beta  << std::endl;
 						*out << "\nv_y =\n"           << *v_y;
@@ -649,29 +652,29 @@ bool DecompositionSystemTester::test_decomp_system(
 			}
 		}}
 		if(!llresult) lresult = false;
-		if( out && print_tests() == PRINT_MORE )
+		if( out && print_tests == PRINT_MORE )
 			*out << " : " << ( llresult ? "passed" : "failed" )
 				 << std::endl;
 		
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out << "\n\n3.b.2) Testing transposed A'*v == B'*v ...";
-		if(out && print_tests() > PRINT_MORE)
+		if(out && print_tests > PRINT_MORE)
 			*out << std::endl;
 		llresult = true;
 		{for( int k = 1; k <= num_random_tests(); ++k ) {
 			random_vector( rand_y_l, rand_y_u, v_c.get() );
-			if(out && print_tests() >= PRINT_ALL) {
+			if(out && print_tests >= PRINT_ALL) {
 				*out
 					<< "\n3.a.2."<<k<<") random vector " << k << " ( ||v_c||_1 / n = " << (v_c->norm_1() / v_c->dim()) << " )\n";
-				if(dump_all() && print_tests() >= PRINT_ALL)
+				if(dump_all() && print_tests >= PRINT_ALL)
 					*out << "\nv_c =\n" << *v_c;
 			}
 			V_StMtV( v_x.get(), alpha, Gc, no_trans, *v_c );
 			V_StMtV( v_y.get(), beta,  *Y, trans,    *v_x );
-			V_StMtV( v_y_tmp.get(), alpha*beta, *R, trans, *v_c->sub_view(con_decomp) );
-			if(con_undecomp.size()) {
+			V_StMtV( v_y_tmp.get(), alpha*beta, *R, trans, *v_c->sub_view(equ_decomp) );
+			if(equ_undecomp.size()) {
 				if(Uy)
-					Vp_StMtV( v_y_tmp.get(), alpha*beta, *Uy, trans, *v_c->sub_view(con_undecomp) );
+					Vp_StMtV( v_y_tmp.get(), alpha*beta, *Uy, trans, *v_c->sub_view(equ_undecomp) );
 				else
 					Vp_V( v_y_tmp.get(), *v_y );
 			}
@@ -683,13 +686,13 @@ bool DecompositionSystemTester::test_decomp_system(
 			const value_type
 				calc_err = ::fabs( ( sum_Av - sum_Bv )
 								   /( ::fabs(sum_Av) + ::fabs(sum_Bv) + small_num ) );
-			if(out && print_tests() >= PRINT_ALL)
+			if(out && print_tests >= PRINT_ALL)
 				*out
 					<< "\nrel_err(sum(A'*v_c),sum(B'*v_c)) = "
 					<< "rel_err(" << sum_Av << "," << sum_Bv << ") = "
 					<< calc_err << std::endl;
 			if( calc_err >= mult_warning_tol() ) {
-				if(out && print_tests() >= PRINT_ALL)
+				if(out && print_tests >= PRINT_ALL)
 					*out
 						<< std::endl
 						<< ( calc_err >= mult_error_tol() ? "Error" : "Warning" )
@@ -702,7 +705,7 @@ bool DecompositionSystemTester::test_decomp_system(
 						<< ( calc_err >= mult_error_tol() ? mult_error_tol() : mult_warning_tol() )
 						<< std::endl;
 				if(calc_err >= mult_error_tol()) {
-					if(dump_all() && print_tests() >= PRINT_ALL) {
+					if(dump_all() && print_tests >= PRINT_ALL) {
 						*out << "\nalpha = " << alpha << std::endl;
 						*out << "\nbeta  = " << beta  << std::endl;
 						*out << "\nv_c =\n"           << *v_c;
@@ -715,13 +718,13 @@ bool DecompositionSystemTester::test_decomp_system(
 			}
 		}}
 		if(!llresult) lresult = false;
-		if( out && print_tests() == PRINT_MORE )
+		if( out && print_tests == PRINT_MORE )
 			*out << " : " << ( llresult ? "passed" : "failed" )
 				 << std::endl;
 
 	}
 	else {
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< std::endl
 				<< "\n3.b) Warning! Y ==NULL; Y, R and Uy are not checked numerically ...\n";
@@ -730,14 +733,14 @@ bool DecompositionSystemTester::test_decomp_system(
 	assert(Vz == NULL && Vy == NULL); // ToDo: 3.c) Check Vz and Vy
 
 	if(R) {
-		if(out && print_tests() >= PRINT_MORE)
+		if(out && print_tests >= PRINT_MORE)
 			*out
 				<< std::endl
 				<< "\n3.b) Check consistency of: op(op(inv(R))*op(R)) == I ...\n";
 		typedef MatrixWithOpNonsingularTester  MWONST_t;
 		MWONST_t::EPrintTestLevel
 			olevel;
-		switch(print_tests()) {
+		switch(print_tests) {
 			case PRINT_NONE:
 			case PRINT_BASIC:
 				olevel = MWONST_t::PRINT_NONE;
@@ -765,15 +768,15 @@ bool DecompositionSystemTester::test_decomp_system(
 	}
 
 	if(!lresult) success = false;
-	if( out && print_tests() == PRINT_BASIC )
+	if( out && print_tests == PRINT_BASIC )
 		*out << " : " << ( lresult ? "passed" : "failed" );
 	
-	if( out && print_tests() != PRINT_NONE ) {
+	if( out && print_tests != PRINT_NONE ) {
 		if(success)
 			*out << "\nCongradulations! The DecompositionSystem object and its associated matrix objects seem to check out!\n";
 		else
 			*out << "\nOops! At last one of the tests did not check out!\n";
-		if( print_tests() >= PRINT_BASIC )
+		if( print_tests >= PRINT_BASIC )
 			*out << "\nEnd DecompositionSystemTester::test_decomp_system(...)\n";
 	}
 
