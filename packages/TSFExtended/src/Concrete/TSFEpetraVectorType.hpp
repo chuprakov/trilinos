@@ -94,12 +94,8 @@ namespace TSFExtended
     void print(ostream& os) const {os << describe();}
     //@}
 
-    /** \name Handleable interface */
-    //@{
-    /** Return a ref count pointer to a newly created object */
-    virtual RefCountPtr<VectorTypeExtensions<double> > getRcp() 
-    {return rcp(this);}
-    //@}
+    GET_RCP(VectorTypeExtensions<double>);
+
   };
   
 }

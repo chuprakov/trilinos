@@ -116,9 +116,7 @@ namespace TSFExtended
     /** Printable interface */
     virtual void print(ostream& os) const ;
 
-    /** Handleable interface */
-    virtual RefCountPtr<TSFCore::LinearOp<double> > getRcp()
-    {return rcp(this);}
+    GET_RCP(TSFCore::LinearOp<double>);
 
   protected:
      /** \name Allocators for domain and range spaces */

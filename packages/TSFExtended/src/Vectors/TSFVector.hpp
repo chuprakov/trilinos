@@ -96,11 +96,7 @@ namespace TSFExtended
     public:
       /** \name Constructors, Destructors, and Assignment Operators */
       //@{
-      /** empty ctor. Constructs a null vector */
-      Vector();
-
-      /** Construct with an existing smart pointer */
-      Vector(const RefCountPtr<TSFCore::Vector<Scalar> >& smartPtr);
+      HANDLE_CTORS(Vector<Scalar>, TSFCore::Vector<Scalar>);
 
 #ifndef DOXYGEN_DEVELOPER_ONLY
       /** Construct a vector from a 1-term LC */
@@ -249,16 +245,7 @@ namespace TSFExtended
 #endif
     };
 
-  template <class Scalar> inline 
-  Vector<Scalar>::Vector()
-    : Handle<TSFCore::Vector<Scalar> >()
-  {}
 
-
-  template <class Scalar> inline 
-  Vector<Scalar>::Vector(const RefCountPtr<TSFCore::Vector<Scalar> >& smartPtr)
-    : Handle<TSFCore::Vector<Scalar> >(smartPtr)
-  {}
 
   template <class Scalar> inline 
   const AccessibleVector<Scalar>* Vector<Scalar>::castToAccessible() const

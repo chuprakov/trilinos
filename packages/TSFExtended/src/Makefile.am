@@ -55,11 +55,12 @@ VECTORS_H = \
 VECTORS = 
 
 UTILS_H = \
-	$(srcdir)/Utils/TSFConfigDefs.hpp\
-	$(srcdir)/Utils/TSFDescribable.hpp\
-	$(srcdir)/Utils/TSFDouble.hpp\
-	$(srcdir)/Utils/TSFHandle.hpp\
-	$(srcdir)/Utils/TSFHandleable.hpp\
+	$(srcdir)/Utils/TSFConfigDefs.hpp \
+	$(srcdir)/Utils/TSFDescribable.hpp \
+	$(srcdir)/Utils/TSFDouble.hpp \
+	$(srcdir)/Utils/TSFHandle.hpp \
+	$(srcdir)/Utils/TSFHandleable.hpp \
+	$(srcdir)/Utils/TSFObjectWithVerbosity.hpp \
 	$(srcdir)/Utils/TSFPrintable.hpp
 
 UTILS = 

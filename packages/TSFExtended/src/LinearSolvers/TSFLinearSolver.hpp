@@ -40,14 +40,7 @@ namespace TSFExtended
   class LinearSolver : public Handle<LinearSolverBase<Scalar> >
   {
   public:
-    /** */
-    LinearSolver();
-
-    /** */
-    LinearSolver(Handleable<LinearSolverBase<Scalar> >* ptr);
-    
-    /** */
-    LinearSolver(const RefCountPtr<LinearSolverBase<Scalar> >& ptr);
+    HANDLE_CTORS(LinearSolver<Scalar>, LinearSolverBase<Scalar>);
 
     /** */
     SolverState<Scalar> solve(const LinearOperator<Scalar>& op,
@@ -64,23 +57,6 @@ namespace TSFExtended
     
   };
 
-  template <class Scalar> inline 
-  LinearSolver<Scalar>
-  ::LinearSolver()
-    : Handle<LinearSolverBase<Scalar> >()
-  {;}
-  
-  template <class Scalar> inline 
-  LinearSolver<Scalar>
-  ::LinearSolver(Handleable<LinearSolverBase<Scalar> >* ptr)
-    : Handle<LinearSolverBase<Scalar> >(ptr)
-  {;}
-  
-  template <class Scalar> inline 
-  LinearSolver<Scalar>
-  ::LinearSolver(const RefCountPtr<LinearSolverBase<Scalar> >& ptr)
-    : Handle<LinearSolverBase<Scalar> >(ptr)
-  {;}
   
   template <class Scalar> inline 
   SolverState<Scalar> LinearSolver<Scalar>

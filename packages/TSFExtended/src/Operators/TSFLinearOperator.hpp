@@ -51,14 +51,7 @@ namespace TSFExtended
     public:
       /** \name Constructors, Destructors, and Assignment Operators */
       //@{
-      /** empty ctor. Constructs a null operator */
-      LinearOperator();
-
-      /** Construct with an existing smart pointer */
-      LinearOperator(const RefCountPtr<TSFCore::LinearOp<Scalar> >& smartPtr);
-
-      /** Construct with a handleable raw pointer */
-      LinearOperator(Handleable<TSFCore::LinearOp<Scalar> >* rawPtr);
+      HANDLE_CTORS(LinearOperator<Scalar>, TSFCore::LinearOp<Scalar>);
       
       //@}
 
@@ -102,23 +95,7 @@ namespace TSFExtended
     private:
     };
 
-  template <class Scalar> inline 
-  LinearOperator<Scalar>::LinearOperator()
-    : Handle<TSFCore::LinearOp<Scalar> >()
-  {}
 
-
-  template <class Scalar> inline 
-  LinearOperator<Scalar>
-  ::LinearOperator(const RefCountPtr<TSFCore::LinearOp<Scalar> >& smartPtr)
-    : Handle<TSFCore::LinearOp<Scalar> >(smartPtr)
-  {}
-
-  template <class Scalar> inline 
-  LinearOperator<Scalar>
-  ::LinearOperator(Handleable<TSFCore::LinearOp<Scalar> >* ptr)
-    : Handle<const TSFCore::LinearOp<Scalar> >(ptr)
-  {}
 
   template <class Scalar> inline 
   void LinearOperator<Scalar>::apply(const Vector<Scalar>& in,

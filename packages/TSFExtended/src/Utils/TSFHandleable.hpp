@@ -34,6 +34,10 @@
 
 #ifndef DOXYGEN_DEVELOPER_ONLY
 
+#define GET_RCP(Base) \
+/** Handleable<##Base> interface */ \
+virtual RefCountPtr<Base > getRcp() {return rcp(this);}
+
 namespace TSFExtended
 {
   using namespace Teuchos;

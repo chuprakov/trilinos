@@ -33,8 +33,20 @@
 #include "TSFPrintable.hpp"
 #include "TSFDescribable.hpp"
 #include "TSFHandleable.hpp"
+#include "TSFObjectWithVerbosity.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 #include "Teuchos_MPIComm.hpp"
+
+
+
+#define HANDLE_CTORS(handle, contents) \
+/** Empty ctor */ \
+handle() : Handle<contents >() {;} \
+/** Construct a #handle with a raw pointer to a #contents */ \
+handle(Handleable<contents >* rawPtr) : Handle<contents >(rawPtr) {;} \
+/** Construct a #handle with a smart pointer to a #contents */ \
+handle(const RefCountPtr<contents >& smartPtr) : Handle<contents >(smartPtr){;}
+
 
 
 #ifndef DOXYGEN_DEVELOPER_ONLY
@@ -82,6 +94,47 @@ namespace TSFExtended
      */
     std::string describe() const ;
 
+    /** 
+     * Return the verbosity setting using the ObjectWithVerbosity
+     * interface. If the contents of the handle cannot be downcasted
+     * or crosscasted into an ObjectWithVerbosity, an exception will
+     * be thrown. 
+     */
+    VerbositySetting verbosity() const 
+    {
+      const ObjectWithVerbosity<PointerType>* v 
+        = dynamic_cast<const ObjectWithVerbosity<PointerType>*>(ptr_.get());
+      
+      TEST_FOR_EXCEPTION(v==0, std::runtime_error,
+                         "Attempted to cast non-verbose "
+                         "pointer to an ObjectWithVerbosity");
+      return v->verbosity();
+    }
+
+    /** 
+     * Return a writeable reference to 
+     * the verbosity setting using the ObjectWithVerbosity
+     * interface. If the contents of the handle cannot be downcasted
+     * or crosscasted into an ObjectWithVerbosity, an exception will
+     * be thrown. 
+     */
+    VerbositySetting& verbosity() 
+    {
+      ObjectWithVerbosity<PointerType>* v 
+        = dynamic_cast<ObjectWithVerbosity<PointerType>*>(ptr_.get());
+      
+      TEST_FOR_EXCEPTION(v==0, std::runtime_error,
+                         "Attempted to cast non-verbose "
+                         "pointer to an ObjectWithVerbosity");
+      return v->verbosity();
+    }
+
+    /** */
+    static VerbositySetting& classVerbosity() 
+    {
+      return PointerType::classVerbosity();
+    }
+
   private:
     RefCountPtr<PointerType> ptr_;
   };
@@ -119,6 +172,9 @@ ostream& operator<<(ostream& os, const TSFExtended::Handle<PointerType>& h)
   return os;
 }
 
+#define STREAM_OUT(handleType) \
+inline ostream& operator<<(ostream& os, const handleType& h) \
+{h.print(os); return os;}
 
 #endif  /* DOXYGEN_DEVELOPER_ONLY */
 

@@ -42,8 +42,8 @@ namespace TSFExtended
   class VectorType : public Handle<VectorTypeExtensions<Scalar> >
   {
   public:
-    /** */
-    VectorType(Handleable<VectorTypeExtensions<Scalar> >* ptr);
+    HANDLE_CTORS(VectorType<Scalar>, VectorTypeExtensions<Scalar>);
+   
 
     /** Create a vector space in which all elements are replicated on
      * all processors. This is used when creating multivector-based
@@ -70,10 +70,7 @@ namespace TSFExtended
     
   };
 
-  template <class Scalar> inline 
-  VectorType<Scalar>::VectorType(Handleable<VectorTypeExtensions<Scalar> >* ptr)
-    : Handle<VectorTypeExtensions<Scalar> >(ptr)
-  {;}
+
 
 
   template <class Scalar> inline 

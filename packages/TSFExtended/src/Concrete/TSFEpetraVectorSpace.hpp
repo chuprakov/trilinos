@@ -66,9 +66,7 @@ namespace TSFExtended
       string describe() const ;
       //@}
 
-      /** \name Handleable interface */
-      virtual RefCountPtr<const TSFCore::VectorSpace<double> > getRcp() 
-      {return rcp(this);}
+      GET_RCP(const TSFCore::VectorSpace<double>);
     };
   
 }

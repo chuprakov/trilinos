@@ -44,15 +44,7 @@ namespace TSFExtended
                       public TSFCore::VectorSpace<Scalar>
   {
   public:
-    /** Empty ctor */
-    VectorSpace();
-
-    /** Construct with a raw pointer to a concrete type. Note that the
-     * type must implement the Handleable interface. */
-    VectorSpace(Handleable<const TSFCore::VectorSpace<Scalar> >* rawPtr);
-
-    /** Construct with a smart pointer to a TSFCore vector space */
-    VectorSpace(const RefCountPtr<const TSFCore::VectorSpace<Scalar> >& smartPtr);
+    HANDLE_CTORS(VectorSpace<Scalar>, const TSFCore::VectorSpace<Scalar>);
     
     /** Create a new element of this vector space */
     RefCountPtr<TSFCore::Vector<Scalar> > createMember() const 
@@ -76,20 +68,20 @@ namespace TSFExtended
   };
   
 
-  template <class Scalar> inline 
-  VectorSpace<Scalar>::VectorSpace()
-    : Handle<const TSFCore::VectorSpace<Scalar> >()
-  {}
+  // template <class Scalar> inline 
+//   VectorSpace<Scalar>::VectorSpace()
+//     : Handle<const TSFCore::VectorSpace<Scalar> >()
+//   {}
 
-  template <class Scalar> inline 
-  VectorSpace<Scalar>::VectorSpace(Handleable<const TSFCore::VectorSpace<Scalar> >* ptr)
-    : Handle<const TSFCore::VectorSpace<Scalar> >(ptr)
-  {}
+//   template <class Scalar> inline 
+//   VectorSpace<Scalar>::VectorSpace(Handleable<const TSFCore::VectorSpace<Scalar> >* ptr)
+//     : Handle<const TSFCore::VectorSpace<Scalar> >(ptr)
+//   {}
 
-  template <class Scalar> inline 
-  VectorSpace<Scalar>::VectorSpace(const RefCountPtr<const TSFCore::VectorSpace<Scalar> >& smartPtr)
-    : Handle<const TSFCore::VectorSpace<Scalar> >(smartPtr)
-  {}
+//   template <class Scalar> inline 
+//   VectorSpace<Scalar>::VectorSpace(const RefCountPtr<const TSFCore::VectorSpace<Scalar> >& smartPtr)
+//     : Handle<const TSFCore::VectorSpace<Scalar> >(smartPtr)
+//   {}
 }
 
 
