@@ -45,9 +45,26 @@ void sig_handler_interrupt_algorithm( int signum )
 
 namespace {
 
+// Helper functions
+
 template< class T >
 inline
 T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
+
+// Private static data for IterationPack::Algorithm.
+// I put it here so that I can modify it without affecting the
+// header file and avoiding unnecessary recompilations.
+
+enum EInterruptStatus { NOT_INTERRUPTED=0, STOP_END_STEP=1, STOP_END_ITER=2, ABORT_PROGRAM=3 };
+
+int static_mpi_initialized = false;
+int static_num_running_algorithms = 0;
+int static_num_proc = 0; // Flag that no algorithm has been even allocated yet!
+int static_proc_rank = 0;
+bool static_interrupt_called = false;
+bool static_processed_user_interrupt = false;
+EInterruptStatus static_interrupt_status = NOT_INTERRUPTED;
+bool static_interrupt_terminate_return = true;
 
 } // end namespace
 
@@ -64,19 +81,30 @@ Algorithm::Algorithm()
 	,next_step_name_(0), do_step_next_called_(false), reconfigured_(false)
 	,time_stats_computed_(false)
 {
-	// Register the signal handler for the SIGINT
-	signal( SIGINT, &sig_handler_interrupt_algorithm );
-	interrupt_called_ = false;
-	processed_user_interrupt_ = false;
 	// Set MPI info
-	num_proc_ = 1;
-	proc_rank_ = 0;
+	static_num_proc = 1;
+	static_proc_rank = 0;
 #ifdef HAVE_MPI
+	// If MPI is not initialized then this must be because the code was
+	// compiled with support for MPI but it not actually using it.
+	// Therefore, we will initialize MPI but not bother to finialize it.
+	if(!static_mpi_initialized) {
+		int mpi_initialized = false;
+		MPI_Initialized(&mpi_initialized);
+		if(!mpi_initialized) {
+			int argc = 1;
+			char arg_str[] = "dummy_prg";
+			char *arg_str_ptr = arg_str;
+			char **argv = &arg_str_ptr;
+			MPI_Init( &argc, &argv );
+		}
+		static_mpi_initialized = true;
+	}
 	// ToDo: Allow the specification of another communicator if needed!
-	MPI_Comm_size( MPI_COMM_WORLD, &num_proc_ );
-	MPI_Comm_rank( MPI_COMM_WORLD, &proc_rank_ );
+	MPI_Comm_size( MPI_COMM_WORLD, &static_num_proc );
+	MPI_Comm_rank( MPI_COMM_WORLD, &static_proc_rank );
 #ifdef ITERATION_PACK_ALGORITHM_SHOW_MPI_DEBUG_INFO
-	std::cerr << "\np=" << proc_rank_ << ": Algorithm::Algorithm() being called (num_proc = "<<num_proc_<<") ... \n";
+	std::cerr << "\np=" << static_proc_rank << ": Algorithm::Algorithm() being called (num_proc = "<<static_num_proc<<") ... \n";
 #endif
 #endif // HAVE_MPI
 }
@@ -279,7 +307,7 @@ void Algorithm::begin_config_update()
 	validate_in_state(RUNNING);
 	saved_next_step_name_ = *next_step_name_;
 	saved_curr_step_name_ = steps_[curr_step_poss_ - 1].name;
-	running_state_ = RUNNING_BEING_CONFIGURED;
+	change_running_state(RUNNING_BEING_CONFIGURED);
 }
 
 void Algorithm::end_config_update()
@@ -310,7 +338,7 @@ void Algorithm::end_config_update()
 		}
 	}
 
-	running_state_ = RUNNING;
+	change_running_state(RUNNING);
 	reconfigured_ = true;
 }
 
@@ -377,7 +405,7 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 	try{
 	
 	terminate_status_ = STATUS_KEEP_RUNNING;
-	running_state_ = RUNNING;
+	change_running_state(RUNNING);
 
 	first_k_ = state().k();
 	next_step_poss_ = validate(step_poss);
@@ -425,11 +453,11 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 		// See if a step object called terminate(...)
 		if(terminate_status_ != STATUS_KEEP_RUNNING) {
 			EAlgoReturn algo_return;
-			if( interrupt_status_ == STOP_END_STEP ) {
+			if( static_interrupt_status == STOP_END_STEP ) {
 				algo_return = ( terminate_status_ == STATUS_TERMINATE_TRUE
 												? INTERRUPTED_TERMINATE_TRUE
 												: INTERRUPTED_TERMINATE_FALSE );
-				interrupt_status_ = NOT_INTERRUPTED;
+				static_interrupt_status = NOT_INTERRUPTED;
 			}
 			else {
 				algo_return = ( terminate_status_ == STATUS_TERMINATE_TRUE
@@ -437,7 +465,7 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 												: TERMINATE_FALSE );
 			}
 			track().output_final(*this,algo_return);
-			running_state_ = NOT_RUNNING;
+			change_running_state(NOT_RUNNING);
 			return algo_return;
 		}
 
@@ -454,23 +482,23 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 
 				// Check if the maximum number of iterations has been exceeded.
 				if( state().k() - first_k_ >= max_iter() ) {
-					running_state_ = NOT_RUNNING;
+					change_running_state(NOT_RUNNING);
 					track().output_final(*this,MAX_ITER_EXCEEDED);
 					return MAX_ITER_EXCEEDED;
 				}
 
 				// Check if the maximum runtime has been exceeded.
 				if( overall_timer.read() / 60 >= max_run_time() ) {
-					running_state_ = NOT_RUNNING;
+					change_running_state(NOT_RUNNING);
 					track().output_final(*this,MAX_RUN_TIME_EXCEEDED);
 					return MAX_RUN_TIME_EXCEEDED;
 				}
 
 				// Set if the algorithm was interrupted
-				if( interrupt_status_ == STOP_END_ITER ) {
-					running_state_ = NOT_RUNNING;
-					interrupt_status_ = NOT_INTERRUPTED;
-					const EAlgoReturn algo_return = ( interruptTerminateReturn_
+				if( static_interrupt_status == STOP_END_ITER ) {
+					change_running_state(NOT_RUNNING);
+					static_interrupt_status = NOT_INTERRUPTED;
+					const EAlgoReturn algo_return = ( static_interrupt_terminate_return
 																						? INTERRUPTED_TERMINATE_TRUE
 																						: INTERRUPTED_TERMINATE_FALSE );
 					track().output_final(*this,algo_return);
@@ -510,7 +538,7 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 
 	}	// end try
 	catch(...) {
-		running_state_ = NOT_RUNNING;
+		change_running_state(NOT_RUNNING);
 		track().output_final( *this,TERMINATE_FALSE );  // This may also throw an exception?
 		throw;
 	}
@@ -757,23 +785,46 @@ void Algorithm::compute_final_time_stats() const
 
 // private
 
-void Algorithm::validate_in_state(ERunningState running_state) const {
+void Algorithm::change_running_state(ERunningState _running_state)
+{
+	if( running_state() != RUNNING && _running_state == RUNNING ) {
+		if( static_num_running_algorithms == 0 ) {
+			// Register the signal handler for the SIGINT
+			signal( SIGINT, &sig_handler_interrupt_algorithm );
+			static_interrupt_called = false;
+			static_processed_user_interrupt = false;
+		}
+		++static_num_running_algorithms;
+	}
+	else if( running_state() != NOT_RUNNING && _running_state == NOT_RUNNING ) {
+		--static_num_running_algorithms;
+		if( static_num_running_algorithms == 0 ) {
+			// Put back the default signal handler
+			signal( SIGINT, SIG_DFL );
+			static_interrupt_called = false;
+			static_processed_user_interrupt = false;
+		}
+	}
+	running_state_ = _running_state;
+}
+
+void Algorithm::validate_in_state(ERunningState _running_state) const {
 	const char running_state_name[3][25] = { "NOT_RUNNING" , "RUNNING", "RUNNING_BEING_CONFIGURED" };
-	if(running_state_ != running_state)
+	if(running_state() != _running_state)
 		TEST_FOR_EXCEPTION(
 			true, InvalidRunningState
 			,"Algorithm::validate_in_state(...) : The condition running_state() == "
-			<< running_state_name[running_state_] << " has been violated with "
-			<< " running_state() = " << running_state_name[running_state] );
+			<< running_state_name[running_state()] << " has been violated with "
+			<< " running_state = " << running_state_name[_running_state] );
 }
 
-void Algorithm::validate_not_in_state(ERunningState running_state) const {
+void Algorithm::validate_not_in_state(ERunningState _running_state) const {
 	const char running_state_name[3][25] = { "NOT_RUNNING" , "RUNNING", "RUNNING_BEING_CONFIGURED" };
-	if(running_state_ == running_state)
+	if(running_state() == _running_state)
 		TEST_FOR_EXCEPTION(
 			true, InvalidRunningState
 			,"Algorithm::validate_not_in_state(...) : The condition running_state() != "
-			<< running_state_name[running_state_] << " has been violated" );
+			<< running_state_name[running_state()] << " has been violated" );
 }
 
 void Algorithm::validate_not_curr_step(poss_type step_poss) const {
@@ -825,8 +876,8 @@ bool Algorithm::imp_do_step(poss_type step_poss) {
 	if( !imp_do_assoc_steps(POST_STEP) ) return false;
 	// if you get here all the pre steps, step, and post steps returned true.
 	look_for_interrupt();
-	if( interrupt_status_ == STOP_END_STEP ) {
-		terminate( interruptTerminateReturn_ );
+	if( static_interrupt_status == STOP_END_STEP ) {
+		terminate( static_interrupt_terminate_return );
 		return false;
 	}
 	return true;
@@ -938,79 +989,91 @@ void Algorithm::look_for_interrupt()
 	//
 	// Get the mode of aborting from the user!
 	//
-	if( interrupt_called_ && !processed_user_interrupt_ && proc_rank_ == 0 ) {
+	if( static_interrupt_called && !static_processed_user_interrupt && static_proc_rank == 0 ) {
+		// Allow for another interrupt possibly
+		static_interrupt_called = false;
 		//
 		// Get the response from the user
 		//
-		enum EResponse { R_STOP_END_STEP, R_STOP_END_ITER, R_ABORT_NOW };
+		enum EResponse { R_ABORT_NOW, R_CONTINUE, R_STOP_END_STEP, R_STOP_END_ITER };
 		EResponse response = R_ABORT_NOW;
 		const int max_tries = 3;
 		bool valid_response = false;
 		for( int tries = 0; !valid_response && tries < max_tries; ++tries ) {
 			std::cerr
-				<< "\np="<<proc_rank_<<": IterationPack::Algorithm::interrupt(): Received signal SIGINT: Do you want to:\n"
-				<< "  (a) Gracefully terminate the algorithm at the end of this step?\n"
-				<< "  (b) Gracefully terminate the algorithm at the end of this iteration?\n"
-				<< "  (c) Abort the program immediately?\n"
-				<< "Answer a, b or c ? ";
+				<< "\nIterationPack::Algorithm: Received signal SIGINT."
+				<< "\nJust completed current step curr_step_name = \""
+				<< get_step_name(curr_step_poss_) << "\",  curr_step_poss = "
+				<< curr_step_poss_ << " of steps [1..." << num_steps() << "]."
+				<< "\nDo you want to:\n"
+				<< "  (a) Abort the program immediately?\n"
+				<< "  (c) Continue with the algorithm?\n"
+				<< "  (s) Gracefully terminate the algorithm at the end of this step?\n"
+				<< "  (i) Gracefully terminate the algorithm at the end of this iteration?\n"
+				<< "Answer a, c, s or i ? ";
 			char c_response;
 			std::cin >> c_response;
-			if( c_response == 'a' || c_response == 'b' ) {
-				if( c_response == 'a')
+			if( c_response == 'a' ) {
+				response = R_ABORT_NOW;
+				valid_response = true;
+			}
+			if( c_response == 'c' ) {
+				response = R_CONTINUE;
+				valid_response = true;
+			}
+			else if( c_response == 's' || c_response == 'i' ) {
+				if( c_response == 's')
 					response = R_STOP_END_STEP;
 				else
 					response = R_STOP_END_ITER;
 				std::cerr
-					<< "\np="<<proc_rank_<<": Terminate the algorithm with true (t) or false (f) ? ";
+					<< "\nTerminate the algorithm with true (t) or false (f) ? ";
 				std::cin >> c_response;
 				if( c_response == 't' ) {
-					interruptTerminateReturn_ = true;
+					static_interrupt_terminate_return = true;
 					valid_response = true;
 				}
 				else if( c_response == 'f' ) {
-					interruptTerminateReturn_ = false;
+					static_interrupt_terminate_return = false;
 					valid_response = true;
 				}
 				else {
-					std::cerr	<< "p="<<proc_rank_<<": Invalid response! Expecting \'t\' or \'f\'\n";
+					std::cerr	<< "Invalid response! Expecting \'t\' or \'f\'\n";
 				}
-				if(valid_response) {
-					// ToDo: Write a file if needed (must syn up processors here)!
-				}
-			}
-			else if( c_response == 'c' ) {
-					response = R_ABORT_NOW;
-					valid_response = true;
 			}
 			else {
-				std::cerr	<< "\np="<<proc_rank_<<": Invalid response! Expecting \'a\', \'b\' or \'c\'\n";
+				std::cerr	<< "\nInvalid response! Expecting \'a\', \'c\', \'s\' or \'i\'\n";
 			}
 			std::cerr << std::endl;
 		}
 		if(!valid_response) {
-			std::cerr << "p="<<proc_rank_<<": Three strikes, you are out!\n";
+			std::cerr << "Three strikes, you are out!\n";
 		}
 		//
 		// Interpret the response
 		//
 		switch(response) {
+			case R_ABORT_NOW: {
+				static_interrupt_status = ABORT_PROGRAM;
+				break;
+			}
+			case R_CONTINUE: {
+				static_interrupt_status = NOT_INTERRUPTED;
+				break;
+			}
 			case R_STOP_END_STEP: {
-				interrupt_status_ = STOP_END_STEP;
+				static_interrupt_status = STOP_END_STEP;
 				break;
 			}
 			case R_STOP_END_ITER: {
-				interrupt_status_ = STOP_END_ITER;
-				break;
-			}
-			case R_ABORT_NOW: {
-				interrupt_status_ = ABORT_PROGRAM;
+				static_interrupt_status = STOP_END_ITER;
 				break;
 			}
 			default: {
 				assert(0);
 			}
 		}
-		processed_user_interrupt_ = true;
+		static_processed_user_interrupt = true;
 	}
 	//
 	// Make sure that all of the processes get the same
@@ -1018,7 +1081,7 @@ void Algorithm::look_for_interrupt()
 	//
 #ifdef HAVE_MPI
 	const bool query_for_interrupt = true; // ToDo: Make this an external option!
-	if( num_proc_ > 1 && query_for_interrupt ) {
+	if( static_num_proc > 1 && query_for_interrupt ) {
 		//
 		// Here we will do a global reduction to see of a processor has
 		// recieved an interrupt.  Here we will do a sum since only the
@@ -1026,13 +1089,13 @@ void Algorithm::look_for_interrupt()
 		//
 		int sendbuf[2] = { 0, 0 };
 		int recvbuf[2] = { 0, 0 };
-		if( proc_rank_ == 0 ) {
-			sendbuf[0] = (int)interrupt_status_;
-			sendbuf[1] = interruptTerminateReturn_ ? 1 : 0;
+		if( static_proc_rank == 0 ) {
+			sendbuf[0] = (int)static_interrupt_status;
+			sendbuf[1] = static_interrupt_terminate_return ? 1 : 0;
 		}
 		// Note: this global reduction will synchronize all of the processors!
 #ifdef ITERATION_PACK_ALGORITHM_SHOW_MPI_DEBUG_INFO
-		std::cerr	<< "\np="<<proc_rank_<<": IterationPack::Algorithm::interrupt(): Calling MPI_Allreduce(...) ...\n";
+		std::cerr	<< "\np="<<static_proc_rank<<": IterationPack::Algorithm::interrupt(): Calling MPI_Allreduce(...) ...\n";
 #endif
 		MPI_Allreduce(
 			sendbuf                  // sendbuf
@@ -1044,38 +1107,38 @@ void Algorithm::look_for_interrupt()
 			);
 #ifdef ITERATION_PACK_ALGORITHM_SHOW_MPI_DEBUG_INFO
 		std::cerr
-			<< "\np="<<proc_rank_<<": IterationPack::Algorithm::interrupt(): After MPI_Allreduce(...)"
-			<< "\np="<<proc_rank_<<": recvbuf[0] = " << recvbuf[0] << ", recvbuf[1] = " << recvbuf[1] << std::endl;
+			<< "\np="<<static_proc_rank<<": IterationPack::Algorithm::interrupt(): After MPI_Allreduce(...)"
+			<< "\np="<<static_proc_rank<<": recvbuf[0] = " << recvbuf[0] << ", recvbuf[1] = " << recvbuf[1] << std::endl;
 #endif
-		// Set interrupt_status_
+		// Set static_interrupt_status
 		switch( (EInterruptStatus)recvbuf[0] ) {
 			case NOT_INTERRUPTED:
-				interrupt_status_ = NOT_INTERRUPTED;
+				static_interrupt_status = NOT_INTERRUPTED;
 				break;
 			case STOP_END_STEP:
-				interrupt_status_ = STOP_END_STEP;
+				static_interrupt_status = STOP_END_STEP;
 				break;
 			case STOP_END_ITER:
-				interrupt_status_ = STOP_END_ITER;
+				static_interrupt_status = STOP_END_ITER;
 				break;
 			case ABORT_PROGRAM:
-				interrupt_status_ = ABORT_PROGRAM;
+				static_interrupt_status = ABORT_PROGRAM;
 				break;
 			default:
 				std::cerr
-					<< "p=" << proc_rank_ << ": Algorithm::look_for_interrupt(): Error, the globally reduced value of "
+					<< "p=" << static_proc_rank << ": Algorithm::look_for_interrupt(): Error, the globally reduced value of "
 					"recvbuf[0] = " << recvbuf[0] << " is not valid!";
 				abort();
 		}
-		// Set interruptTerminateReturn_
-		interruptTerminateReturn_ = ( recvbuf[1] == 0 ? false : true );
+		// Set static_interrupt_terminate_return
+		static_interrupt_terminate_return = ( recvbuf[1] == 0 ? false : true );
 	}
 	//
 	// Abort the program now if the user did not already press Ctrl-C again!
 	//
-	if( interrupt_status_ == ABORT_PROGRAM ) {
-		if( proc_rank_ == 0 ) {
-			std::cerr << "\np=" << proc_rank_ << ": Aborting the program now!\n";
+	if( static_interrupt_status == ABORT_PROGRAM ) {
+		if( static_proc_rank == 0 ) {
+			std::cerr << "\nAborting the program now!\n";
 		}
 		abort();
 	}
@@ -1084,23 +1147,11 @@ void Algorithm::look_for_interrupt()
 
 // static
 
-int Algorithm::num_proc_ = 0; // Flag that an Algorithm object has not be allocated yet!
-
-int Algorithm::proc_rank_ = 0;
-
-bool Algorithm::interrupt_called_ = false;
-
-bool Algorithm::processed_user_interrupt_ = false;
-
-Algorithm::EInterruptStatus Algorithm::interrupt_status_ = Algorithm::NOT_INTERRUPTED;
-
-bool Algorithm::interruptTerminateReturn_ = true;
-
 void Algorithm::interrupt()
 {
-	processed_user_interrupt_ = false;
+	static_processed_user_interrupt = false;
 #ifdef ITERATION_PACK_ALGORITHM_SHOW_MPI_DEBUG_INFO
-	std::cerr	<< "\np="<<proc_rank_<<": IterationPack::Algorithm::interrupt() called!\n";
+	std::cerr	<< "\np="<<static_proc_rank<<": IterationPack::Algorithm::interrupt() called!\n";
 #endif
 	//
 	// This function assumes that every process will recieve the same
@@ -1119,8 +1170,8 @@ void Algorithm::interrupt()
 	//
 	// See if an algorithm is possibly even running yet!
 	//
-	if( num_proc_ == 0 ) {
-		if( proc_rank_ == 0 )
+	if( static_num_proc == 0 ) {
+		if( static_proc_rank == 0 )
 			std::cerr
 				<< "\nIterationPack::Algorithm::interrupt(): Received signal SIGINT but an Algorithm "
 				<< "object has not been allocated yet and no algorithm is running.\n"
@@ -1132,11 +1183,11 @@ void Algorithm::interrupt()
 	// See if we are going to query for an interrupt when running in MPI mode
 	//
 	const bool query_for_interrupt = true; // ToDo: Make this an external option!
-	if( !query_for_interrupt && num_proc_ > 1 ) {
-		if( proc_rank_ == 0 )
+	if( !query_for_interrupt && static_num_proc > 1 ) {
+		if( static_proc_rank == 0 )
 			std::cerr
 				<< "\nIterationPack::Algorithm::interrupt(): Received signal SIGINT but num_proc = "
-				<< num_proc_ << " > 1 and query_for_interrupt = false so:\n"
+				<< static_num_proc << " > 1 and query_for_interrupt = false so:\n"
 				<< "\nAborting the program now!\n";
 		abort();
 		return;  // Should not be called!
@@ -1144,12 +1195,12 @@ void Algorithm::interrupt()
 	//
 	// Remember that this interrupt has been called!
 	//
-	if( proc_rank_ == 0 )
+	if( static_proc_rank == 0 )
 		std::cerr
 			<< "\nIterationPack::Algorithm::interrupt(): Received signal SIGINT.  "
 			<< "Wait for the end of the current step and respond to an interactive query,  "
 			<< "kill the process by sending another signal (i.e. SIGKILL).\n";
-	interrupt_called_ = true;
+	static_interrupt_called = true;
 }
 
 } // end namespace IterationPack

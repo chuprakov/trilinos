@@ -701,9 +701,6 @@ private:
 	///
 	enum { NUM_STEP_TIME_STATS = 5 };
 
-	///
-	enum EInterruptStatus { NOT_INTERRUPTED=0, STOP_END_STEP=1, STOP_END_ITER=2, ABORT_PROGRAM=3 };
-
 	// /////////////////////////////////////////////////////
 	// Private data members
 
@@ -726,10 +723,14 @@ private:
 	ERunningState			running_state_;
 	// The state this Algorithm object is in:
 	//
-	// NOT_RUNNING					do_algorithm() has not been called.
-	// RUNNING						do_algorithm() has been called.
-	// RUNNING_BEING_CONFIGURED		do_algorithm() is active and begin_config_update() has been called
+	// NOT_RUNNING    do_algorithm() is not active.
+	// RUNNING        do_algorithm() has been called and is active.
+	// RUNNING_BEING_CONFIGURED
+	//                do_algorithm() is active and begin_config_update() has been called
 	//								but end_config_update() has not.
+	//
+	// Note: Only change this variable through the private function change_running_state(...)
+	// unless you are 100% sure that you know what you are doing!
 
 	size_t					first_k_;
 	// The first iteration from state().k().
@@ -813,24 +814,6 @@ private:
 	mutable double total_time_;
 	// Records the total computed time for the algorithm.
 
-	static int num_proc_;
-	// The number of processors (only meaningful if MPI is being used)
-
-	static int proc_rank_;
-	// Which processor this is (only meaningfull if MPI is being used)
-
-	static bool interrupt_called_;
-	// A flag for if an interrupt is called
-
-	static bool processed_user_interrupt_;
-	// A flag for if the user has already selected the interrupt mode
-
-	static EInterruptStatus interrupt_status_;
-	// Records if the process was interupted or not.
-
-	static bool interruptTerminateReturn_;
-	// Records if the algorithm is to be terminated with true or false
-
 	// /////////////////////////////////////////////////////
 	// Private member functions
 
@@ -839,6 +822,9 @@ private:
 
 	/// Validate an assoc_step_poss and throw a DoesNotExist exception if it does not.
 	poss_type validate(const assoc_steps_ele_list_t& assoc_list, poss_type assoc_step_poss, int past_end = 0) const;
+
+	/// Change the running state
+	void change_running_state(ERunningState running_state);
 
 	/// Validate that <tt>this</tt> is in a specific running state.
 	void validate_in_state(ERunningState running_state) const;
