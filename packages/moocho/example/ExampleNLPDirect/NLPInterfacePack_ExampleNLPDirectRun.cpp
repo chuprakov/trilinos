@@ -29,11 +29,16 @@
 
 #include "ExampleNLPFirstOrderDirectRun.h"
 #include "ExampleNLPFirstOrderDirect.h"
+#include "ReducedSpaceSQPPack/include/rSQPAlgoClientInterface.h"
+#include "ReducedSpaceSQPPack/Configurations/MamaJama/rsqp_mama_jama_solve.h"
+#include "GeneralIterationPack/include/AlgorithmTrack.h"
 #include "NLPInterfacePack/test/test_nlp_first_order_direct.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "AbstractLinAlgPack/include/BasisSystem.h"
 #include "OptionsFromStream.h"
 
-bool NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
+ReducedSpaceSQPPack::mama_jama_solve_return_t
+NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	const VectorSpace&   vec_space
 	,value_type          xo
 	,bool                has_bounds
@@ -48,8 +53,10 @@ bool NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	using rcp::ref_count_ptr;
 	namespace ofsp = OptionsFromStreamPack;
 	using ofsp::OptionsFromStream;
+	namespace rsqp = ReducedSpaceSQPPack;
+	typedef rsqp::mama_jama_solve_return_t  solve_return_t;
 
-	bool prog_return = true;
+	solve_return_t solve_return(solve_return_t::SOLVE_RETURN_EXCEPTION);
 
 	int err = 0;
 	
@@ -67,32 +74,39 @@ bool NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 			<< "\nwith a dimension of vec_space.dim() = " << vec_space.dim()
 			<< std::endl;
 
-	// Read in the options
-	std::ifstream      options_in_file("ExampleNLPFirstOrderDirectRun.opt");	
-	OptionsFromStream  options(options_in_file);
-
 	// Create the nlp
 	ExampleNLPFirstOrderDirect
 		nlp(VectorSpace::space_ptr_t(&vec_space,false),xo,has_bounds,dep_bounded);
 
-	// Test the NLPFirstOrderDirect interface!
-	const bool
-		result = NLPInterfacePack::test_nlp_first_order_direct(&nlp,&options,out);
-	if(!result)
-		prog_return = false;
-
-	if(prog_return == true) {
-		if(eout)
-			*eout   << "Congradulations!  The vector space and NLP class seems to check out!\n";
-		if(out && out != eout)
-			*out    << "\nCongradulations!  The vector space and NLP class seems to check out!\n";
+	// Run rSQP++ using the MamaJama configuration
+	solve_return = rsqp::rsqp_mama_jama_solve(
+		rcp::rcp(&nlp,false)    // nlp
+		,NULL                   // options (read from "rSQPpp.opt")
+		,NULL                   // summary_out
+		,NULL                   // journal_out
+		,NULL                   // algo_out
+		,out                    // console_out
+		,NULL                   // track
+		,NULL                   // basis_sys
+		);
+	switch(solve_return.status) {
+		case solve_return_t::SOLVE_RETURN_SOLVED:
+		case solve_return_t::SOLVE_RETURN_MAX_ITER:
+		case solve_return_t::SOLVE_RETURN_MAX_RUN_TIME:
+			if(eout)
+				*eout   << "Congradulations!  The vector space and NLP class seems to check out!\n";
+			if(out && out != eout)
+				*out    << "\nCongradulations!  The vector space and NLP class seems to check out!\n";
+			break;
+		case solve_return_t::SOLVE_RETURN_NLP_TEST_FAILED:
+		case solve_return_t::SOLVE_RETURN_EXCEPTION:
+			if(eout)
+				*eout   << "Oh No!  Something did not checkout!\n";
+			if(out && out != eout)
+				*out    << "\nOh No!  Something did not checkout!\n";
+			break;
+		default:
+			assert(0);
 	}
-	else {
-		if(eout)
-			*eout   << "Oh No!  Something did not checkout!\n";
-		if(out && out != eout)
-			*out    << "\nOh No!  Something did not checkout!\n";
-	}
-
-	return prog_return;
+	return solve_return;
 }

@@ -20,6 +20,7 @@
 #include <iosfwd>
 
 #include "NLPInterfacePack/include/NLPInterfacePackTypes.h"
+#include "ReducedSpaceSQPPack/Configurations/MamaJama/mama_jama_solve_return.h"
 
 namespace NLPInterfacePack {
 
@@ -43,16 +44,11 @@ namespace NLPInterfacePack {
  *                     options file "ExampleNLPFirstOrderDirectRun.opt").
  * @param  eout        [in/out] If != NULL then *eout gets minimal summary output.
  *
- * @returns true if the tests were successful, returns false otherwise.
- *
- * This function will read the file "ExampleNLPFirstOrderDirectRun.opt" in the
- * current directory to get the options to use.  The following is an example
- * of this file.
- * \verbinclude ExampleNLPFirstOrderDirectRun.opt
- * See <tt>\ref NLPInterfacePack::test_nlp_first_order_direct "test_nlp_first_order_direct()"</tt>
- * for descriptions of the options in this file.
+ * @returns Returns the return value from <tt>ReducedSpaceSQPPack::rsqp_mama_jama_solve()</tt>
+ * (see this function for most of the documentation).
  */
-bool ExampleNLPFirstOrderDirectRun(
+ReducedSpaceSQPPack::mama_jama_solve_return_t
+ExampleNLPFirstOrderDirectRun(
 	const VectorSpace&   vec_space
 	,value_type          xo
 	,bool                has_bounds
