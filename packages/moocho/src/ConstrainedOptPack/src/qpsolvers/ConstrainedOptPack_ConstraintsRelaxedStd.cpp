@@ -640,7 +640,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 			vs = vs->space(P_u_,BLAS_Cpp::trans);
 		row_spaces[num_row_spaces++] = vs;
 	}
-	space_rows_.initialize( row_spaces, num_row_spaces );
+	space_rows_.initialize( row_spaces, num_row_spaces, space_d_eta->small_vec_spc_fcty() );
 
 	// Set the rest of the members
 	nd_       = space_d_eta->dim() - 1;
