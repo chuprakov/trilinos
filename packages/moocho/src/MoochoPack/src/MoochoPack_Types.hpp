@@ -40,15 +40,16 @@ enum EJournalOutputLevel {
 // public interface classes
 
 class rSQPState;
-class rSQPTrack;
 class rSQPSolverClientInterface;
 class rSQPAlgoClientInterface;
 class rSQPAlgo_Config;
-class IterQuantMatrixWithOpCreator;
 
 //
 
 class rSQPAlgo;
+typedef GeneralIterationPack::AlgorithmStep             rSQPStep;
+typedef GeneralIterationPack::AlgorithmTrack            rSQPTrack;
+typedef GeneralIterationPack::AlgorithmTrackComposite   rSQPTrackComposite;
 
 }	// end namespace ReducedSpaceSQPPack 
 
