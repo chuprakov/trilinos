@@ -1,4 +1,4 @@
-// ///////////////////////////////////////////////////////////////
+/* ///////////////////////////////////////////////////////////////
 // RTOp_reduct_sum_values.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_REDUCT_SUM_VALUES_H
 #define RTOP_REDUCT_SUM_VALUES_H
@@ -27,28 +28,26 @@ extern "C" {
  * These functions perform a simple sum of a list of scalar objects
  * as defined by the virtual function table \Ref{RTOp_obj_values_vtbl}.
  */
-//@{
+/*@{*/
 
-///
-/** Use this function for <tt>reduce_reduct_objs</tt> in the RTOp_RTOp_vtbl_t virtual
+/*!<* Use this function for <tt>reduce_reduct_objs</tt> in the RTOp_RTOp_vtbl_t virtual
  * function table.
  */
 int RTOp_reduct_sum_values(
 	const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
 	, RTOp_ReductTarget in_targ_obj, RTOp_ReductTarget inout_targ_obj );
 
-///
-/** Use this function for <tt>get_reduct_op</tt> in the RTOp_RTOp_vtbl_t virtual
+/*!<* Use this function for <tt>get_reduct_op</tt> in the RTOp_RTOp_vtbl_t virtual
  * function table.
  */
 int RTOp_get_reduct_sum_values_op(
 	const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
 	, RTOp_reduct_op_func_ptr_t* reduct_op_func_ptr );
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // RTOP_REDUCT_SUM_VALUES_H
+#endif /* RTOP_REDUCT_SUM_VALUES_H */

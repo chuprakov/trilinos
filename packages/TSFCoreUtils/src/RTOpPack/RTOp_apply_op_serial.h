@@ -1,5 +1,6 @@
-// //////////////////////////////////////////////////////////////
+/* //////////////////////////////////////////////////////////////
 // RTOp_apply_op_serial.h
+*/
 
 #ifndef RTOP_APPLY_OP_SERIAL_H
 #define RTOP_APPLY_OP_SERIAL_H
@@ -10,7 +11,6 @@
 extern "C" {
 #endif
 
-///
 /** Function that implements the guts an <tt>apply_op()</tt> method for dense serial vectors.
  *
  * @param  full_dim    [in] The full dimension of the vector arguments.
@@ -81,4 +81,4 @@ int RTOp_apply_op_serial(
 }
 #endif
 
-#endif // RTOP_APPLY_OP_SERIAL_H
+#endif /* RTOP_APPLY_OP_SERIAL_H */

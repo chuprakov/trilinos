@@ -1,4 +1,4 @@
-// /////////////////////////////////////////
+/* /////////////////////////////////////////
 // RTOp_obj_null_vtbl.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_OBJ_NULL_VTBL_H
 #define RTOP_OBJ_NULL_VTBL_H
@@ -22,8 +23,7 @@
 extern "C" {
 #endif
 
-///
-/** Virtual function table for a null (none) object.
+/*!<* Virtual function table for a null (none) object.
   *
   * The functions do the following:
   * <ul>
@@ -53,4 +53,4 @@ extern const struct RTOp_obj_type_vtbl_t   RTOp_obj_null_vtbl;
 }
 #endif
 
-#endif // RTOP_OBJ_NULL_VTBL_H
+#endif /* RTOP_OBJ_NULL_VTBL_H */

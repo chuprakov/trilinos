@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_combined_nu_comp_err.h
 //
 // Copyright (C) 2001
@@ -16,13 +16,13 @@
 //
 // Note: This file was created automatically by 'new_rtop.pl'
 //       on 6/27/2002 at 15:7
-//
+*/
 
 #ifndef RTOp_ROp_combined_nu_comp_err_H
 #define RTOp_ROp_combined_nu_comp_err_H
 
 #include "RTOp.h"
-#include "RTOp_obj_value_vtbl.h"  // vtbl for reduction object data
+#include "RTOp_obj_value_vtbl.h"  /* vtbl for reduction object data */
 
 #ifdef __cplusplus
 extern "C" {
@@ -50,25 +50,25 @@ extern "C" {
        comp_err = max(comp_err, v(i)*(xu(i)-x(i), -v(i)*(x(i)-xl(i))));
 \endverbatim
  */
-//@{
+/*@{*/
 
-/// Name of this transformation operator class
+/*!< Name of this transformation operator class */
 extern const char RTOp_ROp_combined_nu_comp_err_name[];
 
-/// Virtual function table
+/*!< Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_ROp_combined_nu_comp_err_vtbl;
 
-/// Constructor
+/*!< Constructor */
 int RTOp_ROp_combined_nu_comp_err_construct(  struct RTOp_RTOp* op );
 
-/// Destructor
+/*!< Destructor */
 int RTOp_ROp_combined_nu_comp_err_destroy( struct RTOp_RTOp* op );
 
 
-/// Extract the value of the reduction object
+/*!< Extract the value of the reduction object */
 RTOp_value_type RTOp_ROp_combined_nu_comp_err_val(RTOp_ReductTarget reduct_obj);
 
-//@}
+/*@}*/
 
 
 /**
@@ -86,28 +86,27 @@ RTOp_value_type RTOp_ROp_combined_nu_comp_err_val(RTOp_ReductTarget reduct_obj);
  *  (upper or lower) - it is to be used when either one of the bounds
  *  vectors are all infinite (-/+)
  */
-//@{
+/*@{*/
 
-/// Name of this transformation operator class
+/*!< Name of this transformation operator class */
 extern const char RTOp_ROp_combined_nu_comp_err_one_only_name[];
 
-/// Virtual function table
+/*!< Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_ROp_combined_nu_comp_err_one_only_vtbl;
 
-/// Constructor
+/*!< Constructor */
 int RTOp_ROp_combined_nu_comp_err_one_only_construct(  struct RTOp_RTOp* op );
 
-/// Destructor
+/*!< Destructor */
 int RTOp_ROp_combined_nu_comp_err_one_only_destroy( struct RTOp_RTOp* op );
 
-
-/// Extract the value of the reduction object
+/*!< Extract the value of the reduction object */
 RTOp_value_type RTOp_ROp_combined_nu_comp_err_one_only_val(RTOp_ReductTarget reduct_obj);
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // RTOp_ROp_combined_nu_comp_err_H
+#endif  /* RTOp_ROp_combined_nu_comp_err_H */

@@ -1,4 +1,4 @@
-// //////////////////////////////////////////////////////////////
+/* //////////////////////////////////////////////////////////////
 // RTOp_apply_op_mpi.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_APPLY_OP_MPI_H
 #define RTOP_APPLY_OP_MPI_H
@@ -22,7 +23,6 @@
 extern "C" {
 #endif
 
-///
 /** Function that implements the guts an <tt>apply_op()</tt> method for dense MPI vectors.
  *
  * @param  comm        [in] MPI communicator
@@ -108,4 +108,4 @@ int RTOp_apply_op_mpi(
 }
 #endif
 
-#endif // RTOP_APPLY_OP_MPI_H
+#endif /* RTOP_APPLY_OP_MPI_H */

@@ -1,6 +1,6 @@
-// //////////////////////////////////////////////////////////////
+/* //////////////////////////////////////////////////////////////
 // RTOp_apply_op_serial.c
-
+*/
 #include <assert.h>
 #include <malloc.h>
 
@@ -20,7 +20,7 @@ int RTOp_apply_op_serial(
   struct RTOp_SubVector        *sub_vecs      = NULL;
   struct RTOp_MutableSubVector *targ_sub_vecs = NULL;
   int                          k;
-  // Sort out the input and get the number of vector elements to operator over
+  /* Sort out the input and get the number of vector elements to operator over */
 #ifdef RTOp_DEBUG
   assert( num_vecs || num_targ_vecs );
   if(num_vecs)
@@ -29,8 +29,8 @@ int RTOp_apply_op_serial(
     assert( targ_vec_ptrs != NULL );
   assert( 0 <= sub_dim_in && sub_dim_in <= full_dim );
 #endif
-  sub_dim = sub_dim_in ? sub_dim_in : full_dim - (first_ele_in - 1); // Dimension of logical vectors
-  // Create the sub-vector data structures
+  sub_dim = sub_dim_in ? sub_dim_in : full_dim - (first_ele_in - 1); /* Dimension of logical vectors */
+  /* Create the sub-vector data structures */
   if(num_vecs) {
     sub_vecs = malloc( sizeof(struct RTOp_SubVector) * num_vecs );
     for( k = 0; k < num_vecs; ++k ) {
@@ -61,11 +61,11 @@ int RTOp_apply_op_serial(
         );
     }
   }
-  // Apply the reduction/transformation operator in one chunk
+  /* Apply the reduction/transformation operator in one chunk */
   err = RTOp_apply_op( op, num_vecs, sub_vecs, num_targ_vecs, targ_sub_vecs, reduct_obj );
   // Free the sub-vector data structures
   if(      sub_vecs ) free(      sub_vecs );
   if( targ_sub_vecs ) free( targ_sub_vecs );
 
-  return err;  // This could be an error code!
+  return err;  /* This could be an error code! */
 }

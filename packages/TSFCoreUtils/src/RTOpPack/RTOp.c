@@ -1,4 +1,4 @@
-// ///////////////////////////////////////////////////////////////
+/* ///////////////////////////////////////////////////////////////
 // RTOp.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,14 +12,14 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
-
+*/
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
 
 #include "RTOp.h"
 
-// Misc.
+/* Misc. */
 
 void RTOp_sub_vector(
   RTOp_index_type global_offset, RTOp_index_type sub_dim
@@ -27,11 +27,11 @@ void RTOp_sub_vector(
   ,struct RTOp_SubVector *sub_vec
   )
 {
-  // Validate input
+  /* Validate input */
 #ifdef RTOp_DEBUG
   assert( values != NULL );
 #endif
-  // Set members
+  /* Set members */
   sub_vec->global_offset  = global_offset;
   sub_vec->sub_dim        = sub_dim;
   sub_vec->values         = values;
@@ -52,12 +52,12 @@ void RTOp_mutable_sub_vector(
   ,struct RTOp_MutableSubVector *sub_vec
   )
 {
-  // Validate input
+  /* Validate input */
 #ifdef RTOp_DEBUG
   assert( sub_vec );
   assert( values != NULL );
 #endif
-  // Set members
+  /* Set members */
   sub_vec->global_offset  = global_offset;
   sub_vec->sub_dim        = sub_dim;
   sub_vec->values         = values;
@@ -75,7 +75,7 @@ void RTOp_mutable_sub_vector_null( struct RTOp_MutableSubVector *sub_vec )
   sub_vec->values_stride  = 0;
 }
 
-// RTOp_RTOp
+/* RTOp_RTOp */
 
 int RTOp_get_op_type_num_entries(
   const struct RTOp_RTOp* op
@@ -272,7 +272,7 @@ int RTOp_load_reduct_obj_state(
   ,RTOp_ReductTarget       reduct_obj
   )
 {
-  RTOp_ReductTarget reduct_obj_in = reduct_obj; // Just keep a reference
+  RTOp_ReductTarget reduct_obj_in = reduct_obj; /* Just keep a reference */
   int err = 0;
 #ifdef RTOp_DEBUG
   assert( op );
@@ -292,7 +292,7 @@ int RTOp_load_reduct_obj_state(
   if(err != 0) return err;
   if( reduct_obj != reduct_obj_in )
     return RTOp_ERR_INVALID_USAGE;
-  return 0; // Success!
+  return 0; /* Success! */
 }
 
 int RTOp_coord_invariant(
@@ -303,11 +303,11 @@ int RTOp_coord_invariant(
 #ifdef RTOp_DEBUG
 	assert( op );
 	assert( op->vtbl );
-//	assert( op->vtbl->coord_invariant );
+/*	assert( op->vtbl->coord_invariant ); */
 	assert( coord_invariant );
 #endif
-//	return op->vtbl->coord_invariant(op->vtbl,op->obj_data,coord_invariant);
-	*coord_invariant = 1; // ToDo: Implement the above code!
+/*	return op->vtbl->coord_invariant(op->vtbl,op->obj_data,coord_invariant); */
+	*coord_invariant = 1; /* ToDo: Implement the above code! */
 	return 0;
 }
 
@@ -350,11 +350,11 @@ int RTOp_get_reduct_op( const struct RTOp_RTOp* op
   return op->vtbl->get_reduct_op(op->vtbl,op->obj_data,reduct_op_func_ptr);
 }
 
-//
+/*
 // RTOp_Server
-//
+*/
 
-// RTOp_Server data
+/* RTOp_Server data */
 
 static int RTOp_Server_num_ops = 0;
 
@@ -368,15 +368,15 @@ typedef const struct RTOp_RTOp_vtbl_t* RTOp_RTOp_vtbl_t_ptr;
 static RTOp_RTOp_vtbl_t_ptr
   RTOp_Server_op_vtbl[RTOp_SERVER_MAX_NUM_ENTRIES];
 
-//
+/*
 // Private RTOp_Server functions
 //
 // In this simplistic implementation the names and vtbl pointers
 // are stored an accessed in unsorted tables.
-//
+*/
 
-// returns the position in the table where this name is found.
-// otherwise it returns < 0.
+/* returns the position in the table where this name is found.
+   otherwise it returns < 0. */
 static int find_op_name( const struct RTOp_Server_op_class_name op_name_tbl[]
   , int num_entries, const char op_name[] )
 {
@@ -386,11 +386,11 @@ static int find_op_name( const struct RTOp_Server_op_class_name op_name_tbl[]
     if( strcmp( op_name_tbl[k].name, op_name ) == 0 )
       return k;
   }
-  return -1; // Did not find the name
+  return -1; /* Did not find the name */
 }
 
-// returns the position in the table where this reduct vtbl is found.
-// otherwise it returns < 0.
+/* returns the position in the table where this reduct vtbl is found.
+   otherwise it returns < 0. */
 static int find_op_vtbl( const RTOp_RTOp_vtbl_t_ptr op_vtbl_tbl[]
   , int num_entries, RTOp_RTOp_vtbl_t_ptr op_vtbl )
 {
@@ -400,12 +400,12 @@ static int find_op_vtbl( const RTOp_RTOp_vtbl_t_ptr op_vtbl_tbl[]
     if( op_vtbl_tbl[k] == op_vtbl )
       return k;
   }
-  return -1; // Did not find the name
+  return -1; /* Did not find the name */
 }
 
-//
+/*
 // Public RTOp_Server functions
-//
+*/
 
 int RTOp_Server_add_op_name_vtbl( const char op_class_name[]
   , const struct RTOp_RTOp_vtbl_t* op_class_vtbl )
@@ -418,12 +418,12 @@ int RTOp_Server_add_op_name_vtbl( const char op_class_name[]
   {
     if( RTOp_Server_op_vtbl[k] != op_class_vtbl )
       return RTOp_SERVER_INCOMPATIBLE_OPS;
-    return k; // The name exits but vtble is the same
+    return k; /* The name exits but vtble is the same */
   }
   strcpy( RTOp_Server_op_names[RTOp_Server_num_ops].name, op_class_name );
   RTOp_Server_op_vtbl[RTOp_Server_num_ops] = op_class_vtbl;
   ++RTOp_Server_num_ops;
-  return 0; // Successfully added it
+  return 0; /* Successfully added it */
 }
 
 int RTOp_Server_lookup_op_name( const struct RTOp_RTOp_vtbl_t* op_class_vtbl
@@ -434,9 +434,9 @@ int RTOp_Server_lookup_op_name( const struct RTOp_RTOp_vtbl_t* op_class_vtbl
     , RTOp_Server_num_ops, op_class_vtbl ) >= 0 )
   {
     strcpy( op_class_name, RTOp_Server_op_names[k].name );
-    return 0; // Success
+    return 0; /* Success */
   }
-  return -1; // Did not find vtbl
+  return -1; /* Did not find vtbl */
 }
 
 int RTOp_Server_construct_op(
@@ -451,20 +451,20 @@ int RTOp_Server_construct_op(
   )
 {
   int k = 0;
-  int err = 0; // success?
+  int err = 0; /* success? */
   if( strlen( op_class_name ) > RTOp_MAX_REDUCT_TRANS_OP_CLASS_NAME )
     return RTOp_SERVER_OP_NAME_TOO_LONG;
   if( k = find_op_name( RTOp_Server_op_names
     , RTOp_Server_num_ops, op_class_name ) >= 0 )
   {
-    op->obj_data = NULL; // Will be dyn allocated below!
+    op->obj_data = NULL; /* Will be dyn allocated below! */
     op->vtbl     = RTOp_Server_op_vtbl[k];
     err = RTOp_load_op_state(
       num_values,value_data,num_indexes,index_data,num_chars,char_data
       ,op);
     return err;
   }
-  return -1; // op_class_name not found
+  return -1; /* op_class_name not found */
 }
 
 void RTOp_Server_dump( FILE* file )

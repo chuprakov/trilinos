@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////////////////////////
+/* /////////////////////////////////////////////////////////////////
 // RTOpToMPI.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #include <assert.h>
 #include <malloc.h>
@@ -35,13 +36,13 @@ void RTOp_MPI_type_signature(
   )
 {
   int k = 0, off = 0;
-  // values
-  block_lengths[k] = 3 + num_values; // must carry size information
+  /* values */
+  block_lengths[k] = 3 + num_values; /* must carry size information */
   displacements[k] = 0;
   datatypes[k]     = RTOpMPI_VALUE_TYPE;
   ++k;
   off += (3 + num_values) * sizeof(RTOp_value_type);
-  // indexes
+  /* indexes */
   if( num_indexes ) {
     block_lengths[k] = num_indexes;
     displacements[k] = off;
@@ -49,7 +50,7 @@ void RTOp_MPI_type_signature(
     ++k;
     off += num_indexes * sizeof(RTOp_index_type);
   }
-  // chars
+  /* chars */
   if( num_chars ) {
     block_lengths[k] = num_chars;
     displacements[k] = off;
@@ -145,7 +146,7 @@ int RTOp_MPI_apply_op(
   clock_t ticks_start_start, ticks_start, ticks_end, ticks_total = 0;
 #endif
 
-  //
+  /*
   // Get the description of the datatype of the target object.
   // We need this in order to map it to an MPI user defined
   // data type so that the reduction operations can be performed
@@ -153,6 +154,7 @@ int RTOp_MPI_apply_op(
   //
   // Get the number of the entries in the array that describes
   // target type's datatypes
+  */
   err = RTOp_get_reduct_type_num_entries(
     op, &num_reduct_type_values, &num_reduct_type_indexes, &num_reduct_type_chars );
   if(err) goto ERR_LABEL;
@@ -168,13 +170,13 @@ int RTOp_MPI_apply_op(
       ticks_start_start = clock();
     }
 #endif
-    //
+    /*
     // There is a non-null reduction target object so we need to reduce
     // it across processors
     //
     // Allocate the intermediate target object and perform the reduction for the
     // vector elements on this processor.
-    //
+    */
         i_reduct_objs = malloc( sizeof(RTOp_ReductTarget) * num_cols );
     for( kc = 0; kc < num_cols; ++kc ) {
       i_reduct_objs[kc] = RTOp_REDUCT_OBJ_NULL;
@@ -201,16 +203,16 @@ int RTOp_MPI_apply_op(
       printf(" : cpu time = %g s\n", (ticks_end-ticks_start)*secs_per_tick );
     }
 #endif
-    // Get the arrays that describe the reduction object datatype
-    if( num_reduct_type_values == 0 ) ++num_reduct_type_entries; // Add the block for the sizes
+    /* Get the arrays that describe the reduction object datatype */
+    if( num_reduct_type_values == 0 ) ++num_reduct_type_entries; /* Add the block for the sizes */
     RTOp_MPI_type_signature(
       num_reduct_type_values, num_reduct_type_indexes, num_reduct_type_chars
       ,&num_reduct_type_entries
       ,target_type_block_lengths, target_type_displacements, target_type_datatypes
       );
-    //
+    /*
     // Translate this target datatype description to an MPI datatype
-    //
+    */
 #ifdef RTOP_TO_MPI_SHOW_TIMES
     if(RTOp_MPI_apply_op_print_timings) {
       printf("calling MPI_Type_struct(...)");
@@ -241,11 +243,11 @@ int RTOp_MPI_apply_op(
     }
 #endif
     if(err) goto ERR_LABEL;
-    //
+    /*
     // Create an external contiguous representation for the intermediate reduction object
     // that MPI can use.  This is very low level but at least the user
     // does not have to do it.
-    //
+    */
     reduct_obj_ext_size =
       (3 + num_reduct_type_values) * sizeof(RTOp_value_type) +
       num_reduct_type_indexes      * sizeof(RTOp_index_type) +
@@ -257,18 +259,19 @@ int RTOp_MPI_apply_op(
         ,i_reduct_objs_ext+kc*reduct_obj_ext_size
         );
     }
-    //
+    /*
     // Now perform a global reduction over all of the processors.
     //
     // Get the user defined reduction operation for MPI to use
+    */
     RTOp_get_reduct_op( op, &reduct_op_func_ptr );
     if( reduct_op_func_ptr != NULL ) {
-      //
+      /*
       // The operator object has returned an MPI compatible reduction function so
       // MPI will be of great help in preforming the global reduction :-).
       //
       // Create the MPI reduction operator object
-      //
+      */
 #ifdef RTOP_TO_MPI_SHOW_TIMES
       if(RTOp_MPI_apply_op_print_timings) {
         printf("calling MPI_Op_create(...)");
@@ -277,7 +280,7 @@ int RTOp_MPI_apply_op(
 #endif
       err = MPI_Op_create(
         reduct_op_func_ptr
-        ,1                   // The op is communitive? yes == 1!
+        ,1                   /* The op is communitive? yes == 1! */
         ,&mpi_op
         );
 #ifdef RTOP_TO_MPI_SHOW_TIMES
@@ -289,23 +292,23 @@ int RTOp_MPI_apply_op(
       if(err) goto ERR_LABEL;
       if( root_rank >= 0 ) {
         MPI_Comm_rank( comm, &rank );
-        // Apply the reduction operation over all of the processors
-        // and reduce to one target object only on the root processor
+        /* Apply the reduction operation over all of the processors
+           and reduce to one target object only on the root processor */
         i_reduct_objs_tmp = malloc( reduct_obj_ext_size * num_cols );
         err = MPI_Reduce(
           i_reduct_objs_ext
-          ,rank == root_rank ? i_reduct_objs_tmp : NULL  // I don't know if this is MPI legal?
+          ,rank == root_rank ? i_reduct_objs_tmp : NULL  /* I don't know if this is MPI legal? */
           ,num_cols, mpi_reduct_ext_type
           ,mpi_op, root_rank, comm
           );
         if(err) goto ERR_LABEL;
-        if( rank == root_rank ) { // bit-by-bit copy
+        if( rank == root_rank ) { /* bit-by-bit copy */
           for( k = 0; k < reduct_obj_ext_size * num_cols; ++k ) i_reduct_objs_ext[k] = i_reduct_objs_tmp[k];
         }
       }
       else {
-        // Apply the reduction operation over all of the processors
-        // and reduce to one target object on each processor
+        /* Apply the reduction operation over all of the processors
+           and reduce to one target object on each processor */
         i_reduct_objs_tmp = malloc( reduct_obj_ext_size * num_cols );
 #ifdef RTOP_TO_MPI_SHOW_TIMES
         if(RTOp_MPI_apply_op_print_timings) {
@@ -326,14 +329,14 @@ int RTOp_MPI_apply_op(
         if(err) goto ERR_LABEL;
         for( k = 0; k < reduct_obj_ext_size * num_cols; ++k ) i_reduct_objs_ext[k] = i_reduct_objs_tmp[k];
       }
-      // Load the updated state of the reduction target object and reduce.
+      /* Load the updated state of the reduction target object and reduce. */
       for( kc = 0; kc < num_cols; ++kc ) {
         RTOp_load_reduct_obj_ext_state( op, i_reduct_objs_ext+kc*reduct_obj_ext_size, i_reduct_objs[kc] );
         RTOp_reduce_reduct_objs( op, i_reduct_objs[kc], reduct_objs[kc] );
       }
     }
     else {
-      //
+      /*
       // We must do without the MPI compatible reduction function :-(  We must
       // manually perform the reduction operation ourselves.  Note, this will
       // not be as efficient as when MPI would do it but it helps take some
@@ -341,15 +344,15 @@ int RTOp_MPI_apply_op(
       //
       // What we need to do is to gather all of the intermediate reduction
       // objects to the root process and then do the reduction pair-wise.
-      //
-      assert( reduct_op_func_ptr ); // ToDo: Implement!
+      */
+      assert( reduct_op_func_ptr ); /* ToDo: Implement! */
     }
   }
   else {
-    //
+    /*
     // There is a null reduction target object so we don't need to reduce
     // it across processors
-    //
+    */
     if( sub_vecs || sub_targ_vecs ) {
       for( kc = 0; kc < num_cols; ++kc ) {
         err = RTOp_apply_op(
@@ -359,7 +362,7 @@ int RTOp_MPI_apply_op(
         if (err) goto ERR_LABEL;
       }
     }
-    //
+    /*
     // There was not a reduction operation so we must assume that at least
     // one of the vectors has changed so we had better make sure that
     // all of the other processes get here before we move on.  Otherwise
@@ -372,11 +375,12 @@ int RTOp_MPI_apply_op(
     //
 //    err = MPI_Barrier(comm); // RAB: 2002/03/28: Profiling on CPlant showed that
 //    if(err) goto ERR_LABEL;  // this was consuming a lot of time unnecessarily
+    */
   }
 
 ERR_LABEL:
 
-  // Clean up dynamically allocated memory!
+  /* Clean up dynamically allocated memory! */
 
   if( i_reduct_objs_tmp != NULL )
     free( i_reduct_objs_tmp );

@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////////////////////////////////////
+/* /////////////////////////////////////////////////////////////////////////////
 // RTOp_obj_free_free.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_OBJ_FREE_FREE_H
 #define RTOP_OBJ_FREE_FREE_H
@@ -22,8 +23,7 @@
 extern "C" {
 #endif
 
-///
-/** Definition of function to be used for </tt>obj_free<tt> in RTOp_RTOp_vtbl_t which
+/*!<* Definition of function to be used for </tt>obj_free<tt> in RTOp_RTOp_vtbl_t which
  * simply calls </tt>free(...)<tt>.
  *
  * @param  vtbl           [in] Totally ignored.
@@ -39,4 +39,4 @@ int RTOp_obj_free_free( const struct RTOp_obj_type_vtbl_t* vtbl, const void* ins
 }
 #endif
 
-#endif // RTOP_OBJ_FREE_FREE_H
+#endif /* RTOP_OBJ_FREE_FREE_H */

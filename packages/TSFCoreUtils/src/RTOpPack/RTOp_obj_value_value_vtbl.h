@@ -1,4 +1,4 @@
-// /////////////////////////////////////////
+/* /////////////////////////////////////////
 // RTOp_obj_value_value_vtbl.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_OBJ_VALUE_VALUE_VTBL_H
 #define RTOP_OBJ_VALUE_VALUE_VTBL_H
@@ -85,23 +86,23 @@ extern "C" {
   *		</ul>
   * </ul>
   */
-//@{
+/*@{*/
 
-/// Virtual function table
+/*!< Virtual function table */
 extern const struct RTOp_obj_type_vtbl_t   RTOp_obj_value_value_vtbl;
 
-/// Object type structure for a value, index pair.
+/*!< Object type structure for a value, index pair. */
 struct RTOp_value_value_type {
-	///
+	/*!<*/
 	RTOp_value_type  value1;
-	///
+	/*!<*/
 	RTOp_value_type  value2;
 };
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // RTOP_OBJ_VALUE_VALUE_VTBL_H
+#endif /* RTOP_OBJ_VALUE_VALUE_VTBL_H */

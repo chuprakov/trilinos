@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////////////
+/* /////////////////////////////////////////////////////
 // RTOp_SparseSubVector.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -13,6 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 //
+*/
 
 #include <assert.h>
 
@@ -26,7 +27,7 @@ void RTOp_sparse_sub_vector(
 	,struct RTOp_SparseSubVector *sub_vec
 	)
 {
-	// Validate input
+	/* Validate input */
 #ifdef RTOp_DEBUG
 	assert( sub_vec );
 	assert(
@@ -34,7 +35,7 @@ void RTOp_sparse_sub_vector(
 		|| !sub_nz || ( sub_nz == sub_dim && indices == NULL )
 		);
 #endif
-	// Set members
+	/* Set members */
 	sub_vec->global_offset  = global_offset;
 	sub_vec->sub_dim        = sub_dim;
 	sub_vec->sub_nz         = sub_nz;

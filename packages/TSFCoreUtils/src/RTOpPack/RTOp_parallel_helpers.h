@@ -1,4 +1,4 @@
-// //////////////////////////////////////////////////////////////
+/* //////////////////////////////////////////////////////////////
 // RTOp_parallel_helpers.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_PARALLEL_HELPERS_H
 #define RTOP_PARALLEL_HELPERS_H
@@ -22,8 +23,7 @@
 extern "C" {
 #endif
 
-///
-/** This function helps to implement vector method <tt>apply_op(...)</tt> for any type of parallel vector.
+/*!<* This function helps to implement vector method <tt>apply_op(...)</tt> for any type of parallel vector.
  *
  * To understand what this function computes first consider the what
  * an <tt>apply_op(...)</tt> method might look like from a vector
@@ -132,4 +132,4 @@ void RTOp_parallel_calc_overlap(
 }
 #endif
 
-#endif // RTOP_PARALLEL_HELPERS_H
+#endif /* RTOP_PARALLEL_HELPERS_H */

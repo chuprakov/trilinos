@@ -1,4 +1,4 @@
-// ///////////////////////////////////////////////////////////////
+/* ///////////////////////////////////////////////////////////////
 // RTOp_reduct_max_value.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #define MY_MAX(a,b) a > b ? a : b
 
@@ -21,7 +22,7 @@ int RTOp_reduct_max_value(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
   , RTOp_ReductTarget in_targ_obj, RTOp_ReductTarget inout_targ_obj )
 {
-  // inout_dot_prod += in_dot_prod
+  /* inout_dot_prod += in_dot_prod */
   *((RTOp_value_type*)inout_targ_obj)
     = MY_MAX( *((RTOp_value_type*)inout_targ_obj)
           ,*((RTOp_value_type*)in_targ_obj)
@@ -32,8 +33,8 @@ int RTOp_reduct_max_value(
 static void external_reduct_op( void* in_targ_array, void* inout_targ_array
   , int* len, RTOp_Datatype* datatype )
 {
-  // inout_dot_prod += in_dot_prod
-  RTOp_value_type // index past the size members
+  /* inout_dot_prod += in_dot_prod */
+  RTOp_value_type /* index past the size members */
     *in_targs    = (RTOp_value_type*)in_targ_array    + 3,
     *inout_targs = (RTOp_value_type*)inout_targ_array + 3;
   int i;

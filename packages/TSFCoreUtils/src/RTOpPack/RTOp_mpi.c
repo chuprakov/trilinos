@@ -1,4 +1,4 @@
-// ///////////////////////////////////////////////
+/* //////////////////////////////////////////////
 // RTOp_mpi.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -15,7 +15,7 @@
 //
 // Selected hollow MPI function definitions for a sinlge process
 // implementation.
-//
+*/
 
 #include <assert.h>
 
@@ -48,7 +48,7 @@ int MPI_Comm_rank(MPI_Comm comm, int *rank)
 int MPI_Type_struct(int count , int *array_of_blocklengths, MPI_Aint *array_of_displacements
   , MPI_Datatype *array_of_types, MPI_Datatype *data_type)
 {
-  // Make the mpi datatype just the extent (needed latter!)
+  /* Make the mpi datatype just the extent (needed latter!) */
   int len = 0, extent = 0, k = 0;
   for( k = 0; k < count; ++k ) {
     switch( array_of_types[k] ) {
@@ -103,7 +103,7 @@ int MPI_Allreduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype
     *_recvbuf = recvbuf;
   int k;
   for( k = 0; k < count * datatype; ++k )
-    _recvbuf[k] =_sendbuf[k]; // just copy bit for bit
+    _recvbuf[k] =_sendbuf[k]; /* just copy bit for bit */
   return 0;
 }
 
@@ -115,7 +115,7 @@ int MPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, M
     *_recvbuf = recvbuf;
   int k;
   for( k = 0; k < count * datatype; ++k )
-    _recvbuf[k] =_sendbuf[k]; // just copy bit for bit
+    _recvbuf[k] =_sendbuf[k]; /* just copy bit for bit */
   return 0;
 }
 
@@ -139,8 +139,8 @@ int MPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype
   assert(sendtype == recvtype);
   assert(sendcount == recvcount);
   for( k = 0; k < sendcount * sendtype; ++k )
-    _recvbuf[k] =_sendbuf[k]; // just copy bit for bit
+    _recvbuf[k] =_sendbuf[k]; /* just copy bit for bit */
   return 0;
 }
 
-#endif // RTOp_USE_MPI
+#endif /* RTOp_USE_MPI */

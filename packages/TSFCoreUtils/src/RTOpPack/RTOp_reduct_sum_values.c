@@ -1,4 +1,4 @@
-// ///////////////////////////////////////////////////////////////
+/* ///////////////////////////////////////////////////////////////
 // RTOp_reduct_sum_values.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #include <assert.h>
 
@@ -26,7 +27,7 @@ int RTOp_reduct_sum_values(
   assert(obj_data);
 #endif
   num_values = *(RTOp_index_type*)obj_data;
-  // inout_dot_prod += in_dot_prod
+  /* inout_dot_prod += in_dot_prod */
   for( k = 0; k < num_values; ++k )
     ((RTOp_value_type*)inout_targ_obj)[k] += ((RTOp_value_type*)in_targ_obj)[k];
   return 0;
@@ -35,10 +36,10 @@ int RTOp_reduct_sum_values(
 static void external_reduct_op( void* in_targ_array, void* inout_targ_array
   , int* len, RTOp_Datatype* datatype )
 {
-  // inout_dot_prod += in_dot_prod
+  /* inout_dot_prod += in_dot_prod */
   RTOp_index_type
-    num_values   = *(RTOp_value_type*)in_targ_array; // num_values is first size member
-  RTOp_value_type // index past the size members
+    num_values   = *(RTOp_value_type*)in_targ_array; /* num_values is first size member */
+  RTOp_value_type /* index past the size members */
     *in_targs    = (RTOp_value_type*)in_targ_array    + 3,
     *inout_targs = (RTOp_value_type*)inout_targ_array + 3;
   int i, k;

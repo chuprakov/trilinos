@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_mpi.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -16,6 +16,7 @@
 // MPI declarations used by RTOp example program.
 // These where taken from mpich for Windows NT.
 //
+*/
 
 #ifndef MPI_H
 #define MPI_H
@@ -24,8 +25,9 @@
 extern "C" {
 #endif
 
-// //////////////////////////
+/* //////////////////////////
 // MPI declarations
+*/
 
 #define MPI_Aint int
 typedef int MPI_Datatype;
@@ -40,8 +42,9 @@ typedef int MPI_Op;
 #define MPI_DATATYPE_NULL  ((MPI_Datatype)0)
 typedef void (MPI_User_function) ( void *, void *, int *, MPI_Datatype * ); 
 
-// //////////////////////////
+/* //////////////////////////
 // MPI functions
+*/
 
 #define EXPORT_MPI_API
 EXPORT_MPI_API int MPI_Init(int *, char ***);
@@ -63,4 +66,4 @@ EXPORT_MPI_API int MPI_Gather(void* , int, MPI_Datatype, void*, int, MPI_Datatyp
 }
 #endif
 
-#endif // MPI_H
+#endif /* MPI_H */
