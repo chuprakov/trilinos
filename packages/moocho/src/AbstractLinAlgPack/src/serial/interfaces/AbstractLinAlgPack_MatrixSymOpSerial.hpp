@@ -38,6 +38,9 @@ class MatrixSymWithOpSerial
 public:
 
 	///
+	using MatrixSymWithOp::Mp_StPtMtP;
+
+	///
 	/** sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
 	  *
 	  * The default operation is based on <tt>this->Vp_StMtV(...)</tt> and assumes
