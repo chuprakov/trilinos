@@ -12,20 +12,29 @@ namespace AbstractLinAlgPack {
 class VectorWithOpMutable;
 
 ///
-/** Abstract interface for immutable vectors {abstract}.
+/** Abstract interface for immutable coordinate vectors {abstract}.
   *
   * This interface contains a mimimal set of operations.  The main feature
   * of this interface is the operation \Ref{apply_reduction}#(...)#.
   * Almost every standard (i.e. BLAS) and non-standard operation that
-  * can be performed on a set of vectors without changing (mutating)
-  * the vectors can be performed through reduction operators.  Standard
+  * can be performed on a set of coordinate vectors without changing (mutating)
+  * the vectors can be performed through reduction operators.  More standard
   * vector operations could be included in this interface and allow
   * for specialized implementations but in general, assuming the
   * sub-vectors are large enough, such implementations
   * would not be significantly faster than those implemented through
-  * reduction/transformation operators.  Therefore, the only operation that an
-  * immutable abstract vector must implement is the #apply_reduction(...)#
-  * method.
+  * reduction/transformation operators.  There are some operations however
+  * that can not always be efficiently with reduction/transforamtion operators
+  * and a few of these important methods are added to this interface.
+  *
+  * In order to create a concreate subclass of this interface, only three
+  * methods absolutely must be overridden.  The method \Ref{dim}#()#
+  * gives the dimension of the vector at hand. As mentioned above,
+  * the \Ref{apply_reduction}#(...)# method must be
+  * overridden.  The last method that must be overridden is \Ref{create_sub_view}#(...)#.
+  * This method allows clients to perform operations on sub-vectors within the
+  * whole vector.  This makes the #apply_reduction(...)# method even more powerful
+  * but makes vector implementations slightly more complicated.
   */
 class VectorWithOp : virtual public VectorBase {
 public:
@@ -33,16 +42,12 @@ public:
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<const VectorWithOp>   vec_ptr_t;
 
-	///
-	/** Fetch an element in the vector {abstract}.
-	 *
-	 * Preconditions:\begin{itemize}
-	 * \item #1 <= i <= this->dim()# (#throw std::out_of_range#)
-	 * \end{itemize}
-	 *
-	 * @param  i  [in]  Index of the element value to get.
+	/** @name Pure virtual methods (must be overridden by subclass).
 	 */
-	virtual RTOp_value_type get_ele(RTOp_index_type i) const = 0;
+	//@{
+
+	/// Return the dimension of this vector
+	virtual RTOp_index_type dim() const = 0;
 
 	///
 	/** Apply a reduction/transformation,operation over a set of vectors:
@@ -105,6 +110,18 @@ public:
 	 * This is only a transient view of a sub-vector that is to be immediately used
 	 * and then released by #ref_count_ptr<>#.
 	 *
+	 * It is important to understand what
+	 * the minimum postconditions are for the sub vector objects returned from this
+	 * method.  If two vector objects #x# and #y# are compatible (possibly of different types)
+	 * it is assumed that #*x.create_sub_view(rng)# and #*y.create_sub_view(rng)# will also be
+	 * compatible vector objects no mater what range #rng# represents.  However,
+	 * if #i1 < i2 < i3 < i4# with #i2-i1 == i4-i3#, then in general, one can not expect
+	 * that the vector objects #*x.create_sub_view(Range1D(i2,i1))# and
+	 * #*x.create_sub_view(Range1D(i4,i5))# will be compatible objects.  For some vector
+	 * implementaions they may be (i.e. serial vectors) but for others they most
+	 * certainly will not be (i.e. parallel vectors).  This limitation must be kept in
+	 * mind by all vector subclass implementors and vector interface clients.
+	 *
 	 * Preconditions:\begin{itemize}
 	 * \item #rng.in_range(this->dim()) == true# (#throw std::out_of_range#)
 	 * \end{itemize}
@@ -116,6 +133,26 @@ public:
 	 */
 	virtual vec_ptr_t create_sub_view( const LinAlgPack::Range1D& rng ) const = 0;
 
+	//@}
+
+	/** @name Virtual methods with default implementations based on
+	 * reduction/transforamtion operators and \Ref{apply_reduction}#(...)#.
+	 */
+	//@{
+
+	///
+	/** Fetch an element in the vector {abstract}.
+	 *
+	 * Preconditions:\begin{itemize}
+	 * \item #1 <= i <= this->dim()# (#throw std::out_of_range#)
+	 * \end{itemize}
+	 *
+	 * The default implementation uses a C reduction operator class
+	 * (See the RTOp_ROp_get_ele C operator class).
+	 *
+	 * @param  i  [in]  Index of the element value to get.
+	 */
+	virtual RTOp_value_type get_ele(RTOp_index_type i) const;
 
 	/** @name Explicit sub-vector access.
 	 *
@@ -153,18 +190,32 @@ public:
 	 * \item #rng.in_range(this->dim()) == true# (#throw std::out_of_range#)
 	 * \end{itemize}
 	 *
+	 * This method has a default implementation based on a vector reduction operator
+	 * class (see RTOp_ROp_get_sub_vector) and calls \Ref{apply_reduction}#(...)#.
+	 * Note that the footprint of the reduction object (both internal and external state)
+	 * will be O(#rng.size()#).  For serial applications this is faily adequate and will
+	 * not be a major performance penalty.  For parallel applications, this will be
+	 * a terrible implementation and must be overridden if #rng.size()# is large at all.
+	 * If a subclass does override this method, it must also override \Ref{release_sub_vector}
+	 * which has a default implementation which is a companion to this method's default
+	 * implementation.
+	 *
 	 * @param  rng      [in] The range of the elements to extract the sub-vector view.
 	 * @param  sub_vec  [in/out] View of the sub-vector.  Prior to the
 	 *                  first call \Ref{RTOp_sub_vector_null}#(sub_vec)# must
 	 *                  have been called for the correct behavior.
 	 */
-	virtual void get_sub_vector( const LinAlgPack::Range1D& rng, RTOp_SubVector* sub_vec ) const = 0;
+	virtual void get_sub_vector( const LinAlgPack::Range1D& rng, RTOp_SubVector* sub_vec ) const;
 
 	///
 	/** Release an explicit view of a sub-vector {abstract}.
 	 *
 	 * The sub-vector view must have been allocated by
-	 * this->\Ref{extract_sub_vector}#(...,sub_vec)# first.
+	 * this->\Ref{get_sub_vector}#(...,sub_vec)# first.
+	 *
+	 * This method has a default implementation which is a companion to the default implementation
+	 * for \Ref{get_sub_vector}#(...)#.  If #get_sub_vector(...)# is overridden by a subclass then
+	 * this method must be overridden also!
 	 *
 	 *	@param	sub_vec
 	 *				[in/out] The memory refered to by #sub_vec->values#
@@ -172,8 +223,21 @@ public:
 	 *				and #*sub_vec# will be zeroed out using
 	 *				\Ref{RTOp_sub_vector_null}#(sub_vec)#.
 	 */
-	virtual void release_sub_vector( RTOp_SubVector* sub_vec ) const = 0;
+	virtual void release_sub_vector( RTOp_SubVector* sub_vec ) const;
 	
+	//@}
+
+	//@}
+
+	/** @name Overridden from \Ref{VectorBase} */
+	//@{
+	
+	///
+	/** Calls #apply_reduction(...)# with an operator class object
+	 * of type #RTOp_ROp_dot_prod#.
+	 */
+	RTOp_value_type inner_product(  const VectorBase& ) const;
+
 	//@}
 
 };
