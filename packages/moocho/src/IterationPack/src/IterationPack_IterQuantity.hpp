@@ -97,15 +97,15 @@ public:
 	virtual bool updated_k(int offset) const = 0;
 
 	///
-	/** Return the highest k such <tt>updated_k(k)</tt> returns true.
+	/** Return the highest k such that <tt>updated_k(k)</tt> returns true.
 	  *
-	  * If no <tt>updated_k(k)</tt> equals false for all k then this function
-	  * will return NONE_UPDATED.
+	  * If <tt>updated_k(k) == false</tt> false for all \c k then this function
+	  * will return \c NONE_UPDATED.
 	  */
 	virtual int last_updated() const = 0;
 
 	///
-	/** Determine if the memory for the k <tt>offset</tt> quanity will be lost if
+	/** Determine if the memory for the k + <tt>offset</tt> quantityy will be lost if
 	  * <tt>set_k(set_offset)</tt> is called (see \c IterQuantityAccess).
 	  *
 	  * This member function allows clients to know a little about the
@@ -116,13 +116,17 @@ public:
 	  * a subclass with only single storage (<tt>info.will_loose_mem(0,+1) == true</tt>)
 	  * the following code would not work:
 	  \code
-	  for(int i = 1; i <= n; ++i) info.set_k(+1)(i) = info.get_k(0)(i) * 2;
+	  for(int i = 1; i <= n; ++i) {
+	      info.set_k(+1)(i) = info.get_k(0)(i);
+	  }
 	  \endcode
-	  * For <tt>i</tt> == 1, <tt>set_k(+1)</tt> would cause a state transition and for <tt>i</tt> = 2
-	  * <tt>info.get_k(0)</tt> would throw an exception.
+	  * For <tt>i</tt> == 1, <tt>set_k(+1)</tt> would cause a state transition and for <tt>i</tt> == 2
+	  * <tt>info.get_k(0)</tt> would throw an exception.  Actually, the compiler may evaluate
+	  * <tt>info.set_k(+1)</tt> before <tt>info.get_k(0)</tt> so <tt>info.get_k(0)</tt> whould throw
+	  * an exception right away for <tt>i</tt> == 1.
 	  *
-	  * If the client knows that only single storage is needed then he should use
-	  * the following code:
+	  * If the client knows that only single storage is needed then it could use
+	  * something like the following code:
 	  \code
 	  if(info.will_loose_mem(0,+1) {
 	      info.set_k(+1) = info.get_k(0);
@@ -132,8 +136,8 @@ public:
 	      for(int i = 1; i <= n; ++i) info.set_k(+1)(i) = info.get_k(0)(i);
 	  }
 	  \endcode
-	  *
-	  * To implement the above code you would use temporary references but you get
+	  * In an actually implemention one would use temporary references and would not
+	  * call \c set_k() and \c get_k() multiple times like this but you get
 	  * the basic idea.  The above code works for both single and multiple storage
 	  * and will not result in any unnecessary copying since assingment to self
 	  * should be detected.  In the above code <tt>info.set_k(+1) = info.get_k(0);</tt>
@@ -145,7 +149,6 @@ public:
 	  \code
 	  for(int i = 2; i <= n; ++i) info.set_k(+1)(i) = info.get_k(0)(i) * info.get_k(0)(i-1);
 	  \endcode
-	  *
 	  * Even the above operation can be implemented without a temporary vector but you get the
 	  * idea, the (i-1) quanity is modifed and is not the original for i > 2.
 	  *
