@@ -40,10 +40,10 @@ int		rSQPTrackConsoleStd::w_i2_		= 2;
 char	rSQPTrackConsoleStd::ul_i2_[]	= "--";
 int		rSQPTrackConsoleStd::w_i4_		= 4;
 char	rSQPTrackConsoleStd::ul_i4_[]	= "----";
-int		rSQPTrackConsoleStd::p2_		= 2;
+int		rSQPTrackConsoleStd::p2_		= 1;
 int		rSQPTrackConsoleStd::w_p2_		= 8;
 char	rSQPTrackConsoleStd::ul_p2_[]	= "--------";
-int		rSQPTrackConsoleStd::p3_		= 3;
+int		rSQPTrackConsoleStd::p3_		= 2;
 int		rSQPTrackConsoleStd::w_p3_		= 9;
 char	rSQPTrackConsoleStd::ul_p3_[]	= "---------";
 
