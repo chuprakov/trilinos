@@ -31,6 +31,7 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFHandleable.hpp"
+#include "TSFObjectWithVerbosity.hpp"
 #include "TSFVector.hpp"
 
 namespace TSFExtended
@@ -43,7 +44,8 @@ namespace TSFExtended
    */
   template <class Scalar>
   class NonlinearOperatorBase 
-    : public Handleable<NonlinearOperatorBase<Scalar> >
+    : public Handleable<NonlinearOperatorBase<Scalar> >,
+    public ObjectWithVerbosity<NonlinearOperatorBase<Scalar> >
     {
     public:
       /** Empty ctor, for contexts in which we don't know the
@@ -79,6 +81,16 @@ namespace TSFExtended
       /** Set the evaluation point */
       void setEvalPt(const Vector<Scalar>& x)
       {
+        if (verbosity() > VerbLow)
+          {
+            cerr << "NonlinearOperatorBase Setting new eval pt";
+            if (verbosity() > VerbHigh)
+              {
+                cerr << " to " << endl ;
+                x.print(cerr);
+              }
+            cerr << endl;
+          }
         jacobianIsValid_ = false;
         residualIsValid_ = false;
 
@@ -98,12 +110,33 @@ namespace TSFExtended
       /** Return the Jacobian at the current evaluation point */
        LinearOperator<double> getJacobian() const 
       {
+        if (verbosity() > VerbLow)
+          {
+            cerr << "NonlinearOperatorBase getting Jacobian" << endl;
+          }
         if (!jacobianIsValid_)
           {
+            if (verbosity() > VerbLow)
+              {
+                cerr << "...computing new J and F" << endl;
+              }
             currentJ_ 
               = computeJacobianAndFunction(currentFunctionValue_);
             jacobianIsValid_ = true;
             residualIsValid_ = true;
+          }
+        else
+          {
+            if (verbosity() > VerbLow)
+              {
+                cerr << "...reusing valid J" << endl;
+              }
+          }
+        if (verbosity() > VerbHigh)
+          {
+            cerr << "J is " << endl;
+            currentJ_.print(cerr);
+            cerr << endl;
           }
         return currentJ_;
       }
@@ -113,10 +146,32 @@ namespace TSFExtended
       /** Return the function value at the current evaluation point */
       Vector<double> getFunctionValue() const 
       {
+        if (verbosity() > VerbLow)
+          {
+            cerr << "NonlinearOperatorBase getting function value" << endl;
+          }
         if (!residualIsValid_)
           {
+            if (verbosity() > VerbLow)
+              {
+                cerr << "...computing new F" << endl;
+              }
             currentFunctionValue_ = computeFunctionValue();
             residualIsValid_ = true;
+          }
+        else
+          {
+            if (verbosity() > VerbLow)
+              {
+                cerr << "...reusing valid F" << endl;
+              }
+          }
+
+        if (verbosity() > VerbHigh)
+          {
+            cerr << "F is " << endl;
+            currentFunctionValue_.print(cerr);
+            cerr << endl;
           }
         return currentFunctionValue_;
       }
