@@ -31,6 +31,9 @@ public:
 	///
 	typedef size_t poss_type;
 
+	/** @name Pure virtual functions that must be overridden */
+	//@{
+
 	///
 	/** Called by <tt>Algorithm</tt> to perform a main, pre or post step at step_poss and assoc_step_poss.
 	  *
@@ -46,14 +49,62 @@ public:
 		,poss_type             assoc_step_poss
 		) = 0;
 
+	//@}
+
+	/** @name Virtual functions with default implementations */
+	//@{
+
+	///
+	virtual ~AlgorithmStep() {}
+
+	///
+	/** Called by <tt>Algorithm</tt> just before the algorithm is run.
+	 *
+	 * This allows step objects to reinitialize themselves just before
+	 * an algorithm is run.
+	 *
+	 * The default implementation does nothing.
+	 */
+	virtual void initialize_step(
+		Algorithm&             algo
+		,poss_type             step_poss
+		,EDoStepType           type
+		,poss_type             assoc_step_poss
+		)
+		{}
+
 	///
 	/** Called by <tt>Algorithm</tt> to inform when a runtime configuration change
-	  * is finihed.
-	  *
-	  * The default does nothing.
-	  */
-	virtual void inform_updated(Algorithm& algo)
-	{}
+	 * is finihed.
+	 *
+	 * This function is only called when the algorithm is already running
+	 * but the configuration has changed.
+	 *
+	 * The default implementation does nothing.
+	 */
+	virtual void inform_updated(
+		Algorithm&             algo
+		,poss_type             step_poss
+		,EDoStepType           type
+		,poss_type             assoc_step_poss
+		)
+		{}
+
+	///
+	/** Called by <tt>Algorithm</tt> just after an algorithm is terminiated.
+	 *
+	 * This allows step objects to perform any final processing or cleanup
+	 * just after an algorithm is finished.
+	 *
+	 * The default implementation does nothing.
+	 */
+	virtual void finalize_step(
+		Algorithm&             algo
+		,poss_type             step_poss
+		,EDoStepType           type
+		,poss_type             assoc_step_poss
+		)
+		{}
 
 	///
 	/** Called by <tt>Algorithm::print_algorithm()</tt> to print out what this step does in Matlab like format.
@@ -69,6 +120,8 @@ public:
 		,const std::string&      leading_str
 		) const
 	{}
+
+	//@}
 
 };	// end class AlgorithmStep
 

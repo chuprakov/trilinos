@@ -326,17 +326,7 @@ void Algorithm::end_config_update()
 	curr_step_poss_ = std::distance( steps_.begin() , itr ) + 1;
 
 	// inform the step objects that *this has changes.
-	steps_t::iterator			s_itr = steps_.begin();
-	assoc_steps_t::iterator		a_itr = assoc_steps_.begin();
-	for(; s_itr != steps_.end(); ++s_itr, ++a_itr) {
-		(*(*s_itr).step_ptr).inform_updated(*this);
-		for(int assoc_type_i = 0; assoc_type_i < 2; ++assoc_type_i) {	// PRE_STEP, POST_STEP
-			assoc_steps_ele_list_t::iterator	as_itr = (*a_itr)[assoc_type_i].begin(),
-												as_itr_end = (*a_itr)[assoc_type_i].end();
-			for(; as_itr != as_itr_end; ++as_itr)
-				(*(*as_itr).step_ptr).inform_updated(*this);
-		}
-	}
+	imp_inform_steps( &AlgorithmStep::inform_updated );
 
 	change_running_state(RUNNING);
 	reconfigured_ = true;
@@ -424,6 +414,8 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 	stopwatch step_timer;
 	stopwatch overall_timer;
 
+	imp_inform_steps( &AlgorithmStep::initialize_step );
+
 	overall_timer.start();
 	for(;;) {
 
@@ -464,9 +456,7 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 												? TERMINATE_TRUE
 												: TERMINATE_FALSE );
 			}
-			track().output_final(*this,algo_return);
-			change_running_state(NOT_RUNNING);
-			return algo_return;
+			return finalize_algorithm(algo_return);
 		}
 
 		if(keep_on) {
@@ -482,27 +472,21 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 
 				// Check if the maximum number of iterations has been exceeded.
 				if( state().k() - first_k_ >= max_iter() ) {
-					change_running_state(NOT_RUNNING);
-					track().output_final(*this,MAX_ITER_EXCEEDED);
-					return MAX_ITER_EXCEEDED;
+					return finalize_algorithm(MAX_ITER_EXCEEDED);
 				}
 
 				// Check if the maximum runtime has been exceeded.
-				if( overall_timer.read() / 60 >= max_run_time() ) {
-					change_running_state(NOT_RUNNING);
-					track().output_final(*this,MAX_RUN_TIME_EXCEEDED);
-					return MAX_RUN_TIME_EXCEEDED;
+				if( ( overall_timer.read() / 60 ) >= max_run_time() ) {
+					return finalize_algorithm(MAX_RUN_TIME_EXCEEDED);
 				}
 
 				// Set if the algorithm was interrupted
 				if( static_interrupt_status == STOP_END_ITER ) {
-					change_running_state(NOT_RUNNING);
 					static_interrupt_status = NOT_INTERRUPTED;
 					const EAlgoReturn algo_return = ( static_interrupt_terminate_return
 																						? INTERRUPTED_TERMINATE_TRUE
 																						: INTERRUPTED_TERMINATE_FALSE );
-					track().output_final(*this,algo_return);
-					return algo_return;
+					return finalize_algorithm(algo_return);
 				}
 
 				// Transition the iteration quantities to k = k + 1
@@ -538,8 +522,12 @@ EAlgoReturn Algorithm::do_algorithm(poss_type step_poss)
 
 	}	// end try
 	catch(...) {
-		change_running_state(NOT_RUNNING);
-		track().output_final( *this,TERMINATE_FALSE );  // This may also throw an exception?
+		try {
+			finalize_algorithm(TERMINATE_FALSE);
+		}
+		catch(...) {
+			// We tried to finalize gracefully but we failed!
+		}
 		throw;
 	}
 }
@@ -743,6 +731,13 @@ void Algorithm::get_final_step_stats( size_t step, double* total, double* averag
 	}
 }
 
+EAlgoReturn Algorithm::finalize_algorithm( EAlgoReturn algo_return )
+{
+	change_running_state(NOT_RUNNING);
+	imp_inform_steps( &AlgorithmStep::finalize_step );
+	track().output_final(*this,algo_return);
+	return algo_return;
+}
 
 void Algorithm::compute_final_time_stats() const
 {
@@ -903,6 +898,33 @@ bool Algorithm::imp_do_assoc_steps(EAssocStepType type) {
 		if( !(*(*itr).step_ptr).do_step(*this, curr_step_poss_, do_step_type(type), i) ) return false;
 	}
 	return true;	// All the associated steps returned true.
+}
+
+void Algorithm::imp_inform_steps(inform_func_ptr_t inform_func_ptr)
+{
+	steps_t::const_iterator         s_itr = steps_.begin();
+	assoc_steps_t::const_iterator   a_itr = assoc_steps_.begin();
+	poss_type step_i = 1;
+	for(; step_i <= num_steps(); ++step_i, ++s_itr, ++a_itr) {
+		// pre_steps (e.q. 2.-3, 2.-2, 2.-1)
+		const assoc_steps_ele_list_t &pre_steps = (*a_itr)[PRE_STEP];
+		assoc_steps_ele_list_t::const_iterator pre_step_itr = pre_steps.begin();
+		for(int pre_step_i = - pre_steps.size(); pre_step_i < 0; ++pre_step_i, ++pre_step_itr) {
+			((&*(*pre_step_itr).step_ptr)->*inform_func_ptr)(
+				*this, step_i, DO_PRE_STEP, pre_steps.size()+pre_step_i+1
+				);
+		}
+		// The main step.
+		((&*(*s_itr).step_ptr)->*inform_func_ptr)( *this, step_i, DO_MAIN_STEP, 0 );
+		// post_steps (e.q. 2.1, 2.2, 2.3)
+		const assoc_steps_ele_list_t &post_steps = (*a_itr)[POST_STEP];
+		assoc_steps_ele_list_t::const_iterator post_step_itr = post_steps.begin();
+		for(int post_step_i = 1; post_step_i <= post_steps.size(); ++post_step_i, ++post_step_itr) {
+			((&*(*post_step_itr).step_ptr)->*inform_func_ptr)(
+				*this, step_i, DO_POST_STEP, post_step_i
+				);
+		}
+	}
 }
 
 void Algorithm::imp_print_algorithm(std::ostream& out, bool print_steps) const

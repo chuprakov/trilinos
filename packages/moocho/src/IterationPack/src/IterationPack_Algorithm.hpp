@@ -701,6 +701,14 @@ private:
 	///
 	enum { NUM_STEP_TIME_STATS = 5 };
 
+	///
+	typedef void (AlgorithmStep::*inform_func_ptr_t)(
+		Algorithm&             algo
+		,poss_type             step_poss
+		,EDoStepType           type
+		,poss_type             assoc_step_poss
+		);
+
 	// /////////////////////////////////////////////////////
 	// Private data members
 
@@ -871,10 +879,16 @@ private:
 	bool imp_do_assoc_steps(EAssocStepType type);
 
 	///
+	void imp_inform_steps(inform_func_ptr_t inform_func_ptr);
+
+	///
 	void imp_print_algorithm(std::ostream& out, bool print_steps) const;
 
 	/// EAssocStepType -> EDoStepType
 	EDoStepType do_step_type(EAssocStepType assoc_step_type);
+
+	///
+	EAlgoReturn finalize_algorithm( EAlgoReturn algo_return );
 
 	///
 	void compute_final_time_stats() const;
