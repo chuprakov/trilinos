@@ -235,7 +235,7 @@ SolveReturn GMRESSolver<Scalar>::localSolve(
 	typedef Teuchos::ScalarTraits<Scalar> ST;
 	const Scalar one = ST::one();
 	// 
-	//  Check compatability of linear operator with rhs and solution vector.
+	// Check compatability of linear operator with rhs and solution vector
 	//
 	const VectorSpace<Scalar> &M_domain = ( ( M_trans == NOTRANS ) ? *M.domain() : *M.range()  );
 	const VectorSpace<Scalar> &M_range  = ( ( M_trans == NOTRANS ) ? *M.range()  : *M.domain() );
@@ -272,7 +272,7 @@ SolveReturn GMRESSolver<Scalar>::localSolve(
 	}
 	if(!isConverged) {
 		//
-		// Determine the residual from the current solution: r = b - M*x 
+		// Determine the residual from the current solution: r = M*x - b 
 		//
 		assign( &*r_, b );
 		const ScalarMagnitude norm_x = norm_inf(*x);
@@ -296,7 +296,7 @@ SolveReturn GMRESSolver<Scalar>::localSolve(
 		// Do the GMRES iterations
 		//
 		bool solverBreakdown = false;
-		while( !isConverged && (curr_iter_ < max_iter) ) {
+		while( !isConverged ) {
 			//
 			// Convergence check
 			//
@@ -315,6 +315,8 @@ SolveReturn GMRESSolver<Scalar>::localSolve(
 				isConverged = true;
 				break;
 			}
+			if(curr_iter_ == max_iter)
+				break;
 			//
 			// Setup for first GMRES iteration
 			//
