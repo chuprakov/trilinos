@@ -36,7 +36,7 @@ ExampleNLPFirstOrderInfo::ExampleNLPFirstOrderInfo(
 	,bool                            has_bounds
 	,bool                            dep_bounded
 	)
-	:ExampleNLPFirstOrderDirect(vec_space,xo,has_bounds,dep_bounded)
+	:ExampleNLPObjGradient(vec_space,xo,has_bounds,dep_bounded)
 	,initialized_(false)
 {}
 
@@ -58,7 +58,7 @@ ExampleNLPFirstOrderInfo::factory_Gc() const
 const NLPFirstOrderInfo::mat_fcty_ptr_t
 ExampleNLPFirstOrderInfo::factory_Gh() const
 {
-	return ExampleNLPFirstOrderDirect::factory_Gh();
+	return MemMngPack::null;
 }
 
 // Overridden public members from NLP
@@ -67,7 +67,7 @@ void ExampleNLPFirstOrderInfo::initialize(bool test_setup)
 {
 	namespace rcp = MemMngPack;
 
-	ExampleNLPFirstOrderDirect::initialize(test_setup);
+	ExampleNLPObjGradient::initialize(test_setup);
 	NLPFirstOrderInfo::initialize(test_setup);
 
 	factory_Gc_ = BasisSystemCompositeStd::factory_Gc();

@@ -16,7 +16,7 @@
 #ifndef EXAMPLE_NLP_FIRST_ORDER_INFO_H
 #define EXAMPLE_NLP_FIRST_ORDER_INFO_H
 
-#include "ExampleNLPFirstOrderDirect/ExampleNLPFirstOrderDirect.h"
+#include "ExampleNLPFirstOrderDirect/ExampleNLPObjGradient.h"
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
 
 namespace NLPInterfacePack {
@@ -47,7 +47,7 @@ namespace NLPInterfacePack {
  */
 class ExampleNLPFirstOrderInfo
 	: virtual public NLPFirstOrderInfo
-	, virtual public ExampleNLPFirstOrderDirect
+	, virtual public ExampleNLPObjGradient
 {
 public:
 
