@@ -16,6 +16,8 @@
 #ifndef IVECTOR_H
 #define IVECTOR_H
 
+#include <assert.h>
+
 #include <valarray>
 
 #include "LinAlgPackTypes.h"
