@@ -97,7 +97,8 @@ bool NLPFirstDerivativesTester::fd_check_all(
 				"by finite differences ...\n";
 	}
 	CalcFiniteDiffFirstDerivatives fd_deriv_computer;
-	fd_deriv_computer.calc_deriv(xo,nlp,&FDGf(),&FDGc(),out);
+	fd_deriv_computer.calc_deriv(xo,NULL,NULL,0,Range1D(),nlp,&FDGf()
+		,&FDGc(),BLAS_Cpp::no_trans,out);
 
 	// Compare results
 	// 
