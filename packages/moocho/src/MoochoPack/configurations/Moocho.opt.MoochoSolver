@@ -1,0 +1,246 @@
+********************************************************************
+*** All of these options can be used with the class rSQPppSolver.
+***
+*** This file will be maintained and will include every option that
+*** users can set.  Most of these options the user will want to
+*** leave alone but they are there in any case.
+***
+*** For options specific to the rSQPAlgo_ConfigMamaJama configuration
+*** class see the file 'rSQPpp.opt.rSQPAlgo_ConfigMamaJama'.
+***
+
+begin_options
+
+***********************************************************
+*** Options for all rSQP solvers.
+***
+*** These include basic algorithmic control parameters.
+***
+options_group rSQPSolverClientInterface {
+
+*    max_iter = 1000;  *** (default?)
+     *** (+int) Maximum number of SQP iterations allowed.
+
+*    max_run_time = 1e+10; *** (default?)
+     *** (+dbl) Maximum runtime for the SQP algorithm (in minutes).
+     *** The default is to run forever.
+
+*    opt_tol = 1e-6;  *** (default?)
+     *** (+dbl) Convergence tolerence for (scaled) KKT linear dependence of gradinets.
+     *** This is usually the hardest error to minimize.  The exact definition of this tolerance
+     *** is depends on algorithms use and may use different scalings (see other options and
+     *** outputed algorithm description for details).  Example values:
+     *** 0.0   : The algorithm will never converge except in trivial cases.
+     *** 1e-6  : Only converge when opt_kkt_err is below this value (default).
+     *** 1e+50 : (big number) Converged when any of the other tolerances are satisfied.
+
+*    feas_tol = 1e-6;  *** (default?)
+     *** (+dbl) Convergence tolerance for (scaled) feasibility of the equality constriants
+     *** ||c(x)||inf.  The norm of the constraints ||c(x)||inf may be scaled (see other
+     *** options and the outputed algorithm description).  Example values:
+     *** 0.0   : Never converge the algorithm except in trivial cases.
+     *** 1e-6  : Only converge when feas_kkt_err is below this value (default).
+     *** 1e+50 : (big number)  Converged when any of the other tolerances are satisfied.
+
+*    step_tol = 1e-2;  *** (default?)
+     *** (+dbl) Convergence tolerance for (scaled) step size ||x_k(+1)-x_k||inf.
+     *** This tolerance is usually scaled by x is some way (see other output algorithm
+     *** description).  Example values:
+     *** 0.0   : Never converge the algorithm except in trivial cases.
+     *** 1e-2  : Only converge when the max (scaled) step size is below this value (default).
+     *** 1e+50 : (big number) Converged when any of the other tolerances are satisfied.
+
+*    max_var_bounds_viol = 1e-5;  *** (default?)
+     *** (+dbl) Allow f(x), c(x) computed in relaxed bounds:
+     ***    xl - max_var_bounds_viol <= x <= xu + max_var_bounds_viol
+     *** This relaxation represents a little wiggle room for the algorithm to perform
+     *** such tasks as finite differencing.  The algorithm will never evaluate any of the
+     *** NLP functions outside of this relaxed region.  This is the agreement the algorithm
+     *** makes with the NLP so as to avoid undefined regions if f(x) and c(x).
+     *** Example values:
+     *** 0.0   : Don't allow any violation of the variable bounds.  Note that when there
+     ***         are active bounds this means that no finite differencing can be used
+     ***         and any tests or other options that depend on this should be turned off.
+     ***         This value should only be used when any point outside the bounds would
+     ***         cause f(x) or c(x) to become undefined.
+     *** 1e-5  : This allows sufficiently large step sizes in most cases to get accurate
+     ***         finite differencing and is therefore the default value.
+     *** 1e+50 : (big number) Allow any points outside of the bounds to be used with
+     ***         f(x) and c(x).  If the NLP does not have any undefined regions then
+     ***         this is a reasonable value to let the algorithm do what ever it wants. 
+
+*    journal_output_level = PRINT_NOTHING;              * No output to journal from algorithm
+*    journal_output_level = PRINT_BASIC_ALGORITHM_INFO; * O(1) information usually
+*    journal_output_level = PRINT_ALGORITHM_STEPS;      * O(iter) output to journal     (default)
+*    journal_output_level = PRINT_ACTIVE_SET;           * O(iter*nact) output to journal  
+*    journal_output_level = PRINT_VECTORS;              * O(iter*n) output to journal   (lots!)
+*    journal_output_level = PRINT_ITERATION_QUANTITIES; * O(iter*n*m) output to journal (big lots!)
+     *** This option determines the type and amount of output to the journal_out stream
+     *** (the file 'rSQPppJournal.out' by default) that is generated while the algorithm runs.
+     ***  In general, each increasing value includes the same output from the lower options
+     *** (i.e. PRINT_VECTORS includes all the output for PRINT_ACTIVE_SET and more).   Above
+     *** the identifer iter is the number of total rSQP iterations (see max_iter above), nact
+     *** is the total number of active inequality constriants, n is the total number
+     *** of NLP variables and m is the total number of NLP constraints.  The higer output
+     *** values are generally used for debugging.  For most problems the value
+     *** PRINT_ALGORITHM_STEPS is usually the most appropriate and will give a great deal
+     *** of information about the algorithm without generating excessive output.
+     *** For the fastest possible execution you should set this to PRINT_NOTHING.
+
+*    journal_print_digits = 6;  *** (default?)
+     *** (+int) Number of decimal significant figures to print to journal_out stream.
+     *** With a higher number more significant figures will be printed.  This may be useful
+     *** for debugging or in seeing the effects of subtle rounding differences.  For IEEE double
+     *** precision, 18 is usually the maximum number of unique decimal significant figures.
+
+*    check_results = true;  *** (costly?)
+*    check_results = false; *** (default?)
+     *** If true then all computation that can be reasonably checked will be at runtime.
+     *** When all of the other default testing options are used, this overhead usually will
+     *** not dominiate the cost of the algorithm so if speed is not critical then it is a
+     *** good idea to turn this testing on.  If your problem is not solving then you should
+     *** definitly try turning this on and try to see it will catch any bugs.  However,
+     *** for the fastest possible execution you should set this to false.
+}
+
+**********************************************************
+*** Options specific for the rSQPppSolver class
+***
+options_group rSQPppSolver {
+
+*    workspace_MB = -1.0; *** (default)
+     *** (+-dbl) If > 0, givens the number of megabytes that are allocated for
+     *** temporary workspace for automatic arrays.  If < 0 then the
+     *** this will be determined internaly.  This value should be set by the
+     *** user for whatever is appropriate for the computing enviornment.  See
+     *** the summary output for statistics on memory allocation usage when the
+     *** algorithm finishes.  Example values:
+     *** -1.0 : (< 0) Allow the algorithm to decide how much to allocate.
+     *** 100  : Allocate 100 MB of ram for this purpose
+
+*    obj_scale = 1.0; *** (default)
+     *** (+-dbl) Scale for the objective function.  This can have a dramatic impact
+     *** on the behavior of the algorithm in some cases.  Changing this value
+     *** does a lot to change the wait between minimizing the objective and converging
+     *** the constraints.  Example values:
+     *** 1e-8  : Really scale the objective down a lot!
+     *** 1.0   : Leave the objective unscaled (default).
+     *** 1e+8  : Really scale the objective up a lot!
+
+*    test_nlp = true; *** (default)
+*    test_nlp = false;
+     *** If true then the NLP will be tested at the initial point.  The
+     *** vector spaces (see options_group VectorSpaceTester),
+     *** the NLP interface (see options_group NLPTester), and the gradients
+     *** (see options_group NLPFirstOrderDirectTester and options_group
+     *** NLPFirstOrderInfoTester).  With all of the default options in place
+     *** these tests are fairly cheap so it is recommended that you perform
+     *** these test when first getting started.
+
+*    print_algo = true; *** (default)
+*    print_algo = false;
+     *** If true then the algorithm will be printed to the algo_out stream
+     *** (the file 'rSQPAlgo.out' by default).  In order to get more insight into
+     *** what all of the options do it is a good idea to print the algorithm
+     *** description out and search for the options you are curious about.
+
+*    algo_timing = true; *** (default)
+*    algo_timing = false;
+     *** If true, then the steps in the algorithm will be timed and a table of the
+     *** algorithm and step times will be sent to the summary_out stream (the file
+     *** 'rSQPppSummary.out' by default).  This feature is very useful in examining
+     *** performance of the algorithm and can give more detailed information than you
+     *** get from a profiler in may ways.
+
+*    generate_stats_file = true;
+*    generate_stats_file = false; *** (default)
+     *** If true, then a rSQPTrackStatsStd object will be used to generate
+     *** statistics about the solution process to an NLP.  The track object
+     *** will overwritte the file 'rSQPppStats.out' in the current directory.
+
+*    print_opt_grp_not_accessed = true; *** (default)
+*    print_opt_grp_not_accessed = false;
+     *** If true, then the options groups that are specified but are not read by
+     *** some software entity are printed to the algo_out stream (the file 'rSQPppAlgo.out'
+     *** by default).  This may help you catch problems associated with spelling the name of
+     *** an options group inproperly and then having its default options used instead of the
+     *** options that you set.  Note that some options groups are only looked for depending
+     *** on option values from other options groups.
+
+}
+
+************************************************************
+*** Options for testing the NLP interface
+***
+options_group NLPTester {
+
+*    print_all = true;
+*    print_all = false; *** (default)
+     *** If true, then everything about the NLP will be printed
+     *** to journal_out (i.e. the file 'rSQPppJournal.out').
+     *** This is useful for initial debugging but not recommended
+     *** for larger problems.
+
+}
+
+***********************************************************
+*** Options for the finite derivative testing for a
+*** standard NLP.
+***
+options_group NLPFirstDerivativesTester {
+*    fd_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(m))
+*    fd_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
+*    num_fd_directions = 1;  *** [fd_testing_method == DIRECTIONAL]
+*    warning_tol   = 1e-10;
+*    warning_tol   = 0.0;  *** Show me all comparisons.
+*    error_tol     = 1e-5;
+}
+
+****************************************************************
+*** Options for the finite difference derivative tester for a 
+*** direct sensistivity NLP.
+***
+options_group NLPFirstOrderDirectTester {
+*    Gf_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n))
+*    Gf_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
+*    Gf_warning_tol   = 1e-10;
+*    Gf_error_tol     = 1e-5;
+*    Gc_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(n-m))
+*    Gc_testing_method = FD_DIRECTIONAL; *** Only compute along random directions
+*    Gc_warning_tol   = 1e-10;
+*    Gc_error_tol     = 1e-5;
+*    num_fd_directions = 1;  *** [testing_method == DIRECTIONAL]
+}
+
+****************************************************************
+*** Options for the BasisSystem tester used to validate the
+*** basis of the constraints Jacobian.
+***
+options_group BasisSystemTester {
+
+*    print_tests = PRINT_NONE; *** (default)
+*    print_tests = PRINT_BASIC;
+*    print_tests = PRINT_MORE;
+*    print_tests = PRINT_ALL;
+
+*    dump_all = true;
+*    dump_all = false; *** (default)
+
+*    throw_exception = true; *** (default)
+*    throw_exception = false;
+
+*    num_random_tests = 1;
+
+*    mult_warning_tol = 1e-14;
+
+*    mult_error_tol   = 1e-10;
+
+*    solve_warning_tol = 1e-14;
+
+*    solve_error_tol   = 1e-10;
+
+}
+
+end_options
+
+*** End file
