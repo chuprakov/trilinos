@@ -37,7 +37,6 @@ class IterQuantMatrixWithOpCreator;
 //
 
 class rSQPAlgo;
-class ReducedQPSolver;
 
 }	// end namespace ReducedSpaceSQPPack 
 

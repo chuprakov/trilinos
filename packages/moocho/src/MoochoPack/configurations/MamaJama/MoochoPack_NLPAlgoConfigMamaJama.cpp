@@ -44,8 +44,12 @@
 
 #include "NLPInterfacePack/include/NLPReduced.h"
 #include "SparseSolverPack/include/COOBasisSystem.h"
+#ifdef SPARSE_SOLVER_PACK_USE_MA48
 #include "SparseSolverPack/include/MA28SparseCOOSolverCreator.h"
+#endif
+#ifdef SPARSE_SOLVER_PACK_USE_MA48
 #include "SparseSolverPack/include/MA48SparseCOOSolverCreator.h"
+#endif
 #include "ConstrainedOptimizationPack/include/DirectLineSearchArmQuad_Strategy.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPL1.h"
 #include "ConstrainedOptimizationPack/include/MeritFuncNLPModL1.h"
@@ -63,12 +67,9 @@
 #include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianFull.h"
 #include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianSuperBasic.h"
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPKWIK.h"
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPOPT.h"
-
-#include "ReducedSpaceSQPPack/include/std/ReducedQPSolverCheckOptimality.h"
-#include "ReducedSpaceSQPPack/include/std/ReducedQPSolverQPOPTSOLStd.h"
-#include "ReducedSpaceSQPPack/include/std/ReducedQPSolverQPSOL.h"
-#include "ReducedSpaceSQPPack/include/std/ReducedQPSolverQPOPT.h"
+#endif // CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
 
 #include "ReducedSpaceSQPPack/include/std/rSQPAlgorithmStepNames.h"
 
@@ -757,6 +758,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			ref_count_ptr<SparseCOOSolverCreator>
 				sparse_solver_creator = NULL;
 			if( cov_.direct_linear_solver_type_ == LA_MA28 ) {
+#ifdef SPARSE_SOLVER_PACK_USE_MA28
 				sparse_solver_creator
 					= rcp::rcp_implicit_cast<SparseCOOSolverCreator>(
 						ref_count_ptr<SparseSolverPack::MA28SparseCOOSolverCreator>(
@@ -765,8 +767,12 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 									ref_count_ptr<SparseSolverPack::MA28SparseCOOSolverSetOptions>(
 										new SparseSolverPack::MA28SparseCOOSolverSetOptions ) )
 								,const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_) ) ) );
+#else
+				assert(0);
+#endif
 			}
 			else if ( cov_.direct_linear_solver_type_ == LA_MA48 ) {
+#ifdef SPARSE_SOLVER_PACK_USE_MA48
 				sparse_solver_creator
 					= rcp::rcp_implicit_cast<SparseCOOSolverCreator>(
 						ref_count_ptr<SparseSolverPack::MA48SparseCOOSolverCreator>(
@@ -775,6 +781,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 									ref_count_ptr<SparseSolverPack::MA48SparseCOOSolverSetOptions>(
 										new SparseSolverPack::MA48SparseCOOSolverSetOptions ) )
 							,const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_) ) ) );
+#else
+				assert(0);
+#endif
 			}
 			else {
 				assert(0);
@@ -1289,169 +1298,121 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			// with the calculation of the reduced gradient of the lagrangian).
 			
 			// Setup IndepDirec step
-			if( cov_.qp_solver_type_ == QP_QPSCHUR || cov_.qp_solver_type_ == QP_QPKWIK
-				|| cov_.qp_solver_type_ == QP_QPOPT )
-			{
 			
-				// Add iteration quantity for d_bounds
-				algo->state().set_iter_quant( d_bounds_name
-					, new IterQuantityAccessContinuous<SparseBounds>( 1, d_bounds_name ) );
+			// Add iteration quantity for d_bounds
+			algo->state().set_iter_quant( d_bounds_name
+				, new IterQuantityAccessContinuous<SparseBounds>( 1, d_bounds_name ) );
 
-				// Create the QP solver
+			// Create the QP solver
 
-				// RAB 8/28/00: In the future, all the QP solvers will also use this interface.
+			// RAB 8/28/00: In the future, all the QP solvers will also use this interface.
 
-				switch( cov_.qp_solver_type_ ) {
-					case QP_QPSCHUR: {
-						using ConstrainedOptimizationPack::QPSolverRelaxedQPSchur;
-						using ConstrainedOptimizationPack::QPSolverRelaxedQPSchurSetOptions;
-						using ConstrainedOptimizationPack::QPSchurInitKKTSystemHessianFull;
-						using ConstrainedOptimizationPack::QPSchurInitKKTSystemHessianSuperBasic;
-						ConstrainedOptimizationPack::QPSolverRelaxedQPSchur::InitKKTSystem
-							*init_kkt_sys = NULL;
-						switch( cov_.quasi_newton_ ) {
-						    case QN_BFGS:
-						    case QN_LBFGS:
-								init_kkt_sys = new QPSchurInitKKTSystemHessianFull();
-								break;
-						    case QN_PBFGS:
-						    case QN_LPBFGS:
-								init_kkt_sys = new QPSchurInitKKTSystemHessianSuperBasic();
-								break;
-						    default:
-								assert(0);
-						}
-						QPSolverRelaxedQPSchur
-							*_qp_solver = new QPSolverRelaxedQPSchur(init_kkt_sys);
-						QPSolverRelaxedQPSchurSetOptions
-							qp_options_setter(_qp_solver);
-						qp_options_setter.set_options( *options_ );
-						qp_solver = _qp_solver; // give ownership to delete!
-						break;
+			switch( cov_.qp_solver_type_ ) {
+				case QP_QPSCHUR: {
+					using ConstrainedOptimizationPack::QPSolverRelaxedQPSchur;
+					using ConstrainedOptimizationPack::QPSolverRelaxedQPSchurSetOptions;
+					using ConstrainedOptimizationPack::QPSchurInitKKTSystemHessianFull;
+					using ConstrainedOptimizationPack::QPSchurInitKKTSystemHessianSuperBasic;
+					ConstrainedOptimizationPack::QPSolverRelaxedQPSchur::InitKKTSystem
+						*init_kkt_sys = NULL;
+					switch( cov_.quasi_newton_ ) {
+						case QN_BFGS:
+						case QN_LBFGS:
+							init_kkt_sys = new QPSchurInitKKTSystemHessianFull();
+							break;
+						case QN_PBFGS:
+						case QN_LPBFGS:
+							init_kkt_sys = new QPSchurInitKKTSystemHessianSuperBasic();
+							break;
+						default:
+							assert(0);
 					}
-					case QP_QPKWIK: {
-						using ConstrainedOptimizationPack::QPSolverRelaxedQPKWIK;
-						QPSolverRelaxedQPKWIK
-							*_qp_solver = new QPSolverRelaxedQPKWIK();
-						qp_solver = _qp_solver; // give ownership to delete!
-						break;
-					}
-					case QP_QPOPT: {
-						using ConstrainedOptimizationPack::QPSolverRelaxedQPOPT;
-						QPSolverRelaxedQPOPT
-							*_qp_solver = new QPSolverRelaxedQPOPT();
-						qp_solver = _qp_solver; // give ownership to delete!
-						break;
-					}
-					default:
-						assert(0);
+					QPSolverRelaxedQPSchur
+						*_qp_solver = new QPSolverRelaxedQPSchur(init_kkt_sys);
+					QPSolverRelaxedQPSchurSetOptions
+						qp_options_setter(_qp_solver);
+					qp_options_setter.set_options( *options_ );
+					qp_solver = _qp_solver; // give ownership to delete!
+					break;
 				}
-
-				// Create the QP solver tester object and set its options
-				qp_tester = new QPSolverRelaxedTester();
-				ConstrainedOptimizationPack::QPSolverRelaxedTesterSetOptions
-					qp_tester_options_setter( qp_tester.get() );
-				qp_tester_options_setter.set_options( *options_ );
-
-				// Create the step object
-
-				IndepDirecWithBoundsStd_Step
-					*indep_direct_step = new  IndepDirecWithBoundsStd_Step( qp_solver, qp_tester );
-				IndepDirecWithBoundsStd_StepSetOptions
-					indep_direct_step_options_setter( indep_direct_step );
-				indep_direct_step_options_setter.set_options( *options_ );
-
-				// Set the step objects
-
-				if( trase_out ) {
-					*trase_out
-						<< "\n\nreinit_hessian_on_qp_fail = " << (cov_.reinit_hessian_on_qp_fail_ ? "true" : "false");
-					if(cov_.reinit_hessian_on_qp_fail_)
-						*trase_out
-							<< "\nThe algorithm will reinitalize the reduced hessian if the QP subproblem fails"
-							<< "\nand will not throw a QPFailure exception the first time\n";
-					else
-						*trase_out
-							<< "\nThe algorithm will not reinitalize the reduced hessian if the QP subproblem fails"
-							<< "\nIt will just be a QPFailure exception thrown\n";
+				case QP_QPKWIK: {
+					using ConstrainedOptimizationPack::QPSolverRelaxedQPKWIK;
+					QPSolverRelaxedQPKWIK
+						*_qp_solver = new QPSolverRelaxedQPKWIK();
+					qp_solver = _qp_solver; // give ownership to delete!
+					break;
 				}
-				rSQPAlgo_Step
-					*_indep_direc_step = NULL;
-				if(cov_.reinit_hessian_on_qp_fail_)
-					_indep_direc_step = new QPFailureReinitReducedHessian_Step(indep_direct_step); // Will clean up memory!
-				else
-					_indep_direc_step = indep_direct_step;
-				Algorithm::poss_type poss;
-				poss = algo->get_step_poss(IndepDirec_name);
-				algo->remove_step( poss );	// remove any pre or post steps also
-				algo->insert_step(
-					poss
-					,IndepDirec_name
-					,_indep_direc_step // Will clean up memory!
-					);
-				algo->insert_assoc_step(
-					 poss
-					, GeneralIterationPack::PRE_STEP
-					, 1
-					, "SetDBounds"
-					, new  SetDBoundsStd_AddedStep
-					);
-
-			}
-			else {
-
-				// RAB 8/28/00: This step object and QP solver interface will be phased out!
-
-				typedef ref_count_ptr<ReducedQPSolver> qp_solver_ptr_t;
-				qp_solver_ptr_t qp_solver;
-
-				switch(cov_.qp_solver_type_) {
-					case QP_QPOPT:
-					case QP_QPSOL:
-					{
-						ReducedQPSolverQPOPTSOL*  _qp_solver = 0;
-						if(cov_.qp_solver_type_ == QP_QPOPT)
-							_qp_solver = new ReducedQPSolverQPOPT;
-						else
-							_qp_solver = new ReducedQPSolverQPSOL;
-						
-						// If we are going to dump all of the iteration quantites we might as
-						// well just print out the mappings to QPOPT and QPSOL.
-						if(algo_cntr.journal_output_level() == PRINT_ITERATION_QUANTITIES) {
-#ifdef _PG_CXX
-							// What a dumb hack!
-							mapped_qp_file_ptr_t mapped_qp_file_tmp(new std::ofstream("mapped_qp.txt"));
-							mapped_qp_file_ = mapped_qp_file_tmp;
+				case QP_QPOPT: {
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
+					using ConstrainedOptimizationPack::QPSolverRelaxedQPOPT;
+					QPSolverRelaxedQPOPT
+						*_qp_solver = new QPSolverRelaxedQPOPT();
+					qp_solver = _qp_solver; // give ownership to delete!
 #else
-							mapped_qp_file_ = mapped_qp_file_ptr_t( new std::ofstream("mapped_qp.txt") );
+					throw std::logic_error(
+						"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : QPOPT is not supported,"
+						" must define CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT!" );
 #endif
-						}
-						_qp_solver->qp_mapping_output( mapped_qp_file_.get() );
-						qp_solver = qp_solver_ptr_t( new ReducedQPSolverQPOPTSOLStd(_qp_solver,algo.get()) );
-						break;
-					}
-				    default:
-						assert(0);
+					break;
 				}
-
-				Algorithm::poss_type poss;
-
-				poss = algo->get_step_poss(IndepDirec_name);
-				algo->replace_step(
-							poss
-							,new  IndepDirecExact_Step( 
-								new ReducedQPSolverCheckOptimality(
-									qp_solver, algo.get(), algo->algo_cntr().check_results() )
-							  )
-					    );
+				default:
+					assert(0);
 			}
 
+			// Create the QP solver tester object and set its options
+			qp_tester = new QPSolverRelaxedTester();
+			ConstrainedOptimizationPack::QPSolverRelaxedTesterSetOptions
+				qp_tester_options_setter( qp_tester.get() );
+			qp_tester_options_setter.set_options( *options_ );
+
+			// Create the step object
+
+			IndepDirecWithBoundsStd_Step
+				*indep_direct_step = new  IndepDirecWithBoundsStd_Step( qp_solver, qp_tester );
+			IndepDirecWithBoundsStd_StepSetOptions
+				indep_direct_step_options_setter( indep_direct_step );
+			indep_direct_step_options_setter.set_options( *options_ );
+
+			// Set the step objects
+
+			if( trase_out ) {
+				*trase_out
+					<< "\n\nreinit_hessian_on_qp_fail = " << (cov_.reinit_hessian_on_qp_fail_ ? "true" : "false");
+				if(cov_.reinit_hessian_on_qp_fail_)
+					*trase_out
+						<< "\nThe algorithm will reinitalize the reduced hessian if the QP subproblem fails"
+						<< "\nand will not throw a QPFailure exception the first time\n";
+				else
+					*trase_out
+						<< "\nThe algorithm will not reinitalize the reduced hessian if the QP subproblem fails"
+						<< "\nIt will just be a QPFailure exception thrown\n";
+			}
+			rSQPAlgo_Step
+				*_indep_direc_step = NULL;
+			if(cov_.reinit_hessian_on_qp_fail_)
+				_indep_direc_step = new QPFailureReinitReducedHessian_Step(indep_direct_step); // Will clean up memory!
+			else
+				_indep_direc_step = indep_direct_step;
+			Algorithm::poss_type poss;
+			poss = algo->get_step_poss(IndepDirec_name);
+			algo->remove_step( poss );	// remove any pre or post steps also
+			algo->insert_step(
+				poss
+				,IndepDirec_name
+				,_indep_direc_step // Will clean up memory!
+				);
+			algo->insert_assoc_step(
+				 poss
+				, GeneralIterationPack::PRE_STEP
+				, 1
+				, "SetDBounds"
+				, new  SetDBoundsStd_AddedStep
+				);
 
 			Algorithm::step_ptr_t calc_rgrad_lagr, calc_lambda, check_conv;
 
 			// Remove and save CalcReducedGradLagr..., CalcLambdaIndep... and CheckConv...
 
-			Algorithm::poss_type poss;
 			poss = algo->get_step_poss(CalcReducedGradLagrangian_name);
 			calc_rgrad_lagr	= algo->get_step(poss);
 			algo->remove_step(poss);
@@ -1816,9 +1777,21 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 				{
 					const std::string &linear_solver = ofsp::option_value(itr);
 					if( linear_solver == "MA28" )
+#ifdef SPARSE_SOLVER_PACK_USE_MA28
 						ov->direct_linear_solver_type_ = LA_MA28;
+#else
+						throw std::logic_error(
+							"rSQPAlgo_ConfigMamaJama::readin_options(...) : MA28 is not supported,"
+							" must define SPARSE_SOLVER_PACK_USE_MA28!" );
+#endif
 					else if( linear_solver == "MA48" )
+#ifdef SPARSE_SOLVER_PACK_USE_MA48
 						ov->direct_linear_solver_type_ = LA_MA48;
+#else
+						throw std::logic_error(
+							"rSQPAlgo_ConfigMamaJama::readin_options(...) : MA48 is not supported,"
+							" must define SPARSE_SOLVER_PACK_USE_MA48!" );
+#endif
 					else if( linear_solver == "AUTO" )
 						ov->direct_linear_solver_type_ = LA_AUTO;
 					else
@@ -1926,7 +1899,13 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					else if( qp_solver == "QPSOL" )
 						ov->qp_solver_type_ = QP_QPSOL;
 					else if( qp_solver == "QPOPT" )
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
 						ov->qp_solver_type_ = QP_QPOPT;
+#else
+						throw std::logic_error(
+							"rSQPAlgo_ConfigMamaJama::readin_options(...) : QPOPT is not supported,"
+							" must define CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT!" );
+#endif
 					else if( qp_solver == "QPKWIK" )
 						ov->qp_solver_type_ = QP_QPKWIK;
 					else if( qp_solver == "QPSCHUR" )
