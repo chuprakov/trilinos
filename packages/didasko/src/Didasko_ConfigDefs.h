@@ -4,7 +4,7 @@
 ************************************************************************
 
               Didasko : Tutorial for Trilinos
-                Copyright (2001) Sandia Corporation
+                Copyright (2005) Sandia Corporation
 
 Under terms of Contract DE-AC04-94AL85000, there is a non-exclusive
 license for use of this work by or on behalf of the U.S. Government.

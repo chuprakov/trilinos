@@ -5,7 +5,7 @@
 # @HEADER
 # ************************************************************************
 # 
-#            Trilinos: An Object-Oriented Solver Framework
+#                      Didasko Tutorial Package
 #                 Copyright (2002,2003) Sandia Corporation
 # 
 #
