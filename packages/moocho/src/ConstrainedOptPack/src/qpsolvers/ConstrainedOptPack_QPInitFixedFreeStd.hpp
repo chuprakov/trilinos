@@ -27,58 +27,65 @@ public:
 	///
 	/** Initialize.
 	  *
-	  * 
+	  * The pointers and references to the objects pointed to by the
+	  * arguments to this function must not be modified by the caller.
+	  * Copies of these objects are not made internally so these
+	  * objects must remain valid while this object is in use.
 	  *
+	  * If the sizes of the arguments do not match up or some consistency
+	  * test fails then exceptions may be thrown with (hopefully) helpful
+	  * messages.
 	  *
-	  *
-	  *	@param	g 	[I]	vector (size n): objective gradient
-	  *	@param	G	[I] matrix (size n x n): objective Hessian
-	  *	@param	A	[I]	matrix (size n x m): full rank equality constraints
-	  *					in Ko.  If A==NULL then there are no equality constraints
-	  *					in Ko and m will be zero.
-	  *	@param	n_R	[I]	# of initially free variables
+	  *	@param	g 	[in] vector (size #n#): objective gradient
+	  *	@param	G	[in] matrix (size #n x n#): objective Hessian
+	  *	@param	A	[in] matrix (size #n x m#): full rank equality constraints
+	  *					in #Ko#.  If #A==NULL# then there are no equality constraints
+	  *					in #Ko# and m will be zero.
+	  *	@param	n_R	[in] number of initially free variables
 	  *	@param	i_x_free
-	  *				[I]	array (size n_R): i_x_free[l-1], l = 1...n_R defines
-	  *					the matrix Q_R as:
-	  *					Q_R(:,l) = e(i_x_free[l-1]), l = 1...n_R
+	  *				[in] array (size #n_R#): #i_x_free[l-1], l = 1...n_R# defines
+	  *					the matrix #Q_R# as:\\
+	  *					#Q_R(:,l) = e(i_x_free[l-1]), l = 1...n_R#\\
 	  *					The ordering of these indices is significant.
 	  *	@param	i_x_fixed
-	  *				[I]	array (size n_X = n - n_R):
-	  *					i_x_fixed[l-1], l = 1...n_X defines the matrix Q_X as:
-	  *					Q_X(:,l) = e(i_x_fixed[l-1]), l = 1...n_X
+	  *				[in] array (size #n_X = n - n_R#):
+	  *					#i_x_fixed[l-1], l = 1...n_X# defines the matrix #Q_X# as:\\
+	  *					#Q_X(:,l) = e(i_x_fixed[l-1]), l = 1...n_X#\\
 	  *					The ordering of these indices is significant.
 	  *	@param	bnd_fixed
-	  *				[I]	array (size n_X = n - n_R):
-	  *					bnd_fixed[l-1], l = 1...n_X define the initial active set as:
-	  *					                  / LOWER : b_X(l) = xL(i_x_fixed[l-1])
-	  *					bnd_fixed[l-1] = |  UPPER : b_X(l) = xU(i_x_fixed[l-1])
-	  *				    	              \ EQUALITY : b_X(l) = xL(i) = xU(i) (i = i_x_fixed[l-1])
-	  *	@param	b_X	[I]	vector (size n_X = n - n_R):
-	  *				Initial varaible bounds (see bnd_fixed)
-	  *	@param	Ko	[I]	matrix (size (n_R+m) x (n_R+m)):  Initial KKT matrix
-	  *	@param	fo 	[I]	vector (size n_R + m): Initial KKT system rhs vector
+	  *				[in] array (size #n_X = n - n_R#):
+	  *					#bnd_fixed[l-1], l = 1...n_X# defines the initial active set as:\\
+	  \begin{verbatim}
+	                    / LOWER : b_X(l) = xL(i_x_fixed[l-1])
+	  bnd_fixed[l-1] = |  UPPER : b_X(l) = xU(i_x_fixed[l-1])
+	                    \ EQUALITY : b_X(l) = xL(i) = xU(i) (i = i_x_fixed[l-1])
+	  \end{verbatim}
+	  *	@param	b_X	[in] vector (size #n_X = n - n_R#):
+	  *				Initial varaible bounds (see #bnd_fixed#)
+	  *	@param	Ko	[in] matrix (size #(n_R+m) x (n_R+m)#):  Initial KKT matrix
+	  *	@param	fo 	[in] vector (size #n_R + m#): Initial KKT system rhs vector
 	  *	@param	constraints
-	  *				[I]	Constraints object for the extra constraints
-	  *					cL_bar <= A_bar'*x <= cU_bar
-	  *	@param	out	[O]	If out!=NULL, then any warning or error messages will
+	  *				[in] Constraints object for the extra constraints
+	  *					#cL_bar <= A_bar'*x <= cU_bar#
+	  *	@param	out	[out] If #out!=NULL#, then any warning or error messages will
 	  *					be printed here.
 	  *	@param	test_setup
-	  *				[I]	If set to true, then consistency checks will be
+	  *				[in] If set to true, then consistency checks will be
 	  *					made on all the input arguments.  The cost of the
 	  *					tests will not be too excessive in runtime or
 	  *					storge costs and do not completly validate everything
 	  *	@param	waring_tol
-	  *				[I]	Warning tolerance for tests.
+	  *				[in] Warning tolerance for tests.
 	  *	@param	error_tol
-	  *				[I]	Error tolerance for tests.  If the relative error
+	  *				[in] Error tolerance for tests.  If the relative error
 	  *					of any test exceeds this limit, then an error
-	  *					message will be printed to out (if out!=NULL) and then
+	  *					message will be printed to out (if #out!=NULL#) and then
 	  *					a runtime exception will be thrown.
 	  *	@param	print_all_warnings
-	  *				[I] If set to true, then any relative errors for tests
-	  *					that are above warning_tol will be printed to
-	  *					out (if out!= NULL) (O(n) output).
-	  *					Otherwise, if false, then
+	  *				[in] If set to #true#, then any relative errors for tests
+	  *					that are above #warning_tol# will be printed to
+	  *					#out# (if #out!= NULL#) (O(#n#) output).
+	  *					Otherwise, if #false#, then
 	  *					only the number of violations and the maximum
 	  *					violation will be printed (O(1) output).
 	  */
@@ -96,8 +103,8 @@ public:
 		, Constraints							*constraints
 		, std::ostream							*out				= NULL
 		, bool									test_setup			= false
-		, value_type							warning_tol			= 1e-6
-		, value_type							error_tol			= 1e-1
+		, value_type							warning_tol			= 1e-10
+		, value_type							error_tol			= 1e-5
 		, bool									print_all_warnings	= false
 		);
 
