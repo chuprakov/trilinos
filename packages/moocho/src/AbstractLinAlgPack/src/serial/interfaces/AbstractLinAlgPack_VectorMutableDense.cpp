@@ -154,6 +154,7 @@ VectorWithOpMutable&
 VectorWithOpMutableDense::operator=(value_type alpha)
 {
 	v_ = alpha;
+	this->has_changed();
 }
 
 VectorWithOpMutable&
@@ -163,6 +164,7 @@ VectorWithOpMutableDense::operator=(const VectorWithOp& v)
 		v_ = vp->v_;
 	else
 		return VectorWithOpMutable::operator=(v); // Try the default implementation?
+	this->has_changed();
 	return *this;
 }
 
@@ -173,12 +175,14 @@ VectorWithOpMutableDense::operator=(const VectorWithOpMutable& v)
 		v_ = vp->v_;
 	else
 		return VectorWithOpMutable::operator=(v); // Try the default implementation?
+	this->has_changed();
 	return *this;
 }
 
 void VectorWithOpMutableDense::set_ele( index_type i, value_type val )
 {
 	v_(i) = val;
+	this->has_changed();
 }
 
 void VectorWithOpMutableDense::get_sub_vector(
@@ -205,6 +209,7 @@ void VectorWithOpMutableDense::get_sub_vector(
 void VectorWithOpMutableDense::free_sub_vector( RTOp_MutableSubVector* sub_vec )
 {
 	RTOp_mutable_sub_vector_null( sub_vec ); // No memory to deallocate!
+	this->has_changed(); // Be aware of any final changes!
 }
 
 void VectorWithOpMutableDense::set_sub_vector( const RTOp_SubVector& sub_vec )
