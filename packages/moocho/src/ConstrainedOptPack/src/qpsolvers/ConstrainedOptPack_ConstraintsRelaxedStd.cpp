@@ -279,11 +279,9 @@ void ConstraintsRelaxedStd::pick_violated(
 		{
 			*j_viol			= max_bound_viol_j;
 			*constr_val		= d(max_bound_viol_j);
-			*viol_bnd_val	= max_bound_viol_upper
-				? d(max_bound_viol_j) - max_bounds_viol		// e(i) - (e(i) - eU(i)) = eU(i)
-				: max_bounds_viol + d(max_bound_viol_j);	// (eL(i) - e(i)) + e(i) = eL(i)
 			*norm_2_constr	= 1.0;
 			*bnd			= max_bound_viol_upper ? UPPER : LOWER;
+			*viol_bnd_val	= get_bnd(*j_viol,*bnd);
 			*can_ignore		= false;
 		}
 		else {
@@ -341,11 +339,9 @@ void ConstraintsRelaxedStd::pick_violated(
 			{
 				*j_viol			= max_inequality_viol_j + nd + 1; // offset into A_bar
 				*constr_val		= e(max_inequality_viol_j);
-				*viol_bnd_val	= max_inequality_viol_upper
-					? e(max_inequality_viol_j) - max_inequality_viol	// e(i) - (e(i) - eU(i)) = eU(i)
-					: max_inequality_viol + e(max_inequality_viol_j);	// (eL(i) - e(i)) + e(i) = eL(i)
 				*norm_2_constr	= 1.0;	// ToDo: Compute it some how?
 				*bnd			= max_inequality_viol_upper ? UPPER : LOWER;
+				*viol_bnd_val   = get_bnd(*j_viol,*bnd);
 				*can_ignore		= false;
 			}
 			else {

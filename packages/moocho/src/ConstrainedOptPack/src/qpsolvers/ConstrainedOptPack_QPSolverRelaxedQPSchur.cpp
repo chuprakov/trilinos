@@ -18,23 +18,30 @@ namespace LinAlgOpPack {
 namespace ConstrainedOptimizationPack {
 
 QPSolverRelaxedQPSchur::QPSolverRelaxedQPSchur(
-		  const init_kkt_sys_ptr_t&  init_kkt_sys
-		, value_type		max_qp_iter_frac
-		, QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
-							inequality_pick_policy
-		, ELocalOutputLevel	print_level
-		, value_type 		bounds_tol
-		, value_type 		inequality_tol
-		, value_type 		equality_tol
-		, value_type		loose_feas_tol
-		, value_type		dual_infeas_tol
-		, value_type        pivot_tol
-		, value_type		huge_primal_step
-		, value_type		huge_dual_step
-		, value_type		bigM
-		, value_type		warning_tol
-		, value_type		error_tol
-		)
+	const init_kkt_sys_ptr_t&  init_kkt_sys
+	, value_type		max_qp_iter_frac
+	, QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
+	                    inequality_pick_policy
+	, ELocalOutputLevel	print_level
+	, value_type 		bounds_tol
+	, value_type 		inequality_tol
+	, value_type 		equality_tol
+	, value_type		loose_feas_tol
+	, value_type		dual_infeas_tol
+	, value_type		huge_primal_step
+	, value_type		huge_dual_step
+	, value_type		bigM
+	, value_type		warning_tol
+	, value_type		error_tol
+	,size_type          iter_refine_min_iter
+	,size_type          iter_refine_max_iter
+	,value_type         iter_refine_opt_tol
+	,value_type         iter_refine_feas_tol
+	,bool               iter_refine_at_solution
+	,value_type         pivot_warning_tol
+	,value_type         pivot_singular_tol
+	,value_type         pivot_wrong_inertia_tol
+	)
 	:
 	init_kkt_sys_(init_kkt_sys)
 	,max_qp_iter_frac_(max_qp_iter_frac)
@@ -45,12 +52,19 @@ QPSolverRelaxedQPSchur::QPSolverRelaxedQPSchur(
 	,equality_tol_(equality_tol)
 	,loose_feas_tol_(loose_feas_tol)
 	,dual_infeas_tol_(dual_infeas_tol)
-	,pivot_tol_(pivot_tol)
 	,huge_primal_step_(huge_primal_step)
 	,huge_dual_step_(huge_dual_step)
 	,bigM_(bigM)
 	,warning_tol_(warning_tol)
 	,error_tol_(error_tol)
+	,iter_refine_min_iter_(iter_refine_min_iter)
+	,iter_refine_max_iter_(iter_refine_max_iter)
+	,iter_refine_opt_tol_(iter_refine_opt_tol)
+	,iter_refine_feas_tol_(iter_refine_feas_tol)
+	,iter_refine_at_solution_(iter_refine_at_solution)
+	,pivot_warning_tol_(pivot_warning_tol)
+	,pivot_singular_tol_(pivot_singular_tol)
+	,pivot_wrong_inertia_tol_(pivot_wrong_inertia_tol)
 {}
 
 QPSolverRelaxedQPSchur::~QPSolverRelaxedQPSchur()
@@ -345,11 +359,18 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		qp_solver_.huge_primal_step( huge_primal_step() );
 	if(huge_dual_step() > 0.0)
 		qp_solver_.huge_dual_step( huge_dual_step() );
-	if(pivot_tol() > 0.0)
-		schur_comp_.pivot_tol(pivot_tol());
 	qp_solver_.set_schur_comp( QPSchur::schur_comp_ptr_t( &schur_comp_, false ) );
 	qp_solver_.warning_tol( warning_tol() );
 	qp_solver_.error_tol( error_tol() );
+	qp_solver_.iter_refine_min_iter( iter_refine_min_iter() );
+	qp_solver_.iter_refine_max_iter( iter_refine_max_iter() );
+	qp_solver_.iter_refine_opt_tol( iter_refine_opt_tol() );
+	qp_solver_.iter_refine_feas_tol( iter_refine_feas_tol() );
+	qp_solver_.iter_refine_at_solution( iter_refine_at_solution() );
+	qp_solver_.pivot_tols(
+		MatrixSymAddDelUpdateable::PivotTolerances(
+			pivot_warning_tol(), pivot_singular_tol(), pivot_wrong_inertia_tol()
+			));
 	
 	//
 	// Solve the QP with QPSchur

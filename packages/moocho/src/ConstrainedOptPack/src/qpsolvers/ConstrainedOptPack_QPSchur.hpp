@@ -376,7 +376,9 @@ public:
 	//@{
 
 	///
-	typedef QPSchurPack::QP		QP;
+	typedef QPSchurPack::QP               QP;
+	///
+	typedef MatrixSymAddDelUpdateable     MSADU;
 	/// Thrown if a test failed
 	class TestFailed : public std::logic_error
 	{public: TestFailed(const std::string& what_arg) : std::logic_error(what_arg) {}};
@@ -421,7 +423,7 @@ public:
 	/** @name Public Member functions */
 	//@{
 
-	/// «std comp» members for schur complement matrix object S_hat
+	/// Schur complement matrix object S_hat
 	STANDARD_COMPOSITION_MEMBERS( MatrixSymAddDelUpdateableWithOpFactorized, schur_comp )
 
 	///
@@ -470,16 +472,59 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 
 	///
+	/** Set the minimum number of refinement iterations to perform
+	 * when using iterative refinement.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, iter_refine_min_iter )
+		
+	///
+	/** Set the maximum number of refinement iterations to perform
+	 * when using iterative refinement.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, iter_refine_max_iter )
+
+	///
+	/** Set the maxinum scaled tolerance the residual of the optimality conditions
+	 * must be before terminating iterative refinement.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, iter_refine_opt_tol )
+
+	///
+	/** Set the maxinum scaled tolerance the residual of the feasibility conditions
+	 * must be before terminating iterative refinement.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, iter_refine_feas_tol )
+
+	///
+	/** Set whether iterative refinement is automatically used once the solution
+	 * is found.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, iter_refine_at_solution )
+		
+	///
+	/** Set the tolerances to use when updating the schur complement.
+	 */
+	void pivot_tols( MSADU::PivotTolerances pivot_tols );
+	///
+	MSADU::PivotTolerances pivot_tols() const;
+
+	///
 	QPSchur(
-		  const schur_comp_ptr_t& 	schur_comp 			= NULL
-		, size_type					max_iter			= 100
-		, value_type				feas_tol			= 1e-8
-		, value_type				loose_feas_tol		= 1e-6
-		, value_type				dual_infeas_tol		= 1e-12
-		, value_type				huge_primal_step	= 1e+20
-		, value_type				huge_dual_step		= 1e+20
-		,value_type                 warning_tol         = 1e-10
-		,value_type                 error_tol           = 1e-5
+		const schur_comp_ptr_t&   schur_comp           = NULL
+		,size_type                max_iter             = 100
+		,value_type               feas_tol             = 1e-8
+		,value_type               loose_feas_tol       = 1e-6
+		,value_type               dual_infeas_tol      = 1e-12
+		,value_type               huge_primal_step     = 1e+20
+		,value_type               huge_dual_step       = 1e+20
+		,value_type               warning_tol          = 1e-10
+		,value_type               error_tol            = 1e-5
+		,size_type                iter_refine_min_iter = 1
+		,size_type                iter_refine_max_iter = 3
+		,value_type               iter_refine_opt_tol  = 1e-12
+		,value_type               iter_refine_feas_tol = 1e-12
+		,bool                     iter_refine_at_solution = true
+		,MSADU::PivotTolerances   pivot_tols = MSADU::PivotTolerances( 1e-6,1e-8,1e-8 )
 		);
 
 	///
@@ -665,7 +710,9 @@ public:
 		// Public types
 
 		///
-		typedef QPSchurPack::QP          QP;
+		typedef QPSchurPack::QP            QP;
+		///
+		typedef MatrixSymAddDelUpdateable  MSADU;
 
 		// /////////////////////
 		// Public interface
@@ -679,7 +726,15 @@ public:
 		STANDARD_COMPOSITION_MEMBERS( MatrixSymAddDelUpdateableWithOpFactorized, schur_comp )
 
 		///
-		ActiveSet(const schur_comp_ptr_t& schur_comp);
+		/** Set the tolerances to use when updating the schur complement.
+		 */
+		STANDARD_MEMBER_COMPOSITION_MEMBERS( MSADU::PivotTolerances, pivot_tols )
+
+		///
+		ActiveSet(
+			const schur_comp_ptr_t   &schur_comp
+			,MSADU::PivotTolerances  pivot_tols = MSADU::PivotTolerances( 1e-6,1e-8,1e-8 )
+			);
 
 		// ///////////////////////////////////////
 		/** @name Update the active set. */
@@ -693,9 +748,10 @@ public:
 		  * The active set will contain all of the constraints it
 		  * can such that the schur complement is nonsingular.
 		  */
-		void initialize( QP& qp, size_type num_act_change, const int ij_act_change[]
-		, const EBounds bnds[], bool test
-		, std::ostream *out, EOutputLevel output_level );
+		void initialize( 
+			QP& qp, size_type num_act_change, const int ij_act_change[]
+			, const EBounds bnds[], bool test
+			, std::ostream *out, EOutputLevel output_level );
 
 		///
 		/** Reinitialize the schur complement factorization for the current active set
@@ -718,26 +774,38 @@ public:
 		  * correct inertia then the exception
 		  * MatrixSymAddDelUpdateable::WrongInertiaUpdateException
 		  * will be thrown but the old KKT system will be kept intact.
+		  *
+		  * Returns true if any output was sent to *out.
 		  */
-		void add_constraint( size_type ja, EBounds bnd_ja
-			, bool update_steps, bool force_refactorization = true );
+		bool add_constraint(
+			size_type ja, EBounds bnd_ja, bool update_steps
+			, std::ostream *out, EOutputLevel output_level
+			, bool force_refactorization = true
+			, bool allow_any_cond = false );
 
 		///
 		/** Drop a constraint from the active set then refactorize the schur
 		  * complement (if forced).
 		  *
 		  * ToDo: Finish documentation
+		  *
+		  * Returns true if any output was sent to *out.
 		  */
-		void drop_constraint( int jd , bool force_refactorization = true );
+		bool drop_constraint(
+			int jd, std::ostream *out, EOutputLevel output_level
+			, bool force_refactorization = true, bool allow_any_cond = false );
 
 		///
 		/** Drop a constraint from, then add a constraint to the active set
 		  * and refactorize the schur complement.
 		  *
 		  * ToDo: Finish documentation
+		  *
+		  * Returns true if any output was sent to *out.
 		  */
-		void drop_add_constraints( int jd, size_type ja, EBounds bnd_ja
-			, bool update_steps );
+		bool drop_add_constraints(
+			int jd, size_type ja, EBounds bnd_ja, bool update_steps
+			, std::ostream *out, EOutputLevel output_level );
 
 		//@}
 
@@ -966,10 +1034,13 @@ public:
 		
 		// Remove an element from the augmented KKT system.
 		// This does not update P_plus_hat, P_XF_hat or any
-		// of the dimensions.
-		void remove_augmented_element(
+		// of the dimensions.  Returns true if *out was
+		// written to.
+		bool remove_augmented_element(
 			size_type sd, bool force_refactorization
-			,MatrixSymAddDelUpdateable::EEigenValType eigen_val_drop );
+			,MatrixSymAddDelUpdateable::EEigenValType eigen_val_drop
+			,std::ostream *out, EOutputLevel output_level
+			,bool allow_any_cond );
 
 		// not defined and not to be called.
 		ActiveSet();
@@ -1004,23 +1075,53 @@ protected:
 	  */
 	virtual
 	ESolveReturn qp_algo(
-		  EPDSteps first_step
+		EPDSteps first_step
 		, std::ostream *out, EOutputLevel output_level, ERunTests test_what
 		, const VectorSlice& vo, ActiveSet* act_set, VectorSlice* v
 		, VectorSlice* x, size_type* iter, size_type* num_adds, size_type* num_drops
+		, size_type* iter_refine_num_resid, size_type* iter_refine_num_solves
 		);
 
 	///
 	/** Set the values in x for all the variables.
-	  *
-	  * @param	set_fixed	[in] If true then those variables that where initially
-	  *							free are specifically fixed to their bounds.
 	  */
 	virtual void set_x( const ActiveSet& act_set, const VectorSlice& v, VectorSlice* x );
 
 	/// Map from the active set to the sparse multipliers for the inequality constraints
-	virtual void set_multipliers( const ActiveSet& act_set, const VectorSlice& v
+	virtual void set_multipliers(
+		const ActiveSet& act_set, const VectorSlice& v
 		, SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve );
+
+	///
+	enum EIterRefineReturn {
+		ITER_REFINE_NOT_PERFORMED    // Did not even perform it (iter_refine_max_iter == 0)
+		,ITER_REFINE_ONE_STEP        // Only performed one step and the status is not known.
+		,ITER_REFINE_NOT_NEEDED      // Convergence tolerance was already satisfied
+		,ITER_REFINE_IMPROVED        // Did not converge but it was improved
+		,ITER_REFINE_NOT_IMPROVED    // Tried iterative refinement but no improvement
+		,ITER_REFINE_CONVERGED       // Performed iterative refinement and converged!
+	};
+	///
+	/** Perform iterative refinement on the augmented KKT system for the current active set.
+	 *
+	 * [   Ko     U_hat ] [ v ] + [ ao * bo ]
+	 * [ U_hat'   V_hat ] [ z ]   [ aa * ba ]
+	 * 
+	 * Returns true if iterative refinement satisfied the convergence criteria.
+	 */
+    EIterRefineReturn iter_refine(
+		const ActiveSet      &act_set
+		,std::ostream        *out
+		,EOutputLevel        output_level
+		,const value_type    ao  // Only used if bo != NULL
+		,const VectorSlice   *bo // If NULL then assumed to be zero!
+		,const value_type    aa  // Only used if q_hat > 0
+		,const VectorSlice   *ba // If NULL then assumed to be zero!  Not accessed if q_hat > 0
+		,VectorSlice         *v
+		,VectorSlice         *z  // Can be NULL if q_hat > 0
+		,size_type           *iter_refine_num_resid
+		,size_type           *iter_refine_num_solves
+		);
 
 private:
 
@@ -1028,12 +1129,6 @@ private:
 	// Private data members
 
 	ActiveSet		act_set_;	// The active set.
-
-	// The rest of these are just workspace so as to reduce allocations.
-	Vector			vo_,			// vo = inv(Ko) * fo
-					v_,				// v = [ x_R; lambda ]
-					z_hat_plus_,	// z_hat for if ja is added to active set.
-					v_plus_;		// v = [ x; lambda ] if ja is added to active set.
 
 	// /////////////////////////
 	// Private Member functions.

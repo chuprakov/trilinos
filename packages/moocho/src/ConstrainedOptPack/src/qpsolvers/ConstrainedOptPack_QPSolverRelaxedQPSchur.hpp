@@ -215,12 +215,6 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, dual_infeas_tol )
 
 	///
-	/** <<std member comp>> members for the relative pivot tolerance for the
-	 * factors of the schur complement.
-	 */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, pivot_tol )
-
-	///
 	/** Set the tolerence for the size of the step in the primal space that is considered
 	  * to be a near infinite step.  This is used to determine if the KKT
 	  * system is near singular.
@@ -250,24 +244,82 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 
 	///
+	/** Set the minimum number of refinement iterations to perform
+	 * when using iterative refinement.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, iter_refine_min_iter )
+		
+	///
+	/** Set the maximum number of refinement iterations to perform
+	 * when using iterative refinement.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, iter_refine_max_iter )
+
+	///
+	/** Set the maxinum scaled tolerance the residual of the optimality conditions
+	 * must be before terminating iterative refinement.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, iter_refine_opt_tol )
+
+	///
+	/** Set the maxinum scaled tolerance the residual of the feasibility conditions
+	 * must be before terminating iterative refinement.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, iter_refine_feas_tol )
+
+	///
+	/** Set whether iterative refinement is automatically used once the solution
+	 * is found.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, iter_refine_at_solution )
+
+	///
+	/** Set the relative tolerance for pivots in the schur complement under
+	 * which a waning will be printed (see MatrixSymAddDelUpdateable) for
+	 * near singular updates.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, pivot_warning_tol )
+
+	///
+	/** Set the relative tolerance for pivots in the schur complement under
+	 * which a singularity exception will be thrown (see MatrixSymAddDelUpdateable)
+	 * for singular updates.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, pivot_singular_tol )
+
+	///
+	/** Set the relative tolerance for pivots in the schur complement over
+	 * which a wrong inertia exception will be throw (see MatrixSymAddDelUpdateable)
+	 * for updates with the wrong inertia.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, pivot_wrong_inertia_tol )
+
+	///
 	QPSolverRelaxedQPSchur(
 		const init_kkt_sys_ptr_t&    init_kkt_sys       = NULL
 		,value_type                  max_qp_iter_frac   = 10.0
 		,QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
 		                             inequality_pick_policy
 		                                 = QPSchurPack::ConstraintsRelaxedStd::ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY
-		,ELocalOutputLevel           print_level        = USE_INPUT_ARG   // Deduce from input arguments
-		,value_type                  bounds_tol         = -1.0            // use default
-		,value_type                  inequality_tol     = -1.0	          // use default
-		,value_type                  equality_tol       = -1.0	          // use default
-		,value_type                  loose_feas_tol     = -1.0	          // use default
-		,value_type                  dual_infeas_tol    = -1.0	          // use default
-		,value_type                  pivot_tol          = 1e-8
-		,value_type                  huge_primal_step   = -1.0	          // use defalut
-		,value_type                  huge_dual_step     = -1.0	          // use default
-		,value_type                  bigM               = 1e+10
-		,value_type                  warning_tol        = 1e-10
-		,value_type                  error_tol          = 1e-5
+		,ELocalOutputLevel           print_level             = USE_INPUT_ARG // Deduce from input arguments
+		,value_type                  bounds_tol              = -1.0           // use default
+		,value_type                  inequality_tol          = -1.0	          // use default
+		,value_type                  equality_tol            = -1.0	          // use default
+		,value_type                  loose_feas_tol          = -1.0	          // use default
+		,value_type                  dual_infeas_tol         = -1.0	          // use default
+		,value_type                  huge_primal_step        = -1.0	          // use defalut
+		,value_type                  huge_dual_step          = -1.0	          // use default
+		,value_type                  bigM                    = 1e+10
+		,value_type                  warning_tol             = 1e-10
+		,value_type                  error_tol               = 1e-5
+		,size_type                   iter_refine_min_iter    = 1
+		,size_type                   iter_refine_max_iter    = 3
+		,value_type                  iter_refine_opt_tol     = 1e-12
+		,value_type                  iter_refine_feas_tol    = 1e-12
+		,bool                        iter_refine_at_solution = true
+		,value_type                  pivot_warning_tol       = 1e-6
+		,value_type                  pivot_singular_tol      = 1e-8
+		,value_type                  pivot_wrong_inertia_tol = 1e-10
 		);
 
 	///

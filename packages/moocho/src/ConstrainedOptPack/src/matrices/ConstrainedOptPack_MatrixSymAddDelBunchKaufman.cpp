@@ -1,5 +1,11 @@
 // //////////////////////////////////////////////////////////
 // MatrixSymAddDelBunchKaufman.cpp
+//
+// ToDo: 2001/03/08: Use pivot_tols to check for singularity
+//       in the function compute_assert_inertia(...) and throw
+//       the appropriate exceptions if needed!  We need to do
+//       this to be complient with the specification of the
+//       interface.
 
 #include <assert.h>
 
@@ -16,14 +22,14 @@ MatrixSymAddDelBunchKaufman::MatrixSymAddDelBunchKaufman()
 	: S_size_(0), S_indef_(false), fact_updated_(false), fact_in1_(true), inertia_(0,0,0)
 {}
 
-void MatrixSymAddDelBunchKaufman::pivot_tol( value_type pivot_tol )
+void MatrixSymAddDelBunchKaufman::pivot_tols( PivotTolerances pivot_tols )
 {
-	S_chol_.pivot_tol(pivot_tol);
+	S_chol_.pivot_tols(pivot_tols);
 }
 
-value_type MatrixSymAddDelBunchKaufman::pivot_tol() const
+MatrixSymAddDelUpdateable::PivotTolerances MatrixSymAddDelBunchKaufman::pivot_tols() const
 {
-	return S_chol_.pivot_tol();
+	return S_chol_.pivot_tols();
 }
 
 // Overridden from MatrixSymAddDelUpdateableWithOpFactorized
@@ -73,6 +79,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
 	,size_type         max_size
 	,bool              force_factorization
 	,Inertia           expected_inertia
+	,PivotTolerances   pivot_tols
 	)
 {
 	using BLAS_Cpp::upper;
@@ -102,7 +109,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
 			// The client says that the matrix is p.d. or n.d. so
 			// we will take their word for it.
 			S_chol_.init_setup(&S_store1_(),NULL,0,true,true,true,false,0.0);
-			S_chol_.initialize(A,max_size,force_factorization,expected_inertia);
+			S_chol_.initialize(A,max_size,force_factorization,expected_inertia,pivot_tols);
 			// Set the state variables:
 			S_size_       = n;
 			S_indef_      = false; // fact_updated_, fact_in1_ and inertia are meaningless!
@@ -125,7 +132,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
 					<< "MatrixSymAddDelBunchKaufman::initialize(...): "
 					<< "Error, the matrix A is singular:\n"
 					<< excpt.what();
-				throw SingularUpdateException( omsg.str() );
+				throw SingularUpdateException( omsg.str(), -1.0 );
 			}
 			// Compute the inertia and validate that it is correct.
 			Inertia inertia = compute_assert_inertia(n,fact_in1,expected_inertia,"initialize");
@@ -176,6 +183,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 	,value_type        alpha
 	,bool              force_refactorization
 	,EEigenValType     add_eigen_val
+	,PivotTolerances   pivot_tols
 	)
 {
 	using BLAS_Cpp::no_trans;
@@ -197,9 +205,12 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 	if( !(add_eigen_val == MSADU::EIGEN_VAL_UNKNOWN || add_eigen_val != MSADU::EIGEN_VAL_ZERO) )
 		throw SingularUpdateException(
 			"MatrixSymAddDelBunchKaufman::augment_update(...): "
-			"Error, the client has specified a singular update in add_eigen_val." );
+			"Error, the client has specified a singular update in add_eigen_val.", -1.0 );
 
 	// Try to perform the update
+	bool throw_exception = false; // If true then throw exception
+	std::ostringstream omsg;      // Will be set if an exception has to be thrown.
+	value_type gamma;             // ...
 	if( !S_indef_ ) {
 		// The current matrix is positive definite or negative definite.  If the
 		// new matrix is still p.d. or n.d. when we are good to go.  We must first
@@ -221,9 +232,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 			// The new matrix could/should still be p.d. or n.d. so let's try it!
 			bool update_successful = false;
 			try {
-				S_chol_.augment_update( t, alpha, force_refactorization, add_eigen_val );
-				++S_size_;
-				inertia_ = S_chol_.inertia();
+				S_chol_.augment_update(t,alpha,force_refactorization,add_eigen_val,pivot_tols);
 				update_successful = true;
 			}
 			catch(MSADU::WrongInertiaUpdateException) {
@@ -232,7 +241,19 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 				// If the client did not know that inertia then we can't fault them so we will
 				// proceed unto the indefinite factorization.
 			}
-			if( update_successful ) return;
+			catch(const MSADU::WarnNearSingularUpdateException& except) {
+				throw_exception = true; // Throw this same exception at the end!
+				update_successful = true;
+				omsg << except.what();
+				gamma = except.gamma;
+			}
+			if( update_successful ) {
+				++S_size_;     // Now we can resize the matrix
+				if(throw_exception)
+					throw MSADU::WarnNearSingularUpdateException(omsg.str(),gamma);
+				else
+					return;
+			}
 		}
 	}
 	//
@@ -251,28 +272,78 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 	// Validate that the new matrix will be nonsingular.
 	//
 	// Given any nonsingular matrix S (even unsymmetric) it is easy to show that
-	// gamma = alpha - t'*inv(S)*t != 0.0 if [ S, t; t', alpha ] is nonsingular.
+	// beta = alpha - t'*inv(S)*t != 0.0 if [ S, t; t', alpha ] is nonsingular.
 	// This is a cheap O(n^2) way to check that the update is nonsingular before
 	// we go through the O(n^3) refactorization.
-	// In fact, the sign of gamma even tells us the sign of the new eigen value
+	// In fact, the sign of beta even tells us the sign of the new eigen value
 	// of the updated matrix even before we perform the refactorization.
 	// If the current matrix is not factored then we will just skip this
 	// test and let the full factorization take place to find this out.
 	//
 	if( force_refactorization && fact_updated_ ) {
 		const value_type
-			gamma       = alpha - ( t ? transVtInvMtV(*t,*this,no_trans,*t) : 0.0 ),
-			abs_gamma   = ::fabs(gamma),
+			beta        = alpha - ( t ? transVtInvMtV(*t,*this,no_trans,*t) : 0.0 ),
+			abs_beta    = ::fabs(beta),
 			nrm_D_diag  = norm_inf(DU(n,fact_in1_).gms().diag()); // ToDo: Consider 2x2 blocks also!
-		if( abs_gamma / nrm_D_diag < S_chol_.pivot_tol() ) {
-			std::ostringstream omsg;
+		gamma = abs_beta / nrm_D_diag;
+		// Check gamma
+		const bool
+			correct_inertia = (
+				add_eigen_val == MSADU::EIGEN_VAL_UNKNOWN
+				|| beta > 0.0 && add_eigen_val == MSADU::EIGEN_VAL_POS
+				|| beta < 0.0 && add_eigen_val == MSADU::EIGEN_VAL_POS
+				);
+		PivotTolerances use_pivot_tols = S_chol_.pivot_tols();
+		if( pivot_tols.warning_tol != PivotTolerances::UNKNOWN )
+			use_pivot_tols.warning_tol = pivot_tols.warning_tol;
+		if( pivot_tols.singular_tol != PivotTolerances::UNKNOWN )
+			use_pivot_tols.singular_tol = pivot_tols.singular_tol;
+		if( pivot_tols.wrong_inertia_tol != PivotTolerances::UNKNOWN )
+			use_pivot_tols.wrong_inertia_tol = pivot_tols.wrong_inertia_tol;
+		throw_exception = (
+			gamma == 0.0
+			|| correct_inertia && gamma <= use_pivot_tols.warning_tol
+			|| correct_inertia && gamma <= use_pivot_tols.singular_tol
+			|| !correct_inertia
+			);
+		// Create message and throw exceptions
+		std::ostringstream onum_msg;
+		if(throw_exception) {
+			onum_msg
+				<< "gamma = |alpha-t'*inv(S)*t)|/||diag(D)||inf = |" <<  beta << "|/" << nrm_D_diag
+				<< " = " << gamma;
 			omsg
-				<< "MatrixSymAddDelBunchKaufman::augment_update(...): "
-				<< "Singular update! |alpha-t'*inv(S)*t)|/||diag(D)||inf = |" <<  gamma << "|/" << nrm_D_diag
-				<< " = " << (abs_gamma/nrm_D_diag) << " < pivot_tol = " << S_chol_.pivot_tol();
-			throw SingularUpdateException( omsg.str() );
+				<< "MatrixSymAddDelBunchKaufman::augment_update(...): ";
+			if( correct_inertia && gamma <= use_pivot_tols.singular_tol ) {
+				omsg
+					<< "Singular update!\n" << onum_msg.str() << " <= singular_tol = "
+					<< use_pivot_tols.singular_tol;
+				throw SingularUpdateException( omsg.str(), gamma );
+			}
+			else if( !correct_inertia && gamma <= use_pivot_tols.singular_tol ) {
+				omsg
+					<< "Singular update!\n" << onum_msg.str() << " <= wrong_inertia_tol = "
+					<< use_pivot_tols.wrong_inertia_tol;
+				throw SingularUpdateException( omsg.str(), gamma );
+			}
+			
+			else if( !correct_inertia ) {
+				omsg
+					<< "Indefinite update!\n" << onum_msg.str() << " >= wrong_inertia_tol = "
+					<< use_pivot_tols.wrong_inertia_tol;
+				throw WrongInertiaUpdateException( omsg.str(), gamma );
+			}
+			else if( correct_inertia && gamma <= use_pivot_tols.warning_tol ) {
+				omsg
+					<< "Warning, near singular update!\nsingular_tol = " << use_pivot_tols.singular_tol
+					<< " < " << onum_msg.str() << " <= warning_tol = "
+					<< use_pivot_tols.warning_tol;
+				// Don't throw the exception till the very end!
+			}
+			else {
+				assert(0); // Only local programming error?
+			}
 		}
-		// ToDo: check that gamma is the right sign based on add_eigen_val
 	}
 
 	// Add new row to the lower part of the original symmetric matrix.
@@ -311,7 +382,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 				<< "MatrixSymAddDelBunchKaufman::augment_update(...): "
 				<< "Error, singular update but the original matrix was be maintianed:\n"
 				<< excpt.what();
-			throw SingularUpdateException( omsg.str() );
+			throw SingularUpdateException( omsg.str(), -1.0 );
 		}
 		// Compute the expected inertia
 		Inertia expected_inertia = this->inertia();
@@ -339,6 +410,8 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 		//
 		// Don't update the factorization yet
 		//
+		if(!S_indef_) // We must set the inertia if it was definite!
+			inertia_ = S_chol_.inertia();
 		++S_size_;
 		S_indef_      = true;
 		fact_updated_ = false;  // fact_in1_ is meaningless now
@@ -352,12 +425,15 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 		else
 			assert(0); // Should not happen!
 	}
+	if( throw_exception )
+		throw WarnNearSingularUpdateException(omsg.str(),gamma);
 }
 
 void MatrixSymAddDelBunchKaufman::delete_update(
 	size_type          jd
 	,bool              force_refactorization
 	,EEigenValType     drop_eigen_val
+	,PivotTolerances   pivot_tols
 	)
 {
 	using BLAS_Cpp::upper;
@@ -377,7 +453,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 		//
 		// The current matrix is p.d. or n.d. and so should the new matrix.
 		//
-		S_chol_.delete_update( jd, force_refactorization, drop_eigen_val );
+		S_chol_.delete_update(jd,force_refactorization,drop_eigen_val,pivot_tols);
 		--S_size_;
 	}
 	else {
@@ -411,7 +487,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 				// Setup S_chol and factor the thing
 				S_chol_.init_setup(&S_store1_(),NULL,0,true,true,true,false,0.0);
 				S_chol_.initialize( this->S(S_size_-1), S_store1_.rows()-1
-									, force_refactorization, Inertia() );
+									, force_refactorization, Inertia(), PivotTolerances() );
 			}
 			catch( const SingularUpdateException& excpt ) {
 				S_size_ = 0;
@@ -421,6 +497,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 						"Error, the client incorrectly specified that the new "
 						"matrix would be nonsingular and not indefinite:\n" )
 					+ excpt.what()
+					, excpt.gamma
 					);
 			}
 			catch( const WrongInertiaUpdateException& excpt ) {
@@ -431,6 +508,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 						"Error, the client incorrectly specified that the new "
 						"matrix would not be indefinite:\n" )
 					+ excpt.what()
+					, excpt.gamma
 					);
 			}
 			// If we get here the update succeeded and the new matrix is p.d. or n.d.
@@ -461,9 +539,9 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 					std::ostringstream omsg;
 					omsg
 						<< "MatrixSymAddDelBunchKaufman::delete_update(...): "
-						<< "Error, singular update but the original matrix was be maintianed:\n"
+						<< "Error, singular update but the original matrix was maintianed:\n"
 						<< excpt.what();
-					throw SingularUpdateException( omsg.str() );
+					throw SingularUpdateException( omsg.str(), -1.0 );
 				}
 				// Compute the expected inertia
 				Inertia expected_inertia = this->inertia();
@@ -656,7 +734,7 @@ MatrixSymAddDelBunchKaufman::compute_assert_inertia(
 			<< inertia.neg_eigens << "," << inertia.zero_eigens << "," << inertia.pos_eigens
 			<< ") != expected_inertia = ("
 			<< exp_inertia.neg_eigens << "," << exp_inertia.zero_eigens << "," << exp_inertia.pos_eigens << ")";
-		throw WrongInertiaUpdateException( omsg.str() );
+		throw WrongInertiaUpdateException( omsg.str(), -1.0 );
 	}
 	// The inertia checked out
 	return inertia;

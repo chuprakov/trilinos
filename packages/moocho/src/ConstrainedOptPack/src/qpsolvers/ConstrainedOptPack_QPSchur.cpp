@@ -23,11 +23,13 @@
 #include "SparseLinAlgPack/test/CompareDenseVectors.h"
 #include "LinAlgPack/include/LinAlgPackAssertOp.h"
 #include "LinAlgPack/include/VectorClass.h"
+#include "LinAlgPack/include/VectorClassExt.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/VectorOut.h"
 #include "LinAlgPack/include/GenMatrixOut.h"
 #include "Misc/include/WorkspacePack.h"
+#include "Misc/include/doubledouble.h"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StV;
@@ -64,6 +66,21 @@ inline
 const char* bool_str( bool b ) {
 	return b ? "true" : "false";
 }
+
+//
+// Return a std::string that has a file name, line number and
+// error message.
+//
+std::string error_msg(
+	const char file_name[], const int line_num, const char err_msg[]
+	)
+{
+	std::ostringstream  omsg;
+	omsg
+		<< file_name << ":" << line_num << ":" << err_msg;
+	return omsg.str();
+}
+
 
 //
 // Deincrement all indices less that k_remove
@@ -119,35 +136,58 @@ void insert_pair_sorted(
 //
 // z_hat = inv(S_hat) * ( d_hat - U_hat'*vo )
 //
-void calc_z( const SparseLinAlgPack::MatrixFactorized& S_hat
-	, const LinAlgPack::VectorSlice& d_hat, const SparseLinAlgPack::MatrixWithOp& U_hat
-	, const LinAlgPack::VectorSlice& vo, LinAlgPack::VectorSlice* z_hat )
+void calc_z(
+	const SparseLinAlgPack::MatrixFactorized& S_hat
+	,const LinAlgPack::VectorSlice         &d_hat
+	,const SparseLinAlgPack::MatrixWithOp  &U_hat
+	,const LinAlgPack::VectorSlice         *vo       // If NULL then assumed zero
+	,LinAlgPack::VectorSlice               *z_hat
+	)
 {
+	using SparseLinAlgPack::Vp_StMtV;
+	using SparseLinAlgPack::V_InvMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::V_InvMtV;
-	LinAlgPack::Vector tmp = d_hat;
-	Vp_StMtV( &tmp(), -1.0, U_hat, BLAS_Cpp::trans, vo );
-	V_InvMtV( z_hat, S_hat, BLAS_Cpp::no_trans, tmp() );	
+	wsp::Workspace<LinAlgPack::value_type> t_ws(wss,d_hat.size());
+	LinAlgPack::VectorSlice                t(&t_ws[0],t_ws.size());
+	t = d_hat;
+	if(vo)
+		Vp_StMtV( &t, -1.0, U_hat, BLAS_Cpp::trans, *vo );
+	V_InvMtV( z_hat, S_hat, BLAS_Cpp::no_trans, t );
 }
 
 //
 // v = inv(Ko) * ( fo - U_hat * z_hat )
 //
-void calc_v( const SparseLinAlgPack::MatrixFactorized& Ko
-	, const LinAlgPack::VectorSlice& fo, const SparseLinAlgPack::MatrixWithOp& U_hat
-	, const LinAlgPack::VectorSlice& z_hat, LinAlgPack::VectorSlice* v )
+void calc_v(
+	const SparseLinAlgPack::MatrixFactorized &Ko
+	, const LinAlgPack::VectorSlice          *fo    // If NULL then assumed to be zero
+	, const SparseLinAlgPack::MatrixWithOp   &U_hat
+	, const LinAlgPack::VectorSlice          &z_hat // Only accessed if U_hat.cols() > 0
+	, LinAlgPack::VectorSlice                *v
+	)
 {
+	using LinAlgPack::norm_inf;
+	using SparseLinAlgPack::Vp_StMtV;
+	using SparseLinAlgPack::V_InvMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	using SparseLinAlgPack::Vp_StMtV;
-	using SparseLinAlgPack::V_InvMtV;
-	LinAlgPack::Vector tmp = fo; // must use temporary storage.
-	Vp_StMtV( &tmp(), -1.0, U_hat, BLAS_Cpp::no_trans, z_hat );
-	V_InvMtV( v, Ko, BLAS_Cpp::no_trans, tmp() );	
+	wsp::Workspace<LinAlgPack::value_type> t_ws(wss,fo->size());
+	LinAlgPack::VectorSlice                t(&t_ws[0],t_ws.size());
+	if(fo) {	
+		t = *fo;
+	}
+	else {
+		t = 0.0;
+	}
+	if( U_hat.cols() )
+		Vp_StMtV( &t, -1.0, U_hat, BLAS_Cpp::no_trans, z_hat );
+	if( norm_inf(t) > 0.0 )
+		V_InvMtV( v, Ko, BLAS_Cpp::no_trans, t );
+	else
+		*v = 0.0;
 }
 
 //
@@ -264,65 +304,425 @@ void calc_p_mu_D(
 }
 
 //
+// Calculate the residual of the augmented KKT system:
+//
+// [ ro ] = [   Ko     U_hat ] [   v   ] - [  bo ]
+// [ ra ]   [ U_hat'   V_hat ] [ z_hat ]   [  ba ]
+//
+// Expanding this out we have:
+//
+// ro = Ko * v + U_hat * z_hat - bo
+//
+// ra = U_hat' * v + V_hat * z_hat - ba
+//
+// On output we will have set:
+//
+//   roR_scaling = ???
+//
+//   rom_scaling = ???
+//
+//   ra_scaling  = ???
+//
+template<class val_type>
+void calc_resid_ext(
+	const ConstrainedOptimizationPack::QPSchur::ActiveSet     &act_set
+	,const LinAlgPack::VectorSlice                            &v
+	,const LinAlgPack::VectorSlice                            &z_hat        // Only accessed if q_hat > 0
+	,const LinAlgPack::VectorSlice                            *bo           // If NULL then considered 0
+	,LinAlgPack::VectorSliceTmpl<val_type>                    *ro
+	,LinAlgPack::value_type                                   *roR_scaling
+	,LinAlgPack::value_type                                   *rom_scaling  // Only set if m > 0
+	,const LinAlgPack::VectorSlice                            &ba           // Only accessed if q_hat > 0
+	,LinAlgPack::VectorSliceTmpl<val_type>                    *ra           // Only set if q_hat > 0
+	,LinAlgPack::value_type                                   *ra_scaling   // Only set if q_hat > 0
+	)
+{
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
+	using LinAlgPack::norm_inf;
+	using LinAlgPack::VectorSlice;
+	using LinAlgPack::Vp_StV;
+	using SparseLinAlgPack::SpVector;
+	using SparseLinAlgPack::GenPermMatrixSlice;
+	using LinAlgOpPack::Vp_V;
+	using LinAlgOpPack::V_StV;
+	using LinAlgOpPack::V_MtV;
+	using LinAlgOpPack::Vp_MtV;
+	namespace COP = ConstrainedOptimizationPack;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	
+	const COP::QPSchurPack::QP
+		&qp = act_set.qp();
+	const LinAlgPack::size_type
+		n          = qp.n(),
+		n_R        = qp.n_R(),
+		m          = qp.m(),
+		q_hat      = act_set.q_hat();
+	
+	wsp::Workspace<val_type>
+		to_ws(wss,n_R+m),
+		ta_ws(wss,q_hat);
+	LinAlgPack::VectorSliceTmpl<val_type>
+		to(&to_ws[0],to_ws.size()),
+		ta(&ta_ws[0],ta_ws.size());
+
+	*roR_scaling = 0.0;
+	if( m )
+		*rom_scaling = 0.0;
+	if( q_hat )
+		*ra_scaling  = 0.0;
+
+	// Convert to dense for now
+	LinAlgPack::GenMatrix dense_Ko, dense_U_hat;
+	LinAlgOpPack::assign( &dense_Ko, qp.Ko(), no_trans );
+	LinAlgOpPack::assign( &dense_U_hat, act_set.U_hat(), no_trans );
+
+	//
+	// ro = Ko * v + U_hat * z_hat - bo
+	//
+	*ro = 0.0;
+	// ro += Ko*v
+	{for( LinAlgPack::size_type k1 = 1; k1 <= n_R+m; ++k1 ) {
+		for( LinAlgPack::size_type k2 = 1; k2 <= n_R+m; ++k2 )
+			(*ro)(k1) += dense_Ko(k1,k2) * v(k2); // extended precision
+		*roR_scaling += ::fabs(double((*ro)(k1)));
+	}}
+	// ro += U_hat*z_hat
+	if( q_hat ) {
+		for( LinAlgPack::size_type k1 = 1; k1 <= n_R+m; ++k1 ) {
+			for( LinAlgPack::size_type k2 = 1; k2 <= q_hat; ++k2 )
+				(*ro)(k1) += dense_U_hat(k1,k2) * z_hat(k2); // extended precision
+			*roR_scaling += ::fabs(double((*ro)(k1)));
+		}
+	}
+	// ro += -bo
+	if( bo ) {
+		for( LinAlgPack::size_type k1 = 1; k1 <= n_R+m; ++k1 ) {
+			(*ro)(k1) += -(*bo)(k1); // extended precision
+			*roR_scaling += ::fabs(double((*ro)(k1)));
+		}
+	}
+	//
+	// ra = U_hat' * v + V_hat * z_hat - ba
+	//
+	if( q_hat ) {
+		*ra = 0.0;
+		// ra += U_hat'*v
+		{for( LinAlgPack::size_type k1 = 1; k1 <= q_hat; ++k1 ) {
+			for( LinAlgPack::size_type k2 = 1; k2 <= n_R+m; ++k2 )
+				(*ra)(k1) += dense_U_hat(k2,k1) * v(k2); // extended precision
+			*ra_scaling += ::fabs(double((*ra)(k1)));
+		}}
+		// ra += V_hat * z_hat
+		assert( act_set.q_F_hat() == 0 ); // Not implemented yet!
+		// ra += - ba
+		{for( LinAlgPack::size_type k1 = 1; k1 <= q_hat; ++k1 ) {
+			(*ra)(k1) += -ba(k1); // extended precision
+			*ra_scaling += ::fabs(double((*ra)(k1)));
+		}}
+	}
+}
+
+//
+// Calculate the residual of the augmented KKT system:
+//
+// [ ro ] = [   Ko     U_hat ] [   v   ] + [  ao * bo ]
+// [ ra ]   [ U_hat'   V_hat ] [ z_hat ]   [  aa * ba ]
+//
+// Expanding this out we have:
+//
+// ro = Ko * v + U_hat * z_hat + ao * bo
+//
+//    = [ Q_R'*G*Q_R   Q_R'*A ] * [   x_R  ] + [ Q_R'*G*P_XF_hat + Q_R'*A_bar*P_plus_hat ] * z_hat + [ ao*boR ]
+//      [  A'*Q_R             ]   [ lambda ]   [          A'*P_XF_hat                    ]           [ ao*bom ]
+//
+//    = [ Q_R'*G*(Q_R*x_R + P_XF_hat*z_hat) + Q_R'*A*lambda + Q_R'*A_bar*P_plus_hat*z_hat + ao*boR ]   
+//      [      A'*(Q_R*x_R + P_XF_hat*z_hat) + ao*bom                                              ]
+//
+// ra = [ U_hat' * v + V_hat * z_hat + aa*ba
+//
+//    = [ P_XF_hat'*G*Q_R + P_plus_hat'*A_bar'*Q_R , P_XF_hat'*A ] * [ x_R , lambda ]
+//      + [ P_XF_hat'*G*P_XF_hat + P_XF_hat'*A_bar*P_plus_hat + P_plus_hat'*A_bar'*P_XF_hat
+//          + P_F_tilde'*P_C_hat + P_C_hat'*P_F_tilde ] * z_hat + aa*ba
+//
+//    = P_XF_hat'*G*(Q_R*x_X + P_XF_hat*z_hat) + P_plus_hat'*A_bar'*(Q_R*x_R + P_XF_hat*z_hat)
+//      + P_XF_hat'*A*lambda + P_XF_hat'*A_bar*P_plus_hat*z_hat
+//      + (P_F_tilde'*P_C_hat + P_C_hat'*P_F_tilde)*z_hat + aa*ba
+//
+// Given the QP matrices G, A, and A_bar and the active set mapping matrices Q_R, P_XF_hat,
+// P_plus_hat and P_FC_hat = P_F_tilde'*P_C_hat, we can compute the residual efficiently
+// as follows:
+//
+// x_free = Q_R*x_R + P_XF_hat*z_hat (sparse)
+// 
+// lambda_bar = P_plus_hat*z_hat (sparse)
+//
+// t1 = G*x_free
+//
+// t2 = A*lambda
+//
+// t3 = A_bar*lambda_bar
+//
+// roR = Q_R'*t1 + Q_R'*t2 + Q_R'*t3 + ao*boR
+//
+// rom = A'*t1 + ao*bom
+//
+// ra = P_XF_hat'*x_free + P_plus_hat'*A_bar'*x_free + P_XF_hat'*t2 + P_XF_hat'*t3
+//      + (P_FC_hat + P_FC_hat')*z_hat  + aa*ba
+//
+// On output we will have set:
+//
+//   roR_scaling = ||Q_R'*t1||inf + ||Q_R'*t2||inf + ||Q_R'*t3||inf + ||ao*boR||inf
+//
+//   rom_scaling = ||A'*t1||inf + ||ao*bom||inf
+//
+//   ra_scaling  = ||P_XF_hat'*t1||inf + ||P_plus_hat'*A_bar'*t1||inf + ||P_XF_hat'*t2||inf
+//                 + ||P_XF_hat'*t3||inf + ||(P_FC_hat + P_FC_hat')*z_hat|| + ||aa*ba||inf
+// 
+// Note: In the future we could make this a little more efficent by combining (Q_R + P_XF_hat) into
+// an single permulation matrix and then we could leave out the terms for the variables initially 
+// fixed and still fixed rather than computing the terms then throwing them away.
+//
+// Also, in the future, this could really be implemented for extended precision data types but
+// it would require some real work!
+//
+template<class val_type>
+void calc_resid(
+	const ConstrainedOptimizationPack::QPSchur::ActiveSet     &act_set
+	,const LinAlgPack::VectorSlice                            &v
+	,const LinAlgPack::VectorSlice                            &z_hat        // Only accessed if q_hat > 0
+	,const LinAlgPack::value_type                             ao            // Only accessed if bo != NULL
+	,const LinAlgPack::VectorSlice                            *bo           // If NULL then considered 0
+	,LinAlgPack::VectorSliceTmpl<val_type>                    *ro
+	,LinAlgPack::value_type                                   *roR_scaling
+	,LinAlgPack::value_type                                   *rom_scaling  // Only set if m > 0
+	,const LinAlgPack::value_type                             aa            // Only accessed if q_hat > 0
+	,const LinAlgPack::VectorSlice                            *ba           // If NULL then considered 0, Only accessed if q_hat > 0
+	,LinAlgPack::VectorSliceTmpl<val_type>                    *ra           // Only set if q_hat > 0
+	,LinAlgPack::value_type                                   *ra_scaling   // Only set if q_hat > 0
+	)
+{
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
+	using LinAlgPack::norm_inf;
+	using LinAlgPack::VectorSlice;
+	using LinAlgPack::Vp_StV;
+	using SparseLinAlgPack::SpVector;
+	using SparseLinAlgPack::GenPermMatrixSlice;
+	using LinAlgOpPack::Vp_V;
+	using LinAlgOpPack::V_StV;
+	using LinAlgOpPack::V_MtV;
+	using LinAlgOpPack::Vp_MtV;
+	namespace COP = ConstrainedOptimizationPack;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	
+	const COP::QPSchurPack::QP
+		&qp = act_set.qp();
+	const COP::QPSchurPack::Constraints
+		&constraints = qp.constraints();
+	const GenPermMatrixSlice
+		&Q_R        = qp.Q_R(),
+		&P_XF_hat   = act_set.P_XF_hat(),
+		&P_plus_hat = act_set.P_plus_hat();
+	const LinAlgPack::size_type
+		n          = qp.n(),
+		n_R        = qp.n_R(),
+		m          = qp.m(),
+		m_breve    = constraints.m_breve(),
+		q_hat      = act_set.q_hat(),
+		q_F_hat    = act_set.q_F_hat(),
+		q_C_hat    = act_set.q_C_hat(),
+		q_plus_hat = act_set.q_plus_hat();
+	
+	const VectorSlice
+		x_R = v(1,n_R),
+		lambda = ( m ? v(n_R+1,n_R+m): VectorSlice() ),
+		boR = ( bo ? (*bo)(1,n_R) : VectorSlice() ),
+		bom = ( bo && m ? (*bo)(n_R+1,n_R+m) : VectorSlice() );
+
+	LinAlgPack::VectorSliceTmpl<val_type>
+		roR = (*ro)(1,n_R),
+		rom = ( m ? (*ro)(n_R+1,n_R+m) : LinAlgPack::VectorSliceTmpl<val_type>() );
+
+	wsp::Workspace<LinAlgPack::value_type>
+		x_free_ws(wss,n);
+	LinAlgPack::VectorSlice
+		x_free(&x_free_ws[0],x_free_ws.size());
+	wsp::Workspace<val_type>
+		t1_ws(wss,n),
+		t2_ws(wss,n),
+		t3_ws(wss,n),
+		tR_ws(wss,n_R),
+		tm_ws(wss,m),
+		ta_ws(wss,q_hat);
+	LinAlgPack::VectorSliceTmpl<val_type>
+		t1(&t1_ws[0],t1_ws.size()),
+		t2(&t2_ws[0],t2_ws.size()),
+		t3(&t3_ws[0],t3_ws.size()),
+		tR(&tR_ws[0],tR_ws.size()),
+		tm(&tm_ws[0],tm_ws.size()),
+		ta(&ta_ws[0],ta_ws.size());
+
+	*roR_scaling = 0.0;
+	if( m )
+		*rom_scaling = 0.0;
+	if( q_hat )
+		*ra_scaling  = 0.0;
+	
+	// x_free = Q_R*x_R + P_XF_hat*z_hat (dense for now)
+	LinAlgOpPack::V_MtV( &x_free, Q_R, no_trans, x_R );
+	if( q_F_hat )
+		LinAlgOpPack::Vp_MtV( &x_free, P_XF_hat, no_trans, z_hat );
+	// lambda_bar = P_plus_hat*z_hat
+	SpVector lambda_bar;
+	if( q_plus_hat )
+		SparseLinAlgPack::V_MtV( &lambda_bar, P_plus_hat, no_trans, z_hat );
+	// t1 = G*x_free
+	SparseLinAlgPack::Vp_StMtV( &t1, 1.0, qp.G(), no_trans, x_free, 0.0 );
+	// t2 = A*lambda
+	if( m )
+		SparseLinAlgPack::Vp_StMtV( &t2, 1.0, qp.A(), no_trans, lambda, 0.0 );
+	// t3 = A_bar*lambda_bar
+	if( q_plus_hat )
+		SparseLinAlgPack::Vp_StMtV( &t3, 1.0, constraints.A_bar(), no_trans, lambda_bar, 0.0 );
+	// roR = Q_R'*t1 + Q_R'*t2 + Q_R'*t3 + ao*boR
+	LinAlgOpPack::V_MtV( &tR, Q_R, trans, t1 );  // roR = Q_R'*t1
+	*roR_scaling += norm_inf(tR);
+	roR = tR;
+	if( m ) {                     // roR += Q_R'*t2
+		LinAlgOpPack::V_MtV( &tR, Q_R, trans, t2 );
+		*roR_scaling += norm_inf(tR);
+		LinAlgOpPack::Vp_V(&roR,tR);
+	}
+	if( q_plus_hat ) {           // roR += Q_R'*t3
+		LinAlgOpPack::V_MtV( &tR, Q_R, trans, t3 );
+		*roR_scaling += norm_inf(tR);
+		LinAlgOpPack::Vp_V(&roR,tR);
+	}
+	if( bo ) {
+		LinAlgOpPack::Vp_StV( &roR, ao, boR );    // roR += ao*boR
+		*roR_scaling += ::fabs(ao) * norm_inf(boR);
+	}
+	// rom = A'*t1 + ao*bom
+	if( m ) {
+		SparseLinAlgPack::Vp_StMtV( &tm, 1.0, qp.A(), trans, t1, 0.0 );   // A'*t1
+		*rom_scaling += norm_inf(tm);
+		LinAlgOpPack::Vp_V(&rom,tm);
+		if(bo) {
+			LinAlgOpPack::Vp_StV( &rom, ao, bom );        // rom += ao*bom
+			*rom_scaling += ::fabs(ao)*norm_inf(bom);
+		}
+	}
+	// ra = P_XF_hat'*x_free + P_plus_hat'*A_bar'*x_free + P_XF_hat'*t2 + P_XF_hat'*t3
+	//      +(P_FC_hat + P_FC_hat')*z_hat + aa*ba
+	if( q_hat ) {
+		if(ba) {              // ra = aa*ba
+			V_StV( ra, aa, *ba );
+			*ra_scaling += ::fabs(aa) * norm_inf(*ba);
+		}
+		else {
+			*ra = 0.0;
+		}
+		if( q_F_hat ) {       // ra +=  P_XF_hat'*x_free
+			LinAlgOpPack::V_MtV( &ta, P_XF_hat, trans, x_free );
+			*ra_scaling += norm_inf(ta);
+			LinAlgOpPack::Vp_V(ra,ta);
+		}
+		if( q_plus_hat ) {    // ra += P_plus_hat'*A_bar'*x_free
+			SparseLinAlgPack::Vp_StPtMtV( &ta, 1.0, P_plus_hat, trans, constraints.A_bar(), trans, x_free, 0.0 );
+			*ra_scaling += norm_inf(ta);
+			LinAlgOpPack::Vp_V(ra,ta);
+		}
+		if( q_F_hat && m ) {  // ra += P_XF_hat'*t2
+			LinAlgOpPack::V_MtV( &ta, P_XF_hat, trans, t2 );
+			*ra_scaling += norm_inf(ta);
+			LinAlgOpPack::Vp_V(ra,ta);
+		}
+		if( q_F_hat && q_plus_hat ) {
+			LinAlgOpPack::V_MtV( &ta, P_XF_hat, trans, t3 );
+			*ra_scaling += norm_inf(ta);
+			LinAlgOpPack::Vp_V(ra,ta);
+		}
+		if( q_C_hat ) {
+			throw std::logic_error(
+				error_msg(__FILE__,__LINE__,"QPSchur::calc_resid(...) : Error, "
+						  "q_C_hat != 0, not supported yet!"));  
+			assert(0);
+		}
+	}
+}
+
+//
 // Correct a nearly degenerate Lagrange multiplier
 //
 // If < 0 is returned it means that the multiplier could not
-// be corrected and this should be nonsidered an error.  In this
-// case the error output is sent to out.
+// be corrected and this should be considered to be dual infeasible
+// In this case the error output is sent to *out if print_dual_infeas
+// == true.
 //
 // If 0 is returned then the multiplier was near degenerate and
 // was corrected.  In this case a warning message is printed to
-// out.
+// *out.
 //
-// If > 0 is returned then the multipliers sign
+// If > 0 is returned then the multiplier's sign
 // is just fine and no corrections were needed (no output).
 //
 int correct_dual_infeas(
-	const LinAlgPack::size_type                                  j
+	const LinAlgPack::size_type                                  j                // for output info only
 	,const ConstrainedOptimizationPack::EBounds                  bnd_j
-	,const LinAlgPack::value_type                                t_P              // > 0 full step length
-	,const LinAlgPack::value_type                                scale            // > 0 scaling value
+	,const LinAlgPack::value_type                                t_P              // (> 0) full step length
+	,const LinAlgPack::value_type                                scale            // (> 0) scaling value
 	,const LinAlgPack::value_type                                dual_infeas_tol
 	,const LinAlgPack::value_type                                degen_mult_val
-	,std::ostream                                                *out
+	,std::ostream                                                *out             // Can be NULL
 	,const ConstrainedOptimizationPack::QPSchur::EOutputLevel    olevel
-	,LinAlgPack::value_type                                      *nu_j
-	,LinAlgPack::value_type                                      *p_nu_j    // Can be NULL
-	,LinAlgPack::value_type                                      *nu_j_plus // Can be NULL
+	,const bool                                                  print_dual_infeas
+	,const char                                                  nu_j_n[]         // Name of nu_j
+	,LinAlgPack::value_type                                      *nu_j            // required
+	,LinAlgPack::value_type                                      *scaled_viol     // = scale*nu_j*(bnd_j==UPPER ? 1.0: -1.0 ) (after output)
+	,const char                                                  p_nu_j_n[]    = NULL // Name of p_nu_j (can be NULL if p_nu_j==NULL)
+	,LinAlgPack::value_type                                      *p_nu_j       = NULL // optional (can be NULL)
+	,const char                                                  nu_j_plus_n[] = NULL // Name of nu_j_plus (can be NULL if p_nu_j==NULL)
+	,LinAlgPack::value_type                                      *nu_j_plus    = NULL // optional (can be NULL)
 	)
 {
 	typedef LinAlgPack::value_type value_type;
 	namespace COP = ConstrainedOptimizationPack;
 
-	value_type nu_j_max = scale * (*nu_j) * (bnd_j == COP::UPPER ? +1.0 : -1.0);
-	if( nu_j_max > dual_infeas_tol || bnd_j == COP::EQUALITY )
+	value_type nu_j_max = (*scaled_viol) = scale * (*nu_j) * (bnd_j == COP::UPPER ? +1.0 : -1.0);
+	if( nu_j_max > 0.0 || bnd_j == COP::EQUALITY ) // Leave any multiplier value with the correct sign alone!
 		return +1; // No correction needed
 	// See if we need to correct the multiplier
 	nu_j_max = ::fabs(nu_j_max);
 	if( nu_j_max < dual_infeas_tol ) {
 		// This is a near degenerate multiplier so adjust it
 		value_type degen_val = degen_mult_val * ( bnd_j == COP::UPPER ? +1.0 : -1.0 );
-		if( (int)olevel >= (int)COP::QPSchur::OUTPUT_BASIC_INFO ) {
+		if( out && (int)olevel >= (int)COP::QPSchur::OUTPUT_BASIC_INFO ) {
 			*out
 				<< "\nWarning, the constriant a(" << j << ") currently at its "
 				<< (bnd_j == COP::UPPER ? "UPPER" : "LOWER") << " bound"
 				<< " has the wrong Lagrange multiplier value but\n"
-				<< "scale*|nu("<<j<<")| = " << scale << " * |" << (*nu_j)
+				<< "scale*|"<<nu_j_n<<"| = " << scale << " * |" << (*nu_j)
 				<< "| = " << nu_j_max  << " < dual_infeas_tol = " << dual_infeas_tol
-				<< "\nTherefore, this is considered a degenerate constraint and the "
+				<< "\nTherefore, this is considered a degenerate constraint and this "
 				<< "multiplier is set to " << degen_val << std::endl;
 		}
 		if(p_nu_j) {
 			nu_j_max += ::fabs( t_P * (*p_nu_j) ) * scale;
 			if( nu_j_max < dual_infeas_tol ) {
 				// The full step is also degenerate so adjust it also
-				if( (int)olevel >= (int)COP::QPSchur::OUTPUT_BASIC_INFO ) {
+				if( out && (int)olevel >= (int)COP::QPSchur::OUTPUT_BASIC_INFO ) {
 					*out
-						<< "Also, the maximum full step scale*(|nu("<<j<<")|+|t_P*p_nu("<<j<<")|) = "
+						<< "Also, the maximum full step scale*(|"<<nu_j_n<<"|+|t_P*"<<p_nu_j_n<<"|) = "
 						<< scale << " * (|" << (*nu_j) << "| +  |" << t_P << " * " << (*p_nu_j) << "|) = "
 						<< nu_j_max << " < dual_infeas_tol = " << dual_infeas_tol
 						<< "\nTherefore, this is considered degenerate and therefore "
-						<< "seting p_nu("<<j<<") = 0 and p_nu("<<j<<") = " << degen_val << std::endl;
+						<< "seting "<<p_nu_j_n<<" = 0";
+					if(nu_j_plus)
+						*out << " and "<< nu_j_plus_n <<" = " << degen_val;
+					*out << std::endl;
 				}
 				*p_nu_j = 0.0; // Don't let it limit the step length
 				if(nu_j_plus) {
@@ -331,15 +731,16 @@ int correct_dual_infeas(
 			}
 		}
 		*nu_j = degen_val;  // Now set it
+		*scaled_viol = scale * (*nu_j) * (bnd_j == COP::UPPER ? +1.0 : -1.0); // Not violated!
 		return 0;
 	}
 	else {
-		if( (int)olevel >= (int)COP::QPSchur::OUTPUT_BASIC_INFO ) {
+		if( print_dual_infeas && out && (int)olevel >= (int)COP::QPSchur::OUTPUT_BASIC_INFO ) {
 			*out
 				<< "\nError, the constriant a(" << j << ") currently at its "
 				<< (bnd_j == COP::UPPER ? "UPPER" : "LOWER") << " bound"
 				<< " has the wrong Lagrange multiplier value and\n"
-				<< "scale*|nu("<<j<<")| = " << scale << " * |" << (*nu_j)
+				<< "scale*|"<<nu_j_n<<"| = " << scale << " * |" << (*nu_j)
 				<< "| = " << nu_j_max  << " > dual_infeas_tol = " << dual_infeas_tol
 				<< "\nThis is an indication of instability in the calculations.\n"
 				<< "The QP algorithm is terminated!\n";
@@ -347,6 +748,24 @@ int correct_dual_infeas(
 		return -1;
 	}
 	return 0; // Will never be executed!
+}
+
+//
+// Calculate the QP objective if it has not been already
+//
+// qp_grad_norm_inf = ||g + G*x||inf
+//
+// On input, if qp_grad_norm_inf != 0, then it will be assumed
+// that this value has already been computed and the computation will
+// be skipped.
+//
+void calc_obj_grad_norm_inf(
+	const ConstrainedOptimizationPack::QPSchurPack::QP     &qp
+	,const LinAlgPack::VectorSlice                         &x
+	,LinAlgPack::value_type                                *qp_grad_norm_inf
+	)
+{
+	assert(0); // ToDo: Implement this?
 }
 
 }	// end namespace
@@ -648,19 +1067,23 @@ void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M
 
 // public member functions for QPSchur::ActiveSet
 
-QPSchur::ActiveSet::ActiveSet(const schur_comp_ptr_t& schur_comp)
+QPSchur::ActiveSet::ActiveSet(
+	const schur_comp_ptr_t& schur_comp
+	,MSADU::PivotTolerances   pivot_tols
+	)
 	:
-		schur_comp_(schur_comp)
-		,initialized_(false)
-		,test_(false)
-		,qp_(NULL)
-		,x_init_(NULL)
-		,n_(0)
-		,n_R_(0)
-		,m_(0)
-		,q_plus_hat_(0)
-		,q_F_hat_(0)
-		,q_C_hat_(0)
+	schur_comp_(schur_comp)
+	,pivot_tols_(pivot_tols)
+	,initialized_(false)
+	,test_(false)
+	,qp_(NULL)
+	,x_init_(NULL)
+	,n_(0)
+	,n_R_(0)
+	,m_(0)
+	,q_plus_hat_(0)
+	,q_F_hat_(0)
+	,q_C_hat_(0)
 {}
 
 void QPSchur::ActiveSet::initialize(
@@ -998,6 +1421,9 @@ void QPSchur::ActiveSet::initialize(
 		}
 		if( q_F_hat && q_C_hat ) {
 			// S += P_F_tilde' * P_C_hat + P_C_hat' * P_F_tilde
+			throw std::logic_error(
+				error_msg(__FILE__,__LINE__,"QPSchur::ActiveSet::initialize(...) : "
+						  "Error, q_C_hat != 0, now supported yet!"));  
 			assert(0);	// ToDo: We should implement this but it is unlikely to be needed
 		}
 
@@ -1042,9 +1468,12 @@ void QPSchur::ActiveSet::refactorize_schur_comp()
 	assert(0);
 }
 
-void QPSchur::ActiveSet::add_constraint(
-	  size_type ja, EBounds bnd_ja
-	, bool update_steps, bool force_refactorization )
+bool QPSchur::ActiveSet::add_constraint(
+	size_type ja, EBounds bnd_ja, bool update_steps
+	, std::ostream *out, EOutputLevel output_level
+	, bool force_refactorization
+	, bool allow_any_cond
+	)
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
@@ -1059,6 +1488,8 @@ void QPSchur::ActiveSet::add_constraint(
 	typedef SparseLinAlgPack::EtaVector eta_t;
 
 	assert_initialized();
+
+	bool wrote_output = false;
 
 	const QPSchurPack::QP::Constraints
 		&constraints = qp_->constraints();
@@ -1075,9 +1506,10 @@ void QPSchur::ActiveSet::add_constraint(
 		const size_type la = qp_->l_x_X_map()(ja);
 		assert(sd);
 		assert(la);
-		remove_augmented_element(
+		wrote_output = remove_augmented_element(
 			sd,force_refactorization
-			,MatrixSymAddDelUpdateable::EIGEN_VAL_POS );
+			,MatrixSymAddDelUpdateable::EIGEN_VAL_POS
+			,out,output_level,allow_any_cond);
 		// We must remove (ja,sd) from P_XF_hat
 		P_row_t::iterator
 			itr = std::lower_bound( P_XF_hat_row_.begin(), P_XF_hat_row_.begin()+q_F_hat_, ja );
@@ -1158,6 +1590,9 @@ void QPSchur::ActiveSet::add_constraint(
 			// simple change.
 			//
 
+			throw std::logic_error(
+				error_msg(__FILE__,__LINE__,"QPSchur::ActiveSet::add_constraint(...): "
+						  "Error, q_C_hat != 0, now supported yet!"));
 			assert(0);	// ToDo: Finish this!
 
 			changed_bounds = true;
@@ -1203,9 +1638,23 @@ void QPSchur::ActiveSet::add_constraint(
 		// with throw exceptions if the matrix is singular
 		// or has the wrong inertia
 		if(q_hat) {
-			schur_comp().update_interface().augment_update(
-				&t_hat(), alpha_hat, force_refactorization
-				,MatrixSymAddDelUpdateable::EIGEN_VAL_NEG  );
+			try {
+				schur_comp().update_interface().augment_update(
+					&t_hat(), alpha_hat, force_refactorization
+					,MatrixSymAddDelUpdateable::EIGEN_VAL_NEG
+					,MSADU::PivotTolerances(
+						pivot_tols().warning_tol
+						,allow_any_cond ? 0.0 : pivot_tols().singular_tol
+						,allow_any_cond ? 0.0 : pivot_tols().wrong_inertia_tol ) );
+			}
+			catch(const MSADU::WarnNearSingularUpdateException& excpt) {
+				if( out && (int)output_level >= QPSchur::OUTPUT_BASIC_INFO ) {
+					*out
+						<< "\nActiveSet::add_constraint(...) : " << excpt.what()
+						<< std::endl;
+					wrote_output = true;
+				}
+			}
 		}
 		else {
 			schur_comp().update_interface().initialize(
@@ -1238,10 +1687,13 @@ void QPSchur::ActiveSet::add_constraint(
 	}
 	// Update the permutation matrices and U_hat
 	reinitialize_matrices(test_);
+	return wrote_output;
 }
 
-void QPSchur::ActiveSet::drop_constraint(
-	 int jd , bool force_refactorization )
+bool QPSchur::ActiveSet::drop_constraint(
+	int jd, std::ostream *out, EOutputLevel output_level
+	, bool force_refactorization, bool allow_any_cond
+	)
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
@@ -1259,6 +1711,8 @@ void QPSchur::ActiveSet::drop_constraint(
 	typedef SparseLinAlgPack::EtaVector eta_t;
 
 	assert_initialized();
+
+	bool wrote_output = false;
 
 	if( jd < 0 ) {
 		//
@@ -1348,9 +1802,19 @@ void QPSchur::ActiveSet::drop_constraint(
 		// or has the wrong inertia
 		//
 		if(q_hat) {
-			schur_comp().update_interface().augment_update(
-				&t_hat(), alpha_hat, force_refactorization
-				,MatrixSymAddDelUpdateable::EIGEN_VAL_POS );
+			try {
+				schur_comp().update_interface().augment_update(
+					&t_hat(), alpha_hat, force_refactorization
+					,MatrixSymAddDelUpdateable::EIGEN_VAL_POS );
+			}
+			catch(const MSADU::WarnNearSingularUpdateException& excpt) {
+				if( out && (int)output_level >= QPSchur::OUTPUT_BASIC_INFO ) {
+					*out
+						<< "\nActiveSet::drop_constraint(...) : " << excpt.what()
+						<< std::endl;
+					wrote_output = true;
+				}
+			}
 		}
 		else {
 			schur_comp().update_interface().initialize(
@@ -1401,11 +1865,12 @@ void QPSchur::ActiveSet::drop_constraint(
 		const size_type sd = s_map(jd);
 		assert(sd);
 		const bool is_init_fixed = this->is_init_fixed( jd );
-		remove_augmented_element(
+		wrote_output = remove_augmented_element(
 			sd,force_refactorization
 			, ( is_init_fixed
 				? MatrixSymAddDelUpdateable::EIGEN_VAL_POS
 				: MatrixSymAddDelUpdateable::EIGEN_VAL_NEG )
+			,out,output_level,allow_any_cond
 			);
 		if( is_init_fixed ) {
 			// This must be an intially fixed variable, currently fixed at a different
@@ -1432,13 +1897,20 @@ void QPSchur::ActiveSet::drop_constraint(
 	}
 	// Update the permutation matrices and U_hat
 	reinitialize_matrices(test_);
+	return wrote_output;
 }
 
-void QPSchur::ActiveSet::drop_add_constraints(
-	int jd, size_type ja, EBounds bnd_ja, bool update_steps )
+bool QPSchur::ActiveSet::drop_add_constraints(
+	int jd, size_type ja, EBounds bnd_ja, bool update_steps
+	, std::ostream *out, EOutputLevel output_level
+	)
 {
-	drop_constraint( jd, false );
-	add_constraint( ja, bnd_ja, update_steps, true );
+	bool wrote_output = false;
+	if( drop_constraint( jd, out, output_level, false, true ) )
+		wrote_output = true;
+	if( add_constraint( ja, bnd_ja, update_steps, out, output_level, true, true ) )
+		wrote_output = true;
+	return wrote_output;
 }
 
 QPSchur::ActiveSet::QP&
@@ -1618,8 +2090,9 @@ bool QPSchur::ActiveSet::all_dof_used_up() const
 void QPSchur::ActiveSet::assert_initialized() const
 {
 	if( !initialized_ )
-		throw std::logic_error( "QPSchur::ActiveSet::assert_initialized() : Error, "
-			"The active set has not been initialized yet!" );
+		throw std::logic_error(
+			error_msg(__FILE__,__LINE__,"QPSchur::ActiveSet::assert_initialized() : Error, "
+			"The active set has not been initialized yet!") );
 }
 
 void QPSchur::ActiveSet::assert_s( size_type s) const
@@ -1656,15 +2129,32 @@ void QPSchur::ActiveSet::reinitialize_matrices(bool test)
 		, &qp_->Q_R(), &P_XF_hat_, &P_plus_hat_);
 }
 
-void QPSchur::ActiveSet::remove_augmented_element(
+bool QPSchur::ActiveSet::remove_augmented_element(
 	size_type sd, bool force_refactorization
 	,MatrixSymAddDelUpdateable::EEigenValType eigen_val_drop
+	,std::ostream *out, EOutputLevel output_level
+	,bool allow_any_cond
 	)
 {
+	bool wrote_output = false;
 	const size_type q_hat = this->q_hat();
 	// Delete the sd row and column for S_hat
-	schur_comp().update_interface().delete_update(
-		sd,force_refactorization,eigen_val_drop );
+	try {
+		schur_comp().update_interface().delete_update(
+			sd,force_refactorization,eigen_val_drop
+			,MSADU::PivotTolerances(
+				pivot_tols().warning_tol
+				,allow_any_cond ? 0.0 : pivot_tols().singular_tol
+				,allow_any_cond ? 0.0 : pivot_tols().wrong_inertia_tol ));
+	}
+	catch(const MSADU::WarnNearSingularUpdateException& excpt) {
+		if( out && (int)output_level >= QPSchur::OUTPUT_BASIC_INFO ) {
+			*out
+				<< "\nActiveSet::drop_constraint(...) : " << excpt.what()
+				<< std::endl;
+			wrote_output = true;
+		}
+	}
 	// Remove the ij_map(s) = jd element from ij_map(...)
 	std::copy( ij_map_.begin() + sd, ij_map_.begin() + q_hat
 			   , ij_map_.begin() + (sd-1) );
@@ -1683,34 +2173,55 @@ void QPSchur::ActiveSet::remove_augmented_element(
 	// Remove the p_z_hat(s) element from p_z_hat(...)
 	std::copy( p_z_hat_.begin() + sd, p_z_hat_.begin() + q_hat
 			   , p_z_hat_.begin() + (sd-1) );
+	return wrote_output;
 }
 
 // public member functions for QPSchur
 
 value_type QPSchur::DEGENERATE_MULT = std::numeric_limits<value_type>::min();
 
+void QPSchur::pivot_tols( MSADU::PivotTolerances pivot_tols )
+{
+	act_set_.pivot_tols(pivot_tols);
+}
+
+QPSchur::MSADU::PivotTolerances QPSchur::pivot_tols() const
+{
+	return act_set_.pivot_tols();
+}
+
 QPSchur::QPSchur(
-		  const schur_comp_ptr_t& 	schur_comp
-		, size_type					max_iter
-		, value_type				feas_tol
-		, value_type				loose_feas_tol
-		, value_type				dual_infeas_tol
-		, value_type				huge_primal_step
-		, value_type				huge_dual_step
-		,value_type                 warning_tol
-		,value_type                 error_tol
-		)
-	:
-	schur_comp_(schur_comp)
+	const schur_comp_ptr_t&   schur_comp
+	,size_type                max_iter
+	,value_type               feas_tol
+	,value_type               loose_feas_tol
+	,value_type               dual_infeas_tol
+	,value_type               huge_primal_step
+	,value_type               huge_dual_step
+	,value_type               warning_tol
+	,value_type               error_tol
+	,size_type                iter_refine_min_iter
+	,size_type                iter_refine_max_iter
+	,value_type               iter_refine_opt_tol
+	,value_type               iter_refine_feas_tol
+	,bool                     iter_refine_at_solution
+	,MSADU::PivotTolerances   pivot_tols
+	)
+	:schur_comp_(schur_comp)
 	,max_iter_(max_iter)
 	,feas_tol_(feas_tol)
 	,loose_feas_tol_(loose_feas_tol)
 	,dual_infeas_tol_(dual_infeas_tol)
 	,huge_primal_step_(huge_primal_step)
 	,huge_dual_step_(huge_dual_step)
-	,act_set_(schur_comp)
 	,warning_tol_(warning_tol)
 	,error_tol_(error_tol)
+	,iter_refine_min_iter_(iter_refine_min_iter)
+	,iter_refine_max_iter_(iter_refine_max_iter)
+	,iter_refine_opt_tol_(iter_refine_opt_tol)
+	,iter_refine_feas_tol_(iter_refine_feas_tol)
+	,iter_refine_at_solution_(iter_refine_at_solution)
+	,act_set_(schur_comp,pivot_tols)
 {}
 
 QPSchur::ESolveReturn QPSchur::solve_qp(
@@ -1731,19 +2242,18 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
+	const value_type inf = std::numeric_limits<value_type>::max();
+
 	if( !out )
 		output_level = NO_OUTPUT;
 
-	const int	dbl_prec = 6;
-	int			prec_saved = out ? out->precision() : 0;
+	const int   dbl_w = (out ? out->precision()+8 : 20 );
 
 	// Set the schur complement
 	act_set_.set_schur_comp( schur_comp_ );
 
 	ESolveReturn
 		solve_return = SUBOPTIMAL_POINT;
-
-	try {
 
 	// Print QPSchur output header
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
@@ -1789,7 +2299,6 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	}
 	
 	if( num_act_change > 0 && (int)output_level >= (int)OUTPUT_ACT_SET ) {
-		*out << std::setprecision(dbl_prec);
 		*out
 			<< endl
 			<< right << setw(5) << "s"
@@ -1803,7 +2312,6 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 				<< right << setw(5) << s
 				<< right << setw(20) << ij_act_change[s-1]
 				<< right << setw(10) << bnd_str(bnds[s-1]) << endl;
-		*out << std::setprecision(prec_saved);
 	}
 
 	// Initialize the active set.
@@ -1825,15 +2333,17 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	}
 
 	// Compute vo =  inv(Ko) * fo
-	V_InvMtV( &vo_, qp.Ko(), BLAS_Cpp::no_trans, qp.fo() );
+	wsp::Workspace<value_type> vo_ws(wss,qp.n_R()+qp.m());
+	VectorSlice vo(&vo_ws[0],vo_ws.size());
+	V_InvMtV( &vo, qp.Ko(), BLAS_Cpp::no_trans, qp.fo() );
 
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		*out
-			<< "\nSolution to the initial KKT system, vo = inv(Ko)*fo:\n\n||vo||inf = " << norm_inf(vo_()) << std::endl;
+			<< "\nSolution to the initial KKT system, vo = inv(Ko)*fo:\n\n||vo||inf = " << norm_inf(vo) << std::endl;
 	}
 	if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 		*out
-			<< "\nvo =\n" << vo_();
+			<< "\nvo =\n" << vo;
 	}
 
 	// ////////////////////////////////////////////////
@@ -1868,87 +2378,66 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		&& (int)output_level < (int)OUTPUT_ITER_QUANTITIES
 		&& num_act_change > 0  )
 	{
-		*out << std::setprecision(dbl_prec);
 		*out     
 			<< "\nIf max_viol > 0 and jd != 0 then constraint jd will be dropped from the active set\n\n"
-			<< setw(20)	<< "max_viol"
+			<< setw(dbl_w)	<< "max_viol"
 			<< setw(5)	<< "sd"
 			<< setw(5)	<< "jd"		<< endl
-			<< setw(20)	<< "--------------"
+			<< setw(dbl_w)	<< "--------------"
 			<< setw(5)	<< "----"
 			<< setw(5)	<< "----"	<< endl;
 	}
 	for( int k = num_act_change; k > 0; --k, ++(*iter) ) {
 		// Compute z_hat (z_hat = inv(S_hat)*(d_hat - U_hat'*vo))
 		VectorSlice z_hat = act_set_.z_hat();
-		calc_z( act_set_.S_hat(), act_set_.d_hat(), act_set_.U_hat(), vo_()
+		calc_z( act_set_.S_hat(), act_set_.d_hat(), act_set_.U_hat(), &vo
 			, &z_hat );
 		// Determine if we are dual feasible.
 		value_type	max_viol = 0.0;	// max scaled violation of dual feasability.
 		size_type	jd = 0;			// indice of constraint with max scaled violation.
-		VectorSlice::const_iterator
-			z_itr = const_cast<const VectorSlice&>(z_hat).begin();
+		VectorSlice::iterator
+			z_itr = z_hat.begin();
 		const size_type q_hat = act_set_.q_hat();	// Size of schur complement system.
 		// Print header for s, z_hat(s), bnd(s), viol, max_viol and jd
 		if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 			*out
 				<< "\nLooking for a constraint with the maximum dual infeasiblity to drop...\n\n"
 				<< right << setw(5)		<< "s"
-				<< right << setw(20)	<< "z_hat"
+				<< right << setw(dbl_w)	<< "z_hat"
 				<< right << setw(20)	<< "bnd"
-				<< right << setw(20)	<< "viol"
-				<< right << setw(20)	<< "max_viol"
+				<< right << setw(dbl_w)	<< "viol"
+				<< right << setw(dbl_w)	<< "max_viol"
 				<< right << setw(5)		<< "jd"	<< endl
 				<< right << setw(5)		<< "----"
+				<< right << setw(dbl_w)	<< "--------------"
 				<< right << setw(20)	<< "--------------"
-				<< right << setw(20)	<< "--------------"
-				<< right << setw(20)	<< "--------------"
-				<< right << setw(20)	<< "--------------"
+				<< right << setw(dbl_w)	<< "--------------"
+				<< right << setw(dbl_w)	<< "--------------"
 				<< right << setw(5)		<< "----"	<< endl;
 		}
 		for( int s = 1; s <= q_hat; ++s, ++z_itr ) {
 			int j = act_set_.ij_map(s);
 			if( j > 0 ) {
-				// This is for an active constraint not initially in Ko so
-				// z_hat(s) = mu(j)
+				// This is for an active constraint not initially in Ko so z_hat(s) = mu(j)
 				EBounds bnd = act_set_.bnd(s);
-				const value_type inf = std::numeric_limits<value_type>::max();
-				value_type viol = -inf;
-				if( bnd == LOWER ) {
-					viol = (*z_itr) / act_set_.constr_norm(s);	// + scaled violation.
-					if( viol > 0 ) {
-						if( viol < dual_infeas_tol() ) {
-							// We need to fix the sign of this near degenerate multiplier
-							assert(0);
-						}
-						else if( viol > max_viol ) {
-							max_viol = viol;
-							jd = j;
-						}
-					}
-				}
-				else if( bnd == UPPER ) {
-					viol = -(*z_itr) / act_set_.constr_norm(s);	// + scaled violation.
-					if( viol > 0 ) {
-						if( viol < dual_infeas_tol() ) {
-							// We need to fix the sign of this near degenerate multiplier
-							assert(0);
-						}
-						else if( viol > max_viol ) {
-							max_viol = viol;
-							jd = j;
-						}
-					}
+				value_type viol;  // Get the amount of violation and fix near degeneracies
+				const int dual_feas_status
+					= correct_dual_infeas(
+						j,bnd,0.0,act_set_.constr_norm(s),dual_infeas_tol(),DEGENERATE_MULT
+						,out,output_level,false
+						,"z_hat(s)", &(*z_itr), &viol );
+				if( dual_feas_status < 0  && viol < max_viol ) {
+					max_viol = viol;
+					jd = j;
 				}
 				// Print row for s, z_hat(s), bnd(s), viol, max_viol and jd
 				if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
-					*out << std::setprecision(dbl_prec);
 					*out
 						<< right << setw(5)		<< s
-						<< right << setw(20)	<< *z_itr
+						<< right << setw(dbl_w)	<< *z_itr
 						<< right << setw(20)	<< bnd_str(bnd)
-						<< right << setw(20)	<< viol
-						<< right << setw(20)	<< max_viol
+						<< right << setw(dbl_w)	<< viol
+						<< right << setw(dbl_w)	<< max_viol
 						<< right << setw(5)		<< jd	<< endl;
 				}
 			}
@@ -1958,25 +2447,22 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			&& (int)output_level < (int)OUTPUT_ITER_QUANTITIES )
 		{
 			*out
-				<< setw(20)	<< max_viol
+				<< setw(dbl_w)	<< max_viol
 				<< setw(5)	<< act_set_.s_map(jd)
 				<< setw(5)	<< jd					<< endl;
 		}
 		if( jd == 0 ) break;	// We have a dual feasible point w.r.t. these constraints
 		// Remove the active constraint with the largest scaled violation.
-		act_set_.drop_constraint( jd );
+		act_set_.drop_constraint( jd, out, output_level, true, true );
 		++(*iter);
 		++(*num_drops);
 		// Print U_hat, S_hat and d_hat.
 		if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
-			*out << std::setprecision(prec_saved);
 			*out
 				<< "\nPrinting active set after dropping constraint jd = " << jd << " ...\n";
 			dump_act_set_quantities( act_set_, *out );
 		}
 	}
-
-	if(out) *out << std::setprecision(prec_saved);
 
 	// Print how many constraints where removed from the schur complement
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
@@ -1986,25 +2472,26 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	}
 
 	// Compute v
+	wsp::Workspace<value_type> v_ws(wss,qp.n_R()+qp.m());
+	VectorSlice v(&v_ws[0],v_ws.size());
 	if( act_set_.q_hat() > 0 ) {
-		v_.resize( qp.n_R() + qp.m() );
-		calc_v( qp.Ko(), qp.fo(), act_set_.U_hat(), act_set_.z_hat(), &v_() );
+		calc_v( qp.Ko(), &qp.fo(), act_set_.U_hat(), act_set_.z_hat(), &v );
 		if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 			*out
 				<< "\nSolution to the system; v = inv(Ko)*(fo - U_hat*z_hat):\n"
-				<< "\n||v||inf = " << norm_inf(v_()) << std::endl;
+				<< "\n||v||inf = " << norm_inf(v) << std::endl;
 		}
 		if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 			*out
-				<< "\nv =\n" << v_();
+				<< "\nv =\n" << v;
 		}
 	}
 	else {
-		v_ = vo_;
+		v = vo;
 	}
 
 	// Set x
-	set_x( act_set_, v_(), x );
+	set_x( act_set_, v, x );
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		*out
 			<< "\nCurrent guess for unknowns x:\n\n||x||inf = " << norm_inf(*x) << std::endl;
@@ -2027,13 +2514,12 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		if( (int)OUTPUT_ITER_SUMMARY <= (int)output_level 
 			&& (int)output_level < (int)OUTPUT_ITER_QUANTITIES )
 		{
-			*out << std::setprecision(dbl_prec);
 			*out     
 				<< "\nIf max_viol > 0 and id != 0 then the variable x(id) will be freed from its initial bound\n\n"
-				<< setw(20)	<< "max_viol"
+				<< setw(dbl_w)	<< "max_viol"
 				<< setw(5)	<< "kd"
 				<< setw(5)	<< "id"		<< endl
-				<< setw(20)	<< "--------------"
+				<< setw(dbl_w)	<< "--------------"
 				<< setw(5)	<< "----"
 				<< setw(5)	<< "----"	<< endl;
 		}
@@ -2041,28 +2527,28 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		while( q_D_hat > 0 ) {
 			// mu_D_hat = ???
 			VectorSlice mu_D_hat = act_set_.mu_D_hat();
-			calc_mu_D( act_set_, *x, v_(), &mu_D_hat );
+			calc_mu_D( act_set_, *x, v, &mu_D_hat );
 			// Determine if we are dual feasible.
 			value_type	max_viol = 0.0;	// max scaled violation of dual feasability.
 			int			id = 0;			// indice of variable with max scaled violation.
 			size_type   kd = 0;
-			VectorSlice::const_iterator
-				mu_D_itr = const_cast<const VectorSlice&>(mu_D_hat).begin();
+			VectorSlice::iterator
+				mu_D_itr = mu_D_hat.begin();
 			// Print header for k, mu_D_hat(k), bnd, viol, max_viol and id
 			if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 				*out
 					<< "\nLooking for a variable bound with the max dual infeasibility to drop...\n\n"
 					<< right << setw(5)		<< "k"
-					<< right << setw(20)	<< "mu_D_hat"
+					<< right << setw(dbl_w)	<< "mu_D_hat"
 					<< right << setw(20)	<< "bnd"
-					<< right << setw(20)	<< "viol"
-					<< right << setw(20)	<< "max_viol"
+					<< right << setw(dbl_w)	<< "viol"
+					<< right << setw(dbl_w)	<< "max_viol"
 					<< right << setw(5)		<< "id"	<< endl
 					<< right << setw(5)		<< "----"
+					<< right << setw(dbl_w)	<< "--------------"
 					<< right << setw(20)	<< "--------------"
-					<< right << setw(20)	<< "--------------"
-					<< right << setw(20)	<< "--------------"
-					<< right << setw(20)	<< "--------------"
+					<< right << setw(dbl_w)	<< "--------------"
+					<< right << setw(dbl_w)	<< "--------------"
 					<< right << setw(5)		<< "----"	<< endl;
 			}
 			for( int k = 1; k <= q_D_hat; ++k, ++mu_D_itr ) {
@@ -2070,45 +2556,25 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 					i = i_x_X_map(act_set_.l_fxfx(k));
 				EBounds
 					bnd = x_init(i);
-				const value_type inf = std::numeric_limits<value_type>::max();
-				value_type viol = -inf;
-				if( bnd == LOWER ) {
-					viol = (*mu_D_itr);
-					if( viol > 0 ) {
-						if( viol < dual_infeas_tol() ) {
-							// We need to fix the sign of this near degenerate multiplier
-							assert(0);
-						}
-						else if( viol > max_viol ) {
-							max_viol = viol;
-							kd = k;
-							id = i;
-						}
-					}
-				}
-				else if( bnd == UPPER ) {
-					viol = -(*mu_D_itr);
-					if( viol > 0 ) {
-						if( viol < dual_infeas_tol() ) {
-							// We need to fix the sign of this near degenerate multiplier
-							assert(0);
-						}
-						else if( viol > max_viol ) {
-							max_viol = viol;
-							kd = k;
-							id = i;
-						}
-					}
+				value_type viol;  // Get the amount of violation and fix near degeneracies
+				const int dual_feas_status
+					= correct_dual_infeas(
+						i,bnd,0.0,1.0,dual_infeas_tol(),DEGENERATE_MULT
+						,out,output_level,false
+						,"mu_D_hat(k)", &(*mu_D_itr), &viol );
+				if( dual_feas_status < 0  && viol < max_viol ) {
+					max_viol = viol;
+					kd = k;
+					id = i;
 				}
 				// Print row for k, mu_D_hat(k), bnd, viol, max_viol and jd
 				if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
-					*out << std::setprecision(dbl_prec);
 					*out
 						<< right << setw(5)		<< k
-						<< right << setw(20)	<< *mu_D_itr
+						<< right << setw(dbl_w)	<< *mu_D_itr
 						<< right << setw(20)	<< bnd_str(bnd)
-						<< right << setw(20)	<< viol
-						<< right << setw(20)	<< max_viol
+						<< right << setw(dbl_w)	<< viol
+						<< right << setw(dbl_w)	<< max_viol
 						<< right << setw(5)		<< id	<< endl;
 				}
 			}
@@ -2117,19 +2583,18 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 				&& (int)output_level < (int)OUTPUT_ITER_QUANTITIES )
 			{
 				*out
-					<< setw(20)	<< max_viol
+					<< setw(dbl_w)	<< max_viol
 					<< setw(5)	<< kd
 					<< setw(5)	<< id         << endl;
 			}
 			if( id == 0 ) break;	// We have a dual feasible point w.r.t. these variable bounds
 			// Remove the active constraint with the largest scaled violation.
-			act_set_.drop_constraint( -id );
+			act_set_.drop_constraint( -id, out, output_level, true, true );
 			++(*iter);
 			++(*num_adds);
 			--q_D_hat;
 			// Print U_hat, S_hat and d_hat.
 			if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
-				*out << std::setprecision(prec_saved);
 				*out
 					<< "\nPrinting active set after freeing initially fixed variable id = " << id << " ...\n";
 				dump_act_set_quantities( act_set_, *out );
@@ -2139,7 +2604,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 					<< "\nSolution to the new KKT system; z_hat = inv(S_hat)*(d_hat - U_hat'*vo), v = inv(Ko)*(fo - U_hat*z_hat):\n";
 			}
 			// Compute z_hat (z_hat = inv(S_hat)*(d_hat - U_hat'*vo))
-			calc_z( act_set_.S_hat(), act_set_.d_hat(), act_set_.U_hat(), vo_()
+			calc_z( act_set_.S_hat(), act_set_.d_hat(), act_set_.U_hat(), &vo
 					, &act_set_.z_hat() );
 			if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 				*out
@@ -2150,17 +2615,17 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 					<< "\nz_hat =\n" << act_set_.z_hat();
 			}
 			// Compute v
-			calc_v( qp.Ko(), qp.fo(), act_set_.U_hat(), act_set_.z_hat(), &v_() );
+			calc_v( qp.Ko(), &qp.fo(), act_set_.U_hat(), act_set_.z_hat(), &v );
 			if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 				*out
-					<< "\n||v||inf = " << norm_inf(v_()) << std::endl;
+					<< "\n||v||inf = " << norm_inf(v) << std::endl;
 			}
 			if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 				*out
-					<< "\nv =\n" << v_();
+					<< "\nv =\n" << v;
 			}
 			// Set x
-			set_x( act_set_, v_(), x );
+			set_x( act_set_, v, x );
 			if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 				*out
 					<< "\nCurrent guess for unknowns x:\n\n||x||inf = " << norm_inf(*x) << std::endl;
@@ -2180,21 +2645,20 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	}
 
 	// Run the primal dual algorithm
+	size_type  iter_refine_num_resid = 0, iter_refine_num_solves = 0;
 	solve_return = qp_algo(
-		  PICK_VIOLATED_CONSTRAINT
-		, out, output_level, test_what
-		, vo_(), &act_set_, &v_()
-		, x, iter, num_adds, num_drops
+		PICK_VIOLATED_CONSTRAINT
+		,out, output_level, test_what
+		,vo, &act_set_, &v
+		,x, iter, num_adds, num_drops
+		,&iter_refine_num_resid, &iter_refine_num_solves
 		);
 
-	if(out) *out << std::setprecision(prec_saved);
-
 	if( solve_return != OPTIMAL_SOLUTION )
-		set_x( act_set_, v_(), x );
+		set_x( act_set_, v, x );
 
-	set_multipliers( act_set_, v_(), mu, lambda, lambda_breve );
+	set_multipliers( act_set_, v, mu, lambda, lambda_breve );
 
-	// Print Solution x, lambda and mu
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		switch(solve_return) {
 			case OPTIMAL_SOLUTION:
@@ -2228,7 +2692,9 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			default:
 				assert(0);
 		}
-		*out	<< "\nNumber of QP iteratons  = "	<< *iter << endl;
+		*out	<< "\nNumber of QP iteratons                                = " << *iter;
+		*out	<< "\nNumber of iterative refinement residual calculations  = " << iter_refine_num_resid;
+		*out	<< "\nNumber of iterative refinement solves                 = " << iter_refine_num_solves << endl;
 		*out	<< "\n||x||inf                = "	<< norm_inf(*x);
 		*out	<< "\nmax(|mu(i)|)            = " 	<< norm_inf((*mu)());
 		*out	<< "\nmin(|mu(i)|)            = " 	<< min_abs((*mu)());
@@ -2242,6 +2708,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 				<< "\nmin(|lambda_breve(i)|)  = "	<< min_abs((*lambda_breve)());
 		*out << std::endl;
 	}
+	// Print Solution x, lambda and mu
 	if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 		*out	<< "\nx =\n" 				<< *x;
 		*out	<< "\nmu =\n" 				<< *mu;
@@ -2256,12 +2723,6 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			<< "\n*** Leaving QPSchur::solve_qp(...)\n";
 	}
 
-	}	// end try
-	catch(...) {
-		if(out) *out << std::setprecision(prec_saved);
-		throw;
-	}
-
 	return solve_return;
 }
 
@@ -2273,10 +2734,11 @@ const QPSchur::ActiveSet& QPSchur::act_set() const
 // protected member functions for QPSchur
 
 QPSchur::ESolveReturn QPSchur::qp_algo(
-	  EPDSteps next_step
+	EPDSteps next_step
 	, std::ostream *out, EOutputLevel output_level, ERunTests test_what
 	, const VectorSlice& vo, ActiveSet* act_set, VectorSlice* v
 	, VectorSlice* x, size_type* iter, size_type* num_adds, size_type* num_drops
+	, size_type* iter_refine_num_resid, size_type* iter_refine_num_solves
 	)
 {
 	using std::setw;
@@ -2308,8 +2770,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 			<< "\n*** Starting Primal-Dual Iterations ***\n";
 	}
 
-	const int	dbl_prec = 6;
-	int			prec_saved = out ? out->precision() : 0;
+	const int   dbl_w = (out ? out->precision()+8: 20 );
 
 	try {
 
@@ -2321,10 +2782,14 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 		m		= qp.m(),
 		m_breve	= qp.constraints().m_breve();
 
-	Vector
-		v_plus(v->size()),
+	wsp::Workspace<value_type>
+		v_plus_ws(wss,v->size()),
+		z_hat_plus_ws(wss,(n-m)+(n-n_R)),
+		p_v_ws(wss,v->size());
+	VectorSlice
+		v_plus(&v_plus_ws[0],v_plus_ws.size()),
 		z_hat_plus,
-		p_v(v->size());
+		p_v(&p_v_ws[0],p_v_ws.size());
 
 	const value_type
 		inf = std::numeric_limits<value_type>::max();
@@ -2360,6 +2825,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	bool					return_to_init_fixed = false;	// True if the constraint being added
 									// to the active set is a varible returning to its orginally
 	                                // fixed variable bound.
+	bool                    using_iter_refinement = false; // Will be set to true if instability detected
 
 	for( itr = 0; itr <= max_iter_; ++itr, ++(*iter) ) {
 		if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
@@ -2415,7 +2881,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						}
 						wsp::Workspace<value_type> mu_D_hat_calc_ws( wss, act_set->q_D_hat() );
 						VectorSlice mu_D_hat_calc( &mu_D_hat_calc_ws[0], mu_D_hat_calc_ws.size() );
-						calc_mu_D( *act_set, *x, v_(), &mu_D_hat_calc );
+						calc_mu_D( *act_set, *x, *v, &mu_D_hat_calc );
 						if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 							*out
 								<< "\n||mu_D_hat_calc||inf = " << norm_inf(mu_D_hat_calc) << std::endl;
@@ -2471,7 +2937,6 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 				// Print header for itr, nact, change (ADD, DROP), indice (ja, jb)
 				//, bound (LOWER, UPPER, EQUALITY), violation (primal or dual), rank (LD,LI)
 				if( (int)output_level == (int)OUTPUT_ITER_SUMMARY ) {
-					if(out) *out << std::setprecision(dbl_prec);
 					if( summary_lines_counter <= 0 ) {
 						summary_lines_counter = summary_lines_counter_max;
 						*out
@@ -2486,7 +2951,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							<< setw(9)	<< "type"
 							<< setw(6)	<< "j"
 							<< setw(10)	<< "bnd"
-							<< setw(20)	<< "viol, p_z(jd)"
+							<< setw(dbl_w)	<< "viol, p_z(jd)"
 							<< setw(6)	<< "rank" << endl
 							<< setw(6)	<< "----"
 							<< setw(6)	<< "----"
@@ -2498,12 +2963,11 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							<< setw(9)	<< "-------"
 							<< setw(6)	<< "----"
 							<< setw(10)	<< "--------"
-							<< setw(20) << "--------------"
+							<< setw(dbl_w) << "--------------"
 							<< setw(6)	<< "----"	<< endl;
 					}
 				}
 				// Print first part of row for itr, q_hat, q(+), q_D, q_C, q_F, change, type, index, bound, violation
-				const size_type sa = act_set->s_map(ja);
 				if( (int)output_level == (int)OUTPUT_ITER_SUMMARY ) {
 					*out
 						<< setw(6)	<< itr                                   // itr
@@ -2532,7 +2996,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					*out
 						<< setw(6)	<< ja                                    // index
 						<< setw(10)	<< ( ja ? bnd_str(bnd_ja) : "-" )        // bound
-						<< setw(20);                                         // violation
+						<< setw(dbl_w);                                      // violation
 					if(ja)
 						*out << (con_ja_val - b_a); 
 					else
@@ -2540,90 +3004,156 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					if(!ja)
 						*out << setw(6) << "-" << endl;                      // rank for last iteration
 				}
+				bool found_solution = false;
+				const size_type sa = act_set->s_map(ja);
+				value_type scaled_viol = 0.0;
 				if( ja == 0 ) {
-					//
-					// Solution found!  All of the inequality constraints are satisfied!
-					//
-
-					// Todo: Implement iterative refinement if needed.
-
-/*
-					// Compute the lagrange multipliers for the initially fixed
-					// variables that are still fixed.  Note, we really should
-					// not have to do this I would not think?  It is really for
-					// debugging I guess.
-					if( act_set->q_D_hat() ) {
-						calc_mu_D( *act_set, *x, v_(), &act_set->mu_D_hat() );
-						if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+					found_solution = true;
+				}
+				else if( sa != 0 || ( act_set->is_init_fixed(ja) && act_set->s_map(-ja) == 0 ) ) {
+					const bool is_most_violated
+						= (qp.constraints().pick_violated_policy() == QPSchurPack::Constraints::MOST_VIOLATED);
+					if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+						*out
+							<< "\n\nWarning, we have picked the constriant a(" << ja << ") with violation\n"
+							<< "(a(ja)'*x - b_a) = (" << con_ja_val << " - " << b_a << ") = " << (con_ja_val - b_a)
+							<< "\nto add to the active set but it is already part of the active set.\n"
+							<< "This is an indication of instability in the calculations.\n";
+					}
+					summary_lines_counter = 0;
+					if( !is_most_violated ) {
+						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 							*out
-								<< "\n||mu_D_hat||inf = " << norm_inf(act_set->mu_D_hat()) << std::endl;
+								<< "\nThis is not the most violated constraint so set\n"
+								<< "pick_violated_policy = MOST_VIOLATED ...\n";
 						}
-						if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
+						summary_lines_counter = 0;
+						qp.constraints().pick_violated_policy(QP::Constraints::MOST_VIOLATED);
+						next_step = PICK_VIOLATED_CONSTRAINT;
+						continue;	// Go back and pick the most violated constraint
+					}
+					else if( !using_iter_refinement ) {
+						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 							*out
-								<< "\nmu_D_hat =\n" << act_set->mu_D_hat();
+								<< "\nThis is the most violated constraint but we are currently not using\n"
+								<< "iterative refinement so let's switch it on ...\n";
+						}
+						summary_lines_counter = 0;
+						EIterRefineReturn status = iter_refine(
+							*act_set, out, output_level, -1.0, &qp.fo(), -1.0, act_set->q_hat() ? &act_set->d_hat() : NULL
+							,v, act_set->q_hat() ? &act_set->z_hat() : NULL
+							,iter_refine_num_resid, iter_refine_num_solves
+							);
+						if( status == ITER_REFINE_IMPROVED || status == ITER_REFINE_CONVERGED ) {
+							using_iter_refinement = true; // Use iterative refinement from now on!
+							next_step = PICK_VIOLATED_CONSTRAINT;
+							continue; // Now go back
+						}
+						else {
+							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+								*out
+									<< "\nError, iterative refinement was not allowed or failed to improve the residuals.\n"
+									<< "Terminating the QP algorithm ...\n";
+							}
+							return SUBOPTIMAL_POINT;
 						}
 					}
-*/
-					return OPTIMAL_SOLUTION;	// current point is optimal.
+					else {
+						scaled_viol = ::fabs(con_ja_val - b_a)/(1.0 + ::fabs(con_ja_val));
+						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+							*out
+								<< "\n\nThis is the most violated constraint, we are using iterative refinement and\n"
+								<< "|a("<<ja<<")'*x - b_a| / (1 + |a("<<ja<<")'*x|) = |"<<con_ja_val<<" - "<<b_a
+								<< "| / (1 + |"<<con_ja_val<<"|) = "<<scaled_viol<< (scaled_viol<loose_feas_tol()?" < ":" > ")
+								<< "loose_feas_tol = "<<loose_feas_tol();
+						}
+ 						if( scaled_viol < loose_feas_tol() ) {
+							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+								*out
+									<< "\nTerminating the algorithm with a near optimal solution!\n";
+							}
+							found_solution = true;
+						}
+						else { 
+							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+								*out
+									<< "\nError!  The QP algorithm is terminated!\n";
+							}
+							return SUBOPTIMAL_POINT;
+						}
+					}
 				}
-
-// ToDo: Combine the following two conditions into one and deal with
-// the problem of (most violated, extra feas tol etc.)			  
-
-				if( sa != 0 || ( act_set->is_init_fixed(ja) && act_set->s_map(-ja) == 0 ) )
+				else if( act_set->all_dof_used_up()
+						 && (scaled_viol = ::fabs(con_ja_val - b_a)/ (1.0 + ::fabs(con_ja_val))) < feas_tol() )
 				{
 					if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 						*out
-							<< "\nQPSchur::qp_algo(...) : Error, we have picked the constriant "
-							<< "a(" << ja << ") with violation\n"
-							<< "(a(ja)'*x - b_a) = (" << con_ja_val
-							<< " - " << b_a << ") = " << (con_ja_val - b_a) << "\n"
-							<< "to add to the active set but it is already part of the active set.\n"
-							<< "This is an indication of instability in the calculations.\n"
-							<< "The QP algorithm is terminated!\n";
+							<< "\nWith all the dof used up, the violated inequality constriant "
+							<< "a("<< ja << ")'*x statisfies:\n"
+							<< "|a("<<ja<<")'*x - b_a| / (1 + |a("<<ja<<")'*x|) = |" << con_ja_val << " - " << b_a
+							<< "| / (1 + |"<<con_ja_val<<"|) = "<<scaled_viol<<" < feas_tol = "<<feas_tol();
 					}
-					return SUBOPTIMAL_POINT;
-				}
-				else if(	act_set->all_dof_used_up()
-						 && ::fabs( con_ja_val - b_a )
-								/ std::_MAX(::fabs(con_ja_val),1.0) < feas_tol()	)
-				{
-					// Here all of the degrees of freedom are used up and the violated
-					// constraint is not part of the active set.
-					// In addition, it violation is very small.  Therefore we can assume
-					// that this is a degenerate variable bound.
-					if( act_set->qp().constraints().pick_violated_policy()
-						== QP::Constraints::MOST_VIOLATED )
-					{
-						// This is the most violated constraint so just ignore it and we
-						// are done.
+					if( act_set->qp().constraints().pick_violated_policy() == QP::Constraints::MOST_VIOLATED ) {
 						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 							*out
-								<< "\nWith all the dof used up, the inequality constriant a("
-								<< ja
-								<< ")' * x is the most violated "
-								<< "but the violation = " << con_ja_val - b_a
-								<< " is smaller than feas_tol = " << feas_tol_ << " so just assume "
-								<< "this is a degenerate constraint and we are done.\n";
+								<< "\nThis is the most violated constraint so we will consider this\n"
+								<< "a near degenerate constraint so we are done!\n";
 						}
-						return OPTIMAL_SOLUTION;
+						found_solution = true;
 					}
 					else {
 						if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 							*out
-								<< "\nThe inequality constriant a("
-								<< ja
-								<< ")' * x is violated "
-								<< "but the violation = " << con_ja_val - b_a
-								<< " is smaller than feas_tol = " << feas_tol_ << " but it may not "
-								<< "be the most violated constraints so set pick_violated_policy = "
-								<< "MOST_VIOLATED and pick another violated constraint.\n";
+								<< "\nThis is not the most violated constraint so set pick_violated_policy = "
+								<< "MOST_VIOLATED and pick another violated constraint ....\n";
 						}
-						act_set->qp().constraints().pick_violated_policy(
-							QP::Constraints::MOST_VIOLATED );
+						act_set->qp().constraints().pick_violated_policy(QP::Constraints::MOST_VIOLATED);
+						next_step = PICK_VIOLATED_CONSTRAINT;
 						continue;	// Go back and pick the most violated constraint
 					}
-				} 
+				}
+				if(found_solution) {
+					//
+					// Solution found!  All of the inequality constraints are satisfied!
+					//
+					// Use iterative refinement if we need to
+					if( iter_refine_at_solution() && !using_iter_refinement ) {
+						// The user has requested iterative refinement at the solution
+						// and we have not been using iterative refinement up to this point.
+						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+							*out
+								<< "\nWe have found to solution and are now performing iterative refinement ...\n";
+						}
+						iter_refine(
+							*act_set, out, output_level, -1.0, &qp.fo(), -1.0, act_set->q_hat() ? &act_set->d_hat() : NULL
+							,v, act_set->q_hat() ? &act_set->z_hat() : NULL
+							,iter_refine_num_resid, iter_refine_num_solves
+							);
+						set_x( *act_set, *v, x );
+					}
+					if( iter_refine_at_solution() || using_iter_refinement ) {
+						// The user has requested iterative refinement at the solution
+						// or we have been using iterative refinement so we should
+						// compute the lagrange multipliers for the initially fixed
+						// variables that are still fixed.
+						if( act_set->q_D_hat() ) {
+							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+								*out
+									<< "\nRecomputing final mu_D_hat at the solution ...\n";
+							}
+							calc_mu_D( *act_set, *x, *v, &act_set->mu_D_hat() );
+							if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+								*out
+									<< "\n||mu_D_hat||inf = " << norm_inf(act_set->mu_D_hat()) << std::endl;
+							}
+							if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
+								*out
+									<< "\nmu_D_hat =\n" << act_set->mu_D_hat();
+							}
+						}
+					}
+					return OPTIMAL_SOLUTION;	// current point is optimal.
+				}
 			}
 			case UPDATE_ACTIVE_SET: {
 				if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
@@ -2664,7 +3194,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 				else {
 					assume_lin_dep_ja = false;
 					try {
-						act_set->add_constraint( ja, bnd_ja, false, true );
+						if(act_set->add_constraint( ja, bnd_ja, false, out, output_level, true ))
+							summary_lines_counter = 0;
 						if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 							*out << "\nNew KKT system is nonsingular! (linearly independent (LI) constraints)\n";
 						}
@@ -2762,25 +3293,31 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						//
 						// Fix a varaible that was fixed and then freed.
 						//
-						// v_a = e(s_map(-ja)) <: R^q_hat
+						// [   Ko     U_hat ] [   p_v   ] = [   0  ]
+						// [ U_hat'   V_hat ] [ p_z_hat ]   [ -v_a ]
+						//
+						// v_a = e(sa) <: R^q_hat            : where sa = s_map(-ja)
 						//
 						//        / 0                        : if x_init(ja) == bnd_ja
 						// d_a =  |
 						//        \ b_a - b_X(l_x_X_map(ja)) : otherwise
 						//
-						// p_z_hat = -inv(S_hat) * v_a
+						// p_z_hat = -inv(S_hat)*v_a
 						//
-						// p_v = inv(Ko)*(-U_hat*p_v_hat)
+						// p_v = inv(Ko)*(-U_hat*p_z_hat)
 						//
-						// gamma_plus = (d_a - v_a' * z_hat ) / ( v_a' * p_v_hat )
+						// gamma_plus = (d_a - v_a' * z_hat ) / ( v_a' * p_z_hat )
 						//
 						const size_type
 							sa = act_set->s_map(-int(ja)),
 							la = act_set->qp().l_x_X_map()(ja);
 						assert(sa);
 						assert(la);
-						// v_a = e(s_map(-ja)) <: R^q_hat
-						const EtaVector v_a = EtaVector(sa,act_set->q_hat());
+						// v_a = e(sa) <: R^q_hat
+						wsp::Workspace<value_type> v_a_ws(wss,act_set->q_hat());
+						VectorSlice v_a(&v_a_ws[0],v_a_ws.size());
+						v_a = 0.0;
+						v_a(sa) = 1.0;
 						// d_a
 						const value_type
 							d_a = ( bnd_ja == qp.x_init()(ja) 
@@ -2791,16 +3328,25 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						Vt_S( &act_set->p_z_hat(), -1.0 );
 						// p_v = inv(Ko)*(-U_hat*p_v_hat)
 						if(!know_lin_dep_ja) {
-							wsp::Workspace<value_type> t1_ws(wss,n_R+m);
-							VectorSlice t1(&t1_ws[0],t1_ws.size());
-							V_StMtV( &t1, -1.0, act_set->U_hat(), no_trans, act_set->p_z_hat() );
-							if( norm_inf(t1) > 0.0 )
-								V_InvMtV( &p_v, qp.Ko(), no_trans, t1 );
-							else
-								p_v = 0.0;
+							calc_v( qp.Ko(), NULL, act_set->U_hat(), act_set->p_z_hat(), &p_v() );
 						}
 						else {
 							p_v = 0.0;
+						}
+						// Iterative refinement?
+						if( using_iter_refinement ) {
+							if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
+								*out
+									<< "\n\nPerforming iterative refinement on p_v, p_z_hat system ...\n";
+							}
+							summary_lines_counter = 0;
+							// [   Ko     U_hat ] [   p_v   ] = [   0  ]
+							// [ U_hat'   V_hat ] [ p_z_hat ]   [ -v_a ]
+							EIterRefineReturn status = iter_refine(
+								*act_set, out, output_level, 0.0, NULL, +1.0, &v_a
+								,&p_v, &act_set->p_z_hat()
+								,iter_refine_num_resid, iter_refine_num_solves
+								);
 						}
 						// gamma_plus = ( d_a - v_a'*z_hat ) / ( v_a'*p_z_hat )
 						if(!know_lin_dep_ja)
@@ -2814,6 +3360,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						// Add a constraint that is not an initially fixed
 						// variable bound.
 						// 
+						// [   Ko     U_hat ] [   p_v   ] = [ -u_a ]
+						// [ U_hat'   V_hat ] [ p_z_hat ]   [ -v_a ]
+						//
 						// p_z_hat = inv(S_hat) * ( - v_a + U_hat' * inv(Ko) * u_a )
 						// 
 						// p_v = inv(Ko) * ( -u_a - U_hat * p_z_hat )
@@ -2860,6 +3409,26 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								// p_v = -t1
 								V_mV( &p_v, t1() );
 							}
+							// Iterative refinement?
+							if( using_iter_refinement ) {
+								if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
+									*out
+										<< "\n\nPerforming iterative refinement on p_v, p_z_hat system ...\n";
+								}
+								summary_lines_counter = 0;
+								// [   Ko     U_hat ] [   p_v   ] = [ -u_a ]
+								// [ U_hat'   V_hat ] [ p_z_hat ]   [   0  ]
+								wsp::Workspace<value_type> dense_u_a_ws(wss,u_a().size());
+								VectorSlice dense_u_a(&dense_u_a_ws[0],dense_u_a_ws.size());
+								dense_u_a = 0.0; // Make a dense copy of u_a!
+								dense_u_a(u_a().begin()->indice()+u_a().offset()) = 1.0;
+								EIterRefineReturn status = iter_refine(
+									*act_set, out, output_level, +1.0, &dense_u_a, 0.0, NULL
+									,&p_v, &act_set->p_z_hat()
+									,iter_refine_num_resid, iter_refine_num_solves
+									);
+								summary_lines_counter = 0;
+							}
 							// gamma_plus = ( d_a - u_a'*v) / ( u_a'*p_v )
 							if(!know_lin_dep_ja)
 								gamma_plus = ( d_a - dot(u_a(),*v) ) / dot(u_a(),p_v());
@@ -2878,6 +3447,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							//
 							wsp::Workspace<value_type> u_a_ws( wss, n_R + m );
 							VectorSlice u_a( &u_a_ws[0], u_a_ws.size() );
+							wsp::Workspace<value_type> v_a_ws( wss, act_set->q_hat() );
+							VectorSlice v_a( &v_a_ws[0], v_a_ws.size() );
 							// u_a(1:n_R) =  Q_R' * A_bar * e(ja)
 							Vp_StPtMtV( &u_a(1,n_R), 1.0, qp.Q_R(), trans
 										, qp.constraints().A_bar(), no_trans, e_ja(), 0.0 );
@@ -2903,8 +3474,6 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								VectorSlice t2( &t2_ws[0], t2_ws.size() );
 								V_MtV( &t2, act_set->U_hat(), trans, t1() );
 								// v_a = P_XF_hat' * A_bar * e_ja
-								wsp::Workspace<value_type> v_a_ws( wss, act_set->q_hat() );
-								VectorSlice v_a( &v_a_ws[0], v_a_ws.size() );
 								Vp_StPtMtV( &v_a(), 1.0, act_set->P_XF_hat(), trans
 											, qp.constraints().A_bar(), no_trans, e_ja(), 0.0 );
 								// t2 += -v_a
@@ -2921,6 +3490,22 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								}
 								else {
 									p_v = 0.0;
+								}
+								// Iterative refinement?
+								if( using_iter_refinement ) {
+									if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
+										*out
+											<< "\n\nPerforming iterative refinement on p_v, p_z_hat system ...\n";
+									}
+									summary_lines_counter = 0;
+									// [   Ko     U_hat ] [   p_v   ] = [ -u_a ]
+									// [ U_hat'   V_hat ] [ p_z_hat ]   [ -v_a ]
+									EIterRefineReturn status = iter_refine(
+										*act_set, out, output_level, +1.0, &u_a, +1.0, act_set->q_hat() ? &v_a : NULL
+										,&p_v, act_set->q_hat() ? &act_set->p_z_hat() : NULL
+										,iter_refine_num_resid, iter_refine_num_solves
+										);
+									summary_lines_counter = 0;
 								}
 								// gamma_plus = ( d_a - u_a'*v - v_a'*z_hat ) / ( u_a'*p_v + v_a'*p_z_hat )
 								if(!know_lin_dep_ja)
@@ -2994,9 +3579,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 
 					// z_hat_plus = inv(S_hat) * ( d_hat - U_hat' * vo  )
 					const size_type q_hat = act_set->q_hat();
-					z_hat_plus.resize( q_hat );
-					calc_z( act_set->S_hat(), act_set->d_hat(), act_set->U_hat(), vo()
-						, &z_hat_plus() );
+					z_hat_plus.bind(VectorSlice(&z_hat_plus_ws[0],q_hat));
+					calc_z( act_set->S_hat(), act_set->d_hat(), act_set->U_hat(), &vo
+						, &z_hat_plus );
 					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 						*out
 							<< "\n||z_hat_plus||inf = " << norm_inf(z_hat_plus()) << std::endl;
@@ -3006,8 +3591,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							<< "\nz_hat_plus =\n" << z_hat_plus();
 					}
 					// v_plus = inv(Ko) * (fo - U_hat * z_hat_plus)
-					calc_v( act_set->qp().Ko(), act_set->qp().fo(), act_set->U_hat(), z_hat_plus()
-						, &v_plus() );
+					calc_v( qp.Ko(), &qp.fo(), act_set->U_hat(), z_hat_plus
+						, &v_plus );
 					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 						*out
 							<< "\n||v_plus||inf = " << norm_inf(v_plus()) << std::endl;
@@ -3015,6 +3600,20 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 						*out
 							<< "\nv_plus =\n" << v_plus();
+					}
+					if( using_iter_refinement ) {
+						if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
+							*out
+								<< "\n\nPerforming iterative refinement on v_plus, z_hat_plus system ...\n";
+						}
+						summary_lines_counter = 0;
+						// [   Ko     U_hat ] [   v_plus   ] = [   fo  ]
+						// [ U_hat'   V_hat ] [ z_hat_plus ]   [ d_hat ]
+						EIterRefineReturn status = iter_refine(
+							*act_set, out, output_level, -1.0, &qp.fo(), -1.0, &act_set->d_hat()
+							,&v_plus, &z_hat_plus
+							,iter_refine_num_resid, iter_refine_num_solves
+							);
 					}
 					// Compute p_z_hat (change in z_hat w.r.t newly added constriant multiplier)
 					VectorSlice p_z_hat = act_set->p_z_hat();
@@ -3080,12 +3679,12 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 				// Compute the dual infeasibility scaling
 				const size_type q_hat = act_set->q_hat();
 				dual_infeas_scale = 1.0;
-				if( q_hat )
-					dual_infeas_scale = std::_MAX( dual_infeas_scale, norm_inf( act_set->z_hat() ) );
-				if( m )
-					dual_infeas_scale = std::_MAX( dual_infeas_scale, norm_inf( (*v)(n_R+1,n_R+m) ) );
-				if( act_set->q_D_hat() )
-					dual_infeas_scale = std::_MAX( dual_infeas_scale, norm_inf( act_set->mu_D_hat() ) );
+//				if( q_hat )
+//					dual_infeas_scale = std::_MAX( dual_infeas_scale, norm_inf( act_set->z_hat() ) );
+//				if( m )
+//					dual_infeas_scale = std::_MAX( dual_infeas_scale, norm_inf( (*v)(n_R+1,n_R+m) ) );
+//				if( act_set->q_D_hat() )
+//					dual_infeas_scale = std::_MAX( dual_infeas_scale, norm_inf( act_set->mu_D_hat() ) );
 				
 				// Primal step length, t_P = beta * gamma_plus, z_plus = [ z_hat_plus; gama_plus ].
 				// Or constraint ja is linearly dependent in which case p_x is zero so
@@ -3099,12 +3698,15 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 									<< " is being added that has the wrong sign with:\n"
 								<< "    t_P                     = " << t_P 				<< std::endl
 								<< "    dual_infeas_scale       = " << dual_infeas_scale	<< std::endl
-								<< "    norm_2_constr            = " << norm_2_constr   << std::endl
+								<< "    norm_2_constr           = " << norm_2_constr   << std::endl
 								<< "    |t_P/(norm_2_constr*dual_infeas_scale)| = "
 									<< ::fabs(t_P/(norm_2_constr*dual_infeas_scale))
 									<< " <= dual_infeas_tol = " << dual_infeas_tol() << std::endl
 								<< "therefore we will adjust things and keep going.\n";
 						}
+						throw std::logic_error(
+							error_msg(__FILE__,__LINE__,"QPSchur::qp_algo(...) : Error, "
+									  "Have not implemented correcton of infeasible t_P yet!"));  
 						assert(0);	// ToDo: Finish this!
 					}
 					else {
@@ -3145,35 +3747,33 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 
 				// Search through Lagrange multipliers in z_hat
 				if( act_set->q_hat() ) {
-
 					VectorSlice z_hat = act_set->z_hat();
 					VectorSlice p_z_hat = act_set->p_z_hat();
-					VectorSlice::const_iterator
-						z_itr		= const_cast<const VectorSlice&>(z_hat).begin(),
-						p_z_itr		= const_cast<const VectorSlice&>(p_z_hat).begin();
+					VectorSlice::iterator
+						z_itr		= z_hat.begin(),
+						p_z_itr		= p_z_hat.begin();
 					const size_type
 						qq = assume_lin_dep_ja || (!assume_lin_dep_ja && return_to_init_fixed)
 							? q_hat : q_hat - 1;
 					// Print header for s, j, z_hat(s), p_z_hat(s), bnds(s), t, t_D, jd
 					if( qq > 0 && (int)output_level >= (int)OUTPUT_ACT_SET ) {
-						if(out) *out << std::setprecision(dbl_prec);
-						*out
+							*out
 							<< "\nComputing the maximum step for multiplers for dual feasibility\n\n"
 							<< setw(5)	<< "s"
 							<< setw(5)	<< "j"
-							<< setw(20)	<< "z_hat"
-							<< setw(20)	<< "p_z_hat"
+							<< setw(dbl_w)	<< "z_hat"
+							<< setw(dbl_w)	<< "p_z_hat"
 							<< setw(20)	<< "bnd"
-							<< setw(20)	<< "t"
-							<< setw(20)	<< "t_D"
+							<< setw(dbl_w)	<< "t"
+							<< setw(dbl_w)	<< "t_D"
 							<< setw(5)	<< "jd"	<< endl
 							<< setw(5)	<< "----"
 							<< setw(5)	<< "----"
+							<< setw(dbl_w)	<< "--------------"
+							<< setw(dbl_w)	<< "--------------"
 							<< setw(20)	<< "--------------"
-							<< setw(20)	<< "--------------"
-							<< setw(20)	<< "--------------"
-							<< setw(20)	<< "--------------"
-							<< setw(20)	<< "--------------"
+							<< setw(dbl_w)	<< "--------------"
+							<< setw(dbl_w)	<< "--------------"
 							<< setw(5)	<< "----"	<< endl;
 					}
 					for( int s = 1; s <= qq; ++s, ++z_itr, ++p_z_itr) {
@@ -3186,20 +3786,32 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								*out
 									<< setw(5)	<< s
 									<< setw(5)	<< j
-									<< setw(20)	<< *z_itr
-									<< setw(20)	<< *p_z_itr
+									<< setw(dbl_w)	<< *z_itr
+									<< setw(dbl_w)	<< *p_z_itr
 									<< setw(20)	<< bnd_str(bnd);
 							}
 							value_type t = inf;
+							// Lookout for degeneracy.
 							bool j_is_degen = false;
-							if( (bnd == LOWER && *z_itr > 0.0) || (bnd == UPPER && *z_itr < 0.0) ) {
-								if( (int)output_level >= (int)OUTPUT_BASIC_INFO && !warned_degeneracy ) {
-									*out
-										<< "\nWarning, possible degeneracy and numerical instability detected.\n";
-									warned_degeneracy = true;
-								}
-								assert(0);	// ToDo: Finish this!
+							value_type viol;
+							const bool dual_feas_status
+								= correct_dual_infeas(
+									j,bnd,t_P,1.0,dual_infeas_tol(),DEGENERATE_MULT
+									,out,output_level,true,"z_hat(s)",&(*z_itr),&viol
+									,"p_z_hat(s)",&(*p_z_itr),"z_hat_plus(s)"
+									, (assume_lin_dep_ja ? NULL: &z_hat_plus(s) ) );
+							if( dual_feas_status < 0 ) {
+								// Turn on iterative refinement and go back
+								throw std::logic_error(
+									error_msg(__FILE__,__LINE__,"QPSchur::qp_algo(...): Error, "
+											  "iterative refinement not implemented here yet!"));
+								assert(0);
 							}
+							else if( dual_feas_status == 0 ) {
+								j_is_degen = true;
+							}
+							// If we get here either the dual variable was feasible or it
+							// was near degenerate and was corrected!
 							const value_type feas_viol = beta*(*p_z_itr);
 							if( bnd == LOWER && feas_viol <= 0.0 )
 								;	// dual feasible for all t > 0
@@ -3219,13 +3831,12 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							// Print rest of row for ... t, t_D, jd
 							if( (int)output_level >= (int)OUTPUT_ACT_SET ) {
 								*out
-									<< setw(20)	<< t
-									<< setw(20)	<< t_D
+									<< setw(dbl_w)	<< t
+									<< setw(dbl_w)	<< t_D
 									<< setw(5)	<< jd	<< endl;
 							}
 						}
 					}
-					if(out) *out << std::setprecision(prec_saved);
 				}
 					
 				// Search through Lagrange multipliers in mu_D_hat
@@ -3234,33 +3845,32 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					VectorSlice mu_D_hat = act_set->mu_D_hat();
 					VectorSlice p_mu_D_hat = act_set->p_mu_D_hat();
 					const GenPermMatrixSlice &Q_XD_hat = act_set->Q_XD_hat();
-					VectorSlice::const_iterator
-						mu_D_itr		= const_cast<const VectorSlice&>(mu_D_hat).begin(),
-						p_mu_D_itr		= const_cast<const VectorSlice&>(p_mu_D_hat).begin();
+					VectorSlice::iterator
+						mu_D_itr		= mu_D_hat.begin(),
+						p_mu_D_itr		= p_mu_D_hat.begin();
 					GenPermMatrixSlice::const_iterator
 						Q_XD_itr		= Q_XD_hat.begin();
 					const size_type
 						qD = assume_lin_dep_ja && return_to_init_fixed ? q_D_hat-1 : q_D_hat;
 					// Print header for k, i, mu_D_hat(k), p_mu_D_hat(k), x_init(k), t, t_D, jd
 					if( qD > 0 && (int)output_level >= (int)OUTPUT_ACT_SET ) {
-						if(out) *out << std::setprecision(dbl_prec);
 						*out
 							<< "\nComputing the maximum step for multiplers for dual feasibility\n\n"
 							<< setw(5)	<< "k"
 							<< setw(5)	<< "i"
-							<< setw(20)	<< "mu_D_hat"
-							<< setw(20)	<< "p_mu_D_hat"
+							<< setw(dbl_w)	<< "mu_D_hat"
+							<< setw(dbl_w)	<< "p_mu_D_hat"
 							<< setw(20)	<< "x_init"
-							<< setw(20)	<< "t"
-							<< setw(20)	<< "t_D"
+							<< setw(dbl_w)	<< "t"
+							<< setw(dbl_w)	<< "t_D"
 							<< setw(5)	<< "jd"	<< endl
 							<< setw(5)	<< "----"
 							<< setw(5)	<< "----"
+							<< setw(dbl_w)	<< "--------------"
+							<< setw(dbl_w)	<< "--------------"
 							<< setw(20)	<< "--------------"
-							<< setw(20)	<< "--------------"
-							<< setw(20)	<< "--------------"
-							<< setw(20)	<< "--------------"
-							<< setw(20)	<< "--------------"
+							<< setw(dbl_w)	<< "--------------"
+							<< setw(dbl_w)	<< "--------------"
 							<< setw(5)	<< "----"	<< endl;
 					}
 					for( int k = 1; k <= qD; ++k, ++mu_D_itr, ++p_mu_D_itr, ++Q_XD_itr )
@@ -3274,20 +3884,31 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								*out
 									<< setw(5)	<< k
 									<< setw(5)	<< i
-									<< setw(20)	<< *mu_D_itr
-									<< setw(20)	<< *p_mu_D_itr
+									<< setw(dbl_w)	<< *mu_D_itr
+									<< setw(dbl_w)	<< *p_mu_D_itr
 									<< setw(20)	<< bnd_str(bnd);
 							}
 							value_type t = inf;
+							// Lookout for degeneracy.
 							bool j_is_degen = false;
-							if( (bnd == LOWER && *mu_D_itr > 0.0) || (bnd == UPPER && *mu_D_itr < 0.0) ) {
-								if( (int)output_level >= (int)OUTPUT_BASIC_INFO && !warned_degeneracy ) {
-									*out
-										<< "\nWarning, possible degeneracy and numerical instability detected.\n";
-									warned_degeneracy = true;
-								}
-								assert(0);	// ToDo: Finish this!
+							value_type viol;
+							const bool dual_feas_status
+								= correct_dual_infeas(
+									i,bnd,t_P,1.0,dual_infeas_tol(),DEGENERATE_MULT
+									,out,output_level,true,"mu_D_hat(k)",&(*mu_D_itr),&viol
+									,"p_mu_D_hat(k)",&(*p_mu_D_itr) );
+							if( dual_feas_status < 0 ) {
+								// Turn on iterative refinement and go back
+								throw std::logic_error(
+									error_msg(__FILE__,__LINE__,"QPSchur::qp_algo(...): Error, "
+											  "iterative refinement not implemented here yet!"));
+								assert(0);
 							}
+							else if( dual_feas_status == 0 ) {
+								j_is_degen = true;
+							}
+							// If we get here either the dual variable was feasible or it
+							// was near degenerate and was corrected!
 							const value_type feas_viol = beta*(*p_mu_D_itr);
 							if( bnd == LOWER && feas_viol <= 0.0 )
 								;	// dual feasible for all t > 0
@@ -3307,13 +3928,12 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							// Print rest of row for ... t, t_D, jd
 							if( (int)output_level >= (int)OUTPUT_ACT_SET ) {
 								*out
-									<< setw(20)	<< t
-									<< setw(20)	<< t_D
+									<< setw(dbl_w)	<< t
+									<< setw(dbl_w)	<< t_D
 									<< setw(5)	<< jd	<< endl;
 							}
 						}
 					}
-					if(out) *out << std::setprecision(prec_saved);
 				}
 				// Print t_D, jd
 				if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
@@ -3355,7 +3975,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					*out
 						<< setw(6)	<< jd                   // index
 						<< setw(10)	<< bnd_str(bnd_jd)      // bound
-						<< setw(20)	<< max_feas_viol;       // violation
+						<< setw(dbl_w)	<< max_feas_viol;       // violation
 				}
 			}
 			case TAKE_STEP: {
@@ -3364,42 +3984,29 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						<< "\n*** TAKE_STEP\n";
 				}
 				if( t_P >= huge_primal_step() && t_D >= huge_dual_step() ) {
-					if( 	act_set->all_dof_used_up()
-						&&	::fabs( con_ja_val - b_a )
-								/ std::_MAX(::fabs(con_ja_val),1.0) < loose_feas_tol_	)
-					{
-						if( act_set->qp().constraints().pick_violated_policy()
-							== QP::Constraints::MOST_VIOLATED )
-						{
-							// This is the most violated constraint so  perform a step of
-							// iterative refinement and quit.
-							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
-								*out
-									<< "\nWith all the dof used up, the inequality constriant a("
-									<< ja
-									<< ")' * x is the most violated "
-									<< "but the violation = " << con_ja_val - b_a
-									<< " is smaller than loose_feas_tol = " << loose_feas_tol_
-									<< " but larger than feas_tol = " << feas_tol_
-									<< " and the iteration failed so just assume "
-									<< "this is a degenerate constraint and we are done.\n";
-							}
-							return OPTIMAL_SOLUTION;
-						}
-						else {
-							act_set->qp().constraints().pick_violated_policy(
-								QP::Constraints::MOST_VIOLATED );
-							continue;	// Go back and pick the most violated constraint
-						}
-					}
-					// This is an infeasible QP
 					if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 						*out
-							<< "QPSchur::qp_algo(...) : "
-							<< "Error, QP is infeasible, inconsistent constraint "
-							<< ja << " detected";
+							<< "Error, QP is infeasible, inconsistent constraint a("<<ja<<") detected\n";
 					}
-					return INFEASIBLE_CONSTRAINTS;
+					if( using_iter_refinement ) {
+						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+							*out
+								<< "We are already using iterative refinement so the QP algorithm is terminated!\n";
+						}
+						return INFEASIBLE_CONSTRAINTS;
+					}
+					else {
+						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+							*out
+								<< "We are not using iterative refinement yet so turn it on and recompute the steps ... \n";
+						}
+						summary_lines_counter = 0;
+						last_jd = 0;  // erase this memory!
+						last_ja = 0;  // ..
+						using_iter_refinement = true;
+						next_step = COMPUTE_SEARCH_DIRECTION;
+						continue;
+					}
 				}
 				else if( t_P > t_D ) {
 					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
@@ -3423,18 +4030,36 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								<< " - " << b_a << ") = " << (con_ja_val - b_a) << "\n"
 								<< "we are adding to the active set and the constraint constriant\n"
 								<< "a(" << jd << ") we are dropping were just dropped and added respectively!\n"
-								<< "The algorithm is cycling!\n"
-								<< "This is an indication of instability in the calculations.\n"
-								<< "The QP algorithm is terminated!\n";
+								<< "The algorithm is cycling!\n";
 						}
-						return SUBOPTIMAL_POINT;
+						if( using_iter_refinement ) {
+							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+								*out
+									<< "We are already using iterative refinement so the QP algorithm is terminated!\n";
+							}
+							return SUBOPTIMAL_POINT;
+						}
+						else {
+							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+								*out
+									<< "We are not using iterative refinement yet so turn it on and recompute the steps ... \n";
+							}
+							summary_lines_counter = 0;
+							last_jd = 0;  // erase this memory!
+							last_ja = 0;  // ..
+							using_iter_refinement = true;
+							next_step = COMPUTE_SEARCH_DIRECTION;
+							continue;
+						}
 					}
 					// Update the augmented KKT system
 					if( assume_lin_dep_ja ) {
-						act_set->drop_add_constraints( jd, ja, bnd_ja, true );
+						if(act_set->drop_add_constraints( jd, ja, bnd_ja, true, out, output_level ))
+							summary_lines_counter = 0;
 					}
 					else {
-						act_set->drop_constraint( jd );
+						if(act_set->drop_constraint( jd, out, output_level, true, true ))
+							summary_lines_counter = 0;
 					}
 					// z_hat = z_hat + beta * t_D * p_z_hat
 					if(act_set->q_hat())
@@ -3494,7 +4119,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						*v 					= v_plus;
 					}
 					else {
-						act_set->add_constraint( ja, bnd_ja, true, true );
+						if(act_set->add_constraint( ja, bnd_ja, true, out, output_level, true, true ))
+							summary_lines_counter = 0;
 						// z_hat = z_hat + beta * t_P * p_z_hat
 						if(act_set->q_hat())
 							Vp_StV( &act_set->z_hat(), beta * t_P, act_set->p_z_hat() );
@@ -3556,7 +4182,6 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 				<< excpt.what()
 				<< "\n*** Rethrowing the exception ...\n";
 		}
-		if(out) *out << std::setprecision(prec_saved);
 		throw;
 	}
 	catch(...) {
@@ -3564,11 +4189,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 			*out
 				<< "\n\n*** Caught an unknown exception.  Rethrowing the exception ...\n";
 		}
-		if(out) *out << std::setprecision(prec_saved);
 		throw;
 	}
-
-	if(out) *out << std::setprecision(prec_saved);
 
 	// If you get here then the maximum number of QP iterations has been exceeded
 	return MAX_ITER_EXCEEDED;
@@ -3581,11 +4203,10 @@ void QPSchur::set_x( const ActiveSet& act_set, const VectorSlice& v, VectorSlice
 	using LinAlgOpPack::Vp_MtV;
 	
 	// x = Q_R * v(1:n_R) + Q_X * b_X + P_XF_hat * z_hat
-	if( act_set.qp().n_R() )
-		V_MtV( x, act_set.qp().Q_R(), no_trans, v(1,act_set.qp().n_R()) );
+	V_MtV( x, act_set.qp().Q_R(), no_trans, v(1,act_set.qp().n_R()) );
 	if( act_set.qp().n() > act_set.qp().n_R() )
 		Vp_MtV( x, act_set.qp().Q_X(), no_trans, act_set.qp().b_X() );
-	if( act_set.q_hat() )
+	if( act_set.q_F_hat() )
 		Vp_MtV( x, act_set.P_XF_hat(), no_trans, act_set.z_hat() );
 }
 
@@ -3623,6 +4244,9 @@ void QPSchur::set_multipliers( const ActiveSet& act_set, const VectorSlice& v
 		Vp_MtV( mu, act_set.Q_XD_hat(), no_trans, act_set.mu_D_hat() );
 	// Add multipliers for initially fixed variables fixed to the other bounds.
 	if( act_set.q_C_hat() ) {
+		throw std::logic_error(
+			error_msg(__FILE__,__LINE__,"QPSchur::set_multipliers(...) : Error, "
+					  "q_C_hat != 0, now supported yet!"));  
 		assert(0);	// ToDo: Implement this!
 	}
 
@@ -3638,6 +4262,317 @@ void QPSchur::set_multipliers( const ActiveSet& act_set, const VectorSlice& v
 		V_MtV( lambda_breve
 			, act_set.P_plus_hat().create_submatrix(Range1D(n+1,n+m_breve),GPMSTP::BY_ROW)
 			, no_trans, act_set.z_hat() );
+}
+
+QPSchur::EIterRefineReturn
+QPSchur::iter_refine(
+	const ActiveSet      &act_set
+	,std::ostream        *out
+	,EOutputLevel        output_level
+	,const value_type    ao
+	,const VectorSlice   *bo
+	,const value_type    aa
+	,const VectorSlice   *ba
+	,VectorSlice         *v
+	,VectorSlice         *z
+	,size_type           *iter_refine_num_resid
+	,size_type           *iter_refine_num_solves
+	)
+{
+	using std::endl;
+	using std::setw;
+	using std::left;
+	using std::right;
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
+	using LinAlgPack::norm_inf;
+	using SparseLinAlgPack::Vp_StMtV;
+	using SparseLinAlgPack::V_InvMtV;
+	using LinAlgOpPack::Vp_V;
+	namespace wsp = WorkspacePack;
+	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+
+	typedef LinAlgPack::value_type           extra_value_type;
+//	typedef LinAlgPack::extended_value_type  extra_value_type;
+//	typedef doubledouble                     extra_value_type;
+
+
+	const value_type small_num = std::numeric_limits<value_type>::min();
+
+	const int int_w = 8;
+	const char int_ul[] = "------"; 
+	const int dbl_w = ( out ? out->precision()+8: 20 );
+	const char dbl_ul[] = "------------------";
+
+	const QPSchurPack::QP
+		&qp    = act_set.qp();
+	const MatrixSymWithOpFactorized
+		&Ko    = qp.Ko(),
+		&S_hat = act_set.S_hat();
+	const MatrixWithOp
+		&U_hat = act_set.U_hat();
+	const LinAlgPack::size_type
+		n          = qp.n(),
+		n_R        = qp.n_R(),
+		m          = qp.m(),
+		q_hat      = act_set.q_hat();
+	const VectorSlice
+		fo    = qp.fo(),
+		d_hat = (q_hat ? act_set.d_hat() : VectorSlice());
+
+	wsp::Workspace<extra_value_type>
+		ext_ro_ws(wss,n_R+m),
+		ext_ra_ws(wss,q_hat);
+	LinAlgPack::VectorSliceTmpl<extra_value_type>
+		ext_ro(&ext_ro_ws[0],ext_ro_ws.size()),
+		ext_ra(&ext_ra_ws[0],ext_ra_ws.size());
+	wsp::Workspace<value_type>
+		ro_ws(wss,n_R+m),
+		ra_ws(wss,q_hat),
+		t1_ws(wss,n_R+m),
+		del_v_ws(wss,n_R+m),
+		del_z_ws(wss,q_hat),
+		v_itr_ws(wss,n_R+m),
+		z_itr_ws(wss,q_hat);
+	VectorSlice
+		ro(&ro_ws[0],ro_ws.size()),
+		ra(&ra_ws[0],ra_ws.size()),
+		t1(&t1_ws[0],t1_ws.size()),
+		del_v(&del_v_ws[0],del_v_ws.size()),
+		del_z(&del_z_ws[0],del_z_ws.size()),
+		v_itr(&v_itr_ws[0],v_itr_ws.size()),
+		z_itr(&z_itr_ws[0],z_itr_ws.size());
+	
+	// Accumulate into temporary variables
+	v_itr = *v;
+	if(q_hat)
+		z_itr = *z;
+
+	// Print summary header
+	if( out && (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
+		*out
+			<< "\nBeginning iterative refinement ..."
+			<< "\niter_refine_opt_tol = " << iter_refine_opt_tol()
+			<< ", iter_refine_feas_tol = " << iter_refine_feas_tol()
+			<< "\niter_refine_min_iter = " << iter_refine_min_iter()
+			<< ", iter_refine_max_iter = " << iter_refine_max_iter() << "\n\n";
+		//
+		*out
+			<< right << setw(int_w) << "ir_itr"
+			<< right << setw(dbl_w) << "roR_scaling"
+			<< right << setw(dbl_w) << "||roR||s"
+			<< left  << setw(1)     << " ";
+		if(m) {
+			*out
+				<< right << setw(dbl_w) << "rom_scaling"
+				<< right << setw(dbl_w) << "||rom||s"
+				<< left  << setw(1)     << " ";
+		}
+		if(q_hat) {
+			*out
+				<< right << setw(dbl_w) << "ra_scaling"
+				<< right << setw(dbl_w) << "||ra||s"
+				<< left  << setw(1)     << " ";
+		}
+		*out
+			<< right << setw(dbl_w) << "||del_v||/||v||inf"
+			<< right << setw(dbl_w) << "||del_z||/||z||inf"
+			<< endl;
+		//
+		*out
+			<< right << setw(int_w) << int_ul
+			<< right << setw(dbl_w) << dbl_ul
+			<< right << setw(dbl_w) << dbl_ul
+			<< left  << setw(1)     << " ";
+		if(m) {
+			*out
+			<< right << setw(dbl_w) << dbl_ul
+			<< right << setw(dbl_w) << dbl_ul
+			<< left  << setw(1)     << " ";
+		}
+		if(q_hat) {
+			*out
+			<< right << setw(dbl_w) << dbl_ul
+			<< right << setw(dbl_w) << dbl_ul
+			<< left  << setw(1)     << " ";
+		}
+		*out
+			<< right << setw(dbl_w) << dbl_ul
+			<< right << setw(dbl_w) << dbl_ul
+			<< endl;
+	}
+	//
+	// Perform iterative refinement iterations
+	//
+	EIterRefineReturn return_status = ITER_REFINE_NOT_PERFORMED;
+	value_type
+		roR_nrm_o,   rom_nrm_o,   ra_nrm_o,
+		roR_nrm,     rom_nrm,     ra_nrm;
+	for( size_type iter_refine_k = 0;
+		 iter_refine_k < iter_refine_max_iter() && return_status != ITER_REFINE_CONVERGED;
+		 ++iter_refine_k)
+	{
+		//
+		// Compute the residual (in extended precision?)
+		//
+		// [ ro ] = [   Ko     U_hat ] [ v ] + [ ao*bo ]
+		// [ ra ]   [ U_hat'   V_hat ] [ z ]   [ aa*ba ]
+		//
+		value_type
+			roR_scaling = 0.0,
+			rom_scaling = 0.0,
+			ra_scaling  = 0.0;
+		++(*iter_refine_num_resid);
+		calc_resid(
+			act_set
+			, v_itr, z_itr
+			, ao
+			, bo
+			, &ext_ro
+			, &roR_scaling
+			, m ? &rom_scaling : NULL
+			, aa
+			, ba
+			, q_hat ? &ext_ra : NULL
+			, q_hat ? &ra_scaling : NULL
+			);
+		std::copy(ext_ro.begin(),ext_ro.end(),ro.begin());  // Convert back to standard precision
+		std::copy(ext_ra.begin(),ext_ra.end(),ra.begin());
+		//
+		// Calcuate convergence criteria
+		//
+		roR_nrm  = norm_inf(ro(1,n_R));
+		rom_nrm  = (m ? norm_inf(ro(n_R+1,n_R+m)) : 0.0);
+		ra_nrm   = (q_hat ? norm_inf(ra) : 0.0);
+		if( iter_refine_k == 0 ) {
+			roR_nrm_o = roR_nrm;
+			rom_nrm_o = rom_nrm;
+			ra_nrm_o  = rom_nrm;
+		}
+		const bool
+			is_roR_conv = roR_nrm / (1.0 + roR_scaling) < iter_refine_opt_tol(),
+			is_rom_conv = (m ? rom_nrm / (1.0 + rom_scaling) < iter_refine_feas_tol() : true ),
+			is_ra_conv  = (q_hat ?  ra_nrm / (1.0 + ra_scaling) < iter_refine_feas_tol() : true ),
+			is_conv     = is_roR_conv && is_rom_conv && is_ra_conv;
+		//
+		// Print beginning of summary line for residuals
+		//
+		if( out && (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
+			*out
+				<< right << setw(int_w) << iter_refine_k
+				<< right << setw(dbl_w) << roR_scaling
+				<< right << setw(dbl_w) << (roR_nrm / (1.0 + roR_scaling))
+				<< left  << setw(1)     << (is_roR_conv ? "*" : " ");
+			if(m) {
+				*out
+					<< right << setw(dbl_w) << rom_scaling
+					<< right << setw(dbl_w) << (rom_nrm /(1.0 + rom_scaling))
+					<< left  << setw(1)     << (is_rom_conv ? "*" : " ");
+			}
+			if(q_hat) {
+				*out
+					<< right << setw(dbl_w) << ra_scaling
+					<< right << setw(dbl_w) << (ra_nrm /(1.0 + ra_scaling))
+					<< left  << setw(1)     << (is_ra_conv ? "*" : " ");
+			}
+		}
+		//
+		// Check for convergence
+		//
+		if( iter_refine_k + 1 < iter_refine_min_iter() ) {
+			// Keep on going even if we have converged to desired tolerances!
+		}
+		else if( is_conv ) {
+			if( out && (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
+				*out
+					<< right << setw(dbl_w) << "-"
+					<< right << setw(dbl_w) << "-"
+					<< endl;
+			}
+			if( iter_refine_k == 0 )
+				return_status = ITER_REFINE_NOT_NEEDED;
+			else
+				return_status = ITER_REFINE_CONVERGED;
+			break;
+		}
+		//
+		// Solve for the steps
+		//
+		// [   Ko     U_hat ] [ del_v ] = [ ro ]
+		// [ U_hat'   V_hat ] [ del_z ]   [ ra ]
+		//
+		++(*iter_refine_num_solves);
+		if( q_hat ) {
+			// del_v = inv(S_hat)*(ra - U_hat'*inv(Ko)*ro)
+			V_InvMtV( &t1, Ko, no_trans, ro );
+			calc_z( act_set.S_hat(), ra, act_set.U_hat(), &t1, &del_z );
+		}
+		calc_v( Ko, &ro, U_hat, del_z, &del_v );
+		//
+		// Compute steps:
+		//
+		// v += -del_v
+		// z += -del_z
+		//
+		Vp_StV( &v_itr, -1.0, del_v );
+		if( q_hat )
+			Vp_StV( &z_itr, -1.0, del_z );
+		//
+		// Print rest of summary line for steps
+		//
+		if( out && (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
+			*out
+				<< right << setw(dbl_w) << norm_inf(del_v) / (norm_inf(v_itr) + small_num)
+				<< right << setw(dbl_w) << norm_inf(del_z) / (norm_inf(z_itr) + small_num)
+				<< endl;
+		}
+		// Make sure we have made progress
+		if( roR_nrm_o < roR_nrm && rom_nrm_o < rom_nrm && ra_nrm_o < rom_nrm ) {
+			return_status = ITER_REFINE_NOT_IMPROVED;
+			break; // No progress was make in converging the equations!
+		}
+	}
+	if( iter_refine_max_iter() == 0 ) {
+		if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
+			*out
+				<< "\nWarning, iter_refine_max_iter == 0.  Iterative refinement was not performed."
+				<< "\nLeaving the original solution intact ...\n";
+		}
+		return_status = ITER_REFINE_NOT_PERFORMED;
+	}
+	else {
+		if( iter_refine_max_iter() == 1 ) {
+			if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
+				*out
+					<< "\nWarning, iter_refine_max_iter == 1.  Only one step of iterative refinement"
+					<< "was performed and the step is taken which out checking the residual ...\n";
+			}
+			return_status = ITER_REFINE_NOT_PERFORMED;
+		}
+		if( roR_nrm_o < roR_nrm && rom_nrm_o < rom_nrm && ra_nrm_o < rom_nrm ) {
+			if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
+				*out
+					<< "\nNo progress was made in reducing the residuals."
+					<< "\nLeaving the original solution intact ...\n";
+			}
+			return_status = ITER_REFINE_IMPROVED;
+		}
+		else {
+			// The residuals were at least not increased so let's take the new solution
+			*v = v_itr;
+			if(q_hat)
+				*z = z_itr;
+			if( return_status != ITER_REFINE_CONVERGED && return_status != ITER_REFINE_NOT_NEEDED ) {
+				if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
+					*out
+						<< "\nThe residuals were not converged but they where not increased either."
+						<< "\nTake the new point anyway ...\n";
+				}
+				return_status = ITER_REFINE_IMPROVED;
+			}
+		}
+	}
+	return return_status;
 }
 
 // private static member functions for QPSchur
@@ -3656,15 +4591,11 @@ void QPSchur::dump_act_set_quantities(
 	const QPSchurPack::Constraints
 		&constraints = qp.constraints();
 
-	const int int_w = 8;
-	const char int_ul[] = "----------"; 
-	const int dbl_prec = 6;
-	const int dbl_w = 20;
+	const int  int_w = 10;
+	const char int_ul[] = "--------"; 
+	const int  dbl_w = out.precision()+8;
 	const char dbl_ul[] = "------------------";
 
-	const int prec_saved = out.precision();
-
-	try {
     out << "\n*** Dumping the current active set ***\n"
 		<< "\nDimensions of the current active set:\n"
 		<< "\nn           = " << right << setw(int_w) << qp.n()					<< " (Number of unknowns)"
@@ -3680,7 +4611,6 @@ void QPSchur::dump_act_set_quantities(
 
 	// Print table of quantities in augmented KKT system
 	out	<< "\nQuantities for augmentations to the initial KKT system:\n";
-	out << std::setprecision(dbl_prec);
 	const size_type q_hat = act_set.q_hat();
 	out	<< endl
 		<< right << setw(int_w) << "s"
@@ -3709,7 +4639,6 @@ void QPSchur::dump_act_set_quantities(
 			<< right << setw(dbl_w) << act_set.p_z_hat()(s)
 			<< endl;
 	}}
-	out << std::setprecision(prec_saved);
 	
 	// Print P_XF_hat, P_plus_hat, U_hat and S_hat
 	out	<< "\nP_XF_hat =\n" 	<< act_set.P_XF_hat();
@@ -3720,7 +4649,6 @@ void QPSchur::dump_act_set_quantities(
 	
 	// Print table of multipliers for q_D_hat
 	out	<< "\nQuantities for initially fixed variables which are still fixed at their initial bound:\n";
-	out << std::setprecision(dbl_prec);
 	const size_type q_D_hat = act_set.q_D_hat();
 	out	<< endl
 		<< right << setw(int_w) << "k"
@@ -3740,20 +4668,12 @@ void QPSchur::dump_act_set_quantities(
 			<< right << setw(dbl_w) << act_set.p_mu_D_hat()(k)
 			<< endl;
 	}}
-	out << std::setprecision(prec_saved);
 	
 	// Print Q_XD_hat
 	out	<< "\nQ_XD_hat =\n" << act_set.Q_XD_hat();
 
 	out << "\n*** End dump of current active set ***\n";
 
-	}	// end try
-	catch(...) {
-		out << std::setprecision(prec_saved);
-		throw;
-	}
-
-	out << std::setprecision(prec_saved);
 }
 
 // QPSchurPack::QP
@@ -3786,6 +4706,9 @@ void QPSchurPack::QP::dump_qp( std::ostream& out )
 	if(m) {
 		out	<< "\nA =\n" << A();
 		// Le'ts recover c from fo(n_R+1:n_R+m) = c - A' * Q_X * b_x
+		throw std::logic_error(
+			error_msg(__FILE__,__LINE__,"QPSchurPack::QP::dump_qp(...) : Error, "
+					  "m != not supported yet!"));  
 		assert(0);	// ToDo: Implement this!
 	}
 	out	<< "\nA_bar =\n" << constraints.A_bar();

@@ -641,6 +641,7 @@ void MatrixSymPosDefLBFGS::initialize(
 	,size_type         max_size
 	,bool              force_factorization
 	,Inertia           inertia
+	,PivotTolerances   pivot_tols
 	)
 {
 	throw std::runtime_error(
@@ -668,6 +669,7 @@ void MatrixSymPosDefLBFGS::augment_update(
 	,value_type        alpha
 	,bool              force_refactorization
 	,EEigenValType     add_eigen_val
+	,PivotTolerances   pivot_tols
 	)
 {
 	assert_initialized();
@@ -720,6 +722,7 @@ void MatrixSymPosDefLBFGS::delete_update(
 	size_type          jd
 	,bool              force_refactorization
 	,EEigenValType     drop_eigen_val
+	,PivotTolerances   pivot_tols
 	)
 {
 	assert_initialized();

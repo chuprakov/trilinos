@@ -33,13 +33,13 @@ class MatrixSymAddDelBunchKaufman
 {
 public:
 
-	/// Initializes with 0x0 and pivot_tol == 0.0.
+	/// Initializes with 0x0 and pivot_tols == (0.0,0.0,0.0).
 	MatrixSymAddDelBunchKaufman();
 
 	/// Pivot tolerance used durring the cholesky factorization (it may be zero).
-	void pivot_tol( value_type pivot_tol );
+	void pivot_tols( PivotTolerances pivot_tols );
 	///
-	value_type pivot_tol() const;
+	PivotTolerances	pivot_tols() const;
 
 	// /////////////////////////////////////////////////////////////
 	// Overridden from MatrixSymAddDelUpdateableWithOpFactorized
@@ -65,6 +65,7 @@ public:
 		,size_type         max_size
 		,bool              force_factorization
 		,Inertia           inertia
+		,PivotTolerances   pivot_tols
 		);
 	///
 	size_type max_size() const;
@@ -78,12 +79,14 @@ public:
 		,value_type        alpha
 		,bool              force_refactorization
 		,EEigenValType     add_eigen_val
+		,PivotTolerances   pivot_tols
 		);
 	///
 	void delete_update(
 		size_type          jd
 		,bool              force_refactorization
 		,EEigenValType     drop_eigen_val
+		,PivotTolerances   pivot_tols
 		);
 
 	// ///////////////////////////////////////////////////////

@@ -236,6 +236,7 @@ public:
 		,size_type         max_size
 		,bool              force_factorization
 		,Inertia           inertia
+		,PivotTolerances   pivot_tols
 		);
 	///
 	size_type max_size() const;
@@ -257,12 +258,14 @@ public:
 		,value_type        alpha
 		,bool              force_refactorization
 		,EEigenValType     add_eigen_val
+		,PivotTolerances   pivot_tols
 		);
 	/// Should always succeed unless user gives a wrong value for drop_eigen_val.
 	void delete_update(
 		size_type          jd
 		,bool              force_refactorization
 		,EEigenValType     drop_eigen_val
+		,PivotTolerances   pivot_tols
 		);
 	
 	//@}
