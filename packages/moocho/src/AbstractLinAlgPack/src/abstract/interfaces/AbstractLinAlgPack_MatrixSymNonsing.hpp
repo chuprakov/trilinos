@@ -32,17 +32,23 @@ public:
 	///
 	enum EMatrixDummyArg { DUMMY_ARG };
 
+	/** @name Level-3 */
+	//@{
+
 	///
-	/** sym_gms_lhs = alpha * op(mwo) * inv(M) * op(mwo)'
-	  *
-	  * The default implementation is based on the operation M_StInvMtM(...)
-	  * assuming that this #M# is a symmetric matrix.  For an efficient implementation
-	  * (for this = L*L' for instance) the subclass may want to override this function.
-	  */
+	/** symwo_lhs = alpha * op(mwo) * inv(M) * op(mwo)'.
+	 *
+	 * The default implementation is based on the operation M_StInvMtM(...)
+	 * assuming that this #M# is a symmetric matrix.  For an efficient implementation
+	 * (for this = L*L' for instance) the subclass may want to override this function.
+	 */
 	virtual void M_StMtInvMtM(
-		MatrixSymWithOp* sym_gms_lhs, value_type alpha
-		, const MatrixWithOp& mwo, BLAS_Cpp::Transp mwo_trans, EMatrixDummyArg
+		MatrixSymWithOp* symwo_lhs, value_type alpha
+		,const MatrixWithOp& mwo, BLAS_Cpp::Transp mwo_trans
+		,EMatrixDummyArg
 		) const;
+
+	//@}
 
 };	// end class MatrixSymNonsingular
 
