@@ -54,6 +54,23 @@ public:
 	typedef ReferenceCountingPack::ref_count_ptr<MultiVectorMutable>   multi_vec_mut_ptr_t;
 
 	///
+	/** Compare the compatibility of two vector spaces.
+	 *
+	 * If this function returns true, then vectors created from
+	 * either of the vector spaces will be compatible and can
+	 * be combined in vector operations.
+	 *
+	 * Invariants:<ul>
+	 * <li> [<tt>this->is_compatible(vec_spc) == true</tt>] <tt>vec_spc.is_compatible(*this) == true</tt>
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> [<tt>this->dim() != vec_spc.dim()</tt>] <tt>return == false</tt>
+	 * </ul>
+	 */
+	virtual bool is_compatible(const VectorSpace& vec_spc ) const = 0;
+
+	///
 	/** Return the dimmension of the vector space.
 	 */
 	virtual index_type dim() const = 0;
@@ -161,6 +178,10 @@ public:
 	/** @name Overrriden from VectorSpaceBase */
 	//@{
 	
+	///
+	/** This implementation just cals <tt>is_compatible(vec_spc)</tt>.
+	 */
+	bool is_compatible(const VectorSpaceBase& vec_spc ) const;
 	///
 	/** This implementaion just calls <tt>create_member()</tt> and then converts
 	 * the smart pointer.

@@ -74,7 +74,7 @@ public:
 	//@{
 
 	///
-	bool is_compatible(const VectorSpaceBase& ) const;
+	bool is_compatible(const VectorSpace& ) const;
 
 	//@}
 

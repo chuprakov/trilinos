@@ -58,7 +58,7 @@ void VectorSpaceSubSpace::validate_range(const Range1D& rng) const
 // Overridden from VectorSpaceBase
 
 
-bool VectorSpaceSubSpace::is_compatible(const VectorSpaceBase& another_space) const
+bool VectorSpaceSubSpace::is_compatible(const VectorSpace& another_space) const
 {
 	const VectorSpaceSubSpace
 		*a_space = dynamic_cast<const VectorSpaceSubSpace*>(&another_space);
