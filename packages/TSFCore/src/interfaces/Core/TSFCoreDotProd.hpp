@@ -41,6 +41,9 @@ template<class Scalar>
 void DotProd<Scalar>::scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const
 {
 	dot(X,Y,scalar_prods);
+	const Index m = X.domain()->dim();
+	const Scalar one_over_n = X.range()->dim();
+	for( Index j = 0; j < m; ++j ) scalar_prods[j] *= one_over_n;
 }
 
 } // end namespace TSFCore

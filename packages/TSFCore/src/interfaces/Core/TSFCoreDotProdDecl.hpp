@@ -37,7 +37,7 @@
 namespace TSFCore {
 
 ///
-/** Implementation of a scalar product using the dot product.
+/** Implementation of a scalar product using the dot product divided by the size of the space.
  */
 template<class Scalar>
 class DotProd : public ScalarProd<Scalar> {
