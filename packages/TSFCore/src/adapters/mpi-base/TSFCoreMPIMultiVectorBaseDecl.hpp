@@ -32,8 +32,6 @@
 #ifndef TSFCORE_MPI_MULTI_VECTOR_BASE_DECL_HPP
 #define TSFCORE_MPI_MULTI_VECTOR_BASE_DECL_HPP
 
-#include <vector>
-
 #include "TSFCoreMultiVector.hpp"
 #include "Teuchos_BLAS.hpp"
 

@@ -32,8 +32,6 @@
 #ifndef TSFCORE_MPI_VECTOR_BASE_HPP
 #define TSFCORE_MPI_VECTOR_BASE_HPP
 
-#include <stdexcept>
-
 #include "TSFCoreMPIVectorBaseDecl.hpp"
 #include "RTOp_parallel_helpers.h"
 #include "RTOpPack_MPI_apply_op.hpp"

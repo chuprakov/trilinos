@@ -32,8 +32,6 @@
 #ifndef TSFCORE_SIMPLE_MPI_VECTOR_DECL_HPP
 #define TSFCORE_SIMPLE_MPI_VECTOR_DECL_HPP
 
-#include <vector>
-
 #include "TSFCoreMPIVectorBase.hpp"
 
 namespace TSFCore {

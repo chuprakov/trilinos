@@ -32,8 +32,6 @@
 #ifndef TSFCORE_NONLIN_NP_2D_SIM_HPP
 #define TSFCORE_NONLIN_NP_2D_SIM_HPP
 
-#include <assert.h>
-
 #include "TSFCoreNonlinNP2DSimDecl.hpp"
 #include "TSFCoreSerialVectorSpace.hpp"
 #include "TSFCoreMultiVector.hpp"

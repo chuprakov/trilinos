@@ -29,9 +29,6 @@
 // //////////////////////////////////////////////////////////////////////////////////////
 // TSFCoreNonlinNP4DOptDeclTestMain.cpp
 
-#include <iostream>
-#include <typeinfo>
-
 #include "TSFCoreNonlinNP4DOpt.hpp"
 #include "TSFCoreNonlinNonlinearProblemTester.hpp"
 #include "TSFCoreNonlinNonlinearProblemFirstOrderTester.hpp"

@@ -29,9 +29,6 @@
 // //////////////////////////////////////////////////////////////////////////////////////
 // TSFCoreNonlinNP2DSimDeclTestMain.cpp
 
-#include <iostream>
-#include <typeinfo>
-
 #include "TSFCoreNonlinNP2DSim.hpp"
 #include "TSFCoreNonlinNonlinearProblemTester.hpp"
 #include "TSFCoreNonlinNonlinearProblemFirstOrderTester.hpp"

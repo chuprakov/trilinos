@@ -32,8 +32,6 @@
 // Define this to use the optimized EpetraMultiVector implementation!
 #define TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR
 
-#include <assert.h>
-
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVectorSpaceFactory.hpp"
 #include "TSFCoreEpetraVector.hpp"

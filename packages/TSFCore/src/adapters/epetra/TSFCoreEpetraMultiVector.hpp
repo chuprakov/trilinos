@@ -32,8 +32,6 @@
 #ifndef TSFCORE_EPETRA_MULTI_VECTOR_HPP
 #define TSFCORE_EPETRA_MULTI_VECTOR_HPP
 
-#include <vector>
-
 #include "TSFCoreMPIMultiVectorBase.hpp"
 
 // Define this to use Epetra_MultiVector::Multiply(...) to implement apply(...)

@@ -32,8 +32,6 @@
 #ifndef TSFCORE_MPI_MULTI_VECTOR_BASE_HPP
 #define TSFCORE_MPI_MULTI_VECTOR_BASE_HPP
 
-#include <vector>
-
 #include "TSFCoreMPIMultiVectorBaseDecl.hpp"
 #include "TSFCoreMPIVectorSpaceBase.hpp"
 #include "TSFCoreExplicitMultiVectorView.hpp"
