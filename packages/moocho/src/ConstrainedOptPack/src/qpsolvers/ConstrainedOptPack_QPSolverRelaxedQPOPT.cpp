@@ -178,7 +178,7 @@ QPSolverRelaxedQPOPTSOL::EInform QPSolverRelaxedQPOPT::call_qp_solver(bool warm_
 	AX_.resize( NCLIN_ > 0 ? NCLIN_ : 1 );
 
 	QPOPT_CppDecl::qpopt(
-		N_, NCLIN_, LDA_, LDH_, &A_(1,1), &BL_(1), &BU_(1)
+		N_, NCLIN_, LDA_, LDH_, NCLIN_ ? &A_(1,1) : NULL, &BL_(1), &BU_(1)
 		, &CVEC_(1), H_
 		, FORTRAN_NAME_UL(QPHESS_SERVER_RELAX2,qphess_server_relax2)
 		, &ISTATE_[0], &X_(1), INFORM_, ITER_, OBJ_, &AX_(1)

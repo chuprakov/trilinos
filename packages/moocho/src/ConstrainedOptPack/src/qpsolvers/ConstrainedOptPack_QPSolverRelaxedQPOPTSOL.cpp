@@ -385,6 +385,9 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 		}
 		mu->assume_sorted(true);
 	}
+	else if(E) {
+		mu->resize( eL->size(), 0 );
+	}
 
 	// lambda
 	if( F ) {
