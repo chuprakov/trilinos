@@ -505,16 +505,16 @@ a function that performs several types of tasks:
 temaplate<class Scalar>
 void TSFCore::foo0( const VectorSpace<Scalar>& vecSpc, const LinearOp<Scalar>& M )
 {
-    TEST_FOR_EXCEPTION(!vecSpc.isCompatible(*M.domain()),std::logic_error,"Error!"); // Check compatibility
-    Teuchos::RefCountPtr<Vector<Scalar> > x = vecSpc.createMember();                // Create new vector x
-    Teuchos::RefCountPtr<Vector<Scalar> > y = M.range()->createMember();            // Create new vector y
-    assign(x.get(),1.0);                                                          // x = 1.0
-    M.apply(NOTRANS,*x,y.get());                                                  // y = M*x
-    M.apply(TRANS,*y,x.get(),0.5,0.1);                                            // x = 0.5*M*y + 0.1*x
+  TEST_FOR_EXCEPTION(!vecSpc.isCompatible(*M.domain()),std::logic_error,"Error!"); // Check compatibility
+  Teuchos::RefCountPtr<Vector<Scalar> > x = vecSpc.createMember();                 // Create new vector x
+  Teuchos::RefCountPtr<Vector<Scalar> > y = M.range()->createMember();             // Create new vector y
+  assign(x.get(),1.0);                                                             // x = 1.0
+  M.apply(NOTRANS,*x,y.get());                                                     // y = M*x
+  M.apply(TRANS,*y,x.get(),0.5,0.1);                                               // x = 0.5*M*y + 0.1*x
 }
 \end{verbatim}}
 
-\noindent The above code snippet shows how memory management in TSFCore is
+{}\noindent{}The above code snippet shows how memory management in TSFCore is
 handled -- through the templated smart reference-counted pointer class
 \texttt{Teuchos\-::RefCountPtr<>} (see Section
 \ref{tsfcore:sec:general_software_concepts}).  The vector objects pointed
@@ -522,7 +522,7 @@ to by the objects \texttt{x} and \texttt{y} are accessed in various
 ways in the last three lines.  For instance, in the statement
 
 {\scriptsize\begin{verbatim}
-    assign(x.get(),1.0);
+  assign(x.get(),1.0);
 \end{verbatim}}
 
 \noindent
@@ -534,10 +534,10 @@ implementation is shown in Section \ref{tsfcore:sec:vec_apply_op}.
 The next statement
 
 {\scriptsize\begin{verbatim}
-    M.apply(NOTRANS,*x,y.get());
+  M.apply(NOTRANS,*x,y.get());
 \end{verbatim}}
 
-\noindent shows the created vectors being passed into the \texttt{apply(\-...)}
+{}\noindent{}shows the created vectors being passed into the \texttt{apply(\-...)}
 method of a \texttt{\textit{LinearOp}} object.  The expression
 \texttt{*x} invokes the method
 \texttt{RefCountPtr<>\-::operator*()} which returns a reference
@@ -686,15 +686,15 @@ the prototype for the non-member function
 {\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::applyOp(
-    const RTOpPack::RTOpT<Scalar> &op
-    ,const size_t num_vecs, const Vector<Scalar>* vecs[]
-    ,const size_t num_targ_vecs , Vector<Scalar>* targ_vecs[]
-    ,RTOp_ReductTarget reduct_obj
-    ,const Index first_ele = 1, const Index sub_dim = 0, const Index global_offset = 0
-    );
+  const RTOpPack::RTOpT<Scalar> &op
+  ,const size_t num_vecs, const Vector<Scalar>* vecs[]
+  ,const size_t num_targ_vecs , Vector<Scalar>* targ_vecs[]
+  ,RTOpPack::ReductTarget *reduct_obj
+  ,const Index first_ele = 1, const Index sub_dim = 0, const Index global_offset = 0
+  );
 \end{verbatim}}
 
-\noindent and has nine arguments: the RTOp object that defines the
+{}\noindent{}and has nine arguments: the RTOp object that defines the
 reduction/transformation operation to be performed \texttt{op}; the
 non-mutable input vectors specified by \texttt{num\_vecs} and
 \texttt{vecs[]} (\texttt{num\_vecs==0} and \texttt{vecs==NULL}
@@ -702,9 +702,9 @@ allowed); the mutable input/output vectors specified by
 \texttt{num\_targ\_vecs} and \texttt{targ\-\_vecs[]}
 (\texttt{num\_targ\_vecs==0} and \texttt{targ\_vecs==NULL} allowed);
 the input/output opaque reduction target object \texttt{reduct\_obj}
-(must be set to the value \texttt{RTOp\_REDUCT\_OBJ\_NULL} if no
-reduction is defined); the range of elements defining the sub-vector
-to apply the operator to specified by \texttt{first\_ele} and
+(must be set to {}\texttt{NULL} if no reduction is defined); the range
+of elements defining the sub-vector to apply the operator to specified
+by \texttt{first\_ele} and
 \texttt{sub\_dim}; and the global offset \texttt{global\_offset} to
 use when applying coordinate-variant operators.
 
@@ -739,18 +739,17 @@ transformation operator in the following function.
 template<class Scalar>
 void TSFCore::assign( Vector<Scalar>* y, const Scalar& alpha )
 {
-    TEST_FOR_EXCEPTION(y==NULL,std::logic_error,"assign(...), Error!");           // Validate input
-    RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op;                        // Create the operator
-    Vector<Scalar>* targ_vecs[] = { y };                                       // Set up vector args
-    applyOp<Scalar>(assign_scalar_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL); // Invoke operator
+  TEST_FOR_EXCEPTION(y==NULL,std::logic_error,"assign(...), Error!");  // Validate input
+  RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op(alpha);           // Create the operator
+  Vector<Scalar>* targ_vecs[] = { y };                                 // Set up vector args
+  applyOp<Scalar>(assign_scalar_op,0,NULL,1,targ_vecs,NULL);           // Invoke operator
 }
 \end{verbatim}}
 
-\noindent In the above function, the operator \texttt{assign\_scalar\_op} of type
+{}\noindent{}In the above function, the operator \texttt{assign\_scalar\_op} of type
 \texttt{RTOpPack::RTOpAssignScalar} only performs a transformation which
-does not require a reduction object.  In these cases the special value
-of \texttt{RTOp\_REDUCT\_OBJ\_NULL} must be passed in for the
-opaque reduction object \texttt{reduct\_obj}.
+does not require a reduction object.  In these cases a {}\texttt{NULL}
+pointer is passed in for the reduction object \texttt{reduct\_obj}.
 
 If a reduction is being performed, the reduction object is initialized
 prior to a single call to \texttt{TSFCore::applyOp(\-...)} and then the
@@ -761,15 +760,16 @@ where the norm $||.||_2$ is computed
 template<class Scalar>
 Scalar TSFCore::norm_2( const Vector<Scalar>& v )
 {
-    RTOpPack::ROpNorm2<Scalar>        norm_2_op;                     // Create the RTOp operator object
-    RTOpPack::ReductTargetT<Scalar>   norm_2_targ(norm_2_op);        // Create (init) reduction object
-    const Vector<Scalar>* vecs[] = { &v };                           // Set up non-mutable vector args
-    applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj();       // Invoke the reduction operator
-    return norm_2_op(norm_2_targ);                                   // Extract reduction value
+  RTOpPackROpNorm2<Scalar> norm_2_op;                       // Create the RTOp operator object
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget>
+    norm_2_targ = norm_2_op.reduct_obj_create();            // Create (init) reduction object
+  const Vector<Scalar>* vecs[] = { &v };                    // Set up non-mutable vector args
+  applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,&*norm_2_targ);   // Invoke the reduction operator
+  return norm_2_op(*norm_2_targ);                           // Extract reduction value
 }
 \end{verbatim}}
 
-\noindent A great many implementations of \texttt{RTOp} operator subclasses are
+{}\noindent{}A great many implementations of \texttt{RTOp} operator subclasses are
 already available and wrapper functions to several of the more
 standard operations, including the above functions
 \texttt{assign( y, alpha )} and \texttt{norm\_2(v)},
@@ -788,40 +788,41 @@ in the following function.
 template<class Scalar>
 Scalar TSFCore::get_ele( const Vector<Scalar>& v, Index i )
 {
-    RTOpPack::ROpSum<Scalar>          sum_op;                 // Create RTOp operator object
-    RTOpPack::ReductTargetT<Scalar>   sum_targ(sum_op);       // Create (init) reduction object
-    const Vector<Scalar>* vecs[1] = { &v };                   // Set up non-mutable vector args
-    applyOp<Scalar>(sum_op,1,vecs,0,NULL,sum_targ.obj(),i,1); // Invoke the reduction operator
-    return sum_opt(sum_targ);                                 // Extract reduction value
+  RTOpPack::ROpSum<Scalar> sum_op;                      // Create RTOp operator object
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget>
+    sum_targ = sum_op.reduct_obj_create();              // Create (init) reduction object
+  const Vector<Scalar>* vecs[1] = { &v };               // Set up non-mutable vector args
+  applyOp<Scalar>(sum_op,1,vecs,0,NULL,&*sum_targ,i,1); // Invoke the reduction operator
+  return sum_opt(*sum_targ);                            // Extract reduction value
 }
 \end{verbatim}}
 
-\noindent In the above call to \texttt{TSFCore::applyOp(\-...)}, the argument
-\texttt{global\_offset} is left at its default value of \texttt{0},
-since this argument is ignored by the RTOp object \texttt{sum\_op}
-anyway (the sum operator is coordinate invariant).
+{}\noindent{}In the above call to \texttt{TSFCore::applyOp(\-...)},
+the argument {}\texttt{global\_offset} is left at its default value of
+\texttt{0}, since this argument is ignored by the RTOp object
+\texttt{sum\_op} anyway (the sum operator is coordinate invariant).
 
 Setting a vector element is performed in a similar manner using the
 same transformation RTOp operator subclass for assigning the elements
 of a vector that was used in the \texttt{assign(...)} function shown
-above.  The following function shows how setting a vector element
-is performed using this transformation operator.
+above.  The following function shows how setting a vector element is
+performed using this transformation operator.
 
 {\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::set_ele( Index i, Scalar alpha, Vector<Scalar>* v )
 {
-    TEST_FOR_EXCEPTION(v==NULL,std::logic_error,"set_ele(...), Error!");               // Validate input
-    RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op;                             // Create op object
-    Vector<Scalar>* targ_vecs[1] = { v };                                           // Set up vector args
-    applyOp<Scalar>(assign_scalar_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL,i,1);  // Invoke operator
+  TEST_FOR_EXCEPTION(v==NULL,std::logic_error,"set_ele(...), Error!"); // Validate input
+  RTOpPack::TOpAssignScalar<Scalar> assign_scalar_op(alpha);           // Create op object
+  Vector<Scalar>* targ_vecs[1] = { v };                                // Set up vector args
+  applyOp<Scalar>(assign_scalar_op,0,NULL,1,targ_vecs,NULL,i,1);       // Invoke operator
 }
 \end{verbatim}}
 
-\noindent Again, since the assignment operator is also coordinate invariant, the
-\texttt{assign\_scalar\_op} object ignores the \texttt{global\_offset}
-argument so \texttt{global\_offset} is left at its default value in
-the call to \texttt{TSFCore::applyOp(\-...)}.
+{}\noindent{}Again, since the assignment operator is also coordinate
+invariant, the {}\texttt{assign\_scalar\_op} object ignores the
+\texttt{global\_offset} argument so \texttt{global\_offset} is left at
+its default value in the call to \texttt{TSFCore::applyOp(\-...)}.
 
 For an example of the third use case (c), where a sub-view of an
 existing vector is treating as a vector in its own right, consider an
@@ -852,19 +853,20 @@ sub-vectors given the vector object \texttt{x}.
 template<class Scalar>
 void TSFCore::compute_norm_2( const Vector<Scalar>& x, Index ny, Scalar* nrm_2_y, Scalar* nrm_2_u )
 {
-    const Index  nx = x.space()->dim(), nu = nx - ny;                   // Get dimensions
-    RTOpPack::ROpNorm2<Scalar>        norm_2_op;                        // Create op object
-    RTOpPack::ReductTargetT<Scalar>   norm_2_targ(norm_2_op);           // Create (init) reduction object
-    const Vector<Scalar>* vecs[1] = { &x };                             // Set up non-mutable vector args
-    applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj(),1,ny);    // Invoke the operator for y
-    *nrm_2_y = norm_2_op(norm_2_targ);                                  // Extract the value of ||y||2
-    norm_2_targ.reinit()                                                // Reinitialize reduction object
-    applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj(),ny+1,ny+nu);// Invoke operator for u
-    *nrm_2_u = norm_2_op(norm_2_targ);                                  // Extract the value of ||u||2
+  const Index  nx = x.space()->dim(), nu = nx - ny;                 // Get dimensions
+  RTOpPack::ROpNorm2<Scalar> norm_2_op;                             // Create op object
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget>
+    norm_2_targ = norm_2_op.reduct_obj_create();                    // Create (init) reduction object
+  const Vector<Scalar>* vecs[1] = { &x };                           // Set up non-mutable vector args
+  applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,&*norm_2_targ,1,ny);      // Invoke the operator for y
+  *nrm_2_y = norm_2_op(*norm_2_targ);                               // Extract the value of ||y||2
+  norm_2_op.reduct_obj_reinit(&*norm_2_targ);                       // Reinitialize reduction object
+  applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,&*norm_2_targ,ny+1,ny+nu);// Invoke operator for u
+  *nrm_2_u = norm_2_op(*norm_2_targ);                               // Extract the value of ||u||2
 }
 \end{verbatim}}
 
-\noindent Finally, as an example of the fourth use case (d), where a new larger
+{}\noindent{}Finally, as an example of the fourth use case (d), where a new larger
 composite (i.e.~block) abstract vector is created out of a collection
 of other abstract vectors, we use the same optimization example as
 above, except this time the vector $x$ is actually represented as two
@@ -889,20 +891,21 @@ template<class Scalar>
 void TSFCore::compute_max_abs_ele( const Vector<Scalar>& y, const Vector<Scalar>& u
     ,Scalar* x_max, Index* x_i )
 {
-    const Index ny = y.space()->dim(), nu = u.space()->dim();           // Get dimensions
-    RTOpPack::ROpMaxAbsEle<Scalar>    max_abs_ele_op;                   // Create op object
-    RTOpPack::ReductTargetT<Scalar>   max_abs_ele_targ(max_abe_ele_op); // Create (init) reduct object
-    const Vector<Scalar>* vecs[1];                                      // Declare array
-    vecs[0] = &y;                                                       // Set pointer to y
-    applyOp<Scalar>(max_abs_ele_op,1,vecs,0,NULL,max_abs_ele_targ.obj(),1,0,0);// Reduce over y
-    vecs[0] = &u;                                                       // Set pointer to u
-    applyOp(max_abs_ele_op,1,vecs,0,NULL,max_abs_ele_targ.obj(),1,0,ny);// Combine with reduction over u
-    *x_max = max_abs_ele_op(max_abse_ele_targ).x_max();                 // Extract reduction values
-    *x_i   = max_abs_ele_op(max_abse_ele_targ).x_i();                   // ...
+  const Index ny = y.space()->dim(), nu = u.space()->dim();       // Get dimensions
+  RTOpPack::ROpMaxAbsEle<Scalar> max_abs_ele_op;                  // Create op object
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget>
+    max_abs_ele_targ = max_abs_ele_op.reduct_obj_create();        // Create (init) reduction object
+  const Vector<Scalar>* vecs[1];                                  // Declare array
+  vecs[0] = &y;                                                   // Set pointer to y
+  applyOp<Scalar>(max_abs_ele_op,1,vecs,0,NULL,&*max_abs_ele_targ,1,0,0);// Reduce over y
+  vecs[0] = &u;                                                   // Set pointer to u
+  applyOp(max_abs_ele_op,1,vecs,0,NULL,&*max_abs_ele_targ,1,0,ny);// Combine with reduction over u
+  *x_max = max_abs_ele_op(*max_abse_ele_targ).x_max();            // Extract reduction values
+  *x_i   = max_abs_ele_op(*max_abse_ele_targ).x_i();              // ...
 }
 \end{verbatim}}
 
-\noindent The above reduction operation is not coordinate invariant and
+{}\noindent{}The above reduction operation is not coordinate invariant and
 therefore the value of \texttt{global\_offset} is critical in the
 calls to \texttt{TSFCore\-::applyOp(\-...)}.
 
@@ -953,19 +956,19 @@ namespace TSFCore {
 teamplate<class Scalar>
 class Vector {
 public:
-    ...
-    virtual bool isInCore() const;
-    virtual void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
-    virtual void freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
-    virtual void getSubVector( const Range1D& rng, RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
-    virtual void commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
-    virtual void setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub_vec );
-    ...
+  ...
+  virtual bool isInCore() const;
+  virtual void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
+  virtual void freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
+  virtual void getSubVector( const Range1D& rng, RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
+  virtual void commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
+  virtual void setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub_vec );
+  ...
 };
 } // namespace TSFCore
 \end{verbatim}}
 
-\noindent All of these methods have reasonably efficient default implementations
+{}\noindent{}All of these methods have reasonably efficient default implementations
 based on fairly sophisticated RTOp subclasses and
 \texttt{\textit{Vector::applyOp(\-...)}}.  The default implementations of the
 \texttt{\textit{getSubVector(...)}} methods require dynamic memory allocation.
@@ -996,21 +999,21 @@ elements from a \texttt{\textit{Vector}} object into a raw C++ array.
 teamplate<class Scalar>
 void foo1( const Vector<Scalar>& x, Scalar v[] )
 {
-    RTOpPack::SubVectorT<Scalar> sub_vec;             // Create (int) subvector view object
-    x.getSubVector(Range1D(),&sub_vec);               // Initialize the view object
-    for( Index i = 0; i < sub_vec.subDim(); ++i )     // Loop through the explicit elements
-        v[i] = sub_vec(i+1);                          //     Extract values
-    x.freeSubVector(&sub_vec);                        // Free the view of the vector x
+  RTOpPack::SubVectorT<Scalar> sub_vec;           // Create (int) subvector view object
+  x.getSubVector(Range1D(),&sub_vec);             // Initialize the view object
+  for( Index i = 0; i < sub_vec.subDim(); ++i )   // Loop through the explicit elements
+    v[i] = sub_vec(i+1);                          //     Extract values
+  x.freeSubVector(&sub_vec);                      // Free the view of the vector x
 }
 \end{verbatim}}
 
-\noindent In the statement
+{}\noindent{}In the statement
 
 {\scriptsize\begin{verbatim}
-    x.getSubVector(Range1D(),&sub_vec);
+  x.getSubVector(Range1D(),&sub_vec);
 \end{verbatim}}
 
-\noindent the constructed \texttt{Range1D()} object represents the full range of
+{}\noindent{}the constructed \texttt{Range1D()} object represents the full range of
 vector elements (this is similar to the colon '\texttt{:}' syntax
 in Matlab).  Note that this method call may require dynamic memory
 allocation in order to create a strided view of the vector elements
@@ -1019,10 +1022,10 @@ data pointed to by \texttt{sub\_vec.values} may be dynamically
 allocated which is why it is necessary to call
 
 {\scriptsize\begin{verbatim}
-    x.freeSubVector(&sub_vec);
+  x.freeSubVector(&sub_vec);
 \end{verbatim}}
 
-\noindent after the view in \texttt{sub\_vec} is no longer needed in order to possibly
+{}\noindent{}after the view in \texttt{sub\_vec} is no longer needed in order to possibly
 free dynamically allocated memory.
 
 The process of extracting, modifying and committing a mutable view of
@@ -1038,11 +1041,11 @@ elements.
 template<class Scalar>
 void foo2( const Scalar v[], Vector<Scalar>* x )
 {
-    RTOpPack::MutableSubVectorT<Scalar> sub_vec;      // Create (init) subvector view object
-    x->getSubVector(Range1D(),&sub_vec);              // Initialize the view object
-    for( Index i = 0; i < sub_vec.subDim(); ++i )     // Loop through the explict elements
-        sub_vec(i+1) += v[i];                         //      add v[] to elements
-    x->commitSubVector(&sub_vec);                     // Commit and free the view of x
+  RTOpPack::MutableSubVectorT<Scalar> sub_vec;    // Create (init) subvector view object
+  x->getSubVector(Range1D(),&sub_vec);            // Initialize the view object
+  for( Index i = 0; i < sub_vec.subDim(); ++i )   // Loop through the explict elements
+    sub_vec(i+1) += v[i];                         //      add v[] to elements
+  x->commitSubVector(&sub_vec);                   // Commit and free the view of x
 }
 \end{verbatim}}
 
@@ -1064,11 +1067,11 @@ like the following.
 template<class Scalar>
 void set_eta_vec( Index i, Vector<Scalar>* e_i )
 {
-    const Scalar av[] = { 1.0 };                      // Create array for the values
-    const Index  ai[] = { i   };                      // Create array for the indexes
-    RTOpPack::SparseSubVectorT<Scalar> sub_vec(       // Initialize sub_vec with sparse ele arrays
-        0,e_i->dim(),1,av,1,ai,1,0,1);                // ...
-    x->setSubVector(sub_vec);                         // Set all x = 0 except x(i) = 1.0
+  const Scalar av[] = { 1.0 };                    // Create array for the values
+  const Index  ai[] = { i   };                    // Create array for the indexes
+  RTOpPack::SparseSubVectorT<Scalar> sub_vec(     // Initialize sub_vec with sparse ele arrays
+    0,e_i->dim(),1,av,1,ai,1,0,1);                // ...
+  x->setSubVector(sub_vec);                       // Set all x = 0 except x(i) = 1.0
 }
 \end{verbatim}}
 
@@ -1105,11 +1108,11 @@ as the example).
 template<class Scalar>
 bool SerialVectorSpaceBase<Scalar>::isCompatible( const VectorSpace<Scalar>& aVecSpc ) const
 {
-    return this->dim() == aVecSpc.dim() && this->isInCore() && aVecSpc.isInCore();
+  return this->dim() == aVecSpc.dim() && this->isInCore() && aVecSpc.isInCore();
 }
 \end{verbatim}}
 
-\noindent The above implementation makes the assumption that if the dimensions
+{}\noindent{}The above implementation makes the assumption that if the dimensions
 of the vector spaces are the same and both vectors are stored in core,
 then the vectors themselves should also be compatible (through the
 efficient use of the explicit sub-vector element access methods,
@@ -1134,31 +1137,32 @@ subclass as the example).
 {\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::SerialVectorBase::applyOp(
-    const RTOpPack::RTOpT<Scalar> &op, const size_t num_vecs, const Vector<Scalar>* vecs[]
-    ,const size_t num_targ_vecs, Vector<Scalar>* targ_vecs[]
-    ,RTOp_ReductTarget reduct_obj
-    ,const Index first_ele, const Index sub_dim, const Index global_offset
-    ) const
+  const RTOpPack::RTOpT<Scalar> &op, const size_t num_vecs, const Vector<Scalar>* vecs[]
+  ,const size_t num_targ_vecs, Vector<Scalar>* targ_vecs[]
+  ,RTOpPack::ReductTarget *reduct_obj
+  ,const Index first_ele, const Index sub_dim, const Index global_offset
+  ) const
 {
-    ...
-    in_applyOp_ = true;
-    TSFCore::apply_op_serial(
-        op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj
-        ,first_ele,sub_dim,global_offset
-        );
-    in_applyOp_ = false;
+  ...
+  in_applyOp_ = true;
+  TSFCore::apply_op_serial(
+    op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj
+    ,first_ele,sub_dim,global_offset
+    );
+  in_applyOp_ = false;
 }
 \end{verbatim}}
 
-\noindent The implementation of the above \texttt{applyOp(\-...)} method is really
-quite simple and it uses a helper function
-\texttt{apply\_op\_serial(...)}  that takes care of all of the details
-of calling the sub-vector extraction methods on the \texttt{Vector}
-objects.  No dynamic casting is performed during this process and in
-the case of \texttt{SerialVector}, no dynamic memory allocation is
-performed either.  Therefore, for sufficiently large serial vectors,
-the overhead of these function calls will be swamped by computation in
-the RTOp operators, yielding near-optimal performance.
+{}\noindent{}The implementation of the above \texttt{applyOp(\-...)}
+method is really quite simple and it uses a helper function
+{}\texttt{apply\_op\_serial(...)}  that takes care of all of the
+details of calling the sub-vector extraction methods on the
+\texttt{Vector} objects.  No dynamic casting is performed during this
+process and in the case of \texttt{SerialVector}, no dynamic memory
+allocation is performed either.  Therefore, for sufficiently large
+serial vectors, the overhead of these function calls will be swamped
+by computation in the RTOp operators, yielding near-optimal
+performance.
 
 There are cases where it can not be determined until runtime whether a
 vector is serial or not.  In these cases the concrete subclasses can
@@ -1196,23 +1200,23 @@ namespace TSFCore{
 template<class Scalar>
 class LinearOp : public virtual OpBase<Scalar> {
 public:
-    ...
-    virtual void apply(
-        ETransp M_trans, const Vector<Scalar> &x, Vector<Scalar> *y
-        ,Scalar alpha = 1.0, Scalar beta = 0.0
-        ) const = 0;
-    ...
+  ...
+  virtual void apply(
+    ETransp M_trans, const Vector<Scalar> &x, Vector<Scalar> *y
+    ,Scalar alpha = 1.0, Scalar beta = 0.0
+    ) const = 0;
+  ...
 };
 } // namespace TSFCore
 \end{verbatim}}
 
-\noindent where the type \texttt{ETransp} is the C++ \texttt{enum}
+{}\noindent{}where the type \texttt{ETransp} is the C++ \texttt{enum}
 
 {\scriptsize\begin{verbatim}
 enum ETransp { NOTRANS, TRANS, CONJTRANS };
 \end{verbatim}}
 
-\noindent The use of an \texttt{enum} instead of a simple \texttt{bool} for the
+{}\noindent{}The use of an \texttt{enum} instead of a simple \texttt{bool} for the
 \texttt{M\_trans} argument is very important.  The use of an \texttt{enum}
 disallows the implicit conversion from other types like \texttt{char},
 \texttt{int}, \texttt{double} and any type of pointer.  Using
@@ -1257,19 +1261,19 @@ long operation can be performed as follows
 {\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::long_expression(
-    const LinearOp<Scalar>& A, const Vector<Scalar>& u
-    ,Scalar gamma, const LinearOp<Scalar>& B, const Vector<Scalar>& u
-    ,Scalar eta, const LinearOp<Scalar>& C, const Vector<Scalar>& w
-    ,Vector<Scalar>* y
-    )
+  const LinearOp<Scalar>& A, const Vector<Scalar>& u
+  ,Scalar gamma, const LinearOp<Scalar>& B, const Vector<Scalar>& u
+  ,Scalar eta, const LinearOp<Scalar>& C, const Vector<Scalar>& w
+  ,Vector<Scalar>* y
+  )
 {
-    A.apply(NOTRANS,u,y);          // y  =  A*u
-    B.apply(TRANS,v,y,gamma,1.0);  // y +=  gamma*B'*v
-    C.apply(NOTRANS,w,y,eta,1.0);  // y +=  eta*C*w
+  A.apply(NOTRANS,u,y);          // y  =  A*u
+  B.apply(TRANS,v,y,gamma,1.0);  // y +=  gamma*B'*v
+  C.apply(NOTRANS,w,y,eta,1.0);  // y +=  eta*C*w
 }
 \end{verbatim}}
 
-\noindent where no temporary vectors are required.  Note that if the arguments
+{}\noindent{}where no temporary vectors are required.  Note that if the arguments
 \texttt{alpha=1.0} and \texttt{beta=0.0} where fixed (as they are
 in HCL for instance), the above operation would have to be implemented
 as:
@@ -1277,19 +1281,19 @@ as:
 {\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::bad_long_expression(
-    const LinearOp<Scalar>& A, const Vector<Scalar>& u
-    ,Scalar gamma, const LinearOp<Scalar>& B, const Vector<Scalar>& u
-    ,Scalar eta, const LinearOp<Scalar>& C, const Vector<Scalar>& w
-    ,Vector<Scalar>* y
-    )
+  const LinearOp<Scalar>& A, const Vector<Scalar>& u
+  ,Scalar gamma, const LinearOp<Scalar>& B, const Vector<Scalar>& u
+  ,Scalar eta, const LinearOp<Scalar>& C, const Vector<Scalar>& w
+  ,Vector<Scalar>* y
+  )
 {
-    Teuchos::RefCountPtr<Vector<Scalar> >
-        t = A.range()->createMember(); // Create a temporary to store the intermediate  products
-    A.apply(NOTRANS,u,y);              // y  =  A*u
-    B.apply(TRANS,v,t.get());          // t  =  B'*v
-    axpy(gamma,*t,y);                  // y +=  gamma*t
-    C.apply(NOTRANS,w,t.get());        // t  =  C*w
-    axpy(eta,*t,y);                    // y +=  eta*t
+  Teuchos::RefCountPtr<Vector<Scalar> >
+    t = A.range()->createMember(); // Create a temporary to store the intermediate  products
+  A.apply(NOTRANS,u,y);            // y  =  A*u
+  B.apply(TRANS,v,t.get());        // t  =  B'*v
+  axpy(gamma,*t,y);                // y +=  gamma*t
+  C.apply(NOTRANS,w,t.get());      // t  =  C*w
+  axpy(eta,*t,y);                  // y +=  eta*t
 }
 \end{verbatim}}
 
@@ -1370,15 +1374,15 @@ namespace TSFCore{
 template<class Scalar>
 class MultiVector : virtual public LinearOp<Scalar> {
 public:
-    ...
-    virtual Teuchos::RefCountPtr<Vector<Scalar> >        col(const Index j) = 0;
-    virtual Teuchos::RefCountPtr<const Vector<Scalar> >  col(const Index j) const;
-    ...
+  ...
+  virtual Teuchos::RefCountPtr<Vector<Scalar> >        col(const Index j) = 0;
+  virtual Teuchos::RefCountPtr<const Vector<Scalar> >  col(const Index j) const;
+  ...
 };
 } // namespace TSFCore
 \end{verbatim}}
 
-\noindent Actually, the non-\texttt{const} version of \texttt{\textit{col(...)}}
+{}\noindent{}Actually, the non-\texttt{const} version of \texttt{\textit{col(...)}}
 is the only pure virtual function in \texttt{\textit{Multi\-Vector}} and
 therefore the only function that must be overridden in order to create
 a concrete (but suboptimal) \texttt{\textit{Multi\-Vector}} subclass.
@@ -1396,20 +1400,20 @@ template<class Scalar>
 void TSFCore::update_S_Y( const Vector<Scalar>& s, const Vector<Scalar>& y
                           ,MultiVector<Scalar>* S_store, MultiVector<Scalar>* Y_store, int* m )
 {
-    const int m_max = S_store->domain()->dim(); // Get the maximum number of updates allowed
-    if(*m < m_max) {
-        ++(*m);                                 // Increment the number of updates
-        assign(S_store->col(*m).get(),s);       // Copy in s into S(:,m)         
-        assign(Y_store->col(*m).get(),y);       // Copy in y into Y(:,m)
-    }
-    else {
-        // We must drop the oldest pair (s,y) and copy in the newest pair
-        ...
-    }
+  const int m_max = S_store->domain()->dim(); // Get the maximum number of updates allowed
+  if(*m < m_max) {
+    ++(*m);                                   // Increment the number of updates
+    assign(S_store->col(*m).get(),s);         // Copy in s into S(:,m)         
+    assign(Y_store->col(*m).get(),y);         // Copy in y into Y(:,m)
+  }
+  else {
+    // We must drop the oldest pair (s,y) and copy in the newest pair
+    ...
+  }
 }
 \end{verbatim}}
 
-\noindent Note that the \texttt{\textit{Multi\-Vector}} object that
+{}\noindent{}Note that the \texttt{\textit{Multi\-Vector}} object that
 \texttt{\textit{col(...)}} is called on is not guaranteed to be
 updated until the returned \texttt{\textit{Vector}} object is
 destroyed when the \texttt{RefCountPtr<>} object returned from
@@ -1432,19 +1436,19 @@ namespace TSFCore {
 template<class Scalar>
 class MultiVector : virtual public LinearOp<Scalar> {
 public:
-    ...
-    virtual Teuchos::RefCountPtr<MultiVector<Scalar> >       subView(const Range1D& col_rng);
-    virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > subView(const Range1D& col_rng) const;
-    virtual Teuchos::RefCountPtr<MultiVector<Scalar> >       subView(const int numCols
-                                                                          ,const int cols[]);
-    virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > subView(const int numCols
-                                                                          ,const int cols[]) const;
-    ...
+  ...
+  virtual Teuchos::RefCountPtr<MultiVector<Scalar> >       subView(const Range1D& col_rng);
+  virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > subView(const Range1D& col_rng) const;
+  virtual Teuchos::RefCountPtr<MultiVector<Scalar> >       subView(const int numCols
+                                                                        ,const int cols[]);
+  virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > subView(const int numCols
+                                                                        ,const int cols[]) const;
+  ...
 };
 } // namespace TSFCore
 \end{verbatim}}
 
-\noindent The ability to extract a \texttt{\textit{Multi\-Vector}} sub-view of a
+{}\noindent{}The ability to extract a \texttt{\textit{Multi\-Vector}} sub-view of a
 contiguous set of columns of a \texttt{\textit{Multi\-Vector}} object,
 which is supported by the first two methods, is required in order to
 implement certain types of numerical methods.  For example, the
@@ -1463,7 +1467,7 @@ template<class Scalar>
 Teuchos::RefCountPtr<const TSFCore::MultiVector<Scalar> >
 TSFCore::get_updated( const MultiVector<Scalar>& Store, int m )
 {
-    return Store.subView(Range1D(1,m));
+  return Store.subView(Range1D(1,m));
 }
 \end{verbatim}}
 
@@ -1525,15 +1529,15 @@ and is implemented in the following function.
 template<class Scalar>
 void TSFCore::update( Scalar alpha, const MultiVector<Scalar>& U, MultiVector<Scalar>* V )
 {
-    TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"axpy(...), Error!");    // Validate input
-    RTOpPack::TOpAxpy<Scalar> axpy_op(alpha);                         // Create (init) op object
-    const MultiVector<Scalar>* multi_vecs[]       = { &U };           // Set up non-mutable mv args
-    MultiVector<Scalar>*       targ_multi_vecs[]  = { V  };           // Set up mutable mv args
-    applyOp<Scalar>(axpy_op,1,multi_vecs,1,targ_multi_vecs,NULL);     // Invoke the transformation operator
+  TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"axpy(...), Error!"); // Validate input
+  RTOpPack::TOpAxpy<Scalar> axpy_op(alpha);                         // Create (init) op object
+  const MultiVector<Scalar>* multi_vecs[]       = { &U };           // Set up non-mutable mv args
+  MultiVector<Scalar>*       targ_multi_vecs[]  = { V  };           // Set up mutable mv args
+  applyOp<Scalar>(axpy_op,1,multi_vecs,1,targ_multi_vecs,NULL);     // Invoke the transformation operator
 }
 \end{verbatim}}
 
-\noindent In the above call to \texttt{applyOp(\-...)}, a \texttt{NULL} pointer is
+{}\noindent{}In the above call to \texttt{applyOp(\-...)}, a \texttt{NULL} pointer is
 passed in for the array of reduction objects which is allowed since
 this RTOp operator does not perform a reduction.
 
@@ -1544,21 +1548,25 @@ implemented in the following function.
 template<class Scalar>
 void TSFCore::dot( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2, Scalar dot[] )
 {
-    const int m = V1.domain()->dim();                                        // Get the num cols
-    RTOpPack::ROpDot<Scalar> dot_op;                                         // Create op object
-    std::vector<RTOp_ReductTarget>  dot_targs(m);                            // Array of reduct objects
-    for( int kc = 0; kc < m; ++kc )                                          // For each column:
-        dot_op.reduct_obj_create_raw(&(dot_targs[kc]=RTOp_REDUCT_OBJ_NULL)); //   Create reduct object
-    const MultiVector<Scalar>* multi_vecs[] = { &V1, &V2 };                  // Set up non-mutable mv args
-    applyOp(dot_op,2,multi_vecs,0,NULL,&dot_targs[0]);                       // Invoke the reduction operator
-    for( int kc = 0; kc < m; ++kc ) {                                        // For each column:
-        dot[kc] = dot_op(dot_targs[kc]);                                     //   Extract dot product val
-        dot_op.reduct_obj_free_raw(&(dot_targs[kc]));                        //   Free each reduction object
-    }
+  const int m = V1.domain()->dim();                                      // Get the num cols
+  RTOpPack::ROpDot<Scalar> dot_op;                                       // Create op object
+  std::vector<Teuchos::RefCountPtr<RTOpPack::ReductTarget> >
+   rcp_dot_targs(m);                                                     // Array of reduct objects
+  std::vector<RTOpPack::ReductTarget*>
+   dot_targs(m);                                                         // Array of reduct object ptrs
+  for( int kc = 0; kc < m; ++kc ) {                                      // For each column:
+    rcp_dot_targs[kc] = dot_op.reduct_obj_create();                      //   Create reduct object
+    dot_targs[kc] = &*rcp_dot_targs[kc];                                 //   Set raw pointer
+  }
+  const MultiVector<Scalar>* multi_vecs[] = { &V1, &V2 };                // Set up non-mutable mv args
+  applyOp(dot_op,2,multi_vecs,0,NULL,&dot_targs[0]);                     // Invoke the reduction operator
+  for( int kc = 0; kc < m; ++kc ) {                                      // For each column:
+    dot[kc] = dot_op(*dot_targs[kc]);                                    //   Extract dot product val
+  }
 }
 \end{verbatim}}
 
-\noindent Note that the above reduction operation will be performed with a
+{}\noindent{}Note that the above reduction operation will be performed with a
 single global reduction when performed on a distributed-memory
 parallel computer (using MPI).  Without the concept of a
 \texttt{\textit{Multi\-Vector}} or support for the
@@ -1608,36 +1616,36 @@ namespace TSFCore {
 template<class Scalar>
 class MyLinearOp : public LinearOp<Scalar> {
 public:
+  ...
+  void apply( ETransp M_trans, const Vector<Scalar> &x, Vector<Scalar> *y, Scalar alpha
+             ,Scalar beta ) const
+  {
+    const MultiVectorCols<Scalar>
+      X(Teuchos::rcp(const_cast<Vector<Scalar>*>(&x),false)); // Create mv views
+    MultiVectorCols<Scalar>
+      Y(Teuchos::rcp(y,false));                               // ...
+    apply(alpha,M_trans,X,&Y,beta);                           // Call mv version
+  }
+  void apply( ETransp M_trans, const MultiVector<Scalar> &X, MultiVector<Scalar> *Y, Scalar alpha
+              ,Scalar beta ) const
+  {
+    // Optimized implementation for multi-vectors
     ...
-    void apply( ETransp M_trans, const Vector<Scalar> &x, Vector<Scalar> *y, Scalar alpha
-               ,Scalar beta ) const
-    {
-        const MultiVectorCols<Scalar>
-            X(Teuchos::rcp(const_cast<Vector<Scalar>*>(&x),false)); // Create mv views
-        MultiVectorCols<Scalar>
-            Y(Teuchos::rcp(y,false));                               // ...
-        apply(alpha,M_trans,X,&Y,beta);                         // Call mv version
-    }
-    void apply( ETransp M_trans, const MultiVector<Scalar> &X, MultiVector<Scalar> *Y, Scalar alpha
-                ,Scalar beta ) const
-    {
-        // Optimized implementation for multi-vectors
-        ...
-    }
-    ...
+  }
+  ...
 };
 } // namespace TSFCore
 \end{verbatim}}
 
-\noindent Note that the constructor for the the class \texttt{MultiVectorCols},
+{}\noindent{}Note that the constructor for the the class \texttt{MultiVectorCols},
 for instance called in the line
 
 {\scriptsize\begin{verbatim}
-      MultiVectorCols<Scalar>
-          Y(Teuchos::rcp(y,false));
+    MultiVectorCols<Scalar>
+      Y(Teuchos::rcp(y,false));
 \end{verbatim}}
 
-\noindent takes a \texttt{RefCountPtr<const Vector<Scalar> >} object.  In
+{}\noindent{}takes a \texttt{RefCountPtr<const Vector<Scalar> >} object.  In
 order to call this constructor with memory not owned by the client
 (which is the case here), the \texttt{rcp(...)} function must be
 called with the argument \texttt{owns\_mem = false} so that the last
@@ -1696,31 +1704,31 @@ order to implement the overall multi-vector solve.
 {\scriptsize\begin{verbatim}
 template<class Scalar>
 void TSFCore::LBFGS_solve(
-    int m, Scalar g, const MultiVector<Scalar>& S_store, const MultiVector<Scalar>& Y_store
-    ,const MultiVector<Scalar>& Q_ss, const MultiVector<Scalar>& Q_sy, const MultiVector<Scalar>& Q_yy
-    ,const MultiVector<Scalar>& V, MultiVector<Scalar>* U, Scalar alpha = 1.0, Scalar = beta = 0.0
-    )
+  int m, Scalar g, const MultiVector<Scalar>& S_store, const MultiVector<Scalar>& Y_store
+  ,const MultiVector<Scalar>& Q_ss, const MultiVector<Scalar>& Q_sy, const MultiVector<Scalar>& Q_yy
+  ,const MultiVector<Scalar>& V, MultiVector<Scalar>* U, Scalar alpha = 1.0, Scalar = beta = 0.0
+  )
 {
-    // validate input
-    ...
-    const int p = V.domain()->dim();                // Get number of columns in V and U
-    Teuchos::RefCountPtr<const MultiVector<Scalar> >
-        S = get_updated(S_store,m),                 // Get view of only stored columns in S_store
-        Y = get_updated(Y_store,m);                 // Get view of only stored columns in Y_store
-    Teuchos::RefCountPtr<MultiVector<Scalar> >
-        T_1 = S->domain()->createMembers(p),        // Create the tempoarary multi-vectors
-        T_2 = Y->domain()->createMembers(p),        // ...
-        T_3 = Q_ss->range()->createMembers(p),      // ...
-        T_4 = Q_yy->range()->createMembers(p);      // ...
-    S->apply(TRANS,V,T_1->get());                   // T_1  =  S'*V
-    Y->apply(TRANS,V,T_2->get());                   // T_2  =  Y'*V
-    Q_ss.apply(NOTRANS,*T_1,T_3->get());            // T_3  =  Q_ss*T_1
-    Q_sy.apply(NOTRANS,*T_2,T_3->get(),g,1.0);      // T_3 +=  g*Q_sy*T_2
-    Q_sy.apply(TRANS,  *T_1,T_4->get());            // T_4  =  Q_sy'*T_1
-    Q_yy.apply(NOTRANS,*T_2,T_4->get(),g,1.0);      // T_4 +=  g*Q_yy*T_2
-    S->apply(NOTRANS,*T_3,U,alpha);                 // U    =  alpha*S*T_3
-    Y->apply(NOTRANS,*T_4,U,alpha*g,1.0);           // U   +=  alpha*g*Y*T_4
-    axpy(alpha*g,V,U);                              // U   +=  alpha*g*V
+  // validate input
+  ...
+  const int p = V.domain()->dim();              // Get number of columns in V and U
+  Teuchos::RefCountPtr<const MultiVector<Scalar> >
+    S = get_updated(S_store,m),                 // Get view of only stored columns in S_store
+    Y = get_updated(Y_store,m);                 // Get view of only stored columns in Y_store
+  Teuchos::RefCountPtr<MultiVector<Scalar> >
+    T_1 = S->domain()->createMembers(p),        // Create the tempoarary multi-vectors
+    T_2 = Y->domain()->createMembers(p),        // ...
+    T_3 = Q_ss->range()->createMembers(p),      // ...
+    T_4 = Q_yy->range()->createMembers(p);      // ...
+  S->apply(TRANS,V,T_1->get());                 // T_1  =  S'*V
+  Y->apply(TRANS,V,T_2->get());                 // T_2  =  Y'*V
+  Q_ss.apply(NOTRANS,*T_1,T_3->get());          // T_3  =  Q_ss*T_1
+  Q_sy.apply(NOTRANS,*T_2,T_3->get(),g,1.0);    // T_3 +=  g*Q_sy*T_2
+  Q_sy.apply(TRANS,  *T_1,T_4->get());          // T_4  =  Q_sy'*T_1
+  Q_yy.apply(NOTRANS,*T_2,T_4->get(),g,1.0);    // T_4 +=  g*Q_yy*T_2
+  S->apply(NOTRANS,*T_3,U,alpha);               // U    =  alpha*S*T_3
+  Y->apply(NOTRANS,*T_4,U,alpha*g,1.0);         // U   +=  alpha*g*Y*T_4
+  axpy(alpha*g,V,U);                            // U   +=  alpha*g*V
 }
 \end{verbatim}}
 
@@ -1742,11 +1750,11 @@ The first type of operation performed by
 matrix-matrix products performed in the lines
 
 {\scriptsize\begin{verbatim}
-    S->apply(TRANS,V,T_1->get());
-    Y->apply(TRANS,V,T_2->get());
+  S->apply(TRANS,V,T_1->get());
+  Y->apply(TRANS,V,T_2->get());
 \end{verbatim}}
 
-\noindent where the results are stored in the local multi-vectors 
+{}\noindent{}where the results are stored in the local multi-vectors 
 \texttt{T\_1} and \texttt{T\_2}.  These two operations only
 require a single global reduction each, independent of the number of
 updates $m$ represented in $S$ and $Y$ or columns $p$ in $V$.  Note
@@ -1770,13 +1778,13 @@ products of small local \texttt{\textit{Multi\-Vector}} objects in the
 lines
 
 {\scriptsize\begin{verbatim}
-    Q_ss.apply(NOTRANS,*T_1,T_3->get());
-    Q_sy.apply(NOTRANS,*T_2,T_3->get(),g,1.0);
-    Q_sy.apply(TRANS,  *T_1,T_4->get());
-    Q_yy.apply(NOTRANS,*T_2,T_4->get(),g,1.0);
+  Q_ss.apply(NOTRANS,*T_1,T_3->get());
+  Q_sy.apply(NOTRANS,*T_2,T_3->get(),g,1.0);
+  Q_sy.apply(TRANS,  *T_1,T_4->get());
+  Q_yy.apply(NOTRANS,*T_2,T_4->get(),g,1.0);
 \end{verbatim}}
 
-\noindent Note that these types of local computations classify as serial
+{}\noindent{}Note that these types of local computations classify as serial
 overhead and therefore it is critical that the cost of these
 operations be kept to a minimum or they could cripple the parallel
 scalability of the overall ANA.  Each of these four matrix-matrix
@@ -1790,11 +1798,11 @@ The third type of operation performed by
 multiplications performed in the lines
 
 {\scriptsize\begin{verbatim}
-    S->apply(NOTRANS,*T_3,U,alpha);
-    Y->apply(NOTRANS,*T_4,U,alpha*g,1.0);
+  S->apply(NOTRANS,*T_3,U,alpha);
+  Y->apply(NOTRANS,*T_4,U,alpha*g,1.0);
 \end{verbatim}}
 
-\noindent This type of operation involves fully scalable work with no
+{}\noindent{}This type of operation involves fully scalable work with no
 communication or synchronization required.  Here, a vector-by-vector
 implementation will not be a bottleneck from a standpoint of global
 communication.  However, this operation will utilize level-3 BLAS and
@@ -1806,10 +1814,10 @@ The last type of operation performed in the above
 \texttt{\textit{Multi\-Vector\-::apply(\-...)}} and is shown in the line
 
 {\scriptsize\begin{verbatim}
-    axpy(alpha*g,V,U);
+  axpy(alpha*g,V,U);
 \end{verbatim}}
 
-\noindent The implementation of this function uses an RTOp transformation
+{}\noindent{}The implementation of this function uses an RTOp transformation
 operator with the \texttt{\textit{Multi\-Vector\-::applyOp(\-...)}}
 method.  Note that this function only involves transformation
 operations (i.e.~no communication) which are fully scalable.
@@ -1831,11 +1839,11 @@ following is strictly forbidden.
 template<class Scalar>
 void foo3( const LinearOp& M, ETransp M_trans, Vector<Scalar>* x )
 {
-    M.apply(M_trans,*x,x);  // Error!!!!!!!!!!
+  M.apply(M_trans,*x,x);  // Error!!!!!!!!!!
 }
 \end{verbatim}}
 
-\noindent Note that typically the above function would not even get to the numerics
+{}\noindent{}Note that typically the above function would not even get to the numerics
 (where it would most likely compute the wrong results) because
 \texttt{M.range()->isCompatible(*M.domain())==false} in general.
 Instead, this operation must be implemented as follows.
@@ -1844,12 +1852,12 @@ Instead, this operation must be implemented as follows.
 template<class Scalar>
 void foo4( const LinearOp& M, ETransp M_trans, Vector<Scalar>* x )
 {
-    Teuchos::RefCountPtr<Vector<Scalar> > x_tmp = x->clone();   // Create a copy
-    M.apply(M_trans,*x_tmp,x);                                       // Okay!
+  Teuchos::RefCountPtr<Vector<Scalar> > x_tmp = x->clone();   // Create a copy
+  M.apply(M_trans,*x_tmp,x);                                       // Okay!
 }
 \end{verbatim}}
 
-\noindent Allowing client code to pass in aliased arguments would greatly
+{}\noindent{}Allowing client code to pass in aliased arguments would greatly
 complicate the implementation of most RTOp,
 \texttt{\textit{Multi\-Vector}} and \texttt{\textit{LinearOp}}
 subclasses and would introduce the possibility of many different types
@@ -1884,6 +1892,18 @@ have.
 
 In summary, do not alias output arguments with each other or with
 other input arguments in any of the TSFCore interface methods.
+
+%
+\subsubsection{Explicit access to \texttt{\textit{MultiVector}} elements}
+\label{tsfcore:sec:explicit_multi_vec_access}
+%
+
+In certain cases explicit access to the elements in
+{}\texttt{\textit{Multi\-Vector}} objects is required just as with
+{}\texttt{\textit{Vector}} objects (see Section
+{}\ref{tsfcore:sec:explicit_vec_access}).
+
+ToDo: Finish this discussion!
 
 %
 \section{An Example Abstract Numerical Algorithm : An Iterative Linear Solver}
@@ -1968,49 +1988,49 @@ a single iteration of the BiCG method) as implemented in the file
 {\scriptsize\begin{verbatim}
  00273 template<class Scalar>
  00274 void BiCGSolver<Scalar>::doIteration(
- 00275     const LinearOp<Scalar> &M, ETransp opM_notrans, ETransp opM_trans, MultiVector<Scalar> *X, Scalar a
- 00276     ,const LinearOp<Scalar> *M_tilde_inv, ETransp opM_tilde_inv_notrans, ETransp opM_tilde_inv_trans
- 00277     ) const
+ 00275   const LinearOp<Scalar> &M, ETransp opM_notrans, ETransp opM_trans, MultiVector<Scalar> *X, Scalar a
+ 00276   ,const LinearOp<Scalar> *M_tilde_inv, ETransp opM_tilde_inv_notrans, ETransp opM_tilde_inv_trans
+ 00277   ) const
  00278 {
- 00285     const Index m = currNumSystems_;
- 00286     int j;
- 00287     if( M_tilde_inv ) {
- 00288         M_tilde_inv->apply( opM_tilde_inv_notrans, *R_,       Z_.get()       );
- 00289         M_tilde_inv->apply( opM_tilde_inv_trans,   *R_tilde_, Z_tilde_.get() );
- 00290     }
- 00291     else {
- 00292         assign( Z_.get(),       *R_        );
- 00293         assign( Z_tilde_.get(), *R_tilde_  );
- 00294     }
- 00299     dot( *Z_, *R_tilde_, &rho_[0] );
- 00303     for(j=0;j<m;++j) {
- 00304         TEST_FOR_EXCEPTION(
- 00305             rho_[j] == 0.0, Exceptions::SolverBreakdown
- 00306             ,"BiCGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = 0.0, the method has failed!"
- 00307             );
- 00308     }
- 00309     if( currIteration_ == 1 ) {
- 00310         assign( P_.get(),       *Z_       );
- 00311         assign( P_tilde_.get(), *Z_tilde_ );
- 00312     }
- 00313     else {
- 00314         for(j=0;j<m;++j) beta_[j] = rho_[j]/rho_old_[j];
- 00315         update( *Z_,       &beta_[0], 1.0, P_.get()       );
- 00316         update( *Z_tilde_, &beta_[0], 1.0, P_tilde_.get() );
- 00317     }
- 00322     M.apply(opM_notrans, *P_,       Q_.get()       );
- 00323     M.apply(opM_trans,   *P_tilde_, Q_tilde_.get() );
- 00328     dot( *P_tilde_, *Q_, &gamma_[0] );
- 00329     for(j=0;j<m;++j) alpha_[j] = rho_[j]/gamma_[j];
- 00334     for(j=0;j<m;++j) {
- 00335         TEST_FOR_EXCEPTION(
- 00336             alpha_[j] == 0.0 || RTOp_is_nan_inf(alpha_[j]), Exceptions::SolverBreakdown
- 00337             ,"BiCGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = 0.0, the method has failed!"
- 00338             );
- 00339     }
- 00340     update( &alpha_[0], +1.0, *P_, X );
- 00341     update( &alpha_[0], -1.0, *Q_, R_.get() );
- 00342     update( &alpha_[0], -1.0, *Q_tilde_, R_tilde_.get() );
+ 00285   const Index m = currNumSystems_;
+ 00286   int j;
+ 00287   if( M_tilde_inv ) {
+ 00288     M_tilde_inv->apply( opM_tilde_inv_notrans, *R_,       Z_.get()       );
+ 00289     M_tilde_inv->apply( opM_tilde_inv_trans,   *R_tilde_, Z_tilde_.get() );
+ 00290   }
+ 00291   else {
+ 00292     assign( Z_.get(),       *R_        );
+ 00293     assign( Z_tilde_.get(), *R_tilde_  );
+ 00294   }
+ 00299   dot( *Z_, *R_tilde_, &rho_[0] );
+ 00303   for(j=0;j<m;++j) {
+ 00304     TEST_FOR_EXCEPTION(
+ 00305       rho_[j] == 0.0, Exceptions::SolverBreakdown
+ 00306       ,"BiCGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = 0.0, the method has failed!"
+ 00307         );
+ 00308   }
+ 00309   if( currIteration_ == 1 ) {
+ 00310     assign( P_.get(),       *Z_       );
+ 00311     assign( P_tilde_.get(), *Z_tilde_ );
+ 00312   }
+ 00313   else {
+ 00314     for(j=0;j<m;++j) beta_[j] = rho_[j]/rho_old_[j];
+ 00315     update( *Z_,       &beta_[0], 1.0, P_.get()       );
+ 00316     update( *Z_tilde_, &beta_[0], 1.0, P_tilde_.get() );
+ 00317   }
+ 00322   M.apply(opM_notrans, *P_,       Q_.get()       );
+ 00323   M.apply(opM_trans,   *P_tilde_, Q_tilde_.get() );
+ 00328   dot( *P_tilde_, *Q_, &gamma_[0] );
+ 00329   for(j=0;j<m;++j) alpha_[j] = rho_[j]/gamma_[j];
+ 00334   for(j=0;j<m;++j) {
+ 00335     TEST_FOR_EXCEPTION(
+ 00336       alpha_[j] == 0.0 || RTOp_is_nan_inf(alpha_[j]), Exceptions::SolverBreakdown
+ 00337       ,"BiCGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = 0.0, the method has failed!"
+ 00338       );
+ 00339   }
+ 00340   update( &alpha_[0], +1.0, *P_, X );
+ 00341   update( &alpha_[0], -1.0, *Q_, R_.get() );
+ 00342   update( &alpha_[0], -1.0, *Q_tilde_, R_tilde_.get() );
  00348 }
 \end{verbatim}}
 \end{minipage}
@@ -2046,14 +2066,14 @@ in the function
 template<class Scalar>
 void TSFCore::update( Scalar alpha[], Scalar beta, const MultiVector<Scalar>& U, MultiVector<Scalar>* V )
 {
-    ...
-    const int m = U.domain()->dim();
-    for( int j = 1; j <= m; ++j )
-        Vp_StV( V->col(j).get(), alpha[j-1]*beta, *U.col(j) );
+  ...
+  const int m = U.domain()->dim();
+  for( int j = 1; j <= m; ++j )
+    Vp_StV( V->col(j).get(), alpha[j-1]*beta, *U.col(j) );
 }
 \end{verbatim}}
 
-\noindent where the \texttt{Vp\_StV(...)} function is the axpy operation for
+{}\noindent{}where the \texttt{Vp\_StV(...)} function is the axpy operation for
 vectors and is declared in the header
 \texttt{TSFCore\-Vector\-StdOps\-Decl.hpp}.  Note that when running the
 above BiCG method in an SPMD configuration (where the ANA runs in
@@ -2429,22 +2449,22 @@ y = A u + \gamma B^T v + \eta C w
 in C++ as
 %
 \begin{verbatim}
-    y = A*u + gamma*trans(B)*v + eta*w;
+  y = A*u + gamma*trans(B)*v + eta*w;
 \end{verbatim}
 
-\noindent However, providing a near-optimal implementation (i.e.~no unnecessary
-temporaries or multiple memory accesses) of operator overloading for
-linear algebra in C++ is nontrivial.  While this type of syntax is
-desirable, it does not provide any new functionality and is only
-nonessential but convenient functionality and is therefore not included in TSFCore.
-An efficient operator overloading mechanism in C++ is hard to
-implement and is difficult for C++ novices to debug through.  If
-operator overloading is to be built on top of TSFCore (e.g.~using TSF for
-instance) then this implementation must be bullet proof and provide
-unmatched exception handling so that users must never need to debug
-through this code.  TSF has started to implement linear algebra
-operations using operator overloading but at the present time only
-vector-vector operations are supported.
+{}\noindent{}However, providing a near-optimal implementation (i.e.~no
+unnecessary temporaries or multiple memory accesses) of operator
+overloading for linear algebra in C++ is nontrivial.  While this type
+of syntax is desirable, it does not provide any new functionality and
+is only nonessential but convenient functionality and is therefore not
+included in TSFCore.  An efficient operator overloading mechanism in
+C++ is hard to implement and is difficult for C++ novices to debug
+through.  If operator overloading is to be built on top of TSFCore
+(e.g.~using TSF for instance) then this implementation must be bullet
+proof and provide unmatched exception handling so that users must
+never need to debug through this code.  TSF has started to implement
+linear algebra operations using operator overloading but at the
+present time only vector-vector operations are supported.
 
 Closely associated with operator overloading is the concept of handle
 classes \cite{ref:advanced_c++_coplien}.  Handles assume the same type
