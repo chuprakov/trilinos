@@ -66,6 +66,15 @@ int main(int argc, char *argv[])
   Epetra_CrsMatrix  *F_crs = PetraMatrix::getConcrete(F_tsf);
   Epetra_Map        *F_map = (Epetra_Map *) &(F_crs->OperatorDomainMap());
 
+  TSFLinearOperator  B_tsf = saddleA_tsf.getBlock(1,0);
+  TSFLinearOperator  Bt_tsf = saddleA_tsf.getBlock(0,1);
+  TSFLinearOperator BBt_tsf;
+  TSF_MatrixMult(B_tsf, Bt_tsf, BBt_tsf);
+
+  Epetra_CrsMatrix  *BBt_crs = PetraMatrix::getConcrete(BBt_tsf);
+  Epetra_Map        *BBt_map = (Epetra_Map *) &(BBt_crs->OperatorDomainMap());
+
+
 
  // build a simple preconditioner corresponding to 
  //
@@ -107,6 +116,32 @@ int main(int argc, char *argv[])
    FSolver.setVerbosityLevel(4);
    TSFLinearOperator F_inv = F_tsf.inverse(FSolver);
 
+
+   ML *ml_BBt;
+   ML_Create(&ml_BBt, N_levels);
+   EpetraMatrix2MLMatrix(ml_BBt, 0, BBt_crs);
+   N_levels = ML_Gen_MGHierarchy_UsingAggregation(ml_BBt, 0,
+                                                  ML_INCREASING, NULL);
+   ML_Gen_Smoother_SymGaussSeidel(ml_BBt, ML_ALL_LEVELS, ML_BOTH, 1, 1.);
+   ML_Gen_Solver    (ml_BBt, ML_MGV, 0, N_levels-1);
+   Epetra_ML_Operator  *MLBBtop = new Epetra_ML_Operator(ml_BBt,*comm,
+							 *BBt_map,*BBt_map);
+   MLBBtop->SetOwnership(true);
+
+
+   TSFHashtable<int, int> azBBtOptions;
+   TSFHashtable<int, double> azBBtParams;
+   azBBtOptions.put(AZ_solver, AZ_cg);
+   azBBtOptions.put(AZ_conv, AZ_r0);
+   azBBtParams.put(AZ_tol, 1e-8);
+   azBBtOptions.put(AZ_max_iter, 50);
+   TSFSmartPtr<Epetra_Operator> Smart_MLBBtprec = TSFSmartPtr<Epetra_Operator>(MLBBtop, true);
+
+   TSFLinearSolver BBtSolver = new AZTECSolver(azBBtOptions, azBBtParams, Smart_MLBBtprec);
+   BBtSolver.setVerbosityLevel(4);
+   TSFLinearOperator BBt_inv = BBt_tsf.inverse(BBtSolver);
+
+
    // 2) Build 2x2 block preconditioner by seting inv(F) to the (0,0)
    //    block and the identity to the (1,1) block. Then wrap the 
    //    preconditioner within an Epetra_Row matrix.
@@ -114,7 +149,8 @@ int main(int argc, char *argv[])
    TSFLinearOperator saddleM_tsf =  new TSFBlockLinearOperator(saddleA_tsf.range(), saddleA_tsf.domain());
    saddleM_tsf.setBlock(0,0,F_inv);
    TSFLinearOperator ident = new TSFIdentityOperator(saddleA_tsf.getBlock(1,0).range());
-   saddleM_tsf.setBlock(1,1,ident);
+   //   saddleM_tsf.setBlock(1,1,ident);
+   saddleM_tsf.setBlock(1,1,BBt_inv);
 
    TSFLinearOperator2EpetraRowMatrix *saddlePrec_epet = new TSFLinearOperator2EpetraRowMatrix(saddleM_tsf,
                                              comm, (Epetra_Map *) &(saddleA_epet->OperatorDomainMap()),
