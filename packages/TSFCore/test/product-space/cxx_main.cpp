@@ -224,7 +224,7 @@ int main( int argc, char* argv[] ) {
 		//
 
 		int n         = 4;
-		int numBlocks = 2;
+		int numBlocks = 4; // RAB: 2004/06/06: Segfaults on g++ version 3.2.x with numBlocks=2
 		bool dumpAll  = false;
 
 		CommandLineProcessor  clp(false); // Don't throw exceptions
