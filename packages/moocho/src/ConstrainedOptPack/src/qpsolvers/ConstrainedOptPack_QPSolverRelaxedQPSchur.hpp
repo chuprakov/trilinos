@@ -19,7 +19,7 @@
 #include "QPSolverRelaxed.h"
 #include "QPSchur.h"
 #include "QPInitFixedFreeStd.h"
-#include "MatrixSymHessianRelaxNonsing.h"
+#include "MatrixSymHessianRelaxNonSing.h"
 #include "ConstraintsRelaxedStd.h"
 #include "MatrixSymAddDelBunchKaufman.h"
 #include "SparseLinAlgPack/include/VectorWithOpMutableDense.h"
