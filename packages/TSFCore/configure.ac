@@ -230,6 +230,9 @@ AM_CONDITIONAL(BUILD_TESTS, test "X$ac_cv_use_tests" != "Xno")
 TAC_ARG_ENABLE_FEATURE(examples, [Build examples for all Trilinos packages (not all packages are sensitive to this option)], EXAMPLES, yes)
 AM_CONDITIONAL(BUILD_EXAMPLES, test "X$ac_cv_use_examples" != "Xno")
 
+TAC_ARG_ENABLE_FEATURE_SUB( teuchos, experimental, [Build TSFCore's examples which use teuchos-experimental], TEUCHOS_EXPERIMENTAL, no)
+AM_CONDITIONAL(BUILD_TEUCHOS_EXPERIMENTAL, [test "X$ac_cv_use_teuchos_experimental" != "Xno"])
+
 # ------------------------------------------------------------------------
 # Specify other directories 
 # ------------------------------------------------------------------------

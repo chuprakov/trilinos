@@ -4,7 +4,11 @@
 
 EXEEXT = .exe
 
-noinst_PROGRAMS = TSFCoreNonlinNP4DOptTest
+if BUILD_TEUCHOS_EXPERIMENTAL
+NONLIN_EX = TSFCoreNonlinNP4DOptTest
+endif
+
+noinst_PROGRAMS = $(NONLIN_EX)
 
 TSFCoreNonlinNP4DOptTest_SOURCES = $(srcdir)/TSFCoreNonlinNP4DOptTestMain.cpp \
 	$(srcdir)/TSFCoreNonlinNP4DOptDecl.hpp \

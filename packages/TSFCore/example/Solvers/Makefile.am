@@ -4,7 +4,13 @@
 
 EXEEXT = .exe
 
-noinst_PROGRAMS = TSFCoreSolversGmresTest
+if BUILD_TEUCHOS_EXPERIMENTAL
+if HAVE_TSFCORE_EPETRA
+EPETRA_EX = TSFCoreSolversGmresTest
+endif
+endif
+
+noinst_PROGRAMS = $(EPETRA_EX)
 
 TSFCoreSolversGmresTest_SOURCES = $(srcdir)/TSFCoreSolversGmresTest.cpp
 

@@ -4,7 +4,11 @@
 
 EXEEXT = .exe
 
-noinst_PROGRAMS = TSFCoreNonlinNP2DSimTest
+if BUILD_TEUCHOS_EXPERIMENTAL
+NONLIN_EX = TSFCoreNonlinNP2DSimTest
+endif
+
+noinst_PROGRAMS = $(NONLIN_EX)
 
 TSFCoreNonlinNP2DSimTest_SOURCES = $(srcdir)/TSFCoreNonlinNP2DSimTestMain.cpp \
 	$(srcdir)/TSFCoreNonlinNP2DSimDecl.hpp \

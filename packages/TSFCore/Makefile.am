@@ -87,7 +87,7 @@ if BUILD_TESTS
 TEST_SUBDIR=test
 endif
 
-if BUILD_EXAMPLES
+if BUILD_EXAMPLES 
 EXAMPLE_SUBDIR=example
 endif
 

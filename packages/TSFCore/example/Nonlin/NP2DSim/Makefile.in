@@ -92,7 +92,9 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 
-noinst_PROGRAMS = TSFCoreNonlinNP2DSimTest
+@BUILD_TEUCHOS_EXPERIMENTAL_TRUE@NONLIN_EX = TSFCoreNonlinNP2DSimTest
+
+noinst_PROGRAMS = $(NONLIN_EX)
 
 TSFCoreNonlinNP2DSimTest_SOURCES = $(srcdir)/TSFCoreNonlinNP2DSimTestMain.cpp \
 	$(srcdir)/TSFCoreNonlinNP2DSimDecl.hpp \
@@ -129,7 +131,9 @@ subdir = example/Nonlin/NP2DSim
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/TSFCoreConfig.h
 CONFIG_CLEAN_FILES =
-noinst_PROGRAMS = TSFCoreNonlinNP2DSimTest$(EXEEXT)
+@BUILD_TEUCHOS_EXPERIMENTAL_TRUE@noinst_PROGRAMS = \
+@BUILD_TEUCHOS_EXPERIMENTAL_TRUE@	TSFCoreNonlinNP2DSimTest$(EXEEXT)
+@BUILD_TEUCHOS_EXPERIMENTAL_FALSE@noinst_PROGRAMS =
 PROGRAMS = $(noinst_PROGRAMS)
 
 am_TSFCoreNonlinNP2DSimTest_OBJECTS = \
