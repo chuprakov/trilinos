@@ -422,9 +422,9 @@ const VectorSpace& MatrixWithOpSerial::space_cols() const
 const VectorSpace& MatrixWithOpSerial::space_rows() const
 {
 	const size_type cols = this->cols();
-	if(space_cols_.dim() != cols)
-		space_cols_.initialize(cols);
-	return space_cols_;
+	if(space_rows_.dim() != cols)
+		space_rows_.initialize(cols);
+	return space_rows_;
 }
 	
 std::ostream& MatrixWithOpSerial::output(std::ostream& out) const {
