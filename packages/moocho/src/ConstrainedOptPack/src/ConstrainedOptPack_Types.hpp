@@ -70,23 +70,18 @@ class DirectLineSearchArmQuad_StrategySetOptions;
 
 // decomposition classes
 
-/*
 class DecompositionSystem;
 class DecompositionSystemVarReduct;
-class DecompositionSystemVarReductImpNode;
-class DecompositionSystemCoordinate;
-class DecompositionSystemCoordinateDirect;
-class DecompositionSystemCoordinateAdjoint;
-*/
+//class DecompositionSystemCoordinate;
+//class DecompositionSystemCoordinateDirect;
+//class DecompositionSystemCoordinateAdjoint;
 
 // Abstract QP solvers
 
-//class QPSolverWithBounds;
 //class QPSolverRelaxed;
 
 // Concrete QP solvers
 
-//class QPSCPD;
 //class QPSchur;
 //class QPSolverRelaxedQPSchurRangeSpace;
 
