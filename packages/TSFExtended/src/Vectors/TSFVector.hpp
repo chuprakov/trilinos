@@ -30,6 +30,7 @@
 #define TSFVECTOR_HPP
 
  /* dummy comment for testing CVS */
+ /* another dummy comment for testing CVS */
 
 #include "TSFVectorDecl.hpp"
 #include "TSFVectorImpl.hpp"
