@@ -70,7 +70,7 @@ public:
 	///
 	RTOp_index_type   leadingDim()   const { return smv_.leadingDim();  }
 	/// One-based indexing: Preconditions: <tt>values()!=NULL && (1<=i<=subDim()) && (1<=j<=numSubCols())</tt>
-	const Scalar& operator()(RTOp_index_type i,RTOp_index_type j) const { return smv_(i,j); }
+	Scalar& operator()(RTOp_index_type i,RTOp_index_type j) { return smv_(i,j); }
 private:
 	MultiVector<Scalar>                       &mv_;
 	RTOpPack::MutableSubMultiVectorT<Scalar>  smv_;
