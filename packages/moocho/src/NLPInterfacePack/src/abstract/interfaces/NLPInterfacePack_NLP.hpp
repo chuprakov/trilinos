@@ -828,7 +828,7 @@ protected:
 	struct ZeroOrderInfo {
 	public:
 		///
-		ZeroOrderInfo() : f(NULL), c(NULL)
+        ZeroOrderInfo() : f(NULL), c(NULL), h(NULL)
 		{}
 		///
 		ZeroOrderInfo( value_type* f_in, VectorWithOpMutable* c_in, VectorWithOpMutable* h_in )
