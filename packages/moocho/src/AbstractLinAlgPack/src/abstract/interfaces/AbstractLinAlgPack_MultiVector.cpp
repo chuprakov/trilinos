@@ -4,7 +4,10 @@
 #include <assert.h>
 
 #include "AbstractLinAlgPack/include/MultiVectorMutable.h"
+#include "AbstractLinAlgPack/include/MatrixSymDiagonal.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "WorkspacePack.h"
 #include "ThrowException.h"
 
@@ -49,6 +52,63 @@ vec(
 			? multi_vec->row(k)
 			: multi_vec->col(k)
 			);
+}
+
+// Implement a matrix-matrix multiplication with a diagonal matrix.
+//
+// op(C) = b*op(C) + a*D*op(B)
+//
+bool mat_vec(
+	const AbstractLinAlgPack::value_type        &a
+	,const AbstractLinAlgPack::MatrixWithOp     &D_mwo  // Diagonal matrix?
+	,BLAS_Cpp::Transp                           D_trans
+	,const AbstractLinAlgPack::MultiVector      &B
+	,BLAS_Cpp::Transp                           B_trans
+	,const AbstractLinAlgPack::value_type       &b
+	,BLAS_Cpp::Transp                           C_trans
+	,AbstractLinAlgPack::MatrixWithOp           *C
+	)
+{
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
+
+	typedef AbstractLinAlgPack::MultiVector          MV;
+	typedef AbstractLinAlgPack::MultiVectorMutable   MVM;
+	using AbstractLinAlgPack::size_type;
+	using AbstractLinAlgPack::VectorWithOp;
+	using AbstractLinAlgPack::MatrixWithOp;
+	using AbstractLinAlgPack::MultiVectorMutable;
+	using AbstractLinAlgPack::MatrixSymDiagonal;
+	using AbstractLinAlgPack::ele_wise_prod;
+	using LinAlgOpPack::Vt_S;
+	
+	AbstractLinAlgPack::Mp_MtM_assert_compatibility(C,C_trans,D_mwo,D_trans,B,B_trans);
+
+	MultiVectorMutable
+		*Cmv = dynamic_cast<MultiVectorMutable*>(C);
+	const MatrixSymDiagonal
+		*D = dynamic_cast<const MatrixSymDiagonal*>(&D_mwo);
+	if( !Cmv || !D || !(Cmv->access_by() & ( C_trans == no_trans ? MV::COL_ACCESS : MV::ROW_ACCESS ))
+		|| !(B.access_by() & ( B_trans == no_trans ? MV::COL_ACCESS : MV::ROW_ACCESS ))
+		)
+	{
+		return false;
+	}
+	//
+	// op(C).col(j) = b*op(C).col(j) + a*ele_wise_prod(D_diag,op(B).col(j)), for j = 1...op(C).cols()
+	//
+	const VectorWithOp  &D_diag = D->diag();
+	const size_type
+		opC_cols = BLAS_Cpp::cols( Cmv->rows(), Cmv->cols(), C_trans );
+	for( size_type j = 1; j <= opC_cols; ++j ) {
+		MV::vec_ptr_t
+			opB_col_j = ( B_trans == no_trans ? B.col(j)    : B.row(j) );
+		MVM::vec_mut_ptr_t
+			opC_col_j = ( C_trans == no_trans ? Cmv->col(j) : Cmv->row(j) );
+		Vt_S( opC_col_j.get(), b );
+		ele_wise_prod( a, D_diag, *opB_col_j, opC_col_j.get() );
+	}	
+	return true;
 }
 
 } // end namespace
@@ -128,6 +188,36 @@ MatrixWithOp::mat_ptr_t
 MultiVector::sub_view(const Range1D& row_rng, const Range1D& col_rng) const
 {
 	return mv_sub_view(row_rng,col_rng);
+}
+
+bool MultiVector::Mp_StMtM(
+	MatrixWithOp* mwo_lhs, value_type alpha
+	,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+	,BLAS_Cpp::Transp trans_rhs2
+	,value_type beta
+	) const
+{
+	return mat_vec(
+		alpha
+		,mwo_rhs1,trans_rhs1
+		,*this,trans_rhs2
+		,beta,BLAS_Cpp::no_trans,mwo_lhs
+		);
+}
+
+bool MultiVector::Mp_StMtM(
+	MatrixWithOp* mwo_lhs, value_type alpha
+	,BLAS_Cpp::Transp trans_rhs1
+	,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+	,value_type beta
+	) const
+{
+	return mat_vec(
+		alpha
+		,mwo_rhs2,BLAS_Cpp::trans_not(trans_rhs2)
+		,*this,BLAS_Cpp::trans_not(trans_rhs1)
+		,beta,BLAS_Cpp::trans,mwo_lhs
+		);
 }
 
 // Combined implementations for apply_reduction() and apply_transformation() methods

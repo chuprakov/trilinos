@@ -238,6 +238,46 @@ public:
 	 */
 	mat_ptr_t sub_view(const Range1D& row_rng, const Range1D& col_rng) const;
 
+	///
+	/** Provides a specialized implementation for <tt>mwo_rhs1</tt> of type <tt>MatrixSymDiagonal</tt>.
+	 *
+	 * @return Returns <tt>true</tt> and implements the operation if
+	 * <tt>dynamic_cast<MatrixSymDiagonal>(&mwo_rhs1) != NULL
+	 * && op(*this).access_by() =& MultiVector::COL_ACCESS
+	 * && (mvm_lhs = dynamic_cast<MultiVectorMutable*>(&mwo_lhs)) != NULL
+	 * && mvm_lhs->access_by() & MultiVector::COL_ACCESS</tt>.
+	 * Otherwise, this function returns <tt>false</tt> and does not implement the operation.
+	 * or <tt>dynamic_cast<const MatrixSymDiagonal>(&mwo_rhs1) != NULL</tt>.
+	 *
+	 * The default implementation relies on column access of <tt>op(*this)</tt>
+	 * and <tt>mwo_lhs</tt> to implement this method.
+	 */
+	bool Mp_StMtM(
+		MatrixWithOp* mwo_lhs, value_type alpha
+		,const MatrixWithOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+		,BLAS_Cpp::Transp trans_rhs2
+		,value_type beta ) const;
+
+	///
+	/** Provides a specialized implementation for <tt>mwo_rhs2</tt> of type <tt>MatrixSymDiagonal</tt>.
+	 *
+	 * @return Returns <tt>true</tt> and implements the operation if
+	 * <tt>dynamic_cast<MatrixSymDiagonal>(&mwo_rhs1) != NULL
+	 * && op(*this).access_by() =& MultiVector::ROW_ACCESS
+	 * && (mvm_lhs = dynamic_cast<MultiVectorMutable*>(&mwo_lhs)) != NULL
+	 * && mvm_lhs->access_by() & MultiVector::ROW_ACCESS</tt>.
+	 * Otherwise, this function returns <tt>false</tt> and does not implement the operation.
+	 * or <tt>dynamic_cast<const MatrixSymDiagonal>(&mwo_rhs1) != NULL</tt>.
+	 *
+	 * The default implementation relies on row access of <tt>op(*this)</tt>
+	 * and <tt>mwo_lhs</tt> to implement this method.
+	 */
+	bool Mp_StMtM(
+		MatrixWithOp* mwo_lhs, value_type alpha
+		,BLAS_Cpp::Transp trans_rhs1
+		,const MatrixWithOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+		,value_type beta ) const;
+
 	//@}
 
 protected:
