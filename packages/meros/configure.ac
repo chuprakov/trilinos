@@ -264,6 +264,7 @@ AC_CONFIG_FILES([
 		src/Makefile
 		example/Makefile
                 example/saddle_kayloghin/Makefile
+                example/kayloghin_vbr/Makefile
                 example/saddle_matvec/Makefile
                 example/saddle_solve/Makefile
                 example/vbr_test/Makefile
