@@ -18,10 +18,10 @@
 #include <vector>
 #include <typeinfo>
 
-#include "../test/TestLinAlgPack.h"
-#include "../include/VectorClass.h"
-#include "../include/VectorOut.h"
-#include "../include/MatVecCompare.h"
+#include "LinAlgPack/test/TestLinAlgPack.h"
+#include "LinAlgPack/include/VectorClass.h"
+#include "LinAlgPack/include/VectorOut.h"
+#include "LinAlgPack/include/MatVecCompare.h"
 #include "update_success.h"
 
 namespace {
@@ -329,53 +329,53 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 	Range1D rng;
 
 	if(out) *out << "\nv = v3, rng = [1,n/2], vs = v(rng)";
-	rng.set_bounds(1,n/2);
+	rng = Range1D(1,n/2);
 	test_subregion_access( &v3, &v3(rng), rng, out, &success );
 
 	if(out) *out << "\nv = v3, rng = [n/3,2*n/3], vs = v(rng)";
-	rng.set_bounds(n/3,2*n/3);
+	rng = Range1D(n/3,2*n/3);
 	test_subregion_access( &v3, &v3(rng), rng, out, &success );
 	
 	if(out) *out << "\nv = v3, rng = [n/2,n], vs = v(rng)";
-	rng.set_bounds(n/2,n);
+	rng = Range1D(n/2,n);
 	test_subregion_access( &v3, &v3(rng), rng, out, &success );
 
 	if(out) *out << "\nv = const_cast<const Vector&>(v3), rng = [n/2,n], vs = v(rng)";
-	rng.set_bounds(n/2,n);
+	rng = Range1D(n/2,n);
 	test_subregion_access( &v3, &const_cast<const Vector&>(v3)(rng), rng, out, &success );
 
 	if(out) *out << "\nv = v3, rng = [1,n/2], vs = v(1,n/2)";
-	rng.set_bounds(1,n/2);
+	rng = Range1D(1,n/2);
 	test_subregion_access( &v3, &v3(1,n/2), rng, out, &success );
 
 	if(out) *out << "\nv = const_cast<const Vector&>(v3), rng = [n/2,n], vs = v(n/2,n)";
-	rng.set_bounds(n/2,n);
+	rng = Range1D(n/2,n);
 	test_subregion_access( &v3, &const_cast<const Vector&>(v3)(n/2,n), rng, out, &success );
 
 	// VectorSlice Subregions
 
 	if(out) *out << "\nv = vs3, rng = [1,n/2], vs = v(rng)";
-	rng.set_bounds(1,n/2);
+	rng = Range1D(1,n/2);
 	test_subregion_access( &vs3, &vs3(rng), rng, out, &success );
 
 	if(out) *out << "\nv = vs3, rng = [n/3,2*n/3], vs = v(rng)";
-	rng.set_bounds(n/3,2*n/3);
+	rng = Range1D(n/3,2*n/3);
 	test_subregion_access( &vs3, &vs3(rng), rng, out, &success );
 	
 	if(out) *out << "\nv = vs3, rng = [n/2,n], vs = v(rng)";
-	rng.set_bounds(n/2,n);
+	rng = Range1D(n/2,n);
 	test_subregion_access( &vs3, &vs3(rng), rng, out, &success );
 
 	if(out) *out << "\nv = const_cast<const VectorSlice&>(vs3), rng = [n/2,n], vs = v(rng)";
-	rng.set_bounds(n/2,n);
+	rng = Range1D(n/2,n);
 	test_subregion_access( &vs3, &const_cast<const VectorSlice&>(vs3)(rng), rng, out, &success );
 
 	if(out) *out << "\nv = vs3, rng = [1,n/2], vs = v(1,n/2)";
-	rng.set_bounds(1,n/2);
+	rng = Range1D(1,n/2);
 	test_subregion_access( &vs3, &vs3(1,n/2), rng, out, &success );
 
 	if(out) *out << "\nv = const_cast<const VectorSlice&>(vs3), rng = [n/2,n], vs = v(n/2,n)";
-	rng.set_bounds(n/2,n);
+	rng = Range1D(n/2,n);
 	test_subregion_access( &vs3, &const_cast<const VectorSlice&>(vs3)(n/2,n), rng, out, &success );
 
 	// ///////////////////////
