@@ -393,6 +393,7 @@ protected:
 private:
 
 #ifdef DOXYGEN_COMPILE
+	AbstractLinAlgPack::BasisSystem                                *basis_sys;
 	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixWithOp>  *factory_Gc;
 	MemMngPack::AbstractFactory<AbstractLinAlgPack::MatrixWithOp>  *factory_Gh;
 #endif

@@ -80,11 +80,7 @@ public:
 
 private:
 
-#ifndef DOXYGEN_COMPILE
 	config_ptr_t			config_;
-#else
-	config_ptr_t			config;
-#endif
 
 	// Assert that the object has been set up properly and throw exception if it has not
 	void assert_valid_setup() const;
