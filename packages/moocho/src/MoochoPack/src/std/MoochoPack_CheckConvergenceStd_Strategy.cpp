@@ -145,7 +145,7 @@ bool CheckConvergenceStd_Strategy::Converged(
 		comp_kkt_err_k = comp_err/scale_comp_factor;
 
 	// update the iteration quantities
-	opt_kkt_err_iq.set_k(0) = opt_kkt_err_k;
+	if(n > m) opt_kkt_err_iq.set_k(0) = opt_kkt_err_k;
 	feas_kkt_err_iq.set_k(0) = feas_kkt_err_k;
 	comp_kkt_err_iq.set_k(0) = comp_kkt_err_k;
 
