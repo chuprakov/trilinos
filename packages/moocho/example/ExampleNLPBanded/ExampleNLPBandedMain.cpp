@@ -36,12 +36,12 @@ int main( int argc, char* argv[] )
 		size_type    nD = 2;
 		size_type    nI = 1;
 		size_type    bw = 1;
+		size_type    mI = 2;
 		value_type   xo = 0.1;
 		bool         nlp_selects_basis = true;
 		value_type   xl = -NLP::infinite_bound();
 		value_type   xu = +NLP::infinite_bound();
 		size_type    mU = 0;
-		size_type    mI = 0;
 		value_type   hl = -NLP::infinite_bound();
 		value_type   hu = +NLP::infinite_bound();
 		value_type   diag_scal = 1.0;
@@ -56,15 +56,17 @@ int main( int argc, char* argv[] )
 		if(argc > 3)
 			bw = ::atoi(argv[3]);
 		if(argc > 4)
-			xo = ::atof(argv[4]);
+			mI = ::atoi(argv[4]);
 		if(argc > 5)
-			nlp_selects_basis = (::atoi(argv[5]) != 0 );
+			xo = ::atof(argv[5]);
 		if(argc > 6)
-			diag_scal  = ::atof(argv[6]);
+			nlp_selects_basis = (::atoi(argv[6]) != 0 );
 		if(argc > 7)
-			diag_vary  = ::atof(argv[7]);
+			diag_scal  = ::atof(argv[7]);
 		if(argc > 8)
-			sym_basis = (::atoi(argv[8]) != 0 );
+			diag_vary  = ::atof(argv[8]);
+		if(argc > 9)
+			sym_basis = (::atoi(argv[9]) != 0 );
 		
 		// ToDo: readin more the arguments from argv[] when options are supported
 		

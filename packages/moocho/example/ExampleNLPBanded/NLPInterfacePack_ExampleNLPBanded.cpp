@@ -64,24 +64,25 @@ ExampleNLPBanded::ExampleNLPBanded(
 	THROW_EXCEPTION(
 		mU != 0, std::invalid_argument
 		,msg_err_head<<", can't handle undecomposed equalities yet!" );
-	THROW_EXCEPTION(
-		mI != 0, std::invalid_argument
-		,msg_err_head<<", can't handle general equalities yet!" );
 #endif
-	Gc_full_nz_ = nD_ * ( 1 + 2*(bw_-1) + nI_ ); // Overestimate, ToDo: compute the exact value!
-	Gh_full_nz_ = 2*mI_;
-	xinit_full_.resize(nD_ + nI_);
-	xl_full_.resize(xinit_full_.dim());
-	xu_full_.resize(xinit_full_.dim());
-	hl_full_.resize(mI_);
-	hu_full_.resize(mI_);
-	co_full_.resize(nD_ + mU_);
-	xinit_full_ = xo;
-	xl_full_    = xl;
-	xu_full_    = xu;
-	hl_full_    = hl;
-	hu_full_    = hu;
-	co_full_    = 0.0;
+	Gc_orig_nz_ = nD_ * ( 1 + 2*(bw_-1) + nI_ ); // Overestimate, ToDo: compute the exact value!
+	Gh_orig_nz_ = 2*mI_;
+	//
+	xinit_orig_.resize(nD_ + nI_);
+	xl_orig_.resize(xinit_orig_.dim());
+	xu_orig_.resize(xinit_orig_.dim());
+	hl_orig_.resize(mI_);
+	hu_orig_.resize(mI_);
+	co_orig_.resize(nD_ + mU_);
+	//
+	xinit_orig_ = xo;
+	xl_orig_    = xl;
+	xu_orig_    = xu;
+	if( mI_ ) {
+		hl_orig_    = hl;
+		hu_orig_    = hu;
+	}
+	co_orig_    = 0.0;
 }
 
 // Overridden public members from NLP
@@ -131,24 +132,24 @@ bool ExampleNLPBanded::imp_nlp_has_changed() const
 	return !is_initialized_;
 }
 
-size_type ExampleNLPBanded::imp_n_full() const
+size_type ExampleNLPBanded::imp_n_orig() const
 {
 	return nD_ + nI_;
 }
 
-size_type ExampleNLPBanded::imp_m_full() const
+size_type ExampleNLPBanded::imp_m_orig() const
 {
 	return nD_ + mU_;
 }
 
-size_type ExampleNLPBanded::imp_mI_full() const
+size_type ExampleNLPBanded::imp_mI_orig() const
 {
 	return mI_;
 }
 
-const VectorSlice ExampleNLPBanded::imp_xinit_full() const
+const VectorSlice ExampleNLPBanded::imp_xinit_orig() const
 {
-	return xinit_full_();
+	return xinit_orig_();
 }
 
 bool ExampleNLPBanded::imp_has_var_bounds() const
@@ -156,44 +157,45 @@ bool ExampleNLPBanded::imp_has_var_bounds() const
 	return false; // ToDo: Add bounds!
 }
 
-const VectorSlice ExampleNLPBanded::imp_xl_full() const
+const VectorSlice ExampleNLPBanded::imp_xl_orig() const
 {
-	return xl_full_();
+	return xl_orig_();
 }
 
-const VectorSlice ExampleNLPBanded::imp_xu_full() const
+const VectorSlice ExampleNLPBanded::imp_xu_orig() const
 {
-	return xu_full_();
+	return xu_orig_();
 }
 
-const VectorSlice ExampleNLPBanded::imp_hl_full() const
+const VectorSlice ExampleNLPBanded::imp_hl_orig() const
 {
-	return hl_full_();
+	return hl_orig_();
 }
 
-const VectorSlice ExampleNLPBanded::imp_hu_full() const
+const VectorSlice ExampleNLPBanded::imp_hu_orig() const
 {
-	return hu_full_();
+	return hu_orig_();
 }
 
-void ExampleNLPBanded::imp_calc_f_full(
+void ExampleNLPBanded::imp_calc_f_orig(
 	const VectorSlice            &x_full
 	,bool                        newx
 	,const ZeroOrderInfoSerial   &zero_order_info
 	) const
 {
 	inform_new_point(newx);
-	*zero_order_info.f = ( 1.0 / 2.0 ) * LinAlgPack::dot( x_full, x_full );
+	const VectorSlice x_orig = x_full(1,imp_n_orig());
+	*zero_order_info.f = ( 1.0 / 2.0 ) * LinAlgPack::dot( x_orig, x_orig );
 }
 
-void ExampleNLPBanded::imp_calc_c_full(
-	const VectorSlice            &x
+void ExampleNLPBanded::imp_calc_c_orig(
+	const VectorSlice            &x_full
 	,bool                        newx
 	,const ZeroOrderInfoSerial   &zero_order_info
 	) const
 {
 	inform_new_point(newx);
-	if(c_full_updated_)
+	if(c_orig_updated_)
 		return; // c(x) is already computed in *zero_order_info.c
 	Vector
 		&c  = *zero_order_info.c;
@@ -214,40 +216,57 @@ void ExampleNLPBanded::imp_calc_c_full(
 			const value_type
 				ds_j = ds_alpha * (j-1) + ds_beta;
 			value_type
-				&c_j = (c(j) = ds_j * x(j));
+				&c_j = (c(j) = ds_j * x_full(j));
 			{for( size_type k = 1; k <= klu; ++k ) {
-				c_j -= (3.0 / k) * x(j-k);
+				c_j -= (3.0 / k) * x_full(j-k);
 			}}
 			{for( size_type k = 1; k <= kuu; ++k ) {
-				c_j -= (fu_ / k) * x(j+k);
+				c_j -= (fu_ / k) * x_full(j+k);
 			}}
 			const value_type
-				term = x(nD_ + q_i) + 1;
+				term = x_full(nD_ + q_i) + 1;
 			c_j *= (term * term);
-			c_j += co_full_(j);
+			c_j += co_orig_(j);
 		}
 	}
-	c_full_updated_ = true;
+	c_orig_updated_ = true;
 }
 
-void ExampleNLPBanded::imp_calc_h_full(
+void ExampleNLPBanded::imp_calc_h_orig(
 	const VectorSlice            &x_full
 	,bool                        newx
 	,const ZeroOrderInfoSerial   &zero_order_info
 	) const
 {
 	inform_new_point(newx);
-	assert(0); //  ToDo: Implemenet!
+	Vector
+		&h  = *zero_order_info.h;
+	const size_type
+		num_I_per_D = nD_ / nI_,  // Integer division (rounds down)
+		I_remainder = nD_ % nI_;
+	size_type jI = 0;
+	for( size_type q_i = 1; q_i <= nI_; ++q_i ) {
+		const value_type  x_q = x_full(nD_ + q_i);
+		const size_type   num_I_per_D_local = num_I_per_D + ( q_i <= I_remainder ? 1 : 0 );
+		for( size_type q_k = 0; q_k < num_I_per_D_local; ++q_k ) {
+			++jI;
+			if( jI > mI_ ) goto EXIT_LOOP;
+			h(jI) = x_full(jI) - x_q;
+		}
+	}
+EXIT_LOOP:
+	jI; // Must have a statement here
 }
 
-void ExampleNLPBanded::imp_calc_Gf_full(
+void ExampleNLPBanded::imp_calc_Gf_orig(
 	const VectorSlice            &x_full
 	,bool                        newx
 	,const ObjGradInfoSerial     &obj_grad_info
 	) const
 {
 	inform_new_point(newx);
-	*obj_grad_info.Gf = x_full;
+	const Range1D var_orig(1,imp_n_orig());
+	(*obj_grad_info.Gf)(var_orig) = x_full(var_orig);
 }
 
 bool ExampleNLPBanded::imp_get_next_basis(
@@ -260,24 +279,46 @@ bool ExampleNLPBanded::imp_get_next_basis(
 		return false; // Already gave this basis selection.
 	// Select the first nD variables as basis variables which gives
 	// a nice banded matrix for the basis matrix C.
+	// Also, if the general inequality constraints are begin
+	// converted to equalities with slacks, make the slack variables
+	// basic variables also (put them first).
+#ifdef _DEBUG
 	assert(var_perm);
 	assert(equ_perm);
 	assert(rank);
-	var_perm->resize(nD_+nI_);
-	equ_perm->resize(nD_+mU_);
-	LinAlgPack::identity_perm( var_perm );
+#endif
+	const bool         cinequtoequ = this->convert_inequ_to_equ();
+	const size_type    n_orig = nD_ + nI_;
+	const size_type    n_full = n_orig + ( cinequtoequ ? mI_ : 0 );
+	const size_type    m_full = nD_    + ( cinequtoequ ? mI_ : 0 );
+	var_perm->resize(n_full);
+	equ_perm->resize(m_full);
+	if( cinequtoequ && mI_ ) {
+		index_type k;
+		// basic variables
+		for( k = 1; k <= mI_; ++k )         // Put slacks first
+			(*var_perm)(k) = n_orig + k;
+		for( k = 1; k <= nD_; ++k )         // Followed by xD
+			(*var_perm)(mI_ + k) = k;
+		// non-basic variables
+		for( k = 1; k <= nI_; ++k )         // Followed by nI
+			(*var_perm)(mI_+nD_ + k) = nD_ + k;
+	}
+	else {
+		LinAlgPack::identity_perm( var_perm );
+	}
 	LinAlgPack::identity_perm( equ_perm );
-	*rank = nD_;
+	*rank = m_full;
 	basis_selection_was_given_ = true;
 	return true;
 }
 
-void ExampleNLPBanded::imp_report_full_final_solution(
-	const VectorSlice      &x_full
-	,const VectorSlice     *lambda_full
-	,const SpVectorSlice   *lambdaI_full
-	,const SpVectorSlice   *nu_full
-	,bool                  optimal
+void ExampleNLPBanded::imp_report_orig_final_solution(
+	const VectorSlice      &x_orig
+	,const VectorSlice     *lambda_orig
+	,const VectorSlice     *lambdaI_orig
+	,const VectorSlice     *nu_orig
+	,bool                  is_optimal
 	) const
 {
 	// ToDo: Do something with the final soltuion?
@@ -285,24 +326,24 @@ void ExampleNLPBanded::imp_report_full_final_solution(
 
 // Overridden protected methods from NLPSerialPreprocessExplJac */
 
-size_type ExampleNLPBanded::imp_Gc_nz_full() const
+size_type ExampleNLPBanded::imp_Gc_nz_orig() const
 {
-	return Gc_full_nz_;
+	return Gc_orig_nz_;
 }
 
-size_type ExampleNLPBanded::imp_Gh_nz_full() const
+size_type ExampleNLPBanded::imp_Gh_nz_orig() const
 {
-	return Gh_full_nz_;
+	return Gh_orig_nz_;
 }
 
-void ExampleNLPBanded::imp_calc_Gc_full(
-	const VectorSlice& x, bool newx
+void ExampleNLPBanded::imp_calc_Gc_orig(
+	const VectorSlice& x_full, bool newx
 	, const FirstOrderExplInfo& first_order_expl_info
 	) const
 {
 	inform_new_point(newx);
 	// Compute c(x) if not already
-	this->imp_calc_c_full( x, newx, zero_order_full_info() );
+	this->imp_calc_c_orig( x_full, newx, zero_order_orig_info() );
 	Vector
 		&c = *first_order_expl_info.c; // This must not be NULL!
 	// Get references/pointers to data for Gc to be computed/updated.
@@ -327,7 +368,7 @@ void ExampleNLPBanded::imp_calc_Gc_full(
 		ds_beta = diag_scal_;
 	for( size_type q_i = 1; q_i <= nI_; ++q_i ) {
 		const value_type
-			x_q = x(nD_ + q_i),
+			x_q = x_full(nD_ + q_i),
 			x_q_term = (x_q + 1) * (x_q + 1);
 		const size_type num_I_per_D_local = num_I_per_D + ( q_i <= I_remainder ? 1 : 0 );
 		for( size_type q_k = 0; q_k < num_I_per_D_local; ++q_k ) {
@@ -364,7 +405,7 @@ void ExampleNLPBanded::imp_calc_Gc_full(
 			}}
 			//
 			++Gc_nz;
-			*Gc_val++ = 2.0 * (c(j) - co_full_(j)) / (x_q + 1);
+			*Gc_val++ = 2.0 * (c(j) - co_orig_(j)) / (x_q + 1);
 			if(Gc_ivect) {
 				*Gc_ivect++ = nD_ + q_i;
 				*Gc_jvect++ = j;
@@ -373,13 +414,51 @@ void ExampleNLPBanded::imp_calc_Gc_full(
 	}
 }
 
-void ExampleNLPBanded::imp_calc_Gh_full(
+void ExampleNLPBanded::imp_calc_Gh_orig(
 	const VectorSlice& x_full, bool newx
 	, const FirstOrderExplInfo& first_order_expl_info
 	) const
 {
 	inform_new_point(newx);
-	assert(0); //  ToDo: Implemenet!
+	// Get references/pointers to data for Gh to be computed/updated.
+	index_type
+		&Gh_nz = *first_order_expl_info.Gh_nz;
+	value_type
+		*Gh_val = &(*first_order_expl_info.Gh_val)[0];
+	index_type
+		*Gh_ivect = ( first_order_expl_info.Gh_ivect
+					  ? &(*first_order_expl_info.Gh_ivect)[0] : NULL ),
+		*Gh_jvect = ( first_order_expl_info.Gh_jvect
+					  ? &(*first_order_expl_info.Gh_jvect)[0] : NULL );
+	assert( (Gh_ivect != NULL) == (Gh_jvect != NULL) );
+	// Set nonzeros for Gh (in sorted compressed column format w.r.t., i.e. grouped by constraints)
+	const size_type
+		num_I_per_D = nD_ / nI_,  // Integer division (rounds down)
+		I_remainder = nD_ % nI_;
+	Gh_nz = 0;
+	size_type jI = 0;
+	for( size_type q_i = 1; q_i <= nI_; ++q_i ) {
+		const size_type   nD_q_i = nD_ + q_i;
+		const value_type  x_q = x_full(nD_q_i);
+		const size_type   num_I_per_D_local = num_I_per_D + ( q_i <= I_remainder ? 1 : 0 );
+		for( size_type q_k = 0; q_k < num_I_per_D_local; ++q_k ) {
+			++jI;
+			// w.r.t. x(jI)
+			++Gh_nz;
+			*Gh_val++ = 1.0;
+			if(Gh_ivect) {
+				*Gh_ivect++ = jI;
+				*Gh_jvect++ = jI;
+			}
+			// w.r.t. x(nD+q(jI))
+			++Gh_nz;
+			*Gh_val++ = -1.0;
+			if(Gh_ivect) {
+				*Gh_ivect++ = nD_q_i;
+				*Gh_jvect++ = jI;
+			}
+		}
+	}
 }
 
 // private
@@ -392,7 +471,7 @@ void ExampleNLPBanded::assert_is_initialized() const
 void ExampleNLPBanded::inform_new_point(bool newx) const
 {
 	if(newx) {
-		c_full_updated_ = false;
+		c_orig_updated_ = false;
 	}
 }
 

@@ -34,7 +34,7 @@ namespace NLPInterfacePack {
  *              center diagonal i==j that have non-zero element)
  * <li> \c mU : the number of undecomposed dependent constraints
  * <li> \c mI : the number of general constraints
- * <li> \c diag_scal : Constant scaling factory for the diagonal elements
+ * <li> \c diag_scal : Constant scaling factor for the diagonal elements
  * <li> \c diag_vary : The scaling factor for the diagonal elements (to produce
  *                     illconditioning) between the largets and the smallest.
  * <li> \c sym_basis : True if the basis (selected by the NLP) is symmetric or not.
@@ -97,7 +97,7 @@ namespace NLPInterfacePack {
     
                       /  -3/(j-i) * (x(nD+q(j)) + 1)^2         : i - klu(i) <= j < i
                       |
-                      |  10 * (x(nD+q(j)) + 1)^2               : i == j
+                      |  ds(j) * (x(nD+q(j)) + 1)^2            : i == j
    d(c(j))/d(x(i)) =  |
                       |  -3/(i-j) * (x(nD+q(j)) + 1)^2         : i < j <= i + kuu(i)
                       |
@@ -201,43 +201,43 @@ protected:
 	///
 	bool imp_nlp_has_changed() const;
 	///
-	size_type imp_n_full() const;
+	size_type imp_n_orig() const;
 	///
-	size_type imp_m_full() const;
+	size_type imp_m_orig() const;
 	///
-	size_type imp_mI_full() const;
+	size_type imp_mI_orig() const;
 	///
-	const VectorSlice imp_xinit_full() const;
+	const VectorSlice imp_xinit_orig() const;
 	///
 	bool imp_has_var_bounds() const;
 	///
-	const VectorSlice imp_xl_full() const;
+	const VectorSlice imp_xl_orig() const;
 	///
-	const VectorSlice imp_xu_full() const;
+	const VectorSlice imp_xu_orig() const;
 	///
-	const VectorSlice imp_hl_full() const;
+	const VectorSlice imp_hl_orig() const;
 	///
-	const VectorSlice imp_hu_full() const;
+	const VectorSlice imp_hu_orig() const;
 	///
-	void imp_calc_f_full(
+	void imp_calc_f_orig(
 		const VectorSlice            &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const;
 	///
-	void imp_calc_c_full(
+	void imp_calc_c_orig(
 		const VectorSlice            &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const;
 	///
-	void imp_calc_h_full(
+	void imp_calc_h_orig(
 		const VectorSlice            &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const;
 	///
-	void imp_calc_Gf_full(
+	void imp_calc_Gf_orig(
 		const VectorSlice            &x_full
 		,bool                        newx
 		,const ObjGradInfoSerial     &obj_grad_info
@@ -249,12 +249,12 @@ protected:
 		,size_type   *rank
 		);
 	///
-	void imp_report_full_final_solution(
-		const VectorSlice      &x_full
-		,const VectorSlice     *lambda_full
-		,const SpVectorSlice   *lambdaI_full
-		,const SpVectorSlice   *nu_full
-		,bool                  optimal
+	void imp_report_orig_final_solution(
+		const VectorSlice      &x_orig
+		,const VectorSlice     *lambda_orig
+		,const VectorSlice     *lambdaI_orig
+		,const VectorSlice     *nu_orig
+		,bool                  is_optimal
 		) const;
 
 	//@}
@@ -263,16 +263,16 @@ protected:
 	//@{
 
 	///
-	size_type imp_Gc_nz_full() const;
+	size_type imp_Gc_nz_orig() const;
 	///
-	size_type imp_Gh_nz_full() const;
+	size_type imp_Gh_nz_orig() const;
 	///
-	void imp_calc_Gc_full(
+	void imp_calc_Gc_orig(
 		const VectorSlice& x_full, bool newx
 		, const FirstOrderExplInfo& first_order_expl_info
 		) const;
 	///
-	void imp_calc_Gh_full(
+	void imp_calc_Gh_orig(
 		const VectorSlice& x_full, bool newx
 		, const FirstOrderExplInfo& first_order_expl_info
 		) const;
@@ -300,18 +300,18 @@ private:
 	size_type    mU_;
 	size_type    mI_;
 
-	size_type    Gc_full_nz_;
-	size_type    Gh_full_nz_;
+	size_type    Gc_orig_nz_;
+	size_type    Gh_orig_nz_;
 
-	Vector       xinit_full_;
-	Vector       xl_full_;
-	Vector       xu_full_;
-	Vector       hl_full_;
-	Vector       hu_full_;
+	Vector       xinit_orig_;
+	Vector       xl_orig_;
+	Vector       xu_orig_;
+	Vector       hl_orig_;
+	Vector       hu_orig_;
 
-	Vector       co_full_;
+	Vector       co_orig_;
 
-	mutable bool  c_full_updated_;
+	mutable bool  c_orig_updated_;
 
 	value_type   diag_scal_;
 	value_type   diag_vary_;
