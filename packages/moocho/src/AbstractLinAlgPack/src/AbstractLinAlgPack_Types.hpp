@@ -102,6 +102,7 @@ template <class M_itfc, class M_impl, class T_PostMod>  class MatrixSpaceStd;
 
 class VectorSpaceCompositeStd;
 class VectorWithOpMutableCompositeStd;
+class MatrixWithOpSubView;
 class MatrixCompositeStd;
 class MatrixSymIdentity;
 class MatrixSymDiagonalStd;

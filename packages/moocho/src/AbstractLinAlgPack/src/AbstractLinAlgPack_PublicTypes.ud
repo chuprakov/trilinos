@@ -69,6 +69,7 @@ using AbstractLinAlgPack::MatrixSpaceStd;
 
 using AbstractLinAlgPack::VectorSpaceCompositeStd;
 using AbstractLinAlgPack::VectorWithOpMutableCompositeStd;
+using AbstractLinAlgPack::MatrixWithOpSubView;
 using AbstractLinAlgPack::MatrixCompositeStd;
 using AbstractLinAlgPack::MatrixSymIdentity;
 using AbstractLinAlgPack::MatrixSymDiagonalStd;
