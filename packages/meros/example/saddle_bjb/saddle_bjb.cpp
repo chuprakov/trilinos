@@ -46,6 +46,8 @@
 #include "TSFPreconditioner.h"
 #include "TSFMatrixOperator.h"
 #include "Epetra_Vector.h"
+#include "TSFHashtable.h"
+
 
 #ifdef EPETRA_MPI
 #include "Epetra_MpiComm.h"
@@ -156,13 +158,18 @@ int main(int argc, void** argv)
   
   // 1) Build solver for inv(F) so that it corresponds to using GMRES with ML.
 
-  TSFLinearSolver FSolver;
-  ML_solverData   Fsolver_data;
-  
-  bool symmetric = false;
-
-  ML_TSF_defaults(FSolver, &Fsolver_data, symmetric, F_crs);
-  FSolver.setVerbosityLevel(4);
+  TSFHashtable<int, int> azOptionsF;
+  TSFHashtable<int, double> azParamsF;
+  azOptionsF.put(AZ_solver, AZ_gmres);
+  azOptionsF.put(AZ_ml, 1);
+  azOptionsF.put(AZ_ml_levels, 4);
+  azOptionsF.put(AZ_precond, AZ_dom_decomp);
+  azOptionsF.put(AZ_subdomain_solve, AZ_ilu);
+  azParamsF.put(AZ_tol, 1e-6);
+  azOptionsF.put(AZ_max_iter, 200);
+  azOptionsF.put(AZ_recursive_iterate, 1);
+  TSFLinearSolver FSolver = new AZTECSolver(azOptionsF,azParamsF);
+  FSolver.setVerbosityLevel(4);  
   
   TSFLinearOperator F_inv = F_tsf.inverse(FSolver);
   
@@ -171,13 +178,28 @@ int main(int argc, void** argv)
   //   Using a X = inv(Ap)(B * Dinv * Bt)inv(Ap), where Ap = C;
 
   // solver for Xinv
-  int fill = 0;
-  int overlap = 0; 
-  double tol = 1.0e-8;
-  int maxiter = 100;
-  int kspace = 100;
-  // unpreconditioned GMRES
-  TSFLinearSolver ApSolver = new GMRESSolver(tol, maxiter, kspace);
+//   int fill = 0;
+//   int overlap = 0; 
+//   double tol = 1.0e-8;
+//   int maxiter = 100;
+//   int kspace = 100;
+//   // unpreconditioned GMRES
+//   TSFLinearSolver ApSolver = new GMRESSolver(tol, maxiter, kspace);
+
+  TSFHashtable<int, int> azOptionsAp;
+  TSFHashtable<int, double> azParamsAp;
+  azOptionsAp.put(AZ_solver, AZ_gmres);
+  azOptionsAp.put(AZ_ml, 1);
+  //  azOptionsAp.put(AZ_ml_sym, 1);
+  azOptionsAp.put(AZ_ml_levels, 4);
+  azOptionsAp.put(AZ_precond, AZ_dom_decomp);
+  azOptionsAp.put(AZ_subdomain_solve, AZ_ilu);
+  azParamsAp.put(AZ_tol, 1e-6);
+  azOptionsAp.put(AZ_max_iter, 200);
+  azOptionsAp.put(AZ_recursive_iterate, 1);
+  azOptionsAp.put(AZ_output, 1);
+  TSFLinearSolver ApSolver = new AZTECSolver(azOptionsAp,azParamsAp);
+
   ApSolver.setVerbosityLevel(4);
   
 
