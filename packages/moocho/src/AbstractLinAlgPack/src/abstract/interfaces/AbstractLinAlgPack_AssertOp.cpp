@@ -42,13 +42,18 @@ public:
 	const char                            *vec_space2_name;
 }; // end dum_vec_spaces
 
+// Notice!!!!!!!  Place a breakpoint in following function in order to halt the
+// program just before an exception is thrown!
+
 std::ostream& operator<<( std::ostream& o, const dump_vec_spaces& d )
 {
-	o << "Error, " << d.vec_space1_name << " of type \'" << typeid(d.vec_space1).name()
+	o << "Error, " << d.vec_space1_name << " at address " << &d.vec_space1
+	  << " of type \'" << typeid(d.vec_space1).name()
 	  << "\' with dimension " << d.vec_space1_name << ".dim() = " << d.vec_space1.dim()
 	  << " is not compatible with "
-	  << d.vec_space2_name << " of type \'" << typeid(d.vec_space2).name()
-	  << "\' with dimension " << d.vec_space2_name << ".dim()" << d.vec_space2.dim();
+	  << d.vec_space2_name  << " at address " << &d.vec_space2
+	  << " of type \'" << typeid(d.vec_space2).name()
+	  << "\' with dimension " << d.vec_space2_name << ".dim() = " << d.vec_space2.dim();
 }
 
 enum EM_VS { SPACE_COLS, SPACE_ROWS };
@@ -79,6 +84,10 @@ const AbstractLinAlgPack::VectorSpace& op(
 		,FUNC_NAME << " : Error!"                                                      \
 		);
 
+// Notice!!!!!!!  Setting a breakpoint a the line number that is printed by this macro
+// and then trying to set the condition !is_compatible does not work (at least not
+// in gdb).
+
 #define ASSERT_VEC_SPACES_NAMES(FUNC_NAME,VS1,VS1_NAME,VS2,VS2_NAME)                   \
 {                                                                                      \
 	const bool is_compatible = (VS1).is_compatible(VS2);                               \
@@ -88,27 +97,27 @@ const AbstractLinAlgPack::VectorSpace& op(
 		)                                                                              \
 }
 
-#define ASSERT_VEC_SPACES(FUNC_NAME,VS1,VS2)                                           \
-ASSERT_VEC_SPACES_NAMES(FUNC_NAME,VS1," ## VS1 ## ",VS2," ## VS2 ## ")
+#define ASSERT_VEC_SPACES(FUNC_NAME,VS1,VS2)                                              \
+ASSERT_VEC_SPACES_NAMES(FUNC_NAME,VS1,#VS1,VS2,#VS2)
 
 #define ASSERT_MAT_VEC_SPACES(FUNC_NAME,M,M_T,M_VS,VS)                                    \
 {                                                                                         \
 	std::ostringstream M_VS_name;                                                         \
-	M_VS_name << "(" << " ## M ## " << ( M_T == BLAS_Cpp::no_trans ? "" : "'" ) << ")"    \
+	M_VS_name << "(" #M << ( M_T == BLAS_Cpp::no_trans ? "" : "'" ) << ")"                \
 			   << "." << ( M_VS == SPACE_COLS ? "space_cols()" : "space_rows()" );        \
 	ASSERT_VEC_SPACES_NAMES(                                                              \
 		FUNC_NAME                                                                         \
 		,op(M,M_T,M_VS),M_VS_name.str().c_str()                                           \
-		,VS," ## VS ##"                                                                   \
+		,VS,#VS                                                                           \
 		)                                                                                 \
 }
 
 #define ASSERT_MAT_MAT_SPACES(FUNC_NAME,M1,M1_T,M1_VS,M2,M2_T,M2_VS)                      \
 {                                                                                         \
 	std::ostringstream M1_VS_name, M2_VS_name;                                            \
-	M1_VS_name << "(" << " ## M1 ## " << ( M1_T == BLAS_Cpp::no_trans ? "" : "'" ) << ")" \
+	M1_VS_name << "(" #M1 << ( M1_T == BLAS_Cpp::no_trans ? "" : "'" ) << ")" \
 			   << "." << ( M1_VS == SPACE_COLS ? "space_cols()" : "space_rows()" );       \
-	M2_VS_name << "(" << " ## M2 ## " << ( M2_T == BLAS_Cpp::no_trans ? "" : "'" ) << ")" \
+	M2_VS_name << "(" #M2 << ( M2_T == BLAS_Cpp::no_trans ? "" : "'" ) << ")" \
 			   << "." << ( M2_VS == SPACE_COLS ? "space_cols()" : "space_rows()" );       \
 	ASSERT_VEC_SPACES_NAMES(                                                              \
 		FUNC_NAME                                                                         \
