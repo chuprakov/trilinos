@@ -224,7 +224,16 @@ void LinearOperator<Scalar>::setBlock(int i, int j,
   b->setBlock(i, j, sub);
 } 
 
-
+//=============================================================================
+template <class Scalar>
+void LinearOperator<Scalar>::finalize(bool zerofill)
+{
+  BlockOperator<Scalar>* b = dynamic_cast<BlockOperator<Scalar>* >(ptr().get());
+  
+  TEST_FOR_EXCEPTION(b == 0, runtime_error, 
+		   "Can't call finalize since operator not BlockOperator");
+  b->finalize(zerofill);
+}
 
 //=============================================================================
 

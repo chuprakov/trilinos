@@ -159,6 +159,8 @@ namespace TSFExtended
     void setBlock(int i, int j, 
 		  const LinearOperator<Scalar>& sub);
 
+      void finalize(bool zerofill);
+
       /** Describe function */
       string describe() const
       {

@@ -36,9 +36,11 @@
 
  
 using namespace TSFExtended;
-using namespace Teuchos;
-
+//using namespace Teuchos;
+using Teuchos::Array;
+using Teuchos::RefCountPtr;
 using std::ostream;
+
 
 
 //========================================================================

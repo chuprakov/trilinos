@@ -180,7 +180,7 @@ void BlockOperator<Scalar>::applyReg(const TSFCore::Vector<Scalar>& arg,
 				     TSFCore::Vector<Scalar>* out, 
 				     const Scalar beta) const
 {
-  TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
+  TEST_FOR_EXCEPTION(!isFinal_, runtime_error, "Operator not finalized");
 
   for (int i=0; i<nBlockRows_; i++)
     {
@@ -219,7 +219,7 @@ void BlockOperator<Scalar>::applyTrans(const TSFCore::Vector<Scalar>& arg,
 				       TSFCore::Vector<Scalar>* out,
 				       const Scalar beta) const
 {
-  TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
+  TEST_FOR_EXCEPTION(!isFinal_, runtime_error, "Operator not finalized");
 
   for (int i=0; i<nBlockCols_; i++)
     {
@@ -259,7 +259,7 @@ void BlockOperator<Scalar>::applyTrans(const TSFCore::Vector<Scalar>& arg,
 template <class Scalar>
 LinearOperator<Scalar> BlockOperator<Scalar>::formTranspose() const
 {
-  TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
+  TEST_FOR_EXCEPTION(!isFinal_, runtime_error, "Operator not finalized");
 
   BlockOperator<Scalar> trans(range_, domain_);
 //   LinearOperator<Scalar> opTrp = new BlockOperator<Scalar>(range_, domain_);
@@ -286,7 +286,7 @@ LinearOperator<Scalar> BlockOperator<Scalar>::formTranspose() const
 template <class Scalar>
 void BlockOperator<Scalar>::print(ostream& os) const 
 {
-  TEST_FOR_EXCEPTION(isFinal_, runtime_error, "Operator not finalized");
+  TEST_FOR_EXCEPTION(!isFinal_, runtime_error, "Operator not finalized");
   os << "<BlockOperator nRows=\"" << nBlockRows_ 
      << "\" nCols=\"" << nBlockCols_ << "\">" << endl;
   for (int i=0; i<nBlockRows_; i++)
@@ -413,7 +413,7 @@ string BlockOperator<Scalar>::describe(int depth) const
       for (int j = 0; j < nBlockCols_; j++)
 	{
 	  ret.append(spaces + "   Block " + Teuchos::toString(i) + ", "
-		     + Teuchos::toString(j) + " is\n");
+		     + Teuchos::toString(j) + " is");
 	  OpDescribableByTypeID<Scalar>* mat = 
 	    dynamic_cast<OpDescribableByTypeID<Scalar>* > (sub_[i][j].ptr().get());
 	  //	    (&(*(getBlock(i,j).getPtr())));
@@ -425,7 +425,7 @@ string BlockOperator<Scalar>::describe(int depth) const
 	    }
 	  else
 	    {
-	      ret.append(mat->describe(depth+1));
+	      ret.append(mat->describe(depth+1) + "\n");
 	    }
 
 	}

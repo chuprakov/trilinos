@@ -35,7 +35,7 @@
 #include "TSFVectorSpace.hpp"
 #include "TSFEpetraVectorType.hpp"
 #include "TSFEpetraVectorSpace.hpp"
-#include "TSFCoreEpetraVectorSpace.hpp"
+//#include "TSFCoreEpetraVectorSpace.hpp"
 #include "Teuchos_Time.hpp"
 #include "Teuchos_MPIComm.hpp"
 //#include "TSFLinearSolver.hpp"
@@ -45,13 +45,13 @@
 //#include "TSFInverseOperator.hpp"
 #include "TSFLinearOperator.hpp"
 #include "TSFEpetraMatrix.hpp"
-#include "TSFCoreLinearOp.hpp"
+//#include "TSFCoreLinearOp.hpp"
 #include "TSFIdentityOperator.hpp"
 #include "TSFZeroOperator.hpp"
 #include "TSFBlockOperator.hpp"
 
 
-using namespace Teuchos;
+//using namespace Teuchos;
 using namespace TSFExtended;
 using namespace TSFExtendedOps;
 
@@ -147,32 +147,45 @@ int main(int argc, void *argv[])
       vec.zero();
       vec2.zero();
 
-//       VectorSpace<double> pvs = 
-// 	new ProductVectorSpace<double>(space, space2);
-//       cerr << "Created a product vector space\n";
-//       cerr << pvs.describe() << endl;
+      VectorSpace<double> pvs = 
+	new ProductVectorSpace<double>(space, space2);
+      cerr << "Created a product vector space\n";
+      cerr << pvs.describe() << endl;
 
-//       cerr << "Creating ProductVector" << endl;
-//       Vector<double> pv = pvs.createMember();
-//       cerr << pv.describe() << endl;
+      cerr << "Creating ProductVector" << endl;
+      Vector<double> pv = pvs.createMember();
+      cerr << pv.describe() << endl;
       
-//       pv.setBlock(0, vec);
-//       pv.setBlock(1, vec2);
-//       cerr << "Set the blocks of the pv\n";
-//       cerr << pv.describe() << endl;
+      pv.setBlock(0, vec);
+      pv.setBlock(1, vec2);
+      cerr << "Set the blocks of the pv\n";
+      cerr << pv.describe() << endl;
 
 
-//       cerr << "Setting up block Operator" << endl;
-//       LinearOperator<double> B = new BlockOperator<double>(pvs, pvs);
-//       cerr << "B = " << B.describe() << endl;
+      cerr << "Setting up block Operator" << endl;
+      LinearOperator<double> B = new BlockOperator<double>(pvs, pvs);
+      cerr << "B = " << B.describe() << endl;
 
-//       cerr << "Getting nBlockRows = " << B.numBlockRows() << endl;
-
-
-//       cerr << "Setting up the blocks" << endl;
-//       B.setBlock(0, 0, I);
+      cerr << "Getting nBlockRows = " << B.numBlockRows() << endl;
 
 
+      cerr << "Setting up the blocks" << endl;
+      B.setBlock(0, 0, I);
+
+      
+      LinearOperator<double> I2 = new IdentityOperator<double>(space2);
+      B.setBlock(1, 1, I2);
+     
+      B.finalize(true);
+      cerr << "B set up and finalized" << endl;
+      cerr << B.describe() << endl;
+
+
+      vec.setToConstant(1.0);
+      vec2.setToConstant(1.0);
+      /* Let's do a matrix-vect mult  */
+      Vector<double> r = B*pv;
+      cerr << "Did a mv mult; norm of r = " << pow(r.norm2(), 2) << endl;
 
       /* Try Block operators  */
 

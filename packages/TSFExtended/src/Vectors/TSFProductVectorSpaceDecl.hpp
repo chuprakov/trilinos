@@ -38,12 +38,13 @@
 #include "TSFCoreProductVectorSpaceDecl.hpp"
 #include "TSFVecSpaceDescribableByTypeID.hpp"
 #include "TSFVectorSpaceDecl.hpp"
-#include "TSFCoreMultiVector.hpp"
-#include "TSFMultiVector.hpp"
+//#include "TSFCoreMultiVector.hpp"
+//#include "TSFMultiVector.hpp"
 
 namespace TSFExtended
 {
-  using namespace Teuchos;
+  //using namespace Teuchos;
+  using Teuchos::Array;
 
   /** Implementation of a product vector space. */
 
