@@ -14,11 +14,6 @@
 // above mentioned "Artistic License" for more details.
 //
 
-// disable VC 5.0 warnings about debugger limitations
-#pragma warning(disable : 4786)	
-// disable VC 5.0 warnings about truncated identifier names (templates).
-#pragma warning(disable : 4503)	
-
 #include <assert.h>
 
 #include <fstream>
@@ -29,9 +24,7 @@
 
 #include "ExampleNLPFirstOrderDirectRun.h"
 #include "ExampleNLPFirstOrderDirect.h"
-//#include "ReducedSpaceSQPPack/include/rSQPAlgoClientInterface.h"
 #include "GeneralIterationPack/include/AlgorithmTrack.h"
-#include "NLPInterfacePack/test/test_nlp_first_order_direct.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/BasisSystem.h"
 #include "OptionsFromStream.h"
@@ -97,22 +90,6 @@ NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 
 	// Run rSQP++ using the MamaJama configuration
 	solve_return = solver.solve_nlp();
-/*	
-	switch(solve_return) {
-		case rSQPppSolver::SOLVE_RETURN_SOLVED:
-		case rSQPppSolver::SOLVE_RETURN_MAX_ITER:
-		case rSQPppSolver::SOLVE_RETURN_MAX_RUN_TIME:
-			if(error_out)
-				*error_out   << "Congradulations!  The vector space and NLP class seems to check out!\n";
-			break;
-		case rSQPppSolver::SOLVE_RETURN_NLP_TEST_FAILED:
-		case rSQPppSolver::SOLVE_RETURN_EXCEPTION:
-			if(error_out)
-				*error_out   << "Oh No!  Something did not checkout!\n";
-			break;
-		default:
-			assert(0);
-	}
-*/
+
 	return solve_return;
 }
