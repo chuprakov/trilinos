@@ -24,6 +24,10 @@ namespace AbstractLinAlgPack {
 
 ///
 /** Simple diagonal matrix class.
+ *
+ * ToDo: Implement clone_mswons() and deal with this->diag_ptr().count() > 1
+ * by cloning vector if told to.  This allows lazy evaluation of the clone_mswons()
+ * method.
  */
 class MatrixSymDiagonalStd
 	: public virtual MatrixSymInitDiagonal
@@ -45,7 +49,15 @@ public:
 	/** @name Access */
 	//@{
 
-	/// Give access to the diagonal vector (or NULL if not initialized)
+	///
+	/** Give non-const access to the diagonal vector.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->diag_ptr().get() != NULL</tt> (throw <tt>???</tt>)
+	 * </ul>
+	 *
+	 * ToDo: Finish documentation!
+	 */
 	VectorWithOpMutable& diag();
 	///
 	const VectorWithOp& diag() const;
