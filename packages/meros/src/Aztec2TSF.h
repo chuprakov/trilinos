@@ -21,7 +21,9 @@
  * RESPONSIBILITY FOR THE ACCURACY, COMPLETENESS, OR USEFULNESS OF ANY
  * INFORMATION, APPARATUS, PRODUCT, OR PROCESS DISCLOSED, OR REPRESENTS
  * THAT ITS USE WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS. */
-
+#ifndef AZTEC
+#define AZTEC
+#endif
 #ifndef _AZTEC2TSF_H_
 #define _AZTEC2TSF_H_
 
@@ -41,6 +43,8 @@
 #include "Epetra_VbrMatrix.h"
 #include "Epetra_CrsMatrix.h"
 #include "TSFLinearOperator.h"
+#include "TSFHashtable.h"
+#include "ml_include.h"
 
 extern int Aztec2TSF(   AZ_MATRIX * Amat, 
 			Epetra_Comm * & junkcomm,
@@ -59,6 +63,24 @@ extern int TSF_MatrixMult(const TSF::TSFLinearOperator& B,const TSF::TSFLinearOp
 			  TSF::TSFLinearOperator& result);
 extern int TSF_MatrixAdd(const TSF::TSFLinearOperator& B,const TSF::TSFLinearOperator& Bt, double scalar, 
 			  TSF::TSFLinearOperator& result);
+
+struct ML_TSF_data {
+  TSF::TSFHashtable<int, int>  azOptions;
+  TSF::TSFHashtable<int, double>  azParams;
+  ML *ml;
+  TSF::TSFSmartPtr<double> aztec_status;
+  TSF::TSFSmartPtr<int> aztec_proc_config;
+};
+typedef struct ML_TSF_data ML_solverData;
+
+  
+
+extern int ML_TSF_defaults(TSF::TSFLinearSolver &FSolver,
+			   ML_solverData *,
+			   bool symmetric,
+			   Epetra_RowMatrix *);
+
+
 
 
 #endif /* _VBR2PETRA_H_ */
