@@ -80,7 +80,7 @@ SerialVectorSpaceStd<Scalar>::createMembers(int numMembers) const
 	return Teuchos::rcp(
 		new SerialMultiVectorStd<Scalar>(
 			Teuchos::rcp(this,false)
-			,Teuchos::rcp_dynamic_cast<const ScalarProdVectorSpaceBase<Scalar> >(smallVecSpcFcty()->createVecSpc(numMembers),true)
+			,Teuchos::rcp_dynamic_cast<const ScalarProdVectorSpaceBase<Scalar> >(this->smallVecSpcFcty()->createVecSpc(numMembers),true)
 			)
 		);
 #else

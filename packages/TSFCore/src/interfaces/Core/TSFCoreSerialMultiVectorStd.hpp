@@ -103,7 +103,7 @@ void SerialMultiVectorStd<Scalar>::initialize(
   leadingDim_  = leadingDim;
 	numRows_     = range->dim();
 	numCols_     = domain->dim();
-  updateSpace();
+  this->updateSpace();
 }
 
 template<class Scalar>
@@ -124,7 +124,7 @@ void SerialMultiVectorStd<Scalar>::uninitialize(
   values_      = Teuchos::null;
   leadingDim_  = 0;
 
-  updateSpace();
+  this->updateSpace();
 }
 
 // Overridden from EuclideanLinearOpBase
@@ -172,7 +172,7 @@ SerialMultiVectorStd<Scalar>::subView( const Range1D& col_rng_in )
 #ifdef TSFCORE_SERIAL_MULTI_VECTOR_STD_VERBOSE_TO_ERROR_OUT
   std::cerr << "\nSerialMultiVectorStd<Scalar>::subView() called!\n";
 #endif
-	const Range1D colRng = validateColRange(col_rng_in);
+	const Range1D colRng = this->validateColRange(col_rng_in);
   return Teuchos::rcp(
     new SerialMultiVectorStd<Scalar>(
       range_

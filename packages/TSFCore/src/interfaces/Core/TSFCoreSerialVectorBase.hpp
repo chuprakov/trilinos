@@ -84,7 +84,7 @@ void SerialVectorBase<Scalar>::applyOp(
 #endif
 	in_applyOp_ = true;
 	TSFCore::apply_op_serial(
-		*space()
+		*(this->space())
 		,op,num_vecs,vecs,num_targ_vecs,targ_vecs,reduct_obj
 		,first_ele,sub_dim,global_offset
 		);
@@ -94,7 +94,7 @@ void SerialVectorBase<Scalar>::applyOp(
 template<class Scalar>
 void SerialVectorBase<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::SubVectorT<Scalar>* sub_vec ) const
 {
-	const Index   this_dim = space()->dim(); // ToDo: Cache this!
+	const Index   this_dim = this->space()->dim(); // ToDo: Cache this!
 	const Range1D rng      = RangePack::full_range(rng_in,1,this_dim);
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(
@@ -122,7 +122,7 @@ void SerialVectorBase<Scalar>::freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_
 template<class Scalar>
 void SerialVectorBase<Scalar>::getSubVector( const Range1D& rng_in, RTOpPack::MutableSubVectorT<Scalar>* sub_vec )
 {
-	const Index   this_dim = space()->dim(); // ToDo: Cache this!
+	const Index   this_dim = this->space()->dim(); // ToDo: Cache this!
 	const Range1D rng      = RangePack::full_range(rng_in,1,this_dim);
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(

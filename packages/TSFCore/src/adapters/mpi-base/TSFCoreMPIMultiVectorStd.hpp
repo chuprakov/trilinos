@@ -77,7 +77,7 @@ void MPIMultiVectorStd<Scalar>::initialize(
   domainSpace_   = domainSpace;
   localValues_   = localValues;
   leadingDim_    = leadingDim;
-  updateMpiSpace();
+  this->updateMpiSpace();
 }
 
 template<class Scalar>
@@ -98,7 +98,7 @@ void MPIMultiVectorStd<Scalar>::uninitialize(
   localValues_    = Teuchos::null;
   leadingDim_     = 0;
 
-  updateMpiSpace();
+  this->updateMpiSpace();
 }
 
 // Overridden from EuclideanLinearOpBase
@@ -142,7 +142,7 @@ MPIMultiVectorStd<Scalar>::subView( const Range1D& col_rng_in )
 #ifdef TSFCORE_MPI_MULTI_VECTOR_STD_VERBOSE_TO_ERROR_OUT
   std::cerr << "\nMPIMultiVectorStd<Scalar>::subView() called!\n";
 #endif
-	const Range1D colRng = validateColRange(col_rng_in);
+	const Range1D colRng = this->validateColRange(col_rng_in);
   return Teuchos::rcp(
     new MPIMultiVectorStd<Scalar>(
       mpiRangeSpace_

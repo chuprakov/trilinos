@@ -69,7 +69,7 @@ void MPIVectorStd<Scalar>::initialize(
   mpiSpace_      = mpiSpace;
   localValues_   = localValues;
   stride_        = stride;
-  updateMpiSpace();
+  this->updateMpiSpace();
 }
 
 template<class Scalar>
@@ -87,7 +87,7 @@ void MPIVectorStd<Scalar>::uninitialize(
   localValues_    = Teuchos::null;
   stride_         = 0;
 
-  updateMpiSpace();
+  this->updateMpiSpace();
 }
 
 // Overridden from MPIVectorBase

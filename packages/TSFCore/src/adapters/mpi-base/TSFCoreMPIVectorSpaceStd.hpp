@@ -44,7 +44,7 @@ template<class Scalar>
 MPIVectorSpaceStd<Scalar>::MPIVectorSpaceStd()
   :mpiComm_(MPI_COMM_NULL),localSubDim_(0),numProc_(0),procRank_(0)
 {
-	updateState();
+	this->updateState();
 }
 
 template<class Scalar>
@@ -74,7 +74,7 @@ void MPIVectorSpaceStd<Scalar>::initialize( MPI_Comm mpiComm, const Index localS
 #ifdef RTOp_USE_MPI
 	}
 #endif
-	updateState(globalDim);
+	this->updateState(globalDim);
 }
 
 template<class Scalar>
@@ -111,7 +111,7 @@ MPIVectorSpaceStd<Scalar>::createMembers(int numMembers) const
   return Teuchos::rcp(
     new MPIMultiVectorStd<Scalar>(
       Teuchos::rcp(this,false)
-      ,Teuchos::rcp_dynamic_cast<const ScalarProdVectorSpaceBase<Scalar> >(smallVecSpcFcty()->createVecSpc(numMembers),true)
+      ,Teuchos::rcp_dynamic_cast<const ScalarProdVectorSpaceBase<Scalar> >(this->smallVecSpcFcty()->createVecSpc(numMembers),true)
       ,Teuchos::rcp( new Scalar[localSubDim_*numMembers], Teuchos::DeallocArrayDelete<Scalar>(), true )
       ,localSubDim_
       )
@@ -160,7 +160,7 @@ MPIVectorSpaceStd<Scalar>::createMembersView( const RTOpPack::MutableSubMultiVec
   return Teuchos::rcp(
     new MPIMultiVectorStd<Scalar>(
       Teuchos::rcp(this,false)
-      ,Teuchos::rcp_dynamic_cast<const ScalarProdVectorSpaceBase<Scalar> >(smallVecSpcFcty()->createVecSpc(raw_mv.numSubCols()),true)
+      ,Teuchos::rcp_dynamic_cast<const ScalarProdVectorSpaceBase<Scalar> >(this->smallVecSpcFcty()->createVecSpc(raw_mv.numSubCols()),true)
       ,Teuchos::rcp( raw_mv.values(), false )
       ,raw_mv.leadingDim()
       )
@@ -177,7 +177,7 @@ MPIVectorSpaceStd<Scalar>::createMembersView( const RTOpPack::SubMultiVectorT<Sc
   return Teuchos::rcp(
     new MPIMultiVectorStd<Scalar>(
       Teuchos::rcp(this,false)
-      ,Teuchos::rcp_dynamic_cast<const ScalarProdVectorSpaceBase<Scalar> >(smallVecSpcFcty()->createVecSpc(raw_mv.numSubCols()),true)
+      ,Teuchos::rcp_dynamic_cast<const ScalarProdVectorSpaceBase<Scalar> >(this->smallVecSpcFcty()->createVecSpc(raw_mv.numSubCols()),true)
       ,Teuchos::rcp( const_cast<Scalar*>(raw_mv.values()), false )
       ,raw_mv.leadingDim()
       )

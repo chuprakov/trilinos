@@ -180,7 +180,7 @@ public:
 		)
 		{
 			TEST_FOR_EXCEPT( localDim < 2 );
-			setLocalDimensions(mpiComm,localDim,localDim); // We must tell the base class our local dimensions to setup range() and domain()
+			this->setLocalDimensions(mpiComm,localDim,localDim); // We must tell the base class our local dimensions to setup range() and domain()
 			mpiComm_  = mpiComm;
 			localDim_ = localDim;
 			MPI_Comm_size( mpiComm, &numProc_ );

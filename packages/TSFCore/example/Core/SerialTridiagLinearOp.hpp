@@ -108,7 +108,7 @@ public:
 		)
 		{
 			TEST_FOR_EXCEPT( dim < 2 );
-			setDimensions(dim,dim); // We must tell the base class our dimension to setup range() and domain()
+			this->setDimensions(dim,dim); // We must tell the base class our dimension to setup range() and domain()
 			dim_ = dim;
 			lower_.resize(dim-1);  for( int k = 0; k < dim-1; ++k ) lower_[k] = lower[k];
 			diag_.resize(dim);     for( int k = 0; k < dim;   ++k ) diag_[k]  = diag[k];

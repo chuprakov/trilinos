@@ -61,7 +61,7 @@ SummaryOutputter<Scalar>::SummaryOutputter(
 template<class Scalar>
 void SummaryOutputter<Scalar>::reset()
 {
-	Teuchos::RefCountPtr<ConvergenceTester<Scalar> > attachedConvTester = getAttachedConvTester();
+	Teuchos::RefCountPtr<ConvergenceTester<Scalar> > attachedConvTester = this->getAttachedConvTester();
 	if(attachedConvTester.get()) attachedConvTester->reset();
 	resetCalled_ = true;
 }
@@ -73,7 +73,7 @@ void SummaryOutputter<Scalar>::convStatus(
 	,bool                         isConverged[]
 	)
 {
-	Teuchos::RefCountPtr<ConvergenceTester<Scalar> > attachedConvTester = getAttachedConvTester();
+	Teuchos::RefCountPtr<ConvergenceTester<Scalar> > attachedConvTester = this->getAttachedConvTester();
 	if(attachedConvTester.get()) attachedConvTester->convStatus(solver,currNumSystems,isConverged);
 	else std::fill_n(isConverged,currNumSystems,false);
 	if(out_.get()) {
