@@ -92,7 +92,9 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 
-noinst_PROGRAMS = epetra_adapters
+@BUILD_TEUCHOS_EXPERIMENTAL_TRUE@@HAVE_TSFCORE_EPETRA_TRUE@EPETRA_TEST = epetra_adapters
+
+noinst_PROGRAMS = $(EPETRA_TEST)
 
 epetra_adapters_SOURCES = $(srcdir)/cxx_main.cpp
 
@@ -100,12 +102,7 @@ epetra_adapters_DEPENDENCIES = \
   $(top_builddir)/src/libTSFCore.a
 
 
-epetra_adapters_LDFLAGS = \
-  -L$(top_builddir)/../teuchos/src \
-  -L$(top_builddir)/../TSFCoreUtils/src \
-  -L$(top_builddir)/../epetra/src \
-  -L$(top_builddir)/src
-
+epetra_adapters_LDFLAGS = 
 
 epetra_adapters_CXXFLAGS = \
   -I$(top_builddir)/src \
@@ -132,14 +129,22 @@ epetra_adapters_CXXFLAGS = \
   -I$(top_srcdir)/../teuchos/src
 
 
-epetra_adapters_LDADD = $(epetra_adapters_LDFLAGS) -lTSFCore -lTSFCoreUtils -lepetra -lteuchos \
+epetra_adapters_LDADD = \
+  	$(top_builddir)/../teuchos/src/libteuchos.a \
+  	$(top_builddir)/../TSFCoreUtils/src/libTSFCoreUtils.a \
+  	$(top_builddir)/../epetra/src/libepetra.a \
+  	$(top_builddir)/src/libTSFCore.a \
 	$(BLAS_LIBS) $(FLIBS)
 
 subdir = test/epetra-adapters
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/TSFCoreConfig.h
 CONFIG_CLEAN_FILES =
-noinst_PROGRAMS = epetra_adapters$(EXEEXT)
+@BUILD_TEUCHOS_EXPERIMENTAL_FALSE@@HAVE_TSFCORE_EPETRA_TRUE@noinst_PROGRAMS =
+@BUILD_TEUCHOS_EXPERIMENTAL_FALSE@@HAVE_TSFCORE_EPETRA_FALSE@noinst_PROGRAMS =
+@BUILD_TEUCHOS_EXPERIMENTAL_TRUE@@HAVE_TSFCORE_EPETRA_TRUE@noinst_PROGRAMS = \
+@BUILD_TEUCHOS_EXPERIMENTAL_TRUE@@HAVE_TSFCORE_EPETRA_TRUE@	epetra_adapters$(EXEEXT)
+@BUILD_TEUCHOS_EXPERIMENTAL_TRUE@@HAVE_TSFCORE_EPETRA_FALSE@noinst_PROGRAMS =
 PROGRAMS = $(noinst_PROGRAMS)
 
 am_epetra_adapters_OBJECTS = epetra_adapters-cxx_main.$(OBJEXT)

@@ -3,18 +3,20 @@
 
 EXEEXT = .exe
 
-noinst_PROGRAMS = epetra_adapters
+if BUILD_TEUCHOS_EXPERIMENTAL
+if HAVE_TSFCORE_EPETRA
+EPETRA_TEST = epetra_adapters
+endif
+endif
+
+noinst_PROGRAMS = $(EPETRA_TEST)
 
 epetra_adapters_SOURCES = $(srcdir)/cxx_main.cpp
 
 epetra_adapters_DEPENDENCIES = \
   $(top_builddir)/src/libTSFCore.a
 
-epetra_adapters_LDFLAGS = \
-  -L$(top_builddir)/../teuchos/src \
-  -L$(top_builddir)/../TSFCoreUtils/src \
-  -L$(top_builddir)/../epetra/src \
-  -L$(top_builddir)/src
+epetra_adapters_LDFLAGS =
 
 epetra_adapters_CXXFLAGS = \
   -I$(top_builddir)/src \
@@ -40,5 +42,9 @@ epetra_adapters_CXXFLAGS = \
   -I$(top_builddir)/../teuchos/src \
   -I$(top_srcdir)/../teuchos/src
 
-epetra_adapters_LDADD = $(epetra_adapters_LDFLAGS) -lTSFCore -lTSFCoreUtils -lepetra -lteuchos \
+epetra_adapters_LDADD = \
+  	$(top_builddir)/../teuchos/src/libteuchos.a \
+  	$(top_builddir)/../TSFCoreUtils/src/libTSFCoreUtils.a \
+  	$(top_builddir)/../epetra/src/libepetra.a \
+  	$(top_builddir)/src/libTSFCore.a \
 	$(BLAS_LIBS) $(FLIBS)
