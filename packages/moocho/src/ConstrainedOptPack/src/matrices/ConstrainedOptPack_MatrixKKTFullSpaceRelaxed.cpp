@@ -155,7 +155,7 @@ void MatrixKKTFullSpaceRelaxed::Vp_StMtV(
 
 // Overridden from MatrixFactorized
 
-void MatrixKKTFullSpaceRelaxed::V_invMtV( VectorSlice* v_lhs, BLAS_Cpp::Transp trans_rhs1
+void MatrixKKTFullSpaceRelaxed::V_InvMtV( VectorSlice* v_lhs, BLAS_Cpp::Transp trans_rhs1
 	, const VectorSlice& vs_rhs2) const
 {
 	assert_initialized();

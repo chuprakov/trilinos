@@ -194,7 +194,7 @@ public:
 	// Overridden from MatrixFactorized
 
 	/// (1) v_lhs	= inv(op(M_rhs1)) * vs_rhs2
-	void V_invMtV( VectorSlice* v_lhs, BLAS_Cpp::Transp trans_rhs1
+	void V_InvMtV( VectorSlice* v_lhs, BLAS_Cpp::Transp trans_rhs1
 		, const VectorSlice& vs_rhs2) const;
 
 	// ////////////////////////////////////////////////////////////

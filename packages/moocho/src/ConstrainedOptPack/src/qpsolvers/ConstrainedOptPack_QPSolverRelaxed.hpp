@@ -9,66 +9,91 @@
 namespace ConstrainedOptimizationPack {
 
 ///
-/** Solves Quadratic Programs (QPs) of the form:
+/** Solves Quadratic Programs (QPs) of several different forms while
+  * relaxing the constraints.
   *
-  * (1.1)  min          g'*x + 1/2*x'*G*x + M(eta)
-  *        x <: R^n
-  *
-  * s.t.
-  * (1.2)               etaL <=  eta
-  * (1.3)               xL   <=  x                       <= xU
-  *	(1.4)               eL   <=  op(E)*x + b*eta         <= eU
-  *	(1.5)                        op(F)*x + (1 - eta) * f  = 0
-  *
+  * The master for the QP being solve is:
+  \begin{verbatim}
+  
+  (1.1)  min          g'*d + 1/2*d'*G*d + M(eta)
+         d <: R^n
+         
+         s.t.
+  (1.2)               etaL <=  eta
+  (1.3)               dL   <=  d                       <= dU
+  (1.4)               eL   <=  op(E)*d + b*eta         <= eU
+  (1.5)                        op(F)*d + (1 - eta) * f  = 0
+  
+  \end{verbatim}
   * The relaxation is used to ensure that the QP will have a solution
-  * (eta = 1, x = 0 guarrentted if xL <= 0 <= xU and eL <= b <= eU).
+  * (eta = 1, d = 0 guarrentted if dL <= 0 <= dU and eL <= b <= eU).
   * If the function of M(eta) in the objective is large enough, then
   * the constraint etaL <= eta will be active if a feasible region
   * exists.
   *
   * The Lagrangian for the QP is:
-  *
-  * L = g' * x + 1/2 * x' * G * x + M(eta)
-  *		+ kappa * (etaL - eta)
-  *		+ nuL' * (xL - x)
-  *		+ nuU' * (x - xU)
-  *		+ muL' * (eL - op(E)*x - b*eta)
-  *		+ muU' * (op(E)*x + b*eta - eU)
-  *		+ lambda' * (op(F)*x + (1 - eta) * f)
-  *
+  \begin{verbatim}
+  
+	L = g' * d + 1/2 * d' * G * d + M(eta)
+	     + kappa * (etaL - eta)
+	     + nuL' * (dL - d)
+	     + nuU' * (d - dU)
+	     + muL' * (eL - op(E)*d - b*eta)
+	     + muU' * (op(E)*d + b*eta - eU)
+		 + lambda' * (op(F)*d + (1 - eta) * f)
+	
+  \end{verbatim}
   * The optimality conditions for this QP are:
-  *
-  * Linear dependence of gradients:
-  *
-  * (2)  d(L)/d(x) = g + G*x - nuL + nuU + op(E)'*(- muL + muU) + op(F)'*lambda
-  *                = g + G*x + nu + op(E)'*mu - op(F)'*lambda = 0
-  *
-  *		where: nu = nuU - nuL, mu = muU - muL
-  *
-  * (3)  d(L)/d(eta) = d(M)/d(eta) - kappa + b'*mu - f'*lambda = 0
-  *
-  * Feasibility:
-  *
-  * (4.1)  etaL <=  eta
-  * (4.2)  xL   <=  x                       <= xU
-  *	(4.3)  eL   <=  op(E)*x + b*eta         <= eU
-  *	(4.4)  op(F)*x + (1 - eta) * f  = 0
-  *
-  * The optimal x and eta are determined as well as the lagrange multipliers
+  \begin{verbatim}
+
+	Linear dependence of gradients:
+	  
+	(2)  d(L)/d(d) = g + G*d - nuL + nuU + op(E)'*(- muL + muU) + op(F)'*lambda
+	               = g + G*d + nu + op(E)'*mu - op(F)'*lambda = 0
+	  
+	     where: nu = nuU - nuL, mu = muU - muL
+
+	(3)  d(L)/d(eta) = d(M)/d(eta) - kappa + b'*mu - f'*lambda = 0
+	  
+	Feasibility:
+	  
+	(4.1)  etaL <=  eta
+	(4.2)  dL   <=  d                       <= dU
+	(4.3)  eL   <=  op(E)*d + b*eta         <= eU
+	(4.4)  op(F)*d + (1 - eta) * f  = 0
+
+	Complementarity:
+
+	(5.1)  nu(i) * (dL - d)(i), if nu(i) <= 0, i = 1...n
+	(5.2)  nu(i) * (d - dU)(i), if nu(i) >= 0, i = 1...n
+	(5.3)  mu(j) * (eL - op(E)*d - b*eta)(j), if mu(j) <= 0, j = 1...m_in
+	(5.4)  mu(j) * (op(E)*d + b*eta - eU)(j), if mu(j) >= 0, j = 1...m_in
+
+	Nonnegativity of Lagrange Multipliers for Inequality Constraints:
+
+	(6.1)  nu(i) <= 0 if (dL - d)(i) \approx 0, i = 1...n
+	(6.2)  nu(i) >= 0 if (d - dU)(i) \approx 0, i = 1...n
+	(6.3)  mu(j) <= 0 if (eL - op(E)*d - b*eta)(j) \approx 0, j = 1...m_in
+	(6.4)  mu(j) >= 0 if (op(E)*d + b*eta - eU)(j) \approx 0, j = 1...m_in
+
+  \end{verbatim}
+  * The optimal d and eta are determined as well as the lagrange multipliers
   * for the constriants:
-  *
-  * nu :			xL <= x <= xU
-  * 
-  * mu :			eL <= op(E)*x + b*eta <= eU
-  *
-  * lambda :		op(F)*x + (1 - eta) * f  = 0
-  *
+  \begin{verbatim}
+
+	nu :       dL <= d <= dU
+ 
+	mu :       eL <= op(E)*d + b*eta <= eU
+
+	lambda :   op(F)*d + (1 - eta) * f  = 0
+
+  \end{verbatim}
   * The lagrange multiper for the constraint etaL <= eta kappa is not given
   * since if this constraint is not active, then kappa = 0 and all of the multiplier
-  * estimates will be off because of the arbitrarily large value of M(eta) and
-  * the optimality condition d(L)/d(eta) = 0.
+  * estimates will be off because of the arbitrarily large value of d(M)/d(eta) and
+  * the optimality condition (3).
   *
-  * The bounds xL, xU, eL and eU are input as sparse vectors (SpVectorSlice).
+  * The bounds dL, dU, eL and eU are input as sparse vectors (SpVectorSlice).
   *
   * Note that this interface is geared toward active-set solvers but could also
   * be used for iterative solvers with care.
@@ -106,7 +131,7 @@ public:
 		PRINT_EVERY_THING	= 6
 		};
 
-	/// Enumeration for if the run internal tests or not.
+	/// Enumeration for if to run internal tests or not.
 	enum ERunTests { RUN_TESTS, NO_TESTS };
 
 	//@}
@@ -126,22 +151,12 @@ public:
 	  * After this function returns, get_qp_stats(...) can be called to return
 	  * some statistics for the QP just solved (or attempted to be solved).
 	  *
-	  * Note skip the variable bounds can be removed by passing in
-	  * pass in xL.nz() == xU.nz() == 0.
+	  * Note, the variable bounds can be removed by passing in
+	  * pass in dL.nz() == dU.nz() == 0.
+	  * 
+	  * By default calls the function solve_qp(...) which excepts
+	  * various sets of constraints.
 	  *
-	  *	@param	g			[I]	vector (size n)
-	  *	@param	G			[I]	matrix (size n x n).
-	  *	@param	etaL		[I] scalar.
-	  * @param	xL			[I] sparse vector (size n) (xL->is_sorted() == true)
-	  * @param	xU			[I] sparse vector (size n) (xU->is_sorted() == true)
-	  *	@param	E			[I] matrix (op(E) size m_in x n)
-	  * @param	trans_E		[I]	E is transposed? 
-	  * @param	b			[I] vector (size m_in)
-	  * @param	eL			[I] sparse vector (size m_in) (eL->is_sorted() == true)
-	  * @param	eU			[I] sparse vector (size m_in) (eU->is_sorted() == true)
-	  *	@param	F			[I] matrix (op(F) size m_eq x n)
-	  * @param	trans_F		[I]	F is transposed? 
-	  * @param	f			[I] vector (size m_eq)
 	  *	@param	out			[O]	If out != NULL then output is printed to this stream
 	  *							depending on the value of olevel.
 	  *	@param	olevel		[I]	Determines the amount of output to print to *out.
@@ -165,15 +180,33 @@ public:
 	  *	@param	test_what	[I]	Determines if internal validation tests are performed.
 	  *							The optimality conditions for the QP are not checked
 	  *							internally, this is something that client can (and should)
-	  *							do independently (see TestQPSolverRelaxed).
-	  *							RUN_TESTS : As many validation / consistency tests
+	  *							do independently (see QPSolverRelaxedTester).
+	  *							RUN_TESTS : As many validation/consistency tests
 	  *								are performed internally as possible.  If a test
 	  *								fails then a TestFailed execption will be thrown.
+	  *								The subclasses determine what the tests are and
+	  *								what failing a test means.
 	  *							NO_TEST : No tests are performed internally.  This is
-	  *								to allow the fastest possilbe execution as possible.
-	  *	@param	eta			[O]	scalar.  Relaxation variable.
-	  *	@param	x			[O]	vector (size n).  Solution vector.
-	  *	@param	nu			[I/O]	sparse vector (size n).  Lagrange multipilers
+	  *								to allow the fastest possible execution.
+	  *	@param	g			[I]	vector (size n): objective 1st order
+	  *	@param	G			[I]	matrix (size n x n): objective, second order Hessian
+	  *	@param	etaL		[I] scalar: Lower bound for relaxation variable (0 usually)
+	  * @param	dL			[I] sparse vector (size n) (dL->is_sorted() == true): lower variable bounds
+	  * @param	dU			[I] sparse vector (size n) (dU->is_sorted() == true): upper variable bounds
+	  *	@param	E			[I] matrix (op(E)) (size m_in x n): inequality constraint Jacobian matrix 
+	  * @param	trans_E		[I]	E is transposed? 
+	  * @param	b			[I] vector (size m_in): relaxation vector for inequalities
+	  * @param	eL			[I] sparse vector (size m_in) (eL->is_sorted() == true): lower inequality bounds
+	  * @param	eU			[I] sparse vector (size m_in) (eU->is_sorted() == true): upper inequality bounds
+	  *	@param	F			[I] matrix (op(F) size m_eq x n): equality constraint Jacobian matrix
+	  * @param	trans_F		[I]	F is transposed? 
+	  * @param	f			[I] vector (size m_eq): equality constraint right hand side
+	  *	@param	obj_d		[O] If obj_d != NULL on input, then obj_d will be set with the
+	  *							value of obj_d = g'*d + 1/2*d'*G*d for the value of d
+	  *							returned.
+	  *	@param	eta			[O]	scalar:  Relaxation variable
+	  *	@param	d			[O]	vector (size n):  Solution vector
+	  *	@param	nu			[I/O]	sparse vector (size n):  Lagrange multipilers
 	  *							for variable bounds.  On input it contains the
 	  *							estimate of the active set and multiplier values.  If
 	  *							nu->nz() == 0 on input then there is no estimate for the
@@ -184,8 +217,8 @@ public:
 	  *							On output nu contains the active-set for the
 	  *							returned solution.  If nu->nz() > 0 on input then
 	  *							nu->is_sorted() must be true.  On output nu->is_sorted()
-	  *							will be true..
-	  *	@param	mu			[I/O]	sparse vector (size m_in).  Lagrange multipilers
+	  *							will be true.
+	  *	@param	mu			[I/O]	sparse vector (size m_in):  Lagrange multipilers
 	  *							for the general inequality constriants.
 	  *							On input it contains the
 	  *							estimate of the active set and multiplier values.  If
@@ -197,26 +230,31 @@ public:
 	  *							On output mu contains the active-set for the
 	  *							returned solution.  If mu->nz() > 0 on input then
 	  *							mu->is_sorted() must be true.  On output mu->is_sorted()
-	  *							will be true..
-	  *	@param	lambda		[O]	vector (size m_eq).  Lagrange multipilers for equality
+	  *							will be true.
+	  *	@param	Ed			[O]	vector (size m_in) If Ed!=NULL on input, then on output
+	  *							Ed will contain the product opt(E)*d for the value of
+	  *							d on output.  This is included to save user from having
+	  *							to perform this computation again if it has already been
+	  *							done internally.
+	  *	@param	lambda		[O]	vector (size m_eq):  Lagrange multipilers for equality
 	  *							constraints.
 	  *
 	  *	@return
 	  *		OPTIMAL_SOLUTION : Returned point satisfies the optimality conditions
-	  *			in (2)-(4) above.  This will generally be the case if the maximum
+	  *			in (2)-(6) above.  This will generally be the case if the maximum
 	  *			number of QP iterations is not exceeded and none of the possible
 	  *			exeptions are thrown.
 	  *		PRIMAL_FEASIBLE_POINT : Returned point satisfies the feasibility conditions
-	  *			in (4) above.
+	  *			in (4)-(5) above.
 	  *			For example, a primal, active-set QP algorithm may return this if
 	  *			the maxinum number of iterations has been exceeded durring the
 	  *			optimality phase (phase 2).
 	  *		DUAL_FEASIBLE_POINT : Returned point satisfies the optimality conditions
-	  *			in (2)-(4.1) but not the variable bounds in (4.2),(4.3).
+	  *			in (2)-(4.1),(4.4),(5),(6) but not the inequality constraints in (4.2),(4.3).
 	  *			For example, a primal-dual, active-set QP algorithm might return this
 	  *			value if the maximum number of iterations has been exceeded.
 	  *		SUBOPTIMAL_POINT : Returned point does not accurately enough satisfy any of the
-	  *			optimality conditions in (2)-(4) above but the solution may still be
+	  *			optimality conditions in (2)-(6) above but the solution may still be
 	  *			of some use.  For example, an active-set (primal, or dual) QP algorithm
 	  *			might return this if there is some serious illconditioning in the QP
 	  *			and a solution satisfying the desired tolerance could not be found.
@@ -224,52 +262,97 @@ public:
 	  *			number if iterations is exceeded.
 	  */
 	virtual QPSolverStats::ESolutionType solve_qp(
-		  const VectorSlice& g, const MatrixWithOp& G
+		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
+		, const VectorSlice& g, const MatrixWithOp& G
 		, value_type etaL
-		, const SpVectorSlice& xL, const SpVectorSlice& xU
+		, const SpVectorSlice& dL, const SpVectorSlice& dU
 		, const MatrixWithOp& E, BLAS_Cpp::Transp trans_E, const VectorSlice& b
 			, const SpVectorSlice& eL, const SpVectorSlice& eU
 		, const MatrixWithOp& F, BLAS_Cpp::Transp trans_F, const VectorSlice& f
-		, std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, value_type* eta, Vector* x, SpVector* nu, SpVector* mu, Vector* lambda
-		) = 0;
+		, value_type* obj_d
+		, value_type* eta, VectorSlice* d
+		, SpVector* nu
+		, SpVector* mu, VectorSlice* Ed
+		, VectorSlice* lambda, VectorSlice* Fd
+		);
 
 	///
 	/** Solve the QP without general equality constrants.
+	  *
+	  * By default calls the function solve_qp(...) which excepts
+	  * various sets of constraints.
 	  */
 	virtual QPSolverStats::ESolutionType solve_qp(
-		  const VectorSlice& g, const MatrixWithOp& G
+		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
+		, const VectorSlice& g, const MatrixWithOp& G
 		, value_type etaL
-		, const SpVectorSlice& xL, const SpVectorSlice& xU
+		, const SpVectorSlice& dL, const SpVectorSlice& dU
 		, const MatrixWithOp& E, BLAS_Cpp::Transp trans_E, const VectorSlice& b
 			, const SpVectorSlice& eL, const SpVectorSlice& eU
-		, std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, value_type* eta, Vector* x, SpVector* nu, SpVector* mu
-		) = 0;
+		, value_type* obj_d
+		, value_type* eta, VectorSlice* d
+		, SpVector* nu
+		, SpVector* mu, VectorSlice* Ed
+		);
 
 	///
 	/** Solve the QP without general inequality constrants.
+	  *
+	  * By default calls the function solve_qp(...) which excepts
+	  * various sets of constraints.
 	  */
 	virtual QPSolverStats::ESolutionType solve_qp(
-		  const VectorSlice& g, const MatrixWithOp& G
+		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
+		, const VectorSlice& g, const MatrixWithOp& G
 		, value_type etaL
-		, const SpVectorSlice& xL, const SpVectorSlice& xU
+		, const SpVectorSlice& dL, const SpVectorSlice& dU
 		, const MatrixWithOp& F, BLAS_Cpp::Transp trans_F, const VectorSlice& f
-		, std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, value_type* eta, Vector* x, SpVector* nu, Vector* lambda
-		) = 0;
+		, value_type* obj_d
+		, value_type* eta, VectorSlice* d
+		, SpVector* nu
+		, VectorSlice* lambda, VectorSlice* Fd
+		);
 
 
 	///
 	/** Solve the QP without general equality or inequality constrants (no relaxation
 	  * needed).
+	  *
+	  * By default calls the function solve_qp(...) which excepts
+	  * various sets of constraints.
 	  */
 	virtual QPSolverStats::ESolutionType solve_qp(
-		  const VectorSlice& g, const MatrixWithOp& G
-		, const SpVectorSlice& xL, const SpVectorSlice& xU
-		, std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, Vector* x, SpVector* nu
-		) = 0;
+		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
+		, const VectorSlice& g, const MatrixWithOp& G
+		, const SpVectorSlice& dL, const SpVectorSlice& dU
+		, value_type* obj_d
+		, VectorSlice* d
+		, SpVector* nu
+		);
+
+	///
+	/** This is a more flexible function where the client can
+	  * set different constraints to be included.
+	  *
+	  * The defualt implementation of this function validates that input
+	  * sizes are correct and that the proper sets of constraints are set
+	  * by calling validate_input(...) and then imp_solve_qp(...) which
+	  * must be implemented by the subclass.
+	  */
+	virtual QPSolverStats::ESolutionType solve_qp(
+		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
+		, const VectorSlice& g, const MatrixWithOp& G
+		, value_type etaL
+		, const SpVectorSlice& dL, const SpVectorSlice& dU
+		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
+			, const SpVectorSlice* eL, const SpVectorSlice* eU
+		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
+		, value_type* obj_d
+		, value_type* eta, VectorSlice* d
+		, SpVector* nu
+		, SpVector* mu, VectorSlice* Ed
+		, VectorSlice* lambda, VectorSlice* Fd
+		);
 
 	///
 	/** Get the statistics of the last QP solved.
@@ -292,33 +375,12 @@ public:
 	  */
 	virtual void release_memory() = 0;
 
-
-protected:
-
 	///
-	/** Validates that input sizes are correct and the proper set of
-	  * constraints is set.
-	  *
-	  * After checking the input arguments the pure virtual function
-	  * imp_solve_qp(...) is called which must be implemented by the subclass.
-	  */
-	virtual QPSolverStats::ESolutionType solve_qp(
-		  const VectorSlice& g, const MatrixWithOp& G
-		, value_type etaL
-		, const SpVectorSlice& xL, const SpVectorSlice& xU
-		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
-			, const SpVectorSlice* eL, const SpVectorSlice* eU
-		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
-		, std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, value_type* eta, Vector* x, SpVector* nu, SpVector* mu, Vector* lambda
-		);
-	
-	///
-	/** Subclasses are to override this to implement the QP algorithm.
-	  *
-	  * The sizes of the input arguments is validated as well as the proper
-	  * sets of constraints.
-	  *
+	/** This is (static) function that is used as a utility to
+	  * validate the input arguments to solve_qp(...).
+	  * 
+	  * The input arguments are validated as follows.
+	  * 
 	  * If the inequality constraints are excluded then:
 	  * void(E) == void(b) == void(eL) == void(eU) == void(mu) == NULL
 	  *
@@ -329,20 +391,48 @@ protected:
 	  * eta == NULL
 	  * void(E) == void(b) == void(eL) == void(eU) == void(mu) == NULL
 	  * void(F) == void(f) == void(lambda) == NULL
+	  * 
+	  * If any errors are found an std::invalid_argument exception
+	  * will be thrown.
 	  */
-	virtual QPSolverStats::ESolutionType imp_solve_qp(
+	static void validate_input(
 		  const VectorSlice& g, const MatrixWithOp& G
 		, value_type etaL
-		, const SpVectorSlice& xL, const SpVectorSlice& xU
+		, const SpVectorSlice& dL, const SpVectorSlice& dU
 		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
 			, const SpVectorSlice* eL, const SpVectorSlice* eU
 		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
-		, std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, value_type* eta, Vector* x, SpVector* nu, SpVector* mu, Vector* lambda
+		, const value_type* obj_d
+		, const value_type* eta, const VectorSlice* d
+		, const SpVector* nu
+		, const SpVector* mu, const VectorSlice* Ed
+		, const VectorSlice* lambda, const VectorSlice* Fd
+		);
+
+protected:
+
+	///
+	/** Subclasses are to override this to implement the QP algorithm.
+	  *
+	  * Called by default solve_qp(...) functions.
+	  */
+	virtual QPSolverStats::ESolutionType imp_solve_qp(
+		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
+		, const VectorSlice& g, const MatrixWithOp& G
+		, value_type etaL
+		, const SpVectorSlice& dL, const SpVectorSlice& dU
+		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
+			, const SpVectorSlice* eL, const SpVectorSlice* eU
+		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
+		, value_type* obj_d
+		, value_type* eta, VectorSlice* d
+		, SpVector* nu
+		, SpVector* mu, VectorSlice* Ed
+		, VectorSlice* lambda, VectorSlice* Fd
 		) = 0;
 
-};	// end class QPSovlerWithBounds
+};	// end class QPSovlerRelaxed
 
-}	// end namespace ConstrainedOptimizationPackTypes
+}	// end namespace ConstrainedOptimizationPack
 
 #endif	// QP_SOLVER_RELAXED_H
