@@ -82,7 +82,8 @@ public:
 
 	//@}
 
-protected:
+private:
+
 	std::ostream *journal_out_;
 
 	// not defined and not to be called
