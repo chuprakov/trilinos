@@ -179,6 +179,11 @@ public:
 	MatrixWithOp& operator=(const MatrixWithOp& mwo_rhs);
 	///
 	std::ostream& output(std::ostream& out) const;
+	///
+	void syrk(
+		 BLAS_Cpp::Transp M_trans, value_type alpha
+		,value_type beta, MatrixSymWithOp* sym_lhs
+		) const;
 
 	//@}
 

@@ -17,8 +17,9 @@
 
 #include "SparseLinAlgPack/include/MultiVectorMutableDense.h"
 #include "SparseLinAlgPack/include/VectorWithOpMutableDense.h"
+#include "SparseLinAlgPack/include/MatrixSymWithOpGetGMSSymMutable.h"
 #include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "LinAlgPack/include/GenMatrixOp.h"
+#include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/GenMatrixOut.h"
 #include "ReleaseResource_ref_count_ptr.h"
 #include "WorkspacePack.h"
@@ -204,6 +205,23 @@ std::ostream& MultiVectorMutableDense::output(std::ostream& out) const
 	if(gms_trans() == BLAS_Cpp::no_trans)
 		return out << gms_;
 	return MatrixWithOpSerial::output(out);
+}
+
+void MultiVectorMutableDense::syrk(
+	BLAS_Cpp::Transp M_trans, value_type alpha
+	,value_type beta, MatrixSymWithOp* sym_lhs
+	) const
+{
+	using DynamicCastHelperPack::dyn_cast;
+#ifdef _DEBUG
+	THROW_EXCEPTION(
+		sym_lhs == NULL, std::invalid_argument
+		,"MultiVectorMutableDense::syrk(...) : Error!" );
+#endif
+	MatrixSymWithOpGetGMSSymMutable
+		&sym_get_lhs = dyn_cast<MatrixSymWithOpGetGMSSymMutable>(*sym_lhs);
+	MatrixDenseSymMutableEncap  sym_gms_lhs(&sym_get_lhs);
+	LinAlgPack::syrk( M_trans, alpha, get_gms(), beta, &sym_gms_lhs() );
 }
 
 // Overridden from MatrixWithOpSerial
