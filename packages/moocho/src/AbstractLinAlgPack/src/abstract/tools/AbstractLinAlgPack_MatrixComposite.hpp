@@ -109,7 +109,7 @@ public:
 		MemMngPack::ReleaseResource>  release_resource_ptr_t;
 
 	///
-	/** DVector list entry for a sub-vector.
+	/** Vector list entry for a sub-vector.
 	 *
 	 * ToDo: Finish Documentation!
 	 */

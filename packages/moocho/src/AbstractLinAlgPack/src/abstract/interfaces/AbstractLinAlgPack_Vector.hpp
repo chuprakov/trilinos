@@ -331,7 +331,7 @@ public:
 	 */
 	vec_ptr_t sub_view( const index_type& l, const index_type& u ) const;
 
-	/** @name DVector norms */
+	/** @name Vector norms */
 	//@{
 
 	///

@@ -79,7 +79,7 @@ class SparseVectorSlice;
 
 // ///////////////////////////////////////////////////////////////////////
 ///
-/** Sparse DVector class template.
+/** Sparse Vector class template.
   *
   * This is a class for abstracting a sparse vector of a templated element
   * type.  All of the operations are based on the element type.  Access
@@ -528,7 +528,7 @@ private:
 
 // ///////////////////////////////////////////////////////////////////////
 ///
-/** Sparse DVector Slice class template.
+/** Sparse Vector Slice class template.
   *
   * This is a class for abstracting a region of a sparse vector stored
   * as an array of elements of a templated type.  The required inteface
@@ -636,7 +636,7 @@ public:
 	  */
 	EOverLap overlap(const SparseVectorSlice<T_Element>& sv) const;
 
-	/** @name Sparse DVector Templated interface for linear algebra operations */
+	/** @name Sparse Vector Templated interface for linear algebra operations */
 	//@{
 
 	/// Return the number of elements in the full vector
@@ -1021,7 +1021,7 @@ inline void SparseVectorSlice<T_Element>::bind(SparseVectorSlice svs)
 	assume_sorted_	= svs.assume_sorted_;
 }
 
-// Sparse DVector Templated interface for linear algebra operations
+// Sparse Vector Templated interface for linear algebra operations
 
 template <class T_Element>
 inline SparseVectorSlice<T_Element>::size_type SparseVectorSlice<T_Element>::dim() const {
