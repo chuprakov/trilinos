@@ -71,14 +71,14 @@ const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_Uy() const
 {
 	assert(0); // ToDo: Return MatrixCompositeStd (which will use MatrixProductStd)
-	return NULL;
+	return ReferenceCountingPack::null;
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
 DecompositionSystemOrthogonal::factory_Vy() const
 {
 	assert(0); // ToDo: Return MatrixCompositeStd (which will use MatrixProductStd)
-	return NULL;
+	return ReferenceCountingPack::null;
 }
 
 // Overridden from DecompositionSystemVarReduct
@@ -116,7 +116,7 @@ DecompositionSystemOrthogonal::uninitialize_matrices(
 	// matrix S = I + D'*D
 	//
 	
-	C_ptr_t C_ptr = NULL;
+	C_ptr_t C_ptr = rcp::null;
 	if(R_orth) {
 		C_ptr  = rcp::rcp_const_cast<MatrixWithOpNonsingular>(    R_orth->C_ptr() ); // This could be NULL!
 		S_ptr_ = rcp::rcp_const_cast<MatrixSymWithOpNonsingular>( R_orth->S_ptr() ); // ""

@@ -115,7 +115,7 @@ public:
 
 	/// Constructor
 	NLPFirstDerivativesTester(
-		const calc_fd_prod_ptr_t  &calc_fd_prod      = new CalcFiniteDiffProd()
+		const calc_fd_prod_ptr_t  &calc_fd_prod      = ReferenceCountingPack::rcp(new CalcFiniteDiffProd())
 		,ETestingMethod           fd_testing_method  = FD_DIRECTIONAL
 		,size_type                num_fd_directions  = 3
 		,value_type               warning_tol        = 1e-8

@@ -79,12 +79,12 @@ void MatrixWithOpSubView::initialize(
 						: M_full->space_cols().sub_space(rng_rows)->clone() );
 	}
 	else {
-		M_full_     = NULL;
+		M_full_     = rcp::null;
 		rng_rows_   = Range1D::Invalid;
 		rng_cols_   = Range1D::Invalid;
 		M_trans_    = BLAS_Cpp::no_trans;
-		space_cols_ = NULL;
-		space_rows_ = NULL;
+		space_cols_ = rcp::null;
+		space_rows_ = rcp::null;
 	}
 }
 
@@ -132,7 +132,7 @@ MatrixWithOpSubView::sub_view(const Range1D& row_rng, const Range1D& col_rng) co
 {
 	assert_initialized();
 	assert(0); // ToDo: Implement!
-	return NULL;
+	return ReferenceCountingPack::null;
 }
 
 void MatrixWithOpSubView::zero_out()

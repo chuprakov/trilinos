@@ -157,7 +157,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	// If Z has not been initialized or Z.D is being shared by someone else we need to reconstruct Z.D
 	bool reconstruct_Z_D = (cZ_k.rows() == n || cZ_k.cols() != n-r || cZ_k.D_ptr().count() > 1);
 	MatrixIdentConcatStd::D_ptr_t
-		D_ptr = NULL;
+		D_ptr = rcp::null;
 	if( reconstruct_Z_D )
 		D_ptr = nlp.space_D()->create_member();
 	else
@@ -165,7 +165,7 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 
 	// Compute all the quantities.
 	rcp::ref_count_ptr<MatrixWithOp>
-		GcU = (m > r) ? nlp.space_GcU()->create_member() : NULL; // ToDo: Reuse GcU somehow? 
+		GcU = (m > r) ? nlp.space_GcU()->create_member() : rcp::null; // ToDo: Reuse GcU somehow? 
 	VectorWithOpMutable
 		&py_k  = s.py().set_k(0);
 	nlp.calc_point(

@@ -122,12 +122,12 @@ bool NLPInterfacePack::test_nlp_first_order_info(
 		m  = nlp->m(),
 		mI = nlp->mI();
 	VectorSpace::vec_mut_ptr_t
-		c   = m  ? nlp->space_c()->create_member() : NULL,
-		h   = mI ? nlp->space_h()->create_member() : NULL,
+		c   = m  ? nlp->space_c()->create_member() : rcp::null,
+		h   = mI ? nlp->space_h()->create_member() : rcp::null,
 		Gf  =      nlp->space_x()->create_member();
 	NLPFirstOrderInfo::mat_space_ptr_t::element_type::mat_ptr_t
-		Gc  = m  ? nlp->space_Gc()->create_member() : NULL,
-		Gh  = mI ? nlp->space_Gh()->create_member() : NULL;
+		Gc  = m  ? nlp->space_Gc()->create_member() : rcp::null,
+		Gh  = mI ? nlp->space_Gh()->create_member() : rcp::null;
 
 	if(m) {
 		if(out)

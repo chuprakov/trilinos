@@ -42,12 +42,12 @@ Range1D BasisSystem::inequ_undecomp() const
 
 const BasisSystem::mat_fcty_ptr_t BasisSystem::factory_GcUP() const
 {
-	return NULL;
+	return ReferenceCountingPack::null;
 }
 
 const BasisSystem::mat_fcty_ptr_t BasisSystem::factory_GhUP() const
 {
-	return NULL;
+	return ReferenceCountingPack::null;
 }
 
 } // end namespace AbstractLinAlgPack

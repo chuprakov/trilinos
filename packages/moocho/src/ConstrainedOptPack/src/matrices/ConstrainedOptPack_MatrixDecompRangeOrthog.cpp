@@ -71,9 +71,10 @@ void MatrixDecompRangeOrthog::initialize(
 
 void MatrixDecompRangeOrthog::set_uninitialized()
 {
-	C_ptr_ = NULL;
-	D_ptr_ = NULL;
-	S_ptr_ = NULL;
+	namespace rcp = ReferenceCountingPack;
+	C_ptr_ = rcp::null;
+	D_ptr_ = rcp::null;
+	S_ptr_ = rcp::null;
 }
 
 // Overridden from MatrixWithOp

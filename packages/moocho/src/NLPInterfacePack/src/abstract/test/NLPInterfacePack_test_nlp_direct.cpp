@@ -172,16 +172,16 @@ bool NLPInterfacePack::test_nlp_first_order_direct(
 		con_undecomp = nlp->con_undecomp();
 	VectorSpace::vec_mut_ptr_t
 		c   =      nlp->space_c()->create_member(),
-		h   = mI ? nlp->space_h()->create_member() : NULL,
+		h   = mI ? nlp->space_h()->create_member() : rcp::null,
 		Gf  =      nlp->space_x()->create_member(),
 		py  =      nlp->space_x()->sub_space(var_dep)->create_member(),
 		rGf =      nlp->space_x()->sub_space(var_indep)->create_member();
 	NLPFirstOrderDirect::mat_space_ptr_t::element_type::mat_ptr_t
-		GcU = con_decomp.size() < m ? nlp->space_GcU()->create_member() : NULL,
-		Gh  = mI                    ? nlp->space_Gh()->create_member()  : NULL,
+		GcU = con_decomp.size() < m ? nlp->space_GcU()->create_member() : rcp::null,
+		Gh  = mI                    ? nlp->space_Gh()->create_member()  : rcp::null,
 		D   =                         nlp->space_D()->create_member(),
-		Uz   = con_decomp.size() < m ? nlp->space_Uz()->create_member()   : NULL,
-		Vz   = mI                    ? nlp->space_Vz()->create_member()   : NULL;
+		Uz   = con_decomp.size() < m ? nlp->space_Uz()->create_member()   : rcp::null,
+		Vz   = mI                    ? nlp->space_Vz()->create_member()   : rcp::null;
 	nlp->calc_point(
 		nlp->xinit(), NULL, c.get(), true, h.get(), Gf.get(), py.get(), rGf.get()
 		,GcU.get(), Gh.get(), D.get(), Uz.get(), Vz.get() );

@@ -194,11 +194,11 @@ bool BasisSystemTester::test_basis_system(
 			*out
 				<< std::endl;
 		rcp::ref_count_ptr<AbstractLinAlgPack::MatrixCompositeStd>
-			N_comp = new AbstractLinAlgPack::MatrixCompositeStd(var_dep.size(),var_indep.size());
+			N_comp = rcp::rcp(new AbstractLinAlgPack::MatrixCompositeStd(var_dep.size(),var_indep.size()));
 		if( equ_decomp.size() )
-			N_comp->add_matrix( 0, 0, 1.0, equ_decomp, Gc, NULL, BLAS_Cpp::trans, var_indep );
+			N_comp->add_matrix( 0, 0, 1.0, equ_decomp, Gc, rcp::null, BLAS_Cpp::trans, var_indep );
 		if( Gh && inequ_decomp.size() )
-			N_comp->add_matrix( equ_decomp.size(), 0, 1.0, inequ_decomp, Gh, NULL, BLAS_Cpp::trans, var_indep );
+			N_comp->add_matrix( equ_decomp.size(), 0, 1.0, inequ_decomp, Gh, rcp::null, BLAS_Cpp::trans, var_indep );
 		N_comp->finish_construction(
 			Gc->space_rows().sub_space(equ_decomp)->clone()
 			,Gc->space_cols().sub_space(var_indep)->clone()
@@ -371,10 +371,10 @@ bool BasisSystemTester::test_basis_system(
 		{
 
 			VectorSpace::vec_mut_ptr_t
-				Gc_v_x    = ( Gc ? Gc->space_cols().create_member() : NULL ),
-				Gc_v_c    = ( Gc ? Gc->space_rows().create_member() : NULL ),
-				Gh_v_x    = ( Gh ? Gh->space_cols().create_member() : NULL ),
-				Gh_v_h    = ( Gh ? Gh->space_rows().create_member() : NULL ),
+				Gc_v_x    = ( Gc ? Gc->space_cols().create_member() : rcp::null ),
+				Gc_v_c    = ( Gc ? Gc->space_rows().create_member() : rcp::null ),
+				Gh_v_x    = ( Gh ? Gh->space_cols().create_member() : rcp::null ),
+				Gh_v_h    = ( Gh ? Gh->space_rows().create_member() : rcp::null ),
 				C_v_xD    = C->space_rows().create_member(),
 				C_v_chD   = C->space_cols().create_member(),
 				N_v_xI    = N->space_rows().create_member(),

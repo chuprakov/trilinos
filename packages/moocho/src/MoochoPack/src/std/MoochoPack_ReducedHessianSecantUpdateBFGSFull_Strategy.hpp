@@ -41,7 +41,7 @@ public:
 	STANDARD_COMPOSITION_MEMBERS( BFGSUpdate_Strategy, bfgs_update )
 
     ReducedHessianSecantUpdateBFGSFull_Strategy(
-		const bfgs_update_ptr_t&      bfgs_update = NULL
+		const bfgs_update_ptr_t&      bfgs_update = ReferenceCountingPack::null
 		);      
 
 	/** @name Overridden from ReducedHessianSecantUpdate_Strategy */

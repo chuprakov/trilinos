@@ -61,6 +61,7 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 	,std::ostream           *out
 	) const
 {
+	namespace rcp = ReferenceCountingPack;
 	using AbstractLinAlgPack::assert_print_nan_inf;
 
 	const size_type
@@ -219,6 +220,7 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 	using std::endl;
 	using std::right;
 
+	namespace rcp = ReferenceCountingPack;
 	using AbstractLinAlgPack::sum;
 	using AbstractLinAlgPack::dot;
 	using AbstractLinAlgPack::Vp_StV;
@@ -262,10 +264,10 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 
 	VectorSpace::vec_mut_ptr_t
 		y         = space_x->create_member(),
-		Gc_prod   = ( Gc ? space_c->create_member() : NULL ),
-		FDGc_prod = ( Gc ? space_c->create_member() : NULL ),
-		Gh_prod   = ( Gh ? space_c->create_member() : NULL ),
-		FDGh_prod = ( Gh ? space_c->create_member() : NULL );
+		Gc_prod   = ( Gc ? space_c->create_member()  : rcp::null ),
+		FDGc_prod = ( Gc ? space_c->create_member()  : rcp::null ),
+		Gh_prod   = ( Gh ? space_c->create_member()  : rcp::null ),
+		FDGh_prod = ( Gh ? space_c->create_member()  : rcp::null );
 
 	for( int direc_i = 1; direc_i <= num_fd_directions(); ++direc_i ) {
 		random_vector( rand_y_l, rand_y_u, y.get() );

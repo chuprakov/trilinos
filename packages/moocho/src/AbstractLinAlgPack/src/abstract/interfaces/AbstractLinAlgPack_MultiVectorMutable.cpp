@@ -27,7 +27,7 @@ MultiVectorMutable::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng)
 	assert(0); // ToDo: return a MultiVectorMutableSubView object.
 	// Note that the MultiVectorMutableSubView class should derive from
 	// MultiVectorSubView.
-	return NULL;
+	return ReferenceCountingPack::null;
 }
 
 // Collective apply_transformation() methods

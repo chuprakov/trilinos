@@ -78,8 +78,9 @@ rSQPppSolver::get_nlp() const
 
 void rSQPppSolver::set_track(const track_ptr_t& track)
 {
+	namespace rcp = ReferenceCountingPack;
 	track_ = track;
-	solver_.set_track(NULL); // Force the track objects to be rebuilt and added!
+	solver_.set_track(rcp::null); // Force the track objects to be rebuilt and added!
 }
 	
 const rSQPppSolver::track_ptr_t&
@@ -90,8 +91,9 @@ rSQPppSolver::get_track() const
 	
 void rSQPppSolver::set_config( const config_ptr_t& config )
 {
+	namespace rcp = ReferenceCountingPack;
 	config_ = config;
-	solver_.set_config(NULL); // Must unset the config object.
+	solver_.set_config(rcp::null); // Must unset the config object.
 	reconfig_solver_ = true;
 }
 
@@ -103,11 +105,12 @@ rSQPppSolver::get_config() const
 
 void rSQPppSolver::set_options( const options_ptr_t& options )
 {
+	namespace rcp = ReferenceCountingPack;
 	options_ = options;                  // Must totally free all of the references we
 	const config_ptr_t                   // have to the current options.  That includes
 		&config = solver_.get_config();  // removing the options object for the configuration
 	if(config.get())                     // object.
-		config->set_options(NULL);       // ...
+		config->set_options(rcp::null);  // ...
 	options_used_ = options;
 	reconfig_solver_ = true;
 }
@@ -151,9 +154,10 @@ rSQPppSolver::error_out() const
 
 void rSQPppSolver::set_console_out( const ostream_ptr_t& console_out )
 {
+	namespace rcp = ReferenceCountingPack;
 	console_out_      = console_out;
-	console_out_used_ = NULL;  // Remove every reference to this ostream object!
-	solver_.set_track(NULL);
+	console_out_used_ = rcp::null;  // Remove every reference to this ostream object!
+	solver_.set_track(rcp::null);
 }
 
 const rSQPppSolver::ostream_ptr_t&
@@ -164,9 +168,10 @@ rSQPppSolver::get_console_out() const
 
 void rSQPppSolver::set_summary_out( const ostream_ptr_t& summary_out )
 {
+	namespace rcp = ReferenceCountingPack;
 	summary_out_      = summary_out;
-	summary_out_used_ = NULL;
-	solver_.set_track(NULL);     // Remove every reference to this ostream object!
+	summary_out_used_ = rcp::null;
+	solver_.set_track(rcp::null);     // Remove every reference to this ostream object!
 }
 	
 const rSQPppSolver::ostream_ptr_t&
@@ -177,9 +182,10 @@ rSQPppSolver::get_summary_out() const
 
 void rSQPppSolver::set_journal_out( const ostream_ptr_t& journal_out )
 {
+	namespace rcp = ReferenceCountingPack;
 	journal_out_      = journal_out;
-	journal_out_used_ = NULL;
-	solver_.set_track(NULL);     // Remove every reference to this ostream object!
+	journal_out_used_ = rcp::null;
+	solver_.set_track(rcp::null);     // Remove every reference to this ostream object!
 }
 	
 const rSQPppSolver::ostream_ptr_t&
@@ -190,8 +196,9 @@ rSQPppSolver::get_journal_out() const
 
 void rSQPppSolver::set_algo_out( const ostream_ptr_t& algo_out )
 {
+	namespace rcp = ReferenceCountingPack;
 	algo_out_      = algo_out;
-	algo_out_used_ = NULL;
+	algo_out_used_ = rcp::null;
 }
 	
 const rSQPppSolver::ostream_ptr_t&
@@ -453,7 +460,7 @@ void rSQPppSolver::update_solver() const
 			if(options_in)
 				options_used_ = rcp::rcp(new OptionsFromStream(options_in));
 			else
-				options_used_ = NULL;
+				options_used_ = rcp::null;
 		}
 		else
 			options_used_ = options_;

@@ -172,7 +172,7 @@ public:
 
 	/// Constructor
 	NLPFirstOrderDirectTester(
-		const calc_fd_prod_ptr_t  &calc_fd_prod       = new CalcFiniteDiffProd()
+		const calc_fd_prod_ptr_t  &calc_fd_prod       = ReferenceCountingPack::rcp(new CalcFiniteDiffProd())
 		,ETestingMethod           Gf_testing_method   = FD_DIRECTIONAL
 		,ETestingMethod           Gc_testing_method   = FD_DIRECTIONAL
 		,value_type               Gf_warning_tol      = 1e-6

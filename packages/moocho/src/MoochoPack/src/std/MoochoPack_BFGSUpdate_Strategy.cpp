@@ -63,6 +63,7 @@ void BFGSUpdate_Strategy::perform_update(
 	,QuasiNewtonStats        * quasi_newton_stats 
 	)
 {
+	namespace rcp = ReferenceCountingPack;
 	using DynamicCastHelperPack::dyn_cast;
 	using AbstractLinAlgPack::dot;
 	using AbstractLinAlgPack::Vt_S;
@@ -125,7 +126,7 @@ void BFGSUpdate_Strategy::perform_update(
 	// ////////////////////////////////////////////////////
 	// Modify the s_bfgs and y_bfgs vectors for dampening?
 	VectorSpace::vec_mut_ptr_t
-		Bs = NULL;
+		Bs = rcp::null;
 	if( use_dampening() ) {
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
 		{
@@ -186,8 +187,8 @@ void BFGSUpdate_Strategy::perform_update(
 	// Perform the update if it is defined (s_bfgs' * y_bfgs > 0.0)
 				
 	VectorSpace::vec_mut_ptr_t
-		s_bfgs_save = NULL,
-		y_bfgs_save = NULL;
+		s_bfgs_save = rcp::null,
+		y_bfgs_save = rcp::null;
 	if( check_results ) {
 		// Save s and y since they may be overwritten in the update.
 		s_bfgs_save = s_bfgs->clone();

@@ -67,10 +67,11 @@ void MatrixIdentConcatStd::initialize(
 
 void MatrixIdentConcatStd::set_uninitialized()
 {
-	space_cols_ = NULL;
-	space_rows_ = NULL;
+	namespace rcp = ReferenceCountingPack;
+	space_cols_ = rcp::null;
+	space_rows_ = rcp::null;
 	alpha_      = 0.0;
-	D_ptr_      = NULL;
+	D_ptr_      = rcp::null;
 	D_trans_    = BLAS_Cpp::no_trans;
 	D_rng_      = Range1D::Invalid;
 	I_rng_      = Range1D::Invalid;

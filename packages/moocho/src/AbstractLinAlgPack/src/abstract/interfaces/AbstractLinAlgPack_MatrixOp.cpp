@@ -76,13 +76,13 @@ std::ostream& MatrixWithOp::output(std::ostream& out) const
 MatrixWithOp::mat_mut_ptr_t
 MatrixWithOp::clone()
 {
-	return NULL;
+	return ReferenceCountingPack::null;
 }
 
 MatrixWithOp::mat_ptr_t
 MatrixWithOp::clone() const
 {
-	return NULL;
+	return ReferenceCountingPack::null;
 }
 
 // Subview

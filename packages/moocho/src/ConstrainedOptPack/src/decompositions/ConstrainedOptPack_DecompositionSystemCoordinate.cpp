@@ -113,9 +113,9 @@ DecompositionSystemCoordinate::uninitialize_matrices(
 	//
 
 	if(Uy_sv)
-		Uy_sv->initialize(NULL);
+		Uy_sv->initialize(rcp::null);
 	if(Vy_sv)
-		Vy_sv->initialize(NULL);
+		Vy_sv->initialize(rcp::null);
 
 	//
 	// Return the basis matrix object R == C as a smart pointer that is

@@ -85,7 +85,8 @@ VectorSpace::vec_mut_ptr_t VectorSpaceSubSpace::create_member() const
 
 VectorSpace::space_ptr_t VectorSpaceSubSpace::clone() const
 {
-	return new VectorSpaceSubSpace( full_space_->clone(), rng_ );
+	namespace rcp = ReferenceCountingPack;
+	return rcp::rcp(new VectorSpaceSubSpace( full_space_->clone(), rng_ ));
 }
 
 VectorSpace::space_ptr_t VectorSpaceSubSpace::sub_space(const Range1D& rng_in) const

@@ -450,7 +450,7 @@ bool VectorSpaceTester::check_vector_space(
 			vec_clone = vec->clone();
 		if(out && print_all_tests())
 			*out << "vec = NULL\n";
-		vec = NULL;
+		vec = rcp::null;
 		const value_type
 			sum_vec       = sum(*v[0]),
 			sum_vec_clone = sum(*vec_clone);

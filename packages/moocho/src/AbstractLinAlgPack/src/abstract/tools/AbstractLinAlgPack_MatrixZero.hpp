@@ -36,8 +36,8 @@ public:
 
 	/// Calls <tt>this->initalize()</tt>
 	MatrixZero(
-		const VectorSpace::space_ptr_t&     space_cols = NULL
-		,const VectorSpace::space_ptr_t&    space_rows = NULL
+		const VectorSpace::space_ptr_t&     space_cols = VectorSpace::space_ptr_t(NULL)
+		,const VectorSpace::space_ptr_t&    space_rows = VectorSpace::space_ptr_t(NULL)
 		);
 
 	///

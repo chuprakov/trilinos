@@ -39,7 +39,7 @@ public:
 	//@{
 
 	/// Calls <tt>this->initialize()</tt>.
-	MatrixSymDiagonalStd( const VectorSpace::vec_mut_ptr_t& diag = NULL );
+	MatrixSymDiagonalStd( const VectorSpace::vec_mut_ptr_t& diag = VectorSpace::vec_mut_ptr_t(NULL) );
 
 	/// Initialize given the diagonal vector (or no vector at all).
 	void initialize( const VectorSpace::vec_mut_ptr_t& diag );

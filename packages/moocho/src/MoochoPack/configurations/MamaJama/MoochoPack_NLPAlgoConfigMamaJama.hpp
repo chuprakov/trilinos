@@ -44,8 +44,8 @@ public:
 
 	/// Calls <tt>this->initalize()</tt>
 	rSQPAlgo_ConfigMamaJama( 
-		const basis_sys_ptr_t                     &basis_sys                  = NULL
-		,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy = NULL
+		const basis_sys_ptr_t                     &basis_sys                  = ReferenceCountingPack::null
+		,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy = ReferenceCountingPack::null
 		);
 
 	///
@@ -54,8 +54,8 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	void initialize(
-		const basis_sys_ptr_t                     &basis_sys                  = NULL
-		,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy = NULL
+		const basis_sys_ptr_t                     &basis_sys                  = ReferenceCountingPack::null
+		,const var_reduct_orthog_strategy_ptr_t   &var_reduct_orthog_strategy = ReferenceCountingPack::null
 		);
 
 	///

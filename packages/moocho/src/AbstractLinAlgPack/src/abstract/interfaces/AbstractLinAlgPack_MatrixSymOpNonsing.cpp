@@ -20,13 +20,13 @@ namespace AbstractLinAlgPack {
 MatrixSymWithOpNonsingular::mat_mswons_mut_ptr_t
 MatrixSymWithOpNonsingular::clone_mswons()
 {
-	return NULL;
+	return ReferenceCountingPack::null;
 }
 
 MatrixSymWithOpNonsingular::mat_mswons_ptr_t
 MatrixSymWithOpNonsingular::clone_mswons() const
 {
-	return NULL;
+	return ReferenceCountingPack::null;
 }
 
 // Overridden from MatrixWithOp

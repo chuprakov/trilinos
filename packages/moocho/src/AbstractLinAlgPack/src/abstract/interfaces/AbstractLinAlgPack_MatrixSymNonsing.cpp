@@ -23,13 +23,13 @@ namespace AbstractLinAlgPack {
 MatrixSymNonsingular::mat_msns_mut_ptr_t
 MatrixSymNonsingular::clone_msns()
 {
-	return NULL;
+	return ReferenceCountingPack::null;
 }
 
 MatrixSymNonsingular::mat_msns_ptr_t
 MatrixSymNonsingular::clone_msns() const
 {
-	return NULL;
+	return ReferenceCountingPack::null;
 }
 
 void MatrixSymNonsingular::M_StMtInvMtM(

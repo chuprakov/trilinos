@@ -52,11 +52,11 @@ public:
 
 	///
 	DecompositionSystemCoordinate(
-		const VectorSpace::space_ptr_t     &space_x          = NULL
-		,const VectorSpace::space_ptr_t    &space_c          = NULL
-		,const VectorSpace::space_ptr_t    &space_h          = NULL
-		,const basis_sys_ptr_t             &basis_sys        = NULL
-		,const basis_sys_tester_ptr_t      &basis_sys_tester = NULL
+		const VectorSpace::space_ptr_t     &space_x          = ReferenceCountingPack::null
+		,const VectorSpace::space_ptr_t    &space_c          = ReferenceCountingPack::null
+		,const VectorSpace::space_ptr_t    &space_h          = ReferenceCountingPack::null
+		,const basis_sys_ptr_t             &basis_sys        = ReferenceCountingPack::null
+		,const basis_sys_tester_ptr_t      &basis_sys_tester = ReferenceCountingPack::null
 		,EExplicitImplicit                 D_imp             = MAT_IMP_AUTO
 		,EExplicitImplicit                 Uz_imp            = MAT_IMP_AUTO
 		,EExplicitImplicit                 Vz_imp            = MAT_IMP_AUTO

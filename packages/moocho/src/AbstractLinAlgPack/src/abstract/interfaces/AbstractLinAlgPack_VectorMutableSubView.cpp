@@ -19,7 +19,7 @@
 namespace AbstractLinAlgPack {
 
 VectorWithOpMutableSubView::VectorWithOpMutableSubView( const vec_mut_ptr_t& vec, const Range1D& rng )
-	: VectorWithOpSubView(NULL,rng)
+	: VectorWithOpSubView(ReferenceCountingPack::null,rng)
 {
 	this->initialize(vec,rng);
 }

@@ -75,6 +75,7 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
 	
+	namespace rcp = ReferenceCountingPack;
 	typedef VectorSpace::vec_mut_ptr_t  vec_mut_ptr_t;
 	using AbstractLinAlgPack::Vt_S;
 	using AbstractLinAlgPack::Vp_StV;
@@ -360,8 +361,8 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 	vec_mut_ptr_t
 		x = nlp->space_x()->create_member();
 	vec_mut_ptr_t
-		c = m  && Gc_prod ? nlp->space_c()->create_member() : NULL,
-		h = mI && Gh_prod? nlp->space_h()->create_member()  : NULL;
+		c = m  && Gc_prod ? nlp->space_c()->create_member() : rcp::null,
+		h = mI && Gh_prod? nlp->space_h()->create_member()  : rcp::null;
 	
 	// Set the quanitities used to compute with
 

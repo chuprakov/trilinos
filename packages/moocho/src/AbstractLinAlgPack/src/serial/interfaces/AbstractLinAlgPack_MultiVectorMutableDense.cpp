@@ -133,7 +133,7 @@ MultiVectorMutableDense::col(index_type j)
 	return rcp::rcp(
 		new VectorWithOpMutableDense(
 			LinAlgPack::col( set_gms(), gms_trans(), j )
-			,NULL ) );
+			,rcp::null ) );
 }
 
 MultiVectorMutableDense::vec_mut_ptr_t
@@ -143,7 +143,7 @@ MultiVectorMutableDense::row(index_type i)
 	return rcp::rcp(
 		new VectorWithOpMutableDense(
 			LinAlgPack::row( set_gms(), gms_trans(), i )
-			,NULL ) );
+			,rcp::null ) );
 }
 
 MultiVectorMutableDense::vec_mut_ptr_t
@@ -153,7 +153,7 @@ MultiVectorMutableDense::diag(int k)
 	return rcp::rcp(
 		new VectorWithOpMutableDense(
 			gms_.diag( gms_trans() == BLAS_Cpp::no_trans ? k : -k )
-			,NULL ) );
+			,rcp::null ) );
 }
 
 MultiVectorMutableDense::multi_vec_mut_ptr_t
@@ -166,7 +166,7 @@ MultiVectorMutableDense::mv_sub_view(const Range1D& row_rng, const Range1D& col_
 				gms_trans() == BLAS_Cpp::no_trans   ? row_rng : col_rng
 				,gms_trans() == BLAS_Cpp::no_trans  ? col_rng : row_rng )
 			,gms_trans()
-			,NULL ) );
+			,rcp::null ) );
 }
 
 // Overridden from MatrixBase

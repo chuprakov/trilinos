@@ -34,7 +34,7 @@ public:
 
 	/// Calls <tt>this->initialize()</tt>.
 	MatrixSymIdentity(
-		const VectorSpace::space_ptr_t&          vec_space = NULL
+		const VectorSpace::space_ptr_t&          vec_space = VectorSpace::space_ptr_t(NULL)
 		,const value_type                        scale     = 1.0
 		);
 

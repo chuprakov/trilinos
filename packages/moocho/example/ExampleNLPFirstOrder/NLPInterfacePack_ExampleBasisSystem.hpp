@@ -32,7 +32,7 @@ class ExampleBasisSystem : public BasisSystem {
 public:
 
 	/// Calls <tt>this->initialize()</tt>
-	ExampleBasisSystem( const VectorSpace::space_ptr_t& space_x_DI = NULL );
+	ExampleBasisSystem( const VectorSpace::space_ptr_t& space_x_DI = ReferenceCountingPack::null );
 	
 	///
 	/** Initialize given the vector space for the dependent and independent variables.

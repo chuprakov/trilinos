@@ -23,7 +23,7 @@
 namespace AbstractLinAlgPack {
 
 VectorWithOpSubView::VectorWithOpSubView( const vec_ptr_t& vec, const Range1D& rng )
-	: space_(NULL,rng)
+	: space_(ReferenceCountingPack::null,rng)
 {
 	initialize(vec,rng);
 }

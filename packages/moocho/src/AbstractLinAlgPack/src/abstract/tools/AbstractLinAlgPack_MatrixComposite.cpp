@@ -236,6 +236,8 @@ MatrixCompositeStd::MatrixCompositeStd( size_type rows, size_type cols )
 
 void MatrixCompositeStd::reinitialize( size_type rows, size_type cols )
 {
+	namespace rcp = ReferenceCountingPack;
+	
 	fully_constructed_ = true;
 	rows_ = rows;
 	cols_ = cols;
@@ -245,8 +247,8 @@ void MatrixCompositeStd::reinitialize( size_type rows, size_type cols )
 	if(vector_list_.size()) {
 		vector_list_.erase(vector_list_.begin(),vector_list_.end());
 	}
-	space_rows_  = NULL;
-	space_cols_  = NULL;
+	space_rows_  = rcp::null;
+	space_cols_  = rcp::null;
 }
 
 void MatrixCompositeStd::add_vector(
@@ -288,6 +290,8 @@ void MatrixCompositeStd::add_vector(
 	,BLAS_Cpp::Transp              v_trans
 	)
 {
+	namespace rcp = ReferenceCountingPack;
+
 	assert( beta != 0.0 );
 	assert( v != NULL );
 	fully_constructed_ = false;
@@ -303,7 +307,7 @@ void MatrixCompositeStd::add_vector(
 	vector_list_.push_back(
 		SubVectorEntry(
 			row_offset+1,col_offset+1,beta,Range1D()
-			,NULL,NULL,BLAS_Cpp::no_trans
+			,rcp::null,rcp::null,BLAS_Cpp::no_trans
 			,v,v_release,v_trans ) );
 }
 
@@ -377,6 +381,7 @@ void MatrixCompositeStd::add_matrix(
 	,const Range1D                 &rng_Q_in
 	)
 {
+	namespace rcp = ReferenceCountingPack;
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
 	using RangePack::full_range;
@@ -415,10 +420,10 @@ void MatrixCompositeStd::add_matrix(
 			,col_offset+1,col_offset+opPopAopQ_rows
 			,alpha
 			,rng_P
-			,NULL,NULL,BLAS_Cpp::no_trans
+			,rcp::null,rcp::null,BLAS_Cpp::no_trans
 			,A,A_release,A_trans
 			,rng_Q
-			,NULL,NULL,BLAS_Cpp::no_trans
+			,rcp::null,rcp::null,BLAS_Cpp::no_trans
 			)
 		);
 
@@ -437,6 +442,7 @@ void MatrixCompositeStd::add_matrix(
 	,BLAS_Cpp::Transp              A_trans
 	)
 {
+	namespace rcp = ReferenceCountingPack;
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
 
@@ -468,10 +474,10 @@ void MatrixCompositeStd::add_matrix(
 			,col_offset+1,col_offset+opA_cols
 			,alpha
 			,Range1D()
-			,NULL,NULL,BLAS_Cpp::no_trans
+			,rcp::null,rcp::null,BLAS_Cpp::no_trans
 			,A,A_release,A_trans
 			,Range1D()
-			,NULL,NULL,BLAS_Cpp::no_trans
+			,rcp::null,rcp::null,BLAS_Cpp::no_trans
 			)
 		);
 }
@@ -485,6 +491,7 @@ void MatrixCompositeStd::add_matrix(
 	,BLAS_Cpp::Transp              P_trans
 	)
 {
+	namespace rcp = ReferenceCountingPack;
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
 
@@ -506,10 +513,10 @@ void MatrixCompositeStd::add_matrix(
 		SubMatrixEntry(
 			row_offset+1,row_offset+opP_rows,col_offset+1,col_offset+opP_cols,alpha
 			,Range1D::Invalid
-			,new GenPermMatrixSlice(*P),P_release,P_trans
-			,NULL,NULL,BLAS_Cpp::no_trans
+			,rcp::rcp(new GenPermMatrixSlice(*P)),P_release,P_trans
+			,NULL,rcp::null,BLAS_Cpp::no_trans
 			,Range1D()
-			,NULL,NULL,BLAS_Cpp::no_trans
+			,rcp::null,rcp::null,BLAS_Cpp::no_trans
 			)
 		);
 }

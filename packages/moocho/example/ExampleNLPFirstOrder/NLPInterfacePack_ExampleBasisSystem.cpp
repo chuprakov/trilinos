@@ -50,8 +50,8 @@ void ExampleBasisSystem::initialize( const VectorSpace::space_ptr_t& space_x_DI 
 	else {
 		var_dep_    = Range1D::Invalid;
 		var_indep_  = Range1D::Invalid;
-		factory_C_    = NULL;
-		factory_D_    = NULL;
+		factory_C_  = rcp::null;
+		factory_D_  = rcp::null;
 	}
 }
 

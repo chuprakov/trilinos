@@ -37,8 +37,8 @@ bool NLPInterfacePack::test_basis_system(
 
 	// Create the matrices Gc and Gh
 	NLPFirstOrderInfo::mat_space_ptr_t::element_type::mat_ptr_t
-		Gc = ( m  ? nlp->space_Gc()->create_member() : NULL ),
-		Gh = ( mI ? nlp->space_Gh()->create_member() : NULL );
+		Gc = ( m  ? nlp->space_Gc()->create_member() : rcp::null ),
+		Gh = ( mI ? nlp->space_Gh()->create_member() : rcp::null );
 	
 	// Compute the matrices at xinit
 	const VectorWithOp
@@ -54,13 +54,13 @@ bool NLPInterfacePack::test_basis_system(
 
 	// Create the matrices C and D
 	BasisSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
-		C = ( m ? basis_sys->factory_C()->create() : NULL);
+		C = ( m ? basis_sys->factory_C()->create() : rcp::null);
 	BasisSystem::mat_fcty_ptr_t::element_type::obj_ptr_t
-		D = ( m && n > m && basis_sys->factory_C().get() ? basis_sys->factory_C()->create() : NULL);
+		D = ( m && n > m && basis_sys->factory_C().get() ? basis_sys->factory_C()->create() : rcp::null);
 	BasisSystem::mat_fcty_ptr_t::element_type::obj_ptr_t
-		GcUP = ( m && n > m && basis_sys->factory_GcUP().get()  ? basis_sys->factory_GcUP()->create() : NULL);
+		GcUP = ( m && n > m && basis_sys->factory_GcUP().get()  ? basis_sys->factory_GcUP()->create() : rcp::null);
 	BasisSystem::mat_fcty_ptr_t::element_type::obj_ptr_t
-		GhUP = ( mI && n > m && basis_sys->factory_GhUP().get() ? basis_sys->factory_GhUP()->create() : NULL);
+		GhUP = ( mI && n > m && basis_sys->factory_GhUP().get() ? basis_sys->factory_GhUP()->create() : rcp::null);
 
 	// Initialize C and D with basis_sys
 	basis_sys->update_basis(

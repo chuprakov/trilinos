@@ -176,6 +176,7 @@ void MatrixVarReductImplicit::initialize(
 	,const mat_ptr_t                 &D_direct
 	)
 {
+	namespace rcp = ReferenceCountingPack;
 	// Validate the inputs
 	THROW_EXCEPTION(
 		C.get() == NULL, std::invalid_argument
@@ -205,7 +206,7 @@ void MatrixVarReductImplicit::initialize(
 		for( InvCtN_rows_set_list_t::iterator itr = InvCtN_rows_set_list_.begin();
 			 itr != InvCtN_rows_set_list_.end(); ++itr )
         {
-			InvCtN_rows_[*itr] = NULL;
+			InvCtN_rows_[*itr] = rcp::null;
 		}
 		InvCtN_rows_set_list_.clear();
 	}
@@ -213,9 +214,10 @@ void MatrixVarReductImplicit::initialize(
 
 void MatrixVarReductImplicit::set_uninitialized()
 {
-	C_        = NULL;
-	N_        = NULL;
-	D_direct_ = NULL;
+	namespace rcp = ReferenceCountingPack;
+	C_        = rcp::null;
+	N_        = rcp::null;
+	D_direct_ = rcp::null;
 }
 
 // Overridden from MatrixBase

@@ -405,7 +405,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	// C.1. Create the decomposition system object
 
 	typedef ref_count_ptr<DecompositionSystem> decomp_sys_ptr_t;
-	decomp_sys_ptr_t decomp_sys = NULL;
+	decomp_sys_ptr_t decomp_sys = rcp::null;
 	if(!tailored_approach) {
 		// Set the default basis system if one is not set
 		THROW_EXCEPTION(
@@ -476,12 +476,12 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					,(tailored_approach
 					  ? ( nlp_fod->var_dep().size() 
 					    ? nlp.space_x()->sub_space(nlp_fod->var_dep())->clone()
-					    : NULL )
+					    : rcp::null )
                       : decomp_sys->space_range() )
 					,(tailored_approach
 					   ?( nlp_fod->var_indep().size()
 					     ? nlp.space_x()->sub_space(nlp_fod->var_indep())->clone()
-					     : NULL )
+					     : rcp::null )
 					   : decomp_sys->space_null() )
 					)
 				);
@@ -615,7 +615,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 		if( !cov_.exact_reduced_hessian_ ) {
 			ref_count_ptr<afp::AbstractFactory<MatrixSymWithOp> >
-				abstract_factory_rHL = NULL;
+				abstract_factory_rHL = rcp::null;
 			// Only maintain the orginal matrix if we have inequality constraints and therefore will be
 			// needing a QP solver (which may be QPSchur which needs an accurate original matrix for
 			// iterative refinment).
@@ -675,7 +675,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 		if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
 			ref_count_ptr<afp::AbstractFactory<MeritFuncNLP> >
-				merit_func_factory = NULL;
+				merit_func_factory = rcp::null;
 			switch( cov_.merit_function_type_ ) {
 				case MERIT_FUNC_L1:
 					merit_func_factory = rcp::rcp(
@@ -772,7 +772,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 		// Create the variable bounds testing object.
 		typedef rcp::ref_count_ptr<VariableBoundsTester>     bounds_tester_ptr_t;
-		bounds_tester_ptr_t   bounds_tester = NULL;
+		bounds_tester_ptr_t   bounds_tester = rcp::null;
 		if(nb) { // has variable bounds?
 			const value_type var_bounds_warning_tol = 1e-10;
 			const value_type var_bounds_error_tol   = 1e-5;
@@ -790,7 +790,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 		// Create the finite difference class
 		typedef rcp::ref_count_ptr<CalcFiniteDiffProd>     calc_fd_prod_ptr_t;
-		calc_fd_prod_ptr_t   calc_fd_prod = NULL;
+		calc_fd_prod_ptr_t   calc_fd_prod = rcp::null;
 		{
 			calc_fd_prod = rcp::rcp(new CalcFiniteDiffProd());
 			if(options_.get()) {
@@ -801,7 +801,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 		
 		// EvalNewPoint_Step
-		algo_step_ptr_t    eval_new_point_step = NULL;
+		algo_step_ptr_t    eval_new_point_step = rcp::null;
 		{
 			// Create the step object
 			if( tailored_approach ) {
@@ -822,7 +822,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				// create the step
 				typedef rcp::ref_count_ptr<EvalNewPointTailoredApproach_Step>  _eval_new_point_step_ptr_t;
 				_eval_new_point_step_ptr_t
-					_eval_new_point_step = NULL;
+					_eval_new_point_step = rcp::null;
 				switch( cov_.range_space_matrix_type_ ) {
 					case RANGE_SPACE_MATRIX_COORDINATE:
 						_eval_new_point_step
@@ -887,25 +887,25 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 
 		// RangeSpace_Step
-		algo_step_ptr_t    range_space_step_step = NULL;
+		algo_step_ptr_t    range_space_step_step = rcp::null;
 		if( !tailored_approach ) {
 			range_space_step_step = rcp::rcp(new RangeSpaceStepStd_Step());
 		}
 
 		// CheckDescentRangeSpaceStep
-		algo_step_ptr_t    check_descent_range_space_step_step = NULL;
+		algo_step_ptr_t    check_descent_range_space_step_step = rcp::null;
 		if( algo->algo_cntr().check_results() ) {
 			check_descent_range_space_step_step = rcp::rcp(new CheckDescentRangeSpaceStep_Step(calc_fd_prod));
 		}
 
 		// ReducedGradient_Step
-		algo_step_ptr_t    reduced_gradient_step = NULL;
+		algo_step_ptr_t    reduced_gradient_step = rcp::null;
 		if( !tailored_approach ) {
 			reduced_gradient_step = rcp::rcp(new ReducedGradientStd_Step());
 		}
 
 		// CheckSkipBFGSUpdate
-		algo_step_ptr_t    check_skip_bfgs_update_step = NULL;
+		algo_step_ptr_t    check_skip_bfgs_update_step = rcp::null;
 		if(!cov_.exact_reduced_hessian_) {
 			ref_count_ptr<CheckSkipBFGSUpdateStd_Step>
 				step = rcp::rcp(new CheckSkipBFGSUpdateStd_Step());
@@ -918,11 +918,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 
 		// ReducedHessian_Step
-		algo_step_ptr_t    reduced_hessian_step = NULL;
+		algo_step_ptr_t    reduced_hessian_step = rcp::null;
 		{
 			// Get the strategy object that will perform the actual secant update.
 			ref_count_ptr<ReducedHessianSecantUpdate_Strategy>
-				secant_update_strategy = NULL;
+				secant_update_strategy = rcp::null;
 			switch( cov_.quasi_newton_ )
 			{
 			    case QN_BFGS:
@@ -968,7 +968,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			// Add the QuasiNewtonStats iteration quantity
 			algo->state().set_iter_quant(
 				quasi_newton_stats_name
-				,new IterQuantityAccessContiguous<QuasiNewtonStats>(
+				,rcp::rcp(new IterQuantityAccessContiguous<QuasiNewtonStats>(
 					1
 					,quasi_newton_stats_name
 #ifdef _MIPS_CXX
@@ -976,30 +976,30 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						new AbstractFactoryPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats>())
 #endif
 					)
-				);
+				));
 		}
 
 		// NullSpace_Step
-		algo_step_ptr_t    null_space_step_step = NULL;
+		algo_step_ptr_t    null_space_step_step = rcp::null;
 		{
 			null_space_step_step = rcp::rcp(new NullSpaceStepWithoutBounds_Step());
 		}
 
 		// CalcDFromYPYZPZ_Step
-		algo_step_ptr_t    calc_d_from_Ypy_Zpy_step = NULL;
+		algo_step_ptr_t    calc_d_from_Ypy_Zpy_step = rcp::null;
 		{
 			calc_d_from_Ypy_Zpy_step = rcp::rcp(new CalcDFromYPYZPZ_Step());
 		}
 
 		// CalcReducedGradLagrangianStd_AddedStep
-		algo_step_ptr_t    calc_reduced_grad_lagr_step = NULL;
+		algo_step_ptr_t    calc_reduced_grad_lagr_step = rcp::null;
 		{
 			calc_reduced_grad_lagr_step = rcp::rcp(
 				new CalcReducedGradLagrangianStd_AddedStep() );
 		}
 
 		// CheckConvergence_Step
-		algo_step_ptr_t    check_convergence_step = NULL;
+		algo_step_ptr_t    check_convergence_step = rcp::null;
 		{
 			ref_count_ptr<CheckConvergenceStd_AddedStep>
 				_check_convergence_step = rcp::rcp(new CheckConvergenceStd_AddedStep());
@@ -1012,10 +1012,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 
 		// MeritFuncPenaltyParamUpdate_Step
-		algo_step_ptr_t    merit_func_penalty_param_update_step = NULL;
+		algo_step_ptr_t    merit_func_penalty_param_update_step = rcp::null;
 		if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
 			ref_count_ptr<MeritFunc_PenaltyParamUpdate_AddedStep>
-				param_update_step = NULL;
+				param_update_step = rcp::null;
 			switch( cov_.merit_function_type_ ) {
 				case MERIT_FUNC_L1: {
 					switch(cov_.l1_penalty_param_update_) {
@@ -1057,13 +1057,13 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 
 		// LineSearch_Step
-		algo_step_ptr_t    line_search_full_step_step = NULL;
+		algo_step_ptr_t    line_search_full_step_step = rcp::null;
 		{
 			line_search_full_step_step = rcp::rcp(new LineSearchFullStep_Step(bounds_tester));
 		}
 
 		// LineSearch_Step
-		algo_step_ptr_t    line_search_step = NULL;
+		algo_step_ptr_t    line_search_step = rcp::null;
 		if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
 			ref_count_ptr<DirectLineSearchArmQuad_Strategy>
 				direct_line_search = rcp::rcp(new  DirectLineSearchArmQuad_Strategy());
@@ -1239,750 +1239,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		else {
 			assert(0); // Error, this should not ever be called!
 		}
-
-		// Set the standard set of step objects.
-		// This default algorithm is for NLPs with no variable bounds.
-/*
-
-		// (1) EvalNewPoint
-		if( tailored_approach ) {
-			typedef rcp::ref_count_ptr<NLPrSQPTailoredApproachTester>
-				nonconst_deriv_tester_ptr_t;
-			typedef EvalNewPointTailoredApproach_Step::deriv_tester_ptr_t
-				deriv_tester_ptr_t;
-
-			nonconst_deriv_tester_ptr_t
-				deriv_tester = new NLPrSQPTailoredApproachTester(
-										NLPrSQPTailoredApproachTester::FD_DIRECTIONAL		// Gf
-										,NLPrSQPTailoredApproachTester::FD_COMPUTE_ALL		// -Inv(C)*N
-										);
-
-			{
-				NLPrSQPTailoredApproachTesterSetOptions options_setter(deriv_tester.get());
-				if(options_) options_setter.set_options(*options_);
-			}		
-
-			EvalNewPointTailoredApproach_Step
-				*eval_new_point_step = NULL;
-			switch( cov_.range_space_matrix_type_ ) {
-				case RANGE_SPACE_MATRIX_COORDINATE:
-					eval_new_point_step
-						= new EvalNewPointTailoredApproachCoordinate_Step(deriv_tester,bounds_tester);
-					break;
-				case RANGE_SPACE_MATRIX_ORTHOGONAL:
-					eval_new_point_step
-						= new EvalNewPointTailoredApproachOrthogonal_Step(deriv_tester,bounds_tester);
-					break;
-				default:
-					assert(0);	// only a local error
-			}
-			{
-				EvalNewPointTailoredApproach_StepSetOptions options_setter(eval_new_point_step);
-				if(options_) options_setter.set_options(*options_);
-			}		
-
-			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
-		}
-		else {
-			typedef NLPInterfacePack::TestingPack::NLPFirstDerivativesTester
-				NLPFirstDerivativesTester;
-			typedef NLPInterfacePack::TestingPack::NLPFirstDerivativesTesterSetOptions
-				NLPFirstDerivativesTesterSetOptions;
-			typedef rcp::ref_count_ptr<NLPFirstDerivativesTester>
-				nonconst_deriv_tester_ptr_t;
-			typedef EvalNewPointStd_Step::deriv_tester_ptr_t
-				deriv_tester_ptr_t;
-			
-			nonconst_deriv_tester_ptr_t
-				deriv_tester = new NLPFirstDerivativesTester();
-
-			{
-				NLPFirstDerivativesTesterSetOptions options_setter(deriv_tester.get());
-				if(options_) options_setter.set_options(*options_);
-			}		
-
-			EvalNewPointStd_Step
-				*eval_new_point_step = new EvalNewPointStd_Step(deriv_tester,bounds_tester);
-
-			{
-				EvalNewPointStd_StepSetOptions options_setter(eval_new_point_step);
-				if(options_) options_setter.set_options(*options_);
-			}		
-
-			algo->insert_step( ++step_num, EvalNewPoint_name, eval_new_point_step );
-		}
-
-		// (2) DepDirec
-		if( !tailored_approach ) {
-			algo->insert_step( ++step_num, DepDirec_name, new  DepDirecStd_Step );
-		}
-
-		// (3) ReducedGradient
-		algo->insert_step( ++step_num, ReducedGradient_name, new ReducedGradientStd_Step );
-
-		// (4) Calculate Reduced Gradient of the Lagrangian
-		algo->insert_step( ++step_num, CalcReducedGradLagrangian_name, new CalcReducedGradLagrangianStd_AddedStep );
-
-		// (5)	Calculate the Lagrange multipliers for the independent constraints.
-		// 		These are computed here just in case the algorithm converges and we need to
-		// 		report these multipliers to the NLP.
-		if( !tailored_approach ) {
-			algo->insert_step( ++step_num, CalcLambdaIndep_name, new  CalcLambdaIndepStd_AddedStep );
-		}
-
-		// (6) Check for convergence
-		{
-			CheckConvergenceStd_AddedStep
-				*check_convergence_step = new CheckConvergenceStd_AddedStep;
-
-			CheckConvergenceStd_AddedStepSetOptions
-				opt_setter( check_convergence_step );
-			if(options_) opt_setter.set_options( *options_ );
-
-			algo->insert_step( ++step_num, CheckConvergence_name, check_convergence_step );
-		}
-
-		// (7) ReducedHessian
-		{
-			// Get the strategy object that will perform the actual secant update.
-			ref_count_ptr<ReducedHessianSecantUpdate_Strategy>
-				secant_update_strategy = NULL;
-			switch( cov_.quasi_newton_ )
-			{
-			    case QN_BFGS:
-			    case QN_PBFGS:
-			    case QN_LBFGS:
-			    case QN_LPBFGS:
-				{
-					typedef ref_count_ptr<BFGSUpdate_Strategy> bfgs_strategy_ptr_t;
-					bfgs_strategy_ptr_t
-						bfgs_strategy = new BFGSUpdate_Strategy;
-					BFGSUpdate_StrategySetOptions
-						opt_setter( bfgs_strategy.get() );
-					if(options_) opt_setter.set_options( *options_ );
-
-					switch( cov_.quasi_newton_ ) {
-					    case QN_BFGS:
-					    case QN_LBFGS:
-						{
-							secant_update_strategy = new ReducedHessianSecantUpdateBFGSFull_Strategy(bfgs_strategy);
-							break;
-						}
-					    case QN_PBFGS:
-					    case QN_LPBFGS:
-						{
-							typedef ref_count_ptr<ReducedHessianSecantUpdateBFGSProjected_Strategy>
-								pbfgs_strategy_ptr_t;
-							pbfgs_strategy_ptr_t
-								pbfgs_strategy = new ReducedHessianSecantUpdateBFGSProjected_Strategy(bfgs_strategy);
-							ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions
-								opt_setter( pbfgs_strategy.get() );
-							if(options_) opt_setter.set_options( *options_ );
-							if( cov_.quasi_newton_ == QN_PBFGS ) {
-								secant_update_strategy
-									= rcp::rcp_static_cast<ReducedHessianSecantUpdate_Strategy>(pbfgs_strategy);
-							}
-							else {
-								typedef ref_count_ptr<ReducedHessianSecantUpdateLPBFGS_Strategy>
-									lpbfgs_strategy_ptr_t;
-								lpbfgs_strategy_ptr_t
-									lpbfgs_strategy
-									= new ReducedHessianSecantUpdateLPBFGS_Strategy(
-										pbfgs_strategy 
-										);
-								ReducedHessianSecantUpdateLPBFGS_StrategySetOptions
-									opt_setter( lpbfgs_strategy.get() );
-								if(options_) opt_setter.set_options( *options_ );
-								secant_update_strategy
-									= rcp::rcp_static_cast<ReducedHessianSecantUpdate_Strategy>(lpbfgs_strategy);
-							}
-							break;
-						}
-					}
-					break;
-				}
-			    default:
-					assert(0);
-			}
-			// Finally build the step object
-			ReducedHessianSecantUpdateStd_Step
-				*step = new ReducedHessianSecantUpdateStd_Step( secant_update_strategy );
-			algo->insert_step( ++step_num, ReducedHessian_name, step );
-		}
-
-		// (7.-1) CheckSkipBFGSUpdate
-		{
-			CheckSkipBFGSUpdateStd_Step
-				*step = new CheckSkipBFGSUpdateStd_Step;
-			CheckSkipBFGSUpdateStd_StepSetOptions
-				opt_setter( step );
-			if(options_) opt_setter.set_options( *options_ );
-			
-			algo->insert_assoc_step(
-				  step_num
-				, GeneralIterationPack::PRE_STEP
-				, 1
-				, CheckSkipBFGSUpdate_name
-				, step
-			  );
-		}
-
-		// (8) IndepDirec
-		algo->insert_step( ++step_num, IndepDirec_name, new  IndepDirecWithoutBounds_Step );
-
-		// (9) CalcDFromYPYZPZ
-		algo->insert_step( ++step_num, "CalcDFromYPYZPZ", new CalcDFromYPYZPZ_Step );
-
-		// (10) LineSearch
-		if( cov_.line_search_method_ == LINE_SEARCH_NONE ) {
-
-			algo->insert_step(
-				  ++step_num
-				, LineSearch_name
-				, new LineSearchFullStep_Step(bounds_tester)
-			  );
-			
-		}
-		else {
-
-			using ConstrainedOptimizationPack::DirectLineSearchArmQuad_Strategy;
-			using ConstrainedOptimizationPack::MeritFuncNLPL1;
-			using ConstrainedOptimizationPack::MeritFuncNLPModL1;
-
-			switch( cov_.merit_function_type_ ) {
-				case MERIT_FUNC_L1:
-					merit_func = merit_func_ptr_t(new MeritFuncNLPL1);
-					break;
-				case MERIT_FUNC_MOD_L1:
-				case MERIT_FUNC_MOD_L1_INCR:
-					merit_func = merit_func_ptr_t(new MeritFuncNLPModL1);
-					break;
-				default:
-					assert(0);	// local programming error
-			}
-
-			DirectLineSearchArmQuad_Strategy
-				*direct_line_search = new  DirectLineSearchArmQuad_Strategy();
-
-			ConstrainedOptimizationPack::DirectLineSearchArmQuad_StrategySetOptions
-				ls_options_setter( direct_line_search, "DirectLineSearchArmQuadSQPStep" );
-			if(options_) ls_options_setter.set_options( *options_ );
-			LineSearch_Step
-				*line_search_step = 0;
-
-			switch( cov_.line_search_method_ ) {
-				case LINE_SEARCH_DIRECT: {
-					line_search_step = new LineSearchDirect_Step(
-						  direct_line_search
-						, rcp::rcp_implicit_cast<MeritFuncNLP>(merit_func)
-					  );
-					break;
-				}
-				case LINE_SEARCH_2ND_ORDER_CORRECT: {
-					typedef LineSearch2ndOrderCorrect_Step ls_t;
-					// Set the default print level for the newton iterations
-					ls_t::ENewtonOutputLevel
-						newton_olevel;
-					switch( algo_cntr->journal_output_level() ) {
-						case PRINT_NOTHING:
-							newton_olevel = ls_t::PRINT_NEWTON_NOTHING;
-							break;
-						case PRINT_BASIC_ALGORITHM_INFO:
-							newton_olevel = ls_t::PRINT_NEWTON_NOTHING;
-							break;
-						case PRINT_ALGORITHM_STEPS:
-						case PRINT_ACTIVE_SET:
-							newton_olevel = ls_t::PRINT_NEWTON_SUMMARY_INFO;
-							break;
-						case PRINT_VECTORS:
-						case PRINT_ITERATION_QUANTITIES:
-							newton_olevel = ls_t::PRINT_NEWTON_VECTORS;
-							break;
-					}
-					// Create the QuasiRangeSpaceStep_Strategy object
-					QuasiRangeSpaceStep_Strategy
-						*quasi_range_space_step = NULL;
-					if(tailored_approach) {
-						// ToDo: Set the EvalNewPointTailoredApproach_Step object!
-						quasi_range_space_step = new QuasiRangeSpaceStepTailoredApproach_Strategy();
-					}
-					else {
-						quasi_range_space_step = new QuasiRangeSpaceStepStd_Strategy();
-					}
-					// Create the FeasibilityStepReducedStd_Strategy object and
-					// set its options
-					{
-						feasibility_step_strategy
-							= new FeasibilityStepReducedStd_Strategy(
-								quasi_range_space_step         // Given ownership to delete!
-								,NULL  // QP solver (must be set later)
-								,NULL  // QP solver tester (must be set later)
-								);
-						// Set the options
-						FeasibilityStepReducedStd_StrategySetOptions
-							opt_setter(feasibility_step_strategy.get());
-						if(options_) opt_setter.set_options( *options_ );
-					}
-					// Create the line search object for the newton iterations
-					// and set its options from the option from stream object.
-					DirectLineSearchArmQuad_Strategy
-						*direct_ls_newton = new  DirectLineSearchArmQuad_Strategy(
-								5	// max_iter
-							);
-					ConstrainedOptimizationPack::DirectLineSearchArmQuad_StrategySetOptions
-						direct_ls_opt_setter( direct_ls_newton
-							, "DirectLineSearchArmQuad2ndOrderCorrectNewton" );
-					if(options_) direct_ls_opt_setter.set_options( *options_ );
-					// Create the step object and set its options from the options object.
-					LineSearch2ndOrderCorrect_Step
-						*_line_search_step = new LineSearch2ndOrderCorrect_Step(
-							direct_line_search
-							,rcp::rcp_implicit_cast<MeritFuncNLP>(merit_func)
-							,rcp::rcp_implicit_cast<FeasibilityStep_Strategy>(
-								feasibility_step_strategy)
-							,direct_ls_newton
-							,direct_line_search->eta()
-							,newton_olevel
-						);
-					LineSearch2ndOrderCorrect_StepSetOptions
-						ls_opt_setter( _line_search_step );
-					if(options_) ls_opt_setter.set_options( *options_ );
-					//
-					line_search_step = _line_search_step;
-					break;
-				}
-				case LINE_SEARCH_WATCHDOG: {
-					// Create the step object and set its options from the options object.
-					LineSearchWatchDog_Step
-						*_line_search_step = new LineSearchWatchDog_Step(
-							  direct_line_search
-							, rcp::rcp_implicit_cast<MeritFuncNLP>(merit_func)
-							, direct_line_search->eta()
-							);
-					LineSearchWatchDog_StepSetOptions
-						ls_opt_setter( _line_search_step );
-					if(options_) ls_opt_setter.set_options( *options_ );
-					//
-					line_search_step = _line_search_step;
-					break;
-				}
-			}
-
-			algo->insert_step(
-				++step_num
-				, LineSearch_name
-				, new LineSearchFailureNewBasisSelection_Step( 
-					line_search_step
-					,new NewBasisSelectionStd_Strategy(decomp_sys.get()) // Just aggregation, okay!
-					)
-				);
-			
-			Algorithm::poss_type
-				pre_step_i = 0;
-
-			// (10.-?) Update the penalty parameter for the Merit function.
-			MeritFunc_PenaltyParamUpdate_AddedStep
-				*param_update_step = 0;
-
-			switch( cov_.merit_function_type_ ) {
-				case MERIT_FUNC_L1: {
-					switch(cov_.l1_penalty_param_update_) {
-						case L1_PENALTY_PARAM_WITH_MULT:
-							param_update_step
-								= new  MeritFunc_PenaltyParamUpdateWithMult_AddedStep(
-											rcp::rcp_implicit_cast<MeritFuncNLP>(merit_func) );
-							break;
-						case L1_PENALTY_PARAM_MULT_FREE:
-							param_update_step
-								= new  MeritFunc_PenaltyParamUpdateMultFree_AddedStep(
-											rcp::rcp_implicit_cast<MeritFuncNLP>(merit_func) );
-							break;
-						default:
-							assert(0);
-					}
-					break;
-				}
-				case MERIT_FUNC_MOD_L1:
-				case MERIT_FUNC_MOD_L1_INCR:
-					param_update_step = new  MeritFunc_PenaltyParamsUpdateWithMult_AddedStep(
-											rcp::rcp_implicit_cast<MeritFuncNLP>(merit_func) );
-					break;
-				default:
-					assert(0);	// local programming error
-			}
-			// Set the options from the stream
-			MeritFunc_PenaltyParamUpdate_AddedStepSetOptions
-				ppu_options_setter( param_update_step );
-			if(options_) ppu_options_setter.set_options( *options_ );
-
-			algo->insert_assoc_step(	  step_num
-										, GeneralIterationPack::PRE_STEP
-										, ++pre_step_i
-										, "MeritFunc_PenaltyParamUpdate"
-										, param_update_step // give control over memory!
-									);
-			
-			// (10.-?)	Compute the full step before the linesearch
-			algo->insert_assoc_step(	  step_num
-										, GeneralIterationPack::PRE_STEP
-										, ++pre_step_i
-										, "LineSearchFullStep"
-										, new  LineSearchFullStep_Step(bounds_tester)	);
-
-			// (10.-?) Increase the penalty parameters to get a larger step.
-			if( cov_.merit_function_type_ == MERIT_FUNC_MOD_L1_INCR ) {
-
-				MeritFunc_ModifiedL1LargerSteps_AddedStep
-					*_added_step = new MeritFunc_ModifiedL1LargerSteps_AddedStep(
-						   rcp::rcp_implicit_cast<MeritFuncNLP>(merit_func)
-						 , direct_line_search->eta() );
-
-				MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions
-					options_setter( _added_step );
-				if(options_) options_setter.set_options( *options_ );
-
-				algo->insert_assoc_step(	  step_num
-											, GeneralIterationPack::PRE_STEP
-											, ++pre_step_i
-											, "MeritFunc_ModifiedL1LargerSteps"
-											, _added_step // give control over memory!
-										);
-			}
-		}
+	}
 	
-*/
-
-/*
-		// Reconfigure the steps if the NLP has bounds
-
-		if( algo_cntr->nlp().has_bounds() ) {
-
-			if(trase_out)
-				*trase_out << "\nReconfiguring steps for NLP with bounds ...\n";
-			
-			// If the NLP has bounds on the variables then we must replace
-			// IndepDirec and move the convergence check to the end (along
-			// with the calculation of the reduced gradient of the lagrangian).
-			
-			// Setup IndepDirec step
-			
-			// Add iteration quantity for d_bounds
-			algo->state().set_iter_quant( d_bounds_name
-				, new IterQuantityAccessContinuous<SparseBounds>( 1, d_bounds_name ) );
-
-			// Create the QP solver
-
-			// RAB 8/28/00: In the future, all the QP solvers will also use this interface.
-
-			switch( cov_.qp_solver_type_ ) {
-				case QP_QPSCHUR: {
-					using ConstrainedOptimizationPack::QPSolverRelaxedQPSchur;
-					using ConstrainedOptimizationPack::QPSolverRelaxedQPSchurSetOptions;
-					using ConstrainedOptimizationPack::QPSchurInitKKTSystemHessianFull;
-					using ConstrainedOptimizationPack::QPSchurInitKKTSystemHessianSuperBasic;
-					ConstrainedOptimizationPack::QPSolverRelaxedQPSchur::InitKKTSystem
-						*init_kkt_sys = NULL;
-					switch( cov_.quasi_newton_ ) {
-						case QN_BFGS:
-						case QN_LBFGS:
-							init_kkt_sys = new QPSchurInitKKTSystemHessianFull();
-							break;
-						case QN_PBFGS:
-						case QN_LPBFGS:
-							init_kkt_sys = new QPSchurInitKKTSystemHessianSuperBasic();
-							break;
-						default:
-							assert(0);
-					}
-					QPSolverRelaxedQPSchur
-						*_qp_solver = new QPSolverRelaxedQPSchur(init_kkt_sys);
-					QPSolverRelaxedQPSchurSetOptions
-						qp_options_setter(_qp_solver);
-					qp_options_setter.set_options( *options_ );
-					qp_solver = _qp_solver; // give ownership to delete!
-					break;
-				}
-				case QP_QPKWIK: {
-					using ConstrainedOptimizationPack::QPSolverRelaxedQPKWIK;
-					QPSolverRelaxedQPKWIK
-						*_qp_solver = new QPSolverRelaxedQPKWIK();
-					qp_solver = _qp_solver; // give ownership to delete!
-					break;
-				}
-				case QP_QPOPT: {
-#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
-					using ConstrainedOptimizationPack::QPSolverRelaxedQPOPT;
-					QPSolverRelaxedQPOPT
-						*_qp_solver = new QPSolverRelaxedQPOPT();
-					qp_solver = _qp_solver; // give ownership to delete!
-#else
-					throw std::logic_error(
-						"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : QPOPT is not supported,"
-						" must define CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT!" );
-#endif
-					break;
-				}
-				default:
-					assert(0);
-			}
-
-			// Create the QP solver tester object and set its options
-			qp_tester = new QPSolverRelaxedTester();
-			ConstrainedOptimizationPack::QPSolverRelaxedTesterSetOptions
-				qp_tester_options_setter( qp_tester.get() );
-			qp_tester_options_setter.set_options( *options_ );
-
-			// Create the step object
-
-			IndepDirecWithBoundsStd_Step
-				*indep_direct_step = new  IndepDirecWithBoundsStd_Step( qp_solver, qp_tester );
-			IndepDirecWithBoundsStd_StepSetOptions
-				indep_direct_step_options_setter( indep_direct_step );
-			indep_direct_step_options_setter.set_options( *options_ );
-
-			// Set the step objects
-
-			if( trase_out ) {
-				*trase_out
-					<< "\n\nreinit_hessian_on_qp_fail = " << (cov_.reinit_hessian_on_qp_fail_ ? "true" : "false");
-				if(cov_.reinit_hessian_on_qp_fail_)
-					*trase_out
-						<< "\nThe algorithm will reinitalize the reduced hessian if the QP subproblem fails"
-						<< "\nand will not throw a QPFailure exception the first time\n";
-				else
-					*trase_out
-						<< "\nThe algorithm will not reinitalize the reduced hessian if the QP subproblem fails"
-						<< "\nIt will just be a QPFailure exception thrown\n";
-			}
-			rSQPAlgo_Step
-				*_indep_direc_step = NULL;
-			if(cov_.reinit_hessian_on_qp_fail_)
-				_indep_direc_step = new QPFailureReinitReducedHessian_Step(indep_direct_step); // Will clean up memory!
-			else
-				_indep_direc_step = indep_direct_step;
-			Algorithm::poss_type poss;
-			poss = algo->get_step_poss(IndepDirec_name);
-			algo->remove_step( poss );	// remove any pre or post steps also
-			algo->insert_step(
-				poss
-				,IndepDirec_name
-				,_indep_direc_step // Will clean up memory!
-				);
-			algo->insert_assoc_step(
-				 poss
-				, GeneralIterationPack::PRE_STEP
-				, 1
-				, "SetDBounds"
-				, new  SetDBoundsStd_AddedStep
-				);
-
-			Algorithm::step_ptr_t calc_rgrad_lagr, calc_lambda, check_conv;
-
-			// Remove and save CalcReducedGradLagr..., CalcLambdaIndep... and CheckConv...
-
-			poss = algo->get_step_poss(CalcReducedGradLagrangian_name);
-			calc_rgrad_lagr	= algo->get_step(poss);
-			algo->remove_step(poss);
-
-			if(!tailored_approach) {
-				poss			= algo->get_step_poss(CalcLambdaIndep_name);
-				calc_lambda		= algo->get_step(poss);
-				algo->remove_step(poss);
-			}
-
-			poss			= algo->get_step_poss(CheckConvergence_name);
-			check_conv		= algo->get_step(poss);
-			algo->remove_step(poss);
-
-			// Add them before LineSearch
-	
-			poss		= algo->get_step_poss(LineSearch_name);
-			algo->insert_step( poss++, CalcReducedGradLagrangian_name, calc_rgrad_lagr );
-			if(!tailored_approach) {
-				algo->insert_step( poss++, CalcLambdaIndep_name, calc_lambda );
-			}
-			algo->insert_step( poss++, CheckConvergence_name, check_conv );
-
-		}
-
-*/
-
-	}
-
-/*
-
-	// 8/30/99: Add the iteration quantities for the QPSolverStats and 
-	// ActSetStats and the added step that will calculate the
-	// active set changes.
-
-	{
-		// Add active set and QP statistics to state object
-		algo->state().set_iter_quant( act_set_stats_name
-			, new IterQuantityAccessContinuous<ActSetStats>( 1, act_set_stats_name ) );
-		algo->state().set_iter_quant( qp_solver_stats_name
-			, new IterQuantityAccessContinuous<QPSolverStats>( 1, qp_solver_stats_name ) );
-
-		if( algo_cntr->nlp().has_bounds() ) {
-
-			// Insert active set computational step into algorithm
-			Algorithm::poss_type
-				poss = algo->get_step_poss( IndepDirec_name );
-			if( poss == Algorithm::DOES_NOT_EXIST ) {
-				// If we are not using IndepDirec to compute the active set then
-				// we must be using SearchDirec
-				assert( poss = algo->get_step_poss( SearchDirec_name ) );		
-			}
-			Algorithm::poss_type
-				nas = algo->num_assoc_steps( poss, GeneralIterationPack::POST_STEP );
-			algo->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+1
-				, "ActiveSetStatistics", new ActSetStats_AddedStep );
-			
-			// Output the number of fixed depenent and indepent variables.
-			algo->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+2
-				, "CountNumFixedDepIndep", new NumFixedDepIndep_AddedStep );
-		}
-
-	}
-
-	// 10/15/99: Add basis checking step
-	if( !tailored_approach && cov_.max_basis_cond_change_frac_ < INF_BASIS_COND_CHANGE_FRAC ) {
-		// 3/7/01: Added another test also
-		CheckBasisFromCPy_Step
-			*basis_check_step1 = new CheckBasisFromCPy_Step(
-				new NewBasisSelectionStd_Strategy(decomp_sys.get()) );
-		CheckBasisFromPy_Step
-			*basis_check_step2 = new CheckBasisFromPy_Step(
-				new NewBasisSelectionStd_Strategy(decomp_sys.get()) );
-		if( cov_.max_basis_cond_change_frac_ > 0.0 ) {
-			basis_check_step1->max_basis_cond_change_frac( cov_.max_basis_cond_change_frac_ );
-			basis_check_step2->max_basis_cond_change_frac( cov_.max_basis_cond_change_frac_ );
-		}
-		Algorithm::poss_type poss;
-		assert(poss = algo->get_step_poss( DepDirec_name ) );
-		algo->insert_step(
-			  ++poss
-			, "CheckBasis1"
-			, basis_check_step1
-		  );
-		algo->insert_step(
-			  ++poss
-			, "CheckBasis2"
-			, basis_check_step2
-		  );
-	}
-
-	// 10/19/99: Add quasi-newton stats
-	algo->state().set_iter_quant( quasi_newton_stats_name
-		, new IterQuantityAccessContinuous<QuasiNewtonStats>( 1, quasi_newton_stats_name ) );
-
-	// 11/12/99: Add the option of using full steps after a specified number of iterations
-	// if this option has been set and if we are using a linesearch method.
-	if( cov_.full_steps_after_k_ > 0 && cov_.line_search_method_ != LINE_SEARCH_NONE ) {
-		Algorithm::poss_type poss;
-		assert(poss = algo->get_step_poss( LineSearch_name ) );
-		Algorithm::step_ptr_t
-			existing_step_ptr = algo->get_step( poss );
-		// Check that the existing step is indeed a linesearch step and that
-		// we can safely use static cast cast up in types.  If multiple
-		// inheritance was used then this test will also fail.
-		assert( dynamic_cast<LineSearch_Step*>(existing_step_ptr.get())
-				==  existing_step_ptr.get() );
-		rcp::ref_count_ptr<LineSearch_Step>
-			existing_ls_step_ptr = rcp::rcp_static_cast<LineSearch_Step>(existing_step_ptr);
-		algo->replace_step(
-			  poss
-			, new LineSearchFullStepAfterKIter_Step(
-				  existing_ls_step_ptr
-				, cov_.full_steps_after_k_
-			  )
-		  );
-
-	}
-
-	// 12/3/99: Adding finite difference initializaiton of the reduced hessian
-	if( cov_.hessian_initialization_ != INIT_HESS_IDENTITY ) {
-		Algorithm::poss_type poss;
-		assert(poss = algo->get_step_poss( ReducedHessian_name ) );
-		InitFinDiffReducedHessian_Step::EInitializationMethod
-			init_hess;
-		switch( cov_.hessian_initialization_ ) {
-			case INIT_HESS_FIN_DIFF_SCALE_IDENTITY:
-				init_hess = InitFinDiffReducedHessian_Step::SCALE_IDENTITY;
-				break;
-			case INIT_HESS_FIN_DIFF_SCALE_DIAGONAL:
-				init_hess = InitFinDiffReducedHessian_Step::SCALE_DIAGONAL;
-				break;
-			case INIT_HESS_FIN_DIFF_SCALE_DIAGONAL_ABS:
-				init_hess = InitFinDiffReducedHessian_Step::SCALE_DIAGONAL_ABS;
-				break;
-			default:
-				assert(0);	// only local programming error?
-		}
-		InitFinDiffReducedHessian_Step
-			*init_red_hess_step = new InitFinDiffReducedHessian_Step(init_hess);
-		InitFinDiffReducedHessian_StepSetOptions
-			opt_setter( init_red_hess_step );
-		if(options_) opt_setter.set_options( *options_ );
-		algo->insert_assoc_step( poss, GeneralIterationPack::PRE_STEP, 1
-			, "InitFiniteDiffReducedHessian"
-			, init_red_hess_step  );
-	}
-
-	// 6/13/00: Adding steps for the computation of the exact reduced Hessian
-	if( cov_.exact_reduced_hessian_ == true ) {
-
-		// Remove the ReducedHessian steps and all of its associated pre and
-		// post steps and add the exact calculation of the reduced Hessian
-		Algorithm::poss_type poss;
-		assert( (poss = algo->get_step_poss(ReducedHessian_name))
-			!= Algorithm::DOES_NOT_EXIST );
-		algo->remove_step( poss );
-		algo->insert_step(
-			  poss
-			, ReducedHessian_name
-			, new ReducedHessianExactStd_Step
-		  );
-
-		// Add the step for the exact computation of the reduced QP cross term
-		assert( (poss = algo->get_step_poss(IndepDirec_name))
-			!= Algorithm::DOES_NOT_EXIST );
-		algo->insert_step(
-			  poss
-			, "ReducedQPCrossTerm"
-			, new CrossTermExactStd_Step
-		  );
-
-		// Add the calculation of the dampening parameter for the cross term.
-		if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
-			DampenCrossTermStd_Step
-				*zeta_step = new DampenCrossTermStd_Step;
-			// ToDo: set options from stream
-			algo->insert_assoc_step( poss+1, GeneralIterationPack::POST_STEP, 1
-				, "DampenReducedQPCrossTerm"
-				, zeta_step  );
-		}
-
-		// Change the type of the iteration quantity for rHL
-		typedef GeneralIterationPack::IterQuantityAccessContinuous<
-					MatrixSymPosDefCholFactor >
-				iq_rHL_concrete_t;
-		typedef GeneralIterationPack::IterQuantityAccessDerivedToBase< MatrixWithOp
-					, MatrixSymPosDefCholFactor >
-				iq_rHL_t;
-		algo->state().get_iter_quant(algo->state().get_iter_quant_id(rHL_name))
-			= AlgorithmState::IQ_ptr( new iq_rHL_t( new iq_rHL_concrete_t(1,rHL_name) ) );
-
-		// That's it man!
-	}
-
-	// 4/10/01: Set the QP solver and tester objects.
-	if( feasibility_step_strategy.get() ) {
-		feasibility_step_strategy->set_qp_solver(qp_solver);
-		feasibility_step_strategy->set_qp_tester(qp_tester);
-	}
-
-*/
-
 }
 
 void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface* _algo)

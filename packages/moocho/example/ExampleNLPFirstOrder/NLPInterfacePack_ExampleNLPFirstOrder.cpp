@@ -116,8 +116,8 @@ void ExampleNLPFirstOrderInfo::imp_calc_Gc(
 				rr_ptr_ptr_t;
 			// this is a mess of a data structure but it is correct
 			rr_ptr_ptr_t
-				rr_ptr_ptr = new rmp::ReleaseResource_ref_count_ptr<MatrixSymDiagonalStd>(
-					new MatrixSymDiagonalStd( space_x_DI->create_member() ) );
+				rr_ptr_ptr = rcp::rcp( new rmp::ReleaseResource_ref_count_ptr<MatrixSymDiagonalStd>(
+					rcp::rcp( new MatrixSymDiagonalStd( space_x_DI->create_member() ) ) ) );
 			// Add the matrix object
 			Gc_comp.add_matrix(
 				row_offset, 0         // row_offset, col_offset
