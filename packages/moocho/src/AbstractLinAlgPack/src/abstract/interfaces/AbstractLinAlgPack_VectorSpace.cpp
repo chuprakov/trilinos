@@ -15,9 +15,11 @@
 
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/VectorSpaceSubSpace.h"
+#include "AbstractLinAlgPack/include/VectorSpaceFactory.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/MultiVectorMutable.h"
 #include "AbstractLinAlgPack/include/InnerProductDot.h"
+#include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
 #include "ThrowException.h"
 
 namespace AbstractLinAlgPack {
@@ -45,6 +47,12 @@ VectorSpace::inner_prod() const
 }
 
 // Virtual functions with default implementations
+
+VectorSpace::space_fcty_ptr_t
+VectorSpace::small_vec_spc_fcty() const
+{
+	return MemMngPack::null;
+}
 
 VectorSpace::vec_mut_ptr_t
 VectorSpace::create_member(const value_type& alpha) const
@@ -87,6 +95,11 @@ VectorSpace::space(
 	,BLAS_Cpp::Transp         P_trans
 	) const
 {
+	const index_type
+		dim = BLAS_Cpp::rows( P.rows(), P.cols(), P_trans );
+	space_fcty_ptr_t  vec_spc_fcty = this->small_vec_spc_fcty();
+	if(vec_spc_fcty.get())
+		return vec_spc_fcty->create_vec_spc(dim);
 	return MemMngPack::null;
 }
 

@@ -16,6 +16,7 @@
 #include <assert.h>
 
 #include "SparseLinAlgPack/include/VectorSpaceSerial.h"
+#include "SparseLinAlgPack/include/VectorSpaceFactorySerial.h"
 #include "SparseLinAlgPack/include/VectorWithOpMutableDense.h"
 #include "SparseLinAlgPack/include/MultiVectorMutableDense.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
@@ -45,6 +46,12 @@ bool VectorSpaceSerial::is_compatible(const VectorSpace& a_vec_space ) const
 index_type VectorSpaceSerial::dim() const
 {
 	return dim_;
+}
+
+VectorSpace::space_fcty_ptr_t
+VectorSpaceSerial::small_vec_spc_fcty() const
+{
+	return MemMngPack::rcp(new VectorSpaceFactorySerial());
 }
 
 VectorSpace::space_ptr_t

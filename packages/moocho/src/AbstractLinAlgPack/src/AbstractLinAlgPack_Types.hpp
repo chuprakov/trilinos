@@ -40,6 +40,7 @@ enum EOverLap { NO_OVERLAP = 0, SOME_OVERLAP, SAME_MEM };
 
 class InnerProduct;
 
+class VectorSpaceFactory;
 class VectorSpace;
 class VectorWithOp;
 class VectorWithOpMutable;

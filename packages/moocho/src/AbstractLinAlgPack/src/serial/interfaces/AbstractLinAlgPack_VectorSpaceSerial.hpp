@@ -63,6 +63,8 @@ public:
  	bool is_compatible(const VectorSpace& vec_space) const;
 	/// Returns 0 if uninitialized
 	index_type dim() const;
+	/// Returns a <tt>VectorSpaceFactorySerial</tt> object
+	space_fcty_ptr_t small_vec_spc_fcty() const;
 	///
 	space_ptr_t clone() const;
 	/// Returns a <tt>VectorWithOpMutableDense</tt> object.

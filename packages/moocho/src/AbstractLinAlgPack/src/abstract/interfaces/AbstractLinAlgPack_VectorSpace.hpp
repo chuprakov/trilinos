@@ -40,10 +40,23 @@ namespace AbstractLinAlgPack {
  * Any <tt>%VectorSpace</tt> object can be copied using the \c clone() method.  Therefore,
  * clients have complete control over the lifetime of <tt>%VectorSpace</tt> objects.
  *
- * A <tt>VectorSpace</tt> object can exist independent from any individual <tt>VectorWithOpMutable</tt>
- * (or \c MutiVectorMutable) object; Or, a <tt>VectorSpace</tt> object can have a lifetime that is
+ * A <tt>%VectorSpace</tt> object can exist independent from any individual <tt>VectorWithOpMutable</tt>
+ * (or \c MutiVectorMutable) object; Or, a <tt>%VectorSpace</tt> object can have a lifetime that is
  * dependent on a single <tt>VectorWithOp</tt> ( or \c MultiVector) object.  The same interface can
  * serve both roles.
+ *
+ * Note that a <tt>%VectorSpace</tt> object can create <tt>MultiVectorMutable</tt> objects
+ * with any number of column vectors, and <tt>MultiVector::space_rows()</tt> gives a vector space
+ * of the dimension.  Therefore, the creation of a multi-vector provides a way for clients to create
+ * vector spaces of any arbitrary (although small usually) dimension.  In order to give the client
+ * the same ability without having to create a multi-vector, the method <tt>small_vec_spc_fcty()</tt>
+ * returns a <tt>VectorSpaceFactory</tt> object that can create vector spaces of small dimension.
+ * These created vector spaces can be used by the created <tt>MultiVectorMutable</tt> objects
+ * (see <tt>create_members()</tt>).  These vector spaces are also used for the default implementation
+ * of <tt>space(P,P_trans)</tt> (see below).  Since a <tt>%VectorSpace</tt> object is not required
+ * to create <tt>MultiVectorMutable</tt> objects using <tt>create_members()</tt> a <tt>%VectorSpace</tt>
+ * object is also not required to return a <tt>VectorSpaceFactory</tt> object from <tt>small_vec_spc_fcty()</tt>.
+ * to be consistent.
  *
  * A vector space is also where the inner product for the space is
  * defined.  It is anticipated that the same implementation of vectors
@@ -102,13 +115,15 @@ public:
 	class IncompatibleVectorSpaces : public std::logic_error
 	{public: IncompatibleVectorSpaces(const std::string& what_arg) : std::logic_error(what_arg) {}};
 	///
-	typedef MemMngPack::ref_count_ptr<InnerProduct>         inner_prod_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const InnerProduct>          inner_prod_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<const VectorSpace>    space_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const VectorSpace>           space_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<VectorWithOpMutable>  vec_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<const VectorSpaceFactory>    space_fcty_ptr_t;
 	///
-	typedef MemMngPack::ref_count_ptr<MultiVectorMutable>   multi_vec_mut_ptr_t;
+	typedef MemMngPack::ref_count_ptr<VectorWithOpMutable>         vec_mut_ptr_t;
+	///
+	typedef MemMngPack::ref_count_ptr<MultiVectorMutable>          multi_vec_mut_ptr_t;
 
 
 	/** @name Constructors / initializers */
@@ -203,6 +218,17 @@ public:
 
 	/** @name Virtual functions with default implementations */
 	//@{
+
+	///
+	/** Return a <tt>VectorSpaceFactory</tt> object for the creation of
+	 * vector spaces with a small dimension.
+	 *
+	 * ToDo: Finish documentation!
+	 *
+	 * The default implementation returns <tt>return.get() == NULL</tt>.
+	 *
+	 */
+	virtual space_fcty_ptr_t small_vec_spc_fcty() const;
 
 	///
 	/** Create a vector member from the vector space initialized to a scalar.
@@ -336,9 +362,9 @@ public:
 
 private:
 #ifdef DOXYGEN_COMPILE
-	InnerProduct       *inner_prod;
+	const InnerProduct   *inner_prod;
 #else
-	inner_prod_ptr_t   inner_prod_;
+	inner_prod_ptr_t     inner_prod_;
 #endif
 
 }; // end class VectorSpace
