@@ -26,7 +26,7 @@
 namespace GeneralIterationPack {
 
 ///
-/** Base class for some of the implementation features.
+/** Base class for some of the implementation features of \c CastIQMember.
   *
   * This class is included to avoid code blot with the templates.
   */
@@ -38,35 +38,32 @@ protected:
 	///
 	CastIQMemberBase( const std::string iq_name );
 	///
-	const std::string					iq_name_;
-	///
-	mutable AlgorithmState::iq_id_type	iq_id_;
-	///
 	void cache_iq_id( const AlgorithmState& s ) const;
 	///
 	void throw_cast_error( const std::string& iqa_name ) const;
+	///
+	const std::string					iq_name_;
+	///
+	mutable AlgorithmState::iq_id_type	iq_id_;
 private:
 	enum { NOT_SET_YET = INT_MAX };
 	CastIQMemberBase(); // not defined and not to be called.
 };	// end class CastIQMemberBase
 
 ///
-/** Template class to be used to lookup an interation quantity
-  * , cast it to an IterQuantityAccess<T> and cache the iq_id
-  *  for fast access later.
+/** Template class to be used to lookup an interation quantity,
+  * cast it to an <tt>\ref IterQuantityAccess "IterQuantityAccess<T>"</tt> object
+  * and cache the \c iq_id for fast access later.
   *
-  * The idea is that a Step class can create a data member
-  * of this class and then access and interation quantity
-  * and have the iq_id looked up the first time.
+  * The idea is that a Step class can create a data member of this type and then
+  * access and interation quantity and have the \c iq_id looked up the first time.
   * 
-  * The best way to use this class to access an iteration quantity
-  * is for a header file to be created for the iteration quantity (or several
-  * iteration quantityies) that contains a new class.  For example, suppose
-  * we have an double object that we want to add as an iteration quantity
-  * with the name "x_step".  For this we might create an header file like:
-  * 
-  \begin{verbose}
-    
+  * The best way to use this class to access an iteration quantity is for a header
+  * file to be created for the iteration quantity (or several iteration quantities)
+  * that contains a new class.  For example, suppose we have an \c double object that
+  * we want to add as an iteration quantity with the name "x_step".  For this we might
+  * create an header file like:
+  \code
     // /////////////////////////////////////////////////////////////////
     // x_step_iter_quantity.h
     
@@ -76,16 +73,12 @@ private:
     public:
         x_step_iq_member() : CastIQMember<double>("x_step") {}
     }
-    
-  \end{verbose} 
-  *
+  \endcode 
   * Now lets suppose we have two step classes that need to access this
   * iteration quantity.  These step classes would each include
   * a data member of this new class.  For example, these
   * step classes might be implemented as:
-  * 
-  \begin{verbose}
-   
+  \code
     // /////////////////////////////////////////////////////////////////
     // MyStep1.h
     
@@ -101,7 +94,8 @@ private:
     private:
     	x_step_iq_member x_step_;
     }
-   
+	\endcode
+	\code
     // /////////////////////////////////////////////////////////////////
     // MyStep2.h
     
@@ -118,14 +112,15 @@ private:
     private:
     	x_step_iq_member x_step_;
     }
-    
-  \end{verbose}
+  \endcode
+  * In the above example, an <tt>O(s.num_iter_quantities())</tt> search for the \c iq_id
+  * would only be performed the first time <tt>x_step_(s)</tt> was called by each
+  * step object.  In later iterations, the cached \c iq_id would be used to access
+  * the iteration quantity and the only price one would pay above a few
+  * \a O(1) function calls in is an \a O(1) dynamic cast.
   *
-  * In the above example, on O(s.num_iter_quantities()) search for the iq_id
-  * would only be performed the first time x_step_(s) was called by each
-  * step object.  At later iterations, the cached iq_id would be used to access
-  * the iteration quantity and the only price you would pay above a few
-  * O(1) function calls in is an O(1) dynamic cast.
+  * The default constructor is not allowed by the default copy constructors and
+  * assignment operators are allowed since they have the correct semantics.
   */
 template < class T >
 class CastIQMember : public CastIQMemberBase {

@@ -32,36 +32,38 @@ namespace GeneralIterationPack {
 /** Abstacts a set of iteration quantities for an iterative algorithm.
   *
   * This object encapsulates a set of iteration quantity access objects.
-  * The concrete types of the IterQuantity objects are expected to be subclasses
-  * of IterQuantityAccess<...>.  It is therefore up the the clients to determine
+  * The concrete types of the \c IterQuantity objects are expected to be subclasses
+  * of \c IterQuantityAccess.  It is therefore up the the clients to determine
   * the concrete types of these iteration quantity access objects and to use
-  * dynamic_cast<...> (or static_cast<...> if you are sure) to access the
-  * IterQuantityAccess<...> object and therefore the iteration quantities themselves.
+  * <tt>dynamic_cast<...></tt> (or static_cast<...> if you are sure) to access the
+  * <tt>IterQuantityAccess<...></tt> object and therefore the iteration quantities themselves.
   * Each iteration quantity (IQ) access object must have a unique name associated with it.
-  * IQ objects are given to the state object by clients through the set_iter_quant(...)
-  * operation at which point the IQ object will be given a unique id that will never change
-  * change until the IQ object is removed using erase_iter_quant(...).  Memory management
-  * is performed using the ref_count_ptr<...> smart reference counting poiner class.
-  * The id of any IQ object (iq_id) can be obtained from its name by calling
-  * iq_id = get_iter_quant_id(iq_name).  If an IQ object with the name iq_name does not
-  * exist then get_iter_quant_id(iq_name) will return DOES_NOT_EXIST.  The IQ objects
-  * themselves can be accesed in O(log(num_iter_quant())) time using iter_quant(iq_name)
-  * or in O(1) time using iter_quant(iq_id).  Therefore, the access of IQ objects using iq_id
-  * is an optimization for faster access and the client should never have to lookup iq_name
-  * given iq_id.  The mapping only works from iq_name to iq_id, not the other way around.
-  * It is garrenteed that as long as erase_iter_quant(iq_id) is not called that each
-  * &iter_quant(iq_id) == &iter_quant( get_iter_quant(iq_name) ) will be the same.
-  * For iq_name, if get_iter_quant_id(iq_name) == DOES_NOT_EXIST then iter_quant(iq_name)
-  * will throw the exception DoesNotExist.
+  * IQ objects are given to the state object by clients through the \c set_iter_quant()
+  * method at which point the IQ object will be given a unique id that will never change
+  * change until the IQ object is removed using \c erase_iter_quant().  Memory management
+  * is performed using the <tt>ReferenceCountingPack::ref_count_ptr</tt> smart reference
+  * counting poiner class.
+  * The id of any IQ object (\c iq_id) can be obtained from its name by calling
+  * <tt>iq_id = get_iter_quant_id(iq_name)</tt>.  If an IQ object with the name \c iq_name
+  * does not exist then <tt>get_iter_quant_id(iq_name)</tt> will return <tt>DOES_NOT_EXIST</tt>.
+  * The IQ objects themselves can be accesed in <tt>O(log(num_iter_quant()))</tt> time using
+  * <tt>iter_quant(iq_name)</tt> or in <tt>O(1)</tt> time using <tt>iter_quant(iq_id)</tt>.
+  *  Therefore, the access of IQ objects using <tt>iq_id</tt> is an optimization for faster
+  * access and the client should never have to lookup <tt>iq_name</tt> given <tt>iq_id</tt>.
+  * The mapping only works from \c iq_name to \c iq_id, not the other way around.
+  * It is guaranteed that as long as <tt>erase_iter_quant(iq_id)</tt> is not called that each
+  * \c iq_id that  <tt>&iter_quant(iq_id) == &iter_quant( get_iter_quant(iq_name) )</tt> will \c true.
+  * For \c iq_name, if <tt>get_iter_quant_id(iq_name) == DOES_NOT_EXIST</tt> then <tt>iter_quant(iq_name)</tt>
+  * will throw the exception \c DoesNotExist.
   *
-  * The next_iteration(...) operation is called by the algorithm to call next_iteration()
-  * on each of the IQ objects.
+  * The \c next_iteration() operation is called by the algorithm to call
+  * <tt>\ref IterQuantity::next_iteration "next_iteration()"</tt> on each of the IQ objects.
   *
-  * The dump_iter_quant(out) operation prints out a list of all of the IQ objects of thier
-  * iq_name, iq_name and concrete type.
+  * The \c dump_iter_quant(out) operation prints out a list of all of the IQ objects of thier
+  * \c iq_name, \c iq_name and concrete type.
   *
   * The default copy constructor, and assignment operator functions
-  * are allowed since they have the proper sematics.
+  * are allowed since they have the proper semantics.
   */
 class AlgorithmState {
 public:
@@ -86,6 +88,9 @@ public:
 
 	//@}
 
+	/** @name Constructors */
+	//@{
+
 	///
 	/** Construct with an initial guess for the number of iteration quantities.
 	  *
@@ -93,7 +98,9 @@ public:
 	  */
 	explicit AlgorithmState(size_t reserve_size = 0);
 
-	/** @name iteration counter */
+	//@}
+
+	/** @name Iteration counter */
 	//@{
 
 	///
@@ -105,7 +112,7 @@ public:
 
 	//@}
 
-	/** @name iteration quantity encapsulation object setup */
+	/** @name Iteration quantity setup */
 	//@{
 	
 	/// Return the number of iteration quantities.
@@ -169,6 +176,9 @@ public:
 
 	//@}
 
+	/** @name Iteration quantity access */
+	//@{
+
 	///
 	/** Iteration quantity encapsulation object access with via iq_name.
 	  *
@@ -193,11 +203,21 @@ public:
 	///
 	virtual const IterQuantity& iter_quant(iq_id_type iq_id) const;
 
+	//@}
+
+	/** @name Iteration incrementation */
+	//@{
+
 	///
 	/** iteration quantity forwarding.
 	  *
 	  */
 	virtual void next_iteration(bool incr_k = true);
+
+	//@}
+
+	/** @name Miscellaneous */
+	//@{
 
 	///
 	/** iteration quantity information dumping.
@@ -209,6 +229,8 @@ public:
 	  * for each iteration quantity object.
 	  */
 	virtual void dump_iter_quant(std::ostream& out) const;
+
+	//@}
 
 private:
 	// ///////////////////////////////////////////////////////////
@@ -231,6 +253,9 @@ private:
 	// there are no other references).  Then if the user tries to access and
 	// IQ object with this abandonded iq_id, the dereferencing operator for
 	// ref_count_ptr<...> will throw an exception.
+#ifdef DOXYGEN_COMPILE
+	IterQuantity  *iter_quantity_list; ///< We just want to show this relationship!
+#endif
 
 	iq_name_to_id_t			iq_name_to_id_;
 	// Mapping of an IQ name to its id.

@@ -25,43 +25,62 @@ namespace GeneralIterationPack {
 ///
 /** Used to ouput iteration results and other information.
   *
+  * This interface can be implemented by outside clients of an iterative
+  * algorithm to monitor or "track" the progress of the algorithm.
   *
-  *
+  * ToDo: Write more documentation!
   */
 class AlgorithmTrack {
 public:
 
+	/** @name Constructors */
+	//@{
+
 	///
 	AlgorithmTrack(std::ostream& journal_out)
 		: journal_out_(&journal_out)
-	{}
+			{}
+
+	//@}
+
+	/** @name Algorithm iteration state notification */
+	//@{
 
 	///
 	/** Output information about an iteration just completed.
 	  *
 	  * The default just does nothing.
 	  */
-	virtual void output_iteration(const Algorithm& algo) const {}
+	virtual void output_iteration(const Algorithm& algo) const
+			{}
 
 	///
 	/** Output information about a just completed algorithm.
 	  *
 	  * The default just does nothing.
 	  */
-	virtual void output_final(const Algorithm& algo, EAlgoReturn algo_return) const {}
+	virtual void output_final(const Algorithm& algo, EAlgoReturn algo_return) const
+			{}
+
+	//@}
+
+	/** @name Journal file access */
+	//@{
+
+	///
+	/** Set the journal file.
+	  */
+	virtual void set_journal_out(std::ostream& journal_out)
+			{	journal_out_ = &journal_out; }
 
 	///
 	/** Return a reference to a std::ostream to be used to output debug information 
 	  * and the like.
 	  */
 	virtual std::ostream& journal_out() const
-	{	return *const_cast<AlgorithmTrack*>(this)->journal_out_; }
+			{	return *const_cast<AlgorithmTrack*>(this)->journal_out_; }
 
-	///
-	/** Set the journal file.
-	  */
-	virtual void set_journal_out(std::ostream& journal_out)
-	{	journal_out_ = &journal_out; }
+	//@}
 
 protected:
 	std::ostream *journal_out_;

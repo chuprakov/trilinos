@@ -27,18 +27,23 @@ namespace GeneralIterationPack {
 
 ///
 /** Lookup an iteration quantity by name and cast it
-  * to an IterQuantityAccess<T> of the given type T.
+  * to an <tt>IterQuantityAccess<T></tt> of the given type \c T.
   * If the iteration quantity of that name does not
-  * exist then a AlgorithmState::DoesNotExist exception
+  * exist then a <tt>AlgorithmState::DoesNotExist</tt> exception
   * will be thrown.  If the type of the iteration quantity
-  * is not of the type IterQuantityAcess<T> (as determined
-  * by dynamic_cast<T>) then the exception InvalidTypeCastException:
+  * is not of the type <tt>IterQuantityAcess<T></tt> (as determined
+  * by <tt>dynamic_cast<T></tt>) then the exception \c InvalidTypeCastException:
   * will be thrown with a helpful error message.
+  *
+  * Note that using this function always cost <tt>O(s.num_iter_quantities())</tt>
+  * everytime it is called.  Therefore, the developer should consider using the
+  * class \c CastIQMember instead if it is appropriate.
   */
 template<class T>
 IterQuantityAccess<T>& cast_iq( AlgorithmState& state
 	, const std::string& iq_name );
 
+///
 template<class T>
 const IterQuantityAccess<T>& cast_iq( const AlgorithmState& state
 	, const std::string& iq_name );

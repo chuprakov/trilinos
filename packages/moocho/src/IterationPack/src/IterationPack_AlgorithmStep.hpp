@@ -23,7 +23,7 @@
 namespace GeneralIterationPack {
 
 ///
-/** Base type for all objects that perform steps in an #Algorithm#.
+/** Base type for all objects that perform steps in an <tt>Algorithm</tt>.
   */
 class AlgorithmStep {
 public:
@@ -32,17 +32,22 @@ public:
 	typedef size_t poss_type;
 
 	///
-	/** Called by #Algorithm# to perform a main, pre or post step at step_poss and assoc_step_poss.
+	/** Called by <tt>Algorithm</tt> to perform a main, pre or post step at step_poss and assoc_step_poss.
 	  *
 	  * @return Should return false if this step object has terminated the algorithm or
-	  * redirected control to another step.  In this case it is assumed that #this# called
-	  * #algo.terminate(...)# or #algo.do_step_next(...)#.
+	  * redirected control to another step.  In this case it is assumed that <tt>this</tt> called
+	  * <tt>algo\ref Algorithm::terminate ".terminate(...)"</tt>
+	  * or <tt>algo\ref Algorithm::do_step_next ".do_step_next(...)"</tt>.
 	  */
-	virtual bool do_step( Algorithm& algo, poss_type step_poss, EDoStepType type
-		, poss_type assoc_step_poss ) = 0;
+	virtual bool do_step(
+		Algorithm&             algo
+		,poss_type             step_poss
+		,EDoStepType           type
+		,poss_type             assoc_step_poss
+		) = 0;
 
 	///
-	/** Called by #Algorithm# to inform when a runtime configuration change
+	/** Called by <tt>Algorithm</tt> to inform when a runtime configuration change
 	  * is finihed.
 	  *
 	  * The default does nothing.
@@ -51,12 +56,18 @@ public:
 	{}
 
 	///
-	/** Called by #Algorithm# to print out what this step does in Matlab like format.
+	/** Called by <tt>Algorithm::print_algorithm()</tt> to print out what this step does in Matlab like format.
 	  *
 	  * The default does nothing.
 	  */
-	virtual void print_step( const Algorithm& algo, poss_type step_poss, EDoStepType type
-		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const
+	virtual void print_step(
+		const Algorithm&         algo
+		,poss_type               step_poss
+		,EDoStepType             type
+		,poss_type               assoc_step_poss
+		, std::ostream&          out
+		,const std::string&      leading_str
+		) const
 	{}
 
 };	// end class AlgorithmStep

@@ -25,8 +25,10 @@ namespace GeneralIterationPack {
 ///
 /** Prints to 'out' the algorithm step.
   *
-  * 
-  *
+  * This function can be used by \c AlgorithmStep subclasses in their
+  * \c AlgorithmStep::print_step() methods to print the header for the
+  * algorithm step.  This will print the number of the step in the algorithm,
+  * its name, and the name of its concreate subclass.
   */
 void print_algorithm_step( const Algorithm& algo, Algorithm::poss_type step_poss
 	, EDoStepType type, Algorithm::poss_type assoc_step_poss

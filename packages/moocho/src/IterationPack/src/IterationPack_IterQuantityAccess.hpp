@@ -27,14 +27,14 @@ namespace GeneralIterationPack {
   * offset to the current iteration k.  For example to set
   * a quanity for the k+1 iteration you would call set_k(+1).
   * The functions ending with prefix_k(offset) are ment to suggest
-  * prefix k offset.  For example:\\
-  * has_storage_k(+1) => has storage k+1\\
-  * get_k(-1) => get k-1\\
-  *
+  * prefix k offset.  For example:
+  \verbatim
+  has_storage_k(+1) => has storage k+1
+  get_k(-1) => get k-1  \endverbatim
   * Subclasses can implement this interface in a varity of ways.  But
-  * they must follow a few simple rules: <ul>\\
+  * they must follow a few simple rules: <ul>
   * <li>	Only forward transitions are allowed.  This effects the behavior of
-  *			has_storage_k() and set_k().
+  *			\c IterQuantity::has_storage_k() and \c set_k().
   * </ul>
   *
   * The client should not have to worry about how much memory is advalible.  Instead
@@ -51,45 +51,45 @@ public:
 	typedef IterQuantity::QuanityNotSet			QuanityNotSet;
 
 	///
-	/** Return a reference for the k #offset# iteration quanity.
+	/** Return a reference for the k <tt>offset</tt> iteration quanity.
 	  *
 	  * Clients call this member function to access a quantity for a
 	  * given iteration or modify the quantity if has already been
 	  * set for that iteration.
 	  *
 	  * Preconditions:<ul>
-	  * <li> #this->updated_k(offset) == true# (throw QuanityNotSet)
+	  * <li> <tt>this->updated_k(offset) == true</tt> (throw QuanityNotSet)
 	  * </ul>
 	  */
 	virtual T_info& get_k(int offset) = 0;
 
 	///
-	/** Return a const reference for the k #offset# iteration quanity.
+	/** Return a const reference for the k <tt>offset</tt> iteration quanity.
 	  *
 	  * Clients call this member function to access a const quantity for a
 	  * given iteration.
 	  *
 	  * Preconditions:<ul>
-	  * <li> #this->updated_k(offset) == true# (throw QuanityNotSet)
+	  * <li> <tt>this->updated_k(offset) == true</tt> (throw QuanityNotSet)
 	  * </ul>
 	  */
 	virtual const T_info& get_k(int offset) const = 0;
 
 	///
-	/** Return a reference to the storage location for the k #offset# iteration quanity.
+	/** Return a reference to the storage location for the k <tt>offset</tt> iteration quanity.
 	  *
-	  * This function will return a reference to the storage for the k #offset# iteration
+	  * This function will return a reference to the storage for the k <tt>offset</tt> iteration
 	  * quanity.  Calling this function may cause the loss of memory for a back iteration.
-	  * If #will_loose_mem(back_offset,offset)# returns true then #updated_k(back_offset)#
+	  * If <tt>will_loose_mem(back_offset,offset)</tt> returns true then <tt>updated_k(back_offset)</tt>
 	  * will return false after this function returns without throwing an exception.
 	  *
 	  * Precondtions:<ul>
-	  * <li> #this->has_storage_k(offset) == true# (throw #NoStorageAvailable#)
+	  * <li> <tt>this->has_storage_k(offset) == true</tt> (throw <tt>NoStorageAvailable</tt>)
 	  * </ul>
 	  *
  	  * Postcondtions:<ul>
-	  * <li> #this->updated_k(offset) == true#
-	  * <li> #this->updated_k(i) == false# for i in the set of { i : #this->will_loose_mem(i,offset) == true# }
+	  * <li> <tt>this->updated_k(offset) == true</tt>
+	  * <li> <tt>this->updated_k(i) == false</tt> for i in the set of { i : <tt>this->will_loose_mem(i,offset) == true</tt> }
 	  * </ul> 
 	  */
 	virtual T_info& set_k(int offset) = 0;

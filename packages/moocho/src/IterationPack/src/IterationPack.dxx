@@ -1,33 +1,58 @@
-/** @name namespace GeneralIterationPack.
-  * @memo Framework for implementing general iterative algorithms.
-  */
-//@{
-  //@Include: Algorithm.h
-  //@Include: AlgorithmStep.h
-  //@Include: AlgorithmState.h
-  /** @name Iteration Quantities.
-    * @memo Interfaces for abstracting iteration quantities
-    */
-  //@{
-    //@Include: IterQuantity.h
-    //@Include: IterQuantityAccess.h
-    /** @name Iteration quantity node subclasses. */
-    //@{
-      //@Include: IterQuantityAccessContinuousDecl.h
-      //@Include: IterQuantityAccessDerivedToBaseDecl.h
-    //@}
-  //@}
-  //@Include: AlgorithmTrack.h
-  /** @name Misc. */
-  //@{
-    //@Include: print_algorithm_step.h
-  //@}
-//@}
+/** \mainpage GeneralIterationPack: Framework for implementing general iterative algorithms.
 
+This project contains classes comprising a framework for developing iterative algorithms.
 
+For a detailed discussion of the design principles behind \c GeneralIterationPack, see the
+document ???.
 
+<ul>
 
+<li> Main library (<tt>libGeneralIterationPack</tt>)
 
+The objects of type <tt>\ref GeneralIterationPack::Algorithm "Algorithm"</tt> acts as the
+central hub for an interative algorithm.  <tt>Algorithm</tt> objects fire off a set of
+<tt>\ref GeneralIterationPack::AlgorithmStep "AlgorithmStep"</tt> objects that perform
+the actual computations in the iterative algorithm.  The <tt>Algorithm</tt> object is
+also responsible for cordinating different types of algorithmic constrol structures.
+An aggregate <tt>\ref GeneralIterationPack::AlgorithmState "AlgorithmState"</tt> object
+acts as a central repository for a set of iteration quantities (of type
+<tt>\ref GeneralIterationPack::IterQuantity "IterQuantity"</tt>).  A centralized state
+object helps to remove data dependencies between different step objects.  The interface
+<tt>\ref GeneralIterationPack::AlgorithmTrack "AlgorithmTrack"</tt> allows outside
+clients the ability to easily monitor (but not control) the progress of the algorithm.
 
+In order to allow typed access to the iteration quantities, the templated interface
+<tt>\ref GeneralIterationPack::IterQuantityAccess "IterQuantityAccess<T>"</tt> is
+defined.  This interface allows step objects to get at the actual iteration quantities
+while the <tt>\ref GeneralIterationPack::IterQuantity "IterQuantity"</tt> provides
+all of the methods that are independent of the specific type of quantity being stored.
 
+The <tt>IterQuantityAccess<T></tt> is an abstract interface and can have any implementation.
+However, a typical situation is where only quantities for continuous iterations is needed
+by the algorithm.  The subclass
+<tt>\ref GeneralIterationPack::IterQuantityAccessContinuous "IterQuantityAccessContinuous<T>"</tt>
+provides a nice, general implementation for all iteration quantities that have continuous
+storage.  The constructor takes an optional <tt>AbstractFactoryPack::AbstractFactory</tt> object
+so the interface and the implementation of the actual iteration quantity objects themselves
+are separated very well.
 
+In order to help ease the access of iteration quantities through the interface
+<tt>IterQuantityAccess<T></tt> by step objects (and other clients) the template class
+<tt>\ref GeneralIterationPack::CastIQMember "CastIQMember<T>"</tt> and the template function
+<tt>\ref GeneralIterationPack::cast_iq "cast_iq<T>(...)"</tt> have been defined.
+
+The non-member function <tt>\ref GeneralIterationPack::print_algorithm_step "print_algoritm_step()"</tt>
+is provided to help in the implementation of
+<tt>\ref GeneralIterationPack::AlgorithmStep::print_step "AlgorithmStep::print_step(...)"</tt>.
+
+<li> Testing library (<tt>libTestGeneralIterationPack</tt>)
+
+Some testing code is available ...
+
+<li> Testing program (<tt>TestGeneralIterationPack</tt>)
+
+This testing program runs some rudamentory tests on some of the classes in this framework.
+
+</ul>
+
+*/
