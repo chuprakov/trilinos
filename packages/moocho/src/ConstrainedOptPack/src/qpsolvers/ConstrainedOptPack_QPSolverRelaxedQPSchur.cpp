@@ -18,16 +18,14 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchur.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/include/MatrixWithOp.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "SparseLinAlgPack/include/SortByDescendingAbsValue.h"
-#include "SparseLinAlgPack/include/sparse_bounds.h"
+#include "SparseLinAlgPack/include/VectorDenseEncap.h"
+//#include "SparseLinAlgPack/include/sparse_bounds.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
-#include "Misc/include/dynamic_cast_verbose.h"
-#include "Misc/include/profile_hack.h"
-
-namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StMtV;
-}
+#include "dynamic_cast_verbose.h"
+#include "profile_hack.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -106,20 +104,21 @@ void QPSolverRelaxedQPSchur::release_memory()
 
 QPSolverStats::ESolutionType
 QPSolverRelaxedQPSchur::imp_solve_qp(
-		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, const VectorSlice& g, const MatrixWithOp& G
-		, value_type etaL
-		, const SpVectorSlice& dL, const SpVectorSlice& dU
-		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
-			, const SpVectorSlice* eL, const SpVectorSlice* eU
-		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
-		, value_type* obj_d
-		, value_type* eta, VectorSlice* d
-		, SpVector* nu
-		, SpVector* mu, VectorSlice* Ed
-		, VectorSlice* lambda, VectorSlice* Fd
+	std::ostream* out, EOutputLevel olevel, ERunTests test_what
+	,const VectorWithOp& g_in, const MatrixSymWithOp& G
+	,value_type etaL
+	,const VectorWithOp* dL_in, const VectorWithOp* dU_in
+	,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b_in
+	,const VectorWithOp* eL_in, const VectorWithOp* eU_in
+	,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f_in
+	,value_type* obj_d
+	,value_type* eta, VectorWithOpMutable* d_inout
+	,VectorWithOpMutable* nu_inout
+	,VectorWithOpMutable* mu_inout, VectorWithOpMutable* Ed_inout
+	,VectorWithOpMutable* lambda_inout, VectorWithOpMutable* Fd_inout
 	)
 {
+	namespace mmp = MemMngPack;
 	using DynamicCastHelperPack::dyn_cast;
 	using LinAlgOpPack::V_mV;
 	typedef QPSchurPack::ConstraintsRelaxedStd constr_t;
@@ -129,17 +128,9 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 #endif
 
 	const size_type
-		nd = g.size(),
+		nd = g_in.dim(),
 		m_in = E ? BLAS_Cpp::rows(E->rows(),E->cols(),trans_E) : 0,
 		m_eq = F ? BLAS_Cpp::rows(F->rows(),F->cols(),trans_F) : 0;
-
-	// Validate that G is symmetric
-	const MatrixSymWithOp&
-#ifdef _WINDOWS
-		G_sym = dynamic_cast<const MatrixSymWithOp&>(G);
-#else
-		G_sym = dyn_cast<const MatrixSymWithOp>(G);
-#endif
 
 	// ///////////////////////////////
 	// Setup the initial KKT system
@@ -149,10 +140,13 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	InitKKTSystem::bnd_fixed_t    bnd_fixed;
 	InitKKTSystem::j_f_decomp_t   j_f_decomp;
 	size_type n_R_tmp;
+	assert(0); // ToDo: Update the below code!
+/*
 	init_kkt_sys().initialize_kkt_system(
 		g,G,etaL,dL,dU,F,trans_F,f,(*d)(),(*nu)()
 		,&n_R_tmp,&i_x_free,&i_x_fixed,&bnd_fixed,&j_f_decomp
 		,&b_X_,&Ko_,&fo_ );
+*/
 	const size_type
 		n_R = n_R_tmp,
 		n_X = nd + 1 - n_R; // fixed variables in d and eta
@@ -166,7 +160,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// Setup j_f_undecomp
 	const bool all_f_undecomp = F ? j_f_decomp.size() == 0 : true;
 	const size_type
-		m_undecomp = F ? f->size() - j_f_decomp.size() : 0;
+		m_undecomp = F ? f_in->dim() - j_f_decomp.size() : 0;
 	typedef std::vector<size_type> j_f_undecomp_t;
 	j_f_undecomp_t j_f_undecomp;
 	if( m_undecomp && !all_f_undecomp ) {
@@ -178,6 +172,8 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	}
 
 	// initialize constraints object
+	assert(0); // ToDo: Update the below code!
+/*
 	constraints_->initialize(
 		nd,etaL,&dL,&dU,E,trans_E,b,eL,eU,F,trans_F,f
 		, m_undecomp, m_undecomp && !all_f_undecomp ? &j_f_undecomp[0] : NULL
@@ -185,6 +181,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		, !add_equalities_initially()  // If we add equalities the the schur complement intially
 		                               // then we don't need to check if they are violated.
 		);
+*/
 	// ToDo: Add j_f_decomp to the above constraints class!
 
 	// ///////////////////////////
@@ -192,11 +189,16 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 
 	// g_relaxed_ = [ g; bigM ]
 	g_relaxed_.resize(nd+1);
-	g_relaxed_(1,nd) = g;
+	g_relaxed_(1,nd) = VectorDenseEncap(g_in)();
 	g_relaxed_(nd+1) = bigM();
 
 	// G_relaxed_ = [ G, zeros(...); zeros(...), bigM ]
-	G_relaxed_.initialize( G_sym, bigM() );
+	bigM_vec_.initialize(1); // dim == 1
+	bigM_vec_ = bigM();	
+	G_relaxed_.initialize(
+		mmp::rcp(&dyn_cast<const MatrixSymWithOpNonsingular>(G),false)
+		,mmp::rcp(&bigM_vec_,false)
+		);
 	
 	qp_.initialize(
 		g_relaxed_(),G_relaxed_,NULL
@@ -230,9 +232,11 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// (if it is not already an intially fixed variable).  If fixing a variable
 	// causes the KKT system to become singular then we are in real trouble!
 	// We should add these eairly on since they will not be freed.
-	if( dL.nz() && dU.nz() ) {
+	if( dL_in ) {
 		const QPSchurPack::QP::x_init_t &x_init = qp_.x_init();
 		const value_type inf_bnd = std::numeric_limits<value_type>::max();
+		assert(0); // ToDo: Update the below code!
+/*
 		SparseLinAlgPack::sparse_bounds_itr
 			dLU_itr(
 				dL.begin(), dL.end(), dL.offset(),
@@ -244,15 +248,18 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 				++num_act_change;
 			}
 		}
+*/
 	}
 	// Add inequality constriants to the list from nu and mu
-	if( ( nu && nu->nz() ) || ( m_in && mu->nz() ) ) {
+	if( ( nu_inout && nu_inout->nz() ) || ( m_in && mu_inout->nz() ) ) {
 		//
 		// Setup num_act_change, ij_act_change, and bnds for a warm start!
 		//
 		const size_type
-			nu_nz = nu ? nu->nz() : 0,
-			mu_nz = mu ? mu->nz() : 0;
+			nu_nz = nu_inout ? nu_inout->nz() : 0,
+			mu_nz = mu_inout ? mu_inout->nz() : 0;
+		assert(0); // ToDo: Update the below code!
+/*
 		// Combine all the multipliers for the bound and general inequality
 		// constraints and sort them from the largest to the smallest.  Hopefully
 		// the constraints with the larger multiplier values will not be dropped
@@ -302,11 +309,14 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 				++num_act_change;
 			}
 		}
+*/
 	}
 	// We need to loop through x_init() and nu() in order and look for variables
 	// that are initially fixed in x_init() but are not present in nu().  For these
 	// variables we need to free them in ij_act_change[].
 	{
+		assert(0); // ToDo: Update the below code!
+/*
 		QPSchurPack::QP::x_init_t::const_iterator
 			x_init_itr = qp_.x_init().begin();
 		const SpVector::difference_type o = nu->offset();
@@ -342,6 +352,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 				}
 			}
 		}
+*/
 	}
 	// Consider the relaxation variable!
 	if(*eta > etaL) {
@@ -464,9 +475,11 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// Set the solution
 
 	// d
-	*d = _x(1,nd);
+	(VectorDenseMutableEncap(*d_inout))() = _x(1,nd);
 	// nu
-	if( nu ) {
+	if( nu_inout ) {
+		assert(0); // ToDo: Update the below code!
+/*
 		nu->resize( nd, std::_MIN( nd, _mu.nz() ) );
 		const SpVector::difference_type o = _mu.offset();
 		if( _mu.nz() ) {
@@ -478,10 +491,13 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 			}
 		}
 		nu->assume_sorted(true);
+*/
 	}
 	// mu, lambda	
 	if( m_in || m_eq ) {
 		*eta = _x(nd+1);	// must be non-null
+		assert(0); // ToDo: Update the below code!
+/*
 		if(mu) mu->resize(m_in,_lambda_breve.nz());	// resize for storage for all inequalities active?
 		const SpVector::difference_type o = _lambda_breve.offset();
 		if(_lambda_breve.nz()) {
@@ -501,15 +517,16 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 			}
 		}
 		mu->assume_sorted(true);
+*/
 	}
 	// obj_d (This could be updated within QPSchur in the future)
 	if(obj_d) {
 		// obj_d = g'*d + 1/2 * d' * G * g
-		*obj_d = LinAlgPack::dot(g,*d)
-			+ 0.5 * SparseLinAlgPack::transVtMtV(*d,G,BLAS_Cpp::no_trans,*d);
+		*obj_d = AbstractLinAlgPack::dot(g_in,*d_inout)
+			+ 0.5 * AbstractLinAlgPack::transVtMtV(*d_inout,G,BLAS_Cpp::no_trans,*d_inout);
 	}
 	// Ed
-	if(Ed && E) {
+	if(Ed_inout && E) {
 		switch(constraints_->inequality_pick_policy()) {
 			case constr_t::ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY:
 				if(solve_returned == QPSchur::OPTIMAL_SOLUTION)
@@ -518,12 +535,12 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 				break; // Ed already computed (see ConstraintsRelaxedStd::pick_violated())
 			default:
 				// We need to compute Ed
-				LinAlgOpPack::V_MtV( Ed, *E, trans_E, *d );
+				LinAlgOpPack::V_MtV( Ed_inout, *E, trans_E, *d_inout );
 		}
 	}
 	// Fd (This could be updated within ConstraintsRelaxedStd in the future)
-	if(Fd) {
-		LinAlgOpPack::V_MtV( Fd, *F, trans_F, *d );
+	if(Fd_inout) {
+		LinAlgOpPack::V_MtV( Fd_inout, *F, trans_F, *d_inout );
 	}
 	// Set the QP statistics
 	QPSolverStats::ESolutionType solution_type;

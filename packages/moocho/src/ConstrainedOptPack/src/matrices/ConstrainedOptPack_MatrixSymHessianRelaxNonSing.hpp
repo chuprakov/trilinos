@@ -170,7 +170,7 @@ public:
 	///
 	void V_InvMtV(
 		VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		,const VectorWithOp& v_rhs2) const = 0;
+		,const VectorWithOp& v_rhs2) const;
 	///
 	void V_InvMtV(
 		VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1

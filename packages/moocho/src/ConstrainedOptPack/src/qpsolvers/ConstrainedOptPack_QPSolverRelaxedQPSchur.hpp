@@ -22,6 +22,7 @@
 #include "MatrixSymHessianRelaxNonsing.h"
 #include "ConstraintsRelaxedStd.h"
 #include "MatrixSymAddDelBunchKaufman.h"
+#include "SparseLinAlgPack/include/VectorWithOpMutableDense.h"
 #include "StandardCompositionMacros.h"
 #include "StandardMemberCompositionMacros.h"
 
@@ -326,7 +327,7 @@ public:
 
 	///
 	QPSolverRelaxedQPSchur(
-		const init_kkt_sys_ptr_t&    init_kkt_sys       = MemMngPack::rcp(NULL)
+		const init_kkt_sys_ptr_t&    init_kkt_sys       = MemMngPack::null
 		,const constraints_ptr_t&    constraints        = MemMngPack::rcp(new QPSchurPack::ConstraintsRelaxedStd)
 		,value_type                  max_qp_iter_frac   = 10.0
 		,value_type                  max_real_runtime   = 1e+20
@@ -399,7 +400,8 @@ private:
 	QPSolverStats                    qp_stats_;
 	QPSchur                          qp_solver_;
 	QPSchurPack::QPInitFixedFreeStd  qp_;
-	MatrixSymHessianRelaxNonsing     G_relaxed_;
+	MatrixSymHessianRelaxNonSing     G_relaxed_;
+	VectorWithOpMutableDense         bigM_vec_;
 	MatrixSymAddDelBunchKaufman      schur_comp_;
 	Vector                           g_relaxed_;
 	Vector                           b_X_;
