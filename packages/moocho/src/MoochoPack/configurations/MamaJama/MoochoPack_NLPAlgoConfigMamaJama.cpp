@@ -72,8 +72,8 @@
 #include "SparseSolverPack/include/DirectSparseSolverMA28SetOptions.h"
 #endif
 
-//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
-//#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
+#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
+#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
 //#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchur.h"
 //#include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchurSetOptions.h"
 //#include "ConstrainedOptimizationPack/include/QPSchurInitKKTSystemHessianFull.h"
@@ -105,10 +105,10 @@
 #include "ReducedSpaceSQPPack/include/std/CheckDecompositionFromPy_Step.h"
 #include "ReducedSpaceSQPPack/include/std/CheckDecompositionFromRPy_Step.h"
 #include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithoutBounds_Step.h"
+#include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithInequStd_Step.h"
+#include "ReducedSpaceSQPPack/include/std/NullSpaceStepWithInequStd_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/SetDBoundsStd_AddedStep.h"
 #include "ReducedSpaceSQPPack/include/std/QPFailureReinitReducedHessian_Step.h"
-//#include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_Step.h"
-//#include "ReducedSpaceSQPPack/include/std/IndepDirecWithBoundsStd_StepSetOptions.h"
 #include "ReducedSpaceSQPPack/include/std/CalcDFromYPYZPZ_Step.h"
 #include "ReducedSpaceSQPPack/include/std/LineSearchFailureNewDecompositionSelection_Step.h"
 #include "ReducedSpaceSQPPack/include/std/NewDecompositionSelectionStd_Strategy.h"
@@ -137,13 +137,11 @@
 //#include "ReducedSpaceSQPPack/include/std/ActSetStats_AddedStep.h"
 //#include "ReducedSpaceSQPPack/include/std/NumFixedDepIndep_AddedStep.h"
 
-//#include "ReducedSpaceSQPPack/include/std/act_set_stats.h"
-//#include "ReducedSpaceSQPPack/include/std/qp_solver_stats.h"
-//#include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
+#include "ReducedSpaceSQPPack/include/std/act_set_stats.h"
+#include "ReducedSpaceSQPPack/include/std/qp_solver_stats.h"
+#include "ReducedSpaceSQPPack/include/std/quasi_newton_stats.h"
 
 //#include "SparseLinAlgPack/include/sparse_bounds.h"
-
-//#include "LinAlgPack/include/PermVecMat.h"
 
 // Misc utilities
 #include "AbstractFactoryStd.h"
@@ -152,8 +150,8 @@
 #include "ThrowException.h"
 
 // Stuff to read in options
-#include "Misc/include/StringToIntMap.h"
-#include "Misc/include/StringToBool.h"
+#include "StringToIntMap.h"
+#include "StringToBool.h"
 
 // Stuff for exact reduced hessian
 //#include "ReducedSpaceSQPPack/include/std/ReducedHessianExactStd_Step.h"
@@ -231,8 +229,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	)
 {
 	namespace afp = MemMngPack;
-	namespace rcp = MemMngPack;
-	using rcp::ref_count_ptr;
+	namespace mmp = MemMngPack;
+	using mmp::ref_count_ptr;
 	using DynamicCastHelperPack::dyn_cast;
 
 	if(trase_out) {
@@ -257,8 +255,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	if(trase_out)
 		*trase_out << "\n*** Creating the rSQPAlgo algo object ...\n";
 
-	typedef rcp::ref_count_ptr<rSQPAlgo>	algo_ptr_t;
-	algo_ptr_t algo = rcp::rcp(new rSQPAlgo);
+	typedef mmp::ref_count_ptr<rSQPAlgo>	algo_ptr_t;
+	algo_ptr_t algo = mmp::rcp(new rSQPAlgo);
 	assert(algo.get());
 	algo_cntr->set_algo(algo);
 	algo->set_algo_cntr(algo_cntr);
@@ -455,7 +453,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			*trase_out
 				<< "\nrange_space_matrix == ORTHOGONAL and the client has not given a specialized VarReductOrthog_Strategy object\n"
 				<< "Using the default implementation VarReductOrthogDenseStd_Strategy ...\n";
-		var_reduct_orthog_strategy_ = rcp::rcp(new VarReductOrthogDenseStd_Strategy());
+		var_reduct_orthog_strategy_ = mmp::rcp(new VarReductOrthogDenseStd_Strategy());
 	}
 
 	// /////////////////////////////////////////////////////
@@ -466,7 +464,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	basis_sys_perm_ptr_t  basis_sys_perm;
 #endif
 	typedef ref_count_ptr<DecompositionSystem> decomp_sys_ptr_t;
-	decomp_sys_ptr_t decomp_sys = rcp::null;
+	decomp_sys_ptr_t decomp_sys = mmp::null;
 	if(!tailored_approach) {
 		// Set the default basis system if one is not set
 		if( basis_sys_.get() == NULL ) {
@@ -475,14 +473,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				*trase_out <<
 					"\nA specialized basis system object was not specified by the client.\n"
 					"Creating BasisSystemPermDirectSparse object for direct sparse matrices ...\n";
-			rcp::ref_count_ptr<DirectSparseSolver>  direct_sparse_solver;
+			mmp::ref_count_ptr<DirectSparseSolver>  direct_sparse_solver;
 			switch(cov_.direct_linear_solver_type_) {
 				case LA_MA28: {
 					if(trase_out)
 						*trase_out <<
 							"Using DirectSparseSolverMA28 ...\n";
-					rcp::ref_count_ptr<DirectSparseSolverMA28>
-						dss_ma28 = rcp::rcp(new DirectSparseSolverMA28());
+					mmp::ref_count_ptr<DirectSparseSolverMA28>
+						dss_ma28 = mmp::rcp(new DirectSparseSolverMA28());
 					if(options_.get()) {
 						SparseSolverPack::DirectSparseSolverMA28SetOptions
 							opt_setter(dss_ma28.get());
@@ -510,7 +508,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				default:
 					assert(0); // Should not be called?
 			}
-			basis_sys_ = rcp::rcp(new BasisSystemPermDirectSparse(direct_sparse_solver));
+			basis_sys_ = mmp::rcp(new BasisSystemPermDirectSparse(direct_sparse_solver));
 #else
 			THROW_EXCEPTION(
 				true, std::logic_error
@@ -522,7 +520,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 		// Create the testing object for the basis system and set it up.
 		ref_count_ptr<BasisSystemTester>
-			basis_sys_tester = rcp::rcp(new BasisSystemTester());
+			basis_sys_tester = mmp::rcp(new BasisSystemTester());
 		if(options_.get()) {
 			BasisSystemTesterSetOptions
 				opt_setter(basis_sys_tester.get());
@@ -530,7 +528,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 #ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 		// See if the basis system object supports basis permutations
-		basis_sys_perm = rcp::rcp_dynamic_cast<BasisSystemPerm>(basis_sys_);
+		basis_sys_perm = mmp::rcp_dynamic_cast<BasisSystemPerm>(basis_sys_);
 #endif
 		// Create the DecompositionSystem implementation object
 		typedef ref_count_ptr<DecompositionSystemVarReductImp> decomp_sys_imp_ptr_t;
@@ -538,7 +536,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		switch( cov_.range_space_matrix_type_ ) {
 			case RANGE_SPACE_MATRIX_COORDINATE:
 				decomp_sys_imp
-					= rcp::rcp(new DecompositionSystemCoordinate(
+					= mmp::rcp(new DecompositionSystemCoordinate(
 						nlp.space_x()
 						,nlp.space_c()
 						,nlp.space_h()
@@ -548,7 +546,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				break;
 			case RANGE_SPACE_MATRIX_ORTHOGONAL: {
 				decomp_sys_imp
-					= rcp::rcp(new DecompositionSystemOrthogonal(
+					= mmp::rcp(new DecompositionSystemOrthogonal(
 						nlp.space_x()
 						,nlp.space_c()
 						,nlp.space_h()
@@ -569,7 +567,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					<< "\nThe BasisSystem object with concreate type \'" << typeid(*basis_sys_).name()
 					<< "\' supports the BasisSystemPerm interface.\n"
 					<< "Using DecompositionSystemVarReductPermStd to support basis permutations ...\n";
-			decomp_sys = rcp::rcp(
+			decomp_sys = mmp::rcp(
 				new DecompositionSystemVarReductPermStd(
 					decomp_sys_imp
 					,basis_sys_perm
@@ -608,7 +606,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 		typedef ref_count_ptr<rSQPState>   state_ptr_t;
 		state_ptr_t
-			state = rcp::rcp(
+			state = mmp::rcp(
 				new rSQPState(
 					decomp_sys
 					,nlp.space_x()
@@ -617,13 +615,13 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					,( tailored_approach
 					   ? ( nlp_fod->var_dep().size() 
 						   ? nlp.space_x()->sub_space(nlp_fod->var_dep())->clone()
-						   : rcp::null )
+						   : mmp::null )
 					   : decomp_sys->space_range() // could be NULL for BasisSystemPerm
 						)
 					,( tailored_approach
 					   ?( nlp_fod->var_indep().size()
 						  ? nlp.space_x()->sub_space(nlp_fod->var_indep())->clone()
-						  : rcp::null )
+						  : mmp::null )
 					   : decomp_sys->space_null() // could be NULL for BasisSystemPerm
 						)
 					)
@@ -648,7 +646,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			if(m)
 				state->set_iter_quant(
 					Gc_name
-					,rcp::rcp(
+					,mmp::rcp(
 						new IterQuantityAccessContiguous<MatrixWithOp>(
 							1
 							,Gc_name
@@ -659,7 +657,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			if(mI)
 				state->set_iter_quant(
 					Gh_name
-					,rcp::rcp(
+					,mmp::rcp(
 						new IterQuantityAccessContiguous<MatrixWithOp>(
 							1
 							,Gh_name
@@ -670,7 +668,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			if(nlp_soi)
 				state->set_iter_quant(
 					HL_name
-					,rcp::rcp(
+					,mmp::rcp(
 						new IterQuantityAccessContiguous<MatrixSymWithOp>(
 							1
 							,HL_name
@@ -690,22 +688,22 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			// Z
 			state->set_iter_quant(
 				Z_name
-				,rcp::rcp(
+				,mmp::rcp(
 					new IterQuantityAccessContiguous<MatrixWithOp>(
 						1
 						,Z_name
-						,rcp::rcp(new afp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+						,mmp::rcp(new afp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
 						)
 					)
 				);
 			// Y
 			state->set_iter_quant(
 				Y_name
-				,rcp::rcp(
+				,mmp::rcp(
 					new IterQuantityAccessContiguous<MatrixWithOp>(
 						1
 						,Y_name
-						,rcp::rcp(new afp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
+						,mmp::rcp(new afp::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>)
 						)
 					)
 				);
@@ -718,7 +716,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			// Z
 			state->set_iter_quant(
 				Z_name
-				,rcp::rcp(
+				,mmp::rcp(
 					new IterQuantityAccessContiguous<MatrixWithOp>(
 						1
 						,Z_name
@@ -729,7 +727,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			// Y
 			state->set_iter_quant(
 				Y_name
-				,rcp::rcp(
+				,mmp::rcp(
 					new IterQuantityAccessContiguous<MatrixWithOp>(
 						1
 						,Y_name
@@ -740,7 +738,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			// R
 			state->set_iter_quant(
 				R_name
-				,rcp::rcp(
+				,mmp::rcp(
 					new IterQuantityAccessContiguous<MatrixWithOpNonsingular>(
 						1
 						,R_name
@@ -751,7 +749,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			// Uz
 			state->set_iter_quant(
 				Uz_name
-				,rcp::rcp(
+				,mmp::rcp(
 					new IterQuantityAccessContiguous<MatrixWithOp>(
 						1
 						,Uz_name
@@ -762,7 +760,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			// Uy
 			state->set_iter_quant(
 				Uy_name
-				,rcp::rcp(
+				,mmp::rcp(
 					new IterQuantityAccessContiguous<MatrixWithOp>(
 						1
 						,Uy_name
@@ -773,7 +771,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			// Vz
 			state->set_iter_quant(
 				Vz_name
-				,rcp::rcp(
+				,mmp::rcp(
 					new IterQuantityAccessContiguous<MatrixWithOp>(
 						1
 						,Vz_name
@@ -784,7 +782,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			// Vy
 			state->set_iter_quant(
 				Vy_name
-				,rcp::rcp(
+				,mmp::rcp(
 					new IterQuantityAccessContiguous<MatrixWithOp>(
 						1
 						,Vy_name
@@ -798,7 +796,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 		if( !cov_.exact_reduced_hessian_ ) {
 			ref_count_ptr<afp::AbstractFactory<MatrixSymWithOp> >
-				abstract_factory_rHL = rcp::null;
+				abstract_factory_rHL = mmp::null;
 			// Only maintain the orginal matrix if we have inequality constraints and therefore will be
 			// needing a QP solver (which may be QPSchur which needs an accurate original matrix for
 			// iterative refinment).
@@ -811,7 +809,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 									 || algo->algo_cntr().check_results() );
 			switch( cov_.quasi_newton_ ) {
 				case QN_BFGS:
-					abstract_factory_rHL = rcp::rcp(
+					abstract_factory_rHL = mmp::rcp(
 						new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefCholFactor,MatrixSymPosDefCholFactor::PostMod>(
 							MatrixSymPosDefCholFactor::PostMod(
 								maintain_original      // maintain_original
@@ -822,7 +820,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						);
 					break;
 				case QN_LBFGS:
-					abstract_factory_rHL = rcp::rcp(
+					abstract_factory_rHL = mmp::rcp(
 						new afp::AbstractFactoryStd<MatrixSymWithOp,MatrixSymPosDefLBFGS,MatrixSymPosDefLBFGS::PostMod>(
 							MatrixSymPosDefLBFGS::PostMod(
 								cov_.num_lbfgs_updates_stored_  //
@@ -839,7 +837,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			
 			state->set_iter_quant(
 				rHL_name
-				,rcp::rcp(
+				,mmp::rcp(
 					new IterQuantityAccessContiguous<MatrixSymWithOp>(
 						1
 						,rHL_name
@@ -858,15 +856,15 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 		if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
 			ref_count_ptr<afp::AbstractFactory<MeritFuncNLP> >
-				merit_func_factory = rcp::null;
+				merit_func_factory = mmp::null;
 			switch( cov_.merit_function_type_ ) {
 				case MERIT_FUNC_L1:
-					merit_func_factory = rcp::rcp(
+					merit_func_factory = mmp::rcp(
 						new afp::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPL1>());
 					break;
 				case MERIT_FUNC_MOD_L1:
 				case MERIT_FUNC_MOD_L1_INCR:
-					merit_func_factory = rcp::rcp(
+					merit_func_factory = mmp::rcp(
 						new afp::AbstractFactoryStd<MeritFuncNLP,MeritFuncNLPModL1>());
 					break;
 				default:
@@ -874,13 +872,28 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			}
 			state->set_iter_quant(
 				merit_func_nlp_name
-				,rcp::rcp(
+				,mmp::rcp(
 					new IterQuantityAccessContiguous<MeritFuncNLP>(
 						1
 						,merit_func_nlp_name
 						,merit_func_factory
 						)
 					)
+				);
+		}
+
+		if( nb || mI ) {
+			// Add active-set iteration quantity
+			state->set_iter_quant(
+				act_set_stats_name
+				,mmp::rcp(
+					new IterQuantityAccessContiguous<ActSetStats>( 1, act_set_stats_name ) )
+				);
+			// Add QP solver stats iteration quantity
+			state->set_iter_quant(
+				qp_solver_stats_name
+				,mmp::rcp(
+					new IterQuantityAccessContiguous<QPSolverStats>( 1, qp_solver_stats_name ) )
 				);
 		}
 
@@ -973,12 +986,12 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		typedef ref_count_ptr<AlgorithmStep>    algo_step_ptr_t;
 
 		// Create the variable bounds testing object.
-		typedef rcp::ref_count_ptr<VariableBoundsTester>     bounds_tester_ptr_t;
-		bounds_tester_ptr_t   bounds_tester = rcp::null;
+		typedef mmp::ref_count_ptr<VariableBoundsTester>     bounds_tester_ptr_t;
+		bounds_tester_ptr_t   bounds_tester = mmp::null;
 		if(nb) { // has variable bounds?
 			const value_type var_bounds_warning_tol = 1e-10;
 			const value_type var_bounds_error_tol   = 1e-5;
-			bounds_tester = rcp::rcp(
+			bounds_tester = mmp::rcp(
 				new VariableBoundsTester(
 					var_bounds_warning_tol      // default warning tolerance
 					,var_bounds_error_tol       // default error tolerance
@@ -991,10 +1004,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 
 		// Create the finite difference class
-		typedef rcp::ref_count_ptr<CalcFiniteDiffProd>     calc_fd_prod_ptr_t;
-		calc_fd_prod_ptr_t   calc_fd_prod = rcp::null;
+		typedef mmp::ref_count_ptr<CalcFiniteDiffProd>     calc_fd_prod_ptr_t;
+		calc_fd_prod_ptr_t   calc_fd_prod = mmp::null;
 		{
-			calc_fd_prod = rcp::rcp(new CalcFiniteDiffProd());
+			calc_fd_prod = mmp::rcp(new CalcFiniteDiffProd());
 			if(options_.get()) {
 				ConstrainedOptimizationPack::CalcFiniteDiffProdSetOptions
 					options_setter( calc_fd_prod.get() );
@@ -1007,30 +1020,30 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 #ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 			if( basis_sys_perm.get() )
 				decomp_sys_handler = decomp_sys_handler_select_new
-					= rcp::rcp( new DecompositionSystemHandlerVarReductPerm_Strategy );
+					= mmp::rcp( new DecompositionSystemHandlerVarReductPerm_Strategy );
 			else
 #endif
-				decomp_sys_handler = rcp::rcp( new DecompositionSystemHandlerStd_Strategy );
+				decomp_sys_handler = mmp::rcp( new DecompositionSystemHandlerStd_Strategy );
 		}
 	
 #ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 		// NewDecompositionSelectionStd_Strategy
 		if( decomp_sys_handler_select_new.get() ) {
-			new_decomp_selection_strategy = rcp::rcp(
+			new_decomp_selection_strategy = mmp::rcp(
 				new NewDecompositionSelectionStd_Strategy(decomp_sys_handler_select_new)
 				);
 		}
 #endif
 
 		// EvalNewPoint_Step
-		algo_step_ptr_t    eval_new_point_step = rcp::null;
+		algo_step_ptr_t    eval_new_point_step = mmp::null;
 		{
 			// Create the step object
 			if( tailored_approach ) {
 				// create and setup the derivative tester
-				typedef rcp::ref_count_ptr<NLPFirstOrderDirectTester>   deriv_tester_ptr_t;
+				typedef mmp::ref_count_ptr<NLPFirstOrderDirectTester>   deriv_tester_ptr_t;
 				deriv_tester_ptr_t
-					deriv_tester = rcp::rcp(
+					deriv_tester = mmp::rcp(
 						new NLPFirstOrderDirectTester(
 							calc_fd_prod
 							,NLPFirstOrderDirectTester::FD_DIRECTIONAL    // Gf testing
@@ -1042,17 +1055,17 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					options_setter.set_options(*options_);
 				}
 				// create the step
-				typedef rcp::ref_count_ptr<EvalNewPointTailoredApproach_Step>  _eval_new_point_step_ptr_t;
+				typedef mmp::ref_count_ptr<EvalNewPointTailoredApproach_Step>  _eval_new_point_step_ptr_t;
 				_eval_new_point_step_ptr_t
-					_eval_new_point_step = rcp::null;
+					_eval_new_point_step = mmp::null;
 				switch( cov_.range_space_matrix_type_ ) {
 					case RANGE_SPACE_MATRIX_COORDINATE:
 						_eval_new_point_step
-							= rcp::rcp(new EvalNewPointTailoredApproachCoordinate_Step(deriv_tester,bounds_tester));
+							= mmp::rcp(new EvalNewPointTailoredApproachCoordinate_Step(deriv_tester,bounds_tester));
 						break;
 					case RANGE_SPACE_MATRIX_ORTHOGONAL:
 						_eval_new_point_step
-							= rcp::rcp(new EvalNewPointTailoredApproachOrthogonal_Step(
+							= mmp::rcp(new EvalNewPointTailoredApproachOrthogonal_Step(
 								var_reduct_orthog_strategy_,deriv_tester,bounds_tester) );
 						break;
 					default:
@@ -1067,9 +1080,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			}
 			else {
 				// create and setup the derivative tester
-				typedef rcp::ref_count_ptr<NLPFirstDerivativesTester>   deriv_tester_ptr_t;
+				typedef mmp::ref_count_ptr<NLPFirstDerivativesTester>   deriv_tester_ptr_t;
 				deriv_tester_ptr_t
-					deriv_tester = rcp::rcp(
+					deriv_tester = mmp::rcp(
 						new NLPFirstDerivativesTester(
 							calc_fd_prod
 							,NLPFirstDerivativesTester::FD_DIRECTIONAL
@@ -1080,17 +1093,17 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					options_setter.set_options(*options_);
 				}
 				// create and setup the decomposition system tester
-				typedef rcp::ref_count_ptr<DecompositionSystemTester>   decomp_sys_tester_ptr_t;
+				typedef mmp::ref_count_ptr<DecompositionSystemTester>   decomp_sys_tester_ptr_t;
 				decomp_sys_tester_ptr_t
-					decomp_sys_tester = rcp::rcp( new DecompositionSystemTester() );
+					decomp_sys_tester = mmp::rcp( new DecompositionSystemTester() );
 				if(options_.get()) {
 					DecompositionSystemTesterSetOptions
 						options_setter(decomp_sys_tester.get());
 					options_setter.set_options(*options_);
 				}
-				typedef rcp::ref_count_ptr<EvalNewPointStd_Step>  _eval_new_point_step_ptr_t;
+				typedef mmp::ref_count_ptr<EvalNewPointStd_Step>  _eval_new_point_step_ptr_t;
 				_eval_new_point_step_ptr_t
-					_eval_new_point_step = rcp::rcp(
+					_eval_new_point_step = mmp::rcp(
 						new EvalNewPointStd_Step(
 							decomp_sys_handler
 							,deriv_tester
@@ -1107,21 +1120,21 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 
 		// RangeSpace_Step
-		algo_step_ptr_t    range_space_step_step = rcp::null;
+		algo_step_ptr_t    range_space_step_step = mmp::null;
 		if( !tailored_approach ) {
-			range_space_step_step = rcp::rcp(new RangeSpaceStepStd_Step());
+			range_space_step_step = mmp::rcp(new RangeSpaceStepStd_Step());
 		}
 
 		// Check and change decomposition 
-		algo_step_ptr_t    check_decomp_from_py_step  = rcp::null;
-		algo_step_ptr_t    check_decomp_from_Rpy_step = rcp::null;
+		algo_step_ptr_t    check_decomp_from_py_step  = mmp::null;
+		algo_step_ptr_t    check_decomp_from_Rpy_step = mmp::null;
 		if( new_decomp_selection_strategy.get() && cov_.max_basis_cond_change_frac_ < INF_BASIS_COND_CHANGE_FRAC ) {
-			check_decomp_from_py_step = rcp::rcp(
+			check_decomp_from_py_step = mmp::rcp(
 				new CheckDecompositionFromPy_Step(
 					new_decomp_selection_strategy
 					,cov_.max_basis_cond_change_frac_
 					) );
-			check_decomp_from_Rpy_step = rcp::rcp(
+			check_decomp_from_Rpy_step = mmp::rcp(
 				new CheckDecompositionFromRPy_Step(
 					new_decomp_selection_strategy
 					,cov_.max_basis_cond_change_frac_
@@ -1129,22 +1142,22 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 
 		// CheckDescentRangeSpaceStep
-		algo_step_ptr_t    check_descent_range_space_step_step = rcp::null;
+		algo_step_ptr_t    check_descent_range_space_step_step = mmp::null;
 		if( algo->algo_cntr().check_results() ) {
-			check_descent_range_space_step_step = rcp::rcp(new CheckDescentRangeSpaceStep_Step(calc_fd_prod));
+			check_descent_range_space_step_step = mmp::rcp(new CheckDescentRangeSpaceStep_Step(calc_fd_prod));
 		}
 
 		// ReducedGradient_Step
-		algo_step_ptr_t    reduced_gradient_step = rcp::null;
+		algo_step_ptr_t    reduced_gradient_step = mmp::null;
 		if( !tailored_approach ) {
-			reduced_gradient_step = rcp::rcp(new ReducedGradientStd_Step());
+			reduced_gradient_step = mmp::rcp(new ReducedGradientStd_Step());
 		}
 
 		// CheckSkipBFGSUpdate
-		algo_step_ptr_t    check_skip_bfgs_update_step = rcp::null;
+		algo_step_ptr_t    check_skip_bfgs_update_step = mmp::null;
 		if(!cov_.exact_reduced_hessian_) {
 			ref_count_ptr<CheckSkipBFGSUpdateStd_Step>
-				step = rcp::rcp(new CheckSkipBFGSUpdateStd_Step());
+				step = mmp::rcp(new CheckSkipBFGSUpdateStd_Step());
 			if(options_.get()) {
 				CheckSkipBFGSUpdateStd_StepSetOptions
 					opt_setter( step.get() );
@@ -1154,11 +1167,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 
 		// ReducedHessian_Step
-		algo_step_ptr_t    reduced_hessian_step = rcp::null;
+		algo_step_ptr_t    reduced_hessian_step = mmp::null;
 		{
 			// Get the strategy object that will perform the actual secant update.
 			ref_count_ptr<ReducedHessianSecantUpdate_Strategy>
-				secant_update_strategy = rcp::null;
+				secant_update_strategy = mmp::null;
 			switch( cov_.quasi_newton_ )
 			{
 			    case QN_BFGS:
@@ -1169,7 +1182,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					// create and setup the actual BFGS strategy object
 					typedef ref_count_ptr<BFGSUpdate_Strategy> bfgs_strategy_ptr_t;
 					bfgs_strategy_ptr_t
-						bfgs_strategy = rcp::rcp(new BFGSUpdate_Strategy);
+						bfgs_strategy = mmp::rcp(new BFGSUpdate_Strategy);
 					if(options_.get()) { 
 						BFGSUpdate_StrategySetOptions
 							opt_setter( bfgs_strategy.get() );
@@ -1179,7 +1192,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					    case QN_BFGS:
 					    case QN_LBFGS:
 						{
-							secant_update_strategy = rcp::rcp(new ReducedHessianSecantUpdateBFGSFull_Strategy(bfgs_strategy));
+							secant_update_strategy = mmp::rcp(new ReducedHessianSecantUpdateBFGSFull_Strategy(bfgs_strategy));
 							break;
 						}
 					    case QN_PBFGS:
@@ -1199,16 +1212,16 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			}
 			
 			// Finally build the step object
-			reduced_hessian_step = rcp::rcp(
+			reduced_hessian_step = mmp::rcp(
 				new ReducedHessianSecantUpdateStd_Step( secant_update_strategy ) );
 			// Add the QuasiNewtonStats iteration quantity
 			algo->state().set_iter_quant(
 				quasi_newton_stats_name
-				,rcp::rcp(new IterQuantityAccessContiguous<QuasiNewtonStats>(
+				,mmp::rcp(new IterQuantityAccessContiguous<QuasiNewtonStats>(
 					1
 					,quasi_newton_stats_name
 #ifdef _MIPS_CXX
-					,rcp::ref_count_ptr<MemMngPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats> >(
+					,mmp::ref_count_ptr<MemMngPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats> >(
 						new MemMngPack::AbstractFactoryStd<QuasiNewtonStats,QuasiNewtonStats>())
 #endif
 					)
@@ -1216,37 +1229,60 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 
 		// NullSpace_Step
-		algo_step_ptr_t    set_d_bounds_step    = rcp::null;
-		algo_step_ptr_t    null_space_step_step = rcp::null;
+		algo_step_ptr_t    set_d_bounds_step    = mmp::null;
+		algo_step_ptr_t    null_space_step_step = mmp::null;
 		if( mI == 0 && nb == 0 ) {
-			null_space_step_step = rcp::rcp(new NullSpaceStepWithoutBounds_Step());
+			null_space_step_step = mmp::rcp(new NullSpaceStepWithoutBounds_Step());
 		}
 		else {
-			set_d_bounds_step = rcp::rcp(new SetDBoundsStd_AddedStep());
-			// ToDo: set NullSpaceStepWithInequStd_Step
-			null_space_step_step = rcp::rcp(
+			// Step object that sets bounds for QP subproblem
+			set_d_bounds_step = mmp::rcp(new SetDBoundsStd_AddedStep());
+			// QP Solver object
+			mmp::ref_count_ptr<QPSolverRelaxed>  qp_solver = mmp::null;
+				// ToDo: Create the QP solver!
+			// QP solver tester
+			mmp::ref_count_ptr<QPSolverRelaxedTester> 
+				qp_solver_tester = mmp::rcp(new QPSolverRelaxedTester());
+			if(options_.get()) {
+				QPSolverRelaxedTesterSetOptions
+					opt_setter( qp_solver_tester.get() );
+				opt_setter.set_options( *options_ );
+			}
+			// The null-space step
+			mmp::ref_count_ptr<NullSpaceStepWithInequStd_Step>
+				null_space_step_with_inequ_step = mmp::rcp(
+					new NullSpaceStepWithInequStd_Step(
+						qp_solver, qp_solver_tester ) );
+			if(options_.get()) {
+				NullSpaceStepWithInequStd_StepSetOptions
+					opt_setter( null_space_step_with_inequ_step.get() );
+				opt_setter.set_options( *options_ );
+			}
+			null_space_step_step = null_space_step_with_inequ_step;
+			// Step for reinitialization reduced Hessian on QP failure
+			null_space_step_step = mmp::rcp(
 				new QPFailureReinitReducedHessian_Step(null_space_step_step)
 				);
 		}
 
 		// CalcDFromYPYZPZ_Step
-		algo_step_ptr_t    calc_d_from_Ypy_Zpy_step = rcp::null;
+		algo_step_ptr_t    calc_d_from_Ypy_Zpy_step = mmp::null;
 		{
-			calc_d_from_Ypy_Zpy_step = rcp::rcp(new CalcDFromYPYZPZ_Step());
+			calc_d_from_Ypy_Zpy_step = mmp::rcp(new CalcDFromYPYZPZ_Step());
 		}
 
 		// CalcReducedGradLagrangianStd_AddedStep
-		algo_step_ptr_t    calc_reduced_grad_lagr_step = rcp::null;
+		algo_step_ptr_t    calc_reduced_grad_lagr_step = mmp::null;
 		{
-			calc_reduced_grad_lagr_step = rcp::rcp(
+			calc_reduced_grad_lagr_step = mmp::rcp(
 				new CalcReducedGradLagrangianStd_AddedStep() );
 		}
 
 		// CheckConvergence_Step
-		algo_step_ptr_t    check_convergence_step = rcp::null;
+		algo_step_ptr_t    check_convergence_step = mmp::null;
 		{
 			ref_count_ptr<CheckConvergenceStd_AddedStep>
-				_check_convergence_step = rcp::rcp(new CheckConvergenceStd_AddedStep());
+				_check_convergence_step = mmp::rcp(new CheckConvergenceStd_AddedStep());
 			if(options_.get()) {
 				CheckConvergenceStd_AddedStepSetOptions
 					opt_setter( _check_convergence_step.get() );
@@ -1256,16 +1292,16 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 
 		// MeritFuncPenaltyParamUpdate_Step
-		algo_step_ptr_t    merit_func_penalty_param_update_step = rcp::null;
+		algo_step_ptr_t    merit_func_penalty_param_update_step = mmp::null;
 		if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
 			ref_count_ptr<MeritFunc_PenaltyParamUpdate_AddedStep>
-				param_update_step = rcp::null;
+				param_update_step = mmp::null;
 			switch( cov_.merit_function_type_ ) {
 				case MERIT_FUNC_L1: {
 					switch(cov_.l1_penalty_param_update_) {
 						case L1_PENALTY_PARAM_WITH_MULT:
 //							param_update_step
-//								= rcp::rcp(new  MeritFunc_PenaltyParamUpdateWithMult_AddedStep());
+//								= mmp::rcp(new  MeritFunc_PenaltyParamUpdateWithMult_AddedStep());
 							THROW_EXCEPTION(
 								true, std::logic_error
 								,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
@@ -1273,7 +1309,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 							break;
 						case L1_PENALTY_PARAM_MULT_FREE:
 							param_update_step
-								= rcp::rcp(new  MeritFunc_PenaltyParamUpdateMultFree_AddedStep());
+								= mmp::rcp(new  MeritFunc_PenaltyParamUpdateMultFree_AddedStep());
 							break;
 						default:
 							assert(0);
@@ -1283,7 +1319,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				case MERIT_FUNC_MOD_L1:
 				case MERIT_FUNC_MOD_L1_INCR:
 //					param_update_step = new  MeritFunc_PenaltyParamsUpdateWithMult_AddedStep(
-//											rcp::rcp_implicit_cast<MeritFuncNLP>(merit_func) );
+//											mmp::rcp_implicit_cast<MeritFuncNLP>(merit_func) );
 					THROW_EXCEPTION(
 						true, std::logic_error
 						,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
@@ -1301,16 +1337,16 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		}
 
 		// LineSearch_Step
-		algo_step_ptr_t    line_search_full_step_step = rcp::null;
+		algo_step_ptr_t    line_search_full_step_step = mmp::null;
 		{
-			line_search_full_step_step = rcp::rcp(new LineSearchFullStep_Step(bounds_tester));
+			line_search_full_step_step = mmp::rcp(new LineSearchFullStep_Step(bounds_tester));
 		}
 
 		// LineSearch_Step
-		algo_step_ptr_t    line_search_step = rcp::null;
+		algo_step_ptr_t    line_search_step = mmp::null;
 		if( cov_.line_search_method_ != LINE_SEARCH_NONE ) {
 			ref_count_ptr<DirectLineSearchArmQuad_Strategy>
-				direct_line_search = rcp::rcp(new  DirectLineSearchArmQuad_Strategy());
+				direct_line_search = mmp::rcp(new  DirectLineSearchArmQuad_Strategy());
 			if(options_.get()) {
 				ConstrainedOptimizationPack::DirectLineSearchArmQuad_StrategySetOptions
 					ls_options_setter( direct_line_search.get(), "DirectLineSearchArmQuadSQPStep" );
@@ -1318,7 +1354,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			}
 			switch( cov_.line_search_method_ ) {
 				case LINE_SEARCH_DIRECT: {
-					line_search_step = rcp::rcp(new LineSearchDirect_Step(direct_line_search));
+					line_search_step = mmp::rcp(new LineSearchDirect_Step(direct_line_search));
 					break;
 				}
 				case LINE_SEARCH_2ND_ORDER_CORRECT: {
@@ -1340,7 +1376,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 		// LineSearchFailure
 		if( new_decomp_selection_strategy.get() ) {
-			line_search_step = rcp::rcp(
+			line_search_step = mmp::rcp(
 				new LineSearchFailureNewDecompositionSelection_Step(
 					line_search_step
 					,new_decomp_selection_strategy
@@ -1566,7 +1602,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 void rSQPAlgo_ConfigMamaJama::init_algo(rSQPAlgoInterface* _algo)
 {
 	using DynamicCastHelperPack::dyn_cast;
-	namespace rcp = MemMngPack;
+	namespace mmp = MemMngPack;
 
 	THROW_EXCEPTION(
 		_algo == NULL, std::invalid_argument
@@ -1661,44 +1697,52 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 				case DIRECT_LINEAR_SOLVER:
 				{
 					const std::string &linear_solver = ofsp::option_value(itr);
-					if( linear_solver == "MA28" )
+					if( linear_solver == "MA28" ) {
 #ifdef SPARSE_SOLVER_PACK_USE_MA28
 						ov->direct_linear_solver_type_ = LA_MA28;
 #else
-						throw std::logic_error(
-							"rSQPAlgo_ConfigMamaJama::readin_options(...) : MA28 is not supported,"
+						THROW_EXCEPTION(
+							true, std::logic_error
+							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : MA28 is not supported,"
 							" must define SPARSE_SOLVER_PACK_USE_MA28!" );
 #endif
-					else if( linear_solver == "MA48" )
+					} else if( linear_solver == "MA48" ) {
 #ifdef SPARSE_SOLVER_PACK_USE_MA48
 						ov->direct_linear_solver_type_ = LA_MA48;
 #else
-						throw std::logic_error(
-							"rSQPAlgo_ConfigMamaJama::readin_options(...) : MA48 is not supported,"
+						THROW_EXCEPTION(
+							true, std::logic_error
+							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : MA48 is not supported,"
 							" must define SPARSE_SOLVER_PACK_USE_MA48!" );
 #endif
-					else if( linear_solver == "AUTO" )
+					} else if( linear_solver == "AUTO" ) {
 						ov->direct_linear_solver_type_ = LA_AUTO;
-					else
-						throw std::invalid_argument( "rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+					} else {
+						THROW_EXCEPTION(
+							true, std::invalid_argument
+							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"direct_linear_solver\" "
 							"Only the options \'AUTO\' \'MA28\' and \'MA48\' are avalible." );
+					}
 					break;
 				}
 				case NULL_SPACE_MATRIX:
 				{
 					const std::string &opt_val = ofsp::option_value(itr);
-					if( opt_val == "EXPLICIT" )
+					if( opt_val == "EXPLICIT" ) {
 						ov->null_space_matrix_type_ = NULL_SPACE_MATRIX_EXPLICIT;
-					else if( opt_val == "IMPLICIT" )
+					} else if( opt_val == "IMPLICIT" ) {
 						ov->null_space_matrix_type_ = NULL_SPACE_MATRIX_IMPLICIT;
-					else if( opt_val == "AUTO" )
+					} else if( opt_val == "AUTO" ) {
 						ov->null_space_matrix_type_ = NULL_SPACE_MATRIX_AUTO;
-					else
-						throw std::invalid_argument( "crrSQPAlgo_ConfigMamaJama::readin_options(...) : "
+					} else {
+						THROW_EXCEPTION(
+							true, std::invalid_argument
+							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"null_space_matrix\" "
 							", Only the options for Z of EXPLICIT, IMPLICIT"
 							", and AUTO are avalible."	);
+					}
 					break;
 				}
 				case RANGE_SPACE_MATRIX:
@@ -1711,7 +1755,9 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					else if( opt_val == "AUTO" )
 						ov->range_space_matrix_type_ = RANGE_SPACE_MATRIX_AUTO;
 					else
-						throw std::invalid_argument( "rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+						THROW_EXCEPTION(
+							true, std::invalid_argument
+							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"range_space_matrix\" "
 							", Only the options for Z of COORDINATE,"
 							", ORTHOGONAL and AUTO are avalible."	);
@@ -1737,8 +1783,9 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					else if( opt_val == "LPBFGS" )
 						ov->quasi_newton_ = QN_LPBFGS;
 					else
-						throw std::invalid_argument( 
-							"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+						THROW_EXCEPTION(
+							true, std::invalid_argument
+							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"quasi_newton\" "
 							", Only options of BFGS, PBFGS"
 							", LBFGS, LPBFGS and AUTO are avalible."
@@ -1769,7 +1816,9 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					else if( opt_val == "AUTO" )
 						ov->hessian_initialization_ = INIT_HESS_AUTO;
 					else
-						throw std::invalid_argument( "rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+						THROW_EXCEPTION(
+							true, std::invalid_argument
+							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"hessian_initialization\" "
 							", Only options of IDENTITY, FINITE_DIFF_SCALE_IDENTITY,"
 							" FINITE_DIFF_DIAGONAL, FINITE_DIFF_DIAGONAL_ABS and AUTO"
@@ -1779,26 +1828,30 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 				case QP_SOLVER:
 				{
 					const std::string &qp_solver = ofsp::option_value(itr);
-					if( qp_solver == "AUTO" )
+					if( qp_solver == "AUTO" ) {
 						ov->qp_solver_type_ = QP_AUTO;
-					else if( qp_solver == "QPSOL" )
+					} else if( qp_solver == "QPSOL" ) {
 						ov->qp_solver_type_ = QP_QPSOL;
-					else if( qp_solver == "QPOPT" )
+					} else if( qp_solver == "QPOPT" ) {
 #ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
 						ov->qp_solver_type_ = QP_QPOPT;
 #else
-						throw std::logic_error(
-							"rSQPAlgo_ConfigMamaJama::readin_options(...) : QPOPT is not supported,"
+						THROW_EXCEPTION(
+							true, std::invalid_argument
+							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : QPOPT is not supported,"
 							" must define CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT!" );
 #endif
-					else if( qp_solver == "QPKWIK" )
+					} else if( qp_solver == "QPKWIK" ) {
 						ov->qp_solver_type_ = QP_QPKWIK;
-					else if( qp_solver == "QPSCHUR" )
+					} else if( qp_solver == "QPSCHUR" ) {
 						ov->qp_solver_type_ = QP_QPSCHUR;
-					else
-						throw std::invalid_argument( "rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+					} else {
+						THROW_EXCEPTION(
+							true, std::invalid_argument
+							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"qp_solver\" "
 							"Only qp solvers QPOPT, QPSOL, QPKWIK, QPSCHUR and AUTO are avalible."	);
+					}
 					break;
 				}
 				case REINIT_HESSIAN_ON_QP_FAIL:
@@ -1807,21 +1860,24 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 				case LINE_SEARCH_METHOD:
 				{
 					const std::string &option = ofsp::option_value(itr);
-					if( option == "NONE" )
+					if( option == "NONE" ) {
 						ov->line_search_method_ = LINE_SEARCH_NONE;
-					else if( option == "DIRECT" )
+					} else if( option == "DIRECT" ) {
 						ov->line_search_method_ = LINE_SEARCH_DIRECT;
-					else if( option == "2ND_ORDER_CORRECT" )
+					} else if( option == "2ND_ORDER_CORRECT" ) {
 						ov->line_search_method_ = LINE_SEARCH_2ND_ORDER_CORRECT;
-					else if( option == "WATCHDOG" )
+					} else if( option == "WATCHDOG" ) {
 						ov->line_search_method_ = LINE_SEARCH_WATCHDOG;
-					else if( option == "AUTO" )
+					} else if( option == "AUTO" ) {
 						ov->line_search_method_ = LINE_SEARCH_AUTO;
-					else
-						throw std::invalid_argument( "rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+					} else {
+						THROW_EXCEPTION(
+							true, std::invalid_argument
+							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"line_search_method\".\n"
 							"Only the options NONE, DIRECT, 2ND_ORDER_CORRECT, WATCHDOG "
 							"and AUTO are avalible." );
+					}
 					break;
 				}
 				case MERIT_FUNCTION_TYPE:
@@ -1836,7 +1892,9 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 					else if( option == "AUTO" )
 						ov->merit_function_type_ = MERIT_FUNC_AUTO;
 					else
-						throw std::invalid_argument( "rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+						THROW_EXCEPTION(
+							true, std::invalid_argument
+							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"merit_function_type\".\n"
 							"Only the options L1, MODIFIED_L1, MODIFIED_L1_INCR "
 							"and AUTO are avalible." );
@@ -1855,7 +1913,9 @@ void rSQPAlgo_ConfigMamaJama::readin_options(
 						ov->l1_penalty_param_update_
 							= L1_PENALTY_PARAM_AUTO;
 					else
-						throw std::invalid_argument( "rSQPAlgo_ConfigMamaJama::readin_options(...) : "
+						THROW_EXCEPTION(
+							true, std::invalid_argument
+							,"rSQPAlgo_ConfigMamaJama::readin_options(...) : "
 							"Error, incorrect value for \"l1_penalty_param_update\".\n"
 							"Only the options WITH_MULT, MULT_FREE and AUTO"
 							"are avalible."  );

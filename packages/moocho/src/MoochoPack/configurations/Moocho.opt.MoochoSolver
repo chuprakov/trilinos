@@ -116,7 +116,7 @@ options_group rSQPppSolver {
 ***
 options_group rSQPSolverClientInterface {
 
-*    max_iter = 1000;  *** (default?)
+*    max_iter = 10000;  *** (default?)
      *** (+int) Maximum number of SQP iterations allowed.
 
 *    max_run_time = 1e+10; *** (default?)
