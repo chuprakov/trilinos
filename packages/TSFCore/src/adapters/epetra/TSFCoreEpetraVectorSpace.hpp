@@ -84,7 +84,9 @@ public:
 	 * <li> <tt>this->localSubdim() == -1)</tt>
 	 * </ul>
 	 */
-	Teuchos::RefCountPtr<const Epetra_BlockMap> setUninitialized();
+	void setUninitialized(
+		Teuchos::RefCountPtr<const Epetra_BlockMap> *epetra_map = NULL
+		);
 
 	///
 	/** Return a smart pointer to the underlying <tt>Epetra_BlockMap</tt> object.
@@ -124,7 +126,7 @@ private:
 #ifdef DOXYGEN_COMPILE
 	Epetra_BlockMap                                     *epetra_map;
 #else	
-	Teuchos::RefCountPtr<const Epetra_BlockMap>    epetra_map_;
+	Teuchos::RefCountPtr<const Epetra_BlockMap>         epetra_map_;
 	MPI_Comm                                            mpiComm_;
 	Index                                               localOffset_;
 	Index                                               localSubDim_;

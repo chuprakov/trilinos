@@ -87,30 +87,21 @@ public:
 	const Scalar& operator[](RTOp_index_type i) const { return values_[ stride_*i ]; }
 	/// One-based indexing (Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>)
 	const Scalar& operator()(RTOp_index_type i) const { return values_[ stride_*(i-1) ]; }
-protected:
+private:
 	RTOp_index_type     globalOffset_;
 	RTOp_index_type     subDim_;
 	ptrdiff_t           stride_;
 	const Scalar        *values_;
 };
 
-
 ///
 /** Class for a mutable sub-vector.
  *
- * For a sub-vector <tt>vec</tt>, the corresponding entries
- *	in the global vector <tt>x(j)</tt> (one based) are as follows:
- \verbatim
-
-	x( vec.globalOffset() + k ) = v.(k), for k = 1,...,vec.subDim()
-  \endverbatim
- * The stride <tt>vec.stride()</tt> may be positive (>0), negative (<0)
- * or even zero (0).  A negative stride <tt>vec.stride() < 0</tt> allows a
- * reverse traversal of the elements.  A zero stride
- * <tt>vec.stride()</tt> allows a sub-vector with all the elements the same.
- *
- * The raw pointer to the start of the memory can be obtained as
- * <tt>&vec(1)</tt>.
+ * This class derives from <tt>SubVectorT</tt> and adds methods to
+ * mutate the data.  Note, a <tt>const MutableSubVectorT</tt> object
+ * allows clients to change the values in the underlying subvector.
+ * The meaning of <tt>const</tt> in this context is that the
+ * view of the data can not change.
  *
  * Warning! the default copy constructor and assignement operators are
  * allowed which results in only pointer copy, not deep copy!  You
@@ -123,11 +114,12 @@ public:
 	MutableSubVectorT() {}
 	///
 	MutableSubVectorT(RTOp_index_type globalOffset, RTOp_index_type subDim, Scalar *values, ptrdiff_t strid)
-		: SubVectorT<Scalar>(globalOffset, subDim, values, stride)
+		:SubVectorT<Scalar>(globalOffset, subDim, values, stride)
 		{}
 	///
-	MutableSubVectorT( const MutableSubVectorT<Scalar> & s)
-		: SubVectorT<Scalar>(s) {}
+	MutableSubVectorT( const MutableSubVectorT<Scalar> & sv)
+		:SubVectorT<Scalar>(sv)
+		{}
 	///
 	void initialize(RTOp_index_type globalOffset, RTOp_index_type subDim, Scalar *values, ptrdiff_t stride)
 		{ SubVectorT<Scalar>::initialize(globalOffset, subDim, values, stride); }
@@ -135,14 +127,12 @@ public:
 	void set_uninitialized()
 		{ SubVectorT<Scalar>::set_uninitialized(); }
 	///
-	Scalar*           values()       const { return const_cast<Scalar*>(values_);  }
+	Scalar* values() const { return const_cast<Scalar*>(SubVectorT<Scalar>::values());  }
 	/// Zero-based indexing (Preconditions: <tt>values()!=NULL && (0 <= i <= subDim()-1)</tt>)
-	virtual Scalar& operator[](RTOp_index_type i) const { return const_cast<Scalar*>(values_)[ stride_*i ]; }
+	Scalar& operator[](RTOp_index_type i) const { return const_cast<Scalar*>(SubVectorT<Scalar>::operator[](i)); }
 	/// One-based indexing (Preconditions: <tt>values()!=NULL && (1 <= i <= subDim())</tt>)
-	virtual Scalar& operator()(RTOp_index_type i) const { return const_cast<Scalar*>(values_)[ stride_*(i-1) ]; }
-
+	Scalar& operator()(RTOp_index_type i) const { return const_cast<Scalar&>(SubVectorT<Scalar>::operator()(i)); }
 };
-
 
 ///
 /** Class for a (sparse or dense) sub-vector.
@@ -319,15 +309,142 @@ private:
 };
 
 //
-// Templated types
+// MultiVector subviews
 //
 
 ///
-template<class Scalar>  class MutableSubVectorT;
+/** Class for a non-mutable sub-multi-vector (submatrix).
+ *
+ * For a sub-multi-vector <tt>mv</tt>, the corresponding entries
+ *	in the global multi-vector <tt>X(j)</tt> (one based) are as follows:
+ \verbatim
+
+  X(mv.globalOffset()+k1,mv.colOffset()+k2) = mv(k1,k2), for k1=1...mv.subDim(), k2=1...mv.numSubCols()
+ \endverbatim
+ * Unlike vectors, there can only be a unit stride between vector elements
+ * in a particular column and there is a Fortran-like leading dimmension
+ * <tt>mv.leadingDim()</tt> that seperates corresponding elements in 
+ * each column sub-vector.
+ *
+ * The raw pointer to the first element, in the first column can be
+ * obtained from the function <tt>mv.values()</tt>.
+ *
+ * Warning! the default copy constructor and assignement operators are
+ * allowed which results in only pointer copy, not deep copy!  You
+ * have been warned!
+ */
+template<class Scalar>
+class SubMultiVectorT {
+public:
+	///
+	SubMultiVectorT()
+		:globalOffset_(0), subDim_(0), colOffset_(0), numSubCols_(0)
+		,values_(NULL), leadingDim_(0)
+		{}
+	///
+	SubMultiVectorT(
+		RTOp_index_type globalOffset, RTOp_index_type subDim
+		,RTOp_index_type colOffset, RTOp_index_type numSubCols
+		,const Scalar *values, RTOp_index_type leadingDim
+		)
+		:globalOffset_(globalOffset), subDim_(subDim)
+		,colOffset_(colOffset), numSubCols_(numSubCols)
+		,values_(values), leadingDim_(leadingDim)
+		{}
+	///
+	SubMultiVectorT( const SubMultiVectorT<Scalar>& smv )
+		:globalOffset_(smv.globalOffset), subDim_(smv.subDim)
+		,colOffset_(smv.colOffset), numSubCols_(smv.numSubCols)
+		,values_(smv.values), leadingDim_(smv.leadingDim)
+		{}
+	///
+	void initialize(
+		RTOp_index_type globalOffset, RTOp_index_type subDim
+		,RTOp_index_type colOffset, RTOp_index_type numSubCols
+		,const Scalar *values, RTOp_index_type leadingDim
+		)
+		{ globalOffset_=globalOffset; subDim_=subDim; colOffset_=colOffset; numSubCols_=numSubCols;
+		values_=values; leadingDim_=leadingDim; }
+	///
+	void set_uninitialized()
+		{ globalOffset_ = 0; subDim_=0; colOffset_=0, numSubCols_=0; values_=NULL; leadingDim_=0; }
+	///
+	void setGlobalOffset(RTOp_index_type globalOffset) { globalOffset_ = globalOffset; } 
+	///
+	RTOp_index_type   globalOffset()   const { return globalOffset_; }
+	///
+	RTOp_index_type   subDim()         const { return subDim_; }
+	///
+	RTOp_index_type   colOffset()      const { return colOffset_; }
+	///
+	RTOp_index_type   numSubCols()     const { return numSubCols_; }
+	///
+	const Scalar*     values()         const { return values_; }
+	///
+	RTOp_index_type   leadingDim()     const { return leadingDim_;  }
+	/// One-based indexing (Preconditions: <tt>values()!=NULL && (1 <= i <= subDim()) && (1<= j <= numSubCols()</tt>)
+	const Scalar& operator()(RTOp_index_type i, RTOp_index_type j) const
+		{ return values_[ (i-1) + leadingDim_*(j-1) ]; }
+private:
+	RTOp_index_type     globalOffset_;
+	RTOp_index_type     subDim_;
+	RTOp_index_type     colOffset_;
+	RTOp_index_type     numSubCols_;
+	const Scalar        *values_;
+	RTOp_index_type     leadingDim_;
+};
+
 ///
-template<class Scalar>  class SubVectorT;
-///
-template<class Scalar>  class SparseSubVectorT;
+/** Class for a mutable sub-vector.
+ *
+ * This class derives from <tt>SubVectorT</tt> and adds methods to
+ * mutate the data.  Note, a <tt>const MutableSubVectorT</tt> object
+ * allows clients to change the values in the underlying subvector.
+ * The meaning of <tt>const</tt> in this context is that the
+ * view of the data can not change.
+ *
+ * Warning! the default copy constructor and assignement operators are
+ * allowed which results in only pointer copy, not deep copy!  You
+ * have been warned!
+ */
+template<class Scalar>
+class MutableSubMultiVectorT : public SubMultiVectorT<Scalar> {
+public:
+	///
+	MutableSubMultiVectorT() {}
+	///
+	MutableSubMultiVectorT(
+		RTOp_index_type globalOffset, RTOp_index_type subDim
+		,RTOp_index_type colOffset, RTOp_index_type numSubCols
+		,const Scalar *values, RTOp_index_type leadingDim
+		)
+		:SubMultiVectorT<Scalar>(globalOffset,subDim,colOffset,numSubCols,values,leadingDim)
+		{}
+	///
+	MutableSubMultiVectorT( const MutableSubMultiVectorT<Scalar> & smv)
+		:SubMultiVectorT<Scalar>(smv)
+		{}
+	///
+	void initialize(
+		RTOp_index_type globalOffset, RTOp_index_type subDim
+		,RTOp_index_type colOffset, RTOp_index_type numSubCols
+		,const Scalar *values, RTOp_index_type leadingDim
+		)
+		{ SubMultiVectorT<Scalar>::initialize(globalOffset,subDim,colOffset,numSubCols,values,leadingDim); }
+	///
+	void set_uninitialized()
+		{ SubMultiVectorT<Scalar>::set_uninitialized(); }
+	///
+	Scalar* values() const { return const_cast<Scalar*>(SubMultiVectorT<Scalar>::values());  }
+	/// One-based indexing (Preconditions: <tt>values()!=NULL && (1 <= i <= subDim()) && (1<= j <= numSubCols()</tt>)
+	Scalar& operator()(RTOp_index_type i, RTOp_index_type j) const
+		{ return const_cast<Scalar&>(SubMultiVectorT<Scalar>::operator()(i,j)); }
+};
+
+//
+// Templated types
+//
+
 ///
 template<class Scalar>  class ReductTargetT;
 ///

@@ -17,17 +17,9 @@ namespace TSFCore {
 class EpetraVectorSpace;
 
 ///
-/** Default subclass for <tt>MultiVector</tt> implemented using columns
- * of separate abstract vectors.
+/** Optimized <tt>MultiVector</tt> subclass for <tt>Epetra_MultiVector</tt>.
  *
- * This is a very bad implementation of a multi-vector but this will
- * work in situations where you need a multi-vector but some
- * underlying linear algebra library does not directly support them.
- *
- * This subclass can be used to represent a <tt>%MultiVector</tt>
- * wrapper around a single <tt>Vector</tt> object so that a single
- * vector can be passed to a method that expects a <tt>%MultiVector</tt>
- * object.
+ * ToDo: Finish documentation!
  */
 class EpetraMultiVector : virtual public MPIMultiVectorBase<RTOp_value_type> {
 public:
@@ -50,29 +42,45 @@ public:
 
 	/// Calls <tt>initalize()</tt>.
 	EpetraMultiVector(
-		const Teuchos::RefCountPtr<Epetra_MultiVector>         multi_vec
-		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &range
-		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &domain   = Teuchos::null
+		const Teuchos::RefCountPtr<Epetra_MultiVector>         &epetra_multi_vec
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_range       = Teuchos::null
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_domain      = Teuchos::null
 		);
 	
 	///
-	/** Initialize given the spaces for the columns and rows.
+	/** Initialize given the <tt>Epetra_multi_vec</tt>.
 	 */
 	void initialize(
-		const Teuchos::RefCountPtr<Epetra_MultiVector>         multi_vec
-		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &range
-		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &domain   = Teuchos::null
+		const Teuchos::RefCountPtr<Epetra_MultiVector>         &epetra_multi_vec
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_range       = Teuchos::null
+		,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_domain      = Teuchos::null
 		);
 	
 	/// Set uninitalized.
-	void setUninitialized();
+	void setUninitialized(
+		Teuchos::RefCountPtr<Epetra_MultiVector>        *epetra_multi_vec = NULL
+		,Teuchos::RefCountPtr<const EpetraVectorSpace>  *epetra_range     = NULL
+		,Teuchos::RefCountPtr<const EpetraVectorSpace>  *epetra_domain    = NULL
+		);
 
+	//@}
+
+	/** @name Overridden from OpBase */
+	//@{
+	///
+	Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const;
 	//@}
 
 	/** @name Overridden from LinearOp */
 	//@{
 	///
-	Teuchos::RefCountPtr<const VectorSpace<Scalar> > domain() const;
+	void apply(
+		const ETransp                 M_trans
+		,const MultiVector<Scalar>    &X
+		,MultiVector<Scalar>          *Y
+		,const Scalar                 alpha
+		,const Scalar                 beta
+		) const;
 	//@}
 
 	/** @name Overridden from MultiVector */
@@ -81,23 +89,28 @@ public:
 	Teuchos::RefCountPtr<Vector<Scalar> > col(Index j);
 	///
 	Teuchos::RefCountPtr<MultiVector<Scalar> > subView( const Range1D& col_rng );
+	///
+	Teuchos::RefCountPtr<MultiVector<Scalar> > subView( const int numCols, const int cols[] );
 	//@}
 
 	/** @name Overridden from MPIMultiVectorBase */
 	//@{
 	///
 	Teuchos::RefCountPtr<const MPIVectorSpaceBase<Scalar> > mpiSpace() const;
+	///
+	void getLocalData( Scalar **values, Index *leadingDim );
 	//@}
 
 private:
 	
 #ifdef DOXYGEN_COMPILE
-	const EpetraVectorSpace                                *range;
-	const EpetraVectorSpace                                *domain;
+	Epetra_MultiVector                              *epetra_multi_vec;
+	EpetraVectorSpace                               *epetra_range;
+	EpetraVectorSpace                               *epetra_domain;
 #else
-	Teuchos::RefCountPtr<Epetra_MultiVector>          multi_vec_;
-	Teuchos::RefCountPtr<const EpetraVectorSpace>     range_;
-	Teuchos::RefCountPtr<const EpetraVectorSpace>     domain_;
+	Teuchos::RefCountPtr<Epetra_MultiVector>        epetra_multi_vec_;
+	Teuchos::RefCountPtr<const EpetraVectorSpace>   epetra_range_;
+	Teuchos::RefCountPtr<const EpetraVectorSpace>   epetra_domain_;
 #endif
 	
 }; // end class EpetraMultiVector

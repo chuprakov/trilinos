@@ -5,7 +5,6 @@
 #define TSFCORE_MULTI_VECTOR_HPP
 
 #include "TSFCoreMultiVectorDecl.hpp"
-//#include "TSFCoreMultiVectorStdOps.hpp"
 #include "TSFCoreLinearOp.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"
@@ -255,6 +254,44 @@ void MultiVector<Scalar>::applyOp(
 			prim_op.reduct_obj_free( &reduct_objs[k] );
 		}
 	}
+}
+
+// Explicit sub-multi-vector access
+
+template<class Scalar>
+void MultiVector<Scalar>::getSubMultiVector(
+	const Range1D                       &rowRng
+	,const Range1D                      &colRng
+	,RTOpPack::SubMultiVectorT<Scalar>  *sub_mv
+	) const
+{
+	assert(0); // ToDo: Implement!
+}
+
+template<class Scalar>
+void MultiVector<Scalar>::freeSubMultiVector(
+	RTOpPack::SubMultiVectorT<Scalar>* sub_mv
+	) const
+{
+	assert(0); // ToDo: Implement!
+}
+
+template<class Scalar>
+void MultiVector<Scalar>::getSubMultiVector(
+	const Range1D                                &rowRng
+	,const Range1D                               &colRng
+	,RTOpPack::MutableSubMultiVectorT<Scalar>    *sub_mv
+	)
+{
+	assert(0); // ToDo: Implement!
+}
+
+template<class Scalar>
+void MultiVector<Scalar>::commitSubMultiVector(
+	RTOpPack::MutableSubMultiVectorT<Scalar>* sub_mv
+	)
+{
+	assert(0); // ToDo: Implement!
 }
 
 // Overridden methods from LinearOp

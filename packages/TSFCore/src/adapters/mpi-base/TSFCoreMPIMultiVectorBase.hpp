@@ -25,6 +25,20 @@ MPIMultiVectorBase<Scalar>::range() const
 	return mpiSpace();
 }
 
+// Overridden from LinearOp
+
+template<class Scalar>
+void MPIMultiVectorBase<Scalar>::apply(
+	const ETransp            M_trans
+	,const Vector<Scalar>    &x
+	,Vector<Scalar>          *y
+	,const Scalar            alpha
+	,const Scalar            beta
+	) const
+{
+	assert(0); // ToDo: Wrap in MultiVector and call MultiVector version!
+}
+
 // Overridden from MultiVector
 
 template<class Scalar>
@@ -50,6 +64,42 @@ void MPIMultiVectorBase<Scalar>::applyOp(
 		,primary_first_ele,primary_sub_dim,primary_global_offset
 		,secondary_first_ele,secondary_sub_dim
 		);
+}
+
+template<class Scalar>
+void MPIMultiVectorBase<Scalar>::getSubMultiVector(
+	const Range1D                       &rowRng
+	,const Range1D                      &colRng
+	,RTOpPack::SubMultiVectorT<Scalar>  *sub_mv
+	) const
+{
+	assert(0); // ToDo: Implement!
+}
+
+template<class Scalar>
+void MPIMultiVectorBase<Scalar>::freeSubMultiVector(
+	RTOpPack::SubMultiVectorT<Scalar>* sub_mv
+	) const
+{
+	assert(0); // ToDo: Implement!
+}
+
+template<class Scalar>
+void MPIMultiVectorBase<Scalar>::getSubMultiVector(
+	const Range1D                                &rowRng
+	,const Range1D                               &colRng
+	,RTOpPack::MutableSubMultiVectorT<Scalar>    *sub_mv
+	)
+{
+	assert(0); // ToDo: Implement!
+}
+
+template<class Scalar>
+void MPIMultiVectorBase<Scalar>::commitSubMultiVector(
+	RTOpPack::MutableSubMultiVectorT<Scalar>* sub_mv
+	)
+{
+	assert(0); // ToDo: Implement!
 }
 
 } // end namespace TSFCore

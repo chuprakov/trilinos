@@ -14,9 +14,9 @@ namespace TSFCore {
  *
  * By inheriting from this base class, vector implementations allow
  * their vector objects to be seamlessly combined with other MPI-based
- * vector objects (of different concrete type) in <tt>applyOp()</tt>.
+ * vector objects (of different concrete types) in <tt>applyOp()</tt>.
  * A big part of this protocal is that every vector object can expose
- * an <tt>MPIVectorSpaceBase<></tt> object through the virtual
+ * an <tt>MPIVectorSpaceBase</tt> object through the virtual
  * <tt>mpiSpace()</tt> method.
  *
  * This node subclass contains an implementation of <tt>applyOp()</tt>
@@ -34,9 +34,11 @@ namespace TSFCore {
  * The only methods that a subclass must override in order to
  * implement a fully-functional vector subclass of which who's vector
  * objects can be seemlessly used with any other MPI-based vector
- * object are the methods (non-<tt>const</tt>) <tt>getLocalData()</tt>
- * and <tt>mpiSpace</tt>.  All of the other methods have good default
- * implementations.
+ * object are the methods <tt>getLocalData()</tt> and
+ * <tt>mpiSpace</tt>.  All of the other methods have good default
+ * implementations.  Providing an implementation for <tt>mpiSpace</tt>
+ * of course means having the define a <tt>MPIVectorSpaceBase</tt>
+ * subclass appropriately.
  *
  * If the <tt>getSubVector()</tt> methods are ever called with index
  * ranges outside of those of the local processor, then the default
@@ -63,6 +65,13 @@ namespace TSFCore {
  * overridden to handle this which will of course remove the
  * possibility of interoperability with other MPI-based vector
  * objects.
+ *
+ * Note that vector subclass derived from this node interface class
+ * must only be directly used in SPMD mode for this to work properly.
+ *
+ * 2003/11/21: It may be good to address the issue of ghost elements
+ * with transformation operators so that this can be handled better
+ * also but this is future work.
  */
 template<class Scalar>
 class MPIVectorBase : virtual public Vector<Scalar> {
@@ -102,12 +111,11 @@ public:
 
 	//@}
 
-	/** @name Overridden from Vector */
+	/** @name Overridden from MultiVector */
 	//@{
 
 	/// Calls <tt>mpiSpace()</tt>
 	Teuchos::RefCountPtr<const VectorSpace<Scalar> > space() const;
-
 	///
 	/** Implements the <tt>%applyOp()</tt> method through the methods
 	 * <tt>getSubVector()</tt>, <tt>freeSubVector()</tt> and

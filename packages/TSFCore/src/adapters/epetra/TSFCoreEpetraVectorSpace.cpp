@@ -1,11 +1,15 @@
 // ////////////////////////////////////////////////////////////////////////////
 // TSFCoreEpetraVectorSpace.cpp
 
+//#define TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR
+
 #include <assert.h>
 
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVector.hpp"
-//#include "TSFCoreEpetraMultiVector.hpp"
+#ifdef TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR
+#  include "TSFCoreEpetraMultiVector.hpp"
+#endif
 #include "Teuchos_TestForException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -41,7 +45,12 @@ void EpetraVectorSpace::initialize(
 #endif
 	epetra_map_  = epetra_map;
 #ifdef PETRA_COMM_MPI
-	mpiComm_ = dyn_cast<const Epetra_MpiComm>(epetra_map_->Comm()).Comm();
+	const Epetra_MpiComm
+		*epetra_mpi_comm = dynamic_cast<const Epetra_MpiComm*>(&epetra_map_->Comm());
+	if(epetra_mpi_comm)
+		mpiComm_ = epetra_mpi_comm->Comm();
+	else
+		mpiComm_ = MPI_COMM_NULL;
 #else
 	mpiComm_ = MPI_COMM_NULL;
 #endif
@@ -50,12 +59,12 @@ void EpetraVectorSpace::initialize(
 	MPIVectorSpaceBase<Scalar>::invalidateState();
 }
 
-Teuchos::RefCountPtr<const Epetra_BlockMap>
-EpetraVectorSpace::setUninitialized()
+void EpetraVectorSpace::setUninitialized(
+	Teuchos::RefCountPtr<const Epetra_BlockMap> *epetra_map
+	)
 {
-	Teuchos::RefCountPtr<const Epetra_BlockMap> tmp = epetra_map_;
+	if(epetra_map) *epetra_map = epetra_map_;
 	epetra_map_ = Teuchos::null;
-	return tmp;
 }
 
 // Overridden from VectorSpace
@@ -74,15 +83,18 @@ EpetraVectorSpace::createMember() const
 Teuchos::RefCountPtr<MultiVector<EpetraVectorSpace::Scalar> > 
 EpetraVectorSpace::createMembers(int numMembers) const
 {
-	return VectorSpace<Scalar>::createMembers(numMembers); // Todo: use the below code!
-/*
+#ifdef TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR
+	// Use specialized Epetra_MultiVector implementation
 	return Teuchos::rcp(
 		new EpetraMultiVector(
-			Teuchos::rcp(new Epetra_MultiVector(*epetra_map_,numMembers))  // epetra_multi_vec
-			,Teuchos::rcp(this,false)                                      // epetra_vec_spc
+			Teuchos::rcp(new Epetra_MultiVector(*epetra_map_,numMembers))
+			,Teuchos::rcp(this,false)
 			)
 		);
-*/
+#else
+	// Use default MultiVector implementation
+	return VectorSpace<Scalar>::createMembers(numMembers);
+#endif
 }
 
 Teuchos::RefCountPtr< const VectorSpace<EpetraVectorSpace::Scalar> >

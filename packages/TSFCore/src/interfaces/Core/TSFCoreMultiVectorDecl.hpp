@@ -241,8 +241,9 @@ public:
 	 *      for <tt>k=0...numCols</tt>
 	 * </ul>
 	 *
-	 * The default implementation of this function uses <tt>MultiVectorCols</tt> but this is not
-	 * a good default implementation in general.
+	 * The default implementation of this function uses
+	 * <tt>MultiVectorCols</tt> but this is not a good default
+	 * implementation in general.
 	 *
 	 * Note that <tt>*this</tt> is not guaranteed to be modified until
 	 * the smart pointer returned by this function goes out of scope.
@@ -325,6 +326,206 @@ public:
 		,const Index                    secondary_first_ele
 		,const Index                    secondary_sub_dim
 		) const;
+
+	//@}
+
+	/** @name Explicit sub-multi-vector access */
+	//@{
+
+	///
+	/** Get a non-mutable explicit view of a sub-multi-vector.
+	 *
+	 * @param  rowRng   [in] The range of the rows to extract the sub-multi-vector view.
+	 * @param  colRng   [in] The range of the columns to extract the sub-multi-vector view.
+	 * @param  sub_mv   [in/out] View of the sub-multi_vector.  Prior to the
+	 *                  first call <tt>sub_mv->set_uninitialized()</tt> must be called.
+	 *                  Technically <tt>*sub_mv</tt> owns the memory but this memory can be freed
+	 *                  only by calling <tt>this->freeSubMultiVector(sub_mv)</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->space().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
+	 * <li> [<tt>!rowRng.full_range()</tt>] <tt>(rowRng.ubound() <= this->range()->dim()) == true</tt>
+	 *      (<tt>throw std::out_of_range</tt>)
+	 * <li> [<tt>!colRng.full_range()</tt>] <tt>(colRng.ubound() <= this->domain()->dim()) == true</tt>
+	 *      (<tt>throw std::out_of_range</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>*sub_mv</tt> contains an explicit non-mutable view to the elements
+	 *      in the row and column ranges <tt>full_range(rowRng,1,this->range()->dim())</tt>
+	 *      and <tt>full_range(colRng,1,this->domain()->dim())</tt> respectively.
+	 * </ul>
+	 *
+	 * This is only a transient view of a sub-multi-vector that is to
+	 * be immediately used and then released with a call to
+	 * <tt>freeSubMultiVector()</tt>.
+	 *
+	 * Note that calling this operation might require some dynamic
+	 * memory allocations and temporary memory.  Therefore, it is
+	 * critical that <tt>this->freeSubMultiVector(sub_mv)</tt> is called to
+	 * clean up memory and avoid memory leaks after the
+	 * sub-multi-vector is used.
+	 *
+	 * If <tt>this->getSubMultiVector(...,sub_mv)</tt> was previously
+	 * called on <tt>sub_mv</tt> then it may be possible to reuse this
+	 * memory if it is sufficiently sized.  The user is encouraged to
+	 * make multiple calls to
+	 * <tt>this->getSubMultiVector(...,sub_mv)</tt> before
+	 * <tt>this->freeSubMultiVector(sub_mv)</tt> to finally clean up all of
+	 * the memory.  Of course, the same <tt>sub_mv</tt> object must be
+	 * passed to the same multi-vector object for this to work correctly.
+	 *
+	 * This method has a default implementation based on the vector
+	 * operation <tt>Vector::getSubVector()</tt> called on the
+	 * non-mutable vector objects returned from <tt>col()</tt>.  Note
+	 * that the footprint of the reduction object (both internal and
+	 * external state) will be
+	 * O(<tt>rowRng.size()*colRng.size()</tt>).  For serial
+	 * applications this is faily reasonable and will not be a major
+	 * performance penalty.  For parallel applications, however, this
+	 * is a terrible implementation and must be overridden if
+	 * <tt>rowRng.size()</tt> is large at all.  Although, this method
+	 * should not even be used in case where the multi-vector is very
+	 * large.  If a subclass does override this method, it must also
+	 * override <tt>freeSubMultiVector()</tt> which has a default
+	 * implementation which is a companion to this method's default
+	 * implementation.
+	 */
+	virtual void getSubMultiVector(
+		const Range1D                       &rowRng
+		,const Range1D                      &colRng
+		,RTOpPack::SubMultiVectorT<Scalar>  *sub_mv
+		) const;
+
+	///
+	/** Free an explicit view of a sub-multi-vector.
+	 *
+	 * @param  sub_mv
+	 *				[in/out] The memory refered to by <tt>sub_mv->values()</tt>
+	 *				will be released if it was allocated and <tt>*sub_mv</tt>
+	 *              will be zeroed out using <tt>sub_mv->set_uninitialized()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->space().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
+	 * <li> <tt>sub_mv</tt> must have been passed through a call to 
+	 *      <tt>this->getSubMultiVector(...,sub_mv)</tt>
+	 * </ul>
+ 	 *
+	 * Postconditions:<ul>
+	 * <li> See <tt>RTOpPack::SubMultiVectorT::set_uninitialized()</tt> for <tt>sub_mv</tt>
+	 * </ul>
+	 *
+	 * The sub-multi-vector view must have been allocated by
+	 * <tt>this->getSubMultiVector()</tt> first.
+	 *
+	 * This method has a default implementation which is a companion
+	 * to the default implementation for <tt>getSubMultiVector()</tt>.  If
+	 * <tt>getSubMultiVector()</tt> is overridden by a subclass then this
+	 * method must be overridden also!
+	 */
+	virtual void freeSubMultiVector( RTOpPack::SubMultiVectorT<Scalar>* sub_mv ) const;
+
+	///
+	/** Get a mutable explicit view of a sub-multi-vector.
+	 *
+	 * @param  rowRng   [in] The range of the rows to extract the sub-multi-vector view.
+	 * @param  colRng   [in] The range of the columns to extract the sub-multi-vector view.
+	 * @param  sub_mv   [in/out] Mutable view of the sub-multi-vector.  Prior to the
+	 *                  first call <tt>sub_mv->set_uninitialized()</tt> must
+	 *                  have been called for the correct behavior.  Technically
+	 *                  <tt>*sub_mv</tt> owns the memory but this memory must be commited
+	 *                  and freed only by calling <tt>this->commitSubMultiVector(sub_mv)</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->space().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
+	 * <li> [<tt>!rowRng.full_range()</tt>] <tt>(rowRng.ubound() <= this->range()->dim()) == true</tt>
+	 *      (<tt>throw std::out_of_range</tt>)
+	 * <li> [<tt>!colRng.full_range()</tt>] <tt>(colRng.ubound() <= this->domain()->dim()) == true</tt>
+	 *      (<tt>throw std::out_of_range</tt>)
+	 * </ul>
+ 	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>*sub_mv</tt> contains an explicit mutable view to the elements
+	 *      in the row and column ranges <tt>full_range(rowRng,1,this->range()->dim())</tt>
+	 *      and <tt>full_range(colRng,1,this->domain()->dim())</tt> respectively.
+	 * </ul>
+	 *
+	 * This is only a transient view of a sub-multi-vector that is to be
+	 * immediately used and then committed back with a call to
+	 * <tt>commitSubMultiVector()</tt>.
+	 *
+	 * Note that calling this operation might require some internal
+	 * allocations and temporary memory.  Therefore, it is critical
+	 * that <tt>this->commitSubMultiVector(sub_mv)</tt> is called to
+	 * commit the changed entires and clean up memory and avoid memory
+	 * leaks after the sub-multi-vector is modified.
+	 *
+	 * If <tt>this->getSubMultiVector(...,sub_mv)</tt> was previously
+	 * called on <tt>sub_mv</tt> then it may be possible to reuse this
+	 * memory if it is sufficiently sized.  The user is encouraged to
+	 * make multiple calls to
+	 * <tt>this->getSubMultiVector(...,sub_mv)</tt> before
+	 * <tt>this->commitSubMultiVector(sub_mv)</tt> to finally clean up
+	 * all of the memory.  Of course the same <tt>sub_mv</tt> object
+	 * must be passed to the same multi-vector object for this to work
+	 * correctly.
+	 *
+	 * Changes to the underlying sub-multi-vector are not guarrenteed to
+	 * become permanent until <tt>this->getSubMultiVector(...,sub_mv)</tt>
+	 * is called agian, or <tt>this->commitSubMultiVector(sub_mv)</tt> is
+	 * called.
+	 *
+	 * This method has a default implementation based on the vector
+	 * operation <tt>Vector::getSubVector()</tt> called on the mutable
+	 * vector objects returned from <tt>col()</tt>.  Note that the
+	 * footprint of the reduction object (both internal and external
+	 * state) will be O(<tt>rowRng.size()*colRng.size()</tt>).  For
+	 * serial applications this is faily reasonable and will not be a
+	 * major performance penalty.  For parallel applications, however,
+	 * this is a terrible implementation and must be overridden if
+	 * <tt>rowRng.size()</tt> is large at all.  Although, this method
+	 * should not even be used in case where the multi-vector is very
+	 * large.  If a subclass does override this method, it must also
+	 * override <tt>commitSubMultiVector()</tt> which has a default
+	 * implementation which is a companion to this method's default
+	 * implementation.
+	 */
+	virtual void getSubMultiVector(
+		const Range1D                                &rowRng
+		,const Range1D                               &colRng
+		,RTOpPack::MutableSubMultiVectorT<Scalar>    *sub_mv
+		);
+
+	///
+	/** Commit changes for a mutable explicit view of a sub-multi-vector.
+	 *
+	 * @param sub_mv
+	 *				[in/out] The data in <tt>sub_mv->values()</tt> will be written
+	 *              back internal storage and the memory refered to by
+	 *              <tt>sub_mv->values()</tt> will be released if it was allocated
+	 *				and <tt>*sub_mv</tt> will be zeroed out using
+	 *				<tt>sub_mv->set_uninitialized()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->space().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
+	 * <li> <tt>sub_mv</tt> must have been passed through a call to 
+	 *      <tt>this->getSubMultiVector(...,sub_mv)</tt>
+	 * </ul>
+ 	 *
+	 * Postconditions:<ul>
+	 * <li> See <tt>RTOpPack::MutableSubMultiVectorT::set_uninitialized()</tt> for <tt>sub_mv</tt>
+	 * <li> <tt>*this</tt> will be updated according the the changes made to <tt>sub_mv</tt>
+	 * </ul>
+	 *
+	 * The sub-multi-vector view must have been allocated by
+	 * <tt>this->getSubMultiVector()</tt> first.
+	 *
+	 * This method has a default implementation which is a companion
+	 * to the default implementation for <tt>getSubMultiVector()</tt>.  If
+	 * <tt>getSubMultiVector()</tt> is overridden by a subclass then this
+	 * method must be overridden also!
+	 */
+	virtual void commitSubMultiVector( RTOpPack::MutableSubMultiVectorT<Scalar>* sub_mv );
 
 	//@}
 

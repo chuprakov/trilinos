@@ -14,47 +14,75 @@ EpetraMultiVector::EpetraMultiVector()
 {}
 
 EpetraMultiVector::EpetraMultiVector(
-	const Teuchos::RefCountPtr<Epetra_MultiVector>         multi_vec
-	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &range
-	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &domain
+	const Teuchos::RefCountPtr<Epetra_MultiVector>         &epetra_multi_vec
+	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_range
+	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_domain
 	)
 {
-	this->initialize(multi_vec,range,domain);
+	this->initialize(epetra_multi_vec,epetra_range,epetra_domain);
 }
 
 void EpetraMultiVector::initialize(
-	const Teuchos::RefCountPtr<Epetra_MultiVector>         multi_vec
-	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &range
-	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &domain
+	const Teuchos::RefCountPtr<Epetra_MultiVector>         &epetra_multi_vec
+	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_range
+	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_domain
 	)
 {
 #ifdef _DEBUG
 	const char err_msg[] = "EpetraMultiVector::initialize(...): Error!";
-	TEST_FOR_EXCEPTION( multi_vec.get() == NULL, std::invalid_argument, err_msg ); 
-	TEST_FOR_EXCEPTION( range.get()   == NULL, std::invalid_argument, err_msg ); 
-	TEST_FOR_EXCEPTION( domain.get()  == NULL, std::invalid_argument, err_msg ); 
-	TEST_FOR_EXCEPTION( range->dim()  == 0,    std::invalid_argument, err_msg ); 
-	TEST_FOR_EXCEPTION( domain->dim() == 0,    std::invalid_argument, err_msg );
+	TEST_FOR_EXCEPTION( epetra_multi_vec.get() == NULL, std::invalid_argument, err_msg ); 
+	TEST_FOR_EXCEPTION( epetra_range.get() && epetra_range->dim() == 0, std::invalid_argument, err_msg ); 
+	TEST_FOR_EXCEPTION( epetra_domain.get() && epetra_domain->dim() == 0,std::invalid_argument, err_msg );
 	// ToDo: Check the compatibility of the vectors in col_vecs!
 #endif
-	multi_vec_ = multi_vec;
-	range_     = range;
-	domain_    = domain;
+	epetra_multi_vec_ = epetra_multi_vec;
+	if(epetra_range.get()) {
+		epetra_range_  = epetra_range;
+	}
+	else {
+		assert(0); // ToDo: Implement this case!
+	}
+	if(epetra_domain.get()) {
+		epetra_domain_  = epetra_domain;
+	}
+	else {
+		assert(0); // ToDo: Implement this case!
+	}
 }
 
-void EpetraMultiVector::setUninitialized()
+void EpetraMultiVector::setUninitialized(
+	Teuchos::RefCountPtr<Epetra_MultiVector>        *epetra_multi_vec
+	,Teuchos::RefCountPtr<const EpetraVectorSpace>  *epetra_range
+	,Teuchos::RefCountPtr<const EpetraVectorSpace>  *epetra_domain
+	)
 {
-	multi_vec_ = Teuchos::null;
-	range_     = Teuchos::null;
-	domain_    = Teuchos::null;
+	if(epetra_multi_vec) *epetra_multi_vec = epetra_multi_vec_;;
+	if(epetra_range) *epetra_range = epetra_range_;
+	if(epetra_domain) * epetra_domain = epetra_domain_;
+	epetra_multi_vec_ = Teuchos::null;
+	epetra_range_ = Teuchos::null;
+	epetra_domain_ = Teuchos::null;
 }
 
-// Overridden from LinearOp
+// Overridden from OpBase
 
 Teuchos::RefCountPtr<const VectorSpace<EpetraMultiVector::Scalar> >
 EpetraMultiVector::domain() const
 {
-	return domain_;
+	return epetra_domain_;
+}
+
+// Overridden from LinearOp
+
+void EpetraMultiVector::apply(
+	const ETransp                 M_trans
+	,const MultiVector<Scalar>    &X
+	,MultiVector<Scalar>          *Y
+	,const Scalar                 alpha
+	,const Scalar                 beta
+	) const
+{
+	assert(0); // ToDo: Implement this!
 }
 
 // Overridden from MultiVector
@@ -62,7 +90,7 @@ EpetraMultiVector::domain() const
 Teuchos::RefCountPtr<Vector<EpetraMultiVector::Scalar> >
 EpetraMultiVector::col(Index j)
 {
-	TEST_FOR_EXCEPTION( !(  1 <= j  && j <= domain_->dim() ), std::logic_error, "EpetraMultiVector::col(j): Error!" );
+	TEST_FOR_EXCEPTION( !(  1 <= j  && j <= epetra_domain_->dim() ), std::logic_error, "EpetraMultiVector::col(j): Error!" );
 	assert(0); // ToDo: Implement!
 	return Teuchos::null;
 }
@@ -89,12 +117,23 @@ EpetraMultiVector::subView( const Range1D& col_rng_in )
 */
 }
 
+Teuchos::RefCountPtr<MultiVector<EpetraMultiVector::Scalar> >
+EpetraMultiVector::subView( const int numCols, const int cols[] )
+{
+	return MultiVector<Scalar>::subView(numCols,cols); // ToDo: specialize!
+}
+
 // Overridden from MPIMultiVectorBase
 
 Teuchos::RefCountPtr<const MPIVectorSpaceBase<EpetraMultiVector::Scalar> >
 EpetraMultiVector::mpiSpace() const
 {
-	return range_;
+	return epetra_range_;
+}
+
+void EpetraMultiVector::getLocalData( Scalar **values, Index *leadingDim )
+{
+	assert(0); // ToDo: Implement!
 }
 	
 } // end namespace TSFCore
