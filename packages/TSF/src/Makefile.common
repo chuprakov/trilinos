@@ -14,10 +14,12 @@ TSF_INCLUDES = -I$(top_srcdir)/src/Support -I$(top_srcdir)/src/Vectors \
 
 #JW added all paths beginning with -I$(top_builddir) so that TSF could be
 #configured and built in a build tree separate from the source tree.
+#KL added teuchos dependencies, because ML now depends on teuchos
 AM_CPPFLAGS = $(TSF_INCLUDES)\
 -I$(top_builddir)/../epetra/src\
 -I$(top_builddir)/../ifpack/src\
 -I$(top_builddir)/../aztecoo/src\
+-I$(top_builddir)/../teuchos/src\
 -I$(top_builddir)/../ml/src/Include\
 -I$(top_builddir)/../ml/src\
 -I$(top_builddir)/../ml/src/Coarsen\
@@ -33,6 +35,7 @@ AM_CPPFLAGS = $(TSF_INCLUDES)\
 -I$(top_srcdir)/../epetra/src\
 -I$(top_srcdir)/../ifpack/src\
 -I$(top_srcdir)/../aztecoo/src\
+-I$(top_srcdir)/../teuchos/src\
 -I$(top_srcdir)/../ml/src/Include\
 -I$(top_srcdir)/../ml/src\
 -I$(top_srcdir)/../ml/src/Coarsen\
@@ -45,6 +48,7 @@ AM_CPPFLAGS = $(TSF_INCLUDES)\
 -I$(top_srcdir)/../ml/src/Runtime\
 -I$(top_srcdir)/../ml/src/Smoother\
 -I$(top_srcdir)/../ml/src/Utils
+
 
 # ------------------------------------------------------------------------
 # For using a special archiver
