@@ -80,8 +80,8 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	virtual void select_basis(
-		const VectorWithOp          &nu
-		,const VectorWithOp         &lambdaI
+		const VectorWithOp          *nu
+		,const VectorWithOp         *lambdaI
 		,MatrixWithOp               *Gc
 		,MatrixWithOp               *Gh
 		,Permutation                *P_var
