@@ -234,7 +234,8 @@ void MatrixKKTFullSpaceRelaxed::coor_extract_nonzeros(
 
 			bool result = TestMatrixConvertToSparseFortranCompatible(
 				 extract_region,sparse_format,*convG_,*G_
-				,warning_tol,error_tol,out_,print_what_==PRINT_MORE );
+				,warning_tol,error_tol,true,out_
+				,print_what_==PRINT_MORE );
 
 			if( !result) {
 				char omsg[] = "MatrixKKTFullSpaceRelaxed : Error, the conversion "
@@ -264,7 +265,8 @@ void MatrixKKTFullSpaceRelaxed::coor_extract_nonzeros(
 
 			bool result = TestMatrixConvertToSparseFortranCompatible(
 				 extract_region,sparse_format,*convA_,*A_
-				,warning_tol,error_tol,out_,print_what_==PRINT_MORE );
+				,warning_tol,error_tol,true,out_
+				,print_what_==PRINT_MORE );
 
 			if( !result) {
 				char omsg[] = "MatrixKKTFullSpaceRelaxed : Error, the conversion "

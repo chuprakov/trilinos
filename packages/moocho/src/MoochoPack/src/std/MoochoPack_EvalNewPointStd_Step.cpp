@@ -110,6 +110,7 @@ bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 
 		const bool result = deriv_tester().finite_diff_check(
 			  &nlp, s.Gc().get_k(0), s.Gf().get_k(0)(), x()
+			, olevel >= PRINT_VECTORS
 			, ( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : 0 );
 		if( !result ) {
 			throw std::logic_error( "EvalNewPointStd_Step::do_step(...) : "

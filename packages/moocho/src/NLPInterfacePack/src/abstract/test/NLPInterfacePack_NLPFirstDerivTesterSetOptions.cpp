@@ -12,16 +12,20 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 2;
+	const int local_num_options = 4;
 
 	enum local_EOptions {
-	    WARNING_TOL,
-	    ERROR_TOL
+		FD_TESTING_METHOD
+		,NUM_FD_DIRECTIONS
+	    ,WARNING_TOL
+	    ,ERROR_TOL
 	};
 
 	const char* local_SOptions[local_num_options]	= {
-	    "warning_tol",
-	    "error_tol"
+	    "fd_testing_method"
+	    ,"num_fd_directions"
+	    ,"warning_tol"
+	    ,"error_tol"
 	};
 
 }
@@ -43,6 +47,22 @@ void NLPFirstDerivativesTesterSetOptions::set_option(
 {
 	typedef NLPFirstDerivativesTester target_t;
 	switch( (local_EOptions)option_num ) {
+	    case FD_TESTING_METHOD:
+		{
+			const std::string &option = option_value.c_str();
+			if( option == "COMPUTE_ALL" )
+				target().fd_testing_method( target_t::FD_COMPUTE_ALL );
+			else if( option == "DIRECTIONAL" )
+				target().fd_testing_method( target_t::FD_DIRECTIONAL );
+			else
+				throw std::invalid_argument( "Error, incorrect value for "
+					"\"fd_testing_method\".  Only the options "
+					"COMPUTE_ALL and DIRECTIONAL are available" );
+			break;
+		}
+	    case NUM_FD_DIRECTIONS:
+			target().num_fd_directions(::fabs(::atoi(option_value.c_str())));
+			break;
 	    case WARNING_TOL:
 			target().warning_tol(::fabs(::atof(option_value.c_str())));
 			break;

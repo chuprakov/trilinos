@@ -21,8 +21,11 @@ namespace TestingPack {
   *
   \begin{verbatim}
 	options_group NLPFirstDerivativesTester {
-	    warning_tol   = 1e-6;
-	    error_tol     = 1e-3;
+	*	fd_testing_method = COMPUTE_ALL;
+		fd_testing_method = DIRECTIONAL;
+		num_fd_directions = 3;  *** [fd_testing_method == DIRECTIONAL]
+	    warning_tol   = 1e-3;
+	    error_tol     = 1e-1;
 	}
   \end{verbatim}
   */
