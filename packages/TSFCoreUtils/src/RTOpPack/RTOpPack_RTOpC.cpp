@@ -38,6 +38,7 @@ namespace {
 namespace RTOpPack {
 
 RTOpC::RTOpC()
+  :RTOpT<RTOp_value_type>("RTOpC") // Should be unused since op_name() if overridden here!
 {
 	op_.vtbl     = NULL;
 	op_.obj_data = NULL;
@@ -105,9 +106,9 @@ void RTOpC::extract_reduct_obj_state(
   ,int                      num_values
   ,primitive_value_type     value_data[]
   ,int                      num_indexes
-  ,RTOp_index_type          index_data[]
+  ,index_type               index_data[]
   ,int                      num_chars
-  ,RTOp_char_type           char_data[]
+  ,char_type                char_data[]
   ) const
 {
 	TEST_FOR_EXCEPTION(
@@ -127,9 +128,9 @@ void RTOpC::load_reduct_obj_state(
   int                            num_values
   ,const primitive_value_type    value_data[]
   ,int                           num_indexes
-  ,const RTOp_index_type         index_data[]
+  ,const index_type              index_data[]
   ,int                           num_chars
-  ,const RTOp_char_type          char_data[]
+  ,const char_type               char_data[]
   ,ReductTarget               *reduct_obj
   ) const
 {
@@ -165,9 +166,9 @@ void RTOpC::extract_op_state(
   int                             num_values
   ,primitive_value_type           value_data[]
   ,int                            num_indexes
-  ,RTOp_index_type                index_data[]
+  ,index_type                     index_data[]
   ,int                            num_chars
-  ,RTOp_char_type                 char_data[]
+  ,char_type                      char_data[]
   ) const
 {
   TEST_FOR_EXCEPTION(
@@ -187,9 +188,9 @@ void RTOpC::load_op_state(
   int                           num_values
   ,const primitive_value_type   value_data[]
   ,int                          num_indexes
-  ,const RTOp_index_type        index_data[]
+  ,const index_type             index_data[]
   ,int                          num_chars
-  ,const RTOp_char_type         char_data[]
+  ,const char_type              char_data[]
   )
 {
 	TEST_FOR_EXCEPTION(

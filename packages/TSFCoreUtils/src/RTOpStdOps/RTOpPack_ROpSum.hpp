@@ -37,17 +37,17 @@
 namespace RTOpPack {
 
 ///
-/** Simple reduction operator that sums the elements of an input vector.
+/** Summation reduction operator: <tt>result = sum( v0[i], i=1...n )</tt>.
  */
 template<class Scalar>
 class ROpSum : public ROpScalarReductionBase<Scalar> {
 public:
   ///
+  ROpSum() : RTOpT<Scalar>("ROpSum") {}
+  ///
   Scalar operator()(const ReductTarget& reduct_obj ) const { return getRawVal(reduct_obj); }
   /** @name Overridden from RTOpT */
   //@{
-  ///
-  const char* op_name() const { return "TOpAssignScalar"; }
   ///
 	void apply_op(
 		const int   num_vecs,       const SubVectorT<Scalar>         sub_vecs[]
@@ -58,11 +58,11 @@ public:
       using DynamicCastHelperPack::dyn_cast;
       ReductTargetScalar<Scalar> &reduct_obj = dyn_cast<ReductTargetScalar<Scalar> >(*_reduct_obj); 
       RTOP_APPLY_OP_1_0(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
-      Scalar sum(0.0);
+      Scalar sum = reduct_obj.get();
       for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s ) {
         sum += *v0_val;
       }
-      reduct_obj.set( reduct_obj.get() + sum );
+      reduct_obj.set(sum);
     }
   //@}
 }; // class ROpSum

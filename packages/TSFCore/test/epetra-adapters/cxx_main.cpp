@@ -135,18 +135,11 @@ int main_body( int argc, char* argv[] ) {
 	bool verbose = true;
 	bool dumpAll = false;
 #ifdef RTOp_USE_MPI
-	bool useMPI  = true;
-#else
-	bool useMPI  = false;
+	bool useMPI  = true; // ToDo: Make a commandline argument?
 #endif
 	bool success = true;
-	bool result;
 
 	int procRank = 0;
-
-	const Scalar err_tol = 1e-10; // Todo: Make this adjustable!
-
-	Scalar rel_err;
 
 	MPI_Init(&argc,&argv);
 	
@@ -183,10 +176,9 @@ int main_body( int argc, char* argv[] ) {
 		// Get basic MPI info
 		//
 
-		MPI_Comm mpiComm = MPI_COMM_NULL;
 		int numProc = 1;
 #ifdef RTOp_USE_MPI
-		mpiComm = MPI_COMM_WORLD;
+		MPI_Comm mpiComm = MPI_COMM_WORLD;
 		MPI_Comm_size( mpiComm, &numProc );
 		MPI_Comm_rank( mpiComm, &procRank );
 #endif
@@ -330,16 +322,24 @@ int main_body( int argc, char* argv[] ) {
 		const double s1 = fabs(scalar)*global_dim;
 		
 		testRelErr("norm_1(ev1)",ev1_nrm,"0",0,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\nev1 =\n" << *ev1;
 		testRelErr("norm_1(ev2)",ev2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\nev2 =\n" << *ev2;
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 		testRelErr("norm_1(nev1)",nev1_nrm,"0",0,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\nnev2 =\n" << *ev1;
 		testRelErr("norm_1(nev2)",nev2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\nnev2 =\n" << *nev2;
 #endif
 		testRelErr("norm_1(eV1)",eV1_nrm,"0",0,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\neV1 =\n" << *eV1;
 		testRelErr("norm_1(eV2)",eV2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\neV2 =\n" << *eV2;
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 		testRelErr("norm_1(neV1)",neV1_nrm,"0",0,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\nneV1 =\n" << *neV1;
 		testRelErr("norm_1(neV2)",neV2_nrm,s1_n,s1,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\nneV2 =\n" << *neV2;
 #endif
 
 		if(verbose)
@@ -352,6 +352,7 @@ int main_body( int argc, char* argv[] ) {
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(ev1)",norm_1(*ev1),"norm_1(ev2)",ev2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\nev1 =\n" << *ev1;
 
 		if(verbose) out << "\nPerforming eV1 = eV2 ...\n";
 		timer.start(true);
@@ -359,6 +360,7 @@ int main_body( int argc, char* argv[] ) {
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(eV1)",norm_1(*eV1),"norm_1(eV2)",eV2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\neV1 =\n" << *eV1;
 
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 
@@ -368,6 +370,7 @@ int main_body( int argc, char* argv[] ) {
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(ev1)",norm_1(*ev1),"norm_1(nev2)",nev2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\nev1 =\n" << *ev1;
 
 		if(verbose) out << "\nPerforming nev1 = ev2 ...\n";
 		timer.start(true);
@@ -375,6 +378,7 @@ int main_body( int argc, char* argv[] ) {
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(nev1)",norm_1(*nev1),"norm_1(ev2)",ev2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\nnev1 =\n" << *nev1;
 
 		if(verbose) out << "\nPerforming nev1 = nev2 ...\n";
 		timer.start(true);
@@ -382,6 +386,7 @@ int main_body( int argc, char* argv[] ) {
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(nev1)",norm_1(*nev1),"norm_1(nev2)",nev2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\nnev1 =\n" << *nev1;
 
 		if(verbose) out << "\nPerforming eV1 = neV2 ...\n";
 		timer.start(true);
@@ -389,6 +394,7 @@ int main_body( int argc, char* argv[] ) {
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(eV1)",norm_1(*eV1),"norm_1(neV2)",neV2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\neV1 =\n" << *eV1;
 
 		if(verbose) out << "\nPerforming neV1 = eV2 ...\n";
 		timer.start(true);
@@ -396,6 +402,7 @@ int main_body( int argc, char* argv[] ) {
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(neV1)",norm_1(*neV1),"norm_1(eV2)",eV2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\nneV1 =\n" << *neV1;
 
 		if(verbose) out << "\nPerforming neV1 = neV2 ...\n";
 		timer.start(true);
@@ -403,6 +410,7 @@ int main_body( int argc, char* argv[] ) {
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		testRelErr("norm_1(neV1)",norm_1(*neV1),"norm_1(neV2)",neV2_nrm,"max_rel_err",max_rel_err,verbose,out) || (success=false);
+		if(verbose && dumpAll) out << "\nneV1 =\n" << *neV1;
 
 #endif
 

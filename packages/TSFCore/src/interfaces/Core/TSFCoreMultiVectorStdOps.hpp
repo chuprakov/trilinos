@@ -36,14 +36,12 @@
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreMultiVector.hpp"
-#include "RTOpPack_RTOpC.hpp"
-#include "RTOpPack_TOpAssignScalar.hpp"
-#include "RTOp_ROp_dot_prod.h"
-#include "RTOp_ROp_max.h"
-#include "RTOp_ROp_sum_abs.h"
-#include "RTOp_TOp_assign_vectors.h"
-#include "RTOp_TOp_axpy.h"
-#include "RTOp_TOp_scale_vector.h"
+#include "RTOpPack_ROpDotProd.hpp"
+#include "RTOpPack_ROpNorm1.hpp"
+#include "RTOpPack_ROpNormInf.hpp"
+#include "RTOpPack_TOpAssignVectors.hpp"
+#include "RTOpPack_TOpAXPY.hpp"
+#include "RTOpPack_TOpScaleVector.hpp"
 #include "Teuchos_TestForException.hpp"
 
 template<class Scalar>
@@ -51,10 +49,7 @@ void TSFCore::dot( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2,
 {
 	int kc;
   const int m = V1.domain()->dim();
-  RTOpPack::RTOpC dot_op;
-  TEST_FOR_EXCEPTION(
-    0!=RTOp_ROp_dot_prod_construct(&dot_op.op())
-    ,std::logic_error,"Error!" );
+  RTOpPack::ROpDotProd<Scalar> dot_op;
   std::vector<Teuchos::RefCountPtr<RTOpPack::ReductTarget> >  rcp_dot_targs(m);
   std::vector<RTOpPack::ReductTarget*>                        dot_targs(m);
   for( kc = 0; kc < m; ++kc ) {
@@ -64,7 +59,7 @@ void TSFCore::dot( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2,
   const MultiVector<Scalar>* multi_vecs[] = { &V1, &V2 };
   applyOp<Scalar>(dot_op,2,multi_vecs,0,NULL,&dot_targs[0]);
   for( kc = 0; kc < m; ++kc ) {
-    dot[kc] = RTOp_ROp_dot_prod_val(dot_op(*dot_targs[kc]));
+    dot[kc] = dot_op(*dot_targs[kc]);
   }
 }
 
@@ -72,11 +67,9 @@ template<class Scalar>
 Scalar TSFCore::norm_1( const MultiVector<Scalar>& V )
 {
 	// Primary column-wise reduction (sum of absolute values)
-	RTOpPack::RTOpC sum_abs_op;
-	RTOp_ROp_sum_abs_construct(&sum_abs_op.op());
-	// Secondaary reduction (max over all columns = norm_1)
-	RTOpPack::RTOpC max_op;
-	RTOp_ROp_max_construct(&max_op.op());
+  RTOpPack::ROpNorm1<Scalar> sum_abs_op;
+	// Secondaary reduction (max over all columns = induced norm_1 matrix  norm)
+  RTOpPack::ROpNormInf<Scalar> max_op;
 	// Reduction object (must be same for both sum_abs and max_targ objects)
   Teuchos::RefCountPtr<RTOpPack::ReductTarget>
     max_targ = max_op.reduct_obj_create();
@@ -84,7 +77,7 @@ Scalar TSFCore::norm_1( const MultiVector<Scalar>& V )
   const MultiVector<Scalar>* multi_vecs[] = { &V };
   applyOp<Scalar>(sum_abs_op,max_op,1,multi_vecs,0,NULL,&*max_targ);
 	// Return the final value
-	return RTOp_ROp_max_val(max_op(*max_targ));
+	return max_op(*max_targ);
 }
 
 template<class Scalar>
@@ -93,15 +86,14 @@ void TSFCore::scale( Scalar alpha, MultiVector<Scalar>* V )
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"assign(...), Error!");
 #endif
-	if(alpha==0.0) {
-		assign( V, 0.0 );
+	if(alpha==Teuchos::ScalarTraits<Scalar>::zero()) {
+		assign( V, Teuchos::ScalarTraits<Scalar>::zero() );
 		return;
 	}
-	if(alpha==1.0) {
+	if(alpha==Teuchos::ScalarTraits<Scalar>::one()) {
 		return;
 	}
-	RTOpPack::RTOpC  scale_vector_op;
-	RTOp_TOp_scale_vector_construct(alpha,&scale_vector_op.op());
+  RTOpPack::TOpScaleVector<Scalar> scale_vector_op(alpha);
 	MultiVector<Scalar>* targ_multi_vecs[] = { V };
 	applyOp<Scalar>(
 		scale_vector_op,0,(const MultiVector<Scalar>**)NULL // The SUN compiler requires these casts!
@@ -153,8 +145,7 @@ void TSFCore::assign( MultiVector<Scalar>* V, const MultiVector<Scalar>& U )
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"assign(...), Error!");
 #endif
-	RTOpPack::RTOpC assign_vectors_op;
-	if(0>RTOp_TOp_assign_vectors_construct(&assign_vectors_op.op())) assert(0);
+	RTOpPack::TOpAssignVectors<Scalar> assign_vectors_op;
 	const MultiVector<Scalar>* multi_vecs[]      = { &U };
 	MultiVector<Scalar>*       targ_multi_vecs[] = { V   };
 	applyOp<Scalar>(
@@ -167,26 +158,25 @@ template<class Scalar>
 void TSFCore::update( Scalar alpha, const MultiVector<Scalar>& U, MultiVector<Scalar>* V )
 {
 #ifdef _DEBUG
-    TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"update(...), Error!");
+  TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"update(...), Error!");
 #endif
-    RTOpPack::RTOpC axpy_op;
-    RTOp_TOp_axpy_construct(alpha,&axpy_op.op());
-    const MultiVector<Scalar>* multi_vecs[]       = { &U };
-    MultiVector<Scalar>*       targ_multi_vecs[]  = { V  };
-    applyOp<Scalar>(axpy_op,1,multi_vecs,1,targ_multi_vecs,NULL);
+  RTOpPack::TOpAXPY<Scalar> axpy_op(alpha);
+  const MultiVector<Scalar>* multi_vecs[]       = { &U };
+  MultiVector<Scalar>*       targ_multi_vecs[]  = { V  };
+  applyOp<Scalar>(axpy_op,1,multi_vecs,1,targ_multi_vecs,NULL);
 }
 
 template<class Scalar>
 void TSFCore::update( Scalar alpha[], Scalar beta, const MultiVector<Scalar>& U, MultiVector<Scalar>* V )
 {
 #ifdef _DEBUG
-    TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"update(...), Error!");
+  TEST_FOR_EXCEPTION(V==NULL,std::logic_error,"update(...), Error!");
 	bool is_compatible = U.range()->isCompatible(*V->range());
-    TEST_FOR_EXCEPTION(
+  TEST_FOR_EXCEPTION(
 		!is_compatible,Exceptions::IncompatibleVectorSpaces
 		,"update(...), Error, U.range()->isCompatible((V->range())==false ");
 	is_compatible = U.domain()->isCompatible(*V->domain());
-    TEST_FOR_EXCEPTION(
+  TEST_FOR_EXCEPTION(
 		!is_compatible,Exceptions::IncompatibleVectorSpaces
 		,"update(...), Error, U.domain().isCompatible(V->domain())==false ");
 #endif

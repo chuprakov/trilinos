@@ -62,8 +62,8 @@ public:
   const RTOp_ReductTarget& operator()(const ReductTarget& reduct_obj) const;
 
   /** @name Overridden from RTOpT */
-
   //@{
+
   ///
 	void get_reduct_type_num_entries(
 		int*   num_values
@@ -84,18 +84,18 @@ public:
 		,int                      num_values
 		,primitive_value_type     value_data[]
 		,int                      num_indexes
-		,RTOp_index_type          index_data[]
+		,index_type               index_data[]
 		,int                      num_chars
-		,RTOp_char_type           char_data[]
+		,char_type                char_data[]
 		) const;
 	///
 	void load_reduct_obj_state(
 		int                            num_values
 		,const primitive_value_type    value_data[]
 		,int                           num_indexes
-		,const RTOp_index_type         index_data[]
+		,const index_type              index_data[]
 		,int                           num_chars
-		,const RTOp_char_type          char_data[]
+		,const char_type               char_data[]
 		,ReductTarget               *reduct_obj
 		) const;
   ///
@@ -109,18 +109,18 @@ public:
 		int                             num_values
 		,primitive_value_type           value_data[]
 		,int                            num_indexes
-		,RTOp_index_type                index_data[]
+		,index_type                     index_data[]
 		,int                            num_chars
-		,RTOp_char_type                 char_data[]
+		,char_type                      char_data[]
 		) const;
 	///
 	void load_op_state(
 		int                           num_values
 		,const primitive_value_type   value_data[]
 		,int                          num_indexes
-		,const RTOp_index_type        index_data[]
+		,const index_type             index_data[]
 		,int                          num_chars
-		,const RTOp_char_type         char_data[]
+		,const char_type              char_data[]
 		);
 	///
 	bool coord_invariant() const;

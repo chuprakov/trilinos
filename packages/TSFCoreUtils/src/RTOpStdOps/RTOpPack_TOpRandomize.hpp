@@ -27,28 +27,35 @@
 // @HEADER
 
 // ///////////////////////////////
-// RTOpPack_TOpAssignScalar.hpp
+// RTOpPack_TOpRandomize.hpp
 
-#ifndef RTOPPACK_TOP_ASSIGN_SCALAR_HPP
-#define RTOPPACK_TOP_ASSIGN_SCALAR_HPP
+#ifndef RTOPPACK_TOP_RANDOMIZE_HPP
+#define RTOPPACK_TOP_RANDOMIZE_HPP
 
 #include "RTOpPack_RTOpTHelpers.hpp"
 
 namespace RTOpPack {
 
 ///
-/** Assign a scalar to a vector transforamtion operator: <tt>z0[i] = alpha, i=1...n</tt>.
+/** Generate a random vector in the range [l,u]: <tt>z0[i] = 0.5*((u-l)*Teuchos::ScalarTraits<Scalar>::random()+(u+l)), i=1...n</tt>.
+ *
+ * The seed for the random number generator can be set by:
+ \code
+  Teuchos::ScalarTraits<Scalar>::seedrandom(s)
+ \endcode
+ * where <tt>s</tt> is some unsigned integer
  */
 template<class Scalar>
-class TOpAssignScalar : public ROpScalarTransformationBase<Scalar> {
+class TOpRandomize : public ROpScalarScalarTransformationBase<Scalar> {
 public:
   ///
-  void alpha( const Scalar& alpha ) { scalarData(alpha); }
+  void set_bounds( const Scalar& l, const Scalar& u ) { scalarData1(l); scalarData2(u); }
   ///
-  Scalar alpha() const { return scalarData(); }
-  ///
-  TOpAssignScalar( const Scalar &alpha = Teuchos::ScalarTraits<Scalar>::zero() )
-    : ROpScalarTransformationBase<Scalar>(alpha), RTOpT<Scalar>("TOpAssignScalar")
+  TOpRandomize(
+    const Scalar& l   = -Teuchos::ScalarTraits<Scalar>::one()
+    ,const Scalar& u  = +Teuchos::ScalarTraits<Scalar>::one()
+    )
+    :ROpScalarScalarTransformationBase<Scalar>(l,u), RTOpT<Scalar>("TOpRandomize")
     {}
   /** @name Overridden from RTOpT */
   //@{
@@ -59,14 +66,16 @@ public:
 		,ReductTarget *reduct_obj
 		) const
     {
+      const Scalar l = scalarData1(), u = scalarData2();
+      const Scalar a = 0.5*(u-l), b = 0.5*(u+l) ; // Linear coefficients for translating from [-1,+1] to [l,b]
       RTOP_APPLY_OP_0_1(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
       for( RTOp_index_type i = 0; i < subDim; ++i, z0_val += z0_s ) {
-        *z0_val = alpha();
+        *z0_val = a * Teuchos::ScalarTraits<Scalar>::random() + b; // Should be in the range [l,b]
       }
-}
+    }
   //@}
-}; // class TOpAssignScalar
+}; // class TOpRandomize
 
 } // namespace RTOpPack
 
-#endif // RTOPPACK_TOP_ASSIGN_SCALAR_HPP
+#endif // RTOPPACK_TOP_RANDOMIZE_HPP

@@ -27,46 +27,59 @@
 // @HEADER
 
 // ///////////////////////////////
-// RTOpPack_TOpAssignScalar.hpp
+// RTOpPack_ROpNormInf.hpp
 
-#ifndef RTOPPACK_TOP_ASSIGN_SCALAR_HPP
-#define RTOPPACK_TOP_ASSIGN_SCALAR_HPP
+#ifndef RTOPPACK_ROP_NORMINF_HPP
+#define RTOPPACK_ROP_NORMINF_HPP
 
 #include "RTOpPack_RTOpTHelpers.hpp"
 
 namespace RTOpPack {
 
 ///
-/** Assign a scalar to a vector transforamtion operator: <tt>z0[i] = alpha, i=1...n</tt>.
+/** Infinity norm reduction operator: <tt>result = sum( |v0[i]|, i=1...n )</tt>.
  */
 template<class Scalar>
-class TOpAssignScalar : public ROpScalarTransformationBase<Scalar> {
+class ROpNormInf : public ROpScalarReductionBase<Scalar> {
 public:
   ///
-  void alpha( const Scalar& alpha ) { scalarData(alpha); }
+  ROpNormInf() : RTOpT<Scalar>("ROpNormInf") {}
   ///
-  Scalar alpha() const { return scalarData(); }
-  ///
-  TOpAssignScalar( const Scalar &alpha = Teuchos::ScalarTraits<Scalar>::zero() )
-    : ROpScalarTransformationBase<Scalar>(alpha), RTOpT<Scalar>("TOpAssignScalar")
-    {}
+  Scalar operator()(const ReductTarget& reduct_obj ) const { return getRawVal(reduct_obj); }
   /** @name Overridden from RTOpT */
   //@{
+  ///
+	void reduce_reduct_objs(
+		const ReductTarget& _in_reduct_obj, ReductTarget* _inout_reduct_obj
+		) const
+    {
+      using DynamicCastHelperPack::dyn_cast;
+      const ReductTargetScalar<Scalar>
+        &in_reduct_obj = dyn_cast<const ReductTargetScalar<Scalar> >(_in_reduct_obj);
+      ReductTargetScalar<Scalar>
+        &inout_reduct_obj = dyn_cast<ReductTargetScalar<Scalar> >(*_inout_reduct_obj);
+      if( in_reduct_obj.get() > inout_reduct_obj.get() ) inout_reduct_obj.set(in_reduct_obj.get());
+    }
   ///
 	void apply_op(
 		const int   num_vecs,       const SubVectorT<Scalar>         sub_vecs[]
 		,const int  num_targ_vecs,  const MutableSubVectorT<Scalar>  targ_sub_vecs[]
-		,ReductTarget *reduct_obj
+		,ReductTarget *_reduct_obj
 		) const
     {
-      RTOP_APPLY_OP_0_1(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
-      for( RTOp_index_type i = 0; i < subDim; ++i, z0_val += z0_s ) {
-        *z0_val = alpha();
+      using DynamicCastHelperPack::dyn_cast;
+      ReductTargetScalar<Scalar> &reduct_obj = dyn_cast<ReductTargetScalar<Scalar> >(*_reduct_obj); 
+      RTOP_APPLY_OP_1_0(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
+      Scalar norm_inf = reduct_obj.get();
+      for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s ) {
+        const Scalar mag = Teuchos::ScalarTraits<Scalar>::magnitude(*v0_val);
+        norm_inf = mag > norm_inf ? mag : norm_inf;
       }
-}
+      reduct_obj.set(norm_inf);
+    }
   //@}
-}; // class TOpAssignScalar
+}; // class ROpNormInf
 
 } // namespace RTOpPack
 
-#endif // RTOPPACK_TOP_ASSIGN_SCALAR_HPP
+#endif // RTOPPACK_ROP_NORMINF_HPP

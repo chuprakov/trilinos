@@ -173,6 +173,8 @@ private:
 	Vector<Scalar>                                                  *c_;
 	LinearOpWithSolveIter<Scalar>                                   *DcDy_;
 
+  mutable Teuchos::RefCountPtr<std::ostream>                      bicg_solver_out_;
+
 	// Not defined and not to be called
 	NP2DSim(const NP2DSim<Scalar>&);
 	NP2DSim<Scalar>& operator=(const NP2DSim<Scalar>&);

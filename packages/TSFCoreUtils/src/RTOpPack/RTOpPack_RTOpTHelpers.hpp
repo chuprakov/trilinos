@@ -34,6 +34,7 @@
 
 #include "RTOpPack_RTOpT.hpp"
 #include "Teuchos_StandardMemberCompositionMacros.hpp"
+#include "Teuchos_ScalarTraits.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace RTOpPack {
@@ -44,7 +45,7 @@ namespace RTOpPack {
 template<class Scalar>
 class ReductTargetScalar : public ReductTarget {
 public:
-  ReductTargetScalar( const Scalar &scalar = Scalar(0.0) ) : scalar_(scalar) {}
+  ReductTargetScalar( const Scalar &scalar = Teuchos::ScalarTraits<Scalar>::zero() ) : scalar_(scalar) {}
   void set( const Scalar &scalar ) { scalar_ = scalar; }
   const Scalar& get() const { return scalar_; }
 private:
@@ -52,23 +53,20 @@ private:
 };
 
 ///
-/** Simple class for all reduction operators that return a simple
+/** Simple base class for all reduction operators that return a simple
  * scalar reduction object.
  *
- * Subclasses have to minimally define <tt>op_name()</tt> and
- * <tt>apply_op()</tt>.  Subclasses should also override
- * <tt>reduce_reduct_objs()</tt> if the reduction is not a simple
- * summation.
+ * Subclasses have to minimally define <tt>apply_op()</tt>.
+ * Subclasses should also override <tt>reduce_reduct_objs()</tt> if
+ * the reduction is not a simple summation.
  */
 template<class Scalar>
-class ROpScalarReductionBase : public RTOpT<Scalar> {
+class ROpScalarReductionBase : virtual public RTOpT<Scalar> {
 public:
   typedef typename RTOpT<Scalar>::primitive_value_type primitive_value_type;
   ///
-  STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, initReductObjValue );
-  ///
-  ROpScalarReductionBase( const Scalar &initReductObjValue = static_cast<const Scalar&>(0.0) )
-    : initReductObjValue_(initReductObjValue)
+  ROpScalarReductionBase( const Scalar &initReductObjValue = Teuchos::ScalarTraits<Scalar>::zero() )
+    :RTOpT<Scalar>(""), initReductObjValue_(initReductObjValue) 
     {}
   ///
   const Scalar& getRawVal( const ReductTarget &reduct_obj ) const
@@ -94,8 +92,7 @@ public:
 		,int*  num_chars
 		) const
     {
-      const Scalar dummy(0.0);
-      *num_values = Teuchos::PrimitiveTypeTraits<Scalar>::numPrimitiveObjs(dummy);
+      *num_values = Teuchos::PrimitiveTypeTraits<Scalar>::numPrimitiveObjs();
       *num_indexes = 0;
       *num_chars = 0;
     }
@@ -121,13 +118,13 @@ public:
     }
 	///
 	void extract_reduct_obj_state(
-		const ReductTarget     &reduct_obj
+		const ReductTarget        &reduct_obj
 		,int                      num_values
 		,primitive_value_type     value_data[]
 		,int                      num_indexes
-		,RTOp_index_type          index_data[]
+		,index_type               index_data[]
 		,int                      num_chars
-		,RTOp_char_type           char_data[]
+		,char_type                char_data[]
 		) const
     {
 #ifdef _DEBUG
@@ -143,10 +140,10 @@ public:
 		int                            num_values
 		,const primitive_value_type    value_data[]
 		,int                           num_indexes
-		,const RTOp_index_type         index_data[]
+		,const index_type              index_data[]
 		,int                           num_chars
-		,const RTOp_char_type          char_data[]
-		,ReductTarget               *reduct_obj
+		,const char_type               char_data[]
+		,ReductTarget                  *reduct_obj
 		) const
     {
 #ifdef _DEBUG
@@ -155,17 +152,169 @@ public:
         ,std::invalid_argument, "Error!"
         );
 #endif
-      Scalar val(0.0);
+      Scalar val = Teuchos::ScalarTraits<Scalar>::zero();
       Teuchos::PrimitiveTypeTraits<Scalar>::loadPrimitiveObjs( num_values, value_data, &val );
       setRawVal( val, reduct_obj );
     }
   //@}
+protected:
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, initReductObjValue );
 }; // class ROpScalarReductionBase
+
+///
+/** Simple base class for all transformation operators that
+ * use a single piece of Scalar data.
+ *
+ * Subclasses have to minimally define <tt>apply_op()</tt>.
+ * Subclasses should also define access functions for changing the
+ * scalar data.
+ */
+template<class Scalar>
+class ROpScalarTransformationBase : virtual public RTOpT<Scalar> {
+public:
+  typedef typename RTOpT<Scalar>::primitive_value_type primitive_value_type;
+  ///
+  ROpScalarTransformationBase( const Scalar &scalarData = Teuchos::ScalarTraits<Scalar>::zero() )
+    :RTOpT<Scalar>(""), scalarData_(scalarData)
+    {}
+  /** @name Overridden from RTOpT */
+  //@{
+  ///
+	void get_op_type_num_entries(
+		int*  num_values
+		,int* num_indexes
+		,int* num_chars
+		) const
+    {
+      *num_values = Teuchos::PrimitiveTypeTraits<Scalar>::numPrimitiveObjs();
+      *num_indexes = 0;
+      *num_chars = 0;
+    }
+	///
+	void extract_op_state(
+		int                             num_values
+		,primitive_value_type           value_data[]
+		,int                            num_indexes
+		,index_type                     index_data[]
+		,int                            num_chars
+		,char_type                      char_data[]
+		) const
+    {
+#ifdef _DEBUG
+      TEST_FOR_EXCEPTION(
+        num_values==0 || value_data==NULL || num_indexes!=0 || index_data!=NULL || num_chars!=0 || char_data!=NULL
+        ,std::invalid_argument, "Error!"
+        );
+#endif
+      Teuchos::PrimitiveTypeTraits<Scalar>::extractPrimitiveObjs( scalarData_, num_values, value_data );
+    }
+	///
+	void load_op_state(
+		int                           num_values
+		,const primitive_value_type   value_data[]
+		,int                          num_indexes
+		,const index_type             index_data[]
+		,int                          num_chars
+		,const char_type              char_data[]
+		)
+    {
+#ifdef _DEBUG
+      TEST_FOR_EXCEPTION(
+        num_values==0 || value_data==NULL || num_indexes!=0 || index_data!=NULL || num_chars!=0 || char_data!=NULL
+        ,std::invalid_argument, "Error!"
+        );
+#endif
+      Teuchos::PrimitiveTypeTraits<Scalar>::loadPrimitiveObjs( num_values, value_data, &scalarData_ );
+    }
+  //@}
+protected:
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, scalarData );
+}; // class ROpScalarTransformationBase
+
+///
+/** Simple base class for all transformation operators that
+ * use a pair of Scalar data members.
+ *
+ * Subclasses have to minimally define <tt>apply_op()</tt>.
+ * Subclasses should also define access functions for changing the
+ * scalar data.
+ */
+template<class Scalar>
+class ROpScalarScalarTransformationBase : virtual public RTOpT<Scalar> {
+public:
+  typedef typename RTOpT<Scalar>::primitive_value_type primitive_value_type;
+  ///
+  ROpScalarScalarTransformationBase(
+    const Scalar &scalarData1 = Teuchos::ScalarTraits<Scalar>::zero()
+    ,const Scalar &scalarData2 = Teuchos::ScalarTraits<Scalar>::zero()
+    )
+    :RTOpT<Scalar>(""), scalarData1_(scalarData1), scalarData2_(scalarData2)
+    {}
+  /** @name Overridden from RTOpT */
+  //@{
+  ///
+	void get_op_type_num_entries(
+		int*  num_values
+		,int* num_indexes
+		,int* num_chars
+		) const
+    {
+      *num_values = 2 * Teuchos::PrimitiveTypeTraits<Scalar>::numPrimitiveObjs();
+      *num_indexes = 0;
+      *num_chars = 0;
+    }
+	///
+	void extract_op_state(
+		int                             num_values
+		,primitive_value_type           value_data[]
+		,int                            num_indexes
+		,index_type                     index_data[]
+		,int                            num_chars
+		,char_type                      char_data[]
+		) const
+    {
+#ifdef _DEBUG
+      TEST_FOR_EXCEPTION(
+        num_values==0 || value_data==NULL || num_indexes!=0 || index_data!=NULL || num_chars!=0 || char_data!=NULL
+        ,std::invalid_argument, "Error!"
+        );
+#endif
+      Teuchos::PrimitiveTypeTraits<Scalar>::extractPrimitiveObjs( scalarData1_, num_values/2, value_data );
+      Teuchos::PrimitiveTypeTraits<Scalar>::extractPrimitiveObjs( scalarData2_, num_values/2, value_data + num_values/2 );
+    }
+	///
+	void load_op_state(
+		int                           num_values
+		,const primitive_value_type   value_data[]
+		,int                          num_indexes
+		,const index_type             index_data[]
+		,int                          num_chars
+		,const char_type              char_data[]
+		)
+    {
+#ifdef _DEBUG
+      TEST_FOR_EXCEPTION(
+        num_values==0 || value_data==NULL || num_indexes!=0 || index_data!=NULL || num_chars!=0 || char_data!=NULL
+        ,std::invalid_argument, "Error!"
+        );
+#endif
+      Teuchos::PrimitiveTypeTraits<Scalar>::loadPrimitiveObjs( num_values/2, value_data, &scalarData1_ );
+      Teuchos::PrimitiveTypeTraits<Scalar>::loadPrimitiveObjs( num_values/2, value_data+num_values/2, &scalarData2_ );
+    }
+  //@}
+protected:
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, scalarData1 );
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, scalarData2 );
+}; // class ROpScalarTransformationBase
 
 } // namespace RTOpPack
 
 ///
-/** Use within an apply_op(...) function implemention here num_vecs==1, num_targ_vecs==0.
+/** Use within an apply_op(...) function implemention where num_vecs==1, num_targ_vecs==0.
  */
 #define RTOP_APPLY_OP_1_0( NUM_VECS, SUB_VECS, NUM_TARG_VECS, TARG_SUB_VECS ) \
   TEST_FOR_EXCEPTION( \
@@ -183,7 +332,33 @@ public:
   const ptrdiff_t              v0_s    = (SUB_VECS)[0].stride()
 
 ///
-/** Use within an apply_op(...) function implemention here num_vecs==0, num_targ_vecs==1.
+/** Use within an apply_op(...) function implemention where num_vecs==2, num_targ_vecs==0.
+ */
+#define RTOP_APPLY_OP_2_0( NUM_VECS, SUB_VECS, NUM_TARG_VECS, TARG_SUB_VECS ) \
+  TEST_FOR_EXCEPTION( \
+    (NUM_VECS)!=2 || (SUB_VECS)==NULL \
+    ,RTOpPack::InvalidNumVecs \
+    ,"Error, num_vecs="<<(NUM_VECS)<<" not allowed, only num_vecs==1, sub_vecs!=NULL" \
+    ); \
+  TEST_FOR_EXCEPTION( \
+    (NUM_TARG_VECS)!=0 || (TARG_SUB_VECS)!=NULL \
+    ,RTOpPack::InvalidNumTargVecs \
+    ,"Error, num_targ_vecs="<<(NUM_TARG_VECS)<<" not allowed, only num_targ_vecs==0, targ_sub_vecs==NULL" \
+    ); \
+  TEST_FOR_EXCEPTION( \
+    (SUB_VECS)[0].subDim() != (SUB_VECS)[1].subDim() || \
+    (SUB_VECS)[0].globalOffset() != (SUB_VECS)[1].globalOffset() \
+    ,IncompatibleVecs \
+    ,"Error, num_targ_vecs="<<(NUM_TARG_VECS)<<" not allowed, only num_targ_vecs==0, targ_sub_vecs==NULL" \
+    ); \
+  const RTOpPack::index_type   subDim  = (SUB_VECS)[0].subDim(); \
+  const Scalar                 *v0_val = (SUB_VECS)[0].values(); \
+  const ptrdiff_t              v0_s    = (SUB_VECS)[0].stride(); \
+  const Scalar                 *v1_val = (SUB_VECS)[1].values(); \
+  const ptrdiff_t              v1_s    = (SUB_VECS)[1].stride()
+
+///
+/** Use within an apply_op(...) function implemention where num_vecs==0, num_targ_vecs==1.
  */
 #define RTOP_APPLY_OP_0_1( NUM_VECS, SUB_VECS, NUM_TARG_VECS, TARG_SUB_VECS ) \
   TEST_FOR_EXCEPTION( \
@@ -197,6 +372,62 @@ public:
     ,"Error, num_targ_vecs="<<(NUM_TARG_VECS)<<" not allowed, only num_targ_vecs==1, targ_sub_vecs!=NULL" \
     ); \
   const RTOpPack::index_type   subDim  = (TARG_SUB_VECS)[0].subDim(); \
+  Scalar                       *z0_val = (TARG_SUB_VECS)[0].values(); \
+  const ptrdiff_t              z0_s    = (TARG_SUB_VECS)[0].stride()
+
+///
+/** Use within an apply_op(...) function implemention where num_vecs==1, num_targ_vecs==1.
+ */
+#define RTOP_APPLY_OP_1_1( NUM_VECS, SUB_VECS, NUM_TARG_VECS, TARG_SUB_VECS ) \
+  TEST_FOR_EXCEPTION( \
+    (NUM_VECS)!=1 || (SUB_VECS)==NULL \
+    ,RTOpPack::InvalidNumVecs \
+    ,"Error, num_vecs="<<(NUM_VECS)<<" not allowed, only num_vecs==1, sub_vecs!=NULL" \
+    ); \
+  TEST_FOR_EXCEPTION( \
+    (NUM_TARG_VECS)!=1 || (TARG_SUB_VECS)==NULL \
+    ,RTOpPack::InvalidNumTargVecs \
+    ,"Error, num_targ_vecs="<<(NUM_TARG_VECS)<<" not allowed, only num_targ_vecs==1, targ_sub_vecs!=NULL" \
+    ); \
+  TEST_FOR_EXCEPTION( \
+    (SUB_VECS)[0].subDim() != (TARG_SUB_VECS)[0].subDim() || \
+    (SUB_VECS)[0].globalOffset() != (TARG_SUB_VECS)[0].globalOffset() \
+    ,IncompatibleVecs \
+    ,"Error, num_targ_vecs="<<(NUM_TARG_VECS)<<" not allowed, only num_targ_vecs==0, targ_sub_vecs==NULL" \
+    ); \
+  const RTOpPack::index_type   subDim  = (SUB_VECS)[0].subDim(); \
+  const Scalar                 *v0_val = (SUB_VECS)[0].values(); \
+  const ptrdiff_t              v0_s    = (SUB_VECS)[0].stride(); \
+  Scalar                       *z0_val = (TARG_SUB_VECS)[0].values(); \
+  const ptrdiff_t              z0_s    = (TARG_SUB_VECS)[0].stride()
+
+///
+/** Use within an apply_op(...) function implemention where num_vecs==2, num_targ_vecs==1.
+ */
+#define RTOP_APPLY_OP_2_1( NUM_VECS, SUB_VECS, NUM_TARG_VECS, TARG_SUB_VECS ) \
+  TEST_FOR_EXCEPTION( \
+    (NUM_VECS)!=2 || (SUB_VECS)==NULL \
+    ,RTOpPack::InvalidNumVecs \
+    ,"Error, num_vecs="<<(NUM_VECS)<<" not allowed, only num_vecs==2, sub_vecs!=NULL" \
+    ); \
+  TEST_FOR_EXCEPTION( \
+    (NUM_TARG_VECS)!=1 || (TARG_SUB_VECS)==NULL \
+    ,RTOpPack::InvalidNumTargVecs \
+    ,"Error, num_targ_vecs="<<(NUM_TARG_VECS)<<" not allowed, only num_targ_vecs==1, targ_sub_vecs!=NULL" \
+    ); \
+  TEST_FOR_EXCEPTION( \
+    (SUB_VECS)[0].subDim() != (SUB_VECS)[1].subDim() || \
+    (SUB_VECS)[0].subDim() != (TARG_SUB_VECS)[0].subDim() || \
+    (SUB_VECS)[0].globalOffset() != (SUB_VECS)[1].globalOffset() \
+    (SUB_VECS)[0].globalOffset() != (TARG_SUB_VECS)[0].globalOffset() \
+    ,IncompatibleVecs \
+    ,"Error, num_targ_vecs="<<(NUM_TARG_VECS)<<" not allowed, only num_targ_vecs==0, targ_sub_vecs==NULL" \
+    ); \
+  const RTOpPack::index_type   subDim  = (SUB_VECS)[0].subDim(); \
+  const Scalar                 *v0_val = (SUB_VECS)[0].values(); \
+  const ptrdiff_t              v0_s    = (SUB_VECS)[0].stride(); \
+  const Scalar                 *v1_val = (SUB_VECS)[1].values(); \
+  const ptrdiff_t              v1_s    = (SUB_VECS)[1].stride(); \
   Scalar                       *z0_val = (TARG_SUB_VECS)[0].values(); \
   const ptrdiff_t              z0_s    = (TARG_SUB_VECS)[0].stride()
 

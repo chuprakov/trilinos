@@ -251,7 +251,9 @@ void NP2DSim<Scalar>::calc_DcDy(
     Teuchos::RefCountPtr<Solvers::BiCGSolver<Scalar> >
       bicg_solver = Teuchos::rcp(new Solvers::BiCGSolver<Scalar>());
     if(1) { // ToDo: Make this a runtime option?
-      bicg_solver->set_out(Teuchos::rcp(new std::ofstream("BiCGSolver.out")));
+      if(!bicg_solver_out_.get())
+        bicg_solver_out_ = Teuchos::rcp(new std::ofstream("BiCGSolver.out"));
+      bicg_solver->set_out(bicg_solver_out_);
       bicg_solver->dump_all(true);
     }
     DcDy_solver = bicg_solver;

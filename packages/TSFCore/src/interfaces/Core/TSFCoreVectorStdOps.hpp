@@ -35,24 +35,20 @@
 #include "TSFCoreVectorStdOpsDecl.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"
+#include "RTOpPack_ROpDotProd.hpp"
+#include "RTOpPack_ROpNorm1.hpp"
+#include "RTOpPack_ROpNorm2.hpp"
+#include "RTOpPack_ROpNormInf.hpp"
 #include "RTOpPack_ROpSum.hpp"
+#include "RTOpPack_TOpAddScalar.hpp"
 #include "RTOpPack_TOpAssignScalar.hpp"
-#include "RTOpPack_RTOpC.hpp"
-#include "RTOp_ROp_norms.h"
-#include "RTOp_ROp_dot_prod.h"
-#include "RTOp_TOp_assign_vectors.h"
-#include "RTOp_TOp_add_scalar.h"
-#include "RTOp_TOp_axpy.h"
-#include "RTOp_TOp_ele_wise_divide.h"
-#include "RTOp_TOp_ele_wise_prod.h"
-#include "RTOp_TOp_random_vector.h"
-#include "RTOp_TOp_scale_vector.h"
-#include "RTOp_TOp_sign.h"
-#include "Teuchos_arrayArg.hpp"
+#include "RTOpPack_TOpAssignVectors.hpp"
+#include "RTOpPack_TOpAXPY.hpp"
+#include "RTOpPack_TOpEleWiseDivide.hpp"
+#include "RTOpPack_TOpEleWiseProd.hpp"
+#include "RTOpPack_TOpScaleVector.hpp"
+#include "RTOpPack_TOpRandomize.hpp"
 #include "Teuchos_TestForException.hpp"
-
-// RAB: 3/24/2004: ToDo: Replace all of these C RTOp subclases with
-// fully templated direct subclasses of RTOpT<>!
 
 // Reduction operations
 
@@ -69,45 +65,41 @@ Scalar TSFCore::sum( const Vector<Scalar>& v_rhs )
 template<class Scalar>
 Scalar TSFCore::norm_1( const Vector<Scalar>& v_rhs )
 {
-	RTOpPack::RTOpC norm_1_op;
-	TEST_FOR_EXCEPTION( 0!=RTOp_ROp_norm_1_construct(&norm_1_op.op()),std::logic_error,"Error!");
+  RTOpPack::ROpNorm1<Scalar> norm_1_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> norm_1_targ = norm_1_op.reduct_obj_create();
 	const Vector<Scalar>* vecs[] = { &v_rhs };
 	applyOp<Scalar>(norm_1_op,1,vecs,0,NULL,&*norm_1_targ);
-	return RTOp_ROp_norm_1_val(norm_1_op(*norm_1_targ));
+	return norm_1_op(*norm_1_targ);
 }
 
 template<class Scalar>
 Scalar TSFCore::norm_2( const Vector<Scalar>& v_rhs )
 {
-	RTOpPack::RTOpC norm_2_op;
-	TEST_FOR_EXCEPTION( 0!=RTOp_ROp_norm_2_construct(&norm_2_op.op()),std::logic_error,"Error!");
+  RTOpPack::ROpNorm2<Scalar> norm_2_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> norm_2_targ = norm_2_op.reduct_obj_create();
 	const Vector<Scalar>* vecs[] = { &v_rhs };
 	applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,&*norm_2_targ);
-	return RTOp_ROp_norm_2_val(norm_2_op(*norm_2_targ));
+	return norm_2_op(*norm_2_targ);
 }
 
 template<class Scalar>
 Scalar TSFCore::norm_inf( const Vector<Scalar>& v_rhs )
 {
-	RTOpPack::RTOpC norm_inf_op;
-	TEST_FOR_EXCEPTION( 0!=RTOp_ROp_norm_inf_construct(&norm_inf_op.op()),std::logic_error,"Error!");
+  RTOpPack::ROpNormInf<Scalar> norm_inf_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> norm_inf_targ = norm_inf_op.reduct_obj_create();
 	const Vector<Scalar>* vecs[] = { &v_rhs };
 	applyOp<Scalar>(norm_inf_op,1,vecs,0,NULL,&*norm_inf_targ);
-	return RTOp_ROp_norm_inf_val(norm_inf_op(*norm_inf_targ));
+	return norm_inf_op(*norm_inf_targ);
 }
 
 template<class Scalar>
 Scalar TSFCore::dot( const Vector<Scalar>& v_rhs1, const Vector<Scalar>& v_rhs2 )
 {
-	RTOpPack::RTOpC dot_prod_op;
-	TEST_FOR_EXCEPTION(0!=RTOp_ROp_dot_prod_construct(&dot_prod_op.op()),std::logic_error,"Error!");
+  RTOpPack::ROpDotProd<Scalar> dot_prod_op;
   Teuchos::RefCountPtr<RTOpPack::ReductTarget> dot_prod_targ = dot_prod_op.reduct_obj_create();
 	const Vector<Scalar>* vecs[] = { &v_rhs1, &v_rhs2 };
 	applyOp<Scalar>(dot_prod_op,2,vecs,0,NULL,&*dot_prod_targ);
-	return RTOp_ROp_dot_prod_val(dot_prod_op(*dot_prod_targ));
+  return dot_prod_op(*dot_prod_targ);
 }
 
 template<class Scalar>
@@ -150,10 +142,7 @@ void TSFCore::assign( Vector<Scalar>* v_lhs, const Vector<Scalar>& v_rhs )
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"assign(...), Error!");
 #endif
-	RTOpPack::RTOpC assign_vectors_op;
-  TEST_FOR_EXCEPTION(
-    0!=RTOp_TOp_assign_vectors_construct(&assign_vectors_op.op())
-    ,std::logic_error,"Error!" );
+  RTOpPack::TOpAssignVectors<Scalar> assign_vectors_op;
 	const Vector<Scalar>* vecs[]      = { &v_rhs };
 	Vector<Scalar>*       targ_vecs[] = { v_lhs  };
 	applyOp<Scalar>(assign_vectors_op,1,vecs,1,targ_vecs,NULL);
@@ -165,10 +154,7 @@ void TSFCore::Vp_S( Vector<Scalar>* v_lhs, const Scalar& alpha )
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
 #endif
-	RTOpPack::RTOpC add_scalar_op;
-  TEST_FOR_EXCEPTION(
-    0!=RTOp_TOp_add_scalar_construct(alpha,&add_scalar_op.op())
-    ,std::logic_error,"Error!" );
+  RTOpPack::TOpAddScalar<Scalar> add_scalar_op(alpha);
 	Vector<Scalar>* targ_vecs[] = { v_lhs };
 	applyOp<Scalar>(add_scalar_op,0,NULL,1,targ_vecs,NULL);
 }
@@ -180,14 +166,11 @@ void TSFCore::Vt_S(
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vt_S(...), Error!");
 #endif
-	if( alpha == 0.0 ) {
-		assign(v_lhs,0.0);
+	if( alpha == Teuchos::ScalarTraits<Scalar>::zero() ) {
+		assign(v_lhs,Teuchos::ScalarTraits<Scalar>::zero());
 	}
-	else if( alpha != 1.0 ) {
-		RTOpPack::RTOpC  scale_vector_op;
-    TEST_FOR_EXCEPTION(
-      0!=RTOp_TOp_scale_vector_construct(alpha,&scale_vector_op.op())
-      ,std::logic_error,"Error!" );
+	else if( alpha != Teuchos::ScalarTraits<Scalar>::one() ) {
+    RTOpPack::TOpScaleVector<Scalar> scale_vector_op(alpha);
 		Vector<Scalar>* targ_vecs[] = { v_lhs };
 		applyOp<Scalar>(scale_vector_op,0,NULL,1,targ_vecs,NULL);
 	}
@@ -199,10 +182,7 @@ void TSFCore::Vp_StV( Vector<Scalar>* v_lhs, const Scalar& alpha, const Vector<S
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"Vp_StV(...), Error!");
 #endif
-	RTOpPack::RTOpC axpy_op;
-  TEST_FOR_EXCEPTION(
-    0!=RTOp_TOp_axpy_construct(alpha,&axpy_op.op())
-    ,std::logic_error,"Error!" );
+  RTOpPack::TOpAXPY<Scalar> axpy_op(alpha);
 	const Vector<Scalar>* vecs[]      = { &v_rhs };
 	Vector<Scalar>*       targ_vecs[] = { v_lhs  };
 	applyOp<Scalar>(axpy_op,1,vecs,1,targ_vecs,NULL);
@@ -217,10 +197,7 @@ void TSFCore::ele_wise_prod(
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_prod(...), Error");
 #endif
-	RTOpPack::RTOpC ele_wise_prod_op;
-  TEST_FOR_EXCEPTION(
-    0!=RTOp_TOp_ele_wise_prod_construct(alpha,&ele_wise_prod_op.op())
-    ,std::logic_error,"Error!" );
+  RTOpPack::TOpEleWiseProd<Scalar> ele_wise_prod_op(alpha);
 	const Vector<Scalar>* vecs[]      = { &v_rhs1, &v_rhs2 };
 	Vector<Scalar>*       targ_vecs[] = { v_lhs };
 	applyOp<Scalar>(ele_wise_prod_op,2,vecs,1,targ_vecs,NULL);
@@ -235,10 +212,7 @@ void TSFCore::ele_wise_divide(
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(v_lhs==NULL,std::logic_error,"ele_wise_divide(...), Error");
 #endif
-	RTOpPack::RTOpC ele_wise_divide_op;
-  TEST_FOR_EXCEPTION(
-    0!=RTOp_TOp_ele_wise_divide_construct(alpha,&ele_wise_divide_op.op())
-    ,std::logic_error,"Error!" );
+  RTOpPack::TOpEleWiseDivide<Scalar> ele_wise_divide_op(alpha);
 	const Vector<Scalar>* vecs[]      = { &v_rhs1, &v_rhs2 };
 	Vector<Scalar>*       targ_vecs[] = { v_lhs };
 	applyOp<Scalar>(ele_wise_divide_op,2,vecs,1,targ_vecs,NULL);
@@ -247,7 +221,7 @@ void TSFCore::ele_wise_divide(
 template<class Scalar>
 void TSFCore::seed_randomize( unsigned int s )
 {
-	srand(s);
+  Teuchos::ScalarTraits<Scalar>::seedrandom(s);
 }
 
 template<class Scalar>
@@ -256,10 +230,7 @@ void TSFCore::randomize( Scalar l, Scalar u, Vector<Scalar>* v )
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION(v==NULL,std::logic_error,"Vt_S(...), Error");
 #endif
-	RTOpPack::RTOpC random_vector_op;
-  TEST_FOR_EXCEPTION(
-    0!=RTOp_TOp_random_vector_construct(l,u,&random_vector_op.op())
-    ,std::logic_error,"Error!" );
+  RTOpPack::TOpRandomize<Scalar> random_vector_op(l,u);
 	Vector<Scalar>* targ_vecs[] = { v };
 	applyOp<Scalar>(random_vector_op,0,NULL,1,targ_vecs,NULL);
 }

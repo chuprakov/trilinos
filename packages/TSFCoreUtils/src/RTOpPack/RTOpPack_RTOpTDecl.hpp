@@ -71,6 +71,9 @@ public:
 
   //@}
 
+  /// Constructor that creates an operator name appended with the type.
+  RTOpT( const std::string &op_name_base );
+
   /** @name Reduction object functions */
   //@{
 
@@ -140,9 +143,9 @@ public:
 		,int                      num_values
 		,primitive_value_type     value_data[]
 		,int                      num_indexes
-		,RTOp_index_type          index_data[]
+		,index_type               index_data[]
 		,int                      num_chars
-		,RTOp_char_type           char_data[]
+		,char_type                char_data[]
 		) const;
 	///
 	/** Load the state of an already created reduction object given
@@ -154,9 +157,9 @@ public:
 		int                            num_values
 		,const primitive_value_type    value_data[]
 		,int                           num_indexes
-		,const RTOp_index_type         index_data[]
+		,const index_type              index_data[]
 		,int                           num_chars
-		,const RTOp_char_type          char_data[]
+		,const char_type               char_data[]
 		,ReductTarget               *reduct_obj
 		) const;
 
@@ -166,15 +169,18 @@ public:
   //@{
 
 	/// Mandatory virtual destructor.
-	virtual ~RTOpT() {}
+	virtual ~RTOpT();
 	///
 	/** Return the name (as a null-terminated C-style string) of the operator.
 	 *
 	 * This name is used to differentate an operator subclass from all
 	 * other operator subclasses.  This is an important property needed
 	 * for a client/server or master/slave runtime configuration.
+   *
+   * The default implementation uses the value created in the
+   * constructor <tt>RTOpT()</tt>.
 	 */
-	virtual const char* op_name() const = 0;
+	virtual const char* op_name() const;
 	///
 	/** Copy the state of another operator object into this one.
 	 *
@@ -225,9 +231,9 @@ public:
 		int                             num_values
 		,primitive_value_type           value_data[]
 		,int                            num_indexes
-		,RTOp_index_type                index_data[]
+		,index_type                     index_data[]
 		,int                            num_chars
-		,RTOp_char_type                 char_data[]
+		,char_type                      char_data[]
 		) const;
 	///
 	/** Load the state of the object from a portable format.
@@ -256,9 +262,9 @@ public:
 		int                           num_values
 		,const primitive_value_type   value_data[]
 		,int                          num_indexes
-		,const RTOp_index_type        index_data[]
+		,const index_type             index_data[]
 		,int                          num_chars
-		,const RTOp_char_type         char_data[]
+		,const char_type              char_data[]
 		);
 	///
 	/** Returns <tt>true</tt> if this operator is coordinate invariant.
@@ -338,6 +344,10 @@ public:
 		) const = 0;
 
   //@}
+
+private:
+
+  std::string op_name_;
 
 }; // end class RTOpT
 

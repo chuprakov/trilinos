@@ -35,11 +35,16 @@
 #include "RTOpPack_RTOpTDecl.hpp"
 #include "WorkspacePack.hpp"
 #include "Teuchos_TestForException.hpp"
+#include "Teuchos_ScalarTraits.hpp"
 
 namespace RTOpPack {
 
-// Reduction object functions
+template<class Scalar>
+RTOpT<Scalar>::RTOpT( const std::string &op_name_base )
+  :op_name_(op_name_base + std::string(Teuchos::ScalarTraits<Scalar>::name()))
+{}
 
+// Reduction object functions
 
 template<class Scalar>
 void RTOpT<Scalar>::get_reduct_type_num_entries(
@@ -85,9 +90,9 @@ void RTOpT<Scalar>::extract_reduct_obj_state(
   ,int                      num_values
   ,primitive_value_type     value_data[]
   ,int                      num_indexes
-  ,RTOp_index_type          index_data[]
+  ,index_type               index_data[]
   ,int                      num_chars
-  ,RTOp_char_type           char_data[]
+  ,char_type                char_data[]
 	) const
 {
 	TEST_FOR_EXCEPTION(true,std::logic_error,"Error, should not call!");
@@ -98,9 +103,9 @@ void RTOpT<Scalar>::load_reduct_obj_state(
   int                            num_values
   ,const primitive_value_type    value_data[]
   ,int                           num_indexes
-  ,const RTOp_index_type         index_data[]
+  ,const index_type              index_data[]
   ,int                           num_chars
-  ,const RTOp_char_type          char_data[]
+  ,const char_type               char_data[]
   ,ReductTarget               *reduct_obj
 	) const
 {
@@ -110,6 +115,16 @@ void RTOpT<Scalar>::load_reduct_obj_state(
 // Operator functions
 
 template<class Scalar>
+RTOpT<Scalar>::~RTOpT()
+{}
+
+template<class Scalar>
+const char* RTOpT<Scalar>::op_name() const
+{
+  return op_name_.c_str();
+}
+
+template<class Scalar>
 RTOpT<Scalar>& RTOpT<Scalar>::operator=(const RTOpT<Scalar>& op)
 {
 	namespace wsp = WorkspacePack;
@@ -117,8 +132,8 @@ RTOpT<Scalar>& RTOpT<Scalar>::operator=(const RTOpT<Scalar>& op)
 	int num_values = 0, num_indexes = 0, num_chars = 0;
 	op.get_op_type_num_entries( &num_values, &num_indexes, &num_chars );
 	wsp::Workspace<primitive_value_type> value_data(wss,num_values);
-	wsp::Workspace<RTOp_index_type>      index_data(wss,num_indexes);
-	wsp::Workspace<RTOp_char_type>       char_data(wss,num_chars);
+	wsp::Workspace<index_type>           index_data(wss,num_indexes);
+	wsp::Workspace<char_type>            char_data(wss,num_chars);
 	op.extract_op_state(
 		num_values,   num_values  ? &value_data[0] : NULL
 		,num_indexes, num_indexes ? &index_data[0] : NULL
@@ -154,9 +169,9 @@ void RTOpT<Scalar>::extract_op_state(
   int                             num_values
   ,primitive_value_type           value_data[]
   ,int                            num_indexes
-  ,RTOp_index_type                index_data[]
+  ,index_type                     index_data[]
   ,int                            num_chars
-  ,RTOp_char_type                 char_data[]
+  ,char_type                      char_data[]
 	) const
 {
 	TEST_FOR_EXCEPTION(true,std::logic_error,"Error, should not call!");
@@ -167,9 +182,9 @@ void RTOpT<Scalar>::load_op_state(
   int                           num_values
   ,const primitive_value_type   value_data[]
   ,int                          num_indexes
-  ,const RTOp_index_type        index_data[]
+  ,const index_type             index_data[]
   ,int                          num_chars
-  ,const RTOp_char_type         char_data[]
+  ,const char_type              char_data[]
 	)
 {
 	TEST_FOR_EXCEPTION(true,std::logic_error,"Error, should not call!");

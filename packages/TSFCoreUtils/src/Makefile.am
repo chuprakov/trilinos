@@ -195,8 +195,21 @@ $(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.cpp
 
 RTOp_STDOPS_SOURCES_HPP=\
 $(srcdir)/RTOpStdOps/initRTOpStdOpsLibCpp.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_ROpDotProd.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_ROpGetSubVector.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_ROpNorm1.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_ROpNorm2.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_ROpNormInf.hpp\
 $(srcdir)/RTOpStdOps/RTOpPack_ROpSum.hpp\
-$(srcdir)/RTOpStdOps/RTOpPack_TOpAssignScalar.hpp
+$(srcdir)/RTOpStdOps/RTOpPack_TOpAXPY.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_TOpAddScalar.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_TOpAssignVectors.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_TOpEleWiseDivide.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_TOpEleWiseProd.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_TOpRandomize.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_TOpAssignScalar.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_TOpScaleVector.hpp\
+$(srcdir)/RTOpStdOps/RTOpPack_TOpSetSubVector.hpp
 
 AM_CPPFLAGS = -I$(top_builddir)/src \
   -I$(top_srcdir)/src/MoochoUtilities \

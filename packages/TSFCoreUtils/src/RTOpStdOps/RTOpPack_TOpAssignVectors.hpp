@@ -27,29 +27,23 @@
 // @HEADER
 
 // ///////////////////////////////
-// RTOpPack_TOpAssignScalar.hpp
+// RTOpPack_TOpAssignVectors.hpp
 
-#ifndef RTOPPACK_TOP_ASSIGN_SCALAR_HPP
-#define RTOPPACK_TOP_ASSIGN_SCALAR_HPP
+#ifndef RTOPPACK_TOP_ASSIGN_VECTORS_HPP
+#define RTOPPACK_TOP_ASSIGN_VECTORS_HPP
 
 #include "RTOpPack_RTOpTHelpers.hpp"
 
 namespace RTOpPack {
 
 ///
-/** Assign a scalar to a vector transforamtion operator: <tt>z0[i] = alpha, i=1...n</tt>.
+/** Vector assignment transforamtion operator: <tt>z0[i] = v0[i], i=1...n</tt>.
  */
 template<class Scalar>
-class TOpAssignScalar : public ROpScalarTransformationBase<Scalar> {
+class TOpAssignVectors : public RTOpT<Scalar> {
 public:
   ///
-  void alpha( const Scalar& alpha ) { scalarData(alpha); }
-  ///
-  Scalar alpha() const { return scalarData(); }
-  ///
-  TOpAssignScalar( const Scalar &alpha = Teuchos::ScalarTraits<Scalar>::zero() )
-    : ROpScalarTransformationBase<Scalar>(alpha), RTOpT<Scalar>("TOpAssignScalar")
-    {}
+  TOpAssignVectors() : RTOpT<Scalar>("TOpAssignScalar") {}
   /** @name Overridden from RTOpT */
   //@{
   ///
@@ -59,14 +53,14 @@ public:
 		,ReductTarget *reduct_obj
 		) const
     {
-      RTOP_APPLY_OP_0_1(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
-      for( RTOp_index_type i = 0; i < subDim; ++i, z0_val += z0_s ) {
-        *z0_val = alpha();
+      RTOP_APPLY_OP_1_1(num_vecs,sub_vecs,num_targ_vecs,targ_sub_vecs);
+      for( RTOp_index_type i = 0; i < subDim; ++i, v0_val += v0_s, z0_val += z0_s ) {
+        *z0_val = *v0_val;
       }
-}
+    }
   //@}
-}; // class TOpAssignScalar
+}; // class TOpAssignVectors
 
 } // namespace RTOpPack
 
-#endif // RTOPPACK_TOP_ASSIGN_SCALAR_HPP
+#endif // RTOPPACK_TOP_ASSIGN_VECTORS_HPP

@@ -38,6 +38,7 @@ namespace RTOpPack {
 
 template<class Scalar>
 RTOpUnaryFuncPtr<Scalar>::RTOpUnaryFuncPtr()
+  :RTOpT<Scalar>("RTOpUnaryFuncPtr")
 {
 	set_initialized();
 }
@@ -47,6 +48,7 @@ RTOpUnaryFuncPtr<Scalar>::RTOpUnaryFuncPtr(
 	unary_func_ptr_t        unary_func_ptr
 	,const std::string      &op_name
 	)
+  :RTOpT<Scalar>("RTOpUnaryFuncPtr")
 {
 	initialize(unary_func_ptr,op_name);
 }
