@@ -31,8 +31,25 @@ namespace NLPInterfacePack {
  *
  * <b>Overview:</b>
  *
- * This class represents an abstract interface to a general nonlinear
- * programming problem of the form:
+ * This class represents an abstract interface to a general nonlinear programming problem of the form
+ * (in mathematical and ASCII notation):
+ \f[
+ \begin{array}{lcl}
+ \mbox{min}  &  & f(x)                     \\
+ \mbox{s.t.} &  & c(x) = 0                 \\
+             &  & h^L \leq h(x) \leq h^U   \\
+             &  & x^L \leq x    \leq x^U
+ \end{array}
+ \f]
+ * where:<ul>
+ * <li> \f$x, x^L, x^U \:\in\:\mathcal{X}\f$
+ * <li> \f$f(x) : \:\mathcal{X} \rightarrow \Re\f$
+ * <li> \f$c(x) : \:\mathcal{X} \rightarrow \mathcal{C}\f$
+ * <li> \f$h(x) : \:\mathcal{X} \rightarrow \mathcal{H}\f$
+ * <li> \f$\mathcal{X} \:\in\:\Re\:^n\f$
+ * <li> \f$\mathcal{C} \:\in\:\Re\:^m\f$
+ * <li> \f$\mathcal{H} \:\in\:\Re\:^{m^I}\f$
+ * </ul>
  \verbatim
 
      min    f(x)
@@ -40,10 +57,17 @@ namespace NLPInterfacePack {
             hl <= h(x) <= hu
 	        xl <= x <= xu
 	where:
-	        x    <: R^n
-	        c(x) <: R^n -> R^m 
-	        h(x) <: R^n -> R^mI 
+	        x    <: space_x
+            f(x) <: space_x -> R^1
+	        c(x) <: space_x -> space_c 
+	        h(x) <: space_x -> space_h
+            space_x <: R^n
+            space_c <: R^n -> R^m
+            space_h <: R^n -> R^mI
  \endverbatim
+ * The %NLP is defined in terms of vector spaces for the unknowns \a x (\c space_x)
+ * the equality constraints \a c (\c space_h) and general inequality constraints
+ * \a (\c space_h) and nonlinear operator functions \a f(x), \a c(x) and \a h(x).
  * In the above form, none of the variables are fixed between bounds (strictly
  * xl < xu).  It is allowed however for <tt>m == 0</tt> and/or <tt>mI == 0</tt>
  * for the elimination of more general constriants.  It is also allowed for
@@ -83,21 +107,25 @@ namespace NLPInterfacePack {
  * The optimality conditions are given by:
  \verbatim
 
-	del(L,x)      = del(f,x) + del(c,x) * lambda + del(h,x) * lambdaI + nu = 0
-	del(L,lambda) = c(x) = 0
-	  where:
-        lambdaI = lambdaI_u - lambdaI_l
+	del(L,x) = del(f,x) + del(c,x) * lambda + del(h,x) * lambdaI + nu = 0
+	c(x) = 0
+	hl <= h(x) <= hu
+	lambdaI_l(j) * ( h(x)(j) - hl(j) ) = 0,    for j = 1...mI
+	lambdaI_u(j) * ( h(x)(j) - hu(j) ) = 0,    for j = 1...mI
+	nuu(i) * ( x(i) - xu(i) ) = 0,      for i = 1...n
+	nuu(i) * ( x(i) - xu(i) ) = 0,      for i = 1...n
+	where:
+		lambdaI = lambdaI_u - lambdaI_l
 		nu = nuu - nul
-		lambdaI_l(j) * ( h(x)(j) - hl(j) ) = 0,    for j = 1...mI
-		lambdaI_u(j) * ( h(x)(j) - hu(j) ) = 0,    for j = 1...mI
-		nuu(i) * ( x(i) - xu(i) ) = 0,      for i = 1...n
-		nuu(i) * ( x(i) - xu(i) ) = 0,      for i = 1...n
  \endverbatim
  * What is unique about this interface is that the vector objects are hidden behind
  * abstact interfaces.  Clients can create vectors from the various vector spaces
  * using the <tt>\ref AbstractLinAlgPack::VectorSpace "VectorSpace"</tt> objects returned from
  * <tt>this->space_x()</tt> (dim \c n), <tt>this->space_c()</tt> (dim \c m) and
- * <tt>this->space_h()</tt> (dim \c mI).
+ * <tt>this->space_h()</tt> (dim \c mI).  In this sense, an <tt>%NLP</tt> object
+ * acks as an "Abstract Factory" to create the vectors needed by an optimization
+ * algorithm.  This allows optimization software to be written in a way that is
+ * completly independent from the linear algebra components.
  *
  * <b>Client Usage:</b>
  *
@@ -935,6 +963,12 @@ protected:
 	}
 
 private:
+
+#ifdef DOXYGEN_COMPILE
+	AbstractLinAlgPack::VectorSpace *space_x;
+	AbstractLinAlgPack::VectorSpace *space_c;
+	AbstractLinAlgPack::VectorSpace *space_h;
+#endif
 	mutable ZeroOrderInfo           first_order_info_;
 	mutable size_type				num_f_evals_;
 	mutable size_type				num_c_evals_;
