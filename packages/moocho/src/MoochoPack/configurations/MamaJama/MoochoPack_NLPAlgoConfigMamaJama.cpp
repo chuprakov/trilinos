@@ -453,9 +453,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			options_setter.set_options(*options_);			
 
 			algo->insert_step( ++step_num, EvalNewPoint_name
-				, new EvalNewPointStd_Step(
-					rcp::rcp_const_cast<const NLPFirstDerivativesTester>(deriv_tester)
-					)
+				, new EvalNewPointStd_Step(deriv_tester)
 				);
 		}
 

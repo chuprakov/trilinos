@@ -26,7 +26,7 @@ public:
 		NLPFirstDerivativesTester;
 
 	/// «std comp» members for comparision object compatible with Gc
-	STANDARD_COMPOSITION_MEMBERS( const NLPFirstDerivativesTester, deriv_tester )
+	STANDARD_COMPOSITION_MEMBERS( NLPFirstDerivativesTester, deriv_tester )
 
 	///
 	/** Call to set #newx# = #new_point# which is passed to the to the first nlp calc with is Gc.

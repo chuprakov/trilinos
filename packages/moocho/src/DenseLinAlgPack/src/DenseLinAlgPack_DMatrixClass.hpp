@@ -976,8 +976,13 @@ GenMatrix::GenMatrix(value_type val, size_type rows, size_type cols)
 
 inline
 GenMatrix::GenMatrix(const value_type* p, size_type rows, size_type cols)
-	: v_(p,rows*cols), rows_(rows)
-{}
+	: v_(rows*cols), rows_(rows)
+{
+// 6/7/00: valarray<> in libstdc++-2.90.7 has a bug in v_(p,size) so we do not
+// use it.  This is a hack until I can find the time to remove valarray all
+// together.
+	std::copy( p, p + rows*cols, &v_[0] );
+}
 
 inline
 GenMatrix::GenMatrix(const GenMatrixSlice& gms)

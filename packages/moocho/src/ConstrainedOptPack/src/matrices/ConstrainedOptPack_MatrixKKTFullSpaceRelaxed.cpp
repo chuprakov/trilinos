@@ -6,6 +6,7 @@
 #include <assert.h>
 
 #include <sstream>
+#include <typeinfo>
 
 #include "ConstrainedOptimizationPack/include/MatrixKKTFullSpaceRelaxed.h"
 #include "SparseSolverPack/include/DirectSparseFortranCompatibleSolver.h"

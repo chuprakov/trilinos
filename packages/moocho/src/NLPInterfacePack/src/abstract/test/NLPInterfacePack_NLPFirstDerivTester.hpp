@@ -65,7 +65,7 @@ public:
 		CompareDenseSparseMatrices;
 
 	/// «std comp» members for comparision object compatible with Gc
-	STANDARD_COMPOSITION_MEMBERS( const CompareDenseSparseMatrices, comp_Gc )
+	STANDARD_COMPOSITION_MEMBERS( CompareDenseSparseMatrices, comp_Gc )
 
 	///
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )

@@ -1,6 +1,10 @@
 // ///////////////////////////////////////////////////////////
 // NLPFirstDerivativesTester.cpp
 
+#include <assert.h>
+#include <iomanip>
+#include <sstream>
+
 #include "NLPFirstDerivativesTester.h"
 #include "../include/NLPFirstOrderInfo.h"
 #include "LinAlgPack/include/GenMatrixClass.h"
@@ -27,6 +31,10 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 	, const VectorSlice&					xo
 	, std::ostream*							out		) const
 {
+	using std::setw;
+	using std::endl;
+	using std::right;
+
 	using LinAlgPack::Vp_StV;
 	using LinAlgPack::sqrt_eps;
 
@@ -77,6 +85,17 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 	nlp->set_f( &f );
 	nlp->set_c( &c );
 
+	// Output header
+	bool printed_header = false;
+	const int int_w = 10, dbl_w = 25, dbl_p = 15;
+	const char int_ul[] = "--------", dbl_ul[] = "-----------------------"; 
+
+	int p_saved;
+	if(out) {
+		p_saved = out->precision();
+		*out << std::setprecision(dbl_p);
+	}
+
 	// For each x(i) compute the finite difference approximations to
 	// Gf and Gc
 	if(out)
@@ -102,31 +121,47 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 		x(i) = x(i) + h;
 
 		const value_type
-			err = ::fabs( (FDGf(i) - Gf(i)) / (FDGf(i) + Gf(i) + small_num ) );
+			ele_err = ::fabs( (FDGf(i) - Gf(i)) / (FDGf(i) + Gf(i) + small_num ) );
 
-		if( err >= warning_tol() || err >= error_tol() ) {
+		if( ele_err >= warning_tol() || ele_err >= error_tol() ) {
 			if(out) {
-				std::ostringstream omsg;
-				if( err >= error_tol() ) {
-					omsg
-						<< "*** Error, ";
+				if(!printed_header) {
+					*out
+						<< "Warning, the following relative error between "
+						<< "the elements is greater than warning_tol = "
+						<< warning_tol() << endl << endl
+						<< right << setw(int_w) << "i"
+						<< right << setw(dbl_w) << "d(f(x))/d(x(i))"
+						<< right << setw(dbl_w) << "finite_d(f(x))/d(x(i))"
+						<< right << setw(dbl_w) << "relative error\n"
+						<< right << setw(int_w) << int_ul
+						<< right << setw(dbl_w) << dbl_ul
+						<< right << setw(dbl_w) << dbl_ul
+						<< right << setw(dbl_w) << dbl_ul << endl;
+					printed_header = true;
 				}
-				else {	// ele_err >= warning_tol
-					omsg
-						<< "*** Warning, ";
-				}
-				omsg	<< "d(f(x))/d(x(" << i << ")) = " << Gf(i)
-						<< " not close enough to finite_diff(f(x))/d(x(" << i << ")) = "
-						<< FDGf(i) << "\n";
-				*out << omsg.str();
+				*out
+					<< right << setw(int_w) << i
+					<< right << setw(dbl_w) << Gf(i)
+					<< right << setw(dbl_w) << FDGf(i)
+					<< right << setw(dbl_w) << ele_err << endl;
 			}
-			if( err >= error_tol() )
+			if( ele_err >= error_tol() ) {
+				if(out)
+					*out
+						<< "*** Error, the last error is larger than error_tol = "
+						<< error_tol() << endl; 
 				return false;	// no more testing!
+			}
 		}
 	}
 
-	if(out)
+
+
+	if(out) {
+		if(printed_header) *out << std::endl;
 		*out << "Checking derivatives of constraints c(x)...\n";
+	}
 	result = comp_Gc().comp( FDGc, Gc, CompareDenseSparseMatrices::FULL_MATRIX
 		, warning_tol(), error_tol(), out );
 	if( !result && out )
