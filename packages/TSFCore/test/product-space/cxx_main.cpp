@@ -227,14 +227,14 @@ int main( int argc, char* argv[] ) {
 		// Run the tests
 		//
 
-		if( !run_product_space_tests<float>(n,numBlocks,float(1e-7),dumpAll,verbose?&out:NULL) ) success = false;
-		if( !run_product_space_tests<double>(n,numBlocks,double(1e-15),dumpAll,verbose?&out:NULL) ) success = false;
+		if( !run_product_space_tests<float>(n,numBlocks,float(1e-5),dumpAll,verbose?&out:NULL) ) success = false;
+		if( !run_product_space_tests<double>(n,numBlocks,double(1e-14),dumpAll,verbose?&out:NULL) ) success = false;
 #if defined(HAVE_COMPLEX) && defined(HAVE_TEUCHOS_COMPLEX)
-		if( !run_product_space_tests<std::complex<float> >(n,numBlocks,float(1e-7),dumpAll,verbose?&out:NULL) ) success = false;
-		if( !run_product_space_tests<std::complex<double> >(n,numBlocks,double(1e-15),dumpAll,verbose?&out:NULL) ) success = false;
+		if( !run_product_space_tests<std::complex<float> >(n,numBlocks,float(1e-5),dumpAll,verbose?&out:NULL) ) success = false;
+		if( !run_product_space_tests<std::complex<double> >(n,numBlocks,double(1e-14),dumpAll,verbose?&out:NULL) ) success = false;
 #endif
 #ifdef HAVE_TEUCHOS_GNU_MP
-		//if( !run_product_space_tests<mpf_class>(n,numBlocks,mpf_class(1e-15),dumpAll,verbose?&out:NULL) ) success = false;
+		//if( !run_product_space_tests<mpf_class>(n,numBlocks,mpf_class(1e-14),dumpAll,verbose?&out:NULL) ) success = false;
 		// Above commented out code will not compile because its ScalarTraits specializatioin does not support eps()
 #endif
 

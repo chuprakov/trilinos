@@ -30,7 +30,6 @@
 // TSFCoreEpetraVector.cpp
 
 #include "TSFCoreEpetraVector.hpp"
-#include "TSFCoreMPIVectorBase.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreMPIVectorBase.hpp"
 #include "Teuchos_TestForException.hpp"

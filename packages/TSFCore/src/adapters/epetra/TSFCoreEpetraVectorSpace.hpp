@@ -33,7 +33,7 @@
 #define TSFCORE_EPETRA_VECTOR_SPACE_HPP
 
 #include "TSFCoreEpetraTypes.hpp"
-#include "TSFCoreMPIVectorSpaceBaseDecl.hpp"
+#include "TSFCoreMPIVectorSpaceBase.hpp"
 
 namespace TSFCore {
 

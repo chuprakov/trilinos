@@ -87,7 +87,7 @@ int main()
 	}
 
 	if(success)
-		std::cout << "\nCongradulations! All of the tests performed passed!\n";
+		std::cout << "\nCongratulations! All of the tests performed passed!\n";
 	else
 		std::cout << "\nOohs! At least one of the tests failed!\n";
 	

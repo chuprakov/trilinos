@@ -33,7 +33,7 @@
 #define TSFCORE_EPETRA_MULTI_VECTOR_HPP
 
 #include "TSFCoreEpetraTypes.hpp"
-#include "TSFCoreMPIMultiVectorBaseDecl.hpp"
+#include "TSFCoreMPIMultiVectorBase.hpp"
 
 namespace TSFCore {
 
