@@ -98,7 +98,7 @@ SolveReturn GMRESSolver<Scalar>::solve(
 		cs.resize(max_iter); sn.resize(max_iter);
     }
     //
-    // Determine the residual from the current solution.
+    // Determine the residual from the current solution: r = b - Op*curr_soln 
     //
     assign( r.get(), b );
     Op.apply( Op_trans, *curr_soln, r.get(), 1.0, -1.0 );

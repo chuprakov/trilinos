@@ -98,12 +98,10 @@ public:
 		,const Scalar               alpha
 		,const Scalar               beta
 		) const;
-
 	//@}
 
 	/** @name Overridden from LinearOpWithSolve */
 	//@{
-
 	///
 	void solve(
 		const ETransp                          M_trans
@@ -123,7 +121,6 @@ public:
 	MemMngPack::ref_count_ptr<const LinearOpWithSolve<Scalar> > clone_lows() const;
 	///
 	MemMngPack::ref_count_ptr<const LinearOp<Scalar> > preconditioner() const;
-
 	//@}
 
 private:

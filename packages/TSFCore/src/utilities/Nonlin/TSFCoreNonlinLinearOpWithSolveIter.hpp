@@ -122,7 +122,7 @@ LinearOpWithSolveIter<Scalar>::setUninitialized()
 	return state_tmp;
 }
 
-// Overridden from LinearOp
+// Overridden from OpBase
 
 template<class Scalar>
 MemMngPack::ref_count_ptr<const VectorSpace<Scalar> >
@@ -143,6 +143,8 @@ bool LinearOpWithSolveIter<Scalar>::opSupported(ETransp M_trans) const
 {
 	return state_.M->opSupported(M_trans);
 }
+
+// Overridden from LinearOp
 
 template<class Scalar>
 void LinearOpWithSolveIter<Scalar>::apply(

@@ -62,7 +62,9 @@ NonlinearProblemFirstOrderTester<Scalar>::doTest(
 	if(o) *o << "DcDy = prob->factory_DcDy()->create();\n";
 	mmp::ref_count_ptr<LinearOpWithSolve<Scalar> > DcDy = DcDy_fcty->create();
 	if(o) *o << "prob->set_DcDy(DcDy)\n"; prob->set_DcDy(DcDy.get());
-	if(o) *o << "prob->get_DcDy() -> "; LinearOpWithSolve<Scalar> *get_DcDy = prob->get_DcDy(); if(o) *o << get_DcDy << endl;
+	if(o) *o << "prob->get_DcDy() -> ";
+	LinearOpWithSolve<Scalar> *get_DcDy = prob->get_DcDy();
+	if(o) *o << get_DcDy << endl;
 
 	std::vector<mmp::ref_count_ptr<LinearOp<Scalar> > >  DcDu(Nu);
 	for( l = 1; l <= Nu; ++l ) {

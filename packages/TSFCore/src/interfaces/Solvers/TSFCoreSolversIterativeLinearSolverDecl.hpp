@@ -45,6 +45,20 @@ public:
 	//@{
 
 	///
+	virtual SolveReturn solve(
+		const LinearOp<Scalar>               &M
+		,const ETransp                       M_trans
+		,const Vector<Scalar>                &y
+		,Vector<Scalar>                      *x
+		,const int                           max_iter                = DEFAULT_MAX_ITER
+		,ConvergenceTester<Scalar>           *convTester             = NULL
+		,const LinearOp<Scalar>              *M_tilde_left_inv       = NULL
+		,const ETransp                       M_tilde_left_inv_trans  = NOTRANS
+		,const LinearOp<Scalar>              *M_tilde_right_inv      = NULL
+		,const ETransp                       M_tilde_right_inv_trans = NOTRANS
+		) const;
+
+	///
 	virtual MemMngPack::ref_count_ptr<const IterativeLinearSolver<Scalar> > clone() const;
 
 	//@}

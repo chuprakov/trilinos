@@ -200,6 +200,11 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 	//
 	// Return the solution
 	//
+
+	if(get_out().get()) {
+		*get_out() << "\n*** Leaving SimpleGMRESSolver<Scalar>::solve(...)\n";
+	}
+
 	return SolveReturn( all_solved ? SOLVED_TO_TOL : MAX_ITER_EXCEEDED , max_iter_taken );
 }
 
