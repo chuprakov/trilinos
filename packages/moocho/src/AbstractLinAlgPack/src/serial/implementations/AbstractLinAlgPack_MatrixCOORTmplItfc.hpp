@@ -115,7 +115,12 @@ public:
 		, nz_left_(nz)
 #endif
 	{}
-	void operator++() {	--nz_left_;	ele_.increment(); }
+	void operator++() {
+#ifdef _DEBUG
+		--nz_left_;
+#endif
+		ele_.increment();
+	}
 	bool operator!=(const MatrixCOORTmplItfcItr<T_Scalar,T_Index>& itr) const
 	{   return ele_ != itr.ele_; }
 	const MatrixCOORTmplItfcItrEleView<T_Scalar,T_Index>* operator->() const
