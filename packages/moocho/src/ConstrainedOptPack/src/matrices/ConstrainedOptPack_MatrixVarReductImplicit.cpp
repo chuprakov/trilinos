@@ -125,7 +125,7 @@ void imp_Vp_StPtMtV_by_row(
 		D_cols = decomp_sys.N().cols();
 	// y = b*y
 	if(b==0.0)       *y = 0.0;
-	else if(b!=1.0)  Vt_S(y,b);
+	else if(b!=1.0)  LinAlgPack::Vt_S(y,b);
 	// Compute t = N'*inv(C')*e(j) then y(i) += -a*t'*x where op(P)(i,j) = 1.0
 	wsp::Workspace<LinAlgPack::value_type>   e_j_ws(wss,D_rows);
 	VectorSlice                              e_j(&e_j_ws[0],e_j_ws.size());
@@ -145,6 +145,7 @@ void imp_Vp_StPtMtV_by_row(
 } // end namespace
 
 namespace LinAlgOpPack {
+	using SparseLinAlgPack::Vp_StV;
 	using SparseLinAlgPack::Vp_StMtV;
 }
 
@@ -226,7 +227,7 @@ MatrixWithOp& MatrixVarReductImplicit::operator=(const MatrixWithOp& M)
 	return *this;
 }
 
-void MatrixVarReductImplicit::MatrixVarReductImplicit::Vp_StMtV(
+void MatrixVarReductImplicit::Vp_StMtV(
 	VectorSlice* y, value_type a, BLAS_Cpp::Transp D_trans
 	, const VectorSlice& x, value_type b) const
 {
@@ -246,6 +247,7 @@ void MatrixVarReductImplicit::Vp_StMtV(
 {
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
+	using LinAlgPack::Vt_S;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
@@ -306,7 +308,7 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 	LinAlgPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans,opD_rows);
 	LinAlgPack::Vp_MtV_assert_sizes(cols(P.rows(),P.cols(),P_trans),D_rows,D_cols,D_trans,x.size());
 	if( D_dense_.rows() > 0 ) {
-		dense_Vp_StPtMtV(y,a,P,P_trans,D_dense_,D_trans,x,b);
+		SparseLinAlgPack::dense_Vp_StPtMtV(y,a,P,P_trans,D_dense_,D_trans,x,b);
 	}
 	else if( P.nz() > D_cols || D_trans == BLAS_Cpp::trans ) {
 		// Just use the default implementation
@@ -332,7 +334,7 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 	LinAlgPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans,opD_rows);
 	LinAlgPack::Vp_MtV_assert_sizes(cols(P.rows(),P.cols(),P_trans),D_rows,D_cols,D_trans,x.size());
 	if( D_dense_.rows() > 0 ) {
-		dense_Vp_StPtMtV(y,a,P,P_trans,D_dense_,D_trans,x,b);
+		SparseLinAlgPack::dense_Vp_StPtMtV(y,a,P,P_trans,D_dense_,D_trans,x,b);
 	}
 	else if( P.nz() > D_cols || D_trans == BLAS_Cpp::trans ) {
 		// Just use the default implementation

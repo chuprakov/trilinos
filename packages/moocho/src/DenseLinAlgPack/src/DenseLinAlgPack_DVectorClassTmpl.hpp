@@ -767,10 +767,6 @@ const VectorSliceTmpl<T> gen_vs( const VectorSliceTmpl<T>& vs, size_type start, 
 // /////////////////////////////////////////////////////////////////////////////
 // VectorSliceTmpl inline member function definitions
 
-template<class T>
-inline
-VectorSliceTmpl<T>::difference_type my_abs(VectorSliceTmpl<T>::difference_type i) { return i > 0 ? i : -i; }
-
 // Constructors.  Use default copy constructor
 
 template<class T>

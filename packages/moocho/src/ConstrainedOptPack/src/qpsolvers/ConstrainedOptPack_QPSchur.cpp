@@ -2377,7 +2377,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		output_level = NO_OUTPUT;
 
 	const int dbl_min_w = 20;
-	const int dbl_w = (out ? std::_MAX(dbl_min_w,out->precision()+8) : 20 );
+	const int dbl_w = (out ? std::_MAX(dbl_min_w,int(out->precision()+8)) : 20 );
 
 	// Set the schur complement
 	act_set_.set_schur_comp( schur_comp_ );
@@ -2943,7 +2943,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	}
 
 	const int dbl_min_w = 20;
-	const int dbl_w = (out ? std::_MAX(dbl_min_w,out->precision()+8): 20 );
+	const int dbl_w = (out ? std::_MAX(dbl_min_w,int(out->precision()+8)): 20 );
 
 	try {
 
@@ -4607,7 +4607,7 @@ QPSchur::iter_refine(
 	const int int_w = 8;
 	const char int_ul[] = "------";
 	const int dbl_min_w = 20;
-	const int dbl_w = ( out ? std::_MAX(dbl_min_w,out->precision()+8): 20 );
+	const int dbl_w = ( out ? std::_MAX(dbl_min_w,int(out->precision()+8)): 20 );
 	const char dbl_ul[] = "------------------";
 
 	const QPSchurPack::QP
@@ -4904,7 +4904,7 @@ void QPSchur::dump_act_set_quantities(
 	const int  int_w = 10;
 	const char int_ul[] = "--------";
 	const int  dbl_min_w = 20;
-	const int  dbl_w = std::_MAX(dbl_min_w,out.precision()+8);
+	const int  dbl_w = std::_MAX(dbl_min_w,int(out.precision()+8));
 	const char dbl_ul[] = "------------------";
 
     out << "\n*** Dumping the current active set ***\n"
