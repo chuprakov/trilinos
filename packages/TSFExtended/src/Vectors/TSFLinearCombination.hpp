@@ -31,6 +31,7 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFVector.hpp"
+#include "TSFLinearOperator.hpp"
 
 
 #ifndef DOXYGEN_DEVELOPER_ONLY
@@ -65,18 +66,26 @@ namespace TSFExtendedOps
 
   /** 
    * Class LC1 holds the information required to perform
-   * a 1-term linear combination, i.e., a scalar times a vector.
+   * a 1-term linear combination, i.e., a scalar times a vector
+   * or an operator times a vectir.
    */
   template <class Scalar>
   class LC1 : public ConvertibleToVector<Scalar>
   {
     public:
     /** */
-    LC1(const TSFExtended::Vector<Scalar>& x) : alpha_(1.0), x_(x) {;}
+    LC1(const TSFExtended::Vector<Scalar>& x) 
+      : alpha_(1.0), op_(), x_(x) {;}
 
     /** */
     LC1(const Scalar& alpha, const TSFExtended::Vector<Scalar>& x)
-      : alpha_(alpha), x_(x) {;}
+      : alpha_(alpha), op_(), x_(x) {;}
+
+    /** */
+    LC1(const Scalar& alpha,
+        const TSFExtended::LinearOperator<Scalar>& op, 
+        const TSFExtended::Vector<Scalar>& x)
+      : alpha_(alpha), op_(op), x_(x) {;}
 
     /** 
      * Evaluate the term into the argument vector, overwriting 
@@ -94,8 +103,13 @@ namespace TSFExtendedOps
     bool containsVector(const TSFCore::Vector<Scalar>* vec) const 
     {return vec == x_.ptr().get();}
 
+    /** */
+    LC1<Scalar> operator*(const Scalar& beta) const ;
+    
     private:
     Scalar alpha_;
+
+    TSFExtended::LinearOperator<Scalar> op_;
 
     TSFExtended::Vector<Scalar> x_;
   };
@@ -142,6 +156,19 @@ namespace TSFExtendedOps
                         const TSFExtended::Vector<Scalar>& x)
   {
     return LC1<Scalar>(alpha, x);
+  }
+
+  template <class Scalar> inline
+  LC1<Scalar> operator*(const TSFExtended::LinearOperator<Scalar>& op, 
+                        const TSFExtended::Vector<Scalar>& x)
+  {
+    return LC1<Scalar>(1.0, op, x);
+  }
+
+  template <class Scalar> inline
+  LC1<Scalar> LC1<Scalar>::operator*(const Scalar& beta) const
+  {
+    return LC1<Scalar>(alpha_*beta, op_, x_);
   }
 
 
@@ -338,22 +365,47 @@ namespace TSFExtendedOps
   template <class Scalar> inline
   void LC1<Scalar>::evalInto(TSFExtended::Vector<Scalar>& result) const
   {
-    result.acceptCopyOf(x_).scale(alpha_);
+    if (op_.ptr().get() != 0)
+      {
+        op_.apply(x_, result, alpha_);
+      }
+    else
+      {
+        result.acceptCopyOf(x_);
+        result.scale(alpha_);
+      }
   }
 
   template <class Scalar> inline
   void LC1<Scalar>::addInto(TSFExtended::Vector<Scalar>& result,
                             LCSign sign) const
   {
-    result.update(sign*alpha_, x_);
+    if (op_.ptr().get() != 0)
+      {
+        op_.apply(x_, result, alpha_, 1.0);
+      }
+    else
+      {
+        result.update(sign*alpha_, x_);
+      }
   } 
 
   template <class Scalar> inline
   TSFExtended::Vector<Scalar> LC1<Scalar>::eval() const 
   {
-    TSFExtended::Vector<Scalar> result = x_.copy();
-    result.scale(alpha_);
-    
+    TSFExtended::Vector<Scalar> result;
+
+    if (op_.ptr().get() != 0)
+      {
+        result = op_.range().createMember();
+        op_.apply(x_, result, alpha_);
+      }
+    else
+      {
+        result = x_.copy();
+        result.scale(alpha_);    
+      }
+
     return result;
   }
 }

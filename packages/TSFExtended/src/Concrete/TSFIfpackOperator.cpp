@@ -51,15 +51,17 @@ IfpackOperator::IfpackOperator(const EpetraMatrix* A,
 			
   Ifpack_IlukGraph* precondGraph 
     = new Ifpack_IlukGraph(matrixGraph, fillLevels, overlapFill);
+  precondGraph_ = rcp(precondGraph);
 
   int ierr = precondGraph->ConstructFilledGraph();
 
-  TEST_FOR_EXCEPTION(ierr != 0, runtime_error,
+  TEST_FOR_EXCEPTION(ierr < 0, runtime_error,
                      "IfpackOperator ctor: "
                      "precondGraph->ConstructFilledGraph() failed with ierr="
                      << ierr);
 
   Ifpack_CrsRiluk* precond = new Ifpack_CrsRiluk(*precondGraph);
+  precond_ = rcp(precond);
 
   precond->SetRelaxValue(relaxationValue);
   precond->SetRelativeThreshold(relativeThreshold);
@@ -67,14 +69,14 @@ IfpackOperator::IfpackOperator(const EpetraMatrix* A,
 
   ierr = precond->InitValues(*matrix);
 
-  TEST_FOR_EXCEPTION(ierr != 0, runtime_error,
+  TEST_FOR_EXCEPTION(ierr < 0, runtime_error,
                      "IfpackOperator ctor: "
                      "precond->InitValues() failed with ierr="
                      << ierr);
 
   ierr = precond->Factor();
 
-  TEST_FOR_EXCEPTION(ierr != 0, runtime_error,
+  TEST_FOR_EXCEPTION(ierr < 0, runtime_error,
                      "IfpackOperator ctor: "
                      "precond->Factor() failed with ierr="
                      << ierr);

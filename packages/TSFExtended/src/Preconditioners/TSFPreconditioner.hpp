@@ -96,13 +96,13 @@ namespace TSFExtended
   template <class Scalar> inline
   bool Preconditioner<Scalar>::hasLeft() const 
   {
-    return (ptr_.get()!=0 && ptr_->hasLeft());
+    return (ptr().get()!=0 && ptr()->hasLeft());
   }
 
   template <class Scalar> inline
   bool Preconditioner<Scalar>::hasRight() const 
   {
-    return (ptr_.get()!=0 && ptr_->hasRight());
+    return (ptr().get()!=0 && ptr()->hasRight());
   }
 
   

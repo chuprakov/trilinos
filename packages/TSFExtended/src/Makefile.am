@@ -109,6 +109,7 @@ OPERATORS = \
 LINEARSOLVERS_H = \
 	$(srcdir)/LinearSolvers/TSFAztecSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFBICGSTABSolver.hpp \
+	$(srcdir)/LinearSolvers/TSFGMRESSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFIterativeSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFKrylovSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFLinearSolver.hpp \

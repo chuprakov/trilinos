@@ -87,7 +87,47 @@ namespace TSFExtended
           const Vector<Scalar>& rhs,
           Vector<Scalar>& soln) const
   {
-    return solveUnprec(op, rhs, soln);
+    if (precond_.ptr().get()==0) 
+      {
+        return solveUnprec(op, rhs, soln);
+      }
+
+
+    Preconditioner<Scalar> p = precond_.createPreconditioner(op);
+    
+    if (!p.hasRight())
+      {
+        LinearOperator<Scalar> A = p.left()*op;
+        Vector<Scalar> newRHS = rhs.space().createMember();
+        p.left().apply(rhs, newRHS);
+        return solveUnprec(A, newRHS, soln);
+      }
+    else if (!p.hasLeft())
+      {
+        LinearOperator<Scalar> A = op * p.right();
+        Vector<Scalar> intermediateSoln;
+        SolverState<Scalar> rtn 
+          = solveUnprec(A, rhs, intermediateSoln);
+        if (rtn.finalState()==SolveConverged) 
+          {
+            p.right().apply(intermediateSoln, soln);
+          }
+        return rtn;
+      }
+    else
+      {
+        LinearOperator<Scalar> A = p.left() * op * p.right();
+        Vector<Scalar> newRHS;
+        p.left().apply(rhs, newRHS);
+        Vector<Scalar> intermediateSoln;
+        SolverState<Scalar> rtn 
+          = solveUnprec(A, newRHS, intermediateSoln);
+        if (rtn.finalState()==SolveConverged) 
+          {
+            p.right().apply(intermediateSoln, soln);
+          }
+        return rtn;
+      }
   }
   
 }

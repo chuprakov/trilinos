@@ -137,11 +137,12 @@ int main(int argc, void *argv[])
       ParameterList params;
       ParameterList solverParams;
       solverParams.set("Type", "TSF");
-      solverParams.set("Method", "BICGSTAB");
-      solverParams.set("Max Iterations", 100);
+      solverParams.set("Method", "GMRES");
+      solverParams.set("Max Iterations", 500);
+      solverParams.set("Restart", 100);
       solverParams.set("Tolerance", 1.0e-12);
-      solverParams.set("Precond", "ILUK");
-      solverParams.set("Graph Fill", 1);
+      //      solverParams.set("Precond", "ILUK");
+      // solverParams.set("Graph Fill", 1);
       solverParams.set("Verbosity", 4);
 
       params.set("Linear Solver", solverParams);

@@ -42,7 +42,8 @@ namespace TSFExtended
    * ComposedOperator is a composition of two linear operators.
    */
   template <class Scalar> 
-  class ComposedOperator : public OpDescribableByTypeID<Scalar>
+  class ComposedOperator : public OpDescribableByTypeID<Scalar>,
+                           public Handleable<TSFCore::LinearOp<Scalar> >
   {
   public:
     /** 
@@ -67,28 +68,31 @@ namespace TSFExtended
                        ,const Scalar            beta  = 0.0
                        ) const 
     {
-      RefCountPtr<TSFCore::Vector<Scalar> > vect;
-      if (M_trans == NOTRANS)
+      Vector<Scalar> v;
+      if (M_trans == TSFCore::NOTRANS)
         {
-          vect = right_.range().createMember();
-          vect->zero();
-          right_.ptr()->apply(M_trans, x, vect, 1.0, 0.0);
-          left_.ptr()->apply(M_trans, *vect, y, alpha, beta);
+          v = right_.range().createMember();
+          v.zero();
+          right_.ptr()->apply(M_trans, x, v.ptr().get(), 1.0, 0.0);
+          left_.ptr()->apply(M_trans, *(v.ptr()), y, alpha, beta);
         }
       else
         {
-          vect = left_.range().createMember();
-          vect->zero();
-          left_.ptr()->apply(M_trans, x, vect, 1.0, 0.0);
-          right_.ptr()->apply(M_trans, *vect, y, alpha, beta);
+          v = left_.range().createMember();
+          v.zero();
+          left_.ptr()->apply(M_trans, x, v.ptr().get(), 1.0, 0.0);
+          right_.ptr()->apply(M_trans, *(v.ptr()), y, alpha, beta);
         }
     }
 
     /** Return the domain of the operator */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const {return right_.domain();}
+    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const {return right_.domain().ptr();}
 
     /** Return the range of the operator */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const {return left_.range_();}
+    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const {return left_.range().ptr();}
+
+    /* */
+    GET_RCP(TSFCore::LinearOp<Scalar>);
 
   private:
 

@@ -90,7 +90,9 @@ VectorSpace<Scalar> LinearOperator<Scalar>::range() const
 
 template <class Scalar> inline 
 void LinearOperator<Scalar>::apply(const Vector<Scalar>& in,
-				   Vector<Scalar>& out) const
+                                   Vector<Scalar>& out,
+                                   const Scalar& alpha,
+                                   const Scalar& beta) const
 {
   /* the result vector might not be initialized. If it's null,
    * create a new vector in the range space */
@@ -99,12 +101,14 @@ void LinearOperator<Scalar>::apply(const Vector<Scalar>& in,
       out = range().createMember();
     }
   ptr()->apply(TSFCore::NOTRANS, *(in.ptr().get()),
-	       out.ptr().get());
+	       out.ptr().get(), alpha, beta);
 }
 
 template <class Scalar> inline 
 void LinearOperator<Scalar>::applyTranspose(const Vector<Scalar>& in,
-                                            Vector<Scalar>& out) const
+                                            Vector<Scalar>& out,
+                                            const Scalar& alpha,
+                                            const Scalar& beta) const
 {
   /* the result vector might not be initialized. If it's null,
    * create a new vector in the domain space (i.e., the range space
@@ -114,7 +118,7 @@ void LinearOperator<Scalar>::applyTranspose(const Vector<Scalar>& in,
       out = domain().createMember();
     }
   ptr()->apply(TSFCore::TRANS, *(in.ptr().get()),
-	       out.ptr().get());
+	       out.ptr().get(), alpha, beta);
 }
 
 //       LinearOperator<Scalar> form() const ;
@@ -130,19 +134,7 @@ RefCountPtr<Time>& LinearOperator<Scalar>::opTimer()
 template <class Scalar>
 LinearOperator<Scalar> LinearOperator<Scalar>::transpose() const
 {
-//   TSFCore::LinearOp<Scalar>* t = 
-//     new TransposeOperator<Scalar>(ptr());
-  
-//   Teuchos::RefCountPtr<TSFCore::LinearOp<Scalar> > rt = 
-//     rcp_dynamic_cast<TSFCore::LinearOp<Scalar> >(ptr());
-//   //rp(t);
-  
-//   LinearOperator<Scalar> op(rt);
-//   return op;
   LinearOperator<Scalar> op = new TransposeOperator<Scalar>(*this);
-//   RefCountPtr<TSFCore::LinearOp<double> > op = 
-//     rcp(new TransposeOperator<Scalar>(*this));
-// 				      //(ptr()->range())));
   return op;
 }
 

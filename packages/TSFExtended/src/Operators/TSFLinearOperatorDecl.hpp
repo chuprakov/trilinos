@@ -81,16 +81,28 @@ namespace TSFExtended
       /** */
       virtual VectorSpace<Scalar> range() const ;
 
-      /** */
+      /** 
+       * Compute
+       * \code
+       * out = beta*out + alpha*op*in;
+       * \endcode
+       **/
       void apply(const Vector<Scalar>& in,
-                 Vector<Scalar>& out) const ;
+                 Vector<Scalar>& out,
+                 const Scalar& alpha = 1.0,
+                 const Scalar& beta = 0.0) const ;
 
-      /** */
+      /**  
+       * Compute
+       * \code
+       * out = beta*out + alpha*op^T*in;
+       * \endcode
+       **/
        void applyTranspose(const Vector<Scalar>& in,
-                           Vector<Scalar>& out) const ;
+                           Vector<Scalar>& out,
+                           const Scalar& alpha = 1.0,
+                           const Scalar& beta = 0.0) const ;
 
-//       /** */
-//       LinearOperator<Scalar> transpose() const ;
 
 //       /** */
 //       LinearOperator<Scalar> form() const ;

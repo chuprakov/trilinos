@@ -29,6 +29,7 @@
 #include "TSFLinearSolverBuilder.hpp"
 #include "TSFAztecSolver.hpp"
 #include "TSFBICGSTABSolver.hpp"
+#include "TSFGMRESSolver.hpp"
 #include "Teuchos_XMLParameterListReader.hpp"
 
 using namespace TSFExtended;
@@ -68,6 +69,10 @@ LinearSolver<double> LinearSolverBuilder::createSolver(const XMLObject& xml)
         {
           return new BICGSTABSolver<double>(params);
         }
+       else if (method=="GMRES")
+         {
+           return new GMRESSolver<double>(params);
+         }
     }
 
   TEST_FOR_EXCEPTION(true, runtime_error, 
@@ -97,6 +102,10 @@ LinearSolver<double> LinearSolverBuilder::createSolver(const ParameterList& para
       if (solverMethod=="BICGSTAB") 
         {
           return new BICGSTABSolver<double>(solverSublist);
+        }
+      else if (solverMethod=="GMRES")
+        {
+          return new GMRESSolver<double>(solverSublist);
         }
     }
 
