@@ -40,5 +40,5 @@ TSF_LIBS = -L$(top_builddir)/src \
 	-L$(top_builddir)/../ifpack/src \
 	-L$(top_builddir)/../epetra/src \
 	-L$(top_builddir)/../triutils/src \
-	-ltsf -laztecoo -lifpack -lepetra -ltriutils -ly12m
+	-lTSF -laztecoo -lifpack -lepetra -ltriutils -ly12m
 
