@@ -33,6 +33,9 @@ namespace TSF
 			/** */
 			static void rootPrintf(const char* format, ...);
 
+			/** */
+			static void setWriter(const TSFSmartPtr<TSFWriterBase>& writer );
+
 		private:
 			static TSFSmartPtr<TSFWriterBase> writer_;
 

@@ -3,6 +3,7 @@
 
 #include "TSFConfig.h"
 #include "TSFWriterBase.h"
+#include "TSFSmartPtr.h"
 #include <iostream>
 
 namespace TSF
@@ -16,11 +17,15 @@ namespace TSF
 	class TSFDefaultWriter : public TSFWriterBase
 		{
 		public:
+
 			/** */
 			TSFDefaultWriter();
 
 			/** */
 			TSFDefaultWriter(ostream& os);
+
+			/** */
+			TSFDefaultWriter(const TSFSmartPtr<ostream>& os_ptr);
 
 			/** */
 			virtual ~TSFDefaultWriter(){;}
@@ -32,7 +37,8 @@ namespace TSF
 			virtual void println(const string& msg);
 
 		private:
-			std::ostream& os_;
+			TSFSmartPtr<ostream>   os_ptr_;
+			std::ostream           &os_;
 			static string& header();
 		};
 }

@@ -19,6 +19,10 @@ TSFDefaultWriter::TSFDefaultWriter(std::ostream& os)
 	: os_(os)
 {}
 
+TSFDefaultWriter::TSFDefaultWriter(const TSFSmartPtr<ostream>& os_ptr)
+	: os_ptr_(os_ptr), os_(*os_ptr_)
+{}
+
 void TSFDefaultWriter::print(const std::string& msg)
 {
 	string head = header() + TSFUtils::toString(TSFMPI::getRank()) + "> ";

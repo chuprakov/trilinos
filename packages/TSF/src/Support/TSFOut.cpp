@@ -113,4 +113,7 @@ void TSFOut::vprintf(const char* format, va_list args)
 	TSFError::raise("buffer overflow in TSFOut::printf()");
 }
 
-
+void TSFOut::setWriter(const TSFSmartPtr<TSFWriterBase>& writer )
+{
+	writer_ = writer;
+}
