@@ -16,6 +16,7 @@
 #include <assert.h>
 
 #include <fstream>		// For debugging only
+#include <limits>
 
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDiagSparse.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"

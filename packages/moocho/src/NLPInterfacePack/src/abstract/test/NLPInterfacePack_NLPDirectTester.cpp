@@ -19,6 +19,7 @@
 #include <ostream>
 #include <iomanip>
 #include <sstream>
+#include <limits>
 
 #include "NLPDirectTester.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"

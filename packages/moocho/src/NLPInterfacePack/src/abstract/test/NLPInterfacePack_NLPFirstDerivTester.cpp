@@ -18,6 +18,7 @@
 
 #include <iomanip>
 #include <sstream>
+#include <limits>
 
 #include "NLPFirstDerivTester.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"

@@ -16,6 +16,8 @@
 
 #include <assert.h>
 
+#include <limits>
+
 #include "ConstrainedOptPack/src/matrices/MatrixSymAddDelBunchKaufman.hpp"
 #include "DenseLinAlgLAPack/src/DenseLinAlgLAPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixOut.hpp"

@@ -13,6 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#include <limits>
+
 #include "ConstrainedOptPack/src/misc/ComputeMinMult.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"

@@ -29,6 +29,7 @@
 
 #include <ostream>
 #include <iomanip>
+#include <limits>
 
 #include "ConstrainedOptPack/src/qpsolvers/QPSchur.hpp"
 #include "ConstrainedOptPack/src/misc/ComputeMinMult.hpp"

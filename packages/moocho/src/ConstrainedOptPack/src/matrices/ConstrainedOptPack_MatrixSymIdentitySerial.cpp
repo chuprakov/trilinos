@@ -15,6 +15,8 @@
 
 #include <assert.h>
 
+#include <limits>
+
 #include "ConstrainedOptPack/src/matrices/MatrixSymIdentitySerial.hpp"
 #include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "DenseLinAlgPack/src/DMatrixOp.hpp"

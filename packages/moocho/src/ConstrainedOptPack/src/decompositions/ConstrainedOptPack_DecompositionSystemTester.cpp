@@ -15,6 +15,7 @@
 
 #include <math.h>
 
+#include <limits>
 #include <ostream>
 
 #include "ConstrainedOptPack/src/decompositions/DecompositionSystemTester.hpp"

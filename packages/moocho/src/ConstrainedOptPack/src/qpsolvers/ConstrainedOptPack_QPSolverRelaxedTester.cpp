@@ -15,6 +15,8 @@
 
 #include <math.h>
 
+#include <limits>
+
 #include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedTester.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"

@@ -16,6 +16,7 @@
 #include <math.h>
 
 #include <ostream>
+#include <limits>
 
 #include "AbstractLinAlgPack/src/abstract/tools/BasisSystemTester.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystem.hpp"

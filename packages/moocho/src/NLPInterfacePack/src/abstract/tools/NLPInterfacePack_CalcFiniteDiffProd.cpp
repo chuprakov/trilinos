@@ -20,6 +20,7 @@
 #include <typeinfo>
 #include <iomanip>
 #include <sstream>
+#include <limits>
 
 #include "NLPInterfacePack/src/abstract/tools/CalcFiniteDiffProd.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLP.hpp"

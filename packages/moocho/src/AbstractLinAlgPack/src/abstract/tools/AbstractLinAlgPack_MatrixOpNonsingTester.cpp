@@ -16,6 +16,7 @@
 #include <math.h>
 
 #include <ostream>
+#include <limits>
 
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixOpNonsingTester.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
