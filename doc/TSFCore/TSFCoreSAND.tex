@@ -26,7 +26,10 @@ A Package of Light-Weight Object-Oriented Abstractions for the
 Development of Abstract Numerical Algorithms and Interfacing
 to Linear Algebra Libraries and Applications.
 }
-\author{Roscoe A. Bartlett, Michael A. Heroux and Kevin R. Long \\
+\author{
+Roscoe A. Bartlett \\ Optimization/Uncertainty Estim \\ \\
+Michael A. Heroux \\ Computational Math/Algorithms \\ \\
+Kevin R. Long \\ Computational Sciences \& Math \\ \\
 Sandia National Laboratories\footnote{
 Sandia is a multiprogram laboratory operated by Sandia Corporation, a
 Lockheed-Martin Company, for the United States Department of Energy
@@ -37,9 +40,13 @@ under Contract DE-AC04-94AL85000.}, Albuquerque NM 87185 USA, \\
 % ---------------------------------------------------------------------------- %
 % Set some things we need for SAND reports. These are mandatory
 %
-\SANDnum{SAND2003-xxxx}
-\SANDprintDate{\today}
-\SANDauthor{Roscoe A. Bartlett, Michael A. Heroux and Kevin R. Long}
+\SANDnum{SAND2003-1378}
+\SANDprintDate{September 2003}
+\SANDauthor{
+Roscoe A. Bartlett \\ Optimization/Uncertainty Estim \\ \\
+Michael A. Heroux \\ Computational Math/Algorithms \\ \\
+Kevin R. Long \\ Computational Sciences \& Math
+}
 
 % ---------------------------------------------------------------------------- %
 % The following definitions are optional. The values shown are the default
@@ -105,9 +112,9 @@ libraries.
 %
 \clearpage
 \section*{Acknowledgement}
-The authors would like to thank Paul Boggs, Matthias Heinkenschloss,
-Rob Hoekstra, Rich Lehoucq, Tony Padual and Bart van Bloemen Waanders
-for their input and suggestions.
+The authors would like to thank Paul Boggs, Rob Hoekstra, Rich
+Lehoucq, and Bart van Bloemen Waanders for their input and
+suggestions.
 
 The format of this report is based on information found
 in~\cite{Sand98-0730}.
@@ -174,18 +181,83 @@ in~\cite{Sand98-0730}.
 \input{apdx_TSFCoreClassDecl}
 
 \begin{SANDdistribution}
-%\SANDdistExternal{1}{An Address\\ 99 $99^{th}$ street NW\\City, State}
-%\SANDdistExternal{3}{Some Address\\ and street\\City, State}
-%\bigskip
-%\SANDdistExternal{12}{Another Address\\ On a street\\City, State\\U.S.A.}
-
-%\SANDdistInternal{1}{1110}{Rolf Riesen}{9223}
-
+% External
+\SANDdistExternal{1}{} Omar Ghattas \\ Carnegie Mellon University\\5000 Forms Ave.\\Pittsburgh, PA 15213
+\SANDdistExternal{1}{} Larry Biegler \\ Department Chemeical Engineering\\Carnegie Mellon University\\5000 Forms Ave.\\Pittsburgh, PA 15213
+\SANDdistExternal{1}{} Carl Laird \\ Department Chemeical Engineering\\Carnegie Mellon University\\5000 Forms Ave.\\Pittsburgh, PA 15213
+\SANDdistExternal{1}{} Matthias Heinkenschloss \\ Department of Computational and Applied Mathematics\\MS 134 Rice University\\
+6100 S. Main Street\\Houston, TX 77005-1892
+\SANDdistExternal{1}{} Bill Symes\\Department of Computational and Applied Mathematics\\MS 134 Rice University\\
+6100 S. Main Street\\Houston, TX 77005-1892
+\SANDdistExternal{1}{} Tony Padula\\Department of Computational and Applied Mathematics\\MS 134 Rice University\\
+6100 S. Main Street\\Houston, TX 77005-1892
+\SANDdistExternal{1}{} Mark Gockenbach \\ Department of Mathematical Sciences\\Michigan Technological University\\ 
+1400 Townsend Drive\\Houghton, Michigan 49931-1295, U.S.A.
+\SANDdistExternal{1}{} George Biros \\ Department of Applied Mechanics and Mechanical Engineering\\University of Pennsylvania\\
+220 Towne Building 220 S. 33rd St.\\Philadelphia, PA 19104-6315, USA 
+% Sandia Line
+\SANDdistInternal{1}{0847}{Bill Camp}{9200}
+\SANDdistInternal{1}{0847}{Sudip Dosanjh}{9233}
+% 9211
+\SANDdistInternal{1}{0847}{Scott Mitchell}{9211}
+\SANDdistInternal{1}{1110}{Roscoe Bartlett}{9211}
+\SANDdistInternal{1}{1110}{Scott Collis}{9211}
+\SANDdistInternal{1}{0847}{Bart van Bloemen Waanders}{9211}
+\SANDdistInternal{1}{0847}{Mike Eldred}{9211}
+\SANDdistInternal{1}{0819}{Tim Trucano}{9211}
+\SANDdistInternal{1}{0847}{Tony Giunta}{9211}
+\SANDdistInternal{1}{0947}{Laura Swiler}{9211}
+% 9214
+\SANDdistInternal{1}{9217}{Mark Adams}{9214}
+\SANDdistInternal{1}{1110}{Pavel Bochev}{9214}
+\SANDdistInternal{1}{1110}{Todd Coffey}{9214}
+\SANDdistInternal{1}{1110}{David Day}{9214}
+\SANDdistInternal{1}{1110}{John Delaurentis}{9214}
+\SANDdistInternal{1}{1110}{Michael Heroux}{9214}
+\SANDdistInternal{1}{1110}{Ulrich Hetmaniuk}{9214}
+\SANDdistInternal{1}{9217}{Jonathan Hu}{9214}
+\SANDdistInternal{1}{1110}{Richard Lehoucq}{9214}
+\SANDdistInternal{1}{1110}{Louis Romero}{9214}
+\SANDdistInternal{1}{1110}{David Ropp}{9214}
+\SANDdistInternal{1}{1110}{Heidi Thornquist}{9214}
+\SANDdistInternal{1}{9217}{Raymond Tuminaro}{9214}
+\SANDdistInternal{1}{1110}{James Willenbring}{9214}
+\SANDdistInternal{1}{1110}{David Womble}{9214}
+% 8962
+\SANDdistInternal{1}{9217}{Steve Thomas}{8962}
+\SANDdistInternal{1}{9217}{Paul Boggs}{8962}
+\SANDdistInternal{1}{9217}{Kevin Long}{8962}
+\SANDdistInternal{1}{9217}{Patricia Hough}{8962}
+\SANDdistInternal{1}{9217}{Tamara Kolda}{8962}
+\SANDdistInternal{1}{9217}{Monica Martinez-Canales}{8962}
+\SANDdistInternal{1}{9217}{Pamela Williams}{8962}
+\SANDdistInternal{1}{9217}{Victoria Howle}{8962}
+% Sandia Misc
+\SANDdistInternal{1}{1110}{William Hart}{9215}
+\SANDdistInternal{1}{0847}{Steve Wojtkiewicz}{9124}
+% Xyce developers
+\SANDdistInternal{1}{0316}{Eric Keiter}{9233}
+\SANDdistInternal{1}{0316}{Scott Hutchinson}{9233}
+% Premo developers
+\SANDdistInternal{1}{0316}{Curt Ober}{9233}
+\SANDdistInternal{1}{0316}{Tom Smith}{9233}
+% Main Sierra developers
+\SANDdistInternal{1}{9143}{Carter Edwards}{0827}
+\SANDdistInternal{1}{9143}{James Stewart}{0826}
+% Main Nevada developers
+\SANDdistInternal{1}{0819}{Ricard Drake}{9231}
+% NOX/LOCA developers
+\SANDdistInternal{1}{0316}{Robert Hoekstra}{9233}
+\SANDdistInternal{1}{0316}{Roger Pawlowski}{9233}
+\SANDdistInternal{1}{1110}{Eric Phipps}{9233}
+\SANDdistInternal{1}{1110}{Andrew Salinger}{9233}
+% Other Trilinos developers
+\SANDdistInternal{1}{0826}{Alan Williams}{8961}
+\SANDdistExternal{1}{}{Kendall Stanley}{}
 % Housekeeping copies necessary for every unclassified report:
-\SANDdistInternal{1}{9018}{Central Technical Files}{8940-2}
-\SANDdistInternal{2}{0899}{Technical Library}{4916}
-\SANDdistInternal{2}{0619}{Review \& Approval Desk}{4916}
-
+\SANDdistInternal{1}{9018}{Central Technical Files}{8945-1}
+\SANDdistInternal{2}{0899}{Technical Library}{9610}
+\SANDdistInternal{2}{0612}{Review \& Approval Desk}{4916}
 % If report has a Patent Caution or Patent Interest, add this:
 %\SANDdistInternal{3}{0161}{Patent and Licensing Office}{4916}
 \end{SANDdistribution}
