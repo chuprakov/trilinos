@@ -33,6 +33,8 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, maxIter );
   ///
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, relTol );
+  ///
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, minRelTol );
 
 	///
 	/** Construct uninitialized but with default option values.
@@ -41,8 +43,9 @@ public:
 	 * NOX::Epetra::Group::applyJacobianInverse(...) on 2004/01/19.
 	 */
  	LinearOpWithSolveAztecOO(
-	 	const int      maxIter = 400
-		,const double  relTol  = 1e-6
+	 	const int      maxIter    = 400
+		,const double  relTol     = 1e-6
+		,const double  minRelTol  = 1e-2
 		);
 
 	///

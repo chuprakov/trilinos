@@ -16,9 +16,11 @@ namespace Nonlin {
 LinearOpWithSolveAztecOO::LinearOpWithSolveAztecOO(
 	const int      maxIter
 	,const double  relTol
+	,const double  minRelTol
 	)
 	:maxIter_(maxIter)
 	,relTol_(relTol)
+	,minRelTol_(minRelTol)
 {}
 
 LinearOpWithSolveAztecOO::LinearOpWithSolveAztecOO(
@@ -194,16 +196,31 @@ void LinearOpWithSolveAztecOO::solve(
 	if(get_trace_out().get())
 		trace_out() << "\nSolving the linear system with AztecOO ...\n";
   int aztecStatus = solver_used.Iterate( maxIter(), relTol() );
-  TEST_FOR_EXCEPTION(
-    aztecStatus != 0, Solvers::Exceptions::FailureToConverge
-    ,"LinearOpWithSolveAztecOO::solve(...): Error, AztecOO performed numIter = "
-    << solver_used.NumIters() << " iterations (maxIter = " << maxIter() << ") and failed to converge and "
-    << "only achieved a scaled residual tolerance of " << solver_used.ScaledResidual()
-    << " >= tol = " << relTol() << "!"
-    );
-	if(get_trace_out().get())
-		trace_out() << "\nSolved the linear system(s) in " << solver_used.NumIters() << " iterations to a scaled "
-                << "residual tolerance of " << solver_used.ScaledResidual() << "!\n";
+	const int     numIterUsed = solver_used.NumIters();
+	const double  tolReached  = solver_used.ScaledResidual();
+	if( tolReached > relTol() ) {
+		TEST_FOR_EXCEPTION(
+			tolReached > minRelTol(), Solvers::Exceptions::FailureToConverge
+			,"LinearOpWithSolveAztecOO::solve(...): Error, AztecOO performed numIter = "
+			<< numIterUsed << " iterations (maxIter = " << maxIter() << ") and failed to converge and "
+			<< "only achieved a scaled residual tolerance of " << tolReached
+			<< " > minRelTol = " << minRelTol() << " > relTol = " << relTol() << "!"
+			);
+		if(get_trace_out().get())
+			trace_out()
+				<< "\nWarning! The linear solver took " << numIterUsed << " iterations "
+				<< "(maxIter = " << maxIter() << ") and reached a scaled "
+				<< "residual tolerance tolReached of relTol = " << relTol() << " <= tolReached = "
+				<< tolReached << " <= minRelTol = " << minRelTol() << ".  Therefore, even through the "
+				<< "desired tolerance was not reached we will continue anyway!\n";
+	}
+	else {
+		if(get_trace_out().get())
+			trace_out()
+				<< "\nSolved the linear system(s) in " << numIterUsed << " iterations "
+				<< "(maxIter = " << maxIter() << ") to a scaled "
+				<< "residual tolerance of " << tolReached << " <= relTol = " << relTol() << "!\n";
+	}
   //
   // Release the Epetra_MultiVector views of X and Y;
   X = Teuchos::null;
