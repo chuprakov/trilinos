@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// ExampleNLPFirstOrderInfo.hpp
+// ExampleNLPFirstOrder.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef EXAMPLE_NLP_FIRST_ORDER_INFO_H
 #define EXAMPLE_NLP_FIRST_ORDER_INFO_H
 
-#include "ExampleNLPFirstOrderDirect/ExampleNLPObjGradient.hpp"
+#include "ExampleNLPDirect/ExampleNLPObjGrad.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPFirstOrder.hpp"
 
 namespace NLPInterfacePack {
@@ -39,22 +39,22 @@ namespace NLPInterfacePack {
         p = 1 if dep_bounded == true or m+1 if dep_bounded = false
  \endverbatim
  * This subclass inherits from the subclass
- * <tt>\ref NLPInterfacePack::ExampleNLPFirstOrderDirect "ExampleNLPFirstOrderDirect"</tt>
+ * <tt>\ref NLPInterfacePack::ExampleNLPDirect "ExampleNLPDirect"</tt>
  * mostly out of lazyness but also to show how flexible these interfaces
  * can be using mutiple inheritance.
  *
  * ToDo: Finish documentation!
  */
-class ExampleNLPFirstOrderInfo
+class ExampleNLPFirstOrder
 	: virtual public NLPFirstOrder
-	, virtual public ExampleNLPObjGradient
+	, virtual public ExampleNLPObjGrad
 {
 public:
 
 	///
-	/** Constructor (see </tt>ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect()</tt>).
+	/** Constructor (see </tt>ExampleNLPDirect::ExampleNLPDirect()</tt>).
 	 */
-	ExampleNLPFirstOrderInfo(
+	ExampleNLPFirstOrder(
 		const VectorSpace::space_ptr_t&  vec_space
 		,value_type                      xo
 		,bool                            has_bounds
@@ -112,18 +112,18 @@ private:
 	///
 	void assert_is_initialized() const;
 
-};	// end class ExampleNLPFirstOrderInfo
+};	// end class ExampleNLPFirstOrder
 
 // ///////////////////////////////////////////////
 // Inline member functions
 
 inline
-void ExampleNLPFirstOrderInfo::assert_is_initialized() const
+void ExampleNLPFirstOrder::assert_is_initialized() const
 {
     using NLPInterfacePack::NLP;
 	if( !is_initialized() )
-		throw NLP::UnInitialized("ExampleNLPFirstOrderInfo::assert_is_initialized() : Error, "
-			"ExampleNLPFirstOrderInfo::initialize() has not been called yet." );
+		throw NLP::UnInitialized("ExampleNLPFirstOrder::assert_is_initialized() : Error, "
+			"ExampleNLPFirstOrder::initialize() has not been called yet." );
 }
 
 }	// end namespace NLPInterfacePack

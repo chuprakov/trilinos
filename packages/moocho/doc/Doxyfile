@@ -44,11 +44,13 @@ TAGFILES               = $(MOOCHO_BASE_DIR)/doc/Misc/Misc.tag=./Misc/html \
                          $(MOOCHO_BASE_DIR)/doc/IterationPack/IterationPack.tag=./IterationPack/html \
                          $(MOOCHO_BASE_DIR)/doc/RTOpPack/RTOpPack.tag=./RTOpPack/html \
                          $(MOOCHO_BASE_DIR)/doc/RTOpStdOpsLib/RTOpStdOpsLib.tag=./RTOpStdOpsLib/html \
+                         $(MOOCHO_BASE_DIR)/doc/DenseLinAlgPack/DenseLinAlgPack.tag=./DenseLinAlgPack/html \
+                         $(MOOCHO_BASE_DIR)/doc/DenseLinAlgLAPack/DenseLinAlgLAPack.tag=./DenseLinAlgLAPack/html \
                          $(MOOCHO_BASE_DIR)/doc/AbstractLinAlgPack/AbstractLinAlgPack.tag=./AbstractLinAlgPack/html \
                          $(MOOCHO_BASE_DIR)/doc/NLPInterfacePack/NLPInterfacePack.tag=./NLPInterfacePack/html \
                          $(MOOCHO_BASE_DIR)/doc/ExampleRTOpSimple/ExampleRTOpSimple.tag=./ExampleRTOpSimple/html \
-                         $(MOOCHO_BASE_DIR)/doc/ExampleNLPFirstOrderDirect/ExampleNLPFirstOrderDirect.tag=./ExampleNLPFirstOrderDirect/html \
-                         $(MOOCHO_BASE_DIR)/doc/ExampleNLPFirstOrderInfo/ExampleNLPFirstOrderInfo.tag=./ExampleNLPFirstOrderInfo/html \
+                         $(MOOCHO_BASE_DIR)/doc/ExampleNLPDirect/ExampleNLPFirstOrderDirect.tag=./ExampleNLPDirect/html \
+                         $(MOOCHO_BASE_DIR)/doc/ExampleNLPFirstOrder/ExampleNLPFirstOrderInfo.tag=./ExampleNLPFirstOrder/html \
                          $(MOOCHO_BASE_DIR)/doc/ExampleNLPBanded/ExampleNLPBanded.tag=./ExampleNLPBanded/html
 GENERATE_TAGFILE       =
 ALLEXTERNALS           = YES

@@ -1,4 +1,4 @@
-package      RSQPppVaryOptions;
+package      MoochoVaryOptions;
 require      Exporter;
 @ISA       = qw(Exporter);
 @EXPORT    = qw(readin_options_lines);
@@ -8,7 +8,7 @@ use strict;
 
 ##################################################
 #
-# Class for varying rSQP++ options for an NLP
+# Class for varying MOOCHO options for an NLP
 #
 # ToDo: Finish documentation!
 #
@@ -763,8 +763,8 @@ sub _vary_options {
 	  $varied_options = $varied_options . $v_opt_value_abbr->[ $_ ] . ",";
 	}
 	print STDERR
-	  "Running rSQP++ for options : $varied_options ... ";
-	# Run rSQP++ on this NLP with these options
+	  "Running MOOCHHO for options : $varied_options ... ";
+	# Run MOOCHO on this NLP with these options
 	$nlp_runner->run_nlp();
 	# Create the header for this NLP if this is first run
 	if( $$new_nlp ) {
@@ -816,7 +816,7 @@ sub _create_nlp_header {
 }
 
 #
-# Adds a summary line for a run of rSQP++.
+# Adds a summary line for a run of MOOCHO.
 #
 # This sub reads the file MoochoStats.out.
 #

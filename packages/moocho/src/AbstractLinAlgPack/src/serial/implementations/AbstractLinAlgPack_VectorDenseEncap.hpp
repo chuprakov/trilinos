@@ -13,7 +13,7 @@ namespace AbstractLinAlgPack {
 ///
 /** Extract a constant <tt>DenseLinAlgPack::DVectorSlice</tt> view of a <tt>Vector</tt> object.
  *
- * This class is only to be used with <tt>VectotrWithOp</tt> objects that store all of their
+ * This class is only to be used with <tt>Vector</tt> objects that store all of their
  * elements in the local address space or can easily access all of the vector elements in
  * this process (or thread).  It is generally to be used in serial applications but might
  * also find use in parallel appliations where a vector is replicated across processes.

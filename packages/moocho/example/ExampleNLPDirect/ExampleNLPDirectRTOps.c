@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////
-// ExampleNLPFirstOrderDirectRTOps.c
+// ExampleNLPDirectRTOps.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <malloc.h>
 
-#include "ExampleNLPFirstOrderDirectRTOps.h"
+#include "ExampleNLPDirectRTOps.h"
 #include "RTOpPack/src/RTOp_obj_null_vtbl.h"
 #include "RTOpPack/src/RTOp_obj_index_vtbl.h"
 

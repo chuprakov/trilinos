@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// ExampleNLPFirstOrderDirect.hpp
+// ExampleNLPDirect.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef EXAMPLE_NLP_FIRST_ORDER_DIRECT_H
 #define EXAMPLE_NLP_FIRST_ORDER_DIRECT_H
 
-#include "ExampleNLPObjGradient.hpp"
+#include "ExampleNLPObjGrad.hpp"
 #include "NLPInterfacePack/src/abstract/interfaces/NLPDirect.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
@@ -28,7 +28,7 @@ namespace NLPInterfacePack {
 /** Simple example %NLP subclass to illustrate how to implement the
  * \c NLPDirect interface for a specialized \c NLP.
  *
- * For the NLP formulation see <tt>ExampleNLPObjGradient</tt>.
+ * For the NLP formulation see <tt>ExampleNLPObjGrad</tt>.
  *
  * In this %NLP we will select the first <tt>n/2</tt> variables as the dependent
  * or basis variables.  Note that the variable bounds are on the dependent
@@ -40,7 +40,7 @@ namespace NLPInterfacePack {
  * space for the dependent and independent variables (same vector space).
  * This implementation is defined entirely based on an arbitrary
  * <tt>VectorSpace</tt> object that is passed to the constructor
- * \c ExampleNLPFirstOrderDirect().  This %NLP subclass uses a
+ * \c ExampleNLPDirect().  This %NLP subclass uses a
  * <tt>\ref AbstractLinAlgPack::VectorSpaceBlock "VectorSpaceBlock"</tt>
  * object to represent the space for <tt>[ x_dep; x_indep ]</tt>
  *
@@ -73,11 +73,11 @@ namespace NLPInterfacePack {
  *
  * To make this possible this subclass relies on some specialized RTOp operators which
  * are implemented in C (for portability).  These operator classes are declared in the header
- * file <tt>ExampleNLPFirstOrderDirect.hpp</tt> and are documented \ref explnlp2_ops_grp "here".
+ * file <tt>ExampleNLPDirect.hpp</tt> and are documented \ref explnlp2_ops_grp "here".
  */
-class ExampleNLPFirstOrderDirect
+class ExampleNLPDirect
 	: virtual public NLPDirect
-	, virtual public ExampleNLPObjGradient
+	, virtual public ExampleNLPObjGrad
 {
 public:
 
@@ -95,7 +95,7 @@ public:
 	 *                    independent variable.  This argument is ignored if
 	 *                    <tt>has_bounds == false</tt>.
 	 */
-	ExampleNLPFirstOrderDirect(
+	ExampleNLPDirect(
 		const VectorSpace::space_ptr_t&  vec_space
 		,value_type                      xo
 		,bool                            has_bounds
@@ -178,18 +178,18 @@ private:
 	///
 	void assert_is_initialized() const;
 
-};	// end class ExampleNLPFirstOrderDirect
+};	// end class ExampleNLPDirect
 
 // ///////////////////////////////////////////////
 // Inline member functions
 
 inline
-void ExampleNLPFirstOrderDirect::assert_is_initialized() const
+void ExampleNLPDirect::assert_is_initialized() const
 {
     using NLPInterfacePack::NLP;
 	if( !is_initialized() )
-		throw NLP::UnInitialized("ExampleNLPFirstOrderDirect::assert_is_initialized() : Error, "
-			"ExampleNLPFirstOrderDirect::initialize() has not been called yet." );
+		throw NLP::UnInitialized("ExampleNLPDirect::assert_is_initialized() : Error, "
+			"ExampleNLPDirect::initialize() has not been called yet." );
 }
 
 }	// end namespace NLPInterfacePack

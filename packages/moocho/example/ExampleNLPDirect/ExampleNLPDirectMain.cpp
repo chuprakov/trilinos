@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// ExampleNLPFirstOrderDirectMain.cpp
+// ExampleNLPDirectMain.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -26,7 +26,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "ExampleNLPFirstOrderDirectRun.hpp"
+#include "ExampleNLPDirectRun.hpp"
 #include "ExampleVectorLib/src/MPIDenseVector.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
 #include "OptionsFromStream.hpp"

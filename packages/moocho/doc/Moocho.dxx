@@ -47,7 +47,9 @@ extensive.
 	<li> <A HREF="../RTOpStdOpsLib/html/index.html">RTOpStdOpsLib</A>: C implementations
 		of general vector (and array) reduction/transformation operators.
 	<li> <A HREF="../DenseLinAlgPack/html/index.html">DenseLinAlgPack</A>: Concreate C++ classes
-		for dense BLAS compatible linear algebra . *** Not updated yet!
+		for dense BLAS compatible linear algebra.
+	<li> <A HREF="../DenseLinAlgLAPack/html/index.html">DenseLinAlgLAPack</A>: Interface to 
+		LAPACK based on the abstractions in <tt>%DenseLinAlgPack</tt>.
 	<li> <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>: C++ interfaces
 		for vectors, matrices and related linear algebra objects based on 
 		<tt>%RTOpPack</tt>.  Also contains	concreate C++ classes
@@ -72,8 +74,8 @@ extensive.
 <li> Example projects:
 	<ul>
 	<li> <A HREF="../ExampleRTOpSimple/html/index.html">ExampleRTOpSimple</A>.
-	<li> <A HREF="../ExampleNLPFirstOrderDirect/html/index.html">ExampleNLPFirstOrderDirect</A>.
-	<li> <A HREF="../ExampleNLPFirstOrderInfo/html/index.html">ExampleNLPFirstOrderInfo</A>.
+	<li> <A HREF="../ExampleNLPDirect/html/index.html">ExampleNLPDirect</A>.
+	<li> <A HREF="../ExampleNLPFirstOrder/html/index.html">ExampleNLPFirstOrder</A>.
 	<li> <A HREF="../ExampleNLPBanded/html/index.html">ExampleNLPBanded</A>.
 	</ul>
 

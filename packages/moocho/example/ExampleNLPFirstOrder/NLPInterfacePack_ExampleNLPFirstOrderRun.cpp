@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// ExampleNLPFirstOrderInfoRun.cpp
+// ExampleNLPFirstOrderRun.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -26,8 +26,8 @@
 #include <iomanip>
 #include <typeinfo>
 
-#include "ExampleNLPFirstOrderInfoRun.hpp"
-#include "ExampleNLPFirstOrderInfo.hpp"
+#include "ExampleNLPFirstOrderRun.hpp"
+#include "ExampleNLPFirstOrder.hpp"
 #include "ExampleBasisSystem.hpp"
 #include "MoochoPack/configurations/MamaJama/NLPAlgoConfigMamaJama.hpp"
 #include "IterationPack/src/AlgorithmTracker.hpp"
@@ -69,14 +69,14 @@ NLPInterfacePack::ExampleNLPFirstOrderInfoRun(
 			<< std::setprecision(prec)
 			<< std::scientific
 			<< "*************************************************\n"
-			<< "*** Running Tests on ExampleNLPFirstOrderInfo ***\n"
+			<< "*** Running Tests on ExampleNLPFirstOrder ***\n"
 			<< "*************************************************\n"
 			<< "\nUsing a vector space of type \'" << typeid(vec_space).name() << "\'"
 			<< "\nwith a dimension of vec_space.dim() = " << vec_space.dim()
 			<< std::endl;
 
 	// Create the nlp
-	ExampleNLPFirstOrderInfo
+	ExampleNLPFirstOrder
 		nlp(VectorSpace::space_ptr_t(&vec_space,false),xo,has_bounds,dep_bounded);
 
 	// Create the solver object and set it up

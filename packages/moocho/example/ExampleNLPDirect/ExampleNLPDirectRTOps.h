@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////
-// ExampleNLPFirstOrderDirectRTOps.h
+// ExampleNLPDirectRTOps.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -25,7 +25,7 @@ extern "C" {
 /** \defgroup explnlp2_ops_grp Reduction/Transformation operators for example NLP subclass.
  *
  * These operator classes are used in the implementation of
- * <tt>\ref NLPInterfacePack::ExampleNLPFirstOrderDirect "ExampleNLPFirstOrderDirect"</tt>.
+ * <tt>\ref NLPInterfacePack::ExampleNLPDirect "ExampleNLPDirect"</tt>.
  * The binary code for these RTOp operator classes (as well as any others) must be loaded into
  * runtime environment in any process where a vector implementation must apply it.
  */

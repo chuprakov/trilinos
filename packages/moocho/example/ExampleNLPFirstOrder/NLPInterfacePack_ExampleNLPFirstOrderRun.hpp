@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// ExampleNLPFirstOrderInfoRun.hpp
+// ExampleNLPFirstOrderRun.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -24,7 +24,7 @@
 
 namespace NLPInterfacePack {
 
-/** \defgroup ExampleNLPFirstOrderInfoRun_grp Helper function for ExampleNLPFirstOrderInfo */
+/** \defgroup ExampleNLPFirstOrderInfoRun_grp Helper function for ExampleNLPFirstOrder */
 //@{
 
 ///

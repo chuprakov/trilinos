@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// ExampleNLPObjGradient.hpp
+// ExampleNLPObjGrad.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -43,7 +43,7 @@ namespace NLPInterfacePack {
  * This is not really a fully functional NLP in the sense that there is
  * no derivative information for the constraints.
  */
-class ExampleNLPObjGradient
+class ExampleNLPObjGrad
 	: virtual public NLPObjGrad
 {
 public:
@@ -62,7 +62,7 @@ public:
 	 *                    independent variable.  This argument is ignored if
 	 *                    <tt>has_bounds == false</tt>.
 	 */
-	ExampleNLPObjGradient(
+	ExampleNLPObjGrad(
 		const VectorSpace::space_ptr_t&  vec_space
 		,value_type                      xo
 		,bool                            has_bounds
@@ -183,18 +183,18 @@ private:
 	///
 	void assert_is_initialized() const;
 
-};	// end class ExampleNLPObjGradient
+};	// end class ExampleNLPObjGrad
 
 // ///////////////////////////////////////////////
 // Inline member functions
 
 inline
-void ExampleNLPObjGradient::assert_is_initialized() const
+void ExampleNLPObjGrad::assert_is_initialized() const
 {
     using NLPInterfacePack::NLP;
 	if( !is_initialized() )
-		throw NLP::UnInitialized("ExampleNLPObjGradient::assert_is_initialized() : Error, "
-			"ExampleNLPObjGradient::initialize() has not been called yet." );
+		throw NLP::UnInitialized("ExampleNLPObjGrad::assert_is_initialized() : Error, "
+			"ExampleNLPObjGrad::initialize() has not been called yet." );
 }
 
 }	// end namespace NLPInterfacePack

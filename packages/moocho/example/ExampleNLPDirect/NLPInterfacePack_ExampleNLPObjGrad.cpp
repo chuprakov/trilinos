@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// ExampleNLPObjGradient.cpp
+// ExampleNLPObjGrad.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,8 +17,8 @@
 
 #include <stdexcept>
 
-#include "ExampleNLPObjGradient.hpp"
-#include "ExampleNLPFirstOrderDirectRTOps.h"
+#include "ExampleNLPObjGrad.hpp"
+#include "ExampleNLPDirectRTOps.h"
 #include "AbstractLinAlgPack/src/abstract/tools/BasisSystemComposite.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
@@ -58,7 +58,7 @@ init_rtop_server_t  init_rtop_server;
 
 namespace NLPInterfacePack {
 
-ExampleNLPObjGradient::ExampleNLPObjGradient(
+ExampleNLPObjGrad::ExampleNLPObjGrad(
 	const VectorSpace::space_ptr_t&  vec_space
 	,value_type                      xo
 	,bool                            has_bounds
@@ -73,7 +73,7 @@ ExampleNLPObjGradient::ExampleNLPObjGradient(
 	// Assert the size of the NLP
 	THROW_EXCEPTION(
 		vec_space->dim() <= 0, std::logic_error
-		,"ExampleNLPObjGradient::ExampleNLPObjGradient(...) Error!" );
+		,"ExampleNLPObjGrad::ExampleNLPObjGrad(...) Error!" );
 
 	// Setup the aggregate vector space object
 	BasisSystemComposite::initialize_space_x(
@@ -109,7 +109,7 @@ ExampleNLPObjGradient::ExampleNLPObjGradient(
 
 // Overridden public members from NLP
 
-void ExampleNLPObjGradient::initialize(bool test_setup)
+void ExampleNLPObjGrad::initialize(bool test_setup)
 {
 
 #ifndef _WINDOWS
@@ -128,101 +128,101 @@ void ExampleNLPObjGradient::initialize(bool test_setup)
 	initialized_ = true;
 }
 
-bool ExampleNLPObjGradient::is_initialized() const
+bool ExampleNLPObjGrad::is_initialized() const
 {
 	return initialized_;
 }
 
-size_type ExampleNLPObjGradient::n() const
+size_type ExampleNLPObjGrad::n() const
 {
 	assert_is_initialized();
 	return n_;
 }
 
-size_type ExampleNLPObjGradient::m() const
+size_type ExampleNLPObjGrad::m() const
 {
 	assert_is_initialized();
 	return n_ / 2;
 }
 
-NLP::vec_space_ptr_t ExampleNLPObjGradient::space_x() const
+NLP::vec_space_ptr_t ExampleNLPObjGrad::space_x() const
 {
 	return vec_space_comp_;
 }
 
-NLP::vec_space_ptr_t ExampleNLPObjGradient::space_c() const
+NLP::vec_space_ptr_t ExampleNLPObjGrad::space_c() const
 {
 	return vec_space_;
 }
 
-NLP::vec_space_ptr_t ExampleNLPObjGradient::space_h() const
+NLP::vec_space_ptr_t ExampleNLPObjGrad::space_h() const
 {
 	return MemMngPack::null;
 }
 
-size_type ExampleNLPObjGradient::num_bounded_x() const
+size_type ExampleNLPObjGrad::num_bounded_x() const
 {
 	return has_bounds_ ? n_/2 : 0;
 }
 
-void ExampleNLPObjGradient::force_xinit_in_bounds(bool force_xinit_in_bounds)
+void ExampleNLPObjGrad::force_xinit_in_bounds(bool force_xinit_in_bounds)
 {
 	force_xinit_in_bounds_ = force_xinit_in_bounds;
 }
 
-bool ExampleNLPObjGradient::force_xinit_in_bounds() const
+bool ExampleNLPObjGrad::force_xinit_in_bounds() const
 {
 	return force_xinit_in_bounds_;
 }
 
-const Vector& ExampleNLPObjGradient::xinit() const
+const Vector& ExampleNLPObjGrad::xinit() const
 {
 	assert_is_initialized();
 	return *xinit_;
 }
 
-const Vector& ExampleNLPObjGradient::xl() const
+const Vector& ExampleNLPObjGrad::xl() const
 {
 	assert_is_initialized();
 	return *xl_;
 }
 
-const Vector& ExampleNLPObjGradient::xu() const
+const Vector& ExampleNLPObjGrad::xu() const
 {
 	assert_is_initialized();
 	return *xu_;
 }
 
-value_type ExampleNLPObjGradient::max_var_bounds_viol() const
+value_type ExampleNLPObjGrad::max_var_bounds_viol() const
 {
 	return std::numeric_limits<value_type>::max(); // No limits on the bounds
 }
 
-const Vector& ExampleNLPObjGradient::hl() const
+const Vector& ExampleNLPObjGrad::hl() const
 {
-	THROW_EXCEPTION( true, NoBounds, "ExampleNLPObjGradient::hl(), Error, default is for mI() == 0" );
+	THROW_EXCEPTION( true, NoBounds, "ExampleNLPObjGrad::hl(), Error, default is for mI() == 0" );
 	return xl(); // will never execute.
 }
 
-const Vector& ExampleNLPObjGradient::hu() const
+const Vector& ExampleNLPObjGrad::hu() const
 {
-	THROW_EXCEPTION( true, NoBounds, "ExampleNLPObjGradient::hl(), Error, default is for mI() == 0" );
+	THROW_EXCEPTION( true, NoBounds, "ExampleNLPObjGrad::hl(), Error, default is for mI() == 0" );
 	return xu(); // will never execute.
 }
 
-void ExampleNLPObjGradient::scale_f( value_type scale_f )
+void ExampleNLPObjGrad::scale_f( value_type scale_f )
 {
 	assert_is_initialized();
 	obj_scale_ = scale_f;
 }
 
-value_type ExampleNLPObjGradient::scale_f() const
+value_type ExampleNLPObjGrad::scale_f() const
 {
 	assert_is_initialized();
 	return obj_scale_;
 }
 
-void ExampleNLPObjGradient::report_final_solution(
+void ExampleNLPObjGrad::report_final_solution(
 	const Vector&    x
 	,const Vector*   lambda
 	,const Vector*   lambdaI
@@ -236,35 +236,35 @@ void ExampleNLPObjGradient::report_final_solution(
 	// For this example we will just ignore it.
 }
 
-Range1D ExampleNLPObjGradient::var_dep() const
+Range1D ExampleNLPObjGrad::var_dep() const
 {
 	return var_dep_;
 }
 
-Range1D ExampleNLPObjGradient::var_indep() const
+Range1D ExampleNLPObjGrad::var_indep() const
 {
 	return var_indep_;
 }
 
 // Overridden protected members from NLP
 
-void ExampleNLPObjGradient::imp_calc_f(const Vector& x, bool newx
+void ExampleNLPObjGrad::imp_calc_f(const Vector& x, bool newx
 	, const ZeroOrderInfo& zero_order_info) const
 {
 	using AbstractLinAlgPack::dot;
 	assert_is_initialized();
 	f(); // assert f is set
-	THROW_EXCEPTION( n() != x.dim(), std::length_error, "ExampleNLPObjGradient::imp_calc_f(...)"  );
+	THROW_EXCEPTION( n() != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_f(...)"  );
 	// f(x) = (obj_scale/2) * sum( x(i)^2, for i = 1..n )
 	*zero_order_info.f = obj_scale_ / 2.0 * dot(x,x);
 }
 
-void ExampleNLPObjGradient::imp_calc_c(const Vector& x, bool newx
+void ExampleNLPObjGrad::imp_calc_c(const Vector& x, bool newx
 	, const ZeroOrderInfo& zero_order_info) const
 {
 	assert_is_initialized();
 	const size_type n = this->n();
-	THROW_EXCEPTION( n != x.dim(), std::length_error, "ExampleNLPObjGradient::imp_calc_c(...)"  );
+	THROW_EXCEPTION( n != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_c(...)"  );
 
 	// c(x)(j) = x(j) * (x(m+j) -1) - 10 * x(m+j) = 0, for j = 1...m
 
@@ -280,7 +280,7 @@ void ExampleNLPObjGradient::imp_calc_c(const Vector& x, bool newx
 
 }
 
-void ExampleNLPObjGradient::imp_calc_h(
+void ExampleNLPObjGrad::imp_calc_h(
 	const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const
 {
 	assert(0); // Should never be called!
@@ -288,11 +288,11 @@ void ExampleNLPObjGradient::imp_calc_h(
 
 // Overridden protected members from NLPFirstOrder
 
-void ExampleNLPObjGradient::imp_calc_Gf(const Vector& x, bool newx
+void ExampleNLPObjGrad::imp_calc_Gf(const Vector& x, bool newx
 	, const ObjGradInfo& obj_grad_info) const
 {
 	assert_is_initialized();
-	THROW_EXCEPTION( n() != x.dim(), std::length_error, "ExampleNLPObjGradient::imp_calc_Gf(...)"  );
+	THROW_EXCEPTION( n() != x.dim(), std::length_error, "ExampleNLPObjGrad::imp_calc_Gf(...)"  );
 	// Gf = obj_scale * x
 	LinAlgOpPack::V_StV(obj_grad_info.Gf,obj_scale_,x);
 }

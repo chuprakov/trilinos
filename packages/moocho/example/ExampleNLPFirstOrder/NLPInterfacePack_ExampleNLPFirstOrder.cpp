@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// ExampleNLPFirstOrderInfo.cpp
+// ExampleNLPFirstOrder.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,7 +17,7 @@
 
 #include <stdexcept>
 
-#include "ExampleNLPFirstOrderInfo.hpp"
+#include "ExampleNLPFirstOrder.hpp"
 #include "ExampleBasisSystem.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/BasisSystemComposite.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
@@ -30,13 +30,13 @@
 
 namespace NLPInterfacePack {
 
-ExampleNLPFirstOrderInfo::ExampleNLPFirstOrderInfo(
+ExampleNLPFirstOrder::ExampleNLPFirstOrder(
 	const VectorSpace::space_ptr_t&  vec_space
 	,value_type                      xo
 	,bool                            has_bounds
 	,bool                            dep_bounded
 	)
-	:ExampleNLPObjGradient(vec_space,xo,has_bounds,dep_bounded)
+	:ExampleNLPObjGrad(vec_space,xo,has_bounds,dep_bounded)
 	,initialized_(false)
 {
 	basis_sys_ = MemMngPack::rcp(
@@ -50,7 +50,7 @@ ExampleNLPFirstOrderInfo::ExampleNLPFirstOrderInfo(
 
 // Overridden public members from NLPFirstOrder
 
-void ExampleNLPFirstOrderInfo::set_Gc(MatrixOp* Gc)
+void ExampleNLPFirstOrder::set_Gc(MatrixOp* Gc)
 {
 	if(Gc) // Throw an exception if this matrix is the wrong type!
 		DynamicCastHelperPack::dyn_cast<AbstractLinAlgPack::MatrixComposite>(*Gc);
@@ -58,30 +58,30 @@ void ExampleNLPFirstOrderInfo::set_Gc(MatrixOp* Gc)
 }
 
 const NLPFirstOrder::mat_fcty_ptr_t
-ExampleNLPFirstOrderInfo::factory_Gc() const
+ExampleNLPFirstOrder::factory_Gc() const
 {
 	return factory_Gc_;
 }
 
 const NLPFirstOrder::mat_fcty_ptr_t
-ExampleNLPFirstOrderInfo::factory_Gh() const
+ExampleNLPFirstOrder::factory_Gh() const
 {
 	return MemMngPack::null;
 }
 
 const NLPFirstOrder::basis_sys_ptr_t
-ExampleNLPFirstOrderInfo::basis_sys() const
+ExampleNLPFirstOrder::basis_sys() const
 {
 	return basis_sys_;
 }
 
 // Overridden public members from NLP
 
-void ExampleNLPFirstOrderInfo::initialize(bool test_setup)
+void ExampleNLPFirstOrder::initialize(bool test_setup)
 {
 	namespace rcp = MemMngPack;
 
-	ExampleNLPObjGradient::initialize(test_setup);
+	ExampleNLPObjGrad::initialize(test_setup);
 	NLPFirstOrder::initialize(test_setup);
 
 	factory_Gc_ = BasisSystemComposite::factory_Gc();
@@ -89,14 +89,14 @@ void ExampleNLPFirstOrderInfo::initialize(bool test_setup)
 	initialized_ = true;
 }
 
-bool ExampleNLPFirstOrderInfo::is_initialized() const
+bool ExampleNLPFirstOrder::is_initialized() const
 {
 	return initialized_;
 }
 
 // Overridden protected members from NLPFirstOrder
 
-void ExampleNLPFirstOrderInfo::imp_calc_Gc(
+void ExampleNLPFirstOrder::imp_calc_Gc(
 	const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const
 {
 	namespace rcp = MemMngPack;
@@ -158,7 +158,7 @@ void ExampleNLPFirstOrderInfo::imp_calc_Gc(
 	}
 }
 
-void ExampleNLPFirstOrderInfo::imp_calc_Gh(
+void ExampleNLPFirstOrder::imp_calc_Gh(
 	const Vector& x, bool newx, const FirstOrderInfo& first_order_info) const
 {
 	assert(0); // This should never be called!

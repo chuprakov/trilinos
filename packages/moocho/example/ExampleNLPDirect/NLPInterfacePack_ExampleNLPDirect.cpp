@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// ExampleNLPFirstOrderDirect.cpp
+// ExampleNLPDirect.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,8 +17,8 @@
 
 #include <stdexcept>
 
-#include "ExampleNLPFirstOrderDirect.hpp"
-#include "ExampleNLPFirstOrderDirectRTOps.h"
+#include "ExampleNLPDirect.hpp"
+#include "ExampleNLPDirectRTOps.h"
 #include "AbstractLinAlgPack/src/abstract/tools/BasisSystemComposite.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
@@ -59,13 +59,13 @@ init_rtop_server_t  init_rtop_server;
 
 namespace NLPInterfacePack {
 
-ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect(
+ExampleNLPDirect::ExampleNLPDirect(
 	const VectorSpace::space_ptr_t&  vec_space
 	,value_type                      xo
 	,bool                            has_bounds
 	,bool                            dep_bounded
 	)
-	:ExampleNLPObjGradient(vec_space,xo,has_bounds,dep_bounded)
+	:ExampleNLPObjGrad(vec_space,xo,has_bounds,dep_bounded)
 {
 	namespace rcp = MemMngPack;
 
@@ -81,60 +81,60 @@ ExampleNLPFirstOrderDirect::ExampleNLPFirstOrderDirect(
 
 // Overridden public members from NLP
 
-void ExampleNLPFirstOrderDirect::initialize(bool test_setup)
+void ExampleNLPDirect::initialize(bool test_setup)
 {
 
 	if( initialized_ ) {
 		NLPDirect::initialize(test_setup);
-		ExampleNLPObjGradient::initialize(test_setup);
+		ExampleNLPObjGrad::initialize(test_setup);
 		return;
 	}
 
 	NLPDirect::initialize(test_setup);
-	ExampleNLPObjGradient::initialize(test_setup);
+	ExampleNLPObjGrad::initialize(test_setup);
 
 	initialized_ = true;
 }
 
-bool ExampleNLPFirstOrderDirect::is_initialized() const
+bool ExampleNLPDirect::is_initialized() const
 {
 	return initialized_;
 }
 
-NLP::vec_space_ptr_t ExampleNLPFirstOrderDirect::space_h() const
+NLP::vec_space_ptr_t ExampleNLPDirect::space_h() const
 {
-	return ExampleNLPObjGradient::space_h();
+	return ExampleNLPObjGrad::space_h();
 }
 
-const Vector& ExampleNLPFirstOrderDirect::hl() const
+const Vector& ExampleNLPDirect::hl() const
 {
-	return ExampleNLPObjGradient::hl();
+	return ExampleNLPObjGrad::hl();
 }
 
-const Vector& ExampleNLPFirstOrderDirect::hu() const
+const Vector& ExampleNLPDirect::hu() const
 {
-	return ExampleNLPObjGradient::hl();
+	return ExampleNLPObjGrad::hl();
 }
 
 // Overridden public members from NLPDirect
 
-Range1D ExampleNLPFirstOrderDirect::var_dep() const
+Range1D ExampleNLPDirect::var_dep() const
 {
-	return ExampleNLPObjGradient::var_dep();
+	return ExampleNLPObjGrad::var_dep();
 }
 
-Range1D ExampleNLPFirstOrderDirect::var_indep() const
+Range1D ExampleNLPDirect::var_indep() const
 {
-	return ExampleNLPObjGradient::var_indep();
+	return ExampleNLPObjGrad::var_indep();
 }
 
 const NLPDirect::mat_fcty_ptr_t
-ExampleNLPFirstOrderDirect::factory_D() const
+ExampleNLPDirect::factory_D() const
 {
 	return factory_D_;
 }
 
-void ExampleNLPFirstOrderDirect::calc_point(
+void ExampleNLPDirect::calc_point(
 	const Vector     &x
 	,value_type            *f
 	,VectorMutable   *c
@@ -164,48 +164,48 @@ void ExampleNLPFirstOrderDirect::calc_point(
 #ifdef _DEBUG
 	THROW_EXCEPTION(
 		x.dim() != n, std::invalid_argument
-		,"ExampleNLPFirstOrderDirect::calc_point(...), Error x.dim() = " << x.dim()
+		,"ExampleNLPDirect::calc_point(...), Error x.dim() = " << x.dim()
 		<< " != n = " << n );
 	THROW_EXCEPTION(
 		c && !this->space_c()->is_compatible(c->space()), std::invalid_argument
-		,"ExampleNLPFirstOrderDirect::calc_point(...), Error c is not compatible" );
+		,"ExampleNLPDirect::calc_point(...), Error c is not compatible" );
 	THROW_EXCEPTION(
 		h, std::invalid_argument
-		,"ExampleNLPFirstOrderDirect::calc_point(...), Error, there are no inequalities h(x)" );
+		,"ExampleNLPDirect::calc_point(...), Error, there are no inequalities h(x)" );
 	THROW_EXCEPTION(
 		Gf && !this->space_x()->is_compatible(Gf->space()), std::invalid_argument
-		,"ExampleNLPFirstOrderDirect::calc_point(...), Error, Gf is not compatible" );
+		,"ExampleNLPDirect::calc_point(...), Error, Gf is not compatible" );
 	THROW_EXCEPTION(
 		py && !this->space_x()->sub_space(this->var_dep())->is_compatible(py->space()), std::invalid_argument
-		,"ExampleNLPFirstOrderDirect::calc_point(...), Error, py is not compatible" );
+		,"ExampleNLPDirect::calc_point(...), Error, py is not compatible" );
 	THROW_EXCEPTION(
 		rGf && !this->space_x()->sub_space(this->var_dep())->is_compatible(rGf->space()), std::invalid_argument
-		,"ExampleNLPFirstOrderDirect::calc_point(...), Error, py is not compatible" );
+		,"ExampleNLPDirect::calc_point(...), Error, py is not compatible" );
 	THROW_EXCEPTION(
 		GcU, std::invalid_argument
-		,"ExampleNLPFirstOrderDirect::calc_point(...), Error, there are no undecomposed equalities" );
+		,"ExampleNLPDirect::calc_point(...), Error, there are no undecomposed equalities" );
 	THROW_EXCEPTION(
 		Gh, std::invalid_argument
-		,"ExampleNLPFirstOrderDirect::calc_point(...), Error, there are no inequalities h(x)" );
+		,"ExampleNLPDirect::calc_point(...), Error, there are no inequalities h(x)" );
 	THROW_EXCEPTION(
 		D && !dynamic_cast<MatrixSymDiagStd*>(D), std::invalid_argument
-		,"ExampleNLPFirstOrderDirect::calc_point(...), Error, D is not compatible" );
+		,"ExampleNLPDirect::calc_point(...), Error, D is not compatible" );
 	THROW_EXCEPTION(
 		V, std::invalid_argument
-		,"ExampleNLPFirstOrderDirect::calc_point(...), Error, there are no undecomposed equalities" );
+		,"ExampleNLPDirect::calc_point(...), Error, there are no undecomposed equalities" );
 	THROW_EXCEPTION(
 		P, std::invalid_argument
-		,"ExampleNLPFirstOrderDirect::calc_point(...), Error, there are no general inequalities h(x)" );
+		,"ExampleNLPDirect::calc_point(...), Error, there are no general inequalities h(x)" );
 	THROW_EXCEPTION(
 		py!=NULL && c==NULL, std::invalid_argument
-		,"ExampleNLPFirstOrderDirect::calc_point(...) : "
+		,"ExampleNLPDirect::calc_point(...) : "
 		"Error, if py!=NULL then c!=NULL must also be true" );
 #endif
 
 	// ///////////////////////////////////
 	// Compute f(x), c(x) and Gf(x)
 
-	typedef ExampleNLPFirstOrderDirect  this_t;
+	typedef ExampleNLPDirect  this_t;
 
 	// Make temp Gf if needed
 	VectorSpace::vec_mut_ptr_t  Gf_ptr;
@@ -306,7 +306,7 @@ void ExampleNLPFirstOrderDirect::calc_point(
 	}
 }
 
-void ExampleNLPFirstOrderDirect::calc_semi_newton_step(
+void ExampleNLPDirect::calc_semi_newton_step(
 	const Vector    &x
 	,VectorMutable  *c
 	,bool                 recalc_c
@@ -320,7 +320,7 @@ void ExampleNLPFirstOrderDirect::calc_semi_newton_step(
 
 // Overriden protected members for NLP
 
-void ExampleNLPFirstOrderDirect::imp_calc_h(
+void ExampleNLPDirect::imp_calc_h(
 	const Vector& x, bool newx, const ZeroOrderInfo& zero_order_info) const
 {
 	assert(0); // Should never be called!

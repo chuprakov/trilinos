@@ -32,6 +32,23 @@ typedef RTOp_index_type  size_type;
 typedef RTOp_value_type  value_type;
 typedef RTOp_index_type  index_type;
 
+#ifdef DOXYGEN_COMPILE // Doxygen needs a little help finding these links
+///
+typedef DenseLinAlgPack::VectorTmpl<value_type>             DVector;
+///
+typedef DenseLinAlgPack::VectorSliceTmpl<value_type>        DVectorSlice;
+///
+typedef DenseLinAlgPack::DMatrix                            DMatrix;
+///
+typedef DenseLinAlgPack::DMatrixSlice                       DMatrixSlice;
+///
+typedef DenseLinAlgPack::DMatrixSliceTriEle                 DMatrixSliceTriEle;
+///
+typedef DenseLinAlgPack::DMatrixSliceTri                    DMatrixSliceTri;
+///
+typedef DenseLinAlgPack::DMatrixSliceSym                    DMatrixSliceSym;
+#endif
+
 typedef RangePack::Range1D Range1D; // For some reason doxygen likes typedef more than using?
 
 /** @name Exception classes */
