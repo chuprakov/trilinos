@@ -23,10 +23,6 @@
 #include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 
-namespace LinAlgOpPack {
-	using AbstractLinAlgPack::Vp_StV;
-}
-
 namespace {
 
 // Get a view of a vector (two versions)
