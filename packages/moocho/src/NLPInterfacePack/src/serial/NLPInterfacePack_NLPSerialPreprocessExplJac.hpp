@@ -261,9 +261,8 @@ protected:
 	 *                [out] Pointers to zero and first order quantities .
 	 *                On output, <tt>*first_order_expl_info.Gc_nz</tt> must be set to the actual
 	 *                number of nonzero elements in \c Gc and the array of nonzero entry
-	 *                values <tt>*first_order_expl_info.Gc_val</tt> must also be set.  In addition
-	 *                <tt
-	 *                If <tt>this->multi_calc() == true</tt> then
+	 *                values <tt>*first_order_expl_info.Gc_val</tt> must also be set.  In addition,
+	 *                if <tt>this->multi_calc() == true</tt> then
 	 *                any of the other quantities pointed to in \c first_order_expl_info may be set on
 	 *                output, but are not guaranteed to be.
 	 *
@@ -303,9 +302,8 @@ protected:
 	 *                [out] Pointers to zero and first order quantities .
 	 *                On output, <tt>*first_order_expl_info.Gh_nz</tt> must be set to the actual
 	 *                number of nonzero elements in \c Gh and the array of nonzero entry
-	 *                values <tt>*first_order_expl_info.Gh_val</tt> must also be set.  In addition
-	 *                <tt
-	 *                If <tt>this->multi_calc() == true</tt> then
+	 *                values <tt>*first_order_expl_info.Gh_val</tt> must also be set.  In addition,
+	 *                if <tt>this->multi_calc() == true</tt> then
 	 *                any of the other quantities pointed to in \c first_order_expl_info may be set on
 	 *                output, but are not guaranteed to be.
 	 *
