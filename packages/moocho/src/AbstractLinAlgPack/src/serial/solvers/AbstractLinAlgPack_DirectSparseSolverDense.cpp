@@ -262,10 +262,11 @@ void DirectSparseSolverDense::imp_analyze_and_factor(
 	fn.LU_.resize(n,m);
 	fn.ipiv_.resize(n);
 
-	// Copy in the nonzero entires (transposed)
+	// Add in the nonzero entires transposed (allows for multiple entries with same
+	// row and column indexes).
 	fn.LU_ = 0.0;
 	for( size_type k = 0; k < nz; ++k )
-		fn.LU_(a_col_j[k],a_row_i[k]) = a_val[k];
+		fn.LU_(a_col_j[k],a_row_i[k]) += a_val[k];
 
 	//
 	// Have xGETRF factor this matrix.
