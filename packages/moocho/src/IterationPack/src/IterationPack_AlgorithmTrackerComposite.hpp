@@ -59,7 +59,11 @@ public:
 
 private:
 
+#ifdef DOXYGEN_COMPILE
+	AlgorithmTrack  *tracks;
+#else
 	track_list_t    tracks_;
+#endif
 
 };	// end class AlgorithmTrackComposite
 
