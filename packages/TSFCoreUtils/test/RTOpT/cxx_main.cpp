@@ -144,10 +144,10 @@ int main( int argc, char* argv[] ) {
 
     test_do_stuff<float>(mpiComm,n,out);
     test_do_stuff<double>(mpiComm,n,out);
-#ifdef HAVE_COMPLEX
+#if defined(HAVE_COMPLEX) && defined(HAVE_TEUCHOS_COMPLEX)
     test_do_stuff<std::complex<float> >(mpiComm,n,out);
     test_do_stuff<std::complex<double> >(mpiComm,n,out);
-#endif // HAVE_COMPLEX
+#endif
 
     //
     // Use adapters for C RTOp_RTOp operator subclasses
