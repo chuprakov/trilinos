@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_max_inequ_viol.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_ROP_MAX_INEQU_VIOL_H
 #define RTOP_ROP_MAX_INEQU_VIOL_H
@@ -41,9 +42,8 @@ extern "C" {
  v0 = v, v1 = vL, v2 = vU
  \endverbatim
  */
-//@{
+/*@{*/
 
-///
 /** Reduction target object for this max_inequ_viol operation.
  */
 struct RTOp_ROp_max_inequ_viol_reduct_obj_t {
@@ -54,26 +54,26 @@ struct RTOp_ROp_max_inequ_viol_reduct_obj_t {
   RTOp_index_type   bnd_type;   ///< -1 : LOWER, 0 : EQUALITY, +1 : UPPER
 };
 
-/// Name of this reduction operator class
+/** Name of this reduction operator class */
 extern const char RTOp_ROp_max_inequ_viol_name[];
 
-/// Virtual function table
+/** Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_inequ_viol_vtbl;
 
-/// Constructor
+/** Constructor */
 int RTOp_ROp_max_inequ_viol_construct( struct RTOp_RTOp* op );
 
-/// Destructor
+/** Destructor */
 int RTOp_ROp_max_inequ_viol_destroy( struct RTOp_RTOp* op );
 
-/// Extract the concrete reduction target object from its pointer (handle).
+/** Extract the concrete reduction target object from its pointer (handle). */
 struct RTOp_ROp_max_inequ_viol_reduct_obj_t
 RTOp_ROp_max_inequ_viol_val(RTOp_ReductTarget targ_obj);
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // RTOP_ROP_MAX_INEQU_VIOL_H
+#endif  /* RTOP_ROP_MAX_INEQU_VIOL_H */

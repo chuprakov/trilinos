@@ -1,10 +1,11 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_max.h
 
 //
 // Note: This file was created automatically by 'new_rtop.pl'
 //       on 7/15/2002 at 16:59
 //
+*/
 
 #ifndef RTOp_ROp_max_H
 #define RTOp_ROp_max_H
@@ -26,28 +27,28 @@ extern "C" {
  * This operator class implementation was created
  * automatically by 'new_rtop.pl'.
  */
-//@{
+/*@{*/
 
-/// Name of this transformation operator class
+/** Name of this transformation operator class */
 extern const char RTOp_ROp_max_name[];
 
-/// Virtual function table
+/** Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_vtbl;
 
-/// Constructor
+/** Constructor */
 int RTOp_ROp_max_construct(  struct RTOp_RTOp* op );
 
-/// Destructor
+/** Destructor */
 int RTOp_ROp_max_destroy( struct RTOp_RTOp* op );
 
 
-/// Extract the value of the reduction object
+/** Extract the value of the reduction object */
 RTOp_value_type RTOp_ROp_max_val(RTOp_ReductTarget reduct_obj);
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // RTOp_ROp_max_H
+#endif  /* RTOp_ROp_max_H */

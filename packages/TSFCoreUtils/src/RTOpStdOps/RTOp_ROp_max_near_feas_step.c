@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_max_near_feas_step.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -13,6 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 //
+*/
 
 #include <assert.h>
 #include <malloc.h>
@@ -22,11 +23,11 @@
 #include "RTOp_obj_free_free.h"
 #include "RTOp_get_reduct_op.hpp"
 
-//
+/*
 // Implementation functions
-//
+*/
 
-// Functions for the reduction target object
+/* Functions for the reduction target object */
 
 static int get_targ_type_num_entries(
   const struct RTOp_obj_type_vtbl_t* vtbl
@@ -58,8 +59,8 @@ static int targ_obj_reinit(
 {
   struct RTOp_ROp_max_near_feas_step_reduct_obj_t
     *targ = (struct RTOp_ROp_max_near_feas_step_reduct_obj_t*)targ_obj;
-  targ->alpha_pos = +1e+50; // big enough?
-  targ->alpha_neg = -1e+50; // big enough?
+  targ->alpha_pos = +1e+50; /* big enough? */
+  targ->alpha_neg = -1e+50; /* big enough? */
   return 0;
 }
 
@@ -125,7 +126,7 @@ static const struct RTOp_obj_type_vtbl_t targ_obj_vtbl =
   ,targ_load_state
 };
 
-// Other functions
+/* Other functions */
 
 static int RTOp_ROp_max_near_feas_step_apply_op(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -148,9 +149,9 @@ static int RTOp_ROp_max_near_feas_step_apply_op(
   register RTOp_index_type  k;
   RTOp_value_type  alpha;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 4 )
     return RTOp_ERR_INVALID_NUM_VECS;
   assert(vecs);
@@ -165,47 +166,47 @@ static int RTOp_ROp_max_near_feas_step_apply_op(
     )
     return RTOp_ERR_INCOMPATIBLE_VECS;
 
-  //
+  /*
   // Get pointers to data
-  //
+  */
 
-  // beta
+  /* beta */
   beta = *(RTOp_value_type*)obj_data;
-  // targ
+  /* targ */
   targ = (struct RTOp_ROp_max_near_feas_step_reduct_obj_t*)targ_obj;
-  // sub_dim
+  /* sub_dim */
   sub_dim        = vecs[0].sub_dim;
-  // xl
+  /* xl */
   xl_val         = vecs[0].values;
   xl_val_s       = vecs[0].values_stride;
-  // x
+  /* x */
   x_val          = vecs[1].values;
   x_val_s        = vecs[1].values_stride;
-  // d
+  /* d */
   d_val          = vecs[2].values;
   d_val_s        = vecs[2].values_stride;
-  // xu
+  /* xu */
   xu_val         = vecs[3].values;
   xu_val_s       = vecs[3].values_stride;
 
-  //
+  /*
   // If x has already been found to be infeasible just return
-  //
+  */
   if(targ->alpha_pos < 0.0)
-    return 0; // success!
+    return 0; /* success! */
 
-  //
+  /*
   // Perform the reduction operation.
   //
   // max alpha_pos, min alpha_neg s.t. xl - beta <= x + alpha*d <= xu + beta
-  //
+  */
   for( k = 0; k < sub_dim; ++k, xl_val += xl_val_s, x_val += x_val_s, d_val += d_val_s, xu_val += xu_val_s ) {
     if( *x_val < *xl_val - beta || *x_val > *xu_val + beta ) {
-      targ->alpha_pos = -1.0; // x is infeasible as is
-      return 0; // success!
+      targ->alpha_pos = -1.0; /* x is infeasible as is */
+      return 0; /* success! */
     }
     if( *d_val != 0.0 ) {
-      // check lower bound
+      /* check lower bound */
       alpha = (*xl_val - beta - *x_val) / *d_val;
       if( ( alpha > 0.0 && alpha < targ->alpha_pos )
         || ( alpha == 0.0 && *d_val < 0.0 ) )
@@ -213,7 +214,7 @@ static int RTOp_ROp_max_near_feas_step_apply_op(
       if( ( alpha < 0.0 && -alpha < -targ->alpha_neg )
         || ( alpha == 0.0 && *d_val > 0.0 ) )
         targ->alpha_neg = alpha;
-      // check upper bound
+      /* check upper bound */
       alpha = (*xu_val + beta - *x_val) / *d_val;
       if( (alpha > 0.0 && alpha < targ->alpha_pos )
         || ( alpha == 0.0 && *d_val > 0.0 ) )
@@ -224,11 +225,11 @@ static int RTOp_ROp_max_near_feas_step_apply_op(
     }
   }
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
 static int reduce_reduct_objs(
-  const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data // Can be NULL!
+  const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data /* Can be NULL! */
   , RTOp_ReductTarget in_reduct_obj, RTOp_ReductTarget inout_reduct_obj )
 {
   const struct RTOp_ROp_max_near_feas_step_reduct_obj_t
@@ -247,13 +248,13 @@ INSERT_GET_REDUCT_OP_FUNCS(
   ,targ_load_state,targ_extract_state
   ,external_reduct_op,get_reduct_op)
 
-/// Name of this reduction operator class
+/** Name of this reduction operator class */
 const char RTOp_ROp_max_near_feas_step_name[] = "ROp_max_near_feas_step";
 
-/// Virtual function table
+/** Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_near_feas_step_vtbl =
 {
-  &RTOp_obj_value_vtbl // use simple scalar value type for object instance data
+  &RTOp_obj_value_vtbl /* use simple scalar value type for object instance data */
   ,&targ_obj_vtbl
   ,NULL
   ,RTOp_ROp_max_near_feas_step_apply_op
@@ -261,27 +262,27 @@ const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_near_feas_step_vtbl =
   ,get_reduct_op
 };
 
-// Class specific functions
+/* Class specific functions */
 
 int RTOp_ROp_max_near_feas_step_construct( RTOp_value_type beta, struct RTOp_RTOp* op )
 {
   op->vtbl = &RTOp_ROp_max_near_feas_step_vtbl;
   op->vtbl->obj_data_vtbl->obj_create(NULL,NULL,&op->obj_data);
   *((RTOp_value_type*)op->obj_data) = beta;
-  return 0; // success?
+  return 0; /* success? */
 }
 
 int RTOp_ROp_max_near_feas_step_destroy( struct RTOp_RTOp* op )
 {
   op->vtbl->obj_data_vtbl->obj_free(NULL,NULL,&op->obj_data);
   op->vtbl      = NULL;
-  return 0; // success?
+  return 0; /* success? */
 }
 
 int RTOp_ROp_max_near_feas_step_set_beta( RTOp_value_type beta, struct RTOp_RTOp* op )
 {
   *((RTOp_value_type*)op->obj_data) = beta;
-  return 0; // success?
+  return 0; /* success? */
 }
 
 struct RTOp_ROp_max_near_feas_step_reduct_obj_t

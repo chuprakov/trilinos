@@ -1,10 +1,11 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_max.c
 
 //
 // Note: This file was created automatically by 'new_rtop.pl'
 //       on 7/15/2002 at 17:33
 //
+*/
 
 #include <assert.h>
 #include <math.h>
@@ -13,11 +14,11 @@
 #define min(a,b) ( (a) < (b) ? (a) : (b) )
 
 #include "RTOp_ROp_max.h"
-#include "RTOp_obj_null_vtbl.h"  // vtbl for operator object instance data
+#include "RTOp_obj_null_vtbl.h"  /* vtbl for operator object instance data */
 #include "RTOp_reduct_max_value.h"
 
 
-// Implementation functions for RTOp_RTOp
+/* Implementation functions for RTOp_RTOp */
 
 static int RTOp_ROp_max_apply_op(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -25,26 +26,26 @@ static int RTOp_ROp_max_apply_op(
   , const int num_targ_vecs, const struct RTOp_MutableSubVector targ_vecs[]
   , RTOp_ReductTarget reduct_obj )
 {
-  //
+  /*
   // Declare local variables
-  //
+  */
 
-  // Access to the reduction object data
+  /* Access to the reduction object data */
   RTOp_value_type *max_ele = (RTOp_value_type*)reduct_obj;
-  // Vector data
+  /* Vector data */
   RTOp_index_type           sub_dim;
-  // v0
+  /* v0 */
   const RTOp_value_type     *v0_val;
   ptrdiff_t                 v0_val_s;
 
-  // Automatic temporary variables
+  /* Automatic temporary variables */
   register RTOp_index_type  k;
-  // Temporary element-wise reduction object
+  /* Temporary element-wise reduction object */
   RTOp_value_type max_ele_ith;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 1 || ( num_vecs && vecs == NULL ) )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 || ( num_targ_vecs && targ_vecs == NULL ) )
@@ -52,27 +53,27 @@ static int RTOp_ROp_max_apply_op(
   assert(reduct_obj);
 
 
-  //
+  /*
   // Get pointers to data
-  //
+  */
   sub_dim       = vecs[0].sub_dim;
-  // v0
+  /* v0 */
   v0_val        = vecs[0].values;
   v0_val_s      = vecs[0].values_stride;
 
 
-  //
+  /*
   // Apply the operator:
-  //
+  */
   for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s )
   {
-    // Element-wise reduction
+    /* Element-wise reduction */
     max_ele_ith = (*v0_val);
-    // Reduction of intermediates
+    /* Reduction of intermediates */
     (*max_ele) = max( (*max_ele), max_ele_ith );
   }
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
 static int RTOp_ROp_max_reduct_obj_reinit(
@@ -86,10 +87,10 @@ static int RTOp_ROp_max_reduct_obj_reinit(
 }
 
 
-// Name of this transformation operator class
+/* Name of this transformation operator class */
 const char RTOp_ROp_max_name[] = "ROp_max";
 
-// Virtual function table
+/* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_vtbl =
 {
   &RTOp_obj_null_vtbl
@@ -100,7 +101,7 @@ const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_vtbl =
   ,RTOp_get_reduct_max_value_op
 };
 
-// Class specific functions
+/* Class specific functions */
 
 int RTOp_ROp_max_construct(  struct RTOp_RTOp* op )
 {

@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_max_abs_ele.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -13,6 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 //
+*/
 
 #include <assert.h>
 
@@ -22,11 +23,11 @@
 #include "RTOp_obj_free_free.h"
 #include "RTOp_get_reduct_op.hpp"
 
-//
+/*
 // Implementation functions
-//
+*/
 
-// Selected functions that are used to implement exteral_reduct_op
+/* Selected functions that are used to implement exteral_reduct_op */
 
 static int targ_extract_state(
   const struct RTOp_obj_type_vtbl_t* vtbl
@@ -79,7 +80,7 @@ static int targ_load_state(
   return 0;
 }
 
-// Other functions
+/* Other functions */
 
 static int RTOp_ROp_max_abs_ele_apply_op(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -88,18 +89,18 @@ static int RTOp_ROp_max_abs_ele_apply_op(
   ,RTOp_ReductTarget targ_obj
   )
 {
-  //
+  /*
   // Declare local variables
-  //
+  */
 
-  // targ
+  /* targ */
   struct RTOp_value_index_type
     *targ = NULL;
-  // global_off
+  /* global_off */
   size_t                 global_offset;
-  // sub_dim
+  /* sub_dim */
   size_t                 sub_dim;
-  // v
+  /* v */
   const RTOp_value_type  *v_val = NULL;
   ptrdiff_t              v_val_s;
 
@@ -107,31 +108,31 @@ static int RTOp_ROp_max_abs_ele_apply_op(
   RTOp_index_type  i;
   RTOp_value_type  abs_v_i;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
     return RTOp_ERR_INVALID_NUM_TARG_VECS;
 
-  //
+  /*
   // Get pointers to the data
-  //
+  */
 
-  // targ
+  /* targ */
   targ            = (struct RTOp_value_index_type*)targ_obj;
-  // global_off
+  /* global_off */
   global_offset   = vecs[0].global_offset;
-  // sub_dim
+  /* sub_dim */
   sub_dim         = vecs[0].sub_dim;
-  // v
+  /* v */
   v_val           = vecs[0].values;
   v_val_s         = vecs[0].values_stride;
 
-  //
+  /*
   // Perform the reduction operation.
-  //
+  */
 
   i = global_offset + 1;
   for( k = 0; k < sub_dim; ++k, ++i, v_val += v_val_s ) {
@@ -142,11 +143,11 @@ static int RTOp_ROp_max_abs_ele_apply_op(
     }
   }
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
 static int reduce_reduct_objs(
-  const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data // Can be NULL!
+  const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data /* Can be NULL! */
   , RTOp_ReductTarget in_reduct_obj, RTOp_ReductTarget inout_reduct_obj )
 {
   const struct RTOp_value_index_type
@@ -185,20 +186,20 @@ const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_abs_ele_vtbl =
   ,get_reduct_op
 };
 
-// Class specific functions
+/* Class specific functions */
 
 int RTOp_ROp_max_abs_ele_construct( struct RTOp_RTOp* op )
 {
   op->vtbl     = &RTOp_ROp_max_abs_ele_vtbl;
   op->obj_data = NULL;
-  return 0; // success?
+  return 0; /* success? */
 }
 
 int RTOp_ROp_max_abs_ele_destroy( struct RTOp_RTOp* op )
 {
   op->vtbl     = NULL;
   op->obj_data = NULL;
-  return 0; // success?
+  return 0; /* success? */
 }
 
 struct RTOp_value_index_type

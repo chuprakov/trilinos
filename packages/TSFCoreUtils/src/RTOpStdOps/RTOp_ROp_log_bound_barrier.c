@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_log_bound_barrier.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -16,7 +16,7 @@
 //
 // Note: This file was created automatically by 'new_rtop.pl'
 //       on 6/26/2002 at 21:9
-//
+*/
 
 #include <assert.h>
 #include <math.h>
@@ -30,7 +30,7 @@
 
 
 
-// Implementation functions for RTOp_RTOp
+/* Implementation functions for RTOp_RTOp */
 
 static int RTOp_ROp_log_bound_barrier_apply_op(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -38,34 +38,34 @@ static int RTOp_ROp_log_bound_barrier_apply_op(
   , const int num_targ_vecs, const struct RTOp_MutableSubVector targ_vecs[]
   , RTOp_ReductTarget reduct_obj )
 {
-  //
+  /*
   // Declare local variables
-  //
+  */
 
-    // Access to the reduction object data
+    /* Access to the reduction object data */
     RTOp_value_type *log_result = (RTOp_value_type*)reduct_obj;
-    // Vector data
+    /* Vector data */
     RTOp_index_type           sub_dim;
-    // v0
+    /* v0 */
     const RTOp_value_type     *v0_val;
     ptrdiff_t                 v0_val_s;
-    // v1
+    /* v1 */
     const RTOp_value_type     *v1_val;
     ptrdiff_t                 v1_val_s;
-    // v2
+    /* v2 */
     const RTOp_value_type     *v2_val;
     ptrdiff_t                 v2_val_s;
 
     register RTOp_index_type  k;
 
-  //
+  /*
   // Validate the input
-  //
+  */
     if( num_vecs != 3 || ( num_vecs && vecs == NULL ) )
         return RTOp_ERR_INVALID_NUM_VECS;
     if( num_targ_vecs != 0 || ( num_targ_vecs && targ_vecs == NULL ) )
         return RTOp_ERR_INVALID_NUM_TARG_VECS;
-    if( // Validate sub_dim
+    if( /* Validate sub_dim */
         vecs[1].sub_dim != vecs[0].sub_dim
         || vecs[2].sub_dim != vecs[0].sub_dim
         )
@@ -73,41 +73,41 @@ static int RTOp_ROp_log_bound_barrier_apply_op(
     assert(reduct_obj);
 
 
-  //
+  /*
   // Get pointers to data
-  //
+  */
     sub_dim       = vecs[0].sub_dim;
-    // v0
+    /* v0 */
     v0_val        = vecs[0].values;
     v0_val_s      = vecs[0].values_stride;
-    // v1
+    /* v1 */
     v1_val        = vecs[1].values;
     v1_val_s      = vecs[1].values_stride;
-    // v2
+    /* v2 */
     v2_val        = vecs[2].values;
     v2_val_s      = vecs[2].values_stride;
 
 
-  //
+  /*
   // Apply the operator:
   //
     //    element-wise reduction      : log_result += log(v0 - v1) + log(v2 - v0);
-    //
+    */
     for( k = 0; k < sub_dim; ++k, v0_val += v0_val_s, v1_val += v1_val_s, v2_val += v2_val_s )
     {
-        // Element-wise reduction
+        /* Element-wise reduction */
         (*log_result) += log((*v0_val) - (*v1_val)) + log((*v2_val) - (*v0_val));
     }
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
 
 
-// Name of this transformation operator class
+/* Name of this transformation operator class */
 const char RTOp_ROp_log_bound_barrier_name[] = "ROp_log_bound_barrier";
 
-// Virtual function table
+/* Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_log_bound_barrier_vtbl =
 {
   &RTOp_obj_null_vtbl
@@ -118,7 +118,7 @@ const struct RTOp_RTOp_vtbl_t RTOp_ROp_log_bound_barrier_vtbl =
   ,RTOp_get_reduct_sum_value_op
 };
 
-// Class specific functions
+/* Class specific functions */
 
 int RTOp_ROp_log_bound_barrier_construct(  struct RTOp_RTOp* op )
 {

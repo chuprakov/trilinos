@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_find_nan_inf.h
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef RTOP_ROP_FIND_NAN_INF_H
 #define RTOP_ROP_FIND_NAN_INF_H
@@ -32,27 +33,25 @@ extern "C" {
  * The element with the lowest index is selected so that the
  * reduction object returned will be unique for a given vector.
  */
-//@{
+/*@{*/
 
-///
 struct RTOp_ROp_find_nan_inf_reduct_obj_t {
   RTOp_value_type v0_i;
   RTOp_index_type i;
 };
 
-/// Name of this reduction operator class
+/** Name of this reduction operator class */
 extern const char RTOp_ROp_find_nan_inf_name[];
 
-/// Virtual function table
+/** Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_ROp_find_nan_inf_vtbl;
 
-/// Constructor
+/** Constructor */
 int RTOp_ROp_find_nan_inf_construct( struct RTOp_RTOp* op );
 
-/// Destructor
+/** Destructor */
 int RTOp_ROp_find_nan_inf_destroy( struct RTOp_RTOp* op );
 
-///
 /** Extract the number offending element.
  *
  * If <tt>return.i == 0</tt> then no element was found to be NaN or Inf.
@@ -60,10 +59,10 @@ int RTOp_ROp_find_nan_inf_destroy( struct RTOp_RTOp* op );
 struct RTOp_ROp_find_nan_inf_reduct_obj_t
 RTOp_ROp_find_nan_inf_val(RTOp_ReductTarget targ_obj);
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // RTOP_ROP_FIND_NAN_INF_H
+#endif  /* RTOP_ROP_FIND_NAN_INF_H */

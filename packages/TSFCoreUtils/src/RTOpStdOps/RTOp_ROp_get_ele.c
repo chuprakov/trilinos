@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_get_ele.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #include <assert.h>
 #include <string.h>
@@ -22,7 +23,7 @@
 #include "RTOp_obj_value_vtbl.h"
 #include "RTOp_reduct_sum_value.h"
 
-// Implementation functions
+/* Implementation functions */
 
 static int RTOp_ROp_get_ele_apply_op(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -38,9 +39,9 @@ static int RTOp_ROp_get_ele_apply_op(
   register RTOp_index_type k;
   RTOp_index_type i_look;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
@@ -48,46 +49,46 @@ static int RTOp_ROp_get_ele_apply_op(
   assert(targ_obj);
   assert(vecs);
 
-  //
+  /*
   // Get pointers to data
-  //
+  */
 
-  // i
+  /* i */
   i = *((RTOp_index_type*)obj_data);
 
-  // v0
+  /* v0 */
   global_offset  = vecs[0].global_offset;
   sub_dim        = vecs[0].sub_dim;
   v0_val         = vecs[0].values;
   v0_val_s       = vecs[0].values_stride;
 
-  //
+  /*
   // Lookup the element!
-  //
+  */
 
   if( i < global_offset + 1 || global_offset + sub_dim < i )
-    return 0; // The element we are looking for is not here.
+    return 0; /* The element we are looking for is not here. */
 
   *((RTOp_value_type*)targ_obj) = *(v0_val+v0_val_s*(i-global_offset-1));
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
-/// Name of this reduction operator class
+/** Name of this reduction operator class */
 const char RTOp_ROp_get_ele_name[] = "ROp_get_ele";
 
-/// Virtual function table
+/** Virtual function table */
 const struct RTOp_RTOp_vtbl_t RTOp_ROp_get_ele_vtbl =
 {
-  &RTOp_obj_index_vtbl  // use simple scalar index type for object instance data
-  ,&RTOp_obj_value_vtbl // use simple scalar value type for target object
+  &RTOp_obj_index_vtbl  /* use simple scalar index type for object instance data */
+  ,&RTOp_obj_value_vtbl /* use simple scalar value type for target object */
   ,NULL
   ,RTOp_ROp_get_ele_apply_op
   ,RTOp_reduct_sum_value
   ,RTOp_get_reduct_sum_value_op
 };
 
-// Class specific functions
+/* Class specific functions */
 
 int RTOp_ROp_get_ele_construct( RTOp_index_type i, struct RTOp_RTOp* op )
 {

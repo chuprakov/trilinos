@@ -1,4 +1,4 @@
-// ///////////////////////////////////////////////////////
+/* ///////////////////////////////////////////////////////
 // init_RTOpStdOpsLib.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,7 +12,8 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #include "init_RTOpStdOpsLib.h"
 
-// ToDo: Setup the RTOp_Server object for this process!
+/* ToDo: Setup the RTOp_Server object for this process! */

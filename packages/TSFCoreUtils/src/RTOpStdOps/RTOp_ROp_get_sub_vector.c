@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////////////////////////////////
+/* /////////////////////////////////////////////////////////////////////////
 // RTOp_ROp_get_sub_vector.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #include <stdlib.h>
 #include <assert.h>
@@ -21,9 +22,9 @@
 
 #define MY_MIN(a,b) a < b ? a : b
 
-// Operator object data virtual function table
+/* Operator object data virtual function table */
 
-struct RTOp_ROp_get_sub_vector_rng_t { // operator object instance data
+struct RTOp_ROp_get_sub_vector_rng_t { /* operator object instance data */
   RTOp_index_type  l;
   RTOp_index_type  u;
 };
@@ -103,7 +104,7 @@ static struct RTOp_obj_type_vtbl_t  instance_obj_vtbl =
   ,load_op_state
 };
 
-// Reduction object virtual function table
+/* Reduction object virtual function table */
 
 static int get_targ_type_num_entries(
   const struct RTOp_obj_type_vtbl_t* vtbl
@@ -119,8 +120,8 @@ static int get_targ_type_num_entries(
   assert( num_indexes );
   assert( num_chars );
     rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
-  *num_values  = rng->u - rng->l + 1; // dense storage for elements of sub-vector to get
-  *num_indexes = 2;                   // l and u
+    *num_values  = rng->u - rng->l + 1; /* dense storage for elements of sub-vector to get */
+    *num_indexes = 2;                   /* l and u */
   *num_chars   = 0;
   return 0;
 }
@@ -133,21 +134,21 @@ static int targ_obj_create(
   const int mem_size = sizeof(struct RTOp_SubVector);
   struct RTOp_SubVector *sub_vec_targ = NULL;
   RTOp_index_type sub_dim = 0;
-  // Get the range of the sub-vector
+  /* Get the range of the sub-vector */
   assert(obj_data);
     rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
   sub_dim = rng->u - rng->l + 1;
-  // Allocate the sub-vector target object
+  /* Allocate the sub-vector target object */
   *targ_obj = malloc(mem_size);
   sub_vec_targ = (struct RTOp_SubVector*)*targ_obj;
-  // Setup storage for the target sub-vector
+  /* Setup storage for the target sub-vector */
   RTOp_sub_vector(
-     rng->l - 1                                                        // global_offset
-     ,sub_dim                                                          // sub_dim
-     ,(const RTOp_value_type*)malloc(sub_dim*sizeof(RTOp_value_type))  // values[]
-     ,1                                                                // value_stride
+  rng->l - 1                                                        /* global_offset */
+     ,sub_dim                                                          /* sub_dim */
+     ,(const RTOp_value_type*)malloc(sub_dim*sizeof(RTOp_value_type))  /* values[] */
+     ,1                                                                /* value_stride */
      ,sub_vec_targ );
-  // Initialize the sub-vector to zero
+  /* Initialize the sub-vector to zero */
   vtbl->obj_reinit( vtbl, obj_data, *targ_obj );
   return 0;
 }
@@ -162,14 +163,14 @@ static int targ_obj_reinit(
   RTOp_value_type *values = NULL;
   register RTOp_index_type k;
   assert(obj_data);
-  // Get the range of the sub-vector
+  /* Get the range of the sub-vector */
     rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
   sub_dim = rng->u - rng->l + 1;
-  // Get the target sub-vector
+  /* Get the target sub-vector */
   sub_vec_targ = (struct RTOp_SubVector*)targ_obj;
   assert( sub_dim == sub_vec_targ->sub_dim );
   assert( sub_vec_targ->values );
-  // Initialize the values to zero
+  /* Initialize the values to zero */
   values = (RTOp_value_type*)sub_vec_targ->values;
   for( k = 0; k < sub_dim; ++k )
     *values++ = 0.0;
@@ -185,14 +186,14 @@ static int targ_obj_free(
   struct RTOp_SubVector *sub_vec_targ = NULL;
   RTOp_index_type sub_dim = 0;
   assert(obj_data);
-  // Get the range of the sub-vector
+  /* Get the range of the sub-vector */
     rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
   sub_dim = rng->u - rng->l + 1;
-  // Get the target sub-vector
+  /* Get the target sub-vector */
   sub_vec_targ = (struct RTOp_SubVector*)*targ_obj;
   assert( sub_dim == sub_vec_targ->sub_dim );
   assert( sub_vec_targ->values );
-  // Deallocate the vectors and the object
+  /* Deallocate the vectors and the object */
   if( (void*)sub_vec_targ->values )
     free( (void*)sub_vec_targ->values );
   free( (void*)sub_vec_targ );
@@ -217,15 +218,15 @@ static int targ_extract_state(
   RTOp_index_type sub_dim = 0;
   register RTOp_index_type k;
   assert(obj_data);
-  // Get the range of the sub-vector
+  /* Get the range of the sub-vector */
     rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
   sub_dim = rng->u - rng->l + 1;
-  // Get the target sub-vector
+  /* Get the target sub-vector */
   assert( targ_obj  );
   sub_vec_targ = (struct RTOp_SubVector*)targ_obj;
   assert( sub_dim == sub_vec_targ->sub_dim );
   assert( sub_vec_targ->values );
-  // Extract the state
+  /* Extract the state */
   assert( num_values  == sub_dim );
   assert( num_indexes == 2 );
   assert( num_chars   == 0 );
@@ -254,15 +255,15 @@ static int targ_load_state(
   RTOp_value_type *values = NULL;
   register RTOp_index_type k;
   assert(obj_data);
-  // Get the range of the sub-vector
+  /* Get the range of the sub-vector */
     rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
   sub_dim = rng->u - rng->l + 1;
-  // Get the target sub-vector
+  /* Get the target sub-vector */
   assert( *targ_obj );
   sub_vec_targ = (struct RTOp_SubVector*)*targ_obj;
   assert( sub_dim == sub_vec_targ->sub_dim );
   assert( sub_vec_targ->values );
-  // Load the state
+  /* Load the state */
   assert( num_values  == sub_dim );
   assert( num_indexes == 2 );
   assert( num_chars   == 0 );
@@ -272,10 +273,10 @@ static int targ_load_state(
   for( k = 0; k < sub_dim; ++k )
     *values++ = value_data[k];
   RTOp_sub_vector(
-    rng->l - 1             // global_offset
-    ,sub_dim               // sub_dim
-    ,sub_vec_targ->values  // values[]
-    ,1                     // value_stide
+		  rng->l - 1             /* global_offset */
+		  ,sub_dim               /* sub_dim */
+		  ,sub_vec_targ->values  /* values[] */
+		  ,1                     /* value_stide */
     ,sub_vec_targ );
   return 0;
 }
@@ -290,7 +291,7 @@ static struct RTOp_obj_type_vtbl_t  targ_obj_vtbl =
   ,targ_load_state
 };
 
-// Implementation functions
+/* Implementation functions */
 
 static int RTOp_ROp_get_sub_vector_apply_op(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -307,9 +308,9 @@ static int RTOp_ROp_get_sub_vector_apply_op(
   register RTOp_index_type k;
   RTOp_index_type i, i_l, i_u;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 1 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
@@ -317,36 +318,36 @@ static int RTOp_ROp_get_sub_vector_apply_op(
   assert(targ_obj);
   assert(vecs);
 
-  //
+  /*
   // Get pointers to data
-  //
+  */
 
-  // Get the range of the sub-vector
+  /* Get the range of the sub-vector */
   assert(obj_data);
     rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
 
-  // Get the sub-vector target object
+    /* Get the sub-vector target object */
   assert( targ_obj );
   sub_vec_targ = (struct RTOp_SubVector*)targ_obj;
   assert( sub_vec_targ->global_offset + 1 == rng->l );
   assert( sub_vec_targ->global_offset + sub_vec_targ->sub_dim == rng->u );
 
-  // v0
+  /* v0 */
   global_offset  = vecs[0].global_offset;
   sub_dim        = vecs[0].sub_dim;
   v0_val         = vecs[0].values;
   v0_val_s       = vecs[0].values_stride;
 
-  //
+  /*
   // Extract part of the sub-vector for this chunk.
   //
   // We only want the elements from rng->l to rng->u
   // and this vector chunk only has elements from global_offset
   // to global_offset + sub_dim.
-  //
+  */
 
   if( rng->u < global_offset + 1 || global_offset + sub_dim < rng->l )
-    return 0; // The sub-vector that we are looking for is not in this vector chunk!
+  return 0; /* The sub-vector that we are looking for is not in this vector chunk! */
 
   i_l = ( rng->l <= global_offset + 1       ? i_l = global_offset + 1       : rng->l );
   i_u = ( rng->u >= global_offset + sub_dim ? i_u = global_offset + sub_dim : rng->u );
@@ -354,35 +355,35 @@ static int RTOp_ROp_get_sub_vector_apply_op(
     ((RTOp_value_type*)sub_vec_targ->values)[ i - rng->l ]
       = v0_val[ (i - global_offset - 1) * v0_val_s ];
 
-  return 0; // success?
+      return 0; /* success? */
 }
 
 static int reduce_reduct_objs(
-  const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data // Can be NULL!
+const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data /* Can be NULL! */
   , RTOp_ReductTarget in_reduct_obj, RTOp_ReductTarget inout_reduct_obj )
 {
   const struct RTOp_ROp_get_sub_vector_rng_t *rng = NULL;
   struct RTOp_SubVector
-    *in_sub_vec_targ    = NULL,
+    *in_sub_vec_targ    = NULL, 
     *inout_sub_vec_targ = NULL;
   RTOp_index_type sub_dim = 0;
   RTOp_value_type *inout_values = NULL;
   register RTOp_index_type k;
-  // Get the range of the sub-vector
+  /* Get the range of the sub-vector */
   assert(obj_data);
     rng = (const struct RTOp_ROp_get_sub_vector_rng_t*)obj_data;
   sub_dim = rng->u - rng->l + 1;
-  // Get the in target sub-vector
+  /* Get the in target sub-vector */
   assert( in_reduct_obj );
   in_sub_vec_targ = (struct RTOp_SubVector*)in_reduct_obj;
   assert( sub_dim == in_sub_vec_targ->sub_dim );
   assert( in_sub_vec_targ->values );
-  // Get the inout target sub-vector
+  /* Get the inout target sub-vector */
   assert( inout_reduct_obj );
   inout_sub_vec_targ = (struct RTOp_SubVector*)inout_reduct_obj;
   assert( sub_dim == inout_sub_vec_targ->sub_dim );
   assert( inout_sub_vec_targ->values );
-  // Perform the reduction
+  /* Perform the reduction */
   inout_values = (RTOp_value_type*)inout_sub_vec_targ->values;
   for( k = 0; k < sub_dim; ++k )
     *inout_values++ += in_sub_vec_targ->values[k];
@@ -398,11 +399,11 @@ static void external_reduct_op( void* in_targ_array, void* inout_targ_array
   const RTOp_value_type *in_values    = NULL;
   RTOp_value_type       *inout_values = NULL;
   register RTOp_index_type k;
-  // Get the offsets for the number of elements of each data type
+  /* Get the offsets for the number of elements of each data type */
   num_values_off  = 0;
   num_indexes_off = num_values_off  + sizeof(RTOp_value_type);
   num_chars_off   = num_indexes_off + sizeof(RTOp_value_type);
-  // Get the number of elements of each data type
+  /* Get the number of elements of each data type */
   num_values  = *(RTOp_value_type*)((char*)in_targ_array + num_values_off);
   num_indexes = *(RTOp_value_type*)((char*)in_targ_array + num_indexes_off);
   num_chars   = *(RTOp_value_type*)((char*)in_targ_array + num_chars_off);
@@ -414,7 +415,7 @@ static void external_reduct_op( void* in_targ_array, void* inout_targ_array
   assert( num_indexes == *(RTOp_value_type*)((char*)inout_targ_array + num_indexes_off) );
   assert( num_chars   == *(RTOp_value_type*)((char*)inout_targ_array + num_chars_off) );
 #endif
-  // Get the offsets for the sub-vector values and range l and u
+/* Get the offsets for the sub-vector values and range l and u */
   values_off = num_chars_off + sizeof(RTOp_value_type);
   l_off      = values_off    + num_values * sizeof(RTOp_value_type);
   u_off      = l_off         + sizeof(RTOp_index_type);
@@ -424,7 +425,7 @@ static void external_reduct_op( void* in_targ_array, void* inout_targ_array
   assert( *(RTOp_index_type*)((char*)in_targ_array + u_off)
       == *(RTOp_index_type*)((char*)inout_targ_array + u_off) );
 #endif
-  // Perform the reduction! (just add the elements together)
+/* Perform the reduction! (just add the elements together) */
   in_values    = (const RTOp_value_type*)((char*)in_targ_array + values_off);
   inout_values = (RTOp_value_type*)((char*)inout_targ_array + values_off);
   for( k = 0; k < num_values; ++k )
@@ -439,7 +440,7 @@ static int get_reduct_op(
   return 0;
 }
 
-// Public interface
+/* Public interface */
 
 const char RTOp_ROp_get_sub_vector_name[] = "RTOp_ROp_get_sub_vector";
 

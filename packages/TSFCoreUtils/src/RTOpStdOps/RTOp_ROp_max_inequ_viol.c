@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////
+/* /////////////////////////////////////////////
 // RTOp_ROp_max_inequ_viol.c
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -13,6 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 //
+*/
 
 #include <assert.h>
 #include <malloc.h>
@@ -26,11 +27,11 @@
 #include "RTOp_obj_free_free.h"
 #include "RTOp_get_reduct_op.hpp"
 
-//
+/*
 // Implementation functions
-//
+*/
 
-// Functions for the reduction target object
+/* Functions for the reduction target object */
 
 static int get_targ_type_num_entries(
   const struct RTOp_obj_type_vtbl_t* vtbl
@@ -52,11 +53,11 @@ static int targ_obj_reinit(
 {
   struct RTOp_ROp_max_inequ_viol_reduct_obj_t
     *targ = (struct RTOp_ROp_max_inequ_viol_reduct_obj_t*)targ_obj;
-  targ->max_viol   = 0.0; // None violated yet!
-  targ->v_i        = 0.0; // arbitrary
-  targ->vLU_i      = 0.0; // arbitrary
-  targ->max_viol_i = 0;   // None violated yet!
-  targ->bnd_type   = -2;  // Invalid type (just in case used by accident)
+  targ->max_viol   = 0.0; /* None violated yet! */
+  targ->v_i        = 0.0; /* arbitrary */
+  targ->vLU_i      = 0.0; /* arbitrary */
+  targ->max_viol_i = 0;   /* None violated yet! */
+  targ->bnd_type   = -2;  /* Invalid type (just in case used by accident) */
   return 0;
 }
 
@@ -133,7 +134,7 @@ static const struct RTOp_obj_type_vtbl_t targ_obj_vtbl =
   ,targ_load_state
 };
 
-// Other functions
+/* Other functions */
 
 static int RTOp_ROp_max_inequ_viol_apply_op(
   const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
@@ -142,24 +143,24 @@ static int RTOp_ROp_max_inequ_viol_apply_op(
   ,RTOp_ReductTarget targ_obj
   )
 {
-  //
+  /*
   // Declare local variables
-  //
+  */
 
-  // targ
+  /* targ */
   struct RTOp_ROp_max_inequ_viol_reduct_obj_t
     *targ = NULL;
-  // global_off
+  /* global_off */
   size_t                 global_offset;
-  // sub_dim
+  /* sub_dim */
   size_t                 sub_dim;
-  // v
+  /* v */
   const RTOp_value_type  *v_val = NULL;
   ptrdiff_t              v_val_s;
-  // vL
+  /* vL */
   const RTOp_value_type  *vL_val = NULL;
   ptrdiff_t              vL_val_s;
-  // vU
+  /* vU */
   const RTOp_value_type  *vU_val = NULL;
   ptrdiff_t              vU_val_s;
 
@@ -169,9 +170,9 @@ static int RTOp_ROp_max_inequ_viol_apply_op(
   RTOp_value_type  violL;
   RTOp_value_type  violU;
 
-  //
+  /*
   // Validate the input
-  //
+  */
   if( num_vecs != 3 )
     return RTOp_ERR_INVALID_NUM_VECS;
   if( num_targ_vecs != 0 )
@@ -182,38 +183,38 @@ static int RTOp_ROp_max_inequ_viol_apply_op(
     || vecs[0].sub_dim       != vecs[2].sub_dim )
     return RTOp_ERR_INCOMPATIBLE_VECS;
 
-  //
+  /*
   // Get pointers to the data
-  //
+  */
 
-  // targ
+  /* targ */
   targ            = (struct RTOp_ROp_max_inequ_viol_reduct_obj_t*)targ_obj;
-  // global_off
+  /* global_off */
   global_offset   = vecs[0].global_offset;
-  // sub_dim
+  /* sub_dim */
   sub_dim         = vecs[0].sub_dim;
-  // v
+  /* v */
   v_val           = vecs[0].values;
   v_val_s         = vecs[0].values_stride;
-  // vL
+  /* vL */
   vL_val          = vecs[1].values;
   vL_val_s        = vecs[1].values_stride;
-  // vU
+  /* vU */
   vU_val          = vecs[2].values;
   vU_val_s        = vecs[2].values_stride;
 
-  //
+  /*
   // Perform the reduction operation.
-  //
+  */
 
   i = global_offset + 1;
   for( k = 0; k < sub_dim; ++k, ++i, v_val += v_val_s, vL_val += vL_val_s, vU_val += vU_val_s ) {
     v_scale = 1.0 / (1.0 + fabs(*v_val));
-    // (vL - v)*v_scale
+    /* (vL - v)*v_scale */
     violL = (*vL_val - *v_val) * v_scale;
-    // (v - vU)*v_scale
+    /* (v - vU)*v_scale */
     violU = (*v_val - *vU_val) * v_scale;
-    // Perform the reduction
+    /* Perform the reduction */
     if(
       ( max(violL,violU) > targ->max_viol )
       ||
@@ -222,10 +223,10 @@ static int RTOp_ROp_max_inequ_viol_apply_op(
      {
       targ->bnd_type = ( violL > 0.0
                 ? ( *vL_val == *vU_val
-                  ? 0  // EQUALITY
-                  : -1 // LOWER
+                  ? 0  /* EQUALITY */
+                  : -1 /* LOWER */
                   )
-                : +1 // UPPER
+                : +1 /* UPPER */
                 );
       targ->max_viol   = ( targ->bnd_type <= 0 ? violL : violU );
       targ->v_i        = *v_val;
@@ -234,11 +235,11 @@ static int RTOp_ROp_max_inequ_viol_apply_op(
     }
   }
 
-  return 0; // success?
+  return 0; /* success? */
 }
 
 static int reduce_reduct_objs(
-  const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data // Can be NULL!
+  const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data /* Can be NULL! */
   , RTOp_ReductTarget in_reduct_obj, RTOp_ReductTarget inout_reduct_obj )
 {
   const struct RTOp_ROp_max_inequ_viol_reduct_obj_t
@@ -278,20 +279,20 @@ const struct RTOp_RTOp_vtbl_t RTOp_ROp_max_inequ_viol_vtbl =
   ,get_reduct_op
 };
 
-// Class specific functions
+/* Class specific functions */
 
 int RTOp_ROp_max_inequ_viol_construct( struct RTOp_RTOp* op )
 {
   op->vtbl     = &RTOp_ROp_max_inequ_viol_vtbl;
   op->obj_data = NULL;
-  return 0; // success?
+  return 0; /* success? */
 }
 
 int RTOp_ROp_max_inequ_viol_destroy( struct RTOp_RTOp* op )
 {
   op->vtbl     = NULL;
   op->obj_data = NULL;
-  return 0; // success?
+  return 0; /* success? */
 }
 
 struct RTOp_ROp_max_inequ_viol_reduct_obj_t
