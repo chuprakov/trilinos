@@ -2,6 +2,7 @@
 // VectorWithOpMutableDense.cpp
 
 #include <typeinfo>
+#include <stdexcept>
 
 #include "SparseLinAlgPack/include/VectorWithOpMutableDense.h"
 #include "AbstractLinAlgPack/include/apply_op_helper.h"
@@ -98,14 +99,21 @@ value_type VectorWithOpMutableDense::get_ele(index_type i) const
 }
 
 void VectorWithOpMutableDense::get_sub_vector(
-	const Range1D& rng, ESparseOrDense sparse_or_dense, RTOp_SubVector* sub_vec ) const
+	const Range1D& rng_in, ESparseOrDense sparse_or_dense, RTOp_SubVector* sub_vec ) const
 {
+	const size_type  this_dim = v_.dim();
+	const Range1D    rng = RangePack::full_range(rng_in,1,this_dim);
+	THROW_EXCEPTION(
+		rng.ubound() > this_dim, std::out_of_range
+		,"VectorWithOpMutableDense::get_sub_vector(...) : Error, "
+		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
+		"is not in the range [1,this->dim()] = [1," << this_dim );
 	// Just return the dense view regardless of spare_or_dense argument
 	RTOp_SubVector _sub_vec;
 	RTOp_sub_vector_dense(
-		0                           // global_offset
-		,v_.dim()                   // sub_dim
-		,v_.raw_ptr()                // values
+		rng.lbound()-1                             // global_offset
+		,rng.size()                                // sub_dim
+		,v_.raw_ptr()+v_.stride()*(rng.lbound()-1) // values
 		,v_.stride()
 		,&_sub_vec
 		);
@@ -174,13 +182,20 @@ void VectorWithOpMutableDense::set_ele( index_type i, value_type val )
 }
 
 void VectorWithOpMutableDense::get_sub_vector(
-	const Range1D& rng, RTOp_MutableSubVector* sub_vec )
+	const Range1D& rng_in, RTOp_MutableSubVector* sub_vec )
 {
+	const size_type  this_dim = v_.dim();
+	const Range1D    rng = RangePack::full_range(rng_in,1,this_dim);
+	THROW_EXCEPTION(
+		rng.ubound() > this_dim, std::out_of_range
+		,"VectorWithOpMutableDense::get_sub_vector(...) : Error, "
+		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
+		"is not in the range [1,this->dim()] = [1," << this_dim );
 	RTOp_MutableSubVector _sub_vec;
 	RTOp_mutable_sub_vector(
-		0                           // global_offset
-		,v_.dim()                   // sub_dim
-		,v_.raw_ptr()                // values
+		rng.lbound()-1                             // global_offset
+		,rng.size()                                // sub_dim
+		,v_.raw_ptr()+v_.stride()*(rng.lbound()-1) // values
 		,v_.stride()
 		,&_sub_vec
 		);
