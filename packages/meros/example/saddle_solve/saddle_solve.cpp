@@ -41,6 +41,8 @@
 #include "GenericRightPreconditioner.h"
 #include "TSFPreconditioner.h"
 #include "TSFMatrixOperator.h"
+#include "TSFHashtable.h"
+
 
 #ifdef EPETRA_MPI
 #include "Epetra_MpiComm.h"
@@ -112,18 +114,41 @@ int main(int argc, char *argv[])
  // 1) Build inv(F) so that it corresponds to using GMRES with ML.
 
 
-  TSFLinearSolver FSolver,      BBtSolver;
+  //  TSFLinearSolver FSolver,      BBtSolver;
   ML_solverData   Fsolver_data, BBtSolver_data;
 
   bool symmetric = false;
+  TSFHashtable<int, int> azOptionsF;
+  TSFHashtable<int, double> azParamsF;
+  azOptionsF.put(AZ_solver, AZ_gmres);
+  azOptionsF.put(AZ_ml, 1);
+  azOptionsF.put(AZ_ml_levels, 4);
+  azOptionsF.put(AZ_precond, AZ_dom_decomp);
+  azOptionsF.put(AZ_subdomain_solve, AZ_ilu);
+  azParamsF.put(AZ_tol, 1e-6);
+  azOptionsF.put(AZ_max_iter, 200);
+  azOptionsF.put(AZ_recursive_iterate, 1);
+  azOptionsF.put(AZ_output, 1);
+  TSFLinearSolver FSolver = new AZTECSolver(azOptionsF,azParamsF);
 
-  ML_TSF_defaults(FSolver, &Fsolver_data, symmetric, F_crs);
+  //  ML_TSF_defaults(FSolver, &Fsolver_data, symmetric, F_crs);
   FSolver.setVerbosityLevel(4);
   TSFLinearOperator F_inv = F_tsf.inverse(FSolver);
 
-  symmetric = true;
+  TSFHashtable<int, int> azOptionsBBt;
+  TSFHashtable<int, double> azParamsBBt;
+  azOptionsBBt.put(AZ_solver, AZ_cg);
+  azOptionsBBt.put(AZ_ml, 1);
+  azOptionsBBt.put(AZ_ml_sym, 1);
+  azOptionsBBt.put(AZ_ml_levels, 4);
+  azOptionsBBt.put(AZ_precond, AZ_dom_decomp);
+  azOptionsBBt.put(AZ_subdomain_solve, AZ_ilu);
+  azParamsBBt.put(AZ_tol, 1e-6);
+  azOptionsBBt.put(AZ_max_iter, 200);
+  azOptionsBBt.put(AZ_recursive_iterate, 1);
+  TSFLinearSolver BBtSolver = new AZTECSolver(azOptionsBBt,azParamsBBt);
 
-  ML_TSF_defaults(BBtSolver, &BBtSolver_data, symmetric, BBt_crs);
+  // ML_TSF_defaults(BBtSolver, &BBtSolver_data, symmetric, BBt_crs);
   BBtSolver.setVerbosityLevel(4);
   TSFLinearOperator BBt_inv = BBt_tsf.inverse(BBtSolver);
 
