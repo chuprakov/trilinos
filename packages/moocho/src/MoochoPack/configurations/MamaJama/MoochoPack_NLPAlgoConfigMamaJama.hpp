@@ -31,6 +31,9 @@ namespace ReducedSpaceSQPPack {
  * it works with that can be set through <tt>this->set_options()</tt>, see the file
  * <tt>\ref rSQPAlgo_ConfigMamaJama_opts "rSQPpp.opt.rSQPAlgo_ConfigMamaJama"</tt>.
  *
+ * Note that all built-in support for basis permutations and direct sparse solvers
+ * can be left out if the macro RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS is defined.
+ * 
  * ToDo: Finish documentation!
  */
 class rSQPAlgo_ConfigMamaJama : public rSQPAlgo_Config {

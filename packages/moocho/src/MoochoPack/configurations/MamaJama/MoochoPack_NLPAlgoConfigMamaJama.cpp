@@ -55,13 +55,6 @@
 
 #include "NLPInterfacePack/include/NLPSecondOrderInfo.h"
 #include "NLPInterfacePack/include/NLPVarReductPerm.h"
-//#include "SparseSolverPack/include/COOBasisSystem.h"
-#ifdef SPARSE_SOLVER_PACK_USE_MA28
-#include "SparseSolverPack/include/DirectSparseSolverMA28.h"
-#endif
-#ifdef SPARSE_SOLVER_PACK_USE_MA48
-//#include "SparseSolverPack/include/MA48SparseCOOSolverCreator.h"
-#endif
 
 // line search
 #include "ConstrainedOptimizationPack/include/DirectLineSearchArmQuad_Strategy.h"
@@ -73,14 +66,17 @@
 #include "ConstrainedOptimizationPack/include/DecompositionSystemTesterSetOptions.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinate.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystemOrthogonal.h"
-#include "ConstrainedOptimizationPack/include/DecompositionSystemVarReductPermStd.h"
 #include "ConstrainedOptimizationPack/include/VarReductOrthogDenseStd_Strategy.h"
 
 #include "AbstractLinAlgPack/include/BasisSystemTester.h"
 #include "AbstractLinAlgPack/include/BasisSystemTesterSetOptions.h"
 
+// Basis permutations and direct sparse solvers
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+#include "ConstrainedOptimizationPack/include/DecompositionSystemVarReductPermStd.h"
 #include "SparseSolverPack/include/BasisSystemPermDirectSparse.h"
 #include "SparseSolverPack/include/DirectSparseSolverMA28.h"
+#endif
 
 //#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
 //#include "ConstrainedOptimizationPack/include/QPSolverRelaxedTesterSetOptions.h"
@@ -471,13 +467,16 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 	// /////////////////////////////////////////////////////
 	// C.1. Create the decomposition system object
 
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 	typedef ref_count_ptr<BasisSystemPerm> basis_sys_perm_ptr_t;
 	basis_sys_perm_ptr_t  basis_sys_perm;
+#endif
 	typedef ref_count_ptr<DecompositionSystem> decomp_sys_ptr_t;
 	decomp_sys_ptr_t decomp_sys = rcp::null;
 	if(!tailored_approach) {
 		// Set the default basis system if one is not set
 		if( basis_sys_.get() == NULL ) {
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 			if(trase_out)
 				*trase_out <<
 					"\nA specialized basis system object was not specified by the client.\n"
@@ -510,6 +509,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					assert(0); // Should not be called?
 			}
 			basis_sys_ = rcp::rcp(new BasisSystemPermDirectSparse(direct_sparse_solver));
+#else
+			THROW_EXCEPTION(
+				true, std::logic_error
+				,"\nA specialized basis system object was not specified by the client "
+				"and support for direct sparse solvers was not compiled in since the preprocessing macro "
+				"RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS was defined" );
+
+#endif
 		}
 		// Create the testing object for the basis system and set it up.
 		ref_count_ptr<BasisSystemTester>
@@ -519,8 +526,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				opt_setter(basis_sys_tester.get());
 			opt_setter.set_options(*options_);
 		}
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 		// See if the basis system object supports basis permutations
 		basis_sys_perm = rcp::rcp_dynamic_cast<BasisSystemPerm>(basis_sys_);
+#endif
 		// Create the DecompositionSystem implementation object
 		typedef ref_count_ptr<DecompositionSystemVarReductImp> decomp_sys_imp_ptr_t;
 		decomp_sys_imp_ptr_t decomp_sys_imp;
@@ -531,7 +540,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						nlp.space_x()
 						,nlp.space_c()
 						,nlp.space_h()
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 						,basis_sys_perm.get() ? rcp::null : basis_sys_
+#else
+						,basis_sys_
+#endif
 						,basis_sys_tester
 						) );
 				break;
@@ -541,7 +554,11 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						nlp.space_x()
 						,nlp.space_c()
 						,nlp.space_h()
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 						,basis_sys_perm.get() ? rcp::null : basis_sys_
+#else
+						,basis_sys_
+#endif
 						,basis_sys_tester
 						,var_reduct_orthog_strategy_
 						) );
@@ -550,6 +567,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			default:
 				assert(0);	// only a local error
 		}
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 		// Create the actual DecompositionSystem object being used
 		if( basis_sys_perm.get() != NULL ) {
 			if(trase_out)
@@ -564,6 +582,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 					) );
 		}
 		else {
+#endif
 			if(trase_out)
 				*trase_out
 					<< "\nThe BasisSystem object with concreate type \'" << typeid(*basis_sys_).name()
@@ -577,7 +596,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 				);
 			decomp_sys = decomp_sys_imp;
 		}
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 	}
+#endif
 
 	// /////////////////////////////////////////////////////
 	// C.2. Create and set the state object
@@ -888,9 +909,17 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		if(m && nlp_foi) state->Gc();
 		if(mI) state->Gh();
 
-		if(m && basis_sys_perm.get() == NULL) state->py();
+		if( m
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+		   && basis_sys_perm.get() == NULL
+#endif
+			) state->py();
 		if(m) dyn_cast<IQ_vector_cngs>(state->Ypy()).resize(2);
-		if(m && basis_sys_perm.get() == NULL) state->pz();
+		if( m
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+			&& basis_sys_perm.get() == NULL
+#endif
+			) state->pz();
 		if(m) dyn_cast<IQ_vector_cngs>(state->Zpz()).resize(2);
 		dyn_cast<IQ_vector_cngs>(state->d()).resize(2);
 

@@ -23,7 +23,9 @@
 #include "ReducedSpaceSQPPack/include/ReducedSpaceSQPPackExceptions.h"
 #include "ReducedSpaceSQPPack/include/rsqp_algo_conversion.h"
 #include "GeneralIterationPack/include/print_algorithm_step.h"
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 #include "ConstrainedOptimizationPack/include/DecompositionSystemVarReductPerm.h"
+#endif
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
 #include "NLPInterfacePack/include/NLPVarReductPerm.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
@@ -89,6 +91,8 @@ bool EvalNewPointStd_Step::do_step(
 
 	bool decomp_updated = false;
 	bool get_new_basis  = false;
+
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 	// See if the permutable decomp_sys and nlp interfaces are supported.
 	DecompositionSystemVarReductPerm
 		*decomp_sys_perm = NULL;
@@ -120,6 +124,7 @@ bool EvalNewPointStd_Step::do_step(
 			}
 		}
 	}
+#endif
 
 	IterQuantityAccess<index_type>
 		&num_basis_iq = s.num_basis();
@@ -264,7 +269,9 @@ bool EvalNewPointStd_Step::do_step(
 				assert(0); // Should not get here!
 		};
 
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 		if( !decomp_sys_perm || !get_new_basis ) {
+#endif
 			THROW_EXCEPTION(
 				select_new_basis_, std::runtime_error
 				,"EvalNewPointStd_Step::do_step(...) : Error, "
@@ -302,8 +309,12 @@ bool EvalNewPointStd_Step::do_step(
 						<< "\nOops!  This decomposition was singular; must select a new basis!\n"
 						<< except.what() << std::endl;
 			}
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 		}
+#endif
+
 		if( !decomp_updated ) {
+#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
 			if( decomp_sys_perm ) {
 				if( get_new_basis ) {
 					MemMngPack::ref_count_ptr<Permutation>
@@ -428,9 +439,15 @@ bool EvalNewPointStd_Step::do_step(
 					,"EvalNewPointStd_Step::do_step(...) : Error, "
 					"The current decomposition is singular and the decomp_sys object does "
 					"not support the DecompositionSystemVarReductPerm interface.  Therefore, no new "
-					"basis for the decompositon can be selected and therefore the algorithm is terminated!"
-					);
+					"basis for the decompositon can be selected and therefore the algorithm is terminated!"	);
 			}
+#else
+			THROW_EXCEPTION(
+				true, std::runtime_error
+				,"EvalNewPointStd_Step::do_step(...) : Error, "
+				"The current decomposition is singular and a new basis can not be determined "
+				"since the preprocessor macros RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS is defined!" );
+#endif
 		}
 
 		// Test the decomposition system
