@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// MatrixConvertToSparseEncap.h
+// MatrixConvertToSparseEncap.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MATRIX_CONVERT_TO_SPARSE_ENCAP_H
 #define MATRIX_CONVERT_TO_SPARSE_ENCAP_H
 
-#include "MatrixConvertToSparse.h"
-#include "ref_count_ptr.h"
+#include "MatrixConvertToSparse.hpp"
+#include "ref_count_ptr.hpp"
 
 namespace SparseLinAlgPack {
 

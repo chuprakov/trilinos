@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/MatrixSymNonsingular.h"
-#include "AbstractLinAlgPack/src/EtaVector.h"
+#include "AbstractLinAlgPack/src/MatrixSymNonsingular.hpp"
+#include "AbstractLinAlgPack/src/EtaVector.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixWithOp.h
+// MatrixWithOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <iosfwd>
 
-#include "MatrixWithOp.h"
-#include "ref_count_ptr.h"
-#include "VectorSpace.h"
+#include "MatrixWithOp.hpp"
+#include "ref_count_ptr.hpp"
+#include "VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
 

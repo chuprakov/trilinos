@@ -15,9 +15,9 @@
 
 #include <ostream>
 
-#include "../std/LineSearchFullStepAfterKIter_Step.h"
-#include "../rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "../std/LineSearchFullStepAfterKIter_Step.hpp"
+#include "../rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
 
 bool ReducedSpaceSQPPack::LineSearchFullStepAfterKIter_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)

@@ -16,14 +16,14 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateGuts_AddedStep.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLP.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncPenaltyParam.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLPDirecDeriv.h"
-#include "AbstractLinAlgPack/src/VectorWithOp.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateGuts_AddedStep.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncPenaltyParam.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLPDirecDeriv.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOp.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 
 namespace {
 template< class T >

@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcat.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
+#include "ConstrainedOptimizationPack/src/MatrixIdentConcat.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace {
 

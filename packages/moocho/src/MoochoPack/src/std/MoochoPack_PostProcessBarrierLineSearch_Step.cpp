@@ -18,17 +18,17 @@
 #include <iostream>
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "NLPInterfacePack/src/BarrierNLP.h"
-#include "ReducedSpaceSQPPack/src/std/PostProcessBarrierLineSearch_Step.h"
-#include "ReducedSpaceSQPPack/src/ipState.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "dynamic_cast_verbose.h"
-#include "ThrowException.h"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "NLPInterfacePack/src/BarrierNLP.hpp"
+#include "ReducedSpaceSQPPack/src/std/PostProcessBarrierLineSearch_Step.hpp"
+#include "ReducedSpaceSQPPack/src/ipState.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ThrowException.hpp"
 
 #define min(a,b) ( (a < b) ? a : b )
 #define max(a,b) ( (a > b) ? a : b )

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// InitFinDiffReducedHessian_Step.h
+// InitFinDiffReducedHessian_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_H
 #define INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_H
 
-#include "GeneralIterationPack/src/AlgorithmStep.h"
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.h"
-#include "StandardMemberCompositionMacros.h"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

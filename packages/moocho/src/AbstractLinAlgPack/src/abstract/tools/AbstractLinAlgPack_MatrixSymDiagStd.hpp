@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////
-// MatrixSymDiagonalStd.h
+// MatrixSymDiagonalStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef MATRIX_SYM_DIAGONAL_STD_H
 #define MATRIX_SYM_DIAGONAL_STD_H
 
-#include "MatrixSymInitDiagonal.h"
-#include "MatrixSymDiagonal.h"
-#include "VectorSpace.h"
+#include "MatrixSymInitDiagonal.hpp"
+#include "MatrixSymDiagonal.hpp"
+#include "VectorSpace.hpp"
 
 namespace AbstractLinAlgPack {
 

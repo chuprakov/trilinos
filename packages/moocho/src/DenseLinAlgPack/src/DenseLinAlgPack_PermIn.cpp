@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "PermIn.h"
-#include "IVector.h"
+#include "PermIn.hpp"
+#include "IVector.hpp"
 
 std::istream& LinAlgPack::operator>>(std::istream& istrm, IVector& perm) {
 	size_type size;

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// DecompositionSystem.h
+// DecompositionSystem.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <stdexcept>
 
-#include "ConstrainedOptimizationPackTypes.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
 
 namespace ConstrainedOptimizationPack {
 

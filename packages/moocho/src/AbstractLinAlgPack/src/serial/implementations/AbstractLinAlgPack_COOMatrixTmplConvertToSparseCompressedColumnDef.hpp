@@ -1,5 +1,5 @@
 // /////////////////////////////////////
-// COOMatrixTmplConvertToSparseCompressedColumnDef.h
+// COOMatrixTmplConvertToSparseCompressedColumnDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef COO_MATRIX_TMPL_CONVERT_TO_SPARSE_COMPRESSED_COLUMN_DEF_H
 #define COO_MATRIX_TMPL_CONVERT_TO_SPARSE_COMPRESSED_COLUMN_DEF_H
 
-#include "COOMatrixTmplConvertToSparseCompressedColumnDecl.h"
+#include "COOMatrixTmplConvertToSparseCompressedColumnDecl.hpp"
 
 namespace SparseLinAlgPack {
 

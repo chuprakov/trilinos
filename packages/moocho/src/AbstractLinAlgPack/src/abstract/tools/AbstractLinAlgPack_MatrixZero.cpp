@@ -15,10 +15,10 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/MatrixZero.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "ThrowException.h"
+#include "AbstractLinAlgPack/src/MatrixZero.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "ThrowException.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// MatrixSymDiagonalSparseStd.h
+// MatrixSymDiagonalSparseStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_STD_H
 #define SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_STD_H
 
-#include "MatrixSymDiagonalSparse.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
+#include "MatrixSymDiagonalSparse.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 
 namespace SparseLinAlgPack {
 

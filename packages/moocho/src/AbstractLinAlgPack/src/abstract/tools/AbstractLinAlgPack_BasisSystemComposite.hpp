@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////
-// BasisSystemCompositeStd.h
+// BasisSystemCompositeStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef BASIS_SYSTEM_COMPOSITE_STD_H
 #define BASIS_SYSTEM_COMPOSITE_STD_H
 
-#include "BasisSystem.h"
-#include "VectorSpace.h"
-#include "Range1D.h"
+#include "BasisSystem.hpp"
+#include "VectorSpace.hpp"
+#include "Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

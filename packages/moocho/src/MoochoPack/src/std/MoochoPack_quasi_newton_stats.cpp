@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.h"
+#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
 
 extern const std::string
 	ReducedSpaceSQPPack::quasi_newton_stats_name = "quasi_newton_stats";

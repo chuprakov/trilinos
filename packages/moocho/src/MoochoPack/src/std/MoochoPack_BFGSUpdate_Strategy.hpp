@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-// BFGSUpdate_Strategy.h
+// BFGSUpdate_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef BFGS_UPDATE_STRATEGY_H
 #define BFGS_UPDATE_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "ReducedSpaceSQPPack/src/std/QuasiNewtonStats.h"
-#include "StandardMemberCompositionMacros.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "ReducedSpaceSQPPack/src/std/QuasiNewtonStats.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

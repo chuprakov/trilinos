@@ -13,17 +13,17 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/MatrixVarReductImplicit.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-//#include "SparseLinAlgPack/src/dense_Vp_StPtMtV.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/src/GenPermMatrixSlice.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "WorkspacePack.h"
-#include "ThrowException.h"
+#include "ConstrainedOptimizationPack/src/MatrixVarReductImplicit.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+//#include "SparseLinAlgPack/src/dense_Vp_StPtMtV.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "WorkspacePack.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 

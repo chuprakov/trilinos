@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NLPTesterSetOptions.h
+// NLPTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef NLP_TESTER_SET_OPTIONS_H
 #define NLP_TESTER_SET_OPTIONS_H
 
-#include "NLPTester.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "NLPTester.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace NLPInterfacePack {
 

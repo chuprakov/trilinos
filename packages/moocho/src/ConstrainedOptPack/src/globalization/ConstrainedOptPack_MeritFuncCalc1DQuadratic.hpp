@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MeritFuncCalc1DQuadratic.h
+// MeritFuncCalc1DQuadratic.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MERIT_FUNC_CALC_1D_QUADRATIC_H
 #define MERIT_FUNC_CALC_1D_QUADRATIC_H
 
-#include "MeritFuncCalc1D.h"
-#include "MeritFuncCalc.h"
+#include "MeritFuncCalc1D.hpp"
+#include "MeritFuncCalc.hpp"
 
 namespace ConstrainedOptimizationPack {
 

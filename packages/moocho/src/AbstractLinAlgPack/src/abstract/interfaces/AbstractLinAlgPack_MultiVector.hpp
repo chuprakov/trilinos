@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// MultiVector.h
+// MultiVector.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef ALAP_MULTI_VECTOR_H
 #define ALAP_MULTI_VECTOR_H
 
-#include "MatrixWithOp.h"
-#include "RTOpPack/src/RTOpCpp.h"
-#include "ref_count_ptr.h"
+#include "MatrixWithOp.hpp"
+#include "RTOpPack/src/RTOpCpp.hpp"
+#include "ref_count_ptr.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixSymIdentitySerial.h
+// MatrixSymIdentitySerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef COP_MATRIX_SYM_IDENTITY_SERIAL_H
 #define COP_MATRIX_SYM_IDENTITY_SERIAL_H
 
-#include "ConstrainedOptimizationPackTypes.h"
-#include "SparseLinAlgPack/src/MatrixExtractInvCholFactor.h"
-#include "SparseLinAlgPack/src/MatrixSymWithOpNonsingularSerial.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
+#include "SparseLinAlgPack/src/MatrixExtractInvCholFactor.hpp"
+#include "SparseLinAlgPack/src/MatrixSymWithOpNonsingularSerial.hpp"
 
 namespace ConstrainedOptimizationPack {
 

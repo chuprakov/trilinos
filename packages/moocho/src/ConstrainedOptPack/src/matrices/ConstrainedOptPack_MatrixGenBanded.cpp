@@ -16,10 +16,10 @@
 #include <assert.h>
 #include <sstream>
 
-#include "ConstrainedOptimizationPack/src/MatrixGenBanded.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/BLAS_Cpp.h"
+#include "ConstrainedOptimizationPack/src/MatrixGenBanded.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/BLAS_Cpp.hpp"
 #include "MiWorkspacePack.h"
 
 namespace ConstrainedOptimizationPack {

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixBasisNonbasisStd.h
+// MatrixBasisNonbasisStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_BASIS_NON_BASIS_STD_H
 #define MATRIX_BASIS_NON_BASIS_STD_H
 
-#include "MatrixBasisNonbasis.h"
+#include "MatrixBasisNonbasis.hpp"
 #include "Miref_count_ptr.h"
 
 namespace SparseLinAlgPack {

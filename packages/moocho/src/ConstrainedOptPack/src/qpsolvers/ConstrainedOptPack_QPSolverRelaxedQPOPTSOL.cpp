@@ -17,14 +17,14 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPOPTSOL.h"
-#include "ConstrainedOptimizationPack/src/MatrixExtractInvCholFactor.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-#include "SparseLinAlgPack/src/MatrixWithOp.h"
-#include "SparseLinAlgPack/src/SortByDescendingAbsValue.h"
-#include "SparseLinAlgPack/src/sparse_bounds.h"
-#include "SparseLinAlgPack/src/EtaVector.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPOPTSOL.hpp"
+#include "ConstrainedOptimizationPack/src/MatrixExtractInvCholFactor.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "SparseLinAlgPack/src/MatrixWithOp.hpp"
+#include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
+#include "SparseLinAlgPack/src/sparse_bounds.hpp"
+#include "SparseLinAlgPack/src/EtaVector.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "Miprofile_hack.h"
 

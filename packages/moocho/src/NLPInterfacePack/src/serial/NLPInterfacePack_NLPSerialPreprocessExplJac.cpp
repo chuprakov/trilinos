@@ -18,20 +18,20 @@
 #include <typeinfo>
 #include <algorithm>
 
-#include "NLPInterfacePack/src/NLPSerialPreprocessExplJac.h"
-#include "SparseLinAlgPack/src/MatrixSparseCOORSerial.h"
-#include "SparseLinAlgPack/src/PermutationSerial.h"
-#include "SparseLinAlgPack/src/VectorDenseEncap.h"
-#include "AbstractLinAlgPack/src/MatrixPermAggr.h"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.h"
-#include "AbstractLinAlgPack/src/BasisSystemFactory.h"
-#include "LinAlgPack/src/VectorOp.h"
-#include "LinAlgPack/src/IVector.h"
-#include "LinAlgPack/src/PermVecMat.h"
-#include "ThrowException.h"
-#include "dynamic_cast_verbose.h"
-#include "AbstractFactoryStd.h"
-#include "OptionsFromStream.h"
+#include "NLPInterfacePack/src/NLPSerialPreprocessExplJac.hpp"
+#include "SparseLinAlgPack/src/MatrixSparseCOORSerial.hpp"
+#include "SparseLinAlgPack/src/PermutationSerial.hpp"
+#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/MatrixPermAggr.hpp"
+#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/BasisSystemFactory.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
+#include "LinAlgPack/src/IVector.hpp"
+#include "LinAlgPack/src/PermVecMat.hpp"
+#include "ThrowException.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "AbstractFactoryStd.hpp"
+#include "OptionsFromStream.hpp"
 
 namespace NLPInterfacePack {
 

@@ -17,20 +17,20 @@
 #include <typeinfo>
 #include <iostream>
 
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
-#include "AbstractLinAlgPack/src/assert_print_nan_inf.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.h"
-#include "ReducedSpaceSQPPack/src/ipState.h"
-#include "ReducedSpaceSQPPack/src/std/PostEvalNewPointBarrier_Step.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
+#include "ReducedSpaceSQPPack/src/ipState.hpp"
+#include "ReducedSpaceSQPPack/src/std/PostEvalNewPointBarrier_Step.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 
-#include "StringToBool.h"
+#include "StringToBool.hpp"
 
-#include "dynamic_cast_verbose.h"
+#include "dynamic_cast_verbose.hpp"
 
 namespace ReducedSpaceSQPPack {
 

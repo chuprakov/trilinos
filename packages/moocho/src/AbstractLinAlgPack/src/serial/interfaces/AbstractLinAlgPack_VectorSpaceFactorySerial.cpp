@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseLinAlgPack/src/VectorSpaceFactorySerial.h"
-#include "SparseLinAlgPack/src/VectorSpaceSerial.h"
+#include "SparseLinAlgPack/src/VectorSpaceFactorySerial.hpp"
+#include "SparseLinAlgPack/src/VectorSpaceSerial.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -16,8 +16,8 @@
 #include <stdexcept>
 #include <string>
 
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
-#include "ThrowException.h"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "ThrowException.hpp"
 
 #ifdef LINALGPACK_CHECK_RHS_SIZES
 

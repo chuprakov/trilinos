@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "../std/CheckSkipBFGSUpdateStd_StepSetOptions.h"
-#include "StringToBool.h"
+#include "../std/CheckSkipBFGSUpdateStd_StepSetOptions.hpp"
+#include "StringToBool.hpp"
 
 // Define the options
 namespace {

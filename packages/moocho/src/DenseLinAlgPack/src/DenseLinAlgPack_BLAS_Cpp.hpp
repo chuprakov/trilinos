@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// BLAS_Cpp.h
+// BLAS_Cpp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,8 +20,8 @@
 
 #include <stdexcept>
 
-#include "BLAS_CppTypes.h"
-#include "fortran_types.h"
+#include "BLAS_CppTypes.hpp"
+#include "fortran_types.hpp"
 
 // Overloaded BLAS wrappers.
 // The naming convention is the Fortran BLAS name minus the type prefix.

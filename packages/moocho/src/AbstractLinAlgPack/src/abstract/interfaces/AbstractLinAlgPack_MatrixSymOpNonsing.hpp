@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////
-// MatrixSymWithOpNonsingular.h
+// MatrixSymWithOpNonsingular.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef ABSTRACT_LINALG_PACK_MATRIX_SYM_WITH_OP_NONSINGULAR_H
 #define ABSTRACT_LINALG_PACK_MATRIX_SYM_WITH_OP_NONSINGULAR_H
 
-#include "MatrixSymWithOp.h"
-#include "MatrixSymNonsingular.h"
-#include "MatrixWithOpNonsingular.h"
+#include "MatrixSymWithOp.hpp"
+#include "MatrixSymNonsingular.hpp"
+#include "MatrixWithOpNonsingular.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -15,7 +15,7 @@
 
 //
 // 7/4/2002: RAB: I was able to update this class using the
-// functions in LinAlgOpPackHack.h.  This is wastefull in that
+// functions in LinAlgOpPackHack.hpp.  This is wastefull in that
 // I am creating temporaries every time any operation is performed
 // but this was the easiest way to get things going.
 //
@@ -30,27 +30,27 @@
 #include <ostream>
 #include <iomanip>
 
-#include "ConstrainedOptimizationPack/src/QPSchur.h"
-#include "ConstrainedOptimizationPack/src/ComputeMinMult.h"
-#include "SparseLinAlgPack/src/MatrixSymPosDefCholFactor.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.h"
-#include "SparseLinAlgPack/src/LinAlgOpPackHack.h"
-#include "AbstractLinAlgPack/src/GenPermMatrixSliceOut.h"
-#include "AbstractLinAlgPack/src/SpVectorOut.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/EtaVector.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/VectorClassExt.h"
-#include "LinAlgPack/src/VectorOp.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/VectorOut.h"
-#include "LinAlgPack/src/GenMatrixOut.h"
-#include "WorkspacePack.h"
-#include "ThrowException.h"
+#include "ConstrainedOptimizationPack/src/QPSchur.hpp"
+#include "ConstrainedOptimizationPack/src/ComputeMinMult.hpp"
+#include "SparseLinAlgPack/src/MatrixSymPosDefCholFactor.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "SparseLinAlgPack/src/LinAlgOpPackHack.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSliceOut.hpp"
+#include "AbstractLinAlgPack/src/SpVectorOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/EtaVector.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/VectorClassExt.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/VectorOut.hpp"
+#include "LinAlgPack/src/GenMatrixOut.hpp"
+#include "WorkspacePack.hpp"
+#include "ThrowException.hpp"
 
 namespace LinAlgOpPack {
 using SparseLinAlgPack::Vp_StV;
@@ -1195,7 +1195,7 @@ void QPSchur::ActiveSet::initialize(
 	P_plus_hat_row_.resize(q_plus_hat_max);
 	P_plus_hat_col_.resize(q_plus_hat_max);
 	if(q_hat) {
-		// See QPSchur.h for description of P_XF_hat and P_plus_hat
+		// See QPSchur.hpp for description of P_XF_hat and P_plus_hat
 		size_type
 			k_XF_hat = 0,	// zero based
 			k_plus_hat = 0;	// zero based
@@ -1256,7 +1256,7 @@ void QPSchur::ActiveSet::initialize(
 	Q_XD_hat_row_.resize(q_D_hat_max);
 	Q_XD_hat_col_.resize(q_D_hat_max);
 	if(q_D_hat) {
-		// See QPSchur.h for description of Q_XD_hat
+		// See QPSchur.hpp for description of Q_XD_hat
 		size_type
 			k_XD_hat = 0;	// zero based
 		GenPermMatrixSlice::const_iterator

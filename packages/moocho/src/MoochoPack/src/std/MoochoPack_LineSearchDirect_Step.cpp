@@ -16,18 +16,18 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/LineSearchDirect_Step.h"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalcNLP.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/src/assert_print_nan_inf.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "ThrowException.h"
+#include "ReducedSpaceSQPPack/src/std/LineSearchDirect_Step.hpp"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalcNLP.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "ThrowException.hpp"
 
 namespace ReducedSpaceSQPPack {
 

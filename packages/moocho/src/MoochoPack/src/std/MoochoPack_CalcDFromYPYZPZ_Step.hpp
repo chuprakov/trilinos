@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CalcDFromYPYZPZ_Step.h
+// CalcDFromYPYZPZ_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef CALC_D_FROM_YPY_ZPZ_STEP_H
 #define CALC_D_FROM_YPY_ZPZ_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
 
 namespace ReducedSpaceSQPPack {
 

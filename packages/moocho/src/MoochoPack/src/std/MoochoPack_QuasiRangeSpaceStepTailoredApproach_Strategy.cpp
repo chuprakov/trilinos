@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepTailoredApproach_Strategy.h"
-#include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.h"
-#include "ReducedSpaceSQPPack/src/rSQPAlgo.h"
-#include "ReducedSpaceSQPPack/src/rSQPState.h"
+#include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepTailoredApproach_Strategy.hpp"
+#include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
 #include "ReducedSpaceSQPPack/src/NLPrSQPTailoredApproach.h"
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
 #include "ConstrainedOptimizationPack/src/DenseIdentVertConcatMatrixSubclass.h"
-#include "SparseLinAlgPack/src/MatrixWithOp.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "SparseLinAlgPack/src/MatrixWithOp.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
 #include "MiWorkspacePack.h"
 #include "Midynamic_cast_verbose.h"
 

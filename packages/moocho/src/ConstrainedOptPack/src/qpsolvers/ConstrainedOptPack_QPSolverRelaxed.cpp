@@ -17,14 +17,14 @@
 
 #include <limits>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxed.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
-#include "profile_hack.h"
-#include "ThrowException.h"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxed.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "profile_hack.hpp"
+#include "ThrowException.hpp"
 
 namespace ConstrainedOptimizationPack {
 

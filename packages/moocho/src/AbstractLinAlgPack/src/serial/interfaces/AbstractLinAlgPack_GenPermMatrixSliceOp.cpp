@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
+#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
 
 void SparseLinAlgPack::V_StMtV(
 	  SpVector* y, value_type a, const GenPermMatrixSlice& P

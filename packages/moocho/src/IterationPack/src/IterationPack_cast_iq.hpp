@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// cast_iq.h
+// cast_iq.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,8 +19,8 @@
 #include <stdexcept>
 #include <typeinfo>
 
-#include "AlgorithmState.h"
-#include "IterQuantityAccess.h"
+#include "AlgorithmState.hpp"
+#include "IterQuantityAccess.hpp"
 
 namespace GeneralIterationPack {
 

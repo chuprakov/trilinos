@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// ConstrainedOptimizationPackTypes.h
+// ConstrainedOptimizationPackTypes.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef CONSTRAINED_OPTIMIZATION_PACK_TYPES_H
 #define CONSTRAINED_OPTIMIZATION_PACK_TYPES_H
 
-#include "ConstrainedOptimizationPackDebugAcronyms.h"
-#include "SparseSolverPack/src/SparseSolverPackTypes.h"
-#include "NLPInterfacePack/src/NLPInterfacePackTypes.h"
-#include "NLPInterfacePack/src/NLP.h"
+#include "ConstrainedOptimizationPackDebugAcronyms.hpp"
+#include "SparseSolverPack/src/SparseSolverPackTypes.hpp"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
+#include "NLPInterfacePack/src/NLP.hpp"
 
 namespace ConstrainedOptimizationPack {
 

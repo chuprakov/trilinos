@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////////
-// COOMPartitionOut.h
+// COOMPartitionOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 #ifndef COOM_PARTITION_OUT_H
 #define COOM_PARTITION_OUT_H
 
-#include "COOMatrixTmplOutFunc.h"
+#include "COOMatrixTmplOutFunc.hpp"
 
 namespace SparseLinAlgPack {
 

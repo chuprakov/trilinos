@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// MatrixNonsingularSerial.h
+// MatrixNonsingularSerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SLAP_MATRIX_NONSINGULAR_SERIAL_H
 #define SLAP_MATRIX_NONSINGULAR_SERIAL_H
 
-#include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/src/MatrixNonsingular.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/MatrixNonsingular.hpp"
 
 namespace SparseLinAlgPack {
 

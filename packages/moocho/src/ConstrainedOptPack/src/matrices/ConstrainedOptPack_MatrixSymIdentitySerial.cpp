@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptimizationPack/src/MatrixSymIdentitySerial.h"
-#include "LinAlgPack/src/GenMatrixAsTriSym.h"
-#include "LinAlgPack/src/GenMatrixOp.h"
-#include "LinAlgPack/src/GenMatrixOut.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
+#include "ConstrainedOptimizationPack/src/MatrixSymIdentitySerial.hpp"
+#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
+#include "LinAlgPack/src/GenMatrixOp.hpp"
+#include "LinAlgPack/src/GenMatrixOut.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
 
 namespace ConstrainedOptimizationPack {
 

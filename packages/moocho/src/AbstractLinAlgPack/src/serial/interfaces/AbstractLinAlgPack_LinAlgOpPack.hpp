@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// LinAlgOpPack.h
+// LinAlgOpPack.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SLAP_LIN_ALG_OP_PACK_H
 #define SLAP_LIN_ALG_OP_PACK_H
 
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "MatrixSymWithOpNonsingularSerial.h"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "MatrixSymWithOpNonsingularSerial.hpp"
 
 namespace LinAlgOpPack {
 

@@ -15,10 +15,10 @@
 
 #include <ostream>
 
-#include "../std/NumFixedDepIndep_AddedStep.h"
-#include "../rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "SparseLinAlgPack/src/SpVectorClass.h"
+#include "../std/NumFixedDepIndep_AddedStep.hpp"
+#include "../rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "SparseLinAlgPack/src/SpVectorClass.hpp"
 
 bool ReducedSpaceSQPPack::NumFixedDepIndep_AddedStep::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)

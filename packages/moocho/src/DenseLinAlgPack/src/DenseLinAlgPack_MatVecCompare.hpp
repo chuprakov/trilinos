@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// MatVecCompare.h
+// MatVecCompare.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -23,8 +23,8 @@
 #include <math.h>
 #endif
 
-#include "LinAlgPackTypes.h"
-#include "update_success.h"
+#include "LinAlgPackTypes.hpp"
+#include "update_success.hpp"
 
 namespace LinAlgPack {
 

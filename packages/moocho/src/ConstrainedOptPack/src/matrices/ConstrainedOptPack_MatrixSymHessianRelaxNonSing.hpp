@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixSymHessianRelaxNonSing.h
+// MatrixSymHessianRelaxNonSing.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef MATRIX_SYM_HESSIAN_RELAX_NON_SING_H
 #define MATRIX_SYM_HESSIAN_RELAX_NON_SING_H
 
-#include "ConstrainedOptimizationPackTypes.h"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.h"
-#include "ref_count_ptr.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "ref_count_ptr.hpp"
 
 namespace ConstrainedOptimizationPack {
 

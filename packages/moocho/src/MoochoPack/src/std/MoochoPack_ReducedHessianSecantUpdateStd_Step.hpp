@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// ReducedHessianSecantUpdateStd_Step.h
+// ReducedHessianSecantUpdateStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_STD_STEP_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdate_Strategy.h"
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdate_Strategy.hpp"
+#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

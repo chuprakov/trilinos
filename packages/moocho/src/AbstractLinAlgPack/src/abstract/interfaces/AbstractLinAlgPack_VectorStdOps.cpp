@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "AbstractLinAlgPack/src/SpVectorView.h"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/SpVectorView.hpp"
 #include "RTOpStdOpsLib/src/RTOp_ROp_dot_prod.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_max_abs_ele.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_sum.h"
@@ -31,8 +31,8 @@
 #include "RTOpStdOpsLib/src/RTOp_TOp_random_vector.h"
 #include "RTOpStdOpsLib/src/RTOp_TOp_scale_vector.h"
 #include "RTOpStdOpsLib/src/RTOp_TOp_sign.h"
-#include "RTOpPack/src/RTOpCppC.h"
-#include "ThrowException.h"
+#include "RTOpPack/src/RTOpCppC.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 

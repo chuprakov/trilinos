@@ -16,9 +16,9 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ConstrainedOptimizationPack/src/DecompositionSystemTesterSetOptions.h"
-#include "StringToBool.h"
-#include "ThrowException.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemTesterSetOptions.hpp"
+#include "StringToBool.hpp"
+#include "ThrowException.hpp"
 
 // Define the options
 namespace {

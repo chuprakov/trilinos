@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// VectorWithOpSubView.h
+// VectorWithOpSubView.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef VECTOR_WITH_OP_SUB_VIEW_H
 #define VECTOR_WITH_OP_SUB_VIEW_H
 
-#include "VectorWithOp.h"
-#include "VectorSpaceSubSpace.h"
+#include "VectorWithOp.hpp"
+#include "VectorSpaceSubSpace.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -17,7 +17,7 @@
 #include <math.h>
 
 #include "../std/ReducedHessianBFGSStd_StepSetOptions.h"
-#include "StringToBool.h"
+#include "StringToBool.hpp"
 
 // Define the options
 namespace {

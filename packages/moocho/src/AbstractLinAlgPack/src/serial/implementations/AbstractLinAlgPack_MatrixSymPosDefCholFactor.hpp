@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixSymPosDefCholFactor.h
+// MatrixSymPosDefCholFactor.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,17 +16,17 @@
 #ifndef MATRIX_SYM_POS_DEF_CHOL_FACTOR_H
 #define MATRIX_SYM_POS_DEF_CHOL_FACTOR_H
 
-#include "SparseLinAlgPackTypes.h"
-#include "MatrixExtractInvCholFactor.h"
-#include "MatrixSymAddDelUpdateable.h"
-#include "MatrixSymWithOpNonsingularSerial.h"
-#include "MatrixSymDenseInitialize.h"
-#include "MatrixSymWithOpGetGMSSymMutable.h"
-#include "AbstractLinAlgPack/src/MatrixSymSecantUpdateable.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "LinAlgPack/src/GenMatrixAsTriSym.h"
-#include "ref_count_ptr.h"
-#include "ReleaseResource.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "MatrixExtractInvCholFactor.hpp"
+#include "MatrixSymAddDelUpdateable.hpp"
+#include "MatrixSymWithOpNonsingularSerial.hpp"
+#include "MatrixSymDenseInitialize.hpp"
+#include "MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymSecantUpdateable.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
+#include "ref_count_ptr.hpp"
+#include "ReleaseResource.hpp"
 
 namespace SparseLinAlgPack {
 ///

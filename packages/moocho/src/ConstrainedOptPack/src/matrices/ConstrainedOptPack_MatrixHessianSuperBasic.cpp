@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.h"
-#include "ConstrainedOptimizationPack/src/initialize_Q_R_Q_X.h"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.h"
-#include "SparseLinAlgPack/src/SpVectorClass.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-#include "SparseLinAlgPack/src/MatrixWithOpOut.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
+#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.hpp"
+#include "ConstrainedOptimizationPack/src/initialize_Q_R_Q_X.hpp"
+#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "SparseLinAlgPack/src/SpVectorClass.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "SparseLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;

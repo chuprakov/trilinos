@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////
-// GenPermMatrixSliceOp.h
+// GenPermMatrixSliceOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef GEN_PERM_MATRIX_SLICE_OP_H
 #define GEN_PERM_MATRIX_SLICE_OP_H
 
-#include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/src/GenPermMatrixSlice.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
 
 namespace SparseLinAlgPack {
 

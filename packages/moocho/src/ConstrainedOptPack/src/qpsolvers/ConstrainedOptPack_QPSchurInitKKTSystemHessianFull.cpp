@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianFull.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "SparseLinAlgPack/src/VectorDenseEncap.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "dynamic_cast_verbose.h"
+#include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianFull.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace ConstrainedOptimizationPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// LinAlgOpPackDecl.h
+// LinAlgOpPackDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef LIN_ALG_OP_PACK_DECL_H
 #define LIN_ALG_OP_PACK_DECL_H
 
-#include "VectorOp.h"
-#include "GenMatrixOp.h"
+#include "VectorOp.hpp"
+#include "GenMatrixOp.hpp"
 
 namespace LinAlgOpPack {
 

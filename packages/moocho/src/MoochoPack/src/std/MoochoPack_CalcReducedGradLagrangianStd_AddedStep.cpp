@@ -14,16 +14,16 @@
 // above mentioned "Artistic License" for more details.
 
 #include <ostream>
-#include "ReducedSpaceSQPPack/src/std/CalcReducedGradLagrangianStd_AddedStep.h"
-#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "AbstractLinAlgPack/src/MatrixWithOp.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
+#include "ReducedSpaceSQPPack/src/std/CalcReducedGradLagrangianStd_AddedStep.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StV;

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// DecompositionSystemTester.h
+// DecompositionSystemTester.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <iosfwd>
 
-#include "ConstrainedOptimizationPackTypes.h"
-#include "StandardMemberCompositionMacros.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptimizationPack {
 

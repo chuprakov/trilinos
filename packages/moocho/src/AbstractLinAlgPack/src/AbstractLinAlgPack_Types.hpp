@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// AbstractLinAlgPackTypes.h
+// AbstractLinAlgPackTypes.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,8 +19,8 @@
 #include <memory>
 
 #include "RTOpPack/src/RTOp.h"
-#include "BLAS_CppTypes.h"
-#include "Range1D.h"
+#include "BLAS_CppTypes.hpp"
+#include "Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

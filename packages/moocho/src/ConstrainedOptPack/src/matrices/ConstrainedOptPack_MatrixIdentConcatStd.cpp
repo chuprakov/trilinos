@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.h"
-#include "ThrowException.h"
+#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
+#include "ThrowException.hpp"
 
 namespace ConstrainedOptimizationPack {
 

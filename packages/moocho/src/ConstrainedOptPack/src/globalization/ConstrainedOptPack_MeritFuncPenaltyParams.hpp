@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MeritFuncPenaltyParams.h
+// MeritFuncPenaltyParams.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MERIT_FUNC_PENALTY_PARAMS_H
 #define MERIT_FUNC_PENALTY_PARAMS_H
 
-#include "ConstrainedOptimizationPackTypes.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
 
 namespace ConstrainedOptimizationPack {
 

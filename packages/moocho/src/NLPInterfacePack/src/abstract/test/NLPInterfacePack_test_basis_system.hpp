@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////
-// test_basis_system.h
+// test_basis_system.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef TEST_BASIS_SYSTEM_H
 #define TEST_BASIS_SYSTEM_H
 
-#include "NLPInterfacePack/src/NLPInterfacePackTypes.h"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;

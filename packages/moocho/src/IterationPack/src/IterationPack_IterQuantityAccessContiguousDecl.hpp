@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////////
-// IterQuantityAccessContiguousDecl.h
+// IterQuantityAccessContiguousDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -28,8 +28,8 @@
 #include <vector>
 #include <limits>
 
-#include "IterQuantityAccess.h"
-#include "AbstractFactoryStd.h"
+#include "IterQuantityAccess.hpp"
+#include "AbstractFactoryStd.hpp"
 
 namespace GeneralIterationPack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// LinAlgPackTypes.h
+// LinAlgPackTypes.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef LINALGPACK_TYPES_H
 #define LINALGPACK_TYPES_H
 
-#include "LinAlgPackOptions.h"
-#include "Range1D.h"
-#include "BLAS_CppTypes.h"
+#include "LinAlgPackOptions.hpp"
+#include "Range1D.hpp"
+#include "BLAS_CppTypes.hpp"
 
 namespace LinAlgPack {
 

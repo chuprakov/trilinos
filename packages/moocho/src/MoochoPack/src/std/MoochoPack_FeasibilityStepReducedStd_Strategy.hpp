@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////
-// FeasibilityStepReducedStd_Strategy.h
+// FeasibilityStepReducedStd_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,17 +16,17 @@
 #ifndef FEASIBILITY_STEP_REDUCED_STD_STRATEGY_H
 #define FEASIBILITY_STEP_REDUCED_STD_STRATEGY_H
 
-#include "FeasibilityStep_Strategy.h"
-#include "QuasiRangeSpaceStep_Strategy.h"
-#include "d_bounds_iter_quant.h"
-#include "GeneralIterationPack/src/CastIQMember.h"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxed.h"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.h"
-#include "AbstractLinAlgPack/src/MatrixWithOp.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "FeasibilityStep_Strategy.hpp"
+#include "QuasiRangeSpaceStep_Strategy.hpp"
+#include "d_bounds_iter_quant.hpp"
+#include "GeneralIterationPack/src/CastIQMember.hpp"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxed.hpp"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

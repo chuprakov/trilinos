@@ -20,12 +20,12 @@
 #include <sstream>
 #include <typeinfo>
 
-#include "ConstrainedOptimizationPack/src/MatrixKKTFullSpaceRelaxed.h"
+#include "ConstrainedOptimizationPack/src/MatrixKKTFullSpaceRelaxed.hpp"
 #include "SparseSolverPack/src/DirectSparseFortranCompatibleSolver.h"
-#include "SparseLinAlgPack/src/MatrixConvertToSparseFortranCompatible.h"
-#include "SparseLinAlgPack/test/TestMatrixConvertToSparseFortranCompatible.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
+#include "SparseLinAlgPack/src/MatrixConvertToSparseFortranCompatible.hpp"
+#include "SparseLinAlgPack/test/TestMatrixConvertToSparseFortranCompatible.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
 
 namespace ConstrainedOptimizationPack {
 

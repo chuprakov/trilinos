@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// COOMatrixOut.h
+// COOMatrixOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef COO_MATRIX_OUT_H
 #define COO_MATRIX_OUT_H
 
-#include "COOMatrixOutFunc.h"
+#include "COOMatrixOutFunc.hpp"
 
 namespace SparseLinAlgPack {
 

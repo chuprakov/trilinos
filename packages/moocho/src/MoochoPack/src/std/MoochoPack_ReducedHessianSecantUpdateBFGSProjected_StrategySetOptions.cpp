@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "../std/ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.h"
-#include "StringToBool.h"
+#include "../std/ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.hpp"
+#include "StringToBool.hpp"
 
 // Define the options
 namespace {

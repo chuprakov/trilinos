@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "NLPInterfacePack/src/NLPSecondOrderInfo.h"
-#include "ThrowException.h"
+#include "NLPInterfacePack/src/NLPSecondOrderInfo.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 	const char name_HL[] = "HL";

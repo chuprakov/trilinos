@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixWithOpNonsingularAggr.h
+// MatrixWithOpNonsingularAggr.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_WITH_OP_NONSINGULAR_AGGR_H
 #define MATRIX_WITH_OP_NONSINGULAR_AGGR_H
 
-#include "MatrixWithOpNonsingular.h"
+#include "MatrixWithOpNonsingular.hpp"
 
 namespace AbstractLinAlgPack {
 

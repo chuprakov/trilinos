@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// NLPFirstOrderDirectTester.h
+// NLPFirstOrderDirectTester.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,10 +18,10 @@
 
 #include <iosfwd>
 
-#include "NLPInterfacePack/src/NLPInterfacePackTypes.h"
-#include "NLPInterfacePack/src/CalcFiniteDiffProd.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
+#include "NLPInterfacePack/src/CalcFiniteDiffProd.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace NLPInterfacePack {
 

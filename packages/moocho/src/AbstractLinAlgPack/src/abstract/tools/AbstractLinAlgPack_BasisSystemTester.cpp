@@ -17,17 +17,17 @@
 
 #include <ostream>
 
-#include "AbstractLinAlgPack/src/BasisSystemTester.h"
-#include "AbstractLinAlgPack/src/BasisSystem.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.h"
-#include "AbstractLinAlgPack/src/assert_print_nan_inf.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/src/BasisSystemTester.hpp"
+#include "AbstractLinAlgPack/src/BasisSystem.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace AbstractLinAlgPack {
 

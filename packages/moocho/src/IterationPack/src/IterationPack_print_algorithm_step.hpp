@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////
-// print_algorithm_step.h
+// print_algorithm_step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "Algorithm.h"
+#include "Algorithm.hpp"
 
 namespace GeneralIterationPack {
 

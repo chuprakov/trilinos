@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixSymDiagonalSparse.h
+// MatrixSymDiagonalSparse.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,9 +15,9 @@
 #ifndef SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_H
 #define SPARSE_LINALG_PACK_MATRIX_DIAGONAL_SPARSE_H
 
-#include "MatrixSymWithOpSerial.h"
-#include "MatrixConvertToSparse.h"
-#include "StandardMemberCompositionMacros.h"
+#include "MatrixSymWithOpSerial.hpp"
+#include "MatrixConvertToSparse.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace SparseLinAlgPack {
 

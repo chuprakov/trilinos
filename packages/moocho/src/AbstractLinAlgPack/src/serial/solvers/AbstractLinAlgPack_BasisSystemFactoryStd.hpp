@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////
-// BasisSystemFactoryStd.h
+// BasisSystemFactoryStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef SPARSE_SOLVER_PACK_BASIS_SYSTEM_FACTORY_H
 #define SPARSE_SOLVER_PACK_BASIS_SYSTEM_FACTORY_H
 
-#include "SparseSolverPackTypes.h"
-#include "AbstractLinAlgPack/src/BasisSystemFactory.h"
-#include "AbstractFactory.h"
+#include "SparseSolverPackTypes.hpp"
+#include "AbstractLinAlgPack/src/BasisSystemFactory.hpp"
+#include "AbstractFactory.hpp"
 
 namespace SparseSolverPack {
 

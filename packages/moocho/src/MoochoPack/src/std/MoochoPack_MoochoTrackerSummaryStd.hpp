@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPTrackSummaryStd.h
+// rSQPTrackSummaryStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef RSQP_TRACK_SUMMARY_STD_H
 #define RSQP_TRACK_SUMMARY_STD_H
 
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.h"
-#include "ReducedSpaceSQPPack/src/std/qp_solver_stats.h"
-#include "ReducedSpaceSQPPack/src/std/act_set_stats.h"
-#include "GeneralIterationPack/src/AlgorithmTrack.h"
+#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
+#include "ReducedSpaceSQPPack/src/std/qp_solver_stats.hpp"
+#include "ReducedSpaceSQPPack/src/std/act_set_stats.hpp"
+#include "GeneralIterationPack/src/AlgorithmTrack.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -15,16 +15,16 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.h"
-#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "ReleaseResource_ref_count_ptr.h"
-#include "AbstractFactoryStd.h"
-#include "dynamic_cast_verbose.h"
-#include "ThrowException.h"
+#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "ReleaseResource_ref_count_ptr.hpp"
+#include "AbstractFactoryStd.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 

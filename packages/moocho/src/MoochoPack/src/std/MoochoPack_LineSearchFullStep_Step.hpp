@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// LineSearchFullStep_Step.h
+// LineSearchFullStep_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef LINE_SEARCH_FULL_STEP_STEP_H
 #define LINE_SEARCH_FULL_STEP_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
-#include "ConstrainedOptimizationPack/src/VariableBoundsTester.h"
-#include "StandardCompositionMacros.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
+#include "StandardCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

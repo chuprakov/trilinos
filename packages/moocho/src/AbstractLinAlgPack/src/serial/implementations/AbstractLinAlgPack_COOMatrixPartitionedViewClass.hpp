@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// COOMatrixPartitionedViewClass.h
+// COOMatrixPartitionedViewClass.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define COO_MATRIX_PARTITIONED_VIEW_CLASS_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "COOMatrixPartitionedViewClassDecl.h"
+#include "COOMatrixPartitionedViewClassDecl.hpp"
 #else
-#include "COOMatrixPartitionedViewClassDef.h"
+#include "COOMatrixPartitionedViewClassDef.hpp"
 #endif
 
 #endif // COO_MATRIX_PARTITIONED_VIEW_CLASS_H

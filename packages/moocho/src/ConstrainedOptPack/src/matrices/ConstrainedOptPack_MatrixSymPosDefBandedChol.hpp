@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////
-// MatrixSymPosDefBandedChol.h
+// MatrixSymPosDefBandedChol.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef MATRIX_SYM_POS_DEF_BANDED_CHOL_H
 #define MATRIX_SYM_POS_DEF_BANDED_CHOL_H
 
-#include "ConstrainedOptimizationPackTypes.h"
-#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
+#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
 #include "Miref_count_ptr.h"
 #include "MiReleaseResource.h"
 

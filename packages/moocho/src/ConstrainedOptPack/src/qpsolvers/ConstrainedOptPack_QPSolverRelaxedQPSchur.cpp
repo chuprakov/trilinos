@@ -17,16 +17,16 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchur.h"
-#include "AbstractLinAlgPack/src/MatrixWithOp.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "SparseLinAlgPack/src/SortByDescendingAbsValue.h"
-#include "SparseLinAlgPack/src/VectorDenseEncap.h"
-#include "SparseLinAlgPack/src/VectorSpaceSerial.h"
-#include "SparseLinAlgPack/src/sparse_bounds.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "dynamic_cast_verbose.h"
-#include "profile_hack.h"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchur.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
+#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "SparseLinAlgPack/src/VectorSpaceSerial.hpp"
+#include "SparseLinAlgPack/src/sparse_bounds.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "profile_hack.hpp"
 
 namespace ConstrainedOptimizationPack {
 

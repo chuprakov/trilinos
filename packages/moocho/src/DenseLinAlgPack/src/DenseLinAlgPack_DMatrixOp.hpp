@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// GenMatrixOp.h
+// GenMatrixOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -32,11 +32,11 @@
 #ifndef GEN_MATRIX_OP_H
 #define GEN_MATRIX_OP_H
 
-#include "LinAlgPackTypes.h"
-#include "LinAlgPackAssertOp.h"
-#include "GenMatrixClass.h"
-#include "GenMatrixAsTriSym.h"
-#include "VectorOp.h"
+#include "LinAlgPackTypes.hpp"
+#include "LinAlgPackAssertOp.hpp"
+#include "GenMatrixClass.hpp"
+#include "GenMatrixAsTriSym.hpp"
+#include "VectorOp.hpp"
 
 /** @name {\bf Basic GenMatrix Operation Functions (Level 2,3 BLAS)}.
   *

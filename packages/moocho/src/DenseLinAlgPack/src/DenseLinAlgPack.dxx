@@ -23,50 +23,50 @@ that is BLAS compatable.
 
 */
 //@{
-  //@Include: LinAlgPackOptions.h
+  //@Include: LinAlgPackOptions.hpp
   /** @name Linear algebra vector, matrix and permutation types. */
   //@{
-    //@Include: IVector.h
-    //@Include: VectorClass.h
-    //@Include: VectorClassTmpl.h
-    //@Include: GenMatrixClass.h
-    //@Include: GenMatrixAsTriSym.h
+    //@Include: IVector.hpp
+    //@Include: VectorClass.hpp
+    //@Include: VectorClassTmpl.hpp
+    //@Include: GenMatrixClass.hpp
+    //@Include: GenMatrixAsTriSym.hpp
   //@}
   /** @name Linear algebra operations */
   //@{
     /** @name Assignment */
     //@{
-      //@Include: VectorAssign.h
-      //@Include: GenMatrixAssign.h
+      //@Include: VectorAssign.hpp
+      //@Include: GenMatrixAssign.hpp
     //@}
     /** @name BLAS operations */
     //@{
-      //@Include: VectorOp.h
-      //@Include: GenMatrixOp.h
-      //@Include: LinAlgPackAssertOp.h
+      //@Include: VectorOp.hpp
+      //@Include: GenMatrixOp.hpp
+      //@Include: LinAlgPackAssertOp.hpp
     //@}
-    //@Include: PermVecMat.h
+    //@Include: PermVecMat.hpp
   //@}
   /** @name Input / Output */
   //@{
-    //@Include: PermIn.h
-    //@Include: PermOut.h
-    //@Include: VectorIn.h
-    //@Include: VectorOut.h
-    //@Include: GenMatrixIn.h
-    //@Include: GenMatrixOut.h
-    //@Include: VectorInFunc.h
-    //@Include: VectorOutFunc.h
-    //@Include: GenMatrixInFunc.h
-    //@Include: GenMatrixOutFunc.h
-    //@Include: LinAlgPackInFormatDecl.h
-    //@Include: LinAlgPackOutFormatDecl.h
+    //@Include: PermIn.hpp
+    //@Include: PermOut.hpp
+    //@Include: VectorIn.hpp
+    //@Include: VectorOut.hpp
+    //@Include: GenMatrixIn.hpp
+    //@Include: GenMatrixOut.hpp
+    //@Include: VectorInFunc.hpp
+    //@Include: VectorOutFunc.hpp
+    //@Include: GenMatrixInFunc.hpp
+    //@Include: GenMatrixOutFunc.hpp
+    //@Include: LinAlgPackInFormatDecl.hpp
+    //@Include: LinAlgPackOutFormatDecl.hpp
   //@}
   /** @name Utilities / Misc. */
   //@{
-    //@Include: ElementaryMatVec.h
-    //@Include: MatVecCompare.h
-    //@Include: InvCholUpdate.h
+    //@Include: ElementaryMatVec.hpp
+    //@Include: MatVecCompare.hpp
+    //@Include: InvCholUpdate.hpp
 //@}
   //@Include: LinAlgPackIO.dxx
 //@}

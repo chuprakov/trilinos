@@ -15,11 +15,11 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/MatrixBasisNonbasis.h"
-#include "SparseLinAlgPack/src/SpVectorClass.h"
-#include "LinAlgPack/src/VectorOp.h"
-#include "LinAlgPack/src/GenMatrixOp.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
+#include "SparseLinAlgPack/src/MatrixBasisNonbasis.hpp"
+#include "SparseLinAlgPack/src/SpVectorClass.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
+#include "LinAlgPack/src/GenMatrixOp.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
 
 namespace SparseLinAlgPack {
 

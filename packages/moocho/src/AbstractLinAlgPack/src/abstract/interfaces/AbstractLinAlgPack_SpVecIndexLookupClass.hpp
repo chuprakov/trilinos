@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SpVecIndexLookupClass.h
+// SpVecIndexLookupClass.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define SPVEC_INDEX_LOOKUP_CLASS_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "SpVecIndexLookupClassDecl.h"
+#include "SpVecIndexLookupClassDecl.hpp"
 #else
-#include "SpVecIndexLookupClassDef.h"
+#include "SpVecIndexLookupClassDef.hpp"
 #endif
 
 #endif // SPVEC_INDEX_LOOKUP_CLASS_H

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// SetDBoundsStd_AddedStep.h
+// SetDBoundsStd_AddedStep.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef SET_D_BOUNDS_STD_ADDED_STEP_HH
 #define SET_D_BOUNDS_STD_ADDED_STEP_HH
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
-#include "GeneralIterationPack/src/CastIQMember.h"
-#include "ReducedSpaceSQPPack/src/std/d_bounds_iter_quant.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "GeneralIterationPack/src/CastIQMember.hpp"
+#include "ReducedSpaceSQPPack/src/std/d_bounds_iter_quant.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// MatrixLoadSparseElements.h
+// MatrixLoadSparseElements.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_LOAD_SPARSE_FORTRAN_COMPATIBLE_ELEMENTS_H
 #define MATRIX_LOAD_SPARSE_FORTRAN_COMPATIBLE_ELEMENTS_H
 
-#include "AbstractLinAlgPack/src/MatrixBase.h"
+#include "AbstractLinAlgPack/src/MatrixBase.hpp"
 
 namespace SparseLinAlgPack {
 

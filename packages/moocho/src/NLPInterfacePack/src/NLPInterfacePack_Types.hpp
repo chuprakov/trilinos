@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPInterfacePackTypes.h
+// NLPInterfacePackTypes.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef NLP_INTERFACE_PACK_TYPES_H
 #define NLP_INTERFACE_PACK_TYPES_H
 
-#include "SparseSolverPack/src/SparseSolverPackTypes.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h" // Needed for doxygen?
+#include "SparseSolverPack/src/SparseSolverPackTypes.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp" // Needed for doxygen?
 
 namespace NLPInterfacePack {
 

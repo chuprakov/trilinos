@@ -16,12 +16,12 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptimizationPack/src/MatrixSymAddDelBunchKaufman.h"
-#include "LinAlgLAPack/src/LinAlgLAPack.h"
-#include "LinAlgPack/src/GenMatrixOut.h"
-#include "LinAlgPack/src/GenMatrixOp.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
-#include "LinAlgPack/src/delete_row_col.h"
+#include "ConstrainedOptimizationPack/src/MatrixSymAddDelBunchKaufman.hpp"
+#include "LinAlgLAPack/src/LinAlgLAPack.hpp"
+#include "LinAlgPack/src/GenMatrixOut.hpp"
+#include "LinAlgPack/src/GenMatrixOp.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "LinAlgPack/src/delete_row_col.hpp"
 
 namespace ConstrainedOptimizationPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPAlgo.h
+// rSQPAlgo.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef RSQP_ALGO_H
 #define RSQP_ALGO_H
 
-#include "rSQPAlgoInterface.h"
-#include "rSQPAlgoContainer.h"
-#include "rSQPState.h"
-#include "GeneralIterationPack/src/Algorithm.h"
-#include "StandardAggregationMacros.h"
+#include "rSQPAlgoInterface.hpp"
+#include "rSQPAlgoContainer.hpp"
+#include "rSQPState.hpp"
+#include "GeneralIterationPack/src/Algorithm.hpp"
+#include "StandardAggregationMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

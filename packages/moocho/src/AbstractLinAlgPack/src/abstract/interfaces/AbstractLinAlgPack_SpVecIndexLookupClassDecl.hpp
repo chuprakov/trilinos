@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SpVecIndexLookupClassDecl.h
+// SpVecIndexLookupClassDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <stdexcept>
 
-#include "AbstractLinAlgPackTypes.h"
+#include "AbstractLinAlgPackTypes.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// LinAlgPackOutFormat.h
+// LinAlgPackOutFormat.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define LINALGPACK_OUT_FORMAT_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "LinAlgPackOutFormatDecl.h"
+#include "LinAlgPackOutFormatDecl.hpp"
 #else
-#include "LinAlgPackOutFormatDef.h"
+#include "LinAlgPackOutFormatDef.hpp"
 #endif
 
 #endif // LINALGPACK_OUT_FORMAT_H

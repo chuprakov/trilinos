@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// LineSearchWatchDog_StepSetOptions.h
+// LineSearchWatchDog_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef LINE_SEARCH_WATCH_DOG_STEP_SET_OPTIONS_H
 #define LINE_SEARCH_WATCH_DOG_STEP_SET_OPTIONS_H
 
-#include "LineSearchWatchDog_Step.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "LineSearchWatchDog_Step.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

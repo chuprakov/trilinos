@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPSerialPreprocessExplJac.h
+// NLPSerialPreprocessExplJac.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,12 +18,12 @@
 
 #include <valarray>
 
-#include "NLPSerialPreprocess.h"
-#include "NLPFirstOrderInfo.h"
-#include "SparseSolverPack/src/BasisSystemFactoryStd.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "AbstractFactory.h"
-#include "StandardCompositionMacros.h"
+#include "NLPSerialPreprocess.hpp"
+#include "NLPFirstOrderInfo.hpp"
+#include "SparseSolverPack/src/BasisSystemFactoryStd.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "AbstractFactory.hpp"
+#include "StandardCompositionMacros.hpp"
 
 namespace NLPInterfacePack {
 

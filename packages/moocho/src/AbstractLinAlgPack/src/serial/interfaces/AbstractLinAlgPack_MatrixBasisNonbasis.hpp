@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixBasisNonbasis.h
+// MatrixBasisNonbasis.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_BASIS_NON_BASIS_H
 #define MATRIX_BASIS_NON_BASIS_H
 
-#include "MatrixWithOpFactorized.h"
+#include "MatrixWithOpFactorized.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "NLPTesterSetOptions.h"
-#include "StringToBool.h"
+#include "NLPTesterSetOptions.hpp"
+#include "StringToBool.hpp"
 
 // Define the options
 namespace {

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// InitFinDiffReducedHessian_StepSetOptions.h
+// InitFinDiffReducedHessian_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_SET_OPTIONS_H
 #define INIT_FIN_DIFF_REDUCED_HESSIAN_STEP_SET_OPTIONS_H
 
-#include "InitFinDiffReducedHessian_Step.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "InitFinDiffReducedHessian_Step.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

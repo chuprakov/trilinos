@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////
-// MatlabPack.h
+// MatlabPack.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATLAB_PACK_H
 #define MATLAB_PACK_H
 
-#include "LinAlgPackTypes.h"
+#include "LinAlgPackTypes.hpp"
 
 namespace LinAlgPack {
 namespace MatlabPack {

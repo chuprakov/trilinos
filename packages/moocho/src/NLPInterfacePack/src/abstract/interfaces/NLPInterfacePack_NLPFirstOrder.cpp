@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.h"
-#include "AbstractLinAlgPack/src/MatrixWithOp.h"
-#include "Range1D.h"
-#include "ThrowException.h"
+#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "Range1D.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 	const char name_Gc[] = "Gc";

@@ -17,12 +17,12 @@
 
 #include <algorithm>
 
-#include "ConvertToSparseCompressedColumn.h"
-#include "MatrixWithOp.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "LinAlgPack/src/BLAS_Cpp.h"
-#include "LinAlgPack/src/VectorOp.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "ConvertToSparseCompressedColumn.hpp"
+#include "MatrixWithOp.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "LinAlgPack/src/BLAS_Cpp.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Mp_StM;

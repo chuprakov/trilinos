@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////
-// get_init_fixed_free_indep.h
+// get_init_fixed_free_indep.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef GET_INIT_FIXED_FREE_INDEP_H
 #define GET_INIT_FIXED_FREE_INDEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
 
 namespace ReducedSpaceSQPPack {
 

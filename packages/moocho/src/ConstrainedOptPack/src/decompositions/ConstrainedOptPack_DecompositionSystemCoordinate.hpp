@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// DecompositionSystemCoordinate.h
+// DecompositionSystemCoordinate.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef DECOMPOSITION_SYSTEM_COORDINATE_H
 #define DECOMPOSITION_SYSTEM_COORDINATE_H
 
-#include "DecompositionSystemVarReductImp.h"
-#include "StandardCompositionMacros.h"
+#include "DecompositionSystemVarReductImp.hpp"
+#include "StandardCompositionMacros.hpp"
 
 namespace ConstrainedOptimizationPack {
 

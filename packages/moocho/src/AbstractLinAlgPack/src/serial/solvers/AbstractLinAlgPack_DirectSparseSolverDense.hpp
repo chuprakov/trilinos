@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////
-// DirectSparseSolverDense.h
+// DirectSparseSolverDense.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,10 +20,10 @@
 #include <vector>
 #include <string>
 
-#include "DirectSparseSolverImp.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "LinAlgPack/src/IVector.h"
-#include "StandardMemberCompositionMacros.h"
+#include "DirectSparseSolverImp.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "LinAlgPack/src/IVector.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace SparseSolverPack {
 

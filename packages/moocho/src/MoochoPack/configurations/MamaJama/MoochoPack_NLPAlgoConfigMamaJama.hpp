@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// rSQPAlgo_ConfigMamaJama.h
+// rSQPAlgo_ConfigMamaJama.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef RSQP_ALGO_CONFIG_MAMA_JAMA_H
 #define RSQP_ALGO_CONFIG_MAMA_JAMA_H
 
-#include "ReducedSpaceSQPPack/src/rSQPAlgo_Config.h"
-#include "ReducedSpaceSQPPack/src/rSQPAlgo.h"
-#include "ReducedSpaceSQPPack/Configurations/shared/DecompositionSystemStateStepBuilderStd.h"
-#include "OptionsFromStream.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo_Config.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
+#include "ReducedSpaceSQPPack/Configurations/shared/DecompositionSystemStateStepBuilderStd.hpp"
+#include "OptionsFromStream.hpp"
 
 namespace ReducedSpaceSQPPack {
 
@@ -35,7 +35,7 @@ namespace ReducedSpaceSQPPack {
  * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "rSQPpp.opt.rSQPAlgo_ConfigMamaJama"</tt>.
  *
  * Note that all built-in support for basis permutations and direct sparse solvers
- * can be left out if the macro RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS is defined
+ * can be left out if the macro MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS is defined
  * This will result in smaller executables for programs that don't need this
  * extra functionality..
  * 

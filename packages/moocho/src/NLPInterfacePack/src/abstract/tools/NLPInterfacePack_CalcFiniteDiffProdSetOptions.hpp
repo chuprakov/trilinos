@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// CalcFiniteDiffProdSetOptions.h
+// CalcFiniteDiffProdSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef CALC_FINITE_DIFF_PROD_SET_OPTIONS_H
 #define CALC_FINITE_DIFF_PROD_SET_OPTIONS_H
 
-#include "CalcFiniteDiffProd.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "CalcFiniteDiffProd.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace NLPInterfacePack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparseVectorSliceOp.h
+// SparseVectorSliceOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #ifndef SPARSE_VECTOR_SLICE_OP_H
 #define SPARSE_VECTOR_SLICE_OP_H
 
-#include "SparseVectorOp.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
-#include "LinAlgPack/src/VectorOp.h"
+#include "SparseVectorOp.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
 
 namespace SparseLinAlgPack {
 

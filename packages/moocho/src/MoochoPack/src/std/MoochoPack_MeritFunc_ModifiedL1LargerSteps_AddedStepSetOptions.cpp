@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "../std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.h"
-#include "StringToBool.h"
+#include "../std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.hpp"
+#include "StringToBool.hpp"
 
 // Define the options
 namespace {

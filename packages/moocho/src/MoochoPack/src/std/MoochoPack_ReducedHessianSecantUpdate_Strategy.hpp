@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////
-// ReducedHessianSecantUpdate_Strategy.h
+// ReducedHessianSecantUpdate_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_STRATEGY_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
 
 namespace ReducedSpaceSQPPack {
 

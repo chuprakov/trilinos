@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLP.h
+// NLP.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,10 +19,10 @@
 #include <stdexcept>
 #include <string>
 
-#include "NLPInterfacePackTypes.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "StandardCompositionRelationshipsPack.h"
-#include "ref_count_ptr.h"
+#include "NLPInterfacePackTypes.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "StandardCompositionRelationshipsPack.hpp"
+#include "ref_count_ptr.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;

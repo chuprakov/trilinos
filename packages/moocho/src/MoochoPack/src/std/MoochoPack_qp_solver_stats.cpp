@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/qp_solver_stats.h"
+#include "ReducedSpaceSQPPack/src/std/qp_solver_stats.hpp"
 
 extern const std::string
 	ReducedSpaceSQPPack::qp_solver_stats_name = "qp_solver_stats";

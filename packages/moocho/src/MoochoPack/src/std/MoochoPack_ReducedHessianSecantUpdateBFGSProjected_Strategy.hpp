@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////
-// ReducedHessianSecantUpdateBFGSProjected_Strategy.h
+// ReducedHessianSecantUpdateBFGSProjected_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,13 +16,13 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_BFGS_PROJECTED_STRATEGY_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_BFGS_PROJECTED_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdate_Strategy.h"
-#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.h"
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.h"
-#include "ReducedSpaceSQPPack/src/std/act_set_stats.h"
-#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdate_Strategy.hpp"
+#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.hpp"
+#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
+#include "ReducedSpaceSQPPack/src/std/act_set_stats.hpp"
+#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// ExampleNLPFirstOrderDirectRun.h
+// ExampleNLPFirstOrderDirectRun.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,8 +19,8 @@
 
 #include <iosfwd>
 
-#include "NLPInterfacePack/src/NLPInterfacePackTypes.h"
-#include "ReducedSpaceSQPPack/Configurations/rSQPppSolver.h"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
+#include "ReducedSpaceSQPPack/Configurations/rSQPppSolver.hpp"
 
 namespace NLPInterfacePack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// LineSearch2ndOrderCorrect_StepSetOptions.h
+// LineSearch2ndOrderCorrect_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef LINE_SEARCH_2ND_ORDER_CORRECT_STEP_SET_OPTIONS_H
 #define LINE_SEARCH_2ND_ORDER_CORRECT_STEP_SET_OPTIONS_H
 
-#include "LineSearch2ndOrderCorrect_Step.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "LineSearch2ndOrderCorrect_Step.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

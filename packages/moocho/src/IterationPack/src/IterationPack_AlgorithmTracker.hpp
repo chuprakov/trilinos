@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// AlgorithmTrack.h
+// AlgorithmTrack.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <iosfwd>
 
-#include "GeneralIterationPackTypes.h"
-#include "ref_count_ptr.h"
+#include "GeneralIterationPackTypes.hpp"
+#include "ref_count_ptr.hpp"
 
 namespace GeneralIterationPack {
 

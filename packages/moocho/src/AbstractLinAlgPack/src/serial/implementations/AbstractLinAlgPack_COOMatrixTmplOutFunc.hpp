@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// COOMatrixTmplOutFunc.h
+// COOMatrixTmplOutFunc.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define COO_MATRIX_TMPL_OUT_FUNC_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "COOMatrixTmplOutFuncDecl.h"
+#include "COOMatrixTmplOutFuncDecl.hpp"
 #else
-#include "COOMatrixTmplOutFuncDef.h"
+#include "COOMatrixTmplOutFuncDef.hpp"
 #endif
 
 #endif	// COO_MATRIX_TMPL_OUT_FUNC_H

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// AlgorithmStep.h
+// AlgorithmStep.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "GeneralIterationPackTypes.h"
+#include "GeneralIterationPackTypes.hpp"
 
 namespace GeneralIterationPack {
 

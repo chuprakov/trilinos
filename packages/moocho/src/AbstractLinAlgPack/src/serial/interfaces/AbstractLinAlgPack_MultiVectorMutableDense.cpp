@@ -15,15 +15,15 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/MultiVectorMutableDense.h"
-#include "SparseLinAlgPack/src/VectorWithOpMutableDense.h"
-#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/GenMatrixOut.h"
-#include "ReleaseResource_ref_count_ptr.h"
-#include "WorkspacePack.h"
-#include "ThrowException.h"
+#include "SparseLinAlgPack/src/MultiVectorMutableDense.hpp"
+#include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
+#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/GenMatrixOut.hpp"
+#include "ReleaseResource_ref_count_ptr.hpp"
+#include "WorkspacePack.hpp"
+#include "ThrowException.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparseCOOPtrElement.h
+// SparseCOOPtrElement.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef SPARSE_COO_PTR_ELEMENT_H
 #define SPARSE_COO_PTR_ELEMENT_H
 
-#include "SparseLinAlgPackTypes.h"
+#include "SparseLinAlgPackTypes.hpp"
 
 namespace SparseLinAlgPack {
 

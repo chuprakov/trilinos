@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// LineSearchFilter_StepSetOptions.h
+// LineSearchFilter_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef LINE_SEARCH_FILTER_STEP_SET_OPTIONS_H
 #define LINE_SEARCH_FILTER_STEP_SET_OPTIONS_H
 
-#include "LineSearchFilter_Step.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "LineSearchFilter_Step.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/ComputeMinMult.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "LinAlgPack/src/VectorClass.h"
+#include "ConstrainedOptimizationPack/src/ComputeMinMult.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
 
 namespace {
 template< class T >

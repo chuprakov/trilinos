@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////
-// DirectSparseSolverMA28.h
+// DirectSparseSolverMA28.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -22,11 +22,11 @@
 #include <vector>
 #include <string>
 
-#include "DirectSparseSolverImp.h"
-#include "MA28Solver.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/IVector.h"
-#include "StandardMemberCompositionMacros.h"
+#include "DirectSparseSolverImp.hpp"
+#include "MA28Solver.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/IVector.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace SparseSolverPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////
-// rSQPState.h
+// rSQPState.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,19 +18,19 @@
 
 #include <deque>
 
-#include "ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/IterQuantityAccess.h"
-#include "GeneralIterationPack/src/AlgorithmState.h"
-#include "GeneralIterationPack/src/cast_iq.h"
-#include "GeneralIterationPack/src/IterQuantityAccessContiguous.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/Permutation.h"
-#include "ConstrainedOptimizationPack/src/DecompositionSystem.h"
-#include "AbstractLinAlgPack/src/MatrixWithOp.h"
-//#include "LinAlgPack/src/IVector.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
-#include "Range1D.h"
+#include "ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/IterQuantityAccess.hpp"
+#include "GeneralIterationPack/src/AlgorithmState.hpp"
+#include "GeneralIterationPack/src/cast_iq.hpp"
+#include "GeneralIterationPack/src/IterQuantityAccessContiguous.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/Permutation.hpp"
+#include "ConstrainedOptimizationPack/src/DecompositionSystem.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+//#include "LinAlgPack/src/IVector.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
+#include "Range1D.hpp"
 
 namespace ReducedSpaceSQPPack {
 

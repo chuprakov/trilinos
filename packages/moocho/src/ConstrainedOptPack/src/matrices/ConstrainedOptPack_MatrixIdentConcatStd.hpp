@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////
-// MatrixIdentConcatStd.h
+// MatrixIdentConcatStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef MATRIX_IDENT_CONCAT_STD_H
 #define MATRIX_IDENT_CONCAT_STD_H
 
-#include "MatrixIdentConcat.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "Range1D.h"
-#include "ref_count_ptr.h"
+#include "MatrixIdentConcat.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "Range1D.hpp"
+#include "ref_count_ptr.hpp"
 
 namespace ConstrainedOptimizationPack {
 

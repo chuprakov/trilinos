@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// qp_solver_stats.h
+// qp_solver_stats.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef QP_SOLVER_STATS_HH
 #define QP_SOLVER_STATS_HH
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "ConstrainedOptimizationPack/src/QPSolverStats.h"
-#include "GeneralIterationPack/src/CastIQMember.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "ConstrainedOptimizationPack/src/QPSolverStats.hpp"
+#include "GeneralIterationPack/src/CastIQMember.hpp"
 
 namespace ReducedSpaceSQPPack {
 

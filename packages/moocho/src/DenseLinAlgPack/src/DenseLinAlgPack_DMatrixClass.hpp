@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////
-// GenMatrixClass.h
+// GenMatrixClass.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 #ifndef GEN_MATRIX_CLASS_H
 #define GEN_MATRIX_CLASS_H
 
-#include "VectorClass.h"
-#include "GenMatrixAssign.h"
+#include "VectorClass.hpp"
+#include "GenMatrixAssign.hpp"
 
 /** @name {\bf Dense 2-D Rectangular Matrix Absractions}.
   *

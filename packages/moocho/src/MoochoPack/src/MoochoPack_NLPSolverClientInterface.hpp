@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPSolverClientInterface.h
+// rSQPSolverClientInterface.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,10 +18,10 @@
 
 #include <stdexcept>
 
-#include "ReducedSpaceSQPPackTypes.h"
-#include "NLPInterfacePack/src/NLP.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "ReducedSpaceSQPPackTypes.hpp"
+#include "NLPInterfacePack/src/NLP.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

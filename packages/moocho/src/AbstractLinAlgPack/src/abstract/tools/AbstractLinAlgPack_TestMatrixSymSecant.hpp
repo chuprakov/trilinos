@@ -1,9 +1,9 @@
 // ///////////////////////////////////////////////////////////
-// TestMatrixSymSecantUpdate.h
+// TestMatrixSymSecantUpdate.hpp
 
 #include <iosfwd>
 
-#include "AbstractLinAlgPackTypes.h"
+#include "AbstractLinAlgPackTypes.hpp"
 
 namespace AbstractLinAlgPack {
 

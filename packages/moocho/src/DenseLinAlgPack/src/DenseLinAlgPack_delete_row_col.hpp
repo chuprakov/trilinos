@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////
-// delete_row_col.h
+// delete_row_col.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef DELETE_ROW_COL_H
 #define DELETE_ROW_COL_H
 
-#include "LinAlgPackTypes.h"
+#include "LinAlgPackTypes.hpp"
 
 namespace LinAlgPack {
 

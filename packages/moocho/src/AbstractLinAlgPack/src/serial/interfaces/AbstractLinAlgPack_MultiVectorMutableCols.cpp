@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseLinAlgPack/src/MultiVectorMutableCols.h"
-#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "dynamic_cast_verbose.h"
-#include "ThrowException.h"
+#include "SparseLinAlgPack/src/MultiVectorMutableCols.hpp"
+#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ThrowException.hpp"
 
 namespace SparseLinAlgPack {
 

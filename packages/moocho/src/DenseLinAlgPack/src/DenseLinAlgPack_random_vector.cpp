@@ -17,8 +17,8 @@
 
 #include <stdexcept>
 
-#include "LinAlgPack/src/random_vector.h"
-#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/random_vector.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
 
 void LinAlgPack::seed_random_vector_generator( unsigned int s )
 {

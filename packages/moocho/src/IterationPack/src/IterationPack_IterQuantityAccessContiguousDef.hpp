@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////////
-// IterQuantityAccessContiguousDef.h
+// IterQuantityAccessContiguousDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -22,8 +22,8 @@
 #include <algorithm>
 #include <iterator>
 
-#include "IterQuantityAccessContiguousDecl.h"
-#include "ThrowException.h"
+#include "IterQuantityAccessContiguousDecl.hpp"
+#include "ThrowException.hpp"
 
 namespace GeneralIterationPack {
 

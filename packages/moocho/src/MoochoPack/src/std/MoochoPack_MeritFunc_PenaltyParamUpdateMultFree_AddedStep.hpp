@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// MeritFunc_PenaltyParamUpdateMultFree_AddedStep.h
+// MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MERIT_FUNC_PENALTY_PARAM_UPDATE_MULT_FREE_ADDED_STEP_H
 #define MERIT_FUNC_PENALTY_PARAM_UPDATE_MULT_FREE_ADDED_STEP_H
 
-#include "MeritFunc_PenaltyParamUpdateGuts_AddedStep.h"
+#include "MeritFunc_PenaltyParamUpdateGuts_AddedStep.hpp"
 
 namespace ReducedSpaceSQPPack {
 

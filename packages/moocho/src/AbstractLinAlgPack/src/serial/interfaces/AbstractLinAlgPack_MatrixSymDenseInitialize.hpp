@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// MatrixSymDenseInitialize.h
+// MatrixSymDenseInitialize.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_SYM_DENSE_INITIALIZE_H
 #define MATRIX_SYM_DENSE_INITIALIZE_H
 
-#include "AbstractLinAlgPack/src/MatrixBase.h"
+#include "AbstractLinAlgPack/src/MatrixBase.hpp"
 
 namespace SparseLinAlgPack {
 

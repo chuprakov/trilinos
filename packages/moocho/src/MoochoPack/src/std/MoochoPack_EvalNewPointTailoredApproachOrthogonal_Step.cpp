@@ -13,19 +13,19 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.h"
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.h"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/MatrixSymInitDiagonal.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "dynamic_cast_verbose.h"
-#include "ThrowException.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.hpp"
+#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
+#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
+#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymInitDiagonal.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ThrowException.hpp"
 
 namespace ReducedSpaceSQPPack {
 

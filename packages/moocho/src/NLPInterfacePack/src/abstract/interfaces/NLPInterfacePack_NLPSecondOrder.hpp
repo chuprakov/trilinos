@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPSecondOrderInfo.h
+// NLPSecondOrderInfo.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef NLP_SECOND_ORDER_INFO_H
 #define NLP_SECOND_ORDER_INFO_H
 
-#include "NLPFirstOrderInfo.h"
+#include "NLPFirstOrderInfo.hpp"
 
 namespace NLPInterfacePack {
 

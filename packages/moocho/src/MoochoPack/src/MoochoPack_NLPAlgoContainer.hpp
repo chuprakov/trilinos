@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPAlgoContainer.h
+// rSQPAlgoContainer.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef RSQP_ALGO_CONTAINER_H
 #define RSQP_ALGO_CONTAINER_H
 
-#include "rSQPAlgoClientInterface.h"
-#include "rSQPAlgoInterface.h"
-#include "rSQPAlgo_Config.h"
-#include "StandardCompositionMacros.h"
+#include "rSQPAlgoClientInterface.hpp"
+#include "rSQPAlgoInterface.hpp"
+#include "rSQPAlgo_Config.hpp"
+#include "StandardCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// dense_Vp_StPtMtV.h
+// dense_Vp_StPtMtV.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,15 +16,15 @@
 #ifndef DENSE_V_P_S_T_P_T_M_T_V_H
 #define DENSE_V_P_S_T_P_T_M_T_V_H
 
-#include "SparseLinAlgPack/src/SpVectorClass.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-#include "SparseLinAlgPack/src/EtaVector.h"
-#include "SparseLinAlgPack/src/GenPermMatrixSlice.h"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "LinAlgPack/src/GenMatrixOut.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
+#include "SparseLinAlgPack/src/SpVectorClass.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "SparseLinAlgPack/src/EtaVector.hpp"
+#include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
+#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "LinAlgPack/src/GenMatrixOut.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
 #include "MiWorkspacePack.h"
 
 namespace SparseLinAlgPack {

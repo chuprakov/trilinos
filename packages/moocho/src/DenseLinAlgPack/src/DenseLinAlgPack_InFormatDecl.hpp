@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// LinAlgPackInFormatDecl.h
+// LinAlgPackInFormatDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef LINALGPACK_IN_FORMAT_DECL_H
 #define LINALGPACK_IN_FORMAT_DECL_H
 
-#include "LinAlgPackIOFormat.h"
+#include "LinAlgPackIOFormat.hpp"
 
 namespace LinAlgPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// MeritFuncNLPDirecDeriv.h
+// MeritFuncNLPDirecDeriv.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MERIT_FUNC_NLP_DIREC_DERIV_H
 #define MERIT_FUNC_NLP_DIREC_DERIV_H
 
-#include "ConstrainedOptimizationPackTypes.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
 
 namespace ConstrainedOptimizationPack {
 

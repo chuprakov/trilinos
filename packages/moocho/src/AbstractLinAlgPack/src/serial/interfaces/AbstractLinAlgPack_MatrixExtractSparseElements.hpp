@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// MatrixExtractSparseElements.h
+// MatrixExtractSparseElements.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_EXTRACT_SPARSE_FORTRAN_COMPATIBLE_ELEMENTS_H
 #define MATRIX_EXTRACT_SPARSE_FORTRAN_COMPATIBLE_ELEMENTS_H
 
-#include "MatrixConvertToSparse.h"
+#include "MatrixConvertToSparse.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////
-// print_vector_change_stats.h
+// print_vector_change_stats.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef PRINT_VECTOR_CHANGE_STATS_H
 #define PRINT_VECTOR_CHANGE_STATS_H
 
-#include "ConstrainedOptimizationPackTypes.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
 
 namespace ConstrainedOptimizationPack {
 

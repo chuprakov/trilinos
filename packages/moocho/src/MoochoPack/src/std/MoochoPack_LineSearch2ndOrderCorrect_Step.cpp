@@ -16,22 +16,22 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/LineSearch2ndOrderCorrect_Step.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/src/print_vector_change_stats.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalcNLP.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalcNLE.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLESqrResid.h"
+#include "ReducedSpaceSQPPack/src/std/LineSearch2ndOrderCorrect_Step.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalcNLP.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalcNLE.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLESqrResid.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
-#include "SparseLinAlgPack/src/MatrixWithOp.h"
-#include "SparseLinAlgPack/src/SpVectorClass.h"
-#include "SparseLinAlgPack/src/max_near_feas_step.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/VectorOp.h"
-#include "LinAlgPack/src/VectorOut.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "SparseLinAlgPack/src/MatrixWithOp.hpp"
+#include "SparseLinAlgPack/src/SpVectorClass.hpp"
+#include "SparseLinAlgPack/src/max_near_feas_step.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
+#include "LinAlgPack/src/VectorOut.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// EvalNewPointStd_StepSetOptions.h
+// EvalNewPointStd_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef EVAL_NEW_POINT_STD_STEP_SET_OPTIONS_H
 #define EVAL_NEW_POINT_STD_STEP_SET_OPTIONS_H
 
-#include "EvalNewPointStd_Step.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "EvalNewPointStd_Step.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

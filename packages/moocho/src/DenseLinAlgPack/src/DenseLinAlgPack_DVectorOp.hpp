@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// VectorOp.h
+// VectorOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -14,12 +14,12 @@
 // above mentioned "Artistic License" for more details.
 //
 
-// See GenMatrixOp.h for description of naming convensions
+// See GenMatrixOp.hpp for description of naming convensions
 
 #ifndef VECTOROP_H
 #define VECTOROP_H
 
-#include "VectorAssign.h"
+#include "VectorAssign.hpp"
 
 /** @name {\bf Basic Vector Operation Functions (Level-1 BLAS)}.
   *

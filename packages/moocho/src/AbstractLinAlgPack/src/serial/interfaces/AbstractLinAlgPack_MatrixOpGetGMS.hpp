@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixWithOpGetGMS.h
+// MatrixWithOpGetGMS.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef MATRIX_WITH_OP_GET_GMS_H
 #define MATRIX_WITH_OP_GET_GMS_H
 
-#include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/src/MatrixWithOp.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "dynamic_cast_verbose.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace SparseLinAlgPack {
 

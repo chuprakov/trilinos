@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// ExampleNLPFirstOrderInfo.h
+// ExampleNLPFirstOrderInfo.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef EXAMPLE_NLP_FIRST_ORDER_INFO_H
 #define EXAMPLE_NLP_FIRST_ORDER_INFO_H
 
-#include "ExampleNLPFirstOrderDirect/ExampleNLPObjGradient.h"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.h"
+#include "ExampleNLPFirstOrderDirect/ExampleNLPObjGradient.hpp"
+#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
 
 namespace NLPInterfacePack {
 

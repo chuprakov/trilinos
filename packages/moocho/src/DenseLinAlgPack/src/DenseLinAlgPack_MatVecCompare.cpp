@@ -16,9 +16,9 @@
 #include <limits>
 #include <algorithm>
 
-#include "MatVecCompare.h"
-#include "GenMatrixClass.h"
-#include "GenMatrixAsTriSym.h"
+#include "MatVecCompare.hpp"
+#include "GenMatrixClass.hpp"
+#include "GenMatrixAsTriSym.hpp"
 
 namespace {
 //

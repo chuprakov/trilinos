@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// PostProcessBarrierLineSearch_Step.h
+// PostProcessBarrierLineSearch_Step.hpp
 //
 // Copyright (C) 2001
 //
@@ -16,13 +16,13 @@
 #ifndef POST_PROCESS_BARRIER_LINE_SEARCH_STEP_H
 #define POST_PROCESS_BARRIER_LINE_SEARCH_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

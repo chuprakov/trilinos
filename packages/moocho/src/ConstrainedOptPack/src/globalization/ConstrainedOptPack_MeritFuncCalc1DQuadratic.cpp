@@ -13,11 +13,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalc.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "ThrowException.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalc.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "ThrowException.hpp"
 
 namespace ConstrainedOptimizationPack {
 

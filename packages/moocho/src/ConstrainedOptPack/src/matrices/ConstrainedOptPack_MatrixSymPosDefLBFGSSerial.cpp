@@ -45,11 +45,11 @@
 
 #include <assert.h>
 
-#include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.h"
-#include "ConstrainedOptimizationPack/src/BFGS_helpers.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/GenMatrixOut.h"
-#include "LinAlgLAPack/src/LinAlgLAPack.h"
+#include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"
+#include "ConstrainedOptimizationPack/src/BFGS_helpers.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/GenMatrixOut.hpp"
+#include "LinAlgLAPack/src/LinAlgLAPack.hpp"
 
 namespace {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// COOMatrixTmplOp.h
+// COOMatrixTmplOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define COO_MATRIX_TMPL_OP_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "COOMatrixTmplOpDecl.h"
+#include "COOMatrixTmplOpDecl.hpp"
 #else
-#include "COOMatrixTmplOpDef.h"
+#include "COOMatrixTmplOpDef.hpp"
 #endif
 
 #endif	// COO_MATRIX_TMPL_OP_H

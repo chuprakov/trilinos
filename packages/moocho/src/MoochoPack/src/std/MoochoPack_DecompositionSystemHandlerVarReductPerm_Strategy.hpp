@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// DecompositionSystemHandlerVarReductPerm_Strategy.h
+// DecompositionSystemHandlerVarReductPerm_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef DECOMPOSITION_SYSTEM_HANDLER_VAR_REDUCT_PERM_STRATEGY_H
 #define DECOMPOSITION_SYSTEM_HANDLER_VAR_REDUCT_PERM_STRATEGY_H
 
-#include "DecompositionSystemHandlerSelectNew_Strategy.h"
+#include "DecompositionSystemHandlerSelectNew_Strategy.hpp"
 
 namespace ReducedSpaceSQPPack {
 

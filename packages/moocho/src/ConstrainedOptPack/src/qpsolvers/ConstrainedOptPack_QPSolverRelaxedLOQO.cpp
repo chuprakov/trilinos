@@ -57,15 +57,15 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedLOQO.h"
-#include "ConstrainedOptimizationPack/src/MatrixExtractInvCholFactor.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-#include "SparseLinAlgPack/src/MatrixWithOp.h"
-#include "SparseLinAlgPack/src/SortByDescendingAbsValue.h"
-#include "SparseLinAlgPack/src/sparse_bounds.h"
-#include "SparseLinAlgPack/src/EtaVector.h"
-#include "SparseLinAlgPack/src/sparse_bounds.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedLOQO.hpp"
+#include "ConstrainedOptimizationPack/src/MatrixExtractInvCholFactor.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "SparseLinAlgPack/src/MatrixWithOp.hpp"
+#include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
+#include "SparseLinAlgPack/src/sparse_bounds.hpp"
+#include "SparseLinAlgPack/src/EtaVector.hpp"
+#include "SparseLinAlgPack/src/sparse_bounds.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
 

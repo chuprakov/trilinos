@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.h
+// ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_LPBFGS_STRATEGY_SET_OPTIONS_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_LPBFGS_STRATEGY_SET_OPTIONS_H
 
-#include "ReducedHessianSecantUpdateLPBFGS_Strategy.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "ReducedHessianSecantUpdateLPBFGS_Strategy.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

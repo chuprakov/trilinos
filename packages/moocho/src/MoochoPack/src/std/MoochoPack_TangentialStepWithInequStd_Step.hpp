@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NullSpaceStepWithInequStd_Step.h
+// NullSpaceStepWithInequStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,16 +16,16 @@
 #ifndef NULL_SPACE_STEP_WITH_INEQU_STD_STEP_H
 #define NULL_SPACE_STEP_WITH_INEQU_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
-#include "GeneralIterationPack/src/CastIQMember.h"
-#include "ReducedSpaceSQPPack/src/std/d_bounds_iter_quant.h"
-#include "ReducedSpaceSQPPack/src/std/qp_solver_stats.h"
-#include "ReducedSpaceSQPPack/src/std/act_set_stats.h"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxed.h"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "GeneralIterationPack/src/CastIQMember.hpp"
+#include "ReducedSpaceSQPPack/src/std/d_bounds_iter_quant.hpp"
+#include "ReducedSpaceSQPPack/src/std/qp_solver_stats.hpp"
+#include "ReducedSpaceSQPPack/src/std/act_set_stats.hpp"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxed.hpp"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -17,10 +17,10 @@
 
 #include <sstream>
 
-#include "ConstrainedOptimizationPack/src/MatrixSymPosDefBandedChol.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/BLAS_Cpp.h"
+#include "ConstrainedOptimizationPack/src/MatrixSymPosDefBandedChol.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/BLAS_Cpp.hpp"
 #include "MiReleaseResource_ref_count_ptr.h"
 #include "MiWorkspacePack.h"
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// ExampleNLPObjGradient.h
+// ExampleNLPObjGradient.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef EXAMPLE_NLP_OBJ_GRADIENT_H
 #define EXAMPLE_NLP_OBJ_GRADIENT_H
 
-#include "NLPInterfacePack/src/NLPObjGradient.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.h"
+#include "NLPInterfacePack/src/NLPObjGradient.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.hpp"
 
 namespace NLPInterfacePack {
 

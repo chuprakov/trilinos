@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// VariableBoundsTesterSetOptions.h
+// VariableBoundsTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef VARIABLE_BOUNDS_TESTER_SET_OPTIONS_H
 #define VARIABLE_BOUNDS_TESTER_SET_OPTIONS_H
 
-#include "VariableBoundsTester.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "VariableBoundsTester.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ConstrainedOptimizationPack {
 

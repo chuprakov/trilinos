@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////////
-// COOMatrixClass.h
+// COOMatrixClass.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,7 +19,7 @@
 #include <valarray>
 #include <vector>
 
-#include "SparseLinAlgPackTypes.h"
+#include "SparseLinAlgPackTypes.hpp"
 #include "MiRefCount.h"
 
 namespace SparseLinAlgPack {

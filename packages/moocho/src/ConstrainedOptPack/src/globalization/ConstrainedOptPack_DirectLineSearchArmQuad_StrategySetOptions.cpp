@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "DirectLineSearchArmQuad_StrategySetOptions.h"
-#include "StringToBool.h"
+#include "DirectLineSearchArmQuad_StrategySetOptions.hpp"
+#include "StringToBool.hpp"
 
 // Define the options
 namespace {

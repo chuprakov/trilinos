@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixSymPosDefLBFGS.h
+// MatrixSymPosDefLBFGS.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,11 +18,11 @@
 
 #include <vector>
 
-#include "MatrixSymSecantUpdateable.h"
-#include "MatrixSymAddDelUpdateable.h"
-#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.h"
-#include "LinAlgPack/src/GenMatrixAsTriSym.h"
-#include "StandardMemberCompositionMacros.h"
+#include "MatrixSymSecantUpdateable.hpp"
+#include "MatrixSymAddDelUpdateable.hpp"
+#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
+#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptimizationPack {
 

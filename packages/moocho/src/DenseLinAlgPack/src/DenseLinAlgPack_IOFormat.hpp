@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// LinAlgPackIOFormat.h
+// LinAlgPackIOFormat.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <ios>
 
-#include "LinAlgPackIOBasic.h"
+#include "LinAlgPackIOBasic.hpp"
 
 namespace LinAlgPack {
 namespace LinAlgPackIO {

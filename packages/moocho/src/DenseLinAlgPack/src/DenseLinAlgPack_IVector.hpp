@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// IVector.h
+// IVector.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,8 +20,8 @@
 
 #include <valarray>
 
-#include "LinAlgPackTypes.h"
-#include "ThrowException.h"
+#include "LinAlgPackTypes.hpp"
+#include "ThrowException.hpp"
 
 namespace LinAlgPack {
 ///

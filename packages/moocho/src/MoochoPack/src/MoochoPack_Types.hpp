@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// ReducedSpaceSQPPackTypes.h
+// ReducedSpaceSQPPackTypes.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef REDUCED_SPACE_SQP_PACK_TYPES_H
 #define REDUCED_SPACE_SQP_PACK_TYPES_H
 
-#include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackTypes.h"
-#include "GeneralIterationPack/src/GeneralIterationPackTypes.h"
+#include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackTypes.hpp"
+#include "GeneralIterationPack/src/GeneralIterationPackTypes.hpp"
 
 namespace ReducedSpaceSQPPack {
 

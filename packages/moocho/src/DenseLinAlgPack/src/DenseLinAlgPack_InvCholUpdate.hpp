@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// InvCholUpdate.h
+// InvCholUpdate.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef INV_CHOL_UPDATE_H
 #define INV_CHOL_UPDATE_H
 
-#include "LinAlgPackTypes.h"
+#include "LinAlgPackTypes.hpp"
 
 namespace LinAlgPack {
 

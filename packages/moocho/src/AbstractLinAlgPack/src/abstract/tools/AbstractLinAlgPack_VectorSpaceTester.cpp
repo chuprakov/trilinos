@@ -17,13 +17,13 @@
 
 #include <ostream>
 
-#include "AbstractLinAlgPack/src/VectorSpaceTester.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "update_success.h"
-#include "ThrowException.h"
+#include "AbstractLinAlgPack/src/VectorSpaceTester.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "update_success.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 template< class T >

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////////
-// IterQuantity.h
+// IterQuantity.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -26,7 +26,7 @@
 #include <iomanip>
 #include <limits>
 
-#include "GeneralIterationPackTypes.h"
+#include "GeneralIterationPackTypes.hpp"
 
 namespace GeneralIterationPack {
 

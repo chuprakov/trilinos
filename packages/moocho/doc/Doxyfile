@@ -19,7 +19,7 @@ CGI_NAME               = rSQPpp.cgi
 #---------------------------------------------------------------------------
 PROJECT_NAME           = rSQP++
 PROJECT_NUMBER         = 0.1 (beta)
-OUTPUT_DIRECTORY       = $(RSQPPP_BASE_DIR)/doc
+OUTPUT_DIRECTORY       = $(MOOCHO_BASE_DIR)/doc
 EXTRACT_ALL            = YES
 #---------------------------------------------------------------------------
 # configuration options related to the input files
@@ -40,15 +40,15 @@ INCLUDE_PATH           = ../core/Misc/include
 #---------------------------------------------------------------------------
 # Configuration::addtions related to external references   
 #---------------------------------------------------------------------------
-TAGFILES               = $(RSQPPP_BASE_DIR)/doc/Misc/Misc.tag=./Misc/html \
-                         $(RSQPPP_BASE_DIR)/doc/RTOpPack/RTOpPack.tag=./RTOpPack/html \
-                         $(RSQPPP_BASE_DIR)/doc/RTOpStdOpsLib/RTOpStdOpsLib.tag=./RTOpStdOpsLib/html \
-                         $(RSQPPP_BASE_DIR)/doc/AbstractLinAlgPack/AbstractLinAlgPack.tag=./AbstractLinAlgPack/html \
-                         $(RSQPPP_BASE_DIR)/doc/NLPInterfacePack/NLPInterfacePack.tag=./NLPInterfacePack/html \
-                         $(RSQPPP_BASE_DIR)/doc/ExampleRTOpSimple/ExampleRTOpSimple.tag=./ExampleRTOpSimple/html \
-                         $(RSQPPP_BASE_DIR)/doc/ExampleNLPFirstOrderDirect/ExampleNLPFirstOrderDirect.tag=./ExampleNLPFirstOrderDirect/html \
-                         $(RSQPPP_BASE_DIR)/doc/ExampleNLPFirstOrderInfo/ExampleNLPFirstOrderInfo.tag=./ExampleNLPFirstOrderInfo/html \
-                         $(RSQPPP_BASE_DIR)/doc/ExampleNLPBanded/ExampleNLPBanded.tag=./ExampleNLPBanded/html
+TAGFILES               = $(MOOCHO_BASE_DIR)/doc/Misc/Misc.tag=./Misc/html \
+                         $(MOOCHO_BASE_DIR)/doc/RTOpPack/RTOpPack.tag=./RTOpPack/html \
+                         $(MOOCHO_BASE_DIR)/doc/RTOpStdOpsLib/RTOpStdOpsLib.tag=./RTOpStdOpsLib/html \
+                         $(MOOCHO_BASE_DIR)/doc/AbstractLinAlgPack/AbstractLinAlgPack.tag=./AbstractLinAlgPack/html \
+                         $(MOOCHO_BASE_DIR)/doc/NLPInterfacePack/NLPInterfacePack.tag=./NLPInterfacePack/html \
+                         $(MOOCHO_BASE_DIR)/doc/ExampleRTOpSimple/ExampleRTOpSimple.tag=./ExampleRTOpSimple/html \
+                         $(MOOCHO_BASE_DIR)/doc/ExampleNLPFirstOrderDirect/ExampleNLPFirstOrderDirect.tag=./ExampleNLPFirstOrderDirect/html \
+                         $(MOOCHO_BASE_DIR)/doc/ExampleNLPFirstOrderInfo/ExampleNLPFirstOrderInfo.tag=./ExampleNLPFirstOrderInfo/html \
+                         $(MOOCHO_BASE_DIR)/doc/ExampleNLPBanded/ExampleNLPBanded.tag=./ExampleNLPBanded/html
 GENERATE_TAGFILE       =
 ALLEXTERNALS           = YES
 #---------------------------------------------------------------------------

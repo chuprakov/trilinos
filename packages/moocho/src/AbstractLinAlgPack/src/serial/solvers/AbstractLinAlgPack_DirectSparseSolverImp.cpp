@@ -15,10 +15,10 @@
 
 #include <assert.h>
 
-#include "SparseSolverPack/src/DirectSparseSolverImp.h"
-#include "AbstractFactoryStd.h"
-#include "ThrowException.h"
-#include "dynamic_cast_verbose.h"
+#include "SparseSolverPack/src/DirectSparseSolverImp.hpp"
+#include "AbstractFactoryStd.hpp"
+#include "ThrowException.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace SparseSolverPack {
 

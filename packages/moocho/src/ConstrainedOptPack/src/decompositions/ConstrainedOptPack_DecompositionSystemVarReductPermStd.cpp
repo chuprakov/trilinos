@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPermStd.h"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductImp.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/BasisSystemPerm.h"
-#include "AbstractLinAlgPack/src/PermutationOut.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-#include "ThrowException.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPermStd.hpp"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductImp.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/BasisSystemPerm.hpp"
+#include "AbstractLinAlgPack/src/PermutationOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "ThrowException.hpp"
 
 namespace ConstrainedOptimizationPack {
 

@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/NewDecompositionSelectionStd_Strategy.h"
-#include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.h"
-#include "ReducedSpaceSQPPack/src/rSQPAlgo.h"
-#include "ReducedSpaceSQPPack/src/rSQPState.h"
+#include "ReducedSpaceSQPPack/src/std/NewDecompositionSelectionStd_Strategy.hpp"
+#include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
 
 namespace ReducedSpaceSQPPack {
 

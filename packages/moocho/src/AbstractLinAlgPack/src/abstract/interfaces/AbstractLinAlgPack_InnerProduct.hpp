@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// InnerProduct.h
+// InnerProduct.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ALAP_INNER_PRODUCT_H
 #define ALAP_INNER_PRODUCT_H
 
-#include "AbstractLinAlgPackTypes.h"
+#include "AbstractLinAlgPackTypes.hpp"
 
 namespace AbstractLinAlgPack {
 

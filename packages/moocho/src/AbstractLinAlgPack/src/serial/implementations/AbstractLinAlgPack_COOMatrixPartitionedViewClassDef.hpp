@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// COOMatrixPartitionedViewClassDef.h
+// COOMatrixPartitionedViewClassDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,7 +20,7 @@
 #include <algorithm>
 #include <functional>
 
-#include "COOMatrixPartitionedViewClassDecl.h"
+#include "COOMatrixPartitionedViewClassDecl.hpp"
 
 namespace SparseLinAlgPack {
 

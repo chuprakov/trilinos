@@ -17,16 +17,16 @@
 
 #include <stdexcept>
 
-#include "ExampleNLPFirstOrderInfo.h"
-#include "ExampleBasisSystem.h"
-#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.h"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "Range1D.h"
-#include "ReleaseResource_ref_count_ptr.h"
-#include "dynamic_cast_verbose.h"
-#include "ThrowException.h"
+#include "ExampleNLPFirstOrderInfo.hpp"
+#include "ExampleBasisSystem.hpp"
+#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "Range1D.hpp"
+#include "ReleaseResource_ref_count_ptr.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ThrowException.hpp"
 
 namespace NLPInterfacePack {
 

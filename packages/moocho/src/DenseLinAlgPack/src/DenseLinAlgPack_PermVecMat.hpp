@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// PermVecMat.h
+// PermVecMat.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,7 +20,7 @@
 
 #include <stdexcept>
 
-#include "LinAlgPackTypes.h"
+#include "LinAlgPackTypes.hpp"
 
 /** @name {\bf Vector / Matrix Permutations}.
   *
@@ -48,7 +48,7 @@
 
 //@{
 
-//@Include: IVector.h
+//@Include: IVector.hpp
 
 // /////////////////////////////////////////////////////////////////////////////////////////
 // Public Permutation functions

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NewDecompositionSelection_Strategy.h
+// NewDecompositionSelection_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef NEW_DECOMPOSITION_SELECTION_STRATEGY_H
 #define NEW_DECOMPOSITION_SELECTION_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/Algorithm.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/Algorithm.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// FeasibilityStepReducedStd_StrategySetOptions.h
+// FeasibilityStepReducedStd_StrategySetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef FEASIBILITY_STEP_REDUCED_STD_STRATEGY_SET_OPTIONS_H
 #define FEASIBILITY_STEP_REDUCED_STD_STRATEGY_SET_OPTIONS_H
 
-#include "FeasibilityStepReducedStd_Strategy.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "FeasibilityStepReducedStd_Strategy.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// LineSearchWatchDog_Step.h
+// LineSearchWatchDog_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,12 +17,12 @@
 #define LINE_SEARCH_WATCH_DOG_STEP_H
 
 #include "../rSQPAlgo_StepBaseClasses.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLP.h"
-#include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "StandardCompositionMacros.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
+#include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// DecompositionSystemTesterSetOptions.h
+// DecompositionSystemTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef DECOMPOSITION_SYSTEM_TESTER_SET_OPTIONS_H
 #define DECOMPOSITION_SYSTEM_TESTER_SET_OPTIONS_H
 
-#include "DecompositionSystemTester.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "DecompositionSystemTester.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ConstrainedOptimizationPack {
 

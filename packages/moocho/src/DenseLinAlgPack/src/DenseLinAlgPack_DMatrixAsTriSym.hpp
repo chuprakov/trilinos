@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// GenMatrixAsTriSym.h
+// GenMatrixAsTriSym.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef GEN_MATRIX_AS_TRI_SYM_H
 #define GEN_MATRIX_AS_TRI_SYM_H
 
-#include "GenMatrixClass.h"
+#include "GenMatrixClass.hpp"
 
 namespace LinAlgPack {
 

@@ -17,11 +17,11 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/CheckSkipBFGSUpdateStd_Step.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
+#include "ReducedSpaceSQPPack/src/std/CheckSkipBFGSUpdateStd_Step.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
 
 namespace ReducedSpaceSQPPack {
 

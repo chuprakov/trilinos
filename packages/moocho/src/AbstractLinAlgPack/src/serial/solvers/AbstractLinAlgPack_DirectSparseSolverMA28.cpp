@@ -20,15 +20,15 @@
 #include <fstream>
 #include <algorithm>
 
-#include "SparseSolverPack/src/DirectSparseSolverMA28.h"
-#include "SparseSolverPack/src/MatrixScaling_Strategy.h"
-#include "SparseLinAlgPack/src/VectorDenseEncap.h"
-#include "LinAlgPack/src/PermVecMat.h"
-#include "AbstractFactoryStd.h"
-#include "ThrowException.h"
-#include "WorkspacePack.h"
-#include "dynamic_cast_verbose.h"
-#include "f_open_file.h"
+#include "SparseSolverPack/src/DirectSparseSolverMA28.hpp"
+#include "SparseSolverPack/src/MatrixScaling_Strategy.hpp"
+#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "LinAlgPack/src/PermVecMat.hpp"
+#include "AbstractFactoryStd.hpp"
+#include "ThrowException.hpp"
+#include "WorkspacePack.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "f_open_file.hpp"
 
 namespace {
 //

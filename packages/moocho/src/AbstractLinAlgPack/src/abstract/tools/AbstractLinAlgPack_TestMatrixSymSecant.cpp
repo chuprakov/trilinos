@@ -18,15 +18,15 @@
 
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/TestMatrixSymSecantUpdate.h"
-#include "AbstractLinAlgPack/src/MatrixWithOp.h"
-#include "AbstractLinAlgPack/src/MatrixNonsingular.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "AbstractLinAlgPack/src/assert_print_nan_inf.h"
+#include "AbstractLinAlgPack/src/TestMatrixSymSecantUpdate.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixNonsingular.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
 
 bool AbstractLinAlgPack::TestMatrixSymSecantUpdate(
 	const MatrixWithOp        &B

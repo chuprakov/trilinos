@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////
-// VariableBoundsTester.h
+// VariableBoundsTester.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef VARIABLE_BOUNDS_TESTER_H
 #define VARIABLE_BOUNDS_TESTER_H
 
-#include "ConstrainedOptimizationPackTypes.h"
-#include "StandardMemberCompositionMacros.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptimizationPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// COOMatrixTmplOutFuncDecl.h
+// COOMatrixTmplOutFuncDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef COO_MATRIX_TMPL_OUT_FUNC_DECL_H
 #define COO_MATRIX_TMPL_OUT_FUNC_DECL_H
 
-#include "SparseLinAlgPackIOBasic.h"
+#include "SparseLinAlgPackIOBasic.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// PermOut.h
+// PermOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <ostream>
 
-#include "LinAlgPackTypes.h"
+#include "LinAlgPackTypes.hpp"
 
 namespace LinAlgPack {
 

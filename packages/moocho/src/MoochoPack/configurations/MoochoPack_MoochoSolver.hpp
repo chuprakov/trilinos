@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// rSQPppSolver.h
+// rSQPppSolver.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef RSSQPP_RSQPPP_SOLVER_H
 #define RSSQPP_RSQPPP_SOLVER_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.h"
-#include "ref_count_ptr.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
+#include "ref_count_ptr.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;

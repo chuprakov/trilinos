@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NullSpaceStepIP_Step.h
+// NullSpaceStepIP_Step.hpp
 //
 // Copyright (C) 2001
 //
@@ -16,8 +16,8 @@
 #ifndef NullSpaceStepIP_Step_H
 #define NullSpaceStepIP_Step_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
 
 namespace ReducedSpaceSQPPack {
 

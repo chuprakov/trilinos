@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// ActSetStats.h
+// ActSetStats.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ACT_SET_STATS_H
 #define ACT_SET_STATS_H
 
-#include "../ReducedSpaceSQPPackTypes.h"
+#include "../ReducedSpaceSQPPackTypes.hpp"
 
 namespace ReducedSpaceSQPPack {
 

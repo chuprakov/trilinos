@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchurSetOptions.h"
-#include "StringToBool.h"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchurSetOptions.hpp"
+#include "StringToBool.hpp"
 
 // Define the options
 namespace {

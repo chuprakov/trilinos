@@ -15,9 +15,9 @@
 
 #include <assert.h>
 
-#include "LinAlgPack/src/delete_row_col.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "LinAlgPack/src/GenMatrixAsTriSym.h"
+#include "LinAlgPack/src/delete_row_col.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
 
 void LinAlgPack::delete_row_col( size_type kd, tri_ele_gms* tri_M )
 {

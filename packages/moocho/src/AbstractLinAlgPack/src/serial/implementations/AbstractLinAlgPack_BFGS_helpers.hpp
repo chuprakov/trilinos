@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// BFGS_helpers.h
+// BFGS_helpers.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef BFGS_HELPERS_H
 #define BFGS_HELPERS_H
 
-#include "SparseLinAlgPackTypes.h"
+#include "SparseLinAlgPackTypes.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// ActSetStats_AddedStep.h
+// ActSetStats_AddedStep.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,7 +17,7 @@
 #define ACT_SET_STATS_ADDED_STEP_H
 
 #include "ReducedSpaceSQPPack/src/rSQPAlgo_Step.h"
-#include "ReducedSpaceSQPPack/src/std/act_set_stats.h"
+#include "ReducedSpaceSQPPack/src/std/act_set_stats.hpp"
 
 namespace ReducedSpaceSQPPack {
 

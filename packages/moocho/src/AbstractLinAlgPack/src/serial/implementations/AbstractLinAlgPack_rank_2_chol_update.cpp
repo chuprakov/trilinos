@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseLinAlgPack/src/rank_2_chol_update.h"
-#include "LinAlgPack/src/GenMatrixAsTriSym.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/VectorOp.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
-#include "LinAlgPack/src/BLAS_Cpp.h"
+#include "SparseLinAlgPack/src/rank_2_chol_update.hpp"
+#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "LinAlgPack/src/BLAS_Cpp.hpp"
 
 void SparseLinAlgPack::rank_2_chol_update(
 	const value_type     a

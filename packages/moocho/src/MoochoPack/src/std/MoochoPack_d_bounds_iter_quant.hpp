@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// d_bounds_iter_quant.h
+// d_bounds_iter_quant.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef D_BOUNDS_ITE_QUANT_HH
 #define D_BOUNDS_ITE_QUANT_HH
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
 
 namespace ReducedSpaceSQPPack {
 

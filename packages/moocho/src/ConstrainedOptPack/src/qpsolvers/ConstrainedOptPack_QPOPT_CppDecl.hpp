@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////
-// QPOPT_CppDecl.h
+// QPOPT_CppDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,13 +15,13 @@
 //
 // C declarations for QPSOL functions.  These declarations should not have to change
 // for different platforms.  As long as the fortran object code uses capitalized
-// names for its identifers then the declarations in fortran_types.h should be
+// names for its identifers then the declarations in fortran_types.hpp should be
 // sufficent for portability.
 
 #ifndef QPOPT_CPP_DECL_H
 #define QPOPT_CPP_DECL_H
 
-#include "fortran_types.h"
+#include "fortran_types.hpp"
 
 namespace QPOPT_CppDecl {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// COOMPartitionOp.h
+// COOMPartitionOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef COOM_PARTITION_OP_H
 #define COOM_PARTITION_OP_H
 
-#include "COOMatrixTmplOp.h"
+#include "COOMatrixTmplOp.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////////
-// IterQuantityAccess.h
+// IterQuantityAccess.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ITER_QUANTITY_ACCESS_H
 #define ITER_QUANTITY_ACCESS_H
 
-#include "IterQuantity.h"
+#include "IterQuantity.hpp"
 
 namespace GeneralIterationPack {
 

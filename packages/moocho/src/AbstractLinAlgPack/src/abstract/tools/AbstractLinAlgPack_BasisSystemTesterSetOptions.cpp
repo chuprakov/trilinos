@@ -16,9 +16,9 @@
 #include <assert.h>
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/BasisSystemTesterSetOptions.h"
-#include "StringToBool.h"
-#include "ThrowException.h"
+#include "AbstractLinAlgPack/src/BasisSystemTesterSetOptions.hpp"
+#include "StringToBool.hpp"
+#include "ThrowException.hpp"
 
 // Define the options
 namespace {

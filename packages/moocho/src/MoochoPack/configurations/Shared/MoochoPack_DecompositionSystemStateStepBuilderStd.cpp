@@ -13,60 +13,60 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "DecompositionSystemStateStepBuilderStd.h"
+#include "DecompositionSystemStateStepBuilderStd.hpp"
 
 // NLP Stuff
 
-#include "NLPInterfacePack/src/NLPSecondOrderInfo.h"
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.h"
-#include "NLPInterfacePack/src/NLPVarReductPerm.h"
-#include "NLPInterfacePack/test/NLPFirstOrderDirectTester.h"
-#include "NLPInterfacePack/test/NLPFirstOrderDirectTesterSetOptions.h"
+#include "NLPInterfacePack/src/NLPSecondOrderInfo.hpp"
+#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
+#include "NLPInterfacePack/src/NLPVarReductPerm.hpp"
+#include "NLPInterfacePack/test/NLPFirstOrderDirectTester.hpp"
+#include "NLPInterfacePack/test/NLPFirstOrderDirectTesterSetOptions.hpp"
 
 // Basis system and direct sparse solvers
 
-#include "AbstractLinAlgPack/src/BasisSystemTester.h"
-#include "AbstractLinAlgPack/src/BasisSystemTesterSetOptions.h"
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPermStd.h"
+#include "AbstractLinAlgPack/src/BasisSystemTester.hpp"
+#include "AbstractLinAlgPack/src/BasisSystemTesterSetOptions.hpp"
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
+#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPermStd.hpp"
 #endif
 
 // Range/null decomposition
 
-#include "AbstractLinAlgPack/src/MatrixSymIdentity.h"
-#include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.h"
-#include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerStd_Strategy.h"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemTester.h"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemTesterSetOptions.h"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemCoordinate.h"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemOrthogonal.h"
+#include "AbstractLinAlgPack/src/MatrixSymIdentity.hpp"
+#include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.hpp"
+#include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerStd_Strategy.hpp"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemTester.hpp"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemTesterSetOptions.hpp"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemCoordinate.hpp"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemOrthogonal.hpp"
 
 // Iteration quantities
 
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.h"               // Y, Z
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
+#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"               // Y, Z
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
 
 // Eval new point
 
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointStd_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.h"
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointStd_StepSetOptions.hpp"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_StepSetOptions.hpp"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.hpp"
 
 // Other classes
 
-#include "ReducedSpaceSQPPack/src/rSQPState.h"
-#include "ReducedSpaceSQPPack/src/std/NewDecompositionSelectionStd_Strategy.h"
-#include "ConstrainedOptimizationPack/src/VariableBoundsTesterSetOptions.h"
-#include "NLPInterfacePack/src/CalcFiniteDiffProdSetOptions.h"
-#include "NLPInterfacePack/test/NLPFirstDerivativesTester.h"
-#include "NLPInterfacePack/test/NLPFirstDerivativesTesterSetOptions.h"
+#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
+#include "ReducedSpaceSQPPack/src/std/NewDecompositionSelectionStd_Strategy.hpp"
+#include "ConstrainedOptimizationPack/src/VariableBoundsTesterSetOptions.hpp"
+#include "NLPInterfacePack/src/CalcFiniteDiffProdSetOptions.hpp"
+#include "NLPInterfacePack/test/NLPFirstDerivativesTester.hpp"
+#include "NLPInterfacePack/test/NLPFirstDerivativesTesterSetOptions.hpp"
 
 // Common utilities
-#include "StringToIntMap.h"
-#include "StringToBool.h"
-#include "OptionsFromStream.h"
-#include "ThrowException.h"
+#include "StringToIntMap.hpp"
+#include "StringToBool.hpp"
+#include "OptionsFromStream.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 	const int DEFAULT_MAX_DOF_QUASI_NEWTON_DENSE = 200;
@@ -256,7 +256,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 			default:
 				assert(0);
 		}
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 		// See if the basis system object supports basis permutations
 		basis_sys_perm_ = mmp::rcp_dynamic_cast<BasisSystemPerm>(basis_sys);
 #endif
@@ -289,7 +289,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 			default:
 				assert(0);	// only a local error
 		}
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 		// Create the actual DecompositionSystem object being used
 		if( basis_sys_perm_.get() != NULL ) {
 			if(trase_out)
@@ -320,7 +320,7 @@ void DecompositionSystemStateStepBuilderStd::create_decomp_sys(
 				);
 			*decomp_sys = decomp_sys_imp;
 		}
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 	}
 #endif
 }
@@ -502,7 +502,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 
 	typedef ref_count_ptr<DecompositionSystemHandler_Strategy>           decomp_sys_handler_ptr_t;
 	decomp_sys_handler_ptr_t             decomp_sys_handler               = mmp::null;
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 	typedef ref_count_ptr<DecompositionSystemHandlerSelectNew_Strategy>  decomp_sys_handler_select_new_ptr_t;
 	decomp_sys_handler_select_new_ptr_t  decomp_sys_handler_select_new   = mmp::null;
 #endif
@@ -535,7 +535,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 
 		// Decomposition system handler
 		if( nlp_foi ) {
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 			if( basis_sys_perm_.get() )
 				decomp_sys_handler = decomp_sys_handler_select_new
 					= mmp::rcp( new DecompositionSystemHandlerVarReductPerm_Strategy );
@@ -544,7 +544,7 @@ void DecompositionSystemStateStepBuilderStd::create_eval_new_point(
 				decomp_sys_handler = mmp::rcp( new DecompositionSystemHandlerStd_Strategy );
 		}
 	
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 		// NewDecompositionSelectionStd_Strategy
 		if( decomp_sys_handler_select_new.get() ) {
 			*new_decomp_selection_strategy = mmp::rcp(

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// AlgorithmTrackComposite.h
+// AlgorithmTrackComposite.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <list>
 
-#include "AlgorithmTrack.h"
-#include "ref_count_ptr.h"
+#include "AlgorithmTrack.hpp"
+#include "ref_count_ptr.hpp"
 
 namespace GeneralIterationPack {
 

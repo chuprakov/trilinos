@@ -17,9 +17,9 @@
 #include <sstream>
 #include <iomanip>
 
-#include "LinAlgPack/src/assert_print_nan_inf.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
+#include "LinAlgPack/src/assert_print_nan_inf.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
 #include "RTOpPack/src/check_nan_inf.h"
 
 bool LinAlgPack::assert_print_nan_inf( const value_type& val, char name[]

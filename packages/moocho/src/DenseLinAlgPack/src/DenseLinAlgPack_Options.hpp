@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////////////////
-// LinAlgPackOptions.h
+// LinAlgPackOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,15 +19,15 @@
 #ifndef LINALGPACK_OPTIONS_H
 #define LINALGPACK_OPTIONS_H
 
-#include "LinAlgPackDebugAcronyms.h"
-#include "extended_value_type.h"
-#include "fortran_types.h"
+#include "LinAlgPackDebugAcronyms.hpp"
+#include "extended_value_type.hpp"
+#include "fortran_types.hpp"
 
 #if !defined(LINALGPACK_NO_CHECKS)
 
 /** @name {\bf LinAlgPack Options}.
   *
-  * The header file LinAlgPackOptions.h contains the defines for several macros that
+  * The header file LinAlgPackOptions.hpp contains the defines for several macros that
   * determine how the library is built.  The user should comment out any
   * macros that her or she does not want to be defined.  The definition of
   * these macros cause the library code to assert the preconditions documented

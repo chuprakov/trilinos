@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingularAggr.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "ThrowException.h"
-#include "dynamic_cast_verbose.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingularAggr.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "ThrowException.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace AbstractLinAlgPack {
 

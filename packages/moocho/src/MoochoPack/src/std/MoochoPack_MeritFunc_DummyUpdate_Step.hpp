@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// MeritFunc_DummyUpdate_Step.h
+// MeritFunc_DummyUpdate_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MERIT_FUNC_DUMMY_UPDATE_STEP_H
 #define MERIT_FUNC_DUMMY_UPDATE_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
 
 namespace ReducedSpaceSQPPack {
 

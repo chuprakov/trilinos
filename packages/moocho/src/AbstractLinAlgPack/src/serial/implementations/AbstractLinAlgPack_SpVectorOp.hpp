@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SpVectorOp.h
+// SpVectorOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SP_VECTOR_OP_H
 #define SP_VECTOR_OP_H
 
-#include "SparseVectorSliceOp.h"
-#include "AbstractLinAlgPack/src/SparseElement.h"
+#include "SparseVectorSliceOp.hpp"
+#include "AbstractLinAlgPack/src/SparseElement.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////
-// rSQPAlgorithmStepNames.h
+// rSQPAlgorithmStepNames.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <string>
 
-#include "../ReducedSpaceSQPPackTypes.h"
+#include "../ReducedSpaceSQPPackTypes.hpp"
 
 namespace ReducedSpaceSQPPack {
 

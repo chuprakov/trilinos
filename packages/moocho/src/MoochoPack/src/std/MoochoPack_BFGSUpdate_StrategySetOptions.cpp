@@ -16,8 +16,8 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_StrategySetOptions.h"
-#include "StringToBool.h"
+#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_StrategySetOptions.hpp"
+#include "StringToBool.hpp"
 
 // Define the options
 namespace {

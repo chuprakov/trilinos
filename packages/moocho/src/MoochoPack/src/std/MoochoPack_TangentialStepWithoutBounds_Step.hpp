@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// NullSpaceStepWithoutBounds_Step.h
+// NullSpaceStepWithoutBounds_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef NULL_SPACE_STEP_WITHOUT_BOUNDS_STEP_H
 #define NULL_SPACE_STEP_WITHOUT_BOUNDS_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
 
 namespace ReducedSpaceSQPPack {
 

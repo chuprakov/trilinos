@@ -16,7 +16,7 @@
 #include <stdexcept>
 #include <string>
 
-#include "SparseLinAlgPack/src/MatrixBasisNonbasisStd.h"
+#include "SparseLinAlgPack/src/MatrixBasisNonbasisStd.hpp"
 
 namespace SparseLinAlgPack {
 

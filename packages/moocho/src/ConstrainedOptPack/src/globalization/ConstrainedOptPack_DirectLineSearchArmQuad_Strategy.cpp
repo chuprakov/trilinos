@@ -17,8 +17,8 @@
 #include <iomanip>
 #include <sstream>
 
-#include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_Strategy.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalc1D.h"
+#include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_Strategy.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalc1D.hpp"
 #include "RTOpPack/src/check_nan_inf.h"
 
 namespace ConstrainedOptimizationPack {

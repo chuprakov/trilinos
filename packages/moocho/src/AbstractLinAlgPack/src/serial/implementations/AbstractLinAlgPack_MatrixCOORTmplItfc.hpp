@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixCOORTmplItfc.h
+// MatrixCOORTmplItfc.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <stdexcept>
 
-#include "SparseLinAlgPackTypes.h"
-#include "ThrowException.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "ThrowException.hpp"
 
 namespace SparseLinAlgPack {
 

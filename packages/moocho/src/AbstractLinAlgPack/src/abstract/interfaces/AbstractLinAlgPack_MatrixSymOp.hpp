@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// MatrixSymWithOp.h
+// MatrixSymWithOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_SYM_WITH_OP_H
 #define MATRIX_SYM_WITH_OP_H
 
-#include "MatrixWithOp.h"
+#include "MatrixWithOp.hpp"
 
 namespace AbstractLinAlgPack {
 

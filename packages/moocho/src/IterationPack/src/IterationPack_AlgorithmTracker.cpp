@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "GeneralIterationPack/src/AlgorithmTrack.h"
+#include "GeneralIterationPack/src/AlgorithmTrack.hpp"
 
 namespace GeneralIterationPack {
 

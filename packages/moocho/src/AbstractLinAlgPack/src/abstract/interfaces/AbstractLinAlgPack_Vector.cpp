@@ -18,18 +18,18 @@
 #include <limits>
 #include <ostream>
 
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorWithOpSubView.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpSubView.hpp"
 #include "RTOpStdOpsLib/src/RTOp_ROp_dot_prod.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_get_ele.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_norms.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_num_nonzeros.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_get_sub_vector.h"
-#include "RTOpPack/src/RTOpCppC.h"
-#include "RTOpPack/src/print_sub_vector.h"
-#include "Range1D.h"
-#include "dynamic_cast_verbose.h"
-#include "ThrowException.h"
+#include "RTOpPack/src/RTOpCppC.hpp"
+#include "RTOpPack/src/print_sub_vector.hpp"
+#include "Range1D.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// ReducedSpaceSQPPackExceptions.h
+// ReducedSpaceSQPPackExceptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef REDUCED_SPACE_SQP_PACK_EXCEPTIONS_H
 #define REDUCED_SPACE_SQP_PACK_EXCEPTIONS_H
 
-#include "ReducedSpaceSQPPackTypes.h"
-#include "ConstrainedOptimizationPack/src/QPSolverStats.h"
+#include "ReducedSpaceSQPPackTypes.hpp"
+#include "ConstrainedOptimizationPack/src/QPSolverStats.hpp"
 
 namespace ReducedSpaceSQPPack {
 

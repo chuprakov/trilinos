@@ -19,128 +19,128 @@
 #include <typeinfo>
 #include <iostream>
 
-#include "debug.h"
+#include "debug.hpp"
 
-#include "rSQPAlgo_ConfigMamaJama.h"
-#include "ReducedSpaceSQPPack/src/rSQPAlgo.h"
-#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.h"
-#include "SparseLinAlgPack/src/MatrixSymPosDefCholFactor.h"                     // rHL 
-//#include "ConstrainedOptimizationPack/src/MatrixSymPosDefInvCholFactor.h"		// .
-#include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.h"				// .
-//#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasicInitDiagonal.h"// | rHL (super basics)
-//#include "SparseLinAlgPack/src/MatrixSymDiagonalStd.h"                          // |
+#include "rSQPAlgo_ConfigMamaJama.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
+#include "SparseLinAlgPack/src/MatrixSymPosDefCholFactor.hpp"                     // rHL 
+//#include "ConstrainedOptimizationPack/src/MatrixSymPosDefInvCholFactor.hpp"		// .
+#include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"				// .
+//#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasicInitDiagonal.hpp"// | rHL (super basics)
+//#include "SparseLinAlgPack/src/MatrixSymDiagonalStd.hpp"                          // |
 
-#include "ConstrainedOptimizationPack/src/VariableBoundsTester.h"
+#include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
 
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.h"
+#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
 
-#include "NLPInterfacePack/src/CalcFiniteDiffProd.h"
-#include "NLPInterfacePack/src/NLPVarReductPerm.h"
+#include "NLPInterfacePack/src/CalcFiniteDiffProd.hpp"
+#include "NLPInterfacePack/src/NLPVarReductPerm.hpp"
 
 // line search
-#include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_Strategy.h"
-#include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_StrategySetOptions.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLPL1.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLPModL1.h"
+#include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_Strategy.hpp"
+#include "ConstrainedOptimizationPack/src/DirectLineSearchArmQuad_StrategySetOptions.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLPL1.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLPModL1.hpp"
 
 // Basis permutations and direct sparse solvers
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPerm.h"
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
+#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPerm.hpp"
 #endif
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.h"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTesterSetOptions.h"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchur.h"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchurSetOptions.h"
-#include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianFull.h"
-//#include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianSuperBasic.h"
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPKWIK.h"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.hpp"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedTesterSetOptions.hpp"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchur.hpp"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPSchurSetOptions.hpp"
+#include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianFull.hpp"
+//#include "ConstrainedOptimizationPack/src/QPSchurInitKKTSystemHessianSuperBasic.hpp"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPKWIK.hpp"
 #ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
-//#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPOPT.h"
+//#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPOPT.hpp"
 #endif
 
-#include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.h"
+#include "ReducedSpaceSQPPack/src/std/rSQPAlgorithmStepNames.hpp"
 
 /*
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointStd_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.h"
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.h"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointStd_StepSetOptions.hpp"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_StepSetOptions.hpp"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachCoordinate_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproachOrthogonal_Step.hpp"
 */
 
-#include "ReducedSpaceSQPPack/src/std/ReducedGradientStd_Step.h"
-#include "ReducedSpaceSQPPack/src/std/InitFinDiffReducedHessian_Step.h"
-#include "ReducedSpaceSQPPack/src/std/InitFinDiffReducedHessian_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateStd_Step.h"
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSFull_Strategy.h"
+#include "ReducedSpaceSQPPack/src/std/ReducedGradientStd_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/InitFinDiffReducedHessian_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/InitFinDiffReducedHessian_StepSetOptions.hpp"
+#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateStd_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSFull_Strategy.hpp"
 
 
-//#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
-//#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.h"
-//#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateLPBFGS_Strategy.h"
-//#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.h"
-#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.h"
-#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_StrategySetOptions.h"
-#include "ReducedSpaceSQPPack/src/std/RangeSpaceStepStd_Step.h"
-#include "ReducedSpaceSQPPack/src/std/CheckDescentRangeSpaceStep_Step.h"
-#include "ReducedSpaceSQPPack/src/std/CheckDecompositionFromPy_Step.h"
-#include "ReducedSpaceSQPPack/src/std/CheckDecompositionFromRPy_Step.h"
-#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithoutBounds_Step.h"
-#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithInequStd_Step.h"
-#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithInequStd_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/src/std/SetDBoundsStd_AddedStep.h"
-#include "ReducedSpaceSQPPack/src/std/QPFailureReinitReducedHessian_Step.h"
-#include "ReducedSpaceSQPPack/src/std/CalcDFromYPYZPZ_Step.h"
-#include "ReducedSpaceSQPPack/src/std/CalcDFromZPZ_Step.h"
-#include "ReducedSpaceSQPPack/src/std/LineSearchFailureNewDecompositionSelection_Step.h"
-#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_Step.h"
-#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/src/std/LineSearchFullStep_Step.h"
-#include "ReducedSpaceSQPPack/src/std/LineSearchDirect_Step.h"
-//#include "ReducedSpaceSQPPack/src/std/LineSearch2ndOrderCorrect_Step.h"
-//#include "ReducedSpaceSQPPack/src/std/LineSearch2ndOrderCorrect_StepSetOptions.h"
-//#include "ReducedSpaceSQPPack/src/std/FeasibilityStepReducedStd_Strategy.h"
-//#include "ReducedSpaceSQPPack/src/std/FeasibilityStepReducedStd_StrategySetOptions.h"
-//#include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepStd_Strategy.h"
-//#include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepTailoredApproach_Strategy.h"
-//#include "ReducedSpaceSQPPack/src/std/LineSearchWatchDog_Step.h"
-//#include "ReducedSpaceSQPPack/src/std/LineSearchWatchDog_StepSetOptions.h"
-//#include "ReducedSpaceSQPPack/src/std/LineSearchFullStepAfterKIter_Step.h"
-//#include "ReducedSpaceSQPPack/src/std/CalcLambdaIndepStd_AddedStep.h"
-#include "ReducedSpaceSQPPack/src/std/CalcReducedGradLagrangianStd_AddedStep.h"
-#include "ReducedSpaceSQPPack/src/std/CheckConvergenceStd_AddedStep.h"
-#include "ReducedSpaceSQPPack/src/std/CheckConvergenceStd_Strategy.h"
-#include "ReducedSpaceSQPPack/src/std/CheckSkipBFGSUpdateStd_StepSetOptions.h"
-#include "ReducedSpaceSQPPack/src/std/MeritFunc_DummyUpdate_Step.h"
-#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.h"
-#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.h"
-//#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.h"
-//#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.h"
-//#include "ReducedSpaceSQPPack/src/std/MeritFunc_ModifiedL1LargerSteps_AddedStep.h"
-//#include "ReducedSpaceSQPPack/src/std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.h"
-//#include "ReducedSpaceSQPPack/src/std/ActSetStats_AddedStep.h"
-//#include "ReducedSpaceSQPPack/src/std/NumFixedDepIndep_AddedStep.h"
+//#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.hpp"
+//#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.hpp"
+//#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateLPBFGS_Strategy.hpp"
+//#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateLPBFGS_StrategySetOptions.hpp"
+#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.hpp"
+#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_StrategySetOptions.hpp"
+#include "ReducedSpaceSQPPack/src/std/RangeSpaceStepStd_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/CheckDescentRangeSpaceStep_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/CheckDecompositionFromPy_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/CheckDecompositionFromRPy_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithoutBounds_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithInequStd_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithInequStd_StepSetOptions.hpp"
+#include "ReducedSpaceSQPPack/src/std/SetDBoundsStd_AddedStep.hpp"
+#include "ReducedSpaceSQPPack/src/std/QPFailureReinitReducedHessian_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/CalcDFromYPYZPZ_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/CalcDFromZPZ_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/LineSearchFailureNewDecompositionSelection_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_StepSetOptions.hpp"
+#include "ReducedSpaceSQPPack/src/std/LineSearchFullStep_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/LineSearchDirect_Step.hpp"
+//#include "ReducedSpaceSQPPack/src/std/LineSearch2ndOrderCorrect_Step.hpp"
+//#include "ReducedSpaceSQPPack/src/std/LineSearch2ndOrderCorrect_StepSetOptions.hpp"
+//#include "ReducedSpaceSQPPack/src/std/FeasibilityStepReducedStd_Strategy.hpp"
+//#include "ReducedSpaceSQPPack/src/std/FeasibilityStepReducedStd_StrategySetOptions.hpp"
+//#include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepStd_Strategy.hpp"
+//#include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepTailoredApproach_Strategy.hpp"
+//#include "ReducedSpaceSQPPack/src/std/LineSearchWatchDog_Step.hpp"
+//#include "ReducedSpaceSQPPack/src/std/LineSearchWatchDog_StepSetOptions.hpp"
+//#include "ReducedSpaceSQPPack/src/std/LineSearchFullStepAfterKIter_Step.hpp"
+//#include "ReducedSpaceSQPPack/src/std/CalcLambdaIndepStd_AddedStep.hpp"
+#include "ReducedSpaceSQPPack/src/std/CalcReducedGradLagrangianStd_AddedStep.hpp"
+#include "ReducedSpaceSQPPack/src/std/CheckConvergenceStd_AddedStep.hpp"
+#include "ReducedSpaceSQPPack/src/std/CheckConvergenceStd_Strategy.hpp"
+#include "ReducedSpaceSQPPack/src/std/CheckSkipBFGSUpdateStd_StepSetOptions.hpp"
+#include "ReducedSpaceSQPPack/src/std/MeritFunc_DummyUpdate_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdate_AddedStepSetOptions.hpp"
+#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp"
+//#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateWithMult_AddedStep.hpp"
+//#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamsUpdateWithMult_AddedStep.hpp"
+//#include "ReducedSpaceSQPPack/src/std/MeritFunc_ModifiedL1LargerSteps_AddedStep.hpp"
+//#include "ReducedSpaceSQPPack/src/std/MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.hpp"
+//#include "ReducedSpaceSQPPack/src/std/ActSetStats_AddedStep.hpp"
+//#include "ReducedSpaceSQPPack/src/std/NumFixedDepIndep_AddedStep.hpp"
 
-#include "ReducedSpaceSQPPack/src/std/act_set_stats.h"
-#include "ReducedSpaceSQPPack/src/std/qp_solver_stats.h"
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.h"
+#include "ReducedSpaceSQPPack/src/std/act_set_stats.hpp"
+#include "ReducedSpaceSQPPack/src/std/qp_solver_stats.hpp"
+#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
 
-//#include "SparseLinAlgPack/src/sparse_bounds.h"
+//#include "SparseLinAlgPack/src/sparse_bounds.hpp"
 
 // Misc utilities
-#include "AbstractFactoryStd.h"
-#include "dynamic_cast_verbose.h"
-#include "ReleaseResource_ref_count_ptr.h"
-#include "ThrowException.h"
+#include "AbstractFactoryStd.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ReleaseResource_ref_count_ptr.hpp"
+#include "ThrowException.hpp"
 
 // Stuff to read in options
-#include "StringToIntMap.h"
-#include "StringToBool.h"
+#include "StringToIntMap.hpp"
+#include "StringToBool.hpp"
 
 // Stuff for exact reduced hessian
-//#include "ReducedSpaceSQPPack/src/std/ReducedHessianExactStd_Step.h"
-//#include "ReducedSpaceSQPPack/src/std/CrossTermExactStd_Step.h"
-//#include "ReducedSpaceSQPPack/src/std/DampenCrossTermStd_Step.h"
+//#include "ReducedSpaceSQPPack/src/std/ReducedHessianExactStd_Step.hpp"
+//#include "ReducedSpaceSQPPack/src/std/CrossTermExactStd_Step.hpp"
+//#include "ReducedSpaceSQPPack/src/std/DampenCrossTermStd_Step.hpp"
 
 namespace {
 	const double INF_BASIS_COND_CHANGE_FRAC      = 1e+20;
@@ -415,7 +415,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		,&decomp_sys
 		);
 
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 	ref_count_ptr<DecompositionSystemVarReductPerm>
 		decomp_sys_perm = mmp::rcp_dynamic_cast<DecompositionSystemVarReductPerm>(decomp_sys);
 #endif
@@ -622,13 +622,13 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 		if(mI) state->Gh();
 
 		if( m
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 		   && decomp_sys_perm.get() == NULL
 #endif
 			) state->py();
 		if(m) dyn_cast<IQ_vector_cngs>(state->Ypy()).resize(2);
 		if( m
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 			&& decomp_sys_perm.get() == NULL
 #endif
 			) state->pz();

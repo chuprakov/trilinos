@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SpVectorClass.h
+// SpVectorClass.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SP_VECTOR_CLASS_H
 #define SP_VECTOR_CLASS_H
 
-#include "SparseElement.h"
-#include "SparseVectorClass.h"
+#include "SparseElement.hpp"
+#include "SparseVectorClass.hpp"
 
 namespace AbstractLinAlgPack {
 

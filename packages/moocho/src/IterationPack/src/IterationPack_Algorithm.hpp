@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////
-// Algorithm.h
+// Algorithm.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -24,11 +24,11 @@
 #include <vector>
 #include <algorithm>
 
-#include "AlgorithmState.h"
-#include "AlgorithmTrack.h"
-#include "AlgorithmStep.h"
-#include "ref_count_ptr.h"
-#include "ThrowException.h"
+#include "AlgorithmState.hpp"
+#include "AlgorithmTrack.hpp"
+#include "AlgorithmStep.hpp"
+#include "ref_count_ptr.hpp"
+#include "ThrowException.hpp"
 
 namespace GeneralIterationPack {
 

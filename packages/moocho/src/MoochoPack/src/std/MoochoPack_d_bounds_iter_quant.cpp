@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/d_bounds_iter_quant.h"
+#include "ReducedSpaceSQPPack/src/std/d_bounds_iter_quant.hpp"
 
 const std::string  ReducedSpaceSQPPack::dl_name = "dl";
 const std::string  ReducedSpaceSQPPack::du_name = "du";

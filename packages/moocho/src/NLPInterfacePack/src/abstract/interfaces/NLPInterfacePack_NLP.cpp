@@ -15,10 +15,10 @@
 
 #include <limits>
 
-#include "NLPInterfacePack/src/NLP.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "ThrowException.h"
+#include "NLPInterfacePack/src/NLP.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 const char name_f[] = "f";

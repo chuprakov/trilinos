@@ -17,20 +17,20 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/InitFinDiffReducedHessian_Step.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "NLPInterfacePack/src/NLPObjGradient.h"
-#include "AbstractLinAlgPack/src/MatrixSymInitDiagonal.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-//#include "AbstractLinAlgPack/src/SpVectorClass.h"
-//#include "SparseLinAlgPack/src/max_near_feas_step.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "dynamic_cast_verbose.h"
+#include "ReducedSpaceSQPPack/src/std/InitFinDiffReducedHessian_Step.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "NLPInterfacePack/src/NLPObjGradient.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymInitDiagonal.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+//#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+//#include "SparseLinAlgPack/src/max_near_feas_step.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace {
 template< class T >

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// VectorInFunc.h
+// VectorInFunc.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef VECTOR_IN_FUNC_H
 #define VECTOR_IN_FUNC_H
 
-#include "LinAlgPackIOBasic.h"
+#include "LinAlgPackIOBasic.hpp"
 
 namespace LinAlgPack {
 

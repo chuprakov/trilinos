@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparseVectorOpDecl.h
+// SparseVectorOpDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,7 +19,7 @@
 #ifndef SPARSE_VECTOR_OP_DECL_H
 #define SPARSE_VECTOR_OP_DECL_H
 
-#include "LinAlgPack/src/GenMatrixAsTriSym.h"
+#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
 
 namespace SparseLinAlgPack {
 

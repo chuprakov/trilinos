@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// assert_print_nan_inf.h
+// assert_print_nan_inf.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <stdexcept>
 
-#include "LinAlgPackTypes.h"
+#include "LinAlgPackTypes.hpp"
 
 namespace LinAlgPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparseVectorClassDef.h
+// SparseVectorClassDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <algorithm>
 
-#include "SparseVectorClassDecl.h"
-#include "compare_element_indexes.h"
-#include "ThrowException.h"
+#include "SparseVectorClassDecl.hpp"
+#include "compare_element_indexes.hpp"
+#include "ThrowException.hpp"
 
 namespace AbstractLinAlgPack {
 

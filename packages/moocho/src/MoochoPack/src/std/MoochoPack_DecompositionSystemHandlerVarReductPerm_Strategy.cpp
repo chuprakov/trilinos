@@ -13,28 +13,28 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.h"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPerm.h"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.h"
-#include "NLPInterfacePack/src/NLPVarReductPerm.h"
-#include "AbstractLinAlgPack/src/PermutationOut.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/src/assert_print_nan_inf.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "dynamic_cast_verbose.h"
-#include "ThrowException.h"
+#include "ReducedSpaceSQPPack/src/std/DecompositionSystemHandlerVarReductPerm_Strategy.hpp"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductPerm.hpp"
+#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
+#include "NLPInterfacePack/src/NLPVarReductPerm.hpp"
+#include "AbstractLinAlgPack/src/PermutationOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ThrowException.hpp"
 
 namespace ReducedSpaceSQPPack {
 
@@ -417,4 +417,4 @@ void DecompositionSystemHandlerVarReductPerm_Strategy::select_new_decomposition(
 
 } // end namespace ReducedSpaceSQPPack
 
-#endif // RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+#endif // MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS

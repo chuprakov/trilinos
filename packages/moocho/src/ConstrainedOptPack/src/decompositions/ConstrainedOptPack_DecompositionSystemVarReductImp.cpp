@@ -15,14 +15,14 @@
 
 #include <typeinfo>
 
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductImp.h"
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.h"
-#include "ConstrainedOptimizationPack/src/MatrixVarReductImplicit.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpSubView.h"
-#include "AbstractFactoryStd.h"
-#include "dynamic_cast_verbose.h"
-#include "ThrowException.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReductImp.hpp"
+#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
+#include "ConstrainedOptimizationPack/src/MatrixVarReductImplicit.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpSubView.hpp"
+#include "AbstractFactoryStd.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ThrowException.hpp"
 
 namespace ConstrainedOptimizationPack {
 

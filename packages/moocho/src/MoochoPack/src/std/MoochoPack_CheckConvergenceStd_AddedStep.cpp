@@ -17,10 +17,10 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/CheckConvergenceStd_AddedStep.h"
-#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "ReducedSpaceSQPPack/src/std/CheckConvergenceStd_AddedStep.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPAlgoContainer.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
 
 namespace ReducedSpaceSQPPack {
 

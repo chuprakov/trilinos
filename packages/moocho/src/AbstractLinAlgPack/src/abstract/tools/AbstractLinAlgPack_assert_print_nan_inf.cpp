@@ -16,12 +16,12 @@
 #include <ostream>
 #include <iomanip>
 
-#include "AbstractLinAlgPack/src/assert_print_nan_inf.h"
-#include "AbstractLinAlgPack/src/VectorWithOp.h"
+#include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOp.hpp"
 #include "RTOpStdOpsLib/src/RTOp_ROp_find_nan_inf.h"
-#include "RTOpPack/src/RTOpCppC.h"
+#include "RTOpPack/src/RTOpCppC.hpp"
 #include "RTOpPack/src/check_nan_inf.h"
-#include "ThrowException.h"
+#include "ThrowException.hpp"
 
 namespace {
 

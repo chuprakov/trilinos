@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// quasi_newton_stats.h
+// quasi_newton_stats.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef QUASI_NEWTON_STATS_HH
 #define QUASI_NEWTON_STATS_HH
 
-#include "QuasiNewtonStats.h"
-#include "GeneralIterationPack/src/CastIQMember.h"
+#include "QuasiNewtonStats.hpp"
+#include "GeneralIterationPack/src/CastIQMember.hpp"
 
 namespace ReducedSpaceSQPPack {
 

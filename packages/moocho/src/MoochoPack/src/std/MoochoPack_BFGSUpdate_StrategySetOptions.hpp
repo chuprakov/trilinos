@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// BFGSUpdate_StrategySetOptions.h
+// BFGSUpdate_StrategySetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef REDUCED_HESSIAN_BFGS_STD_STEP_SET_OPTIONS_H
 #define REDUCED_HESSIAN_BFGS_STD_STEP_SET_OPTIONS_H
 
-#include "BFGSUpdate_Strategy.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "BFGSUpdate_Strategy.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// LineSearchFullStepAfterKIter_Step.h
+// LineSearchFullStepAfterKIter_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,8 +19,8 @@
 #include <limits>
 
 #include "../rSQPAlgo_StepBaseClasses.h"
-#include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.h"
-#include "StandardCompositionMacros.h"
+#include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.hpp"
+#include "StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
 
 namespace ReducedSpaceSQPPack {

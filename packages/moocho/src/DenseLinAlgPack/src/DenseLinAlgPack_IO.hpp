@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// LinAlgPackIO.h
+// LinAlgPackIO.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,17 +20,17 @@
 #ifndef LINALGPACK_IO_H
 #define LINALGPACK_IO_H
 
-#include "EatInputComment.h"
-#include "VectorIn.h"
-#include "VectorOut.h"
-#include "GenMatrixIn.h"
-#include "GenMatrixOut.h"
-#include "LinAlgPackInFormatDef.h"
-#include "LinAlgPackOutFormatDef.h"
+#include "EatInputComment.hpp"
+#include "VectorIn.hpp"
+#include "VectorOut.hpp"
+#include "GenMatrixIn.hpp"
+#include "GenMatrixOut.hpp"
+#include "LinAlgPackInFormatDef.hpp"
+#include "LinAlgPackOutFormatDef.hpp"
 
 // Include namelookups for templated operator functions.  MS VS++ 5.0 standard
 // nonconformance problem.
 
-#include "LinAlgPackIO_NameLookups.h"
+#include "LinAlgPackIO_NameLookups.hpp"
 
 #endif // LINALGPACK_IO_H

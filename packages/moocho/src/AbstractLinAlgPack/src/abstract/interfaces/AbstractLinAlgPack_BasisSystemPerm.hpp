@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////
-// BasisSystemPerm.h
+// BasisSystemPerm.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ABSTRACT_LIN_ALG_PACK_BASIS_PERM_SYSTEM_H
 #define ABSTRACT_LIN_ALG_PACK_BASIS_PERM_SYSTEM_H
 
-#include "BasisSystem.h"
+#include "BasisSystem.hpp"
 
 namespace AbstractLinAlgPack {
 

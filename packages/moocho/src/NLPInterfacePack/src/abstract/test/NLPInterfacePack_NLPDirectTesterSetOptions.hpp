@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NLPFirstOrderDirectTesterSetOptions.h
+// NLPFirstOrderDirectTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef NLP_FIRST_ORDER_DIRECT_TESTER_SET_OPTIONS_H
 #define NLP_FIRST_ORDER_DIRECT_TESTER_SET_OPTIONS_H
 
-#include "NLPFirstOrderDirectTester.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "NLPFirstOrderDirectTester.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace NLPInterfacePack {
 

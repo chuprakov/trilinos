@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include <iostream> // Debug only
-#include "LinAlgPack/src/PermOut.h"
+#include "LinAlgPack/src/PermOut.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -24,19 +24,19 @@
 #include <stdio.h>
 #include <fstream>
 
-#include "NLPInterfacePack/src/NLPSerialPreprocess.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-#include "SparseLinAlgPack/src/PermutationSerial.h"
-#include "SparseLinAlgPack/src/VectorDenseEncap.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
-#include "LinAlgPack/src/VectorOp.h"
-#include "LinAlgPack/src/IVector.h"
-#include "LinAlgPack/src/PermVecMat.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "ThrowException.h"
-#include "AbstractFactoryStd.h"
-#include "dynamic_cast_verbose.h"
+#include "NLPInterfacePack/src/NLPSerialPreprocess.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "SparseLinAlgPack/src/PermutationSerial.hpp"
+#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
+#include "LinAlgPack/src/IVector.hpp"
+#include "LinAlgPack/src/PermVecMat.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "ThrowException.hpp"
+#include "AbstractFactoryStd.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StV;

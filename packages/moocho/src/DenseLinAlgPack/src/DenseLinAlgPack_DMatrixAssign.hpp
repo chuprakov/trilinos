@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// GenMatrixAssign.h
+// GenMatrixAssign.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,7 +20,7 @@
 #ifndef GEN_MATRIX_ASSIGN_H
 #define GEN_MATRIX_ASSIGN_H
 
-#include "LinAlgPackTypes.h"
+#include "LinAlgPackTypes.hpp"
 
 namespace LinAlgPack {
 

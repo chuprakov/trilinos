@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////
-// ReducedHessianSecantUpdateBFGSFull_Strategy.h
+// ReducedHessianSecantUpdateBFGSFull_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef REDUCED_HESSIAN_SECANT_UPDATE_BFGS_FULL_STRATEGY_H
 #define REDUCED_HESSIAN_SECANT_UPDATE_BFGS_FULL_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdate_Strategy.h"
-#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.h"
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.h"
-#include "StandardCompositionMacros.h"
+#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdate_Strategy.hpp"
+#include "ReducedSpaceSQPPack/src/std/BFGSUpdate_Strategy.hpp"
+#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
+#include "StandardCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -17,8 +17,8 @@
 
 #include <sstream>
 
-#include "ConstrainedOptimizationPack/src/QPInitFixedFreeStd.h"
-#include "ConstrainedOptimizationPack/src/initialize_Q_R_Q_X.h"
+#include "ConstrainedOptimizationPack/src/QPInitFixedFreeStd.hpp"
+#include "ConstrainedOptimizationPack/src/initialize_Q_R_Q_X.hpp"
 
 namespace ConstrainedOptimizationPack {
 namespace QPSchurPack {

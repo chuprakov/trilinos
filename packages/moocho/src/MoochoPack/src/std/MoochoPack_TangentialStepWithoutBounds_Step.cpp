@@ -15,21 +15,21 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithoutBounds_Step.h"
-#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.h"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/src/assert_print_nan_inf.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "dynamic_cast_verbose.h"
-#include "ThrowException.h"
+#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithoutBounds_Step.hpp"
+#include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ThrowException.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;

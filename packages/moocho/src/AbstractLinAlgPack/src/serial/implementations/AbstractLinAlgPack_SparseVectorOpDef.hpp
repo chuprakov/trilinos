@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparseVectorOpDef.h
+// SparseVectorOpDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,7 +13,7 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 //
-// The declarations for these functions is in the file SparseVectorOpDecl.h
+// The declarations for these functions is in the file SparseVectorOpDecl.hpp
 // but because of a bug with the MS VC++ 5.0 compiler you can not use
 // namespace qualification with definitions of previously declared
 // nonmember template funcitons.  By not including the declarations
@@ -30,12 +30,12 @@
 #ifndef SPARSE_VECTOR_OP_DEF_H
 #define SPARSE_VECTOR_OP_DEF_H
 
-#include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/src/SparseVectorClass.h"
-#include "LinAlgPack/src/VectorOp.h"
-#include "LinAlgPack/src/GenMatrixAsTriSym.h"	// also included in SparseVectorOpDef.h
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/SparseVectorClass.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
+#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"	// also included in SparseVectorOpDef.hpp
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
 
 namespace {
 template< class T >

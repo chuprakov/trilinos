@@ -16,12 +16,12 @@
 #include <ostream>
 #include <iomanip>
 
-#include "TestGeneralIterationPack.h"
-#include "AlgorithmStepTesting.h"
-#include "AlgorithmTrackTesting.h"
-#include "GeneralIterationPack/src/Algorithm.h"
-#include "GeneralIterationPack/src/AlgorithmState.h"
-#include "debug.h"
+#include "TestGeneralIterationPack.hpp"
+#include "AlgorithmStepTesting.hpp"
+#include "AlgorithmTrackTesting.hpp"
+#include "GeneralIterationPack/src/Algorithm.hpp"
+#include "GeneralIterationPack/src/AlgorithmState.hpp"
+#include "debug.hpp"
 
 namespace GeneralIterationPack {
 

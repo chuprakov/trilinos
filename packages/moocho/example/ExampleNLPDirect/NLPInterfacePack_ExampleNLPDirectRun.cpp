@@ -22,13 +22,13 @@
 #include <iomanip>
 #include <typeinfo>
 
-#include "ExampleNLPFirstOrderDirectRun.h"
-#include "ExampleNLPFirstOrderDirect.h"
-#include "ReducedSpaceSQPPack/Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.h"
-#include "GeneralIterationPack/src/AlgorithmTrack.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/BasisSystem.h"
-#include "OptionsFromStream.h"
+#include "ExampleNLPFirstOrderDirectRun.hpp"
+#include "ExampleNLPFirstOrderDirect.hpp"
+#include "ReducedSpaceSQPPack/Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.hpp"
+#include "GeneralIterationPack/src/AlgorithmTrack.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/BasisSystem.hpp"
+#include "OptionsFromStream.hpp"
 
 ReducedSpaceSQPPack::rSQPppSolver::ESolutionStatus
 NLPInterfacePack::ExampleNLPFirstOrderDirectRun(

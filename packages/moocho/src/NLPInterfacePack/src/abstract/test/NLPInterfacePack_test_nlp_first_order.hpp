@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////
-// test_nlp_first_order_info.h
+// test_nlp_first_order_info.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "NLPInterfacePack/src/NLPInterfacePackTypes.h"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;

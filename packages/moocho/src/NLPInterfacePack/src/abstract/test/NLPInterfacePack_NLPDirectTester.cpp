@@ -20,17 +20,17 @@
 #include <iomanip>
 #include <sstream>
 
-#include "NLPFirstOrderDirectTester.h"
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "AbstractLinAlgPack/src/assert_print_nan_inf.h"
-#include "Range1D.h"
-#include "update_success.h"
-#include "ThrowException.h"
+#include "NLPFirstOrderDirectTester.hpp"
+#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
+#include "Range1D.hpp"
+#include "update_success.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 template< class T >

@@ -17,10 +17,10 @@
 
 #include <stdexcept>
 
-#include "AbstractLinAlgPack/src/VectorWithOpMutableSubView.h"
-#include "WorkspacePack.h"
-#include "ThrowException.h"
-#include "dynamic_cast_verbose.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutableSubView.hpp"
+#include "WorkspacePack.hpp"
+#include "ThrowException.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "WorkspacePack.h"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "WorkspacePack.hpp"
 
 namespace AbstractLinAlgPack {
 

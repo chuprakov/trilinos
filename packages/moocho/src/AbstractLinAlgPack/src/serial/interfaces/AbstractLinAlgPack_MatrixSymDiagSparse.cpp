@@ -17,18 +17,18 @@
 
 #include <fstream>		// For debugging only
 
-#include "SparseLinAlgPack/src/MatrixSymDiagonalSparse.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "AbstractLinAlgPack/src/EtaVector.h"
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.h"
-#include "AbstractLinAlgPack/src/SpVectorOut.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/GenMatrixAssign.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "LinAlgPack/src/GenMatrixOp.h"
-#include "LinAlgPack/src/assert_print_nan_inf.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "ThrowException.h"
+#include "SparseLinAlgPack/src/MatrixSymDiagonalSparse.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack/src/SpVectorOut.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/GenMatrixAssign.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "LinAlgPack/src/GenMatrixOp.hpp"
+#include "LinAlgPack/src/assert_print_nan_inf.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 template< class T >

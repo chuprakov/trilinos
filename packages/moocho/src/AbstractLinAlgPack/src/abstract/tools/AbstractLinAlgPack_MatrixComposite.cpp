@@ -13,16 +13,16 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutableCompositeStd.h"
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.h"
-//#include "AbstractLinAlgPack/src/GenPermMatrixSliceOp.h"
-#include "WorkspacePack.h"
-#include "Range1D.h"
-#include "ThrowException.h"
-#include "profile_hack.h"
+#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutableCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
+//#include "AbstractLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "WorkspacePack.hpp"
+#include "Range1D.hpp"
+#include "ThrowException.hpp"
+#include "profile_hack.hpp"
 
 namespace {
 

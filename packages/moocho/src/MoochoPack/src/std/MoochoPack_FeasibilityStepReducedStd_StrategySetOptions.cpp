@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "../std/FeasibilityStepReducedStd_StrategySetOptions.h"
+#include "../std/FeasibilityStepReducedStd_StrategySetOptions.hpp"
 
 // Define the options
 namespace {

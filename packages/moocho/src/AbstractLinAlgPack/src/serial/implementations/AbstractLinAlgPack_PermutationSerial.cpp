@@ -15,12 +15,12 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/PermutationSerial.h"
-#include "SparseLinAlgPack/src/VectorDenseEncap.h"
-#include "LinAlgPack/src/IVector.h"
-#include "LinAlgPack/src/PermVecMat.h"
-#include "LinAlgPack/src/PermOut.h"
-#include "ThrowException.h"
+#include "SparseLinAlgPack/src/PermutationSerial.hpp"
+#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "LinAlgPack/src/IVector.hpp"
+#include "LinAlgPack/src/PermVecMat.hpp"
+#include "LinAlgPack/src/PermOut.hpp"
+#include "ThrowException.hpp"
 
 namespace SparseLinAlgPack {
 

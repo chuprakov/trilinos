@@ -19,9 +19,9 @@
 #include <numeric>
 #include <typeinfo>
 
-#include "GeneralIterationPack/src/Algorithm.h"
-#include "stpwatch.h"
-#include "ThrowException.h"
+#include "GeneralIterationPack/src/Algorithm.hpp"
+#include "stpwatch.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 template< class T >

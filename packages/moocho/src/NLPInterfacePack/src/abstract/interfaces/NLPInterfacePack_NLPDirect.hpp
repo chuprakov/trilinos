@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// NLPFirstOrderDirect.h
+// NLPFirstOrderDirect.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef NLP_FIRST_ORDER_DIRECT_H
 #define NLP_FIRST_ORDER_DIRECT_H
 
-#include "NLPObjGradient.h"
+#include "NLPObjGradient.hpp"
 
 namespace NLPInterfacePack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// NLPSerialPreprocess.h
+// NLPSerialPreprocess.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,12 +18,12 @@
 
 #include <valarray>
 
-#include "NLPFirstOrderInfo.h"
-#include "NLPVarReductPerm.h"
-#include "SparseLinAlgPack/src/VectorWithOpMutableDense.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/IVector.h"
+#include "NLPFirstOrderInfo.hpp"
+#include "NLPVarReductPerm.hpp"
+#include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/IVector.hpp"
 
 namespace NLPInterfacePack {
 

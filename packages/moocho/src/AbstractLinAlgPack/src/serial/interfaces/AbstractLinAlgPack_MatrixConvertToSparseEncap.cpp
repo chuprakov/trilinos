@@ -15,11 +15,11 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/MatrixConvertToSparseEncap.h"
-#include "SparseLinAlgPack/src/MatrixExtractSparseElements.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "LinAlgPack/src/IVector.h"
-#include "ThrowException.h"
+#include "SparseLinAlgPack/src/MatrixConvertToSparseEncap.hpp"
+#include "SparseLinAlgPack/src/MatrixExtractSparseElements.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "LinAlgPack/src/IVector.hpp"
+#include "ThrowException.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -15,10 +15,10 @@
 
 #include <math.h>
 
-#include "ExampleNLPBanded.h"
-#include "LinAlgPack/src/PermVecMat.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "ThrowException.h"
+#include "ExampleNLPBanded.hpp"
+#include "LinAlgPack/src/PermVecMat.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "ThrowException.hpp"
 
 namespace NLPInterfacePack {
 

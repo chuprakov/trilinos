@@ -18,19 +18,19 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/MatrixNonsingularSerial.h"
-#include "SparseLinAlgPack/src/MatrixWithOpSerial.h"
-#include "SparseLinAlgPack/src/VectorDenseEncap.h"
-#include "SparseLinAlgPack/src/VectorWithOpGetSparse.h"
-#include "SparseLinAlgPack/src/MatrixWithOpGetGMSMutable.h"
-#include "SparseLinAlgPack/src/MatrixWithOpGetGMSTri.h"
-#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
+#include "SparseLinAlgPack/src/MatrixNonsingularSerial.hpp"
+#include "SparseLinAlgPack/src/MatrixWithOpSerial.hpp"
+#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "SparseLinAlgPack/src/VectorWithOpGetSparse.hpp"
+#include "SparseLinAlgPack/src/MatrixWithOpGetGMSMutable.hpp"
+#include "SparseLinAlgPack/src/MatrixWithOpGetGMSTri.hpp"
+#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StV;

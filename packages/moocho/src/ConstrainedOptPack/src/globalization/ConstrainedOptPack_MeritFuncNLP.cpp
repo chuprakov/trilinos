@@ -15,8 +15,8 @@
 
 #include <typeinfo>
 
-#include "ConstrainedOptimizationPack/src/MeritFuncNLP.h"
-#include "ThrowException.h"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
+#include "ThrowException.hpp"
 
 namespace ConstrainedOptimizationPack {
 

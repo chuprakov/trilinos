@@ -16,9 +16,9 @@
 #include <assert.h>
 #include <math.h>
 
-#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithInequStd_StepSetOptions.h"
-#include "StringToBool.h"
-#include "ThrowException.h"
+#include "ReducedSpaceSQPPack/src/std/NullSpaceStepWithInequStd_StepSetOptions.hpp"
+#include "StringToBool.hpp"
+#include "ThrowException.hpp"
 
 // Define the options
 namespace {

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////
-// ReducedSpaceSQPPack/src/std/CheckConvergenceIP_Strategy.h
+// ReducedSpaceSQPPack/src/std/CheckConvergenceIP_Strategy.hpp
 //
 // Copyright (C) 2001
 //
@@ -17,7 +17,7 @@
 #if !defined CHECK_CONVERGENCE_IP_STRATEGY_H
 #define CHECK_CONVERGENCE_IP_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/std/CheckConvergenceStd_Strategy.h"
+#include "ReducedSpaceSQPPack/src/std/CheckConvergenceStd_Strategy.hpp"
 
 namespace ReducedSpaceSQPPack {
 

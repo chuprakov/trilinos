@@ -17,12 +17,12 @@
 #include <iomanip>
 #include <typeinfo>
 
-#include "GeneralIterationPack/test/TestGeneralIterationPack.h"
-#include "GeneralIterationPack/src/AlgorithmState.h"
-#include "GeneralIterationPack/src/IterQuantityAccessContiguous.h"
-#include "AbstractFactoryStd.h"
-#include "update_success.h"
-#include "ThrowException.h"
+#include "GeneralIterationPack/test/TestGeneralIterationPack.hpp"
+#include "GeneralIterationPack/src/AlgorithmState.hpp"
+#include "GeneralIterationPack/src/IterQuantityAccessContiguous.hpp"
+#include "AbstractFactoryStd.hpp"
+#include "update_success.hpp"
+#include "ThrowException.hpp"
 
 // explicit instantiation for testing compilation only
 //template MemMngPack::ref_count_ptr<double>;

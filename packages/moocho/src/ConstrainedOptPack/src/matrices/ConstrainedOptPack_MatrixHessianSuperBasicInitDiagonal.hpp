@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////
-// MatrixHessianSuperBasicInitDiagonal.h
+// MatrixHessianSuperBasicInitDiagonal.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.h"
-#include "SparseLinAlgPack/src/MatrixSymInitDiagonal.h"
+#include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.hpp"
+#include "SparseLinAlgPack/src/MatrixSymInitDiagonal.hpp"
 
 namespace ConstrainedOptimizationPack {
 

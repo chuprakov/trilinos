@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// sparse_bounds.h
+// sparse_bounds.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef SPARSE_LIN_ALG_PACK_SPARSE_BOUNDS_H
 #define SPARSE_LIN_ALG_PACK_SPARSE_BOUNDS_H
 
-#include "LinAlgPack/src/VectorClass.h"
+#include "LinAlgPack/src/VectorClass.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -18,11 +18,11 @@
 #include <vector>
 #include <typeinfo>
 
-#include "TestLinAlgPack.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/VectorOut.h"
-#include "LinAlgPack/src/MatVecCompare.h"
-#include "update_success.h"
+#include "TestLinAlgPack.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/VectorOut.hpp"
+#include "LinAlgPack/src/MatVecCompare.hpp"
+#include "update_success.hpp"
 
 namespace {
 

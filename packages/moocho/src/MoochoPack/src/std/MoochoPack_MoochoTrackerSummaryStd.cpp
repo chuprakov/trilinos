@@ -17,13 +17,13 @@
 
 #include <iomanip>
 
-#include "ReducedSpaceSQPPack/src/std/rSQPTrackSummaryStd.h"
-#include "ReducedSpaceSQPPack/src/rSQPState.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.h"
-#include "AbstractLinAlgPack/src/VectorWithOp.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
-#include "dynamic_cast_verbose.h"
+#include "ReducedSpaceSQPPack/src/std/rSQPTrackSummaryStd.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 using std::endl;
 using std::setw;

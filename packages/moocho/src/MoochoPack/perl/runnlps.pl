@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 #
 use strict;
-use lib "$ENV{RSQPPP_BASE_DIR}/rSQPpp/core/ReducedSpaceSQPPack/perl";
+use lib "$ENV{MOOCHO_BASE_DIR}/Moocho/core/ReducedSpaceSQPPack/perl";
 #
 my $g_use_msg =
   "Use: runnlps.pl [-h] [-i] [-k0,-k1] [-e executable] [-a \"arguments\"]\n".

@@ -1,5 +1,5 @@
 // /////////////////////////////////////
-// COOMatrixTmplOpDef.h
+// COOMatrixTmplOpDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef COO_MATRIX_TMPL_OP_DEF_H
 #define COO_MATRIX_TMPL_OP_DEF_H
 
-#include "COOMatrixTmplOpDecl.h"
+#include "COOMatrixTmplOpDecl.hpp"
 
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "LinAlgPack/src/VectorOp.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
 
 namespace SparseLinAlgPack {
 

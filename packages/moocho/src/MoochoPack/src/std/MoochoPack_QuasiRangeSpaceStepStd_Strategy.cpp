@@ -13,11 +13,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepStd_Strategy.h"
-#include "ReducedSpaceSQPPack/src/rSQPState.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
+#include "ReducedSpaceSQPPack/src/std/QuasiRangeSpaceStepStd_Strategy.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace ReducedSpaceSQPPack {
 

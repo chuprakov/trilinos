@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPAlgo_Config.h
+// rSQPAlgo_Config.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef RSQP_ALGO_CONFIG_H
 #define RSQP_ALGO_CONFIG_H
 
-#include "ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPackTypes.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////////
-// VectorClassExt.h
+// VectorClassExt.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <valarray>
 
-#include "VectorClassTmpl.h"
+#include "VectorClassTmpl.hpp"
 
 namespace LinAlgPack {
 

@@ -15,19 +15,19 @@
 
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateStd_Step.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/MatrixSymInitDiagonal.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "dynamic_cast_verbose.h"
+#include "ReducedSpaceSQPPack/src/std/ReducedHessianSecantUpdateStd_Step.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackExceptions.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymInitDiagonal.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::ReducedHessianSecantUpdateStd_Step(
 	const secant_update_ptr_t&   secant_update

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixVarReductImplicit.h
+// MatrixVarReductImplicit.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,10 +19,10 @@
 #include <vector>
 #include <list>
 
-#include "ConstrainedOptimizationPackTypes.h"
-#include "AbstractLinAlgPack/src/MatrixWithOp.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "ref_count_ptr.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "ref_count_ptr.hpp"
 
 namespace ConstrainedOptimizationPack {
 

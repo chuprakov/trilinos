@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// MatrixWithOpOut.h
+// MatrixWithOpOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "AbstractLinAlgPackTypes.h"
+#include "AbstractLinAlgPackTypes.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// MultiVectorMutableCols.h
+// MultiVectorMutableCols.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,10 +18,10 @@
 
 #include <vector>
 
-#include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
 
 namespace SparseLinAlgPack {
 

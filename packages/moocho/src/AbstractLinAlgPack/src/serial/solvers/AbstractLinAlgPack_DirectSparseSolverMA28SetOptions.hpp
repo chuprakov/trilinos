@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// DirectSparseSolverMA28SetOptions.h
+// DirectSparseSolverMA28SetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 #ifndef DIRECT_SPARSE_SOLVER_MA28_SET_OPTIONS_H
 #define DIRECT_SPARSE_SOLVER_MA28_SET_OPTIONS_H
 
-#include "DirectSparseSolverMA28.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "DirectSparseSolverMA28.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace SparseSolverPack {
 

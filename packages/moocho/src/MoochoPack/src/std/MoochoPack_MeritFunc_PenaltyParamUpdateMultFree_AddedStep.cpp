@@ -18,10 +18,10 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.h"
-#include "ReducedSpaceSQPPack/src/rSQPState.h"
-#include "AbstractLinAlgPack/src/VectorWithOp.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "ReducedSpaceSQPPack/src/std/MeritFunc_PenaltyParamUpdateMultFree_AddedStep.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOp.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 
 namespace ReducedSpaceSQPPack {
 

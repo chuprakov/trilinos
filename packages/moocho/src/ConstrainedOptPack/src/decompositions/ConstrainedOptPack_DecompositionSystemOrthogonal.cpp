@@ -17,17 +17,17 @@
 
 #include <typeinfo>
 
-#include "ConstrainedOptimizationPack/src/DecompositionSystemOrthogonal.h"
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.h"
-#include "ConstrainedOptimizationPack/src/MatrixDecompRangeOrthog.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/MatrixSymInitDiagonal.h"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpSubView.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "AbstractFactoryStd.h"
-#include "dynamic_cast_verbose.h"
-#include "ThrowException.h"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemOrthogonal.hpp"
+#include "ConstrainedOptimizationPack/src/MatrixIdentConcatStd.hpp"
+#include "ConstrainedOptimizationPack/src/MatrixDecompRangeOrthog.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymInitDiagonal.hpp"
+#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpSubView.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractFactoryStd.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ThrowException.hpp"
 
 namespace ConstrainedOptimizationPack {
 

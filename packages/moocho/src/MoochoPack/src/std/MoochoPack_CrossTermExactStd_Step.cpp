@@ -15,14 +15,14 @@
 
 #include <ostream>
 
-#include "../std/CrossTermExactStd_Step.h"
-#include "../rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "../std/CrossTermExactStd_Step.hpp"
+#include "../rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
-#include "SparseLinAlgPack/src/MatrixWithOp.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/VectorOut.h"
+#include "SparseLinAlgPack/src/MatrixWithOp.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/VectorOut.hpp"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;

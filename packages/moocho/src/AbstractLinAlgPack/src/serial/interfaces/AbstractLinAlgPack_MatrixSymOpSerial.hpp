@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////
-// MatrixSymWithOpSerial.h
+// MatrixSymWithOpSerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SLAP_MATRIX_SYM_WITH_OP_SERIAL_H
 #define SLAP_MATRIX_SYM_WITH_OP_SERIAL_H
 
-#include "MatrixWithOpSerial.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
+#include "MatrixWithOpSerial.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
 
 namespace SparseLinAlgPack {
 

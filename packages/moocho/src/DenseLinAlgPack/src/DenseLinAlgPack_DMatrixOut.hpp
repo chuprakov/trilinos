@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// GenMatrixOut.h
+// GenMatrixOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef GENMATRIX_OUT_H
 #define GENMATRIX_OUT_H
 
-#include "GenMatrixOutFunc.h"
+#include "GenMatrixOutFunc.hpp"
 
 namespace LinAlgPack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// QPSolverRelaxedQPSchur.h
+// QPSolverRelaxedQPSchur.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,15 +16,15 @@
 #ifndef QP_SOLVER_RELAXED_QP_SCHUR_H
 #define QP_SOLVER_RELAXED_QP_SCHUR_H
 
-#include "QPSolverRelaxed.h"
-#include "QPSchur.h"
-#include "QPInitFixedFreeStd.h"
-#include "MatrixSymHessianRelaxNonSing.h"
-#include "ConstraintsRelaxedStd.h"
-#include "MatrixSymAddDelBunchKaufman.h"
-#include "SparseLinAlgPack/src/VectorWithOpMutableDense.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "QPSolverRelaxed.hpp"
+#include "QPSchur.hpp"
+#include "QPInitFixedFreeStd.hpp"
+#include "MatrixSymHessianRelaxNonSing.hpp"
+#include "ConstraintsRelaxedStd.hpp"
+#include "MatrixSymAddDelBunchKaufman.hpp"
+#include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptimizationPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CalcLambdaIndepStd_AddedStep.h
+// CalcLambdaIndepStd_AddedStep.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

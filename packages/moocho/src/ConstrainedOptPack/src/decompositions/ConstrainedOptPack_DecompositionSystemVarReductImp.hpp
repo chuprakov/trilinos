@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////
-// DecompositionSystemVarReductImp.h
+// DecompositionSystemVarReductImp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef DECOMPOSITION_SYSTEM_VAR_REDUCT_IMP_H
 #define DECOMPOSITION_SYSTEM_VAR_REDUCT_IMP_H
 
-#include "DecompositionSystemVarReduct.h"
-#include "AbstractLinAlgPack/src/BasisSystemTester.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "DecompositionSystemVarReduct.hpp"
+#include "AbstractLinAlgPack/src/BasisSystemTester.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptimizationPack {
 

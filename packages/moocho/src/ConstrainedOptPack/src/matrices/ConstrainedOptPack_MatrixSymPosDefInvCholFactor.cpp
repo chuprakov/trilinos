@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MatrixSymPosDefInvCholFactor.h"
-#include "SymInvCholMatrixOp.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-#include "LinAlgPack/src/VectorOp.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/GenMatrixOp.h"
-#include "LinAlgPack/src/GenMatrixOut.h"
+#include "MatrixSymPosDefInvCholFactor.hpp"
+#include "SymInvCholMatrixOp.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/GenMatrixOp.hpp"
+#include "LinAlgPack/src/GenMatrixOut.hpp"
 
 namespace LinAlgOpPack {
 

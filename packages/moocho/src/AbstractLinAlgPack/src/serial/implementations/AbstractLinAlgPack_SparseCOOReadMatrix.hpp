@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// SparseCOOReadMatrix.h
+// SparseCOOReadMatrix.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -22,7 +22,7 @@
 #include <istream>
 #include <valarray>
 
-#include "SparseLinAlgPackTypes.h"
+#include "SparseLinAlgPackTypes.hpp"
 
 namespace SparseLinAlgPack {
 

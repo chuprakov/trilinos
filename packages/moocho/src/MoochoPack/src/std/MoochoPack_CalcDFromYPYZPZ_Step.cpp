@@ -16,15 +16,15 @@
 #include <limits>
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/CalcDFromYPYZPZ_Step.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-//#include "ConstrainedOptimizationPack/src/print_vector_change_stats.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
+#include "ReducedSpaceSQPPack/src/std/CalcDFromYPYZPZ_Step.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+//#include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
 	using AbstractLinAlgPack::Vp_StMtV;

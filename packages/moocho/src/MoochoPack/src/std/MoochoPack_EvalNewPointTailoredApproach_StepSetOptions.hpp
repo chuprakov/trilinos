@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// EvalNewPointTailoredApproach_StepSetOptions.h
+// EvalNewPointTailoredApproach_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef EVAL_NEW_POINT_TAILORED_APPROACH_STD_SET_OPTIONS_H
 #define EVAL_NEW_POINT_TAILORED_APPROACH_STD_SET_OPTIONS_H
 
-#include "EvalNewPointTailoredApproach_Step.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "EvalNewPointTailoredApproach_Step.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

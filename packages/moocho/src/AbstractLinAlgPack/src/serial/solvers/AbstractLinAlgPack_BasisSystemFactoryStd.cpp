@@ -13,16 +13,16 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseSolverPack/src/BasisSystemFactoryStd.h"
-#include "SparseSolverPack/src/BasisSystemPermDirectSparse.h"
-#include "SparseSolverPack/src/DirectSparseSolverDense.h"
-#include "SparseSolverPack/src/DirectSparseSolverMA28.h"
-#include "SparseSolverPack/src/DirectSparseSolverMA28SetOptions.h"
-#include "SparseSolverPack/src/DirectSparseSolverSuperLU.h"
-#include "ThrowException.h"
-#include "OptionsFromStream.h"
-#include "StringToIntMap.h"
-#include "StringToBool.h"
+#include "SparseSolverPack/src/BasisSystemFactoryStd.hpp"
+#include "SparseSolverPack/src/BasisSystemPermDirectSparse.hpp"
+#include "SparseSolverPack/src/DirectSparseSolverDense.hpp"
+#include "SparseSolverPack/src/DirectSparseSolverMA28.hpp"
+#include "SparseSolverPack/src/DirectSparseSolverMA28SetOptions.hpp"
+#include "SparseSolverPack/src/DirectSparseSolverSuperLU.hpp"
+#include "ThrowException.hpp"
+#include "OptionsFromStream.hpp"
+#include "StringToIntMap.hpp"
+#include "StringToBool.hpp"
 
 namespace SparseSolverPack {
 

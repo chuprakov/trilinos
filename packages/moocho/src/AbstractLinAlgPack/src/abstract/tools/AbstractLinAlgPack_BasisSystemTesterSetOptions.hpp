@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// BasisSystemTesterSetOptions.h
+// BasisSystemTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef BASIS_SYSTEM_TESTER_SET_OPTIONS_H
 #define BASIS_SYSTEM_TESTER_SET_OPTIONS_H
 
-#include "BasisSystemTester.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "BasisSystemTester.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace AbstractLinAlgPack {
 

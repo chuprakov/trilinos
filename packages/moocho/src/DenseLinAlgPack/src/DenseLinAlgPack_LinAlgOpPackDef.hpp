@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// LinAlgOpPackDef.h
+// LinAlgOpPackDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef LIN_ALG_OP_PACK_DEF_H
 #define LIN_ALG_OP_PACK_DEF_H
 
-#include "LinAlgOpPackDecl.h"	// also includes some inline function definitions
-#include "LinAlgPackAssertOp.h"
-#include "GenMatrixClass.h"
+#include "LinAlgOpPackDecl.hpp"	// also includes some inline function definitions
+#include "LinAlgPackAssertOp.hpp"
+#include "GenMatrixClass.hpp"
 
 namespace LinAlgOpPack {
 

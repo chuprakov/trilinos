@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// VectorWithOp.h
+// VectorWithOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <iosfwd>
 
-#include "AbstractLinAlgPackTypes.h"
-#include "RTOpPack/src/RTOpCpp.h"
-#include "Range1D.h"
+#include "AbstractLinAlgPackTypes.hpp"
+#include "RTOpPack/src/RTOpCpp.hpp"
+#include "Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixWithOpSerial.h
+// MatrixWithOpSerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <iosfwd>
 
-#include "SparseLinAlgPackTypes.h"
-#include "VectorSpaceSerial.h"
-#include "AbstractLinAlgPack/src/MatrixWithOp.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// LineSearchFilter_Step.h
+// LineSearchFilter_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,13 +18,13 @@
 
 #include <list>
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
-#include "GeneralIterationPack/src/CastIQMember.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "GeneralIterationPack/src/CastIQMember.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
-#include "GeneralIterationPack/src/AlgorithmState.h"
+#include "GeneralIterationPack/src/AlgorithmState.hpp"
 
 namespace ReducedSpaceSQPPack {
  

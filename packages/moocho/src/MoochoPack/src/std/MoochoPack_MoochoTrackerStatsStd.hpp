@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPTrackStatsStd.h
+// rSQPTrackStatsStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef RSQP_TRACK_STATS_STD_H
 #define RSQP_TRACK_STATS_STD_H
 
-#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.h"
-#include "GeneralIterationPack/src/AlgorithmTrack.h"
-#include "stpwatch.h"
+#include "ReducedSpaceSQPPack/src/std/quasi_newton_stats.hpp"
+#include "GeneralIterationPack/src/AlgorithmTrack.hpp"
+#include "stpwatch.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// RangeSpaceStepStd_Step.h
+// RangeSpaceStepStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef RANGE_SPACE_STEP_STD_STEP_H
 #define RANGE_SPACE_STEP_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
 
 namespace ReducedSpaceSQPPack {
 

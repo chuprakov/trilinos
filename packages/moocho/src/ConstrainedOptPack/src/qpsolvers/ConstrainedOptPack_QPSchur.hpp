@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////
-// QPSchur.h
+// QPSchur.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,19 +20,19 @@
 #include <map>
 #include <vector>
 
-#include "ConstrainedOptimizationPackTypes.h"
-#include "MatrixSymAddDelUpdateableWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/GenPermMatrixSlice.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
-#include "AbstractLinAlgPack/src/MatrixWithOp.h"
-#include "SparseLinAlgPack/src/MatrixSymAddDelUpdateable.h"
-#include "SparseLinAlgPack/src/MatrixWithOpSerial.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
-#include "stpwatch.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
+#include "MatrixSymAddDelUpdateableWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "SparseLinAlgPack/src/MatrixSymAddDelUpdateable.hpp"
+#include "SparseLinAlgPack/src/MatrixWithOpSerial.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
+#include "stpwatch.hpp"
 
 namespace ConstrainedOptimizationPack {
 

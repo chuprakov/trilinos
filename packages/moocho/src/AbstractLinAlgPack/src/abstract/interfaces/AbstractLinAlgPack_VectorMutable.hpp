@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// VectorWithOpMutable.h
+// VectorWithOpMutable.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef VECTOR_WITH_OP_MUTABLE_H
 #define VECTOR_WITH_OP_MUTABLE_H
 
-#include "VectorWithOp.h"
-#include "Range1D.h"
+#include "VectorWithOp.hpp"
+#include "Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/VectorWithOpMutableSubView.h"
-#include "ThrowException.h"
-#include "WorkspacePack.h"
-#include "dynamic_cast_verbose.h"
+#include "AbstractLinAlgPack/src/VectorWithOpMutableSubView.hpp"
+#include "ThrowException.hpp"
+#include "WorkspacePack.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace AbstractLinAlgPack {
 

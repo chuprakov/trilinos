@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// VectorWithOpMutableDense.h
+// VectorWithOpMutableDense.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef VECTOR_WITH_OP_MUTABLE_DENSE_H
 #define VECTOR_WITH_OP_MUTABLE_DENSE_H
 
-#include "VectorSpaceSerial.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "ref_count_ptr.h"
-#include "ReleaseResource.h"
+#include "VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "ref_count_ptr.hpp"
+#include "ReleaseResource.hpp"
 
 namespace SparseLinAlgPack {
 

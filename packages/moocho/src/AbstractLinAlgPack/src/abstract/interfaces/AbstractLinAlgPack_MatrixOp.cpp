@@ -19,18 +19,18 @@
 #include <typeinfo>
 #include <stdexcept>
 
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpSubView.h"
-#include "AbstractLinAlgPack/src/MatrixPermAggr.h"
-#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/Permutation.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "AbstractLinAlgPack/src/SpVectorView.h"
-#include "AbstractLinAlgPack/src/EtaVector.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "ThrowException.h"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpSubView.hpp"
+#include "AbstractLinAlgPack/src/MatrixPermAggr.hpp"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/Permutation.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/SpVectorView.hpp"
+#include "AbstractLinAlgPack/src/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "ThrowException.hpp"
 
 namespace AbstractLinAlgPack {
 

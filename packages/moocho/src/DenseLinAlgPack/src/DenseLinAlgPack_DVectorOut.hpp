@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////////
-// VectorOut.h
+// VectorOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 #ifndef VECTOROUT_H
 #define VECTOROUT_H
 
-#include "VectorOutFunc.h"
+#include "VectorOutFunc.hpp"
 
 namespace LinAlgPack {
 

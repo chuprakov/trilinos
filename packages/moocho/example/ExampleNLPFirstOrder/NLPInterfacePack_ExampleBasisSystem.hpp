@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////
-// ExampleBasisSystem.h
+// ExampleBasisSystem.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef EXAMPLE_BASIS_SYSTEM_H
 #define EXAMPLE_BASIS_SYSTEM_H
 
-#include "NLPInterfacePack/src/NLPInterfacePackTypes.h"
-#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.h"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
+#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.hpp"
 
 namespace NLPInterfacePack {
 

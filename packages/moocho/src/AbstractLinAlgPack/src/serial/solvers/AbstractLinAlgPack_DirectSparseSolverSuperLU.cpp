@@ -20,13 +20,13 @@
 #include <fstream>
 #include <algorithm>
 
-#include "SparseSolverPack/src/DirectSparseSolverSuperLU.h"
-#include "SparseLinAlgPack/src/VectorDenseEncap.h"
-#include "LinAlgPack/src/PermVecMat.h"
-#include "AbstractFactoryStd.h"
-#include "ThrowException.h"
-#include "WorkspacePack.h"
-#include "dynamic_cast_verbose.h"
+#include "SparseSolverPack/src/DirectSparseSolverSuperLU.hpp"
+#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "LinAlgPack/src/PermVecMat.hpp"
+#include "AbstractFactoryStd.hpp"
+#include "ThrowException.hpp"
+#include "WorkspacePack.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace {
 

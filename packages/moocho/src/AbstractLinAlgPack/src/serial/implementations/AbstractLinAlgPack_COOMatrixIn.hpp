@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// COOMatrixIn.h
+// COOMatrixIn.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <istream>
 
-#include "SparseLinAlgPackTypes.h"
+#include "SparseLinAlgPackTypes.hpp"
 
 namespace SparseLinAlgPack {
 

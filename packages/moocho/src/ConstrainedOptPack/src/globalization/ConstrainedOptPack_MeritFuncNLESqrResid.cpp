@@ -13,9 +13,9 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "MeritFuncNLESqrResid.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/VectorOp.h"
+#include "MeritFuncNLESqrResid.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
 
 namespace ConstrainedOptimizationPack {
 

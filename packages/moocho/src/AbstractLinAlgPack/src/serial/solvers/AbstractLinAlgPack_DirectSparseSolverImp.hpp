@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////
-// DirectSparseSolverImp.h
+// DirectSparseSolverImp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef	DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_IMP_H
 #define DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_IMP_H
 
-#include "DirectSparseSolver.h"
-#include "SparseLinAlgPack/src/VectorSpaceSerial.h"
+#include "DirectSparseSolver.hpp"
+#include "SparseLinAlgPack/src/VectorSpaceSerial.hpp"
 
 namespace SparseSolverPack {
 

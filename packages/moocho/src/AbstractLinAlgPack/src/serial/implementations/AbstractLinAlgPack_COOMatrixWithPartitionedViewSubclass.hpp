@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// COOMatrixWithPartitionedViewSubclass.h
+// COOMatrixWithPartitionedViewSubclass.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef COO_MATRIX_WITH_PARTITIONED_VIEW_SUBCLASS_H
 #define COO_MATRIX_WITH_PARTITIONED_VIEW_SUBCLASS_H
 
-#include "MatrixWithOpConcreteEncap.h"
-#include "COOMatrixWithPartitionedView.h"
-#include "ConvertToSparseCompressedColumn.h"
-#include "MatrixConvertToSparseFortranCompatible.h"
-#include "COOMPartitionOut.h"
+#include "MatrixWithOpConcreteEncap.hpp"
+#include "COOMatrixWithPartitionedView.hpp"
+#include "ConvertToSparseCompressedColumn.hpp"
+#include "MatrixConvertToSparseFortranCompatible.hpp"
+#include "COOMPartitionOut.hpp"
 
 namespace SparseLinAlgPack {
 

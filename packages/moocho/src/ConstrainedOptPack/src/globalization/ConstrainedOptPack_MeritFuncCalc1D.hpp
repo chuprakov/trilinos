@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MeritFuncCalc1D.h
+// MeritFuncCalc1D.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MERIT_FUNC_CALC_1D_H
 #define MERIT_FUNC_CALC_1D_H
 
-#include "ConstrainedOptimizationPackTypes.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
 
 namespace ConstrainedOptimizationPack {
 

@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "test_basis_system.h"
-#include "NLPInterfacePack/src/NLPFirstOrderInfo.h"
-#include "AbstractLinAlgPack/src/BasisSystem.h"
-#include "AbstractLinAlgPack/src/BasisSystemTester.h"
-#include "AbstractLinAlgPack/src/BasisSystemTesterSetOptions.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.h"
+#include "test_basis_system.hpp"
+#include "NLPInterfacePack/src/NLPFirstOrderInfo.hpp"
+#include "AbstractLinAlgPack/src/BasisSystem.hpp"
+#include "AbstractLinAlgPack/src/BasisSystemTester.hpp"
+#include "AbstractLinAlgPack/src/BasisSystemTesterSetOptions.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingular.hpp"
 
 bool NLPInterfacePack::test_basis_system(
  	NLPFirstOrderInfo*                             nlp

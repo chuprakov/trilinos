@@ -16,13 +16,13 @@
 #include <typeinfo>
 #include <stdexcept>
 
-#include "SparseLinAlgPack/src/VectorWithOpMutableDense.h"
-#include "SparseLinAlgPack/src/VectorDenseEncap.h"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.h"
-#include "AbstractLinAlgPack/src/apply_op_helper.h"
-#include "ReleaseResource_ref_count_ptr.h"
-#include "WorkspacePack.h"
-#include "ThrowException.h"
+#include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
+#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/apply_op_helper.hpp"
+#include "ReleaseResource_ref_count_ptr.hpp"
+#include "WorkspacePack.hpp"
+#include "ThrowException.hpp"
 
 #ifdef _DEBUG
 #define CLASS_MEMBER_PTRS \

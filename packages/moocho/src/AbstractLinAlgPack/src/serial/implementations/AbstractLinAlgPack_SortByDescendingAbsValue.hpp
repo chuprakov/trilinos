@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////
-// SortByDescendingAbsValue.h
+// SortByDescendingAbsValue.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <math.h>
 
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 
 namespace SparseLinAlgPack {
 

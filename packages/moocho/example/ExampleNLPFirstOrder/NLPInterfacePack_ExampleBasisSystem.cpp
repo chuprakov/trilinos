@@ -13,14 +13,14 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ExampleBasisSystem.h"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/src/MatrixCompositeStd.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "RTOpPack/src/RTOpCppC.h"
-#include "AbstractFactoryStd.h"
-#include "dynamic_cast_verbose.h"
-#include "ThrowException.h"
+#include "ExampleBasisSystem.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "RTOpPack/src/RTOpCppC.hpp"
+#include "AbstractFactoryStd.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ThrowException.hpp"
 
 namespace NLPInterfacePack {
  

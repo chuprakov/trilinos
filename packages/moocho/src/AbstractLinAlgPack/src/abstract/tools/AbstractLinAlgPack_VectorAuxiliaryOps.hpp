@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// VectorAuxiliaryOps.h
+// VectorAuxiliaryOps.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <utility>
 
-#include "VectorWithOpMutable.h"
+#include "VectorWithOpMutable.hpp"
 
 namespace AbstractLinAlgPack {
 

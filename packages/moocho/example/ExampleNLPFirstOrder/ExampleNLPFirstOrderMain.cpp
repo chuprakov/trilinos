@@ -26,13 +26,13 @@
 #include <iostream>
 #include <iomanip>
 
-#include "ExampleNLPFirstOrderInfoRun.h"
-#include "ExampleVectorLib/src/MPIDenseVector.h"
-#include "SparseLinAlgPack/src/VectorSpaceSerial.h"
-#include "OptionsFromStream.h"
-#include "WorkspacePack.h"
-#include "oblackholestream.h"
-#include "CommandLineProcessor.h"
+#include "ExampleNLPFirstOrderInfoRun.hpp"
+#include "ExampleVectorLib/src/MPIDenseVector.hpp"
+#include "SparseLinAlgPack/src/VectorSpaceSerial.hpp"
+#include "OptionsFromStream.hpp"
+#include "WorkspacePack.hpp"
+#include "oblackholestream.hpp"
+#include "CommandLineProcessor.hpp"
 
 int main(int argc, char* argv[] ) {
 

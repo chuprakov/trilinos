@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// ElementaryMatVec.h
+// ElementaryMatVec.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ELEMENTARY_MAT_VEC_H
 #define ELEMENTARY_MAT_VEC_H
 
-#include "GenMatrixClass.h"
+#include "GenMatrixClass.hpp"
 
 namespace LinAlgPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// Algo_ConfigIP.h
+// Algo_ConfigIP.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef ALGO_CONFIG_IP_H
 #define ALGO_CONFIG_IP_H
 
-#include "ReducedSpaceSQPPack/src/rSQPAlgo_Config.h"
-#include "ReducedSpaceSQPPack/src/rSQPAlgo.h"
-#include "ReducedSpaceSQPPack/Configurations/shared/DecompositionSystemStateStepBuilderStd.h"
-#include "OptionsFromStream.h"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo_Config.hpp"
+#include "ReducedSpaceSQPPack/src/rSQPAlgo.hpp"
+#include "ReducedSpaceSQPPack/Configurations/shared/DecompositionSystemStateStepBuilderStd.hpp"
+#include "OptionsFromStream.hpp"
 
 namespace ReducedSpaceSQPPack {
 
@@ -31,7 +31,7 @@ namespace ReducedSpaceSQPPack {
  * <tt>\ref Algo_ConfigIP_opts "rSQPpp.opt.Algo_ConfigIP"</tt>.
  *
  * Note that all built-in support for basis permutations and direct sparse solvers
- * can be left out if the macro RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS is defined.
+ * can be left out if the macro MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS is defined.
  * 
  * ToDo: Finish documentation!
  */

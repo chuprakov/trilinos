@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
 #include "RTOpStdOpsLib/src/RTOp_ROp_max.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_max_near_feas_step.h"
 #include "RTOpStdOpsLib/src/RTOp_ROp_max_rel_step.h"
@@ -34,8 +34,8 @@
 #include "RTOpStdOpsLib/src/RTOp_TOp_inv_of_difference.h"
 #include "RTOpStdOpsLib/src/RTOp_TOp_max_vec_scalar.h"
 #include "RTOpStdOpsLib/src/RTOp_TOp_max_abs_vec_scalar.h"
-#include "RTOpPack/src/RTOpCppC.h"
-#include "ThrowException.h"
+#include "RTOpPack/src/RTOpCppC.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 

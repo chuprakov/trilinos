@@ -16,14 +16,14 @@
 #include <typeinfo>
 
 #include "ReducedSpaceSQPPack/src/std/CheckBasisFromCPy_Step.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReduct.h"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemVarReduct.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
-#include "SparseLinAlgPack/src/MatrixWithOp.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/VectorOp.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "SparseLinAlgPack/src/MatrixWithOp.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
 

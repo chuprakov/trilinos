@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// EvalNewPointTailoredApproachOrthogonal_Step.h
+// EvalNewPointTailoredApproachOrthogonal_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef EVAL_NEW_POINT_TAILORED_APPROACH_ORTHOGONAL_STEP_H
 #define EVAL_NEW_POINT_TAILORED_APPROACH_ORTHOGONAL_STEP_H
 
-#include "EvalNewPointTailoredApproach_Step.h"
-#include "StandardCompositionMacros.h"
+#include "EvalNewPointTailoredApproach_Step.hpp"
+#include "StandardCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

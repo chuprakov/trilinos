@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// COOMatrixTmplOutFuncDef.h
+// COOMatrixTmplOutFuncDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -19,7 +19,7 @@
 #include <ostream>
 #include <iomanip>
 
-#include "COOMatrixTmplOutFuncDecl.h"
+#include "COOMatrixTmplOutFuncDecl.hpp"
 
 namespace SparseLinAlgPack {
 

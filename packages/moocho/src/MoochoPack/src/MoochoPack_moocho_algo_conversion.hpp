@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// rsqp_algo_conversion.h
+// rsqp_algo_conversion.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef RSQP_ALGO_CONVERSION_H
 #define RSQP_ALGO_CONVERSION_H
 
-#include "rSQPAlgo.h"
-#include "GeneralIterationPack/src/Algorithm.h"
+#include "rSQPAlgo.hpp"
+#include "GeneralIterationPack/src/Algorithm.hpp"
 
 namespace ReducedSpaceSQPPack {
 

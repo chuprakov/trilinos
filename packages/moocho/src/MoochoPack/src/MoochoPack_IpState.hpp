@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////
-// ipState.h
+// ipState.hpp
 //
 // Copyright (C) 2001
 //
@@ -17,7 +17,7 @@
 #if !defined IP_STATE_H
 #define IP_STATE_H
 
-#include "ReducedSpaceSQPPack/src/rSQPState.h"
+#include "ReducedSpaceSQPPack/src/rSQPState.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// ExampleNLPBanded.h
+// ExampleNLPBanded.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef EXAMPLE_NLP_BANDED_H
 #define EXAMPLE_NLP_BANDED_H
 
-#include "NLPInterfacePack/src/NLPSerialPreprocessExplJac.h"
+#include "NLPInterfacePack/src/NLPSerialPreprocessExplJac.hpp"
 
 namespace NLPInterfacePack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////
-// active_set_change.h
+// active_set_change.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "../ReducedSpaceSQPPackTypes.h"
+#include "../ReducedSpaceSQPPackTypes.hpp"
 
 namespace ReducedSpaceSQPPack {
 

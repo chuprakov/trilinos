@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// LineSearchFailureNewDecompositionSelection_Step.h
+// LineSearchFailureNewDecompositionSelection_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef LINE_SEARCH_FAILURE_NEW_DECOMPOSITION_SELECTION_H
 #define LINE_SEARCH_FAILURE_NEW_DECOMPOSITION_SELECTION_H
 
-#include "NewDecompositionSelection_Strategy.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
-#include "StandardCompositionMacros.h"
+#include "NewDecompositionSelection_Strategy.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "StandardCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// BasisSystemTester.h
+// BasisSystemTester.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <iosfwd>
 
-#include "AbstractLinAlgPackTypes.h"
-#include "StandardMemberCompositionMacros.h"
+#include "AbstractLinAlgPackTypes.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// VectorSpaceTester.h
+// VectorSpaceTester.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <iosfwd>
 
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.h"
-#include "StandardMemberCompositionMacros.h"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -42,32 +42,32 @@ namespace AbstractLinAlgPack {
 class VectorSpaceTester {
 public:
 
-	/// Members for option \c print_all_tests() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c print_all_tests() (see StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_all_tests )
 #ifdef DOXYGEN_COMPILE
 		;
 #endif		
-	/// Members for option \c print_vectors() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c print_vectors() (see StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_vectors )
 #ifdef DOXYGEN_COMPILE
 		;
 #endif		
-	/// Members for option \c throw_exception() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c throw_exception() (see StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, throw_exception )
 #ifdef DOXYGEN_COMPILE
 		;
 #endif		
-	/// Members for option \c num_random_tests() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c num_random_tests() (see StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, num_random_tests )
 #ifdef DOXYGEN_COMPILE
 		;
 #endif		
-	/// Members for option \c () warning_tol(see StandardMemberCompositionMacros.h).
+	/// Members for option \c () warning_tol(see StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
 #ifdef DOXYGEN_COMPILE
 		;
 #endif		
-	/// Members for option \c error_tol() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c error_tol() (see StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 #ifdef DOXYGEN_COMPILE
 		;

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// random_vector.h
+// random_vector.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef RANDOM_VECTOR_H
 #define RANDOM_VECTOR_H
 
-#include "LinAlgPackTypes.h"
+#include "LinAlgPackTypes.hpp"
 
 namespace LinAlgPack {
 

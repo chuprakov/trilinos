@@ -16,7 +16,7 @@
 #include <assert.h>
 #include <math.h>
 
-#include "NLPFirstOrderDirectTesterSetOptions.h"
+#include "NLPFirstOrderDirectTesterSetOptions.hpp"
 
 // Define the options
 namespace {

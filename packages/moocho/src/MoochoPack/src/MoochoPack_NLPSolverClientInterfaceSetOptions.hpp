@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// rSQPSolverClientInterfaceSetOptions.h
+// rSQPSolverClientInterfaceSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef RSQP_SOLVER_CLIENT_INTERFACE_SET_OPTIONS_H
 #define RSQP_SOLVER_CLIENT_INTERFACE_SET_OPTIONS_H
 
-#include "rSQPSolverClientInterface.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "rSQPSolverClientInterface.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.h
+// MeritFunc_ModifiedL1LargerSteps_AddedStepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef MERIT_FUNC_MODIFIED_L1_LARGER_STEPS_ADDED_STEP_SET_OPTIONS_H
 #define MERIT_FUNC_MODIFIED_L1_LARGER_STEPS_ADDED_STEP_SET_OPTIONS_H
 
-#include "MeritFunc_ModifiedL1LargerSteps_AddedStep.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "MeritFunc_ModifiedL1LargerSteps_AddedStep.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -21,16 +21,16 @@
 #include <iomanip>
 #include <sstream>
 
-#include "NLPInterfacePack/src/CalcFiniteDiffProd.h"
-#include "NLPInterfacePack/src/NLP.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/assert_print_nan_inf.h"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "Range1D.h"
-#include "ThrowException.h"
+#include "NLPInterfacePack/src/CalcFiniteDiffProd.hpp"
+#include "NLPInterfacePack/src/NLP.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "Range1D.hpp"
+#include "ThrowException.hpp"
 
 namespace NLPInterfacePack {
 

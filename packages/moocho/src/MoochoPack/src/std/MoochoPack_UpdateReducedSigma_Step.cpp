@@ -17,24 +17,24 @@
 #include <typeinfo>
 #include <iostream>
 
-#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpOut.h"
-#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "AbstractLinAlgPack/src/assert_print_nan_inf.h"
-#include "ConstrainedOptimizationPack/src/MatrixIdentConcat.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "ReducedSpaceSQPPack/src/ipState.h"
-#include "ReducedSpaceSQPPack/src/std/UpdateReducedSigma_Step.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonalStd.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/assert_print_nan_inf.hpp"
+#include "ConstrainedOptimizationPack/src/MatrixIdentConcat.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "ReducedSpaceSQPPack/src/ipState.hpp"
+#include "ReducedSpaceSQPPack/src/std/UpdateReducedSigma_Step.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
 
-#include "StringToIntMap.h"
+#include "StringToIntMap.hpp"
 
-#include "dynamic_cast_verbose.h"
+#include "dynamic_cast_verbose.hpp"
 
 namespace ReducedSpaceSQPPack {
 

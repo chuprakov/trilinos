@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// ConvertToSparseCompressedColumn.h
+// ConvertToSparseCompressedColumn.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef CONVERT_TO_SPARSE_COMPRESSED_COLUMN_H
 #define CONVERT_TO_SPARSE_COMPRESSED_COLUMN_H
 
-#include "SparseLinAlgPackTypes.h"
-#include "LinAlgPack/src/IVector.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "LinAlgPack/src/IVector.hpp"
 
 /** @name Conversion utilites / interfaces for a Fortran compatable sparse compressed column matrix format.
   *

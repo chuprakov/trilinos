@@ -1,5 +1,5 @@
 // //////////////////////////////////////////
-// BarrierNLP.h
+// BarrierNLP.hpp
 //
 // Copyright (C) 2001
 //
@@ -16,7 +16,7 @@
 #ifndef BARRIER_NLP_H
 #define BARRIER_NLP_H
 
-#include "NLPInterfacePack/src/NLPObjGradient.h"
+#include "NLPInterfacePack/src/NLPObjGradient.hpp"
 
 namespace NLPInterfacePack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// QPSchurInitKKTSystemHessianFull.h
+// QPSchurInitKKTSystemHessianFull.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef QPSCHUR_INIT_KKT_SYSTEM_HESSIAN_FULL_H
 #define QPSCHUR_INIT_KKT_SYSTEM_HESSIAN_FULL_H
 
-#include "QPSolverRelaxedQPSchur.h"
+#include "QPSolverRelaxedQPSchur.hpp"
 
 namespace ConstrainedOptimizationPack {
 

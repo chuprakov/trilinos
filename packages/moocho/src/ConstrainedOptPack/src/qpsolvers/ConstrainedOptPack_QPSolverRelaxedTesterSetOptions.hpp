@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// QPSolverRelaxedTesterSetOptions.h
+// QPSolverRelaxedTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef QP_SOLVER_RELAXED_TESTER_SET_OPTIONS_H
 #define QP_SOLVER_RELAXED_TESTER_SET_OPTIONS_H
 
-#include "QPSolverRelaxedTester.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "QPSolverRelaxedTester.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ConstrainedOptimizationPack {
 

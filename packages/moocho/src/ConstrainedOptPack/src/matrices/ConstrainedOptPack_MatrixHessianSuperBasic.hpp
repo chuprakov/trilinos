@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////
-// MatrixHessianSuperBasic.h
+// MatrixHessianSuperBasic.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackTypes.h"
-#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.h"
-#include "SparseLinAlgPack/src/GenPermMatrixSlice.h"
+#include "ConstrainedOptimizationPack/src/ConstrainedOptimizationPackTypes.hpp"
+#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
+#include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "Miref_count_ptr.h"
 
 namespace ConstrainedOptimizationPack {

@@ -15,14 +15,14 @@
 
 #include <assert.h>
 
-#include "SparseLinAlgPack/src/MatrixSparseCOORSerial.h"
-#include "SparseLinAlgPack/src/MatrixCOORTmplItfc.h"
-#include "SparseLinAlgPack/src/COOMatrixTmplOp.h"
-#include "SparseLinAlgPack/src/VectorDenseEncap.h"
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "ThrowException.h"
-#include "dynamic_cast_verbose.h"
+#include "SparseLinAlgPack/src/MatrixSparseCOORSerial.hpp"
+#include "SparseLinAlgPack/src/MatrixCOORTmplItfc.hpp"
+#include "SparseLinAlgPack/src/COOMatrixTmplOp.hpp"
+#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "ThrowException.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace SparseLinAlgPack {
 

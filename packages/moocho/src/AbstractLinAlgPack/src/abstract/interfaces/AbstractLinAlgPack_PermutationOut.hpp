@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// PermutationOut.h
+// PermutationOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iosfwd>
 
-#include "Permutation.h"
+#include "Permutation.hpp"
 
 namespace AbstractLinAlgPack {
 

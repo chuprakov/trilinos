@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// QPFailureReinitReducedHessian_Step.h
+// QPFailureReinitReducedHessian_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef QP_FAILURE_REINIT_REDUCED_HESSIAN_STEP_H
 #define QP_FAILURE_REINIT_REDUCED_HESSIAN_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
-#include "StandardCompositionMacros.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "StandardCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

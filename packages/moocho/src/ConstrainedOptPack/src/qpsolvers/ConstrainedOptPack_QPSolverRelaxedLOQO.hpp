@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// QPSolverRelaxedLOQO.h
+// QPSolverRelaxedLOQO.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,11 +20,11 @@
 
 #include <vector>
 
-#include "QPSolverRelaxed.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "StandardMemberCompositionMacros.h"
-#include "StandardCompositionMacros.h"
+#include "QPSolverRelaxed.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "StandardMemberCompositionMacros.hpp"
+#include "StandardCompositionMacros.hpp"
 
 namespace ConstrainedOptimizationPack {
 

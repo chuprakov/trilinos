@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// VectorSpaceFactorySerial.h
+// VectorSpaceFactorySerial.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef VECTOR_SPACE_FACTORY_SERIAL_H
 #define VECTOR_SPACE_FACTORY_SERIAL_H
 
-#include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/src/VectorSpaceFactory.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/VectorSpaceFactory.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////
-// BasisSystemFactory.h
+// BasisSystemFactory.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef ABSTRACT_LIN_ALG_PACK_BASIS_SYSTEM_FACTORY_H
 #define ABSTRACT_LIN_ALG_PACK_BASIS_SYSTEM_FACTORY_H
 
-#include "AbstractLinAlgPackTypes.h"
-#include "AbstractFactory.h"
-#include "ref_count_ptr.h"
+#include "AbstractLinAlgPackTypes.hpp"
+#include "AbstractFactory.hpp"
+#include "ref_count_ptr.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;

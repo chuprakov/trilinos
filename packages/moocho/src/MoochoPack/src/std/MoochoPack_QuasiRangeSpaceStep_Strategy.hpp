@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////
-// QuasiRangeSpaceStep_Strategy.h
+// QuasiRangeSpaceStep_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef QUASI_RANGE_SPACE_STEP_STRATEGY_H
 #define QUASI_RANGE_SPACE_STEP_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
 
 namespace ReducedSpaceSQPPack {
 

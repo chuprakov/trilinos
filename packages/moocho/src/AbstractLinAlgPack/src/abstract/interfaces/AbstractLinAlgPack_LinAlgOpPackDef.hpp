@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// LinAlgOpPackDef.h
+// LinAlgOpPackDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ABSTRACT_LIN_ALG_OP_PACK_DEF_H
 #define ABSTRACT_LIN_ALG_OP_PACK_DEF_H
 
-#include "LinAlgOpPackDecl.h"	// also includes some inline function definitions
+#include "LinAlgOpPackDecl.hpp"	// also includes some inline function definitions
 
 namespace LinAlgOpPack {
 

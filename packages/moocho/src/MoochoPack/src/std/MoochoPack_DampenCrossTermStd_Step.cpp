@@ -17,14 +17,14 @@
 #include <sstream>
 #include <limits>
 
-#include "../std/DampenCrossTermStd_Step.h"
-#include "../rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
+#include "../std/DampenCrossTermStd_Step.hpp"
+#include "../rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
-#include "SparseLinAlgPack/src/MatrixWithOpFactorized.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/VectorOut.h"
+#include "SparseLinAlgPack/src/MatrixWithOpFactorized.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/VectorOut.hpp"
 
 ReducedSpaceSQPPack::DampenCrossTermStd_Step::DampenCrossTermStd_Step(const value_type& frac_descent)
 	: frac_descent_(frac_descent)

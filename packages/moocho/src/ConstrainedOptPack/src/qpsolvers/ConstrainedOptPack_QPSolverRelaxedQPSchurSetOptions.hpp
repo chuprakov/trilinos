@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// QPSolverRelaxedQPSchurSetOptions.h
+// QPSolverRelaxedQPSchurSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef QP_SOLVER_RELAXED_QP_SCHUR_SET_OPTIONS_H
 #define QP_SOLVER_RELAXED_QP_SCHUR_SET_OPTIONS_H
 
-#include "QPSolverRelaxedQPSchur.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "QPSolverRelaxedQPSchur.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ConstrainedOptimizationPack {
 

@@ -17,18 +17,18 @@
 
 #include <stdexcept>
 
-#include "ExampleNLPObjGradient.h"
+#include "ExampleNLPObjGradient.hpp"
 #include "ExampleNLPFirstOrderDirectRTOps.h"
-#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "RTOpPack/src/RTOpCppC.h"
-#include "Range1D.h"
-#include "dynamic_cast_verbose.h"
-#include "ThrowException.h"
-#include "AbstractFactoryStd.h"
+#include "AbstractLinAlgPack/src/BasisSystemCompositeStd.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "RTOpPack/src/RTOpCppC.hpp"
+#include "Range1D.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ThrowException.hpp"
+#include "AbstractFactoryStd.hpp"
 
 namespace {
 

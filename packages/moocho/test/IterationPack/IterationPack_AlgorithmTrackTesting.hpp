@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// AlgorithmTrackTesting.h
+// AlgorithmTrackTesting.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef ALGORITHM_TRACK_TESTING_H
 #define ALGORITHM_TRACK_TESTING_H
 
-#include "GeneralIterationPack/src/AlgorithmTrack.h"
+#include "GeneralIterationPack/src/AlgorithmTrack.hpp"
 
 namespace GeneralIterationPack {
 

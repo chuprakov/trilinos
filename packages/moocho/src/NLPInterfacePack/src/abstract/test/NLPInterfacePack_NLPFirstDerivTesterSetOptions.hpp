@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NLPFirstDerivativesTesterSetOptions.h
+// NLPFirstDerivativesTesterSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef NLP_FIRST_DERIVATIVES_TESTER_SET_OPTIONS_H
 #define NLP_FIRST_DERIVATIVES_TESTER_SET_OPTIONS_H
 
-#include "NLPFirstDerivativesTester.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "NLPFirstDerivativesTester.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace NLPInterfacePack {
 

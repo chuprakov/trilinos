@@ -15,9 +15,9 @@
 
 #include <iostream>
 
-#include "ExampleNLPBanded.h"
-#include "ReducedSpaceSQPPack/Configurations/rSQPppSolver.h"
-#include "CommandLineProcessor.h"
+#include "ExampleNLPBanded.hpp"
+#include "ReducedSpaceSQPPack/Configurations/rSQPppSolver.hpp"
+#include "CommandLineProcessor.hpp"
 
 int main( int argc, char* argv[] )
 {

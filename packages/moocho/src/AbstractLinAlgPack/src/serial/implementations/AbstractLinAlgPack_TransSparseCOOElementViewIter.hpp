@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// TransSparseCOOElementViewIter.h
+// TransSparseCOOElementViewIter.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <iterator>
 
-#include "SparseLinAlgPackTypes.h"
+#include "SparseLinAlgPackTypes.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////
-// MatrixSymAddDelUpdateableWithOpNonsingular.h
+// MatrixSymAddDelUpdateableWithOpNonsingular.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_SYM_ADD_DEL_UPDATEABLE_WITH_OP_NONSINGULAR_H
 #define MATRIX_SYM_ADD_DEL_UPDATEABLE_WITH_OP_NONSINGULAR_H
 
-#include "ConstrainedOptimizationPackTypes.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
 
 namespace ConstrainedOptimizationPack {
 

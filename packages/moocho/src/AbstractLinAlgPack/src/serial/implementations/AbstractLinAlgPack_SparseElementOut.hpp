@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// SparseElementOut.h
+// SparseElementOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <ostream>
 
-#include "SparseElement.h"
+#include "SparseElement.hpp"
 
 namespace SparseLinAlgPack {
 

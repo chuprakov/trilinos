@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////
-// NullSpaceStepWithInequStd_StepSetOptions.h
+// NullSpaceStepWithInequStd_StepSetOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef INDEP_DIREC_WITH_BOUNDS_STD_STEP_SET_OPTIONS_H
 #define INDEP_DIREC_WITH_BOUNDS_STD_STEP_SET_OPTIONS_H
 
-#include "NullSpaceStepWithInequStd_Step.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "NullSpaceStepWithInequStd_Step.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

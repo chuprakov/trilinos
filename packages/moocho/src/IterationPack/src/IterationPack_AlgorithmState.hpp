@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////
-// AlgorithmState.h
+// AlgorithmState.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -23,8 +23,8 @@
 #include <sstream>
 #include <iosfwd>
 
-#include "IterQuantity.h"
-#include "ref_count_ptr.h"
+#include "IterQuantity.hpp"
+#include "ref_count_ptr.hpp"
 
 namespace GeneralIterationPack {
 

@@ -15,8 +15,8 @@
 
 #include <assert.h>
 
-#include "ReducedSpaceSQPPack/src/std/CheckConvergence_Strategy.h"
-#include "StringToBool.h"
+#include "ReducedSpaceSQPPack/src/std/CheckConvergence_Strategy.hpp"
+#include "StringToBool.hpp"
 
 namespace ReducedSpaceSQPPack {
 

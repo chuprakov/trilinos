@@ -3,13 +3,13 @@
 
 #include <assert.h>
 
-#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/src/MatrixSymDiagonal.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "WorkspacePack.h"
-#include "ThrowException.h"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymDiagonal.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "WorkspacePack.hpp"
+#include "ThrowException.hpp"
 
 namespace {
 

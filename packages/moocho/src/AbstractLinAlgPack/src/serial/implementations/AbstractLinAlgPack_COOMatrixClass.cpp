@@ -15,16 +15,16 @@
 
 #include <sstream>
 
-#include "COOMatrixClass.h"
-#include "SparseCOOReadMatrix.h"
-#include "LinAlgPack/src/IVector.h"
-#include "LinAlgPack/src/Range1D.h"
+#include "COOMatrixClass.hpp"
+#include "SparseCOOReadMatrix.hpp"
+#include "LinAlgPack/src/IVector.hpp"
+#include "LinAlgPack/src/Range1D.hpp"
 
 // Junk, test compilation
 //#include "MemMngPackDef.h"
 //MemMngPack::RefCount<double> ref1;
 
-//#include "SequentialAllocatorPack.h"
+//#include "SequentialAllocatorPack.hpp"
 //template SequentialAllocatorPack::SequentialAllocator<double>;
 
 // ///////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// LineSearch2ndOrderCorrect_Step.h
+// LineSearch2ndOrderCorrect_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,12 +17,12 @@
 #define LINE_SEARCH_2ND_ORDER_CORRECT_STEP_H
 
 #include "ReducedSpaceSQPPack/src/rSQPAlgo_StepBaseClasses.h"
-#include "FeasibilityStep_Strategy.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncNLP.h"
-#include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.h"
-#include "StandardCompositionMacros.h"
+#include "FeasibilityStep_Strategy.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
+#include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.hpp"
+#include "StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

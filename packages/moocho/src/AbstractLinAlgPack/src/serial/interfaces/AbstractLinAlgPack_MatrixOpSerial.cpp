@@ -17,22 +17,22 @@
 
 #include <typeinfo>
 
-#include "SparseLinAlgPack/src/MatrixWithOpSerial.h"
-#include "SparseLinAlgPack/src/VectorDenseEncap.h"
-#include "SparseLinAlgPack/src/VectorWithOpGetSparse.h"
-#include "SparseLinAlgPack/src/MatrixWithOpGetGMSMutable.h"
-#include "SparseLinAlgPack/src/MatrixWithOpGetGMSTri.h"
-#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.h"
-#include "AbstractLinAlgPack/src/EtaVector.h"
-#include "AbstractLinAlgPack/src/GenPermMatrixSlice.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "LinAlgPack/src/GenMatrixOut.h"
-#include "LinAlgPack/src/LinAlgPackAssertOp.h"
-#include "WorkspacePack.h"
-#include "dynamic_cast_verbose.h"
+#include "SparseLinAlgPack/src/MatrixWithOpSerial.hpp"
+#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "SparseLinAlgPack/src/VectorWithOpGetSparse.hpp"
+#include "SparseLinAlgPack/src/MatrixWithOpGetGMSMutable.hpp"
+#include "SparseLinAlgPack/src/MatrixWithOpGetGMSTri.hpp"
+#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
+#include "AbstractLinAlgPack/src/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "LinAlgPack/src/GenMatrixOut.hpp"
+#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "WorkspacePack.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StV;

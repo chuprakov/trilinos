@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// LinAlgOpPackDecl.h
+// LinAlgOpPackDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef ABSTRACT_LIN_ALG_OP_PACK_DECL_H
 #define ABSTRACT_LIN_ALG_OP_PACK_DECL_H
 
-#include "AbstractLinAlgPackTypes.h"
-#include "MatrixWithOpNonsingular.h"
-#include "VectorWithOpMutable.h"
-#include "VectorStdOps.h"
-#include "AbstractLinAlgPackAssertOp.h"
+#include "AbstractLinAlgPackTypes.hpp"
+#include "MatrixWithOpNonsingular.hpp"
+#include "VectorWithOpMutable.hpp"
+#include "VectorStdOps.hpp"
+#include "AbstractLinAlgPackAssertOp.hpp"
 
 namespace LinAlgOpPack {
 

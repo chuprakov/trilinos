@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// DampenCrossTermStd_Step.h
+// DampenCrossTermStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,7 +17,7 @@
 #define DAMPEN_CROSS_TERM_STD_STEP_H
 
 #include "../rSQPAlgo_Step.h"
-#include "StandardMemberCompositionMacros.h"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

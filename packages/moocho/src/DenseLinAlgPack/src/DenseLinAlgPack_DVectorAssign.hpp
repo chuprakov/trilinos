@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// VectorAssign.h
+// VectorAssign.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef VECTOR_ASSIGN_H
 #define VECTOR_ASSIGN_H
 
-#include "LinAlgPackTypes.h"
+#include "LinAlgPackTypes.hpp"
 
 namespace LinAlgPack {
 

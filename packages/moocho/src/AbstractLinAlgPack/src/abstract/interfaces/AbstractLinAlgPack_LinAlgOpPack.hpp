@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// LinAlgOpPack.h
+// LinAlgOpPack.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define ABSTRACT_LIN_ALG_OP_PACK_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "LinAlgOpPackDecl.h"
+#include "LinAlgOpPackDecl.hpp"
 #else
-#include "LinAlgOpPackDef.h"
+#include "LinAlgOpPackDef.hpp"
 #endif
 
 #endif // ABSTRACT_LIN_ALG_OP_PACK_H

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////
-// VectorWithOpMutableSubView.h
+// VectorWithOpMutableSubView.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef VECTOR_WITH_OP_MUTABLE_SUB_VIEW_H
 #define VECTOR_WITH_OP_MUTABLE_SUB_VIEW_H
 
-#include "VectorWithOpMutable.h"
-#include "VectorWithOpSubView.h"
+#include "VectorWithOpMutable.hpp"
+#include "VectorWithOpSubView.hpp"
 
 namespace AbstractLinAlgPack {
 

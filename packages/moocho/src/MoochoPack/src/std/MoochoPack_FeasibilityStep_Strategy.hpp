@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////
-// FeasibilityStep_Strategy.h
+// FeasibilityStep_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef FEASIBILITY_STEP_STRATEGY_H
 #define FEASIBILITY_STEP_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
 
 namespace ReducedSpaceSQPPack {
 

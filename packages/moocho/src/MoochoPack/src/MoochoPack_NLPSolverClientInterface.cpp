@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "ReducedSpaceSQPPack/src/rSQPSolverClientInterface.h"
-#include "GeneralIterationPack/src/AlgorithmTrack.h"
+#include "ReducedSpaceSQPPack/src/rSQPSolverClientInterface.hpp"
+#include "GeneralIterationPack/src/AlgorithmTrack.hpp"
 
 ReducedSpaceSQPPack::rSQPSolverClientInterface::rSQPSolverClientInterface(
 	int                      max_iter

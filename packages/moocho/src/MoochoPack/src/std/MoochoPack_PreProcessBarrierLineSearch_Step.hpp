@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// PreProcessBarrierLineSearch_Step.h
+// PreProcessBarrierLineSearch_Step.hpp
 //
 // Copyright (C) 2001
 //
@@ -18,14 +18,14 @@
 
 #include <list>
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_Step.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "ReducedSpaceSQPPack/src/std/LineSearchFilter_Step.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

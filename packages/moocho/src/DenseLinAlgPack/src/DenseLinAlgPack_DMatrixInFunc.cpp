@@ -15,10 +15,10 @@
 
 #include <sstream>
 
-#include "EatInputComment.h"
-#include "GenMatrixInFunc.h"
-#include "VectorInFunc.h"
-#include "GenMatrixClass.h"
+#include "EatInputComment.hpp"
+#include "GenMatrixInFunc.hpp"
+#include "VectorInFunc.hpp"
+#include "GenMatrixClass.hpp"
 
 namespace {	// Local inplementation
 std::istream& input_gms(std::istream& is, LinAlgPack::GenMatrixSlice* gms, const char func[]);

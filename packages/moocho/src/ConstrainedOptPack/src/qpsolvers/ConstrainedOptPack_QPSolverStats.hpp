@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// QPSolverStats.h
+// QPSolverStats.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef COP_QP_SOLVER_STATS_H
 #define COP_QP_SOLVER_STATS_H
 
-#include "ConstrainedOptimizationPackTypes.h"
+#include "ConstrainedOptimizationPackTypes.hpp"
 
 namespace ConstrainedOptimizationPack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////
-// LinAlgOpPackHack.h
+// LinAlgOpPackHack.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,8 +17,8 @@
 #ifndef LIN_ALG_OP_PACK_HACK_H
 #define LIN_ALG_OP_PACK_HACK_H
 
-#include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
 

@@ -17,11 +17,11 @@
 #include <iostream>
 #include <limits>
 
-#include "NLPInterfacePack/src/BarrierNLP.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
-#include "ThrowException.h"
+#include "NLPInterfacePack/src/BarrierNLP.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
+#include "ThrowException.hpp"
 
 namespace NLPInterfacePack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// DecompositionSystemHandler_Strategy.h
+// DecompositionSystemHandler_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef DECOMPOSITION_SYSTEM_HANDLER_STRATEGY_H
 #define DECOMPOSITION_SYSTEM_HANDLER_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/Algorithm.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/Algorithm.hpp"
 
 namespace ReducedSpaceSQPPack {
 

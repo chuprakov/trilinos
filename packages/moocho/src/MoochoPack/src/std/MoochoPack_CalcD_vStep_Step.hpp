@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CalcD_vStep_Step.h
+// CalcD_vStep_Step.hpp
 //
 // Copyright (C) 2001
 //
@@ -16,8 +16,8 @@
 #ifndef CALC_D_v_STEP_STEP_H
 #define CALC_D_v_STEP_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// extended_value_type.h
+// extended_value_type.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //

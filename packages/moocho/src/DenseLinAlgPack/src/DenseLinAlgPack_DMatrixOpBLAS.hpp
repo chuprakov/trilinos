@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// GenMatrixOpBLAS.h
+// GenMatrixOpBLAS.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef GENMATRIX_OP_BLAS_H
 #define GENMATRIX_OP_BLAS_H
 
-#include "GenMatrixClass.h"
-#include "BLAS_Cpp.h"
+#include "GenMatrixClass.hpp"
+#include "BLAS_Cpp.hpp"
 
 #endif // GENMATRIX_OP_BLAS_H

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixSymWithOpGetGMSSym.h
+// MatrixSymWithOpGetGMSSym.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef MATRIX_SYM_WITH_OP_GET_GMS_SYM_H
 #define MATRIX_SYM_WITH_OP_GET_GMS_SYM_H
 
-#include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
-#include "LinAlgPack/src/GenMatrixAsTriSym.h"
-#include "dynamic_cast_verbose.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixWithOpGetGMSMutable.h
+// MatrixWithOpGetGMSMutable.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_WITH_OP_GET_GMS_MUTABLE_H
 #define MATRIX_WITH_OP_GET_GMS_MUTABLE_H
 
-#include "SparseLinAlgPack/src/MatrixWithOpGetGMS.h"
+#include "SparseLinAlgPack/src/MatrixWithOpGetGMS.hpp"
 
 namespace SparseLinAlgPack {
 

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CheckDecompositionFromPy_Step.h
+// CheckDecompositionFromPy_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef CHECK_DECOMPOSITION_FROM_PY_STEP_H
 #define CHECK_DECOMPOSITION_FROM_PY_STEP_H
 
-#include "NewDecompositionSelection_Strategy.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "NewDecompositionSelection_Strategy.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

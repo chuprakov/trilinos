@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CalcReducedGradLagrangianStd_AddedStep.h
+// CalcReducedGradLagrangianStd_AddedStep.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef CALC_REDUCED_GRAD_LAGRANGIAN_STD_ADDED_STEP_H
 #define CALC_REDUCED_GRAD_LAGRANGIAN_STD_ADDED_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
 
 namespace ReducedSpaceSQPPack {
 

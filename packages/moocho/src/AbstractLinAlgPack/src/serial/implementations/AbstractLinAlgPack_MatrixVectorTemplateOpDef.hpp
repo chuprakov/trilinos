@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////
-// MatrixVectorTemplateOpDef.h
+// MatrixVectorTemplateOpDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 //
-// Definitions of template functions declared in MatrixVectorTemplateOp.h.
+// Definitions of template functions declared in MatrixVectorTemplateOp.hpp.
 
 #ifndef MATRIX_VECTOR_TEMPLATE_OP_DEF_H
 #define MATRIX_VECTOR_TEMPLATE_OP_DEF_H
 
-#include "MatrixVectorTemplateOp.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
+#include "MatrixVectorTemplateOp.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
 
 // ///////////////////////////////////
 // Matrix assignment

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////
-// DirectSparseSolver.h
+// DirectSparseSolver.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef	DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_H
 #define DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_H
 
-#include "SparseSolverPackTypes.h"
-#include "SparseLinAlgPack/src/MatrixConvertToSparse.h"
-#include "AbstractLinAlgPack/src/MatrixNonsingular.h"
-#include "ref_count_ptr.h"
-#include "AbstractFactory.h"
+#include "SparseSolverPackTypes.hpp"
+#include "SparseLinAlgPack/src/MatrixConvertToSparse.hpp"
+#include "AbstractLinAlgPack/src/MatrixNonsingular.hpp"
+#include "ref_count_ptr.hpp"
+#include "AbstractFactory.hpp"
 
 namespace SparseSolverPack {
 

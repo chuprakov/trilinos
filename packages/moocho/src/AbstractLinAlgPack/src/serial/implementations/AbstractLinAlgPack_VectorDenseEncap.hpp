@@ -1,12 +1,12 @@
 // /////////////////////////////////////////////////////////////////////
-// VectorDenseEncap.h
+// VectorDenseEncap.hpp
 
 #ifndef SLAP_VECTOR_DENSE_ENCAP_H
 #define SLAP_VECTOR_DENSE_ENCAP_H
 
-#include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "LinAlgPack/src/VectorClass.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
 
 namespace SparseLinAlgPack {
 

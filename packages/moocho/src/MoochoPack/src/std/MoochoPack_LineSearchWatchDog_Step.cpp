@@ -16,19 +16,19 @@
 #include <ostream>
 #include <typeinfo>
 
-#include "../std/LineSearchWatchDog_Step.h"
-#include "../std/rSQPAlgorithmStepNames.h"
-#include "../rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.h"
-#include "ConstrainedOptimizationPack/src/MeritFuncCalcNLP.h"
-#include "ConstrainedOptimizationPack/src/print_vector_change_stats.h"
+#include "../std/LineSearchWatchDog_Step.hpp"
+#include "../std/rSQPAlgorithmStepNames.hpp"
+#include "../rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalc1DQuadratic.hpp"
+#include "ConstrainedOptimizationPack/src/MeritFuncCalcNLP.hpp"
+#include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
-#include "SparseLinAlgPack/src/MatrixWithOp.h"
-#include "LinAlgPack/src/VectorClass.h"
-#include "LinAlgPack/src/VectorOp.h"
-#include "LinAlgPack/src/VectorOut.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
+#include "SparseLinAlgPack/src/MatrixWithOp.hpp"
+#include "LinAlgPack/src/VectorClass.hpp"
+#include "LinAlgPack/src/VectorOp.hpp"
+#include "LinAlgPack/src/VectorOut.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace {
 	const int NORMAL_LINE_SEARCH = -1;

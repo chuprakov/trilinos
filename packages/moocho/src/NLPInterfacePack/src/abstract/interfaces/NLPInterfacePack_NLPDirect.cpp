@@ -15,11 +15,11 @@
 
 #include <assert.h>
 
-#include "NLPInterfacePack/src/NLPFirstOrderDirect.h"
-#include "AbstractLinAlgPack/src/MatrixWithOp.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "Range1D.h"
-#include "ThrowException.h"
+#include "NLPInterfacePack/src/NLPFirstOrderDirect.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "Range1D.hpp"
+#include "ThrowException.hpp"
 
 namespace NLPInterfacePack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// MatrixSymWithOpGetGMSSymMutable.h
+// MatrixSymWithOpGetGMSSymMutable.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef MATRIX_SYM_WITH_OP_GET_GMS_SYM_MUTABLE_H
 #define MATRIX_SYM_WITH_OP_GET_GMS_SYM_MUTABLE_H
 
-#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSym.h"
+#include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSym.hpp"
 
 namespace SparseLinAlgPack {
 

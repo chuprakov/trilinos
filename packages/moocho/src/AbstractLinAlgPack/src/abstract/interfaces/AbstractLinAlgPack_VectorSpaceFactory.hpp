@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////
-// VectorSpaceFactory.h
+// VectorSpaceFactory.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef VECTOR_SPACE_FACTORY_H
 #define VECTOR_SPACE_FACTORY_H
 
-#include "AbstractLinAlgPackTypes.h"
-#include "ref_count_ptr.h"
+#include "AbstractLinAlgPackTypes.hpp"
+#include "ref_count_ptr.hpp"
 
 namespace AbstractLinAlgPack {
 

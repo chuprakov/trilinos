@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////
-// ConstraintsRelaxedStd.h
+// ConstraintsRelaxedStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <list>
 
-#include "QPSchur.h"
-#include "AbstractLinAlgPack/src/MatrixWithOp.h"
-#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.h"
+#include "QPSchur.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/VectorSpaceCompositeStd.hpp"
 
 namespace ConstrainedOptimizationPack {
 namespace QPSchurPack {

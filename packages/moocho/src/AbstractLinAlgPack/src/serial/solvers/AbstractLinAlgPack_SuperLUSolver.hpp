@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// SuperLUSolver.h
+// SuperLUSolver.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 #ifndef SSP_SUPERLU_SOLVER_H
 #define SSP_SUPERLU_SOLVER_H
 
-#include "ref_count_ptr.h"
+#include "ref_count_ptr.hpp"
 
 namespace SuperLUPack {
 

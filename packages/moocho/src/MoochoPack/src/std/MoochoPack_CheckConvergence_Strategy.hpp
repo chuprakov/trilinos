@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CheckConvergence_Strategy.h
+// CheckConvergence_Strategy.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef CHECK_CONVERGENCE_STRATEGY_H
 #define CHECK_CONVERGENCE_STRATEGY_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "StandardMemberCompositionMacros.h"
-#include "SetOptionsFromStreamNode.h"
-#include "SetOptionsToTargetBase.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "StandardMemberCompositionMacros.hpp"
+#include "SetOptionsFromStreamNode.hpp"
+#include "SetOptionsToTargetBase.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "LinAlgPack/src/PermVecMat.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "LinAlgPack/src/IVector.h"
+#include "LinAlgPack/src/PermVecMat.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "LinAlgPack/src/IVector.hpp"
 
 #ifdef _DEBUG   // Debug only!
 bool LinAlgPack::PermVecMat_print = false;
 #include <iostream>
-#include "LinAlgPack/src/PermOut.h"
-#include "LinAlgPack/src/VectorOut.h"
+#include "LinAlgPack/src/PermOut.hpp"
+#include "LinAlgPack/src/VectorOut.hpp"
 #endif
 
 // Local assert function

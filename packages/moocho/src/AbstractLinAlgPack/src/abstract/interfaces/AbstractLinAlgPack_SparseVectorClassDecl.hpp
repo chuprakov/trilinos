@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SparseVectorClassDecl.h
+// SparseVectorClassDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -21,8 +21,8 @@
 #include <vector>
 #include <sstream>
 
-#include "SpVecIndexLookupClass.h"
-#include "Range1D.h"
+#include "SpVecIndexLookupClass.hpp"
+#include "Range1D.hpp"
 
 namespace AbstractLinAlgPack {
 

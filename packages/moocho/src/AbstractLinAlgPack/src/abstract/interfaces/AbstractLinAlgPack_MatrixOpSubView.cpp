@@ -18,16 +18,16 @@
 #include <typeinfo>
 #include <stdexcept>
 
-#include "AbstractLinAlgPack/src/MatrixWithOpSubView.h"
-#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
-#include "AbstractLinAlgPack/src/VectorSpace.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "AbstractLinAlgPack/src/SpVectorView.h"
-#include "AbstractLinAlgPack/src/EtaVector.h"
-#include "AbstractLinAlgPack/src/LinAlgOpPack.h"
-#include "ref_count_ptr.h"
-#include "ThrowException.h"
+#include "AbstractLinAlgPack/src/MatrixWithOpSubView.hpp"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorSpace.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/SpVectorView.hpp"
+#include "AbstractLinAlgPack/src/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
+#include "ref_count_ptr.hpp"
+#include "ThrowException.hpp"
 
 namespace AbstractLinAlgPack {
 

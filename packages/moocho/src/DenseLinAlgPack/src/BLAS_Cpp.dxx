@@ -2,8 +2,8 @@
 @memo Basic C and C++ declarations needed for C++ to link to Fortran BLAS libraries.
 */
 //@{
-  //@Include: BLAS_CppTypes.h
-  //@Include: BLAS_Cpp.h
+  //@Include: BLAS_CppTypes.hpp
+  //@Include: BLAS_Cpp.hpp
 //@}
 
 

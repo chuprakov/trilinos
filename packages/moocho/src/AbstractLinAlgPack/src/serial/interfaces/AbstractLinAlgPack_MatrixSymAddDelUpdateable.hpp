@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// MatrixSymAddDelUpdateable.h
+// MatrixSymAddDelUpdateable.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MATRIX_SYM_ADD_DEL_UPDATEABLE_H
 #define MATRIX_SYM_ADD_DEL_UPDATEABLE_H
 
-#include "SparseLinAlgPackTypes.h"
-#include "AbstractLinAlgPack/src/MatrixBase.h"
+#include "SparseLinAlgPackTypes.hpp"
+#include "AbstractLinAlgPack/src/MatrixBase.hpp"
 
 namespace SparseLinAlgPack {
 

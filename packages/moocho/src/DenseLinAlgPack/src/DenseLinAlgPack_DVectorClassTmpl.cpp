@@ -15,8 +15,8 @@
 
 #include <iomanip>
 
-#include "LinAlgPack/src/VectorClassTmpl.h"
-#include "ThrowException.h"
+#include "LinAlgPack/src/VectorClassTmpl.hpp"
+#include "ThrowException.hpp"
 
 #ifdef LINALGPACK_CHECK_SLICE_SETUP
 LinAlgPack::size_type LinAlgPack::vector_validate_sized(size_type size)

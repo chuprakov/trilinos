@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// LinAlgPackInFormatDef.h
+// LinAlgPackInFormatDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,7 +20,7 @@
 
 #include <istream>
 
-#include "LinAlgPackInFormatDecl.h"
+#include "LinAlgPackInFormatDecl.hpp"
 
 namespace LinAlgPack {
 

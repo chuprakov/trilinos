@@ -16,7 +16,7 @@
 
 #include <iomanip>
 
-#include "GenMatrixClass.h"
+#include "GenMatrixClass.hpp"
 
 namespace LinAlgPack {
 

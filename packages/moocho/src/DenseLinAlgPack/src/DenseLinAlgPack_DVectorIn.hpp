@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// VectorIn.h
+// VectorIn.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef VECTORIN_H
 #define VECTORIN_H
 
-#include "VectorInFunc.h"
+#include "VectorInFunc.hpp"
 
 namespace LinAlgPack {
 

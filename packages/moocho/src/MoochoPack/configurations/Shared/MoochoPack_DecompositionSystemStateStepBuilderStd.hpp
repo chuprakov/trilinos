@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////
-// DecompositionSystemStateStepBuilderStd.h
+// DecompositionSystemStateStepBuilderStd.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef DECOMPOSITION_SYSTEM_STATE_STEP_BUILDER_STD_H
 #define DECOMPOSITION_SYSTEM_STATE_STEP_BUILDER_STD_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-#include "AbstractLinAlgPack/src/BasisSystemPerm.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
+#include "AbstractLinAlgPack/src/BasisSystemPerm.hpp"
 #endif
-#include "ReducedSpaceSQPPack/src/std/NewDecompositionSelection_Strategy.h"
+#include "ReducedSpaceSQPPack/src/std/NewDecompositionSelection_Strategy.hpp"
 
 namespace OptionsFromStreamPack {
 	class OptionsFromStream;
@@ -171,7 +171,7 @@ private:
 	SOptionValues       uov_; // options set by user
 	SOptionValues       cov_; // current option values actually used
 
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
+#ifndef MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS
 	MemMngPack::ref_count_ptr<BasisSystemPerm> basis_sys_perm_;
 #endif
 

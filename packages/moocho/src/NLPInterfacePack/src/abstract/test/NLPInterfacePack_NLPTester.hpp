@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////
-// NLPTester.h
+// NLPTester.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,8 +18,8 @@
 
 #include <iosfwd>
 
-#include "NLPInterfacePack/src/NLPInterfacePackTypes.h"
-#include "StandardMemberCompositionMacros.h"
+#include "NLPInterfacePack/src/NLPInterfacePackTypes.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace NLPInterfacePack {
 
@@ -35,12 +35,12 @@ namespace NLPInterfacePack {
 class NLPTester {
 public:
 
-	/// Members for option \c print_all() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c print_all() (see StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_all )
 #ifdef DOXYGEN_COMPILE
 		;
 #endif		
-	/// Members for option \c throw_exception() (see StandardMemberCompositionMacros.h).
+	/// Members for option \c throw_exception() (see StandardMemberCompositionMacros.hpp).
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, throw_exception )
 #ifdef DOXYGEN_COMPILE
 		;

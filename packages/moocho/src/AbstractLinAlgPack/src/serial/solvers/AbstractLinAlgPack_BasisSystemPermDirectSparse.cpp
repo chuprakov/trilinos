@@ -13,18 +13,18 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "SparseSolverPack/src/BasisSystemPermDirectSparse.h"
-#include "SparseLinAlgPack/src/PermutationSerial.h"
-#include "SparseLinAlgPack/src/MatrixConvertToSparseEncap.h"
-#include "SparseLinAlgPack/src/MatrixExtractSparseElements.h"
-#include "SparseLinAlgPack/src/MatrixSymPosDefCholFactor.h"
-#include "AbstractLinAlgPack/src/MatrixWithOp.h"
-#include "AbstractLinAlgPack/src/MatrixWithOpNonsingularAggr.h"
-#include "AbstractLinAlgPack/src/MatrixPermAggr.h"
-#include "SparseLinAlgPack/src/MultiVectorMutableDense.h"
-#include "AbstractFactoryStd.h"
-#include "ThrowException.h"
-#include "dynamic_cast_verbose.h"
+#include "SparseSolverPack/src/BasisSystemPermDirectSparse.hpp"
+#include "SparseLinAlgPack/src/PermutationSerial.hpp"
+#include "SparseLinAlgPack/src/MatrixConvertToSparseEncap.hpp"
+#include "SparseLinAlgPack/src/MatrixExtractSparseElements.hpp"
+#include "SparseLinAlgPack/src/MatrixSymPosDefCholFactor.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
+#include "AbstractLinAlgPack/src/MatrixWithOpNonsingularAggr.hpp"
+#include "AbstractLinAlgPack/src/MatrixPermAggr.hpp"
+#include "SparseLinAlgPack/src/MultiVectorMutableDense.hpp"
+#include "AbstractFactoryStd.hpp"
+#include "ThrowException.hpp"
+#include "dynamic_cast_verbose.hpp"
 
 namespace SparseSolverPack {
 

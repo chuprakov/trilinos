@@ -17,21 +17,21 @@
 
 #include <vector>
 
-#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPKWIK.h"
-#include "AbstractLinAlgPack/src/SpVectorClass.h"
-#include "AbstractLinAlgPack/src/MatrixSymWithOp.h"
-#include "AbstractLinAlgPack/src/EtaVector.h"
-#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.h"
-#include "SparseLinAlgPack/src/MatrixExtractInvCholFactor.h"
-#include "SparseLinAlgPack/src/SortByDescendingAbsValue.h"
-#include "SparseLinAlgPack/src/VectorDenseEncap.h"
-#include "SparseLinAlgPack/src/LinAlgOpPackHack.h"
-#include "SparseLinAlgPack/src/LinAlgOpPack.h"
-#include "SparseLinAlgPack/src/sparse_bounds.h"
-#include "SparseLinAlgPack/src/SpVectorOp.h"
-#include "LinAlgPack/src/LinAlgOpPack.h"
-#include "dynamic_cast_verbose.h"
-#include "ThrowException.h"
+#include "ConstrainedOptimizationPack/src/QPSolverRelaxedQPKWIK.hpp"
+#include "AbstractLinAlgPack/src/SpVectorClass.hpp"
+#include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
+#include "AbstractLinAlgPack/src/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
+#include "SparseLinAlgPack/src/MatrixExtractInvCholFactor.hpp"
+#include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
+#include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
+#include "SparseLinAlgPack/src/LinAlgOpPackHack.hpp"
+#include "SparseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "SparseLinAlgPack/src/sparse_bounds.hpp"
+#include "SparseLinAlgPack/src/SpVectorOp.hpp"
+#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "ThrowException.hpp"
 
 namespace QPKWIKNEW_CppDecl {
 

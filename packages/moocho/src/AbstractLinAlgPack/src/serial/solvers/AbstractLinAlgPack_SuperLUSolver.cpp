@@ -19,10 +19,10 @@
 #include <valarray>
 #include <stdexcept>
 
-#include "SparseSolverPack/src/SuperLUSolver.h"
-#include "dynamic_cast_verbose.h"
-#include "WorkspacePack.h"
-#include "ThrowException.h"
+#include "SparseSolverPack/src/SuperLUSolver.hpp"
+#include "dynamic_cast_verbose.hpp"
+#include "WorkspacePack.hpp"
+#include "ThrowException.hpp"
 
 // SuperLU
 #include "dsp_defs.h"

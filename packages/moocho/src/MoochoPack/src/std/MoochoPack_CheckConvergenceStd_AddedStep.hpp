@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// CheckConvergenceStd_AddedStep.h
+// CheckConvergenceStd_AddedStep.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #ifndef CHECK_CONVERGENCE_STD_ADDEDSTEP_H
 #define CHECK_CONVERGENCE_STD_ADDEDSTEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
-#include "StandardCompositionMacros.h"
-#include "CheckConvergence_Strategy.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "CheckConvergence_Strategy.hpp"
 
 namespace ReducedSpaceSQPPack {
 

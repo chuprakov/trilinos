@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////////
-// VectorClassTmpl.h
+// VectorClassTmpl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <vector>
 
-#include "LinAlgPack/src/LinAlgPackTypes.h"
-#include "Range1D.h"
-#include "StrideIter.h"
+#include "LinAlgPack/src/LinAlgPackTypes.hpp"
+#include "Range1D.hpp"
+#include "StrideIter.hpp"
 
 namespace LinAlgPack{
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////
-// sparse_bounds_diff.h
+// sparse_bounds_diff.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,7 +16,7 @@
 #ifndef SPARSE_BOUNDS_DIFF_H
 #define SPARSE_BOUNDS_DIFF_H
 
-#include "SparseLinAlgPackTypes.h" 
+#include "SparseLinAlgPackTypes.hpp" 
 
 namespace SparseLinAlgPack {
 

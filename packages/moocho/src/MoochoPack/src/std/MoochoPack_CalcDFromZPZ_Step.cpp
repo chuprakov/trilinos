@@ -16,11 +16,11 @@
 #include <limits>
 #include <ostream>
 
-#include "ReducedSpaceSQPPack/src/std/CalcDFromZPZ_Step.h"
-#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.h"
-#include "GeneralIterationPack/src/print_algorithm_step.h"
-#include "AbstractLinAlgPack/src/VectorWithOpMutable.h"
-#include "AbstractLinAlgPack/src/VectorWithOpOut.h"
+#include "ReducedSpaceSQPPack/src/std/CalcDFromZPZ_Step.hpp"
+#include "ReducedSpaceSQPPack/src/rsqp_algo_conversion.hpp"
+#include "GeneralIterationPack/src/print_algorithm_step.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOpOut.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////
-// PBFGS_helpers.h
+// PBFGS_helpers.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef PBFGS_HELPERS
 #define PBFGS_HELPERS
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "ReducedSpaceSQPPack/src/std/ActSetStats.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "ReducedSpaceSQPPack/src/std/ActSetStats.hpp"
 
 namespace ReducedSpaceSQPPack {
 namespace PBFGSPack {

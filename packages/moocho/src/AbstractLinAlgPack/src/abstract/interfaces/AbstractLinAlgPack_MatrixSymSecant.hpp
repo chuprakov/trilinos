@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixSymSecantUpdateable.h
+// MatrixSymSecantUpdateable.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,7 +18,7 @@
 
 #include <stdexcept>
 
-#include "MatrixSymInitDiagonal.h"
+#include "MatrixSymInitDiagonal.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////
-// MeritFuncCalcNLP.h
+// MeritFuncCalcNLP.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef MERIT_FUNC_CALC_NLP_H
 #define MERIT_FUNC_CALC_NLP_H
 
-#include "MeritFuncCalc.h"
-#include "MeritFuncNLP.h"
-#include "StandardAggregationMacros.h"
+#include "MeritFuncCalc.hpp"
+#include "MeritFuncNLP.hpp"
+#include "StandardAggregationMacros.hpp"
 
 namespace ConstrainedOptimizationPack {
 

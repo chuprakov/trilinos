@@ -16,9 +16,9 @@
 #include <ostream>
 #include <iomanip>
 
-#include "GenMatrixOutFunc.h"
-#include "VectorOutFunc.h"
-#include "GenMatrixClass.h"
+#include "GenMatrixOutFunc.hpp"
+#include "VectorOutFunc.hpp"
+#include "GenMatrixClass.hpp"
 
 std::ostream& LinAlgPack::output(std::ostream& os, const GenMatrixSlice& gms
 	, LinAlgPackIO::fmtflags extra_flags )

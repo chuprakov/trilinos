@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// EvalNewPointStd_Step.h
+// EvalNewPointStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,13 +16,13 @@
 #ifndef EVAL_NEW_POINT_STD_STEP_H
 #define EVAL_NEW_POINT_STD_STEP_H
 
-#include "DecompositionSystemHandler_Strategy.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
-#include "ConstrainedOptimizationPack/src/DecompositionSystemTester.h"
-#include "ConstrainedOptimizationPack/src/VariableBoundsTester.h"
-#include "NLPInterfacePack/test/NLPFirstDerivativesTester.h"
-#include "StandardCompositionMacros.h"
-#include "StandardMemberCompositionMacros.h"
+#include "DecompositionSystemHandler_Strategy.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
+#include "ConstrainedOptimizationPack/src/DecompositionSystemTester.hpp"
+#include "ConstrainedOptimizationPack/src/VariableBoundsTester.hpp"
+#include "NLPInterfacePack/test/NLPFirstDerivativesTester.hpp"
+#include "StandardCompositionMacros.hpp"
+#include "StandardMemberCompositionMacros.hpp"
 
 namespace ReducedSpaceSQPPack {
 

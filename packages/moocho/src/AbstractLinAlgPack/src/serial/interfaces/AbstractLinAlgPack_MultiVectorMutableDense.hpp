@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////
-// MultiVectorMutableDense.h
+// MultiVectorMutableDense.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef MULTI_VECTOR_MUTABLE_DENSE_H
 #define MULTI_VECTOR_MUTABLE_DENSE_H
 
-#include "MatrixWithOpSerial.h"
-#include "MatrixWithOpGetGMSMutable.h"
-#include "AbstractLinAlgPack/src/MultiVectorMutable.h"
-#include "LinAlgPack/src/GenMatrixClass.h"
-#include "ReleaseResource.h"
+#include "MatrixWithOpSerial.hpp"
+#include "MatrixWithOpGetGMSMutable.hpp"
+#include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
+#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "ReleaseResource.hpp"
 
 namespace SparseLinAlgPack {
 

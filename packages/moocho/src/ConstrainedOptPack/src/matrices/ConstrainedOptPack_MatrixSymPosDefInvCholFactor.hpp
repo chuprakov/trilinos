@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MatrixSymPosDefInvCholFactor.h
+// MatrixSymPosDefInvCholFactor.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #ifndef MATRIX_SYM_POS_DEF_INV_CHOL_FACTOR_H
 #define MATRIX_SYM_POS_DEF_INV_CHOL_FACTOR_H
 
-#include "SymInvCholMatrixClass.h"
-#include "MatrixSymSecantUpdateable.h"
-#include "MatrixExtractInvCholFactor.h"
-#include "SparseLinAlgPack/src/MatrixWithOpConcreteEncap.h"
-#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.h"
+#include "SymInvCholMatrixClass.hpp"
+#include "MatrixSymSecantUpdateable.hpp"
+#include "MatrixExtractInvCholFactor.hpp"
+#include "SparseLinAlgPack/src/MatrixWithOpConcreteEncap.hpp"
+#include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
 
 namespace ConstrainedOptimizationPack {
 

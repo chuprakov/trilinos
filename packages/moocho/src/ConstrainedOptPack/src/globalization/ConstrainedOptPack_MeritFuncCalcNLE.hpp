@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// MeritFuncCalcNLE.h
+// MeritFuncCalcNLE.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef MERIT_FUNC_CALC_NLE_H
 #define MERIT_FUNC_CALC_NLE_H
 
-#include "MeritFuncCalc.h"
-#include "MeritFuncNLE.h"
+#include "MeritFuncCalc.hpp"
+#include "MeritFuncNLE.hpp"
 #include "MiStandardAggregationMacros.h"
 
 namespace ConstrainedOptimizationPack {

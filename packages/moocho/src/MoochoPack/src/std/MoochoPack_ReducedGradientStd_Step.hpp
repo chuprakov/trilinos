@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// ReducedGradientStd_Step.h
+// ReducedGradientStd_Step.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef REDUCED_GRADIENT_STD_STEP_H
 #define REDUCED_GRADIENT_STD_STEP_H
 
-#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.h"
-#include "GeneralIterationPack/src/AlgorithmStep.h"
+#include "ReducedSpaceSQPPack/src/ReducedSpaceSQPPackTypes.hpp"
+#include "GeneralIterationPack/src/AlgorithmStep.hpp"
 
 namespace ReducedSpaceSQPPack {
 

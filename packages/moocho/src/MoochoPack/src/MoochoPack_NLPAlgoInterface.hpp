@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////
-// rSQPAlgoInterface.h
+// rSQPAlgoInterface.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef RSQP_ALGO_INTERFACE_H
 #define RSQP_ALGO_INTERFACE_H
 
-#include "ReducedSpaceSQPPackTypes.h"
-#include "rSQPSolverClientInterface.h"
+#include "ReducedSpaceSQPPackTypes.hpp"
+#include "rSQPSolverClientInterface.hpp"
 
 namespace ReducedSpaceSQPPack {
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// SpVecIndexLookupClassDef.h
+// SpVecIndexLookupClassDef.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,8 +16,8 @@
 #ifndef SP_VEC_INDEX_LOOKUP_CLASS_DEF_H
 #define SP_VEC_INDEX_LOOKUP_CLASS_DEF_H
 
-#include "SpVecIndexLookupClassDecl.h"
-#include "compare_element_indexes.h"
+#include "SpVecIndexLookupClassDecl.hpp"
+#include "compare_element_indexes.hpp"
 
 // /////////////////////////////////////////////////////////////////////////////////////
 // Definitions of members for SpVecIndexLookup<>

@@ -17,9 +17,9 @@
 #include <limits>
 #include <ostream>
 
-#include "SparseLinAlgPack/src/BFGS_helpers.h"
-#include "AbstractLinAlgPack/src/VectorWithOp.h"
-#include "AbstractLinAlgPack/src/VectorStdOps.h"
+#include "SparseLinAlgPack/src/BFGS_helpers.hpp"
+#include "AbstractLinAlgPack/src/VectorWithOp.hpp"
+#include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 
 bool SparseLinAlgPack::BFGS_sTy_suff_p_d(
 	const VectorWithOp    &s
