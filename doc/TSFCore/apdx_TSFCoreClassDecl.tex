@@ -28,35 +28,21 @@ public:
   virtual bool isCompatible( const VectorSpace<Scalar>& vecSpc ) const = 0;
   virtual Teuchos::RefCountPtr< Vector<Scalar> > createMember() const = 0;
   virtual bool isInCore() const;
-  virtual Teuchos::RefCountPtr< const VectorSpaceFactory<Scalar> > smallVecSpcFcty() const;
   virtual Teuchos::RefCountPtr< MultiVector<Scalar> > createMembers(int numMembers) const;
+  virtual Teuchos::RefCountPtr<Vector<Scalar> > createMemberView(
+            const RTOpPack::MutableSubVectorT<Scalar> &raw_v ) const;
+  virtual Teuchos::RefCountPtr<const Vector<Scalar> > createMemberView(
+            const RTOpPack::SubVectorT<Scalar> &raw_v ) const;
+  virtual Teuchos::RefCountPtr<MultiVector<Scalar> > createMembersView(
+            const RTOpPack::MutableSubMultiVectorT<Scalar> &raw_mv ) const;
+  virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > createMembersView(
+            const RTOpPack::SubMultiVectorT<Scalar> &raw_mv ) const;
+  virtual Teuchos::RefCountPtr< const VectorSpaceFactory<Scalar> > smallVecSpcFcty() const;
   virtual Scalar scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const;
   virtual void scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y
     ,Scalar scalar_prods[] ) const;
   virtual Teuchos::RefCountPtr< const VectorSpace<Scalar> > clone() const;
 };
-
-template<class Scalar>
-class Vector {
-public:
-  virtual ~Vector() {}
-  virtual Teuchos::RefCountPtr< const VectorSpace<Scalar> > space() const = 0;
-  virtual void applyOp( const RTOpPack::RTOpT<Scalar> &op, const size_t num_vecs
-    ,const Vector<Scalar>* vecs[], const size_t num_targ_vecs ,Vector<Scalar>* targ_vecs[]
-    ,RTOpPack::ReductTarget *reduct_obj ,const Index first_ele ,const Index sub_dim
-    ,const Index global_offset ) const = 0;
-  virtual void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
-  virtual void freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
-  virtual void getSubVector( const Range1D& rng, RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
-  virtual void commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
-  virtual void setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub_vec );
-};
-
-template<class Scalar>
-void applyOp( const RTOpPack::RTOpT<Scalar> &op, const size_t num_vecs
-    ,const Vector<Scalar>* vecs[], const size_t num_targ_vecs ,Vector<Scalar>* targ_vecs[]
-    ,RTOpPack::ReductTarget *reduct_obj ,const Index first_ele=1 ,const Index sub_dim=0
-    ,const Index global_offset=0 );
 
 template<class Scalar>
 class OpBase {
@@ -108,6 +94,30 @@ public:
     ,const Scalar beta ) const;
   Teuchos::RefCountPtr<const LinearOp<Scalar> > clone() const;
 };
+
+template<class Scalar>
+class Vector : virtual public MultiVector<Scalar> {
+public:
+  virtual ~Vector() {}
+  virtual Teuchos::RefCountPtr< const VectorSpace<Scalar> > space() const = 0;
+  virtual void applyOp( const RTOpPack::RTOpT<Scalar> &op, const size_t num_vecs
+    ,const Vector<Scalar>* vecs[], const size_t num_targ_vecs ,Vector<Scalar>* targ_vecs[]
+    ,RTOpPack::ReductTarget *reduct_obj ,const Index first_ele ,const Index sub_dim
+    ,const Index global_offset ) const = 0;
+  virtual void getSubVector( const Range1D& rng, RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
+  virtual void freeSubVector( RTOpPack::SubVectorT<Scalar>* sub_vec ) const;
+  virtual void getSubVector( const Range1D& rng, RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
+  virtual void commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_vec );
+  virtual void setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub_vec );
+  // Multi-vector overrides
+  ...
+};
+
+template<class Scalar>
+void applyOp( const RTOpPack::RTOpT<Scalar> &op, const size_t num_vecs
+    ,const Vector<Scalar>* vecs[], const size_t num_targ_vecs ,Vector<Scalar>* targ_vecs[]
+    ,RTOpPack::ReductTarget *reduct_obj ,const Index first_ele=1 ,const Index sub_dim=0
+    ,const Index global_offset=0 );
 
 template<class Scalar>
 void applyOp( const RTOpPack::RTOpT<Scalar> &primary_op, const size_t num_multi_vecs
