@@ -10,11 +10,21 @@
 extern "C" {
 #endif
 
-/** @name Evaluate the constraints for the NLP.
+/** \defgroup explnlp2_ops_grp Reduction/Transformation operators for example NLP subclass.
  *
- * This operator is only admits dense vectors.
+ * These operator classes are used in the implementation of
+ * <tt>\ref NLPInterfacePack::ExampleNLPFirstOrderDirect "ExampleNLPFirstOrderDirect"</tt>.
+ * The binary code for these RTOp operator classes (as well as any others) must be loaded into
+ * runtime environment in any process where a vector implementation must apply it.
+ */
+//@{
+
+/** \defgroup explnlp2_eval_grp Evaluate the constraints for the example NLP.
  *
- * @memo #z[0](i) <- v[0](i) * (v[1](i) - 1) - 10 * v[1](i), for i = 1...n#
+ * <tt>z[0](i) <- v[0](i) * (v[1](i) - 1) - 10 * v[1](i), for i = 1...n</tt>
+ *
+ * This operator is only admits dense vectors and is only defined for <tt>num_vecs == 2</tt>
+ * and <tt>num_targ_vecs == 1</tt>.
  */
 //@{
 
@@ -32,10 +42,11 @@ int RTOp_TOp_explnlp2_c_eval_destroy( struct RTOp_RTOp* op );
 
 //@}
 
-/** @name Evaluate py = -inv(C)*c and/or D = inv(C)*N for the NLP.
+/** \defgroup explnlp2_calc_py_D_grp Evaluate py = -inv(C)*c and/or D = inv(C)*N for the example %NLP.
  *
  * This operator performs the following:
- \begin{verbatim}
+ \verbatim
+
  task = 0 (py only, num_vecs = 2, num_targ_vecs = 1):
      py(i) <- c(i) / ( 1.0 - xD(i) ), i = 1...n
      where: xD = vec[0], c = vec[1], py = targ_vec[0]
@@ -46,7 +57,7 @@ int RTOp_TOp_explnlp2_c_eval_destroy( struct RTOp_RTOp* op );
      py(i) = c(i) / ( 1.0 - xD(i) ), i = 1...n
      d(i) = (xI(i) - 10.0) / (1.0 - xD(i)), i = 1...n
      where: xD = vec[0], xI = vec[1], c = vec[2], d = targ_vec[0], py = targ_vec[1]
- \end{verbatim}
+ \endverbatim
  */
 //@{
 
@@ -64,6 +75,8 @@ int RTOp_TOp_explnlp2_calc_py_D_set_task( int task, struct RTOp_RTOp* op );
 
 /// Destructor
 int RTOp_TOp_explnlp2_calc_py_D_destroy( struct RTOp_RTOp* op );
+
+//@}
 
 //@}
 

@@ -26,8 +26,7 @@
 #include <iostream>
 #include <iomanip>
 
-#include "ExampleNLPFirstOrderDirect.h"
-#include "NLPInterfacePack/test/test_nlp_first_order_direct.h"
+#include "ExampleNLPFirstOrderDirectRun.h"
 #include "ExampleVectorLib/include/MPIDenseVector.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "OptionsFromStream.h"
@@ -44,7 +43,6 @@ int main(int argc, char* argv[] ) {
 	typedef AbstractLinAlgPack::size_type size_type;
 	typedef AbstractLinAlgPack::value_type value_type;
 	namespace NLPIP = NLPInterfacePack;
-	using NLPIP::ExampleNLPFirstOrderDirect;
 
 	using AbstractLinAlgPack::VectorSpace;
 	using AbstractLinAlgPack::VectorWithOp;
@@ -124,10 +122,6 @@ int main(int argc, char* argv[] ) {
 		<< "*** Running Tests on Example First Order Dirrect NLP ***\n"
 		<< "********************************************************\n";
 
-	// Read in the options
-	std::ifstream      options_in_file("ExampleNLPFirstOrderDirectMain.opt");	
-	OptionsFromStream  options(options_in_file);
-
 	// Create the vector space object to use.
 	VectorSpace::space_ptr_t    vec_space;
 
@@ -150,14 +144,11 @@ int main(int argc, char* argv[] ) {
 			new MPIDenseVectorSpace(MPI_COMM_WORLD,&ind_map[0],1,n)
 			)
 		);
-	
-	// Create the nlp
-	ExampleNLPFirstOrderDirect
-		nlp(vec_space,xo,has_bounds,dep_bounded);
 
-	// Test the NLPFirstOrderDirect interface!
+	// Create and test the NLP using this vector space object
 	const bool
-		result = NLPInterfacePack::test_nlp_first_order_direct(&nlp,&options,&out);
+		result = NLPIP::ExampleNLPFirstOrderDirectRun(
+			*vec_space, xo, has_bounds, dep_bounded, &out );
 	if(!result)
 		prog_return = PROG_NLP_TEST_ERR;
 

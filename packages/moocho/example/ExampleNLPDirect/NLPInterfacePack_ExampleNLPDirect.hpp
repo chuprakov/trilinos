@@ -24,62 +24,86 @@
 namespace NLPInterfacePack {
 
 ///
-/** Simple example NLP to illustrate how to implement the
- * \Ref{NLPFirstOrderDirect) interface for a specialized NLP.
-  *
-  * The example NLP we will use is a scalable problem where
-  * the basis of the jacobian of the constraints is a diagonal
-  * matrix.
-  * 
-  * min    f(x) = (1/2) * sum( x(i)^2, for i = 1..n )
-  * s.t.   c(x)(j) = x(j) * (x(m+j) -1) - 10 * x(m+j) = 0, for j = 1..m
-  *        0.01 < x(i) < 20, for i = p...p+m
-  *
-  *	where:
-  *		m = n/2
-  *		p = 1 if dep_bounded == true or m+1 if dep_bounded = false
-  *
-  * In this NLP we will select the first n/2 variables as the dependent
-  * or basis variables.  Note that the variable bounds are on the dependent
-  * or independent variables variables if has_bounds = true.  Otherwise
-  * there are no variable bounds.  Also the starting point can be
-  * varied.
-  *
-  * The implementation of this NLP class is actually independent from the vector
-  * space for the dependent and independent variables (same vector space).
-  *
-  * The rSQP algorithm needs:
-  *
-  * py = -inv(C)*c
-  * 
-  *	D = -inv(C)*N
-  *
-  *	where:
-  *
-  *  Gc' = [ C , N ]
-  *
-  *		[ x(m+1) - 1									]
-  *		[				x(m+2) - 1						]
-  *	C = [							.					]
-  *		[								.				]
-  *		[									x(m+m) - 1	]
-  *
-  *
-  *		[ x(1) - 10										]
-  *		[				x(2) - 10						]
-  *	N = [							.					]
-  *		[								.				]
-  *		[									x(m) - 10	]
-  *
-  * 
-  * Here Gc is never computed explicitly.
-  */
+/** Simple example %NLP subclass to illustrate how to implement the
+ * \c NLPFirstOrderDirect interface for a specialized \c NLP.
+ *
+ * The example %NLP we will use is a scalable problem where
+ * the basis of the jacobian of the constraints is a diagonal
+ * matrix.
+ \verbatim
+
+    min    f(x) = (1/2) * sum( x(i)^2, for i = 1..n )
+    s.t.   c(x)(j) = x(j) * (x(m+j) -1) - 10 * x(m+j) = 0, for j = 1..m
+          0.01 < x(i) < 20, for i = p...p+m
+
+    where:
+        m = n/2
+        p = 1 if dep_bounded == true or m+1 if dep_bounded = false
+ \endverbatim
+ * In this %NLP we will select the first <tt>n/2</tt> variables as the dependent
+ * or basis variables.  Note that the variable bounds are on the dependent
+ * or independent variables variables if has_bounds = true.  Otherwise
+ * there are no variable bounds.  Also the starting point can be
+ * varied.
+ *
+ * The implementation of this %NLP subclass is actually independent from the vector
+ * space for the dependent and independent variables (same vector space).
+ * This implementation is defined entirely based on an arbitrary
+ * <tt>VectorSpace</tt> object that is passed to the constructor
+ * \c ExampleNLPFirstOrderDirect().  This %NLP subclass uses a
+ * <tt>\ref AbstractLinAlgPack::VectorSpaceCompositeStd "VectorSpaceCompositeStd"</tt>
+ * object to represent the space for <tt>[ x_dep; x_indep ]</tt>
+ *
+ * The quantities computed by this subclass include:
+ \verbatim
+
+  py = -inv(C)*c
+   
+  D = -inv(C)*N
+  
+  where:
+  
+    Gc' = [ C , N ]
+  
+  		[ x(m+1) - 1									]
+  		[				x(m+2) - 1						]
+  	C = [							.					]
+  		[								.				]
+  		[									x(m+m) - 1	]
+  
+  
+  		[ x(1) - 10										]
+  		[				x(2) - 10						]
+  	N = [							.					]
+  		[								.				]
+  		[									x(m) - 10	]
+  
+ \endverbatim 
+ * Here \c Gc is never computed explicitly.
+ *
+ * To make this possible this subclass relies on some specialized RTOp operators which
+ * are implemented in C (for portability).  These operator classes are declared in the header
+ * file <tt>ExampleNLPFirstOrderDirect.h</tt> and are documented \ref explnlp2_ops_grp "here".
+ */
 class ExampleNLPFirstOrderDirect
 	: public NLPFirstOrderDirect
 {
 public:
 
-	// Constructor.
+	///
+	/** Constructor.
+	 *
+	 * @param  vec_space  [in] Smart pointer to a vector space object that will
+	 *                    be used to define the spaces of dependent and independent
+	 *                    variables.
+	 * @param  xo         [in] The initial starting guess for \a x.
+	 * @param  has_bounds [in] If \c true, then the NLP will have bounds.  If \c false
+	 *                    then it will not have bounds.
+	 * @param  dep_bouned [in] If \c true, then the bounds will be on the dependent
+	 *                    variables.  If \c false, then the bounds will be on the
+	 *                    independent variable.  This argument is ignored if
+	 *                    <tt>has_bounds == false</tt>.
+	 */
 	ExampleNLPFirstOrderDirect(
 		const VectorSpace::space_ptr_t&  vec_space
 		,value_type                      xo
@@ -87,8 +111,8 @@ public:
 		,bool                            dep_bounded
 		);
 
-	// ///////////////////////////////////////
-	// Overridden public members from NLP
+	/** @name Overridden public members from NLP */
+	//@{
 
 	///
 	void initialize();
@@ -127,8 +151,10 @@ public:
 		,bool                  optimal
 		) const;
 
-	// ///////////////////////////////////////////////////
-	// Overridden public members from NLPFirstOrderDirect
+	//@}
+
+	/** @name Overridden public members from NLPFirstOrderDirect */
+	//@{
 
 	///
 	const mat_space_ptr_t& space_D() const;
@@ -156,24 +182,34 @@ public:
 		,VectorWithOpMutable  *py
 		) const;
 
+	//@}
+
 protected:
 
-	// ////////////////////////////////////////
-	// Overridden protected members from NLP
+
+	/** @name Overridden protected members from NLP */
+	//@{
 
 	///
-	void imp_calc_f(const VectorWithOp& x, bool newx
-		, const ZeroOrderInfo& zero_order_info) const;
+	void imp_calc_f(
+		const VectorWithOp& x, bool newx
+		,const ZeroOrderInfo& zero_order_info) const;
 	///
-	void imp_calc_c(const VectorWithOp& x, bool newx
-		, const ZeroOrderInfo& zero_order_info) const;
+	void imp_calc_c(
+		const VectorWithOp& x, bool newx
+		,const ZeroOrderInfo& zero_order_info) const;
 
-	// /////////////////////////////////////////////////////////
-	// Overridden protected members from NLPObjGradient
+	//@}
+
+	/** @name Overridden protected members from NLPObjGradient */
+	//@{
 
 	///
-	void imp_calc_Gf(const VectorWithOp& x, bool newx
-		, const ObjGradInfo& obj_grad_info) const;
+	void imp_calc_Gf(
+		const VectorWithOp& x, bool newx
+		,const ObjGradInfo& obj_grad_info) const;
+
+	//@}
 
 private:
 
