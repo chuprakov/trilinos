@@ -44,6 +44,17 @@
 namespace TSFCore {
 namespace Nonlin {
 
+template<class T>
+void my_sad_swap( T &t1, T &t2 ) {
+	// RAB: 05/03/2004: Replaced HKT's incode swap to call this function.
+	// ToDo: Once std::swap<> is supported get rid of this function.
+	T t_tmp;
+	t_tmp = t1;
+	t1 = t2;
+	t2 = t_tmp;
+}
+
+
 template<class Scalar>
 SimpleNewtonSolver<Scalar>::SimpleNewtonSolver(
 	const Scalar   tol
@@ -62,16 +73,15 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 	namespace mmp = MemMngPack;
 	if(out) *out << "\n*** Entering SimpleNewtonSolver::solve(...) ...\n";
 	// Create the data for the problem
-	const Index                                     n        = np->space_c()->dim();
-	Teuchos::RefCountPtr<Vector<Scalar> >             y        = Teuchos::rcp(y_inout,false);       // Initial guess/solution
+	const Index                                       n        = np->space_c()->dim();
+	Teuchos::RefCountPtr<Vector<Scalar> >             y        = Teuchos::rcp(y_inout,false);   // Initial guess/solution
 	Teuchos::RefCountPtr<Vector<Scalar> >             c        = np->space_c()->createMember(); // Residual
 	Teuchos::RefCountPtr<LinearOpWithSolve<Scalar> >  DcDy     = np->factory_DcDy()->create();  // Jacobian object
-	ETransp                                         opDcDy   = np->opDcDy();                  // Transpose argument for DcDy
+	ETransp                                           opDcDy   = np->opDcDy();                  // Transpose argument for DcDy
 	Teuchos::RefCountPtr<Vector<Scalar> >             dy       = np->space_y()->createMember(); // Newton step for y
 	Teuchos::RefCountPtr<Vector<Scalar> >             y_new    = np->space_y()->createMember(); // Trial point for y
-	Teuchos::RefCountPtr<Vector<Scalar> >		y_temp   = np->space_y()->createMember(); // Temp vector for swap
 	// Compute the initial starting point
-	np->unsetQuantities(); np->set_c(c.get()); np->set_DcDy(DcDy.get()); // These pointers will be maintained throughout
+	np->unsetQuantities(); np->set_c(&*c); np->set_DcDy(&*DcDy); // These pointers will be maintained throughout
 	np->calc_DcDy(*y,NULL); np->calc_c(*y,NULL,false);
 	// Print the starting point
 	if(out && dumpAll) {
@@ -111,9 +121,9 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 		}
 		// Compute the newton step: dy = -inv(DcDy)*c
 		if(out) *out << "\nComputing the Newton step: dy = - inv(DcDy)*c ...\n";
-		assign( dy.get(), 0.0 );         // Initial guess for the linear solve
-		DcDy->solve(opDcDy,*c,dy.get()); // Solve: DcDy*dy = c
-		Vt_S( dy.get(), -1.0 );          // dy *= -1.0
+		assign( &*dy, 0.0 );         // Initial guess for the linear solve
+		DcDy->solve(opDcDy,*c,&*dy); // Solve: DcDy*dy = c
+		Vt_S( &*dy, -1.0 );          // dy *= -1.0
 		if(out) *out << "\n||dy||inf = " << norm_inf(*dy) << std::endl;
 		if(out && dumpAll) *out << "\ndy =\n" << *dy;
 		// Perform backtracking armijo line search
@@ -124,7 +134,7 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 		for( lineSearchIter = 1; lineSearchIter <= maxLineSearchIter(); ++lineSearchIter ) {
 			if(out) *out << "\n*** lineSearchIter = " << lineSearchIter << std::endl;
 			// y_new = y + alpha*dy
-			assign( y_new.get(), *y ); Vp_StV( y_new.get(), alpha, *dy );
+			assign( &*y_new, *y ); Vp_StV( &*y_new, alpha, *dy );
 			if(out) *out << "\n||y_new||inf = " << norm_inf(*y_new) << std::endl;
 			if(out && dumpAll) *out << "\ny_new =\n" << *y_new;
 			// Compute the residual at the updated point
@@ -153,14 +163,7 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 				<< ": Terminating algorithm!" );
 		}
 		// Take the Newton step
-		y_temp = y_new;
-		y_new = y;
-		y = y_temp;
-				
-		// Used hard-coded swap because not in std:: for GNU 2.96 compiler and won't compile w/o 
-		// std:: for GNU 3.2. (HKT, 09/22/03)
-		// To Do (HKT) : Create macro to inject swap into std:: namespace.
-		//std::swap<Teuchos::RefCountPtr<Vector<Scalar> > >( y_new, y ); // Swap y_new and y
+		my_sad_swap<Teuchos::RefCountPtr<Vector<Scalar> > >( y_new, y ); // Swap y_new and y
 		
 	}
 	np->unsetQuantities();
