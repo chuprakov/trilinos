@@ -48,9 +48,12 @@ bool MeritFunc_PenaltyParamUpdateMultFree_AddedStep::min_mu(
 		&c_iq     = s.c();
 	if ( Gf_iq.updated_k(0) && nu_iq.updated_k(0) && Ypy_iq.updated_k(0) && c_iq.updated_k(0) ) {
 		// min_mu = abs((Gf_k+nu_k)'*Ypy_k) / norm(c_k,1)
-		*min_mu = ::fabs( 	  dot( Gf_iq.get_k(0), Ypy_iq.get_k(0) )
-							+ dot( nu_iq.get_k(0), Ypy_iq.get_k(0) )
-						) / c_iq.get_k(0).norm_1();
+		const value_type
+			dot_Gf_Ypy = dot( Gf_iq.get_k(0), Ypy_iq.get_k(0) ),
+			dot_nu_Ypy = dot( nu_iq.get_k(0), Ypy_iq.get_k(0) ),
+			nrm_c      = c_iq.get_k(0).norm_1(),
+			small_num  = std::numeric_limits<value_type>::min();
+		*min_mu = ::fabs( dot_Gf_Ypy + dot_nu_Ypy ) / ( nrm_c + small_num );
 		return true;
 	}
 	return false;
@@ -61,7 +64,7 @@ void MeritFunc_PenaltyParamUpdateMultFree_AddedStep::print_min_mu_step(
 {
 	out
 		<< L << "if Gf_k, nu_k, Ypy_k and c_k are updated then\n"
-		<< L << "   min_mu = abs((Gf_k+nu_k)'*Ypy_k) / norm(c_k,1)\n"
+		<< L << "   min_mu = abs((Gf_k+nu_k)'*Ypy_k) / ( norm(c_k,1) + small_num )\n"
 		<< L << "   update_mu = true\n"
 		<< L << "else\n"
 		<< L << "   update_mu = false\n"
