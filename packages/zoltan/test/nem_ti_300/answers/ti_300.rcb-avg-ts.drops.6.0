@@ -1,0 +1,45 @@
+
+-------------------------------------------------------
+0 Zoltan_LB_Box_Assign    LO: (0.000000e+00 0.000000e+00 0.000000e+00)
+0                         HI: (1.000000e+00 1.000000e+00 1.000000e+00)
+       On 2 Procs: 4 3 
+0 Zoltan_LB_Box_PP_Assign LO: (0.000000e+00 0.000000e+00 0.000000e+00)
+0                         HI: (1.000000e+00 1.000000e+00 1.000000e+00)
+       On 2 Procs: 3 4 
+       In 2 Parts: 4 3 
+0 Zoltan_LB_Point_Assign    (0.000000e+00 0.000000e+00 0.000000e+00) on proc 4
+0 Zoltan_LB_Point_PP_Assign (0.000000e+00 0.000000e+00 0.000000e+00) on proc 4 part 4
+0 Zoltan_LB_Point_Assign    (1.000000e+00 1.000000e+00 1.000000e+00) on proc 3
+0 Zoltan_LB_Point_PP_Assign (1.000000e+00 1.000000e+00 1.000000e+00) on proc 3 part 3
+0 Zoltan_LB_Point_Assign    (5.000000e-01 5.000000e-01 5.000000e-01) on proc 3
+0 Zoltan_LB_Point_PP_Assign (5.000000e-01 5.000000e-01 5.000000e-01) on proc 3 part 3
+
+-------------------------------------------------------
+0 Zoltan_LB_Box_Assign    LO: (-2.503156e+00 -3.540665e+00 3.204127e+00)
+0                         HI: (-1.503156e+00 -1.540665e+00 6.204127e+00)
+       On 2 Procs: 0 1 
+0 Zoltan_LB_Box_PP_Assign LO: (-2.503156e+00 -3.540665e+00 3.204127e+00)
+0                         HI: (-1.503156e+00 -1.540665e+00 6.204127e+00)
+       On 2 Procs: 0 1 
+       In 2 Parts: 0 1 
+0 Zoltan_LB_Point_Assign    (-2.503156e+00 -3.540665e+00 3.204127e+00) on proc 0
+0 Zoltan_LB_Point_PP_Assign (-2.503156e+00 -3.540665e+00 3.204127e+00) on proc 0 part 0
+0 Zoltan_LB_Point_Assign    (-1.503156e+00 -1.540665e+00 6.204127e+00) on proc 1
+0 Zoltan_LB_Point_PP_Assign (-1.503156e+00 -1.540665e+00 6.204127e+00) on proc 1 part 1
+0 Zoltan_LB_Point_Assign    (-2.003156e+00 -2.540665e+00 4.704127e+00) on proc 1
+0 Zoltan_LB_Point_PP_Assign (-2.003156e+00 -2.540665e+00 4.704127e+00) on proc 1 part 1
+
+-------------------------------------------------------
+0 Zoltan_LB_Box_Assign    LO: (-1.000000e+06 -1.000000e+06 -1.000000e+06)
+0                         HI: (1.000000e+06 1.000000e+06 1.000000e+06)
+       On 6 Procs: 0 5 1 4 3 2 
+0 Zoltan_LB_Box_PP_Assign LO: (-1.000000e+06 -1.000000e+06 -1.000000e+06)
+0                         HI: (1.000000e+06 1.000000e+06 1.000000e+06)
+       On 6 Procs: 0 1 2 3 4 5 
+       In 6 Parts: 0 5 1 4 3 2 
+0 Zoltan_LB_Point_Assign    (-1.000000e+06 -1.000000e+06 -1.000000e+06) on proc 0
+0 Zoltan_LB_Point_PP_Assign (-1.000000e+06 -1.000000e+06 -1.000000e+06) on proc 0 part 0
+0 Zoltan_LB_Point_Assign    (1.000000e+06 1.000000e+06 1.000000e+06) on proc 2
+0 Zoltan_LB_Point_PP_Assign (1.000000e+06 1.000000e+06 1.000000e+06) on proc 2 part 2
+0 Zoltan_LB_Point_Assign    (0.000000e+00 0.000000e+00 0.000000e+00) on proc 4
+0 Zoltan_LB_Point_PP_Assign (0.000000e+00 0.000000e+00 0.000000e+00) on proc 4 part 4

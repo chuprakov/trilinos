@@ -1,0 +1,11 @@
+Decomposition Method 	= rcb
+Zoltan Parameters	= tflops_special=1
+Zoltan Parameters       = average_cuts=1
+Zoltan Parameters       = keep_cuts=1
+File Type		= NemesisI
+File Name		= ti_300-m6-r.par
+Parallel Disk Info	= number=2,offset=1,zeros
+Parallel file location  = root=pio_, subdir=.
+test multi callbacks    = 1
+test null import lists  = 1
+Test Drops		= 1

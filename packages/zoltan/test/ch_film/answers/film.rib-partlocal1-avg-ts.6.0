@@ -1,0 +1,14 @@
+Decomposition Method 	= rib
+Zoltan Parameters	= tflops_special = 1
+Zoltan Parameters	= average_cuts=1
+Zoltan Parameters       = keep_cuts=1
+File Type		= Chaco
+File Name		= film
+Parallel Disk Info	= number=0
+test multi callbacks    = 1
+test null import lists  = 1
+test local partitions	= 1
+Test Drops		= 1
+Test DDirectory		= 1
+Global element ids assigned to processor 0
+GID	Part	Perm	IPerm
