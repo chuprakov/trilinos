@@ -83,7 +83,7 @@ void rSQPTrackStatsStd::output_final( const Algorithm& p_algo
 		&nlp = dynamic_cast<const NLPObjGradient&>(algo.nlp()); 
 #else
 	const NLPObjGradient
-		&nlp = const_dyn_cast<NLPFirstOrderInfo>(algo.nlp()); 
+		&nlp = const_dyn_cast<NLPObjGradient>(algo.nlp()); 
 #endif
 	const NLPFirstOrderInfo
 		*nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
