@@ -162,8 +162,12 @@ VectorWithOpMutable::vec_mut_ptr_t VectorWithOpMutable::clone() const
 void VectorWithOpMutable::get_sub_vector(
 	const Range1D& rng, RTOp_MutableSubVector* sub_vec )
 {
-	// Note, this is very dependent on the behavior of the default implementation of
-	// VectorWithOp::get_sub_vector(...)!
+	// Here we get a copy of the data for the sub-vector that the client will
+	// modify.  We must later commit these changes to the actual vector
+	// when the client calls free_sub_vector(...).
+	// Note, this implementation is very dependent on the behavior of the default
+	// implementation of VectorWithOp::get_sub_vector(...) and
+	// VectorWithOp::set_sub_vector(...)!
 	RTOp_SubVector _sub_vec;
 	RTOp_sub_vector_null( &_sub_vec );
 	VectorWithOp::get_sub_vector(
@@ -190,7 +194,8 @@ void VectorWithOpMutable::free_sub_vector( RTOp_MutableSubVector* sub_vec )
 		,sub_vec->values_stride
 		,&_sub_vec
 		);
-	VectorWithOp::free_sub_vector( &_sub_vec );
+	VectorWithOpMutable::set_sub_vector( _sub_vec ); // Commit the changes!
+	VectorWithOp::free_sub_vector( &_sub_vec );      // Free the memory!
 }
 
 void VectorWithOpMutable::set_sub_vector( const RTOp_SubVector& sub_vec )
@@ -229,7 +234,7 @@ void VectorWithOpMutable::axpy( value_type alpha, const VectorBase& x )
 	const VectorWithOp*
 		vec_args[1] = { dynamic_cast<const VectorWithOp*>(&x) };
 	if( vec_args[0] == NULL )
-		throw IncompatibleVectors(
+		throw VectorSpaceBase::IncompatibleVectorSpaces(
 			"VectorWithOp::axpy(alpha,x): Error, x is not of type VectorWithOp!" );
 	this->apply_transformation(axpy_op,num_vecs,vec_args,0,NULL,RTOp_REDUCT_OBJ_NULL);
 }
