@@ -68,7 +68,11 @@ void PrintTimers(CtrlType *ctrl)
 **************************************************************************/
 double seconds(void)
 {
+#ifndef SMOS
   return((double) clock()/CLOCKS_PER_SEC);
+#else
+  return((double) dclock());
+#endif
 }
 
 
