@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////
-// check_nan_inf.h
+// check_nan_inf.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-/** \file check_nan_inf.h Utility functions for determining if a number is not a regular floating point number.
+/** \file check_nan_inf.hpp Utility functions for determining if a number is not a regular floating point number.
  */
 //@{
 

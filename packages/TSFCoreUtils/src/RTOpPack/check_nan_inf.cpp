@@ -16,7 +16,7 @@
 #include <float.h>
 #include <math.h>
 
-#include "check_nan_inf.h"
+#include "check_nan_inf.hpp"
 
 // Computed values to compare to
 static RTOp_value_type

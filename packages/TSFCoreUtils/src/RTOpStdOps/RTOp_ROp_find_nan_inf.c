@@ -20,7 +20,7 @@
 #include "RTOp_ROp_find_nan_inf.h"
 #include "RTOp_obj_null_vtbl.h"
 #include "RTOp_obj_value_index_vtbl.h"
-#include "check_nan_inf.h"
+#include "check_nan_inf.hpp"
 #include "RTOp_get_reduct_op.hpp"
 
 // Implementation functions

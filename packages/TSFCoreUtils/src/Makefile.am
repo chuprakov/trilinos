@@ -42,8 +42,7 @@ $(srcdir)/RTOpPack/RTOp_parallel_helpers.h\
 $(srcdir)/RTOpPack/RTOp_reduct_max_value.h\
 $(srcdir)/RTOpPack/RTOp_reduct_min_value.h\
 $(srcdir)/RTOpPack/RTOp_reduct_sum_value.h\
-$(srcdir)/RTOpPack/RTOp_reduct_sum_values.h\
-$(srcdir)/RTOpPack/check_nan_inf.h
+$(srcdir)/RTOpPack/RTOp_reduct_sum_values.h
 
 RTOp_C_SOURCES=\
 $(srcdir)/RTOpPack/RTOp.c\
@@ -74,7 +73,8 @@ $(srcdir)/RTOpPack/RTOpCppToMPI.hpp\
 $(srcdir)/RTOpPack/RTOpFactoryTmpl.hpp\
 $(srcdir)/RTOpPack/RTOpPackTypes.hpp\
 $(srcdir)/RTOpPack/RTOp_get_reduct_op.hpp\
-$(srcdir)/RTOpPack/print_sub_vector.hpp
+$(srcdir)/RTOpPack/print_sub_vector.hpp\
+$(srcdir)/RTOpPack/check_nan_inf.hpp
 
 RTOp_CXX_SOURCES=\
 $(srcdir)/RTOpPack/RTOpCppC.cpp\
