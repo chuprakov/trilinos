@@ -144,6 +144,9 @@
 /* Define if want to build tests */
 #undef HAVE_TESTS
 
+/* Define if want to build tsfcoreutils-tests */
+#undef HAVE_TSFCOREUTILS_TESTS
+
 /* Define to 1 if you have the <typeinfo> header file. */
 #undef HAVE_TYPEINFO
 
