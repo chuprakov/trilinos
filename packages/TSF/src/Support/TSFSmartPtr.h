@@ -166,6 +166,12 @@ namespace TSF
 		{
 			smartPtrError(msg);
 		}
+
+	template <class T>
+		string toString(const TSFSmartPtr<T>& sp) 
+		{
+			return "SmartPtr<" + TSF::toString(*sp) + ">";
+		}
 }
 
 #undef cond_inline

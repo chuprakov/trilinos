@@ -369,6 +369,12 @@ namespace TSF
 
 	ostream& operator<<(ostream& os, const DenseSerialVector& v);
 
+	inline string toString(const DenseSerialVector& v)
+		{
+			return v.toString();
+		}
+
+
 }
 
 	

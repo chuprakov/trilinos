@@ -228,7 +228,8 @@ template<class Key, class Value>  inline
 		try
 			{
 				if (!containsKey(key)) TSFError::raise(toString(key) 
-																						+ "key not found in TSFHashtable");
+																						+ "key not found in TSFHashtable"
+																							 + toString(*this));
 				
 				const TSFArray<HashPair<Key, Value> >& candidates 
 					= data_[hashCode(key) % capacity_];

@@ -72,7 +72,7 @@ namespace TSF
 
 	/** \relates TSFUtils */
 	inline string toString(const string& x) {return x;}
-	
+
 }
 	
 #endif

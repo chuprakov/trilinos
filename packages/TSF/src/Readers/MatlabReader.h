@@ -178,7 +178,10 @@ namespace TSF
     };
 
 
-
+	inline string toString(const MatVec& mv)
+		{
+			return "MatVec";
+		}
 
 
   /**
