@@ -5,11 +5,11 @@
 #ifndef TSFCORE_SOLVERS_GMRES_SOLVER_HPP
 #define TSFCORE_SOLVERS_GMRES_SOLVER_HPP
 
+#include "TSFCoreSolversTypes.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFCoreVector.hpp"
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreMultiVector.hpp"
-#include "TSFCoreTypes.hpp"
 #include "Teuchos_ScalarTraits.hpp"
 #include "Teuchos_DenseMatrix.hpp"
 #include "Teuchos_BLAS.hpp"
@@ -26,12 +26,12 @@ public:
 		int		    default_max_iter = 1000,
 		Scalar		default_tol      = 1e-10			
 		);
-				
+
 	int currIteration() const { return curr_iter; };
   
 	Scalar currEstRelResidualNorm() const { return curr_res; };
   
-	void solve(
+	SolveReturn solve(
 		const LinearOp<Scalar> &Op,
 		const Vector<Scalar>   &b,
 		Vector<Scalar>         *curr_soln,
@@ -67,7 +67,7 @@ GMRESSolver<Scalar>::GMRESSolver(
 {}
 	
 template<class Scalar>
-void GMRESSolver<Scalar>::solve(
+SolveReturn GMRESSolver<Scalar>::solve(
 	const LinearOp<Scalar> &Op,
 	const Vector<Scalar>   &b,
 	Vector<Scalar>         *curr_soln,
@@ -128,11 +128,14 @@ void GMRESSolver<Scalar>::solve(
 //
 // Compute the new solution.
 //
-	MemMngPack::ref_count_ptr<MultiVector<Scalar> > V = V_->subView(Range1D(1,curr_iter));
-	SerialVector<Scalar> z_vec( &z[0], 1, curr_iter, false );
-	V->apply( NOTRANS, z_vec, curr_soln, -1.0, 1.0 );
+	if( curr_iter > 0 ) {
+		MemMngPack::ref_count_ptr<MultiVector<Scalar> > V = V_->subView(Range1D(1,curr_iter));
+		SerialVector<Scalar> z_vec( &z[0], 1, curr_iter, false );
+		V->apply( NOTRANS, z_vec, curr_soln, -1.0, 1.0 );
+	}
 //	for( int i = 0; i < curr_iter; i++ )
 //		Vp_StV( curr_soln, -z[i], *V_->col(i+1) );
+	return SolveReturn( curr_iter >= max_iter ? MAX_ITER_EXCEEDED : SOLVED_TO_TOL, curr_iter );
 }
 
 template<class Scalar>

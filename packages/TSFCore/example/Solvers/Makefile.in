@@ -108,6 +108,7 @@ TSFCoreSolversGmresTest_CXXFLAGS = \
 -I$(top_srcdir)/src \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/src/interfaces/Core \
+-I$(top_srcdir)/src/interfaces/Solvers \
 -I$(top_srcdir)/src/adapters/epetra \
 -I$(top_srcdir)/src/adapters/mpi-base \
 -I$(top_srcdir)/../TSFCoreUtils/src \
