@@ -454,24 +454,24 @@ void AbstractLinAlgPack::force_in_bounds_buffer(
   const value_type abs_push,
   const VectorWithOp& xl, 
   const VectorWithOp& xu,
-  VectorWithOpMutable& x )
+  VectorWithOpMutable* x
+  )
 	{
 	assert(0==RTOp_TOp_force_in_bounds_buffer_init( rel_push, abs_push, &force_in_bounds_buffer_op.op()));
 
     const int num_vecs = 2;
 	const VectorWithOp*
 		vecs[num_vecs] = { &xl, &xu };
-	x.apply_transformation(
+	x->apply_transformation(
 		force_in_bounds_buffer_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
 	}
 
 
-AbstractLinAlgPack::value_type 
-AbstractLinAlgPack::inv_of_difference(
-  VectorWithOpMutable& z
-  ,const value_type alpha
-  ,const VectorWithOp    &v0
+void AbstractLinAlgPack::inv_of_difference(
+  const value_type      alpha
+  ,const VectorWithOp   &v0
   ,const VectorWithOp   &v1
+  ,VectorWithOpMutable  *z
   )
 	{
 	assert(0==RTOp_TOp_inv_of_difference_init( alpha, &inv_of_difference_op.op()));
@@ -480,15 +480,15 @@ AbstractLinAlgPack::inv_of_difference(
 	const VectorWithOp*
 		vecs[num_vecs] = { &v0, &v1 };
 	
-	z.apply_transformation(
+	z->apply_transformation(
 	  inv_of_difference_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL 
 	  );
 	}
 
 void AbstractLinAlgPack::correct_lower_bound_multipliers(
-  VectorWithOpMutable& vl
-  ,const VectorWithOp    &xl
-  ,const value_type inf_bound_limit
+  const VectorWithOp    &xl
+  ,const value_type     inf_bound_limit
+  ,VectorWithOpMutable  *vl
   )
 	{
 	assert(0==RTOp_TOp_Correct_Multipliers_init( inf_bound_limit, 0, &correct_lower_bound_multipliers_op.op()));
@@ -497,15 +497,15 @@ void AbstractLinAlgPack::correct_lower_bound_multipliers(
 	const VectorWithOp*
 		vecs[num_vecs] = { &xl };
 	
-	vl.apply_transformation(
+	vl->apply_transformation(
 	  correct_lower_bound_multipliers_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL 
 	  );
 	}
 
 void AbstractLinAlgPack::correct_upper_bound_multipliers(
-  VectorWithOpMutable& vu
-  ,const VectorWithOp    &xu
-  , const value_type inf_bound_limit
+  const VectorWithOp    &xu
+  ,const value_type     inf_bound_limit
+  ,VectorWithOpMutable  *vu
   )
 	{
 	assert(0==RTOp_TOp_Correct_Multipliers_init( inf_bound_limit, 1, &correct_upper_bound_multipliers_op.op()));
@@ -514,7 +514,7 @@ void AbstractLinAlgPack::correct_upper_bound_multipliers(
 	const VectorWithOp*
 		vecs[num_vecs] = { &xu };
 	
-	vu.apply_transformation(
+	vu->apply_transformation(
 	  correct_upper_bound_multipliers_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL
 	  );
 	}
@@ -558,10 +558,10 @@ void AbstractLinAlgPack::upperbound_multipliers_step(
 	}
 
 void AbstractLinAlgPack::ele_wise_sqrt(
-  VectorWithOpMutable& z
+  VectorWithOpMutable* z
   )
   {
-	z.apply_transformation(
+	z->apply_transformation(
 	  ele_wise_sqrt_op, 0, NULL, 0, NULL, RTOp_REDUCT_OBJ_NULL
 	  );  
   }

@@ -76,27 +76,28 @@ value_type max_rel_step(
 	);
 
 /// 
-/** Computes alpha_max by the fraction to boundary rule
+/** Computes alpha_max by the fraction to boundary rule.
  *
- *
+ * ToDo: Finish documentation!
  */
 value_type fraction_to_boundary(
-  const value_type tau,
-  const VectorWithOp& x,
-  const VectorWithOp& d,
-  const VectorWithOp& xl,
-  const VectorWithOp& xu
+  const value_type    tau,
+  const VectorWithOp  &x,
+  const VectorWithOp  &d,
+  const VectorWithOp  &xl,
+  const VectorWithOp  &xu
   );
 
 /// 
 /** Computes alpha_max by the fraction to boundary rule
  *   assuming only a lower bound of zero
  *
+ * ToDo: Finish documentation!
  */
 value_type fraction_to_zero_boundary(
-  const value_type tau,
-  const VectorWithOp& x,
-  const VectorWithOp& d
+  const value_type    tau,
+  const VectorWithOp  &x,
+  const VectorWithOp  &d
   );
 
 ///
@@ -133,7 +134,7 @@ value_type log_bound_barrier(
  */
 value_type combined_nu_comp_err(
 	const VectorWithOp    &v
-	,const VectorWithOp    &x
+	,const VectorWithOp   &x
 	,const VectorWithOp   &xl
 	,const VectorWithOp   &xu
 	); 
@@ -171,7 +172,7 @@ value_type combined_nu_comp_err_lower(
  */
 value_type combined_nu_comp_err_upper(
 	const VectorWithOp    &v
-	,const VectorWithOp    &x
+	,const VectorWithOp   &x
 	,const VectorWithOp   &xu
   );
 
@@ -190,8 +191,8 @@ value_type combined_nu_comp_err_upper(
 \endverbatim
  */
 value_type IP_comp_err_with_mu(
-  const value_type mu
-  ,const value_type inf_bound
+  const value_type    mu
+  ,const value_type   inf_bound
   ,const VectorWithOp &x
   ,const VectorWithOp &xl
   ,const VectorWithOp &xu
@@ -281,13 +282,12 @@ void force_in_bounds( const VectorWithOp& xl, const VectorWithOp& xu, VectorWith
  *
  */
 void force_in_bounds_buffer(
-  const value_type rel_push,
-  const value_type abs_push,
-  const VectorWithOp& xl, 
-  const VectorWithOp& xu, 
-  VectorWithOpMutable& x 
+  const value_type     rel_push,
+  const value_type     abs_push,
+  const VectorWithOp   &xl, 
+  const VectorWithOp   &xu, 
+  VectorWithOpMutable  *x 
   );
-
 
 ///
 /** Computes the inverse of the difference
@@ -297,13 +297,12 @@ void force_in_bounds_buffer(
  z(i) = alpha/(v0(i) - v1(i));
  \endverbatim
  */
-value_type inv_of_difference(
-  VectorWithOpMutable& z
-  ,const value_type alpha
+void inv_of_difference(
+  const value_type       alpha
   ,const VectorWithOp    &v0
-  ,const VectorWithOp   &v1
+  ,const VectorWithOp    &v1
+  ,VectorWithOpMutable   *z
   );
-
 
 ///
 /** Corrects the lower bound multipliers with 
@@ -314,9 +313,9 @@ value_type inv_of_difference(
  \endverbatim
  */
 void correct_lower_bound_multipliers(
-  VectorWithOpMutable& vl
-  ,const VectorWithOp    &xl
-  , const value_type inf_bound_limit
+  const VectorWithOp      &xl
+  ,const value_type       inf_bound_limit
+  ,VectorWithOpMutable    *vl
   );
 
 ///
@@ -328,25 +327,24 @@ void correct_lower_bound_multipliers(
  \endverbatim
  */
 void correct_upper_bound_multipliers(
-  VectorWithOpMutable& vu
-  ,const VectorWithOp    &xu
-  , const value_type inf_bound_limit
+  const VectorWithOp       &xu
+  ,const value_type        inf_bound_limit
+  ,VectorWithOpMutable     *vu
   );
 
 ///
 /** Calculates the multiplier step for lower bounds
- *
  *
 \verbatim
 dvl(i) = -vl(i) + mu*invXl(i)*e - invXl(i)*Vl(i)*d_k(i)
 \endverbatim
 */
 void lowerbound_multipliers_step(
-  const value_type mu,
-  const VectorWithOp& invXl,
-  const VectorWithOp& vl,
-  const VectorWithOp& d_k,
-  VectorWithOpMutable* dvl
+  const value_type         mu,
+  const VectorWithOp       &invXl,
+  const VectorWithOp       &vl,
+  const VectorWithOp       &d_k,
+  VectorWithOpMutable      *dvl
   );
 
 ///
@@ -358,11 +356,11 @@ dvu(i) = -vu(i) + mu*invXl(i)*e + invXl(i)*Vl(i)*d_k(i)
 \endverbatim
 */
 void upperbound_multipliers_step(
-  const value_type mu,
-  const VectorWithOp& invXu,
-  const VectorWithOp& vu,
-  const VectorWithOp& d_k,
-  VectorWithOpMutable* dvu
+  const value_type       mu,
+  const VectorWithOp     &invXu,
+  const VectorWithOp     &vu,
+  const VectorWithOp     &d_k,
+  VectorWithOpMutable    *dvu
   );
 
 
@@ -375,9 +373,9 @@ void upperbound_multipliers_step(
  z(i) = sqrt(z(i));
  \endverbatim
  */
-void AbstractLinAlgPack::ele_wise_sqrt(
-  VectorWithOpMutable& z
-  );
+void ele_wise_sqrt(
+	VectorWithOpMutable* z
+  	);		
 
 ///
 /** Take the maximum value of the vector elements and a scalar.
