@@ -5,7 +5,7 @@ use lib "$ENV{RSQPPP_BASE_DIR}/rSQPpp/ReducedSpaceSQPPack/perl";
 #
 my $g_use_msg =
   "Use: runnlps.pl [-h] [-i] [-k0,-k1] [-e executable] [-a \"arguments\"] [-s setup_script]\n".
-  "                [-b base_opt_file] [-v vary_opt_file] [-o output_file]\n";
+  "                [-p post_script] [-b base_opt_file] [-v vary_opt_file] [-o output_file]\n";
 #
 my $g_use_msg_opts =
   $g_use_msg.
@@ -16,12 +16,15 @@ my $g_use_msg_opts =
   "  -k1 : Keep the output files and directories\n".
   "  -e executable\n".
   "     : Gives the path of the executable to run (with arguments).  (default is to use the\n".
-  "       executable with the name \'solve_nlp\'\n).\n".
+  "       executable with the name \'solve_nlp\').\n".
   "  -a \"arguments\"\n".
   "      : Arguments to pass on to the executable. (default is not arguments).\n".
   "  -s setup_script\n".
   "      : Script to be run just before the executable is called.\n".
   "        (default is to run no script before hand).\n".
+  "  -p post_script\n".
+  "      : Script to be run just after the executable is called.\n".
+  "        (default is to run no script after at all).\n".
   "  -b base_opt_file\n".
   "      : Gives the path of the options file with the base options to be used.\n".
   "        (default is to use the \'rSQPpp.opt\' file in the current directory. If\n".
@@ -93,6 +96,7 @@ use strict 'refs';
 
 # Object member names
 use constant SETUP_SCRIPT       => "setup_script";
+use constant POST_SCRIPT        => "post_script";
 use constant EXECUTABLE         => "executable";
 use constant EXEC_ARGUMENTS     => "exec_arguments";
 use constant PRINT_ITER_SUMMARY => "print_iter_summary";
@@ -105,12 +109,14 @@ sub new {
   # Arguments
   my $class           = shift; # Class name (required)
   my $setup_script    = shift; # Script to run before running executable (required)
+  my $post_script     = shift; # Script to run after running executable (required)
   my $executable      = shift; # Executable to be run (required)
   my $exec_arguments  = shift; # Arguments to pass on to the executable
   my $print_iter_sum  = shift; # Print the iteration summary to STDOUT or not (optional)
   #
   my $self = {
 			  SETUP_SCRIPT()        => $setup_script
+			  ,POST_SCRIPT()        => $post_script
 			  ,EXECUTABLE()         => $executable
 			  ,EXEC_ARGUMENTS()     => $exec_arguments
 			  ,PRINT_ITER_SUMMARY() => $print_iter_sum
@@ -130,6 +136,7 @@ sub run_nlp {
   my $self = shift;
   #
   my $setup_script    = $self->{SETUP_SCRIPT()};
+  my $post_script     = $self->{POST_SCRIPT()};
   my $executable      = $self->{EXECUTABLE()};
   my $exec_arguments  = $self->{EXEC_ARGUMENTS()};
   my $print_iter_sum  = $self->{PRINT_ITER_SUMMARY()};
@@ -148,6 +155,11 @@ sub run_nlp {
 	$run_cmnd .= " 1> console.out 2> console.out";
   }
   system($run_cmnd);
+  # Run the post script
+  if(defined($post_script)) {
+	$run_cmnd = $post_script;
+	system($run_cmnd);
+  }
 }
 
 package main; # end class NLPRunner
@@ -182,8 +194,11 @@ my $g_executable_str = $g_basedir . "/solve_nlp";
 # Arguments to pass on to executable
 my $g_exec_arguments_str;
 # Fully qualified name of the setup script with arguments
-# (if UNDEF then no file was specified)
+# (if UNDEF then no scrip was specified)
 my $g_setup_script_str;
+# Fully qualified name of the post script with arguments
+# (if UNDEF then no script was specified)
+my $g_post_script_str;
 # Fully qualified name of the base options file
 # (if UNDEF then no file was specified)
 my $g_default_options_file_name;
@@ -218,6 +233,9 @@ for (my $i = 0; $i < @ARGV; ++$i) {
   }
   elsif(/^-s$/) {
 	$g_setup_script_str = $ARGV[++$i];
+  }
+  elsif(/^-p$/) {
+	$g_post_script_str = $ARGV[++$i];
   }
   elsif(/^-b$/) {
 	$g_default_options_file_name = $ARGV[++$i];
@@ -326,6 +344,7 @@ print $g_output_fh
 $g_vary_options->run_nlps(
 						  NLPRunner->new(
 										 $g_setup_script_str
+										 ,$g_post_script_str
 										 ,$g_executable_str
 										 ,$g_exec_arguments_str
 										 ,$g_print_iter_summ )
