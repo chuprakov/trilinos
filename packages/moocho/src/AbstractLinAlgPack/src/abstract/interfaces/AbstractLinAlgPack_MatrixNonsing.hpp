@@ -101,6 +101,9 @@ public:
 	 *
 	 * The behavior of this method is the same as for the non-const version
 	 * above except it returns a smart pointer to a const matrix object.
+	 *
+	 * The default implementation of this method will call the non-const version
+	 * and then cast to constant.
 	 */
 	virtual mat_mns_ptr_t clone_mns() const;
 

@@ -34,7 +34,7 @@ MatrixNonsingular::clone_mns()
 MatrixNonsingular::mat_mns_ptr_t
 MatrixNonsingular::clone_mns() const
 {
-	return MemMngPack::null;
+	return const_cast<MatrixNonsingular*>(this)->clone_mns(); // Implicit conversion to const
 }
 
 // Level-2 BLAS
