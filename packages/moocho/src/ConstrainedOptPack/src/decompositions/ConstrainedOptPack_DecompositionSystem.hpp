@@ -10,19 +10,25 @@
 namespace ConstrainedOptimizationPack {
 
 ///
-/** {abstrack} This class abstracts a decomposition choose for the
-  * range space Y, and null space Z, matrices for the linearly
-  * independent rows of A':\\
+/** This class abstracts a decomposition choose for the
+  * range space #Y#, and null space #Z#, matrices for the linearly
+  * independent set of columns of #A# {abstract}.
   *
-  *	#A = [ A(indep)  A(dep)  ]# where A is n x m, A(indep) is n x r and A(dep) is n x (m - r)\\
+  *	#A = [ A(indep),  A(dep)  ]#
   *
-  * The decomposition formed by subclasses must have the properties:\\
+  * where A is n x m, A(indep) is n x r and A(dep) is n x (m - r)
   *
-  * A(indep)' * Z = 0 (orthoganol property)\\
-  * [Y  Z] is nonsingular\\
+  * Note that the columns in #A(dep)# may be linearly dependent with
+  * the columns in #A(indep)# but they may just be undecomposed
+  * linearly independent equality constraints.
+  *
+  * The decomposition formed by subclasses must have the properties:
+  *
+  * #A(indep)' * Z = 0# (orthoganol property)\\
+  * #[Y , Z]# is nonsingular\\
   *
   * This object forms the decomposition and solves the linear systems
-  * op(A(indep)' * Y) * x = b.
+  * #op(A(indep)' * Y) * x = b#.
   *
   * It is assumed that the matrix #A# is not modified between calls to
   * #update_decomp(...)#.
@@ -47,7 +53,7 @@ public:
 	DecompositionSystem() {}
 		
 	///
-	/** Creates the decomposition for A'.
+	/** Creates the decomposition for #A'#.
 	  *
 	  * The decomposition is based on the linearly independent
 	  * columns of A:\\
@@ -56,23 +62,23 @@ public:
 	  *
 	  * Specifically this operation finds the matrices:
 	  *
-	  * Z		s.t.	A(indep)' * Z = 0#\\
-	  * Y		s.t.	[Z  Y] is nonsingular\\
-	  * U = A(dep)' * Y\\
-	  * V = A(dep)' * Z\\
+	  * #Z# s.t. #A(indep)' * Z = 0#\\
+	  * #Y# s.t. #[Z  Y]# is nonsingular\\
+	  * #U = A(dep)' * Y#\\
+	  * #V = A(dep)' * Z#\\
 	  *
 	  * After this operations is called then the MatrixWithOp view of A will
-	  * be sorted so that A = [ A(indep)  A(dep) ].
+	  * be sorted so that #A = [ A(indep)  A(dep) ]#.
 	  *
 	  * If there is some problem creating the decomposition then exceptions
 	  * with the base class std::exception may be thrown.  The meaning
 	  * of these exceptions are more associated with the subclasses
 	  * that implement this operation.
 	  *
-	  * The concrete types for A, Z, Y, U, and V must be compatable with
-	  * the concrete subclass or a InvalidMatrixType exeption will be thrown..
+	  * The concrete types for #A#, #Z#, #Y#, #U#, and #V# must be compatable with
+	  * the concrete subclass or an #InvalidMatrixType# exeption will be thrown..
 	  *
-	  * If m() == r() then out out put U and V will have rows() == cols() == 0.
+	  * If m() == r() then on output #U# and #V# should not be accessed.
 	  *
 	  * Preconditions:\begin{itemize}
 	  * \item #A.rows() > A.cols()# (throw std::length_error)
@@ -110,7 +116,7 @@ public:
 		, MatrixWithOp* U, MatrixWithOp* V) = 0;
 
 	///
-	/** Solves the linear systems op(A' * Y) * x = b
+	/** Solves the linear systems #op(A' * Y) * x = b#.
 	  *
 	  * This operation solves the linear system:\\
 	  *
@@ -129,7 +135,7 @@ public:
 		, VectorSlice* x) const = 0;
 
 	///
-	/** Solves the set of linear systems op(A' * Y) * X = B
+	/** Solves the set of linear systems #op(A' * Y) * X = B#.
 	  *
 	  * This operation solves the set of linear systems:\\
 	  *
@@ -148,17 +154,17 @@ public:
 	virtual void solve_transAtY(const GenMatrixSlice& B, BLAS_Cpp::Transp trans
 		, GenMatrixSlice* X) const = 0;
 
-	/// Return the number of columns in A'
+	/// Return the number of columns in #A'#
 	virtual size_type n() const = 0;
 
-	/// Return the number of rows in A'
+	/// Return the number of rows in #A'#
 	virtual size_type m() const = 0;
 
-	/// Returns the rank of A
+	/// Returns the rank of #A(indep)#
 	virtual size_type r() const = 0;
 
 	///
-	/** Set of the trase of calculations and checking of errors.
+	/** Setup of the trase of calculations and checking of errors.
 	  *
 	  * @param	out		[O]	If out == 0 then no output is produced/
 	  *	@param	trase	[I]	If true then calculations and tests

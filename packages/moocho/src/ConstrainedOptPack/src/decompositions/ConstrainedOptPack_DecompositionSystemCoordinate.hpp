@@ -13,15 +13,20 @@ namespace ConstrainedOptimizationPack {
 /** Coordiante variable redunction interface class {abstract}.
   *
   * This is the interface for the coordinate variable reduction decomposition
-  * where Y = [I  0]' (type IdentZeroVertConcatMatrixSubclass).  The solution of the
-  * linear systems op(A(:,indep)' * Y) * x = y, can be implemented here since,
-  * A(:,indep)' * Y = [C  N] * [I  0]' = C.
+  * where:
   *
-  * Also this fixes the definitions of of U and V as:\\
-  * U = A(:,dep)' * Y = E\\
-  * V = A(:,dep)' * Z = F - E * inv(C) * N\\
+  * #Y = [I ; 0]# (type \Ref{IdentZeroVertConcatMatrixSubclass}).
   *
-  * Here it is therefore assumed that all subclasses will use the passed in type
+  * The solution of the
+  * linear systems #op(A(:,indep)'*Y) * x = y#, can be implemented here since,
+  * #A(:,indep)' * Y = [C  N] * [I  0]' = C#.
+  *
+  * Also this fixes the definitions of of U and V as:
+  *
+  * #U = A(:,dep)' * Y = E#\\
+  * #V = A(:,dep)' * Z = F - E * inv(C) * N#\\
+  *
+  * Here it is, therefore, assumed that all subclasses will use the passed in type
   * for U as E with the BasisSystem object and delete_access_matrices(...)
   * is defined here to refect that.  This behavior can of course be overrriden
   * by overridding this function.

@@ -16,18 +16,19 @@ namespace ConstrainedOptimizationPack {
   *
   \begin{verbatim}
   
-  P*A'*Q = [C  N]    or    Q*A*P = [C'  E']
-           [E  F]                  [N'  F']
+  P*A'*Q = [C  N] 
+           [E  F]
 
-  D = -inv(C) * N
+  Z = [ D ]
+      [ I ]
 
-  Z = [D' I]'
+      where:   D = -inv(C) * N
 
-  A(indep)' * Y = C
+  A(indep)'*Y = C
 
   \end{verbatim}
   *
-  * Here C is a r x r nonsingular matrix.
+  * Here #C# is a r x r nonsingular matrix.
   */
 class DecompositionSystemVarReduct : public DecompositionSystem {
 public:
@@ -68,12 +69,12 @@ public:
 		, size_type* rank) const = 0;
 
 	///
-	/** Solves the systems op(C) * x = b
+	/** Solves the systems #op(C) * x = b#.
 	  *
 	  * This operation solves the linear system:\\
 	  *
-	  * C * x = b,  for #trans == BLAS_Cpp::no_trans#\\
-	  * C' * x = b,  for #trans == BLAS_Cpp::trans#\\
+	  * #C * x = b#,  for #trans == BLAS_Cpp::no_trans#\\
+	  * #C' * x = b#,  for #trans == BLAS_Cpp::trans#\\
 	  *
 	  * Preconditions (rank as returned from the last call to get_basis(....,&rank)):
 	  * \begin{itemize}
@@ -85,12 +86,12 @@ public:
 		, VectorSlice* x) const = 0;
 
 	///
-	/** Solves the set of linear systems op(C) * X = B.
+	/** Solves the set of linear systems #op(C) * X = B#.
 	  *
 	  * This operation solves the set of linear systems:\\
 	  *
-	  * C * X = B,  for #trans == BLAS_Cpp::no_trans#\\
-	  * C' * X = B,  for #trans == BLAS_Cpp::trans#\\
+	  * #C * X = B#,  for #trans == BLAS_Cpp::no_trans#\\
+	  * #C' * X = B#,  for #trans == BLAS_Cpp::trans#\\
 	  *
 	  * Preconditions (rank as returned from the last call to get_basis(....,&rank)):
 	  * \begin{itemize}

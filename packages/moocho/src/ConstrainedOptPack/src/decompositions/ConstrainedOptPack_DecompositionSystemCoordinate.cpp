@@ -52,7 +52,7 @@ void DecompositionSystemCoordinate::update_decomp(MatrixWithOp* A, MatrixWithOp*
 			
 			std::fill_n( allocate, (int)BasisSystem::NUM_ACCESS_MATRICES, true );
 			
-			allocate[BasisSystem::E] = false;	// E is V so don't allocate it
+			allocate[BasisSystem::E] = false;	// E is U so don't allocate it
 			
 			basis_sys().create_access_matrices( allocate, &access_matrices(BasisSystem::C) );
 
