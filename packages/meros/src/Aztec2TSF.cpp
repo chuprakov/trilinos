@@ -159,6 +159,7 @@ int Aztec2TSF(	AZ_MATRIX * Amat,
  return 0;
 }
 #include "ml_epetra_utils.h"
+
 int TSF_MatrixMult(const TSFLinearOperator& B, const TSFLinearOperator& Bt,
 		   TSFLinearOperator& result)
 {
@@ -188,8 +189,53 @@ int TSF_MatrixMult(const TSFLinearOperator& B, const TSFLinearOperator& Bt,
       printf("TSF_MatrixMult: second argument is not a Matrix\n");
       exit(1);
   }
+
+
+
   Epetra_CrsMatrix  *Bt_crs = PetraMatrix::getConcrete(Bt);
   Epetra_CrsMatrix *result_crs = Epetra_MatrixMult(B_crs,Bt_crs);
+
+  PetraMatrix* result_petra = new PetraMatrix(B.range(), Bt.domain());
+  result_petra->setPetraMatrix(result_crs,true);  // insert the epetra matrix into our TSF
+  result = result_petra;                          // matrix and make it a TSF linear op
+
+  return 0;
+}
+
+int TSF_MatrixAdd(const TSFLinearOperator& B, const TSFLinearOperator& Bt,
+		  double scalar,  TSFLinearOperator& result)
+{
+  if (B.isMatrixOperator()) {
+    const TSFSmartPtr<const TSFMatrixOperator> M = B.getMatrix();
+    const PetraMatrix* pm = dynamic_cast<const PetraMatrix*>(M.get());
+    if (pm==0) {
+      printf("TSF_MatrixMult: first argument is not a Petra_Matrix\n");
+      exit(1);
+    }
+  }
+  else {
+      printf("TSF_MatrixMult: first argument is not a Matrix\n");
+      exit(1);
+  }
+  Epetra_CrsMatrix  *B_crs  = PetraMatrix::getConcrete(B);
+
+  if (Bt.isMatrixOperator()) {
+    const TSFSmartPtr<const TSFMatrixOperator> M = Bt.getMatrix();
+    const PetraMatrix* pm = dynamic_cast<const PetraMatrix*>(M.get());
+    if (pm==0) {
+      printf("TSF_MatrixMult: second argument is not a Petra_Matrix\n");
+      exit(1);
+    }
+  }
+  else {
+      printf("TSF_MatrixMult: second argument is not a Matrix\n");
+      exit(1);
+  }
+
+
+
+  Epetra_CrsMatrix  *Bt_crs = PetraMatrix::getConcrete(Bt);
+  Epetra_CrsMatrix *result_crs = Epetra_MatrixAdd(B_crs,Bt_crs,scalar);
 
   PetraMatrix* result_petra = new PetraMatrix(B.range(), Bt.domain());
   result_petra->setPetraMatrix(result_crs,true);  // insert the epetra matrix into our TSF

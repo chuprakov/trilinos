@@ -57,7 +57,8 @@ extern Epetra_RowMatrix *Aztec2TSF(   AZ_MATRIX * Amat,
 
 extern int TSF_MatrixMult(const TSF::TSFLinearOperator& B,const TSF::TSFLinearOperator& Bt,
 			  TSF::TSFLinearOperator& result);
-
+extern int TSF_MatrixAdd(const TSF::TSFLinearOperator& B,const TSF::TSFLinearOperator& Bt, double scalar, 
+			  TSF::TSFLinearOperator& result);
 
 
 #endif /* _VBR2PETRA_H_ */
