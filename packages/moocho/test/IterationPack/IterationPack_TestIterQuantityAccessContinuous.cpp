@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////
-// TestIterQuantityAccessContinuous.cpp
+// TestIterQuantityAccessContiguous.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,14 +20,14 @@
 #include <vector>
 
 #include "GeneralIterationPack/test/TestGeneralIterationPack.h"
-#include "GeneralIterationPack/include/IterQuantityAccessContinuous.h"
+#include "GeneralIterationPack/include/IterQuantityAccessContiguous.h"
 #include "update_success.h"
 
-bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::ostream* out)
+bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::ostream* out)
 {
 	{
 		// explicit instantiation test
-		IterQuantityAccessContinuous< std::vector<int> > iq_v(1,"v");
+		IterQuantityAccessContiguous< std::vector<int> > iq_v(1,"v");
 	}
 
 	using std::endl;
@@ -48,7 +48,7 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 
 	if(out)
 		 *out	<< "\n********************************************\n"
-				<< "*** Testing IterQuantityAccessContinuous ***\n"
+				<< "*** Testing IterQuantityAccessContiguous ***\n"
 				<< "********************************************\n";
 
 	// Create a 1 storage and test it
@@ -56,9 +56,9 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 
 		if(out) 
 			*out	<< "\n *** Test single storage ***\n"
-					<< "  IterQuantityAccessContinuous<int> x_cont(1,\"x\");\n"
+					<< "  IterQuantityAccessContiguous<int> x_cont(1,\"x\");\n"
 					<< "  IterQuantityAccess<int>& x = x_cont;\n";
-		IterQuantityAccessContinuous<int> x_cont(1, "x");
+		IterQuantityAccessContiguous<int> x_cont(1, "x");
 		IterQuantityAccess<int>& x = x_cont;
 
 		if(out)
@@ -222,9 +222,9 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 
 		if(out)
 			*out<< "\n*** Test dual storage ***\n"
-				<< "IterQuantityAccessContinuous<int> x_cont(2,\"x\");\n"
+				<< "IterQuantityAccessContiguous<int> x_cont(2,\"x\");\n"
 				<< "IterQuantityAccess<int>& x = x_cont;\n";
-		IterQuantityAccessContinuous<int> x_cont(2, "x");
+		IterQuantityAccessContiguous<int> x_cont(2, "x");
 		IterQuantityAccess<int>& x = x_cont;
 
 		if(out)
@@ -443,9 +443,9 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContinuous(std::os
 	{
 		if(out)
 			*out<< "\n*** Test 4 storage ***\n"
-				<< "IterQuantityAccessContinuous<int> x_cont(4,\"x\");\n"
+				<< "IterQuantityAccessContiguous<int> x_cont(4,\"x\");\n"
 				<< "IterQuantityAccess<int>& x = x_cont;\n";
-		IterQuantityAccessContinuous<int> x_cont(4, "x");
+		IterQuantityAccessContiguous<int> x_cont(4, "x");
 		IterQuantityAccess<int>& x = x_cont;
 
 		if(out)

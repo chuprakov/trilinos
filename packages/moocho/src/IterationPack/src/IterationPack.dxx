@@ -45,6 +45,10 @@ The non-member function <tt>\ref GeneralIterationPack::print_algorithm_step "pri
 is provided to help in the implementation of
 <tt>\ref GeneralIterationPack::AlgorithmStep::print_step "AlgorithmStep::print_step(...)"</tt>.
 
+The subclass <tt>\ref GeneralIterationPack::AlgorithmTrackComposite "AlgorithmTrackComposite"</tt>
+is provided to allow a set of <tt>AlgorithmTrack</tt> objects to be called instead of just a single
+<tt>AlgorithmTrack</tt> object by the <tt>Algorithm</tt> object.
+
 <li> Testing library (<tt>libTestGeneralIterationPack</tt>)
 
 Some testing code is available ...
