@@ -45,6 +45,88 @@ const IterQuantityAccess<Type>& cast_to_type(const AlgorithmState& state, Algori
 
 }	// end namespace
 
+
+// rSQPState iteration quantities names
+
+// NLP Problem Info 
+const std::string ReducedSpaceSQPPack::x_name				= "x";
+const std::string ReducedSpaceSQPPack::f_name				= "f";
+const std::string ReducedSpaceSQPPack::Gf_name				= "Gf";
+const std::string ReducedSpaceSQPPack::HL_name				= "HL";
+const std::string ReducedSpaceSQPPack::c_name				= "c";
+const std::string ReducedSpaceSQPPack::Gc_name				= "Gc";
+// Constraint Gradient Null Space / Range Space Decomposition Info
+const std::string ReducedSpaceSQPPack::Y_name				= "Y";
+const std::string ReducedSpaceSQPPack::Z_name				= "Z";
+const std::string ReducedSpaceSQPPack::U_name				= "U";
+const std::string ReducedSpaceSQPPack::V_name				= "V";
+// Search Direction Info
+const std::string ReducedSpaceSQPPack::py_name				= "py";
+const std::string ReducedSpaceSQPPack::Ypy_name				= "Ypy";
+const std::string ReducedSpaceSQPPack::pz_name				= "pz";
+const std::string ReducedSpaceSQPPack::Zpz_name				= "Zpz";
+const std::string ReducedSpaceSQPPack::d_name				= "d";
+// Reduced QP Subproblem Info
+const std::string ReducedSpaceSQPPack::rGf_name				= "rGf";
+const std::string ReducedSpaceSQPPack::rHL_name				= "rHL";
+const std::string ReducedSpaceSQPPack::w_name				= "w";
+const std::string ReducedSpaceSQPPack::zeta_name				= "zeta";
+const std::string ReducedSpaceSQPPack::qp_grad_name			= "qp_grad";
+const std::string ReducedSpaceSQPPack::eta_name				= "eta";
+// Global Convergence Info
+const std::string ReducedSpaceSQPPack::alpha_name			= "alpha";
+const std::string ReducedSpaceSQPPack::mu_name				= "mu";
+const std::string ReducedSpaceSQPPack::Delta_name			= "Delta";
+const std::string ReducedSpaceSQPPack::phi_name				= "phi";
+// KKT Info
+const std::string ReducedSpaceSQPPack::opt_kkt_err_name		= "opt_kkt_err";
+const std::string ReducedSpaceSQPPack::feas_kkt_err_name		= "feas_kkt_err";
+const std::string ReducedSpaceSQPPack::GL_name				= "GL";
+const std::string ReducedSpaceSQPPack::rGL_name				= "rGL";
+const std::string ReducedSpaceSQPPack::lambda_name			= "lambda";
+const std::string ReducedSpaceSQPPack::nu_name				= "nu";
+
+void ReducedSpaceSQPPack::initialize_rsqp_names()
+{
+	// NLP Problem Info 
+	const_cast<std::string&>(x_name)				= "x";
+	const_cast<std::string&>(f_name)				= "f";
+	const_cast<std::string&>(Gf_name)				= "Gf";
+	const_cast<std::string&>(HL_name)				= "HL";
+	const_cast<std::string&>(c_name)				= "c";
+	const_cast<std::string&>(Gc_name)				= "Gc";
+	// Constraint Gradient Null Space / Range Space Decomposition Info
+	const_cast<std::string&>(Y_name)				= "Y";
+	const_cast<std::string&>(Z_name)				= "Z";
+	const_cast<std::string&>(U_name)				= "U";
+	const_cast<std::string&>(V_name)				= "V";
+	// Search Direction Info
+	const_cast<std::string&>(py_name)				= "py";
+	const_cast<std::string&>(Ypy_name)				= "Ypy";
+	const_cast<std::string&>(pz_name)				= "pz";
+	const_cast<std::string&>(Zpz_name)				= "Zpz";
+	const_cast<std::string&>(d_name)				= "d";
+	// Reduced QP Subproblem Info
+	const_cast<std::string&>(rGf_name)				= "rGf";
+	const_cast<std::string&>(rHL_name)				= "rHL";
+	const_cast<std::string&>(w_name)				= "w";
+	const_cast<std::string&>(zeta_name)				= "zeta";
+	const_cast<std::string&>(qp_grad_name)			= "qp_grad";
+	const_cast<std::string&>(eta_name)				= "eta";
+	// Global Convergence Info
+	const_cast<std::string&>(alpha_name)			= "alpha";
+	const_cast<std::string&>(mu_name)				= "mu";
+	const_cast<std::string&>(Delta_name)			= "Delta";
+	const_cast<std::string&>(phi_name)				= "phi";
+	// KKT Info
+	const_cast<std::string&>(opt_kkt_err_name)		= "opt_kkt_err";
+	const_cast<std::string&>(feas_kkt_err_name)		= "feas_kkt_err";
+	const_cast<std::string&>(GL_name)				= "GL";
+	const_cast<std::string&>(rGL_name)				= "rGL";
+	const_cast<std::string&>(lambda_name)			= "lambda";
+	const_cast<std::string&>(nu_name)				= "nu";
+}
+
 namespace ReducedSpaceSQPPack {
 
 // /////////////////////////////////////////////////
@@ -141,7 +223,7 @@ const rSQPState::IQA_MatrixWithOp& rSQPState::iqa_MatrixWithOp(E_IterQuantities_
 
 rSQPState::rSQPState()
 	: AlgorithmState(num_quantites)
-		, num_basis_(0), iq_ids_initialized_(0), check_results_(false)
+		, num_basis_(0), iq_ids_initialized_(0)
 {
 	// Initialize array to iq_id arrays.
 	typedef const AlgorithmState::iq_id_type ** iq_id_t;
@@ -574,6 +656,5 @@ Range1D& rSQPState::con_undecomp() {
 const Range1D& rSQPState::con_undecomp() const {
 	return con_undecomp_;
 }
-
 
 }	// end namespace ReducedSpaceSQPPack

@@ -13,16 +13,6 @@
 #include "../include/rSQPAlgoInterface.h"
 #include "Misc/include/debug.h"
 
-void ReducedSpaceSQPPack::rSQPAlgoContainer::max_run_time(double max_run_time)
-{
-	algo().set_max_run_time(max_run_time);
-}
-
-double ReducedSpaceSQPPack::rSQPAlgoContainer::max_run_time() const
-{
-	return algo().return_max_run_time();
-}
-
 void ReducedSpaceSQPPack::rSQPAlgoContainer::set_config(const config_ptr_t& config)
 {
 	algo_ = algo_ptr_t(0); // Remove our reference to the current (configured?) algorithm.

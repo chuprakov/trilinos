@@ -20,6 +20,18 @@ namespace ReducedSpaceSQPPack {
   */
 class rSQPSolverClientInterface {
 public:
+
+	/** @name Public Types */
+	//@{
+
+	///
+	enum EFindMinReturn { SOLUTION_FOUND, MAX_ITER_EXCEEDED, MAX_RUN_TIME_EXCEEDED };
+
+	/// Thrown if the setup is not valid
+	class InvalidSetup : public std::logic_error
+	{public: InvalidSetup(const std::string& what_arg) : std::logic_error(what_arg) {}};
+
+	//@}
 	
 	/// «std comp» members for nlp
 	STANDARD_COMPOSITION_MEMBERS( NLP, nlp )
@@ -33,20 +45,20 @@ public:
 	/// Set the maximum number of iterations the rSQP algorithm can perform (default = 100)
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, max_iter )
 
-	/// Set the maximum run_time (in min, default = infinity)
-	virtual void max_run_time(double max_run_time) = 0;
 	///
-	virtual double max_run_time() const = 0;
+	/** Set the maximum run_time (in min, default = infinity).
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( double, max_run_time )
 
 	///
-	/** Set the termination tolerance for the relative linear dependence of the
+	/** Set the termination tolerance for the relative (scaled) linear dependence of the
 	  * gradients part of the first order necessary optimality conditions.
 	  * Default = 1e-6.
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, opt_tol )
 
 	///
-	/** Set the termination tolerance for the equality constraints ||c(x*)||inf
+	/** Set the termination tolerance for the (scaled) equality constraints ||c(x*)||inf
 	  * which is part of the first order necessary optimality conditions.
 	  * Default = 1e-6.
 	  */
@@ -63,7 +75,7 @@ public:
 	/** Set the maximum absolute value for which the variable bounds may be violated
 	  * by when computing function and gradient values.
 	  *
-	  * In other words the algorithm will never call an the NLP to compute
+	  * In other words the algorithm will never call on the NLP to compute
 	  * a function and gradient evaluation outside of:
 	  *
 	  * xl - delta <= x <= xu + delta
@@ -78,21 +90,14 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( EJournalOutputLevel, journal_output_level )
 
 	///
-	/** Set the precesion of the output.
+	/** Set the precesion of the journal output.
 	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, print_digits )
-
-	//@}
-
-	/** @name Public Types */
-	//@{
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( int, journal_print_digits )
 
 	///
-	enum EFindMinReturn { SOLUTION_FOUND, MAX_ITER_EXCEEDED, MAX_RUN_TIME_EXCEEDED };
-
-	/// Thrown if the setup is not valid
-	class InvalidSetup : public std::logic_error
-	{public: InvalidSetup(const std::string& what_arg) : std::logic_error(what_arg) {}};
+	/** Set whether computations will be double checked or not.
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, check_results )
 
 	//@}
 
@@ -101,11 +106,17 @@ public:
 	  * , max_iter = 100, opt_tol = 1e-6, feas_tol = 1e-6, and step_tol = 1e-6
 	  * , max_var_bounds_viol = 1e-6.
 	  */
-	rSQPSolverClientInterface()
-		: max_iter_(100), opt_tol_(1e-6), feas_tol_(1e-6), step_tol_(1e-6)
-			, max_var_bounds_viol_(1e-8), journal_output_level_(PRINT_NOTHING)
-			, print_digits_(6)
-	{}
+	rSQPSolverClientInterface(
+		  int					max_iter				= 100
+		, double				max_run_time			= 1e+10 // run forever
+		, value_type			opt_tol					= 1e-6
+		, value_type			feas_tol				= 1e-6
+		, value_type			step_tol				= 1e-6
+		, value_type			max_var_bounds_viol		= 0.0
+		, EJournalOutputLevel 	journal_output_level 	= PRINT_NOTHING
+		, int					journal_print_digits	= 6
+		, bool					check_results			= true
+		);
 
 	///
 	virtual ~rSQPSolverClientInterface() {}
@@ -134,6 +145,10 @@ public:
 	  * \item	Minimum of NLPReduced is found to opt_tol, max_iter was reached
 	  *			or max_run_time reached (throw std::exection)
 	  * \end{itemize}
+	  *
+	  * The client should be prepaired to catch all sorts of exceptions from this function.
+	  * All of the purposefully thrown exceptions are derived from std::exception so the
+	  * client can check the what() function to see and description of the error.
 	  */
 	virtual EFindMinReturn find_min() = 0;
 

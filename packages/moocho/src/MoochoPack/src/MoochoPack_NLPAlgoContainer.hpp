@@ -30,11 +30,6 @@ public:
 	/** @name Overridden.*/
 	//@{
 
-	///
-	void max_run_time(double max_run_time);
-	///
-	double max_run_time() const;
-
 	/** @name «std comp» members for config. */
 	//@{
 

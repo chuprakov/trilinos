@@ -30,17 +30,20 @@ namespace LinAlgOpPack {
 }
 
 ReducedSpaceSQPPack::LineSearchWatchDog_Step::LineSearchWatchDog_Step(
-		const direct_line_search_ptr_t&	direct_line_search
+		  const direct_line_search_ptr_t&	direct_line_search
 		, const merit_func_ptr_t&			merit_func
-		, value_type						use_line_search_correct_kkt_tol
-		, value_type						eta							)
-	: direct_line_search_(direct_line_search)
+		, value_type						eta
+		, value_type						opt_kkt_err_threshold
+		, value_type						feas_kkt_err_threshold
+		)
+	:
+		  direct_line_search_(direct_line_search)
 		, merit_func_(merit_func)
-		, use_line_search_correct_kkt_tol_(use_line_search_correct_kkt_tol)
 		, eta_(eta)
+		, opt_kkt_err_threshold_(opt_kkt_err_threshold)
+		, feas_kkt_err_threshold_(feas_kkt_err_threshold)
 		, watch_k_(NORMAL_LINE_SEARCH)
 {}
-
 
 bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
@@ -127,11 +130,14 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 
 	if( watch_k_ == NORMAL_LINE_SEARCH ) {
 		const value_type
-			kkt_error	= s.opt_kkt_err().get_k(0) + s.feas_kkt_err().get_k(0);
-		if( kkt_error <= use_line_search_correct_kkt_tol() ) {
+			opt_kkt_err_k	= s.opt_kkt_err().get_k(0),
+			feas_kkt_err_k	= s.feas_kkt_err().get_k(0);
+		if( opt_kkt_err_k <= opt_kkt_err_threshold() && feas_kkt_err_k <= feas_kkt_err_threshold() ) {
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-				out	<< "\nkkt_error = " << kkt_error << " <= use_line_search_correct_kkt_tol = "
-						<< use_line_search_correct_kkt_tol() << std::endl
+				out	<< "\nopt_kkt_err_k = " << opt_kkt_err_k << " <= opt_kkt_err_threshold = "
+						<< opt_kkt_err_threshold() << std::endl
+					<< "\nfeas_kkt_err_k = " << feas_kkt_err_k << " <= feas_kkt_err_threshold = "
+						<< feas_kkt_err_threshold() << std::endl
 					<< "\nSwitching to watchdog linesearch ...\n";
 			}
 			watch_k_ = 0;
@@ -394,7 +400,9 @@ void ReducedSpaceSQPPack::LineSearchWatchDog_Step::print_step( const Algorithm& 
 	, std::ostream& out, const std::string& L ) const
 {
 	out	<< L << "*** Use the Watchdog linesearch when near solution.\n"
-		<< L << "default: use_correct_kkt_tol = 0.0, eta = 1.0e-4\n"
+		<< L << "default: opt_kkt_err_threshold = 0.0\n"
+		<< L << "         feas_kkt_err_threshold = 0.0\n"
+		<< L << "         eta = 1.0e-4\n"
 		<< L << "         watch_k = NORMAL_LINE_SEARCH\n"
 		<< L << "begin definition of NLP merit function phi.value(f(x),c(x)):\n";
 
@@ -408,9 +416,9 @@ void ReducedSpaceSQPPack::LineSearchWatchDog_Step::print_step( const Algorithm& 
 		<< L << "phi_kp1 = phi_k.value(f_kp1,c_kp1)\n"
 		<< L << "phi_k = phi.value(f_k,c_k)\n"
 		<< L << "if watch_k == NORMAL_LINE_SEARCH then\n"
-		<< L << "    kkt_error = opt_kkt_err_k + feas_kkt_err_k\n"
-		<< L << "    if kkt_error <= use_line_search_correct_kkt_tol then\n"
-		<< L << "        *** Start using watchdog from now on\n"
+		<< L << "    if opt_kkt_err <= opt_kkt_err_threshold\n"
+		<< L << "      and feas_kkt_err <= feas_kkt_err_threshold then\n"
+		<< L << "        *** Start using watchdog from now on!\n"
 		<< L << "        watch_k = 0\n"
 		<< L << "    end\n"
 		<< L << "end\n"

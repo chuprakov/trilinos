@@ -52,11 +52,6 @@ public:
 	const rSQPState& retrieve_state() const;
 
 	///
-	void set_max_run_time(double max_run_time);
-	///
-	double return_max_run_time() const;
-
-	///
 	/** This is the main control function for the rSQP algorithm.  It is responsible
 	  * for executing the main loop of the algorithm and does so sequentially until
 	  * one of the Strategy objects that it calls to perform steps in the algorithm

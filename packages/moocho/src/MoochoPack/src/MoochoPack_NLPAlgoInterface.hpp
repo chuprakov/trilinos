@@ -21,11 +21,6 @@ public:
 	/// Return the state object
 	virtual const rSQPState& retrieve_state() const = 0;
 
-	/// Set the maximum run_time (in min, default = infinity)
-	virtual void set_max_run_time(double max_run_time) = 0;
-	///
-	virtual double return_max_run_time() const = 0;
-
 	///
 	/** Start the iterations.
 	  *

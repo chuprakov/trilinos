@@ -13,7 +13,7 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 7;
+	const int local_num_options = 9;
 
 	enum local_EOptions {
         MAX_ITER,
@@ -22,7 +22,9 @@ namespace {
         FEAS_TOL,
         STEP_TOL,
         MAX_VAR_BOUNDS_VIOL,
-		JOURNAL_OUTPUT_LEVEL
+		JOURNAL_OUTPUT_LEVEL,
+		JOURNAL_PRINT_DIGITS,
+		CHECK_RESULTS
 	};
 
 	const char* local_SOptions[local_num_options]	= {
@@ -32,7 +34,9 @@ namespace {
         ("feas_tol"),
         ("step_tol"),
         ("max_var_bounds_viol"),
-		("journal_output_level")
+		("journal_output_level"),
+		("journal_print_digits"),
+		("check_results")
 	};
 
 }
@@ -51,6 +55,9 @@ rSQPSolverClientInterfaceSetOptions::rSQPSolverClientInterfaceSetOptions(
 void rSQPSolverClientInterfaceSetOptions::set_option(
 	int option_num, const std::string& option_value )
 {
+	namespace ofsp = OptionsFromStreamPack;
+	using ofsp::StringToBool;
+
 	typedef rSQPSolverClientInterface target_t;
 	switch( (local_EOptions)option_num ) {
 	    case MAX_ITER:
@@ -90,6 +97,14 @@ void rSQPSolverClientInterfaceSetOptions::set_option(
 					"Error, incorrect value for \"journal_output_level\"." );
 			break;
 		}
+	    case JOURNAL_PRINT_DIGITS:
+			target().journal_print_digits(::abs(::atoi(option_value.c_str())));
+			break;
+		case CHECK_RESULTS:
+			target().check_results(
+				StringToBool( "check_results", option_value.c_str() )
+				);
+			break;
 		default:
 			assert(0);	// Local error only?
 	}

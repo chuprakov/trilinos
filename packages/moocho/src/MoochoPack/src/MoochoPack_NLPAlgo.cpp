@@ -23,16 +23,6 @@ const rSQPState& rSQPAlgo::retrieve_state() const
 	return dynamic_cast<const rSQPState&>(state());
 }
 
-void rSQPAlgo::set_max_run_time(double max_run_time)
-{
-	this->max_run_time(max_run_time);
-}
-
-double rSQPAlgo::return_max_run_time() const
-{
-	return Algorithm::max_run_time();
-}
-
 rSQPSolverClientInterface::EFindMinReturn
 rSQPAlgo::dispatch() {
 	switch( do_algorithm(first_step_poss_) ) {

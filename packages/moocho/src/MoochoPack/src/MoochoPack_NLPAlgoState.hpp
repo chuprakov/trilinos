@@ -19,47 +19,45 @@ namespace ReducedSpaceSQPPack {
 //@{
 
 // NLP Problem Info 
-const std::string x_name				= "x";
-const std::string f_name				= "f";
-const std::string Gf_name				= "Gf";
-const std::string HL_name				= "HL";
-const std::string c_name				= "c";
-const std::string Gc_name				= "Gc";
-
+extern const std::string x_name;
+extern const std::string f_name;
+extern const std::string Gf_name;
+extern const std::string HL_name;
+extern const std::string c_name;
+extern const std::string Gc_name;
 // Constraint Gradient Null Space / Range Space Decomposition Info
-const std::string Y_name				= "Y";
-const std::string Z_name				= "Z";
-const std::string U_name				= "U";
-const std::string V_name				= "V";
-
+extern const std::string Y_name;
+extern const std::string Z_name;
+extern const std::string U_name;
+extern const std::string V_name;
 // Search Direction Info
-const std::string py_name				= "py";
-const std::string Ypy_name				= "Ypy";
-const std::string pz_name				= "pz";
-const std::string Zpz_name				= "Zpz";
-const std::string d_name				= "d";
-
+extern const std::string py_name;
+extern const std::string Ypy_name;
+extern const std::string pz_name;
+extern const std::string Zpz_name;
+extern const std::string d_name;
 // Reduced QP Subproblem Info
-const std::string rGf_name				= "rGf";
-const std::string rHL_name				= "rHL";
-const std::string w_name				= "w";
-const std::string zeta_name				= "zeta";
-const std::string qp_grad_name			= "qp_grad";
-const std::string eta_name				= "eta";
-
+extern const std::string rGf_name;
+extern const std::string rHL_name;
+extern const std::string w_name;
+extern const std::string zeta_name;
+extern const std::string qp_grad_name;
+extern const std::string eta_name;
 // Global Convergence Info
-const std::string alpha_name			= "alpha";
-const std::string mu_name				= "mu";
-const std::string Delta_name			= "Delta";
-const std::string phi_name				= "phi";
-
+extern const std::string alpha_name;
+extern const std::string mu_name;
+extern const std::string Delta_name;
+extern const std::string phi_name;
 // KKT Info
-const std::string opt_kkt_err_name		= "opt_kkt_err";
-const std::string feas_kkt_err_name		= "feas_kkt_err";
-const std::string GL_name				= "GL";
-const std::string rGL_name				= "rGL";
-const std::string lambda_name			= "lambda";
-const std::string nu_name				= "nu";
+extern const std::string opt_kkt_err_name;
+extern const std::string feas_kkt_err_name;
+extern const std::string GL_name;
+extern const std::string rGL_name;
+extern const std::string lambda_name;
+extern const std::string nu_name;
+
+// Call to initialize names (hack for the SGI 8/16/00)
+void initialize_rsqp_names();
 
 //@}
 
@@ -102,13 +100,6 @@ public:
 
 	/// Virtual destructor
 	virtual ~rSQPState() {}
-
-	/// Set if the results are to be checked or not
-	void check_results( bool check_results )
-	{	check_results_ = check_results; }
-	///
-	bool check_results() const
-	{	return check_results_; }
 
 	// ////////////////////////////////////////
 	// Overridden from AlgorithmState
@@ -488,9 +479,6 @@ private:
 	IVector var_perm_new_, var_perm_old_, con_perm_new_, con_perm_old_;
 	Range1D var_dep_, var_indep_, con_decomp_, con_undecomp_;
 	decomp_sys_ptr_t decomp_sys_;
-
-	bool check_results_;
-	// Check result flag
 
 	bool iq_ids_initialized_;
 	// Flag to keep track if the id's to the IQ objects are initialized

@@ -17,6 +17,12 @@
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorOut.h"
 
+ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::CheckSkipBFGSUpdateStd_Step(
+		value_type	skip_bfgs_prop_const
+		)
+	: skip_bfgs_prop_const_(skip_bfgs_prop_const)
+{}
+
 bool ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
@@ -64,18 +70,18 @@ bool ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::do_step(Algorithm& _algo
 				nrm_Zpz_km1	= s.Zpz().get_k(-1).norm_2(),
 				nrm_Ypy_km1	= s.Ypy().get_k(-1).norm_2();
 
-			// ratio = (10.0 / sqrt(||rGL_km1|| + ||c_km1||)) * ( ||Zpz_km1|| / ||Ypy_km1|| )
+			// ratio = (skip_bfgs_prop_const / sqrt(||rGL_km1|| + ||c_km1||)) * ( ||Zpz_km1|| / ||Ypy_km1|| )
 			value_type
-				ratio = ( 10.0 / ::sqrt( nrm_rGL_km1 + nrm_c_km1 ) )
+				ratio = ( skip_bfgs_prop_const() / ::sqrt( nrm_rGL_km1 + nrm_c_km1 ) )
 					* ( nrm_Zpz_km1 / nrm_Ypy_km1 );
 
-			// If ratio > 1.0 then skip the update
+			// If ratio < 1.0 then skip the update
 			skip_update = ratio < 1.0;
 
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 				out
-					<< "ratio = (10/sqrt(||rGL_km1||+||c_km1||))*(||Zpz_km1||/||Ypy_km1||)\n"
-					<< "      = (10/sqrt("<<nrm_rGL_km1<<"+"<<nrm_c_km1<<"))\n"
+					<< "ratio = (skip_bfgs_prop_const/sqrt(||rGL_km1||+||c_km1||))*(||Zpz_km1||/||Ypy_km1||)\n"
+					<< "      = (" << skip_bfgs_prop_const() << "/sqrt("<<nrm_rGL_km1<<"+"<<nrm_c_km1<<"))\n"
 					<< "        * ("<<nrm_Zpz_km1<<"/"<<nrm_Ypy_km1<<")\n"
 					<< "      = " << ratio << std::endl
 					<< "ratio " << (skip_update ? '<' : '>' ) << " 1\n"
@@ -121,7 +127,7 @@ void ReducedSpaceSQPPack::CheckSkipBFGSUpdateStd_Step::print_step( const Algorit
 		<< L << "        rHL_k = rHL_km1\n"
 		<< L << "    else\n"
 		<< L << "        *** Check if we are in the proper region\n"
-		<< L << "        ratio = ( 10 / sqrt( norm(rGL_km1,2) + norm(c_km1,2) ) )\n"
+		<< L << "        ratio = ( skip_bfgs_prop_const / sqrt( norm(rGL_km1,2) + norm(c_km1,2) ) )\n"
 		<< L << "                 * ( norm(Zpz_km1,2) / norm(Ypy_km1,2) )\n"
 		<< L << "        if ratio < 1 then \n"
 		<< L << "            rHL_k = rHL_km1\n"

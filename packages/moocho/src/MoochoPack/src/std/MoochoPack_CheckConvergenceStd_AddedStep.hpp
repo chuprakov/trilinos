@@ -19,8 +19,8 @@ public:
 	enum EOptErrorCheck { OPT_ERROR_REDUCED_GRADIENT_LAGR, OPT_ERROR_GRADIENT_LAGR };
 
 	///
-	/** <<std member comp>> members for whether the optimality conditions
-	  * should be scaled by the 
+	/** <<std member comp>> members for whether to check the reduced
+	  * or full gradient of the Lagrangian. 
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( EOptErrorCheck, opt_error_check )
 
@@ -29,7 +29,7 @@ public:
 
 	///
 	/** <<std member comp>> members for whether the optimality conditions
-	  * should be scaled by the 
+	  * should be scaled by the gradient of the objective or not.
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( EScaleKKTErrorBy, scale_kkt_error_by )
 
