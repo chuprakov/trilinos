@@ -17,7 +17,7 @@
 #define ABSTRACT_LIN_ALG_OP_PACK_DECL_H
 
 #include "AbstractLinAlgPackTypes.h"
-#include "MatrixWithOp.h"
+#include "MatrixWithOpNonsingular.h"
 #include "VectorWithOpMutable.h"
 #include "VectorStdOps.h"
 #include "AbstractLinAlgPackAssertOp.h"
@@ -27,9 +27,12 @@ namespace LinAlgOpPack {
 typedef AbstractLinAlgPack::size_type  size_type;
 typedef AbstractLinAlgPack::value_type value_type;
 
+using AbstractLinAlgPack::VectorSpace;
 using AbstractLinAlgPack::VectorWithOp;
 using AbstractLinAlgPack::VectorWithOpMutable;
 using AbstractLinAlgPack::MatrixWithOp;
+using AbstractLinAlgPack::MatrixNonsingular;
+using AbstractLinAlgPack::MatrixWithOpNonsingular;
 
 // Inject names of base linear algebra functions for LinAlgPack.
 // Note that this is neccesary in MS VC++ 5.0 because
@@ -42,6 +45,8 @@ using AbstractLinAlgPack::Vp_StMtV;
 //using AbstractLinAlgPack::Mt_S;
 using AbstractLinAlgPack::Mp_StM;
 using AbstractLinAlgPack::Mp_StMtM;
+using AbstractLinAlgPack::V_InvMtV;
+using AbstractLinAlgPack::M_StInvMtM;
 
 /** \defgroup LinAlgOpPack_grp Default linear algebra implementation operations.
   *
