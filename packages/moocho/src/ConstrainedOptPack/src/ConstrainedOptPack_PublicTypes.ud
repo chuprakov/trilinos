@@ -16,10 +16,6 @@
 #include "NLPInterfacePack/include/NLPInterfacePackPublicTypes.ud"
 
 using ConstrainedOptimizationPack::VectorWithNorms;
-using ConstrainedOptimizationPack::MatrixSymPosDefCholFactor;
-using ConstrainedOptimizationPack::MatrixSymAddDelBunchKaufman;
-using ConstrainedOptimizationPack::SymInvCholMatrix;
-using ConstrainedOptimizationPack::SymLBFGSMatrixSubclass;
 using ConstrainedOptimizationPack::DenseIdentVertConcatMatrix;
 using ConstrainedOptimizationPack::IdentZeroVertConcatMatrix;
 
@@ -41,10 +37,12 @@ using ConstrainedOptimizationPack::MeritFuncCalc1DQuadratic;
 using ConstrainedOptimizationPack::MeritFuncCalcNLP;
 using ConstrainedOptimizationPack::MeritFuncCalcNLE;
 using ConstrainedOptimizationPack::MeritFuncCalcNLF;
-using ConstrainedOptimizationPack::MatrixSymPosDefAddDel;
 using ConstrainedOptimizationPack::MatrixHessianSuperBasic;
 using ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal;
-using ConstrainedOptimizationPack::SymInvCholMatrixSubclass;
+using ConstrainedOptimizationPack::MatrixSymPosDefInvCholFactor;
+using ConstrainedOptimizationPack::MatrixSymPosDefCholFactor;
+using ConstrainedOptimizationPack::MatrixSymPosDefLBFGS;
+using ConstrainedOptimizationPack::MatrixSymAddDelBunchKaufman;
 using ConstrainedOptimizationPack::DenseIdentVertConcatMatrixSubclass;
 using ConstrainedOptimizationPack::ZAdjointFactMatrixSubclass;
 using ConstrainedOptimizationPack::IdentZeroVertConcatMatrixSubclass;

@@ -22,10 +22,6 @@ enum EBounds { FREE, UPPER, LOWER, EQUALITY };
 // concrete classes
 
 class VectorWithNorms;
-class MatrixSymPosDefCholFactor;
-class MatrixSymAddDelBunchKaufman;
-class SymInvCholMatrix;
-class SymLBFGSMatrixSubclass;
 class DenseIdentVertConcatMatrix;
 class IdentZeroVertConcatMatrix;
 
@@ -51,10 +47,12 @@ class MeritFuncCalc1DQuadratic;
 class MeritFuncCalcNLP;
 class MeritFuncCalcNLE;
 class MeritFuncCalcNLF;
-class MatrixSymPosDefAddDel;
 class MatrixHessianSuperBasic;
 class MatrixHessianSuperBasicInitDiagonal;
-class SymInvCholMatrixSubclass;
+class MatrixSymPosDefInvCholFactor;
+class MatrixSymPosDefCholFactor;
+class MatrixSymPosDefLBFGS;
+class MatrixSymAddDelBunchKaufman;
 class DenseIdentVertConcatMatrixSubclass;
 class ZAdjointFactMatrixSubclass;
 class IdentZeroVertConcatMatrixSubclass;

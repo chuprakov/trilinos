@@ -1,0 +1,875 @@
+// //////////////////////////////////////////////////////////////////////////////////
+// MatrixSymPosDefLBFGS.cpp
+//
+// Implementation for limited memory BFGS matrix where update vectors are thrown away.
+//
+// This implementation is based on:
+//
+// Byrd, Nocedal, and Schnabel, "Representations of quasi-Newton matrices
+// and their use in limited memory methods", Mathematical Programming, 63 (1994)
+// 
+// Consider the following BFGS updates:
+//
+// ( B^{k-1}, s^{k-1}, y^{k-1} ) -> B^{k}
+//
+// where:
+//
+// B^{k} = B^{k-1} - ( (B*s)*(B*s)' / (s'*B*s) )^{k-1} + ( (y*y') / (s'*y) )^{k-1}
+//
+// B <: R^(n x n)
+// s <: R^(n)
+// y <: R^(n)
+//
+// Given that we start from the same initial matrix Bo, the updated matrix B^{k}
+// will be the same independent of the order the (s^{i},y^{i}) updates are added.
+//
+// Now let us consider limited memory updating.  For updating let
+//
+// Bo = ( 1 / gamma_k ) * I
+//
+// where:
+//
+// gamma_k = ( s^{k-1}'*y^{k-1} ) / ( y^{k-1}'*y^{k-1} )
+//
+// Now let us define the matrices S and Y that store the update vectors
+// s^{i} and y^{i} for i = 1 ... m.
+//
+// S = [ s^{1}, s^{2},...,s^{m} ] <: R^(n x m)
+// Y = [ y^{1}, y^{2},...,y^{m} ] <: R^(n x m)
+//
+// Here we are only storing the m most recent update vectors
+// and their ordering is arbitrary.
+//
+// Now let's define a compact representation for the matrix B^{k} and
+// its inverse H^{k} = inv(B^{k}).
+//
+// Bk = (1/gk)*I - [ (1/gk)*S  Y ] * inv( [ (1/gk)*S'S   L ]     [ (1/gk)*S' ]
+//                                        [    L'       -D ] ) * [    Y'     ]
+//                                        \________________/
+//                                                Q
+//
+// Hk = gk*I + [ S  gk*Y ] * [ inv(R')*(D+gk*Y'Y)*inv(R)     -inv(R') ] * [   S'  ]
+//                           [            -inv(R)                0    ]   [ gk*Y' ]
+//
+// where:
+//
+// gk = gamma_k <: R
+//
+//			[	s^{1}'*y^{1}	s^{1}'*y^{2}	...		s^{1}'*y^{m}	]
+//	S'Y =	[	s^{2}'*y^{1}	s^{2}'*y^{2}	...		s^{2}'*y^{m}	] <: R^(m x m)
+//			[	.				.						.				]
+//			[	s^{m}'*y^{1}	s^{m}'*y^{2}	...		s^{m}'*y^{m}	]
+// 
+//			[	s^{1}'*y^{1}	0				...		0				]
+//	D =		[	0				s^{2}'*y^{2}	...		0				] <: R^(m x m)
+//			[	.				.						.				]
+//			[	0				0				...		s^{m}'*y^{m}	]
+//
+//	R = upper triangular part of S'Y
+// 
+//	L =	lower tirangular part of S'Y with zeros on the diagonal
+//
+
+#include <assert.h>
+
+#include "../include/MatrixSymPosDefLBFGS.h"
+#include "LinAlgPack/include/LinAlgOpPack.h"
+#include "LinAlgPack/include/GenMatrixOut.h"
+#include "LinAlgLAPack/include/LinAlgLAPack.h"
+
+namespace {
+
+	using LinAlgPack::VectorSlice;
+	using LinAlgPack::GenMatrixSlice;
+
+	///
+	/** Compute Cb = Lb * inv(Db) * Lb' (see update_Q()).
+	  *
+	  * Here:
+	  *		Lb is lower triangular.
+	  *		Cb is upper triangular.
+	  *		Db_diag is the diagonal of Db
+	  */
+	void comp_Cb( const GenMatrixSlice& Lb, const VectorSlice& Db_diag
+		, GenMatrixSlice* Cb );
+
+}	// end namespace
+
+namespace ConstrainedOptimizationPack {
+
+// /////////////////////////////////
+// Inline private member functions
+
+inline
+const GenMatrixSlice MatrixSymPosDefLBFGS::S() const
+{
+	return S_(1,n_,1,m_bar_);
+}
+
+inline
+const GenMatrixSlice MatrixSymPosDefLBFGS::Y() const
+{
+	return Y_(1,n_,1,m_bar_);
+}
+
+inline
+const tri_gms MatrixSymPosDefLBFGS::R() const
+{
+	return LinAlgPack::tri( STY_(1,m_bar_,1,m_bar_), BLAS_Cpp::upper, BLAS_Cpp::nonunit );
+}
+
+inline
+const tri_gms MatrixSymPosDefLBFGS::Lb() const
+{
+	return LinAlgPack::tri( STY_(2,m_bar_,1,m_bar_-1), BLAS_Cpp::lower, BLAS_Cpp::nonunit );
+}
+
+inline
+const sym_gms MatrixSymPosDefLBFGS::STS() const
+{
+	return LinAlgPack::sym( STSYTY_(2,m_bar_+1,1,m_bar_),BLAS_Cpp::lower );
+}
+
+inline
+const sym_gms MatrixSymPosDefLBFGS::YTY() const
+{
+	return LinAlgPack::sym( STSYTY_(1,m_bar_,2,m_bar_+1),BLAS_Cpp::upper );
+}
+
+// ///////////////////////
+// Nonlinined functions
+
+MatrixSymPosDefLBFGS::MatrixSymPosDefLBFGS( int num_updates_stored )
+	: n_(0), m_(num_updates_stored), auto_rescaling_(true)
+{}
+
+void MatrixSymPosDefLBFGS::set_num_updates_stored(int m)
+{
+	if( m < 1 )
+		throw std::logic_error( "MatrixSymPosDefLBFGS::set_num_updates_stored(m) : "
+			"Error, the number of storage locations must be > 0" );
+	m_ = m;
+	n_ = 0;	// make uninitialized
+}
+
+// Overridden from Matrix
+
+size_type MatrixSymPosDefLBFGS::rows() const
+{
+	return n_;
+}
+
+// Overridden from MatrixWithOp
+
+std::ostream& MatrixSymPosDefLBFGS::output(std::ostream& out) const
+{
+	assert_initialized();
+	out << "*** Limited Memory BFGS matrix.\n"
+		<< "Conversion to dense =\n";
+	MatrixWithOp::output(out);
+	out << "\n*** Stored quantities\n"
+		<< "\ngamma_k = " << gamma_k_ << std::endl;
+	if( m_bar_ ) {
+		out	<< "\nS =\n" << S()
+			<< "\nY =\n" << Y()
+			<< "\nS'Y =\n" << STY_(1,m_bar_,1,m_bar_)
+			<< "\nlower(S'S) \\ zero diagonal \\ upper(Y'Y) =\n"
+				<< STSYTY_(1,m_bar_+1,1,m_bar_+1)
+			<< "\nQ updated? = " << Q_updated_ << std::endl
+			<< "\nCholesky of schur complement of Q, QJ =\n" << QJ_(1,m_bar_,1,m_bar_);
+	}
+	return out;
+}
+
+MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)
+{	
+	const MatrixSymPosDefLBFGS *p_m = dynamic_cast<const MatrixSymPosDefLBFGS*>(&m);
+	if(p_m) {
+		if( p_m == this ) return *this;	// assignment to self
+		// Important: Assign all members here.
+		n_	 		= p_m->n_;
+		m_			= p_m->m_;
+		m_bar_		= p_m->m_bar_;
+		k_bar_		= p_m->k_bar_;
+		gamma_k_	= p_m->gamma_k_;
+		S_			= p_m->S_;
+		Y_			= p_m->Y_;
+		STY_		= p_m->STY_;
+		STSYTY_		= p_m->STSYTY_;
+		Q_updated_	= p_m->Q_updated_;
+		QJ_			= p_m->QJ_;
+	}
+	else {
+		throw std::invalid_argument("MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)"
+			" : The concrete type of m is not a subclass of MatrixSymPosDefLBFGS as expected" );
+	}
+	return *this;
+}
+
+// Level-2 BLAS
+
+void MatrixSymPosDefLBFGS::Vp_StMtV(
+	  VectorSlice* y, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	, const VectorSlice& x, value_type beta) const
+{
+	using LinAlgOpPack::V_StMtV;
+	using LinAlgOpPack::V_MtV;
+
+	using LinAlgPack::Vt_S;
+	using LinAlgPack::Vp_StV;
+	using LinAlgPack::Vp_StMtV;
+
+	assert_initialized();
+
+	// y = b*y + Bk * x
+	//
+	// y = b*y + (1/gk)*x - [ (1/gk)*S  Y ] * inv(Q) * [ (1/gk)*S' ] * x
+	//                                                 [     Y'    ]
+	// Perform the following operations (in order):
+	//
+	// y = b*y
+	//
+	// y += (1/gk)*x
+	//
+	// t1 = [ (1/gk)*S'*x ]		<: R^(2*m)
+	//		[      Y'*x   ]
+	//
+	// t2 =	inv(Q) * t1			<: R^(2*m)
+	//
+	// y += -(1/gk) * S * t2(1:m)
+	//
+	// y += -1.0 * Y * t2(m+1,2m)
+
+	const value_type
+		invgk = 1.0 / gamma_k_;
+
+	// y = b*y
+
+	if( beta == 0.0 )
+		*y = beta;
+	else
+		Vt_S( y, beta );
+
+	// y += (1/gk)*x
+
+	Vp_StV( y, invgk, x );
+
+	if( !m_bar_ )
+		return;	// No updates have been added yet.
+
+	// Get workspace
+
+	if( work_.size() < 4 * m_ )
+		work_.resize( 4 * m_ );
+
+	const size_type
+		mb = m_bar_;
+
+	const size_type
+		t1s = 1,
+		t1n = 2*mb,
+		t2s = t1s+t1n,
+		t2n = 2*mb;
+
+	VectorSlice
+		t1 = work_(	t1s,	t1s + t1n - 1	),
+		t2 = work_(	t2s,	t2s + t2n - 1 	);
+
+	const GenMatrixSlice
+		&S = this->S(),
+		&Y = this->Y();
+
+	// t1 = [ (1/gk)*S'*x ]
+	//		[      Y'*x   ]
+
+	V_StMtV( &t1(1,mb), invgk, S, BLAS_Cpp::trans, x );
+	V_MtV( &t1(mb+1,2*mb), Y, BLAS_Cpp::trans, x );
+
+	// t2 =	inv(Q) * t1
+
+	V_invQtV( &t2, t1 );
+
+	// y += -(1/gk) * S * t2(1:m)
+
+	Vp_StMtV( y, -invgk, S, BLAS_Cpp::no_trans, t2(1,mb) );
+
+	// y += -1.0 * Y * t2(m+1,2m)
+
+	Vp_StMtV( y, -1.0, Y, BLAS_Cpp::no_trans, t2(mb+1,2*mb) );
+
+}
+
+// Overridden from MatrixWithOpFactorized
+
+// Level-2 BLAS
+
+void MatrixSymPosDefLBFGS::V_InvMtV( VectorSlice* y, BLAS_Cpp::Transp trans_rhs1
+	, const VectorSlice& x ) const
+{
+
+	using LinAlgPack::V_mV;
+	using LinAlgPack::V_StV;
+	using LinAlgPack::V_InvMtV;
+
+	using LinAlgOpPack::Vp_V;
+	using LinAlgOpPack::V_MtV;
+	using LinAlgOpPack::V_StMtV;
+	using LinAlgOpPack::Vp_MtV;
+	using LinAlgOpPack::Vp_StMtV;
+
+
+	assert_initialized();
+
+	// y = inv(Bk) * x = Hk * x
+	//
+	// = gk*x + [S gk*Y] * [ inv(R')*(D+gk*Y'Y)*inv(R)     -inv(R') ] * [   S'  ] * x
+	//                     [            -inv(R)                0    ]   [ gk*Y' ]
+	//
+	// Perform in the following (in order):
+	//
+	// y = gk*x
+	//
+	// t1 = [   S'*x  ]					<: R^(2*m)
+	//      [ gk*Y'*x ]
+	//
+	// t2 = inv(R) * t1(1:m)			<: R^(m)
+	//
+	// t3 = - inv(R') * t1(m+1,2*m)		<: R^(m)
+	//
+	// t4 = gk * Y'Y * t2				<: R^(m)
+	//
+	// t4 += D*t2
+	//
+	// t5 = inv(R') * t4				<: R^(m)
+	//
+	// t5 += t3
+	//
+	// y += S*t5
+	//
+	// y += -gk*Y*t2
+
+	// y = gk*x
+	V_StV( y, gamma_k_, x );
+
+	const size_type
+		mb = m_bar_;	
+	
+	if( !mb )
+		return;	// No updates have been performed.
+
+	// Get workspace
+
+	if( work_.size() < 6*m_ )
+		work_.resize( 6*m_ );
+
+	const size_type
+		t1s		= 1,
+		t1n		= 2*mb,
+		t2s		= t1s + t1n,
+		t2n		= mb,
+		t3s		= t2s + t2n,
+		t3n		= mb,
+		t4s		= t3s + t3n,
+		t4n		= mb,
+		t5s		= t4s + t4n,
+		t5n		= mb;
+
+	VectorSlice
+		t1	= work_( t1s, t1s + t1n - 1 ),
+		t2	= work_( t2s, t2s + t2n - 1 ),
+		t3	= work_( t3s, t3s + t3n - 1 ),
+		t4	= work_( t4s, t4s + t4n - 1 ),
+		t5	= work_( t5s, t5s + t5n - 1 );
+
+	const GenMatrixSlice
+		&S = this->S(),
+		&Y = this->Y();
+
+	const tri_gms
+		&R = this->R();
+
+	const sym_gms
+		&YTY = this->YTY();
+
+	// t1 = [   S'*x  ]
+	//      [ gk*Y'*x ]
+	V_MtV( &t1(1,mb), S, BLAS_Cpp::trans, x );
+	V_StMtV( &t1(mb+1,2*mb), gamma_k_, Y, BLAS_Cpp::trans, x );
+
+	// t2 = inv(R) * t1(1:m)
+	V_InvMtV( &t2, R, BLAS_Cpp::no_trans, t1(1,mb) );
+
+	// t3 = - inv(R') * t1(m+1,2*m)
+	V_mV( &t3, t1(mb+1,2*mb) );
+	V_InvMtV( &t3, R, BLAS_Cpp::trans, t3 );
+
+	// t4 = gk * Y'Y * t2
+	V_StMtV( &t4, gamma_k_, YTY, BLAS_Cpp::no_trans, t2 );
+
+	// t4 += D*t2
+	Vp_DtV( &t4, t2 );
+
+	// t5 = inv(R') * t4
+	V_InvMtV( &t5, R, BLAS_Cpp::trans, t4 );
+
+	// t5 += t3
+	Vp_V( &t5, t3 );
+
+	// y += S*t5
+	Vp_MtV( y, S, BLAS_Cpp::no_trans, t5 );
+
+	// y += -gk*Y*t2
+	Vp_StMtV( y, -gamma_k_, Y, BLAS_Cpp::no_trans, t2 );
+
+}
+
+// Overridden from MatrixSymSecantUpdateable
+
+void MatrixSymPosDefLBFGS::init_identity(size_type n, value_type alpha)
+{
+	// Resize storage
+	S_.resize( n, m_ );
+	Y_.resize( n, m_ );
+	STY_.resize( m_, m_ );
+	STSYTY_.resize( m_+1, m_+1 );
+	STSYTY_.diag(0) = 0.0;
+
+	gamma_k_	= alpha;
+
+	// Initialize counters
+	k_bar_	= 0;
+	m_bar_	= 0;
+
+	n_ = n;		// initialized;
+}
+
+void MatrixSymPosDefLBFGS::init_diagonal(const VectorSlice& diag)
+{
+	using LinAlgPack::norm_inf;
+	init_identity( diag.size(), norm_inf(diag) );
+}
+
+void MatrixSymPosDefLBFGS::secant_update(
+	VectorSlice* s, VectorSlice* y, VectorSlice* Bs)
+{
+	using LinAlgPack::dot;
+	using LinAlgPack::norm_2;
+
+	using LinAlgOpPack::V_MtV;
+
+	assert_initialized();
+
+	// Check that s'*y is sufficently positive and if not then skip the update:
+	// s'*y > sqrt(macheps) * ||s||2 * ||y||2   (Dennis and Schnabel, A9.4.2)
+	const value_type
+		sTy	= dot(*s,*y),
+		macheps = std::numeric_limits<value_type>::epsilon(),
+		min_sTy = ::sqrt(macheps) * norm_2(*s) * norm_2(*y);
+	if(sTy <= min_sTy) {
+		std::ostringstream omsg;
+		omsg	<< "MatrixSymPosDefLBFGS::secant_update(...) : Error, s'*y = " << sTy
+				<< " < sqrt(mach_eps) * ||s||2 * ||y||2 = " << min_sTy << std::endl
+				<< "Therefore the BFGS update is illdefined.";
+		throw UpdateSkippedException( omsg.str() );	
+	}
+
+	try {
+
+	// Update counters
+	if( k_bar_ == m_ ) {
+		// We are at the end storage so loop back around again
+		k_bar_ = 1;
+	}
+	else {
+		k_bar_++;
+	}
+	if( m_bar_ < m_ ) {
+		// This is the first few updates where we have not maxed out the storage.
+		m_bar_++;
+	}
+
+	// Set the update vectors
+	S_.col(k_bar_) = *s;
+	Y_.col(k_bar_) = *y;
+
+	// /////////////////////////////////////////////////////////////////////////////////////
+	// Update S'Y
+	//
+	// Update the row and column k_bar
+	//
+	//	S'Y = 
+	//
+	//	[	s(1)'*y(1)		...		s(1)'*y(k_bar)		...		s(1)'*y(m_bar)		]
+	//	[	.						.							.					] row
+	//	[	s(k_bar)'*y(1)	...		s(k_bar)'*y(k_bar)	...		s(k_bar)'*y(m_bar)	] k_bar
+	//	[	.						.							.					]
+	//	[	s(m_bar)'*y(1)	...		s(m_bar)'*y(k_bar)	...		s(m_bar)'*y(m_bar)	]
+	//
+	//								col k_bar
+	//
+	// Therefore we set:
+	//	(S'Y)(:,k_bar) =  S'*y(k_bar)
+	//	(S'Y)(k_bar,:) =  s(k_bar)'*Y
+
+	const GenMatrixSlice
+		&S = this->S(),
+		&Y = this->Y();
+
+	//	(S'Y)(:,k_bar) =  S'*y(k_bar)
+	V_MtV( &STY_.col(k_bar_)(1,m_bar_), S, BLAS_Cpp::trans, Y.col(k_bar_) );
+
+	//	(S'Y)(k_bar,:)' =  Y'*s(k_bar)
+	V_MtV( &STY_.row(k_bar_)(1,m_bar_), Y, BLAS_Cpp::trans, S.col(k_bar_) );
+
+	// /////////////////////////////////////////////////////////////////
+	// Update S'S
+	//
+	//	S'S = 
+	//
+	//	[	s(1)'*s(1)		...		symmetric					symmetric			]
+	//	[	.						.							.					] row
+	//	[	s(k_bar)'*s(1)	...		s(k_bar)'*s(k_bar)	...		symmetric			] k_bar
+	//	[	.						.							.					]
+	//	[	s(m_bar)'*s(1)	...		s(m_bar)'*s(k_bar)	...		s(m_bar)'*s(m_bar)	]
+	//
+	//								col k_bar
+	//
+	// Here we will update the lower triangular part of S'S.  To do this we
+	// only need to compute:
+	//		t = S'*s(k_bar) = { s(k_bar)' * [ s(1),..,s(k_bar),..,s(m_bar) ]  }'
+	// then set the appropriate rows and columns of S'S.
+
+	if( work_.size() < m_ )
+		work_.resize(m_);
+
+	// work = S'*s(k_bar)
+	V_MtV( &work_(1,m_bar_), S, BLAS_Cpp::trans, S.col(k_bar_) );
+
+	// Set row elements
+	STSYTY_.row(k_bar_+1)(1,k_bar_) = work_(1,k_bar_);
+	// Set column elements
+	STSYTY_.col(k_bar_)(k_bar_+1,m_bar_+1) = work_(k_bar_,m_bar_);
+
+	// /////////////////////////////////////////////////////////////////////////////////////
+	// Update Y'Y
+	//
+	// Update the row and column k_bar
+	//
+	//	Y'Y = 
+	//
+	//	[	y(1)'*y(1)		...		y(1)'*y(k_bar)		...		y(1)'*y(m_bar)		]
+	//	[	.						.							.					] row
+	//	[	symmetric		...		y(k_bar)'*y(k_bar)	...		y(k_bar)'*y(m_bar)	] k_bar
+	//	[	.						.							.					]
+	//	[	symmetric		...		symmetric			...		y(m_bar)'*y(m_bar)	]
+	//
+	//								col k_bar
+	//
+	// Here we will update the upper triangular part of Y'Y.  To do this we
+	// only need to compute:
+	//		t = Y'*y(k_bar) = { y(k_bar)' * [ y(1),..,y(k_bar),..,y(m_bar) ]  }'
+	// then set the appropriate rows and columns of Y'Y.
+
+	// work = Y'*y(k_bar)
+	V_MtV( &work_(1,m_bar_), Y, BLAS_Cpp::trans, Y.col(k_bar_) );
+
+	// Set row elements
+	STSYTY_.col(k_bar_+1)(1,k_bar_) = work_(1,k_bar_);
+	// Set column elements
+	STSYTY_.row(k_bar_)(k_bar_+1,m_bar_+1) = work_(k_bar_,m_bar_);
+
+	// /////////////////////////////
+	// Update gamma_k
+
+	// gamma_k = s'*y / y'*y
+	gamma_k_ = auto_rescaling_ ? STY_(k_bar_,k_bar_) / STSYTY_(k_bar_,k_bar_+1) : 1.0;
+
+	// We do not initially update Q unless we have to form a matrix-vector
+	// product latter.
+	
+	Q_updated_ = false;
+
+	}	//	end try
+	catch(...) {
+		// If we throw any exception the we should make the matrix uninitialized
+		// so that we do not leave this object in an inconsistant state.
+		n_ = 0;
+		throw;
+	}
+}
+
+// Private member functions
+
+void MatrixSymPosDefLBFGS::Vp_DtV( VectorSlice* y, const VectorSlice& x ) const
+{
+	LinAlgPack::Vp_MtV_assert_sizes( y->size(), m_bar_, m_bar_
+		, BLAS_Cpp::no_trans, x.size() );
+
+	VectorSlice::const_iterator
+		d_itr	= STY_.diag(0).begin(),
+		x_itr	= x.begin();
+	VectorSlice::iterator
+		y_itr	= y->begin();
+
+	while( y_itr != y->end() )
+		*y_itr++ += (*d_itr++) * (*x_itr++);		
+}
+
+// We need update the factorizations to solve for:
+//
+// x = inv(Q) * y   =>   Q * x = y
+//
+//	[ (1/gk)*S'S	 L	] * [ x1 ] = [ y1 ]
+//	[      L'		-D	]   [ x2 ]   [ y2 ]
+//
+// We will solve the above system using the schur complement:
+//
+// C = (1/gk)*S'S + L*inv(D)*L'
+//
+// According to the referenced paper, C is p.d. so:
+//
+// C = J*J'
+//
+// We then compute the solution as:
+//
+// x1 = inv(C) * ( y1 + L*inv(D)*y2 )
+// x2 = - inv(D) * ( y2 - L'*x1 )
+//
+// Therefore we will just update the factorization C = J*J'
+// where the factor J is stored in QJ_.
+
+void MatrixSymPosDefLBFGS::update_Q() const
+{
+	using LinAlgPack::tri;
+	using LinAlgPack::tri_ele;
+	using LinAlgPack::Mp_StM;
+
+	// We need update the factorizations to solve for:
+	//
+	// x = inv(Q) * y
+	//
+	//	[ y1 ]	=	[ (1/gk)*S'S	 L	] * [ x1 ]
+	//	[ y2 ]		[      L'		-D	]   [ x2 ]
+	//
+	// We will solve the above system using the schur complement:
+	//
+	// C = (1/gk)*S'S + L*inv(D)*L'
+	//
+	// According to the referenced paper, C is p.d. so:
+	//
+	// C = J*J'
+	//
+	// We then compute the solution as:
+	//
+	// x1 = inv(C) * ( y1 + L*inv(D)*y2 )
+	// x2 = - inv(D) * ( y2 - L'*x1 )
+	//
+	// Therefore we will just update the factorization C = J*J'
+
+	// Form the upper triangular part of C which will become J
+	// which we are using storage of QJ
+
+	QJ_.resize( m_, m_ );
+
+	const size_type
+		mb = m_bar_;
+
+	GenMatrixSlice
+		C = QJ_(1,mb,1,mb);
+
+	// C = L * inv(D) * L'
+	//
+	// Here L is a strictly lower triangular (zero diagonal) matrix where:
+	//
+	// L = [ 0  0 ]
+	//     [ Lb 0 ]
+	//
+	// Lb is lower triangular (nonzero diagonal)
+	//
+	// Therefore we compute L*inv(D)*L' as:
+	//
+	// C = [ 0	0 ] * [ Db  0  ] * [ 0  Lb' ]
+	//	   [ Lb 0 ]   [ 0   db ]   [ 0   0  ]
+	//
+	//   = [ 0  0  ] = [ 0      0     ]
+	//     [ 0  Cb ]   [ 0  Lb*Db*Lb' ]
+	//
+	// We need to compute the upper triangular part of Cb.
+
+	C.row(1) = 0.0;
+	if( mb > 1 )
+		comp_Cb( STY_(2,mb,1,mb-1), STY_.diag(0)(1,mb-1), &C(2,mb,2,mb) );
+
+	// C += (1/gk)*S'S
+
+	const sym_gms &STS = this->STS();
+	Mp_StM( &C, (1/gamma_k_), tri( STS.gms(), STS.uplo(), BLAS_Cpp::nonunit )
+		, BLAS_Cpp::trans );
+
+	// Now perform a cholesky factorization of C
+	// After this factorization the upper triangular part of QJ
+	// (through C) will contain the cholesky factor.
+
+	tri_ele_gms C_upper = tri_ele( C, BLAS_Cpp::upper );
+	LinAlgLAPack::potrf( &C_upper );
+
+	Q_updated_ = true;
+}
+
+void MatrixSymPosDefLBFGS::V_invQtV( VectorSlice* x, const VectorSlice& y ) const
+{
+	using LinAlgPack::sym;
+	using LinAlgPack::tri;
+	using LinAlgPack::Vp_StV;
+	using LinAlgPack::V_InvMtV;
+
+	using LinAlgOpPack::Vp_V;
+	using LinAlgOpPack::V_MtV;
+
+
+	// Solve the system 
+	//
+	// Q * x = y
+	//
+	// Using the schur complement factorization as described above.
+
+	const size_type
+		mb = m_bar_;
+
+	if(!Q_updated_) {
+		update_Q();
+	}
+
+	VectorSlice
+		x1 = (*x)(1,mb),
+		x2 = (*x)(mb+1,2*mb);
+
+	const VectorSlice
+		y1 = y(1,mb),
+		y2 = y(mb+1,2*mb);
+
+	// //////////////////////////////////////
+	// x1 = inv(C) * ( y1 + L*inv(D)*y2 )
+	//     = inv(J'*J) * r
+	//     = inv(J) * inv(J') * r
+
+	{	// x1 = inv(D) * y2
+		VectorSlice::const_iterator
+			d_itr = STY_.diag(0).begin(),
+			y2_itr = y2.begin();
+		VectorSlice::iterator
+			x1_itr = x1.begin();
+		while( x1_itr != x1.end() )
+			*x1_itr++ = *y2_itr++ / *d_itr++;
+	}
+
+	// x1 = L * x1
+	//
+	//    = [ 0  0 ] * [ x1(1:mb-1) ]
+	//      [ Lb 0 ]   [ x1(mb)     ]
+	//
+	//    = [ 0             ]
+	//      [ Lb*x1(1:mb-1) ]
+	//
+	if( mb > 1 ) {
+		// x1(2,mb) = x1(1,mb-1) ( copy from mb-1 to mb then mb-2 to mb-1
+		// etc. so that we don't overwrite the elements we need to copy ).
+		VectorSlice
+			x1a = x1(1,mb-1),
+			x1b = x1(2,mb);
+		std::copy( x1a.rbegin(), x1a.rend(), x1b.rbegin() );
+		V_MtV( &x1b, Lb(), BLAS_Cpp::no_trans, x1b );
+	}
+	x1(1) = 0.0;
+
+	// r = x1 += y1
+	Vp_V( &x1, y1 );
+
+	// x1 = inv(J') * r
+	const tri_gms J = tri( QJ_(1,mb,1,mb), BLAS_Cpp::upper, BLAS_Cpp::nonunit );
+	V_InvMtV( &x1, J, BLAS_Cpp::trans, x1 );
+
+	// x1 = inv(J) * x1
+	V_InvMtV( &x1, J, BLAS_Cpp::no_trans, x1 );
+
+	// /////////////////////////////////////
+	// x2 = inv(D) * ( - y2 + L'*x1 )
+
+	// x2 = L'*x1
+	//
+	//    = [ 0  Lb' ] * [ x1(1)    ]
+	//      [ 0  0   ]   [ x1(2,mb) ]
+	//
+	//    = [ Lb'*x1(2,mb) ]
+	//      [      0       ]
+	//
+	if( mb > 1 ) {
+		V_MtV( &x2(1,mb-1), Lb(), BLAS_Cpp::trans, x1(2,mb) );
+	}
+	x2(mb) = 0.0;
+
+	// x2 += -y2
+	Vp_StV( &x2, -1.0, y2 );
+
+	// x2 = inv(D) * x2
+	{
+		VectorSlice::const_iterator
+			d_itr = STY_.diag(0).begin();
+		VectorSlice::iterator
+			x2_itr = x2.begin();
+		while( x2_itr != x2.end() )
+			*x2_itr++ /= *d_itr++;
+	}
+}
+
+void MatrixSymPosDefLBFGS::assert_initialized() const
+{
+	if(!n_)
+		throw std::logic_error( "MatrixSymPosDefLBFGS::assert_initialized() : "
+			"Error, matrix not initialized" );
+}
+
+}	// end namespace ConstrainedOptimizationPack 
+
+namespace {
+
+void comp_Cb( const GenMatrixSlice& Lb, const VectorSlice& Db_diag
+	, GenMatrixSlice* Cb )
+{
+	// Lb * inv(Db) * Lb =
+	//
+	// [ l(1,1)						]   [ dd(1)					]   [ l(1,1)	l(2,1)	...	l(p,1)	]
+	// [ l(2,1)	l(2,2)				]   [		dd(2)			]   [			l(2,2)	...	l(p,2)	]
+	// [ .		.        .			] * [			.			] * [					.	.		]
+	// [ l(p,1)	l(p,2)	...	l(p,p)	]   [				dd(p)	]   [						l(p,p)	]
+	//
+	//
+	// [ l(1,1)*dd(1)*l(1,1)	l(1,1)*dd(1)*l(2,1)							...		l(1,1)*dd(1)*l(p,1)							]
+	// [ symmetric				l(2,1)*dd(1)*l(2,1) + l(2,2)*dd(2)*l(2,2)	...		l(2,1)*dd(1)*l(p,1) + l(2,2)*dd(2)*l(p,2)	]		
+	// [ .						.											...
+	// [ symmetric				symmetric									...		sum( l(p,i)*dd(i)*l(p,i), i=1,..,p )		]
+	//
+	// Therefore we can express the upper triangular elemetns of Cb as:
+	//
+	// Cb(i,j) = sum( l(i,k)*dd(k)*l(j,k), k = 1,..,i )
+
+	typedef LinAlgPack::size_type size_type;
+	typedef LinAlgPack::value_type value_type;
+
+	assert( Lb.rows() == Cb->rows() && Cb->rows() == Db_diag.size() );
+
+	const size_type p = Db_diag.size();
+
+	for( size_type i = 1; i <= p; ++i ) {
+		for( size_type j = i; j <= p; ++j ) {
+			value_type &c = (*Cb)(i,j) = 0.0;
+			for( size_type k = 1; k <= i; ++k ) {
+				c += Lb(i,k) * Lb(j,k) / Db_diag(k);
+			}
+		}
+	}
+
+	// ToDo: Make the above operation more efficent!
+}
+
+}	// end namespace
