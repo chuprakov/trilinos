@@ -13,17 +13,35 @@ begin_options
 ***
 options_group rSQPAlgo_ConfigMamaJama {
 
-*** Algorithmic/Implementation Options
-
 *** Variable Reduction range/null space decomposition
 
 *    null_space_matrix = AUTO;         *** Let the solver decide (default)
 *    null_space_matrix = EXPLICIT;     *** Store D = -inv(C)*N explicitly
 *    null_space_matrix = IMPLICIT;     *** Perform operations implicity with C, N
+     *** This option is used to determine the type of implementation to use for
+     *** the variable reduction null space matrix Z = [ -inv(C)*N; I ].
+     ***    AUTO     : Let the algorithm decide.  The algorithm will take into
+     ***               account the number of degrees of freedom in the problem
+     ***               (n-r), the number of active inequality constraints and
+     ***               other issues when deciding what implementation to use.
+     ***    EXPLICIT : The matrix D = -inv(C)*N is formed expliciting an us used
+     ***               to form Z = [ D; I ].
+     ***    IMPLICIT : The matrix D = -inv(C)*N is not formed explicitly but is
+     ***               instead used implicitly in matrix-vector and other
+     ***               related operations.
 
 *    range_space_matrix = AUTO;        *** Let the algorithm decide dynamically (default)
 *    range_space_matrix = COORDINATE;  *** Y = [ I; 0 ] (Cheaper computationally)
 *    range_space_matrix = ORTHOGONAL;  *** Y = [ I; -N'*inv(C') ] (more stable)
+     *** This option is used to determine the selection of the range space matrix Y.
+     ***    AUTO      : Let the algorithm decide.  The algorithm will take into
+     ***                account the number of degrees of freedom in the problem
+     ***                (n-r) and other issues when deciding what representation to use.
+     ***   COORDINATE : Use the coordinate decomposition Y = [ I; 0 ]
+     ***   ORTHOGONAL : Use the orthogonal decomposition Y = [ I; N'*inv(C') ].
+     ***                Warning!  For general NLPs this option costs approximatly
+     ***                O((n-r)^2*r) flops per rSQP iteration and will dominate
+     ***                the runtime for large (n-r).
 
 *    max_basis_cond_change_frac = -1.0;  *** (default)
      *** (+-dbl) If < 0 then the solver will decide what value to use.
@@ -49,14 +67,15 @@ options_group rSQPAlgo_ConfigMamaJama {
      *** ToDo: Finish documentation!
 
 *    max_dof_quasi_newton_dense = -1; *** (default)
-     *** [quasi_newton == AUTO] (+-int) If < 0 let solver decide when to switch
-     *** to limited memory LBFGS quasi-newton updating.  Otherwise LBFGS
-     *** will be used rather than dense BFGS when the number of degrees of
-     *** freedom n-m is larger than thhis number.  Example values:
+     *** [quasi_newton == AUTO] (+-int)  This option is used to
+     *** determine when the algorithm will switch from quasi_newton=LBFGS
+     *** to quasi_newton=BFGS and from range_space_matrix=ORTHOGONAL
+     *** to range_space_matrix=COORDINATE.  Example values:
      ***  -1 : (< 0) Let the solver decide dynamically (default)
-     ***   0 : Always use limited memory LBFGS.
-     *** 500 : Use LBFG when n-m >= 500 and dense BFGS when n-m < 500.
-     *** 
+     ***   0 : Always use limited memory LBFGS and COORDINATE.
+     *** 500 : Use LBFG when n-r >= 500 and dense BFGS when n-m < 500
+     ***       Use COORDINATE when (n-m)*r >= 500 and ORTHOGONAL when
+     ***       (n-r)*r <= 500.
 
 *    num_lbfgs_updates_stored   = -1; *** (default)
      *** [quasi_newton == L*BFGS] (+-int) If < 0 then let solver decide
