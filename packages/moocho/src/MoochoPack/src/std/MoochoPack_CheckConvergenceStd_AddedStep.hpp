@@ -25,7 +25,7 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( EOptErrorCheck, opt_error_check )
 
 	///
-	enum EScaleKKTErrorBy { SCALE_BY_ONE, SCALE_BY_NORM_2_X, SCALE_BY_NOMR_INF_X };
+	enum EScaleKKTErrorBy { SCALE_BY_ONE, SCALE_BY_NORM_2_X, SCALE_BY_NORM_INF_X };
 
 	///
 	/** <<std member comp>> members for whether the optimality conditions

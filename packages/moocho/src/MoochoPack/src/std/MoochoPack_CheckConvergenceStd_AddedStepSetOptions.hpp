@@ -34,7 +34,7 @@ namespace ReducedSpaceSQPPack {
   *		\begin{description}
   *		\item[SCALE_BY_ONE]			no scaling by x
   *		\item[SCALE_BY_NORM_2_X]    scale opt_err and feas_err by 1/||x||2
-  *		\item[SCALE_BY_NOMR_INF_X]  scale opt_err and feas_err by 1/||x||inf
+  *		\item[SCALE_BY_NORM_INF_X]  scale opt_err and feas_err by 1/||x||inf
   *		\end{description}
   */
 class CheckConvergenceStd_AddedStepSetOptions
