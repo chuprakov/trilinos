@@ -138,7 +138,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	InitKKTSystem::j_f_decomp_t   j_f_decomp;
 	size_type n_R_tmp;
 	init_kkt_sys().initialize_kkt_system(
-		g,G,etaL,dL,dU,F,trans_F,f
+		g,G,etaL,dL,dU,F,trans_F,f,(*d)(),(*nu)()
 		,&n_R_tmp,&i_x_free,&i_x_fixed,&bnd_fixed,&j_f_decomp
 		,&b_X_,&Ko_,&fo_ );
 	const size_type

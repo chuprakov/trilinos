@@ -23,6 +23,8 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 	,const MatrixWithOp*  F
 	,BLAS_Cpp::Transp     trans_F
 	,const VectorSlice*   f
+	,const VectorSlice&   d
+	,const SpVectorSlice& nu
 	,size_type*           n_R
 	,i_x_free_t*          i_x_free
 	,i_x_fixed_t*         i_x_fixed
@@ -45,7 +47,7 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 
 	if( G_super_ptr == NULL ) {
 		init_kkt_full_.initialize_kkt_system(
-			g,G,etaL,dL,dU,F,trans_F,f,n_R,i_x_free,i_x_fixed,bnd_fixed
+			g,G,etaL,dL,dU,F,trans_F,f,d,nu,n_R,i_x_free,i_x_fixed,bnd_fixed
 			,j_f_decomp,b_X,Ko,fo);
 		return;
 	}

@@ -17,6 +17,8 @@ void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 	,const MatrixWithOp*  F
 	,BLAS_Cpp::Transp     trans_F
 	,const VectorSlice*   f
+	,const VectorSlice&   d
+	,const SpVectorSlice& nu
 	,size_type*           n_R
 	,i_x_free_t*          i_x_free
 	,i_x_fixed_t*         i_x_fixed

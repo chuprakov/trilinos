@@ -62,7 +62,7 @@ public:
 		 * Given the definitions of #Q# and #P# above, this function will return
 		 * the initial KKT system:
 		 \begin{verbatim}
-		 Ko = [ Q_R'*G*Q_X     op(F')*P_d ]
+		 Ko = [ Q_R'*G*Q_R     op(F')*P_d ]
 		      [ P_d'*op(F)          0     ]
 
 		 fo = [ -Q_R'*g - Q_R'*G*Q_X*b_X    ]
@@ -71,14 +71,16 @@ public:
 		 b_X = ??? (see below)
 		 \end{verbatim}
 		 *
-		 * @param  g    [in] See #QPSolverRelaxed::solve_qp(...)
-		 * @param  G    [in] See #QPSolverRelaxed::solve_qp(...)
-		 * @param  dL   [in] See #QPSolverRelaxed::solve_qp(...)
-		 * @param  dU   [in] See #QPSolverRelaxed::solve_qp(...)
-		 * @param  F    [in] See #QPSolverRelaxed::solve_qp(...)
+		 * @param  g    [in] See #QPSolverRelaxed::solve_qp(...)#
+		 * @param  G    [in] See #QPSolverRelaxed::solve_qp(...)#
+		 * @param  dL   [in] See #QPSolverRelaxed::solve_qp(...)#
+		 * @param  dU   [in] See #QPSolverRelaxed::solve_qp(...)#
+		 * @param  F    [in] See #QPSolverRelaxed::solve_qp(...)#
 		 * @param  trans_f
-		 *              [in] See #QPSolverRelaxed::solve_qp(...)
-		 * @param  f    [in] See #QPSolverRelaxed::solve_qp(...)
+		 *              [in] See #QPSolverRelaxed::solve_qp(...)#
+		 * @param  f    [in] See #QPSolverRelaxed::solve_qp(...)#
+		 * @param  d    [in] See #QPSolverRelaxed::solve_qp(...)#
+		 * @param  nu   [in] See #QPSolverRelaxed::solve_qp(...)#
 		 * @param  n_R  [out] Number of initially free variables.
 		 * @param  i_x_free
 		 *              [out] array (size #n_R# or #0#):
@@ -129,6 +131,8 @@ public:
 			,const MatrixWithOp*  F
 			,BLAS_Cpp::Transp     trans_F
 			,const VectorSlice*   f
+			,const VectorSlice&   d
+			,const SpVectorSlice& nu
 			,size_type*           n_R
 			,i_x_free_t*          i_x_free
 			,i_x_fixed_t*         i_x_fixed
@@ -165,7 +169,7 @@ public:
 	///
 	/** Constraints object.
 	 */
-	STANDARD_COMPOSITION_MEMBERS( QPSchurPack::ConstraintsRelaxedStd, constraints );
+	STANDARD_COMPOSITION_MEMBERS( QPSchurPack::ConstraintsRelaxedStd, constraints )
 
 	///
 	/** Set the maximum number of QP iterations as max_itr = max_qp_iter_frac * n.
