@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorSpaceBlocked.hpp"
 
 namespace AbstractLinAlgPack {
 
