@@ -110,6 +110,11 @@ void MatrixSymWithOpSerial::Mp_StMtMtM(
 
 // Overridden from MatrixSymWithOp
 
+const VectorSpace& MatrixSymWithOpSerial::space_rows() const
+{
+	return MatrixWithOpSerial::space_rows();
+}
+
 void MatrixSymWithOpSerial::Mp_StPtMtP(
 	MatrixSymWithOp* symwo_lhs, value_type alpha
 	,EMatRhsPlaceHolder dummy

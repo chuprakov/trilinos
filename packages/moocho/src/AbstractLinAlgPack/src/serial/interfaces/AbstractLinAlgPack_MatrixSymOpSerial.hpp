@@ -71,6 +71,9 @@ public:
 	/** @name Overridden from MatrixSymWithOp */
 	//@{
 
+	/// Must be overridden to call <tt>MatrixWithOpSerial::space_rows()</tt>
+	const VectorSpace& space_rows() const;
+
 	/// symwo_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
  	void Mp_StPtMtP(
 		MatrixSymWithOp* symwo_lhs, value_type alpha
