@@ -1,111 +1,87 @@
 /*
 
-This is the main documentation building file for rSQPpp.
-For this to work properly doc++ must be run in this
+This is the main documentation file for rSQP++.
+For this to work properly doxygen must be run in this
 directory for these include paths to work.  The paths
 must always be relative to the directory that doc++
 is invoked in.  That is the rule that I discovered by
 running through doc++ in the debugger.
 
-This file also shows how I figured out how to compile the DOC++ documentation
-for each package separately and how you can link them together.
-
 */
 
-/** @name rSQP++.
+/** \mainpage rSQP++: C++ framework for building Successive Quadratic Programming (SQP) algorithms.
 
-This is a reference for the packages of C++ classes and functions that comprise
+This is a reference for the projects of C++ classes and functions that comprise
 rSQP++.
 
-Still under construction!  In the future this docuentation will be much more
-extensive.
+Warning!  The documentation and code is still under construction and is not fully functional.
+In the future this docuentation will be much more extensive.
 
-@memo C++ framework for building Successive Quadratic Programming
-algorithms.
+<ul>
 
-@author Roscoe A. Bartlett
-@version 1.0
+<li> Utility Packages: 
+	Packages that are used in the implementation of the other packages.
+	<ul>
+	<li> <A HREF="../Misc/html/index.html">Misc</A>
+	</ul>
+
+<li> Abstractions for General Iterative Algorithms:
+    Package framework for iterative algorithms.
+	<ul>
+	<li> <A HREF="../GeneralIterationPack/html/index.html">GeneralIterationPack</A>. *** Not updated yet!
+	</ul>
+
+<li> Numerical Packages:
+    Packages for abstract, sparse and dense linear algebra, linear solvers,
+    QP solvers and range / null space decompositions.
+    These are packages that are used to perform numerical computations within
+    and algorithm.  They range from low level dense BLAS linear algebra to
+    high level operations like the solution of complex Quadratic Programms.
+    Packages are listed in assending order based on dependencies.  No package is
+    dependent on any package below it but it may be dependent on a package above
+    it.
+	<ul>
+	<li> <A HREF="../RTOpPack/html/index.html">RTOpPack</A>: C/C++ interfaces to vector
+		reduction/transformation operators.
+	<li> <A HREF="../RTOpStdOpsLib/html/index.html">RTOpStdOpsLib</A>: C implementations
+		of general vector (and array) reduction/transformation operators.
+	<li> <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>: C++ interfaces
+		for vectors, matrices and related linear algebra objects based on 
+		<A HREF="../RTOpPack/html/index.html">RTOpPack</A>.
+	<li> <A HREF="../LinAlgPack/html/index.html">LinAlgPack</A>: Concreate C++ classes
+		for dense BLAS compatible linear algebra with implementations of abstract interfaces
+		in  <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>. *** Not updated yet!
+	<li> <A HREF="../SparseLinAlgPack/html/index.html">SparseLinAlgPack</A>: Concreate C++ classes
+		for sparse linear algebra with implementations of abstract interfaces
+		in  <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>. *** Not updated yet!
+	<li> <A HREF="../SparseSolverPack/html/index.html">SparseSolverPack</A>: Abstract C++ interfaces
+		and subclasses for serial linear solvers with implementations of abstract interfades
+		in  <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>. *** Not updated yet!
+	<li> <A HREF="../ConstrainedOptimizationPack/html/index.html">ConstrainedOptimizationPack</A>:
+		C++ classes and interfaces for utilities for constrained optimization based on the
+		interfaces in <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>. *** Not updated yet!
+	</ul>
+
+<li> Intefaces for Nonlinear Programs (NLPs):
+	Package of NLP interfaces and implementation classes.
+	<ul>
+	<li> <A HREF="../NLPInterfacePack/html/index.html">NLPInterfacePack</A>
+	</ul>
+
+<li> Succesive Quadratic Programming (SQP) Algorithms:
+	<ul>
+	<li> <A HREF="../ReducedSpaceSQPPack/html/index.html">ReducedSpaceSQPPack</A>. *** Not updated yet!
+	</ul>
+
+<li> Example projects:
+	<ul>
+	<li> <A HREF="../ExampleNLPFirstOrderDirect/html/index.html">ExampleNLPFirstOrderDirect</A>.
+	<li> <A HREF="../ExampleNLPFirstOrderInfo/html/index.html">ExampleNLPFirstOrderInfo</A>.
+	<li> <A HREF="../ExampleNLPFullToReducedExplJac/html/index.html">ExampleNLPFullToReducedExplJac</A>. *** Not updated yet!
+	</ul>
+
+</ul>
+
+\author Roscoe A. Bartlett
+
 */
-//@{
-  /** @name 1.Utility Packages
-    *
-    * @memo Packages that are used in the implementation of the other packages.
-    */
-  //@{
-    /** @name 1.\URL[namespace Misc]{Misc/index.html}
-      * @memo Single DOC++ collection.
-      */
-    //@{
-    //@} 
-  //@}
-  /** @name 2.Abstractions for General Iterative Algorithms.
-    *
-    * @memo Package framework for iterative algorithms.
-    */
-  //@{
-    /** @name 1.\URL[namespace GeneralIterationPack]{GeneralIterationPack/index.html}
-      * @memo Single DOC++ collection.
-      */
-    //@{
-    //@} 
-  //@}
-  /** @name 3.Numerical Packages.
-    *
-    * These are packages that are used to perform numerical computations within
-    * and algorithm.  They range from low level dense BLAS linear algebra to
-    * high level operations like the solution of complex Quadratic Programms.
-    *
-    * Each package is a separate set of DOC++ files.  Therefore the class hierarchies
-    * and and alphabetical indexes only include the componenets from the individual
-    * package itself.
-    *
-    * Packages are listed in assending order based on dependencies.  No package is
-    * dependent on any package below it but it may be dependent on a package above
-    * it.  For example the package {\em LinAlgPack} is dependent on the {
-    *
-    * @memo Packages for sparse and dense linear algebra, linear solvers, QP solvers
-    * and range / null space decompositions.
-    */
-  //@{
-    /** @name 1. \URL[Dense Linear Algebra]{LinAlgPack/index.html}.
-      * @memo Single DOC++ collection.
-      */
-    //@{
-    //@}
-    /** @name 2. \URL[namespace SparseLinAlgPack]{SprseLinAlgPack/index.html}
-      * @memo Single DOC++ collection.
-      */
-    //@{
-    //@} 
-    /** @name 3. \URL[namespace SparseSolverPack]{SparseSolverPack/index.html}
-      * @memo Single DOC++ collection.
-      */
-    //@{
-    //@} 
-    /** @name 4. \URL[namespace ConstrainedOptimizationPack]{ConstrainedOptimizationPack/index.html}
-      * @memo Single DOC++ collection.
-      */
-    //@{
-    //@} 
-  //@}
-  /** @name 4.Abstractions for Nonlinear Programs (NLPs).
-    *
-    * @memo Package of NLP interfaces and node (implementation classes).
-    */
-  //@{
-    /** @name 1. \URL[namespace NLPInterfacePack]{NLPInterfacePack/index.html}
-	  * @memo Single DOC++ collection.
-	  */
-	//@{
-	//@} 
-  //@}
-  /** @name 5. Succesive Quadratic Programming (SQP) Algorithms.
-    */
-  //@{
-    /** @name 1.\URL[namespace ReducedSpaceSQPPack]{ReducedSpaceSQPPack/index.html}
-	  * @memo Single DOC++ collection.
-	  */
-	//@{
-	//@}
-  //@}
-//@}
