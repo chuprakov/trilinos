@@ -16,8 +16,6 @@
 // disable VC 5.0 warnings about debugger limitations
 #pragma warning(disable : 4786)
 
-//#include <iostream>
-
 #include <ostream>
 
 #include "ReducedSpaceSQPPack/include/std/EvalNewPointTailoredApproach_Step.h"
@@ -35,11 +33,9 @@
 #include "dynamic_cast_verbose.h"
 #include "ThrowException.h"
 
-namespace LinAlgOpPack {
-	using AbstractLinAlgPack::Vp_StMtV;
-}
+namespace ReducedSpaceSQPPack {
 
-ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::EvalNewPointTailoredApproach_Step(
+EvalNewPointTailoredApproach_Step::EvalNewPointTailoredApproach_Step(
 	const deriv_tester_ptr_t      &deriv_tester
 	,const bounds_tester_ptr_t    &bounds_tester
 	, EFDDerivTesting             fd_deriv_testing
@@ -49,7 +45,7 @@ ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::EvalNewPointTailoredAppr
 	,fd_deriv_testing_(fd_deriv_testing)
 {}
 
-bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(
+bool EvalNewPointTailoredApproach_Step::do_step(
 	Algorithm& _algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 	,poss_type assoc_step_poss
 	)
@@ -233,7 +229,7 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(
 		}
 		
 		const bool has_bounds = nlp.num_bounded_x() > 0;
-		const bool result = deriv_tester().finite_diff_check(
+		const bool nlp_passed = deriv_tester().finite_diff_check(
 			&nlp
 			,x
 			,has_bounds ? &nlp.xl() : (const VectorWithOp*)NULL
@@ -252,10 +248,10 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(
 			,olevel >= PRINT_VECTORS
 			,( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : (std::ostream*)NULL
 			);
-		if( !result ) {
-			throw std::logic_error( "EvalNewPointTailoredApproach_Step::do_step(...) : "
-				"Error, the finite derivative test of the first derivatives of the NLP failed" );
-		}
+		THROW_EXCEPTION(
+			!nlp_passed, TestFailed
+			,"EvalNewPointTailoredApproach_Step::do_step(...) : Error, "
+			"the tests of the nlp derivatives failed!" );
 	}
 
 	if( reconstruct_Z_D ) {
@@ -304,27 +300,35 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(
 
 }
 
-void ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::print_step( const Algorithm& algo
-	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss
-	, std::ostream& out, const std::string& L ) const
+void EvalNewPointTailoredApproach_Step::print_step(
+	const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
+	,poss_type assoc_step_poss, std::ostream& out, const std::string& L
+	) const
 {
 	out
 		<< L << "*** Evaluate the new point for the \"Tailored Approach\"\n"
 		<< L << "if nlp is not initialized then initialize the nlp\n"
 		<< L << "if x is not updated for any k then set x_k = xinit\n"
-		<< L << "if f_k is not updated f_k = f(x_k) <: R^n -> R^1\n"
-		<< L << "if c_k is not updated c_k = c(x_k) <: R^n -> R^m\n"
-		<< L << "if mI > 0 and h_k is not updated h_k = h(x_k) <: R^n -> R^mI\n"
-		<< L << "Gf_k = Gf(x_k) <: R^n -> R^n\n"
-		<< L << "For Gc = [ C' ; N' ] = Gc(x_k) <: R^n -> R^(n x m) compute:\n"
-		<< L << "    py_k = -inv(C)*c_k\n"
-		<< L << "    D = -inv(C)*N <: R^(n x (n-m))\n"
-		<< L << "    rGf_k = Gf_k(var_indep) + D'*Gf_k(var_dep)\n"
-		<< L << "    Z_k = [ D ; I ] <: R^(n x (n-m))\n"
-		<< L << "if (fd_deriv_testing==FD_TEST) or (fd_deriv_testing==FD_DEFAULT and check_results==true) then\n"
-		<< L << "    check Gf_k, py_k, rGf_k, and D by finite differences.\n"
+		<< L << "Gf_k = Gf(x_k) <: space_x\n"
+		<< L << "For Gc(:,con_decomp) = [ C' ; N' ] <: space_x:space_c(con_decomp) compute:\n"
+		<< L << "  py_k = -inv(C)*c_k\n"
+		<< L << "  D = -inv(C)*N <: R^(n x (n-m))\n"
+		<< L << "  rGf_k = Gf_k(var_indep) + D'*Gf_k(var_dep)\n"
+		<< L << "  Z_k = [ D ; I ] <: R^(n x (n-m))\n"
+		<< L << "  if m > r Uz_k = Gc(var_indep,con_undecomp)' + Gc(var_dep,con_undecomp)'*D\n"
+		<< L << "  if mI > 0 Yz_k = Gh(var_indep,:)' + Gh(var_dep,:)'*D\n"
+		<< L << "if ( (fd_deriv_testing==FD_TEST)\n"
+		<< L << "    or (fd_deriv_testing==FD_DEFAULT and check_results==true\n"
+		<< L << "  ) then\n"
+		<< L << "  check Gf_k, py_k, rGf_k, D, Uz (if m > r) and Vz (if mI > 0) by finite differences.\n"
 		<< L << "end\n";
 	print_calc_py_Y( out, L );
 	out
-		<< L << "Ypy_k = Y_k * py_k\n";
+		<< L << "Ypy_k = Y_k * py_k\n"
+		<< L << "if c_k is not updated c_k = c(x_k) <: space_c\n"
+		<< L << "if mI > 0 and h_k is not updated h_k = h(x_k) <: space_h\n"
+		<< L << "if f_k is not updated f_k = f(x_k) <: REAL\n"
+		;
 }
+
+} // end namespace ReducedSpaceSQPPack

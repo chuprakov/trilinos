@@ -37,16 +37,21 @@ class EvalNewPointTailoredApproach_Step
 {
 public:
 
+	/** @name Public types */
+	//@{
+	///
+	enum EFDDerivTesting { FD_DEFAULT, FD_TEST, FD_NO_TEST };
+	//@}
+
+	/** @name Constructors / initializers */
+	//@{
+
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOp> D_ptr_t;
-	///
-	typedef NLPInterfacePack::NLPFirstOrderDirectTester    NLPFirstOrderDirectTester;
 	/// <<std comp>> members for testing object for NLPFirstOrderDirect
 	STANDARD_COMPOSITION_MEMBERS( NLPFirstOrderDirectTester, deriv_tester )
 	/// <<std comp>> Members for variable bounds tester object
 	STANDARD_COMPOSITION_MEMBERS( VariableBoundsTester, bounds_tester )
-	///
-	enum EFDDerivTesting { FD_DEFAULT, FD_TEST, FD_NO_TEST };
 	///
 	/** Set how and if finite derivatives are tested.
 	 *
@@ -61,16 +66,16 @@ public:
 		, EFDDerivTesting				fd_deriv_testing = FD_DEFAULT
 		);
 
+	//@}
+
 	/** @name Overridden from AlgorithmStep */
 	//@{
-
 	///
 	bool do_step(Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss);
 	///
 	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
-	
 	//@}
 
 	/** @name To be overridden by subclasses */
