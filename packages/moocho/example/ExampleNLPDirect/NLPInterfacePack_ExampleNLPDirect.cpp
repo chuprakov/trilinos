@@ -65,7 +65,7 @@ ExampleNLPDirect::ExampleNLPDirect(
 	,bool                            has_bounds
 	,bool                            dep_bounded
 	)
-	:ExampleNLPObjGrad(vec_space,xo,has_bounds,dep_bounded)
+	:ExampleNLPObjGrad(vec_space,xo,has_bounds,dep_bounded),initialized_(false)
 {
 	namespace rcp = MemMngPack;
 

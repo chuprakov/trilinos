@@ -112,11 +112,6 @@ ExampleNLPObjGrad::ExampleNLPObjGrad(
 
 void ExampleNLPObjGrad::initialize(bool test_setup)
 {
-
-#ifndef _WINDOWS
-    using NLPInterfacePack::NLPDirect;
-#endif
-
 	if( initialized_ ) {
 		NLPObjGrad::initialize(test_setup);
 		return;
