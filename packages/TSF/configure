@@ -880,6 +880,9 @@ Optional Features:
   --enable-examples       Build examples for all Trilinos packages (not all
                           packages are sensitive to this option) (default is
                           yes)
+
+  --enable-tsf-examples   Build TSF examples (default is yes if
+                          --disable-examples is not specified)
   --enable-libcheck       Check for some third-party libraries including BLAS
                           and LAPACK. (Cannot be disabled unless tests and
                           examples are also disabled.) (default is yes)
@@ -3796,7 +3799,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:3799:" \
+echo "$as_me:3802:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -6425,8 +6428,41 @@ echo "${ECHO_T}no" >&6
 fi
 
 
+# Check whether --enable-examples or --disable-examples was given.
+if test "${enable_examples+set}" = set; then
+  enableval="$enable_examples"
+  ac_cv_use_examples=$enableval
+else
+  ac_cv_use_examples=yes
+fi;
 
-if test "X$ac_cv_use_examples" != "Xno"; then
+# Check whether --enable-tsf-examples or --disable-tsf-examples was given.
+if test "${enable_tsf_examples+set}" = set; then
+  enableval="$enable_tsf_examples"
+  ac_cv_use_tsf_examples=$enableval
+else
+  ac_cv_use_tsf_examples=${ac_cv_use_examples}
+fi;
+
+echo "$as_me:$LINENO: checking whether to use tsf-examples" >&5
+echo $ECHO_N "checking whether to use tsf-examples... $ECHO_C" >&6
+
+if test "X$ac_cv_use_tsf_examples" != "Xno"; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_TSF_EXAMPLES
+_ACEOF
+
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
+
+
+if test "X$ac_cv_use_tsf_examples" != "Xno"; then
   BUILD_EXAMPLES_TRUE=
   BUILD_EXAMPLES_FALSE='#'
 else
@@ -6630,7 +6666,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:6633: \"$ac_link\") >&5
+(eval echo $as_me:6669: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -6708,7 +6744,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:6711: \"$ac_link\") >&5
+(eval echo $as_me:6747: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -7402,7 +7438,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 # If tests, examples and libcheck are disabled, we don't have to check
 # for these libraries.
-if test "X$ac_cv_use_examples" != "Xno" || test "X$ac_cv_use_libcheck" != "Xno"; then
+if test "X$ac_cv_use_tsf_examples" != "Xno" || test "X$ac_cv_use_libcheck" != "Xno"; then
 
 # checks for libraries now
 echo "$as_me:$LINENO: checking for library containing sqrt" >&5
@@ -9442,7 +9478,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:9445: \"$ac_link\") >&5
+(eval echo $as_me:9481: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -9520,7 +9556,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:9523: \"$ac_link\") >&5
+(eval echo $as_me:9559: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
