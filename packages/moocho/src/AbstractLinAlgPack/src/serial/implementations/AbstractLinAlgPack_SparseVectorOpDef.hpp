@@ -102,6 +102,15 @@ value_type min_SV(const T_SpVec& sv_rhs) {
 
 // vs_lhs += alpha * sv_rhs (BLAS xAXPY)
 template<class T_SpVec>
+void Vt_S( T_SpVec* sv_lhs, value_type alpha )
+{
+	if( alpha == 1.0 ) return;
+	for(typename T_SpVec::iterator iter = sv_lhs->begin(); iter != sv_lhs->end(); ++iter)
+		iter->value() *= alpha;
+}
+
+// vs_lhs += alpha * sv_rhs (BLAS xAXPY)
+template<class T_SpVec>
 void Vp_StSV(VectorSlice* vs_lhs, value_type alpha, const T_SpVec& sv_rhs)
 {
 	Vp_V_assert_sizes(vs_lhs->size(),sv_rhs.size());

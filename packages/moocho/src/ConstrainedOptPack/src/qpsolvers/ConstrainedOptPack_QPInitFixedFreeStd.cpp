@@ -94,30 +94,36 @@ void QPInitFixedFreeStd::initialize(
 	i_x_X_map_.assign(n_X,0);
 
 	// Set free portion of x_init
-	if(test_setup) {
-		for( const size_type *i_x_R = i_x_free; i_x_R != i_x_free + n_R; ++i_x_R ) {
-			if( *i_x_R < 1 || *i_x_R > n ) {
-				std::ostringstream omsg;
-				omsg
-					<< "QPInitFixedFreeStd::initialize(...) : Error, "
-					<< "i_x_free[" << i_x_R-i_x_free << "] = "
-					<< (*i_x_R) << " is out of bounds";
-				throw std::invalid_argument( omsg.str() );
-			}
-			if( x_init_(*i_x_R) != NOT_SET_YET ) {
-				std::ostringstream omsg;
-				omsg
-					<< "QPInitFixedFreeStd::initialize(...) : Error, "
-					<< "Duplicate entries for i_x_free[i] = "
-					<< (*i_x_R);
-				throw std::invalid_argument( omsg.str() );
-			}
-			x_init_(*i_x_R) = QPSchurPack::FREE;
-		}
+	if( i_x_free == NULL ) {
+		for( size_type i = 0; i < n_R; ++i )
+			x_init_[i] = QPSchurPack::FREE;
 	}
 	else {
-		for( const size_type *i_x_R = i_x_free; i_x_R != i_x_free + n_R; ++i_x_R ) {
-			x_init_(*i_x_R) = QPSchurPack::FREE;
+		if(test_setup) {
+			for( const size_type *i_x_R = i_x_free; i_x_R != i_x_free + n_R; ++i_x_R ) {
+				if( *i_x_R < 1 || *i_x_R > n ) {
+					std::ostringstream omsg;
+					omsg
+						<< "QPInitFixedFreeStd::initialize(...) : Error, "
+						<< "i_x_free[" << i_x_R-i_x_free << "] = "
+						<< (*i_x_R) << " is out of bounds";
+					throw std::invalid_argument( omsg.str() );
+				}
+				if( x_init_(*i_x_R) != NOT_SET_YET ) {
+					std::ostringstream omsg;
+					omsg
+						<< "QPInitFixedFreeStd::initialize(...) : Error, "
+						<< "Duplicate entries for i_x_free[i] = "
+						<< (*i_x_R);
+					throw std::invalid_argument( omsg.str() );
+				}
+				x_init_(*i_x_R) = QPSchurPack::FREE;
+			}
+		}
+		else {
+			for( const size_type *i_x_R = i_x_free; i_x_R != i_x_free + n_R; ++i_x_R ) {
+				x_init_(*i_x_R) = QPSchurPack::FREE;
+			}
 		}
 	}
 
@@ -165,7 +171,7 @@ void QPInitFixedFreeStd::initialize(
 					omsg
 						<< "QPInitFixedFreeStd::initialize(...) : Error, "
 						<< "x_init(" << i << ") has not been set by"
-							"i_x_free[] or i_x_fixed[].";
+						   " i_x_free[] or i_x_fixed[].";
 					throw std::invalid_argument( omsg.str() );
 				}
 			}
@@ -180,14 +186,14 @@ void QPInitFixedFreeStd::initialize(
 	}
 
 	// Setup Q_R and Q_X
-	Q_R_row_i_.resize(n_R);
-	Q_R_col_j_.resize(n_R);
+	Q_R_row_i_.resize( i_x_free ? n_R : 0 );
+	Q_R_col_j_.resize( i_x_free ? n_R : 0 );
 	Q_X_row_i_.resize(n_X);
 	Q_X_col_j_.resize(n_X);
 	initialize_Q_R_Q_X(
 		n_R,n_X,i_x_free,i_x_fixed,test_setup
-		,n_R ? &Q_R_row_i_[0] : NULL
-		,n_R ? &Q_R_col_j_[0] : NULL
+		,n_R && i_x_free ? &Q_R_row_i_[0] : NULL
+		,n_R && i_x_free ? &Q_R_col_j_[0] : NULL
 		,&Q_R_
 		,n_X ? &Q_X_row_i_[0] : NULL
 		,n_X ? &Q_X_col_j_[0] : NULL

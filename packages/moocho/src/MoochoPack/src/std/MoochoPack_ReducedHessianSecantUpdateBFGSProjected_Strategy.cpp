@@ -53,7 +53,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 
 	bool do_projected_rHL_RR = false;
 
-	if( pz_n == Q_R.cols() ) {
+	if( Q_R.is_identity() ) {
 		// Determine when to start adding and removing rows/cols form rHL_RR
 		if( act_set_stats_(*s).updated_k(-1) ) {
 			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {

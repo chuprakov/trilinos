@@ -116,6 +116,10 @@ value_type max_SV(const T_SpVec& sv_rhs);
 template<class T_SpVec>
 value_type min_SV(const T_SpVec& sv_rhs);
 
+/// sv_lhs *= alpha (BLAS xSCAL)
+template<class T_SpVec>
+void Vt_S( T_SpVec* sv_lhs, value_type alpha );
+
 /// vs_lhs += alpha * sv_rhs (BLAS xAXPY)
 template<class T_SpVec>
 void Vp_StSV(VectorSlice* vs_lhs, value_type alpha, const T_SpVec& sv_rhs);

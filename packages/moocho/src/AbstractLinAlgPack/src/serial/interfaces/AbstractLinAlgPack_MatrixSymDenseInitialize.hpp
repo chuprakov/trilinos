@@ -16,7 +16,11 @@ public:
 
 	///
 	/** Initialize with a symmetric dense matrix.
-	  */
+	 * Through this interface there are absolutly no preconditions
+	 * as the the state of #this# after this function executes.
+	 * The implementation can use #M# to initialize itself any way
+	 * it would like.
+	 */
 	virtual void initialize( const sym_gms& M ) = 0;
 
 };	// end class MatrixSymDenseInitialize

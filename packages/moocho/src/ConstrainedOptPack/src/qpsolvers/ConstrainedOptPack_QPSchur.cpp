@@ -58,11 +58,16 @@ const char* bool_str( bool b ) {
 }
 
 // Deincrement all indices less that k_remove
-void deincrement_indices( LinAlgPack::size_type k_remove, std::vector<LinAlgPack::size_type> *indice_vector )
+void deincrement_indices(
+	LinAlgPack::size_type k_remove
+	,std::vector<LinAlgPack::size_type> *indice_vector
+	,size_t len_vector
+	)
 {
 	typedef LinAlgPack::size_type				size_type;
 	typedef std::vector<LinAlgPack::size_type>	vec_t;
-	for( vec_t::iterator itr = indice_vector->begin(); itr != indice_vector->end(); ++itr ) {
+	assert( len_vector <= indice_vector->size() );
+	for( vec_t::iterator itr = indice_vector->begin(); itr != indice_vector->begin() + len_vector; ++itr ) {
 		if( *itr > k_remove )
 			--(*itr);
 	}
@@ -825,7 +830,9 @@ void QPSchur::ActiveSet::initialize(
 			*out << "\nS_hat =\n" << S_store;
 		}
 
-		schur_comp().update_interface().initialize( S, q_hat_max );
+		schur_comp().update_interface().initialize(
+			S, q_hat_max, true
+			, MatrixSymAddDelUpdateable::Inertia( q_plus_hat + q_C_hat, 0, q_F_hat ) );
 		// ToDo: Think about how to deal with the case where we may want to
 		// selectively remove some rows/columns of S in order to
 		// get a nonsingular schur complement.  This may be complicated though.
@@ -910,8 +917,8 @@ void QPSchur::ActiveSet::add_constraint(
 			changed_bounds = false;
 		}
 		else if ( is_init_fixed(ja) ) {
-			// An intially fixed variable was freed and is not being fixed to the
-			// other bound.
+			// An intially fixed variable was freed and
+			// is now being fixed to the other bound.
 
 			assert(0);	// ToDo: Finish this!
 
@@ -957,7 +964,8 @@ void QPSchur::ActiveSet::add_constraint(
 		try {
 			if(q_hat) {
 				schur_comp().update_interface().augment_update(
-					t_hat(), alpha_hat, force_refactorization );
+					&t_hat(), alpha_hat, force_refactorization
+					,MatrixSymAddDelUpdateable::EIGEN_VAL_NEG  );
 			}
 			else {
 				schur_comp().update_interface().initialize(
@@ -969,13 +977,11 @@ void QPSchur::ActiveSet::add_constraint(
 				"Error, constraint appears to be linearly dependent:\n" )
 				+ std::string( excpt.what() ) );
 		}
-		catch(const MatrixSymAddDelUpdateable::IndefiniteUpdateException& excpt) {
+		catch(const MatrixSymAddDelUpdateable::WrongInertiaUpdateException& excpt) {
 			throw BadUpdateException( std::string( "QPSchur::ActiveSet::add_constraint(...) : "
-				"Error, The updated schur complement appears to be indefinite:\n" )
+				"Error, The updated schur complement appears to have the wrong inertia:\n" )
 				+ std::string( excpt.what() ) );
 		}
-
-		// ToDo: Check the inertia of the schur complement
 
 		// Update the rest of the augmented KKT system
 		if( changed_bounds )
@@ -1033,7 +1039,10 @@ void QPSchur::ActiveSet::drop_constraint(
 	using BLAS_Cpp::trans;
 	using LinAlgPack::dot;
 	using LinAlgOpPack::V_StMtV;
+	using LinAlgOpPack::V_MtV;
+	using LinAlgOpPack::Vp_MtV;
 	using SparseLinAlgPack::dot;
+	using SparseLinAlgPack::transVtMtV;
 	using SparseLinAlgPack::Vp_StPtMtV;
 	using SparseLinAlgPack::V_InvMtV;
 	
@@ -1042,16 +1051,142 @@ void QPSchur::ActiveSet::drop_constraint(
 	assert_initialized();
 
 	if( jd < 0 ) {
+		//
 		// A variable initially fixed is being freed.
 		// Increase the dimension of the augmented the KKT system!
-		
-		throw std::logic_error(
-			"QPSchur::ActiveSet::drop_constraint(jd) : "
-			"dropping an initially fixed variable is not supported yet!"
-			);
-
-		assert(0);	// ToDo: Implement this!
-		--q_F_hat_;
+		//
+		size_type
+			q_hat      = this->q_hat(),
+			q_F_hat    = this->q_F_hat(),
+			q_plus_hat = this->q_plus_hat(),
+			q_D_hat    = this->q_D_hat();
+		// Get indexes
+		const size_type id = -jd;
+		assert( 1 <= id && id <= n_ );
+		const size_type ld = qp_->l_x_X_map()(-jd);
+		assert( 1 <= ld && ld <= n_ - n_R_ );
+		size_type kd = 0; // Find kd
+		{for( size_type kd = 1; kd <= q_D_hat; ++kd ) {
+			if( l_fxfx_[kd-1] == ld ) break;
+		}}
+		// Get references
+		const MatrixSymWithOp
+			&G           = qp_->G();
+		const VectorSlice
+			g            = qp_->g();
+		const MatrixWithOp
+			&A_bar       = qp_->constraints().A_bar();
+		const MatrixSymWithOpFactorized
+			&Ko          = qp_->Ko();
+		const MatrixWithOp
+			&U_hat       = this->U_hat();
+		const GenPermMatrixSlice
+			&Q_R         = qp_->Q_R(),
+			&Q_X         = qp_->Q_X(),
+			&P_XF_hat    = this->P_XF_hat(),
+			&P_plus_hat  = this->P_plus_hat();
+		const VectorSlice
+			b_X          = qp_->b_X();
+		//
+		// Compute the update quantities to augmented KKT system
+		//
+		// e_id
+		eta_t e_id(id,n_);
+		// u_p = [ Q_R'*G*e_id ; A'*e_id ] <: R^(n_R+m)
+		Vector u_p(n_R_+m_);
+		Vp_StPtMtV( &u_p(1,n_R_), 1.0, Q_R, trans, G, no_trans, e_id(), 0.0 );
+		if( m_ )
+			V_MtV( &u_p(n_R_+1,n_R_+m_), qp_->A(), trans, e_id() );
+		const value_type
+			nrm_u_p = LinAlgPack::norm_inf( u_p() );
+		// sigma = e_id'*G*e_id <: R
+		const value_type
+			sigma = transVtMtV( e_id(), G, no_trans, e_id() );
+		// d_p = - g(id) - b_X'*(Q_X'*G*e_id) <: R
+		Vector Q_X_G_e_id(q_D_hat);
+		Vp_StPtMtV( &Q_X_G_e_id(), 1.0, Q_X, trans, G, no_trans, e_id(), 0.0 );
+		const value_type
+			d_p = -g(id) - dot( b_X, Q_X_G_e_id() );
+		// r = inv(Ko)*u_p <: R^(n_R+m)
+		Vector r;
+		if( nrm_u_p > 0.0 )
+			V_InvMtV( &r, Ko, no_trans, u_p() );
+		// t_hat = v_p - U_hat'*r
+		// where: v_p = P_XF_hat'*G*e_id + P_plus_hat'*A_bar'*e_id <: R^(q_hat)
+		Vector t_hat(q_hat);
+		if(q_hat) {
+			// t_hat = v_p
+			if(q_F_hat_)
+				Vp_StPtMtV( &t_hat(), 1.0, P_XF_hat, trans, G, no_trans, e_id(), 0.0 );
+			if(q_plus_hat_)
+				Vp_StPtMtV( &t_hat(), 1.0, P_plus_hat, trans, A_bar, trans, e_id() );
+			// t_hat += U_hat'*r
+			if( nrm_u_p > 0.0 )
+				Vp_MtV( &t_hat(), U_hat, trans, r() );
+		}
+		// alpha_hat = sigma - u_p'*r
+		const value_type
+			alpha_hat = sigma - ( nrm_u_p > 0.0 ? dot(u_p(),r()) : 0.0 );
+		//
+		// Update the schur complement (if nonsingular)
+		//
+		try {
+			if(q_hat) {
+				schur_comp().update_interface().augment_update(
+					&t_hat(), alpha_hat, force_refactorization
+					,MatrixSymAddDelUpdateable::EIGEN_VAL_POS );
+			}
+			else {
+				schur_comp().update_interface().initialize(
+					alpha_hat, (n_-n_R_) + n_-m_ );
+			}
+		}
+		catch(const MatrixSymAddDelUpdateable::SingularUpdateException& excpt) {
+			throw LDConstraintException( std::string( "QPSchur::ActiveSet::drop_constraint(...) : "
+				"Error, the new KKT system with the freed variable appears to be singular:\n" )
+				+ std::string( excpt.what() ) );
+		}
+		catch(const MatrixSymAddDelUpdateable::WrongInertiaUpdateException& excpt) {
+			throw BadUpdateException( std::string( "QPSchur::ActiveSet::drop_constraint(...) : "
+				"Error, The updated schur complement appears to have the wrong inertia:\n" )
+				+ std::string( excpt.what() ) );
+		}
+		//
+		// Remove multiplier from mu_D_hat(...)
+		//
+		// remove l_fxfx(kd) == ld from l_fxfx(...)
+		std::copy( l_fxfx_.begin() + kd, l_fxfx_.begin() + q_D_hat
+			, l_fxfx_.begin() + (kd-1) );
+		// remove mu_D_hat(kd) from mu_D_hat(...)
+		std::copy( mu_D_hat_.begin() + kd, mu_D_hat_.begin() + q_D_hat
+			, mu_D_hat_.begin() + (kd-1) );
+		// remove Q_XD_hat(:,kd) = e(id) from Q_XD_hat
+		std::copy( Q_XD_hat_row_.begin() + kd, Q_XD_hat_row_.begin() + q_D_hat
+			, Q_XD_hat_row_.begin() + (kd-1) );
+		std::copy( Q_XD_hat_col_.begin() + kd, Q_XD_hat_col_.begin() + q_D_hat
+			, Q_XD_hat_col_.begin() + (kd-1) );
+		deincrement_indices( kd, &Q_XD_hat_col_, q_D_hat-1 );
+		//
+		// Update the counts
+		//
+		++q_F_hat_;
+		q_hat = this->q_hat();
+		//
+		// Add the elements for newly freed variable
+		//
+		// add ij_map(q_hat) == -id to ij_map(...)
+		ij_map_[q_hat-1] = -id;
+		// add s_map(-id) == q_hat to s_map(...)
+		// ToDo: implement s_map(...)
+		// add bnds(q_hat) == FREE to bnds(...)
+		bnds_[q_hat-1] = QPSchurPack::FREE;
+		// add d_hat(q_hat) == d_p to d_hat(...)
+		d_hat_[q_hat-1] = d_p;
+		// add p_X(ld) == 0 to the end of z_hat(...)
+		z_hat_[q_hat-1] = 0.0; // This is needed so that (z_hat + beta*t_D*p_z_hat)(q_hat) == 0
+		// add [P_XF_hat](:,q_hat) = e(id) to P_XF_hat
+		P_XF_hat_row_[q_F_hat_-1] = id;
+		P_XF_hat_col_[q_F_hat_-1] = q_hat;
 	}
 	else {
 		// Shrink the dimension of the augmented KKT system to remove the constraint!
@@ -1059,7 +1194,9 @@ void QPSchur::ActiveSet::drop_constraint(
 		const size_type sd = s_map(jd);
 		assert(sd);
 		// Delete the sd row and column for S_hat
-		schur_comp().update_interface().delete_update(sd,force_refactorization);
+		schur_comp().update_interface().delete_update(
+			sd,force_refactorization
+			,MatrixSymAddDelUpdateable::EIGEN_VAL_NEG );
 		// Remove the ij_map(s) = jd element from ij_map(...)
 		std::copy( ij_map_.begin() + sd, ij_map_.begin() + q_hat
 			, ij_map_.begin() + (sd-1) );
@@ -1098,8 +1235,8 @@ void QPSchur::ActiveSet::drop_constraint(
 			--q_plus_hat_;
 		}
 		// Deincrement all counters in permutation matrices for removed element
-		deincrement_indices( sd, &P_XF_hat_col_ );
-		deincrement_indices( sd, &P_plus_hat_col_ );
+		deincrement_indices( sd, &P_XF_hat_col_, this->q_hat() );
+		deincrement_indices( sd, &P_plus_hat_col_, this->q_hat() );
 	}
 	// Update the permutation matrices and U_hat
 	reinitialize_matrices(test_);
@@ -1474,8 +1611,10 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	// Print header for removing constraints
 	if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY && num_act_change > 0 ) {
 		*out
-			<< "\n*** Removing constriants until we are dual feasible\n"
-			<< "\n*** Start by removing constraints within the Schur complement first\n\n";
+			<< "\n***"
+			<< "\n*** Removing constriants until we are dual feasible"
+			<< "\n***\n"
+			<< "\n*** Start by removing constraints within the Schur complement first\n";
 	}
 	// Print summary header for max_viol and jd.
 	if( (int)OUTPUT_ITER_SUMMARY <= (int)output_level 
@@ -1506,7 +1645,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		// Print header for s, z_hat(s), bnd(s), viol, max_viol and jd
 		if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 			*out
-				<< endl
+				<< "\nLooking for a constraint with the maximum dual infeasiblity to drop...\n\n"
 				<< right << setw(5)		<< "s"
 				<< right << setw(20)	<< "z_hat"
 				<< right << setw(20)	<< "bnd"
@@ -1579,17 +1718,25 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		if( jd == 0 ) break;	// We have a dual feasible point w.r.t. these constraints
 		// Remove the active constraint with the largest scaled violation.
 		act_set_.drop_constraint( jd );
+		++(*iter);
 		++(*num_drops);
 		// Print U_hat, S_hat and d_hat.
 		if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 			*out << std::setprecision(prec_saved);
 			*out
-				<< "\n*** drop constraint jd\n";
+				<< "\nPrinting active set after dropping constraint jd = " << jd << " ...\n";
 			dump_act_set_quantities( act_set_, *out );
 		}
 	}
 
 	if(out) *out << std::setprecision(prec_saved);
+
+	// Print how many constraints where removed from the schur complement
+	if( num_act_change > 0 && (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+		*out
+			<< "\nThere where " << (*num_drops)
+			<< " constraints dropped from the schur complement from the initial guess of the active set.\n";
+	}
 
 	// Compute v
 	if( act_set_.q_hat() > 0 ) {
@@ -1597,6 +1744,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		calc_v( qp.Ko(), qp.fo(), act_set_.U_hat(), act_set_.z_hat(), &v_() );
 		if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 			*out
+				<< "\nSolution to the system; v = inv(Ko)*(fo - U_hat*z_hat):\n"
 				<< "\n||v||inf = " << norm_inf(v_()) << std::endl;
 		}
 		if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
@@ -1612,7 +1760,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	set_x( act_set_, v_(), x );
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		*out
-			<< "\nCurrent guess for unknowns x\n||x||inf = " << norm_inf(*x);
+			<< "\nCurrent guess for unknowns x:\n\n||x||inf = " << norm_inf(*x) << std::endl;
 	}
 	if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 		*out
@@ -1623,6 +1771,9 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	// Determine if any initially fixed variables need to be freed by checking mu_D_hat.
 	//
 	if( act_set_.q_D_hat() ) {
+		if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+			*out << "\n*** Second, free initially fixed variables not in Ko\n\n";
+		}
 		const QPSchurPack::QP::i_x_X_map_t&  i_x_X_map = act_set_.qp().i_x_X_map();
 		const QPSchurPack::QP::x_init_t&     x_init    = act_set_.qp().x_init();
 		// Print summary header for max_viol and jd.
@@ -1632,10 +1783,10 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		{
 			*out << std::setprecision(dbl_prec);
 			*out     
-				<< "\nIf max_viol > 0 and jd != 0 then the variable i=-jd will be free from its initial bound\n\n"
+				<< "\nIf max_viol > 0 and id != 0 then the variable x(id) will be freed from its initial bound\n\n"
 				<< setw(20)	<< "max_viol"
 				<< setw(5)	<< "kd"
-				<< setw(5)	<< "jd"		<< endl
+				<< setw(5)	<< "id"		<< endl
 				<< setw(20)	<< "--------------"
 				<< setw(5)	<< "----"
 				<< setw(5)	<< "----"	<< endl;
@@ -1647,20 +1798,20 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			calc_mu_D( act_set_, *x, v_(), &mu_D_hat );
 			// Determine if we are dual feasible.
 			value_type	max_viol = 0.0;	// max scaled violation of dual feasability.
-			int			jd = 0;			// -indice of variable with max scaled violation.
+			int			id = 0;			// indice of variable with max scaled violation.
 			size_type   kd = 0;
 			VectorSlice::const_iterator
 				mu_D_itr = const_cast<const VectorSlice&>(mu_D_hat).begin();
-			// Print header for k, mu_D_hat(k), bnd, viol, max_viol and jd
+			// Print header for k, mu_D_hat(k), bnd, viol, max_viol and id
 			if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 				*out
-					<< endl
+					<< "\nLooking for a variable bound with the max dual infeasibility to drop...\n\n"
 					<< right << setw(5)		<< "k"
 					<< right << setw(20)	<< "mu_D_hat"
 					<< right << setw(20)	<< "bnd"
 					<< right << setw(20)	<< "viol"
 					<< right << setw(20)	<< "max_viol"
-					<< right << setw(5)		<< "jd"	<< endl
+					<< right << setw(5)		<< "id"	<< endl
 					<< right << setw(5)		<< "----"
 					<< right << setw(20)	<< "--------------"
 					<< right << setw(20)	<< "--------------"
@@ -1685,7 +1836,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 						else if( viol > max_viol ) {
 							max_viol = viol;
 							kd = k;
-							jd = -i;
+							id = i;
 						}
 					}
 				}
@@ -1699,7 +1850,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 						else if( viol > max_viol ) {
 							max_viol = viol;
 							kd = k;
-							jd = -i;
+							id = i;
 						}
 					}
 				}
@@ -1712,29 +1863,34 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 						<< right << setw(20)	<< bnd_str(bnd)
 						<< right << setw(20)	<< viol
 						<< right << setw(20)	<< max_viol
-						<< right << setw(5)		<< jd	<< endl;
+						<< right << setw(5)		<< id	<< endl;
 				}
 			}
-			// Print row of max_viol and jd
+			// Print row of max_viol and id
 			if( (int)OUTPUT_ITER_SUMMARY <= (int)output_level 
 				&& (int)output_level < (int)OUTPUT_ITER_QUANTITIES )
 			{
 				*out
 					<< setw(20)	<< max_viol
 					<< setw(5)	<< kd
-					<< setw(5)	<< jd         << endl;
+					<< setw(5)	<< id         << endl;
 			}
-			if( jd == 0 ) break;	// We have a dual feasible point w.r.t. these variable bounds
+			if( id == 0 ) break;	// We have a dual feasible point w.r.t. these variable bounds
 			// Remove the active constraint with the largest scaled violation.
-			act_set_.drop_constraint( jd );
-			++(*num_drops);
+			act_set_.drop_constraint( -id );
+			++(*iter);
+			++(*num_adds);
 			--q_D_hat;
 			// Print U_hat, S_hat and d_hat.
 			if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 				*out << std::setprecision(prec_saved);
 				*out
-					<< "\n*** drop constraint jd\n";
+					<< "\nPrinting active set after freeing initially fixed variable id = " << id << " ...\n";
 				dump_act_set_quantities( act_set_, *out );
+			}
+			if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
+				*out
+					<< "\nSolution to the new KKT system; z_hat = inv(S_hat)*(d_hat - U_hat'*vo), v = inv(Ko)*(fo - U_hat*z_hat):\n";
 			}
 			// Compute z_hat (z_hat = inv(S_hat)*(d_hat - U_hat'*vo))
 			calc_z( act_set_.S_hat(), act_set_.d_hat(), act_set_.U_hat(), vo_()
@@ -1761,7 +1917,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			set_x( act_set_, v_(), x );
 			if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 				*out
-					<< "\nCurrent guess for unknowns x\n||x||inf = " << norm_inf(*x);
+					<< "\nCurrent guess for unknowns x:\n\n||x||inf = " << norm_inf(*x) << std::endl;
 			}
 			if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
 				*out
@@ -1770,12 +1926,11 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		}
 	}
 
-	// Print how many constraints where removed from the initial quess
-	if( num_act_change > 0 && (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+	// Print how many initially fixed variables where freed
+	if( *num_adds > 0 && (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 		*out
-			<< "\nThere where " << (*num_drops)
-			<< " constraints dropped from the schur complement for the initial guess"
-			<< " of the active set.\n";
+			<< "\nThere where " << (*num_adds)
+			<< " initially fixed variables not in Ko that where freed and added to the schur complement.\n";
 	}
 
 	// Run the primal dual algorithm
@@ -1798,27 +1953,27 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		switch(solve_return) {
 			case OPTIMAL_SOLUTION:
 				*out
-					<< "\n\n*** Solution found!\n";
+					<< "\n*** Solution found!\n";
 				break;
 			case MAX_ITER_EXCEEDED:
 				*out
-					<< "\n\n*** Maximum iterations exceeded!\n";
+					<< "\n*** Maximum iterations exceeded!\n";
 				break;
 			case MAX_ALLOWED_STORAGE_EXCEEDED:
 				*out
-					<< "\n\n*** The maxinum size of the schur complement has been exceeded!\n";
+					<< "\n*** The maxinum size of the schur complement has been exceeded!\n";
 				break;
 			case INFEASIBLE_CONSTRAINTS:
 				*out
-					<< "\n\n*** The constraints are infeasible!\n";
+					<< "\n*** The constraints are infeasible!\n";
 				break;
 			case DUAL_INFEASIBILITY:
 				*out
-					<< "\n\n*** The dual variables are infeasible (numerical roundoff?)!\n";
+					<< "\n*** The dual variables are infeasible (numerical roundoff?)!\n";
 				break;
 			case SUBOPTIMAL_POINT:
 				*out
-					<< "\n\n*** The current point is suboptimal but we will return it anyway!\n";
+					<< "\n*** The current point is suboptimal but we will return it anyway!\n";
 				break;
 			default:
 				assert(0);
@@ -2909,20 +3064,21 @@ void QPSchur::dump_act_set_quantities(
 	const int prec_saved = out.precision();
 
 	try {
-
-	out	<< "\n*** Dump active-set quantities ***\n"
-		<< "\nn           = " << qp.n()
-		<< "\nn_R         = " << qp.n_R()
-		<< "\nm           = " << qp.m()
-		<< "\nm_breve     = " << constraints.m_breve()
-		<< "\nq_hat       = " << act_set.q_hat()
-		<< "\nq_plus_hat  = " << act_set.q_plus_hat()
-		<< "\nq_F_hat     = " << act_set.q_F_hat()
-		<< "\nq_C_hat     = " << act_set.q_C_hat()
-		<< "\nq_D_hat     = " << act_set.q_D_hat()
+    out << "\n*** Dumping the current active set ***\n"
+		<< "\nDimensions of the current active set:\n"
+		<< "\nn           = " << right << setw(int_w) << qp.n()					<< " (Number of unknowns)"
+		<< "\nn_R         = " << right << setw(int_w) << qp.n_R()				<< " (Number of initially free variables in Ko)"
+		<< "\nm           = " << right << setw(int_w) << qp.m()					<< " (Number of initially fixed variables not in Ko)"
+		<< "\nm_breve     = " << right << setw(int_w) << constraints.m_breve()	<< " (Number of extra general equality/inequality constriants)"
+		<< "\nq_hat       = " << right << setw(int_w) << act_set.q_hat()		<< " (Number of augmentations to the initial KKT system Ko)"
+		<< "\nq_plus_hat  = " << right << setw(int_w) << act_set.q_plus_hat()	<< " (Number of added variable bounds and general constraints)"
+		<< "\nq_F_hat     = " << right << setw(int_w) << act_set.q_F_hat()		<< " (Number of initially fixed variables not at their initial bound)"
+		<< "\nq_C_hat     = " << right << setw(int_w) << act_set.q_C_hat()		<< " (Number of initially fixed variables at the other bound)"
+		<< "\nq_D_hat     = " << right << setw(int_w) << act_set.q_D_hat()		<< " (Number of initially fixed variables still fixed at initial bound)"
 		<< endl;
 
 	// Print table of quantities in augmented KKT system
+	out	<< "\nQuantities for augmentations to the initial KKT system:\n";
 	out << std::setprecision(dbl_prec);
 	const size_type q_hat = act_set.q_hat();
 	out	<< endl
@@ -2962,6 +3118,7 @@ void QPSchur::dump_act_set_quantities(
 		out	<< "\nS_hat =\n" 		<< act_set.S_hat();
 	
 	// Print table of multipliers for q_D_hat
+	out	<< "\nQuantities for initially fixed variables which are still fixed at their initial bound:\n";
 	out << std::setprecision(dbl_prec);
 	const size_type q_D_hat = act_set.q_D_hat();
 	out	<< endl
@@ -2986,6 +3143,8 @@ void QPSchur::dump_act_set_quantities(
 	
 	// Print Q_XD_hat
 	out	<< "\nQ_XD_hat =\n" << act_set.Q_XD_hat();
+
+	out << "\n*** End dump of current active set ***\n";
 
 	}	// end try
 	catch(...) {

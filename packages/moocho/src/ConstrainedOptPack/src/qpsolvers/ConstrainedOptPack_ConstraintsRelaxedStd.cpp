@@ -731,6 +731,8 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 	, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type beta) const
 {
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
 
 	assert( !F_ || P_u_.cols() == f_->size() ); // ToDo: Add P_u when needed!
 
@@ -791,8 +793,17 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 		//
 
 		const GenPermMatrixSlice
-			P1 = P.create_submatrix(d_rng,P.ordered_by()),
-			P2 = P.create_submatrix(Range1D(nd()+1,nd()+1),P.ordered_by());
+			P1 = ( P.is_identity() 
+				   ? GenPermMatrixSlice( nd(), nd(), GenPermMatrixSlice::IDENTITY_MATRIX )
+				   : P.create_submatrix(d_rng,P.ordered_by())
+				),
+			P2 = ( P.is_identity()
+				   ? GenPermMatrixSlice(
+					   P_trans == no_trans ? nd() : 1
+					   , P_trans == no_trans ? 1 : nd()
+					   , GenPermMatrixSlice::ZERO_MATRIX )
+				   : P.create_submatrix(Range1D(nd()+1,nd()+1),P.ordered_by())
+				);
 
 		const SpVectorSlice
 			x1 = x(d_rng);
@@ -851,6 +862,8 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 		//   P3 = op(P)(:,nd+1+1:nd+1+m_in)
 		//   P4 = op(P)(:,nd+1+m_in+1:nd+1+m_in+m_eq)
 		//
+
+		assert( !P.is_identity() ); // We should never have this!
 
 		size_type off = 0;
 		const GenPermMatrixSlice

@@ -46,7 +46,9 @@ public:
 	  *				[in] array (size #n_R#): #i_x_free[l-1], l = 1...n_R# defines
 	  *					the matrix #Q_R# as:\\
 	  *					#Q_R(:,l) = e(i_x_free[l-1]), l = 1...n_R#\\
-	  *					The ordering of these indices is significant.
+	  *					The ordering of these indices is significant.  It is allowed
+	  *                 for #i_x_free == NULL# in which case it will be
+	  *                 considered to be identity.
 	  *	@param	i_x_fixed
 	  *				[in] array (size #n_X = n - n_R#):
 	  *					#i_x_fixed[l-1], l = 1...n_X# defines the matrix #Q_X# as:\\

@@ -37,7 +37,9 @@ class QPSchurInitKKTSystemHessianSuperBasic
 	 * Given the above parts of #G#, define: #[nd,nd_R] = size(G.Q_R)# and
 	 * #[nd,nd_X] = size(G.Q_X)#.  Then initial KKT system is defined as:
 	 *
-	 * #i_x_free[l-1] = (G.Q_R.begin()+l-1)->row_i(), l = 1...nd_R#\\
+	 * #n_R = nd_R#\\
+	 * if #i_x_free.size() > 0# then #i_x_free[l-1] = (G.Q_R.begin()+l-1)->row_i(), l = 1...nd_R#\\
+	 * if #i_x_free.size() == 0# then #i_x_free is implicitly identity#\\
 	 * #i_x_fixed[l-1] = (G.Q_X.begin()+l-1)->row_i(), l = 1...nd_X#\\
 	 * #i_x_fixed[nd_X] = nd+1#\\
 	 * #bnd_fixed[l-1] = G.bnd_fixed[l-1], l = 1...nd_X#\\
@@ -62,6 +64,7 @@ class QPSchurInitKKTSystemHessianSuperBasic
 		,const MatrixWithOp*  F
 		,BLAS_Cpp::Transp     trans_F
 		,const VectorSlice*   f
+		,size_type*           n_R
 		,i_x_free_t*          i_x_free
 		,i_x_fixed_t*         i_x_fixed
 		,bnd_fixed_t*         bnd_fixed

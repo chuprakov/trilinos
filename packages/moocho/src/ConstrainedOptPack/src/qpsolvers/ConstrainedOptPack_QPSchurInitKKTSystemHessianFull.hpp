@@ -30,7 +30,8 @@ class QPSchurInitKKTSystemHessianFull
 	 *
 	 * For this implementation:
 	 *
-	 * #i_x_free[i-1] = i, i = 1...nd#\\
+	 * #n_R = nd#\\
+	 * #i_x_free = emply (it is identity)#\\
 	 * #i_x_fixed[0] = nd+1#\\
 	 * #bnd_fixed[0] = LOWER#\\
 	 * #j_f_decomp[] = empty#\\
@@ -47,6 +48,7 @@ class QPSchurInitKKTSystemHessianFull
 		,const MatrixWithOp*  F
 		,BLAS_Cpp::Transp     trans_F
 		,const VectorSlice*   f
+		,size_type*           n_R
 		,i_x_free_t*          i_x_free
 		,i_x_fixed_t*         i_x_fixed
 		,bnd_fixed_t*         bnd_fixed

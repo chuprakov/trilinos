@@ -15,27 +15,28 @@ namespace ConstrainedOptimizationPack {
  * @param  n_R        [in] Number of free variables
  * @param  n_X        [in] Number of fixed variables
  * @param  i_x_free   [in] array (length n_R) of indices of free variables.
- *                    If n_R == 0 then i_x_free can be NULL.  If n_X == 0
- *                    then i_x_free can be NULL in which case it is considered
+ *                    If n_R == 0 then i_x_free can be NULL.  It is allowed
+ *                    for i_x_free == NULL in which case it is considered
  *                    identitiy.
  * @param  i_x_fixed  [in] array (length n_X) of indices of fixed variables.
- *                    If n_X == 0 then i_x_fixed can be NULL.  If n_R == 0
- *                    then i_x_fixed can be NULL in which case it is considered
- *                    identitiy.
+ *                    If n_X == 0 then i_x_fixed can be NULL.
  * @param  test_setup [in] If true then i_x_free[] and i_x_fixed[] will be
  *                    validated and if not okay then an exception will be
  *                    thown.
  * @param  Q_R_row_i  [out] array (length n_R) of row indices for Q_R.
- *                    If n_R == 0 then Q_R_row_i can be NULL.
+ *                    If n_R == 0 or (n == n_R and i_x_free == NULL)
+ *                    then Q_R_row_i can be NULL and will not be accessed.
  * @param  Q_R_col_j  [out] array (length n_R) of column indices for Q_R.
- *                    If n_R == 0 then Q_R_col_j can be NULL.
+ *                    If n_R == 0  or (n == n_R and i_x_free == NULL)
+ *                    then Q_R_col_j can be NULL and will not be accessed.
  * @param  Q_R        [out] GenPermMatixSlice object initialized with 
  *                    Q_R_row_i and Q_R_col_j.  If n_R == 0 then Q_R
- *                    will be initialized to (n_X by 0).
+ *                    will be initialized to (n_X by 0).  If i_x_free == NULL
+ *                    and n == n_R then Q_R->is_identity() == true on output.
  * @param  Q_X_row_i  [out] array (length n_X) of row indices for Q_X.
- *                    If n_X == 0 then Q_X_row_i can be NULL.
+ *                    If n_X == 0 then Q_X_row_i can be NULL and will not be accessed.
  * @param  Q_X_col_j  [out] array (length n_X) of column indices for Q_X
- *                    If n_X == 0 then Q_X_col_j can be NULL.
+ *                    If n_X == 0 then Q_X_col_j can be NULL and will not be accessed.
  * @param  Q_X        [out] GenPermMatixSlice object initialized with 
  *                    Q_X_row_i and Q_X_col_j  If n_X == 0 then Q_X
  *                    will be initialized to (n_X by 0).

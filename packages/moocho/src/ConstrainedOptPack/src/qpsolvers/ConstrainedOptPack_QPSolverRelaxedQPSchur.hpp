@@ -78,10 +78,15 @@ public:
 		 * @param  trans_f
 		 *              [in] See #QPSolverRelaxed::solve_qp(...)
 		 * @param  f    [in] See #QPSolverRelaxed::solve_qp(...)
+		 * @param  n_R  [out] Number of initially free variables.
 		 * @param  i_x_free
-		 *              [out] array (size #n_R#): #i_x_free[l-1], l = 1...n_R# defines
-		 *              the matrix #Q_R# as:\\
+		 *              [out] array (size #n_R# or #0#):
+		 *              If #i_x_free.size() > 0# then #i_x_free[l-1], l = 1...n_R#
+		 *              defines the matrix #Q_R# as:\\
 		 *              #Q_R(:,l) = e(i_x_free[l-1]), l = 1...n_R#\\
+		 *              If #i_x_free.size() == 0# then #i_x_free# is implicitly
+		 *              identity and #Q_R# is defiend as:\\
+		 *              #Q_R(:,l) = e(l), l = 1...n_R#\\
 		 *              The ordering of these indices is significant.
 		 *@param  i_x_fixed
 		 *              [out] array (size #n_X#):
@@ -122,6 +127,7 @@ public:
 			,const MatrixWithOp*  F
 			,BLAS_Cpp::Transp     trans_F
 			,const VectorSlice*   f
+			,size_type*           n_R
 			,i_x_free_t*          i_x_free
 			,i_x_fixed_t*         i_x_fixed
 			,bnd_fixed_t*         bnd_fixed

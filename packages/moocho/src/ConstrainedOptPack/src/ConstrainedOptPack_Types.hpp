@@ -19,7 +19,8 @@ namespace ConstrainedOptimizationPack {
 // concrete classes
 
 class VectorWithNorms;
-class SymMatrixSubclass;
+class MatrixSymPosDefCholFactor;
+class MatrixSymAddDelBunchKaufman;
 class SymInvCholMatrix;
 class SymLBFGSMatrixSubclass;
 class DenseIdentVertConcatMatrix;

@@ -19,6 +19,7 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 	,const MatrixWithOp*  F
 	,BLAS_Cpp::Transp     trans_F
 	,const VectorSlice*   f
+	,size_type*           n_R
 	,i_x_free_t*          i_x_free
 	,i_x_fixed_t*         i_x_fixed
 	,bnd_fixed_t*         bnd_fixed
@@ -55,9 +56,11 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 
 	// Setup output arguments
 
+	// n_R = nd_R
+	*n_R = nd_R;
 	// i_x_free[l-1] = (G.Q_R.begin()+l-1)->row_i(), l = 1...nd_R
-	i_x_free->resize(nd_R);
-	if(nd_R) {
+	i_x_free->resize( Q_R.is_identity() ? 0: nd_R );
+	if( nd_R && !Q_R.is_identity() ) {
 		GenPermMatrixSlice::const_iterator
 			Q_itr = Q_R.begin();
 		i_x_free_t::iterator
@@ -123,7 +126,7 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 		//             (where i = i_x_fixed[l-1])
 		bnd_fixed_t::const_iterator
 			bnd_itr     = const_cast<const bnd_fixed_t&>(*bnd_fixed).begin(),
-			bnd_itr_end = const_cast<const bnd_fixed_t&>(*bnd_fixed).begin();
+			bnd_itr_end = const_cast<const bnd_fixed_t&>(*bnd_fixed).begin() + nd_X;
 		i_x_fixed_t::const_iterator
 			i_x_itr     = const_cast<const i_x_fixed_t&>(*i_x_fixed).begin();
 		Vector::iterator

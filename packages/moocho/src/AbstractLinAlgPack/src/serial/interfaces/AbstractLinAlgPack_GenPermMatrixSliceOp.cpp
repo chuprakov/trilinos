@@ -24,6 +24,11 @@ void SparseLinAlgPack::V_StMtV(
 
 	typedef SpVector::element_type ele_t;
 
+	if( P.is_identity() ) {
+		SparseLinAlgPack::add_elements( y, x(1,P.nz()));
+		SparseLinAlgPack::Vt_S( y, a );
+		return;
+	}		
 	if( P_trans == no_trans ) {
 		for( GenPermMatrixSlice::const_iterator itr = P.begin(); itr != P.end(); ++itr ) {
 			const size_type
@@ -62,6 +67,11 @@ void SparseLinAlgPack::V_StMtV(
 	typedef SpVector::element_type ele_t;
 	const SpVectorSlice::element_type *ele_ptr;
 
+	if( P.is_identity() ) {
+		SparseLinAlgPack::add_elements( y, x(1,P.nz()) );
+		SparseLinAlgPack::Vt_S( &(*y)(), a );
+		return;
+	}		
 	if( x.is_sorted() ) {
 		if( P_trans == no_trans ) {
 			for( GenPermMatrixSlice::const_iterator itr = P.begin(); itr != P.end(); ++itr ) {
@@ -101,7 +111,12 @@ void SparseLinAlgPack::Vp_StMtV(
 
 	typedef SpVector::element_type ele_t;
 
-	if( P_trans == BLAS_Cpp::no_trans ) {
+	if( P.is_identity() ) {
+		for( size_type i = 1; i <= P.nz(); ++i ) {
+			y->add_element( ele_t( i, a ) );
+		}
+	}		
+	else if( P_trans == BLAS_Cpp::no_trans ) {
 		for( GenPermMatrixSlice::const_iterator itr = P.begin(); itr != P.end(); ++itr ) {
 			const size_type
 				i = itr->row_i(),
@@ -132,6 +147,14 @@ void SparseLinAlgPack::Vp_StMtV(
 	else
 		Vt_S(y,b);	
 	// y += a*op(P)*x
+	if( P.is_identity() ) {
+		if( b == 0.0 )
+			*y = 0.0;
+		else
+			LinAlgPack::Vt_S( y, b );
+		LinAlgPack::Vp_StV( &(*y)(1,P.nz()), a, x(1,P.nz()) );
+		return;
+	}		
 	if( P_trans == BLAS_Cpp::no_trans ) {
 		for( GenPermMatrixSlice::const_iterator itr = P.begin(); itr != P.end(); ++itr ) {
 			const size_type
@@ -165,8 +188,16 @@ void SparseLinAlgPack::Vp_StMtV(
 	if( b == 0.0 )
 		*y = 0.0;
 	else
-		Vt_S(y,b);	
+		Vt_S(y,b);
 	// y += a*op(P)*x
+	if( P.is_identity() ) {
+		if( b == 0.0 )
+			*y = 0.0;
+		else
+			LinAlgPack::Vt_S( y, b );
+		SparseLinAlgPack::Vp_StV( &(*y)(1,P.nz()), a, x(1,P.nz()) );
+		return;
+	}		
 	if( x.is_sorted() ) {
 		const SpVectorSlice::difference_type x_off = x.offset();
 		if( P_trans == no_trans && P.ordered_by() == GPMSIP::BY_COL ) {

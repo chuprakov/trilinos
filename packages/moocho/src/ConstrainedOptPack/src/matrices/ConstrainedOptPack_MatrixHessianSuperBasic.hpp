@@ -47,7 +47,9 @@ namespace ConstrainedOptimizationPack {
  * The default compiler generated constructors are allowed and initialize the
  * matrix to uninitialized by default.
  */
-class MatrixHessianSuperBasic : public MatrixSymWithOp {
+class MatrixHessianSuperBasic
+	: public virtual MatrixSymWithOp
+{
 public:
 
     ///
@@ -177,25 +179,15 @@ public:
 	/** @name Overridden from MatrixWithOp */
 	//@{
 
-	/// vs_lhs = alpha * op(M_rhs1) * vs_rhs2 + beta * vs_lhs (BLAS xGEMV)
+	///
 	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const VectorSlice& vs_rhs2, value_type beta) const;
-	/// vs_lhs = alpha * op(M_rhs1) * sv_rhs2 + beta * vs_lhs (BLAS xGEMV)
+	///
 	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
-	/// vs_lhs = alpha * op(P_rhs1) * op(M_rhs2) * vs_rhs3 + beta * vs_rhs
-	void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
-		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-		, BLAS_Cpp::Transp M_rhs2_trans
-		, const VectorSlice& vs_rhs3, value_type beta) const;
-	/// vs_lhs = alpha * op(P_rhs1) * op(M_rhs2) * sv_rhs3 + beta * vs_rhs
-	void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
-		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-		, BLAS_Cpp::Transp M_rhs2_trans
-		, const SpVectorSlice& sv_rhs3, value_type beta) const;
-	/// result = sv_rhs1' * op(M_rhs2) * sv_rhs3
+	///
 	value_type transVtMtV(const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
-		, const SpVectorSlice& sv_rhs3) const;
+		, const SpVectorSlice& sv_rhs3) const ;
 
 	//@}
 

@@ -29,7 +29,6 @@
 #include "SparseLinAlgPack/include/GenMatrixSubclass.h"								// V
 #include "ConstrainedOptimizationPack/include/SymInvCholMatrixSubclass.h"			// rHL
 #include "ConstrainedOptimizationPack/include/SymLBFGSMatrixSubclass.h"				// .
-#include "ConstrainedOptimizationPack/include/SymMatrixSubclass.h"					// .
 #include "ConstrainedOptimizationPack/include/MatrixHessianSuperBasicInitDiagonal.h"// |
 #include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"          // | rHL (super basics)
 #include "SparseLinAlgPack/include/MatrixSymDiagonalStd.h"                          // |
@@ -69,7 +68,6 @@
 #include "ReducedSpaceSQPPack/include/std/ReducedQPSolverQPOPTSOLStd.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedQPSolverQPSOL.h"
 #include "ReducedSpaceSQPPack/include/std/ReducedQPSolverQPOPT.h"
-#include "ReducedSpaceSQPPack/include/std/PrintReducedQPError_AddedStep.h"
 
 #include "ReducedSpaceSQPPack/include/std/rSQPAlgorithmStepNames.h"
 
@@ -139,7 +137,6 @@
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianExactStd_Step.h"
 #include "ReducedSpaceSQPPack/include/std/CrossTermExactStd_Step.h"
 #include "ReducedSpaceSQPPack/include/std/DampenCrossTermStd_Step.h"
-#include "ConstrainedOptimizationPack/include/MatrixSymPosDefChol.h"	// rHL_k
 
 // Correct a bad initial guess
 #include "ReducedSpaceSQPPack/include/std/CorrectBadInitGuessStd_AddedStep.h"
@@ -413,7 +410,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		
 		// Q_rHL
 
-		// Decide if we could use limited memory BFGS or not?
+		// Decide what type of quasi newton update to use
 		bool use_limited_memory = false;
 		const size_type
 			n = algo->nlp().n(),
@@ -483,7 +480,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 									SymLBFGSMatrixSubclass>() )
 							: static_cast<IterQuantMatrixWithOpCreator*>( 
 								new IterQuantMatrixWithOpCreatorContinuous<
-									SymMatrixSubclass>() );
+									MatrixSymPosDefCholFactor>() );
 					break;
 				case QPKWIK:
 					matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
@@ -575,18 +572,21 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					*_rHL = dynamic_cast<ConstrainedOptimizationPack::MatrixHessianSuperBasicInitDiagonal*>(
 						&algo->rsqp_state().rHL().set_k(-1) );
 				assert(_rHL); // Should not happen?
-				GenMatrix
-					*B_RR_store = new GenMatrix(dof,dof);
+				MatrixSymPosDefCholFactor
+					*B_RR_ptr = new MatrixSymPosDefCholFactor(
+						NULL    // Let it allocate its own memory
+						,NULL   // ...
+						,false  // Do not maintain the original matrix
+						,true   // Maintian the cholesky factor
+						);
+				B_RR_ptr->init_identity( n-r, 1.0 ); // Must be sized when rHL is initialized
 				_rHL->initialize(
-					dof, dof, NULL, NULL, NULL  // n, n_R, i_x_free, i_x_fixed, bnd_fixed
-					,new ConstrainedOptimizationPack::MatrixSymPosDefCholFactor(
-						&(*B_RR_store)()
-						,new ReleaseResource_ref_count_ptr<GenMatrix>(B_RR_store) // Give ownership to clean up
-						)                                          // B_RR_ptr
-					,NULL, BLAS_Cpp::no_trans                      // B_RX_ptr. B_RX_trans
-					,new SparseLinAlgPack::MatrixSymDiagonalStd()  // B_XX_ptr
+					dof, dof, NULL, NULL, NULL                     // n, n_R, i_x_free, i_x_fixed, bnd_fixed
+					,B_RR_ptr                                      // B_RR_ptr
+					,NULL, BLAS_Cpp::no_trans                      // B_RX_ptr, B_RX_trans
+					,new SparseLinAlgPack::MatrixSymDiagonalStd()  // B_XX_ptr (sized to 0x0)
 					);
-				algo->rsqp_state().rHL().set_not_updated(-1);
+				algo->rsqp_state().rHL().set_not_updated(-1);      // Set non updated so that it will be computed.
 			}
 		}
 	}
@@ -796,7 +796,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			// Get the strategy object that will perform the actual secant update.
 			ReducedHessianSecantUpdate_Strategy
 				*secant_update_strategy = NULL;
-			switch( cov_.quasi_newton_ )
+			switch( cov_.quasi_newton_used_ )
 			{
 			    case QN_BFGS:
 			    case QN_BFGS_PROJECTED:
@@ -809,7 +809,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					if(options_) opt_setter.set_options( *options_ );
 					
 
-					switch(  cov_.quasi_newton_ ) {
+					switch(  cov_.quasi_newton_used_ ) {
 					    case QN_BFGS:
 					    case QN_LBFGS:
 						{
@@ -1259,14 +1259,6 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			// Output the number of fixed depenent and indepent variables.
 			algo->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+2
 				, "CountNumFixedDepIndep", new NumFixedDepIndep_AddedStep );
-
-			// Output of KKT conditions of reduced QP subproblem
-			if( cov_.print_qp_error_ ) {
-				algo->insert_assoc_step( poss, GeneralIterationPack::POST_STEP, nas+3
-					, "PrintReducedQPError"
-					, new PrintReducedQPError_AddedStep( cov_.print_qp_error_ ) );
-			}
-
 		}
 
 	}
@@ -1380,10 +1372,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 		// Change the type of the iteration quantity for rHL
 		typedef GeneralIterationPack::IterQuantityAccessContinuous<
-					ConstrainedOptimizationPack::MatrixSymPosDefChol >
+					MatrixSymPosDefCholFactor >
 				iq_rHL_concrete_t;
 		typedef GeneralIterationPack::IterQuantityAccessDerivedToBase< MatrixWithOp
-					, ConstrainedOptimizationPack::MatrixSymPosDefChol >
+					, MatrixSymPosDefCholFactor >
 				iq_rHL_t;
 		algo->state().get_iter_quant(algo->state().get_iter_quant_id(rHL_name))
 			= AlgorithmState::IQ_ptr( new iq_rHL_t( new iq_rHL_concrete_t(1,rHL_name) ) );

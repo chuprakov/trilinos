@@ -133,11 +133,16 @@ void MatrixHessianSuperBasic::Vp_StMtV(
 		//
 		// B = Q_R*B_RR*Q_R'
 		//
-		// y = b*b + a*Q_R*B_RR*Q_R'*x
+		// y = b*y + a*Q_R*B_RR*Q_R'*x
 		//
-		Vector Q_R_x;
-		V_MtV( &Q_R_x, Q_R(), trans, x );
-		SparseLinAlgPack::Vp_StPtMtV(y,a,Q_R(),no_trans,*this->B_RR_ptr(),no_trans,Q_R_x(),b);
+		if( Q_R().is_identity() ) {
+			SparseLinAlgPack::Vp_StMtV(y,a,*this->B_RR_ptr(),no_trans,x,b);
+		}
+		else {
+			Vector Q_R_x;
+			V_MtV( &Q_R_x, Q_R(), trans, x );
+			SparseLinAlgPack::Vp_StPtMtV(y,a,Q_R(),no_trans,*this->B_RR_ptr(),no_trans,Q_R_x(),b);
+		}
 	}
 	else if( n_R_ == 0 ) {
 		//
@@ -147,8 +152,8 @@ void MatrixHessianSuperBasic::Vp_StMtV(
 	}
 	else {
 		//
-		// B = [   B_RR      op(B_RX) ]
-		//     [ op(B_RX')      B_XX  ]
+		// B = [ Q_R  Q_X  ] * [   B_RR      op(B_RX) ] * [ Q_R' ]
+		//                     [ op(B_RX')      B_XX  ]   [ Q_X' ]
 		//
 		// y = b*y + a*op(B)*x
 		//
@@ -200,11 +205,16 @@ void MatrixHessianSuperBasic::Vp_StMtV(
 		//
 		// B = Q_R*B_RR*Q_R'
 		//
-		// y = b*b + a*Q_R*B_RR*Q_R'*x
+		// y = b*y + a*Q_R*B_RR*Q_R'*x
 		//
-		Vector Q_R_x;
-		V_MtV( &Q_R_x, Q_R(), trans, x );
-		SparseLinAlgPack::Vp_StPtMtV(y,a,Q_R(),no_trans,*this->B_RR_ptr(),no_trans,Q_R_x(),b);
+		if( Q_R().is_identity() ) {
+			SparseLinAlgPack::Vp_StMtV(y,a,*this->B_RR_ptr(),no_trans,x,b);
+		}
+		else {
+			SpVector Q_R_x;
+			SparseLinAlgPack::V_MtV( &Q_R_x, Q_R(), trans, x );
+			SparseLinAlgPack::Vp_StPtMtV(y,a,Q_R(),no_trans,*this->B_RR_ptr(),no_trans,Q_R_x(),b);
+		}
 	}
 	else if( n_R_ == 0 ) {
 		//
@@ -214,8 +224,8 @@ void MatrixHessianSuperBasic::Vp_StMtV(
 	}
 	else {
 		//
-		// B = [   B_RR      op(B_RX) ]
-		//     [ op(B_RX')      B_XX  ]
+		// B = [ Q_R  Q_X  ] * [   B_RR      op(B_RX) ] * [ Q_R' ]
+		//                     [ op(B_RX')      B_XX  ]   [ Q_X' ]
 		//
 		// y = b*y + a*op(B)*x
 		//
@@ -251,75 +261,91 @@ void MatrixHessianSuperBasic::Vp_StMtV(
 	}
 }
 
-void MatrixHessianSuperBasic::Vp_StPtMtV(
-	VectorSlice* y, value_type a
-	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
-	, BLAS_Cpp::Transp B_trans
-	, const VectorSlice& x, value_type b
-	) const
-{
-	assert_initialized();
-	LinAlgPack::Vp_MtV_assert_sizes( y->size(), P.rows(), P.cols(), P_trans, n_	);
-	LinAlgPack::Vp_V_assert_sizes( n_, x.size() );
-	if( n_ == n_R_ ) {
-		//
-		// B = B_RR
-		//
-		SparseLinAlgPack::Vp_StPtMtV(y,a,P,P_trans,*this->B_RR_ptr(),B_trans,x,b);
-	}
-	else if( n_R_ == 0 ) {
-		//
-		// B = B_XX
-		//
-		assert(0); // ToDo: Implement this!
-	}
-	else {
-		//
-		// B = [   B_RR      op(B_RX) ]
-		//     [ op(B_RX')      B_XX  ]
-		//
-		assert(0); // ToDo: Implement this!
-	}
-}
-
-void MatrixHessianSuperBasic::Vp_StPtMtV(
-	VectorSlice* y, value_type a
-	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
-	, BLAS_Cpp::Transp B_trans
-	, const SpVectorSlice& x, value_type b
-	) const
-{
-	assert_initialized();
-	LinAlgPack::Vp_MtV_assert_sizes( y->size(), P.rows(), P.cols(), P_trans, n_	);
-	LinAlgPack::Vp_V_assert_sizes( n_, x.size() );
-	if( n_ == n_R_ ) {
-		//
-		// B = B_RR
-		//
-		SparseLinAlgPack::Vp_StPtMtV(y,a,P,P_trans,*this->B_RR_ptr(),B_trans,x,b);
-	}
-	else if( n_R_ == 0 ) {
-		//
-		// B = B_XX
-		//
-		assert(0); // ToDo: Implement this!
-	}
-	else {
-		//
-		// B = [   B_RR      op(B_RX) ]
-		//     [ op(B_RX')      B_XX  ]
-		//
-		assert(0); // ToDo: Implement this!
-	}
-}
-
 value_type MatrixHessianSuperBasic::transVtMtV(
-	const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
-	, const SpVectorSlice& sv_rhs3) const
+	const SpVectorSlice& x1, BLAS_Cpp::Transp B_trans
+	, const SpVectorSlice& x2 ) const
 {
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
 	assert_initialized();
-	assert(0);
-	return 0.0;
+	LinAlgPack::Vp_MtV_assert_sizes( x1.size(), rows(), cols(), B_trans, x1.size() );
+	if( n_ == n_R_ ) {
+		//
+		// B = Q_R*B_RR*Q_R'
+		//
+		// a = x1'*Q_R*B_RR*Q_R'*x2
+		//
+		if( Q_R().is_identity() ) {
+			return SparseLinAlgPack::transVtMtV( x1, *B_RR_ptr(), no_trans, x2 );
+		}
+		else {
+			if( x1.overlap(x2) == LinAlgPack::SAME_MEM ) {
+				SpVector Q_RT_x2;
+				SparseLinAlgPack::V_MtV( &Q_RT_x2, Q_R(), trans, x2 );
+				SpVectorSlice Q_RT_x2_slc = Q_RT_x2();
+				return SparseLinAlgPack::transVtMtV(
+					Q_RT_x2_slc, *B_RR_ptr(), no_trans, Q_RT_x2_slc );
+ 			}
+			else {
+				SpVector Q_RT_x2;
+				SparseLinAlgPack::V_MtV( &Q_RT_x2, Q_R(), trans, x2 );
+				SpVector Q_RT_x1;
+				SparseLinAlgPack::V_MtV( &Q_RT_x1, Q_R(), trans, x1 );
+				return SparseLinAlgPack::transVtMtV(
+					Q_RT_x1(), *B_RR_ptr(), no_trans, Q_RT_x2() );
+			}
+		}
+	}
+	else if( n_R_ == 0 ) {
+		//
+		// B = Q_X *B_XX * Q_X'
+		//
+		assert(0); // ToDo: Implement this!
+	}
+	else {
+		//
+		// B = [ Q_R  Q_X  ] * [   B_RR      op(B_RX) ] * [ Q_R' ]
+		//                     [ op(B_RX')      B_XX  ]   [ Q_X' ]
+		//
+		//
+		// a = x1'*B*x2
+		// =>
+		// a = x1' * [ Q_R  Q_X  ] * [   B_RR      op(B_RX) ] * [ Q_R' ] * x2
+		//                           [ op(B_RX')      B_XX  ]   [ Q_X' ]
+		//
+		// a = x1'*Q_R*B_RR*Q_R'*x2 + 2*x1'*Q_R*op(B_RX)*Q_X'*x2 + x1'*Q_X*B_XX*Q_X'*x2
+		//
+		if( x1.overlap(x2) == LinAlgPack::SAME_MEM ) {
+			// a = x1'*Q_R*B_RR*Q_R'*x1 + 2*x1'*Q_R*op(B_RX)*Q_X'*x1 + x1'*Q_X*B_XX*Q_X'*x1
+			SpVector Q_RT_x1;
+			if( Q_R().nz() )
+				SparseLinAlgPack::V_MtV( &Q_RT_x1, Q_R(), trans, x1 );
+			SpVector Q_XT_x1;
+			if( Q_X().nz() )
+				SparseLinAlgPack::V_MtV( &Q_XT_x1, Q_X(), trans, x1 );
+			SpVectorSlice Q_RT_x1_slc = Q_RT_x1();
+			SpVectorSlice Q_XT_x1_slc = Q_XT_x1();
+			return
+				( Q_R().nz()
+				  ? SparseLinAlgPack::transVtMtV(
+					  Q_RT_x1_slc, *B_RR_ptr(), no_trans, Q_RT_x1_slc )
+				  : 0.0
+					)
+				+ 2*(  B_RX_ptr().get() && Q_R().nz() && Q_X().nz()
+					   ? SparseLinAlgPack::transVtMtV(
+						   Q_RT_x1_slc, *B_RX_ptr(), B_RX_trans(), Q_XT_x1_slc )
+					   : 0.0
+					)
+				+ ( Q_X().nz()
+					? SparseLinAlgPack::transVtMtV(
+						Q_XT_x1_slc, *B_XX_ptr(), no_trans, Q_XT_x1_slc )
+					: 0.0
+					);
+		}
+		else {
+			assert(0); // ToDo: Implement this!
+		}
+	}
 }
 
 // Private

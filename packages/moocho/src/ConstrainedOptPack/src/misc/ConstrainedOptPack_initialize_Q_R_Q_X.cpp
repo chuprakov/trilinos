@@ -25,15 +25,8 @@ void ConstrainedOptimizationPack::initialize_Q_R_Q_X(
 	// ToDo: Implement this!
 
 	// Setup Q_R
-	if( n_X == 0 && i_x_free == NULL ) {
-		// consider i_x_free as identity
-		size_type
-			*row_i_itr = Q_R_row_i,
-			*col_j_itr = Q_R_col_j;
-		for( size_type i = 1; i <= n_R; ++i, ++row_i_itr, ++col_j_itr ) {
-			*row_i_itr = i;
-			*col_j_itr = i;
-		}
+	if( i_x_free == NULL ) {
+		Q_R->initialize(n,n_R,GenPermMatrixSlice::IDENTITY_MATRIX);
 	}
 	else if( n_R > 0 ) {
 		const size_type
@@ -45,22 +38,12 @@ void ConstrainedOptimizationPack::initialize_Q_R_Q_X(
 			*row_i_itr = *i_x_R;
 			*col_j_itr = i;
 		}
+		Q_R->initialize_and_sort(
+			n,n_R,n_R,0,0,GPMSIP::BY_ROW
+			,Q_R_row_i,Q_R_col_j,test_setup);
 	}
-	Q_R->initialize_and_sort(
-		n,n_R,n_R,0,0,GPMSIP::BY_ROW
-		,Q_R_row_i,Q_R_col_j,test_setup);
 	// Setup Q_X
-	if( n_R == 0 && i_x_fixed == NULL ) {
-		// consider i_x_fixed as identity
-		size_type
-			*row_i_itr = Q_X_row_i,
-			*col_j_itr = Q_X_col_j;
-		for( size_type i = 1; i <= n_X; ++i, ++row_i_itr, ++col_j_itr ) {
-			*row_i_itr = i;
-			*col_j_itr = i;
-		}
-	}
-	else if( n_X > 0 ) {
+	if( n_X > 0 ) {
 		const size_type
 			*i_x_X = i_x_fixed;
 		size_type

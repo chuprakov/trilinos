@@ -20,8 +20,8 @@ namespace ConstrainedOptimizationPack {
  */
 
 class MatrixHessianSuperBasicInitDiagonal
-	: public MatrixHessianSuperBasic
-	, public MatrixSymInitDiagonal
+	: public virtual MatrixHessianSuperBasic
+	, public virtual MatrixSymInitDiagonal
 	{
 public:
 

@@ -16,7 +16,8 @@
 #include "NLPInterfacePack/include/NLPInterfacePackPublicTypes.ud"
 
 using ConstrainedOptimizationPack::VectorWithNorms;
-using ConstrainedOptimizationPack::SymMatrixSubclass;
+using ConstrainedOptimizationPack::MatrixSymPosDefCholFactor;
+using ConstrainedOptimizationPack::MatrixSymAddDelBunchKaufman;
 using ConstrainedOptimizationPack::SymInvCholMatrix;
 using ConstrainedOptimizationPack::SymLBFGSMatrixSubclass;
 using ConstrainedOptimizationPack::DenseIdentVertConcatMatrix;

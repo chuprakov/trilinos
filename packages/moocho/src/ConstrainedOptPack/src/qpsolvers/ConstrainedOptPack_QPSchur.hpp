@@ -163,7 +163,7 @@ public:
 	virtual const VectorSlice g() const = 0;
 	///
 	virtual const MatrixSymWithOp& G() const = 0;
-	/// If m == 0 then don't call this
+	/// If m == 0 then don't call this, it may throw an exception or worse.
 	virtual const MatrixWithOp& A() const = 0;
 
 	// /////////////////////////////////////
@@ -627,14 +627,14 @@ public:
 	  * This object maintains references to objects that represent the current
 	  * augmented KKT system:
 	  *
-	  * MatrixWithOp               : U_hat        ( \hat{U} )
-	  * MatrixSymWithOP            : V_hat        ( \hat{V} )
-	  * MatrixSymWithOpFactorized  : S_hat        ( \hat{S} )
-	  * GenPermMatrixSlice         : P_XF_hat     ( \hat{P}^{XF} )
-	  * GenPermMatrixSlice         : P_plus_hat   ( \hat{P}^{(+)} )
-	  * GenPermMatrixSlice         : Q_XD_hat     ( \hat{Q}^{XD}  )
-	  * Vector                     : d_hat        ( \hat{d} )
-	  * Vector                     : z_hat        ( \hat{z} )
+	  * MatrixWithOp               : U_hat        <: R^((n_R+m) x q_hat)
+	  * MatrixSymWithOP            : V_hat        <: R^(q_hat x q_hat)
+	  * MatrixSymWithOpFactorized  : S_hat        <: R^(q_hat x q_hat)
+	  * GenPermMatrixSlice         : P_XF_hat     <: R^(n x q_hat)
+	  * GenPermMatrixSlice         : P_plus_hat   <: R^((n+m_breve) x q_hat)
+	  * GenPermMatrixSlice         : Q_XD_hat     <: R^(n x q_D_hat)
+	  * Vector                     : d_hat        <: R^(q_hat)
+	  * Vector                     : z_hat        <: R^(q_hat)
 	  * 
 	  */
 	class ActiveSet {

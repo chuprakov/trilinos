@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedQPSchur.h"
-#include "ConstrainedOptimizationPack/include/MatrixSymPosDefAddDel.h"
+#include "ConstrainedOptimizationPack/include/MatrixSymAddDelBunchKaufman.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "SparseLinAlgPack/include/SortByDescendingAbsValue.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
@@ -50,7 +50,7 @@ QPSolverRelaxedQPSchur::QPSolverRelaxedQPSchur(
 	,bigM_(bigM)
 	,warning_tol_(warning_tol)
 	,error_tol_(error_tol)
-	,qp_solver_( new MatrixSymPosDefAddDel )
+	,qp_solver_(new MatrixSymAddDelBunchKaufman)
 {}
 
 QPSolverRelaxedQPSchur::~QPSolverRelaxedQPSchur()
@@ -112,12 +112,13 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	InitKKTSystem::i_x_fixed_t    i_x_fixed;
 	InitKKTSystem::bnd_fixed_t    bnd_fixed;
 	InitKKTSystem::j_f_decomp_t   j_f_decomp;
+	size_type n_R_tmp;
 	init_kkt_sys().initialize_kkt_system(
 		g,G,etaL,dL,dU,F,trans_F,f
-		,&i_x_free,&i_x_fixed,&bnd_fixed,&j_f_decomp
+		,&n_R_tmp,&i_x_free,&i_x_fixed,&bnd_fixed,&j_f_decomp
 		,&b_X_,&Ko_,&fo_ );
 	const size_type
-		n_R = i_x_free.size(),
+		n_R = n_R_tmp,
 		n_X = i_x_fixed.size();
 	assert( n_R + n_X == nd + 1);  // Todo: Make an exception!
 	assert( bnd_fixed.size() == n_X ); // Todo: Make and exception!
@@ -159,7 +160,8 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	
 	qp_.initialize(
 		g_relaxed_(),G_relaxed_,NULL
-		,i_x_free.size(),&i_x_free[0],&i_x_fixed[0],&bnd_fixed[0]
+		,n_R, i_x_free.size() ? &i_x_free[0] : NULL
+		,&i_x_fixed[0],&bnd_fixed[0]
 		,b_X_(),*Ko_,fo_(),&constraints_
 		,out,test_what==RUN_TESTS,warning_tol(),error_tol()
 		,int(olevel)>=int(PRINT_ITER_VECTORS)

@@ -17,6 +17,7 @@ void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 	,const MatrixWithOp*  F
 	,BLAS_Cpp::Transp     trans_F
 	,const VectorSlice*   f
+	,size_type*           n_R
 	,i_x_free_t*          i_x_free
 	,i_x_fixed_t*         i_x_fixed
 	,bnd_fixed_t*         bnd_fixed
@@ -39,10 +40,11 @@ void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 #endif
 
 	const size_type nd = g.size();
-
+	
+	// n_R
+	*n_R = nd;
 	// i_x_free[i-1] = i, i = 1...nd
-	i_x_free->resize(nd);
-	{for(size_type i = 1; i <= nd; ++i) (*i_x_free)[i-1] = i; }
+	i_x_free->resize(0);
 	// i_x_fixed[0] = nd+1
 	i_x_fixed->resize(1);
 	(*i_x_fixed)[0] = nd+1;
