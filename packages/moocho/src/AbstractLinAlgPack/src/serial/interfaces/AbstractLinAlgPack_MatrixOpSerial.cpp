@@ -18,8 +18,11 @@
 #include <typeinfo>
 
 #include "SparseLinAlgPack/include/MatrixWithOpSerial.h"
-#include "SparseLinAlgPack/include/VectorWithOpGetSparse.h"
 #include "SparseLinAlgPack/include/VectorDenseEncap.h"
+#include "SparseLinAlgPack/include/VectorWithOpGetSparse.h"
+#include "SparseLinAlgPack/include/MatrixWithOpGetGMSMutable.h"
+#include "SparseLinAlgPack/include/MatrixWithOpGetGMSTri.h"
+#include "SparseLinAlgPack/include/MatrixSymWithOpGetGMSSymMutable.h"
 #include "SparseLinAlgPack/include/SpVectorOp.h"
 #include "SparseLinAlgPack/include/GenPermMatrixSliceOp.h"
 #include "AbstractLinAlgPack/include/EtaVector.h"
@@ -186,8 +189,8 @@ void MatrixWithOpSerial::syr2k(
 	// S += a*op(P1')*op(M)*op(P2) + a*op(P2')*op(M')*op(P1)
 	//
 	// We will start by renaming P1 and P2 such that op(P1).rows() >= op(P2).rows().
-	// This is becase we are going to store some temparary vectors and we don't
-	// them to be too big.
+	// This is because we are going to store some temparary vectors and we don't
+	// want them to be too big.
 	//
 	// We will perform the above operation by working with columns of:
 	//
@@ -435,7 +438,11 @@ bool MatrixWithOpSerial::Mp_StM(
 	,BLAS_Cpp::Transp trans_rhs
 	) const
 {
-	assert(0); // ToDo: Implement!
+	MatrixWithOpGetGMSMutable
+		*mwo_gms_lhs = dynamic_cast<MatrixWithOpGetGMSMutable*>(mwo_lhs);
+	if(!mwo_gms_lhs)
+		return MatrixWithOp::Mp_StM(mwo_lhs,alpha,trans_rhs); // boot it!
+	this->Mp_StM( &MatrixDenseMutableEncap(mwo_gms_lhs)(), alpha, trans_rhs );
 	return true;
 }
 	
@@ -445,7 +452,11 @@ bool MatrixWithOpSerial::Mp_StMtP(
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	) const
 {
-	assert(0); // ToDo: Implement!
+	MatrixWithOpGetGMSMutable
+		*mwo_gms_lhs = dynamic_cast<MatrixWithOpGetGMSMutable*>(mwo_lhs);
+	if(!mwo_gms_lhs)
+		return MatrixWithOp::Mp_StMtP(mwo_lhs,alpha,M_trans,P_rhs,P_rhs_trans); // boot it!
+	this->Mp_StMtP(&MatrixDenseMutableEncap(mwo_gms_lhs)(),alpha,M_trans,P_rhs,P_rhs_trans);
 	return true;
 }
 	
@@ -455,7 +466,11 @@ bool MatrixWithOpSerial::Mp_StPtM(
 	, BLAS_Cpp::Transp M_trans
 	) const
 {
-	assert(0); // ToDo: Implement!
+	MatrixWithOpGetGMSMutable
+		*mwo_gms_lhs = dynamic_cast<MatrixWithOpGetGMSMutable*>(mwo_lhs);
+	if(!mwo_gms_lhs)
+		return MatrixWithOp::Mp_StPtM(mwo_lhs,alpha,P_rhs,P_rhs_trans,M_trans); // boot it!
+	this->Mp_StPtM(&MatrixDenseMutableEncap(mwo_gms_lhs)(),alpha,P_rhs,P_rhs_trans,M_trans);
 	return true;
 }
 	
@@ -466,45 +481,11 @@ bool MatrixWithOpSerial::Mp_StPtMtP(
 	,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 	) const
 {
-	assert(0); // ToDo: Implement!
-	return true;
-}
-	
-bool MatrixWithOpSerial::Mp_StM(
-	value_type alpha,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs)
-{
-	assert(0); // ToDo: Implement!
-	return true;
-}
-	
-bool MatrixWithOpSerial::Mp_StMtP(
-	value_type alpha
-	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
-	,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
-	)
-{
-	assert(0); // ToDo: Implement!
-	return true;
-}
-	
-bool MatrixWithOpSerial::Mp_StPtM(
-	value_type alpha
-	,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
-	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
-	)
-{
-	assert(0); // ToDo: Implement!
-	return true;
-}
-	
-bool MatrixWithOpSerial::Mp_StPtMtP(
-	value_type alpha
-	,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-	,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
-	,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
-	)
-{
-	assert(0); // ToDo: Implement!
+	MatrixWithOpGetGMSMutable
+		*mwo_gms_lhs = dynamic_cast<MatrixWithOpGetGMSMutable*>(mwo_lhs);
+	if(!mwo_gms_lhs)
+		return MatrixWithOp::Mp_StPtMtP(mwo_lhs,alpha,P_rhs1,P_rhs1_trans,M_trans,P_rhs2,P_rhs2_trans); // boot it!
+	this->Mp_StPtMtP(&MatrixDenseMutableEncap(mwo_gms_lhs)(),alpha,P_rhs1,P_rhs1_trans,M_trans,P_rhs2,P_rhs2_trans);
 	return true;
 }
 	
@@ -516,7 +497,7 @@ void MatrixWithOpSerial::Vp_StMtV(
 	const VectorWithOpGetSparse   *sv_rhs2 = dynamic_cast<const VectorWithOpGetSparse*>(&v_rhs2);
 	if(sv_rhs2)
 		this->Vp_StMtV( &vs_lhs(), alpha, trans_rhs1, VectorSparseEncap(*sv_rhs2)(), beta );
-	VectorDenseEncap            vs_rhs2(v_rhs2);
+	VectorDenseEncap              vs_rhs2(v_rhs2);
 	return this->Vp_StMtV( &vs_lhs(), alpha, trans_rhs1, vs_rhs2(), beta );	
 }
 
@@ -524,7 +505,7 @@ void MatrixWithOpSerial::Vp_StMtV(
 	VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2, value_type beta) const
 {
-	VectorDenseMutableEncap     vs_lhs(*v_lhs);
+	VectorDenseMutableEncap       vs_lhs(*v_lhs);
 	this->Vp_StMtV( &vs_lhs(), alpha, trans_rhs1, sv_rhs2, beta );	
 }
 	
@@ -538,7 +519,7 @@ void MatrixWithOpSerial::Vp_StPtMtV(
 	const VectorWithOpGetSparse   *sv_rhs3 = dynamic_cast<const VectorWithOpGetSparse*>(&v_rhs3);
 	if(sv_rhs3)
 		return this->Vp_StPtMtV( &vs_lhs(), alpha, P_rhs1, P_rhs1_trans, M_rhs2_trans, VectorSparseEncap(*sv_rhs3)(), beta );	
-	VectorDenseEncap             vs_rhs3(v_rhs3);
+	VectorDenseEncap              vs_rhs3(v_rhs3);
 	this->Vp_StPtMtV( &vs_lhs(), alpha, P_rhs1, P_rhs1_trans, M_rhs2_trans, vs_rhs3(), beta );	
 }
 	
@@ -548,7 +529,7 @@ void MatrixWithOpSerial::Vp_StPtMtV(
 	, BLAS_Cpp::Transp M_rhs2_trans
 	, const SpVectorSlice& sv_rhs3, value_type beta) const
 {
-	VectorDenseMutableEncap     vs_lhs(*v_lhs);
+	VectorDenseMutableEncap       vs_lhs(*v_lhs);
 	this->Vp_StPtMtV( &vs_lhs(), alpha, P_rhs1, P_rhs1_trans, M_rhs2_trans, sv_rhs3, beta );	
 }
 	
@@ -557,8 +538,8 @@ value_type MatrixWithOpSerial::transVtMtV(
 	, const VectorWithOp& v_rhs3) const
 {
 	using DynamicCastHelperPack::dyn_cast;
-	VectorDenseEncap            vs_rhs1(v_rhs1);
-	VectorDenseEncap            vs_rhs3(v_rhs3);
+	VectorDenseEncap              vs_rhs1(v_rhs1);
+	VectorDenseEncap              vs_rhs3(v_rhs3);
 	return this->transVtMtV(vs_rhs1(),trans_rhs2,vs_rhs3());
 }
 	
@@ -568,23 +549,58 @@ void MatrixWithOpSerial::syr2k(
 	, const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
 	, value_type beta, MatrixSymWithOp* symwo_lhs ) const
 {
-	assert(0); // ToDo: Implement!
+	MatrixSymWithOpGetGMSSymMutable
+		*symwo_gms_lhs = dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(symwo_lhs);
+	if(!symwo_gms_lhs)
+		return MatrixWithOp::syr2k(M_trans,alpha,P1,P1_trans,P2,P2_trans,beta,symwo_lhs); // Boot it
+	this->syr2k(
+		M_trans,alpha,P1,P1_trans,P2,P2_trans,beta
+		,&MatrixDenseSymMutableEncap(symwo_gms_lhs)()
+		 );
 }
-	
+
 bool MatrixWithOpSerial::Mp_StMtM(
 	MatrixWithOp* mwo_lhs, value_type alpha
 	, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOp& mwo_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta ) const
 {
-	assert(0); // ToDo: Implement!
-	return true;
+	MatrixWithOpGetGMSMutable
+		*mwo_gms_lhs = dynamic_cast<MatrixWithOpGetGMSMutable*>(mwo_lhs);
+	if(mwo_gms_lhs) {
+		// Try to match the rhs arguments to known serial interfaces
+		if(const MatrixWithOpGetGMS* mwo_gms_rhs2 = dynamic_cast<const MatrixWithOpGetGMS*>(&mwo_rhs2)) {
+			this->Mp_StMtM(
+				&MatrixDenseMutableEncap(mwo_gms_lhs)(),alpha,trans_rhs1
+				,MatrixDenseEncap(*mwo_gms_rhs2)(),trans_rhs2,beta );
+			return true;
+		}
+		if(const MatrixSymWithOpGetGMSSym* mwo_sym_gms_rhs2 = dynamic_cast<const MatrixSymWithOpGetGMSSym*>(&mwo_rhs2)) {
+			this->Mp_StMtM(
+				&MatrixDenseMutableEncap(mwo_gms_lhs)(),alpha,trans_rhs1
+				,MatrixDenseEncap(*mwo_sym_gms_rhs2)(),trans_rhs2,beta );
+			return true;
+		}
+		if(const MatrixWithOpGetGMSTri* mwo_tri_gms_rhs2 = dynamic_cast<const MatrixWithOpGetGMSTri*>(&mwo_rhs2)) {
+			this->Mp_StMtM(
+				&MatrixDenseMutableEncap(mwo_gms_lhs)(),alpha,trans_rhs1
+				,MatrixDenseEncap(*mwo_tri_gms_rhs2)(),trans_rhs2,beta );
+			return true;
+		}
+		// If we get here, the matrix arguments did not match up so we have to give up (I think?)
+	}
+	// Let the default implementation try to find matrix arguments that can handle this!
+	return MatrixWithOp::Mp_StMtM(mwo_lhs,alpha,trans_rhs1,mwo_rhs2,trans_rhs2,beta); // Boot it!
 }
-	
+
 void MatrixWithOpSerial::syrk(
 	BLAS_Cpp::Transp M_trans, value_type alpha
-	, value_type beta, MatrixSymWithOp* sym_lhs ) const
+	, value_type beta, MatrixSymWithOp* symwo_lhs ) const
 {
-	assert(0); // ToDo: Implement!
+	MatrixSymWithOpGetGMSSymMutable
+		*symwo_gms_lhs = dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(symwo_lhs);
+	if(!symwo_gms_lhs)
+		return MatrixWithOp::syrk(M_trans,alpha,beta,symwo_lhs); // Boot it
+	this->syrk(M_trans,alpha,beta,&MatrixDenseSymMutableEncap(symwo_gms_lhs)());
 }
 
 }	// end namespace SparseLinAlgPack

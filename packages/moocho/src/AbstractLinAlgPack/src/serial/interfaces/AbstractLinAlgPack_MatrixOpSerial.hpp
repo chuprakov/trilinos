@@ -209,28 +209,6 @@ public:
 		,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 		) const;
 	///
-	bool Mp_StM(
-		value_type alpha,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp trans_rhs);
-	///
-	bool Mp_StMtP(
-		value_type alpha
-		,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
-		,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
-		);
-	///
-	bool Mp_StPtM(
-		value_type alpha
-		,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
-		,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
-		);
-	///
-	bool Mp_StPtMtP(
-		value_type alpha
-		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-		,const MatrixWithOp& M_rhs, BLAS_Cpp::Transp M_trans
-		,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
-		);
-	///
 	void Vp_StMtV(
 		VectorWithOpMutable* v_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const VectorWithOp& v_rhs2, value_type beta) const;
