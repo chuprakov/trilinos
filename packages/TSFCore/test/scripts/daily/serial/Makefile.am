@@ -34,15 +34,15 @@ else
 if BUILD_TEUCHOS
 if HAVE_TSFCORE_EPETRA
 
-EPETRA_ADAPTERS_TEST= TSFCoreTestEpetraAdapters
+TSFCORE_TEST= tsfcoreTestAll
 
-TSFCoreTestEpetraAdapters_SOURCES = $(srcdir)/TSFCoreTestEpetraAdapters
+tsfcoreTestAll_SOURCES = $(srcdir)/tsfcoreTestAll
 
-TSFCoreTestEpetraAdapters$(EXEEXT): $(srcdir)/TSFCoreTestEpetraAdapters
-	cp $(srcdir)/TSFCoreTestEpetraAdapters TSFCoreTestEpetraAdapters$(EXEEXT) 
+tsfcoreTestAll$(EXEEXT): $(srcdir)/tsfcoreTestAll
+	cp $(srcdir)/tsfcoreTestAll tsfcoreTestAll$(EXEEXT) 
 endif
 endif
 
-noinst_PROGRAMS = $(EPETRA_ADAPTERS_TEST)
+noinst_PROGRAMS = $(TSFCORE_TEST)
 
 endif

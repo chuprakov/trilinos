@@ -42,7 +42,7 @@
 # ************************************************************************
 #@HEADER
 
-SOURCES = $(TSFCoreTestEpetraAdapters_SOURCES)
+SOURCES = $(tsfcoreTestAll_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -93,21 +93,19 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/TSFCoreConfig.h
 CONFIG_CLEAN_FILES =
-@BUILD_TEUCHOS_TRUE@@HAVE_MPI_FALSE@@HAVE_TSFCORE_EPETRA_TRUE@am__EXEEXT_1 = TSFCoreTestEpetraAdapters$(EXEEXT)
+@BUILD_TEUCHOS_TRUE@@HAVE_MPI_FALSE@@HAVE_TSFCORE_EPETRA_TRUE@am__EXEEXT_1 = tsfcoreTestAll$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
-am__TSFCoreTestEpetraAdapters_SOURCES_DIST =  \
-	$(srcdir)/TSFCoreTestEpetraAdapters
-am_TSFCoreTestEpetraAdapters_OBJECTS =
-TSFCoreTestEpetraAdapters_OBJECTS =  \
-	$(am_TSFCoreTestEpetraAdapters_OBJECTS)
-TSFCoreTestEpetraAdapters_LDADD = $(LDADD)
+am__tsfcoreTestAll_SOURCES_DIST = $(srcdir)/tsfcoreTestAll
+am_tsfcoreTestAll_OBJECTS =
+tsfcoreTestAll_OBJECTS = $(am_tsfcoreTestAll_OBJECTS)
+tsfcoreTestAll_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(TSFCoreTestEpetraAdapters_SOURCES)
-DIST_SOURCES = $(am__TSFCoreTestEpetraAdapters_SOURCES_DIST)
+SOURCES = $(tsfcoreTestAll_SOURCES)
+DIST_SOURCES = $(am__tsfcoreTestAll_SOURCES_DIST)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALTERNATE_AR = @ALTERNATE_AR@
@@ -233,8 +231,8 @@ target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
 # Nothing should be done for an mpi build
-@BUILD_TEUCHOS_TRUE@@HAVE_MPI_FALSE@@HAVE_TSFCORE_EPETRA_TRUE@EPETRA_ADAPTERS_TEST = TSFCoreTestEpetraAdapters
-@BUILD_TEUCHOS_TRUE@@HAVE_MPI_FALSE@@HAVE_TSFCORE_EPETRA_TRUE@TSFCoreTestEpetraAdapters_SOURCES = $(srcdir)/TSFCoreTestEpetraAdapters
+@BUILD_TEUCHOS_TRUE@@HAVE_MPI_FALSE@@HAVE_TSFCORE_EPETRA_TRUE@TSFCORE_TEST = tsfcoreTestAll
+@BUILD_TEUCHOS_TRUE@@HAVE_MPI_FALSE@@HAVE_TSFCORE_EPETRA_TRUE@tsfcoreTestAll_SOURCES = $(srcdir)/tsfcoreTestAll
 all: all-am
 
 .SUFFIXES:
@@ -270,15 +268,15 @@ $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
-@BUILD_TEUCHOS_FALSE@TSFCoreTestEpetraAdapters$(EXEEXT): $(TSFCoreTestEpetraAdapters_OBJECTS) $(TSFCoreTestEpetraAdapters_DEPENDENCIES) 
-@BUILD_TEUCHOS_FALSE@	@rm -f TSFCoreTestEpetraAdapters$(EXEEXT)
-@BUILD_TEUCHOS_FALSE@	$(LINK) $(TSFCoreTestEpetraAdapters_LDFLAGS) $(TSFCoreTestEpetraAdapters_OBJECTS) $(TSFCoreTestEpetraAdapters_LDADD) $(LIBS)
-@HAVE_MPI_TRUE@TSFCoreTestEpetraAdapters$(EXEEXT): $(TSFCoreTestEpetraAdapters_OBJECTS) $(TSFCoreTestEpetraAdapters_DEPENDENCIES) 
-@HAVE_MPI_TRUE@	@rm -f TSFCoreTestEpetraAdapters$(EXEEXT)
-@HAVE_MPI_TRUE@	$(LINK) $(TSFCoreTestEpetraAdapters_LDFLAGS) $(TSFCoreTestEpetraAdapters_OBJECTS) $(TSFCoreTestEpetraAdapters_LDADD) $(LIBS)
-@HAVE_TSFCORE_EPETRA_FALSE@TSFCoreTestEpetraAdapters$(EXEEXT): $(TSFCoreTestEpetraAdapters_OBJECTS) $(TSFCoreTestEpetraAdapters_DEPENDENCIES) 
-@HAVE_TSFCORE_EPETRA_FALSE@	@rm -f TSFCoreTestEpetraAdapters$(EXEEXT)
-@HAVE_TSFCORE_EPETRA_FALSE@	$(LINK) $(TSFCoreTestEpetraAdapters_LDFLAGS) $(TSFCoreTestEpetraAdapters_OBJECTS) $(TSFCoreTestEpetraAdapters_LDADD) $(LIBS)
+@BUILD_TEUCHOS_FALSE@tsfcoreTestAll$(EXEEXT): $(tsfcoreTestAll_OBJECTS) $(tsfcoreTestAll_DEPENDENCIES) 
+@BUILD_TEUCHOS_FALSE@	@rm -f tsfcoreTestAll$(EXEEXT)
+@BUILD_TEUCHOS_FALSE@	$(LINK) $(tsfcoreTestAll_LDFLAGS) $(tsfcoreTestAll_OBJECTS) $(tsfcoreTestAll_LDADD) $(LIBS)
+@HAVE_MPI_TRUE@tsfcoreTestAll$(EXEEXT): $(tsfcoreTestAll_OBJECTS) $(tsfcoreTestAll_DEPENDENCIES) 
+@HAVE_MPI_TRUE@	@rm -f tsfcoreTestAll$(EXEEXT)
+@HAVE_MPI_TRUE@	$(LINK) $(tsfcoreTestAll_LDFLAGS) $(tsfcoreTestAll_OBJECTS) $(tsfcoreTestAll_LDADD) $(LIBS)
+@HAVE_TSFCORE_EPETRA_FALSE@tsfcoreTestAll$(EXEEXT): $(tsfcoreTestAll_OBJECTS) $(tsfcoreTestAll_DEPENDENCIES) 
+@HAVE_TSFCORE_EPETRA_FALSE@	@rm -f tsfcoreTestAll$(EXEEXT)
+@HAVE_TSFCORE_EPETRA_FALSE@	$(LINK) $(tsfcoreTestAll_LDFLAGS) $(tsfcoreTestAll_OBJECTS) $(tsfcoreTestAll_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -405,8 +403,8 @@ uninstall-am: uninstall-info-am
 	uninstall uninstall-am uninstall-info-am
 
 
-@BUILD_TEUCHOS_TRUE@@HAVE_MPI_FALSE@@HAVE_TSFCORE_EPETRA_TRUE@TSFCoreTestEpetraAdapters$(EXEEXT): $(srcdir)/TSFCoreTestEpetraAdapters
-@BUILD_TEUCHOS_TRUE@@HAVE_MPI_FALSE@@HAVE_TSFCORE_EPETRA_TRUE@	cp $(srcdir)/TSFCoreTestEpetraAdapters TSFCoreTestEpetraAdapters$(EXEEXT) 
+@BUILD_TEUCHOS_TRUE@@HAVE_MPI_FALSE@@HAVE_TSFCORE_EPETRA_TRUE@tsfcoreTestAll$(EXEEXT): $(srcdir)/tsfcoreTestAll
+@BUILD_TEUCHOS_TRUE@@HAVE_MPI_FALSE@@HAVE_TSFCORE_EPETRA_TRUE@	cp $(srcdir)/tsfcoreTestAll tsfcoreTestAll$(EXEEXT) 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
