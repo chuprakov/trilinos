@@ -111,14 +111,14 @@ int main(int argc, char *argv[])
       Indices[1] = MyGlobalElements[i]+1;
       NumEntries = 2;
     }
-    assert(A.InsertGlobalValues(MyGlobalElements[i], NumEntries, Values, Indices)==0);
+    A.InsertGlobalValues(MyGlobalElements[i], NumEntries, Values, Indices);
     // Put in the diagonal entry
-    assert(A.InsertGlobalValues(MyGlobalElements[i], 1, &two, MyGlobalElements+i)==0);
+    A.InsertGlobalValues(MyGlobalElements[i], 1, &two, MyGlobalElements+i);
   }
   
   // Finish up, trasforming the matrix entries into local numbering,
   // to optimize data transfert during matrix-vector products
-  assert(A.TransformToLocal()==0);
+  A.TransformToLocal();
 
   // build up two distributed vectors q and z, and compute
   // q = A * z

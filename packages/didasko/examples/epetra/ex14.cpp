@@ -89,13 +89,13 @@ public:
 	Indices[1] = MyGlobalElements[i]+1;
 	NumEntries = 2;
       }
-      assert(this->InsertGlobalValues(MyGlobalElements[i], NumEntries, Values, Indices)==0);
+      InsertGlobalValues(MyGlobalElements[i], NumEntries, Values, Indices);
       // Put in the diagonal entry
-      assert(this->InsertGlobalValues(MyGlobalElements[i], 1, &diag, MyGlobalElements+i)==0);
+      InsertGlobalValues(MyGlobalElements[i], 1, &diag, MyGlobalElements+i);
     }
 
     // Finish up
-    assert(TransformToLocal()==0);
+    TransformToLocal();
 
   }
   

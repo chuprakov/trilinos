@@ -115,15 +115,13 @@ int main(int argc, char *argv[])
       ++NumEntries;
     }
     // put the off-diagonal entries
-    assert(A.InsertGlobalValues(MyGlobalElements[i], NumEntries, 
-				Values, Indices)==0);
+    A.InsertGlobalValues(MyGlobalElements[i], NumEntries, Values, Indices);
     // Put in the diagonal entry
-    assert(A.InsertGlobalValues(MyGlobalElements[i], 1, 
-				&diag, MyGlobalElements+i)==0);
+    A.InsertGlobalValues(MyGlobalElements[i], 1, &diag, MyGlobalElements+i);
   }
   
   // Finish up
-  assert(A.TransformToLocal()==0);
+  A.TransformToLocal();
 
   // create x and b vectors
   Epetra_Vector x(Map);

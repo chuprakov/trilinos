@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
   A.Export(*readA, exporter, Add);
   Comm.Barrier();
   double matrixRedistributeTime = FillTimer.ElapsedTime() - vectorRedistributeTime;
-  assert(A.TransformToLocal()==0);    
+  A.TransformToLocal();
   Comm.Barrier();
   double fillCompleteTime = FillTimer.ElapsedTime() - matrixRedistributeTime;
 

@@ -152,11 +152,9 @@ Epetra_CrsMatrix * CreateLaplacian( const int nx, const int ny,
       ++NumEntries;
     }
     // put the off-diagonal entries
-    assert(A->InsertGlobalValues(MyGlobalElements[i], NumEntries, 
-				 Values, Indices)==0);
+    A->InsertGlobalValues(MyGlobalElements[i], NumEntries, Values, Indices);
     // Put in the diagonal entry
-    assert(A->InsertGlobalValues(MyGlobalElements[i], 1, 
-				 &diag, MyGlobalElements+i)==0);
+    A->InsertGlobalValues(MyGlobalElements[i], 1, &diag, MyGlobalElements+i);
   }
 
   // put matrix in local ordering
@@ -213,8 +211,7 @@ public:
     
     for( int i=0 ; i<NumMyElements; ++i ) {
       // Put in the diagonal entry
-      assert(Matrix_->ReplaceGlobalValues(MyGlobalElements[i], 1, 
-					  &diag, MyGlobalElements+i)==0);
+      Matrix_->ReplaceGlobalValues(MyGlobalElements[i], 1, &diag, MyGlobalElements+i);
     }
     // matrix-vector product (intra-processes communication occurs
     // in this call)

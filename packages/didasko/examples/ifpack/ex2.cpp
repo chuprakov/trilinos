@@ -139,13 +139,13 @@ int main(int argc, char *argv[]) {
   Ifpack_CrsRiluk * RILU = 0;
 
   Graph = new Ifpack_IlukGraph(A.Graph(), LevelFill, Overlap);
-  assert(Graph->ConstructFilledGraph()==0);
+  Graph->ConstructFilledGraph();
 
   RILU = new Ifpack_CrsRiluk(*Graph);
   int initerr = RILU->InitValues(A);
   if (initerr!=0) cout << Comm << "*ERR* InitValues = " << initerr;
 
-  assert(RILU->Factor()==0);
+  RILU->Factor();
   
   // Define label for printing out during the solve phase
   string label = "Ifpack_CrsRiluk Preconditioner: LevelFill = " + toString(LevelFill) + 

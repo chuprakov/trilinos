@@ -139,11 +139,9 @@ int main(int argc, char *argv[])
       ++NumEntries;
     }
     // put the off-diagonal entries
-    assert(A.InsertGlobalValues(MyGlobalElements[i], NumEntries, 
-				Values, Indices)==0);
+    A.InsertGlobalValues(MyGlobalElements[i], NumEntries, Values, Indices);
     // Put in the diagonal entry
-    assert(A.InsertGlobalValues(MyGlobalElements[i], 1, 
-				&diag, MyGlobalElements+i)==0);
+    A.InsertGlobalValues(MyGlobalElements[i], 1, &diag, MyGlobalElements+i);
   }
   cout <<  A;
   

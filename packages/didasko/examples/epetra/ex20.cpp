@@ -87,13 +87,13 @@ int main(int argc, char *argv[])
       Indices[1] = MyGlobalElements[i]+1;
       NumEntries = 2;
     }
-    assert(A.InsertGlobalValues(MyGlobalElements[i], NumEntries, Values, Indices)==0);
+    A.InsertGlobalValues(MyGlobalElements[i], NumEntries, Values, Indices);
     // Put in the diagonal entry
-    assert(A.InsertGlobalValues(MyGlobalElements[i], 1, &two, MyGlobalElements+i)==0);
+    A.InsertGlobalValues(MyGlobalElements[i], 1, &two, MyGlobalElements+i);
   }
   
   // Finish up
-  assert(A.TransformToLocal()==0);
+  A.TransformToLocal();
 
   // ================ CONSTRUCTION OF VECTORS =======================
   

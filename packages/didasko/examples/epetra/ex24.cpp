@@ -98,7 +98,8 @@ int main(int argc, char *argv[])
 
   // Now, I would like to apply Q to a vector defined on
   // MapB, giving as a result a vector on MapB
-  assert(Q.FillComplete(MapB,MapB)==0);
+  Q.FillComplete(MapB,MapB);
+
   // the instruction above causes the code to crash if
   // I build up the matrix as `Epetra_CrsMatrix Q(Copy,MapA,1)'
   // (without specifing the col map)
