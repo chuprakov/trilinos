@@ -125,7 +125,7 @@ options_group NLPSolverClientInterface {
 *    max_iter = 1000;  *** (default?)
      *** (+int) Maximum number of SQP iterations allowed.
 
-*    max_run_time = 1e+10; *** (default?)
+*    max_run_time = 1e+10; *** In minutes (default?)
      *** (+dbl) Maximum runtime for the SQP algorithm (in minutes).
      *** The default is to run forever.
 
