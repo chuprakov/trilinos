@@ -20,13 +20,12 @@
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
+#include "AbstractLinAlgPack/include/AbstractLinAlgPackAssertOp.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "WorkspacePack.h"
 #include "ThrowException.h"
 
 namespace {
-
-/*
 
 //
 // Implicit matrix-vector multiplication:
@@ -35,51 +34,57 @@ namespace {
 //
 template<class V>
 void imp_Vp_StMtV_implicit(
-	LinAlgPack::VectorSlice                                             *y
-	,LinAlgPack::value_type                                             a
-	,const ConstrainedOptimizationPack::DecompositionSystemVarReduct    &decomp_sys
-	,BLAS_Cpp::Transp                                                   D_trans
-	,const V                                                            &x
-	,LinAlgPack::value_type                                             b
+	AbstractLinAlgPack::VectorWithOpMutable               *y
+	,AbstractLinAlgPack::value_type                       a
+	,const AbstractLinAlgPack::MatrixWithOpNonsingular    &C
+	,const AbstractLinAlgPack::MatrixWithOp               &N
+	,BLAS_Cpp::Transp                                     D_trans
+	,const V                                              &x
+	,LinAlgPack::value_type                               b
 	)
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
+	namespace alap = AbstractLinAlgPack;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	const LinAlgPack::size_type
-		r   = decomp_sys.C().rows(),
-		dof = decomp_sys.N().cols();
+		r   = C.rows(),
+		dof = N.cols();
+
+	// ToDo: Pass in workspace vectors to save some allocation time!
 
 	if( D_trans == no_trans ) {
-		//
-		// y += a * inv(C) * ( N * x )
-		//
-		wsp::Workspace<LinAlgPack::value_type> t1_ws(wss,r), t2_ws(wss,r);
-		LinAlgPack::VectorSlice t1(&t1_ws[0],t1_ws.size()), t2(&t2_ws[0],t2_ws.size());
-		// t1 = N*x
-		LinAlgOpPack::V_MtV( &t1, decomp_sys.N(), no_trans, x );
-		// t2 = inv(C) * t1
-		decomp_sys.solve_C( t1, no_trans, &t2 );
 		// y = b*y
-		if(b==0.0)       *y = 0.0;
-		else if(b!=1.0)  LinAlgPack::Vt_S(y,b);
+		alap::Vt_S(y,b);
+		//
+		// y += -a * inv(C) * ( N * x )
+		//
+		alap::VectorSpace::vec_mut_ptr_t
+			t1 = N.space_cols().create_member(),
+			t2 = C.space_rows().create_member();
+		// t1 = N*x
+		LinAlgOpPack::V_MtV( t1.get(), N, no_trans, x );
+		// t2 = inv(C) * t1
+		alap::V_InvMtV( t2.get(), C, no_trans, *t1 );
 		// y += a*t2
-		LinAlgPack::Vp_StV( y, -a, t2 );
+		alap::Vp_StV( y, -a, *t2 );
 	}
 	else {
 		//
-		// y = b*y + a * N' * ( inv(C') * x )
+		// y = b*y - a * N' * ( inv(C') * x )
 		//
-		wsp::Workspace<LinAlgPack::value_type> t1_ws(wss,r);
-		LinAlgPack::VectorSlice t1(&t1_ws[0],t1_ws.size());
+		alap::VectorSpace::vec_mut_ptr_t
+			t1 = C.space_cols().create_member();
 		// t1 = inv(C')*x
-		decomp_sys.solve_C( x, trans, &t1 );
-		// y = b*y + a*N'*t1
-	    SparseLinAlgPack::Vp_StMtV( y, a,  decomp_sys.N(), trans, t1, b );
+		alap::V_InvMtV( t1.get(), C, trans, x );
+		// y = b*y - a*N'*t1
+	    alap::Vp_StMtV( y, -a,  N, trans, *t1, b );
 	}
 }
+
+/*
 
 //
 // Generate a row of inv(C)*N if not already computed.
@@ -248,9 +253,10 @@ MatrixWithOp& MatrixVarReductImplicit::operator=(const MatrixWithOp& M)
 
 std::ostream& MatrixVarReductImplicit::output(std::ostream& o) const
 {
-	o << "\nVariable reduction matrix D = -inv(C)*N where C and N are:\n"
-	  << "\nC =\n" << *C_
-	  << "\nN =\n" << *N_;
+	o << "This is a " << this->rows() << " x " << this->cols()
+	  << " variable reduction matrix D = -inv(C)*N where C and N are:\n"
+	  << "C =\n" << *C_
+	  << "N =\n" << *N_;
 	return o;
 }
 
@@ -261,16 +267,8 @@ void MatrixVarReductImplicit::Vp_StMtV(
 	) const
 {
 	assert_initialized();
-/*
-	LinAlgPack::Vp_MtV_assert_sizes(y->size(),rows(),cols(),D_trans,x.size());
-	if( use_dense_mat_vec_ && D_dense_.rows() > 0 ) {
-		LinAlgOpPack::Vp_StMtV( y, a, D_dense_, D_trans, x, b );
-	}
-	else {
-		imp_Vp_StMtV_implicit( y, a, *decomp_sys_, D_trans, x, b );
-	}
-*/
-	assert(0); // ToDo: Update above!
+	AbstractLinAlgPack::Vp_MtV_assert_compatibility(y,*this,D_trans,x);
+	imp_Vp_StMtV_implicit( y, a, *C_, *N_, D_trans, x, b );
 }
 
 void MatrixVarReductImplicit::Vp_StMtV(
@@ -286,6 +284,8 @@ void MatrixVarReductImplicit::Vp_StMtV(
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	assert_initialized();
+	AbstractLinAlgPack::Vp_MtV_assert_compatibility(y,*this,D_trans,x);
+	imp_Vp_StMtV_implicit( y, a, *C_, *N_, D_trans, x, b );
 /*
 	const size_type
 		D_rows = this->rows(), D_cols = this->cols(),
@@ -327,7 +327,7 @@ void MatrixVarReductImplicit::Vp_StMtV(
 		}
 	}
 */
-	assert(0); // ToDo: Update above!
+	// ToDo: Consider implementing the above specialized implementation!
 }
 
 void MatrixVarReductImplicit::Vp_StPtMtV(
@@ -357,7 +357,7 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 		imp_Vp_StPtMtV_by_row(y,a,P,P_trans,*decomp_sys_,x,b,&InvCtN_rows_);
 	}
 */
-	assert(0); // ToDo: Update above!
+	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,D_trans,x,b); // ToDo:Update specialized implementation above!
 }
 
 void MatrixVarReductImplicit::Vp_StPtMtV(
@@ -387,7 +387,7 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 		imp_Vp_StPtMtV_by_row(y,a,P,P_trans,*decomp_sys_,x,b,&InvCtN_rows_);
 	}
 */
-	assert(0); // ToDo: Update above!
+	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,D_trans,x,b); // ToDo:Update specialized implementation above!
 }
 
 // Private member functions
