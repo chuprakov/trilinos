@@ -21,18 +21,18 @@
 #ifndef REDUCT_TRANS_VECTOR_OPERATORS_CONFIG_H
 #define REDUCT_TRANS_VECTOR_OPERATORS_CONFIG_H
 
-/* RAB: 2003/12/15: We really need to include a header like this so
-   that #defines for HAVE_MPI will be defined but this is included
-   by C source files that do not accept the C++-specific declarations
-   in this file.  As a resort, we have to explicitly define
-   -DRTOp_USE_MPI if we want to support MPI for now. */
-/*#include "TSFCoreUtils_ConfigDefs.hpp"*/
+#ifndef PACKAGE_TARNAME  /* This is flag that this file is already included */
+#include <TSFCoreUtilsConfig.h>
+#endif
 
-/* KL: Test value of HAVE_MPI, conforming to autotools conventions for */
-/* conditional compilation. */
-#if defined(RTOp_USE_MPI) || defined(HAVE_MPI)
+#ifdef HAVE_MPI
+#define RTOp_USE_MPI  /* This macro is used in several places so we must keep it */
+#endif
+
+#ifdef RTOp_USE_MPI
 #include "mpi.h"       /* Use real MPI declarations */
 #else
+#warning "Compiling in support for dummy MPI, real MPI will not be available!"
 #include "RTOp_mpi.h"  /* Use dummy MPI declarations */
 #endif
 
@@ -63,6 +63,8 @@ typedef char                    RTOp_char_type;  /*< Compatible with fortran CHA
 
 /* The maxinum number of characters in a name of a reduction/transformation operator class */
 #define RTOp_MAX_REDUCT_TRANS_OP_CLASS_NAME  50
+
+/*@} */
 
 #ifdef __cplusplus
 }

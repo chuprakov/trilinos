@@ -60,7 +60,10 @@
 #undef VERSION
 #endif
 
+
+#ifndef PACKAGE_TARNAME  /* This is flag that this file is already included */
 #include <TSFCoreUtilsConfig.h>
+#endif
 
 #ifdef __cplusplus
 

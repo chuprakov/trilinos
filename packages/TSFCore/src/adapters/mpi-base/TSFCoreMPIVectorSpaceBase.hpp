@@ -105,7 +105,7 @@ void MPIVectorSpaceBase<Scalar>::updateState()
 			// Check that the vector does not have any ghost elements
 			Index computedGlobalDim = 0;
 			MPI_Allreduce(
-				&localSubDim                            // sendbuf
+				(void*)&localSubDim                     // sendbuf
 				,&computedGlobalDim                     // recvbuf
 				,1                                      // count
 				,Teuchos::RawMPITraits<Index>::type()   // datatype
@@ -119,10 +119,10 @@ void MPIVectorSpaceBase<Scalar>::updateState()
 				<< " is not equal to the reported global dimension of globalDim = this->dim() = "
 				<< globalDim << "!"
 				);
-#endif
+#endif // _DEBUG
 		}
 		else {
-#endif
+#endif // RTOp_USE_MPI
 			// This is a serial or a locally-replicated parallel
 			// vector space.
 			mapCode_ = localSubDim;

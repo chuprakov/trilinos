@@ -12,16 +12,21 @@
 /* but WITHOUT ANY WARRANTY; without even the implied warranty of */
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
 /* above mentioned "Artistic License" for more details. */
-/* */
-/* Selected hollow MPI function definitions for a sinlge process */
-/* implementation. */
-/* */
 
-#include <assert.h>
+/*
+ * This file includes selected hollow MPI function definitions for a
+ * sinlge process implementation.
+ */
+
+/*
+ * RAB: 2004/01/22: This file is included because it includes
+ * TSFCoreUtilsConfig.h which then defines RTOp_USE_MPI or not.  If
+ * RTOp_USE_MPI is defined then this header file will also include
+ * RTOp_mpi.h for these delcarations.
+ */
+#include "RTOp_config.h"
 
 #ifndef RTOp_USE_MPI
-
-#include "RTOp_mpi.h"
 
 int MPI_Init(int *argc, char ***argv)
 {

@@ -297,7 +297,7 @@ void MPIMultiVectorBase<Scalar>::apply(
 		}
 	}
 
-#endif
+#endif // RTOp_USE_MPI
 
 	// When you get here the view Y_local will be committed back to Y
 	// in the distructor to Y_local

@@ -44,7 +44,7 @@ void EpetraVectorSpace::initialize(
 	using DynamicCastHelperPack::dyn_cast;
 #ifdef _DEBUG
 	TEST_FOR_EXCEPTION( !epetra_map.get(), std::invalid_argument, "EpetraVectorSpace::initialize(...): Error!" );
-#endif
+#endif // _DEBUG
 	epetra_map_  = epetra_map;
 #ifdef RTOp_USE_MPI
 	const Epetra_MpiComm
@@ -58,17 +58,17 @@ void EpetraVectorSpace::initialize(
 			,"EpetraVectorSpace::initialize(...), Error, if using Epetra_MpiComm then "
 			"the associated MPI_Comm object can not be MPI_COMM_NULL!"
 			);
-#endif
+#endif // _DEBUG
 //		std::cout << "EpetraVectorSpace::initialize(...): mpiComm_ = " << mpiComm_ << std::endl;
 	}
 	else {
 		std::cout << "EpetraVectorSpace::initialize(...): Not using an Epetra_MpiComm!\n";
 		mpiComm_ = MPI_COMM_NULL;
 	}
-#else
+#else // RTOp_USE_MPI
 //	std::cout << "EpetraVectorSpace::initialize(...): Not using an Epetra_MpiComm!\n";
 	mpiComm_ = MPI_COMM_NULL;
-#endif
+#endif // RTOp_USE_MPI
 	localSubDim_ = epetra_map->NumMyElements();
 	smallVecSpcFcty_ = Teuchos::rcp(
 		new EpetraVectorSpaceFactory(
