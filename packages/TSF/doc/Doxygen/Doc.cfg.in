@@ -53,7 +53,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 INPUT                  = @PROJECT_ROOT@/src @PROJECT_ROOT@/examples/Tests @PROJECT_ROOT@/doc/Doxygen
 
-FILE_PATTERNS          = *.h *.html
+FILE_PATTERNS          = *.h *.cpp *.html
 
 RECURSIVE              = YES
 EXCLUDE                = 
