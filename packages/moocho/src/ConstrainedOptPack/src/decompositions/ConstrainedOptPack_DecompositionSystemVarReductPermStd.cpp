@@ -219,7 +219,7 @@ void DecompositionSystemVarReductPermStd::set_decomp(
 		basis_sys_->set_basis(
 			P_var, var_dep
 			,P_equ, equ_decomp
-			,&Gc
+			,Gc
 			,C_ptr.get()
 			,D_ptr.get() // May be NULL
 			,this->Uz_imp() == MAT_IMP_EXPLICIT ? Uz : NULL

@@ -321,7 +321,7 @@ public:
 	Range1D var_indep() const;
 	///
 	void update_basis(
-		const MatrixOp          *Gc
+		const MatrixOp          &Gc
 		,MatrixOpNonsing        *C
 		,MatrixOp               *D
 		,MatrixOp               *GcUP

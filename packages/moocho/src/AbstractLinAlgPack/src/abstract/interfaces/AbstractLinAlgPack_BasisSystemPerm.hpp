@@ -72,7 +72,7 @@ public:
 		,const Range1D             &var_dep
 		,const Permutation         *P_equ
 		,const Range1D             *equ_decomp
-		,const MatrixOp            *Gc
+		,const MatrixOp            &Gc
 		,MatrixOpNonsing           *C
 		,MatrixOp                  *D
 		,MatrixOp                  *GcUP

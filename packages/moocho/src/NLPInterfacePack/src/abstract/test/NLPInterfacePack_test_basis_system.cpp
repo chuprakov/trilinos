@@ -55,7 +55,7 @@ bool NLPInterfacePack::test_basis_system(
 
 	// Initialize C and D with basis_sys
 	basis_sys->update_basis(
-		Gc.get()
+		*Gc
 		,C.get()
 		,D.get()
 		,GcUP.get()

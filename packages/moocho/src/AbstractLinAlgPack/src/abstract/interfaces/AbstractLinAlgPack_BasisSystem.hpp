@@ -34,23 +34,23 @@ namespace AbstractLinAlgPack {
  *
  \f[ \nabla c^T d + c = 0 \f]
  *
- * The C++ identifiers given to \f$ \nabla c \f$ is <tt>Gc</tt>.
+ * The C++ identifier given to \f$ \nabla c \f$ is <tt>Gc</tt>.
  *
  * In this basis interface we will assume that <tt>d</tt>, <tt>c</tt> and <tt>h</tt> are
  * sorted such that we define the following sets (given the partitioning matrices
- * \f$ Q^{x} = \left[\begin{array}{c} Q^{xD} \\ Q^{xI} \end{array}\right] \f$,
- * \f$ Q^{c} = \left[\begin{array}{c} Q^{cD} \\ Q^{cU} \end{array}\right] \f$,
+ * \f$ Q_{x} = \left[\begin{array}{c} Q_{xD} \\ Q_{xI} \end{array}\right] \f$,
+ * \f$ Q_{c} = \left[\begin{array}{c} Q_{cD} \\ Q_{cU} \end{array}\right] \f$,
  * ):
  * <ul>
- * <li> <tt>d(var_dep)</tt> (\f$ d^D = Q^{xD} d\f$) : Dependent (i.e. basis) variables.
- * <li> <tt>d(var_indep)</tt> (\f$ d^I = Q^{xI} d\f$) : Independent (i.e. nonbasic) variables.
- * <li> <tt>c(equ_decomp)</tt> (\f$ c^D = Q^{cD} c\f$) : Decomposed equality constriants.
- * <li> <tt>c(equ_undecomp)</tt> (\f$ c^U = Q^{cU} c\f$): Undecomposed equality constriants.
+ * <li> <tt>d(var_dep)</tt> (\f$ d_D = Q_{xD} d\f$) : Dependent (i.e. basis) variables.
+ * <li> <tt>d(var_indep)</tt> (\f$ d_I = Q_{xI} d\f$) : Independent (i.e. nonbasic) variables.
+ * <li> <tt>c(equ_decomp)</tt> (\f$ c_D = Q_{cD} c\f$) : Decomposed equality constriants.
+ * <li> <tt>c(equ_undecomp)</tt> (\f$ c_U = Q_{cU} c\f$): Undecomposed equality constriants.
  * </ul>
  * Given these partitionings we can define a basis matrix \a C for the
  * following Jacobian sub-matrices (in mathematical and Matlab-like notation):
  \f[
-    C = Q^{cD} \nabla c^T (Q^{xD})^T
+    C = Q_{cD} \nabla c_T (Q_{xD})^T
  \f]
  \verbatim
 
@@ -58,14 +58,14 @@ namespace AbstractLinAlgPack {
  \endverbatim
  * We can also define a nonbasis matrix \a N for the decomposed constraints as:
  \f[
-    N = Q^{cD} \nabla c^T (Q^{xI})^T
+    N = Q_{cD} \nabla c^T (Q_{xI})^T
  \f]
  \verbatim
 
  N = Gc(var_indep,equ_decomp)'
  \endverbatim
  * Given the definitions of \a C and \a N above, we can define the following
- * matrix <tt>D</tt>:
+ * direct-sensitivity matrix <tt>D</tt>:
  \f[
    D = - C^{-1} N
  \f]
@@ -82,7 +82,7 @@ namespace AbstractLinAlgPack {
  * the direct sensitivity matrix <tt>D = -inv(C)*N</tt> and the auxiliary projected
  * sensistivity matrix <tt>GcUP</tt> (shown above).  These matrix
  * objects are independent from \c this \c BasisSystem object or from other \a C, \a D,
- * or \c GcUP.  Therefore, a <tt>BasisSystem</tt> object can be thought of
+ * or \c GcUP objects.  Therefore, a <tt>%BasisSystem</tt> object can be thought of
  * as an "Abstract Factory" for basis matrices and auxillary matrices.  Note that
  * a <tt>%BasisSystem</tt> object will not compute the matrices \c D, \c GcUP
  * unless specifically asked.
@@ -98,16 +98,22 @@ namespace AbstractLinAlgPack {
  *
  * <b>Client usage:</b>
  *
- * The matrix objects for the basis matrix \a C and the direct sensitivity matrix
- * \a D are created by the client using the \c AbstractFactory<> objects returned from
- * \c factory_C() and \c factory_D().  These methods return smart pointers to these
- * matrix factory objects and these objects are ment to have a lifetime that extends
- * up to and beyond the lifetime of the <tt>%BasisSystem</tt> object that created them.
- * Note that the matrix objects returned by these matrix factory objects are not to be
- * considered usable until they have passed through \c update_basis().
+ * The matrix objects for <tt>C</tt>, <tt>D</tt>, <tt>GcUP</tt>,
+ * <tt>D'*D</tt> and <tt>S=I+D'*D</tt> are created by the client
+ * using the \c AbstractFactory<> objects returned from
+ * <tt>factory_C()</tt>, <tt>factory_D()</tt>,
+ * <tt>factory_GcUP()</tt>, <tt>factory_transDtD()</tt> and
+ * <tt>factory_S()</tt> respectively.  These methods return smart
+ * pointers to these matrix factory objects and these objects are ment
+ * to have a lifetime that extends up to and beyond the lifetime of
+ * the <tt>%BasisSystem</tt> object that created them.  Note that the
+ * matrix objects returned by these matrix factory objects are not to
+ * be considered usable until they have passed through
+ * <tt>update_basis()</tt> or receive some other appropriate
+ * initialization.
  *
  * The ranges of the dependent and independent variables, and decomposed and undecomposed
- * equality constriants are returned  * by the methods \c var_dep(), \c var_indep(),
+ * equality constriants are returned by the methods \c var_dep(), \c var_indep(),
  * \c equ_decomp() and\c equ_undecomp() respectively.  There are a few obvious assertions
  * for the values that these ranges can take on.  Assuming that \c Gc is non-null
  * when passed to \c update_basis(), the following assertions apply:
@@ -423,7 +429,7 @@ public:
 	 * (as defined by the underlying implementation by some means) to being numerically singular.
 	 */
 	virtual void update_basis(
-		const MatrixOp          *Gc
+		const MatrixOp          &Gc
 		,MatrixOpNonsing        *C
 		,MatrixOp               *D
 		,MatrixOp               *GcUP

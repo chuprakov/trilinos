@@ -104,7 +104,7 @@ Range1D BasisSystemPermDirectSparse::equ_undecomp() const
 }
 
 void BasisSystemPermDirectSparse::update_basis(
-	const MatrixOp          *Gc
+	const MatrixOp          &Gc
 	,MatrixOpNonsing        *C
 	,MatrixOp               *D
 	,MatrixOp               *GcUP
@@ -116,18 +116,11 @@ void BasisSystemPermDirectSparse::update_basis(
 	using DynamicCastHelperPack::dyn_cast;
 	if(out)
 		*out << "\nUsing a direct sparse solver to update basis ...\n";
-#ifdef _DEBUG
-	// Validate input
-	THROW_EXCEPTION(
-		Gc == NULL, std::invalid_argument
-		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
-		"Must have equality constriants in this current implementation! " );
-#endif
 	const size_type
-		n  = Gc->rows(),
-		m  = Gc->cols();
+		n  = Gc.rows(),
+		m  = Gc.cols();
 #ifdef _DEBUG
-	const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc->nz();
+	const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc.nz();
 	THROW_EXCEPTION(
 		Gc_rows != n_ || Gc_cols != m_ || Gc_nz != Gc_nz_, std::invalid_argument
 		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
@@ -138,7 +131,7 @@ void BasisSystemPermDirectSparse::update_basis(
 #endif
 	// Get the aggregate matrix object for Gc
 	const MatrixPermAggr	
-		&Gc_pa = dyn_cast<const MatrixPermAggr>(*Gc);
+		&Gc_pa = dyn_cast<const MatrixPermAggr>(Gc);
 	// Get the basis matrix object from the aggregate or allocate one
 	MatrixOpNonsingAggr
 		&C_aggr = dyn_cast<MatrixOpNonsingAggr>(*C);
@@ -166,7 +159,7 @@ void BasisSystemPermDirectSparse::update_basis(
 			"is singular : " << excpt.what() );
 	}
 	// Update the aggregate basis matrix and compute the auxiliary projected matrices
-	update_basis_and_auxiliary_matrices( *Gc, C_bm, &C_aggr, D, GcUP );
+	update_basis_and_auxiliary_matrices( Gc, C_bm, &C_aggr, D, GcUP );
 }
 
 // Overridded from BasisSystemPerm
@@ -197,7 +190,7 @@ void BasisSystemPermDirectSparse::set_basis(
 	,const Range1D             &var_dep
 	,const Permutation         *P_equ
 	,const Range1D             *equ_decomp
-	,const MatrixOp            *Gc
+	,const MatrixOp            &Gc
 	,MatrixOpNonsing           *C
 	,MatrixOp                  *D
 	,MatrixOp                  *GcUP
@@ -209,18 +202,11 @@ void BasisSystemPermDirectSparse::set_basis(
 	using DynamicCastHelperPack::dyn_cast;
 	if(out)
 		*out << "\nUsing a direct sparse solver to set a new basis ...\n";
-#ifdef _DEBUG
-	// Validate input
-	THROW_EXCEPTION(
-		Gc == NULL, std::invalid_argument
-		,"BasisSystemPermDirectSparse::set_basis(...) : Error, "
-		"Must have equality constriants in this current implementation! " );
-#endif
 	const size_type
-		n  = Gc->rows(),
-		m  = Gc->cols();
+		n  = Gc.rows(),
+		m  = Gc.cols();
 #ifdef _DEBUG
-	const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc->nz();
+	const size_type Gc_rows = n, Gc_cols = m, Gc_nz = Gc.nz();
 	THROW_EXCEPTION(
 		P_equ == NULL || equ_decomp == NULL, std::invalid_argument
 		,"BasisSystemPermDirectSparse::set_basis(...) : Error!" );
@@ -230,7 +216,7 @@ void BasisSystemPermDirectSparse::set_basis(
 #endif
 	// Get the aggreate matrix object for Gc
 	const MatrixPermAggr	
-		&Gc_pa = dyn_cast<const MatrixPermAggr>(*Gc);
+		&Gc_pa = dyn_cast<const MatrixPermAggr>(Gc);
 	// Get the basis matrix object from the aggregate or allocate one
 	MatrixOpNonsingAggr
 		&C_aggr = dyn_cast<MatrixOpNonsingAggr>(*C);
@@ -262,7 +248,7 @@ void BasisSystemPermDirectSparse::set_basis(
 		assert(0); // ToDo: Throw an exception with a good error message!
 	}
 	// Update the rest of the basis stuff
-	do_some_basis_stuff(*Gc,var_dep,*equ_decomp,C_bm,&C_aggr,D,GcUP);
+	do_some_basis_stuff(Gc,var_dep,*equ_decomp,C_bm,&C_aggr,D,GcUP);
 }
 
 void BasisSystemPermDirectSparse::select_basis(

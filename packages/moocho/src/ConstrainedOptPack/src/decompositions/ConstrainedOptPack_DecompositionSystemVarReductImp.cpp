@@ -451,7 +451,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 		assert( C_ptr.get() ); // local programming error only!
 	
 		basis_sys_->update_basis(
-			&Gc                                                      // Gc
+			Gc                                                       // Gc
 			,C_ptr.get()                                             // C
 			,D_imp_used_ == MAT_IMP_EXPLICIT ? D_ptr.get() : NULL    // D?
 			,NULL                                                    // GcUP == Uz

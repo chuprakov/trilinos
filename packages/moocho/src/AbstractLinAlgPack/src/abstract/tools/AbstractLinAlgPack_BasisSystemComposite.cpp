@@ -104,7 +104,7 @@ void BasisSystemComposite::initialize_Gc(
 	,const VectorSpace::space_ptr_t   &space_c
 	,const C_ptr_t                    &C
 	,const N_ptr_t                    &N
-	,MatrixOp                     *Gc
+	,MatrixOp                         *Gc
 	)
 {
 	namespace rcp = MemMngPack;
@@ -390,7 +390,7 @@ Range1D BasisSystemComposite::var_indep() const
 }
 
 void BasisSystemComposite::update_basis(
-	const MatrixOp          *Gc
+	const MatrixOp          &Gc
 	,MatrixOpNonsing        *C
 	,MatrixOp               *D
 	,MatrixOp               *GcUP
@@ -406,9 +406,6 @@ void BasisSystemComposite::update_basis(
 		n == 0, std::logic_error
 		,"BasisSystemComposite::update_basis(...): Error, this must be initialized first!" );
 	THROW_EXCEPTION(
-		Gc == NULL, std::logic_error
-		,"BasisSystemComposite::update_basis(...): Error, Gc can not be NULL!" );
-	THROW_EXCEPTION(
 		C == NULL && D == NULL, std::logic_error
 		,"BasisSystemComposite::update_basis(...): Error, C or D must be non-NULL!" );
 	// Get references to the aggregate C and N matrices
@@ -416,7 +413,7 @@ void BasisSystemComposite::update_basis(
 		*C_aggr = NULL;
 	const MatrixOp
 		*N_aggr = NULL;
-	get_C_N( *Gc, &C_aggr, &N_aggr );
+	get_C_N( Gc, &C_aggr, &N_aggr );
 	// Setup C
 	if( C ) {
 		*C = *C_aggr;
