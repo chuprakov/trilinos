@@ -34,6 +34,7 @@ MoochoPack::ReducedHessianSecantUpdateStd_Step::ReducedHessianSecantUpdateStd_St
 	)
 	:secant_update_(secant_update)
 	 ,iter_k_rHL_init_ident_(-1.0) // not a valid iteration?
+	 ,num_basis_(NO_BASIS_UPDATED_YET)
 {}
 
 bool MoochoPack::ReducedHessianSecantUpdateStd_Step::do_step(

@@ -41,6 +41,7 @@ namespace MoochoPack {
 // Constructors / initializers
 
 DecompositionSystemHandlerVarReductPerm_Strategy::DecompositionSystemHandlerVarReductPerm_Strategy()
+	:select_new_decomposition_(false)
 {}
 
 // Overridden from DecompositionSystemHandler_Strategy

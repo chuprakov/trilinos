@@ -139,7 +139,7 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
 	// and remove any reference to the basis matrix C by Z.D.
 	//
 
-	bool new_D_mat_object; // compiler should warn if used before initialized!
+	bool new_D_mat_object = true; // Valgrind complains if this is not initialized.
 	if( Z_vr ) {
 		if( Z_vr->D_ptr().get() == NULL ) {
 			if( out && olevel >= PRINT_BASIC_INFO )
@@ -190,7 +190,7 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
 	//
 
 	rcp::ref_count_ptr<MatrixOp> _D_ptr;
-	if( new_D_mat_object) {
+	if( new_D_mat_object ) {
 		// Create a new matrix object!
 		alloc_new_D_matrix( out, olevel, &_D_ptr );
 	}
