@@ -224,6 +224,13 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
+
+# These headers need to be in the distribution tarball
+EXTRA_DIST = $(srcdir)/Core/TSFCoreSimpleMPIVectorSpace.hpp \
+	$(srcdir)/Core/TSFCoreSimpleMPIVectorDecl.hpp \
+	$(srcdir)/Core/TSFCoreSimpleMPIVectorSpaceDecl.hpp \
+	$(srcdir)/Core/TSFCoreSimpleMPIVector.hpp
+
 SUBDIRS = Nonlin Solvers
 all: all-recursive
 
@@ -376,6 +383,7 @@ distclean-tags:
 	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
+	$(mkdir_p) $(distdir)/$(srcdir)/Core
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
