@@ -115,6 +115,12 @@ AC_PROG_RANLIB
 TAC_ARG_CONFIG_EXPAT
 
 # ------------------------------------------------------------------------
+# Check to see if array boundschecking has been enabled
+# ------------------------------------------------------------------------
+
+TAC_ARG_CONFIG_BOUNDSCHECK
+
+# ------------------------------------------------------------------------
 # Checks for --enable-debug, --enable-optimize, --enable-profile, --enable-purify
 # Changes flags and compiler names accordingly
 # ------------------------------------------------------------------------

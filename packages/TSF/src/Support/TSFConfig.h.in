@@ -11,6 +11,9 @@
 /* As F77_FUNC, but for C identifiers containing underscores. */
 #undef F77_FUNC_
 
+/* Define if we are using array boundschecking */
+#undef HAVE_ARRAY_BOUNDSCHECK
+
 /* Define to 1 if you have the <assert.h> header file. */
 #undef HAVE_ASSERT_H
 

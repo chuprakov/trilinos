@@ -255,7 +255,7 @@ namespace TSF
 
   template<class T> inline
     T& TSFArray<T>::operator[](int i) {
-#if HAVE_ARRAY_BOUNDSCHECK
+#ifdef HAVE_ARRAY_BOUNDSCHECK
     indexCheckCrash(i);
 #endif
     return data_[i];
@@ -263,7 +263,7 @@ namespace TSF
 
   template<class T> inline
     const T& TSFArray<T>::operator[](int i) const {
-#if HAVE_ARRAY_BOUNDSCHECK
+#ifdef HAVE_ARRAY_BOUNDSCHECK
     indexCheckCrash(i);
 #endif
     return data_[i];
@@ -272,7 +272,7 @@ namespace TSF
   template<class T> inline
     void TSFArray<T>::remove(int i)
     {
-#if HAVE_ARRAY_BOUNDSCHECK
+#ifdef HAVE_ARRAY_BOUNDSCHECK
       indexCheckCrash(i);
 #endif
       for (int j=i+1; j<length(); j++)

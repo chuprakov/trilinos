@@ -92,7 +92,6 @@ typedef double TSFReal;
 
 #define HAVE_DENSE_VECTOR_BOUNDSCHECK 0
 
-#define HAVE_ARRAY_BOUNDSCHECK 0
 
 
 /* ------------ specification of header file flavor --------------- */
