@@ -7,6 +7,7 @@
 #pragma warning(disable : 4503)	
 
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
+#include "ReducedSpaceSQPPack/include/std/get_init_fixed_free_indep.h"
 #include "ReducedSpaceSQPPack/include/rSQPAlgo.h"
 #include "ReducedSpaceSQPPack/include/rSQPState.h"
 #include "ConstrainedOptimizationPack/include/MatrixSymAddDelUpdateable.h"
@@ -27,11 +28,11 @@ namespace ReducedSpaceSQPPack {
 
 ReducedHessianSecantUpdateBFGSProjected_Strategy::ReducedHessianSecantUpdateBFGSProjected_Strategy(
 	const bfgs_update_ptr_t&      bfgs_update
-	,value_type                   proj_start_act_set_frac
+	,value_type                   act_set_frac_proj_start
 	,value_type                   super_basic_mult_drop_tol
 	)
 	: bfgs_update_(bfgs_update)
-	, proj_start_act_set_frac_(proj_start_act_set_frac)
+	, act_set_frac_proj_start_(act_set_frac_proj_start)
 	, super_basic_mult_drop_tol_(super_basic_mult_drop_tol)
 {}
 
@@ -55,12 +56,13 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 	MHSB_t &rHL_super = dyn_cast<MHSB_t>(*rHL_k);
 #endif
 
+	const size_type
+		n    = algo->nlp().n(),
+		r    = algo->nlp().r(),
+		n_pz = n-r;
 	const GenPermMatrixSlice
 		&Q_R = rHL_super.Q_R(),
 		&Q_X = rHL_super.Q_X();
-	const size_type
-		r    = algo->nlp().r(),
-		n_pz = Q_R.rows();
 
 	bool do_projected_rHL_RR = false;
 
@@ -84,7 +86,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 				= ( num_adds == ActSetStats::NOT_KNOWN || num_active_indep == 0
 					? 0.0
 					: std::_MAX(((double)(num_active_indep)-num_adds-num_drops) / num_active_indep, 0.0 ) );
-			do_projected_rHL_RR = ( num_active_indep > 0 && frac_same >= proj_start_act_set_frac() );
+			do_projected_rHL_RR = ( num_active_indep > 0 && frac_same >= act_set_frac_proj_start() );
 			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 				out << "\nnum_active_indep = " << num_active_indep;
 				if( num_active_indep ) {
@@ -95,7 +97,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 						out << " >= ";
 					else
 						out << " < ";
-					out << "proj_start_act_set_frac = " << proj_start_act_set_frac();
+					out << "act_set_frac_proj_start = " << act_set_frac_proj_start();
 				}
 				if( do_projected_rHL_RR )
 					out << "\nStart performing projected BFGS updating of superbasic variables only!\n";
@@ -106,81 +108,16 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 				//
 				// Eliminate those rows/cols from rHL_RR for fixed variables and reinitialize rHL
 				//
+				// Determine the set of initially fixed and free independent variables
 				if( i_x_free_.size() < n_pz ) { // Only need to resize these once
 					i_x_free_.resize(n_pz); 
 					i_x_fixed_.resize(n_pz);
 					bnd_fixed_.resize(n_pz);
 				}
-				// Loop through and set i_x_free and i_x_fixed
-				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-					out << "\nDetermining which fixed variables to remove from rHL_RR (can remove all but one)...\n";
-				}
-				const value_type
-					max_nu_indep = norm_inf(nu_indep);
-				const bool
-					all_fixed = n_pz == nu_indep.nz();
-				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-					out << "\nmax{|nu_k(indep)|,i=r+1...n} = " << max_nu_indep << std::endl;
-				}
-				const int prec = out.precision();
-				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ACTIVE_SET) ) {
-					out << endl
-						<< right << setw(10)      << "i"
-						<< right << setw(prec+12) << "nu(i)"
-						<< right << setw(8)       << "status"
-						<< endl
-						<< right << setw(10)      << "--------"
-						<< right << setw(prec+12) << "--------"
-						<< right << setw(8)       << "------"
-						<< endl;
-				}
-				SpVector::const_iterator
-					nu_itr = nu_indep.begin(),
-					nu_end = nu_indep.end();
-				SpVector::difference_type
-					nu_o = nu_indep.offset();
-				i_x_t::iterator
-					i_x_free_itr  = i_x_free_.begin(),
-					i_x_fixed_itr = i_x_fixed_.begin();
-				bnd_fixed_t::iterator
-					bnd_fixed_itr = bnd_fixed_.begin();
-				size_type
-					n_pz_X = 0, // We will count these
-					n_pz_R = 0;
-				bool kept_one = false;
-                {for( size_type i_indep = 1; i_indep <= n_pz; ++i_indep ) {
-					if( nu_itr != nu_end && (nu_itr->indice() + nu_o) == i_indep ) {
-						const value_type
-							abs_val = ::fabs(nu_itr->value());
-						const bool
-							keep = ( (all_fixed && abs_val == max_nu_indep && !kept_one)
-									 || abs_val > super_basic_mult_drop_tol() );
-						if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ACTIVE_SET) ) {
-							out << right << setw(10)      << i_indep + r
-								<< right << setw(prec+12) << nu_itr->value()
-								<< right << setw(8)       << (keep ? "keep" : "drop")
-								<< endl;
-						}
-						if(!keep) {
-							*i_x_fixed_itr++ = i_indep;
-							namespace COP = ConstrainedOptimizationPack;
-							*bnd_fixed_itr++
-								= ( nu_itr->value() > 0.0 ? COP::UPPER : COP::LOWER );
-							// ToDo: Consider fixed variable bounds
-							++n_pz_X;
-						}
-						else {
-							kept_one = true;
-						}
-						++nu_itr;
-						if(!keep) continue;
-					}
-					*i_x_free_itr++ = i_indep;
-					++n_pz_R;
-				}}
-				assert( i_x_free_itr  - i_x_free_.begin()  == n_pz_R );
-				assert( i_x_fixed_itr - i_x_fixed_.begin() == n_pz_X );
-				assert( bnd_fixed_itr - bnd_fixed_.begin() == n_pz_X );
+				size_type n_pz_X = 0, n_pz_R = 0;
+				get_init_fixed_free_indep(
+					n,r,nu_indep,super_basic_mult_drop_tol(),olevel,out
+					,&n_pz_X,&n_pz_R,&i_x_free_[0],&i_x_fixed_[0],&bnd_fixed_[0] );
 				// Delete rows/cols from rHL_RR for fixed variables
 #ifdef _WINDOWS
 				MatrixSymAddDelUpdateable
@@ -223,7 +160,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 						,rHL_super.B_RR_ptr(),NULL,BLAS_Cpp::no_trans,rHL_super.B_XX_ptr()
 						);
 					if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
-						out << "\nFull rHL after reinitialization but before BFGS update =\n" << *rHL_k;
+						out << "\nFull rHL after reinitialization but before BFGS update\nrHL =\n" << *rHL_k;
 					}
 				}
 				else {

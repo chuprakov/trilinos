@@ -112,8 +112,8 @@ public:
 		, double				max_run_time			= 1e+10 // run forever
 		, value_type			opt_tol					= 1e-6
 		, value_type			feas_tol				= 1e-6
-		, value_type			step_tol				= 1e-6
-		, value_type			max_var_bounds_viol		= 0.0
+		, value_type			step_tol				= 1e-2
+		, value_type			max_var_bounds_viol		= 1e-5
 		, EJournalOutputLevel 	journal_output_level 	= PRINT_NOTHING
 		, int					journal_print_digits	= 6
 		, bool					check_results			= true

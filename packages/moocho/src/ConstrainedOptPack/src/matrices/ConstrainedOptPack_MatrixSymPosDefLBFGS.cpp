@@ -1,46 +1,7 @@
 // //////////////////////////////////////////////////////////////////////////////////
 // MatrixSymPosDefLBFGS.cpp
 //
-// Implementation for limited memory BFGS matrix where update vectors are thrown away.
-//
-// This implementation is based on:
-//
-// Byrd, Nocedal, and Schnabel, "Representations of quasi-Newton matrices
-// and their use in limited memory methods", Mathematical Programming, 63 (1994)
-// 
-// Consider the following BFGS updates:
-//
-// ( B^{k-1}, s^{k-1}, y^{k-1} ) -> B^{k}
-//
-// where:
-//
-// B^{k} = B^{k-1} - ( (B*s)*(B*s)' / (s'*B*s) )^{k-1} + ( (y*y') / (s'*y) )^{k-1}
-//
-// B <: R^(n x n)
-// s <: R^(n)
-// y <: R^(n)
-//
-// Given that we start from the same initial matrix Bo, the updated matrix B^{k}
-// will be the same independent of the order the (s^{i},y^{i}) updates are added.
-//
-// Now let us consider limited memory updating.  For updating let
-//
-// Bo = ( 1 / gamma_k ) * I
-//
-// where:
-//
-// gamma_k = ( s^{k-1}'*y^{k-1} ) / ( y^{k-1}'*y^{k-1} )
-//
-// Now let us define the matrices S and Y that store the update vectors
-// s^{i} and y^{i} for i = 1 ... m.
-//
-// S = [ s^{1}, s^{2},...,s^{m} ] <: R^(n x m)
-// Y = [ y^{1}, y^{2},...,y^{m} ] <: R^(n x m)
-//
-// Here we are only storing the m most recent update vectors
-// and their ordering is arbitrary.
-//
-// Now let's define a compact representation for the matrix B^{k} and
+// Let's define a compact representation for the matrix B^{k} and
 // its inverse H^{k} = inv(B^{k}).
 //
 // Bk = (1/gk)*I - [ (1/gk)*S  Y ] * inv( [ (1/gk)*S'S   L ]     [ (1/gk)*S' ]
@@ -101,18 +62,6 @@ namespace ConstrainedOptimizationPack {
 // Inline private member functions
 
 inline
-const GenMatrixSlice MatrixSymPosDefLBFGS::S() const
-{
-	return S_(1,n_,1,m_bar_);
-}
-
-inline
-const GenMatrixSlice MatrixSymPosDefLBFGS::Y() const
-{
-	return Y_(1,n_,1,m_bar_);
-}
-
-inline
 const tri_gms MatrixSymPosDefLBFGS::R() const
 {
 	return LinAlgPack::tri( STY_(1,m_bar_,1,m_bar_), BLAS_Cpp::upper, BLAS_Cpp::nonunit );
@@ -139,17 +88,36 @@ const sym_gms MatrixSymPosDefLBFGS::YTY() const
 // ///////////////////////
 // Nonlinined functions
 
-MatrixSymPosDefLBFGS::MatrixSymPosDefLBFGS( int num_updates_stored )
-	: n_(0), m_(num_updates_stored), auto_rescaling_(true)
-{}
-
-void MatrixSymPosDefLBFGS::set_num_updates_stored(int m)
+MatrixSymPosDefLBFGS::MatrixSymPosDefLBFGS(
+    size_type   m
+	,bool       maintain_original
+	,bool       maintain_inverse
+	,bool       auto_rescaling
+	)
 {
+	initial_setup(m,maintain_original,maintain_inverse,auto_rescaling);
+}
+
+void MatrixSymPosDefLBFGS::initial_setup(
+    size_type   m
+	,bool       maintain_original
+	,bool       maintain_inverse
+	,bool       auto_rescaling
+	)
+{
+	// Validate input
+	if( !maintain_original && !maintain_inverse )
+		throw std::invalid_argument(
+			"MatrixSymPosDefLBFGS::initial_setup(...) : "
+			"Error, both maintain_original and maintain_inverse can not both be false!" );
 	if( m < 1 )
-		throw std::logic_error( "MatrixSymPosDefLBFGS::set_num_updates_stored(m) : "
+		throw std::invalid_argument(
+			"MatrixSymPosDefLBFGS::set_num_updates_stored(m) : "
 			"Error, the number of storage locations must be > 0" );
-	m_ = m;
-	n_ = 0;	// make uninitialized
+	maintain_original_ = maintain_original;
+	maintain_inverse_  = maintain_inverse;
+	m_                 = m;
+	n_                 = 0; // make uninitialized
 }
 
 // Overridden from Matrix
@@ -187,17 +155,22 @@ MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)
 	if(p_m) {
 		if( p_m == this ) return *this;	// assignment to self
 		// Important: Assign all members here.
-		n_	 		= p_m->n_;
-		m_			= p_m->m_;
-		m_bar_		= p_m->m_bar_;
-		k_bar_		= p_m->k_bar_;
-		gamma_k_	= p_m->gamma_k_;
-		S_			= p_m->S_;
-		Y_			= p_m->Y_;
-		STY_		= p_m->STY_;
-		STSYTY_		= p_m->STSYTY_;
-		Q_updated_	= p_m->Q_updated_;
-		QJ_			= p_m->QJ_;
+		auto_rescaling_      = p_m->auto_rescaling_;
+		maintain_original_   = p_m->maintain_original_;
+		original_is_updated_ = p_m->original_is_updated_;
+		maintain_inverse_    = p_m->maintain_inverse_;
+		inverse_is_updated_  = p_m->inverse_is_updated_;
+		n_	 		         = p_m->n_;
+		m_			         = p_m->m_;
+		m_bar_		         = p_m->m_bar_;
+		k_bar_		         = p_m->k_bar_;
+		gamma_k_	         = p_m->gamma_k_;
+		S_			         = p_m->S_;
+		Y_			         = p_m->Y_;
+		STY_		         = p_m->STY_;
+		STSYTY_		         = p_m->STSYTY_;
+		Q_updated_	         = p_m->Q_updated_;
+		QJ_			         = p_m->QJ_;
 	}
 	else {
 		throw std::invalid_argument("MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)"
@@ -220,6 +193,8 @@ void MatrixSymPosDefLBFGS::Vp_StMtV(
 	using LinAlgPack::Vp_StMtV;
 
 	assert_initialized();
+
+	assert( original_is_updated_ ); // For now just always update
 
 	// y = b*y + Bk * x
 	//
@@ -306,7 +281,6 @@ void MatrixSymPosDefLBFGS::Vp_StMtV(
 void MatrixSymPosDefLBFGS::V_InvMtV( VectorSlice* y, BLAS_Cpp::Transp trans_rhs1
 	, const VectorSlice& x ) const
 {
-
 	using LinAlgPack::V_mV;
 	using LinAlgPack::V_StV;
 	using LinAlgPack::V_InvMtV;
@@ -317,8 +291,9 @@ void MatrixSymPosDefLBFGS::V_InvMtV( VectorSlice* y, BLAS_Cpp::Transp trans_rhs1
 	using LinAlgOpPack::Vp_MtV;
 	using LinAlgOpPack::Vp_StMtV;
 
-
 	assert_initialized();
+
+	assert( inverse_is_updated_ ); // For now just always update
 
 	// y = inv(Bk) * x = Hk * x
 	//
@@ -440,7 +415,9 @@ void MatrixSymPosDefLBFGS::init_identity(size_type n, value_type alpha)
 	k_bar_	= 0;
 	m_bar_	= 0;
 
-	n_ = n;		// initialized;
+	n_ = n;	 // initialized;
+	original_is_updated_ = true; // This will never change for now
+	inverse_is_updated_  = true; // This will never change for now
 }
 
 void MatrixSymPosDefLBFGS::init_diagonal(const VectorSlice& diag)
@@ -615,14 +592,15 @@ void MatrixSymPosDefLBFGS::Vp_DtV( VectorSlice* y, const VectorSlice& x ) const
 		*y_itr++ += (*d_itr++) * (*x_itr++);		
 }
 
-// We need update the factorizations to solve for:
+//
+// We need to update the factorizations to solve for:
 //
 // x = inv(Q) * y   =>   Q * x = y
 //
 //	[ (1/gk)*S'S	 L	] * [ x1 ] = [ y1 ]
 //	[      L'		-D	]   [ x2 ]   [ y2 ]
 //
-// We will solve the above system using the schur complement:
+// We will solve the above system using a schur complement:
 //
 // C = (1/gk)*S'S + L*inv(D)*L'
 //
@@ -637,6 +615,7 @@ void MatrixSymPosDefLBFGS::Vp_DtV( VectorSlice* y, const VectorSlice& x ) const
 //
 // Therefore we will just update the factorization C = J*J'
 // where the factor J is stored in QJ_.
+//
 
 void MatrixSymPosDefLBFGS::update_Q() const
 {
@@ -644,6 +623,7 @@ void MatrixSymPosDefLBFGS::update_Q() const
 	using LinAlgPack::tri_ele;
 	using LinAlgPack::Mp_StM;
 
+	//
 	// We need update the factorizations to solve for:
 	//
 	// x = inv(Q) * y
@@ -665,11 +645,13 @@ void MatrixSymPosDefLBFGS::update_Q() const
 	// x2 = - inv(D) * ( y2 - L'*x1 )
 	//
 	// Therefore we will just update the factorization C = J*J'
+	//
 
 	// Form the upper triangular part of C which will become J
 	// which we are using storage of QJ
 
-	QJ_.resize( m_, m_ );
+	if( QJ_.rows() < m_ )
+		QJ_.resize( m_, m_ );
 
 	const size_type
 		mb = m_bar_;
@@ -869,7 +851,7 @@ void comp_Cb( const GenMatrixSlice& Lb, const VectorSlice& Db_diag
 		}
 	}
 
-	// ToDo: Make the above operation more efficent!
+	// ToDo: Make the above operation more efficent if needed!
 }
 
 }	// end namespace

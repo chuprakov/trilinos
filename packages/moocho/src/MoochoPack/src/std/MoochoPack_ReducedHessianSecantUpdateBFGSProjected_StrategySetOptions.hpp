@@ -1,8 +1,8 @@
 // ////////////////////////////////////////////////////////////////
 // ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions.h
 
-#ifndef REDUCED_HESSIAN_SECANT_UPDATE_BFGS_PROJECTED_STRATEGY_H
-#define REDUCED_HESSIAN_SECANT_UPDATE_BFGS_PROJECTED_STRATEGY_H
+#ifndef REDUCED_HESSIAN_SECANT_UPDATE_BFGS_PROJECTED_STRATEGY_SET_OPTIONS_H
+#define REDUCED_HESSIAN_SECANT_UPDATE_BFGS_PROJECTED_STRATEGY_SET_OPTIONS_H
 
 #include "ReducedHessianSecantUpdateBFGSProjected_Strategy.h"
 #include "Misc/include/SetOptionsFromStreamNode.h"
@@ -18,7 +18,7 @@ namespace ReducedSpaceSQPPack {
   *
   \begin{verbatim}
 	options_group ReducedHessianSecantUpdateBFGSProjected {
-		proj_start_act_set_frac   = 0.8;   *** (+dbl)
+		act_set_frac_proj_start   = 0.8;   *** (+dbl)
         super_basic_mult_drop_tol = 1e-5;  *** (+dbl)
 	}
   \end{verbatim}
@@ -38,7 +38,7 @@ public:
 	///
 	ReducedHessianSecantUpdateBFGSProjected_StrategySetOptions(
 		ReducedHessianSecantUpdateBFGSProjected_Strategy* target = 0
-		, const char opt_grp_name[] = "ReducedHessianSecantUpdateBFGSProjected" );
+		, const char opt_grp_name[] = "ReducedHessianSecantUpdatePBFGS" );
 
 protected:
 
@@ -49,4 +49,4 @@ protected:
 
 }	// end namespace ReducedSpaceSQPPack
 
-#endif	// REDUCED_HESSIAN_SECANT_UPDATE_BFGS_PROJECTED_STRATEGY_H
+#endif	// REDUCED_HESSIAN_SECANT_UPDATE_BFGS_PROJECTED_STRATEGY_SET_OPTIONS_H

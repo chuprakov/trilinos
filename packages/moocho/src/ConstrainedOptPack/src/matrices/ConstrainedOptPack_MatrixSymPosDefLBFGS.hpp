@@ -9,36 +9,89 @@
 #include "MatrixSymSecantUpdateable.h"
 #include "SparseLinAlgPack/include/MatrixSymWithOpFactorized.h"
 #include "LinAlgPack/include/GenMatrixAsTriSym.h"
+#include "Misc/include/StandardMemberCompositionMacros.h"
 
 namespace ConstrainedOptimizationPack {
 
 ///
 /** Implementation of limited Memory BFGS matrix.
-  *
-  * The function set_num_updates_stored(l) must be called first
-  * to set the number of most current updates stored.  The storage
-  * requirements for this class are O( n*l + l*l ) which is
-  * O(n*l) when n >> l which is expected.
-  *
-  *   
-  */
+ *
+ * The function set_num_updates_stored(l) must be called first to set the number of
+ * most current updates stored.  The storage requirements for this class are O( n*l + l*l )
+ * which is O(n*l) when n >> l which is expected.
+ *
+ * Implementation for limited memory BFGS matrix where update vectors are thrown away.
+ *
+ * This implementation is based on:
+ *
+ * Byrd, Nocedal, and Schnabel, "Representations of quasi-Newton matrices
+ * and their use in limited memory methods", Mathematical Programming, 63 (1994)
+ * 
+ * Consider BFGS updates of the form:
+ \begin{verbatim}
+
+ ( B^{k-1}, s^{k-1}, y^{k-1} ) -> B^{k}
+ 
+ where:
+ 
+ B^{k} = B^{k-1} - ( (B*s)*(B*s)' / (s'*B*s) )^{k-1} + ( (y*y') / (s'*y) )^{k-1}
+ 
+ B <: R^(n x n)
+ s <: R^(n)
+ y <: R^(n)
+ 
+ \end{verbatim}
+ * Given that we start from the same initial matrix #Bo#, the updated matrix #B^{k}#
+ * will be the same independent of the order the #(s^{i},y^{i})# updates are added.
+ *
+ * Now let us consider limited memory updating.  For this implementation we set:
+ \begin{verbatim}
+
+ Bo = ( 1 / gamma_k ) * I
+ 
+ where:
+               / (s^{k-1}'*y^{k-1})/(y^{k-1}'*y^{k-1})           :  if auto_rescaling() == true
+     gamma_k = |
+	           \  alpha from last call to init_identity(n,alpha) :  otherwise
+ 
+ \end{verbatim}
+ * Now let us define the matrices #S# and #Y# that store the update vectors
+ * #s^{i}# and #y^{i}# for #i = 1 ... m_bar#:
+ \begin{verbatim}
+
+ S = [ s^{1}, s^{2},...,s^{m_bar} ] <: R^(n x m)
+ Y = [ y^{1}, y^{2},...,y^{m_bar} ] <: R^(n x m)
+ 
+ \end{verbatim}
+ * Here we are only storing the #m_bar <= m# most recent update vectors
+ * and their ordering is arbitrary.  The columns #S(:,k_bar)# and #Y(:,k_bar)#
+ * contain the most recent update vectors.  The next most recent vectors
+ * are to the left (i.e. #p = k_bar-1#) and so forth until #p = 1#.  Then
+ * the next most recent update vectors start at #m_bar# and move to the
+ * left until you reach the oldest update vector stored at column #k_bar+1#.
+ * This is all client need to know in order to reconstruct the updates
+ * themselves.
+ *
+ * This class allows matrix vector products x = B*y and the inverse
+ * matrix vector products x = inv(B)*y to be performed at a cost of
+ * about O(n*m^2).
+ */
 class MatrixSymPosDefLBFGS
 	: public MatrixSymWithOpFactorized
 		, public MatrixSymSecantUpdateable
 {
 public:
 
-	///
-	MatrixSymPosDefLBFGS( int num_updates_stored = 10 );
+	// //////////////////////////////////////////////
+	// Constructors and initializers
 
-	///
-	/** Set the maximum number of update vectors
-	  *
-	  * Note: set_num_updates_stored(m) must be called before identity(n)
-	  * is called.  When set_num_updates_stored(m) is called all current
-	  * updates are lost and the matrix becomes uninitialized.
-	  */
-	void set_num_updates_stored(int);
+	/// Calls initial_setup(,,,)
+	MatrixSymPosDefLBFGS(
+	    size_type   m                  = 10
+		,bool       maintain_original  = true
+		,bool       maintain_inverse   = true
+		,bool       auto_rescaling     = false
+		);
 
 	///
 	/** Set whether automatic rescaling is used or not.
@@ -46,9 +99,66 @@ public:
 	  * This function must be called before a BFGS update is performed
 	  * in order for it to take effect for that update.
 	  */
-	void auto_rescaling(bool);
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, auto_rescaling )
+
 	///
-	bool auto_rescaling() const;
+	/** Initial setup for the matrix.
+	  *
+	  * This function must be called before init_identity(n)
+	  * is called.  When this function is called all current
+	  * updates are lost and the matrix becomes uninitialized.
+	  *
+	  * @param  m  [in] Max number of recent update vectors stored
+	  * @param  maintain_original
+	  *            [in] If true then quantities needed to compute
+	  *            x = Bk*y will be maintained, otherwise they
+	  *            will not be unless needed.  This is to save
+	  *            computational costs in case matrix vector
+	  *            products will never be needed.  However,
+	  *            if a matrix vector product is needed then
+	  *            these quantities will be computed on the fly
+	  *            in order to satisfy the request.
+	  * @param  maintain_inverse
+	  *            [in] If true then quantities needed to compute
+	  *            x = inv(Bk)*y = x = Hk*y will be maintained
+	  *            , otherwise they will not be unless needed.
+	  *            This is to save computational costs in case
+	  *            inverse matrix vector products will never be needed.
+	  *            However, if the inverse product is ever needed
+	  *            then the needed quantities will be computed
+	  *            on the fly in order to satisfiy the request.
+	  *            Because it takes so little extra work to maintain
+	  *            the quantities needed for Hk it is recommended
+	  *            to always set this to true.
+	  * @param  auto_rescaling
+	  *            [in] See intro.
+	  */
+	 void initial_setup(
+	    size_type   m                  = 10
+		,bool       maintain_original  = true
+		,bool       maintain_inverse   = true
+		,bool       auto_rescaling     = false
+		);
+
+	// //////////////////////////////////
+	// Representation access
+
+	///
+	size_type m() const;
+	///
+	size_type m_bar() const;
+	///
+	size_type k_bar() const;
+	///
+	value_type gamma_k() const;
+	///
+	const GenMatrixSlice S() const;
+	///
+	const GenMatrixSlice Y() const;
+	///
+	bool maintain_original() const;
+	///
+	bool maintain_inverse() const;
 
 	// /////////////////////////////////////////////////////
 	// Overridden from Matrix
@@ -86,7 +196,6 @@ public:
 
 	///
 	void init_identity( size_type n, value_type alpha );
-
 	///
 	/** Actually this calls init_identity( (&diag)->size(), norm_inf(diag) ).
 	  *
@@ -95,7 +204,6 @@ public:
 	  * then this will really not matter much anyway.
 	  */
 	void init_diagonal( const VectorSlice& diag );
-
 	///
 	void secant_update(VectorSlice* s, VectorSlice* y, VectorSlice* Bs);
 
@@ -110,7 +218,12 @@ private:
 	// //////////////////////////////////
 	// Private data members
 
-	size_type	n_,		// Size of the matrix.
+	bool        maintain_original_;  // If true, qualities needed for Bk will be maintained
+	bool        original_is_updated_;// If true, qualities needed for Bk are already updated
+	bool        maintain_inverse_;   // If true, quantities needed for Hk will be maintained
+	bool        inverse_is_updated_; // If true, quantities needed for Hk are already updated
+
+	size_type	n_,		// Size of the matrix.  If 0 then is uninitialized
 				m_,		// Maximum number of update vectors that can be stored.
 				m_bar_,	// Current number of update vectors being stored.
 						// 0 <= m_bar <= m
@@ -118,7 +231,6 @@ private:
 						// 1 <= k_bar <= m_bar
 
 	value_type	gamma_k_;// Scaling factor for Bo = (1/gamma_k) * I.
-	bool		auto_rescaling_; // If true then gamma_k will be set to 1.0 always
 
 	GenMatrix	S_,		// (n x m) Matrix of stored update vectors = [ s1, ..., sm ]
 						// S(:,k_bar) is the most recently stored s update vector
@@ -141,26 +253,15 @@ private:
 	// Access to important matrices.
 
 	///
-	const GenMatrixSlice S() const;
-
-	///
-	const GenMatrixSlice Y() const;
-
-	///
 	const tri_gms R() const;
-
 	/// Strictly lower triangular part of L
 	const tri_gms Lb() const;
-
 	///
 	const sym_gms STS() const;
-
 	///
 	const sym_gms YTY() const;
-
 	/// y = inv(Q) * x
 	void V_invQtV( VectorSlice* y, const VectorSlice& x ) const;
-
 	/// y += D * x
 	void Vp_DtV( VectorSlice* y, const VectorSlice& x ) const;
 
@@ -177,16 +278,53 @@ private:
 // //////////////////////////////////////////////
 // Inline member functions
 
+
 inline
-void MatrixSymPosDefLBFGS::auto_rescaling(bool auto_rescaling)
+size_type MatrixSymPosDefLBFGS::m() const
 {
-	auto_rescaling_ = auto_rescaling;
+	return m_;
 }
 
 inline
-bool MatrixSymPosDefLBFGS::auto_rescaling() const
+size_type MatrixSymPosDefLBFGS::m_bar() const
 {
-	return auto_rescaling_;
+	return m_bar_;
+}
+
+inline
+size_type MatrixSymPosDefLBFGS::k_bar() const
+{
+	return k_bar_;
+}
+
+inline
+value_type MatrixSymPosDefLBFGS::gamma_k() const
+{
+	return gamma_k_;
+}
+
+inline
+const GenMatrixSlice MatrixSymPosDefLBFGS::S() const
+{
+	return S_(1,n_,1,m_bar_);
+}
+
+inline
+const GenMatrixSlice MatrixSymPosDefLBFGS::Y() const
+{
+	return Y_(1,n_,1,m_bar_);
+}
+
+inline
+bool MatrixSymPosDefLBFGS::maintain_original() const
+{
+	return maintain_original_;
+}
+
+inline
+bool MatrixSymPosDefLBFGS::maintain_inverse() const
+{
+	return maintain_inverse_;
 }
 
 }	// end namespace ConstrainedOptimizationPack 

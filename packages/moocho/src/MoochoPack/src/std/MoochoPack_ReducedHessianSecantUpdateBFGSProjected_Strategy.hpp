@@ -1,8 +1,8 @@
 // ///////////////////////////////////////////////////////
 // ReducedHessianSecantUpdateBFGSProjected_Strategy.h
 
-#ifndef REDUCED_HESSIAN_SECANT_UPDATE_PROJECTED_FULL_STRATEGY_H
-#define REDUCED_HESSIAN_SECANT_UPDATE_PROJECTED_FULL_STRATEGY_H
+#ifndef REDUCED_HESSIAN_SECANT_UPDATE_BFGS_PROJECTED_STRATEGY_H
+#define REDUCED_HESSIAN_SECANT_UPDATE_BFGS_PROJECTED_STRATEGY_H
 
 #include "ReducedSpaceSQPPack/include/std/ReducedHessianSecantUpdate_Strategy.h"
 #include "ReducedSpaceSQPPack/include/std/BFGSUpdate_Strategy.h"
@@ -34,7 +34,7 @@ public:
 	  * active-set of the last two calls before a projected updating
 	  * for superbasic variables only is started.
 	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, proj_start_act_set_frac )
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, act_set_frac_proj_start )
 
 	///
 	/** Set the tolerance for Langrange multipliers for fixed variables
@@ -45,7 +45,7 @@ public:
 	///
     ReducedHessianSecantUpdateBFGSProjected_Strategy(
 		const bfgs_update_ptr_t&      bfgs_update                = NULL
-		,value_type                   proj_start_act_set_frac    = 0.8
+		,value_type                   act_set_frac_proj_start    = 0.8
 		,value_type                   super_basic_mult_drop_tol  = 1e-5
 		);      
 
@@ -79,4 +79,4 @@ private:
 
 }  // end namespace ReducedSpaceSQPPack
 
-#endif // REDUCED_HESSIAN_SECANT_UPDATE_PROJECTED_FULL_STRATEGY_H
+#endif // REDUCED_HESSIAN_SECANT_UPDATE_BFGS_PROJECTED_STRATEGY_H

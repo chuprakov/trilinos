@@ -29,9 +29,11 @@ namespace ConstrainedOptimizationPack {
   * (eta = 1, d = 0 guarrentted if dL <= 0 <= dU and eL <= b <= eU).
   * If the function M(eta) in the objective is large enough, then
   * the constraint etaL <= eta will be active if a feasible region
-  * exists.
+  * exists.  The form of the function M(eta) is not specified by this
+  * interface defined as appropriate for each individual QP solver
+  * method and implementation. 
   *
-  * The Lagrangian for the QP is:
+  * The Lagrangian for the QP in (1) is:
   \begin{verbatim}
   
 	L = g' * d + 1/2 * d' * G * d + M(eta)
@@ -88,7 +90,7 @@ namespace ConstrainedOptimizationPack {
 	lambda :   op(F)*d + (1 - eta) * f  = 0
 
   \end{verbatim}
-  * The lagrange multiper for the constraint #etaL <= eta kappa# is not given
+  * The lagrange multiper #kappa# for the constraint #etaL <= eta# is not returned
   * since if this constraint is not active, then #kappa == 0# and all of the multiplier
   * estimates will be off because of the arbitrarily large value of #d(M)/d(eta)# in
   * the optimality condition (3).

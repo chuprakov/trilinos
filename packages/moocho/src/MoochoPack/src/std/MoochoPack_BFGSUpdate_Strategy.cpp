@@ -197,7 +197,7 @@ void BFGSUpdate_Strategy::perform_update(
 					*B, s_bfgs_save(), y_bfgs_save()
 					, secant_warning_tol(), secant_error_tol()
 					, (int)olevel >= (int)PRINT_VECTORS
-					, &out
+					, (int)olevel >  (int)PRINT_NOTHING ? &out : NULL
 					, (int)olevel >= (int)PRINT_ALGORITHM_STEPS
 					);
 			if( !result ) {
