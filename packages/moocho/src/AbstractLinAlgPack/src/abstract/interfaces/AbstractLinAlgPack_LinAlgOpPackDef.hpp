@@ -31,6 +31,7 @@ using AbstractLinAlgPack::MopM_assert_compatibility;
 using AbstractLinAlgPack::Vp_MtV_assert_compatibility;
 using AbstractLinAlgPack::MtV_assert_compatibility;
 using AbstractLinAlgPack::MtM_assert_compatibility;
+using AbstractLinAlgPack::Mp_MtM_assert_compatibility;
 
 // ///////////////////////////////////////////////////////////////////////////////
 // Level 1 BLAS for Vectors
