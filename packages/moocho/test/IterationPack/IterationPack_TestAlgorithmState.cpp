@@ -121,13 +121,15 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 
 	// Try to add the same name again.
 
-	if(out) *out << "\nTry to add \"x\" (should throw execption)\n";
+	if(out) *out << "\nTry to add \"x\" (should throw execption) : ";
 	try {
-		state.set_iter_quant( "x", AlgorithmState::IQ_ptr(NULL) );
+		state.set_iter_quant( "x", rcp::rcp(new x_t(2,"x")) );
 		success = false;
+		if(out)
+			*out << "false\n";
 	}
 	catch(const AlgorithmState::AlreadyExists& expt) {
-		if(out) *out << "Caught a AlgorithmState::AlreadyExists execption : " << expt.what() << endl;
+		if(out) *out << "Caught a AlgorithmState::AlreadyExists execption : " << expt.what() << " : true\n" << endl;
 	}
 
 	// dump the iteration quantity names, ids, and concrete types.
@@ -295,6 +297,8 @@ bool GeneralIterationPack::TestingPack::TestAlgorithmState(std::ostream* out) {
 	catch(...) {
 		if(out) *out << "\nCaught an unknown exception\n";
 	}
+
+	if(out) *out << "\n*** Oops, If you read this some function throw an unexpected exception and the tests have failed!\n";
 
 	return false;
 }
