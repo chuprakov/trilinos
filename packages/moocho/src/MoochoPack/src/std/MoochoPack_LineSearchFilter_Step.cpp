@@ -518,6 +518,8 @@ void LineSearchFilter_Step::UpdatePoint(
   IterQuantityAccess<VectorWithOpMutable>* h,
   NLP& nlp ) const
 	{  
+	using LinAlgOpPack::Vp_StV;
+    using AbstractLinAlgPack::assert_print_nan_inf;
 	VectorWithOpMutable& x_kp1 = x.set_k(+1);
 	x_kp1 = x.get_k(0);
     Vp_StV( &x_kp1, alpha, d);
