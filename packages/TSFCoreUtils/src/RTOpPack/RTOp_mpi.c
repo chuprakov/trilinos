@@ -18,6 +18,8 @@
  * sinlge process implementation.
  */
 
+#include <assert.h> // Must be included since I can't include TSFCoreUtilsConfig.h
+
 /*
  * RAB: 2004/01/22: This file is included because it includes
  * TSFCoreUtilsConfig.h which then defines RTOp_USE_MPI or not.  If

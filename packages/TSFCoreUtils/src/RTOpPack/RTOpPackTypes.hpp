@@ -4,8 +4,8 @@
 #ifndef RTOPPACK_TYPES_HPP
 #define RTOPPACK_TYPES_HPP
 
-#include "TSFCoreUtils_ConfigDefs.hpp"
 #include "RTOp_config.h"
+#include "TSFCoreUtils_ConfigDefs.hpp"
 
 namespace RTOpPack {
 
