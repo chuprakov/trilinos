@@ -37,6 +37,13 @@ TSFExtended::EpetraVector::EpetraVector(const RefCountPtr<Epetra_Vector>& vec,
    : TSFCore::EpetraVector(vec, vs) 
 {;}
 
+
+double& EpetraVector::operator[](Index globalIndex) 
+{
+  const Epetra_BlockMap& myMap = epetra_vec()->Map();
+  return (*epetra_vec())[myMap.LID(globalIndex)];
+}
+
 void EpetraVector::setElement(Index index, const double& value)
 {
   epetra_vec()->ReplaceGlobalValues(1, const_cast<double*>(&value), 

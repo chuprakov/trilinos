@@ -31,8 +31,7 @@
 #include "TSFPrintable.hpp"
 #include "TSFVecDescribableByTypeID.hpp"
 #include "TSFCoreEpetraVector.hpp"
-#include "TSFAccessibleVector.hpp"
-#include "TSFLoadableVector.hpp"
+#include "TSFIndexableVector.hpp"
 #include "TSFVectorDecl.hpp"
 #include "Epetra_FEVector.h"
 #include "Epetra_Vector.h"
@@ -50,8 +49,7 @@ namespace TSFExtended
    */
   class EpetraVector : public TSFCore::EpetraVector, 
                        public Handleable<TSFCore::Vector<double> >,
-                       public LoadableVector<double>,
-                       public AccessibleVector<double>,
+                       public IndexableVector<double>,
                        public VecDescribableByTypeID<double>,
                        public Printable
     {
@@ -63,6 +61,16 @@ namespace TSFExtended
 
       /** virtual dtor */
       virtual ~EpetraVector() {;}
+
+      /** \name IndexableVector interface */
+      //@{
+      /** read the element at the given global index */
+      virtual const double& operator[](Index globalIndex) const 
+      {return getElement(globalIndex);}
+
+      /** writable access to the element at the given global index */
+      virtual double& operator[](Index globalIndex) ;
+      //@}
 
       /** \name LoadableVector interface */
       //@{

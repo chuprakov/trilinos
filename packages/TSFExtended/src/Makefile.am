@@ -46,6 +46,7 @@
 VECTORS_H = \
 	$(srcdir)/Vectors/TSFGhostImporter.hpp \
 	$(srcdir)/Vectors/TSFGhostView.hpp \
+	$(srcdir)/Vectors/TSFIndexableVector.hpp\
 	$(srcdir)/Vectors/TSFLoadableVector.hpp\
 	$(srcdir)/Vectors/TSFLinearCombination.hpp\
 	$(srcdir)/Vectors/TSFAccessibleVector.hpp\
