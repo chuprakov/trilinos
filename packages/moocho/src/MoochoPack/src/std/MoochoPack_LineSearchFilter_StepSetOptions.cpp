@@ -22,12 +22,13 @@
 // Define the options
 namespace {
 
-const int local_num_options = 10;
+const int local_num_options = 11;
 
 enum local_EOptions 
 	{
 		GAMMA_THETA
 		,GAMMA_F
+		,F_MIN
 		,GAMMA_ALPHA
 		,DELTA
 		,S_THETA
@@ -42,6 +43,7 @@ const char* local_SOptions[local_num_options] =
 	{
 		"gamma_theta"
 		,"gamma_f"
+		,"f_min"
 		,"gamma_alpha"
 		,"delta"
 		,"s_theta"
@@ -72,14 +74,20 @@ void LineSearchFilter_StepSetOptions::setOption(
 	using OptionsFromStreamPack::StringToBool;
   
 	typedef LineSearchFilter_Step target_t;
-	switch( (local_EOptions)option_num ) 
-		{
+	switch( (local_EOptions)option_num ) {
 		case GAMMA_THETA:
 			target().gamma_theta(::atof(option_value.c_str()));
 			break;
 		case GAMMA_F:
 			target().gamma_f(::atof(option_value.c_str()));
 			break;
+		case F_MIN: {
+			if( option_value == "UNBOUNDED" )
+				target().f_min(target_t::F_MIN_UNBOUNDED);
+			else
+				target().f_min(::atof(option_value.c_str()));
+			break;
+		}
 		case GAMMA_ALPHA:
 			target().gamma_alpha(::atof(option_value.c_str()));
 			break;
