@@ -228,65 +228,59 @@ rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
 		
 		if(test_nlp_) {
 			
-			//
-			// Test the nlp if needed
-			//
-			
-			if( test_nlp_ ) {
-				const char msg1[] = "\ntest_nlp = true: Testing the NLP!\n";
+			const char msg1[] = "\ntest_nlp = true: Testing the NLP!\n";
+			if(do_summary_outputting())
+				*summary_out_used_ << msg1;
+			if(do_journal_outputting())
+				*journal_out_used_ << msg1;
+			if(NLPFirstOrderInfo* nlp_foi = dynamic_cast<NLPFirstOrderInfo*>(nlp_.get())) {
+				const char msg[] = "\nTesting the supported NLPFirstOrderInfo interface ...\n";
 				if(do_summary_outputting())
-					*summary_out_used_ << msg1;
+					*summary_out_used_ << msg;
 				if(do_journal_outputting())
-					*journal_out_used_ << msg1;
-				if(NLPFirstOrderInfo* nlp_foi = dynamic_cast<NLPFirstOrderInfo*>(nlp_.get())) {
-					const char msg[] = "\nTesting the supported NLPFirstOrderInfo interface ...\n";
+					*journal_out_used_ << msg;
+				const bool
+					result = NLPInterfacePack::test_nlp_first_order_info(
+						nlp_foi,options_used_.get()
+						,do_journal_outputting() ? journal_out_used_.get() : NULL
+						);
+				if(!result) {
+					const char msg[] = "\nTest failed! exiting!\n";
 					if(do_summary_outputting())
 						*summary_out_used_ << msg;
 					if(do_journal_outputting())
 						*journal_out_used_ << msg;
-					const bool
-						result = NLPInterfacePack::test_nlp_first_order_info(
-							nlp_foi,options_used_.get()
-							,do_journal_outputting() ? journal_out_used_.get() : NULL
-							);
-					if(!result) {
-						const char msg[] = "\nTest failed! exiting!\n";
-						if(do_summary_outputting())
-							*summary_out_used_ << msg;
-						if(do_journal_outputting())
-							*journal_out_used_ << msg;
-						solve_return = SOLVE_RETURN_NLP_TEST_FAILED;
-						return solve_return;
-					}
+					solve_return = SOLVE_RETURN_NLP_TEST_FAILED;
+					return solve_return;
 				}
-				if(NLPFirstOrderDirect* nlp_fod = dynamic_cast<NLPFirstOrderDirect*>(nlp_.get())) {
-					const char msg[] = "\nTesting the supported NLPFirstOrderDirect interface ...\n";
-					if(do_summary_outputting())
-						*summary_out_used_ << msg;
-					if(do_journal_outputting())
-						*journal_out_used_ << msg;
-					const bool
-						result = NLPInterfacePack::test_nlp_first_order_direct(
-							nlp_fod,options_used_.get()
-							,do_journal_outputting() ? journal_out_used_.get() : NULL
-							);
-					if(!result) {
-						const char msg[] = "\nTest failed! exiting!\n";
-						if(do_summary_outputting())
-							*summary_out_used_ << msg;
-						if(do_journal_outputting())
-							*journal_out_used_ << msg;
-						solve_return = SOLVE_RETURN_NLP_TEST_FAILED;
-						return solve_return;
-					}
-				}
-				const char msg2[] = "\n... end testing of nlp\n";
-				if(do_summary_outputting())
-					*summary_out_used_ << msg2;
-				if(do_journal_outputting())
-					*journal_out_used_ << msg2;
 			}
-			
+			if(NLPFirstOrderDirect* nlp_fod = dynamic_cast<NLPFirstOrderDirect*>(nlp_.get())) {
+				const char msg[] = "\nTesting the supported NLPFirstOrderDirect interface ...\n";
+				if(do_summary_outputting())
+					*summary_out_used_ << msg;
+				if(do_journal_outputting())
+					*journal_out_used_ << msg;
+				const bool
+					result = NLPInterfacePack::test_nlp_first_order_direct(
+						nlp_fod,options_used_.get()
+						,do_journal_outputting() ? journal_out_used_.get() : NULL
+						);
+				if(!result) {
+					const char msg[] = "\nTest failed! exiting!\n";
+					if(do_summary_outputting())
+						*summary_out_used_ << msg;
+					if(do_journal_outputting())
+						*journal_out_used_ << msg;
+					solve_return = SOLVE_RETURN_NLP_TEST_FAILED;
+					return solve_return;
+				}
+			}
+			const char msg2[] = "\n... end testing of nlp\n";
+			if(do_summary_outputting())
+				*summary_out_used_ << msg2;
+			if(do_journal_outputting())
+				*journal_out_used_ << msg2;
+
 		}
 		
 		//
