@@ -9,8 +9,7 @@
 //     #include "ConstrainedOptimizationPack/include/ConstrainedOptimizationPackPublicTypes.ud"
 // }
 
-#include "SparseLinAlgPack/include/SparseLinAlgPackPublicTypes.ud"
-//#include "SparseSolverPack/include/SparseSolverPackPublicTypes.ud"
+#include "SparseSolverPack/include/SparseSolverPackPublicTypes.ud"
 #include "NLPInterfacePack/include/NLPInterfacePackPublicTypes.ud"
 
 using ConstrainedOptimizationPack::VariableBoundsTester;
