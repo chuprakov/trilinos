@@ -312,7 +312,7 @@ void ReducedSpaceSQPPack::InitFinDiffReducedHessian_Step::print_step( const Algo
 		<< L << "                for i = 1 ... n-r\n"
 		<< L << "                   diag(i) = max( rGf_fd(i), min_ele )\n"
 		<< L << "                end\n"
-		<< L << "            else\n"
+		<< L << "            else *** SCALE_DIAGONAL_ABS\n"
 		<< L << "                for i = 1 ... n-r\n"
 		<< L << "                   diag(i) = max( abs(rGf_fd(i)), min_ele )\n"
 		<< L << "                end\n"

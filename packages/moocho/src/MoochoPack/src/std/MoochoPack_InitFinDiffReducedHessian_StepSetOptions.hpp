@@ -20,10 +20,10 @@ namespace ReducedSpaceSQPPack {
   *
   \begin{verbatim}
 	options_group InitFinDiffReducedHessian {
-		initialization_method	= ?;
-		max_cond				= ?;
-		min_diag				= ?;
-		step_scale				= ?;
+		initialization_method   = SCALE_DIAGONAL_ABS;
+		max_cond                = 1e+1;
+		min_diag                = 1e-8;
+		step_scale              = 1e-1;
 	}
   \end{verbatim}
   *
@@ -37,14 +37,14 @@ namespace ReducedSpaceSQPPack {
   *		\end{description}
   *		where: smallest_ele = max( ||rGf_fd||inf / max_cond , min_diag )
   *	\item[max_cond] The maximum condition of the initialized matrix.
-  *		See initialization_method.
-  *		Example: max_cond = 1e+5.
-  *	\item[min_diag] The smallest absolute diagonal element.
+  *		See initialization_method.\\
+  *		Example: max_cond = 1e+1.
+  *	\item[min_diag] The smallest absolute diagonal element.\\
   *		Example: min_diag = 1e-8.
   *	\item[step_scale] scales the step for the finite difference by
-  *		u = scale_step / ||Z*e||inf.
-  *		The finite difference is then taken as:
-  *		rGf_fd = ( Z_k * g(x_k + u * Z*e - rGf_k ) / u
+  *		#u = scale_step / ||Z*e||inf#.
+  *		The finite difference is then taken as:\\
+  *		#rGf_fd = ( Z_k * g(x_k + u * Z*e - rGf_k ) / u#\\
   *		Example: step_scale = 1.0.
   */
 class InitFinDiffReducedHessian_StepSetOptions

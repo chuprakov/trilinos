@@ -51,9 +51,9 @@ public:
 	///
 	InitFinDiffReducedHessian_Step(
 		  EInitializationMethod		initialization_method	= SCALE_IDENTITY
-		, value_type				max_cond				= 1e+5
+		, value_type				max_cond				= 1e+1
 		, value_type				min_diag				= 1e-8
-		, value_type				step_scale				= 1e+0			 );
+		, value_type				step_scale				= 1e-1			 );
 
 	/// The initialization method for setting the diagonal
 	STANDARD_MEMBER_COMPOSITION_MEMBERS(EInitializationMethod,initialization_method)

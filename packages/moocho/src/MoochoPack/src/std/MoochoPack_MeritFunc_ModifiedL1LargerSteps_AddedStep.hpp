@@ -28,7 +28,7 @@ public:
 	MeritFunc_ModifiedL1LargerSteps_AddedStep(
 		  const merit_func_ptr_t& merit_func
 		, value_type	eta
-		, int			after_k_iter				= 4
+		, int			after_k_iter				= 3
 		, value_type	obj_increase_threshold		= 1e-4
 		, value_type	max_pos_penalty_increase	= 1.0
 		, value_type	pos_to_neg_penalty_increase	= 1.0

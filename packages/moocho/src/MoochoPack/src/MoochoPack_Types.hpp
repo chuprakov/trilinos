@@ -32,6 +32,7 @@ class rSQPTrack;
 class rSQPSolverClientInterface;
 class rSQPAlgoClientInterface;
 class rSQPAlgo_Config;
+class IterQuantMatrixWithOpCreator;
 
 //
 

@@ -95,18 +95,33 @@
 
 namespace ReducedSpaceSQPPack {
 
-rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama()
-	: algo_(0), algo_cntr_(0), in_destructor_(false), qp_solver_type_(QPOPT)
-		, factorization_type_(AUTO_FACT), bigM_(-1.0)
+rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
+		  ReferenceCountingPack::ref_count_ptr<BasisSystem> basis_sys_ptr
+		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
+			Gc_iq_creator_ptr
+		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
+			U_iq_creator_ptr	)
+	: algo_(0)
+		, algo_cntr_(0)
+		, in_destructor_(false)
+		, basis_sys_ptr_(basis_sys_ptr)
+		, Gc_iq_creator_ptr_(Gc_iq_creator_ptr)
+		, U_iq_creator_ptr_(U_iq_creator_ptr)
+		, qp_solver_type_(QPOPT)
+		, factorization_type_(AUTO_FACT)
+		, bigM_(-1.0)
 		, max_basis_cond_change_frac_(-1.0)
 		, warm_start_frac_(-1.0)
-		, merit_function_type_(MERIT_FUNC_L1), line_search_method_(LINE_SEARCH_DIRECT)
+		, merit_function_type_(MERIT_FUNC_MOD_L1_INCR)
+		, line_search_method_(LINE_SEARCH_DIRECT)
 		, use_line_search_correct_kkt_tol_(-1.0)
 		, full_steps_after_k_(-1)
-		, quasi_newton_(QN_AUTO), hessian_initialization_(INIT_HESS_IDENTITY)
+		, quasi_newton_(QN_AUTO)
+		, hessian_initialization_(INIT_HESS_FIN_DIFF_SCALE_DIAGONAL_ABS)
 		, quasi_newton_dampening_(false)
 		, num_lbfgs_updates_stored_(7)
-		, lbfgs_auto_scaling_(true), max_dof_quasi_newton_dense_(1000)
+		, lbfgs_auto_scaling_(true)
+		, max_dof_quasi_newton_dense_(1000)
 		, check_results_(false)
 {}
 
@@ -249,11 +264,15 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 		matrix_iqa_creator_ptr_t matrix_iqa_creators[matrix_creator_t::num_MatrixWithOp] =
 		{
 			new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>(),						// Q_Hf
-			new IterQuantMatrixWithOpCreatorContinuous<COOMatrixWithPartitionedViewSubclass>(),		// Q_Gc
+			Gc_iq_creator_ptr_.get()
+				? Gc_iq_creator_ptr_
+				: new IterQuantMatrixWithOpCreatorContinuous<COOMatrixWithPartitionedViewSubclass>(),		// Q_Gc
 			new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>(),						// Q_Hcj
 			new IterQuantMatrixWithOpCreatorContinuous<IdentZeroVertConcatMatrixSubclass>(),		// Q_Y
 			0,																						// Q_Z
-			new IterQuantMatrixWithOpCreatorContinuous<COOMatrixPartitionViewSubclass>(),			// Q_U
+			U_iq_creator_ptr_.get()
+				? U_iq_creator_ptr_
+				: new IterQuantMatrixWithOpCreatorContinuous<COOMatrixPartitionViewSubclass>(),			// Q_U
 			new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>(),						// Q_V
 			0																						// Q_rHL
 		};
@@ -398,23 +417,28 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 	// ToDo: guard from an exception being thrown from these
 	// constructors.
 
-	MA28SparseCOOSolverCreator*
-		solver_creator = new MA28SparseCOOSolverCreator(
-				new SparseSolverPack::MA28SparseCOOSolverSetOptions
-				, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
-			);
-	
-	COOBasisSystem*
-		basis_sys = new COOBasisSystem(solver_creator, true);
+	if( !basis_sys_ptr_.get() ) {
+
+		MA28SparseCOOSolverCreator*
+			solver_creator = new MA28SparseCOOSolverCreator(
+					new SparseSolverPack::MA28SparseCOOSolverSetOptions
+					, const_cast<OptionsFromStreamPack::OptionsFromStream*>(options_)
+				);
+		
+		basis_sys_ptr_ = new COOBasisSystem(solver_creator, true);
+
+	}
 
 	DecompositionSystemVarReductImpNode* decomp_sys_aggr = 0;
 	
 	switch(fact_type_) {
 		case DIRECT_FACT:
-			decomp_sys_aggr = new DecompositionSystemCoordinateDirect(basis_sys, true);
+			decomp_sys_aggr = new DecompositionSystemCoordinateDirect(
+									basis_sys_ptr_.release(), true);
 			break;
 		case ADJOINT_FACT:
-			decomp_sys_aggr = new DecompositionSystemCoordinateAdjoint(basis_sys, true);
+			decomp_sys_aggr = new DecompositionSystemCoordinateAdjoint(
+									basis_sys_ptr_.release(), true);
 			break;
 	}
 	
@@ -952,7 +976,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 			*basis_check_step = new CheckBasisFromPy_Step(
 				new NewBasisSelectionStd_Strategy(decomp_sys) );
 		if( max_basis_cond_change_frac_ > 0.0 )
-			basis_check_step->max_beta_change( max_basis_cond_change_frac_ );
+			basis_check_step->max_basis_cond_change_frac( max_basis_cond_change_frac_ );
 		Algorithm::poss_type poss;
 		assert(poss = algo_->get_step_poss( DepDirec_name ) );
 		algo_->insert_step(

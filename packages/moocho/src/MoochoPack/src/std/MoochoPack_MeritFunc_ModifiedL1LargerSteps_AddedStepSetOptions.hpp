@@ -11,18 +11,18 @@
 namespace ReducedSpaceSQPPack {
 
 ///
-/** Set options for MeritFunc_ModifiedL1LargerSteps_AddedStep from a
+/** Set options for \Ref{MeritFunc_ModifiedL1LargerSteps_AddedStep} from a
   * OptionsFromStream object.
   *
   * The options group is:
   *
   \begin{verbatim}
 	options_group MeritFuncModifiedL1LargerSteps {
-		after_k_iter				= ?;
-		obj_increase_threshold		= ?;
-		max_pos_penalty_increase	= ?;
-		pos_to_neg_penalty_increase	= ?;
-		incr_mult_factor			= ?;
+		after_k_iter                = 3;
+		obj_increase_threshold      = 1e-3;
+		max_pos_penalty_increase    = 1.0;
+		pos_to_neg_penalty_increase = 1.0;
+		incr_mult_factor            = 1e-4;
 	}
   \end{verbatim}
   *

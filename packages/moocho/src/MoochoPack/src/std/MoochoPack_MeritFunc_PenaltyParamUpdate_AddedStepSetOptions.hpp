@@ -18,23 +18,23 @@ namespace ReducedSpaceSQPPack {
   *
   \begin{verbatim}
 	options_group MeritFuncPenaltyParamUpdate {
-	    small_mu = ?;
-		min_mu_ratio = ?;
-	    mult_factor = ?;
-	    kkt_near_sol = ?;
+	    small_mu     = 1e-6;
+	    min_mu_ratio = 1e-8;
+	    mult_factor  = 1e-4;
+	    kkt_near_sol = 1.0;
 	}
   \end{verbatim}
   *
   * \begin{description}
-  *	\item[small_mu] The smallest mu allows when away from the soltion.
+  *	\item[small_mu] The smallest mu allows when away from the soltion.\\
   *		Example: small_mu = 1e-6;
-  *	\item[min_mu_ratio] This bounds the smallest mu(i) as
-  *		min(mu(i))/max(mu(i)) >= min_mu_ratio.
+  *	\item[min_mu_ratio] This bounds the smallest mu(i) as:\\
+  *		min(mu(i))/max(mu(i)) >= min_mu_ratio.\\
   *		Example: min_mu_ratio = 1e-4;
-  *	\item[mult_factor] Multiplicative factor for mu(j) = (1.0+mult_factor) * abs(lambda(j)).
+  *	\item[mult_factor] Multiplicative factor for mu(j) = (1.0+mult_factor) * abs(lambda(j)).\\
   *		Example: mult_factor = 1e-4;
   *	\item[kkt_near_sol] When the total kkt_error is below kkt_near_sol a safer
-  *		penalty update will be used.
+  *		penalty update will be used.\\
   *		Example: kkt_near_sol = 1.0;
   *	\end{description}
   */

@@ -30,11 +30,11 @@ namespace LinAlgOpPack {
 ReducedSpaceSQPPack::LineSearchWatchDog_Step::LineSearchWatchDog_Step(
 		const direct_line_search_ptr_t&	direct_line_search
 		, const merit_func_ptr_t&			merit_func
-		, value_type						use_watchdog_kkt_tol
+		, value_type						use_line_search_correct_kkt_tol
 		, value_type						eta							)
 	: direct_line_search_(direct_line_search)
 		, merit_func_(merit_func)
-		, use_watchdog_kkt_tol_(use_watchdog_kkt_tol)
+		, use_line_search_correct_kkt_tol_(use_line_search_correct_kkt_tol)
 		, eta_(eta)
 		, watch_k_(NORMAL_LINE_SEARCH)
 {}
@@ -126,10 +126,10 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 	if( watch_k_ == NORMAL_LINE_SEARCH ) {
 		const value_type
 			kkt_error	= std::_MAX( s.norm_inf_rGL().get_k(0), s.norm_inf_c().get_k(0) );
-		if( kkt_error <= use_watchdog_kkt_tol() ) {
+		if( kkt_error <= use_line_search_correct_kkt_tol() ) {
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-				out	<< "\nkkt_error = " << kkt_error << " <= use_watchdog_kkt_tol = "
-						<< use_watchdog_kkt_tol() << std::endl
+				out	<< "\nkkt_error = " << kkt_error << " <= use_line_search_correct_kkt_tol = "
+						<< use_line_search_correct_kkt_tol() << std::endl
 					<< "\nSwitching to watchdog linesearch ...\n";
 			}
 			watch_k_ = 0;
@@ -408,7 +408,7 @@ void ReducedSpaceSQPPack::LineSearchWatchDog_Step::print_step( const Algorithm& 
 		<< L << "phi_k = phi.value(f_k,c_k)\n"
 		<< L << "if watch_k == NORMAL_LINE_SEARCH then\n"
 		<< L << "    kkt_error = max( norm_inf_rGL_k, norm_inf_c_k )\n"
-		<< L << "    if kkt_error <= use_watchdog_kkt_tol then\n"
+		<< L << "    if kkt_error <= use_line_search_correct_kkt_tol then\n"
 		<< L << "        *** Start using watchdog from now on\n"
 		<< L << "        watch_k = 0\n"
 		<< L << "    end\n"

@@ -102,9 +102,12 @@ bool ReducedSpaceSQPPack::CheckConvergenceStd_AddedStep::do_step(Algorithm& _alg
 				<< "\nstep_error  = " << step_error	<< " < step_tol = "	<< step_tol
 					<< std::endl;
 		}
-		nlp.report_optimal_x( s.x().get_k(0) );
-		if( s.lambda().updated_k(0) && s.nu().updated_k(0) )
-			nlp.report_optimal_multipliers(	s.lambda().get_k(0), s.nu().get_k(0) );
+		nlp.report_final_solution(
+			  s.x().get_k(0)()
+			, s.lambda().updated_k(0)	? &s.lambda().get_k(0)()	: 0
+			, s.nu().updated_k(0)		? &s.nu().get_k(0)()		: 0
+			, true
+			);
 		algo.terminate(true);	// found min
 		return false; // skip the other steps and terminate
 	}
@@ -121,14 +124,15 @@ void ReducedSpaceSQPPack::CheckConvergenceStd_AddedStep::print_step( const Algor
 		<< L << "*** Check to see if the KKT error is small enough for convergence ***\n"
 		<< L << "norm_inf_rGL_k = norm(rGL_k,inf)\n"
 		<< L << "norm_inf_c_k = norm(c_k,inf)\n"
-		<< L << "kkt_err = norm_inf_rGL_k / max(1,0,norm_inf(Gf_k))\n"
+		<< L << "kkt_err = norm_inf_rGL_k / max(1.0,norm_inf(Gf_k))\n"
 		<< L << "feas_err = norm_inf_c_k\n"
 		<< L << "if d_k is updated then\n"
-		<< L << "    step_err = max( |d_k(i)|/(1+|x_k(i)|, i=1..n )\n"
+		<< L << "    step_err = max( |d_k(i)|/(1+|x_k(i)|), i=1..n )\n"
 		<< L << "else\n"
 		<< L << "    step_err = 0\n"
 		<< L << "end\n"
-		<< L << "if kkt_err<kkt_tol and feas_err<feas_tol and step_err<step_tol then\n"
+		<< L << "if kkt_err < kkt_tol and feas_err < feas_tol and step_err < step_tol then\n"
+		<< L << "   report optimal x_k, lambda_k and nu_k to the nlp\n"
 		<< L << "   terminate, the solution has beed found!\n"
 		<< L << "end\n";
 }

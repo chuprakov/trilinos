@@ -58,10 +58,10 @@ public:
 		, const direct_ls_newton_ptr_t&		direct_ls_newton		= 0
 		, value_type						eta						= 1.0e-4
 		, ENewtonOutputLevel				newton_olevel			= PRINT_NEWTON_NOTHING
-		, value_type						constr_norm_threshold	= 1.0
-		, int								after_k_iter			= 3
+		, value_type						constr_norm_threshold	= 1e-3
+		, int								after_k_iter			= 2
 		, EForcedConstrReduction			forced_constr_reduction	= CONSTR_LESS_X_D
-		, value_type						max_step_ratio			= 0.5
+		, value_type						max_step_ratio			= 0.7
 		, int								max_newton_iter			= 3				);
 
 	/** @name Options for 2nd order correction

@@ -29,15 +29,15 @@ public:
 	LineSearchWatchDog_Step(
 			  const direct_line_search_ptr_t&	direct_line_search	= 0
 			, const merit_func_ptr_t&			merit_func			= 0
-			, value_type						use_watchdog_kkt_tol = 0.0
+			, value_type						use_line_search_correct_kkt_tol = 0.0
 			, value_type						eta					= 1.0e-4	);
 
 	/// Set the KKT tolerance below which we will start applying the watchdog
-	void set_use_watchdog_kkt_tol( value_type use_watchdog_kkt_tol )
-	{	use_watchdog_kkt_tol_ = use_watchdog_kkt_tol; }
+	void set_use_line_search_correct_kkt_tol( value_type use_line_search_correct_kkt_tol )
+	{	use_line_search_correct_kkt_tol_ = use_line_search_correct_kkt_tol; }
 	///
-	value_type use_watchdog_kkt_tol() const
-	{	return use_watchdog_kkt_tol_; }
+	value_type use_line_search_correct_kkt_tol() const
+	{	return use_line_search_correct_kkt_tol_; }
 
 	/// Set the Armijo test parameter eta
 	void set_eta(value_type eta)
@@ -58,7 +58,7 @@ public:
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 
 private:
-	value_type			use_watchdog_kkt_tol_;
+	value_type			use_line_search_correct_kkt_tol_;
 	value_type			eta_;
 	int					watch_k_;	// >= 0 means that we are using the watchdog.
 	Vector				xo_;

@@ -27,8 +27,8 @@ public:
 
 	///
 	MeritFunc_PenaltyParamsUpdateWithMult_AddedStep(const merit_func_ptr_t& merit_func
-		, value_type small_mu = 1e-6, value_type min_mu_ratio = 1e-4
-		, value_type mult_factor = 1e-4 , value_type kkt_near_sol = 1.0 );
+		, value_type small_mu = 1e-6, value_type min_mu_ratio = 1e-8
+		, value_type mult_factor = 1e-4 , value_type kkt_near_sol = 1e-1 );
 
 	// ///////////////////////////////
 	// Overridden from AlgorithmStep

@@ -20,12 +20,12 @@ namespace ReducedSpaceSQPPack {
   *
   \begin{verbatim}
 	options_group LineSearch2ndOrderCorrect {
-	    newton_olevel			= ?;
-		constr_norm_threshold	= ?;
-		after_k_iter			= ?;
-		forced_constr_reduction	= LESS_X_D;
-		max_step_ratio			= ?;
-		max_newton_iter			= ?;
+	    newton_olevel           = PRINT_NOTHING;
+	    constr_norm_threshold   = 1e-3;
+	    after_k_iter            = 3;
+	    forced_constr_reduction = LESS_X_D;
+	    max_step_ratio          = 0.7;
+	    max_newton_iter         = 3;
 	}
   \end{verbatim}
   *

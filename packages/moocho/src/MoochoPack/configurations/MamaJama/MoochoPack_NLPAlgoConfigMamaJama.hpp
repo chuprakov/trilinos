@@ -53,7 +53,13 @@ public:
 	/// Initialize
 
 	///
-	rSQPAlgo_ConfigMamaJama();
+	rSQPAlgo_ConfigMamaJama(
+		  ReferenceCountingPack::ref_count_ptr<BasisSystem> basis_sys_ptr = 0
+		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
+			Gc_iq_creator_ptr = 0
+		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
+			U_iq_creator_ptr = 0
+		);
 
 	///
 	~rSQPAlgo_ConfigMamaJama();
@@ -204,6 +210,11 @@ public:
 
 protected:
 	typedef std::auto_ptr<std::ofstream> mapped_qp_file_ptr_t;
+	typedef ReferenceCountingPack::ref_count_ptr<BasisSystem> basis_sys_ptr_t;
+	typedef ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
+		Gc_iq_creator_ptr_t;
+	typedef ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
+		U_iq_creator_ptr_t;
 	
 	// just keep track of the algo_cntr and the algo this object is associated with.
 	rSQPAlgo			*algo_;
@@ -211,6 +222,11 @@ protected:
 	bool	in_destructor_;	// a flag to determine if decomfig_algo_cntr()
 							// was called from within the call stack of
 							// ~rSQPAlgo_ConfigMamaJama
+
+	basis_sys_ptr_t		basis_sys_ptr_;	// Basis system object (if null will be set)
+	Gc_iq_creator_ptr_t	Gc_iq_creator_ptr_;	// IQA creator for Gc
+	U_iq_creator_ptr_t	U_iq_creator_ptr_;	// IQA creator for U which is N
+
 	EQPSolverType		qp_solver_type_;
 	EFactorizationType	factorization_type_;	// choosen by user
 	EFactorizationType	fact_type_;				// actual type used.
