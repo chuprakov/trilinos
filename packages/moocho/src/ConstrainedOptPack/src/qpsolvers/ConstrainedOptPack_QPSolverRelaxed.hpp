@@ -12,7 +12,7 @@ namespace ConstrainedOptimizationPack {
 /** Solves Quadratic Programs (QPs) of several different forms while
   * relaxing the constraints.
   *
-  * The master for the QP being solve is:
+  * The formulation for the QP being solve is:
   \begin{verbatim}
   
   (1.1)  min          g'*d + 1/2*d'*G*d + M(eta)
@@ -27,7 +27,7 @@ namespace ConstrainedOptimizationPack {
   \end{verbatim}
   * The relaxation is used to ensure that the QP will have a solution
   * (eta = 1, d = 0 guarrentted if dL <= 0 <= dU and eL <= b <= eU).
-  * If the function of M(eta) in the objective is large enough, then
+  * If the function M(eta) in the objective is large enough, then
   * the constraint etaL <= eta will be active if a feasible region
   * exists.
   *
@@ -64,10 +64,10 @@ namespace ConstrainedOptimizationPack {
 
 	Complementarity:
 
-	(5.1)  nu(i) * (dL - d)(i), if nu(i) <= 0, i = 1...n
-	(5.2)  nu(i) * (d - dU)(i), if nu(i) >= 0, i = 1...n
-	(5.3)  mu(j) * (eL - op(E)*d - b*eta)(j), if mu(j) <= 0, j = 1...m_in
-	(5.4)  mu(j) * (op(E)*d + b*eta - eU)(j), if mu(j) >= 0, j = 1...m_in
+	(5.1)  nu(i) * (dL - d)(i) \approx 0, if nu(i) <= 0, i = 1...n
+	(5.2)  nu(i) * (d - dU)(i) \approx 0, if nu(i) >= 0, i = 1...n
+	(5.3)  mu(j) * (eL - op(E)*d - b*eta)(j) \approx 0, if mu(j) <= 0, j = 1...m_in
+	(5.4)  mu(j) * (op(E)*d + b*eta - eU)(j) \approx 0, if mu(j) >= 0, j = 1...m_in
 
 	Nonnegativity of Lagrange Multipliers for Inequality Constraints:
 
@@ -77,7 +77,7 @@ namespace ConstrainedOptimizationPack {
 	(6.4)  mu(j) >= 0 if (op(E)*d + b*eta - eU)(j) \approx 0, j = 1...m_in
 
   \end{verbatim}
-  * The optimal d and eta are determined as well as the lagrange multipliers
+  * The optimal #d# and #eta# are determined as well as the lagrange multipliers
   * for the constriants:
   \begin{verbatim}
 
@@ -88,12 +88,12 @@ namespace ConstrainedOptimizationPack {
 	lambda :   op(F)*d + (1 - eta) * f  = 0
 
   \end{verbatim}
-  * The lagrange multiper for the constraint etaL <= eta kappa is not given
-  * since if this constraint is not active, then kappa = 0 and all of the multiplier
-  * estimates will be off because of the arbitrarily large value of d(M)/d(eta) and
+  * The lagrange multiper for the constraint #etaL <= eta kappa# is not given
+  * since if this constraint is not active, then #kappa == 0# and all of the multiplier
+  * estimates will be off because of the arbitrarily large value of #d(M)/d(eta)# in
   * the optimality condition (3).
   *
-  * The bounds dL, dU, eL and eU are input as sparse vectors (SpVectorSlice).
+  * The bounds #dL#, #dU#, #eL# and #eU# are input as sparse vectors (SpVectorSlice).
   *
   * Note that this interface is geared toward active-set solvers but could also
   * be used for iterative solvers with care.
@@ -143,23 +143,23 @@ public:
 	/** Solve the QP.
 	  *
 	  * This function may throw many exceptions.  If there is some problem with
-	  * the QP definition the exceptions Unbounded, Infeasible or InvalidInput
+	  * the QP definition the exceptions #Unbounded#, #Infeasible# or #InvalidInput#
 	  * may be thrown.  If the QP is illconditioned other exeptions may be thrown
-	  * by this function or perhaps a warning message may be printed to *out and
-	  * a value of the return other than OPTIMAL_SOLUTION may be returned.
+	  * by this function or perhaps warning messages may be printed to #*out# and
+	  * a value other than #OPTIMAL_SOLUTION# may be returned.
 	  *
-	  * After this function returns, get_qp_stats(...) can be called to return
+	  * After this function returns, #this->get_qp_stats()# can be called to return
 	  * some statistics for the QP just solved (or attempted to be solved).
 	  *
 	  * Note, the variable bounds can be removed by passing in
-	  * pass in dL.nz() == dU.nz() == 0.
+	  * pass in #dL.nz() == dU.nz() == 0#.
 	  * 
-	  * By default calls the function solve_qp(...) which excepts
+	  * By default this function calls the function #this->solve_qp(...)# which accepts
 	  * various sets of constraints.
 	  *
-	  *	@param	out			[O]	If out != NULL then output is printed to this stream
-	  *							depending on the value of olevel.
-	  *	@param	olevel		[I]	Determines the amount of output to print to *out.
+	  *	@param	out			[out] If out != NULL then output is printed to this stream
+	  *							depending on the value of #olevel#.
+	  *	@param	olevel		[in] Determines the amount of output to print to *out.
 	  *							The exact type of output is determined by the implementing
 	  *							subclass but here is the sugguested behavior:
 	  *							PRINT_NONE : Don't print anything (same as out == NULL).
@@ -177,7 +177,7 @@ public:
 	  *								quantity within each QP iteration including
 	  *								vectors and matrices.  Mainly useful for debugging.
 	  *								Amount of output = O((num_iter)(n-m)^2)+O((num_iter)(n))
-	  *	@param	test_what	[I]	Determines if internal validation tests are performed.
+	  *	@param	test_what	[in] Determines if internal validation tests are performed.
 	  *							The optimality conditions for the QP are not checked
 	  *							internally, this is something that client can (and should)
 	  *							do independently (see QPSolverRelaxedTester).
@@ -188,25 +188,25 @@ public:
 	  *								what failing a test means.
 	  *							NO_TEST : No tests are performed internally.  This is
 	  *								to allow the fastest possible execution.
-	  *	@param	g			[I]	vector (size n): objective 1st order
-	  *	@param	G			[I]	matrix (size n x n): objective, second order Hessian
-	  *	@param	etaL		[I] scalar: Lower bound for relaxation variable (0 usually)
-	  * @param	dL			[I] sparse vector (size n) (dL->is_sorted() == true): lower variable bounds
-	  * @param	dU			[I] sparse vector (size n) (dU->is_sorted() == true): upper variable bounds
-	  *	@param	E			[I] matrix (op(E)) (size m_in x n): inequality constraint Jacobian matrix 
-	  * @param	trans_E		[I]	E is transposed? 
-	  * @param	b			[I] vector (size m_in): relaxation vector for inequalities
-	  * @param	eL			[I] sparse vector (size m_in) (eL->is_sorted() == true): lower inequality bounds
-	  * @param	eU			[I] sparse vector (size m_in) (eU->is_sorted() == true): upper inequality bounds
-	  *	@param	F			[I] matrix (op(F) size m_eq x n): equality constraint Jacobian matrix
-	  * @param	trans_F		[I]	F is transposed? 
-	  * @param	f			[I] vector (size m_eq): equality constraint right hand side
-	  *	@param	obj_d		[O] If obj_d != NULL on input, then obj_d will be set with the
+	  *	@param	g			[in] vector (size n): objective 1st order
+	  *	@param	G			[in] matrix (size n x n): objective, second order Hessian
+	  *	@param	etaL		[in] scalar: Lower bound for relaxation variable (0 usually)
+	  * @param	dL			[in] sparse vector (size n) (dL->is_sorted() == true): lower variable bounds
+	  * @param	dU			[in] sparse vector (size n) (dU->is_sorted() == true): upper variable bounds
+	  *	@param	E			[in] matrix (op(E)) (size m_in x n): inequality constraint Jacobian matrix 
+	  * @param	trans_E		[in] E is transposed? 
+	  * @param	b			[in] vector (size m_in): relaxation vector for inequalities
+	  * @param	eL			[in] sparse vector (size m_in) (eL->is_sorted() == true): lower inequality bounds
+	  * @param	eU			[in] sparse vector (size m_in) (eU->is_sorted() == true): upper inequality bounds
+	  *	@param	F			[in] matrix (op(F) size m_eq x n): equality constraint Jacobian matrix
+	  * @param	trans_F		[in] F is transposed? 
+	  * @param	f			[in] vector (size m_eq): equality constraint right hand side
+	  *	@param	obj_d		[out] If obj_d != NULL on input, then obj_d will be set with the
 	  *							value of obj_d = g'*d + 1/2*d'*G*d for the value of d
 	  *							returned.
-	  *	@param	eta			[O]	scalar:  Relaxation variable
-	  *	@param	d			[O]	vector (size n):  Solution vector
-	  *	@param	nu			[I/O]	sparse vector (size n):  Lagrange multipilers
+	  *	@param	eta			[out] scalar:  Relaxation variable
+	  *	@param	d			[out] vector (size n):  Solution vector
+	  *	@param	nu			[in/out] sparse vector (size n):  Lagrange multipilers
 	  *							for variable bounds.  On input it contains the
 	  *							estimate of the active set and multiplier values.  If
 	  *							nu->nz() == 0 on input then there is no estimate for the
@@ -218,7 +218,7 @@ public:
 	  *							returned solution.  If nu->nz() > 0 on input then
 	  *							nu->is_sorted() must be true.  On output nu->is_sorted()
 	  *							will be true.
-	  *	@param	mu			[I/O]	sparse vector (size m_in):  Lagrange multipilers
+	  *	@param	mu			[in/out] sparse vector (size m_in):  Lagrange multipilers
 	  *							for the general inequality constriants.
 	  *							On input it contains the
 	  *							estimate of the active set and multiplier values.  If
@@ -231,29 +231,29 @@ public:
 	  *							returned solution.  If mu->nz() > 0 on input then
 	  *							mu->is_sorted() must be true.  On output mu->is_sorted()
 	  *							will be true.
-	  *	@param	Ed			[O]	vector (size m_in) If Ed!=NULL on input, then on output
+	  *	@param	Ed			[in/out] vector (size m_in) If Ed!=NULL on input, then on output
 	  *							Ed will contain the product opt(E)*d for the value of
 	  *							d on output.  This is included to save user from having
 	  *							to perform this computation again if it has already been
 	  *							done internally.
-	  *	@param	lambda		[O]	vector (size m_eq):  Lagrange multipilers for equality
+	  *	@param	lambda		[out] vector (size m_eq):  Lagrange multipilers for equality
 	  *							constraints.
 	  *
 	  *	@return
-	  *		OPTIMAL_SOLUTION : Returned point satisfies the optimality conditions
+	  *		#OPTIMAL_SOLUTION# : Returned point satisfies the optimality conditions
 	  *			in (2)-(6) above.  This will generally be the case if the maximum
 	  *			number of QP iterations is not exceeded and none of the possible
 	  *			exeptions are thrown.
-	  *		PRIMAL_FEASIBLE_POINT : Returned point satisfies the feasibility conditions
-	  *			in (4)-(5) above.
+	  *		#PRIMAL_FEASIBLE_POINT# : Returned point satisfies the feasibility
+	  *         and complementarity conditions in (4)-(5) above.
 	  *			For example, a primal, active-set QP algorithm may return this if
 	  *			the maxinum number of iterations has been exceeded durring the
 	  *			optimality phase (phase 2).
-	  *		DUAL_FEASIBLE_POINT : Returned point satisfies the optimality conditions
-	  *			in (2)-(4.1),(4.4),(5),(6) but not the inequality constraints in (4.2),(4.3).
+	  *		#DUAL_FEASIBLE_POINT# : Returned point satisfies the optimality conditions
+	  *			in (2)-(4.1),(4.4),(5) and (6) but not the inequality constraints in (4.2),(4.3).
 	  *			For example, a primal-dual, active-set QP algorithm might return this
 	  *			value if the maximum number of iterations has been exceeded.
-	  *		SUBOPTIMAL_POINT : Returned point does not accurately enough satisfy any of the
+	  *		#SUBOPTIMAL_POINT# : Returned point does not accurately enough satisfy any of the
 	  *			optimality conditions in (2)-(6) above but the solution may still be
 	  *			of some use.  For example, an active-set (primal, or dual) QP algorithm
 	  *			might return this if there is some serious illconditioning in the QP
@@ -279,7 +279,7 @@ public:
 	///
 	/** Solve the QP without general equality constrants.
 	  *
-	  * By default calls the function solve_qp(...) which excepts
+	  * By default this function calls #solve_qp(...)# which excepts
 	  * various sets of constraints.
 	  */
 	virtual QPSolverStats::ESolutionType solve_qp(
@@ -298,7 +298,7 @@ public:
 	///
 	/** Solve the QP without general inequality constrants.
 	  *
-	  * By default calls the function solve_qp(...) which excepts
+	  * By default this function calls #solve_qp(...)# which excepts
 	  * various sets of constraints.
 	  */
 	virtual QPSolverStats::ESolutionType solve_qp(
@@ -318,7 +318,7 @@ public:
 	/** Solve the QP without general equality or inequality constrants (no relaxation
 	  * needed).
 	  *
-	  * By default calls the function solve_qp(...) which excepts
+	  * By default this function calls #solve_qp(...)# which excepts
 	  * various sets of constraints.
 	  */
 	virtual QPSolverStats::ESolutionType solve_qp(
