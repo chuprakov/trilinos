@@ -88,6 +88,9 @@ public:
 
 	//@}
 
+  ///
+  virtual ~AlgorithmState() {}
+
 	/** @name Constructors */
 	//@{
 

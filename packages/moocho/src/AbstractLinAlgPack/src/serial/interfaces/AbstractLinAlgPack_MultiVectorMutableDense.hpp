@@ -257,7 +257,7 @@ protected:
 		EApplyBy apply_by, const RTOpPack::RTOp& primary_op
 		,const size_t num_multi_vecs,      const MultiVector**   multi_vecs
 		,const size_t num_targ_multi_vecs, MultiVectorMutable**  targ_multi_vecs
-		,RTOp_ReductTarget reduct_objs[]
+		,RTOpPack::ReductTarget* reduct_objs[]
 		,const index_type primary_first_ele   , const index_type primary_sub_dim   , const index_type primary_global_offset
 		,const index_type secondary_first_ele , const index_type secondary_sub_dim 
 		) const;
@@ -266,7 +266,7 @@ protected:
 		EApplyBy apply_by, const RTOpPack::RTOp& primary_op, const RTOpPack::RTOp& secondary_op
 		,const size_t num_multi_vecs,      const MultiVector**   multi_vecs
 		,const size_t num_targ_multi_vecs, MultiVectorMutable**  targ_multi_vecs
-		,RTOp_ReductTarget reduct_obj
+		,RTOpPack::ReductTarget *reduct_obj
 		,const index_type primary_first_ele   , const index_type primary_sub_dim   , const index_type primary_global_offset
 		,const index_type secondary_first_ele , const index_type secondary_sub_dim 
 		) const;

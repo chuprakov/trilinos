@@ -20,7 +20,7 @@
 #include "RTOp_TOp_assign_vectors.h"
 #include "RTOp_TOp_axpy.h"
 #include "RTOp_TOp_set_sub_vector.h"
-#include "RTOpCppC.hpp"
+#include "RTOpPack_RTOpC.hpp"
 #include "Range1D.hpp"
 #include "Teuchos_TestForException.hpp"
 
@@ -42,19 +42,15 @@ class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
 		// Vector scalar assignment operator
-		if(0>RTOp_TOp_assign_scalar_construct( 0.0, &assign_scalar_op.op() ))
-			assert(0);
+		TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_construct(0.0,&assign_scalar_op.op()));
 		// Vector assignment operator
-		if(0>RTOp_TOp_assign_vectors_construct( &assign_vec_op.op() ))
-			assert(0);
+		TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_vectors_construct(&assign_vec_op.op()));
 		// Set sub-vector operator
 		RTOp_SparseSubVector spc_sub_vec;
 		RTOp_sparse_sub_vector_null(&spc_sub_vec);
-		if(0>RTOp_TOp_set_sub_vector_construct( &spc_sub_vec, &set_sub_vector_op.op() ))
-			assert(0);
+		TEST_FOR_EXCEPT(0!=RTOp_TOp_set_sub_vector_construct(&spc_sub_vec,&set_sub_vector_op.op()));
 		// axpy operator
-		if(0>RTOp_TOp_axpy_construct( 0.0, &axpy_op.op() ))
-			assert(0);
+		TEST_FOR_EXCEPT(0!=RTOp_TOp_axpy_construct(0.0,&axpy_op.op()));
 	}
 }; 
 
@@ -70,10 +66,9 @@ namespace AbstractLinAlgPack {
 
 VectorMutable& VectorMutable::operator=(value_type alpha)
 {
-	if(0!=RTOp_TOp_assign_scalar_set_alpha( alpha, &assign_scalar_op.op() ))
-		assert(0);
+	TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_set_alpha(alpha,&assign_scalar_op.op()));
 	VectorMutable* targ_vecs[1] = { this };
-	AbstractLinAlgPack::apply_op(assign_scalar_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
+	AbstractLinAlgPack::apply_op(assign_scalar_op,0,NULL,1,targ_vecs,NULL);
 	return *this;
 }
 
@@ -83,7 +78,7 @@ VectorMutable& VectorMutable::operator=(const Vector& vec)
 		return *this; // Assignment to self!
 	const Vector*   vecs[1]      = { &vec };
 	VectorMutable*  targ_vecs[1] = { this };
-	AbstractLinAlgPack::apply_op(assign_vec_op,1,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
+	AbstractLinAlgPack::apply_op(assign_vec_op,1,vecs,1,targ_vecs,NULL);
 	return *this;
 }
 
@@ -94,11 +89,10 @@ VectorMutable& VectorMutable::operator=(const VectorMutable& vec)
 
 void VectorMutable::set_ele( index_type i, value_type alpha )
 {
-	if(0!=RTOp_TOp_assign_scalar_set_alpha( alpha, &assign_scalar_op.op() ))
-		assert(0);
+	TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_set_alpha(alpha,&assign_scalar_op.op()));
 	VectorMutable* targ_vecs[1] = { this };
 	AbstractLinAlgPack::apply_op(
-		assign_scalar_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL
+		assign_scalar_op,0,NULL,1,targ_vecs,NULL
 		,i,1,0 // first_ele, sub_dim, global_offset
 		);
 }
@@ -133,10 +127,10 @@ void VectorMutable::zero()
 
 void VectorMutable::axpy( value_type alpha, const Vector& x )
 {
-	if(0!=RTOp_TOp_axpy_set_alpha(alpha,&axpy_op.op())) assert(0);
+	TEST_FOR_EXCEPT(0!=RTOp_TOp_axpy_set_alpha(alpha,&axpy_op.op()));
 	const Vector*  vecs[1]      = { &x   };
 	VectorMutable* targ_vecs[1] = { this };
-	AbstractLinAlgPack::apply_op(axpy_op,1,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
+	AbstractLinAlgPack::apply_op(axpy_op,1,vecs,1,targ_vecs,NULL);
 }
 
 void VectorMutable::get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec_inout )
@@ -188,11 +182,10 @@ void VectorMutable::set_sub_vector( const RTOpPack::SparseSubVector& sub_vec )
 		RTOp_sparse_sub_vector_from_dense( &_sub_vec, &spc_sub_vec );
 	}
 	RTOpPack::RTOpC  set_sub_vector_op;
-	if(0>RTOp_TOp_set_sub_vector_construct( &spc_sub_vec, &set_sub_vector_op.op() ))
-		assert(0);
+	TEST_FOR_EXCEPT(0!=RTOp_TOp_set_sub_vector_construct(&spc_sub_vec,&set_sub_vector_op.op()));
 	VectorMutable* targ_vecs[1] = { this };
 	AbstractLinAlgPack::apply_op(
-		set_sub_vector_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL
+		set_sub_vector_op,0,NULL,1,targ_vecs,NULL
 		,sub_vec.globalOffset()+1,sub_vec.subDim(),sub_vec.globalOffset() // first_ele, sub_dim, global_offset
 		);
 }

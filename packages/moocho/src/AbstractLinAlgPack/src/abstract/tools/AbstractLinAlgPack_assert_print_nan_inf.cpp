@@ -19,28 +19,24 @@
 #include "AbstractLinAlgPack/src/abstract/tools/assert_print_nan_inf.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
 #include "RTOp_ROp_find_nan_inf.h"
-#include "RTOpCppC.hpp"
+#include "RTOpPack_RTOpC.hpp"
 #include "check_nan_inf.h"
 #include "Teuchos_TestForException.hpp"
 
 namespace {
 
 // Find a NaN or Inf element!
-static RTOpPack::RTOpC          find_nan_inf_op;
-static RTOpPack::ReductTarget   find_nan_inf_targ;
+static RTOpPack::RTOpC                               find_nan_inf_op;
+static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  find_nan_inf_targ;
 
-// Simple class for an object that will initialize the RTOp_Server.
 class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
-		if(0>RTOp_ROp_find_nan_inf_construct(&find_nan_inf_op.op() ))
-			assert(0);
-		find_nan_inf_op.reduct_obj_create(&find_nan_inf_targ);
+		TEST_FOR_EXCEPT(0!=RTOp_ROp_find_nan_inf_construct(&find_nan_inf_op.op() ));
+		find_nan_inf_targ = find_nan_inf_op.reduct_obj_create();
 	}
 }; 
 
-// When the program starts, this object will be created and the RTOp_Server object will
-// be initialized before main() gets underway!
 init_rtop_server_t  init_rtop_server;
 
 } // end namespace
@@ -68,11 +64,11 @@ bool AbstractLinAlgPack::assert_print_nan_inf(
 	,bool throw_excpt, std::ostream* out
 	)
 {
-	find_nan_inf_targ.reinit();
+	find_nan_inf_op.reduct_obj_reinit(&*find_nan_inf_targ);
 	const Vector* vecs[1] = { &v };
-	apply_op(find_nan_inf_op,1,vecs,0,NULL,find_nan_inf_targ.obj() );
+	apply_op(find_nan_inf_op,1,vecs,0,NULL,&*find_nan_inf_targ);
 	RTOp_ROp_find_nan_inf_reduct_obj_t
-		ele =RTOp_ROp_find_nan_inf_val(find_nan_inf_targ.obj());
+		ele =RTOp_ROp_find_nan_inf_val(find_nan_inf_op(*find_nan_inf_targ));
 	if(out && ele.i) {
 		*out
 			<< "The vector \"" << name << "\" has the first following NaN or Inf element\n"

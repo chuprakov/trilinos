@@ -25,7 +25,7 @@
 #include "RTOp_ROp_norms.h"
 #include "RTOp_ROp_num_nonzeros.h"
 #include "RTOp_ROp_get_sub_vector.h"
-#include "RTOpCppC.hpp"
+#include "RTOpPack_RTOpC.hpp"
 #include "print_sub_vector.hpp"
 #include "Range1D.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -37,57 +37,44 @@
 namespace {
 
 // get element operator
-static RTOpPack::RTOpC          sum_op;
-static RTOpPack::ReductTarget   sum_targ;
+static RTOpPack::RTOpC                               sum_op;
+static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  sum_targ;
 // number nonzros
-static RTOpPack::RTOpC          num_nonzeros_op;
-static RTOpPack::ReductTarget   num_nonzeros_targ;
+static RTOpPack::RTOpC                               num_nonzeros_op;
+static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  num_nonzeros_targ;
 // Norm 1
-static RTOpPack::RTOpC          norm_1_op;
-static RTOpPack::ReductTarget   norm_1_targ;
+static RTOpPack::RTOpC                               norm_1_op;
+static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  norm_1_targ;
 // Norm 2
-static RTOpPack::RTOpC          norm_2_op;
-static RTOpPack::ReductTarget   norm_2_targ;
+static RTOpPack::RTOpC                               norm_2_op;
+static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  norm_2_targ;
 // Norm inf
-static RTOpPack::RTOpC          norm_inf_op;
-static RTOpPack::ReductTarget   norm_inf_targ;
-// dot product operator
-static RTOpPack::RTOpC          dot_op;
-static RTOpPack::ReductTarget   dot_targ;
+static RTOpPack::RTOpC                               norm_inf_op;
+static Teuchos::RefCountPtr<RTOpPack::ReductTarget>  norm_inf_targ;
 // get sub-vector operator
-static RTOpPack::RTOpC          get_sub_vector_op;
+static RTOpPack::RTOpC                               get_sub_vector_op;
 
 // Simple class for an object that will initialize the RTOp_Server and operators.
 class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
 		// Operator and target for getting a vector element
-		if(0>RTOp_ROp_sum_construct( &sum_op.op() ))
-			assert(0);
-		sum_op.reduct_obj_create(&sum_targ);
+		TEST_FOR_EXCEPT(0!=RTOp_ROp_sum_construct(&sum_op.op()));
+    sum_targ = sum_op.reduct_obj_create();
 		// Operator and target for norm 1
-		if(0>RTOp_ROp_num_nonzeros_construct(&num_nonzeros_op.op() ))
-			assert(0);
-		num_nonzeros_op.reduct_obj_create(&num_nonzeros_targ);
+		TEST_FOR_EXCEPT(0!=RTOp_ROp_num_nonzeros_construct(&num_nonzeros_op.op()));
+		num_nonzeros_targ = num_nonzeros_op.reduct_obj_create();
 		// Operator and target for norm 1
-		if(0>RTOp_ROp_norm_1_construct(&norm_1_op.op() ))
-			assert(0);
-		norm_1_op.reduct_obj_create(&norm_1_targ);
+		TEST_FOR_EXCEPT(0!=RTOp_ROp_norm_1_construct(&norm_1_op.op()));
+		norm_1_targ = norm_1_op.reduct_obj_create();
 		// Operator and target for norm 1
-		if(0>RTOp_ROp_norm_2_construct(&norm_2_op.op() ))
-			assert(0);
-		norm_2_op.reduct_obj_create(&norm_2_targ);
+		TEST_FOR_EXCEPT(0!=RTOp_ROp_norm_2_construct(&norm_2_op.op()));
+		norm_2_targ = norm_2_op.reduct_obj_create();
 		// Operator and target for norm 1
-		if(0>RTOp_ROp_norm_inf_construct(&norm_inf_op.op() ))
-			assert(0);
-		norm_inf_op.reduct_obj_create(&norm_inf_targ);
-		// Dot product operator and target
-		if(0>RTOp_ROp_dot_prod_construct(&dot_op.op()))
-			assert(0);
-		dot_op.reduct_obj_create(&dot_targ);
+		TEST_FOR_EXCEPT(0!=RTOp_ROp_norm_inf_construct(&norm_inf_op.op()));
+		norm_inf_targ = norm_inf_op.reduct_obj_create();
 		// Get sub-vector operator
-		if(0>RTOp_ROp_get_sub_vector_construct(1,1,&get_sub_vector_op.op()))
-			assert(0);
+		TEST_FOR_EXCEPT(0!=RTOp_ROp_get_sub_vector_construct(1,1,&get_sub_vector_op.op()));
 	}
 }; 
 
@@ -114,10 +101,10 @@ index_type Vector::nz() const
 #else
 	if( num_nonzeros_ < 0 ) {
 #endif
-		num_nonzeros_targ.reinit();
+		num_nonzeros_op.reduct_obj_reinit(&*num_nonzeros_targ);
 		const Vector *vecs[1] = { this };
-		AbstractLinAlgPack::apply_op(num_nonzeros_op,1,vecs,0,NULL,num_nonzeros_targ.obj());
-		num_nonzeros_ = RTOp_ROp_num_nonzeros_val(num_nonzeros_targ.obj());
+		AbstractLinAlgPack::apply_op(num_nonzeros_op,1,vecs,0,NULL,&*num_nonzeros_targ);
+		num_nonzeros_ = RTOp_ROp_num_nonzeros_val(num_nonzeros_op(*num_nonzeros_targ));
 	}
 	return num_nonzeros_;
 }
@@ -145,13 +132,13 @@ VectorMutable::vec_mut_ptr_t Vector::clone() const
 
 value_type Vector::get_ele(index_type i) const
 {
-	sum_targ.reinit();
+	sum_op.reduct_obj_reinit(&*sum_targ);
 	const Vector *vecs[1] = { this };
 	AbstractLinAlgPack::apply_op(
-		sum_op,1,vecs,0,NULL,sum_targ.obj()
+		sum_op,1,vecs,0,NULL,&*sum_targ
 		,i,1,0 // first_ele, sub_dim, global_offset
 		);
-	return RTOp_ROp_sum_val(sum_targ.obj());
+	return RTOp_ROp_sum_val(sum_op(*sum_targ));
 }
 
 value_type Vector::norm_1() const
@@ -161,10 +148,10 @@ value_type Vector::norm_1() const
 #else
 	if( norm_1_ < 0.0 ) {
 #endif
-		norm_1_targ.reinit();
+		norm_1_op.reduct_obj_reinit(&*norm_1_targ);
 		const Vector *vecs[1] = { this };
-		AbstractLinAlgPack::apply_op(norm_1_op,1,vecs,0,NULL,norm_1_targ.obj());
-		norm_1_ = RTOp_ROp_norm_1_val(norm_1_targ.obj());
+		AbstractLinAlgPack::apply_op(norm_1_op,1,vecs,0,NULL,&*norm_1_targ);
+		norm_1_ = RTOp_ROp_norm_1_val(norm_1_op(*norm_1_targ));
 	}
 	return norm_1_;
 }
@@ -176,10 +163,10 @@ value_type Vector::norm_2() const
 #else
 	if( norm_2_ < 0.0 ) {
 #endif
-		norm_2_targ.reinit();
+		norm_2_op.reduct_obj_reinit(&*norm_2_targ);
 		const Vector *vecs[1] = { this };
-		AbstractLinAlgPack::apply_op(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj());
-		norm_2_ = RTOp_ROp_norm_2_val(norm_2_targ.obj());
+		AbstractLinAlgPack::apply_op(norm_2_op,1,vecs,0,NULL,&*norm_2_targ);
+		norm_2_ = RTOp_ROp_norm_2_val(norm_2_op(*norm_2_targ));
 	}
 	return norm_2_;
 }
@@ -191,12 +178,12 @@ value_type Vector::norm_inf() const
 #else
 	if( norm_inf_ < 0.0 ) {
 #endif
-		norm_inf_targ.reinit();
+		norm_inf_op.reduct_obj_reinit(&*norm_inf_targ);
 		const Vector *vecs[1] = { this };
-		AbstractLinAlgPack::apply_op(norm_inf_op,1,vecs,0,NULL,norm_inf_targ.obj());
-		norm_inf_ = RTOp_ROp_norm_inf_val(norm_inf_targ.obj());
+		AbstractLinAlgPack::apply_op(norm_inf_op,1,vecs,0,NULL,&*norm_inf_targ);
+		norm_inf_ = RTOp_ROp_norm_inf_val(norm_inf_op(*norm_inf_targ));
 	}
-  return norm_inf_;
+	return norm_inf_;
 }
 
 value_type Vector::inner_product(  const Vector& v ) const
@@ -239,24 +226,24 @@ void Vector::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec
 	}
 	// Initialize the operator
 	RTOpPack::RTOpC get_sub_vector_op;
-	if(0>RTOp_ROp_get_sub_vector_construct( rng.lbound(), rng.ubound(),&get_sub_vector_op.op()))
-		assert(0);
+	TEST_FOR_EXCEPT(0!=RTOp_ROp_get_sub_vector_construct(rng.lbound(),rng.ubound(),&get_sub_vector_op.op()));
 	// Create the reduction object (another sub_vec)
-	RTOp_ReductTarget reduct_obj = RTOp_REDUCT_OBJ_NULL;
-	get_sub_vector_op.reduct_obj_create_raw(&reduct_obj); // This is really of type RTOpPack::SubVectorT<Scalar>!
+  Teuchos::RefCountPtr<RTOpPack::ReductTarget> reduct_obj = get_sub_vector_op.reduct_obj_create(); // This is really of type RTOpPack::SubVectorT<Scalar>!
 	// Perform the reduction (get the sub-vector requested)
 	const size_t  num_vecs = 1;
 	const Vector* sub_vecs[num_vecs] = { this };
 	AbstractLinAlgPack::apply_op(
-		get_sub_vector_op,num_vecs,sub_vecs,0,NULL,reduct_obj
+		get_sub_vector_op,num_vecs,sub_vecs,0,NULL,&*reduct_obj
 		,rng.lbound(),rng.size(),rng.lbound()-1 // first_ele, sub_dim, global_offset
 		);
 	// Set the sub-vector.  Note reduct_obj will go out of scope so the sub_vec parameter will
 	// own the memory allocated within get_sub_vector_op.create_reduct_obj_raw(...).  This is okay
 	// since the client is required to call release_sub_vector(...) so release memory!
-	RTOp_SubVector sub_vec = RTOp_ROp_get_sub_vector_val(reduct_obj);
-	sub_vec_inout->initialize(sub_vec.global_offset,sub_vec.sub_dim,sub_vec.values,sub_vec.values_stride);
-	free(reduct_obj); // Now *sub_vec owns the values[] and indices[] arrays!
+  RTOp_ReductTarget reduct_obj_raw = get_sub_vector_op(*reduct_obj);
+	RTOp_SubVector sub_vec = RTOp_ROp_get_sub_vector_val(reduct_obj_raw);
+	sub_vec_inout->initialize(sub_vec.global_offset,sub_vec.sub_dim,sub_vec.values,sub_vec.values_stride);\
+  reduct_obj.release();  // Do not allow delete to be called!
+	free(reduct_obj_raw); // Now *sub_vec owns the values[] and indices[] arrays!
 }
 
 void Vector::free_sub_vector( RTOpPack::SubVector* sub_vec ) const
@@ -293,7 +280,7 @@ void AbstractLinAlgPack::apply_op(
 	,const Vector*             vecs[]
 	,const size_t              num_targ_vecs
 	,VectorMutable*            targ_vecs[]
-	,RTOp_ReductTarget         reduct_obj
+	,RTOpPack::ReductTarget    *reduct_obj
 	,const index_type          first_ele
 	,const index_type          sub_dim
 	,const index_type          global_offset

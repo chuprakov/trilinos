@@ -19,7 +19,7 @@
 #include <iosfwd>
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "RTOpCpp.hpp"
+#include "RTOpPack_RTOpT.hpp"
 #include "Range1D.hpp"
 
 namespace AbstractLinAlgPack {
@@ -57,7 +57,7 @@ namespace AbstractLinAlgPack {
  *
  * @param  op	[in] Reduction/transformation operator to apply over each sub-vector
  *				and assemble the intermediate targets into <tt>reduct_obj</tt> (if
- *              <tt>reduct_obj != RTOp_REDUCT_OBJ_NULL</tt>).
+ *              <tt>reduct_obj != NULL</tt>).
  * @param  num_vecs
  *				[in] Number of nonmutable vectors in <tt>vecs[]</tt>.
  *              If <tt>vecs==NULL</tt> then this argument is ignored but should be set to zero.
@@ -82,7 +82,7 @@ namespace AbstractLinAlgPack {
  *              operation can be accumulated over a set of abstract vectors	which can be useful for implementing
  *              composite vectors for instance.  If <tt>op.get_reduct_type_num_entries(...)</tt> returns
  *              <tt>num_values == 0</tt>, <tt>num_indexes == 0</tt> and <tt>num_chars == 0</tt> then
- *              <tt>reduct_obj</tt> should be set to <tt>RTOp_REDUCT_OBJ_NULL</tt> and no reduction will be performed.
+ *              <tt>reduct_obj</tt> should be set to <tt>NULL</tt> and no reduction will be performed.
  * @param  first_ele
  *				[in] (default = 1) The index of the first element in <tt>this</tt> to be included.
  * @param  sub_dim
@@ -98,7 +98,7 @@ void apply_op(
 	,const Vector*             vecs[]
 	,const size_t              num_targ_vecs
 	,VectorMutable*            targ_vecs[]
-	,RTOp_ReductTarget         reduct_obj
+	,RTOpPack::ReductTarget    *reduct_obj
 	,const index_type          first_ele      = 1
 	,const index_type          sub_dim        = 0
 	,const index_type          global_offset  = 0
@@ -177,7 +177,7 @@ public:
 		,const Vector*             vecs[]
 		,const size_t              num_targ_vecs
 		,VectorMutable*            targ_vecs[]
-		,RTOp_ReductTarget         reduct_obj
+		,RTOpPack::ReductTarget    *reduct_obj
 		,const index_type          first_ele
 		,const index_type          sub_dim
 		,const index_type          global_offset
@@ -222,7 +222,7 @@ protected:
 		,const Vector*             vecs[]
 		,const size_t              num_targ_vecs
 		,VectorMutable*            targ_vecs[]
-		,RTOp_ReductTarget         reduct_obj
+		,RTOpPack::ReductTarget    *reduct_obj
 		,const index_type          first_ele
 		,const index_type          sub_dim
 		,const index_type          global_offset

@@ -134,7 +134,7 @@ void MultiVector::apply_op(
 	EApplyBy apply_by, const RTOpPack::RTOp& prim_op
 	,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
 	,const size_t num_targ_multi_vecs, MultiVectorMutable*  targ_multi_vecs[]
-	,RTOp_ReductTarget reduct_objs[]
+	,RTOpPack::ReductTarget* reduct_objs[]
 	,const index_type prim_first_ele_in, const index_type prim_sub_dim_in, const index_type prim_global_offset_in
 	,const index_type sec_first_ele_in, const index_type sec_sub_dim_in
 	) const
@@ -178,7 +178,7 @@ void MultiVector::apply_op(
 			prim_op
 			,num_multi_vecs,      num_multi_vecs      ? &vecs[0]      : NULL
 			,num_targ_multi_vecs, num_targ_multi_vecs ? &targ_vecs[0] : NULL
-			,reduct_objs ? reduct_objs[j-1] : RTOp_REDUCT_OBJ_NULL
+			,reduct_objs ? reduct_objs[j-1] : NULL
 			,prim_first_ele_in, prim_sub_dim_in, prim_global_offset_in
 			);
 	}}
@@ -193,7 +193,7 @@ void MultiVector::apply_op(
 	EApplyBy apply_by, const RTOpPack::RTOp& prim_op, const RTOpPack::RTOp& sec_op
 	,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
 	,const size_t num_targ_multi_vecs, MultiVectorMutable*  targ_multi_vecs[]
-	,RTOp_ReductTarget reduct_obj
+	,RTOpPack::ReductTarget *reduct_obj
 	,const index_type prim_first_ele_in, const index_type prim_sub_dim_in, const index_type prim_global_offset_in
 	,const index_type sec_first_ele_in, const index_type sec_sub_dim_in
 	) const
@@ -212,10 +212,12 @@ void MultiVector::apply_op(
 
 	// Create a temporary buffer for the reduction objects of the primary reduction
 	// so that we can call the companion version of this method.
-	wsp::Workspace<RTOp_ReductTarget>   reduct_objs(wss,sec_sub_dim);
-	{for(index_type k = 0; k < sec_sub_dim; ++k) {
-		prim_op.reduct_obj_create_raw( &(reduct_objs[k]=RTOp_REDUCT_OBJ_NULL) );
-	}}
+	wsp::Workspace<Teuchos::RefCountPtr<RTOpPack::ReductTarget> >   rcp_reduct_objs(wss,sec_sub_dim);
+	wsp::Workspace<RTOpPack::ReductTarget*>                         reduct_objs(wss,sec_sub_dim);
+	for(index_type k = 0; k < sec_sub_dim; ++k) {
+    rcp_reduct_objs[k] = prim_op.reduct_obj_create();
+    reduct_objs[k] = &*rcp_reduct_objs[k];
+	}
 	
 	// Call the campanion version that accepts an array of reduction objects
 	this->apply_op(
@@ -229,10 +231,9 @@ void MultiVector::apply_op(
 
 	// Reduce all the reduction objects using the secondary reduction operator
 	// into one reduction object and free the intermedate reduction objects.
-	{for(index_type k = 0; k < sec_sub_dim; ++k) {
-		sec_op.reduce_reduct_objs( reduct_objs[k] ,reduct_obj );
-		prim_op.reduct_obj_free( &reduct_objs[k] );
-	}}
+	for(index_type k = 0; k < sec_sub_dim; ++k) {
+		sec_op.reduce_reduct_objs( *reduct_objs[k], reduct_obj );
+	}
 }
 
 // Overridden form MatrixOp
@@ -290,7 +291,7 @@ void AbstractLinAlgPack::apply_op(
 	,const MultiVector*             multi_vecs[]
 	,const size_t                   num_targ_multi_vecs
 	,MultiVectorMutable*            targ_multi_vecs[]
-	,RTOp_ReductTarget              reduct_objs[]
+	,RTOpPack::ReductTarget*        reduct_objs[]
 	,const index_type               primary_first_ele
 	,const index_type               primary_sub_dim
 	,const index_type               primary_global_offset
@@ -322,7 +323,7 @@ void AbstractLinAlgPack::apply_op(
 	,const MultiVector*             multi_vecs[]
 	,const size_t                   num_targ_multi_vecs
 	,MultiVectorMutable*            targ_multi_vecs[]
-	,RTOp_ReductTarget              reduct_obj
+	,RTOpPack::ReductTarget         *reduct_obj
 	,const index_type               primary_first_ele
 	,const index_type               primary_sub_dim
 	,const index_type               primary_global_offset

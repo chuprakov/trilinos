@@ -17,7 +17,6 @@
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixSymDiagStd.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "RTOpCppC.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "Teuchos_TestForException.hpp"

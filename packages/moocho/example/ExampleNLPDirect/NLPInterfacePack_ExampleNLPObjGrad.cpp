@@ -25,7 +25,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "RTOpCppC.hpp"
+#include "RTOpPack_RTOpC.hpp"
 #include "Range1D.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "Teuchos_TestForException.hpp"
@@ -33,19 +33,14 @@
 
 namespace {
 
-static RTOpPack::RTOpC          explnlp2_c_eval_op;
+static RTOpPack::RTOpC explnlp2_c_eval_op;
 
-// Simple class for an object that will initialize the RTOp_Server.
 class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
-		if(0!=RTOp_TOp_explnlp2_c_eval_construct( &explnlp2_c_eval_op.op() ))
-			assert(0);
+		TEST_FOR_EXCEPT(0!=RTOp_TOp_explnlp2_c_eval_construct(&explnlp2_c_eval_op.op()));
 	}
 }; 
-
-// When the program starts, this object will be created and the RTOp_Server object will
-// be initialized before main() gets underway!
 init_rtop_server_t  init_rtop_server;
 
 } // end namespace
@@ -77,11 +72,13 @@ ExampleNLPObjGrad::ExampleNLPObjGrad(
 	xinit_ = vec_space_comp_->create_member();
 	*xinit_ = xo;
 
-	// Setup the sparse bounds
-	//
-	// xl(i) = 0.01  \ 
-	//                }  for i <: bounded_rng
-	// xu(i) = 20    /
+  /*
+    Setup the sparse bounds
+    
+    xl(i) = 0.01  \ 
+	                  }  for i <: bounded_rng
+    xu(i) = 20    /
+  */
 
 	xl_ = vec_space_comp_->create_member();
 	xu_ = vec_space_comp_->create_member();
@@ -244,7 +241,7 @@ void ExampleNLPObjGrad::imp_calc_c(const Vector& x, bool newx
 
 	const Vector*  vecs[]      = { xD.get(), xI.get() };
 	VectorMutable* targ_vecs[] = { zero_order_info.c };
-	AbstractLinAlgPack::apply_op(explnlp2_c_eval_op,2,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
+	AbstractLinAlgPack::apply_op(explnlp2_c_eval_op,2,vecs,1,targ_vecs,NULL);
 
 }
 

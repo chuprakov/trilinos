@@ -1,3 +1,4 @@
+/*
 // /////////////////////////////////////////////
 // ExampleNLPDirectRTOps.h
 //
@@ -12,6 +13,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+*/
 
 #ifndef EXAMPLE_NLP_FIRST_ORDER_DIRECT_RTOPS_H
 #define EXAMPLE_NLP_FIRST_ORDER_DIRECT_RTOPS_H
@@ -29,7 +31,7 @@ extern "C" {
  * The binary code for these RTOp operator classes (as well as any others) must be loaded into
  * runtime environment in any process where a vector implementation must apply it.
  */
-//@{
+/*@{*/
 
 /** \defgroup explnlp2_eval_grp Evaluate the constraints for the example NLP.
  *
@@ -38,18 +40,18 @@ extern "C" {
  * This operator is only admits dense vectors and is only defined for <tt>num_vecs == 2</tt>
  * and <tt>num_targ_vecs == 1</tt>.
  */
-//@{
+/*@{*/
 
-// Virtual function table
+/** Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_explnlp2_c_eval_vtbl;
 
-/// Constructor
+/** Constructor */
 int RTOp_TOp_explnlp2_c_eval_construct( struct RTOp_RTOp* op );
 
-/// Destructor
+/** Destructor */
 int RTOp_TOp_explnlp2_c_eval_destroy( struct RTOp_RTOp* op );
 
-//@}
+/*@}*/
 
 /** \defgroup explnlp2_calc_py_D_grp Evaluate py = -inv(C)*c and/or D = inv(C)*N for the example %NLP.
  *
@@ -68,26 +70,26 @@ int RTOp_TOp_explnlp2_c_eval_destroy( struct RTOp_RTOp* op );
      where: xD = vec[0], xI = vec[1], c = vec[2], d = targ_vec[0], py = targ_vec[1]
  \endverbatim
  */
-//@{
+/*@{*/
 
-/// Virtual function table
+/** Virtual function table */
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_explnlp2_calc_py_D_vtbl;
 
-/// Constructor (task = 0, 1 or 2)
+/** Constructor (task = 0, 1 or 2) */
 int RTOp_TOp_explnlp2_calc_py_D_construct( int task, struct RTOp_RTOp* op );
 
-/// Set the task
+/** Set the task */
 int RTOp_TOp_explnlp2_calc_py_D_set_task( int task, struct RTOp_RTOp* op );
 
-/// Destructor
+/** Destructor */
 int RTOp_TOp_explnlp2_calc_py_D_destroy( struct RTOp_RTOp* op );
 
-//@}
+/*@}*/
 
-//@}
+/*@}*/
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif  // EXAMPLE_NLP_FIRST_ORDER_DIRECT_RTOPS_H
+#endif  /* EXAMPLE_NLP_FIRST_ORDER_DIRECT_RTOPS_H */

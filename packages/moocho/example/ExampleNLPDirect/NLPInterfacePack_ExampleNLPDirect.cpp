@@ -25,7 +25,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
-#include "RTOpCppC.hpp"
+#include "RTOpPack_RTOpC.hpp"
 #include "Range1D.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "Teuchos_TestForException.hpp"
@@ -33,19 +33,14 @@
 
 namespace {
 
-static RTOpPack::RTOpC          explnlp2_calc_py_D_op;
+static RTOpPack::RTOpC explnlp2_calc_py_D_op;
 
-// Simple class for an object that will initialize the RTOp_Server.
 class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
-		if(0!=RTOp_TOp_explnlp2_calc_py_D_construct( 0, &explnlp2_calc_py_D_op.op() ))
-			assert(0);
+		TEST_FOR_EXCEPT(0!=RTOp_TOp_explnlp2_calc_py_D_construct(0,&explnlp2_calc_py_D_op.op()));
 	}
 }; 
-
-// When the program starts, this object will be created and the RTOp_Server object will
-// be initialized before main() gets underway!
 init_rtop_server_t  init_rtop_server;
 
 } // end namespace
@@ -231,7 +226,7 @@ void ExampleNLPDirect::calc_point(
 	else if( !py &&  D )  task = 1;
 	else if( py  &&  D )  task = 2;
 	
-	if(0!=RTOp_TOp_explnlp2_calc_py_D_set_task(task,&explnlp2_calc_py_D_op.op())) assert(0);
+	TEST_FOR_EXCEPT(0!=RTOp_TOp_explnlp2_calc_py_D_set_task(task,&explnlp2_calc_py_D_op.op()));
 
 	const int              num_vecs = task < 2 ? 2 : 3;
 	const Vector*          vecs[3] = { NULL, NULL, NULL };
@@ -259,7 +254,7 @@ void ExampleNLPDirect::calc_point(
 
 	AbstractLinAlgPack::apply_op(
 		explnlp2_calc_py_D_op, num_vecs, vecs, num_targ_vecs, num_targ_vecs?targ_vecs:NULL
-		,RTOp_REDUCT_OBJ_NULL
+		,NULL
 		);
 
 	// rGf = Gf(var_indep) + D' * Gf(var_dep)

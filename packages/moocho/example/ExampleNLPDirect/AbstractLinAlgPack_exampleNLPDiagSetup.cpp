@@ -9,12 +9,18 @@
 #include <iomanip>
 
 #include "exampleNLPDiagSetup.hpp"
-#include "ExampleVectorLib/src/MPIDenseVector.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/abstract/tsfcore/VectorSpaceTSFCore.hpp"
+#include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreSerialVectorSpaceDecl.hpp"
 #include "MoochoMoreUtilities/src/OptionsFromStream.hpp"
 #include "Teuchos_CommandLineProcessor.hpp"
+#include "Epetra_Map.h"
+#ifdef HAVE_MPI
+#include "Epetra_MpiComm.h"
+#else
+#include "Epetra_SerialComm.h"
+#endif
 
 ///
 int AbstractLinAlgPack::exampleNLPDiagSetup(
@@ -86,17 +92,15 @@ int AbstractLinAlgPack::exampleNLPDiagSetup(
 		//
 		// Use parallel vectors!
 		//
-		// Determine the mapping of elements to processors for MPIDenseVectorSpace
-		RTOp_index_type local_dim = (*n)/num_proc; // assume n > num_proc
-		RTOp_index_type *ind_map  = new RTOp_index_type[num_proc];
-		RTOp_index_type i_u = local_dim;
-		for( int p = 0; p < num_proc; ++p, i_u += local_dim )
-			ind_map[p] = i_u;
-		ind_map[num_proc-1] = *n; // Make sure we don't go past n
-		local_dim = ( proc_rank > 0
-					  ? ind_map[proc_rank]-ind_map[proc_rank-1]
-					  : ind_map[0] );
-		*vec_space = Teuchos::rcp(new MPIDenseVectorSpace(MPI_COMM_WORLD,ind_map,true,1,*n));
+    Teuchos::RefCountPtr<Epetra_Comm> comm;
+#ifdef HAVE_MPI
+    comm = Teuchos::rcp(new Epetra_MpiComm(MPI_COMM_WORLD));
+#else
+    comm = Teuchos::rcp(new Epetra_SerialComm());
+#endif
+    Teuchos::RefCountPtr<Epetra_Map> map = Teuchos::rcp(new Epetra_Map(*n,0,*comm));
+    Teuchos::set_extra_data( comm, "comm", &map );
+    *vec_space = Teuchos::rcp(new VectorSpaceTSFCore(Teuchos::rcp(new TSFCore::EpetraVectorSpace(map))));
 	}
 	else {
 		//

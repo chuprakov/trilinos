@@ -98,7 +98,7 @@ void VectorMutableDense::apply_op(
 	const RTOpPack::RTOp& op
 	,const size_t num_vecs,      const Vector*  vecs[]
 	,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
-	,RTOp_ReductTarget reduct_obj
+	,RTOpPack::ReductTarget *reduct_obj
 	,const index_type first_ele_in, const index_type sub_dim_in, const index_type global_offset_in
 	) const
 {

@@ -5,7 +5,7 @@
 #define ALAP_VECTOR_APPLY_OP_SERIAL_BASE_HPP
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
-#include "RTOpPackTypes.hpp"
+#include "RTOpPack_RTOpT.hpp"
 
 namespace AbstractLinAlgPack {
 
@@ -28,7 +28,7 @@ public:
 		const RTOpPack::RTOp& op
 		,const size_t num_vecs, const Vector* vecs[]
 		,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
-		,RTOp_ReductTarget reduct_obj
+		,RTOpPack::ReductTarget *reduct_obj
 		,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 		) const;
 

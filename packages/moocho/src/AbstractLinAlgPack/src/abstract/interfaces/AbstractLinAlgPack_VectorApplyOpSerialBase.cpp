@@ -14,7 +14,7 @@ void VectorApplyOpSerialBase::apply_op_serial(
 	const RTOpPack::RTOp& op
 	,const size_t num_vecs, const Vector* vecs[]
 	,const size_t num_targ_vecs, VectorMutable* targ_vecs[]
-	,RTOp_ReductTarget reduct_obj
+	,RTOpPack::ReductTarget *reduct_obj
 	,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 	) const
 {

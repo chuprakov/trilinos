@@ -17,7 +17,7 @@
 #define ALAP_MULTI_VECTOR_H
 
 #include "MatrixOp.hpp"
-#include "RTOpCpp.hpp"
+#include "RTOpPack_RTOpT.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace AbstractLinAlgPack {
@@ -41,7 +41,7 @@ void apply_op(
 	,const MultiVector*             multi_vecs[]
 	,const size_t                   num_targ_multi_vecs
 	,MultiVectorMutable*            targ_multi_vecs[]
-	,RTOp_ReductTarget              reduct_objs[]         = NULL
+	,RTOpPack::ReductTarget*        reduct_objs[]         = NULL
 	,const index_type               primary_first_ele     = 1
 	,const index_type               primary_sub_dim       = 0
 	,const index_type               primary_global_offset = 0
@@ -63,7 +63,7 @@ void apply_op(
 	,const MultiVector*             multi_vecs[]
 	,const size_t                   num_targ_multi_vecs
 	,MultiVectorMutable*            targ_multi_vecs[]
-	,RTOp_ReductTarget              reduct_obj
+	,RTOpPack::ReductTarget         *reduct_obj
 	,const index_type               primary_first_ele     = 1
 	,const index_type               primary_sub_dim       = 0
 	,const index_type               primary_global_offset = 0
@@ -172,7 +172,7 @@ public:
 		,const MultiVector*             multi_vecs[]
 		,const size_t                   num_targ_multi_vecs
 		,MultiVectorMutable*            targ_multi_vecs[]
-		,RTOp_ReductTarget              reduct_objs[]
+		,RTOpPack::ReductTarget*        reduct_objs[]
 		,const index_type               primary_first_ele
 		,const index_type               primary_sub_dim
 		,const index_type               primary_global_offset
@@ -189,7 +189,7 @@ public:
 		,const MultiVector*             multi_vecs[]
 		,const size_t                   num_targ_multi_vecs
 		,MultiVectorMutable*            targ_multi_vecs[]
-		,RTOp_ReductTarget              reduct_obj
+		,RTOpPack::ReductTarget         *reduct_obj
 		,const index_type               primary_first_ele
 		,const index_type               primary_sub_dim
 		,const index_type               primary_global_offset
@@ -298,7 +298,7 @@ protected:
 		EApplyBy apply_by, const RTOpPack::RTOp& primary_op
 		,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
 		,const size_t num_targ_multi_vecs, MultiVectorMutable*  targ_multi_vecs[]
-		,RTOp_ReductTarget reduct_objs[]
+		,RTOpPack::ReductTarget* reduct_objs[]
 		,const index_type primary_first_ele,   const index_type primary_sub_dim, const index_type primary_global_offset
 		,const index_type secondary_first_ele, const index_type secondary_sub_dim
 		) const;
@@ -321,7 +321,7 @@ protected:
 		EApplyBy apply_by, const RTOpPack::RTOp& primary_op, const RTOpPack::RTOp& secondary_op
 		,const size_t num_multi_vecs,      const MultiVector*   multi_vecs[]
 		,const size_t num_targ_multi_vecs, MultiVectorMutable*  targ_multi_vecs[]
-		,RTOp_ReductTarget reduct_obj
+		,RTOpPack::ReductTarget* reduct_obj
 		,const index_type primary_first_ele, const index_type primary_sub_dim, const index_type primary_global_offset
 		,const index_type secondary_first_ele, const index_type secondary_sub_dim
 		) const;

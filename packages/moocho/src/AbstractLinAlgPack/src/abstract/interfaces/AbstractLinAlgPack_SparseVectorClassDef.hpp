@@ -310,10 +310,13 @@ void SparseVector<T_Element,T_Alloc>::insert_element(element_type ele)
 	// Find the insertion point
 	if( nz() ) {
 		typedef SparseVectorUtilityPack::SpVecIndexLookup<T_Element> SpVecIndexLookup;
+    typedef typename SpVecIndexLookup::poss_type poss_type;
 		index_lookup_.validate_state();
-		typename SpVecIndexLookup::poss_type
-			poss = ( nz() ? index_lookup_.find_poss(ele.index(), SpVecIndexLookup::LOWER_ELE)
-					 : SpVecIndexLookup::poss_type(0,SpVecIndexLookup::BEFORE_ELE) );
+		poss_type poss
+      = ( nz()
+          ? index_lookup_.find_poss(ele.index(), SpVecIndexLookup::LOWER_ELE)
+          : poss_type(0,SpVecIndexLookup::BEFORE_ELE)
+        );
 		// Make sure this element does not already exist!
 #ifdef _DEBUG
 		TEST_FOR_EXCEPTION(

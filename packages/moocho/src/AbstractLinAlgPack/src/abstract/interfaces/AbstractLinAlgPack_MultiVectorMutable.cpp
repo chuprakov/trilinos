@@ -19,7 +19,7 @@
 #include "RTOp_TOp_assign_scalar.h"
 #include "RTOp_TOp_assign_vectors.h"
 #include "RTOp_TOp_scale_vector.h"
-#include "RTOpCppC.hpp"
+#include "RTOpPack_RTOpC.hpp"
 #include "WorkspacePack.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -37,14 +37,11 @@ class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
 		// Vector scalar assignment operator
-		if(0>RTOp_TOp_assign_scalar_construct( 0.0, &assign_scalar_op.op() ))
-			assert(0);
+		TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_construct(0.0,&assign_scalar_op.op()));
 		// Vector assignment operator
-		if(0>RTOp_TOp_assign_vectors_construct( &assign_vec_op.op() ))
-			assert(0);
+		TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_vectors_construct(&assign_vec_op.op()));
 		// Operator scale_vector
-		if(0>RTOp_TOp_scale_vector_construct( 0.0, &scale_vector_op.op() ))
-			assert(0);
+		TEST_FOR_EXCEPT(0!=RTOp_TOp_scale_vector_construct(0.0,&scale_vector_op.op()));
 	}
 }; 
 
@@ -84,7 +81,7 @@ MultiVectorMutable::mv_sub_view(const Range1D& row_rng, const Range1D& col_rng)
 
 void MultiVectorMutable::zero_out()
 {
-	if(0!=RTOp_TOp_assign_scalar_set_alpha(0.0,&assign_scalar_op.op())) assert(0);
+	TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_set_alpha(0.0,&assign_scalar_op.op()));
 	MultiVectorMutable* targ_multi_vecs[] = { this };
 	AbstractLinAlgPack::apply_op(APPLY_BY_COL,assign_scalar_op,0,NULL,1,targ_multi_vecs,NULL);
 }
@@ -92,12 +89,12 @@ void MultiVectorMutable::zero_out()
 void MultiVectorMutable::Mt_S( value_type alpha )
 {
 	if( alpha == 0.0 ) {
-		if(0!=RTOp_TOp_assign_scalar_set_alpha(alpha,&assign_scalar_op.op())) assert(0);
+		TEST_FOR_EXCEPT(0!=RTOp_TOp_assign_scalar_set_alpha(alpha,&assign_scalar_op.op()));
 		MultiVectorMutable* targ_multi_vecs[] = { this };
 		AbstractLinAlgPack::apply_op(APPLY_BY_COL,assign_scalar_op,0,NULL,1,targ_multi_vecs,NULL);
 	}
 	else if( alpha != 1.0 ) {
-		if(0!=RTOp_TOp_scale_vector_set_alpha( alpha, &scale_vector_op.op() )) assert(0);
+		TEST_FOR_EXCEPT(0!=RTOp_TOp_scale_vector_set_alpha(alpha,&scale_vector_op.op()));
 		MultiVectorMutable* targ_multi_vecs[] = { this };
 		AbstractLinAlgPack::apply_op(APPLY_BY_COL,scale_vector_op,0,NULL,1,targ_multi_vecs,NULL);
 	}
