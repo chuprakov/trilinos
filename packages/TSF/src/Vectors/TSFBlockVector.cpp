@@ -351,7 +351,14 @@ void TSFBlockVector::invalidateGhostValues()
 
 ostream& TSFBlockVector::print(ostream& os) const 
 {
-	for (int i=0; i<numBlocks(); i++) os << subvectors_[i] << endl;
+	cerr << "<TSFBlockVector n=" << numBlocks() << ">" << endl;
+	for (int i=0; i<numBlocks(); i++)
+		{
+			cerr << "<Block i=" << i << ">" << endl;
+			os << subvectors_[i] << endl;
+			cerr << "</Block>" << endl;
+		}
+	cerr << "</TSFBlockVector>" << endl;
 	return os;
 }
 

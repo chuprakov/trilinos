@@ -44,3 +44,7 @@ void TSFZeroOperator::applyInverse(const TSFVector& /* in */,
 	TSFError::raise("Attempted to apply inverse of TSFZeroOperator");
 }
 
+void TSFZeroOperator::print(ostream& os) const 
+{
+	os << "<TSFZeroOperator/>" << endl;
+}

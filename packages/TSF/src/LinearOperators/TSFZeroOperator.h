@@ -48,7 +48,10 @@ namespace TSF
 			/** calling applyInverse is an error */
 			virtual void applyInverse(const TSFVector& in, 
 																TSFVector& out) const ;
-
+			/**
+			 * Write to a stream 
+			 */
+			virtual void print(ostream& os) const ;
 		protected:
 		};
 }

@@ -91,10 +91,9 @@ bool BICGSTABSolver::solveUnpreconditioned(const TSFLinearOperator& op,
 	op.apply(x0, tmp);
 	r0.subtract(b, tmp);
 	
-
-	if (sqrt(b.dot(b)) < tol_*normOfB) 
+	if (sqrt(r0.dot(r0)) < tol_*normOfB) 
 		{
-			soln = b.copy();
+			soln = x0;
 			return true;
 		}
 	
