@@ -40,6 +40,7 @@
 #include "Epetra_Vector.h"
 #include "Epetra_VbrMatrix.h"
 #include "Epetra_CrsMatrix.h"
+#include "TSFLinearOperator.h"
 
 extern int Aztec2TSF(   AZ_MATRIX * Amat, 
 			Epetra_Comm * & junkcomm,
@@ -53,6 +54,10 @@ extern Epetra_RowMatrix *Aztec2TSF(   AZ_MATRIX * Amat,
 			Epetra_Comm * & junkcomm,
 			Epetra_BlockMap * & VbrMap,
 			Epetra_Map **);
+
+extern int TSF_MatrixMult(const TSF::TSFLinearOperator& B,const TSF::TSFLinearOperator& Bt,
+			  TSF::TSFLinearOperator& result);
+
 
 
 #endif /* _VBR2PETRA_H_ */
