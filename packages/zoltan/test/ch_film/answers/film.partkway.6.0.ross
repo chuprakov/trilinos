@@ -3,6 +3,8 @@ Zoltan Parameters	= parmetis_method=partkway
 File Type		= Chaco
 File Name		= film
 Parallel Disk Info	= number=0
+test multi callbacks    = 1
+test null import lists  = 1
 Global element ids assigned to processor 0
 33
 34

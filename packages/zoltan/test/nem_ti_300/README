@@ -34,12 +34,13 @@ nem_ti_300
   No vertex weighting.
 -------------------------------------------------------------------------------
 
+Using ParMETIS2:
 Answers on dec and linux differ from answers on Sun for zdrive.inp.partgeom
    ElementID      SUN Assignment       Dec Assignment
     241                4                    5
     224                5                    4
 Reason unknown. 
-
+Answers do not differ with ParMETIS3.
 
 -------------------------------------------------------------------------------
 Answers differ for ParMETIS tests on linux platforms 

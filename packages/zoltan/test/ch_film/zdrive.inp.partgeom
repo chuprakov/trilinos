@@ -3,3 +3,5 @@ Zoltan Parameters	= parmetis_method=partgeom
 File Type		= Chaco
 File Name		= film
 Parallel Disk Info	= number=0
+test multi callbacks    = 1
+test null import lists  = 1

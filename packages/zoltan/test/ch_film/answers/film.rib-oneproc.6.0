@@ -3,6 +3,8 @@ Zoltan Parameters	=
 File Type		= Chaco, initial procs = 1
 File Name		= film
 Parallel Disk Info	= number=0
+test multi callbacks    = 1
+test null import lists  = 1
 Global element ids assigned to processor 0
 48
 49
