@@ -221,8 +221,6 @@ public:
 	///
 	size_type m() const;
 	///
-	size_type mI() const;
-	///
 	vec_space_ptr_t space_x() const;
 	///
 	vec_space_ptr_t space_c() const;
