@@ -32,7 +32,7 @@
 #include "Teuchos_TestForException.hpp"
 
 // Uncomment to ignore cache of reduction data
-#define ALAP_VECTOR_IGNORE_CACHE_DATA
+//#define ALAP_VECTOR_IGNORE_CACHE_DATA
 
 namespace {
 
@@ -143,7 +143,8 @@ VectorMutable::vec_mut_ptr_t Vector::clone() const
 	return vec;
 }
 
-value_type Vector::get_ele(index_type i) const {
+value_type Vector::get_ele(index_type i) const
+{
 	sum_targ.reinit();
 	const Vector *vecs[1] = { this };
 	AbstractLinAlgPack::apply_op(
@@ -153,7 +154,8 @@ value_type Vector::get_ele(index_type i) const {
 	return RTOp_ROp_sum_val(sum_targ.obj());
 }
 
-value_type Vector::norm_1() const {
+value_type Vector::norm_1() const
+{
 #ifdef ALAP_VECTOR_IGNORE_CACHE_DATA
 	if(1) {
 #else
@@ -167,7 +169,8 @@ value_type Vector::norm_1() const {
 	return norm_1_;
 }
 
-value_type Vector::norm_2() const {
+value_type Vector::norm_2() const
+{
 #ifdef ALAP_VECTOR_IGNORE_CACHE_DATA
 	if(1) {
 #else
@@ -181,7 +184,8 @@ value_type Vector::norm_2() const {
 	return norm_2_;
 }
 
-value_type Vector::norm_inf() const {
+value_type Vector::norm_inf() const
+{
 #ifdef ALAP_VECTOR_IGNORE_CACHE_DATA
 	if(1) {
 #else

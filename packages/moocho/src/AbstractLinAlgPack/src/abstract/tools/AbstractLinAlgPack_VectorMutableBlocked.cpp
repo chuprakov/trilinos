@@ -23,6 +23,9 @@
 #include "WorkspacePack.hpp"
 #include "Teuchos_TestForException.hpp"
 
+// Uncomment to ignore cache of reduction data
+//#define ALAP_VECTOR_MUTABLE_BLOCKED_IGNORE_CACHE_DATA
+
 namespace {
 template< class T >
 inline
@@ -244,7 +247,11 @@ value_type VectorMutableBlocked::get_ele(index_type i) const
 
 value_type VectorMutableBlocked::norm_1() const
 {
+#ifdef ALAP_VECTOR_MUTABLE_BLOCKED_IGNORE_CACHE_DATA
+	if( true ) {
+#else
 	if( norm_1_ < 0.0 ) {
+#endif
 		const int num_vec_spaces = vec_space_->num_vector_spaces();
 		norm_1_ = 0.0;
 		for( int k = 0; k < num_vec_spaces; ++k )
@@ -255,7 +262,11 @@ value_type VectorMutableBlocked::norm_1() const
 
 value_type VectorMutableBlocked::norm_inf() const
 {
+#ifdef ALAP_VECTOR_MUTABLE_BLOCKED_IGNORE_CACHE_DATA
+	if( true ) {
+#else
 	if( norm_inf_ < 0.0 ) {
+#endif
 		const int num_vec_spaces = vec_space_->num_vector_spaces();
 		norm_inf_ = 0.0;
 		for( int k = 0; k < num_vec_spaces; ++k )
@@ -339,10 +350,15 @@ VectorMutableBlocked::sub_view( const Range1D& rng_in )
 		<< "["<<rng.lbound()<<","<<rng.ubound()<<"] is not in range [1,"<<dim<<"]" );
 #endif
 	vecs_t &vecs = this->vecs_; // Need to examine in debugger!
+	// See if the entire vector is being returned or just NULL
 	if( rng.lbound() == 1 && rng.ubound() == dim ) {
 		if( vecs.size() == 1 )   return vecs[0]->sub_view(Range1D());
 		else                     return Teuchos::rcp(this,false);
 	}
+	// From here on out we will return a view that could change the
+	// elements of one or more of the constituent vectors so we had
+	// better wipe out the cache
+	this->has_changed();
 	// Get the position of the vector space object of interest
 	int           kth_vector_space  = -1;
 	index_type    kth_global_offset = 0;
@@ -393,6 +409,7 @@ VectorMutableBlocked::sub_view( const Range1D& rng_in )
 void VectorMutableBlocked::axpy( value_type alpha, const Vector& x )
 {
 	VectorMutable::axpy(alpha,x); // ToDo: Specialize? (why bother?)
+	this->has_changed();
 }
 
 VectorMutable& VectorMutableBlocked::operator=(value_type alpha)
@@ -400,12 +417,14 @@ VectorMutable& VectorMutableBlocked::operator=(value_type alpha)
 	const int num_vec_spaces = vec_space_->num_vector_spaces();
 	for( int k = 0; k < num_vec_spaces; ++k )
 		*vecs_[k] = alpha;
+	this->has_changed();
 	return *this;
 }
 
 VectorMutable& VectorMutableBlocked::operator=(const Vector& v)
 {
 	VectorMutable::operator=(v); // ToDo: Specialize (why bother?)
+	this->has_changed();
 	return *this;
 }
 
@@ -418,6 +437,7 @@ void VectorMutableBlocked::set_ele( index_type i, value_type val )
 	assert( 0 <= kth_vector_space && kth_vector_space <= vecs_.size() );
 #endif
 	vecs_[kth_vector_space]->set_ele( i - kth_global_offset, val );
+	this->has_changed();
 }
 
 void VectorMutableBlocked::set_sub_vector( const RTOpPack::SparseSubVector& sub_vec )
@@ -441,6 +461,7 @@ void VectorMutableBlocked::set_sub_vector( const RTOpPack::SparseSubVector& sub_
 		// vectors with no temp memory allocations.
 		VectorMutable::set_sub_vector(sub_vec);
 	}
+	this->has_changed();
 }
 
 void VectorMutableBlocked::assert_in_range(int k) const

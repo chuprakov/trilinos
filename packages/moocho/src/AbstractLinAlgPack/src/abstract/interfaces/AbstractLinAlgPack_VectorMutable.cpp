@@ -117,6 +117,9 @@ VectorMutable::sub_view( const Range1D& rng_in )
 #endif	
 	if( rng.lbound() == 1 && rng.ubound() == dim )
 		return Teuchos::rcp( this, false );
+	// We are returning a view that could change this vector so we had better
+	// wipe out the cache
+	//this->has_changed();  // I don't think this line is needed!
 	return Teuchos::rcp(
 		new VectorMutableSubView(
 			Teuchos::rcp( this, false )
@@ -162,7 +165,7 @@ void VectorMutable::commit_sub_vector( RTOpPack::MutableSubVector* sub_vec_inout
 	VectorMutable::set_sub_vector( spc_sub_vec );            // Commit the changes!
 	RTOpPack::SubVector sub_vec(*sub_vec_inout);
 	Vector::free_sub_vector( &sub_vec );                     // Free the memory!
-	sub_vec_inout->set_uninitialized();                     // Make null as promised!
+	sub_vec_inout->set_uninitialized();                      // Make null as promised!
 }
 
 void VectorMutable::set_sub_vector( const RTOpPack::SparseSubVector& sub_vec )

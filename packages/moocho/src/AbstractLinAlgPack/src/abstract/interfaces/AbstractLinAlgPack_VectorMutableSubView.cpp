@@ -53,6 +53,7 @@ void VectorMutableSubView::set_ele( index_type i, value_type val )
 {
 	space_impl().validate_range(Range1D(i,i));
 	full_vec_->set_ele( space_impl().rng().lbound() + i - 1, val );
+	this->has_changed();
 }
 
 VectorMutable::vec_mut_ptr_t
@@ -64,6 +65,9 @@ VectorMutableSubView::sub_view( const Range1D& rng_in )
 	space_impl().validate_range(rng);
 	if( rng.lbound() == 1 && rng.ubound() == this_dim )
 		return Teuchos::rcp(this,false); // Do not own memory!
+	// Below we will return an object that is not this entire object so
+	// we must wipe out cache.
+	this->has_changed();
 	const index_type this_offset = space_impl().rng().lbound() - 1;
 	return Teuchos::rcp(
 		new VectorMutableSubView(
@@ -95,6 +99,7 @@ void VectorMutableSubView::commit_sub_vector( RTOpPack::MutableSubVector* sub_ve
 	const index_type this_offset = space_impl().rng().lbound() - 1;
 	sub_vec->setGlobalOffset( sub_vec->globalOffset() + this_offset );
 	full_vec_->commit_sub_vector( sub_vec );
+	this->has_changed();
 }
 
 void VectorMutableSubView::set_sub_vector( const RTOpPack::SparseSubVector& sub_vec_in )
@@ -103,6 +108,7 @@ void VectorMutableSubView::set_sub_vector( const RTOpPack::SparseSubVector& sub_
 	RTOpPack::SparseSubVector   sub_vec = sub_vec_in;
 	sub_vec.setGlobalOffset( sub_vec.globalOffset() + this_offset );
 	full_vec_->set_sub_vector( sub_vec );
+	this->has_changed();
 }
 
 } // end namespace AbstractLinAlgPack
