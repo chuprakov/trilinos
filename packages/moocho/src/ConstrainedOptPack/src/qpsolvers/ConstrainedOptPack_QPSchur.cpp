@@ -3255,7 +3255,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					}
 				}
 				else if( act_set->all_dof_used_up()
-						 && (scaled_viol = ::fabs(con_ja_val - b_a)/ (1.0 + ::fabs(con_ja_val))) < feas_tol() )
+						 && (scaled_viol = ::fabs(con_ja_val - b_a)/(1.0 + ::fabs(con_ja_val))) < feas_tol() )
 				{
 					if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 						*out
@@ -3902,50 +3902,33 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 				// t_P is infinite.
 				t_P = beta * gamma_plus;	// Could be < 0
 				if( t_P < 0.0 ) {
-					if( ::fabs( t_P / (norm_2_constr*dual_infeas_scale) )  <= dual_infeas_tol() ) {
+					if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+						*out
+							<< "\nWarning, A near degenerate inequality constraint ja = " << ja
+							<< " is being added that has the wrong sign with:\n"
+							<< "    t_P                     = " << t_P 					<< std::endl
+							<< "    dual_infeas_scale       = " << dual_infeas_scale	<< std::endl
+							<< "    norm_2_constr           = " << norm_2_constr  		<< std::endl
+							<< "    |t_P/(norm_2_constr*dual_infeas_scale)| = "
+							<< ::fabs(t_P/(norm_2_constr*dual_infeas_scale))
+							<< " <= dual_infeas_tol = " << dual_infeas_tol()			<< std::endl;
+					}
+					summary_lines_counter = 0;
+					if( !using_iter_refinement ) {
 						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
-							*out
-								<< "\nWarning, A near degenerate inequality constraint ja = " << ja
-									<< " is being added that has the wrong sign with:\n"
-								<< "    t_P                     = " << t_P 					<< std::endl
-								<< "    dual_infeas_scale       = " << dual_infeas_scale	<< std::endl
-								<< "    norm_2_constr           = " << norm_2_constr  		<< std::endl
-								<< "    |t_P/(norm_2_constr*dual_infeas_scale)| = "
-									<< ::fabs(t_P/(norm_2_constr*dual_infeas_scale))
-									<< " <= dual_infeas_tol = " << dual_infeas_tol()	 << std::endl
-								<< "therefore we will adjust things and keep going.\n";
+							*out << "We are not using iterative refinement yet so turn it on"
+								 << "\nthen recompute the steps ...\n";
 						}
+						using_iter_refinement = true;
+						next_step = COMPUTE_SEARCH_DIRECTION;
+						continue;
 					}
 					else {
 						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 							*out
-								<< "\nError, an inequality constraint ja = " << ja
-								<< " is being added that has the wrong sign and is not near degenerate with:\n"
-								<< "    t_P                     = " << t_P 				<< std::endl
-								<< "    dual_infeas_scale       = " << dual_infeas_scale	<< std::endl
-								<< "    norm_2_constr           = " << norm_2_constr   << std::endl
-								<< "    |t_P/(norm_2_constr*dual_infeas_scale)| = "
-								<< ::fabs(t_P/(norm_2_constr*dual_infeas_scale))
-								<< " < -dual_infeas_tol = " << dual_infeas_tol() << std::endl
-								<< "There may be serious illconditioning in the problem.\n";
+								<< "We are already using iterative refinement so the QP algorithm is terminated!\n";
 						}
-						summary_lines_counter = 0;
-						if( !using_iter_refinement ) {
-							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
-								*out << "We are not using iterative refinement yet so turn it on"
-									 << "\nthen recompute the steps ...\n";
-							}
-							using_iter_refinement = true;
-							next_step = COMPUTE_SEARCH_DIRECTION;
-							continue;
-						}
-						else {
-							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
-								*out
-									<< "We are already using iterative refinement so the QP algorithm is terminated!\n";
-							}
-							return DUAL_INFEASIBILITY;
-						}
+						return DUAL_INFEASIBILITY;
 					}
 				}
 				t_P = beta * gamma_plus;	// Now guaranteed to be > 0
@@ -4602,6 +4585,7 @@ QPSchur::iter_refine(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using LinAlgPack::norm_inf;
+	using LinAlgPack::Vp_StV;
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::V_InvMtV;
 	using LinAlgOpPack::Vp_V;
