@@ -2203,12 +2203,13 @@ detailed discussion of this example program.
 \ingroup TSFCore_examples_cg_grp
 
 \brief Here is an example program that shows the use of the example
-serial templated matrix class <tt>MPITridiagLinearOp</tt>
-with the example linear ANA implementation <tt>sillyCgSolve()</tt>.
+MPI templated matrix class <tt>MPITridiagLinearOp</tt> with the
+example linear ANA implementation <tt>sillyCgSolve()</tt>.
 
-The class <tt>MPITridiagLinearOp</tt> that derives from the
-base class <tt>TSFCore::MPILinearOpBase</tt> is quite simple and
-its complete implementation looks like:
+The class <tt>MPITridiagLinearOp</tt> that derives from the base class
+<tt>TSFCore::MPILinearOpBase</tt> is quite simple and its
+implementation (minus the <tt>communication()</tt> function) looks
+like:
 
 \dontinclude MPITridiagLinearOp.hpp
 \skip template
@@ -2540,14 +2541,132 @@ and multi-vectors are created:
 \until neV2
 
 Most of the operations performed in this testing program are fairly
-mundane but we will show a few of these simpler examples before going
-onto some more interesting ones.
+mundane and we show a few of these simpler examples before going onto
+some more interesting ones.
 
 These vectors and multi-vectors are then initialized using the
 <tt>TSFCore::assign()</tt> wrapper functions:
 
 \skip assign
 \until neV2
+
+The one norms of these vectors and multi-vectors are are then computed
+using various overloads of <tt>TSFCore::norm_1()</tt> as:
+
+\skip Scalar
+\until neV2_nrm
+
+The first set of more interesting operations are mixing objects of
+different concrete type in vector transformation operations.  The
+following code shows assigning vectors and multi-vectors of various
+types
+
+\skip TSFCore::assign
+\until TSFCore::assign
+\skip TSFCore::assign
+\until TSFCore::assign
+\skip TSFCore::assign
+\until TSFCore::assign
+\skip TSFCore::assign
+\until TSFCore::assign
+\skip TSFCore::assign
+\until TSFCore::assign
+\skip TSFCore::assign
+\until TSFCore::assign
+\skip TSFCore::assign
+\until TSFCore::assign
+
+What is significant about some of the above function calls is that
+they mix and match objects with different concrete types.  For
+example, a non-Epetra vector is assigned to an %Epetra in the line:
+
+\verbatim
+TSFCore::assign( &*ev1, *nev2 );
+\endverbatim
+
+and an %Epetra vector is assigned to a non-Epetra in the line:
+
+\verbatim
+TSFCore::assign( &*nev1, *ev2 );
+\endverbatim
+
+Similarly, non-Epetra and %Epetra multi-vectors are assigned to and
+from in the calls:
+
+\verbatim
+TSFCore::assign( &*eV1, *neV2 );
+TSFCore::assign( &*neV1, *eV2 );
+\endverbatim
+
+Developer's that really want to understand how this type of
+interoperability between different concrete types works are cautiously
+encouraged to step look at the implementations of the functions
+<tt>TSFCore::SerialVectorBase::applyOp()</tt> and
+<tt>TSFCore::SerialMultiVectorBase::applyOp()</tt> in a serial build
+and <tt>TSFCore::MPIVectorBase::applyOp()</tt> and
+<tt>TSFCore::MPIMultiVectorBase::applyOp()</tt>.
+
+The <tt>TSFCore::LinearOp</tt> interface that all vectors and
+multi-vectors support is tested by the testing class
+<tt>TSFCore::LinearOpTester</tt> which is created in the line:
+
+\skip LinearOpTester
+\until LinearOpTester
+
+This testing class is then called for all of the vector and
+multi-vector objects is the following lines:
+
+\skipline linearOpTester
+\skipline linearOpTester
+\skipline linearOpTester
+\skipline linearOpTester
+
+Now we show how an <tt>Epetra_Operator</tt> object is wrapped by a
+<tt>TSFCore::EpetraLinearOp</tt> object to give the %Epetra object a
+%TSFCore skin.
+
+First we create a simple diagonal %Epetra operator in the following
+lines of code:
+
+\skip epetra_op
+\until end epetra_op
+
+We then wrap this %Epetra operator object as:
+
+\skip LinearOp
+\until EpetraLinearOp
+
+This object is then tested in the line:
+
+\skipline linearOpTester
+
+Before the next set of tests we create some %Epetra and non-Epetra
+working vectors and mulit-vectors in the lines:
+
+\skip RefCountPtr
+\until neY
+
+In the next set of lines of code shows how different %Epetra and
+non-Epetra vectors and multi-vectors can be mixed and matched with
+with this <tt>TSFCore::EpetraLinearOp</tt> object:
+
+\skipline NOTRANS
+\skipline NOTRANS
+\skipline NOTRANS
+\skipline NOTRANS
+\skipline NOTRANS
+\skipline NOTRANS
+\skipline NOTRANS
+\skipline NOTRANS
+\skipline NOTRANS
+
+Note that many of the above function calls involve using non-Epetra
+vector and multi-vector objects with the underlying
+<tt>Epetra_Operator</tt> object.  This magic happens through the use
+of the utility function <tt>TSFCore::get_Epetra_MultiVector()</tt> by
+the overridden function <tt>TSFCore::EpetraLinearOp::euclideanApply()</tt>.
+
+ToDo: Finish this discussion.
 
 To see the full listing of this click: <a
 href="epetra-adapters_2cxx__main_8cpp-example.html">

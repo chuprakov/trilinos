@@ -11,14 +11,19 @@ INPUT                  = ../../../../Trilinos/packages/TSFCore/doc/index_nonlin.
                          ../../../../Trilinos/packages/TSFCore/src/interfaces/Solvers \
                          ../../../../Trilinos/packages/TSFCore/src/interfaces/Nonlin \
                          ../../../../Trilinos/packages/TSFCore/src/utilities/Solvers \
-                         ../../../../Trilinos/packages/TSFCore/src/utilities/Nonlin
+                         ../../../../Trilinos/packages/TSFCore/src/utilities/Nonlin \
+                         ../../../../Trilinos/packages/TSFCore/src/adapters/aztecoo \
+                         ../../../../Trilinos/packages/TSFCore/example\Nonlin\NP2DSim\TSFCoreNonlinNP2DSimDecl.hpp \
+                         ../../../../Trilinos/packages/TSFCore/example\Nonlin\NP2DSim\TSFCoreNonlinNP2DSim.hpp \
+                         ../../../../Trilinos/packages/TSFCore/example\Nonlin\NP4DOpt\TSFCoreNonlinNP4DOptDecl.hpp \
+                         ../../../../Trilinos/packages/TSFCore/example\Nonlin\NP4DOpt\TSFCoreNonlinNP4DOpt.hpp
 FILE_PATTERNS          = *.h *.hpp *.cpp
 RECURSIVE              = YES
 EXCLUDE                = 
 EXCLUDE_PATTERNS       = *.x *.o *.out
 EXAMPLE_PATH           = ../../../../Trilinos/packages/TSFCore/example\Nonlin \
                          ../../../../Trilinos/packages/TSFCore/example\Nonlin\NP2DSim \
-                         ../../../../Trilinos/packages/TSFCore/example\Nonlin\NP2DOpt
+                         ../../../../Trilinos/packages/TSFCore/example\Nonlin\NP4DOpt
 EXAMPLE_PATTERNS       = *.cpp *.hpp
 IMAGE_PATH             = ../../../../Trilinos/packages/TSFCore/doc/images 
 INPUT_FILTER           = 

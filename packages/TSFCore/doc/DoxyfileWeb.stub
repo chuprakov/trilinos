@@ -17,6 +17,10 @@ INPUT                  = ../../../../Trilinos/packages/TSFCore/doc/index.doc \
                          ../../../../Trilinos/packages/TSFCore/src/adapters/serial \
                          ../../../../Trilinos/packages/TSFCore/src/adapters/epetra \
                          ../../../../Trilinos/packages/TSFCore/src/adapters/mpi-base \
+                         ../../../../Trilinos/packages/TSFCore/example/Core/TSFCoreSimpleMPIVectorSpaceDecl.hpp \
+                         ../../../../Trilinos/packages/TSFCore/example/Core/TSFCoreSimpleMPIVectorSpace.hpp \
+                         ../../../../Trilinos/packages/TSFCore/example/Core/TSFCoreSimpleMPIVectorDecl.hpp \
+                         ../../../../Trilinos/packages/TSFCore/example/Core/TSFCoreSimpleMPIVector.hpp \
                          ../../../../Trilinos/packages/TSFCore/example/Core/SerialTridiagLinearOp.hpp \
                          ../../../../Trilinos/packages/TSFCore/example/Core/MPITridiagLinearOp.hpp \
                          ../../../../Trilinos/packages/TSFCore/example/Core/createTridiagEpetraLinearOp.hpp \

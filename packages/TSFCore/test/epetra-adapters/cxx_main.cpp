@@ -471,7 +471,7 @@ int main( int argc, char* argv[] ) {
 			}
 			epetra_mat->FillComplete();
 			epetra_op = epetra_mat;
-		}
+		} // end epetra_op
 
 		RefCountPtr<const TSFCore::LinearOp<Scalar> >
 			Op = rcp(new TSFCore::EpetraLinearOp(epetra_op));
