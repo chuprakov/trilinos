@@ -760,9 +760,42 @@ const VectorSliceTmpl<T> gen_vs( const VectorSliceTmpl<T>& vs, size_type start, 
 //		end Vectors scope
 //@}
 
+} // end namespace LinAlgPack
+
 // ////////////////////////////////////////////////////////////////////////////////
 // Inline definitions of member function definitions							 //
 // ////////////////////////////////////////////////////////////////////////////////
+
+// ////////////////////////////////////////////////////////////////////////
+// Non-member functions / utilities
+
+#ifndef LINALGPACK_CHECK_SLICE_SETUP
+inline
+LinAlgPack::size_type LinAlgPack::vector_validate_sized(size_type size)
+{
+	return size;
+}
+#endif
+
+#ifndef LINALGPACK_CHECK_RANGE
+inline
+void LinAlgPack::vector_validate_range(size_type ubound, size_type max_ubound)
+{}
+#endif
+
+#ifndef LINALGPACK_CHECK_RANGE
+inline
+void LinAlgPack::vector_validate_subscript(size_type size, size_type i)
+{}
+#endif
+
+#ifndef LINALGPACK_CHECK_RHS_SIZES
+inline
+void LinAlgPack::assert_vs_sizes(size_type size1, size_type size2)
+{}
+#endif
+
+namespace LinAlgPack {
 
 // /////////////////////////////////////////////////////////////////////////////
 // VectorSliceTmpl inline member function definitions
@@ -789,15 +822,17 @@ template<class T>
 inline
 VectorSliceTmpl<T>::VectorSliceTmpl( value_type* ptr, size_type size, const Range1D& rng )
 	: ptr_( ptr + rng.lbound() - 1 )
-	, size_( rng.full_range() ? vector_validate_sized(size) : rng.size() )
+	, size_( rng.full_range() ?	vector_validate_sized(size) : rng.size() )
 	, stride_(1)
-{	vector_validate_range( rng.full_range() ? size : rng.ubound(), size ); }
+{
+	vector_validate_range( rng.full_range() ? size : rng.ubound(), size );
+}
 
 template<class T>
 inline
 VectorSliceTmpl<T>::VectorSliceTmpl( VectorSliceTmpl<T>& vs, const Range1D& rng )
 	: ptr_( vs.start_ptr() + (rng.lbound() - 1) * vs.stride() )
-	, size_( rng.full_range() ? vector_validate_sized(vs.size()) : rng.size() )
+	, size_( rng.full_range() ?	vector_validate_sized(vs.size()) : rng.size() )
 	, stride_( vs.stride() )
 {	vector_validate_range(  rng.full_range() ? vs.size() : rng.ubound(), vs.size() ); }
 
@@ -1357,34 +1392,5 @@ EOverLap VectorTmpl<T>::overlap(const VectorSliceTmpl<value_type>& vs) const {
 }
 
 } // end namespace LinAlgPack
-
-// ////////////////////////////////////////////////////////////////////////
-// Non-member functions / utilities
-
-#ifndef LINALGPACK_CHECK_SLICE_SETUP
-inline
-LinAlgPack::size_type LinAlgPack::vector_validate_sized(size_type size)
-{
-	return size;
-}
-#endif
-
-#ifndef LINALGPACK_CHECK_RANGE
-inline
-void LinAlgPack::vector_validate_range(size_type ubound, size_type max_ubound)
-{}
-#endif
-
-#ifndef LINALGPACK_CHECK_RANGE
-inline
-void LinAlgPack::vector_validate_subscript(size_type size, size_type i)
-{}
-#endif
-
-#ifndef LINALGPACK_CHECK_RHS_SIZES
-inline
-void LinAlgPack::assert_vs_sizes(size_type size1, size_type size2)
-{}
-#endif
 
 #endif	// end VECTOR_CLASS_TMPL_H
