@@ -222,7 +222,7 @@ bool NLPFirstDerivativesTester::fd_check_all(
 			Gf_err = ::fabs( Gf_i - FDGf_i ) / ( ::fabs(Gf_i) + ::fabs(FDGf_i) + small_num );
 		if(out)
 			*out
-				<< "\nrel_err(Gf("<<i<<"),FDGf'*e("<<i<<") = "
+				<< "\nrel_err(Gf("<<i<<"),FDGf'*e("<<i<<")) = "
 				<< "rel_err(" << Gf_i << "," << FDGf_i << ") = "
 				<< Gf_err << endl;
 		if( Gf_err >= warning_tol() ) {
