@@ -109,8 +109,10 @@ namespace AbstractLinAlgPack {
 class MatrixWithOp : public virtual MatrixBase {
 public:
 
+#ifndef DOXYGEN_COMPILE
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<const MatrixWithOp>    mat_ptr_t;
+#endif
 
 	/// Thrown if a method is not implemented
 	class MethodNotImplemented : public std::runtime_error
