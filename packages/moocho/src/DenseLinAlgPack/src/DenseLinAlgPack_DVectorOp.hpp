@@ -69,7 +69,7 @@ namespace LinAlgPack {
 
 /// vs_lhs += alpha
 void Vp_S(VectorSlice* vs_lhs, value_type alpha);
-/// vs_lhs *= alpha (BLAS xSCAL)
+/// vs_lhs *= alpha (BLAS xSCAL) (*** Note that alpha == 0.0 is handeled as vs_lhs = 0.0)
 void Vt_S(VectorSlice* vs_lhs, value_type alpha);
 /// vs_lhs += alpha * vs_rhs (BLAS xAXPY)
 void Vp_StV(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs);
