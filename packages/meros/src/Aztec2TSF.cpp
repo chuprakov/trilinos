@@ -40,6 +40,8 @@
 #include "TSFPreconditioner.h"
 #include "TSFMatrixOperator.h"
 #include "TSFLinearOperator2EpetraRowMatrix.h"
+#include "Epetra2TSFutils.h"
+#include "Aztec2Petra.h"
 
 Epetra_RowMatrix *Aztec2TSF(   AZ_MATRIX * Amat, 
 			Epetra_Comm * & junkcomm,
@@ -50,7 +52,73 @@ Epetra_RowMatrix *Aztec2TSF(   AZ_MATRIX * Amat,
   return tmp;
 }
 
+TSFLinearOperator Aztec1x1VBR_2_TSF(AZ_MATRIX *Fp, 
+				    //TSFLinearOperator Fp_tsf,
+		      TSFVectorSpace pressureSpace,
+		      Epetra_Comm *comm, int proc_config[])
+{
+  AZ_MATRIX *Fpmat;
+  Epetra_CrsMatrix *Fp_crs;
+  Epetra_RowMatrix *Fp_row;
+  int **junk_indices;
+  Epetra_BlockMap *junkmap;
+ 
+  int *bindx;
+  double *val;
 
+  int Nrows, nz_ptr, ival, iblk_row, j, jblk, NnzTotal, oldnz_ptr;
+  Nrows  = Fp->data_org[AZ_N_border]+Fp->data_org[AZ_N_internal];
+  nz_ptr = Nrows + 1;
+
+  NnzTotal = ival = Fp->indx[Fp->bpntr[Nrows]];
+  bindx = (int    *) malloc(sizeof(int)*(NnzTotal+2));
+  val   = (double *) malloc(sizeof(double)*(NnzTotal+2));
+    
+  bindx[0] = nz_ptr;
+
+  /* loop over block rows */
+
+  for (iblk_row = 0; iblk_row < Nrows; iblk_row++) {
+    oldnz_ptr = nz_ptr;
+    ival = Fp->indx[Fp->bpntr[iblk_row]];
+    for (j = Fp->bpntr[iblk_row]; j < Fp->bpntr[iblk_row+1]; j++) {
+      jblk = Fp->bindx[j];
+      if (jblk == iblk_row) {
+	val[iblk_row] = Fp->val[ival];
+      }
+      else {
+	bindx[nz_ptr] = jblk;
+	val[nz_ptr++] = Fp->val[ival];
+      }
+      ival += 1;
+    }
+    bindx[iblk_row+1] = bindx[iblk_row] + nz_ptr - oldnz_ptr;
+  }
+  Fpmat = AZ_matrix_create(Fp->data_org[AZ_N_internal] +
+			   Fp->data_org[AZ_N_border]);
+
+  int old_matrix_type = Fp->data_org[AZ_matrix_type];
+  Fp->data_org[AZ_matrix_type] = AZ_MSR_MATRIX;
+  AZ_set_MSR(Fpmat, bindx, val, Fp->data_org, 0, NULL, AZ_LOCAL);
+
+  Epetra_Vector *tmpSolution = NULL, *residual = NULL;
+  Aztec2Petra (proc_config, Fpmat, NULL, NULL, comm, *& junkmap, 
+	       Fp_row, *& tmpSolution, *& residual, junk_indices);
+
+  free( val);
+  free( bindx);
+  AZ_matrix_destroy(&Fpmat);
+  Fp->data_org[AZ_matrix_type] = old_matrix_type;
+
+  Fp_crs = dynamic_cast<Epetra_CrsMatrix*>(Fp_row);
+
+  TSFLinearOperator Fp_tsf  = EpetraCRS2TSF(pressureSpace,pressureSpace,
+					    Fp_crs);
+
+  return Fp_tsf;
+
+
+}
 
 int Aztec2TSF(	AZ_MATRIX * Amat, 
 		Epetra_Comm * & junkcomm,

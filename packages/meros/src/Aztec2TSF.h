@@ -55,6 +55,11 @@ extern int Aztec2TSF(   AZ_MATRIX * Amat,
                         double * resid_vector, Epetra_Vector ** residual,
                         Epetra_Map **);
 
+extern TSF::TSFLinearOperator Aztec1x1VBR_2_TSF(AZ_MATRIX *Fp, 
+			     TSF::TSFVectorSpace pressureSpace,
+			     Epetra_Comm *comm, int proc_config[]);
+
+
 extern Epetra_RowMatrix *Aztec2TSF(   AZ_MATRIX * Amat,
                                       Epetra_Comm * & junkcomm,
                                       Epetra_BlockMap * & VbrMap,
