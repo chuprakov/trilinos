@@ -92,13 +92,13 @@ namespace AbstractLinAlgPack {
  * More operations will be overridden as they are needed by various applications.
  */
 class MatrixSymPosDefCholFactor
-	: virtual public AbstractLinAlgPack::MatrixSymOpNonsingSerial  // doxygen needs full name
-	, virtual public AbstractLinAlgPack::MatrixSymDenseInitialize          // ""
-	, virtual public AbstractLinAlgPack::MatrixSymOpGetGMSSymMutable   // ""
+	: virtual public AbstractLinAlgPack::MatrixSymOpNonsingSerial     // doxygen needs full name
+	, virtual public AbstractLinAlgPack::MatrixSymDenseInitialize     // ""
+	, virtual public AbstractLinAlgPack::MatrixSymOpGetGMSSymMutable  // ""
 	, virtual public MatrixExtractInvCholFactor
 	, virtual public MatrixSymSecant
 	, virtual public MatrixSymAddDelUpdateable
-	, public virtual SerializationPack::Serializable
+	, virtual public SerializationPack::Serializable
 {
 public:
 	

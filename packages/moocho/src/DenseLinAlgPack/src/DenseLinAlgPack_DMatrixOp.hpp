@@ -180,6 +180,10 @@ namespace DenseLinAlgPack {
 /// gms_lhs *= alpha (BLAS xSCAL)
 void Mt_S(DMatrixSlice* gms_lhs, value_type alpha);
 
+/// gms_lhs = diag(vs_rhs) * op(gms_rhs) [Row or column scaling]
+void M_diagVtM( DMatrixSlice* gms_lhs, const DVectorSlice& vs_rhs
+                , const DMatrixSlice& gms_rhs, BLAS_Cpp::Transp trans_rhs );
+
 /// tri_lhs *= alpha (BLAS xSCAL)
 void Mt_S(DMatrixSliceTriEle* tri_lhs, value_type alpha);
 

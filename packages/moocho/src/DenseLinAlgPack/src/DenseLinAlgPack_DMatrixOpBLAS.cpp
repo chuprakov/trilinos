@@ -118,10 +118,10 @@ void DenseLinAlgPack::assign(DMatrix* gm_lhs, const DMatrixSlice& gms_rhs, BLAS_
 // gms_lhs = alpha (elementwise)
 void DenseLinAlgPack::assign(DMatrixSlice* gms_lhs, value_type alpha)
 {
-	if(!gms_lhs->rows())
-		throw std::length_error("assign(gms_lhs,alpha):  You can not assign"
-								" a scalar to an unsized DMatrixSlice" );
-	else i_assign(gms_lhs, alpha);
+  TEST_FOR_EXCEPTION(
+    !gms_lhs->rows(), std::length_error
+    ,"Error, assign(gms_lhs,alpha):  You can not assign Scalar to an unsized DMatrixSlice" );
+	i_assign(gms_lhs, alpha);
 }
 
 // gms_lhs = op(gms_rhs)
@@ -134,9 +134,9 @@ void DenseLinAlgPack::assign(DMatrixSlice* gms_lhs, const DMatrixSlice& gms_rhs,
 // tri_lhs = alpha (elementwise)
 void DenseLinAlgPack::assign(DMatrixSliceTriEle* tri_lhs, value_type alpha)
 {
-	if(!tri_lhs->gms().rows())
-		throw std::length_error("assign(tri_lhs,alpha):  You can not assign"
-								" a scalar to an unsized triangular DMatrixSlice" );
+	TEST_FOR_EXCEPTION(
+    !tri_lhs->gms().rows(), std::length_error
+    ,"Error, assign(tri_lhs,alpha):  You can not assign a scalar to an unsized triangular DMatrixSlice" );
 	assert_gms_square(tri_lhs->gms()); 
 	DMatrixSlice::size_type n = tri_lhs->gms().cols();
 	// access BLAS_Cpp::lower tri by col and upper tri by row
@@ -186,21 +186,28 @@ void DenseLinAlgPack::assign(DMatrixSliceTriEle* tri_lhs, const DMatrixSliceTriE
 // /////////////////////////////////////////////////////////////////////////////////////////
 // Element-wise Algebraic Operations
 
-// gms_lhs *= alpha (BLAS xSCAL)
 void DenseLinAlgPack::Mt_S(DMatrixSlice* gms_lhs, value_type alpha)
 {
-	if(!gms_lhs->rows())
-		throw std::length_error("Mt_S(gms_lhs,alpha):  You can not scale"
-								" an unsized DMatrixSlice" );
+	TEST_FOR_EXCEPTION(
+    !gms_lhs->rows(), std::length_error
+    ,"Error, Mt_S(gms_lhs,alpha):  You can not scale an unsized DMatrixSlice" );
 	for(int j = 1; j <= gms_lhs->cols(); ++j)
 		Vt_S(&gms_lhs->col(j), alpha);
 }
 
-// tri_lhs *= alpha (BLAS xSCAL)
+void DenseLinAlgPack::M_diagVtM( DMatrixSlice* gms_lhs, const DVectorSlice& vs_rhs
+                , const DMatrixSlice& gms_rhs, BLAS_Cpp::Transp trans_rhs )
+{
+	Mp_M_assert_sizes(gms_lhs->rows(), gms_lhs->cols(), BLAS_Cpp::no_trans
+		, gms_rhs.rows(), gms_rhs.cols(), trans_rhs);
+  for(DMatrixSlice::size_type j = 1; j <= gms_lhs->cols(); ++j)
+    prod( &gms_lhs->col(j), vs_rhs, col(gms_rhs,trans_rhs,j) );
+}
+
 void DenseLinAlgPack::Mt_S(DMatrixSliceTriEle* tri_lhs, value_type alpha) {
-	if(!tri_lhs->gms().rows())
-		throw std::length_error("Mt_S(tri_lhs,alpha):  You can not scale"
-								" an unsized triangular DMatrixSlice" );
+	TEST_FOR_EXCEPTION(
+    !tri_lhs->gms().rows(), std::length_error
+    ,"Error, Mt_S(tri_lhs,alpha):  You can not scale an unsized triangular DMatrixSlice" );
 	BLAS_Cpp::Transp
 		trans_lhs = (tri_lhs->uplo() == BLAS_Cpp::lower) ? BLAS_Cpp::no_trans : BLAS_Cpp::trans;
 
@@ -209,7 +216,6 @@ void DenseLinAlgPack::Mt_S(DMatrixSliceTriEle* tri_lhs, value_type alpha) {
 		Vt_S( &col( tri_lhs->gms(), trans_lhs , j )(j,n), alpha );	
 }
 
-// tri_ele_lhs += alpha * tri_ele_rhs (BLAS xAXPY)
 void DenseLinAlgPack::Mp_StM(DMatrixSliceTriEle* tri_lhs, value_type alpha, const DMatrixSliceTriEle& tri_ele_rhs)
 {
 	Mp_M_assert_sizes(tri_lhs->gms().rows(), tri_lhs->gms().cols(), BLAS_Cpp::no_trans
@@ -226,7 +232,6 @@ void DenseLinAlgPack::Mp_StM(DMatrixSliceTriEle* tri_lhs, value_type alpha, cons
 
 // LinAlgOpPack Compatable (compile time polymorphism)
 
-// gms_lhs += alpha * op(gms_rhs) (BLAS xAXPY)
 void DenseLinAlgPack::Mp_StM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rhs
 	, BLAS_Cpp::Transp trans_rhs)
 {
@@ -255,7 +260,6 @@ void i_Mp_StSM( DenseLinAlgPack::DMatrixSlice* gms_lhs, DenseLinAlgPack::value_t
 }
 }	// end namespace
 
-// gms_lhs += alpha * op(sym_rhs) (BLAS xAXPY)
 void DenseLinAlgPack::Mp_StM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceSym& sym_rhs
 	, BLAS_Cpp::Transp trans_rhs )
 {
@@ -273,7 +277,6 @@ void DenseLinAlgPack::Mp_StM(DMatrixSlice* gms_lhs, value_type alpha, const DMat
 	}
 }
 
-// gms_lhs += alpha * op(tri_rhs) (BLAS xAXPY)
 void DenseLinAlgPack::Mp_StM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs
 	, BLAS_Cpp::Transp trans_rhs)
 {
@@ -317,7 +320,6 @@ void DenseLinAlgPack::Mp_StM(DMatrixSlice* gms_lhs, value_type alpha, const DMat
 // /////////////////////////////////////////////////////////////////////////////////////
 // Level-2 BLAS (vector-matrtix) Liner Algebra Operations
 
-/// vs_lhs = alpha * op(gms_rhs1) * vs_rhs2 + beta * vs_lhs (BLAS xGEMV)
 void DenseLinAlgPack::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2, value_type beta)
 {
@@ -328,7 +330,6 @@ void DenseLinAlgPack::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMa
 		,vs_lhs->stride());
 }
 
-// vs_lhs = alpha * op(sym_rhs1) * vs_rhs2 + beta * vs_lhs. (BLAS xSYMV).
 void DenseLinAlgPack::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSliceSym& sym_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2, value_type beta)
 {
@@ -340,7 +341,6 @@ void DenseLinAlgPack::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMa
 		,vs_lhs->raw_ptr(),vs_lhs->stride());
 }
 
-// v_lhs = op(tri_rhs1) * vs_rhs2 (BLAS xTRMV)
 void DenseLinAlgPack::V_MtV(DVector* v_lhs, const DMatrixSliceTri& tri_rhs1, BLAS_Cpp::Transp trans_rhs1
 	, const DVectorSlice& vs_rhs2)
 {
@@ -352,7 +352,6 @@ void DenseLinAlgPack::V_MtV(DVector* v_lhs, const DMatrixSliceTri& tri_rhs1, BLA
 		,tri_rhs1.gms().col_ptr(1),tri_rhs1.gms().max_rows(), v_lhs->raw_ptr(),1);
 }
 
-// vs_lhs = op(tri_rhs1) * vs_rhs2 (BLAS xTRMV)
 void DenseLinAlgPack::V_MtV(DVectorSlice* vs_lhs, const DMatrixSliceTri& tri_rhs1, BLAS_Cpp::Transp trans_rhs1
 	, const DVectorSlice& vs_rhs2)
 {
@@ -364,7 +363,6 @@ void DenseLinAlgPack::V_MtV(DVectorSlice* vs_lhs, const DMatrixSliceTri& tri_rhs
 		,tri_rhs1.gms().col_ptr(1),tri_rhs1.gms().max_rows(), vs_lhs->raw_ptr(),vs_lhs->stride());
 }
 
-// vs_lhs = alpha * op(tri_rhs1) * vs_rhs2 + beta * vs_lhs.
 void DenseLinAlgPack::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2, value_type beta)
 {
@@ -386,7 +384,6 @@ void DenseLinAlgPack::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const DMa
 	}
 }
 
-// v_lhs = inv(op(tri_rhs1)) * vs_rhs2 (BLAS xTRSV)
 void DenseLinAlgPack::V_InvMtV(DVector* v_lhs, const DMatrixSliceTri& tri_rhs1, BLAS_Cpp::Transp trans_rhs1
 	, const DVectorSlice& vs_rhs2)
 {
@@ -398,7 +395,6 @@ void DenseLinAlgPack::V_InvMtV(DVector* v_lhs, const DMatrixSliceTri& tri_rhs1, 
 		,tri_rhs1.gms().col_ptr(1),tri_rhs1.gms().max_rows(), v_lhs->raw_ptr(),1);
 }
 
-// vs_lhs = inv(op(tri_rhs1)) * vs_rhs2 (BLAS xTRSV)
 void DenseLinAlgPack::V_InvMtV(DVectorSlice* vs_lhs, const DMatrixSliceTri& tri_rhs1, BLAS_Cpp::Transp trans_rhs1
 	, const DVectorSlice& vs_rhs2)
 {
@@ -411,7 +407,6 @@ void DenseLinAlgPack::V_InvMtV(DVectorSlice* vs_lhs, const DMatrixSliceTri& tri_
 }
 
 
-// gms_lhs = alpha * vs_rhs1 * vs_rhs2' + gms_lhs (BLAS xGER)
 void DenseLinAlgPack::ger(
 	value_type alpha, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2
 	, DMatrixSlice* gms_lhs )
@@ -425,7 +420,6 @@ void DenseLinAlgPack::ger(
 		,gms_lhs->col_ptr(1), gms_lhs->max_rows() );
 }
 
-// sym_lhs = alpha * vs_rhs * vs_rhs' + sym_lhs (BLAS xSYR).
 void DenseLinAlgPack::syr(value_type alpha, const DVectorSlice& vs_rhs, DMatrixSliceSym* sym_lhs)
 {
 	assert_gms_square(sym_lhs->gms());
@@ -435,7 +429,6 @@ void DenseLinAlgPack::syr(value_type alpha, const DVectorSlice& vs_rhs, DMatrixS
 		, vs_rhs.stride(), sym_lhs->gms().col_ptr(1), sym_lhs->gms().max_rows() );
 }
 
-// sym_lhs = alpha * vs_rhs1 * vs_rhs2' + alpha * vs_rhs2 * vs_rhs1' + sym_lhs (BLAS xSYR2).
 void DenseLinAlgPack::syr2(value_type alpha, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2
 	, DMatrixSliceSym* sym_lhs)
 {
@@ -454,7 +447,6 @@ void DenseLinAlgPack::syr2(value_type alpha, const DVectorSlice& vs_rhs1, const 
 // ////////////////////////////
 // Rectangular Matrices
 
-// gms_lhs = alpha * op(gms_rhs1) * op(gms_rhs2) + beta * gms_lhs (BLAS xGEMV).
 void DenseLinAlgPack::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta)
@@ -488,7 +480,6 @@ void i_symm(BLAS_Cpp::Side side, value_type alpha, const DMatrixSliceSym& sym_rh
 
 }	// end namespace
 
-// gms_lhs = alpha * op(sym_rhs1) * op(gms_rhs2) + beta * gms_lhs (left) (BLAS xSYMM).
 void DenseLinAlgPack::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceSym& sym_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta)
@@ -507,7 +498,6 @@ void DenseLinAlgPack::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DM
 	}
 }
 
-// gms_lhs = alpha * op(gms_rhs1) * op(sym_rhs2) + beta * gms_lhs (right) (BLAS xSYMM).
 void DenseLinAlgPack::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceSym& sym_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta)
@@ -526,7 +516,6 @@ void DenseLinAlgPack::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DM
 	}
 }
 
-// sym_lhs = alpha * op(gms_rhs) * op(gms_rhs')  + beta * sym_lhs (BLAS xSYRK).
 void DenseLinAlgPack::syrk(BLAS_Cpp::Transp trans, value_type alpha, const DMatrixSlice& gms_rhs
 	, value_type beta, DMatrixSliceSym* sym_lhs)
 {
@@ -539,7 +528,6 @@ void DenseLinAlgPack::syrk(BLAS_Cpp::Transp trans, value_type alpha, const DMatr
 		,sym_lhs->gms().col_ptr(1),sym_lhs->gms().max_rows() );
 }
 
-// sym_lhs = alpha * op(gms_rhs1) * op(gms_rhs2') + alpha * op(gms_rhs2) * op(gms_rhs1')
 void DenseLinAlgPack::syr2k(BLAS_Cpp::Transp trans,value_type alpha, const DMatrixSlice& gms_rhs1
 	, const DMatrixSlice& gms_rhs2, value_type beta, DMatrixSliceSym* sym_lhs)
 {
@@ -610,7 +598,6 @@ void i_trsm_alt(BLAS_Cpp::Side side, value_type alpha, const DMatrixSliceTri& tr
 
 }	// end namespace
 
-// gm_lhs = alpha * op(tri_rhs1) * op(gms_rhs2) (left) (BLAS xTRMM).
 void DenseLinAlgPack::M_StMtM(DMatrix* gm_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
 	, BLAS_Cpp::Transp trans_rhs2)
@@ -622,7 +609,6 @@ void DenseLinAlgPack::M_StMtM(DMatrix* gm_lhs, value_type alpha, const DMatrixSl
 	i_trmm_alt(BLAS_Cpp::left,alpha,tri_rhs1,trans_rhs1,gms_rhs2,trans_rhs2,&(*gm_lhs)());
 }
 
-// gms_lhs = alpha * op(tri_rhs1) * op(gms_rhs2) (left) (BLAS xTRMM).
 void DenseLinAlgPack::M_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
 	, BLAS_Cpp::Transp trans_rhs2)
@@ -633,7 +619,6 @@ void DenseLinAlgPack::M_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMa
 	i_trmm_alt(BLAS_Cpp::left,alpha,tri_rhs1,trans_rhs1,gms_rhs2,trans_rhs2,gms_lhs);
 }
 
-// gm_lhs = alpha * op(gms_rhs1) * op(tri_rhs2) (right) (BLAS xTRMM).
 void DenseLinAlgPack::M_StMtM(DMatrix* gm_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2
 	, BLAS_Cpp::Transp trans_rhs2)
@@ -645,7 +630,6 @@ void DenseLinAlgPack::M_StMtM(DMatrix* gm_lhs, value_type alpha, const DMatrixSl
 	i_trmm_alt(BLAS_Cpp::right,alpha,tri_rhs2,trans_rhs2,gms_rhs1,trans_rhs1,&(*gm_lhs)());
 }
 
-// gms_lhs = alpha * op(gms_rhs1) * op(tri_rhs2) (right) (BLAS xTRMM).
 void DenseLinAlgPack::M_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2
 	, BLAS_Cpp::Transp trans_rhs2)
@@ -656,7 +640,6 @@ void DenseLinAlgPack::M_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMa
 	i_trmm_alt(BLAS_Cpp::right,alpha,tri_rhs2,trans_rhs2,gms_rhs1,trans_rhs1,gms_lhs);
 }
 
-// gms_lhs = alpha * op(tri_rhs1) * op(gms_rhs2) + beta * gms_lhs (left).
 void DenseLinAlgPack::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta)
@@ -676,7 +659,6 @@ void DenseLinAlgPack::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DM
 	}
 }
 
-// gms_lhs = alpha * op(gms_rhs1) * op(tri_rhs2) + beta * gms_lhs (right).
 void DenseLinAlgPack::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta)
@@ -696,7 +678,6 @@ void DenseLinAlgPack::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DM
 	}
 }
 
-// gm_lhs = alpha * inv(op(tri_rhs1)) * op(gms_rhs2) (left) (BLAS xTRSM).
 void DenseLinAlgPack::M_StInvMtM(DMatrix* gm_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
 	, BLAS_Cpp::Transp trans_rhs2)
@@ -708,7 +689,6 @@ void DenseLinAlgPack::M_StInvMtM(DMatrix* gm_lhs, value_type alpha, const DMatri
 	i_trsm_alt(BLAS_Cpp::left,alpha,tri_rhs1,trans_rhs1,gms_rhs2,trans_rhs2,&(*gm_lhs)());
 }
 
-// gms_lhs = alpha * inv(op(tri_rhs1)) * op(gms_rhs2) (left) (BLAS xTRSM).
 void DenseLinAlgPack::M_StInvMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
 	, BLAS_Cpp::Transp trans_rhs2)
@@ -719,7 +699,6 @@ void DenseLinAlgPack::M_StInvMtM(DMatrixSlice* gms_lhs, value_type alpha, const 
 	i_trsm_alt(BLAS_Cpp::left,alpha,tri_rhs1,trans_rhs1,gms_rhs2,trans_rhs2,gms_lhs);
 }
 
-// gm_lhs = alpha * op(gms_rhs1) * inv(op(tri_rhs2)) (right) (BLAS xTRSM).
 void DenseLinAlgPack::M_StMtInvM(DMatrix* gm_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2
 	, BLAS_Cpp::Transp trans_rhs2)
@@ -731,7 +710,6 @@ void DenseLinAlgPack::M_StMtInvM(DMatrix* gm_lhs, value_type alpha, const DMatri
 	i_trsm_alt(BLAS_Cpp::right,alpha,tri_rhs2,trans_rhs2,gms_rhs1,trans_rhs1,&(*gm_lhs)());
 }
 
-// gms_lhs = alpha * op(gms_rhs1) * inv(op(tri_rhs2)) (right) (BLAS xTRSM).
 void DenseLinAlgPack::M_StMtInvM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2
 	, BLAS_Cpp::Transp trans_rhs2)

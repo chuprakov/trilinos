@@ -166,6 +166,8 @@ void pow(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs, value_type alpha);
 void pow(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs, int n);
 /// vs_lhs = pow(alpha,vs_rhs)
 void pow(DVectorSlice* vs_lhs, value_type alpha, const DVectorSlice& vs_rhs);
+/// vs_lhs(i) = vs_rhs1(i) * vs_rhs2(i), i = 1...n
+void prod(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// vs_lhs = sqrt(vs_rhs)
 void sqrt(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = sin(vs_rhs)
@@ -223,6 +225,8 @@ void sinh(DVector* v_lhs, const DVectorSlice& vs_rhs);
 void tan(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = tanh(vs_rhs)
 void tanh(DVector* v_lhs, const DVectorSlice& vs_rhs);
+/// v_lhs(i) = vs_rhs1(i) * vs_rhs2(i), i = 1...n
+void prod( DVector* vs_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2 );
 
 //		end Elementsize Math Functions
 // @}

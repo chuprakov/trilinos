@@ -80,7 +80,7 @@ public:
 	/** Calls <tt>this->initialize(gms,gms_trans,gms_release)</tt>.
 	 */
 	MultiVectorMutableDense(
-		DMatrixSlice                     gms
+		DMatrixSlice                       gms
 		,BLAS_Cpp::Transp                  gms_trans
 		,const release_resource_ptr_t&     gms_release
 		);
@@ -104,7 +104,7 @@ public:
 	 * </ul>
 	 */
 	void initialize(
-		DMatrixSlice                     gms
+		DMatrixSlice                       gms
 		,BLAS_Cpp::Transp                  gms_trans
 		,const release_resource_ptr_t&     gms_release
 		);
@@ -278,7 +278,7 @@ private:
 	// ///////////////////////////////////////
 	// Private data members
 	
-	DMatrixSlice            gms_;
+	DMatrixSlice              gms_;
 	BLAS_Cpp::Transp          gms_trans_;
 	release_resource_ptr_t    gms_release_;
 

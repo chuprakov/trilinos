@@ -127,10 +127,11 @@ void MatrixSymPosDefCholFactor::init_setup(
 		allocates_storage_ = false; // The client allocated the storage!
 		MU_store_.bind(*MU_store);
 		release_resource_ptr_ = release_resource_ptr;
+    max_size_ = my_min( MU_store->rows(), MU_store->cols() ) - 1;
 		if( set_full_view ) {
 			assert( scale != 0.0 );
 			this->set_view(
-				my_min( MU_store->rows(), MU_store->cols() ) - 1
+				max_size_
 				,scale,maintain_original,1,1
 				,maintain_factor, allow_factor ? 1: 0, allow_factor ? 1 : 0
 				);
