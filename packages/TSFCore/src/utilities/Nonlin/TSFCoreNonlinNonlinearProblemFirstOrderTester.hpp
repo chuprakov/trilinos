@@ -25,7 +25,9 @@ NonlinearProblemFirstOrderTester<Scalar>::doTest(
 	namespace mmp = MemMngPack;
 	using std::endl;
 
-	if(o) *o << "Entering NonlinearProblemFirstOrderTester<Scalar>::do_test(prob,...)\n\n" << std::boolalpha;
+	if(o) *o << "Entering NonlinearProblemFirstOrderTester<Scalar>::do_test(prob,...)\n\n";
+	// Removed std::boolalpha from output stream because it doesn't exist for the GNU 2.96 compiler (HKT, 09/22/03)
+	// if(o) *o << "Entering NonlinearProblemFirstOrderTester<Scalar>::do_test(prob,...)\n\n" << std::boolalpha;
 
 	bool result, success = true;
 	int l;

@@ -21,8 +21,11 @@ NonlinearProblemTester<Scalar>::doTest(
 {
 	namespace mmp = MemMngPack;
 	using std::endl;
-
-	if(o) *o << "Entering NonlinearProblemTester<Scalar>::do_test(prob,...)\n\n" << std::boolalpha;
+	
+	if(o) *o << "Entering NonlinearProblemTester<Scalar>::do_test(prob,...)\n\n";
+	//if(o) *o << "Entering NonlinearProblemTester<Scalar>::do_test(prob,...)\n\n" << std::boolalpha;
+	// Removed boolalpha because it doesn't exist for GNU 2.96 compilers (HKT 09/22/03)
+	// To Do (HKT):  Create boolalpha capabilities 
 
 	bool result, success = true;
 	int l;

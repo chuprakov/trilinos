@@ -18,7 +18,11 @@ namespace Nonlin {
 template<class Scalar>
 Scalar NonlinearProblem<Scalar>::infiniteBound()
 {
-	return std::numeric_limits<Scalar>::max();
+	return 1e+50;
+//	numeric_limits doesn't exist on GNU 2.96 compilers (HKT, 09/22/03). 
+//	Returned large number from old version that was deemed large enough.
+//	return std::numeric_limits<Scalar>::max();
+//	To Do (HKT) : Create work-around for numeric_limits.
 }
 
 //
