@@ -70,9 +70,6 @@ LINKLIB = $(TARGETLIB) $(EXTERNAL_LIB_PATH) $(EXTERNAL_LIB) $(ARCH_LIB)
 %.o : %.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $<
 
-%.o : %.cpp
-	$(CXX) -c $(CXXFLAGS) -o $@ $<
-
 %.o : %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 

@@ -82,7 +82,8 @@ no.
 \item {\tt --enable-debug=yes|no} toggles generation of debugging information. 
 Default is yes. 
 \item {\tt --enable-boundscheck=yes|no} toggles bounds checking on dense vector 
-element access. Default is yes. 
+element access. Default is yes. Bounds checking helps with debugging, but also incurs 
+a significant performance penalty. 
 \item {\tt --with-mpi-cxx} specifies the C++ compiler to be used with MPI. Default is
 {\tt mpiCC}. 
 \item {\tt FLIBS} specifies flags and libraries for linking Fortran. By default,

@@ -1,0 +1,54 @@
+\section{Example: A Conjugate Gradients Solver}
+
+The best way to introduce the TSF objects is through example, so let's dive in and
+write a solver. We'll write a simple program to solve $Ax=b$ using unpreconditioned
+CG which we code in-line. 
+
+
+\subsection{Step-by-step explanation}
+
+We start with a step-by-step walkthrough of the CG solver example.
+When finished, there will be a summary and then the complete CG code will be
+listed for reference.
+
+\subsubsection{Boilerplate}
+
+A dull but essential first step is to show 
+the boilerplate C++ common to any TSF main program. 
+\begin{verbatim}
+#include "TSF.h"
+
+int main(int argc, void** argv)
+{
+  try
+    {
+      TSF::init(argc, argv);
+
+      /*
+       * code body goes here
+       */
+    }
+  catch(exception& e)
+    {
+       TSF::handleException(__FILE__, e);
+    }
+  TSF::finalize();
+}
+\end{verbatim}
+The body of the code -- everything else we discuss here -- goes in place 
+of the comment {\tt code body goes here}. 
+
+\subsubsection{Specifying the vector type}
+
+TSF is designed to work with arbitrary vector representations. 
+
+\begin{verbatim}
+
+\end{verbatim}
+
+
+
+
+
+
+
