@@ -30,6 +30,17 @@ namespace AbstractLinAlgPack {
 //@{
 
 ///
+/** Compute the maximum element in a vector.
+ *
+ * Returns:
+  \verbatim
+
+  max{ v(i), i = 1...n }
+  \endverbatim
+  */
+value_type max( const VectorWithOp& v ); 
+
+///
 /** Computes the maximum positive and negative step that can be taken
   * that are within the relaxed bounds.
   *
@@ -92,9 +103,42 @@ value_type log_bound_barrier(
 ///
 /** Force a vector in bounds.
  *
- * ToDo: Finish documentation!
+ \verbatim
+
+          / xl(i)  : if x(i) < xl(i)
+  x(i) =  | x(i)   : if xl(i) <= x(i) <= xu(i)
+          \ xu(i)  : if x(i) > xu(i)
+
+  , for 1 = 1...n
+ \endverbatim
  */
 void force_in_bounds( const VectorWithOp& xl, const VectorWithOp& xu, VectorWithOpMutable* x );
+
+///
+/** Take the maximum value of the vector elements and a scalar.
+ *
+ \verbatim
+
+ y(i) = max( y(i), min_ele ), for i = 1...n
+ \endverbatim
+ */
+void max_vec_scalar(
+	value_type              min_ele
+	,VectorWithOpMutable    *y
+	);
+
+///
+/** Take the maximum value of the absolute vector elements and a scalar.
+ *
+ \verbatim
+
+ y(i) = max( fabs(y(i)), min_ele ), for i = 1...n
+ \endverbatim
+ */
+void max_abs_vec_scalar(
+	value_type              min_ele
+	,VectorWithOpMutable    *y
+	);
 
 //@}
 

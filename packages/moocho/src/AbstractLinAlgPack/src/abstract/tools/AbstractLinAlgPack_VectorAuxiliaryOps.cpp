@@ -17,11 +17,14 @@
 
 #include "AbstractLinAlgPack/include/VectorAuxiliaryOps.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "RTOpStdOpsLib/include/RTOp_ROp_max.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_max_near_feas_step.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_max_rel_step.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_num_bounded.h"
 #include "RTOpStdOpsLib/include/RTOp_ROp_log_bound_barrier.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_force_in_bounds.h"
+#include "RTOpStdOpsLib/include/RTOp_TOp_max_vec_scalar.h"
+#include "RTOpStdOpsLib/include/RTOp_TOp_max_abs_vec_scalar.h"
 #include "RTOpPack/include/RTOpCppC.h"
 #include "ThrowException.h"
 
@@ -86,6 +89,17 @@ public:
 init_rtop_server_t  init_rtop_server;
 
 } // end namespace
+
+AbstractLinAlgPack::value_type
+AbstractLinAlgPack::max( const VectorWithOp& v )
+{
+	RTOpPack::RTOpC          op;
+	RTOpPack::ReductTarget   reduct_obj;
+	assert(0==RTOp_ROp_max_construct(&op.op()));
+	op.reduct_obj_create(&reduct_obj);
+	v.apply_reduction( op, 0, NULL, 0, NULL,reduct_obj.obj() );
+	return RTOp_ROp_max_val(reduct_obj.obj());
+}
 
 std::pair<AbstractLinAlgPack::value_type,AbstractLinAlgPack::value_type>
 AbstractLinAlgPack::max_near_feas_step(
@@ -172,4 +186,24 @@ void AbstractLinAlgPack::force_in_bounds(
 		vecs[num_vecs] = { &xl, &xu };
 	x->apply_transformation(
 		force_in_bounds_op, num_vecs, vecs, 0, NULL, RTOp_REDUCT_OBJ_NULL );
+}
+
+void AbstractLinAlgPack::max_vec_scalar(
+	value_type              min_ele
+	,VectorWithOpMutable    *y
+	)
+{
+	RTOpPack::RTOpC op;
+	assert(0==RTOp_TOp_max_vec_scalar_construct(min_ele,&op.op()));
+	y->apply_transformation( op, 0, NULL, 0, NULL, RTOp_REDUCT_OBJ_NULL );
+}
+
+void AbstractLinAlgPack::max_abs_vec_scalar(
+	value_type              min_ele
+	,VectorWithOpMutable    *y
+	)
+{
+	RTOpPack::RTOpC op;
+	assert(0==RTOp_TOp_max_abs_vec_scalar_construct(min_ele,&op.op()));
+	y->apply_transformation( op, 0, NULL, 0, NULL, RTOp_REDUCT_OBJ_NULL );
 }
