@@ -123,6 +123,11 @@ template<class Scalar> class Vector;
 template<class Scalar> class LinearOp;
 template<class Scalar> class MultiVector;
 
+// Misc interface classes
+
+template<class Scalar> class LinOpPersisting;
+template<class Scalar> class LinOpNonPersisting;
+
 // Basic node support subclasses and interfaces
 
 template<class Scalar> class ScalarProd;

@@ -142,6 +142,7 @@ SAND report.
     </ul>
   <li> Other basic concrete support subclasses
     <ul>
+    <li><tt>TSFCore::VectorMultiVector</tt>
     <li><tt>TSFCore::MultiVectorCols</tt>
     </ul>
   </ul>
@@ -286,16 +287,30 @@ linear operator with a solve operation (see
   </ul>
 .
 
+<li> Standard implementations:
+
+  <ul>
+  <li><tt>TSFCore::MPIVectorSpaceFactoryStd</tt>
+  <li><tt>TSFCore::MPIVectorSpaceStd</tt>
+  <li><tt>TSFCore::MPIMultiVectorStd</tt>
+  </ul>
+.
+
 </ul>
 
-These subclasses are designed to be base classes for all MPI-based
-TSFCore adapters for <tt>TSFCore::Vector</tt>,
+The first set of subclasses are designedto be standard base classes
+for adapters for <tt>TSFCore::Vector</tt>,
 <tt>TSFCore::VectorSpace</tt> and <tt>TSFCore::MultiVector</tt>.
 These classes are all fully templated on the <tt>Scalar</tt> type and
 should work with arbitrary scalar types (such as <tt>std::complex</tt>
 and extended precision types) if a fully MPP environment.  These
 subclasses are also carfully designed to allow interoperability
-between various 
+between various concrete implementations of MPI-based
+<tt>TSFCore::Vector</tt> and <tt>TSFCore::MultiVector</tt> objects.
+
+The second set of classes provide general and highly optimized
+implementations for <tt>TSFCore::MultiVector</tt>,
+<tt>TSFCore::VectorSpace</tt> and <tt>TSFCore::VectorSpaceFactory</tt>.
 
 */
 
@@ -377,6 +392,15 @@ objects to form <tt>%TSFCore</tt> objects.
     <li><tt>TSFCore::ProductVector</tt>
     <li><tt>TSFCore::ProductMultiVector</tt> (ToDo: This needs to be implemented!)
     </ul>
+  </ul>
+
+.
+
+<li> Miscellaneous omposite linear operators:
+
+  <ul>
+	<li><tt>TSFCore::DiagonalLinearOp</tt>
+	<li><tt>TSFCore::MultiplicativeLinearOp</tt>
   </ul>
 
 .
