@@ -217,7 +217,7 @@ void UpdateReducedSigma_Step::FormReducedSigmaExplicitly(
 				static_cast<MatrixOp*>(J.get())
 				,Sigma_D_sqrt, BLAS_Cpp::no_trans, Z.D(), BLAS_Cpp::no_trans);
 
-			J->syrk(BLAS_Cpp::trans, 1.0, 0.0, &rHB);
+			LinAlgOpPack::syrk( *J, BLAS_Cpp::trans, 1.0, 0.0, &rHB );
 
 			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) 
 				{

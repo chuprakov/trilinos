@@ -19,7 +19,7 @@
 
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymDiagSparse.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/EtaVector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorOut.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"

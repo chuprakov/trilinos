@@ -21,14 +21,14 @@
 
 #include "MatrixSymOp.hpp"
 #include "MatrixOpSubView.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixPermAggr.hpp"
+#include "MatrixPermAggr.hpp"
 #include "MultiVectorMutable.hpp"
 #include "VectorSpace.hpp"
 #include "VectorMutable.hpp"
 #include "Permutation.hpp"
 #include "SpVectorClass.hpp"
 #include "SpVectorView.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
+#include "EtaVector.hpp"
 #include "LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 

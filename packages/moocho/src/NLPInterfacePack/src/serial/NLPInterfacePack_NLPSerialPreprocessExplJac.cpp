@@ -18,13 +18,13 @@
 #include <typeinfo>
 #include <algorithm>
 
-#include "NLPInterfacePack/src/serial/NLPSerialPreprocessExplJac.hpp"
+#include "NLPSerialPreprocessExplJac.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixPermAggr.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemFactory.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/MatrixSparseCOORSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixPermAggr.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixComposite.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/BasisSystemFactory.hpp"
 #include "DenseLinAlgPack/src/DVectorOp.hpp"
 #include "DenseLinAlgPack/src/IVector.hpp"
 #include "DenseLinAlgPack/src/PermVecMat.hpp"

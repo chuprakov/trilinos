@@ -20,7 +20,7 @@
 #include "ConstrainedOptPack/src/qpsolvers/QPSolverRelaxedQPKWIK.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/EtaVector.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractInvCholFactor.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SortByDescendingAbsValue.hpp"

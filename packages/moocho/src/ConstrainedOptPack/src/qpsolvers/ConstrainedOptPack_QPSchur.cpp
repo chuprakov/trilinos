@@ -41,7 +41,7 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/EtaVector.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "DenseLinAlgPack/src/DVectorClassExt.hpp"
@@ -1356,8 +1356,9 @@ void QPSchur::ActiveSet::initialize(
 		}
 		if( q_F_hat && q_plus_hat ) {
 			// S += P_XF_hat' * A_bar * P_plus_hat + P_plus_hat' * A_bar' * P_XF_hat
-			qp_->constraints().A_bar().syr2k(
-				BLAS_Cpp::no_trans, 1.0
+			AbstractLinAlgPack::syr2k(
+				qp_->constraints().A_bar()
+				,BLAS_Cpp::no_trans, 1.0
 				,P_XF_hat_, BLAS_Cpp::no_trans
 				,P_plus_hat_, BLAS_Cpp::no_trans
 				,1.0, &S );

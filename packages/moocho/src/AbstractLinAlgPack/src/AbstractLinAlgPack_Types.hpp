@@ -21,7 +21,6 @@
 
 #include "RTOpPack/src/RTOp.h"
 #include "BLAS_CppTypes.hpp"
-#include "Range1D.hpp"
 #include "DenseLinAlgPack/src/DenseLinAlgPackTypes.hpp"
 
 namespace AbstractLinAlgPack {
@@ -47,9 +46,10 @@ typedef DenseLinAlgPack::DMatrixSliceTriEle                 DMatrixSliceTriEle;
 typedef DenseLinAlgPack::DMatrixSliceTri                    DMatrixSliceTri;
 ///
 typedef DenseLinAlgPack::DMatrixSliceSym                    DMatrixSliceSym;
+///
+typedef RangePack::Range1D Range1D;
 #endif
 
-typedef RangePack::Range1D Range1D; // For some reason doxygen likes typedef more than using?
 
 /** @name Exception classes */
 //@{

@@ -29,10 +29,10 @@
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorMutable.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/VectorDenseEncap.hpp"
 #include "ThrowException.hpp"
 
 namespace {

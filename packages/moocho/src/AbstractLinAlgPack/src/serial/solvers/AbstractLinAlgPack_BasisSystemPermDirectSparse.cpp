@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "AbstractLinAlgPack/src/serial/solvers/BasisSystemPermDirectSparse.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixConvertToSparseEncap.hpp"
-#include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractSparseElements.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
+#include "BasisSystemPermDirectSparse.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsingAggr.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/MatrixPermAggr.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/MatrixPermAggr.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixConvertToSparseEncap.hpp"
+#include "AbstractLinAlgPack/src/serial/interfaces/MatrixExtractSparseElements.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MultiVectorMutableDense.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/PermutationSerial.hpp"
+#include "AbstractLinAlgPack/src/serial/implementations/MatrixSymPosDefCholFactor.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "ThrowException.hpp"
 #include "dynamic_cast_verbose.hpp"

@@ -24,7 +24,7 @@
 #include "VectorMutable.hpp"
 #include "SpVectorClass.hpp"
 #include "SpVectorView.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
+#include "EtaVector.hpp"
 #include "LinAlgOpPack.hpp"
 #include "ref_count_ptr.hpp"
 #include "ThrowException.hpp"

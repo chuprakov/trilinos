@@ -65,6 +65,20 @@ public:
 
 	//@}
 
+	/** @name Friends */
+	//@{
+
+	///
+	friend
+	void M_StMtInvMtM(
+		MatrixSymOp* sym_gms_lhs, value_type alpha
+		,const MatrixOp& mwo
+		,BLAS_Cpp::Transp mwo_trans, const MatrixSymNonsing& mswof
+		,EMatrixDummyArg mwo_rhs
+		 );
+
+	//@}
+
 	/** @name Clone */
 	//@{
 
@@ -87,6 +101,8 @@ public:
 
 	//@}
 
+protected:
+
 	/** @name Level-3 */
 	//@{
 
@@ -104,6 +120,8 @@ public:
 		) const;
 
 	//@}
+
+public:
 
 	/** Overridden from MatrixNonsing */
 	//@{
@@ -126,9 +144,10 @@ inline
 /// sym_gms_lhs = alpha * op(mwo) * inv(mswof) * op(mwo)'
 void M_StMtInvMtM(
 	MatrixSymOp* sym_gms_lhs, value_type alpha
-	, const MatrixOp& mwo
-	, BLAS_Cpp::Transp mwo_trans, const MatrixSymNonsing& mswof
-	, MatrixSymNonsing::EMatrixDummyArg mwo_rhs )
+	,const MatrixOp& mwo
+	,BLAS_Cpp::Transp mwo_trans, const MatrixSymNonsing& mswof
+	,MatrixSymNonsing::EMatrixDummyArg mwo_rhs
+	)
 {
 	mswof.M_StMtInvMtM(sym_gms_lhs,alpha,mwo,mwo_trans,mwo_rhs);
 }

@@ -47,17 +47,21 @@ be of great use to any developer.
 <li> Interfaces for mixed abstract and serial computaitons
 (<tt>\ref libAbstractLinAlgPackSerialItfc_grp "libAbstractLinAlgPackSerialItfc"</tt>):
 This library contains interfaces for exposing and accessing vectors
-and matrices using serial data structures.  ToDo: Finish!
+and matrices using serial data structures.  For example, the classes
+<tt>VectorDenseEncap</tt> and and <tt>VectorDenseEncapMutable</tt> can
+be used to create nonmutable and mutable <tt>DVectorSlice</tt> views of
+abstract vector objects.  Other interfaces are included for extracting
+dense matrix views and extracting sparse elements.
 
 <li> Implementations for serial linear algebra
 (<tt>\ref libAbstractLinAlgPackSerialImpl_grp "libAbstractLinAlgPackSerialImpl"</tt>):
-This library contains several different implementations of serial
-sparse matrices and related code.
+This library contains several different implementations of serial matrix
+implementations for dense and sparse matrices.
 
 <li> Interfaces and implementations of direct sparse solvers
 (<tt>\ref libAbstractLinAlgPackSerialSolvers_grp "libAbstractLinAlgPackSerialSolvers"</tt>):
-This library .. blah blah
-blah ...
+This library contains basic serial interfaces to direct solvers as well has several
+adapter subclasses the support several popular direct sparse solvers.
 
 </ol>
 

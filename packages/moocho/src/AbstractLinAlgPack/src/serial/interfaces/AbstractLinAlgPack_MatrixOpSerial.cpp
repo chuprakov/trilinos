@@ -25,7 +25,7 @@
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixSymOpGetGMSSymMutable.hpp"
 #include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/GenPermMatrixSliceOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/EtaVector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "DenseLinAlgPack/src/DMatrixClass.hpp"

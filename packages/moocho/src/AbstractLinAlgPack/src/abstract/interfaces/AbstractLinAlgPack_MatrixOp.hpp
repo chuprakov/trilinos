@@ -105,6 +105,107 @@ namespace AbstractLinAlgPack {
 class MatrixOp : public virtual MatrixBase {
 public:
 
+	/** @name Friends */
+	//@{
+
+	///
+	friend
+	void Mt_S( MatrixOp* mwo_lhs, value_type alpha );
+	///
+	friend
+	void Mp_StM(
+		MatrixOp* mwo_lhs, value_type alpha, const MatrixOp& M_rhs
+		, BLAS_Cpp::Transp trans_rhs);
+	///
+	friend
+	void Mp_StMtP(
+		MatrixOp* mwo_lhs, value_type alpha
+		,const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
+		,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
+		);
+	///
+	friend
+	void Mp_StPtM(
+		MatrixOp* mwo_lhs, value_type alpha
+		,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
+		,const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
+		);
+	///
+	friend
+	void Mp_StPtMtP(
+		MatrixOp* mwo_lhs, value_type alpha
+		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+		,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
+		,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
+		);
+	///
+	friend
+	void Vp_StMtV(
+		VectorMutable* v_lhs, value_type alpha, const MatrixOp& M_rhs1
+		,BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2, value_type beta
+		);
+	///
+	friend
+	void Vp_StMtV(
+		VectorMutable* v_lhs, value_type alpha, const MatrixOp& M_rhs1
+		,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2, value_type beta
+		);
+	///
+	friend
+	void Vp_StPtMtV(
+		VectorMutable* v_lhs, value_type alpha
+		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+		,const MatrixOp& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
+		,const Vector& v_rhs3, value_type beta
+		);
+	///
+	friend
+	void Vp_StPtMtV(
+		VectorMutable* v_lhs, value_type alpha
+		,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+		,const MatrixOp& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
+		,const SpVectorSlice& sv_rhs3, value_type beta
+		);
+	///
+	friend
+	value_type transVtMtV(
+		const Vector& v_rhs1, const MatrixOp& M_rhs2
+		,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3
+		);
+	///
+	friend
+	value_type transVtMtV(
+		const SpVectorSlice& sv_rhs1, const MatrixOp& M_rhs2
+		,BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3
+		);
+	///
+	friend
+	void syr2k(
+		const MatrixOp& M, BLAS_Cpp::Transp M_trans, value_type alpha
+		,const GenPermMatrixSlice& P1, BLAS_Cpp::Transp P1_trans
+		,const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
+		,value_type beta, MatrixSymOp* symwo_lhs
+		);
+	///
+	friend
+	void Mp_StMtM(
+		MatrixOp* mwo_lhs, value_type alpha
+		,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
+		,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
+		,value_type beta
+		);
+	///
+	friend
+	void syrk(
+		const MatrixOp  &mwo_rhs
+		,BLAS_Cpp::Transp   M_trans
+		,value_type         alpha
+		,value_type         beta
+		,MatrixSymOp    *sym_lhs
+		);
+
+	//@}
+
 	/** @name Public types */
 	//@{
 
@@ -387,6 +488,8 @@ public:
 
 	//@}
 
+protected:
+
 	/** @name Level-1 BLAS */
 	//@{
 
@@ -395,9 +498,8 @@ public:
 	 *
 	 * The default implementation does nothing returns false.
 	 *
-	 * Warning! A client should never call this method
-	 * call this method directly.  Instead, use
-	 * <tt>AbstractLinAlgPack::Mp_StM()</tt>
+	 * A client can not call this method call this method directly.
+	 * Instead, use <tt>AbstractLinAlgPack::Mp_StM()</tt>.
 	 */
 	virtual bool Mp_StM(
 		MatrixOp* mwo_lhs, value_type alpha
@@ -408,9 +510,8 @@ public:
 	 *
 	 * The default implementation does nothing and returns false.
 	 *
-	 * Warning! A client should never call this method
-	 * call this method directly.  Instead, use
-	 * <tt>AbstractLinAlgPack::Mp_StM()</tt>.
+	 * A client can not call this method call this method directly.
+	 * Instead, use <tt>AbstractLinAlgPack::Mp_StM()</tt>.
 	 */
 	virtual bool Mp_StM(
 		value_type alpha,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs);
@@ -420,9 +521,8 @@ public:
 	 *
 	 * The default implementation does nothing and returns false.
 	 *
-	 * Warning! A client should never call this method
-	 * call this method directly.  Instead, use
-	 * <tt>AbstractLinAlgPack::Mp_StMtP()</tt>.
+	 * A client can not call this method call this method directly.
+	 * Instead, use <tt>AbstractLinAlgPack::Mp_StMtP()</tt>.
 	 */
 	virtual bool Mp_StMtP(
 		MatrixOp* mwo_lhs, value_type alpha
@@ -435,9 +535,8 @@ public:
 	 *
 	 * The default implementation does nothing and returns false.
 	 *
-	 * Warning! A client should never call this method
-	 * call this method directly.  Instead, use
-	 * <tt>AbstractLinAlgPack::Mp_StMtP()</tt>.
+	 * A client can not call this method call this method directly.
+	 * Instead, use <tt>AbstractLinAlgPack::Mp_StMtP()</tt>.
 	 */
 	virtual bool Mp_StMtP(
 		value_type alpha
@@ -450,9 +549,8 @@ public:
 	 *
 	 * The default implementation does nothing and returns false.
 	 *
-	 * Warning! A client should never call this method
-	 * call this method directly.  Instead, use
-	 * <tt>AbstractLinAlgPack::Mp_StPtM()</tt>.
+	 * A client can not call this method call this method directly.
+	 * Instead, use <tt>AbstractLinAlgPack::Mp_StPtM()</tt>.
 	 */
 	virtual bool Mp_StPtM(
 		MatrixOp* mwo_lhs, value_type alpha
@@ -465,9 +563,8 @@ public:
 	 *
 	 * The default implementation does nothing and returns false.
 	 *
-	 * Warning! A client should never call this method
-	 * call this method directly.  Instead, use
-	 * <tt>AbstractLinAlgPack::Mp_StPtM()</tt>.
+	 * A client can not call this method call this method directly.
+	 * Instead, use <tt>AbstractLinAlgPack::Mp_StPtM()</tt>.
 	 */
 	virtual bool Mp_StPtM(
 		value_type alpha
@@ -480,9 +577,8 @@ public:
 	 *
 	 * The default implementation does nothing and returns false.
 	 *
-	 * Warning! A client should never call this method
-	 * call this method directly.  Instead, use
-	 * <tt>AbstractLinAlgPack::Mp_StPtMtP()</tt>.
+	 * A client can not call this method call this method directly.
+	 * Instead, use <tt>AbstractLinAlgPack::Mp_StPtMtP()</tt>.
 	 */
 	virtual bool Mp_StPtMtP(
 		MatrixOp* mwo_lhs, value_type alpha
@@ -496,9 +592,8 @@ public:
 	 *
 	 * The default implementation does nothing and returns false.
 	 *
-	 * Warning! A client should never call this method
-	 * call this method directly.  Instead, use
-	 * <tt>AbstractLinAlgPack::Mp_StPtMtP()</tt>.
+	 * A client can not call this method call this method directly.
+	 * Instead, use <tt>AbstractLinAlgPack::Mp_StPtMtP()</tt>.
 	 */
 	virtual bool Mp_StPtMtP(
 		value_type alpha
@@ -709,8 +804,8 @@ void Mp_StM(
  */
 void Mp_StMtP(
 	MatrixOp* mwo_lhs, value_type alpha
-	, const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
-	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
+	,const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
+	,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	);
 
 ///
@@ -722,8 +817,8 @@ void Mp_StMtP(
  */
 void Mp_StPtM(
 	MatrixOp* mwo_lhs, value_type alpha
-	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
-	, const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
+	,const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
+	,const MatrixOp& M_rhs, BLAS_Cpp::Transp M_trans
 	);
 
 ///
@@ -735,9 +830,9 @@ void Mp_StPtM(
  */
 void Mp_StPtMtP(
 	MatrixOp* mwo_lhs, value_type alpha
-	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-	, const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
-	, const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
+	,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+	,const MatrixOp& M_rhs, BLAS_Cpp::Transp trans_rhs
+	,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
 	);
 
 //		end Level-1 BLAS
@@ -749,7 +844,8 @@ void Mp_StPtMtP(
 /// v_lhs = alpha * op(M_rhs1) * v_rhs2 + beta * v_lhs (BLAS xGEMV)
 inline void Vp_StMtV(
 	VectorMutable* v_lhs, value_type alpha, const MatrixOp& M_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2, value_type beta = 1.0)
+	,BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2, value_type beta = 1.0
+	)
 {
 	M_rhs1.Vp_StMtV(v_lhs,alpha,trans_rhs1,v_rhs2,beta);
 }
@@ -757,7 +853,8 @@ inline void Vp_StMtV(
 /// v_lhs = alpha * op(M_rhs1) * sv_rhs2 + beta * v_lhs (BLAS xGEMV)
 inline void Vp_StMtV(
 	VectorMutable* v_lhs, value_type alpha, const MatrixOp& M_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2, value_type beta = 1.0)
+	,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2, value_type beta = 1.0
+	)
 {
 	M_rhs1.Vp_StMtV(v_lhs,alpha,trans_rhs1,sv_rhs2,beta);
 }
@@ -765,9 +862,10 @@ inline void Vp_StMtV(
 /// v_lhs = alpha * op(P_rhs1) * op(M_rhs2) * v_rhs3 + beta * v_rhs
 inline void Vp_StPtMtV(
 	VectorMutable* v_lhs, value_type alpha
-	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
-	, const Vector& v_rhs3, value_type beta = 1.0) 
+	,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+	,const MatrixOp& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
+	,const Vector& v_rhs3, value_type beta = 1.0
+	) 
 {
 	M_rhs2.Vp_StPtMtV(v_lhs,alpha,P_rhs1,P_rhs1_trans,M_rhs2_trans,v_rhs3,beta);
 }
@@ -775,9 +873,10 @@ inline void Vp_StPtMtV(
 /// v_lhs = alpha * op(P_rhs1) * op(M_rhs2) * sv_rhs3 + beta * v_rhs
 inline void Vp_StPtMtV(
 	VectorMutable* v_lhs, value_type alpha
-	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
-	, const MatrixOp& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
-	, const SpVectorSlice& sv_rhs3, value_type beta = 1.0)
+	,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
+	,const MatrixOp& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
+	,const SpVectorSlice& sv_rhs3, value_type beta = 1.0
+	)
 {
 	M_rhs2.Vp_StPtMtV(v_lhs,alpha,P_rhs1,P_rhs1_trans,M_rhs2_trans,sv_rhs3,beta);
 }
@@ -785,7 +884,8 @@ inline void Vp_StPtMtV(
 /// result = v_rhs1' * op(M_rhs2) * v_rhs3
 inline value_type transVtMtV(
 	const Vector& v_rhs1, const MatrixOp& M_rhs2
-	, BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3)
+	,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3
+	)
 {
 	return M_rhs2.transVtMtV(v_rhs1,trans_rhs2,v_rhs3);
 }
@@ -793,9 +893,21 @@ inline value_type transVtMtV(
 /// result = sv_rhs1' * op(M_rhs2) * sv_rhs3
 inline value_type transVtMtV(
 	const SpVectorSlice& sv_rhs1, const MatrixOp& M_rhs2
-	, BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3)
+	,BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3
+	)
 {
 	return M_rhs2.transVtMtV(sv_rhs1,trans_rhs2,sv_rhs3);
+}
+
+/// <tt>symwo_lhs += alpha*op(P1')*op(M)*op(P2) + alpha*op(P2')*op(M')*op(P1) + beta*symwo_lhs</tt>
+inline void syr2k(
+	const MatrixOp& M, BLAS_Cpp::Transp M_trans, value_type alpha
+	,const GenPermMatrixSlice& P1, BLAS_Cpp::Transp P1_trans
+	,const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
+	,value_type beta, MatrixSymOp* symwo_lhs
+	)
+{
+	M.syr2k(M_trans,alpha,P1,P1_trans,P2,P2_trans,beta,symwo_lhs);
 }
 
 //		end Level-2 BLAS
@@ -821,7 +933,8 @@ void Mp_StMtM(
 	MatrixOp* mwo_lhs, value_type alpha
 	,const MatrixOp& mwo_rhs1, BLAS_Cpp::Transp trans_rhs1
 	,const MatrixOp& mwo_rhs2, BLAS_Cpp::Transp trans_rhs2
-	, value_type beta = 1.0 );
+	,value_type beta = 1.0
+	);
 
 ///
 /** Perform a rank-k update of a symmetric matrix of the form:

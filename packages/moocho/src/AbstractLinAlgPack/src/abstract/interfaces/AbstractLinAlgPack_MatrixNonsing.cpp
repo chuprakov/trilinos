@@ -23,7 +23,7 @@
 #include "VectorSpace.hpp"
 #include "SpVectorClass.hpp"
 #include "SpVectorView.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
+#include "EtaVector.hpp"
 #include "LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 #include "dynamic_cast_verbose.hpp"

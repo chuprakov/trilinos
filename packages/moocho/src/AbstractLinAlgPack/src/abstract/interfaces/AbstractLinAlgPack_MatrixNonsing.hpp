@@ -72,6 +72,44 @@ namespace AbstractLinAlgPack {
 class MatrixNonsing : public virtual MatrixBase {
 public:
 
+	/** @name Friends */
+	//@{
+
+	///
+	friend
+	void V_InvMtV(
+		VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
+		,BLAS_Cpp::Transp trans_rhs1, const Vector& v_rhs2);
+	///
+	friend
+	void V_InvMtV(
+		VectorMutable* v_lhs, const MatrixNonsing& M_rhs1
+		,BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2);
+	///
+	friend
+	value_type transVtInvMtV(
+		const Vector& v_rhs1, const MatrixNonsing& M_rhs2
+		,BLAS_Cpp::Transp trans_rhs2, const Vector& v_rhs3);
+	///
+	friend
+	value_type transVtInvMtV(
+		const SpVectorSlice& sv_rhs1, const MatrixNonsing& M_rhs2
+		,BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3);
+	///
+	friend
+	void M_StInvMtM(
+		MatrixOp* m_lhs, value_type alpha
+		,const MatrixNonsing&  M_rhs1,     BLAS_Cpp::Transp trans_rhs1
+		,const MatrixOp&       mwo_rhs2,   BLAS_Cpp::Transp trans_rhs2 );
+	///
+	friend
+	void M_StMtInvM(
+		MatrixOp* m_lhs, value_type alpha
+		,const MatrixOp&      mwo_rhs1,  BLAS_Cpp::Transp trans_rhs1
+		,const MatrixNonsing& M_rhs2,    BLAS_Cpp::Transp trans_rhs2 );
+
+	//@}
+
 	/** @name Public types */
 	//@{
 

@@ -58,6 +58,30 @@ public:
 
 	//@}
 
+	/** @Friends */
+	//@{
+
+	///
+	friend
+	void Mp_StPtMtP(
+		MatrixSymOp* sym_lhs, value_type alpha
+		,EMatRhsPlaceHolder dummy_place_holder
+		,const MatrixSymOp& M
+		,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
+		,value_type beta
+		);
+	///
+	friend
+	void Mp_StMtMtM(
+		MatrixSymOp* sym_lhs, value_type alpha
+		,EMatRhsPlaceHolder dummy_place_holder
+		,const MatrixSymOp& M
+		,const MatrixOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+		,value_type beta
+		);
+
+	//@}
+
 	/** @name Clone */
 	//@{
 
@@ -79,6 +103,8 @@ public:
 	virtual mat_mswo_ptr_t clone_mswo() const;
 
 	//@}
+
+protected:
 
 	/** @name Level-1 BLAS */
 	//@{
@@ -117,6 +143,8 @@ public:
 		) const;
 
 	//@}
+
+public:
 
 	/** Overridden from MatrixOp */
 	//@{

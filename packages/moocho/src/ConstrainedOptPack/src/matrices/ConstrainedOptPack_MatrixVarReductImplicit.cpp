@@ -14,14 +14,12 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptPack/src/matrices/MatrixVarReductImplicit.hpp"
-#include "AbstractLinAlgPack/src/serial/implementations/SpVectorOp.hpp"
-//#include "AbstractLinAlgPack/src/serial/implementations/dense_Vp_StPtMtV.hpp"
+#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpNonsing.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOpOut.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/AbstractLinAlgPackAssertOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/interfaces/LinAlgOpPack.hpp"
 #include "WorkspacePack.hpp"
 #include "ThrowException.hpp"
 
@@ -281,7 +279,6 @@ void MatrixVarReductImplicit::Vp_StMtV(
 {
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
-	using DenseLinAlgPack::Vt_S;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 

@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include "MatrixSymOp.hpp"
-#include "AbstractLinAlgPack/src/abstract/tools/EtaVector.hpp"
+#include "EtaVector.hpp"
 
 namespace AbstractLinAlgPack {
 

@@ -41,7 +41,6 @@ namespace NLPInterfacePack {
  \begin{array}{lcl}
  \mbox{min}  &  & f(x)                     \\
  \mbox{s.t.} &  & c(x) = 0                 \\
-             &  & h^L \leq h(x) \leq h^U   \\
              &  & x^L \leq x    \leq x^U
  \end{array}
  \f]
@@ -49,53 +48,45 @@ namespace NLPInterfacePack {
  * <li> \f$x, x^L, x^U \:\in\:\mathcal{X}\f$
  * <li> \f$f(x) : \:\mathcal{X} \rightarrow \Re\f$
  * <li> \f$c(x) : \:\mathcal{X} \rightarrow \mathcal{C}\f$
- * <li> \f$h(x) : \:\mathcal{X} \rightarrow \mathcal{H}\f$
  * <li> \f$\mathcal{X} \:\in\:\Re\:^n\f$
  * <li> \f$\mathcal{C} \:\in\:\Re\:^m\f$
- * <li> \f$\mathcal{H} \:\in\:\Re\:^{m^I}\f$
  * </ul>
  \verbatim
 
      min    f(x)
      s.t.   c(x) = 0
-            hl <= h(x) <= hu
 	        xl <= x <= xu
 	where:
 	        x    <: space_x
             f(x) <: space_x -> R^1
 	        c(x) <: space_x -> space_c 
-	        h(x) <: space_x -> space_h
             space_x <: R^n
             space_c <: R^n -> R^m
-            space_h <: R^n -> R^mI
  \endverbatim
- * The %NLP is defined in terms of vector spaces for the unknowns \a x (\c space_x)
- * the equality constraints \a c (\c space_h) and general inequality constraints
- * \a (\c space_h) and nonlinear operator functions \a f(x), \a c(x) and \a h(x).
- * In the above form, none of the variables are fixed between bounds (strictly
- * xl < xu).  It is allowed however for <tt>m == 0</tt> and/or <tt>mI == 0</tt>
- * for the elimination of more general constriants.  It is also allowed for
- * <tt>n == m</tt> in which case <tt>this</tt> represents a fully determined
- * system of nonlinear equaltions.  In any case, an objective function is always
+
+ * The %NLP is defined in terms of vector spaces for the unknowns \a x (\c space_x),
+ * the equality constraints \a c (\c space_c)and nonlinear operator functions
+ * \a f(x) and \a c(x).  In the above form, none of the variables are fixed between
+ * bounds (strictly xl < xu).  It is allowed however for <tt>m == 0</tt> for the
+ * elimination of general constriants.  It is also allowed for <tt>n == m</tt>
+ * in which case <tt>this</tt> represents a fully determined system of nonlinear
+ * equaltions.  In any case, an objective function is always
  * included in the formutation and will impact solution algorithms.
  *
  * Special types of NLPs are identified as: <ol>
  * <li> Fully general %NLP :
- *      <ul><li><tt>( xl != -Inf || xu != +inf ) && ( m  > 0 && mI  > 0 )</tt></ul>
+ *      <ul><li><tt>( xl != -Inf || xu != +inf ) && ( m  > 0 )</tt></ul>
  * <li> General equality only constrained %NLP :
- *      <ul><li><tt>( xl == -Inf && xu == +Inf ) && ( m  > 0 && mI == 0 )</tt></ul>
- * <li> General inequality constrained %NLP :
- *      <ul><li><tt>( xl ==  ??? && xu ==  ??? ) && ( m == 0 && mI  > 0 )</tt></ul>
+ *      <ul><li><tt>( xl == -Inf && xu == +Inf ) && ( m  > 0 )</tt></ul>
  * <li> Bound constrained %NLP :
- *      <ul><li><tt>( xl != -Inf || xu != +Inf ) && ( m == 0 && mI == 0 )</tt></ul>
+ *      <ul><li><tt>( xl != -Inf || xu != +Inf ) && ( m == 0 )</tt></ul>
  * <li> Unconstrained %NLP :
- *      <ul><li><tt>( xl == -Inf && xu == +Inf ) && ( m == 0 && mI == 0 )</tt></ul>
+ *      <ul><li><tt>( xl == -Inf && xu == +Inf ) && ( m == 0 )</tt></ul>
  * <li> Nonlinear Equations (NLE) :
  *      <ul><li><tt>n == m</tt></ul>
  * </ol>
  *
- * Note that in (6) above, that this allows for bounds on the variables and general
- * inequality constriants.  If some of the equations in <tt>c(x)</tt> are linearly
+ * If some of the equations in <tt>c(x)</tt> are linearly
  * dependent (but consistent) then it is possible that some of these extra inequalities
  * my be active at the solution but in general they can not be (unless they are degenerate).
  * An optimization algorithm may refuse to solve some of the above problems but this
@@ -104,32 +95,67 @@ namespace NLPInterfacePack {
  * The Lagrangian for this problem is defined by:
  \verbatim
 
-	L = f(x) + lambda' * c(x)
-        + lambdaI_l' * ( hl - h(x) ) + lambdaI_u' * ( h(x) - hu )
-        + nul' * ( xl - x ) + nuu' * ( x - xu )
+	L = f(x) + lambda' * c(x) + nul' * ( xl - x ) + nuu' * ( x - xu )
  \endverbatim
  * The optimality conditions are given by:
  \verbatim
 
-	del(L,x) = del(f,x) + del(c,x) * lambda + del(h,x) * lambdaI + nu = 0
+	del(L,x) = del(f,x) + del(c,x) * lambda + nu = 0
 	c(x) = 0
-	hl <= h(x) <= hu
-	lambdaI_l(j) * ( h(x)(j) - hl(j) ) = 0,    for j = 1...mI
-	lambdaI_u(j) * ( h(x)(j) - hu(j) ) = 0,    for j = 1...mI
 	nuu(i) * ( x(i) - xu(i) ) = 0,      for i = 1...n
 	nuu(i) * ( x(i) - xu(i) ) = 0,      for i = 1...n
 	where:
-		lambdaI = lambdaI_u - lambdaI_l
 		nu = nuu - nul
  \endverbatim
  * What is unique about this interface is that the vector objects are hidden behind
  * abstact interfaces.  Clients can create vectors from the various vector spaces
  * using the <tt>\ref AbstractLinAlgPack::VectorSpace "VectorSpace"</tt> objects returned from
- * <tt>this->space_x()</tt> (dim \c n), <tt>this->space_c()</tt> (dim \c m) and
- * <tt>this->space_h()</tt> (dim \c mI).  In this sense, an <tt>%NLP</tt> object
+ * <tt>this->space_x()</tt> (dim \c n), and <tt>this->space_c()</tt> (dim \c m).
+ * In this sense, an <tt>%NLP</tt> object
  * acks as an "Abstract Factory" to create the vectors needed by an optimization
  * algorithm.  This allows optimization software to be written in a way that is
  * completly independent from the linear algebra components.
+ *
+ * <b>General Inequalities and Slacks</b>
+ *
+ * The underlying NLP may containe general inequality
+ * constraints which where converted to equalities using slack
+ * variables.  The actual underlying NLP may have taken the form
+ * (in mathematical and ASCII notation):
+ \f[
+ \begin{array}{lcl}
+ \mbox{min}  &  & \hat{f}(\hat{x})                                 \\
+ \mbox{s.t.} &  & \hat{c}(\hat{x}) = 0                             \\
+             &  & \hat{h}^L \leq \hat{h}(\hat{x}) \leq \hat{h}^U   \\
+             &  & \hat{x}^L \leq \hat{x} \leq \hat{x}^U
+ \end{array}
+ \f]
+ * where:<ul>
+ * <li> \f$\hat{x}, \hat{x}^L, \hat{x}^U \:\in\:\hat{\mathcal{X}}\f$
+ * <li> \f$\hat{f}(\hat{x}) : \:\hat{\mathcal{X}} \rightarrow \Re\f$
+ * <li> \f$\hat{c}(\hat{x}) : \:\hat{\mathcal{X}} \rightarrow \hat{\mathcal{C}}\f$
+ * <li> \f$h(x) : \:\hat{\mathcal{X}} \rightarrow \hat{\mathcal{H}}\f$
+ * <li> \f$\hat{\mathcal{X}} \:\in\:\Re\:^{\hat{n}}\f$
+ * <li> \f$\hat{\mathcal{C}} \:\in\:\Re\:^{\hat{m}}\f$
+ * <li> \f$\hat{\mathcal{H}} \:\in\:\Re\:^{\hat{m^I}}\f$
+ * </ul>
+ \verbatim
+
+     min    f_hat(x_hat)
+     s.t.   c_hat(x_hat) = 0
+            hl_hat <= h_hat(x_hat) <= hu_hat
+	        xl_hat <= x_hat <= xu_hat
+	where:
+	        x_hat    <: space_x
+            f_hat(x_hat) <: space_x_hat -> R^1
+	        c_hat(x_hat) <: space_x_hat -> space_c_hat 
+	        h_hat(x_hat) <: space_x_hat -> space_h_hat
+            space_x_hat <: R^n_hat
+            space_c_hat <: R^n -> R^m_hat
+            space_h_hat <: R^n -> R^mI_hat
+ \endverbatim
+ *
+ * ToDo: Finish!
  *
  * <b>Client Usage:</b>
  *
@@ -144,13 +170,13 @@ namespace NLPInterfacePack {
  * respectively.  The vector space objects returned by these methods are ment to be more
  * than transient.  In fact, it is expected that these vector space objects should remain
  * valid for the entire run of an NLP algorithm.  Only if the underlying NLP is changed in
- * a fundamental way (i.e. \c n, \c m or \c mI changes) should the vector space objects returned
+ * a fundamental way (i.e. \c n, or \c m changes) should the vector space objects returned
  * from these function become invalid.  In this case the client must call these methods again
  * to get updated vector space objects.
  *
- * The dimensionality of the NLP is returned by the methods <tt>n()</tt>, <tt>m()</tt>
- * and <tt>>mI()</tt> but they have default implementations based on <tt>space_x()</tt>,
- * <tt>space_c()</tt> and <tt>space_h()</tt> respectively.
+ * The dimensionality of the NLP is returned by the methods <tt>n()</tt> and <tt>m()</tt>
+ * but they have default implementations based on <tt>space_x()</tt> and <tt>space_c()</tt>
+ * respectively.
  *
  * The number of variables \c x with finite bounds is returned by the method <tt>num_bounded_x()</tt>.
  * The methods <tt>xl()</tt> and <tt>xu()</tt> return references
@@ -158,9 +184,9 @@ namespace NLPInterfacePack {
  * <tt>xl().get_ele(i) == -infinite_bound()</tt> and an upper bound is considered infinite if
  * <tt>xu().get_ele(i) == +infinite_bound()</tt>.
  *
- * If <tt>mI() > 0</tt>, the methods \c hl() and \c hu() return references to the upper and lower
- * bounds to the general inequality constraints \a h(x).  While it is expected that 
- * <tt>hl().get_ele(j) != -infinite_bound() || hu().get_ele(j) != +infinite_bound</tt> for <tt>j = 1...mI()</tt>
+ * If <tt>ns() > 0</tt>, the methods \c hl_hat() and \c hu_hat() return references to the upper and lower
+ * bounds to the general inequality constraints \a h_hat(x_hat).  While it is expected that 
+ * <tt>hl_hat().get_ele(j) != -infinite_bound() || hu_hat().get_ele(j) != +infinite_bound</tt> for <tt>j = 1...ns()</tt>
  * this is not required by this interface.  On the other hand it seems silly to define general inequality constriants
  * that are not bounded but there may be some reason to include these that makes things easier for the
  * implementor of the NLP subclass.
@@ -170,61 +196,58 @@ namespace NLPInterfacePack {
  * method <tt>get_init_lagrange_mult()</tt>.  
  * 
  * The bread and butter of an %NLP interface is the calculation of the functions that define the objective
- * and constraints and various points \a x and the methods \c calc_f(), \c calc_c() and \c calc_h()
+ * and constraints and various points \a x and the methods \c calc_f() and \c calc_c()
  * accomplish this.  The quantities that these functions update must be set prior by calling the methods
- * \c set_f(), \c set_c() and \c set_h() respectively.  It may seem strange not to pass these quantities
+ * \c set_f() and \c set_c() respectively.  It may seem strange not to pass these quantities
  * directly to the calculation functions but there is a good reason why it is done this way.
  * The reason is that this interface supports the efficient update of mutiple quantities at a given
  * point \a x.  For example, in many %NLPs some of the same terms are shared between the constriants
- * functions and objective function.  Therefore it is more efficient to compute \a f(x), \a c(x) and \a h(x)
+ * functions and objective function.  Therefore it is more efficient to compute \a f(x) and \a c(x)
  * simultaneously rather than computing them separately.  In order to allow for this possibility,
- * the client can set the desired quantities (i.e. \c set_f(), \c set_c() and \c set_h()) and then
- * calling the method \c set_multi_calc(true) prior to calling \c calc_f(), \c calc_c() and \c calc_h().
- * Another reason for structuring this %NLP interface this way is when automatic differentiation is used
+ * the client can set the desired quantities (i.e. \c set_f() and \c set_c()) prior to calling \c calc_f()
+ * and \c calc_c().  Another reason for structuring this %NLP interface this way is when automatic differentiation is used
  * to compute derivatives (see \c NLPFirstOrder) the function values are computed for free.
  *
  * Once an optimization algorithm has the solution (or gives up with a suboptimal point), it should
  * report this solution to the %NLP object using the method \c report_final_solution().
  *
  * Finally, the client can get the counts for the number of function evaluations since \c initialize()
- * was called using the methods \c num_f_evals(), \c num_c_evals() and \c num_h_evals().
+ * was called using the methods \c num_f_evals() and \c num_c_evals().
  * These counts do not include any function evaluations that may have been used internally for finite
  * difference evaluations or anything of that nature.  Also, if the client calls <tt>calc_info(x,false)</tt>
- * (where \c info = \c f, \c c or \c h) several times then the default implementation will increment the count
+ * (where \c info = \c f or \c c) several times then the default implementation will increment the count
  * for each call even though the actual quantity may not actually be recalculated each time (i.e. if <tt>newx==false</tt>).
  * This information is not known here in this base class but the subclasses can overide this behavior if desired.
  *
  * <b>Subclass developer's notes:</b>
  *
- * The calcuation methods \c calc_f(), \c calc_c() and \c calc_h() have default implementations in this base
+ * The calcuation methods \c calc_f() and \c calc_c() have default implementations in this base
  * class that should meet the needs of all the subclasses.  These method implementations call the protected
- * pure virtual methods \c imp_calc_f(), \c imp_calc_c() and \c imp_calc_h() to compute the actual quantities.
+ * pure virtual methods \c imp_calc_f() and \c imp_calc_c() to compute the actual quantities.
  * Subclasses must override these methods (in addition to several methods from the public interface).
  * Pointers to the quantities to be updated are passed to these methods to the subclasses in the form of
- * an aggregate \c ZeroOrderInfo object that is returned from \c the protected method zero_order_info().
+ * an aggregate \c ZeroOrderInfo object that is returned from the protected method \c zero_order_info().
  * This ensures that the only interaction between an NLP base object and its subclass objects is through
  * member functions and never through pulic or protected data members.
  *
  * <A NAME="must_override"></A>
  * The following methods must be overridden by a subclass in order to create a concrete NLP object:
  * \c force_xinit_in_bounds(bool), \c force_xinit_in_bounds(), \c is_initialized(),
- * \c space_x(), \c space_c(), \c space_h(), \c num_bounded_x(), \c xl(), xu(), \c hl(), \c hu(),
- * \c xinit(), \c scale_f(value_type), \c scale_f().
+ * \c space_x(), \c space_c(), \c num_bounded_x(), \c xl(), xu(), \c xinit(),]
+ * \c scale_f(value_type), \c scale_f().
  *
  * <A NAME="should_override"></A>
  * The following methods should be overridden by most subclasses but do not have to be: \c initialize(),
- * \c n(), \c m(), \c mI(), \c get_init_lagrange_mult(), \c set_multi_calc(bool), \c multi_calc(),
- * \c report_final_solution().
+ * \c get_init_lagrange_mult(), \c report_final_solution().
  *
  * The following methods should never have to be overridden by most subclasses except in some very
  * strange situations: \c set_f(), \c get_f(), \c f(), \c set_c(), \c get_c(), \c c(),
- * \c set_h(), \c get_h(), \c h(), \c calc_f(), \c calc_c(), \c calc_h(), \c num_f_evals(),
- * \c num_c_evals(), \c num_h_evals().
+ * \c calc_f(), \c calc_c(), \c num_f_evals(), \c num_c_evals().
  *
  * <b>Additional notes:</b>
  *
- * This is where the bounds on the variables can play a very
- * critical part.  It is desirable for the functions \a f(x), \a c(x) and \a h(x) to be defined and
+ * The bounds on the variables can play a very critical role in many optimization algorithms.  It is desirable
+ * for the functions \a f(x) and \a c(x) to be defined and
  * relatively well behaved (i.e. smooth, continous, differentiable etc.) in the region <tt>xl <= x <= xu</tt>.
  * While this is not always possible, an NLP can often be reformulated to have this properly.  For example, suppose
  * there are constraints has the form:
@@ -377,24 +400,14 @@ public:
 	 * Default implementation returns <tt>this->space_c().get() != NULL ? this-space_c()->dim() : 0</tt>.
 	 */
 	virtual size_type m() const;
-	///
-	/** Return the number of general inequality constraints.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Default implementation returns <tt>this->space_h().get() != NULL ? this-space_h()->dim() : 0</tt>.
-	 */
-	virtual size_type mI() const;
 
 	//@}
 
-	/** @name DVector Space objects. */
+	/** @name Vector Space objects. */
 	//@{
 
 	///
-	/** DVector space object for unknown variables x (dimension n).
+	/** Vector space object for unknown variables x (dimension n).
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -406,7 +419,7 @@ public:
 	 */
 	virtual vec_space_ptr_t space_x() const = 0;
 	///
-	/** DVector space object for general equality constraints c(x) (dimension m).
+	/** Vector space object for general equality constraints c(x) (dimension m).
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -418,20 +431,6 @@ public:
 	 * </ul>
 	 */
 	virtual vec_space_ptr_t space_c() const = 0;
-
-	///
-	/** DVector space object for general inequality constraints c(x) (dimension mI).
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> [<tt>this->mI() > 0</tt>] <tt>return.get() != NULL</tt>
-	 * <li> [<tt>this->mI() == 0</tt>] <tt>return.get() == NULL</tt>
-	 * </ul>
-	 */
-	virtual vec_space_ptr_t space_h() const = 0;
 
 	//@}
 
@@ -483,42 +482,6 @@ public:
 
 	//@}
 
-	/** @name Bounds on the general inequality constraints h(x). */
-	//@{
-
-	///
-	/** Returns the lower bounds on the inequality constraints <tt>h(x)</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->mI() > 0</tt> (throw <tt>NoBounds</tt>).
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>return.space().is_compatible(*this->space_h()) == true</tt>
-	 * </ul>
-	 *
-	 * Any bounds that are non-existant will return <tt>this->hl().get_ele(j) == -NLP::infinite_bound()</tt>.
-	 */
-	virtual const Vector& hl() const = 0;
-	///
-	/** Returns upper bounds on the inequality constraints <tt>h(x)</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->mI() > 0</tt> (throw <tt>NoBounds</tt>).
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>return.space().is_compatible(*this->space_h()) == true</tt>
-	 * </ul>
-	 *
-	 * Any bounds that are non-existant will return <tt>this->hu().get_ele(j) == +NLP::infinite_bound()</tt>.
-	 */
-	virtual const Vector& hu() const = 0;
-
-	//@}
-
 	/** @name Initial guess of NLP solution */
 	//@{
 
@@ -544,10 +507,6 @@ public:
 	 *                lambda == NULL is allowed in which case it will not
 	 *                be set.  Must have been created by <tt>this->space_c()->create_member()</tt>.
 	 *                Must be NULL if m() == 0.
-	 * @param lambdaI [out] Pointer to lagrange multipliers for inequalities.
-	 *                lambdaI == NULL is allowed in which case it will not
-	 *                be set.  Must have been created by <tt>this->space_h()->create_member()</tt>.
-	 *                Must be NULL if mI() == 0;
 	 * @param nu      [out] Pointer to lagrange multipliers for bounds.
 	 *                nu == NULL is allowed in which case it will not
 	 *                be set.  Must have been created by <tt>this->space_x()->create_member()</tt>.
@@ -556,15 +515,9 @@ public:
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> [<tt>lambda != NULL</tt>] <tt>lambda->size() == this->n()</tt>
-	 * <li> [<tt>nu != NULL</tt>] <tt>nu->size() == this->n()</tt>
-	 * </ul>
 	 */
 	virtual void get_init_lagrange_mult(
 		VectorMutable*   lambda
-		,VectorMutable*  lambdaI
 		,VectorMutable*  nu
 		) const;
 
@@ -660,83 +613,9 @@ public:
 
 	//@}
 
-	/** @name <<std aggr>> members for the residual of the general inequality constriants h(x). */
-	//@{
-
-	///
-	/** Set a pointer to a vector to be updated when <tt>this->calc_h()</tt> is called.
-	 *
-	 * @param  h  [in] Pointer to constraint residual vector.  May be \c NULL.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> [<tt>h != NULL</tt>] <tt>h->space().is_compatible(*this->space_h()) == true</tt>
-	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->get_h() == h</tt>
-	 * </ul>
-	 */
-	virtual void set_h(VectorMutable* h);
-	///
-	/** Return pointer passed to <tt>this->set_h()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 */
-	virtual VectorMutable* get_h();
-	///
-	/** Returns non-<tt>const</tt> <tt>*this->get_h()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_h() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 */
-	virtual VectorMutable& h();
-	///
-	/** Returns <tt>const</tt> <tt>*this->get_h()</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>this->get_h() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 */
-	virtual const Vector& h() const;
-
-	//@}
-
 	/** @name Calculation Members. */
 	//@{
 
-	///
-	/** Set whether the subclass can update multiple quanities to save recalculations.
-	 *
-	 * The default implementation does nothing.
-	 *
-	 * @param  set_multi_calc
-	 *                [in] If \c true the subclass is allowed to update multiple quantities if it is
-	 *                more efficient to do so.  For example, calling calc_f(...) to update 'f'
-	 *                may result in an update of 'c' if it is more efficent to do so.
-	 *                If \c false,  the subclass is not allowed to update multiple quantities.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 */
-	virtual void set_multi_calc(bool multi_calc) const;
-	///
-	/** Query whether the NLP is allowed to perform multiple updates.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 *
-	 * The default implementation just returns false.
-	 */
-	virtual bool multi_calc() const;
 	///
 	/** Set the scaling of the objective function.
 	 *
@@ -805,30 +684,6 @@ public:
 	 * to be updated as a side effect.
 	 */ 
 	virtual void calc_c(const Vector& x, bool newx = true) const;
-	///
-	/** Update the vector for <tt>h</tt> at the point <tt>x</tt> and put it in the stored reference.
-	 *
-	 * @param  x     [in] Point at which to calculate residual to the inequality constraints <tt>h</tt>.
-	 * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
-	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
-	 *               If \c false, the values in \c x are not the same as the last call to a
-	 *               <tt>this->calc_*(x,newx)</tt> member.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
-	 * <li> <tt>this->get_h() != NULL</tt> (throw <tt>NoRefSet</tt>)
-	 * </ul>
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>this->h()</tt> is updated to \a h(x)
-	 * </ul>
-	 *
-	 * If <tt>set_multi_calc(true)</tt> was called then storage reference for <tt>f</tt> and/or <tt>c</tt> may also be changed
-	 * but is not guarentied to be.  But no other quanities from possible subclasses are allowed
-	 * to be updated as a side effect.
-	 */ 
-	virtual void calc_h(const Vector& x, bool newx = true) const;
 
 	//@}
 
@@ -853,9 +708,8 @@ public:
 	virtual void report_final_solution(
 		const Vector&    x
 		,const Vector*   lambda
-		,const Vector*   lambdaI
 		,const Vector*   nu
-		,bool                  is_optimal
+		,bool            is_optimal
 		) const;
 
 	//@}
@@ -881,15 +735,6 @@ public:
 	 * </ul>
 	 */
 	virtual size_type num_c_evals() const;
-	///
-	/** Gives the number of constraint function h(x) evaluations called by the solver
-	 * since initialize() was called.  Throws exception if <tt>this->mI() == 0</tt>.
-	 *
-	 * Preconditions:<ul>
-	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * </ul>
-	 */
-	virtual size_type num_h_evals() const;
 
 	//@}
 
@@ -902,18 +747,16 @@ public:
 	struct ZeroOrderInfo {
 	public:
 		///
-        ZeroOrderInfo() : f(NULL), c(NULL), h(NULL)
+        ZeroOrderInfo() : f(NULL), c(NULL)
 		{}
 		///
-		ZeroOrderInfo( value_type* f_in, VectorMutable* c_in, VectorMutable* h_in )
-			: f(f_in), c(c_in), h(h_in)
+		ZeroOrderInfo( value_type* f_in, VectorMutable* c_in )
+			: f(f_in), c(c_in)
 		{}
-		/// Pointer to objective function <tt>f</tt> (may be NULL if not set)
+		/// Pointer to objective function <tt>f</tt> (Will be NULL if not set)
 		value_type*           f;
-		/// Pointer to constraints residual <tt>c</tt> (may be NULL if not set)
+		/// Pointer to constraints residual <tt>c</tt> (Will be NULL if not set)
 		VectorMutable*  c;
-		/// Pointer to constraints residual <tt>h</tt> (may be NULL if not set)
-		VectorMutable*  h;
 	}; // end struct ZeroOrderInfo
 
 	/// Return pointer to set quantities
@@ -925,7 +768,7 @@ protected:
 	//@{
 
 	///
-	/** Overridden to compute f(x) and perhaps c(x) and/or h(x) (if multiple calculaiton = true).
+	/** Overridden to compute f(x) (and perhaps other quantities if set).
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)

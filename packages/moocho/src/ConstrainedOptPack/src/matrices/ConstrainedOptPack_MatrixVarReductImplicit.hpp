@@ -22,7 +22,6 @@
 #include "ConstrainedOptPack/src/ConstrainedOptPackTypes.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixOp.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorSpace.hpp"
-#include "ref_count_ptr.hpp"
 
 namespace ConstrainedOptPack {
 
