@@ -77,6 +77,12 @@ public:
   /// Determines if operators are tested after they are formed
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, testOperators );
 
+  /// Determine the file that the initial state solution is read from.
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, yGuessFileNameBase );
+
+  /// Determine the file that the final solution for the state is written.
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( std::string, yFinalFileNameBase );
+
   ///
   /** Give mutable access to the object used to generate
    * preconditioners.
@@ -130,16 +136,13 @@ public:
 	 * NOX::Epetra::Group::applyJacobianInverse(...) on 2004/01/19.
 	 */
   EpetraNPFO(
-	 	const int      maxLinSolveIter  = 400
-		,const double  relLinSolveTol   = 1e-6
-		,const bool    usePrec          = true
-		,const bool    testOperators    = false
+	 	const int            maxLinSolveIter      = 400
+		,const double        relLinSolveTol       = 1e-6
+		,const bool          usePrec              = true
+		,const bool          testOperators        = false
+		,const std::string   &yGuessFileNameBase  = ""
+		,const std::string   &yFinalFileNameBase  = ""
 		);
-
-  /// Calls <tt>initialize()</tt>
-  EpetraNPFO(
-    const Teuchos::RefCountPtr<Epetra::NonlinearProblemFirstOrder>   &epetra_np
-    );
 
   ///
   void initialize(
@@ -203,7 +206,13 @@ public:
 		,const Vector<Scalar>*   u[]
 		,bool                    newPoint
 		) const;
-
+	///
+	void reportFinalSolution(
+		const Vector<Scalar>     &y
+		,const Vector<Scalar>*   u[]
+		,bool                    solved
+		);
+	
 	//@}
 
 	/** @name Overridden from NonlinearProblemFirstOrder */
@@ -303,6 +312,9 @@ private:
 	// Private data members
 
 	bool isInitialized_;
+
+	int numProc_;
+	int procRank_;
 	
 	mutable AztecOO  aztecOO_;
 
@@ -317,14 +329,14 @@ private:
 	Teuchos::RefCountPtr<const EpetraVectorSpace >                  space_c_;
 	Teuchos::RefCountPtr<const EpetraVectorSpace >                  space_g_;
 
-	Teuchos::RefCountPtr<Vector<Scalar> >                           yL_;
-	Teuchos::RefCountPtr<Vector<Scalar> >                           yU_;
-	Teuchos::RefCountPtr<Vector<Scalar> >                           y0_;
-	std::vector<Teuchos::RefCountPtr<Vector<Scalar> > >             uL_;
- 	std::vector<Teuchos::RefCountPtr<Vector<Scalar> > >             uU_;
-	std::vector<Teuchos::RefCountPtr<Vector<Scalar> > >             u0_;
-	Teuchos::RefCountPtr<Vector<Scalar> >                           gL_;
- 	Teuchos::RefCountPtr<Vector<Scalar> >                           gU_;
+	Teuchos::RefCountPtr<EpetraVector>                           yL_;
+	Teuchos::RefCountPtr<EpetraVector>                           yU_;
+	Teuchos::RefCountPtr<EpetraVector>                           y0_;
+	std::vector<Teuchos::RefCountPtr<EpetraVector> >             uL_;
+ 	std::vector<Teuchos::RefCountPtr<EpetraVector> >             uU_;
+	std::vector<Teuchos::RefCountPtr<EpetraVector> >             u0_;
+	Teuchos::RefCountPtr<EpetraVector>                           gL_;
+ 	Teuchos::RefCountPtr<EpetraVector>                           gU_;
 
 	Teuchos::RefCountPtr<const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > >       factory_DcDy_;
   std::vector<Teuchos::RefCountPtr<const MemMngPack::AbstractFactory<LinearOp<Scalar> > > >  factory_DcDu_;
@@ -351,6 +363,12 @@ private:
 
 	// //////////////////////////////////////
 	// Private member functions
+
+	///
+	void read_y_guess( EpetraVector *y );
+
+	///
+	void write_y_final( const Epetra_Vector &y );
 
   ///
   static const Epetra_Vector& get_epetra_vec( const Vector<Scalar> &v );

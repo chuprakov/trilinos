@@ -37,6 +37,7 @@
 #include "AbstractFactoryStd.hpp"
 #include "Epetra_CrsMatrix.h"
 #include "Epetra_VbrMatrix.h"
+#include "Epetra_Comm.h"
 #include "Ifpack_CrsRiluk.h"
 #include "Teuchos_Time.hpp"
 
@@ -56,26 +57,25 @@ namespace Nonlin {
 // Constructors / Initializers / accessors
 
 EpetraNPFO::EpetraNPFO(
-	const int      maxLinSolveIter
-	,const double  relLinSolveTol
-	,const bool    usePrec
-	,const bool    testOperators
+	const int            maxLinSolveIter
+	,const double        relLinSolveTol
+	,const bool          usePrec
+	,const bool          testOperators
+	,const std::string   &yGuessFileNameBase
+	,const std::string   &yFinalFileNameBase
 	)
 	:maxLinSolveIter_(maxLinSolveIter)
 	,relLinSolveTol_(relLinSolveTol)
 	,usePrec_(usePrec)
 	,testOperators_(testOperators)
 	,isInitialized_(false)
+	,yGuessFileNameBase_(yGuessFileNameBase)
+	,yFinalFileNameBase_(yFinalFileNameBase)
+	,numProc_(1)
+	,procRank_(0)
 {
 	// Turn off output from Aztec by default!
 	aztecOO_.SetAztecOption(AZ_output,AZ_none);
-}
-
-EpetraNPFO::EpetraNPFO(
-  const Teuchos::RefCountPtr<Epetra::NonlinearProblemFirstOrder>   &epetra_np
-  )
-{
-  initialize(epetra_np);
 }
 
 void EpetraNPFO::initialize(
@@ -85,6 +85,11 @@ void EpetraNPFO::initialize(
   using Teuchos::RefCountPtr;
   using Teuchos::rcp;
 
+	TEST_FOR_EXCEPTION( !epetra_np.get(), std::invalid_argument, "Error!" );
+
+	const Epetra_Comm &epetra_comm = epetra_np->map_y()->Comm();
+	numProc_  = epetra_comm.NumProc();
+	procRank_ = epetra_comm.MyPID();
   epetra_np_ = epetra_np;
 
   // Make sure that the Epetra Nonlinear Problem is initialized
@@ -107,6 +112,7 @@ void EpetraNPFO::initialize(
   yL_ = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->yL()),false),space_y_));
   yU_ = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->yU()),false),space_y_));
   y0_ = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->y0()),false),space_y_));
+	read_y_guess( &*y0_ );
   // u
   uL_.resize(Nu);
   uU_.resize(Nu);
@@ -116,6 +122,7 @@ void EpetraNPFO::initialize(
     uL_[l-1] = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->uL(l)),false),space_u_[l-1]));
     uU_[l-1] = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->uU(l)),false),space_u_[l-1]));
     u0_[l-1] = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->u0(l)),false),space_u_[l-1]));
+		// ToDo: Optionally read in u0[l] from file!
   }
   // g
   gL_ = rcp(new EpetraVector(rcp(&const_cast<Epetra_Vector&>(epetra_np_->gL()),false),space_g_));
@@ -310,6 +317,22 @@ void EpetraNPFO::calc_g(
   calc_Dg(y,u,newPoint,false);
 }
 
+void EpetraNPFO::reportFinalSolution(
+		const Vector<Scalar>     &y_in
+		,const Vector<Scalar>*   u_in[]
+		,bool                    solved
+	)
+{
+  // Get Epetra objects for y and u
+  const Epetra_Vector &y  = get_epetra_vec(y_in);
+  const Epetra_Vector **u = set_u( u_in, true );
+	// Write solution files
+	write_y_final(y);
+	// ToDo: Write the final solution for u[l] to file!
+	// Report the final solution
+	epetra_np_->reportFinalSolution(y,u,solved);
+}
+
 // Overridden from NonlinearProblemFirstOrder
 
 Teuchos::RefCountPtr< const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > >
@@ -471,6 +494,56 @@ EpetraNPFO::set_u( const Vector<Scalar>* u_in[], bool newPoint ) const
     }
   }
   return &u_in_[0];
+}
+
+void EpetraNPFO::read_y_guess( EpetraVector *y )
+{
+	if(yGuessFileNameBase().length()) {
+		std::ostringstream y_guess_file_name;
+		y_guess_file_name << yGuessFileNameBase() << "." << numProc_ << "." << procRank_;
+		std::ifstream y_guess_file(y_guess_file_name.str().c_str());
+		TEST_FOR_EXCEPTION(
+			!y_guess_file, std::runtime_error
+			,"EpetraNPFO::read_y_guess(...): Error, the file \""<<y_guess_file_name.str()<<"\" could not be opended for input!"
+			);
+		Epetra_Vector &epetra_y = *y->epetra_vec();
+		const int local_dim = epetra_np_->map_y()->NumMyElements();
+		int read_local_dim;
+#ifdef _DEBUG
+		TEST_FOR_EXCEPTION( y_guess_file.eof(), std::runtime_error, "Error!" );
+#endif
+		y_guess_file >> read_local_dim;
+		for( int i = 0; i < local_dim; ++i ) {
+#ifdef _DEBUG
+			TEST_FOR_EXCEPTION( y_guess_file.eof(), std::runtime_error, "Error!" );
+#endif
+			int i_read = -1;
+			y_guess_file >> i_read;
+#ifdef _DEBUG
+			TEST_FOR_EXCEPTION( i != i_read || y_guess_file.eof(), std::runtime_error, "Error!" );
+#endif
+			y_guess_file >> epetra_y[i];
+		}
+	}
+}
+
+void EpetraNPFO::write_y_final( const Epetra_Vector &epetra_y )
+{
+	if(yFinalFileNameBase().length()) {
+		std::ostringstream y_final_file_name;
+		y_final_file_name << yFinalFileNameBase() << "." << numProc_ << "." << procRank_;
+		std::ofstream y_final_file(y_final_file_name.str().c_str());
+		TEST_FOR_EXCEPTION(
+			!y_final_file, std::runtime_error
+			,"EpetraNPFO::write_y_final(...): Error, the file \""<<y_final_file_name.str()<<"\" could not be opended for output!"
+			);
+		y_final_file.precision(23); // Should print enough digits to read back in same binary number!
+		const int local_dim = epetra_np_->map_y()->NumMyElements();
+		y_final_file << local_dim << std::endl;
+		for( int i = 0; i < local_dim; ++i ) {
+			y_final_file << "  " << i << "  " << epetra_y[i] << std::endl;
+		}
+	}
 }
 
 void EpetraNPFO::updateNewPoint( bool newPoint ) const
