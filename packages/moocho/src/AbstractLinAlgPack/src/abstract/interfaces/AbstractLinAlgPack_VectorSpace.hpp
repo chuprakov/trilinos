@@ -17,6 +17,7 @@
 #define VECTOR_SPACE_H
 
 #include "VectorSpaceBase.h"
+#include "AbstractFactory.h"
 #include "Range1D.h"
 
 namespace AbstractLinAlgPack {
@@ -43,7 +44,10 @@ namespace AbstractLinAlgPack {
  * dependent on a single <tt>VectorWithOp</tt> ( or \c MultiVector) object.  The same interface can
  * serve both roles.
  */
-class VectorSpace : public virtual VectorSpaceBase {
+class VectorSpace
+	: public virtual VectorSpaceBase
+	, public AbstractFactoryPack::AbstractFactory<VectorWithOpMutable>
+{
 public:
 
 	///
@@ -187,6 +191,14 @@ public:
 	 * the smart pointer.
 	 */
 	vec_ptr_t new_member() const;
+
+	//@}
+
+	/** @name Overridden from AbstractFactory */
+	//@{
+
+	/// Just calls <tt>this->create_member()</tt> by default!
+	obj_ptr_t create() const;
 
 	//@}
 

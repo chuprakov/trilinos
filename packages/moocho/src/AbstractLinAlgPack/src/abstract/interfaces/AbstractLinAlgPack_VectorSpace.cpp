@@ -48,12 +48,18 @@ VectorSpace::sub_space(const Range1D& rng_in) const
 			,rng ) );
 }
 
-// VectorSpace
+// Overridden from VectorSpaceBase
 
 VectorSpaceBase::vec_ptr_t  VectorSpace::new_member() const
 {
-	namespace rcp = ReferenceCountingPack;
-	return rcp::rcp_implicit_cast<vec_ptr_t::element_type>(create_member());
+	return create_member();
+}
+
+// Overridden from AbstractFactory<>
+
+VectorSpace::obj_ptr_t VectorSpace::create() const
+{
+	return this->create_member();
 }
 
 } // end namespace AbstractLinAlgPack
