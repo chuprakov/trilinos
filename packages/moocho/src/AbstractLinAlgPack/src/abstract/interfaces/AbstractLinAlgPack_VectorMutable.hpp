@@ -63,9 +63,6 @@ public:
 	///
 	using VectorWithOp::free_sub_vector;
 
-	///
-	typedef MemMngPack::ref_count_ptr<VectorWithOpMutable>    vec_mut_ptr_t;
-
 	/** @name Pure virtual methods (must be overridden by subclass) */
 	//@{
 
@@ -234,18 +231,6 @@ public:
 	/** Inline member function that simply calls <tt>this->sub_view(Range1D(l,u))</tt>.
 	 */
 	vec_mut_ptr_t sub_view( const index_type& l, const index_type& u );
-
-	///
-	/** Create a clone of this vector objet.
-	 *
-	 * The vector object returned in a smart reference counted pointer to a functional copy of
-	 * the current vector object.  The vector object <tt>this</tt> and the vector returned by
-	 * this method can be modified independently.
-	 *
-	 * The default implementation of this function calls on <tt>this->space().create_member()</tt> and
-	 * then copies over the elements from <tt>this</tt> using <tt>operator=()</tt>.
-	 */
-	virtual vec_mut_ptr_t clone() const;
 
 	///
 	/** Zeros this vector.

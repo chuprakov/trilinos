@@ -151,14 +151,6 @@ VectorWithOpMutable::sub_view( const Range1D& rng_in )
 			,rng ) );
 }
 
-VectorWithOpMutable::vec_mut_ptr_t VectorWithOpMutable::clone() const
-{
-	vec_mut_ptr_t
-		vec = this->space().create_member();
-	*vec = *this;
-	return vec;
-}
-
 void VectorWithOpMutable::zero()
 {
 	this->operator=(0.0);

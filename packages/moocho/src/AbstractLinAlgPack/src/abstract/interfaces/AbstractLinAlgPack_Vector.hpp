@@ -87,6 +87,8 @@ public:
 	///
 	typedef MemMngPack::ref_count_ptr<const VectorWithOp>   vec_ptr_t;
 	///
+	typedef MemMngPack::ref_count_ptr<VectorWithOpMutable>  vec_mut_ptr_t;
+	///
 	enum ESparseOrDense { SPARSE, DENSE };
 
 	///
@@ -252,6 +254,18 @@ public:
 	virtual std::ostream& output(
 		std::ostream& out, bool print_dim = true, bool newline = true
 		,index_type global_offset = 0 ) const;
+
+	///
+	/** Create a clone of this vector objet.
+	 *
+	 * The vector object returned in a smart reference counted pointer to a functional copy of
+	 * the current vector object.  The vector object <tt>this</tt> and the vector returned by
+	 * this method can be modified independently.
+	 *
+	 * The default implementation of this function calls on <tt>this->space().create_member()</tt> and
+	 * then copies over the elements from <tt>this</tt> using <tt>operator=()</tt>.
+	 */
+	virtual vec_mut_ptr_t clone() const;
 
 	///
 	/** Fetch an element in the vector.

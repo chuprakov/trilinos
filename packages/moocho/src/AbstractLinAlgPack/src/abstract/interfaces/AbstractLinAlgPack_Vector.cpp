@@ -165,6 +165,14 @@ std::ostream& VectorWithOp::output(
 	return out;
 }
 
+VectorWithOpMutable::vec_mut_ptr_t VectorWithOp::clone() const
+{
+	vec_mut_ptr_t
+		vec = this->space().create_member();
+	*vec = *this;
+	return vec;
+}
+
 value_type VectorWithOp::get_ele(index_type i) const {
 	assert(0==RTOp_ROp_get_ele_set_i( i, &get_ele_op.op() ));
 	get_ele_targ.reinit();
