@@ -46,25 +46,25 @@ void ReducedSpaceSQPPack::active_set_change(
 
 	while( nu_k_itr != nu_k_end || nu_km1_itr != nu_km1_end ) {
 		if( nu_k_itr != nu_k_end && ( nu_km1_itr == nu_km1_end || ( nu_k_itr != nu_k_end
-				&& nu_k_itr->indice() < nu_km1_itr->indice() ) ) )
+				&& nu_k_itr->indice()+nu_k.offset() < nu_km1_itr->indice()+nu_km1.offset() ) ) )
 		{
 			// *nu_k_itr was added to active set.
 			(*num_adds)++;
 			if(dump_change)
 				*out
-					<< setw(w) << nu_k_itr->indice()
+					<< setw(w) << nu_k_itr->indice() + nu_k.offset()
 					<< setw(w) << ( nu_k_itr->value() >= 0.0 ? "upper" : "lower" )
 					<< setw(w) << "added" << endl;
 			nu_k_itr++;
 		}
 		else if( nu_km1_itr != nu_km1_end && ( nu_k_itr == nu_k_end || ( nu_km1_itr != nu_km1_end
-				&& nu_k_itr->indice() > nu_km1_itr->indice() ) ) )
+				&& nu_k_itr->indice()+nu_k.offset() > nu_km1_itr->indice()+nu_km1.offset() ) ) )
 		{
 			// *nu_km1_itr was removed from the active set.
 			(*num_drops)++;
 			if(dump_change)
 				*out
-					<< setw(w) << nu_km1_itr->indice()
+					<< setw(w) << nu_km1_itr->indice()+nu_km1.offset()
 					<< setw(w) << ( nu_km1_itr->value() >= 0.0 ? "upper" : "lower" )
 					<< setw(w) << "dropped" << endl;
 			nu_km1_itr++;
@@ -77,7 +77,7 @@ void ReducedSpaceSQPPack::active_set_change(
 				(*num_drops)++;
 			if(dump_change)
 				*out
-					<< setw(w) << nu_k_itr->indice()
+					<< setw(w) << nu_k_itr->indice()+nu_k.offset()
 					<< setw(w) << ( nu_k_itr->value() >= 0.0 ? "upper" : "lower" )
 					<< setw(w) << "switch bnd" << endl;
 			}

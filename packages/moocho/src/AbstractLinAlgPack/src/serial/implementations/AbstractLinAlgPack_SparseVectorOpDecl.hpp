@@ -46,7 +46,7 @@ namespace SparseLinAlgPack {
 		// Information
 		size_type		size() const;	// size of the full vector
 		size_type		nz() const;		// number of nonzero elements
-		difference_type	offset() const;	// stored_indice + offset = indice
+		difference_type	offset() const;	// ith real real indice = begin()[i-1] + offset()
 		bool			is_sorted() const;	// true if elements are sorted by indice
 
 		// iterate forward (sorted) through elemlents

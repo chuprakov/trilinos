@@ -20,13 +20,13 @@ SparseLinAlgPack::num_bounds( const SpVectorSlice& bl, const SpVectorSlice& bu )
 	size_type num_bounds = 0;
 	while( bl_itr != bl_itr_end || bu_itr != bu_itr_end ) {
 		if( ( bl_itr != bl_itr_end )
-			&& ( bu_itr == bu_itr_end || bl_itr->indice() < bu_itr->indice() ) )
+			&& ( bu_itr == bu_itr_end || bl_itr->indice() + bl.offset() < bu_itr->indice() + bu.offset() ) )
 		{
 			// Only the lower bound is finite
 			++bl_itr;
 		}
 		else if( ( bu_itr != bu_itr_end )
-			&& ( bl_itr == bl_itr_end || bu_itr->indice() < bl_itr->indice() ) )
+			&& ( bl_itr == bl_itr_end || bu_itr->indice() + bu.offset() < bl_itr->indice() + bl.offset()) )
 		{
 			// Only the upper bound is finite
 			++bu_itr;

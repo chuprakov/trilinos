@@ -34,9 +34,9 @@ bool ReducedSpaceSQPPack::NumFixedDepIndep_AddedStep::do_step(Algorithm& _algo
 		const SpVector &nu_k	= s.nu().get_k(0);
 		size_type fixed_dep = 0, fixed_indep = 0;
 		for( SpVector::const_iterator itr = nu_k.begin(); itr != nu_k.end(); ++itr ) {
-			if( dep.in_range( itr->indice() ) )
+			if( dep.in_range( itr->indice() + nu_k.offset() ) )
 				fixed_dep++;
-			else if( indep.in_range( itr->indice() ) )
+			else if( indep.in_range( itr->indice() + nu_k.offset() ) )
 				fixed_indep++;
 			else
 				assert(0);	// should never happen

@@ -33,10 +33,14 @@ public:
 	sparse_bounds_itr(	
 			  const SpVectorSlice::const_iterator& bl_begin
 			, const SpVectorSlice::const_iterator& bl_end
+			, SpVectorSlice::difference_type bl_offset
 			, const SpVectorSlice::const_iterator& bu_begin
 			, const SpVectorSlice::const_iterator& bu_end
+			, SpVectorSlice::difference_type bu_offset
 			, value_type big_bnd = std::numeric_limits<value_type>::infinity()		)
-		: bl_itr_(bl_begin), bl_end_(bl_end), bu_itr_(bu_begin), bu_end_(bu_end), big_bnd_(big_bnd)
+		: bl_itr_(bl_begin), bl_end_(bl_end), bu_itr_(bu_begin), bu_end_(bu_end)
+			, bl_offset_(bl_offset), bu_offset_(bu_offset)
+			, big_bnd_(big_bnd)
 	{	if(!at_end()) update(); }
 
 	///
@@ -76,6 +80,8 @@ public:
 private:
 	SpVectorSlice::const_iterator
 		bl_itr_, bl_end_, bu_itr_, bu_end_;
+	SpVectorSlice::difference_type
+		bl_offset_, bu_offset_;
 	value_type
 		big_bnd_, lbound_, ubound_;
 	indice_type
@@ -88,23 +94,23 @@ private:
 			return;
 		}
 		else if( ( bl_itr_ != bl_end_ ) 
-			&& ( bu_itr_ == bu_end_ || bl_itr_->indice() < bu_itr_->indice() ) )
+			&& ( bu_itr_ == bu_end_ || bl_itr_->indice() + bl_offset_ < bu_itr_->indice() + bu_offset_ ) )
 		{
-			indice_ = bl_itr_->indice();
+			indice_ = bl_itr_->indice() + bl_offset_;
 			lbound_ = bl_itr_->value();
 			ubound_ = big_bnd_;
 			at_bound_ = LOWER;
 		}
 		else if( ( bu_itr_ != bu_end_ )
-			&& ( bl_itr_ == bl_end_ || bu_itr_->indice() < bl_itr_->indice() ) ) 
+			&& ( bl_itr_ == bl_end_ || bu_itr_->indice() + bu_offset_ < bl_itr_->indice() + bl_offset_ ) ) 
 		{
-			indice_ = bu_itr_->indice();
+			indice_ = bu_itr_->indice() + bu_offset_;
 			lbound_ = - big_bnd_;
 			ubound_ = bu_itr_->value();
 			at_bound_ = UPPER;
 		}
-		else if(bl_itr_->indice() == bu_itr_->indice()) {
-			indice_ = bl_itr_->indice();
+		else if(bl_itr_->indice() + bl_offset_ == bu_itr_->indice() + bu_offset_) {
+			indice_ = bl_itr_->indice() + bl_offset_;
 			lbound_ = bl_itr_->value();
 			ubound_ = bu_itr_->value();
 			at_bound_ = BOTH;
