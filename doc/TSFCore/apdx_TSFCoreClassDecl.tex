@@ -88,8 +88,8 @@ public:
     ,RTOpPack::SubMultiVectorT<Scalar> *sub_mv ) const;
   virtual void freeSubMultiVector( RTOpPack::SubMultiVectorT<Scalar>* sub_mv ) const;
   virtual void getSubMultiVector( const Range1D &rowRng, const Range1D &colRng
-    ,RTOpPack::MutableSubMultiVectorT<Scalar> *sub_mv	);
-	virtual void commitSubMultiVector( RTOpPack::MutableSubMultiVectorT<Scalar>* sub_mv );
+    ,RTOpPack::MutableSubMultiVectorT<Scalar> *sub_mv );
+  virtual void commitSubMultiVector( RTOpPack::MutableSubMultiVectorT<Scalar>* sub_mv );
   void apply( const ETransp M_trans, const Vector<Scalar> &x, Vector<Scalar> *y, const Scalar alpha
     ,const Scalar beta ) const;
   Teuchos::RefCountPtr<const LinearOp<Scalar> > clone() const;
