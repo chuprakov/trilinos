@@ -295,7 +295,10 @@ rSQPppSolver::ESolutionStatus rSQPppSolver::solve_nlp() const
 		
 		if(do_journal_outputting())
 			*journal_out_used_
-				<< "\n*** Starting rSQP iterations ...\n\n";	
+				<< "\n************************************"
+				<< "\n*** rSQPppSolver::solve_nlp()    ***"
+				<< "\n************************************\n"	
+				<< "\n*** Starting rSQP iterations ...\n\n";
 		
 		solver_.set_algo_timing(algo_timing_);
 		timer.start();
