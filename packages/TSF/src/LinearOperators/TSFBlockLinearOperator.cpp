@@ -8,7 +8,6 @@
 #include "TSFVector.h"
 #include "TSFVectorSpace.h"
 
-#include <iostream.h>
 
 using namespace TSF;
 using std::ostream;
