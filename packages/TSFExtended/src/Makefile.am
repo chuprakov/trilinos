@@ -109,8 +109,6 @@ OPERATORS = \
 LINEARSOLVERS_H = \
 	$(srcdir)/LinearSolvers/TSFAztecSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFBICGSTABSolver.hpp \
-	$(srcdir)/LinearSolvers/TSFGenericLeftPreconditioner.hpp \
-	$(srcdir)/LinearSolvers/TSFGenericRightPreconditioner.hpp \
 	$(srcdir)/LinearSolvers/TSFIterativeSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFKrylovSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFLinearSolver.hpp \
@@ -118,8 +116,6 @@ LINEARSOLVERS_H = \
 	$(srcdir)/LinearSolvers/TSFLinearSolverBaseDecl.hpp \
 	$(srcdir)/LinearSolvers/TSFLinearSolverBaseImpl.hpp \
 	$(srcdir)/LinearSolvers/TSFLinearSolverBuilder.hpp \
-	$(srcdir)/LinearSolvers/TSFPreconditioner.hpp \
-	$(srcdir)/LinearSolvers/TSFPreconditionerBase.hpp \
 	$(srcdir)/LinearSolvers/TSFSolverState.hpp 
 
 LINEARSOLVERS = \
