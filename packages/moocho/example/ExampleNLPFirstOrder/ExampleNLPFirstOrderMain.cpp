@@ -43,6 +43,8 @@ int main(int argc, char* argv[] ) {
 	typedef AbstractLinAlgPack::size_type size_type;
 	typedef AbstractLinAlgPack::value_type value_type;
 	namespace NLPIP = NLPInterfacePack;
+	namespace rsqp = ReducedSpaceSQPPack;
+	using rsqp::rSQPppSolver;
 
 	using AbstractLinAlgPack::VectorSpace;
 	using AbstractLinAlgPack::VectorWithOp;
@@ -89,11 +91,11 @@ int main(int argc, char* argv[] ) {
 	// Get the starting point
 	value_type xo = 0.1;
 	// Determine if the NLP has bounds or not.
-	bool has_bounds = true;
+	bool has_bounds = false;
 	// Make the dependent or independent variables bounded.
 	bool dep_bounded = true;
 	// Serial or parallel?
-	bool in_parallel = true;
+	bool in_parallel = false;
 
 	// Read from the arguments
 	if(argc > 1)
@@ -124,9 +126,9 @@ int main(int argc, char* argv[] ) {
 	out
 		<< std::setprecision(prec)
 		<< std::scientific
-		<< "***************************************************\n"
-		<< "*** Running Tests on ExampleNLPFirstOrderDirect ***\n"
-		<< "***************************************************\n";
+		<< "*************************************************\n"
+		<< "*** Running Tests on ExampleNLPFirstOrderInfo ***\n"
+		<< "*************************************************\n";
 
 	// Create the vector space object to use.
 	VectorSpace::space_ptr_t    vec_space;
@@ -155,11 +157,31 @@ int main(int argc, char* argv[] ) {
 	}
 
 	// Create and test the NLP using this vector space object
-	const bool
-		result = NLPIP::ExampleNLPFirstOrderInfoRun(
-			*vec_space, xo, has_bounds, dep_bounded, &out, &eout );
-	if(!result)
-		prog_return = PROG_NLP_TEST_ERR;
+	const rSQPppSolver::ESolutionStatus
+		solve_return = NLPIP::ExampleNLPFirstOrderInfoRun(
+			*vec_space, xo, has_bounds, dep_bounded
+			,&out,&eout
+			);
+
+	switch(solve_return) {
+		case rSQPppSolver::SOLVE_RETURN_SOLVED:
+			prog_return = PROG_SUCCESS;
+			break;
+		case rSQPppSolver::SOLVE_RETURN_MAX_ITER:
+			prog_return = PROG_MAX_ITER_EXEEDED;
+			break;
+		case rSQPppSolver::SOLVE_RETURN_MAX_RUN_TIME:
+			prog_return = PROG_MAX_TIME_EXEEDED;
+			break;
+		case rSQPppSolver::SOLVE_RETURN_NLP_TEST_FAILED:
+			prog_return = PROG_NLP_TEST_ERR;
+			break;
+		case rSQPppSolver::SOLVE_RETURN_EXCEPTION:
+			prog_return = PROG_EXCEPTION;
+			break;
+		default:
+			assert(0);
+	}
 
 	}	// end try
 	catch(const std::exception& excpt) {
