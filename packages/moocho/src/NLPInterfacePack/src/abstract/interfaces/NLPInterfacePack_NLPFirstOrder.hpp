@@ -21,14 +21,44 @@
 namespace NLPInterfacePack {
 ///
 /** NLP first order information interface class {abstract}.
-  *
-  * This class adds Jacobian information for the constraints.  This augments the
-  * information provided by the \Ref{NLPObjGradient} interface.  This interface
-  * includes access matrix space objects which must be used by the client
-  * to create the matrix objects that are used with this interface.  This
-  * totally decouples the client from the implementation of these matrix
-  * objects.
-  */
+ *
+ * <b>Overview:</b>
+ *
+ * This class adds Jacobian information for the constraints.  This augments the
+ * information provided by the \c NLP and \c NLPObjGradient interfaces.  This interface
+ * includes access to matrix space objects which must be used by the client
+ * to create the matrix objects that are used with this interface.  This
+ * totally decouples the client from the implementation of these matrix
+ * objects.
+ *
+ * <b>Client Usage:</b>
+ *
+ * As with the <tt>NLP</tt> base interface, the <tt>initialize()</tt> method must be called before
+ * the %NLP object can be used.
+ *
+ * The matrix space objects returned from \c space_Gc() and \c space_Gh() must be used to create
+ * the matrix objects for \c Gc and \c Gh used with this interface.  
+ *
+ * The methods \c set_Gc() and \c set_Gh are used to set a pointers to matrix objects to be updated
+ * when \c Gc and \c Gh are computed using \c calc_Gc() and \c calc_Gh().
+ *
+ * The number of evaluations of \c Gc and \c Gh using calc_Gc() and calc_Gh() are returned by
+ * \c num_Gc_evals() and \c num_Gh_evals().
+ * 
+ * <b>Subclass developer's notes:</b>
+ *
+ * In addition to the methods that must be overridden by the \c NLPObjGradient interface
+ * (<A HREF="classNLPInterfacePack_1_1NLPObjGradient.html#must_override">see</A>) the following methods
+ * must also be overridden: \c space_Gc(), \c space_Gh(), \c imp_calc_Gc(), \c imp_calc_Gc().
+ *
+ * In addition to the methods that should be overridden from <tt>%NLPObjGradient</tt> by most subclasses
+ * (<A HREF="classNLPInterfacePack_1_1NLPObjGradient.html#should_override">see</A>), the following
+ * additional methods should be overridden: \c initialize().
+ *
+ * The following methods should never have to be overridden by most subclasses except in some very
+ * specialized situations: \c set_Gc(), \c get_Gc(), \c Gc(), \c set_Gh(), \c get_Gh(), \c Gh(),
+ * \c num_Gc_evals(), \c num_Gh_evals().
+ */
 class NLPFirstOrderInfo : public NLPObjGradient {
 public:
 
@@ -44,122 +74,226 @@ public:
 
 	//@}
 
+	/** @name NLP initialization */
+	//@{
+
 	///
 	/** Initialize the NLP for its first use.
-	  */
+	 *
+	 * This function implementation should be called by subclass implementations
+	 * in order to reset counts for \c f(x), \c c(x), \c h(x), \c Gf(x), \c Gc(x)
+	 * and \c Gh(x) evaluations.  This implementation calls
+	 * <tt>this->NLPObjGradient::initialize()</tt>
+	 *
+	 * Postconditions:<ul>
+	 * <li> See <tt>NLPObjGradient::initialize()</tt>
+	 * <li> <tt>this->num_Gc_evals() == 0</tt>
+	 * <li> <tt>this->num_Gh_evals() == 0</tt>
+	 * </ul>
+	 */
 	void initialize();
 
-	/** @name Get access to matrix space objects for the pertinent matrix spaces.
-	 *
-	 * The matrix space objects returned from these methods act as "Factories"
-	 * that create the needed matrix objects.
-	 */
+	//@}
+
+	/** @name Matrix space objects */
 	//@{
 	
 	///
-	/** Return a matrix space object for creating #Gc#.
+	/** Return a matrix space object for creating <tt>Gc</tt>.
 	 *
-	 * This method may return #return.get() == NULL# if #m() == 0#.
+	 * This method may return <tt>return.get() == NULL</tt> if <tt>m() == 0</tt>.
 	 * Otherwise, it must must return a valid matrix space object.
 	 * The returned matrix object may not support the creation of any
-	 * sub-matrix spaces (i.e. #return->sub_space(rrng,crng).get() == NULL#
-	 * for all #rrng# and #crng#).
+	 * sub-matrix spaces (i.e. <tt>return->sub_space(rrng,crng).get() == NULL</tt>
+	 * for all <tt>rrng</tt> and <tt>crng</tt>).
 	 */
 	virtual const mat_space_ptr_t& space_Gc() const = 0;
 
 	///
-	/** Return a matrix space object for creating #Gh#.
+	/** Return a matrix space object for creating <tt>Gh</tt>.
 	 *
-	 * This method may return #return.get() == NULL# if #mI() == 0#.
+	 * This method may return <tt>return.get() == NULL</tt> if <tt>mI() == 0</tt>.
 	 * Otherwise, it must must return a valid matrix space object.
 	 * The returned matrix object may not support the creation of any
-	 * sub-matrix spaces (i.e. #return->sub_space(rrng,crng).get() == NULL#
-	 * for all #rrng# and #crng#).
+	 * sub-matrix spaces (i.e. <tt>return->sub_space(rrng,crng).get() == NULL</tt>
+	 * for all <tt>rrng</tt> and <tt>crng</tt>).
 	 */
 	virtual const mat_space_ptr_t& space_Gh() const = 0;
 
 	//@}
 
-	/** @name <<std aggr>> members for the matrix of the gradient of equality constaints vector, Gc.
-	  *
-	  * The is a reference to a vector storage location that is updated when
-	  * #calc_Gc(...)# is called or when #Gc# is updated as a side effect
-	  * when another "calc" member funciton is called.
-	  */
+	/** @name <<std aggr>> members for the gradient of the objective function Gc(x) */
 	//@{
 
 	///
+	/** Set a pointer to a matrix object to be updated when <tt>this->calc_Gc()</tt> is called.
+	 *
+	 * @param  Gc  [in] Pointer to matrix of gradients.  May be \c NULL.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> [<tt>Gc != NULL</tt>] <tt>Gc->space().is_compatible(*this->space_Gc(),no_trans) == true</tt>
+	 *      (throw <tt>VectorBase::IncompatibleVectors</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->get_Gc() == Gc</tt>
+	 * </ul>
+	 */
 	virtual void set_Gc(MatrixWithOp* Gc);
 	///
+	/** Return pointer passed to <tt>this->set_Gc()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * </ul>
+	 */
 	virtual MatrixWithOp* get_Gc();
 	///
+	/** Returns non-<tt>const</tt> <tt>*this->get_Gc()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>this->get_Gc() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * </ul>
+	 */
 	virtual MatrixWithOp& Gc();
 	///
+	/** Returns <tt>const</tt> <tt>*this->get_Gc()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>this->get_Gc() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * </ul>
+	 */
 	virtual const MatrixWithOp& Gc() const;
 
 	//@}
 
-	/** @name <<std aggr>> members for the matrix of the gradient of equality constaints vector, Gh.
-	  *
-	  * The is a reference to a vector storage location that is updated when
-	  * #calc_Gh(...)# is called or when #Gh# is updated as a side effect
-	  * when another "calc" member funciton is called.
-	  */
+	/** @name <<std aggr>> members for the gradient of the objective function Gh(x) */
 	//@{
 
 	///
+	/** Set a pointer to a matrix object to be updated when <tt>this->calc_Gh()</tt> is called.
+	 *
+	 * @param  Gh  [in] Pointer to matrix of gradients.  May be \c NULL.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> [<tt>Gh != NULL</tt>] <tt>Gh->space().is_compatible(*this->space_Gh(),no_trans) == true</tt>
+	 *      (throw <tt>VectorBase::IncompatibleVectors</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->get_Gh() == Gh</tt>
+	 * </ul>
+	 */
 	virtual void set_Gh(MatrixWithOp* Gh);
 	///
+	/** Return pointer passed to <tt>this->set_Gh()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * </ul>
+	 */
 	virtual MatrixWithOp* get_Gh();
 	///
+	/** Returns non-<tt>const</tt> <tt>*this->get_Gh()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>this->get_Gh() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * </ul>
+	 */
 	virtual MatrixWithOp& Gh();
 	///
+	/** Returns <tt>const</tt> <tt>*this->get_Gh()</tt>.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>this->get_Gh() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * </ul>
+	 */
 	virtual const MatrixWithOp& Gh() const;
 
 	//@}
 
-	/** @name Calculation Members.
-	  *
-	  * See \Ref{NLP} for a description of the behavior of these member functions.
-	  */
 
+	/** @name Calculation Members. */
 	//@{
 
 	///
-	/** Update the matrix for #Gc# at the point #x# and put it in the stored reference.
-	  *
-	  * If #set_mult_calc(true)# was called then referenced storage for #f#, #c#, #Gf# and #Gh# may also be changed
-	  * but are not guarentied to be.  But no other quanities from possible subclasses are allowed
-	  * to be updated as a side effect.
-	  */ 
+	/** Update the matrix for \c Gc at the point \c x and put it in the stored reference.
+	 *
+	 * @param  x     [in] Point at which to calculate the matrix of gradients <tt>Gc(x)</tt>.
+	 * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
+	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
+	 *               If \c false, the values in \c x are not the same as the last call to a
+	 *               <tt>this->calc_*(x,newx)</tt> member.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorBase::IncompatibleVectors</tt>)
+	 * <li> <tt>this->get_Gc() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->Gc()</tt> is updated to \c Gc(x)
+	 * </ul>
+	 *
+	 * If \c set_mult_calc(true) was called then referenced storage for \c f, \c c, \c Gf and \c Gh may also be changed
+	 * but are not guarantied to be.  But no other quanities from possible subclasses are allowed
+	 * to be updated as a side effect.
+	 */ 
 	virtual void calc_Gc(const VectorWithOp& x, bool newx = true) const;
 
 	///
-	/** Update the matrix for #Gh# at the point #x# and put it in the stored reference.
-	  *
-	  * If #set_mult_calc(true)# was called then referenced storage for #f#, #c#, #Gf# and #Gc# may also be changed
-	  * but are not guarentied to be.  But no other quanities from possible subclasses are allowed
-	  * to be updated as a side effect.
-	  */ 
+	/** Update the matrix for \c Gh at the point \c x and put it in the stored reference.
+	 *
+	 * @param  x     [in] Point at which to calculate the matrix of gradients <tt>Gh(x)</tt>.
+	 * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
+	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
+	 *               If \c false, the values in \c x are not the same as the last call to a
+	 *               <tt>this->calc_*(x,newx)</tt> member.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
+	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorBase::IncompatibleVectors</tt>)
+	 * <li> <tt>this->get_Gh() != NULL</tt> (throw <tt>NoRefSet</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>this->Gh()</tt> is updated to \c Gh(x)
+	 * </ul>
+	 *
+	 * If \c set_mult_calc(true) was called then referenced storage for \c f, \c c, \c Gf and \c Gc may also be changed
+	 * but are not guarantied to be.  But no other quanities from possible subclasses are allowed
+	 * to be updated as a side effect.
+	 */ 
 	virtual void calc_Gh(const VectorWithOp& x, bool newx = true) const;
 
 	//@}
 
+	/** @name Function evaluation counts. */
+	//@{
+
 	///
-	/** Number of equality constraint function Jacobian evaluations.
-	  *
-	  * This function can be called to find out how many evaluations
-	  * the client requested since initialize() was called.
-	  */
+	/** Gradient of constraints matrix \c Gc evaluations count.
+	 *
+	 * This function can be called to find out how many evaluations
+	 * \c this->calc_Gc() the client requested since \c this->initialize() was called.
+	 */
 	virtual size_type num_Gc_evals() const;
 
 	///
-	/** Number of inequality constraint function Jacobian evaluations.
-	  *
-	  * This function can be called to find out how many evaluations
-	  * the client requested since initialize() was called.
-	  */
+	/** Gradient of constraints matrix \c Gh evaluations count.
+	 *
+	 * This function can be called to find out how many evaluations
+	 * \c this->calc_Gh() the client requested since \c this->initialize() was called.
+	 */
 	virtual size_type num_Gh_evals() const;
+
+	//@}
 
 protected:
 
@@ -175,17 +309,17 @@ protected:
 		FirstOrderInfo( MatrixWithOp* Gc_in, MatrixWithOp* Gh_in, const ObjGradInfo& obj_grad )
 			: Gc(Gc_in), Gh(Gh_in), Gf(obj_grad.Gf), f(obj_grad.f), c(obj_grad.c), h(obj_grad.h)
 		{}
-		/// Pointer to Jacobian of equality constraints #Gc# (may be NULL if not set)
+		/// Pointer to Jacobian of equality constraints <tt>Gc</tt> (may be NULL if not set)
 		MatrixWithOp*           Gc;
-		/// Pointer to Jacobian of inequality constraints #Gh# (may be NULL if not set)
+		/// Pointer to Jacobian of inequality constraints <tt>Gh</tt> (may be NULL if not set)
 		MatrixWithOp*           Gh;
-		/// Pointer to gradient of objective function #Gf# (may be NULL if not set)
+		/// Pointer to gradient of objective function <tt>Gf</tt> (may be NULL if not set)
 		VectorWithOpMutable*    Gf;
-		/// Pointer to objective function #f# (may be NULL if not set)
+		/// Pointer to objective function <tt>f</tt> (may be NULL if not set)
 		value_type*             f;
-		/// Pointer to equality constraints residule #c# (may be NULL if not set)
+		/// Pointer to equality constraints residule <tt>c</tt> (may be NULL if not set)
 		VectorWithOpMutable*    c;
-		/// Pointer to inequality constraints residule #h# (may be NULL if not set)
+		/// Pointer to inequality constraints residule <tt>h</tt> (may be NULL if not set)
 		VectorWithOpMutable*    h;
 	}; // end struct FirstOrderInfo
 
@@ -196,20 +330,48 @@ protected:
 	//@{
 
 	///
-	/** Overridden to compute Gc(x) and perhaps Gh(x), Gf(x), f(x) and c(x) (if multiple calculaiton = true).
+	/** Overridden to compute \a Gc(x) and perhaps \a Gh(x), \a Gf(x), \a f(x) and \a c(x).
 	 *
-	 * @param x           Unknown vector (size n).
-	 * @param newx        True if is a new point.
-	 * @param obj_grad    Pointers to Gf, f, c and h
+	 * Preconditions:<ul>
+	 * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
+	 * <li> <tt>obj_grad_info.Gc != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>*obj_grad_info.Gc</tt> is updated to \a Gc(x).
+	 * </ul>
+	 *
+	 * @param x       [in]  Unknown vector (size n).
+	 * @param newx    [in]  True if is a new point.
+	 * @param obj_grad_info
+	 *                [out] Pointers to \c f, \c c, \c h, \c Gf, \c Gc and \c Gh.
+	 *                On output <tt>*obj_grad_info.Gc</tt> is updated to \a Gc(x).
+	 *                Any of the other objects pointed to in
+	 *                \c obj_grad_info may be set if <tt>this->mult_calc() == true</tt> but are
+	 *                now guaranteed to be.
 	 */
 	virtual void imp_calc_Gc(const VectorWithOp& x, bool newx, const FirstOrderInfo& first_order_info) const = 0;
 
 	///
-	/** Overridden to compute Gh(x) and perhaps Gh(x), Gf(x), f(x) and c(x) (if multiple calculaiton = true).
+	/** Overridden to compute \a Gh(x) and perhaps \a Gh(x), \a Gf(x), \a f(x) and \a c(x).
 	 *
-	 * @param x           Unknown vector (size n).
-	 * @param newx        True if is a new point.
-	 * @param obj_grad    Pointers to Gf, f, c and h
+	 * @param x       [in]  Unknown vector (size n).
+	 * @param newx    [in]  True if is a new point.
+	 * @param obj_grad_info
+	 *                [out] Pointers to \c f, \c c, \c h, \c Gf, \c Gc and \c Gh.
+	 *                On output <tt>*obj_grad_info.Gh</tt> is updated to \a Gh(x).
+	 *                Any of the other objects pointed to in
+	 *                \c obj_grad_info may be set if <tt>this->mult_calc() == true</tt> but are
+	 *                now guaranteed to be.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>x.space().is_compatible(*this->space_x())</tt> (throw <tt>IncompatibleType</tt>)
+	 * <li> <tt>obj_grad_info.Gh != NULL</tt> (throw <tt>std::invalid_argument</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>*obj_grad_info.Gh</tt> is updated to \a Gh(x).
+	 * </ul>
 	 */
 	virtual void imp_calc_Gh(const VectorWithOp& x, bool newx, const FirstOrderInfo& first_order_info) const = 0;
 

@@ -17,6 +17,7 @@
 #define NLP_INTERFACE_PACK_TYPES_H
 
 #include "AbstractLinAlgPack/include/AbstractLinAlgPackTypes.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h" // Needed for doxygen?
 
 namespace NLPInterfacePack {
 
