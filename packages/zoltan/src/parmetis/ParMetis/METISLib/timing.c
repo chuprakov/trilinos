@@ -66,6 +66,13 @@ void PrintTimers(CtrlType *ctrl)
 /*************************************************************************
 * This function returns the seconds
 **************************************************************************/
+#ifndef CLOCKS_PER_SEC
+/* Some non-ANSI systems return clock() in microseconds
+ * and do not define CLOCKS_PER_SEC. 
+ */
+#define CLOCKS_PER_SEC 1000000 /* Correct for SunOs 4.1 */
+#endif
+
 double seconds(void)
 {
 #ifndef SMOS
