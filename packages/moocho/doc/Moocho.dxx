@@ -58,7 +58,7 @@ In the future this docuentation will be much more extensive.
 		in  <tt>%AbstractLinAlgPack</tt>. *** Not updated yet!
 	<li> <A HREF="../ConstrainedOptimizationPack/html/index.html">ConstrainedOptimizationPack</A>:
 		C++ classes and interfaces for utilities for constrained optimization based on the
-		interfaces in <tt>%AbstractLinAlgPack</tt>. *** Not updated yet!
+		interfaces in <tt>%AbstractLinAlgPack</tt>.
 	</ul>
 
 <li> Intefaces for Nonlinear Programs (NLPs):
@@ -69,7 +69,7 @@ In the future this docuentation will be much more extensive.
 
 <li> Succesive Quadratic Programming (SQP) Algorithms:
 	<ul>
-	<li> <A HREF="../ReducedSpaceSQPPack/html/index.html">ReducedSpaceSQPPack</A>. *** Not updated yet!
+	<li> <A HREF="../ReducedSpaceSQPPack/html/index.html">ReducedSpaceSQPPack</A>.
 	</ul>
 
 <li> Example projects:
