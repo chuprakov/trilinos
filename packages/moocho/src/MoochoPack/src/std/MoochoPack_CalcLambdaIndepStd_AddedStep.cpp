@@ -54,7 +54,7 @@ bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
-	Range1D		decomp	= s.con_decomp();
+	Range1D		decomp	= s.equ_decomp();
 	
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -91,7 +91,7 @@ bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 
 	// lambda_decomp_tmp2 = lambda_decomp_tmp1 - U' * lambda(undecomp)
 	if( algo.nlp().r() < algo.nlp().m() ) {
-		Range1D undecomp = s.con_undecomp();
+		Range1D undecomp = s.equ_undecomp();
 		Vp_StMtV( &lambda_decomp, -1.0, s.U().get_k(0), trans, s.lambda().get_k(0).v()(undecomp) );
 	}
 	// else lambda(decomp)_tmp2 = lambda(decomp)_tmp1
@@ -100,12 +100,12 @@ bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 	s.decomp_sys().solve_transAtY( lambda_decomp, trans, &lambda_decomp );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\nmax(|lambda_k(con_decomp)(i)|) = " << norm_inf(lambda_decomp)
-			<< "\nmin(|lambda_k(con_decomp)(i)|) = " << min_abs(lambda_decomp)  << std::endl;
+		out	<< "\nmax(|lambda_k(equ_decomp)(i)|) = " << norm_inf(lambda_decomp)
+			<< "\nmin(|lambda_k(equ_decomp)(i)|) = " << min_abs(lambda_decomp)  << std::endl;
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out	<< "\nlambda_k(con_decomp) = \n" << lambda_decomp;
+		out	<< "\nlambda_k(equ_decomp) = \n" << lambda_decomp;
 	}
 
 	return true;
@@ -117,6 +117,6 @@ void ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::print_step( const Algori
 {
 	out
 		<< L << "*** Calculate the Lagrange multipliers for the decomposed constraints\n"
-		<< L << "lambda_k(con_decomp) = - inv(Gc_k(:,con_decomp)'*Y_k)\n"
-		<< L << "                        * (Y_k'*(Gf_k + nu_k) + U_k'*lambda_k(con_undecomp))\n";
+		<< L << "lambda_k(equ_decomp) = - inv(Gc_k(:,equ_decomp)'*Y_k)\n"
+		<< L << "                        * (Y_k'*(Gf_k + nu_k) + U_k'*lambda_k(equ_undecomp))\n";
 }

@@ -181,8 +181,8 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 		,Uz_k                                                 // Uz
 		,Vz_k                                                 // Vz
 		);
-	s.con_decomp(   nlp.con_decomp()   );
-	s.con_undecomp( nlp.con_undecomp() );
+	s.equ_decomp(   nlp.con_decomp()   );
+	s.equ_undecomp( nlp.con_undecomp() );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out << "\nf_k           = " << s.f().get_k(0);
@@ -309,12 +309,12 @@ void EvalNewPointTailoredApproach_Step::print_step(
 		<< L << "if nlp is not initialized then initialize the nlp\n"
 		<< L << "if x is not updated for any k then set x_k = xinit\n"
 		<< L << "Gf_k = Gf(x_k) <: space_x\n"
-		<< L << "For Gc(:,con_decomp) = [ C' ; N' ] <: space_x:space_c(con_decomp) compute:\n"
+		<< L << "For Gc(:,equ_decomp) = [ C' ; N' ] <: space_x:space_c(equ_decomp) compute:\n"
 		<< L << "  py_k = -inv(C)*c_k\n"
 		<< L << "  D = -inv(C)*N <: R^(n x (n-m))\n"
 		<< L << "  rGf_k = Gf_k(var_indep) + D'*Gf_k(var_dep)\n"
 		<< L << "  Z_k = [ D ; I ] <: R^(n x (n-m))\n"
-		<< L << "  if m > r Uz_k = Gc(var_indep,con_undecomp)' + Gc(var_dep,con_undecomp)'*D\n"
+		<< L << "  if m > r Uz_k = Gc(var_indep,equ_undecomp)' + Gc(var_dep,equ_undecomp)'*D\n"
 		<< L << "  if mI > 0 Yz_k = Gh(var_indep,:)' + Gh(var_dep,:)'*D\n"
 		<< L << "if ( (fd_deriv_testing==FD_TEST)\n"
 		<< L << "    or (fd_deriv_testing==FD_DEFAULT and check_results==true\n"

@@ -22,7 +22,7 @@
 namespace ReducedSpaceSQPPack {
 
 ///
-/** Calculates the range space step by, solving for <tt>py = -inv(R)*c(con_decomp)</tt>,
+/** Calculates the range space step by, solving for <tt>py = -inv(R)*c(equ_decomp)</tt>,
  * then setting <tt>Ypy = Y * py</tt>.
  */
 class RangeSpaceStepStd_Step

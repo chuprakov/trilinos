@@ -41,7 +41,7 @@ bool RangeSpaceStepStd_Step::do_step(
 
 	rSQPAlgo         &algo        = rsqp_algo(_algo);
 	rSQPState        &s           = algo.rsqp_state();
-	const Range1D    con_decomp   = s.con_decomp();
+	const Range1D    equ_decomp   = s.equ_decomp();
 
 	EJournalOutputLevel olevel = algo.algo_cntr().journal_output_level();
 	std::ostream& out = algo.track().journal_out();
@@ -62,9 +62,9 @@ bool RangeSpaceStepStd_Step::do_step(
 	IterQuantityAccess<MatrixWithOp>
 		&Y_iq = s.Y();
 
-	// Solve the system py = - inv(R) * c(con_decomp)
+	// Solve the system py = - inv(R) * c(equ_decomp)
 	VectorWithOpMutable &py_k = py_iq.set_k(0);
-	V_InvMtV( &py_k, R_iq.get_k(0), no_trans, *c_iq.get_k(0).sub_view(con_decomp) );
+	V_InvMtV( &py_k, R_iq.get_k(0), no_trans, *c_iq.get_k(0).sub_view(equ_decomp) );
 	Vt_S( &py_k, -1.0 );
 
 	// Ypy = Y * py
@@ -90,7 +90,7 @@ void RangeSpaceStepStd_Step::print_step(
 {
 	out
 		<< L << "*** Calculate the range space step\n"
-		<< L << "py_k = - inv(R_k) * c_k(con_decomp)\n"
+		<< L << "py_k = - inv(R_k) * c_k(equ_decomp)\n"
 		<< L << "Ypy_k = Y_k * py_k\n";
 }
 
