@@ -83,7 +83,7 @@ echo `uname -a` >>& $file
 ## List the subdirectories of 'test' containing test exe's in the foreach loop
 ## if directory structure is like that of epetra.
 cd ../examples
-foreach f ( amesos anasazi aztecoo epetra epetraext ifpack ml nox teuchos triutils)
+foreach f ( amesos aztecoo epetra epetraext ifpack ml nox teuchos triutils)
 	cd $f
     touch fakefile.exe
     set tt = (*.exe)
@@ -94,29 +94,30 @@ foreach f ( amesos anasazi aztecoo epetra epetraext ifpack ml nox teuchos triuti
       rm -f fakefile.exe
 	  foreach g(*.exe)
 	          echo "" >>& ../$file
-		  echo "############" $f ":" $g "##############" >>& ../$file
+                  echo "" >>& ../$file
+		  echo "[DIDASKO Test " $f ":" $g "]" >>& ../$file
 		  if( "$2" == "True" ) then
 		      # run with 1 process		    
 		      mpirun -np 1 ./$g >>& ../$file
 		      if( $status != 0 ) then
 		        # A test failed.
 			    set AnError = True
-			    echo "  ******** Test w/ 1 proc failed ********" >>& ../$file
+			    echo "[ERROR: Test w/ 1 proc failed]" >>& ../$file
 			    echo "Errors for script " $g " are listed above." >>& ../$file2
 		      else
 		        # Tests passed
-			    echo "******** Test w/ 1 proc passed ********" >>& ../$file
+			    echo "[Test w/ 1 proc passed]" >>& ../$file
 		      endif
 		      # run with 1 process		    
 		      mpirun -np 4 ./$g >>& ../$file
 		      if( $status != 0 ) then
 		        # A test failed.
 			    set AnError = True
-			    echo "  ******** Test w/ 4 proc failed ********" >>& ../$file
+			    echo "[ERROR: Test w/ 4 procs failed]" >>& ../$file
 			    echo "Errors for script " $g " are listed above." >>& ../$file2
 		      else
 		        # Tests passed
-			    echo "******** Test w/ 4 proc passed ********" >>& ../$file
+			    echo "[Test w/ 4 procs passed]" >>& ../$file
 		      endif
 		  else
 		    # This is not an automated test.

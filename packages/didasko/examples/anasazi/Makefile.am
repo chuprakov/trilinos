@@ -26,58 +26,18 @@
 # ************************************************************************
 #@HEADER
 
+include $(top_builddir)/Makefile.export
+
 EXAMPLE = ex1
 EXEEXT = .exe
-
-DIDASKO_INCLUDES = -I$(top_srcdir)/src/
-
-if HAVE_DIDASKO_EPETRA
-include $(top_builddir)/../epetra/Makefile.export
-else
-EPETRA_INCLUDE = 
-EPETRA_LIBS = =
-endif
-
-if HAVE_DIDASKO_ANASAZI
-ANASAZI_INCLUDES = -I$(top_srcdir)/../anasazi/src \
-		  -I$(top_builddir)/../anasazi/src
-ANASAZI_LIBS = $(top_builddir)/../anasazi/src/libanasazi.a
-else
-ANASAZI_INCLUDES = 
-ANASAZI_LIBS = =
-endif
-
-if HAVE_DIDASKO_TEUCHOS
-TEUCHOS_INCLUDES = -I$(top_srcdir)/../teuchos/src \
-		  -I$(top_builddir)/../teuchos/src
-TEUCHOS_LIBS = $(top_builddir)/../teuchos/src/libteuchos.a
-else
-TEUCHOS_INCLUDES = 
-TEUCHOS_LIBS = =
-endif
-
-if HAVE_DIDASKO_TRIUTILS
-TRIUTILS_INCLUDES = -I$(top_srcdir)/../triutils/src \
-		  -I$(top_builddir)/../triutils/src
-TRIUTILS_LIBS = $(top_builddir)/../triutils/src/libtriutils.a
-else
-TRIUTILS_INCLUDES = 
-TRIUTILS_LIBS = =
-endif
 
 noinst_PROGRAMS = $(EXAMPLE)
 
 ex1_SOURCES = $(srcdir)/ex1.cpp
-ex1_DEPENDENCIES = $(EPETRA_LIBS) \
-		   $(ANASAZI_LIBS) \
-		   $(TEUCHOS_LIBS)
-ex1_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(EPETRA_INCLUDE) \
-	       $(ANASAZI_INCLUDES) \
-	       $(TEUCHOS_INCLUDES) \
-	       $(TRIUTILS_INCLUDES)
-ex1_LDADD = $(ANASAZI_LIBS) \
-	    $(TEUCHOS_LIBS) \
-	    $(TRIUTILS_LIBS) \
-	    $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex1_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex1_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
+

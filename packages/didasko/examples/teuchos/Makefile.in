@@ -82,6 +82,7 @@ am__aclocal_m4_deps = $(top_srcdir)/config/ac_cxx_bool.m4 \
 	$(top_srcdir)/config/tac_arg_enable_can_use_package.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature_sub.m4 \
+	$(top_srcdir)/config/tac_arg_enable_feature_sub_check.m4 \
 	$(top_srcdir)/config/tac_arg_enable_option.m4 \
 	$(top_srcdir)/config/tac_arg_with_ar.m4 \
 	$(top_srcdir)/config/tac_arg_with_blaslib.m4 \
@@ -101,20 +102,33 @@ am__EXEEXT_1 = ex1$(EXEEXT) ex2$(EXEEXT) ex3$(EXEEXT) ex4$(EXEEXT) \
 PROGRAMS = $(noinst_PROGRAMS)
 am_ex1_OBJECTS = ex1-ex1.$(OBJEXT)
 ex1_OBJECTS = $(am_ex1_OBJECTS)
-@HAVE_DIDASKO_TEUCHOS_TRUE@am__DEPENDENCIES_1 = $(top_builddir)/../teuchos/src/libteuchos.a
-am__DEPENDENCIES_2 =
+am__DEPENDENCIES_1 =
+ex1_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex2_OBJECTS = ex2-ex2.$(OBJEXT)
 ex2_OBJECTS = $(am_ex2_OBJECTS)
+ex2_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex3_OBJECTS = ex3-ex3.$(OBJEXT)
 ex3_OBJECTS = $(am_ex3_OBJECTS)
+ex3_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex4_OBJECTS = ex4-ex4.$(OBJEXT)
 ex4_OBJECTS = $(am_ex4_OBJECTS)
+ex4_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex5_OBJECTS = ex5-ex5.$(OBJEXT)
 ex5_OBJECTS = $(am_ex5_OBJECTS)
+ex5_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex6_OBJECTS = ex6-ex6.$(OBJEXT)
 ex6_OBJECTS = $(am_ex6_OBJECTS)
+ex6_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex7_OBJECTS = ex7-ex7.$(OBJEXT)
 ex7_OBJECTS = $(am_ex7_OBJECTS)
+ex7_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
@@ -270,69 +284,62 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-EXAMPLE = ex1  ex2  ex3  ex4  ex5  ex6  ex7
-DIDASKO_INCLUDES = -I$(top_srcdir)/src
-@HAVE_DIDASKO_TEUCHOS_FALSE@TEUCHOS_INCLUDES = 
-@HAVE_DIDASKO_TEUCHOS_TRUE@TEUCHOS_INCLUDES = -I$(top_srcdir)/../teuchos/src \
-@HAVE_DIDASKO_TEUCHOS_TRUE@                 -I$(top_builddir)/../teuchos/src
-
-@HAVE_DIDASKO_TEUCHOS_FALSE@TEUCHOS_LIBS = 
-@HAVE_DIDASKO_TEUCHOS_TRUE@TEUCHOS_LIBS = $(top_builddir)/../teuchos/src/libteuchos.a
+EXAMPLE = ex1 ex2 ex3 ex4 ex5 ex6 ex7
 ex1_SOURCES = $(srcdir)/ex1.cpp
-ex1_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex1_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-
-ex1_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex1_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex1_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex2_SOURCES = $(srcdir)/ex2.cpp
-ex2_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex2_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-
-ex2_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex2_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex2_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex3_SOURCES = $(srcdir)/ex3.cpp
-ex3_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex3_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-
-ex3_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex3_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex3_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex4_SOURCES = $(srcdir)/ex4.cpp
-ex4_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex4_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-
-ex4_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex4_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex4_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex5_SOURCES = $(srcdir)/ex5.cpp
-ex5_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex5_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-
-ex5_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex5_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex5_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex6_SOURCES = $(srcdir)/ex6.cpp
-ex6_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex6_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-
-ex6_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex6_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex6_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex7_SOURCES = $(srcdir)/ex7.cpp
-ex7_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex7_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-
-ex7_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex7_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex7_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 all: all-am
 
@@ -696,6 +703,8 @@ uninstall-am: uninstall-info-am
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am
 
+
+include $(top_builddir)/Makefile.export
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

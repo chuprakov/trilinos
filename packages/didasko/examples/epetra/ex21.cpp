@@ -175,7 +175,8 @@ int main(int argc, char *argv[]) {
       cerr << "This is mono-process example\n"
 	   << "Please run with one processo only\n";
     }
-    exit( EXIT_FAILURE );
+    // return success not to break the tests
+    exit(EXIT_SUCCESS);
   }
   
   // global dimension of the problem, could be any positive number

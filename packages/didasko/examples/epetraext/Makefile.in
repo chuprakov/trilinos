@@ -82,6 +82,7 @@ am__aclocal_m4_deps = $(top_srcdir)/config/ac_cxx_bool.m4 \
 	$(top_srcdir)/config/tac_arg_enable_can_use_package.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature_sub.m4 \
+	$(top_srcdir)/config/tac_arg_enable_feature_sub_check.m4 \
 	$(top_srcdir)/config/tac_arg_enable_option.m4 \
 	$(top_srcdir)/config/tac_arg_with_ar.m4 \
 	$(top_srcdir)/config/tac_arg_with_blaslib.m4 \
@@ -100,11 +101,13 @@ am__EXEEXT_1 = ex1$(EXEEXT) ex2$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 am_ex1_OBJECTS = ex1-ex1.$(OBJEXT)
 ex1_OBJECTS = $(am_ex1_OBJECTS)
-@HAVE_DIDASKO_TRIUTILS_TRUE@am__DEPENDENCIES_1 = $(top_builddir)/../triutils/src/libtriutils.a
-@HAVE_DIDASKO_EPETRAEXT_TRUE@am__DEPENDENCIES_2 = $(top_builddir)/../epetraext/src/libepetraext.a
-am__DEPENDENCIES_3 =
+am__DEPENDENCIES_1 =
+ex1_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex2_OBJECTS = ex2-ex2.$(OBJEXT)
 ex2_OBJECTS = $(am_ex2_OBJECTS)
+ex2_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
@@ -255,45 +258,22 @@ target_alias = @target_alias@
 target_cpu = @target_cpu@
 target_os = @target_os@
 target_vendor = @target_vendor@
-EXAMPLE = ex1  ex2
-DIDASKO_INCLUDES = -I$(top_srcdir)/src
-@HAVE_DIDASKO_EPETRA_FALSE@EPETRA_INCLUDE = 
-@HAVE_DIDASKO_EPETRA_FALSE@EPETRA_LIBS = 
-@HAVE_DIDASKO_EPETRAEXT_FALSE@EPETRAEXT_INCLUDES = 
-@HAVE_DIDASKO_EPETRAEXT_TRUE@EPETRAEXT_INCLUDES = -I$(top_srcdir)/../epetraext/src \
-@HAVE_DIDASKO_EPETRAEXT_TRUE@		     -I$(top_builddir)/../epetraext/src
-
-@HAVE_DIDASKO_EPETRAEXT_FALSE@EPETRAEXT_LIBS = 
-@HAVE_DIDASKO_EPETRAEXT_TRUE@EPETRAEXT_LIBS = $(top_builddir)/../epetraext/src/libepetraext.a
-@HAVE_DIDASKO_TRIUTILS_FALSE@TRIUTILS_INCLUDES = 
-@HAVE_DIDASKO_TRIUTILS_TRUE@TRIUTILS_INCLUDES = -I$(top_srcdir)/../triutils/src \
-@HAVE_DIDASKO_TRIUTILS_TRUE@                  -I$(top_builddir)/../triutils/src
-
-@HAVE_DIDASKO_TRIUTILS_FALSE@TRIUTILS_LIBS = 
-@HAVE_DIDASKO_TRIUTILS_TRUE@TRIUTILS_LIBS = $(top_builddir)/../triutils/src/libtriutils.a
+EXAMPLE = ex1 ex2
 ex1_SOURCES = $(srcdir)/ex1.cpp
-ex1_DEPENDENCIES = $(EPETRA_LIBS)
-ex1_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(EPETRAEXT_INCLUDES) \
-	       $(EPETRA_INCLUDE) \
-	       $(TRIUTILS_INCLUDE)
-
-ex1_LDADD = $(TRIUTILS_LIBS) \
-	    $(EPETRAEXT_LIBS) \
-	    $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex1_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex1_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex2_SOURCES = $(srcdir)/ex2.cpp
-ex2_DEPENDENCIES = $(EPETRA_LIBS)
-ex2_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(EPETRAEXT_INCLUDES) \
-	       $(EPETRA_INCLUDE) \
-	       $(TRIUTILS_INCLUDE)
-
-ex2_LDADD = $(TRIUTILS_LIBS) \
-	    $(EPETRAEXT_LIBS) \
-	    $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex2_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex2_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 all: all-am
 
@@ -558,7 +538,7 @@ uninstall-am: uninstall-info-am
 	uninstall-am uninstall-info-am
 
 
-@HAVE_DIDASKO_EPETRA_TRUE@include $(top_builddir)/../epetra/Makefile.export
+include $(top_builddir)/Makefile.export
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

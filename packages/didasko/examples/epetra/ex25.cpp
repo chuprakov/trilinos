@@ -60,7 +60,8 @@ public:
     // check number of processes
     if( Map_.Comm().NumProc() != 1 ) {
       cerr << "*ERR* can be used only with one process" << endl;
-      exit( EXIT_FAILURE );
+      // return success not to break the test
+      exit(EXIT_SUCCESS);
     }
     
   }
@@ -197,7 +198,7 @@ int main(int argc, char *argv[])
   double norm2;
   yyy.Norm2(&norm2);
 
-  cout << norm2;
+  cout << norm2 << endl;
 
   // free memory allocated by Trilinos_Util_read_hb
   if (val != NULL) free((void*)val);

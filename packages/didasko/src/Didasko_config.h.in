@@ -50,6 +50,9 @@
 /* Define if want to build with epetraext enabled */
 #undef HAVE_DIDASKO_EPETRAEXT
 
+/* Define if want to build didasko-examples */
+#undef HAVE_DIDASKO_EXAMPLES
+
 /* Define if want to build with ifpack enabled */
 #undef HAVE_DIDASKO_IFPACK
 
@@ -61,6 +64,9 @@
 
 /* Define if want to build with nox enabled */
 #undef HAVE_DIDASKO_NOX
+
+/* Define if want to build didasko-tests */
+#undef HAVE_DIDASKO_TESTS
 
 /* Define if want to build with teuchos enabled */
 #undef HAVE_DIDASKO_TEUCHOS

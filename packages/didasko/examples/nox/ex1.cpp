@@ -155,6 +155,12 @@ int main( int argc, char **argv )
   Epetra_SerialComm Comm;
 #endif
 
+  if (Comm.NumProc() != 1) {
+    cerr << "Please run this test with one process only!" << endl;
+    // return true not to break the tests
+    exit(EXIT_SUCCESS);
+  }
+      
   // linear map for the 2 global elements
   Epetra_Map Map(2,0,Comm);
   

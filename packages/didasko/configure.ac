@@ -310,23 +310,17 @@ AM_CONDITIONAL(BUILD_ZOLTAN, [test "X$ac_cv_use_epetraext_zoltan" != "Xno"])
 # Checks if tests and examples should be built
 # ------------------------------------------------------------------------
 
-AC_ARG_ENABLE(examples, AC_HELP_STRING([--enable-examples], [Build examples for all Trilinos packages (not all packages are sensitive to this option) (default is yes)]), ac_cv_use_examples=$enableval, ac_cv_use_examples=yes)
-
-AC_MSG_CHECKING(whether to use examples)
-
-if test "X$ac_cv_use_examples" != "Xno"; then
-  AC_MSG_RESULT(yes)
-  AC_DEFINE([HAVE_EXAMPLES],,[Define if want to build examples])
-else
-  AC_MSG_RESULT(no)
-fi
-
-AM_CONDITIONAL(BUILD_EXAMPLES, test "X$ac_cv_use_examples" != "Xno")
-
-# End of embedded tac_arg_enable_feature_sub_check.m4
+TAC_ARG_ENABLE_FEATURE(examples, [Build examples for all Trilinos packages
+                                  (not all packages are sensitive to this
+                                   option)], EXAMPLES, yes)
+TAC_ARG_ENABLE_FEATURE_SUB_CHECK( didasko, examples, [Build didasko examples],
+                                 DIDASKO_EXAMPLES)
+AM_CONDITIONAL(BUILD_EXAMPLES, test "X$ac_cv_use_didasko_examples" != "Xno")
 
 TAC_ARG_ENABLE_FEATURE(tests, [Build tests for all Trilinos packages (not all packages are sensitive to this option)], TESTS, yes)
-AM_CONDITIONAL(BUILD_TESTS, test "X$ac_cv_use_tests" != "Xno")
+TAC_ARG_ENABLE_FEATURE_SUB_CHECK( didasko, tests, [Build didasko tests],
+                                 DIDASKO_TESTS)
+AM_CONDITIONAL(BUILD_TESTS, test "X$ac_cv_use_didasko_tests" != "Xno")
 
 TAC_ARG_ENABLE_FEATURE(libcheck, [Check for some third-party libraries including BLAS and LAPACK.  (Cannot be disabled unless tests and examples are also disabled.)], LIBCHECK, yes)
 
@@ -432,6 +426,7 @@ AC_SUBST(ac_aux_dir)
 #  to add a new directory.
 AC_CONFIG_FILES([
 		Makefile 
+		Makefile.export 
                 doc/Makefile
 		examples/Makefile
 		examples/amesos/Makefile

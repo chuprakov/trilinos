@@ -26,67 +26,66 @@
 # ************************************************************************
 #@HEADER
 
-EXAMPLE = ex1  ex2  ex3  ex4  ex5  ex6  ex7
+
+include $(top_builddir)/Makefile.export
+
+EXAMPLE = ex1 ex2 ex3 ex4 ex5 ex6 ex7
 EXEEXT = .exe
-
-DIDASKO_INCLUDES = -I$(top_srcdir)/src
-
-if HAVE_DIDASKO_TEUCHOS
-TEUCHOS_INCLUDES = -I$(top_srcdir)/../teuchos/src \
-                 -I$(top_builddir)/../teuchos/src
-TEUCHOS_LIBS = $(top_builddir)/../teuchos/src/libteuchos.a
-else
-TEUCHOS_INCLUDES =
-TEUCHOS_LIBS =
-endif
 
 noinst_PROGRAMS = $(EXAMPLE)
 
 ex1_SOURCES = $(srcdir)/ex1.cpp
-ex1_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex1_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-ex1_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex1_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex1_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex2_SOURCES = $(srcdir)/ex2.cpp
-ex2_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex2_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-ex2_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex2_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex2_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex3_SOURCES = $(srcdir)/ex3.cpp
-ex3_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex3_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-ex3_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex3_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex3_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex4_SOURCES = $(srcdir)/ex4.cpp
-ex4_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex4_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-ex4_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex4_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex4_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex5_SOURCES = $(srcdir)/ex5.cpp
-ex5_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex5_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-ex5_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex5_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex5_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex6_SOURCES = $(srcdir)/ex6.cpp
-ex6_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex6_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-ex6_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex6_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex6_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex7_SOURCES = $(srcdir)/ex7.cpp
-ex7_DEPENDENCIES = $(TEUCHOS_LIBS)
-ex7_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(TEUCHOS_INCLUDES)
-ex7_LDADD = $(TEUCHOS_LIBS) \
-            $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex7_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex7_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)

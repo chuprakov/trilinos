@@ -82,6 +82,7 @@ am__aclocal_m4_deps = $(top_srcdir)/config/ac_cxx_bool.m4 \
 	$(top_srcdir)/config/tac_arg_enable_can_use_package.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature_sub.m4 \
+	$(top_srcdir)/config/tac_arg_enable_feature_sub_check.m4 \
 	$(top_srcdir)/config/tac_arg_enable_option.m4 \
 	$(top_srcdir)/config/tac_arg_with_ar.m4 \
 	$(top_srcdir)/config/tac_arg_with_blaslib.m4 \
@@ -106,58 +107,105 @@ am__EXEEXT_1 = ex1$(EXEEXT) ex2$(EXEEXT) ex3$(EXEEXT) ex4$(EXEEXT) \
 PROGRAMS = $(noinst_PROGRAMS)
 am_ex1_OBJECTS = ex1-ex1.$(OBJEXT)
 ex1_OBJECTS = $(am_ex1_OBJECTS)
-@HAVE_DIDASKO_EPETRA_FALSE@am__DEPENDENCIES_1 = =
-am__DEPENDENCIES_2 =
+am__DEPENDENCIES_1 =
+ex1_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex10_OBJECTS = ex10-ex10.$(OBJEXT)
 ex10_OBJECTS = $(am_ex10_OBJECTS)
+ex10_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex11_OBJECTS = ex11-ex11.$(OBJEXT)
 ex11_OBJECTS = $(am_ex11_OBJECTS)
+ex11_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex12_OBJECTS = ex12-ex12.$(OBJEXT)
 ex12_OBJECTS = $(am_ex12_OBJECTS)
+ex12_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex13_OBJECTS = ex13-ex13.$(OBJEXT)
 ex13_OBJECTS = $(am_ex13_OBJECTS)
+ex13_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex14_OBJECTS = ex14-ex14.$(OBJEXT)
 ex14_OBJECTS = $(am_ex14_OBJECTS)
+ex14_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex15_OBJECTS = ex15-ex15.$(OBJEXT)
 ex15_OBJECTS = $(am_ex15_OBJECTS)
+ex15_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex16_OBJECTS = ex16-ex16.$(OBJEXT)
 ex16_OBJECTS = $(am_ex16_OBJECTS)
+ex16_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex17_OBJECTS = ex17-ex17.$(OBJEXT)
 ex17_OBJECTS = $(am_ex17_OBJECTS)
+ex17_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex18_OBJECTS = ex18-ex18.$(OBJEXT)
 ex18_OBJECTS = $(am_ex18_OBJECTS)
+ex18_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex19_OBJECTS = ex19-ex19.$(OBJEXT)
 ex19_OBJECTS = $(am_ex19_OBJECTS)
+ex19_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex2_OBJECTS = ex2-ex2.$(OBJEXT)
 ex2_OBJECTS = $(am_ex2_OBJECTS)
+ex2_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex20_OBJECTS = ex20-ex20.$(OBJEXT)
 ex20_OBJECTS = $(am_ex20_OBJECTS)
+ex20_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex21_OBJECTS = ex21-ex21.$(OBJEXT)
 ex21_OBJECTS = $(am_ex21_OBJECTS)
+ex21_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex22_OBJECTS = ex22-ex22.$(OBJEXT)
 ex22_OBJECTS = $(am_ex22_OBJECTS)
+ex22_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex23_OBJECTS = ex23-ex23.$(OBJEXT)
 ex23_OBJECTS = $(am_ex23_OBJECTS)
+ex23_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex24_OBJECTS = ex24-ex24.$(OBJEXT)
 ex24_OBJECTS = $(am_ex24_OBJECTS)
+ex24_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex25_OBJECTS = ex25-ex25.$(OBJEXT)
 ex25_OBJECTS = $(am_ex25_OBJECTS)
-@HAVE_DIDASKO_TRIUTILS_FALSE@am__DEPENDENCIES_3 = =
-@HAVE_DIDASKO_TRIUTILS_TRUE@am__DEPENDENCIES_3 = $(top_builddir)/../triutils/src/libtriutils.a
+ex25_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex3_OBJECTS = ex3-ex3.$(OBJEXT)
 ex3_OBJECTS = $(am_ex3_OBJECTS)
+ex3_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex4_OBJECTS = ex4-ex4.$(OBJEXT)
 ex4_OBJECTS = $(am_ex4_OBJECTS)
+ex4_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex5_OBJECTS = ex5-ex5.$(OBJEXT)
 ex5_OBJECTS = $(am_ex5_OBJECTS)
+ex5_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex6_OBJECTS = ex6-ex6.$(OBJEXT)
 ex6_OBJECTS = $(am_ex6_OBJECTS)
+ex6_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex7_OBJECTS = ex7-ex7.$(OBJEXT)
 ex7_OBJECTS = $(am_ex7_OBJECTS)
+ex7_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex8_OBJECTS = ex8-ex8.$(OBJEXT)
 ex8_OBJECTS = $(am_ex8_OBJECTS)
+ex8_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_ex9_OBJECTS = ex9-ex9.$(OBJEXT)
 ex9_OBJECTS = $(am_ex9_OBJECTS)
+ex9_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
@@ -338,167 +386,205 @@ EXAMPLE = ex1  ex2  ex3  ex4  ex5  ex6  ex7  ex8  ex9  ex10 \
 	  ex11 ex12 ex13 ex14 ex15 ex16 ex17 ex18 ex19 ex20 \
 	  ex21 ex22 ex23 ex24 ex25
 
-DIDASKO_INCLUDES = -I$(top_srcdir)/src
-@HAVE_DIDASKO_EPETRA_FALSE@EPETRA_INCLUDE = 
-@HAVE_DIDASKO_EPETRA_FALSE@EPETRA_LIBS = =
-@HAVE_DIDASKO_TRIUTILS_FALSE@TRIUTILS_INCLUDES = 
-
-# Triutils is used by example 25 only
-@HAVE_DIDASKO_TRIUTILS_TRUE@TRIUTILS_INCLUDES = -I$(top_srcdir)/../triutils/src \
-@HAVE_DIDASKO_TRIUTILS_TRUE@                  -I$(top_builddir)/../triutils/src
-
-@HAVE_DIDASKO_TRIUTILS_FALSE@TRIUTILS_LIBS = =
-@HAVE_DIDASKO_TRIUTILS_TRUE@TRIUTILS_LIBS = $(top_builddir)/../triutils/src/libtriutils.a
 ex1_SOURCES = $(srcdir)/ex1.cpp
-ex1_DEPENDENCIES = $(EPETRA_LIBS)
-ex1_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex1_LDADD = $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex1_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex1_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex2_SOURCES = $(srcdir)/ex2.cpp
-ex2_DEPENDENCIES = $(EPETRA_LIBS)
-ex2_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex2_LDADD = $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex2_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex2_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex3_SOURCES = $(srcdir)/ex3.cpp
-ex3_DEPENDENCIES = $(EPETRA_LIBS)
-ex3_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex3_LDADD = $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex3_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex3_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex4_SOURCES = $(srcdir)/ex4.cpp
-ex4_DEPENDENCIES = $(EPETRA_LIBS)
-ex4_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex4_LDADD = $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex4_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex4_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex5_SOURCES = $(srcdir)/ex5.cpp
-ex5_DEPENDENCIES = $(EPETRA_LIBS)
-ex5_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex5_LDADD = $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex5_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex5_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex6_SOURCES = $(srcdir)/ex6.cpp
-ex6_DEPENDENCIES = $(EPETRA_LIBS)
-ex6_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex6_LDADD = $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex6_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex6_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex7_SOURCES = $(srcdir)/ex7.cpp
-ex7_DEPENDENCIES = $(EPETRA_LIBS)
-ex7_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex7_LDADD = $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex7_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex7_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex8_SOURCES = $(srcdir)/ex8.cpp
-ex8_DEPENDENCIES = $(EPETRA_LIBS)
-ex8_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex8_LDADD = $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex8_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex8_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex9_SOURCES = $(srcdir)/ex9.cpp
-ex9_DEPENDENCIES = $(EPETRA_LIBS)
-ex9_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex9_LDADD = $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex9_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex9_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex10_SOURCES = $(srcdir)/ex10.cpp
-ex10_DEPENDENCIES = $(EPETRA_LIBS)
-ex10_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex10_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex10_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex10_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex11_SOURCES = $(srcdir)/ex11.cpp
-ex11_DEPENDENCIES = $(EPETRA_LIBS)
-ex11_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex11_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex11_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex11_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex12_SOURCES = $(srcdir)/ex12.cpp
-ex12_DEPENDENCIES = $(EPETRA_LIBS)
-ex12_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex12_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex12_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex12_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex13_SOURCES = $(srcdir)/ex13.cpp
-ex13_DEPENDENCIES = $(EPETRA_LIBS)
-ex13_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex13_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex13_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex13_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex14_SOURCES = $(srcdir)/ex14.cpp
-ex14_DEPENDENCIES = $(EPETRA_LIBS)
-ex14_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex14_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex14_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex14_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex15_SOURCES = $(srcdir)/ex15.cpp
-ex15_DEPENDENCIES = $(EPETRA_LIBS)
-ex15_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex15_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex15_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex15_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex16_SOURCES = $(srcdir)/ex16.cpp
-ex16_DEPENDENCIES = $(EPETRA_LIBS)
-ex16_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex16_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex16_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex16_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex17_SOURCES = $(srcdir)/ex17.cpp
-ex17_DEPENDENCIES = $(EPETRA_LIBS)
-ex17_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex17_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex17_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex17_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex18_SOURCES = $(srcdir)/ex18.cpp
-ex18_DEPENDENCIES = $(EPETRA_LIBS)
-ex18_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex18_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex18_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex18_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex19_SOURCES = $(srcdir)/ex19.cpp
-ex19_DEPENDENCIES = $(EPETRA_LIBS)
-ex19_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex19_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex19_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex19_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex20_SOURCES = $(srcdir)/ex20.cpp
-ex20_DEPENDENCIES = $(EPETRA_LIBS)
-ex20_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex20_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex20_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex20_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex21_SOURCES = $(srcdir)/ex21.cpp
-ex21_DEPENDENCIES = $(EPETRA_LIBS)
-ex21_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex21_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex21_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex21_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex22_SOURCES = $(srcdir)/ex22.cpp
-ex22_DEPENDENCIES = $(EPETRA_LIBS)
-ex22_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex22_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex22_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex22_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex23_SOURCES = $(srcdir)/ex23.cpp
-ex23_DEPENDENCIES = $(EPETRA_LIBS)
-ex23_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex23_LDADD = $(EPETRA_LIBS) \
-	      $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex23_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex23_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex24_SOURCES = $(srcdir)/ex24.cpp
-ex24_DEPENDENCIES = $(EPETRA_LIBS)
-ex24_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE)
-ex24_LDADD = $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex24_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex24_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex25_SOURCES = $(srcdir)/ex25.cpp
-ex25_DEPENDENCIES = $(EPETRA_LIBS) $(TRIUTILS_LIBS)
-ex25_CXXFLAGS = $(DIDASKO_INCLUDES) $(EPETRA_INCLUDE) $(TRIUTILS_INCLUDES)
-ex25_LDADD = $(TRIUTILS_LIBS) \
-	     $(EPETRA_LIBS) \
-	     $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex25_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex25_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 all: all-am
 
@@ -1223,7 +1309,7 @@ uninstall-am: uninstall-info-am
 	uninstall-am uninstall-info-am
 
 
-@HAVE_DIDASKO_EPETRA_TRUE@include $(top_builddir)/../epetra/Makefile.export
+include $(top_builddir)/Makefile.export
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -26,45 +26,25 @@
 # ************************************************************************
 #@HEADER
 
+include $(top_builddir)/Makefile.export
+
 EXAMPLE = ex1 ex2
 EXEEXT = .exe
-
-DIDASKO_INCLUDES = -I$(top_srcdir)/src
-
-if HAVE_DIDASKO_EPETRA
-include $(top_builddir)/../epetra/Makefile.export
-else
-EPETRA_INCLUDE = 
-EPETRA_LIBS = =
-endif
-
-if HAVE_DIDASKO_TRIUTILS
-TRIUTILS_INCLUDES = -I$(top_srcdir)/../triutils/src \
-		  -I$(top_builddir)/../triutils/src
-TRIUTILS_LIBS = $(top_builddir)/../triutils/src/libtriutils.a
-else
-TRIUTILS_INCLUDES = 
-TRIUTILS_LIBS = =
-endif
 
 noinst_PROGRAMS = $(EXAMPLE)
 
 ex1_SOURCES = $(srcdir)/ex1.cpp
-ex1_DEPENDENCIES = $(TRIUTILS_LIBS) \
-		   $(EPETRA_LIBS)
-ex1_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(EPETRA_INCLUDE) \
-	       $(TRIUTILS_INCLUDES)
-ex1_LDADD = $(TRIUTILS_LIBS) \
-	    $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex1_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex1_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
 
 ex2_SOURCES = $(srcdir)/ex2.cpp
-ex2_DEPENDENCIES = $(TRIUTILS_LIBS) \
-		   $(EPETRA_LIBS)
-ex2_CXXFLAGS = $(DIDASKO_INCLUDES) \
-	       $(EPETRA_INCLUDE) \
-	       $(TRIUTILS_INCLUDES)
-ex2_LDADD = $(TRIUTILS_LIBS) \
-	    $(EPETRA_LIBS) \
-	    $(LAPACK_LIBS) $(LIBS) $(BLAS_LIBS) $(FLIBS)
+ex2_CXXFLAGS = $(DIDASKO_INCLUDES) 
+ex2_LDADD = $(DIDASKO_LIBS) \
+            $(LIBS)         \
+            $(LAPACK_LIBS)  \
+            $(BLAS_LIBS)    \
+            $(FLIBS)
