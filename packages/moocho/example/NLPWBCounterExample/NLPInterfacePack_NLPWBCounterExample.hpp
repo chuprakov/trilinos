@@ -41,19 +41,19 @@ namespace NLPInterfacePack {
  * and where <tt>a</tt> and <tt>b</tt> are constants.  In the counter
  * example, the form of the objective function <tt>f(x)</tt> is not
  * important, but we have to specify one here in order to have MOOCHO
- * solve the problem.  So we will specify the objective function of
- \beginverbatim
+ * solve the problem.  So we will specify the objective function as
+ \verbatim
         / x(1)       : if linear_obj == true
  f(x) = |
         \ 0.5*x(1)^2 : if linear_obj == false
  \endverbatim
+ * where the client can specify <tt>linear_obj</tt> (in the constructor).
+ *
  * Note that an excellent basis selection is for <tt>x(2)</tt> and
  * <tt>x(3)</tt> to be in the basis since this gives the basis
  * matrix of <tt>C = -I</tt>.
  */
-class NLPWBCounterExample
-	: public NLPSerialPreprocessExplJac
-{
+class NLPWBCounterExample : public NLPSerialPreprocessExplJac {
 public:
 
 	/** @name Constructors / initializers */
@@ -64,24 +64,20 @@ public:
 	 *
 	 * @param  a       [in] The constant in constriant <tt>c(1)</tt>
 	 * @param  b       [in] The constant in constriant <tt>c(2)</tt>
-	 * @param  x1_init [in] Initial guess for <tt>x(1)</tt>
-	 * @param  x2_init [in] Initial guess for <tt>x(2)</tt>
-	 * @param  x3_init [in] Initial guess for <tt>x(3)</tt>
+	 * @param  xinit   [in] Array (size 3) of initial guess for <tt>x</tt>
 	 * @param  nlp_selects_basis
      *                 [in] If true, then this NLP will select
      *                 the basis variables as <tt>x(2)</tt> and
-     *                 <tt>x(3)</tt> (which gives <tt>C = -I</tt>.
+     *                 <tt>x(3)</tt> (which gives <tt>C = -I</tt>).
 	 * @param  linear_obj
 	 *                 [in] If true, the the objective is
 	 *                 set to <tt>f(x) = x(1)</tt>, else it
 	 *                 is set to <tt>f(x) = 0.5*x(1)^2</tt>
 	 */
 	NLPWBCounterExample(
-		value_type    a                  = 0.0
+		value_type   xinit[3]
+		,value_type   a                  = 0.0
 		,value_type   b                  = 1.0
-		,value_type   x1_init            = 0.0
-		,value_type   x2_init            = 0.0
-		,value_type   x3_init            = 0.0
 		,bool         nlp_selects_basis  = true
 		,bool         linear_obj         = true
 		);
@@ -164,14 +160,10 @@ protected:
 	size_type imp_Gh_nz_orig() const;
 	///
 	void imp_calc_Gc_orig(
-		const DVectorSlice& x_full, bool newx
-		, const FirstOrderExplInfo& first_order_expl_info
-		) const;
+		const DVectorSlice& x_full, bool newx, const FirstOrderExplInfo& first_order_expl_info ) const;
 	///
 	void imp_calc_Gh_orig(
-		const DVectorSlice& x_full, bool newx
-		, const FirstOrderExplInfo& first_order_expl_info
-		) const;
+		const DVectorSlice& x_full, bool newx, const FirstOrderExplInfo& first_order_expl_info ) const;
 
 	//@}
 
@@ -180,18 +172,13 @@ private:
 	// /////////////////////////////////////////
 	// Private data members
 
-	bool         is_initialized_;  ///< Flag of if <tt>this</tt> is initialized yet
-	bool         nlp_selects_basis_; ///< Flag for if <tt>this</tt> selects first basis
-	bool         basis_selection_was_given_; ///< Flag for if <tt>this</tt> already selected a basis
-	bool         linear_obj_;      ///< Flag for if a linear objective is used or not
-	size_type    n_orig_;          ///< Number of variables
-	size_type    m_orig_;          ///< Number of equality constraints
-	size_type    Gc_orig_nz_;      ///< Number of nonzeros in Jacobian
-	value_type   a_;               ///< Constant for <tt>c(1)</tt>
-	value_type   b_;               ///< Constant for <tt>c(2)</tt>
-	DVector      xinit_orig_;      ///< Initial guess for <tt>x_orig</tt>
-	DVector      xl_orig_;         ///< Lower bounds for <tt>x_orig</tt>
-	DVector      xu_orig_;         ///< Upper bounds for <tt>x_orig</tt>  
+	bool         is_initialized_;                 // Flag for if this is initialized
+	bool         nlp_selects_basis_;              // Flag for if this selects first basis
+	bool         basis_selection_was_given_;      // Flag for if this already selected a basis
+	bool         linear_obj_;                     // Flag for if objective is linear or quadratic
+	size_type    n_orig_, m_orig_, Gc_orig_nz_;   // NLP sizes and number nonzeros in Jacobian
+	value_type   a_, b_;                          // Constants for constraints
+	DVector      xinit_orig_, xl_orig_, xu_orig_; // Guess, and bounds on x_orig
 
 	// /////////////////////////////////////////
 	// Private member functions

@@ -1,5 +1,7 @@
-/** \mainpage Scalable NLP subclass with a banded basis of the Jacobian.
+/** \mainpage Simple example NLP for the Waechter & Biegler counter example.
 
-ToDo: Write documentation!
+The class <tt>NLPInterfacePack::NLPWBCounterExample</tt> implements
+this simple %NLP and the file <tt>NLPWBCounterExampleMain.cpp</tt> includes
+a driver for solving this %NLP using MOOCHO.
 
 */

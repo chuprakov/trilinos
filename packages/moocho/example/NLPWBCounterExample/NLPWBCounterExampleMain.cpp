@@ -31,21 +31,19 @@ int main( int argc, char* argv[] )
 		// Get options from the command line
 		//
 		
+		double   xinit[3]          = { 0.0, 0.0, 0.0 };
 		double   a                 = 0.0;
 		double   b                 = 1.0;
-		double   x1_init           = 0.0;
-		double   x2_init           = 0.0;
-		double   x3_init           = 0.0;
 		bool     nlp_selects_basis = true;
 		bool     linear_obj        = true;
 
 		CommandLineProcessor  command_line_processor;
 
+		command_line_processor.set_option( "x1-init",  &xinit[0], "Initail guess for x(1)" );
+		command_line_processor.set_option( "x2-init",  &xinit[1], "Initail guess for x(2)" );
+		command_line_processor.set_option( "x3-init",  &xinit[2], "Initail guess for x(3)" );
 		command_line_processor.set_option( "a",  &a, "Constant for c(1)" );
 		command_line_processor.set_option( "b",  &b, "Constant for c(2)" );
-		command_line_processor.set_option( "x1-init",  &x1_init, "Initail guess for x(1)" );
-		command_line_processor.set_option( "x2-init",  &x2_init, "Initail guess for x(2)" );
-		command_line_processor.set_option( "x3-init",  &x3_init, "Initail guess for x(3)" );
 		command_line_processor.set_option(
 			"nlp-selects-basis", "no-nlp-selects-basis", &nlp_selects_basis
 			,"Determine if NLP will select basis" );
@@ -64,14 +62,13 @@ int main( int argc, char* argv[] )
 		//
 
 		// Create the NLP
-		NLPWBCounterExample  nlp(a,b,x1_init,x2_init,x3_init,nlp_selects_basis,linear_obj);
+		NLPWBCounterExample  nlp(xinit,a,b,nlp_selects_basis,linear_obj);
 		// Create the solver object
 		MoochoSolver  solver;
 		// Set the NLP
 		solver.set_nlp( MemMngPack::rcp(&nlp,false) );
 		// Solve the NLP
-		const MoochoSolver::ESolutionStatus
-			solution_status = solver.solve_nlp();
+		const MoochoSolver::ESolutionStatus	solution_status = solver.solve_nlp();
 		
 		//
 		// Return the solution status (0 if sucessfull)
