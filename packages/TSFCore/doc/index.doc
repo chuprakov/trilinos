@@ -18,19 +18,19 @@ into a single library called <tt>libTSFCore</tt>.
 
 <ol>
 
-<li> \ref TSFCore_Core_Interfaces_grp "Fundamental vector and linear operator interfaces" (in namespace <tt>TSFCore</tt>)
+<li> \ref TSFCore_Interfaces_Core_grp "Fundamental vector and linear operator interfaces" (in namespace <tt>TSFCore</tt>)
 
 Included are vector and linear operator interfaces and bare minimum
 support software needed for default method implementations.  The
 vector interface is <tt>TSFCore::Vector</tt>.  The basic
 interface for linear operators is <tt>TSFCore::LinearOp</tt>.
 
-<li> \ref TSFCore_Solvers_Interfaces_grp "Interfaces to (iterative) linear solvers" (in namespace <tt>TSFCore::Solvers</tt>)
+<li> \ref TSFCore_Interfaces_Solvers_grp "Interfaces to (iterative) linear solvers" (in namespace <tt>TSFCore::Solvers</tt>)
 
 This library contains interfaces and classes assoicated with iterative
 linear solvers.
 
-<li> \ref TSFCore_Nonlin_Interfaces_grp "Interfaces to nonlinear problems" (in namespace <tt>TSFCore::Nonlin</tt>)
+<li> \ref TSFCore_Interfaces_Nonlin_grp "Interfaces to nonlinear problems" (in namespace <tt>TSFCore::Nonlin</tt>)
 
 The abstact class <tt>TSFCore::Nonlin::LinearOpWithSolve</tt>
 provides an interface to nonsingular linear operators.  The abstract
@@ -55,19 +55,25 @@ TSFCore interfaces.
 <li> Utilities
 
 
+<ol>
 
+<li> \ref TSFCore_Utilities_Core_grp "Utilities based on basic TSFCore interfaces" (in namespace <tt>TSFCore</tt>)
+
+<li> \ref TSFCore_Utilities_Solvers_grp "Utilities based on TSFCore::Solvers interfaces" (in namespace <tt>TSFCore::Solvers</tt>)
+
+<li> \ref TSFCore_Utilities_Nonlin_grp "Utilities based on TSFCore::Nonlin interfaces" (in namespace <tt>TSFCore::Nonlin</tt>)
+
+</ol>
 
 <li> Examples
 
 
 </ol>
 
-
-
 */
 //@{
 
-/** \defgroup TSFCore_Core_Interfaces_grp Fundamental Vector and Linear Operator Interfaces.
+/** \defgroup TSFCore_Interfaces_Core_grp Fundamental Vector and Linear Operator Interfaces.
 
 <ul>
 
@@ -184,7 +190,7 @@ Blah blah blah ...
 
 */
 
-/** \defgroup TSFCore_Solvers_Interfaces_grp Extended Interfaces for Iterative Linear Solvers.
+/** \defgroup TSFCore_Interfaces_Solvers_grp Extended Interfaces for Iterative Linear Solvers.
 
 <ul>
 
@@ -205,7 +211,7 @@ Blah blah blah ...
 
 */
 
-/** \defgroup TSFCore_Nonlin_Interfaces_grp Extended Interfaces to Nonlinear Problems
+/** \defgroup TSFCore_Interfaces_Nonlin_grp Extended Interfaces to Nonlinear Problems
 
 <ul>
 
@@ -223,6 +229,12 @@ Blah blah blah ...
 .
 
 </ul>
+
+These abstract classes provide interfaces for more general nonlinear
+problems (see the definition in
+<tt>TSFCore::Nonlin::NonlinearProblem</tt>) and an interface for a
+linear operator with a solve operation (see
+<tt>TSFCore::Nonlin::LinearOpWithSolve</tt>) .
 
 */
 
@@ -251,7 +263,93 @@ and extended precision types) if a fully MPP environment.  These
 subclasses are also carfully designed to allow interoperability
 between various 
 
-
 */
 
+/** \defgroup TSFCore_Utilities_Core_grp Utility software based on the basic TSFCore interfaces.
 
+<ul>
+
+<li> Explicit views of vector and multi-vector elements:
+
+  <ul>
+  <li><tt>TSFCore::ExplicitVectorView</tt>
+  <li><tt>TSFCore::ExplicitMutableVectorView</tt>
+  <li><tt>TSFCore::ExplicitMultiVectorView</tt>
+  <li><tt>TSFCore::ExplicitMutableMultiVectorView</tt>
+  </ul>
+
+.
+
+<li> Product vector spaces, vectors and multi-vectors:
+
+  <ul>
+  <li> Node interface classes:
+    <ul>
+    <li><tt>TSFCore::ProductVectorSpaceBase</tt>
+    <li><tt>TSFCore::ProductVectorBase</tt>
+    <li><tt>TSFCore::ProductMultiVectorBase</tt>
+    </ul>
+  <li> Standard concrete implementations:
+    <ul>
+    <li><tt>TSFCore::ProductVectorSpace</tt>
+    <li><tt>TSFCore::ProductVector</tt>
+    <li><tt>TSFCore::ProductMultiVector</tt> (ToDo: This needs to be implemented!)
+    </ul>
+  </ul>
+
+.
+
+<li> Testing:
+
+  <ul>
+  <li><tt>TSFCore::LinearOpTester</tt>
+  </ul>
+
+.
+
+<li> Miscellaneous:
+
+  <ul>
+  <li><tt>TSFCore::MultiVectorAllocator</tt>
+  </ul>
+.
+
+</ul>
+
+All of this software only has dependencies on the basic
+<tt>%TSFCore</tt> interfaces described \ref TSFCore_Interfaces_Core_grp "here".
+
+This is a mixed bag of software and is divided into the categories
+shown above.
+
+The first category of software is concrete classes to help create
+explicit views of constant and non-constant vectors and multi-vectors.
+The concrete classes <tt>TSFCore::ExplicitVectorView</tt>,
+<li><tt>TSFCore::ExplicitMutableVectorView</tt>,
+<li><tt>TSFCore::ExplicitMultiVectorView</tt> and
+<li><tt>TSFCore::ExplicitMutableMultiVectorView</tt> have constructors
+and destructors that greatly simplify getting at the explicit elements
+of any vector or multi-vector object.  Note, it is generally not a
+good idea to ask for explicit access to vector or multi-vector
+elements but there are some special cases where this type of access is
+absoluting critical (see the TSFCore design document).
+
+Another important category of software is for supporting interfaces
+and implementations to product vectors and product multi-vectors that
+are created by product vector spaces.  There are abstract interface
+classes to these types of objects provided in
+<tt>TSFCore::ProductVectorBase</tt>,
+<tt>TSFCore::ProductMultiVectorBase</tt> and
+<tt>TSFCore::ProductVectorSpaceBase</tt> which are appropriate for
+some client software but need not be tied to a particular
+implementation.  There are also very general default implementations
+in <tt>TSFCore::ProductVector</tt>,
+<tt>TSFCore::ProductMultiVector</tt> and
+<tt>TSFCore::ProductVectorSpace</tt> that should have all of the
+functionality needed for most use cases.  These subclasses represent
+true "Composite" (in the lingo of design patterns) objects where
+multiple objects can be composed to represent a single object.
+
+ToDo: Finish discussion.
+
+*/
