@@ -59,7 +59,8 @@ using AbstractLinAlgPack::Vt_S;
 using AbstractLinAlgPack::Vp_StV;
 ///
 using AbstractLinAlgPack::Vp_StMtV;
-//using AbstractLinAlgPack::Mt_S;
+///
+using AbstractLinAlgPack::Mt_S;
 ///
 using AbstractLinAlgPack::Mp_StM;
 ///
@@ -83,9 +84,6 @@ using AbstractLinAlgPack::M_StInvMtM;
   * Concidering aliasing would make the operations much more complicated to implement.
   * So unless you are sure that it is okay, do not use a vector or matrix object
   * in both the lhs and rhs expressions.
-  *
-  * The naming covension for these functions is the same as for the linear algebra
-  * functions for ???.
   */
 //@{
 
