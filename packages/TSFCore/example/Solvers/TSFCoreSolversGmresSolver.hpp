@@ -117,6 +117,7 @@ void GMRESSolver<Scalar>::solve(
 //
 // Calls doIteration() using the current linear system parameters.
 //
+	curr_iter = 0;
     while( !isConverged && (curr_iter < max_iter) ) { doIteration( Op, Op_trans ); }
 //
 // Solve least squares problem.
@@ -127,8 +128,11 @@ void GMRESSolver<Scalar>::solve(
 //
 // Compute the new solution.
 //
-	for( int i = 0; i < curr_iter; i++ )
-		Vp_StV( curr_soln, -z[i], *V_->col(i+1) );
+	MemMngPack::ref_count_ptr<MultiVector<Scalar> > V = V_->subView(Range1D(1,curr_iter));
+	SerialVector<Scalar> z_vec( &z[0], 1, curr_iter, false );
+	V->apply( NOTRANS, z_vec, curr_soln, -1.0, 1.0 );
+//	for( int i = 0; i < curr_iter; i++ )
+//		Vp_StV( curr_soln, -z[i], *V_->col(i+1) );
 }
 
 template<class Scalar>
@@ -152,10 +156,18 @@ void GMRESSolver<Scalar>::doIteration( const LinearOp<Scalar> &Op, const ETransp
     //
     // Perform MGS to orthogonalize new Krylov vector.
     //
-    for( i=0; i<curr_iter+1; i++ ) {	
+   for( i=0; i<curr_iter+1; i++ ) {	
 		H( i, curr_iter ) = dot( *w, *V_->col(i+1) );          // h_{i,j} = ( w, v_{i} )
 		Vp_StV( w.get(), -H( i, curr_iter ), *V_->col(i+1) );  // w = w - h_{i,j} * v_{i}
     }
+/* RAB: Why not this or a MultiVector version???
+    for( i=0; i<curr_iter+1; i++ ) {
+		H( i, curr_iter ) = dot( *w, *V_->col(i+1) );          // h_{i,j} = ( w, v_{i} )
+    }
+    for( i=0; i<curr_iter+1; i++ ) {
+		Vp_StV( w.get(), -H( i, curr_iter ), *V_->col(i+1) );  // w = w - h_{i,j} * v_{i}
+    }
+*/
     H( curr_iter+1, curr_iter ) = norm_2( *w );                // h_{j+1,j} = || w ||
     Vt_S( w.get(), 1.0 / H( curr_iter+1, curr_iter ) ); 	   // v_{j+1} = w / h_{j+1,j}			
     //
