@@ -96,7 +96,7 @@ void LinAlgPack::assign(Vector* v_lhs, const VectorSlice& vs_rhs) {
 // v_lhs = vs_rhs1 + vs_rhs2
 void LinAlgPack::V_VpV(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
 {
-	assert_vs_sizes(vs_rhs1, vs_rhs2);
+	assert_vs_sizes(vs_rhs1.size(), vs_rhs2.size());
 	v_lhs->resize(vs_rhs1.size());
 	std::transform(vs_rhs1.begin(),vs_rhs1.end(),vs_rhs2.begin(),v_lhs->begin(),std::plus<value_type>());
 //	VectorSlice::const_iterator
@@ -111,7 +111,7 @@ void LinAlgPack::V_VpV(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSl
 // v_lhs = vs_rhs1 - vs_rhs2
 void LinAlgPack::V_VmV(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
 {
-	assert_vs_sizes(vs_rhs1, vs_rhs2);
+	assert_vs_sizes(vs_rhs1.size(), vs_rhs2.size());
 	v_lhs->resize(vs_rhs1.size());
 	std::transform(vs_rhs1.begin(),vs_rhs1.end(),vs_rhs2.begin(),v_lhs->begin(),std::minus<value_type>());
 }
@@ -128,6 +128,12 @@ void LinAlgPack::V_StV(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rh
 	BLAS_Cpp::scal( v_lhs->size(), alpha, v_lhs->raw_ptr(), 1);
 }
 
+void LinAlgPack::rot( const value_type c, const value_type s, VectorSlice* x, VectorSlice* y )
+{
+	assert_vs_sizes( x->size(), y->size() );
+	BLAS_Cpp::rot( x->size(), x->raw_ptr(), x->stride(), y->raw_ptr(), y->stride(), c, s );
+}
+
 // Elementwise math vector functions. VC++ 5.0 is not allowing use of ptr_fun() with overloaded
 // functions so I have to perform the loops straight out.
 // ToDo: use ptr_fun() when you get a compiler that works this out.  For now I will just use macros.
@@ -138,7 +144,7 @@ void LinAlgPack::V_StV(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rh
 	{	*itr_lhs = FUNC(*itr_rhs); }
 
 #define BINARYOP_VEC(LHS, RHS1, RHS2, FUNC)																	\
-	LinAlgPack::assert_vs_sizes(RHS1, RHS2); LHS->resize(RHS1.size());										\
+	LinAlgPack::assert_vs_sizes(RHS1.size(), RHS2.size()); LHS->resize(RHS1.size());						\
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;								\
 	for(itr_lhs = LHS->begin(), itr_rhs1 = RHS1.begin(), itr_rhs2 = RHS2.begin();							\
 		itr_lhs != LHS->end(); ++itr_lhs, ++itr_rhs1, ++itr_rhs2)											\
@@ -202,7 +208,7 @@ void LinAlgPack::exp(Vector* v_lhs, const VectorSlice& vs_rhs) {
 // v_lhs = max(vs_rhs1,vs_rhs2)
 void LinAlgPack::max(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2)
 {
-	LinAlgPack::assert_vs_sizes(vs_rhs1, vs_rhs2); v_lhs->resize(vs_rhs1.size());
+	LinAlgPack::assert_vs_sizes(vs_rhs1.size(), vs_rhs2.size()); v_lhs->resize(vs_rhs1.size());
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;
 	for(itr_lhs = v_lhs->begin(), itr_rhs1 = vs_rhs1.begin(), itr_rhs2 = vs_rhs2.begin();
 		itr_lhs != v_lhs->end(); ++itr_lhs, ++itr_rhs1, ++itr_rhs2)
@@ -218,7 +224,7 @@ void LinAlgPack::max(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rhs)
 // v_lhs = min(vs_rhs1,vs_rhs2)
 void LinAlgPack::min(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2) 
 {
-	LinAlgPack::assert_vs_sizes(vs_rhs1, vs_rhs2); v_lhs->resize(vs_rhs1.size());
+	LinAlgPack::assert_vs_sizes(vs_rhs1.size(), vs_rhs2.size()); v_lhs->resize(vs_rhs1.size());
 	Vector::iterator itr_lhs; VectorSlice::const_iterator itr_rhs1, itr_rhs2;
 	for(itr_lhs = v_lhs->begin(), itr_rhs1 = vs_rhs1.begin(), itr_rhs2 = vs_rhs2.begin();
 		itr_lhs != v_lhs->end(); ++itr_lhs, ++itr_rhs1, ++itr_rhs2)

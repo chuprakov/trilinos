@@ -18,6 +18,8 @@ using LinAlgPack::IVector;
 using LinAlgPack::Range1D;
 using LinAlgPack::Vector;
 using LinAlgPack::VectorSlice;
+using LinAlgPack::VectorExt;
+using LinAlgPack::VectorSliceExt;
 using LinAlgPack::TransVectorSlice;
 using LinAlgPack::GenMatrix;
 using LinAlgPack::GenMatrixSlice;

@@ -34,9 +34,19 @@ class IVector;
 ///
 class Range1D;
 ///
-class Vector;
+template<class T>
+class VectorTmpl;
 ///
-class VectorSlice;
+template<class T>
+class VectorSliceTmpl;
+///
+typedef VectorTmpl<value_type>                Vector;
+///
+typedef VectorSliceTmpl<value_type>           VectorSlice;
+///
+typedef VectorTmpl<extended_value_type>       VectorExt;
+///
+typedef VectorSliceTmpl<extended_value_type>  VectorSliceExt;
 ///
 class TransVectorSlice;
 ///

@@ -33,10 +33,10 @@ extern "C" {
 // Level 1 BLAS (vector-vector operations)
 
 // Generate plane rotation
-FORTRAN_FUNC_DECL_UL(void,DROTG,drotg)(f_dbl_prec& A, f_dbl_prec& B, f_dbl_prec& C, f_dbl_prec& S);
+FORTRAN_FUNC_DECL_UL(void,DROTG,drotg)(f_dbl_prec* A, f_dbl_prec* B, f_dbl_prec* C, f_dbl_prec* S);
 
 // Generate modified plane rotation
-FORTRAN_FUNC_DECL_UL(void,DROTMG,drotmg)(f_dbl_prec& D1, f_dbl_prec& D2, f_dbl_prec& A, const f_dbl_prec& B, f_dbl_prec* PARAM);
+FORTRAN_FUNC_DECL_UL(void,DROTMG,drotmg)(f_dbl_prec* D1, f_dbl_prec* D2, f_dbl_prec* A, const f_dbl_prec& B, f_dbl_prec* PARAM);
  
 // Apply plane rotation
 FORTRAN_FUNC_DECL_UL(void,DROT,drot)(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY,
@@ -239,13 +239,13 @@ FORTRAN_FUNC_DECL_UL(void,DTRSM,dtrsm)(FORTRAN_CONST_CHAR_1_ARG(SIDE)
 
 // Level 1 BLAS (vector-vector operations)
 
-void BLAS_Cpp::rotg(f_dbl_prec& a, f_dbl_prec& b, f_dbl_prec& c, f_dbl_prec& s) {
+void BLAS_Cpp::rotg(f_dbl_prec* a, f_dbl_prec* b, f_dbl_prec* c, f_dbl_prec* s) {
 	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DROTG,drotg)(a,b,c,s);
 }
 
 // Generate modified plane rotation
 
-void BLAS_Cpp::rotmg(f_dbl_prec& d1, f_dbl_prec& d2, f_dbl_prec& a, const f_dbl_prec& b, f_dbl_prec* param) {
+void BLAS_Cpp::rotmg(f_dbl_prec* d1, f_dbl_prec* d2, f_dbl_prec* a, const f_dbl_prec& b, f_dbl_prec* param) {
 	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DROTMG,drotmg)(d1, d2, a, b, param);
 }
  

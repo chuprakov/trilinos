@@ -100,6 +100,16 @@ void V_mV(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
 /// vs_lhs = alpha * vs_rhs
 void V_StV(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs);
 
+///
+/* Apply a plane (Givens) rotation.
+ *
+ * [  c  s ] * [ x' ] -> [ x' ]
+ * [ -s  c ]   [ y' ]    [ y' ]
+ *
+ * See "Handbook for Matrix Computations" section 2.4
+ */
+void rot( const value_type c, const value_type s, VectorSlice* x, VectorSlice* y );
+
 //		end Algebraic Functions
 //@}
 

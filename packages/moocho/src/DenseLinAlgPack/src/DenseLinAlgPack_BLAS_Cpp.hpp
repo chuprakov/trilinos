@@ -51,7 +51,7 @@ const char DiagChar[]	= {'U'	, 'N'			};
 //@{
 
 ///
-void rotg(f_dbl_prec& a, f_dbl_prec& b, f_dbl_prec& c, f_dbl_prec& s);
+void rotg( f_dbl_prec* a, f_dbl_prec* b, f_dbl_prec* c, f_dbl_prec* s );
 
 //@}	 	
 
@@ -59,7 +59,7 @@ void rotg(f_dbl_prec& a, f_dbl_prec& b, f_dbl_prec& c, f_dbl_prec& s);
 //@{
 
 ///
-void rotmg(f_dbl_prec& d1, f_dbl_prec& d2, f_dbl_prec& a, const f_dbl_prec& b, f_dbl_prec* param);
+void rotmg( f_dbl_prec* d1, f_dbl_prec* d2, f_dbl_prec* a, const f_dbl_prec& b, f_dbl_prec* param );
 
 //@}
  
@@ -68,7 +68,7 @@ void rotmg(f_dbl_prec& d1, f_dbl_prec& d2, f_dbl_prec& a, const f_dbl_prec& b, f
 
 ///
 void rot(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY
-	, const f_dbl_prec& C, const f_dbl_prec& S);
+		 , const f_dbl_prec& C, const f_dbl_prec& S);
 //@}
 
 /** @name  Apply modified plane rotation */
@@ -76,7 +76,7 @@ void rot(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const 
 
 /// 
 void rot(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY
-	, const f_dbl_prec* PARAM);
+		 , const f_dbl_prec* PARAM);
 
 //@}
 

@@ -14,7 +14,6 @@
   * The class GenMatrix is a storage class for 2-D matrices while the class GenMatrixSlice
   * is used to represent rectangular regions of a GenMatrix object.
   */
-
 //@{
 //		begin General Rectangular 2-D Matrices scope
 
@@ -143,7 +142,6 @@ public:
 	void bind( GenMatrixSlice gms );
 
 	/** @name {\bf Dimensionality, Misc}. */
-
 	//@{
 
 	/// Return the number of rows
@@ -166,7 +164,6 @@ public:
 	//@}
 
 	/** @name {\bf Individual Element Access Subscripting (lvalue)}. */
-
 	//@{
 
 	/// Return element at row i, col j (i,j) (1-based) (throws std::out_of_range if i, j are out of bounds)
@@ -183,7 +180,6 @@ public:
 	  * the subscripting operators opeator()(I,J) return GenMatrixSlice objects for
 	  * rectangular subregions.
 	  */
-
 	//@{
 
 	/// Return VectorSlice object representing the ith row (1-based; 1,2,..,#this->rows()#, or throw std::out_of_range)
@@ -198,7 +194,7 @@ public:
 	/** Return VectorSlice object representing a diagonal.
 	  *
 	  * Passing k == 0 returns the center diagonal.  Values of k < 0 are the lower diagonals
-	  * (k = -1, -2, ..., #this->rows()# - 1).  Values of k > 0 are the upper diagonals
+	  * (k = -1, -2, ..., -#this->rows()# + 1).  Values of k > 0 are the upper diagonals
 	  * (k = 1, 2, ..., #this->cols()# - 1).
 	  *
 	  * Preconditions: \begin{itemize}
@@ -263,7 +259,6 @@ public:
 	//@}
 
 	/** @name {\bf Assignment operators}. */
-	
 	//@{
 
 	///
@@ -298,7 +293,6 @@ public:
 
 	/** @name {\bf Raw data access}.
 	  */
-
 	//@{
 
 	/// Return the number of rows in the full matrix. Equivalent to BLAS LDA argument.
@@ -350,8 +344,8 @@ public:
 	  *	\item[#const_reference#]		const value_type&
 	  * \end{description}
 	  */
-	
 	//@{
+	//@}
 	
 	typedef LinAlgPack::value_type					value_type;
 	typedef LinAlgPack::size_type					size_type;
@@ -360,8 +354,6 @@ public:
 	typedef const value_type&						const_reference;
 	typedef std::valarray<value_type>				valarray;
 
-	//@}
-
 	/** @name {\bf Constructors}.
 	  *
 	  * The general user uses these constructors to create a matrix.  
@@ -369,6 +361,7 @@ public:
 	  * The default constructor is used and is therefore not shown here.
 	  */
 	//@{
+
 	/// Construct a matrix with rows = cols = 0
 	GenMatrix();
 	/// Construct an uninitialied rectangular matrix (rows x cols) 
@@ -397,10 +390,10 @@ public:
 	  *		\end{itemize}
 	  */
 	GenMatrix(const GenMatrixSlice& gms);
+
 	//@}
 
 	/** @name {\bf Memory Management, Dimensionality, Misc}. */
-
 	//@{
 	
 	/// Resize matrix to a (rows x cols) matrix and initializes any added elements by val
@@ -534,7 +527,6 @@ public:
 	  * This implicit converstion is important for the proper usage of much of the
 	  * libraries functionality.
 	  */
-
 	//@{
 
 	///
@@ -545,7 +537,6 @@ public:
 	//@}
 
 	/** @name {\bf Assignment Operators}. */
-
 	//@{
 	
 	///
@@ -574,7 +565,6 @@ public:
 
 	/** @name {\bf Raw data access}.
 	  */
-
 	//@{
 
 	/// Return the number of rows in the full matrix. Equivalent to BLAS LDA argument.
@@ -611,7 +601,6 @@ private:
 // ///////////////////////////////////////////////////////////////////////////////
 
 /** @name {\bf GenMatrix / GenMatrixSlice Associated Non-Member Functions}. */
-
 //@{
 //		begin non-member functions scope
 
