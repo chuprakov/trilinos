@@ -499,6 +499,7 @@ void DecompositionSystemVarReductImp::update_decomp(
 			,(mat_rel == mat_rel == MATRICES_INDEP_IMPS
 			  ? BasisSystem::MATRICES_INDEP_IMPS
 			  : BasisSystem::MATRICES_ALLOW_DEP_IMPS )
+			,out && olevel >= PRINT_BASIC_INFO ? out : NULL
 			);
 	}
 		
