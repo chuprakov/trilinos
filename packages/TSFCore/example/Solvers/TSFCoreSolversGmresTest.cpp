@@ -36,18 +36,27 @@ int main(int argc, char *argv[]) {
 	
 	int MyPID = Comm.MyPID();
 	int NumProc = Comm.NumProc();
-	
-	bool verbose = (MyPID==0);
-	//
-    	if(argc < 2 && verbose) {
-     	cerr << "Usage: " << argv[0] 
-	 << " HB_filename " << endl
-	 << "where:" << endl
-	 << "HB_filename        - filename and path of a Harwell-Boeing data set" << endl
-	 << endl;
-    	return(1);
+	// Set verbosity of output
+	bool verbose = false;
+	for( i=1; i<argc; i++ ) {
+	  if (argv[i][0]=='-' && argv[i][1]=='v' && MyPID==0 ) { verbose = true; };
 	}
+	if ( verbose ) { argc--; } // Decrement argument counter if one of the arguments is the verbosity flag.
 	//
+    	if( argc < 4 ) {
+	  if ( verbose ) {
+	    cerr << "Usage: " << argv[0] 
+		 << " HB_filename max_iter tol [-v] " << endl
+		 << "where:" << endl
+		 << "HB_filename        - filename and path of a Harwell-Boeing data set" << endl
+		 << "max_iter           - maximum number of iterations allowed in GMRES solve" <<endl
+		 << "tol                - relative residual tolerance for GMRES solve" << endl
+		 << "[-v]               - verbosity flag for debugging" << endl
+		 << endl;
+	  }
+	  return(1);
+	}
+       	//
 	//**********************************************************************
 	//******************Set up the problem to be solved*********************
 	//**********************************************************************
@@ -57,7 +66,7 @@ int main(int argc, char *argv[]) {
 	// *****Read in matrix from HB file****** 
 	//
 	Trilinos_Util_read_hb(argv[1], MyPID, &NumGlobalElements, &n_nonzeros,
-			      &val,  &bindx, &xguess, &b, &xexact);
+			      &val, &bindx, &xguess, &b, &xexact);
 	//
 	// *****Distribute data among processors*****
 	//
@@ -81,9 +90,8 @@ int main(int argc, char *argv[]) {
 	//
 	// Create a Epetra_Matrix
 	//
-	//Epetra_CrsMatrix A(Copy, Map, NumNz);
 	mmp::ref_count_ptr<Epetra_CrsMatrix> A =
-		mmp::rcp( new Epetra_CrsMatrix(Copy, Map, NumNz) );
+	  mmp::rcp( new Epetra_CrsMatrix(Copy, Map, NumNz) );
 	//
 	// Create some Epetra_Vectors
 	//
@@ -118,31 +126,36 @@ int main(int argc, char *argv[]) {
 	//
     	// ********Other information used by the GMRES solver***********
 	//
-    	int maxits = NumGlobalElements-1; // maximum number of iterations to run
-    	double tol = 1.0e-10;  // relative residual tolerance
+    	int max_iter = atoi(argv[2]);  // maximum number of iterations to run
+    	double tol = atof(argv[3]);  // relative residual tolerance
 	//
 	//*******************************************************************
 	// *************Start the GMRES iteration*************************
 	//*******************************************************************
 	//
-	TSFCore::Solvers::GMRESSolver<double> MySolver( ELOp, RHS, &Soln );
-	//MySolver.solve();
+	TSFCore::Solvers::GMRESSolver<double> MySolver( max_iter, tol );
+	MySolver.solve( ELOp, RHS, &Soln, TSFCore::NOTRANS, max_iter, tol );
 	//
 	// Compute actual residual norm.
 	//
-	
-
+	double bnorm = norm_2( RHS );
+	ELOp.apply( TSFCore::NOTRANS, Soln, &RHS, 1.0, -1.0 );
+	//
+	double final_rel_err = norm_2( RHS )/bnorm;
 	if (verbose) {
-	  cout << "Iteration : "<< MySolver.currIteration() << endl;
-	  cout << "Final Computed GMRES Residual Norm" << 
+	  cout << "******************* Results ************************"<<endl;
+	  cout << "Iteration "<< MySolver.currIteration()<<" of "<<max_iter<< endl;
+	  cout << "Final Computed GMRES Residual Norm : " << 
 	    MySolver.currEstRelResidualNorm() << endl;
+	  cout << "Actual Computed GMRES Residual Norm : " <<
+	    final_rel_err << endl;
+	  cout << "****************************************************"<<endl;
 	}
-
-// Release all objects  
-
-  delete [] NumNz;
-  delete [] bindx;
+      	
+	// Release all objects  	
+	delete [] NumNz;
+	delete [] bindx;
 	
-  return 0;
+	return final_rel_err <= tol ? 0 : -1;
   //
 } // end TSFCoreSolversGmresTest.cpp
