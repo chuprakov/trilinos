@@ -84,6 +84,12 @@ namespace TSF
 			/** Represent this node and its children as a String */
 			string toString() const {return ptr_->toString();}
 
+			/** Write the header for this object to a string */
+			string header() const {return ptr_->header();}
+
+			/** Write the footer for this object to a string */
+			string footer() const {return ptr_->footer();}
+
 			/** Find out if a node is empty */
 			bool isEmpty() const {return ptr_.get()==0;}
 

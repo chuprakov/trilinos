@@ -37,6 +37,12 @@ namespace TSF
 			/** return the tag string */
 			const string& getTag() const {return tag_;}
 
+			/** Write the header */
+			string header() const ;
+
+			/** Write the footer */
+			string footer() const {return "</" + getTag() + ">";}
+
 			/** determine whether an attribute exists */
 			bool hasAttribute(const string& name) const 
 				{return attributes_.containsKey(name);}

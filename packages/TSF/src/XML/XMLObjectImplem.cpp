@@ -48,7 +48,7 @@ void XMLObjectImplem::addChild(const XMLObject& child)
 	catch(exception& e)
 		{
 			TSFError::trace(e,  "XMLObjectImplem::addChild(), adding child " 
-									 + child.getTag());
+											+ child.getTag());
 		}
 }
 
@@ -61,14 +61,30 @@ void XMLObjectImplem::addContent(const string& contentLine)
 	catch(exception& e)
 		{
 			TSFError::trace(e,  
-									 "in XMLObjectImplem::addContent(), adding content line " 
-									 + contentLine);
+											"in XMLObjectImplem::addContent(), adding content line " 
+											+ contentLine);
 		}
 }
 
 const XMLObject& XMLObjectImplem::getChild(int i) const 
 {
 	return children_[i];
+}
+
+string XMLObjectImplem::header() const
+{
+	string rtn = "<" + tag_;
+      
+	TSFArray<string> names;
+	TSFArray<string> values;
+	attributes_.arrayify(names, values);
+
+	for (int i=0; i<names.length(); i++)
+		{
+			rtn += " " + names[i] + "=\"" + values[i] + "\"";
+		}
+	rtn += ">";
+	return rtn;
 }
 
 string XMLObjectImplem::toString() const
