@@ -530,6 +530,13 @@ protected:
 	///
 	/** Return the next basis selection (default returns \c false).
 	 *
+	 * @param  var_perm  [out] (size = <tt>n_orig + (convert_inequ_to_equ ? mI_orig : 0)</tt>).
+	 *                   Contains the variable permutations (including slack variables possibly).
+	 * @param  equ_perm  [out] (size = <tt>m_orig + (convert_inequ_to_equ ? mI_orig : 0)</tt>).
+	 *                   Contains the constriant permutations (including general inequalities
+	 *                   possibly).
+	 * @param  rank      [out] Returns the rank of the basis specified by \c var_perm and \c equ_perm
+	 *
 	 * This method will only be called if <tt>this->nlp_selects_basis() == true</tt>.
 	 *
 	 * The basis returned by the subclass must be sorted <tt>var_perm = [ dep  indep ]</tt>
@@ -537,7 +544,7 @@ protected:
 	 * remove the variables fixed by bounds from \c var_perm as they will be removed by this
 	 * class as they are translated.  In addition, the subclass can also include
 	 * slack variables in the basis (if <tt>convert_inequ_to_equ == true && mI_orig > 0>/tt>).
-	 * Therefore a nonsingular basis before fixed variables are
+	 * Therefore, a nonsingular basis before fixed variables are
 	 * removed may not be nonsingular once the fixed variables are removed.
 	 * During the translation of \c var_perm, the variables fixed by bounds are removed
 	 * by compacting \c var_perm and adjusting the remaining indexes.  For this
@@ -553,12 +560,7 @@ protected:
 	 * The first time this method is called, the subclass should return the first suggested
 	 * basis selection (even if it happens to be identical to the original ordering).
 	 *
-	 * @param  var_perm  [out] (size = <tt>n_orig + (convert_inequ_to_equ ? mI_orig : 0)</tt>).
-	 *                   Contains the variable permutations (including slack variables possibly).
-	 * @param  equ_perm  [out] (size = <tt>m_orig + (convert_inequ_to_equ ? mI_orig : 0)</tt>).
-	 *                   Contains the constriant permutations (including general inequalities
-	 *                   possibly).
-	 * @param  rank      [out] Returns the rank of the basis specified by \c var_perm and \c equ_perm
+	 * The default implementation returns false.
 	 */
 	virtual bool imp_get_next_basis(
 		IVector      *var_perm
