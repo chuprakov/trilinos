@@ -32,6 +32,7 @@ Uses packages LinAlgPack, SparseLinAlgPack, SparseSolverPack
   /** @name 2. Archetictural Classes.
     */
   //@{
+    //@Include: ./include/rSQPState.h
   //@}
 
   /** @name 3. Standard Algorithm Step Classes.
@@ -76,12 +77,18 @@ Uses packages LinAlgPack, SparseLinAlgPack, SparseSolverPack
     //@Include: ./include/std/SearchDirecMixedFullReduced_Step.h
   //@}
 
-  /** @name 4. Standard Algorithm Track Classes.
+  /** @name 4. Reduced Space QP Solvers.
+    */
+  //@{
+    //@Include: ./include/std/ReducedQPSolver.h
+  //@}
+
+  /** @name 5. Standard Algorithm Track Classes.
     */
   //@{
   //@}
 
-  /** @name 5. Misc. Classes and Functions.
+  /** @name 6. Misc. Classes and Functions.
     */
   //@{
   //@}

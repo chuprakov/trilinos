@@ -77,7 +77,7 @@ const std::string nu_name				= "nu";
   *
   * This in an interface to a set of data specific to a
   * reduced space SQP algorithm.  The iteration quantites
-  * are abstracted within IterQuantityAccess objects.
+  * are abstracted within IterQuantityAccess<...> objects.
   *
   * The interface functions use dynamic_cast<...> to cast
   * from IterQuantity to the specific types of IterQuantityAccess<...>.
@@ -178,16 +178,18 @@ public:
 	/** @name NLP Problem Info 
 	  *
 	  * The problem is of the form:\\
+	  \begin{verbatim}
+	min     f(x)
+	s.t.    c(x)
+	        xl < x < xu
+	        n = size(x), m = size(c)
+	  \end{verbatim}
 	  *
-	  * min     f(x)\\
-	  * s.t.    c(x)\\
-	  * .       xl < x < xu\\
-	  * .       n = size(x), m = size(c)\\
+	  * #Gf# is the gradient of #f#
 	  *
-	  * Gf is the gradient of f\\
-	  * Gc = [Gc1, Gc2, ... , Gcm] = [Gc(indep)  Gc(dep)]\\
-	  *    is the matrix of constriant gradients partitioned into independent and dependent\\
-	  *    columns.
+	  * #Gc = [Gc1, Gc2, ... , Gcm] = [Gc(indep)  Gc(dep)]#\\
+	  * is the matrix of constriant gradients partitioned into independent and dependent
+	  * columns.
 	  */
 	//@{
 
@@ -346,7 +348,7 @@ public:
 	///
 	virtual const IQA_value_type& zeta() const;
 
-	/// qp_grad:  QP gradient (qp_grad = rGf + zeta * ZtHLYpy) ( (n-m) x 1 )
+	/// qp_grad:  QP gradient (qp_grad = rGf + zeta * w) ( (n-m) x 1 )
 	virtual IQA_Vector& qp_grad();
 	///
 	virtual const IQA_Vector& qp_grad() const;
@@ -381,23 +383,29 @@ public:
 
 	/** @name KKT Info.
 	  *
-	  * The Lagrangian is:\\
-	  *
-	  * L = f + lambda'*c + omega'*(xl - x) + gama'*(x - xu)\\
-	  * L = f + lambda'*c + nu'*x + omega'*xl - gama'*xu\\
-	  * where: nu = gama - omega\\
+	  * The Lagrangian is:
+	  \begin{verbatim}
+	L = f + lambda'*c + nul'*(xl - x) + nuu'*(x - xu)
+	  = f + lambda'*c + nu'*x + nul'*xl - nuu'*xu
+	where: nu = nul - nuu
+	  \end{verbatim}
 	  * 
-	  * The gradient of the Lagrangian is:\\
+	  * The gradient of the Lagrangian is:
 	  *
-	  * GL = Gf + Gc*lambda + nu\\
+	  * #GL = Gf + Gc*lambda + nu#
 	  *
-	  * The reduced gradient of the Lagrangian is:\\ 
-	  *
-	  * rGL = Z'*GL\\
-	  * rGL = Z'*Gf + Z'*Gc*lambda + Z'*nu\\
-	  * rGL = Z'*Gf + Z'*Gc(indep)*lambda(indep) + Z'*Gc(dep)*lambda(dep) + Z'*nu\\
-	  *    with Gc(indep)' * Z, V = [Gc(dep)' * Z],  and rGf = Z'*Gf\\
-	  * rGL = rGf + Z'*nu + V'*lambda(dep)\\
+	  * The reduced gradient of the Lagrangian is:
+	  \begin{verbatim}
+	rGL = Z'*GL
+	    = Z'*Gf + Z'*Gc*lambda + Z'*nu
+	    = Z'*Gf + Z'*Gc(indep)*lambda(indep) + Z'*Gc(dep)*lambda(dep) + Z'*nu
+		      with Gc(indep)' * Z, V = [Gc(dep)' * Z],  and rGf = Z'*Gf
+		= rGf + Z'*nu + V'*lambda(dep)
+	where:
+	    Gc(indep)' * Z = 0
+		V = [Gc(dep)' * Z]
+		rGf = Z'*Gf
+	  \end{verbatim}
 	  */
 	//@{
 
