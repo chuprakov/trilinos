@@ -55,6 +55,7 @@ typedef int MPI_Comm;
 typedef int MPI_Op;
 #define MPI_OP_NULL        ((MPI_Op)0)
 #define MPI_DATATYPE_NULL  ((MPI_Datatype)0)
+typedef struct { int MPI_SOURCE; int MPI_TAG; int MPI_ERROR; } MPI_Status;
 typedef void (MPI_User_function) ( void *, void *, int *, MPI_Datatype * ); 
 
 /* ////////////////////////// */
@@ -68,9 +69,12 @@ EXPORT_MPI_API int MPI_Comm_rank(MPI_Comm, int *);
 EXPORT_MPI_API int MPI_Type_struct(int, int *, MPI_Aint *, MPI_Datatype *, MPI_Datatype *);
 EXPORT_MPI_API int MPI_Type_commit(MPI_Datatype *);
 EXPORT_MPI_API int MPI_Type_free(MPI_Datatype *);
-EXPORT_MPI_API int MPI_Reduce(void* , void*, int, MPI_Datatype, MPI_Op, int, MPI_Comm);
 EXPORT_MPI_API int MPI_Op_create(MPI_User_function *, int, MPI_Op *);
 EXPORT_MPI_API int MPI_Op_free( MPI_Op *);
+EXPORT_MPI_API int MPI_Send(void*, int, MPI_Datatype, int, int, MPI_Comm);
+EXPORT_MPI_API int MPI_Recv(void*, int, MPI_Datatype, int, int, MPI_Comm, MPI_Status*);
+EXPORT_MPI_API int MPI_Sendrecv_replace(void*, int, MPI_Datatype, int, int, int, int, MPI_Comm, MPI_Status*);
+EXPORT_MPI_API int MPI_Reduce(void* , void*, int, MPI_Datatype, MPI_Op, int, MPI_Comm);
 EXPORT_MPI_API int MPI_Allreduce(void* , void*, int, MPI_Datatype, MPI_Op, MPI_Comm);
 EXPORT_MPI_API int MPI_Barrier(MPI_Comm);
 EXPORT_MPI_API int MPI_Bcast(void*, int, MPI_Datatype, int, MPI_Comm );

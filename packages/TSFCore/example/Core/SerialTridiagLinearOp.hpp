@@ -67,7 +67,7 @@
  * \ingroup TSFCore_examples_cg_serial_grp
  */
 template<class Scalar>
-class SerialTridiagLinearOp : virtual public TSFCore::SerialLinearOpBase<Scalar> {
+class SerialTridiagLinearOp : public TSFCore::SerialLinearOpBase<Scalar> {
 private:
 
 	TSFCore::Index       dim_;

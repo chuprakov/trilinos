@@ -132,7 +132,7 @@
  * \ingroup TSFCore_examples_cg_MPI_grp
  */
 template<class Scalar>
-class MPITridiagLinearOp : virtual public TSFCore::MPILinearOpBase<Scalar> {
+class MPITridiagLinearOp : public TSFCore::MPILinearOpBase<Scalar> {
 private:
 
 	MPI_Comm             mpiComm_;
@@ -247,7 +247,6 @@ void MPITridiagLinearOp<Scalar>::communicate(
 	const bool first, const bool last, const Scalar x[], Scalar *x_km1, Scalar *x_kp1
 	) const
 {
-	// ToDo: Modify this comminication so as not to require buffering (hint: even and odd processors)
 	if(numProc_ > 1 ) {
 		// Get the types so allow interaction with MPI
 		typedef Teuchos::PrimitiveTypeTraits<Scalar>  PTT;
@@ -257,21 +256,38 @@ void MPITridiagLinearOp<Scalar>::communicate(
 		MPI_Status status;
 		// Setup buffer
 		std::vector<PT> buff(numPrimObjs);
-		if( !last ) {
-			// Send last element x[locakDim_-1] to next processor
-			PTT::extractPrimitiveObjs( x[localDim_-1], numPrimObjs, &buff[0] );
-			MPI_Send( &buff[0], numPrimObjs, primMPIType, procRank_+1, 0, mpiComm_ );
-			// Receive element x[0] from next processor into x_kp1
-			MPI_Recv( &buff[0], numPrimObjs, primMPIType, procRank_+1, 1, mpiComm_, &status );
-			PTT::loadPrimitiveObjs( numPrimObjs, &buff[0], x_kp1 );
-		}
-		if( !first ) {
-			// Recieve last element x[locakDim_-1] from previous processor into x_km1
+		// Send and recieve x[localDim_-1] forward and copy into x_km1
+		if(last) {
 			MPI_Recv( &buff[0], numPrimObjs, primMPIType, procRank_-1, 0, mpiComm_, &status );
 			PTT::loadPrimitiveObjs( numPrimObjs, &buff[0], x_km1 );
-			// Set first element x[0] to previous processor
+		}
+		else {
+			PTT::extractPrimitiveObjs( x[localDim_-1], numPrimObjs, &buff[0] );
+			if(first) {
+				MPI_Send( &buff[0], numPrimObjs, primMPIType, procRank_+1, 0, mpiComm_ );
+			}
+			else {
+				MPI_Sendrecv_replace( &buff[0], numPrimObjs, primMPIType, procRank_+1, 0, procRank_-1, 0, mpiComm_, &status );
+				TEST_FOR_EXCEPT( status.MPI_ERROR );
+				PTT::loadPrimitiveObjs( numPrimObjs, &buff[0], x_km1 );
+			}
+		}
+		// Send and recieve x[0] backward and copy into x_kp1
+		if(first) {
+			MPI_Recv( &buff[0], numPrimObjs, primMPIType, procRank_+1, 0, mpiComm_, &status );
+			TEST_FOR_EXCEPT( status.MPI_ERROR );
+			PTT::loadPrimitiveObjs( numPrimObjs, &buff[0], x_kp1 );
+		}
+		else {
 			PTT::extractPrimitiveObjs( x[0], numPrimObjs, &buff[0] );
-			MPI_Send( &buff[0], numPrimObjs, primMPIType, procRank_-1, 1, mpiComm_ );
+			if(last) {
+				MPI_Send( &buff[0], numPrimObjs, primMPIType, procRank_-1, 0, mpiComm_ );
+			}
+			else {
+				MPI_Sendrecv_replace( &buff[0], numPrimObjs, primMPIType, procRank_-1, 0, procRank_+1, 0, mpiComm_, &status );
+				TEST_FOR_EXCEPT( status.MPI_ERROR );
+				PTT::loadPrimitiveObjs( numPrimObjs, &buff[0], x_kp1 );
+			}
 		}
 	}
 }

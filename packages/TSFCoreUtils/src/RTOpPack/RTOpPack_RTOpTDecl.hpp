@@ -38,16 +38,13 @@
 
 namespace RTOpPack {
 
-// ToDo: Change the names from ReductTarget and RTOpT to
-// ReductTarget and RTOpT once this class is finished and tested.
-
 /** \defgroup RTOpCpp_grp Templated interfaces for generalized vector
  * reduction/transformation operators in C++.
  */
 //@{
 
 ///
-/** Base class for reduction object.
+/** Abstract base class for all reduction object.
  */
 class ReductTarget {
 public:
@@ -57,7 +54,111 @@ public:
 ///
 /** Templated interface to vector reduction/transformation operators {abstract}.
  *
- * ToDo: Finish documentation!
+ * The purpose of this base class is to allow users to specify
+ * arbitrary reduction/transformation operations on vectors without
+ * requiring the vectors to reveal their implementation details.  The
+ * design is motivated partly by the "Visitor" patter (Gamma, 1995).
+ *
+ * This interface is designed to allow implementation of a distributed
+ * parallel application without the explicit knowledge by the
+ * application.
+ *
+ * In the following discussion, <tt>v[k]</tt>, <tt>x</tt>, <tt>y</tt>
+ * and <tt>z</tt> are some abstract vector objects of dimension
+ * <tt>n</tt>.  Users can define operators to perform reduction and/or
+ * transformation operations.  Reduction operations applied over all
+ * of the elements of a vector require communication between nodes in
+ * a parallel environment but do not change any of the vectors
+ * involved.  Transformation operations don't require communication
+ * between nodes in a parallel environment.  The targets of a
+ * transformation operation is a set of one or more vectors which are
+ * mutated in some way.
+ *
+ * The idea is that the user may want to perform reduction
+ * operations of the form:
+ *
+ \verbatim
+
+ op(v[0]...v[*],z[0]...z[*]) -> reduct_obj
+ \endverbatim
+ *
+ * where <tt>reduct_obj</tt> is a single object based on a reduction over
+ * all the elements of the vector arguments, or transformation
+ * operations of the form:
+ *
+ \verbatim
+
+ op(v[0](i)...v[*](i),z[0](i)...z[*](i)) -> z[0](i)...z[*](i), for i = 1...n
+ \endverbatim
+ *
+ * Operators can also be defined that perform reduction and
+ * transformation operations.
+ *
+ * The tricky part though, is that the <tt>reduct_obj</tt> object of
+ * the reduction operation may be more complex than a single scalar
+ * value.  For instance, it could be a <tt>double</tt> and an
+ * <tt>int</tt> pair such as in the reduction operation:
+ *
+ \verbatim
+
+ min{ |x(i)|, i = 1...n } -> [ x(j_min), j_min ]
+ \endverbatim
+ *
+ * or it could perform several reductions at once and store
+ * several scalar values such as in:
+ *
+ \verbatim
+
+ min_max_sum{ x(i), i = 1...n } -> [ x(j_min), j_min, x(j_max), j_max, x_sum ]
+ \endverbatim
+ *
+ * Transformation operations are much simpler to think about and to
+ * deal with.  Some off-the-wall examples of transformation operations
+ * that this design will support are:
+ *
+ \verbatim
+
+ max{ |x(i)|, |y(i)| } + |z(i)| -> z(i), for i = 1...n
+ 
+ alpha * |z(i)| / x(i) -> z(i), for i = 1...n
+ 
+ alpha * x(i) * y(i) + beta * z(i) -> z(i), for i = 1...n
+ \endverbatim
+ *
+ * Reduction operations present the more difficult technical
+ * challenge since they require information gathered from all of the
+ * elements to arrive at the final result.  This design allows
+ * operator classes to be defined that can simultaneously perform
+ * reduction and transformation operations:
+ *
+ \verbatim
+
+   op(v[0](i)...v[*](i),z[0](i)...z[*](i)) -> z[0](i)...z[*](i),reduct_obj
+      , for i = 1...n
+ \endverbatim
+ *
+ * This design is based on a few assumptions about the reduction and
+ * transformation operations and vector implementations themselves.
+ * First, we will assume that vectors are stored and manipulated as
+ * chunks of sub-vectors (of dimension <tt>subDim</tt>) where each
+ * sub-vector is sufficiently large.  This design supports dense
+ * strided sub-vectors (see <tt>SubVectorT</tt> and <tt>MutableSubVectorT</tt>)
+ * and is relatively flexible.
+ *
+ * It is strictly the responsibilities of the vector implementations
+ * to determine how these operators are applied.  For instance, if we
+ * are performing a transformation operation of the form:
+ *
+ \verbatim
+
+ op( x(i), y(i), z(i) ) -> z(i), for i = 1...n
+ \endverbatim
+ *
+ * where <tt>x</tt>, <tt>y</tt>, and <tt>z</tt> are distributed
+ * parallel vectors, then we would assume that the elements would be
+ * partitioned onto the various processors with the same local
+ * elements stored on each processor so as not to require any
+ * communication between processors.
  */
 template<class Scalar>
 class RTOpT {

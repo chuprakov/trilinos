@@ -113,15 +113,31 @@ int MPI_Op_create(MPI_User_function *func, int communitive, MPI_Op *op)
   *op = (MPI_Op)*func;
   return 0;
 }
-
 int MPI_Op_free( MPI_Op *op)
 {
   *op = MPI_OP_NULL;
   return 0;
 }
 
-int MPI_Allreduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype
-  , MPI_Op op, MPI_Comm comm)
+int MPI_Send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
+{
+	assert(0); /* Should never be called in serial mode */
+	return 0;
+}
+int MPI_Recv(void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status* status)
+{
+	assert(0); /* Should never be called in serial mode */
+	return 0;
+}
+
+int MPI_Sendrecv_replace(void* buff, int count, MPI_Datatype datatype, int dest, int sendtag, int source, int recvtag, MPI_Comm comm, MPI_Status* status)
+{
+	assert(0); /* Should never be called in serial mode */
+	return 0;
+}
+
+int MPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op
+  , int root, MPI_Comm comm)
 {
   char
     *_sendbuf = sendbuf,
@@ -132,8 +148,8 @@ int MPI_Allreduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype
   return 0;
 }
 
-int MPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op
-  , int root, MPI_Comm comm)
+int MPI_Allreduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype
+  , MPI_Op op, MPI_Comm comm)
 {
   char
     *_sendbuf = sendbuf,

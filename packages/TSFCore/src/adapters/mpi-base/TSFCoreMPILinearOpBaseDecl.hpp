@@ -41,7 +41,7 @@ template<class Scalar> class MPIVectorSpaceBase;
  *
  * This subclass defines machinery for developing concrete
  * <tt>LinearOp</tt> subclasses for MPI SPMD vectors where it is
- * assumed that all of the elements in associated vectors and
+ * assumed that all of the local elements in associated vectors and
  * multi-vectors are immediately and cheaply avaliable on each
  * processor.
  *
@@ -69,7 +69,7 @@ template<class Scalar> class MPIVectorSpaceBase;
  *
  \code
 template<class Scalar>
-class MyMPILinearOp : virtual public MPILinearOpBase<Scalar> {
+class MyMPILinearOp : public MPILinearOpBase<Scalar> {
 private:
   // Declare your classes private data
   ...
@@ -114,7 +114,7 @@ protected:
  * non-templated version of the form:
  *
  \code
-class MyMPILinearOp : virtual public MPILinearOpBase<double> {
+class MyMPILinearOp : public MPILinearOpBase<double> {
 private:
   // Declare your classes private data
   ...

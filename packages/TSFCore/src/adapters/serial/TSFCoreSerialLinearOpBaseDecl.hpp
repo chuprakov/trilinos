@@ -66,7 +66,7 @@ namespace TSFCore {
  *
  \code
 template<class Scalar>
-class MySerialLinearOp : virtual public SerialLinearOpBase<Scalar> {
+class MySerialLinearOp : public SerialLinearOpBase<Scalar> {
 private:
   // Declare your classes private data
   ...
@@ -106,7 +106,7 @@ protected:
  * non-templated version of the form:
  *
  \code
-class MySerialLinearOp : virtual public SerialLinearOpBase<double> {
+class MySerialLinearOp : public SerialLinearOpBase<double> {
 private:
   // Declare your classes private data
   ...

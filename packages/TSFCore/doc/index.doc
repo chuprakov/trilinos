@@ -962,6 +962,15 @@ interoperability between different concrete subclasses.  This type of
 automatic interoperability is demonstrated in 
 \ref TSFCore_epetra_adapters_testing_prg_grp "this testing program".
 
+\section TSFCore_mpi_adpaters_linear_op_sec Base Subclasses for MPI TSFCore::LinearOp Implementations
+
+To facilitate the creation of concrete MPI linear operators the
+following simple but very general base class is supplied:
+
+<ul> <li><tt>TSFCore::MPILinearOpBase</tt> is a general base subclass
+for MPI SPMD platforms that only requires concrete subclass
+implementations to overide one function that accepts explict local
+vector data.  </ul>
 
 */
 
