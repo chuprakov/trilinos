@@ -1,29 +1,30 @@
 #!/usr/bin/perl -w
 #
 use strict;
-use lib "$ENV{RSQPPP_BASE_DIR}/rSQPpp/ReducedSpaceSQPPack/perl";
+use lib "$ENV{RSQPPP_BASE_DIR}/rSQPpp/core/ReducedSpaceSQPPack/perl";
 #
 my $g_use_msg =
-  "Use: runnlps.pl [-h] [-i] [-k0,-k1] [-e executable] [-a \"arguments\"] [-s setup_script]\n".
-  "                [-p post_script] [-b base_opt_file] [-v vary_opt_file] [-o output_file]\n";
+  "Use: runnlps.pl [-h] [-i] [-k0,-k1] [-e executable] [-a \"arguments\"]\n".
+  "                [-s setup_script] [-p post_script] [-b base_opt_file]\n".
+  "                [-v vary_opt_file] [-o output_file]\n";
 #
 my $g_use_msg_opts =
   $g_use_msg.
   "options:\n".
-  "  -h  : Print prints this help message and the program quits\n".
+  "  -h  : Prints this help message and the program quits\n".
   "  -i  : Print iteration output (default is no iteration output)\n".
   "  -k0 : Don't keep any of the output files or directories (default)\n".
   "  -k1 : Keep the output files and directories\n".
   "  -e executable\n".
-  "     : Gives the path of the executable to run (with arguments).  (default is to use the\n".
-  "       executable with the name \'solve_nlp\').\n".
+  "     : Gives the absolute path of the executable to run (with arguments).\n".
+  "      (default is to use the executable with the name \'solve_nlp\').\n".
   "  -a \"arguments\"\n".
-  "      : Arguments to pass on to the executable. (default is not arguments).\n".
+  "      : Arguments to pass on to the executable. (default is no arguments).\n".
   "  -s setup_script\n".
-  "      : Script to be run just before the executable is called.\n".
-  "        (default is to run no script before hand).\n".
+  "      : Script to be run in each directory just before the executable is\n".
+  "        called (default is to run no script before hand).\n".
   "  -p post_script\n".
-  "      : Script to be run just after the executable is called.\n".
+  "      : Script to be run just after the executable is called in each directory\n".
   "        (default is to run no script after at all).\n".
   "  -b base_opt_file\n".
   "      : Gives the path of the options file with the base options to be used.\n".
@@ -34,7 +35,7 @@ my $g_use_msg_opts =
   "        is to use the file \'vary.opt\' in the current directory.  If this file\n".
   "        does not exist then no options are varied)\n".
   "  -o output_file\n".
-  "      : This is the file that output is printed to (default is to print to STDOUT)\n";
+  "      : This is the file to which output is printed (default is to STDOUT)\n";
 #
 # This is a perl program for running an NLP while
 # varying a set of options for rSQP++.  This program will print
