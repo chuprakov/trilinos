@@ -108,7 +108,9 @@ int main(int argc, char* argv[] ) {
 	::sprintf( console_out_name, "console.%d.out", proc_rank );
 	std::ofstream console_out(console_out_name);
 	std::ostream // Only send output to the root process!
-		&out = proc_rank == 0 ? std::cout : console_out;
+		&out  = ( proc_rank == 0 ? std::cout : console_out );
+	std::ostream // Only send output to the root process!
+		&eout = ( proc_rank == 0 ? std::cerr : console_out );
 
 	try {
 	
@@ -148,7 +150,9 @@ int main(int argc, char* argv[] ) {
 	// Create and test the NLP using this vector space object
 	const bool
 		result = NLPIP::ExampleNLPFirstOrderDirectRun(
-			*vec_space, xo, has_bounds, dep_bounded, &out );
+			*vec_space, xo, has_bounds, dep_bounded
+			,&out,&eout
+			);
 	if(!result)
 		prog_return = PROG_NLP_TEST_ERR;
 
@@ -163,12 +167,12 @@ int main(int argc, char* argv[] ) {
 	}
 
 	if(prog_return == PROG_SUCCESS) {
-		std::cerr   << "Congradulations!  NLP class seems to check out!\n";
-		out         << "\nCongradulations!  NLP class seems to check out!\n";
+		eout   << "Congradulations!  NLP class seems to check out!\n";
+		out    << "\nCongradulations!  NLP class seems to check out!\n";
 	}
 	else {
-		std::cerr   << "Oh No!  Something did not checkout!\n";
-		out         << "\nOh No!  Something did not checkout!\n";
+		eout   << "Oh No!  Something did not checkout!\n";
+		out    << "\nOh No!  Something did not checkout!\n";
 	}
 
  	MPI_Finalize();

@@ -41,6 +41,7 @@ namespace NLPInterfacePack {
  *                     independent variables will be bounded.
  * @param  out         [in/out] If != NULL then *out gets the output (see the
  *                     options file "ExampleNLPFirstOrderDirectRun.opt").
+ * @param  eout        [in/out] If != NULL then *eout gets minimal summary output.
  *
  * @returns true if the tests were successful, returns false otherwise.
  *
@@ -57,6 +58,7 @@ bool ExampleNLPFirstOrderDirectRun(
 	,bool                has_bounds
 	,bool                dep_bounded
 	,std::ostream*       out
+	,std::ostream*       eout
 	);
 
 //@}

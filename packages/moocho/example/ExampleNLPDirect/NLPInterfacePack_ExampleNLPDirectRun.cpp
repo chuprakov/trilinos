@@ -38,6 +38,7 @@ bool NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	,bool                has_bounds
 	,bool                dep_bounded
 	,std::ostream*       out
+	,std::ostream*       eout
 	)
 {
 	using std::endl;
@@ -77,13 +78,15 @@ bool NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 		prog_return = false;
 
 	if(prog_return == true) {
-		std::cerr   << "Congradulations!  The vector space and NLP class seems to check out!\n";
-		if(out)
+		if(eout)
+			*eout   << "Congradulations!  The vector space and NLP class seems to check out!\n";
+		if(out && out != eout)
 			*out    << "\nCongradulations!  The vector space and NLP class seems to check out!\n";
 	}
 	else {
-		std::cerr   << "Oh No!  Something did not checkout!\n";
-		if(out)
+		if(eout)
+			*eout   << "Oh No!  Something did not checkout!\n";
+		if(out && out != eout)
 			*out    << "\nOh No!  Something did not checkout!\n";
 	}
 
