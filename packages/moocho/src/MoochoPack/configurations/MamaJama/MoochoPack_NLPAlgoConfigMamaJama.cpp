@@ -27,10 +27,10 @@
 #include "ConstrainedOptimizationPack/include/ZAdjointFactMatrixSubclass.h"			// .
 #include "SparseLinAlgPack/include/COOMatrixPartitionViewSubclass.h"				// U
 #include "SparseLinAlgPack/include/GenMatrixSubclass.h"								// V
-#include "ConstrainedOptimizationPack/include/SymInvCholMatrixSubclass.h"			// rHL
-#include "ConstrainedOptimizationPack/include/SymLBFGSMatrixSubclass.h"				// .
-#include "ConstrainedOptimizationPack/include/MatrixHessianSuperBasicInitDiagonal.h"// |
-#include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"          // | rHL (super basics)
+#include "ConstrainedOptimizationPack/include/MatrixSymPosDefCholFactor.h"          // rHL 
+#include "ConstrainedOptimizationPack/include/MatrixSymPosDefInvCholFactor.h"		// .
+#include "ConstrainedOptimizationPack/include/MatrixSymPosDefLBFGS.h"				// .
+#include "ConstrainedOptimizationPack/include/MatrixHessianSuperBasicInitDiagonal.h"// | rHL (super basics)
 #include "SparseLinAlgPack/include/MatrixSymDiagonalStd.h"                          // |
 
 #include "ConstrainedOptimizationPack/include/VariableBoundsTesterSetOptions.h"
@@ -483,10 +483,10 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				= use_limited_memory
 					? static_cast<IterQuantMatrixWithOpCreator*>(
 						new IterQuantMatrixWithOpCreatorContinuous<
-							SymLBFGSMatrixSubclass>() )
+							MatrixSymPosDefLBFGS>() )
 					: static_cast<IterQuantMatrixWithOpCreator*>( 
 						new IterQuantMatrixWithOpCreatorContinuous<
-							SymInvCholMatrixSubclass>() );
+							MatrixSymPosDefInvCholFactor>() );
 		}
 		else {
 			switch(cov_.qp_solver_type_) {
@@ -496,7 +496,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 					if( use_limited_memory ) {
 						matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
 							= static_cast<IterQuantMatrixWithOpCreator*>(
-								new IterQuantMatrixWithOpCreatorContinuous<SymLBFGSMatrixSubclass>()
+								new IterQuantMatrixWithOpCreatorContinuous<MatrixSymPosDefLBFGS>()
 								);
 					}
 					else {
@@ -520,7 +520,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 				case QPKWIK:
 					matrix_iqa_creators[rSQPStateContinuousStorageMatrixWithOpCreator::Q_rHL]
 						= new IterQuantMatrixWithOpCreatorContinuous<
-									SymInvCholMatrixSubclass>();
+									MatrixSymPosDefInvCholFactor>();
 					use_limited_memory = false;
 					break;
 				default:
@@ -565,8 +565,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 			// it for the k-1 iteration.  That way the k iteration will still not
 			// be updated and therefore the regular initializations will still
 			// be performed.  This is a little bit of a hack but it should work.
-			SymLBFGSMatrixSubclass *_rHL
-				= dynamic_cast<SymLBFGSMatrixSubclass*>(&algo->rsqp_state().rHL().set_k(-1));
+			MatrixSymPosDefLBFGS *_rHL
+				= dynamic_cast<MatrixSymPosDefLBFGS*>(&algo->rsqp_state().rHL().set_k(-1));
 			if(_rHL) {
 				_rHL->set_num_updates_stored( cov_.num_lbfgs_updates_stored_ );
 				_rHL->auto_rescaling( cov_.lbfgs_auto_scaling_ );
