@@ -16,6 +16,7 @@
 #include "ConstrainedOptPack/src/globalization/MeritFuncNLPL1.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/Vector.hpp"
 #include "AbstractLinAlgPack/src/abstract/interfaces/VectorStdOps.hpp"
+#include "AbstractLinAlgPack/src/abstract/tools/VectorAuxiliaryOps.hpp"
 #include "ThrowException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -39,17 +40,22 @@ MeritFuncNLP& MeritFuncNLPL1::operator=(const MeritFuncNLP& merit_func)
 }
 
 value_type MeritFuncNLPL1::value(
-	value_type             f
+	value_type       f
 	,const Vector    *c
 	,const Vector    *h
 	,const Vector    *hl
 	,const Vector    *hu
 	) const
 {
-	THROW_EXCEPTION(
-		h || hl || hu, std::logic_error
-		,"MeritFuncNLPL1::value(...) : Error! general inequalities are not supported yet" );
-	return f + ( c ? mu_ * c->norm_1() : 0.0);
+	value_type phi_val_h = 0.0;
+	if(h) {
+		size_type   max_viol_i;
+		value_type  max_viol, h_i, hlu_i;
+		int         bnd_type;
+		AbstractLinAlgPack::max_inequ_viol(*h,*hl,*hu,&max_viol_i,&max_viol,&h_i,&bnd_type,&hlu_i);
+		if(max_viol_i) phi_val_h += mu_ * fabs(h_i - hlu_i);
+	}
+	return f + ( c ? mu_ * c->norm_1() : 0.0) + phi_val_h;
 }
 
 value_type MeritFuncNLPL1::deriv() const
@@ -62,8 +68,8 @@ void MeritFuncNLPL1::print_merit_func(std::ostream& out
 {
 	out
 		<< L << "*** Define L1 merit funciton (assumes Gc_k'*d_k + c_k = 0):\n"
-		<< L << "phi(f,c) = f + mu_k * norm(c,1)\n"
-		<< L << "Dphi(x_k,d_k) = Gf_k' * d_k - mu * norm(c_k,1)\n";
+		<< L << "phi(f,c) = f + mu_k*( norm(c,1) + max_viol( hl <= h <= hu ) )\n"
+		<< L << "Dphi(x_k,d_k) = Gf_k' * d_k - mu*( norm(c_k,1)  + max_viol( hl <= h_k <= hu ) )\n";
 }
 
 // Overridden from MeritFuncNLPDirecDeriv
