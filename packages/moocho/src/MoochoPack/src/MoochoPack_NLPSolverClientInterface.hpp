@@ -25,7 +25,8 @@ public:
 	//@{
 
 	///
-	enum EFindMinReturn { SOLUTION_FOUND, MAX_ITER_EXCEEDED, MAX_RUN_TIME_EXCEEDED };
+	enum EFindMinReturn { SOLUTION_FOUND, MAX_ITER_EXCEEDED, MAX_RUN_TIME_EXCEEDED
+		, ALGORITHMIC_ERROR };
 
 	/// Thrown if the setup is not valid
 	class InvalidSetup : public std::logic_error
