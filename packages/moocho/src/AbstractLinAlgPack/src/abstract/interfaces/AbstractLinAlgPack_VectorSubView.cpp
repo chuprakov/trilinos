@@ -116,9 +116,11 @@ value_type VectorWithOpSubView::get_ele(index_type i) const
 }
 
 VectorWithOp::vec_ptr_t
-VectorWithOpSubView::sub_view( const Range1D& rng ) const
+VectorWithOpSubView::sub_view( const Range1D& rng_in ) const
 {
 	namespace rcp = MemMngPack;
+	const index_type this_dim = this->dim();
+	const Range1D rng = RangePack::full_range(rng_in,1,this_dim);
 	space_.validate_range(rng);
 	const index_type this_offset = space_.rng().lbound() - 1;
 	return rcp::rcp(
@@ -131,13 +133,15 @@ VectorWithOpSubView::sub_view( const Range1D& rng ) const
 }
 
 void VectorWithOpSubView::get_sub_vector(
-	const Range1D& rng, ESparseOrDense sparse_or_dense, RTOp_SubVector* sub_vec ) const
+	const Range1D& rng_in, ESparseOrDense sparse_or_dense, RTOp_SubVector* sub_vec ) const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(
 		!sub_vec, std::logic_error
 		,"VectorWithOpSubView::get_sub_vector(...): Error!" ) ;
 #endif
+	const index_type this_dim = this->dim();
+	const Range1D rng = RangePack::full_range(rng_in,1,this_dim);
 	space_.validate_range(rng);
 	const index_type this_offset = space_.rng().lbound() - 1;
 	full_vec_->get_sub_vector( rng + this_offset, sparse_or_dense, sub_vec );
