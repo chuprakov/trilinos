@@ -67,7 +67,7 @@ namespace TSFExtended
     int finalIters() const {return finalIters_;}
 
     /** */
-    const SolverState& finalState() const {return finalState_;}
+    const SolverStatusCode& finalState() const {return finalState_;}
 
     /** */
     const string& finalMsg() const {return msg_;}

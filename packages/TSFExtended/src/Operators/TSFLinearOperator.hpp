@@ -68,9 +68,9 @@ namespace TSFExtended
       void apply(const Vector<Scalar>& in,
                  Vector<Scalar>& out) const ;
 
-      // /** */
-//       void applyTranspose(const Vector<Scalar>& in,
-//                           Vector<Scalar>& out) const ;
+      /** */
+      void applyTranspose(const Vector<Scalar>& in,
+                          Vector<Scalar>& out) const ;
 
 //       /** */
 //       LinearOperator<Scalar> transpose() const ;
@@ -109,6 +109,20 @@ namespace TSFExtended
         out = range().createMember();
       }
     ptr()->apply(TSFCore::NOTRANS, *(in.ptr().get()),
+                 out.ptr().get());
+  }
+
+  template <class Scalar> inline 
+  void LinearOperator<Scalar>::applyTranspose(const Vector<Scalar>& in,
+                                              Vector<Scalar>& out) const
+  {
+    /* the result vector might not be initialized. If it's null,
+     * create a new vector in the domain space */
+    if (out.ptr().get()==0)
+      {
+        out = domain().createMember();
+      }
+    ptr()->apply(TSFCore::TRANS, *(in.ptr().get()),
                  out.ptr().get());
   }
 }

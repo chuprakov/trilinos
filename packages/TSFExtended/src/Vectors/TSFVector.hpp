@@ -341,6 +341,11 @@ namespace TSFExtended
     const TSFCore::Vector<Scalar>* px = x.ptr().get();
     {
       TimeMonitor t(*opTimer());
+      if (p==0) 
+        {
+          Vector<Scalar> me = space().createMember();
+          ptr() = me.ptr();
+        }
       TSFCore::assign(p, *px);
     }
     return *this;
