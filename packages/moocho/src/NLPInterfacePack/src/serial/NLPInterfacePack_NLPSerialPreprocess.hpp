@@ -34,7 +34,7 @@ namespace NLPInterfacePack {
  * This is an implementation node class that takes an original NLP and transforms
  * it by:
  * <ul>
- * <li> Possibly converting general inequalities to equalities with slack varaibles
+ * <li> Converting general inequalities to equalities with slack varaibles
  * <li> Removing variables fixed by bounds
  * <li> Converting general inequalities with cramped bounds into general equalities
  * <li> Reordering the quanities according to the current basis selection
@@ -114,12 +114,12 @@ namespace NLPInterfacePack {
  * The implementations of the Jacobian matrices \c Gc and \c Gh are not determined here and
  * must be defined by an %NLP subclass (see \c NLPSerialPreprocessExplJac for example).
  *
- * This class stores the variable permutations and processing information two parts.  The
- * stage removed fixed variables:
+ * This class stores the variable permutations and processing information in two parts.
+ * In the first state, the fixed variables are removed as:
  \verbatim
 
 	  var_remove_fixed_to_full =  [ not fixed by bounds |  fixed by bounds  ]
-	                              [1 ..                n|n + 1 ..     n_full]
+	                              [1 ..                n|n+1 ..        n_full]
  \endverbatim
  *
  * The mapping <tt>i_full = var_remove_fixed_to_full()(i_free_fixed)</tt> gives the index of the

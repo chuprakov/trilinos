@@ -666,9 +666,9 @@ public:
 	/** Update the value for the objective <tt>f</tt> at the point <tt>x</tt> and put it in the stored reference.
 	 *
 	 * @param  x     [in] Point at which to calculate the object function <tt>f</tt>.
-	 * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
+	 * @param  newx  [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
 	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
-	 *               If \c false, the values in \c x are not the same as the last call to a
+	 *               If \c true, the values in \c x are assumed to not be the same as the last call to a
 	 *               <tt>this->calc_*(x,newx)</tt> member.
 	 *
 	 * Preconditions:<ul>
@@ -690,9 +690,9 @@ public:
 	/** Update the constraint residual vector for <tt>c</tt> at the point <tt>x</tt> and put it in the stored reference.
 	 *
 	 * @param  x     [in] Point at which to calculate residual to the equality constraints <tt>c</tt>.
-	 * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
+	 * @param  newx  [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
 	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
-	 *               If \c false, the values in \c x are not the same as the last call to a
+	 *               If \c true, the values in \c x are assumed to not be the same as the last call to a
 	 *               <tt>this->calc_*(x,newx)</tt> member.
 	 *
 	 * Preconditions:<ul>

@@ -203,10 +203,10 @@ public:
 	/** Update the matrix for \c Gc at the point \c x and put it in the stored reference.
 	 *
 	 * @param  x     [in] Point at which to calculate the matrix of gradients <tt>Gc(x)</tt>.
-	 * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
-	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
-	 *               If \c false, the values in \c x are not the same as the last call to a
-	 *               <tt>this->calc_*(x,newx)</tt> member.
+	 * @param  newx  [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
+	 *               the last call to a <tt>this->imp_calc_*(x,newx)</tt> member.
+	 *               If \c true, the values in \c x are assumed to not be the same as the last call to a
+	 *               <tt>this->imp_calc_*(x,newx)</tt> member.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -283,7 +283,10 @@ protected:
 	 * </ul>
 	 *
 	 * @param x       [in]  Unknown vector (size n).
-	 * @param newx    [in]  True if is a new point.
+	 * @param  newx   [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
+	 *                the last call to a <tt>this->imp_calc_*(x,newx)</tt> member.
+	 *                If \c true, the values in \c x are assumed to not be the same as the last call to a
+	 *                <tt>this->imp_calc_*(x,newx)</tt> member.
 	 * @param obj_grad_info
 	 *                [out] Pointers to \c f, \c c, \c Gf and \c Gc
 	 *                On output <tt>*obj_grad_info.Gc</tt> is updated to \a Gc(x).

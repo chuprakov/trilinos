@@ -157,9 +157,9 @@ public:
 	/** Update the vector for \c Gf at the point \c x and put it in the stored reference.
 	 *
 	 * @param  x     [in] Point at which to calculate the gradient of the objective <tt>Gf(x)</tt>.
-	 * @param  newx  [in] (default \c true) If \c true, the values in \c x are the same as
+	 * @param  newx  [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
 	 *               the last call to a <tt>this->calc_*(x,newx)</tt> member.
-	 *               If \c false, the values in \c x are not the same as the last call to a
+	 *               If \c true, the values in \c x are assumed to not be the same as the last call to a
 	 *               <tt>this->calc_*(x,newx)</tt> member.
 	 *
 	 * Preconditions:<ul>
@@ -239,7 +239,10 @@ protected:
 	 * </ul>
 	 *
 	 * @param x       [in]  Unknown vector (size n).
-	 * @param newx    [in]  True if is a new point.
+	 * @param  newx   [in] (default \c true) If \c false, the values in \c x are assumed to be the same as
+	 *                the last call to a <tt>this->imp_calc_*(x,newx)</tt> member.
+	 *                If \c true, the values in \c x are assumed to not be the same as the last call to a
+	 *                <tt>this->imp_calc_*(x,newx)</tt> member.
 	 * @param obj_grad_info
 	 *                [out] Pointers to \c f, \c c and \c Gf.
 	 *                On output <tt>*obj_grad_info.Gf</tt> is updated to \a Gf(x).

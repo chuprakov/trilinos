@@ -181,9 +181,9 @@ public:
 	 *                  If <tt>m() == 0</tt> then <tt>lambda</tt> must be <tt>NULL</tt>.  However, if
 	 *                  <tt>m() > 0</tt> then <tt>lambda == NULL</tt> is still allowed and is treated
 	 *                  as <tt>lambda = 0</tt>.
-	 * @param  newpoint [in] (default \c true) If \c true, the values in \c x, \c lambda and \c lambdaI
+	 * @param  newpoint [in] (default \c true) If \c false, the values in \c x, \c lambda and \c lambdaI
 	 *                  are the same as the last call to <tt>this->calc_HL()</tt>.
-	 *                  If \c false, then this is a new point.
+	 *                  If \c true, then this is a new point.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -256,7 +256,9 @@ protected:
 	 * @param lambda                [in] Lagrange multipliers for equality constraints c(x).
 	 *                              Must be <tt>NULL</tt> if <tt>m() == 0</tt>.  If \c NULL, then
 	 *                              treated as <tt>lambda = 0</tt>.
-	 * @param newpoint              [in] True if is a new point.
+	 * @param  newpoint             [in] (default \c true) If \c false, the values in \c x, \c lambda and \c lambdaI
+	 *                              are the same as the last call to <tt>this->calc_HL()</tt>.
+	 *                              If \c true, then this is a new point.
 	 * @param second_order_info     [out] Pointers to \c HL, \c Gc, \c Gh, \c Gf, \c f, \c c and \c h
 	 *                              On output <tt>*second_order_info.HL</tt> is updated to \a HL(x).
 	 *                              Any of the other objects pointed to in \c second_order_info may
