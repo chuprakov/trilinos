@@ -28,6 +28,9 @@
 // @HEADER
 */
 
+#include <assert.h>
+#include <malloc.h>
+
 #include "RTOp_TOp_scale_vector.h"
 #include "RTOp_obj_value_vtbl.h"
 #include "RTOp_obj_null_vtbl.h"

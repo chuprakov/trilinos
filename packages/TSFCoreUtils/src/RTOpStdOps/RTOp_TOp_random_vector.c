@@ -34,6 +34,8 @@
 /* environment!  The user has been warned! */
 /* */
 
+#include <assert.h>
+#include <malloc.h>
 #include <stdlib.h>
 
 #include "RTOp_TOp_random_vector.h"
