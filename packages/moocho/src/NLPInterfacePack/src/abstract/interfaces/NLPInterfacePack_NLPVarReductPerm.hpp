@@ -32,53 +32,57 @@ namespace NLPInterfacePack {
   
             c(x)  = 0,    c(x) <: R^n -> R^m
 	  hl <= h(x) <= hu,   h(x) <: R^n -> R^mI
-  \endverbatim
-  * This interface allows \a x, \a c(x) and \a h(x) to be partitioned into different
-  * sets.  The variables \a x are partitioned into a dependent set \c x(var_dep)
-  * and an independent set \c x(var_dep) by the permutation \c P_var.  The equality
-  * constraints \a c(x) are partitioned into decomposed \c c(equ_decomp) and undecomposed
-  * \c c(equ_undecomp) sets by the permutation \c P_equ.  The inequality constriants
-  * \a h(x) are partitioned into decomposed \c h(inequ_decomp) and undecomposed
-  * \c h(inequ_undecomp) sets by the permutation \c P_inequ.  These permutations
-  * permute from an original order to a new ordering.  For example:
-  \verbatim
+ \endverbatim
+ * This interface allows \a x, \a c(x) and \a h(x) to be partitioned into different
+ * sets.  The variables \a x are partitioned into a dependent set \c x(var_dep)
+ * and an independent set \c x(var_dep) by the permutation \c P_var.  The equality
+ * constraints \a c(x) are partitioned into decomposed \c c(equ_decomp) and undecomposed
+ * \c c(equ_undecomp) sets by the permutation \c P_equ.  The inequality constriants
+ * \a h(x) are partitioned into decomposed \c h(inequ_decomp) and undecomposed
+ * \c h(inequ_undecomp) sets by the permutation \c P_inequ.  These permutations
+ * permute from an original order to a new ordering.  For example:
+ \verbatim
 
   Original Ordering      Permutation to new ordering                Partitioning
   -----------------    -------------------------------   -------------------------------------
        x_orig          P_var.permute(trans,x_orig,x)     -> x(var_dep),      x(var_indep)
        c_orig          P_equ.permute(trans,c_orig,c)     -> c(equ_decomp),   c(equ_undecomp)
        h_orig          P_inequ.permute(trans,h_orig,h)   -> h(inequ_decomp), h(inequ_undecomp)
-  \endverbatim
-  * Because of this partitioning, it is expected that the following vector sub-spaces will be
-  * non-null: <tt>space_x()->sub_space(var_indep)</tt>, <tt>space_x()->sub_space(var_dep)</tt>,
-  * <tt>space_c()->sub_space(equ_decomp)</tt>, <tt>space_c()->sub_space(equ_undecomp)</tt>,
-  * <tt>space_h()->sub_space(inequ_decomp)</tt> and <tt>space_h()->sub_space(inequ_undecomp)</tt>.
-  * Other subspaces may be non-null also but these are the only ones that are required
-  * to be.
-  *
-  * After initialization, the %NLP subclass will be initialized to the first basis.
-  * This basis may be the original ordering if \c P_var, \c P_equ and \c P_inequ
-  * all return <tt>xxx_perm.is_identity()</tt>.
-  * If the concrete %NLP is selecting the basis (<tt>nlp_selects_basis() == true</tt>) this
-  * basis will be that first basis.  The client can see what this first basis
-  * is by calling <tt>this->get_basis()</tt>.  If this basis goes singular the client can
-  * request another basis from the %NLP by calling <tt>this->get_nex_basis()</tt>.
-  * The client can also select a basis itself and then set that basis by calling
-  * <tt>this->set_basis()</tt> to force the use of that basis selection.
-  * In this way a valid basis is automatically selected after initialization so that
-  * clients using another interface (\c NLP, \c NLPFirstOrderInfo, or 
-  * \c NLPSecondOrderInfo) will be able to use the %NLP object without even knowing
-  * about a basis selection.
-  *
-  * Below are some obviouls assertions about the basis selection: <ul>
-  * <li> <tt>P_var.space().dim() == this->n()</tt>  (throw \c std::length_error)
-  * <li> <tt>P_equ.space().dim() == this->m()</tt>  (throw \c std::length_error)
-  * <li> <tt>P_inequ.space().dim() == this->mI()</tt> (throw \c std::length_error)
-  * <li> <tt>var_dep.size() <= min( this->m() + this->mI(), this->n() )</tt> (throw \c InvalidBasis)
-  * <li> <tt>var_dep.size() == equ_decomp.size() + inequ_decomp.size() )</tt> (throw \c InvalidBasis)
-  * <li> Other obvious assertions on the basis selection?
-  * </ul>
-  */
+ \endverbatim
+ * Because of this partitioning, it is expected that the following vector sub-spaces will be
+ * non-null: <tt>space_x()->sub_space(var_indep)</tt>, <tt>space_x()->sub_space(var_dep)</tt>,
+ * <tt>space_c()->sub_space(equ_decomp)</tt>, <tt>space_c()->sub_space(equ_undecomp)</tt>,
+ * <tt>space_h()->sub_space(inequ_decomp)</tt> and <tt>space_h()->sub_space(inequ_undecomp)</tt>.
+ * Other subspaces may be non-null also but these are the only ones that are required
+ * to be.
+ *
+ * After initialization, the %NLP subclass will be initialized to the first basis.
+ * This basis may be the original ordering if \c P_var, \c P_equ and \c P_inequ
+ * all return <tt>xxx_perm.is_identity()</tt>.
+ * If the concrete %NLP is selecting the basis (<tt>nlp_selects_basis() == true</tt>) this
+ * basis will be that first basis.  The first time that \c this->get_next_basis() is called
+ * it will return this initial basis (which may not be the original ordering).
+ *
+ * The client can always see what this first basis is by calling <tt>this->get_basis()</tt>.
+ * If a basis goes singular the client can request other basis selections from the %NLP by
+ * calling <tt>this->get_next_basis()</tt> (which will return true if more basis selections
+ * are available).
+ * The client can also select a basis itself and then set that basis by calling
+ * <tt>this->set_basis()</tt> to force the use of that basis selection.
+ * In this way a valid basis is automatically selected after initialization so that
+ * clients using another interface (\c NLP, \c NLPFirstOrderInfo, or 
+ * \c NLPSecondOrderInfo) will be able to use the %NLP object without even knowing
+ * about a basis selection.
+ *
+ * Below are some obviouls assertions about the basis selection: <ul>
+ * <li> <tt>P_var.space().dim() == this->n()</tt>  (throw \c std::length_error)
+ * <li> <tt>P_equ.space().dim() == this->m()</tt>  (throw \c std::length_error)
+ * <li> <tt>P_inequ.space().dim() == this->mI()</tt> (throw \c std::length_error)
+ * <li> <tt>var_dep.size() <= min( this->m() + this->mI(), this->n() )</tt> (throw \c InvalidBasis)
+ * <li> <tt>var_dep.size() == equ_decomp.size() + inequ_decomp.size() )</tt> (throw \c InvalidBasis)
+ * <li> Other obvious assertions on the basis selection?
+ * </ul>
+ */
 class NLPVarReductPerm
 	: virtual public NLP
 {
