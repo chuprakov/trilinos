@@ -39,21 +39,38 @@ namespace TSFCore {
 ///
 /** Concrete composite <tt>LinearOp</tt> subclass that creates a
  * multiplicative linear operator out of one or more constituent
- * <tt>#LinearOp</tt> objects.
+ * <tt>LinearOp</tt> objects.
  *
  * This class represents a multiplicative linear operator <tt>M</tt> of the form:
  \verbatim
  
- M = Op[0] * Op[1] * ... * Op[numOps-1]
-
+ M = gamma * Op[0] * Op[1] * ... * Op[numOps-1]
  \endverbatim
  *
  * where <tt>Op[]</tt> is an array of <tt>numOps</tt>
- * <tt>LinOpPersisting</tt> objects.  Of course the operator
- * <tt>M</tt> is not constructed explicitly but instead just applies
- * the constituent linear operators accordingly using temporaries.
+ * <tt>LinOpPersisting</tt> objects and <tt>gamma</tt> is a scalar.
+ * Of course the operator <tt>M</tt> is not constructed explicitly but
+ * instead just applies the constituent linear operators accordingly
+ * using temporaries.
  *
- * ToDo: Finish documentation!
+ * In other words, this class defines <tt>apply()</tt> as:
+ *
+ \verbatim
+
+ y = alpha*M*x + beta*y
+   = (alpha*gamma) * ( Op[0] * ( Op[1] * ( .... ( Op[numOps-1] * x ) ... ) ) ) + beta * y
+ \endverbatim
+ *
+ * for the case where <tt>M_trans==NOTRANS</tt> and as:
+ *
+ \verbatim
+
+ y = alpha*M'*x + beta*y
+   = (alpha*gamma) * ( Op[numOps-1]' * ( Op[numOps-2]' * ( .... ( Op[0]' * x ) ... ) ) ) + beta * y
+ \endverbatim
+ *
+ * for the case where <tt>M_trans!=NOTRANS</tt> (where the transpose
+ * <tt>'</tt> either defines <tt>TRANS</t> or <tt>CONJTRANS</tt>).
  */
 template<class Scalar>
 class MultiplicativeLinearOp : virtual public LinearOp<Scalar> {
@@ -75,6 +92,7 @@ public:
 	MultiplicativeLinearOp(
 		const int                        numOps
 		,const LinOpPersisting<Scalar>   Ops[]
+		,const Scalar                    &gamma = Teuchos::ScalarTraits<Scalar>::one()
 		);
 
 	///
@@ -85,15 +103,24 @@ public:
 	 *                 constituent linear operators and their
 	 *                 aggregated default definitions of the
 	 *                 non-transposed operator.
+	 * @param  gamma   [in] Scalar multiplier
+	 *
+	 * Preconditions:<ul>
+	 * <li><tt>numOps > 0</tt>
+	 * <li><tt>Ops != NULL</tt>
+	 * <li><tt>Ops[k].op().get()!=NULL</tt>, for <tt>k=0...numOps-1</tt>
+	 * </ul>
 	 *
 	 * Postconditions:<ul>
 	 * <li><tt>this->numOps()==numOps</tt>
-	 * <li><tt>this->getOp(k).op().get()==Ops[k].op().get()</tt>
+	 * <li><tt>this->getOp(k).op().get()==Ops[k].op().get()</tt>, for <tt>k=0...numOps-1</tt>
+	 * <li><tt>this->gamma()==gamma</tt>
 	 * </ul>
 	 */
 	void initialize(
 		const int                        numOps
 		,const LinOpPersisting<Scalar>   Ops[]
+		,const Scalar                    &gamma = Teuchos::ScalarTraits<Scalar>::one()
 		);
 
 	///
@@ -122,6 +149,9 @@ public:
 	 * @param  Ops     [out] Array (length <tt>numOps</tt>) that if <tt>Ops!=NULL</tt>
 	 *                 then <tt>Ops[k]</tt> will be set to <tt>this->getOp(k)</tt>, for
 	 *                 <tt>k=0...numOps-1</tt>.
+	 * @param  gamma [out] Optional pointer to scalar <tt>gamma</tt>.
+	 *               If <tt>gamma!=NULL</tt> then on output <tt>*gamma</tt>
+	 *               is set to <tt>this->gamma()</tt> (before call).
 	 *
 	 * Precconditions:<ul>
 	 * <li>[<tt>Ops!=NULL</tt>] <tt>numOps==this->numOps()</tt>
@@ -133,7 +163,8 @@ public:
 	 */
 	void uninitialize(
 		const int                  numOps   = 0
-		,LinOpPersisting<Scalar>   Ops       = NULL
+		,LinOpPersisting<Scalar>   Ops[]    = NULL
+		,Scalar                    *gamma   = NULL
 		);
 
 	//@}
@@ -192,6 +223,7 @@ public:
 private:
 
 	std::vector<LinOpPersisting<Scalar> >  Ops_;
+	Scalar                                 gamma_;
 
 	void assertInitialized() const;
 

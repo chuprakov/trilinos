@@ -46,28 +46,33 @@ DiagonalLinearOp<Scalar>::DiagonalLinearOp()
 template<class Scalar>
 DiagonalLinearOp<Scalar>::DiagonalLinearOp(
 	const Teuchos::RefCountPtr<const Vector<Scalar> >   &diag
+	,const Scalar                                       &gamma
 	)
 {
-	initialize(diag);
+	initialize(diag,gamma);
 }
 
 template<class Scalar>
 void DiagonalLinearOp<Scalar>::initialize(
 	const Teuchos::RefCountPtr<const Vector<Scalar> >   &diag
+	,const Scalar                                       &gamma
 	)
 {
 #ifdef _DEBUG
 	TEST_FOR_EXCEPT(diag.get()==NULL);
 #endif
 	diag_ = diag;
+	gamma_ = gamma;
 }
 
 template<class Scalar>
 void DiagonalLinearOp<Scalar>::uninitialize(
 	Teuchos::RefCountPtr<const Vector<Scalar> >  *diag
+	,Scalar                                      *gamma
 	)
 {
 	if(diag) *diag = diag_;
+	if(gamma) *gamma = gamma_;
 	diag_ = Teuchos::null;
 }
 
@@ -106,7 +111,7 @@ void DiagonalLinearOp<Scalar>::apply(
 {
 	typedef Teuchos::ScalarTraits<Scalar> ST;
 	if( beta != ST::one() ) Vt_S( y, beta );
-	ele_wise_prod( alpha, x, *diag_, y );
+	ele_wise_prod( (alpha*gamma_), x, *diag_, y );
 }
 
 template<class Scalar>
@@ -118,7 +123,7 @@ void DiagonalLinearOp<Scalar>::apply(
 	,const Scalar                 beta
 	) const
 {
-	LinearOp<Scalar>::apply(M_trans,X,Y,alpha,beta); // ToDo: specialize if we can?
+	LinearOp<Scalar>::apply(M_trans,X,Y,alpha,beta); // ToDo: Specialize with a multi-vector call?
 }
 
 template<class Scalar>

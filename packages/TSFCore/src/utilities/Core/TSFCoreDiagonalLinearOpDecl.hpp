@@ -42,13 +42,25 @@ namespace TSFCore {
  * This class represents a diagonal linear operator <tt>M</tt> of the form:
  \verbatim
  
- M = diag(diag)
-
+ M = gamma*diag(diag)
  \endverbatim
  *
- * where <tt>diag</tt> is a <tt>Vector</tt> object.
+ * where <tt>diag</tt> is a <tt>Vector</tt> object and <tt>gamma</tt>
+ * is a <tt>Scalar</tt>.
  *
- * ToDo: Finish documentation!
+ * The defined operator implements <tt>apply()</tt> as follows:
+ *
+ \verbatim
+ y = (alpha*gamma)*op(M)*x + beta*y
+ 
+ =>
+
+ y(i) = (alpha*gamma)*diag(i)*x(i) + beta*y(i), for i = 1 ... n
+ \endverbatim
+ *
+ * where <tt>n = this->domain()->dim()</tt>.
+ *
+ * That is all there is to this subclass.
  */
 template<class Scalar>
 class DiagonalLinearOp : virtual public LinearOp<Scalar> {
@@ -69,46 +81,61 @@ public:
 	/// Calls <tt>initialize()</tt>
 	DiagonalLinearOp(
 		const Teuchos::RefCountPtr<const Vector<Scalar> >   &diag
+		,const Scalar                                       &gamma = Teuchos::ScalarTraits<Scalar>::one()
 		);
 
 	///
 	/** Initialize given the diagonal.
 	 *
-	 * @param  diag  [in] Smart pointer to diagonal vector. 
+	 * @param  diag   [in] Smart pointer to diagonal vector. 
+	 * @param  gamma  [in] Scalar multiplier.
 	 *
 	 * Precconditions:<ul>
 	 * <li><tt>diag.get()!=NULL</tt>
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
-	 * <li><tt>this->getDiag().get()==diag.get()</tt>
+	 * <li><tt>this->diag().get()==diag.get()</tt>
+	 * <li><tt>this->gamma()==gamma</tt>
 	 * <li><tt>this->this->domain().get() == diag->space().get()</tt>
 	 * <li><tt>this->this->range().get() == diag->space().get()</tt>
 	 * </ul>
 	 */
 	void initialize(
 		const Teuchos::RefCountPtr<const Vector<Scalar> >   &diag
+		,const Scalar                                       &gamma = Teuchos::ScalarTraits<Scalar>::one()
 		);
 
 	///
-	/** Returns the current number of constutient operators.
+	/** Returns the diagonal vector <tt>diag</tt>.
 	 *
-	 * A return value of <tt>0</tt> indicates that <tt>this</tt> is not
-	 * fully initialized.
+	 * A return value of <tt>return.get()==NULL</tt> indicates that
+	 * <tt>this</tt> is not fully initialized.
 	 */
-	Teuchos::RefCountPtr<const Vector<Scalar> >  getDiag() const;
+	Teuchos::RefCountPtr<const Vector<Scalar> > diag() const;
+
+	///
+	/** Returns the scalar multiplier <tt>gamma</tt>.
+	 */
+	Scalar gamma() const;
 
 	///
 	/** Set to uninitialized.
 	 *
 	 * @param  diag  [out] Optional pointer to smart pointer for diagonal.
+	 *               If <tt>diag!=NULL</tt> then on output <tt>*diag</tt>
+	 *               is set to <tt>this->diag()</tt> (before call).
+	 * @param  gamma [out] Optional pointer to scalar <tt>gamma</tt>.
+	 *               If <tt>gamma!=NULL</tt> then on output <tt>*gamma</tt>
+	 *               is set to <tt>this->gamma()</tt> (before call).
 	 *
 	 * Postconditions:<ul>
 	 * <li><tt>this->getDiag().get()==NULL</tt>
 	 * </ul>
 	 */
 	void uninitialize(
-		Teuchos::RefCountPtr<const Vector<Scalar> >  *diag = NULL
+		Teuchos::RefCountPtr<const Vector<Scalar> >  *diag   = NULL
+		,Scalar                                      *gamma  = NULL
 		);
 
 	//@}
@@ -166,6 +193,7 @@ public:
 private:
 
 	Teuchos::RefCountPtr< const Vector<Scalar> > diag_;
+	Scalar                                       gamma_;
 
 	void assertInitialized() const;
 
@@ -177,9 +205,16 @@ private:
 template<class Scalar>
 inline
 Teuchos::RefCountPtr<const Vector<Scalar> >  
-DiagonalLinearOp<Scalar>::getDiag() const
+DiagonalLinearOp<Scalar>::diag() const
 {
 	return diag_;
+}
+
+template<class Scalar>
+inline
+Scalar DiagonalLinearOp<Scalar>::gamma() const
+{
+	return gamma_;
 }
 
 template<class Scalar>

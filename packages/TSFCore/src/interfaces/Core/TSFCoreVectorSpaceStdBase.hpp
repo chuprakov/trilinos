@@ -72,8 +72,8 @@ template<class Scalar>
 Scalar VectorSpaceStdBase<Scalar>::scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const
 {
 #ifdef _DEBUG
-	ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProd(...)",*x.space(),*this);
-	ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProd(...)",*y.space(),*this);
+	TSFCORE_ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProd(...)",*x.space(),*this);
+	TSFCORE_ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProd(...)",*y.space(),*this);
 #endif
 	return scalarProd_->scalarProd(x,y);
 }
@@ -82,9 +82,9 @@ template<class Scalar>
 void VectorSpaceStdBase<Scalar>::scalarProds( const MultiVector<Scalar>& X, const MultiVector<Scalar>& Y, Scalar scalar_prods[] ) const
 {
 #ifdef _DEBUG
-	ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProds(...)",*X.range(),*this);
-	ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProds(...)",*Y.range(),*this);
-	ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProds(...)",*X.domain(),*Y.domain());
+	TSFCORE_ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProds(...)",*X.range(),*this);
+	TSFCORE_ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProds(...)",*Y.range(),*this);
+	TSFCORE_ASSERT_VEC_SPACES("VectorSpaceStdBase<Scalar>::scalarProds(...)",*X.domain(),*Y.domain());
 #endif
 	scalarProd_->scalarProds(X,Y,scalar_prods);
 }

@@ -261,6 +261,12 @@ public:
 	 * <li>this->op().get() == op.get()</tt>
 	 * <li>this->defaultTrans() == defaultTrans</tt>
 	 * </ul>
+	 *
+	 * Note that this constructor (because of the default value for
+	 * <tt>defaultTrans</tt>) defines an implicit conversion from a
+	 * <tt>Teuchos::RefCountPtr<const LinearOp<Scalar> ></tt> object to
+	 * a <tt>LinOpNonPersisting<Scalar></tt> object.  This is reasonable
+	 * behavior and is therefore allowed.
 	 */
 	LinOpPersisting(
 		const Teuchos::RefCountPtr<const LinearOp<Scalar> >   &op
@@ -316,8 +322,12 @@ public:
 	 * <li>this->op() == &op</tt>
 	 * <li>this->defaultTrans() == defaultTrans</tt>
 	 * </ul>
+	 *
+	 * Note that this constructor is made <tt>explict</tt> so that an
+	 * implicit conversion from a <tt>LinearOp<Sclar></tt> to a
+	 * <tt>LinOpNonPersisting<Scalar></tt> is not allowed.
 	 */
-	LinOpNonPersisting(
+	explicit LinOpNonPersisting(
 		const LinearOp<Scalar>                                &op
 		,const ETransp                                        defaultTrans = NOTRANS
 		);

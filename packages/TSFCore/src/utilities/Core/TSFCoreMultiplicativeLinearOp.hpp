@@ -33,6 +33,7 @@
 #define TSFCORE_MULTIPLICATIVE_LINEAR_OP_HPP
 
 #include "TSFCoreMultiplicativeLinearOpDecl.hpp"
+#include "TSFCoreAssertOp.hpp"
 
 namespace TSFCore {
 
@@ -46,35 +47,48 @@ template<class Scalar>
 MultiplicativeLinearOp<Scalar>::MultiplicativeLinearOp(
 	const int                        numOps
 	,const LinOpPersisting<Scalar>   Ops[]
+	,const Scalar                    &gamma
 	)
 {
-	initialize(numOps,Ops);
+	initialize(numOps,Ops,gamma);
 }
 
 template<class Scalar>
 void MultiplicativeLinearOp<Scalar>::initialize(
 	const int                        numOps
 	,const LinOpPersisting<Scalar>   Ops[]
+	,const Scalar                    &gamma
 	)
 {
-	// ToDo: Validate that the range and domain spaces of these
-	// operators are compatible right here!
+#ifdef _DEBUG
+	TEST_FOR_EXCEPT( numOps <= 0 || Ops == NULL );
+	for( int k = 0; k < numOps; ++k ) {
+		TEST_FOR_EXCEPT( Ops[k].op().get() == NULL );
+		if( k < numOps-1 ) {
+			TSFCORE_ASSERT_VEC_SPACES(
+				"MultiplicativeLinearOp<Scalar>::initialize(...)"
+				,*Ops[k].domain(), *Ops[k+1].range()
+				);
+		}
+	}
+#endif
 	Ops_.resize(numOps);
 	std::copy( Ops, Ops+numOps, Ops_.begin() );
+	gamma_ = gamma;
 }
 
 template<class Scalar>
 void MultiplicativeLinearOp<Scalar>::uninitialize(
 	const int                  numOps
-	,LinOpPersisting<Scalar>   Ops
+	,LinOpPersisting<Scalar>   Ops[]
+	,Scalar                    *gamma
 	)
 {
 #ifdef _DEBUG
 	TEST_FOR_EXCEPT( Ops!=NULL && numOps!=this->numOps() );
 #endif
-	if(Ops) {
-		std::copy( Ops_.begin(), Ops_.end(), Ops );
-	}
+	if(Ops) std::copy( Ops_.begin(), Ops_.end(), Ops );
+	if(gamma) *gamma = gamma_;
 	Ops_.resize(0);
 }
 
@@ -143,7 +157,7 @@ void MultiplicativeLinearOp<Scalar>::apply(
 		//
 		// Y = alpha * M * X + beta*Y
 		// =>
-		// Y = alpha * op(Op[0]) * op(Op[1]) * ... * op(Op[numOps-1]) * X + beta*Y
+		// Y = (alpha*gamma) * op(Op[0]) * op(Op[1]) * ... * op(Op[numOps-1]) * X + beta*Y
 		//
 		RefCountPtr<MultiVector<Scalar> > T_kp1, T_k; // Temporary propogated between loops 
 		for( int k = numOps-1; k >= 0; --k ) {
@@ -154,7 +168,7 @@ void MultiplicativeLinearOp<Scalar>::apply(
 			if( k > 0 )
 				Ops_[k].apply(NOTRANS,*X_k,&*Y_k);
 			else
-				Ops_[0].apply(NOTRANS,*X_k,&*Y_k,alpha,beta);
+				Ops_[0].apply(NOTRANS,*X_k,&*Y_k,(alpha*gamma_),beta);
 			T_kp1 = T_k;
 		}
 	}
