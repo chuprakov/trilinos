@@ -1,5 +1,17 @@
 // /////////////////////////////////////////////////////////////////
 // VectorWithOpMutableDense.h
+//
+// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+//
+// This is free software; you can redistribute it and/or modify it
+// under the terms of the "Artistic License" (see the web site
+//   http://www.opensource.org/licenses/artistic-license.html).
+// This license is spelled out in the file COPYING.
+//
+// This software is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// above mentioned "Artistic License" for more details.
 
 #ifndef VECTOR_WITH_OP_MUTABLE_DENSE_H
 #define VECTOR_WITH_OP_MUTABLE_DENSE_H
@@ -16,8 +28,8 @@ namespace SparseLinAlgPack {
 /** Vector "Adaptor" subclass for <tt>LinAlgPack::VectorSlice</tt>
  * or <tt>LinAlgPack::Vector</tt> objects.
  *
- * Class can be used either a a view for a <tt>LinAlgPack::VectorSlice</tt> object
- * or an a storage type with <tt>LinAlgPack::Vector</tt> object.
+ * This class can be used either as a view of a <tt>LinAlgPack::VectorSlice</tt> object
+ * or as a storage type for a <tt>LinAlgPack::Vector</tt> object.
  *
  * To create a storage type with the dimension of \c dim just call the constructor
  * <tt>VectorWithOpMutableDense(dim)</tt> or after construction you can call
@@ -158,7 +170,7 @@ public:
 	void get_sub_vector(
 		const Range1D& rng, RTOp_MutableSubVector* sub_vec );
 	///
-	void free_sub_vector( RTOp_MutableSubVector* sub_vec );
+	void commit_sub_vector( RTOp_MutableSubVector* sub_vec );
 	///
 	void set_sub_vector( const RTOp_SubVector& sub_vec );
 

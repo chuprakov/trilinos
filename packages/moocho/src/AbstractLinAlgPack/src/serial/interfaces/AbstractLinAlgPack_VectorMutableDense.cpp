@@ -1,5 +1,17 @@
 // /////////////////////////////////////////////////////////////////
 // VectorWithOpMutableDense.cpp
+//
+// Copyright (C) 2001 Roscoe Ainsworth Bartlett
+//
+// This is free software; you can redistribute it and/or modify it
+// under the terms of the "Artistic License" (see the web site
+//   http://www.opensource.org/licenses/artistic-license.html).
+// This license is spelled out in the file COPYING.
+//
+// This software is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// above mentioned "Artistic License" for more details.
 
 #include <typeinfo>
 #include <stdexcept>
@@ -206,7 +218,7 @@ void VectorWithOpMutableDense::get_sub_vector(
 	*sub_vec = _sub_vec;  // No memory has been allocated here!
 }
 
-void VectorWithOpMutableDense::free_sub_vector( RTOp_MutableSubVector* sub_vec )
+void VectorWithOpMutableDense::commit_sub_vector( RTOp_MutableSubVector* sub_vec )
 {
 	RTOp_mutable_sub_vector_null( sub_vec ); // No memory to deallocate!
 	this->has_changed(); // Be aware of any final changes!
