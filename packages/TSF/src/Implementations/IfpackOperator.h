@@ -47,24 +47,17 @@ namespace TSF
 			virtual void applyAdjoint(const TSFVector& in,
 																TSFVector& out) const ;
 
-				/** append my timings to a list of timings */
-			static void collectTimings(TSFArray<TSFTimer>& timers) ;
-
 			
 
-			
+			/** timer for matrix-vector multiplies */
+			static TSFTimer& opTimer();
+
 		private:
 
 
 			Ifpack_IlukGraph* precondGraph_;
 
 			Ifpack_CrsRiluk* precond_;
-
-
-
-		
-
-			static TSFTimer opTimer_;
 		};
 
 

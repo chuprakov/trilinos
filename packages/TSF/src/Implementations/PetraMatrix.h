@@ -108,6 +108,11 @@ namespace TSF
 			static void collectTimings(TSFArray<TSFTimer>& timers) ;
 
 			static Epetra_CrsMatrix* getConcrete(const TSFLinearOperator& A);
+
+			/** timer for matrix-vector multiplies */
+			static TSFTimer& mvMultTimer();
+			/** timer for forming ILU preconditioner */
+			static TSFTimer& iluTimer();
 		private:
 			void petraCheck(int ierr, const string& methodName) const ;
 
@@ -120,8 +125,6 @@ namespace TSF
 			bool transposed_;
 			mutable bool hasCachedPreconditioner_;
 			mutable TSFPreconditioner cachedPreconditioner_;
-			static TSFTimer mvMultTimer_;
-			static TSFTimer ILUTimer_;
 		};
 
 

@@ -34,9 +34,6 @@
 using namespace TSF;
 
 
-TSFTimer PetraMatrix::mvMultTimer_("Petra matrix mvmults");
-TSFTimer PetraMatrix::ILUTimer_("Petra matrix ILU factorization");
-
 PetraMatrix::PetraMatrix(const TSFVectorSpace& domain,
 												 const TSFVectorSpace& range)
 	: 
@@ -75,7 +72,7 @@ void PetraMatrix::apply(const TSFVector& argument,
 	// object represents a transpose.
 	int ierr;
 	{
-		TSFTimeMonitor t(mvMultTimer_);
+		TSFTimeMonitor t(mvMultTimer());
 		ierr = mPtr->Multiply((int) transposed_, in, out);
 	}
 
@@ -107,7 +104,7 @@ void PetraMatrix::applyAdjoint(const TSFVector& argument,
 
 	int ierr;
 	{
-		TSFTimeMonitor t(mvMultTimer_);
+		TSFTimeMonitor t(mvMultTimer());
 		ierr = mPtr->Multiply((int) !transposed_, in, out);
 	}
 	if (ierr != 0) 
@@ -268,7 +265,7 @@ void PetraMatrix::getILUKPreconditioner(int fillLevels, int overlapFill,
 	else
 		{
 			ptrCheck("getILUKPreconditioner");
-			TSFTimeMonitor t(ILUTimer_);
+			TSFTimeMonitor t(iluTimer());
 			double relaxValue = 0.0;
 			
 			const Epetra_CrsGraph& matrixGraph = matrix_->Graph();
@@ -306,10 +303,17 @@ void PetraMatrix::petraCheck(int ierr, const string& methodName) const
 		}
 }
 
-void PetraMatrix::collectTimings(TSFArray<TSFTimer>& timers)
+
+TSFTimer& PetraMatrix::mvMultTimer()
 {
-	timers.append(mvMultTimer_);
-	timers.append(ILUTimer_);
+	static TSFSmartPtr<TSFTimer> timer= TSFTimer::getNewTimer("PetraMatrix mvmult");
+	return *timer;
+}
+
+TSFTimer& PetraMatrix::iluTimer()
+{
+	static TSFSmartPtr<TSFTimer> timer= TSFTimer::getNewTimer("ILU factoring of PetraMatrix");
+	return *timer;
 }
 
 Epetra_CrsMatrix* 

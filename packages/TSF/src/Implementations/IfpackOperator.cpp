@@ -24,8 +24,6 @@
 
 using namespace TSF;
 
-TSFTimer IfpackOperator::opTimer_("IFPACK operator action");
-
 IfpackOperator::IfpackOperator(const TSFVectorSpace& domain,
 			       const TSFVectorSpace& range,
 			       Ifpack_CrsRiluk* prec,
@@ -55,7 +53,7 @@ void IfpackOperator::apply(const TSFVector& argument,
 
 	int ierr;
 	{
-		TSFTimeMonitor t(opTimer_);
+		TSFTimeMonitor t(opTimer());
 		ierr = p->Solve((int) false, in, out);
 	}
 	if (ierr < 0)
@@ -79,7 +77,7 @@ void IfpackOperator::applyAdjoint(const TSFVector& argument,
 
 	int ierr;
 	{
-		TSFTimeMonitor t(opTimer_);
+		TSFTimeMonitor t(opTimer());
 		ierr = p->Solve((int) true, in, out);
 	}
 	if (ierr < 0)
@@ -89,9 +87,11 @@ void IfpackOperator::applyAdjoint(const TSFVector& argument,
 		}
 }
 
-void IfpackOperator::collectTimings(TSFArray<TSFTimer>& timers)
+TSFTimer& IfpackOperator::opTimer()
 {
-	timers.append(opTimer_);
+	static TSFSmartPtr<TSFTimer> timer= TSFTimer::getNewTimer("IFPACK mvmult");
+	return *timer;
 }
+
 
 #endif /* HAVE_PETRA */
