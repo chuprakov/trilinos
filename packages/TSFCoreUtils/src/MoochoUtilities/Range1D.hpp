@@ -34,7 +34,8 @@
 #ifndef RANGE1D_H
 #define RANGE1D_H
 
-#include "TSFCoreUtils_ConfigDefs.hpp"
+#include "RTOpPackTypes.hpp"
+#include "Teuchos_ScalarTraits.hpp"
 
 namespace RangePack {
 
@@ -66,6 +67,8 @@ namespace RangePack {
   */
 class Range1D {
 public:
+  ///
+  typedef RTOpPack::index_type  index_type;
   ///
   enum EInvalidRange { INVALID };
   /// Range1D(INVALID)
@@ -107,29 +110,29 @@ public:
    * <li> <tt>this->ubound() == ubound</tt>
    *	</ul>
    */
-  inline Range1D(int lbound, int ubound);
+  inline Range1D(index_type lbound, index_type ubound);
   /// Returns \c true if the range represents the entire region (constructed from \c Range1D())
   inline bool full_range() const;
   /// Return lower bound of the range
-  inline int lbound() const;
+  inline index_type lbound() const;
   /// Return upper bound of the range
-  inline int ubound() const;
+  inline index_type ubound() const;
   /// Return the size of the range (<tt>ubound() - lbound() + 1</tt>)
-  inline int size() const;
+  inline index_type size() const;
   /// Return true if the index is in range
-  inline bool in_range(int i) const;
+  inline bool in_range(index_type i) const;
   /// Increment the range by a constant
-  inline Range1D& operator+=( int incr );
+  inline Range1D& operator+=( index_type incr );
   /// Deincrement the range by a constant
-  inline Range1D& operator-=( int incr );
+  inline Range1D& operator-=( index_type incr );
 
 private:
-  int lbound_;
-  int ubound_;	// = INT_MAX flag for entire range
+  index_type lbound_;
+  index_type ubound_;	// = INT_MAX flag for entire range
   // lbound == ubound == 0 flag for invalid range.
   
   // assert that the range is valid
-  void assert_valid_range(int lbound, int ubound) const;
+  void assert_valid_range(index_type lbound, index_type ubound) const;
   
 }; // end class Range1D
   
@@ -160,7 +163,7 @@ inline bool operator==(const Range1D& rng1, const Range1D& rng2 )
   *	<li> <tt>rng_lhs.ubound() == rng_rhs.ubound() + i</tt>
   *	</ul>
   */
-inline Range1D operator+(const Range1D &rng_rhs, int i)
+inline Range1D operator+(const Range1D &rng_rhs, Range1D::index_type i)
 {
     return Range1D(i+rng_rhs.lbound(), i+rng_rhs.ubound());
 }
@@ -175,7 +178,7 @@ inline Range1D operator+(const Range1D &rng_rhs, int i)
   *	<li> <tt>rng_lhs.ubound() == i + rng_rhs.ubound()</tt>
   *	</ul>
   */
-inline Range1D operator+(int i, const Range1D &rng_rhs)
+inline Range1D operator+(Range1D::index_type i, const Range1D &rng_rhs)
 {
     return Range1D(i+rng_rhs.lbound(), i+rng_rhs.ubound());
 }
@@ -190,7 +193,7 @@ inline Range1D operator+(int i, const Range1D &rng_rhs)
   *	<li> <tt>rng_lhs.ubound() == rng_rhs.ubound() - 1</tt>
   *	</ul>
   */
-inline Range1D operator-(const Range1D &rng_rhs, int i)
+inline Range1D operator-(const Range1D &rng_rhs, Range1D::index_type i)
 {
     return Range1D(rng_rhs.lbound()-i, rng_rhs.ubound()-i);
 }
@@ -208,7 +211,7 @@ inline Range1D operator-(const Range1D &rng_rhs, int i)
   *	<li> [<tt>rng.full_range() == false</tt>] <tt>return.ubound() == rng.ubound()</tt>
   *	</ul>
   */
-inline Range1D full_range(const Range1D &rng, int lbound, int ubound)
+inline Range1D full_range(const Range1D &rng, Range1D::index_type lbound, Range1D::index_type ubound)
 {	return rng.full_range() ? Range1D(lbound,ubound) : rng; }
 
 //@}
@@ -218,7 +221,7 @@ inline Range1D full_range(const Range1D &rng, int lbound, int ubound)
 
 inline
 Range1D::Range1D()
-	: lbound_(1), ubound_(INT_MAX)
+	: lbound_(1), ubound_(INT_MAX)  // RAB: 2004/08/24: Replace this with std::numeric_traits<index_type>::max() when supported everywhere!
 {}
 
 inline
@@ -228,7 +231,7 @@ Range1D::Range1D( EInvalidRange )
 
 
 inline
-Range1D::Range1D(int lbound, int ubound)
+Range1D::Range1D(index_type lbound, index_type ubound)
 	: lbound_(lbound), ubound_(ubound)
 {
 	assert_valid_range(lbound,ubound);
@@ -240,27 +243,27 @@ bool Range1D::full_range() const {
 }
 
 inline
-int Range1D::lbound() const {
+Range1D::index_type Range1D::lbound() const {
 	return lbound_;
 }
 
 inline
-int Range1D::ubound() const {
+Range1D::index_type Range1D::ubound() const {
 	return ubound_;
 }
 
 inline
-int Range1D::size() const {
+Range1D::index_type Range1D::size() const {
 	return 1 + ubound_ - lbound_;
 }
 
 inline
-bool Range1D::in_range(int i) const {
+bool Range1D::in_range(index_type i) const {
 	return lbound_ <= i && i <= ubound_;
 }
 
 inline
-Range1D& Range1D::operator+=( int incr ) {
+Range1D& Range1D::operator+=( index_type incr ) {
 	assert_valid_range( lbound_ + incr, ubound_ + incr );
 	lbound_ += incr;
 	ubound_ += incr;
@@ -268,7 +271,7 @@ Range1D& Range1D::operator+=( int incr ) {
 }
 
 inline
-Range1D& Range1D::operator-=( int incr ) {
+Range1D& Range1D::operator-=( index_type incr ) {
 	assert_valid_range( lbound_ - incr, ubound_ - incr );
 	lbound_ -= incr;
 	ubound_ -= incr;
