@@ -22,27 +22,25 @@ namespace AbstractLinAlgPack {
 
 ///
 /** Concrete matrix type to represent general permutation (mapping) matrices.
-  *
-  * These are matrices who's rows or columns represent eta vectors
-  * (i.e. only one nonzero element with the value 1).  These matrices
-  * can be rectangular and have one or more zero rows & columns.  Therefore, these
-  * matrices can be used to represent gathering and scattering operations
-  * on other vectors and matrices.
-  *
-  * This is only a view type.  The client specifies the mapping arrays and then
-  * this class provides a clean encapsulation for the mapping.  Objects of this
-  * type can also represent the identity matrix which is constructed with
-  * the initialize_identity(...) function.
-  *
-  * The default copy constructor is allowd but the default 
-  * assignment operator function is not.
-  */
+ *
+ * These are matrices who's rows or columns represent eta vectors
+ * (i.e. only one nonzero element with the value 1).  These matrices
+ * can be rectangular and have one or more zero rows & columns.  Therefore, these
+ * matrices can be used to represent gathering and scattering operations
+ * on other vectors and matrices.
+ *
+ * This is only a view type.  The client specifies the mapping arrays and then
+ * this class provides a clean encapsulation for the mapping.  Objects of this
+ * type can also represent the identity matrix which is constructed with
+ * the initialize_identity(...) function.
+ *
+ * The default copy constructor is allowd but the default 
+ * assignment operator function is not.
+ */
 class GenPermMatrixSlice {
 public:
 
-	// ////////////////////////////////////////
-	/** @name Public types.
-	  */
+	/** @name Public types */
 	//@{
 
 	///
@@ -68,64 +66,65 @@ public:
 	///
 	/** Initialize an identity or zero permutation.
 	 *
-	 * If #type == IDENTITY_MATRIX# then after this function is called #this# will
-	 * represent #Q = [ I; 0 ]# if #rows > cols# or #Q = [ I, 0 ]#
-	 * if #rows < cols# or #Q = I# if #rows == cols#.  If #type == ZERO_MATRIX]#
-	 * then #this# will represent a #rows# x #cols# zero matrix.
+	 * If <tt>type == IDENTITY_MATRIX</tt> then after this function is called <tt>this</tt> will
+	 * represent <tt>Q = [ I; 0 ]</tt> if <tt>rows > cols</tt> or <tt>Q = [ I, 0 ]</tt>
+	 * if <tt>rows < cols</tt> or <tt>Q = I</tt> if <tt>rows == cols</tt>.  If <tt>type == ZERO_MATRIX]</tt>
+	 * then <tt>this</tt> will represent a <tt>rows</tt> x <tt>cols</tt> zero matrix.
 	 *
-	 * Postconditions:\begin{itemize}
-	 * \item #this->rows() == rows#
-	 * \item #this->cols() == cols#
-	 * \item [#type == IDENTITY_MATRIX#] #this->nz() == min(rows,cols)#
-	 * \item [#type == ZERO_MATRIX#]     #this->nz() == 0#
-	 * \item [#type == IDENTITY_MATRIX#] #this->is_identity() == true#
-	 * \item [#type == ZERO_MATRIX#]     #this->is_identity() == false#
-	 * \item #this->ordered_by() == BY_ROW_AND_COL#
-	 * \end{itemize}
+	 * Postconditions:<ul>
+	 * <li> <tt>this->rows() == rows</tt>
+	 * <li> <tt>this->cols() == cols</tt>
+	 * <li> [<tt>type == IDENTITY_MATRIX</tt>] <tt>this->nz() == min(rows,cols)</tt>
+	 * <li> [<tt>type == ZERO_MATRIX</tt>]     <tt>this->nz() == 0</tt>
+	 * <li> [<tt>type == IDENTITY_MATRIX</tt>] <tt>this->is_identity() == true</tt>
+	 * <li> [<tt>type == ZERO_MATRIX</tt>]     <tt>this->is_identity() == false</tt>
+	 * <li> <tt>this->ordered_by() == BY_ROW_AND_COL</tt>
+	 * </ul>
 	 */
 	void initialize( index_type rows, index_type cols, EIdentityOrZero type );
 
 	///
 	/** Initialize.
-	  *
-	  * This function sets up general permutation view.
-	  * The client must setup the arrays row_i[] and col_j[] to define
-	  * the mapping.  If nz == 0 then row_i and col_j can be NULL.
-	  * Otherwise, row_i != NULL and col_j != NULL.  If nz > 0 and
-	  * ordered_by == BY_ROW then row_i[k] must be sorted in assending order
-	  * else if ordered_by == BY_COL or col_j[k] must be sorted in assnding order
-	  * else if ordered_by == UNORDERED then no ordering for row_i[k] or
-	  * col_j[k] is required.  If nz == 1 then the value of ordered_by
-	  * is not really significant at it is ordered by row and by column.
-	  * 
-	  * It is required that if nz > 0 then:
-	  * 1 <= row_i[k] + row_off <= rows, for k = 1...nz
-	  * 1 <= col_j[k] + col_off <= cols, for k = 1...nz
-	  * 
-	  * All of these preconditions will be checked if test_setup == true.
-	  *
-	  * After setup, the memory pointed to by row_i[] and col_j[] must not
-	  * be altered since this object does not make an independent copy
-	  * of this data.
-	  * 
-	  * After construction the nonzero elements of this matrix are:
-	  * M(row_i[k]+row_off,col_j[k]+col_off) = 1.0, for k = 1...nz.
-	  *
-	  *	@param	rows	[I]	Number of rows in matrix
-	  *	@param	cols	[I]	Number of columns in matrix
-	  *	@param	nz		[I]	Number of nonzero elements in the matrix
-	  *	@param	row_off	[I]	Row offsets for row_i[]
-	  *	@param	col_off	[I]	Column offsets for col_i[]
-	  *	@param	ordered_by
-	  *					[I]	The ordering of the nonzero elements
-	  *	@param	row_i	[I]	Array (size nz):  If nz == 0 then
-	  *						row_i can be NULL
-	  *	@param	col_j	[I]	Array (size nz): If nz == 0 then
-	  *						col_j can be NULL
-	  *	@param	test_setup
-	  *					[I] If true then all of the preconditions for
-	  *						the input arguments will be checked.
-	  */
+	 *
+	 *	@param	rows	[in] Number of rows in matrix
+	 *	@param	cols	[in] Number of columns in matrix
+	 *	@param	nz		[in] Number of nonzero elements in the matrix
+	 *	@param	row_off	[in] Row offsets for row_i[]
+	 *	@param	col_off	[in] Column offsets for col_i[]
+	 *	@param	ordered_by
+	 *					[in] The ordering of the nonzero elements
+	 *	@param	row_i	[in] Array (size nz):  If nz == 0 then
+	 *					row_i can be NULL
+	 *	@param	col_j	[in] Array (size nz): If nz == 0 then
+	 *					col_j can be NULL
+	 *	@param	test_setup
+	 *					[in] If true then all of the preconditions for
+	 *					the input arguments will be checked.
+	 *
+	 * This function sets up general permutation view.
+	 * The client must setup the arrays row_i[] and col_j[] to define
+	 * the mapping.  If nz == 0 then row_i and col_j can be NULL.
+	 * Otherwise, row_i != NULL and col_j != NULL.  If nz > 0 and
+	 * ordered_by == BY_ROW then row_i[k] must be sorted in assending order
+	 * else if ordered_by == BY_COL or col_j[k] must be sorted in assnding order
+	 * else if ordered_by == UNORDERED then no ordering for row_i[k] or
+	 * col_j[k] is required.  If nz == 1 then the value of ordered_by
+	 * is not really significant at it is ordered by row and by column.
+	 * 
+	 * It is required that if nz > 0 then:
+	 * 1 <= row_i[k] + row_off <= rows, for k = 1...nz
+	 * 1 <= col_j[k] + col_off <= cols, for k = 1...nz
+	 * 
+	 * All of these preconditions will be checked if test_setup == true.
+	 *
+	 * After setup, the memory pointed to by row_i[] and col_j[] must not
+	 * be altered since this object does not make an independent copy
+	 * of this data.
+	 * 
+	 * After construction the nonzero elements of this matrix are:
+	 * M(row_i[k]+row_off,col_j[k]+col_off) = 1.0, for k = 1...nz.
+	 *
+	 */
 	void initialize(
 		index_type			rows
 		,index_type			cols
@@ -147,22 +146,22 @@ public:
 	  *
 	  * ToDo: Finish documentation.
 	  *
-	  *	@param	rows	[I]	Number of rows in matrix
-	  *	@param	cols	[I]	Number of columns in matrix
-	  *	@param	nz		[I]	Number of nonzero elements in the matrix
-	  *	@param	row_off	[I]	Row offsets for row_i[]
-	  *	@param	col_off	[I]	Column offsets for col_i[]
+	  *	@param	rows	[in] Number of rows in matrix
+	  *	@param	cols	[in] Number of columns in matrix
+	  *	@param	nz		[in] Number of nonzero elements in the matrix
+	  *	@param	row_off	[in] Row offsets for row_i[]
+	  *	@param	col_off	[in] Column offsets for col_i[]
 	  *	@param	ordered_by
-	  *					[I]	The ordering of the nonzero elements
-	  *	@param	row_i	[I/O]	Array (size nz):  If nz == 0 then
-	  *						row_i can be NULL.  On output it will be
-	  *						sorted according to ordered_by
-	  *	@param	col_j	[I/O]	Array (size nz): If nz == 0 then
-	  *						col_j can be NULL.  On output it will be
-	  *						sorted according to ordered_by
+	  *					[in] The ordering of the nonzero elements
+	  *	@param	row_i	[in/out] Array (size nz):  If nz == 0 then
+	  *					row_i can be NULL.  On output it will be
+	  *					sorted according to ordered_by
+	  *	@param	col_j	[in/out] Array (size nz): If nz == 0 then
+	  *					col_j can be NULL.  On output it will be
+	  *					sorted according to ordered_by
 	  *	@param	test_setup
-	  *					[I] If true then all of the preconditions for
-	  *						the input arguments will be checked.
+	  *					[in] If true then all of the preconditions for
+	  *					the input arguments will be checked.
 	  */
 	void initialize_and_sort(
 		index_type			rows
@@ -200,17 +199,17 @@ public:
 	 * if it exists.
 	 *
 	 * This function will return 0 if the index is not found.  If 
-	 * #this->ordered_by() == BY_COL || this->ordered_by() == BY_ROW_AND_COL#
-	 * then this function will be executed in O(log(#this->nz()#)) time.
-	 * Otherwise it will execute in O(#this->nz()#) time.
+	 * <tt>this->ordered_by() == BY_COL || this->ordered_by() == BY_ROW_AND_COL</tt>
+	 * then this function will be executed in O(log(<tt>this->nz()</tt>)) time.
+	 * Otherwise it will execute in O(<tt>this->nz()</tt>) time.
 	 *
-	 * Preconditions:\begin{itemize}
-	 * \item #(1 <= col_j && col_j <= this->cols())# (throw #std::out_of_range#)
-	 * \end{itemize}
+	 * Preconditions:<ul>
+	 * <li> <tt>(1 <= col_j && col_j <= this->cols())</tt> (throw <tt>std::out_of_range</tt>)
+	 * </ul>
 	 *
-	 * Postconditions:\begin{itemize}
-	 * \item #(1 <= return && return <= this->rows()) || return == 0#
-	 * \end{itemize}
+	 * Postconditions:<ul>
+	 * <li> <tt>(1 <= return && return <= this->rows()) || return == 0</tt>
+	 * </ul>
 	 */
 	index_type lookup_row_i(index_type col_j) const;
 
@@ -219,17 +218,17 @@ public:
 	 * if it exists.
 	 *
 	 * This function will return 0 if the index is not found.  If 
-	 * #this->ordered_by() == BY_ROW || this->ordered_by() == BY_ROW_AND_COL#
-	 * then this function will be executed in O(log(#this->nz()#)) time.
-	 * Otherwise it will execute in O(#this->nz()#) time.
+	 * <tt>this->ordered_by() == BY_ROW || this->ordered_by() == BY_ROW_AND_COL</tt>
+	 * then this function will be executed in O(log(<tt>this->nz()</tt>)) time.
+	 * Otherwise it will execute in O(<tt>this->nz()</tt>) time.
 	 *
-	 * Preconditions:\begin{itemize}
-	 * \item #(1 <= row_i && row_i <= this->rows())# (throw #std::out_of_range#)
-	 * \end{itemize}
+	 * Preconditions:<ul>
+	 * <li> <tt>(1 <= row_i && row_i <= this->rows())</tt> (throw <tt>std::out_of_range</tt>)
+	 * </ul>
 	 *
-	 * Postconditions:\begin{itemize}
-	 * \item #(1 <= return && return <= this->cols()) || return == 0#
-	 * \end{itemize}
+	 * Postconditions:<ul>
+	 * <li> <tt>(1 <= return && return <= this->cols()) || return == 0</tt>
+	 * </ul>
 	 */
 	index_type lookup_col_j(index_type row_i) const;
 
