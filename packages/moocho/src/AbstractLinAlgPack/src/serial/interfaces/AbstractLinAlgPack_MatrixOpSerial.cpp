@@ -517,8 +517,10 @@ void MatrixWithOpSerial::Vp_StPtMtV(
 {
 	VectorDenseMutableEncap       vs_lhs(*v_lhs);
 	const VectorWithOpGetSparse   *sv_rhs3 = dynamic_cast<const VectorWithOpGetSparse*>(&v_rhs3);
-	if(sv_rhs3)
-		return this->Vp_StPtMtV( &vs_lhs(), alpha, P_rhs1, P_rhs1_trans, M_rhs2_trans, VectorSparseEncap(*sv_rhs3)(), beta );	
+	if(sv_rhs3) {
+		this->Vp_StPtMtV( &vs_lhs(), alpha, P_rhs1, P_rhs1_trans, M_rhs2_trans, VectorSparseEncap(*sv_rhs3)(), beta );
+		return;
+	}
 	VectorDenseEncap              vs_rhs3(v_rhs3);
 	this->Vp_StPtMtV( &vs_lhs(), alpha, P_rhs1, P_rhs1_trans, M_rhs2_trans, vs_rhs3(), beta );	
 }
@@ -550,8 +552,10 @@ void MatrixWithOpSerial::syr2k(
 {
 	MatrixSymWithOpGetGMSSymMutable
 		*symwo_gms_lhs = dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(symwo_lhs);
-	if(!symwo_gms_lhs)
-		return MatrixWithOp::syr2k(M_trans,alpha,P1,P1_trans,P2,P2_trans,beta,symwo_lhs); // Boot it
+	if(!symwo_gms_lhs) {
+		MatrixWithOp::syr2k(M_trans,alpha,P1,P1_trans,P2,P2_trans,beta,symwo_lhs); // Boot it
+		return;
+	}
 	this->syr2k(
 		M_trans,alpha,P1,P1_trans,P2,P2_trans,beta
 		,&MatrixDenseSymMutableEncap(symwo_gms_lhs)()
@@ -597,8 +601,10 @@ void MatrixWithOpSerial::syrk(
 {
 	MatrixSymWithOpGetGMSSymMutable
 		*symwo_gms_lhs = dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(symwo_lhs);
-	if(!symwo_gms_lhs)
-		return MatrixWithOp::syrk(M_trans,alpha,beta,symwo_lhs); // Boot it
+	if(!symwo_gms_lhs) {
+		MatrixWithOp::syrk(M_trans,alpha,beta,symwo_lhs); // Boot it
+		return;
+	}
 	this->syrk(M_trans,alpha,beta,&MatrixDenseSymMutableEncap(symwo_gms_lhs)());
 }
 
