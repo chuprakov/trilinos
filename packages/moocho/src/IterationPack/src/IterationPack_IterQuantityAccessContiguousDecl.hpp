@@ -72,14 +72,18 @@ public:
 
 	///
 	/** Construct storage for <tt>num_quantities</tt> with the name <tt>name</tt> given an abstract factory.
-	  *
-	  * After construction <tt>this->set_k(offset)</tt> can be called for any
-	  * <tt>offset</tt> in the range of legal integers.
-	  *
-	  * Preconditions: <ul>
-	  * <li> <tt>num_quantities > 0</tt> (throw std::length_error)
-	  * </ul>
-	  */
+	 *
+	 * After construction <tt>this->set_k(offset)</tt> can be called for any
+	 * <tt>offset</tt> in the range of legal integers.
+	 *
+	 * Preconditions: <ul>
+	 * <li> <tt>num_quantities > 0</tt> (throw std::length_error)
+	 * </ul>
+	 *
+	 * If \c abstract_factory.get() == NULL then the client had better call \c this->set_factory()
+	 * with an non-NULL factory before any attempt is made to call \c get_k() or \c set_k() or an
+	 * exception will be thrown.
+	 */
 	IterQuantityAccessContiguous(
 		int                              num_quantities
 		,const std::string&              name
@@ -94,8 +98,12 @@ public:
 	/** Set the abstract factory to use to allocate storate.
 	 *
 	 * Postconditions:<ul>
-	 * <li> \c this will be come uninitialized and current memory will be wipped out.
+	 * <li> \c this will become uninitialized and current memory will be wipped out.
 	 * </ul>
+	 *
+	 * If \c abstract_factory.get() == NULL then the client had better call \c this->set_factory()
+	 * again later with a non-NULL factory before any attempt is made to call \c get_k() or
+	 * \c set_k() or an exception will be thrown.
 	 */
 	void set_factory( const abstract_factory_ptr_t& abstract_factory );
 
@@ -103,7 +111,7 @@ public:
 	/** Resize the number of contiguous storage locations.
 	 *
 	 * Postconditions:<ul>
-	 * <li> \c this will be come uninitialized and current memory will be wipped out.
+	 * <li> \c this will become uninitialized and current memory will be wipped out.
 	 * </ul>
 	 */
 	void resize( int num_quantities );

@@ -53,10 +53,6 @@ void IterQuantityAccessContiguous<T_info>::set_factory(
 	const abstract_factory_ptr_t& abstract_factory
 	)
 {
-	THROW_EXCEPTION(
-		abstract_factory.get() == NULL, std::length_error
-		,"IterQuantityAccessContiguous::set_factory(abstract_factor): Error, "
-		"the abstract factory for creating the iteration quantities can not be NULL" );
 	release_mem();
 	max_offset_ = std::numeric_limits<int>::min() + num_quantities_;  // uninitialized
 }
@@ -66,7 +62,7 @@ void IterQuantityAccessContiguous<T_info>::resize( int num_quantities ) {
 	THROW_EXCEPTION(
 		num_quantities < 1, std::length_error
 		,"IterQuantityAccessContiguous::resize(num_quantities): Error, "
-		"num_quantities = "<<num_quantities<<" must be greater than zero" );
+		"name = "<<name_<<", num_quantities = "<<num_quantities<<" must be greater than zero" );
 	if( num_quantities_ != num_quantities )
 		release_mem();
 	num_quantities_ = num_quantities;
@@ -150,6 +146,8 @@ void IterQuantityAccessContiguous<T_info>::print_concrete_type( std::ostream& ou
 	const int last_updated = this->last_updated();
 	if(last_updated != NONE_UPDATED)
 		out << typeid(get_k(last_updated)).name();
+	else if( abstract_factory_.get() == NULL )
+		out << "NULL";
 	else
 		out << typeid(*abstract_factory_->create()).name();
 }
@@ -242,6 +240,10 @@ bool IterQuantityAccessContiguous<T_info>::is_initialized() const {
 template<class T_info>
 void IterQuantityAccessContiguous<T_info>::lazy_initialization() {
 	if( !is_initialized() ) {
+		THROW_EXCEPTION(
+			abstract_factory_.get() == NULL, std::logic_error
+			,"IterQuantityAccessContiguous::lazy_initialization(): Error, "
+			"iq_name = "<<name_<<" the abstract factory can not be NULL" );
 		// Allocate storage
 		updated_.resize(num_quantities_,false);
 		store_.resize(num_quantities_);
