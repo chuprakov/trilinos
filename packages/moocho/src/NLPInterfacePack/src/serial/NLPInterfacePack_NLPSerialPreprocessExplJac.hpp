@@ -114,7 +114,7 @@ public:
 	//@{
 
 	///
-	void initialize();	
+	void initialize(bool test_setup);	
 	///
 	bool is_initialized() const;
 
@@ -355,6 +355,7 @@ private:
 	// Private data members
 	
 	bool initialized_;              // Flag for if the NLP has has been properly initialized
+	bool test_setup_;               // Flag for if to test the setup of things or not
 
 	factory_mat_ptr_t   factory_Gc_full_;
 	factory_mat_ptr_t   factory_Gh_full_;

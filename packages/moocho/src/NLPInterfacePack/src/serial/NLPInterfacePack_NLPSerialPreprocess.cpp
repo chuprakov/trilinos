@@ -15,6 +15,9 @@
 
 #include <assert.h>
 
+//#include <iostream> // Debug only
+//#include "LinAlgPack/include/PermOut.h"
+
 #include <algorithm>
 #include <sstream>
 #include <limits>
@@ -77,7 +80,7 @@ bool NLPSerialPreprocess::force_xinit_in_bounds() const
 	return force_xinit_in_bounds_;
 }
 
-void NLPSerialPreprocess::initialize()
+void NLPSerialPreprocess::initialize(bool test_setup)
 {
 	namespace mmp = MemMngPack;
 
@@ -86,7 +89,7 @@ void NLPSerialPreprocess::initialize()
 	if( initialized_  && !imp_nlp_has_changed() ) {
 		// The subclass NLP has not changed so we can just
 		// slip this preprocessing.
-		NLPObjGradient::initialize();
+		NLPObjGradient::initialize(test_setup);
 		return;
 	}
 
@@ -256,8 +259,12 @@ void NLPSerialPreprocess::initialize()
 		}
 	}
 
+//	std::cerr << "var_full_to_fixed_ =\n"      << var_full_to_fixed_;
+//	std::cerr << "inv_var_full_to_fixed_ =\n"  << inv_var_full_to_fixed_;
+//	std::cerr << "equ_perm_ =\n"               << equ_perm_;
+
 	// If you get here then the initialization went Ok.
-	NLPObjGradient::initialize();
+	NLPObjGradient::initialize(test_setup);
 	initialized_ = true;
 }
 
@@ -620,10 +627,10 @@ void NLPSerialPreprocess::imp_calc_c(
 		imp_calc_h_orig( x_full(), newx, zero_order_orig_info() );
 	VectorDenseMutableEncap  c_d(*zero_order_info.c);
 	equ_from_full(
-		m_orig_                            ? c_orig_.begin()                     : NULL
-		,mI_orig_ && convert_inequ_to_equ_ ? h_orig_.begin()                     : NULL
-		,mI_orig_ && convert_inequ_to_equ_ ? x_full()(n_orig_+1,n_full_).begin() : NULL // slacks
-		,c_d().begin()
+		m_orig_                            ? c_orig_()                     : VectorSlice()
+		,mI_orig_ && convert_inequ_to_equ_ ? h_orig_()                     : VectorSlice()
+		,mI_orig_ && convert_inequ_to_equ_ ? x_full()(n_orig_+1,n_full_)   : VectorSlice() // s_orig
+		,&c_d()
 		);
 }
 
@@ -714,19 +721,18 @@ void NLPSerialPreprocess::var_to_full( VectorSlice::const_iterator vec, VectorSl
 }
 
 void NLPSerialPreprocess::equ_from_full(
-	VectorSlice::const_iterator  c_orig
-	,VectorSlice::const_iterator h_orig
-	,VectorSlice::const_iterator s_orig
-	,VectorSlice::iterator       c
+	const VectorSlice   &c_orig
+	,const VectorSlice  &h_orig
+	,const VectorSlice  &s_orig
+	,VectorSlice        *c_full
 	) const
 {
 	size_type i;
 	// c_full = [ c_orig; h_orig - s_orig ]
-	if( m_orig_ ) c--; // Want 1 based indexing
  	for(i = 1; i <= m_orig_; ++i)
-		c[inv_equ_perm_(i)] = *c_orig++;
- 	for(; i <= m_full_; ++i)
-		c[inv_equ_perm_(i)] = (*h_orig++) - (*s_orig++);
+		(*c_full)(inv_equ_perm_(i)) = c_orig(i);
+ 	for(i = 1; i <= mI_orig_; ++i)
+		(*c_full)(inv_equ_perm_(m_orig_+i)) = h_orig(i) - s_orig(i);
 }
 
 // private members

@@ -245,7 +245,7 @@ public:
 	///
 	bool force_xinit_in_bounds() const;
 	///
-	void initialize();	
+	void initialize(bool test_setup);	
 	///
 	bool is_initialized() const;
 	///
@@ -681,10 +681,10 @@ protected:
 
 	// Perform the mapping from c_orig, h_orig, s_orig to the permuted constraint vector c
 	void equ_from_full(
-		VectorSlice::const_iterator  c_orig
-		,VectorSlice::const_iterator h_orig
-		,VectorSlice::const_iterator s_orig
-		,VectorSlice::iterator       c
+		const VectorSlice   &c_orig
+		,const VectorSlice  &h_orig
+		,const VectorSlice  &s_orig
+		,VectorSlice        *c_full
 		) const;
 
 	//@}

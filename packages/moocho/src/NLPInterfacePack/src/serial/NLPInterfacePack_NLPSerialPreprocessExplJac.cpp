@@ -41,7 +41,7 @@ NLPSerialPreprocessExplJac::NLPSerialPreprocessExplJac(
 	const factory_mat_ptr_t     &factory_Gc_full
 	,const factory_mat_ptr_t    &factory_Gh_full
 	)
-	:initialized_(false)
+	:initialized_(false),test_setup_(false)
 {
 	this->set_mat_factories(factory_Gc_full,factory_Gh_full);
 }
@@ -69,21 +69,23 @@ void NLPSerialPreprocessExplJac::set_mat_factories(
 
 // Overridden public members from NLP
 
-void NLPSerialPreprocessExplJac::initialize()
+void NLPSerialPreprocessExplJac::initialize(bool test_setup)
 {
 	namespace rcp = MemMngPack;
+
+	test_setup_ = test_setup;
 
 	if( initialized_  && !imp_nlp_has_changed() ) {
 		// The subclass NLP has not changed so we can just
 		// slip this preprocessing.
-		NLPFirstOrderInfo::initialize();
-		NLPSerialPreprocess::initialize();  // Some duplication but who cares!
+		NLPFirstOrderInfo::initialize(test_setup);
+		NLPSerialPreprocess::initialize(test_setup);  // Some duplication but who cares!
 		return;
 	}
 
 	// Initialize the base object first
-	NLPFirstOrderInfo::initialize();
-	NLPSerialPreprocess::initialize();  // Some duplication but who cares!
+	NLPFirstOrderInfo::initialize(test_setup);
+	NLPSerialPreprocess::initialize(test_setup);  // Some duplication but who cares!
 
 	const NLP::vec_space_ptr_t
 		space_x = this->space_x(),
@@ -428,7 +430,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 		,load_struct ? &ivect : NULL
 		,load_struct ? &jvect : NULL
 		);
-	G_lse.finish_construction();
+	G_lse.finish_construction(test_setup_);
 
 	//
 	// Setup permuted view
