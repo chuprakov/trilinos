@@ -105,21 +105,29 @@ for this NLP formulation).  Again, this Hessian matrix object is abstracted behi
 
 This library contains a number of classes and subclasses that are useful in developing and testing concrete NLP implementations.
 
-It is very common to approximate derivatives using finite differences.  In general, finite differencing can lead to inaccurate
-derivatives when fine precision is needed and can be expensive to compute.  However, using finite differences to provide some
-validation for derivatives computed by an NLP interface is invaluable.  The class
-<tt>\ref NLPInterfacePack::CalcFiniteDiffProd "CalcFiniteDiffProd"</tt> can be used to
-approximate the products <tt>Gf'*y</tt>, <tt>Gc'*y</tt> and <tt>Gh'*y</tt> for arbitrary vectors using one of several different
-order methods.  Note that computing each of these products only requires between one to four extra function evaluations
-per function.  Therefore, these products can be computed for even the largest problems.  The class
-<tt>\ref NLPInterfacePack::CalcFiniteDiffFirstDerivatives "CalcFiniteDiffFirstDerivatives"</tt> can be used to compute
-dense approximations for \c Gf, \c Gc and \c Gh.  In this case, computing these quantities will be prohibitively expensive
-for larger problems and is not generally practical to do so.  However, computing these compete gradients by finite differences
-can be very valuable to debug small NLPs.  Test finite differencing classes are used by several of the following testing
-classes.
+It is very common to approximate derivatives using finite differences.
+In general, finite differencing can lead to inaccurate derivatives
+when fine precision is needed and can be expensive to compute.
+However, using finite differences to provide some validation for
+derivatives computed by an NLP interface is invaluable.  The class
+<tt>\ref NLPInterfacePack::CalcFiniteDiffProd
+"CalcFiniteDiffProd"</tt> can be used to approximate the products
+<tt>Gf'*y</tt>, <tt>Gc'*y</tt> and <tt>Gh'*y</tt> for arbitrary
+vectors using one of several different order methods.  Note that
+computing each of these products only requires between one to four
+extra function evaluations per function.  Therefore, these products
+can be computed for even the largest problems.  This class can also be
+used to compute the entire dense approximations for \c Gf, \c Gc and
+\c Gh by using the unit vectors \c e(i).  Computing these quantities
+will be prohibitively expensive for larger problems and is not
+generally practical to do so.  However, computing these compete
+gradients by finite differences can be very valuable to debug small
+NLPs.
 
-The above finite differencing driver classes can be useful in their own right but they are perhaps the most usefully in
-developing automated testing software for NLP interfaces.  There are several NLP testing classes for various NLP interfaces.
+The above finite differencing driver classes can be useful in their
+own right but they are perhaps the most usefully in developing
+automated testing software for NLP interfaces.  There are several NLP
+testing classes for various NLP interfaces.
 
 The testing class <tt>\ref NLPInterfacePack::NLPTester "NLPTester"</tt> performs unit testing for the base
 <tt>\ref NLPInterfacePack::NLP "NLP"</tt> interface.  No derivatives are checked here but must of the postconditions of all
