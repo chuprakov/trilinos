@@ -139,7 +139,7 @@ public: \
 public: \
 	void set_ ## NAME ( const Teuchos::RefCountPtr< const TYPE >& NAME ) \
 	{	NAME ## _ = NAME ; } \
-	Teuchos::RefCountPtr< const TYPE >& get_ ## NAME() const \
+	Teuchos::RefCountPtr< const TYPE > get_ ## NAME() const \
 	{	return NAME ## _; } \
 	const TYPE& NAME() const \
 	{	return *NAME ## _; } \
