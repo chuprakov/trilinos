@@ -37,7 +37,7 @@ int main( int argc, char* argv[] )
 		size_type    nI = 1;
 		size_type    bw = 1;
 		value_type   xo = 0.1;
-		bool         nlp_selects_basis = false;
+		bool         nlp_selects_basis = true;
 		value_type   xl = -NLP::infinite_bound();
 		value_type   xu = +NLP::infinite_bound();
 		size_type    mU = 0;
