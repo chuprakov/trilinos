@@ -2536,12 +2536,12 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	{
 		*out     
 			<< "\nIf max_viol > 0 and jd != 0 then constraint jd will be dropped from the active set\n\n"
-			<< setw(dbl_w)	<< "max_viol"
-			<< setw(5)	<< "sd"
-			<< setw(5)	<< "jd"		<< endl
-			<< setw(dbl_w)	<< "--------------"
-			<< setw(5)	<< "----"
-			<< setw(5)	<< "----"	<< endl;
+			<< right << setw(dbl_w)	<< "max_viol"
+			<< right << setw(5)	<< "sd"
+			<< right << setw(5)	<< "jd"		<< endl
+			<< right << setw(dbl_w)	<< "--------------"
+			<< right << setw(5)	<< "----"
+			<< right << setw(5)	<< "----"	<< endl;
 	}
 	for( int k = num_act_change; k > 0; --k, ++(*iter) ) {
 		// Compute z_hat (z_hat = inv(S_hat)*(d_hat - U_hat'*vo))
@@ -2603,9 +2603,9 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			&& (int)output_level < (int)OUTPUT_ITER_QUANTITIES )
 		{
 			*out
-				<< setw(dbl_w)	<< max_viol
-				<< setw(5)	<< act_set_.s_map(jd)
-				<< setw(5)	<< jd					<< endl;
+				<< right << setw(dbl_w)	<< max_viol
+				<< right << setw(5)	    << act_set_.s_map(jd)
+				<< right << setw(5)	    << jd					<< endl;
 		}
 		if( jd == 0 ) break;	// We have a dual feasible point w.r.t. these constraints
 		// Remove the active constraint with the largest scaled violation.
@@ -2672,12 +2672,12 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		{
 			*out     
 				<< "\nIf max_viol > 0 and id != 0 then the variable x(id) will be freed from its initial bound\n\n"
-				<< setw(dbl_w)	<< "max_viol"
-				<< setw(5)	<< "kd"
-				<< setw(5)	<< "id"		<< endl
-				<< setw(dbl_w)	<< "--------------"
-				<< setw(5)	<< "----"
-				<< setw(5)	<< "----"	<< endl;
+				<< right << setw(dbl_w)	<< "max_viol"
+				<< right << setw(5)	<< "kd"
+				<< right << setw(5)	<< "id"		<< endl
+				<< right << setw(dbl_w)	<< "--------------"
+				<< right << setw(5)	<< "----"
+				<< right << setw(5)	<< "----"	<< endl;
 		}
 		size_type q_D_hat = act_set_.q_D_hat(); // This will be deincremented
 		while( q_D_hat > 0 ) {
@@ -2739,9 +2739,9 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 				&& (int)output_level < (int)OUTPUT_ITER_QUANTITIES )
 			{
 				*out
-					<< setw(dbl_w)	<< max_viol
-					<< setw(5)	<< kd
-					<< setw(5)	<< id         << endl;
+					<< right << setw(dbl_w)	<< max_viol
+					<< right << setw(5)	<< kd
+					<< right << setw(5)	<< id         << endl;
 			}
 			if( id == 0 ) break;	// We have a dual feasible point w.r.t. these variable bounds
 			// Remove the active constraint with the largest scaled violation.
@@ -2941,6 +2941,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 {
 	using std::setw;
 	using std::endl;
+	using std::right;
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using LinAlgPack::dot;
@@ -3139,43 +3140,43 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						summary_lines_counter = summary_lines_counter_max;
 						*out
 							<< endl
-							<< setw(6)	<< "itr"
-							<< setw(6)	<< "qhat"
-							<< setw(6)	<< "q(+)"
-							<< setw(6)	<< "q_F"
-							<< setw(6)	<< "q_C"
-							<< setw(6)	<< "q_D"
-							<< setw(8)	<< "change"
-							<< setw(9)	<< "type"
-							<< setw(6)	<< "j"
-							<< setw(10)	<< "bnd"
-							<< setw(dbl_w)	<< "viol, p_z(jd)"
-							<< setw(6)	<< "rank" << endl
-							<< setw(6)	<< "----"
-							<< setw(6)	<< "----"
-							<< setw(6)	<< "----"
-							<< setw(6)	<< "----"
-							<< setw(6)	<< "----"
-							<< setw(6)	<< "----"
-							<< setw(8)	<< "------"
-							<< setw(9)	<< "-------"
-							<< setw(6)	<< "----"
-							<< setw(10)	<< "--------"
-							<< setw(dbl_w) << "--------------"
-							<< setw(6)	<< "----"	<< endl;
+							<< right << setw(6)	<< "itr"
+							<< right << setw(6)	<< "qhat"
+							<< right << setw(6)	<< "q(+)"
+							<< right << setw(6)	<< "q_F"
+							<< right << setw(6)	<< "q_C"
+							<< right << setw(6)	<< "q_D"
+							<< right << setw(8)	<< "change"
+							<< right << setw(9)	<< "type"
+							<< right << setw(6)	<< "j"
+							<< right << setw(10)	<< "bnd"
+							<< right << setw(dbl_w)	<< "viol, p_z(jd)"
+							<< right << setw(6)	<< "rank" << endl
+							<< right << setw(6)	<< "----"
+							<< right << setw(6)	<< "----"
+							<< right << setw(6)	<< "----"
+							<< right << setw(6)	<< "----"
+							<< right << setw(6)	<< "----"
+							<< right << setw(6)	<< "----"
+							<< right << setw(8)	<< "------"
+							<< right << setw(9)	<< "-------"
+							<< right << setw(6)	<< "----"
+							<< right << setw(10)	<< "--------"
+							<< right << setw(dbl_w) << "--------------"
+							<< right << setw(6)	<< "----"	<< endl;
 					}
 				}
 				// Print first part of row for itr, q_hat, q(+), q_D, q_C, q_F, change, type, index, bound, violation
 				if( (int)output_level == (int)OUTPUT_ITER_SUMMARY ) {
 					*out
-						<< setw(6)	<< itr                                   // itr
-						<< setw(6)	<< act_set->q_hat()                      // q_hat
-						<< setw(6)	<< act_set->q_plus_hat()                 // q(+)
-						<< setw(6)	<< act_set->q_F_hat()                    // q_F
-						<< setw(6)	<< act_set->q_C_hat()                    // q_C
-						<< setw(6)	<< act_set->q_D_hat()                    // q_D
-						<< setw(8)  << ( ja ? "ADD" : "-" )                  // change
-						<< setw(9);                                          // type
+						<< right << setw(6)	<< itr                                   // itr
+						<< right << setw(6)	<< act_set->q_hat()                      // q_hat
+						<< right << setw(6)	<< act_set->q_plus_hat()                 // q(+)
+						<< right << setw(6)	<< act_set->q_F_hat()                    // q_F
+						<< right << setw(6)	<< act_set->q_C_hat()                    // q_C
+						<< right << setw(6)	<< act_set->q_D_hat()                    // q_D
+						<< right << setw(8)  << ( ja ? "ADD" : "-" )                 // change
+						<< right << setw(9);                                         // type
 					if( ja == 0 ) {
 						*out << "-";
 					}
@@ -3192,15 +3193,15 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						*out << "GEN";
 					}
 					*out
-						<< setw(6)	<< ja                                    // index
-						<< setw(10)	<< ( ja ? bnd_str(bnd_ja) : "-" )        // bound
-						<< setw(dbl_w);                                      // violation
+						<< right << setw(6)	<< ja                                    // index
+						<< right << setw(10) << ( ja ? bnd_str(bnd_ja) : "-" )       // bound
+						<< right << setw(dbl_w);                                     // violation
 					if(ja)
 						*out << (con_ja_val - b_a); 
 					else
 						*out << "-";
 					if(!ja)
-						*out << setw(6) << "-" << endl;                      // rank for last iteration
+						*out << right << setw(6) << "-" << endl;                      // rank for last iteration
 				}
 				bool found_solution = false;
 				const size_type sa = act_set->s_map(ja);
@@ -3221,7 +3222,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					if( act_bnd != bnd_ja ) {
 						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 							*out
-								<< "However, this is not the same bound in the active set!\n";
+								<< "However, this is not the same bound as the active bound!\n";
 						}
 						const value_type
 							act_b_a = qp.constraints().get_bnd(ja,act_bnd);
@@ -3244,7 +3245,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					else {
 						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 							*out
-								<< "This is the same bounds so this is an indication of instability\n"
+								<< "This is the active bound so this is an indication of instability\n"
 								<< "in the calculations.\n";
 						}
 					}
@@ -3449,7 +3450,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						else {
 							// Print end of row for rank if the right print level
 							if( (int)output_level == (int)OUTPUT_ITER_SUMMARY ) {
-								*out << setw(6) << "LI" << endl;
+								*out << right << setw(6) << "LI" << endl;
 								out->flush();
 								--summary_lines_counter;
 							}
@@ -4019,22 +4020,22 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					if( qq > 0 && (int)output_level >= (int)OUTPUT_ACT_SET ) {
 							*out
 							<< "\nComputing the maximum step for multiplers for dual feasibility\n\n"
-							<< setw(5)	<< "s"
-							<< setw(5)	<< "j"
-							<< setw(dbl_w)	<< "z_hat"
-							<< setw(dbl_w)	<< "p_z_hat"
-							<< setw(20)	<< "bnd"
-							<< setw(dbl_w)	<< "t"
-							<< setw(dbl_w)	<< "t_D"
-							<< setw(5)	<< "jd"	<< endl
-							<< setw(5)	<< "----"
-							<< setw(5)	<< "----"
-							<< setw(dbl_w)	<< "--------------"
-							<< setw(dbl_w)	<< "--------------"
-							<< setw(20)	<< "--------------"
-							<< setw(dbl_w)	<< "--------------"
-							<< setw(dbl_w)	<< "--------------"
-							<< setw(5)	<< "----"	<< endl;
+							<< right << setw(5)	<< "s"
+							<< right << setw(5)	<< "j"
+							<< right << setw(dbl_w)	<< "z_hat"
+							<< right << setw(dbl_w)	<< "p_z_hat"
+							<< right << setw(20)	<< "bnd"
+							<< right << setw(dbl_w)	<< "t"
+							<< right << setw(dbl_w)	<< "t_D"
+							<< right << setw(5)	<< "jd"	<< endl
+							<< right << setw(5)	<< "----"
+							<< right << setw(5)	<< "----"
+							<< right << setw(dbl_w)	<< "--------------"
+							<< right << setw(dbl_w)	<< "--------------"
+							<< right << setw(20)	<< "--------------"
+							<< right << setw(dbl_w)	<< "--------------"
+							<< right << setw(dbl_w)	<< "--------------"
+							<< right << setw(5)	<< "----"	<< endl;
 					}
 					for( int s = 1; s <= qq; ++s, ++z_itr, ++p_z_itr) {
 						int j = act_set->ij_map(s);
@@ -4044,11 +4045,11 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							// Print first part of row for s, j, z_hat(s), p_z_hat(s), bnds(s) ....
 							if( (int)output_level >= (int)OUTPUT_ACT_SET ) {
 								*out
-									<< setw(5)	<< s
-									<< setw(5)	<< j
-									<< setw(dbl_w)	<< *z_itr
-									<< setw(dbl_w)	<< *p_z_itr
-									<< setw(20)	<< bnd_str(bnd);
+									<< right << setw(5)	<< s
+									<< right << setw(5)	<< j
+									<< right << setw(dbl_w)	<< *z_itr
+									<< right << setw(dbl_w)	<< *p_z_itr
+									<< right << setw(20)	<< bnd_str(bnd);
 							}
 							value_type t = inf;
 							// Lookout for degeneracy.
@@ -4101,9 +4102,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							// Print rest of row for ... t, t_D, jd
 							if( (int)output_level >= (int)OUTPUT_ACT_SET ) {
 								*out
-									<< setw(dbl_w)	<< t
-									<< setw(dbl_w)	<< t_D
-									<< setw(5)	<< jd	<< endl;
+									<< right << setw(dbl_w)	<< t
+									<< right << setw(dbl_w)	<< t_D
+									<< right << setw(5)	<< jd	<< endl;
 							}
 						}
 					}
@@ -4122,22 +4123,22 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					if( qD > 0 && (int)output_level >= (int)OUTPUT_ACT_SET ) {
 						*out
 							<< "\nComputing the maximum step for multiplers for dual feasibility\n\n"
-							<< setw(5)	<< "k"
-							<< setw(5)	<< "i"
-							<< setw(dbl_w)	<< "mu_D_hat"
-							<< setw(dbl_w)	<< "p_mu_D_hat"
-							<< setw(20)	<< "x_init"
-							<< setw(dbl_w)	<< "t"
-							<< setw(dbl_w)	<< "t_D"
-							<< setw(5)	<< "jd"	<< endl
-							<< setw(5)	<< "----"
-							<< setw(5)	<< "----"
-							<< setw(dbl_w)	<< "--------------"
-							<< setw(dbl_w)	<< "--------------"
-							<< setw(20)	<< "--------------"
-							<< setw(dbl_w)	<< "--------------"
-							<< setw(dbl_w)	<< "--------------"
-							<< setw(5)	<< "----"	<< endl;
+							<< right << setw(5)	<< "k"
+							<< right << setw(5)	<< "i"
+							<< right << setw(dbl_w)	<< "mu_D_hat"
+							<< right << setw(dbl_w)	<< "p_mu_D_hat"
+							<< right << setw(20)	<< "x_init"
+							<< right << setw(dbl_w)	<< "t"
+							<< right << setw(dbl_w)	<< "t_D"
+							<< right << setw(5)	<< "jd"	<< endl
+							<< right << setw(5)	<< "----"
+							<< right << setw(5)	<< "----"
+							<< right << setw(dbl_w)	<< "--------------"
+							<< right << setw(dbl_w)	<< "--------------"
+							<< right << setw(20)	<< "--------------"
+							<< right << setw(dbl_w)	<< "--------------"
+							<< right << setw(dbl_w)	<< "--------------"
+							<< right << setw(5)	<< "----"	<< endl;
 					}
 					GenPermMatrixSlice::const_iterator
 						Q_XD_itr = act_set->Q_XD_hat().begin(),
@@ -4153,11 +4154,11 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						// Print first part of row for s, j, z_hat(s), p_z_hat(s), bnds(s) ....
 						if( (int)output_level >= (int)OUTPUT_ACT_SET ) {
 							*out
-								<< setw(5)	<< k
-								<< setw(5)	<< i
-								<< setw(dbl_w)	<< *mu_D_itr
-								<< setw(dbl_w)	<< *p_mu_D_itr
-								<< setw(20)	<< bnd_str(bnd);
+								<< right << setw(5)	<< k
+								<< right << setw(5)	<< i
+								<< right << setw(dbl_w)	<< *mu_D_itr
+								<< right << setw(dbl_w)	<< *p_mu_D_itr
+								<< right << setw(20)	<< bnd_str(bnd);
 						}
 						value_type t = inf;
 						// Lookout for degeneracy.
@@ -4209,9 +4210,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						// Print rest of row for ... t, t_D, jd
 						if( (int)output_level >= (int)OUTPUT_ACT_SET ) {
 							*out
-								<< setw(dbl_w)	<< t
-								<< setw(dbl_w)	<< t_D
-								<< setw(5)	<< jd	<< endl;
+								<< right << setw(dbl_w)	<< t
+								<< right << setw(dbl_w)	<< t_D
+								<< right << setw(5)	    << jd   << endl;
 						}
 					}
 				}
@@ -4232,23 +4233,23 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 				// Print end of row for rank if the right print level
 				if( assume_lin_dep_ja && !schur_comp_update_failed && (int)output_level == (int)OUTPUT_ITER_SUMMARY ) {
 					if( t_P < huge_primal_step() )
-						*out << setw(6) << "LI" << endl;
+						*out << right << setw(6) << "LI" << endl;
 					else
-						*out << setw(6) << "LD" << endl;
+						*out << right << setw(6) << "LD" << endl;
 					out->flush();
 					--summary_lines_counter;
 				}
 				// Print start of row for itr, q_hat, q(+), q_D, q_C, q_F, change, type, index, bound, violation
 				if( t_D < t_P && (int)output_level == (int)OUTPUT_ITER_SUMMARY ) {
 					*out
-						<< setw(6)	<< itr                   // itr
-						<< setw(6)	<< act_set->q_hat()      // q_hat
-						<< setw(6)	<< act_set->q_plus_hat() // q(+)
-						<< setw(6)	<< act_set->q_F_hat()    // q_F
-						<< setw(6)	<< act_set->q_C_hat()    // q_C
-						<< setw(6)	<< act_set->q_D_hat()    // q_D
-						<< setw(8)	<< "DROP"                // change
-						<< setw(9);                          // type
+						<< right << setw(6)	<< itr                   // itr
+						<< right << setw(6)	<< act_set->q_hat()      // q_hat
+						<< right << setw(6)	<< act_set->q_plus_hat() // q(+)
+						<< right << setw(6)	<< act_set->q_F_hat()    // q_F
+						<< right << setw(6)	<< act_set->q_C_hat()    // q_C
+						<< right << setw(6)	<< act_set->q_D_hat()    // q_D
+						<< right << setw(8)	<< "DROP"                // change
+						<< right << setw(9);                         // type
 					if( jd < 0 ) {
 						*out << "X_F";
 					}
@@ -4262,10 +4263,10 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						*out << "GEN";
 					}
 					*out
-						<< setw(6)		<< jd                   // index
-						<< setw(10)		<< bnd_str(bnd_jd)      // bound
-						<< setw(dbl_w)	<< max_feas_viol        // violation
-						<< setw(6)		<< "LI" << endl;        // rank (this should be true!)
+						<< right << setw(6)		<< jd                   // index
+						<< right << setw(10)	<< bnd_str(bnd_jd)      // bound
+						<< right << setw(dbl_w)	<< max_feas_viol        // violation
+						<< right << setw(6)		<< "LI" << endl;        // rank (this should be true!)
 				}
 			}
 			case TAKE_STEP: {
