@@ -64,18 +64,18 @@ namespace AbstractLinAlgPack {
  * For any other behavior and the subbclass will have to take care of it.
  *
  * A vector space may also have another advanced feature; it may be able to define other
- * vector spaces based on a gatter operation of selected vector elements given a
+ * vector spaces based on a gather operation of selected vector elements given a
  * <tt>GenPermMatrixSlice</tt> (<tt>GPMS</tt>) object.  For example, suppose that a
  * <tt>GPMS</tt> object \c P is defined which extracts a (relatively) small number of elements
- * of a vector \c v (from the vector space \c *this) and gathers them into a smaller vector \c q.
+ * of a vector \c v (from the vector space \c *this) and gathers them into a small vector \c q.
  \verbatim
 
  q = op(P)*v
  \endverbatim
  * The question is, to what vector space \c Q does the vector \c q belong?
  * The answer is returned by the method <tt>Q = this->space(P,P_trans)</tt>.
- * Theoretically, \c op(P) could
- * be any <tt>GPMS</tt> object and <tt>this->space(P,P_trans)</tt> should always be able
+ * Theoretically, \c op(P) could be any <tt>GPMS</tt> object and
+ * <tt>this->space(P,P_trans)</tt> should always be able
  * to return a non-NULL vector space object.  In reality, the client should only
  * expect <tt>this->space(P,P_trans).get() != NULL</tt> if
  * <tt>q_dim = BLAS_Cpp::rows( P.rows(), P.cols(), P_trans )</tt> is a relatively
@@ -83,8 +83,15 @@ namespace AbstractLinAlgPack {
  * \c q can always be represented as a local serial vector.  This is not a terribly
  * difficult requirement and any <tt>%VectorSpace</tt> subclass should be able to
  * comply.
- * 	
  *
+ * The returned vector space \c Q must have the property that the scatter operation is
+ * also defined.  In other words, it must be that:
+ \verbatim
+
+  this->space(P,P_trans)->space(P,trans_not(P_trans))->is_compatible(*this) == true
+ \endverbatim
+ * This property insures that the gather and scatter operations can be implemented
+ * properly.
  */
 class VectorSpace
 	: public MemMngPack::AbstractFactory<VectorWithOpMutable>
@@ -221,7 +228,7 @@ public:
 	virtual vec_mut_ptr_t create_member(const value_type& alpha) const;
 
 	///
-	/** Create a set of vector members (a \c MultiVector) from the vector space.
+	/** Create a set of vector members (a \c MultiVectorMutable) from the vector space.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>num_vecs >= 1</tt> (throw <tt>???</tt>)
@@ -250,6 +257,8 @@ public:
 	///
 	/** Create a transient sub-space of the current vector space.
 	 *
+	 * @param  rng  [in] The range of the elements to extract a vector sub-space.
+	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>rng.ubound() <= this->dim()</tt> (<tt>throw std::out_of_range</tt>)
 	 * </ul>
@@ -257,8 +266,6 @@ public:
 	 * Postconditions:<ul>
 	 * <li> [<tt>return.get() != NULL</tt>] <tt>return->dim() == rng->size()</tt>
 	 * </ul>
-	 *
-	 * @param  rng  [in] The range of the elements to extract a vector sub-space.
 	 *
 	 * @return  Returns a smart reference counted pointer to a dynamically
 	 * allocated vector space object.  Note that the vector object returned
@@ -289,6 +296,33 @@ public:
 
 	/// Inlined to call <tt>this->sub_space(Range1D(il,iu))</tt>.
 	space_ptr_t sub_space( const index_type il, const index_type iu ) const;
+
+	///
+	/** Create a vector space for vector to gather the elements into.
+	 *
+	 * @param  P        [in] A <tt>GenPermMatrixSlice</tt> object specifying the map.
+	 * @param  P_trans  [in] Determines if <tt>P</tt> is transposed or not.
+	 *
+	 * Preconditions:<ul>
+	 * <li> ???
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> [<tt>return.get()!=NULL</tt>]
+	 *   return->space(P,trans_not(P_trans))->is_compatible(*this) == true
+	 * </ul>
+	 *
+	 * @return  Returns a smart reference counted pointer to a dynamically
+	 * allocated vector space object.  
+	 *
+	 * ToDo: Finish documentation!
+	 *
+	 * The default implementation returns <tt>return.get() == NULL</tt>.
+	 */
+	virtual space_ptr_t space(
+		const GenPermMatrixSlice  &P
+		,BLAS_Cpp::Transp         P_trans
+		) const;
 
 	//@}
 	

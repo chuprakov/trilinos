@@ -81,6 +81,15 @@ VectorSpace::sub_space(const Range1D& rng_in) const
 			,rng ) );
 }
 
+VectorSpace::space_ptr_t
+VectorSpace::space(
+	const GenPermMatrixSlice  &P
+	,BLAS_Cpp::Transp         P_trans
+	) const
+{
+	return MemMngPack::null;
+}
+
 // Overridden from AbstractFactory<>
 
 VectorSpace::obj_ptr_t VectorSpace::create() const
