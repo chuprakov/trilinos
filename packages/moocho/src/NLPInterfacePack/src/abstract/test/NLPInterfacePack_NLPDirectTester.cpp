@@ -22,10 +22,6 @@
 
 #include "NLPFirstOrderDirectTester.h"
 #include "NLPInterfacePack/include/NLPFirstOrderDirect.h"
-//#include "NLPInterfacePack/include/CalcFiniteDiffFirstDerivatives.h"
-//#include "SparseLinAlgPack/test/CompareDenseSparseMatrices.h"
-//#include "SparseLinAlgPack/test/CompareDenseVectors.h"
-//#include "LinAlgPack/include/GenMatrixClass.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
@@ -137,9 +133,6 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 
 	const CalcFiniteDiffProd
 		&fd_deriv_prod = this->calc_fd_prod();
-//	CalcFiniteDiffFirstDerivatives 	fd_deriv_computer;
-//	CompareDenseVectors				comp_v;
-//	CompareDenseSparseMatrices		comp_M;
 
 	const value_type
 		rand_v_l = -1.0, rand_v_u = 1.0,
@@ -154,21 +147,6 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 		switch( Gf_testing_method() ) {
 			case FD_COMPUTE_ALL: {
 				// Compute FDGf outright
-/*
-				vec_mut_ptr_t FDGf = space_x->create_member();
-				fd_deriv_computer.calc_deriv(
-					xo, xl, xu
-					,Range1D(), nlp, FDGf.get()
-					,NULL ,NULL, out );
-				if(out)
-					*out
-						<< "\nComparing derivatives of objective f(x)\n"
-						<< "where u(i) = finite_d(f(x))/d(x(i)), v(i) = d(f(x))/d(x(i)) ...\n";
-				result = comp_v.comp( FDGf, *Gf, Gf_warning_tol(), Gf_error_tol()
-					, print_all_warnings, out );
-				update_success( result, &success );
-				if(!result) return false;
-*/
 				assert(0); // ToDo: update above!
 				break;
 			}

@@ -164,7 +164,7 @@ bool NLPFirstDerivativesTester::fd_check_all(
 
 	if(out)
 		*out
-			<< "\nComparing products Gf, Gc and/or Gh with finite difference values "
+			<< "\nComparing Gf, Gc and/or Gh with finite-difference values "
 				"FDGf, FDGc and/or FDGh one variable i at a time ...\n";
 
 	value_type  max_Gf_warning_viol = 0.0;

@@ -262,7 +262,7 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 			if( abs_max_u_feas < uh_min ) {
 				if(out)
 					*out
-						<< "\nCalcFiniteDiffFirstDerivatives::calc_deriv(...) : "
+						<< "\nCalcFiniteDiffProd::calc_deriv_product(...) : "
 						<< "Warning, the size of the maximum finite difference step length\n"
 						<< "that does not violate the relaxed variable bounds uh = "
 						<< max_u_feas << " is less than the mimimum allowable step length\n"
@@ -272,7 +272,7 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 			}
 			if(out)
 				*out
-					<< "\nCalcFiniteDiffFirstDerivatives::calc_deriv(...) : "
+					<< "\nCalcFiniteDiffProd::calc_deriv_product(...) : "
 					<< "Warning, the size of the maximum finite difference step length\n"
 					<< "that does not violate the relaxed variable bounds uh = "
 					<< max_u_feas << " is less than the desired step length\n"
