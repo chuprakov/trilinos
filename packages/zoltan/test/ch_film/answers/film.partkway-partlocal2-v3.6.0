@@ -1,6 +1,7 @@
 Decomposition Method 	= parmetis
 Zoltan Parameters       = parmetis_method=partkway
 Zoltan Parameters       = imbalance_tol = 1.05
+Zoltan Parameters	= num_global_partitions=14
 File Type		= Chaco
 File Name		= film
 Parallel Disk Info	= number=0
@@ -9,3 +10,24 @@ test multi callbacks    = 1
 test null import lists  = 1
 Global element ids assigned to processor 0
 GID	Part	Perm	IPerm
+62	0	-1	-1
+63	0	-1	-1
+118	0	-1	-1
+119	0	-1	-1
+120	0	-1	-1
+121	0	-1	-1
+122	0	-1	-1
+123	0	-1	-1
+179	0	-1	-1
+180	0	-1	-1
+181	0	-1	-1
+182	0	-1	-1
+183	0	-1	-1
+184	0	-1	-1
+185	0	-1	-1
+218	0	-1	-1
+219	0	-1	-1
+220	0	-1	-1
+221	0	-1	-1
+255	0	-1	-1
+256	0	-1	-1
