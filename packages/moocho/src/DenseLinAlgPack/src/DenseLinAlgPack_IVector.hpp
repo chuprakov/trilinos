@@ -32,6 +32,7 @@ public:
 	typedef LinAlgPack::index_type		value_type;
 	typedef LinAlgPack::size_type		size_type;
 	typedef value_type&					reference;
+	typedef const value_type&			const_reference;
 	typedef value_type*					iterator;
 	typedef const value_type*			const_iterator;
 	typedef std::valarray<size_type>	valarray;
@@ -50,7 +51,7 @@ public:
 	/// 1-based element access
 	reference operator()(size_type i);
 	/// 1-based element access
-	value_type operator()(size_type i) const;
+	const_reference operator()(size_type i) const;
 
 	/// STL iterator
 	iterator begin();
@@ -80,8 +81,8 @@ inline IVector::IVector(const value_type* p, size_type n) : std::valarray<size_t
 inline IVector::reference IVector::operator()(size_type i)
 {	return operator[](i-1);	}
 
-inline IVector::value_type IVector::operator()(size_type i) const
-{	return operator[](i-1);		}
+inline IVector::const_reference IVector::operator()(size_type i) const
+{	return const_cast<IVector*>(this)->operator[](i-1);		}
 
 inline IVector::iterator IVector::begin()
 {	return &operator[](0); }
