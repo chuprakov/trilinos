@@ -22,6 +22,7 @@
 #include "AbstractLinAlgPack/include/MultiVectorMutable.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/SpVectorClass.h"
+#include "AbstractLinAlgPack/include/SpVectorView.h"
 #include "AbstractLinAlgPack/include/EtaVector.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "ThrowException.h"
@@ -46,26 +47,47 @@ MatrixNonsingular::clone_mns() const
 // Level-2 BLAS
 
 void MatrixNonsingular::V_InvMtV(
-	VectorWithOpMutable* v_lhs, BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2
+	VectorWithOpMutable* y, BLAS_Cpp::Transp M_trans, const SpVectorSlice& sx
 	) const
 {
-	assert(0); // ToDo: Implement!
+	if( sx.nz() ) {
+		VectorSpace::vec_mut_ptr_t
+			x = (M_trans == BLAS_Cpp::no_trans
+					  ? this->space_cols()
+					  : this->space_rows()
+				).create_member();
+		x->set_sub_vector(sub_vec_view(sx));
+		this->V_InvMtV(y,M_trans,*x);
+	}
+	else {
+		*y = 0.0;
+	}
 }
 
 value_type MatrixNonsingular::transVtInvMtV(
 	const VectorWithOp& v_rhs1, BLAS_Cpp::Transp trans_rhs2, const VectorWithOp& v_rhs3
 	) const
 {
-	assert(0); // ToDo: Implement!
-	return 0.0;
+	VectorSpace::vec_mut_ptr_t
+		v = (trans_rhs2 == BLAS_Cpp::no_trans
+				  ? this->space_rows()
+				  : this->space_cols()
+			).create_member();
+	this->V_InvMtV( v.get(), trans_rhs2, v_rhs3 );
+	return dot(v_rhs1,*v);
 }
 
 value_type MatrixNonsingular::transVtInvMtV(
 	const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3
 	) const
 {
-	assert(0); // ToDo: Implement!
-	return 0.0;
+	VectorSpace::vec_mut_ptr_t
+		v = (trans_rhs2 == BLAS_Cpp::no_trans
+				  ? this->space_rows()
+				  : this->space_cols()
+			).create_member();
+	this->V_InvMtV( v.get(), trans_rhs2, sv_rhs3 );
+	return dot(sv_rhs1,*v);
 }
 
 // Level-3 BLAS

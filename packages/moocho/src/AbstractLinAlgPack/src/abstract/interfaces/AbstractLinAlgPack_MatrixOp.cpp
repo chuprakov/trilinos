@@ -392,18 +392,6 @@ void MatrixWithOp::syrk(
 	assert(0); // ToDo: Implement!
 }
 
-// overridden from MatrixBase
-
-size_type MatrixWithOp::rows() const
-{
-	return this->space_cols().dim();
-}
-
-size_type MatrixWithOp::cols() const
-{
-	return this->space_rows().dim();
-}
-
 } // end namespace AbstractLinAlgPack
 
 // Non-member functions

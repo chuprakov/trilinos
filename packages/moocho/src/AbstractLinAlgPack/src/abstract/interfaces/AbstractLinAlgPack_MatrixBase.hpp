@@ -35,22 +35,43 @@ public:
 	/// Virtual destructor
 	virtual ~MatrixBase() {}
 
-	/// Return the number of rows in the matrix
-	virtual size_type rows() const = 0;
+	/** @name Vector spaces for the columns and rows of the matrix */
+	//@{
 
-	/// Return the number of columns in the matrix
-	virtual size_type cols() const = 0;
+	/// Vector space for vectors that are compatible with the columns of the matrix.
+	virtual const VectorSpace& space_cols() const = 0;
+
+	/// Vector space for vectors that are compatible with the rows of the matrix.
+	virtual const VectorSpace& space_rows() const = 0;
+
+	//@}
+
+	/** @name Dimensionality */
+	//@{
+
+	///
+	/** Return the number of rows in the matrix.
+	 *
+	 * The default implementation returns <tt>space_cols().dim()</tt>.
+	 */
+	virtual size_type rows() const;
+
+	///
+	/** Return the number of columns in the matrix.
+	 *
+	 * The default implementation returns <tt>space_rows().dim()</tt>.
+	 */
+	virtual size_type cols() const;
 
 	///
 	/** Return the number of nonzero elements in the matrix.
-	  *
-	  * The default is to just assume it is dense and to return
-	  * rows() * cols().
-	  */
-	virtual size_type nz() const
-	{
-		return rows() * cols();
-	}
+	 *
+	 * The default is to just assume it is dense and to return
+	 * <tt>rows() * cols()</tt>.
+	 */
+	virtual size_type nz() const;
+
+	//@}
 
 };	// end class MatrixBase
 

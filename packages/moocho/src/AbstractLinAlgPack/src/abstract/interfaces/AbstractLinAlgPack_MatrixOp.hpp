@@ -129,17 +129,6 @@ public:
 
 	//@}
 
-	/** @name Vector spaces for the columns and rows of the matrix */
-	//@{
-
-	/// Vector space for vectors that are compatible with the columns of the matrix.
-	virtual const VectorSpace& space_cols() const = 0;
-
-	/// Vector space for vectors that are compatible with the rows of the matrix.
-	virtual const VectorSpace& space_rows() const = 0;
-
-	//@}
-
 	/** @name Minimal modifying methods */
 	//@{
 
@@ -558,17 +547,6 @@ public:
 		, value_type beta, MatrixSymWithOp* sym_lhs ) const;
 
 	//		end Level-3 BLAS
-	//@}
-
-	/** @name Overridden from MatrixBase */
-	//@{
-
-	/// Returns <tt>space_cols().dim()</tt>
-	size_type rows() const;
-
-	/// Returns <tt>space_rows().dim()</tt>
-	size_type cols() const;
-
 	//@}
 
 };	// end class MatrixWithOp
