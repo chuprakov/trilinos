@@ -288,7 +288,7 @@ void MoochoTrackerConsoleStd::output_final( const Algorithm& p_algo
 	o << endl;
 
 	// Print total time
-	o << "\nTotal time = " << timer_.read() << " sec\n";
+	o << setprecision(5) << "\nTotal time = " << timer_.read() << " sec\n";
 
 	switch( algo_return ) {
 		case IterationPack::TERMINATE_TRUE:
