@@ -167,6 +167,7 @@ VectorWithOpMutableDense::operator=(value_type alpha)
 {
 	v_ = alpha;
 	this->has_changed();
+	return *this;
 }
 
 VectorWithOpMutable&
