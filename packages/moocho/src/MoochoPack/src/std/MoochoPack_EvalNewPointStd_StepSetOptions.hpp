@@ -33,6 +33,7 @@ namespace ReducedSpaceSQPPack {
     options_group EvalNewPointStd {
         fd_deriv_testing = FD_DEFAULT;
         decomp_sys_teting = DST_DEFAULT;
+        decomp_sys_teting_print_level = DSPL_USE_GLOBAL;
     }
  \verbatim
  *

@@ -25,16 +25,18 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 2;
+	const int local_num_options = 3;
 
 	enum local_EOptions {
 		FD_DERIV_TESTING
 		,DECOMP_SYS_TESTING
+		,DECOMP_SYS_TESTING_PRINT_LEVEL
 	};
 
 	const char* local_SOptions[local_num_options]	= {
 		"fd_deriv_testing"
 		,"decomp_sys_testing"
+		,"decomp_sys_testing_print_level"
 	};
 
 }
@@ -91,6 +93,21 @@ void EvalNewPointStd_StepSetOptions::set_option(
 					"\"decomp_sys_testing\".  Only the options "
 					"DST_DEFAULT, DST_TEST, and DST_NO_TEST "
 					"are available" );
+			break;
+		}
+	    case DECOMP_SYS_TESTING_PRINT_LEVEL:
+		{
+			const std::string &option = option_value.c_str();
+			if( option == "DSPL_USE_GLOBAL" )
+				target().decomp_sys_testing_print_level( target_t::DSPL_USE_GLOBAL);
+			else if( option == "DSPL_LEAVE_DEFAULT" )
+				target().decomp_sys_testing_print_level( target_t::DSPL_LEAVE_DEFAULT);
+			else
+				THROW_EXCEPTION(
+					true, std::invalid_argument
+					,"Error, incorrect value for "
+					"\"decomp_sys_testing_print_level\".  Only the options "
+					"DSPL_USE_GLOBAL and DSPL_LEAVE_DEFAULT are available" );
 			break;
 		}
 		default:

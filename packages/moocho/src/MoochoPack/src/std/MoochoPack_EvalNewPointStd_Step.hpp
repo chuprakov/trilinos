@@ -45,6 +45,8 @@ public:
 	enum EFDDerivTesting   { FD_DEFAULT,  FD_TEST,  FD_NO_TEST  };
 	///
 	enum EDecompSysTesting { DST_DEFAULT, DST_TEST, DST_NO_TEST };
+	///
+	enum EDecompSysPrintLevel { DSPL_USE_GLOBAL, DSPL_LEAVE_DEFAULT };
 
 	//@}
 
@@ -69,14 +71,21 @@ public:
 	  * ToDo: Finish documentation.
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( EDecompSysTesting, decomp_sys_testing )
+	///
+	/** Set how to set the print level for decomp_sys_tester (only if testing).
+	  *
+	  * ToDo: Finish documentation.
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( EDecompSysPrintLevel, decomp_sys_testing_print_level )
 
 	/// set new_point == true by default.
 	EvalNewPointStd_Step(
 		const deriv_tester_ptr_t&         deriv_tester
 		,const decomp_sys_tester_ptr_t&   decomp_sys_tester
 		,const bounds_tester_ptr_t&       bounds_tester
-		,EFDDerivTesting                  fd_deriv_testing   = FD_DEFAULT
-		,EDecompSysTesting                decomp_sys_testing = DST_DEFAULT
+		,EFDDerivTesting                  fd_deriv_testing               = FD_DEFAULT
+		,EDecompSysTesting                decomp_sys_testing             = DST_DEFAULT
+		,EDecompSysPrintLevel             decomp_sys_testing_print_level = DSPL_USE_GLOBAL
 		);
 
 	//@}
