@@ -279,13 +279,17 @@ Range1D& Range1D::operator-=( index_type incr ) {
 }
 
 // See Range1D.cpp
-//#ifndef _DEBUG
-//inline
-//void Range1D::assert_valid_range(int lbound, int ubound) const
-//{}
-//#endif
-
-// RAB: 2003/09/11: ToDo: Figure out how configure scripts set a debug macro
+inline
+void Range1D::assert_valid_range(int lbound, int ubound) const {
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION(
+		lbound < 1, std::range_error
+		,"Range1D::assert_valid_range(): Error, lbound ="<<lbound<<" must be greater than 0." );
+	TEST_FOR_EXCEPTION(
+		lbound > ubound, std::range_error
+		,"Range1D::assert_valid_range(): Error, lbound = "<<lbound<<" > ubound = "<<ubound );
+#endif
+}
 
 } // end namespace RangePack
 
