@@ -8,7 +8,7 @@
 
 #ifdef _MS_VCXX_60
 #else
-#include <cmath>
+#include <math.h>
 #endif
 
 #include "LinAlgPackTypes.h"
@@ -24,16 +24,16 @@ using TestingHelperPack::update_success;
   * objects.  If any of the corresponding elements does not obey
   * abs(ele1 - ele2) < sqrt(eps) then the functions return false, otherwise
   * they return true.  An exact test (bits) is not performed to allow for some round-off
-  * error to occure and still equate.
+  * error to occur and still equate.
   */
 //@{
 
 ///
 const value_type sqrt_eps
-#ifdef _MS_VCXX_60
-	= ::sqrt(std::numeric_limits<value_type>::epsilon());
-#else
+#ifdef _GNU_GXX
 	= std::sqrt(std::numeric_limits<value_type>::epsilon());
+#else
+	= ::sqrt(std::numeric_limits<value_type>::epsilon());
 #endif
 
 ///

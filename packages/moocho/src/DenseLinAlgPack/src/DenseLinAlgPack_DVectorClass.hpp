@@ -273,6 +273,14 @@ public:
 	  *
 	  * Included for uniformity with vector.
 	  */
+	/// Allow the address to be taken of an rvalue of this object.
+	VectorSlice* operator&() {
+	  return this;
+	}
+	///
+	const VectorSlice* operator&() const {
+	  return this;
+	}
 	VectorSlice& operator()();
 	/// Same as above.
 	const VectorSlice& operator()() const;

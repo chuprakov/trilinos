@@ -14,6 +14,8 @@
 
 namespace {
 
+#ifndef _MIPS_CXX
+
 // 2/10/00:  It seems that with g++ 2.95.2 that within a template function in an annonymus namespace
 // that you can't write:
 // 
@@ -27,6 +29,8 @@ inline
 bool update_success( bool result, bool *success ) {
 	return TestingHelperPack::update_success( result, success );
 }
+
+#endif
 
 // This template function checks that iterator and subscriping access all
 // give the same results.
@@ -116,7 +120,6 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 
 	using LinAlgPack::comp;
 	using LinAlgPack::sqrt_eps;
-	using TestingHelperPack::update_success;
 
 	bool success = true;
 	bool result, result1, result2;

@@ -20,11 +20,15 @@
 
 namespace {
 
+#ifndef _MIPS_CXX
+
 // 2/10/00: See TestVectorClass.cpp
 inline
 bool update_success( bool result, bool *success ) {
 	return TestingHelperPack::update_success( result, success );
 }
+
+#endif
 
 using LinAlgPack::size_type;
 using LinAlgPack::value_type;
@@ -172,7 +176,6 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 	using BLAS_Cpp::trans_to_bool;
 	using LinAlgPack::comp;
 	using LinAlgPack::sqrt_eps;
-	using TestingHelperPack::update_success;
 
 	bool success = true;
 	bool result, result1, result2;

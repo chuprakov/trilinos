@@ -247,6 +247,14 @@ public:
 	/// Same as above.
 	const GenMatrixSlice operator()(size_type i1, size_type i2, size_type j1
 		, size_type j2) const;
+	/// Allow the address to be taken of an rvalue of this object.
+	GenMatrixSlice* operator&() {
+	  return this;
+	}
+	///
+	const GenMatrixSlice* operator&() const {
+	  return this;
+	}
 	/// Return reference of this.  Included for iniformity with GenMatrix
 	GenMatrixSlice& operator()();
 	/// Same as above

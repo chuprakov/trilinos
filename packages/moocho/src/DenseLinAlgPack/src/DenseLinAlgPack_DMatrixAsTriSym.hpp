@@ -58,6 +58,15 @@ public:
 		return uplo_;
 	}
 
+	/// Allow address to be taken of rvalue of this object
+	tri_ele_gms* operator&() {
+	  return this;
+	}
+
+	const tri_ele_gms* operator&() const {
+	  return this;
+	}
+
 private:	
 	GenMatrixSlice	gms_;
 	BLAS_Cpp::Uplo	uplo_;
@@ -125,6 +134,16 @@ public:
 		return diag_;
 	}
 
+	/// Allow address to be taken of rvalue of this object
+	tri_gms* operator&() {
+	  return this;
+	}
+
+	const tri_gms* operator&() const {
+	  return this;
+	}
+
+
 private:	
 	GenMatrixSlice	gms_;
 	BLAS_Cpp::Uplo	uplo_;
@@ -185,6 +204,15 @@ public:
 	///
 	BLAS_Cpp::Uplo	uplo() const {
 		return uplo_;
+	}
+
+	/// Allow address to be taken of rvalue of this object
+        sym_gms* operator&() {
+	  return this;
+	}
+
+	const sym_gms* operator&() const {
+	  return this;
 	}
 
 private:	

@@ -16,6 +16,12 @@
 
 namespace {
 
+// 2/10/00: See TestVectorClass.cpp
+inline
+bool update_success( bool result, bool *success ) {
+	return TestingHelperPack::update_success( result, success );
+}
+
 }	// end namespace
 
 bool LinAlgPack::TestingPack::TestVectorOp(std::ostream* out)
@@ -23,7 +29,6 @@ bool LinAlgPack::TestingPack::TestVectorOp(std::ostream* out)
 
 	using LinAlgPack::comp;
 	using LinAlgPack::sqrt_eps;
-	using TestingHelperPack::update_success;
 
 	bool success = true;
 	bool result, result1, result2;

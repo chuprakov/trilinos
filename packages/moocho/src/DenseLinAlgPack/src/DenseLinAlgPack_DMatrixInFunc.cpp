@@ -25,7 +25,8 @@ std::istream& LinAlgPack::input(std::istream& is, GenMatrix* gm, LinAlgPackIO::f
 				"Input operation failed because the stream became currupted." );
 		gm->resize(m,n);
 	}
-	return input_gms(is,&(*gm)(),"LinAlgPack::input() {GenMatrix}");
+	GenMatrixSlice gms = (*gm)();
+	return input_gms(is,&gms,"LinAlgPack::input() {GenMatrix}");
 }
 
 std::istream& LinAlgPack::input(std::istream& is, GenMatrixSlice* gms, LinAlgPackIO::fmtflags extra_flags) {
@@ -58,6 +59,7 @@ namespace {
 std::istream& input_gms(std::istream& is, LinAlgPack::GenMatrixSlice* gms, const char func[]) {
 	using std::ios_base;
 	using LinAlgPack::size_type;
+	using LinAlgPack::VectorSlice;
 	if(!gms->rows()) return is;	// If we are inputting an unsized matrix then there are no elements
 								// to extract so just return.
 	ios_base::iostate old_state = is.exceptions();		// save the old state
@@ -66,7 +68,8 @@ std::istream& input_gms(std::istream& is, LinAlgPack::GenMatrixSlice* gms, const
 		// Read in the rows
 		for(size_type i = 1; i <= gms->rows(); ++i) {
 			InputStreamHelperPack::eat_comment_lines(is,'*');
-			LinAlgPack::input( is, &gms->row(i)
+			VectorSlice gms_row_i = gms->row(i);
+			LinAlgPack::input( is, &gms_row_i
 				, (LinAlgPack::LinAlgPackIO::fmtflags)(LinAlgPack::LinAlgPackIO::ignore_dim_bit) );
 		}
 	}

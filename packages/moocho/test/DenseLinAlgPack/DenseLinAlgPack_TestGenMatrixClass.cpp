@@ -78,7 +78,6 @@ bool LinAlgPack::TestingPack::TestGenMatrixClass(std::ostream* out)
 
 	using LinAlgPack::comp;
 	using LinAlgPack::sqrt_eps;
-	using TestingHelperPack::update_success;
 
 	bool success = true;
 	bool result;
