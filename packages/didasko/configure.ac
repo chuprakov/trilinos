@@ -258,53 +258,44 @@ AC_CXX_STD_SPRINTF
 # Interfaces to other Trilinos packages
 # ------------------------------------------------------------------------
 #
-TAC_ARG_ENABLE_FEATURE_SUB( default, packages, [Build all default packages unless explicitly disabled.  When this option is disabled, only packages explicitly enabled and packages needed to satisfy the dependencies of enabled packages will be built], DEFAULT_PACKAGES, yes)
 #
-TAC_ARG_ENABLE_DEFAULT_FEATURE(epetra, [Enables EPETRA examples.], DIDASKO_EPETRA, yes)
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(epetra, [Enables EPETRA examples.], DIDASKO_EPETRA)
 AM_CONDITIONAL(HAVE_DIDASKO_EPETRA, test "X$ac_cv_use_epetra" = "Xyes")
 #
-TAC_ARG_ENABLE_DEFAULT_FEATURE(epetraext, [Enables EPETRAEXT examples.],
-			       DIDASKO_EPETRAEXT, yes)
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(epetraext, [Enables EPETRAEXT examples.],
+			       DIDASKO_EPETRAEXT)
 AM_CONDITIONAL(HAVE_DIDASKO_EPETRAEXT, test "X$ac_cv_use_epetraext" = "Xyes")
 #
-TAC_ARG_ENABLE_DEFAULT_FEATURE(nox, [Enables NOX examples, requires
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(nox, [Enables NOX examples, requires
 				     --enable-epetra --enable-nox-epetra],
-				     DIDASKO_NOX, yes)
+				     DIDASKO_NOX)
 AM_CONDITIONAL(HAVE_DIDASKO_NOX, test "X$ac_cv_use_nox" = "Xyes")
 #
-TAC_ARG_ENABLE_DEFAULT_FEATURE(ml, [Enables ML examples.], DIDASKO_ML, yes)
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(ml, [Enables ML examples.], DIDASKO_ML)
 AM_CONDITIONAL(HAVE_DIDASKO_ML, test "X$ac_cv_use_ml" = "Xyes")
 #
-TAC_ARG_ENABLE_OPTION(amesos, [Enables AMESOS examples, requires
-			       --enable-epetra.], DIDASKO_AMESOS, no)
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(amesos, [Enables AMESOS examples.], DIDASKO_AMESOS)
 AM_CONDITIONAL(HAVE_DIDASKO_AMESOS, test "X$ac_cv_use_amesos" = "Xyes")
 #
-TAC_ARG_ENABLE_DEFAULT_FEATURE(ifpack, [Enables IFPACK examples, requires
-					--enable_epetra.], DIDASKO_IFPACK, yes)
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(ifpack, [Enables IFPACK examples.], DIDASKO_IFPACK)
 AM_CONDITIONAL(HAVE_DIDASKO_IFPACK, test "X$ac_cv_use_ifpack" = "Xyes")
 #
-TAC_ARG_ENABLE_OPTION(teuchos, [Enables TEUCHOS examples, requires
-				--enable_epetra.], DIDASKO_TEUCHOS, no)
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(teuchos, [Enables TEUCHOS examples, requires
+				--enable_epetra.], DIDASKO_TEUCHOS)
 #
 AM_CONDITIONAL(HAVE_DIDASKO_TEUCHOS, test "X$ac_cv_use_teuchos" = "Xyes")
 #
-TAC_ARG_ENABLE_OPTION(anasazi, [Enables ANASAZI examples. Anasazi, requires
-				--enable_epetra and --enable-teuchos.],
-				DIDASKO_ANASAZI, no)
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(anasazi, [Enables ANASAZI examples.],
+				DIDASKO_ANASAZI)
 AM_CONDITIONAL(HAVE_DIDASKO_ANASAZI, test "X$ac_cv_use_anasazi" = "Xyes")
 #
-TAC_ARG_ENABLE_OPTION(triutils, [Enables TRIUTILS examples, requires
-				 --enable_epetra.], DIDASKO_TRIUTILS, no)
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(triutils, [Enables TRIUTILS examples.], DIDASKO_TRIUTILS)
 AM_CONDITIONAL(HAVE_DIDASKO_TRIUTILS, test "X$ac_cv_use_triutils" = "Xyes")
 #
-TAC_ARG_ENABLE_DEFAULT_FEATURE(aztecoo, [Enables AZTECOO examples, requires
-					 --enable-epetra --enable-teuchos.],
-					 DIDASKO_AZTECOO, yes)
+TAC_ARG_ENABLE_CAN_USE_PACKAGE(aztecoo, [Enables AZTECOO examples, requires
+					 --enable-teuchos.],
+					 DIDASKO_AZTECOO)
 AM_CONDITIONAL(HAVE_DIDASKO_AZTECOO, test "X$ac_cv_use_aztecoo" = "Xyes")
-#
-TAC_ARG_ENABLE_OPTION(epetraext, [Enables EPETRAEXT examples, 
-				  requires --enable_epetra.], DIDASKO_TRIUTILS, no)
-AM_CONDITIONAL(HAVE_DIDASKO_TRIUTILS, test "X$ac_cv_use_triutils" = "Xyes")
 #
 TAC_ARG_ENABLE_OPTION(latex, [Enables compilation of LaTeX source files.],
 		      DIDASKO_LATEX, no)
