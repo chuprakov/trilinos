@@ -55,7 +55,6 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 	const VectorWithOp     &xo
 	,const VectorWithOp    *xl
 	,const VectorWithOp    *xu
-	,const value_type      &max_bnd_viol
 	,const VectorWithOp    &v
 	,const value_type      *fo
 	,const VectorWithOp    *co
@@ -134,6 +133,9 @@ bool CalcFiniteDiffProd::calc_deriv_product(
 		n = nlp->n(),
 		m = nlp->m(),
 		mI = nlp->mI();
+
+	const value_type
+		max_bnd_viol = nlp->max_var_bounds_viol();
 
 	// /////////////////////////////////////////
 	// Validate the input

@@ -205,11 +205,6 @@ public:
 	 *	                If xl != NULL then xu != NULL must also be true
 	 *                 and visa-versa or a std::invalid_arguement exceptions
 	 *                 will be thrown.
-	 * @param  max_var_bounds_viol
-	 *                 [in] If the bounds are set then this is the maximum
-	 *                 violation in the bounds allowed. when computing
-	 *                 points.  If xl==NULL and xu==NULL then this
-	 *                 number is ignored.
 	 * @param  c       [in] Value of c(x) computed at xo.
 	 *                 If NULL, then none of the tests involving it will
 	 *                 be performed.
@@ -252,7 +247,6 @@ public:
 		,const VectorWithOp     &xo
 		,const VectorWithOp     *xl
 		,const VectorWithOp     *xu
-		,const value_type       &max_var_bounds_viol
 		,const VectorWithOp     *c
 		,const VectorWithOp     *h
 		,const VectorWithOp     *Gf

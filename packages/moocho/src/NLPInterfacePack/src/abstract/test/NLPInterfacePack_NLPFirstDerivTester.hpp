@@ -137,11 +137,6 @@ public:
 	 *                  If xl != NULL then xu != NULL must also be true
 	 *                  and visa-versa or a std::invalid_arguement exceptions
 	 *                  will be thrown.
-	 * @param  max_var_bounds_viol
-	 *                  [in] If the bounds are set then this is the maximum
-	 *                  violation in the bounds allowed. when computing
-	 *                  points.  If xl==NULL and xu==NULL then this
-	 *                  number is not important.
 	 * @param  Gc       [in] A matrix object for the Gc computed at xo.
 	 *                  If Gc==NULL then this is not tested for.
 	 * @param  Gh       [in] A matrix object for the Gh computed at xo.
@@ -163,7 +158,6 @@ public:
 		,const VectorWithOp     &xo
 		,const VectorWithOp     *xl
 		,const VectorWithOp     *xu
-		,const value_type       &max_var_bounds_viol
 		,const MatrixWithOp     *Gc
 		,const MatrixWithOp     *Gh
 		,const VectorWithOp     *Gf
@@ -179,7 +173,6 @@ private:
 		,const VectorWithOp     &xo
 		,const VectorWithOp     *xl
 		,const VectorWithOp     *xu
-		,const value_type       &max_var_bounds_viol
 		,const MatrixWithOp     *Gc
 		,const MatrixWithOp     *Gh
 		,const VectorWithOp     *Gf
@@ -193,7 +186,6 @@ private:
 		,const VectorWithOp     &xo
 		,const VectorWithOp     *xl
 		,const VectorWithOp     *xu
-		,const value_type       &max_var_bounds_viol
 		,const MatrixWithOp     *Gc
 		,const MatrixWithOp     *Gh
 		,const VectorWithOp     *Gf

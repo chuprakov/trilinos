@@ -54,7 +54,6 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 	,const VectorWithOp     &xo
 	,const VectorWithOp     *xl
 	,const VectorWithOp     *xu
-	,const value_type       &max_var_bounds_viol
 	,const MatrixWithOp     *Gc
 	,const MatrixWithOp     *Gh
 	,const VectorWithOp     *Gf
@@ -91,10 +90,10 @@ bool NLPFirstDerivativesTester::finite_diff_check(
 
 	switch(fd_testing_method_) {
 		case FD_COMPUTE_ALL:
-			return fd_check_all(nlp,xo,xl,xu,max_var_bounds_viol,Gc,Gh,Gf
+			return fd_check_all(nlp,xo,xl,xu,Gc,Gh,Gf
 				,print_all_warnings,out);
 		case FD_DIRECTIONAL:
-			return fd_directional_check(nlp,xo,xl,xu,max_var_bounds_viol,Gc,Gh,Gf
+			return fd_directional_check(nlp,xo,xl,xu,Gc,Gh,Gf
 				,print_all_warnings,out);
 		default:
 			assert(0);
@@ -118,7 +117,6 @@ bool NLPFirstDerivativesTester::fd_check_all(
 	,const VectorWithOp     &xo
 	,const VectorWithOp     *xl
 	,const VectorWithOp     *xu
-	,const value_type       &max_var_bounds_viol
 	,const MatrixWithOp     *Gc
 	,const MatrixWithOp     *Gh
 	,const VectorWithOp     *Gf
@@ -164,7 +162,7 @@ bool NLPFirstDerivativesTester::fd_check_all(
 		FDGc.resize(n,m);
 
 	CalcFiniteDiffFirstDerivatives fd_deriv_computer;
-	fd_deriv_computer.calc_deriv(xo,xl,xu,max_var_bounds_viol,Range1D(),nlp
+	fd_deriv_computer.calc_deriv(xo,xl,xu,Range1D(),nlp
 		, Gf ? &FDGf() : NULL
 		, Gc ? &FDGc() : NULL	,BLAS_Cpp::no_trans
 		,out
@@ -210,7 +208,6 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 	,const VectorWithOp     &xo
 	,const VectorWithOp     *xl
 	,const VectorWithOp     *xu
-	,const value_type       &max_var_bounds_viol
 	,const MatrixWithOp     *Gc
 	,const MatrixWithOp     *Gh
 	,const VectorWithOp     *Gf
@@ -289,7 +286,7 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 		value_type
 			FDGf_y;
 		const bool preformed_fd = fd_deriv_prod.calc_deriv_product(
-			xo,xl,xu,max_var_bounds_viol
+			xo,xl,xu
 			,*y
 			,NULL // fo
 			,NULL // co

@@ -76,7 +76,7 @@ namespace NLPInterfacePack {
   * The finite difference perturbations may be limited by the relaxed variable bounds:
   \verbatim
 
-  xl - max_bnd_viol <= x <= xu + max_bnd_viol
+  xl - max_var_bounds_viol <= x <= xu + max_var_bounds_viol
   \endverbatim
   * if variable bounds are present.  If it is not expected that bounds will limit the step
   * length (or there are no bounds) then the central difference methods \c FD_ORDER_TWO_CENTRAL
@@ -87,7 +87,7 @@ namespace NLPInterfacePack {
   * implementation may be able to take a larger (in magnitude) negative step than a positive
   * step (and visa-versa) in which case the one sided methods would have an advantage.  Note
   * that the one situation where one sided differences is guaranteed to be able to take steps
-  * away from the bounds is when <tt>xl - max_bnd_viol + fd_step_size <= xu</tt> and <tt>v = eta(j)</tt>
+  * away from the bounds is when <tt>xl - max_var_bounds_viol + fd_step_size <= xu</tt> and <tt>v = eta(j)</tt>
   * (i.e. <tt>eta(j)</tt> is the jth column of identity).  The situation <tt>v = eta(j)</tt> occurs
   * when the client is computing the full finite difference approximations to \c Gf, \c Gc and/or \c Gh
   * on variable at a time.
@@ -162,7 +162,7 @@ public:
 	 * The finite difference peturbations may be limited by the relaxed variable bounds
 	 \verbatim
 
-	 xl - max_bnd_viol <= x <= xu + max_bnd_viol
+	 xl - max_var_bounds_viol <= x <= xu + max_var_bounds_viol
 	 \endverbatim
 	 * if variable bounds are present.  If these bounds do limit the finite difference step
 	 * size then a warning will be printed to *out (if <tt>out!=NULL</tt>) and the
@@ -176,11 +176,6 @@ public:
 	 *                  If <tt>xl != NULL</tt> then <tt>xu != NULL</tt> must also be true
 	 *                  and visa-versa or a <tt>std::invalid_arguement</tt> exception
 	 *                  will be thrown.
-	 * @param  max_bnd_viol
-	 *                  [in] If the bounds are set then this is the maximum
-	 *                  violation in the bounds allowed when computing
-	 *                  points.  If <tt>xl==NULL && xu==NULL</tt> then this
-	 *                  number is not important.
 	 * @param  v        [in] The vector for which to form the products with.
 	 * @param  fo       [in] If <tt>fo != NULL</tt> then <tt>*fo</tt> should be set to the
 	 *                  value of <tt>f(xo)</tt>.  Not useful for \c FD_ORDER_TWO_CENTRAL.
@@ -216,7 +211,6 @@ public:
 		const VectorWithOp     &xo
 		,const VectorWithOp    *xl
 		,const VectorWithOp    *xu
-		,const value_type      &max_bnd_viol
 		,const VectorWithOp    &v
 		,const value_type      *fo
 		,const VectorWithOp    *co

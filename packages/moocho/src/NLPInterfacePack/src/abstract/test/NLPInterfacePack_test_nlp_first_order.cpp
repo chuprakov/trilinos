@@ -171,7 +171,6 @@ bool NLPInterfacePack::test_nlp_first_order_info(
 		nlp, nlp->xinit()
 		,nlp->num_bounded_x() ? &nlp->xl() : NULL
 		,nlp->num_bounded_x() ? &nlp->xu() : NULL
-		,0.0
 		,Gc.get(), Gh.get(), Gf.get()
 		,print_all_warnings, out
 		);

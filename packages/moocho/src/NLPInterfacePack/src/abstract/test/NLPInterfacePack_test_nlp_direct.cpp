@@ -220,8 +220,10 @@ bool NLPInterfacePack::test_nlp_first_order_direct(
 		nlp_tester_opt_setter.set_options(*options);
 	}
 	result = nlp_first_order_direct_tester.finite_diff_check(
-		nlp, nlp->xinit(), nlp->num_bounded_x() ? &nlp->xl() : NULL
-		,nlp->num_bounded_x() ? &nlp->xu() : NULL, 0.0, c.get(), h.get()
+		nlp, nlp->xinit()
+		,nlp->num_bounded_x() ? &nlp->xl() : NULL
+		,nlp->num_bounded_x() ? &nlp->xu() : NULL
+		,c.get(), h.get()
 		,Gf.get(),py.get(),rGf.get(),GcU.get(),Gh.get(),D.get(),Uz.get(),Vz.get()
 		,print_all_warnings, out );
 	update_success( result, &success );

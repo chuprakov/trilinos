@@ -67,7 +67,6 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 	,const VectorWithOp     &xo
 	,const VectorWithOp     *xl
 	,const VectorWithOp     *xu
-	,const value_type       &max_var_bounds_viol
 	,const VectorWithOp     *c
 	,const VectorWithOp     *h
 	,const VectorWithOp     *Gf
@@ -158,7 +157,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 /*
 				vec_mut_ptr_t FDGf = space_x->create_member();
 				fd_deriv_computer.calc_deriv(
-					xo, xl, xu, max_var_bounds_viol
+					xo, xl, xu
 					,Range1D(), nlp, FDGf.get()
 					,NULL ,NULL, out );
 				if(out)
@@ -188,7 +187,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 						Gf_y = dot( *Gf, *y ),
 						FDGf_y;
 					preformed_fd = fd_deriv_prod.calc_deriv_product(
-						xo,xl,xu,max_var_bounds_viol
+						xo,xl,xu
 						,*y,NULL,NULL,NULL,true,nlp
 						,&FDGf_y,NULL,NULL,out
 						);
@@ -260,7 +259,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 		VectorSpace::vec_mut_ptr_t
 			t2 = nlp->space_c()->create_member();
 		preformed_fd = fd_deriv_prod.calc_deriv_product(
-			xo,xl,xu,max_var_bounds_viol
+			xo,xl,xu
 			,*t1,NULL,NULL,NULL,true,nlp,NULL,t2.get(),NULL,out
 			);
 		if( !preformed_fd )
@@ -320,7 +319,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 /*
 				// FDN
 				GenMatrix FDN(m,n-m);
-				fd_deriv_computer.calc_deriv( xo, xl, xu, max_var_bounds_viol
+				fd_deriv_computer.calc_deriv( xo, xl, xu
 					, Range1D(m+1,n), nlp, NULL
 					, &FDN() ,BLAS_Cpp::trans, out );
 
@@ -332,8 +331,8 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 					// t = [ -D(:,s); 0 ]
 					V_StV( &t(1,m), -1.0, D->col(s) );
 					// T(:,s) =  FDA' * t
-					fd_deriv_prod.calc_deriv_product(xo,xl,xu,max_var_bounds_viol
-						,t(),nlp,NULL,&T.col(s),out);
+					fd_deriv_prod.calc_deriv_product(
+						xo,xl,xu,t(),nlp,NULL,&T.col(s),out);
 				}				
 
 				// Compare T \approx FDN
@@ -388,7 +387,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 					*t1->sub_view(var_indep) = *y;
 					// t2 = FDA' * t1  (  FDN * y ) <: R^(m)
 					preformed_fd = fd_deriv_prod.calc_deriv_product(
-						xo,xl,xu,max_var_bounds_viol
+						xo,xl,xu
 						,*t1,NULL,NULL,NULL,true,nlp,NULL,t2.get(),NULL,out
 						);
 					if( !preformed_fd )
@@ -398,7 +397,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 					*t1->sub_view(var_indep) = 0.0;
 					// t3 = FDA' * t1  ( -FDC * D * y ) <: R^(m)
 					preformed_fd = fd_deriv_prod.calc_deriv_product(
-						xo,xl,xu,max_var_bounds_viol
+						xo,xl,xu
 						,*t1,NULL,NULL,NULL,true,nlp,NULL,t3.get(),NULL,out
 						);
 					// Compare t2 \approx t3
