@@ -79,6 +79,7 @@ void DiagonalOperator::uninitialize(
 int DiagonalOperator::SetUseTranspose(bool UseTranspose)
 {
 	UseTranspose_ = UseTranspose; // Totally ignored!
+	return 0;
 }
 
 int DiagonalOperator::Apply(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const
