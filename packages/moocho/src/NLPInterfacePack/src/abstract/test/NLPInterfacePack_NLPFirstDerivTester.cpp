@@ -21,7 +21,6 @@
 
 #include "NLPFirstDerivativesTester.h"
 #include "NLPInterfacePack/include/NLPFirstOrderInfo.h"
-//#include "NLPInterfacePack/include/CalcFiniteDiffFirstDerivatives.h"
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
@@ -29,6 +28,7 @@
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 #include "AbstractLinAlgPack/include/assert_print_nan_inf.h"
+#include "AbstractLinAlgPack/include/EtaVector.h"
 #include "Range1D.h"
 #include "update_success.h"
 #include "ThrowException.h"
@@ -129,78 +129,180 @@ bool NLPFirstDerivativesTester::fd_check_all(
 	using std::endl;
 	using std::right;
 
-	assert(0); // ToDo: Update the below code!
-/*
-	using LinAlgPack::Vp_StV;
-	using LinAlgPack::assert_print_nan_inf;
+	namespace rcp = MemMngPack;
+	using AbstractLinAlgPack::sum;
+	using AbstractLinAlgPack::dot;
+	using AbstractLinAlgPack::Vp_StV;
+	using AbstractLinAlgPack::assert_print_nan_inf;
+	using AbstractLinAlgPack::random_vector;
 	using LinAlgOpPack::V_StV;
+	using LinAlgOpPack::V_MtV;
 
-	using AbstractLinAlgPack::TestingPack::CompareDenseVectors;
+ 	using TestingHelperPack::update_success;
 
-	using NLPInterfacePack::CalcFiniteDiffFirstDerivatives;
-
-	using TestingHelperPack::update_success;
-
-	bool success = true, result;
+	bool success = true;
 
 	const size_type
-		n = nlp->n(),
-		m = nlp->m();
-	
-	// //////////////////////////////////////
-	// Compute the derivatives and test them.
+		n  = nlp->n(),
+		m  = nlp->m(),
+		mI = nlp->mI();
+
+	// //////////////////////////////////////////////
+	// Validate the input
+
+	NLP::vec_space_ptr_t
+		space_x = nlp->space_x(),
+		space_c = nlp->space_c(),
+		space_h = nlp->space_h();
+
+	const CalcFiniteDiffProd
+		&fd_deriv_prod = this->calc_fd_prod();
+
+	const value_type
+		rand_y_l = -1.0, rand_y_u = 1.0,
+		small_num = ::pow(std::numeric_limits<value_type>::epsilon(),0.25);
 
 	if(out)
 		*out
-			<< "\nComputing derivatives of objective f(x) and constraints c(x) "
-				"by finite differences ...\n";
+			<< "\nComparing products Gf, Gc and/or Gh with finite difference values "
+				"FDGf, FDGc and/or FDGh one variable i at a time ...\n";
 
-	Vector FDGf;
-	if(Gf)
-		FDGf.resize(n);
-	GenMatrix FDGc;
-	if(Gc)
-		FDGc.resize(n,m);
+	value_type  max_Gf_warning_viol = 0.0;
+	int         num_Gf_warning_viol = 0;
+	value_type  max_Gc_warning_viol = 0.0;
+	int         num_Gc_warning_viol = 0;
 
-	CalcFiniteDiffFirstDerivatives fd_deriv_computer;
-	fd_deriv_computer.calc_deriv(xo,xl,xu,Range1D(),nlp
-		, Gf ? &FDGf() : NULL
-		, Gc ? &FDGc() : NULL	,BLAS_Cpp::no_trans
-		,out
-		);
+	VectorSpace::vec_mut_ptr_t
+		e_i       = space_x->create_member(),
+		Gc_i      = ( Gc ? space_c->create_member()  : rcp::null ),
+		FDGc_i    = ( Gc ? space_c->create_member()  : rcp::null ),
+		Gh_i      = ( Gh ? space_c->create_member()  : rcp::null ),
+		FDGh_i    = ( Gh ? space_c->create_member()  : rcp::null );
 
-	// /////////////////////////////////////////
-	// Compare results
+	*e_i = 0.0;
 
-	if(Gf) {
+	for( size_type i = 1; i <= n; ++ i ) {
+		EtaVector eta_i(i,n);
+		e_i->set_ele(i,1.0);
+		// Compute exact??? values
+		value_type
+			Gf_i = Gf ? Gf->get_ele(i) : 0.0;
+		if(Gc)
+			V_MtV( Gc_i.get(), *Gc, BLAS_Cpp::trans, eta_i() );
+		if(Gh)
+			V_MtV( Gh_i.get(), *Gh, BLAS_Cpp::trans, eta_i() );
+		// Compute finite difference values
+		value_type
+			FDGf_i;
+		const bool preformed_fd = fd_deriv_prod.calc_deriv_product(
+			xo,xl,xu
+			,*e_i
+			,NULL // fo
+			,NULL // co
+			,NULL // ho
+			,true // check_nan_inf
+			,nlp
+			,Gf ? &FDGf_i : NULL
+			,Gc ? FDGc_i.get() : NULL
+			,Gh ? FDGc_i.get() : NULL
+			,out
+			);
+		if( !preformed_fd ) {
+			if(out)
+				*out
+					<< "\nError, the finite difference computation was not preformed due to cramped bounds\n"
+					<< "Finite difference test failed!\n" << endl;
+			return false;
+		}
+		
+		// Compare the quantities
+		// Gf
+		assert_print_nan_inf(FDGf_i, "FDGf'*e_i",true,out);
+		const value_type
+			Gf_err = ::fabs( Gf_i - FDGf_i ) / ( ::fabs(Gf_i) + ::fabs(FDGf_i) + small_num );
 		if(out)
 			*out
-				<< "\nComparing derivatives of objective f(x)\n"
-				<< "where u(i) = finite_d(f(x))/d(x(i)), v(i) = d(f(x))/d(x(i)) ...\n";
-		CompareDenseVectors comp_Gf;
-		result = comp_Gf.comp( FDGf, *Gf, warning_tol(), error_tol()
-			, print_all_warnings, out );
-		update_success( result, &success );
+				<< "\nrel_err(Gf("<<i<<"),FDGf'*e("<<i<<") = "
+				<< "rel_err(" << Gf_i << "," << FDGf_i << ") = "
+				<< Gf_err << endl;
+		if( Gf_err >= warning_tol() ) {
+			max_Gf_warning_viol = std::_MAX( max_Gf_warning_viol, Gf_err );
+			++num_Gf_warning_viol;
+		}
+		if( Gf_err >= error_tol() ) {
+			if(out)
+				*out
+					<< "\nError, exceeded Gf_error_tol = " << error_tol() << endl
+					<< "Stoping the tests!\n";
+			return false;
+		}
+		// Gc
+		if(Gc) {
+			const value_type
+				sum_Gc_i   = sum(*Gc_i),
+				sum_FDGc_i = sum(*FDGc_i);
+			assert_print_nan_inf(sum_FDGc_i, "sum(FDGc'*e_i)",true,out);
+			const value_type
+				calc_err = ::fabs( ( sum_Gc_i - sum_FDGc_i )
+								   /( ::fabs(sum_Gc_i) + ::fabs(sum_FDGc_i) + small_num ) );
+			if(out)
+				*out
+					<< "\nrel_err(sum(Gc'*e("<<i<<")),sum(FDGc'*e("<<i<<"))) = "
+					<< "rel_err(" << sum_Gc_i << "," << sum_FDGc_i << ") = "
+					<< calc_err << endl;
+			if( calc_err >= warning_tol() ) {
+				max_Gc_warning_viol = std::_MAX( max_Gc_warning_viol, calc_err );
+				++num_Gc_warning_viol;
+			}
+			if( calc_err >= error_tol() ) {
+				if(out)
+					*out
+						<< "\nError, rel_err(sum(Gc'*e("<<i<<")),sum(FDGc'*e("<<i<<"))) = "
+						<< "rel_err(" << sum_Gc_i << "," << sum_FDGc_i << ") = "
+						<< calc_err << endl
+						<< "exceeded error_tol = " << error_tol() << endl
+						<< "Stoping the tests!\n";
+				if(print_all_warnings)
+					*out << "\ne_i =\n"     << *e_i
+						 << "\nGc_i =\n"    << *Gc_i
+						 << "\nFDGc_i =\n"  << *FDGc_i;
+				update_success( false, &success );
+				return false;
+			}
+			if( calc_err >= warning_tol() ) {
+				if(out)
+					*out
+						<< "\nWarning, rel_err(sum(Gc'*e("<<i<<")),sum(FDGc'*e("<<i<<"))) = "
+						<< "rel_err(" << sum_Gc_i << "," << sum_FDGc_i << ") = "
+						<< calc_err << endl
+						<< "exceeded warning_tol = " << warning_tol() << endl;
+			}
+		}
+		// Gh
+		if(Gh) {
+			assert(0); // ToDo: Implement for general inequalities!
+		}
+		e_i->set_ele(i,0.0);
 	}
+	if(out && num_Gf_warning_viol)
+		*out
+			<< "\nFor Gf, there were " << num_Gf_warning_viol << " warning tolerance "
+			<< "violations out of num_fd_directions = " << num_fd_directions()
+			<< " computations of FDGf'*e(i)\n"
+			<< "and the maximum violation was " << max_Gf_warning_viol
+			<< " > Gf_waring_tol = " << warning_tol() << endl;
+	if(out && num_Gc_warning_viol)
+		*out
+			<< "\nFor Gc, there were " << num_Gc_warning_viol << " warning tolerance "
+			<< "violations out of num_fd_directions = " << num_fd_directions()
+			<< " computations of FDGc'*e(i)\n"
+			<< "and the maximum violation was " << max_Gc_warning_viol
+			<< " > Gc_waring_tol = " << warning_tol() << endl;
+	if(out)
+		*out
+			<< "\nCongradulations!  All of the computed errors were within the specified error tolerance!\n";
 
-	if(Gc) {
-		if(out)
-			*out
-				<< "\nComparing derivatives of constraints c(x)\n"
-				<< "where D(i,j) = finite_d(c(j))/d(x(i)), M(i,j) = d(c(j))/d(x(i)) ...\n";
-		result = comp_Gc().comp(
-			FDGc, *Gc, BLAS_Cpp::no_trans
-			, CompareDenseSparseMatrices::FULL_MATRIX
-			, CompareDenseSparseMatrices::REL_ERR_BY_COL
-			, warning_tol(), error_tol(), print_all_warnings, out );
-		update_success( result, &success );
-	}
-
-	return success;
-
-*/
-
-	return false;
+	return true;
 
 }
 
@@ -229,7 +331,6 @@ bool NLPFirstDerivativesTester::fd_directional_check(
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_MtV;
 
-//	using AbstractLinAlgPack::TestingPack::CompareDenseVectors;
  	using TestingHelperPack::update_success;
 
 	bool success = true;
