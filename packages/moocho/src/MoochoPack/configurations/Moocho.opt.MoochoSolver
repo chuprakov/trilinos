@@ -148,25 +148,6 @@ options_group rSQPSolverClientInterface {
      *** 1e-2  : Only converge when the max (scaled) step size is below this value (default).
      *** 1e+50 : (big number) Converged when any of the other tolerances are satisfied.
 
-*    max_var_bounds_viol = 1e-5;  *** (default?)
-     *** (+dbl) Allow f(x), c(x) computed in relaxed bounds:
-     ***    xl - max_var_bounds_viol <= x <= xu + max_var_bounds_viol
-     *** This relaxation represents a little wiggle room for the algorithm to perform
-     *** such tasks as finite differencing.  The algorithm will never evaluate any of the
-     *** NLP functions outside of this relaxed region.  This is the agreement the algorithm
-     *** makes with the NLP so as to avoid undefined regions if f(x) and c(x).
-     *** Example values:
-     *** 0.0   : Don't allow any violation of the variable bounds.  Note that when there
-     ***         are active bounds this means that no finite differencing can be used
-     ***         and any tests or other options that depend on this should be turned off.
-     ***         This value should only be used when any point outside the bounds would
-     ***         cause f(x) or c(x) to become undefined.
-     *** 1e-5  : This allows sufficiently large step sizes in most cases to get accurate
-     ***         finite differencing and is therefore the default value.
-     *** 1e+50 : (big number) Allow any points outside of the bounds to be used with
-     ***         f(x) and c(x).  If the NLP does not have any undefined regions then
-     ***         this is a reasonable value to let the algorithm do what ever it wants. 
-
 *    journal_output_level = PRINT_NOTHING;              * No output to journal from algorithm
 *    journal_output_level = PRINT_BASIC_ALGORITHM_INFO; * O(1) information usually
 *    journal_output_level = PRINT_ALGORITHM_STEPS;      * O(iter) output to journal     (default)
