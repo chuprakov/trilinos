@@ -142,9 +142,9 @@ public:
 	///
 	value_type get_ele(index_type i) const;
 	///
-	void get_sub_vector( const Range1D& rng, RTOp_SubVector* sub_vec ) const;
+	void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
 	///
-	void free_sub_vector( RTOp_SubVector* sub_vec ) const;
+	void free_sub_vector( RTOpPack::SubVector* sub_vec ) const;
 
 	//@}
 
@@ -162,18 +162,17 @@ public:
 	///
 	vec_mut_ptr_t sub_view( const Range1D& rng );
 	///
-	void get_sub_vector(
-		const Range1D& rng, RTOp_MutableSubVector* sub_vec );
+	void get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec );
 	///
-	void commit_sub_vector( RTOp_MutableSubVector* sub_vec );
+	void commit_sub_vector( RTOpPack::MutableSubVector* sub_vec );
 	///
-	void set_sub_vector( const RTOp_SparseSubVector& sub_vec );
+	void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
 	///
 	void Vp_StMtV(
 		value_type                       alpha
 		,const GenPermMatrixSlice        &P
 		,BLAS_Cpp::Transp                P_trans
-		,const Vector              &x
+		,const Vector                    &x
 		,value_type                      beta
 		);
 
@@ -189,7 +188,7 @@ private:
 	// ///////////////////////////////////////
 	// Private data members
 	
-	DVectorSlice               v_;
+	DVectorSlice              v_;
 	release_resource_ptr_t    v_release_;
 	VectorSpaceSerial         space_;
 

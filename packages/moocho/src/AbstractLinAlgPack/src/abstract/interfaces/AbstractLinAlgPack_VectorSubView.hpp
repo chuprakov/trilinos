@@ -118,9 +118,9 @@ public:
 	///
 	vec_ptr_t sub_view( const Range1D& rng ) const;
 	///
-	void get_sub_vector( const Range1D& rng, RTOp_SubVector* sub_vec ) const;
+	void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
 	///
-	void free_sub_vector( RTOp_SubVector* sub_vec ) const;
+	void free_sub_vector( RTOpPack::SubVector* sub_vec ) const;
 
 	//@}
 

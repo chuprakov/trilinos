@@ -353,20 +353,18 @@ bool VectorSpaceTester::check_vector_space(
 
 			if(out && print_all_tests())
 				*out << std::endl << v_name << ".get_sub_vector(Rang1D("<<i1<<","<<i2<<"),SPARSE,&sub_vec)\n";
-			RTOp_SubVector sub_vec;
-			RTOp_sub_vector_null(&sub_vec);
+			RTOpPack::SubVector sub_vec;
 			v_from.get_sub_vector(Range1D(i1,i2),&sub_vec);	
 
-			err = sub_vec_dim - sub_vec.sub_dim;
+			err = sub_vec_dim - sub_vec.subDim();
 			if(out && (print_all_tests() || ::fabs(err) >= warning_tol()))
 				*out << "check: ("<<i2<<"-"<<i1<<"+1) - sub_vec.sub_dim = "
-					 << sub_vec_dim << " - " << sub_vec.sub_dim << "  = " << err << std::endl;
+					 << sub_vec_dim << " - " << sub_vec.subDim() << "  = " << err << std::endl;
 			check_test(err,out,&success);
 
 			if(out && print_all_tests())
 				*out << z_name << ".set_sub_vector(sub_vec)\n";
-			RTOp_SparseSubVector spc_sub_vec;
-			RTOp_sparse_sub_vector_from_dense( &sub_vec, &spc_sub_vec );
+			RTOpPack::SparseSubVector spc_sub_vec( sub_vec );
 			z_to.set_sub_vector(spc_sub_vec);
 			if(out && print_vectors())
 				*out << std::endl << z_name << " =\n" << z_to;

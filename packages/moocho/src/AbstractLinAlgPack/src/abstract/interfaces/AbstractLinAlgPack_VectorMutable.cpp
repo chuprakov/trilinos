@@ -140,54 +140,61 @@ void VectorMutable::axpy( value_type alpha, const Vector& x )
 	AbstractLinAlgPack::apply_op(axpy_op,1,vecs,1,targ_vecs,RTOp_REDUCT_OBJ_NULL);
 }
 
-void VectorMutable::get_sub_vector(
-	const Range1D& rng, RTOp_MutableSubVector* sub_vec )
+void VectorMutable::get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec_inout )
 {
-	// Here we get a copy of the data for the sub-vector that the client will
-	// modify.  We must later commit these changes to the actual vector
-	// when the client calls commit_sub_vector(...).
-	// Note, this implementation is very dependent on the behavior of the default
-	// implementation of Vector::get_sub_vector(...) and
-	// Vector::set_sub_vector(...)!
-	RTOp_SubVector _sub_vec;
-	RTOp_sub_vector_null( &_sub_vec );
-	Vector::get_sub_vector(
-		rng
-		,&_sub_vec
-		);
-	RTOp_mutable_sub_vector(
-		_sub_vec.global_offset
-		,_sub_vec.sub_dim
-		,const_cast<value_type*>(_sub_vec.values)
-		,_sub_vec.values_stride
-		,sub_vec
-		);
+	//
+	// Here we get a copy of the data for the sub-vector that the
+	// client will modify.  We must later commit these changes to the
+	// actual vector when the client calls commitSubVector(...).
+	// Note, this implementation is very dependent on the behavior of
+	// the default implementation of constant version of
+	// Vector<Scalar>::getSubVector(...) and the implementation of
+	// Vector<Scalar>::setSubVector(...)!
+	//
+	RTOpPack::SubVector sub_vec;
+	Vector::get_sub_vector( rng, &sub_vec );
+	sub_vec_inout->initialize(
+		sub_vec.globalOffset(),sub_vec.subDim(),const_cast<value_type*>(sub_vec.values()),sub_vec.stride());
 }
 
-void VectorMutable::commit_sub_vector( RTOp_MutableSubVector* sub_vec )
+void VectorMutable::commit_sub_vector( RTOpPack::MutableSubVector* sub_vec_inout )
 {
-	RTOp_SubVector _sub_vec;
-	RTOp_sub_vector(
-		sub_vec->global_offset
-		,sub_vec->sub_dim
-		,sub_vec->values
-		,sub_vec->values_stride
-		,&_sub_vec
+	RTOpPack::SparseSubVector spc_sub_vec(
+		sub_vec_inout->globalOffset(), sub_vec_inout->subDim()
+		,sub_vec_inout->values(), sub_vec_inout->stride()
 		);
+	VectorMutable::set_sub_vector( spc_sub_vec );            // Commit the changes!
+	RTOpPack::SubVector sub_vec(*sub_vec_inout);
+	Vector::free_sub_vector( &sub_vec );                     // Free the memory!
+	sub_vec_inout->set_uninitialized();                     // Make null as promised!
+}
+
+void VectorMutable::set_sub_vector( const RTOpPack::SparseSubVector& sub_vec )
+{
 	RTOp_SparseSubVector spc_sub_vec;
-	RTOp_sparse_sub_vector_from_dense( &_sub_vec, &spc_sub_vec );
-	VectorMutable::set_sub_vector( spc_sub_vec ); // Commit the changes!
-	Vector::free_sub_vector( &_sub_vec );      // Free the memory!
-}
-
-void VectorMutable::set_sub_vector( const RTOp_SparseSubVector& sub_vec )
-{
-	if(0!=RTOp_TOp_set_sub_vector_set_sub_vec( &sub_vec, &set_sub_vector_op.op() ))
+	if(sub_vec.indices()) {
+		RTOp_sparse_sub_vector(
+			sub_vec.globalOffset(), sub_vec.subDim(), sub_vec.subNz()
+			,sub_vec.values(), sub_vec.valuesStride(), sub_vec.indices(), sub_vec.indicesStride()
+			,sub_vec.localOffset(), sub_vec.isSorted()
+			,&spc_sub_vec
+			);
+	}
+	else {
+		RTOp_SubVector _sub_vec;
+		RTOp_sub_vector(
+			sub_vec.globalOffset(), sub_vec.subDim(), sub_vec.values(), sub_vec.valuesStride()
+			,&_sub_vec
+			);
+		RTOp_sparse_sub_vector_from_dense( &_sub_vec, &spc_sub_vec );
+	}
+	RTOpPack::RTOpC  set_sub_vector_op;
+	if(0>RTOp_TOp_set_sub_vector_construct( &spc_sub_vec, &set_sub_vector_op.op() ))
 		assert(0);
 	VectorMutable* targ_vecs[1] = { this };
 	AbstractLinAlgPack::apply_op(
 		set_sub_vector_op,0,NULL,1,targ_vecs,RTOp_REDUCT_OBJ_NULL
-		,sub_vec.global_offset+1,sub_vec.sub_dim,sub_vec.global_offset // first_ele, sub_dim, global_offset
+		,sub_vec.globalOffset()+1,sub_vec.subDim(),sub_vec.globalOffset() // first_ele, sub_dim, global_offset
 		);
 }
 

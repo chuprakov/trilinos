@@ -17,7 +17,7 @@
 #define ALAP_VECTOR_MUTABLE_HPP
 
 #include "Vector.hpp"
-#include "RTOpPack/src/RTOp_SparseSubVector.h"
+#include "RtOpPack/src/RTOpPackTypes.hpp"
 #include "Range1D.hpp"
 
 namespace AbstractLinAlgPack {
@@ -198,7 +198,7 @@ public:
 	 *                  <tt>*sub_vec</tt> owns the memory but this memory can be freed
 	 *                  only by calling <tt>this->commit_sub_vector(sub_vec)</tt>.
 	 */
-	virtual void get_sub_vector( const Range1D& rng, RTOp_MutableSubVector* sub_vec );
+	virtual void get_sub_vector( const Range1D& rng, RTOpPack::MutableSubVector* sub_vec );
 
 	///
 	/** Free a mutable explicit view of a sub-vector.
@@ -215,7 +215,7 @@ public:
 	 *				and <tt>*sub_vec</tt> will be zeroed out using
 	 *				<tt>RTOp_mutable_sub_vector_null(sub_vec)</tt>.
 	 */
-	virtual void commit_sub_vector( RTOp_MutableSubVector* sub_vec );
+	virtual void commit_sub_vector( RTOpPack::MutableSubVector* sub_vec );
 
 	///
 	/** Set a specific sub-vector.
@@ -235,7 +235,7 @@ public:
 	 *
 	 * @param  sub_vec  [in] Represents the elements in the subvector to be set.
 	 */
-	virtual void set_sub_vector( const RTOp_SparseSubVector& sub_vec );
+	virtual void set_sub_vector( const RTOpPack::SparseSubVector& sub_vec );
 
 	///
 	/** Perform a gather or scatter operation with a vector.

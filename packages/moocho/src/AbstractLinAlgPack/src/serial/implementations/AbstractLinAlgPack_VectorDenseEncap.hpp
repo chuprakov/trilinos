@@ -45,9 +45,9 @@ public:
 
 private:
 
-	const Vector &vec_;
-	RTOp_SubVector     sub_vec_;
-	DVectorSlice        vs_;
+	const Vector            &vec_;
+	RTOpPack::SubVector     sub_vec_;
+	DVectorSlice            vs_;
 	VectorDenseEncap();                                     // Not defined and not to be called!
 	VectorDenseEncap(const VectorDenseEncap&);              // ""
 	VectorDenseEncap& operator=(const VectorDenseEncap&);   // ""
@@ -75,9 +75,9 @@ public:
 
 private:
 
-	VectorMutable       &vec_;
-	RTOp_MutableSubVector     sub_vec_;
-	DVectorSlice               vs_;
+	VectorMutable                  &vec_;
+	RTOpPack::MutableSubVector     sub_vec_;
+	DVectorSlice                   vs_;
 	VectorDenseMutableEncap();                                            // Not defined and not to be called!
 	VectorDenseMutableEncap(const VectorDenseMutableEncap&);              // ""
 	VectorDenseMutableEncap& operator=(const VectorDenseMutableEncap&);   // ""
@@ -93,12 +93,11 @@ inline
 VectorDenseEncap::VectorDenseEncap( const Vector&  vec )
 	:vec_(vec)
 {
-	RTOp_sub_vector_null(&sub_vec_);
 	vec_.get_sub_vector(Range1D(),&sub_vec_);
 	vs_.bind( DVectorSlice(
-				  const_cast<value_type*>(sub_vec_.values)
-				  ,sub_vec_.sub_dim
-				  ,sub_vec_.values_stride
+				  const_cast<value_type*>(sub_vec_.values())
+				  ,sub_vec_.subDim()
+				  ,sub_vec_.stride()
 				  )
 		);
 }
@@ -121,12 +120,11 @@ inline
 VectorDenseMutableEncap::VectorDenseMutableEncap( VectorMutable&  vec )
 	:vec_(vec)
 {
-	RTOp_mutable_sub_vector_null(&sub_vec_);
 	vec_.get_sub_vector(Range1D(),&sub_vec_);
 	vs_.bind( DVectorSlice(
-				  sub_vec_.values
-				  ,sub_vec_.sub_dim
-				  ,sub_vec_.values_stride
+				  sub_vec_.values()
+				  ,sub_vec_.subDim()
+				  ,sub_vec_.stride()
 				  )
 		);
 }

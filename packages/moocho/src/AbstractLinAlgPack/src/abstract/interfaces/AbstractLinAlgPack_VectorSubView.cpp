@@ -132,7 +132,7 @@ VectorSubView::sub_view( const Range1D& rng_in ) const
 			) );
 }
 
-void VectorSubView::get_sub_vector( const Range1D& rng_in, RTOp_SubVector* sub_vec ) const
+void VectorSubView::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec ) const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(
@@ -144,10 +144,10 @@ void VectorSubView::get_sub_vector( const Range1D& rng_in, RTOp_SubVector* sub_v
 	space_.validate_range(rng);
 	const index_type this_offset = space_.rng().lbound() - 1;
 	full_vec_->get_sub_vector( rng + this_offset, sub_vec );
-	sub_vec->global_offset -= this_offset;
+	sub_vec->setGlobalOffset( sub_vec->globalOffset() - this_offset );
 }
 
-void VectorSubView::free_sub_vector( RTOp_SubVector* sub_vec ) const
+void VectorSubView::free_sub_vector( RTOpPack::SubVector* sub_vec ) const
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION(
@@ -155,7 +155,7 @@ void VectorSubView::free_sub_vector( RTOp_SubVector* sub_vec ) const
 		,"VectorSubView::free_sub_vector(...): Error!" ) ;
 #endif
 	const index_type this_offset = space_.rng().lbound() - 1;
-	sub_vec->global_offset += this_offset;
+	sub_vec->setGlobalOffset( sub_vec->globalOffset() + this_offset );
 	full_vec_->free_sub_vector( sub_vec );
 }
 

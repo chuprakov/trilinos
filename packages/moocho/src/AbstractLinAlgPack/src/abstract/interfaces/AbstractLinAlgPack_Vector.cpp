@@ -120,12 +120,10 @@ std::ostream& Vector::output(
 	,index_type global_offset
 	) const
 {
-	RTOp_SubVector sub_vec;
-	RTOp_sub_vector_null(&sub_vec);
+	RTOpPack::SubVector sub_vec;
 	this->get_sub_vector( Range1D(), &sub_vec );
-	RTOp_SubVector  sub_vec_print = sub_vec;
-	sub_vec_print.global_offset += global_offset;
-	RTOpPack::output(out,sub_vec_print,print_dim,newline);
+	sub_vec.initialize( sub_vec.globalOffset() + global_offset, sub_vec.subDim(), sub_vec.values(), sub_vec.stride() );
+	RTOpPack::output(out,sub_vec,print_dim,newline);
 	this->free_sub_vector( &sub_vec );
 	return out;
 }
@@ -204,47 +202,47 @@ Vector::sub_view( const Range1D& rng_in ) const
 			,rng ) );
 }
 
-void Vector::get_sub_vector( const Range1D& rng_in, RTOp_SubVector* sub_vec	) const
+void Vector::get_sub_vector( const Range1D& rng_in, RTOpPack::SubVector* sub_vec_inout ) const
 {
-	const Range1D rng = rng_in.full_range() ? Range1D(1,this->dim()) : rng_in;
+	const Range1D rng = rng_in.full_range() ? Range1D(1,this->space().dim()) : rng_in;
 #ifdef _DEBUG
 	THROW_EXCEPTION(
-		this->dim() < rng.ubound(), std::out_of_range
+		this->space().dim() < rng.ubound(), std::out_of_range
 		,"Vector::get_sub_vector(rng,...): Error, rng = ["<<rng.lbound()<<","<<rng.ubound()
-		<<"] is not in range = [1,"<<this->dim()<<"]" );
+		<<"] is not in range = [1,"<<this->space().dim()<<"]" );
 #endif
 	// Free sub_vec if needed (note this is dependent on the implemenation of this operator class!)
-	if( sub_vec->values ) {
-		free( (void*)sub_vec->values  );
+	if( sub_vec_inout->values() ) {
+		free( (void*)sub_vec_inout->values()  );
 	}
-	RTOp_sub_vector_null( sub_vec );
 	// Initialize the operator
-	if(0!=RTOp_ROp_get_sub_vector_set_range( rng.lbound(), rng.ubound(), &get_sub_vector_op.op() ))
+	RTOpPack::RTOpC get_sub_vector_op;
+	if(0>RTOp_ROp_get_sub_vector_construct( rng.lbound(), rng.ubound(),&get_sub_vector_op.op()))
 		assert(0);
 	// Create the reduction object (another sub_vec)
-	RTOp_ReductTarget
-		reduct_obj = RTOp_REDUCT_OBJ_NULL;
-	get_sub_vector_op.reduct_obj_create_raw(&reduct_obj); // This is really of type RTOp_SubVector!
+	RTOp_ReductTarget reduct_obj = RTOp_REDUCT_OBJ_NULL;
+	get_sub_vector_op.reduct_obj_create_raw(&reduct_obj); // This is really of type RTOpPack::SubVectorT<Scalar>!
 	// Perform the reduction (get the sub-vector requested)
-	const Vector *vecs[1] = { this };
+	const size_t  num_vecs = 1;
+	const Vector* sub_vecs[num_vecs] = { this };
 	AbstractLinAlgPack::apply_op(
-		get_sub_vector_op,1,vecs,0,NULL,reduct_obj
+		get_sub_vector_op,num_vecs,sub_vecs,0,NULL,reduct_obj
 		,rng.lbound(),rng.size(),rng.lbound()-1 // first_ele, sub_dim, global_offset
 		);
 	// Set the sub-vector.  Note reduct_obj will go out of scope so the sub_vec parameter will
 	// own the memory allocated within get_sub_vector_op.create_reduct_obj_raw(...).  This is okay
-	//  since the client is required to call release_sub_vector(...) so release memory!
-
-	*sub_vec = RTOp_ROp_get_sub_vector_val(reduct_obj);
+	// since the client is required to call release_sub_vector(...) so release memory!
+	RTOp_SubVector sub_vec = RTOp_ROp_get_sub_vector_val(reduct_obj);
+	sub_vec_inout->initialize(sub_vec.global_offset,sub_vec.sub_dim,sub_vec.values,sub_vec.values_stride);
 	free(reduct_obj); // Now *sub_vec owns the values[] and indices[] arrays!
 }
 
-void Vector::free_sub_vector( RTOp_SubVector* sub_vec ) const
+void Vector::free_sub_vector( RTOpPack::SubVector* sub_vec ) const
 {
 	// Free sub_vec if needed (note this is dependent on the implemenation of this operator class!)
-	if( sub_vec->values )
-		free( (void*)sub_vec->values  );
-	RTOp_sub_vector_null( sub_vec );
+	if( sub_vec->values() )
+		free( (void*)sub_vec->values() );
+	sub_vec->set_uninitialized();
 }
 
 void Vector::has_changed() const

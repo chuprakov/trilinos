@@ -125,7 +125,7 @@ value_type VectorMutableDense::get_ele(index_type i) const
 }
 
 void VectorMutableDense::get_sub_vector(
-	const Range1D& rng_in, RTOp_SubVector* sub_vec
+	const Range1D& rng_in, RTOpPack::SubVector* sub_vec
 	) const
 {
 	CLASS_MEMBER_PTRS
@@ -137,20 +137,17 @@ void VectorMutableDense::get_sub_vector(
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
 		"is not in the range [1,this->dim()] = [1," << this_dim << "]!" );
 	// Just return the dense view regardless of spare_or_dense argument
-	RTOp_SubVector _sub_vec;
-	RTOp_sub_vector(
+	sub_vec->initialize(
 		rng.lbound()-1                             // global_offset
 		,rng.size()                                // sub_dim
 		,v_.raw_ptr()+v_.stride()*(rng.lbound()-1) // values
 		,v_.stride()
-		,&_sub_vec
 		);
-	*sub_vec = _sub_vec;  // No memory has been allocated here!
 }
 
-void VectorMutableDense::free_sub_vector( RTOp_SubVector* sub_vec ) const
+void VectorMutableDense::free_sub_vector( RTOpPack::SubVector* sub_vec ) const
 {
-	RTOp_sub_vector_null( sub_vec ); // No memory to deallocate!
+	sub_vec->set_uninitialized(); // No memory to deallocate!
 }
 
 // Overridden from VectorMutable
@@ -216,7 +213,7 @@ VectorMutableDense::sub_view( const Range1D& rng_in )
 }
 
 void VectorMutableDense::get_sub_vector(
-	const Range1D& rng_in, RTOp_MutableSubVector* sub_vec )
+	const Range1D& rng_in, RTOpPack::MutableSubVector* sub_vec )
 {
 	CLASS_MEMBER_PTRS
 	const size_type  this_dim = v_.dim();
@@ -228,25 +225,22 @@ void VectorMutableDense::get_sub_vector(
 		"rng = ["<<rng.lbound()<<","<<rng.ubound()<<"] "
 		"is not in the range [1,this->dim()] = [1," << this_dim << "]!" );
 #endif
-	RTOp_MutableSubVector _sub_vec;
-	RTOp_mutable_sub_vector(
+	sub_vec->initialize(
 		rng.lbound()-1                             // global_offset
 		,rng.size()                                // sub_dim
 		,v_.raw_ptr()+v_.stride()*(rng.lbound()-1) // values
 		,v_.stride()
-		,&_sub_vec
 		);
-	*sub_vec = _sub_vec;  // No memory has been allocated here!
 }
 
-void VectorMutableDense::commit_sub_vector( RTOp_MutableSubVector* sub_vec )
+void VectorMutableDense::commit_sub_vector( RTOpPack::MutableSubVector* sub_vec )
 {
 	CLASS_MEMBER_PTRS
-	RTOp_mutable_sub_vector_null( sub_vec ); // No memory to deallocate!
-	this->has_changed(); // Be aware of any final changes!
+	sub_vec->set_uninitialized(); // No memory to deallocate!
+	this->has_changed();          // Be aware of any final changes!
 }
 
-void VectorMutableDense::set_sub_vector( const RTOp_SparseSubVector& sub_vec )
+void VectorMutableDense::set_sub_vector( const RTOpPack::SparseSubVector& sub_vec )
 {
 	CLASS_MEMBER_PTRS
 	VectorMutable::set_sub_vector(sub_vec); // ToDo: Provide specialized implementation?

@@ -17,6 +17,7 @@
 #define NLP_FIRST_ORDER_DIRECT_H
 
 #include "NLPObjGrad.hpp"
+#include "AbstractFactory.hpp"
 
 namespace NLPInterfacePack {
 

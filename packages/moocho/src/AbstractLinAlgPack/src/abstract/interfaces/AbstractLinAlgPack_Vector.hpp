@@ -82,7 +82,7 @@ namespace AbstractLinAlgPack {
  *              operation can be accumulated over a set of abstract vectors	which can be useful for implementing
  *              composite vectors for instance.  If <tt>op.get_reduct_type_num_entries(...)</tt> returns
  *              <tt>num_values == 0</tt>, <tt>num_indexes == 0</tt> and <tt>num_chars == 0</tt> then
- *              <tt>reduct_obj</tt> should be set to #RTOp_REDUCT_OBJ_NULL and no reduction will be performed.
+ *              <tt>reduct_obj</tt> should be set to <tt>RTOp_REDUCT_OBJ_NULL</tt> and no reduction will be performed.
  * @param  first_ele
  *				[in] (default = 1) The index of the first element in <tt>this</tt> to be included.
  * @param  sub_dim
@@ -132,7 +132,7 @@ void apply_op(
  * how this is done.
  *
  * This interface also allows a client to extract a sub-set of elements in an
- * explicit form as an \c RTOp_SubVector object using the method \c get_sub_vector().
+ * explicit form as an <tt>RTOpPack::SubVector object using the method \c get_sub_vector().
  * In general, this is very bad thing to do and should be avoided at all costs.
  * However, there are some applications where this is needed and therefore it is
  * supported.  The default implementation of this method uses a reduction/transformation
@@ -427,7 +427,7 @@ public:
 	 *                  <tt>*sub_vec</tt> owns the memory but this memory can be freed
 	 *                  only by calling <tt>this->free_sub_vector(sub_vec)</tt>.
 	 */
-	virtual void get_sub_vector( const Range1D& rng, RTOp_SubVector* sub_vec ) const;
+	virtual void get_sub_vector( const Range1D& rng, RTOpPack::SubVector* sub_vec ) const;
 
 	///
 	/** Free an explicit view of a sub-vector.
@@ -444,7 +444,7 @@ public:
 	 *				and <tt>*sub_vec</tt> will be zeroed out using
 	 *				<tt>RTOp_sub_vector_null(sub_vec)</tt>.
 	 */
-	virtual void free_sub_vector( RTOp_SubVector* sub_vec ) const;
+	virtual void free_sub_vector( RTOpPack::SubVector* sub_vec ) const;
 
 	//@}
 

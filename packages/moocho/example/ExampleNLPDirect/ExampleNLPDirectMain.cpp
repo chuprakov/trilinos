@@ -29,6 +29,8 @@
 #include "ExampleNLPDirectRun.hpp"
 #include "ExampleVectorLib/src/MPIDenseVector.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
+#include "AbstractLinAlgPack/src/abstract/tsfl/VectorSpaceTSFL.hpp"
+#include "TSFL/src/interfaces/VectorSpaceSerialDecl.hpp"
 #include "OptionsFromStream.hpp"
 #include "WorkspacePack.hpp"
 #include "oblackholestream.hpp"
@@ -38,8 +40,8 @@ int main(int argc, char* argv[] ) {
 
 	using std::endl;
 	using std::setw;
-	namespace rcp = MemMngPack;
-	using rcp::ref_count_ptr;
+	namespace mmp = MemMngPack;
+	using mmp::ref_count_ptr;
 	namespace ofsp = OptionsFromStreamPack;
 	using ofsp::OptionsFromStream;
 	typedef AbstractLinAlgPack::size_type size_type;
@@ -51,6 +53,8 @@ int main(int argc, char* argv[] ) {
 	using AbstractLinAlgPack::VectorSpace;
 	using AbstractLinAlgPack::Vector;
 	using AbstractLinAlgPack::VectorMutable;
+
+	using AbstractLinAlgPack::VectorSpaceTSFL;
 
 	using CommandLineProcessorPack::CommandLineProcessor;
 
@@ -100,6 +104,8 @@ int main(int argc, char* argv[] ) {
 	bool dep_bounded = true;
 	// Serial or parallel?
 	bool in_parallel = false;
+	// Use TSFL?
+	bool use_tsfl = false;
 
 	CommandLineProcessor  command_line_processor;
 	
@@ -114,6 +120,9 @@ int main(int argc, char* argv[] ) {
 	command_line_processor.set_option(
 		"in-parallel", "in-serial", &in_parallel
 		,"Determine if computations are performed in parallel or not" );
+	command_line_processor.set_option(
+		"use-tsfl", "no-use-tsfl", &use_tsfl
+		,"Determine whether to use TSFL vectors or not" );
 	
 	CommandLineProcessor::EParseCommandLineReturn
 		parse_return = command_line_processor.parse_command_line(argc,argv,&std::cerr);
@@ -145,13 +154,18 @@ int main(int argc, char* argv[] ) {
 		local_dim = ( proc_rank > 0
 					  ? ind_map[proc_rank]-ind_map[proc_rank-1]
 					  : ind_map[0] );
-		vec_space = rcp::rcp(new MPIDenseVectorSpace(MPI_COMM_WORLD,ind_map,true,1,n));
+		vec_space = mmp::rcp(new MPIDenseVectorSpace(MPI_COMM_WORLD,ind_map,true,1,n));
 	}
 	else {
 		//
 		// Use serial vectors
 		//
-		vec_space = rcp::rcp(new AbstractLinAlgPack::VectorSpaceSerial(n));
+		if( use_tsfl ) {
+			vec_space = mmp::rcp(new VectorSpaceTSFL(mmp::rcp(new TSFL::VectorSpaceSerial<value_type>(n))));
+		}
+		else {
+			vec_space = mmp::rcp(new AbstractLinAlgPack::VectorSpaceSerial(n));
+		}
 	}
 
 	// Create and test the NLP using this vector space object
