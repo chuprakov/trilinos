@@ -40,6 +40,13 @@ void PAROMETIS(idxtype *, idxtype *, idxtype *, idxtype *, idxtype *, idxtype *,
 
 
 /* gmetis.c */
+void ParMETIS_PartGeom(idxtype *vtxdist, int *ndims, float *xyz, idxtype *part, MPI_Comm *comm);
+void ParMETIS_PartGeomRefine(idxtype *vtxdist, idxtype *xadj, idxtype *adjncy,
+       idxtype *vwgt, idxtype *adjwgt, int *wgtflag, int *numflag, int *ndims,
+       float *xyz, int *options, int *edgecut, idxtype *part, MPI_Comm *comm) ;
+void ParMETIS_PartGeomKway(idxtype *vtxdist, idxtype *xadj, idxtype *adjncy, idxtype *vwgt,
+       idxtype *adjwgt, int *wgtflag, int *numflag, int *ndims, float *xyz, int *nparts,
+       int *options, int *edgecut, idxtype *part, MPI_Comm *comm);
 void ParMETIS_PartGraphGeomKway(idxtype *, idxtype *, idxtype *, idxtype *, idxtype *, int *, int *, int *, float *, int *, int *, int *, idxtype *, MPI_Comm *);
 void ParMETIS_PartGraphGeomRefine(idxtype *, idxtype *, idxtype *, idxtype *, idxtype *, int *, int *, int *, float *, int *, int *, idxtype *, MPI_Comm *);
 void ParMETIS_PartGraphGeom(idxtype *, int *, float *, idxtype *, MPI_Comm *);
@@ -82,6 +89,7 @@ void WritePVector(char *, idxtype *, idxtype *, MPI_Comm);
 
 
 /* util.c */
+int idxsum(int n, idxtype *x);
 void errexit(char *,...);
 void myprintf(CtrlType *, char *f_str,...);
 void rprintf(CtrlType *, char *f_str,...);
@@ -93,7 +101,7 @@ int *ismalloc(int, int, char *);
 idxtype *idxsmalloc(int, idxtype, char *);
 void *GKmalloc(int, char *);
 #endif
-/*void GKfree(void **,...); */
+void GKfree(void **,...); 
 int *iset(int n, int val, int *x);
 idxtype * idxset(int n, idxtype val, idxtype *x);
 int idxamax(int n, idxtype *x);
@@ -280,3 +288,13 @@ int GreaterThan(const void *, const void *);
 void ReadTestGraph(GraphType *, char *, MPI_Comm);
 float *ReadTestCoordinates(GraphType *, char *, int, MPI_Comm);
 void ReadMetisGraph(char *, int *, idxtype **, idxtype **);
+
+/* METISLIB */
+void METIS_PartGraphKway(int *, idxtype *, idxtype *, idxtype *, idxtype *, int *, int *, int *, int *, int *, idxtype *);
+void METIS_EdgeComputeSeparator(int *, idxtype *, idxtype *, idxtype *, idxtype *, int *, int *, idxtype *);
+void METIS_NodeComputeSeparator(int *, idxtype *, idxtype *, idxtype *, idxtype *, int *, int *, idxtype *);
+void METIS_PartGraphKway2(int *, idxtype *, idxtype *, idxtype *, idxtype *, int *, int *, int *, int *, int *, idxtype *);
+void METIS_WPartGraphRecursive(int *, idxtype *, idxtype *, idxtype *, idxtype *, int *, int *, int *, float *, int *, int *, idxtype *);
+void METIS_NodeND(int *, idxtype *, idxtype *, int *, int *, idxtype *, idxtype *);
+void METIS_NodeNDP(int, idxtype *, idxtype *, int, int *, idxtype *, idxtype *, idxtype *);
+

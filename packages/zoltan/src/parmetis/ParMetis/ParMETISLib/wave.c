@@ -118,7 +118,7 @@ int KWay_WavefrontDiffuser(CtrlType *ctrl, GraphType *graph, int nparts, float f
 
   /* printf("%d %d %5.3f\n", graph->mincut, totalv, balance); */
 
-  GKfree(&home, &pwgts, &trvec, &load, &perm, &rowptr, &colind, &transfer, &wspace, &tmpvec, LTERM);
+  GKfree((void **)&home, &pwgts, &trvec, &load, &perm, &rowptr, &colind, &transfer, &wspace, &tmpvec, LTERM);
 
   return (int)(balance * (float)(nparts*mean)) + totalv;
 }
@@ -273,7 +273,7 @@ int SortedKWay_WD(CtrlType *ctrl, GraphType *graph, int nparts)
 
   /* printf("%d %d %5.3f\n", graph->mincut, totalv, balance); */
 
-  GKfree(&home, &perm, &ed, &pwgts, &trvec, &load, &cand, &rowptr, &colind, &transfer, &wspace, &tmpvec, LTERM);
+  GKfree((void **)&home, &perm, &ed, &pwgts, &trvec, &load, &cand, &rowptr, &colind, &transfer, &wspace, &tmpvec, LTERM);
 
   return (int)(balance * (float)(nparts*mean)) + totalv;
 }

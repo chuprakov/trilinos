@@ -308,6 +308,7 @@ void FindVtxPerm(CtrlType *ctrl, GraphType *graph, idxtype *perm, WorkSpaceType 
 
 
 
+void
 CheckMGraph(CtrlType *ctrl, GraphType *graph)
 {
   int i, j, jj, k, nvtxs, firstvtx, lastvtx;

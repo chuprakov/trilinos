@@ -280,7 +280,7 @@ void GlobalMatch_HEM(CtrlType *ctrl, GraphType *graph, WorkSpaceType *wspace)
   IFSET(ctrl->dbglvl, DBG_TIME, MPI_Barrier(ctrl->comm));
   IFSET(ctrl->dbglvl, DBG_TIME, stoptimer(ctrl->MatchTmr));
 
-  GKfree(&nreqs_pe, LTERM);
+  GKfree((void **)&nreqs_pe, LTERM);
 
   IFSET(ctrl->dbglvl, DBG_TIME, starttimer(ctrl->ContractTmr));
   Global_CreateCoarseGraph(ctrl, graph, wspace, cnvtxs);
@@ -721,7 +721,7 @@ void Global_CreateCoarseGraph(CtrlType *ctrl, GraphType *graph, WorkSpaceType *w
   free(perm);
 
   if (rgraph != (idxtype *)wspace->degrees) 
-    GKfree(&rgraph, &sgraph, LTERM);
+    GKfree((void **)&rgraph, &sgraph, LTERM);
 
 }
 
@@ -1018,7 +1018,7 @@ void Local_CreateCoarseGraph(CtrlType *ctrl, GraphType *graph, WorkSpaceType *ws
   cgraph->adjwgt = idxmalloc(cnedges, "CreateCoarserGraph: cadjwgt");
   idxcopy(cnedges, cadjncy, cgraph->adjncy);
   idxcopy(cnedges, cadjwgt, cgraph->adjwgt);
-  GKfree(&cadjncy, &graph->where, LTERM); /* Note that graph->where works fine even if it is NULL */
+  GKfree((void **)&cadjncy, &graph->where, LTERM); /* Note that graph->where works fine even if it is NULL */
 
 }
 

@@ -89,7 +89,7 @@ void MultilevelOrder(CtrlType *ctrl, GraphType *graph, idxtype *order, idxtype *
   }
 
   FreeGraph(mgraph);
-  GKfree(&perm, &lastnode, &porder, &morder, LTERM);
+  GKfree((void **)&perm, &lastnode, &porder, &morder, LTERM);
 
   /* PrintVector(ctrl, 2*npes-1, 0, sizes, "SIZES"); */
 }
@@ -251,7 +251,7 @@ void CompactGraph(CtrlType *ctrl, GraphType *graph, idxtype *perm, WorkSpaceType
     xadj[i] = xadj[i-1];
   xadj[0] = 0;
 
-  GKfree(&graph->match, &graph->cmap, &graph->lperm, &graph->where, &graph->label, &graph->rinfo,
+  GKfree((void **)&graph->match, &graph->cmap, &graph->lperm, &graph->where, &graph->label, &graph->rinfo,
          &graph->nrinfo, &graph->lpwgts, &graph->gpwgts, &graph->sepind, &graph->peind,
          &graph->sendptr, &graph->sendind, &graph->recvptr, &graph->recvind, 
          &graph->imap, &graph->rlens, &graph->slens, &graph->rcand, &graph->pexadj, 

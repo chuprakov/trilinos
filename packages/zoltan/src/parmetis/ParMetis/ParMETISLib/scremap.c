@@ -75,7 +75,7 @@ void ParMETIS_RepartRemap(idxtype *vtxdist, idxtype *xadj, idxtype *adjncy,
           graph->mincut, 1.0*npes*graph->gpwgts[idxamax(npes, graph->gpwgts)]/(1.0*tvwgt),
           nmoved, maxin, maxout, maxin+maxout, npes, graph->gpwgts[idxamax(npes, graph->gpwgts)], tvwgt, graph->gnvtxs));
 
-  GKfree(&graph->vsize, LTERM);
+  GKfree((void **)&graph->vsize, LTERM);
   FreeInitialGraphAndRemap(graph, *wgtflag);
   FreeWSpace(&wspace);
   FreeCtrl(&ctrl);
@@ -146,7 +146,7 @@ void ParMETIS_RepartMLRemap(idxtype *vtxdist, idxtype *xadj, idxtype *adjncy,
           graph->mincut, 1.0*npes*graph->gpwgts[idxamax(npes, graph->gpwgts)]/(1.0*tvwgt),
           nmoved, maxin, maxout, maxin+maxout, npes, graph->gpwgts[idxamax(npes, graph->gpwgts)], tvwgt, graph->gnvtxs));
 
-  GKfree(&graph->vsize, LTERM);
+  GKfree((void **)&graph->vsize, LTERM);
   FreeInitialGraphAndRemap(graph, *wgtflag);
   FreeWSpace(&wspace);
   FreeCtrl(&ctrl);

@@ -527,7 +527,7 @@ void KWayRefine(CtrlType *ctrl, GraphType *graph, WorkSpaceType *wspace, int npa
       break;
   }
 
-  GKfree(&update, &nupds_pe, &htable, &changed, &pperm, LTERM);
+  GKfree((void **)&update, &nupds_pe, &htable, &changed, &pperm, LTERM);
 
   IFSET(ctrl->dbglvl, DBG_TIME, stoptimer(ctrl->KWayTmr));
 }
@@ -785,7 +785,7 @@ void KWayRefineClean(CtrlType *ctrl, GraphType *graph, WorkSpaceType *wspace, in
       break;
   }
 
-  GKfree(&update, &nupds_pe, &htable, &changed, &pperm, &perm, LTERM);
+  GKfree((void **)&update, &nupds_pe, &htable, &changed, &pperm, &perm, LTERM);
 
   IFSET(ctrl->dbglvl, DBG_TIME, stoptimer(ctrl->KWayTmr));
 }
@@ -1118,7 +1118,7 @@ myprintf(ctrl, "*Node: %3d, Gain: %3d, From: %d, To: %d, Vwgt: %3d, Fwgt: %3d, T
   }
 
   MPI_Allreduce((void *)lpwgts, (void *)gpwgts, nparts, IDX_DATATYPE, MPI_SUM, ctrl->comm);
-  GKfree(&update, &nupds_pe, &htable, &changed, &perm, &pperm, &tocheck, LTERM);
+  GKfree((void **)&update, &nupds_pe, &htable, &changed, &perm, &pperm, &tocheck, LTERM);
 
   IFSET(ctrl->dbglvl, DBG_TIME, stoptimer(ctrl->KWayTmr));
 }
@@ -1469,7 +1469,7 @@ myprintf(ctrl, "*Node: %3d, Gain: %3d, From: %d, To: %d, Vwgt: %3d, Fwgt: %3d, T
   }
 
   MPI_Allreduce((void *)lpwgts, (void *)gpwgts, nparts, IDX_DATATYPE, MPI_SUM, ctrl->comm);
-  GKfree(&update, &nupds_pe, &htable, &changed, &perm, &pperm, &tocheck, &maxpush, LTERM);
+  GKfree((void **)&update, &nupds_pe, &htable, &changed, &perm, &pperm, &tocheck, &maxpush, LTERM);
 
   IFSET(ctrl->dbglvl, DBG_TIME, stoptimer(ctrl->KWayTmr));
 }

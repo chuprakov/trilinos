@@ -49,7 +49,7 @@ void PreAllocateMemory(CtrlType *ctrl, GraphType *graph, WorkSpaceType *wspace)
 void FreeWSpace(WorkSpaceType *wspace)
 {
 
-  GKfree(&wspace->core, 
+  GKfree((void **)&wspace->core, 
          &wspace->pv1, 
          &wspace->pv2, 
          &wspace->pv3,
@@ -123,7 +123,7 @@ void InitGraph(GraphType *graph)
 void FreeGraph(GraphType *graph) 
 {
 
-  GKfree(&graph->xadj, 
+  GKfree((void **)&graph->xadj, 
          &graph->vwgt,
          &graph->vsize,
          &graph->adjncy,
@@ -163,7 +163,7 @@ void FreeGraph(GraphType *graph)
 void FreeGraphContent(GraphType *graph) 
 {
 
-  GKfree(&graph->xadj, 
+  GKfree((void **)&graph->xadj, 
          &graph->vwgt,
          &graph->vsize,
          &graph->adjncy,
@@ -213,7 +213,7 @@ void FreeInitialGraphAndRemap(GraphType *graph, int wgtflag)
   }
 
   /* Free Metis's things */
-  GKfree(&graph->match, 
+  GKfree((void **)&graph->match, 
          &graph->cmap, 
          &graph->lperm, 
          &graph->where, 
@@ -238,9 +238,9 @@ void FreeInitialGraphAndRemap(GraphType *graph, int wgtflag)
          LTERM);
 
   if ((wgtflag&2) == 0) 
-    GKfree(&graph->vwgt, &graph->vsize, LTERM);
+    GKfree((void **)&graph->vwgt, &graph->vsize, LTERM);
   if ((wgtflag&1) == 0) 
-    GKfree(&graph->adjwgt, LTERM);
+    GKfree((void **)&graph->adjwgt, LTERM);
 
   free(graph);
 }

@@ -128,7 +128,7 @@ void ComputeTotalVReMap(CtrlType *ctrl, idxtype *lpwgts, idxtype *map, WorkSpace
         map[i] = i;
     }
 
-    GKfree(&mvmat, &order, LTERM);
+    GKfree((void **)&mvmat, &order, LTERM);
   }
 
   IFSET(ctrl->dbglvl, DBG_INFO, rprintf(ctrl, "Savings from remapping: %d\n", nsaved)); 
@@ -229,7 +229,7 @@ void ComputeTotalVReMap1(CtrlType *ctrl, idxtype *lpwgts, idxtype *map, WorkSpac
     free(orgwgt);
   }
 
-  GKfree(&order, LTERM);
+  GKfree((void **)&order, LTERM);
 
   IFSET(ctrl->dbglvl, DBG_INFO, rprintf(ctrl, "Savings from remapping: %d\n", nsaved)); 
 

@@ -82,7 +82,7 @@ void InitPartition(CtrlType *ctrl, GraphType *graph, WorkSpaceType *wspace, int 
     MPI_Scatterv((void *)part, sendcounts, displs, IDX_DATATYPE, 
                  (void *)graph->where, graph->nvtxs, IDX_DATATYPE, 0, ctrl->comm);
 
-    GKfree(&sendcounts, &displs, LTERM);
+    GKfree((void **)&sendcounts, &displs, LTERM);
   }
 
   free(part);
@@ -177,7 +177,7 @@ void InitPartition_RB(CtrlType *ctrl, GraphType *graph, WorkSpaceType *wspace, i
   }
 
   FreeGraph(agraph);
-  GKfree(&gwhere0, &gwhere1, &part, LTERM);
+  GKfree((void **)&gwhere0, &gwhere1, &part, LTERM);
 
   IFSET(ctrl->dbglvl, DBG_TIME, stoptimer(ctrl->InitPartTmr));
 
@@ -238,7 +238,7 @@ GraphType *AssembleGraph(CtrlType *ctrl, GraphType *graph, WorkSpaceType *wspace
     MPI_Gatherv((void *)mygraph, mysize, IDX_DATATYPE, (void *)(ggraph+2), 
                    recvcounts, displs, IDX_DATATYPE, 0, ctrl->comm);
 
-    GKfree(&recvcounts, &displs, LTERM);
+    GKfree((void **)&recvcounts, &displs, LTERM);
     if (mysize > wspace->maxcore)
       free(mygraph);
   }

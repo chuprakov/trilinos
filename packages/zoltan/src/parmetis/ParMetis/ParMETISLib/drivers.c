@@ -307,7 +307,7 @@ void AdaptiveReMap_Partition(CtrlType *ctrl, GraphType *graph, WorkSpaceType *ws
     ComputePartitionParams(ctrl, graph, wspace);
     KWayRefine(ctrl, graph, wspace, NGR_PASSES, UNBALANCE_FRACTION);
     ReMapGraph(ctrl, graph, 1, wspace);
-    GKfree(&graph->rinfo, &graph->lpwgts, &graph->gpwgts, LTERM);
+    GKfree((void **)&graph->rinfo, &graph->lpwgts, &graph->gpwgts, LTERM);
 
     if (graph->finer == NULL) { /* Do that only of no-coarsening took place */
       ComputePartitionParams(ctrl, graph, wspace);

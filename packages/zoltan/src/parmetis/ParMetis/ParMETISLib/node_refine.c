@@ -352,7 +352,7 @@ void KWayNodeRefine(CtrlType *ctrl, GraphType *graph, WorkSpaceType *wspace, int
   for (i=0; i<nvtxs+graph->nrecv; i++)
     where[i] = SelectWhere(where[i]);
 
-  GKfree(&update, &nupds_pe, &htable, &changed, LTERM);
+  GKfree((void **)&update, &nupds_pe, &htable, &changed, LTERM);
 
   IFSET(ctrl->dbglvl, DBG_TIME, stoptimer(ctrl->KWayTmr));
 }

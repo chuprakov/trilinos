@@ -47,7 +47,7 @@ void PQueueFree(PQueueType *queue)
 {
   queue->maxnnodes = 0;
 
-  GKfree(&queue->iperm, &queue->perm, &queue->values, LTERM);
+  GKfree((void **)&queue->iperm, &queue->perm, &queue->values, LTERM);
 }
 
 

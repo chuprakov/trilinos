@@ -83,7 +83,7 @@ void InitDiffusion(CtrlType *ctrl, GraphType *graph, WorkSpaceType *wspace)
   MPI_Scatterv((void *)agraph->where, sendcounts, displs, IDX_DATATYPE, 
                (void *)graph->where, graph->nvtxs, IDX_DATATYPE, gpecut[1], ctrl->comm);
 
-  GKfree(&sendcounts, &displs, LTERM);
+  GKfree((void **)&sendcounts, &displs, LTERM);
 
   FreeGraph(agraph);
 
@@ -146,7 +146,7 @@ GraphType *AssembleAdaptiveGraph(CtrlType *ctrl, GraphType *graph, WorkSpaceType
 
   /* MPI_Bcast((void *)ggraph, gsize, IDX_DATATYPE, 0, ctrl->comm); */
 
-  GKfree(&recvcounts, &displs, LTERM);
+  GKfree((void **)&recvcounts, &displs, LTERM);
   if (mysize > wspace->maxcore)
     free(mygraph);
 

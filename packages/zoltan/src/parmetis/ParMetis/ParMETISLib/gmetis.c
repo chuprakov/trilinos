@@ -314,7 +314,7 @@ void ParMETIS_PartGeom(idxtype *vtxdist, int *ndims, float *xyz, idxtype *part, 
   FreeWSpace(&wspace);
   FreeCtrl(&ctrl);
 
-  GKfree(&xadj, &adjncy, LTERM);
+  GKfree((void **)&xadj, &adjncy, LTERM);
 }
 
 

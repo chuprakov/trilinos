@@ -135,7 +135,7 @@ void InitMultisection(CtrlType *ctrl, GraphType *graph, WorkSpaceType *wspace)
   MPI_Scatterv((void *)agraph->where, sendcounts, displs, IDX_DATATYPE, 
                (void *)graph->where, graph->nvtxs, IDX_DATATYPE, 0, ctrl->comm);
 
-  GKfree(&sendcounts, &displs, &label, LTERM);
+  GKfree((void **)&sendcounts, &displs, &label, LTERM);
 
   FreeGraph(agraph);
 
@@ -200,7 +200,7 @@ GraphType *AssembleMultisectedGraph(CtrlType *ctrl, GraphType *graph, WorkSpaceT
   ggraph = (gsize <= wspace->maxcore-mysize ? wspace->core+mysize : idxmalloc(gsize, "AssembleGraph: ggraph"));
   MPI_Allgatherv((void *)mygraph, mysize, IDX_DATATYPE, (void *)ggraph, recvcounts, displs, IDX_DATATYPE, ctrl->comm);
 
-  GKfree(&recvcounts, &displs, LTERM);
+  GKfree((void **)&recvcounts, &displs, LTERM);
   if (mysize > wspace->maxcore)
     free(mygraph);
 
