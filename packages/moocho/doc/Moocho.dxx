@@ -47,7 +47,7 @@ In the future this docuentation will be much more extensive.
 		of general vector (and array) reduction/transformation operators.
 	<li> <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>: C++ interfaces
 		for vectors, matrices and related linear algebra objects based on 
-		<A HREF="../RTOpPack/html/index.html">RTOpPack</A>.
+		<tt>%RTOpPack</tt>.
 	<li> <A HREF="../LinAlgPack/html/index.html">LinAlgPack</A>: Concreate C++ classes
 		for dense BLAS compatible linear algebra . *** Not updated yet!
 	<li> <A HREF="../SparseLinAlgPack/html/index.html">SparseLinAlgPack</A>: Concreate C++ classes
