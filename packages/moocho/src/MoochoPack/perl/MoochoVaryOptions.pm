@@ -7,7 +7,7 @@ require      Exporter;
 use strict;
 
 ##################################################
-# 
+#
 # Class for varying rSQP++ options for an NLP
 #
 # ToDo: Finish documentation!
