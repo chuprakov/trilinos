@@ -38,8 +38,8 @@ namespace QPSchurPack {
 
        =>
 
-  (3)   [     xl     ]    [   I       ]       [     xu     ]
-        [  cl_breve  ] <= [  A_breve' ]*x  <= [  cu_breve  ]
+  (3)   [     xl     ]    [  I        ]          [     xu     ]
+        [  cl_breve  ] <= [  A_breve' ] * x  <=  [  cu_breve  ]
 
        =>
 
@@ -47,25 +47,25 @@ namespace QPSchurPack {
 
   \end{verbatim}
   * 
-  * The main responcibility of this class is to expose a
-  * MatrixWithOp object for A_bar shown in (2) and to compute
-  * constraint violations.
+  * The main responsibility of this class is to expose a
+  * MatrixWithOp object for A_bar shown in (2) and to pick
+  * violated constraints.
   */
 class ConstraintsRelaxedStd : public Constraints {
 public:
 
 	///
-	/** Set the feasibility tolerance for the bound constriants.
+	/** <<std comp>> members for feasibility tolerance for the bound constriants.
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, bounds_tol )
 
 	///
-	/** Set the feasibility tolerance for the general inequality constraints.
+	/** <<std comp>> members for feasibility tolerance for the general inequality constraints.
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, inequality_tol )
 
 	///
-	/** Set the feasibility tolerance for the general equality constriants.
+	/** <<std comp>> members for feasibility tolerance for the general equality constriants.
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, equality_tol )
 
@@ -77,7 +77,7 @@ public:
 	};
 
 	///
-	/** <<std member comp>> members policy used to select a violated constraint.
+	/** <<std comp>> members for policy used to select a violated constraint.
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( EInequalityPickPolicy, inequality_pick_policy )
 
@@ -88,40 +88,31 @@ public:
 	///
 	/** Initialize constriants.
 	  *
-	  * If there are no variable bounds then set:
-	  * void(dL) == void(dU) == NULL
+	  * If there are no variable bounds then set:\\
+	  * #void(dL) == void(dU) == NULL#
 	  * 
 	  * If there are no general inequality constraints
-	  * then set:
-	  * void(E) == void(b) == void(eL) == void(eU) == NULL
+	  * then set:\\
+	  * #void(E) == void(b) == void(eL) == void(eU) == NULL#
 	  * 
 	  * If there are no general equality constraints then
-	  * set:
-	  * void(F) = void(f) == NULL
+	  * set:\\
+	  * #void(F) = void(f) == NULL#
 	  * 
-	  * If check_F == false, then the equality constriants
-	  * in op(F) will not be checked as violated constriants.
+	  * If #check_F == false#, then the equality constriants
+	  * in #op(F)# will not be checked as violated constriants.
 	  * This is to facilitate the addition of the equality
 	  * constraints to the initial schur complement and therefore
 	  * these constraints should never be violated (except for
 	  * illconditioning).
 	  * The tolerances below which a constriant will not be considered
-	  * violated are given by bounds_tol, inequality_tol and equality_tol.
+	  * violated are given by #bounds_tol#, #inequality_tol# and #equality_tol#.
 	  * 
-	  * Here, Ed is updated within the function pick_violated(...) when the
-	  * options pick_policy == ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY
-	  * or pick_policy == ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY
-	  * are used.  For these polices it is guarrentteed that
-	  * Ed is set to the value op(E)*d on the last call the pick_violated(...)
-	  * in which none of the constriants is violated by mor than the
-	  * set tolerances and therefore the Primal-Dual algorithm will
-	  * terminate immediately.  This is to
-	  * save some computational work.  To skip computing this value, just
-	  * set Ed == NULL.  On return, if the current value for this->pick_policy()
-	  * does not equal any of the two options given above then it should
-	  * be assumed that Ed was not update on the last call to
-	  * pick_violated(...) and therefore Ed should not be considered current.
-	  * 
+	  * Here, #Ed# is updated (if #Ed != NULL#) within the function
+	  * #this->#\Ref{pick_violated}#(...)#.  This saves some computational work of
+	  * having to compute #op(E)*d# again.  To skip computing this value, just set
+	  * #Ed == NULL#.
+	  *
 	  * ToDo: Specify more concretely exactly what the criteria is for
 	  * considering that a constraint is violated or in picking the most
 	  * violated constraint.
@@ -167,29 +158,41 @@ public:
 	/** Here the next violated constraint to add to the active set is selected.
 	  *
 	  * Violated constraints are selected to to add to the active set in the following
-	  * order.
+	  * order:
 	  * \begin{itemize}
 	  * \item The equality constraints are added first, one at a time (if not already added
 	  *		as part of the warm start).
 	  * \item Add inequality constraints according according to the following options:
 	  *		\begin{itemize}   
-	  *		\item ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY
+	  *		\item #ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY#
 	  *			Check the variable bounds first and add the most violated.  If no
-	  *			variable bounds are violated by more than bounds_tol then check for
-	  *			the most violated inequality constraint by computing r = op(E)*d+b*eta then
-	  *			add the most violated bound (eL, eU).
-	  *		\item ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY
+	  *			variable bounds are violated by more than #this->bounds_tol()# then check for
+	  *			the most violated inequality constraint by computing #r = op(E)*d+b*eta# and
+	  *			add the most violated bound (#eL#, #eU#) if one exists.
+	  *		\item #ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY#
 	  *			Check the variable bounds first and add the most violated.  If no
-	  *			variable bounds are violated by more than bounds_tol then check for
-	  *			the first violated inequality constraint by computing e(j)'*(op(E)*d+b*eta)
-	  *			one constraint at a time (or a few at a time).  This option may be
-	  *			better if the cost of computing op(E)*d is significant.
-	  *		\item ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY
+	  *			variable bounds are violated by more than #this->bounds_tol()# then check for
+	  *			the first violated inequality constraint by computing #e(j)'*(op(E)*d+b*eta)#
+	  *			one or more constraints at a time.  This option may be
+	  *			better if the cost of computing #op(E)*d# is significant.
+	  *		\item #ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY#
 	  *			Select the most violated constraint from the variable bounds and the
 	  *			general inequality constraints by computing  r = op(E)*d+b*eta then
 	  *			add the most violated variable bound.  This option is always the most
 	  *			expensive but may result in less QP iterations.
 	  * \end{itemize}
+	  *
+	  * As a side effect, the vector pointed to by #Ed# which was passed to
+	  * #this->\Ref{initialize}#(...)# will be guarrenteed to be updated for
+	  * the current #op(E)*d#, where #d = x(1,nd)#, if any of the following is true:
+	  * \begin{itemize}
+	  * \item #j_viol == 0#
+	  * \item #this->pick_violated_policy() == ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY#
+	  * \item #this->pick_violated_policy() == ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY#
+	  *		#&& j_viol > this->n()#
+	  *	\end{itemize}
+	  * If none of the above criteria applies then the client can not assume that
+	  * #Ed# was updated and therefore the client must compute this value on its own.
 	  */
 	void pick_violated( const VectorSlice& x, size_type* j_viol, value_type* constr_val
 		, value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
@@ -222,7 +225,6 @@ protected:
 		/** Construct to unitinitialized.
 		  *
 		  * this->nd() == 0 after construction.
-		  *
 		  */
 		MatrixConstraints();
 
@@ -235,7 +237,6 @@ protected:
 		  * It is expected that the objects being
 		  * pointed to will not be resized or invalidated
 		  * since copies of data are not made!
-		  * 
 		  */
 		void initialize(
 			  size_type				nd

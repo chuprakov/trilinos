@@ -1,5 +1,12 @@
 // //////////////////////////////////////////////////////////////
 // ConstraintsRelaxedStd.cpp
+//
+// ToDo: 12/29/00: Consider scaling when determining if a
+// constraint is violated.  We should consider the size of
+// ||d(e[j](x))/d(x)||inf but this is expensive to compute
+// given the current interfaces.  We really need to rectify
+// this!
+//
 
 // disable VC 5.0 warnings about debugger limitations
 #pragma warning(disable : 4786)	
@@ -38,7 +45,7 @@ imp_max_element( const LinAlgPack::VectorSlice &v )
 
 // Update a maxinum violation
 //
-// If max(v(i)) < max_viol then this function
+// If max(v(i)) > max_viol then this function
 // sets max_viol = v(i) and max_viol_j = i and returns
 // true.  Otherwise it returns false.
 //
@@ -225,6 +232,7 @@ void ConstraintsRelaxedStd::pick_violated(
 	, value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
 	) const
 {
+	using LinAlgPack::norm_inf;
 	using SparseLinAlgPack::imp_sparse_bnd_diff;
 
 	if( x.size() != A_bar_.nd()+1 ) {
@@ -240,6 +248,7 @@ void ConstraintsRelaxedStd::pick_violated(
 		eta = x(nd+1);
 
 	Vector r;
+	bool Ed_computed = false;
 
 	// //////////////////////////////////////////////
 	// Check the equality constraints first
@@ -255,6 +264,7 @@ void ConstraintsRelaxedStd::pick_violated(
 	value_type 	max_bounds_viol 		= 0.0;
 	bool		max_bound_viol_upper	= false;
 	if( dL_ && ( dL_->nz() || dU_->nz() ) ) {
+		const value_type scale = 1.0 / (1.0 + norm_inf(d));
 		// r = dL - d
 		r.resize(nd);
 		imp_sparse_bnd_diff( +1, *dL_, BLAS_Cpp::lower, d, &r() );
@@ -264,7 +274,7 @@ void ConstraintsRelaxedStd::pick_violated(
 		max_bound_viol_upper
 			= imp_update_max_viol( r(), &max_bounds_viol, &max_bound_viol_j );
 
-		if( max_bounds_viol > bounds_tol_ )
+		if( scale * max_bounds_viol > bounds_tol_ )
 		{
 			*j_viol			= max_bound_viol_j;
 			*constr_val		= d(max_bound_viol_j);
@@ -311,6 +321,11 @@ void ConstraintsRelaxedStd::pick_violated(
 			// e = op(E)*d + b*eta
 			Vector e;
 			LinAlgOpPack::V_MtV( &e, *A_bar_.E(), A_bar_.trans_E(), d );
+			if(Ed_) {
+				*Ed_ = e;
+				Ed_computed = true;
+			}
+			const value_type scale = 1.0 / (1.0 + norm_inf(e));
 			LinAlgPack::Vp_StV( &e(), eta, *A_bar_.b() );
 			// r = eL - e
 			r.resize(A_bar_.m_in());
@@ -320,7 +335,8 @@ void ConstraintsRelaxedStd::pick_violated(
 			imp_sparse_bnd_diff( -1, *eU_, BLAS_Cpp::upper, e(), &r() );
 			max_inequality_viol_upper
 				= imp_update_max_viol( r(), &max_inequality_viol, &max_inequality_viol_j );
-			if( max_inequality_viol > max_bounds_viol && max_inequality_viol > inequality_tol_ )
+			if( max_inequality_viol > max_bounds_viol
+				&& scale * max_inequality_viol > inequality_tol_ )
 			{
 				*j_viol			= max_inequality_viol_j + nd + 1; // offset into A_bar
 				*constr_val		= e(max_inequality_viol_j);
@@ -334,9 +350,6 @@ void ConstraintsRelaxedStd::pick_violated(
 			else {
 				max_inequality_viol_j = 0;	// No general inequality constraints sufficiently violated.
 			}
-			// Ed = e
-			if(Ed_)
-				*Ed_ = e;
 		}
 	}
 
@@ -349,11 +362,15 @@ void ConstraintsRelaxedStd::pick_violated(
 	}
 
 	// If we get here then no constraint was found that violated any of the tolerances.
+	if(Ed_ && !Ed_computed) {
+		// Ed = op(E)*d
+		LinAlgOpPack::V_MtV( Ed_, *A_bar_.E(), A_bar_.trans_E(), d );
+	}
 	*j_viol			= 0;
 	*constr_val		= 0.0;
 	*viol_bnd_val	= 0.0;
 	*norm_2_constr	= 0.0;
-	*bnd			= FREE;	// Junk
+	*bnd			= FREE;	// Meaningless
 	*can_ignore		= false;
 }
 

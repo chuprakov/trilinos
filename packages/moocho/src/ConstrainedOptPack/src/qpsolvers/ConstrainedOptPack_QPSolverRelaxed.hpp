@@ -238,6 +238,11 @@ public:
 	  *							done internally.
 	  *	@param	lambda		[out] vector (size m_eq):  Lagrange multipilers for equality
 	  *							constraints.
+	  *	@param	Fd			[in/out] vector (size m_eq) If Fd!=NULL on input, then on output
+	  *							Fd will contain the product opt(F)*d for the value of
+	  *							d on output.  This is included to save user from having
+	  *							to perform this computation again if it has already been
+	  *							done internally.
 	  *
 	  *	@return
 	  *		#OPTIMAL_SOLUTION# : Returned point satisfies the optimality conditions

@@ -57,12 +57,11 @@ enum EBounds { FREE, UPPER, LOWER, EQUALITY };
 ///
 /** Represents the QP to be solved by QPSchur {abstract}.
   *
-  * In order to solve a QP clients must define subclasses
+  * In order to solve a QP, clients must define subclasses
   * for this interface and the \Ref{Constraints} interface
   * defined later.  This is where the specialized properties
-  * if the QP are exploited.  However, for certain types
-  * of QPs, standard implementation classes are defined
-  * elsewhere.
+  * of the QP are exploited.  For certain types of QPs, standard
+  * implementation classes can be defined.
   *
   * Here the QP is of the form:
   *
@@ -83,8 +82,9 @@ enum EBounds { FREE, UPPER, LOWER, EQUALITY };
 
   \end{verbatim}
   *
-  * Above, A_bar may represent variable bounds, general inequalities and equality constraints
-  * and these constraints are represented by the class \Ref{Constraints}.
+  * Above, #cl_bar <= A_bar'*x <= cu_bar# may represent variable bounds, general
+  * inequalities and equality constraints and these constraints are represented
+  * by the class \Ref{Constraints}.
   *
   * When solving the above QP using the schur complement QP solver we start out with
   * a KKT system with a subset of variables initially fixed at a bound:
@@ -122,13 +122,12 @@ enum EBounds { FREE, UPPER, LOWER, EQUALITY };
 		Q_X                  <: R^(n x n_X)
 
   \end{verbatim}
-  * This class is an interface for encapsulating this QP.  Operations
-  * are available for accessing g, G, A, Ko, vo, and fo as well as the mapping
-  * matrices Q_R and Q_X (both ordered by row).
-  * Also, operations are available for accessing
-  * data structures that describe the set of initially fixed and free
-  * variables.  See the \Ref{Constraints} interface for
-  * how to access the constraints in (1.c) and the matrix A_bar.
+  * This class is an interface for encapsulating this QP.  Operations are available
+  * for accessing #g#, #G#, #A#, #Ko#, #vo#, and #fo# as well as the mapping
+  * matrices #Q_R# and #Q_X# (both ordered by row). Also, operations are available
+  * for accessing data structures that describe the set of initially fixed and free
+  * variables.  See the \Ref{Constraints} interface for how to access the constraints
+  * in (1.c) and the matrix #A_bar#.
   */
 class QP {
 public:
@@ -263,8 +262,9 @@ public:
   * by the schur complement QP solver QPSchur {abstract}.
   *
   * This class is only ment to be used in conjunction with the class \Ref{QP}
-  * and QPSchur.  Its interface is designed to be minimal with respect to
-  * the needs of the QPSchur solver.
+  * and \Ref{QPSchur}.  Its interface is designed to be minimal with respect to
+  * the needs of the #QPSchur# solver.  However, this interface may be useful
+  * for any primal-dual QP solver.
   *
   * These constraints are:
   \begin{verbatim}
@@ -292,12 +292,12 @@ public:
 
   \end{verbatim}
   *
-  * Here m_bar = n + m_breve
+  * Here #m_bar = n + m_breve#
   *
-  * Above, some of the bounds in xl, xu, cl_breve, and cu_breve may be -inf and +inf
-  * and will therefore never be violated and never be added to the active set.
+  * Above, some of the bounds in #xl#, #xu#, #cl_breve#, and #cu_breve# may be #-inf#
+  * or #+inf# and will therefore never be violated and never be added to the active set.
   * Also, some of the lower and upper bounds may be equal which turns those
-  * constraints into equality constraints (or fixed variables).
+  * inequality constraints into equality constraints (or fixed variables).
   */
 class Constraints {
 public:
@@ -326,14 +326,14 @@ public:
 	///
 	/** Pick a violated constraint.
 	  *
-	  * @param	x			 [I] Trial point to pick a violated constraint at.
-	  * @param	j_viol		 [O] Indice of violated constraint.  j_viol = 0 if
+	  * @param	x			 [in] Trial point to pick a violated constraint at.
+	  * @param	j_viol		 [out] Indice of violated constraint.  j_viol = 0 if
 	  *							 no constraint is violated by more that some tolerance.
-	  * @param	constr_val	 [O] The value if the violated constraint a_bar(j)'*x.
-	  * @param	viol_bnd_val [O] The value if the violated bound.
-	  * @param	norm_2_constr	 [O] The 2 norm of the violated constraint ||a_bar(j)||2
-	  * @param	bnd			 [O] Classification of the bound being violated.
-	  * @param	can_ignore	 [O] True if the constraint can be ignored if it is linearly
+	  * @param	constr_val	 [out] The value if the violated constraint a_bar(j)'*x.
+	  * @param	viol_bnd_val [out] The value if the violated bound.
+	  * @param	norm_2_constr[out] The 2 norm of the violated constraint ||a_bar(j)||2
+	  * @param	bnd			 [out] Classification of the bound being violated.
+	  * @param	can_ignore	 [out] True if the constraint can be ignored if it is linearly
 	  *							 dependent.
 	  */
 	virtual void pick_violated( const VectorSlice& x, size_type* j_viol, value_type* constr_val
@@ -348,8 +348,8 @@ public:
 	///
 	/** Return the bound for a constraint.
 	  *
-	  * @param	j	[I]		Indice of the constraint of the bound to obtain.
-	  * @param	bnd	[I]		Which bound to obtain (UPPER or LOWER).
+	  * @param	j	[in] Indice of the constraint of the bound to obtain.
+	  * @param	bnd	[in] Which bound to obtain (UPPER or LOWER).
 	  * @return
 	  *		xl(j) [ 0 < j < n, bnd == LOWER ]\\ 
 	  *		xu(j) [ 0 < j < n, bnd == UPPER ]\\ 
@@ -366,7 +366,9 @@ public:
 /** Solves a Quadratic Program with a primal-dual QP method
   * using a schur complement.
   *
-  * ToDo : finish documentation
+  * See the paper "QPSchur: A Primal-Dual Active-Set Quadratic Programming
+  * Algorithm Using a Schur Complement Factorization Method" for a description
+  * of what this class does.
   */
 class QPSchur {
 public:
@@ -470,51 +472,53 @@ public:
 		);
 
 	///
-	/** Solve a QP
+	/** Solve a QP.
 	  *
-	  * @param	qp	[I] The abstraction of the QP being solved
+	  * @param	qp	[in] The abstraction for the QP being solved
 	  * @param	num_act_change
-	  * 			[I] The number of changes to the
+	  * 			[in] The number of changes to the
 	  *					active set before the primal-dual QP algorithm
 	  *					starts.
 	  * @param	ij_act_change
-	  * 			[I] Array (size num_act_change): specifying
+	  * 			[in] Array (size num_act_change): specifying
 	  *					how to initialize the active set.  If i = ij_act_change(s)
 	  *					< 0 then the initially fixed variable x(-i) is to be
 	  *					freed.  If j = ij_act_change(s) > 0 then the constraint
-	  *					a_bar(j)'*x is to be added to the active set.
-	  *	@param	bnd [I] Array (size num_act_change):  bnd(s) gives which bound to
+	  *					a_bar(j)'*x is to be added to the active set.  The order
+	  *					of these changes can significantly effect the performance
+	  *					of the algorithm if these change.
+	  *	@param	bnd [in] Array (size num_act_change):  bnd(s) gives which bound to
 	  *					make active.  If ij_act_change(s) < 0 then this is ignored.
-	  * @param	out [O] output stream.  Iteration information is printed to according
+	  * @param	out [out] output stream.  Iteration information is printed according
 	  *					to output_level.  If #output_level == NO_OUTPUT# then #out# may
-	  *					be #NULL#.  If out==NULL, then output_level is forced to NO_OUTPUT
+	  *					be #NULL#.  If #out==NULL#, then output_level is forced to #NO_OUTPUT#
 	  * @param	output_level
-	  * 			[I] Specifies the level of output.
+	  * 			[in] Specifies the level of output (see \Ref{EOutputLevel}).
 	  *	@param	test_what
-	  *				[I]	Determines if internal validation tests are performed.
+	  *				[in] Determines if internal validation tests are performed.
 	  *					The optimality conditions for the QP are not checked
-	  *					internally, this is something that client can (and should)
-	  *					do independentlyr).
+	  *					internally, since this is something that client can
+	  *					(and should) do independently.
 	  *					RUN_TESTS : As many validation/consistency tests
 	  *						are performed internally as possible.  If a test
 	  *						fails then a TestFailed execption will be thrown.
 	  *					NO_TEST : No tests are performed internally.  This is
 	  *						to allow the fastest possible execution.
-	  * @param	x	[O] vector (size qp.n()): Solution or current iteration value
-	  * @param	mu 	[O]	sparse vector (size qp.n()): Optimal lagrange multipliers for
+	  * @param	x	[out] vector (size qp.n()): Solution or current iteration value
+	  * @param	mu 	[out] sparse vector (size qp.n()): Optimal lagrange multipliers for
 	  * 				bound constraints.  On output mu->is_sorted() == true.
 	  * @param	lambda
-	  * 			[O] vector (size q.m()): Optimal lagrange multipliers for
+	  * 			[out] vector (size q.m()): Optimal lagrange multipliers for
 	  *					equality constraints.
 	  * @param	lambda_breve
-	  * 			[O] sparse vector (size qp.constraints().m_breve()) for the active constraints
-	  * 				in A_breve.  On output lambda_breve->is_sorted() == true.
-	  *	@param	iter [O] The number of warm start drops and primal-dual iterations.
-	  *	@param	num_adds [O] The number of updates to the active set where a variable
-	  *					was added.  These do not include variables added in a warm start.
-	  *	@param	num_drops [0] The number of updates to the active set where a variable
-	  *					was dropped.  These include variables dropped during a warm start
-	  *					and during the normal QP iterations.
+	  * 			[out] sparse vector (size qp.constraints().m_breve()) for the active
+	  *					constraints in A_breve.  On output lambda_breve->is_sorted() == true.
+	  *	@param	iter [out] The number of warm start drops and primal-dual iterations.
+	  *	@param	num_adds [out] The number of updates to the active set where a constraint
+	  *					was added.  These do not include initially fixed variables.
+	  *	@param	num_drops [out] The number of updates to the active set where a constraint
+	  *					was dropped.  These include constraints dropped during a warm start
+	  *					as well as during the primal-dual QP iterations.
 	  */
 	virtual
 	ESolveReturn solve_qp(
@@ -533,7 +537,9 @@ public:
 	/** Represents the matrix U_hat. 
 	  *
 	  * This matrix is only ment to be an aggregate of and ActiveSet
-	  * object and is only managed by the ActiveSet object.
+	  * object and is only managed by the ActiveSet object.  It is made
+	  * public so that clients can developed specialized implementations
+	  * if needed.
 	  */
 	class U_hat_t : public MatrixWithOp {
 	public:
@@ -962,7 +968,6 @@ protected:
 	  * By default, the algorithm should start with
 	  * first_step = PICK_VIOLATED_CONSTRAINT if we are starting
 	  * with a dual feasible point.
-	  * 
 	  */
 	virtual
 	ESolveReturn qp_algo(
@@ -975,7 +980,7 @@ protected:
 	///
 	/** Set the values in x for all the variables.
 	  *
-	  * @param	set_fixed	[I]	If true then those variables that where initially
+	  * @param	set_fixed	[in] If true then those variables that where initially
 	  *							free are specifically fixed to their bounds.
 	  */
 	virtual void set_x( const ActiveSet& act_set, const VectorSlice& v, VectorSlice* x );
