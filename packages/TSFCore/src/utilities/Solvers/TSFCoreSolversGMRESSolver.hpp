@@ -291,11 +291,7 @@ SolveReturn GMRESSolver<Scalar>::localSolve(
 #ifdef TSFCORE_GMRES_HACKED_PRINT_STATEMENTS
 		std::cout << "\nGMRESSolver::solve(): ||r0|| = " << r0_nrm_ << std::endl;
 #endif
-#ifdef TSFCORE_GMRES_USE_DOT_FOR_SCALAR_PROD	
-		rel_r_nrm_ = r0_nrm_ / ( one + norm_b );
-#else
-		rel_r_nrm_ = r0_nrm_ / ( one + norm_b );
-#endif
+		rel_r_nrm_ = r0_nrm_ / norm_b;
 		//
 		// Do the GMRES iterations
 		//
