@@ -93,7 +93,7 @@ public:
 	typedef StrideIterPack::stride_iter<const value_type*
 		, value_type, const value_type&, const value_type*
 		, difference_type>									const_iterator;
-#ifdef _WINDOWS
+#if defined(_INTEL_CXX) || defined (_INTEL_CXX)
 	typedef std::reverse_iterator<iterator, value_type
 		, value_type&, value_type*, difference_type>		reverse_iterator;
 	typedef std::reverse_iterator<const_iterator
@@ -451,7 +451,7 @@ public:
 	typedef ptrdiff_t								difference_type;
 	typedef value_type*								iterator;
 	typedef const value_type*						const_iterator;
-#ifdef _WINDOWS
+#if defined(_INTEL_CXX) || defined(_WINDOWS)
 	typedef std::reverse_iterator<iterator, value_type
 		, value_type&, value_type*, difference_type>		reverse_iterator;
 	typedef std::reverse_iterator<const_iterator
