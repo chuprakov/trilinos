@@ -89,7 +89,6 @@ ConstraintsRelaxedStd::ConstraintsRelaxedStd()
 		,dU_(NULL)
 		,eL_(NULL)
 		,eU_(NULL)
-		,f_(NULL)
 		,Ed_(NULL)
 		,last_added_j_(0)
 		,last_added_bound_(0.0)
@@ -103,6 +102,7 @@ void ConstraintsRelaxedStd::initialize(
 	, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
 		, const SpVectorSlice* eL, const SpVectorSlice* eU
 	, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f	
+	, size_type m_undecomp, const size_type j_f_undecomp[]
 	, VectorSlice* Ed
 	, bool check_F
 	, value_type bounds_tol
@@ -113,6 +113,8 @@ void ConstraintsRelaxedStd::initialize(
 	size_type
 		m_in = 0,
 		m_eq = 0;
+
+	assert( m_undecomp == (F ? f->size() : 0) ); // ToDo: support undecomposed equalities in future.
 
 	// Validate that the correct sets of constraints are selected
 	if( dL && !dU )
@@ -163,15 +165,14 @@ void ConstraintsRelaxedStd::initialize(
 			throw std::invalid_argument( "QPSolverRelaxed::solve_qp(...) : Error, "
 				"f->size() != op(F).rows()." );
 	}
-
-	// Initialize members
-	A_bar_.initialize(nd,m_in,m_eq,E,trans_E,b,F,trans_F,f);
+	
+	// Initialize other members
+	A_bar_.initialize(nd,m_in,m_eq,E,trans_E,b,F,trans_F,f,m_undecomp,j_f_undecomp);
 	etaL_			= etaL;
 	dL_				= dL;
 	dU_				= dU;
 	eL_				= eL;
 	eU_				= eU;
-	f_				= f;
 	Ed_				= Ed;
 	check_F_		= check_F;
 	bounds_tol_		= bounds_tol;
@@ -439,7 +440,7 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 			case QPSchurPack::EQUALITY:
 			case QPSchurPack::LOWER:
 			case QPSchurPack::UPPER:
-				return -(*f_)(j_local);
+				return -(*A_bar_.f())(j_local);
 			default:
 				assert(0);
 		}
@@ -481,8 +482,32 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 	, const MatrixWithOp	*F
 	, BLAS_Cpp::Transp		trans_F
 	, const VectorSlice		*f
+	, size_type             m_undecomp
+	, const size_type       j_f_undecomp[]
 	)
 {
+	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
+
+	// Setup P_u
+	const bool test_setup = true; // Todo: Make this an argument!
+	P_u_row_i_.resize(m_undecomp);
+	P_u_col_j_.resize(m_undecomp);
+	if( m_undecomp > 0 ) {
+		const size_type
+			*j_f_u = j_f_undecomp;
+		row_i_t::iterator
+			row_i_itr = P_u_row_i_.begin();
+		col_j_t::iterator
+			col_j_itr = P_u_col_j_.begin();
+		for( size_type i = 1; i <= m_undecomp; ++i, ++j_f_u, ++row_i_itr, ++col_j_itr ) {
+			*row_i_itr = *j_f_u;
+			*col_j_itr = i;
+		}					
+		P_u_.initialize_and_sort(nd,m_undecomp,m_undecomp,0,0,GPMSTP::BY_ROW
+			,&P_u_row_i_[0],&P_u_col_j_[0],test_setup);
+	}
+	
+	// Set the rest of the members
 	nd_			= nd;
 	m_in_		= m_in;
 	m_eq_		= m_eq;
@@ -587,6 +612,9 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 	  VectorSlice* y, value_type a, BLAS_Cpp::Transp trans_rhs1
 	, const VectorSlice& x, value_type b) const
 {
+
+	assert( !F_ || P_u_.cols() == f_->size() ); // ToDo: Add P_u when needed!
+
 	using BLAS_Cpp::trans_not;
 	using LinAlgPack::dot;
 	using LinAlgPack::Vt_S;
@@ -703,6 +731,9 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 	, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type beta) const
 {
+
+	assert( !F_ || P_u_.cols() == f_->size() ); // ToDo: Add P_u when needed!
+
 	using BLAS_Cpp::trans_not;
 	using SparseLinAlgPack::dot;
 	using SparseLinAlgPack::Vp_StMtV;

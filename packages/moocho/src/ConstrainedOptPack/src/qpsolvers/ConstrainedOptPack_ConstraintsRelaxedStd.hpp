@@ -20,21 +20,21 @@ namespace QPSchurPack {
   \begin{verbatim}
   
   (1.2)               etaL <=  eta
-  (1.3)               dL   <=  d                       <= dU
-  (1.4)               eL   <=  op(E)*d - b*eta         <= eU
-  (1.5)                        op(F)*d + (1 - eta) * f  = 0
+  (1.3)               dL   <=  d                                 <= dU
+  (1.4)               eL   <=  op(E)*d - b*eta                   <= eU
+  (1.5)                        P_u'*op(F)*d + (1 - eta) * P_u'f  = 0
   
   \end{verbatim}
   *
   * These constraints are converted into the form:
   \begin{verbatim}
 
-       [ dL   ]     [ I           ]              [ dU   ]
-       [ etaL ] <=  [          1  ] * [  d  ] <= [ inf  ]
-  (2)  [ eL   ]     [ op(E)    -b ]   [ eta ]    [ eU   ]
-       [ -f   ]     [ op(F)    -f ]              [ -f   ]
-       \______/     \_____________/   \_____/    \______/
-        cL_bar           A_bar'          x        cU_bar
+       [ dL   ]     [ I                    ]              [ dU   ]
+       [ etaL ] <=  [                   1  ] * [  d  ] <= [ inf  ]
+  (2)  [ eL   ]     [ op(E)            -b  ]   [ eta ]    [ eU   ]
+       [ -f   ]     [ P_u'*op(F)   -P_u'*f ]              [ -f   ]
+       \______/     \______________________/   \_____/    \______/
+        cL_bar                A_bar'              x        cU_bar
 
        =>
 
@@ -124,6 +124,7 @@ public:
 		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
 			, const SpVectorSlice* eL, const SpVectorSlice* eU
 		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
+		, size_type m_undecomp, const size_type j_f_undecomp[]
 		, VectorSlice* Ed
 		, bool check_F = true
 		, value_type bounds_tol			= 1e-10
@@ -143,8 +144,8 @@ public:
 	  *
 	  \begin{verbatim}
 
-		A_bar = [  I   0  op(E')   op(F')  ]
-		        [  0   1    b'      -f'    ]
+		A_bar = [  I   0  op(E')   op(F')*P_u  ]
+		        [  0   1   -b'       -f'*P_u   ]
 
 	  \end{verbatim}
 	  *
@@ -202,18 +203,16 @@ public:
 	///
 	value_type get_bnd( size_type j, EBounds bnd ) const;
 
-protected:
-
 	// /////////////////////////////////////////////
-	// Protected types
+	// Public types
 
 	///
 	/** Matrix type for A_bar.
 	  *
 	  \begin{verbatim}
 
-		A_bar = [  I   0  op(E')   op(F')  ]
-		        [  0   1    b'      -f'    ]
+		A_bar = [  I   0  op(E')   op(F')*P_u  ]
+		        [  0   1   -b'       -f'*P_u   ]
 
 	  \end{verbatim}
 	  *
@@ -248,6 +247,8 @@ protected:
 			, const MatrixWithOp	*F
 			, BLAS_Cpp::Transp		trans_F
 			, const VectorSlice		*f
+			, size_type             m_undecomp
+			, const size_type       j_f_undecomp[]
 			);
 
 		// ///////////////////////
@@ -280,6 +281,9 @@ protected:
 		///
 		const VectorSlice*	f() const
 		{	return f_;	}
+		///
+		const GenPermMatrixSlice& P_u() const
+		{	return P_u_;	}
 
 
 		// ///////////////////////////////
@@ -311,6 +315,8 @@ protected:
 			, const SpVectorSlice& sv_rhs3, value_type beta) const;
 		
 	private:
+		typedef std::vector<size_type>		row_i_t;
+		typedef std::vector<size_type>		col_j_t;
 		size_type			nd_;	// # unknowns d
 		size_type			m_in_;	// # op(E)*d inequality constraints
 		size_type			m_eq_;	// # op(F)*d equality constraints
@@ -320,6 +326,9 @@ protected:
 		const MatrixWithOp	*F_;	// If NULL then no general equalities
 		BLAS_Cpp::Transp	trans_F_;
 		const VectorSlice	*f_;
+		GenPermMatrixSlice  P_u_;
+		row_i_t             P_u_row_i_;
+		col_j_t             P_u_col_j_;
 	};	// end class MatrixConstraints
 
 private:
@@ -329,7 +338,6 @@ private:
 		const SpVectorSlice *dU_;
 		const SpVectorSlice	*eL_;
 		const SpVectorSlice	*eU_;
-		const VectorSlice	*f_;
 		VectorSlice			*Ed_;
 		bool				check_F_;
 		mutable size_type	last_added_j_;			// Remember the last bound added so that
