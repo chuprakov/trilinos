@@ -99,6 +99,11 @@
 #include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinateDirect.h"
 #include "SparseLinAlgPack/include/sparse_bounds.h"
 
+// Stuff for exact reduced hessian
+#include "../../include/std/ReducedHessianExactStd_Step.h"
+#include "../../include/std/CrossTermExactStd_Step.h"
+#include "ConstrainedOptimizationPack/include/MatrixSymPosDefChol.h"	// rHL_k
+
 namespace ReducedSpaceSQPPack {
 
 rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
@@ -106,10 +111,14 @@ rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
 		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
 			Gc_iq_creator_ptr
 		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
-			U_iq_creator_ptr	)
+			U_iq_creator_ptr
+		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
+			HL_iq_creator_ptr
+		)
 	: basis_sys_ptr_(basis_sys_ptr)
 		, Gc_iq_creator_ptr_(Gc_iq_creator_ptr)
 		, U_iq_creator_ptr_(U_iq_creator_ptr)
+		, HL_iq_creator_ptr_(HL_iq_creator_ptr)
 		, qp_solver_type_(QPOPT)
 		, factorization_type_(AUTO_FACT)
 		, bigM_(-1.0)
@@ -119,6 +128,7 @@ rSQPAlgo_ConfigMamaJama::rSQPAlgo_ConfigMamaJama(
 		, line_search_method_(LINE_SEARCH_DIRECT)
 		, use_line_search_correct_kkt_tol_(-1.0)
 		, full_steps_after_k_(-1)
+		, exact_reduced_hessian_(false)
 		, quasi_newton_(QN_AUTO)
 		, hessian_initialization_(INIT_HESS_FIN_DIFF_SCALE_DIAGONAL_ABS)
 		, quasi_newton_dampening_(false)
@@ -240,7 +250,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 
 		matrix_iqa_creator_ptr_t matrix_iqa_creators[matrix_creator_t::num_MatrixWithOp] =
 		{
-			new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>(),						// Q_HL (not used)
+			HL_iq_creator_ptr_.get()																// HL
+				? HL_iq_creator_ptr_
+				: new IterQuantMatrixWithOpCreatorContinuous<GenMatrixSubclass>(),
 			Gc_iq_creator_ptr_.get()
 				? Gc_iq_creator_ptr_
 				: new IterQuantMatrixWithOpCreatorContinuous<COOMatrixWithPartitionedViewSubclass>(),// Q_Gc
@@ -1040,6 +1052,40 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		algo->insert_assoc_step( poss, GeneralIterationPack::PRE_STEP, 1
 			, "InitFiniteDiffReducedHessian"
 			, init_red_hess_step  );
+	}
+
+	// 6/13/00: Adding steps for the computation of the exact reduced Hessian
+	if( exact_reduced_hessian_ == true ) {
+
+		// Remove the ReducedHessian steps and all of its associated pre and
+		// post steps and add the exact calculation of the reduced Hessian
+		Algorithm::poss_type poss;
+		assert( (poss = algo->get_step_poss(ReducedHessian_name))
+			!= Algorithm::DOES_NOT_EXIST );
+		algo->remove_step( poss );
+		algo->insert_step(
+			  poss
+			, ReducedHessian_name
+			, new ReducedHessianExactStd_Step
+		  );
+
+		// Add the step for the exact computation of the reduced QP cross term
+		assert( (poss = algo->get_step_poss(DepDirec_name))
+			!= Algorithm::DOES_NOT_EXIST );
+		algo->insert_step(
+			  poss+1
+			, "ReducedQPCrossTerm"
+			, new CrossTermExactStd_Step
+		  );
+
+		// Change the type of the iteration quantity for rHL
+		typedef GeneralIterationPack::IterQuantityAccessContinuous<
+			ConstrainedOptimizationPack::MatrixSymPosDefChol>
+				iq_rHL_t;
+		algo->state().get_iter_quant(algo->state().get_iter_quant_id(rHL_name))
+			= AlgorithmState::IQ_ptr(new iq_rHL_t(1,rHL_name));
+
+		// That's it man!
 	}
 
 	// Desprite debugging stuff

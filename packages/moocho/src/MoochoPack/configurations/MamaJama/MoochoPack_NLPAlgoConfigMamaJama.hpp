@@ -54,11 +54,14 @@ public:
 
 	///
 	rSQPAlgo_ConfigMamaJama(
-		  ReferenceCountingPack::ref_count_ptr<BasisSystem> basis_sys_ptr = 0
+		  ReferenceCountingPack::ref_count_ptr<BasisSystem>
+			basis_sys_ptr = 0
 		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
 			Gc_iq_creator_ptr = 0
 		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
 			U_iq_creator_ptr = 0
+		, ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
+			HL_iq_creator_ptr = 0
 		);
 
 	///
@@ -123,6 +126,12 @@ public:
 	  */
 	void full_steps_after_k(int full_steps_after_k)
 	{	full_steps_after_k_ = full_steps_after_k; }
+
+	///
+	/** If set to true then the exact reduced hessian will be computed.
+	  */
+	void exact_reduced_hessian( bool exact_reduced_hessian )
+	{	exact_reduced_hessian_ = exact_reduced_hessian;	}
 
 	///
 	/** Set the Quasi-Newton method to use for the reduced hessian approximation
@@ -203,10 +212,13 @@ protected:
 		Gc_iq_creator_ptr_t;
 	typedef ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
 		U_iq_creator_ptr_t;
+	typedef ReferenceCountingPack::ref_count_ptr<IterQuantMatrixWithOpCreator>
+			HL_iq_creator_ptr_t;
 	
 	basis_sys_ptr_t		basis_sys_ptr_;	// Basis system object (if null will be set)
 	Gc_iq_creator_ptr_t	Gc_iq_creator_ptr_;	// IQA creator for Gc
 	U_iq_creator_ptr_t	U_iq_creator_ptr_;	// IQA creator for U which is N
+	HL_iq_creator_ptr_t	HL_iq_creator_ptr_;	// IQA creator for HL
 
 	EQPSolverType		qp_solver_type_;
 	EFactorizationType	factorization_type_;	// choosen by user
@@ -221,6 +233,7 @@ protected:
 	ELineSearchMethod	line_search_method_;
 	value_type 			use_line_search_correct_kkt_tol_;	// default = -1.0, don't change default
 	int					full_steps_after_k_;	// default = -1, do use this option at all.
+	bool				exact_reduced_hessian_;	// default = false
 	EQuasiNewton		quasi_newton_;
 	EHessianInitialization
 						hessian_initialization_;
