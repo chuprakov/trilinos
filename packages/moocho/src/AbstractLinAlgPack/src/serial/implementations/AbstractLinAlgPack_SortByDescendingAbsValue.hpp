@@ -17,7 +17,7 @@ public:
 	bool operator()( const SparseLinAlgPack::SpVector::element_type& x
 		, const SparseLinAlgPack::SpVector::element_type& y ) const
 	{
-		return ::abs(x.value()) > ::abs(y.value());
+		return ::fabs(x.value()) > ::fabs(y.value());
 	}
 };	// end class AbsMultVal
 

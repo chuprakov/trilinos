@@ -96,6 +96,10 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 		return true;
 	}
 
+	// Get matrix scaling
+	value_type
+		rHL_XX_scale = sTy > 0.0 ? yTy/sTy : 1.0;
+
 	// 
 	// Initialize or adjust the active set before the BFGS update
 	//
@@ -138,8 +142,6 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 					nu_indep, *s_bfgs, *y_bfgs
 					, &n_pz_R, &i_x_free[0], &sRTBRRsR, &sRTyR );  // We don't really want sRTRBBsR here
 				// rHL_XX = some_scaling * I
-				value_type
-					rHL_XX_scale = sTy > 0.0 ? yTy/sTy : 1.0;
 				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 					out	<< "\nScaling for diagonal rHL_XX = rHL_XX_scale*I, rHL_XX_scale = " << rHL_XX_scale << std::endl;
 				}
@@ -254,8 +256,6 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 		// will be left out of Q_R.  Some of these variables might already be in Q_R and B_RR
 		// and may still be in Q_R and B_RR after we are finished adjusting the sets Q_R and Q_X
 		// and we don't want to delete these rows/cols in B_RR just yet!
-		value_type
-			rHL_XX_scale = sTy > 0.0 ? yTy/sTy : 1.0;
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 			out	<< "\nScaling for diagonal rHL_XX = rHL_XX_scale*I, rHL_XX_scale = " << rHL_XX_scale << std::endl;
 		}
@@ -481,8 +481,62 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 void ReducedHessianSecantUpdateBFGSProjected_Strategy::print_step( std::ostream& out, const std::string& L ) const
 {
 	out
-		<< L << "*** Perform BFGS update on only free independent (super basic) variables.\n"
-		<< L << "ToDo: Finish implementation!\n";
+		<< L << "*** Perform BFGS update on only free independent (superbasic) variables.\n"
+		<< L << "if s'*y < sqrt(macheps) * ||s||2 * ||y||2 and use_dampening == false then"
+		<< L << "    Skip the update and exit this step!\n"
+		<< L << "end\n"
+		<< L << "rHL_XX_scale = max(y'*y/s'*y,1.0)\n"
+		<< L << "do_projected_rHL_RR = false\n"
+		<< L << "if nu_km1 is updated then\n"
+		<< L << "    if rHL_k.Q_R is the identity matrix then\n"
+		<< L << "        *** Determine if the active set has calmed down enough\n"
+		<< L << "        Given (num_active_indep,num_adds_indep,num_drops_indep) from act_set_stats_km1\n"
+		<< L << "        fact_same =\n"
+		<< L << "            ( num_adds_indep== NOT_KNOWN || num_drops_indep==NOT_KNOWN\n"
+		<< L << "            || num_active_indep==0\n"
+		<< L << "                ? 0.0\n"
+		<< L << "                : std::_MAX((num_active_indep-num_adds_indep-num_drops_indep)\n"
+		<< L << "                    /num_active_indep,0.0)\n"
+		<< L << "            )\n"
+		<< L << "        do_projected_rHL_RR\n"
+		<< L << "            = fact_same >= act_set_frac_proj_start && num_active_indep > 0\n"
+		<< L << "        if do_projected_rHL_RR == true then\n"
+		<< L << "            Determine the sets of superbasic variables given the mapping matrix\n"
+		<< L << "            Q = [ Q_R, Q_X ] where pz_R = Q_R'*pz <: R^n_pz_R are the superbasic variables and\n"
+		<< L << "            pz_X = Q_X'*pz <: R^n_pz_X are the nonbasic variables that only contain fixed\n"
+		<< L << "            variables in nu_km1(indep) where the following condidtions are satisfied:\n"
+		<< L << "                (s'*Q_X*rHL_XX_scale*Q_X'*s)/(s'*Q_R*Q_R'*rHL_k*Q_R*Q_R'*s) <= project_error_tol\n"
+		<< L << "                |s'*Q_X*Q_X'*y|/|s'*Q_R*Q_R'*s| <= project_error_tol\n"
+		<< L << "                |Q_X'*nu_km1(indep)|/||nu_km1(indep)||inf >= super_basic_mult_drop_tol\n"
+		<< L << "            if n_pz_R < n-r then\n"
+		<< L << "                Delete rows/columns of rHL_k to form rHL_RR = Q_R'*rHL_k*Q_R\n"
+		<< L << "                Define new rHL_k = [ Q_R, Q_X ] * [ rHL_RR, 0; 0; rHL_XX_scale*I ] [ Q_R'; Q_X ]\n"
+		<< L << "            else\n"
+		<< L << "                do_projected_rHL_RR = false\n"
+		<< L << "            end\n"
+		<< L << "        end\n"
+		<< L << "    else\n"
+		<< L << "        Determine the new Q_n = [ Q_R_n, Q_X_n ] that satisfies:\n"
+		<< L << "            (s'*Q_X_n*rHL_XX_scale*Q_X_n'*s)/(s'*Q_R_n*Q_R_n'*rHL_k*Q_R_n*Q_R_n'*s) <= project_error_tol\n"
+		<< L << "            |s'*Q_X_n*Q_X_n'*y|/|s'*Q_R_n*Q_R_n'*s| <= project_error_tol\n"
+		<< L << "            |Q_X_n'*nu_km1(indep)|/||nu_km1(indep)||inf >= super_basic_mult_drop_tol\n"
+		<< L << "        Remove rows/cols from rHL_k.rHL_RR for variables in rHL_k.Q_R that are not in Q_R_n.\n"
+		<< L << "        Add digonal entries equal to rHL_XX_scale to rHL_k.rHL_RR for variables in Q_R_n\n"
+		<< L << "        that are not in rHL_k.Q_R\n"
+		<< L << "        Define new rHL_k = [ Q_R_n, Q_X_n ] * [ rHL_k.rHL_RR, 0; 0; rHL_XX_scale*I ] [ Q_R_n'; Q_X_n ]\n"
+		<< L << "        do_projected_rHL_RR = true\n"
+		<< L << "    end\n"
+		<< L << "end\n"
+		<< L << "if do_projected_rHL_RR == true then\n"
+		<< L << "    Perform projected BFGS update (see below): (rHL_k.rHL_RR, Q_R_n'*s, Q_R_n'*y) -> rHL_k.rHL_RR\n"
+		<< L << "else\n"
+		<< L << "    Perform full BFGS update: (rHL_k, s, y) -> rHL_k\n"
+		<< L << "    begin BFGS update where B = rHL_k\n";
+	bfgs_update().print_step( out, L + "        " );
+	out
+		<< L << "    end BFGS update\n"
+		<< L << "else\n"
+		;
 }
 
 }  // end namespace ReducedSpaceSQPPack

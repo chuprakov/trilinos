@@ -77,13 +77,13 @@ const tri_gms MatrixSymPosDefLBFGS::Lb() const
 inline
 GenMatrixSlice MatrixSymPosDefLBFGS::STY()
 {
-	return STY_(1,m_bar_+1,1,m_bar_);
+	return STY_(1,m_bar_,1,m_bar_);
 }
 
 inline
 const GenMatrixSlice MatrixSymPosDefLBFGS::STY() const
 {
-	return STY_(1,m_bar_+1,1,m_bar_);
+	return STY_(1,m_bar_,1,m_bar_);
 }
 
 inline

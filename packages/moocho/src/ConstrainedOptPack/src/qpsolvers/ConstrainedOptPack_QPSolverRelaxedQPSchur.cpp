@@ -450,7 +450,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 			assert(0);
 	}
 	qp_stats_.set_stats(solution_type,qp_iter,num_adds,num_drops
-		,num_act_change > 0, *eta > 0.0 );
+		, num_act_change > 0 || n_X > 1, *eta > 0.0 );
 
 	return qp_stats_.solution_type();
 }

@@ -238,6 +238,7 @@ void ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::print_step( const 
 		<< L << "        else\n"
 		<< L << "            first_update = false\n"
 		<< L << "        end\n"
+		<< L << "        rHL_k = rHL_km1\n"
 		<< L << "        begin secant update\n"
 		<< L << "        (" << typeid(secant_update()).name() << ")\n"
 		;

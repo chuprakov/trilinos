@@ -22,7 +22,7 @@ namespace PBFGSPack {
  \begin{verbatim}
   ( num_adds_indep == NOT_KNOWN || num_drops_indep == NOT_KNOWN || num_active_indep == 0
  	  ? 0.0
-     : std::_MAX(((double)(num_active_indep)-num_adds-num_drops) / num_active_indep, 0.0
+     : std::_MAX(((double)(num_active_indep)-num_adds_indep-num_drops_indep) / num_active_indep, 0.0
    ) >= act_set_frac_proj_start
   &&
   num_active_indep > 0

@@ -127,8 +127,10 @@ void PBFGSPack::sort_fixed_max_cond_viol(
 		}
 	}
 	// Sort this sparse vector in decending order
-	std::sort( &sort_array[0], &sort_array[0] + sort_array.size()
-			   , SparseLinAlgPack::SortByDescendingAbsValue() );
+	std::sort(
+		&sort_array[0], &sort_array[0] + sort_array.size()
+		, SparseLinAlgPack::SortByDescendingAbsValue()
+		);
 	// Extract this ordering
 	{
 		for( size_type l = 0; l < nu_indep.nz(); ++l )
@@ -183,7 +185,7 @@ void PBFGSPack::choose_fixed_free(
 		max_nu_indep = norm_inf(nu_indep);
 	const bool
 		all_fixed = n_pz == nu_indep.nz();
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ACTIVE_SET) ) {
 		out << "\nmax{|nu_k(indep)|,i=r+1...n} = " << max_nu_indep            << std::endl
 			<< "super_basic_mult_drop_tol    = " << super_basic_mult_drop_tol << std::endl
 			<< "project_error_tol            = " << project_error_tol         << std::endl;
