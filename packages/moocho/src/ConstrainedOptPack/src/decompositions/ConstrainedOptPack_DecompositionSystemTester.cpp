@@ -24,6 +24,7 @@
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpNonsingularTester.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
 #include "AbstractLinAlgPack/include/assert_print_nan_inf.h"
@@ -390,6 +391,10 @@ bool DecompositionSystemTester::test_decomp_system(
 			*out << " : " << ( llresult ? "passed" : "failed" );
 	}
 
+	if(!lresult) success = false;
+	if( out && print_tests() == PRINT_BASIC )
+		*out << " : " << ( lresult ? "passed" : "failed" );
+
 	if(out && print_tests() >= PRINT_BASIC)
 		*out
 			<< "\n3) Check the compatibility of the matrices Gc, Gh Z, Y, R, Uz, Uy, Vz and Vy numerically ...";
@@ -724,7 +729,40 @@ bool DecompositionSystemTester::test_decomp_system(
 
 	assert(Vz == NULL && Vy == NULL); // ToDo: 3.c) Check Vz and Vy
 
-	// ToDo: 3.d) Check op(R*inv(R)) \approx I
+	if(R) {
+		if(out && print_tests() >= PRINT_MORE)
+			*out
+				<< std::endl
+				<< "\n3.b) Check consistency of: op(op(inv(R))*op(R)) == I ...\n";
+		typedef MatrixWithOpNonsingularTester  MWONST_t;
+		MWONST_t::EPrintTestLevel
+			olevel;
+		switch(print_tests()) {
+			case PRINT_NONE:
+			case PRINT_BASIC:
+				olevel = MWONST_t::PRINT_NONE;
+				break;
+			case PRINT_MORE:
+				olevel = MWONST_t::PRINT_MORE;
+				break;
+			case PRINT_ALL:
+				olevel = MWONST_t::PRINT_ALL;
+				break;
+			default:
+				assert(0); // Should not get here
+		}
+		MWONST_t
+			R_tester(
+				MWONST_t::TEST_LEVEL_2_BLAS
+				,olevel
+				,dump_all()
+				,throw_exception()
+				,num_random_tests()
+				,solve_warning_tol()
+				,solve_error_tol()
+				);
+		lresult = R_tester.test_matrix(*R,"R",out);
+	}
 
 	if(!lresult) success = false;
 	if( out && print_tests() == PRINT_BASIC )
