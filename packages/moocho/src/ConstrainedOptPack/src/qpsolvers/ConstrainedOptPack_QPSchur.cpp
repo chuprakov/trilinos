@@ -264,7 +264,7 @@ void calc_p_mu_D(
 }
 
 //
-// Correct a nearly degenerate lagrange multiplier
+// Correct a nearly degenerate Lagrange multiplier
 //
 // If < 0 is returned it means that the multiplier could not
 // be corrected and this should be nonsidered an error.  In this
@@ -2567,8 +2567,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					return OPTIMAL_SOLUTION;	// current point is optimal.
 				}
 
-				*** ToDo: Combine the following two conditions into one and deal with
-							  *** the problem of (most violated, extra feas tol etc.)			  
+// ToDo: Combine the following two conditions into one and deal with
+// the problem of (most violated, extra feas tol etc.)			  
 
 				if( sa != 0 || ( act_set->is_init_fixed(ja) && act_set->s_map(-ja) == 0 ) )
 				{
