@@ -24,6 +24,7 @@
 #include "GeneralIterationPack/include/cast_iq.h"
 #include "GeneralIterationPack/include/IterQuantityAccessContiguous.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
+#include "AbstractLinAlgPack/include/Permutation.h"
 #include "ConstrainedOptimizationPack/include/DecompositionSystem.h"
 #include "AbstractLinAlgPack/include/MatrixWithOp.h"
 //#include "LinAlgPack/include/IVector.h"
@@ -196,11 +197,11 @@ CLASS::NAME() const                                                       \
  * that is called on *this for the maximum safety and to avoid strage
  * behavior.
  */
-#define RSQP_STATE_VECTOR_IQ_DEF(CLASS,NAME,NAME_STR,VEC_SPC)             \
+#define RSQP_STATE_VECTOR_IQ_DEF(CLASS,NAME,NAME_STR,VEC_SPC,VEC_RN)      \
 IterQuantityAccess<VectorWithOpMutable>&                                  \
 CLASS::NAME()                                                             \
 {                                                                         \
-    update_vector_iq_id( NAME_STR, VEC_SPC, &NAME ## _iq_id_ );           \
+    update_vector_iq_id( NAME_STR, VEC_SPC, VEC_RN, &NAME ## _iq_id_ );   \
 	return GeneralIterationPack::cast_iq<VectorWithOpMutable>(            \
         *this, NAME ## _iq_id_.iq_id, NAME_STR );                         \
 }                                                                         \
@@ -279,6 +280,9 @@ public:
 
 	/** @name Constructors/initializers */
 	//@{
+
+	// ToDo: Implement all set_space_xx methods to update factories
+	// for all vector iteration quantities.
 
 	/// Set the DecompositionSystem object that all share
 	STANDARD_COMPOSITION_MEMBERS( DecompositionSystem, decomp_sys )
@@ -365,13 +369,13 @@ public:
 
 	/// Y:  Range space matrix for Gc ([Y  Z] is non-singular) ( n x r )
 	RSQP_STATE_IQ_DECL(MatrixWithOp,Y)
-	/// Z:  Null space matrix for Gc(con_decomp)' (Gc(con_decomp)' * Z) ( n x (n-r) )
+	/// Z:  Null space matrix for Gc(equ_decomp)' (Gc(equ_decomp)' * Z) ( n x (n-r) )
 	RSQP_STATE_IQ_DECL(MatrixWithOp,Z)
-	/// R:  Represents the nonsingular matrix Gc(con_decomp)' * Y ( r x r )
+	/// R:  Represents the nonsingular matrix Gc(equ_decomp)' * Y ( r x r )
 	RSQP_STATE_IQ_DECL(MatrixWithOpNonsingular,R)
-	/// Uy:  Represents Gc(con_undecomp)' * Y ( (m-r) x r )
+	/// Uy:  Represents Gc(equ_undecomp)' * Y ( (m-r) x r )
 	RSQP_STATE_IQ_DECL(MatrixWithOp,Uy)
-	/// Uz:  Represents Gc(con_undecomp)' * Z ( (m-r) x (m-r) )
+	/// Uz:  Represents Gc(equ_undecomp)' * Z ( (m-r) x (m-r) )
 	RSQP_STATE_IQ_DECL(MatrixWithOp,Uz)
 	/// Vy:  Represents Gh' * Y ( mI x r )
 	RSQP_STATE_IQ_DECL(MatrixWithOp,Vy)
@@ -448,17 +452,44 @@ public:
 
 	//@}
 
-	/** @name Basis Pivot Info */
+	/** @name Decomposition information */
 	//@{
 
 	/// Range of decomposed equality constraints [1,r]
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, con_decomp )
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, equ_decomp )
 	/// Range of undecomposed equality constraints [r+1,m]
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, con_undecomp )
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, equ_undecomp )
+
+	//@}
+
+	/** @name Basis Pivot Info (variable reduction decompositions only) */
+	//@{
+
+	/// Range of dependent variables [1,r]
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, var_dep )
+	/// Range of independent variables [r+1,n]
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( Range1D, var_indep )
+	/// Current permutation for variables
+	STANDARD_COMPOSITION_MEMBERS( Permutation, P_var_current )
+	/// Previous permutation for variables
+	STANDARD_COMPOSITION_MEMBERS( Permutation, P_var_last )
+	/// Current permutation for equality constraints
+	STANDARD_COMPOSITION_MEMBERS( Permutation, P_equ_current )
+	/// Previous permutation for equality constraints
+	STANDARD_COMPOSITION_MEMBERS( Permutation, P_equ_last )
 
 	//@}
 
 protected:
+
+	enum { NUM_VEC_SPACE_TYPES = 5 };
+	enum EVecSpaceType {
+		VST_SPACE_X       = 0
+		,VST_SPACE_C      = 1
+		,VST_SPACE_H      = 2
+		,VST_SPACE_RANGE  = 3
+		,VST_SPACE_NULL   = 4
+	};
 
 	// /////////////////////////////
 	// Protected member functions
@@ -485,6 +516,7 @@ protected:
 	void update_vector_iq_id(
 		const std::string&                iq_name
 		,const VectorSpace::space_ptr_t&  vec_space
+		,EVecSpaceType                    vec_space_type
 		,iq_id_encap*                     iq_id
 		);
 
@@ -494,15 +526,14 @@ private:
 	// Private types
 
 	typedef std::deque<iq_id_type>  iq_vector_list_t;
-
+	
 	// ////////////////////////////
 	// Private data member
 
-	vec_space_ptr_t          space_range_;
-	vec_space_ptr_t          space_null_;
+	vec_space_ptr_t    space_range_;
+	vec_space_ptr_t    space_null_;
 
-	iq_vector_list_t         range_space_vector_iqs_;
-	iq_vector_list_t         null_space_vector_iqs_;
+	iq_vector_list_t   vector_iqs_lists_[NUM_VEC_SPACE_TYPES];
 
 	// ////////////////////////////
 	// Private member functions.
@@ -510,7 +541,7 @@ private:
 	// Update the vector factories for all of the iteration quantities
 	// in the input list.
 	void update_vector_factories(
-		const iq_vector_list_t&   iq_vector_list
+		EVecSpaceType             vec_space_type
 		,const vec_space_ptr_t&   vec_space
 		);
 
