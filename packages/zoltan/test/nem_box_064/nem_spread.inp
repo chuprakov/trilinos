@@ -141,4 +141,4 @@ Parallel Disk Info	= number=1, offset=1, zeros
 #		/usr/tmp/pio_<Parallel Disk Info, number>/run1/input/
 #
 #-----------------------------------------------------------------------------
-Parallel file location	= root=io_, subdir=.
+Parallel file location	= root=pio_, subdir=.

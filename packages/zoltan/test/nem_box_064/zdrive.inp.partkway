@@ -1,5 +1,5 @@
-Decomposition Info	= method=rcb
-Zoltan Parameters       = 
+Decomposition Info	= method=parmetis
+Zoltan Parameters       = parmetis_method=partkway
 File Type		= NemesisI
 File Name		= box_064-m5-r.par
 Parallel Disk Info	= number=1,offset=1,zeros
