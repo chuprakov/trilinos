@@ -111,7 +111,10 @@ template<class Scalar>
 MemMngPack::ref_count_ptr<Vector<Scalar> >
 MultiVectorCols<Scalar>::col(Index j)
 {
-	THROW_EXCEPTION( !(  1 <= j  && j <= col_vecs_.size() ), std::logic_error, "Error!" );
+	THROW_EXCEPTION(
+		!(  1 <= j  && j <= col_vecs_.size() ), std::logic_error
+		,"Error, j = " << j << " does not fall in the range [1,"<<col_vecs_.size()<< "]!"
+		);
 	return col_vecs_[j-1];
 }
 
