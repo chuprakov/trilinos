@@ -34,7 +34,5 @@ TSFCoreSolversGmresTest_CXXFLAGS = \
 -I$(top_builddir)/../triutils/src
 
 TSFCoreSolversGmresTest_LDADD = \
-	$(top_builddir)/src/libTSFCore.a \
+	$(TSFCoreSolversGmresTest_DEPENDENCIES) \
 	$(LAPACK_LIBS) $(BLAS_LIBS) $(LIBS) $(FLIBS)
-
-

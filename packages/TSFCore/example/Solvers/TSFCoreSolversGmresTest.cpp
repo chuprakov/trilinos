@@ -125,7 +125,7 @@ int main(int argc, char *argv[]) {
 	// *************Start the GMRES iteration*************************
 	//*******************************************************************
 	//
-	TSFCore::Solvers::GMRESSolver<double> MySolver( ELOp, RHS, Soln );
+	TSFCore::Solvers::GMRESSolver<double> MySolver( ELOp, RHS, &Soln );
 	//MySolver.solve();
 	//
 	// Compute actual residual norm.

@@ -74,34 +74,35 @@ GMRESSolver<Scalar>::GMRESSolver(	const LinearOp<Scalar>	&Op_In,
     //
     const VectorSpace<Scalar> &Op_domain = *Op.domain();
     const VectorSpace<Scalar> &Op_range = *Op.range();
-    const bool 	domain_compatable = Op_domain.isCompatable( x->range() ),
-		range_compatable = Op_range.isCompatable( b.range() );
+    const bool 	domain_compatable = Op_domain.isCompatible( *x->space() ),
+		range_compatable = Op_range.isCompatible( *b.space() );
     if (!(domain_compatable && range_compatable) ) { cout<<"Op is not compatable with x or b"<<endl; }
     //
     //  Initialize internal data structures
     //		
     V = Op_domain.createMembers(max_iter+1);
-    w = Op_domain.createMember();
+    //w = Op_domain.createMember();
     r = Op_domain.createMember();
-    H->shape(max_iter+1, _max_iter);
-    ptr_H = H->values;
+    H->shape(max_iter+1, max_iter);
+    ptr_H = H->values();
     z = new Scalar[max_iter+1];
     cs.resize(max_iter); sn.resize(max_iter); 
     //
     // Determine the residual from the current solution.
     //
-    assign( r, b );
-    Op.apply( Op_trans, x, r, 1.0, -1.0 );
-    curr_res = norm_2( r ); 	        
+    assign( r.get(), b );
+    Op.apply( Op_trans, *x, r.get(), 1.0, -1.0 );
+    curr_res = norm_2( *r ); 	        
     if (curr_res < tol) { isConverged = true; }
     //
     // Set up initial vector.
     //
     r0 = curr_res;
     z[0] = curr_res;
-    w = V.col(1);		// get a mutable view of the first column of V.
-    assign( w, r );		// copy r to the first column of V.
-    Vt_S( w, 1.0/r0 );		// v_1 = r_0 / ||r_0||
+    w = V->col(1);		// get a mutable view of the first column of V.
+    assign( w.get(), *r );		// copy r to the first column of V.
+    Vt_S( w.get(), 1.0/r0 );		// v_1 = r_0 / ||r_0||
+	w = MemMngPack::null;
 }	
 	
 template<class Scalar>
@@ -132,16 +133,16 @@ void GMRESSolver<Scalar>::doIteration()
     Teuchos::BLAS<int, Scalar> blas;
     // 
     w = V.col(curr_iter+2);				// w = v_{j+1}
-    Op.apply( Op_trans, V.col(curr_iter+1), w );	// w = Op * v_{j}	
+    Op.apply( Op_trans, *V.col(curr_iter+1), w.get() ); // w = Op * v_{j}	
     //
     // Perform MGS to orthogonalize new Krylov vector.
     //
     for( i=0; i<curr_iter+1; i++ ) {	
-	H( i, curr_iter ) = dot( w, V.col(i+1) );	// h_{i,j} = ( w, v_{i} )
-	Vt_StV( w, H(i, curr_iter), V.col(i+1) );	// w = w - h_{i,j} * v_{i}
+	H( i, curr_iter ) = dot( *w, *V.col(i+1) );	// h_{i,j} = ( w, v_{i} )
+	Vt_StV( w.get(), H(i, curr_iter), *V.col(i+1) );	// w = w - h_{i,j} * v_{i}
     }
-    H( curr_iter+1, curr_iter ) = norm_2( w );		// h_{j+1,j} = || w ||
-    Vt_S( w, 1.0 / H( curr_iter+1, curr_iter ) ); 	// v_{j+1} = w / h_{j+1,j}			
+    H( curr_iter+1, curr_iter ) = norm_2( *w );		// h_{j+1,j} = || w ||
+    Vt_S( w.get(), 1.0 / H( curr_iter+1, curr_iter ) ); 	// v_{j+1} = w / h_{j+1,j}			
     //
     // Apply previous Givens rotations
     //

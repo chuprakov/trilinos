@@ -108,6 +108,9 @@ public:
 	 * <li> <tt>return.get() != NULL</tt>
 	 * <li> <tt>this->range()->isCompatible(*return->space()) == true</tt>
 	 * </ul>
+	 *
+	 * Note that <tt>*this</tt> is not guaranteed to be modified until
+	 * the smart pointer returned by this function goes out of scope.
 	 */
 	virtual MemMngPack::ref_count_ptr<Vector<Scalar> > col(Index j) = 0;
 
@@ -185,6 +188,9 @@ public:
 	 *
 	 * The default implementation of this function uses <tt>MultiVectorCols</tt> but this is not
 	 * a good default implementation in general.
+	 *
+	 * Note that <tt>*this</tt> is not guaranteed to be modified until
+	 * the smart pointer returned by this function goes out of scope.
 	 */
 	virtual MemMngPack::ref_count_ptr<MultiVector<Scalar> > subView( const Range1D& col_rng );
 
@@ -237,6 +243,9 @@ public:
 	 *
 	 * The default implementation of this function uses <tt>MultiVectorCols</tt> but this is not
 	 * a good default implementation in general.
+	 *
+	 * Note that <tt>*this</tt> is not guaranteed to be modified until
+	 * the smart pointer returned by this function goes out of scope.
 	 */
 	virtual MemMngPack::ref_count_ptr<MultiVector<Scalar> > subView( const int numCols, const int cols[] );
 	
