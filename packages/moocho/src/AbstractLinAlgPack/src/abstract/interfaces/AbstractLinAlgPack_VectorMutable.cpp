@@ -159,6 +159,40 @@ VectorWithOpMutable::vec_mut_ptr_t VectorWithOpMutable::clone() const
 	return vec;
 }
 
+void VectorWithOpMutable::get_sub_vector(
+	const Range1D& rng, RTOp_MutableSubVector* sub_vec )
+{
+	// Note, this is very dependent on the behavior of the default implementation of
+	// VectorWithOp::get_sub_vector(...)!
+	RTOp_SubVector _sub_vec;
+	RTOp_sub_vector_null( &_sub_vec );
+	VectorWithOp::get_sub_vector(
+		rng
+		,DENSE
+		,&_sub_vec
+		);
+	RTOp_mutable_sub_vector(
+		_sub_vec.global_offset
+		,_sub_vec.sub_dim
+		,const_cast<value_type*>(_sub_vec.values)
+		,_sub_vec.values_stride
+		,sub_vec
+		);
+}
+
+void VectorWithOpMutable::free_sub_vector( RTOp_MutableSubVector* sub_vec )
+{
+	RTOp_SubVector _sub_vec;
+	RTOp_sub_vector_dense(
+		sub_vec->global_offset
+		,sub_vec->sub_dim
+		,sub_vec->values
+		,sub_vec->values_stride
+		,&_sub_vec
+		);
+	VectorWithOp::free_sub_vector( &_sub_vec );
+}
+
 void VectorWithOpMutable::set_sub_vector( const RTOp_SubVector& sub_vec )
 {
 	if(0!=RTOp_TOp_set_sub_vector_set_sub_vec( &sub_vec, &set_sub_vector_op.op() ))
