@@ -225,9 +225,10 @@ public:
 
 	///
 	void reinitialize(
-		size_type  rows
-		,size_type cols
-		,size_type max_nz
+		size_type                  rows
+		,size_type                 cols
+		,size_type                 max_nz
+		,EAssumeElementUniqueness  element_uniqueness
 		);
 	void reset_to_load_values();
 	///
@@ -294,6 +295,7 @@ private:
 	size_type                 rows_;
 	size_type                 cols_;
 	size_type                 max_nz_;
+	EAssumeElementUniqueness  element_uniqueness_;
 	size_type                 nz_;
 	value_type                *val_;
 	index_type                *row_i_;

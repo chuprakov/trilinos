@@ -211,9 +211,10 @@ void MatrixSparseCOORSerial::Vp_StMtV(
 // Overridden from MatrixLoadSparseElements
 
 void MatrixSparseCOORSerial::reinitialize(
-	size_type  rows
-	,size_type cols
-	,size_type max_nz
+	size_type                  rows
+	,size_type                 cols
+	,size_type                 max_nz
+	,EAssumeElementUniqueness  element_uniqueness
 	)
 {
 	namespace rcp = MemMngPack;
@@ -222,9 +223,10 @@ void MatrixSparseCOORSerial::reinitialize(
 	THROW_EXCEPTION( max_nz <= 0, std::invalid_argument, msg_err_head<<"!" );
 	THROW_EXCEPTION( rows <= 0 || cols <= 0 , std::invalid_argument, msg_err_head<<"!" );
 #endif
-	rows_        = rows;
-	cols_        = cols;
-	nz_          = 0;
+	rows_               = rows;
+	cols_               = cols;	
+	element_uniqueness_ = element_uniqueness;
+	nz_                 = 0;
 	if( self_allocate_ ) {
 		if(max_nz_ < max_nz) {
 			release_resource_ = rcp::rcp(
@@ -351,17 +353,69 @@ void MatrixSparseCOORSerial::finish_construction()
 
 // Overridden from MatrixExtractSparseElements
 
+#ifdef _DEBUG
+#define VALIDATE_ROW_COL_IN_RANGE() \
+THROW_EXCEPTION( \
+	i < 1 || rows_ < i, std::invalid_argument \
+	,err_msg_head<<", i = inv_row_perm[(row_i["<<k<<"]=="<<*row_i<<")-1] = "<<i<<" > rows = "<<rows_ ); \
+THROW_EXCEPTION( \
+	j < 1 || cols_ < j, std::invalid_argument \
+	,err_msg_head<<", j = inv_col_perm[(col_j["<<k<<"]=="<<*col_j<<")-1] = "<<j<<" > rows = "<<cols_ );
+#else
+#define VALIDATE_ROW_COL_IN_RANGE()
+#endif
+
 index_type MatrixSparseCOORSerial::count_nonzeros(
 	EElementUniqueness    element_uniqueness
 	,const index_type     inv_row_perm[]
 	,const index_type     inv_col_perm[]
-	,const Range1D        &row_rng
-	,const Range1D        &col_rng
+	,const Range1D        &row_rng_in
+	,const Range1D        &col_rng_in
 	,index_type           dl
 	,index_type           du
 	) const
 {
-	assert(0); // ToDo: Implement!
+#ifdef _DEBUG
+	const char err_msg_head[] = "MatrixSparseCOORSerial::count_nonzeros(...): Error";
+	THROW_EXCEPTION(
+		element_uniqueness_ == ELEMENTS_ASSUME_DUPLICATES_SUM && element_uniqueness == ELEMENTS_FORCE_UNIQUE
+		,std::logic_error
+		,err_msg_head << ", the client requests a count for unique "
+		"elements but this sparse matrix object is not allowed to assume this!" );
+	THROW_EXCEPTION( inv_row_perm == NULL, std::logic_error, err_msg_head<<"!" );
+	THROW_EXCEPTION( inv_col_perm == NULL, std::logic_error, err_msg_head<<"!" );
+#endif
+	const Range1D
+		row_rng = RangePack::full_range(row_rng_in,1,rows_),
+		col_rng = RangePack::full_range(row_rng_in,1,rows_),
+		row_rng_full(1,rows_),
+		col_rng_full(1,cols_);
+	index_type
+		*row_i    = row_i_,
+		*col_j    = col_j_,
+		cnt_nz    = 0,
+		k         = 0;
+	if( dl == -row_rng.ubound() + col_rng.lbound() && du == +col_rng.ubound() - row_rng.lbound() ) {
+		// The diagonals are not limiting so we can ignore them
+		if( row_rng == row_rng_full && col_rng == col_rng_full ) {
+			// The row and column ranges are not limiting either
+			cnt_nz = nz_; // Just return the count of all the elements!
+		}
+		else {
+			// The row or column range is limiting
+			for( k = 0; k < nz_; ++row_i, ++col_j, ++k ) {
+				const index_type
+					i = inv_row_perm[(*row_i)-1],
+					j = inv_col_perm[(*col_j)-1];
+				VALIDATE_ROW_COL_IN_RANGE();
+				cnt_nz += row_rng.in_range(i) && col_rng.in_range(j) ? 1 : 0;
+			}
+		}
+	}
+	else {
+		// We have to consider the diagonals dl and du
+		assert(0); // ToDo: Implement!
+	}
 	return 0;
 }
 
