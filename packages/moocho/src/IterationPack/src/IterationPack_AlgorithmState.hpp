@@ -128,6 +128,7 @@ public:
 	  * will return the iq_id assigned to the inserted interation quantity.
 	  *
 	  * Preconditions: <ul>
+	  * <li> <tt>iq.get() != NULL</tt> (thorw <tt>std::invalid_argument</tt>)
 	  * <li> <tt>get_iter_quant_id(iq_name) == DOES_NOT_EXIST</tt> (throw <tt>AlreadyExists</tt>)
 	  * </ul>
 	  */

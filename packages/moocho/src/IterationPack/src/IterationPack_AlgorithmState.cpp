@@ -32,6 +32,10 @@ namespace GeneralIterationPack {
 AlgorithmState::iq_id_type AlgorithmState::set_iter_quant(
 	const std::string& iq_name, const IQ_ptr& iq)
 {
+	THROW_EXCEPTION(
+		iq.get() == NULL, std::invalid_argument
+		,"AlgorithmState::set_iter_quant(...) : The iteration quantity witht the name = \'" << iq_name
+		<< "\' being inserted has iq.get() == NULL!" );
 	iq_id_type new_id = iq_.size();
 	std::pair<iq_name_to_id_t::iterator,bool>
 		r = iq_name_to_id_.insert(iq_name_to_id_t::value_type(iq_name,new_id));
