@@ -570,6 +570,18 @@ int RTOp_load_reduct_obj_state(
 	,RTOp_ReductTarget       reduct_obj
 	);
 ///
+/** Return if the operator is coordinate invariant.
+ *
+ * @param  coord_invarient  [out] If <tt>op</tt> is coordinate invarient then
+ *                          <tt>*coord_invariant</tt> will be true.
+ *
+ * @return Returns <tt>0</tt> if successful and <tt>!=0</tt> otherwise.
+ */
+int RTOp_coord_invariant(
+	const struct RTOp_RTOp   *op
+	,int                     *coord_invariant
+	);
+///
 /** <tt>op(sub_vecs[],targ_sub_vecs[]),reduct_obj) -> targ_sub_vecs[],reduct_obj</tt>.
  *
  * This is the bread and butter of the whole design.  Through this method, a
@@ -752,24 +764,28 @@ struct RTOp_RTOp_vtbl_t {
 	/** Used to overide the initialization or reinitialization of a reduction object
 	 * before it is passed through a series of reductions.
 	 *
-	 * This function pointer should be made \c NULL if the default initialization performed
-	 * by \c this->reduct_vtbl->obj_create and \c this->reduct_vtbl->obj_reinit is
+	 * This function pointer should be made <tt>NULL</tt> if the default initialization performed
+	 * by <tt>this->reduct_vtbl->obj_create</tt> and <tt>this->reduct_vtbl->obj_reinit</tt> is
 	 * sufficient (which will generally be the case).
 	 */
 	int (*reduct_obj_reinit)(
 		const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
 		,RTOp_ReductTarget reduct_obj );
-	/// Called by ::RTOp_apply_op<tt>(...)</tt>
+//	/// Called by <tt>RTOp_coord_invariant()</tt>
+//	int (*coord_invariant) (
+//		const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
+//		,int *coord_invariant );
+	/// Called by <tt>RTOp_apply_op()</tt>
 	int (*apply_op)(
 		const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
 		,const int num_vecs, const struct RTOp_SubVector sub_vecs[]
 		,const int num_targ_vecs, const struct RTOp_MutableSubVector targ_sub_vecs[]
 		,RTOp_ReductTarget reduct_obj );
-	/// Called by ::RTOp_reduce_reduct_objs<tt>(...)</tt>
+	/// Called by <tt>RTOp_reduce_reduct_objs()</tt>
 	int (*reduce_reduct_objs)(
 		const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
 		,RTOp_ReductTarget in_reduct_obj, RTOp_ReductTarget inout_reduct_obj );
-	/// Called by RTOp_get_reduct_op<tt>(...)</tt>
+	/// Called by <tt>RTOp_get_reduct_op()</tt>
 	int (*get_reduct_op)(
 		const struct RTOp_RTOp_vtbl_t* vtbl, const void* obj_data
 		,RTOp_reduct_op_func_ptr_t* reduct_op_func_ptr );

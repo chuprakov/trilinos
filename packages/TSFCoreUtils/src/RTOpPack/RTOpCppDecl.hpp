@@ -187,6 +187,12 @@ public:
 	 */
 	virtual void reduct_obj_create( ReductTargetT<Scalar>* reduct_obj ) const;
 	///
+	/** Return if the operator is coordinate invariant.
+	 *
+	 * The default implementation returns <tt>true</tt>.
+	 */
+	virtual bool coord_invariant() const;
+	///
 	/** Apply the reduction/transformation operator to a set of sub-vectors.
 	 *
 	 * <tt>op(sub_vecs[],targ_sub_vecs[]),reduct_obj) -> targ_sub_vecs[],reduct_obj</tt>.

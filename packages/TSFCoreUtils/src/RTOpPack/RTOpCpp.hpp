@@ -105,6 +105,12 @@ void RTOpT<Scalar>::reduct_obj_create( ReductTargetT<Scalar>* reduct_obj ) const
 }
 
 template<class Scalar>
+bool RTOpT<Scalar>::coord_invariant() const
+{
+	return true;
+}
+
+template<class Scalar>
 void RTOpT<Scalar>::reduce_reduct_objs(
 	RTOp_ReductTarget in_reduct_obj, RTOp_ReductTarget inout_reduct_obj
 	) const

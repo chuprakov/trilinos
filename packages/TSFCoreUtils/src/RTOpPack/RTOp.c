@@ -295,6 +295,22 @@ int RTOp_load_reduct_obj_state(
   return 0; // Success!
 }
 
+int RTOp_coord_invariant(
+	const struct RTOp_RTOp   *op
+	,int                     *coord_invariant
+	)
+{
+#ifdef RTOp_DEBUG
+	assert( op );
+	assert( op->vtbl );
+//	assert( op->vtbl->coord_invariant );
+	assert( coord_invariant );
+#endif
+//	return op->vtbl->coord_invariant(op->vtbl,op->obj_data,coord_invariant);
+	*coord_invariant = 1; // ToDo: Implement the above code!
+	return 0;
+}
+
 int RTOp_apply_op( const struct RTOp_RTOp* op
   , const int num_vecs, const struct RTOp_SubVector sub_vecs[]
   , const int num_targ_vecs, const struct RTOp_MutableSubVector targ_sub_vecs[]
