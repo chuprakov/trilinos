@@ -66,13 +66,16 @@ void QPSchurInitKKTSystemHessianRelaxed::initialize_kkt_system(
 	// n_R = nd_R
 	*n_R = no;
 	// i_x_free.size() == 0 and i_x_free is implicitly identity
-	i_x_free->resize(0);
+	i_x_free->resize(no);
+	{for(size_type l = 1; l <= no; ++l ) {
+		(*i_x_free)[l-1] = l;
+	}}
 	// i_x_fixed[]
 	i_x_fixed->resize(nr+1);
 	if(nr) {
 		// i_x_fixed[l-1] = no + l, l = 1...nr
 		for( size_type l = 1; l <= nr; ++l )
-			(*i_x_fixed)[l-1] = no+nr+1;
+			(*i_x_fixed)[l-1] = no+l;
 	}
 	(*i_x_fixed)[nr] = nd+1; // extra relaxation is always initially active
 	// bnd_fixed[]

@@ -21,6 +21,7 @@ namespace ConstrainedOptimizationPack {
 QPSolverRelaxedQPSchur::QPSolverRelaxedQPSchur(
 	const init_kkt_sys_ptr_t&  init_kkt_sys
 	, value_type		max_qp_iter_frac
+	,value_type         max_real_runtime
 	, QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
 	                    inequality_pick_policy
 	, ELocalOutputLevel	print_level
@@ -47,6 +48,7 @@ QPSolverRelaxedQPSchur::QPSolverRelaxedQPSchur(
 	:
 	init_kkt_sys_(init_kkt_sys)
 	,max_qp_iter_frac_(max_qp_iter_frac)
+	,max_real_runtime_(max_real_runtime)
 	,inequality_pick_policy_(inequality_pick_policy)
 	,print_level_(print_level)
 	,bounds_tol_(bounds_tol)
@@ -399,6 +401,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// Set options for QPSchur.
 	// 
 	qp_solver_.max_iter( max_qp_iter_frac() * nd );
+	qp_solver_.max_real_runtime( max_real_runtime() );
 	qp_solver_.feas_tol( constraints_.bounds_tol() );	// Let's assume the bound tolerance is the tightest
 	if(loose_feas_tol() > 0.0)
 		qp_solver_.loose_feas_tol( loose_feas_tol() );
@@ -514,6 +517,12 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 			solution_type = QPSolverStats::OPTIMAL_SOLUTION;
 			break;
 		case QPSchur::MAX_ITER_EXCEEDED:
+			solution_type = QPSolverStats::DUAL_FEASIBLE_POINT;
+			break;
+		case QPSchur::MAX_RUNTIME_EXEEDED_FAIL:
+			solution_type = QPSolverStats::SUBOPTIMAL_POINT;
+			break;
+		case QPSchur::MAX_RUNTIME_EXEEDED_DUAL_FEAS:
 			solution_type = QPSolverStats::DUAL_FEASIBLE_POINT;
 			break;
 		case QPSchur::MAX_ALLOWED_STORAGE_EXCEEDED:

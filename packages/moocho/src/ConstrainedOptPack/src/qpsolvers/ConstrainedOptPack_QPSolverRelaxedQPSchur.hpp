@@ -168,6 +168,11 @@ public:
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_qp_iter_frac )
 
 	///
+	/** Set the maximum real runtime in minutes.
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_real_runtime )
+
+	///
 	/** <<std member comp>> members policy used to select a violated constraint.
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
@@ -306,6 +311,7 @@ public:
 	QPSolverRelaxedQPSchur(
 		const init_kkt_sys_ptr_t&    init_kkt_sys       = NULL
 		,value_type                  max_qp_iter_frac   = 10.0
+		,value_type                  max_real_runtime   = 1e+20
 		,QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
 		                             inequality_pick_policy
 		                                 = QPSchurPack::ConstraintsRelaxedStd::ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY
