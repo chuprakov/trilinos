@@ -18,7 +18,7 @@
 
 #include "MatrixSymWithOpSerial.h"
 #include "MatrixSymNonsingularSerial.h"
-#include "AbstactLinAlgPack/include/MatrixWithOpNonsingular.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
 
 namespace SparseLinAlgPack {
 
