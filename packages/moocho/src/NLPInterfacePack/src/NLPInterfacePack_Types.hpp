@@ -18,10 +18,12 @@
 
 #include "AbstractLinAlgPack/include/AbstractLinAlgPackTypes.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h" // Needed for doxygen?
+#include "SparseLinAlgPack/include/SparseLinAlgPackTypes.h"
 
 namespace NLPInterfacePack {
 
 #include "AbstractLinAlgPack/include/AbstractLinAlgPackPublicTypes.ud"
+#include "SparseLinAlgPack/include/SparseLinAlgPackPublicTypes.ud"
 
 // NLP interface classes
 
