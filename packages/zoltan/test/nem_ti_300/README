@@ -34,10 +34,17 @@ nem_ti_300
   No vertex weighting.
 -------------------------------------------------------------------------------
 
-Answers on dec differ from answers on Sun for zdrive.inp.partgeom
+Answers on dec and linux differ from answers on Sun for zdrive.inp.partgeom
    ElementID      SUN Assignment       Dec Assignment
     241                4                    5
     224                5                    4
-Reason unknown.
+Reason unknown. 
 
+
+-------------------------------------------------------------------------------
+Answers differ for ParMETIS tests on linux platforms 
+Suspect difference in rand() is the cause.
+On linux, rand() returns values in the range 0 to 2147483647; on
+Solaris, it returns values in the range 0 to 32767.  (See definition of
+RAND_MAX in <stdlib.h>.)
 

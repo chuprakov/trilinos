@@ -33,3 +33,9 @@ nem_box_064
   Random Chaco decomposition initially.
   No vertex weighting.
 -------------------------------------------------------------------------------
+Answers differ for ParMETIS tests on linux platforms 
+Suspect difference in rand() is the cause.
+On linux, rand() returns values in the range 0 to 2147483647; on
+Solaris, it returns values in the range 0 to 32767.  (See definition of
+RAND_MAX in <stdlib.h>.)
+
