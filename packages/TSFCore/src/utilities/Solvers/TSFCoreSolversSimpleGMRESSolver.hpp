@@ -224,19 +224,32 @@ SolveReturn SimpleGMRESSolver<Scalar>::solve(
 				);
 		if( single_solve_return.solve_status == MAX_ITER_EXCEEDED ) all_solved = false;
 		if( single_solve_return.num_iter > max_iter_taken ) max_iter_taken = single_solve_return.num_iter;
+
+		if(get_out().get()) {
+			*get_out()
+				<< "\nSimpleGMRESSolver<Scalar>::solve(...) : k = "<< k << " system : "
+				<< ( single_solve_return.solve_status == SOLVED_TO_TOL ? "Solved for x(" : "Did not solve for x(" ) << k << ")"
+				<< "\n  Number of GMRES iteratins taken          = " << single_solve_return.num_iter
+				<< "\n  Final GMRES preconditioned residual norm = " << solver_.currEstRelResidualNorm() << std::endl;
+			if(dump_all()) {
+				*get_out() << "\nX =\n" << *X;
+			}
+			*get_out() << "\n*** Leaving SimpleGMRESSolver<Scalar>::solve(...)\n";
+		}
 	}
 	//
 	// Return the solution
 	//
 
 	if(get_out().get()) {
-		*get_out() << "\nSimpleGMRESSolver<Scalar>::solve(...) : " << ( all_solved ? "Solved for X" : "Did not solve for X" ) << std::endl;
+		*get_out()
+			<< "\nSimpleGMRESSolver<Scalar>::solve(...) : " << ( all_solved ? "Solved for X" : "Did not solve for X" );
 		if(dump_all()) {
 			*get_out() << "\nX =\n" << *X;
 		}
 		*get_out() << "\n*** Leaving SimpleGMRESSolver<Scalar>::solve(...)\n";
 	}
-
+	
 	return SolveReturn( all_solved ? SOLVED_TO_TOL : MAX_ITER_EXCEEDED , max_iter_taken );
 }
 
