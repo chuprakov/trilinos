@@ -143,7 +143,7 @@ int main(int argc, char* argv[] ) {
 	
 	vec_space = rcp::rcp_implicit_cast<const VectorSpace>(
 		ref_count_ptr<MPIDenseVectorSpace>(
-			new MPIDenseVectorSpace(MPI_COMM_WORLD,&ind_map[0],1,n)
+			new MPIDenseVectorSpace(MPI_COMM_WORLD,&ind_map[0],false,1,n)
 			)
 		);
 
