@@ -71,7 +71,11 @@ public:
 	multi_vec_mut_ptr_t create_members(size_type num_vecs) const;
 	///
 	space_ptr_t sub_space(const Range1D& rng) const;
-
+	///
+	space_ptr_t space(
+		const GenPermMatrixSlice  &P
+		,BLAS_Cpp::Transp         P_trans
+		) const;
 	//@}
 
 private:
