@@ -162,6 +162,116 @@ protected:
   STANDARD_MEMBER_COMPOSITION_MEMBERS( Scalar, initReductObjValue );
 }; // class ROpScalarReductionBase
 
+
+///
+/** Simple base class for all reduction operators that return a simple
+ * scalar index reduction object.
+ *
+ * Subclasses have to minimally define <tt>apply_op()</tt>.
+ * Subclasses should also override <tt>reduce_reduct_objs()</tt> if
+ * the reduction is not a simple summation.
+ */
+template<class Scalar>
+class ROpScalarIndexReductionBase : virtual public RTOpT<Scalar> {
+public:
+  typedef typename RTOpT<Scalar>::primitive_value_type primitive_value_type;
+  ///
+  ROpScalarIndexReductionBase( const index_type &initReductObjValue = Teuchos::ScalarTraits<index_type>::zero() )
+    :RTOpT<Scalar>(""), initReductObjValue_(initReductObjValue) 
+    {}
+  ///
+  index_type getRawVal( const ReductTarget &reduct_obj ) const
+    {
+      using Teuchos::dyn_cast;
+      return dyn_cast<const ReductTargetScalar<index_type> >(reduct_obj).get();
+    }
+  ///
+  void setRawVal( const index_type &rawVal, ReductTarget *reduct_obj ) const
+    {
+#ifdef _DEBUG
+      TEST_FOR_EXCEPTION( reduct_obj==NULL, std::invalid_argument, "Error!" );
+#endif
+      using Teuchos::dyn_cast;
+      dyn_cast<ReductTargetScalar<index_type> >(*reduct_obj).set(rawVal);
+    }
+  /** @name Overridden from RTOpT */
+  //@{
+  ///
+	void get_reduct_type_num_entries(
+		int*   num_values
+		,int*  num_indexes
+		,int*  num_chars
+		) const
+    {
+      *num_values = 0;
+      *num_indexes = 1;
+      *num_chars = 0;
+    }
+	///
+	Teuchos::RefCountPtr<ReductTarget> reduct_obj_create() const
+    {
+      return Teuchos::rcp(new ReductTargetScalar<index_type>(initReductObjValue()));
+    }
+	/// Default implementation here is for a sum
+	void reduce_reduct_objs(
+		const ReductTarget& _in_reduct_obj, ReductTarget* _inout_reduct_obj
+		) const
+    {
+      using Teuchos::dyn_cast;
+      const ReductTargetScalar<index_type> &in_reduct_obj    = dyn_cast<const ReductTargetScalar<index_type> >(_in_reduct_obj); 
+      ReductTargetScalar<index_type>       &inout_reduct_obj = dyn_cast<ReductTargetScalar<index_type> >(*_inout_reduct_obj); 
+      inout_reduct_obj.set( inout_reduct_obj.get() + in_reduct_obj.get() );
+    }
+	///
+	void reduct_obj_reinit( ReductTarget* reduct_obj ) const
+    {
+      setRawVal( initReductObjValue(), reduct_obj );
+    }
+	///
+	void extract_reduct_obj_state(
+		const ReductTarget        &reduct_obj
+		,int                      num_values
+		,primitive_value_type     value_data[]
+		,int                      num_indexes
+		,index_type               index_data[]
+		,int                      num_chars
+		,char_type                char_data[]
+		) const
+    {
+#ifdef _DEBUG
+      TEST_FOR_EXCEPTION(
+        num_values!=0 || value_data!=NULL || num_indexes!=1 || index_data!=NULL || num_chars!=0 || char_data!=NULL
+        ,std::invalid_argument, "Error!"
+        );
+#endif
+			index_data[0] = getRawVal(reduct_obj);
+    }
+	///
+	void load_reduct_obj_state(
+		int                            num_values
+		,const primitive_value_type    value_data[]
+		,int                           num_indexes
+		,const index_type              index_data[]
+		,int                           num_chars
+		,const char_type               char_data[]
+		,ReductTarget                  *reduct_obj
+		) const
+    {
+      using Teuchos::dyn_cast;
+#ifdef _DEBUG
+      TEST_FOR_EXCEPTION(
+        num_values!=0 || value_data!=NULL || num_indexes!=1 || index_data!=NULL || num_chars!=0 || char_data!=NULL
+        ,std::invalid_argument, "Error!"
+        );
+#endif
+      setRawVal( index_data[0], reduct_obj );
+    }
+  //@}
+protected:
+  ///
+  STANDARD_MEMBER_COMPOSITION_MEMBERS( index_type, initReductObjValue );
+}; // class ROpScalarIndexReductionBase
+
 ///
 /** Simple base class for all transformation operators that
  * use a single piece of Scalar data.
