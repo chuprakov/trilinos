@@ -115,6 +115,7 @@ bool MatrixSymDiagonalStd::Mp_StM(
 	if(!M_diag.get())
 		return false; // Access to the diagonal is not supported!
 	Vp_StV( M_diag.get(), alpha, *diag_ );
+	return true;
 }
 
 void MatrixSymDiagonalStd::Vp_StMtV(

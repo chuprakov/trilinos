@@ -100,7 +100,7 @@ MatrixWithOp& MatrixZero::operator=(const MatrixWithOp& M)
 std::ostream& MatrixZero::output(std::ostream& out) const
 {
 	assert_initialized();
-	out << "Zero matrix of dimension " << rows() << " x " << cols() << std::endl;
+	return out << "Zero matrix of dimension " << rows() << " x " << cols() << std::endl;
 }
 
 // Level-1 BLAS
