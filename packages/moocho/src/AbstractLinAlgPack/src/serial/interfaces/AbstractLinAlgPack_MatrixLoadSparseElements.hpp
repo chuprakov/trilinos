@@ -49,6 +49,12 @@ class MatrixLoadSparseElements
 public:
 
 	///
+	enum EAssumeElementUniqueness {
+		ELEMENTS_ASSUME_UNIQUE             ///< Entries assumed have unique row and column indexes (client must enforce this!)
+		,ELEMENTS_ASSUME_DUPLICATES_SUM    ///< Entries allowed with duplicate row and column indexes with the understanding that the values are summed
+	};
+
+	///
 	/** Resize the matrix and reserve space for nonzero elements to be added.
 	 *
 	 * All of the nonzeros in the current matrix are discarded and we start fresh.
@@ -56,9 +62,10 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	virtual void reinitialize(
-		size_type  rows
-		,size_type cols
-		,size_type max_nz
+		size_type                  rows
+		,size_type                 cols
+		,size_type                 max_nz
+		,EAssumeElementUniqueness  element_uniqueness = ELEMENTS_ASSUME_DUPLICATES_SUM
 		) = 0;
 
 	///
