@@ -540,11 +540,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						nlp.space_x()
 						,nlp.space_c()
 						,nlp.space_h()
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-						,basis_sys_perm.get() ? rcp::null : basis_sys_
-#else
-						,basis_sys_
-#endif
+						,basis_sys_  // Will have basis_sys_->var_dep().size() == 0 if permutation
 						,basis_sys_tester
 						) );
 				break;
@@ -554,11 +550,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 						nlp.space_x()
 						,nlp.space_c()
 						,nlp.space_h()
-#ifndef RSQPPP_NO_BASIS_PERM_DIRECT_SOLVERS
-						,basis_sys_perm.get() ? rcp::null : basis_sys_
-#else
-						,basis_sys_
-#endif
+						,basis_sys_  // Will have basis_sys_->var_dep().size() == 0 if permutation
 						,basis_sys_tester
 						,var_reduct_orthog_strategy_
 						) );
@@ -605,7 +597,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 
 	if(trase_out)
 		*trase_out
-			<< "\n*** Creating the state object an setting up iteration quantity objects ...\n";
+			<< "\n*** Creating the state object and setting up iteration quantity objects ...\n";
 
 	{
 		//
@@ -1344,7 +1336,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			//
 			if(trase_out)
 				*trase_out 
-					<< "\nConfiguring an algorithm for nonlinear equality constrained "
+					<< "\nConfiguring an algorithm for a nonlinear equality constrained "
 					<< "NLP ( m > 0 && mI == 0 && num_bounded_x == 0) ...\n";
 
 			int step_num = 0;
@@ -1447,7 +1439,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			//
 			if(trase_out)
 				*trase_out 
-					<< "\nConfiguring an algorithm for nonlinear generally constrained "
+					<< "\nConfiguring an algorithm for a nonlinear generally constrained "
 					<< "NLP ( mI > 0 || num_bounded_x > 0 ) ...\n";
 
 			THROW_EXCEPTION(
