@@ -5,10 +5,19 @@
 
 #include "SparseLinAlgPack/include/VectorWithOpMutableDense.h"
 #include "AbstractLinAlgPack/include/apply_op_helper.h"
+#include "ReleaseResource_ref_count_ptr.h"
 #include "WorkspacePack.h"
 #include "ThrowException.h"
 
 namespace SparseLinAlgPack {
+
+VectorWithOpMutableDense::VectorWithOpMutableDense(
+	const size_type                   dim
+	)
+	:space_(dim)
+{
+	this->initialize(dim);
+}
 
 VectorWithOpMutableDense::VectorWithOpMutableDense(
 	VectorSlice                        v
@@ -17,6 +26,24 @@ VectorWithOpMutableDense::VectorWithOpMutableDense(
 	:space_(v.dim())
 {
 	this->initialize(v,v_release);
+}
+
+void VectorWithOpMutableDense::initialize(
+	const size_type                   dim
+	)
+{
+	namespace rcp = ReferenceCountingPack;
+	namespace rmp = ResourceManagementPack;
+	typedef rcp::ref_count_ptr<Vector> vec_ptr_t;
+	vec_ptr_t vec_ptr = rcp::rcp(new Vector(dim));
+	this->initialize(
+		(*vec_ptr)()
+		,rcp::rcp(
+			new rmp::ReleaseResource_ref_count_ptr<Vector>(
+				vec_ptr
+				)
+			)
+		);
 }
 
 void VectorWithOpMutableDense::initialize(

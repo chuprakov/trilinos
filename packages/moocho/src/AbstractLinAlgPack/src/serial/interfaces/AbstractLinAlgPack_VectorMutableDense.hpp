@@ -4,7 +4,7 @@
 #ifndef VECTOR_WITH_OP_MUTABLE_DENSE_H
 #define VECTOR_WITH_OP_MUTABLE_DENSE_H
 
-#include "VectorSpaceDense.h"
+#include "VectorSpaceSerial.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "ref_count_ptr.h"
@@ -13,41 +13,102 @@
 namespace SparseLinAlgPack {
 
 ///
-/** Vector "Adaptor" subclass for <tt>LinAlgPack::VectorSlice</tt> objects.
+/** Vector "Adaptor" subclass for <tt>LinAlgPack::VectorSlice</tt>
+ * or <tt>LinAlgPack::Vector</tt> objects.
  *
- * ToDo: Finish Documentation!
+ * Class can be used either a a view for a <tt>LinAlgPack::VectorSlice</tt> object
+ * or an a storage type with <tt>LinAlgPack::Vector</tt> object.
+ *
+ * To create a storage type with the dimension of \c dim just call the constructor
+ * <tt>VectorWithOpMutableDense(dim)</tt> or after construction you can call
+ * <tt>this->initialize(dim)</tt>.
+ *
+ * To simply create a view of a vector, say \c v, without ownership just call
+ * <tt>VectorWithOpMutableDense(v(),NULL)</tt> or after construction call
+ * <tt>this->initialize(v(),NULL)</tt>.
+ *
+ * Alternately, \c this can be given a vector with the responsibility to
+ * delete any associated memory by calling <tt>this->initialize()</tt>
+ * with a <tt>ReleaseResource</tt> object to perform the deallocation.
+ *
+ * If \c this has been initialized by <tt>this->initialize(dim)</tt> and if
+ * the client really needs to get at the <tt>LinAlgPack::Vector</tt> object
+ * itself, then it can be obtained as:
+ \code
+ void f( VectorWithOpMutableDense* v )
+     namespace rmp = ResourceManagementPack;
+     Vector &_v = *dynamic_cast<rmp::ReleaseResource_ref_count_ptr<Vector>&>(*v.vec_release()).ptr;
+
+ \endcode
+ * This is not pretty but it is not supposed to be.  Of course the above function will throw
+ * an exception if the <tt>dynamic_cast<></tt> fails.
  */
-class VectorWithOpMutableDense : public VectorWithOpMutable {
+class VectorWithOpMutableDense : virtual public VectorWithOpMutable {
 public:
 
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<
 		ResourceManagementPack::ReleaseResource>  release_resource_ptr_t;
 
+	/** @name Constructors/initializers */
+	//@{
+
 	///
-	/** Calls <tt>this->initialize()</tt>.
+	/** Calls <tt>this->initialize(dim)</tt>.
+	 */
+	VectorWithOpMutableDense(
+		const size_type                    dim
+		);
+	///
+	/** Calls <tt>this->initialize(v,v_release)</tt>.
 	 */
 	VectorWithOpMutableDense(
 		VectorSlice                        v
 		,const release_resource_ptr_t&     v_release
 		);
-
 	///
-	/** Initialize with a Dense vector.
+	/** Call <tt>this->initialize(v,v_release)</tt> with an allocated <tt>LinAlgPack::Vector</tt>
+	 * object.
+	 */
+	void initialize(
+		const size_type                    dim
+		);
+	///
+	/** Initialize with a dense vector slice.
 	 */
 	void initialize(
 		VectorSlice                        v
 		,const release_resource_ptr_t&     v_release
 		);
 
+	//@}
+
+	/** @name Access */
+	//@{
+	
 	///
-	VectorSlice vec();
+	/** Return the non-const dense vector.
+	 *
+	 * Note that calling this method will result in the vector implementation
+	 * being modified.  Therefore, no other methods on \c this object should be
+	 * called until the <tt>VectorSlice</tt> returned from this method is
+	 * discarded.
+	 *
+	 * Note that the underlying implementation calls <tt>this->has_changed()</tt>
+	 * before this method returns.
+	 */
+	VectorSlice set_vec();
 	///
-	const VectorSlice vec() const;
+	/** Return a const dense vector.
+	 */
+	const VectorSlice get_vec() const;
 	///
-	release_resource_ptr_t& vec_release();
-	///
+	/** Return a <tt>ref_count_ptr<></tt> pointer to the object that will
+	 * release the associated resource.
+	 */
 	const release_resource_ptr_t& vec_release() const;
+
+	//@}
 
 	/** @name Overriddenn from VectorWithOp */
 	//@{
@@ -110,7 +171,7 @@ private:
 	
 	VectorSlice               v_;
 	release_resource_ptr_t    v_release_;
-	VectorSpaceDense          space_;
+	VectorSpaceSerial          space_;
 
 	// ///////////////////////////////////////
 	// Private member functions
@@ -137,23 +198,17 @@ private:
 
 inline
 VectorSlice
-VectorWithOpMutableDense::vec()
+VectorWithOpMutableDense::set_vec()
 {
+	this->has_changed();
 	return v_;
 }
 
 inline
 const VectorSlice
-VectorWithOpMutableDense::vec() const
+VectorWithOpMutableDense::get_vec() const
 {
 	return v_;
-}
-
-inline
-VectorWithOpMutableDense::release_resource_ptr_t&
-VectorWithOpMutableDense::vec_release()
-{
-	return v_release_;
 }
 
 inline
