@@ -215,6 +215,11 @@ EPETRA_LIBS = \
 	$(top_builddir)/../epetra/src/libepetra.a
 
 
+#
+# Read macros that are common to building source and tests. We define these
+# in Makefile.common to avoid maintaining the lists in multiple files.
+#
+
 #np# List locations of include files within Trilinos but outside of this 
 #np# package
 #np# - Add packages that this package is dependent on
@@ -304,7 +309,7 @@ include_HEADERS = $(TSF_EXTENDED_H)
 # All Trilinos headers are now installed in the same directory
 execincludedir = $(exec_prefix)/include
 #np# replace new_package with the name of the package being autotool'ed here
-nodist_execinclude_HEADERS = TSFExtended_config.h
+nodist_execinclude_HEADERS = TSF_config.h
 
 
 # ------------------------------------------------------------------------
