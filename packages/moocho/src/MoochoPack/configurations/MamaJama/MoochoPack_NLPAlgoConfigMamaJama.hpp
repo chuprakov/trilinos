@@ -158,9 +158,9 @@ public:
 	  * can be included.  See the class \Ref{LineSearch2ndOrderCorrect_Step}
 	  * for a description of these.
 	  *
-	  * If the QP solver QPSCPD has been selected (qp_solver = QPSCPD)
-	  * , the options group "QPSCPD" can be included
-	  * (see the class \Ref{QPMixedFullReducedQPSCPDSolverSetOptions})
+	  * If the QP solver QPSchur has been selected (qp_solver = QPSCHUR)
+	  * , the options group "QPSolverRelaxedQPSchur" can be included
+	  * (see the class \Ref{QPSolverRelaxedQPSchur})
 	  * to change some of the default options with this QP solver.
 	  * 
 	  * If the MA28 linear solver is selected (direct_linear_solver = MA28) then
@@ -217,7 +217,7 @@ public:
 	///
 	enum ERangeSpaceMatrixType { RANGE_SPACE_MATRIX_COORDINATE, RANGE_SPACE_MATRIX_ORTHOGONAL };
 	///
-	enum EQuasiNewton { QN_AUTO, QN_BFGS, QN_LBFGS };
+	enum EQuasiNewton { QN_AUTO, QN_BFGS, QN_BFGS_PROJECTED, QN_LBFGS };
 	///
 	enum EHessianInitialization { INIT_HESS_IDENTITY, INIT_HESS_FIN_DIFF_SCALE_IDENTITY
 		, INIT_HESS_FIN_DIFF_SCALE_DIAGONAL, INIT_HESS_FIN_DIFF_SCALE_DIAGONAL_ABS };
