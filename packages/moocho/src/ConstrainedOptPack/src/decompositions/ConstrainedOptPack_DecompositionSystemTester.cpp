@@ -37,7 +37,7 @@ DecompositionSystemTester::DecompositionSystemTester(
 	,solve_error_tol_(solve_error_tol)
 {}
  
-bool DecompositionSystemTestertest_decomp_system(
+bool DecompositionSystemTester::test_decomp_system(
 	const DecompositionSystem       &decomp_sys
 	,const MatrixWithOp             &Gc
 	,const MatrixWithOp             *Gh

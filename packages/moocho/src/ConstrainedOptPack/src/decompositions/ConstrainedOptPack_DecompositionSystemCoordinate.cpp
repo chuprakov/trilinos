@@ -1,4 +1,4 @@
-// /////////////////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////////////////////////////
 // DecompositionSystemCoordinate.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
@@ -18,115 +18,188 @@
 // disable VC 5.0 warnings about truncated identifier names (templates).
 #pragma warning(disable : 4503)	
 
-#include "../include/DecompositionSystemCoordinate.h"
-#include "../include/IdentZeroVertConcatMatrixSubclass.h"
-#include "SparseLinAlgPack/include/GenMatrixSubclass.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
-#include "Misc/include/update_success.h"
+#include <assert.h>
+
+#include "ConstrainedOptimizationPack/include/DecompositionSystemCoordinate.h"
+#include "ConstrainedOptimizationPack/include/MatrixIdentConcatStd.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpNonsingular.h"
+#include "AbstractLinAlgPack/include/MatrixWithOpSubView.h"
+#include "AbstractLinAlgPack/include/MatrixZero.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
+#include "AbstractFactoryStd.h"
+#include "dynamic_cast_verbose.h"
+#include "ThrowException.h"
 
 namespace ConstrainedOptimizationPack {
 
-void DecompositionSystemCoordinate::update_decomp(MatrixWithOp* A, MatrixWithOp* Z, MatrixWithOp* Y
-		, MatrixWithOp* U, MatrixWithOp* V)
+DecompositionSystemCoordinate::DecompositionSystemCoordinate(
+	const VectorSpace::space_ptr_t     &space_x
+	,const VectorSpace::space_ptr_t    &space_c
+	,const VectorSpace::space_ptr_t    &space_h
+	,const basis_sys_ptr_t             &basis_sys
+	,const basis_sys_tester_ptr_t      &basis_sys_tester
+	,EExplicitImplicit                 D_imp
+	,EExplicitImplicit                 Uz_imp
+	,EExplicitImplicit                 Vz_imp
+	)
+	:DecompositionSystemVarReduct(
+		space_x, space_c, space_h, basis_sys, basis_sys_tester
+		,D_imp,Uz_imp,Vz_imp )
+{}
+
+// Overridden from DecompositionSystem
+
+const DecompositionSystem::mat_fcty_ptr_t
+DecompositionSystemCoordinate::factory_Y() const
 {
+	namespace rcp = ReferenceCountingPack;
+	return rcp::rcp(
+		new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOp,MatrixIdentConcatStd>()
+		);
+}
 
-	// Validate the matrix types and get concrete references.
+const DecompositionSystem::mat_nonsing_fcty_ptr_t
+DecompositionSystemCoordinate::factory_R() const
+{
+	return basis_sys()->factory_C();
+}
 
-	// Z
-	validate_Z(Z);
+const DecompositionSystem::mat_fcty_ptr_t
+DecompositionSystemCoordinate::factory_Uy() const
+{
+	namespace rcp = ReferenceCountingPack;
+	return rcp::rcp(
+		new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>()
+		);
+}
 
-	// Y
-	IdentZeroVertConcatMatrixSubclass*
-		_Y = dynamic_cast<IdentZeroVertConcatMatrixSubclass*>(Y);
-	if(!_Y)
-		throw InvalidMatrixType( "DecompositionSystemCoordinate::update_decomp(...):  The concrete type "
-									" of the Y matrix must be a subclass of IdentZeroVertConcatMatrixSubclass" );
-	IdentZeroVertConcatMatrix &cY = _Y->m();
+const DecompositionSystem::mat_fcty_ptr_t
+DecompositionSystemCoordinate::factory_Vy() const
+{
+	namespace rcp = ReferenceCountingPack;
+	return rcp::rcp(
+		new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOp,MatrixWithOpSubView>()
+		);
+}
 
-	// V
-	GenMatrixSubclass*
-		_V = dynamic_cast<GenMatrixSubclass*>(V);
-	if(!_V)
-		throw InvalidMatrixType( "DecompositionSystemCoordinate::update_decomp(...):  The concrete type "
-									" of the V matrix must be a subclass of GenMatrixSubclass" );
-	GenMatrix &cV = _V->m();
+// Overridden from DecompositionSystemVarReduct
+
+DecompositionSystem::mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t
+DecompositionSystemCoordinate::uninitialize_matrices(
+	std::ostream                                           *out
+	,EOutputLevel                                          olevel
+	,MatrixWithOp                                          *Y
+	,MatrixWithOpNonsingular                               *R
+	,MatrixWithOp                                          *Uy
+	,MatrixWithOp                                          *Vy
+	) const
+{
+	namespace rcp = ReferenceCountingPack;
+	using DynamicCastHelperPack::dyn_cast;
+
+	//
+	// Get pointers to concreate matrices
+	//
 	
-	bool new_basis = factor_a_new_basis();
+	MatrixIdentConcat
+		*Y_coor = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y) : NULL;
+	MatrixWithOpSubView
+		*Uy_sv = Uy ? &dyn_cast<MatrixWithOpSubView>(*Uy) : NULL;			
+	MatrixWithOpSubView
+		*Vy_sv = Uy ? &dyn_cast<MatrixWithOpSubView>(*Uy) : NULL;			
 
-	// Factor the basis (the type of A is validated by basys_sys().
-	factor(A);
+	//
+	// Only uninitialize the sub_view matrices
+	//
 
-	if(new_basis) {
-		// Setup the access to C, N, E and F.
-		// Here the type of the E matrix is determined by the basys_sys() and done so externally to this
-		// class.
+	if(Uy_sv)
+		Uy_sv->initialize(NULL);
+	if(Vy_sv)
+		Vy_sv->initialize(NULL);
 
-		if( !access_matrices(BasisSystem::C) ) {
-			// If part_[BasisSystem::C] == 0 then we need to allocate all new matrices.
-			
-			bool allocate[BasisSystem::NUM_ACCESS_MATRICES];
-			
-			std::fill_n( allocate, (int)BasisSystem::NUM_ACCESS_MATRICES, true );
-			
-			allocate[BasisSystem::E] = false;	// E is U so don't allocate it
-			
-			basis_sys().create_access_matrices( allocate, &access_matrices(BasisSystem::C) );
+	//
+	// Return the basis matrix object R == C as a smart pointer that is
+	// not owned.  This matrix object (if R != NULL) will get updated
+	// by the basis_sys object as C in the method
+	// 
+	//     DecompositionSystemVarReduct::update_decomp(...)
+	//
 
-			// Use U for E to be set up by basis_sys()
-			access_matrices(BasisSystem::E) = U;
-		}
-
-		// Setup access to C, N and perhaps E and F if they exist
-		// If V and therfore E is not of the proper type then this will
-		// throw an exception.
-		try {
-			basis_sys().setup_access_matrices( &access_matrices(BasisSystem::C) );
-		}
-		catch(const BasisSystem::InvalidMatrixType& excpt) {
-			throw InvalidMatrixType( excpt.what() );
-		}
-	}
-
-	// Test the basis system
-	if( check_results() && get_basis_sys_tester().get() ) {
-		if(!basis_sys_tester().check_basis_system(
-			basis_sys()
-			, const_cast<const MatrixWithOp**>(&access_matrices(BasisSystem::C))
-			, *A, trase(), out() ))
-		{
-			throw std::runtime_error( "DecompositionSystemCoordinate::update_decomp(...) : "
-				"Error, BasisSystem object does not check out." );
-		}
-	}
-
-	// Update the matrices Z, Y, U and V
-
-	// * Z, V
-	update_Z_and_V(Z,&cV);
-
-	// * Y = [I, 0]'
-
-	cY.resize( n(), r(), true );
-
-	// * U is the same thing as E and was already set up by basis_sys()
+	return rcp::rcp(R,false);
 
 }
 
-void DecompositionSystemCoordinate::solve_transAtY(const VectorSlice& b, BLAS_Cpp::Transp trans
-	, VectorSlice* x) const
+void DecompositionSystemCoordinate::initialize_matrices(
+	std::ostream                                           *out
+	,EOutputLevel                                          olevel
+	,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C
+	,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D
+	,MatrixWithOp                                          *Y
+	,MatrixWithOpNonsingular                               *R
+	,MatrixWithOp                                          *Uy
+	,MatrixWithOp                                          *Vy
+	,EMatRelations                                         mat_rel
+	) const
 {
-	solve_C(b,trans,x);
+	namespace rcp = ReferenceCountingPack;
+	using DynamicCastHelperPack::dyn_cast;
+
+	const size_type
+		n = this->n(),
+		m = this->m(),
+		r = this->r();
+	const Range1D
+		var_dep(1,r),
+		var_indep(r+1,n),
+		con_decomp   = this->con_decomp(),
+		con_undecomp = this->con_undecomp();
+
+	//
+	// Get pointers to concreate matrices
+	//
+	
+	MatrixIdentConcatStd
+		*Y_coor = Y ? &dyn_cast<MatrixIdentConcatStd>(*Y) : NULL;
+	MatrixWithOpSubView
+		*Uy_sv = Uy ? &dyn_cast<MatrixWithOpSubView>(*Uy) : NULL;			
+	MatrixWithOpSubView
+		*Vy_sv = Uy ? &dyn_cast<MatrixWithOpSubView>(*Uy) : NULL;			
+
+	//
+	// Initialize the matrices
+	//
+
+	if( Y_coor && Y_coor->D_ptr().get() == NULL ) {
+		Y_coor->initialize(
+			space_x()                                         // space_cols
+			,space_x()->sub_space(var_dep)->clone()           // space_rows
+			,MatrixIdentConcatStd::TOP                        // top_or_bottom
+			,0.0                                              // alpha
+			,rcp::rcp(
+				new MatrixZero(
+					space_x()
+					,space_x()->sub_space(var_dep)->clone()
+					) )                                       // D_ptr
+			,BLAS_Cpp::no_trans                               // D_trans
+			);
+	}
+	assert(Uy_sv == NULL); // ToDo: Implement for undecomposed equalities
+	assert(Vy_sv == NULL); // ToDo: Implement for general inequalities
+
+	// The R = C matrix object should already be updateded
+
 }
 
-void DecompositionSystemCoordinate::solve_transAtY(const GenMatrixSlice& B, BLAS_Cpp::Transp trans
-	, GenMatrixSlice* X) const
+void DecompositionSystemCoordinate::print_update_matrices(
+	std::ostream& out, const std::string& L ) const
 {
-	solve_C(B,trans,X);
-}
-
-void DecompositionSystemCoordinate::delete_access_matrices() {
-	access_matrices(BasisSystem::E) = 0;	// E which is U is not ours to destroy
-	basis_sys().destroy_access_matrices( &access_matrices(BasisSystem::C) );
+	out
+		<< L << "*** Coordinate decompositon Y, R, Uy and Vy matrices\n"
+		<< L << "Y = [ I; 0 ] (using class MatrixIdentConcatStd with MatrixZero)\n"
+		<< L << "R = Gc(var_dep,con_decomp)' = C\n"
+		<< L << "Uy = Gc(var_dep,con_undecomp)'\n"
+		<< L << "Vy = Gh(var_dep,:)'\n"
+		;
 }
 		
 }	// end namespace ConstrainedOptimizationPack

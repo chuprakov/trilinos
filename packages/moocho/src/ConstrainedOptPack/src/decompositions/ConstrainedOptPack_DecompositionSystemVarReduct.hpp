@@ -18,6 +18,7 @@
 
 #include "DecompositionSystem.h"
 #include "AbstractLinAlgPack/include/BasisSystem.h"
+#include "AbstractLinAlgPack/include/BasisSystemTester.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "StandardCompositionMacros.h"
 #include "StandardMemberCompositionMacros.h"
@@ -84,11 +85,13 @@ public:
 		,MAT_IMP_AUTO
 	};
 
-	//@}	
+	//@}
 
 	/** @name Constructors / initializers */
 	//@{
 
+	/// Set the BasisSystem tester object
+	STANDARD_COMPOSITION_MEMBERS( BasisSystemTester, basis_sys_tester )
 	/// Set whether to use explicit or implicit <tt>D = -inv(C)*N</tt> matrix.
 	STANDARD_MEMBER_COMPOSITION_MEMBERS(EExplicitImplicit,D_imp)
 	/// Set whether to use explicit or implicit <tt>Uz = F + E * D</tt> matrix.
@@ -110,13 +113,14 @@ public:
 	 * </ul>
 	 */
 	DecompositionSystemVarReduct(
-		const VectorSpace::space_ptr_t     &space_x   = NULL
-		,const VectorSpace::space_ptr_t    &space_c   = NULL
-		,const VectorSpace::space_ptr_t    &space_h   = NULL
-		,const basis_sys_ptr_t             &basis_sys = NULL
-		,EExplicitImplicit                 D_imp      = MAT_IMP_AUTO
-		,EExplicitImplicit                 Uz_imp     = MAT_IMP_AUTO
-		,EExplicitImplicit                 Vz_imp     = MAT_IMP_AUTO
+		const VectorSpace::space_ptr_t     &space_x
+		,const VectorSpace::space_ptr_t    &space_c
+		,const VectorSpace::space_ptr_t    &space_h
+		,const basis_sys_ptr_t             &basis_sys
+		,const basis_sys_tester_ptr_t      &basis_sys_tester
+		,EExplicitImplicit                 D_imp
+		,EExplicitImplicit                 Uz_imp
+		,EExplicitImplicit                 Vz_imp
 		);
 
 	//@}
@@ -171,12 +175,16 @@ public:
 	/** @name Overridden from DecompositionSystem */
 	//@{
 
-	///
+	/// Returns <tt>this->space_x()->dim()</tt>.
 	size_type n() const;
-	///
+	/// Returns <tt>this->space_c()->dim()</tt>.
 	size_type m() const;
-	///
+	/// Returns <tt>this->basis_sys()->equ_decomp().size()</tt>.
 	size_type r() const;
+	/// Returns <tt>this->space_x()->sub_space(var_dep)</tt>
+	const VectorSpace::space_ptr_t space_range() const;
+	/// Returns <tt>this->space_x()->sub_space(var_indep)</tt>
+	const VectorSpace::space_ptr_t space_null() const;
 	///
 	const mat_fcty_ptr_t factory_Z() const;
 	///
@@ -190,6 +198,7 @@ public:
 	 * <li> <tt>this->space_x().get() != NULL</tt> (throw <tt>std::logic_error</tt>)
 	 * <li> <tt>this->space_c().get() != NULL</tt> (throw <tt>std::logic_error</tt>)
 	 * <li> [<tt>Gh != NULL</tt>] <tt>this->space_h().get() != NULL</tt> (throw <tt>std::logic_error</tt>)
+	 * <li> [<tt>test_what == TEST</tt>] <tt>this->basis_sys_tester().get() != NULL</tt> (throw <tt>std::logic_error</tt>)
 	 * </ul>
 	 */
 	void update_decomp(
@@ -205,14 +214,62 @@ public:
 		,MatrixWithOp             *Uy
 		,MatrixWithOp             *Vz
 		,MatrixWithOp             *Vy
+		,EMatRelations            mat_rel
 		) const;
+	///
+	void print_update_decomp(
+		std::ostream& out, const std::string& leading_str ) const;
 
 	//@}
 
 protected:
 
-	// ToDo: Add pure virtual method to uninitialize Y, R, Uy and Vy and return C if references!
-	// ToDo: Add pure virtual method to initialize Y, R, Uy and Vy given C and D!
+	///
+	/** Overridden by subclasses to uninitialized Y, R, Uy and Vy and return C if referenced.
+	 *
+	 * Note that the returned smart pointer to \c C may have <tt>return.has_ownership() == false</tt>
+	 * in which case this will not be a shared resource with any other object (at least not
+	 * on this level).
+	 *
+	 * ToDo: Finish documentatation!
+`	 */
+	virtual	mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t	uninitialize_matrices(
+		std::ostream                             *out
+		,EOutputLevel                            olevel
+		,MatrixWithOp                            *Y
+		,MatrixWithOpNonsingular                 *R
+		,MatrixWithOp                            *Uy
+		,MatrixWithOp                            *Vy
+		) const = 0;
+
+	///
+	/** Overridden by subclasses to initialize Y, R, Uy and Vy given C and D.
+	 *
+ 	 * If C_ptr.has_ownership() == false, then the subclass implementation of this
+	 * method will use clone_mwons() to clone it so that the output matrices are
+	 * independent.
+	 *
+	 * ToDo: Finish documentatation!
+`	 */
+	virtual void initialize_matrices(
+		std::ostream                                           *out
+		,EOutputLevel                                          olevel
+		,const mat_nonsing_fcty_ptr_t::element_type::obj_ptr_t &C_ptr
+		,const mat_fcty_ptr_t::element_type::obj_ptr_t         &D_ptr
+		,MatrixWithOp                                          *Y
+		,MatrixWithOpNonsingular                               *R
+		,MatrixWithOp                                          *Uy
+		,MatrixWithOp                                          *Vy
+		,EMatRelations                                         mat_rel
+		) const = 0;
+
+	///
+	/** Print the sub-algorithm by which the matrices Y, R, Uy and Uy are updated.
+	 *
+	 * ToDo: Finish documentatation!
+	 */
+	virtual void print_update_matrices(
+		std::ostream& out, const std::string& leading_str ) const = 0;
 
 private:
 
@@ -224,11 +281,15 @@ private:
 	VectorSpace                           *space_x;
 	VectorSpace                           *space_c;
 	VectorSpace                           *space_h;
+	VectorSpace                           *space_range;
+	VectorSpace                           *space_null;
 #else
 	basis_sys_ptr_t                       basis_sys_;
 	VectorSpace::space_ptr_t              space_x_;
 	VectorSpace::space_ptr_t              space_c_;
 	VectorSpace::space_ptr_t              space_h_;
+	VectorSpace::space_ptr_t              space_range_;
+	VectorSpace::space_ptr_t              space_null_;
 #endif
 	// //////////////////////////////////
 	// Private member functions

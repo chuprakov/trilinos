@@ -17,6 +17,16 @@
 
 namespace ConstrainedOptimizationPack {
 
+size_type DecompositionSystem::n() const
+{
+	return this->space_range()->dim() + this->space_null()->dim();
+}
+
+size_type DecompositionSystem::r() const
+{
+	return this->space_range()->dim();
+}
+
 Range1D DecompositionSystem::con_decomp() const
 {
 	return Range1D(1,this->r());
