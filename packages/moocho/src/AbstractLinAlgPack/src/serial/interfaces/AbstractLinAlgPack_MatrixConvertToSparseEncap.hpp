@@ -112,6 +112,10 @@ public:
 	//@{
 
 	///
+	const VectorSpace& space_cols() const;
+	///
+	const VectorSpace& space_rows() const;
+	///
 	size_type rows() const;
 	///
 	size_type cols() const;
@@ -146,6 +150,8 @@ public:
 
 private:
 
+	typedef MemMngPack::ref_count_ptr<const VectorSpace> space_ptr_t;  
+
 #ifdef DOXYGEN_COMPILE
 	const MatrixExtractSparseElements    *mese;
 	const LinAlgPack::IVector            *inv_row_perm;
@@ -154,13 +160,15 @@ private:
 	Range1D                              col_rng;
 #else
 	mese_ptr_t          mese_;
-	i_vector_ptr_t      inv_row_perm_;
-	Range1D             row_rng_;
-	i_vector_ptr_t      inv_col_perm_;
-	Range1D             col_rng_;
 	BLAS_Cpp::Transp    mese_trans_;
 	value_type          alpha_;
+	Range1D             row_rng_;
+	Range1D             col_rng_;
+	i_vector_ptr_t      inv_row_perm_;
+	i_vector_ptr_t      inv_col_perm_;
 	size_type           nz_full_;
+	space_ptr_t         space_cols_;
+	space_ptr_t         space_rows_;
 #endif
 
 };	// end class MatrixConvertToSparseEncap

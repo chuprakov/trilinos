@@ -17,6 +17,7 @@
 
 #include "SparseLinAlgPack/include/MatrixConvertToSparseEncap.h"
 #include "SparseLinAlgPack/include/MatrixExtractSparseElements.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "LinAlgPack/include/IVector.h"
 #include "ThrowException.h"
 
@@ -67,13 +68,19 @@ void MatrixConvertToSparseEncap::initialize(
 	THROW_EXCEPTION( col_rng.ubound() > mese->cols(), std::logic_error, msg_head );
 #endif
 	mese_           = mese;
-	inv_row_perm_   = inv_row_perm;
-	row_rng_        = row_rng;
-	inv_col_perm_   = inv_col_perm;
-	col_rng_        = col_rng;
 	mese_trans_     = mese_trans;
 	alpha_          = alpha;
+	inv_row_perm_   = inv_row_perm;
+	inv_col_perm_   = inv_col_perm;
+	row_rng_        = row_rng;
+	col_rng_        = col_rng;
 	nz_full_        = this->num_nonzeros(EXTRACT_FULL_MATRIX,ELEMENTS_ALLOW_DUPLICATES_SUM);
+	space_cols_     = ( mese_trans_ == BLAS_Cpp::no_trans
+						? mese_->space_cols().sub_space(row_rng_)
+						: mese_->space_rows().sub_space(col_rng_) );
+	space_rows_     = ( mese_trans_ == BLAS_Cpp::no_trans
+						? mese_->space_rows().sub_space(col_rng_)
+						: mese_->space_cols().sub_space(row_rng_) );
 }
 
 void MatrixConvertToSparseEncap::set_uninitialized()
@@ -90,6 +97,16 @@ void MatrixConvertToSparseEncap::set_uninitialized()
 }
 
 // Overridden from MatrixBase
+
+const VectorSpace& MatrixConvertToSparseEncap::space_cols() const
+{
+	return *space_cols_;
+}
+
+const VectorSpace& MatrixConvertToSparseEncap::space_rows() const
+{
+	return *space_rows_;
+}
 
 size_type MatrixConvertToSparseEncap::rows() const
 {
