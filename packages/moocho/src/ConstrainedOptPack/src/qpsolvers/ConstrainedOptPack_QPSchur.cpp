@@ -3215,8 +3215,38 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						*out
 							<< "\n\nWarning, we have picked the constriant a(" << ja << ") with violation\n"
 							<< "(a(ja)'*x - b_a) = (" << con_ja_val << " - " << b_a << ") = " << (con_ja_val - b_a)
-							<< "\nto add to the active set but it is already part of the active set.\n"
-							<< "This is an indication of instability in the calculations.\n";
+							<< "\nto add to the active set but it is already part of the active set.\n";
+					}
+					const EBounds act_bnd = ( sa != 0 ? act_set->bnd(sa) : qp.x_init()(ja) );
+					if( act_bnd != bnd_ja ) {
+						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+							*out
+								<< "However, this is not the same bound in the active set!\n";
+						}
+						const value_type
+							act_b_a = qp.constraints().get_bnd(ja,act_bnd);
+						if( act_bnd == LOWER && act_b_a > b_a || act_bnd == UPPER && act_b_a < b_a ) {
+							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+								*out
+									<< "\nError, c_L_bar(" << ja <<") = " << (act_b_a > b_a ? act_b_a : b_a)
+									<< " > c_U_bar(" << ja << ") = " << (act_b_a < b_a ? act_b_a : b_a) << ".\n";
+							}
+						}
+						else {
+							assert(0); // Should not happen!
+						}
+						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+							*out
+								<< "The constraints are infeasible!  Terminating the QP algorithm!\n";
+						}
+						return INFEASIBLE_CONSTRAINTS;
+					}
+					else {
+						if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+							*out
+								<< "This is the same bounds so this is an indication of instability\n"
+								<< "in the calculations.\n";
+						}
 					}
 					summary_lines_counter = 0;
 					if( !is_most_violated ) {
