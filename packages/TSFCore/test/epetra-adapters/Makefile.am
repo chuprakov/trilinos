@@ -40,4 +40,5 @@ epetra_adapters_CXXFLAGS = \
   -I$(top_builddir)/../teuchos/src \
   -I$(top_srcdir)/../teuchos/src
 
-epetra_adapters_LDADD = $(epetra_adapters_LDFLAGS) -lTSFCore -lTSFCoreUtils -lepetra -lteuchos -lblas $(FLIBS)
+epetra_adapters_LDADD = $(epetra_adapters_LDFLAGS) -lTSFCore -lTSFCoreUtils -lepetra -lteuchos \
+	$(BLAS_LIBS) $(FLIBS)

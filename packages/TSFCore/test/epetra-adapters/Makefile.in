@@ -132,7 +132,9 @@ epetra_adapters_CXXFLAGS = \
   -I$(top_srcdir)/../teuchos/src
 
 
-epetra_adapters_LDADD = $(epetra_adapters_LDFLAGS) -lTSFCore -lTSFCoreUtils -lepetra -lteuchos -lblas $(FLIBS)
+epetra_adapters_LDADD = $(epetra_adapters_LDFLAGS) -lTSFCore -lTSFCoreUtils -lepetra -lteuchos \
+	$(BLAS_LIBS) $(FLIBS)
+
 subdir = test/epetra-adapters
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/TSFCoreConfig.h
