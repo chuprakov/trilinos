@@ -131,6 +131,8 @@ std::ostream& MatrixIdentConcat::output(std::ostream& out) const
 {
 	const Range1D           D_rng   = this->D_rng();
 	const BLAS_Cpp::Transp  D_trans = this->D_trans();
+	out << "This is a " << this->rows() << " x " << this->cols()
+		<< " general matrix / identity matrix concatenated matrix object ";
 	if( D_rng.lbound() == 1 ) {
 		if( D_trans == BLAS_Cpp::no_trans )
 			out << "[ alpha*D; I ]";
@@ -143,6 +145,7 @@ std::ostream& MatrixIdentConcat::output(std::ostream& out) const
 		else
 			out << "[ I; alpha*D' ]";
 	}
+	out << " where alpha and D are:";
 	out << "\nalpha = " << this->alpha();
 	out << "\nD =\n" << D();
 	return out;
