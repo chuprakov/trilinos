@@ -314,8 +314,8 @@ void BiCGSolver<Scalar>::doIteration(
 		*get_out() << "\nP =\n" << *P_;
 		*get_out() << "\nP_tilde =\n" << *P_tilde_;
 	}
-	M.apply(opM_notrans, *P_,       Q_.get()       );      // op(M)*P^(1)                                    -> Q^{i}
-	M.apply(opM_trans,   *P_tilde_, Q_tilde_.get() );      // op(M)'*P_tilde^(1)                             -> Q_tilde^{i}
+	M.apply(opM_notrans, *P_,       Q_.get()       );      // op(M)*P^{1}                                    -> Q^{i}
+	M.apply(opM_trans,   *P_tilde_, Q_tilde_.get() );      // op(M)'*P_tilde^{1}                             -> Q_tilde^{i}
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\nQ =\n" << *Q_;
 		*get_out() << "\nQ_tilde =\n" << *Q_tilde_;
