@@ -54,7 +54,7 @@ public:
 	STANDARD_COMPOSITION_MEMBERS(std::ostream,out)
 
 	///
-	/** Set the default maximum number CG iterations to take
+	/** Determine if we dump all info or not.
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, dump_all )
 

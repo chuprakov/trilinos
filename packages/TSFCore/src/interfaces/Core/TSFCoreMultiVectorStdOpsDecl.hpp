@@ -120,9 +120,11 @@ template<class Scalar>
 void dots( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2, Scalar dots[] );
 
 ///
-/** Take the one norm of a multi-vector.
+/** Take the induced matrix one norm of a multi-vector.
  *
- * @param V  [in]
+ * @param V  [in] Input multi-vector
+ *
+ *Returns a scalar.
  */
 template<class Scalar>
 Scalar norm_1( const MultiVector<Scalar>& V );

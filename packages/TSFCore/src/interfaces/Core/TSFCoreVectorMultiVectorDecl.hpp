@@ -45,8 +45,20 @@ namespace TSFCore {
  * implementation for a <tt>MultiVector</tt> is already provided.  A
  * linear algebra library implementation should have to do almost
  * nothing to get a <tt>Vector</tt> implementation if a
- * <tt>MultiVector</tt> is already supported.  The primary purpose
- * for the use of this subclass is in the 
+ * <tt>MultiVector</tt> is already supported.  The primary purpose for
+ * the use of this subclass is to implement the override of
+ * <tt>VectorSpace::createMember()</tt> function as:
+ *
+ \code
+
+  template<class Scalar>
+  Teuchos::RefCountPtr<MultiVector<Scalar> > SomeVectorSpace::createMember()
+  {
+    return this->createMembers(1);
+  }
+ \endcode
+ *
+ * and that is all there is to it.
  */
 template<class Scalar>
 class VectorMultiVector : virtual public Vector<Scalar> {

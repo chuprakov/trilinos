@@ -103,6 +103,7 @@ class LinearOp : virtual public OpBase<Scalar> {
 public:
 
 	/** @name Pure virtual methods (must be overridden by subclass) */
+	//@{
 
 	///
 	/** Apply the linear operator (or its transpose) to a vector:
