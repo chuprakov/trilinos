@@ -34,7 +34,7 @@ MatrixOpNonsing::clone_mwons() const
 	return MemMngPack::null;
 }
 
-const MatrixOpNonsing::MatNorm
+const MatrixOp::MatNorm
 MatrixOpNonsing::calc_cond_num(
 	EMatNormType  requested_norm_type
 	,bool         allow_replacement

@@ -91,13 +91,17 @@ public:
 	 *      will be equal to <tt>requested_norm_type</tt>.
 	 * </ul>
 	 *
-	 * The default implementation of this method uses Algorithm 2.5 in "Applied Numerical Linear Algebra"
-	 * by James Demmel (1997) to estimate ||inv(M)||1.  The algorithm uses some of the refinements in the
-	 * referenced algorithm by Highman.  This algorithm only requires solves and transposed
-	 * solves so every nonsingular matrix object can implement this method.
-	 * The default arguments for this function will compute an estimate of the condition number and will
-	 * not thrown an exception.  The default implementation will throw an exception for any other norm type than
-	 * <tt>requested_norm_type = MAT_NORM_1</tt>.
+	 * The default implementation of this method uses Algorithm 2.5 in
+	 * "Applied Numerical Linear Algebra" by James Demmel (1997) to
+	 * estimate ||inv(M)||1 or ||inv(M)||inf.  The algorithm uses some
+	 * of the refinements in the referenced algorithm by Highman.
+	 * This algorithm only requires solves and transposed solves so
+	 * every nonsingular matrix object can implement this method.  The
+	 * default arguments for this function will compute an estimate of
+	 * the condition number and will not thrown an exception.  The
+	 * default implementation will throw an exception for any other
+	 * norm type than <tt>requested_norm_type = MAT_NORM_1</tt> or
+	 * <tt>requested_norm_type = MAT_NORM_INF</tt>.
 	 */
 	const MatNorm calc_cond_num(
 		EMatNormType  requested_norm_type = MAT_NORM_1

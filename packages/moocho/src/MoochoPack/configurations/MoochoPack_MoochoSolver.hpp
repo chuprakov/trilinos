@@ -27,7 +27,7 @@ namespace OptionsFromStreamPack {
 namespace MoochoPack {
 
 ///
-/** Universal interface to an rSQP++ solver.
+/** Universal interface to a MOOCHO solver.
  *
  * This class is designed to act as a simple encapsulation to several
  * other smaller components needed to solve an NLP.  This class is an
@@ -47,7 +47,7 @@ namespace MoochoPack {
  * In the algorithm configuration phase, the client must, at a minimum, set the
  * NLP object for the NLP to be solved using <tt>this->set_nlp()</tt>.
  * The NLP object is needed so that the algorithm configuration object can adapt
- * the rSQP algorithm to the NLP in the best way possible.  The configuration
+ * the MOOCHO algorithm to the NLP in the best way possible.  The configuration
  * phase can also include setting a user defined track object(s) and a user
  * defined <tt>NLPAlgoConfig</tt> object.  An NLP is solved by calling
  * the method <tt>this->solve_nlp()</tt> which returns an <tt>enum</tt>
@@ -64,15 +64,15 @@ namespace MoochoPack {
  * algorithmic objects that it creates) can be set through an
  * <tt>OptionsFromStreamPack::OptionsFromStream</tt> object by passing it to
  * <tt>this->set_options()</tt>.  The files
- * <tt>\ref rSQPppSolver_opts "Moocho.opt.MoochoSolver"</tt>,
+ * <tt>\ref MoochoSolver_opts "Moocho.opt.MoochoSolver"</tt>,
  * <tt>\ref DecompositionSystemStateStepBuilderStd_opts "Moocho.opt.DecompositionSystemStateStepBuilderStd"</tt>
- * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "Moocho.opt.NLPAlgoConfigMamaJama"</tt>
+ * and <tt>\ref NLPAlgoConfigMamaJama_opts "Moocho.opt.NLPAlgoConfigMamaJama"</tt>
  * conatain the listing of these options as well as some documentation.
  *
  * <b>Requirements / Specifications</b>
  *
  * The requirements and specifications for this class are stated below.  More
- * detailed scenarios are shown else where (??? where ???).
+ * detailed scenarios are shown elsewhere (??? where ???).
  * <ol>
  * <li> Base default implementation on <tt>NLPAlgoConfigMamaJama</tt> and require
  *   minimal effort to quickly solve an NLP.  This includes setting up standard
@@ -113,12 +113,12 @@ namespace MoochoPack {
  *   <tt>NLPAlgoConfigMamaJama</tt> using delegation or subclassing (delegation is
  *   to be prefered).
  * <li> Allow clients to solve the same NLP (i.e. same dimensions, same structure etc)
- *   multiple times with the same configured rSQP++ algorithm.<br>
+ *   multiple times with the same configured MOOCHO algorithm.<br>
  *   <b>Enabler</b>:  This can be done By simply calling <tt>this->get_nlp()</tt> (if
  *   needed to access the NLP that was set using <tt>this->set_nlp()</tt>),
  *   modifying the NLP object in some way (i.e. a new initial point) and then calling
  *   <tt>this->solve_nlp()</tt>.
- * <li> Allow clients to configure a new rSQP++ algorithm with a potentially new NLP
+ * <li> Allow clients to configure a new MOOCHO algorithm with a potentially new NLP
  *   object (i.e. different dimensions, different structure etc).<br>
  *   <b>Enabler</b>: The client can just call <tt>this->set_uninitialized()</tt> which
  *   is equivalent to setting the state of the object after the default constructor.
@@ -189,7 +189,7 @@ public:
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>this->get_nlp().get() == nlp.get()</tt>
-	 * <li> This will cause the rSQP++ algorithm to be reconfigured before the NLP
+	 * <li> This will cause the MOOCHO algorithm to be reconfigured before the NLP
 	 *   is solved again.
 	 * </ul>
 	 */
@@ -226,12 +226,12 @@ public:
 	 *
 	 * Postconditions:<ul>
 	 * <li> [<tt>config.get() == NULL</tt>] A <tt>NLPAlgoConfigMamaJama</tt>
-	 *   object will be used to configure the rSQP++ algorithm the next time
+	 *   object will be used to configure the MOOCHO algorithm the next time
 	 *   that <tt>this->do_config_algo()</tt> or <tt>this->solve_nlp()</tt> are called.
 	 * <li> [<tt>config.get() != NULL</tt>] The object <tt>*config</tt> will be used
-	 *   to configure the rSQP++ algorithm the next time that <tt>this->do_config_algo()</tt>
+	 *   to configure the MOOCHO algorithm the next time that <tt>this->do_config_algo()</tt>
 	 *    or <tt>this->solve_nlp()</tt> are called.
-	 * <li> A reconfiguration of the rSQP++ algorithm will be forced the next time that
+	 * <li> A reconfiguration of the MOOCHO algorithm will be forced the next time that
 	 *   <tt>this->do_config_algo()</tt> or <tt>this->solve_nlp()</tt> are called.
 	 * <li> <tt>this->get_config().get() == config.get()</tt>
 	 * </ul>
@@ -263,7 +263,7 @@ public:
 	 *   set of options will be used.  If this file does exist then the options will be
 	 *   read from this file.
 	 * <li> [<tt>options.get() != NULL</tt>] The options will be read from <tt>*options</tt>.
-	 * <li> A reconfiguration of the rSQP++ algorithm will be forced the next time that
+	 * <li> A reconfiguration of the MOOCHO algorithm will be forced the next time that
 	 *   <tt>this->do_config_algo()</tt> or <tt>this->solve_nlp()</tt> are called.
 	 * <li> <tt>this->get_options().get() == options.get()</tt>
 	 * </ul>
@@ -420,7 +420,7 @@ public:
 
 	///
 	/** Set the <tt>std::ostream</tt> object to use for journal output by the
-	 * rSQP++ step objects.
+	 * MOOCHO step objects.
 	 *
 	 * @param  journal_out [in] Smart pointer to an <tt>std::ostream</tt> object
 	 *                     that journal output will be set to.
@@ -546,9 +546,9 @@ public:
 	 * <tt>OptionsFromStreamPack::OptionsFromStream</tt> object returned from <tt>*this->get_options()</tt>.
 	 * If <tt>this->get_options().get() == NULL</tt> then an attempt is made to open the file 'Moocho.opt'
 	 * in the current directory.  If this file does not exist, then a default set of options is used
-	 * which will be acceptable for most NLPs.  The files <tt>\ref rSQPppSolver_opts "Moocho.opt.MoochoSolver"</tt>,
+	 * which will be acceptable for most NLPs.  The files <tt>\ref MoochoSolver_opts "Moocho.opt.MoochoSolver"</tt>,
 	 * <tt>\ref DecompositionSystemStateStepBuilderStd_opts "Moocho.opt.DecompositionSystemStateStepBuilderStd"</tt>
-	 * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "Moocho.opt.NLPAlgoConfigMamaJama"</tt> show which
+	 * and <tt>\ref NLPAlgoConfigMamaJama_opts "Moocho.opt.NLPAlgoConfigMamaJama"</tt> show which
 	 * options can be used with this solver interface and a <tt>NLPAlgoConfigMamaJama</tt> configuration
 	 * object respectively.  Other configuration classes will use a different set of options.  See the
 	 * documentation for those configuration classes for details.
@@ -567,7 +567,7 @@ public:
 	 *      (or the file 'MoochoAlgo.out' in the current directory if <tt>this->get_algo_out().get()
 	 *      == NULL</tt>) which contains information on how the optimization algorithm is configured and what
 	 *      the algorithm is (if the option 'MoochoSolver::print_algo == true', see the options file
-	 *      <tt>\ref rSQPppSolver_opts "Moocho.opt.MoochoSolver"</tt>).
+	 *      <tt>\ref MoochoSolver_opts "Moocho.opt.MoochoSolver"</tt>).
 	 * </ul>
 	 *
 	 * If <tt>this->throw_exception() == false</tt> then any exceptions that may be thown
@@ -675,7 +675,7 @@ private:
 
 }; // end class MoochoSolver
 
-/** \defgroup rSQPppSolver_opts Options for an MoochoSolver object.
+/** \defgroup MoochoSolver_opts Options for an MoochoSolver object.
  *
  * The following is the contents of the file <tt>Moocho.opt.MoochoSolver</tt> which
  * are options specific to the class <tt>MoochoPack::MoochoSolver</tt>.

@@ -32,7 +32,7 @@ namespace MoochoPack {
  * Options specific for to this configuration class and the classes that
  * it works with that can be set through <tt>this->set_options()</tt>, see the files
  * <tt>\ref DecompositionSystemStateStepBuilderStd_opts "Moocho.opt.DecompositionSystemStateStepBuilderStd"</tt>.
- * and <tt>\ref rSQPAlgo_ConfigMamaJama_opts "Moocho.opt.NLPAlgoConfigMamaJama"</tt>.
+ * and <tt>\ref NLPAlgoConfigMamaJama_opts "Moocho.opt.NLPAlgoConfigMamaJama"</tt>.
  *
  * Note that all built-in support for basis permutations and direct sparse solvers
  * can be left out if the macro MOOCHO_NO_BASIS_PERM_DIRECT_SOLVERS is defined
@@ -160,7 +160,7 @@ private:
 
 };	// end class NLPAlgoConfigMamaJama
 
-/** \defgroup rSQPAlgo_ConfigMamaJama_opts Options for NLPAlgoConfigMamaJama.
+/** \defgroup NLPAlgoConfigMamaJama_opts Options for NLPAlgoConfigMamaJama.
  *
  * The following is the contents of the file <tt>Moocho.opt.NLPAlgoConfigMamaJama</tt>
  * which are options specific to the class <tt>MoochoPack::NLPAlgoConfigMamaJama</tt>
