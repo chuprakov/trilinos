@@ -6,8 +6,6 @@
 
 #include <assert.h>
 
-#include <limits>
-
 #include "TSFCoreVectorDecl.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "RTOp_ROp_get_sub_vector.h"

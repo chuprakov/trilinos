@@ -21,7 +21,8 @@
 #ifndef RANGE1D_H
 #define RANGE1D_H
 
-#include <limits>
+#include <limits.h>
+
 #include <memory>
 #include <string>
 #include <stdexcept>
@@ -115,7 +116,7 @@ public:
 
 private:
     size_t lbound_;
-    size_t ubound_;	// = std::numeric_limits<size_t>::max() flag for entire range
+    size_t ubound_;	// = UINT_MAX flag for entire range
 	// lbound == ubound == 0 flag for invalid range.
 
 	// assert that the range is valid
@@ -208,7 +209,7 @@ inline Range1D full_range(const Range1D &rng, size_t lbound, size_t ubound)
 
 inline
 Range1D::Range1D()
-	: lbound_(1), ubound_(std::numeric_limits<size_t>::max())
+	: lbound_(1), ubound_(UINT_MAX)
 {}
 
 inline
@@ -226,7 +227,7 @@ Range1D::Range1D(size_t lbound, size_t ubound)
 
 inline
 bool Range1D::full_range() const {
-	return ubound_ == std::numeric_limits<size_t>::max();
+	return ubound_ == UINT_MAX;
 }
 
 inline

@@ -6,8 +6,6 @@
 
 #include <assert.h>
 
-#include <limits>
-
 #include "TSFCoreTypes.hpp"
 #include "RTOpCpp.hpp"
 #include "RTOp_SparseSubVector.h"
