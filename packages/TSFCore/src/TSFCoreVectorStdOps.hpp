@@ -34,7 +34,7 @@ Scalar TSFCore::sum( const Vector<Scalar>& v_rhs )
 	if(0>RTOp_ROp_sum_construct(&sum_op.op() )) assert(0);
 	sum_op.reduct_obj_create(&sum_targ);
 	const Vector<Scalar>* vecs[] = { &v_rhs };
-	applyOp(sum_op,1,vecs,0,NULL,sum_targ.obj() );
+	applyOp<Scalar>(sum_op,1,vecs,0,NULL,sum_targ.obj() );
 	return RTOp_ROp_sum_val(sum_targ.obj());
 }
 
@@ -46,7 +46,7 @@ Scalar TSFCore::norm_1( const Vector<Scalar>& v_rhs )
 	if(0>RTOp_ROp_norm_1_construct(&norm_1_op.op() )) assert(0);
 	norm_1_op.reduct_obj_create(&norm_1_targ);
 	const Vector<Scalar>* vecs[] = { &v_rhs };
-	applyOp(norm_1_op,1,vecs,0,NULL,norm_1_targ.obj() );
+	applyOp<Scalar>(norm_1_op,1,vecs,0,NULL,norm_1_targ.obj() );
 	return RTOp_ROp_norm_1_val(norm_1_targ.obj());
 }
 
@@ -58,7 +58,7 @@ Scalar TSFCore::norm_2( const Vector<Scalar>& v_rhs )
 	if(0>RTOp_ROp_norm_2_construct(&norm_2_op.op() )) assert(0);
 	norm_2_op.reduct_obj_create(&norm_2_targ);
 	const Vector<Scalar>* vecs[] = { &v_rhs };
-	applyOp(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj() );
+	applyOp<Scalar>(norm_2_op,1,vecs,0,NULL,norm_2_targ.obj() );
 	return RTOp_ROp_norm_2_val(norm_2_targ.obj());
 }
 
@@ -70,7 +70,7 @@ Scalar TSFCore::norm_inf( const Vector<Scalar>& v_rhs )
 	if(0>RTOp_ROp_norm_inf_construct(&norm_inf_op.op() )) assert(0);
 	norm_inf_op.reduct_obj_create(&norm_inf_targ);
 	const Vector<Scalar>* vecs[] = { &v_rhs };
-	applyOp(norm_inf_op,1,vecs,0,NULL,norm_inf_targ.obj() );
+	applyOp<Scalar>(norm_inf_op,1,vecs,0,NULL,norm_inf_targ.obj() );
 	return RTOp_ROp_norm_inf_val(norm_inf_targ.obj());
 }
 
