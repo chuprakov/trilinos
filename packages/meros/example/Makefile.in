@@ -90,7 +90,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 
-SUBDIRS = saddle_solve saddle_kayloghin saddle_matvec vbr_test
+SUBDIRS = saddle_solve saddle_kayloghin saddle_matvec vbr_test kayloghin_vbr
 subdir = example
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/meros_config.h

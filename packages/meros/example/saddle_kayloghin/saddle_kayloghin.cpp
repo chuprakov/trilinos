@@ -42,6 +42,9 @@ using namespace SPP;
 
 int main(int argc, void** argv)
 {
+
+  // Set up communication stuff for parallel
+
   TSFMPI::init(&argc, &argv);
 
   Epetra_Comm *comm;
@@ -52,32 +55,76 @@ int main(int argc, void** argv)
   comm = (Epetra_Comm *) new Epetra_SerialComm();
 #endif
 
-  // Read Matrix from file into Aztec VBR matrix
-  
   cerr << "starting saddle_kayloghin" << endl;
-  int Nnz = 4228, Nblks = 256, blk_size = 3;
-  AZ_MATRIX *Amat;
-  ReadAztecVbr(blk_size, Nnz, Nblks, &Amat, "../data/mac-vbr/K_reordered");
 
-  // Convert Aztec matrix to a set of 4 block epetra matrices
+  // Build epetra pressure and velocity maps for a simple example
 
-  Epetra_Map         *VbrMap;
-  Epetra_Map         **subblock_maps;
-  subblock_maps    = (Epetra_Map **) malloc(sizeof(Epetra_Map *)*2);
-  subblock_maps[0] = new Epetra_Map(Nblks*(blk_size-1), 0, *comm);
-  subblock_maps[1] = new Epetra_Map(Nblks, 0, *comm);
+  int Nvelocity = 480;
+  int Npressure = 256;
+  Epetra_Map *VelocityMap = new Epetra_Map(Nvelocity, 0, *comm);
+  Epetra_Map *PressureMap = new Epetra_Map(Npressure, 0, *comm);
+  Epetra_Map *BlockMap    = new Epetra_Map(Nvelocity + Npressure, 0, *comm);
 
-  Epetra_RowMatrix *saddleA_epet=Aztec2TSF(Amat,comm,(Epetra_BlockMap *&) VbrMap,subblock_maps);
+  // Read F,B, and B^T from files and store as epetra crs matrices
 
-  // Pull out stuff from the matrix 
+  Epetra_CrsMatrix *F_crs, *Bt_crs, *B_crs;
+  ReadPetraMatrix(VelocityMap, VelocityMap,  &F_crs, "../data/mac/F.serial");
+  ReadPetraMatrix(VelocityMap, PressureMap, &Bt_crs, "../data/mac/Bt.serial");
+  ReadPetraMatrix(PressureMap, VelocityMap,  &B_crs, "../data/mac/B.serial");
 
-  TSFLinearOperator saddleA_tsf = (dynamic_cast<TSFLinearOperator2EpetraRowMatrix*>
-                                  (saddleA_epet))->getTSF();
-  TSFLinearOperator F_tsf = saddleA_tsf.getBlock(0,0);
-  TSFLinearOperator B_tsf = saddleA_tsf.getBlock(1,0);
-  Epetra_CrsMatrix *F_crs = PetraMatrix::getConcrete(F_tsf);
-  Epetra_Map       *F_map = (Epetra_Map *) &(F_crs->OperatorDomainMap());
-  TSFVectorSpace   pressureSpace = B_tsf.range();
+  // Build TSF vector spaces. This could probably go into a subroutine so
+  // we could hide the details!!!
+
+  Epetra_Map    *vel1 = (Epetra_Map *) &(F_crs->OperatorDomainMap());
+  Epetra_Map    *vel2 = (Epetra_Map *) &(F_crs->RowMatrixColMap());
+  Epetra_Import *vel3  = (Epetra_Import *) F_crs->RowMatrixImporter();
+  TSFSmartPtr<Epetra_Map>    tv1 = TSFSmartPtr<Epetra_Map>(vel1,false);
+  TSFSmartPtr<Epetra_Map>    tv2 = TSFSmartPtr<Epetra_Map>(vel2,false);
+  TSFSmartPtr<Epetra_Import> tv3 = TSFSmartPtr<Epetra_Import>(vel3,false);
+  TSFVectorSpace velocitySpace = new PetraVectorSpace( tv1, tv2, tv3);
+
+  Epetra_Map *p1 = (Epetra_Map *) &(Bt_crs->OperatorDomainMap());
+  Epetra_Map *p2 = (Epetra_Map *) &(Bt_crs->RowMatrixColMap());
+  Epetra_Import *p3 = (Epetra_Import *) Bt_crs->RowMatrixImporter();
+  TSFSmartPtr<Epetra_Map> tp1 = TSFSmartPtr<Epetra_Map>(p1,false);
+  TSFSmartPtr<Epetra_Map> tp2 = TSFSmartPtr<Epetra_Map>(p2,false);
+  TSFSmartPtr<Epetra_Import> tp3 = TSFSmartPtr<Epetra_Import>(p3,false);
+  TSFVectorSpace pressureSpace = new PetraVectorSpace( tp1, tp2, tp3);
+
+
+  // Convert block matrices to TSF matrices. Each individual conversion
+  // could be shoved into a function to hide the details.
+
+  PetraMatrix*  F_petra = new PetraMatrix(velocitySpace, velocitySpace);
+  F_petra->setPetraMatrix(F_crs,true);   // insert epetra matrix into TSF matrix.
+  TSFLinearOperator F_tsf = F_petra;     // 'true' indicates that when this TSF matrix
+                                         // is deleted (automatically via smart
+                                         // pointers),  the underlying epetra matrix is 
+                                         // also deleted.
+
+  PetraMatrix* Bt_petra = new PetraMatrix(velocitySpace, pressureSpace);
+  Bt_petra->setPetraMatrix(Bt_crs,true); // insert epetra matrix into TSF matrix.
+  TSFLinearOperator Bt_tsf = Bt_petra;   // 'true' indicates that when this TSF matrix
+                                         // is deleted (automatically via smart
+                                         // pointers),  the underlying epetra matrix is 
+                                         // also deleted.
+
+  PetraMatrix* B_petra = new PetraMatrix(pressureSpace, velocitySpace);
+  B_petra->setPetraMatrix(B_crs,true); // insert epetra matrix into TSF matrix.
+  TSFLinearOperator B_tsf = B_petra;   // 'true' indicates that when this TSF matrix
+                                         // is deleted (automatically via smart
+                                         // pointers),  the underlying epetra matrix is 
+                                         // also deleted.
+
+  // Set up 2x2 block TSF operator
+
+  TSFVectorSpace  rangeBlockSpace = new TSFProductSpace(velocitySpace, pressureSpace);
+  TSFVectorSpace domainBlockSpace = new TSFProductSpace(velocitySpace, pressureSpace);
+  TSFLinearOperator   saddleA_tsf = new TSFBlockLinearOperator(rangeBlockSpace, domainBlockSpace);
+
+  saddleA_tsf.setBlock(0,0,F_tsf);
+  saddleA_tsf.setBlock(0,1,Bt_tsf);
+  saddleA_tsf.setBlock(1,0,B_tsf);
 
  // Build a Kay & Loghin style block preconditioner with meros
  // 
@@ -92,44 +139,15 @@ int main(int argc, void** argv)
  // 4) Make the preconditioner and get a TSFLinearOperator representing the prec. 
 
 
- // 1) Build solver for inv(F) so that it corresponds to using GMRES with ML.
- 
- ML *ml_handle;
- int N_levels = 10;
- ML_Set_PrintLevel(10);
- ML_Create(&ml_handle, N_levels);
- EpetraMatrix2MLMatrix(ml_handle, 0, F_crs);
- ML_Aggregate *agg_object;
- ML_Aggregate_Create(&agg_object);
- ML_Aggregate_Set_MaxCoarseSize(agg_object,30);
- ML_Set_Symmetrize(ml_handle, ML_TRUE);
- ML_Aggregate_Set_DampingFactor(agg_object,0.25);
- N_levels = ML_Gen_MGHierarchy_UsingAggregation(ml_handle, 0,
-                                                ML_INCREASING, agg_object);
- ML_Gen_Smoother_SymGaussSeidel(ml_handle, ML_ALL_LEVELS,
-                                ML_BOTH, 2, .2);
- ML_Gen_Solver    (ml_handle, ML_MGV, 0, N_levels-1);
+ // 1) Build inv(F) so that it corresponds to using GMRES with ML.
 
- Epetra_ML_Operator  *MLop = new Epetra_ML_Operator(ml_handle,*comm,*F_map,*F_map);
- MLop->SetOwnership(true);
- ML_Aggregate_Destroy(&agg_object);
- TSFSmartPtr<Epetra_Operator> Smart_MLprec = TSFSmartPtr<Epetra_Operator>(MLop, true);
-
- TSFHashtable<int, int> azOptions;
- TSFHashtable<int, double> azParams;
- azOptions.put(AZ_solver, AZ_gmres);
- azOptions.put(AZ_kspace, 50);
- azOptions.put(AZ_conv, AZ_r0);
- azParams.put(AZ_tol, 1e-8);
- azOptions.put(AZ_max_iter, 5);
- azOptions.put(AZ_precond, AZ_none);
-
- TSFLinearSolver FSolver = new AZTECSolver(azOptions, azParams, Smart_MLprec);
- FSolver.setVerbosityLevel(4);
- 
+  TSFLinearSolver FSolver;
+  ML_solverData   Fsolver_data;
+  bool symmetric = false;
+  ML_TSF_defaults(FSolver, &Fsolver_data, symmetric, F_crs);
+  FSolver.setVerbosityLevel(4);
   TSFLinearOperator F_inv = F_tsf.inverse(FSolver);
 
- 
  // 2) Build a Schur complement factory for getting inv(X) approximation.
 
  // 2 a) Build solver for inv(Ap) so that it corresponds to using CG with ML.
@@ -197,60 +215,55 @@ int main(int argc, void** argv)
 //  TSFVector xtmp = domainBlockSpace.createMember();
 //  TSFVector ytmp = rangeBlockSpace.createMember();
 
-//  saddleM_tsf.apply(xtmp, ytmp);
 
-//  exit(0);
+ // Build a map. This map is intended to go between vbr-style vectors and TSF-style vectors. 
+ // Since this example does not contain VBR data, the map is pointless but needed
+ // for the proper creation of an epetra wrapper around a TSF matrix.
+ // Specifically, map[i] != 1 indicates that the ith variable is in the
+ //                           first block.
+ //               map[i] == 1 indicates that the ith variable is in the
+ //                           second block.
 
+ int *imap = (int *) malloc(sizeof(int)*(Nvelocity + Npressure));
+ for (int i = 0; i < Nvelocity; i++) imap[i] = 0;
+ for (int i = Nvelocity; i < Nvelocity + Npressure; i++)  imap[i] = 1;
 
+ // Build the epetra matrix wrapper around the TSF block matrix
 
- // Convert the TSFLinearOperator to an EpetraRowMatrix
+ TSFLinearOperator2EpetraRowMatrix *saddleA_epet = 
+   new TSFLinearOperator2EpetraRowMatrix(saddleA_tsf, comm, BlockMap, imap,
+					 EPETRA_MATRIX);
+
+ // Build the epetra matrix wrapper around the TSF block PRECONDITIONER
+
  TSFLinearOperator2EpetraRowMatrix *saddlePrec_epet 
-   = new TSFLinearOperator2EpetraRowMatrix(saddleM_tsf, comm, VbrMap, 
+   = new TSFLinearOperator2EpetraRowMatrix(saddleM_tsf, comm, BlockMap,
 	               (dynamic_cast<TSFLinearOperator2EpetraRowMatrix*>
                        (saddleA_epet))->getBlockAssignments(), EPETRA_INVERSE);
   
  // Read in 'x' and 'rhs'
  
- Epetra_Vector *x_epet, *rhs_epet;
- x_epet   = new Epetra_Vector(*VbrMap);
- rhs_epet = new Epetra_Vector(*VbrMap);
- ReadPetraVector(x_epet  , "../data/mac-vbr/guess_reordered");
- ReadPetraVector(rhs_epet, "../data/mac-vbr/rhs_reordered");
+ Epetra_Vector *x_epet   = new Epetra_Vector(*BlockMap);
+ Epetra_Vector *rhs_epet = new Epetra_Vector(*BlockMap);
+ ReadPetraVector(x_epet  , "../data/mac/init_guess");
+ ReadPetraVector(rhs_epet, "../data/mac/rhs");
  
  // Set up the outer iteration
- 
  
  Epetra_LinearProblem problem(saddleA_epet, x_epet, rhs_epet);
  AztecOO solver(problem);
  solver.SetPrecOperator(saddlePrec_epet);
  solver.SetAztecOption(AZ_solver,AZ_GMRESR);
  
- solver.Iterate(3, 1.0E-8);
- 
+ solver.Iterate(30, 1.0E-8);
  
  delete saddlePrec_epet;
- delete saddleA_epet;
  delete x_epet;
  delete rhs_epet;
- delete subblock_maps[0];
- delete subblock_maps[1];
 
 #ifndef EPETRA_MPI
  delete comm;
 #endif
-
- delete VbrMap;
- 
- 
- free(Amat->data_org);
- free(Amat->bpntr);
- free(Amat->bindx);
- free(Amat->val);
- free(Amat->cpntr);
- free(Amat->rpntr);
- free(Amat->indx);
- free(subblock_maps);
- AZ_matrix_destroy(&Amat);
  
  
  TSFMPI::finalize(); 
