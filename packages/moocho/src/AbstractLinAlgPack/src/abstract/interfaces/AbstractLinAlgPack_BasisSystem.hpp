@@ -218,6 +218,8 @@ public:
 	///
 	class NumericallySingular : public std::runtime_error
 	{public: NumericallySingular(const std::string& what_arg) : std::runtime_error(what_arg) {}};
+	///
+	enum EMatRelations { MATRICES_INDEP_IMPS, MATRICES_ALLOW_DEP_IMPS };
 
 	//@}
 
@@ -365,6 +367,12 @@ public:
 	 *               This matrix object must be independent of the matrices \c Gc and/or \c Gh
 	 *               and/or \c D.  Therefore, it must be legal to destroy \c Gc and/or \c Gh
 	 *               and/or \c D without affecting the behavior of the matrix object \c GhUP.
+	 * @param mat_rel
+	 *               [in] Determines if the matrix objects must be completely independent or not.
+	 *               <ul>
+	 *               <li> MATRICES_INDEP_IMPS: The matrix objects must have independent implementations (default).
+	 *               <li> MATRICES_ALLOW_DEP_IMPS: The matrix objects can have implementation dependencies.
+	 *               </ul>
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>Gc != NULL || Gh != NULL</tt>
@@ -418,6 +426,7 @@ public:
 		,MatrixWithOp*              D
 		,MatrixWithOp*              GcUP
 		,MatrixWithOp*              GhUP
+		,EMatRelations              mat_rel = MATRICES_INDEP_IMPS
 		) const = 0;
 
 	//@}
