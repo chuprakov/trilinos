@@ -4,7 +4,10 @@
 #ifndef VECTOR_WITH_OP_H
 #define VECTOR_WITH_OP_H
 
+#include <iosfwd>
+
 #include "VectorBase.h"
+#include "Range1D.h"
 
 namespace AbstractLinAlgPack {
 
@@ -28,12 +31,17 @@ class VectorWithOpMutable;
   *
   * In order to create a concreate subclass of this interface, only three
   * methods absolutely must be overridden.  The method \Ref{dim}#()#
-  * gives the dimension of the vector at hand. As mentioned above,
-  * the \Ref{apply_reduction}#(...)# method must be
-  * overridden.  The last method that must be overridden is \Ref{create_sub_view}#(...)#.
-  * This method allows clients to perform operations on sub-vectors within the
-  * whole vector.  This makes the #apply_reduction(...)# method even more powerful
-  * but makes vector implementations slightly more complicated.
+  * gives the dimension of the vector at hand.  The #space()# method must
+  * also be overridden which in turn requires defining a concreate #VectorSpace#
+  * class (which has three pure virtual methods).  As mentioned above,
+  * the \Ref{apply_reduction}#(...)# method must be overridden.
+  *
+  * The fact that this interface returns a #VectorSpace# object (which in turn
+  * can create mutable vectors) implies that for every possible vector, it is
+  * possible to associate with it a mutable vector object that can be the target
+  * of transformation operations.  This is not a serious limitation.  For any
+  * application area mutable vectors should be able to defined and should be
+  * usable with the non-mutable vectors that can be created.
   *
   * The default implementation of this class caches away the values of the
   * norms that are computed.  The operations in any subclass that modifies
@@ -56,8 +64,18 @@ public:
 	 */
 	//@{
 
+	///
+	/** Return the vector space that this vector belongs to {abstract}.
+	 *
+	 * Note that the vectors space object returned is specifically bound to this
+	 * vector object.  The vector space object returned should only be considered
+	 * to be transient and may become invalid if #this# is modified in some way
+	 * (though some other interface).
+	 */
+	virtual const VectorSpace& space() const = 0;
+
 	/// Return the dimension of this vector
-	virtual RTOp_index_type dim() const = 0;
+	virtual index_type dim() const = 0;
 
 	///
 	/** Apply a reduction/transformation,operation over a set of vectors:
@@ -104,15 +122,87 @@ public:
 	 *				be accumulated over a set of abstract vectors
 	 *				which can be useful for implementing concatenated
 	 *				vectors for instance.
-	 *             If #op#.\Ref{get_reduct_type_num_entries}#(...)# returns
-	 *             #num_values == 0#, #num_indexes == 0# and #num_chars == 0#
-	 *             then #reduct_obj# should be set to #RTOp_REDUCT_OBJ_NULL#
-	 *             and no reduction will be performed.	  
+	 *              If #op#.\Ref{get_reduct_type_num_entries}#(...)# returns
+	 *              #num_values == 0#, #num_indexes == 0# and #num_chars == 0#
+	 *              then #reduct_obj# should be set to #RTOp_REDUCT_OBJ_NULL#
+	 *              and no reduction will be performed.
+	 * 	@param	global_offset
+	 *				[in] (default = 0) The offset of the vectors into a larger
+	 *				composite vector.
 	 */
-	virtual void apply_reduction( const RTOpPack::RTOp& op
-		, const size_t num_vecs, const VectorWithOp** vecs
-		, const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
-		, RTOp_ReductTarget reduct_obj ) const = 0;
+	virtual void apply_reduction(
+		const RTOpPack::RTOp& op
+		,const size_t num_vecs, const VectorWithOp** vecs
+		,const size_t num_targ_vecs, VectorWithOpMutable** targ_vecs
+		,RTOp_ReductTarget reduct_obj
+		,const index_type global_offset = 0
+		) const = 0;
+
+	//@}
+
+	/** @name Virtual methods with default implementations based on
+	 * reduction/transforamtion operators and \Ref{apply_reduction}#(...)# or
+	 * have other default implementations.
+	 */
+	//@{
+
+	///
+	/** Return the number of nonzero elements in the vector.
+	 *
+	 * The default implementation just uses a reduction operator
+	 * with the \Ref{apply_reduction}#(...)# method.
+	 */
+	virtual size_type nz() const;
+
+	///
+	/** Virtual output function.
+	  *
+	  * The default just uses get_sub_vector(...) to convert to a dense vector
+	  * and then prints this.
+	  */
+	virtual std::ostream& output(
+		std::ostream& out, bool print_dim = true, bool newline = true
+		,index_type global_offset = 0 ) const;
+
+	///
+	/** Fetch an element in the vector {abstract}.
+	 *
+	 * Preconditions:\begin{itemize}
+	 * \item #1 <= i <= this->dim()# (#throw std::out_of_range#)
+	 * \end{itemize}
+	 *
+	 * The default implementation uses a C reduction operator class
+	 * (See the RTOp_ROp_get_ele C operator class).
+	 *
+	 * @param  i  [in]  Index of the element value to get.
+	 */
+	virtual value_type get_ele(index_type i) const;
+
+	/** @name Vector norms
+	 *
+	 * These member functions have default implementations based on
+	 * reduction operator classes.  The default implementation of this
+	 * class caches the value of the norms since it is common that the
+	 * norms will be accessed many times before a vector is changed.
+	 */
+
+	///
+	/** One norm.
+	 * @memo #||v||_1 = sum( |v(i)|, i = 1,,,this->dim() )#
+	 */
+	virtual value_type norm_1() const;
+	///
+	/** Two norm.
+	 * @memo #||v||_2 = sqrt( sum( v(i)^2, i = 1,,,this->dim() ) )#
+	 */
+	virtual value_type norm_2() const;
+	///
+	/** Infinity norm.
+	 * @memo #||v||_inf = max( |v(i)|, i = 1,,,this->dim() )#
+	 */
+	virtual value_type norm_inf() const;
+	
+	//@}
 
 	///
 	/** Create an abstract view of a vector object {abstract}.
@@ -141,56 +231,16 @@ public:
 	 * vector elements.  It is allowed that #return->get() == NULL# for some selections
 	 * of #rng#.  Only some #rng# ranges may be allowed but they will be appropriate for the
 	 * application at hand.  However, a very good implementation should be able to
-	 * accommodate any valid #rng# that meets the basic preconditions.
+	 * accommodate any valid #rng# that meets the basic preconditions.  The default
+	 * implementation of this method just returns #NULL# unless #rng.full_range() == true#
+	 * or #rng.lbound() == 1 && #rng.ubound()==this->dim()#.
 	 */
-	virtual vec_ptr_t create_sub_view( const Range1D& rng ) const = 0;
-
-	//@}
-
-	/** @name Virtual methods with default implementations based on
-	 * reduction/transforamtion operators and \Ref{apply_reduction}#(...)#.
-	 */
-	//@{
+	virtual vec_ptr_t create_sub_view( const Range1D& rng ) const;
 
 	///
-	/** Fetch an element in the vector {abstract}.
-	 *
-	 * Preconditions:\begin{itemize}
-	 * \item #1 <= i <= this->dim()# (#throw std::out_of_range#)
-	 * \end{itemize}
-	 *
-	 * The default implementation uses a C reduction operator class
-	 * (See the RTOp_ROp_get_ele C operator class).
-	 *
-	 * @param  i  [in]  Index of the element value to get.
+	/** Inline member function that simply calls #this->create_sub_view(Range1D(l,u)).
 	 */
-	virtual RTOp_value_type get_ele(RTOp_index_type i) const;
-
-	/** @name Vector norms
-	 *
-	 * These member functions have default implementations based on
-	 * reduction operator classes.  The default implementation of this
-	 * class caches the value of the norms since it is common that the
-	 * norms will be accessed many times before a vector is changed.
-	 */
-
-	///
-	/** One norm.
-	 * @memo #||v||_1 = sum( |v(i)|, i = 1,,,this->dim() )#
-	 */
-	virtual RTOp_value_type norm_1() const;
-	///
-	/** Two norm.
-	 * @memo #||v||_2 = sqrt( sum( v(i)^2, i = 1,,,this->dim() ) )#
-	 */
-	virtual RTOp_value_type norm_2() const;
-	///
-	/** Infinity norm.
-	 * @memo #||v||_inf = max( |v(i)|, i = 1,,,this->dim() )#
-	 */
-	virtual RTOp_value_type norm_inf() const;
-	
-	//@}
+	vec_ptr_t create_sub_view( const index_type& l, const index_type& u ) const;
 
 	/** @name Explicit sub-vector access.
 	 *
@@ -303,15 +353,26 @@ public:
 	/** Calls #apply_reduction(...)# with an operator class object
 	 * of type #RTOp_ROp_dot_prod#.
 	 */
-	RTOp_value_type inner_product(  const VectorBase& ) const;
+	value_type inner_product(  const VectorBase& ) const;
 
 	//@}
 
 private:
 
-	mutable RTOp_value_type  norm_1_, norm_2_, norm_inf_;   // < 0, not initialized, > 0 already calculated
+	mutable size_type   num_nonzeros_;  // > this->dim() not initialized
+	mutable value_type  norm_1_, norm_2_, norm_inf_;   // < 0 not initialized, > 0 already calculated
 
-};
+}; // end class MatrixWithOp
+
+// ////////////////////////////////////////////////
+// Inline members
+
+inline
+VectorWithOp::vec_ptr_t
+VectorWithOp::create_sub_view( const index_type& l, const index_type& u ) const
+{
+	return this->create_sub_view(Range1D(l,u));
+}
 
 } // end namespace AbstractLinAlgPack
 

@@ -2,12 +2,14 @@
 // VectorWithOpMutable.cpp
 
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_assign_scalar.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_assign_vectors.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_axpy.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_set_ele.h"
 #include "RTOpStdOpsLib/include/RTOp_TOp_set_sub_vector.h"
 #include "RTOpPack/include/RTOpCppC.h"
+#include "Range1D.h"
 
 namespace {
 
@@ -79,17 +81,9 @@ init_rtop_server_t  init_rtop_server;
 
 namespace AbstractLinAlgPack {
 
-// VectorSpace
-
-VectorSpaceBase::vec_ptr_t  VectorSpace::new_member() const
-{
-	namespace rcp = ReferenceCountingPack;
-	return rcp::rcp_implicit_cast<vec_ptr_t::element_type>(create_member());
-}
-
 // VectorWithOpMutable
 
-VectorWithOpMutable& VectorWithOpMutable::operator=(RTOp_value_type alpha)
+VectorWithOpMutable& VectorWithOpMutable::operator=(value_type alpha)
 {
 	if(0!=RTOp_TOp_assign_scalar_set_alpha( alpha, &assign_scalar_op.op() ))
 		assert(0);
@@ -97,8 +91,10 @@ VectorWithOpMutable& VectorWithOpMutable::operator=(RTOp_value_type alpha)
 	return *this;
 }
 
-VectorWithOpMutable& VectorWithOpMutable::operator=(const VectorWithOpMutable& vec)
+VectorWithOpMutable& VectorWithOpMutable::operator=(const VectorWithOp& vec)
 {
+	if( dynamic_cast<const void*>(&vec) == dynamic_cast<const void*>(this) )
+		return *this; // Assignment to self!
 	const int num_vecs = 1;
 	const VectorWithOp*
 		vec_args[1] = { &vec };
@@ -106,11 +102,24 @@ VectorWithOpMutable& VectorWithOpMutable::operator=(const VectorWithOpMutable& v
 	return *this;
 }
 
-void VectorWithOpMutable::set_ele( RTOp_index_type i, RTOp_value_type alpha )
+VectorWithOpMutable& VectorWithOpMutable::operator=(const VectorWithOpMutable& vec)
+{
+	return this->operator=(static_cast<const VectorWithOp&>(vec));
+}
+
+void VectorWithOpMutable::set_ele( index_type i, value_type alpha )
 {
 	if(0!=RTOp_TOp_set_ele_set_i_alpha( i, alpha, &set_ele_op.op() ))
 		assert(0);
 	this->apply_transformation(set_ele_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL);
+}
+
+VectorWithOpMutable::vec_mut_ptr_t
+VectorWithOpMutable::create_sub_view( const Range1D& rng )
+{
+	if( rng.full_range() || ( rng.lbound() == 1 && rng.ubound() == this->dim() ) )
+		return vec_mut_ptr_t(this,false); // returned ref counted pointer does not own memory!
+	return NULL;
 }
 
 VectorWithOpMutable::vec_mut_ptr_t VectorWithOpMutable::clone() const
@@ -151,7 +160,7 @@ void VectorWithOpMutable::zero()
 	this->operator=(0.0);
 }
 
-void VectorWithOpMutable::axpy( RTOp_value_type alpha, const VectorBase& x )
+void VectorWithOpMutable::axpy( value_type alpha, const VectorBase& x )
 {
 	if( 0!=RTOp_TOp_axpy_set_alpha( alpha, &axpy_op.op() ) )
 		assert(0);

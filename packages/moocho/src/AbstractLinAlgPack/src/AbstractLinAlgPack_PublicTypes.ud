@@ -1,7 +1,13 @@
 // ///////////////////////////////////////////////////////////////
 // AbstractLinAlgPackPublicTypes.h
 
-using AbstractRange1D;
+// Main interface library
+
+typedef AbstractLinAlgPack::size_type   size_type;
+typedef AbstractLinAlgPack::value_type  value_type;
+typedef AbstractLinAlgPack::index_type  index_type;
+
+using AbstractLinAlgPack::Range1D;
 
 using AbstractLinAlgPack::VectorSpaceBase;
 using AbstractLinAlgPack::VectorSpace;
@@ -10,3 +16,29 @@ using AbstractLinAlgPack::VectorBase;
 using AbstractLinAlgPack::VectorBaseMutable;
 using AbstractLinAlgPack::VectorWithOp;
 using AbstractLinAlgPack::VectorWithOpMutable;
+
+using AbstractLinAlgPack::MatrixSpaceBase;
+using AbstractLinAlgPack::MatrixSpace;
+
+using AbstractLinAlgPack::MatrixBase;
+using AbstractLinAlgPack::MatrixWithOp;
+using AbstractLinAlgPack::MatrixWithOpMutable;
+using AbstractLinAlgPack::MatrixFactorized;
+using AbstractLinAlgPack::MatrixWithOpFactorized;
+using AbstractLinAlgPack::MatrixSymWithOp;
+using AbstractLinAlgPack::MatrixSymFactorized;
+using AbstractLinAlgPack::MatrixSymWithOpFactorized;
+
+// Tools library
+
+using AbstractLinAlgPack::PermVector;
+
+using AbstractLinAlgPack::MatrixSymInitDiagonal;
+using AbstractLinAlgPack::MatrixSymDiagonal;
+
+using AbstractLinAlgPack::MatrixSpaceStd;
+
+using AbstractLinAlgPack::VectorSpaceCompositeStd;
+using AbstractLinAlgPack::VectorWithOpMutableCompositeStd;
+using AbstractLinAlgPack::MatrixSymIdentity;
+using AbstractLinAlgPack::MatrixSymDiagonalStd;
