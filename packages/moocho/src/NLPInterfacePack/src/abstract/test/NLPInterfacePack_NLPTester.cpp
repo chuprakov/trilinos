@@ -38,10 +38,10 @@ NLPTester::NLPTester(
 {}
 
 bool NLPTester::test_interface(
-	NLP                           *nlp
+	NLP                     *nlp
 	,const Vector           &xo
-	,bool                         print_all_warnings
-	,std::ostream                 *out
+	,bool                   print_all_warnings
+	,std::ostream           *out
 	)
 {
 	using TestingHelperPack::update_success;
@@ -59,9 +59,6 @@ bool NLPTester::test_interface(
 	}
 
 	try {
-	
-		// Check the input x
-		assert_print_nan_inf(xo,"xo",true,out); 
 
 		// Initialize the NLP if it has not been already and force in bounds
 		if(out)
@@ -113,18 +110,13 @@ bool NLPTester::test_interface(
 					 << " == NULL: " << result;
 		}
 
-		// Validate the bounds on the unknowns.
-
-		const Vector &xinit = nlp->xinit();
-		if(out)
-			*out << "\n||nlp->xinit()||inf = " << xinit.norm_inf() << std::endl;
-		if(out && print_all())
-			*out << "\nnlp->xinit() =\n" << xinit;
-
-		assert_print_nan_inf(xinit,"xinit",true,out); 
-
+		// Validate the initial guess the bounds on the unknowns.
 		if(out)
 			*out << "\n*** Validate that the initial starting point is in bounds ...\n";
+		const Vector &xinit = nlp->xinit();
+		if(out) *out << "\n||nlp->xinit()||inf = " << xinit.norm_inf() << std::endl;
+		if(out && print_all()) *out << "\nnlp->xinit() =\n" << xinit;
+		assert_print_nan_inf(xinit,"xinit",true,out); 
 		const Vector
 			&xl = nlp->xl(),
 			&xu = nlp->xu();
@@ -150,7 +142,6 @@ bool NLPTester::test_interface(
 				*out << "\nxinit is in bounds with { max |u| | xl <= x + u <= xu } -> "
 					 << ( u.first > -u.second ? u.first : u.second  ) << std::endl;
 		}
-			
 		size_type 
 			num_bounded_x = AbstractLinAlgPack::num_bounded(
 				nlp->xl(), nlp->xu(), NLP::infinite_bound()
@@ -211,8 +202,14 @@ bool NLPTester::test_interface(
 		if( nlp->m() )  nlp->set_c(c.get());
 
 		// Calculate the quantities at xo
+
 		if(out)
 			*out << "\n*** Evaluate the point xo ...\n";
+
+		if(out)	*out << "\n||xo||inf = " << xo.norm_inf() << std::endl;
+		if(out && print_all()) *out << "\nxo =\n" << xo;
+		assert_print_nan_inf(xo,"xo",true,out); 
+
 		nlp->calc_f(xo,true);
 		if(nlp->m())  nlp->calc_c(xo,false);
 
