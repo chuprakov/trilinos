@@ -418,7 +418,7 @@ protected:
   TEST_FOR_EXCEPTION( \
     (SUB_VECS)[0].subDim() != (SUB_VECS)[1].subDim() || \
     (SUB_VECS)[0].subDim() != (TARG_SUB_VECS)[0].subDim() || \
-    (SUB_VECS)[0].globalOffset() != (SUB_VECS)[1].globalOffset() \
+    (SUB_VECS)[0].globalOffset() != (SUB_VECS)[1].globalOffset() || \
     (SUB_VECS)[0].globalOffset() != (TARG_SUB_VECS)[0].globalOffset() \
     ,IncompatibleVecs \
     ,"Error, num_targ_vecs="<<(NUM_TARG_VECS)<<" not allowed, only num_targ_vecs==0, targ_sub_vecs==NULL" \
