@@ -212,6 +212,9 @@ public:
 	 * @param  Prec_solve
 	 *             [out] A perhaps new <tt>Epetra_Operator</tt> object that
 	 *             represents the scaled preconditioner.
+	 * @param  out
+	 *             [out] If <tt>out!=NULL</tt> then <tt>*out</t> will receive some basic
+	 *             output about what is being done.
 	 *
 	 * Preconditions:<ul>
 	 * <li><tt>scaling.get()!=NULL</tt>

@@ -241,8 +241,10 @@ public:
 	 * @param  Op_inverse
 	 *            [in] Determines if the operator or its inverse (if supported)
 	 *            should be applied.
-	 * @param  X  [in] The input vector.
-	 * @param  Y  [out] The output vector.
+	 * @param  X_k
+	 *            [in] The input vector.
+	 * @param  Y_k
+	 *            [out] The output vector.
 	 *
 	 * Clients should call this function to correctly apply a constitient operator!
 	 */

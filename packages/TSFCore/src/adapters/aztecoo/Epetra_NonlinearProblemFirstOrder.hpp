@@ -226,13 +226,13 @@ public:
 	/** @name Overridden from NonlinearProblem */
 	//@{
 	
-	/// Calls <tt>calc_Dc(y,u,c,NULL,NULL,NULL)
+	/// Calls <tt>calc_Dc(y,u,c,NULL,NULL,NULL)</tt>
 	void calc_c(
 		const Epetra_Vector     &y
 		,const Epetra_Vector*   u[]
     ,Epetra_Vector          *c
 		) const;
-	/// Calls <tt>calc_Dg(y,u,g,NULL,NULL,NULL)
+	/// Calls <tt>calc_Dg(y,u,g,NULL,NULL,NULL)</tt>
 	void calc_g(
 		const Epetra_Vector     &y
 		,const Epetra_Vector*   u[]
