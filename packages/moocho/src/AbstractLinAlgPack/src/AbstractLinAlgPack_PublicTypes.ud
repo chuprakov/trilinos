@@ -1,0 +1,12 @@
+// ///////////////////////////////////////////////////////////////
+// AbstractLinAlgPackPublicTypes.h
+
+using AbstractRange1D;
+
+using AbstractLinAlgPack::VectorSpaceBase;
+using AbstractLinAlgPack::VectorSpace;
+
+using AbstractLinAlgPack::VectorBase;
+using AbstractLinAlgPack::VectorBaseMutable;
+using AbstractLinAlgPack::VectorWithOp;
+using AbstractLinAlgPack::VectorWithOpMutable;

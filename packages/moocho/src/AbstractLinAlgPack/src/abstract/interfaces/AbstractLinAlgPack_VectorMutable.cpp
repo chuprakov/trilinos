@@ -2,10 +2,11 @@
 // VectorWithOpMutable.cpp
 
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
-#include "ExampleRTOpsLib/include/RTOp_TOp_assign_scalar.h"
-#include "ExampleRTOpsLib/include/RTOp_TOp_assign_vectors.h"
-#include "ExampleRTOpsLib/include/RTOp_TOp_axpy.h"
-#include "ExampleRTOpsLib/include/RTOp_TOp_set_ele.h"
+#include "RTOpStdOpsLib/include/RTOp_TOp_assign_scalar.h"
+#include "RTOpStdOpsLib/include/RTOp_TOp_assign_vectors.h"
+#include "RTOpStdOpsLib/include/RTOp_TOp_axpy.h"
+#include "RTOpStdOpsLib/include/RTOp_TOp_set_ele.h"
+#include "RTOpStdOpsLib/include/RTOp_TOp_set_sub_vector.h"
 #include "RTOpPack/include/RTOpCppC.h"
 
 namespace {
@@ -16,6 +17,8 @@ static RTOpPack::RTOpC          assign_scalar_op;
 static RTOpPack::RTOpC          assign_vec_op;
 // set element operator
 static RTOpPack::RTOpC          set_ele_op;
+// set sub-vector operator
+static RTOpPack::RTOpC          set_sub_vector_op;
 // axpy operator
 static RTOpPack::RTOpC          axpy_op;
 
@@ -45,6 +48,16 @@ public:
 		if(0!=RTOp_Server_add_op_name_vtbl(
 			   RTOp_TOp_set_ele_name
 			   ,&RTOp_TOp_set_ele_vtbl
+			   ))
+			assert(0);	
+		// Set sub-vector operator
+		RTOp_SubVector sub_vec;
+		RTOp_sub_vector_null(&sub_vec);
+		if(0!=RTOp_TOp_set_sub_vector_construct( &sub_vec, &set_sub_vector_op.op() ))
+			assert(0);
+		if(0!=RTOp_Server_add_op_name_vtbl(
+			   RTOp_TOp_set_sub_vector_name
+			   ,&RTOp_TOp_set_sub_vector_vtbl
 			   ))
 			assert(0);	
 		// axpy operator
@@ -110,13 +123,15 @@ VectorWithOpMutable::vec_mut_ptr_t VectorWithOpMutable::clone() const
 
 void VectorWithOpMutable::set_sub_vector( const RTOp_SubVector& sub_vec )
 {
-	assert(0); //  ToDo: Implement!
+	if(0!=RTOp_TOp_set_sub_vector_set_sub_vec( &sub_vec, &set_sub_vector_op.op() ))
+		assert(0);
+	this->apply_transformation(set_sub_vector_op,0,NULL,0,NULL,RTOp_REDUCT_OBJ_NULL);
 }
 
 // Overridden from VectorWithOp
 
 VectorWithOp::vec_ptr_t
-VectorWithOpMutable::create_sub_view( const LinAlgPack::Range1D& rng ) const
+VectorWithOpMutable::create_sub_view( const Range1D& rng ) const
 {
 	namespace rcp = ReferenceCountingPack;
 	return rcp::rcp_implicit_cast<vec_ptr_t::element_type>(

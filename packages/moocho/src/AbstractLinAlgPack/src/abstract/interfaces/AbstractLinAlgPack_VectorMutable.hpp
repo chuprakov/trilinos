@@ -12,7 +12,10 @@ namespace AbstractLinAlgPack {
 ///
 /** Abstract interface for objects that represent a space for mutable coordinate vectors.
  *
- * This class is primary an "Abstract Factory" interface.
+ * This class is primary an "Abstract Factory" interface.  A #VectorSpace# object can exist
+ * independent from any individual #VectorWithOpMutable# object.  Or, a #VectorSpace# object
+ * can have a lifetime that is dependent on a single #VectorWithOpMutable# object.  The
+ * same interface can serve both roles.  
  */
 class VectorSpace : public virtual VectorSpaceBase {
 public:
@@ -33,10 +36,16 @@ public:
 	///
 	/** Create a member of the vector space.
 	 *
+	 * Postconditions:\begin{itemize}
+	 * \item #return->dim() == this->dim()#
+	 * \item #return->get_ele(i) == 0.0#, for #i = 1...this->dim()#
+	 * \item #return->space().is_compatible(*this) == true#
+	 * \end{itemize}
+	 *
 	 * @return  Returns a smart reference counted pointer to a dynamically
 	 * allocated vector object.  On construction #return->get_ele(i)# will
 	 * be equal to #0.0# for #i = 1...this->dim()#.  Note that #&return->space()#
-	 * does not have to be equal to #this#.  
+	 * does not have to be equal to #this#.
 	 */
 	virtual vec_mut_ptr_t create_member() const = 0;
 
@@ -45,6 +54,10 @@ public:
 	 *
 	 * Preconditions:\begin{itemize}
 	 * \item #rng.in_range(this->dim()) == true# (#throw std::out_of_range#)
+	 * \end{itemize}
+	 *
+	 * Postconditions:\begin{itemize}
+	 * \item #return->dim() == rng->size()#
 	 * \end{itemize}
 	 *
 	 * @param  rng  [in] The range of the elements to extract a vector sub-space.
@@ -56,7 +69,9 @@ public:
 	 * #this->create_member()->create_sub_view(rng)->space()->create_member()#.
 	 * It is allowed for the implementation to return #return->get() == NULL#
 	 * for arbitrary values of #rng#.  Only some #rng# ranges may be allowed
-	 * but they will be appropriate for the application at hand.
+	 * but they will be appropriate for the application at hand.  However, a
+	 * very good implementation should be able to accomidate any valid #rng#
+	 * that meets the basic preconditions.
 	 *
 	 * Note that if two vector space objects #X# and #Y# are compatible (i.e.
 	 * #X.is_compatible(Y) == true#, then it is also expected that
@@ -68,7 +83,7 @@ public:
 	 * general, don't assume that arbitrary subsets of the vector spaces will be
 	 * comatible, even if the sizes of these subspaces are the same.
 	 */
-	virtual space_ptr_t sub_space(const LinAlgPack::Range1D& rng) const = 0;
+	virtual space_ptr_t sub_space(const Range1D& rng) const = 0;
 	
 	/** @name Overrriden from \Ref{VectorSpaceBase} */
 	//@{
@@ -87,31 +102,32 @@ public:
 /** Abstract interface for mutable coordinate vectors {abstract}.
   *
   * Objects of this type can act as a target vector of
-  * reduction/transformation operations.  Similarly to 
-  * \Ref{VectorWithOp} this interface contains very few pure
-  * virtual methods that must be overridden.
+  * a transformation operation.  Similarly to \Ref{VectorWithOp}
+  * this interface contains very few pure virtual methods that must
+  * be overridden.  However, more efficient implementations will
+  * choose to override more methods.
   * 
   * The most important method is \Ref{apply_transformation}#(...)#
-  * that allows users to apply user defined transformation operators.
-  * Every standard (i.e. BLAS) and non-standard element-wise
-  * vector operation can be performed using a transformation
+  * that allows clients to apply user defined reduction/transformation
+  * operators.  Every standard (i.e. BLAS) and non-standard element-wise
+  * vector operation can be performed using a reduction/transformation
   * operator.  As long as the individual sub-vectors are large enough,
   * transformation operators will be nearly as efficient as
   * specialized operations for most vector subclasses so why
   * even include any other methods?
   *
-  * There are a few pure virtual methods that a concreate subclass
-  * must override.  The #dim()# method from the \Ref{VectorBase} base
+  * There are only few pure virtual methods that a concreate subclass
+  * must override.  The #dim()# method from the \Ref{VectorWithOp} base
   * class interface must be overridden to give the dimmension of the vector.
   * The \Ref{apply_reduction}#(...)# method from the \Ref{VectorWithOp}
   * base class inteface must be defined.  The mutable (non-const)
   * \Ref{create_sub_view}#(...)# method from this interface must be
   * overriden.  The #space()# method must also be overridden which in
-  * turn requires defining a concreate #VectorSpace# class.  Theresfore,
+  * turn requires defining a concreate #VectorSpace# class.  Therefore,
   * defining a concreate #VectorWithOpMutable# subclass is significanly
   * harder that definign a concreate #VectorWithOp# class.  However,
-  * note only four vector methods and three #VectorSpace# methods
-  * must be overridden to define a very powerful vector class.
+  * note only four vector methods and three #VectorSpace# methods must
+  * be overridden to define a very powerful coordinate vector class.
   *
   * The non-mutable (const) \Ref{create_sub_view}#(...)# from the
   * #VectorWithOp# interface has a default implementation defined
@@ -160,25 +176,25 @@ public:
 	  *				then this argument is ignored but should be set to zero.
 	  *	@param  targ_vecs
 	  *				[in] Array (length #num_targ_vecs#) of a set of pointers to
-	  *				mutable vectors to include in the operation.
-	  *				The order of these vectors is significant to #op#.
-	  *				If #targ_vecs==NULL# then #op# is called with no mutable vectors.
+	  *				mutable vectors to include in the operation. The order of these vectors
+	  * 			is significant to #op#.  If #targ_vecs==NULL# then #op# is called with
+	  *				only one mutable vector (#*this#).
 	  *	@param  reduct_obj
 	  *				[in/out] Target object of the reduction operation.
 	  *				This object must have been created by the
-	  *				\Ref{RTOp_reduct_obj_create}#(op,reduct_obj)# function
+	  *				#op#.\Ref{reduct_obj_create_raw}#(&reduct_obj)# function
 	  *				first.  The reduction operation will be added
-	  *				to #(*reduct_obj)# if #(*reduct_obj)# has already been through a
-	  *				reduction.  By allowing the info in #(*reduct_obj)#
+	  *				to #(*reduct_obj)# if #(*reduct_obj)# has already been
+	  *				through a reduction.  By allowing the info in #(*reduct_obj)#
 	  *				to be added to the reduction over all of these
 	  *				vectors, the reduction operation can
 	  *				be accumulated over a set of abstract vectors
 	  *				which can be useful for implementing concatenated
 	  *				vectors for instance.
- 	  *             If \Ref{RTOp_get_reduct_type_num_entries}#(op,...)# returns
+ 	  *             If #op#.\Ref{get_reduct_type_num_entries}#(...)# returns
 	  *             #num_values == 0#, #num_indexes == 0# and #num_chars == 0#
 	  *             then #reduct_obj# should be set to #RTOp_REDUCT_OBJ_NULL#
-	  *             and no reduction will be performed.	  
+	  *             and no reduction will be performed.
 	  */
 	virtual void apply_transformation( const RTOpPack::RTOp& op
 		, const size_t num_vecs, const VectorWithOp** vecs
@@ -203,6 +219,13 @@ public:
 	 * non-constant because the object returned has the capacity to alter #this#
 	 * object.
 	 *
+	 * The compatibility of sub-views goes along with the compatibility of subspaces
+	 * (see \Ref{VectorSpace}).  For example, given the vector objects where
+	 * #x.space().is_compatible(y.space()) == true# then if
+	 * #x.space().sub_space(rng1)->is_compatible(*y.space().sub_space(rng2)) == true#
+	 * then the sub-vector views #*x.create_sub_view(rng1)# and #*y.create_sub_view(rng2)#
+	 * should be compatible and can be combined in vector operations.
+	 *
 	 * Preconditions:\begin{itemize}
 	 * \item #rng.in_range(this->dim()) == true# (#throw std::out_of_range#)
 	 * \end{itemize}
@@ -211,10 +234,10 @@ public:
 	 * 
 	 * @return  Returns a smart reference counted pointer to a view of the requested
 	 * vector elements.  It is allowed for the vector implementation to refuse to
-	 * create arbitrary views in which case this function will return #return.get() == NULL#.
-	 * In most applications, only specific views are every required.
+	 * create arbitrary views in which case this function will return
+	 * #return.get() == NULL#. In most applications, only specific views are every required.
 	 */
-	virtual vec_mut_ptr_t create_sub_view( const LinAlgPack::Range1D& rng ) = 0;
+	virtual vec_mut_ptr_t create_sub_view( const Range1D& rng ) = 0;
 
 	//@}
 
@@ -277,9 +300,9 @@ public:
 	 * \end{itemize}
 	 *
 	 * The default implementation of this operation uses a transformation operator class
-	 * (see RTOp_TOp_set_sub_vector) and calls \Ref{apply_transforamtion}#(...)#.  Be forwarned
+	 * (see RTOp_TOp_set_sub_vector) and calls \Ref{apply_transforamtion}#(...)#.  Be forewarned
 	 * however, that the operator objects state data (both internal and external) will be
-	 * O(sub_vec.sub_nz).  For serial applications, this is entirely adequate.  For parallel
+	 * O(#sub_vec.sub_nz#).  For serial applications, this is entirely adequate.  For parallel
 	 * applications this will be very bad!
 	 *
 	 * @param  sub_vec  [in] Represents the elements in the subvector to be set.
@@ -298,7 +321,7 @@ public:
 	 * override, the non-const version defined in this interface hides the const version
 	 * defined in \Ref{VectorWithOp}.
 	 */
-	vec_ptr_t create_sub_view( const LinAlgPack::Range1D& rng ) const;
+	vec_ptr_t create_sub_view( const Range1D& rng ) const;
 
 	//@}
 
