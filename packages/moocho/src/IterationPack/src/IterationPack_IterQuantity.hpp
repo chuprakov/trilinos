@@ -174,7 +174,7 @@ public:
 	  * <li> <tt>updated_k(offset) == false</tt>
 	  * </ul> 
 	  */
-	virtual void set_not_updated(int offset) = 0;
+	virtual void set_not_updated_k(int offset) = 0;
 
 	///
 	/** Causes <tt>updated_k(k)</tt> to return false for all <tt>k</tt>.

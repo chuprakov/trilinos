@@ -121,7 +121,7 @@ int IterQuantityAccessContiguous<T_info>::last_updated() const {
 }
 
 template<class T_info>
-void IterQuantityAccessContiguous<T_info>::set_not_updated(int offset) {
+void IterQuantityAccessContiguous<T_info>::set_not_updated_k(int offset) {
 	assert_updated_k(offset);
 	updated_[max_offset_ - offset] = false;
 }

@@ -143,7 +143,7 @@ public:
 	///
 	int last_updated() const;
 	///
-	void set_not_updated(int offset);
+	void set_not_updated_k(int offset);
 	///
 	void set_all_not_updated();
 	///
