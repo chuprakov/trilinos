@@ -83,64 +83,21 @@ int main(int argc, char *argv[])
  //
  // 1) Build inv(F) so that it corresponds to using GMRES with ML.
 
-   ML *ml_handle;
-   int N_levels = 10;
-   ML_Set_PrintLevel(10);
-   ML_Create(&ml_handle, N_levels);
-   EpetraMatrix2MLMatrix(ml_handle, 0, F_crs);
-   ML_Aggregate *agg_object;
-   ML_Aggregate_Create(&agg_object);
-   ML_Aggregate_Set_MaxCoarseSize(agg_object,30);
-   ML_Set_Symmetrize(ml_handle, ML_TRUE);
-   ML_Aggregate_Set_DampingFactor(agg_object,0.25);
-   N_levels = ML_Gen_MGHierarchy_UsingAggregation(ml_handle, 0,
-                                                  ML_INCREASING, agg_object);
-   ML_Gen_Smoother_SymGaussSeidel(ml_handle, ML_ALL_LEVELS, ML_BOTH, 2, .2);
-   ML_Gen_Solver    (ml_handle, ML_MGV, 0, N_levels-1);
 
-   Epetra_ML_Operator  *MLop = new Epetra_ML_Operator(ml_handle,*comm,*F_map,*F_map);
-   MLop->SetOwnership(true);
-   ML_Aggregate_Destroy(&agg_object);
+  TSFLinearSolver FSolver,      BBtSolver;
+  ML_solverData   Fsolver_data, BBtSolver_data;
 
+  bool symmetric = false;
 
-   TSFHashtable<int, int> azOptions;
-   TSFHashtable<int, double> azParams;
-   azOptions.put(AZ_solver, AZ_gmres);
-   azOptions.put(AZ_kspace, 50);
-   azOptions.put(AZ_conv, AZ_r0);
-   azParams.put(AZ_tol, 1e-8);
-   azOptions.put(AZ_max_iter, 50);
-   TSFSmartPtr<Epetra_Operator> Smart_MLprec = TSFSmartPtr<Epetra_Operator>(MLop, true);
+  ML_TSF_defaults(FSolver, &Fsolver_data, symmetric, F_crs);
+  FSolver.setVerbosityLevel(4);
+  TSFLinearOperator F_inv = F_tsf.inverse(FSolver);
 
-   TSFLinearSolver FSolver = new AZTECSolver(azOptions, azParams, Smart_MLprec);
-   FSolver.setVerbosityLevel(4);
-   TSFLinearOperator F_inv = F_tsf.inverse(FSolver);
+  symmetric = true;
 
-
-   ML *ml_BBt;
-   ML_Create(&ml_BBt, N_levels);
-   EpetraMatrix2MLMatrix(ml_BBt, 0, BBt_crs);
-   N_levels = ML_Gen_MGHierarchy_UsingAggregation(ml_BBt, 0,
-                                                  ML_INCREASING, NULL);
-   ML_Gen_Smoother_SymGaussSeidel(ml_BBt, ML_ALL_LEVELS, ML_BOTH, 1, 1.);
-   ML_Gen_Solver    (ml_BBt, ML_MGV, 0, N_levels-1);
-   Epetra_ML_Operator  *MLBBtop = new Epetra_ML_Operator(ml_BBt,*comm,
-							 *BBt_map,*BBt_map);
-   MLBBtop->SetOwnership(true);
-
-
-   TSFHashtable<int, int> azBBtOptions;
-   TSFHashtable<int, double> azBBtParams;
-   azBBtOptions.put(AZ_solver, AZ_cg);
-   azBBtOptions.put(AZ_conv, AZ_r0);
-   azBBtParams.put(AZ_tol, 1e-8);
-   azBBtOptions.put(AZ_max_iter, 50);
-   TSFSmartPtr<Epetra_Operator> Smart_MLBBtprec = TSFSmartPtr<Epetra_Operator>(MLBBtop, true);
-
-   TSFLinearSolver BBtSolver = new AZTECSolver(azBBtOptions, azBBtParams, Smart_MLBBtprec);
-   BBtSolver.setVerbosityLevel(4);
-   TSFLinearOperator BBt_inv = BBt_tsf.inverse(BBtSolver);
-
+  ML_TSF_defaults(BBtSolver, &BBtSolver_data, symmetric, BBt_crs);
+  BBtSolver.setVerbosityLevel(4);
+  TSFLinearOperator BBt_inv = BBt_tsf.inverse(BBtSolver);
 
    // 2) Build 2x2 block preconditioner by seting inv(F) to the (0,0)
    //    block and the identity to the (1,1) block. Then wrap the 
