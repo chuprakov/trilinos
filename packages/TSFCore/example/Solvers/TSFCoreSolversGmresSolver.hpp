@@ -82,7 +82,7 @@ private:
 	Teuchos::SerialDenseMatrix<int,Scalar>                H_;
 	Teuchos::RefCountPtr< MultiVector<Scalar> >           V_;
 	Teuchos::RefCountPtr< Vector<Scalar> >                r;
-	std::vector<Scalar>		                                cs, sn;	
+	std::vector<Scalar>		                                cs, sn;
 
 }; // end class GMRESSolver
 
@@ -91,8 +91,8 @@ GMRESSolver<Scalar>::GMRESSolver(
 	int			  default_max_iter,
 	Scalar		default_tol
 	)
-	: max_iter(default_max_iter), tol(default_tol),
-		isConverged(false), curr_iter(0), r0( 1.0 ), curr_res( 1.0 )
+	:max_iter(default_max_iter), curr_iter(0), isConverged(false)
+	,tol(default_tol), curr_res(1.0), r0(1.0) 
 {}
 	
 template<class Scalar>
