@@ -32,7 +32,7 @@
 #ifndef TSFCORE_MULTIPLICATIVE_LINEAR_OP_DECL_HPP
 #define TSFCORE_MULTIPLICATIVE_LINEAR_OP_DECL_HPP
 
-#include "TSFCoreLinearOphandle.hpp"
+#include "TSFCoreLinearOpHandle.hpp"
 
 namespace TSFCore {
 
