@@ -49,7 +49,7 @@ assert_compile_time<
 // Validate that there is an integer stride between indexes
 assert_compile_time<
     ((int)sizeof(SparseLinAlgPack::SpVectorSlice::element_type)
-	 % (int)sizeof(LinAlgPack::indice_type))
+	 % (int)sizeof(LinAlgPack::index_type))
 	, double
 	>
     validate_index_stride;
@@ -63,11 +63,11 @@ void SparseLinAlgPack::add_elements( SpVector* sv_lhs, value_type alpha, const V
 	VectorSlice::const_iterator
 		itr = vs_rhs.begin();
 	if(add_zeros) {
-		for( size_type i = 1; i <= vs_rhs.size(); ++i )
+		for( size_type i = 1; i <= vs_rhs.dim(); ++i )
 			sv_lhs->add_element( ele_t( i + offset, alpha * (*itr++) ) );
 	}
 	else {
-		for( size_type i = 1; i <= vs_rhs.size(); ++i, ++itr )
+		for( size_type i = 1; i <= vs_rhs.dim(); ++i, ++itr )
 			if( *itr != 0.0 )
 				sv_lhs->add_element( ele_t( i + offset, alpha * (*itr) ) );
 	}
@@ -82,12 +82,12 @@ void SparseLinAlgPack::add_elements( SpVector* sv_lhs, value_type alpha, const S
 		&& ( !sv_rhs.nz() || ( sv_rhs.nz() || sv_rhs.is_sorted() ) );
 	if(add_zeros) {
 		for( SpVectorSlice::const_iterator itr = sv_rhs.begin(); itr != sv_rhs.end(); ++itr )
-			sv_lhs->add_element( ele_t( itr->indice() + sv_rhs.offset() + offset, alpha * (itr->value()) ) );
+			sv_lhs->add_element( ele_t( itr->index() + sv_rhs.offset() + offset, alpha * (itr->value()) ) );
 	}
 	else {
 		for( SpVectorSlice::const_iterator itr = sv_rhs.begin(); itr != sv_rhs.end(); ++itr )
 			if(itr->value() != 0.0 )
-				sv_lhs->add_element( ele_t( itr->indice() + sv_rhs.offset() + offset, alpha * (itr->value()) ) );
+				sv_lhs->add_element( ele_t( itr->index() + sv_rhs.offset() + offset, alpha * (itr->value()) ) );
 	}
 	sv_lhs->assume_sorted(assume_sorted);
 }
