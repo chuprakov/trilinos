@@ -21,7 +21,7 @@
 namespace GeneralIterationPack {
 
 ///
-/** Interface to Iteration Quantities.
+/** Interface to typed iteration quantities.
  *
  * Quantities are updated, read and queried given the
  * offset to the current iteration k.  For example, to set
@@ -39,9 +39,47 @@ namespace GeneralIterationPack {
  *	      \c IterQuantity::has_storage_k() and \c set_k().
  * </ul>
  *
+ * Note that any type that is to be used as an iteration quantity must at
+ * the bare minimum have the assignment operation defined for it.
+ *
  * The client should not have to worry about how much memory is
  * available.  Instead, it is for the object that configures the client
  * to provide the appropriate subclass to meet the needs of the client.
+ *
+ * <b> Usage: </b>
+ *
+ * There are sevearl different techniques for using <tt>IterQuantityAccess<T_info></tt>.
+ * An implementation subclass for <tt>IterQuantityAccess<T_info></tt> will maintain
+ * one or more storage locations for iteration quantities that can be updateded
+ * and accessed.  These storage locations need not be contiguous but this is the
+ * most common scenario (see <tt>IterQuantityAccessContiguous</tt>).
+ *
+ * It is important to understand what a client is requesting and what is implied
+ * by various calls to get and set methods.
+ *
+ * By calling the const version of <tt>get_k(offset)</tt>, the client is expecting
+ * to gain read access to previously updated iteration quantity.  This quantity
+ * should not be modified through this constant reference.
+ *
+ * The non-const version of <tt>get_k(offset)</tt> is called by a client
+ * to gain read-write access to a reviously updated iteration quantity.  The quantity
+ * can be further modified through this non-constant reference.
+ *
+ * The method <tt>set_k(offset)</tt> is called by a client so that it may
+ * fully initialize the iteration quantity which may not have been previously
+ * updated.  The object pointed to by the non-const reference returned from
+ * <tt>set_k(offset)</tt> can not expected to have any more than a default
+ * initialization.
+ *
+ * Finally, the method <tt>set_k(set_offset,get_offset)</tt> is called to
+ * explicitly update the iteration quantitiy at <tt>k + set_offset</tt> to the
+ * value at iteration <tt>k + get_offset</tt>.  This method is most useful
+ * when the client simply wants to set the iteration quantity at the current
+ * iteration (<tt>set_offset = 0</tt> to its value at the previous iteration
+ * (<tt>get_offset = -1</tt>).  The outcome of this operation is insured no
+ * matter how the storage is managed by the subclass.  The non-const reference
+ * returned from this method may be used to futher modify the just updated
+ * iteration quantity or the reference can just be discarded.
  */
 template<class T_info>
 class IterQuantityAccess : public IterQuantity {
