@@ -45,6 +45,7 @@
 #include "TSFLinearOperator.h"
 #include "TSFHashtable.h"
 #include "ml_include.h"
+#include "ml_epetra_utils.h"
 
 extern int Aztec2TSF(   AZ_MATRIX * Amat,
                         Epetra_Comm * & junkcomm,
