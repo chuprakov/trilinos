@@ -67,7 +67,7 @@
 #include "TSFIdentityOperator.h"
 
 using namespace TSF;
-using namespace SPP;
+using namespace Meros;
 
 int main(int argc, void** argv)
 {
