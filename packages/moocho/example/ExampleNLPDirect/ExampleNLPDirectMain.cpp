@@ -103,7 +103,7 @@ int main(int argc, char* argv[] ) {
 
 	CommandLineProcessor  command_line_processor;
 	
-	command_line_processor.set_option( "n",  &n,   "Number of variables per process" );
+	command_line_processor.set_option( "n",  &n,   "Global number of dependent (and independent) variables" );
 	command_line_processor.set_option( "xo", &xo,  "Initial guess of the solution" );
 	command_line_processor.set_option(
 		"has-bounds", "no-has-bounds", &has_bounds
