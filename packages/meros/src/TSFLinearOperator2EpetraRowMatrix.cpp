@@ -175,7 +175,6 @@ TSFLinearOperator2EpetraRowMatrix::TSFLinearOperator2EpetraRowMatrix(TSFLinearOp
   const Epetra_Map & TSFLinearOperator2EpetraRowMatrix::RowMatrixColMap() const {
                                   printf("%sRowMatrixColMap%s\n",myname,nop);   exit(1); return(*OperatorDomainMap_);}
   const Epetra_Import * TSFLinearOperator2EpetraRowMatrix::RowMatrixImporter() const {
-    //  printf("%sRowMatrixImporter%s\n",myname,nop); //while(1) { } exit(1); return(dummy);}
    	    return(0); }	 
 
   // The current applyoperator() is very specific to the needs of MPSalsa. In particular,
