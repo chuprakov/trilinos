@@ -167,7 +167,7 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
 		//		0 < a < max_pos_penalty_increase : The length to be determined
 		//			so that (1) can be satsified.
 		//
-		// The idea there is to make (1) and equality, plug (3) into it and then
+		// The idea there is to make (1) an equality, plug (3) into it and then
 		// solve for a.
 		//
 		// (1), (3) -> (4)

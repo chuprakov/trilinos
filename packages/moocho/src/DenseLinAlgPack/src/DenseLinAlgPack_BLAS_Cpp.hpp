@@ -2,22 +2,22 @@
 // BLAS_Cpp.h
 //
 // C++ overloads for BLAS kernals (element type removed from name and enum for operations)
-//
-// ToDo:  7/7/98:  Make more portable by using the types in FortranTypes.
 
 #ifndef BLAS_CPP_OVERLOADS_DECLARATIONS_H
 #define BLAS_CPP_OVERLOADS_DECLARATIONS_H
 
 #include <stdexcept>
 
-#include "BLAS_C_Decl.h"
 #include "BLAS_CppTypes.h"
+#include "Misc/include/fortran_types.h"
 
 // Overloaded BLAS wrappers.
 // The naming convention is the Fortran BLAS name minus the type prefix.
 namespace BLAS_Cpp {
 
-using namespace BLAS_C_Decl;
+typedef FortranTypes::f_int			f_int;
+typedef FortranTypes::f_real		f_real;
+typedef FortranTypes::f_dbl_prec	f_dbl_prec;
 
 /** @name Option Arguments
  * These are emumerations that are used with the overloaded C++ BLAS declarations to replace the
@@ -51,10 +51,7 @@ const char DiagChar[]	= {'U'	, 'N'			};
 //@{
 
 ///
-inline
-void rotg(double& a, double& b, double& c, double& s) {
-	FORTRAN_FUNC_CALL(DROTG)(a,b,c,s);
-}
+void rotg(f_dbl_prec& a, f_dbl_prec& b, f_dbl_prec& c, f_dbl_prec& s);
 
 //@}	 	
 
@@ -62,34 +59,24 @@ void rotg(double& a, double& b, double& c, double& s) {
 //@{
 
 ///
-inline
-void rotmg(double& d1, double& d2, double& a, const double& b, double* param) {
-	FORTRAN_FUNC_CALL(DROTMG)(d1, d2, a, b, param);
-}
+void rotmg(f_dbl_prec& d1, f_dbl_prec& d2, f_dbl_prec& a, const f_dbl_prec& b, f_dbl_prec* param);
+
 //@}
  
 /** @name Apply plane rotation */
 //@{
 
 ///
-inline
-void rot(const int& N, double* X, const int& INCX, double* Y, const int& INCY
-	, const double& C, const double& S)
-{
-	FORTRAN_FUNC_CALL(DROT)(N, X, INCX, Y, INCY, C, S);
-}
+void rot(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY
+	, const f_dbl_prec& C, const f_dbl_prec& S);
 //@}
 
 /** @name  Apply modified plane rotation */
 //@{
 
 /// 
-inline
-void rot(const int& N, double* X, const int& INCX, double* Y, const int& INCY
-	, const double* PARAM)
-{
-	FORTRAN_FUNC_CALL(DROTM)(N, X, INCX, Y, INCY, PARAM);
-}
+void rot(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY
+	, const f_dbl_prec* PARAM);
 
 //@}
 
@@ -97,56 +84,40 @@ void rot(const int& N, double* X, const int& INCX, double* Y, const int& INCY
 //@{
 
 ///
-inline
-void swap(const int& N, double* X, const int& INCX, double* Y, const int& INCY)
-{
-	FORTRAN_FUNC_CALL(DSWAP)(N, X, INCX, Y, INCY);
-}		 	
+void swap(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY);
+
 //@}
 
 /** @name  Vector scaling */
 //@{
 
 /// 
-inline
-void scal(const int& N, const double& ALPHA, double* X, const int& INCX)
-{
-	FORTRAN_FUNC_CALL(DSCAL)(N, ALPHA, X, INCX);
-}
+void scal(const f_int& N, const f_dbl_prec& ALPHA, f_dbl_prec* X, const f_int& INCX);
+
 //@}
 
 /** @name Vector copy */
 //@{
 
 /// 
-inline
-void copy(const int& N, const double* X, const int& INCX, double* Y, const int& INCY)
-{
-	FORTRAN_FUNC_CALL(DCOPY)(N, X, INCX, Y, INCY);
-}
+void copy(const f_int& N, const f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY);
+
 //@}
 
 /** @name  y = a*x + y */
 //@{
 
 ///
-inline
-void axpy(const int& N, const double& A, const double* X, const int& INCX, double* Y
-	, const int& INCY)
-{
-	FORTRAN_FUNC_CALL(DAXPY)(N, A, X, INCX, Y, INCY);
-}
+void axpy(const f_int& N, const f_dbl_prec& A, const f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y
+	, const f_int& INCY);
+	
 //@}
 
 /** @name  Dot product */
 //@{
 
 ///
-inline
-double dot(const int& N, const double* X, const int& INCX, const double* Y, const int& INCY)
-{
-	return FORTRAN_FUNC_CALL(DDOT)(N, X, INCX, Y, INCY);
-}
+f_dbl_prec dot(const f_int& N, const f_dbl_prec* X, const f_int& INCX, const f_dbl_prec* Y, const f_int& INCY);
 
 //@}
 
@@ -154,11 +125,7 @@ double dot(const int& N, const double* X, const int& INCX, const double* Y, cons
 //@{
 
 ///
-inline
-double nrm2(const int& N, const double* X, const int& INCX)
-{
-	return FORTRAN_FUNC_CALL(DNRM2)(N, X, INCX);
-}
+f_dbl_prec nrm2(const f_int& N, const f_dbl_prec* X, const f_int& INCX);
 
 //@}
 
@@ -166,11 +133,7 @@ double nrm2(const int& N, const double* X, const int& INCX)
 //@{
 
 ///
-inline
-double asum(const int& N, const double* X, const int& INCX)
-{
-	return FORTRAN_FUNC_CALL(DASUM)(N, X, INCX);
-}
+f_dbl_prec asum(const f_int& N, const f_dbl_prec* X, const f_int& INCX);
 
 //@}
 
@@ -178,12 +141,7 @@ double asum(const int& N, const double* X, const int& INCX)
 //@{
 
 ///
-inline
-double iamax(const int& N, const double* X, const int& INCX)
-{
-	return FORTRAN_FUNC_CALL(IDAMAX)(N, X, INCX);
-}
-
+f_dbl_prec iamax(const f_int& N, const f_dbl_prec* X, const f_int& INCX);
 //@}
 
 //		end Level-1 BLAS
@@ -197,12 +155,8 @@ double iamax(const int& N, const double* X, const int& INCX)
 //@{
 
 ///
-inline
-void gemv(Transp transa, int m, int n, double alpha, const double* pa
-	, int lda, const double* x, int incx, double beta, double* py, int incy)
-{
-	FORTRAN_FUNC_CALL(DGEMV)(&TransChar[transa], m, n, alpha, pa, lda, x, incx, beta, py, incy);
-}
+void gemv(Transp transa, f_int m, f_int n, f_dbl_prec alpha, const f_dbl_prec* pa
+	, f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
 			 
 //@}	
 
@@ -210,12 +164,8 @@ void gemv(Transp transa, int m, int n, double alpha, const double* pa
 //@{
 
 ///
-inline
-void gbmv(Transp transa, int m, int n, int kl, int ku, double alpha, const double* pa
-	, int lda, const double* x, int incx, double beta, double* py, int incy)
-{
-	FORTRAN_FUNC_CALL(DGBMV)(&TransChar[transa], m, n, kl, ku, alpha, pa, lda, x, incx, beta, py, incy);
-}
+void gbmv(Transp transa, f_int m, f_int n, f_int kl, f_int ku, f_dbl_prec alpha, const f_dbl_prec* pa
+	, f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
 			 	
 //@}
 
@@ -240,12 +190,8 @@ void gbmv(Transp transa, int m, int n, int kl, int ku, double alpha, const doubl
 //@{
 
 ///
-inline
-void symv(Uplo uplo, int n, double alpha, const double* pa
-	, int lda, const double* x, int incx, double beta, double* py, int incy)
-{
-	FORTRAN_FUNC_CALL(DSYMV)(&UploChar[uplo], n, alpha, pa, lda, x, incx, beta, py, incy);
-}
+void symv(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* pa
+	, f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
 			
 //@}
 
@@ -253,12 +199,8 @@ void symv(Uplo uplo, int n, double alpha, const double* pa
 //@{
 
 ///
-inline
-void sbmv(Uplo uplo, int n, int k, double alpha, const double* pa
-	, int lda, const double* x, int incx, double beta, double* py, int incy)
-{
-	FORTRAN_FUNC_CALL(DSBMV)(&UploChar[uplo], n, k, alpha, pa, lda, x, incx, beta, py, incy);
-}
+void sbmv(Uplo uplo, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
+	, f_int lda, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
 
 //@}
 
@@ -266,12 +208,8 @@ void sbmv(Uplo uplo, int n, int k, double alpha, const double* pa
 //@{
 
 ///
-inline
-void spmv(Uplo uplo, int n, double alpha, const double* pap
-	, const double* x, int incx, double beta, double* py, int incy)
-{
-	FORTRAN_FUNC_CALL(DSPMV)(&UploChar[uplo], n, alpha, pap, x, incx, beta, py, incy);
-}
+void spmv(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* pap
+	, const f_dbl_prec* x, f_int incx, f_dbl_prec beta, f_dbl_prec* py, f_int incy);
 
 //@}
 
@@ -279,12 +217,8 @@ void spmv(Uplo uplo, int n, double alpha, const double* pap
 //@{
 
 ///
-inline
-void trmv(Uplo uplo, Transp trans, Diag diag, int n, const double* pa
-	, int lda, double* px, int incx)
-{
-	FORTRAN_FUNC_CALL(DTRMV)(&UploChar[uplo], &TransChar[trans], &DiagChar[diag], n, pa, lda, px, incx);
-}
+void trmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pa
+	, f_int lda, f_dbl_prec* px, f_int incx);
 
 //@}
 
@@ -292,12 +226,8 @@ void trmv(Uplo uplo, Transp trans, Diag diag, int n, const double* pa
 //@{
 
 ///
-inline
-void tbmv(Uplo uplo, Transp trans, Diag diag, int n, int k, const double* pa
-	, int lda, double* px, int incx)
-{
-	FORTRAN_FUNC_CALL(DTBMV)(&UploChar[uplo], &TransChar[trans], &DiagChar[diag], n, k, pa, lda, px, incx);
-}
+void tbmv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const f_dbl_prec* pa
+	, f_int lda, f_dbl_prec* px, f_int incx);
 
 //@}
 
@@ -305,12 +235,8 @@ void tbmv(Uplo uplo, Transp trans, Diag diag, int n, int k, const double* pa
 //@{
 
 ///
-inline
-void tpmv(Uplo uplo, Transp trans, Diag diag, int n, const double* pap
-	, double* px, int incx)
-{
-	FORTRAN_FUNC_CALL(DTPMV)(&UploChar[uplo], &TransChar[trans], &DiagChar[diag], n, pap, px, incx);
-}
+void tpmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pap
+	, f_dbl_prec* px, f_int incx);
 
 //@}
 
@@ -318,12 +244,8 @@ void tpmv(Uplo uplo, Transp trans, Diag diag, int n, const double* pap
 //@{
 
 ///
-inline
-void trsv(Uplo uplo, Transp trans, Diag diag, int n, const double* pa
-	, int lda, double* px, int incx)
-{
-	FORTRAN_FUNC_CALL(DTRSV)(&UploChar[uplo], &TransChar[trans], &DiagChar[diag], n, pa, lda, px, incx);
-}
+void trsv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pa
+	, f_int lda, f_dbl_prec* px, f_int incx);
 
 //@}
 
@@ -331,12 +253,8 @@ void trsv(Uplo uplo, Transp trans, Diag diag, int n, const double* pa
 //@{
 
 ///
-inline
-void tbsv(Uplo uplo, Transp trans, Diag diag, int n, int k, const double* pa
-	, int lda, double* px, int incx)
-{
-	FORTRAN_FUNC_CALL(DTBSV)(&UploChar[uplo], &TransChar[trans], &DiagChar[diag], n, k, pa, lda, px, incx);
-}
+void tbsv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const f_dbl_prec* pa
+	, f_int lda, f_dbl_prec* px, f_int incx);
 
 //@}
 
@@ -344,12 +262,8 @@ void tbsv(Uplo uplo, Transp trans, Diag diag, int n, int k, const double* pa
 //@{
 
 ///
-inline
-void tpsv(Uplo uplo, Transp trans, Diag diag, int n, const double* pap
-	, double* px, int incx)
-{
-	FORTRAN_FUNC_CALL(DTPSV)(&UploChar[uplo], &TransChar[trans], &DiagChar[diag], n, pap, px, incx);
-}
+void tpsv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pap
+	, f_dbl_prec* px, f_int incx);
 
 //@}
 
@@ -357,12 +271,8 @@ void tpsv(Uplo uplo, Transp trans, Diag diag, int n, const double* pap
 //@{
 
 ///
-inline
-void ger(int m, int n, double alpha, const double* px
-	, int incx, const double* py, int incy, double* pa, int lda)
-{
-	FORTRAN_FUNC_CALL(DGER)(m, n, alpha, px, incx, py, incy, pa, lda);
-}
+void ger(f_int m, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
+	, f_int incx, const f_dbl_prec* py, f_int incy, f_dbl_prec* pa, f_int lda);
 
 //@}
 
@@ -390,12 +300,8 @@ void ger(int m, int n, double alpha, const double* px
 //@{
 
 ///
-inline
-void syr(Uplo uplo, int n, double alpha, const double* px
-	, int incx, double* pa, int lda)
-{
-	FORTRAN_FUNC_CALL(DSYR)(&UploChar[uplo], n, alpha, px, incx, pa, lda);
-}
+void syr(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
+	, f_int incx, f_dbl_prec* pa, f_int lda);
 
 //@}
 
@@ -403,12 +309,8 @@ void syr(Uplo uplo, int n, double alpha, const double* px
 //@{
 
 ///
-inline
-void spr(Uplo uplo, int n, double alpha, const double* px
-	, int incx, double* pap)
-{
-	FORTRAN_FUNC_CALL(DSPR)(&UploChar[uplo], n, alpha, px, incx, pap);
-}
+void spr(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
+	, f_int incx, f_dbl_prec* pap);
 
 //@}
 
@@ -416,12 +318,8 @@ void spr(Uplo uplo, int n, double alpha, const double* px
 //@{
 
 ///
-inline
-void syr2(Uplo uplo, int n, double alpha, const double* px
-	, int incx, const double* py, int incy, double* pa, int lda)
-{
-	FORTRAN_FUNC_CALL(DSYR2)(&UploChar[uplo], n, alpha, px, incx, py, incy, pa, lda);
-}
+void syr2(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
+	, f_int incx, const f_dbl_prec* py, f_int incy, f_dbl_prec* pa, f_int lda);
 
 //@}
 
@@ -429,12 +327,8 @@ void syr2(Uplo uplo, int n, double alpha, const double* px
 //@{
 
 ///
-inline
-void spr2(Uplo uplo, int n, double alpha, const double* px
-	, int incx, const double* py, int incy, double* pap)
-{
-	FORTRAN_FUNC_CALL(DSPR2)(&UploChar[uplo], n, alpha, px, incx, py, incy, pap);
-}
+void spr2(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
+	, f_int incx, const f_dbl_prec* py, f_int incy, f_dbl_prec* pap);
 
 //@}
 
@@ -449,13 +343,8 @@ void spr2(Uplo uplo, int n, double alpha, const double* px
 //@{
 
 ///
-inline
-void gemm(Transp transa, Transp transb, int m, int n, int k, double alpha, const double* pa
-	, int lda, const double* pb, int ldb, double beta, double* pc, int ldc)
-{
-	FORTRAN_FUNC_CALL(DGEMM)(&TransChar[transa], &TransChar[transb], m, n, k, alpha, pa, lda, pb, ldb
-		, beta, pc, ldc);
-}
+void gemm(Transp transa, Transp transb, f_int m, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
+	, f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
 
 //@}
 
@@ -463,12 +352,8 @@ void gemm(Transp transa, Transp transb, int m, int n, int k, double alpha, const
 //@{
 
 ///
-inline
-void symm(Side side, Uplo uplo, int m, int n, double alpha, const double* pa
-	, int lda, const double* pb, int ldb, double beta, double* pc, int ldc)
-{
-	FORTRAN_FUNC_CALL(DSYMM)(&SideChar[side], &UploChar[uplo], m, n, alpha, pa, lda, pb, ldb, beta, pc, ldc);
-}
+void symm(Side side, Uplo uplo, f_int m, f_int n, f_dbl_prec alpha, const f_dbl_prec* pa
+	, f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
 
 //@}
 
@@ -481,12 +366,8 @@ void symm(Side side, Uplo uplo, int m, int n, double alpha, const double* pa
 //@{
 
 ///
-inline
-void syrk(Uplo uplo, Transp trans, int n, int k, double alpha, const double* pa
-	, int lda, double beta, double* pc, int ldc)
-{
-	FORTRAN_FUNC_CALL(DSYRK)(&UploChar[uplo], &TransChar[trans], n, k, alpha, pa, lda, beta, pc, ldc);
-}
+void syrk(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
+	, f_int lda, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
 
 //@}
 
@@ -499,12 +380,8 @@ void syrk(Uplo uplo, Transp trans, int n, int k, double alpha, const double* pa
 //@{
 
 ///
-inline
-void syr2k(Uplo uplo, Transp trans, int n, int k, double alpha, const double* pa
-	, int lda, const double* pb, int ldb, double beta, double* pc, int ldc)
-{
-	FORTRAN_FUNC_CALL(DSYR2K)(&UploChar[uplo], &TransChar[trans], n, k, alpha, pa, lda, pb, ldb, beta, pc, ldc);
-}
+void syr2k(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
+	, f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc);
 
 //@}
 
@@ -517,13 +394,8 @@ void syr2k(Uplo uplo, Transp trans, int n, int k, double alpha, const double* pa
 //@{
 
 ///
-inline
-void trmm(Side side, Uplo uplo, Transp transa, Diag diag, int m, int n, double alpha
-	, const double* pa, int lda, double* pb, int ldb)
-{
-	FORTRAN_FUNC_CALL(DTRMM)(&SideChar[side], &UploChar[uplo], &TransChar[transa], &DiagChar[diag]
-		, m, n, alpha, pa, lda, pb, ldb);
-}
+void trmm(Side side, Uplo uplo, Transp transa, Diag diag, f_int m, f_int n, f_dbl_prec alpha
+	, const f_dbl_prec* pa, f_int lda, f_dbl_prec* pb, f_int ldb);
 
 //@}
 
@@ -531,13 +403,8 @@ void trmm(Side side, Uplo uplo, Transp transa, Diag diag, int m, int n, double a
 //@{
 
 ///
-inline
-void trsm(Side side, Uplo uplo, Transp transa, Diag diag, int m, int n, double alpha
-	, const double* pa, int lda, double* pb, int ldb)
-{
-	FORTRAN_FUNC_CALL(DTRSM)(&SideChar[side], &UploChar[uplo], &TransChar[transa], &DiagChar[diag]
-		, m, n, alpha, pa, lda, pb, ldb);
-}
+void trsm(Side side, Uplo uplo, Transp transa, Diag diag, f_int m, f_int n, f_dbl_prec alpha
+	, const f_dbl_prec* pa, f_int lda, f_dbl_prec* pb, f_int ldb);
 		 	 	
 //@}
 
