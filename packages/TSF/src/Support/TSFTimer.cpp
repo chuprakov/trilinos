@@ -73,9 +73,9 @@ void TSFTimer::gatherTimings(const TSFArray<double>& timings,
 
 	int count = (int) timings.size();
 
-	MPI_Reduce(tPtr, minPtr, count, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
-	MPI_Reduce(tPtr, avgPtr, count, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
-	MPI_Reduce(tPtr, maxPtr, count, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+	MPI_Allreduce(tPtr, minPtr, count, MPI_DOUBLE, MPI_MIN, MPI_COMM_WORLD);
+	MPI_Allreduce(tPtr, avgPtr, count, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+	MPI_Allreduce(tPtr, maxPtr, count, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
 
 	for (int i=0; i<avgTime.size(); i++)
 		{
