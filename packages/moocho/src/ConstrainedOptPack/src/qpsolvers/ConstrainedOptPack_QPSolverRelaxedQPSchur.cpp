@@ -82,8 +82,7 @@ QPSolverRelaxedQPSchur::get_qp_stats() const
 
 void QPSolverRelaxedQPSchur::release_memory()
 {
-	// ToDo: Implement
-	assert(0);
+	// Nothing to release!
 }
 
 QPSolverStats::ESolutionType
@@ -142,25 +141,29 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// Initialize constraints object
 
 	// Setup j_f_undecomp
+	const bool all_f_undecomp = F ? j_f_decomp.size() == 0 : true;
 	const size_type
 		m_undecomp = F ? f->size() - j_f_decomp.size() : 0;
 	typedef std::vector<size_type> j_f_undecomp_t;
-	j_f_undecomp_t j_f_undecomp(m_undecomp);
-	if( m_undecomp ) {
-		assert(0); // ToDo: Implement this when needed!
+	j_f_undecomp_t j_f_undecomp;
+	if( m_undecomp && !all_f_undecomp ) {
+		j_f_undecomp.resize(m_undecomp);
+		// Create a full lookup array to determine if a constraint
+		// is decomposed or not.  We need this to fill the array
+		// j_f_undecomp[] (which is sorted).
+		assert(0); // ToDo: Implement this!
 	}
 
 	// initialize constraints object
 	constraints_.initialize(
 		nd,etaL,&dL,&dU,E,trans_E,b,eL,eU,F,trans_F,f
-		, m_undecomp, m_undecomp ? &j_f_undecomp[0] : NULL
+		, m_undecomp, m_undecomp && !all_f_undecomp ? &j_f_undecomp[0] : NULL
 		, Ed
 		, true	// Check the equality constraints since they will not be
 		        // added to the initial active set in case they are linearly
 		        // dependent!
 		);
-	// ToDo: Add computation of Fd to above constraints class!
-	// ToDo: Add j_d_decomp to the above constraints class!
+	// ToDo: Add j_f_decomp to the above constraints class!
 
 	// ///////////////////////////
 	// Initialize the QP object
@@ -194,6 +197,10 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 
 	// Note that we do not add the general equality constraints to the initial
 	// guess of the active set since they may be linearly dependent!
+	// ToDo: Perhaps we should all the user to select which equality constraints
+	// that they would like to add to the initial guess of the active set?
+	// It is very important that the user would select a linearly independent
+	// set that would give a nonsingular KKT system.
 
 	if( ( nu && nu->nz() ) || ( m_in && mu->nz() ) ) {
 		//

@@ -33,7 +33,7 @@ namespace LinAlgOpPack {
 namespace {
 
 // Find the maxinum element of a dense vector
-// and its indice.
+// and its index.
 std::pair<LinAlgPack::size_type,LinAlgPack::value_type>
 imp_max_element( const LinAlgPack::VectorSlice &v )
 {
@@ -82,17 +82,17 @@ namespace QPSchurPack {
 // members for ConstraintsRelaxedStd
 
 ConstraintsRelaxedStd::ConstraintsRelaxedStd()
-	:
-		inequality_pick_policy_(ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY)
-		,etaL_(0.0)
-		,dL_(NULL)
-		,dU_(NULL)
-		,eL_(NULL)
-		,eU_(NULL)
-		,Ed_(NULL)
-		,last_added_j_(0)
-		,last_added_bound_(0.0)
-		,last_added_bound_type_(FREE)
+	:inequality_pick_policy_(ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY)
+	,etaL_(0.0)
+	,dL_(NULL)
+	,dU_(NULL)
+	,eL_(NULL)
+	,eU_(NULL)
+	,Ed_(NULL)
+	,last_added_j_(0)
+	,last_added_bound_(0.0)
+	,last_added_bound_type_(FREE)
+	,next_undecomp_f_k_(0)
 {}
 
 void ConstraintsRelaxedStd::initialize(
@@ -114,7 +114,7 @@ void ConstraintsRelaxedStd::initialize(
 		m_in = 0,
 		m_eq = 0;
 
-	assert( m_undecomp == (F ? f->size() : 0) ); // ToDo: support undecomposed equalities in future.
+	assert( m_undecomp == (F ? f->size() : 0) ); // ToDo: support decomposed equalities in future.
 
 	// Validate that the correct sets of constraints are selected
 	if( dL && !dU )
@@ -168,17 +168,18 @@ void ConstraintsRelaxedStd::initialize(
 	
 	// Initialize other members
 	A_bar_.initialize(nd,m_in,m_eq,E,trans_E,b,F,trans_F,f,m_undecomp,j_f_undecomp);
-	etaL_			= etaL;
-	dL_				= dL;
-	dU_				= dU;
-	eL_				= eL;
-	eU_				= eU;
-	Ed_				= Ed;
-	check_F_		= check_F;
-	bounds_tol_		= bounds_tol;
-	inequality_tol_	= inequality_tol;
-	equality_tol_	= equality_tol;
-	last_added_j_	= 0;	// No cached value.
+	etaL_				= etaL;
+	dL_					= dL;
+	dU_					= dU;
+	eL_					= eL;
+	eU_					= eU;
+	Ed_					= Ed;
+	check_F_			= check_F;
+	bounds_tol_			= bounds_tol;
+	inequality_tol_		= inequality_tol;
+	equality_tol_		= equality_tol;
+	last_added_j_		= 0;	// No cached value.
+	next_undecomp_f_k_	= m_undecomp ? 1 : 0; // Check the first undecomposed equality
 }
 
 // Overridden from Constraints
@@ -233,6 +234,7 @@ void ConstraintsRelaxedStd::pick_violated(
 	, value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
 	) const
 {
+	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
 	using LinAlgPack::norm_inf;
 	using SparseLinAlgPack::imp_sparse_bnd_diff;
 
@@ -254,8 +256,73 @@ void ConstraintsRelaxedStd::pick_violated(
 	// //////////////////////////////////////////////
 	// Check the equality constraints first
 	if( check_F_ && A_bar_.F() ) {
-		// ToDo: Finish this!
-		assert(0);
+		// The basic strategy here is to go through all of the equality
+		// constraints first and add all of the ones that are violated by
+		// more than the set tolerance.  Those that are not sufficiently
+		// violated are passed over but they are remembered for later.
+		// Only when all of the constraints have been gone through once
+		// will those passed over constraints be considered and then only
+		// if ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY is selected.
+		const GenPermMatrixSlice& P_u = A_bar_.P_u();
+		size_type e_k_mat_row, e_k_mat_col = 1; // Mapping matrix for e(j)
+		GenPermMatrixSlice e_k_mat;
+		if( next_undecomp_f_k_ <= P_u.nz() ) {
+			// This is our first pass through the undecomposed equalities.
+			GenPermMatrixSlice::const_iterator P_u_itr, P_u_end; // only used if P_u is not identity
+			if( !P_u.is_identity() ) {
+				P_u_itr = P_u.begin() + (next_undecomp_f_k_ - 1);
+				P_u_end = P_u.end();
+			}
+			for( ; next_undecomp_f_k_ <=  P_u.nz(); ) {
+				size_type k = 0;
+				if( !P_u.is_identity() ) {
+					k = P_u_itr->row_i();
+					++P_u_itr;
+				}
+				else {
+					k = next_undecomp_f_k_;
+				}
+				++next_undecomp_f_k_;
+				// evaluate the constraint e(k)'*[op(F)*d + (1-eta)*f]
+				value_type
+					Fd_k = 0.0,
+					f_k = (*A_bar_.f())(k);
+				e_k_mat.initialize(A_bar_.m_eq(),1,1,0,0,GPMSIP::BY_ROW_AND_COL
+								   ,&(e_k_mat_row=k),&e_k_mat_col,false);
+				VectorSlice Fd_k_vec(&Fd_k,1);
+				SparseLinAlgPack::Vp_StPtMtV(
+					&Fd_k_vec, 1.0, e_k_mat, BLAS_Cpp::trans
+					, *A_bar_.F(), A_bar_.trans_F(), d, 0.0 );
+				const value_type
+					err = ::fabs(Fd_k + (1.0 - eta)*f_k) / (1.0 + ::fabs(f_k));
+				if( err > equality_tol() ) {
+					*j_viol			= nd + 1 + A_bar_.m_in() + k;
+					*constr_val		= Fd_k - eta*f_k;
+					*norm_2_constr	= 1.0;	// ToDo: Compute it some how?
+					*bnd			= EQUALITY;
+					*viol_bnd_val   = -f_k;
+					*can_ignore		= false; // Given this careful algorithm this should be false
+					// cache this
+					last_added_j_			= *j_viol;
+					last_added_bound_type_	= *bnd;
+					last_added_bound_		= *viol_bnd_val;
+					return;
+				}
+				else {
+					passed_over_equalities_.push_back(k); // remember for later
+				}
+			}
+		}
+		else if(
+			inequality_pick_policy() == ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY
+			&& passed_over_equalities_.size() > 0
+			)
+		{
+			// Now look through the list of passed over equalities and see which one
+			// is violated.  If a passed over constraint is added to the active set
+			// then it is removed from this list.
+			assert(0); // ToDo: Implement!
+		}
 	}
 
 	// /////////////////////////////////////////////
@@ -277,11 +344,19 @@ void ConstraintsRelaxedStd::pick_violated(
 
 		if( scale * max_bounds_viol > bounds_tol_ )
 		{
+			// see if this bound is equality or not
+			const EBounds
+				this_bnd = max_bound_viol_upper ? UPPER : LOWER,
+				other_bnd = !max_bound_viol_upper ? UPPER : LOWER;
+			const value_type
+				this_bnd_val = get_bnd(max_bound_viol_j,this_bnd),
+				other_bnd_val = get_bnd(max_bound_viol_j,other_bnd);
+			// Set the return values
 			*j_viol			= max_bound_viol_j;
 			*constr_val		= d(max_bound_viol_j);
 			*norm_2_constr	= 1.0;
-			*bnd			= max_bound_viol_upper ? UPPER : LOWER;
-			*viol_bnd_val	= get_bnd(*j_viol,*bnd);
+			*bnd			= this_bnd_val == other_bnd_val ? EQUALITY : this_bnd;
+			*viol_bnd_val	= this_bnd_val;
 			*can_ignore		= false;
 		}
 		else {
@@ -486,21 +561,25 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 
 	// Setup P_u
 	const bool test_setup = true; // Todo: Make this an argument!
-	P_u_row_i_.resize(m_undecomp);
-	P_u_col_j_.resize(m_undecomp);
-	if( m_undecomp > 0 ) {
+	if( m_undecomp > 0 && f->size() > m_undecomp ) {
+		P_u_row_i_.resize(m_undecomp);
+		P_u_col_j_.resize(m_undecomp);
 		const size_type
-			*j_f_u = j_f_undecomp;
+			*j_f_u = j_f_undecomp;  // This is sorted by row!
 		row_i_t::iterator
 			row_i_itr = P_u_row_i_.begin();
 		col_j_t::iterator
 			col_j_itr = P_u_col_j_.begin();
 		for( size_type i = 1; i <= m_undecomp; ++i, ++j_f_u, ++row_i_itr, ++col_j_itr ) {
-			*row_i_itr = *j_f_u;
+			*row_i_itr = *j_f_u; // This is sorted in asscending order!
 			*col_j_itr = i;
-		}					
-		P_u_.initialize_and_sort(nd,m_undecomp,m_undecomp,0,0,GPMSIP::BY_ROW
+		}
+		P_u_.initialize(nd,m_undecomp,m_undecomp,0,0,GPMSIP::BY_ROW_AND_COL
 			,&P_u_row_i_[0],&P_u_col_j_[0],test_setup);
+	}
+	else if( m_undecomp > 0) { // Must be == f->size()
+		// Set to identity
+		P_u_.initialize(m_undecomp,m_undecomp,GenPermMatrixSlice::IDENTITY_MATRIX);
 	}
 	
 	// Set the rest of the members
@@ -811,10 +890,10 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 		// y = beta*y + a*op(P1)*x1
 		Vp_StMtV( y, a, P1, P_trans, x1, beta );
 		// y += a*op(P1)*op(E')*x3
-		if( m_in() )
+		if( m_in() && P1.nz() )
 			Vp_StPtMtV( y, a, P1, P_trans, *E(), trans_not(trans_E()), x3 );
 		// y += a*op(P1)*op(F')*x4
-		if( m_eq() )
+		if( m_eq() && P1.nz() )
 			Vp_StPtMtV( y, a, P1, P_trans, *F(), trans_not(trans_F()), x4 );
 		//
 		// y += a*op(P2)*x2 - a*op(P2)*b'*x3 - a*op(P2)*f'*x4
@@ -895,13 +974,13 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 					? P2.begin()->row_i() : P2.begin()->col_j() )
 				+= a * x2;
 		}
-		if(m_in()) {
+		if( m_in() && P3.nz() ) {
 			// y += a*P3*op(E)*x1
 			Vp_StPtMtV( y, a, P3, P_trans, *E(), trans_E(), x1 );
 			// y += (-a*x2)*P3*b
 			Vp_StMtV( y, - a * x2, P3, P_trans, *this->b() );
 		}
-		if(m_eq()) {
+		if( m_eq() && P4.nz() ) {
 			// y += a*P4*op(F)*x1
 			Vp_StPtMtV( y, a, P4, P_trans, *F(), trans_F(), x1 );
 			// y += (-a*x2)*P4*f

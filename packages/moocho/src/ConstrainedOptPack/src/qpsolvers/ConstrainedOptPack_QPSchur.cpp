@@ -2865,6 +2865,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		*out	<< "\nNumber of iterative refinement residual calculations  = " << iter_refine_num_resid;
 		*out	<< "\nNumber of iterative refinement solves                 = " << iter_refine_num_solves << endl;
 		*out	<< "\n||x||inf                = "	<< norm_inf(*x);
+		*out	<< "\nmu.nz()                 = "	<< mu->nz();
 		*out	<< "\nmax(|mu(i)|)            = " 	<< norm_inf((*mu)());
 		*out	<< "\nmin(|mu(i)|)            = " 	<< min_abs((*mu)());
 		if(lambda)
@@ -2873,6 +2874,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 				<< "\nmin(|lambda(i)|)        = "	<< min_abs(*lambda);
 		if(lambda_breve)
 			*out
+				<< "\nlambda_breve.nz()       = "	<< lambda_breve->nz()
 				<< "\nmax(|lambda_breve(i)|)  = "	<< norm_inf((*lambda_breve)())
 				<< "\nmin(|lambda_breve(i)|)  = "	<< min_abs((*lambda_breve)());
 		*out << std::endl;
@@ -4040,7 +4042,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							// If we get here either the dual variable was feasible or it
 							// was near degenerate and was corrected!
 							const value_type feas_viol = beta*(*p_z_itr);
-							if( bnd == LOWER && feas_viol <= 0.0 )
+							if( bnd == EQUALITY )
+								; // We don't care
+							else if( bnd == LOWER && feas_viol <= 0.0 )
 								;	// dual feasible for all t > 0
 							else if( bnd == UPPER && feas_viol >= 0.0 )
 								;	// dual feasible for all t > 0
@@ -4142,7 +4146,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						// If we get here either the dual variable was feasible or it
 						// was near degenerate and was corrected!
 						const value_type feas_viol = beta*(*p_mu_D_itr);
-						if( bnd == LOWER && feas_viol <= 0.0 )
+						if( bnd == EQUALITY )
+							; // We don't care
+						else if( bnd == LOWER && feas_viol <= 0.0 )
 							;	// dual feasible for all t > 0
 						else if( bnd == UPPER && feas_viol >= 0.0 )
 							;	// dual feasible for all t > 0

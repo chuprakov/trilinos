@@ -107,7 +107,8 @@ public:
 		 *             #j_f_decomp[p-1], p = 1...m# defines the decomposed equalities included
 		 *             in #Ko# as:\\
 		 *             #P_d(:,p) = e(j_f_decomp[p-1]), p = 1...m#\\
-		 *             The ordering of these indices is significant.
+		 *             The ordering of these indices is significant and are not necessarily
+		 *             sorted in assending or decending order.
 		 * @param  b_X [out] vector (size #n_X#):
 		 *             Initial varaible bounds (see #bnd_fixed# above).  Note that
 		 *             the relaxation variable is always one of the initially fixed

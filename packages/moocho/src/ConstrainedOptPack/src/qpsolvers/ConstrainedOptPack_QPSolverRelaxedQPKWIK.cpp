@@ -178,8 +178,7 @@ QPSolverRelaxedQPKWIK::get_qp_stats() const
 
 void QPSolverRelaxedQPKWIK::release_memory()
 {
-	// ToDo: Implement
-	assert(0);
+	// Todo: resize to zero all the workspace!
 }
 
 QPSolverStats::ESolutionType

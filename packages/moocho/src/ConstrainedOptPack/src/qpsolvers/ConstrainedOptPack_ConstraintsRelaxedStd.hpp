@@ -4,6 +4,8 @@
 #ifndef QP_SCHUR_CONSTRAINTS_RELAXED_STD_H
 #define QP_SCHUR_CONSTRAINTS_RELAXED_STD_H
 
+#include <list>
+
 #include "QPSchur.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 
@@ -22,7 +24,7 @@ namespace QPSchurPack {
   (1.2)               etaL <=  eta
   (1.3)               dL   <=  d                                 <= dU
   (1.4)               eL   <=  op(E)*d - b*eta                   <= eU
-  (1.5)                        P_u'*op(F)*d + (1 - eta) * P_u'f  = 0
+  (1.5)                        P_u'*op(F)*d + (1 - eta) * P_u'*f  = 0
   
   \end{verbatim}
   *
@@ -116,6 +118,18 @@ public:
 	  * ToDo: Specify more concretely exactly what the criteria is for
 	  * considering that a constraint is violated or in picking the most
 	  * violated constraint.
+	  *
+	  * @param  m_undecomp
+	  *                  [in] Number of undecomposed equality constraints.
+	  * @param  j_f_undecomp
+	  *                  [in] array (size m_undecomp) of indexes of constraints
+	  *                  in op(F)*d + (1-eta)*f that are not decomposed and therefore
+	  *                  should be considered when looking for violated constraints.
+	  *                  This array is used to define the mapping matrix P_u.
+	  *                  It is required that this be sorted and that:
+	  *                  j_f_undecomp[k+1] >= j_f_undecomp[k], for k = 0...m_undecomp-2.
+	  *                  If m_undecomp == f->size() then j_f_undecomp == NULL is allowed
+	  *                  and the matrix P_u will be the identity matrix.
 	  */
 	void initialize(
 		  size_type nd
@@ -332,22 +346,43 @@ public:
 	};	// end class MatrixConstraints
 
 private:
-		MatrixConstraints	A_bar_;
-		value_type			etaL_;
-		const SpVectorSlice	*dL_;	// If NULL then no simple bounds
-		const SpVectorSlice *dU_;
-		const SpVectorSlice	*eL_;
-		const SpVectorSlice	*eU_;
-		VectorSlice			*Ed_;
-		bool				check_F_;
-		mutable size_type	last_added_j_;			// Remember the last bound added so that
-		mutable value_type	last_added_bound_;		// we can save our selfs some work.
-		mutable EBounds		last_added_bound_type_;	//
 
-		///
-		void cache_last_added( size_type last_added_j, value_type last_added_bound
-			, EBounds last_added_bound_type ) const;
+	// //////////////////////////////
+	// Private types
 
+	typedef std::list<size_type>  passed_over_equalities_t;
+
+	// //////////////////////////////
+	// Private data members
+
+	MatrixConstraints	A_bar_;
+	value_type			etaL_;
+	const SpVectorSlice	*dL_;	// If NULL then no simple bounds
+	const SpVectorSlice *dU_;
+	const SpVectorSlice	*eL_;
+	const SpVectorSlice	*eU_;
+	VectorSlice			*Ed_;
+	bool				check_F_;
+	mutable size_type	last_added_j_;			// Remember the last bound added so that
+	mutable value_type	last_added_bound_;		// we can save our selfs some work.
+	mutable EBounds		last_added_bound_type_;	// ...
+	mutable size_type   next_undecomp_f_k_;
+	    // Determines the next constraint [P_u'*op(F)*d + (1 - eta) * P_u'*f](next_undecomp_f_k)
+	    // to be checked to see if it is violated.  If next_undecomp_f_k > P_u.nz() then all
+	    // of the constriants have been checked.
+	mutable passed_over_equalities_t passed_over_equalities_;
+	    // This is a list that keeps track of those equality constraints that were checked
+	    // for being violated but were within tolerance and therefore passed over and not added.
+	    // This list can be traversed again and again to check these constraints.  Specifically, the
+	    // indexes of f(k) are sorted, not the indexes in P_u'.
+
+	// //////////////////////////////
+	// Private member functions
+
+	///
+	void cache_last_added(
+		size_type last_added_j, value_type last_added_bound
+		, EBounds last_added_bound_type ) const;
 
 };	// end class ConstraintsRelaxedStd
 
