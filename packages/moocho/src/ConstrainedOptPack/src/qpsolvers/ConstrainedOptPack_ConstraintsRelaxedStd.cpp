@@ -182,6 +182,11 @@ void ConstraintsRelaxedStd::initialize(
 	next_undecomp_f_k_	= m_undecomp ? 1 : 0; // Check the first undecomposed equality
 }
 
+const ConstraintsRelaxedStd::MatrixConstraints& ConstraintsRelaxedStd::A_bar_relaxed() const
+{
+	return A_bar_;
+}
+
 // Overridden from Constraints
 
 size_type ConstraintsRelaxedStd::n() const

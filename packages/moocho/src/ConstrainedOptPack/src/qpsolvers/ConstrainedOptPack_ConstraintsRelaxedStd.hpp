@@ -31,12 +31,12 @@ namespace QPSchurPack {
   * These constraints are converted into the form:
   \begin{verbatim}
 
-       [ dL   ]     [ I                    ]              [ dU   ]
-       [ etaL ] <=  [                   1  ] * [  d  ] <= [ inf  ]
-  (2)  [ eL   ]     [ op(E)            -b  ]   [ eta ]    [ eU   ]
-       [ -f   ]     [ P_u'*op(F)   -P_u'*f ]              [ -f   ]
-       \______/     \______________________/   \_____/    \______/
-        cL_bar                A_bar'              x        cU_bar
+       [   dL    ]     [ I                    ]              [   dU    ]
+       [   etaL  ] <=  [                   1  ] * [  d  ] <= [   inf   ]
+  (2)  [   eL    ]     [ op(E)            -b  ]   [ eta ]    [   eU    ]
+       [ -P_u'*f ]     [ P_u'*op(F)   -P_u'*f ]              [ -P_u'*f ]
+       \_________/     \______________________/   \_____/    \_________/
+         cL_bar                 A_bar'               x          cU_bar
 
        =>
 
@@ -55,167 +55,6 @@ namespace QPSchurPack {
   */
 class ConstraintsRelaxedStd : public Constraints {
 public:
-
-	///
-	/** <<std comp>> members for feasibility tolerance for the bound constriants.
-	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, bounds_tol )
-
-	///
-	/** <<std comp>> members for feasibility tolerance for the general inequality constraints.
-	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, inequality_tol )
-
-	///
-	/** <<std comp>> members for feasibility tolerance for the general equality constriants.
-	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, equality_tol )
-
-	///
-	enum EInequalityPickPolicy {
-		ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY
-		,ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY
-		,ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY
-	};
-
-	///
-	/** <<std comp>> members for policy used to select a violated constraint.
-	  */
-	STANDARD_MEMBER_COMPOSITION_MEMBERS( EInequalityPickPolicy, inequality_pick_policy )
-
-
-	/// Constructs to uninitialized
-	ConstraintsRelaxedStd();
-
-	///
-	/** Initialize constriants.
-	  *
-	  * If there are no variable bounds then set:\\
-	  * #void(dL) == void(dU) == NULL#
-	  * 
-	  * If there are no general inequality constraints
-	  * then set:\\
-	  * #void(E) == void(b) == void(eL) == void(eU) == NULL#
-	  * 
-	  * If there are no general equality constraints then
-	  * set:\\
-	  * #void(F) = void(f) == NULL#
-	  * 
-	  * If #check_F == false#, then the equality constriants
-	  * in #op(F)# will not be checked as violated constriants.
-	  * This is to facilitate the addition of the equality
-	  * constraints to the initial schur complement and therefore
-	  * these constraints should never be violated (except for
-	  * illconditioning).
-	  * The tolerances below which a constriant will not be considered
-	  * violated are given by #bounds_tol#, #inequality_tol# and #equality_tol#.
-	  * 
-	  * Here, #Ed# is updated (if #Ed != NULL#) within the function
-	  * #this->#\Ref{pick_violated}#(...)#.  This saves some computational work of
-	  * having to compute #op(E)*d# again.  To skip computing this value, just set
-	  * #Ed == NULL#.
-	  *
-	  * ToDo: Specify more concretely exactly what the criteria is for
-	  * considering that a constraint is violated or in picking the most
-	  * violated constraint.
-	  *
-	  * @param  m_undecomp
-	  *                  [in] Number of undecomposed equality constraints.
-	  * @param  j_f_undecomp
-	  *                  [in] array (size m_undecomp) of indexes of constraints
-	  *                  in op(F)*d + (1-eta)*f that are not decomposed and therefore
-	  *                  should be considered when looking for violated constraints.
-	  *                  This array is used to define the mapping matrix P_u.
-	  *                  It is required that this be sorted and that:
-	  *                  j_f_undecomp[k+1] >= j_f_undecomp[k], for k = 0...m_undecomp-2.
-	  *                  If m_undecomp == f->size() then j_f_undecomp == NULL is allowed
-	  *                  and the matrix P_u will be the identity matrix.
-	  */
-	void initialize(
-		  size_type nd
-		, value_type etaL
-		, const SpVectorSlice* dL, const SpVectorSlice* dU
-		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
-			, const SpVectorSlice* eL, const SpVectorSlice* eU
-		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
-		, size_type m_undecomp, const size_type j_f_undecomp[]
-		, VectorSlice* Ed
-		, bool check_F = true
-		, value_type bounds_tol			= 1e-10
-		, value_type inequality_tol		= 1e-10
-		, value_type equality_tol		= 1e-10
-		);
-
-	// /////////////////////////////////////
-	// Overridden from Constraints
-
-	///
-	size_type n() const;
-	///
-	size_type m_breve() const;
-	///
-	/** Represents the constraints matrix.
-	  *
-	  \begin{verbatim}
-
-		A_bar = [  I   0  op(E')   op(F')*P_u  ]
-		        [  0   1   -b'       -f'*P_u   ]
-
-	  \end{verbatim}
-	  *
-	  */
-	const MatrixWithOp& A_bar() const;
-	///
-	void pick_violated_policy( EPickPolicy pick_policy );
-	///
-	EPickPolicy pick_violated_policy() const;
-	///
-	/** Here the next violated constraint to add to the active set is selected.
-	  *
-	  * Violated constraints are selected to to add to the active set in the following
-	  * order:
-	  * \begin{itemize}
-	  * \item The equality constraints are added first, one at a time (if not already added
-	  *		as part of the warm start).
-	  * \item Add inequality constraints according according to the following options:
-	  *		\begin{itemize}   
-	  *		\item #ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY#
-	  *			Check the variable bounds first and add the most violated.  If no
-	  *			variable bounds are violated by more than #this->bounds_tol()# then check for
-	  *			the most violated inequality constraint by computing #r = op(E)*d+b*eta# and
-	  *			add the most violated bound (#eL#, #eU#) if one exists.
-	  *		\item #ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY#
-	  *			Check the variable bounds first and add the most violated.  If no
-	  *			variable bounds are violated by more than #this->bounds_tol()# then check for
-	  *			the first violated inequality constraint by computing #e(j)'*(op(E)*d+b*eta)#
-	  *			one or more constraints at a time.  This option may be
-	  *			better if the cost of computing #op(E)*d# is significant.
-	  *		\item #ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY#
-	  *			Select the most violated constraint from the variable bounds and the
-	  *			general inequality constraints by computing  r = op(E)*d+b*eta then
-	  *			add the most violated variable bound.  This option is always the most
-	  *			expensive but may result in less QP iterations.
-	  * \end{itemize}
-	  *
-	  * As a side effect, the vector pointed to by #Ed# which was passed to
-	  * #this->\Ref{initialize}#(...)# will be guarrenteed to be updated for
-	  * the current #op(E)*d#, where #d = x(1,nd)#, if any of the following is true:
-	  * \begin{itemize}
-	  * \item #j_viol == 0#
-	  * \item #this->pick_violated_policy() == ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY#
-	  * \item #this->pick_violated_policy() == ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY#
-	  *		#&& j_viol > this->n()#
-	  *	\end{itemize}
-	  * If none of the above criteria applies then the client can not assume that
-	  * #Ed# was updated and therefore the client must compute this value on its own.
-	  */
-	void pick_violated( const VectorSlice& x, size_type* j_viol, value_type* constr_val
-		, value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
-		) const;
-	///
-	void ignore( size_type j );
-	///
-	value_type get_bnd( size_type j, EBounds bnd ) const;
 
 	// /////////////////////////////////////////////
 	// Public types
@@ -344,6 +183,172 @@ public:
 		row_i_t             P_u_row_i_;
 		col_j_t             P_u_col_j_;
 	};	// end class MatrixConstraints
+
+	///
+	enum EInequalityPickPolicy {
+		ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY
+		,ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY
+		,ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY
+	};
+
+	// ////////////////////////////////////////
+	// Public member functions
+
+	///
+	/** <<std comp>> members for feasibility tolerance for the bound constriants.
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, bounds_tol )
+
+	///
+	/** <<std comp>> members for feasibility tolerance for the general inequality constraints.
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, inequality_tol )
+
+	///
+	/** <<std comp>> members for feasibility tolerance for the general equality constriants.
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, equality_tol )
+
+	///
+	/** <<std comp>> members for policy used to select a violated constraint.
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( EInequalityPickPolicy, inequality_pick_policy )
+
+	/// Constructs to uninitialized
+	ConstraintsRelaxedStd();
+
+	///
+	/** Initialize constriants.
+	  *
+	  * If there are no variable bounds then set:\\
+	  * #void(dL) == void(dU) == NULL#
+	  * 
+	  * If there are no general inequality constraints
+	  * then set:\\
+	  * #void(E) == void(b) == void(eL) == void(eU) == NULL#
+	  * 
+	  * If there are no general equality constraints then
+	  * set:\\
+	  * #void(F) = void(f) == NULL#
+	  * 
+	  * If #check_F == false#, then the equality constriants
+	  * in #op(F)# will not be checked as violated constriants.
+	  * This is to facilitate the addition of the equality
+	  * constraints to the initial schur complement and therefore
+	  * these constraints should never be violated (except for
+	  * illconditioning).
+	  * The tolerances below which a constriant will not be considered
+	  * violated are given by #bounds_tol#, #inequality_tol# and #equality_tol#.
+	  * 
+	  * Here, #Ed# is updated (if #Ed != NULL#) within the function
+	  * #this->#\Ref{pick_violated}#(...)#.  This saves some computational work of
+	  * having to compute #op(E)*d# again.  To skip computing this value, just set
+	  * #Ed == NULL#.
+	  *
+	  * ToDo: Specify more concretely exactly what the criteria is for
+	  * considering that a constraint is violated or in picking the most
+	  * violated constraint.
+	  *
+	  * @param  m_undecomp
+	  *                  [in] Number of undecomposed equality constraints.
+	  * @param  j_f_undecomp
+	  *                  [in] array (size m_undecomp) of indexes of constraints
+	  *                  in op(F)*d + (1-eta)*f that are not decomposed and therefore
+	  *                  should be considered when looking for violated constraints.
+	  *                  This array is used to define the mapping matrix P_u.
+	  *                  It is required that this be sorted and that:
+	  *                  j_f_undecomp[k+1] >= j_f_undecomp[k], for k = 0...m_undecomp-2.
+	  *                  If m_undecomp == f->size() then j_f_undecomp == NULL is allowed
+	  *                  and the matrix P_u will be the identity matrix.
+	  */
+	void initialize(
+		  size_type nd
+		, value_type etaL
+		, const SpVectorSlice* dL, const SpVectorSlice* dU
+		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
+			, const SpVectorSlice* eL, const SpVectorSlice* eU
+		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
+		, size_type m_undecomp, const size_type j_f_undecomp[]
+		, VectorSlice* Ed
+		, bool check_F = true
+		, value_type bounds_tol			= 1e-10
+		, value_type inequality_tol		= 1e-10
+		, value_type equality_tol		= 1e-10
+		);
+
+	///
+	const MatrixConstraints& A_bar_relaxed() const;
+
+	// /////////////////////////////////////
+	// Overridden from Constraints
+
+	///
+	size_type n() const;
+	///
+	size_type m_breve() const;
+	///
+	/** Represents the constraints matrix.
+	  *
+	  \begin{verbatim}
+
+		A_bar = [  I   0  op(E')   op(F')*P_u  ]
+		        [  0   1   -b'       -f'*P_u   ]
+
+	  \end{verbatim}
+	  *
+	  */
+	const MatrixWithOp& A_bar() const;
+	///
+	void pick_violated_policy( EPickPolicy pick_policy );
+	///
+	EPickPolicy pick_violated_policy() const;
+	///
+	/** Here the next violated constraint to add to the active set is selected.
+	  *
+	  * Violated constraints are selected to to add to the active set in the following
+	  * order:
+	  * \begin{itemize}
+	  * \item The equality constraints are added first, one at a time (if not already added
+	  *		as part of the warm start).
+	  * \item Add inequality constraints according according to the following options:
+	  *		\begin{itemize}   
+	  *		\item #ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY#
+	  *			Check the variable bounds first and add the most violated.  If no
+	  *			variable bounds are violated by more than #this->bounds_tol()# then check for
+	  *			the most violated inequality constraint by computing #r = op(E)*d+b*eta# and
+	  *			add the most violated bound (#eL#, #eU#) if one exists.
+	  *		\item #ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY#
+	  *			Check the variable bounds first and add the most violated.  If no
+	  *			variable bounds are violated by more than #this->bounds_tol()# then check for
+	  *			the first violated inequality constraint by computing #e(j)'*(op(E)*d+b*eta)#
+	  *			one or more constraints at a time.  This option may be
+	  *			better if the cost of computing #op(E)*d# is significant.
+	  *		\item #ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY#
+	  *			Select the most violated constraint from the variable bounds and the
+	  *			general inequality constraints by computing  r = op(E)*d+b*eta then
+	  *			add the most violated variable bound.  This option is always the most
+	  *			expensive but may result in less QP iterations.
+	  * \end{itemize}
+	  *
+	  * As a side effect, the vector pointed to by #Ed# which was passed to
+	  * #this->\Ref{initialize}#(...)# will be guarrenteed to be updated for
+	  * the current #op(E)*d#, where #d = x(1,nd)#, if any of the following is true:
+	  * \begin{itemize}
+	  * \item #j_viol == 0#
+	  * \item #this->pick_violated_policy() == ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY#
+	  * \item #this->pick_violated_policy() == ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY#
+	  *		#&& j_viol > this->n()#
+	  *	\end{itemize}
+	  * If none of the above criteria applies then the client can not assume that
+	  * #Ed# was updated and therefore the client must compute this value on its own.
+	  */
+	void pick_violated( const VectorSlice& x, size_type* j_viol, value_type* constr_val
+		, value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
+		) const;
+	///
+	void ignore( size_type j );
+	///
+	value_type get_bnd( size_type j, EBounds bnd ) const;
 
 private:
 
