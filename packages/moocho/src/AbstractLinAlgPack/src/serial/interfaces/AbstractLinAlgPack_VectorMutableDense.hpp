@@ -200,7 +200,7 @@ private:
 	
 	VectorSlice               v_;
 	release_resource_ptr_t    v_release_;
-	VectorSpaceSerial          space_;
+	VectorSpaceSerial         space_;
 
 	// ///////////////////////////////////////
 	// Private member functions

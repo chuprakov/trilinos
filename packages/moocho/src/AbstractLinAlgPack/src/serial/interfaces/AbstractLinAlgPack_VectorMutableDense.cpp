@@ -24,6 +24,16 @@
 #include "WorkspacePack.h"
 #include "ThrowException.h"
 
+#ifdef _DEBUG
+#define CLASS_MEMBER_PTRS \
+const VectorWithOpMutableDense   *_this = this; \
+const VectorSlice                *_v; \
+const release_resource_ptr_t     *_v_release; \
+const VectorSpaceSerial          *_space;
+#else
+#define CLASS_MEMBER_PTRS
+#endif
+
 namespace SparseLinAlgPack {
 
 VectorWithOpMutableDense::VectorWithOpMutableDense(
@@ -31,6 +41,7 @@ VectorWithOpMutableDense::VectorWithOpMutableDense(
 	)
 	:space_(dim)
 {
+	CLASS_MEMBER_PTRS
 	this->initialize(dim);
 }
 
@@ -40,6 +51,7 @@ VectorWithOpMutableDense::VectorWithOpMutableDense(
 	)
 	:space_(v.dim())
 {
+	CLASS_MEMBER_PTRS
 	this->initialize(v,v_release);
 }
 
@@ -47,6 +59,7 @@ void VectorWithOpMutableDense::initialize(
 	const size_type                   dim
 	)
 {
+	CLASS_MEMBER_PTRS
 	namespace rcp = MemMngPack;
 	namespace rmp = MemMngPack;
 	typedef rcp::ref_count_ptr<Vector> vec_ptr_t;
@@ -66,6 +79,7 @@ void VectorWithOpMutableDense::initialize(
 	,const release_resource_ptr_t&     v_release
 	)
 {
+	CLASS_MEMBER_PTRS
 	v_.bind(v);
 	v_release_ = v_release;
 	space_.initialize(v.dim());
@@ -76,6 +90,7 @@ void VectorWithOpMutableDense::initialize(
 
 const VectorSpace& VectorWithOpMutableDense::space() const
 {
+	CLASS_MEMBER_PTRS
 	return space_;
 }
 
@@ -87,6 +102,7 @@ void VectorWithOpMutableDense::apply_reduction(
 	,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 	) const
 {
+	CLASS_MEMBER_PTRS
  	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
@@ -115,6 +131,7 @@ value_type VectorWithOpMutableDense::get_ele(index_type i) const
 void VectorWithOpMutableDense::get_sub_vector(
 	const Range1D& rng_in, ESparseOrDense sparse_or_dense, RTOp_SubVector* sub_vec ) const
 {
+	CLASS_MEMBER_PTRS
 	const size_type  this_dim = v_.dim();
 	const Range1D    rng = RangePack::full_range(rng_in,1,this_dim);
 	THROW_EXCEPTION(
@@ -149,6 +166,7 @@ void VectorWithOpMutableDense::apply_transformation(
 	,const index_type first_ele, const index_type sub_dim, const index_type global_offset
 	)
 {
+	CLASS_MEMBER_PTRS
  	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
@@ -167,6 +185,7 @@ void VectorWithOpMutableDense::apply_transformation(
 VectorWithOpMutable&
 VectorWithOpMutableDense::operator=(value_type alpha)
 {
+	CLASS_MEMBER_PTRS
 	v_ = alpha;
 	this->has_changed();
 	return *this;
@@ -175,6 +194,7 @@ VectorWithOpMutableDense::operator=(value_type alpha)
 VectorWithOpMutable&
 VectorWithOpMutableDense::operator=(const VectorWithOp& v)
 {
+	CLASS_MEMBER_PTRS
 	if( const VectorWithOpMutableDense *vp = dynamic_cast<const VectorWithOpMutableDense*>(&v) )
 		v_ = vp->v_;
 	else
@@ -186,6 +206,7 @@ VectorWithOpMutableDense::operator=(const VectorWithOp& v)
 VectorWithOpMutable&
 VectorWithOpMutableDense::operator=(const VectorWithOpMutable& v)
 {
+	CLASS_MEMBER_PTRS
 	if( const VectorWithOpMutableDense *vp = dynamic_cast<const VectorWithOpMutableDense*>(&v) )
 		v_ = vp->v_;
 	else
@@ -196,6 +217,7 @@ VectorWithOpMutableDense::operator=(const VectorWithOpMutable& v)
 
 void VectorWithOpMutableDense::set_ele( index_type i, value_type val )
 {
+	CLASS_MEMBER_PTRS
 	v_(i) = val;
 	this->has_changed();
 }
@@ -203,6 +225,7 @@ void VectorWithOpMutableDense::set_ele( index_type i, value_type val )
 VectorWithOpMutableDense::vec_mut_ptr_t
 VectorWithOpMutableDense::sub_view( const Range1D& rng_in )
 {
+	CLASS_MEMBER_PTRS
 	namespace rcp = MemMngPack;
 	const size_type this_dim = this->dim();
 	const Range1D rng = RangePack::full_range( rng_in, 1, this_dim );
@@ -222,6 +245,7 @@ VectorWithOpMutableDense::sub_view( const Range1D& rng_in )
 void VectorWithOpMutableDense::get_sub_vector(
 	const Range1D& rng_in, RTOp_MutableSubVector* sub_vec )
 {
+	CLASS_MEMBER_PTRS
 	const size_type  this_dim = v_.dim();
 	const Range1D    rng = RangePack::full_range(rng_in,1,this_dim);
 #ifdef _DEBUG
@@ -244,12 +268,14 @@ void VectorWithOpMutableDense::get_sub_vector(
 
 void VectorWithOpMutableDense::commit_sub_vector( RTOp_MutableSubVector* sub_vec )
 {
+	CLASS_MEMBER_PTRS
 	RTOp_mutable_sub_vector_null( sub_vec ); // No memory to deallocate!
 	this->has_changed(); // Be aware of any final changes!
 }
 
 void VectorWithOpMutableDense::set_sub_vector( const RTOp_SubVector& sub_vec )
 {
+	CLASS_MEMBER_PTRS
 	VectorWithOpMutable::set_sub_vector(sub_vec); // ToDo: Provide specialized implementation?
 }
 
@@ -261,6 +287,7 @@ void VectorWithOpMutableDense::Vp_StMtV(
 	,value_type                      beta
 	)
 {
+	CLASS_MEMBER_PTRS
 	VectorDenseEncap  x_de(x);
 	SparseLinAlgPack::Vp_StMtV( &v_, alpha, P, P_trans, x_de(), beta );
 }
@@ -275,6 +302,7 @@ void VectorWithOpMutableDense::apply_op(
 	,const index_type first_ele_in, const index_type sub_dim_in, const index_type global_offset_in
 	) const
 {
+	CLASS_MEMBER_PTRS
 #ifdef _DEBUG
 	AbstractLinAlgPack::apply_op_validate_input(
 		NULL, "VectorWithOpMutableDense::apply_op(...)"
