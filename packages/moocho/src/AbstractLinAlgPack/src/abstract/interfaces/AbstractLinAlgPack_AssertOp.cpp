@@ -227,7 +227,6 @@ void AbstractLinAlgPack::Mp_MtM_assert_compatibility(
 	ASSERT_LHS_ARG(func_name,m_lhs)
 	ASSERT_MAT_MAT_SPACES(func_name,(*m_lhs),trans_lhs,SPACE_COLS,m_rhs1,trans_rhs1,SPACE_COLS)
 	ASSERT_MAT_MAT_SPACES(func_name,(*m_lhs),trans_lhs,SPACE_ROWS,m_rhs2,trans_rhs2,SPACE_ROWS)
-	ASSERT_MAT_MAT_SPACES(func_name,m_rhs1,trans_rhs1,SPACE_COLS,m_rhs2,trans_rhs2,SPACE_ROWS)
 	ASSERT_MAT_MAT_SPACES(func_name,m_rhs1,trans_rhs1,SPACE_ROWS,m_rhs2,trans_rhs2,SPACE_COLS)
 }
 
