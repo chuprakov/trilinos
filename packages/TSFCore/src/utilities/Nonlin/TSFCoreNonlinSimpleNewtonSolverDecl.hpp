@@ -84,6 +84,9 @@ public:
 	 * @param  y   [in/out] On input, <tt>y</tt> contains the initial guess.  On output, <tt>y</tt>
 	 *             contains the solution (or partial solution) of the set of nonlinear equations.
 	 *
+	 * If a linesearch failure or other problem occurs, then an <tt>Exceptions::SolverBreakdown</tt>
+	 * exception object will be thrown and <tt>*y</tt> will contain the current solution.
+	 *
 	 * ToDo: Finish documentation!
 	 */
 	Solvers::SolveReturn solve(
