@@ -247,8 +247,9 @@ protected:
 		) const;
 	///
 	bool imp_get_next_basis(
-		IVector      *var_perm
-		,IVector     *equ_perm
+		IVector      *var_perm_full
+		,IVector     *equ_perm_full
+		,size_type   *rank_full
 		,size_type   *rank
 		);
 	///

@@ -282,8 +282,9 @@ void ExampleNLPBanded::imp_calc_Gf_orig(
 }
 
 bool ExampleNLPBanded::imp_get_next_basis(
-	IVector      *var_perm
-	,IVector     *equ_perm
+	IVector      *var_perm_full
+	,IVector     *equ_perm_full
+	,size_type   *rank_full
 	,size_type   *rank
 	)
 {
@@ -293,34 +294,49 @@ bool ExampleNLPBanded::imp_get_next_basis(
 	// a nice banded matrix for the basis matrix C.
 	// Also, if the general inequality constraints are begin
 	// converted to equalities with slacks, make the slack variables
-	// basic variables also (put them first).
+	// basic variables also (after the nD variables).
 #ifdef _DEBUG
-	assert(var_perm);
-	assert(equ_perm);
+	assert(var_perm_full);
+	assert(equ_perm_full);
 	assert(rank);
 #endif
 	const bool         cinequtoequ = this->convert_inequ_to_equ();
 	const size_type    n_orig = nD_ + nI_;
 	const size_type    n_full = n_orig + ( cinequtoequ ? mI_ : 0 );
 	const size_type    m_full = nD_    + ( cinequtoequ ? mI_ : 0 );
-	var_perm->resize(n_full);
-	equ_perm->resize(m_full);
+	var_perm_full->resize(n_full);
+	equ_perm_full->resize(m_full);
 	if( cinequtoequ && mI_ ) {
-		index_type k;
+		index_type k, i_perm = 1;;
 		// basic variables
-		for( k = 1; k <= mI_; ++k )         // Put slacks first
-			(*var_perm)(k) = n_orig + k;
-		for( k = 1; k <= nD_; ++k )         // Followed by xD
-			(*var_perm)(mI_ + k) = k;
+		for( k = 1; k <= nD_; ++k, ++i_perm )  // Put xD variables first
+			(*var_perm_full)(i_perm) = k;
+		for( k = 1; k <= mI_; ++k, ++i_perm )  // Put slacks after xD
+			(*var_perm_full)(i_perm) = n_orig + k;
 		// non-basic variables
-		for( k = 1; k <= nI_; ++k )         // Followed by nI
-			(*var_perm)(mI_+nD_ + k) = nD_ + k;
+		for( k = 1; k <= nI_; ++k, ++i_perm )  // Followed by nI
+			(*var_perm_full)(i_perm) = nD_ + k;
 	}
 	else {
-		LinAlgPack::identity_perm( var_perm );
+		LinAlgPack::identity_perm( var_perm_full );
 	}
-	LinAlgPack::identity_perm( equ_perm );
-	*rank = m_full;
+	LinAlgPack::identity_perm( equ_perm_full );
+	// Count the number of fixed basic variables to reduce
+	// the rank of the basis.
+	index_type num_fixed = 0;
+	for( index_type k = 1; k <= nD_; ++k ) {
+		if( xl_orig_(k) == xu_orig_(k) )
+			++num_fixed;
+	}
+	if( cinequtoequ && mI_ ) {
+		for( index_type k = 1; k <= mI_; ++k ) {
+			if( hl_orig_(k) == hu_orig_(k) )
+				++num_fixed;
+		}
+	}
+	// Set the rank
+	*rank_full = m_full;
+	*rank      = m_full - num_fixed;
 	basis_selection_was_given_ = true;
 	return true;
 }
