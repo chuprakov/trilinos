@@ -27,12 +27,12 @@ extern const std::string ReducedSpaceSQPPack::B_name = "B";
 namespace ReducedSpaceSQPPack {
 
 ipState::ipState(
-  const decomp_sys_ptr_t& decomp_sys   = MemMngPack::null
-  ,const vec_space_ptr_t& space_x      = MemMngPack::null
-  ,const vec_space_ptr_t& space_c      = MemMngPack::null
-  ,const vec_space_ptr_t& space_h      = MemMngPack::null
-  ,const vec_space_ptr_t& space_range  = MemMngPack::null
-  ,const vec_space_ptr_t& space_null   = MemMngPack::null
+  const decomp_sys_ptr_t& decomp_sys
+  ,const vec_space_ptr_t& space_x
+  ,const vec_space_ptr_t& space_c
+  ,const vec_space_ptr_t& space_h
+  ,const vec_space_ptr_t& space_range
+  ,const vec_space_ptr_t& space_null
   )
 	:
 	rSQPState(decomp_sys, space_x, space_c, space_h, space_range, space_null)
