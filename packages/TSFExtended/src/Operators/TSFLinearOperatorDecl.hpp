@@ -24,7 +24,7 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
-/* @HEADER@ */
+ /* @HEADER@ */
 
 #ifndef TSFLINEAROPERATORDECL_HPP
 #define TSFLINEAROPERATORDECL_HPP
@@ -35,19 +35,9 @@
 #include "TSFCoreLinearOp.hpp"
 #include "TSFLoadableMatrix.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
- //#include "TSFVectorDecl.hpp"
- // #include "TSFVectorSpaceDecl.hpp"
 #include "Teuchos_TimeMonitor.hpp"
 
 
-// template <class Scalar>
-//  class TransposeOperator;
-
-// template <class Scalar>
-//  class InverseOperator;
-
-// template <class Scalar>
-//  class RowAccessibleOp;
 
 
 namespace TSFExtended
@@ -67,86 +57,90 @@ namespace TSFExtended
    */
   template <class Scalar>
   class LinearOperator : public Handle<TSFCore::LinearOp<Scalar> >
-    {
-    public:
-      /** \name Constructors, Destructors, and Assignment Operators */
-      //@{
-      //      HANDLE_CTORS(LinearOperator<Scalar>, TSFCore::LinearOp<Scalar>);
-      /** */
-      LinearOperator();
-      /** */
-      LinearOperator(Handleable<TSFCore::LinearOp<Scalar> >* rawPtr);
-      /** */
-      LinearOperator(const RefCountPtr<TSFCore::LinearOp<Scalar> >& smartPtr);
-      //@}
+  {
+  public:
+    /** \name Constructors, Destructors, and Assignment Operators */
+    //@{
+    //      HANDLE_CTORS(LinearOperator<Scalar>, TSFCore::LinearOp<Scalar>);
+    /** Empty constructor*/
+    LinearOperator();
 
-      /** */
-      virtual const VectorSpace<Scalar> domain() const ;
-
-      /** */
-      virtual const VectorSpace<Scalar> range() const ;
+    /** Constructor with raw pointer to a Handleable TSFCore::LinearOp*/
+    LinearOperator(Handleable<TSFCore::LinearOp<Scalar> >* rawPtr);
 
 
-      /** 
-       * Compute
-       * \code
-       * out = beta*out + alpha*op*in;
-       * \endcode
-       **/
-      void apply(const Vector<Scalar>& in,
-                 Vector<Scalar>& out,
-                 const Scalar& alpha = 1.0,
-                 const Scalar& beta = 0.0) const ;
+    /** Constructor with smart pointer to a TSFCore::LinearOp*/
+    LinearOperator(const RefCountPtr<TSFCore::LinearOp<Scalar> >& smartPtr);
+    //@}
 
-      /**  
-       * Compute
-       * \code
-       * out = beta*out + alpha*op^T*in;
-       * \endcode
-       **/
-       void applyTranspose(const Vector<Scalar>& in,
-                           Vector<Scalar>& out,
-                           const Scalar& alpha = 1.0,
-                           const Scalar& beta = 0.0) const ;
+    /** Return the domain */
+    virtual const VectorSpace<Scalar> domain() const ;
+
+    /** Return the range */
+    virtual const VectorSpace<Scalar> range() const ;
 
 
-//       /** For the moment this does nothing*/
-       LinearOperator<Scalar> form() const {return *this;}
+    /** 
+     * Compute
+     * \code
+     * out = beta*out + alpha*op*in;
+     * \endcode
+     **/
+    void apply(const Vector<Scalar>& in,
+	       Vector<Scalar>& out,
+	       const Scalar& alpha = 1.0,
+	       const Scalar& beta = 0.0) const ;
+
+    /**  
+     * Compute
+     * \code
+     * out = beta*out + alpha*op^T*in;
+     * \endcode
+     **/
+    void applyTranspose(const Vector<Scalar>& in,
+			Vector<Scalar>& out,
+			const Scalar& alpha = 1.0,
+			const Scalar& beta = 0.0) const ;
+
+
+    //       /** For the moment this does nothing*/
+    LinearOperator<Scalar> form() const {return *this;}
       
       
-      /** Get a stopwatch for timing vector operations */
-      RefCountPtr<Time>& opTimer();
+    /** Get a stopwatch for timing vector operations */
+    RefCountPtr<Time>& opTimer();
 
-      /**
-       * Return a TransposeOperator.
-       */
-      LinearOperator<Scalar> transpose() const ; 
+    /**
+     * Return a TransposeOperator.
+     */
+    LinearOperator<Scalar> transpose() const ; 
 
-      /**
-       * Return an InverseOperator.
-       */
-      LinearOperator<Scalar> inverse(const LinearSolver<Scalar>& solver = LinearSolver<Scalar>()) const ;
+    /**
+     * Return an InverseOperator.
+     */
+    LinearOperator<Scalar> inverse(const LinearSolver<Scalar>& solver = LinearSolver<Scalar>()) const ;
 
-      /** Operator composition */
-      LinearOperator<Scalar> operator*(const LinearOperator<Scalar>& other) const ;
+    /** Operator composition */
+    LinearOperator<Scalar> operator*(const LinearOperator<Scalar>& other) const ;
 
-      /** Return a Loadable Matrix  */
-      RefCountPtr<LoadableMatrix<Scalar> > matrix();
+    /** Return a Loadable Matrix  */
+    RefCountPtr<LoadableMatrix<Scalar> > matrix();
 
-      /** Get a row of the underlying matrix */     
-      void getRow(const int& row, 
-		  Teuchos::Array<int>& indices, 
-		  Teuchos::Array<Scalar>& values) const ;
+    /** Get a row of the underlying matrix */     
+    void getRow(const int& row, 
+		Teuchos::Array<int>& indices, 
+		Teuchos::Array<Scalar>& values) const ;
 
 
-      /* Block operations  */
+    /** \name  Block operations  */
+    //@{
       
-      /** return number of block rows */
-      int numBlockRows() const;
+    /** return number of block rows */
+    int numBlockRows() const;
       
 
-      /** return number of block cols */
-      int numBlockCols() const;
+    /** return number of block cols */
+    int numBlockCols() const;
       
 
     /** get the (i,j)-th block */
@@ -159,33 +153,25 @@ namespace TSFExtended
     void setBlock(int i, int j, 
 		  const LinearOperator<Scalar>& sub);
 
-      void finalize(bool zerofill);
+    /** Finialize the Block operator 
+     *
+     *@param zerofill bool to indicate if blocks that are not set
+     *                should be automatically set to the zero operator.
+     */
+    void finalize(bool zerofill);
 
-      /** Describe function */
-      string describe() const
-      {
-	return describe(0);
-      }
+    //@}
 
-      string describe(int depth) const
-      {
-// 	const OpDescribableByTypeID<Scalar>* p = 
-// 	  dynamic_cast<const OpDescribableByTypeID<Scalar>* >(ptr().get());
-	const DescribableByTypeID* p = 
-	  dynamic_cast<const DescribableByTypeID* >(ptr().get());
-	if (p != 0)
-	  {
-	    return p -> describe(depth);
-	  }
-	return "Operator not describable";
-      }
+    /** Describe function */
+    string describe() const
+    {
+      return describe(0);
+    }
+    /** Describe with proper indent  */
+    string describe(int depth) const;
       
 
-      /** form the transpose */  
- 
-
-
-    private:
+  private:
   };
 }
 

@@ -24,7 +24,7 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov)
 //
 // **********************************************************************/
-/* @HEADER@ */
+ /* @HEADER@ */
 
 #ifndef TSFBLOCKOPERATORDECL_HPP
 #define TSFBLOCKOPERATORDECL_HPP
@@ -32,9 +32,6 @@
 #include "TSFConfigDefs.hpp"
 #include "Teuchos_Array.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
- //#include "TSFVectorSpace.hpp"
- //#include "TSFLinearOperatorDecl.hpp"
- //#include "TSFProductVectorSpaceDecl.hpp"
 #include "TSFExplicitlyTransposeableOp.hpp"
 
 
@@ -69,38 +66,34 @@ namespace TSFExtended
      */
     BlockOperator(const VectorSpace<Scalar> &domain, 
 		  const VectorSpace<Scalar> &range);
-//     BlockOperator( VectorSpace<Scalar> &domain, 
-// 		   VectorSpace<Scalar> &range);
-    
+
 
     /** Virtual dtor */
     virtual ~BlockOperator(){;}
 
+
+    /** Returns the domain  */
     RefCountPtr<const TSFCore::VectorSpace<Scalar> > domain() const;
     
 
+    /** Returns the range  */
     RefCountPtr<const TSFCore::VectorSpace<Scalar> > range() const;
 
 
-    /** get the number of block rows */
+    /** Returns the number of block rows */
     int numBlockRows() const 
     {
-      int k = nBlockRows_;
-      cerr << "In BLOCKnumBlockRows; nBlockrows_ = " << nBlockRows_ << "\n"; 
       return nBlockRows_;
     }
 
-    /** get the number of block columns */
+    /** Returns  the number of block columns */
     int numBlockCols() const {return nBlockCols_;}
 
-    /** get the (i,j)-th block */
+    /** Returns the (i,j)-th block */
     LinearOperator<Scalar> getBlock(const int &i, const int &j) const ;
 
-    /** set the (i,j)-th bock 
-	If the domain and/or the range are not set, then we
-	are building the operator
-    */
-    void setBlock(int i, int j, 
+    /** Set the (i,j)-th bock */
+    void setBlock(int i, int j,  
 		  const LinearOperator<Scalar>& sub);
 
     /** Finalize the matrix by setting the range and domain and 
@@ -131,7 +124,7 @@ namespace TSFExtended
                        ) const;
     
 
-    /** apply operator to a vector in the domain space, returning a vector
+    /** Apply operator to a vector in the domain space, returning a vector
      * in the range space 
      */
     void applyReg(const TSFCore::Vector<Scalar>& in, 
@@ -141,9 +134,10 @@ namespace TSFExtended
 
 
 
-    /** apply adjoint operator to a vector in the domain space, returning
-     * a vector in the range space. The default implementation throws an
-     * exception */
+    /** Apply transpose operator to a vector in the domain space,
+     * returning a vector in the range space. The default
+     * implementation throws an exception 
+     */
     virtual void applyTrans(const TSFCore::Vector<Scalar>& in, 
 			    const Scalar alpha, 
 			    TSFCore::Vector<Scalar>* out, 
@@ -151,7 +145,7 @@ namespace TSFExtended
 
 
 
-    /**  create the transpose */
+    /**  Create the transpose */
     LinearOperator<Scalar> formTranspose() const;
 
     /**
@@ -172,8 +166,6 @@ namespace TSFExtended
     /** Empty ctor which should not be used  */
     BlockOperator(){;}
 
-//     ProductVectorSpace<Scalar> domain_;
-//     ProductVectorSpace<Scalar> range_;
     VectorSpace<Scalar> domain_;
     VectorSpace<Scalar> range_;
     int nBlockRows_;
@@ -201,22 +193,6 @@ namespace TSFExtended
 
 
     /** Private method to check that all blocks are set */
-
-    void apply(const Vector<Scalar>& arg, 
-	       const Scalar alpha,
-	       Vector<Scalar>& out, 
-	       const Scalar beta) const;
-    
-
-    void applyTranspose(const Vector<Scalar>& arg,
-			const Scalar alpha,
-			Vector<Scalar>& out,
-			const Scalar beta) const;
-
-
-
-
-
     bool chkFinal() const;
     
 
@@ -227,9 +203,6 @@ namespace TSFExtended
      */
     void zeroFill(const int &i, const int &j);
     
-
-
-
   }; 
 }
 

@@ -24,20 +24,15 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
-/* @HEADER@ */
+ /* @HEADER@ */
 
 
 #ifndef TSFBLOCKOPERATORIMPL_HPP
 #define TSFBLOCKOPERATORIMPL_HPP
 
 
- //#include "TSFBlockOperator.hpp"
- #include "TSFProductVectorSpaceDecl.hpp"
+#include "TSFProductVectorSpaceDecl.hpp"
 #include "TSFLinearCombination.hpp"
-// #include "TSFVectorSpace.hpp"
-// //#include "TSFCoreVectorSpace.hpp"
-// #include "TSFOpDescribableByTypeID.hpp"
- 
 #include "TSFZeroOperator.hpp"
 
 using namespace TSFExtended;
@@ -63,19 +58,15 @@ BlockOperator<Scalar>::BlockOperator(const VectorSpace<Scalar>& domain,
    sub_(range.numBlocks()),
    isSet_(range.numBlocks())
 {
-  cerr << "In BlockOp::ctor:: nBlockRows_ = " << nBlockRows_ << endl;
   for (int i=0; i<nBlockRows_; i++)
     {
       sub_[i].resize(nBlockCols_);
       isSet_[i].resize(nBlockCols_);
       for (int j = 0; j < nBlockCols_; j++)
 	{
-	  cerr << " i = " << i  << " j = " << j << endl;
 	  isSet_[i][j] = false;
 	}
     }
-  cerr << "In BlockOp::ctor:: nBlockRows_ = " << nBlockRows_ << endl;
-  cerr << "In BlockOp::ctor:: myBlockRow_ = " << myBlockRow_ << endl;
 }
 
 
@@ -83,7 +74,7 @@ BlockOperator<Scalar>::BlockOperator(const VectorSpace<Scalar>& domain,
 /*==================================================================*/
 template <class Scalar>
 RefCountPtr<const TSFCore::VectorSpace<Scalar> >  
-     BlockOperator<Scalar>::domain() const
+BlockOperator<Scalar>::domain() const
 {
   return domain_.ptr();
 }
@@ -91,7 +82,7 @@ RefCountPtr<const TSFCore::VectorSpace<Scalar> >
 /*==================================================================*/
 template <class Scalar>
 RefCountPtr<const TSFCore::VectorSpace<Scalar> >  
-     BlockOperator<Scalar>::range() const
+BlockOperator<Scalar>::range() const
 {
   return range_.ptr();
 }
@@ -122,29 +113,18 @@ LinearOperator<Scalar> BlockOperator<Scalar>::getBlock(const int &i,
 /*==================================================================*/
 template <class Scalar>
 void BlockOperator<Scalar>::setBlock( int i,  int j, 
-				     const LinearOperator<Scalar>& sub)
+				      const LinearOperator<Scalar>& sub)
 {
-  //nBlockRows_ = 2;
-  //  int nBlockRows = numBlockRows(); 
-//   cerr << "In BlockOperator::setBlock: myBlockRow_ = " << endl;
-//   cerr << myBlockRow_ << endl;
-  cerr << "In BlockOperator::setBlock: nBlockRows_ = " << endl;
-  cerr << nBlockRows_ << endl;
-
   TEST_FOR_EXCEPTION(i < 0 || i >=nBlockRows_, std::out_of_range,
 		     "i is out of range in setBlock: i = " << i 
 		     << "and j = " << j << endl);
-  cerr << "   here" << endl;
   TEST_FOR_EXCEPTION(j < 0 || j >=nBlockCols_, std::out_of_range,
 		     "j is out of range in setBlock: i = " << i 
 		     << "and j = " << j << endl);
-  cerr << "   Checking spaces" << endl; 
   chkSpaces(i, j, sub); 
-  cerr << "    inserting sub block" << endl;
   sub_[i][j] = sub;
   isSet_[i][j] = true;
   isFinal_ = chkFinal();
-  cerr << "    finished in setBlock" << endl;
 }  
 
 
@@ -262,17 +242,13 @@ LinearOperator<Scalar> BlockOperator<Scalar>::formTranspose() const
   TEST_FOR_EXCEPTION(!isFinal_, runtime_error, "Operator not finalized");
 
   BlockOperator<Scalar> trans(range_, domain_);
-//   LinearOperator<Scalar> opTrp = new BlockOperator<Scalar>(range_, domain_);
-//   const BlockOperator<Scalar>* trans = 
-//     dynamic_cast<const BlockOperator<Scalar>* > (opTrp.ptr().get());
   
   for (int i = 0; i < numBlockRows(); i++)
     {
       for (int j = 0; j < numBlockCols(); j++)
 	{
-	  //cerr << "getting Block i,j = " << i << " " << j << endl;
 	  LinearOperator<Scalar> B = sub_[i][j];
-	  LinearOperator<Scalar> Btrp = (B.transpose()).form(); //B.getTranspose();
+	  LinearOperator<Scalar> Btrp = (B.transpose()).form(); 
 	  trans.setBlock(j, i, Btrp);
 	}
     }
@@ -416,7 +392,6 @@ string BlockOperator<Scalar>::describe(int depth) const
 		     + Teuchos::toString(j) + " is");
 	  OpDescribableByTypeID<Scalar>* mat = 
 	    dynamic_cast<OpDescribableByTypeID<Scalar>* > (sub_[i][j].ptr().get());
-	  //	    (&(*(getBlock(i,j).getPtr())));
 	  if (mat == 0)
 	    {
 	      ret.append(spaces + "   Unknown type of dimension " 

@@ -24,7 +24,7 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
-/* @HEADER@ */
+ /* @HEADER@ */
 
 #ifndef TSFDIAGONALOPERATOR_HPP
 #define TSFDIAGONALOPERATOR_HPP

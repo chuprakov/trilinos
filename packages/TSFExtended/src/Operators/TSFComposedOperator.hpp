@@ -24,7 +24,7 @@
 // Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
 // 
 // **********************************************************************/
-/* @HEADER@ */
+ /* @HEADER@ */
 
 #ifndef TSFCOMPOSEDOPERATOR_HPP
 #define TSFCOMPOSEDOPERATOR_HPP
@@ -48,7 +48,7 @@ namespace TSFExtended
   public:
     GET_RCP(TSFCore::LinearOp<Scalar>);
     /** 
-     * Construct a pair of linear operators.
+     * Construct from a pair of linear operators.
      */
     ComposedOperator(const LinearOperator<Scalar>& left, 
                      const LinearOperator<Scalar>& right)
@@ -92,8 +92,6 @@ namespace TSFExtended
     /** Return the range of the operator */
     virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const {return left_.range().ptr();}
 
-    /* */
-    //    GET_RCP(TSFCore::LinearOp<Scalar>);
 
   private:
 
