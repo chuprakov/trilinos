@@ -175,8 +175,7 @@ size_type ExampleNLPFirstOrderDirect::m() const
 
 NLP::vec_space_ptr_t ExampleNLPFirstOrderDirect::space_x() const
 {
-	namespace rcp = ReferenceCountingPack;
-	return rcp::rcp_implicit_cast<NLP::vec_space_ptr_t::element_type>(vec_space_comp_);
+	return vec_space_comp_;
 }
 
 NLP::vec_space_ptr_t ExampleNLPFirstOrderDirect::space_c() const
