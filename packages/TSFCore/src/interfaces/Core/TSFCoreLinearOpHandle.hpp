@@ -58,7 +58,6 @@ public:
 	/** @name Public constructors/accessors */
 	//@{
 
-	///
 	/** \brief Default construct to NULL handle.
 	 *
 	 * Postconditions:<ul>
@@ -69,7 +68,6 @@ public:
 	 */
 	LinearOpHandle();
 
-	///
 	/** \brief Construct with an operator and optionally its default transpose
 	 * and scaling arguments.
 	 *
@@ -100,12 +98,10 @@ public:
 		,const Scalar                                         &defaultAlpha = Teuchos::ScalarTraits<Scalar>::one()
 		);
 
-	///
 	/** Return smart pointer to underlying linear operator.
 	 */
 	Teuchos::RefCountPtr<const LinearOp<Scalar> > op() const;
 
-	///
 	/** Set the mathematical transpose argument
 	 *
 	 * @param  defaultTrans  [in] Default definition of transpose (default: <tt>NOTRANS</tt>).
@@ -116,12 +112,10 @@ public:
 	 */
 	void defaultTrans( const ETransp defaultTrans );
 
-	///
 	/** Return the default defintion of mathematical transpose.
 	 */
 	ETransp defaultTrans() const;
 
-	///
 	/** Set the default scalar multiplier.
 	 *
 	 * @param  defaultAlpha  [in] The default scalar multiplier <tt>alpha</tt>.
@@ -132,17 +126,38 @@ public:
 	 */
 	void defaultAlpha( const Scalar &defaultAlpha );
 
-	///
 	/** Return the default defintion of mathematical transpose.
 	 */
 	Scalar defaultAlpha() const;
 
 	//@}
 
+	/** @name Adjoint and transposition */
+	//@{
+
+	/** \brief Create a new handle that is the adjoint of this handle.
+	 *
+	 * Postconditions:<ul>
+	 * <li> [<tt>this->defaultTrans()==NOTRANS</tt>] <tt>return.defaultTrans()==CONJTRANS</tt>
+	 * <li> [<tt>this->defaultTrans()!=NOTRANS<tt>] <tt>return.defaultTrans()==NOTRANS</tt>
+	 * </ul>
+	 */
+	LinearOpHandle<Scalar> adjoint() const;
+
+	/** \brief Create a new handle that is the transpose of this handle.
+	 *
+	 * Postconditions:<ul>
+	 * <li> [<tt>this->defaultTrans()==NOTRANS</tt>] <tt>return.defaultTrans()==TRANS</tt>
+	 * <li> [<tt>this->defaultTrans()!=NOTRANS</tt>] <tt>return.defaultTrans()==NOTRANS</tt> ???Is this currect???
+	 * </ul>
+	 */
+	LinearOpHandle<Scalar> transpose() const;
+
+	//@}
+
 	/** @name LinearOp wrappers */
 	//@{
 
-	///
 	/** Return the range space of the logical linear operator.
 	 *
 	 * Simply returns: \code
@@ -152,7 +167,6 @@ public:
 	 */
 	Teuchos::RefCountPtr<const VectorSpace<Scalar> > range() const;
 
-	///
 	/** Return the domain space of the logical linear operator.
 	 *
 	 * Simply returns: \code
@@ -162,7 +176,6 @@ public:
 	 */
 	Teuchos::RefCountPtr<const VectorSpace<Scalar> > domain() const;
 
-	///
 	/** Return if the operation is supported on the logical linear operator.
 	 *
 	 * Simply returns: \code
@@ -172,7 +185,6 @@ public:
 	 */
 	bool opSupported(ETransp M_trans) const;
 
-	///
 	/** Apply the logical linear operator (or its transpose) to a vector:
 	 * <tt>y = alpha*op(M)*x + beta*y</tt>.
 	 *
@@ -202,7 +214,6 @@ public:
 		,const Scalar            beta  = Teuchos::ScalarTraits<Scalar>::zero()
 		) const;
 
-	///
 	/** Apply the linear operator (or its transpose) to a multi-vector :
 	 * <tt>Y = alpha*op(M)*X + beta*Y</tt>.
 	 *
@@ -300,6 +311,20 @@ inline
 Teuchos::RefCountPtr<const LinearOp<Scalar> > LinearOpHandle<Scalar>::op() const
 {
 	return op_;
+}
+
+template<class Scalar>
+inline
+LinearOpHandle<Scalar> LinearOpHandle<Scalar>::adjoint() const
+{
+	return LinearOpHandle<Scalar>(this->op(),this->defaultTrans()==NOTRANS?CONJTRANS:NOTRANS,this->defaultAlpha());
+}
+
+template<class Scalar>
+inline
+LinearOpHandle<Scalar> LinearOpHandle<Scalar>::transpose() const
+{
+	return LinearOpHandle<Scalar>(this->op(),this->defaultTrans()==NOTRANS?TRANS:NOTRANS,this->defaultAlpha());
 }
 
 template<class Scalar>
