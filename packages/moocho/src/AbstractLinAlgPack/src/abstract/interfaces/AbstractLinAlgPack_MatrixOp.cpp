@@ -111,6 +111,7 @@ bool MatrixWithOp::Mp_StM(
 	for( size_type j = 1; j <= cols; ++j )
 		AbstractLinAlgPack::Vp_StMtV( m_mut_lhs->col(j).get(), alpha, *this, trans_rhs, EtaVector(j,cols)() );
 	// ToDo: consider row and or diagonal access!
+	return true;
 }
 
 bool MatrixWithOp::Mp_StMtP(
