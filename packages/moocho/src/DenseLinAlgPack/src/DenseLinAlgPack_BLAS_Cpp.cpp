@@ -376,7 +376,9 @@ void BLAS_Cpp::spmv(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* pap
 void BLAS_Cpp::trmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pa
 	, f_int lda, f_dbl_prec* px, f_int incx)
 {
-	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTRMV,dtrmv)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo]), &TransChar[trans], &DiagChar[diag], n, pa, lda, px, incx);
+	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTRMV,dtrmv)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo])
+		,FORTRAN_CHAR_1_ARG_CALL(&TransChar[trans]),FORTRAN_CHAR_1_ARG_CALL(&DiagChar[diag])
+		,n, pa, lda, px, incx);
 }
 
 // Triangular band matrix-vector products
@@ -384,7 +386,9 @@ void BLAS_Cpp::trmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_pre
 void BLAS_Cpp::tbmv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const f_dbl_prec* pa
 	, f_int lda, f_dbl_prec* px, f_int incx)
 {
-	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTBMV,dtbmv)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo]), &TransChar[trans], &DiagChar[diag], n, k, pa, lda, px, incx);
+	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTBMV,dtbmv)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo])
+		,FORTRAN_CHAR_1_ARG_CALL(&TransChar[trans]), FORTRAN_CHAR_1_ARG_CALL(&DiagChar[diag])
+		,n, k, pa, lda, px, incx);
 }
 
 // Triangular packed matrix-vector products
@@ -392,7 +396,9 @@ void BLAS_Cpp::tbmv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const 
 void BLAS_Cpp::tpmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pap
 	, f_dbl_prec* px, f_int incx)
 {
-	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTPMV,dtpmv)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo]), &TransChar[trans], &DiagChar[diag], n, pap, px, incx);
+	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTPMV,dtpmv)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo])
+		,FORTRAN_CHAR_1_ARG_CALL(&TransChar[trans]), FORTRAN_CHAR_1_ARG_CALL(&DiagChar[diag])
+		,n, pap, px, incx);
 }
 
 // Triangular equation solve
@@ -400,7 +406,9 @@ void BLAS_Cpp::tpmv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_pre
 void BLAS_Cpp::trsv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pa
 	, f_int lda, f_dbl_prec* px, f_int incx)
 {
-	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTRSV,dtrsv)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo]), &TransChar[trans], &DiagChar[diag], n, pa, lda, px, incx);
+	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTRSV,dtrsv)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo])
+		,FORTRAN_CHAR_1_ARG_CALL(&TransChar[trans]), FORTRAN_CHAR_1_ARG_CALL(&DiagChar[diag])
+		,n, pa, lda, px, incx);
 }
 
 // Triangular band equation solve
@@ -408,7 +416,9 @@ void BLAS_Cpp::trsv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_pre
 void BLAS_Cpp::tbsv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const f_dbl_prec* pa
 	, f_int lda, f_dbl_prec* px, f_int incx)
 {
-	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTBSV,dtbsv)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo]), &TransChar[trans], &DiagChar[diag], n, k, pa, lda, px, incx);
+	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTBSV,dtbsv)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo])
+		,FORTRAN_CHAR_1_ARG_CALL(&TransChar[trans]), FORTRAN_CHAR_1_ARG_CALL(&DiagChar[diag])
+		,n, k, pa, lda, px, incx);
 }
 
 // Triangular packed equation solve
@@ -416,7 +426,9 @@ void BLAS_Cpp::tbsv(Uplo uplo, Transp trans, Diag diag, f_int n, f_int k, const 
 void BLAS_Cpp::tpsv(Uplo uplo, Transp trans, Diag diag, f_int n, const f_dbl_prec* pap
 	, f_dbl_prec* px, f_int incx)
 {
-	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTPSV,dtpsv)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo]), &TransChar[trans], &DiagChar[diag], n, pap, px, incx);
+	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTPSV,dtpsv)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo])
+		,FORTRAN_CHAR_1_ARG_CALL(&TransChar[trans]), FORTRAN_CHAR_1_ARG_CALL(&DiagChar[diag])
+		,n, pap, px, incx);
 }
 
 // General rank-1 update
@@ -474,7 +486,8 @@ void BLAS_Cpp::spr2(Uplo uplo, f_int n, f_dbl_prec alpha, const f_dbl_prec* px
 void BLAS_Cpp::gemm(Transp transa, Transp transb, f_int m, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
 	, f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc)
 {
-	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DGEMM,dgemm)(FORTRAN_CHAR_1_ARG_CALL(&TransChar[transa]), &TransChar[transb], m, n, k, alpha, pa, lda, pb, ldb
+	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DGEMM,dgemm)(FORTRAN_CHAR_1_ARG_CALL(&TransChar[transa])
+		,FORTRAN_CHAR_1_ARG_CALL(&TransChar[transb]), m, n, k, alpha, pa, lda, pb, ldb
 		, beta, pc, ldc);
 }
 
@@ -493,7 +506,8 @@ void BLAS_Cpp::symm(Side side, Uplo uplo, f_int m, f_int n, f_dbl_prec alpha, co
 void BLAS_Cpp::syrk(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
 	, f_int lda, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc)
 {
-	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DSYRK,dsyrk)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo]), &TransChar[trans], n, k, alpha, pa, lda, beta, pc, ldc);
+	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DSYRK,dsyrk)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo])
+		,FORTRAN_CHAR_1_ARG_CALL(&TransChar[trans]), n, k, alpha, pa, lda, beta, pc, ldc);
 }
 
 // Hermitian rank-k update
@@ -503,7 +517,9 @@ void BLAS_Cpp::syrk(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha,
 void BLAS_Cpp::syr2k(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha, const f_dbl_prec* pa
 	, f_int lda, const f_dbl_prec* pb, f_int ldb, f_dbl_prec beta, f_dbl_prec* pc, f_int ldc)
 {
-	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DSYR2K,dsyr2k)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo]), &TransChar[trans], n, k, alpha, pa, lda, pb, ldb, beta, pc, ldc);
+	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DSYR2K,dsyr2k)(FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo])
+		,FORTRAN_CHAR_1_ARG_CALL(&TransChar[trans]), n, k, alpha, pa, lda, pb, ldb
+		,beta, pc, ldc);
 }
 
 // Hermitian rank-2k update
@@ -513,8 +529,9 @@ void BLAS_Cpp::syr2k(Uplo uplo, Transp trans, f_int n, f_int k, f_dbl_prec alpha
 void BLAS_Cpp::trmm(Side side, Uplo uplo, Transp transa, Diag diag, f_int m, f_int n, f_dbl_prec alpha
 	, const f_dbl_prec* pa, f_int lda, f_dbl_prec* pb, f_int ldb)
 {
-	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTRMM,dtrmm)(FORTRAN_CHAR_1_ARG_CALL(&SideChar[side]), FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo]), FORTRAN_CHAR_1_ARG_CALL(&TransChar[transa]), &DiagChar[diag]
-		, m, n, alpha, pa, lda, pb, ldb);
+	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTRMM,dtrmm)(FORTRAN_CHAR_1_ARG_CALL(&SideChar[side])
+		,FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo]), FORTRAN_CHAR_1_ARG_CALL(&TransChar[transa])
+		,FORTRAN_CHAR_1_ARG_CALL(&DiagChar[diag]), m, n, alpha, pa, lda, pb, ldb);
 }
 
 // Solution of triangular system
@@ -522,6 +539,7 @@ void BLAS_Cpp::trmm(Side side, Uplo uplo, Transp transa, Diag diag, f_int m, f_i
 void BLAS_Cpp::trsm(Side side, Uplo uplo, Transp transa, Diag diag, f_int m, f_int n, f_dbl_prec alpha
 	, const f_dbl_prec* pa, f_int lda, f_dbl_prec* pb, f_int ldb)
 {
-	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTRSM,dtrsm)(FORTRAN_CHAR_1_ARG_CALL(&SideChar[side]), FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo]), FORTRAN_CHAR_1_ARG_CALL(&TransChar[transa]), &DiagChar[diag]
-		, m, n, alpha, pa, lda, pb, ldb);
+	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DTRSM,dtrsm)(FORTRAN_CHAR_1_ARG_CALL(&SideChar[side])
+		,FORTRAN_CHAR_1_ARG_CALL(&UploChar[uplo]), FORTRAN_CHAR_1_ARG_CALL(&TransChar[transa])
+		,FORTRAN_CHAR_1_ARG_CALL(&DiagChar[diag]), m, n, alpha, pa, lda, pb, ldb);
 }
