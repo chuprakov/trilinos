@@ -6,6 +6,7 @@ File Name		= film
 Parallel Disk Info	= number=0
 test multi callbacks    = 1
 test null import lists  = 1
+Test DDirectory		= 1
 Global element ids assigned to processor 0
 GID	Part	Perm	IPerm
 6	0	-1	-1
