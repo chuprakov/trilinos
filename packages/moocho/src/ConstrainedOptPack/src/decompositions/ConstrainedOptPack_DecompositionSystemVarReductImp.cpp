@@ -51,13 +51,17 @@ void DecompositionSystemVarReductImp::initialize(
 	)
 {
 	namespace rcp = MemMngPack;
+	size_type num_vars = 0;
 #ifdef _DEBUG
 	THROW_EXCEPTION(
 		basis_sys.get() != NULL && (space_x.get() == NULL || space_c.get() == NULL)
 		,std::invalid_argument
 		,"DecompositionSystemVarReductImp::initialize(...) : Error, "
 		"if basis_sys is set, then space_x and space_c must also be set!" );
+#endif
 	if(basis_sys.get()) {
+		num_vars = basis_sys->var_dep().size() + basis_sys->var_indep().size();
+#ifdef _DEBUG
 		const size_type num_inequ_decomp = basis_sys->inequ_decomp().size();
 		THROW_EXCEPTION(
 			num_inequ_decomp > 0, std::invalid_argument
@@ -66,10 +70,10 @@ void DecompositionSystemVarReductImp::initialize(
 		const size_type
 			space_x_dim = space_x->dim(),
 			space_c_dim = space_c->dim(),
-			num_vars    = basis_sys->var_dep().size() + basis_sys->var_indep().size(),
 			num_equ     = basis_sys->equ_decomp().size() + basis_sys->equ_undecomp().size();
 		THROW_EXCEPTION(
-			space_x_dim != num_vars || space_c_dim != num_equ, std::invalid_argument
+			num_vars != 0 && (space_x_dim != num_vars || space_c_dim != num_equ)
+			, std::invalid_argument
 			,"DecompositionSystemVarReductImp::initialize(...) : Error, "
 			"the dimensions of space_x, space_c and basis_sys do not match up!" );
 		if( space_h.get() ) {
@@ -77,17 +81,17 @@ void DecompositionSystemVarReductImp::initialize(
 				space_h_dim = space_h->dim(),
 				num_inequ   = basis_sys->inequ_decomp().size() + basis_sys->inequ_undecomp().size();
 			THROW_EXCEPTION(
-				space_h_dim != num_inequ, std::invalid_argument
+				num_vars != 0 && (space_h_dim != num_inequ), std::invalid_argument
 				,"DecompositionSystemVarReductImp::initialize(...) : Error, "
 				"the dimensions of space_h, and basis_sys do not match up!" );
 		}
-	}
 #endif
+	}
 	space_x_    = space_x;
 	space_c_    = space_c;
 	space_h_    = space_h;
 	basis_sys_  = basis_sys;
-	if(basis_sys_.get()) {
+	if(num_vars) {
 		space_range_ = space_x_->sub_space(basis_sys->var_dep())->clone();
 		space_null_  = space_x_->sub_space(basis_sys->var_indep())->clone();
 	}
@@ -147,7 +151,7 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
 	// Determine if we should be using an explicit or implicit D = -inv(C)*N object
 	// (if we are allowed to choose).
 	//
-	update_D_imp_used();
+	update_D_imp_used(&D_imp_used_);
 
 	//
 	// Determine if we need to allocate a new matrix object for Z.D.
@@ -155,7 +159,7 @@ void DecompositionSystemVarReductImp::get_basis_matrices(
 	// and remove any reference to the basis matrix C by Z.D.
 	//
 
-	bool                              new_D_mat_object; // compiler should warn if used before initialized!
+	bool new_D_mat_object; // compiler should warn if used before initialized!
 	if( Z_vr ) {
 		if( Z_vr->D_ptr().get() == NULL ) {
 			if( out && olevel >= PRINT_BASIC_INFO )
@@ -285,8 +289,11 @@ void DecompositionSystemVarReductImp::set_basis_matrices(
 	C_ptr_ = C_ptr;
 	if( D_ptr.get() )
 		D_ptr_ = D_ptr;
-	if(basis_sys.get())
-		basis_sys_ = basis_sys;
+	if(basis_sys.get()) {
+		basis_sys_   = basis_sys;
+		space_range_ = space_x_->sub_space(basis_sys->var_dep())->clone();
+		space_null_  = space_x_->sub_space(basis_sys->var_indep())->clone();
+	}
 }
 
 // Overridden from DecompositionSystem
@@ -396,8 +403,8 @@ void DecompositionSystemVarReductImp::update_decomp(
 	const Range1D
 		var_dep(1,r),
 		var_indep(r+1,n),
-		con_decomp   = this->con_decomp(),
-		con_undecomp = this->con_undecomp();
+		equ_decomp   = this->equ_decomp(),
+		equ_undecomp = this->equ_undecomp();
 
 #ifdef _DEBUG
 	// Validate input
@@ -502,21 +509,21 @@ void DecompositionSystemVarReductImp::update_decomp(
 		N_ptr = rcp::null;
 	if( D_imp_used_ == MAT_IMP_IMPLICIT ) {
 		rcp::ref_count_ptr<const MatrixWithOp>
-			GcDd_ptr = Gc.sub_view(var_indep,con_decomp);
+			GcDd_ptr = Gc.sub_view(var_indep,equ_decomp);
 		THROW_EXCEPTION(
 			GcDd_ptr.get() == NULL, std::logic_error
 			,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
 			"The matrix class used for the gradient of constraints matrix Gc of type \'"
 			<< typeid(Gc).name() << "\' must return return.get() != NULL from "
-			"Gc.sub_view(var_indep,con_decomp)!" );
+			"Gc.sub_view(var_indep,equ_decomp)!" );
 		if(mat_rel == MATRICES_INDEP_IMPS) {
 			GcDd_ptr = GcDd_ptr->clone();
 			THROW_EXCEPTION(
 				GcDd_ptr.get() == NULL, std::logic_error
 				,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
-				"The matrix class used for the gradient of constraints matrix Gc.sub_view(var_indep,con_decomp) "
+				"The matrix class used for the gradient of constraints matrix Gc.sub_view(var_indep,equ_decomp) "
 				"of type \'" << typeid(*GcDd_ptr).name() << "\' must return return.get() != NULL from \n"
-				"Gc.sub_view(var_indep,con_decomp)->clone() since mat_rel == MATRICES_INDEP_IMPS!" );
+				"Gc.sub_view(var_indep,equ_decomp)->clone() since mat_rel == MATRICES_INDEP_IMPS!" );
 		}
 		N_ptr = rcp::rcp(
 			new MatrixWithOpSubView(
@@ -539,25 +546,27 @@ void DecompositionSystemVarReductImp::update_decomp(
 			basis_sys_tester_.get() == NULL, std::logic_error
 			,"DecompositionSystemVarReductImp::update_decomp(...) : Error, "
 			"test_what == RUN_TESTS but this->basis_sys_tester().get() == NULL!" );
-		BasisSystemTester::EPrintTestLevel
-			print_tests;
-		switch(olevel) {
-			case PRINT_NONE:
-				print_tests = BasisSystemTester::PRINT_NONE;
-				break;
-			case PRINT_BASIC_INFO:
-				print_tests = BasisSystemTester::PRINT_BASIC;
-				break;
-			case PRINT_MORE_INFO:
-				print_tests = BasisSystemTester::PRINT_MORE;
-				break;
-			case PRINT_VECTORS:
-			case PRINT_EVERY_THING:
-				print_tests = BasisSystemTester::PRINT_ALL;
-				break;
+		if( basis_sys_tester_->print_tests() == BasisSystemTester::PRINT_NOT_SELECTED ) {
+			BasisSystemTester::EPrintTestLevel
+				print_tests;
+			switch(olevel) {
+				case PRINT_NONE:
+					print_tests = BasisSystemTester::PRINT_NONE;
+					break;
+				case PRINT_BASIC_INFO:
+					print_tests = BasisSystemTester::PRINT_BASIC;
+					break;
+				case PRINT_MORE_INFO:
+					print_tests = BasisSystemTester::PRINT_MORE;
+					break;
+				case PRINT_VECTORS:
+				case PRINT_EVERY_THING:
+					print_tests = BasisSystemTester::PRINT_ALL;
+					break;
+			}
+			basis_sys_tester_->print_tests(print_tests);
+			basis_sys_tester_->dump_all( olevel == PRINT_EVERY_THING );
 		}
-		basis_sys_tester_->print_tests(print_tests);
-		basis_sys_tester_->dump_all( olevel == PRINT_EVERY_THING );
 		const bool passed = basis_sys_tester_->test_basis_system(
 			*basis_sys_                                              // basis_sys
 			,&Gc                                                     // Gc
@@ -640,14 +649,14 @@ void DecompositionSystemVarReductImp::print_update_decomp(
 {
 	out
 		<< L << "*** Variable reduction decomposition (class DecompositionSytemVarReductImp)\n"
-		<< L << "C = Gc(var_dep,con_decomp)' (using basis_sys)\n"
+		<< L << "C = Gc(var_dep,equ_decomp)' (using basis_sys)\n"
 		<< L << "if D_imp == MAT_IMP_IMPICIT then\n"
 		<< L << "  D = -inv(C)*N represented implicitly (class MatrixVarReductImplicit)\n"
 		<< L << "else\n"
 		<< L << "  D = -inv(C)*N computed explicity (using basis_sys)\n"
 		<< L << "end\n"
 		<< L << "Z = [ D; I ] (class MatrixIdentConcatStd)\n"
-		<< L << "Uz = Gc(var_indep,con_undecomp)' - Gc(var_dep,con_undecomp)'*D\n"
+		<< L << "Uz = Gc(var_indep,equ_undecomp)' - Gc(var_dep,equ_undecomp)'*D\n"
 		<< L << "Vz = Gh(var_indep,:)' - Gh(var_dep,:)'*D\n"
 		<< L << "begin update Y, R, Uy, and Vy\n"
 		;
@@ -657,14 +666,28 @@ void DecompositionSystemVarReductImp::print_update_decomp(
 		;
 }
 
-// private
+// Overridden from DecompositionSystemVarReduct
 
-void DecompositionSystemVarReductImp::update_D_imp_used() const
+Range1D DecompositionSystemVarReductImp::var_indep() const
 {
-	D_imp_used_ = ( D_imp() == MAT_IMP_AUTO
-					? MAT_IMP_IMPLICIT     // Without better info, use implicit by default!
-					: D_imp() );
+	return basis_sys_.get() ? basis_sys_->var_indep() : Range1D::Invalid;
 }
+
+Range1D DecompositionSystemVarReductImp::var_dep() const
+{
+	return basis_sys_.get() ? basis_sys_->var_dep() : Range1D::Invalid;
+}
+
+// protected
+
+void DecompositionSystemVarReductImp::update_D_imp_used(EExplicitImplicit *D_imp_used) const
+{
+	*D_imp_used = ( D_imp() == MAT_IMP_AUTO
+				   ? MAT_IMP_IMPLICIT     // Without better info, use implicit by default!
+				   : D_imp() );
+}
+
+// private
 
 void DecompositionSystemVarReductImp::alloc_new_D_matrix( 
 	std::ostream                             *out
