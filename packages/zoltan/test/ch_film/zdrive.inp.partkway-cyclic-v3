@@ -1,0 +1,7 @@
+Decomposition Method 	= parmetis
+Zoltan Parameters	= parmetis_method=partkway
+File Type		= Chaco, initial distribution = cyclic
+File Name		= film
+Parallel Disk Info	= number=0
+test multi callbacks    = 1
+test null import lists  = 1
