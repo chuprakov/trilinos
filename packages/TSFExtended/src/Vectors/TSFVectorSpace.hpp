@@ -30,7 +30,7 @@
 #define TSFVECTORSPACE_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFCoreVectorSpace.hpp"
+#include "TSFCoreVectorSpaceStdBase.hpp"
 
 namespace TSFExtended
 {
@@ -41,7 +41,7 @@ namespace TSFExtended
    */
   template <class Scalar>
   class VectorSpace : public Handle<const TSFCore::VectorSpace<Scalar> >,
-                      public TSFCore::VectorSpace<Scalar>
+                      public TSFCore::VectorSpaceStdBase<Scalar>
   {
   public:
     HANDLE_CTORS(VectorSpace<Scalar>, const TSFCore::VectorSpace<Scalar>);
