@@ -47,12 +47,13 @@ namespace AbstractLinAlgPack {
  * if the client really needs to get at the <tt>DenseLinAlgPack::DMatrix</tt> object
  * itself, then it can be obtained as:
  \code
- void f( MatrixWithOpMutableDense* M )
-     namespace rmp = MemMngPack;
-     DMatrix &_M = *dynamic_cast<rmp::ReleaseResource_ref_count_ptr<DMatrix&> >(*M.gms_release()).ptr;
+ DMatrix* f( MultiVectorMutableDense* M )
+ {
+     return dynamic_cast<MemMngPack::ReleaseResource_ref_count_ptr<DMatrix&> >(*M.gms_release()).ptr.get();
+ }
  \endcode
- * This is not pretty but it is not supposed to be.  Of course the above function will throw
- * an exception if the <tt>dynamic_cast<></tt> fails.
+ * This is not pretty but it is not supposed to be.  Of course the above function will return NULL
+ * the <tt>dynamic_cast<></tt> fails or if there is no allocated <tt>DMatrix</tt> object to get.
  */
 class MultiVectorMutableDense
 	: public AbstractLinAlgPack::MultiVectorMutable   // doxygen needs the full path

@@ -228,7 +228,7 @@ void Vector::get_sub_vector( const Range1D& rng_in, RTOp_SubVector* sub_vec	) co
 	// Perform the reduction (get the sub-vector requested)
 	const Vector *vecs[1] = { this };
 	AbstractLinAlgPack::apply_op(
-		get_sub_vector_op,0,NULL,0,NULL,reduct_obj
+		get_sub_vector_op,1,vecs,0,NULL,reduct_obj
 		,rng.lbound(),rng.size(),rng.lbound()-1 // first_ele, sub_dim, global_offset
 		);
 	// Set the sub-vector.  Note reduct_obj will go out of scope so the sub_vec parameter will

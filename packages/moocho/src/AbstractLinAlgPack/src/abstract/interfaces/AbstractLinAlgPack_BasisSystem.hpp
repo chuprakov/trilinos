@@ -163,14 +163,14 @@ namespace AbstractLinAlgPack {
  \code
 MemMngPack::ref_count_ptr<const MatrixOp>
 create_N(
-    const AbstractLinAlgPack::MatrixOp*   Gc
-    ,const AbstractLinAlgPack::BasisSystem&   bs
+    const AbstractLinAlgPack::MatrixOp       &Gc
+    ,const AbstractLinAlgPack::BasisSystem   &bs
     )
 {
     namespace mmp = MemMngPack;
 	return mmp::rcp(
         new MatrixOpSubView(
-            Gc->sub_view(bs.var_indep(),bs.equ_decomp()), BLAS_Cpp::trans
+            Gc.sub_view(bs.var_indep(),bs.equ_decomp()), BLAS_Cpp::trans
             )
         );
 }

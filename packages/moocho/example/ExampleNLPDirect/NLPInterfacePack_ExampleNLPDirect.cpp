@@ -253,11 +253,11 @@ void ExampleNLPDirect::calc_point(
 	else if( !py &&  D )  task = 1;
 	else if( py  &&  D )  task = 2;
 	
-	assert(0==RTOp_TOp_explnlp2_calc_py_D_set_task(task,&explnlp2_calc_py_D_op.op()));
+	if(0!=RTOp_TOp_explnlp2_calc_py_D_set_task(task,&explnlp2_calc_py_D_op.op())) assert(0);
 
 	const int              num_vecs = task < 2 ? 2 : 3;
 	const Vector*          vecs[3] = { NULL, NULL, NULL };
-	const int              num_targ_vecs = task < 2 ? 0 : 1;
+	const int              num_targ_vecs = task < 2 ? 1 : 2;
 	VectorMutable*         targ_vecs[2] = { NULL, NULL };
 
 	// targ_vecs[0] will have apply_op(...) called on it.
