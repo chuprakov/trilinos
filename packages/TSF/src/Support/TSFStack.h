@@ -1,7 +1,7 @@
 #ifndef TSFSTACK_H
 #define TSFSTACK_H
 
-#include "TSFLinkedList.h"
+#include "TSFArray.h"
 
 namespace TSF
 {
@@ -37,7 +37,7 @@ namespace TSF
 			inline TSFArray<T> arrayify();
 
 		private:
-			TSFLinkedList<T> list_;
+			TSFArray<T> list_;
 		};
 
 
@@ -57,28 +57,27 @@ namespace TSF
 
 	template<class T> inline T TSFStack<T>::pop()
 		{
-			T rtn;
-			if (!list_.getLastNode(rtn)) TSFError::raise("TSFStack<T>::get() on empty TSFStack");
-			list_.removeLast();
+			if (list_.length()==0) TSFError::raise("TSFStack<T>::get() on empty TSFStack");
+            T rtn = list_[list_.length()-1];
+			list_.remove(list_.length()-1);
 			return rtn;
 		}
 
 	template<class T> inline T TSFStack<T>::peek() 
 		{
-			T rtn;
-			if (!list_.getLastNode(rtn)) TSFError::raise("TSFStack<T>::get() on empty TSFStack");
-			return rtn;
+			if (list_.length()==0) TSFError::raise("TSFStack<T>::get() on empty TSFStack");
+			return list_[list_.length()-1];
 		}
 
 
 	template<class T> inline TSFArray<T> TSFStack<T>::arrayify()
 		{
-			return ::arrayify(list_);
+          return list_;
 		}
 
 	template<class T> inline string toString(const TSFStack<T>& stack)
 		{
-			return toString(stack.arrayify());
+			return toString(list_);
 		}
 
 

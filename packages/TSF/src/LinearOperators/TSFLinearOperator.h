@@ -39,6 +39,9 @@ namespace TSF
 			const TSFVectorSpace& domain() const ;
 			/** return range space */
 			const TSFVectorSpace& range() const ;
+            
+            /** am I a BlockOperator?  */
+            bool isBlockOperator() const;
 
 			/** am I a zero operator? */
 			bool isZeroOperator() const ;

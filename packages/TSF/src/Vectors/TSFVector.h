@@ -130,6 +130,11 @@ namespace TSF
 
 			/** \name Block access */
 			//@{
+
+            /** returns true if BlockVector  */
+            bool isBlockVector() const;
+
+
 			/** return the number of subvector blocks */
 			int numBlocks() const ;
 

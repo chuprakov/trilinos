@@ -207,7 +207,7 @@ void TSFBlockVector::acceptCopyOf(const TSFVector& other)
 {
 	for (int i=0; i<numBlocks(); i++)
 		{
-			subvectors_[i].acceptCopyOf(other);
+			subvectors_[i].acceptCopyOf(other.getBlock(i));
 		}
 }
 

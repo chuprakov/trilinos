@@ -19,6 +19,11 @@ LAPACKGeneralMatrix::LAPACKGeneralMatrix(const TSFVectorSpace& domain,
 	nCols_(domain.dim())
 {}
 
+
+
+
+
+
 void LAPACKGeneralMatrix::apply(const TSFVector& in,
 																TSFVector& out) const
 {
@@ -54,7 +59,10 @@ void LAPACKGeneralMatrix::mvMult(bool transpose, const TSFVector& in,
 
 	const DenseSerialVector& vIn = TSFSerialVector::getConcrete(in);
 	DenseSerialVector& vOut = TSFSerialVector::getConcrete(out);
-
+    //cout << " vIn befor\n";
+    //cout << vIn;
+    //vIn.print(cout);
+    //cout << endl;
 	const TSFReal* inPtr = &(vIn[0]);
 	TSFReal* outPtr = &(vOut[0]);
 	
@@ -75,6 +83,11 @@ void LAPACKGeneralMatrix::mvMult(bool transpose, const TSFVector& in,
 														 &nRows_, inPtr, &one, &zero, 
 														 outPtr, &one);
 		}
+    //cout << " vOut after\n";
+    //cout << vOut;
+    //vOut.print(cout);
+    //cout << endl;
+
 }
 
 void LAPACKGeneralMatrix::solve(bool transpose, const TSFVector& in,

@@ -21,8 +21,18 @@ namespace TSF
 			LAPACKGeneralMatrix(const TSFVectorSpace& domain,
 													const TSFVectorSpace& range);
 
+            /** Empty Ctor */
+            LAPACKGeneralMatrix(){;}
 			/** the usual virtual dtor */
 			virtual ~LAPACKGeneralMatrix(){;}
+
+            /* added by ptb  */
+            inline TSFReal& operator[](int i) {return data_[i];}
+            inline const TSFReal& operator[](int i) const {return data_[i];}
+            inline TSFReal& operator()(int i, int j) 
+              {return data_[i+nRows_*j];}
+            inline const TSFReal& operator()(int i, int j) const 
+              {return data_[i+nRows_*j];}
 			
 			/** apply operator to a vector in the domain space, returning a vector
 			 * in the range space */

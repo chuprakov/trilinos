@@ -85,8 +85,30 @@ namespace TSF
 			 * with result returned through a reference argument */
 			inline void eMult(const DenseSerialVector& other, 
 												DenseSerialVector& result) const ;
+
 			/** self-modifying element-by-element multiplication */
 			void eMult(const DenseSerialVector& other) ;
+
+
+            /** absolute value of each element */
+            void abs();
+
+            /** return the value of the max element  */
+            TSFReal max();
+
+            /** return the value of the min element  */
+            TSFReal min();
+
+            /** compute the matlab style ".*" operation, i.e.,
+             *      this[i] = y[i] * z[i]  */
+            void dotStar(const DenseSerialVector& y, 
+                         const DenseSerialVector& z);
+
+
+            /** compute the matlab style "./" operation, i.e.,
+             *      this[i] = y[i] / z[i]  */
+            void dotSlash(const DenseSerialVector& y, 
+                         const DenseSerialVector& z);
 
 	
 			/** multiplication by a scalar

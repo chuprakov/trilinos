@@ -25,6 +25,12 @@ namespace TSF
 			/** return the number of subvector blocks */
 			virtual int numBlocks() const ;
 
+            /** states that I am a BlockVector */
+            virtual bool isBlockVector() const
+              {
+                return true;
+              }
+
 			/** return the i-th subvector */
 			virtual void getBlock(int i, const TSFVector& self, 
 														TSFVector& sub) const ;

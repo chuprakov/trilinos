@@ -308,7 +308,10 @@ string TSFLinearOperator::toString() const
 #else
 			std::ostringstream ost;
 #endif
+            ost.clear();
 	ptr_->print(ost);
+    ost << ends;
+    
 	return ost.str();
 }
 

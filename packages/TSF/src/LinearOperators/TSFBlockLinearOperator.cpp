@@ -61,11 +61,12 @@ void TSFBlockLinearOperator::apply(const TSFVector& arg,
 	for (int i=0; i<nBlockRows_; i++)
 		{
 			TSFVector tmpRow = range().getBlock(i).createMember();
+            tmpRow.zero();
 			for (int j=0; j<nBlockCols_; j++)
 				{
 					TSFVector tmp = range().getBlock(i).createMember();
 					sub_[i][j].apply(arg.getBlock(j), tmp);
-					tmpRow.add(tmpRow, tmp);
+                    tmpRow.add(tmp, tmpRow);
 				}
 			out.setBlock(i, tmpRow);
 		}
@@ -82,7 +83,7 @@ void TSFBlockLinearOperator::applyAdjoint(const TSFVector& arg,
 				{
 					TSFVector tmp = domain().getBlock(i).createMember();
 					sub_[j][i].applyAdjoint(arg.getBlock(j), tmp);
-					tmpRow.add(tmpRow, tmp);
+					tmpRow.add(tmp, tmpRow);
 				}
 			out.setBlock(i, tmpRow);
 		}

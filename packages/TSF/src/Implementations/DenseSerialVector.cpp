@@ -96,6 +96,70 @@ void DenseSerialVector::eMult(const DenseSerialVector& other)
 		}
 }
 
+
+/* added by ptb  */
+void DenseSerialVector::abs() 
+{
+  TSFReal* xx = x_;
+  for (int i = 0; i < n_; i++)
+    {
+      *xx++ = ::fabs(*xx);
+    }
+}
+
+/* added by ptb  */
+TSFReal DenseSerialVector::max()
+{
+  TSFReal* xx = x_;
+  TSFReal ret = *xx++;
+  for (int i = 1; i < n_; i++)
+    {
+      if (*xx > ret) ret = *xx;
+      xx++;
+    }
+  return ret;
+}
+
+/* added by ptb  */
+TSFReal DenseSerialVector::min()
+{
+  TSFReal* xx = x_;
+  TSFReal ret = *xx++;
+  for (int i = 1; i < n_; i++)
+    {
+      if (*xx < ret) ret = *xx;
+      xx++;
+    }
+  return ret;
+}
+
+/* added by ptb  */
+void DenseSerialVector::dotStar(const DenseSerialVector& y, 
+                                const DenseSerialVector& z)
+{
+  TSFReal* xx = x_;
+  TSFReal* yy = y.x_;
+  TSFReal* zz = z.x_;
+  for (int i = 0; i < n_; i++)
+  {
+    *xx++ = *yy++ * *zz++;
+  }
+}
+
+/* added by ptb  */
+void DenseSerialVector::dotSlash(const DenseSerialVector& y, 
+                                 const DenseSerialVector& z)
+{
+  TSFReal* xx = x_;
+  TSFReal* yy = y.x_;
+  TSFReal* zz = z.x_;
+  for (int i = 0; i < n_; i++)
+  {
+    *xx++ = *yy++ / *zz++;
+  }
+}
+
+
 void DenseSerialVector::scalarMult(const TSFReal& a)
 {
 	TSFBlas<TSFReal>::scal(&n_, &a, x_, &one_);

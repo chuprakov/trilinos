@@ -272,12 +272,12 @@ TSFReal TSFAccessibleVector::findExtremeValue(MinOrMax type,
 			TSFReal* x = const_cast<TSFReal*>(myChunk);
 			for (int i=0; i<myChunkSize; i++, x++) 
 				{
-					if (type==MIN && *x < current)
+					if (type==MIN && *x > tol && *x < current)
 						{
 							position = i;
 							current = *x;
 						}
-					if (type==MAX && *x > current)
+					if (type==MAX && *x < tol && *x > current)
 						{
 							position = i;
 							current = *x;

@@ -105,6 +105,12 @@ namespace TSF
 			/** read-write access to a single element */
 			virtual TSFReal& setElement(int globalIndex) = 0 ;
 
+            /** returns true if BlockVector  */
+            virtual bool isBlockVector() const
+              {
+                return false;
+              }
+
 			/** set a block of elements */
 			virtual void setElements(int n, const int* globalIndices, 
 															 const TSFReal* values) = 0 ;

@@ -27,6 +27,7 @@ namespace TSF
 			/* the usual virtual dtor */
 			virtual ~TSFLinearOperatorBase(){;}
 
+
 			/** get the number of block rows */
 			virtual int numBlockRows() const {return 1;}
 

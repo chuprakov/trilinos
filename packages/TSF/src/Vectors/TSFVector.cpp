@@ -75,6 +75,11 @@ const TSFVectorSpace& TSFVector::space() const
 	return ptr_->space();
 }
 
+bool TSFVector::isBlockVector() const
+{
+  return ptr_->isBlockVector();
+}
+
 int TSFVector::numBlocks() const 
 {
 	return ptr_->numBlocks();
@@ -380,21 +385,26 @@ void TSFVector::dotSlash(const TSFVector& x, const TSFVector& y)
 	/* we may copy y into this, so if x==this we need to make a copy of x before
 	 * modifying this */
 	TSFVector w;
-	if (isIdenticalTo(x))
+    //cerr << " x = " << x << endl;   
+    //cerr << " y = " << y << endl;
+	if (isIdenticalTo(y))
 		{
-			w = x.copy();
+			w = y.copy();
 		}
 	else
 		{
-			w = x;
+			w = y;
 		}
+    //cerr << "w= " << w << endl;
 	
-	/* save a copy if this==y */
-	if (!isIdenticalTo(y))
+	/* save a copy if this==x */
+	if (!isIdenticalTo(x))
 		{
-			acceptCopyOf(y);
+			acceptCopyOf(x);
 		}
+    //cerr << "this = " << *this << endl;
 	selfModifyingDotSlash(w);
+    //cerr << "this = " << *this << endl;
 }
 
 void TSFVector::scalarMult(const TSFReal& a, const TSFVector& x)

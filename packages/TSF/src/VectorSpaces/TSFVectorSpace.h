@@ -47,6 +47,9 @@ namespace TSF
 			/** test whether the space contains a given vector */
 			bool contains(const TSFVector& vec) const ;
 
+            /** return true if ProductVectorSpace */
+            bool isProductSpace() const;
+
 			/** return the number of subblocks. */
 			int numBlocks() const ;
 			

@@ -280,12 +280,12 @@ string StrUtils::allCaps(const string& s)
 
 double StrUtils::atof(const string& s)
 {
-	return atof(s.c_str());
+	return ::atof(s.c_str());
 }
 
 int StrUtils::atoi(const string& s)
 {
-	return atoi(s.c_str());
+	return ::atoi(s.c_str());
 }
 
 

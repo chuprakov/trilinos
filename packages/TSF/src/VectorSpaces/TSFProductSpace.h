@@ -50,6 +50,12 @@ namespace TSF
 			/** test equality */
 			virtual bool checkEquality(const TSFVectorSpaceBase* other) const ;
 
+            /** returns true since this is a ProductSpace  */
+            virtual bool isProductSpace() const
+              {
+                return true;
+              }
+
 			/** */
 			virtual int numBlocks() const ;
 

@@ -21,6 +21,8 @@ namespace TSF
 			/** construct with domain and range spaces */
 			TSFMatrixOperator(const TSFVectorSpace& domain, 
 												const TSFVectorSpace& range);
+            /** empty ctor  */
+            TSFMatrixOperator(){;}
 
 			/** the usual virtual dtor */
 			virtual ~TSFMatrixOperator();

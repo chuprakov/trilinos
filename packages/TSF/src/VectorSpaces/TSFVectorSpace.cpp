@@ -27,6 +27,12 @@ bool TSFVectorSpace::operator==(const TSFVectorSpace& other) const
 	return ptr_->checkEquality(other.ptr_);
 }
 
+
+bool TSFVectorSpace::isProductSpace() const
+{
+  return ptr_ ->isProductSpace();
+}
+
 bool TSFVectorSpace::operator!=(const TSFVectorSpace& other) const
 {
 	return !(operator==(other));
