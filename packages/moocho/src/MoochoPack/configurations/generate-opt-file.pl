@@ -13,8 +13,8 @@ use Cwd;
 my $g_use_msg =
   "Use: generate-opt-file.pl [-h] [-s] [-m,-i]\n".
   "  -h : Prints this help message\n".
-  "  -s : Ommits comments for generated Moocho.opt file\n".
-  "  -m : Include options for MamaJama config (default)\n".
+  "  -s : Ommits comments form the generated Moocho.opt file\n".
+  "  -m : Include options for MamaJama (active-set) config (default)\n".
   "  -i : Include options for IP config\n"
   ;
 #

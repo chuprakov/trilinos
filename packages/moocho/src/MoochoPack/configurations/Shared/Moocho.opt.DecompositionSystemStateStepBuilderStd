@@ -18,7 +18,7 @@
 ***
 options_group IterationPack::Algorithm {
 
-*   interrupt_file_name = "";             *** (default) Does not check for interrupt
+*   interrupt_file_name = "";             *** [default] Does not check for interrupt
 *   interrupt_file_name = "interrupt.in"; *** checks for this file in current directory
     *** This specifys a file name that is looked for at the end of every
     *** step in a running algorithm.  If this file exists, it is read for
@@ -37,7 +37,7 @@ options_group DecompositionSystemStateStepBuilderStd {
 
 *** Variable Reduction range/null space decomposition
 
-*    null_space_matrix = AUTO;         *** Let the solver decide (default)
+*    null_space_matrix = AUTO;         *** Let the solver decide [default]
 *    null_space_matrix = EXPLICIT;     *** Store D = -inv(C)*N explicitly
 *    null_space_matrix = IMPLICIT;     *** Perform operations implicity with C, N
      *** This option is used to determine the type of implementation to use for
@@ -52,7 +52,7 @@ options_group DecompositionSystemStateStepBuilderStd {
      ***               instead used implicitly in matrix-vector and other
      ***               related operations.
 
-*    range_space_matrix = AUTO;        *** Let the algorithm decide dynamically (default)
+*    range_space_matrix = AUTO;        *** Let the algorithm decide dynamically [default]
 *    range_space_matrix = COORDINATE;  *** Y = [ I; 0 ] (Cheaper computationally)
 *    range_space_matrix = ORTHOGONAL;  *** Y = [ I; -N'*inv(C') ] (more stable)
      *** This option is used to determine the selection of the range space matrix Y.
@@ -67,12 +67,12 @@ options_group DecompositionSystemStateStepBuilderStd {
 
 *** Reduced Hessian Approximations
 
-*    max_dof_quasi_newton_dense = -1; *** (default)
+*    max_dof_quasi_newton_dense = -1; *** [default]
      *** [quasi_newton == AUTO] (+-int)  This option is used to
      *** determine when the algorithm will switch from quasi_newton=LBFGS
      *** to quasi_newton=BFGS and from range_space_matrix=ORTHOGONAL
      *** to range_space_matrix=COORDINATE.  Example values:
-     ***  -1 : (< 0) Let the solver decide dynamically (default)
+     ***  -1 : (< 0) Let the solver decide dynamically [default]
      ***   0 : Always use limited memory LBFGS and COORDINATE.
      *** 500 : Use LBFG when n-r >= 500 and dense BFGS when n-m < 500
      ***       Use COORDINATE when (n-m)*r >= 500 and ORTHOGONAL when
@@ -94,12 +94,12 @@ options_group CalcFiniteDiffProd {
 *    fd_method_order = FD_ORDER_TWO_AUTO;     *** Uses FD_ORDER_TWO_CENTRAL or FD_ORDER_TWO
 *    fd_method_order = FD_ORDER_FOUR;         *** Use O(eps^4) one sided finite differences
 *    fd_method_order = FD_ORDER_FOUR_CENTRAL; *** Use O(eps^4) two sided central finite differences
-*    fd_method_order = FD_ORDER_FOUR_AUTO;    *** (default) Uses FD_ORDER_FOUR_CENTRAL or FD_ORDER_FOUR
+*    fd_method_order = FD_ORDER_FOUR_AUTO;    *** [default] Uses FD_ORDER_FOUR_CENTRAL or FD_ORDER_FOUR
      *** Selects the finite differencing method to use.  Several different
      *** methods of different orders are available.  For more accuracy use a higher order
      *** method, for faster execution time use a lower order method.
 
-*    fd_step_select = FD_STEP_ABSOLUTE; *** (default) Use absolute step size fd_step_size
+*    fd_step_select = FD_STEP_ABSOLUTE; *** [default] Use absolute step size fd_step_size
 *    fd_step_select = FD_STEP_RELATIVE; *** Use relative step size fd_step_size * ||x||inf
      *** Determines how the actual finite difference step size that is used is selected.
      ***    FD_STEP_ABSOLUTE : The actual step size used is taken from fd_step_size or
@@ -112,7 +112,7 @@ options_group CalcFiniteDiffProd {
      ***                       will not always result in accurate gradients and the user
      ***                       may have to play with fd_step_size some.
 
-*    fd_step_size = -1.0; *** (default) Let the implementation decide
+*    fd_step_size = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use.  If fd_step_select=FD_STEP_ABSOLUTE
      *** then this is the absolute step size that is used.  If fd_step_select=FD_STEP_RELATIVE
      *** the actual step size used in fd_step_size * ||x||inf.  Some common values are:
@@ -121,7 +121,7 @@ options_group CalcFiniteDiffProd {
      ***   1e-5    : Optimal step size for FD_ORDER_TWOx for IEEE double and perfect scaling?
      ***   1e-3    : Optimal step size for FD_ORDER_FOURx for IEEE double and perfect scaling?
 
-*    fd_step_size_min = -1.0; *** (default) Let the implementation decide.
+*    fd_step_size_min = -1.0; *** [default] Let the implementation decide.
      *** Determines the minimum step size that will be taken to compute the finite differences.
      *** This option is used to forbid the computation of a finite difference with a very small
      *** step size as required by the variable bounds.  Computing finite difference derivatives
@@ -129,19 +129,19 @@ options_group CalcFiniteDiffProd {
      *** fd_step_size_min < 0.0, then the implementation will pick a default value that is
      *** smaller than the default value for fd_step_size.
 
-*    fd_step_size_f = -1.0; *** (default) Let the implementation decide
+*    fd_step_size_f = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use for the objective function
      *** f(x).  If fd_step_size_f < 0.0, then the selected value for fd_step_size will be
      *** used (see the options fd_step_size and fd_step_select).  This option allows
      *** fine-tunning of the finite difference computations.
 
-*    fd_step_size_c = -1.0; *** (default) Let the implementation decide
+*    fd_step_size_c = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use for the equality constraints
      *** c(x).  If fd_step_size_c < 0.0, then the selected value for fd_step_size will be
      *** used (see the options fd_step_size and fd_step_select).  This option allows
      *** fine-tunning of the finite difference computations.
 
-*    fd_step_size_h = -1.0; *** (default) Let the implementation decide
+*    fd_step_size_h = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use for the inequality constraints
      *** h(x).  If fd_step_size_h < 0.0, then the selected value for fd_step_size will be
      *** used (see the options fd_step_size and fd_step_select).  This option allows
@@ -155,7 +155,7 @@ options_group CalcFiniteDiffProd {
 ***
 options_group EvalNewPointStd {
 
-*    fd_deriv_testing = FD_DEFAULT; *** (default) Test if check_results==true (see above)
+*    fd_deriv_testing = FD_DEFAULT; *** [default] Test if check_results==true (see above)
 *    fd_deriv_testing = FD_TEST;    *** Always test
 *    fd_deriv_testing = FD_NO_TEST; *** never test
      *** Determines if the derivatives of the NLP returned from the NLPFirstOrder interface
@@ -165,7 +165,7 @@ options_group EvalNewPointStd {
      ***    FD_TEST    : Always test, regardless of the value of check_results.
      ***    FD_NO_TEST : Never test, regardless of the value of check_results.
 
-*    decomp_sys_testing = DST_DEFAULT; *** (default) Test if check_results==true (see above)
+*    decomp_sys_testing = DST_DEFAULT; *** [default] Test if check_results==true (see above)
 *    decomp_sys_testing = DST_TEST;    *** Always test
 *    decomp_sys_testing = DST_NO_TEST; *** never test
      *** Determines if the range/null decomposition matrices from DecompositionSystem are
@@ -175,7 +175,7 @@ options_group EvalNewPointStd {
      ***    FD_TEST    : Always test, regardless of the value of check_results.
      ***    FD_NO_TEST : Never test, regardless of the value of check_results.
 
-*    decomp_sys_testing_print_level = DSPL_USE_GLOBAL;    *** (default) Use the value in journal_print_level (see above).
+*    decomp_sys_testing_print_level = DSPL_USE_GLOBAL;    *** [default] Use the value in journal_print_level (see above).
 *    decomp_sys_testing_print_level = DSPL_LEAVE_DEFAULT; *** Leave whatever setting in already in use.
      *** This option allows the user to determine how the testing print level is determined.
      *** Valid options include:
@@ -193,8 +193,8 @@ options_group EvalNewPointStd {
 *** more than an acceptable tolerance.
 ***
 options_group VariableBoundsTester {
-*    warning_tol   = 1e-10; *** (default)
-*    error_tol     = 1e-5; *** (default)
+*    warning_tol   = 1e-10; *** [default]
+*    error_tol     = 1e-5; *** [default]
 }
 
 ***********************************************************
@@ -205,9 +205,9 @@ options_group NLPFirstDerivTester {
 *    fd_testing_method = FD_COMPUTE_ALL; *** Compute all of the derivatives (O(m))
 *    fd_testing_method = FD_DIRECTIONAL; *** Only compute along random directions (O(1))
 *    num_fd_directions = 1;  *** [fd_testing_method == DIRECTIONAL]
-*    warning_tol   = 1e-8; *** (default)
+*    warning_tol   = 1e-8; *** [default]
 *    warning_tol   = 0.0;  *** Show me all comparisons.
-*    error_tol     = 1e-3; *** (default)
+*    error_tol     = 1e-3; *** [default]
 }
 
 ***************************************************************
@@ -241,12 +241,12 @@ options_group NLPDirectTester {
 *** basis of the constraints Jacobian.
 ***
 options_group BasisSystemTester {
-*    print_tests = PRINT_NONE;    *** (default)
+*    print_tests = PRINT_NONE;    *** [default]
 *    print_tests = PRINT_BASIC;
 *    print_tests = PRINT_MORE;
 *    print_tests = PRINT_ALL;
 *    dump_all = true;
-*    dump_all = false;          *** (default)
+*    dump_all = false;          *** [default]
 *    num_random_tests = 1;      *** (+int) Number of sets of random tests to perform
 *    warning_tol   = 1e-15;     *** (+dbl) Warning tolerance
 *    error_tol     = 1e-12;     *** (+dbl) Error tolerance
@@ -257,12 +257,12 @@ options_group BasisSystemTester {
 *** range/null decomposition matrices (NLPFirstOrder only).
 ***
 options_group DecompositionSystemTester {
-*    print_tests = PRINT_NONE;    *** (default)
+*    print_tests = PRINT_NONE;    *** [default]
 *    print_tests = PRINT_BASIC;
 *    print_tests = PRINT_MORE;
 *    print_tests = PRINT_ALL;
 *    dump_all = true;             *** (costly)
-*    dump_all = false;            *** (default)
+*    dump_all = false;            *** [default]
 *    num_random_tests   = 1;      *** (+int) Number of sets of random test to perform
 *    mult_warning_tol   = 1e-14;  *** (+dbl) Warning tolerance for checking matrix-vector multiplication
 *    mult_error_tol     = 1e-8;   *** (+dbl) Error tolerance for checking matrix-vector multiplication

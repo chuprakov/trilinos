@@ -20,7 +20,7 @@
 ***
 options_group MoochoSolver {
 
-*    workspace_MB = -1.0; *** (default)
+*    workspace_MB = -1.0; *** [default]
      *** (+-dbl) If > 0, givens the number of megabytes that are allocated for
      *** temporary workspace for automatic arrays.  If < 0 then the
      *** this will be determined internaly.  This value should be set by the
@@ -30,16 +30,16 @@ options_group MoochoSolver {
      *** -1.0 : (< 0) Allow the algorithm to decide how much to allocate.
      *** 100  : Allocate 100 MB of ram for this purpose
 
-*    obj_scale = 1.0; *** (default)
+*    obj_scale = 1.0; *** [default]
      *** (+-dbl) Scale for the objective function.  This can have a dramatic impact
      *** on the behavior of the algorithm in some cases.  Changing this value
      *** does a lot to change the wait between minimizing the objective and converging
      *** the constraints.  Example values:
      *** 1e-8  : Really scale the objective down a lot!
-     *** 1.0   : Leave the objective unscaled (default).
+     *** 1.0   : Leave the objective unscaled [default].
      *** 1e+8  : Really scale the objective up a lot!
 
-*    test_nlp = true; *** (default)
+*    test_nlp = true; *** [default]
 *    test_nlp = false;
      *** If true then the NLP will be tested at the initial point.  The
      *** vector spaces (see options_group VectorSpaceTester),
@@ -49,28 +49,28 @@ options_group MoochoSolver {
      *** these tests are fairly cheap so it is recommended that you perform
      *** these test when first getting started.
 
-*    console_outputting = true; *** (default)
+*    console_outputting = true; *** [default]
 *    console_outputting = false;
      *** If true, then output from MoochoTrackerConsoleStd is sent to the
      *** console_out stream (which is std::cout by default) 
 
-*    summary_outputting = true; *** (default)
+*    summary_outputting = true; *** [default]
 *    summary_outputting = false;
      *** If true, then output from MoochoTrackerSummaryStd is sent to the
      *** summary_out stream (which is the file 'MoochoSummary.out' by default) 
 
-*    journal_outputting = true; *** (default)
+*    journal_outputting = true; *** [default]
 *    journal_outputting = false;
      *** If true, then output from the algorithm steps an other detailed testing
      *** output is set to the journal_out stream (which is the file
      *** 'MoochoJournal.out' by default) 
 
-*    algo_outputting = true; *** (default)
+*    algo_outputting = true; *** [default]
 *    algo_outputting = false;
      *** If true, then algo output is proceed to the algo_out stream
      *** (which is the file 'MoochoAlgo.out' by default) 
 
-*    print_algo = true; *** (default)
+*    print_algo = true; *** [default]
 *    print_algo = false;
      *** [algo_outputting == true]
      *** If true then the algorithm will be printed to the algo_out stream
@@ -78,7 +78,7 @@ options_group MoochoSolver {
      *** what all of the options do it is a good idea to print the algorithm
      *** description out and search for the options you are curious about.
 
-*    algo_timing = true; *** (default)
+*    algo_timing = true; *** [default]
 *    algo_timing = false;
      *** [summary_outputting == true]
      *** If true, then the steps in the algorithm will be timed and a table of the
@@ -88,12 +88,12 @@ options_group MoochoSolver {
      *** get from a profiler in may ways.
 
 *    generate_stats_file = true;
-*    generate_stats_file = false; *** (default)
+*    generate_stats_file = false; *** [default]
      *** If true, then a MoochoTrackerStatsStd object will be used to generate
      *** statistics about the solution process to an NLP.  The track object
      *** will overwritte the file 'MoochoStats.out' in the current directory.
 
-*    print_opt_grp_not_accessed = true; *** (default)
+*    print_opt_grp_not_accessed = true; *** [default]
 *    print_opt_grp_not_accessed = false;
      *** [algo_outputting == true]
      *** If true, then the options groups that are specified but are not read by
@@ -103,7 +103,7 @@ options_group MoochoSolver {
      *** options that you set.  Note that some options groups are only looked for depending
      *** on option values from other options groups.
 
-*    configuration = mama_jama; *** (default)
+*    configuration = mama_jama; *** [default]
 *    configuration = interior_point;
      *** decides which configuration object will be used:
 	 ***   mama_jama      : standard reduced Space SQP configuration
@@ -135,7 +135,7 @@ options_group NLPSolverClientInterface {
      *** is depends on algorithms use and may use different scalings (see other options and
      *** outputed algorithm description for details).  Example values:
      *** 0.0   : The algorithm will never converge except in trivial cases.
-     *** 1e-6  : Only converge when opt_kkt_err is below this value (default).
+     *** 1e-6  : Only converge when opt_kkt_err is below this value [default].
      *** 1e+50 : (big number) Converged when any of the other tolerances are satisfied.
 
 *    feas_tol = 1e-6;  *** (default?)
@@ -143,7 +143,7 @@ options_group NLPSolverClientInterface {
      *** ||c(x)||inf.  The norm of the constraints ||c(x)||inf may be scaled (see other
      *** options and the outputed algorithm description).  Example values:
      *** 0.0   : Never converge the algorithm except in trivial cases.
-     *** 1e-6  : Only converge when feas_kkt_err is below this value (default).
+     *** 1e-6  : Only converge when feas_kkt_err is below this value [default].
      *** 1e+50 : (big number)  Converged when any of the other tolerances are satisfied.
 
 *    step_tol = 1e-2;  *** (default?)
@@ -151,12 +151,12 @@ options_group NLPSolverClientInterface {
      *** This tolerance is usually scaled by x is some way (see other output algorithm
      *** description).  Example values:
      *** 0.0   : Never converge the algorithm except in trivial cases.
-     *** 1e-2  : Only converge when the max (scaled) step size is below this value (default).
+     *** 1e-2  : Only converge when the max (scaled) step size is below this value [default].
      *** 1e+50 : (big number) Converged when any of the other tolerances are satisfied.
 
 *    journal_output_level = PRINT_NOTHING;              * No output to journal from algorithm
 *    journal_output_level = PRINT_BASIC_ALGORITHM_INFO; * O(1) information usually
-*    journal_output_level = PRINT_ALGORITHM_STEPS;      * O(iter) output to journal     (default)
+*    journal_output_level = PRINT_ALGORITHM_STEPS;      * O(iter) output to journal     [default]
 *    journal_output_level = PRINT_ACTIVE_SET;           * O(iter*nact) output to journal  
 *    journal_output_level = PRINT_VECTORS;              * O(iter*n) output to journal   (lots!)
 *    journal_output_level = PRINT_ITERATION_QUANTITIES; * O(iter*n*m) output to journal (big lots!)
@@ -173,7 +173,7 @@ options_group NLPSolverClientInterface {
      *** of information about the algorithm without generating excessive output.
      *** For the fastest possible execution you should set this to PRINT_NOTHING.
 
-*    null_space_journal_output_level = DEFAULT;                    * Set to journal_output_level 
+*    null_space_journal_output_level = DEFAULT;                    * Set to journal_output_level [default]
 *    null_space_journal_output_level = PRINT_ACTIVE_SET;           * O(iter*nact) output to journal  
 *    null_space_journal_output_level = PRINT_VECTORS;              * O(iter*(n-m)) output to journal   (lots!)
 *    null_space_journal_output_level = PRINT_ITERATION_QUANTITIES; * O(iter*(n-m)^2) output to journal (big lots!)
@@ -235,7 +235,7 @@ options_group NLPSolverClientInterface {
 options_group NLPTester {
 
 *    print_all = true;
-*    print_all = false; *** (default)
+*    print_all = false; *** [default]
      *** If true, then everything about the NLP will be printed
      *** to journal_out (i.e. the file 'MoochoJournal.out').
      *** This is useful for initial debugging but not recommended
@@ -259,11 +259,11 @@ options_group VectorSpaceTester {
 *    throw_exception = true;
 *    throw_exception = false;
 
-*    num_random_tests = 4; *** (default)
+*    num_random_tests = 4; *** [default]
 
-*    warning_tol = 1e-14; *** (default)
+*    warning_tol = 1e-14; *** [default]
 
-*    error_tol   = 1e-10; *** (default)
+*    error_tol   = 1e-10; *** [default]
 
 }
 
@@ -316,7 +316,7 @@ options_group BasisSystemFactoryStd {
 ***
 options_group DirectSparseSolverMA28 {
 
-*    estimated_fillin_ratio = 10.0; *** (default)
+*    estimated_fillin_ratio = 10.0; *** [default]
      *** (+dbl) Estimated amount of fillin ( > 1.0 ) for the
      *** the sparse LU factorization.  If this is too little
      *** then more storage will automatically be allocated
@@ -327,7 +327,7 @@ options_group DirectSparseSolverMA28 {
      ***   1.0   : No fill-in?
      ***   10.0  : LU factors have three times the number of nonzeros
 
-*    u = 0.1; *** (default)
+*    u = 0.1; *** [default]
      *** (+dbl) Control parameter (0 <= u <= 1.0) that us used
      *** to balance 
      *** Example values:
@@ -336,10 +336,10 @@ options_group DirectSparseSolverMA28 {
      ***    1.0 : Pivot for stability only
  
 *    grow = true;
-*    grow = false; *** (default)
+*    grow = false; *** [default]
      *** See MA28 documentation.
 
-*    nsrch = 4; *** (default)
+*    nsrch = 4; *** [default]
      *** (+int) Number of columns that MA28 will search to find
      *** pivots to try to reduce fill-in.
      *** Example values:
@@ -348,16 +348,16 @@ options_group DirectSparseSolverMA28 {
      *** 1000  : A thousand columns are searched
 
 *    lbig = true;
-*    lbig = false; *** (default)
+*    lbig = false; *** [default]
      *** See MA28 documentation.
 
 *    print_ma28_outputs = true;
-*    print_ma28_outputs = false; *** (default)
+*    print_ma28_outputs = false; *** [default]
      *** If true, then the values of the MA28 output will
      *** be dumped to the output stream
      *** (if journal_output_level >= PRINT_ALGORITHM_STEPS).
 
-*    output_file_name = NONE; *** (default)
+*    output_file_name = NONE; *** [default]
      *** Gives the file name that MA28 Fortran output is set to (from LP and MP).
      *** Example values:
      ***    NONE           : No output file

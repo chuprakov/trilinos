@@ -15,11 +15,11 @@ options_group NLPAlgoConfigIP {
 
 *** Variable Reduction range/null space decomposition
 
-*    max_basis_cond_change_frac = -1.0;  *** (default)
+*    max_basis_cond_change_frac = -1.0;  *** [default]
      *** (+-dbl) If < 0 then the solver will decide what value to use.
      *** Otherwise this is the (see printed algorithm description) above
      *** which a new basis will be selected.  Example values:
-     ***    -1 : Allow solver to decide (default) 
+     ***    -1 : Allow solver to decide [default] 
      ***     0 : Switch to a new basis every iteration (not a good idea)
      ***   100 : Seitch to a new basis when change is more that 100?
      *** 1e+50 : (big number) Never switch to a new basis.
@@ -27,29 +27,29 @@ options_group NLPAlgoConfigIP {
 *** Reduced Hessian Approximations
 
 *    exact_reduced_hessian = true; *** Use NLP Hessian info if available
-*    exact_reduced_hessian = false; *** Use quasi_newton (default)
+*    exact_reduced_hessian = false; *** Use quasi_newton [default]
      *** If true and if the NLP supports second order information
      *** (hessian of the lagrangian HL) then the exact reduced hessian
      *** rHL = Z'*HL*Z will be computed at each iteration.
 
-*    quasi_newton = AUTO;   *** Let solver decide dynamically (default)
+*    quasi_newton = AUTO;   *** Let solver decide dynamically [default]
 *    quasi_newton = BFGS;   *** Dense BFGS
 *    quasi_newton = LBFGS;  *** Limited memory BFGS
      *** [exact_reduced_hessian == false]
      *** ToDo: Finish documentation!
 
-*    max_dof_quasi_newton_dense = -1; *** (default)
+*    max_dof_quasi_newton_dense = -1; *** [default]
      *** [quasi_newton == AUTO] (+-int)  This option is used to
      *** determine when the algorithm will switch from quasi_newton=LBFGS
      *** to quasi_newton=BFGS and from range_space_matrix=ORTHOGONAL
      *** to range_space_matrix=COORDINATE.  Example values:
-     ***  -1 : (< 0) Let the solver decide dynamically (default)
+     ***  -1 : (< 0) Let the solver decide dynamically [default]
      ***   0 : Always use limited memory LBFGS and COORDINATE.
      *** 500 : Use LBFG when n-r >= 500 and dense BFGS when n-m < 500
      ***       Use COORDINATE when (n-m)*r >= 500 and ORTHOGONAL when
      ***       (n-r)*r <= 500.
 
-*    num_lbfgs_updates_stored   = -1; *** (default)
+*    num_lbfgs_updates_stored   = -1; *** [default]
      *** [quasi_newton == L*BFGS] (+-int) If < 0 then let solver decide
      *** otherwise this is the maximum number of update vectors stored
      *** for limite memory LBFGS.
@@ -61,7 +61,7 @@ options_group NLPAlgoConfigIP {
 
 *** Line search methods
 
-*    line_search_method = AUTO;               *** Let the solver decide dynamically (default)
+*    line_search_method = AUTO;               *** Let the solver decide dynamically [default]
 *    line_search_method = NONE;               *** Take full steps at every iteration
 *    line_search_method = DIRECT;             *** Use standard Armijo backtracking
 *    line_search_method = FILTER;              *** Use the Filter line search method
@@ -117,12 +117,12 @@ options_group CalcFiniteDiffProd {
 *    fd_method_order = FD_ORDER_TWO_AUTO;     *** Uses FD_ORDER_TWO_CENTRAL or FD_ORDER_TWO
 *    fd_method_order = FD_ORDER_FOUR;         *** Use O(eps^4) one sided finite differences
 *    fd_method_order = FD_ORDER_FOUR_CENTRAL; *** Use O(eps^4) two sided central finite differences
-*    fd_method_order = FD_ORDER_FOUR_AUTO;    *** (default) Uses FD_ORDER_FOUR_CENTRAL or FD_ORDER_FOUR
+*    fd_method_order = FD_ORDER_FOUR_AUTO;    *** [default] Uses FD_ORDER_FOUR_CENTRAL or FD_ORDER_FOUR
      *** Selects the finite differencing method to use.  Several different
      *** methods of different orders are available.  For more accuracy use a higher order
      *** method, for faster execution time use a lower order method.
 
-*    fd_step_select = FD_STEP_ABSOLUTE; *** (default) Use absolute step size fd_step_size
+*    fd_step_select = FD_STEP_ABSOLUTE; *** [default] Use absolute step size fd_step_size
 *    fd_step_select = FD_STEP_RELATIVE; *** Use relative step size fd_step_size * ||x||inf
      *** Determines how the actual finite difference step size that is used is selected.
      ***    FD_STEP_ABSOLUTE : The actual step size used is taken from fd_step_size or
@@ -135,7 +135,7 @@ options_group CalcFiniteDiffProd {
      ***                       will not always result in accurate gradients and the user
      ***                       may have to play with fd_step_size some.
 
-*    fd_step_size = -1.0; *** (default) Let the implementation decide
+*    fd_step_size = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use.  If fd_step_select=FD_STEP_ABSOLUTE
      *** then this is the absolute step size that is used.  If fd_step_select=FD_STEP_RELATIVE
      *** the actual step size used in fd_step_size * ||x||inf.  Some common values are:
@@ -144,7 +144,7 @@ options_group CalcFiniteDiffProd {
      ***   1e-5    : Optimal step size for FD_ORDER_TWOx for IEEE double and perfect scaling?
      ***   1e-3    : Optimal step size for FD_ORDER_FOURx for IEEE double and perfect scaling?
 
-*    fd_step_size_min = -1.0; *** (default) Let the implementation decide.
+*    fd_step_size_min = -1.0; *** [default] Let the implementation decide.
      *** Determines the minimum step size that will be taken to compute the finite differences.
      *** This option is used to forbid the computation of a finite difference with a very small
      *** step size as required by the variable bounds.  Computing finite difference derivatives
@@ -152,19 +152,19 @@ options_group CalcFiniteDiffProd {
      *** fd_step_size_min < 0.0, then the implementation will pick a default value that is
      *** smaller than the default value for fd_step_size.
 
-*    fd_step_size_f = -1.0; *** (default) Let the implementation decide
+*    fd_step_size_f = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use for the objective function
      *** f(x).  If fd_step_size_f < 0.0, then the selected value for fd_step_size will be
      *** used (see the options fd_step_size and fd_step_select).  This option allows
      *** fine-tunning of the finite difference computations.
 
-*    fd_step_size_c = -1.0; *** (default) Let the implementation decide
+*    fd_step_size_c = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use for the equality constraints
      *** c(x).  If fd_step_size_c < 0.0, then the selected value for fd_step_size will be
      *** used (see the options fd_step_size and fd_step_select).  This option allows
      *** fine-tunning of the finite difference computations.
 
-*    fd_step_size_h = -1.0; *** (default) Let the implementation decide
+*    fd_step_size_h = -1.0; *** [default] Let the implementation decide
      *** Determines what finite difference step size to use for the inequality constraints
      *** h(x).  If fd_step_size_h < 0.0, then the selected value for fd_step_size will be
      *** used (see the options fd_step_size and fd_step_select).  This option allows
@@ -211,11 +211,11 @@ options_group CheckSkipBFGSUpdateStd {
 ***
 options_group BFGSUpdate {
 
-*    rescale_init_identity = true;  *** (default)
+*    rescale_init_identity = true;  *** [default]
 *    rescale_init_identity = false;
      *** If true, then rescale the initial identity matrix at 2nd iteration
 
-*    use_dampening = true;  *** (default)
+*    use_dampening = true;  *** [default]
 *    use_dampening = false;
      *** Use dampened BFGS update
 
@@ -237,7 +237,7 @@ options_group UpdateReducedSigma {
 *   update_method = always_explicit;
 *	update_method = BFGS_primal;
 *	update_method = BFGS_dual_no_correction;
-*	update_method = BFGS_dual_explicit_correction; *** (default)
+*	update_method = BFGS_dual_explicit_correction; *** [default]
 *	update_method = BFGS_dual_scaling_correction;
 	*** These options determine exactly how the reduced sigma
 	*** term will be updated. 
@@ -263,22 +263,22 @@ options_group CheckConvergenceStd {
 
 *    scale_opt_error_by   = SCALE_BY_NORM_2_X;
 *    scale_opt_error_by   = SCALE_BY_NORM_INF_X;
-*    scale_opt_error_by   = SCALE_BY_ONE;        *** (default)
+*    scale_opt_error_by   = SCALE_BY_ONE;        *** [default]
 
 *    scale_feas_error_by   = SCALE_BY_NORM_2_X;
 *    scale_feas_error_by   = SCALE_BY_NORM_INF_X;
-*    scale_feas_error_by   = SCALE_BY_ONE;        *** (default)
+*    scale_feas_error_by   = SCALE_BY_ONE;        *** [default]
 
 *    scale_comp_error_by   = SCALE_BY_NORM_2_X;
 *    scale_comp_error_by   = SCALE_BY_NORM_INF_X;
-*    scale_comp_error_by   = SCALE_BY_ONE;        *** (default)
+*    scale_comp_error_by   = SCALE_BY_ONE;        *** [default]
 
      *** Determines what all of the error measures are scaled by when checking convergence
      *** SCALE_BY_NORM_2_X   : Scale the optimiality conditions by 1/(1+||x_k||2)
      *** SCALE_BY_NORM_INF_X : Scale the optimality conditions by 1/(1+||x_k||inf)
      *** SCALE_BY_ONE        : Scale the optimality conditions by 1
 
-*    scale_opt_error_by_Gf = true; *** (default)
+*    scale_opt_error_by_Gf = true; *** [default]
 *    scale_opt_error_by_Gf = false;
      *** Determines if the linear dependence of gradients (i.e. ||rGL_k||inf or ||GL_k||inf)
      *** is scaled by the gradient of the objective function or not.
@@ -320,7 +320,7 @@ options_group LineSearchWatchDog {
 ***
 options_group LineSearch2ndOrderCorrect {
 
-*    newton_olevel = PRINT_USE_DEFAULT;   *** O(?) output (default)
+*    newton_olevel = PRINT_USE_DEFAULT;   *** O(?) output [default]
 *    newton_olevel = PRINT_NOTHING;       *** No output
 *    newton_olevel = PRINT_SUMMARY_INFO;  *** O(max_newton_iter) output
 *    newton_olevel = PRINT_STEPS;         *** O(max_newton_iter) output
@@ -337,14 +337,14 @@ options_group LineSearch2ndOrderCorrect {
      *** PRINT_VECTORS: Print out relavant vectors as well for the feasibility Newton
      ***     iterations.
 
-*    constr_norm_threshold = 1.0; *** (default)
+*    constr_norm_threshold = 1.0; *** [default]
      *** (+dbl) Tolerance for ||c_k||inf below which a 2nd order correction step
      *** will be considered (see printed description).  Example values:
      ***    0.0: Never consider computing a correction.
      ***   1e-3: Consider a correction if and only if ||c_k||inf <= 1e-3
      ***  1e+50: (big number) Consider a correction regardless of ||c_k||inf.
 
-*    constr_incr_ratio = 10.0; *** (default)
+*    constr_incr_ratio = 10.0; *** [default]
      *** (+dbl) Tolerance for ||c_kp1||inf/(1.0+||c_k||inf) below which a 2nd order
      *** correction step will be considered (see printed description).  Example values:
      ***   0.0: Consider computing a correrction only if ||c_kp1||inf is zero.
@@ -352,7 +352,7 @@ options_group LineSearch2ndOrderCorrect {
      ***        ||c_kp1||inf/(1.0+||c_k||inf) < 10.0.
      *** 1e+50: (big number) Consider a corrrection requardless how big ||c_kp1||inf is.
 
-*    after_k_iter = 0; *** (default)
+*    after_k_iter = 0; *** [default]
      *** (+int) Number of SQP iterations before a 2nd order correction will be considered
      *** (see printed description).  Example values:
      ***        0: Consider computing a correction right away at the first iteration.
@@ -360,7 +360,7 @@ options_group LineSearch2ndOrderCorrect {
      ***   999999: (big number) Never consider a 2nd order correction.
 
 *    forced_constr_reduction = LESS_X_D;
-*    forced_constr_reduction = LESS_X; *** (default)
+*    forced_constr_reduction = LESS_X; *** [default]
      *** Determine the amount of reduction required for c(x_k+d+w).
      ***   LESS_X_D: phi(c(x_k+d+w)) < forced_reduct_ratio * phi(c(x_k+d)) is all that is required.
      ***             As long as a feasible step can be computed, only one newton
@@ -370,7 +370,7 @@ options_group LineSearch2ndOrderCorrect {
      ***             and several newton iterations.  Of course the maxinum number of
      ***             newton iterations may be exceeded before this is achieved.
 
-*    forced_reduct_ratio = 1.0; *** (default)
+*    forced_reduct_ratio = 1.0; *** [default]
      *** (+dbl) (< 1) Fraction of reduction in phi(c(x)) for required reduction.
      *** Example values:
      ***    0.0: The constraints must be fully converged and newton iterations will
@@ -378,7 +378,7 @@ options_group LineSearch2ndOrderCorrect {
      ***    0.5: Require an extra 50% of the required reduction.
      ***    1.0: Don't require any extra reduction.
 
-*    max_step_ratio = 1.0; *** (default)
+*    max_step_ratio = 1.0; *** [default]
      *** (+dbl) Maxumum ratio of ||w^p||inf/||d||inf allowed for correction step w^p before
      *** a line search along phi(c(x_k+d+b*w^p)) is performed.  The purpose of this parameter
      *** is to limit the number of line search iterations needed for each feasibility
@@ -388,7 +388,7 @@ options_group LineSearch2ndOrderCorrect {
      ***    1.0: Allow ||w^p||inf/||d||inf <= 1.0.
      ***  1e+50: (big number) Allow ||w^p||inf/||d||inf to be a big as possible.
 
-*    max_newton_iter = 3; *** (default)
+*    max_newton_iter = 3; *** [default]
      *** (+int) Limit the number of newton feasibilty iterations (with line searches)
      *** allowed.  Example values:
      ***       0: Don't allow any newton iterations (no 2nd order correction).
