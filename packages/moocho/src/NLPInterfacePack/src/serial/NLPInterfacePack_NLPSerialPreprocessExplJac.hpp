@@ -210,6 +210,24 @@ protected:
 	 * <tt>Gc_ivect</tt>, <tt>Gc_jvect</tt>, <tt>Gh_val</tt>,
 	 * <tt>Gh_ivect</tt>, <tt>Gh_jvect</tt>, <tt>*Gf</tt>, <tt>*c</tt>
 	 * or </tt>h</tt> since the these will already be resized.
+	 *
+	 * The storage format for the gradient matrices <tt>Gc</tt> and
+	 * <tt>Gh</tt> use the coordinate data structure.  For <tt>Gc</tt>,
+	 * for instance, the elements are stored as:
+	 \verbatim
+
+	 for k = 0 ... Gc_nz
+	     Gc(Gc_ivect[k],Gc_jvect[k]) == Gc_val[k]
+	 \endverbatim
+	 * and all of the other matrix entries in <tt>Gc</tt> are
+	 * implicitly zero.
+	 *
+	 * In general, it is allowed for duplicate entries 
+	 * <tt>(Gc_ivect[k],Gc_jvect[k])</tt> to exist with the
+	 * convention that the corresponding <tt>Gc_val[k]</tt>
+	 * are to be added in matrix operations.  This is a relaxed
+	 * requirement that can make things much more complicated for
+	 * the code that accesses these matrix entries.
 	 */
 	struct FirstOrderExplInfo {
 		///
