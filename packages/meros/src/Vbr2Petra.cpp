@@ -28,6 +28,14 @@
 
 #include "Aztec2Petra.h"
 #include "Vbr2Petra.h"
+#include "ml_include.h"
+
+#include "ml_common.h"
+
+#include "ml_epetra_utils.h"
+
+
+#include <unistd.h>
 #ifdef EPETRA_MPI
 #include "Epetra_MpiComm.h"
 #else
@@ -44,32 +52,32 @@ int VbrMatrix2PetraMatrix(int blk_size,
 	        Epetra_Map  **VBR_map, 
 		Epetra_Map **petra_maps) {
 
-
   int * MyGlobalBlocks, * global_bindx, *update;
   int proc_config[AZ_PROC_SIZE];
-  proc_config[AZ_node   ] = 0;
-  proc_config[AZ_N_procs] = 1;
+   proc_config[AZ_node   ] = comm->MyPID();
+   proc_config[AZ_N_procs] = comm->NumProc();
 
 #ifdef EPETRA_MPI
+  AZ_set_proc_config(proc_config, MPI_COMM_WORLD);
   AZ_set_comm(proc_config, MPI_COMM_WORLD);
 #endif
 
-  if (!Amat->has_global_indices) {
-    //create a global bindx
-    AZ_revert_to_global(proc_config, Amat, &global_bindx, &update);
-    MyGlobalBlocks = update;
-  }
-  else // Already have global ordering
-    {
-      global_bindx = Amat->bindx;
-      MyGlobalBlocks = Amat->update;
-      if (MyGlobalBlocks==0) EPETRA_CHK_ERR(-1);
-    }
+ if (!Amat->has_global_indices) {
+   //   create a global bindx
+   AZ_revert_to_global(proc_config, Amat, &global_bindx, &update);
+   MyGlobalBlocks = update;
+ }
+ else // Already have global ordering
+   {
+     global_bindx = Amat->bindx;
+     MyGlobalBlocks = Amat->update;
+     if (MyGlobalBlocks==0) EPETRA_CHK_ERR(-1);
+   }
 
   // Get matrix information
   int NumMyBlocks = 0;
 
-  NumMyBlocks = Amat->data_org[AZ_N_int_blk] + Amat->data_org[AZ_N_bord_blk];
+  NumMyBlocks = (Amat->data_org[AZ_N_int_blk] + Amat->data_org[AZ_N_bord_blk]);
 
   int * bpntr = Amat->bpntr;
   int * rpntr = Amat->rpntr;
@@ -87,19 +95,20 @@ int VbrMatrix2PetraMatrix(int blk_size,
   Brow_map = petra_maps[1];
   if (Brow_map==0) EPETRA_CHK_ERR(-2); // Ran out of memory
 
-  *VBR_map = new Epetra_Map(blk_size*NumMyBlocks, 0, *comm);
+  *VBR_map = new Epetra_Map(NumGlobalBlocks*3, NumMyBlocks*3, 0, *comm);
   if (*VBR_map==0) EPETRA_CHK_ERR(-2); // Ran out of memory
 
-  Epetra_CrsMatrix *FF = new Epetra_CrsMatrix(Copy, *F_map, 0);
-  if (FF==0) EPETRA_CHK_ERR(-3); // Ran out of memory
-  Epetra_CrsMatrix *BB = new Epetra_CrsMatrix(Copy, *Brow_map, *F_map, 0);
-  if (BB==0) EPETRA_CHK_ERR(-3); // Ran out of memory
-  Epetra_CrsMatrix *BtBt = new Epetra_CrsMatrix(Copy, *F_map, *Brow_map, 0);
-  if (BtBt==0) EPETRA_CHK_ERR(-3); // Ran out of memory
   Epetra_CrsMatrix *CC   = new Epetra_CrsMatrix(Copy, *Brow_map, 0);
   if (CC==0) EPETRA_CHK_ERR(-3); // Ran out of memory
 
+  Epetra_CrsMatrix *FF = new Epetra_CrsMatrix(Copy, *F_map, 0);
+  if (FF==0) EPETRA_CHK_ERR(-3); // Ran out of memory
 
+  Epetra_CrsMatrix *BB = new Epetra_CrsMatrix(Copy, *Brow_map, 0);
+  if (BB==0) EPETRA_CHK_ERR(-3); // Ran out of memory
+
+  Epetra_CrsMatrix *BtBt = new Epetra_CrsMatrix(Copy, *F_map, 0);
+  if (BtBt==0) EPETRA_CHK_ERR(-3); // Ran out of memory
   
   int count = 0;
   int   C_empty = 1;
@@ -107,7 +116,7 @@ int VbrMatrix2PetraMatrix(int blk_size,
     int BlockRow = MyGlobalBlocks[i];
     int NumBlockEntries = bpntr[i+1] - bpntr[i];
     int *BlockIndices = global_bindx + bpntr[i];
-    int therow, thecolumn;
+    int therow, thecolumn, globalcol;
 
     for (int ii = 0; ii < NumBlockEntries; ii++) {
     for (int jj=0; jj < blk_size; jj++) {
@@ -120,18 +129,14 @@ int VbrMatrix2PetraMatrix(int blk_size,
 	    C_empty = 0;
 	    therow = BlockRow;
 	    thecolumn = *BlockIndices;
-	    int ierr = CC->InsertGlobalValues(therow, 1, &(val[count]),
-					      &thecolumn);
-
+     int ierr = CC->InsertGlobalValues(therow, 1, &(val[count]), &thecolumn);
 	  }
 	  else {
 	    /* Bt block */
 
 	    therow = (blk_size-1)*(BlockRow)+kk;
 	    thecolumn = *BlockIndices;
-                        
-	    int ierr = BtBt->InsertGlobalValues(therow, 1, &(val[count]),
-					      &thecolumn);
+	    int ierr = BtBt->InsertGlobalValues(therow, 1, &(val[count]), &thecolumn);
 	  }
 	}
 	else {
@@ -139,19 +144,14 @@ int VbrMatrix2PetraMatrix(int blk_size,
 	    /* B block */
 
 	    thecolumn = (blk_size-1)*(*BlockIndices)+jj;
-	    int ierr = BB->InsertGlobalValues(BlockRow, 1, &(val[count]),
-					      &thecolumn);
-
+	    int ierr = BB->InsertGlobalValues(BlockRow, 1, &(val[count]), &thecolumn);
 	  }
 	  else {
 	    /* F block */
 
 	    therow = (blk_size-1)*(BlockRow)+kk;
 	    thecolumn = (blk_size-1)*(*BlockIndices)+jj;
-	    int ierr = FF->InsertGlobalValues(therow, 1, &(val[count]),
-					      &thecolumn);
-
-
+	    int ierr = FF->InsertGlobalValues(therow, 1, &(val[count]), &thecolumn);
 	  }
 	}
       }
@@ -162,23 +162,23 @@ int VbrMatrix2PetraMatrix(int blk_size,
     }
   }
 
-  int ierr=BB->TransformToLocal(F_map, Brow_map);
+  int ierr=BB->FillComplete(*F_map, *Brow_map);
   if (ierr!=0) {
     cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
     EPETRA_CHK_ERR(ierr);
   }
-  ierr=FF->TransformToLocal();    
+  ierr=FF->FillComplete();    
   if (ierr!=0) {
     cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
     EPETRA_CHK_ERR(ierr);
   }
-  ierr=BtBt->TransformToLocal( Brow_map, F_map);
+    ierr=BtBt->FillComplete(*Brow_map, *F_map);
   if (ierr!=0) {
     cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
     EPETRA_CHK_ERR(ierr);
   }
   if (!C_empty) {
-    ierr=CC->TransformToLocal();    
+    ierr=CC->FillComplete();        
     if (ierr!=0) {
       cerr <<"Error in Epetra_VbrMatrix TransformToLocal" << ierr << endl;
       EPETRA_CHK_ERR(ierr);
@@ -188,12 +188,11 @@ int VbrMatrix2PetraMatrix(int blk_size,
     delete CC;
     CC = NULL;
   }
+
     B  = BB;
     F  = FF; 
     Bt = BtBt;
     C  = CC; 
-
-
 
   // RPP: Can not use the OperatorRangeMap in the ctor of the "b" vector 
   // below.  In MPSalsa, we delete the VbrMatrix yet still use the vector "b".

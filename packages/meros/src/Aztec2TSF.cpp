@@ -48,6 +48,14 @@
 #include "Epetra2TSFutils.h"
 #include "Aztec2Petra.h"
 
+#include "Epetra_Vector.h" //temp!
+#include "Epetra_VbrMatrix.h"
+#include "Epetra_SerialDenseMatrix.h"
+#include "Epetra_Import.h"
+#include "Epetra_Time.h"
+#include "Epetra_FECrsMatrix.h"
+#include "Epetra_Map.h"
+
 Epetra_RowMatrix *Aztec2TSF(   AZ_MATRIX * Amat, 
 			Epetra_Comm * & junkcomm,
 			Epetra_BlockMap * & VbrMap,
@@ -89,16 +97,24 @@ TSFLinearOperator Aztec1x1VBR_2_TSF(AZ_MATRIX *Fp,
     for (j = Fp->bpntr[iblk_row]; j < Fp->bpntr[iblk_row+1]; j++) {
       jblk = Fp->bindx[j];
       if (jblk == iblk_row) {
+   //      	if(jblk=iblk_row) 
+//         	if(iblk_row == 0) //Pinned 	
+//         	val[iblk_row] = 1.0; //Pinned Fp
+//         	else
 	val[iblk_row] = Fp->val[ival];
       }
       else {
 	bindx[nz_ptr] = jblk;
+  //	if(iblk_row == 0) //Pinned
+  //	val[nz_ptr++] = 0.0; //Pinned
+  //	else
 	val[nz_ptr++] = Fp->val[ival];
       }
       ival += 1;
     }
     bindx[iblk_row+1] = bindx[iblk_row] + nz_ptr - oldnz_ptr;
   }
+
   Fpmat = AZ_matrix_create(Fp->data_org[AZ_N_internal] +
 			   Fp->data_org[AZ_N_border]);
 
@@ -107,6 +123,7 @@ TSFLinearOperator Aztec1x1VBR_2_TSF(AZ_MATRIX *Fp,
   AZ_set_MSR(Fpmat, bindx, val, Fp->data_org, 0, NULL, AZ_LOCAL);
 
   Epetra_Vector *tmpSolution = NULL, *residual = NULL;
+
   Aztec2Petra (proc_config, Fpmat, NULL, NULL, comm, *& junkmap, 
 	       Fp_row, *& tmpSolution, *& residual, junk_indices);
 
@@ -121,8 +138,90 @@ TSFLinearOperator Aztec1x1VBR_2_TSF(AZ_MATRIX *Fp,
 					    Fp_crs);
 
   return Fp_tsf;
+}
 
+TSFLinearOperator Aztec2TSFpin(TSFLinearOperator Fp_tsf, TSFLinearOperator C_tsf, Epetra_Comm *comm)
+{
+  cerr << "\n About to pin Fp";
 
+  Epetra_CrsMatrix *C_crs = PetraMatrix::getConcrete(C_tsf);
+  Epetra_CrsMatrix *Fp_crs = PetraMatrix::getConcrete(Fp_tsf);
+
+  // Pinning Stuff
+  Epetra_Vector x_ran(C_crs->RowMap());
+  Epetra_Vector y_ran(C_crs->RowMap());
+
+  x_ran.Random();
+
+  C_crs->Multiply(false, x_ran, y_ran);
+
+  cerr << "\n C multiplied";
+
+  double *before, *after;
+  int nzeros = 0;
+  int tmp;
+  int ind[x_ran.MyLength()];
+  int i;
+
+  x_ran.ExtractView(&before);
+  y_ran.ExtractView(&after);
+
+  cerr << "\n Length of x vec is: " << x_ran.MyLength(); 
+
+  for(i=0; i<x_ran.MyLength(); i++)
+    {
+      if(before[i] == after[i])
+        {
+          ind[nzeros] = i;
+          tmp = i;
+          cerr << "\n Pinning: " << ind[nzeros];
+          nzeros = nzeros + 1;
+        }
+    }
+
+  if(nzeros>1) {
+cerr << "\n WARNING! Number of pinned are: " << nzeros; 
+ exit(1);
+  }
+
+  cerr << "\n row to pin is: " << ind[nzeros-1];
+  cerr << "\n row to pin is (tmp): " << tmp;
+
+  if(nzeros == 0) return Fp_tsf;
+  else 
+    {
+      int MyRowNum = tmp; //need to get GID of this with comm!!!
+      int MyColNum = Fp_crs->NumMyCols();
+      double *val = new double[MyColNum];
+      int *ind = new int[MyColNum];
+      int NumIndices;
+
+      cerr << "\n Rownum is: " << MyRowNum << " Col num is: " << MyColNum;
+
+      Fp_crs->ExtractMyRowView(MyRowNum, NumIndices, val, ind);
+
+      cerr << "\n Extraction complete! ";
+      cerr << "\n numentries is: " << NumIndices;
+
+      for(int kkk=0; kkk<NumIndices; kkk++)
+        {
+          if(kkk==MyRowNum) val[MyRowNum] = 1.0;
+          else         val[kkk] = 0.0;
+
+          ind[kkk] = kkk;
+          cerr << "\n ind is: " << ind[kkk] << " val is: " << val[kkk]; 
+        }
+      cerr << "\n About to insert ";
+
+      //      Fp_crs->InsertMyValues(MyRowNum, MyColNum, val, ind); 
+
+      //  TSFVectorSpace pressureSpace = C_tsf.range();
+  
+      //  Fp_tsf  = EpetraCRS2TSF(pressureSpace,pressureSpace,
+      //	    Fp_crs);
+   
+  return Fp_tsf;
+    }
 }
 
 int Aztec2TSF(	AZ_MATRIX * Amat, 
@@ -140,12 +239,9 @@ int Aztec2TSF(	AZ_MATRIX * Amat,
   Epetra_Map *VbrMap;
 
   // 1) Make a series of petra matrices corresponding to blocks.
-
   VbrMatrix2PetraMatrix(blk_size, Amat, junkcomm, F_crs, B_crs, Bt, C,
                         &VbrMap, petra_maps);
   map = VbrMap;
-
-  // Build TSF vector spaces
 
   Epetra_Map *vel1 = (Epetra_Map *) &(F_crs->OperatorDomainMap());
   Epetra_Map *vel2 = (Epetra_Map *) &(F_crs->RowMatrixColMap());
@@ -229,12 +325,9 @@ int Aztec2TSF(	AZ_MATRIX * Amat,
   if (x != NULL )
     *tmpSolution =  new Epetra_Vector(View, *VbrMap, x);
 
-
-
-
-
  return 0;
 }
+
 #include "ml_epetra_utils.h"
 
 int TSF_MatrixMult(const TSFLinearOperator& B, const TSFLinearOperator& Bt,

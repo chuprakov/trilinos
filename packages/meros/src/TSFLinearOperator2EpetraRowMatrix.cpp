@@ -117,12 +117,14 @@ TSFLinearOperator2EpetraRowMatrix::TSFLinearOperator2EpetraRowMatrix(TSFLinearOp
     else return(applyoperator(X, Y)); 
   }
   int TSFLinearOperator2EpetraRowMatrix::ApplyInverse(const Epetra_MultiVector& X, Epetra_MultiVector& Y) const {
+
     if (matrix_type_ != EPETRA_INVERSE) {
       printf("%sOnly Apply() (and not ApplyInverse()) can be\n",myname);
       printf("invoked on an EPETRA_MATRIX matrix.\n");
       exit(1);
     }
-    else return(applyoperator(X, Y)); 
+    else 
+    return(applyoperator(X, Y)); 
   }
 
 
@@ -173,8 +175,8 @@ TSFLinearOperator2EpetraRowMatrix::TSFLinearOperator2EpetraRowMatrix(TSFLinearOp
   const Epetra_Map & TSFLinearOperator2EpetraRowMatrix::RowMatrixColMap() const {
                                   printf("%sRowMatrixColMap%s\n",myname,nop);   exit(1); return(*OperatorDomainMap_);}
   const Epetra_Import * TSFLinearOperator2EpetraRowMatrix::RowMatrixImporter() const {
-                                  printf("%sRowMatrixImporter%s\n",myname,nop);  exit(1); return(dummy);}
-
+    //  printf("%sRowMatrixImporter%s\n",myname,nop); //while(1) { } exit(1); return(dummy);}
+   	    return(0); }	 
 
   // The current applyoperator() is very specific to the needs of MPSalsa. In particular,
   // it is assumed that the TSF matrix that is being wrapped is a block matrix that
@@ -260,7 +262,7 @@ TSFLinearOperator2EpetraRowMatrix::TSFLinearOperator2EpetraRowMatrix(TSFLinearOp
       if (map_[i] == 1)  Data[i] = DataPressure[PressureCount++];
       else               Data[i] = DataVelocity[VelocityCount++];
     }
-  
+
     return 0;
   }
   
