@@ -1,50 +1,71 @@
 /** \mainpage AbstractLinAlgPack: Abstract interfaces to basic linear algebra.
 
-The namespace C++ <tt>AbstractLinAlgPack</tt> contains abstract interfaces to linear algebra
-vectors and matrices and allow an application to perform linear algebra operations
-with these objects without needing to know anything about their special properties.
-For example, a numerical optimization or equation solver algorithm can be written
-in such a way that it can be used with serial, parallel and other specialized types
-of linear algebra libraries and computing environments.  The code in <tt>AbstractLinAlgPack</tt>
-is logically broken up into three seperate pieces (and compiled into three separate
-libraries).
-<ol>
+The namespace C++ <tt>AbstractLinAlgPack</tt> contains abstract
+interfaces to linear algebra vectors and matrices and allow an
+application to perform linear algebra operations with these objects
+without needing to know anything about their special properties.  For
+example, a numerical optimization or equation solver algorithm can be
+written in such a way that it can be used with serial, parallel and
+other specialized types of linear algebra libraries and computing
+environments.  The code in <tt>AbstractLinAlgPack</tt> is logically
+broken up into three seperate pieces (and compiled into three separate
+libraries).  <ol>
 
 <li> Fundamental vector and matrix interfaces
-(<tt>\ref libAbstractLinAlgPack_grp "libAbstractLinAlgPack"</tt>):
-This library contains several different vector and matrix interfaces
-and includes the bare minimum support software needed for 
-default method implementations.  The primary vector
-interfaces are <tt>\ref AbstractLinAlgPack::Vector "Vector"</tt> and
-<tt>\ref AbstractLinAlgPack::VectorMutable "VectorMutable"</tt> (derived from <tt>Vector</tt>).
-These vector interfaces represent nonmutable and mutable vectors respectively.
-The basic matrix interface compatible with these vector interfaces is
+(<tt>\ref libAbstractLinAlgPackItfc_grp "libAbstractLinAlgPackItfc"</tt>):
+This library contains several
+different vector and matrix interfaces and includes the bare minimum
+support software needed for default method implementations.  The
+primary vector interfaces are <tt>\ref AbstractLinAlgPack::Vector
+"Vector"</tt> and <tt>\ref AbstractLinAlgPack::VectorMutable
+"VectorMutable"</tt> (derived from <tt>Vector</tt>).  These vector
+interfaces represent nonmutable and mutable vectors respectively.  The
+basic matrix interface compatible with these vector interfaces is
 <tt>\ref AbstractLinAlgPack::MatrixOp "MatrixOp"</tt>.
 
-This library also contains many different useful vector operations that are implemented
-using the vector interfaces <tt>Vector</tt> and <tt>VectorMutable</tt>.
-More and more useful vector operations will be added to this library as they
-are needed.  The reason that these vector operations are included in this basic
-interface library is that many of the default implementations depend on them.
+This library also contains many different useful vector operations
+that are implemented using the vector interfaces <tt>Vector</tt> and
+<tt>VectorMutable</tt>.  More and more useful vector operations will
+be added to this library as they are needed.  The reason that these
+vector operations are included in this basic interface library is that
+many of the default implementations depend on them.
 
-<li> Auxiliary subclasses and tools based on the fundamental vector and matrix interfaces
+<li> Auxiliary subclasses and tools based on the fundamental vector
+and matrix interfaces
 (<tt>\ref libAbstractLinAlgPackTools_grp "libAbstractLinAlgPackTools"</tt>):
-The classes and other functions in this
-library are not fundamental and could be recreated by any developer to meet the needs
-of the application.  However, they are included here since it is anticipated that
-they will meet the needs of many different developers.  An example of a useful
-vector subclass is <tt>\ref AbstractLinAlgPack::VectorMutableBlock "VectorMutableBlock"</tt>.
-This subclass allows a vector object to be constructed out of a set of <tt>VectorMutable</tt>
-objects and allows for great flexibility.  Some useful and flexible testing software
-is also included here that will be of great use to any developer.
+The classes and other functions in this library are not fundamental
+and could be recreated by any developer to meet the needs of the
+application.  However, they are included here since it is anticipated
+that they will meet the needs of many different developers.  An
+example of a useful vector subclass is <tt>\ref
+AbstractLinAlgPack::VectorMutableBlock "VectorMutableBlock"</tt>.
+This subclass allows a vector object to be constructed out of a set of
+<tt>VectorMutable</tt> objects and allows for great flexibility.  Some
+useful and flexible testing software is also included here that will
+be of great use to any developer.
+
+<li> Interfaces for mixed abstract and serial computaitons
+(<tt>\ref libAbstractLinAlgPackSerialItfc_grp "libAbstractLinAlgPackSerialItfc"</tt>):
+This library contains interfaces for exposing and accessing vectors
+and matrices using serial data structures.  ToDo: Finish!
+
+<li> Implementations for serial linear algebra
+(<tt>\ref libAbstractLinAlgPackSerialImpl_grp "libAbstractLinAlgPackSerialImpl"</tt>):
+This library contains several different implementations of serial
+sparse matrices and related code.
+
+<li> Interfaces and implementations of direct sparse solvers
+(<tt>\ref libAbstractLinAlgPackSerialSolvers_grp "libAbstractLinAlgPackSerialSolvers"</tt>):
+This library .. blah blah
+blah ...
 
 </ol>
 
 */
 //@{
 
-/** \defgroup libAbstractLinAlgPack_grp libAbstractLinAlgPack 
-\brief Fundamental DVector and Matrix Interfaces.
+/** \defgroup libAbstractLinAlgPackItfc_grp libAbstractLinAlgPack 
+\brief Fundamental Vector and Matrix Interfaces.
 
 There are several different levels of foundational vector and matrix interfaces
 defined here.
@@ -176,6 +197,27 @@ though tests and have several options that can change its behavior.  To facilita
 and options file the subclass <tt>\ref AbstractLinAlgPack::VectorSpaceTesterSetOptions "VectorSpaceTesterSetOptions"</tt>
 is included.  When developing new subclasses for the fundamental vector interfaces, this testing class will
 become very familiar to the developers who do the debugging.
+
+*/
+
+/** \defgroup libAbstractLinAlgPackSerialItfc_grp libAbstractLinAlgPackSerialItfc
+\brief Interfaces for mixed abstract and serial computaitons.
+
+Blah blah blah ...
+
+*/
+
+/** \defgroup libAbstractLinAlgPackSerialImpl_grp libAbstractLinAlgPackSerialImpl
+\brief Implementations for serial linear algebra.
+
+Blah blah blah ...
+
+*/
+
+/** \defgroup libAbstractLinAlgPackSerialSolvers_grp libAbstractLinAlgPackSerialSolvers
+\brief Interfaces and implementations of direct sparse solvers.
+
+Blah blah blah ...
 
 */
 
