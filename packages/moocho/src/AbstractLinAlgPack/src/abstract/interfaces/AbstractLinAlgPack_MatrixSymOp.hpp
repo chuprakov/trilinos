@@ -118,13 +118,6 @@ public:
 
 	//@}
 
-	/// Hack!
-	MatrixSymWithOp& operator=(const MatrixSymWithOp& M)
-	{
-		MatrixWithOp::operator=(M);
-		return *this;
-	}
-
 	/** Overridden from MatrixWithOp */
 	//@{
 	/// Returns <tt>this->rows()</tt>
@@ -136,6 +129,10 @@ public:
 	/// Returns <tt>this->clone_mswo()</tt>.
 	mat_ptr_t clone() const;
 	//@}
+
+	/// Calls operator=(MatrixWithOp&)
+	virtual MatrixSymWithOp& operator=(const MatrixSymWithOp& M)
+	{ static_cast<MatrixWithOp*>(this)->operator=(M); return *this; }
 
 };	// end class MatrixSymWithOp
 

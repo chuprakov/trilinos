@@ -34,6 +34,9 @@ class MatrixSymWithOpNonsingular
 {
 public:
 
+	///
+	using MatrixSymWithOp::operator=;
+
 	/** @name Public types */
 	//@{
 
@@ -107,6 +110,10 @@ public:
 	/// Returns <tt>this->clone_mswons()</tt>.
 	mat_mwons_ptr_t clone_mwons() const;
 	//@}
+
+	/// Calls operator=(MatrixWithOp&)
+	MatrixSymWithOpNonsingular& operator=(const MatrixSymWithOpNonsingular& M)
+	{ static_cast<MatrixWithOp*>(this)->operator=(M); return *this; }
 
 }; // end class MatrixSymWithOpNonsingular
 

@@ -82,6 +82,10 @@ public:
 	mat_mns_ptr_t clone_mns() const;
 	//@}
 
+	/// Calls operator=(MatrixWithOp&)
+	MatrixWithOpNonsingular& operator=(const MatrixWithOpNonsingular& M)
+	{ static_cast<MatrixWithOp*>(this)->operator=(M); return *this; }
+
 }; // end class MatrixWithOpNonsingular
 
 }	// end namespace AbstractLinAlgPack
