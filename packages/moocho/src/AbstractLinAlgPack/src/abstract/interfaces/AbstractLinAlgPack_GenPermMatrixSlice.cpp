@@ -21,6 +21,7 @@
 
 #include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
 #include "Range1D.h"
+#include "ThrowException.h"
 
 #ifdef _WINDOWS
 
@@ -147,24 +148,22 @@ void GenPermMatrixSlice::initialize(
 		const size_type *ordered_sequence = NULL;
 		if( ordered_by == GPMSIP::BY_ROW || ordered_by == GPMSIP::BY_ROW_AND_COL ) {
 			for( size_type k = 1; k < nz; ++k ) {
-				if( row_i[k-1] >= row_i[k] ) {
-					omsg
-						<< "row_i[" << k-1 << "] = " << row_i[k-1]
-						<< " >= row_i[" << k << "] = " << row_i[k]
-						<< "\nThis is not sorted by row!";
-					throw std::invalid_argument( omsg.str() );
-				}
+				THROW_EXCEPTION(
+					row_i[k-1] >= row_i[k], std::invalid_argument
+					,"GenPermMatrixSlice::initialize(...) : Error: "
+					"row_i[" << k-1 << "] = " << row_i[k-1]
+					<< " >= row_i[" << k << "] = " << row_i[k]
+					<< "\nThis is not sorted by row!" );
 			}
 		}
 		if( ordered_by == GPMSIP::BY_COL || ordered_by == GPMSIP::BY_ROW_AND_COL ) {
 			for( size_type k = 1; k < nz; ++k ) {
-				if( col_j[k-1] >= col_j[k] ) {
-					omsg
-						<< "col_j[" << k-1 << "] = " << col_j[k-1]
-						<< " >= col_j[" << k << "] = " << col_j[k]
-						<< "\nThis is not sorted by column!";
-					throw std::invalid_argument( omsg.str() );
-				}
+				THROW_EXCEPTION(
+					col_j[k-1] >= col_j[k], std::invalid_argument
+					,"GenPermMatrixSlice::initialize(...) : Error: "
+					"col_j[" << k-1 << "] = " << col_j[k-1]
+					<< " >= col_j[" << k << "] = " << col_j[k]
+					<< "\nThis is not sorted by column!" );
 			}
 		}
 	}
@@ -192,10 +191,10 @@ void GenPermMatrixSlice::initialize_and_sort(
 	)
 {
 	namespace GPMSIP = GenPermMatrixSliceIteratorPack;
-	if( ordered_by == GPMSIP::BY_ROW_AND_COL )
-		throw std::invalid_argument(
-			"GenPermMatrixSlice::initialize_and_sort(...) : Error, "
-			"ordered_by == GPMSIP::BY_ROW_AND_COL, we can not sort by row and column!" );
+	THROW_EXCEPTION(
+		ordered_by == GPMSIP::BY_ROW_AND_COL, std::invalid_argument
+		,"GenPermMatrixSlice::initialize_and_sort(...) : Error, "
+		"ordered_by == GPMSIP::BY_ROW_AND_COL, we can not sort by row and column!" );
 	if( test_setup ) {
 		std::ostringstream omsg;
 		omsg << "\nGenPermMatrixSlice::initialize_and_sort(...) : Error:\n";
@@ -286,22 +285,26 @@ const GenPermMatrixSlice GenPermMatrixSlice::create_submatrix(
 	validate_not_identity();
 
 	// Validate the input
-	if( ordered_by == GPMSIP::BY_ROW_AND_COL )
-		throw std::invalid_argument(
-			"GenPermMatrixSlice::initialize_and_sort(...) : Error, "
-			"ordered_by == GPMSIP::BY_ROW_AND_COL, we can not sort by row and column!" );
-	if( rng.full_range() )
-		throw std::logic_error( "GenPermMatrixSlice::create_submatrix(...) : Error, "
-			"The range argument can not be rng.full_range() == true" );
-	if( ordered_by == GPMSIP::BY_ROW && rng.ubound() > rows() )
-		throw std::logic_error( "GenPermMatrixSlice::create_submatrix(...) : Error, "
-			"rng.ubound() can not be larger than this->rows()" );
-	if( ordered_by == GPMSIP::BY_COL && rng.ubound() > cols() )
-		throw std::logic_error( "GenPermMatrixSlice::create_submatrix(...) : Error, "
-			"rng.ubound() can not be larger than this->cols()" );
-	if( ordered_by == GPMSIP::UNORDERED )
-		throw std::logic_error( "GenPermMatrixSlice::create_submatrix(...) : Error, "
-			"You can have ordered_by == GPMSIP::UNORDERED" );
+	THROW_EXCEPTION(
+		ordered_by == GPMSIP::BY_ROW_AND_COL, std::invalid_argument
+		,"GenPermMatrixSlice::initialize_and_sort(...) : Error, "
+		"ordered_by == GPMSIP::BY_ROW_AND_COL, we can not sort by row and column!" );
+	THROW_EXCEPTION(
+		rng.full_range(), std::logic_error,
+		"GenPermMatrixSlice::create_submatrix(...) : Error, "
+		"The range argument can not be rng.full_range() == true" );
+	THROW_EXCEPTION(
+		ordered_by == GPMSIP::BY_ROW && rng.ubound() > rows(), std::logic_error
+		,"GenPermMatrixSlice::create_submatrix(...) : Error, "
+		"rng.ubound() can not be larger than this->rows()" );
+	THROW_EXCEPTION(
+		ordered_by == GPMSIP::BY_COL && rng.ubound() > cols(), std::logic_error
+		,"GenPermMatrixSlice::create_submatrix(...) : Error, "
+		"rng.ubound() can not be larger than this->cols()" );
+	THROW_EXCEPTION(
+		ordered_by == GPMSIP::UNORDERED, std::logic_error
+		,"GenPermMatrixSlice::create_submatrix(...) : Error, "
+		"You can have ordered_by == GPMSIP::UNORDERED" );
 
 	// Find the upper and lower k for row[k], col[k] indices
 	size_type
@@ -317,19 +320,15 @@ const GenPermMatrixSlice GenPermMatrixSlice::create_submatrix(
 		case GPMSIP::BY_ROW:
 		case GPMSIP::BY_COL:
 		{
-			if( this->ordered_by() != GPMSIP::BY_ROW_AND_COL
-				&& ( nz() > 1 && ordered_by != this->ordered_by() ) )
-			{
-				std::ostringstream omsg;
-				omsg
-					<< "GenPermMatrixSlice::create_submatrix(...) : Error, "
-					<< "nz = " << nz() << " > 1 and "
-					<< "ordered_by = " << ordered_by_str(ordered_by)
-					<< " != this->ordered_by() = "
-					<< ordered_by_str(this->ordered_by())
-					;
-				throw std::logic_error( omsg.str() );
-			}
+			THROW_EXCEPTION(
+				this->ordered_by() != GPMSIP::BY_ROW_AND_COL
+				&& ( nz() > 1 && ordered_by != this->ordered_by() )
+				,std::logic_error
+				,"GenPermMatrixSlice::create_submatrix(...) : Error, "
+				<< "nz = " << nz() << " > 1 and "
+				<< "ordered_by = " << ordered_by_str(ordered_by)
+				<< " != this->ordered_by() = "
+				<< ordered_by_str(this->ordered_by()) );
 			// Search the rows or the columns.
 			const size_type
 				*search_k = NULL;
@@ -412,44 +411,38 @@ void GenPermMatrixSlice::validate_input_data(
 {
 	namespace GPMSIP = GenPermMatrixSliceIteratorPack;
 
-	if( nz > rows * cols ) {
-		omsg
-			<< "nz = " << nz << " can not be greater than rows * cols = "
-			<< rows << " * " << cols << " = " << rows * cols;
-		throw std::invalid_argument( omsg.str() );
-	}
-
+	THROW_EXCEPTION(
+		nz > rows * cols, std::invalid_argument
+		,omsg.str() << "nz = " << nz << " can not be greater than rows * cols = "
+		<< rows << " * " << cols << " = " << rows * cols );
+	
 	// First see if everything is in range.
-	{for( size_type k = 0; k < nz; ++k ) {
-		if( row_i[k] + row_off < 1 || rows < row_i[k] + row_off ) {
-			omsg
-				<< "row_i[" << k << "] + row_off = " << row_i[k] << " + " << row_off
-				<< " = " << (row_i[k] + row_off)
-				<< " is out of range [1,rows] = [1," << rows << "]";
-			throw std::invalid_argument( omsg.str() );
-		}
-		if( col_j[k] + col_off < 1 || cols < col_j[k] + col_off ) {
-			omsg
-				<< "col_j[" << k << "] + col_off = " << col_j[k] << " + " << col_off
-				<< " = " << (col_j[k] + col_off)
-				<< " is out of range [1,cols] = [1," << cols << "]";
-			throw std::invalid_argument( omsg.str() );
-		}
-	}}
-
+	for( size_type k = 0; k < nz; ++k ) {
+		THROW_EXCEPTION(
+			row_i[k] + row_off < 1 || rows < row_i[k] + row_off, std::invalid_argument
+			,omsg.str() << "row_i[" << k << "] + row_off = " << row_i[k] << " + " << row_off
+			<< " = " << (row_i[k] + row_off)
+			<< " is out of range [1,rows] = [1," << rows << "]" );
+		THROW_EXCEPTION(
+			col_j[k] + col_off < 1 || cols < col_j[k] + col_off, std::invalid_argument
+			,omsg.str() << "col_j[" << k << "] + col_off = " << col_j[k] << " + " << col_off
+			<< " = " << (col_j[k] + col_off)
+			<< " is out of range [1,cols] = [1," << cols << "]" );
+	}
+	
 	// ToDo: Technically, we need to validate that the nonzero elements row_i[k], col_j[k] are
 	// unique but this is much harder to do!
-
+	
 }
 
 // private
 
 void GenPermMatrixSlice::validate_not_identity() const
 {
-	if(is_identity())
-		throw std::logic_error(
-			"GenPermMatrixSlice::validate_not_identity() : "
-			"Error, this->is_identity() is true" );
+	THROW_EXCEPTION(
+		is_identity(), std::logic_error
+		,"GenPermMatrixSlice::validate_not_identity() : "
+		"Error, this->is_identity() is true" );
 }
 
 }	// end namespace AbstractLinAlgPack

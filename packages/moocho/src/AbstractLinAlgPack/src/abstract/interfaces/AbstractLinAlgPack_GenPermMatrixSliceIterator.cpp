@@ -16,11 +16,13 @@
 #include <string>
 
 #include "AbstractLinAlgPack/include/GenPermMatrixSliceIterator.h"
+#include "ThrowException.h"
 
 void AbstractLinAlgPack::GenPermMatrixSliceIteratorPack::GPMS_row_col_iterator_assert_not_null(
 	const void* p)
 {
-	if( !p )
-		throw std::logic_error( "GenPermMatrixSliceIteratorPack::row_col_iterator<T>, Error "
-			"row_i can not be NULL" );
+	THROW_EXCEPTION(
+		!p, std::logic_error
+		,"GenPermMatrixSliceIteratorPack::row_col_iterator<T>, Error "
+		"row_i can not be NULL" );
 }
