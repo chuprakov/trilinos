@@ -13,6 +13,7 @@
 #include "GeneralIterationPack/include/print_algorithm_step.h"
 #include "ConstrainedOptimizationPack/include/VectorWithNorms.h"
 #include "NLPInterfacePack/include/NLPReduced.h"
+#include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "SparseLinAlgPack/include/MatrixWithOp.h"
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
@@ -109,7 +110,8 @@ bool ReducedSpaceSQPPack::EvalNewPointStd_Step::do_step(Algorithm& _algo
 		}
 
 		const bool result = deriv_tester().finite_diff_check(
-			  &nlp, s.Gc().get_k(0), s.Gf().get_k(0)(), x()
+			  &nlp, x(), &nlp.xl(), &nlp.xu(), algo.algo_cntr().max_var_bounds_viol()
+			, &s.Gc().get_k(0), &s.Gf().get_k(0)()
 			, olevel >= PRINT_VECTORS
 			, ( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : 0 );
 		if( !result ) {
