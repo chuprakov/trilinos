@@ -12,6 +12,7 @@
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
+
 #ifndef ABSTRACT_LINALG_PACK_MATRIX_WITH_OP_NONSINGULAR_H
 #define ABSTRACT_LINALG_PACK_MATRIX_WITH_OP_NONSINGULAR_H
 
