@@ -28,6 +28,9 @@
 #include "ConstrainedOptimizationPack/include/SymLBFGSMatrixSubclass.h"				// rHL
 #include "ConstrainedOptimizationPack/include/SymMatrixSubclass.h"					// rHL
 
+#include "NLPInterfacePack/test/NLPFirstDerivativesTester.h"
+#include "NLPInterfacePack/test/NLPFirstDerivativesTesterSetOptions.h"
+
 #include "NLPInterfacePack/include/NLPReduced.h"
 #include "SparseSolverPack/include/COOBasisSystem.h"
 #include "SparseSolverPack/include/MA28SparseCOOSolverCreator.h"
@@ -433,7 +436,28 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		// This default algorithm is for NLPs with no variable bounds.
 
 		// (1) EvalNewPoint
-		algo->insert_step( ++step_num, EvalNewPoint_name, new EvalNewPointStd_Step );
+		{
+			typedef NLPInterfacePack::TestingPack::NLPFirstDerivativesTester
+				NLPFirstDerivativesTester;
+			typedef NLPInterfacePack::TestingPack::NLPFirstDerivativesTesterSetOptions
+				NLPFirstDerivativesTesterSetOptions;
+			typedef rcp::ref_count_ptr<NLPFirstDerivativesTester>
+				nonconst_deriv_tester_ptr_t;
+			typedef EvalNewPointStd_Step::deriv_tester_ptr_t
+				deriv_tester_ptr_t;
+			
+			nonconst_deriv_tester_ptr_t
+				deriv_tester = new NLPFirstDerivativesTester();
+
+			NLPFirstDerivativesTesterSetOptions options_setter(deriv_tester.get());
+			options_setter.set_options(*options_);			
+
+			algo->insert_step( ++step_num, EvalNewPoint_name
+				, new EvalNewPointStd_Step(
+					rcp::rcp_const_cast<const NLPFirstDerivativesTester>(deriv_tester)
+					)
+				);
+		}
 
 		// (2) ReducedGradient
 		algo->insert_step( ++step_num, ReducedGradient_name, new ReducedGradientStd_Step );

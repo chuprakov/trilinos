@@ -17,7 +17,6 @@ namespace SparseLinAlgPack {
   * nonzero elements it has (#nz()#).  The nonzero elements are accessed using forward
   * iterators returned from #begin()# and #end()#.  The iterator must return a type
   * with an interface compatable with the SparseCOOElementTemplateInterface specification.
-  * 
   *
   * The specifications for these template interfaces are given below:\\
   *

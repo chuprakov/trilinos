@@ -155,7 +155,7 @@ public:
 	///
 	/** Report the final solution and multipliers.
 	  *
-	  * Call this function report the final solution of the
+	  * Call this function to report the final solution of the
 	  * unknows x and the Lagrange multipliers for the
 	  * equality constriants #lambda# and the varaible bounds
 	  * #nu#.  If either of the multipliers

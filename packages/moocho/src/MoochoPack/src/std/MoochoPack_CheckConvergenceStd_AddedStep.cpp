@@ -77,7 +77,7 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 		case SCALE_BY_NORM_2_X:
 			scale_kkt_factor = 1.0 + s.x().get_k(0).norm_2();
 			break;
-		case SCALE_BY_NOMR_INF_X:
+		case SCALE_BY_NORM_INF_X:
 			scale_kkt_factor = 1.0 + s.x().get_k(0).norm_inf();
 			break;
 		default:
@@ -165,7 +165,7 @@ void CheckConvergenceStd_AddedStep::print_step( const Algorithm& algo
 		<< L << "    scale_kkt_factor = 1.0\n"
 		<< L << "else if scale_by == SCALE_BY_NORM_2_X then\n"
 		<< L << "    scale_kkt_factor = 1.0 + norm_2(x_k)\n"
-		<< L << "else if scale_by == SCALE_BY_NOMR_INF_X then\n"
+		<< L << "else if scale_by == SCALE_BY_NORM_INF_X then\n"
 		<< L << "    scale_kkt_factor = 1.0 + norm_inf(x_k)\n"
 		<< L << "else\n"
 		<< L << "norm_inf_c_k = norm(c_k,inf)\n"

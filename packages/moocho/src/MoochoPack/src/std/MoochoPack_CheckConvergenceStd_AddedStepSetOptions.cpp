@@ -47,12 +47,12 @@ void CheckConvergenceStd_AddedStepSetOptions::set_option(
 				target().scale_kkt_error_by( target_t::SCALE_BY_ONE );
 			else if( option == "SCALE_BY_NORM_2_X" )
 				target().scale_kkt_error_by( target_t::SCALE_BY_NORM_2_X );
-			else if( option == "SCALE_BY_NOMR_INF_X" )
-				target().scale_kkt_error_by( target_t::SCALE_BY_NOMR_INF_X );
+			else if( option == "SCALE_BY_NORM_INF_X" )
+				target().scale_kkt_error_by( target_t::SCALE_BY_NORM_INF_X );
 			else
 				throw std::invalid_argument( "Error, incorrect value for "
 					"\"scale_kkt_error_by\".  Only the options "
-					"SCALE_BY_ONE, SCALE_BY_NORM_2_X, and SCALE_BY_NOMR_INF_X "
+					"SCALE_BY_ONE, SCALE_BY_NORM_2_X, and SCALE_BY_NORM_INF_X "
 					"are available" );
 			break;
 		}

@@ -64,10 +64,8 @@ class DecompositionSystemCoordinateAdjoint;
 
 // Abstract QP solvers
 class QPSolverWithBounds;
-class QPSolverWithBoundsValidateInput;
 
 // Concrete QP solvers
-class QPSolverWithBoundsVE09;
 class QPSCPD;
 
 }	// end namespace ConstrainedOptimizationPack 

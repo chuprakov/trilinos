@@ -4,7 +4,10 @@
 #ifndef EVAL_NEW_POINT_STD_STEP_H
 #define EVAL_NEW_POINT_STD_STEP_H
 
-#include "../rSQPAlgo_StepBaseClasses.h"
+#include "ReducedSpaceSQPPack/include/rSQPAlgo_StepBaseClasses.h"
+#include "NLPInterfacePack/test/NLPFirstDerivativesTester.h"
+#include "Misc/include/StandardCompositionMacros.h"
+#include "Misc/include/StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -18,10 +21,12 @@ namespace ReducedSpaceSQPPack {
 class EvalNewPointStd_Step : public EvalNewPoint_Step {
 public:
 
-	/// set new_point == true by default.
-	EvalNewPointStd_Step()
-		: new_point_(true)
-	{}
+	///
+	typedef NLPInterfacePack::TestingPack::NLPFirstDerivativesTester
+		NLPFirstDerivativesTester;
+
+	/// «std comp» members for comparision object compatible with Gc
+	STANDARD_COMPOSITION_MEMBERS( const NLPFirstDerivativesTester, deriv_tester )
 
 	///
 	/** Call to set #newx# = #new_point# which is passed to the to the first nlp calc with is Gc.
@@ -33,9 +38,10 @@ public:
 	  * #do_step()# and therefore the effect does not presist between calls of
 	  * #do_step()#.
 	  */
-	void set_new_point(bool new_point) {
-		new_point_ = new_point;
-	}
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, new_point )
+
+	/// set new_point == true by default.
+	EvalNewPointStd_Step(const deriv_tester_ptr_t& deriv_tester = 0);
 
 	// ////////////////////
 	// Overridden
@@ -48,9 +54,6 @@ public:
 	void print_step( const Algorithm& algo, poss_type step_poss, GeneralIterationPack::EDoStepType type
 		, poss_type assoc_step_poss, std::ostream& out, const std::string& leading_str ) const;
 
-private:
-	bool		new_point_;	// flag for if a newx will be calculated for
-	
 };	// end class EvalNewPointStd_Step
 
 }	// end namespace ReducedSpaceSQPPack 

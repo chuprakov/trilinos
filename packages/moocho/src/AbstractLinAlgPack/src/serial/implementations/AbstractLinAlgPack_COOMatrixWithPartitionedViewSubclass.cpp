@@ -3,6 +3,8 @@
 
 #pragma warning(disable : 4786)	// too long class name for debugger warning
 
+#include <assert.h>
+
 #include "../include/COOMatrixWithPartitionedViewSubclass.h"
 #include "../include/SparseVectorSliceOp.h"
 #include "../include/SparseElement.h"
@@ -129,6 +131,68 @@ value_type COOMatrixWithPartitionedViewSubclass::insert_scaled_nonzeros(
 {
 	return COOM_insert_scaled_nonzeros( m().coom_view()(), trans, scaled_max_ele, row_offset
 			, col_offset, row_perm, col_perm, next_nz_in_col, D_val, D_row_i );
+}
+
+	// Overridden from MatrixConvertToSparseFortranCompatible
+
+FortranTypes::f_int
+COOMatrixWithPartitionedViewSubclass::num_nonzeros( EExtractRegion extract_region ) const
+{
+	// ToDo: Implement upper and lower triangular regions when needed!
+	assert( extract_region == EXTRACT_FULL_MATRIX );
+
+	return this->nz();	
+}
+
+void COOMatrixWithPartitionedViewSubclass::coor_extract_nonzeros(
+	  EExtractRegion extract_region
+	, const FortranTypes::f_int len_Aval
+		, FortranTypes::f_dbl_prec Aval[]
+	, const FortranTypes::f_int len_Aij
+		, FortranTypes::f_int Arow[]
+		, FortranTypes::f_int Acol[]
+		, const FortranTypes::f_int row_offset
+		, const FortranTypes::f_int col_offset
+	 ) const
+{
+	// ToDo: Implement upper and lower triangular regions when needed!
+	assert( extract_region == EXTRACT_FULL_MATRIX );
+
+
+	// Get the permuted view (Partition<> object)
+	typedef COOMatrixWithPartitionedView::partitioned_view_type::partition_type
+		part_view_t;
+	const part_view_t
+		part_view = m().coom_view()();
+
+	const FortranTypes::f_int
+		nz = part_view.nz();
+
+	// Validate the input
+	assert( len_Aval == 0 || (len_Aval == nz && Aval)			);
+	assert( len_Aij  == 0 || (len_Aij  == nz && Arow && Acol)	);
+	
+	// Get overall row and column offsets
+	const part_view_t::difference_type
+		r_off = part_view.row_offset() + row_offset,
+		c_off = part_view.col_offset() + col_offset;
+
+	// Fill the nonzeros and structure.
+	part_view_t::const_iterator
+		itr		= part_view.begin();
+	FortranTypes::f_dbl_prec
+		*l_Aval	= Aval;
+	FortranTypes::f_int
+		*l_Arow	= Arow,
+		*l_Acol	= Acol;
+	for( ; itr != part_view.end(); ++itr ) {
+		if( len_Aval )
+			*l_Aval++ = itr->value();
+		if( len_Aij ) {
+			*l_Arow++ = itr->row_i() + r_off;
+			*l_Acol++ = itr->col_j() + c_off;
+		}
+	}
 }
 
 }	// end namespace SparseLinAlgPack

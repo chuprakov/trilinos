@@ -7,6 +7,7 @@
 #include "MatrixWithOpConcreteEncap.h"
 #include "COOMatrixWithPartitionedView.h"
 #include "ConvertToSparseCompressedColumn.h"
+#include "MatrixConvertToSparseFortranCompatible.h"
 #include "COOMPartitionOut.h"
 
 namespace SparseLinAlgPack {
@@ -20,6 +21,7 @@ namespace SparseLinAlgPack {
 class COOMatrixWithPartitionedViewSubclass
 	: public MatrixWithOpConcreteEncap<COOMatrixWithPartitionedView>
 		, public ConvertToSparseCompressedColumn
+		, public MatrixConvertToSparseFortranCompatible
 {
 public:
 
@@ -124,6 +126,24 @@ public:
 		, size_type*						next_nz_in_col
 		, FortranTypes::f_dbl_prec*			D_val
 		, FortranTypes::f_int*				D_row_i			) const;
+
+	// ////////////////////////////////////////////////////////////
+	// Overridden from MatrixConvertToSparseFortranCompatible
+
+	///
+	FortranTypes::f_int num_nonzeros( EExtractRegion extract_region ) const;
+
+	///
+	void coor_extract_nonzeros(
+		  EExtractRegion extract_region
+		, const FortranTypes::f_int len_Aval
+			, FortranTypes::f_dbl_prec Aval[]
+		, const FortranTypes::f_int len_Aij
+			, FortranTypes::f_int Arow[]
+			, FortranTypes::f_int Acol[]
+			, const FortranTypes::f_int row_offset
+			, const FortranTypes::f_int col_offset
+		 ) const;
 
 };	// end class COOMatrixWithPartitionedViewSubclass
 
