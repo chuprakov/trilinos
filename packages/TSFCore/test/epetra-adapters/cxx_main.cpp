@@ -58,6 +58,23 @@ bool testRelErr(
 	return success;
 }
 
+void print_performance_stats(
+	const int        num_time_samples
+	,const double    raw_epetra_time
+	,const double    tsfcore_wrapped_time
+	,bool            verbose
+	,std::ostream    &out
+	)
+{
+	if(verbose)
+		out << "\nAverage times (out of " << num_time_samples << " samples):\n"
+			<< "  Raw Epetra              = " << (raw_epetra_time/num_time_samples) << std::endl
+			<< "  TSFCore Wrapped Epetra  = " << (tsfcore_wrapped_time/num_time_samples) << std::endl
+			<< "\nRelative performance of TSFCore wrapped verses raw Epetra:\n"
+			<< "  ( raw epetra time / tsfcore wrapped time ) = ( " << raw_epetra_time << " / " << tsfcore_wrapped_time << " ) = "
+			<< (raw_epetra_time/tsfcore_wrapped_time) << std::endl;
+}
+
 } // namespace
 
 namespace TSFCore {
@@ -69,13 +86,14 @@ namespace TSFCore {
  * different implementations of vectors and multi-vectors for serial
  * and SPMD MPI implementations.  This code is worth study to show how
  * this is done.
+ *
+ * Note that the tests performed do not prove that the Epetra adapters
+ * (or Epetra itself) perform correctly as only a few post conditions
+ * are checked.  Because of the simple nature of these computations it
+ * would be possible to put in more exactly component-wise tests if
+ * that is needed in the future.
  */
 int main_body( int argc, char* argv[] ) {
-
-	// ToDo: Restructure the test program to show head-to-head
-	// comparisons of raw Epetra and wrapped Epetra operations and
-	// give the relative performance right in the output!  Show the
-	// performance in percent to make it clear what the numbers are!
 
 	typedef double Scalar;
 
@@ -116,8 +134,8 @@ int main_body( int argc, char* argv[] ) {
 		int     local_dim         = 4;
 		int     num_mv_cols       = 4;
 		double  max_rel_err       = 1e-13;
-		double  scalar            = 1.0;
-
+		double  scalar            = 1.5;
+		double  max_flop_rate     = 2.0e8;
 		CommandLineProcessor  clp(false); // Don't throw exceptions
 		clp.setOption( "verbose", "quiet", &verbose, "Determines if any output is printed or not." );
 		clp.setOption( "dump-all", "no-dump", &dumpAll, "Determines if quantities are dumped or not." );
@@ -125,6 +143,7 @@ int main_body( int argc, char* argv[] ) {
 		clp.setOption( "num-mv-cols", &num_mv_cols, "Number columns in each multi-vector (>=4)." );
 		clp.setOption( "max-rel-err", &max_rel_err, "Maximum relative error for tests." );
 		clp.setOption( "scalar", &scalar, "A scalar used in all computations." );
+		clp.setOption( "max-flop-rate", &max_flop_rate, "Approx flop rate used for loop timing." );
 		CommandLineProcessor::EParseCommandLineReturn parse_return = clp.parse(argc,argv);
 		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFULL ) return parse_return;
 
@@ -155,7 +174,7 @@ int main_body( int argc, char* argv[] ) {
 		if(verbose)
 			out
 				<< "\n***"
-				<< "\n*** Creating two vector spaces (an Epetra-based and a non-Epetra-based)"
+				<< "\n*** (A) Creating two vector spaces (an Epetra-based and a non-Epetra-based)"
 				<< "\n***\n";
 
 		//
@@ -217,7 +236,6 @@ int main_body( int argc, char* argv[] ) {
 				<< "\nnon_epetra_vs.dim() = " << non_epetra_vs->dim()
 				<< std::endl;
 
-
 		//
 		// Create vectors and multi-vectors from each vector space
 		//
@@ -240,6 +258,12 @@ int main_body( int argc, char* argv[] ) {
 			neV2 = non_epetra_vs->createMembers(num_mv_cols);
 #endif
 
+		if(verbose)
+			out
+				<< "\n***"
+				<< "\n*** (B) Testing Epetra and non-Epetra TSFCore wrapped objects"
+				<< "\n***\n";
+
 		//
 		// Check for compatibility of the vector and Multi-vectors
 		// w.r.t. RTOps
@@ -247,11 +271,7 @@ int main_body( int argc, char* argv[] ) {
 
 		if(verbose)
 			out
-				<< "\n***"
-				<< "\n*** Testing individual vector/multi-vector RTOps"
-				<< "\n***\n";
-
-		// ToDo: Time these assignment operations and compare with raw Epetra
+				<< "\n*** (B.1) Testing individual vector/multi-vector RTOps\n";
 
 		assign( &*ev1, 0.0 );
 		assign( &*ev2, scalar );
@@ -265,8 +285,6 @@ int main_body( int argc, char* argv[] ) {
 		assign( &*neV1, 0.0 );
 		assign( &*neV2, scalar );
 #endif
-
-		// ToDo: Time these norm calculations and compare with raw Epetra
 
 		Scalar
 			ev1_nrm = norm_1(*ev1),
@@ -299,9 +317,7 @@ int main_body( int argc, char* argv[] ) {
 
 		if(verbose)
 			out
-				<< "\n***"
-				<< "\n*** Test RTOps with two or more arguments"
-				<< "\n***\n";
+				<< "\n*** (B.2) Test RTOps with two or more arguments\n";
 
 		if(verbose) out << "\nPerforming ev1 = ev2 ...\n";
 		timer.start(true);
@@ -369,47 +385,9 @@ int main_body( int argc, char* argv[] ) {
 		RefCountPtr<MultiVector<Scalar> >
 			T = eV1->domain()->createMembers(num_mv_cols);
 
-		// ToDo: Show a more direct comparison of raw Epetra and wrapped Epetra
-
 		if(verbose)
 			out
-				<< "\n***"
-				<< "\n*** Test Epetra_MultiVector::Multiply(...) using raw Epetra objects"
-				<< "\n***\n";
-
-		if(1) {
-
-			// Get constant references to Epetra_MultiVector objects in eV1 and eV2
-			const Epetra_MultiVector
-				&eeV1
-				= *dyn_cast<const EpetraMultiVector>(const_cast<const MultiVector<Scalar>&>(*eV1)).epetra_multi_vec();
-			const Epetra_MultiVector
-				&eeV2
-				= *dyn_cast<const EpetraMultiVector>(const_cast<const MultiVector<Scalar>&>(*eV2)).epetra_multi_vec();
-
-			// Get the Epetra_MultiVector object inside of T to be modified.  Note that the following is the recommended
-			// way to do this since it gives the greatest flexibility in the implementation of TSFCore::EpetraMultiVector.
-			RefCountPtr<Epetra_MultiVector>  eT;
-			RefCountPtr<const EpetraVectorSpace> eT_range, eT_domain;
-			dyn_cast<EpetraMultiVector>(*T).setUninitialized(&eT,&eT_range,&eT_domain);
-
-			if(verbose) out << "\nPerforming eeV1'*eeV2 ...\n";
-			timer.start(true);
-			eT->Multiply( 'T', 'N', 1.0, eeV1, eeV2, 0.0 );
-			timer.stop();
-			if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-
-			dyn_cast<EpetraMultiVector>(*T).initialize(eT,eT_range,eT_domain);
-
-			testRelErr("norm_1(eeV1'*eeV2)",norm_1(*T),s2_n,s2,"max_rel_err",max_rel_err,verbose,out) || (success=false);
-			
-		}
-
-		if(verbose)
-			out
-				<< "\n***"
-				<< "\n*** Test MultiVector::apply(...)"
-				<< "\n***\n";
+				<< "\n*** (B.3) Test MultiVector::apply(...)\n";
 
 		if(verbose) out << "\nPerforming eV1'*eV2 ...\n";
 		timer.start(true);
@@ -451,17 +429,15 @@ int main_body( int argc, char* argv[] ) {
 
 		if(verbose)
 			out
-				<< "\n***"
-				<< "\n*** Creating a diagonal Epetra_Operator"
-				<< "\n***\n";
+				<< "\n*** (B.4) Creating a diagonal Epetra_Operator\n";
 
 		RefCountPtr<Epetra_Operator>  epetra_op;
 
 		if(1) {
-			// Create a diagonal matrix with 0.5 on the diagonal
+			// Create a diagonal matrix with scalar on the diagonal
 			RefCountPtr<Epetra_CrsMatrix>
 				epetra_mat = rcp(new Epetra_CrsMatrix(::Copy,*epetra_map,1));
-			double values[1] = { 0.5 };
+			double values[1] = { scalar };
 			int indices[1];
 			const int IB = epetra_map->IndexBase(), offset = procRank*local_dim;
 			for( int k = 0; k < local_dim; ++k ) {
@@ -492,60 +468,26 @@ int main_body( int argc, char* argv[] ) {
 			neY = non_epetra_vs->createMembers(num_mv_cols);
 #endif
 
-		// ToDo: Show a more direct comparison of raw Epetra and wrapped Epetra
-
 		if(verbose)
 			out
-				<< "\n***"
-				<< "\n*** Test Epetra_Operator::Apply(...) using raw Epetra objects"
-				<< "\n***\n";
+				<< "\n*** (B.5) Mix and match vector and Multi-vectors with Epetra opeator\n";
 
-		if(1) {
-
-			// Get constant references to Epetra_MultiVector objects in eV1 and eV2
-			const Epetra_MultiVector
-				&eeV1
-				= *dyn_cast<const EpetraMultiVector>(const_cast<const MultiVector<Scalar>&>(*eV1)).epetra_multi_vec();
-
-			// Get the Epetra_MultiVector object inside of T to be modified.  Note that the following is the recommended
-			// way to do this since it gives the greatest flexibility in the implementation of TSFCore::EpetraMultiVector.
-			RefCountPtr<Epetra_MultiVector>  eeY;
-			RefCountPtr<const EpetraVectorSpace> eY_range, eY_domain;
-			dyn_cast<EpetraMultiVector>(*eY).setUninitialized(&eeY,&eY_range,&eY_domain);
-
-			if(verbose) out << "\nPerforming eeY = 2*eOp*eeV1 ...\n";
-			epetra_op->SetUseTranspose(false);
-			timer.start(true);
-			epetra_op->Apply( eeV1, *eeY );
-			eeY->Scale(2.0);
-			timer.stop();
-			if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-
-			dyn_cast<EpetraMultiVector>(*eY).initialize(eeY,eY_range,eY_domain);
-
-			if(verbose) out << "  norm_1(eeY) = " << norm_1(*eY) << std::endl;
-			
-		}
-		
-		if(verbose)
-			out
-				<< "\n***"
-				<< "\n*** Mix and match vector and Multi-vectors with Epetra opeator"
-				<< "\n***\n";
+		const std::string s3_n = "2*scalar^2*global_dim";
+		const double s3 = 2*scalar*scalar*global_dim;
 		
 		if(verbose) out << "\nPerforming ey = 2*Op*ev1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *ev1, &*ey, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(ey) = " << norm_1(*ey) << std::endl;
+		testRelErr("norm_1(ey)",norm_1(*ey),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming eY = 2*Op*eV1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *eV1, &*eY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(eY) = " << norm_1(*eY) << std::endl;
+		testRelErr("norm_1(eY)",norm_1(*eY),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 
@@ -554,50 +496,48 @@ int main_body( int argc, char* argv[] ) {
 		Op->apply( NOTRANS, *ev1, &*ney, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(ney) = " << norm_1(*ney) << std::endl;
+		testRelErr("norm_1(ney)",norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming neY = 2*Op*eV1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *eV1, &*neY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(neY) = " << norm_1(*neY) << std::endl;
+		testRelErr("norm_1(neY)",norm_1(*neY),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming ey = 2*Op*nev1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *nev1, &*ey, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(ey) = " << norm_1(*ey) << std::endl;
+		testRelErr("norm_1(ey)",norm_1(*ey),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming eY = 2*Op*neV1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *neV1, &*eY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(eY) = " << norm_1(*eY) << std::endl;
+		testRelErr("norm_1(eY)",norm_1(*eY),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming ney = 2*Op*nev1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *nev1, &*ney, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(ney) = " << norm_1(*ney) << std::endl;
+		testRelErr("norm_1(ney)",norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming neY = 2*Op*neV1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *neV1, &*neY, 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(neY) = " << norm_1(*neY) << std::endl;
+		testRelErr("norm_1(neY)",norm_1(*neY),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 #endif
 
 		if(verbose)
 			out
-				<< "\n***"
-				<< "\n*** Testing Multi-vector views with Epetra operator"
-				<< "\n***\n";
+				<< "\n*** (B.6) Testing Multi-vector views with Epetra operator\n";
 
 		const Range1D col_rng(1,2);
 		const int numCols = 2;
@@ -617,14 +557,14 @@ int main_body( int argc, char* argv[] ) {
 		Op->apply( NOTRANS, *eV1_v1, &*eY->subView(col_rng), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(eY) = " << norm_1(*eY->subView(col_rng)) << std::endl;
+		testRelErr("norm_1(eY_v1)",norm_1(*eY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming eY_v2 = 2*Op*eV1_v2 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *eV1_v2, &*eY->subView(numCols,cols), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(eY) = " << norm_1(*eY->subView(numCols,cols)) << std::endl;
+		testRelErr("norm_1(eY_v2)",norm_1(*eY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 
@@ -633,32 +573,230 @@ int main_body( int argc, char* argv[] ) {
 		Op->apply( NOTRANS, *eV1_v1, &*neY->subView(col_rng), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(eY) = " << norm_1(*neY->subView(col_rng)) << std::endl;
+		testRelErr("norm_1(neY_v1)",norm_1(*neY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming eY_v1 = 2*Op*neV1_v1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *neV1_v1, &*eY->subView(col_rng), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(eY) = " << norm_1(*eY->subView(col_rng)) << std::endl;
+		testRelErr("norm_1(eY_v1)",norm_1(*eY->subView(col_rng)),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming neY_v2 = 2*Op*eV1_v2 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *eV1_v2, &*neY->subView(numCols,cols), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(eY) = " << norm_1(*neY->subView(numCols,cols)) << std::endl;
+		testRelErr("norm_1(neY_v2)",norm_1(*neY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 		if(verbose) out << "\nPerforming eY_v2 = 2*Op*neV1_v2 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *neV1_v2, &*eY->subView(numCols,cols), 2.0 );
 		timer.stop();
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
-		if(verbose) out << "  norm_1(eY) = " << norm_1(*eY->subView(numCols,cols)) << std::endl;
+		testRelErr("norm_1(eY_v2)",norm_1(*eY->subView(numCols,cols)),s3_n,s3,"max_rel_err",max_rel_err,verbose,out) || (success=false);
 
 #endif
 
 #endif // EPETRA_ADAPTERS_EXCLUDE_EPETRA_OPERATOR
+
+		if(verbose)
+			out
+				<< "\n***"
+				<< "\n*** (C) Comparing the speed of TSFCore adapted Epetra objects verses raw Epetra objects"
+				<< "\n***\n";
+
+		//
+		// Setup the number of timing loops to get good timings
+		//
+		// Here we try to shoot for timing about 1 second's worth of
+		// computations and adjust the number of evaluation loops
+		// accordingly.  Let X be the approximate number of flops per
+		// loop (or per evaluation).  We then compute the number of
+		// loops as:
+		//
+		// 1.0 sec |  num CPU flops |   1 loop  |
+		// --------|----------------|-----------|
+		//         |       sec      |   X flops |
+		//
+		// This just comes out to be:
+		//
+		//   num_time_loops_X =  max_flop_rate / (X flops per loop)
+		//
+		// In this computation we ignore extra overhead that will be
+		// an issue when local_dim is small.
+		//
+
+		double raw_epetra_time, tsfcore_wrapped_time;
+		
+		if(verbose)
+			out
+				<< "\n*** (C.1) Comparing the speed of RTOp verses raw Epetra_Vector operations\n";
+
+		const double flop_adjust_factor_1 = 3.0;
+		const int num_time_loops_1 = int( max_flop_rate / ( flop_adjust_factor_1 * local_dim * num_mv_cols ) ) + 1;
+
+		if(1) {
+				
+			// Get constant references to Epetra_MultiVector objects in eV1 and eV2
+			const Epetra_MultiVector
+				&eeV2
+				= *dyn_cast<const EpetraMultiVector>(const_cast<const MultiVector<Scalar>&>(*eV2)).epetra_multi_vec();
+			
+			// Get the Epetra_MultiVector object inside of Y to be modified.  Note that the following is the recommended
+			// way to do this since it gives the greatest flexibility in the implementation of TSFCore::EpetraMultiVector.
+			RefCountPtr<Epetra_MultiVector>  eeV1;
+			RefCountPtr<const EpetraVectorSpace> eV1_range, eV1_domain;
+			dyn_cast<EpetraMultiVector>(*eV1).setUninitialized(&eeV1,&eV1_range,&eV1_domain);
+			
+			if(verbose)
+				out << "\nPerforming eeV1 = eeV2 (using raw Epetra_MultiVector::operator=(...)) " << num_time_loops_1 << " times ...\n";
+			timer.start(true);
+			for(int k = 0; k < num_time_loops_1; ++k ) {
+				*eeV1 = eeV2;
+			}
+			timer.stop();
+			raw_epetra_time = timer.totalElapsedTime();
+			if(verbose) out << "  total time = " << raw_epetra_time << " sec\n";
+			
+			dyn_cast<EpetraMultiVector>(*eV1).initialize(eeV1,eV1_range,eV1_domain);
+				
+		}
+		
+		if(verbose)
+			out << "\nPerforming eV1 = eV2 (using TSFCore::MPIMultiVectorBase::applyOp(...)) " << num_time_loops_1 << " times ...\n";
+		timer.start(true);
+		for(int k = 0; k < num_time_loops_1; ++k ) {
+			assign( &*eV1, *eV2 );
+		}
+		timer.stop();
+		tsfcore_wrapped_time = timer.totalElapsedTime();
+		if(verbose) out << "  total time = " << tsfcore_wrapped_time << " sec\n";
+		
+		print_performance_stats( num_time_loops_1, raw_epetra_time, tsfcore_wrapped_time, verbose, out );
+
+		// RAB: 2004/01/05: Note, the above relative performance is
+		// likely to be the worst of all of the others since RTOp
+		// operators are applied seperately column by column but the
+		// relative performance should go to about 1.0 when local_dim
+		// is sufficiently large!  However, because
+		// Epetra_MultiVector::Assign(...) is implemented with a bad
+		// algorithm (as of this 2004/01/05) with lots of cache misses
+		// for the wrong problem sizes, the column-by-column RTOp
+		// implementation used with the TSFCore adapters is actually
+		// much faster in some cases.  However, the extra overhead of
+		// RTOp is much worse for very very small (order 10) sizes.
+
+		if(verbose)
+			out
+				<< "\n*** (C.2) Comparing TSFCore::MPIMultiVectorBase::apply() verses raw Epetra_MultiVector::Multiply()\n";
+
+		const double flop_adjust_factor_2 = 2.0;
+		const int num_time_loops_2 = int( max_flop_rate / ( flop_adjust_factor_2* local_dim * num_mv_cols * num_mv_cols ) ) + 1;
+
+		if(1) {
+			
+			// Get constant references to Epetra_MultiVector objects in eV1 and eV2
+			const Epetra_MultiVector
+				&eeV1
+				= *dyn_cast<const EpetraMultiVector>(const_cast<const MultiVector<Scalar>&>(*eV1)).epetra_multi_vec();
+			const Epetra_MultiVector
+				&eeV2
+				= *dyn_cast<const EpetraMultiVector>(const_cast<const MultiVector<Scalar>&>(*eV2)).epetra_multi_vec();
+			
+			// Get the Epetra_MultiVector object inside of T to be modified.  Note that the following is the recommended
+			// way to do this since it gives the greatest flexibility in the implementation of TSFCore::EpetraMultiVector.
+			RefCountPtr<Epetra_MultiVector>  eT;
+			RefCountPtr<const EpetraVectorSpace> eT_range, eT_domain;
+			dyn_cast<EpetraMultiVector>(*T).setUninitialized(&eT,&eT_range,&eT_domain);
+			
+			if(verbose)
+				out << "\nPerforming eeV1'*eeV2 (using raw Epetra_MultiVector::Multiply(...)) "	<< num_time_loops_2 << " times ...\n";
+			timer.start(true);
+			for(int k = 0; k < num_time_loops_2; ++k ) {
+				eT->Multiply( 'T', 'N', 1.0, eeV1, eeV2, 0.0 );
+			}
+			timer.stop();
+			raw_epetra_time = timer.totalElapsedTime();
+			if(verbose) out << "  total time = " << raw_epetra_time << " sec\n";
+			
+			dyn_cast<EpetraMultiVector>(*T).initialize(eT,eT_range,eT_domain);
+			
+		}
+		
+		if(verbose)
+			out << "\nPerforming eV1'*eV2 (using TSFCore::MPIMultiVectorBase::apply(...)) "	<< num_time_loops_2 << " times ...\n";
+		timer.start(true);
+		for(int k = 0; k < num_time_loops_2; ++k ) {
+			eV1->apply( TRANS, *eV2, &*T );
+		}
+		timer.stop();
+		tsfcore_wrapped_time = timer.totalElapsedTime();
+		if(verbose) out << "  total time = " << tsfcore_wrapped_time << " sec\n";
+	
+		print_performance_stats( num_time_loops_2, raw_epetra_time, tsfcore_wrapped_time, verbose, out );
+		
+		// RAB: 2004/01/05: Note, even though the TSFCore adapter does
+		// not actually call Epetra_MultiVector::Multiply(...), the
+		// implementation in TSFCore::MPIMultiVectorBase::apply(...)
+		// performs almost exactly the same flops and calls dgemm(...)
+		// as well.  Herefore, except for some small overhead, the raw
+		// Epetra and the TSFCore wrapped computations should give
+		// almost identical times in almost all cases.
+
+		if(verbose)
+			out
+				<< "\n*** (C.3) Comparing TSFCore::EpetraLinearOp::apply() verses raw Epetra_Operator::apply()\n";
+
+		const double flop_adjust_factor_3 = 10.0; // lots of indirect addressing
+		const int num_time_loops_3 = int( max_flop_rate / ( flop_adjust_factor_3 * local_dim * num_mv_cols ) ) + 1;
+
+		if(1) {
+			
+			// Get constant references to Epetra_MultiVector objects in eV1 and eV2
+			const Epetra_MultiVector
+				&eeV1
+				= *dyn_cast<const EpetraMultiVector>(const_cast<const MultiVector<Scalar>&>(*eV1)).epetra_multi_vec();
+			
+			// Get the Epetra_MultiVector object inside of Y to be modified.  Note that the following is the recommended
+			// way to do this since it gives the greatest flexibility in the implementation of TSFCore::EpetraMultiVector.
+			RefCountPtr<Epetra_MultiVector>  eeY;
+			RefCountPtr<const EpetraVectorSpace> eY_range, eY_domain;
+			dyn_cast<EpetraMultiVector>(*eY).setUninitialized(&eeY,&eY_range,&eY_domain);
+			
+			if(verbose)
+				out << "\nPerforming eeY = 2*eOp*eeV1 (using raw Epetra_Operator::apply(...)) " << num_time_loops_3 << " times ...\n";
+			epetra_op->SetUseTranspose(false);
+			timer.start(true);
+			for(int k = 0; k < num_time_loops_3; ++k ) {
+				epetra_op->Apply( eeV1, *eeY );
+				eeY->Scale(2.0);
+			}
+			timer.stop();
+			raw_epetra_time = timer.totalElapsedTime();
+			if(verbose) out << "  total time = " << raw_epetra_time << " sec\n";
+			
+			dyn_cast<EpetraMultiVector>(*eY).initialize(eeY,eY_range,eY_domain);
+			
+		}
+		
+		if(verbose)
+			out << "\nPerforming eY = 2*Op*eV1 (using TSFCore::EpetraLinearOp::apply(...)) " << num_time_loops_3 << " times ...\n";
+		timer.start(true);
+		for(int k = 0; k < num_time_loops_3; ++k ) {
+			Op->apply( NOTRANS, *eV1, &*eY, 2.0 );
+		}
+		timer.stop();
+		tsfcore_wrapped_time = timer.totalElapsedTime();
+		if(verbose) out << "  total time = " << tsfcore_wrapped_time << " sec\n";
+		
+		print_performance_stats( num_time_loops_3, raw_epetra_time, tsfcore_wrapped_time, verbose, out );
+
+		// RAB: 2004/01/05: Note, the above Epetra adapter is a true
+		// adapter and simply calls Epetra_Operator::apply(...) so
+		// except for some small overhead, the raw Epetra and the
+		// TSFCore wrapped computations should give about exactly the
+		// same runtime for almost all cases.
 
 		if(verbose) {
 			if(success)
