@@ -858,7 +858,7 @@ sub _add_summary_line {
   # Read MoochoStats.out and fill this stuff in
   my $stats_fh;
   ($stats_fh = FileHandle->new("<MoochoStats.out"));
-	#|| die "Error, the file MoochoStats.out could not be opened: $!";
+# || die "Error, the file MoochoStats.out could not be opened: $!";
 #  if (!$stats_fh)
 #    {
 #	  ($stats_fh = FileHandle->new("</home/cdlaird/research/rsqpdev/rSQPppApplications/CUTErSQPpp/rSQPppStats_FailedCompile.out"))
@@ -917,7 +917,7 @@ sub _add_summary_line {
 	  die "Error, wrong value of $stat = $val from MoochoStats.out file";
 	}
   }
-  $stats_fh->close();	
+  $stats_fh->close() if defined($stats_fh);	
   # Create the array to print the summary line
   my @sline;
   $sline[$g_status_i]			= $status;

@@ -324,7 +324,7 @@ print $g_output_fh
 # Create the RSQPppVaryOptions object and initialize it
 #
 my $g_vary_options
-  = RSQPppVaryOptions->new(
+  = MoochoVaryOptions->new(
 						   "Moocho.opt"          # Options file name to create
 						   ,\@g_default_options  # Default options
 						   ,$g_vary_options_fh   # Filehandle to get options to vary
