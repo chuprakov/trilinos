@@ -19,13 +19,13 @@
 #include <stdexcept>
 
 #include "ConstrainedOptimizationPackTypes.h"
+#include "AbstractLinAlgPack/include/VectorSpace.h"
 
 namespace ConstrainedOptimizationPack {
 
 ///
-/** This class abstracts a decomposition choice for the
- * range space \a Y, and null space \a Z, matrices for a linearly
- * independent set of columns of \a Gc.
+/** This class abstracts a decomposition choice for the range space \a Y,
+ * and null space \a Z, matrices for a linearly independent set of columns of \a Gc.
  *
  * <tt>Gc = [ Gc(:,con_decomp),  Gc(:,con_undecomp) ]</tt>
  *
@@ -37,13 +37,27 @@ namespace ConstrainedOptimizationPack {
  * linearly independent equality constraints.
  *
  * The decomposition formed by subclasses must have the properties:
- * <ul>
- * <li> <tt>Gc(:,con_decomp)' * Z = 0</tt> (null space property)
- * <li> <tt>[Y , Z]</tt> is nonsingular
- * </ul>
+ \verbatim
+	 Z s.t. Gc(:,con_deomp)' * Z = 0
+	 Y s.t. [Z  Y] is nonsingular
+	 R = Gc(:,con_decomp)' * Y is nonsingular
+	 Uz = Gc(:,con_undecomp)' * Z
+	 Uy = Gc(:,con_undecomp)' * Y
+	 Vz = Gh' * Z
+	 Vy = Gh' * Y
+ \endverbatim
  *
  * The matrix factory objects returned by ??? are ment to have a lifetime that is
  * independent of \c this.
+ *
+ * The decomposition matrices \c Z, \c Y, \c R, \c Uz, \c Uy, \c Vz and \c Vy which
+ * are updated in <tt>this->update_decomp()</tt> must be completely independent from
+ * \c this and from each other and \c Gc and \c Gh that they based on.  For example,
+ * Once \c update_decomp() is called, \c this, \c Gc and \c Gh can be destroyed and
+ * the behaviors of the decomposition matrices must not be altered.  In this respect
+ * the <tt>%DecompositionSystem</tt> interface is really nothing more than a "Strategy"
+ * interface (with some state data of course) for computing range/null decompositions.
+ * This gives the client great flexibility in how the decomposition matrices are used. 
  *
  * ToDo: Finish documentation!
  */
@@ -62,15 +76,21 @@ public:
 	///
 	class InvalidMatrixType : public std::logic_error
 	{public: InvalidMatrixType(const std::string& what_arg) : std::logic_error(what_arg) {}};
+	///
+	class TestFailed : public std::runtime_error
+	{public: TestFailed(const std::string& what_arg) : std::runtime_error(what_arg) {}};
 	/// Enumeration for the amount of output to create from <tt>update_decomp()</tt>.
 	enum EOutputLevel {
-		PRINT_NONE			= 0,
-		PRINT_BASIC_INFO	= 1,
-		PRINT_ITER_VECTORS	= 2,
-		PRINT_EVERY_THING	= 3
+		PRINT_NONE          = 0,
+		PRINT_BASIC_INFO    = 1,
+		PRINT_MORE_INFO     = 2,
+		PRINT_VECTORS       = 3,
+		PRINT_EVERY_THING   = 4
 		};
 	/// Enumeration for if to run internal tests or not.
 	enum ERunTests { RUN_TESTS, NO_TESTS };
+	///
+	enum EMatRelations { MATRICES_INDEP_IMPS, MATRICES_ALLOW_DEP_IMPS };
 
 	//@}
 
@@ -83,8 +103,11 @@ public:
 	 * Postconditions:<ul>
 	 * <li> <tt>n > m</tt>
 	 * </ul>
+	 *
+	 * The default implementation returns
+	 * <tt>this->space_range()->dim() + this->space_null()->dim()</tt>.
 	 */
-	virtual size_type n() const = 0;
+	virtual size_type n() const;
 
 	///
 	/** Return the number of columns in \c Gc.
@@ -101,8 +124,11 @@ public:
 	 * Postconditions:<ul>
 	 * <li> <tt>r =< m</tt>
 	 * </ul>
+	 *
+	 * The default implementation returns
+	 * <tt>this->space_range()->dim()</tt>.
 	 */
-	virtual size_type r() const = 0;
+	virtual size_type r() const;
 
 	///
 	/** Returns the range of the decomposed equalities.
@@ -118,6 +144,31 @@ public:
 	 * or <tt>Range1D::Invalid</tt> if <tt>this->r() == this->m()<tt>
 	 */
 	virtual Range1D con_undecomp() const;
+
+	//@}
+
+	/** @name Range and null vector spaces */
+	//@{
+
+	///
+	/** Return a \c VectorSpace object for the range space.
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>return.get() != NULL</tt>
+	 * <li> <tt>return->dim() == this->r()</tt>
+	 * </ul>
+	 */
+	virtual const VectorSpace::space_ptr_t space_range() const = 0;
+
+	///
+	/** Return a \c VectorSpace object for the range space.
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>return.get() != NULL</tt>
+	 * <li> <tt>return->dim() == this->n() - this->r()</tt>
+	 * </ul>
+	 */
+	virtual const VectorSpace::space_ptr_t space_null() const = 0;
 
 	//@}
 
@@ -173,15 +224,15 @@ public:
 	 * <tt>Gc = [ Gc(:,con_decomp),  Gc(:,con_undecomp) ]</tt>
 	 *
 	 * Specifically this operation finds the matrices:
-	 *
-	 * \c Z s.t. <tt>Gc(:,con_deomp)' * Z = 0</tt><br>
-	 * \c Y s.t. <tt>[Z  Y]</tt> nonsingular<br>
-	 * <tt>R = Gc(:,con_decomp)' * Y</tt> nonsingular<br>
-	 * <tt>Uz = Gc(:,con_undecomp)' * Z</tt><br>
-	 * <tt>Uy = Gc(:,con_undecomp)' * Y</tt><br>
-	 * <tt>Vz = Gh' * Z</tt><br>
-	 * <tt>Vy = Gh' * Y</tt><br>
-	 *
+	 \verbatim
+	 Z s.t. Gc(:,con_deomp)' * Z = 0
+	 Y s.t. [Z  Y] is nonsingular
+	 R = Gc(:,con_decomp)' * Y is nonsingular
+	 Uz = Gc(:,con_undecomp)' * Z
+	 Uy = Gc(:,con_undecomp)' * Y
+	 Vz = Gh' * Z
+	 Vy = Gh' * Y
+	 \endverbatim
 	 * If there is some problem creating the decomposition then exceptions
 	 * with the base class \c std::exception may be thrown.  The meaning
 	 * of these exceptions are more associated with the subclasses
@@ -195,25 +246,24 @@ public:
 	 * Preconditions:<ul>
 	 * <li> <tt>Gc.rows() == this->n()</tt> (throw \c std::invalid_argument)
 	 * <li> <tt>Gc.cols() == this->m()</tt> (throw \c std::invalid_argument)
-	 * <li> <tt>Z != NULL</tt> (throw \c std::invalid_argument)
-	 * <li> <tt>Y != NULL</tt> (throw \c std::invalid_argument)
-	 * <li> <tt>R != NULL</tt> (throw \c std::invalid_argument)
 	 * <li> [<tt>this->m() == this->r()</tt>] <tt>Uz == NULL</tt> (throw \c std::invalid_argument)
 	 * <li> [<tt>this->m() == this->r()</tt>] <tt>Uy == NULL</tt> (throw \c std::invalid_argument)
 	 * <li> [<tt>Gh == NULL</tt>] <tt>Gh->space_cols().is_compatible(Gc.space_cols()) == true</tt> (throw \c ???)
 	 * <li> [<tt>Gh == NULL</tt>] <tt>Vz == NULL</tt> (throw \c std::invalid_argument)
 	 * <li> [<tt>Gh == NULL</tt>] <tt>Vy == NULL</tt> (throw \c std::invalid_argument)
-	 * </ul> 
+	 * <li> <tt>Z!=NULL || Y!=NULL || R!=NULL || Uz!=NULL || Uy!=NULL || Vz!=NULL | Vy!=NULL</tt>
+	 *      (throw \c std::invalid_argument)
+	 * </ul>
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>Gc(:,con_decomp())' * Z = 0</tt>
 	 * <li> <tt>[ Y  Z ]</tt> nonsingular
-	 * <li> <tt>Z.space_cols().is_compatible(Gc.space_cols()) == true)</tt>
-	 * <li> <tt>Z.cols() == this->n() - this->r()</tt>
-	 * <li> <tt>Y.space_cols().is_compatible(Gc.space_cols()) == true)</tt>
-	 * <li> <tt>Y.cols() == this->r()</tt>
-	 * <li> <tt>R->space_cols().is_compatible(*Gc.space_cols()->sub_space(con_decomp())) == true</tt>
-	 * <li> <tt>R->space_rows().is_compatible(Y->space_rows()) == true</tt>
+	 * <li> [<tt>Z != NULL</tt>] <tt>Z.space_cols().is_compatible(Gc.space_cols()) == true)</tt>
+	 * <li> [<tt>Z != NULL</tt>] <tt>Z.cols() == this->n() - this->r()</tt>
+	 * <li> [<tt>Y != NULL</tt>] <tt>Y.space_cols().is_compatible(Gc.space_cols()) == true)</tt>
+	 * <li> [<tt>Y != NULL</tt>] <tt>Y.cols() == this->r()</tt>
+	 * <li> [<tt>R != NULL</tt>] <tt>R->space_cols().is_compatible(*Gc.space_cols()->sub_space(con_decomp())) == true</tt>
+	 * <li> [<tt>R != NULL</tt>] <tt>R->space_rows().is_compatible(Y->space_rows()) == true</tt>
 	 * <li> [<tt>Uz != NULL</tt>] <tt>Uz.space_cols().is_compatible(*Gc.space_rows()->sub_space(con_undecomp())) == true</tt>
 	 * <li> [<tt>Uz != NULL</tt>] <tt>Uz.space_rows().is_compatible(Z.space_rows()) == true</tt>
 	 * <li> [<tt>Uy != NULL</tt>] <tt>Uy.space_cols().is_compatible(*Gc.space_rows()->sub_space(con_undecomp())) == true</tt>
@@ -235,7 +285,7 @@ public:
 	 *             <li> \c PRINT_BASIC_INFO : Only print basic information about
 	 *                  how the decomposition is formed.
 	 *                  Amount of output = \c O(1).
-	 *             <li> \c PRINT_ITER_VECTORS : Prints out important vectors computed
+	 *             <li> \c PRINT_VECTORS : Prints out important vectors computed
 	 *                  durring the computations (usually only durring testing).
 	 *                  This level is only useful for debugging.
 	 *                  Amount of output = \c O(n).
@@ -259,6 +309,8 @@ public:
 	 *             <li> \c NO_TEST : No tests are performed internally.  This is
 	 *                  to allow the fastest possible execution.
 	 *             </ul>
+	 *             If a test fails, then a \c TestFailed exception will be thrown with
+	 *             a helpful error message.
 	 * @param  Gc  [in] The matrix for which the range/null decomposition is defined.
 	 * @param  Gh  [in] An auxlillary matrix that will have the range/null decompositon applied to.
 	 *             It is allowed for <tt>Gh == NULL</tt>.
@@ -310,7 +362,15 @@ public:
 		,MatrixWithOp             *Uy
 		,MatrixWithOp             *Vz
 		,MatrixWithOp             *Vy
+		,EMatRelations            mat_rel = MATRICES_INDEP_IMPS
 		) const = 0;
+	
+	///
+	/** Print the sub-algorithm by which the decomposition is formed
+	 *
+	 */
+	virtual void print_update_decomp(
+		std::ostream& out, const std::string& leading_str ) const = 0;
 
 	//@}
 	
