@@ -52,7 +52,7 @@ public:
 	virtual const rSQPAlgo_Config& config() const = 0;
 
 	//@}
-
+	
 	///
 	/** Causes the algorithm to be configured.
 	 *
@@ -68,6 +68,13 @@ public:
 
 	/// Print the configured algorithm
 	virtual void print_algorithm(std::ostream& out) const = 0;
+
+private:
+
+#ifdef DOXYGEN_COMPILE // Strictly for doxygen diagrams
+	///
+	rSQPAlgo_Config    *config;
+#endif
 
 };	// end class rSQPAlgoClientInterface
 

@@ -400,7 +400,7 @@ public:
 
 	/// Scaled KKT error for optimality ||rGL||
 	RSQP_STATE_SCALAR_IQ_DECL(opt_kkt_err)
-	/// Scaled KKT error for feasibility ||c||
+	/// Scaled KKT error for feasibility ||c|| and ||hl <= h <= hu||
 	RSQP_STATE_SCALAR_IQ_DECL(feas_kkt_err)
 	/// GL:  Gradient of the Lagrangian ( n x 1 )
 	RSQP_STATE_VECTOR_IQ_DECL(GL)

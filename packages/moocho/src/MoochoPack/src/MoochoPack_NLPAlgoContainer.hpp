@@ -32,7 +32,7 @@ namespace ReducedSpaceSQPPack {
 class rSQPAlgoContainer : public rSQPAlgoClientInterface {
 public:
 
-	/** @name Constructors/initializers */
+	/** @name Constructors / initializers */
 	//@{
 
 	/// Members for <<std comp>> of the algorithm object algo.
@@ -79,7 +79,13 @@ public:
 	//@}
 
 private:
+
 	config_ptr_t			config_;
+
+#ifdef DOXYGEN_COMPILE
+	///
+	rSQPAlgoInterface       *algo_interface;
+#endif
 
 	// Assert that the object has been set up properly and throw exception if it has not
 	void assert_valid_setup() const;

@@ -20,8 +20,8 @@
 
 #include "ReducedSpaceSQPPackTypes.h"
 #include "NLPInterfacePack/include/NLP.h"
-#include "Misc/include/StandardCompositionMacros.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "StandardCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ReducedSpaceSQPPack {
 
@@ -49,11 +49,11 @@ public:
 	/** @name Constructors/initalizers */
 	//@{
 
-	/// «std comp» members for nlp
+	/// <<std comp>> members for the nlp
 	STANDARD_COMPOSITION_MEMBERS( NLP, nlp )
 
-	/// «std comp» members for track
-	STANDARD_COMPOSITION_MEMBERS( rSQPTrack, track )
+	/// <<std comp>> members for the track
+	STANDARD_COMPOSITION_MEMBERS( AlgorithmTrack, track )
 
 	///
 	/** Construct with no references set to nlp or track objects.
@@ -136,7 +136,7 @@ public:
 
 	//@}
 
-	/** @name Solve */
+	/** @name Solve the NLP*/
 	//@{
 
 	///
@@ -213,6 +213,15 @@ public:
 	virtual void print_algorithm_times( std::ostream& out ) const = 0;
 
 	//@}
+
+private:
+
+#ifdef DOXYGEN_COMPILE // Strictly for doxygen diagrams
+	///
+	NLPInterfacePack::NLP                  *nlp;
+	///
+	GeneralIterationPack::AlgorithmTrack   *track;
+#endif
 
 }; // end class rSQPSolverClientInterface
 
