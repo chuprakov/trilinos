@@ -23,15 +23,15 @@
 #include "ConstrainedOptimizationPackTypes.h"
 #include "MatrixSymAddDelUpdateableWithOpFactorized.h"
 #include "MatrixSymAddDelUpdateable.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOpFactorized.h"
-#include "SparseLinAlgPack/include/MatrixSymWithOp.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/GenPermMatrixSlice.h"
+#include "AbstractLinAlgPack/include/GenPermMatrixSlice.h"
+#include "AbstractLinAlgPack/include/SpVectorClass.h"
+#include "SparseLinAlgPack/include/MatrixSymWithOpNonsingularSerial.h"
+#include "SparseLinAlgPack/include/MatrixSymWithOpSerial.h"
+#include "SparseLinAlgPack/include/MatrixWithOpSerial.h"
 #include "LinAlgPack/include/GenMatrixClass.h"
-#include "Misc/include/StandardCompositionMacros.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
-#include "Misc/include/stpwatch.h"
+#include "StandardCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
+#include "stpwatch.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -67,16 +67,16 @@ class QP;
 
 ///
 /** Represents the QP to be solved by QPSchur {abstract}.
-  *
-  * In order to solve a QP, clients must define subclasses
-  * for this interface and the \Ref{Constraints} interface
-  * defined later.  This is where the specialized properties
-  * of the QP are exploited.  For certain types of QPs, standard
-  * implementation classes can be defined.
-  *
-  * Here the QP is of the form:
-  *
-  \begin{verbatim}
+ *
+ * In order to solve a QP, clients must define subclasses
+ * for this interface and the \c Constraints interface
+ * defined later.  This is where the specialized properties
+ * of the QP are exploited.  For certain types of QPs, standard
+ * implementation classes can be defined.
+ *
+ * Here the QP is of the form:
+ *
+ \verbatim
 
 	(1.a)	min		g'*x + 1/2*x'*G*x
 	(1.b)	s.t.	A'*x = c
@@ -90,26 +90,24 @@ class QP;
 		c <: R^m
 		A_bar <: R^(n x m_bar)
 		cl_bar, cu_bar <: R^m_bar
-
-  \end{verbatim}
-  *
-  * Above, #cl_bar <= A_bar'*x <= cu_bar# may represent variable bounds, general
-  * inequalities and equality constraints and these constraints are represented
-  * by the class \Ref{Constraints}.
-  *
-  * When solving the above QP using the schur complement QP solver we start out with
-  * a KKT system with a subset of variables initially fixed at a bound:
-  \begin{verbatim}
+ \endverbatim
+ *
+ * Above, <tt>cl_bar <= A_bar'*x <= cu_bar</tt> may represent variable bounds, general
+ * inequalities and equality constraints and these constraints are represented
+ * by the class \c Constraints.
+ *
+ * When solving the above QP using the schur complement QP solver we start out with
+ * a KKT system with a subset of variables initially fixed at a bound:
+ \verbatim
 
   [ G_RR    G_RX     A_F     0  ] [ x_R    ]   [ - g_R ]
   [ G_RX'   G_XX     A_X     I  ] [ x_X    ]   [ - g_X ]
   [ A_R'    A_X'      0      0  ]*[ lambda ] = [   c   ]
   [           I       0      0  ] [ mu_X   ]   [   b_X ]
-
-  \end{verbatim}
-  * We can simplify the above system by solving for the initially
-  * fixed variables and removing them from the initial KKT system to give:
-  \begin{verbatim}
+ \endverbatim
+ * We can simplify the above system by solving for the initially
+ * fixed variables and removing them from the initial KKT system to give:
+ \verbatim
 
   x_X = b_X
 
@@ -118,7 +116,7 @@ class QP;
   \_______________/   \________/   \__________________/
           Ko              vo                fo
 
-  mu_X = - g_X - G_RX'*x_R - G_X*b_X - A_X*lambda
+ mu_X = - g_X - G_RX'*x_R - G_X*b_X - A_X*lambda
 
   where:
   		n_X = n - n_R
@@ -131,15 +129,15 @@ class QP;
 		A_X  = Q_X'*A        <: R^(n_X x m)
 		Q_R                  <: R^(n x n_R)
 		Q_X                  <: R^(n x n_X)
-
-  \end{verbatim}
-  * This class is an interface for encapsulating this QP.  Operations are available
-  * for accessing #g#, #G#, #A#, #Ko#, #vo#, and #fo# as well as the mapping
-  * matrices #Q_R# and #Q_X# (both ordered by row). Also, operations are available
-  * for accessing data structures that describe the set of initially fixed and free
-  * variables.  See the \Ref{Constraints} interface for how to access the constraints
-  * in (1.c) and the matrix #A_bar#.
-  */
+ \endverbatim
+ * This class is an interface for encapsulating the QP.  Operations are available
+ * for accessing <tt>g</tt>, <tt>G</tt>, <tt>A</tt>, <tt>Ko</tt>, <tt>vo</tt>, and
+ * <tt>fo</tt> as well as the mapping
+ * matrices <tt>Q_R</tt> and <tt>Q_X</tt> (both ordered by row). Also, operations are available
+ * for accessing data structures that describe the set of initially fixed and free
+ * variables.  See the \c Constraints interface for how to access the constraints
+ * in (1.c) and the matrix <tt>A_bar</tt>.
+ */
 class QP {
 public:
 
@@ -173,9 +171,9 @@ public:
 	///
 	virtual const VectorSlice g() const = 0;
 	///
-	virtual const MatrixSymWithOp& G() const = 0;
+	virtual const MatrixSymWithOpSerial& G() const = 0;
 	/// If m == 0 then don't call this, it may throw an exception or worse.
-	virtual const MatrixWithOp& A() const = 0;
+	virtual const MatrixWithOpSerial& A() const = 0;
 
 	// /////////////////////////////////////
 	// Initial active set specific members
@@ -188,12 +186,12 @@ public:
 	  *
 	  * For 1 <= i <= n:
 	  *
-	\begin{verbatim}
+	\verbatim
 	             / FREE      : x(i) is initially free
 	             | LOWER     : x(i) is initially fixed at xl(i)
 	 x_init(i) = | UPPER     : x(i) is initially fixed at xu(i)
 	             \ EQUALITY  : x(i) fixed at xl(i) = xu(i) always
-	\end{verbatim}
+	\endverbatim
 	*
 	*/
 	virtual const x_init_t& x_init() const = 0;
@@ -203,11 +201,11 @@ public:
 	  *
 	  * For 1 <= i <= n:
 	  * 
-	\begin{verbatim}
+	\verbatim
 	                 / l : x(i) = x_X(l) = b_X(l) initially (1 <= l <= n_X)
 	 l_x_X_map(i) =  |
 	                 \ 0 : otherwise
-	\end{verbatim}
+	\endverbatim
 	*
 	*/
 	virtual const l_x_X_map_t& l_x_X_map() const = 0;
@@ -217,9 +215,9 @@ public:
 	  *
 	  * For 1 <= l <= n_X:
 	  * 
-	\begin{verbatim}
+	\verbatim
 	 i_x_X_map(l) = i : x(i) = x_X(l) = b_X(l) initially (1 <= i <= n)
-	\end{verbatim}
+	\endverbatim
 	*
 	*/
 	virtual const i_x_X_map_t& i_x_X_map() const = 0;
@@ -229,11 +227,11 @@ public:
 	  *
 	  * For 1 <= l <= n_X:
 	  *
-	\begin{verbatim}
+	\verbatim
 	           / xl(i_x_X_map(l))                     : if x_init(i_x_X_map(l)) == LOWER
 	 b_X(l) =  | xu(i_x_X_map(l))                     : if x_init(i_x_X_map(l)) == UPPER
 	           \ xl(i_x_X_map(l)) = xu(i_x_X_map(l))  : if x_init(i_x_X_map(l)) == EQUALITY
-	\end{verbatim}
+	\endverbatim
 	*
 	*/
 	virtual const VectorSlice b_X() const = 0;
@@ -245,7 +243,7 @@ public:
 	virtual const GenPermMatrixSlice& Q_X() const = 0;
 
 	///
-	virtual const MatrixSymWithOpFactorized& Ko() const = 0;
+	virtual const MatrixSymWithOpNonsingularSerial& Ko() const = 0;
 
 	///
 	virtual const VectorSlice fo() const = 0;
@@ -270,26 +268,25 @@ public:
 
 ///
 /** Represents the extra constraints in the QP to be satisfied
-  * by the schur complement QP solver QPSchur {abstract}.
-  *
-  * This class is only ment to be used in conjunction with the class \Ref{QP}
-  * and \Ref{QPSchur}.  Its interface is designed to be minimal with respect to
-  * the needs of the #QPSchur# solver.  However, this interface may be useful
-  * for any primal-dual QP solver.
-  *
-  * These constraints are:
-  \begin{verbatim}
+ * by the schur complement QP solver QPSchur {abstract}.
+ *
+ * This class is only ment to be used in conjunction with the class \c QP
+ * and \c QPSchur.  Its interface is designed to be minimal with respect to
+ * the needs of the <tt>QPSchur</tt> solver.  However, this interface may be useful
+ * for any primal-dual QP solver.
+ *
+ * These constraints are:
+ \verbatim
 
 	(1.c)	cl_bar <= A_bar'*x <= cu_bar
 
 	where:
 		A_bar <: R^(n x m_bar)
 		cl_bar, cu_bar <: R^m_bar
-
-  \end{verbatim}
-  *
-  * These constraints are also partitioned as:
-  \begin{verbatim}
+ \endverbatim
+ *
+ * These constraints are also partitioned as:
+ \verbatim
 
 	s.t.
 		[     xl     ]    [   I       ]       [     xu     ]
@@ -300,16 +297,16 @@ public:
 		xl, xu <: R^n, are the variable bounds for variables that have bounds (sparse)
 		A_breve <: R^(n x m_breve), is the Jacobian for the general constraints
 		cl_breve, cu_breve <: R^m_breve, are bounds for general constraints
-
-  \end{verbatim}
-  *
-  * Here #m_bar = n + m_breve#
-  *
-  * Above, some of the bounds in #xl#, #xu#, #cl_breve#, and #cu_breve# may be #-inf#
-  * or #+inf# and will therefore never be violated and never be added to the active set.
-  * Also, some of the lower and upper bounds may be equal which turns those
-  * inequality constraints into equality constraints (or fixed variables).
-  */
+ \endverbatim
+ *
+ * Here <tt>m_bar = n + m_breve</tt>
+ *
+ * Above, some of the bounds in <tt>xl</tt>, <tt>xu</tt>, <tt>cl_breve</tt>,
+ * and <tt>cu_breve</tt> may be <tt>-inf</tt> or <tt>+inf</tt> and will
+ * therefore never be violated and never be added to the active set.
+ * Also, some of the lower and upper bounds may be equal which turns those
+ * inequality constraints into equality constraints (or fixed variables).
+ */
 class Constraints {
 public:
 
@@ -317,8 +314,7 @@ public:
 	enum EPickPolicy { ANY_VIOLATED, MOST_VIOLATED };
 
 	///
-	virtual ~Constraints()
-	{}
+	virtual ~Constraints() {}
 
 	///
 	virtual size_type n() const = 0;
@@ -327,7 +323,7 @@ public:
 	virtual size_type m_breve() const = 0;
 
 	///
-	virtual const MatrixWithOp& A_bar() const = 0;
+	virtual const MatrixWithOpSerial& A_bar() const = 0;
 	
 	/// Set the policy used to pick a violated constraint.
 	virtual void pick_violated_policy( EPickPolicy pick_policy ) = 0;
@@ -336,37 +332,38 @@ public:
 
 	///
 	/** Pick a violated constraint.
-	  *
-	  * @param	x			 [in] Trial point to pick a violated constraint at.
-	  * @param	j_viol		 [out] Indice of violated constraint.  j_viol = 0 if
-	  *							 no constraint is violated by more that some tolerance.
-	  * @param	constr_val	 [out] The value if the violated constraint a_bar(j)'*x.
-	  * @param	viol_bnd_val [out] The value if the violated bound.
-	  * @param	norm_2_constr[out] The 2 norm of the violated constraint ||a_bar(j)||2
-	  * @param	bnd			 [out] Classification of the bound being violated.
-	  * @param	can_ignore	 [out] True if the constraint can be ignored if it is linearly
-	  *							 dependent.
-	  */
-	virtual void pick_violated( const VectorSlice& x, size_type* j_viol, value_type* constr_val
-		, value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
+	 *
+	 * @param	x			 [in] Trial point to pick a violated constraint at.
+	 * @param	j_viol		 [out] Indice of violated constraint.  j_viol = 0 if
+	 *							 no constraint is violated by more that some tolerance.
+	 * @param	constr_val	 [out] The value if the violated constraint a_bar(j)'*x.
+	 * @param	viol_bnd_val [out] The value if the violated bound.
+	 * @param	norm_2_constr[out] The 2 norm of the violated constraint ||a_bar(j)||2
+	 * @param	bnd			 [out] Classification of the bound being violated.
+	 * @param	can_ignore	 [out] True if the constraint can be ignored if it is linearly
+	 *							 dependent.
+	 */
+	virtual void pick_violated(
+		 const VectorSlice& x, size_type* j_viol, value_type* constr_val
+		,value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
 		) const = 0;
 
 	///
 	/** Inform to ignore the jth constraint the next time pick_violated(...) is called.
-	  */
+	 */
 	virtual void ignore( size_type j ) = 0;
 
 	///
 	/** Return the bound for a constraint.
-	  *
-	  * @param	j	[in] Indice of the constraint of the bound to obtain.
-	  * @param	bnd	[in] Which bound to obtain (UPPER or LOWER).
-	  * @return
-	  *		xl(j) [ 0 < j < n, bnd == LOWER ]\\ 
-	  *		xu(j) [ 0 < j < n, bnd == UPPER ]\\ 
-	  *		cl_breve(j - n) [ n + 1 < j < n + m_breve, bnd == LOWER ]\\ 
-	  *		cu_breve(j - n) [ n + 1 < j < n + m_breve, bnd == UPPER ]\\ 
-	  */
+	 *
+	 * @param	j	[in] Indice of the constraint of the bound to obtain.
+	 * @param	bnd	[in] Which bound to obtain (UPPER or LOWER).
+	 * @return
+	 *		xl(j) [ 0 < j < n, bnd == LOWER ]<br>
+	 *		xu(j) [ 0 < j < n, bnd == UPPER ]<br>
+	 *		cl_breve(j - n) [ n + 1 < j < n + m_breve, bnd == LOWER ]<br>
+	 *		cu_breve(j - n) [ n + 1 < j < n + m_breve, bnd == UPPER ]<br>
+	 */
 	virtual value_type get_bnd( size_type j, EBounds bnd ) const = 0;
 
 };	// end class Constraints
@@ -374,17 +371,16 @@ public:
 }	// end namespace QPSchurPack 
 
 ///
-/** Solves a Quadratic Program with a primal-dual QP method
-  * using a schur complement.
-  *
-  * See the paper "QPSchur: A Primal-Dual Active-Set Quadratic Programming
-  * Algorithm Using a Schur Complement Factorization Method" for a description
-  * of what this class does.
-  */
+/** Solves a Quadratic Program with a dual QP method using a schur complement
+ * factorization.
+ *
+ * See the paper "QPSchur: A Primal-Dual Active-Set Quadratic Programming
+ * Algorithm Using a Schur Complement Factorization Method" for a description
+ * of what this class does.
+ */
 class QPSchur {
 public:
 
-	// ////////////////////////
 	/** @name Public Types */
 	//@{
 
@@ -431,10 +427,8 @@ public:
 	/// Value for near degenerate lagrange multipliers
 	static value_type DEGENERATE_MULT;
 
-	//		end Public Types
 	//@}
 
-	// //////////////////////////////////////
 	/** @name Public Member functions */
 	//@{
 
@@ -443,52 +437,52 @@ public:
 
 	///
 	/** Set the maximum number of primal-dual QP iterations to take.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, max_iter )
 
 	///
 	/** Set the maximum wall clock runtime (in minutes).
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_real_runtime )
 
 	///
 	/** Set the feasibility tolerance for the constriants.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, feas_tol )
 
 	///
 	/** Set a looser feasibility tolerance ( > feas_tol )
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, loose_feas_tol )
 
 	///
 	/** Set the tolerence where a scaled Langrange multiplier is considered
-	  * degenerate.
-	  */
+	 * degenerate.
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, dual_infeas_tol )
 
 	///
 	/** Set the tolerence for the size of the step in the primal space that is considered
-	  * to be a near infinite step.  This is used to determine if the KKT
-	  * system is near singular.
-	  */
+	 * to be a near infinite step.  This is used to determine if the KKT
+	 * system is near singular.
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, huge_primal_step )
 
 	///
 	/** Set the tolerence for the size of the step in the dual space that is considered
-	  * to be a near infinite step.  This is used to determine if the constriants
-	  * are infeasible.
-	  */
+	 * to be a near infinite step.  This is used to determine if the constriants
+	 * are infeasible.
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, huge_dual_step )
 
 	///
 	/** <<std member comp>> members for the warning tolerance for tests.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
 
 	///
 	/** <<std member comp>> members for the error tolerance for tests.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 
 	///
@@ -557,105 +551,102 @@ public:
 
 	///
 	/** Solve a QP.
-	  *
-	  * If the initial schur complement turns out to have the wrong inertia then
-	  * the QP is nonconvex, and the exception WrongInteriaUpdateExecption will be thrown.
-	  * Otherwise, unless some other strange exception is thrown, this function
-	  * will return normally (see return).
-	  *
-	  * @param	qp	[in] The abstraction for the QP being solved
-	  * @param	num_act_change
-	  * 			[in] The number of changes to the
-	  *					active set before the primal-dual QP algorithm
-	  *					starts.
-	  * @param	ij_act_change
-	  * 			[in] Array (size num_act_change): specifying
-	  *					how to initialize the active set.  If i = -ij_act_change(s)
-	  *					> 0 then the initially fixed variable x(i) is to be
-	  *					freed.  If j = ij_act_change(s) > 0 then the constraint
-	  *					a_bar(j)'*x is to be added to the active set to the
-	  *					bound bnd(s).  The order of these changes can significantly
-	  *					effect the performance of the algorithm if these changes
-	  *					are not part of the optimal active set.  Put changes that
-	  *					you are sure about earlier in the list and those that you
-	  *					are not a sure about later.
-	  *	@param	bnd [in] Array (size num_act_change):  bnd(s) gives which bound to
-	  *					make active.  If ij_act_change(s) < 0 then this is ignored.
-	  * @param	out [out] output stream.  Iteration information is printed according
-	  *					to output_level.  If #output_level == NO_OUTPUT# then #out# may
-	  *					be #NULL#.  If #out==NULL#, then output_level is forced to #NO_OUTPUT#
-	  * @param	output_level
-	  * 			[in] Specifies the level of output (see \Ref{EOutputLevel}).
-	  *	@param	test_what
-	  *				[in] Determines if internal validation tests are performed.
-	  *					The optimality conditions for the QP are not checked
-	  *					internally, since this is something that client can
-	  *					(and should) do independently.
-	  *					RUN_TESTS : As many validation/consistency tests
-	  *						are performed internally as possible.  If a test
-	  *						fails then a TestFailed execption will be thrown.
-	  *					NO_TEST : No tests are performed internally.  This is
-	  *						to allow the fastest possible execution.
-	  * @param	x	[out] vector (size qp.n()): Solution or current iteration value
-	  * @param	mu 	[out] sparse vector (size qp.n()): Optimal lagrange multipliers for
-	  * 				bound constraints.  On output mu->is_sorted() == true.
-	  * @param	lambda
-	  * 			[out] vector (size q.m()): Optimal lagrange multipliers for
-	  *					equality constraints.
-	  * @param	lambda_breve
-	  * 			[out] sparse vector (size qp.constraints().m_breve()) for the active
-	  *					constraints in A_breve.  On output lambda_breve->is_sorted() == true.
-	  *	@param	iter [out] The number of warm start drops and primal-dual iterations.
-	  *	@param	num_adds [out] The number of updates to the active set where a constraint
-	  *					was added.  These do not include initially fixed variables.
-	  *	@param	num_drops [out] The number of updates to the active set where a constraint
-	  *					was dropped.  These include constraints dropped during a warm start
-	  *					as well as during the primal-dual QP iterations.
-	  *
-	  * @return  Returns the type of point that x, mu , lambda and lambda_breve represents.
-	  */
-	virtual
-	ESolveReturn solve_qp(
-		  QP& qp
-		, size_type num_act_change, const int ij_act_change[]
-			, const EBounds bnds[]
-		, std::ostream *out, EOutputLevel output_level, ERunTests test_what
-		, VectorSlice* x, SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve
-		, size_type* iter, size_type* num_adds, size_type* num_drops
+	 *
+	 * If the initial schur complement turns out to have the wrong inertia then
+	 * the QP is nonconvex, and the exception \c WrongInteriaUpdateExecption will be thrown.
+	 * Otherwise, unless some other strange exception is thrown, this function
+	 * will return normally (see return).
+	 *
+	 * @param	qp	[in] The abstraction for the QP being solved
+	 * @param	num_act_change
+	 * 			[in] The number of changes to the
+	 *					active set before the primal-dual QP algorithm
+	 *					starts.
+	 * @param	ij_act_change
+	 * 			[in] Array (size num_act_change): specifying
+	 *					how to initialize the active set.  If i = -ij_act_change(s)
+	 *					> 0 then the initially fixed variable x(i) is to be
+	 *					freed.  If j = ij_act_change(s) > 0 then the constraint
+	 *					a_bar(j)'*x is to be added to the active set to the
+	 *					bound bnd(s).  The order of these changes can significantly
+	 *					effect the performance of the algorithm if these changes
+	 *					are not part of the optimal active set.  Put changes that
+	 *					you are sure about earlier in the list and those that you
+	 *					are not a sure about later.
+	 * @param	bnd [in] Array (size num_act_change):  bnd(s) gives which bound to
+	 *					make active.  If ij_act_change(s) < 0 then this is ignored.
+	 * @param	out [out] output stream.  Iteration information is printed according
+	 *					to output_level.  If <tt>output_level == NO_OUTPUT</tt> then <tt>out</tt> may
+	 *					be <tt>NULL</tt>.  If <tt>out==NULL</tt>, then output_level is forced to <tt>NO_OUTPUT</tt>
+	 * @param	output_level
+	 * 			[in] Specifies the level of output (see \c EOutputLevel).
+	 *	@param	test_what
+	 *				[in] Determines if internal validation tests are performed.
+	 *					The optimality conditions for the QP are not checked
+	 *					internally, since this is something that client can
+	 *					(and should) do independently.
+	 *					RUN_TESTS : As many validation/consistency tests
+	 *						are performed internally as possible.  If a test
+	 *						fails then a TestFailed execption will be thrown.
+	 *					NO_TEST : No tests are performed internally.  This is
+	 *						to allow the fastest possible execution.
+	 * @param	x	[out] vector (size qp.n()): Solution or current iteration value
+	 * @param	mu 	[out] sparse vector (size qp.n()): Optimal lagrange multipliers for
+	 * 				bound constraints.  On output mu->is_sorted() == true.
+	 * @param	lambda
+	 * 			[out] vector (size q.m()): Optimal lagrange multipliers for
+	 *					equality constraints.
+	 * @param	lambda_breve
+	 * 			[out] sparse vector (size qp.constraints().m_breve()) for the active
+	 *					constraints in A_breve.  On output lambda_breve->is_sorted() == true.
+	 *	@param	iter [out] The number of warm start drops and primal-dual iterations.
+	 *	@param	num_adds [out] The number of updates to the active set where a constraint
+	 *					was added.  These do not include initially fixed variables.
+	 *	@param	num_drops [out] The number of updates to the active set where a constraint
+	 *					was dropped.  These include constraints dropped during a warm start
+	 *					as well as during the primal-dual QP iterations.
+	 *
+	 * @return  Returns the type of point that x, mu , lambda and lambda_breve represents.
+	 */
+	virtual ESolveReturn solve_qp(
+		QP& qp
+		,size_type num_act_change, const int ij_act_change[], const EBounds bnds[]
+		,std::ostream *out, EOutputLevel output_level, ERunTests test_what
+		,VectorSlice* x, SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve
+		,size_type* iter, size_type* num_adds, size_type* num_drops
 		);
 
-	//		end Public Member functions
 	//@}
 
 	///
 	/** Represents the matrix U_hat. 
-	  *
-	  * This matrix is only ment to be an aggregate of and ActiveSet
-	  * object and is only managed by the ActiveSet object.  It is made
-	  * public so that clients can developed specialized implementations
-	  * if needed.
-	  */
-	class U_hat_t : public MatrixWithOp {
+	 *
+	 * This matrix is only ment to be an aggregate of and ActiveSet
+	 * object and is only managed by the ActiveSet object.  It is made
+	 * public so that clients can developed specialized implementations
+	 * if needed.
+	 */
+	class U_hat_t : public MatrixWithOpSerial {
 	public:
 		/// Construct uninitialized
 		U_hat_t();
 		/// Initialize.
 		void initialize( 
-			 const MatrixSymWithOp		*G
-			,const MatrixWithOp			*A
-			,const MatrixWithOp			*A_bar
+			 const MatrixSymWithOpSerial		*G
+			,const MatrixWithOpSerial			*A
+			,const MatrixWithOpSerial			*A_bar
 			,const GenPermMatrixSlice	*Q_R
 			,const GenPermMatrixSlice	*P_XF_hat
 			,const GenPermMatrixSlice	*P_plus_hat
 			);
 		///
-		const MatrixSymWithOp& G() const
+		const MatrixSymWithOpSerial& G() const
 		{	return *G_;	}
 		///
-		const MatrixWithOp* A() const
+		const MatrixWithOpSerial* A() const
 		{	return A_;	}
 		///
-		const MatrixWithOp& A_bar() const
+		const MatrixWithOpSerial& A_bar() const
 		{	return *A_bar_;	}
 		///
 		const GenPermMatrixSlice& Q_R() const
@@ -667,33 +658,36 @@ public:
 		const GenPermMatrixSlice& P_plus_hat() const
 		{	return *P_plus_hat_;	}
 
-		// /////////////////////////////////////////////////////
-		// Overridden from Matrix
+		
+		/** @name Overridden from MatrixBase */
+		//@{{
 
 		///
 		size_type rows() const;
 		///
 		size_type cols() const;
 
-		// /////////////////////////////////////////////////////////
-		// Overridden from MatrixWithOp
+		//@}
+
+		/** @name Overridden from MatrixWithOpSerial */
+		//@{
 
 //		///
 //		void Mp_StM(GenMatrixSlice* gms_lhs, value_type alpha
 //			, BLAS_Cpp::Transp trans_rhs) const ;
-
 		///
 		void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 			, const VectorSlice& vs_rhs2, value_type beta) const;
-
 		///
 		void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 			, const SpVectorSlice& sv_rhs2, value_type beta) const;
+
+		//@}
 		
 	private:
-		const MatrixSymWithOp		*G_;
-		const MatrixWithOp			*A_;
-		const MatrixWithOp			*A_bar_;
+		const MatrixSymWithOpSerial	*G_;
+		const MatrixWithOpSerial	*A_;
+		const MatrixWithOpSerial	*A_bar_;
 		const GenPermMatrixSlice	*Q_R_;
 		const GenPermMatrixSlice	*P_XF_hat_;
 		const GenPermMatrixSlice	*P_plus_hat_;
@@ -702,36 +696,35 @@ public:
 
 	///
 	/** Represents and manages the active set for the QPSchur algorithm.
-	  *
-	  * Concrete type that encapsulates the maintaince of the active set and
-	  * abstracts quantities associated with it.
-	  *
-	  * At each iteration the algorithm must solve the system:
-	  \begin{verbatim}
+	 *
+	 * Concrete type that encapsulates the maintaince of the active set and
+	 * abstracts quantities associated with it.
+	 *
+	 * At each iteration the algorithm must solve the system:
+	 \verbatim
 
 		[ Ko       U_hat ]   [    v  ]   [  fo   ]
 		[ U_hat'   V_hat ] * [ z_hat ] = [ d_hat ]
 
-	  \end{verbatim}
-	  *
-	  * Above, U_hat contains the updates to the KKT system for adding constraints
-	  * to the active set and freeing variables that where initially fixed
-	  * and therefore left out of Ko.
-	  * 
-	  * This object maintains references to objects that represent the current
-	  * augmented KKT system:
-	  *
-	  * MatrixWithOp               : U_hat        <: R^((n_R+m) x q_hat)
-	  * MatrixSymWithOP            : V_hat        <: R^(q_hat x q_hat)
-	  * MatrixSymWithOpFactorized  : S_hat        <: R^(q_hat x q_hat)
-	  * GenPermMatrixSlice         : P_XF_hat     <: R^(n x q_hat)             (q_F_hat nonzeros)
-	  * GenPermMatrixSlice         : P_FC_hat     <: R^(q_hat x q_hat)         (q_C_hat nonzeros)
-	  * GenPermMatrixSlice         : P_plus_hat   <: R^((n+m_breve) x q_hat)   (q_plus_hat nonzeros)
-	  * GenPermMatrixSlice         : Q_XD_hat     <: R^(n x q_D_hat)           (q_D_hat nonzeros)
-	  * Vector                     : d_hat        <: R^(q_hat)
-	  * Vector                     : z_hat        <: R^(q_hat)
-	  * 
-	  */
+	 \endverbatim
+	 *
+	 * Above, \c U_hat contains the updates to the KKT system for adding constraints
+	 * to the active set and freeing variables that where initially fixed
+	 * and therefore left out of Ko.
+	 * 
+	 * This object maintains references to objects that represent the current
+	 * augmented KKT system:
+	 *
+	 * MatrixWithOpSerial                : U_hat        <: R^((n_R+m) x q_hat)
+	 * MatrixSymWithOpSerial             : V_hat        <: R^(q_hat x q_hat)
+	 * MatrixSymWithOpNonsingularSerial  : S_hat        <: R^(q_hat x q_hat)
+	 * GenPermMatrixSlice                : P_XF_hat     <: R^(n x q_hat)             (q_F_hat nonzeros)
+	 * GenPermMatrixSlice                : P_FC_hat     <: R^(q_hat x q_hat)         (q_C_hat nonzeros)
+	 * GenPermMatrixSlice                : P_plus_hat   <: R^((n+m_breve) x q_hat)   (q_plus_hat nonzeros)
+	 * GenPermMatrixSlice                : Q_XD_hat     <: R^(n x q_D_hat)           (q_D_hat nonzeros)
+	 * Vector                            : d_hat        <: R^(q_hat)
+	 * Vector                            : z_hat        <: R^(q_hat)
+	 */
 	class ActiveSet {
 	public:
 
@@ -748,10 +741,10 @@ public:
 
 		///
 		/** «std comp» members for schur complement matrix S_hat.
-		  *
-		  * Warning: Resetting schur_comp will cause a reinitialization to
-		  * an empty active set.
-		  */
+		 *
+		 * Warning: Resetting schur_comp will cause a reinitialization to
+		 * an empty active set.
+		 */
 		STANDARD_COMPOSITION_MEMBERS( MatrixSymAddDelUpdateableWithOpFactorized, schur_comp )
 
 		///
@@ -765,162 +758,165 @@ public:
 			,MSADU::PivotTolerances  pivot_tols = MSADU::PivotTolerances( 1e-6,1e-8,1e-8 )
 			);
 
-		// ///////////////////////////////////////
 		/** @name Update the active set. */
 		//@{
 
 		///
 		/** Initialize with an additional active set.
-		  *
-		  * If the initial schur complement is not full rank
-		  * then an #LDConstraintException# exception will be thrown.
-		  * The active set will contain all of the constraints it
-		  * can such that the schur complement is nonsingular.
-		  */
+		 *
+		 * If the initial schur complement is not full rank
+		 * then an <tt>LDConstraintException</tt> exception will be thrown.
+		 * The active set will contain all of the constraints it
+		 * can such that the schur complement is nonsingular.
+		 */
 		void initialize( 
 			QP& qp, size_type num_act_change, const int ij_act_change[]
-			, const EBounds bnds[], bool test, bool salvage_init_schur_comp
-			, std::ostream *out, EOutputLevel output_level );
+			,const EBounds bnds[], bool test, bool salvage_init_schur_comp
+			,std::ostream *out, EOutputLevel output_level );
 
 		///
 		/** Reinitialize the schur complement factorization for the current active set
-		  *
-		  * ToDo: Finish documentation
-		  */
+		 *
+		 * ToDo: Finish documentation
+		 */
 		void refactorize_schur_comp();
 
 		///
 		/** Add a constraint to the active set then refactorize the schur complemnt
-		  * (if forced).
-		  *
-		  * ToDo: Finish documentation
-		  *
-		  * If the new KKT system is singular then the exeption
-		  * MatrixSymAddDelUpdateable::SingularUpdateException will be thrown
-		  * but the old KKT system will be kept intact.
-		  *
-		  * If the reduced Hessian for the new KKT system does not have the
-		  * correct inertia then the exception
-		  * MatrixSymAddDelUpdateable::WrongInertiaUpdateException
-		  * will be thrown but the old KKT system will be kept intact.
-		  *
-		  * Returns true if any output was sent to *out.
-		  */
+		 * (if forced).
+		 *
+		 * ToDo: Finish documentation
+		 *
+		 * If the new KKT system is singular then the exeption
+		 * \c MatrixSymAddDelUpdateable::SingularUpdateException will be thrown
+		 * but the old KKT system will be kept intact.
+		 *
+		 * If the reduced Hessian for the new KKT system does not have the
+		 * correct inertia then the exception
+		 * MatrixSymAddDelUpdateable::WrongInertiaUpdateException
+		 * will be thrown but the old KKT system will be kept intact.
+		 *
+		 * @return Returns true if any output was sent to *out.
+		 */
 		bool add_constraint(
 			size_type ja, EBounds bnd_ja, bool update_steps
-			, std::ostream *out, EOutputLevel output_level
-			, bool force_refactorization = true
-			, bool allow_any_cond = false );
+			,std::ostream *out, EOutputLevel output_level
+			,bool force_refactorization = true
+			,bool allow_any_cond = false );
 
 		///
 		/** Drop a constraint from the active set then refactorize the schur
-		  * complement (if forced).
-		  *
-		  * ToDo: Finish documentation
-		  *
-		  * Returns true if any output was sent to *out.
-		  */
+		 * complement (if forced).
+		 *
+		 * ToDo: Finish documentation
+		 *
+		 * Returns true if any output was sent to *out.
+		 */
 		bool drop_constraint(
 			int jd, std::ostream *out, EOutputLevel output_level
-			, bool force_refactorization = true, bool allow_any_cond = false );
+			,bool force_refactorization = true, bool allow_any_cond = false );
 
 		///
 		/** Drop a constraint from, then add a constraint to the active set
-		  * and refactorize the schur complement.
-		  *
-		  * ToDo: Finish documentation
-		  *
-		  * Returns true if any output was sent to *out.
-		  */
+		 * and refactorize the schur complement.
+		 *
+		 * ToDo: Finish documentation
+		 *
+		 * Returns true if any output was sent to *out.
+		 */
 		bool drop_add_constraints(
 			int jd, size_type ja, EBounds bnd_ja, bool update_steps
-			, std::ostream *out, EOutputLevel output_level );
+			,std::ostream *out, EOutputLevel output_level );
 
 		//@}
+
+		/** @name access the QP */
+		//@{
 
 		///
 		QP& qp();
 		///
 		const QP& qp() const;
 
-		// ///////////////////////////////////////////////
+		//@}
+
 		/** @name Access the active sets quantities. */
 		//@{
 
 		///
 		/** Return the total size of the schur complement.
-		  *
-		  * q_hat = q_plus_hat + q_F_hat + q_C_hat.
-		  */
+		 *
+		 * q_hat = q_plus_hat + q_F_hat + q_C_hat.
+		 */
 		size_type q_hat() const;
 
 		///
 		/** Return the number of constraints from A_bar added
-		  * to the active set.
-		  */
+		 * to the active set.
+		 */
 		size_type q_plus_hat() const;
 
 		///
 		/** Return the number of variables that where
-		  * initially fixed but are currently free or
-		  * fixed to another bound.
-		  */
+		 * initially fixed but are currently free or
+		 * fixed to another bound.
+		 */
 		size_type q_F_hat() const;
 
 		///
 		/** Return the number of variables that where
-		  * initially fixed but are currently
-		  * fixed to another bound.
-		  */
+		 * initially fixed but are currently
+		 * fixed to another bound.
+		 */
 		size_type q_C_hat() const;
 
 		///
 		/** Return the number of variables that where
-		  * initially fixed and are still currently
-		  * fixed to their intial bounds.
-		  */
+		 * initially fixed and are still currently
+		 * fixed to their intial bounds.
+		 */
 		size_type q_D_hat() const;
 
 		///
 		/** Returns -i for row & column of S_bar for an initially
-		  * fixed variable left out of Ko that became free and returns
-		  * j for the constraint a(j)'*x that was added to the active
-		  * set.
-		  *
-		  * 1 <= s <= q_hat
-		  */
+		 * fixed variable left out of Ko that became free and returns
+		 * j for the constraint a(j)'*x that was added to the active
+		 * set.
+		 *
+		 * <tt>1 <= s <= q_hat</tt>
+		 */
 		int ij_map( size_type s ) const;
 
 		///
 		/** Map from a constraint or initially fixed variable
-		  * to a row and column in the schur complement S_bar.
-		  *
-		  * To determine if an initially fixed varible x(i) is now
-		  * free call s_map(-i).  If s_map(-i) returns zero then
-		  * x(i) is still fixed.  Otherwise s_map(-i) returns the
-		  * row and column in S_bar for this change in the
-		  * active set.
-		  *
-		  * To determine if a constraint a(j)'*x is part of the
-		  * active set call s_map(j).  If s_map(j) returns zero
-		  * then a(j)'*x is not part of the active set.
-		  * Otherwise s_map(j) returns the row and column
-		  * in S_bar for this change in the active set.
-		  */
+		 * to a row and column in the schur complement S_bar.
+		 *
+		 * To determine if an initially fixed varible x(i) is now
+		 * free call s_map(-i).  If s_map(-i) returns zero then
+		 * x(i) is still fixed.  Otherwise s_map(-i) returns the
+		 * row and column in S_bar for this change in the
+		 * active set.
+		 *
+		 * To determine if a constraint a(j)'*x is part of the
+		 * active set call s_map(j).  If s_map(j) returns zero
+		 * then a(j)'*x is not part of the active set.
+		 * Otherwise s_map(j) returns the row and column
+		 * in S_bar for this change in the active set.
+		 */
 		size_type s_map( int ij ) const;
 
 		///
 		/** Returns ||a(j)||2 where j = ij_map(s).
-		  * 
-		  * If ij_map(s) < 0, the this function returns zero.
-		  * 
-		  * 1 <= s <= q_hat
-		  */
+		 * 
+		 * If ij_map(s) < 0, the this function returns zero.
+		 * 
+		 * 1 <= s <= q_hat
+		 */
 		value_type constr_norm( size_type s ) const;
 
 		///
 		/** Return which bound is active for the active constraint.
-		  */
+		 */
 		EBounds bnd( size_type s ) const;
 
 		///
@@ -934,7 +930,7 @@ public:
 		///
 		const U_hat_t& U_hat() const;
 		///
-		const MatrixSymWithOpFactorized& S_hat() const;
+		const MatrixSymWithOpNonsingularSerial& S_hat() const;
 		///
 		const GenPermMatrixSlice& P_XF_hat() const;
 		///
@@ -964,14 +960,14 @@ public:
 
 		///
 		/** Determine if a constriant was an initially fixed variable.
-		  *
-		  * This function will return true if:
-		  * 
-		  * j <= n && x_init(j) != FREE
-		  * 
-		  * This is just a function of convienience
-		  * 
-		  */
+		 *
+		 * This function will return true if:
+		 * 
+		 * j <= n && x_init(j) != FREE
+		 * 
+		 * This is just a function of convienience
+		 * 
+		 */
 		bool is_init_fixed( size_type j ) const;
 
 		/// Returns true if all the degrees of freedom of the QP are used up
@@ -1111,11 +1107,11 @@ protected:
 
 	///
 	/** Run the algorithm from a dual feasible point.
-	  *
-	  * By default, the algorithm should start with
-	  * first_step = PICK_VIOLATED_CONSTRAINT if we are starting
-	  * with a dual feasible point.
-	  */
+	 *
+	 * By default, the algorithm should start with
+	 * first_step = PICK_VIOLATED_CONSTRAINT if we are starting
+	 * with a dual feasible point.
+	 */
 	virtual
 	ESolveReturn qp_algo(
 		EPDSteps first_step
@@ -1128,7 +1124,7 @@ protected:
 
 	///
 	/** Set the values in x for all the variables.
-	  */
+	 */
 	virtual void set_x( const ActiveSet& act_set, const VectorSlice& v, VectorSlice* x );
 
 	/// Map from the active set to the sparse multipliers for the inequality constraints
@@ -1176,9 +1172,6 @@ private:
 	// Private data members
 
 	ActiveSet		act_set_;	// The active set.
-
-	// /////////////////////////
-	// Private Member functions.
 
 };	// end class QPSchur
 

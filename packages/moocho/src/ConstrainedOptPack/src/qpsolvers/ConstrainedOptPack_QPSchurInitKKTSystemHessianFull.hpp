@@ -22,11 +22,11 @@ namespace ConstrainedOptimizationPack {
 
 ///
 /** Implementation of initial KKT system for all variables initially free
- * and Ko = G.
+ * and <tt>Ko = G</tt>.
  *
- * In this implementation, #G# must support the #MatrixSymWithOpFactorized#
+ * In this implementation, \c G must support the \c MatrixSymWithOpNonsingular
  * interface.  Using this initial KKT system essentially make QPSchur use
- * a Range Space approach (Nocedal & Wright, 1999) for factorizing the KKT
+ * a range space approach (Nocedal & Wright, 1999) for factorizing the KKT
  * system for the current active set.
  */
 class QPSchurInitKKTSystemHessianFull
@@ -34,8 +34,8 @@ class QPSchurInitKKTSystemHessianFull
 {
 public:
 
-	// ////////////////////////////////
-	// Overridden from InitKKTSystem
+	/** @name Overridden from InitKKTSystem */
+	//@{
 
 	///
 	/** Initialize the KKT system where all variables (except the relaxation variable)
@@ -43,35 +43,37 @@ public:
 	 *
 	 * For this implementation:
 	 *
-	 * #n_R = nd#\\
-	 * #i_x_free = emply (it is identity)#\\
-	 * #i_x_fixed[0] = nd+1#\\
-	 * #bnd_fixed[0] = LOWER#\\
-	 * #j_f_decomp[] = empty#\\
-	 * #b_X = etaL#\\
-	 * #Ko = G#\\
-	 * #fo = -g#\\
+	 * <tt>n_R = nd</tt>\\
+	 * <tt>i_x_free = emply (it is identity)</tt>\\
+	 * <tt>i_x_fixed[0] = nd+1</tt>\\
+	 * <tt>bnd_fixed[0] = LOWER</tt>\\
+	 * <tt>j_f_decomp[] = empty</tt>\\
+	 * <tt>b_X = etaL</tt>\\
+	 * <tt>Ko = G</tt>\\
+	 * <tt>fo = -g</tt>\\
 	 */
 	void initialize_kkt_system(
-		const VectorSlice&    g
-		,const MatrixWithOp&  G
+		const VectorSlice     &g
+		,const MatrixWithOp   &G
 		,value_type           etaL
-		,const SpVectorSlice& dL
-		,const SpVectorSlice& dU
-		,const MatrixWithOp*  F
+		,const SpVectorSlice  &dL
+		,const SpVectorSlice  &dU
+		,const MatrixWithOp   *F
 		,BLAS_Cpp::Transp     trans_F
-		,const VectorSlice*   f
-		,const VectorSlice&   d
-		,const SpVectorSlice& nu
-		,size_type*           n_R
-		,i_x_free_t*          i_x_free
-		,i_x_fixed_t*         i_x_fixed
-		,bnd_fixed_t*         bnd_fixed
-		,j_f_decomp_t*        j_f_decomp
-		,Vector*              b_X
-		,Ko_ptr_t*            Ko
-		,Vector*              fo
+		,const VectorSlice    *f
+		,const VectorSlice    &d
+		,const SpVectorSlice  &nu
+		,size_type            *n_R
+		,i_x_free_t           *i_x_free
+		,i_x_fixed_t          *i_x_fixed
+		,bnd_fixed_t          *bnd_fixed
+		,j_f_decomp_t         *j_f_decomp
+		,Vector               *b_X
+		,Ko_ptr_t             *Ko
+		,Vector               *fo
 		) const;
+
+	//@}
 
 }; // end class QPSchurInitKKTSystemHessianFull
 

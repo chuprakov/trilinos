@@ -21,24 +21,24 @@
 namespace ConstrainedOptimizationPack {
 
 void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
-	const VectorSlice&    g
-	,const MatrixWithOp&  G
+	const VectorSlice     &g
+	,const MatrixWithOp   &G
 	,value_type           etaL
-	,const SpVectorSlice& dL
-	,const SpVectorSlice& dU
-	,const MatrixWithOp*  F
+	,const SpVectorSlice  &dL
+	,const SpVectorSlice  &dU
+	,const MatrixWithOp   *F
 	,BLAS_Cpp::Transp     trans_F
-	,const VectorSlice*   f
-	,const VectorSlice&   d
-	,const SpVectorSlice& nu
-	,size_type*           n_R
-	,i_x_free_t*          i_x_free
-	,i_x_fixed_t*         i_x_fixed
-	,bnd_fixed_t*         bnd_fixed
-	,j_f_decomp_t*        j_f_decomp
-	,Vector*              b_X
-	,Ko_ptr_t*            Ko
-	,Vector*              fo
+	,const VectorSlice    *f
+	,const VectorSlice    &d
+	,const SpVectorSlice  &nu
+	,size_type            *n_R
+	,i_x_free_t           *i_x_free
+	,i_x_fixed_t          *i_x_fixed
+	,bnd_fixed_t          *bnd_fixed
+	,j_f_decomp_t         *j_f_decomp
+	,Vector               *b_X
+	,Ko_ptr_t             *Ko
+	,Vector               *fo
 	) const
 {
 	using DynamicCastHelperPack::dyn_cast;

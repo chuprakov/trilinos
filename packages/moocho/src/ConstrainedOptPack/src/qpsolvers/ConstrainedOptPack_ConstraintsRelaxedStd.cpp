@@ -73,8 +73,10 @@ bool imp_update_max_viol(
 }
 
 // Get an element from a sparse vector and return zero if it does not exist
-LinAlgPack::value_type get_sparse_element( const SparseLinAlgPack::SpVectorSlice& v
-	, LinAlgPack::size_type i )
+LinAlgPack::value_type get_sparse_element(
+	const SparseLinAlgPack::SpVectorSlice& v
+	,LinAlgPack::size_type i
+	)
 {
 	const SparseLinAlgPack::SpVectorSlice::element_type
 		*ele_ptr = v.lookup_element(i);
@@ -103,18 +105,25 @@ ConstraintsRelaxedStd::ConstraintsRelaxedStd()
 {}
 
 void ConstraintsRelaxedStd::initialize(
-	  size_type nd
-	, value_type etaL
-	, const SpVectorSlice* dL, const SpVectorSlice* dU
-	, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
-		, const SpVectorSlice* eL, const SpVectorSlice* eU
-	, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f	
-	, size_type m_undecomp, const size_type j_f_undecomp[]
-	, VectorSlice* Ed
-	, bool check_F
-	, value_type bounds_tol
-	, value_type inequality_tol
-	, value_type equality_tol
+	size_type                       nd
+	,value_type                     etaL
+	,const SpVectorSlice            *dL
+	,const SpVectorSlice            *dU
+	,const MatrixWithOp             *E
+	,BLAS_Cpp::Transp               trans_E
+	,const VectorSlice              *b
+	,const SpVectorSlice            *eL
+	,const SpVectorSlice            *eU
+	,const MatrixWithOp             *F
+	,BLAS_Cpp::Transp               trans_F
+	,const VectorSlice              *f
+	,size_type                      m_undecomp
+	,const size_type                j_f_undecomp[]
+	,VectorSlice                    *Ed
+	,bool                           check_F           = true
+	,value_type                     bounds_tol        = 1e-10
+	,value_type                     inequality_tol    = 1e-10
+	,value_type                     equality_tol      = 1e-10
 	)
 {
 	size_type
@@ -242,8 +251,8 @@ ConstraintsRelaxedStd::pick_violated_policy() const
 }
 
 void ConstraintsRelaxedStd::pick_violated(
-	  const VectorSlice& x, size_type* j_viol, value_type* constr_val
-	, value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
+	const VectorSlice& x, size_type* j_viol, value_type* constr_val
+	,value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
 	) const
 {
 	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
@@ -532,8 +541,10 @@ value_type ConstraintsRelaxedStd::get_bnd( size_type j, EBounds bnd ) const
 	return 0.0;	// will never be executed!
 }
 
-void ConstraintsRelaxedStd::cache_last_added( size_type last_added_j, value_type last_added_bound
-	, EBounds last_added_bound_type ) const
+void ConstraintsRelaxedStd::cache_last_added(
+	size_type last_added_j, value_type last_added_bound
+	,EBounds last_added_bound_type
+	) const
 {
 	last_added_j_			= last_added_j;
 	last_added_bound_		= last_added_bound;
@@ -543,16 +554,15 @@ void ConstraintsRelaxedStd::cache_last_added( size_type last_added_j, value_type
 // members for ConstraintsRelaxedStd::MatrixConstraints
 
 ConstraintsRelaxedStd::MatrixConstraints::MatrixConstraints()
-	:
-		nd_(0)
-		,m_in_(0)
-		,m_eq_(0)
-		,E_(NULL)
-		,trans_E_(BLAS_Cpp::no_trans)
-		,b_(NULL)
-		,F_(NULL)
-		,trans_F_(BLAS_Cpp::no_trans)
-		,f_(NULL)
+	:nd_(0)
+	,m_in_(0)
+	,m_eq_(0)
+	,E_(NULL)
+	,trans_E_(BLAS_Cpp::no_trans)
+	,b_(NULL)
+	,F_(NULL)
+	,trans_F_(BLAS_Cpp::no_trans)
+	,f_(NULL)
 {}
 
 void ConstraintsRelaxedStd::MatrixConstraints::initialize(
@@ -696,8 +706,9 @@ void ConstraintsRelaxedStd::MatrixConstraints::Mp_StPtMtP(
 */
 
 void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
-	  VectorSlice* y, value_type a, BLAS_Cpp::Transp trans_rhs1
-	, const VectorSlice& x, value_type b) const
+	VectorSlice* y, value_type a, BLAS_Cpp::Transp trans_rhs1
+	,const VectorSlice& x, value_type b
+	) const
 {
 
 	assert( !F_ || P_u_.cols() == f_->size() ); // ToDo: Add P_u when needed!
@@ -813,10 +824,11 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 }
 
 void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
-	  VectorSlice* y, value_type a
-	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
-	, BLAS_Cpp::Transp M_trans
-	, const SpVectorSlice& x, value_type beta) const
+	VectorSlice* y, value_type a
+	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	,BLAS_Cpp::Transp M_trans
+	,const SpVectorSlice& x, value_type beta
+	) const
 {
 	assert( !F_ || P_u_.cols() == f_->size() ); // ToDo: Add P_u when needed!
 
@@ -1006,5 +1018,5 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StPtMtV(
 	}
 }
 
-}	// end namespace QPSchurPack 
-}	// end namespace ConstrainedOptimizationPack 
+} // end namespace QPSchurPack 
+} // end namespace ConstrainedOptimizationPack 

@@ -29,12 +29,12 @@ namespace ConstrainedOptimizationPack {
 
 ///
 /** Solves Quadratic Programming (QP) problems using QPSchur.
-  *
-  * This is the only subclass needed for QPSchur.  All of the specifics of how the
-  * initial KKT system is formed is delegated to a strategy object of type
-  * \Ref{InitKKTSystem} (see below).  Note that the matrix #G# must support the
-  * #MatrixSymWithOp# interface (which should be no problem!)
-  */
+ *
+ * This is the only subclass needed for QPSchur.  All of the specifics of how the
+ * initial KKT system is formed is delegated to a strategy object of type
+ * \c InitKKTSystem (see below).  Note that the matrix <tt>G</tt> must support the
+ * <tt>MatrixSymWithOp</tt> interface (which should be no problem!)
+ */
 class QPSolverRelaxedQPSchur
 	: public QPSolverRelaxed
 {
@@ -67,92 +67,92 @@ public:
 		 * Let the following permutation matrices define the selection of the
 		 * initial KKT system:
 		 *
-		 * #Q = [ Q_R, Q_X ]# : Initially fixed #Q_R# and free #Q_X# variables
+		 * <tt>Q = [ Q_R, Q_X ]</tt> : Initially fixed <tt>Q_R</tt> and free <tt>Q_X</tt> variables
 		 *
-		 * #P = [ P_d, P_u ]# : Decomposed #P_d# and undecomposed #P_u# constraints
+		 * <tt>P = [ P_d, P_u ]</tt> : Decomposed <tt>P_d</tt> and undecomposed <tt>P_u</tt> constraints
 		 *
-		 * Given the definitions of #Q# and #P# above, this function will return
+		 * Given the definitions of <tt>Q</tt> and <tt>P</tt> above, this function will return
 		 * the initial KKT system:
-		 \begin{verbatim}
+		 \verbatim
 		 Ko = [ Q_R'*G*Q_R     op(F')*P_d ]
-		      [ P_d'*op(F)          0     ]
+		      [ P_d'*op(F)     0          ]
 
 		 fo = [ -Q_R'*g - Q_R'*G*Q_X*b_X    ]
 		      [ -P_d'f - P_d'*op(F)*Q_X*b_X ]
 
 		 b_X = ??? (see below)
-		 \end{verbatim}
+		 \endverbatim
 		 *
-		 * @param  g    [in] See #QPSolverRelaxed::solve_qp(...)#
-		 * @param  G    [in] See #QPSolverRelaxed::solve_qp(...)#
-		 * @param  dL   [in] See #QPSolverRelaxed::solve_qp(...)#
-		 * @param  dU   [in] See #QPSolverRelaxed::solve_qp(...)#
-		 * @param  F    [in] See #QPSolverRelaxed::solve_qp(...)#
+		 * @param  g    [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
+		 * @param  G    [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
+		 * @param  dL   [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
+		 * @param  dU   [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
+		 * @param  F    [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
 		 * @param  trans_f
-		 *              [in] See #QPSolverRelaxed::solve_qp(...)#
-		 * @param  f    [in] See #QPSolverRelaxed::solve_qp(...)#
-		 * @param  d    [in] See #QPSolverRelaxed::solve_qp(...)#
-		 * @param  nu   [in] See #QPSolverRelaxed::solve_qp(...)#
+		 *              [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
+		 * @param  f    [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
+		 * @param  d    [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
+		 * @param  nu   [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
 		 * @param  n_R  [out] Number of initially free variables.
 		 * @param  i_x_free
-		 *              [out] array (size #n_R# or #0#):
-		 *              If #i_x_free.size() > 0# then #i_x_free[l-1], l = 1...n_R#
-		 *              defines the matrix #Q_R# as:\\
-		 *              #Q_R(:,l) = e(i_x_free[l-1]), l = 1...n_R#\\
-		 *              If #i_x_free.size() == 0# then #i_x_free# is implicitly
-		 *              identity and #Q_R# is defiend as:\\
-		 *              #Q_R(:,l) = e(l), l = 1...n_R#\\
+		 *              [out] array (size <tt>n_R</tt> or <tt>0</tt>):
+		 *              If <tt>i_x_free.size() > 0</tt> then <tt>i_x_free[l-1], l = 1...n_R</tt>
+		 *              defines the matrix <tt>Q_R</tt> as:\\
+		 *              <tt>Q_R(:,l) = e(i_x_free[l-1]), l = 1...n_R</tt>\\
+		 *              If <tt>i_x_free.size() == 0</tt> then <tt>i_x_free</tt> is implicitly
+		 *              identity and <tt>Q_R</tt> is defiend as:\\
+		 *              <tt>Q_R(:,l) = e(l), l = 1...n_R</tt>\\
 		 *              The ordering of these indices is significant.
 		 * @param  i_x_fixed
-		 *              [out] array (size #n_X#):
-		 *              #i_x_fixed[l-1], l = 1...n_X# defines the matrix #Q_X# as:\\
-		 *              #Q_X(:,l) = e(i_x_fixed[l-1]), l = 1...n_X#\\
+		 *              [out] array (size <tt>n_X</tt>):
+		 *              <tt>i_x_fixed[l-1], l = 1...n_X</tt> defines the matrix <tt>Q_X</tt> as:\\
+		 *              <tt>Q_X(:,l) = e(i_x_fixed[l-1]), l = 1...n_X</tt>\\
 		 *              The ordering of these indices is significant.
 		 * @param  bnd_fixed
-		 *             [out] array (size #n_X#):
-		 *             #bnd_fixed[l-1], l = 1...n_X# defines the initial active set as:\\
-		 *\begin{verbatim}
+		 *             [out] array (size <tt>n_X</tt>):
+		 *             <tt>bnd_fixed[l-1], l = 1...n_X</tt> defines the initial active set as:\\
+		 *\verbatim
                            / LOWER : b_X(l) = dL(i_x_fixed[l-1])
 		 bnd_fixed[l-1] = |  UPPER : b_X(l) = dU(i_x_fixed[l-1])
 		                   \ EQUALITY : b_X(l) = dL(i) = dU(i) (i = i_x_fixed[l-1])
-		 \end{verbatim}
+		 \endverbatim
 		 * @param  j_f_decomp
-		 *             [out] array (size #m#):
-		 *             #j_f_decomp[p-1], p = 1...m# defines the decomposed equalities included
-		 *             in #Ko# as:\\
-		 *             #P_d(:,p) = e(j_f_decomp[p-1]), p = 1...m#\\
+		 *             [out] array (size <tt>m</tt>):
+		 *             <tt>j_f_decomp[p-1], p = 1...m</tt> defines the decomposed equalities included
+		 *             in <tt>Ko</tt> as:\\
+		 *             <tt>P_d(:,p) = e(j_f_decomp[p-1]), p = 1...m</tt>\\
 		 *             The ordering of these indices is significant and are not necessarily
 		 *             sorted in assending or decending order.
-		 * @param  b_X [out] vector (size #n_X#):
-		 *             Initial varaible bounds (see #bnd_fixed# above).  Note that
+		 * @param  b_X [out] vector (size <tt>n_X</tt>):
+		 *             Initial varaible bounds (see <tt>bnd_fixed</tt> above).  Note that
 		 *             the relaxation variable is always one of the initially fixed
 		 *             variables.
-		 * @param  Ko  [in/out] Initial KKT matrix (size #(n_R+m) x (n_R+m)#).
+		 * @param  Ko  [in/out] Initial KKT matrix (size <tt>(n_R+m) x (n_R+m)</tt>).
 		 *             On output, Ko will contain a possibly dynamically allocated nonsingular
-		 *             matrix object that represents Ko.  In input, if #Ko->get() != NULL#,
+		 *             matrix object that represents Ko.  In input, if <tt>Ko->get() != NULL</tt>,
 		 *             and no other objects have a reference to this object (based on
-		 *             #Ko->count()#, and it is of the  proper type, then this matrix may be reused.
-		 * @param  fo  [out] vector (size #n_R + m#) of the rhs for the initial KKT system.
+		 *             <tt>Ko->count()</tt>, and it is of the  proper type, then this matrix may be reused.
+		 * @param  fo  [out] vector (size <tt>n_R + m</tt>) of the rhs for the initial KKT system.
 		 */
 		virtual void initialize_kkt_system(
-			const VectorSlice&    g
-			,const MatrixWithOp&  G
+			const VectorSlice     &g
+			,const MatrixWithOp   &G
 			,value_type           etaL
-			,const SpVectorSlice& dL
-			,const SpVectorSlice& dU
-			,const MatrixWithOp*  F
+			,const SpVectorSlice  &dL
+			,const SpVectorSlice  &dU
+			,const MatrixWithOp   *F
 			,BLAS_Cpp::Transp     trans_F
-			,const VectorSlice*   f
-			,const VectorSlice&   d
-			,const SpVectorSlice& nu
-			,size_type*           n_R
-			,i_x_free_t*          i_x_free
-			,i_x_fixed_t*         i_x_fixed
-			,bnd_fixed_t*         bnd_fixed
-			,j_f_decomp_t*        j_f_decomp
-			,Vector*              b_X
-			,Ko_ptr_t*            Ko
-			,Vector*              fo
+			,const VectorSlice    *f
+			,const VectorSlice    &d
+			,const SpVectorSlice  &nu
+			,size_type            *n_R
+			,i_x_free_t           *i_x_free
+			,i_x_fixed_t          *i_x_fixed
+			,bnd_fixed_t          *bnd_fixed
+			,j_f_decomp_t         *j_f_decomp
+			,Vector               *b_X
+			,Ko_ptr_t             *Ko
+			,Vector               *fo
 			) const = 0;
 
 	}; // end class InitKKTSystem
@@ -174,7 +174,7 @@ public:
 
 	///
 	/** Strategy object that sets up the initial KKT system.
-	  */
+	 */
 	STANDARD_COMPOSITION_MEMBERS( InitKKTSystem, init_kkt_sys )
 
 	///
@@ -184,17 +184,17 @@ public:
 
 	///
 	/** Set the maximum number of QP iterations as max_itr = max_qp_iter_frac * n.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_qp_iter_frac )
 
 	///
 	/** Set the maximum real runtime in minutes.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_real_runtime )
 
 	///
 	/** <<std member comp>> members policy used to select a violated constraint.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
 													, inequality_pick_policy )
 
@@ -211,62 +211,62 @@ public:
 
 	///
 	/** Set the output level for QPSchur.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( ELocalOutputLevel, print_level )
 
 	///
 	/** Set the feasibility tolerance for the bound constriants.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, bounds_tol )
 
 	///
 	/** Set the feasibility tolerance for the general inequality constraints.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, inequality_tol )
 
 	///
 	/** Set the feasibility tolerance for the general equality constriants.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, equality_tol )
 
 	///
 	/** Set a looser feasibility tolerance ( > feas_tol )
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, loose_feas_tol )
 
 	///
 	/** Set the tolerence where a scaled Langrange multiplier is considered
-	  * degenerate.
-	  */
+	 * degenerate.
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, dual_infeas_tol )
 
 	///
 	/** Set the tolerence for the size of the step in the primal space that is considered
-	  * to be a near infinite step.  This is used to determine if the KKT
-	  * system is near singular.
-	  */
+	 * to be a near infinite step.  This is used to determine if the KKT
+	 * system is near singular.
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, huge_primal_step )
 
 	///
 	/** Set the tolerence for the size of the step in the dual space that is considered
-	  * to be a near infinite step.  This is used to determine if the constriants
-	  * are infeasible.
-	  */
+	 * to be a near infinite step.  This is used to determine if the constriants
+	 * are infeasible.
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, huge_dual_step )
 
 	///
 	/** <<std member comp>> members for the Big M parameter used in the objective.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, bigM )
 
 	///
 	/** <<std member comp>> members for the warning tolerance for tests.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, warning_tol )
 
 	///
 	/** <<std member comp>> members for the error tolerance for tests.
-	  */
+	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, error_tol )
 
 	///
@@ -328,8 +328,8 @@ public:
 
 	///
 	QPSolverRelaxedQPSchur(
-		const init_kkt_sys_ptr_t&    init_kkt_sys       = NULL
-		,const constraints_ptr_t&    constraints        = new QPSchurPack::ConstraintsRelaxedStd
+		const init_kkt_sys_ptr_t&    init_kkt_sys       = MemMngPack::rcp(NULL)
+		,const constraints_ptr_t&    constraints        = MemMngPack::rcp(new QPSchurPack::ConstraintsRelaxedStd)
 		,value_type                  max_qp_iter_frac   = 10.0
 		,value_type                  max_real_runtime   = 1e+20
 		,QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
@@ -360,19 +360,20 @@ public:
 	///
 	~QPSolverRelaxedQPSchur();
 
-	// /////////////////////////////////
-	// Overridden from QPSolverRelaxed
+	/** @name Overridden from QPSolverRelaxed */
+	//@{
 
 	///
 	QPSolverStats get_qp_stats() const;
-
 	///
 	void release_memory();
 
+	//@}
+
 protected:
 
-	// /////////////////////////////////
-	// Overridden from QPSolverRelaxed
+	/** @name Overridden from QPSolverRelaxed */
+	//@{
 
 	///
 	QPSolverStats::ESolutionType imp_solve_qp(
@@ -390,6 +391,8 @@ protected:
 		, VectorSlice* lambda, VectorSlice* Fd
 		);
 
+	//@}
+
 private:
 
 	// ////////////////////////////
@@ -405,11 +408,8 @@ private:
 	InitKKTSystem::Ko_ptr_t          Ko_;
 	Vector					         fo_;
 
-	// ////////////////////////////
-	// Private member functions
+}; // end class QPSolverRelaxedQPSchur
 
-};	// end class QPSolverRelaxedQPSchur
+} // end namespace ConstrainedOptimizationPack
 
-}	// end namespace ConstrainedOptimizationPack
-
-#endif	// QP_SOLVER_RELAXED_QP_SCHUR_H
+#endif // QP_SOLVER_RELAXED_QP_SCHUR_H

@@ -35,12 +35,11 @@
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "LinAlgPack/include/VectorOut.h"
 #include "LinAlgPack/include/GenMatrixOut.h"
-#include "Misc/include/WorkspacePack.h"
-//#include "Misc/include/doubledouble.h" // 2001/08/31: RAB: watch out for typedef int bool;
+#include "WorkspacePack.h"
 
 namespace LinAlgOpPack {
-using SparseLinAlgPack::Vp_StV;
-using SparseLinAlgPack::Vp_StMtV;
+using AbstractLinAlgPack::Vp_StV;
+using AbstractLinAlgPack::Vp_StMtV;
 }
 
 namespace {
@@ -51,7 +50,8 @@ namespace {
 // Print a bnd as a string
 //
 inline
-const char* bnd_str( ConstrainedOptimizationPack::EBounds bnd ) {
+const char* bnd_str( ConstrainedOptimizationPack::EBounds bnd )
+{
 	switch(bnd) {
 		case ConstrainedOptimizationPack::FREE:
 			return "FREE";
@@ -70,7 +70,8 @@ const char* bnd_str( ConstrainedOptimizationPack::EBounds bnd ) {
 // print a bool
 //
 inline
-const char* bool_str( bool b ) {
+const char* bool_str( bool b )
+{
 	return b ? "true" : "false";
 }
 
@@ -169,10 +170,10 @@ void calc_z(
 //
 void calc_v(
 	const SparseLinAlgPack::MatrixFactorized &Ko
-	, const LinAlgPack::VectorSlice          *fo    // If NULL then assumed to be zero
-	, const SparseLinAlgPack::MatrixWithOp   &U_hat
-	, const LinAlgPack::VectorSlice          &z_hat // Only accessed if U_hat.cols() > 0
-	, LinAlgPack::VectorSlice                *v
+	,const LinAlgPack::VectorSlice           *fo    // If NULL then assumed to be zero
+	,const SparseLinAlgPack::MatrixWithOp    &U_hat
+	,const LinAlgPack::VectorSlice           &z_hat // Only accessed if U_hat.cols() > 0
+	,LinAlgPack::VectorSlice                 *v
 	)
 {
 	using LinAlgPack::norm_inf;
@@ -205,10 +206,11 @@ void calc_v(
 // 		- Q_XD_hat' * A_bar * P_plus_hat * z_hat
 //
 void calc_mu_D(
-	  const ConstrainedOptimizationPack::QPSchur::ActiveSet& act_set
-	, const LinAlgPack::VectorSlice& x
-	, const LinAlgPack::VectorSlice& v
-	, LinAlgPack::VectorSlice* mu_D )
+	const ConstrainedOptimizationPack::QPSchur::ActiveSet  &act_set
+	,const LinAlgPack::VectorSlice                         & x
+	,const LinAlgPack::VectorSlice                         &v
+	,LinAlgPack::VectorSlice                               *mu_D
+	)
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
@@ -256,11 +258,12 @@ void calc_mu_D(
 // 		- Q_XD_hat' * A_bar * (P_plus_hat * p_z_hat + e(ja))
 //
 void calc_p_mu_D(
-	const ConstrainedOptimizationPack::QPSchur::ActiveSet& act_set
-	, const LinAlgPack::VectorSlice& p_v
-	, const LinAlgPack::VectorSlice& p_z_hat
-	, const LinAlgPack::size_type* ja  // If != NULL then we will include the term e(ja)
-	, LinAlgPack::VectorSlice* p_mu_D )
+	const ConstrainedOptimizationPack::QPSchur::ActiveSet  &act_set
+	,const LinAlgPack::VectorSlice                         &p_v
+	,const LinAlgPack::VectorSlice                         &p_z_hat
+	,const LinAlgPack::size_type                           *ja       // If != NULL then we will include the term e(ja)
+	,LinAlgPack::VectorSlice                               *p_mu_D
+	)
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
@@ -838,30 +841,29 @@ namespace ConstrainedOptimizationPack {
 // public member functions for QPSchur::U_hat_t
 
 QPSchur::U_hat_t::U_hat_t()
-	:
-		 G_(NULL)
-		,A_(NULL)
-		,A_bar_(NULL)
-		,Q_R_(NULL)
-		,P_XF_hat_(NULL)
-		,P_plus_hat_(NULL)
+	:G_(NULL)
+	,A_(NULL)
+	,A_bar_(NULL)
+	,Q_R_(NULL)
+	,P_XF_hat_(NULL)
+	,P_plus_hat_(NULL)
 {}
 
 void QPSchur::U_hat_t::initialize( 
-	 const MatrixSymWithOp		*G
-	,const MatrixWithOp			*A
-	,const MatrixWithOp			*A_bar
-	,const GenPermMatrixSlice	*Q_R
-	,const GenPermMatrixSlice	*P_XF_hat
-	,const GenPermMatrixSlice	*P_plus_hat
+	const MatrixSymWithOp       *G
+	,const MatrixWithOp         *A
+	,const MatrixWithOp         *A_bar
+	,const GenPermMatrixSlice   *Q_R
+	,const GenPermMatrixSlice   *P_XF_hat
+	,const GenPermMatrixSlice   *P_plus_hat
 	)
 {
-	G_				= G;
-	A_				= A;
-	A_bar_			= A_bar;
-	Q_R_			= Q_R;
-	P_XF_hat_		= P_XF_hat;
-	P_plus_hat_		= P_plus_hat;
+	G_            = G;
+	A_            = A;
+	A_bar_        = A_bar;
+	Q_R_          = Q_R;
+	P_XF_hat_     = P_XF_hat;
+	P_plus_hat_   = P_plus_hat;
 }
 
 size_type QPSchur::U_hat_t::rows() const
@@ -922,8 +924,10 @@ void QPSchur::U_hat_t::Mp_StM(GenMatrixSlice* C, value_type a
 }
 */
 
-void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
-	, const VectorSlice& x, value_type b) const
+void QPSchur::U_hat_t::Vp_StMtV(
+	VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	,const VectorSlice& x, value_type b
+	) const
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
@@ -1023,8 +1027,10 @@ void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M
 	}
 }
 
-void QPSchur::U_hat_t::Vp_StMtV(VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
-	, const SpVectorSlice& x, value_type b) const
+void QPSchur::U_hat_t::Vp_StMtV(
+	VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	,const SpVectorSlice& x, value_type b
+	) const
 {
 //	// Uncomment to use the default version
 //	MatrixWithOp::Vp_StMtV(y,a,M_trans,x,b); return;
@@ -1134,8 +1140,7 @@ QPSchur::ActiveSet::ActiveSet(
 	const schur_comp_ptr_t& schur_comp
 	,MSADU::PivotTolerances   pivot_tols
 	)
-	:
-	schur_comp_(schur_comp)
+	:schur_comp_(schur_comp)
 	,pivot_tols_(pivot_tols)
 	,initialized_(false)
 	,test_(false)
@@ -1586,9 +1591,9 @@ void QPSchur::ActiveSet::refactorize_schur_comp()
 
 bool QPSchur::ActiveSet::add_constraint(
 	size_type ja, EBounds bnd_ja, bool update_steps
-	, std::ostream *out, EOutputLevel output_level
-	, bool force_refactorization
-	, bool allow_any_cond
+	,std::ostream *out, EOutputLevel output_level
+	,bool force_refactorization
+	,bool allow_any_cond
 	)
 {
 	using BLAS_Cpp::no_trans;
@@ -1826,7 +1831,7 @@ bool QPSchur::ActiveSet::add_constraint(
 
 bool QPSchur::ActiveSet::drop_constraint(
 	int jd, std::ostream *out, EOutputLevel output_level
-	, bool force_refactorization, bool allow_any_cond
+	,bool force_refactorization, bool allow_any_cond
 	)
 {
 	using BLAS_Cpp::no_trans;
@@ -2050,7 +2055,7 @@ bool QPSchur::ActiveSet::drop_constraint(
 
 bool QPSchur::ActiveSet::drop_add_constraints(
 	int jd, size_type ja, EBounds bnd_ja, bool update_steps
-	, std::ostream *out, EOutputLevel output_level
+	,std::ostream *out, EOutputLevel output_level
 	)
 {
 	bool wrote_output = false;
