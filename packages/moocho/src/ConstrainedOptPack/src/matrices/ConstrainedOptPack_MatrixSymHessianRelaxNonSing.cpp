@@ -7,6 +7,7 @@
 #include "SparseLinAlgPack/include/SpVectorClass.h"
 #include "LinAlgPack/include/GenMatrixClass.h"
 #include "LinAlgPack/include/VectorClass.h"
+#include "LinAlgPack/include/VectorOp.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -90,6 +91,7 @@ void MatrixSymHessianRelaxNonSing::Vp_StMtV(
 	const size_type
 		nG = G_ptr_->rows(),
 		nM = M_.rows();
+	LinAlgPack::Vt_S(y,b); // Takes care of b == 0.0 and y uninitialized
 	SparseLinAlgPack::Vp_StMtV( &(*y)(1,nG), a, *G_ptr_, H_trans, x(1,nG) );
 	SparseLinAlgPack::Vp_StMtV( &(*y)(nG+1,nG+nM), a, M_, H_trans, x(nG+1,nG+nM) );
 }
@@ -103,6 +105,7 @@ void MatrixSymHessianRelaxNonSing::Vp_StMtV(
 	const size_type
 		nG = G_ptr_->rows(),
 		nM = M_.rows();
+	LinAlgPack::Vt_S(y,b); // Takes care of b == 0.0 and y uninitialized
 	SparseLinAlgPack::Vp_StMtV( &(*y)(1,nG), a, *G_ptr_, H_trans, x(1,nG) );
 	SparseLinAlgPack::Vp_StMtV( &(*y)(nG+1,nG+nM), a, M_, H_trans, x(nG+1,nG+nM) );
 }
