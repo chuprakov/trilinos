@@ -205,7 +205,7 @@ public:
 		return uplo_;
 	}
 	/// Allow address to be taken of rvalue of this object
-        sym_gms* operator&() {
+	sym_gms* operator&() {
 	  return this;
 	}
 	const sym_gms* operator&() const {
