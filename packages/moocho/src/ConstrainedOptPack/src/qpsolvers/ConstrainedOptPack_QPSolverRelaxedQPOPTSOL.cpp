@@ -398,7 +398,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 	}
 
 	// Ed, Fd
-	if( AX_.size() ) {
+	if( E && AX_.size() && eL->size() == n_inequ_bnds_ ) {
 		if( Ed ) { // Ed = AX + b*eta
 			*Ed = AX_(1,n_inequ_bnds_);
 			if( *eta > 0.0 )

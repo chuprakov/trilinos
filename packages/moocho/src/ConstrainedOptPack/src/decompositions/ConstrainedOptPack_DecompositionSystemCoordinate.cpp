@@ -20,7 +20,6 @@
 
 #include "../include/DecompositionSystemCoordinate.h"
 #include "../include/IdentZeroVertConcatMatrixSubclass.h"
-#include "SparseSolverPack/test/TestBasisSystem.h"
 #include "SparseLinAlgPack/include/GenMatrixSubclass.h"
 #include "LinAlgPack/include/LinAlgOpPack.h"
 #include "Misc/include/update_success.h"

@@ -13,10 +13,10 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_LOQO
+
 #ifndef QP_SOLVER_RELAXED_LOQO_H
 #define QP_SOLVER_RELAXED_LOQO_H
-
-#ifdef USE_QP_LOQO
 
 #include <vector>
 
@@ -175,6 +175,6 @@ private:
 
 }	// end namespace ConstrainedOptimizationPackTypes
 
-#endif // USE_QP_LOQO
-
 #endif	// QP_SOLVER_RELAXED_QPKWIK_H
+
+#endif // CONSTRAINED_OPTIMIZATION_PACK_USE_LOQO

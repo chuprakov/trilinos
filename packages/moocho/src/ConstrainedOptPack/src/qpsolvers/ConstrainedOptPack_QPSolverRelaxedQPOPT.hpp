@@ -13,6 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
+
 #ifndef QP_SOLVER_RELAXED_QPOPT_H
 #define QP_SOLVER_RELAXED_QPOPT_H
 
@@ -112,3 +114,5 @@ private:
 }	// end namespace ConstrainedOptimizationPack
 
 #endif // QP_SOLVER_RELAXED_QPOPT_H
+
+#endif // CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT

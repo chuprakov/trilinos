@@ -13,6 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT
+
 #include <assert.h>
 
 #include <algorithm>
@@ -223,3 +225,5 @@ QPSolverRelaxedQPOPTSOL::EInform QPSolverRelaxedQPOPT::call_qp_solver(bool warm_
 }
 
 } // end namespace ConstrainedOptimizationPack
+
+#endif // CONSTRAINED_OPTIMIZATION_PACK_USE_QPOPT

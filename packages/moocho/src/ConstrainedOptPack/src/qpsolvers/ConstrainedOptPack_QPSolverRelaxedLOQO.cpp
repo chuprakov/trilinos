@@ -51,7 +51,7 @@
 // A(j,:) = -op(E)(j,:).
 //
 
-#ifdef USE_QP_LOQO
+#ifdef CONSTRAINED_OPTIMIZATION_PACK_USE_LOQO
 
 #include <assert.h>
 
@@ -544,4 +544,4 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 
 }	// end namespace ConstrainedOptimizationPack
 
-#endif // USE_QP_LOQO
+#endif // CONSTRAINED_OPTIMIZATION_PACK_USE_LOQO
