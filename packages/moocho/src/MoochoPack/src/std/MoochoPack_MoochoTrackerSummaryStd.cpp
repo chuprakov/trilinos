@@ -341,7 +341,7 @@ void ReducedSpaceSQPPack::rSQPTrackSummaryStd::print_header(const rSQPState &s) 
 	o()	<< "\n\n********************************\n"
 		<< "*** Start of rSQP Iterations ***\n"
 		<< "n = " << s.x().get_k(0).cv().size()
-		<< ", m = " << s.c().get_k(0).cv().size()
+		<< ", m = " << (s.c().updated_k(0) ? s.c().get_k(0).cv().size() : -1 )
 		<< ", nz = ";
 	if( s.Gc().updated_k(0) )
 		o()	<< s.Gc().get_k(0).nz() << endl;
