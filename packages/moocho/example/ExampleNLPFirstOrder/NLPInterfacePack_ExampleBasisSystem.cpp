@@ -14,11 +14,11 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ExampleBasisSystem.h"
-#include "AbstractLinAlgPack/include/MatrixSpaceStd.h"
 #include "AbstractLinAlgPack/include/MatrixSymDiagonalStd.h"
 #include "AbstractLinAlgPack/include/MatrixCompositeStd.h"
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "RTOpPack/include/RTOpCppC.h"
+#include "AbstractFactoryStd.h"
 #include "dynamic_cast_verbose.h"
 #include "ThrowException.h"
 
@@ -40,35 +40,31 @@ void ExampleBasisSystem::initialize( const VectorSpace::space_ptr_t& space_x_DI 
 		assert( n%2 == 0 );
 		var_dep_   = Range1D(1,m);
 		var_indep_ = Range1D(m+1,n);
-		space_C_ = rcp::rcp_implicit_cast<BasisSystem::mat_nonsing_space_ptr_t::element_type>(
-			rcp::ref_count_ptr<MatrixSpaceStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd> >(
-				new MatrixSpaceStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd>(
-					space_x_DI, space_x_DI
-					) ) );
-		space_D_ = rcp::rcp_implicit_cast<BasisSystem::mat_space_ptr_t::element_type>(
-			rcp::ref_count_ptr<MatrixSpaceStd<MatrixWithOp,MatrixSymDiagonalStd> >(
-				new MatrixSpaceStd<MatrixWithOp,MatrixSymDiagonalStd>(
-					space_x_DI, space_x_DI
-					) ) );
+		factory_C_ = rcp::rcp(
+			new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOpNonsingular,MatrixSymDiagonalStd>()
+			);
+		factory_D_ = rcp::rcp(
+			new AbstractFactoryPack::AbstractFactoryStd<MatrixWithOp,MatrixSymDiagonalStd>()
+			);
 	}
 	else {
 		var_dep_    = Range1D::Invalid;
 		var_indep_  = Range1D::Invalid;
-		space_C_    = NULL;
-		space_D_    = NULL;
+		factory_C_    = NULL;
+		factory_D_    = NULL;
 	}
 }
 
-const BasisSystem::mat_nonsing_space_ptr_t&
-ExampleBasisSystem::space_C() const
+const BasisSystem::mat_nonsing_fcty_ptr_t
+ExampleBasisSystem::factory_C() const
 {
-	return space_C_;
+	return factory_C_;
 }
 
-const BasisSystem::mat_space_ptr_t&
-ExampleBasisSystem::space_D() const
+const BasisSystem::mat_fcty_ptr_t
+ExampleBasisSystem::factory_D() const
 {
-	return space_D_;
+	return factory_D_;
 }
 
 Range1D ExampleBasisSystem::var_dep() const

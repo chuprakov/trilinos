@@ -42,10 +42,6 @@ public:
 	 * Postconditions:<ul>
 	 * <li><tt>this->var_dep().size()   == space_x_DI->dim()</tt>
 	 * <li><tt>this->var_indep().size() == space_x_DI->dim()</tt>
-	 * <li><tt>this->space_C()->space_rows().is_compatible(*space_x_DI) == true</tt>
-	 * <li><tt>this->space_C()->space_cols().is_compatible(*space_x_DI) == true</tt>
-	 * <li><tt>this->space_D()->space_rows().is_compatible(*space_x_DI) == true</tt>
-	 * <li><tt>this->space_D()->space_cols().is_compatible(*space_x_DI) == true</tt>
 	 * </ul>
 	 */
 	void initialize( const VectorSpace::space_ptr_t& space_x_DI );
@@ -54,9 +50,9 @@ public:
 	//@{
 
 	///
-	const mat_nonsing_space_ptr_t& space_C() const;
+	const mat_nonsing_fcty_ptr_t factory_C() const;
 	///
-	const mat_space_ptr_t& space_D() const;
+	const mat_fcty_ptr_t factory_D() const;
 	///
 	Range1D var_dep() const;
 	///
@@ -78,8 +74,8 @@ private:
 	VectorSpace::space_ptr_t   space_x_DI_;
 	Range1D                    var_dep_,
 	                           var_indep_;
-	mat_nonsing_space_ptr_t    space_C_;
-	mat_space_ptr_t            space_D_;
+	mat_nonsing_fcty_ptr_t     factory_C_;
+	mat_fcty_ptr_t             factory_D_;
 
 }; // end class ExampleBasisSystem
 
