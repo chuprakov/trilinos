@@ -282,6 +282,16 @@ void CGSolver<Scalar>::doIteration(
 		*get_out() << "\nZ =\n" << *Z_;
 	}
 	dot( *Z_, *R_, &rho_[0] );                                       // rho_{i-1}[j] = Z^{i-1}[j]' * R^{i-1}[j]
+	for(j=0;j<m;++j) { 	// Check indefinite operator
+		THROW_EXCEPTION(
+			RTOp_is_nan_inf(rho_[j]), Exceptions::SolverBreakdown
+			,"CGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = " << rho_[j] << " is not valid number, the method has failed!"
+			);
+		THROW_EXCEPTION(
+			rho_[j] <= 0.0, Exceptions::Indefinite
+			,"CGSolver<Scalar>::solve(...): Error, rho["<<j<<"] = " << rho_[j] << " <= 0, the preconditioner is indefinite!"
+			);
+	}
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\nrho =\n"; for(j=0;j<m;++j) *get_out() << " " << rho_[j]; *get_out() << std::endl;
 	}
@@ -306,6 +316,16 @@ void CGSolver<Scalar>::doIteration(
 		*get_out() << "\nQ =\n" << *Q_;
 	}
 	dot( *P_, *Q_, &gamma_[0] );                           // P^{i}[j]' * Q^{i}[j]                    -> gamma_{i-1}[j]
+	for(j=0;j<m;++j) { 	// Check indefinite operator
+		THROW_EXCEPTION(
+			RTOp_is_nan_inf(gamma_[j]), Exceptions::SolverBreakdown
+			,"CGSolver<Scalar>::solve(...): Error, gamma["<<j<<"] = " << gamma_[j] << " is not valid number, the method has failed!"
+			);
+		THROW_EXCEPTION(
+			gamma_[j] <= 0.0, Exceptions::Indefinite
+			,"CGSolver<Scalar>::solve(...): Error, gamma["<<j<<"] = " << gamma_[j] << " <= 0, the operator is indefinite!"
+			);
+	}
 	for(j=0;j<m;++j) alpha_[j] = rho_[j]/gamma_[j];        // rho_{i-1}[j] / gamma_{i-1}[j]           -> alpha_{i}[j]
 	if(get_out().get() && dump_all()) {
 		*get_out() << "\ngamma =\n"; for(j=0;j<m;++j) *get_out() << " " << gamma_[j]; *get_out() << std::endl;

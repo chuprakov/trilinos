@@ -35,9 +35,13 @@ namespace Exceptions {
 class FailureToConverge : public std::logic_error
 {public: FailureToConverge(const std::string& what_arg) : std::logic_error(what_arg) {}};
 
-/// Thrown if a the operator turns out to be near singular
+/// Thrown if a the operator is defective in some way (related to linear solver method)
 class SolverBreakdown : public FailureToConverge
 {public: SolverBreakdown(const std::string& what_arg) : FailureToConverge(what_arg) {}};
+
+/// Thrown if operator turns out to be indefinite
+class Indefinite : public SolverBreakdown
+{public: Indefinite(const std::string& what_arg) : SolverBreakdown(what_arg) {}};
 
 //@}
 
