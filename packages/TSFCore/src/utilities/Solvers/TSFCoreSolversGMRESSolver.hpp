@@ -102,10 +102,10 @@ bool GMRESSolver<Scalar>::adjointRequired() const
 
 template<class Scalar>
 SolveReturn GMRESSolver<Scalar>::solve(
-	const LinearOp<Scalar> &M, ETransp M_trans, const MultiVector<Scalar> &Y, MultiVector<Scalar> *X
+	const LinearOp<Scalar> &M, const ETransp M_trans, const MultiVector<Scalar> &Y, MultiVector<Scalar> *X
 	,const Scalar a, const int max_iter_in, ConvergenceTester<Scalar> *convTester
 	,const LinearOp<Scalar> *M_tilde_left_inv, const ETransp M_tilde_left_inv_trans
-	,const LinearOp<Scalar> *M_tilde_right_inv, ETransp M_tilde_right_inv_trans
+	,const LinearOp<Scalar> *M_tilde_right_inv, const ETransp M_tilde_right_inv_trans
 	) const
 {
 	TEST_FOR_EXCEPTION(

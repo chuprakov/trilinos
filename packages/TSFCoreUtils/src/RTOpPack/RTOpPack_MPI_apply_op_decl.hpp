@@ -126,7 +126,7 @@ template<class Scalar>
 void  MPI_apply_op(
 	MPI_Comm                                  comm
   ,const RTOpT<Scalar>                      &op
-  ,int                                      root_rank
+  ,const int                                root_rank
 	,const int                                num_cols
 	,const int                                num_vecs
   ,const SubVectorT<Scalar>                 sub_vecs[]

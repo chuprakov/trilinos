@@ -231,10 +231,10 @@ template<class Scalar>
 void RTOpPack::extract_reduct_obj_ext_state(
   const RTOpT<Scalar>    &op
 	,const ReductTarget    &reduct_obj
-	,int                      num_values
-	,int                      num_indexes
-	,int                      num_chars
-	,void                     *_reduct_obj_ext
+	,int                   num_values
+	,int                   num_indexes
+	,int                   num_chars
+	,void                  *_reduct_obj_ext
 	)
 {
   typedef typename RTOpT<Scalar>::primitive_value_type primitive_value_type;
