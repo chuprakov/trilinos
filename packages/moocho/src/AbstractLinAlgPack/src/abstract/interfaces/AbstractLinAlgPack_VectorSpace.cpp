@@ -16,9 +16,17 @@
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/VectorSpaceSubSpace.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/MultiVectorMutable.h"
 #include "ThrowException.h"
 
 namespace AbstractLinAlgPack {
+
+VectorSpace::multi_vec_mut_ptr_t
+VectorSpace::create_members(size_type num_vecs) const
+{
+	namespace rcp = ReferenceCountingPack;
+	return rcp::rcp<multi_vec_mut_ptr_t::element_type>(NULL);
+}
 
 VectorSpace::space_ptr_t
 VectorSpace::sub_space(const Range1D& rng_in) const

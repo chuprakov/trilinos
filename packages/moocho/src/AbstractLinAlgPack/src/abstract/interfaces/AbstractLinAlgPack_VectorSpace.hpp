@@ -24,10 +24,21 @@ namespace AbstractLinAlgPack {
 ///
 /** Abstract interface for objects that represent a space for mutable coordinate vectors.
  *
- * This class is primary an "Abstract Factory" interface.  A <tt>VectorSpace</tt> object can exist
- * independent from any individual <tt>VectorWithOpMutable</tt> object.  Or, a <tt>VectorSpace</tt> object
- * can have a lifetime that is dependent on a single <tt>VectorWithOpMutable</tt> object.  The
- * same interface can serve both roles.  
+ * This class is primary an "Abstract Factory" interface for creating \c VectorWithOpMutable
+ * objects using the \c create_member() method.  A <tt>%VectorSpace</tt> object may also be able
+ * to create \c MultiVectorMutable objects.  A secondary role for  <tt>%VectorSpace</tt> object
+ * to to act a test of compatibility of vector objects using the \c is_compatible() method.
+ *
+ * Given a <tt>%VectorSpace</tt> object is may also be possible to create sub-spaces using the
+ * \c sub_space() method.
+ *
+ * Any <tt>%VectorSpace</tt> object can be copied using the \c clone() method.  Therefore,
+ * clients have complete control over the lifetime of <tt>%VectorSpace</tt> object.
+ *
+ * A <tt>VectorSpace</tt> object can exist independent from any individual <tt>VectorWithOpMutable</tt>
+ * (or \c MutiVectorMutable) object.  Or, a <tt>VectorSpace</tt> object can have a lifetime that is
+ * dependent on a single <tt>VectorWithOp</tt> ( or \c MultiVector) object.  The same interface can
+ * serve both roles.
  */
 class VectorSpace : public virtual VectorSpaceBase {
 public:
@@ -36,6 +47,8 @@ public:
 	typedef ReferenceCountingPack::ref_count_ptr<const VectorSpace>    space_ptr_t;
 	///
 	typedef ReferenceCountingPack::ref_count_ptr<VectorWithOpMutable>  vec_mut_ptr_t;
+	///
+	typedef ReferenceCountingPack::ref_count_ptr<MultiVectorMutable>   multi_vec_mut_ptr_t;
 
 	///
 	/** Return the dimmension of the vector space.
@@ -43,11 +56,10 @@ public:
 	virtual index_type dim() const = 0;
 
 	///
-	/** Create a member of the vector space.
+	/** Create a vector member from the vector space.
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>return->dim() == this->dim()</tt>
-	 * <li> <tt>return->get_ele(i) == 0.0</tt>, for <tt>i = 1...this->dim()</tt>
 	 * <li> <tt>return->space().is_compatible(*this) == true</tt>
 	 * </ul>
 	 *
@@ -58,6 +70,31 @@ public:
 	 * be equal to <tt>this</tt>.
 	 */
 	virtual vec_mut_ptr_t create_member() const = 0;
+
+	///
+	/** Create a set of vector members (a \c MultiVector) from the vector space.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>num_vecs >= 1</tt> (throw <tt>???</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>return->dim() == this->dim()</tt>
+	 * <li> <tt>return->space_cols().is_compatible(*this) == true</tt>
+	 * <li> <tt>return->space_rows().dim() == num_vecs</tt>
+	 * </ul>
+	 *
+	 * @return  Returns a smart reference counted pointer to a dynamically
+	 * allocated multi-vector object.  After construction the values returnd by 
+	 * <tt>return->col(j)->get_ele(i)</tt> are unspecified (uninitialized).  This
+	 * allows for faster execution times.  Note that <tt>&return->space_cols()</tt>
+	 * does not have to be equal to <tt>this</tt>.  It is allowed for a vector
+	 * space implementation to refuse to create multi-vectors and can return
+	 * \c NULL from this method.
+	 *
+	 * The default implementation just returns \c NULL.
+	 */
+	virtual multi_vec_mut_ptr_t create_members(size_type num_vecs) const;
 
 	///
 	/** Create a clone of \c this vector space object.
