@@ -82,7 +82,9 @@ class DecompositionSystemTesterSetOptions;
 
 // Abstract QP solvers
 
-//class QPSolverRelaxed;
+class QPSolverRelaxed;
+class QPSolverRelaxedTester;
+class QPSolverRelaxedTesterSetOptions;
 
 // Concrete QP solvers
 

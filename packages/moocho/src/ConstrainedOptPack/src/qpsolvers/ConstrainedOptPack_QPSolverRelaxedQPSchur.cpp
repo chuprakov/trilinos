@@ -245,10 +245,10 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 			}
 		}
 	}
-	// Add inequality constriants to the list form nu and mu
+	// Add inequality constriants to the list from nu and mu
 	if( ( nu && nu->nz() ) || ( m_in && mu->nz() ) ) {
 		//
-		// Setup num_act_change, ij_act_change, bnds for a warm start!
+		// Setup num_act_change, ij_act_change, and bnds for a warm start!
 		//
 		const size_type
 			nu_nz = nu ? nu->nz() : 0,
@@ -314,10 +314,8 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 			nu_itr = const_cast<const SpVector*>(nu)->begin(), // Okay even if nu.nz() == 0
 			nu_end = const_cast<const SpVector*>(nu)->end();
 		for( size_type i = 1; i <= nd; ++i, ++x_init_itr ) {
-			if( *x_init_itr != FREE
-				&& *x_init_itr != EQUALITY )
-			{
-				// This is an initially fixed upper or lower bound
+			if( *x_init_itr != FREE && *x_init_itr != EQUALITY ) {
+				// This is an initially fixed upper or lower bound.
 				// Look for lagrange multiplier stating that it is
 				// still fixed.
 				if( nu_itr != nu_end && (nu_itr->indice() + o) < i ) {
@@ -454,14 +452,14 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	QPSchur::ESolveReturn
 		solve_returned
 			= qp_solver_.solve_qp(
-				  qp_
-				, num_act_change, num_act_change ? &ij_act_change[0] : NULL
-					, num_act_change ? &bnds[0] : NULL
-				, out, qpschur_olevel
-					, test_what==RUN_TESTS ? QPSchur::RUN_TESTS : QPSchur::NO_TESTS
-				, &_x(), &_mu, NULL, &_lambda_breve
-			, &qp_iter, &num_adds, &num_drops
-			);
+				qp_
+				,num_act_change, num_act_change ? &ij_act_change[0] : NULL
+				,num_act_change ? &bnds[0] : NULL
+				,out, qpschur_olevel
+				,test_what==RUN_TESTS ? QPSchur::RUN_TESTS : QPSchur::NO_TESTS
+				,&_x(), &_mu, NULL, &_lambda_breve
+				,&qp_iter, &num_adds, &num_drops
+				);
 
 	// Set the solution
 

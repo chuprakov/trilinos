@@ -24,33 +24,32 @@ namespace ConstrainedOptimizationPack {
 namespace QPSchurPack {
 
 QPInitFixedFreeStd::QPInitFixedFreeStd()
-	:
-		n_(0)
-		,n_R_(0)
-		,m_(0)
-		,G_(NULL)
-		,A_(NULL)
-		,Ko_(NULL)
-		,constraints_(NULL)
+	:n_(0)
+	,n_R_(0)
+	,m_(0)
+	,G_(NULL)
+	,A_(NULL)
+	,Ko_(NULL)
+	,constraints_(NULL)
 {}
 
 void QPInitFixedFreeStd::initialize(
-	  const VectorSlice						&g
-	, const MatrixSymWithOp					&G
-	, const MatrixWithOp					*A
-	, size_type								n_R
-	, const size_type						i_x_free[]
-	, const size_type						i_x_fixed[]
-	, const EBounds							bnd_fixed[]
-	, const VectorSlice						&b_X
-	, const MatrixSymWithOpFactorized		&Ko
-	, const VectorSlice						&fo
-	, Constraints							*constraints
-	, std::ostream							*out
-	, bool									test_setup
-	, value_type							warning_tol
-	, value_type							error_tol
-	, bool									print_all_warnings
+	const VectorSlice                   &g
+	,const MatrixSymWithOp              &G
+	,const MatrixWithOp                 *A
+	,size_type                          n_R
+	,const size_type                    i_x_free[]
+	,const size_type                    i_x_fixed[]
+	,const EBounds                      bnd_fixed[]
+	,const VectorSlice                  &b_X
+	,const MatrixSymWithOpFactorized    &Ko
+	,const VectorSlice                  &fo
+	,Constraints                        *constraints
+	,std::ostream                       *out
+	,bool                               test_setup
+	,value_type                         warning_tol
+	,value_type                         error_tol
+	,bool                               print_all_warnings
 	)
 {
 	namespace GPMSTP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
@@ -326,7 +325,6 @@ void QPInitFixedFreeStd::assert_initialized() const
 		throw std::logic_error( "QPInitFixedFreeStd::assert_initialized(), Error "
 			"object not initialized\n" );
 }
-
 
 }	// end namespace QPSchurPack
 }	// end namespace ConstrainedOptimizationPack 

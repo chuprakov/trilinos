@@ -24,13 +24,12 @@ namespace ConstrainedOptimizationPack {
 
 ///
 /** Set options for QPSolverRelaxedTester from an
-  * OptionsFromStream object.
-  *
-  * The default options group name is QPSolverRelaxedTester.
-  *
-  * The options group is:
-  *
-  \begin{verbatim}
+ * OptionsFromStream object.
+ *
+ * The default options group name is QPSolverRelaxedTester.
+ *
+ * The options group is:
+ \verbatim
 	options_group QPSolverRelaxedTester {
 	    opt_warning_tol   = 1e-10;  *** Tolerances for optimality conditions
 	    opt_error_tol     = 1e-5;
@@ -39,7 +38,7 @@ namespace ConstrainedOptimizationPack {
 	    comp_warning_tol  = 1e-10;  *** Tolerances for complementarity
 	    comp_error_tol    = 1e-5;
 	}
-  \end{verbatim}
+  \endverbatim
   */
 class QPSolverRelaxedTesterSetOptions
 	: public OptionsFromStreamPack::SetOptionsFromStreamNode 

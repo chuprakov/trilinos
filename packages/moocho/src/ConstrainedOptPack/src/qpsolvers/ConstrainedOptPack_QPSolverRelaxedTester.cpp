@@ -14,15 +14,10 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/include/QPSolverRelaxedTester.h"
-#include "SparseLinAlgPack/include/MatrixWithOp.h"
-#include "SparseLinAlgPack/include/SpVectorClass.h"
-#include "SparseLinAlgPack/include/SpVectorOp.h"
-#include "SparseLinAlgPack/test/CompareDenseVectors.h"
-#include "SparseLinAlgPack/include/sparse_bounds_diff.h"
-#include "LinAlgPack/include/VectorClass.h"
-#include "LinAlgPack/include/VectorOp.h"
-#include "LinAlgPack/include/VectorOut.h"
-#include "LinAlgPack/include/LinAlgOpPack.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
+#include "AbstractLinAlgPack/include/VectorWithOpOut.h"
+#include "AbstractLinAlgPack/include/LinAlgOpPack.h"
 
 namespace {
 
@@ -46,6 +41,8 @@ const char* solution_type_str( ConstrainedOptimizationPack::QPSolverStats::ESolu
 	return "";	// will never be executed.
 }
 
+/* ToDo: Update this code!
+
 // Compute the scaled complementarity conditions.
 // 
 // If uplo == upper then:
@@ -63,11 +60,11 @@ const char* solution_type_str( ConstrainedOptimizationPack::QPSolverStats::ESolu
 // 
 void set_complementarity(
 	const SparseLinAlgPack::SpVector	&gamma
-	, const LinAlgPack::VectorSlice		&constr_resid
-	, const LinAlgPack::VectorSlice     &constr
-	, const LinAlgPack::value_type      opt_scale
-	, BLAS_Cpp::Uplo					uplo
-	, LinAlgPack::Vector			 	*comp_err
+	,const LinAlgPack::VectorSlice		&constr_resid
+	,const LinAlgPack::VectorSlice     &constr
+	,const LinAlgPack::value_type      opt_scale
+	,BLAS_Cpp::Uplo					uplo
+	,LinAlgPack::Vector			 	*comp_err
 	)
 {
 	assert( gamma.size() == constr_resid.size() && gamma.size() == constr.size() );
@@ -85,128 +82,130 @@ void set_complementarity(
 	}
 }
 
-}	// end namespace
+*/
 
-namespace LinAlgOpPack {
-	using SparseLinAlgPack::Vp_StV;
-	using SparseLinAlgPack::Vp_StMtV;
-}
+}	// end namespace
 
 namespace ConstrainedOptimizationPack {
 
 // public
 
 QPSolverRelaxedTester::QPSolverRelaxedTester(
-		  value_type	opt_warning_tol
-		, value_type	opt_error_tol
-		, value_type	feas_warning_tol
-		, value_type	feas_error_tol
-		, value_type	comp_warning_tol
-		, value_type	comp_error_tol
-		)
-	:
-		opt_warning_tol_(opt_warning_tol)
-		,opt_error_tol_(opt_error_tol)
-		,feas_warning_tol_(feas_warning_tol)
-		,feas_error_tol_(feas_error_tol)
-		,comp_warning_tol_(comp_warning_tol)
-		,comp_error_tol_(comp_error_tol)
+	value_type   opt_warning_tol
+	,value_type  opt_error_tol
+	,value_type  feas_warning_tol
+	,value_type  feas_error_tol
+	,value_type  comp_warning_tol
+	,value_type  comp_error_tol
+	)
+	:opt_warning_tol_(opt_warning_tol)
+	,opt_error_tol_(opt_error_tol)
+	,feas_warning_tol_(feas_warning_tol)
+	,feas_error_tol_(feas_error_tol)
+	,comp_warning_tol_(comp_warning_tol)
+	,comp_error_tol_(comp_error_tol)
 {}
 
 bool QPSolverRelaxedTester::check_optimality_conditions(
-	  QPSolverStats::ESolutionType solution_type
-	, std::ostream* out, bool print_all_warnings, bool print_vectors
-	, const VectorSlice& g, const MatrixWithOp& G
-	, value_type etaL
-	, const SpVectorSlice& dL, const SpVectorSlice& dU
-	, const MatrixWithOp& E, BLAS_Cpp::Transp trans_E, const VectorSlice& b
-		, const SpVectorSlice& eL, const SpVectorSlice& eU
-	, const MatrixWithOp& F, BLAS_Cpp::Transp trans_F, const VectorSlice& f
-	, const value_type* obj_d
-	, const value_type* eta, const VectorSlice* d
-	, const SpVector* nu
-	, const SpVector* mu, const VectorSlice* Ed
-	, const VectorSlice* lambda, const VectorSlice* Fd
+	QPSolverStats::ESolutionType solution_type
+	,std::ostream* out, bool print_all_warnings, bool print_vectors
+	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,value_type etaL
+	,const VectorWithOp& dL, const VectorWithOp& dU
+	,const MatrixWithOp& E, BLAS_Cpp::Transp trans_E, const VectorWithOp& b
+	,const VectorWithOp& eL, const VectorWithOp& eU
+	,const MatrixWithOp& F, BLAS_Cpp::Transp trans_F, const VectorWithOp& f
+	,const value_type* obj_d
+	,const value_type* eta, const VectorWithOp* d
+	,const VectorWithOp* nu
+	,const VectorWithOp* mu, const VectorWithOp* Ed
+	,const VectorWithOp* lambda, const VectorWithOp* Fd
 	)
 {
-	return check_optimality_conditions(solution_type,out,print_all_warnings,print_vectors
-		,g,G,etaL,dL,dU,&E,trans_E,&b,&eL,&eU,&F,trans_F,&f
+	return check_optimality_conditions(
+		solution_type,out,print_all_warnings,print_vectors
+		,g,G,etaL,&dL,&dU,&E,trans_E,&b,&eL,&eU,&F,trans_F,&f
 		,obj_d,eta,d,nu,mu,Ed,lambda,Fd);
 }
 
 bool QPSolverRelaxedTester::check_optimality_conditions(
-	  QPSolverStats::ESolutionType solution_type
-	, std::ostream* out, bool print_all_warnings, bool print_vectors
-	, const VectorSlice& g, const MatrixWithOp& G
-	, value_type etaL
-	, const SpVectorSlice& dL, const SpVectorSlice& dU
-	, const MatrixWithOp& E, BLAS_Cpp::Transp trans_E, const VectorSlice& b
-		, const SpVectorSlice& eL, const SpVectorSlice& eU
-	, const value_type* obj_d
-	, const value_type* eta, const VectorSlice* d
-	, const SpVector* nu
-	, const SpVector* mu, const VectorSlice* Ed
+	QPSolverStats::ESolutionType solution_type
+	,std::ostream* out, bool print_all_warnings, bool print_vectors
+	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,value_type etaL
+	,const VectorWithOp& dL, const VectorWithOp& dU
+	,const MatrixWithOp& E, BLAS_Cpp::Transp trans_E, const VectorWithOp& b
+	,const VectorWithOp& eL, const VectorWithOp& eU
+	,const value_type* obj_d
+	,const value_type* eta, const VectorWithOp* d
+	,const VectorWithOp* nu
+	,const VectorWithOp* mu, const VectorWithOp* Ed
 	)
 {
-	return check_optimality_conditions(solution_type,out,print_all_warnings,print_vectors
-		,g,G,etaL,dL,dU,&E,trans_E,&b,&eL,&eU,NULL,BLAS_Cpp::no_trans,NULL
+	return check_optimality_conditions(
+		solution_type,out,print_all_warnings,print_vectors
+		,g,G,etaL,&dL,&dU,&E,trans_E,&b,&eL,&eU,NULL,BLAS_Cpp::no_trans,NULL
 		,obj_d,eta,d,nu,mu,Ed,NULL,NULL);
 }
 
 bool QPSolverRelaxedTester::check_optimality_conditions(
-	  QPSolverStats::ESolutionType solution_type
-	, std::ostream* out, bool print_all_warnings, bool print_vectors
-	, const VectorSlice& g, const MatrixWithOp& G
-	, value_type etaL
-	, const SpVectorSlice& dL, const SpVectorSlice& dU
-	, const MatrixWithOp& F, BLAS_Cpp::Transp trans_F, const VectorSlice& f
-	, const value_type* obj_d
-	, const value_type* eta, const VectorSlice* d
-	, const SpVector* nu
-	, const VectorSlice* lambda, const VectorSlice* Fd
+	QPSolverStats::ESolutionType solution_type
+	,std::ostream* out, bool print_all_warnings, bool print_vectors
+	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,value_type etaL
+	,const VectorWithOp& dL, const VectorWithOp& dU
+	,const MatrixWithOp& F, BLAS_Cpp::Transp trans_F, const VectorWithOp& f
+	,const value_type* obj_d
+	,const value_type* eta, const VectorWithOp* d
+	,const VectorWithOp* nu
+	,const VectorWithOp* lambda, const VectorWithOp* Fd
 	)
 {
-	return check_optimality_conditions(solution_type,out,print_all_warnings,print_vectors
-		,g,G,etaL,dL,dU,NULL,BLAS_Cpp::no_trans,NULL,NULL,NULL,&F,trans_F,&f
+	return check_optimality_conditions(
+		solution_type,out,print_all_warnings,print_vectors
+		,g,G,etaL,&dL,&dU,NULL,BLAS_Cpp::no_trans,NULL,NULL,NULL,&F,trans_F,&f
 		,obj_d,eta,d,nu,NULL,NULL,lambda,Fd );
 }
 
 bool QPSolverRelaxedTester::check_optimality_conditions(
-	  QPSolverStats::ESolutionType solution_type
-	, std::ostream* out, bool print_all_warnings, bool print_vectors
-	, const VectorSlice& g, const MatrixWithOp& G
-	, const SpVectorSlice& dL, const SpVectorSlice& dU
-	, const value_type* obj_d
-	, const VectorSlice* d
-	, const SpVector* nu
+	QPSolverStats::ESolutionType solution_type
+	,std::ostream* out, bool print_all_warnings, bool print_vectors
+	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,const VectorWithOp& dL, const VectorWithOp& dU
+	,const value_type* obj_d
+	,const VectorWithOp* d
+	,const VectorWithOp* nu
 	)
 {
-	return check_optimality_conditions(solution_type,out,print_all_warnings,print_vectors
-		,g,G,0.0,dL,dU,NULL,BLAS_Cpp::no_trans,NULL,NULL,NULL,NULL,BLAS_Cpp::no_trans,NULL
+	return check_optimality_conditions(
+		solution_type,out,print_all_warnings,print_vectors
+		,g,G,0.0,&dL,&dU,NULL,BLAS_Cpp::no_trans,NULL,NULL,NULL,NULL,BLAS_Cpp::no_trans,NULL
 		,obj_d,NULL,d,nu,NULL,NULL,NULL,NULL);
 }
 
 bool QPSolverRelaxedTester::check_optimality_conditions(
-	  QPSolverStats::ESolutionType solution_type
-	, std::ostream* out, bool print_all_warnings, bool print_vectors
-	, const VectorSlice& g, const MatrixWithOp& G
-	, value_type etaL
-	, const SpVectorSlice& dL, const SpVectorSlice& dU
-	, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
-		, const SpVectorSlice* eL, const SpVectorSlice* eU
-	, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
-	, const value_type* obj_d
-	, const value_type* eta, const VectorSlice* d
-	, const SpVector* nu
-	, const SpVector* mu, const VectorSlice* Ed
-	, const VectorSlice* lambda, const VectorSlice* Fd
+	QPSolverStats::ESolutionType solution_type
+	,std::ostream* out, bool print_all_warnings, bool print_vectors
+	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,value_type etaL
+	,const VectorWithOp* dL, const VectorWithOp* dU
+	,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
+	,const VectorWithOp* eL, const VectorWithOp* eU
+	,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f
+	,const value_type* obj_d
+	,const value_type* eta, const VectorWithOp* d
+	,const VectorWithOp* nu
+	,const VectorWithOp* mu, const VectorWithOp* Ed
+	,const VectorWithOp* lambda, const VectorWithOp* Fd
 	)
 {
-	QPSolverRelaxed::validate_input(g,G,etaL,dL,dU
+	QPSolverRelaxed::validate_input(
+		g,G,etaL,dL,dU
 		,E,trans_E,b,eL,eU,F,trans_F,f
 		,obj_d,eta,d,nu,mu,Ed,lambda,Fd);
 
-	return imp_check_optimality_conditions(solution_type
+	return imp_check_optimality_conditions(
+		solution_type
 		,out,print_all_warnings,print_vectors,g,G,etaL,dL,dU
 		,E,trans_E,b,eL,eU,F,trans_F,f
 		,obj_d,eta,d,nu,mu,Ed,lambda,Fd);
@@ -215,19 +214,19 @@ bool QPSolverRelaxedTester::check_optimality_conditions(
 // protected
 
 bool QPSolverRelaxedTester::imp_check_optimality_conditions(
-	  QPSolverStats::ESolutionType solution_type
-	, std::ostream* out, bool print_all_warnings, bool print_vectors
-	, const VectorSlice& g, const MatrixWithOp& G
-	, value_type etaL
-	, const SpVectorSlice& dL, const SpVectorSlice& dU
-	, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
-		, const SpVectorSlice* eL, const SpVectorSlice* eU
-	, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
-	, const value_type* obj_d
-	, const value_type* eta, const VectorSlice* d
-	, const SpVector* nu
-	, const SpVector* mu, const VectorSlice* Ed
-	, const VectorSlice* lambda, const VectorSlice* Fd
+	QPSolverStats::ESolutionType solution_type
+	,std::ostream* out, bool print_all_warnings, bool print_vectors
+	,const VectorWithOp& g, const MatrixSymWithOp& G
+	,value_type etaL
+	,const VectorWithOp* dL, const VectorWithOp* dU
+	,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorWithOp* b
+	,const VectorWithOp* eL, const VectorWithOp* eU
+	,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorWithOp* f
+	,const value_type* obj_d
+	,const value_type* eta, const VectorWithOp* d
+	,const VectorWithOp* nu
+	,const VectorWithOp* mu, const VectorWithOp* Ed
+	,const VectorWithOp* lambda, const VectorWithOp* Fd
 	)
 {
 	using std::endl;
@@ -236,20 +235,22 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 	using BLAS_Cpp::trans;
 	using BLAS_Cpp::upper;
 	using BLAS_Cpp::lower;
-	using LinAlgPack::norm_inf;
-	using LinAlgPack::dot;
-	using LinAlgPack::Vt_S;
-	using LinAlgPack::Vp_StV;
+	using AbstractLinAlgPack::dot;
+	using AbstractLinAlgPack::Vt_S;
+	using AbstractLinAlgPack::Vp_StV;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_MtV;
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::Vp_V;
-	using SparseLinAlgPack::norm_inf;
-	using SparseLinAlgPack::dot;
-	using SparseLinAlgPack::imp_sparse_bnd_diff;
 	typedef QPSolverStats qps_t;
 
-	const value_type really_big_error_tol = std::numeric_limits<value_type>::max();
+	bool test_failed = false;
+
+	assert(0);
+/* ToDo: Update the below code!
+
+	const value_type
+		really_big_error_tol = std::numeric_limits<value_type>::max();
 
 	value_type opt_scale = 0.0;
 	Vector
@@ -277,12 +278,6 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		= solution_type!=qps_t::SUBOPTIMAL_POINT;
 	const bool force_complementarity_error_check
 		= solution_type!=qps_t::SUBOPTIMAL_POINT;
-
-	bool test_failed = false;
-
-	// Check some postconditions
-	if(nu) nu->assert_valid_and_sorted();
-	if(mu) mu->assert_valid_and_sorted();
 
 	const char sep_line[] = "\n--------------------------------------------------------------------------------\n";
 
@@ -618,19 +613,23 @@ bool QPSolverRelaxedTester::imp_check_optimality_conditions(
 		if(solution_type != qps_t::SUBOPTIMAL_POINT) {
 			if(test_failed) {
 				*out
-					<< "\nDarn it!  At least one of the enforced QP optimality conditions were not within the specified error tolerances!\n";
+					<< "\nDarn it!  At least one of the enforced QP optimality conditions were "
+					<< "not within the specified error tolerances!\n";
 			}
 			else {
 				*out
-					<< "\nCongradulations!  All of the enforced QP optimality conditions were within the specified error tolerances!\n";
+					<< "\nCongradulations!  All of the enforced QP optimality conditions were "
+					<< "within the specified error tolerances!\n";
 			}
 		}
 		*out
 			<< "\n*** End checking QP optimality conditions ***\n";
 	}
 
+*/
+
 	return !test_failed;
 
 }
 
-}	// end namespace ConstrainedOptimizationPack
+} // end namespace ConstrainedOptimizationPack

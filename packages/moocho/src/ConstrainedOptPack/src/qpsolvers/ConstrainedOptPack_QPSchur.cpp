@@ -1370,15 +1370,15 @@ void QPSchur::ActiveSet::initialize(
 		assert( k_plus_hat == q_plus_hat );
 	}
 	P_XF_hat_.initialize_and_sort(
-		  n,q_hat,q_F_hat,0,0,GPMSTP::BY_ROW
-		, q_F_hat ? &P_XF_hat_row_[0] : NULL
-		, q_F_hat ? &P_XF_hat_col_[0] : NULL
+		n,q_hat,q_F_hat,0,0,GPMSTP::BY_ROW
+		,q_F_hat ? &P_XF_hat_row_[0] : NULL
+		,q_F_hat ? &P_XF_hat_col_[0] : NULL
 		,test
 		);
 	P_plus_hat_.initialize_and_sort(
-		  n+m_breve,q_hat,q_plus_hat,0,0,GPMSTP::BY_ROW
-		, q_plus_hat ? &P_plus_hat_row_[0] : NULL
-		, q_plus_hat ? &P_plus_hat_col_[0] : NULL
+		n+m_breve,q_hat,q_plus_hat,0,0,GPMSTP::BY_ROW
+		,q_plus_hat ? &P_plus_hat_row_[0] : NULL
+		,q_plus_hat ? &P_plus_hat_col_[0] : NULL
 		,test
 		);
 	

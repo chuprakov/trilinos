@@ -22,8 +22,8 @@
 #include "MatrixHessianRelaxed.h"
 #include "ConstraintsRelaxedStd.h"
 #include "MatrixSymAddDelBunchKaufman.h"
-#include "Misc/include/StandardCompositionMacros.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "StandardCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -32,8 +32,7 @@ namespace ConstrainedOptimizationPack {
  *
  * This is the only subclass needed for QPSchur.  All of the specifics of how the
  * initial KKT system is formed is delegated to a strategy object of type
- * \c InitKKTSystem (see below).  Note that the matrix <tt>G</tt> must support the
- * <tt>MatrixSymWithOp</tt> interface (which should be no problem!)
+ * \c InitKKTSystem (see below).
  */
 class QPSolverRelaxedQPSchur
 	: public QPSolverRelaxed
@@ -74,8 +73,9 @@ public:
 		 * Given the definitions of <tt>Q</tt> and <tt>P</tt> above, this function will return
 		 * the initial KKT system:
 		 \verbatim
-		 Ko = [ Q_R'*G*Q_R     op(F')*P_d ]
-		      [ P_d'*op(F)     0          ]
+
+		 Ko = [ Q_R'*G*Q_R         Q_R'*op(F')*P_d ]
+		      [ P_d'*op(F)*Q_R     0               ]
 
 		 fo = [ -Q_R'*g - Q_R'*G*Q_X*b_X    ]
 		      [ -P_d'f - P_d'*op(F)*Q_X*b_X ]
@@ -83,34 +83,34 @@ public:
 		 b_X = ??? (see below)
 		 \endverbatim
 		 *
-		 * @param  g    [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
-		 * @param  G    [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
-		 * @param  dL   [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
-		 * @param  dU   [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
-		 * @param  F    [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
+		 * @param  g    [in] See <tt>QPSolverRelaxed::solve_qp()</tt>
+		 * @param  G    [in] See <tt>QPSolverRelaxed::solve_qp()</tt>
+		 * @param  dL   [in] See <tt>QPSolverRelaxed::solve_qp()</tt>
+		 * @param  dU   [in] See <tt>QPSolverRelaxed::solve_qp()</tt>
+		 * @param  F    [in] See <tt>QPSolverRelaxed::solve_qp()</tt>
 		 * @param  trans_f
-		 *              [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
-		 * @param  f    [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
-		 * @param  d    [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
-		 * @param  nu   [in] See <tt>QPSolverRelaxed::solve_qp(...)</tt>
+		 *              [in] See <tt>QPSolverRelaxed::solve_qp()</tt>
+		 * @param  f    [in] See <tt>QPSolverRelaxed::solve_qp()</tt>
+		 * @param  d    [in] See <tt>QPSolverRelaxed::solve_qp()</tt>
+		 * @param  nu   [in] See <tt>QPSolverRelaxed::solve_qp()</tt>
 		 * @param  n_R  [out] Number of initially free variables.
 		 * @param  i_x_free
 		 *              [out] array (size <tt>n_R</tt> or <tt>0</tt>):
 		 *              If <tt>i_x_free.size() > 0</tt> then <tt>i_x_free[l-1], l = 1...n_R</tt>
-		 *              defines the matrix <tt>Q_R</tt> as:\\
-		 *              <tt>Q_R(:,l) = e(i_x_free[l-1]), l = 1...n_R</tt>\\
+		 *              defines the matrix <tt>Q_R</tt> as:<br>
+		 *              <tt>Q_R(:,l) = e(i_x_free[l-1]), l = 1...n_R</tt><br>
 		 *              If <tt>i_x_free.size() == 0</tt> then <tt>i_x_free</tt> is implicitly
-		 *              identity and <tt>Q_R</tt> is defiend as:\\
-		 *              <tt>Q_R(:,l) = e(l), l = 1...n_R</tt>\\
+		 *              identity and <tt>Q_R</tt> is defiend as:<br>
+		 *              <tt>Q_R(:,l) = e(l), l = 1...n_R</tt><br>
 		 *              The ordering of these indices is significant.
 		 * @param  i_x_fixed
 		 *              [out] array (size <tt>n_X</tt>):
-		 *              <tt>i_x_fixed[l-1], l = 1...n_X</tt> defines the matrix <tt>Q_X</tt> as:\\
-		 *              <tt>Q_X(:,l) = e(i_x_fixed[l-1]), l = 1...n_X</tt>\\
+		 *              <tt>i_x_fixed[l-1], l = 1...n_X</tt> defines the matrix <tt>Q_X</tt> as:<br>
+		 *              <tt>Q_X(:,l) = e(i_x_fixed[l-1]), l = 1...n_X</tt><br>
 		 *              The ordering of these indices is significant.
 		 * @param  bnd_fixed
 		 *             [out] array (size <tt>n_X</tt>):
-		 *             <tt>bnd_fixed[l-1], l = 1...n_X</tt> defines the initial active set as:\\
+		 *             <tt>bnd_fixed[l-1], l = 1...n_X</tt> defines the initial active set as:<br>
 		 *\verbatim
                            / LOWER : b_X(l) = dL(i_x_fixed[l-1])
 		 bnd_fixed[l-1] = |  UPPER : b_X(l) = dU(i_x_fixed[l-1])
@@ -119,8 +119,8 @@ public:
 		 * @param  j_f_decomp
 		 *             [out] array (size <tt>m</tt>):
 		 *             <tt>j_f_decomp[p-1], p = 1...m</tt> defines the decomposed equalities included
-		 *             in <tt>Ko</tt> as:\\
-		 *             <tt>P_d(:,p) = e(j_f_decomp[p-1]), p = 1...m</tt>\\
+		 *             in <tt>Ko</tt> as:<br>
+		 *             <tt>P_d(:,p) = e(j_f_decomp[p-1]), p = 1...m</tt><br>
 		 *             The ordering of these indices is significant and are not necessarily
 		 *             sorted in assending or decending order.
 		 * @param  b_X [out] vector (size <tt>n_X</tt>):
@@ -183,17 +183,17 @@ public:
 	STANDARD_COMPOSITION_MEMBERS( QPSchurPack::ConstraintsRelaxedStd, constraints )
 
 	///
-	/** Set the maximum number of QP iterations as max_itr = max_qp_iter_frac * n.
+	/** Set the maximum number of QP iterations as <tt>max_itr = max_qp_iter_frac * n</tt>.
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_qp_iter_frac )
 
 	///
-	/** Set the maximum real runtime in minutes.
+	/** Set the maximum real run-time in minutes.
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_real_runtime )
 
 	///
-	/** <<std member comp>> members policy used to select a violated constraint.
+	/** Policy used to select a violated constraint.
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
 													, inequality_pick_policy )
@@ -377,18 +377,18 @@ protected:
 
 	///
 	QPSolverStats::ESolutionType imp_solve_qp(
-		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, const VectorSlice& g, const MatrixWithOp& G
-		, value_type etaL
-		, const SpVectorSlice& dL, const SpVectorSlice& dU
-		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
-			, const SpVectorSlice* eL, const SpVectorSlice* eU
-		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
-		, value_type* obj_d
-		, value_type* eta, VectorSlice* d
-		, SpVector* nu
-		, SpVector* mu, VectorSlice* Ed
-		, VectorSlice* lambda, VectorSlice* Fd
+		std::ostream* out, EOutputLevel olevel, ERunTests test_what
+		,const VectorSlice& g, const MatrixWithOp& G
+		,value_type etaL
+		,const SpVectorSlice* dL, const SpVectorSlice* dU
+		,const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
+		,const SpVectorSlice* eL, const SpVectorSlice* eU
+		,const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
+		,value_type* obj_d
+		,value_type* eta, VectorSlice* d
+		,SpVector* nu
+		,SpVector* mu, VectorSlice* Ed
+		,VectorSlice* lambda, VectorSlice* Fd
 		);
 
 	//@}

@@ -286,7 +286,7 @@ void ConstraintsRelaxedStd::pick_violated(
 		// if ADD_MOST_VIOLATED_BOUNDS_AND_INEQUALITY is selected.
 		const GenPermMatrixSlice& P_u = A_bar_.P_u();
 		size_type e_k_mat_row, e_k_mat_col = 1; // Mapping matrix for e(j)
-		GenPermMatrixSlice e_k_mat;
+		GenPermMatrixSlice e_k_mat; // ToDo: Change to EtaVector
 		if( next_undecomp_f_k_ <= P_u.nz() ) {
 			// This is our first pass through the undecomposed equalities.
 			GenPermMatrixSlice::const_iterator P_u_itr, P_u_end; // only used if P_u is not identity
@@ -308,21 +308,22 @@ void ConstraintsRelaxedStd::pick_violated(
 				value_type
 					Fd_k = 0.0,
 					f_k = (*A_bar_.f())(k);
-				e_k_mat.initialize(A_bar_.m_eq(),1,1,0,0,GPMSIP::BY_ROW_AND_COL
-								   ,&(e_k_mat_row=k),&e_k_mat_col,false);
+				e_k_mat.initialize(
+					A_bar_.m_eq(),1,1,0,0,GPMSIP::BY_ROW_AND_COL
+					,&(e_k_mat_row=k),&e_k_mat_col,false );
 				VectorSlice Fd_k_vec(&Fd_k,1);
-				SparseLinAlgPack::Vp_StPtMtV(
+				SparseLinAlgPack::Vp_StPtMtV(   // ToDo: Use transVtMtV(...) instead!
 					&Fd_k_vec, 1.0, e_k_mat, BLAS_Cpp::trans
-					, *A_bar_.F(), A_bar_.trans_F(), d, 0.0 );
+					,*A_bar_.F(), A_bar_.trans_F(), d, 0.0 );
 				const value_type
 					err = ::fabs(Fd_k + (1.0 - eta)*f_k) / (1.0 + ::fabs(f_k));
 				if( err > equality_tol() ) {
-					*j_viol			= nd + 1 + A_bar_.m_in() + k;
-					*constr_val		= Fd_k - eta*f_k;
-					*norm_2_constr	= 1.0;	// ToDo: Compute it some how?
-					*bnd			= EQUALITY;
+					*j_viol         = nd + 1 + A_bar_.m_in() + k;
+					*constr_val     = Fd_k - eta*f_k;
+					*norm_2_constr  = 1.0; // ToDo: Compute it some how?
+					*bnd            = EQUALITY;
 					*viol_bnd_val   = -f_k;
-					*can_ignore		= false; // Given this careful algorithm this should be false
+					*can_ignore     = false; // Given this careful algorithm this should be false
 					// cache this
 					last_added_j_			= *j_viol;
 					last_added_bound_type_	= *bnd;
@@ -349,9 +350,9 @@ void ConstraintsRelaxedStd::pick_violated(
 	// /////////////////////////////////////////////
 	// Find the most violated variable bound.
 
-	size_type	max_bound_viol_j		= 0;
-	value_type 	max_bounds_viol 		= 0.0;
-	bool		max_bound_viol_upper	= false;
+	size_type   max_bound_viol_j        = 0;
+	value_type  max_bounds_viol         = 0.0;
+	bool        max_bound_viol_upper    = false;
 	if( dL_ && ( dL_->nz() || dU_->nz() ) ) {
 		const value_type scale = 1.0 / (1.0 + norm_inf(d));
 		// r = dL - d
@@ -373,12 +374,12 @@ void ConstraintsRelaxedStd::pick_violated(
 				this_bnd_val = get_bnd(max_bound_viol_j,this_bnd),
 				other_bnd_val = get_bnd(max_bound_viol_j,other_bnd);
 			// Set the return values
-			*j_viol			= max_bound_viol_j;
-			*constr_val		= d(max_bound_viol_j);
-			*norm_2_constr	= 1.0;
-			*bnd			= this_bnd_val == other_bnd_val ? EQUALITY : this_bnd;
-			*viol_bnd_val	= this_bnd_val;
-			*can_ignore		= false;
+			*j_viol         = max_bound_viol_j;
+			*constr_val     = d(max_bound_viol_j);
+			*norm_2_constr  = 1.0;
+			*bnd            = this_bnd_val == other_bnd_val ? EQUALITY : this_bnd;
+			*viol_bnd_val   = this_bnd_val;
+			*can_ignore     = false;
 		}
 		else {
 			max_bound_viol_j = 0;	// No variable bounds sufficiently violated.
@@ -388,21 +389,21 @@ void ConstraintsRelaxedStd::pick_violated(
 	if( (	inequality_pick_policy_ == ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY
 			||	inequality_pick_policy_ == ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY )
 		&& max_bound_viol_j
-			 )
+		)
 	{
 		// A variable bound has been violated so lets just return it!
-		last_added_j_			= *j_viol;
-		last_added_bound_type_	= *bnd;
-		last_added_bound_		= *viol_bnd_val;
-		return;	
+		last_added_j_           = *j_viol;
+		last_added_bound_type_  = *bnd;
+		last_added_bound_       = *viol_bnd_val;
+		return;
 	}
 
 	// /////////////////////////////////////////////
 	// Check the general inequalities
 
-	size_type	max_inequality_viol_j		= 0;
-	value_type 	max_inequality_viol			= 0.0;
-	bool		max_inequality_viol_upper	= false;
+	size_type   max_inequality_viol_j       = 0;
+	value_type  max_inequality_viol         = 0.0;
+	bool        max_inequality_viol_upper   = false;
 
 	if( inequality_pick_policy_ == ADD_BOUNDS_THEN_FIRST_VIOLATED_INEQUALITY ) {
 		// Find the first general inequality violated by more than
@@ -417,7 +418,7 @@ void ConstraintsRelaxedStd::pick_violated(
 			Vector e;
 			LinAlgOpPack::V_MtV( &e, *A_bar_.E(), A_bar_.trans_E(), d );
 			if(Ed_) {
-				*Ed_ = e;
+				*Ed_        = e;
 				Ed_computed = true;
 			}
 			const value_type scale = 1.0 / (1.0 + norm_inf(e));
@@ -433,29 +434,29 @@ void ConstraintsRelaxedStd::pick_violated(
 			if( max_inequality_viol > max_bounds_viol
 				&& scale * max_inequality_viol > inequality_tol_ )
 			{
-				*j_viol			= max_inequality_viol_j + nd + 1; // offset into A_bar
-				*constr_val		= e(max_inequality_viol_j);
-				*norm_2_constr	= 1.0;	// ToDo: Compute it some how?
-				*bnd			= max_inequality_viol_upper ? UPPER : LOWER;
+				*j_viol         = max_inequality_viol_j + nd + 1; // offset into A_bar
+				*constr_val     = e(max_inequality_viol_j);
+				*norm_2_constr  = 1.0;  // ToDo: Compute it some how?
+				*bnd            = max_inequality_viol_upper ? UPPER : LOWER;
 				*viol_bnd_val   = get_bnd(*j_viol,*bnd);
-				*can_ignore		= false;
+				*can_ignore     = false;
 			}
 			else {
-				max_inequality_viol_j = 0;	// No general inequality constraints sufficiently violated.
+				max_inequality_viol_j = 0; // No general inequality constraints sufficiently violated.
 			}
 		}
 	}
 
 	if( max_bound_viol_j || max_inequality_viol_j ) {
 		// One of the constraints has been violated so just return it.
-		last_added_j_			= *j_viol;
-		last_added_bound_type_	= *bnd;
-		last_added_bound_		= *viol_bnd_val;
-		return;		
+		last_added_j_           = *j_viol;
+		last_added_bound_type_  = *bnd;
+		last_added_bound_       = *viol_bnd_val;
+		return;
 	}
 
 	// If we get here then no constraint was found that violated any of the tolerances.
-	if(Ed_ && !Ed_computed) {
+	if( Ed_ && !Ed_computed ) {
 		// Ed = op(E)*d
 		LinAlgOpPack::V_MtV( Ed_, *A_bar_.E(), A_bar_.trans_E(), d );
 	}
@@ -463,8 +464,8 @@ void ConstraintsRelaxedStd::pick_violated(
 	*constr_val		= 0.0;
 	*viol_bnd_val	= 0.0;
 	*norm_2_constr	= 0.0;
-	*bnd			= FREE;	// Meaningless
-	*can_ignore		= false;
+	*bnd			= FREE;	 // Meaningless
+	*can_ignore		= false; // Meaningless
 }
 
 void ConstraintsRelaxedStd::ignore( size_type j )
@@ -546,9 +547,9 @@ void ConstraintsRelaxedStd::cache_last_added(
 	,EBounds last_added_bound_type
 	) const
 {
-	last_added_j_			= last_added_j;
-	last_added_bound_		= last_added_bound;
-	last_added_bound_type_	= last_added_bound_type;
+	last_added_j_           = last_added_j;
+	last_added_bound_       = last_added_bound;
+	last_added_bound_type_  = last_added_bound_type;
 }
 
 // members for ConstraintsRelaxedStd::MatrixConstraints
@@ -566,17 +567,17 @@ ConstraintsRelaxedStd::MatrixConstraints::MatrixConstraints()
 {}
 
 void ConstraintsRelaxedStd::MatrixConstraints::initialize(
-	  size_type				nd
-	, size_type				m_in
-	, size_type				m_eq
-	, const MatrixWithOp	*E
-	, BLAS_Cpp::Transp		trans_E
-	, const VectorSlice		*b
-	, const MatrixWithOp	*F
-	, BLAS_Cpp::Transp		trans_F
-	, const VectorSlice		*f
-	, size_type             m_undecomp
-	, const size_type       j_f_undecomp[]
+	size_type               nd
+	,size_type              m_in
+	,size_type              m_eq
+	,const MatrixWithOp     *E
+	,BLAS_Cpp::Transp       trans_E
+	,const VectorSlice      *b
+	,const MatrixWithOp     *F
+	,BLAS_Cpp::Transp       trans_F
+	,const VectorSlice      *f
+	,size_type              m_undecomp
+	,const size_type        j_f_undecomp[]
 	)
 {
 	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
@@ -605,15 +606,15 @@ void ConstraintsRelaxedStd::MatrixConstraints::initialize(
 	}
 	
 	// Set the rest of the members
-	nd_			= nd;
-	m_in_		= m_in;
-	m_eq_		= m_eq;
-	E_			= E;
-	trans_E_	= trans_E;
-	b_			= b;
-	F_			= F;
-	trans_F_	= trans_F;
-	f_			= f;
+	nd_       = nd;
+	m_in_     = m_in;
+	m_eq_     = m_eq;
+	E_        = E;
+	trans_E_  = trans_E;
+	b_        = b;
+	F_        = F;
+	trans_F_  = trans_F;
+	f_        = f;
 }
 
 // Overridden from Matrix
@@ -736,10 +737,7 @@ void ConstraintsRelaxedStd::MatrixConstraints::Vp_StMtV(
 		F_rng = m_eq() ? Range1D(F_start,F_end) : Range1D();
 
 	// y = b * y
-	if( b == 0.0 )
-		*y = 0.0;
-	else
-		Vt_S( y, b );
+	Vt_S( y, b );
 	
 	if( trans_rhs1 == BLAS_Cpp::no_trans ) {
 		//
