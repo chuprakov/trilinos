@@ -50,34 +50,26 @@
 	};
   \endverbatim
   *
-  * Note that the macro adds the following type and data members
+  * Note that the macro adds the following data member
   * to the class declaration:<br>
   \verbatim
-	public:
-		Teuchos::RefCountPtr<TYPE> NAME_ptr_t;
 	private:
-		NAME_ptr_t NAME_;		
+		Teuchos::RefCountPtr< TYPE > NAME_;		
   \endverbatim
-  *
-  * Note that since this macro defines a public type it must be
-  * included before any other declarations that may need to refere to
-  * the type NAME_ptr_t (such as constuctors)
   */
-#define STANDARD_COMPOSITION_MEMBERS( TYPE, NAME )					\
-	typedef Teuchos::RefCountPtr<TYPE>				\
-		NAME ## _ptr_t;												\
-	void set_ ## NAME (const NAME ## _ptr_t& NAME )					\
-	{	NAME ## _ = NAME ; }										\
-	const NAME ## _ptr_t& get_ ## NAME() const						\
-	{	return NAME ## _; }											\
-	TYPE& NAME()													\
-	{	return *NAME ## _; }										\
-	const TYPE& NAME() const										\
-	{	return *NAME ## _; }										\
-private:															\
-	NAME ## _ptr_t	NAME ## _;										\
-public:
-
+#define STANDARD_COMPOSITION_MEMBERS( TYPE, NAME ) \
+	void set_ ## NAME (const Teuchos::RefCountPtr< TYPE >& NAME ) \
+	{	NAME ## _ = NAME ; } \
+	Teuchos::RefCountPtr< TYPE > get_ ## NAME() const \
+	{	return NAME ## _; } \
+	TYPE& NAME() \
+	{	return *NAME ## _; } \
+	const TYPE& NAME() const \
+	{	return *NAME ## _; } \
+private: \
+	Teuchos::RefCountPtr< TYPE > NAME ## _; \
+public: \
+  typedef Teuchos::RefCountPtr< TYPE > NAME ## _ptr_t;
 
 ///
 /** Macro that adds <<std comp>> members for a composition association.
@@ -98,31 +90,24 @@ public:
 	};
   \endverbatim
   *
-  * Note that the macro adds the following type and data members
+  * Note that the macro adds the following data member
   * to the class declaration:<br>
   \verbatim
-	public:
-		Teuchos::RefCountPtr<TYPE> NAME_ptr_t;
 	private:
-		NAME_ptr_t NAME_;		
+		Teuchos::RefCountPtr< TYPE > NAME_;		
   \endverbatim
-  *
-  * Note that since this macro defines a public type it must be
-  * included before any other declarations that may need to refere to
-  * the type NAME_ptr_t (such as constuctors)
   */
 #define STANDARD_NONCONST_COMPOSITION_MEMBERS( TYPE, NAME ) \
-	typedef Teuchos::RefCountPtr<TYPE> \
-		NAME ## _ptr_t; \
-	void set_ ## NAME (const NAME ## _ptr_t& NAME ) \
+	void set_ ## NAME ( const Teuchos::RefCountPtr< TYPE >& NAME ) \
 	{	NAME ## _ = NAME ; } \
-	const NAME ## _ptr_t& get_ ## NAME() const \
+	Teuchos::RefCountPtr< TYPE > get_ ## NAME() const \
 	{	return NAME ## _; } \
 	TYPE& NAME() const \
 	{	return *NAME ## _; } \
 private: \
-	NAME ## _ptr_t	NAME ## _; \
-public:
+	Teuchos::RefCountPtr< TYPE > NAME ## _; \
+public: \
+  typedef Teuchos::RefCountPtr< TYPE > NAME ## _ptr_t;
 
 ///
 /** Macro that adds <<std comp>> members for a composition association.
@@ -143,33 +128,24 @@ public:
 	};
   \endverbatim
   *
-  * Note that the macro adds the following type and data members
+  * Note that the macro adds the following data member
   * to the class declaration:<br>
   \verbatim
-	public:
-		Teuchos::RefCountPtr<const TYPE> NAME_ptr_t;
 	private:
 		NAME_ptr_t NAME_;		
   \endverbatim
-  *
-  * Note that since this macro defines a public type it must be
-  * included before any other declarations that may need to refere to
-  * the type NAME_ptr_t (such as constuctors)
   */
-#define STANDARD_CONST_COMPOSITION_MEMBERS( TYPE, NAME )			\
-public:																\
-	typedef Teuchos::RefCountPtr<const TYPE>		\
-		NAME ## _ptr_t;												\
-	void set_ ## NAME (const NAME ## _ptr_t& NAME )					\
-	{	NAME ## _ = NAME ; }										\
-	NAME ## _ptr_t& get_ ## NAME()									\
-	{	return NAME ## _ ; }										\
-	const NAME ## _ptr_t& get_ ## NAME() const						\
-	{	return NAME ## _; }											\
-	const TYPE& NAME() const										\
-	{	return *NAME ## _; }										\
-private:															\
-	NAME ## _ptr_t	NAME ## _;										\
-public:
+#define STANDARD_CONST_COMPOSITION_MEMBERS( TYPE, NAME ) \
+public: \
+	void set_ ## NAME ( const Teuchos::RefCountPtr< const TYPE >& NAME ) \
+	{	NAME ## _ = NAME ; } \
+	Teuchos::RefCountPtr< const TYPE >& get_ ## NAME() const \
+	{	return NAME ## _; } \
+	const TYPE& NAME() const \
+	{	return *NAME ## _; } \
+private: \
+	Teuchos::RefCountPtr< const TYPE > NAME ## _; \
+public: \
+  typedef Teuchos::RefCountPtr< const TYPE > NAME ## _ptr_t;
 
 #endif	// STANDARD_COMPOSITION_MACROS_H
