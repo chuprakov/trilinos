@@ -47,7 +47,7 @@ const VectorWithOp& MatrixSymDiagonalStd::diag() const
 	return const_cast<MatrixSymDiagonalStd*>(this)->diag();
 }
 
-// Overridden from Matrix
+// Overridden from MatrixBase
 
 size_type MatrixSymDiagonalStd::rows() const
 {
@@ -61,11 +61,11 @@ size_type MatrixSymDiagonalStd::nz() const
 
 // Overridden from MatrixWithOp
 
-const VectorSpace& MatrixSymDiagonalStd::space_rows() const {
+const VectorSpace& MatrixSymDiagonalStd::space_cols() const {
 	return diag_->space();
 }
 
-const VectorSpace& MatrixSymDiagonalStd::space_cols() const {
+const VectorSpace& MatrixSymDiagonalStd::space_rows() const {
 	return diag_->space();
 }
 

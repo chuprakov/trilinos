@@ -47,9 +47,10 @@ public:
 	  */
 	virtual void Mp_StPtMtP(
 		MatrixSymWithOp* sym_lhs, value_type alpha
-		, EMatRhsPlaceHolder dummy_place_holder
-		, const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
-		, value_type beta = 1.0 ) const;
+		,EMatRhsPlaceHolder dummy_place_holder
+		,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
+		,value_type beta = 1.0
+		) const;
 
 	///
 	/** sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs).
@@ -60,9 +61,10 @@ public:
 	  */
 	virtual void Mp_StMtMtM(
 		MatrixSymWithOp* sym_lhs, value_type alpha
-		, EMatRhsPlaceHolder dummy_place_holder
-		, const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
-		, value_type beta = 1.0 ) const;
+		,EMatRhsPlaceHolder dummy_place_holder
+		,const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+		,value_type beta = 1.0
+		) const;
 
 };	// end class MatrixSymWithOp
 
@@ -74,9 +76,11 @@ inline
 /// sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
 void Mp_StPtMtP(
 	MatrixSymWithOp* sym_lhs, value_type alpha
-	, MatrixSymWithOp::EMatRhsPlaceHolder dummy_place_holder, const MatrixSymWithOp& M
-	, const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
-	, value_type beta = 1.0 )
+	,MatrixSymWithOp::EMatRhsPlaceHolder dummy_place_holder
+	,const MatrixSymWithOp& M
+	,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
+	,value_type beta = 1.0
+	)
 {
 	M.Mp_StPtMtP(sym_lhs,alpha,dummy_place_holder,gpms_rhs,gpms_rhs_trans,beta);
 }
@@ -85,9 +89,11 @@ inline
 /// sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs) + beta * sym_lhs
 void Mp_StMtMtM(
 	MatrixSymWithOp* sym_lhs, value_type alpha
-	, MatrixSymWithOp::EMatRhsPlaceHolder dummy_place_holder, const MatrixSymWithOp& M
-	, const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
-	, value_type beta = 1.0 )
+	,MatrixSymWithOp::EMatRhsPlaceHolder dummy_place_holder
+	,const MatrixSymWithOp& M
+	,const MatrixWithOp& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
+	,value_type beta = 1.0
+	)
 {
 	M.Mp_StMtMtM(sym_lhs,alpha,dummy_place_holder,mwo_rhs,mwo_rhs_trans,beta);
 }
