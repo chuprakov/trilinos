@@ -17,6 +17,8 @@
 #include <stdexcept>
 
 #include "SparseLinAlgPack/include/VectorWithOpMutableDense.h"
+#include "SparseLinAlgPack/include/VectorDenseEncap.h"
+#include "SparseLinAlgPack/include/GenPermMatrixSliceOp.h"
 #include "AbstractLinAlgPack/include/apply_op_helper.h"
 #include "ReleaseResource_ref_count_ptr.h"
 #include "WorkspacePack.h"
@@ -213,6 +215,7 @@ VectorWithOpMutableDense::sub_view( const Range1D& rng_in )
 #endif
 	if( rng == Range1D(1,this_dim) )
 		return rcp::rcp( this, false );
+	this->has_changed(); // This will result in a change in the vector
 	return rcp::rcp( new VectorWithOpMutableDense( v_(rng), rcp::null ) ); 
 }
 
@@ -248,6 +251,18 @@ void VectorWithOpMutableDense::commit_sub_vector( RTOp_MutableSubVector* sub_vec
 void VectorWithOpMutableDense::set_sub_vector( const RTOp_SubVector& sub_vec )
 {
 	VectorWithOpMutable::set_sub_vector(sub_vec); // ToDo: Provide specialized implementation?
+}
+
+void VectorWithOpMutableDense::Vp_StMtV(
+	value_type                       alpha
+	,const GenPermMatrixSlice        &P
+	,BLAS_Cpp::Transp                P_trans
+	,const VectorWithOp              &x
+	,value_type                      beta
+	)
+{
+	VectorDenseEncap  x_de(x);
+	SparseLinAlgPack::Vp_StMtV( &v_, alpha, P, P_trans, x_de(), beta );
 }
 
 // private

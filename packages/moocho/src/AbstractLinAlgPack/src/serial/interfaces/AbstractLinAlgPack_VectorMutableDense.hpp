@@ -177,6 +177,14 @@ public:
 	void commit_sub_vector( RTOp_MutableSubVector* sub_vec );
 	///
 	void set_sub_vector( const RTOp_SubVector& sub_vec );
+	///
+	void Vp_StMtV(
+		value_type                       alpha
+		,const GenPermMatrixSlice        &P
+		,BLAS_Cpp::Transp                P_trans
+		,const VectorWithOp              &x
+		,value_type                      beta
+		);
 
 	//@}
 
