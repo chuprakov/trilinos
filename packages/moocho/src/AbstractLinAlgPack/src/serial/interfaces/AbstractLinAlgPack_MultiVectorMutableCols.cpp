@@ -226,14 +226,14 @@ void MultiVectorMutableCols::syrk(
 	if( sym_gms().uplo() == BLAS_Cpp::upper ) {
 		for( int i = 1; i <= num_vecs; ++i ) {
 			for( int j = i; j <= num_vecs; ++j ) { // Upper triangle!
-				sym_gms().gms()(i,j) = dot(*col_vecs_[i-1],*col_vecs_[j-1]);
+				sym_gms().gms()(i,j) = beta * sym_gms().gms()(i,j) + alpha * dot(*col_vecs_[i-1],*col_vecs_[j-1]);
 			}
 		}
 	}
 	else {
 		for( int i = 1; i <= num_vecs; ++i ) {
 			for( int j = 1; j <= i; ++j ) { // Lower triangle!
-				sym_gms().gms()(i,j) = dot(*col_vecs_[i-1],*col_vecs_[j-1]);
+				sym_gms().gms()(i,j) = beta * sym_gms().gms()(i,j) + alpha * dot(*col_vecs_[i-1],*col_vecs_[j-1]);
 			}
 		}
 	}
