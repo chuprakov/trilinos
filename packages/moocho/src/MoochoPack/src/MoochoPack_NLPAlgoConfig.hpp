@@ -24,10 +24,12 @@ class rSQPAlgoContainer;
 class rSQPAlgoInterface;
 
 ///
-/** Responsible for configuring the containter with an rSQP algorithm object, configuring
-  * the algo with step, state etc. objects and initailizing the algorithm before the
-  * interations start.
-  */
+/** Interface for objects responsible for configuring an rSQP algorithm.
+ *
+ * Objects of this type configure a \c rSQPAlgoContainer object with an rSQP algorithm object,
+ * configuring the algo with step, state etc. objects and initailizing the algorithm before the
+ * interations start.
+ */
 class rSQPAlgo_Config {
 public:
 
@@ -43,11 +45,59 @@ public:
 	// Virtual destructor
 	virtual ~rSQPAlgo_Config() {}
 
-	/// Configure the rSQP algorithm container with an rSQP algorithm object (non-templated).
-	virtual void config_algo_cntr(rSQPAlgoContainer& algo_cntr, std::ostream* trase_out = 0) = 0;
+	///
+	/** Configure the rSQP algorithm container with an rSQP algorithm object.
+	 *
+	 * @param  algo_cntr
+	 *                [in/out] On input, \c algo_cntr may or may not already have
+	 *                a configured algorithm.  The options set from the interface
+	 *                \c rSQPSolverClientInterface may be used determine how the
+	 *                algorithm is to be configured.  On output, \c algo_cntr will
+	 *                have a configured algorithm (ready to call
+	 *                \c algo_cntr->algo().interface_print_algorithm(...)).
+	 * @param  trase_out
+	 *               [in/out] If <tt>trase_out != NULL</tt> on input, then \c *trase_out
+	 *               will recieve a discription about the logic of how the algorithm is
+	 *               configured.
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>algo_cntr != NULL</tt> (throw <tt>???</tt>)
+	 * <li> <tt>algo_cntr->get_nlp() != NULL</tt> (throw <tt>???</tt>)
+	 * <li> <tt>algo_cntr->get_track() != NULL</tt> (throw <tt>???</tt>)
+	 * </ul>
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>algo_cntr->algo() != NULL</tt> (throw <tt>???</tt>)
+	 * </ul>
+	 */
+	virtual void config_algo_cntr(
+		rSQPAlgoContainer*       algo_cntr
+		,std::ostream*           trase_out = 0
+		) = 0;
 
-	/// Initialize the rSQP algorithm object for the start of the rSQP iterations
-	virtual void init_algo(rSQPAlgoInterface& algo) = 0;
+	///
+	/** Initialize the rSQP algorithm object for the start of SQP iterations.
+	 *
+	 * @param  algo_cntr
+	 *                [in/out] On input, \c algo_cntr must already have
+	 *                a configured algorithm.   On output, \c algo_cntr will
+	 *                be ready to solve the NLP (i.e. ready to call
+	 *                \c algo_cntr->algo().dispatch(...)).
+	 *
+	 * Preconditions:<ul>
+	 * <li> <tt>algo_cntr != NULL</tt> (throw <tt>???</tt>)
+	 * <li> <tt>algo_cntr->get_nlp() != NULL</tt> (throw <tt>???</tt>)
+	 * <li> <tt>algo_cntr->get_track() != NULL</tt> (throw <tt>???</tt>)
+	 * <li> <tt>algo_cntr->get_algo() != NULL</tt> (throw <tt>???</tt>)
+	 * </ul>
+	 * 
+	 * Postconditions:<ul>
+	 * <li> <tt>algo_cntr</tt> ready to solve the NLP.
+	 * </ul>
+	 */
+	virtual void init_algo(
+		rSQPAlgoInterface* algo
+		) = 0;
 
 };	// end class rSQPAlgo_Config
 
