@@ -240,13 +240,16 @@ bool GeneralIterationPack::TestingPack::TestAlgorithm(std::ostream* out) {
 	algo.max_iter(5);
 
 	try {
-		_out	<< "* In the 5th iteration a Algorithm::InvalidConfigChange exception should be thrown.";
+		_out	<< "In the 5th (k= 4) iteration an Algorithm::InvalidConfigChange exception should be thrown.";
 		_out	<< "\nalgo.do_algorithm();\n";
 		algo.do_algorithm();
 		success = false;
+		_out
+			<< "Algorithm threw exception : false\n";
 	}
 	catch(Algorithm::InvalidConfigChange& excpt) {
-		_out << "\nCaught a Algorithm::InvalidConfigChange&: " << excpt.what() << endl;
+		_out << "\nAs expected!  Caught a Algorithm::InvalidConfigChange&: " << excpt.what() << endl
+			 << "Algorithm threw exception : true\n";
 	}
 
 	_out << "\n*** Congradulations, If you read this the tests for Algorithm"
@@ -261,6 +264,8 @@ bool GeneralIterationPack::TestingPack::TestAlgorithm(std::ostream* out) {
 	catch(...) {
 		_out << "\nCaught an unknown exception\n";
 	}
+
+	_out << "\n*** Oops, If you read this some function throw an unexpected exception and the tests have failed!\n";
 
 	return false;
 }

@@ -123,24 +123,28 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::os
 			*out<< result << endl;
 
 		if(out) 
-			*out<< "\n** Do illegal set_k(), should throw NoStorageAvailable: x.set_k(-1) = 4;\n";
+			*out<< "\n** Do illegal set_k(), should throw NoStorageAvailable: x.set_k(-1) = 4 : ";
 		try {
 			x.set_k(-1) = 4;
 			success = false;
+			if(out)
+				*out<< "false\n";
 		}
 		catch(const IterQuantity::NoStorageAvailable& excpt) {
 			if(out)
-				*out<< "** Caught IterQuantity::NoStorageAvailable: " << excpt.what() << endl;
+				*out<< "As expected!  Caught IterQuantity::NoStorageAvailable: " << excpt.what() << " : true\n" << endl;
 		}
 
 		if(out)
-			*out<< "\n** Do illegal get_k(), should throw QuanityNotSet: x.get_k(1);\n";
+			*out<< "\n** Do illegal get_k(), should throw QuanityNotSet: x.get_k(1) : ";
 		try {
 			x.get_k(1);
 			success = false;
+			if(out)
+				*out<< "false\n";
 		}
 		catch(const IterQuantity::QuanityNotSet& excpt) {
-			if(out) *out << "** Caught IterQuantity::QuanityNotSet: " << excpt.what() << endl;
+			if(out) *out << "As expected!   Caught IterQuantity::QuanityNotSet: " << excpt.what() << " : true\n" << endl;
 		}
 
 		if(out) *out	<< "\nx.next_iteration();\n";
@@ -306,25 +310,29 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::os
 			*out<< r << " : " << result << endl;
 
 		if(out)
-			*out<< "\n** Do illegal set_k(), should throw NoStorageAvailable: x.set_k(-2) = 4;\n";
+			*out<< "\n** Do illegal set_k(), should throw NoStorageAvailable: x.set_k(-2) = 4 : ";
 		try {
 			x.set_k(-2) = 4;
 			success = false;
+			if(out)
+				*out<< "false\n";
 		}
 		catch(const IterQuantity::NoStorageAvailable& excpt) {
 			if(out)
-				*out<< "Caught IterQuantity::NoStorageAvailable: " << excpt.what() << endl;
+				*out<< "As expected!  Caught IterQuantity::NoStorageAvailable: " << excpt.what() << " : true\n" << endl;
 		}
 
 		if(out)
-			*out<< "\n** Do illegal get_k(), should throw QuanityNotSet: x.get_k(1);\n";
+			*out<< "\n** Do illegal get_k(), should throw QuanityNotSet: x.get_k(1) : ";
 		try {
 			x.get_k(1);
 			success = false;
+			if(out)
+				*out<< "false\n";
 		}
 		catch(const IterQuantity::QuanityNotSet& excpt) {
 			if(out)
-			*out<< "Caught IterQuantity::QuanityNotSet: " << excpt.what() << endl;
+			*out<< "As expected!  Caught IterQuantity::QuanityNotSet: " << excpt.what() << " : true\n" << endl;
 		}
 
 		if(out)
@@ -592,25 +600,29 @@ bool GeneralIterationPack::TestingPack::TestIterQuantityAccessContiguous(std::os
 
 
 		if(out)
-			*out<< "\n** Do illegal set_k(), should throw NoStorageAvailable: x.set_k(-4) = 4;\n";
+			*out<< "\n** Do illegal set_k(), should throw NoStorageAvailable: x.set_k(-4) = 4 : ";
 		try {
 			x.set_k(-4) = 4;
 			success = false;
+			if(out)
+				*out<< "false\n";
 		}
 		catch(const IterQuantity::NoStorageAvailable& excpt) {
 			if(out)
-				*out<< "** Caught IterQuantity::NoStorageAvailable: " << excpt.what() << endl;
+				*out<< "As expected!  Caught IterQuantity::NoStorageAvailable: " << excpt.what() << " : true\n" << endl;
 		}
 
 		if(out)
-			*out<< "\n** Do illegal get_k(), should throw QuanityNotSet: x.get_k(1);\n";
+			*out<< "\n** Do illegal get_k(), should throw QuanityNotSet: x.get_k(1) : ";
 		try {
 			x.get_k(1);
 			success = false;
+			if(out)
+				*out<< "false\n";
 		}
 		catch(const IterQuantity::QuanityNotSet& excpt) {
 			if(out)
-			*out<< "** Caught IterQuantity::QuanityNotSet: " << excpt.what() << endl;
+				*out<< "As expected!  Caught IterQuantity::QuanityNotSet: " << excpt.what() << " : true" << endl;
 		}
 
 		if(out)
