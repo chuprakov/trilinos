@@ -44,6 +44,10 @@ NLPAlgo::dispatch() {
 			return NLPSolverClientInterface::MAX_ITER_EXCEEDED;
 		case IterationPack::MAX_RUN_TIME_EXCEEDED:
 			return NLPSolverClientInterface::MAX_RUN_TIME_EXCEEDED;
+		case IterationPack::INTERRUPTED_TERMINATE_TRUE:
+			return NLPSolverClientInterface::SOLUTION_FOUND;
+		case IterationPack::INTERRUPTED_TERMINATE_FALSE:
+			return NLPSolverClientInterface::ALGORITHMIC_ERROR;
 		default:
 			assert(0);
 	}

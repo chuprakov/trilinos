@@ -303,6 +303,12 @@ void MoochoTrackerConsoleStd::output_final( const Algorithm& p_algo
 		case IterationPack::MAX_RUN_TIME_EXCEEDED:
 			o << "\nOops!  Not the solution.  Maximum runtime exceeded!\n";
 			break;
+		case IterationPack::INTERRUPTED_TERMINATE_TRUE:
+			o << "\nJackpot? The user terminated the algorithm but said to return optimal!!!!!!\n";
+			break;
+		case IterationPack::INTERRUPTED_TERMINATE_FALSE:
+			o << "\nOops!  Not the solution.  The user terminated the algorithm and said to return non-optimal!\n";
+			break;
 		default:
 			assert(0);
 	}

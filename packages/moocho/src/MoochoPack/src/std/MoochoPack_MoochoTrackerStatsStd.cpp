@@ -132,6 +132,12 @@ void MoochoTrackerStatsStd::output_final( const Algorithm& p_algo
 		case IterationPack::MAX_RUN_TIME_EXCEEDED:
 			o << "max_run_time";
 			break;
+		case IterationPack::INTERRUPTED_TERMINATE_TRUE:
+			o << "interrupted_solved";
+			break;
+		case IterationPack::INTERRUPTED_TERMINATE_FALSE:
+			o << "interrupted_not_solved";
+			break;
 		default:
 			assert(0);
 	}

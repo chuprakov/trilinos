@@ -81,6 +81,9 @@ namespace IterationPack {
   * and thereby taking over control of the algorithm.
   *
   * These functions can be invoked in any state of the algorithm.
+	*
+	* Note that the currently running algorithm can always be interupted
+	* by invoking the SIGINT signal (i.e. Ctrl-C) from the console.
   */
 class Algorithm {
 public:
@@ -120,6 +123,10 @@ public:
 	/// Thrown if a member function is called while <tt>this</tt> is in an invalid running state..
 	class InvalidConfigChange : public std::logic_error
 	{public: InvalidConfigChange(const std::string& what_arg) : std::logic_error(what_arg) {}};
+
+	/// Thrown if Algorithm was interrupted by the user
+	class AlgorithmInterrupted : public std::runtime_error
+	{public: AlgorithmInterrupted(const std::string& what_arg) : std::runtime_error(what_arg) {}};
 
 	//@}
 
@@ -624,6 +631,7 @@ public:
 	//@}
 
 private:
+
 	// /////////////////////////////////////////////////////
 	// Private types
 
@@ -692,10 +700,9 @@ private:
 		TIME_STAT_PERCENT_OFFSET	= 4;
 	///
 	enum { NUM_STEP_TIME_STATS = 5 };
-	
-	///
-	void compute_final_time_stats() const;
 
+	///
+	enum EInterruptStatus { NOT_INTERRUPTED=0, STOP_END_STEP=1, STOP_END_ITER=2, ABORT_PROGRAM=3 };
 
 	// /////////////////////////////////////////////////////
 	// Private data members
@@ -704,7 +711,7 @@ private:
 
 #ifdef DOXYGEN_COMPILE
 	AlgorithmState       *state;
-	AlgorithmTracker       *track;
+	AlgorithmTracker     *track;
 	AlgorithmStep        *steps;
 #else
 	state_ptr_t				state_;
@@ -806,6 +813,24 @@ private:
 	mutable double total_time_;
 	// Records the total computed time for the algorithm.
 
+	static int num_proc_;
+	// The number of processors (only meaningful if MPI is being used)
+
+	static int proc_rank_;
+	// Which processor this is (only meaningfull if MPI is being used)
+
+	static bool interrupt_called_;
+	// A flag for if an interrupt is called
+
+	static bool processed_user_interrupt_;
+	// A flag for if the user has already selected the interrupt mode
+
+	static EInterruptStatus interrupt_status_;
+	// Records if the process was interupted or not.
+
+	static bool interruptTerminateReturn_;
+	// Records if the algorithm is to be terminated with true or false
+
 	// /////////////////////////////////////////////////////
 	// Private member functions
 
@@ -814,7 +839,6 @@ private:
 
 	/// Validate an assoc_step_poss and throw a DoesNotExist exception if it does not.
 	poss_type validate(const assoc_steps_ele_list_t& assoc_list, poss_type assoc_step_poss, int past_end = 0) const;
-
 
 	/// Validate that <tt>this</tt> is in a specific running state.
 	void validate_in_state(ERunningState running_state) const;
@@ -865,6 +889,17 @@ private:
 
 	/// EAssocStepType -> EDoStepType
 	EDoStepType do_step_type(EAssocStepType assoc_step_type);
+
+	///
+	void compute_final_time_stats() const;
+
+	// Look for interrup
+	void look_for_interrupt();
+
+public:
+
+	// This is put here out of need.  Not for any user to call!
+	static void interrupt();
 
 };	// end class Algorithm
 

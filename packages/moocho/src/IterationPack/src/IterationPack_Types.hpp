@@ -37,6 +37,8 @@ enum EAlgoReturn {
 	,TERMINATE_FALSE
 	,MAX_ITER_EXCEEDED
 	,MAX_RUN_TIME_EXCEEDED
+	,INTERRUPTED_TERMINATE_TRUE
+	,INTERRUPTED_TERMINATE_FALSE
 };
 ///
 class InvalidTypeCastException : public std::logic_error

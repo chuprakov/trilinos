@@ -38,7 +38,15 @@ void AlgorithmTrackTesting::output_iteration(const Algorithm& algo) const {
 }
 
 void AlgorithmTrackTesting::output_final(const Algorithm& algo, EAlgoReturn algo_return) const {
-	char algo_return_name[3][20] = { "TERMINATE_TRUE" ,"TERMINATE_FALSE" ,"MAX_ITER_EXCEEDED" };
+	char algo_return_name[6][50] =
+		{
+			"TERMINATE_TRUE"
+			,"TERMINATE_FALSE"
+			,"MAX_ITER_EXCEEDED"
+			,"MAX_RUN_TIME_EXCEEDED"
+			,"INTERRUPTED_TERMINATE_TRUE"
+			,"INTERRUPTED_TERMINATE_FALSE"
+		};
 	std::ostream &o = journal_out();
 	o << "\ntrack.output_final(algo,algo_return) called for the iteration k = "
 	  << algo.state().k() << " and algo_return = " << algo_return_name[algo_return]

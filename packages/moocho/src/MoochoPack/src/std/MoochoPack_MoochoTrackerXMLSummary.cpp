@@ -117,6 +117,12 @@ void MoochoTrackerXMLSummary::output_final(const Algorithm& algo
 		case IterationPack::MAX_RUN_TIME_EXCEEDED:
 			strcpy(soln_status, "MAX_RUN_TIME");
 			break;
+		case IterationPack::INTERRUPTED_TERMINATE_TRUE:
+			strcpy(soln_status, "INTERRUPTED_SOLVED");
+			break;
+		case IterationPack::INTERRUPTED_TERMINATE_FALSE:
+			strcpy(soln_status, "INTERRUPTED_FAILED");
+			break;
 		default:
 			strcpy(soln_status, "UNKNOWN_STATUS");
 			break;

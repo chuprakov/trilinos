@@ -158,17 +158,17 @@ bool EvalNewPointStd_Step::do_step(
 	const bool c_k_updated  = m  > 0 ? c_iq->updated_k(0)  : false;
 	const bool Gc_k_updated = m  > 0 ? Gc_iq->updated_k(0) : false;
 	nlp.unset_quantities();
-	nlp.set_f( &f_iq.set_k(0) );
-	nlp.set_Gf( &Gf_iq.set_k(0) );
+	if(!f_k_updated) nlp.set_f( &f_iq.set_k(0) );
+	if(!Gf_k_updated) nlp.set_Gf( &Gf_iq.set_k(0) );
 	if( m > 0 ) {
-		nlp.set_c( &c_iq->set_k(0) );
-		nlp.set_Gc( &Gc_iq->set_k(0) );
+		if(!c_k_updated) nlp.set_c( &c_iq->set_k(0) );
+		if(!Gc_k_updated) nlp.set_Gc( &Gc_iq->set_k(0) );
 	}
 
 	// Calculate Gc at x_k
 	bool new_point = true;
 	if(m > 0) {
-		nlp.calc_Gc( x, new_point );
+		if(!Gc_k_updated) nlp.calc_Gc( x, new_point );
 		new_point = false;
 	}
 
@@ -280,11 +280,14 @@ bool EvalNewPointStd_Step::do_step(
 	// reduction decomposition system object, then nlp will be hip to the
 	// basis selection and will permute these quantities to that basis.
 	// Note that x will already be permuted to the current basis.
-	nlp.calc_Gf( x, new_point ); new_point = false;
-	if( m && (!c_k_updated || new_decomp_selected ) )
+	if(!Gf_k_updated) { nlp.calc_Gf( x, new_point ); new_point = false; }
+	if( m && (!c_k_updated || new_decomp_selected ) ) {
+		if(c_k_updated) nlp.set_c( &c_iq->set_k(0) ); // This was not set earlier!
 		nlp.calc_c( x, false);
-	if( !f_k_updated || new_decomp_selected )
+	}
+	if(!f_k_updated) {
 		nlp.calc_f( x, false);
+	}
 	nlp.unset_quantities();
 
 	// Check for NaN and Inf

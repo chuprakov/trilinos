@@ -27,7 +27,7 @@
 
 namespace {
 
-void report_final_failure( const MoochoPack::NLPAlgoState& s, NLPInterfacePack::NLP* nlp )
+void report_final_point( const MoochoPack::NLPAlgoState& s, const bool optimal, NLPInterfacePack::NLP* nlp )
 {
 	const AbstractLinAlgPack::size_type
 		m  = nlp->m(),
@@ -39,7 +39,7 @@ void report_final_failure( const MoochoPack::NLPAlgoState& s, NLPInterfacePack::
 			x_iq.get_k(0)                                                      // x
 			,( m  && s.lambda().updated_k(0) ) ? &s.lambda().get_k(0)  : NULL  // lambda
 			,( nb && s.nu().updated_k(0)     ) ? &s.nu().get_k(0)      : NULL  // nu
-			, false                                                            // optimal = false
+			, optimal                                                          // optimal = false
 			);
 	}
 }
@@ -89,11 +89,11 @@ NLPAlgoContainer::find_min()
 		solve_return = algo().dispatch();
 	}
 	catch(...) {
-		report_final_failure(algo().retrieve_state(),&nlp());
+		report_final_point(algo().retrieve_state(),false,&nlp());
 		throw;
 	}
 	if( solve_return != SOLUTION_FOUND ) {
-		report_final_failure(algo().retrieve_state(),&nlp());
+		report_final_point(algo().retrieve_state(),solve_return==NLPSolverClientInterface::SOLUTION_FOUND,&nlp());
 	}
 	return solve_return;
 }
