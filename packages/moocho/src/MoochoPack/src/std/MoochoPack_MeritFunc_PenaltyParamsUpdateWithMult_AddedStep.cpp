@@ -140,8 +140,7 @@ bool MeritFunc_PenaltyParamsUpdateWithMult_AddedStep::do_step(Algorithm& _algo
 								, max( mult_fact * lb_j, small_mu_ )
 								);
 				}
-				// ToDo: Replace this with an iteration quantity kkt_error_k
-				value_type kkt_error = s.kkt_err().get_k(0);
+				value_type kkt_error = s.opt_kkt_err().get_k(0) + s.feas_kkt_err().get_k(0);
 				if(kkt_error <= kkt_near_sol_) {
 					if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 						out << "\nkkt_error = " << kkt_error << " <= kkt_near_sol = "
@@ -223,7 +222,7 @@ void MeritFunc_PenaltyParamsUpdateWithMult_AddedStep::print_step( const Algorith
 		<< L << "                mu(j) = max( ( 3.0 * mu(j) + abs(lambda_k(j)) ) / 4.0\n"
 		<< L << "                            , max( 1.001 * abs(lambda_k(j)) , small_mu ) )\n"
 		<< L << "            end\n"
-		<< L << "            kkt_error = kkt_err_k\n"
+		<< L << "            kkt_error = opt_kkt_err_k + feas_kkt_err_k\n"
 		<< L << "            if kkt_error <= kkt_near_sol then\n"
 		<< L << "                near_solution = true\n"
 		<< L << "            end\n"

@@ -112,8 +112,7 @@ bool MeritFunc_PenaltyParamUpdateGuts_AddedStep::do_step(Algorithm& _algo
 								  (3.0 * mu_km1 + min_mu) / 4.0	
 								, max( mult_fact * min_mu, small_mu_ )
 								); 
-				// ToDo: Replace this with an iteration quantity kkt_error_k
-				value_type kkt_error = s.kkt_err().get_k(0);
+				value_type kkt_error = s.opt_kkt_err().get_k(0) + s.feas_kkt_err().get_k(0);
 				
 				if(kkt_error <= kkt_near_sol_) {
 					if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
@@ -174,7 +173,7 @@ void MeritFunc_PenaltyParamUpdateGuts_AddedStep::print_step( const Algorithm& al
 		<< L << "        else\n"
 		<< L << "            mu_k = max(   ( 3.0 * mu_last + min_mu ) / 4.0\n"
 		<< L << "                        , max( mult_fact * min_mu , small_mu )     )\n"
-		<< L << "            kkt_error = kkt_err_k\n"
+		<< L << "            kkt_error = opt_kkt_err_k + feas_kkt_err_k\n"
 		<< L << "            if kkt_error <= kkt_near_sol then\n"
 		<< L << "                near_solution = true\n"
 		<< L << "            end\n"

@@ -429,7 +429,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr
 		storage_num[state_t::Q_f]				= 2;
 		storage_num[state_t::Q_c]				= 2;
 
-		storage_num[state_t::Q_kkt_err]			= 2;
+		storage_num[state_t::Q_opt_kkt_err]		= 2;
+		storage_num[state_t::Q_feas_kkt_err]	= 2;
 		storage_num[state_t::Q_rGL]				= 2;
 		storage_num[state_t::Q_lambda]			= 2;
 

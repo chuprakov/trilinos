@@ -96,7 +96,8 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 	assert_print_nan_inf( feas_err,"||c_k||inf",true,&out);
 
 	// kkt_err
-	s.kkt_err().set_k(0) = opt_err + feas_err;
+	s.opt_kkt_err().set_k(0) = opt_err;
+	s.feas_kkt_err().set_k(0) = feas_err;
 
 	// step_err
 	value_type
@@ -117,9 +118,8 @@ bool CheckConvergenceStd_AddedStep::do_step(Algorithm& _algo
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
 		out	<< "\nscale_kkt_factor = " << scale_kkt_factor
 			<< "\nopt_scale_factor = " << opt_scale_factor
-			<< "\nopt_err          = " << opt_err
-			<< "\nfeas_err         = " << feas_err
-			<< "\nkkt_err          = " << s.kkt_err().get_k(0)
+			<< "\nopt_err_k        = " << opt_err
+			<< "\nfeas_err_k       = " << feas_err
 			<< "\nstep_err         = " << step_err << std::endl;
 	}
 
@@ -176,7 +176,8 @@ void CheckConvergenceStd_AddedStep::print_step( const Algorithm& algo
 		<< L << "opt_err = (norm_inf(rGL_k) or norm_inf(GL_k))\n"
 		<< L << "    / opt_scale_factor\n"
 		<< L << "feas_err = norm_inf_c_k\n"
-		<< L << "kkt_err_k = opt_err + feas_err\n"
+		<< L << "opt_kkt_err_k = opt_err\n"
+		<< L << "feas_kkt_err_k = feas_err\n"
 		<< L << "if d_k is updated then\n"
 		<< L << "    step_err = max( |d_k(i)|/(1+|x_k(i)|), i=1..n )\n"
 		<< L << "else\n"

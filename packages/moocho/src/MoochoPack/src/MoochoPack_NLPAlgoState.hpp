@@ -54,7 +54,8 @@ const std::string Delta_name			= "Delta";
 const std::string phi_name				= "phi";
 
 // KKT Info
-const std::string kkt_err_name			= "kkt_err";
+const std::string opt_kkt_err_name		= "opt_kkt_err";
+const std::string feas_kkt_err_name		= "feas_kkt_err";
 const std::string GL_name				= "GL";
 const std::string rGL_name				= "rGL";
 const std::string lambda_name			= "lambda";
@@ -351,10 +352,15 @@ public:
 	  */
 	//@{
 
-	/// kkt_error
-	virtual IQA_value_type& kkt_err();
+	/// Scaled KKT error for optimality ||rGL||
+	virtual IQA_value_type& opt_kkt_err();
 	///
-	virtual const IQA_value_type& kkt_err() const;
+	virtual const IQA_value_type& opt_kkt_err() const;
+
+	/// Scaled KKT error for feasibility ||c||
+	virtual IQA_value_type& feas_kkt_err();
+	///
+	virtual const IQA_value_type& feas_kkt_err() const;
 
 	/// GL:  Gradient of the Lagrangian ( n x 1 )
 	virtual IQA_Vector& GL();
@@ -434,11 +440,11 @@ private:
 	enum EIQType { VALUE_TYPE, VECTOR, SP_VECTOR, MATRIX_WITH_OP }; 
 
 	///
-	enum { num_value_type_quantities = 7 };
+	enum { num_value_type_quantities = 8 };
 	/// Enumeration for the value_type iteration quantities
 	enum E_IterQuantities_value_type {
 		Q_f,				Q_zeta,				Q_eta,					Q_alpha,
-		Q_mu,				Q_phi,				Q_kkt_err
+		Q_mu,				Q_phi,				Q_opt_kkt_err,			Q_feas_kkt_err
 	};
 
 	///

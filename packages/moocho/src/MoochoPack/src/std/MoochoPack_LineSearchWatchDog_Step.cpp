@@ -127,7 +127,7 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 
 	if( watch_k_ == NORMAL_LINE_SEARCH ) {
 		const value_type
-			kkt_error	= s.kkt_err().get_k(0);
+			kkt_error	= s.opt_kkt_err().get_k(0) + s.feas_kkt_err().get_k(0);
 		if( kkt_error <= use_line_search_correct_kkt_tol() ) {
 			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 				out	<< "\nkkt_error = " << kkt_error << " <= use_line_search_correct_kkt_tol = "
@@ -408,7 +408,7 @@ void ReducedSpaceSQPPack::LineSearchWatchDog_Step::print_step( const Algorithm& 
 		<< L << "phi_kp1 = phi_k.value(f_kp1,c_kp1)\n"
 		<< L << "phi_k = phi.value(f_k,c_k)\n"
 		<< L << "if watch_k == NORMAL_LINE_SEARCH then\n"
-		<< L << "    kkt_error = kkt_err_k\n"
+		<< L << "    kkt_error = opt_kkt_err_k + feas_kkt_err_k\n"
 		<< L << "    if kkt_error <= use_line_search_correct_kkt_tol then\n"
 		<< L << "        *** Start using watchdog from now on\n"
 		<< L << "        watch_k = 0\n"

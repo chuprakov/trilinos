@@ -58,7 +58,7 @@ const std::string * const rSQPState::iq_name_all_[rSQPState::num_quantites] = {
 	// value_type names
 
 	&f_name,				&zeta_name,					&eta_name,					&alpha_name,
-	&mu_name,				&phi_name,					&kkt_err_name,
+	&mu_name,				&phi_name,					&opt_kkt_err_name,			&feas_kkt_err_name,
 
 	// Vector names
 
@@ -455,12 +455,20 @@ const rSQPState::IQA_value_type& rSQPState::phi() const {
 
 // KKT Info
 
-rSQPState::IQA_value_type& rSQPState::kkt_err() {
-	return iqa_value_type(Q_kkt_err);
+rSQPState::IQA_value_type& rSQPState::opt_kkt_err() {
+	return iqa_value_type(Q_opt_kkt_err);
 }
 
-const rSQPState::IQA_value_type& rSQPState::kkt_err() const {
-	return iqa_value_type(Q_kkt_err);
+const rSQPState::IQA_value_type& rSQPState::opt_kkt_err() const {
+	return iqa_value_type(Q_opt_kkt_err);
+}
+
+rSQPState::IQA_value_type& rSQPState::feas_kkt_err() {
+	return iqa_value_type(Q_feas_kkt_err);
+}
+
+const rSQPState::IQA_value_type& rSQPState::feas_kkt_err() const {
+	return iqa_value_type(Q_feas_kkt_err);
 }
 
 rSQPState::IQA_Vector& rSQPState::GL() {
