@@ -90,6 +90,12 @@ public:
 	 * @param  applyAs  [in] If <tt>applyAs==APPLY_APPLY</tt> then <tt>op->Apply()</tt> will be used
 	 *                  and if <tt>applyAs==APPLY_APPLY_INVERSE</tt> then <tt>op->ApplyInverse()</tt>
 	 *                  is used instead.
+	 * @param  adjointSupport
+	 *                  [in] Determines if it is to be assumed that adjoints are supported on the
+	 *                  underlying <tt>Epetra_Operator</tt> object <tt>op</tt>.  If
+	 *                  <tt>adjointSupport==EPETRA_OP_ADJOINT_SUPPORTED</tt> then <tt>this->opSupported(TRANS)</tt>
+	 *                  will return <tt>true</t>.  If <tt>adjointSupport==EPETRA_OP_ADJOINT_UNSUPPORTED</tt> then
+	 *                  <tt>this->opSupported(TRANS)</tt> will return <tt>false</tt>.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>op.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
@@ -98,6 +104,8 @@ public:
 	 * Postconditions:<ul>
 	 * <li> <tt>this->domain().get() != NULL</tt>
 	 * <li> <tt>this->range().get() != NULL</tt>
+	 * <li> <tt>this->opSupported(NOTRANS) == true</tt>
+	 * <li> <tt>this->opSupported(TRNAS) == adjointSupport==EPETRA_OP_ADJOINT_SUPPORTED</tt>
 	 * </ul>
 	 */
 	void initialize(
