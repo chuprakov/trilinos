@@ -268,6 +268,11 @@ namespace TSFExtended
       /** get the element at the given global index */
       const Scalar& getElement(Index globalIndex) const 
       {return castToAccessible()->getElement(globalIndex);}
+
+      /** Get a batch of elements */
+      void getElements(const Index* globalIndices, int numElems,
+                       vector<Scalar>& elems) const 
+      {castToAccessible()->getElements(globalIndices, numElems, elems);}
       //@}
       
       /** Get a stopwtach for timing vector operations */
@@ -529,6 +534,7 @@ namespace TSFExtended
     
     TSFCore::assign(ptr().get(), alpha);
   }
+  
 }
 
 

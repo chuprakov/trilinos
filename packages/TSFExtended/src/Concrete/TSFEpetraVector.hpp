@@ -87,6 +87,10 @@ namespace TSFExtended
       //@{
       /** */
       const double& getElement(Index globalIndex) const ;
+
+      /** */
+      void getElements(const Index* globalIndices, int numElems,
+                       vector<Scalar>& elems) const ;
       //@}
       
 

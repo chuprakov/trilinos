@@ -55,6 +55,19 @@ const double& EpetraVector::getElement(Index index) const
   return (*epetra_vec())[myMap.LID(index)];
 }
 
+void EpetraVector::getElements(const Index* globalIndices, int numElems,
+                               vector<double>& elems) const
+{
+  elems.resize(numElems);
+  const Epetra_BlockMap& myMap = epetra_vec()->Map();
+  RefCountPtr<const Epetra_Vector> epv = epetra_vec();
+
+  for (int i=0; i<numElems; i++)
+    {
+      elems[i] = (*epv)[myMap.LID(globalIndices[i])];
+    }
+}
+
 void EpetraVector::setElements(size_t numElems, const Index* globalIndices,
                                const double* values)
 {
