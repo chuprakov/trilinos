@@ -333,6 +333,16 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(
 			*trase_out << "\nDetected that NLP object also supports the NLPSecondOrderInfo interface!\n";
 	}
 
+	// Make sure that we can handle this type of NLP currently
+	THROW_EXCEPTION(
+		m == 0, std::logic_error
+		,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+		"can not currently solve an unconstrained NLP!" );
+	THROW_EXCEPTION(
+		n == m, std::logic_error
+		,"rSQPAlgo_ConfigMamaJama::config_algo_cntr(...) : Error, "
+		"can not currently solve a square system of equations!" );
+	
 	// //////////////////////////////////////////////////////
 	// C.1.  Sort out the options
 
