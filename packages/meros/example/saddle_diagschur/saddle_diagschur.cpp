@@ -1,43 +1,5 @@
-#include "TSFMPI.h"
-#include "TSFOut.h"
-#include "TSFVectorType.h"
-#include "TSFProductSpace.h"
-#include "TSFBlockLinearOperator.h"
-#include "PetraVectorType.h"
-#include "PetraVectorSpace.h"
-#include "PetraVector.h"
-#include "PetraMatrix.h"
-#include "GMRESSolver.h"
-#include "AZTECSolver.h"
-#include "TSFPreconditionerFactory.h"
-#include "GenericRightPreconditioner.h"
-#include "ILUKRightPreconditionerFactory.h"
-#include "TSFPreconditioner.h"
-#include "TSFMatrixOperator.h"
-#include "Epetra_Vector.h"
-
-#ifdef EPETRA_MPI
-#include "Epetra_MpiComm.h"
-#else
-#include "Epetra_SerialComm.h"
-#endif
-
-#include "Vbr2Petra.h"
-#include "ReadPetra.h"
-#include "TSFLinearOperator2EpetraRowMatrix.h"
-#include "NSBlockPreconditionerFactory.h"
-#include "SchurFactory.h"
-#include "SchurFactoryBase.h"
-#include "DiagSchurFactory.h"
-#include "DiagRightOperatorSource.h"
-#include "GMRESSolver.h"
-#include "Aztec2TSF.h"
-
-#include "ml_include.h"
-#include "ml_epetra_operator.h"
-#include "ml_epetra_utils.h"
-
-#include "TSFIdentityOperator.h"
+#include "diag.h"
+#include "Epetra2TSFutils.h"
 
 using namespace TSF;
 using namespace SPP;
@@ -67,61 +29,26 @@ int main(int argc, void** argv)
   Epetra_Map *PressureMap = new Epetra_Map(Npressure, 0, *comm);
   Epetra_Map *BlockMap    = new Epetra_Map(Nvelocity + Npressure, 0, *comm);
   
-
   //      |    F    Bt   | 
   //      |    B    C    |
-
   // Read F,B, and B^T from files and store as epetra crs matrices
   
   Epetra_CrsMatrix *F_crs, *Bt_crs, *B_crs;
+  Epetra_Vector *x_epet   = new Epetra_Vector(*BlockMap),*rhs_epet = new Epetra_Vector(*BlockMap);
   ReadPetraMatrix(VelocityMap, VelocityMap,  &F_crs, "../data/mac/F.serial");
   ReadPetraMatrix(VelocityMap, PressureMap, &Bt_crs, "../data/mac/Bt.serial");
   ReadPetraMatrix(PressureMap, VelocityMap,  &B_crs, "../data/mac/B.serial");
+  ReadPetraVector(x_epet  , "../data/mac/init_guess");
+  ReadPetraVector(rhs_epet, "../data/mac/rhs");
+  // Build TSF vector spaces. 
   
-  // Build TSF vector spaces. This could probably go into a subroutine so
-  // we could hide the details!!!
-  
-  Epetra_Map    *vel1 = (Epetra_Map *) &(F_crs->OperatorDomainMap());
-  Epetra_Map    *vel2 = (Epetra_Map *) &(F_crs->RowMatrixColMap());
-  Epetra_Import *vel3  = (Epetra_Import *) F_crs->RowMatrixImporter();
-  TSFSmartPtr<Epetra_Map>    tv1 = TSFSmartPtr<Epetra_Map>(vel1,false);
-  TSFSmartPtr<Epetra_Map>    tv2 = TSFSmartPtr<Epetra_Map>(vel2,false);
-  TSFSmartPtr<Epetra_Import> tv3 = TSFSmartPtr<Epetra_Import>(vel3,false);
-  TSFVectorSpace velocitySpace = new PetraVectorSpace( tv1, tv2, tv3);
+  TSFVectorSpace velocitySpace = EpetraCRS2TSFVspace(F_crs);
+  TSFVectorSpace pressureSpace = EpetraCRS2TSFVspace(Bt_crs);
 
-  Epetra_Map *p1 = (Epetra_Map *) &(Bt_crs->OperatorDomainMap());
-  Epetra_Map *p2 = (Epetra_Map *) &(Bt_crs->RowMatrixColMap());
-  Epetra_Import *p3 = (Epetra_Import *) Bt_crs->RowMatrixImporter();
-  TSFSmartPtr<Epetra_Map> tp1 = TSFSmartPtr<Epetra_Map>(p1,false);
-  TSFSmartPtr<Epetra_Map> tp2 = TSFSmartPtr<Epetra_Map>(p2,false);
-  TSFSmartPtr<Epetra_Import> tp3 = TSFSmartPtr<Epetra_Import>(p3,false);
-  TSFVectorSpace pressureSpace = new PetraVectorSpace( tp1, tp2, tp3);
-
-  
-  // Convert block matrices to TSF matrices. Each individual conversion
-  // could be shoved into a function to hide the details.
-  
-  PetraMatrix*  F_petra = new PetraMatrix(velocitySpace, velocitySpace);
-  F_petra->setPetraMatrix(F_crs,true);   // insert epetra matrix into TSF matrix.
-  TSFLinearOperator F_tsf = F_petra;     // 'true' indicates that when this TSF matrix
-                                         // is deleted (automatically via smart
-                                         // pointers),  the underlying epetra matrix is 
-                                         // also deleted.
-
-  // PetraMatrix(domain space, range space)
-  PetraMatrix* Bt_petra = new PetraMatrix(pressureSpace, velocitySpace);
-  Bt_petra->setPetraMatrix(Bt_crs,true); // insert epetra matrix into TSF matrix.
-  TSFLinearOperator Bt_tsf = Bt_petra;   // 'true' indicates that when this TSF matrix
-                                         // is deleted (automatically via smart
-                                         // pointers),  the underlying epetra matrix is 
-                                         // also deleted.
-
-  PetraMatrix* B_petra = new PetraMatrix(velocitySpace, pressureSpace);
-  B_petra->setPetraMatrix(B_crs,true); // insert epetra matrix into TSF matrix.
-  TSFLinearOperator B_tsf = B_petra;   // 'true' indicates that when this TSF matrix
-                                         // is deleted (automatically via smart
-                                         // pointers),  the underlying epetra matrix is 
-                                         // also deleted.
+   // Convert block matrices to TSF matrices. 
+  TSFLinearOperator F_tsf  = EpetraCRS2TSF(velocitySpace,velocitySpace,F_crs);
+  TSFLinearOperator Bt_tsf = EpetraCRS2TSF(pressureSpace,velocitySpace,Bt_crs);
+  TSFLinearOperator B_tsf  = EpetraCRS2TSF(velocitySpace,pressureSpace,B_crs);
 
   // Set up 2x2 block TSF operator
   
@@ -150,12 +77,9 @@ int main(int argc, void** argv)
 
   TSFLinearSolver FSolver;
   ML_solverData   Fsolver_data;
-  
   bool symmetric = false;
-
   ML_TSF_defaults(FSolver, &Fsolver_data, symmetric, F_crs);
   FSolver.setVerbosityLevel(4);
-  
   TSFLinearOperator F_inv = F_tsf.inverse(FSolver);
   
   // 2) Build a Schur complement factory for getting inv(X) approximation.
@@ -176,7 +100,6 @@ int main(int argc, void** argv)
   TSFLinearSolver schurSolver = new GMRESSolver(tol, maxiter, kspace);
   schurSolver.setVerbosityLevel(4);
   
-
   // 2 b) Build a Schur complement factory of type DiagSchurFactory.
   SchurFactory sfac = new DiagSchurFactory(schurSolver);
  
@@ -191,15 +114,12 @@ int main(int argc, void** argv)
   //      For a DiagSchur preconditioner we just need saddleA.
   //      The operator source can build Dinv from A (or we can pass it in).
   
-  
   TSFOperatorSource opSrc = new DiagRightOperatorSource(saddleA_tsf);
-
 
   // 4 b) Create the DiagSchur style preconditioner as a TSFLinearOperator
   TSFPreconditioner P = pfac.createPreconditioner(opSrc);
   TSFLinearOperator saddleM_tsf = P.right();
   
-
   // Build a map. This map is intended to go between vbr-style vectors and TSF-style vectors. 
   // Since this example does not contain VBR data, the map is pointless but needed
   // for the proper creation of an epetra wrapper around a TSF matrix.
@@ -208,9 +128,8 @@ int main(int argc, void** argv)
   //               map[i] == 1 indicates that the ith variable is in the
   //                           second block.
   
-  int *imap = (int *) malloc(sizeof(int)*(Nvelocity + Npressure));
-  for (int i = 0; i < Nvelocity; i++) imap[i] = 0;
-  for (int i = Nvelocity; i < Nvelocity + Npressure; i++)  imap[i] = 1;
+  int *imap;
+  imap = Vbr2TSF(Nvelocity, Npressure);
   
   // Build the epetra matrix wrapper around the TSF block matrix
   
@@ -225,13 +144,6 @@ int main(int argc, void** argv)
                                             (dynamic_cast<TSFLinearOperator2EpetraRowMatrix*>
                                              (saddleA_epet))->getBlockAssignments(), 
                                             EPETRA_INVERSE);
-  
-  // Read in 'x' and 'rhs'
-  
-  Epetra_Vector *x_epet   = new Epetra_Vector(*BlockMap);
-  Epetra_Vector *rhs_epet = new Epetra_Vector(*BlockMap);
-  ReadPetraVector(x_epet  , "../data/mac/init_guess");
-  ReadPetraVector(rhs_epet, "../data/mac/rhs");
   
   // Set up the outer iteration
   
