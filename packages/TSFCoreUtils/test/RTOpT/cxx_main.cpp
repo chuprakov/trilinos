@@ -136,7 +136,7 @@ int main( int argc, char* argv[] ) {
 		clp.setOption( "verbose", "quiet", &verbose, "Set if output is printed or not." );
 		clp.setOption( "n", &n, "Number of local vector elements." );
 		CommandLineProcessor::EParseCommandLineReturn parse_return = clp.parse(argc,argv);
-		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFULL ) return parse_return;
+		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL ) return parse_return;
 
     //
     // Use fully templated operators

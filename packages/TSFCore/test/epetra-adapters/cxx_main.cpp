@@ -165,7 +165,7 @@ int main_body( int argc, char* argv[] ) {
 		clp.setOption( "scalar", &scalar, "A scalar used in all computations." );
 		clp.setOption( "max-flop-rate", &max_flop_rate, "Approx flop rate used for loop timing." );
 		CommandLineProcessor::EParseCommandLineReturn parse_return = clp.parse(argc,argv);
-		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFULL ) return parse_return;
+		if( parse_return != CommandLineProcessor::PARSE_SUCCESSFUL ) return parse_return;
 
 		TEST_FOR_EXCEPTION(
 			num_mv_cols < 4, std::logic_error
