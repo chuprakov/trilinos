@@ -209,8 +209,8 @@ options_group EvalNewPointStd {
 *** more than an acceptable tolerance.
 ***
 options_group VariableBoundsTester {
-*    warning_tol   = 1e-10;
-*    error_tol     = 1e-5; *** The default is max_var_bounds_viol above.
+*    warning_tol   = 1e-10; *** (default)
+*    error_tol     = 1e-5; *** (default)
 }
 
 ***********************************************************
