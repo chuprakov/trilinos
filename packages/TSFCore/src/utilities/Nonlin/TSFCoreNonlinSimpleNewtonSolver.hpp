@@ -73,13 +73,14 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 	namespace mmp = MemMngPack;
 	if(out) *out << "\n*** Entering SimpleNewtonSolver::solve(...) ...\n";
 	// Create the data for the problem
-	const Index                                       n        = np->space_c()->dim();
+	const VectorSpace<Scalar>                         &space_c = *np->space_c();
+	const VectorSpace<Scalar>                         &space_y = *np->space_y();
 	Teuchos::RefCountPtr<Vector<Scalar> >             y        = Teuchos::rcp(y_inout,false);   // Initial guess/solution
-	Teuchos::RefCountPtr<Vector<Scalar> >             c        = np->space_c()->createMember(); // Residual
+	Teuchos::RefCountPtr<Vector<Scalar> >             c        = space_c.createMember();        // Residual
 	Teuchos::RefCountPtr<LinearOpWithSolve<Scalar> >  DcDy     = np->factory_DcDy()->create();  // Jacobian object
 	ETransp                                           opDcDy   = np->opDcDy();                  // Transpose argument for DcDy
-	Teuchos::RefCountPtr<Vector<Scalar> >             dy       = np->space_y()->createMember(); // Newton step for y
-	Teuchos::RefCountPtr<Vector<Scalar> >             y_new    = np->space_y()->createMember(); // Trial point for y
+	Teuchos::RefCountPtr<Vector<Scalar> >             dy       = space_y.createMember();        // Newton step for y
+	Teuchos::RefCountPtr<Vector<Scalar> >             y_new    = space_y.createMember();        // Trial point for y
 	// Compute the initial starting point
 	np->unsetQuantities(); np->set_c(&*c); np->set_DcDy(&*DcDy); // These pointers will be maintained throughout
 	np->calc_DcDy(*y,NULL); np->calc_c(*y,NULL,false);
@@ -97,9 +98,9 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 			if(out) *out << "\n*** newtonIter = " << newtonIter << std::endl;
 			// Check convergence
 			if(out) *out << "\nChecking for convergence ... : ";
-			const Scalar phi = 0.5*dot(*c,*c)/n, sqrt_phi = sqrt(phi); // merit function: phi(c) = 0.5*dot(c,c)/n
+			const Scalar phi = space_c.scalarProd(*c,*c), sqrt_phi = sqrt(phi); // merit function: phi(c) = <c,c>
 			const bool isConverged = sqrt_phi <= tol();
-			if(out) *out << "sqrt(phi) = sqrt(0.5*dot(c,c)/n) = " << sqrt_phi << ( isConverged ? " <= " : " > " ) << "tol = " << tol() << std::endl;
+			if(out) *out << "sqrt(phi) = sqrt(<c,c>) = " << sqrt_phi << ( isConverged ? " <= " : " > " ) << "tol = " << tol() << std::endl;
 			if(isConverged) {
 				np->unsetQuantities();
 				if(y_inout != y.get()) assign( y_inout, *y );  // Assign the solution if we have to
@@ -129,7 +130,7 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 			if(out && dumpAll) *out << "\ndy =\n" << *dy;
 			// Perform backtracking armijo line search
 			if(out) *out << "\nStarting backtracking line search iterations ...\n";
-			const Scalar Dphi = -2.0*phi; // D(phi(y+alpha*dy))/D(alpha) at alpha=0.0 => -dot(c,c)/n: where dy = -inv(DcDy)*c
+			const Scalar Dphi = -2.0*phi; // D(phi(y+alpha*dy))/D(alpha) at alpha=0.0 => -2.0*<c,c>: where dy = -inv(DcDy)*c
 			Scalar alpha = 1.0; // Try a full step initially since it will eventually be accepted near solution
 			int lineSearchIter;
 			for( lineSearchIter = 1; lineSearchIter <= maxLineSearchIter(); ++lineSearchIter ) {
@@ -141,8 +142,8 @@ SimpleNewtonSolver<Scalar>::solve( NonlinearProblemFirstOrder<Scalar> *np
 				// Compute the residual at the updated point
 				np->calc_c(*y_new,NULL);
 				if(out && dumpAll) *out << "\nc_new =\n" << *c;
-				const Scalar phi_new = 0.5*dot(*c,*c)/n, phi_frac = phi + alpha * eta() * Dphi;
-				if(out) *out << "\nphi_new = 0.5*dot(c_new,c_new)/n = " << phi_new << std::endl;
+				const Scalar phi_new = space_c.scalarProd(*c,*c), phi_frac = phi + alpha * eta() * Dphi;
+				if(out) *out << "\nphi_new = <c_new,c_new> = " << phi_new << std::endl;
 				if( Teuchos::ScalarTraits<Scalar>::isnaninf(phi_new) ) {
 					if(out) *out << "\nphi_new is not a valid number, backtracking (alpha = 0.1*alpha) ...\n";
 					alpha *= 0.1;
