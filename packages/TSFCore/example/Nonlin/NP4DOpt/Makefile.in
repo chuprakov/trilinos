@@ -92,7 +92,7 @@ am__include = @am__include@
 am__quote = @am__quote@
 install_sh = @install_sh@
 
-@BUILD_TEUCHOS_EXPERIMENTAL_TRUE@NONLIN_EX = TSFCoreNonlinNP4DOptTest
+@BUILD_TEUCHOS_TRUE@NONLIN_EX = TSFCoreNonlinNP4DOptTest
 
 noinst_PROGRAMS = $(NONLIN_EX)
 
@@ -132,9 +132,8 @@ subdir = example/Nonlin/NP4DOpt
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/TSFCoreConfig.h
 CONFIG_CLEAN_FILES =
-@BUILD_TEUCHOS_EXPERIMENTAL_TRUE@noinst_PROGRAMS = \
-@BUILD_TEUCHOS_EXPERIMENTAL_TRUE@	TSFCoreNonlinNP4DOptTest$(EXEEXT)
-@BUILD_TEUCHOS_EXPERIMENTAL_FALSE@noinst_PROGRAMS =
+@BUILD_TEUCHOS_TRUE@noinst_PROGRAMS = TSFCoreNonlinNP4DOptTest$(EXEEXT)
+@BUILD_TEUCHOS_FALSE@noinst_PROGRAMS =
 PROGRAMS = $(noinst_PROGRAMS)
 
 am_TSFCoreNonlinNP4DOptTest_OBJECTS = \

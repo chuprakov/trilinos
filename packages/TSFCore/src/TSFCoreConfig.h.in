@@ -101,8 +101,8 @@
 /* Define if want to build tests */
 #undef HAVE_TESTS
 
-/* Define if want to build teuchos-experimental */
-#undef HAVE_TEUCHOS_EXPERIMENTAL
+/* Define if want to build teuchos */
+#undef HAVE_TEUCHOS
 
 /* Define if want to build tsfcore-aztecoo */
 #undef HAVE_TSFCORE_AZTECOO

@@ -4,7 +4,7 @@
 
 EXEEXT = .exe
 
-if BUILD_TEUCHOS_EXPERIMENTAL
+if BUILD_TEUCHOS
 NONLIN_EX = TSFCoreNonlinNP4DOptTest
 endif
 

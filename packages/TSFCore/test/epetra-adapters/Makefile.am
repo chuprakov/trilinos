@@ -3,7 +3,7 @@
 
 EXEEXT = .exe
 
-if BUILD_TEUCHOS_EXPERIMENTAL
+if BUILD_TEUCHOS
 if HAVE_TSFCORE_EPETRA
 EPETRA_TEST = epetra_adapters
 endif
