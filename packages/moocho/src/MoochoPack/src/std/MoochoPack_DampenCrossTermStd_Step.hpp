@@ -23,30 +23,30 @@ namespace ReducedSpaceSQPPack {
 
 ///
 /** Compute a dampening term zeta_k for the cross term w_k such that
-  * Gf'*Z*pz <= 0.
-  *
-  * This condition Gf'*Z*pz <= 0 is needed to ensure descent of many
-  * merit functions.
-  *
-  * This implementation ensures that Gf'*Z*pz <= 0 only if
-  * there will not be any active constraints when the reduced QP subproblem
-  * is solved (nu_k = 0) and there are no undecomposed equality constraints
-  * or if there they are linearly dependent (lambda_k(undecomp_con) = 0).
-  * 
-  * In particular this implementation computes zeta_k such that:
-  * 
-  * Gf'*Z*pz <= frac_descent * rGf'inv(B)*rGf
-  * 
-  * where: 0 < frac_descent < 1
-  * 
-  * To ensure strong descent (and hopefully deal with the cases where
-  * nu_k != 0 and lambda_k(undecomp_con) != 0) the parameter frac_descent
-  * is set to frac_descent = 0.9 by default.
-  * 
-  * The basis derivation goes like this:
-  * 
-  * ToDo: Finish documentation!
-  */
+ * Gf'*Z*pz <= 0.
+ *
+ * This condition Gf'*Z*pz <= 0 is needed to ensure descent of many
+ * merit functions.
+ *
+ * This implementation ensures that Gf'*Z*pz <= 0 only if
+ * there will not be any active constraints when the reduced QP subproblem
+ * is solved (nu_k = 0) and there are no undecomposed equality constraints
+ * or if there they are linearly dependent (lambda_k(undecomp_con) = 0).
+ * 
+ * In particular this implementation computes zeta_k such that:
+ * 
+ * Gf'*Z*pz <= frac_descent * rGf'inv(B)*rGf
+ * 
+ * where: 0 < frac_descent < 1
+ * 
+ * To ensure strong descent (and hopefully deal with the cases where
+ * nu_k != 0 and lambda_k(undecomp_con) != 0) the parameter frac_descent
+ * is set to frac_descent = 0.9 by default.
+ * 
+ * The basis derivation goes like this:
+ * 
+ * ToDo: Finish documentation!
+ */
 class DampenCrossTermStd_Step : public rSQPAlgo_Step {
 public:
 
