@@ -6,14 +6,20 @@ using namespace TSF;
 int TSFMPI::rank_ = 0 ;
 int TSFMPI::nProc_ = 1 ;
 
-void TSFMPI::init(int argc, void** argv)
+void TSFMPI::init(int* argc, void*** argv)
 {
 #if HAVE_MPI
 	/* initialize MPI */
-	int mpierr = ::MPI_Init (&argc, (char ***) &argv);
-	if (mpierr != 0)
+	int mpiHasBeenStarted = 0;
+	MPI_Initialized(& mpiHasBeenStarted);
+	int mpierr = 0 ;
+	if (!mpiHasBeenStarted)
 		{
-			TSFError::raise("Error detected in MPI_Init()");
+			mpierr = ::MPI_Init (argc, (char ***) argv);
+			if (mpierr != 0)
+				{
+					TSFError::raise("Error detected in MPI_Init()");
+				}
 		}
 	
 	/* find rank */

@@ -100,6 +100,8 @@ class TSFCommandLine
 												 int count) ;
 
 	static void print();
+
+	static bool& verbose() {static bool v = false; return v;}
  private:
 	static void checkInitialization();
 

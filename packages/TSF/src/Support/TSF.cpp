@@ -2,9 +2,10 @@
 
 namespace TSF
 {
-	void init(int argc, void** argv)
+	void init(int* argc, void*** argv)
 	{
 		TSFMPI::init(argc, argv);
+		TSFCommandLine::init(*argc, *argv);
 	}
 
 	void finalize()

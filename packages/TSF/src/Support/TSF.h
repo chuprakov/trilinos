@@ -6,7 +6,7 @@
 #include "TSFVectorSpaceBase.h"
 #include "TSFVectorBase.h"
 #include "TSFLinearSolver.h"
-
+#include "TSFCommandLine.h"
 #include "PetraMatrix.h"
 #include "LAPACKGeneralMatrix.h"
 #include "TSFLinearProblem.h"
@@ -37,7 +37,7 @@ using namespace TSF;
 
 namespace TSF
 {
-	void init(int argc, void** argv);
+	void init(int* argc, void*** argv);
 
 	void finalize();
 

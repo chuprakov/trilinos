@@ -94,7 +94,6 @@ string XMLObjectImplem::toString() const
 					rtn += ">\n";
 					for (i=0; i<content_.length(); i++)
 						{
-							rtn += "content " ;
 							rtn += content_[i] + "\n";
 						}
 					for (i=0; i<children_.length(); i++)

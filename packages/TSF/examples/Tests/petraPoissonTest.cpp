@@ -38,7 +38,7 @@ int main(int argc, void** argv)
   
   try
     {
-      int n = 10;
+      int n = 3;
       TSFVectorType petra = new PetraVectorType();
       TSFVectorSpace space = petra.createSpace(n);
       TSFMatrixOperator* mat = petra.createMatrix(space, space);
@@ -49,12 +49,17 @@ int main(int argc, void** argv)
       
       TSFVector b = prob.getRHS();
       cerr << "RHS: " << endl << b << endl;
+      cerr << "A: " << endl << A << endl;
       
       TSFVector soln = prob.getKnownSolution();
       
-			TSFLinearSolver solver = new AZTECSolver();
-      
-			TSFLinearOperator aInv = A.inverse(solver);
+			TSFPreconditionerFactory prec = new ILUKPreconditionerFactory(1);
+			TSFLinearSolver solver = new BICGSTABSolver(prec, 1.0e-10, 100);
+      TSFLinearOperator At = A.adjoint();
+			
+			
+
+			TSFLinearOperator aInv = At.inverse(solver);
       
       TSFVector x;
       aInv.apply(b, x);

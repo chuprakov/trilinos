@@ -23,13 +23,18 @@ bool TSFCommandLine::frozen_ = false;
 
 void TSFCommandLine::init(int argc, void** argv)
 {
-	if (frozen_) TSFError::raise("TSFCommandLine::set should never be called more than once");
+	if (frozen_) return;
 	
 #if HAVE_MPI
 	MPI_Bcast(&argc, 1, MPI_INT, 0, MPI_COMM_WORLD);
 	int rank  = 0;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
+	if (verbose())
+		{
+			TSFOut::rootPrintf("number of arguments: %d\n", argc);
+		}
+	
 	int count=0;
 	for (int i=0; i<(argc-1); i++)
 		{
@@ -37,6 +42,10 @@ void TSFCommandLine::init(int argc, void** argv)
 			if (argv[i+1]==0) 
 				{
 					len = -1;
+				}
+			else
+				{
+					len = strlen((char*)argv[i+1]);
 				}
 
 			if (rank==0 && len > 0)
@@ -48,16 +57,40 @@ void TSFCommandLine::init(int argc, void** argv)
 					tokens_.append(" ");
 				}
 
-
-			MPI_Bcast(&len, 1, MPI_INT, 0, MPI_COMM_WORLD);
-			if (len > 0)
+			if (verbose())
 				{
-					MPI_Bcast(&(tokens_[count][0]), len+1, MPI_CHAR, 0, MPI_COMM_WORLD);
-
-					tokenMap_.put(tokens_[count], count);
-					count++;
+					TSFOut::rootPrintf("root sees argument: %s\n", argv[i+1]);
+					TSFOut::rootPrintf("root sees len: %d\n", len);
 				}
 
+			MPI_Bcast(&len, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+			if (verbose())
+				{
+					TSFOut::printf("len: %d\n", len);
+				}
+
+			if (len > 0)
+				{
+					char* tmp = new char[len+1];
+					if (rank==0)
+						{
+							strncpy(tmp, tokens_[count].c_str(), (size_t) len+1);
+						}
+					MPI_Bcast((void*) tmp, len+1, MPI_CHAR, 0, MPI_COMM_WORLD);
+					if (rank != 0)
+						{
+							tokens_[count] = string(tmp);
+						}
+					if (verbose())
+						{
+							TSFOut::printf("bcast'd argument: %s\n", 
+														 tokens_[count].c_str());
+						}
+					tokenMap_.put(tokens_[count], count);
+					delete [] tmp;
+				}
+			count++;
 		}
 #endif
 	frozen_ = true;

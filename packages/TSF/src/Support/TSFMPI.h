@@ -16,7 +16,7 @@ namespace TSF
 		{
 		public:
 			/** initializer, calls MPI_Init() if necessary */
-			static void init(int argc, void** argv);
+			static void init(int* argc, void*** argv);
 
 			/** returns the process rank relative to MPI_COMM_WORLD */
 			static int getRank() {return rank_;}
