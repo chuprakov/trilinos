@@ -54,6 +54,7 @@ std::ostream& operator<<( std::ostream& o, const dump_vec_spaces& d )
 	  << d.vec_space2_name  << " at address " << &d.vec_space2
 	  << " of type \'" << typeid(d.vec_space2).name()
 	  << "\' with dimension " << d.vec_space2_name << ".dim() = " << d.vec_space2.dim();
+	return o;
 }
 
 enum EM_VS { SPACE_COLS, SPACE_ROWS };

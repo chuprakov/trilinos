@@ -128,6 +128,7 @@ MatrixWithOp& MatrixWithOpNonsingularAggr::operator=(const MatrixWithOp& M)
 	mwo_trans_ = Mp.mwo_trans_;
 	mns_       = Mp.mns_;
 	mns_trans_ = Mp.mns_trans_;
+	return *this;
 }
 
 std::ostream& MatrixWithOpNonsingularAggr::output(std::ostream& out) const
