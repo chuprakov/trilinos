@@ -4,9 +4,15 @@
 #ifndef ASSERT_PRINT_NAN_INF_H
 #define ASSERT_PRINT_NAN_INF_H
 
+#include <stdexcept>
+
 #include "LinAlgPackTypes.h"
 
 namespace LinAlgPack {
+
+///
+class NaNInfException : public std::runtime_error
+{public: NaNInfException(const std::string& what_arg) : std::runtime_error(what_arg) {}};
 
 ///
 /** This function asserts if a value_type scalare is a NaN or Inf and optionally
@@ -15,7 +21,8 @@ namespace LinAlgPack {
   * @param	val				[I]	Value the check
   * @param	name 			[I]	Name of the scale variable for output purposes
   * @param	throw_excpt		[I]	If true and is found to be a NaN or Inf
-  * 							then an excetion is thrown after any output.
+  * 							then a NaNInfException excetion is thrown after
+  * 							any output.
   *	@param	out				[I/O]	If out==NULL then not output is produced.
   *									If out!=NULL and val is not
   *									NaN or Inf, then no output is produced.
@@ -24,8 +31,8 @@ namespace LinAlgPack {
   *									execption is thrown.
   *									
   *	@return Returns true if val is not NaN or Inf.  If val
-  *		is NaN or Inf then false will be returned unless an
-  *		excetion was thrown (throw_except==true).
+  *		is NaN or Inf then false will be returned unless a
+  *		excetion NaNInfException was thrown (throw_except==true).
   */
 bool assert_print_nan_inf( const value_type& val, char name[]
 	, bool throw_excpt, std::ostream* out );
@@ -37,7 +44,8 @@ bool assert_print_nan_inf( const value_type& val, char name[]
   * @param	v 				[I]	Vector slice to check
   * @param	name 			[I]	Name of the vector for output purposes
   * @param	throw_excpt		[I]	If true and an entry is found to be a NaN or Inf
-  * 							then an excetion is thrown after any output.
+  * 							then a NaNInfException excetion is thrown after
+  * 							any output.
   *	@param	out				[I/O]	If out==NULL then not output is produced.
   *									If out!=NULL and none of the entries is
   *									NaN or Inf, then no output is produced.
@@ -59,7 +67,8 @@ bool assert_print_nan_inf( const VectorSlice& v, char name[]
   * @param	m 				[I]	Matrix slice to check
   * @param	name 			[I]	Name of the matrix for output purposes
   * @param	throw_excpt		[I]	If true and an entry is found to be a NaN or Inf
-  * 							then an excetion is thrown after any output.
+  * 							then a NaNInfException excetion is thrown after
+  * 							any output.
   *	@param	out				[I/O]	If out==NULL then not output is produced.
   *									If out!=NULL and none of the entries is
   *									NaN or Inf, then no output is produced.
@@ -74,7 +83,6 @@ bool assert_print_nan_inf( const VectorSlice& v, char name[]
 bool assert_print_nan_inf( const GenMatrixSlice& m, char name[]
 	, bool throw_excpt, std::ostream* out );
 
-
-}
+}	// end namespace LinAlgPack
 
 #endif // ASSERT_PRINT_NAN_INF_H

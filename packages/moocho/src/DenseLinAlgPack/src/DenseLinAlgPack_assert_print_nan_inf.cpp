@@ -26,7 +26,7 @@ bool LinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
 		if( throw_excpt ) {
 			if(out)
 				out->flush();	
-			throw std::runtime_error( "assert_print_nan_inf(...) : Error, "
+			throw NaNInfException( "assert_print_nan_inf(...) : Error, "
 				+ omsg.str() );
 		}
 		return false;
@@ -66,7 +66,7 @@ bool LinAlgPack::assert_print_nan_inf( const VectorSlice& v, char name[]
 		omsg
 			<< "assert_print_nan_inf(...) : Error, the vector named "
 			<< name << " has at least one element which is NaN or Inf";
-		throw std::runtime_error( omsg.str() );
+		throw NaNInfException( omsg.str() );
 	}
 
 	return !has_nan_or_inf;
@@ -108,7 +108,7 @@ bool LinAlgPack::assert_print_nan_inf( const GenMatrixSlice& m, char name[]
 		omsg
 			<< "assert_print_nan_inf(...) : Error, the matrix named "
 			<< name << " has at least one element which is NaN or Inf";
-		throw std::runtime_error( omsg.str() );
+		throw NaNInfException( omsg.str() );
 	}
 
 	return has_nan_or_inf;
