@@ -24,6 +24,8 @@
 
 #include "ExampleNLPFirstOrderDirectRun.h"
 #include "ExampleNLPFirstOrderDirect.h"
+#include "ExampleVarReductOrthog_Strategy.h"
+#include "ReducedSpaceSQPPack/Configurations/MamaJama/rSQPAlgo_ConfigMamaJama.h"
 #include "GeneralIterationPack/include/AlgorithmTrack.h"
 #include "AbstractLinAlgPack/include/VectorSpace.h"
 #include "AbstractLinAlgPack/include/BasisSystem.h"
@@ -51,6 +53,8 @@ NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	using ofsp::OptionsFromStream;
 	namespace rsqp = ReducedSpaceSQPPack;
 	using rsqp::rSQPppSolver;
+	using rsqp::rSQPAlgo_ConfigMamaJama;
+	using ConstrainedOptimizationPack::ExampleVarReductOrthog_Strategy;
 
 	rSQPppSolver::ESolutionStatus
 		solve_return = rSQPppSolver::SOLVE_RETURN_EXCEPTION;
@@ -75,8 +79,21 @@ NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	ExampleNLPFirstOrderDirect
 		nlp(VectorSpace::space_ptr_t(&vec_space,false),xo,has_bounds,dep_bounded);
 
+
+	// Create the othogonal decomp object for S = I + D'*D
+	ExampleVarReductOrthog_Strategy
+		var_reduct_orthog_strategy(rcp::rcp(&vec_space,false));
+
 	// Create the solver object and set it up
 	rSQPppSolver solver;
+	solver.set_config(
+		rcp::rcp(
+			new rSQPAlgo_ConfigMamaJama(
+				rcp::null   // no basis_sys object
+				,rcp::rcp(&var_reduct_orthog_strategy,false)
+				)
+			)
+		);                                                 // Set config with basis_sys and ...
 	solver.set_nlp(rcp::rcp(&nlp,false));                  // Set the NLP!
 	// set up outputting
 	solver.set_error_handling(
