@@ -3,6 +3,7 @@
 
 #include "TSFConfig.h"
 #include "TSFMatrixOperator.h"
+#include "TSFLinearOperator.h"
 
 namespace TSF
 {
@@ -39,6 +40,8 @@ namespace TSF
 			//@{
 			/** */
 			virtual bool isFactored() const {return isFactored_;}
+
+
 			
 			/** */
 			virtual void factor() = 0 ;

@@ -4,6 +4,7 @@
 #include "TSFConfig.h"
 #include "TSFVector.h"
 #include "TSFAccessibleVector.h"
+#include <typeinfo>
 
 namespace TSF
 {

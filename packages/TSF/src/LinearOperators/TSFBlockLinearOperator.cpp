@@ -50,6 +50,14 @@ void TSFBlockLinearOperator::setBlock(int i, int j,
 		{
 			TSFError::raise("TSFBlockLinearOperator::setBlock index out of range");
 		}
+/*     if (sub.domain() != domain_.getBlock(j)) */
+/*       { */
+/*         cerr << "error in BlockLinearOp: setBlcok: domain\n"; */
+/*       } */
+/*     if (sub.range() != range_.getBlock(i)) */
+/*       { */
+/*         cerr << "error in BlockLinearOp: setBlcok: range\n"; */
+/*       } */
 	sub_[i][j] = sub;
 }
 
@@ -88,6 +96,24 @@ void TSFBlockLinearOperator::applyAdjoint(const TSFVector& arg,
 			out.setBlock(i, tmpRow);
 		}
 }
+
+
+TSFLinearOperator* TSFBlockLinearOperator::getTranspose()
+{
+  opTrp_ = new TSFBlockLinearOperator(range(), domain());
+  for (int i = 0; i < numBlockRows(); i++)
+    {
+      for (int j = 0; j < numBlockCols(); j++)
+        {
+          TSFLinearOperator B = sub_[i][j];
+          TSFLinearOperator* Btrp = &(B.getTranspose());
+          opTrp_.setBlock(j, i, *Btrp);
+        }
+    }
+  return &opTrp_;
+}
+
+
 
 
 void TSFBlockLinearOperator::print(ostream& os) const 

@@ -96,8 +96,9 @@ bool BICGSTABSolver::solveUnpreconditioned(const TSFLinearOperator& op,
 			soln = x0;
 			return true;
 		}
-	
+
 	TSFVector p0 = r0.copy();
+    //    p0.randomize();
 	TSFVector r0Hat = r0.copy();
 	TSFVector xMid = b.space().createMember();
 	TSFVector rMid = b.space().createMember();
@@ -189,7 +190,8 @@ bool BICGSTABSolver::solveUnpreconditioned(const TSFLinearOperator& op,
 
 			if (myRank==0 && verbosity_ > 1 ) TSFOut::rootPrintf("iteration %d %g\n", k, resid);
 		}
-	TSFError::raise("BICGSTAB failed to converge");
+	//TSFError::raise("BICGSTAB failed to converge");
+    TSFOut::rootPrintf("BICGSTAB failed to converge");
 	return false;
 	
 }

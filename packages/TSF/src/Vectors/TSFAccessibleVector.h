@@ -2,6 +2,7 @@
 #define TSFACCESSIBLEVECTOR_H
 
 #include "TSFConfig.h"
+#include <typeinfo>
 #include "TSFVectorBase.h"
 
 namespace TSF

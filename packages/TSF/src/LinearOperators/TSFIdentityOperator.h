@@ -8,6 +8,7 @@
 #include "TSFVectorSpace.h"
 #include "TSFVectorBase.h"
 #include "TSFVectorSpaceBase.h"
+#include "TSFArray.h"
 
 namespace TSF
 {
@@ -42,6 +43,12 @@ namespace TSF
 			/** applyInverse returns the input vector */
 			virtual void applyInverse(const TSFVector& in, 
 																TSFVector& out) const ;
+
+            /** get the i-th row  */
+            virtual void getRow(int row, TSFArray<int>& indices, 
+                  TSFArray<TSFReal>& values) const;
+
+
 
 		protected:
 		};

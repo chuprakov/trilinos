@@ -2,6 +2,7 @@
 #define TSFADJOINTMATRIXOPERATOR_H
 
 #include "TSFMatrixOperator.h"
+#include "TSFArray.h"
 
 namespace TSF
 {
@@ -27,6 +28,7 @@ namespace TSF
 					  int nCols,
 					  const int* globalColumnIndices,
 					  const TSFReal* a);
+
 		///
 		void zero();
 				

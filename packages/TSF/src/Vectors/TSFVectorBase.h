@@ -4,6 +4,7 @@
 #include "TSFConfig.h"
 #include "TSFVectorSpace.h"
 #include "TSFGeneralizedIndex.h"
+#include <typeinfo>
 
 #if HAVE_RTOP
 #include "RTOpPack/include/RTOp.h"
@@ -155,6 +156,17 @@ namespace TSF
 
 			/** write to stream */
 			virtual ostream& print(ostream& os) const = 0 ;
+
+
+
+
+            /** return type name  */
+
+            virtual string typeName() const 
+              {
+                return typeid(*this).name();
+              }
+
 			//@}
 
 			/** \name Hooks for parallel support */

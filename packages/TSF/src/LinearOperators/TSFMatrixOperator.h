@@ -5,6 +5,7 @@
 #include "TSFSmartPtr.h"
 #include "TSFNonDupArray.h"
 #include "TSFLinearOperatorBase.h"
+#include "TSFArray.h"
 
 namespace TSF
 {
@@ -48,9 +49,20 @@ namespace TSF
 			virtual void setGraph(int nLocalRows, const int* bandwidth,
 														const int** columnIndices) ;
 
-			/** set the columns to be used in a given row */
+			/** set the columns to be used in a given row and initialize to zero*/
 			virtual void setRowStructure(int globalRowIndex, int bandwidth,
 																	 const int* columnIndices);
+			/** set the columns to be used in a given row and
+                initialize to values given in values */
+			virtual void setRowStructure(int globalRowIndex, int bandwidth,
+                                         const int* columnIndices, 
+                                         const double* values);
+            
+
+            /** get row  */
+            virtual void getRow(int row, TSFArray<int>& indices, 
+                                TSFArray<TSFReal>& values) const;
+
 
 			/** set the bandwith of each row */
 			virtual void setBandwidth(int nLocalRows, const int* bandwidth) ;
@@ -72,7 +84,7 @@ namespace TSF
 														const TSFReal* a) = 0 ;
 
 			/** set a single element */
-			virtual void setElement(int i, int j, const TSFReal& aij) ;
+			virtual void setElement(int i, int j, const TSFReal& aij);
 
 			/** set all elements to zero */
 			virtual void zero() = 0 ;

@@ -4,6 +4,7 @@
 #include "TSFConfig.h"
 #include "TSFDenseMatrix.h"
 #include "DenseSerialVector.h"
+#include "TSFArray.h"
 
 namespace TSF
 {
@@ -33,6 +34,37 @@ namespace TSF
               {return data_[i+nRows_*j];}
             inline const TSFReal& operator()(int i, int j) const 
               {return data_[i+nRows_*j];}
+
+
+
+
+            /** apply operator to dense serial vector. 
+			 * in the range space */
+			virtual void apply(const DenseSerialVector& in, 
+                               DenseSerialVector& out) const ;
+             
+      
+
+             /** apply inverse operator to a vector in the range space, returning
+              * its preimage as a vector in the domain space. The solve is done
+              * by factoring and backsolving. */
+			virtual void applyInverse(const DenseSerialVector& in,
+                                      DenseSerialVector& out) const ;
+			
+			/** apply adjoint operator to a vector in the domain space, returning
+			 * a vector in the range space. The default implementation throws an
+			 * exception */
+			virtual void applyAdjoint(const  DenseSerialVector& in,
+                                      DenseSerialVector& out) const ;
+
+			/** apply inverse adjoint operator */
+			virtual void applyInverseAdjoint(const  DenseSerialVector& in,
+                                             DenseSerialVector& out) const ;
+                                             
+
+
+
+
 			
 			/** apply operator to a vector in the domain space, returning a vector
 			 * in the range space */
@@ -78,6 +110,11 @@ namespace TSF
 
 			/** write to a stream */
 			virtual void print(ostream& os) const ;
+
+             /**  get row  */
+            virtual void getRow(int row, TSFArray<int>& indices, 
+                  TSFArray<TSFReal>& values) const;
+           
 			
 		protected:
 			/** low-level matrix-vector multiply */
@@ -85,10 +122,15 @@ namespace TSF
 
 			/** low-level solve */
 			void solve(bool transpose, const TSFVector& in, TSFVector& out) const ;
+			/** low-level matrix-vector multiply */
+			void mvMult(bool transpose, const DenseSerialVector& in, 
+                        DenseSerialVector& out) const ;
+
+			/** low-level solve */
+			void solve(bool transpose, const DenseSerialVector& in, 
+                       DenseSerialVector& out) const ;
 
 			DenseSerialVector data_;
-
-			DenseSerialVector factor_data_;
 
 			TSFArray<int> iPiv_;
 
@@ -97,6 +139,8 @@ namespace TSF
 			int nRows_;
 			
 			int nCols_;
+			DenseSerialVector factorData_;
+
 		};
 
 }

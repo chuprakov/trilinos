@@ -61,6 +61,16 @@ namespace TSF
 
 			/** access to raw pointer */
 			const TSFVectorSpaceBase* ptr() const {return ptr_.get();}
+
+            /** Describe the vectorSpace.  This gives just the number of
+                elements, if the vector is a simple vector.  It gives
+                the block structure if the vector is a TSFBlockVector
+                if the vector is a block vector.  */
+            void describe() const;
+
+            /** The companion to describe that indents for readability  */
+            void describe(const int& depth) const;
+			//@}
 			
 		private:
 			TSFSmartPtr<TSFVectorSpaceBase> ptr_;
@@ -70,6 +80,16 @@ namespace TSF
 		{
 			return space.print(os);
 		}
+
+
+    inline string toString(const TSFVectorSpace& space) 
+      {
+        ostrstream ss;
+        ss << space << ends;
+        return ss.str();
+      }
+
+
 }
 
 #endif

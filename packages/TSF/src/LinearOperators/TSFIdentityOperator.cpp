@@ -49,3 +49,9 @@ void TSFIdentityOperator::applyInverse(const TSFVector& in,
 		}
 }
 
+void TSFIdentityOperator::getRow(int row, TSFArray<int>& indices, 
+                                 TSFArray<TSFReal>& values) const
+{
+  indices.append(row);
+  values.append(1.0);
+}

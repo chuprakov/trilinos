@@ -43,6 +43,14 @@ void TSFLinearOperatorBase::setBlock(int /* i */, int /* j */,
 }
 
 
+void TSFLinearOperatorBase::getRow(int row, TSFArray<int>& indices, 
+                                   TSFArray<TSFReal>& values) const
+{
+	TSFError::raise("TSFLinearOperatorBase::getRow called for non-matrix operator or not implemented in base class");
+  
+}
+
+
 
 void TSFLinearOperatorBase::applyInverse(const TSFVector& /* arg */,
 																				 TSFVector& /* out */) const
@@ -145,12 +153,26 @@ void TSFLinearOperatorBase::getInverseAdjoint(const TSFLinearSolver& solver,
 		}
 }
 
+TSFLinearOperator* TSFLinearOperatorBase::getTranspose() 
+{
+  TSFLinearOperator* ret;
+	TSFError::raise("TSFLinearOperatorBase::getTranspose "
+									" not implememented in base class");
+    return ret;
+}
 
 const TSFSmartPtr<const TSFMatrixOperator>
 TSFLinearOperatorBase::getMatrix() const
 {
 	return TSFSmartPtr<const TSFMatrixOperator>();
 }
+
+
+/* TSFSmartPtr<TSFMatrixOperator> */
+/* TSFLinearOperatorBase::getMatrixC()  */
+/* { */
+/* 	return TSFSmartPtr<TSFMatrixOperator>(); */
+/* } */
 
 void TSFLinearOperatorBase::print(ostream& os) const 
 {

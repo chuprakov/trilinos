@@ -30,7 +30,9 @@ void TSFZeroOperator::applyAdjoint(const TSFVector& in,
 {
 	try
 		{
-			apply(in, out);
+          //apply(in, out);
+          out = domain().createMember();
+          out.zero();
 		}
 	catch(exception& e)
 		{
@@ -47,4 +49,12 @@ void TSFZeroOperator::applyInverse(const TSFVector& /* in */,
 void TSFZeroOperator::print(ostream& os) const 
 {
 	os << "<TSFZeroOperator/>" << endl;
+}
+
+
+void TSFZeroOperator::getRow(int row, TSFArray<int>& indices, 
+                             TSFArray<TSFReal>& values) const
+{
+  indices.resize(0);
+  values.resize(0);
 }

@@ -57,3 +57,21 @@ void TSFScaledOperator::applyInverse(const TSFVector& in,
 		}
 }
 
+
+void TSFScaledOperator::getRow(int row, TSFArray<int>& indices, 
+                               TSFArray<TSFReal>& values) const
+{
+  op_.getRow(row, indices, values);
+  for (int i = 0; i < indices.size(); i++)
+    {
+      values[i] = values[i] * scale_;
+    }
+}
+
+TSFLinearOperator* TSFScaledOperator::getTranspose() 
+{
+  opTrp_ = new TSFScaledOperator(op_.getTranspose(), scale_);
+  return &opTrp_;
+}
+
+

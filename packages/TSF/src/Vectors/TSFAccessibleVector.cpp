@@ -315,7 +315,10 @@ void TSFAccessibleVector::abs()
 		{
 			TSFReal* myChunk = getNextChunk(myChunkSize);
 			TSFReal* x = myChunk;
-			*x = fabs(*x);
+			for (int i=0; i<myChunkSize; i++, x++) 
+				{
+                  if (*x < 0.0) *x = -(*x);
+				}
 			restoreChunk(myChunk, myChunkSize);
 		}
 }

@@ -3,6 +3,8 @@
 
 #include "TSFConfig.h"
 #include "TSFInCoreVector.h"
+#include <typeinfo>
+
 #if HAVE_MPI
 #include "mpi.h"
 #endif

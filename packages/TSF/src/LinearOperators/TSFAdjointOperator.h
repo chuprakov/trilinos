@@ -72,6 +72,12 @@ namespace TSF
 			/** */
 			virtual bool isMatrixOperator() const;
 
+
+            /**  get row  */
+            virtual void getRow(int row, TSFArray<int>& indices, 
+                  TSFArray<TSFReal>& values) const;
+
+
 			/** */
 			const TSFSmartPtr<const TSFMatrixOperator> getMatrix() const;
 

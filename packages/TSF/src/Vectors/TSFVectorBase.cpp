@@ -27,7 +27,7 @@ int TSFVectorBase::numBlocks() const
 }
 
 void TSFVectorBase::getBlock(int i, const TSFVector& self, 
-														 TSFVector& sub) const 
+                             TSFVector& sub) const 
 {
 	if (i==0) 
 		{
@@ -43,4 +43,6 @@ void TSFVectorBase::setBlock(int /*i*/, const TSFVector& /*sub*/)
 {
 	TSFError::raise("TSFVectorBase::setBlock()");
 }
+
+
 

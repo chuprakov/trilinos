@@ -5,6 +5,7 @@
 #include "TSFVector.h"
 #include "TSFLinearOperatorBase.h"
 #include "TSFArray.h"
+#include "TSFLinearOperator.h"
 
 namespace TSF
 {
@@ -21,6 +22,10 @@ namespace TSF
 			TSFMultiVectorOperator(const TSFVectorSpace& space,
 														 int numVectors,
 														 bool isVertical);
+/*             TSFMultiVectorOperator(const TSFVectorSpace& space,  */
+/*                                    bool isVertical, */
+/*                                    const TSFArray<TSFVector>& vectors);  */
+
 														
 			/* the usual virtual dtor */
 			virtual ~TSFMultiVectorOperator(){;}
@@ -40,8 +45,18 @@ namespace TSF
 			/** get one of the vectors that comprise this operator */
 			virtual TSFVector getVector(int i) const {return vectors_[i];}
 
+
 			/** */
 			int numVectors() const {return vectors_.length();}
+
+
+            /** get the i-th row  */
+            virtual void getRow(int row, TSFArray<int>& indices, 
+                  TSFArray<TSFReal>& values) const;
+
+
+            /**  create the transpose */
+            virtual TSFLinearOperator* getTranspose();
 
 			/**
 			 * Write to a stream 
@@ -59,6 +74,10 @@ namespace TSF
 			bool isVertical_;
 			
 			TSFArray<TSFVector> vectors_;
+
+            TSFLinearOperator opTrp_;
+            bool haveTranspose_;
+
 		};
 
 	/** */
@@ -69,6 +88,11 @@ namespace TSF
 			TSFVerticalMultiVectorOperator(const TSFVectorSpace& space,
 																		 int numVectors)
 				: TSFMultiVectorOperator(space, numVectors, true) {}
+
+
+			TSFVerticalMultiVectorOperator(const TSFVectorSpace& space,
+                                           const TSFArray<TSFVector> vectors)
+				: TSFMultiVectorOperator(space, true, vectors) {}
 
 			/** */
 			virtual ~TSFVerticalMultiVectorOperator(){;}

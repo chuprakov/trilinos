@@ -4,6 +4,8 @@
 #include "TSFConfig.h"
 #include "TSFInCoreVector.h"
 #include "DenseSerialVector.h"
+#include <typeinfo>
+
 
 namespace TSF
 {
@@ -22,6 +24,10 @@ namespace TSF
 
 			/** the usual virtual dtor */
 			virtual ~TSFSerialVector(){;}
+
+
+            /* return type name */
+            string name(){return typeid(*this).name();}
 
 #ifdef HAVE_RTOP
 			///

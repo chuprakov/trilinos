@@ -152,7 +152,7 @@ int TSFBlockVector::numBlocks() const
 }
 
 void TSFBlockVector::getBlock(int i, const TSFVector& /* self */, 
-																TSFVector& sub) const 
+                              TSFVector& sub) const 
 {
 	sub = subvectors_[i];
 }
@@ -162,18 +162,44 @@ void TSFBlockVector::setBlock(int i, const TSFVector& sub)
 	subvectors_[i] = sub;
 }
 
-TSFReal& TSFBlockVector::setElement(int /* g */)
+TSFReal& TSFBlockVector::setElement(int  ind )
 {
-	TSFError::raise("TSFBlockVector::setElement should not be called. Set the"
-									"elements in each block");
-	return dummyElement_;
+/* 	TSFError::raise("TSFBlockVector::setElement should not be called. Set the" */
+/* 									"elements in each block"); */
+/* 	return dummyElement_; */
+  int k = 0;
+      for (int i = 0; i < numBlocks(); i++)
+        {
+          int len = subvectors_[i].space().dim();
+          if (ind < k + len )
+            {
+              TSFVector vv = subvectors_[i];
+              //setElement(vv, ind - k, a);
+              return vv[ind - k];
+            }
+          k += len;
+        }
+      TSFError::raise("TSFBlockVector::setElement: index out of range for vector");
+      return dummyElement_;       
 }
 
-const TSFReal& TSFBlockVector::getElement(int /* g */) const 
+const TSFReal& TSFBlockVector::getElement(int ind) const 
 {
-	TSFError::raise("TSFBlockVector::getElement should not be called. Get the"
-									"elements from each block");
-	return dummyElement_; // -Wall
+/* 	TSFError::raise("TSFBlockVector::getElement should not be called. Get the" */
+/* 									"elements from each block"); */
+/* 	return dummyElement_; // -Wall */
+  int k = 0;
+  for (int i = 0; i < numBlocks(); i++)
+    {
+      int len = subvectors_[i].space().dim();
+      if (ind < k + len )
+        {
+          const TSFVector& vv = subvectors_[i];
+          return vv[ind - k];
+        }
+      k += len;
+    }
+  return dummyElement_; // -Wall
 }
 
 void TSFBlockVector::setElements(int /* n */, const int* /* globalIndices */,
@@ -326,7 +352,7 @@ void TSFBlockVector::abs()
 {
 	for (int i=0; i<numBlocks(); i++)
 		{
-			subvectors_[i].abs();
+			setBlock(i, subvectors_[i].abs());
 		}
 }
 

@@ -4,6 +4,7 @@
 #include "TSFVector.h"
 #include "TSFSmartPtr.h"
 #include "TSFTimeMonitor.h"
+#include <typeinfo>
 
 namespace TSF
 {

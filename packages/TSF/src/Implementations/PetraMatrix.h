@@ -8,6 +8,7 @@
 #include "TSFSmartPtr.h"
 #include "TSFMatrixOperator.h"
 #include "TSFPreconditioner.h"
+#include "TSFArray.h"
 
 #if HAVE_PETRA
 
@@ -60,9 +61,14 @@ namespace TSF
 			/** inform caller if this matrix type can handle non-square matrices */
 			virtual bool supportsNonSquare() const {return true;}
 
-			/** set the columns to be used in a given row */
+			/** set the columns to be used in a given row initialize to zero*/
 			virtual void setRowStructure(int globalRowIndex, int bandwidth,
 																	 const int* columnIndices);
+			/** set the columns to be used in a given row initialized
+                to values given*/
+			virtual void setRowStructure(int globalRowIndex, int bandwidth,
+                                         const int* columnIndices, 
+                                         const double* values);
 
 			/** set the bandwith of all rows */
 			virtual void setBandwidth(int nLocalRows, const int* bandwidth) ;
@@ -78,11 +84,19 @@ namespace TSF
 			/** \name matrix loading interface */
 			//@{
 			
+            /** set an element  */
+            virtual void setElement(int i, int j, const TSFReal& aij);
+
+
 			/** add to selected elements of a row in the matrix */
 			virtual void addToRow(int globalRowIndex,
 														int nCols,
 														const int* globalColumnIndices,
 														const TSFReal* a);
+            virtual void getRow(int row, TSFArray<int>& indices, 
+                        TSFArray<TSFReal>& values) const;
+
+            virtual TSFLinearOperator* getTranspose();
 
 			/** set all elements to zero */
 			virtual void zero();
@@ -123,8 +137,13 @@ namespace TSF
 			TSFArray<int> nCols_;
 			TSFSmartPtr<Epetra_Comm> petraComm_;
 			bool transposed_;
+            TSFLinearOperator opTrp_;
 			mutable bool hasCachedPreconditioner_;
 			mutable TSFPreconditioner cachedPreconditioner_;
+/* 			static TSFTimer mvMultTimer_; */
+/* 			static TSFTimer ILUTimer_; */
+            bool hasTranspose_;
+
 		};
 
 

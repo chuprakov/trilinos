@@ -4,6 +4,7 @@
 
 #include "TSFConfig.h"
 #include "TSFSmartPtr.h"
+#include <typeinfo>
 
 
 namespace TSF

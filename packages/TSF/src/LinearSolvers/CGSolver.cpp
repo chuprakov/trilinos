@@ -44,19 +44,22 @@ bool CGSolver::solve(const TSFLinearOperator& A,
 
 	for (int k=1; k<=maxIters_; k++)
 		{
-			if (myRank==0) TSFOut::printf("iteration %d\n", k);
+          //if (myRank==0) TSFOut::printf("iteration %d\n", k);
 			TSFVector Ap = A*p;
 			TSFReal r20 = r*r;
 			TSFReal pAp = p*Ap;
 			if (TSFUtils::chop(pAp)==0) 
 				{
-					TSFError::raise("failure mode 1 in CG");
+                  cerr << "CG Iteration " << k << endl;
+                  //TSFError::raise("failure mode 1 in CG");
+                  pAp = 1.0e-16;
 				}
 			TSFReal alpha = r20/pAp;
 			x0 = x0 + alpha*p;
 			r = r - alpha*Ap;
 			TSFReal r21 = r*r;
-
+            //TSFReal conv = sqrt(r21);
+            //cerr << "alpha = "  << alpha << "  conv = " << conv << endl;
 			if (sqrt(r21) < tol_*normOfB) 
 				{
 					soln = x0.copy();

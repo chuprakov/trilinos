@@ -5,6 +5,7 @@
 #include "TSFVectorSpace.h"
 #include "TSFLinearOperator.h"
 #include "TSFLinearOperatorBase.h"
+#include "TSFArray.h"
 
 
 namespace TSF
@@ -40,9 +41,17 @@ namespace TSF
 			virtual void applyInverse(const TSFVector& in, 
 												 TSFVector& out) const ;
 
+            /**  get row  */
+            virtual void getRow(int row, TSFArray<int>& indices, 
+                  TSFArray<TSFReal>& values) const;
+
+            /**  create the transpose */
+            virtual TSFLinearOperator* getTranspose();
+
 		protected:
 			TSFLinearOperator op_;
 			TSFReal scale_;
+            TSFLinearOperator opTrp_;
 		};
 }
 

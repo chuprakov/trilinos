@@ -41,15 +41,20 @@ void TSFMatrixOperator::setRowStructure(int globalRowIndex, int bandwidth,
 																				const int* columnIndices)
 {}
 
+void TSFMatrixOperator::setRowStructure(int globalRowIndex, int bandwidth,
+																				const int* columnIndices, const double* values)
+{}
+
 void TSFMatrixOperator::freezeStructure()
 {}
 
 void TSFMatrixOperator::freezeValues()
 {}
 
-void TSFMatrixOperator::setElement(int i, int j, const TSFReal& aij)
+void TSFMatrixOperator::setElement(int /* i */, int /* j */, const TSFReal& /* aij */)
 {
-	addToRow(i, 1, &j, &aij);
+	TSFError::raise("TSFMatrixOperator::setElement not avaliable "
+									"for base class");
 }
 
 void TSFMatrixOperator::getILUKPreconditioner(int fillLevels,
@@ -71,3 +76,9 @@ bool TSFMatrixOperator::isFactored() const
 	return false;
 }
 
+void TSFMatrixOperator::getRow(int row, TSFArray<int>& indices, 
+                               TSFArray<TSFReal>& values) const
+{
+	TSFError::raise("TSFMatrixOperator::getRow not implemented "
+									"for base class");
+}

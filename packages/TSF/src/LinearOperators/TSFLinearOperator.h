@@ -5,6 +5,8 @@
 #include "TSFSmartPtr.h"
 #include "TSFTimeMonitor.h"
 #include "TSFMatrixOperator.h"
+//#include "TSFBlockLinearOperator.h"
+#include <typeinfo>
 
 namespace TSF
 {
@@ -38,7 +40,7 @@ namespace TSF
       /** return range space */
       const TSFVectorSpace& range() const ;
       
-      /** am I a BlockOperator?  */
+      /** am I a BlockOperator?  */ 
       bool isBlockOperator() const;
       
       /** am I a zero operator? */
@@ -59,6 +61,12 @@ namespace TSF
       /** set the (i,j)-th submatrix of a block operator */
       TSFLinearOperator& setBlock(int i, int j, 
 				  const TSFLinearOperator& sub);
+
+      void getRow(const int row, TSFArray<int>& indices, 
+                  TSFArray<TSFReal>& values) const; 
+
+      TSFLinearOperator& getTranspose();
+      void setTranspose(TSFLinearOperator* op);
       //@}
       
       
@@ -125,6 +133,15 @@ namespace TSF
       
       /** negation of an operator (deferred) */
       TSFLinearOperator operator-() const ;
+
+
+      /** Describe the operator in terms of its bocks */
+      void describe() const;
+
+      /** Companion to describe for indenting the writing */
+      void describe(const int&depth) const;
+
+
       
       //@}
       
@@ -144,6 +161,11 @@ namespace TSF
       /** access to the pointer to the matrix implementation. If the operator
        * is not a TSFMatrixOperator, throw an error */
       const TSFSmartPtr<const TSFMatrixOperator> getMatrix() const ;
+
+      /** access to the pointer to the matrix implementation. This
+       * allows access to modify the matrix.  If the operator is not a
+       * TSFMatrixOperator, throw an error */
+      //TSFSmartPtr<TSFMatrixOperator> getMatrixC(); 
       //@}
       
       /** \name output */
@@ -159,11 +181,17 @@ namespace TSF
       /* pointer to a concrete type */
       TSFSmartPtr<TSFLinearOperatorBase> ptr_;
       static TSFTimer opTimer_;
+
+
+      TSFLinearOperator* opTrp_;
+      bool hasTranspose_;
     };
   
   /** \relates TSFLinearOperator left multiplication by a scalar */
   TSFLinearOperator operator*(const TSFReal& scale, 
 			      const TSFLinearOperator& op);
+  /** \relates TSFLinearOperator write to a string */
+  inline string toString(const TSFLinearOperator& op) {return op.toString();}
   
 }
 

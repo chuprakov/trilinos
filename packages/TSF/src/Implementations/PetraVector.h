@@ -6,6 +6,7 @@
 #include "TSFMPIVector.h"
 #include "PetraVectorSpace.h"
 #include "DenseSerialVector.h"
+#include <typeinfo>
 
 #if HAVE_PETRA
 

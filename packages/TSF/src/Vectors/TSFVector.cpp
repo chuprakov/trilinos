@@ -466,3 +466,32 @@ TSFTimer& TSFVector::copyTimer()
 	return *timer;
 }
 
+
+void TSFVector::describe() const
+{
+  describe(0);
+}
+
+void TSFVector::describe(const int& depth) const
+{
+  string spaces = "";
+  for (int i = 0; i < depth; i++)
+    {
+      spaces.append("  ");
+    }
+
+  if (isBlockVector())
+    {
+      cerr << spaces << "BlockVector with " << numBlocks() << " blocks\n";
+      for (int i = 0; i < numBlocks(); i++)
+        {
+          getBlock(i).describe(depth+1);
+        }
+    }
+  else
+    {
+      string typeNam = ptr_->typeName();
+      
+      cerr << spaces << typeNam << " of length " << space().dim() << endl; 
+    }
+}

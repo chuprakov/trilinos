@@ -5,7 +5,7 @@
 using namespace TSF;
 
 MatlabWriter::MatlabWriter(const string& filename)
-  : TSFMatrixWriterBase(filename), fout_(filename.c_str(), ios::out|ios::app)
+  : TSFMatrixWriterBase(filename), fout_(filename.c_str())
 {;}
 
 MatlabWriter::~MatlabWriter()
@@ -13,44 +13,46 @@ MatlabWriter::~MatlabWriter()
   fout_.close();
 }
 
-void MatlabWriter::write(const string& name, const TSFLinearOperator& A) const
+void MatlabWriter::write(const TSFLinearOperator& A) const
 {
-  int nRows = A.domain().dim();
-  TSFMatrixView mv(A);
+  int nRows = A.range().dim();
+  int nCols = A.domain().dim();
+  //fout_ << name << " = sparse(" << nRows << " , " << nCols << ");" << endl;
+  fout_ << nRows << "  " << nCols << "  0.0" << endl;
+
+  //TSFMatrixView mv(A);
 
   for(int i=0; i<nRows; i++)
     {
       TSFArray<int> ind;
       TSFArray<TSFReal> aij;
-      mv.getRow(i, ind, aij);
-      
-      writeRow(name, i, ind, aij);
+      A.getRow(i, ind, aij);
+      //cerr << "writing row " << i << endl;
+      writeRow(i, ind, aij);
     }
 }
 
-void MatlabWriter::write(const TSFLinearOperator& A) const
-{
-  TSFError::raise("Must use MatlabWriter::write(string, TSFLinearOperator)");
-}
 
-void MatlabWriter::write(const string& name, const TSFVector& v) const
+void MatlabWriter::write(const TSFVector& v) const
 {
+  fout_ << v.space().dim() << "  1  0.0" << endl;
   for(int i=0; i<v.space().dim(); i++)
     {
       if(v[i] != 0.0)
-	{
-	  fout_ << name << "[" << i << "] = " << v[i] << endl;
-	}
+        {
+          fout_ << i+1 << "  1  " << v[i] << endl;
+        }
     }
 }
 
-void MatlabWriter::writeRow(const string& name, int i, const TSFArray<int>& indices,
+void MatlabWriter::writeRow(int i, const TSFArray<int>& indices,
 			    const TSFArray<TSFReal>& values) const
 {
   int length = indices.length();
 
   for(int j=0; j<length; j++)
     {
-      fout_ << name << "[" << i << "][" << indices[j] << "] = " << values[j] <<  endl;
+      //      fout_ << name << "(" << i+1 << " , " << indices[j]+1 << ") = " << values[j] <<  ";" << endl;
+      fout_ << i+1 << "  " << indices[j]+1  << "  " << values[j] << endl;
     }
 }

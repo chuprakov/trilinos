@@ -144,3 +144,33 @@ TSFAdjointOperator::getMatrix() const
 	}
 	return tsf_implicit_cast<const TSFMatrixOperator>(adj_mat_op);
 }
+
+
+
+void TSFAdjointOperator::getRow(int row, TSFArray<int>& indices, 
+                                TSFArray<TSFReal>& values) const
+{
+  /* very inefficient method of getting row  */
+  try
+    {
+      TSFVector e = op_.domain().createMember();
+      e.zero();
+      e[row] = 1.0;
+      TSFVector r = op_.range().createMember();
+      r = op_ * e;
+
+      for (int i = 0; i < r.space().dim(); i++)
+        {
+          if (r[i] != 0)
+            {
+              indices.append(i);
+              values.append(r[i]);
+            }
+        }
+    }
+  catch(exception& e)
+    {
+      TSFError::trace(e, "in TSFAdjointMatrixOperator::getRow()");
+    }
+
+}

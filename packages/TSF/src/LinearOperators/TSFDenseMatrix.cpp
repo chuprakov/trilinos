@@ -7,3 +7,6 @@ TSFDenseMatrix::TSFDenseMatrix()
 	: TSFMatrixOperator(new TSFEmptyVectorSpace(), new TSFEmptyVectorSpace()), 
 	isFactored_(false)
 {}
+
+
+

@@ -2,6 +2,7 @@
 #define TSFVECTOR_H
 
 #include "TSFConfig.h"
+#include <typeinfo>
 #include "TSFSmartPtr.h"
 #include "TSFTimer.h"
 #include "TSFTimeMonitor.h"
@@ -459,11 +460,28 @@ namespace TSF
 			/** find a min or max */
 			TSFReal findExtremeValue(TSFVectorBase::MinOrMax type, TSFGeneralizedIndex& location, 
 															 const TSFReal& tol) const ;
+
+			//@}
+
+            /** Describe the vector.  This gives just the number of
+                elements, if the vector is a simple vector.  It gives
+                the block structure if the vector is a TSFBlockVector
+                if the vector is a block vector.  */
+            void describe() const;
+
+            /** The companion to describe that indents for readability  */
+             void describe(const int& depth) const;
+
+ 
+
+
+
 			//@}	
 			/** timer for math operations */
 			static TSFTimer& opTimer();
 			/** timer for deep copies */
 			static TSFTimer& copyTimer();
+
 		private:
 
 			TSFSmartPtr<TSFVectorBase> ptr_;

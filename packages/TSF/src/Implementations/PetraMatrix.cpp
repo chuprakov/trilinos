@@ -29,6 +29,8 @@
 
 #include "Epetra_CrsMatrix.h"
 
+#include "MatlabWriter.h"
+
 
 
 using namespace TSF;
@@ -45,7 +47,8 @@ PetraMatrix::PetraMatrix(const TSFVectorSpace& domain,
 	petraComm_(0), 
 	transposed_(false),
 	hasCachedPreconditioner_(false),
-	cachedPreconditioner_()
+  cachedPreconditioner_(),
+  hasTranspose_(false)
 {
 #if HAVE_PETRA_MPI
 	petraComm_ = new Epetra_MpiComm(MPI_COMM_WORLD);
@@ -129,15 +132,36 @@ void PetraMatrix::setRowStructure(int globalRowIndex, int bandwidth,
 																	const int* columnIndices)
 {
 	
-	try
-		{
 			TSFArray<double> zeros(bandwidth);
 			for (int i=0; i<bandwidth; i++)
 				{
 					zeros[i] = 0.0;
 				}
+            setRowStructure(globalRowIndex, bandwidth, columnIndices, &(zeros[0]));
+/* 			int ierr = matrix_->InsertGlobalValues(globalRowIndex, bandwidth,  */
+/* 																						 &(zeros[0]), (int*) columnIndices); */
+/* 			if (ierr < 0) */
+/* 				{ */
+/* 					TSFError::raise("petra InsertGlobalValues row=" + TSFUtils::toString(globalRowIndex) + " failed with ierr="  */
+/* 													+ TSFUtils::toString(ierr)); */
+/* 				} */
+	
+/* 		} */
+/* 	catch(exception& e) */
+/* 		{ */
+/* 			TSFError::trace(e, "in PetraMatrix::setRowStructure()"); */
+/* 		} */
+}
+
+
+void PetraMatrix::setRowStructure(int globalRowIndex, int bandwidth,
+                                  const int* columnIndices,
+                                  const double* values)
+{
+	try
+		{
 			int ierr = matrix_->InsertGlobalValues(globalRowIndex, bandwidth, 
-																						 &(zeros[0]), (int*) columnIndices);
+																						 (double*)values, (int*) columnIndices);
 			if (ierr < 0)
 				{
 					TSFError::raise("petra InsertGlobalValues row=" + TSFUtils::toString(globalRowIndex) + " failed with ierr=" 
@@ -150,6 +174,8 @@ void PetraMatrix::setRowStructure(int globalRowIndex, int bandwidth,
 			TSFError::trace(e, "in PetraMatrix::setRowStructure()");
 		}
 }
+  
+
 
 
 void PetraMatrix::addToRow(int globalRowIndex,
@@ -175,6 +201,78 @@ void PetraMatrix::addToRow(int globalRowIndex,
 		}
 }
 
+void PetraMatrix::setElement(int i, int j, const TSFReal& aij)
+{
+  ptrCheck("setElement");
+  double v = aij;
+  int ierr = matrix_->ReplaceGlobalValues(i, 1, &v, &j);
+	if (ierr < 0)
+		{
+			TSFError::raise("petra setElement failed with ierr=" 
+											+ TSFUtils::toString(ierr));
+		}
+  
+}
+
+TSFLinearOperator* PetraMatrix::getTranspose() 
+{
+  if (hasTranspose_) 
+    {
+      return &opTrp_;
+    }
+  hasTranspose_ = true;
+  int numRowsA = range().dim();
+  int numColsA = domain().dim();
+
+  opTrp_ = new PetraMatrix(range(), domain());
+  TSFSmartPtr<TSFLinearOperatorBase> Abase = opTrp_.getPtr();
+  TSFMatrixOperator* ATmat = dynamic_cast<TSFMatrixOperator*>(&(*Abase));
+ 
+  TSFArray<int> indices;
+  TSFArray<double> values;
+  TSFArray<TSFArray<int> > rowT(numColsA);
+  TSFArray<TSFArray<double> > valT(numColsA);
+  TSFArray<int> bandwidth(numColsA);
+  for (int i = 0; i < numColsA; i++)
+    {
+      bandwidth[i] = 0;
+    }
+      
+  for (int i = 0; i < numRowsA ; i++)
+    {
+      indices.resize(0);
+      values.resize(0);
+      getRow(i, indices, values);
+      for(int j = 0; j < indices.size(); j++)
+        {
+          bandwidth[indices[j]]++;
+          rowT[indices[j]].append(i);
+          valT[indices[j]].append(values[j]);
+        }
+    }
+
+  ATmat->setBandwidth(numColsA, &(bandwidth[0]));
+  ATmat->freezeStructure();
+
+  for (int i = 0; i < numColsA; i++)
+    {
+      ATmat->setRowStructure(i, rowT[i].size(), &(rowT[i][0]), &(valT[i][0]));
+    }
+/*   for (int i = 0; i < numRowsA; i++) */
+/*     { */
+/*       indices.resize(0); */
+/*       values.resize(0); */
+/*       getRow(i, indices, values); */
+/*       for (int j = 0; j < indices.size(); j++) */
+/*         { */
+/*           ATmat->setElement(indices[j], i, values[j]); */
+/*         } */
+/*     } */
+
+  ATmat->freezeValues();
+  
+  return &opTrp_;
+}
 
 void PetraMatrix::freezeStructure()
 {
@@ -334,6 +432,29 @@ PetraMatrix::getConcrete(const TSFLinearOperator& A)
 	return 0; // -Wall
 }
 
+void PetraMatrix::getRow(int row, TSFArray<int>& indices, 
+                                 TSFArray<TSFReal>& values) const
+{
+  if (isFactored_)
+    {
+      TSFError::raise("PetraMatrix: can't getRow since matrix is factored");
+    }
+  int maxRowSize = matrix_->GlobalMaxNumEntries(); 
+  //cerr << "In PetraMatrix: row = " << row << endl;
+  indices.resize(maxRowSize);
+  values.resize(maxRowSize);
+  int numEntries = 0;
+  matrix_->ExtractGlobalRowCopy(row, maxRowSize, numEntries, &(values[0]), &(indices[0]));
+  //cerr << "In PetraMatrix: got row " << row <<  " numEntries = "
+  //  << numEntries << " maxRowSize = "<< maxRowSize << endl;
+  indices.resize(numEntries);
+  values.resize(numEntries);
+  //cerr << "In PetraMatrix: getRow: row = " << row << " numEntries = " << numEntries << endl;
+/*   for (int i = 0; i < numEntries; i++) */
+/*     { */
+/*       cerr << "   " << indices[i] << "  " << values[i] << endl; */
+/*     } */
+}
 
 
 #endif // USE_PETRA

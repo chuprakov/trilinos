@@ -3,6 +3,8 @@
 
 #include "TSFConfig.h"
 #include "TSFVectorSpace.h"
+#include "TSFArray.h"
+#include <typeinfo>
 
 namespace TSF
 {
@@ -38,6 +40,10 @@ namespace TSF
 			/** set the (i,j)-th submatrix */
 			virtual void setBlock(int i, int j, 
 														const TSFLinearOperator& sub);
+
+            /** get the i-th row  */
+            virtual void getRow(int row, TSFArray<int>& indices, 
+                  TSFArray<TSFReal>& values) const;
 
 			/** say whether we are a block operator */
 			virtual bool isBlockOperator() const {return false;}
@@ -110,6 +116,22 @@ namespace TSF
 			 * returns <tt>return.isNull() == true</tt>.
 			 */
 			virtual const TSFSmartPtr<const TSFMatrixOperator> getMatrix() const;
+
+			/** Return the non-const  pointer to the matrix operator.  If not a matrix operation then
+			 * returns <tt>return.isNull() == true</tt>.
+			 */
+/* 			virtual TSFSmartPtr<TSFMatrixOperator> getMatrixC(); */
+
+            virtual TSFLinearOperator* getTranspose();
+
+
+            /** return type name  */
+
+            virtual string typeName() const 
+              {
+                return typeid(*this).name();
+              }
+
 
 			/**
 			 * Write to a stream 

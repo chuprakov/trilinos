@@ -87,4 +87,30 @@ ostream& TSFVectorSpace::print(ostream& os) const
 	return ptr_->print(os);
 }
 
+void TSFVectorSpace::describe() const
+{
+  describe(0);
+}
+
+void TSFVectorSpace::describe(const int& depth) const
+{
+  string spaces = "";
+  for (int i = 0; i < depth; i++)
+    {
+      spaces.append("  ");
+    }
+
+  if (isProductSpace())
+    {
+      cerr << spaces << "ProductSpace with " << numBlocks() << " blocks\n";
+      for (int i = 0; i < numBlocks(); i++)
+        {
+          getBlock(i).describe(depth+1);
+        }
+    }
+  else
+    {
+      cerr << spaces << "Vector of length " << dim() << endl; 
+    }
+}
 

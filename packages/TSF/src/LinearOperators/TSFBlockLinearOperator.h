@@ -52,6 +52,9 @@ namespace TSF
 			virtual void applyAdjoint(const TSFVector& in,
 																TSFVector& out) const ;
 
+            /**  create the transpose */
+            virtual TSFLinearOperator* getTranspose();
+
 			/**
 			 * Write to a stream 
 			 */
@@ -62,6 +65,8 @@ namespace TSF
 			int nBlockCols_;
 
 			TSFArray<TSFArray<TSFLinearOperator> > sub_;
+            TSFLinearOperator opTrp_;
+
 		};
 }
 

@@ -8,6 +8,7 @@
 #include "TSFVectorSpace.h"
 #include "TSFVectorBase.h"
 #include "TSFVectorSpaceBase.h"
+#include "TSFArray.h"
 
 namespace TSF
 {
@@ -20,7 +21,9 @@ namespace TSF
 	class TSFDiagonalOperator : public TSFLinearOperatorBase
 		{
 		public:
+
 			/** */
+          
 			TSFDiagonalOperator(const TSFVector& diagonalValues);
 										 
 			/** the usual virtual dtor */
@@ -40,6 +43,13 @@ namespace TSF
 			 * the input vector and the reciprocals of the diagonal values. */
 			virtual void applyInverse(const TSFVector& in, 
 																TSFVector& out) const ;
+
+            /** get the i-th row  */
+            virtual void getRow(int row, TSFArray<int>& indices, 
+                  TSFArray<TSFReal>& values) const;
+
+
+
 			/**
 			 * Write to a stream 
 			 */

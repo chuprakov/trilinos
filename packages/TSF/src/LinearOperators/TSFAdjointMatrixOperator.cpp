@@ -44,6 +44,10 @@ void TSFAdjointMatrixOperator::addToRow(
 	assert(0);
 }
 
+
+
+
+
 void TSFAdjointMatrixOperator::zero()
 {
 	assert(0);
