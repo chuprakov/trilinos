@@ -473,16 +473,21 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 		// (3) Calculate Reduced Gradient of the Lagrangian
 		algo_->insert_step( ++step_num, CalcReducedGradLagrangian_name, new CalcReducedGradLagrangianStd_AddedStep );
 
-		// (4) Check for convergence (don't check the search direction d_k)
+		// (4)	Calculate the Lagrange multipliers for the independent constraints.
+		// 		These are computed here just in case the algorithm converges and we need to
+		// 		report these multipliers to the NLP.
+		algo_->insert_step( ++step_num, CalcLambdaIndep_name, new  CalcLambdaIndepStd_AddedStep		);
+
+		// (5) Check for convergence
 		algo_->insert_step( ++step_num, CheckConvergence_name, new CheckConvergenceStd_AddedStep );
 
-		// (5) ReducedHessian
+		// (6) ReducedHessian
 		ref_count_ptr<ReducedHessianBFGSStd_Step>
 			bfgs_updater = new ReducedHessianBFGSStd_Step(quasi_newton_dampening_);
 		algo_->insert_step( ++step_num, ReducedHessian_name
 			, rcp::rcp_implicit_cast<AlgorithmStep>(bfgs_updater) );
 
-		// (5.-1) CheckSkipBFGSUpdate
+		// (6.-1) CheckSkipBFGSUpdate
 		algo_->insert_assoc_step(
 			  step_num
 			, GeneralIterationPack::PRE_STEP
@@ -491,17 +496,17 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 			, new CheckSkipBFGSUpdateStd_Step
 		  );
 
-		// (6) DepDirec
+		// (7) DepDirec
 		algo_->insert_step( ++step_num, DepDirec_name, new  DepDirecStd_Step );
 
-		// (7) IndepDirec
+		// (8) IndepDirec
 		algo_->insert_step( ++step_num, IndepDirec_name, new  IndepDirecWithoutBounds_Step );
 
-		// (8) CalcDFromYPYZPZ
+		// (9) CalcDFromYPYZPZ
 
 		algo_->insert_step( ++step_num, "CalcDFromYPYZPZ", new CalcDFromYPYZPZ_Step );
 
-		// (9) LineSearch
+		// (10) LineSearch
 
 		if( line_search_method_ == LINE_SEARCH_NONE ) {
 
@@ -620,16 +625,7 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 			Algorithm::poss_type
 				pre_step_i = 0;
 
-			// (9.-?)	Calculate the Lagrange multipliers for the independent constraints
-			//			This is added as a pre step for the line search since it is only
-			//			needed if lambda(indep) is used to select mu.
-			algo_->insert_assoc_step(	  step_num
-										, GeneralIterationPack::PRE_STEP
-										, ++pre_step_i
-										, CalcLambdaIndep_name
-										, new  CalcLambdaIndepStd_AddedStep		);
-
-			// (9.-?) Update the penalty parameter for the Merit function.
+			// (10.-?) Update the penalty parameter for the Merit function.
 			MeritFunc_PenaltyParamUpdate_AddedStep
 				*param_update_step = 0;
 
@@ -658,14 +654,14 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 										, param_update_step // give control over memory!
 									);
 			
-			// (9.-?)	Compute the full step before the linesearch
+			// (10.-?)	Compute the full step before the linesearch
 			algo_->insert_assoc_step(	  step_num
 										, GeneralIterationPack::PRE_STEP
 										, ++pre_step_i
 										, "LineSearchFullStep"
 										, new  LineSearchFullStep_Step		);
 
-			// (9.-?) Increase the penalty parameters to get a larger step.
+			// (10.-?) Increase the penalty parameters to get a larger step.
 			if( merit_function_type_ == MERIT_FUNC_MOD_L1_INCR ) {
 
 				MeritFunc_ModifiedL1LargerSteps_AddedStep
@@ -746,22 +742,30 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 						  )
 				    );
 
-			Algorithm::step_ptr_t calc_lagr, check_conv;
+			Algorithm::step_ptr_t calc_rgrad_lagr, calc_lambda, check_conv;
 
-			// Remove and save CalcLagr... and CheckConv...
+			// Remove and save CalcReducedGradLagr..., CalcLambdaIndep... and CheckConv...
 			
-			poss		= algo_->get_step_poss(CalcReducedGradLagrangian_name);
-			calc_lagr	= algo_->get_step( poss );
+
+
+
+			poss			= algo_->get_step_poss(CalcReducedGradLagrangian_name);
+			calc_rgrad_lagr	= algo_->get_step(poss);
 			algo_->remove_step(poss);
 
-			poss		= algo_->get_step_poss(CheckConvergence_name);
-			check_conv	= algo_->get_step( poss );
+			poss			= algo_->get_step_poss(CalcLambdaIndep_name);
+			calc_lambda		= algo_->get_step(poss);
+			algo_->remove_step(poss);
+
+			poss			= algo_->get_step_poss(CheckConvergence_name);
+			check_conv		= algo_->get_step(poss);
 			algo_->remove_step(poss);
 
 			// Add them before LineSearch
 	
 			poss		= algo_->get_step_poss(LineSearch_name);
-			algo_->insert_step( poss++, CalcReducedGradLagrangian_name, calc_lagr );
+			algo_->insert_step( poss++, CalcReducedGradLagrangian_name, calc_rgrad_lagr );
+			algo_->insert_step( poss++, CalcLambdaIndep_name, calc_lambda );
 			algo_->insert_step( poss++, CheckConvergence_name, check_conv );
 
 		}
@@ -821,9 +825,9 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 					 qp_solver, algo_, check_results_ );
 
 			Algorithm::poss_type poss;
-			poss = algo_->get_step_poss( IndepDirec_name );
+			poss = algo_->get_step_poss(IndepDirec_name);
 
-			algo_->remove_step( poss );
+			algo_->remove_step(poss);
 
 			algo_->insert_step(
 				poss
@@ -839,14 +843,8 @@ void rSQPAlgo_ConfigMamaJama::config_algo_cntr(rSQPAlgoContainer& algo_cntr) {
 				, new CalcZpzFromDYPY_Step
 			  );
 
-			poss = algo_->get_step_poss( LineSearch_name );
-			if( Algorithm::poss_type assoc_step_poss = algo_->get_assoc_step_poss(
-					poss, GeneralIterationPack::PRE_STEP, CalcLambdaIndep_name )
-				!= Algorithm::DOES_NOT_EXIST )
-			{	
-				algo_->remove_assoc_step( poss, GeneralIterationPack::PRE_STEP
-					, assoc_step_poss  );
-			}
+			poss = algo_->get_step_poss(CalcLambdaIndep_name);
+			algo_->remove_step(poss);
 
 /* VE09 is disabled for now.  Latter I will reintegrate it with what is above.
 
