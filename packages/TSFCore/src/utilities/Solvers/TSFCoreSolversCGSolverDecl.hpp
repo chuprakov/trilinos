@@ -125,8 +125,6 @@ private:
 	mutable Index                                    currNumSystems_;
 	mutable int                                      currIteration_;
 	mutable std::vector<Index>                       activeSystems_;
-	mutable Teuchos::RefCountPtr<const Solvers::Norm<Scalar> >
-	    norm_;
 	mutable Teuchos::RefCountPtr<MultiVector<Scalar> >
 	    X_curr_, R_, Q_, Z_, P_;
 	mutable std::vector<Scalar>

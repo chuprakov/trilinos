@@ -75,7 +75,6 @@ class Indefinite : public SolverBreakdown
 
 } // namespace Exceptions
 
-template<class Scalar> class Norm;
 template<class Scalar> class SolverState;
 template<class Scalar> class ConvergenceTester;
 template<class Scalar> class IterativeLinearSolver;

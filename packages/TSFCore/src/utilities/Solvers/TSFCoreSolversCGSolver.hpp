@@ -104,7 +104,7 @@ template<class Scalar>
 void CGSolver<Scalar>::currEstRelResidualNorms( Scalar norms[] ) const
 {
 	if(!norms_updated_) {
-		norm_->norms( *R_, &norms_[0] );
+		TSFCore::norms( *R_, &norms_[0] );
 		for(int j=0;j<currNumSystems_;++j)
 			norms_[j] /= rel_err_denom_[j];
 		norms_updated_ = true;
@@ -234,7 +234,7 @@ SolveReturn CGSolver<Scalar>::solve(
 	assign( R_.get(), 0.0 ); update( a, Y, R_.get() );
 	// Denominator for relative error ( denom(j) = a||Y|| + 1 )
 	rel_err_denom_.resize(currNumSystems_);
-	norm_->norms( *R_, &rel_err_denom_[0] );
+	norms( *R_, &rel_err_denom_[0] );
 	for(j=0;j<currNumSystems_;++j) rel_err_denom_[j] += 1.0;
 	// R^{0} += - op(M)*X^{0}
 	M.apply(M_trans,*X,R_.get(),-1.0,1.0);
