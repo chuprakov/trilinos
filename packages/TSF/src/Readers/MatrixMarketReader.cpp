@@ -125,6 +125,7 @@ void MatrixMarketReader::readSparse(FILE* fp, TSFMatrixView& matrix, int nRows,
 				case MMSymmetric:
 					if (i != j)
 						{
+						        ++k;
 							bandwidth[j]++;
 							colIndices[j].append(i);
 							aij[j].append(val);
