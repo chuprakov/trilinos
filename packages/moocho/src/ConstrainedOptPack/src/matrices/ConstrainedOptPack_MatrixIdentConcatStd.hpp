@@ -159,13 +159,21 @@ public:
 
 private:
 
+#ifdef DOXYGEN_COMPILE
+	AbstractLinAlgPack::VectorSpace    *space_cols;
+	AbstractLinAlgPack::VectorSpace    *space_rows;
+	AbstractLinAlgPack::MatrixWithOp   *D;
+	RangePack::Range1D                 D_rng;
+	RangePack::Range1D                 I_rng;
+#else
 	VectorSpace::space_ptr_t  space_cols_;
 	VectorSpace::space_ptr_t  space_rows_;
-	value_type        alpha_;
 	D_ptr_t           D_ptr_;
-	BLAS_Cpp::Transp  D_trans_;
 	Range1D           D_rng_;
 	Range1D           I_rng_;
+#endif
+	value_type        alpha_;
+	BLAS_Cpp::Transp  D_trans_;
  
 	//
 	void assert_initialized() const;
