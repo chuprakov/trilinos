@@ -2347,6 +2347,7 @@ QPSchur::MSADU::PivotTolerances QPSchur::pivot_tols() const
 QPSchur::QPSchur(
 	const schur_comp_ptr_t&   schur_comp
 	,size_type                max_iter
+	,value_type               max_real_runtime
 	,value_type               feas_tol
 	,value_type               loose_feas_tol
 	,value_type               dual_infeas_tol
@@ -2364,6 +2365,7 @@ QPSchur::QPSchur(
 	)
 	:schur_comp_(schur_comp)
 	,max_iter_(max_iter)
+	,max_real_runtime_(max_real_runtime)
 	,feas_tol_(feas_tol)
 	,loose_feas_tol_(loose_feas_tol)
 	,dual_infeas_tol_(dual_infeas_tol)
@@ -2396,6 +2398,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	using SparseLinAlgPack::V_InvMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using StopWatchPack::stopwatch;
 
 	const value_type inf = std::numeric_limits<value_type>::max();
 
@@ -2416,6 +2419,11 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		*out
 			<< "\n*** Entering QPSchur::solve_qp(...)\n";
 	}
+
+	// Start the timer!
+	stopwatch timer;
+	timer.reset();
+	timer.start();
 
 	// Print the definition of the QP to be solved.
 	if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
@@ -2544,6 +2552,9 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			<< right << setw(5)	<< "----"	<< endl;
 	}
 	for( int k = num_act_change; k > 0; --k, ++(*iter) ) {
+		// Check runtime
+		if( timeout_return(&timer,out,output_level) )
+			return MAX_RUNTIME_EXEEDED_FAIL;
 		// Compute z_hat (z_hat = inv(S_hat)*(d_hat - U_hat'*vo))
 		VectorSlice z_hat = act_set_.z_hat();
 		calc_z( act_set_.S_hat(), act_set_.d_hat(), act_set_.U_hat(), &vo
@@ -2681,6 +2692,9 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		}
 		size_type q_D_hat = act_set_.q_D_hat(); // This will be deincremented
 		while( q_D_hat > 0 ) {
+			// Check runtime
+			if( timeout_return(&timer,out,output_level) )
+				return MAX_RUNTIME_EXEEDED_FAIL;
 			// mu_D_hat = ???
 			VectorSlice mu_D_hat = act_set_.mu_D_hat();
 			calc_mu_D( act_set_, *x, v, &mu_D_hat );
@@ -2808,6 +2822,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		,vo, &act_set_, &v
 		,x, iter, num_adds, num_drops
 		,&iter_refine_num_resid, &iter_refine_num_solves
+		,&timer
 		);
 
 	if( solve_return != OPTIMAL_SOLUTION )
@@ -2864,6 +2879,10 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			case MAX_ITER_EXCEEDED:
 				*out
 					<< "\n*** Maximum iterations exceeded!\n";
+				break;
+			case MAX_RUNTIME_EXEEDED_DUAL_FEAS:
+				*out
+					<< "\n*** Maximum runtime exceeded!\n";
 				break;
 			case MAX_ALLOWED_STORAGE_EXCEEDED:
 				*out
@@ -2937,6 +2956,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	, const VectorSlice& vo, ActiveSet* act_set, VectorSlice* v
 	, VectorSlice* x, size_type* iter, size_type* num_adds, size_type* num_drops
 	, size_type* iter_refine_num_resid, size_type* iter_refine_num_solves
+	, StopWatchPack::stopwatch* timer
 	)
 {
 	using std::setw;
@@ -3040,7 +3060,11 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					*out
 						<< "\n*** PICK_VIOLATED_CONSTRAINT\n";
 				}
-				last_ja = ja; // Save the indice of the last constriant to be added!
+				// Check runtime
+				if( timeout_return(timer,out,output_level) )
+					return MAX_RUNTIME_EXEEDED_DUAL_FEAS;
+				// Save the indice of the last constriant to be added!
+				last_ja = ja;
 				// Set parts of x that are not currently fixed and may have changed.
 				// Also, we want set specifially set those variables that where
 				// initially free and then latter fixed to their bounds so that
@@ -4457,6 +4481,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						*v 					= v_plus;
 					}
 					else {
+						bool threw_exception = false;
 						try {
 							if(act_set->add_constraint( ja, bnd_ja, true, out, output_level, true, true ))
 								summary_lines_counter = 0;
@@ -4465,19 +4490,47 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 								*out
 									<< "\n\nSchur complement appears to be singular and should not be:\n"
-									<< excpt.what()
-									<< "\nThe QP appears to be nonconvex and we therefore terminate the primal-dual QP algorithm!\n";
+									<< excpt.what() << std::endl;
 							}
-							return NONCONVEX_QP;
+							threw_exception = true;
 						}
 						catch( const MatrixSymAddDelUpdateable::WrongInertiaUpdateException& excpt ) {
 							if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
 								*out
 									<< "\n\nSchur complement appears to have the wrong inertia:\n"
-									<< excpt.what()
-									<< "\nThe QP appears to be nonconvex and we therefore terminate the primal-dual QP algorithm!\n";
+									<< excpt.what() << std::endl;
 							}
-							return NONCONVEX_QP;
+							threw_exception = true;
+						}
+						if( threw_exception ) {
+							if( !using_iter_refinement ) {
+								if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+									*out << "We are not using iterative refinement yet so turn it on and\n"
+										 << "go back and pick a new violated constraint to add to the active set ...\n";
+								}
+								using_iter_refinement = true;
+								if( (int)output_level >= (int)OUTPUT_ITER_SUMMARY ) {
+									*out
+										<< "\n\nPerforming iterative refinement on v, z_hat system ...\n";
+								}
+								summary_lines_counter = 0;
+								// [   Ko     U_hat ] [   v   ] = [   fo  ]
+								// [ U_hat'   V_hat ] [ z_hat ]   [ d_hat ]
+								EIterRefineReturn status = iter_refine(
+									*act_set, out, output_level, -1.0, &qp.fo(), -1.0, &act_set->d_hat()
+									,v, &act_set->z_hat()
+									,iter_refine_num_resid, iter_refine_num_solves
+									);
+								next_step = PICK_VIOLATED_CONSTRAINT;
+								continue;
+							}
+							else {
+								if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+									*out << "Darn, we are already using iterative refinement!"
+										 << "\nThe QP appears to be nonconvex and we therefore terminate the primal-dual QP algorithm!\n";
+								}
+								return NONCONVEX_QP;
+							}
 						}
 						// z_hat = z_hat + beta * t_P * p_z_hat
 						if(act_set->q_hat())
@@ -4622,6 +4675,20 @@ void QPSchur::set_multipliers( const ActiveSet& act_set, const VectorSlice& v
 	if( m ) {
 		*lambda = v(n_R+1,n_R+m);
 	}
+}
+
+bool QPSchur::timeout_return( StopWatchPack::stopwatch* timer, std::ostream *out, EOutputLevel output_level ) const
+{
+	const value_type minutes = timer->read() / 60;
+	if( minutes >= max_real_runtime() ) {
+		if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
+			*out
+				<< "\n*** Runtime = " << minutes << " minutes >= max_real_runtime = " << max_real_runtime() << "!\n"
+				<< "Must terminite the algorithm!\n";
+		}
+		return true;
+	}
+	return false;
 }
 
 QPSchur::EIterRefineReturn

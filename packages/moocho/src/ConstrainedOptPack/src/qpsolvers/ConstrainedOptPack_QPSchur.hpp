@@ -19,6 +19,7 @@
 #include "LinAlgPack/include/GenMatrixClass.h"
 #include "Misc/include/StandardCompositionMacros.h"
 #include "Misc/include/StandardMemberCompositionMacros.h"
+#include "Misc/include/stpwatch.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -396,8 +397,10 @@ public:
 	enum ERunTests { RUN_TESTS, NO_TESTS };
 	/// solve_qp return values
 	enum ESolveReturn {
-		 OPTIMAL_SOLUTION
+		OPTIMAL_SOLUTION
 		,MAX_ITER_EXCEEDED
+		,MAX_RUNTIME_EXEEDED_FAIL
+		,MAX_RUNTIME_EXEEDED_DUAL_FEAS
 		,MAX_ALLOWED_STORAGE_EXCEEDED
 		,INFEASIBLE_CONSTRAINTS
 		,NONCONVEX_QP
@@ -430,6 +433,11 @@ public:
 	/** Set the maximum number of primal-dual QP iterations to take.
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( size_type, max_iter )
+
+	///
+	/** Set the maximum wall clock runtime (in minutes).
+	  */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_real_runtime )
 
 	///
 	/** Set the feasibility tolerance for the constriants.
@@ -518,6 +526,7 @@ public:
 	QPSchur(
 		const schur_comp_ptr_t&   schur_comp           = NULL
 		,size_type                max_iter             = 100
+		,value_type               max_real_runtime     = 1e+20
 		,value_type               feas_tol             = 1e-8
 		,value_type               loose_feas_tol       = 1e-6
 		,value_type               dual_infeas_tol      = 1e-12
@@ -1102,6 +1111,7 @@ protected:
 		, const VectorSlice& vo, ActiveSet* act_set, VectorSlice* v
 		, VectorSlice* x, size_type* iter, size_type* num_adds, size_type* num_drops
 		, size_type* iter_refine_num_resid, size_type* iter_refine_num_solves
+		, StopWatchPack::stopwatch* timer
 		);
 
 	///
@@ -1113,6 +1123,9 @@ protected:
 	virtual void set_multipliers(
 		const ActiveSet& act_set, const VectorSlice& v
 		, SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve );
+
+	/// Determine if time has run out and if we should return.
+	bool timeout_return( StopWatchPack::stopwatch*timer, std::ostream *out, EOutputLevel output_level ) const;
 
 	///
 	enum EIterRefineReturn {
