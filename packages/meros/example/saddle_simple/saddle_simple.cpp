@@ -99,13 +99,17 @@ int main(int argc, void** argv)
   //  TSFLinearSolver FSolver;
   ML_solverData   Fsolver_data;
   bool symmetric = false;
-  TSFHashtable<int, int> azOptions;
-  TSFHashtable<int, double> azParams;
-  azOptions.put(AZ_solver, AZ_gmres);
-  azParams.put(AZ_tol, 1e-6);
-  azOptions.put(AZ_max_iter, 200);
-  azOptions.put(AZ_recursive_iterate, 1);
-  TSFLinearSolver FSolver = new AZTECSolver(azOptions,azParams);
+  TSFHashtable<int, int> azOptionsF;
+  TSFHashtable<int, double> azParamsF;
+  azOptionsF.put(AZ_solver, AZ_gmres);
+  azOptionsF.put(AZ_ml, 1);
+  azOptionsF.put(AZ_ml_levels, 4);
+  azOptionsF.put(AZ_precond, AZ_dom_decomp);
+  azOptionsF.put(AZ_subdomain_solve, AZ_ilu);
+  azParamsF.put(AZ_tol, 1e-6);
+  azOptionsF.put(AZ_max_iter, 200);
+  azOptionsF.put(AZ_recursive_iterate, 1);
+  TSFLinearSolver FSolver = new AZTECSolver(azOptionsF,azParamsF);
 
 
 
