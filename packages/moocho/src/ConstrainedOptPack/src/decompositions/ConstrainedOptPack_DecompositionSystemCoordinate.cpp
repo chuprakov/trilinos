@@ -61,7 +61,9 @@ DecompositionSystemCoordinate::factory_Y() const
 const DecompositionSystem::mat_nonsing_fcty_ptr_t
 DecompositionSystemCoordinate::factory_R() const
 {
-	return basis_sys()->factory_C();
+	if( basis_sys().get() )
+		return basis_sys()->factory_C();
+	return MemMngPack::null;
 }
 
 const DecompositionSystem::mat_fcty_ptr_t
@@ -145,8 +147,8 @@ void DecompositionSystemCoordinate::initialize_matrices(
 	const Range1D
 		var_dep(1,r),
 		var_indep(r+1,n),
-		con_decomp   = this->con_decomp(),
-		con_undecomp = this->con_undecomp();
+		equ_decomp   = this->equ_decomp(),
+		equ_undecomp = this->equ_undecomp();
 
 	//
 	// Get pointers to concreate matrices
@@ -190,8 +192,8 @@ void DecompositionSystemCoordinate::print_update_matrices(
 	out
 		<< L << "*** Coordinate decompositon Y, R, Uy and Vy matrices (class DecompositionSystemCoordinate)\n"
 		<< L << "Y = [ I; 0 ] (using class MatrixIdentConcatStd with MatrixZero)\n"
-		<< L << "R = Gc(var_dep,con_decomp)' = C\n"
-		<< L << "Uy = Gc(var_dep,con_undecomp)'\n"
+		<< L << "R = Gc(var_dep,equ_decomp)' = C\n"
+		<< L << "Uy = Gc(var_dep,equ_undecomp)'\n"
 		<< L << "Vy = Gh(var_dep,:)'\n"
 		;
 }
