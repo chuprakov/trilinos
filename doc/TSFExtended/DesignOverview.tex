@@ -1,0 +1,223 @@
+
+\section{Design overview}
+
+\subsection{Handles}
+
+Handle classes
+(also sometimes known as envelope classes) 
+are a well-known idiom in C++~\cite{ref:advanced_c++_coplien}. 
+Among the uses of handle classes are
+\begin{itemize}
+\item Hiding a developer-only interface behind a smaller user interface
+defined by the handle.
+\item Enabling clean use of operator overloading on polymorphic types.
+\item Hiding details of memory management, and making a code appear
+``pointer free.''
+\end{itemize}
+
+As odd as it may seem to those of us who live and breathe C++, 
+many competent but non-expert
+programmers find C++ syntax for pointers, casts, and polymorphism
+to be rather nonintuitive and error-prone. Indeed 
+much of the popularity of Java is due to the elimination
+of pointers from the syntax of the language.  
+
+Nonetheless, while often useful, handles do come with disadvantages. 
+In particular, hiding of details is a double-edged sword: the syntax
+is cleaner when details are hidden, but unless one understands the 
+underlying memory model, one can unintentionally incur side effects
+from an inoccuous-looking operation. Programmers with experience in Java
+or Mathematica will have no difficulty with this, but those used to a
+language such as Matlab without shallow copies will need to be aware that 
+assignment and copying of vectors in TSF differs from that in Matlab.
+Because handles are not to everyone's taste, TSFExtended has been designed 
+such that handles can be used or ignored according to the
+taste of the individual solver developer.
+
+\subsubsection{The templated handle class}
+
+Handles are used for many data types in TSFExtended, so it is logical to
+provide a generic handle class implementing the common methods. The
+{\tt Handle} class is templated on contained type, and is essentially
+a wrapper for a {\tt Teuchos::RefCountPtr}. 
+{\scriptsize\begin{verbatim}
+template <class PointerType>
+  class Handle
+  {
+  public:
+    /** Construct from a smart pointer */
+    Handle(const RefCountPtr<PointerType>& ptr);
+
+    /** Read-only access to the underlying smart pointer. */
+    const RefCountPtr<PointerType>& ptr() const {return ptr_;}
+
+    /** Read-write access to the underlying smart pointer. */
+    RefCountPtr<PointerType> ptr() {return ptr_;}
+
+    /** 
+     * Print to a stream using the Printable interface. 
+     * If the contents of the handle cannot be 
+     * downcasted or crosscasted to a Printable*, an exception
+     * will be thrown 
+     */
+    void print(std::ostream& os) const ;
+
+    /** 
+     * Return a short descriptive string using the Describable interface.
+     * If the contents of the handle cannot be 
+     * downcasted or crosscasted to a Describable*, an exception
+     * will be thrown. 
+     */
+    std::string describe() const ;
+
+  private:
+    RefCountPtr<PointerType> ptr_;
+  };
+\end{verbatim}}
+Note that the only constructor takes a reference-counted (``smart'')
+pointer. This is because it is not possible to construct directly and safely
+a smart pointer from a raw pointer~\cite{ref:SmartPtrs}; the Teuchos
+smart pointer requires a call to the {\tt rcp()} method for safe
+construction of a smart pointer. Nonetheless,
+syntax such as 
+{\scriptsize\begin{verbatim}
+Handle<Base> handle = new Derived();
+\end{verbatim}}
+without an intermediate {\tt rcp()} call is often desirable. For class
+heirarchies where this is the desired behavior, all subclasses
+should implement the following {\tt Handleable} interface,
+{\scriptsize\begin{verbatim}
+template <class Base>
+  class Handleable
+  {
+  public:
+    /** Virtual dtor */
+    virtual ~Handleable(){;}
+
+    /** Return a safely-created RefCountPtr to the base type. Any
+     * class can implement this method as {return rcp(this);} */
+    virtual RefCountPtr<Base> getRcp() = 0 ;
+    
+  };
+\end{verbatim}}
+where the {\tt getRcp()} method provides a call to {\tt rcp()} in 
+a polymorphic way. Class heirarchies deriving from {\tt Handleable}
+can then support construction of a handle from a raw pointer. Since
+not all class hierarchies will implement the {\tt Handleable} interface,
+this capability is not in the {\tt Handle} class, but in a subtype
+{\tt HandleConstructableFromRawPointer}.
+{\scriptsize\begin{verbatim}
+template <class PointerType>
+  class HandleConstructableFromRawPointer : public Handle<PointerType>
+  {
+  public:
+    /** */
+    Handle(Handleable<PointerType>* ptr);
+  };
+\end{verbatim}}
+
+
+\subsection{Extended interfaces via multiple inheritance}
+
+Many TSFExtended classes are ``extensions'' of existing TSFCore classes,
+providing additional capabilities through an extended interface. 
+The appropriate mechanism for extension of an interface in C++ is inheritance.
+We can further partition the extended interface as appropriate for clarity
+of design and flexibility of implementation; 
+for instance, for vectors we might (and do) 
+wish to group all methods associated with loading elements into 
+a {\tt LoadableVector} interface, and all methods associated with
+stream output into a {\tt Printable} interface. This partitioning gives
+us the flexibility to decide for each concrete type whether a given
+set of interface extensions will be implemented. For example, an in-core
+vector type such as {\tt Epetra$\_$Vector} supports element access, however, 
+a remotely-stored proxy vector will not; therefore, a 
+{\tt TSFExtended::EpetraVector} class will implement the {\tt AccessibleVector}
+interface but a hypothetical {\tt TSFExtended::ProxyVector} would not.
+
+It is worth noting two features of this design: First, 
+that partitioned interfaces naturally use the ``mix-in'' style 
+of multiple inheritance, in which all subclasses but one are abstract and
+serve only to define interfaces. While most C++ programmers are 
+comfortable with multiple inheritance, it is often described (particularly
+in books on Java) as a dangerous feature of C++. Note that the mix-in style
+is the simplest application of multiple inheritance, and indeed is identical
+to using the {\tt interface} keyword to define interface extensions
+in Java; thus, even a Java evangelist should feel comfortable with the present
+use of multiple inheritance.
+Second, it is worth mentioning that to access the extended interface for, 
+say, {\tt LoadableVector} it is necessary to cross-cast 
+a {\tt TSFCore::Vector} to the {\tt LoadableVector} type. In standard C++
+cross-casts can be safely done using the {\tt dynamic$\_$cast} mechanism; the
+return value of {\tt dynamic$\_$cast} can be tested for success. 
+For subtypes such as {\tt ProxyVector} for which some extensions
+are unimplemented, the cross-cast will fail if one attempts to use
+one of the unimplemented extensions; an exception can be thrown to trigger
+an alternate path.
+
+\subsection{Vectors in TSFExtended}
+
+To illustrate how handles and interface extension are used to
+build TSFExtended objects,
+we describe the design of an extended {\tt EpetraVector} class, 
+and for contrast, an extended {\tt ProxyVector} class. 
+
+\subsubsection{Building up an extended concrete type}
+
+First, note
+that in TSF vectors are never created directly by the user; they are always 
+created by vector spaces. Thus there is no need for vectors to implement
+the {\tt Handleable} interface. The next issue to decide is:
+what methods might we want to define on a vector? For use in solver
+algorithms, clearly we will need
+a comprehensive set of mathematical operations; these have already been
+defined in TSFCore. For use in a simulator, we will want to load and
+possibly access elements. We may want to print the contents of the vector,
+or we may want to print a short summary description such as the number of
+elements. 
+\begin{itemize}
+\item All extended vectors will derive from 
+a subtype of {\tt TSFCore::Vector<Scalar>}. This will provide the core
+mathematical capability needed in solvers.
+\item Vectors for which elements can be read and/or written should implement
+the {\tt AccessibleVector} and/or {\tt LoadableVector} interfaces, 
+respectively.
+\item Vectors that can be printed to a stream should implement the
+{\tt Printable} interface.
+\item Vectors that write a short descriptive string should
+implement the {\tt Describable} interface.
+\end{itemize}
+Not all vector types will implement all of these interfaces; a 
+proxy vector, for example, will probably provide a summary
+description but have no element loading or access, 
+and probably no printing; 
+all loading is assumed to be done on the computational server, and any element
+manipulation by the client would 
+be extremely expensive. Thus, a {\tt ProxyVector} would be
+declared as
+\begin{verbatim}
+class ProxyVector : public TSFCore::ProxyVector,
+                    public Describable
+{
+/* methods omitted */
+};
+\end{verbatim}
+At the other extreme, a full-featured
+vector class such as {\tt EpetraVector} will be able to provide nearly
+any method, so it will implement all of the above interfaces,
+\begin{verbatim}
+class EpetraVector : public TSFCore::EpetraVector,
+                     public Describable,
+                     public Printable,
+                     public LoadableVector<double>,
+                     public AccessibleVector<double>,
+{
+/* methods omitted */
+};
+\end{verbatim}
+
+Note that both of these types derive from a subclass of {\tt TSFCore::Vector}, 
+{\it not} from {\tt TSFCore::Vector}. This is so that they can inherit
+the subclass's implementation of the methods of {\tt TSFCore::Vector}. 
+
+\subsubsection{The Vector handle class}
