@@ -52,7 +52,7 @@ In the future this docuentation will be much more extensive.
 		for dense BLAS compatible linear algebra . *** Not updated yet!
 	<li> <A HREF="../SparseLinAlgPack/html/index.html">SparseLinAlgPack</A>: Concreate C++ classes
 		for sparse linear algebra with implementations of abstract interfaces
-		in  <tt>%AbstractLinAlgPack</tt>. *** Not updated yet!
+		in  <tt>%AbstractLinAlgPack</tt>.
 	<li> <A HREF="../SparseSolverPack/html/index.html">SparseSolverPack</A>: Abstract C++ interfaces
 		and subclasses for serial linear solvers with implementations of abstract interfades
 		in  <tt>%AbstractLinAlgPack</tt>. *** Not updated yet!
