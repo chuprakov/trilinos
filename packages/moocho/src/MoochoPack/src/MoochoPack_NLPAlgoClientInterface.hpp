@@ -21,10 +21,11 @@
 namespace ReducedSpaceSQPPack {
 
 ///
-/** Interface that smart clients use to set the configuration
-  * object that defines the rSQP algorithm to be used to solve
-  * the NLP.
-  */
+/** Interface that smart clients use to set the algorithm configuration
+ * object that defines the rSQP algorithm to be used to solve the NLP.
+ *
+ * ToDo: Finish documentation!
+ */
 class rSQPAlgoClientInterface : public rSQPSolverClientInterface {
 public:
 
@@ -53,15 +54,15 @@ public:
 	//@}
 
 	///
-	/** Call that causes the algorithm to be configured.
-	  *
-	  * Causes the config object to configure the algorithm
-	  * to be ready to solve an NLP or print the algorithm.
-	  *
-	  * May be called after the nlp, track and config objects
-	  * are set.
-	  *
-	  * Must be  called before print_algorithm(...) is called.
+	/** Causes the algorithm to be configured.
+	 *
+	 * Causes the \c config object to configure the algorithm
+	 * to be ready to solve an NLP or print the algorithm.
+	 *
+	 * May be called after the \c nlp, \c track and \c config objects
+	 * are set.
+	 *
+	 * Must be  called before \c print_algorithm() or \c find_min() are called.
 	  */
 	virtual void configure_algorithm(std::ostream* trase_out = 0) = 0;
 

@@ -21,6 +21,9 @@
 
 namespace ReducedSpaceSQPPack {
 
+/** \defgroup ReducedSpaceSQPPackExceptions_grp Standard exceptions for rSQP++ */
+//@{
+
 // Thrown if the constraints are infeasible
 class InfeasibleConstraints : public std::logic_error
 {public: InfeasibleConstraints(const std::string& what_arg) : std::logic_error(what_arg) {}};
@@ -33,7 +36,7 @@ class LineSearchFailure : public std::runtime_error
 class TestFailed : public std::runtime_error
 {public: TestFailed(const std::string& what_arg) : std::runtime_error(what_arg){}};
 
-/// Thrown if a the QP failed and was not corredted
+/// Thrown if a the QP failed and was not corrected
 class QPFailure : public std::runtime_error
 {
 public:
@@ -44,6 +47,8 @@ public:
 		{}
 	ConstrainedOptimizationPack::QPSolverStats qp_stats;
 };
+
+//@}
 
 }	// end namespace ReducedSpaceSQPPack 
 
