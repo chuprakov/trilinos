@@ -43,7 +43,7 @@ namespace TestingPack {
   * let's define the relative error between the anylitic value and the
   * finite difference value to be:
   *
-  *   err(i) = | (gh(i) - fdh(i)) /  (gh(i) + fdh(i) + sqrt(epsilon)) |
+  *   err(i) = |(gh(i) - fdh(i))| /  (||gh||inf + ||fdh||inf + sqrt(epsilon))
   *
   * The above error takes into account the relative sizes of the elements and also
   * allows one or both of the elements to be zero without ending up with 0/0
