@@ -97,6 +97,75 @@ options_group rSQPAlgo_ConfigMamaJama {
 }
 
 ***************************************************************
+*** Options group for CalcFiniteDiffProd class
+***
+*** These options control how finite differences are computed
+*** when testing and for other purposes.
+***
+options_group CalcFiniteDiffProdSetOptions {
+
+*    fd_method_order = FD_ORDER_ONE;          *** Use O(eps) one sided finite differences
+*  	 fd_method_order = FD_ORDER_TWO;          *** Use O(eps^2) one sided finite differences
+*    fd_method_order = FD_ORDER_TWO_CENTRAL;  *** Use O(eps^2) two sided central finite differences
+*    fd_method_order = FD_ORDER_TWO_AUTO;     *** Uses FD_ORDER_TWO_CENTRAL or FD_ORDER_TWO
+*    fd_method_order = FD_ORDER_FOUR;         *** Use O(eps^4) one sided finite differences
+*    fd_method_order = FD_ORDER_FOUR_CENTRAL; *** Use O(eps^4) two sided central finite differences
+*    fd_method_order = FD_ORDER_FOUR_AUTO;    *** (default) Uses FD_ORDER_FOUR_CENTRAL or FD_ORDER_FOUR
+     *** Selects the finite differencing method to use.  Several different
+     *** methods of different orders are available.  For more accuracy use a higher order
+     *** method, for faster execution time use a lower order method.
+
+*    fd_step_select = FD_STEP_ABSOLUTE; *** (default) Use absolute step size fd_step_size
+*    fd_step_select = FD_STEP_RELATIVE; *** Use relative step size fd_step_size * ||x||inf
+     *** Determines how the actual finite difference step size that is used is selected.
+     ***    FD_STEP_ABSOLUTE : The actual step size used is taken from fd_step_size or
+     ***                       is determined by the implementation if fd_step_size < 0.0.
+     ***                       Taking an absolute step size can result in inaccurate gradients
+     ***                       for  badly scaled NLPs.
+     ***    FD_STEP_RELATIVE : The actual step size used is taken from fd_step_size or
+     ***                       is determined by the implementation if fd_step_size < 0.0
+     ***                       and then multiplied by ||x||inf.  Taking a relative step
+     ***                       will not always result in accurate gradients and the user
+     ***                       may have to play with fd_step_size some.
+
+*    fd_step_size = -1.0; *** (default) Let the implementation decide
+     *** Determines what finite difference step size to use.  If fd_step_select=FD_STEP_ABSOLUTE
+     *** then this is the absolute step size that is used.  If fd_step_select=FD_STEP_RELATIVE
+     *** the actual step size used in fd_step_size * ||x||inf.  Some common values are:
+     ***   < 0.0   : let the implementation decide.
+     ***   1e-8    : Optimal step size for FD_ORDER_ONE for IEEE double and perfect scaling?
+     ***   1e-5    : Optimal step size for FD_ORDER_TWOx for IEEE double and perfect scaling?
+     ***   1e-3    : Optimal step size for FD_ORDER_FOURx for IEEE double and perfect scaling?
+
+*    fd_step_size_min = -1.0; *** (default) Let the implementation decide.
+     *** Determines the minimum step size that will be taken to compute the finite differences.
+     *** This option is used to forbid the computation of a finite difference with a very small
+     *** step size as required by the variable bounds.  Computing finite difference derivatives
+     *** for such small step sizes generally result in a lot of roundoff errors.  If
+     *** fd_step_size_min < 0.0, then the implementation will pick a default value that is
+     *** smaller than the default value for fd_step_size.
+
+*    fd_step_size_f = -1.0; *** (default) Let the implementation decide
+     *** Determines what finite difference step size to use for the objective function
+     *** f(x).  If fd_step_size_f < 0.0, then the selected value for fd_step_size will be
+     *** used (see the options fd_step_size and fd_step_select).  This option allows
+     *** fine-tunning of the finite difference computations.
+
+*    fd_step_size_c = -1.0; *** (default) Let the implementation decide
+     *** Determines what finite difference step size to use for the equality constraints
+     *** c(x).  If fd_step_size_c < 0.0, then the selected value for fd_step_size will be
+     *** used (see the options fd_step_size and fd_step_select).  This option allows
+     *** fine-tunning of the finite difference computations.
+
+*    fd_step_size_h = -1.0; *** (default) Let the implementation decide
+     *** Determines what finite difference step size to use for the inequality constraints
+     *** h(x).  If fd_step_size_h < 0.0, then the selected value for fd_step_size will be
+     *** used (see the options fd_step_size and fd_step_select).  This option allows
+     *** fine-tunning of the finite difference computations.
+
+}
+
+***************************************************************
 *** Options for EvalNewPoint for NLPFirstOrderInfo.
 *** See options_group NLPFirstDerivativesTester
 ***
