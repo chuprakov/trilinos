@@ -57,6 +57,7 @@ VECTORS =
 UTILS_H = \
 	$(srcdir)/Utils/TSFConfigDefs.hpp \
 	$(srcdir)/Utils/TSFDescribable.hpp \
+	$(srcdir)/Utils/TSFDescribableByTypeID.hpp \
 	$(srcdir)/Utils/TSFDouble.hpp \
 	$(srcdir)/Utils/TSFHandle.hpp \
 	$(srcdir)/Utils/TSFHandleable.hpp \
@@ -78,14 +79,21 @@ CONCRETE = \
 	$(srcdir)/Concrete/TSFEpetraVectorType.cpp
 
 OPERATORS_H = \
+	$(srcdir)/Operators/TSFBlockOperator.hpp \
 	$(srcdir)/Operators/TSFExplicitlyTransposeableOp.hpp\
+	$(srcdir)/Operators/TSFIdentityOperator.hpp \
 	$(srcdir)/Operators/TSFLinearOperator.hpp\
 	$(srcdir)/Operators/TSFLoadableMatrix.hpp\
 	$(srcdir)/Operators/TSFNonlinearOperator.hpp\
 	$(srcdir)/Operators/TSFNonlinearOperatorBase.hpp\
-	$(srcdir)/Operators/TSFTransposeOperator.hpp
+	$(srcdir)/Operators/TSFOpDescribableByTypeID.hpp \
+	$(srcdir)/Operators/TSFTransposeOperator.hpp \
+	$(srcdir)/Operators/TSFZeroOperator.hpp 
 
-OPERATORS = 
+OPERATORS = \
+	$(srcdir)/Operators/TSFBlockOperator.cpp 
+
+
 
 LINEARSOLVERS_H = \
 	$(srcdir)/LinearSolvers/TSFBICGSTABSolver.hpp \

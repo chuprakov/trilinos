@@ -31,6 +31,7 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFCoreVectorSpaceStdBase.hpp"
+#include "TSFHandle.hpp"
 
 namespace TSFExtended
 {

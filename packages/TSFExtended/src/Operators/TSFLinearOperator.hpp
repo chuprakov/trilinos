@@ -56,11 +56,11 @@ namespace TSFExtended
       //@}
 
       /** */
-      RefCountPtr<const TSFCore::VectorSpace<Scalar> > domain() const 
+      RefCountPtr<const VectorSpace<Scalar> > domain() const 
       {return ptr()->domain();}
 
       /** */
-      RefCountPtr<const TSFCore::VectorSpace<Scalar> > range() const 
+      RefCountPtr<const VectorSpace<Scalar> > range() const 
       {return ptr()->range();}
 
       /** */
