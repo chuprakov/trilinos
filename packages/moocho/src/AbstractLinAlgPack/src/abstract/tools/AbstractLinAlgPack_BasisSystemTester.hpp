@@ -49,10 +49,11 @@ public:
 
 	///
 	enum EPrintTestLevel {
-		PRINT_NONE   = 0  ///< Don't print anything
-		,PRINT_BASIC = 1  ///< Print only very basic info
-		,PRINT_MORE  = 2  ///< Print greater detail about the tests.
-		,PRINT_ALL   = 3  ///< Print everything all the tests in great detail but output is independent of problem size.
+		PRINT_NOT_SELECTED = 0  ///< The print option has not been selected (will default to PRINT_NONE if not set)
+		,PRINT_NONE        = 1  ///< Don't print anything
+		,PRINT_BASIC       = 2  ///< Print only very basic info
+		,PRINT_MORE        = 3  ///< Print greater detail about the tests.
+		,PRINT_ALL         = 4  ///< Print everything all the tests in great detail but output is independent of problem size.
 	};
 
 	//@}
@@ -80,7 +81,7 @@ public:
 
 	///	Constructor (default options)
 	BasisSystemTester(
-		EPrintTestLevel  print_tests      = PRINT_NONE
+		EPrintTestLevel  print_tests      = PRINT_NOT_SELECTED
 		,bool            dump_all         = false
 		,bool            throw_exception  = true
 		,size_type       num_random_tests = 1
