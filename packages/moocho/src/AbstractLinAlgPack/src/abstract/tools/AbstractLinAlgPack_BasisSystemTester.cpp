@@ -233,7 +233,7 @@ bool BasisSystemTester::test_basis_system(
 				<< "\n    C.space_cols() == N.space_cols()";
 		llresult = true;
 		if(out && print_tests() >= PRINT_ALL)
- 			*out << "\n\n2.a.1) C->space_cols().is_compatible(N->space_cols()) == true ? ";
+ 			*out << "\n\n2.a.1) C->space_cols().is_compatible(N->space_cols()) == true : ";
 		result = C->space_cols().is_compatible(N->space_cols());	
 		if(out && print_tests() >= PRINT_ALL)
 		 	*out << ( result ? "passed" : "failed" )
@@ -250,13 +250,13 @@ bool BasisSystemTester::test_basis_system(
 					<< "\n    D.space_cols() == C.space_cols() and D.space_rows() == N.space_rows()";
 			llresult = true;
 			if(out && print_tests() >= PRINT_ALL)
-				*out << "\n2.b.1) D->space_cols().is_compatible(C->space_cols()) == true ? ";
+				*out << "\n2.b.1) D->space_cols().is_compatible(C->space_cols()) == true : ";
 			result = D->space_cols().is_compatible(C->space_cols());
 			if(out && print_tests() >= PRINT_ALL)
 				*out << ( result ? "passed" : "failed" );
 			if(!result) llresult = false;
 			if(out && print_tests() >= PRINT_ALL)
-				*out << "\n2.b.2) D->space_rows().is_compatible(N->space_rows()) == true ? ";
+				*out << "\n2.b.2) D->space_rows().is_compatible(N->space_rows()) == true : ";
 			result = D->space_rows().is_compatible(N->space_rows());
 			if(out && print_tests() >= PRINT_ALL)
 				*out << ( result ? "passed" : "failed" )
@@ -275,13 +275,13 @@ bool BasisSystemTester::test_basis_system(
 		llresult = true;
 		if( equ_decomp.size() ) {
 			if(out && print_tests() >= PRINT_ALL)
-				*out << "\n2.c.1) Gc->space_rows().sub_space(equ_decomp)->is_compatible(*C->space_cols().sub_space(equ_decomp)) == true ? ";
+				*out << "\n2.c.1) Gc->space_rows().sub_space(equ_decomp)->is_compatible(*C->space_cols().sub_space(equ_decomp)) == true : ";
 			result = Gc->space_rows().sub_space(equ_decomp)->is_compatible(*C->space_cols().sub_space(equ_decomp));
 			if(out && print_tests() >= PRINT_ALL)
 				*out << ( result ? "passed" : "failed" );
 			if(!result) llresult = false;
 			if(out && print_tests() >= PRINT_ALL)
-				*out << "\n2.c.2) Gc->space_cols().sub_space(var_dep)->is_compatible(C->space_rows()) == true ? ";
+				*out << "\n2.c.2) Gc->space_cols().sub_space(var_dep)->is_compatible(C->space_rows()) == true : ";
 			result = Gc->space_cols().sub_space(var_dep)->is_compatible(C->space_rows());
 			if(out && print_tests() >= PRINT_ALL)
 				*out << ( result ? "passed" : "failed" );
@@ -289,13 +289,13 @@ bool BasisSystemTester::test_basis_system(
 		}
 		if( inequ_decomp.size() ) {
 			if(out && print_tests() >= PRINT_ALL)
-				*out << "\n2.c.3) Gh->space_rows().sub_space(inequ_decomp)->is_compatible(*C->space_cols().sub_space(inequ_decomp)) == true ? ";
+				*out << "\n2.c.3) Gh->space_rows().sub_space(inequ_decomp)->is_compatible(*C->space_cols().sub_space(inequ_decomp)) == true : ";
 			result = Gh->space_rows().sub_space(inequ_decomp)->is_compatible(*C->space_cols().sub_space(inequ_decomp));
 			if(out && print_tests() >= PRINT_ALL)
 				*out << ( result ? "passed" : "failed" );
 			if(!result) llresult = false;
 			if(out && print_tests() >= PRINT_ALL)
-				*out << "\n2.c.4) Gh->space_cols().sub_space(var_dep)->is_compatible(C->space_rows()) == true ? ";
+				*out << "\n2.c.4) Gh->space_cols().sub_space(var_dep)->is_compatible(C->space_rows()) == true : ";
 			result = Gh->space_cols().sub_space(var_dep)->is_compatible(C->space_rows());
 			if(out && print_tests() >= PRINT_ALL)
 				*out << ( result ? "passed" : "failed" );
@@ -315,13 +315,13 @@ bool BasisSystemTester::test_basis_system(
 		llresult = true;
 		if( equ_decomp.size() ) {
 			if(out && print_tests() >= PRINT_ALL)
-				*out << "\n2.d.1) Gc->space_rows().sub_space(equ_decomp)->is_compatible(*N->space_cols().sub_space(equ_decomp)) == true ? ";
+				*out << "\n2.d.1) Gc->space_rows().sub_space(equ_decomp)->is_compatible(*N->space_cols().sub_space(equ_decomp)) == true : ";
 			result = Gc->space_rows().sub_space(equ_decomp)->is_compatible(*N->space_cols().sub_space(equ_decomp));
 			if(out && print_tests() >= PRINT_ALL)
 				*out << ( result ? "passed" : "failed" );
 			if(!result) llresult = false;
 			if(out && print_tests() >= PRINT_ALL)
-				*out << "\n2.d.2) Gc->space_cols().sub_space(var_indep)->is_compatible(N->space_rows()) == true ? ";
+				*out << "\n2.d.2) Gc->space_cols().sub_space(var_indep)->is_compatible(N->space_rows()) == true : ";
 			result = Gc->space_cols().sub_space(var_indep)->is_compatible(N->space_rows());
 			if(out && print_tests() >= PRINT_ALL)
 				*out << ( result ? "passed" : "failed" );
@@ -329,13 +329,13 @@ bool BasisSystemTester::test_basis_system(
 		}
 		if( inequ_decomp.size() ) {
 			if(out && print_tests() >= PRINT_ALL)
-				*out << "\n2.d.3) Gh->space_rows().sub_space(inequ_decomp)->is_compatible(*N->space_cols().sub_space(inequ_decomp)) == true ? ";
+				*out << "\n2.d.3) Gh->space_rows().sub_space(inequ_decomp)->is_compatible(*N->space_cols().sub_space(inequ_decomp)) == true : ";
 			result = Gh->space_rows().sub_space(inequ_decomp)->is_compatible(*N->space_cols().sub_space(inequ_decomp));
 			if(out && print_tests() >= PRINT_ALL)
 				*out << ( result ? "passed" : "failed" );
 			if(!result) llresult = false;
 			if(out && print_tests() >= PRINT_ALL)
-				*out << "\n2.d.4) Gh->space_cols().sub_space(var_indep)->is_compatible(N->space_rows()) == true ? ";
+				*out << "\n2.d.4) Gh->space_cols().sub_space(var_indep)->is_compatible(N->space_rows()) == true : ";
 			result = Gh->space_cols().sub_space(var_indep)->is_compatible(N->space_rows());
 			if(out && print_tests() >= PRINT_ALL)
 				*out << ( result ? "passed" : "failed" );
@@ -821,11 +821,13 @@ bool BasisSystemTester::test_basis_system(
 			*out << " : " << ( lresult ? "passed" : "failed" );
 	}
 
-	if(out && print_tests() >= PRINT_BASIC) {
+	if(out && print_tests() != PRINT_NONE ) {
 		if(success)
 			*out << "\nCongradulations! The BasisSystem object and its associated matrix objects seem to check out!\n";
 		else
 			*out << "\nOops! At last one of the tests did not check out!\n";
+		if(print_tests() >= PRINT_BASIC)
+			*out << "\nEnd BasisSystemTester::test_basis_system(...)\n";
 	}
 	
 	return success;

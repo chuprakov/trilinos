@@ -122,10 +122,10 @@ bool EvalNewPointTailoredApproach_Step::do_step(
 	VectorWithOp &x = x_iq.get_k(0);
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out << "\n||x||inf = " << x.norm_inf() << std::endl;
+		out << "\n||x_k||inf = " << x.norm_inf() << std::endl;
 	}
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-		out << "\nx = \n" << x;
+		out << "\nx_k = \n" << x;
 	}
 
 	// allow multiple updates as defined in NLP
