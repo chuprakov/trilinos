@@ -22,10 +22,9 @@ namespace AbstractLinAlgPack {
 
 ///
 /** Abstract base class for all nonsingular polymorphic matrices
-  * as their factorizations and can be used to compute matrix-vector
-  * products and solve for linear systems efficently.
-  * 
-  */
+ * that can be used to compute matrix-vector products and solve
+ * for linear systems efficiently.
+ */
 class MatrixWithOpNonsingular
 	: virtual public MatrixWithOp
 	, virtual public MatrixNonsingular
