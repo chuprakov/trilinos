@@ -198,8 +198,18 @@ protected:
 	///
 	/** Struct for zero and explicit first order quantities that subclass must fill in.
 	 *
-	 * When computing Gc and/or Gh, the subclass can be instructed to set the row and columns
-	 * index arrays by setting \c Gc_ivect==NULL and \c Gh_ivect==NULL or not respecitively.
+	 * When computing <tt>Gc</tt> and/or <tt>Gh</tt>, the subclass can
+	 * be instructed to set the row and columns index arrays by
+	 * setting <tt>Gc_ivect!=NULL</tt> and/or <tt>Gh_ivect!=NULL</tt>
+	 * respecitively.
+	 *
+	 * Objects of this type are passed on to subclasses and contain
+	 * pointers to quantities to be updated.  Note that %NLP
+	 * subclasses are not to resize the <tt>Vector</tt> or
+	 * <tt>std::valarray</tt> objects <tt>Gc_val</tt>,
+	 * <tt>Gc_ivect</tt>, <tt>Gc_jvect</tt>, <tt>Gh_val</tt>,
+	 * <tt>Gh_ivect</tt>, <tt>Gh_jvect</tt>, <tt>*Gf</tt>, <tt>*c</tt>
+	 * or </tt>h</tt> since the these will already be resized.
 	 */
 	struct FirstOrderExplInfo {
 		///

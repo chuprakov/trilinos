@@ -388,7 +388,9 @@ protected:
 	/** Struct for objective and constriants (pointer) as serial vectors.
 	 *
 	 * Objects of this type are passed on to subclasses and contain pointers to
-	 * quantities to be updated.
+	 * quantities to be updated.  Note that %NLP subclasses are not to resize
+	 * the <tt>Vector</tt> objects <tt>*c</tt> or </tt>h</tt> since the
+	 * these will already be resized.
 	 */
 	struct ZeroOrderInfoSerial {
 	public:
@@ -409,6 +411,12 @@ protected:
 
 	///
 	/** Struct for serial gradient (objective), objective and constriants (pointers)
+	 *
+	 * Objects of this type are passed on to subclasses and contain
+	 * pointers to quantities to be updated.  Note that %NLP
+	 * subclasses are not to resize the <tt>Vector</tt> objects
+	 * <tt>*Gf</tt>, <tt>*c</tt> or </tt>h</tt> since the these will
+	 * already be resized.
 	 */
 	struct ObjGradInfoSerial {
 	public:
