@@ -2,59 +2,81 @@
 #define TSFVECTORTYPE_HPP
 
 #include "TSFHandle.hpp"
-#include "TSFCoreVectorSpaceFactory.hpp"
+#include "TSFVectorTypeExtensions.hpp"
 #include "TSFVectorSpace.hpp"
 
 namespace TSFExtended
 {
   using namespace Teuchos;
   /**
-   * User-level handle class for vector types. 
+   * Vector type objects are used by the application code to create
+   * vector spaces and operators of a given type.
    */
   template <class Scalar>
-  class VectorType : public Handle<TSFCore::VectorSpaceFactory<Scalar> >
+  class VectorType : public Handle<VectorTypeExtensions<Scalar> >
   {
   public:
     /** */
-    VectorType(Handleable<TSFCore::VectorSpaceFactory<Scalar> >* ptr);
+    VectorType(Handleable<VectorTypeExtensions<Scalar> >* ptr);
 
-    /** */
-    VectorSpace<Scalar> createSpace(int dimension) const ;
+    /** Create a vector space in which all elements are replicated on
+     * all processors. This is used when creating multivector-based
+     * operators. */
+    VectorSpace<Scalar> createReplicatedSpace(int dimension) const ;
 
-    /** create a vector space in which the local processor owns
-     * indices \f$[firstLocal, firstLocal+nLocal]f$. */
+    /** create a distributed vector space.
+     * @param dimension the dimension of the space
+     * @param nLocal number of indices owned by the local processor
+     * @param locallyOwnedIndices array of indices owned by this processor  
+     */
     VectorSpace<Scalar> createSpace(int dimension, 
                                     int nLocal,
-                                    int firstLocal) const ;
+                                    const int* locallyOwnedIndices) const ;
+
+    /**
+     * Create an empty matrix of type compatible with this vector type,
+     * sized according to the given domain and range spaces.
+     */
+    LinearOperator<Scalar>
+    createMatrix(const VectorSpace<Scalar>& domain,
+                 const VectorSpace<Scalar>& range) const ;
+                                                      
     
-    /** create a vector space in which the given local indices are owned by 
-     * this processor */
-    VectorSpace<Scalar> createSpace(int dimension, 
-                                     int nLocal,
-                                     const int* localIndices) const ;
-    
-    /** create a vector space in which the given local indices are owned
-     * by this processor, and the given ghost indices are available but
-     * not owned. */
-    VectorSpace<Scalar> createSpace(int dimension, 
-                                      int nLocal,
-                                      const int* localIndices,
-                                      int nGhost,
-                                      const int* ghostIndices) const ;
   };
 
   template <class Scalar> inline 
-  VectorType<Scalar>::VectorType(Handleable<TSFCore::VectorSpaceFactory<Scalar> >* ptr)
-    : Handle<TSFCore::VectorSpaceFactory<Scalar> >(ptr)
+  VectorType<Scalar>::VectorType(Handleable<VectorTypeExtensions<Scalar> >* ptr)
+    : Handle<VectorTypeExtensions<Scalar> >(ptr)
   {;}
 
 
   template <class Scalar> inline 
-  VectorSpace<Scalar> VectorType<Scalar>::createSpace(int dimension) const
+  VectorSpace<Scalar> VectorType<Scalar>::createReplicatedSpace(int dimension) const
   {
-    return ptr()->createVecSpc(dimension);
+    const TSFCore::VectorSpaceFactory<Scalar>* f
+      = dynamic_cast<const TSFCore::VectorSpaceFactory<Scalar>*>(ptr().get());
+    
+    TEST_FOR_EXCEPTION(f==0, runtime_error, 
+                       "failed cast to TSFCore::VectorSpaceFactory in "
+                       "VectorType<Scalar>::createReplicatedSpace()");
+    return f->createVecSpc(dimension);
   }
-  
+
+  template <class Scalar> inline 
+  VectorSpace<Scalar> VectorType<Scalar>::createSpace(int dimension,
+                                                      int nLocal,
+                                                      const int* locallyOwnedIndices) const
+  {
+    return ptr()->createSpace(dimension, nLocal, locallyOwnedIndices);
+  }
+
+  template <class Scalar> inline
+  LinearOperator<Scalar>
+  VectorType<Scalar>::createMatrix(const VectorSpace<Scalar>& domain,
+                                   const VectorSpace<Scalar>& range) const
+  {
+    return ptr()->createMatrix(domain, range);
+  }
 }
 
 #endif

@@ -169,25 +169,25 @@ EPETRA_LIBS = \
 	$(top_builddir)/../epetra/src/libepetra.a
 
 
-noinst_PROGRAMS = Vector_test
+noinst_PROGRAMS = RectMatrix_test
 
-Vector_test_SOURCES = $(srcdir)/cxx_main.cpp 
+RectMatrix_test_SOURCES = $(srcdir)/cxx_main.cpp 
 
-Vector_test_DEPENDENCIES = \
+RectMatrix_test_DEPENDENCIES = \
 $(TSF_EXTENDED_LIBS) \
 $(TSF_CORE_LIBS) \
 $(TEUCHOS_LIBS) \
 $(EPETRA_LIBS) 
 
 
-Vector_test_CXXFLAGS = \
+RectMatrix_test_CXXFLAGS = \
 	$(TSFEXTENDED_INCLUDES) \
 	$(TSFCORE_INCLUDES)\
 	$(EPETRA_INCLUDES)\
 	$(TEUCHOS_INCLUDES)
 
 
-Vector_test_LDADD = \
+RectMatrix_test_LDADD = \
 $(TSF_EXTENDED_LIBS) \
 $(TSF_CORE_LIBS) \
 $(TEUCHOS_LIBS) \
@@ -195,16 +195,16 @@ $(EPETRA_LIBS) \
 $(BLAS_LIBS) \
 	$(LIBS) $(FLIBS)
 
-subdir = test/VectorTests
+subdir = test/RectMatrixTest
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/TSF_config.h
 CONFIG_CLEAN_FILES =
-noinst_PROGRAMS = Vector_test$(EXEEXT)
+noinst_PROGRAMS = RectMatrix_test$(EXEEXT)
 PROGRAMS = $(noinst_PROGRAMS)
 
-am_Vector_test_OBJECTS = Vector_test-cxx_main.$(OBJEXT)
-Vector_test_OBJECTS = $(am_Vector_test_OBJECTS)
-Vector_test_LDFLAGS =
+am_RectMatrix_test_OBJECTS = RectMatrix_test-cxx_main.$(OBJEXT)
+RectMatrix_test_OBJECTS = $(am_RectMatrix_test_OBJECTS)
+RectMatrix_test_LDFLAGS =
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)/src
@@ -213,16 +213,16 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Vector_test-cxx_main.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/RectMatrix_test-cxx_main.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 CXXFLAGS = @CXXFLAGS@
-DIST_SOURCES = $(Vector_test_SOURCES)
+DIST_SOURCES = $(RectMatrix_test_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(Vector_test_SOURCES)
+SOURCES = $(RectMatrix_test_SOURCES)
 
 all: all-am
 
@@ -230,16 +230,16 @@ all: all-am
 .SUFFIXES: .cpp .o .obj
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/Makefile.common $(top_srcdir)/configure.ac $(ACLOCAL_M4)
 	cd $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign  test/VectorTests/Makefile
+	  $(AUTOMAKE) --foreign  test/RectMatrixTest/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
 
 clean-noinstPROGRAMS:
 	-test -z "$(noinst_PROGRAMS)" || rm -f $(noinst_PROGRAMS)
-Vector_test-cxx_main.$(OBJEXT): $(srcdir)/cxx_main.cpp
-Vector_test$(EXEEXT): $(Vector_test_OBJECTS) $(Vector_test_DEPENDENCIES) 
-	@rm -f Vector_test$(EXEEXT)
-	$(CXXLINK) $(Vector_test_LDFLAGS) $(Vector_test_OBJECTS) $(Vector_test_LDADD) $(LIBS)
+RectMatrix_test-cxx_main.$(OBJEXT): $(srcdir)/cxx_main.cpp
+RectMatrix_test$(EXEEXT): $(RectMatrix_test_OBJECTS) $(RectMatrix_test_DEPENDENCIES) 
+	@rm -f RectMatrix_test$(EXEEXT)
+	$(CXXLINK) $(RectMatrix_test_LDFLAGS) $(RectMatrix_test_OBJECTS) $(RectMatrix_test_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -247,7 +247,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Vector_test-cxx_main.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RectMatrix_test-cxx_main.Po@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -264,17 +264,17 @@ distclean-depend:
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXXCOMPILE) -c -o $@ `cygpath -w $<`
 
-Vector_test-cxx_main.o: $(srcdir)/cxx_main.cpp
-@AMDEP_TRUE@	source='$(srcdir)/cxx_main.cpp' object='Vector_test-cxx_main.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/Vector_test-cxx_main.Po' tmpdepfile='$(DEPDIR)/Vector_test-cxx_main.TPo' @AMDEPBACKSLASH@
+RectMatrix_test-cxx_main.o: $(srcdir)/cxx_main.cpp
+@AMDEP_TRUE@	source='$(srcdir)/cxx_main.cpp' object='RectMatrix_test-cxx_main.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RectMatrix_test-cxx_main.Po' tmpdepfile='$(DEPDIR)/RectMatrix_test-cxx_main.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Vector_test_CXXFLAGS) $(CXXFLAGS) -c -o Vector_test-cxx_main.o `test -f '$(srcdir)/cxx_main.cpp' || echo '$(srcdir)/'`$(srcdir)/cxx_main.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(RectMatrix_test_CXXFLAGS) $(CXXFLAGS) -c -o RectMatrix_test-cxx_main.o `test -f '$(srcdir)/cxx_main.cpp' || echo '$(srcdir)/'`$(srcdir)/cxx_main.cpp
 
-Vector_test-cxx_main.obj: $(srcdir)/cxx_main.cpp
-@AMDEP_TRUE@	source='$(srcdir)/cxx_main.cpp' object='Vector_test-cxx_main.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/Vector_test-cxx_main.Po' tmpdepfile='$(DEPDIR)/Vector_test-cxx_main.TPo' @AMDEPBACKSLASH@
+RectMatrix_test-cxx_main.obj: $(srcdir)/cxx_main.cpp
+@AMDEP_TRUE@	source='$(srcdir)/cxx_main.cpp' object='RectMatrix_test-cxx_main.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/RectMatrix_test-cxx_main.Po' tmpdepfile='$(DEPDIR)/RectMatrix_test-cxx_main.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Vector_test_CXXFLAGS) $(CXXFLAGS) -c -o Vector_test-cxx_main.obj `cygpath -w $(srcdir)/cxx_main.cpp`
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(RectMatrix_test_CXXFLAGS) $(CXXFLAGS) -c -o RectMatrix_test-cxx_main.obj `cygpath -w $(srcdir)/cxx_main.cpp`
 CXXDEPMODE = @CXXDEPMODE@
 uninstall-info-am:
 

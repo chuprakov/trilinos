@@ -47,8 +47,10 @@ VECTORS_H = \
 	$(srcdir)/Vectors/TSFLoadableVector.hpp\
 	$(srcdir)/Vectors/TSFLinearCombination.hpp\
 	$(srcdir)/Vectors/TSFAccessibleVector.hpp\
-	$(srcdir)/Vectors/TSFVector.hpp
-	$(srcdir)/Vectors/TSFVectorSpace.hpp
+	$(srcdir)/Vectors/TSFVector.hpp \
+	$(srcdir)/Vectors/TSFVectorSpace.hpp \
+	$(srcdir)/Vectors/TSFVectorType.hpp \
+	$(srcdir)/Vectors/TSFVectorTypeExtensions.hpp
 
 VECTORS = 
 
@@ -63,15 +65,24 @@ UTILS_H = \
 UTILS = 
 
 CONCRETE_H = \
+	$(srcdir)/Concrete/TSFEpetraMatrix.hpp\
 	$(srcdir)/Concrete/TSFEpetraVector.hpp\
 	$(srcdir)/Concrete/TSFEpetraVectorSpace.hpp\
 	$(srcdir)/Concrete/TSFEpetraVectorType.hpp
 
 CONCRETE = \
+	$(srcdir)/Concrete/TSFEpetraMatrix.cpp\
 	$(srcdir)/Concrete/TSFEpetraVector.cpp\
 	$(srcdir)/Concrete/TSFEpetraVectorSpace.cpp\
 	$(srcdir)/Concrete/TSFEpetraVectorType.cpp
 
+OPERATORS_H = \
+	$(srcdir)/Operators/TSFExplicitlyTransposeableOp.hpp\
+	$(srcdir)/Operators/TSFLinearOperator.hpp\
+	$(srcdir)/Operators/TSFLoadableMatrix.hpp\
+	$(srcdir)/Operators/TSFTransposeOperator.hpp
+
+OPERATOR = 
 
 #
 # Read macros that are common to building source and tests. We define these
@@ -106,12 +117,14 @@ TSF_EXTENDED_LIB = libTSFExtended.a
 TSF_EXTENDED_H = \
 	$(UTILS_H) \
 	$(VECTORS_H) \
+	$(OPERATORS_H) \
 	$(CONCRETE_H) 
 
 #np# replace new_package with the name of the package being autotool'ed here
 libTSFExtended_a_SOURCES = \
 	$(UTILS) \
 	$(VECTORS) \
+	$(OPERATORS) \
 	$(CONCRETE) 
 
 

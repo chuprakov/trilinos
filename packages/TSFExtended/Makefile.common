@@ -3,9 +3,11 @@ TSFEXTENDED_INCLUDES =  \
 -I$(top_srcdir)/src/Utils \
 -I$(top_srcdir)/src/Vectors \
 -I$(top_srcdir)/src/Concrete \
+-I$(top_srcdir)/src/Operators \
 -I$(top_builddir)/src/Utils \
 -I$(top_builddir)/src/Vectors \
--I$(top_builddir)/src/Concrete 
+-I$(top_builddir)/src/Concrete \
+-I$(top_builddir)/src/Operators 
 
 TSFCORE_INCLUDES =  \
 -I$(top_builddir)/../TSFCore/src \

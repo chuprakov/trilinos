@@ -5,6 +5,7 @@
 #include "Epetra_Comm.h"
 #include "Epetra_MpiComm.h"
 #include "Teuchos_RefCountPtr.hpp"
+#include "TSFEpetraMatrix.hpp"
 
 using namespace TSFExtended;
 using namespace Teuchos;
@@ -17,34 +18,40 @@ EpetraVectorType::EpetraVectorType()
 #endif
 {;}
 
+
 RefCountPtr<const TSFCore::VectorSpace<double> > 
-EpetraVectorType::createVecSpc(int dimension) const
+EpetraVectorType::createSpace(int dimension,
+                              int nLocal,
+                              const int* localIndices) const
 {
-	RefCountPtr<Epetra_Map> map = rcp(new Epetra_Map(dimension,
-                                               0, *epetra_comm()));
+	RefCountPtr<Epetra_Map> map = rcp(new Epetra_Map(dimension, nLocal,
+                                                   (int*) localIndices,
+                                                   0, *epetra_comm()));
 	return rcp(new EpetraVectorSpace(map));
 }
 
-
-RefCountPtr<const TSFCore::VectorSpace<double> > 
-EpetraVectorType::createVecSpc(int dimension,
-                               int nLocal,
-                               int firstLocal) const
+LinearOperator<double>
+EpetraVectorType::createMatrix(const VectorSpace<double>& domain,
+                               const VectorSpace<double>& range) const
 {
-	RefCountPtr<Epetra_Map> map = rcp(new Epetra_Map(dimension, nLocal,
-                                               0, *epetra_comm()));
-	return rcp(new EpetraVectorSpace(map));
-}
+  RefCountPtr<const EpetraVectorSpace> pd 
+    = rcp_dynamic_cast<const EpetraVectorSpace>(domain.ptr());
 
-RefCountPtr<const TSFCore::VectorSpace<double> > 
-EpetraVectorType::createVecSpc(int dimension,
-                               int nLocal,
-                               const int* localIndices) const
-{
-	RefCountPtr<Epetra_Map> map = rcp(new Epetra_Map(dimension, nLocal,
-                                               (int*) localIndices,
-                                               0, *epetra_comm()));
-	return rcp(new EpetraVectorSpace(map));
+  RefCountPtr<const EpetraVectorSpace> pr 
+    = rcp_dynamic_cast<const EpetraVectorSpace>(range.ptr());
+
+
+  TEST_FOR_EXCEPTION(pd.get()==0, runtime_error, 
+                     "incompatible domain space given to "
+                     "EpetraVectorType::createMatrix()");
+
+  TEST_FOR_EXCEPTION(pr.get()==0, runtime_error, 
+                     "incompatible range space given to "
+                     "EpetraVectorType::createMatrix()");
+
+  RefCountPtr<TSFCore::LinearOp<double> > A = rcp(new EpetraMatrix(pd, pr));
+
+  return A;
 }
 
 

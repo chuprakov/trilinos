@@ -26,5 +26,30 @@
 # ************************************************************************
 #@HEADER
 
-SUBDIRS = VectorTests Double RectMatrixTest PoissonTest
+include $(top_srcdir)/Makefile.common
 
+EXEEXT = .exe
+
+noinst_PROGRAMS = RectMatrix_test
+
+RectMatrix_test_SOURCES = $(srcdir)/cxx_main.cpp 
+
+RectMatrix_test_DEPENDENCIES = \
+$(TSF_EXTENDED_LIBS) \
+$(TSF_CORE_LIBS) \
+$(TEUCHOS_LIBS) \
+$(EPETRA_LIBS) 
+
+RectMatrix_test_CXXFLAGS = \
+	$(TSFEXTENDED_INCLUDES) \
+	$(TSFCORE_INCLUDES)\
+	$(EPETRA_INCLUDES)\
+	$(TEUCHOS_INCLUDES)
+
+RectMatrix_test_LDADD = \
+$(TSF_EXTENDED_LIBS) \
+$(TSF_CORE_LIBS) \
+$(TEUCHOS_LIBS) \
+$(EPETRA_LIBS) \
+$(BLAS_LIBS) \
+	$(LIBS) $(FLIBS)

@@ -34,7 +34,7 @@ namespace TSFExtended
     {return ptr()->createMember();}
 
     /** Return the dimension of the space */
-    Index dim() const {return ptr()->dim();}
+    int dim() const {return ptr()->dim();}
 
     /** Check compatibility with another space. Implementation note: 
      * we don't know if the argument vec space is a handle to another

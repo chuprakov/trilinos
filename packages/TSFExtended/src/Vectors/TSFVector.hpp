@@ -11,6 +11,7 @@
 #include "TSFLoadableVector.hpp"
 #include "TSFAccessibleVector.hpp"
 #include "TSFCoreVectorStdOps.hpp"
+#include "Teuchos_TimeMonitor.hpp"
 
 namespace TSFExtendedOps
 {
@@ -121,6 +122,11 @@ namespace TSFExtended
        * Create a new vector that is a copy of this vector 
        */
       Vector<Scalar> copy() const ;
+
+      /** 
+       * Take dot product with another vector
+       */
+      Scalar dot() const ;
       //@}
 
       /** \name Element loading interface */
@@ -157,7 +163,13 @@ namespace TSFExtended
       {return castToAccessible()->getElement(globalIndex);}
       //@}
       
-      
+      /** Get a stopwtach for timing vector operations */
+      static RefCountPtr<Time>& opTimer()
+      {
+        static RefCountPtr<Time> rtn 
+          = TimeMonitor::getNewTimer("Low-level vector operations");
+        return rtn;
+      }
     private:
 #ifndef DOXYGEN_DEVELOPER_ONLY
       /** Cross-cast vector pointer to an accessible vector */
@@ -165,6 +177,9 @@ namespace TSFExtended
 
       /** Cross-cast vector to a loadable vector */
       LoadableVector<Scalar>* castToLoadable()  ;
+
+      
+      
 #endif
     };
 
@@ -205,7 +220,10 @@ namespace TSFExtended
   Vector<Scalar>& Vector<Scalar>::scale(const Scalar& alpha)
   {
     TSFCore::Vector<Scalar>* p = ptr().get();
-    TSFCore::Vt_S(p, alpha);
+    {
+      TimeMonitor t(*opTimer());
+      TSFCore::Vt_S(p, alpha);
+    }
     return *this;
   }
 
@@ -214,7 +232,10 @@ namespace TSFExtended
   {
     TSFCore::Vector<Scalar>* p = ptr().get();
     const TSFCore::Vector<Scalar>* px = x.ptr().get();
-    TSFCore::Vp_StV(p, alpha, *px);
+    {
+      TimeMonitor t(*opTimer());
+      TSFCore::Vp_StV(p, alpha, *px);
+    }
     return *this;
   }
 
@@ -223,7 +244,10 @@ namespace TSFExtended
   {
     TSFCore::Vector<Scalar>* p = ptr().get();
     const TSFCore::Vector<Scalar>* px = x.ptr().get();
-    TSFCore::assign(p, *px);
+    {
+      TimeMonitor t(*opTimer());
+      TSFCore::assign(p, *px);
+    }
     return *this;
   }
 
@@ -231,7 +255,10 @@ namespace TSFExtended
   Vector<Scalar> Vector<Scalar>::copy() const 
   {
     Vector<Scalar> rtn = space()->createMember();
-    rtn.acceptCopyOf(*this);
+    {
+      TimeMonitor t(*opTimer());
+      rtn.acceptCopyOf(*this);
+    }
     return rtn;
   }
 

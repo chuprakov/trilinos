@@ -136,7 +136,10 @@ VECTORS_H = \
 	$(srcdir)/Vectors/TSFLoadableVector.hpp\
 	$(srcdir)/Vectors/TSFLinearCombination.hpp\
 	$(srcdir)/Vectors/TSFAccessibleVector.hpp\
-	$(srcdir)/Vectors/TSFVector.hpp
+	$(srcdir)/Vectors/TSFVector.hpp \
+	$(srcdir)/Vectors/TSFVectorSpace.hpp \
+	$(srcdir)/Vectors/TSFVectorType.hpp \
+	$(srcdir)/Vectors/TSFVectorTypeExtensions.hpp
 
 
 VECTORS = 
@@ -153,24 +156,37 @@ UTILS_H = \
 UTILS = 
 
 CONCRETE_H = \
+	$(srcdir)/Concrete/TSFEpetraMatrix.hpp\
 	$(srcdir)/Concrete/TSFEpetraVector.hpp\
 	$(srcdir)/Concrete/TSFEpetraVectorSpace.hpp\
 	$(srcdir)/Concrete/TSFEpetraVectorType.hpp
 
 
 CONCRETE = \
+	$(srcdir)/Concrete/TSFEpetraMatrix.cpp\
 	$(srcdir)/Concrete/TSFEpetraVector.cpp\
 	$(srcdir)/Concrete/TSFEpetraVectorSpace.cpp\
 	$(srcdir)/Concrete/TSFEpetraVectorType.cpp
 
+
+OPERATORS_H = \
+	$(srcdir)/Operators/TSFExplicitlyTransposeableOp.hpp\
+	$(srcdir)/Operators/TSFLinearOperator.hpp\
+	$(srcdir)/Operators/TSFLoadableMatrix.hpp\
+	$(srcdir)/Operators/TSFTransposeOperator.hpp
+
+
+OPERATOR = 
 TSFEXTENDED_INCLUDES = \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/src/Utils \
 -I$(top_srcdir)/src/Vectors \
 -I$(top_srcdir)/src/Concrete \
+-I$(top_srcdir)/src/Operators \
 -I$(top_builddir)/src/Utils \
 -I$(top_builddir)/src/Vectors \
--I$(top_builddir)/src/Concrete 
+-I$(top_builddir)/src/Concrete \
+-I$(top_builddir)/src/Operators 
 
 
 TSFCORE_INCLUDES = \
@@ -246,6 +262,7 @@ TSF_EXTENDED_LIB = libTSFExtended.a
 TSF_EXTENDED_H = \
 	$(UTILS_H) \
 	$(VECTORS_H) \
+	$(OPERATORS_H) \
 	$(CONCRETE_H) 
 
 
@@ -253,6 +270,7 @@ TSF_EXTENDED_H = \
 libTSFExtended_a_SOURCES = \
 	$(UTILS) \
 	$(VECTORS) \
+	$(OPERATORS) \
 	$(CONCRETE) 
 
 
@@ -325,10 +343,10 @@ LIBRARIES = $(lib_LIBRARIES)
 
 libTSFExtended_a_DEPENDENCIES =
 am__objects_1 =
-am__objects_2 = TSFEpetraVector.$(OBJEXT) TSFEpetraVectorSpace.$(OBJEXT) \
-	TSFEpetraVectorType.$(OBJEXT)
+am__objects_3 = TSFEpetraMatrix.$(OBJEXT) TSFEpetraVector.$(OBJEXT) \
+	TSFEpetraVectorSpace.$(OBJEXT) TSFEpetraVectorType.$(OBJEXT)
 am_libTSFExtended_a_OBJECTS = $(am__objects_1) $(am__objects_1) \
-	$(am__objects_2)
+	$(am__objects_2) $(am__objects_3)
 libTSFExtended_a_OBJECTS = $(am_libTSFExtended_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -338,7 +356,8 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/TSFEpetraVector.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/TSFEpetraMatrix.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/TSFEpetraVector.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFEpetraVectorSpace.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/TSFEpetraVectorType.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
@@ -414,6 +433,7 @@ uninstall-libLIBRARIES:
 
 clean-libLIBRARIES:
 	-test -z "$(lib_LIBRARIES)" || rm -f $(lib_LIBRARIES)
+TSFEpetraMatrix.$(OBJEXT): $(srcdir)/Concrete/TSFEpetraMatrix.cpp
 TSFEpetraVector.$(OBJEXT): $(srcdir)/Concrete/TSFEpetraVector.cpp
 TSFEpetraVectorSpace.$(OBJEXT): \
 	$(srcdir)/Concrete/TSFEpetraVectorSpace.cpp
@@ -430,6 +450,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFEpetraMatrix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFEpetraVector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFEpetraVectorSpace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TSFEpetraVectorType.Po@am__quote@
@@ -448,6 +469,18 @@ distclean-depend:
 @AMDEP_TRUE@	depfile='$(DEPDIR)/$*.Po' tmpdepfile='$(DEPDIR)/$*.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CXXCOMPILE) -c -o $@ `cygpath -w $<`
+
+TSFEpetraMatrix.o: $(srcdir)/Concrete/TSFEpetraMatrix.cpp
+@AMDEP_TRUE@	source='$(srcdir)/Concrete/TSFEpetraMatrix.cpp' object='TSFEpetraMatrix.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFEpetraMatrix.Po' tmpdepfile='$(DEPDIR)/TSFEpetraMatrix.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFEpetraMatrix.o `test -f '$(srcdir)/Concrete/TSFEpetraMatrix.cpp' || echo '$(srcdir)/'`$(srcdir)/Concrete/TSFEpetraMatrix.cpp
+
+TSFEpetraMatrix.obj: $(srcdir)/Concrete/TSFEpetraMatrix.cpp
+@AMDEP_TRUE@	source='$(srcdir)/Concrete/TSFEpetraMatrix.cpp' object='TSFEpetraMatrix.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/TSFEpetraMatrix.Po' tmpdepfile='$(DEPDIR)/TSFEpetraMatrix.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o TSFEpetraMatrix.obj `cygpath -w $(srcdir)/Concrete/TSFEpetraMatrix.cpp`
 
 TSFEpetraVector.o: $(srcdir)/Concrete/TSFEpetraVector.cpp
 @AMDEP_TRUE@	source='$(srcdir)/Concrete/TSFEpetraVector.cpp' object='TSFEpetraVector.o' libtool=no @AMDEPBACKSLASH@
@@ -564,7 +597,7 @@ top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
-	$(mkinstalldirs) $(distdir)/$(srcdir)/Concrete $(distdir)/$(srcdir)/Utils $(distdir)/$(srcdir)/Vectors
+	$(mkinstalldirs) $(distdir)/$(srcdir)/Concrete $(distdir)/$(srcdir)/Operators $(distdir)/$(srcdir)/Utils $(distdir)/$(srcdir)/Vectors
 	@list='$(DISTFILES)'; for file in $$list; do \
 	  if test -f $$file || test -d $$file; then d=.; else d=$(srcdir); fi; \
 	  dir=`echo "$$file" | sed -e 's,/[^/]*$$,,'`; \
@@ -669,7 +702,6 @@ uninstall-am: uninstall-includeHEADERS uninstall-info-am \
 	uninstall-includeHEADERS uninstall-info-am \
 	uninstall-libLIBRARIES uninstall-nodist_execincludeHEADERS
 
-	$(srcdir)/Vectors/TSFVectorSpace.hpp
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -4,6 +4,10 @@
 #include "TSFCoreEpetraVectorSpaceFactory.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFHandleable.hpp"
+#include "TSFPrintable.hpp"
+#include "TSFDescribable.hpp"
+#include "TSFVectorTypeExtensions.hpp"
+#include "TSFLinearOperator.hpp"
 
 
 namespace TSFExtended
@@ -18,8 +22,11 @@ namespace TSFExtended
    * seamlessly in any 
    * TSFCore-based code.
    */
-  class EpetraVectorType : public TSFCore::EpetraVectorSpaceFactory,
-                           public Handleable<TSFCore::VectorSpaceFactory<double> >
+  class EpetraVectorType : public VectorTypeExtensions<double>,
+                           public TSFCore::EpetraVectorSpaceFactory,
+                           public Handleable<VectorTypeExtensions<double> >,
+                           public Printable,
+                           public Describable
   {
   public:
     /** Ctor needs no arguments */
@@ -28,23 +35,24 @@ namespace TSFExtended
     /** virtual dtor */
     virtual ~EpetraVectorType() {;}
 
-    /** create a vector space of dimension dim */
-    virtual RefCountPtr<const TSFCore::VectorSpace<double> > 
-    createVecSpc(int dimension) const ;
+    /** create a distributed vector space.
+     * @param dimension the dimension of the space 
+     * @param nLocal number of indices owned by the local processor
+     * @param locallyOwnedIndices array of indices owned by this processor  
+     */
+    RefCountPtr<const TSFCore::VectorSpace<double> > 
+    createSpace(int dimension, 
+                int nLocal,
+                const int* locallyOwnedIndices) const ;
 
-    /** create a vector space in which the local processor owns
-     * indices \f$[firstLocal, firstLocal+nLocal]f$. */
-    virtual RefCountPtr<const TSFCore::VectorSpace<double> > 
-    createVecSpc(int dimension, 
-                 int nLocal,
-                 int firstLocal) const  ;
-      
-    /** create a vector space in which the given local indices are owned by 
-     * this processor */
-    virtual RefCountPtr<const TSFCore::VectorSpace<double> > 
-    createVecSpc(int dimension, 
-                 int nLocal,
-                 const int* localIndices) const  ;
+    
+    /**
+     * Create an empty matrix of type compatible with this vector type,
+     * sized according to the given domain and range spaces.
+     */
+    LinearOperator<double>
+    createMatrix(const VectorSpace<double>& domain,
+                 const VectorSpace<double>& range) const ;
       
     
 
@@ -54,9 +62,18 @@ namespace TSFExtended
     string describe() const {return "EpetraVectorType";}
     //@}
 
+    /** \name Printable interface */
+    //@{
+    /** Print to stream */
+    void print(ostream& os) const {os << describe();}
+    //@}
+
     /** \name Handleable interface */
-    virtual RefCountPtr<TSFCore::VectorSpaceFactory<double> > getRcp() 
+    //@{
+    /** Return a ref count pointer to a newly created object */
+    virtual RefCountPtr<VectorTypeExtensions<double> > getRcp() 
     {return rcp(this);}
+    //@}
   };
   
 }
