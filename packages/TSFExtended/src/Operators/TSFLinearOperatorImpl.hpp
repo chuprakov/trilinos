@@ -29,8 +29,8 @@
 #ifndef TSFLINEAROPERATORIMPL_HPP
 #define TSFLINEAROPERATORIMPL_HPP
 
- //#include "TSFConfigDefs.hpp"
- //#include "TSFLinearOperatorDecl.hpp"
+#include "TSFConfigDefs.hpp"
+#include "TSFLinearOperatorDecl.hpp"
  //#include "TSFHandle.hpp"
  //#include "TSFHandleable.hpp"
  //#include "TSFCoreLinearOp.hpp"
@@ -42,7 +42,8 @@
 //#include "TSFVectorSpace.hpp"
 //#include "TSFTransposeOperator.hpp"
 //#include "TSFInverseOperator.hpp"
- #include "TSFIdentityOperator.hpp"
+#include "TSFComposedOperator.hpp"
+#include "TSFIdentityOperator.hpp"
 //#include "TSFLinearSolverBaseDecl.hpp"
 
 // template <class Scalar>
@@ -80,11 +81,11 @@ LinearOperator<Scalar>::LinearOperator(const RefCountPtr<TSFCore::LinearOp<Scala
   : Handle<TSFCore::LinearOp<Scalar> >(smartPtr) {;}
 
 template <class Scalar>
-const  VectorSpace<Scalar> LinearOperator<Scalar>::domain() const 
+VectorSpace<Scalar> LinearOperator<Scalar>::domain() const 
 {return ptr()->domain();}
 
 template <class Scalar>
-const VectorSpace<Scalar> LinearOperator<Scalar>::range() const 
+VectorSpace<Scalar> LinearOperator<Scalar>::range() const 
 {return ptr()->range();}
 
 template <class Scalar> inline 
@@ -146,11 +147,20 @@ LinearOperator<Scalar> LinearOperator<Scalar>::transpose() const
 }
 
 template <class Scalar>
-LinearOperator<Scalar> LinearOperator<Scalar>::inverse(LinearSolver<Scalar> solver) const
+LinearOperator<Scalar> LinearOperator<Scalar>::inverse(const LinearSolver<Scalar>& solver) const
 {
   LinearOperator<Scalar> op = new InverseOperator<Scalar>(*this, solver);
   return op;
 }
+
+template <class Scalar>
+LinearOperator<Scalar> LinearOperator<Scalar>::operator*(const LinearOperator<Scalar>& other) const
+{
+  LinearOperator<Scalar> op = new ComposedOperator<Scalar>(*this, other);
+  return op;
+}
+
+
 
 template <class Scalar>
 RefCountPtr<LoadableMatrix<Scalar> > LinearOperator<Scalar>::matrix()

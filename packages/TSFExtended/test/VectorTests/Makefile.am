@@ -34,24 +34,11 @@ noinst_PROGRAMS = Vector_test
 
 Vector_test_SOURCES = $(srcdir)/cxx_main.cpp 
 
-Vector_test_DEPENDENCIES = \
-$(TSF_EXTENDED_LIBS) \
-$(TSF_CORE_LIBS) \
-$(TEUCHOS_LIBS) \
-$(AZTECOO_LIBS) \
-$(EPETRA_LIBS) 
 
-Vector_test_CXXFLAGS = \
-	$(TSFEXTENDED_INCLUDES) \
-	$(TSFCORE_INCLUDES)\
-	$(AZTECOO_INCLUDES)\
-	$(EPETRA_INCLUDES)\
-	$(TEUCHOS_INCLUDES)
 
-Vector_test_LDADD = \
-$(TSF_EXTENDED_LIBS) \
-$(TSF_CORE_LIBS) \
-$(TEUCHOS_LIBS) \
-$(AZTECOO_LIBS) \
-$(EPETRA_LIBS) \
-	$(LIBS) $(BLAS_LIBS) $(FLIBS)
+Vector_test_DEPENDENCIES = $(COMMON_DEPENDENCIES)
+
+Vector_test_CXXFLAGS = $(COMMON_CXXFLAGS)
+
+Vector_test_LDADD = $(COMMON_LDADD)
+

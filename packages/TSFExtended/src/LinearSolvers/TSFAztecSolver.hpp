@@ -37,6 +37,7 @@
 
 #include "Teuchos_Array.hpp"
 #include "Teuchos_RefCountPtr.hpp"
+#include "Teuchos_ParameterList.hpp"
 #include <map>
 
 #include "AztecOO.h"
@@ -61,8 +62,11 @@ namespace TSFExtended
   {
   public:
     /** */
-    AztecSolver(const std::map<int, int>& aztecOptions,
-                const std::map<int, double>& aztecParameters);
+    AztecSolver(const Teuchos::map<int, int>& aztecOptions,
+                const Teuchos::map<int, double>& aztecParameters);
+
+    /** */
+    AztecSolver(const Teuchos::ParameterList& params);
 
     /** */
     virtual ~AztecSolver(){;}
@@ -95,47 +99,55 @@ namespace TSFExtended
     virtual RefCountPtr<LinearSolverBase<double> > getRcp() 
     {return rcp(this);}
     //@}
-    
+
+
   protected:
 
   private:
     
-      void setupML(Epetra_RowMatrix* A) const ;
+    void setupML(Epetra_RowMatrix* A) const ;
 
-      /** Aztec options */
-      mutable Array<int> options_;
+    /** Aztec options */
+    mutable Array<int> options_;
 
-      /** Aztec parameters */
-      mutable Array<double> parameters_;
+    /** Aztec parameters */
+    mutable Array<double> parameters_;
 
-      /** Flag indicating whether we are using ML preconditioning */
-      bool useML_;
+    /** Flag indicating whether we are using ML preconditioning */
+    bool useML_;
 
-      /** Flag indicating whether we are doing a recursive solve
-       *  with aztec (i.e., using recursiveIterate) */
-      bool aztec_recursive_iterate_;
+    /** Flag indicating whether we are doing a recursive solve
+     *  with aztec (i.e., using recursiveIterate) */
+    bool aztec_recursive_iterate_;
 
-      /** Number of ML levels to use */
-      mutable int mlLevels_;
+    /** Number of ML levels to use */
+    mutable int mlLevels_;
 
-      /** whether ML should assume symmetric system */
-      bool mlSymmetric_;
+    /** whether ML should assume symmetric system */
+    bool mlSymmetric_;
 
-      /** whether ML should use damping */
-      bool mlUseDamping_;
+    /** whether ML should use damping */
+    bool mlUseDamping_;
 
-      /** damping factor for ML */
-      double mlDamping_;
+    /** damping factor for ML */
+    double mlDamping_;
 
-      /** ML preconditioner object */
-      mutable RefCountPtr<Epetra_Operator> prec_;
+    /** ML preconditioner object */
+    mutable RefCountPtr<Epetra_Operator> prec_;
 
-      /** Aztec status */
-      mutable Array<double> aztec_status;
+    /** Aztec status */
+    mutable Array<double> aztec_status;
 
-      /** Aztec proc_config */
-      mutable Array<int> aztec_proc_config;
+    /** Aztec proc_config */
+    mutable Array<int> aztec_proc_config;
 
+
+    /** Map from parameter name to AZTEC parameter identifier */
+    static Teuchos::map<string,int>& paramMap() 
+    {static Teuchos::map<string,int> rtn; return rtn;}
+    
+    /** Initialize the map from parameter names to AZTEC parameter ID codes */
+    static void initParamMap();
 
     
   };

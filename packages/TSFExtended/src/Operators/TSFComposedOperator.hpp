@@ -42,14 +42,15 @@ namespace TSFExtended
    * ComposedOperator is a composition of two linear operators.
    */
   template <class Scalar> 
-  class ComposedOperator : public OpDecribableByTypeID<Scalar>
+  class ComposedOperator : public OpDescribableByTypeID<Scalar>
   {
   public:
     /** 
      * Construct a pair of linear operators.
      */
-    ComposedOperator(const LinearOperator& left, LinearOperator& right)
-      : left_(left.ptr()), right_(right.ptr()) {;}
+    ComposedOperator(const LinearOperator<Scalar>& left, 
+                     const LinearOperator<Scalar>& right)
+      : left_(left), right_(right) {;}
 
     /** Virtual dtor */
     virtual ~ComposedOperator(){;}
@@ -59,7 +60,7 @@ namespace TSFExtended
      * in the range space.
      */
     virtual void apply(
-                       const ETransp            M_trans
+                       const TSFCore::ETransp            M_trans
                        ,const TSFCore::Vector<Scalar>    &x
                        ,TSFCore::Vector<Scalar>          *y
                        ,const Scalar            alpha = 1.0
@@ -68,32 +69,31 @@ namespace TSFExtended
     {
       RefCountPtr<TSFCore::Vector<Scalar> > vect;
       if (M_trans == NOTRANS)
-	{
-	  vect = right_->range()->createMember();
-	  vect->zero();
-	  right_->apply(M_trans, x, vect, 1.0, 0.0);
-	  left_->apply(M_trans, *vect, y, alpha, beta);
-	}
+        {
+          vect = right_.range().createMember();
+          vect->zero();
+          right_.ptr()->apply(M_trans, x, vect, 1.0, 0.0);
+          left_.ptr()->apply(M_trans, *vect, y, alpha, beta);
+        }
       else
-	{
-	  vect = left_->range()->createMember();
-	  vect->zero();
-	  left_->apply(M_trans, x, vect, 1.0, 0.0);
-	  right_->apply(M_trans, *vect, y, alpha, beta);
-	}
+        {
+          vect = left_.range().createMember();
+          vect->zero();
+          left_.ptr()->apply(M_trans, x, vect, 1.0, 0.0);
+          right_.ptr()->apply(M_trans, *vect, y, alpha, beta);
+        }
     }
 
     /** Return the domain of the operator */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const {return right_->domain();}
-    }
+    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const {return right_.domain();}
 
     /** Return the range of the operator */
-    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const {return left_->range_();}
+    virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const {return left_.range_();}
 
   private:
 
-    RefCountPtr<const LinearOperator > left_;  
-    RefCountPtr<const LinearOperator > right_; 
+    LinearOperator<Scalar> left_;  
+    LinearOperator<Scalar> right_; 
 
   };
 }

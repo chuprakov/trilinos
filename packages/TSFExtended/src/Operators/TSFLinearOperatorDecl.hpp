@@ -76,10 +76,10 @@ namespace TSFExtended
       //@}
 
       /** */
-      virtual const VectorSpace<Scalar> domain() const ;
+      virtual VectorSpace<Scalar> domain() const ;
 
       /** */
-      virtual const VectorSpace<Scalar> range() const ;
+      virtual VectorSpace<Scalar> range() const ;
 
       /** */
       void apply(const Vector<Scalar>& in,
@@ -103,12 +103,16 @@ namespace TSFExtended
        * Return a TransposeOperator.
        */
       LinearOperator<Scalar> transpose() const ; 
-      
+
       /**
        * Return an InverseOperator.
        */
-      LinearOperator<Scalar> inverse(LinearSolver<Scalar> solver = LinearSolver<Scalar>()) const ;
+      LinearOperator<Scalar> inverse(const LinearSolver<Scalar>& solver = LinearSolver<Scalar>()) const ;
 
+      /** Operator composition */
+      LinearOperator<Scalar> operator*(const LinearOperator<Scalar>& other) const ;
+
+      /** Access to loadable matrix */
       RefCountPtr<LoadableMatrix<Scalar> > matrix();
 
       /** */     

@@ -105,6 +105,22 @@ AM_INIT_AUTOMAKE(1.8.2)
 
 AC_PREREQ(2.59)
 
+
+
+# ------------------------------------------------------------------------
+# Checks if tests and examples should be built
+# ------------------------------------------------------------------------
+
+#  #np# - These options can disable the tests and examples of a package.
+#  #np# - Packages that do not have tests or examples should #-out the 
+#  #np# - option(s) that does (do) not apply.
+TAC_ARG_ENABLE_FEATURE(tests, [Build tests for all Trilinos packages (not all packages are sensitive to this option)], TESTS, yes)
+TAC_ARG_ENABLE_FEATURE_SUB_CHECK( tsfextended, tests, [Build TSFExtended tests], TSFEXTENDED_TESTS)
+AM_CONDITIONAL(BUILD_TESTS, test "X$ac_cv_use_tsfextended_tests" != "Xno")
+
+
+
+
 # ------------------------------------------------------------------------
 # Check to see if MPI enabled and if any special configuration done
 # ------------------------------------------------------------------------
@@ -124,225 +140,7 @@ TAC_ARG_CONFIG_MPI
 AC_PROG_CC(cc gcc)
 AC_PROG_CXX(CC g++ gcc c++ cxx)
 AC_PROG_F77(f77 g77 f90 xlf90)
-AC_PROG_RANLIB
 
-# ------------------------------------------------------------------------
-# Checks for extra flags
-# #np# - You can pull flag checks for languages not used in package.  Please 
-#	  note that if you use F77_FUNC to determine Fortran name mangling, 
-#	  you should not remove the Fortran compiler check or the check for 
-#	  Fortran flags.  Doing so will prevent the detection of the proper 
-#	  name mangling in some cases.
-# ------------------------------------------------------------------------
-# Check if --with-flags present, prepend any specs to FLAGS
-
-TAC_ARG_WITH_FLAGS(ccflags, CCFLAGS)
-TAC_ARG_WITH_FLAGS(cxxflags, CXXFLAGS)
-TAC_ARG_WITH_FLAGS(cflags, CFLAGS)
-TAC_ARG_WITH_FLAGS(fflags, FFLAGS)
-TAC_ARG_WITH_FLAGS(ldflags, LDFLAGS)
-
-# ------------------------------------------------------------------------
-# Alternate archiver
-# ------------------------------------------------------------------------
-
-TAC_ARG_WITH_AR
-
-# ------------------------------------------------------------------------
-# MPI link check
-# ------------------------------------------------------------------------
-TAC_ARG_CHECK_MPI
-
-#  #np# - Customize the checks for headers needed in package being added.
-#NOTE: This section still needs to be updated for new_package, it is still 
-# code from Epetra
-# ------------------------------------------------------------------------
-# Checks for header files - used in Epetra_ConfigDefs.h 
-# ------------------------------------------------------------------------
-
-AC_CHECK_HEADERS([cstdlib stdlib.h], [break],)
-AC_CHECK_HEADERS([cstdio stdio.h], [break],)
-AC_CHECK_HEADERS([cassert assert.h], [break],)
-AC_CHECK_HEADERS([cmath math.h], [break],)
-AC_CHECK_HEADERS([iomanip iomanip.h], [break],)
-AC_CHECK_HEADERS([iostream iostream.h], [break],)
-AC_CHECK_HEADERS([string string.h], [break],)
-
-if test "X$ac_cv_header_cstdlib" != "Xyes" && test "X$ac_cv_header_stdlib_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find cstdlib or stdlib.h.  New_Package requires at least one or the other.]])
-fi
-
-if test "X$ac_cv_header_cstdio" != "Xyes" && test "X$ac_cv_header_stdio_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find cstdio or stdio.h.  New_Package requires at least one or the other.]])
-fi
-
-if test "X$ac_cv_header_cassert" != "Xyes" && test "X$ac_cv_header_assert_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find cassert or assert.h.  New_Package requires at least one or the other.]])
-fi
-
-if test "X$ac_cv_header_string" != "Xyes" && test "X$ac_cv_header_string_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find string or string.h.  New_Package requires at least one or the other.]])
-fi
-
-if test "X$ac_cv_header_iostream" != "Xyes" && test "X$ac_cv_header_iostream_h" != "Xyes"; then
-  AC_MSG_ERROR([[Cannot find iostream or iostream.h.  New_Package requires at least one or the other.]])
-fi
-
-if test "X${host}" != "Xtflop"; then
-  if test "X$ac_cv_header_cmath" != "Xyes" && test "X$ac_cv_header_math_h" != "Xyes"; then
-    AC_MSG_ERROR([[Cannot find cmath or math.h.  New_Package requires at least one or the other.]])
-  fi
-else
-  # TFLOP
-  if test "X$ac_cv_header_iomanip" != "Xyes" && test "X$ac_cv_header_iomanip_h" != "Xyes"; then
-    AC_MSG_ERROR([[Cannot find iomanip or iomanip.h.  New_Package requires at least one or the other.]])
-  fi
-fi  
-
-# Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-AC_C_INLINE
-
-# ------------------------------------------------------------------------
-# Checks for compiler characteristics - Epetra_ConfigDefs.h uses these, 
-# so it makes sense to leave them in - see PORTABILITY in this directory
-# ------------------------------------------------------------------------
-AC_CXX_NAMESPACES
-AC_CXX_HAVE_STL
-AC_CXX_BOOL
-AC_CXX_MUTABLE
-# ---------------------------------------------------------------------
-# These are pretty obscure
-# ---------------------------------------------------------------------
-AC_CXX_NEW_FOR_SCOPING
-#AC_CXX_STD_IOS_BASE_FMTFLAGS
-AC_CXX_STD_SPRINTF
-
-# ------------------------------------------------------------------------
-# Checks for special package flags
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-# Checks for special package flags
-# ------------------------------------------------------------------------
-
-#
-#  #np# - These options are specific to Epetra and are left only as examples.
-#         If uncommented, the following lines would define HAVE_FATAL_MESSAGES
-#         in the (package)_config.h file.  Developers should use a 
-#         more specific name such as 'new_package-fatal_messages', rather
-#         than 'fatal_messages'.
-#TAC_ARG_ENABLE_OPTION(fatal_messages, [enable printing of fatal error messages], 
-#                   FATAL_MESSAGES, yes)
-#TAC_ARG_ENABLE_OPTION(warning_messages, [enable printing of warning error messages], 
-#                   WARNING_MESSAGES, no)
-
-#  #np# - These are specific to Epetra and are left only as examples.
-#         If uncommented, the following line would define HAVE_ZOLTAN in
-#         the (package)_config.h file.  Developers should use a more
-#         specific name such as 'new_package-zoltan', rather than 'zoltan'.
-# TAC_ARG_WITH_PACKAGE(rtop, [Enable RTOp interface support], RTOP, no)
-
-# ------------------------------------------------------------------------
-# Checks if tests and examples should be built
-# ------------------------------------------------------------------------
-
-#  #np# - These options can disable the tests and examples of a package.
-#  #np# - Packages that do not have tests or examples should #-out the 
-#  #np# - option(s) that does (do) not apply.
-TAC_ARG_ENABLE_FEATURE(tests, [Build tests for all Trilinos packages (not all packages are sensitive to this option)], TESTS, yes)
-TAC_ARG_ENABLE_FEATURE_SUB_CHECK( tsfextended, tests, [Build TSFExtended tests], TSFEXTENDED_TESTS)
-AM_CONDITIONAL(BUILD_TESTS, test "X$ac_cv_use_tsfextended_tests" != "Xno")
-
-#TAC_ARG_ENABLE_FEATURE(examples, [Build examples for all Trilinos packages (not all packages are sensitive to this option)], EXAMPLES, yes)
-#AM_CONDITIONAL(BUILD_EXAMPLES, test "X$ac_cv_use_examples" != "Xno")
-
-TAC_ARG_ENABLE_FEATURE(libcheck, [Check for some third-party libraries including BLAS and LAPACK.  (Cannot be disabled unless tests and examples are also disabled.)], LIBCHECK, yes)
-
-# ------------------------------------------------------------------------
-# Specify other directories 
-# ------------------------------------------------------------------------
-
-# enable use of --with-libdirs="-Llibdir1 -Llibdir2 ..." to prepend to LDFLAGS
-TAC_ARG_WITH_LIBDIRS
-# enable use of --with-incdirs="-Lincdir1 -Lincdir2 ..." to prepend to CPPFLAGS
-TAC_ARG_WITH_INCDIRS
-
-# #np# - Yet another opportunity to remove code if you aren't
-# using Fortran
-# Define F77_FUNC that will be used to link with Fortran subroutines, e.g., BLAS/LAPACK - trash WORKGXX 
-AC_F77_WRAPPERS
-
-# ------------------------------------------------------------------------
-# Checks for libraries
-# ------------------------------------------------------------------------
-
-# If tests, examples and libcheck are disabled, we don't have to check
-# for these libraries.
-#if test "X$ac_cv_use_tests" != "Xno" || test "X$ac_cv_use_examples" != "Xno" || test "X$ac_cv_use_libcheck" != "Xno"; then
-if test "X$ac_cv_use_tsfextended_tests" != "Xno" || test "X$ac_cv_use_libcheck" != "Xno"; then
-
-# #np# - 
-# To add any libraries that you want to check for, replace pow below 
-# with the name of an entry point in that library.
-# checks for libraries now
-dnl Replace `main' with a function in -lm:
-#  #np# These lines can be removed if the math lib is not needed.
-AC_SEARCH_LIBS(pow,[m],,AC_MSG_ERROR(Cannot find math library))
-AC_SEARCH_LIBS(sqrt,[m],,AC_MSG_ERROR(Cannot find math library))
-
-# #np# If Lapack is also needed, see the  
-# configure.ac file for epetra (Trilinos/packages/epetra)
-
-dnl Check for user-specified names for BLAS lib
-TAC_ARG_WITH_LAPACKLIB
-TAC_ARG_WITH_BLASLIB
-
-  ACX_BLAS([], [AC_MSG_ERROR([[Cannot find blas library, specify a path using --with-ldflags=-I<DIR> (ex. --with-ldflags=-I/usr/path/lib) or a specific library using --with-blas=DIR/LIB (for example --with-blas=/usr/path/lib/libcxml.a)]])])
-
-  ACX_LAPACK([], [AC_MSG_ERROR([[Cannot find lapack library, specify a path using --with-ldflags=-I<DIR> (ex. --with-dlflags=-I/usr/path/lib) or a specific library using --with-lapack=DIR/LIB (ex. --with-lapack=/usr/path/lib/libcxml.a)]])])
-
-fi
-# end of the list of libraries that don't need to be checked for if
-# tests and examples are disabled.
-
-# ------------------------------------------------------------------------
-# Checks for compiler characteristics
-# ------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------
-# Checks for linker characteristics
-# ------------------------------------------------------------------------
-
-# Determine libraries needed for linking with Fortran
-AC_F77_LIBRARY_LDFLAGS
-
-
-#  ----------------------------------------------------
-#  Needs this because Dec handles templates differently
-#  ----------------------------------------------------
-#  #np# - Only uncomment the following lines if the package
-#         creates a subdirectory called cxx_repository for
-#         template object files on DEC.  (HINT: try to build on 
-#         DEC/CPLANT and see if template-related errors occur)
-
-# -- DEC CXX --
-#case $target in
-#  alpha*)
-#    if test $CXX = cxx; then
-#      TRILINOS_TEMPLATE_OBJS="cxx_repository/*.o"
-#    fi
-#  ;;
-#esac
-
-#AC_MSG_CHECKING([for template-specific object files to be linked])
-#if test "X$TRILINOS_TEMPLATE_OBJS" = "X"; then
-# AC_MSG_RESULT(none)
-#else
-# AC_MSG_RESULT($TRILINOS_TEMPLATE_OBJS)
-#fi
-
-#AC_SUBST(TRILINOS_TEMPLATE_OBJS)
 
 
 # ------------------------------------------------------------------------
@@ -352,21 +150,20 @@ AC_F77_LIBRARY_LDFLAGS
 TAC_ARG_ENABLE_FEATURE(ml, [Enable the ML multilevel solvers and preconditioners in TSF], ML, yes)
 AM_CONDITIONAL(HAVE_ML, test "X$ac_cv_use_ml" != "Xno")
 
-# ------------------------------------------------------------------------
-# Checks if NOX is enabled
-# ------------------------------------------------------------------------
-
-TAC_ARG_ENABLE_FEATURE(nox, [Enable the NOX nonlinear solvers in TSF], NOX, yes)
-AM_CONDITIONAL(HAVE_TSF_NOX, test "X$ac_cv_use_nox" != "Xno")
 
 
 # ------------------------------------------------------------------------
-# Checks for library functions
+# Get the absolute path to the build directory.  
+# 
+# We need this to be able to figure out paths to the libraries for the
+# other Trilinos packages.
 # ------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------
-# Checks for system services
-# ------------------------------------------------------------------------
+AC_MSG_CHECKING([finding build directory])
+if test "X" = "X"; then
+  TSF_BUILD_DIRECTORY=`pwd`
+  AC_MSG_RESULT($TSF_BUILD_DIRECTORY)
+fi
 
 
 # ------------------------------------------------------------------------
@@ -375,6 +172,8 @@ AM_CONDITIONAL(HAVE_TSF_NOX, test "X$ac_cv_use_nox" != "Xno")
 
 AC_SUBST(ac_aux_dir)
 AC_SUBST(HAVE_ML)
+AC_SUBST(TSF_BUILD_DIRECTORY)
+
 
 # ------------------------------------------------------------------------
 # Output files

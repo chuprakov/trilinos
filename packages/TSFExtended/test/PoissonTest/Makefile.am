@@ -27,71 +27,44 @@
 #@HEADER
 
 include $(top_srcdir)/Makefile.common
+include $(top_builddir)/../teuchos/Makefile.export
 
 EXEEXT = .exe
 
-noinst_PROGRAMS = Poisson_test AztecPoisson
-
-Poisson_test_SOURCES = $(srcdir)/cxx_main.cpp 
-
-Poisson_test_DEPENDENCIES = \
-$(TSF_EXTENDED_LIBS) \
-$(TSF_CORE_LIBS) \
-$(ML_LIBS) \
-$(AZTECOO_LIBS) \
-$(IFPACK_LIBS) \
-$(TEUCHOS_LIBS) \
-$(EPETRA_LIBS) 
-
-Poisson_test_CXXFLAGS = \
-	$(TSFEXTENDED_INCLUDES) \
-	$(TSFCORE_INCLUDES)\
-	$(AZTECOO_INCLUDES)\
-	$(IFPACK_INCLUDES)\
-	$(EPETRA_INCLUDES)\
-	$(TEUCHOS_INCLUDES)
-
-Poisson_test_LDADD = \
-$(TSF_EXTENDED_LIBS) \
-$(TSF_CORE_LIBS) \
-$(ML_LIBS) \
-$(AZTECOO_LIBS) \
-$(IFPACK_LIBS) \
-$(TEUCHOS_LIBS) \
-$(EPETRA_LIBS) \
-	$(LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
-
-
-
+noinst_PROGRAMS = Poisson_test AztecPoisson ParameterListAztecPoisson
 
 
 
 AztecPoisson_SOURCES = $(srcdir)/AztecPoisson.cpp 
 
 
-AztecPoisson_DEPENDENCIES = \
-$(TSF_EXTENDED_LIBS) \
-$(TSF_CORE_LIBS) \
-$(ML_LIBS) \
-$(AZTECOO_LIBS) \
-$(IFPACK_LIBS) \
-$(TEUCHOS_LIBS) \
-$(EPETRA_LIBS) 
+AztecPoisson_DEPENDENCIES = $(COMMON_DEPENDENCIES)
 
-AztecPoisson_CXXFLAGS = \
-	$(TSFEXTENDED_INCLUDES) \
-	$(TSFCORE_INCLUDES)\
-	$(AZTECOO_INCLUDES)\
-	$(IFPACK_INCLUDES)\
-	$(EPETRA_INCLUDES)\
-	$(TEUCHOS_INCLUDES)
+AztecPoisson_CXXFLAGS = $(COMMON_CXXFLAGS)
 
-AztecPoisson_LDADD = \
-$(TSF_EXTENDED_LIBS) \
-$(TSF_CORE_LIBS) \
-$(ML_LIBS) \
-$(AZTECOO_LIBS) \
-$(IFPACK_LIBS) \
-$(TEUCHOS_LIBS) \
-$(EPETRA_LIBS) \
-	$(LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+AztecPoisson_LDADD = $(COMMON_LDADD)
+
+
+
+
+
+ParameterListAztecPoisson_SOURCES = $(srcdir)/ParameterListAztecPoisson.cpp 
+
+
+ParameterListAztecPoisson_DEPENDENCIES = $(COMMON_DEPENDENCIES)
+
+ParameterListAztecPoisson_CXXFLAGS = $(COMMON_CXXFLAGS)
+
+ParameterListAztecPoisson_LDADD = $(COMMON_LDADD)
+
+
+
+
+
+Poisson_test_SOURCES = $(srcdir)/cxx_main.cpp 
+
+Poisson_test_DEPENDENCIES = $(COMMON_DEPENDENCIES)
+
+Poisson_test_CXXFLAGS = $(COMMON_CXXFLAGS)
+
+Poisson_test_LDADD = $(COMMON_LDADD)

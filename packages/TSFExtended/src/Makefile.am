@@ -72,13 +72,15 @@ CONCRETE_H = \
 	$(srcdir)/Concrete/TSFEpetraMatrix.hpp\
 	$(srcdir)/Concrete/TSFEpetraVector.hpp\
 	$(srcdir)/Concrete/TSFEpetraVectorSpace.hpp\
-	$(srcdir)/Concrete/TSFEpetraVectorType.hpp
+	$(srcdir)/Concrete/TSFEpetraVectorType.hpp \
+	$(srcdir)/Concrete/TSFIfpackOperator.hpp
 
 CONCRETE = \
 	$(srcdir)/Concrete/TSFEpetraMatrix.cpp\
 	$(srcdir)/Concrete/TSFEpetraVector.cpp\
 	$(srcdir)/Concrete/TSFEpetraVectorSpace.cpp\
-	$(srcdir)/Concrete/TSFEpetraVectorType.cpp
+	$(srcdir)/Concrete/TSFEpetraVectorType.cpp \
+	$(srcdir)/Concrete/TSFIfpackOperator.cpp
 
 OPERATORS_H = \
 	$(srcdir)/Operators/TSFBlockOperator.hpp \
@@ -107,16 +109,33 @@ OPERATORS = \
 LINEARSOLVERS_H = \
 	$(srcdir)/LinearSolvers/TSFAztecSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFBICGSTABSolver.hpp \
+	$(srcdir)/LinearSolvers/TSFGenericLeftPreconditioner.hpp \
+	$(srcdir)/LinearSolvers/TSFGenericRightPreconditioner.hpp \
 	$(srcdir)/LinearSolvers/TSFIterativeSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFKrylovSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFLinearSolver.hpp \
 	$(srcdir)/LinearSolvers/TSFLinearSolverBase.hpp \
 	$(srcdir)/LinearSolvers/TSFLinearSolverBaseDecl.hpp \
 	$(srcdir)/LinearSolvers/TSFLinearSolverBaseImpl.hpp \
+	$(srcdir)/LinearSolvers/TSFLinearSolverBuilder.hpp \
+	$(srcdir)/LinearSolvers/TSFPreconditioner.hpp \
+	$(srcdir)/LinearSolvers/TSFPreconditionerBase.hpp \
 	$(srcdir)/LinearSolvers/TSFSolverState.hpp 
 
 LINEARSOLVERS = \
-	$(srcdir)/LinearSolvers/TSFAztecSolver.cpp
+	$(srcdir)/LinearSolvers/TSFAztecSolver.cpp \
+	$(srcdir)/LinearSolvers/TSFLinearSolverBuilder.cpp 
+
+
+PRECONDITIONERS_H = \
+	$(srcdir)/Preconditioners/TSFGenericLeftPreconditioner.hpp \
+	$(srcdir)/Preconditioners/TSFGenericRightPreconditioner.hpp \
+	$(srcdir)/Preconditioners/TSFPreconditioner.hpp \
+	$(srcdir)/Preconditioners/TSFPreconditionerBase.hpp 
+
+
+PRECONDITIONERS = 
+
 
 #
 # Read macros that are common to building source and tests. We define these
@@ -135,6 +154,7 @@ AM_CPPFLAGS = \
 	$(TSFEXTENDED_INCLUDES) \
 	$(TSFCORE_INCLUDES)\
 	$(EPETRA_INCLUDES)\
+	$(IFPACK_INCLUDES)\
 	$(AZTECOO_INCLUDES)\
 	$(TEUCHOS_INCLUDES)\
 	$(ML_INCLUDES)
@@ -155,6 +175,7 @@ TSF_EXTENDED_H = \
 	$(VECTORS_H) \
 	$(OPERATORS_H) \
 	$(LINEARSOLVERS_H) \
+	$(PRECONDITIONERS_H) \
 	$(CONCRETE_H) 
 
 #np# replace new_package with the name of the package being autotool'ed here
@@ -163,6 +184,7 @@ libTSFExtended_a_SOURCES = \
 	$(VECTORS) \
 	$(OPERATORS) \
 	$(LINEARSOLVERS) \
+	$(PRECONDITIONERS) \
 	$(CONCRETE) 
 
 
@@ -170,26 +192,6 @@ libTSFExtended_a_SOURCES = \
 EXTRA_libTSFExtended_a_SOURCES = 
 
 
-#We need the following to support separate build directories
-#AM_CPPFLAGS=-I$(builddir)/src
-# ------------------------------------------------------------------------
-# For using a special archiver
-# ------------------------------------------------------------------------
-
-# SPECIAL NOTE: Why is the "else" there?  For some reason, automake
-# fails to define <lib>_AR of USE_ALTERNATE_AR is false, so we have to
-# define it manually.
-
-if USE_ALTERNATE_AR
-
-#np# replace new_package with the name of the package being autotool'ed here
-libTSFExtended_a_AR = $(ALTERNATE_AR)
-else
-
-#np# replace new_package with the name of the package being autotool'ed here
-libTSFExtended_a_AR = $(AR) cru
-
-endif
 
 # ------------------------------------------------------------------------
 # Some C++ compilers create extra .o-files for templates. We need to

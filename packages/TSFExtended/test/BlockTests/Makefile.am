@@ -34,21 +34,8 @@ noinst_PROGRAMS = Block_tests
 
 Block_tests_SOURCES = $(srcdir)/cxx_main.cpp 
 
-Block_tests_DEPENDENCIES = \
-$(TSF_EXTENDED_LIBS) \
-$(TSF_CORE_LIBS) \
-$(TEUCHOS_LIBS) \
-$(EPETRA_LIBS) 
+Block_tests_DEPENDENCIES = $(COMMON_DEPENDENCIES)
 
-Block_tests_CXXFLAGS = \
-	$(TSFEXTENDED_INCLUDES) \
-	$(TSFCORE_INCLUDES)\
-	$(EPETRA_INCLUDES)\
-	$(TEUCHOS_INCLUDES)
+Block_tests_CXXFLAGS = $(COMMON_CXXFLAGS)
 
-Block_tests_LDADD = \
-$(TSF_EXTENDED_LIBS) \
-$(TSF_CORE_LIBS) \
-$(TEUCHOS_LIBS) \
-$(EPETRA_LIBS) \
-	$(LIBS) $(BLAS_LIBS) $(FLIBS)
+Block_tests_LDADD = $(COMMON_LDADD)

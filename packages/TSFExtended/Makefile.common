@@ -31,11 +31,13 @@ TSFEXTENDED_INCLUDES =  \
 -I$(top_srcdir)/src/Concrete \
 -I$(top_srcdir)/src/Operators \
 -I$(top_srcdir)/src/LinearSolvers \
+-I$(top_srcdir)/src/Preconditioners \
 -I$(top_builddir)/src/Utils \
 -I$(top_builddir)/src/Vectors \
 -I$(top_builddir)/src/Concrete \
 -I$(top_builddir)/src/Operators \
--I$(top_builddir)/src/LinearSolvers 
+-I$(top_builddir)/src/LinearSolvers \
+-I$(top_builddir)/src/Preconditioners 
 
 TSFCORE_INCLUDES =  \
 -I$(top_builddir)/../TSFCore/src \
@@ -120,3 +122,62 @@ ML_LIBS = $(top_builddir)/../ml/src/libml.a
 else
 ML_LIBS = 
 endif
+
+
+COMMON_DEPENDENCIES = \
+$(TSF_EXTENDED_LIBS) \
+$(TSF_CORE_LIBS) \
+$(ML_LIBS) \
+$(AZTECOO_LIBS) \
+$(IFPACK_LIBS) \
+$(TEUCHOS_LIBS) \
+$(EPETRA_LIBS) 
+
+COMMON_LDADD = \
+$(TSF_EXTENDED_LIBS) \
+$(TSF_CORE_LIBS) \
+$(ML_LIBS) \
+$(AZTECOO_LIBS) \
+$(IFPACK_LIBS) \
+$(TEUCHOS_LIBS) \
+$(EPETRA_LIBS) \
+$(TEUCHOS_XML_LIBS) \
+$(TEUCHOS_XML_LIBDIR) \
+$(LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+
+COMMON_CXXFLAGS = \
+$(TSFEXTENDED_INCLUDES) \
+$(TSFCORE_INCLUDES)\
+$(AZTECOO_INCLUDES)\
+$(IFPACK_INCLUDES)\
+$(EPETRA_INCLUDES)\
+$(TEUCHOS_INCLUDES)\
+$(TEUCHOS_XML_INC)
+
+
+#########################################################################
+#
+# The following macros would ordinarily be deduced by autoconf, however,
+# they have been set during the configuration of Teuchos so we can
+# steal their values from the Teuchos export makefile.
+#
+#########################################################################
+
+include $(top_builddir)/../teuchos/Makefile.export
+
+RANLIB = $(TEUCHOS_RANLIB)
+
+
+CFLAGS = $(TEUCHOS_CFLAGS)
+FFLAGS = $(TEUCHOS_FFLAGS)
+CXXFLAGS = $(TEUCHOS_CXXFLAGS)
+LDFLAGS = $(TEUCHOS_LDFLAGS)
+
+MPI_LIBS = $(TEUCHOS_MPI_LIBS)
+MPI_LIBDIR = $(TEUCHOS_MPI_LIBDIR)
+MPI_INC = $(TEUCHOS_MPI_INC)
+MPI_DIR = $(TEUCHOS_MPI_DIR)
+
+FLIBS = $(TEUCHOS_FLIBS)
+BLAS_LIBS = $(TEUCHOS_BLAS_LIBS)
+LAPACK_LIBS = $(TEUCHOS_LAPACK_LIBS)

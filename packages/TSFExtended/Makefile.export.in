@@ -25,15 +25,88 @@
 # ************************************************************************
 
 
-HAVE_TSF_ML = @HAVE_ML@
+##########################################################################
+#
+# Macro definitions to be exported from TSFExtended to clients.
+# 
+# -- KL 9 August 2004
+#
+#
+# To link with everything required by TSFExtended, simply add 
+# $(TSF_EXPORT_LIBS) to the linker command line in your Makefile.
+#
+##########################################################################
 
-if HAVE_TSF_ML
+
+TSF_EXPORT_LIBS = -L$(TSF_BUILD_DIRECTORY)/src -lTSFExtended \
+                  -L$(TSFCORE_BUILD_DIRECTORY)/src -lTSFCore \
+                  -L$(TSFCOREUTILS_BUILD_DIRECTORY)/src  -lTSFCoreUtils \
+                  -L$(ML_BUILD_DIRECTORY)/src $(ML_LIBS) \
+                  -L$(AZTECOO_BUILD_DIRECTORY)/src  -laztecoo \
+                  -L$(IFPACK_BUILD_DIRECTORY)/src  -lifpack \
+                  -L$(EPETRA_BUILD_DIRECTORY)/src  -lepetra \
+                  -L$(TEUCHOS_BUILD_DIRECTORY)/src  -lteuchos
+
+
+
+
+
+##########################################################################
+# Set the absolute path to the TSFExtended build directory
+##########################################################################
+
+TSF_BUILD_DIRECTORY = @TSF_BUILD_DIRECTORY@
+
+
+##########################################################################
+# Using the absolute location of TSFExtended's build directory as
+# a reference point, get the paths to the other build directories.
+##########################################################################
+
+TEUCHOS_BUILD_DIRECTORY = $(TSF_BUILD_DIRECTORY)/../teuchos
+
+EPETRA_BUILD_DIRECTORY = $(TSF_BUILD_DIRECTORY)/../epetra
+
+IFPACK_BUILD_DIRECTORY = $(TSF_BUILD_DIRECTORY)/../ifpack
+
+AZTECOO_BUILD_DIRECTORY = $(TSF_BUILD_DIRECTORY)/../aztecoo
+
+ML_BUILD_DIRECTORY = $(TSF_BUILD_DIRECTORY)/../ml
+
+TSFCORE_BUILD_DIRECTORY = $(TSF_BUILD_DIRECTORY)/../TSFCore
+
+TSFCOREUTILS_BUILD_DIRECTORY = $(TSF_BUILD_DIRECTORY)/../TSFCoreUtils
+
+
+##########################################################################
+# Decide whether to link with the ML library 
+##########################################################################
+
+HAVE_ML = @HAVE_ML@
+
+ifeq ($(HAVE_ML),true)
 ML_LIBS = libml.a
 else
 ML_LIBS = 
 endif
 
+
+
+##########################################################################
+#
+# Macro definitions to be exported from TSFExtended to non-Trilinos clients.
+#
+# It is assumed that the client's configuration sets the macro 
+# TRILINOS_DIR to the Trilinos installation directory. 
+#
+# In order for these include and lib paths to be valid, 
+# Trilinos needs to be installed with "make install" so that
+# the libraries and headers are put in $(TRILINOS_DIR)/lib and 
+# $(TRILINOS_DIR)/include, respectively. 
+#
+##########################################################################
+
 TRILINOS_INCLUDES = -I$(TRILINOS_DIR)/include
 
-TRILINOS_LIBS = -L$(TRILINOS_DIR)/lib -lnoxtsf -lnox -lTSFExtended -lTSFCore \
--lTSFCoreUtils $(ML_LIBS) -laztecoo -lepetra -lteuchos
+TRILINOS_LIBS = -L$(TRILINOS_DIR)/lib -lnoxtsf -lnox $(TSF_EXPORT_LIBS)
+

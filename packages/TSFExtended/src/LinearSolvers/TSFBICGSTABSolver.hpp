@@ -34,11 +34,11 @@
 #include "TSFHandleable.hpp"
 #include "TSFPrintable.hpp"
 #include "TSFDescribable.hpp"
+#include "TSFLinearCombination.hpp"
 
 namespace TSFExtended
 {
   using namespace Teuchos;
-
   /**
    *
    */

@@ -30,10 +30,13 @@
 #define TSFILUFACTORIZABLEOP_HPP
 
 #include "TSFConfigDefs.hpp"
+#include "TSFPreconditioner.hpp"
 
 
 namespace TSFExtended
 {
+  /** */
+  enum LeftOrRight {Left, Right};
 
   /** 
    * Base interface for operators for which incomplete LU factorizations
@@ -52,14 +55,24 @@ namespace TSFExtended
       /** create an incomplete factorization. 
        * @param fillLevels number of levels of fill on the local processor
        * @param overlapFill number of levels of fill on remote processors
+       * @param relaxationValue fraction of dropped values to be added to the
+       * diagonal
+       * @param relativeThreshold relative diagonal perutrbation
+       * @param absoluteThreshold absolute diagonal perturbation
+       * @param leftOrRight whether this preconditioner is to be applied
+       * from the left or right 
        * @param rtn newly created preconditioner, returned 
        * by reference argument.
        */
       virtual void getILUKPreconditioner(int fillLevels,
                                          int overlapFill,
+                                         double relaxationValue,
+                                         double relativeThreshold,
+                                         double absoluteThreshold,
+                                         LeftOrRight leftOrRight,
                                          Preconditioner<Scalar>& rtn) const=0;
       //@}
-      
+     
       
     private:
     };

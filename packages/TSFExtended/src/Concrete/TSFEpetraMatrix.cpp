@@ -29,6 +29,9 @@
 #include "TSFEpetraMatrix.hpp"
 #include "Teuchos_Array.hpp"
 #include "Teuchos_MPIComm.hpp"
+#include "TSFIfpackOperator.hpp"
+#include "TSFGenericLeftPreconditioner.hpp"
+#include "TSFGenericRightPreconditioner.hpp"
 
 using namespace TSFExtended;
 using namespace Teuchos;
@@ -43,6 +46,8 @@ EpetraMatrix::EpetraMatrix(const RefCountPtr<const EpetraVectorSpace>& domain,
 
   initialize(A, TSFCore::NOTRANS);
 }
+
+
 
 void EpetraMatrix::setGraph(int nLocalRows,
                             const int* globalRowIndex,
@@ -187,6 +192,34 @@ void EpetraMatrix::zero()
 {
   crsMatrix()->PutScalar(0.0);
 }
+
+
+
+void EpetraMatrix::getILUKPreconditioner(int fillLevels,
+                                         int overlapFill,
+                                         double relaxationValue,
+                                         double relativeThreshold,
+                                         double absoluteThreshold,
+                                         LeftOrRight leftOrRight,
+                                         Preconditioner<double>& rtn) const
+{
+  LinearOperator<double> ilu = new IfpackOperator(this, 
+                                                  fillLevels,
+                                                  overlapFill,
+                                                  relaxationValue,
+                                                  relativeThreshold,
+                                                  absoluteThreshold);
+
+  if (leftOrRight == Left)
+    {
+      rtn = new GenericLeftPreconditioner<double>(ilu);
+    }
+  else
+    {
+      rtn = new GenericRightPreconditioner<double>(ilu);
+    }
+}
+
 
 void EpetraMatrix::print(ostream& os) const 
 {

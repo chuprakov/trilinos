@@ -29,6 +29,10 @@
 #ifndef TSFPRECONDITIONER_HPP
 #define TSFPRECONDITIONER_HPP
 
+#include "TSFConfigDefs.hpp"
+#include "TSFHandle.hpp"
+#include "TSFPreconditionerBase.hpp"
+
 namespace TSFExtended
 {
   /**
@@ -38,27 +42,22 @@ namespace TSFExtended
   class Preconditioner : public Handle<PreconditionerBase<Scalar> >
   {
   public:
-    /** */
-    Preconditioner();
+    /* Boilerplate ctors */
+    HANDLE_CTORS(Preconditioner, PreconditionerBase<Scalar>);
 
-    /** Construct from a raw pointer */
-    Preconditioner(Handleable<PreconditionerBase<Scalar> >* ptr);
+    /** Change the value of a double parameter */
+    void changeParameter(const string& name, const double& value);
 
-    /** Construct from a smart pointer */
-    Preconditioner(const RefCountPtr<PreconditionerBase<Scalar> >& ptr);
+    /** Change the value of an integer parameter */
+    void changeParameter(const string& name, int value);
 
-    /** */
-    const ParameterList& parameters() const ;
-
-    /** */
-    ParameterList& parameters() ;
-
+    
     
     /** Left preconditioner */
-    LinearOperator<Scalar> left() const {return ptr_->left();}
+    LinearOperator<Scalar> left() const ;
     
     /** Right preconditioner */
-    LinearOperator<Scalar> right() const {return ptr_->right();}
+    LinearOperator<Scalar> right() const ;
     
     /** return true if this preconditioner has both left and
      * right components. */
@@ -76,23 +75,7 @@ namespace TSFExtended
     bool isIdentity() const {return !hasLeft() && !hasRight();}
   };
 
-  template <class Scalar> inline 
-  Preconditioner<Scalar>
-  ::Preconditioner()
-    : Handle<PreconditionerBase<Scalar> >()
-  {;}
   
-  template <class Scalar> inline 
-  Preconditioner<Scalar>
-  ::Preconditioner(Handleable<PreconditionerBase<Scalar> >* ptr)
-    : Handle<PreconditionerBase<Scalar> >(ptr)
-  {;}
-  
-  template <class Scalar> inline 
-  Preconditioner<Scalar>
-  ::Preconditioner(const RefCountPtr<PreconditionerBase<Scalar> >& ptr)
-    : Handle<PreconditionerBase<Scalar> >(ptr)
-  {;}
 
   template <class Scalar> inline 
   LinearOperator<Scalar> Preconditioner<Scalar>::left() const 

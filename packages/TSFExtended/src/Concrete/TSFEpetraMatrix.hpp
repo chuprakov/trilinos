@@ -38,6 +38,7 @@
 #include "TSFHandleable.hpp"
 #include "TSFPrintable.hpp"
 #include "TSFDescribableByTypeID.hpp"
+#include "TSFILUFactorizableOp.hpp"
 #include "Epetra_CrsMatrix.h"
 
 namespace TSFExtended
@@ -51,6 +52,7 @@ namespace TSFExtended
                        // public ExplicitlyTransposeableOp<double>,
                        public Printable,
                        public DescribableByTypeID,
+                       public ILUFactorizableOp<double>,
                        public Handleable<TSFCore::LinearOp<double> >
   {
   public:
@@ -127,6 +129,29 @@ namespace TSFExtended
     /** Finalize values of the matrix.  */
     virtual void freezeValues() ;
 
+
+    /** \name incomplete factorization preconditioning interface */
+    //@{
+    /** create an incomplete factorization. 
+     * @param fillLevels number of levels of fill on the local processor
+     * @param overlapFill number of levels of fill on remote processors
+     * @param relaxationValue fraction of dropped values to be added to the
+     * diagonal
+     * @param relativeThreshold relative diagonal perutrbation
+     * @param absoluteThreshold absolute diagonal perturbation
+     * @param leftOrRight whether this preconditioner is to be applied
+     * from the left or right 
+     * @param rtn newly created preconditioner, returned 
+     * by reference argument.
+     */
+    virtual void getILUKPreconditioner(int fillLevels,
+                                       int overlapFill,
+                                       double relaxationValue,
+                                       double relativeThreshold,
+                                       double absoluteThreshold,
+                                       LeftOrRight leftOrRight,
+                                       Preconditioner<double>& rtn) const ;
+
     /** Describable interface */
     virtual string describe() const ;
 
@@ -138,6 +163,10 @@ namespace TSFExtended
     /** */
     static Epetra_CrsMatrix& getConcrete(const LinearOperator<double>& A);
 
+    /** 
+     * Read-only access to the underlying crs matrix. Needed for Ifpack.
+     */
+    const Epetra_CrsMatrix* crsMatrix() const ;
   protected:
      /** \name Allocators for domain and range spaces */
   //@{
@@ -167,10 +196,10 @@ namespace TSFExtended
     ,TSFCore::ETransp  op_trans 
     )  const ; 
 
+
   private:
     Epetra_CrsMatrix* crsMatrix();
 
-    const Epetra_CrsMatrix* crsMatrix() const ;
     
   };
 }

@@ -68,7 +68,7 @@
 # 
 # ************************************************************************
 
-SOURCES = $(AztecPoisson_SOURCES) $(Poisson_test_SOURCES)
+SOURCES = $(AztecPoisson_SOURCES) $(ParameterListAztecPoisson_SOURCES) $(Poisson_test_SOURCES)
 
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
@@ -93,27 +93,13 @@ POST_UNINSTALL = :
 host_triplet = @host@
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(top_srcdir)/Makefile.common
-noinst_PROGRAMS = Poisson_test$(EXEEXT) AztecPoisson$(EXEEXT)
+noinst_PROGRAMS = Poisson_test$(EXEEXT) AztecPoisson$(EXEEXT) \
+	ParameterListAztecPoisson$(EXEEXT)
 subdir = test/PoissonTest
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/config/ac_cxx_bool.m4 \
-	$(top_srcdir)/config/ac_cxx_have_stl.m4 \
-	$(top_srcdir)/config/ac_cxx_mutable.m4 \
-	$(top_srcdir)/config/ac_cxx_namespaces.m4 \
-	$(top_srcdir)/config/ac_cxx_new_for_scoping.m4 \
-	$(top_srcdir)/config/ac_cxx_std_sprintf.m4 \
-	$(top_srcdir)/config/acx_blas.m4 \
-	$(top_srcdir)/config/acx_lapack.m4 \
-	$(top_srcdir)/config/tac_arg_check_mpi.m4 \
-	$(top_srcdir)/config/tac_arg_config_mpi.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/config/tac_arg_config_mpi.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature.m4 \
 	$(top_srcdir)/config/tac_arg_enable_feature_sub_check.m4 \
-	$(top_srcdir)/config/tac_arg_with_ar.m4 \
-	$(top_srcdir)/config/tac_arg_with_blaslib.m4 \
-	$(top_srcdir)/config/tac_arg_with_flags.m4 \
-	$(top_srcdir)/config/tac_arg_with_incdirs.m4 \
-	$(top_srcdir)/config/tac_arg_with_lapacklib.m4 \
-	$(top_srcdir)/config/tac_arg_with_libdirs.m4 \
 	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
@@ -132,25 +118,37 @@ am__DEPENDENCIES_5 = $(top_builddir)/../ifpack/src/libifpack.a
 am__DEPENDENCIES_6 = $(top_builddir)/../teuchos/src/libteuchos.a
 am__DEPENDENCIES_7 = $(top_builddir)/../epetra/src/libepetra.a
 am__DEPENDENCIES_8 =
+am__DEPENDENCIES_9 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_2) \
+	$(am__DEPENDENCIES_3) $(am__DEPENDENCIES_4) \
+	$(am__DEPENDENCIES_5) $(am__DEPENDENCIES_6) \
+	$(am__DEPENDENCIES_7) $(am__DEPENDENCIES_8) \
+	$(am__DEPENDENCIES_8) $(am__DEPENDENCIES_8) \
+	$(am__DEPENDENCIES_8)
+am_ParameterListAztecPoisson_OBJECTS =  \
+	ParameterListAztecPoisson-ParameterListAztecPoisson.$(OBJEXT)
+ParameterListAztecPoisson_OBJECTS =  \
+	$(am_ParameterListAztecPoisson_OBJECTS)
 am_Poisson_test_OBJECTS = Poisson_test-cxx_main.$(OBJEXT)
 Poisson_test_OBJECTS = $(am_Poisson_test_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/src
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/AztecPoisson-AztecPoisson.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/Poisson_test-cxx_main.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(AztecPoisson_SOURCES) $(Poisson_test_SOURCES)
-DIST_SOURCES = $(AztecPoisson_SOURCES) $(Poisson_test_SOURCES)
+SOURCES = $(AztecPoisson_SOURCES) $(ParameterListAztecPoisson_SOURCES) \
+	$(Poisson_test_SOURCES)
+DIST_SOURCES = $(AztecPoisson_SOURCES) \
+	$(ParameterListAztecPoisson_SOURCES) $(Poisson_test_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
-ALTERNATE_AR = @ALTERNATE_AR@
 AMDEP_FALSE = @AMDEP_FALSE@
 AMDEP_TRUE = @AMDEP_TRUE@
 AMTAR = @AMTAR@
@@ -158,41 +156,34 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-BLAS_LIBS = @BLAS_LIBS@
 BUILD_TESTS_FALSE = @BUILD_TESTS_FALSE@
 BUILD_TESTS_TRUE = @BUILD_TESTS_TRUE@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
-CFLAGS = @CFLAGS@
+CFLAGS = $(TEUCHOS_CFLAGS)
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
-CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@
+CXXFLAGS = $(TEUCHOS_CXXFLAGS)
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
-EGREP = @EGREP@
 EXEEXT = .exe
 F77 = @F77@
-FFLAGS = @FFLAGS@
-FLIBS = @FLIBS@
+FFLAGS = $(TEUCHOS_FFLAGS)
 HAVE_ML = @HAVE_ML@
 HAVE_ML_FALSE = @HAVE_ML_FALSE@
 HAVE_ML_TRUE = @HAVE_ML_TRUE@
 HAVE_MPI_FALSE = @HAVE_MPI_FALSE@
 HAVE_MPI_TRUE = @HAVE_MPI_TRUE@
-HAVE_TSF_NOX_FALSE = @HAVE_TSF_NOX_FALSE@
-HAVE_TSF_NOX_TRUE = @HAVE_TSF_NOX_TRUE@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
-LAPACK_LIBS = @LAPACK_LIBS@
-LDFLAGS = @LDFLAGS@
+LDFLAGS = $(TEUCHOS_LDFLAGS)
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LTLIBOBJS = @LTLIBOBJS@
@@ -213,18 +204,15 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
-RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
-USE_ALTERNATE_AR_FALSE = @USE_ALTERNATE_AR_FALSE@
-USE_ALTERNATE_AR_TRUE = @USE_ALTERNATE_AR_TRUE@
+TSF_BUILD_DIRECTORY = @TSF_BUILD_DIRECTORY@
 VERSION = @VERSION@
 ac_aux_dir = @ac_aux_dir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
-ac_ct_RANLIB = @ac_ct_RANLIB@
 ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
@@ -272,11 +260,13 @@ TSFEXTENDED_INCLUDES = \
 -I$(top_srcdir)/src/Concrete \
 -I$(top_srcdir)/src/Operators \
 -I$(top_srcdir)/src/LinearSolvers \
+-I$(top_srcdir)/src/Preconditioners \
 -I$(top_builddir)/src/Utils \
 -I$(top_builddir)/src/Vectors \
 -I$(top_builddir)/src/Concrete \
 -I$(top_builddir)/src/Operators \
--I$(top_builddir)/src/LinearSolvers 
+-I$(top_builddir)/src/LinearSolvers \
+-I$(top_builddir)/src/Preconditioners 
 
 TSFCORE_INCLUDES = \
 -I$(top_builddir)/../TSFCore/src \
@@ -354,8 +344,7 @@ AZTECOO_LIBS = \
 
 @HAVE_ML_FALSE@ML_LIBS = 
 @HAVE_ML_TRUE@ML_LIBS = $(top_builddir)/../ml/src/libml.a
-Poisson_test_SOURCES = $(srcdir)/cxx_main.cpp 
-Poisson_test_DEPENDENCIES = \
+COMMON_DEPENDENCIES = \
 $(TSF_EXTENDED_LIBS) \
 $(TSF_CORE_LIBS) \
 $(ML_LIBS) \
@@ -364,15 +353,7 @@ $(IFPACK_LIBS) \
 $(TEUCHOS_LIBS) \
 $(EPETRA_LIBS) 
 
-Poisson_test_CXXFLAGS = \
-	$(TSFEXTENDED_INCLUDES) \
-	$(TSFCORE_INCLUDES)\
-	$(AZTECOO_INCLUDES)\
-	$(IFPACK_INCLUDES)\
-	$(EPETRA_INCLUDES)\
-	$(TEUCHOS_INCLUDES)
-
-Poisson_test_LDADD = \
+COMMON_LDADD = \
 $(TSF_EXTENDED_LIBS) \
 $(TSF_CORE_LIBS) \
 $(ML_LIBS) \
@@ -380,36 +361,39 @@ $(AZTECOO_LIBS) \
 $(IFPACK_LIBS) \
 $(TEUCHOS_LIBS) \
 $(EPETRA_LIBS) \
-	$(LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+$(TEUCHOS_XML_LIBS) \
+$(TEUCHOS_XML_LIBDIR) \
+$(LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
 
+COMMON_CXXFLAGS = \
+$(TSFEXTENDED_INCLUDES) \
+$(TSFCORE_INCLUDES)\
+$(AZTECOO_INCLUDES)\
+$(IFPACK_INCLUDES)\
+$(EPETRA_INCLUDES)\
+$(TEUCHOS_INCLUDES)\
+$(TEUCHOS_XML_INC)
+
+RANLIB = $(TEUCHOS_RANLIB)
+MPI_LIBS = $(TEUCHOS_MPI_LIBS)
+MPI_LIBDIR = $(TEUCHOS_MPI_LIBDIR)
+MPI_INC = $(TEUCHOS_MPI_INC)
+MPI_DIR = $(TEUCHOS_MPI_DIR)
+FLIBS = $(TEUCHOS_FLIBS)
+BLAS_LIBS = $(TEUCHOS_BLAS_LIBS)
+LAPACK_LIBS = $(TEUCHOS_LAPACK_LIBS)
 AztecPoisson_SOURCES = $(srcdir)/AztecPoisson.cpp 
-AztecPoisson_DEPENDENCIES = \
-$(TSF_EXTENDED_LIBS) \
-$(TSF_CORE_LIBS) \
-$(ML_LIBS) \
-$(AZTECOO_LIBS) \
-$(IFPACK_LIBS) \
-$(TEUCHOS_LIBS) \
-$(EPETRA_LIBS) 
-
-AztecPoisson_CXXFLAGS = \
-	$(TSFEXTENDED_INCLUDES) \
-	$(TSFCORE_INCLUDES)\
-	$(AZTECOO_INCLUDES)\
-	$(IFPACK_INCLUDES)\
-	$(EPETRA_INCLUDES)\
-	$(TEUCHOS_INCLUDES)
-
-AztecPoisson_LDADD = \
-$(TSF_EXTENDED_LIBS) \
-$(TSF_CORE_LIBS) \
-$(ML_LIBS) \
-$(AZTECOO_LIBS) \
-$(IFPACK_LIBS) \
-$(TEUCHOS_LIBS) \
-$(EPETRA_LIBS) \
-	$(LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
-
+AztecPoisson_DEPENDENCIES = $(COMMON_DEPENDENCIES)
+AztecPoisson_CXXFLAGS = $(COMMON_CXXFLAGS)
+AztecPoisson_LDADD = $(COMMON_LDADD)
+ParameterListAztecPoisson_SOURCES = $(srcdir)/ParameterListAztecPoisson.cpp 
+ParameterListAztecPoisson_DEPENDENCIES = $(COMMON_DEPENDENCIES)
+ParameterListAztecPoisson_CXXFLAGS = $(COMMON_CXXFLAGS)
+ParameterListAztecPoisson_LDADD = $(COMMON_LDADD)
+Poisson_test_SOURCES = $(srcdir)/cxx_main.cpp 
+Poisson_test_DEPENDENCIES = $(COMMON_DEPENDENCIES)
+Poisson_test_CXXFLAGS = $(COMMON_CXXFLAGS)
+Poisson_test_LDADD = $(COMMON_LDADD)
 all: all-am
 
 .SUFFIXES:
@@ -449,6 +433,9 @@ clean-noinstPROGRAMS:
 AztecPoisson$(EXEEXT): $(AztecPoisson_OBJECTS) $(AztecPoisson_DEPENDENCIES) 
 	@rm -f AztecPoisson$(EXEEXT)
 	$(CXXLINK) $(AztecPoisson_LDFLAGS) $(AztecPoisson_OBJECTS) $(AztecPoisson_LDADD) $(LIBS)
+ParameterListAztecPoisson$(EXEEXT): $(ParameterListAztecPoisson_OBJECTS) $(ParameterListAztecPoisson_DEPENDENCIES) 
+	@rm -f ParameterListAztecPoisson$(EXEEXT)
+	$(CXXLINK) $(ParameterListAztecPoisson_LDFLAGS) $(ParameterListAztecPoisson_OBJECTS) $(ParameterListAztecPoisson_LDADD) $(LIBS)
 Poisson_test$(EXEEXT): $(Poisson_test_OBJECTS) $(Poisson_test_DEPENDENCIES) 
 	@rm -f Poisson_test$(EXEEXT)
 	$(CXXLINK) $(Poisson_test_LDFLAGS) $(Poisson_test_OBJECTS) $(Poisson_test_LDADD) $(LIBS)
@@ -460,6 +447,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AztecPoisson-AztecPoisson.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Poisson_test-cxx_main.Po@am__quote@
 
 .cpp.o:
@@ -493,6 +481,22 @@ AztecPoisson-AztecPoisson.obj: $(srcdir)/AztecPoisson.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/AztecPoisson-AztecPoisson.Po' tmpdepfile='$(DEPDIR)/AztecPoisson-AztecPoisson.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AztecPoisson_CXXFLAGS) $(CXXFLAGS) -c -o AztecPoisson-AztecPoisson.obj `if test -f '$(srcdir)/AztecPoisson.cpp'; then $(CYGPATH_W) '$(srcdir)/AztecPoisson.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/AztecPoisson.cpp'; fi`
+
+ParameterListAztecPoisson-ParameterListAztecPoisson.o: $(srcdir)/ParameterListAztecPoisson.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ParameterListAztecPoisson_CXXFLAGS) $(CXXFLAGS) -MT ParameterListAztecPoisson-ParameterListAztecPoisson.o -MD -MP -MF "$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.Tpo" -c -o ParameterListAztecPoisson-ParameterListAztecPoisson.o `test -f '$(srcdir)/ParameterListAztecPoisson.cpp' || echo '$(srcdir)/'`$(srcdir)/ParameterListAztecPoisson.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.Tpo" "$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.Po"; else rm -f "$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ParameterListAztecPoisson.cpp' object='ParameterListAztecPoisson-ParameterListAztecPoisson.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.Po' tmpdepfile='$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ParameterListAztecPoisson_CXXFLAGS) $(CXXFLAGS) -c -o ParameterListAztecPoisson-ParameterListAztecPoisson.o `test -f '$(srcdir)/ParameterListAztecPoisson.cpp' || echo '$(srcdir)/'`$(srcdir)/ParameterListAztecPoisson.cpp
+
+ParameterListAztecPoisson-ParameterListAztecPoisson.obj: $(srcdir)/ParameterListAztecPoisson.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ParameterListAztecPoisson_CXXFLAGS) $(CXXFLAGS) -MT ParameterListAztecPoisson-ParameterListAztecPoisson.obj -MD -MP -MF "$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.Tpo" -c -o ParameterListAztecPoisson-ParameterListAztecPoisson.obj `if test -f '$(srcdir)/ParameterListAztecPoisson.cpp'; then $(CYGPATH_W) '$(srcdir)/ParameterListAztecPoisson.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ParameterListAztecPoisson.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.Tpo" "$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.Po"; else rm -f "$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$(srcdir)/ParameterListAztecPoisson.cpp' object='ParameterListAztecPoisson-ParameterListAztecPoisson.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.Po' tmpdepfile='$(DEPDIR)/ParameterListAztecPoisson-ParameterListAztecPoisson.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(ParameterListAztecPoisson_CXXFLAGS) $(CXXFLAGS) -c -o ParameterListAztecPoisson-ParameterListAztecPoisson.obj `if test -f '$(srcdir)/ParameterListAztecPoisson.cpp'; then $(CYGPATH_W) '$(srcdir)/ParameterListAztecPoisson.cpp'; else $(CYGPATH_W) '$(srcdir)/$(srcdir)/ParameterListAztecPoisson.cpp'; fi`
 
 Poisson_test-cxx_main.o: $(srcdir)/cxx_main.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(Poisson_test_CXXFLAGS) $(CXXFLAGS) -MT Poisson_test-cxx_main.o -MD -MP -MF "$(DEPDIR)/Poisson_test-cxx_main.Tpo" -c -o Poisson_test-cxx_main.o `test -f '$(srcdir)/cxx_main.cpp' || echo '$(srcdir)/'`$(srcdir)/cxx_main.cpp; \
@@ -673,6 +677,18 @@ uninstall-am: uninstall-info-am
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-info-am
 
+
+#########################################################################
+#
+# The following macros would ordinarily be deduced by autoconf, however,
+# they have been set during the configuration of Teuchos so we can
+# steal their values from the Teuchos export makefile.
+#
+#########################################################################
+
+include $(top_builddir)/../teuchos/Makefile.export
+
+include $(top_builddir)/../teuchos/Makefile.export
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
