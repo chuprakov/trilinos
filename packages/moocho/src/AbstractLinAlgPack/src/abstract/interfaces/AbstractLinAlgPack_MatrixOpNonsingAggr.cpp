@@ -134,8 +134,8 @@ MatrixWithOp& MatrixWithOpNonsingularAggr::operator=(const MatrixWithOp& M)
 std::ostream& MatrixWithOpNonsingularAggr::output(std::ostream& out) const
 {
 	out << "Aggregate nonsingular matrix:\n";
-	out << "mwo =\n" << *mwo_;
-	out << "mns = ???\n";
+	out << (mwo_trans_ == BLAS_Cpp::no_trans ? "mwo" : "mwo\'") << " =\n" << *mwo_;
+	out << (mns_trans_ == BLAS_Cpp::no_trans ? "mns" : "mns\'") << " = ???\n";
 	return out;
 }
 
