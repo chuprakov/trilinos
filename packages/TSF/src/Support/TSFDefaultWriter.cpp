@@ -47,7 +47,9 @@ void TSFDefaultWriter::print(const std::string& msg)
 				}
 			lineSize += tokens[i].length();
 		}
-	ss << ends;
+#if !HAVE_SSTREAM
+	ss << std::ends;
+#endif
 	os_ << ss.str();
 }
 
