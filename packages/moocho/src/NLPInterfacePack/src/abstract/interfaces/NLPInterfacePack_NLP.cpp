@@ -26,6 +26,14 @@ namespace {
 	const char name_h[] = "h";
 } // end namespace
 
+// static
+
+NLPInterfacePack::value_type NLPInterfacePack::NLP::infinite_bound()
+{
+	return std::numeric_limits<value_type>::max();
+//	return 1e+50;
+}
+
 // constructors
 
 NLPInterfacePack::NLP::NLP()
@@ -40,11 +48,30 @@ void NLPInterfacePack::NLP::initialize() {
 	num_f_evals_ = num_c_evals_ = num_h_evals_ = 0;
 }
 
-NLPInterfacePack::value_type NLPInterfacePack::NLP::infinite_bound()
+// dimensionality
+
+NLPInterfacePack::size_type
+NLPInterfacePack::NLP::n() const
 {
-	return std::numeric_limits<value_type>::max();
-//	return 1e+50;
+	return this->space_x()->dim();
 }
+
+NLPInterfacePack::size_type 
+NLPInterfacePack::NLP::m() const
+{
+	VectorSpace::space_ptr_t spc = this->space_c();
+	return spc.get() ? spc->dim() : 0;
+}
+
+
+NLPInterfacePack::size_type
+NLPInterfacePack::NLP::mI() const
+{
+	VectorSpace::space_ptr_t spc = this->space_h();
+	return spc.get() ? spc->dim() : 0;
+}
+
+// initial guess
 
 void NLPInterfacePack::NLP::get_init_lagrange_mult(
 	VectorWithOpMutable*   lambda
@@ -59,19 +86,19 @@ void NLPInterfacePack::NLP::get_init_lagrange_mult(
 #endif
 	if(lambda) {
 #ifdef _DEBUG
-		THROW_EXCEPTION( !this->space_c()->is_compatible(lambda->space()), std::logic_error, "" );
+		THROW_EXCEPTION( !this->space_c()->is_compatible(lambda->space()), VectorBase::IncompatibleVectors, "" );
 #endif
 		*lambda = 0.0;
 	}
 	if(lambdaI) {
 #ifdef _DEBUG
-		THROW_EXCEPTION( !this->space_h()->is_compatible(lambdaI->space()), std::logic_error, "" );
+		THROW_EXCEPTION( !this->space_h()->is_compatible(lambdaI->space()), VectorBase::IncompatibleVectors, "" );
 #endif
 		*lambdaI = 0.0;
 	}
 	if(nu) {
 #ifdef _DEBUG
-		THROW_EXCEPTION( !this->space_x()->is_compatible(nu->space()), std::logic_error, "" );
+		THROW_EXCEPTION( !this->space_x()->is_compatible(nu->space()), VectorBase::IncompatibleVectors, "" );
 #endif
 		*nu = 0.0;
 	}
@@ -105,7 +132,7 @@ void NLPInterfacePack::NLP::set_c(VectorWithOpMutable* c)
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
-	THROW_EXCEPTION( c && !this->space_c()->is_compatible(c->space()), std::logic_error, "" );
+	THROW_EXCEPTION( c && !this->space_c()->is_compatible(c->space()), VectorBase::IncompatibleVectors, "" );
 #endif
 	first_order_info_.c = c;
 }
@@ -140,7 +167,7 @@ void NLPInterfacePack::NLP::set_h(VectorWithOpMutable* h)
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
-	THROW_EXCEPTION( h && !this->space_h()->is_compatible(h->space()), std::logic_error, "" );
+	THROW_EXCEPTION( h && !this->space_h()->is_compatible(h->space()), VectorBase::IncompatibleVectors, "" );
 #endif
 	first_order_info_.h = h;
 }

@@ -33,7 +33,7 @@ Range1D NLPFirstOrderDirect::con_decomp() const
 
 Range1D NLPFirstOrderDirect::con_undecomp() const
 {
-	return Range1D(m()+1,m()+1);
+	return Range1D::Invalid;
 }
 
 const NLPFirstOrderDirect::mat_space_ptr_t&
@@ -84,13 +84,13 @@ NLP::vec_space_ptr_t NLPFirstOrderDirect::space_h() const
 
 const VectorWithOp& NLPFirstOrderDirect::hl() const
 {
-	THROW_EXCEPTION( true, NoBoundsOnVariables, "NLPFirstOrderDirect::hl(), Error, default is for mI() == 0" );
+	THROW_EXCEPTION( true, NoBounds, "NLPFirstOrderDirect::hl(), Error, default is for mI() == 0" );
 	return xl(); // will never execute.
 }
 
 const VectorWithOp& NLPFirstOrderDirect::hu() const
 {
-	THROW_EXCEPTION( true, NoBoundsOnVariables, "NLPFirstOrderDirect::hl(), Error, default is for mI() == 0" );
+	THROW_EXCEPTION( true, NoBounds, "NLPFirstOrderDirect::hl(), Error, default is for mI() == 0" );
 	return xu(); // will never execute.
 }
 
