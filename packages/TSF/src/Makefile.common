@@ -1,0 +1,66 @@
+
+TSF_LIB = libtsf.a
+
+libtsf_a_SOURCES = $(SOURCES)
+
+
+TSF_INCLUDES = -I$(top_srcdir)/src/Support -I$(top_srcdir)/src/Vectors \
+	-I$(top_srcdir)/src/VectorSpaces -I$(top_srcdir)/src/LinearOperators \
+	-I$(top_srcdir)/src/Preconditioners -I$(top_srcdir)/src/NonlinearOperators \
+	-I$(top_srcdir)/src/LinearSolvers -I$(top_srcdir)/src/NonlinearSolvers \
+	-I$(top_srcdir)/src/LinearProblem -I$(top_srcdir)/src/Readers \
+	-I$(top_srcdir)/src/Writers -I$(top_srcdir)/src/XML \
+	-I$(top_srcdir)/src/Implementations
+
+AM_CPPFLAGS = $(TSF_INCLUDES)	-I$(top_srcdir)/../aztecoo/src -I$(top_srcdir)/../ifpack/src -I$(top_srcdir)/../epetra/src 
+
+# ------------------------------------------------------------------------
+# For using a special archiver
+# ------------------------------------------------------------------------
+
+# SPECIAL NOTE: Why is the "else" there?  For some reason, automake
+# fails to define <lib>_AR of USE_ALTERNATE_AR is false, so we have to
+# define it manually.
+
+if USE_ALTERNATE_AR
+
+libtsf_a_AR = $(ALTERNATE_AR)
+else
+
+libtsf_a_AR = $(AR) cru
+
+endif
+
+# ------------------------------------------------------------------------
+# Some C++ compilers create extra .o-files for templates. We need to
+# be sure to include these, and this is the hack to do it.
+# ------------------------------------------------------------------------
+
+libtsf_a_LIBADD = $(XTRALDADD)
+
+# ------------------------------------------------------------------------
+# List of all libraries to install in $(libexecdir)
+# ------------------------------------------------------------------------
+
+lib_LIBRARIES = $(TSF_LIB)
+
+pkginclude_HEADERS = $(SOURCES_H) 
+
+# ------------------------------------------------------------------------
+# Special stuff to install in our special $(pkgexecincludedir)
+# ------------------------------------------------------------------------
+
+# SPECIAL NOTE: Ifpack_config.h is a machine-dependent file, so we need
+# to install it in the machine-dependent directory. However, that is
+# not a default installation directory, so we had to create it
+# special.
+
+pkgexecincludedir = $(exec_prefix)/include/TSF
+
+nodist_pkgexecinclude_HEADERS = Support/TSFConfig.h
+
+# ------------------------------------------------------------------------
+# Files to be deleted by 'make maintainer-clean'
+# ------------------------------------------------------------------------
+
+MAINTAINERCLEANFILES = Makefile.in 
