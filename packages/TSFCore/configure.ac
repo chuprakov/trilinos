@@ -254,9 +254,12 @@ dnl Replace `main' with a function in -lm:
 AC_SEARCH_LIBS(pow,[m],,AC_MSG_ERROR(Cannot find math library))
 AC_SEARCH_LIBS(sqrt,[m],,AC_MSG_ERROR(Cannot find math library))
 
-### Include Blas/Lapack example here. ###  For now, developers should see
-### The configure.ac file for epetra (Trilinos/packages/epetra) if blas and
-### or Lapack are needed.
+dnl Check for user-specified names for LAPACK and BLAS
+TAC_ARG_WITH_BLASLIB
+TAC_ARG_WITH_LAPACKLIB
+
+### Include Blas/Lapack example here. 
+
 ACX_BLAS([], [AC_MSG_ERROR([[Cannot find blas library, specify a path using --with-blas=DIR/LIB (for example --with-blas=/usr/path/lib/libcxml.a)]])])
 ACX_LAPACK([], [AC_MSG_ERROR([[Cannot find lapack library, specify a path using --with-lapack=DIR/LIB (ex. --with-lapack=/usr/path/lib/libcxml.a)]])])
 
@@ -281,22 +284,22 @@ AC_F77_LIBRARY_LDFLAGS
 #         DEC/CPLANT and see if template-related errors occur)
 
 # -- DEC CXX --
-#case $target in
-#  alpha*)
-#    if test $CXX = cxx; then
-#      TRILINOS_TEMPLATE_OBJS="cxx_repository/*.o"
-#    fi
-#  ;;
-#esac
+case $target in
+  alpha*)
+    if test $CXX = cxx; then
+      TRILINOS_TEMPLATE_OBJS="cxx_repository/*.o"
+    fi
+  ;;
+esac
 
-#AC_MSG_CHECKING([for template-specific object files to be linked])
-#if test "X$TRILINOS_TEMPLATE_OBJS" = "X"; then
-# AC_MSG_RESULT(none)
-#else
-# AC_MSG_RESULT($TRILINOS_TEMPLATE_OBJS)
-#fi
+AC_MSG_CHECKING([for template-specific object files to be linked])
+if test "X$TRILINOS_TEMPLATE_OBJS" = "X"; then
+ AC_MSG_RESULT(none)
+else
+ AC_MSG_RESULT($TRILINOS_TEMPLATE_OBJS)
+fi
 
-#AC_SUBST(TRILINOS_TEMPLATE_OBJS)
+AC_SUBST(TRILINOS_TEMPLATE_OBJS)
 
 # ------------------------------------------------------------------------
 # Checks for library functions
