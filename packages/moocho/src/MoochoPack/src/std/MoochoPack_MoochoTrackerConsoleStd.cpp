@@ -180,11 +180,11 @@ void rSQPTrackConsoleStd::output_iteration(const Algorithm& p_algo) const
 void rSQPTrackConsoleStd::output_final( const Algorithm& p_algo
 	, EAlgoReturn algo_return ) const
 {
-	using DynamicCastHelperPack::const_dyn_cast;
+	using DynamicCastHelperPack::dyn_cast;
 
 	const rSQPAlgo           &algo    = rsqp_algo(p_algo);
 	const rSQPState          &s       = algo.rsqp_state();
-	const NLPObjGradient     &nlp     = const_dyn_cast<NLPObjGradient>(algo.nlp()); 
+	const NLPObjGradient     &nlp     = dyn_cast<const NLPObjGradient>(algo.nlp()); 
 	const NLPFirstOrderInfo  *nlp_foi = dynamic_cast<const NLPFirstOrderInfo*>(&nlp); 
 
 	std::ostream& o = this->o();

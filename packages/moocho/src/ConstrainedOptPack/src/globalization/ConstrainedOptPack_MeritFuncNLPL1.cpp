@@ -29,8 +29,8 @@ MeritFuncNLPL1::MeritFuncNLPL1()
 
 MeritFuncNLP& MeritFuncNLPL1::operator=(const MeritFuncNLP& merit_func)
 {
-	using DynamicCastHelperPack::const_dyn_cast;
-	const MeritFuncNLPL1 &merit_func_l1 = const_dyn_cast<MeritFuncNLPL1>(merit_func);
+	using DynamicCastHelperPack::dyn_cast;
+	const MeritFuncNLPL1 &merit_func_l1 = dyn_cast<const MeritFuncNLPL1>(merit_func);
 	if(this == &merit_func_l1)
 		return *this; // assignment to self
 	this->deriv_   = merit_func_l1.deriv_;
