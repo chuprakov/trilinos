@@ -6,10 +6,12 @@
 
 #include "../include/GenMatrixClass.h"
 
+namespace LinAlgPack {
+
 // ////////////////////////////////////////////////////////////////////////////////
 // GenMatrixSlice
 
-LinAlgPack::VectorSlice LinAlgPack::GenMatrixSlice::p_diag(difference_type k) const {
+VectorSlice GenMatrixSlice::p_diag(difference_type k) const {
 	if(k > 0) {
 		validate_col_subscript(k+1);
 		// upper diagonal (k > 0)
@@ -22,7 +24,7 @@ LinAlgPack::VectorSlice LinAlgPack::GenMatrixSlice::p_diag(difference_type k) co
 		, rows()+k > cols() ? cols() : rows()+k, max_rows()+1 );
 }
 
-LinAlgPack::EOverLap LinAlgPack::GenMatrixSlice::overlap(const GenMatrixSlice& gms) const
+EOverLap GenMatrixSlice::overlap(const GenMatrixSlice& gms) const
 {
 	typedef GenMatrixSlice::size_type size_type;
 	
@@ -80,10 +82,39 @@ LinAlgPack::EOverLap LinAlgPack::GenMatrixSlice::overlap(const GenMatrixSlice& g
 	return SOME_OVERLAP; // Some lower rows of m2 extend into m1 
 }
 
+#ifdef LINALGPACK_CHECK_RANGE
+void GenMatrixSlice::validate_row_subscript(size_type i) const
+{
+	if( i > rows() || !i )
+		throw std::out_of_range( "GenMatrixSlice::validate_row_subscript(i) :"
+									"row index i is out of bounds"				);
+}
+#endif
+
+#ifdef LINALGPACK_CHECK_RANGE
+void GenMatrixSlice::validate_col_subscript(size_type j) const
+{
+	if( j > cols() || !j )
+		throw std::out_of_range( "GenMatrixSlice::validate_col_subscript(j) :"
+									"column index j is out of bounds"			);
+}
+#endif
+
+#ifdef LINALGPACK_CHECK_SLICE_SETUP
+void GenMatrixSlice::validate_setup(size_type size) const
+{
+	if( !ptr_ && !rows() && !cols() && !max_rows() )
+			return; // an unsized matrix slice is ok.
+	if( (rows() - 1) + (cols() - 1) * max_rows() + 1 > size )
+		throw std::out_of_range( "GenMatrixSlice::validate_setup() : "
+									" GenMatrixSlice constructed that goes past end of array" );
+}
+#endif
+
 // /////////////////////////////////////////////////////////////////////////////////
 // GenMatrix
 
-LinAlgPack::VectorSlice LinAlgPack::GenMatrix::p_diag(difference_type k) const {	
+VectorSlice GenMatrix::p_diag(difference_type k) const {	
 	if(k > 0) {
 		validate_col_subscript(k+1);
 		// upper diagonal (k > 0)
@@ -96,9 +127,25 @@ LinAlgPack::VectorSlice LinAlgPack::GenMatrix::p_diag(difference_type k) const {
 		, rows()+k > cols() ? cols() : rows()+k, rows()+1 );
 }
 
-LinAlgPack::EOverLap LinAlgPack::GenMatrix::overlap(const GenMatrixSlice& gms) const {
+EOverLap GenMatrix::overlap(const GenMatrixSlice& gms) const {
 	return (*this)().overlap(gms);
 }
+
+#ifdef LINALGPACK_CHECK_RANGE
+void GenMatrix::validate_row_subscript(size_type i) const {
+	if( i > rows() || !i )
+		throw std::out_of_range("GenMatrix::validate_row_subscript(i) : row index out of bounds");
+}
+#endif
+
+#ifdef LINALGPACK_CHECK_RANGE
+void GenMatrix::validate_col_subscript(size_type j) const {
+	if( j > cols() || !j )
+		throw std::out_of_range("GenMatrix::validate_col_subscript(j) : column index out of bounds");
+}
+#endif
+
+}	// end namespace LinAlgPack
 
 // ///////////////////////////////////////////////////////////////////////////////
 // Non-member funcitons

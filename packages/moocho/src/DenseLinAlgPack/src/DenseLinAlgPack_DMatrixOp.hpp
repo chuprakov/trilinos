@@ -267,7 +267,7 @@ void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, const tri_gms& tri_rhs1
   *
   * There are no LinAlgPackOp template functions compatable with this operation.
   */
-void V_invMtV(Vector* v_lhs, const tri_gms& tri_rhs1, BLAS_Cpp::Transp trans_rhs1
+void V_InvMtV(Vector* v_lhs, const tri_gms& tri_rhs1, BLAS_Cpp::Transp trans_rhs1
 	, const VectorSlice& vs_rhs2);
 
 ///
@@ -275,7 +275,7 @@ void V_invMtV(Vector* v_lhs, const tri_gms& tri_rhs1, BLAS_Cpp::Transp trans_rhs
   *
   * Same as above except for VectorSlice as lhs.
   */
-void V_invMtV(VectorSlice* vs_lhs, const tri_gms& tri_rhs1, BLAS_Cpp::Transp trans_rhs1
+void V_InvMtV(VectorSlice* vs_lhs, const tri_gms& tri_rhs1, BLAS_Cpp::Transp trans_rhs1
 	, const VectorSlice& vs_rhs2);
 
 ///
@@ -470,7 +470,7 @@ void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const GenMatrixSlice& g
   *
   * There is no analog to this operation in the LinAlgPackOp template functions.
   */
-void M_StinvMtM(GenMatrix* gm_lhs, value_type alpha, const tri_gms& tri_rhs1
+void M_StInvMtM(GenMatrix* gm_lhs, value_type alpha, const tri_gms& tri_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const GenMatrixSlice& gms_rhs2
 	, BLAS_Cpp::Transp trans_rhs2);
 
@@ -479,7 +479,7 @@ void M_StinvMtM(GenMatrix* gm_lhs, value_type alpha, const tri_gms& tri_rhs1
   *
   * Same as above accept for GenMatrixSlice as the lhs.
   */
-void M_StinvMtM(GenMatrixSlice* gms_lhs, value_type alpha, const tri_gms& tri_rhs1
+void M_StInvMtM(GenMatrixSlice* gms_lhs, value_type alpha, const tri_gms& tri_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const GenMatrixSlice& gms_rhs2
 	, BLAS_Cpp::Transp trans_rhs2);
 
@@ -491,7 +491,7 @@ void M_StinvMtM(GenMatrixSlice* gms_lhs, value_type alpha, const tri_gms& tri_rh
   *
   * There is no analog to this operation in the LinAlgPackOp template functions.
   */
-void M_StMtinvM(GenMatrix* gm_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
+void M_StMtInvM(GenMatrix* gm_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const tri_gms& tri_rhs2
 	, BLAS_Cpp::Transp trans_rhs2);
 
@@ -500,7 +500,7 @@ void M_StMtinvM(GenMatrix* gm_lhs, value_type alpha, const GenMatrixSlice& gms_r
   *
   * Same as above accept for GenMatrixSlice as the lhs.
   */
-void M_StMtinvM(GenMatrixSlice* gm_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
+void M_StMtInvM(GenMatrixSlice* gm_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const tri_gms& tri_rhs2
 	, BLAS_Cpp::Transp trans_rhs2);
 

@@ -444,13 +444,13 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 				// v_lhs
 				tmp1.resize(1);
 				tmp2.resize(1);
-				V_invMtV( &tmp1, M, a_trans[i_trans], vs_rhs(1,m) );
+				V_InvMtV( &tmp1, M, a_trans[i_trans], vs_rhs(1,m) );
 				V_MtV( &tmp2, M, a_trans[i_trans], tmp1() );
 				update_success( result = comp( tmp2, vs_rhs(1,m)), &success );
 				if(out) *out << "(v_lhs)... M * (inv(M)*vs_rhs(1,m)) == vs_rhs(1,m) : "
 							 << result << std::endl;
 				// vs_lhs
-				V_invMtV( &tmp1(), M, a_trans[i_trans], vs_rhs(1,m) );
+				V_InvMtV( &tmp1(), M, a_trans[i_trans], vs_rhs(1,m) );
 				V_MtV( &tmp1(), M, a_trans[i_trans], tmp1() );
 				update_success( result = comp( tmp1, vs_rhs(1,m)), &success );
 				if(out) *out << "(vs_lhs)... M * (inv(M)*vs_rhs(1,m)) == vs_rhs(1,m) : "
@@ -684,7 +684,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 					// gm_lhs = alpha * inv(op(tri_rhs1)) * op(gms_rhs2) (left) (BLAS xTRSM).
 					Tmp1.resize(1,1);
 					Tmp2.resize(1,1);
-					M_StinvMtM( &Tmp1, 2.0, M, _trans1, gms_rhs(1,m,1,m), _trans2 );
+					M_StInvMtM( &Tmp1, 2.0, M, _trans1, gms_rhs(1,m,1,m), _trans2 );
 					M_StMtM( &Tmp2, 0.5, M, _trans1, Tmp1(), no_trans );
 					update_success( result = comp( Tmp2(), no_trans, gms_rhs(1,m,1,m), _trans2 )
 						, &success );
@@ -696,7 +696,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 					// gms_lhs = alpha * op(tri_rhs1) * op(gms_rhs2) (left) (BLAS xTRMM).
 					// gms_lhs = alpha * inv(op(tri_rhs1)) * op(gms_rhs2) (left) (BLAS xTRSM).
 					assign( &Tmp2, gms_rhs(1,m,1,m), _trans2 );
-					M_StinvMtM( &Tmp1(), 2.0, M, _trans1, Tmp2(), no_trans );
+					M_StInvMtM( &Tmp1(), 2.0, M, _trans1, Tmp2(), no_trans );
 					M_StMtM( &Tmp2, 0.5, M, _trans1, Tmp1(), no_trans );
 					update_success( result = comp( Tmp2(), no_trans, gms_rhs(1,m,1,m), _trans2 )
 						, &success );
@@ -717,7 +717,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 					// gm_lhs = alpha * op(gms_rhs1) * inv(op(tri_rhs2)) (right) (BLAS xTRSM).
 					Tmp1.resize(1,1);
 					Tmp2.resize(1,1);
-					M_StMtinvM( &Tmp1, 2.0, gms_rhs(1,m,1,m), _trans1, M, _trans2 );
+					M_StMtInvM( &Tmp1, 2.0, gms_rhs(1,m,1,m), _trans1, M, _trans2 );
 					M_StMtM( &Tmp2, 0.5, Tmp1(), no_trans, M, _trans2 );
 					update_success( result = comp( Tmp2(), no_trans, gms_rhs(1,m,1,m), _trans1 )
 						, &success );
@@ -729,7 +729,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 					// gms_lhs = alpha * op(gms_rhs1) * op(tri_rhs2) (right) (BLAS xTRMM).
 					// gms_lhs = alpha * op(gms_rhs1) * inv(op(tri_rhs2)) (right) (BLAS xTRSM).
 					assign( &Tmp2(), gms_rhs(1,m,1,m), _trans1 );
-					M_StMtinvM( &Tmp2(), 2.0, Tmp2(), no_trans, M, _trans2 );
+					M_StMtInvM( &Tmp2(), 2.0, Tmp2(), no_trans, M, _trans2 );
 					M_StMtM( &Tmp2(), 0.5, Tmp2(), no_trans, M, _trans2 );
 					update_success( result = comp( Tmp2(), no_trans, gms_rhs(1,m,1,m), _trans1 )
 						, &success );

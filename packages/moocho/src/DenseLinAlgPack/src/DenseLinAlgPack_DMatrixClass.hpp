@@ -735,34 +735,23 @@ void resize_gm_lhs(GenMatrix* gm_rhs, size_type rows, size_type cols
 
 // Private utilities
 
+#ifndef LINALGPACK_CHECK_RANGE
 inline
-void GenMatrixSlice::validate_row_subscript(size_type i) const {
-#ifdef LINALGPACK_CHECK_RANGE
-	if( i > rows() || !i )
-		throw std::out_of_range( "GenMatrixSlice::validate_row_subscript(i) :"
-									"row index i is out of bounds"				);
+void GenMatrixSlice::validate_row_subscript(size_type i) const
+{}
 #endif
-}
 
+#ifndef LINALGPACK_CHECK_RANGE
 inline
-void GenMatrixSlice::validate_col_subscript(size_type j) const {
-#ifdef LINALGPACK_CHECK_RANGE
-	if( j > cols() || !j )
-		throw std::out_of_range( "GenMatrixSlice::validate_col_subscript(j) :"
-									"column index j is out of bounds"			);
+void GenMatrixSlice::validate_col_subscript(size_type j) const
+{}
 #endif
-}
 
+#ifndef LINALGPACK_CHECK_SLICE_SETUP
 inline
-void GenMatrixSlice::validate_setup(size_type size) const {
-#ifdef LINALGPACK_CHECK_SLICE_SETUP
-	if( !ptr_ && !rows() && !cols() && !max_rows() )
-			return; // an unsized matrix slice is ok.
-	if( (rows() - 1) + (cols() - 1) * max_rows() + 1 > size )
-		throw std::out_of_range( "GenMatrixSlice::validate_setup() : "
-									" GenMatrixSlice constructed that goes past end of array" );
+void GenMatrixSlice::validate_setup(size_type size) const
+{}
 #endif
-}
 
 // Constructors
 
@@ -942,21 +931,17 @@ const GenMatrixSlice::value_type* GenMatrixSlice::col_ptr(size_type j) const {
 
 // Private utilities
 
+#ifndef LINALGPACK_CHECK_RANGE
 inline
-void GenMatrix::validate_row_subscript(size_type i) const {
-#ifdef LINALGPACK_CHECK_RANGE
-	if( i > rows() || !i )
-		throw std::out_of_range("GenMatrix::validate_row_subscript(i) : row index out of bounds");
+void GenMatrix::validate_row_subscript(size_type i) const
+{}
 #endif
-}
 
+#ifndef LINALGPACK_CHECK_RANGE
 inline
-void GenMatrix::validate_col_subscript(size_type j) const {
-#ifdef LINALGPACK_CHECK_RANGE
-	if( j > cols() || !j )
-		throw std::out_of_range("GenMatrix::validate_col_subscript(j) : column index out of bounds");
+void GenMatrix::validate_col_subscript(size_type j) const
+{}
 #endif
-}
 
 // constructors
 

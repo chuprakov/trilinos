@@ -48,7 +48,7 @@ void LinAlgPack::MtV_assert_sizes(size_type m_rhs1_rows, size_type m_rhs1_cols
 	, BLAS_Cpp::Transp trans_rhs1, size_type v_rhs2_size)
 {
 	if(cols(m_rhs1_rows,m_rhs1_cols,trans_rhs1) != v_rhs2_size)
-		throw std::length_error("Vp_MtV_assert_sizes(...) : The number of columns in"
+		throw std::length_error("MtV_assert_sizes(...) : The number of columns in"
 			" m_rhs1 and the size of v_rhs2 in the operation v_lhs += op(m_rhs1) * v_rhs2"
 			" do not match");
 }

@@ -785,35 +785,25 @@ const VectorSlice gen_vs( const VectorSlice& vs, size_type start, size_type size
 // /////////////////////////////////////////////////////////////////////////////
 // VectorSlice inline member function definitions
 
-// Validate that the vector is sized on constructions
+#ifndef LINALGPACK_CHECK_SLICE_SETUP
 inline
 VectorSlice::size_type VectorSlice::validate_sized(size_type size)
 {
-#ifdef LINALGPACK_CHECK_SLICE_SETUP
-	if(!size)
-		throw std::invalid_argument("A vector region can not be created from an unsized vector.\n");
-#endif
 	return size;
 }
+#endif
 
-// Validate The range is within allowed limits
+#ifndef LINALGPACK_CHECK_SLICE_SETUP
 inline
 void VectorSlice::validate_range(size_type ubound, size_type max_ubound)
-{
-#ifdef LINALGPACK_CHECK_RANGE
-	if(ubound > max_ubound)
-		throw std::out_of_range("VectorSlice::validate_range(...) : The upper bound is out of range.\n");
+{}
 #endif
-}
 
-// Validate subscript is in range (1 based)
+#ifndef LINALGPACK_CHECK_SLICE_SETUP
 inline
-void VectorSlice::validate_subscript(size_type i) const {
-#ifdef LINALGPACK_CHECK_RANGE
-	if(i < 1 || i > size()) 
-		throw std::out_of_range("VectorSlice::validate_subscript(i) : Subscript i out of bounds.\n");
+void VectorSlice::validate_subscript(size_type i) const
+{}
 #endif
-}
 
 inline
 VectorSlice::difference_type my_abs(VectorSlice::difference_type i) { return i > 0 ? i : -i; }
@@ -991,14 +981,11 @@ VectorSlice::difference_type VectorSlice::stride() const
 // /////////////////////////////////////////////////////////////////////////////
 // Vector inline member function definitions
 
-// Validate subscript is in range (1 based)
+#ifndef LINALGPACK_CHECK_RANGE
 inline
-void Vector::validate_subscript(size_type i) const {
-#ifdef LINALGPACK_CHECK_RANGE
-	if(i < 1 || i > size()) 
-		throw std::out_of_range("Vector::validate_subscript(i) : Subscript out of bounds.\n");
+void Vector::validate_subscript(size_type i) const
+{}
 #endif
-}
 
 // Constructors
 inline
