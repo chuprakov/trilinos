@@ -172,12 +172,14 @@ private:
 	///
 	/** Compute the new inertia and validate that it is what the client says it was.
 	 *
-	 * If the expected inertia does not match the computed inertia then a
-	 * WrongInertiaUpdateException will be thrown.
+	 * Will throw exceptions if the matrix is singular or has the wrong inertia.  If
+	 * the matrix is near singular then true will be returned, the update should
+	 * succeed but a warning exception should be thrown
 	 */
-	Inertia compute_assert_inertia(
+	bool compute_assert_inertia(
 		size_type S_size, bool fact_in1
-		,const Inertia& expected_inertia, const char func_name[] );
+		,const Inertia& expected_inertia, const char func_name[]
+		,PivotTolerances pivot_tols, Inertia* comp_inertia, std::ostringstream* err_msg, value_type* gamma );
 
 	/// Not defined and not to be called.
 	MatrixSymAddDelBunchKaufman( const MatrixSymAddDelBunchKaufman& );

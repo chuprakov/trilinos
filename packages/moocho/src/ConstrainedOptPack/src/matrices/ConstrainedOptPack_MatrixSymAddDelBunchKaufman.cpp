@@ -1,11 +1,6 @@
 // //////////////////////////////////////////////////////////
 // MatrixSymAddDelBunchKaufman.cpp
 //
-// ToDo: 2001/03/08: Use pivot_tols to check for singularity
-//       in the function compute_assert_inertia(...) and throw
-//       the appropriate exceptions if needed!  We need to do
-//       this to be complient with the specification of the
-//       interface.
 
 #include <assert.h>
 
@@ -86,7 +81,12 @@ void MatrixSymAddDelBunchKaufman::initialize(
 	using BLAS_Cpp::lower;
 	using LinAlgPack::tri_ele;
 	using LinAlgPack::nonconst_tri_ele;
-	typedef MatrixSymAddDelUpdateable::Inertia   Inertia;
+	typedef MatrixSymAddDelUpdateable  MSADU;
+	typedef MSADU::Inertia   Inertia;
+
+	bool                throw_exception = false; // If true then throw exception
+	std::ostringstream  omsg;                    // Will be set if an exception has to be thrown.
+	value_type          gamma;                   // ...
 
 	const size_type
 		n = A.rows();
@@ -109,7 +109,14 @@ void MatrixSymAddDelBunchKaufman::initialize(
 			// The client says that the matrix is p.d. or n.d. so
 			// we will take their word for it.
 			S_chol_.init_setup(&S_store1_(),NULL,0,true,true,true,false,0.0);
-			S_chol_.initialize(A,max_size,force_factorization,expected_inertia,pivot_tols);
+			try {
+				S_chol_.initialize(A,max_size,force_factorization,expected_inertia,pivot_tols);
+			}
+			catch(const MSADU::WarnNearSingularUpdateException& except) {
+				throw_exception = true; // Throw this same exception at the end!
+				omsg << except.what();
+				gamma = except.gamma;
+			}
 			// Set the state variables:
 			S_size_       = n;
 			S_indef_      = false; // fact_updated_, fact_in1_ and inertia are meaningless!
@@ -127,7 +134,6 @@ void MatrixSymAddDelBunchKaufman::initialize(
 				factor_matrix( n, fact_in1 );
 			}
 			catch( const LinAlgLAPack::FactorizationException& excpt ) {
-				std::ostringstream omsg;
 				omsg
 					<< "MatrixSymAddDelBunchKaufman::initialize(...): "
 					<< "Error, the matrix A is singular:\n"
@@ -135,7 +141,10 @@ void MatrixSymAddDelBunchKaufman::initialize(
 				throw SingularUpdateException( omsg.str(), -1.0 );
 			}
 			// Compute the inertia and validate that it is correct.
-			Inertia inertia = compute_assert_inertia(n,fact_in1,expected_inertia,"initialize");
+			Inertia inertia;
+			throw_exception = compute_assert_inertia(
+				n,fact_in1,expected_inertia,"initialize",pivot_tols
+				,&inertia,&omsg,&gamma);
 			// If the client did not know the inertia of the
 			// matrix but it turns out to be p.d. or n.d. then modify the
 			// DU factor appropriatly and switch to cholesky factorization.
@@ -160,6 +169,8 @@ void MatrixSymAddDelBunchKaufman::initialize(
 		S_size_ = 0;
 		throw;
 	}
+	if( throw_exception )
+		throw WarnNearSingularUpdateException(omsg.str(),gamma);
 }
 
 size_type MatrixSymAddDelBunchKaufman::max_size() const
@@ -261,10 +272,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 	//
 	// ToDo: (2/2/01): We could also try some more fancy updating
 	// procedures and try to get away with some potentially unstable
-	// methods.  One idea would be to try the diagonal L*D*L' factorization
-	// which we know will grow to be unstable but at least we can get an O(n^2)
-	// test to see if the new matrix is singular or not.  This will be very
-	// complicated so we should wait and try it later if needed.
+	// methods in the interest of time savings.
 	//
 	const size_type n     = S_size_;
 	GenMatrixSlice  S_bar = this->S(n+1).gms();
@@ -279,6 +287,9 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 	// of the updated matrix even before we perform the refactorization.
 	// If the current matrix is not factored then we will just skip this
 	// test and let the full factorization take place to find this out.
+	// We could even cheat a little and actually perform the update with this
+	// diagonal beta and then compute the update to the factors U our selves
+	// in O(n^2) time.
 	//
 	if( force_refactorization && fact_updated_ ) {
 		const value_type
@@ -395,7 +406,10 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 		else
 			assert(0); // Should not happen!
 		// Compute the actually inertia and validate that it is what is expected
-		Inertia inertia = compute_assert_inertia(n+1,fact_in1,expected_inertia,"augment_update");
+		Inertia inertia;
+		throw_exception = compute_assert_inertia(
+			n+1,fact_in1,expected_inertia,"augment_update",pivot_tols
+			,&inertia,&omsg,&gamma);
 		// Unset S_chol so that there is no chance of accedental modification.
 		if(!S_indef_)
 			S_chol_.init_setup(NULL);
@@ -448,6 +462,10 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 		throw std::out_of_range(
 			"MatrixSymAddDelBunchKaufman::delete_update(jd,...): "
 			"Error, the indice jd must be 1 <= jd <= rows()" );
+
+	bool                throw_exception = false; // If true then throw exception
+	std::ostringstream  omsg;                    // Will be set if an exception has to be thrown.
+	value_type          gamma;                   // ...
 
 	if( !S_indef_ ) {
 		//
@@ -536,7 +554,6 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 					factor_matrix(S_size_-1,fact_in1);
 				}
 				catch( const LinAlgLAPack::FactorizationException& excpt ) {
-					std::ostringstream omsg;
 					omsg
 						<< "MatrixSymAddDelBunchKaufman::delete_update(...): "
 						<< "Error, singular update but the original matrix was maintianed:\n"
@@ -554,7 +571,10 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 				else
 					assert(0); // Should not happen!
 				// Compute the exacted inertia and validate that it is what is expected
-				Inertia inertia = compute_assert_inertia(S_size_-1,fact_in1,expected_inertia,"delete_update");
+				Inertia inertia;
+				throw_exception = compute_assert_inertia(
+					S_size_-1,fact_in1,expected_inertia,"delete_update",pivot_tols
+					,&inertia,&omsg,&gamma);
 				// If we get here the factorization worked out.
 				--S_size_;
 				S_indef_      = true;
@@ -583,6 +603,8 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 			}
 		}
 	}
+	if( throw_exception )
+		throw WarnNearSingularUpdateException(omsg.str(),gamma);
 }
 
 // Overridden from MatrixSymWithOpFactorized
@@ -689,36 +711,63 @@ void MatrixSymAddDelBunchKaufman::factor_matrix( size_type S_size, bool fact_in1
 	LinAlgLAPack::sytrf( &DU(S_size,fact_in1), &IPIV_[0], &WORK_() );
 }
 
-MatrixSymAddDelUpdateable::Inertia
-MatrixSymAddDelBunchKaufman::compute_assert_inertia(
-	size_type S_size, bool fact_in1, const Inertia& exp_inertia, const char func_name[] )
+bool MatrixSymAddDelBunchKaufman::compute_assert_inertia(
+	size_type S_size, bool fact_in1, const Inertia& exp_inertia, const char func_name[]
+	,PivotTolerances pivot_tols, Inertia* comp_inertia, std::ostringstream* omsg, value_type* gamma )
 {
+	bool throw_exception = false;
+	*gamma = 0.0;
 	// Here we will compute the inertia given IPIV[] and D[] as described in the documentation
 	// for dsytrf(...) (see the source code).
 	const GenMatrixSlice DU = this->DU(S_size,fact_in1).gms();
 	const size_type      n = DU.rows();
 	Inertia inertia(0,0,0);
+	value_type max_diag = 0.0;
+	value_type min_diag = std::numeric_limits<value_type>::max();
 	for( size_type k = 1; k <= n; ) {
 		const FortranTypes::f_int k_p = IPIV_[k-1];
 		if( k_p > 0 ) {
-			// D(k,k) is a 1x1 matrix.
+			// D(k,k) is a 1x1 block.
 			// Lets get the eigen value from the sign of D(k,k)
-			if( DU(k,k) > 0.0 )
+			const value_type D_k_k = DU(k,k), abs_D_k_k = ::fabs(D_k_k);
+			if( D_k_k > 0.0 )
 				++inertia.pos_eigens;
 			else
 				++inertia.neg_eigens;
+			if(abs_D_k_k > max_diag) max_diag = abs_D_k_k;
+			if(abs_D_k_k < min_diag) min_diag = abs_D_k_k;
 			k++;
 		}
 		else {
-			// D(k-1:k,k-1:k) is a 2x2 matrix.
+			// D(k:k+1,k:k+1) is a 2x2 block.
 			// This represents one positive eigen value and
 			// on negative eigen value
-			assert( IPIV_[k] == k_p ); // This is what the documentation says!
+			assert( IPIV_[k] == k_p ); // This is what the documentation for xSYTRF(...) says!
 			++inertia.pos_eigens;
 			++inertia.neg_eigens;
+			// To find the largest and smallest diagonals of U for L*U we must perform Gaussian
+			// elimination on this 2x2 block:
+			const value_type                                   // [ a   b ] = D(k:k+1,k:k+1) 
+				a = DU(k,k), b = DU(k,k+1), c = DU(k+1,k+1),   // [ b   c ]
+				abs_a = ::fabs(a), abs_b = ::fabs(b);  
+			value_type pivot_1, pivot_2;
+			if( abs_a > abs_b ) { // Pivot on a = D(k,k)
+				pivot_1 = abs_a;              // [   1      ] * [ a   b ] = [ a      b     ]
+				pivot_2 = ::fabs(c - b*b/a);  // [ -b/a  1  ]   [ b   c ]   [ 0  c - b*b/a ]
+			}
+			else {                // Pivot on b = D(k+1,k) = D(k,k+1)
+				pivot_1 = abs_b;              // [   1      ] * [ b   c ] = [ b      c     ]
+				pivot_2 = ::fabs(b - a*c/b);  // [ -a/b  1  ]   [ a   b ]   [ 0  b - a*c/b ]
+			}
+			if(pivot_1 > max_diag) max_diag = pivot_1;
+			if(pivot_1 < min_diag) min_diag = pivot_1;
+			if(pivot_2 > max_diag) max_diag = pivot_2;
+			if(pivot_2 < min_diag) min_diag = pivot_2;
 			k+=2;
 		}
 	}
+	// gamma = min(|diag(i)|)/max(|diag(i)|)
+	*gamma = min_diag / max_diag;
 	// Now validate that the inertia is what is expected
     const bool
 		wrong_inertia =
@@ -726,18 +775,67 @@ MatrixSymAddDelBunchKaufman::compute_assert_inertia(
 		  && exp_inertia.neg_eigens != inertia.neg_eigens )
 		|| ( exp_inertia.pos_eigens != Inertia::UNKNOWN
 			 && exp_inertia.pos_eigens != inertia.pos_eigens ) ;
-	if(wrong_inertia) {
-		std::ostringstream omsg;
-		omsg
-			<< "MatrixSymAddDelBunchKaufman::" << func_name << "(...): "
-			<< "Error, inertia = ("
-			<< inertia.neg_eigens << "," << inertia.zero_eigens << "," << inertia.pos_eigens
-			<< ") != expected_inertia = ("
-			<< exp_inertia.neg_eigens << "," << exp_inertia.zero_eigens << "," << exp_inertia.pos_eigens << ")";
-		throw WrongInertiaUpdateException( omsg.str(), -1.0 );
+	PivotTolerances use_pivot_tols = S_chol_.pivot_tols();
+	if( pivot_tols.warning_tol != PivotTolerances::UNKNOWN )
+		use_pivot_tols.warning_tol = pivot_tols.warning_tol;
+	if( pivot_tols.singular_tol != PivotTolerances::UNKNOWN )
+		use_pivot_tols.singular_tol = pivot_tols.singular_tol;
+	if( pivot_tols.wrong_inertia_tol != PivotTolerances::UNKNOWN )
+		use_pivot_tols.wrong_inertia_tol = pivot_tols.wrong_inertia_tol;
+	throw_exception = (
+		*gamma == 0.0
+		|| !wrong_inertia && *gamma <= use_pivot_tols.warning_tol
+		|| !wrong_inertia && *gamma <= use_pivot_tols.singular_tol
+		|| wrong_inertia
+		);
+	// Create message and throw exceptions
+	std::ostringstream onum_msg;
+	if(throw_exception) {
+		if(wrong_inertia) {
+			onum_msg
+				<< "inertia = ("
+				<< inertia.neg_eigens << "," << inertia.zero_eigens << "," << inertia.pos_eigens
+				<< ") != expected_inertia = ("
+				<< exp_inertia.neg_eigens << "," << exp_inertia.zero_eigens << "," << exp_inertia.pos_eigens << ")"
+				<< std::endl;
+		}
+		onum_msg
+			<< "gamma = min(|diag(D)(k)|)/max(|diag(D)(k)|) = " <<  min_diag << "/" << max_diag
+			<< " = " << *gamma;
+		*omsg
+			<< "MatrixSymAddDelBunchKaufman::"<<func_name<<"(...): ";
+		if( *gamma == 0.0 || (!wrong_inertia && *gamma <= use_pivot_tols.singular_tol) ) {
+			*omsg
+				<< "Singular update!\n" << onum_msg.str() << " <= singular_tol = "
+				<< use_pivot_tols.singular_tol;
+			throw SingularUpdateException( omsg->str(), *gamma );
+		}
+		else if( wrong_inertia && *gamma <= use_pivot_tols.singular_tol ) {
+			*omsg
+				<< "Singular update!\n" << onum_msg.str() << " <= wrong_inertia_tol = "
+				<< use_pivot_tols.wrong_inertia_tol;
+			throw SingularUpdateException( omsg->str(), *gamma );
+		}
+		else if( wrong_inertia ) {
+			*omsg
+				<< "Indefinite update!\n" << onum_msg.str() << " >= wrong_inertia_tol = "
+				<< use_pivot_tols.wrong_inertia_tol;
+			throw WrongInertiaUpdateException( omsg->str(), *gamma );
+		}
+		else if( !wrong_inertia && *gamma <= use_pivot_tols.warning_tol ) {
+			*omsg
+				<< "Warning, near singular update!\nsingular_tol = " << use_pivot_tols.singular_tol
+				<< " < " << onum_msg.str() << " <= warning_tol = "
+				<< use_pivot_tols.warning_tol;
+			// Don't throw the exception till the very end!
+		}
+		else {
+			assert(0); // Only local programming error?
+		}
 	}
-	// The inertia checked out
-	return inertia;
+	// Return
+	*comp_inertia = inertia;
+	return throw_exception;
 }
 
 } // end namespace ConstrainedOptimizationPack
