@@ -172,9 +172,11 @@ std::ostream& MatrixSparseCOORSerial::output(std::ostream& out) const
 {
 	const size_type
 		rows = this->rows(),
-		cols = this->cols();
+		cols = this->cols(),
+		nz   = this->nz();
 	out
-		<< "Sparse " << rows << " x " << cols << " matrix with nonzero entries:\n";
+		<< "Sparse " << rows << " x " << cols << " matrix with "
+		<< nz << " nonzero entries:\n";
 	const value_type
 		*itr_val      = &val_[0],
 		*itr_val_end  = itr_val + nz_;
@@ -227,7 +229,6 @@ void MatrixSparseCOORSerial::reinitialize(
 	rows_               = rows;
 	cols_               = cols;	
 	element_uniqueness_ = element_uniqueness;
-	nz_                 = 0;
 	if( self_allocate_ ) {
 		if(max_nz_ < max_nz) {
 			release_resource_ = rcp::rcp(
@@ -250,8 +251,10 @@ void MatrixSparseCOORSerial::reinitialize(
 			"max_nz = " << max_nz << " nonzero entries!" );
 #endif
 	}
-	max_nz_load_     = 0;
-	reload_val_only_ = false;
+	reload_val_only_         = false;
+	reload_val_only_nz_last_ = 0;
+	nz_                      = 0;
+	max_nz_load_             = 0;
 }
 
 void MatrixSparseCOORSerial::reset_to_load_values()
@@ -263,9 +266,10 @@ void MatrixSparseCOORSerial::reset_to_load_values()
 		"this matrix is not initialized so it can't be rest to load "
 		"new values for nonzero entries." );
 #endif
-	nz_              = 0;
-	max_nz_load_     = 0;
-	reload_val_only_ = true;
+	reload_val_only_         = true;
+	reload_val_only_nz_last_ = nz_;
+	nz_                      = 0;
+	max_nz_load_             = 0;
 }
 
 void MatrixSparseCOORSerial::get_load_nonzeros_buffers(
@@ -327,20 +331,10 @@ void MatrixSparseCOORSerial::commit_load_nonzeros_buffers(
 		,"MatrixSparseCOORSerial::commit_load_nonzeros_buffers(...) : Error, "
 		"This is not the buffer I give you in get_load_nonzeros_buffers(...)!" );
 	THROW_EXCEPTION(
-		reload_val_only_ && (*row_i != NULL || *col_j != NULL), std::invalid_argument
+		reload_val_only_ && (row_i != NULL || col_j != NULL), std::invalid_argument
 		,"MatrixSparseCOORSerial::commit_load_nonzeros_buffers(...) : Error, "
 		"reset_to_load_values() was called and therefore the structure of the matrix "
 		"can not be set!" );
-	THROW_EXCEPTION(
-		!reload_val_only_ && *row_i != row_i_ + nz_
-		, std::logic_error
-		,"MatrixSparseCOORSerial::commit_load_nonzeros_buffers(...) : Error, "
-		"This is not the buffer I give you in get_load_nonzeros_buffers(...)!" );
-	THROW_EXCEPTION(
-		!reload_val_only_ && *col_j != col_j_ + nz_
-		, std::logic_error
-		,"MatrixSparseCOORSerial::commit_load_nonzeros_buffers(...) : Error, "
-		"This is not the buffer I give you in get_load_nonzeros_buffers(...)!" );
 #endif
 	nz_            += nz_commit;
 	max_nz_load_    = 0;
@@ -348,6 +342,11 @@ void MatrixSparseCOORSerial::commit_load_nonzeros_buffers(
 
 void MatrixSparseCOORSerial::finish_construction()
 {
+	THROW_EXCEPTION(
+		reload_val_only_ == true && reload_val_only_nz_last_ != nz_, std::logic_error
+		,"MatrixSparseCOORSerial::finish_construction() : Error, the number of nonzeros on"
+		" the initial load with row and column indexes was = " << reload_val_only_nz_last_ <<
+		" and does not agree with the number of nonzero values = " << nz_ << " loaded this time!" );
 	space_cols_.initialize(rows_);
 	space_rows_.initialize(cols_);
 }
@@ -383,12 +382,10 @@ index_type MatrixSparseCOORSerial::count_nonzeros(
 		,std::logic_error
 		,err_msg_head << ", the client requests a count for unique "
 		"elements but this sparse matrix object is not allowed to assume this!" );
-	THROW_EXCEPTION( inv_row_perm == NULL, std::logic_error, err_msg_head<<"!" );
-	THROW_EXCEPTION( inv_col_perm == NULL, std::logic_error, err_msg_head<<"!" );
 #endif
 	const Range1D
 		row_rng = RangePack::full_range(row_rng_in,1,rows_),
-		col_rng = RangePack::full_range(row_rng_in,1,rows_),
+		col_rng = RangePack::full_range(col_rng_in,1,rows_),
 		row_rng_full(1,rows_),
 		col_rng_full(1,cols_);
 	const index_type
@@ -405,12 +402,45 @@ index_type MatrixSparseCOORSerial::count_nonzeros(
 		}
 		else {
 			// The row or column range is limiting
-			for( k = 0; k < nz_; ++row_i, ++col_j, ++k ) {
-				const index_type
-					i = inv_row_perm[(*row_i)-1],
-					j = inv_col_perm[(*col_j)-1];
-				VALIDATE_ROW_COL_IN_RANGE();
-				cnt_nz += row_rng.in_range(i) && col_rng.in_range(j) ? 1 : 0;
+			if( inv_row_perm == NULL && inv_col_perm == NULL ) {
+				// Neither the rows nor columns are permuted
+				for( k = 0; k < nz_; ++row_i, ++col_j, ++k ) {
+					const index_type
+						i = (*row_i),
+						j = (*col_j);
+					VALIDATE_ROW_COL_IN_RANGE();
+					cnt_nz += row_rng.in_range(i) && col_rng.in_range(j) ? 1 : 0;
+				}
+			}
+			else if ( inv_row_perm != NULL && inv_col_perm == NULL ) {
+				// Only the rows are permuted 
+				for( k = 0; k < nz_; ++row_i, ++col_j, ++k ) {
+					const index_type
+						i = inv_row_perm[(*row_i)-1],
+						j = (*col_j);
+					VALIDATE_ROW_COL_IN_RANGE();
+					cnt_nz += row_rng.in_range(i) && col_rng.in_range(j) ? 1 : 0;
+				}
+			}
+			else if ( inv_row_perm == NULL && inv_col_perm != NULL ) {
+				// Only the columns are permuted 
+				for( k = 0; k < nz_; ++row_i, ++col_j, ++k ) {
+					const index_type
+						i = (*row_i),
+						j = inv_col_perm[(*col_j)-1];
+					VALIDATE_ROW_COL_IN_RANGE();
+					cnt_nz += row_rng.in_range(i) && col_rng.in_range(j) ? 1 : 0;
+				}
+			}
+			else {
+				// Both the rows and columns are permuted!
+				for( k = 0; k < nz_; ++row_i, ++col_j, ++k ) {
+					const index_type
+						i = inv_row_perm[(*row_i)-1],
+						j = inv_col_perm[(*col_j)-1];
+					VALIDATE_ROW_COL_IN_RANGE();
+					cnt_nz += row_rng.in_range(i) && col_rng.in_range(j) ? 1 : 0;
+				}
 			}
 		}
 	}
@@ -446,12 +476,10 @@ void MatrixSparseCOORSerial::coor_extract_nonzeros(
 		,std::logic_error
 		,err_msg_head << ", the client requests extraction of unique "
 		"elements but this sparse matrix object can not guarantee this!" );
-	THROW_EXCEPTION( inv_row_perm == NULL, std::logic_error, err_msg_head<<"!" );
-	THROW_EXCEPTION( inv_col_perm == NULL, std::logic_error, err_msg_head<<"!" );
 #endif
 	const Range1D
 		row_rng = RangePack::full_range(row_rng_in,1,rows_),
-		col_rng = RangePack::full_range(row_rng_in,1,rows_),
+		col_rng = RangePack::full_range(col_rng_in,1,rows_),
 		row_rng_full(1,rows_),
 		col_rng_full(1,cols_);
 	value_type
@@ -466,22 +494,93 @@ void MatrixSparseCOORSerial::coor_extract_nonzeros(
 		// The diagonals are not limiting so we can ignore them
 		if( row_rng == row_rng_full && col_rng == col_rng_full ) {
 			// The row and column ranges are not limiting either
-			assert(0); // ToDo: Implement!
-		}
-		else {
-			// The row or column range is limiting
-			for( k = 0; k < nz_; ++val, ++row_i, ++col_j, ++k ) {
-				const index_type
-					i = inv_row_perm[(*row_i)-1],
-					j = inv_col_perm[(*col_j)-1];
-				VALIDATE_ROW_COL_IN_RANGE();
-				if( row_rng.in_range(i) && col_rng.in_range(j) ) {
+			if( inv_row_perm == NULL && inv_col_perm == NULL ) {
+				// We are just extracting the whole, unpermuted matrix
+				for( k = 0; k < nz_; ++val, ++row_i, ++col_j, ++k ) {
 					++cnt_nz;
 					if( len_Aval )
 						*Aval++ = *val;           // ToDo: Split into different loops (no inner if())
 					if( len_Aij ) {
-						*Arow++ = i + row_offset;
-						*Acol++ = j + col_offset;
+						*Arow++ = *row_i + row_offset;
+						*Acol++ = *col_j + col_offset;
+					}
+				}
+			}
+			else {
+				assert(0); // ToDo: Implement!
+			}
+		}
+		else {
+			// The row or column range is limiting
+			if( inv_row_perm == NULL && inv_col_perm == NULL ) {
+				// There are no permutations to consider
+				for( k = 0; k < nz_; ++val, ++row_i, ++col_j, ++k ) {
+					const index_type
+						i = (*row_i),
+						j = (*col_j);
+					VALIDATE_ROW_COL_IN_RANGE();
+					if( row_rng.in_range(i) && col_rng.in_range(j) ) {
+						++cnt_nz;
+						if( len_Aval )
+							*Aval++ = *val;           // ToDo: Split into different loops (no inner if())
+						if( len_Aij ) {
+							*Arow++ = i + row_offset;
+							*Acol++ = j + col_offset;
+						}
+					}
+				}
+			}
+			else if( inv_row_perm != NULL && inv_col_perm == NULL ) {
+				// We must consider only row permutations
+				for( k = 0; k < nz_; ++val, ++row_i, ++col_j, ++k ) {
+					const index_type
+						i = inv_row_perm[(*row_i)-1],
+						j = (*col_j);
+					VALIDATE_ROW_COL_IN_RANGE();
+					if( row_rng.in_range(i) && col_rng.in_range(j) ) {
+						++cnt_nz;
+						if( len_Aval )
+							*Aval++ = *val;           // ToDo: Split into different loops (no inner if())
+						if( len_Aij ) {
+							*Arow++ = i + row_offset;
+							*Acol++ = j + col_offset;
+						}
+					}
+				}
+			}
+			else if( inv_row_perm == NULL && inv_col_perm != NULL ) {
+				// We must consider only column permutations
+				for( k = 0; k < nz_; ++val, ++row_i, ++col_j, ++k ) {
+					const index_type
+						i = (*row_i),
+						j = inv_col_perm[(*col_j)-1];
+					VALIDATE_ROW_COL_IN_RANGE();
+					if( row_rng.in_range(i) && col_rng.in_range(j) ) {
+						++cnt_nz;
+						if( len_Aval )
+							*Aval++ = *val;           // ToDo: Split into different loops (no inner if())
+						if( len_Aij ) {
+							*Arow++ = i + row_offset;
+							*Acol++ = j + col_offset;
+						}
+					}
+				}
+			}
+			else {
+				// We must consider row and column permutations
+				for( k = 0; k < nz_; ++val, ++row_i, ++col_j, ++k ) {
+					const index_type
+						i = inv_row_perm[(*row_i)-1],
+						j = inv_col_perm[(*col_j)-1];
+					VALIDATE_ROW_COL_IN_RANGE();
+					if( row_rng.in_range(i) && col_rng.in_range(j) ) {
+						++cnt_nz;
+						if( len_Aval )
+							*Aval++ = *val;           // ToDo: Split into different loops (no inner if())
+						if( len_Aij ) {
+							*Arow++ = i + row_offset;
+							*Acol++ = j + col_offset;
+						}
 					}
 				}
 			}

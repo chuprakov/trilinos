@@ -48,20 +48,22 @@ MatrixConvertToSparseEncap::MatrixConvertToSparseEncap(
 void MatrixConvertToSparseEncap::initialize(
 	const mese_ptr_t           &mese
 	,const i_vector_ptr_t      &inv_row_perm
-	,const Range1D             &row_rng
+	,const Range1D             &row_rng_in
 	,const i_vector_ptr_t      &inv_col_perm
-	,const Range1D             &col_rng
+	,const Range1D             &col_rng_in
 	,const BLAS_Cpp::Transp    mese_trans
 	,const value_type          alpha
 	)
 {
+	const size_type mese_rows = mese->rows(), mese_cols = mese->cols();
+	const Range1D row_rng = RangePack::full_range(row_rng_in,1,mese_rows);
+	const Range1D col_rng = RangePack::full_range(col_rng_in,1,mese_cols);
 #ifdef _DEBUG
 	const char msg_head[] = "MatrixConvertToSparseEncap::initialize(...): Error!";
 	THROW_EXCEPTION( mese.get() == NULL, std::logic_error, msg_head );
-	const size_type mese_rows = mese->rows(), mese_cols = mese->cols();
-	THROW_EXCEPTION( !(inv_row_perm.get() == NULL || inv_row_perm->size() == mese_rows), std::logic_error, msg_head );
+	THROW_EXCEPTION( inv_row_perm.get() != NULL && inv_row_perm->size() != mese_rows, std::logic_error, msg_head );
 	THROW_EXCEPTION( row_rng.ubound() > mese_rows, std::logic_error, msg_head );
-	THROW_EXCEPTION( !(inv_col_perm.get() == NULL || inv_col_perm->size() == mese_cols), std::logic_error, msg_head );
+	THROW_EXCEPTION( inv_col_perm.get() != NULL && inv_col_perm->size() != mese_cols, std::logic_error, msg_head );
 	THROW_EXCEPTION( col_rng.ubound() > mese->cols(), std::logic_error, msg_head );
 #endif
 	mese_           = mese;
@@ -69,7 +71,7 @@ void MatrixConvertToSparseEncap::initialize(
 	row_rng_        = row_rng;
 	inv_col_perm_   = inv_col_perm;
 	col_rng_        = col_rng;
-	mese_trans_     = mese_trans_;
+	mese_trans_     = mese_trans;
 	alpha_          = alpha;
 	nz_full_        = this->num_nonzeros(EXTRACT_FULL_MATRIX,ELEMENTS_ALLOW_DUPLICATES_SUM);
 }

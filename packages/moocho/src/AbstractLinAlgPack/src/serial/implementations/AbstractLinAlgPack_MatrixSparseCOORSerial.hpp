@@ -309,6 +309,7 @@ private:
 
 	size_type                 max_nz_load_;     // cashed
 	bool                      reload_val_only_; // cashed
+	size_type                 reload_val_only_nz_last_; // cashed
 
 	// //////////////////////////////
 	// Private member functions

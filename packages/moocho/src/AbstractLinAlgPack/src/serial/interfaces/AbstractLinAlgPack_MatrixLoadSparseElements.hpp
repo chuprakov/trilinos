@@ -84,7 +84,7 @@ public:
 	 *
 	 * @param  max_nz_load
 	 *                  [in] Maximum number of nonzero elements that will be set
-	 *                  in the returned buffers.
+	 *                  in the returned buffers.  If \c reset_to_load_values() 
 	 * @param  val      [out] On output <tt>*val</tt> is set to a pointer to an contiguous array
 	 *                  of memory of at least \c max_nz_load entries for which the values of the
 	 *                  nonzero elements to add are to be set.
@@ -152,6 +152,11 @@ public:
 	///
 	/** To be called when the matrix construction is finally finished after all
 	 * of the nonzero entries have been added.
+	 *
+	 * If \c reset_to_load_values() was called to initialize this set of loads then
+	 * the number of nonzeros added must be exactly the same as the original load
+	 * or an <tt>std::logic_error</tt> will be thrown with an appropriate error
+	 * message.
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>this->nz()</tt> returns the sum of all of <tt>nz_commit</tt> in all previous calls to
