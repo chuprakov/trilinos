@@ -96,6 +96,11 @@ public:
 	/** Return a smart pointer object to a <tt>const</tt> <tt>Epetra_Vector</tt> object.
 	 */
 	Teuchos::RefCountPtr<const Epetra_Vector> epetra_vec() const;
+
+  ///
+	/** Return a modifiable smart pointer object to a <tt>Epetra_Vector</tt> object. (Added by KL to support the LoadableVector interface in TSFExtended).
+	 */
+	Teuchos::RefCountPtr<Epetra_Vector> epetra_vec();
 	
 	//@}
 
@@ -131,6 +136,13 @@ private:
 inline
 Teuchos::RefCountPtr<const Epetra_Vector>
 EpetraVector::epetra_vec() const
+{
+	return epetra_vec_;
+}
+
+inline
+Teuchos::RefCountPtr<Epetra_Vector>
+EpetraVector::epetra_vec()
 {
 	return epetra_vec_;
 }

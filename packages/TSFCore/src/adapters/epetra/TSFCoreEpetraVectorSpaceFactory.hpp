@@ -65,9 +65,12 @@ public:
 		);
 
 	///
-	/** Return a smart pointer to the underlying <tt>Epetra_BlockMap</tt> object.
+	/** 
+   * Return the underlying Epetra communicator.
+   * (This had been declared but unimplemented. Fixed by KL)
 	 */
-	Teuchos::RefCountPtr<const Epetra_Comm> epetra_comm() const;
+	Teuchos::RefCountPtr<const Epetra_Comm> epetra_comm() const
+  {return epetra_comm_;}
 
 	//@}
 
