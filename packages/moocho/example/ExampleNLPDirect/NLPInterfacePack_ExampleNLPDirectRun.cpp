@@ -42,8 +42,12 @@ NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	,value_type          xo
 	,bool                has_bounds
 	,bool                dep_bounded
-	,std::ostream*       out
-	,std::ostream*       eout
+	,std::ostream*       console_out
+	,std::ostream*       error_out
+	,bool                throw_solve_exception
+	,std::ostream*       algo_out
+	,std::ostream*       summary_out
+	,std::ostream*       journal_out
 	)
 {
 	using std::endl;
@@ -63,8 +67,8 @@ NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	int w = 15;
 	int prec = 8;
 
-	if(out)
-		*out
+	if(console_out)
+		*console_out
 			<< std::setprecision(prec)
 			<< std::scientific
 			<< "***************************************************\n"
@@ -81,28 +85,34 @@ NLPInterfacePack::ExampleNLPFirstOrderDirectRun(
 	// Create the solver object and set it up
 	rSQPppSolver solver;
 	solver.set_nlp(rcp::rcp(&nlp,false));                  // Set the NLP!
-	if(out) solver.set_console_out(rcp::rcp(out,false));   // Set the console outputting
+	// set up outputting
+	solver.set_error_handling(
+		throw_solve_exception
+		,rcp::rcp(error_out,false)
+		);
+	solver.set_console_out(rcp::rcp(console_out,false));
+	solver.set_summary_out(rcp::rcp(summary_out,false));
+	solver.set_journal_out(rcp::rcp(journal_out,false));
+	solver.set_algo_out(   rcp::rcp(algo_out,false)   );
 
 	// Run rSQP++ using the MamaJama configuration
 	solve_return = solver.solve_nlp();
+/*	
 	switch(solve_return) {
 		case rSQPppSolver::SOLVE_RETURN_SOLVED:
 		case rSQPppSolver::SOLVE_RETURN_MAX_ITER:
 		case rSQPppSolver::SOLVE_RETURN_MAX_RUN_TIME:
-			if(eout)
-				*eout   << "Congradulations!  The vector space and NLP class seems to check out!\n";
-			if(out && out != eout)
-				*out    << "\nCongradulations!  The vector space and NLP class seems to check out!\n";
+			if(error_out)
+				*error_out   << "Congradulations!  The vector space and NLP class seems to check out!\n";
 			break;
 		case rSQPppSolver::SOLVE_RETURN_NLP_TEST_FAILED:
 		case rSQPppSolver::SOLVE_RETURN_EXCEPTION:
-			if(eout)
-				*eout   << "Oh No!  Something did not checkout!\n";
-			if(out && out != eout)
-				*out    << "\nOh No!  Something did not checkout!\n";
+			if(error_out)
+				*error_out   << "Oh No!  Something did not checkout!\n";
 			break;
 		default:
 			assert(0);
 	}
+*/
 	return solve_return;
 }

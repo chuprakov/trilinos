@@ -40,9 +40,13 @@ namespace NLPInterfacePack {
  * @param  dep_bounded [in] (valid only if has_bounds == true) If true, then
  *                     the dependent variables will be bounded, if false the
  *                     independent variables will be bounded.
- * @param  out         [in/out] If != NULL then *out gets the output (see the
- *                     options file "ExampleNLPFirstOrderDirectRun.opt").
- * @param  eout        [in/out] If != NULL then *eout gets minimal summary output.
+ * @param  console_out [in/out] If != NULL then *console_out gets the output.
+ * @param  error_out   [in/out] If != NULL then *eout gets minimal summary output.
+ * @param  throw_solve_exception
+ *                     [in] If true then solver will not throw exception (but other code may).
+ * @param  algo_out    [in/out] If != NULL then it gets algo outptut, otherwise goes to 'rSQPppAlgo.out'
+ * @param  summary_out [in/out] If != NULL then it gets summary outptut, otherwise goes to 'rSQPppSummary.out'
+ * @param  journal_out [in/out] If != NULL then it gets journal outptut, otherwise goes to 'rSQPppJournal.out'
  *
  * @returns Returns the return value from <tt>ReducedSpaceSQPPack::rsqp_mama_jama_solve()</tt>
  * (see this function for most of the documentation).
@@ -53,8 +57,12 @@ ExampleNLPFirstOrderDirectRun(
 	,value_type          xo
 	,bool                has_bounds
 	,bool                dep_bounded
-	,std::ostream*       out
-	,std::ostream*       eout
+	,std::ostream*       console_out
+	,std::ostream*       error_out
+	,bool                throw_sole_exception = false
+	,std::ostream*       algo_out             = NULL
+	,std::ostream*       summary_out          = NULL
+	,std::ostream*       journal_out          = NULL
 	);
 
 //@}
