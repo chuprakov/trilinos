@@ -246,9 +246,17 @@ void NP2DSim<Scalar>::calc_DcDy(
 			Teuchos::rcp_const_cast<LinearOp<Scalar> >(DcDy_state.M_tilde_left_inv)
 			);
 	// Create these objects if they have not been created already
-	if( !DcDy_mv.get() )      DcDy_mv     = this->space_y()->createMembers(2);
-	if( !DcDy_solver.get() )  DcDy_solver = Teuchos::rcp(new Solvers::BiCGSolver<Scalar>());
-	if( !convTester.get() )   convTester  = Teuchos::rcp(new Solvers::NormedConvergenceTester<Scalar>(lin_sol_tol_));
+	if( !DcDy_mv.get() ) DcDy_mv = this->space_y()->createMembers(2);
+	if( !DcDy_solver.get() ) {
+    Teuchos::RefCountPtr<Solvers::BiCGSolver<Scalar> >
+      bicg_solver = Teuchos::rcp(new Solvers::BiCGSolver<Scalar>());
+    if(1) { // ToDo: Make this a runtime option?
+      bicg_solver->set_out(Teuchos::rcp(new std::ofstream("BiCGSolver.out")));
+      bicg_solver->dump_all(true);
+    }
+    DcDy_solver = bicg_solver;
+  }
+	if( !convTester.get() ) convTester = Teuchos::rcp(new Solvers::NormedConvergenceTester<Scalar>(lin_sol_tol_));
 	// Get at the state vector and Jacobian data
 	if(true) {
 		ExplicitVectorView<Scalar> y(y_in);

@@ -82,10 +82,10 @@ public:
 	 * ToDo: Finish documentation!
 	 */
 	NP2DSim(
-		const Scalar                                                  a           = 2.0
-		,const Scalar                                                 b           = 0.0
-		,const Scalar                                                 d         = 10.0
-		,const Scalar                                                 lin_sol_tol = 1e-12
+		const Scalar                                             a           = 2.0
+		,const Scalar                                            b           = 0.0
+		,const Scalar                                            d           = 10.0
+		,const Scalar                                            lin_sol_tol = 1e-12
 		,const Teuchos::RefCountPtr<const VectorSpace<Scalar> >  &space_y_c  = Teuchos::null
 		);
 	///
@@ -159,19 +159,19 @@ public:
 
 private:
 
-	bool                                                                 isInitialized_;
-	Scalar                                                               a_;
-	Scalar                                                               b_;
-	Scalar                                                               d_;
-	Scalar                                                               lin_sol_tol_;
+	bool                                                            isInitialized_;
+	Scalar                                                          a_;
+	Scalar                                                          b_;
+	Scalar                                                          d_;
+	Scalar                                                          lin_sol_tol_;
 	Teuchos::RefCountPtr<const VectorSpace<Scalar> >                space_y_c_;
 	Teuchos::RefCountPtr<Vector<Scalar> >                           yL_;
 	Teuchos::RefCountPtr<Vector<Scalar> >                           yU_;
 	Teuchos::RefCountPtr<Vector<Scalar> >                           y0_;
 	Teuchos::RefCountPtr<
 		const MemMngPack::AbstractFactory<LinearOpWithSolve<Scalar> > >  factory_DcDy_;
-	Vector<Scalar>                                                       *c_;
-	LinearOpWithSolveIter<Scalar>                                        *DcDy_;
+	Vector<Scalar>                                                  *c_;
+	LinearOpWithSolveIter<Scalar>                                   *DcDy_;
 
 	// Not defined and not to be called
 	NP2DSim(const NP2DSim<Scalar>&);
