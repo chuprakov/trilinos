@@ -432,7 +432,7 @@ bool VectorSpaceTester::check_vector_space(
 	}
 	else {
 		if(out && print_all_tests())
-			*out << "space.dim() = 0, can't test the norms...\n";
+			*out << "space.dim() <= 1, can't test the norms...\n";
 	}
 	
 	//////////////////////////////////////////////////////////////////
