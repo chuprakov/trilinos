@@ -30,7 +30,8 @@
 // Compute the lowest eigenvalue and the corresponding eigenvector
 
 #include "Didasko_ConfigDefs.h"
-#if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_ANASAZI) && defined(HAVE_DIDASKO_TEUCHOS) && defined(HAVE_DIDASKO_TRIUTILS)
+#if defined(HAVE_DIDASKO_EPETRA) && defined(HAVE_DIDASKO_ANASAZI) && defined(HAVE_DIDASKO_TEUCHOS) && defined(HAVE_DIDASKO_TRIUTILS) && NOT_DEFINED
+// this is not compatible with the new Anasazi
 
 #include "Epetra_ConfigDefs.h"
 #ifdef HAVE_MPI
