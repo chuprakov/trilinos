@@ -273,6 +273,7 @@ SolveReturn CGSolver<Scalar>::solve(
 		Teuchos::RefCountPtr<MultiVector<Scalar> > X_curr = X_curr_->subView(Range1D(1,currNumSystems_));
 		doIteration(M,opM_notrans,opM_trans,X_curr.get(),a,M_tilde_left_inv,opM_tilde_inv_notrans,opM_tilde_inv_trans);
 	}
+	if(currIteration_ > max_iter) compress(NULL,X);
 	return SolveReturn(MAX_ITER_EXCEEDED,currIteration_);
 }
 
@@ -377,7 +378,7 @@ void CGSolver<Scalar>::compress( bool isConverged[],  MultiVector<Scalar>* X  ) 
 	// Copy the solutions and compress out the solved systems
 	Index k_curr = 0;
 	for( Index k = 0; k < currNumSystems_; ++k ) {
-		if( isConverged[k] ) {
+		if( isConverged==NULL || isConverged[k] ) {
 			// Save the solution
 			assign( X->col( activeSystems_[k] ).get(), *X_curr_->col(k+1) );
 		}
