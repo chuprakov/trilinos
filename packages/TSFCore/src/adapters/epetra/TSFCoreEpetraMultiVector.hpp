@@ -127,14 +127,10 @@ public:
 
 	//@}
 
-	/** @name Overridden from EuclideanLinearOp */
+	/** @name Overridden from EuclideanLinearOpBase */
 	//@{
 	///
 	Teuchos::RefCountPtr< const ScalarProdVectorSpaceBase<Scalar> > domainScalarProdVecSpc() const;
-	//@}
-
-	/** @name Overridden from LinearOp */
-	//@{
 #if defined(TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR_MULTIPLY) && defined(TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE)
 	///
 	void euclideanApply(
