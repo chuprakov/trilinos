@@ -21,6 +21,7 @@ namespace ConstrainedOptimizationPack {
 
 QPSolverRelaxedQPSchur::QPSolverRelaxedQPSchur(
 	const init_kkt_sys_ptr_t&  init_kkt_sys
+	,const constraints_ptr_t&  constraints
 	, value_type		max_qp_iter_frac
 	,value_type         max_real_runtime
 	, QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
@@ -46,8 +47,8 @@ QPSolverRelaxedQPSchur::QPSolverRelaxedQPSchur(
 	,value_type         pivot_wrong_inertia_tol
 	,bool               add_equalities_initially
 	)
-	:
-	init_kkt_sys_(init_kkt_sys)
+	:init_kkt_sys_(init_kkt_sys)
+	,constraints_(constraints)
 	,max_qp_iter_frac_(max_qp_iter_frac)
 	,max_real_runtime_(max_real_runtime)
 	,inequality_pick_policy_(inequality_pick_policy)
@@ -165,7 +166,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	}
 
 	// initialize constraints object
-	constraints_.initialize(
+	constraints_->initialize(
 		nd,etaL,&dL,&dU,E,trans_E,b,eL,eU,F,trans_F,f
 		, m_undecomp, m_undecomp && !all_f_undecomp ? &j_f_undecomp[0] : NULL
 		, Ed
@@ -189,7 +190,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		g_relaxed_(),G_relaxed_,NULL
 		,n_R, i_x_free.size() ? &i_x_free[0] : NULL
 		,&i_x_fixed[0],&bnd_fixed[0]
-		,b_X_(),*Ko_,fo_(),&constraints_
+		,b_X_(),*Ko_,fo_(),constraints_.get()
 		,out,test_what==RUN_TESTS,warning_tol(),error_tol()
 		,int(olevel)>=int(PRINT_ITER_VECTORS)
 		);
@@ -395,19 +396,19 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	// Set options for ConstraintsRelaxedStd.
 	// 
 	if( bounds_tol() > 0.0 )
-		constraints_.bounds_tol(bounds_tol());
+		constraints_->bounds_tol(bounds_tol());
 	if( inequality_tol() > 0.0 )
-		constraints_.inequality_tol(inequality_tol());
+		constraints_->inequality_tol(inequality_tol());
 	if( equality_tol() > 0.0 )
-		constraints_.equality_tol(equality_tol());
-	constraints_.inequality_pick_policy(inequality_pick_policy());
+		constraints_->equality_tol(equality_tol());
+	constraints_->inequality_pick_policy(inequality_pick_policy());
 
 	//
 	// Set options for QPSchur.
 	// 
 	qp_solver_.max_iter( max_qp_iter_frac() * nd );
 	qp_solver_.max_real_runtime( max_real_runtime() );
-	qp_solver_.feas_tol( constraints_.bounds_tol() );	// Let's assume the bound tolerance is the tightest
+	qp_solver_.feas_tol( constraints_->bounds_tol() );	// Let's assume the bound tolerance is the tightest
 	if(loose_feas_tol() > 0.0)
 		qp_solver_.loose_feas_tol( loose_feas_tol() );
 	else
@@ -499,7 +500,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	}
 	// Ed
 	if(Ed && E) {
-		switch(constraints_.inequality_pick_policy()) {
+		switch(constraints_->inequality_pick_policy()) {
 			case constr_t::ADD_BOUNDS_THEN_MOST_VIOLATED_INEQUALITY:
 				if(solve_returned == QPSchur::OPTIMAL_SOLUTION)
 					break; // Ed already computed (see ConstraintsRelaxedStd::pick_violated())

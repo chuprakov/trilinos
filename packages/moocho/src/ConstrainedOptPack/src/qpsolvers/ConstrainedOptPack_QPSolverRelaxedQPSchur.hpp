@@ -163,6 +163,11 @@ public:
 	STANDARD_COMPOSITION_MEMBERS( InitKKTSystem, init_kkt_sys )
 
 	///
+	/** Constraints object.
+	 */
+	STANDARD_COMPOSITION_MEMBERS( QPSchurPack::ConstraintsRelaxedStd, constraints );
+
+	///
 	/** Set the maximum number of QP iterations as max_itr = max_qp_iter_frac * n.
 	  */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( value_type, max_qp_iter_frac )
@@ -310,6 +315,7 @@ public:
 	///
 	QPSolverRelaxedQPSchur(
 		const init_kkt_sys_ptr_t&    init_kkt_sys       = NULL
+		,const constraints_ptr_t&    constraints        = new QPSchurPack::ConstraintsRelaxedStd()
 		,value_type                  max_qp_iter_frac   = 10.0
 		,value_type                  max_real_runtime   = 1e+20
 		,QPSchurPack::ConstraintsRelaxedStd::EInequalityPickPolicy
@@ -379,8 +385,6 @@ private:
 	QPSchur                          qp_solver_;
 	QPSchurPack::QPInitFixedFreeStd  qp_;
 	MatrixHessianRelaxed	         G_relaxed_;
-	QPSchurPack::ConstraintsRelaxedStd
-							         constraints_;
 	MatrixSymAddDelBunchKaufman      schur_comp_;
 	Vector					         g_relaxed_;
 	Vector					         b_X_;
