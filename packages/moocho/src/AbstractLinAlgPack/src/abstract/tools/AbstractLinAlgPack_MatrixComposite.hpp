@@ -241,7 +241,7 @@ public:
 	 * </ul>
 	 *
 	 */
-	void reinitalize( size_type rows = 0, size_type cols = 0 );
+	void reinitialize( size_type rows = 0, size_type cols = 0 );
 
 	///
 	/** Add a sub-vector beta*op(op(G)*v).

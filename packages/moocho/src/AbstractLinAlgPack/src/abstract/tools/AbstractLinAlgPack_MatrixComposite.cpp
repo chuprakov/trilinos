@@ -231,10 +231,10 @@ namespace AbstractLinAlgPack {
 
 MatrixCompositeStd::MatrixCompositeStd( size_type rows, size_type cols )
 {
-	reinitalize(rows,cols);
+	reinitialize(rows,cols);
 }
 
-void MatrixCompositeStd::reinitalize( size_type rows, size_type cols )
+void MatrixCompositeStd::reinitialize( size_type rows, size_type cols )
 {
 	fully_constructed_ = true;
 	rows_ = rows;
