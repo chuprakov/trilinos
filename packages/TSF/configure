@@ -856,19 +856,22 @@ Optional Features:
                           (and sometimes confusing) to the casual installer
   --disable-dependency-tracking Speeds up one-time builds
   --enable-dependency-tracking  Do not reject slow dependency extractors
-  --enable-mpi            enable MPI using mpiCC C++ compiler
+  --enable-mpi            MPI support
   --enable-expat          enable expat XML parser
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-mpi              specify root directory of MPI installation
-  --with-mpi-cxx          specify MPI C++ compiler
-  --with-mpi-cc           specify MPI C compiler
-  --with-mpi-f77          specify MPI Fortran 77 compiler
-  --with-mpi-include      specify include directory for MPI
-  --with-mpi-libs         specify MPI libraries
-  --with-mpi-libdir       specify location of MPI libraries
+  --with-mpi=MPIROOT      use MPI root directory (enables MPI)
+  --with-mpi-cxx          use MPI C++ compiler (enables MPI) [mpiCC]
+  --with-mpi-cc           use MPI C compiler (enables MPI) [mpicc]
+  --with-mpi-f77          use MPI Fortran 77 compiler (enables MPI)
+                          [mpicc]
+  --with-mpi-include      Obsolete. Use --with-mpi-incdir=DIR instead. Do not
+                          prefix DIR with '-I'.
+  --with-mpi-libs="LIBS"  MPI libraries ["-lmpi"]
+  --with-mpi-incdir=DIR   MPI include directory [MPIROOT/include]
+  --with-mpi-libdir=DIR   MPI library directory [MPIROOT/lib]
   --with-expat            specify root directory of EXPAT installation
   --with-expat-include    specify include directory for EXPAT
   --with-expat-libs       specify EXPAT libraries
@@ -1766,12 +1769,7 @@ INSTALL_STRIP_PROGRAM="\${SHELL} \$(install_sh) -c -s"
 # Check whether --enable-mpi or --disable-mpi was given.
 if test "${enable_mpi+set}" = set; then
   enableval="$enable_mpi"
-
-HAVE_PKG_MPI=yes
-MPI_CXX=mpiCC
-MPI_CC=mpicc
-MPI_F77=mpif77
-
+  HAVE_PKG_MPI=$enableval
 else
   HAVE_PKG_MPI=no
 
@@ -1782,11 +1780,11 @@ fi;
 if test "${with_mpi+set}" = set; then
   withval="$with_mpi"
 
-HAVE_PKG_MPI=yes
-MPI_DIR=${withval}
-echo "$as_me:$LINENO: checking MPI directory" >&5
+  HAVE_PKG_MPI=yes
+  MPI_DIR=${withval}
+  echo "$as_me:$LINENO: checking MPI directory" >&5
 echo $ECHO_N "checking MPI directory... $ECHO_C" >&6
-echo "$as_me:$LINENO: result: ${MPI_DIR}" >&5
+  echo "$as_me:$LINENO: result: ${MPI_DIR}" >&5
 echo "${ECHO_T}${MPI_DIR}" >&6
 
 
@@ -1797,11 +1795,15 @@ fi;
 if test "${with_mpi_cxx+set}" = set; then
   withval="$with_mpi_cxx"
 
-HAVE_PKG_MPI=yes
-MPI_CXX=${withval}
-echo "$as_me:$LINENO: checking user-defined MPI C++ compiler" >&5
+  HAVE_PKG_MPI=yes
+  if test X${withval} = Xyes; then
+    MPI_CXX=mpiCC
+  else
+    MPI_CXX=${withval}
+  fi
+  echo "$as_me:$LINENO: checking user-defined MPI C++ compiler" >&5
 echo $ECHO_N "checking user-defined MPI C++ compiler... $ECHO_C" >&6
-echo "$as_me:$LINENO: result: ${MPI_CXX}" >&5
+  echo "$as_me:$LINENO: result: ${MPI_CXX}" >&5
 echo "${ECHO_T}${MPI_CXX}" >&6
 
 
@@ -1812,11 +1814,15 @@ fi;
 if test "${with_mpi_cc+set}" = set; then
   withval="$with_mpi_cc"
 
-HAVE_PKG_MPI=yes
-MPI_CC=${withval}
-echo "$as_me:$LINENO: checking user-defined MPI C compiler" >&5
+  HAVE_PKG_MPI=yes
+  if test X${withval} = Xyes; then
+    MPI_CC=mpicc
+  else
+    MPI_CC=${withval}
+  fi
+  echo "$as_me:$LINENO: checking user-defined MPI C compiler" >&5
 echo $ECHO_N "checking user-defined MPI C compiler... $ECHO_C" >&6
-echo "$as_me:$LINENO: result: ${MPI_CC}" >&5
+  echo "$as_me:$LINENO: result: ${MPI_CC}" >&5
 echo "${ECHO_T}${MPI_CC}" >&6
 
 
@@ -1827,8 +1833,12 @@ fi;
 if test "${with_mpi_f77+set}" = set; then
   withval="$with_mpi_f77"
 
-HAVE_PKG_MPI=yes
-MPI_F77=${withval}
+  HAVE_PKG_MPI=yes
+  if test X${withval} = Xyes; then
+    MPI_F77=mpif77
+  else
+    MPI_F77=${withval}
+  fi
 echo "$as_me:$LINENO: checking user-defined MPI Fortran 77 compiler" >&5
 echo $ECHO_N "checking user-defined MPI Fortran 77 compiler... $ECHO_C" >&6
 echo "$as_me:$LINENO: result: ${MPI_F77}" >&5
@@ -1841,14 +1851,9 @@ fi;
 # Check whether --with-mpi-include or --without-mpi-include was given.
 if test "${with_mpi_include+set}" = set; then
   withval="$with_mpi_include"
-
-HAVE_PKG_MPI=yes
-MPI_INC=${withval}
-echo "$as_me:$LINENO: checking user-defined MPI includes" >&5
-echo $ECHO_N "checking user-defined MPI includes... $ECHO_C" >&6
-echo "$as_me:$LINENO: result: ${MPI_INC}" >&5
-echo "${ECHO_T}${MPI_INC}" >&6
-
+  { { echo "$as_me:$LINENO: error: --with-mpi-include is an obsolte option.   Use --with-mpi-incdir=DIR instead.  Do not prefix DIR with '-I'.  For example '--with-mpi-incdir=/usr/lam_path/include'." >&5
+echo "$as_me: error: --with-mpi-include is an obsolte option.   Use --with-mpi-incdir=DIR instead.  Do not prefix DIR with '-I'.  For example '--with-mpi-incdir=/usr/lam_path/include'." >&2;}
+   { (exit 1); exit 1; }; }
 
 fi;
 
@@ -1857,12 +1862,25 @@ fi;
 if test "${with_mpi_libs+set}" = set; then
   withval="$with_mpi_libs"
 
-HAVE_PKG_MPI=yes
-MPI_LIBS=${withval}
-echo "$as_me:$LINENO: checking user-defined MPI libraries" >&5
+  MPI_LIBS=${withval}
+  echo "$as_me:$LINENO: checking user-defined MPI libraries" >&5
 echo $ECHO_N "checking user-defined MPI libraries... $ECHO_C" >&6
-echo "$as_me:$LINENO: result: ${MPI_LIBS}" >&5
+  echo "$as_me:$LINENO: result: ${MPI_LIBS}" >&5
 echo "${ECHO_T}${MPI_LIBS}" >&6
+
+
+fi;
+
+
+# Check whether --with-mpi-incdir or --without-mpi-incdir was given.
+if test "${with_mpi_incdir+set}" = set; then
+  withval="$with_mpi_incdir"
+
+  MPI_INC=${withval}
+  echo "$as_me:$LINENO: checking user-defined MPI includes" >&5
+echo $ECHO_N "checking user-defined MPI includes... $ECHO_C" >&6
+  echo "$as_me:$LINENO: result: ${MPI_INC}" >&5
+echo "${ECHO_T}${MPI_INC}" >&6
 
 
 fi;
@@ -1872,12 +1890,11 @@ fi;
 if test "${with_mpi_libdir+set}" = set; then
   withval="$with_mpi_libdir"
 
-HAVE_PKG_MPI=yes
-MPI_LIBDIR=${withval}
-echo "$as_me:$LINENO: checking user-defined MPI libraries" >&5
-echo $ECHO_N "checking user-defined MPI libraries... $ECHO_C" >&6
-echo "$as_me:$LINENO: result: ${MPI_LIBS}" >&5
-echo "${ECHO_T}${MPI_LIBS}" >&6
+  MPI_LIBDIR=${withval}
+  echo "$as_me:$LINENO: checking user-defined MPI library directory" >&5
+echo $ECHO_N "checking user-defined MPI library directory... $ECHO_C" >&6
+  echo "$as_me:$LINENO: result: ${MPI_LIBDIR}" >&5
+echo "${ECHO_T}${MPI_LIBDIR}" >&6
 
 
 fi;
@@ -3213,7 +3230,7 @@ fi
 
 
 # Provide some information about the compiler.
-echo "$as_me:3216:" \
+echo "$as_me:3233:" \
      "checking for Fortran 77 compiler version" >&5
 ac_compiler=`set X $ac_compile; echo $2`
 { (eval echo "$as_me:$LINENO: \"$ac_compiler --version </dev/null >&5\"") >&5
@@ -3746,7 +3763,7 @@ fi
 if test "X${HAVE_PKG_MPI}" = "Xyes"; then
 
   if test -n "${MPI_DIR}" && test -z "${MPI_INC}"; then
-    MPI_INC=${MPI_DIR}/include
+    MPI_INC="${MPI_DIR}/include"
   fi
 
   if test -n "${MPI_DIR}" && test -z "${MPI_LIBDIR}"; then
@@ -3754,11 +3771,11 @@ if test "X${HAVE_PKG_MPI}" = "Xyes"; then
   fi
 
   if test -n "${MPI_INC}"; then
-    CPPFLAGS="${CPPFLAGS} ${MPI_INC}"
+    CPPFLAGS="${CPPFLAGS} -I${MPI_INC}"
   fi
 
   if test -n "${MPI_LIBDIR}"; then
-    LDFLAGS="${LDFLAGS} ${MPI_LIBDIR}"
+    LDFLAGS="${LDFLAGS} -L${MPI_LIBDIR}"
   fi
 
   if test -z "${MPI_LIBS}" && test -n "${MPI_LIBDIR}"; then
@@ -3766,7 +3783,7 @@ if test "X${HAVE_PKG_MPI}" = "Xyes"; then
   fi
 
   if test -n "${MPI_LIBS}"; then
-    LIBS="${MPI_LIBS}"
+    LIBS="${MPI_LIBS} ${LIBS}"
   fi
 
   ac_ext=cc
@@ -3814,6 +3831,12 @@ else
 cat conftest.$ac_ext >&5
 echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
+   echo "-----"
+   echo "Cannot link simple MPI program."
+   echo "Try --with-mpi-cxx to specify MPI C++ compile script."
+   echo "Or try --with-mpi-libs, --with-mpi-incdir, --with-mpi-libdir"
+   echo "to specify all the specific MPI compile options."
+   echo "-----"
    { { echo "$as_me:$LINENO: error: MPI cannot link" >&5
 echo "$as_me: error: MPI cannot link" >&2;}
    { (exit 1); exit 1; }; }
@@ -5481,7 +5504,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:5484: \"$ac_link\") >&5
+(eval echo $as_me:5507: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -5560,7 +5583,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:5563: \"$ac_link\") >&5
+(eval echo $as_me:5586: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -7722,7 +7745,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_verb"
-(eval echo $as_me:7725: \"$ac_link\") >&5
+(eval echo $as_me:7748: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
@@ -7801,7 +7824,7 @@ _ACEOF
 # flags.
 ac_save_FFLAGS=$FFLAGS
 FFLAGS="$FFLAGS $ac_cv_prog_f77_v"
-(eval echo $as_me:7804: \"$ac_link\") >&5
+(eval echo $as_me:7827: \"$ac_link\") >&5
 ac_f77_v_output=`eval $ac_link 5>&1 2>&1 | grep -v 'Driving:'`
 echo "$ac_f77_v_output" >&5
 FFLAGS=$ac_save_FFLAGS
