@@ -88,7 +88,7 @@ namespace TSF
                        const int* nCols,
                        const Real* alpha, const Real* A, const int* lda,
                        const Real* x, const int* incx, const Real* beta,
-                       Real* y, int* incx);
+                       Real* y, int* incy);
       /* factor a general matrix */
       static void getrf(const int* nRows, const int* nCols, Real* A,
                         const int* lda, int* iPiv, int* info);
