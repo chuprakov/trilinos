@@ -23,11 +23,20 @@ namespace AbstractLinAlgPack {
 ///
 /** Interface adding operations specific for a symmetric matrix {abstract}.
  *
+ * This interface defines two addition methods to those found in \c MatrixWithOp:
+ *
+ * <tt>sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs</tt><br>
+ * <tt>sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs) + beta * sym_lhs</tt><br>
+ *
+ * The reason that these methods could not be defined in the \c MatrixWithOp interface
+ * is that the lhs matrix matrix argument \c sym_lhs is only guaranteed to be
+ * symmetric if the rhs matrix argument \c M (which is \c this matrix) is guaranteed
+ * to be symmetric.  Since a \c MatrixWithOp matrix object may be unsymmetric (as
+ * well as rectangular), it can not implement this operation, only a symmetric
+ * matrix can.
  *
  * Clients should use the \ref MatrixSymWithOp_funcs_grp "provided non-member functions"
  * to call the methods and not the methods themselves.
- *
- * ToDo: Finish documentation!
  */
 class MatrixSymWithOp : public virtual MatrixWithOp {
 public:
@@ -38,8 +47,11 @@ public:
 	///
 	enum EMatRhsPlaceHolder { DUMMY_ARG };
 
-	/// Returns size equal to rows() (need not be overridden by subclass again)
+	/// Returns <tt>this->rows()</tt>
 	size_type cols() const;
+
+	// Returns <tt>this->space_cols()</tt>
+	const VectorSpace& space_rows() const;
 
 	///
 	/** sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
@@ -56,9 +68,9 @@ public:
 		) const;
 
 	///
-	/** sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs).
+	/** sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs) + beta * sym_lhs.
 	  *
-	  * The default operation is based on Vp_StMtV(...) and assumes
+	  * The default operation is based on \c Vp_StMtV() and assumes
 	  * that the matrix is symmetric.  Of course, a more efficient implementation
 	  * is often needed and the sublcass would like to override this.
 	  */
@@ -69,9 +81,18 @@ public:
 		,value_type beta = 1.0
 		) const;
 
+	/// Hack!
+	MatrixSymWithOp& operator=(const MatrixSymWithOp& M)
+	{
+		MatrixWithOp::operator=(M);
+		return *this;
+	}
+
 };	// end class MatrixSymWithOp
 
 /** \defgroup MatrixSymWithOp_funcs_grp Inline nonmeber functions for MatrixSymWithOp to call methods.
+  *
+  * These allow nonmember functions to act like virtual functions.
   */
 //@{
 
