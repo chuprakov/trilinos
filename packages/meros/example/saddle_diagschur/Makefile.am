@@ -86,4 +86,4 @@ saddle_diagschur_LDADD =  $(top_builddir)/src/libmeros.a \
  $(top_builddir)/../triutils/src/libtriutils.a   \
  $(top_builddir)/../ml/src/libml.a               \
  $(top_builddir)/../epetra/src/libepetra.a       \
- $(top_builddir)/../aztecoo/src/libaztecoo.a  $(LAPACK_LIBS) $(BLAS_LIBS) $(LIBS) $(FLIBS)
+ $(top_builddir)/../aztecoo/src/libaztecoo.a  $(LIBS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
