@@ -58,7 +58,14 @@ IterQuantity& AlgorithmState::iter_quant(iq_id_type iq_id) {
 		std::ostringstream omsg;
 		omsg
 			<< "AlgorithmState::iter_quant(iq_id) : Error, the iteration quantity iq_id = "
-			<< iq_id << " does not exist.";															
+			<< iq_id << " does not exist.  ";
+		if( iq_id < iq_.size() )
+			omsg
+				<< "This iteration quantity was set and then erased.";
+		else
+			omsg
+				<< "This iteration quantity was never set by the client.";
+																		
 		throw DoesNotExist( omsg.str() );
 	}																								
 	return *iq_.at(0);	// Will never be executed.

@@ -25,21 +25,21 @@ namespace GeneralIterationPack {
   * the concrete types of these iteration quantity access objects and to use
   * dynamic_cast<...> (or static_cast<...> if you are sure) to access the
   * IterQuantityAccess<...> object and therefore the iteration quantities themselves.
-  * Each iteration quantity access object (IQ) must have a unique name associated with it.
-  * IQ objects are given to the state object by clients throught the set_iter_quant(...)
-  * operation at with point the IQ object will be given a unique id that will never change
+  * Each iteration quantity (IQ) access object must have a unique name associated with it.
+  * IQ objects are given to the state object by clients through the set_iter_quant(...)
+  * operation at which point the IQ object will be given a unique id that will never change
   * change until the IQ object is removed using erase_iter_quant(...).  Memory management
   * is performed using the ref_count_ptr<...> smart reference counting poiner class.
   * The id of any IQ object (iq_id) can be obtained from its name by calling
   * iq_id = get_iter_quant_id(iq_name).  If an IQ object with the name iq_name does not
-  * exist then get_iter_quant_id(iq_name) == DOES_NOT_EXIST will be true.  The IQ objects
+  * exist then get_iter_quant_id(iq_name) will return DOES_NOT_EXIST.  The IQ objects
   * themselves can be accesed in O(log(num_iter_quant())) time using iter_quant(iq_name)
-  * or in O(1) time using iter_quant(iq_id).  Therefore the access of IQ objects using iq_id
+  * or in O(1) time using iter_quant(iq_id).  Therefore, the access of IQ objects using iq_id
   * is an optimization for faster access and the client should never have to lookup iq_name
   * given iq_id.  The mapping only works from iq_name to iq_id, not the other way around.
-  * It is garrentied that as long as erase_iter_quant(iq_id) is not called that each
+  * It is garrenteed that as long as erase_iter_quant(iq_id) is not called that each
   * &iter_quant(iq_id) == &iter_quant( get_iter_quant(iq_name) ) will be the same.
-  * For iq_name if get_iter_quant_id(iq_name) == DOES_NOT_EXIST then iter_quant(iq_name)
+  * For iq_name, if get_iter_quant_id(iq_name) == DOES_NOT_EXIST then iter_quant(iq_name)
   * will throw the exception DoesNotExist.
   *
   * The next_iteration(...) operation is called by the algorithm to call next_iteration()
@@ -141,6 +141,12 @@ public:
 
 	///
 	/** Returns the ref_count_ptr<...> for the iteration quantiy with iq_id
+	  *
+	  * If this iq_id does not correspond to a valid iteration quantity
+	  * object then a DoesNotExist exception will be thrown.  If iq_id
+	  * was returned from get_iter_quant_id(iq_name), this iq_id may become
+	  * invalid if a client called erase_iter_quant(iq_name) in the
+	  * mean time.
 	  *
 	  * Time = O(1), Space = O(1).
 	  */
