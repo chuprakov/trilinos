@@ -68,6 +68,7 @@ public:
 		,EJournalOutputLevel   journal_output_level = PRINT_NOTHING
 		,int                   journal_print_digits = 6
 		,bool                  check_results        = false
+		,bool                  calc_conditioning    = false
 		);
 
 	///
@@ -126,6 +127,12 @@ public:
 	/** Set whether computations will be double checked or not.
 	 */
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, check_results )
+
+	///
+	/** Set whether the condition numbers of important matrics is
+	 * computed and printed or not.
+	 */
+	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, calc_conditioning )
 
 	//@}
 

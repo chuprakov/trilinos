@@ -39,6 +39,7 @@ namespace ReducedSpaceSQPPack {
 		journal_output_level = ?;
 		journal_print_digits = ?;
 		check_results = ?;
+		calc_conditioning = ?
 	}
  \endverbatim
  *

@@ -84,13 +84,28 @@ bool BasisSystemTester::test_basis_system(
 	
 	EPrintTestLevel
 		print_tests = ( this->print_tests() == PRINT_NOT_SELECTED ? PRINT_NONE : this->print_tests() );
+
+	MatrixWithOp::EMatNormType mat_nrm_inf = MatrixWithOp::MAT_NORM_INF;
 	
 	// Print the input?
 	if( out && print_tests != PRINT_NONE ) {
-		if( print_tests >= PRINT_BASIC )
+		if( print_tests >= PRINT_BASIC ) {
 			*out << "\n*************************************************"
 				 << "\n*** BasisSystemTester::test_basis_system(...) ***"
 				 << "\n*************************************************\n";
+			if(Gc)
+				*out << "\n||Gc||inf   = " << Gc->calc_norm(mat_nrm_inf).value;
+			if(C) {
+				*out << "\n||C||inf    = " << C->calc_norm(mat_nrm_inf).value;
+				*out << "\ncond_inf(C) = " << C->calc_cond_num(mat_nrm_inf).value;
+			}
+			if(N_in)
+				*out << "\n||N||inf    = " << N_in->calc_norm(mat_nrm_inf).value;
+			if(D)
+				*out << "\n||D||inf    = " << D->calc_norm(mat_nrm_inf).value;
+			if(GcUP)
+				*out << "\n||GcUP||inf = " << GcUP->calc_norm(mat_nrm_inf).value;
+		}
 		if(dump_all()) {
 			if(Gc)
 				*out << "\nGc =\n"    << *Gc;
@@ -104,8 +119,6 @@ bool BasisSystemTester::test_basis_system(
 				*out << "\nD =\n"     << *D;
 			if(GcUP)
 				*out << "\nGcUP =\n"  << *GcUP;
-			if(GhUP)
-				*out << "\nGhUP =\n"  << *GhUP;
 		}
 	}
 

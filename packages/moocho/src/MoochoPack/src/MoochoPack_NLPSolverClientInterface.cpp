@@ -26,6 +26,7 @@ ReducedSpaceSQPPack::rSQPSolverClientInterface::rSQPSolverClientInterface(
 	,EJournalOutputLevel     journal_output_level
 	,int                     journal_print_digits
 	,bool                    check_results
+	,bool                    calc_conditioning
 	)
 	:max_iter_(max_iter)
 	,max_run_time_(max_run_time)
@@ -36,4 +37,5 @@ ReducedSpaceSQPPack::rSQPSolverClientInterface::rSQPSolverClientInterface(
 	,journal_output_level_(journal_output_level)
 	,journal_print_digits_(journal_print_digits)
 	,check_results_(check_results)
+	,calc_conditioning_(calc_conditioning)
 {}

@@ -87,6 +87,63 @@ MatrixWithOp::clone() const
 	return MemMngPack::null;
 }
 
+// Norms
+
+const MatrixWithOp::MatNorm
+MatrixWithOp::calc_norm(
+	EMatNormType  requested_norm_type
+	,bool         allow_replacement
+	) const
+{
+	using BLAS_Cpp::no_trans;
+	using BLAS_Cpp::trans;
+	using LinAlgOpPack::V_MtV;
+	const VectorSpace
+		&space_cols = this->space_cols(),
+		&space_rows = this->space_rows();
+	const index_type
+		num_rows = space_cols.dim(),
+		num_cols = space_rows.dim();
+	THROW_EXCEPTION(
+		!(requested_norm_type == MAT_NORM_1 || requested_norm_type == MAT_NORM_INF), MethodNotImplemented
+		,"MatrixWithOp::calc_norm(...): Error, This default implemenation can only "
+		"compute the one norm or the infinity norm!"
+		);
+	//
+	// Here we implement Algorithm 2.5 in "Applied Numerical Linear Algebra", Demmel (1997)
+	// using the momenclature in the text.
+	//
+	const MatrixWithOp
+		&B = *this;
+	bool
+		do_trans = requested_norm_type == MAT_NORM_INF;
+	VectorSpace::vec_mut_ptr_t
+		x    = (!do_trans ? space_rows : space_cols).create_member(1.0/(!do_trans ? num_cols : num_rows)),
+		w    = (!do_trans ? space_cols : space_rows).create_member(),
+		zeta = (!do_trans ? space_cols : space_rows).create_member(),
+		z    = (!do_trans ? space_rows : space_cols).create_member();
+	const index_type max_iter = 5; // Recommended by Highman 1988, (see Demmel's reference)
+	value_type w_nrm = 0.0;
+	for( index_type k = 0; k <= max_iter; ++k ) {
+		V_MtV( w.get(), B, !do_trans ? no_trans : trans, *x );    // w = B*x
+		sign( *w, zeta.get() );                                   // zeta = sign(w)
+		V_MtV( z.get(), B, !do_trans ? trans : no_trans, *zeta ); // z = B'*zeta
+		value_type  z_j = 0.0;                                    // max |z(j)| = ||z||inf
+		index_type  j   = 0;
+		max_abs_ele( *z, &z_j, &j );
+		const value_type zTx = dot(*z,*x);                        // z'*x
+		w_nrm = w->norm_1();                                      // ||w||1
+		if( ::fabs(z_j) <= zTx ) {                                // Update
+			break;
+		}
+		else {
+			*x = 0.0;
+			x->set_ele(j,1.0);
+		}
+	}
+	return MatNorm(w_nrm,requested_norm_type);
+}
+
 // Subview
 
 MatrixWithOp::mat_ptr_t

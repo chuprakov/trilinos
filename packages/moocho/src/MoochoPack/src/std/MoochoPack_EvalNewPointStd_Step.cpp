@@ -112,6 +112,8 @@ bool EvalNewPointStd_Step::do_step(
 		*Vy_iq  = NULL;
 	IterQuantityAccess<MatrixWithOpNonsingular>
 		*R_iq   = NULL;
+
+	MatrixWithOp::EMatNormType mat_nrm_inf = MatrixWithOp::MAT_NORM_INF;
 	
 	if( x_iq.last_updated() == IterQuantity::NONE_UPDATED ) {
 		if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
@@ -315,6 +317,26 @@ bool EvalNewPointStd_Step::do_step(
 		out << "\nPrinting the updated iteration quantities ...\n";
 	}
 
+	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+		out	<< "\nf_k         = "     << f_iq.get_k(0);
+		out << "\n||Gf_k||inf = "     << Gf_iq.get_k(0).norm_inf();
+		if(m) {
+			out << "\n||c_k||inf  = " << c_iq->get_k(0).norm_inf();
+			out << "\n||Gc_k||inf = " << Gc_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			out << "\n||Z||inf    = " << Z_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			out << "\n||Y||inf    = " << Y_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			out << "\n||R||inf    = " << R_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			if(algo.algo_cntr().calc_conditioning()) {
+				out << "\ncond_inf(R) = " << R_iq->get_k(0).calc_cond_num(mat_nrm_inf).value;
+			}
+			if( m > r ) {
+				out << "\n||Uz_k||inf = " << Uz_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+				out << "\n||Uy_k||inf = " << Uy_iq->get_k(0).calc_norm(mat_nrm_inf).value;
+			}
+		}
+		out << std::endl;
+	}
+
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ITERATION_QUANTITIES) ) {
 		out << "\nGc_k =\n" << Gc_iq->get_k(0);
 		if(mI)
@@ -326,28 +348,12 @@ bool EvalNewPointStd_Step::do_step(
 			out << "\nUz_k =\n" << Uz_iq->get_k(0);
 			out << "\nUy_k =\n" << Uy_iq->get_k(0);
 		}
-		if( mI > r ) {
-			out << "\nVz_k =\n" << Vz_iq->get_k(0);
-			out << "\nVy_k =\n" << Vy_iq->get_k(0);
-		}
-	}
-
-	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\nf_k         = "     << f_iq.get_k(0);
-		out << "\n||Gf_k||inf = "     << Gf_iq.get_k(0).norm_inf();
-		if(m)
-			out << "\n||c_k||inf  = " << c_iq->get_k(0).norm_inf();
-		if(mI)
-			out << "\n||h_k||inf  = " << c_iq->get_k(0).norm_inf();
-		out << std::endl;
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
 		out	<< "\nGf_k = \n" << Gf_iq.get_k(0);
 		if(m)
 			out	<< "\nc_k = \n" << c_iq->get_k(0);
-		if(mI)
-			out	<< "\nh_k = \n" << h_iq->get_k(0);
 		out << std::endl;
 	}
 

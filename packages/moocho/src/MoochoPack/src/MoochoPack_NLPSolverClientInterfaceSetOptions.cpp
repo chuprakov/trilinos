@@ -22,7 +22,7 @@
 // Define the options
 namespace {
 
-	const int local_num_options = 9;
+	const int local_num_options = 10;
 
 	enum local_EOptions {
         MAX_ITER,
@@ -33,7 +33,8 @@ namespace {
         STEP_TOL,
 		JOURNAL_OUTPUT_LEVEL,
 		JOURNAL_PRINT_DIGITS,
-		CHECK_RESULTS
+		CHECK_RESULTS,
+		CALC_CONDITIONING
 	};
 
 	const char* local_SOptions[local_num_options]	= {
@@ -45,7 +46,8 @@ namespace {
         ("step_tol"),
 		("journal_output_level"),
 		("journal_print_digits"),
-		("check_results")
+		("check_results"),
+		("calc_conditioning")
 	};
 
 }
@@ -112,6 +114,11 @@ void rSQPSolverClientInterfaceSetOptions::set_option(
 		case CHECK_RESULTS:
 			target().check_results(
 				StringToBool( "check_results", option_value.c_str() )
+				);
+			break;
+		case CALC_CONDITIONING:
+			target().calc_conditioning(
+				StringToBool( "calc_conditioning", option_value.c_str() )
 				);
 			break;
 		default:

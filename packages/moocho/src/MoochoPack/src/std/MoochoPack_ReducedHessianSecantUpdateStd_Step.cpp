@@ -23,7 +23,7 @@
 #include "AbstractLinAlgPack/include/VectorStdOps.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/VectorWithOpOut.h"
-#include "AbstractLinAlgPack/include/MatrixSymWithOp.h"
+#include "AbstractLinAlgPack/include/MatrixSymWithOpNonsingular.h"
 #include "AbstractLinAlgPack/include/MatrixSymInitDiagonal.h"
 #include "AbstractLinAlgPack/include/MatrixWithOpOut.h"
 #include "AbstractLinAlgPack/include/LinAlgOpPack.h"
@@ -66,6 +66,8 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(
 		using GeneralIterationPack::print_algorithm_step;
 		print_algorithm_step( algo, step_poss, type, assoc_step_poss, out );
 	}
+
+	bool return_val = true;
 	
 	// Get iteration quantities
 	IterQuantityAccess<index_type>
@@ -117,132 +119,151 @@ bool ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::do_step(
 			quasi_newton_stats_(s).set_k(0).set_updated_stats(
 				QuasiNewtonStats::REINITIALIZED );
 			iter_k_rHL_init_ident_ = s.k();	// remember what iteration this was
-			return true;
-		}
-
-		// Determine if rHL has been initialized and if we
-		// can perform the update.  To perform the BFGS update
-		// rHL_km1 and rGf_km1 must have been computed.
-		if( rHL_iq.updated_k(-1) && rGf_iq.updated_k(-1) ) {
-
-			// /////////////////////////////////////////////////////
-			// Perform the Secant update
-
-			if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
-			{
-				out
-					<< "\nPerforming Secant update ...\n";
-			}
-
-			const VectorWithOp
-				&rGf_k   = rGf_iq.get_k(0),
-				&rGf_km1 = rGf_iq.get_k(-1),
-				&pz_km1  = pz_iq.get_k(-1);
-			const value_type
-				alpha_km1 = s.alpha().get_k(-1);
-			VectorSpace::vec_mut_ptr_t
-				y_bfgs = rGf_k.space().create_member(),
-				s_bfgs = pz_km1.space().create_member();
-
-			// /////////////////////////////////////////////////////
-			// y_bfgs = rGf_k - rGf_km1 - alpha_km1 * w_km1
-			
-			// y_bfgs = rGf_k - rGf_km1 
-			V_VmV( y_bfgs.get(), rGf_k, rGf_km1 );	
-
-			if( w_iq.updated_k(-1) )
-				// y_bfgs += - alpha_km1 * w_km1
-				Vp_StV( y_bfgs.get(), - alpha_km1, w_iq.get_k(-1) );
-
-			// /////////////////////////////////////////////////////
-			// s_bfgs = alpha_km1 * pz_km1
-			V_StV( s_bfgs.get(), alpha_km1, pz_iq.get_k(-1) );
-
-			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-				out << "\n||y_bfgs||inf = " << y_bfgs->norm_inf() << std::endl;
-				out << "\n||s_bfgs||inf = " << s_bfgs->norm_inf() << std::endl;
-			}
-
-			if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
-				out << "\ny_bfgs =\n" << *y_bfgs;
-				out << "\ns_bfgs =\n" << *s_bfgs;
-			}
-
-			// Update from last
-			MatrixSymWithOp
-				&rHL_k   = rHL_iq.set_k(0,-1);
-
-			// Perform the secant update
-			if(!secant_update().perform_update(
-				s_bfgs.get(), y_bfgs.get()
-				,iter_k_rHL_init_ident_ == s.k() - 1
-				,out, olevel, &algo, &s, &rHL_k
-				))
-			{
-				return false; // redirect control of algorithm!
-			}
 
 		}
 		else {
-			// We do not have the info to perform the update
+			
+			// Determine if rHL has been initialized and if we
+			// can perform the update.  To perform the BFGS update
+			// rHL_km1 and rGf_km1 must have been computed.
+			if( rHL_iq.updated_k(-1) && rGf_iq.updated_k(-1) ) {
 
-			int k_last_offset = rHL_iq.last_updated();
-			bool set_current = false;
-			if( k_last_offset != IterQuantity::NONE_UPDATED && k_last_offset < 0 ) {
-				const MatrixSymWithOp &rHL_k_last = rHL_iq.get_k(k_last_offset);
-				const size_type nind_last = rHL_k_last.rows();
-				if( nind_last != nind) {
-					if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-						algo.track().journal_out()
-							<< "No new basis was selected.\n"
-							<< "The previous matrix rHL_k(" << k_last_offset << ") was found but its dimmension\n"
-							<< "rHL_k(" << k_last_offset << ").rows() = " << nind_last << " != n-r = " << nind << std::endl;
+				// /////////////////////////////////////////////////////
+				// Perform the Secant update
+
+				if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS )
+				{
+					out
+						<< "\nPerforming Secant update ...\n";
+				}
+
+				const VectorWithOp
+					&rGf_k   = rGf_iq.get_k(0),
+					&rGf_km1 = rGf_iq.get_k(-1),
+					&pz_km1  = pz_iq.get_k(-1);
+				const value_type
+					alpha_km1 = s.alpha().get_k(-1);
+				VectorSpace::vec_mut_ptr_t
+					y_bfgs = rGf_k.space().create_member(),
+					s_bfgs = pz_km1.space().create_member();
+
+				// /////////////////////////////////////////////////////
+				// y_bfgs = rGf_k - rGf_km1 - alpha_km1 * w_km1
+			
+				// y_bfgs = rGf_k - rGf_km1 
+				V_VmV( y_bfgs.get(), rGf_k, rGf_km1 );	
+
+				if( w_iq.updated_k(-1) )
+					// y_bfgs += - alpha_km1 * w_km1
+					Vp_StV( y_bfgs.get(), - alpha_km1, w_iq.get_k(-1) );
+
+				// /////////////////////////////////////////////////////
+				// s_bfgs = alpha_km1 * pz_km1
+				V_StV( s_bfgs.get(), alpha_km1, pz_iq.get_k(-1) );
+
+				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
+					out << "\n||y_bfgs||inf = " << y_bfgs->norm_inf() << std::endl;
+					out << "\n||s_bfgs||inf = " << s_bfgs->norm_inf() << std::endl;
+				}
+
+				if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
+					out << "\ny_bfgs =\n" << *y_bfgs;
+					out << "\ns_bfgs =\n" << *s_bfgs;
+				}
+
+				// Update from last
+				MatrixSymWithOp
+					&rHL_k   = rHL_iq.set_k(0,-1);
+
+				// Perform the secant update
+				if(!secant_update().perform_update(
+					   s_bfgs.get(), y_bfgs.get()
+					   ,iter_k_rHL_init_ident_ == s.k() - 1
+					   ,out, olevel, &algo, &s, &rHL_k
+					   ))
+				{
+					return_val = false; // redirect control of algorithm!
+				}
+
+			}
+			else {
+				// We do not have the info to perform the update
+
+				int k_last_offset = rHL_iq.last_updated();
+				bool set_current = false;
+				if( k_last_offset != IterQuantity::NONE_UPDATED && k_last_offset < 0 ) {
+					const MatrixSymWithOp &rHL_k_last = rHL_iq.get_k(k_last_offset);
+					const size_type nind_last = rHL_k_last.rows();
+					if( nind_last != nind) {
+						if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+							out
+								<< "No new basis was selected.\n"
+								<< "The previous matrix rHL_k(" << k_last_offset << ") was found but its dimmension\n"
+								<< "rHL_k(" << k_last_offset << ").rows() = " << nind_last << " != n-r = " << nind << std::endl;
+						}
+					}
+					else {
+						if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+							out
+								<< "No new basis was selected so using previously updated...\n "
+								<< "rHL_k = rHL_k(" << k_last_offset << ")\n";
+						}
+						rHL_iq.set_k(0) = rHL_k_last;
+						quasi_newton_stats_(s).set_k(0).set_updated_stats(
+							QuasiNewtonStats::SKIPED );
+					
+						if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
+							rHL_iq.get_k(0).output( out << "\nrHL_k = \n" );
+						}
+						set_current = true;
 					}
 				}
-				else {
+				if( !set_current ) {
 					if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-						algo.track().journal_out()
-							<< "No new basis was selected so using previously updated...\n "
-							<< "rHL_k = rHL_k(" << k_last_offset << ")\n";
+						out
+							<< "\nInitializing rHL = eye(n-r) "
+							<< "(k = " << algo.state().k() << ")...\n";
 					}
-					rHL_iq.set_k(0) = rHL_k_last;
+
+					// Now I will assume that since I can't perform the BFGS update and rHL has
+					// not been set for this iteration yet, that it is up to me to initialize rHL_k = 0
+					dyn_cast<MatrixSymInitDiagonal>(rHL_iq.set_k(0)).init_identity(
+						Z_iq.get_k(0).space_rows() );
+					iter_k_rHL_init_ident_ = s.k();	// remember what iteration this was
 					quasi_newton_stats_(s).set_k(0).set_updated_stats(
-						QuasiNewtonStats::SKIPED );
-					
-					if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
-						rHL_iq.get_k(0).output( out << "\nrHL_k = \n" );
-					}
-					set_current = true;
+						QuasiNewtonStats::REINITIALIZED );
+				
 				}
 			}
-			if( !set_current ) {
-				if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
-					algo.track().journal_out()
-						<< "\nInitializing rHL = eye(n-r) "
-						<< "(k = " << algo.state().k() << ")...\n";
-				}
 
-				// Now I will assume that since I can't perform the BFGS update and rHL has
-				// not been set for this iteration yet, that it is up to me to initialize rHL_k = 0
-				dyn_cast<MatrixSymInitDiagonal>(rHL_iq.set_k(0)).init_identity(
-					Z_iq.get_k(0).space_rows() );
-				iter_k_rHL_init_ident_ = s.k();	// remember what iteration this was
-				quasi_newton_stats_(s).set_k(0).set_updated_stats(
-					QuasiNewtonStats::REINITIALIZED );
+		}
+		
+		// Print rHL_k
+		
+		MatrixWithOp::EMatNormType mat_nrm_inf = MatrixWithOp::MAT_NORM_INF;
 
-				if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
-					out << "\nrHL_k = \n" << rHL_iq.get_k(0);
-				}
+		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
+			out << "\n||rHL_k||inf    = " << rHL_iq.get_k(0).calc_norm(mat_nrm_inf).value << std::endl;
+			if(algo.algo_cntr().calc_conditioning()) {
+				const MatrixSymWithOpNonsingular
+					*rHL_ns_k = dynamic_cast<const MatrixSymWithOpNonsingular*>(&rHL_iq.get_k(0));
+				if(rHL_ns_k)
+					out << "\ncond_inf(rHL_k) = " << rHL_ns_k->calc_cond_num(mat_nrm_inf).value << std::endl;
 			}
 		}
+
+		if( (int)olevel >= (int)PRINT_ITERATION_QUANTITIES ) {
+			out << "\nrHL_k = \n" << rHL_iq.get_k(0);
+		}
+		
 	}
 	else {
 		if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 			out	<< "\nThe matrix rHL_k has already been updated so leave it\n";
 		}
 	}
-
-	return true;
+	
+	return return_val;
 }
 
 void ReducedSpaceSQPPack::ReducedHessianSecantUpdateStd_Step::print_step( const Algorithm& algo

@@ -188,6 +188,12 @@ options_group rSQPSolverClientInterface {
      *** good idea to turn this testing on.  If your problem is not solving then you should
      *** definitly try turning this on and try to see it will catch any bugs.  However,
      *** for the fastest possible execution you should set this to false.
+
+*    calc_conditioning = true;  *** (costly?)
+*    calc_conditioning = false; *** (default?)
+     *** If true then estimates of the condition numbers of all of the imporant nonsingular
+     *** matrices used in the algorithm will be computed.  Note that this can be a fairly
+     *** expensive operation so it should be used with care.
 }
 
 ************************************************************

@@ -115,6 +115,21 @@ public:
 	typedef MemMngPack::ref_count_ptr<MatrixWithOp>          mat_mut_ptr_t;
 #endif
 
+	/// Type of matrix norm
+	enum EMatNormType {
+		MAT_NORM_INF        ///< The induced infinity norm ||M||inf, i.e. max abs row sum
+		,MAT_NORM_2         ///< The induced two (i.e. Euclidean norm) norm ||M||2 
+		,MAT_NORM_1         ///< The induced one norm ||M||1, i.e. max abs col sum
+		,MAT_NORM_FORB      ///< The Forbenious norm, i.e. max abs element
+	};
+
+	/// Returned form <tt>calc_norm()</tt>.
+	struct MatNorm {
+		MatNorm(value_type _value, EMatNormType _type) : value(_value), type(_type) {}
+		value_type    value;
+		EMatNormType  type;
+	};
+
 	/// Thrown if a method is not implemented
 	class MethodNotImplemented : public std::runtime_error
 	{public: MethodNotImplemented(const std::string& what_arg) : std::runtime_error(what_arg) {}};
@@ -202,6 +217,47 @@ public:
 	  * <tt>EtaVector</tt> objects and then prints the rows.
 	  */
 	virtual std::ostream& output(std::ostream& out) const;
+
+	//@}
+
+	/** @name Norms */
+	//@{
+
+	///
+	/** Compute a norm of this matrix.
+	 *
+	 * @param  requested_norm_type
+	 *                    [in] Determines the requested type of norm to be computed.
+	 * @param  allow_replacement
+	 *                    [in] Determines if the requested norm in specified in <tt>norm_type</tt>
+	 *                    can be replaced with another norm that can be computed by the matrix.
+	 *
+	 * @return If a norm is computed, then <tt>return.value</tt> gives the value of the norm
+	 * of type <tt>return.type</tt>.
+	 *
+	 * Postconditions:<ul>
+	 * <li> If <tt>allow_replacement==true</tt>, the matrix object must return a computted norm
+	 *      who's type is given in <tt>return.type</tt>.
+	 * <li> If <tt>allow_replacement==false</tt> and the underlying matrix object can not compute
+	 *      the norm requested in <tt>norm_type</tt>, then a <tt>MethodNotImplemented</tt> exception
+	 *      will be thrown.  If the matrix object can compute this norm, then <tt>return.type</tt>
+	 *      will be equal to <tt>requested_norm_type</tt>.
+	 * </ul>
+	 *
+	 * The default implementation of this method uses Algorithm 2.5 in "Applied Numerical Linear Algebra"
+	 * by James Demmel (1997) to estimate ||M||1 or ||M||inf.  The algorithm uses some of the refinements in the
+	 * referenced algorithm by Highman.  This algorithm only requires mat-vecs and transposed
+	 * mat-vecs so every matrix object can implement this method.  The main purpose of this default
+	 * implementation is to allow a default implementation of the estimation of the <tt>||.||1</tt>
+	 * or <tt>||.||inf</tt> normed condition number in the class <tt>MatrixWithOpNonsingular</tt>.
+	 * The default arguments for this function will compute a norm and will not thrown an
+	 * exception.  The default implementation will throw an exception for any other norm type than
+	 * <tt>requested_norm_type == MAT_NORM_1</tt> or <tt>requested_norm_type = MAT_NORM_INF</tt>.
+	 */
+	const MatNorm calc_norm(
+		EMatNormType  requested_norm_type = MAT_NORM_1
+		,bool         allow_replacement   = false
+		) const;
 
 	//@}
 

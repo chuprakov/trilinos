@@ -66,6 +66,46 @@ public:
 
 	//@}
 
+	/** @name Condition number estimation */
+	//@{
+
+	///
+	/** Compute an estimate of the condition number of this matrix.
+	 *
+	 * @param  requested_norm_type
+	 *                    [in] Determines the requested type of norm for the condition number.
+	 * @param  allow_replacement
+	 *                    [in] Determines if the requested norm in specified in <tt>norm_type</tt>
+	 *                    can be replaced with another norm that can be computde by the matrix.
+	 *
+	 * @return If a condition number is computed, then <tt>return.value</tt> gives the value of
+	 * the condition number in the norm of type <tt>return.type</tt>.
+	 *
+	 * Postconditions:<ul>
+	 * <li> If <tt>allow_replacement==true</tt>, the matrix object must return a computed
+	 *      condition number who's type is given in <tt>return.type</tt>.
+	 * <li> If <tt>allow_replacement==false</tt> and the underlying matrix object can not compute
+	 *      condition number for the norm requested in <tt>norm_type</tt>, then a
+	 *      <tt>MethodNotImplemented</tt> exception will be thrown.  If the matrix object can
+	 *      an estimate of the condition number for this norm, then <tt>return.type</tt>
+	 *      will be equal to <tt>requested_norm_type</tt>.
+	 * </ul>
+	 *
+	 * The default implementation of this method uses Algorithm 2.5 in "Applied Numerical Linear Algebra"
+	 * by James Demmel (1997) to estimate ||inv(M)||1.  The algorithm uses some of the refinements in the
+	 * referenced algorithm by Highman.  This algorithm only requires solves and transposed
+	 * solves so every nonsingular matrix object can implement this method.
+	 * The default arguments for this function will compute an estimate of the condition number and will
+	 * not thrown an exception.  The default implementation will throw an exception for any other norm type than
+	 * <tt>requested_norm_type = MAT_NORM_1</tt>.
+	 */
+	const MatNorm calc_cond_num(
+		EMatNormType  requested_norm_type = MAT_NORM_1
+		,bool         allow_replacement   = false
+		) const;
+
+	//@}
+
 	/** @name Overridden from MatrixWithOp */
 	//@{
 	/// Returns <tt>this->clone_mwons()</tt>.
