@@ -25,12 +25,11 @@ TSFDefaultWriter::TSFDefaultWriter(const TSFSmartPtr<ostream>& os_ptr)
 
 void TSFDefaultWriter::print(const std::string& msg)
 {
+	ostrstream ss;
 	string head = header() + TSFUtils::toString(TSFMPI::getRank()) + "> ";
 	unsigned int maxLineSize = 78 - head.length();
 
 	TSFArray<string> tokens = StrUtils::getTokensPlusWhitespace(msg);
-
-	ostrstream ss;
 
 	unsigned int lineSize = 0;
 	ss << head;

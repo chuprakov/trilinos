@@ -2,6 +2,7 @@
 #define TSFBLAS_H
 
 #include "TSFConfig.h"
+#include "TSFTimeMonitor.h"
 
 extern "C"
 {
@@ -97,6 +98,8 @@ namespace TSF
 												const int* nRHS,
 												const Real* A, const int* lda, const int* ipiv,
 												Real* b, const int* ldb, int* info);
+
+				
 			
 		};
 
@@ -109,23 +112,23 @@ namespace TSF
 		public:
 			inline static void copy(const int* n, const double* x, const int* incx, 
 															double* y, const int* incy)
-				{dcopy_(n, x, incx, y, incy);}
+				{TSFTimeMonitor t(blasTimer()); dcopy_(n, x, incx, y, incy);}
 			
 			
 			inline static void axpy(const int* n, const double* a, const double* x, 
 															int* incx, double* y, int* incy)
-				{daxpy_(n, a, x, incx, y, incy);}
+				{TSFTimeMonitor t(blasTimer()); daxpy_(n, a, x, incx, y, incy);}
 				
 			inline static double dot(const int* n, const double* x, const int* incx, 
 															 const double* y, const int* incy)
-				{return ddot_(n, x, incx, y, incy);}
+				{TSFTimeMonitor t(blasTimer()); return ddot_(n, x, incx, y, incy);}
 			
 			inline static double nrm2(const int* n, const double* x, const int* incx)
-				{return dnrm2_(n, x, incx);}
+				{TSFTimeMonitor t(blasTimer()); return dnrm2_(n, x, incx);}
 			
 			inline	static double scal(const int* n, const double* a, 
 																 const double* x, const int* incx)
-				{return dscal_(n, a, x, incx);}
+				{TSFTimeMonitor t(blasTimer()); return dscal_(n, a, x, incx);}
 
 			/** do matrix-vector multiply: y = alpha*A*x + beta*y */
 			inline static void gemv(const char* transFlag, const int* nRows, 
@@ -151,6 +154,12 @@ namespace TSF
 															 const int* ipiv,
 															 double* b, const int* ldb, int* info)
 				{dgetrs_(transFlag, nEqn, nRHS, A, lda, ipiv, b, ldb, info);}
+
+			static TSFTimer& blasTimer() 
+				{
+					static TSFSmartPtr<TSFTimer> timer= TSFTimer::getNewTimer("BLAS calls");
+					return *timer;
+				}
 		};
 
 	

@@ -20,8 +20,6 @@ TSFSmartPtr<TSFRaiseHandlerBase> TSFError::handler_ = new TSFDefaultRaiseHandler
 
 void TSFError::raise(const std::string& msg)
 {
-	TSFArray<int> blah;
-	TSFArray<bool> blap;
 	handler_->handleRaise(msg.c_str());
 }
 
