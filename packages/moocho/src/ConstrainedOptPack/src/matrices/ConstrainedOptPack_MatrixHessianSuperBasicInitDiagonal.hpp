@@ -95,7 +95,7 @@ public:
 	///
 	void init_identity( size_type n, value_type alpha );
 	///
-	void init_diagonal( const VectorSlice& diag );
+	void init_diagonal( const DVectorSlice& diag );
 
 	//@}
 

@@ -27,7 +27,7 @@
 #include "AbstractLinAlgPack/src/Permutation.hpp"
 #include "ConstrainedOptimizationPack/src/DecompositionSystem.hpp"
 #include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
-//#include "LinAlgPack/src/IVector.hpp"
+//#include "DenseLinAlgPack/src/IVector.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 #include "Range1D.hpp"
@@ -354,9 +354,9 @@ public:
 	STATE_VECTOR_IQ_DECL(Gf)
 	/// HL:  Hessian of the Lagrangian ( n x n 
 	STATE_IQ_DECL(MatrixSymWithOp,HL)
-	/// c:  Vector of general nonlinear equality constraints ( m x 1 )
+	/// c:  DVector of general nonlinear equality constraints ( m x 1 )
 	STATE_VECTOR_IQ_DECL(c)
-	/// h:  Vector of general nonlinear inequality constraints ( mI x 1 )
+	/// h:  DVector of general nonlinear inequality constraints ( mI x 1 )
 	STATE_VECTOR_IQ_DECL(h)
 	/// Gc:  Gradient of equality constraints ('c') matrix ( n x m )
 	STATE_IQ_DECL(MatrixWithOp,Gc)

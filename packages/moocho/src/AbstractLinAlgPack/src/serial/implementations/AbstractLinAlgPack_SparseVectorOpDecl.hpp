@@ -19,7 +19,7 @@
 #ifndef SPARSE_VECTOR_OP_DECL_H
 #define SPARSE_VECTOR_OP_DECL_H
 
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 
 namespace SparseLinAlgPack {
 
@@ -86,11 +86,11 @@ namespace SparseLinAlgPack {
   * is also used in the operation.  This has undefined results.  If a future version
   * of the library this may be handeled but for now it is not.
   *
-  * These operations use the same nameing convensions as those for Vector and
-  * VectorSlice in LinAlgPack with the acception that the sparse vectors
+  * These operations use the same nameing convensions as those for DVector and
+  * DVectorSlice in DenseLinAlgPack with the acception that the sparse vectors
   * are given the tag #SV# instead of #V# so as to not destroy the intended
-  * behavior of the operations in LinAlgPack and the implicit conversion of
-  * a Vector to a VectorSlice.
+  * behavior of the operations in DenseLinAlgPack and the implicit conversion of
+  * a DVector to a DVectorSlice.
   *
   * It should be noted that these operations will be more efficient for large
   * dense vectors and sparse vectors with many nonzero elements if the sparse
@@ -102,11 +102,11 @@ namespace SparseLinAlgPack {
 
 /// result = dot(vs_rhs1,sv_rhs2) (BLAS xDOT)
 template<class T_SpVec>
-value_type dot_V_SV(const VectorSlice& vs_rhs1, const T_SpVec& sv_rhs2);
+value_type dot_V_SV(const DVectorSlice& vs_rhs1, const T_SpVec& sv_rhs2);
 
 /// result = dot(sv_rhs1,vs_rhs2) (BLAS xDOT)
 template<class T_SpVec>
-value_type dot_SV_V(const T_SpVec& sv_rhs1, const VectorSlice& vs_rhs2);
+value_type dot_SV_V(const T_SpVec& sv_rhs1, const DVectorSlice& vs_rhs2);
 
 /// result = ||sv_rhs||1 (BLAS xASUM)
 template<class T_SpVec>
@@ -134,21 +134,21 @@ void Vt_S( T_SpVec* sv_lhs, value_type alpha );
 
 /// vs_lhs += alpha * sv_rhs (BLAS xAXPY)
 template<class T_SpVec>
-void Vp_StSV(VectorSlice* vs_lhs, value_type alpha, const T_SpVec& sv_rhs);
+void Vp_StSV(DVectorSlice* vs_lhs, value_type alpha, const T_SpVec& sv_rhs);
 
 /// vs_lhs += alpha * op(gms_rhs1) * sv_rhs2 (BLAS xGEMV)
 template<class T_SpVec>
-void Vp_StMtSV(VectorSlice* vs_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
+void Vp_StMtSV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2);
 
 /// vs_lhs += alpha * op(tri_gms_rhs1) * sv_rhs2 (BLAS xTRMV)
 template<class T_SpVec>
-void Vp_StMtSV(VectorSlice* vs_lhs, value_type alpha, const tri_gms& tri_rhs1
+void Vp_StMtSV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2);
 
 /// vs_lhs += alpha * op(sym_gms_rhs1) * sv_rhs2 (BLAS xSYMV)
 template<class T_SpVec>
-void Vp_StMtSV(VectorSlice* vs_lhs, value_type alpha, const sym_gms& sym_rhs1
+void Vp_StMtSV(DVectorSlice* vs_lhs, value_type alpha, const DMatrixSliceSym& sym_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2);
 
 //@}

@@ -1,17 +1,17 @@
-/** @name namespace LinAlgPack.
+/** @name namespace DenseLinAlgPack.
 
-Dense 1-D vectors are abstracted by two classes, \ref{Vector} and \ref{VectorSlice}.
-#Vector# is a storage type that dynamically allocates memory for a sequential array of
-elements and provides access to those elements in a variety of way.  VectorSlice is a
+Dense 1-D vectors are abstracted by two classes, \ref{DVector} and \ref{DVectorSlice}.
+#DVector# is a storage type that dynamically allocates memory for a sequential array of
+elements and provides access to those elements in a variety of way.  DVectorSlice is a
 class that is used to provide a view of an array of elements that are spaced at regular
-intervals such as BLAS vectors.  A #VectorSlice# object can represent an entire vector,
+intervals such as BLAS vectors.  A #DVectorSlice# object can represent an entire vector,
 a subregion of a vector, or a row or column or diagonal of a rectangular BLAS compatable
-matrix.  In addition #VectorSlice# objects can be constructed a views of raw sequential
+matrix.  In addition #DVectorSlice# objects can be constructed a views of raw sequential
 (C++ or Fortran compatible) arrays and thus can coexist with other packages efficiently.
 
-BLAS compatible 2-D matrices are abstracted by the types \ref{GenMatrix} and
-\ref{GenMatrixSlice}.  These classes parallel #Vector# and #VectorSlice# as #GenMatrix#
-is a storage type that dynamically allocates memory and #GenMatrixSlice# provides BLAS
+BLAS compatible 2-D matrices are abstracted by the types \ref{DMatrix} and
+\ref{DMatrixSlice}.  These classes parallel #DVector# and #DVectorSlice# as #DMatrix#
+is a storage type that dynamically allocates memory and #DMatrixSlice# provides BLAS
 compatible views of rectangular 2-D matrices or subregions of matrices.
 
 @memo
@@ -23,27 +23,27 @@ that is BLAS compatable.
 
 */
 //@{
-  //@Include: LinAlgPackOptions.hpp
+  //@Include: DenseLinAlgPackOptions.hpp
   /** @name Linear algebra vector, matrix and permutation types. */
   //@{
     //@Include: IVector.hpp
-    //@Include: VectorClass.hpp
-    //@Include: VectorClassTmpl.hpp
-    //@Include: GenMatrixClass.hpp
-    //@Include: GenMatrixAsTriSym.hpp
+    //@Include: DVectorClass.hpp
+    //@Include: DVectorClassTmpl.hpp
+    //@Include: DMatrixClass.hpp
+    //@Include: DMatrixAsTriSym.hpp
   //@}
   /** @name Linear algebra operations */
   //@{
     /** @name Assignment */
     //@{
-      //@Include: VectorAssign.hpp
-      //@Include: GenMatrixAssign.hpp
+      //@Include: DVectorAssign.hpp
+      //@Include: DMatrixAssign.hpp
     //@}
     /** @name BLAS operations */
     //@{
-      //@Include: VectorOp.hpp
-      //@Include: GenMatrixOp.hpp
-      //@Include: LinAlgPackAssertOp.hpp
+      //@Include: DVectorOp.hpp
+      //@Include: DMatrixOp.hpp
+      //@Include: DenseLinAlgPackAssertOp.hpp
     //@}
     //@Include: PermVecMat.hpp
   //@}
@@ -51,16 +51,16 @@ that is BLAS compatable.
   //@{
     //@Include: PermIn.hpp
     //@Include: PermOut.hpp
-    //@Include: VectorIn.hpp
-    //@Include: VectorOut.hpp
-    //@Include: GenMatrixIn.hpp
-    //@Include: GenMatrixOut.hpp
-    //@Include: VectorInFunc.hpp
-    //@Include: VectorOutFunc.hpp
-    //@Include: GenMatrixInFunc.hpp
-    //@Include: GenMatrixOutFunc.hpp
-    //@Include: LinAlgPackInFormatDecl.hpp
-    //@Include: LinAlgPackOutFormatDecl.hpp
+    //@Include: DVectorIn.hpp
+    //@Include: DVectorOut.hpp
+    //@Include: DMatrixIn.hpp
+    //@Include: DMatrixOut.hpp
+    //@Include: DVectorInFunc.hpp
+    //@Include: DVectorOutFunc.hpp
+    //@Include: DMatrixInFunc.hpp
+    //@Include: DMatrixOutFunc.hpp
+    //@Include: DenseLinAlgPackInFormatDecl.hpp
+    //@Include: DenseLinAlgPackOutFormatDecl.hpp
   //@}
   /** @name Utilities / Misc. */
   //@{

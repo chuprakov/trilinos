@@ -17,14 +17,14 @@
 #include <algorithm>
 
 #include "MatVecCompare.hpp"
-#include "GenMatrixClass.hpp"
-#include "GenMatrixAsTriSym.hpp"
+#include "DMatrixClass.hpp"
+#include "DMatrixAsTriSym.hpp"
 
 namespace {
 //
-using LinAlgPack::value_type;
+using DenseLinAlgPack::value_type;
 //
-using LinAlgPack::sqrt_eps;
+using DenseLinAlgPack::sqrt_eps;
 //
 template< class T >
 inline
@@ -43,8 +43,8 @@ bool _comp(value_type val1, value_type val2)
 
 }	// end namespace
 
-bool LinAlgPack::comp(const VectorSlice& vs1, const VectorSlice& vs2) {
-	VectorSlice::const_iterator
+bool DenseLinAlgPack::comp(const DVectorSlice& vs1, const DVectorSlice& vs2) {
+	DVectorSlice::const_iterator
 		vs1_itr = vs1.begin(),
 		vs2_itr = vs2.begin();
 	for(; vs1_itr != vs1.end() && vs2_itr != vs2.end(); ++vs1_itr, ++vs2_itr)
@@ -52,29 +52,29 @@ bool LinAlgPack::comp(const VectorSlice& vs1, const VectorSlice& vs2) {
 	return true;
 }
 
-bool LinAlgPack::comp(const VectorSlice& vs, value_type alpha) {
-	VectorSlice::const_iterator vs_itr = vs.begin();
+bool DenseLinAlgPack::comp(const DVectorSlice& vs, value_type alpha) {
+	DVectorSlice::const_iterator vs_itr = vs.begin();
 	for(; vs_itr != vs.end(); ++vs_itr)
 		if( !_comp(*vs_itr,alpha) ) return false;
 	return true;
 }
 
-bool LinAlgPack::comp(const GenMatrixSlice& gms1, BLAS_Cpp::Transp trans1
-	, const GenMatrixSlice& gms2, BLAS_Cpp::Transp trans2)
+bool DenseLinAlgPack::comp(const DMatrixSlice& gms1, BLAS_Cpp::Transp trans1
+	, const DMatrixSlice& gms2, BLAS_Cpp::Transp trans2)
 {
 	for(size_type i = 1; i < my_min(gms1.cols(),gms2.cols()); ++i)
 		if( !comp( col(gms1,trans1,i) , col( gms2, trans2, i ) ) ) return false;
 	return true;
 }
 
-bool LinAlgPack::comp(const GenMatrixSlice& gms, value_type alpha)
+bool DenseLinAlgPack::comp(const DMatrixSlice& gms, value_type alpha)
 {
 	for(size_type i = 1; i < gms.cols(); ++i)
 		if( !comp( gms.col(i) , alpha ) ) return false;
 	return true;
 }
 
-bool LinAlgPack::comp(const tri_ele_gms& tri_gms1, const tri_ele_gms& tri_gms2)
+bool DenseLinAlgPack::comp(const DMatrixSliceTriEle& tri_gms1, const DMatrixSliceTriEle& tri_gms2)
 {
 	using BLAS_Cpp::bool_to_trans;
 	BLAS_Cpp::Transp
@@ -89,7 +89,7 @@ bool LinAlgPack::comp(const tri_ele_gms& tri_gms1, const tri_ele_gms& tri_gms2)
 	return true;
 }
 
-bool LinAlgPack::comp(const tri_ele_gms& tri_gms1, value_type alpha)
+bool DenseLinAlgPack::comp(const DMatrixSliceTriEle& tri_gms1, value_type alpha)
 {
 	using BLAS_Cpp::bool_to_trans;
 	BLAS_Cpp::Transp
@@ -103,9 +103,9 @@ bool LinAlgPack::comp(const tri_ele_gms& tri_gms1, value_type alpha)
 	return true;
 }
 
-bool LinAlgPack::comp_less(const VectorSlice& vs, value_type alpha)
+bool DenseLinAlgPack::comp_less(const DVectorSlice& vs, value_type alpha)
 {
-	VectorSlice::const_iterator vs_itr = vs.begin();
+	DVectorSlice::const_iterator vs_itr = vs.begin();
 	const value_type denom = my_max( ::fabs(alpha), 1.0 );
 	for(; vs_itr != vs.end(); ++vs_itr)
 		if( *vs_itr > alpha ) return false;

@@ -65,7 +65,7 @@
 #include "SparseLinAlgPack/src/sparse_bounds.hpp"
 #include "SparseLinAlgPack/src/EtaVector.hpp"
 #include "SparseLinAlgPack/src/sparse_bounds.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
 
@@ -87,9 +87,9 @@ namespace ConstrainedOptimizationPack {
 
 void QPSolverRelaxedLOQO::InitLOQOHessianJacobian::init_hess_jacob(
 	const MatrixWithOp& G, const value_type bigM
-	, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
+	, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
 	, const int loqo_b_stat[], const size_type num_inequal
-	, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
+	, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
 	, void* _loqo_lp
 	) const
 {
@@ -125,7 +125,7 @@ void QPSolverRelaxedLOQO::InitLOQOHessianJacobian::init_hess_jacob(
 	loqo_lp->kQ[nd+1]            = nd*nd + 1;
 	// Setup Q[]
 	{
-		GenMatrixSlice Q( loqo_lp->Q, nd*nd, nd, nd, nd );
+		DMatrixSlice Q( loqo_lp->Q, nd*nd, nd, nd, nd );
 		LinAlgOpPack::assign( &Q, G, BLAS_Cpp::no_trans );
 		loqo_lp->Q[nd*nd] = bigM;
 	}
@@ -149,7 +149,7 @@ void QPSolverRelaxedLOQO::InitLOQOHessianJacobian::init_hess_jacob(
 		}}
 		loqo_lp->kA[nd+1] = (m_in+m_eq)*(nd+1);
 		// Setup A[]
-		GenMatrixSlice A( loqo_lp->A, loqo_lp->nz, loqo_lp->m, loqo_lp->m, nd+1 );
+		DMatrixSlice A( loqo_lp->A, loqo_lp->nz, loqo_lp->m, loqo_lp->m, nd+1 );
 		if(E) {
 			LinAlgOpPack::assign( &A(1,m_in,1,nd), *E, trans_E );  // A(1:m_in,1:nd) = op(E)
 			LinAlgOpPack::V_StV( &A.col(nd+1)(1,m_in), -1.0, *b ); // A(1:m_in,nd+1) = -b
@@ -167,11 +167,11 @@ void QPSolverRelaxedLOQO::InitLOQOHessianJacobian::init_hess_jacob(
 	
 	// Loop through and adjust A for absent lower bound and using upper bound
 	if( num_inequal ) {
-		GenMatrixSlice A( loqo_lp->A, loqo_lp->nz, loqo_lp->m, loqo_lp->m, nd+1 );
+		DMatrixSlice A( loqo_lp->A, loqo_lp->nz, loqo_lp->m, loqo_lp->m, nd+1 );
 		for(size_type k = 1; k <= num_inequal; ++k ) {
 			const int j = loqo_b_stat[k-1];
 			if( j < 0 )
-				LinAlgPack::Vt_S( &A.row(j), -1.0 );
+				DenseLinAlgPack::Vt_S( &A.row(j), -1.0 );
 		}
 	}
 
@@ -214,17 +214,17 @@ void QPSolverRelaxedLOQO::release_memory()
 QPSolverStats::ESolutionType
 QPSolverRelaxedLOQO::imp_solve_qp(
 		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, const VectorSlice& g, const MatrixWithOp& G
+		, const DVectorSlice& g, const MatrixWithOp& G
 		, value_type etaL
 		, const SpVectorSlice& dL, const SpVectorSlice& dU
-		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
+		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
 			, const SpVectorSlice* eL, const SpVectorSlice* eU
-		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
+		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
 		, value_type* obj_d
-		, value_type* eta, VectorSlice* d
+		, value_type* eta, DVectorSlice* d
 		, SpVector* nu
-		, SpVector* mu, VectorSlice* Ed
-		, VectorSlice* lambda, VectorSlice* Fd
+		, SpVector* mu, DVectorSlice* Ed
+		, DVectorSlice* lambda, DVectorSlice* Fd
 	)
 {
 	namespace wsp = WorkspacePack;
@@ -253,10 +253,10 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 
 	// LOQO's b vector storage
 	MALLOC( loqo_lp->b, m_in+m_eq, double ); // May not use all of this storage
-	VectorSlice loqo_b( loqo_lp->b, m_in+m_eq );
+	DVectorSlice loqo_b( loqo_lp->b, m_in+m_eq );
 	// LOQO's r vector storage
 	MALLOC( loqo_lp->r, m_in+m_eq, double ); // May not use all of this storage
-	VectorSlice loqo_r( loqo_lp->r, m_in+m_eq );
+	DVectorSlice loqo_r( loqo_lp->r, m_in+m_eq );
 	// Gives status of b.
 	//                  /  j : if eL(j) > -inf_bnd
 	// loqo_b_stat(k) = |
@@ -265,7 +265,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 	// , for k = 1...num_inequal
 	//
 	wsp::Workspace<int>               loqo_b_stat_ws(wss,m_in); // May not use all of this
-	LinAlgPack::VectorSliceTmpl<int>  loqo_b_stat(&loqo_b_stat_ws[0],loqo_b_stat_ws.size());
+	DenseLinAlgPack::VectorSliceTmpl<int>  loqo_b_stat(&loqo_b_stat_ws[0],loqo_b_stat_ws.size());
 	std::fill( loqo_b_stat.begin(), loqo_b_stat.end(), 0 ); // Initialize to zero
 
 	// Fill up loqo_b, loqo_r and loqo_b_stat
@@ -276,10 +276,10 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 			eLU_itr( eL->begin(), eL->end(), eL->offset()
 					 , eU->begin(), eU->end(), eU->offset(), inf_bnd );
 		// written iterators
-		VectorSlice::iterator
+		DVectorSlice::iterator
 			b_itr		= loqo_b.begin(),
 			r_itr		= loqo_r.begin();
-		LinAlgPack::VectorSliceTmpl<int>::iterator
+		DenseLinAlgPack::VectorSliceTmpl<int>::iterator
 			b_stat_itr  = loqo_b_stat.begin();
 		// loop
 		for( int k = 1; !eLU_itr.at_end(); ++k, ++eLU_itr, ++b_itr, ++r_itr, ++b_stat_itr, ++num_inequal )
@@ -316,13 +316,13 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 
 	// LOQO's c vector storage
 	MALLOC( loqo_lp->c, nd+1, double );
-	VectorSlice loqo_c( loqo_lp->c, nd+1 );
+	DVectorSlice loqo_c( loqo_lp->c, nd+1 );
 	loqo_c(1,nd) = g;
 	loqo_c(nd+1) = bigM();
 
 	// LOQO's l vector storage
 	MALLOC( loqo_lp->l, nd+1, double );
-	VectorSlice loqo_l( loqo_lp->l, nd+1 );
+	DVectorSlice loqo_l( loqo_lp->l, nd+1 );
 	std::fill( loqo_l.begin(), loqo_l.end(), -real_big );
 	{
 		SpVectorSlice::const_iterator
@@ -335,7 +335,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 
 	// LOQO's u vector storage
 	MALLOC( loqo_lp->u, nd+1, double );
-	VectorSlice loqo_u( loqo_lp->u, nd+1 );
+	DVectorSlice loqo_u( loqo_lp->u, nd+1 );
 	std::fill( loqo_u.begin(), loqo_u.end(), +real_big );
 	{
 		SpVectorSlice::const_iterator
@@ -359,7 +359,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 	//
 
 	MALLOC( loqo_lp->x, nd+1, double );
-	VectorSlice loqo_x( loqo_lp->x, nd+1 );
+	DVectorSlice loqo_x( loqo_lp->x, nd+1 );
 	loqo_x(1,nd) = *d;
 	loqo_x(nd+1) = *eta;
 
@@ -416,7 +416,7 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 	//
 
 	assert( loqo_lp->x );
-	VectorSlice loqo_x_sol( loqo_lp->x, nd+1 );
+	DVectorSlice loqo_x_sol( loqo_lp->x, nd+1 );
 
 	// d
 	*d    = loqo_x_sol(1,nd);
@@ -433,10 +433,10 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 		nu->resize(nd,nd);
 		assert( loqo_lp->z );
 		assert( loqo_lp->s );
-		const VectorSlice
+		const DVectorSlice
 			loqo_z(loqo_lp->z,loqo_lp->n),   // Multipliers for l - x <= 0
 			loqo_s(loqo_lp->s,loqo_lp->n);   // Multipliers for x - u <= 0
-		VectorSlice::const_iterator
+		DVectorSlice::const_iterator
 			z_itr = loqo_z.begin(),
 			s_itr = loqo_s.begin();
 		typedef SpVector::element_type ele_t;
@@ -457,14 +457,14 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 	// mu
 	if(mu) {
 		mu->resize(m_in,num_inequal);
-		LinAlgPack::VectorSliceTmpl<int>::iterator
+		DenseLinAlgPack::VectorSliceTmpl<int>::iterator
 			b_stat_itr  = loqo_b_stat.begin();
 		assert( loqo_lp->v );
 		assert( loqo_lp->q );
-		const VectorSlice
+		const DVectorSlice
 			loqo_v(loqo_lp->v,loqo_lp->m),   // Multipliers for b <= A*x
 			loqo_q(loqo_lp->q,loqo_lp->m);   // Multipliers for A*x <= b + r
-		VectorSlice::const_iterator
+		DVectorSlice::const_iterator
 			v_itr = loqo_v.begin(),
 			q_itr = loqo_q.begin();
 		// loop
@@ -493,11 +493,11 @@ QPSolverRelaxedLOQO::imp_solve_qp(
 	// lambda
 	if(lambda) {
 		assert( loqo_lp->y );
-		const VectorSlice
+		const DVectorSlice
 			loqo_y(loqo_lp->y,loqo_lp->m);         // Multipliers for equalities
-		VectorSlice::const_iterator
+		DVectorSlice::const_iterator
 			y_itr = loqo_y.begin() + num_inequal;  // Get iterators to equalities
-		VectorSlice::iterator
+		DVectorSlice::iterator
 			lambda_itr = lambda->begin();
 		// loop
 		for( size_type k = 1; k <= m_eq; ++k, ++y_itr, ++lambda_itr ) {

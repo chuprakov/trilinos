@@ -22,9 +22,9 @@
 #include "ConstrainedOptimizationPack/src/MeritFuncPenaltyParams.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncNLPDirecDeriv.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
 
 namespace {
 
@@ -48,7 +48,7 @@ bool MeritFunc_PenaltyParamsUpdateWithMult_AddedStep::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type
 	, poss_type assoc_step_poss)
 {
-	using LinAlgPack::norm_inf;
+	using DenseLinAlgPack::norm_inf;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
@@ -115,12 +115,12 @@ bool MeritFunc_PenaltyParamsUpdateWithMult_AddedStep::do_step(Algorithm& _algo
 				out << "\nUpdate the penalty parameter...\n";
 			}
 
-			const Vector
+			const DVector
 				&lambda_k = s.lambda().get_k(0).cv();
 
 			if( params->mu().size() != lambda_k.size() )
 				params->resize( lambda_k.size() );
-			VectorSlice
+			DVectorSlice
 				mu = params->mu();
 
 			const value_type
@@ -131,8 +131,8 @@ bool MeritFunc_PenaltyParamsUpdateWithMult_AddedStep::do_step(Algorithm& _algo
 				if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 					out << "\nNear solution, forcing mu(j) >= mu_old(j)...\n";
 				}
-				Vector::const_iterator	lb_itr = lambda_k.begin();
-				VectorSlice::iterator	mu_itr = mu.begin();
+				DVector::const_iterator	lb_itr = lambda_k.begin();
+				DVectorSlice::iterator	mu_itr = mu.begin();
 				for( ; lb_itr != lambda_k.end(); ++mu_itr, ++ lb_itr )
 					*mu_itr = max( max( *mu_itr, mult_fact * ::fabs(*lb_itr) ), small_mu_ );
 			}
@@ -140,8 +140,8 @@ bool MeritFunc_PenaltyParamsUpdateWithMult_AddedStep::do_step(Algorithm& _algo
 				if( (int)olevel >= (int)PRINT_ALGORITHM_STEPS ) {
 					out << "\nNot near solution, allowing reduction in mu(j) ...\n";
 				}
-				Vector::const_iterator	lb_itr = lambda_k.begin();
-				VectorSlice::iterator	mu_itr = mu.begin();
+				DVector::const_iterator	lb_itr = lambda_k.begin();
+				DVectorSlice::iterator	mu_itr = mu.begin();
 				for( ; lb_itr != lambda_k.end(); ++mu_itr, ++ lb_itr ) {
 					const value_type lb_j = ::fabs(*lb_itr);
 					*mu_itr = max(
@@ -164,7 +164,7 @@ bool MeritFunc_PenaltyParamsUpdateWithMult_AddedStep::do_step(Algorithm& _algo
 			const value_type
 					max_mu	= norm_inf( mu() ),
 					min_mu	= min_mu_ratio_ * max_mu;
-			for(VectorSlice::iterator mu_itr = mu.begin(); mu_itr != mu.end(); ++mu_itr)
+			for(DVectorSlice::iterator mu_itr = mu.begin(); mu_itr != mu.end(); ++mu_itr)
 				*mu_itr = max( (*mu_itr), min_mu );	
 
 			s.mu().set_k(0) = norm_inf_mu_last_ = max_mu;

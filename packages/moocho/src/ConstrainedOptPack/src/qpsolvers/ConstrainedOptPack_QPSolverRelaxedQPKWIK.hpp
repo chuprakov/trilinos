@@ -19,8 +19,8 @@
 #include <vector>
 
 #include "QPSolverRelaxed.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptimizationPack {
@@ -122,23 +122,23 @@ private:
 	///
 	index_type      M3_;
 	///
-	Vector          GRAD_;
+	DVector          GRAD_;
 	///
-	GenMatrix       UINV_AUG_;
+	DMatrix       UINV_AUG_;
 	///
 	index_type      LDUINV_AUG_;
 	///
 	IBND_t          IBND_;
 	///
-	Vector          BL_;
+	DVector          BL_;
 	///
-	Vector          BU_;
+	DVector          BU_;
 	///
-	GenMatrix       A_;
+	DMatrix       A_;
 	///
 	index_type		LDA_;
 	///
-	Vector          YPY_;
+	DVector          YPY_;
 	///
 	index_type      IYPY_;
 	///
@@ -151,7 +151,7 @@ private:
 	// Input / Output
 
 	///
-	Vector          X_;
+	DVector          X_;
 	///
 	index_type      NACTSTORE_;
 	///
@@ -166,7 +166,7 @@ private:
 	///
 	IACT_t          IACT_;
 	///
-	Vector          UR_;
+	DVector          UR_;
 	///
 	value_type      EXTRA_;
 	///
@@ -186,7 +186,7 @@ private:
 	///
 	index_type      LRW_;
 	///
-	Vector          RW_;
+	DVector          RW_;
 
 }; // end class QPSolverRelaxedQPKWIK
 

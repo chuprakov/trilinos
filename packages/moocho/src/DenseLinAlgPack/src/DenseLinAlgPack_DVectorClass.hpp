@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////////
-// VectorClass.hpp
+// DVectorClass.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,22 +18,22 @@
 
 #include <valarray>
 
-#include "VectorClassTmpl.hpp"
+#include "DVectorClassTmpl.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
-/** @name Vector.
-  * @memo typedef \Ref{VectorTmpl}<value_type> Vector;
+/** @name DVector.
+  * @memo typedef \Ref{VectorTmpl}<value_type> DVector;
   */
 //@{
 //@}
 
-/** @name VectorSlice.
-  * @memo typedef \Ref{VectorSliceTmpl}<value_type> VectorSlice;
+/** @name DVectorSlice.
+  * @memo typedef \Ref{VectorSliceTmpl}<value_type> DVectorSlice;
   */
 //@{
 //@}
 
-} // end namespace LinAlgPack
+} // end namespace DenseLinAlgPack
 
 #endif	// end VECTOR_CLASS_H

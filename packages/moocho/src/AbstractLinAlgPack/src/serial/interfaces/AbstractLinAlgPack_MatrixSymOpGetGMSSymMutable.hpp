@@ -21,7 +21,7 @@
 namespace SparseLinAlgPack {
 
 ///
-/** Abstract interface that allows the extraction of a non-const <tt>LinAlgPack::sym_gms</tt>
+/** Abstract interface that allows the extraction of a non-const <tt>DenseLinAlgPack::DMatrixSliceSym</tt>
  * view of a symmetry abstract matrix.
  *
  * This interface is ment to be used by <tt>MatrixSymWithOp</tt> objects
@@ -41,7 +41,7 @@ class MatrixSymWithOpGetGMSSymMutable : virtual public MatrixSymWithOpGetGMSSym 
 public:
 
 	///
-	/** Get a non-const view of the symmetric abstract matrix in the form <tt>LinAlgPack::LinAlgPack::sym_gms</tt>.
+	/** Get a non-const view of the symmetric abstract matrix in the form <tt>DenseLinAlgPack::DenseLinAlgPack::DMatrixSliceSym</tt>.
 	 *
 	 * @return On ouput, \c return will be initialized to point to storage to the dense matrix elements.
 	 * The output from this function <tt>sym_gms_view = this->get_sym_gms_view()</tt> must be passed to
@@ -56,7 +56,7 @@ public:
 	 *
 	 * Warning!  If a subclass overrides this method, it must also override \c commit_sym_gms_view().
 	 */
-	virtual LinAlgPack::sym_gms get_sym_gms_view() = 0;
+	virtual DenseLinAlgPack::DMatrixSliceSym get_sym_gms_view() = 0;
 
 	///
 	/** Free a view of a dense matrix initialized from <tt>get_sym_gms_view()>/tt>.
@@ -74,7 +74,7 @@ public:
 	 * <li> \c sym_gms_view becomes invalid and must not be used any longer!
 	 * </ul>
 	 */
-	virtual void commit_sym_gms_view(LinAlgPack::sym_gms* sym_gms_view) = 0;
+	virtual void commit_sym_gms_view(DenseLinAlgPack::DMatrixSliceSym* sym_gms_view) = 0;
 
 }; // end class MatrixSymWithOpGetGMSSymMutable
 
@@ -82,10 +82,10 @@ public:
 /** Helper class type that simplifies the usage of the <tt>MatrixSymWithOpGetGMSSymMutable</tt> interface for clients.
  *
  * This takes care of worrying about if the <tt>MatrixSymWithOpGetGMSSymMutable</tt> interface is supported or not
- * and remembering to free the <tt>LinAlgPack::sym_gms</tt> view properly.
+ * and remembering to free the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view properly.
  *
  * This class is only to be used on the stack as an automatic variable.  For example, to extract a
- * <tt>LinAlgPack::sym_gms</tt> view of an abstract vector and use it to set the matrix to a scalar
+ * <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view of an abstract vector and use it to set the matrix to a scalar
  * one could write a function like:
  \code
  void assign( const value_type alpha, MatrixSymWithOpGetGMSSymMutable* mat_inout ) {
@@ -102,27 +102,27 @@ class MatrixDenseSymMutableEncap {
 public:
 
 	///
-	/** Construct a <tt>LinAlgPack::sym_gms</tt> view from a <tt>MatrixSymWithOpGetGMSSymMutable</tt> object.
+	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymWithOpGetGMSSymMutable</tt> object.
 	 */
 	MatrixDenseSymMutableEncap( MatrixSymWithOpGetGMSSymMutable*  mat_get );
 	///
-	/** Construct a <tt>LinAlgPack::sym_gms</tt> view from a <tt>MatrixSymWithOp</tt> object.
+	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymWithOp</tt> object.
 	 *
 	 * If <tt>dynamic_cast<MatrixSymWithOpGetGMSSymMutable*>(mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
 	MatrixDenseSymMutableEncap( MatrixSymWithOp* mat );
-	/// Frees the <tt>LinAlgPack::sym_gms</tt> view and commits the changes.
+	/// Frees the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view and commits the changes.
 	~MatrixDenseSymMutableEncap();
-	/// Returns a non-const view of the <tt>LinAlgPack::sym_gms</tt> view.
-	LinAlgPack::sym_gms operator()();
-	/// Returns a const view of the <tt>LinAlgPack::sym_gms</tt> view.
-	const LinAlgPack::sym_gms operator()() const;
+	/// Returns a non-const view of the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view.
+	DenseLinAlgPack::DMatrixSliceSym operator()();
+	/// Returns a const view of the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view.
+	const DenseLinAlgPack::DMatrixSliceSym operator()() const;
 
 private:
 
 	MatrixSymWithOpGetGMSSymMutable    *mat_get_;
-	LinAlgPack::sym_gms                sym_gms_view_;
+	DenseLinAlgPack::DMatrixSliceSym                sym_gms_view_;
 	MatrixDenseSymMutableEncap();                                             // Not defined and not to be called!
 	MatrixDenseSymMutableEncap(const MatrixDenseSymMutableEncap&);            // ""
 	MatrixDenseSymMutableEncap& operator=(const MatrixDenseSymMutableEncap&); // ""
@@ -153,13 +153,13 @@ MatrixDenseSymMutableEncap::~MatrixDenseSymMutableEncap()
 }
 
 inline
-LinAlgPack::sym_gms MatrixDenseSymMutableEncap::operator()()
+DenseLinAlgPack::DMatrixSliceSym MatrixDenseSymMutableEncap::operator()()
 {
 	return sym_gms_view_;
 }
 
 inline
-const LinAlgPack::sym_gms MatrixDenseSymMutableEncap::operator()() const
+const DenseLinAlgPack::DMatrixSliceSym MatrixDenseSymMutableEncap::operator()() const
 {
 	return sym_gms_view_;
 }

@@ -18,18 +18,18 @@
 
 #include "VectorSpaceSerial.hpp"
 #include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "ref_count_ptr.hpp"
 #include "ReleaseResource.hpp"
 
 namespace SparseLinAlgPack {
 
 ///
-/** Vector "Adaptor" subclass for <tt>LinAlgPack::VectorSlice</tt>
- * or <tt>LinAlgPack::Vector</tt> objects.
+/** DVector "Adaptor" subclass for <tt>DenseLinAlgPack::DVectorSlice</tt>
+ * or <tt>DenseLinAlgPack::DVector</tt> objects.
  *
- * This class can be used either as a view of a <tt>LinAlgPack::VectorSlice</tt> object
- * or as a storage type for a <tt>LinAlgPack::Vector</tt> object.
+ * This class can be used either as a view of a <tt>DenseLinAlgPack::DVectorSlice</tt> object
+ * or as a storage type for a <tt>DenseLinAlgPack::DVector</tt> object.
  *
  * To create a storage type with the dimension of \c dim just call the constructor
  * <tt>VectorWithOpMutableDense(dim)</tt> or after construction you can call
@@ -44,12 +44,12 @@ namespace SparseLinAlgPack {
  * with a <tt>ReleaseResource</tt> object to perform the deallocation.
  *
  * If \c this has been initialized by <tt>this->initialize(dim)</tt> and if
- * the client really needs to get at the <tt>LinAlgPack::Vector</tt> object
+ * the client really needs to get at the <tt>DenseLinAlgPack::DVector</tt> object
  * itself, then it can be obtained as:
  \code
  void f( VectorWithOpMutableDense* v )
      namespace rmp = MemMngPack;
-     Vector &_v = *dynamic_cast<rmp::ReleaseResource_ref_count_ptr<Vector>&>(*v.vec_release()).ptr;
+     DVector &_v = *dynamic_cast<rmp::ReleaseResource_ref_count_ptr<DVector>&>(*v.vec_release()).ptr;
 
  \endcode
  * This is not pretty but it is not supposed to be.  Of course the above function will throw
@@ -77,11 +77,11 @@ public:
 	/** Calls <tt>this->initialize(v,v_release)</tt>.
 	 */
 	VectorWithOpMutableDense(
-		VectorSlice                        v
+		DVectorSlice                        v
 		,const release_resource_ptr_t&     v_release
 		);
 	///
-	/** Call <tt>this->initialize(v,v_release)</tt> with an allocated <tt>LinAlgPack::Vector</tt>
+	/** Call <tt>this->initialize(v,v_release)</tt> with an allocated <tt>DenseLinAlgPack::DVector</tt>
 	 * object.
 	 */
 	void initialize(
@@ -91,7 +91,7 @@ public:
 	/** Initialize with a dense vector slice.
 	 */
 	void initialize(
-		VectorSlice                        v
+		DVectorSlice                        v
 		,const release_resource_ptr_t&     v_release
 		);
 
@@ -105,17 +105,17 @@ public:
 	 *
 	 * Note that calling this method will result in the vector implementation
 	 * being modified.  Therefore, no other methods on \c this object should be
-	 * called until the <tt>VectorSlice</tt> returned from this method is
+	 * called until the <tt>DVectorSlice</tt> returned from this method is
 	 * discarded.
 	 *
 	 * Note that the underlying implementation calls <tt>this->has_changed()</tt>
 	 * before this method returns.
 	 */
-	VectorSlice set_vec();
+	DVectorSlice set_vec();
 	///
 	/** Return a const dense vector.
 	 */
-	const VectorSlice get_vec() const;
+	const DVectorSlice get_vec() const;
 	///
 	/** Return a <tt>ref_count_ptr<></tt> pointer to the object that will
 	 * release the associated resource.
@@ -198,7 +198,7 @@ private:
 	// ///////////////////////////////////////
 	// Private data members
 	
-	VectorSlice               v_;
+	DVectorSlice               v_;
 	release_resource_ptr_t    v_release_;
 	VectorSpaceSerial         space_;
 
@@ -226,7 +226,7 @@ private:
 // Inline members
 
 inline
-VectorSlice
+DVectorSlice
 VectorWithOpMutableDense::set_vec()
 {
 	this->has_changed();
@@ -234,7 +234,7 @@ VectorWithOpMutableDense::set_vec()
 }
 
 inline
-const VectorSlice
+const DVectorSlice
 VectorWithOpMutableDense::get_vec() const
 {
 	return v_;

@@ -21,8 +21,8 @@
 #include <vector>
 
 #include "QPSolverRelaxed.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 #include "StandardCompositionMacros.hpp"
 
@@ -94,9 +94,9 @@ public:
 		 */
 		virtual void init_hess_jacob(
 			const MatrixWithOp& G, const value_type bigM
-			, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
+			, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
 			, const int loqo_b_stat[], const size_type num_inequal
-			, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
+			, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
 			, void* loqo_lp
 			) const;
 
@@ -145,17 +145,17 @@ protected:
 	///
 	QPSolverStats::ESolutionType imp_solve_qp(
 		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, const VectorSlice& g, const MatrixWithOp& G
+		, const DVectorSlice& g, const MatrixWithOp& G
 		, value_type etaL
 		, const SpVectorSlice& dL, const SpVectorSlice& dU
-		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
+		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
 			, const SpVectorSlice* eL, const SpVectorSlice* eU
-		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
+		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
 		, value_type* obj_d
-		, value_type* eta, VectorSlice* d
+		, value_type* eta, DVectorSlice* d
 		, SpVector* nu
-		, SpVector* mu, VectorSlice* Ed
-		, VectorSlice* lambda, VectorSlice* Fd
+		, SpVector* mu, DVectorSlice* Ed
+		, DVectorSlice* lambda, DVectorSlice* Fd
 		);
 
 private:

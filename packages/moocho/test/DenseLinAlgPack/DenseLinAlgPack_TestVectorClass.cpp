@@ -19,9 +19,9 @@
 #include <typeinfo>
 
 #include "TestLinAlgPack.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
-#include "LinAlgPack/src/MatVecCompare.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
+#include "DenseLinAlgPack/src/MatVecCompare.hpp"
 #include "update_success.hpp"
 
 namespace {
@@ -59,7 +59,7 @@ void test_access( V* _v, I begin, I end, std::ostream*out, bool* success ) {
 // This template function checks that a subregion creates the expected view.
 // Here rng must be rng.full_range() == true.
 template<class V, class VS>
-void test_subregion_access( V* _v, VS* _vs, const LinAlgPack::Range1D& rng
+void test_subregion_access( V* _v, VS* _vs, const DenseLinAlgPack::Range1D& rng
 	, std::ostream* out, bool* success )
 {
 	using std::setw;
@@ -97,13 +97,13 @@ void test_subregion_access( V* _v, VS* _vs, const LinAlgPack::Range1D& rng
 }
 
 // Print out a string for overlap
-const char* overlap_str( LinAlgPack::EOverLap overlap ) {
+const char* overlap_str( DenseLinAlgPack::EOverLap overlap ) {
 	switch(overlap) {
-		case LinAlgPack::NO_OVERLAP:
+		case DenseLinAlgPack::NO_OVERLAP:
 			return "NO_OVERLAP";
-		case LinAlgPack::SOME_OVERLAP:
+		case DenseLinAlgPack::SOME_OVERLAP:
 			return "SOME_OVERLAP";
-		case LinAlgPack::SAME_MEM:
+		case DenseLinAlgPack::SAME_MEM:
 			return "SAME_MEM";
 	}
 	return "Invalid value for EOverLap";
@@ -111,10 +111,10 @@ const char* overlap_str( LinAlgPack::EOverLap overlap ) {
 
 }	// end namespace
 
-bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
+bool DenseLinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 {
-	using LinAlgPack::comp;
-	using LinAlgPack::sqrt_eps;
+	using DenseLinAlgPack::comp;
+	using DenseLinAlgPack::sqrt_eps;
 	using TestingHelperPack::update_success;
 
 	bool success = true;
@@ -122,7 +122,7 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 
 	if(out)
 		*out	<< "\n**********************************************"
-				<< "\n*** Testing Vector and VectorSlice classes ***"
+				<< "\n*** Testing DVector and DVectorSlice classes ***"
 				<< "\n**********************************************\n"
 				<< std::boolalpha;
 
@@ -132,8 +132,8 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 		*out	<< "\nLet vvz[i-1] = i + 0.1*i, for i = 1...,n\n";
 
 	// std::vector<> which is starndard for comparisons
-	const Vector::size_type n = 6;
-	std::vector<Vector::value_type> vvz(6);
+	const DVector::size_type n = 6;
+	std::vector<DVector::value_type> vvz(6);
 	{for(int i = 1; i <= n; ++i)
 		vvz[i-1] = i + 0.1 * i;
 	}
@@ -147,57 +147,57 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 	if(out)
 		*out	<< "\n***\n*** Testing constructors\n***\n";
 
-	// VectorSlice Constructors
+	// DVectorSlice Constructors
 
 	if(out) *out << "\nVectorSlice vs1\n";
-	VectorSlice	vs1;
+	DVectorSlice	vs1;
 	if(out) *out << "vs1 =\n" << vs1;
 
 	if(out) *out << "\nVectorSlice vs2(vvz.begin(),n)\n";
-	VectorSlice	vs2(&vvz[0],n);
+	DVectorSlice	vs2(&vvz[0],n);
 	if(out) *out << "vs2 =\n" << vs2;
 
 	if(out) *out << "\nVectorSlice vs3(vvz.begin(),n,Range1D())\n";
-	VectorSlice	vs3(&vvz[0],n,Range1D());
+	DVectorSlice	vs3(&vvz[0],n,Range1D());
 	if(out) *out << "vs3 =\n" << vs3;
 
 	if(out) *out << "\nVectorSlice vs4(vs3,Range1D())\n";
-	VectorSlice	vs4(vs3,Range1D());
+	DVectorSlice	vs4(vs3,Range1D());
 	if(out) *out << "vs4 =\n" << vs4;
 
-	// Vector Constructors
+	// DVector Constructors
 
 	if(out) *out << "\nVector v1\n";
-	Vector v1;
+	DVector v1;
 	if(out) *out << "v1 =\n" << v1;
 
 	if(out) *out << "\nVector v2(alpha1,n)\n";
-	Vector v2(alpha1,n);
+	DVector v2(alpha1,n);
 	if(out) *out << "v2 =\n" << v2;
 
 	if(out) *out << "\nVector v3(vvz.begin(),n)\n";
-	Vector v3(&vvz[0],n);
+	DVector v3(&vvz[0],n);
 	if(out) *out << "v3 =\n" << v3;
 
 	if(out) *out << "\nVector v4(vs4)\n";
-	Vector v4(vs4);
+	DVector v4(vs4);
 	if(out) *out << "v4 =\n" << v4;
 
 	// //////////////////////////////////////
-	// Test Binding Views (VectorSlice)
+	// Test Binding Views (DVectorSlice)
 
 	if(out)
-		*out	<< "\n***\n*** Testing VectorSlice binding and "
-					"conversion from Vector -> VectorSlice\n***\n"
+		*out	<< "\n***\n*** Testing DVectorSlice binding and "
+					"conversion from DVector -> DVectorSlice\n***\n"
 				<< "\nvs1.bind(v2());\n";
 	vs1.bind(v2());
 	if(out) *out << "vs1 =\n" << vs1;
 
 	// ///////////////////////
-	// Test Vector Resizing
+	// Test DVector Resizing
 
 	if(out)
-		*out	<< "\n***\n*** Testing Vector resizing\n***\n"
+		*out	<< "\n***\n*** Testing DVector resizing\n***\n"
 				<< "\nv2.free();\n";
 	v2.free();
 	if(out) *out << "v2.dim() == 0 : " << update_success( v2.dim() == 0, &success ) << std::endl;
@@ -222,37 +222,37 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 	test_access(&v3,v3.begin(),v3.end(),out,&success);
 
 	if(out)
-		*out	<< "\nLet v == const_cast<const Vector&>(v3), begin = v.begin()";
-	test_access(&const_cast<const Vector&>(v3),const_cast<const Vector&>(v3).begin()
-		,const_cast<const Vector&>(v3).end(),out,&success);
+		*out	<< "\nLet v == const_cast<const DVector&>(v3), begin = v.begin()";
+	test_access(&const_cast<const DVector&>(v3),const_cast<const DVector&>(v3).begin()
+		,const_cast<const DVector&>(v3).end(),out,&success);
 
 	if(out)
 		*out	<< "\nLet v == vs3, begin = v.begin()";
 	test_access(&vs3,vs3.begin(),vs3.end(),out,&success);
 
 	if(out)
-		*out	<< "\nLet v == const_cast<const VectorSlice&>(vs3), begin = v.begin()";
-	test_access(&const_cast<const VectorSlice&>(vs3),const_cast<const VectorSlice&>(vs3).begin()
-		,const_cast<const VectorSlice&>(vs3).end(),out,&success);
+		*out	<< "\nLet v == const_cast<const DVectorSlice&>(vs3), begin = v.begin()";
+	test_access(&const_cast<const DVectorSlice&>(vs3),const_cast<const DVectorSlice&>(vs3).begin()
+		,const_cast<const DVectorSlice&>(vs3).end(),out,&success);
 
 	if(out)
 		*out	<< "\nLet v == v3.rev(), begin = v3.rbegin()";
 	test_access(&v3.rev(),v3.rbegin(),v3.rend(),out,&success);
 
 	if(out)
-		*out	<< "\nLet v == const_cast<const Vector&>(v3).rev(), begin = const_cast<const Vector&>(v3).rbegin()";
-	test_access(&const_cast<const Vector&>(v3).rev(),const_cast<const Vector&>(v3).rbegin()
-		,const_cast<const Vector&>(v3).rend(),out,&success);
+		*out	<< "\nLet v == const_cast<const DVector&>(v3).rev(), begin = const_cast<const DVector&>(v3).rbegin()";
+	test_access(&const_cast<const DVector&>(v3).rev(),const_cast<const DVector&>(v3).rbegin()
+		,const_cast<const DVector&>(v3).rend(),out,&success);
 
 	if(out)
 		*out	<< "\nLet v == vs3.rev(), begin = vs3.rbegin()";
 	test_access(&vs3.rev(),vs3.rbegin(),vs3.rend(),out,&success);
 
 	if(out)
-		*out	<< "\nLet v == const_cast<const VectorSlice&>(vs3).rev()"
-					", begin = const_cast<const VectorSlice&>(vs3).rbegin()";
-	test_access(&const_cast<const VectorSlice&>(vs3).rev(),const_cast<const VectorSlice&>(vs3).rbegin()
-		,const_cast<const VectorSlice&>(vs3).rend(),out,&success);
+		*out	<< "\nLet v == const_cast<const DVectorSlice&>(vs3).rev()"
+					", begin = const_cast<const DVectorSlice&>(vs3).rbegin()";
+	test_access(&const_cast<const DVectorSlice&>(vs3).rev(),const_cast<const DVectorSlice&>(vs3).rbegin()
+		,const_cast<const DVectorSlice&>(vs3).rend(),out,&success);
 
 #ifdef LINALGPACK_CHECK_RANGE
 
@@ -309,7 +309,7 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 
 	if(out) *out << "\n***\n*** Testing Subregion Access\n***\n";
 
-	// Vector Subregions
+	// DVector Subregions
 	Range1D rng;
 
 	if(out) *out << "\nv = v3, rng = [1,n/2], vs = v(rng)";
@@ -324,19 +324,19 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 	rng = Range1D(n/2,n);
 	test_subregion_access( &v3, &v3(rng), rng, out, &success );
 
-	if(out) *out << "\nv = const_cast<const Vector&>(v3), rng = [n/2,n], vs = v(rng)";
+	if(out) *out << "\nv = const_cast<const DVector&>(v3), rng = [n/2,n], vs = v(rng)";
 	rng = Range1D(n/2,n);
-	test_subregion_access( &v3, &const_cast<const Vector&>(v3)(rng), rng, out, &success );
+	test_subregion_access( &v3, &const_cast<const DVector&>(v3)(rng), rng, out, &success );
 
 	if(out) *out << "\nv = v3, rng = [1,n/2], vs = v(1,n/2)";
 	rng = Range1D(1,n/2);
 	test_subregion_access( &v3, &v3(1,n/2), rng, out, &success );
 
-	if(out) *out << "\nv = const_cast<const Vector&>(v3), rng = [n/2,n], vs = v(n/2,n)";
+	if(out) *out << "\nv = const_cast<const DVector&>(v3), rng = [n/2,n], vs = v(n/2,n)";
 	rng = Range1D(n/2,n);
-	test_subregion_access( &v3, &const_cast<const Vector&>(v3)(n/2,n), rng, out, &success );
+	test_subregion_access( &v3, &const_cast<const DVector&>(v3)(n/2,n), rng, out, &success );
 
-	// VectorSlice Subregions
+	// DVectorSlice Subregions
 
 	if(out) *out << "\nv = vs3, rng = [1,n/2], vs = v(rng)";
 	rng = Range1D(1,n/2);
@@ -350,24 +350,24 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 	rng = Range1D(n/2,n);
 	test_subregion_access( &vs3, &vs3(rng), rng, out, &success );
 
-	if(out) *out << "\nv = const_cast<const VectorSlice&>(vs3), rng = [n/2,n], vs = v(rng)";
+	if(out) *out << "\nv = const_cast<const DVectorSlice&>(vs3), rng = [n/2,n], vs = v(rng)";
 	rng = Range1D(n/2,n);
-	test_subregion_access( &vs3, &const_cast<const VectorSlice&>(vs3)(rng), rng, out, &success );
+	test_subregion_access( &vs3, &const_cast<const DVectorSlice&>(vs3)(rng), rng, out, &success );
 
 	if(out) *out << "\nv = vs3, rng = [1,n/2], vs = v(1,n/2)";
 	rng = Range1D(1,n/2);
 	test_subregion_access( &vs3, &vs3(1,n/2), rng, out, &success );
 
-	if(out) *out << "\nv = const_cast<const VectorSlice&>(vs3), rng = [n/2,n], vs = v(n/2,n)";
+	if(out) *out << "\nv = const_cast<const DVectorSlice&>(vs3), rng = [n/2,n], vs = v(n/2,n)";
 	rng = Range1D(n/2,n);
-	test_subregion_access( &vs3, &const_cast<const VectorSlice&>(vs3)(n/2,n), rng, out, &success );
+	test_subregion_access( &vs3, &const_cast<const DVectorSlice&>(vs3)(n/2,n), rng, out, &success );
 
 	// ///////////////////////
 	// Test Assignment
 
 	if(out) *out << "\n***\n*** Testing assignment operators\n***\n";
 
-	// Vector Assignment
+	// DVector Assignment
 
 	if(out) *out << "\nv1.resize(n); v1 = 0.0;\n";
 	v1.resize(n);
@@ -393,7 +393,7 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 		*out	<< "v1 =\n" << v1
 				<< "v1 == v3 : " << result << std::endl;
 
-	// VectorSlice Assignment
+	// DVectorSlice Assignment
 
 	if(out) *out << "\nv1.resize(n); v1 = 0.0; vs1.bind(v1());\n";
 	v1.resize(n);
@@ -422,9 +422,9 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 
 	EOverLap ovlap;
 
-	// Vector overlap
+	// DVector overlap
 
-	if(out) *out << "\n*** Vector overlap\n";
+	if(out) *out << "\n*** DVector overlap\n";
 
 	if(out) *out << "(v1.overlap(v3) -> ";
 	ovlap = v1.overlap(v3);
@@ -446,9 +446,9 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 	result = update_success( ovlap == SOME_OVERLAP, &success );
 	if(out)	*out	<< overlap_str(ovlap) << ") == SOME_OVERLAP : " << result << std::endl;
 
-	// VectorSlice overlap
+	// DVectorSlice overlap
 
-	if(out) *out << "\n*** VectorSlice overlap\n"
+	if(out) *out << "\n*** DVectorSlice overlap\n"
 					<< "vs1.bind(v3());\n";
 
 	vs1.bind(v3());
@@ -500,10 +500,10 @@ bool LinAlgPack::TestingPack::TestVectorClass(std::ostream* out)
 	if(out) {
 		if(success)
 			(*out)
-				<< "\n*** Congradulations, Vector and VectorSlice seem to check out. ***\n";
+				<< "\n*** Congradulations, DVector and DVectorSlice seem to check out. ***\n";
 		else
 			(*out)
-				<< "\n*** Oops, all of the tests for Vector and VectorSlice "
+				<< "\n*** Oops, all of the tests for DVector and DVectorSlice "
 					"where not successful. ***\n";
 	}
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// LinAlgPackIOFormat.cpp
+// DenseLinAlgPackIOFormat.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,13 +13,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "LinAlgPackIOFormat.hpp"
+#include "DenseLinAlgPackIOFormat.hpp"
 
 // //////////////////
 //  ios_format_memento
 
-LinAlgPack::LinAlgPackIO::ios_format_memento
-LinAlgPack::LinAlgPackIO::ios_format_memento::save_format(const std::ios& s) {
+DenseLinAlgPack::LinAlgPackIO::ios_format_memento
+DenseLinAlgPack::LinAlgPackIO::ios_format_memento::save_format(const std::ios& s) {
 
 	ios_format_memento m;
 
@@ -31,7 +31,7 @@ LinAlgPack::LinAlgPackIO::ios_format_memento::save_format(const std::ios& s) {
 	return m;
 }
 
-void LinAlgPack::LinAlgPackIO::ios_format_memento::set_format(std::ios& s) const {
+void DenseLinAlgPack::LinAlgPackIO::ios_format_memento::set_format(std::ios& s) const {
 
 	s.flags(flags_);
 	s.precision(prec_);
@@ -43,14 +43,14 @@ void LinAlgPack::LinAlgPackIO::ios_format_memento::set_format(std::ios& s) const
 // ///////////////////
 // format
 
-void LinAlgPack::LinAlgPackIO::format::copy_format(const std::ios& s) {
+void DenseLinAlgPack::LinAlgPackIO::format::copy_format(const std::ios& s) {
 	ios_base_flags().flags(s.flags());
 	precision(s.precision());
 	width(s.width());
 	fill(s.fill());
 }
 
-void LinAlgPack::LinAlgPackIO::format::set_format(std::ios& s) const {
+void DenseLinAlgPack::LinAlgPackIO::format::set_format(std::ios& s) const {
 	s.flags(ios_base_flags().flags());
 	s.precision(precision());
 	s.width(width());

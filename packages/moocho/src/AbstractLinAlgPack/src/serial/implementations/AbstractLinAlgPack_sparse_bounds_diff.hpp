@@ -36,8 +36,8 @@ void imp_sparse_bnd_diff(
 	  int						sign
 	, const SpVectorSlice		&sv
 	, BLAS_Cpp::Uplo			uplo
-	, const VectorSlice			&v
-	, VectorSlice				*r
+	, const DVectorSlice			&v
+	, DVectorSlice				*r
 	);
 
 }	// end namespace SparseLinAlgPack

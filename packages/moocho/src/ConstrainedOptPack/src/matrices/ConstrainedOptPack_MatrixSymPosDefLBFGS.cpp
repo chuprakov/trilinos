@@ -53,16 +53,16 @@
 #include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/GenMatrixOut.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "LinAlgLAPack/src/LinAlgLAPack.hpp"
 #include "WorkspacePack.hpp"
 #include "ThrowException.hpp"
 
 namespace {
 
-	using LinAlgPack::VectorSlice;
-	using LinAlgPack::GenMatrixSlice;
+	using DenseLinAlgPack::DVectorSlice;
+	using DenseLinAlgPack::DMatrixSlice;
 
 	///
 	/** Compute Cb = Lb * inv(Db) * Lb' (see update_Q()).
@@ -72,8 +72,8 @@ namespace {
 	  *		Cb is upper triangular.
 	  *		Db_diag is the diagonal of Db
 	  */
-	void comp_Cb( const GenMatrixSlice& Lb, const VectorSlice& Db_diag
-		, GenMatrixSlice* Cb );
+	void comp_Cb( const DMatrixSlice& Lb, const DVectorSlice& Db_diag
+		, DMatrixSlice* Cb );
 
 }	// end namespace
 
@@ -83,51 +83,51 @@ namespace ConstrainedOptimizationPack {
 // Inline private member functions
 
 inline
-const tri_gms MatrixSymPosDefLBFGS::R() const
+const DMatrixSliceTri MatrixSymPosDefLBFGS::R() const
 {
-	return LinAlgPack::tri( STY_(1,m_bar_,1,m_bar_), BLAS_Cpp::upper, BLAS_Cpp::nonunit );
+	return DenseLinAlgPack::tri( STY_(1,m_bar_,1,m_bar_), BLAS_Cpp::upper, BLAS_Cpp::nonunit );
 }
 
 inline
-const tri_gms MatrixSymPosDefLBFGS::Lb() const
+const DMatrixSliceTri MatrixSymPosDefLBFGS::Lb() const
 {
-	return LinAlgPack::tri( STY_(2,m_bar_,1,m_bar_-1), BLAS_Cpp::lower, BLAS_Cpp::nonunit );
+	return DenseLinAlgPack::tri( STY_(2,m_bar_,1,m_bar_-1), BLAS_Cpp::lower, BLAS_Cpp::nonunit );
 }
 
 inline
-GenMatrixSlice MatrixSymPosDefLBFGS::STY()
+DMatrixSlice MatrixSymPosDefLBFGS::STY()
 {
 	return STY_(1,m_bar_,1,m_bar_);
 }
 
 inline
-const GenMatrixSlice MatrixSymPosDefLBFGS::STY() const
+const DMatrixSlice MatrixSymPosDefLBFGS::STY() const
 {
 	return STY_(1,m_bar_,1,m_bar_);
 }
 
 inline
-sym_gms MatrixSymPosDefLBFGS::STS()
+DMatrixSliceSym MatrixSymPosDefLBFGS::STS()
 {
-	return LinAlgPack::nonconst_sym( STSYTY_(2,m_bar_+1,1,m_bar_),BLAS_Cpp::lower );
+	return DenseLinAlgPack::nonconst_sym( STSYTY_(2,m_bar_+1,1,m_bar_),BLAS_Cpp::lower );
 }
 
 inline
-const sym_gms MatrixSymPosDefLBFGS::STS() const
+const DMatrixSliceSym MatrixSymPosDefLBFGS::STS() const
 {
-	return LinAlgPack::sym( STSYTY_(2,m_bar_+1,1,m_bar_),BLAS_Cpp::lower );
+	return DenseLinAlgPack::sym( STSYTY_(2,m_bar_+1,1,m_bar_),BLAS_Cpp::lower );
 }
 
 inline
-sym_gms MatrixSymPosDefLBFGS::YTY()
+DMatrixSliceSym MatrixSymPosDefLBFGS::YTY()
 {
-	return LinAlgPack::nonconst_sym( STSYTY_(1,m_bar_,2,m_bar_+1),BLAS_Cpp::upper );
+	return DenseLinAlgPack::nonconst_sym( STSYTY_(1,m_bar_,2,m_bar_+1),BLAS_Cpp::upper );
 }
 
 inline
-const sym_gms MatrixSymPosDefLBFGS::YTY() const
+const DMatrixSliceSym MatrixSymPosDefLBFGS::YTY() const
 {
-	return LinAlgPack::sym( STSYTY_(1,m_bar_,2,m_bar_+1),BLAS_Cpp::upper );
+	return DenseLinAlgPack::sym( STSYTY_(1,m_bar_,2,m_bar_+1),BLAS_Cpp::upper );
 }
 
 // ///////////////////////
@@ -294,9 +294,9 @@ void MatrixSymPosDefLBFGS::Vp_StMtV(
 		mb = m_bar_;
 
 	wsp::Workspace<value_type>  t1_ws(wss,2*mb);
-	VectorSlice                 t1(&t1_ws[0],t1_ws.size());
+	DVectorSlice                 t1(&t1_ws[0],t1_ws.size());
 	wsp::Workspace<value_type>  t2_ws(wss,2*mb);
-	VectorSlice                 t2(&t2_ws[0],t2_ws.size());
+	DVectorSlice                 t2(&t2_ws[0],t2_ws.size());
 
 	VectorSpace::vec_mut_ptr_t
 		t = S->space_rows().create_member();
@@ -330,14 +330,14 @@ void MatrixSymPosDefLBFGS::V_InvMtV(
 	) const
 {
 	using AbstractLinAlgPack::Vp_StMtV;
-	using LinAlgPack::V_InvMtV;
+	using DenseLinAlgPack::V_InvMtV;
 	using LinAlgOpPack::V_mV;
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::Vp_MtV;
-	using LinAlgPack::Vp_StMtV;
+	using DenseLinAlgPack::Vp_StMtV;
 	typedef VectorDenseEncap         vde;
 	typedef VectorDenseMutableEncap  vdme;
 	namespace wsp = WorkspacePack;
@@ -391,23 +391,23 @@ void MatrixSymPosDefLBFGS::V_InvMtV(
 	// Get workspace
 
 	wsp::Workspace<value_type>    t1_ws(wss,2*mb);
-	VectorSlice                   t1(&t1_ws[0],t1_ws.size());
+	DVectorSlice                   t1(&t1_ws[0],t1_ws.size());
 	wsp::Workspace<value_type>    t2_ws(wss,mb);
-	VectorSlice                   t2(&t2_ws[0],t2_ws.size());
+	DVectorSlice                   t2(&t2_ws[0],t2_ws.size());
 	wsp::Workspace<value_type>    t3_ws(wss,mb);
-	VectorSlice                   t3(&t3_ws[0],t3_ws.size());
+	DVectorSlice                   t3(&t3_ws[0],t3_ws.size());
 	wsp::Workspace<value_type>    t4_ws(wss,mb);
-	VectorSlice                   t4(&t4_ws[0],t4_ws.size());
+	DVectorSlice                   t4(&t4_ws[0],t4_ws.size());
 	wsp::Workspace<value_type>    t5_ws(wss,mb);
-	VectorSlice                   t5(&t5_ws[0],t5_ws.size());
+	DVectorSlice                   t5(&t5_ws[0],t5_ws.size());
 
 	VectorSpace::vec_mut_ptr_t
 		t = S->space_rows().create_member();
 
-	const tri_gms
+	const DMatrixSliceTri
 		&R = this->R();
 
-	const sym_gms
+	const DMatrixSliceSym
 		&YTY = this->YTY();
 
 	// t1 = [   S'*x  ]
@@ -582,7 +582,7 @@ void MatrixSymPosDefLBFGS::secant_update(
 	// then set the appropriate rows and columns of S'S.
 
 	wsp::Workspace<value_type>   work_ws(wss,m_bar_);
-	VectorSlice                  work(&work_ws[0],work_ws.size());
+	DVectorSlice                  work(&work_ws[0],work_ws.size());
 
 	// work = S'*s(m_bar)
 	V_MtV( t.get(), *S, BLAS_Cpp::trans, *s );
@@ -647,15 +647,15 @@ void MatrixSymPosDefLBFGS::secant_update(
 
 // Private member functions
 
-void MatrixSymPosDefLBFGS::Vp_DtV( VectorSlice* y, const VectorSlice& x ) const
+void MatrixSymPosDefLBFGS::Vp_DtV( DVectorSlice* y, const DVectorSlice& x ) const
 {
-	LinAlgPack::Vp_MtV_assert_sizes(
+	DenseLinAlgPack::Vp_MtV_assert_sizes(
 		y->dim(), m_bar_, m_bar_, BLAS_Cpp::no_trans, x.dim() );
 
-	VectorSlice::const_iterator
+	DVectorSlice::const_iterator
 		d_itr	= STY_.diag(0).begin(),
 		x_itr	= x.begin();
-	VectorSlice::iterator
+	DVectorSlice::iterator
 		y_itr	= y->begin();
 
 	while( y_itr != y->end() )
@@ -689,9 +689,9 @@ void MatrixSymPosDefLBFGS::Vp_DtV( VectorSlice* y, const VectorSlice& x ) const
 
 void MatrixSymPosDefLBFGS::update_Q() const
 {
-	using LinAlgPack::tri;
-	using LinAlgPack::tri_ele;
-	using LinAlgPack::Mp_StM;
+	using DenseLinAlgPack::tri;
+	using DenseLinAlgPack::tri_ele;
+	using DenseLinAlgPack::Mp_StM;
 
 	//
 	// We need update the factorizations to solve for:
@@ -726,7 +726,7 @@ void MatrixSymPosDefLBFGS::update_Q() const
 	const size_type
 		mb = m_bar_;
 
-	GenMatrixSlice
+	DMatrixSlice
 		C = QJ_(1,mb,1,mb);
 
 	// C = L * inv(D) * L'
@@ -754,7 +754,7 @@ void MatrixSymPosDefLBFGS::update_Q() const
 
 	// C += (1/gk)*S'S
 
-	const sym_gms &STS = this->STS();
+	const DMatrixSliceSym &STS = this->STS();
 	Mp_StM( &C, (1/gamma_k_), tri( STS.gms(), STS.uplo(), BLAS_Cpp::nonunit )
 		, BLAS_Cpp::trans );
 
@@ -762,18 +762,18 @@ void MatrixSymPosDefLBFGS::update_Q() const
 	// After this factorization the upper triangular part of QJ
 	// (through C) will contain the cholesky factor.
 
-	tri_ele_gms C_upper = tri_ele( C, BLAS_Cpp::upper );
+	DMatrixSliceTriEle C_upper = tri_ele( C, BLAS_Cpp::upper );
 	LinAlgLAPack::potrf( &C_upper );
 
 	Q_updated_ = true;
 }
 
-void MatrixSymPosDefLBFGS::V_invQtV( VectorSlice* x, const VectorSlice& y ) const
+void MatrixSymPosDefLBFGS::V_invQtV( DVectorSlice* x, const DVectorSlice& y ) const
 {
-	using LinAlgPack::sym;
-	using LinAlgPack::tri;
-	using LinAlgPack::Vp_StV;
-	using LinAlgPack::V_InvMtV;
+	using DenseLinAlgPack::sym;
+	using DenseLinAlgPack::tri;
+	using DenseLinAlgPack::Vp_StV;
+	using DenseLinAlgPack::V_InvMtV;
 
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_MtV;
@@ -792,11 +792,11 @@ void MatrixSymPosDefLBFGS::V_invQtV( VectorSlice* x, const VectorSlice& y ) cons
 		update_Q();
 	}
 
-	VectorSlice
+	DVectorSlice
 		x1 = (*x)(1,mb),
 		x2 = (*x)(mb+1,2*mb);
 
-	const VectorSlice
+	const DVectorSlice
 		y1 = y(1,mb),
 		y2 = y(mb+1,2*mb);
 
@@ -806,10 +806,10 @@ void MatrixSymPosDefLBFGS::V_invQtV( VectorSlice* x, const VectorSlice& y ) cons
 	//     = inv(J) * inv(J') * r
 
 	{	// x1 = inv(D) * y2
-		VectorSlice::const_iterator
+		DVectorSlice::const_iterator
 			d_itr = STY_.diag(0).begin(),
 			y2_itr = y2.begin();
-		VectorSlice::iterator
+		DVectorSlice::iterator
 			x1_itr = x1.begin();
 		while( x1_itr != x1.end() )
 			*x1_itr++ = *y2_itr++ / *d_itr++;
@@ -826,7 +826,7 @@ void MatrixSymPosDefLBFGS::V_invQtV( VectorSlice* x, const VectorSlice& y ) cons
 	if( mb > 1 ) {
 		// x1(2,mb) = x1(1,mb-1) ( copy from mb-1 to mb then mb-2 to mb-1
 		// etc. so that we don't overwrite the elements we need to copy ).
-		VectorSlice
+		DVectorSlice
 			x1a = x1(1,mb-1),
 			x1b = x1(2,mb);
 		std::copy( x1a.rbegin(), x1a.rend(), x1b.rbegin() );
@@ -838,7 +838,7 @@ void MatrixSymPosDefLBFGS::V_invQtV( VectorSlice* x, const VectorSlice& y ) cons
 	Vp_V( &x1, y1 );
 
 	// x1 = inv(J') * r
-	const tri_gms J = tri( QJ_(1,mb,1,mb), BLAS_Cpp::upper, BLAS_Cpp::nonunit );
+	const DMatrixSliceTri J = tri( QJ_(1,mb,1,mb), BLAS_Cpp::upper, BLAS_Cpp::nonunit );
 	V_InvMtV( &x1, J, BLAS_Cpp::trans, x1 );
 
 	// x1 = inv(J) * x1
@@ -865,9 +865,9 @@ void MatrixSymPosDefLBFGS::V_invQtV( VectorSlice* x, const VectorSlice& y ) cons
 
 	// x2 = inv(D) * x2
 	{
-		VectorSlice::const_iterator
+		DVectorSlice::const_iterator
 			d_itr = STY_.diag(0).begin();
-		VectorSlice::iterator
+		DVectorSlice::iterator
 			x2_itr = x2.begin();
 		while( x2_itr != x2.end() )
 			*x2_itr++ /= *d_itr++;
@@ -886,8 +886,8 @@ void MatrixSymPosDefLBFGS::assert_initialized() const
 namespace {
 
 void comp_Cb(
-	const GenMatrixSlice& Lb, const VectorSlice& Db_diag
-	,GenMatrixSlice* Cb
+	const DMatrixSlice& Lb, const DVectorSlice& Db_diag
+	,DMatrixSlice* Cb
 	)
 {
 	// Lb * inv(Db) * Lb =
@@ -907,8 +907,8 @@ void comp_Cb(
 	//
 	// Cb(i,j) = sum( l(i,k)*dd(k)*l(j,k), k = 1,..,i )
 
-	typedef LinAlgPack::size_type size_type;
-	typedef LinAlgPack::value_type value_type;
+	typedef DenseLinAlgPack::size_type size_type;
+	typedef DenseLinAlgPack::value_type value_type;
 
 	assert( Lb.rows() == Cb->rows() && Cb->rows() == Db_diag.dim() ); // only a local error!
 

@@ -18,7 +18,7 @@
 
 #include "ConstrainedOptimizationPackTypes.hpp"
 #include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "Miref_count_ptr.h"
 #include "MiReleaseResource.h"
 
@@ -69,10 +69,10 @@ public:
 	MatrixSymPosDefBandedChol(
 		size_type                         n                       = 0
 		,size_type                        kd                      = 0
-		,GenMatrixSlice                   *MB                     = NULL
+		,DMatrixSlice                   *MB                     = NULL
 		,const release_resource_ptr_t&    MB_release_resource_ptr = NULL
 		,BLAS_Cpp::Uplo                   MB_uplo                 = BLAS_Cpp::lower
-		,GenMatrixSlice                   *UB                     = NULL
+		,DMatrixSlice                   *UB                     = NULL
 		,const release_resource_ptr_t&    UB_release_resource_ptr = NULL
 		,BLAS_Cpp::Uplo                   UB_uplo                 = BLAS_Cpp::lower
 		,bool                             update_factor           = false
@@ -118,10 +118,10 @@ public:
 	void initialize(
 		size_type                         n                       = 0
 		,size_type                        kd                      = 0
-		,GenMatrixSlice                   *MB                     = NULL
+		,DMatrixSlice                   *MB                     = NULL
 		,const release_resource_ptr_t&    MB_release_resource_ptr = NULL
 		,BLAS_Cpp::Uplo                   MB_uplo                 = BLAS_Cpp::lower
-		,GenMatrixSlice                   *UB                     = NULL
+		,DMatrixSlice                   *UB                     = NULL
 		,const release_resource_ptr_t&    UB_release_resource_ptr = NULL
 		,BLAS_Cpp::Uplo                   UB_uplo                 = BLAS_Cpp::lower
 		,bool                             update_factor           = false
@@ -133,17 +133,17 @@ public:
 	///
 	/** Get view of MB.
 	 */
-	GenMatrixSlice& MB();
+	DMatrixSlice& MB();
 	///
-	const GenMatrixSlice& MB() const;
+	const DMatrixSlice& MB() const;
 	///
 	BLAS_Cpp::Uplo MB_uplo() const;
 	///
 	/** Get view of UB.
 	 */
-	GenMatrixSlice& UB();
+	DMatrixSlice& UB();
 	///
-	const GenMatrixSlice& UB() const;
+	const DMatrixSlice& UB() const;
 	///
 	BLAS_Cpp::Uplo UB_uplo() const;
 
@@ -157,18 +157,18 @@ public:
 	///
 	std::ostream& output(std::ostream& out) const;
 	///
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2, value_type beta) const;
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2, value_type beta) const;
 	///
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
 	///
-	void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
+	void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
-		, const VectorSlice& vs_rhs3, value_type beta) const;
+		, const DVectorSlice& vs_rhs3, value_type beta) const;
 	///
-	void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
+	void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
 		, const SpVectorSlice& sv_rhs3, value_type beta) const;
@@ -177,8 +177,8 @@ public:
 	// Overridden from MatrixFactorized
 
 	/// With throw exception if factorization is not allowed.
-	void V_InvMtV(VectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2) const;
+	void V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2) const;
 
 private:
 	
@@ -187,10 +187,10 @@ private:
 
 	size_type                       n_;
 	size_type                       kd_;
-	GenMatrixSlice                  MB_;
+	DMatrixSlice                  MB_;
 	release_resource_ptr_t          MB_release_resource_ptr_;
 	BLAS_Cpp::Uplo                  MB_uplo_;
-	mutable GenMatrixSlice          UB_;
+	mutable DMatrixSlice          UB_;
 	mutable release_resource_ptr_t  UB_release_resource_ptr_;
 	mutable BLAS_Cpp::Uplo          UB_uplo_;
 	mutable bool                    factor_updated_;
@@ -214,13 +214,13 @@ size_type MatrixSymPosDefBandedChol::kd() const
 }
 
 inline
-GenMatrixSlice& MatrixSymPosDefBandedChol::MB()
+DMatrixSlice& MatrixSymPosDefBandedChol::MB()
 {
 	return MB_;
 }
 
 inline
-const GenMatrixSlice& MatrixSymPosDefBandedChol::MB() const
+const DMatrixSlice& MatrixSymPosDefBandedChol::MB() const
 {
 	return MB_;
 }
@@ -232,13 +232,13 @@ BLAS_Cpp::Uplo MatrixSymPosDefBandedChol::MB_uplo() const
 }
 
 inline
-GenMatrixSlice& MatrixSymPosDefBandedChol::UB()
+DMatrixSlice& MatrixSymPosDefBandedChol::UB()
 {
 	return UB_;
 }
 
 inline
-const GenMatrixSlice& MatrixSymPosDefBandedChol::UB() const
+const DMatrixSlice& MatrixSymPosDefBandedChol::UB() const
 {
 	return UB_;
 }

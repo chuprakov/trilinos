@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// LinAlgPackAssertOp.hpp
+// DenseLinAlgPackAssertOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef LIN_ALG_PACK_ASSERT_OP_H
 #define LIN_ALG_PACK_ASSERT_OP_H
 
-#include "LinAlgPackTypes.hpp"
+#include "DenseLinAlgPackTypes.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 #ifdef LINALGPACK_CHECK_RHS_SIZES
 
@@ -137,6 +137,6 @@ void Mp_MtM_assert_sizes(
 
 #endif
 
-} // end namespace LinAlgPack
+} // end namespace DenseLinAlgPack
 
 #endif	// LIN_ALG_PACK_ASSERT_OP_H

@@ -15,21 +15,21 @@
 
 #include "SparseLinAlgPack/src/sparse_bounds_diff.hpp"
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
 void SparseLinAlgPack::imp_sparse_bnd_diff(
 	  int						sign
 	, const SpVectorSlice		&sv
 	, BLAS_Cpp::Uplo			uplo
-	, const VectorSlice			&v
-	, VectorSlice				*r
+	, const DVectorSlice			&v
+	, DVectorSlice				*r
 	)
 {
-	LinAlgPack::Vp_V_assert_sizes(r->size(),sv.size());
-	LinAlgPack::VopV_assert_sizes(sv.size(),v.size());
+	DenseLinAlgPack::Vp_V_assert_sizes(r->size(),sv.size());
+	DenseLinAlgPack::VopV_assert_sizes(sv.size(),v.size());
 
-	typedef LinAlgPack::value_type value_type;
+	typedef DenseLinAlgPack::value_type value_type;
 	const value_type
 		inf = std::numeric_limits<value_type>::max();
 	*r = ( uplo == BLAS_Cpp::upper ? inf : -inf );
@@ -39,7 +39,7 @@ void SparseLinAlgPack::imp_sparse_bnd_diff(
 	{
 		(*r)(itr->indice() + o) = itr->value();
 	}
-	LinAlgPack::Vp_StV( r, -1.0, v );
+	DenseLinAlgPack::Vp_StV( r, -1.0, v );
 	if( sign < 0 )
-		LinAlgPack::Vt_S( r, -1.0 );
+		DenseLinAlgPack::Vt_S( r, -1.0 );
 }

@@ -18,10 +18,10 @@
 
 #include "ConstrainedOptimizationPack/src/MatrixSymAddDelBunchKaufman.hpp"
 #include "LinAlgLAPack/src/LinAlgLAPack.hpp"
-#include "LinAlgPack/src/GenMatrixOut.hpp"
-#include "LinAlgPack/src/GenMatrixOp.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
-#include "LinAlgPack/src/delete_row_col.hpp"
+#include "DenseLinAlgPack/src/DMatrixOut.hpp"
+#include "DenseLinAlgPack/src/DMatrixOp.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/delete_row_col.hpp"
 
 namespace ConstrainedOptimizationPack {
 
@@ -82,7 +82,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
 }
 
 void MatrixSymAddDelBunchKaufman::initialize(
-	const sym_gms      &A
+	const DMatrixSliceSym      &A
 	,size_type         max_size
 	,bool              force_factorization
 	,Inertia           expected_inertia
@@ -91,8 +91,8 @@ void MatrixSymAddDelBunchKaufman::initialize(
 {
 	using BLAS_Cpp::upper;
 	using BLAS_Cpp::lower;
-	using LinAlgPack::tri_ele;
-	using LinAlgPack::nonconst_tri_ele;
+	using DenseLinAlgPack::tri_ele;
+	using DenseLinAlgPack::nonconst_tri_ele;
 	typedef MatrixSymAddDelUpdateable  MSADU;
 	typedef MSADU::Inertia   Inertia;
 
@@ -140,7 +140,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
 			//
 			bool fact_in1 = !fact_in1_;
 			// Set the new matrix in the unused factorization location
-			LinAlgPack::assign(	&DU(n,fact_in1), tri_ele( A.gms(), A.uplo() ) );
+			DenseLinAlgPack::assign(	&DU(n,fact_in1), tri_ele( A.gms(), A.uplo() ) );
 			// Update the factorization in place
 			try {
 				factor_matrix( n, fact_in1 );
@@ -166,7 +166,7 @@ void MatrixSymAddDelBunchKaufman::initialize(
 			else {
 				// Indead the new matrix is indefinite
 				// Set the original matrix now
-				LinAlgPack::assign(	&LinAlgPack::nonconst_tri_ele( S(n).gms(), BLAS_Cpp::lower)
+				DenseLinAlgPack::assign(	&DenseLinAlgPack::nonconst_tri_ele( S(n).gms(), BLAS_Cpp::lower)
 									, tri_ele( A.gms(), A.uplo() ) );
 				// Update the state variables:
 				S_size_       = n;
@@ -202,7 +202,7 @@ void MatrixSymAddDelBunchKaufman::set_uninitialized()
 }
 
 void MatrixSymAddDelBunchKaufman::augment_update(
-	const VectorSlice  *t
+	const DVectorSlice  *t
 	,value_type        alpha
 	,bool              force_refactorization
 	,EEigenValType     add_eigen_val
@@ -210,7 +210,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 	)
 {
 	using BLAS_Cpp::no_trans;
-	using LinAlgPack::norm_inf;
+	using DenseLinAlgPack::norm_inf;
 	using SparseLinAlgPack::transVtInvMtV;
 	typedef MatrixSymAddDelUpdateable  MSADU;
 
@@ -287,7 +287,7 @@ void MatrixSymAddDelBunchKaufman::augment_update(
 	// methods in the interest of time savings.
 	//
 	const size_type n     = S_size_;
-	GenMatrixSlice  S_bar = this->S(n+1).gms();
+	DMatrixSlice  S_bar = this->S(n+1).gms();
 	//
 	// Validate that the new matrix will be nonsingular.
 	//
@@ -456,8 +456,8 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 {
 	using BLAS_Cpp::upper;
 	using BLAS_Cpp::lower;
-	using LinAlgPack::tri_ele;
-	using LinAlgPack::nonconst_tri_ele;
+	using DenseLinAlgPack::tri_ele;
+	using DenseLinAlgPack::nonconst_tri_ele;
 	typedef MatrixSymAddDelUpdateable  MSADU;
 
 	assert_initialized();
@@ -506,8 +506,8 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 			// to zero and thrown an exception.
 			try {
 				// Delete row and column jd from M
-				GenMatrixSlice S = this->S(S_size_).gms();
-				LinAlgPack::delete_row_col( jd, &LinAlgPack::nonconst_tri_ele(S,BLAS_Cpp::lower) ); 
+				DMatrixSlice S = this->S(S_size_).gms();
+				DenseLinAlgPack::delete_row_col( jd, &DenseLinAlgPack::nonconst_tri_ele(S,BLAS_Cpp::lower) ); 
 				// Setup S_chol and factor the thing
 				S_chol_.init_setup(&S_store1_(),MemMngPack::null,0,true,true,true,false,0.0);
 				S_chol_.initialize( this->S(S_size_-1), S_store1_.rows()-1
@@ -544,17 +544,17 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 			// We have been given no indication that the new matrix is p.d. or n.d.
 			// so we will assume it is indefinite and go from there.
 			//
-			GenMatrixSlice  S  = this->S(S_size_).gms();
+			DMatrixSlice  S  = this->S(S_size_).gms();
 			if( force_refactorization ) {
 				// 
 				// Perform the refactorization carefully
 				//
 				const bool fact_in1 = !fact_in1_;
 				// Copy the original into the unused storage location
-				tri_ele_gms  DU = this->DU(S_size_,fact_in1);
-				LinAlgPack::assign(	&DU, tri_ele(S,lower) );
+				DMatrixSliceTriEle  DU = this->DU(S_size_,fact_in1);
+				DenseLinAlgPack::assign(	&DU, tri_ele(S,lower) );
 				// Delete row and column jd from the storage location for DU
-				LinAlgPack::delete_row_col( jd, &DU );
+				DenseLinAlgPack::delete_row_col( jd, &DU );
 				// Now factor the matrix inplace
 				try {
 					factor_matrix(S_size_-1,fact_in1);
@@ -589,7 +589,7 @@ void MatrixSymAddDelBunchKaufman::delete_update(
 				inertia_      = inertia;
 			}
 			// Delete the row and column jd from the original
-			LinAlgPack::delete_row_col( jd, &nonconst_tri_ele(S,lower) );
+			DenseLinAlgPack::delete_row_col( jd, &nonconst_tri_ele(S,lower) );
 			if( !force_refactorization ) {
 				//
 				// The refactorization was not forced
@@ -644,22 +644,22 @@ std::ostream& MatrixSymAddDelBunchKaufman::output(std::ostream& out) const
 }
 
 void MatrixSymAddDelBunchKaufman::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
-	,const VectorSlice& x, value_type b
+	DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	,const DVectorSlice& x, value_type b
 	) const
 {
-	LinAlgPack::Vp_MtV_assert_sizes( y->dim(), S_size_, S_size_, M_trans, x.dim() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes( y->dim(), S_size_, S_size_, M_trans, x.dim() );
 	// Use the unfactored matrix since this is more accurate!
-	LinAlgPack::Vp_StMtV( y, a, S(S_size_), BLAS_Cpp::no_trans, x, b );
+	DenseLinAlgPack::Vp_StMtV( y, a, S(S_size_), BLAS_Cpp::no_trans, x, b );
 }
 
 void MatrixSymAddDelBunchKaufman::V_InvMtV(
-	VectorSlice* y, BLAS_Cpp::Transp M_trans
-	,const VectorSlice& x
+	DVectorSlice* y, BLAS_Cpp::Transp M_trans
+	,const DVectorSlice& x
 	) const
 {
 	const size_type n = S_size_;
-	LinAlgPack::Vp_MtV_assert_sizes( y->dim(), n, n, M_trans, x.dim() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes( y->dim(), n, n, M_trans, x.dim() );
 	if( S_indef_ ) {
 		// Update the factorzation if needed
 		if(!fact_updated_) {
@@ -673,7 +673,7 @@ void MatrixSymAddDelBunchKaufman::V_InvMtV(
 		*y = x;
 		LinAlgLAPack::sytrs(
 			DU(S_size_,fact_in1_), &const_cast<IPIV_t&>(IPIV_)[0]
-			, &GenMatrixSlice(y->raw_ptr(),n,n,n,1), &WORK_() );
+			, &DMatrixSlice(y->raw_ptr(),n,n,n,1), &WORK_() );
 	}
 	else {
 		SparseLinAlgPack::V_InvMtV( y, S_chol_, M_trans, x );
@@ -699,9 +699,9 @@ void MatrixSymAddDelBunchKaufman::resize_DU_store( bool in_store1 )
 void MatrixSymAddDelBunchKaufman::copy_and_factor_matrix(
 	size_type S_size, bool fact_in1 )
 {
-	LinAlgPack::assign(
+	DenseLinAlgPack::assign(
 		&DU(S_size,fact_in1)
-		, LinAlgPack::tri_ele(S(S_size).gms(),BLAS_Cpp::lower) );
+		, DenseLinAlgPack::tri_ele(S(S_size).gms(),BLAS_Cpp::lower) );
 	factor_matrix(S_size,fact_in1);
 }
 
@@ -725,7 +725,7 @@ bool MatrixSymAddDelBunchKaufman::compute_assert_inertia(
 	*gamma = 0.0;
 	// Here we will compute the inertia given IPIV[] and D[] as described in the documentation
 	// for dsytrf(...) (see the source code).
-	const GenMatrixSlice DU = this->DU(S_size,fact_in1).gms();
+	const DMatrixSlice DU = this->DU(S_size,fact_in1).gms();
 	const size_type      n = DU.rows();
 	Inertia inertia(0,0,0);
 	value_type max_diag = 0.0;

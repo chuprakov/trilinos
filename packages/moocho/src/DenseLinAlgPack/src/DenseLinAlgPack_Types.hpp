@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////
-// LinAlgPackTypes.hpp
+// DenseLinAlgPackTypes.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,15 +16,15 @@
 #ifndef LINALGPACK_TYPES_H
 #define LINALGPACK_TYPES_H
 
-#include "LinAlgPackOptions.hpp"
+#include "DenseLinAlgPackOptions.hpp"
 #include "Range1D.hpp"
 #include "BLAS_CppTypes.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
-/** @name {\bf LinAlgPack Type Declarations}.
+/** @name {\bf DenseLinAlgPack Type Declarations}.
   *
-  * These are forward declarations of the types used with the LinAlgPack
+  * These are forward declarations of the types used with the DenseLinAlgPack
   * package (namespace).  In addition the BLAS_Cpp enumerations
   * \Ref{Transp}, \Ref{Side}, \Ref{Uplo}, and \Ref{Diag} and there values
   * are avalible using the qualifier #BLAS_Cpp#.
@@ -58,9 +58,9 @@ class VectorTmpl;
 template<class T>
 class VectorSliceTmpl;
 ///
-typedef VectorTmpl<value_type>                Vector;
+typedef VectorTmpl<value_type>                DVector;
 ///
-typedef VectorSliceTmpl<value_type>           VectorSlice;
+typedef VectorSliceTmpl<value_type>           DVectorSlice;
 ///
 typedef VectorTmpl<extended_value_type>       VectorExt;
 ///
@@ -68,20 +68,20 @@ typedef VectorSliceTmpl<extended_value_type>  VectorSliceExt;
 ///
 class TransVectorSlice;
 ///
-class GenMatrix;
+class DMatrix;
 ///
-class GenMatrixSlice;
+class DMatrixSlice;
 ///
 class TransGenMatrixSlice;
 ///
-class tri_ele_gms;
+class DMatrixSliceTriEle;
 ///
-class tri_gms;
+class DMatrixSliceTri;
 ///
-class sym_gms;
+class DMatrixSliceSym;
 
 //@}
 
-}  // namespace LinAlgPack
+}  // namespace DenseLinAlgPack
 
 #endif // LINALGPACK_TYPES_H

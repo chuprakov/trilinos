@@ -17,7 +17,7 @@
 #include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
 #include "AbstractLinAlgPack/src/LinAlgOpPack.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace ConstrainedOptimizationPack {
@@ -38,9 +38,9 @@ void QPSchurInitKKTSystemHessianFull::initialize_kkt_system(
 	,i_x_fixed_t          *i_x_fixed
 	,bnd_fixed_t          *bnd_fixed
 	,j_f_decomp_t         *j_f_decomp
-	,Vector               *b_X
+	,DVector               *b_X
 	,Ko_ptr_t             *Ko
-	,Vector               *fo
+	,DVector               *fo
 	) const
 {
 	namespace mmp = MemMngPack;

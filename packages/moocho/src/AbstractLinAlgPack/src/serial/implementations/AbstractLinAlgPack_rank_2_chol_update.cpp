@@ -14,18 +14,18 @@
 // above mentioned "Artistic License" for more details.
 
 #include "SparseLinAlgPack/src/rank_2_chol_update.hpp"
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
-#include "LinAlgPack/src/BLAS_Cpp.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
 
 void SparseLinAlgPack::rank_2_chol_update(
 	const value_type     a
-	,VectorSlice         *u
-	,const VectorSlice   &v
-	,VectorSlice         *w
-	,tri_ele_gms         *R
+	,DVectorSlice         *u
+	,const DVectorSlice   &v
+	,DVectorSlice         *w
+	,DMatrixSliceTriEle         *R
 	,BLAS_Cpp::Transp    R_trans
 	)
 {
@@ -34,10 +34,10 @@ void SparseLinAlgPack::rank_2_chol_update(
 	using BLAS_Cpp::upper;
 	using BLAS_Cpp::lower;
 	using BLAS_Cpp::rotg;
-	using LinAlgPack::row;
-	using LinAlgPack::col;
-	using LinAlgPack::rot;
-	using LinAlgPack::Vp_StV;
+	using DenseLinAlgPack::row;
+	using DenseLinAlgPack::col;
+	using DenseLinAlgPack::rot;
+	using DenseLinAlgPack::Vp_StV;
 	//
 	// The idea for this routine is to perform a set of givens rotations to return
 	// op(R) +a *u*v' back to triangular form.  The first set of (n-1) givens
@@ -108,7 +108,7 @@ void SparseLinAlgPack::rank_2_chol_update(
 	//       Q2 * op(R2) -> op(R_new)
 	// 
 	const size_type n = R->rows();
-	LinAlgPack::Mp_M_assert_sizes( n, n, no_trans, u->dim(), v.dim(), no_trans );
+	DenseLinAlgPack::Mp_M_assert_sizes( n, n, no_trans, u->dim(), v.dim(), no_trans );
 	// Is op(R) logically upper or lower triangular
 	const BLAS_Cpp::Uplo
 		opR_uplo = ( (R->uplo()==upper && R_trans==no_trans) || (R->uplo()==lower && R_trans==trans)
@@ -147,7 +147,7 @@ void SparseLinAlgPack::rank_2_chol_update(
 		rotg( &(*u)(i+di), &(*u)(i), &c, &s );
 		// [  c  s ] * [ op(R)(i+di,:) ] -> [ op(R)(i+di,:) ]
 		// [ -s  c ]   [ op(R)(i   ,:) ]    [ op(R)(i   ,:) ]
-		VectorSlice
+		DVectorSlice
 			opR_row_idi = row(R->gms(),R_trans,i+di),
 			opR_row_i   = row(R->gms(),R_trans,i);
 		if( opR_uplo == lower ) {
@@ -175,7 +175,7 @@ void SparseLinAlgPack::rank_2_chol_update(
 	// Q2 * R2 -> R_new
 	//
 	{for( size_type i = last_i; i != k; i-=di ) {
-		VectorSlice
+		DVectorSlice
 			opR_row_i   = row(R->gms(),R_trans,i),
 			opR_row_idi = row(R->gms(),R_trans,i-di);
 		value_type

@@ -56,9 +56,9 @@ convert_bnd_type( int bnd_type )
 /*
 
 // Get an element from a sparse vector and return zero if it does not exist
-LinAlgPack::value_type get_sparse_element(
+DenseLinAlgPack::value_type get_sparse_element(
 	const SparseLinAlgPack::SpVectorSlice& v
-	,LinAlgPack::size_type i
+	,DenseLinAlgPack::size_type i
 	)
 {
 	const SparseLinAlgPack::SpVectorSlice::element_type
@@ -264,7 +264,7 @@ ConstraintsRelaxedStd::pick_violated_policy() const
 }
 
 void ConstraintsRelaxedStd::pick_violated(
-	const VectorSlice& x_in, size_type* j_viol, value_type* constr_val
+	const DVectorSlice& x_in, size_type* j_viol, value_type* constr_val
 	,value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
 	) const
 {
@@ -330,7 +330,7 @@ void ConstraintsRelaxedStd::pick_violated(
 				e_k_mat.initialize(
 					A_bar_.m_eq(),1,1,0,0,GPMSIP::BY_ROW_AND_COL
 					,&(e_k_mat_row=k),&e_k_mat_col,false );
-				VectorSlice Fd_k_vec(&Fd_k,1);
+				DVectorSlice Fd_k_vec(&Fd_k,1);
 				SparseLinAlgPack::Vp_StPtMtV(   // ToDo: Use transVtMtV(...) instead!
 					&Fd_k_vec, 1.0, e_k_mat, BLAS_Cpp::trans
 					,*A_bar_.F(), A_bar_.trans_F(), d, 0.0 );
@@ -683,7 +683,7 @@ MatrixWithOp& ConstraintsRelaxedStd::MatrixConstraints::operator=(
 
 /* 10/25/00 I don't think we need this function yet!
 void ConstraintsRelaxedStd::MatrixConstraints::Mp_StPtMtP(
-	GenMatrixSlice* C, value_type a
+	DMatrixSlice* C, value_type a
 	,const GenPermMatrixSlice& P1, BLAS_Cpp::Transp P1_trans
 	,BLAS_Cpp::Transp M_trans
 	,const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans

@@ -42,7 +42,7 @@ static RTOpPack::RTOpC          axpy_op;
 class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
-		// Vector scalar assignment operator
+		// DVector scalar assignment operator
 		if(0>RTOp_TOp_assign_scalar_construct( 0.0, &assign_scalar_op.op() ))
 			assert(0);
 		if(0>RTOp_Server_add_op_name_vtbl(
@@ -50,7 +50,7 @@ public:
 			   ,&RTOp_TOp_assign_scalar_vtbl
 			   ))
 			assert(0);
-		// Vector assignment operator
+		// DVector assignment operator
 		if(0>RTOp_TOp_assign_vectors_construct( &assign_vec_op.op() ))
 			assert(0);
 		if(0>RTOp_Server_add_op_name_vtbl(

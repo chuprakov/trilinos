@@ -41,14 +41,14 @@ namespace SparseLinAlgPack {
  */ 
 void V_StMtV(
 	SpVector* sv_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
-	,BLAS_Cpp::Transp P_rhs1_trans, const VectorSlice& vs_rhs2
+	,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2
 	);
 
 inline
 /// <tt>sv_lhs = op(P_rhs1) * vs_rhs2</tt>
 void V_MtV(
 	SpVector* sv_lhs, const GenPermMatrixSlice& P_rhs1
-	,BLAS_Cpp::Transp P_rhs1_trans, const VectorSlice& vs_rhs2
+	,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2
 	)
 {
 	V_StMtV(sv_lhs,1.0,P_rhs1,P_rhs1_trans,vs_rhs2);
@@ -118,7 +118,7 @@ void V_MtV(
  */ 
 void Vp_StMtV(
 	SpVector* sv_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
-	,BLAS_Cpp::Transp P_rhs1_trans, const VectorSlice& vs_rhs2
+	,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2
 	);
 
 inline
@@ -127,7 +127,7 @@ inline
  */ 
 void Vp_MtV(
 	SpVector* sv_lhs, const GenPermMatrixSlice& P_rhs1
-	,BLAS_Cpp::Transp P_rhs1_trans, const VectorSlice& vs_rhs2
+	,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2
 	)
 {
 	Vp_StMtV(sv_lhs,1.0,P_rhs1,P_rhs1_trans,vs_rhs2);
@@ -135,13 +135,13 @@ void Vp_MtV(
 
 /// <tt>vs_lhs = alpha * op(P_rhs1) * vs_rhs2 + beta * vs_lhs</tt>
 void Vp_StMtV(
-	VectorSlice* vs_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
-	,BLAS_Cpp::Transp P_rhs1_trans, const VectorSlice& vs_rhs2, value_type beta = 1.0
+	DVectorSlice* vs_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
+	,BLAS_Cpp::Transp P_rhs1_trans, const DVectorSlice& vs_rhs2, value_type beta = 1.0
 	);
 
 /// <tt>vs_lhs = alpha * op(P_rhs1) * sv_rhs2 + beta * vs_lhs</tt>
 void Vp_StMtV(
-	VectorSlice* vs_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
+	DVectorSlice* vs_lhs, value_type alpha, const GenPermMatrixSlice& P_rhs1
 	,BLAS_Cpp::Transp P_rhs1_trans, const SpVectorSlice& sv_rhs2, value_type beta = 1.0)
 	;
 

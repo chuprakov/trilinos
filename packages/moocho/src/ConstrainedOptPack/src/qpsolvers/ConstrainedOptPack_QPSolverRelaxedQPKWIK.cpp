@@ -29,7 +29,7 @@
 #include "SparseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "SparseLinAlgPack/src/sparse_bounds.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "ThrowException.hpp"
 
@@ -123,7 +123,7 @@ inline
 T my_max( const T& v1, const T& v2 ) { return v1 > v2 ? v1 : v2; }
 
 using FortranTypes::f_int;
-typedef LinAlgPack::value_type value_type;
+typedef DenseLinAlgPack::value_type value_type;
 
 enum EConstraintType { NU_L, NU_U, GAMA_L, GAMA_U, LAMBDA, RELAXATION };
 char constraint_type_name[6][15] = { "NU_L", "NU_U", "GAMA_L", "GAMA_U", "LAMBDA", "RELAXATION" };
@@ -213,7 +213,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	)
 {
 	using DynamicCastHelperPack::dyn_cast;
-	using LinAlgPack::nonconst_tri_ele;
+	using DenseLinAlgPack::nonconst_tri_ele;
 	using LinAlgOpPack::dot;
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::assign;
@@ -305,7 +305,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 		IBND_t::iterator
 			IBND_itr = IBND_.begin(),
 			IBND_end = IBND_.begin() + M1_;
-		Vector::iterator
+		DVector::iterator
 			BL_itr = BL_.begin(),
 			BU_itr = BU_.begin(),
 			YPY_itr = YPY_.begin();
@@ -332,7 +332,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 		if( M2_ < m_in ) {
 			// Initialize BL, BU, YPY and A for sparse bounds on general inequalities
 			// written iterators
-			Vector::iterator
+			DVector::iterator
 				BL_itr		= BL_.begin() + M1_,
 				BU_itr		= BU_.begin() + M1_,
 				YPY_itr		= YPY_.begin() + M1_;
@@ -350,7 +350,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 				// Add the corresponding row of op(E) to A
 				// y == A.row(i)'
 				// y' = e_k' * op(E) => y = op(E')*e_k
-				VectorSlice y = A_.row(i);
+				DVectorSlice y = A_.row(i);
 				EtaVector e_k(k,eL_de().dim());
 				V_MtV( &y( 1, N_ ), *E, BLAS_Cpp::trans_not(trans_E), e_k() ); // op(E')*e_k
 			}
@@ -361,7 +361,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 			//
 			// Initialize BL(M1+1:M1+M2), BU(M1+1:M1+M2)
 			// and IBND(M1+1:M1+M2) = identity (only for my record, not used by QPKWIK)
-			Vector::iterator
+			DVector::iterator
 				BL_itr		= BL_.begin() + M1_,
 				BU_itr		= BU_.begin() + M1_;
 			IBND_t::iterator
@@ -450,7 +450,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 		typedef SpVector::element_type ele_t;
 		if(nu && nu_nz) {
 			VectorDenseEncap nu_de(*nu);
-			VectorSlice::const_iterator
+			DVectorSlice::const_iterator
 				nu_itr = nu_de().begin(),
 				nu_end = nu_de().end();
 			index_type i = 1;
@@ -462,7 +462,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 		}
 		if(mu && mu_nz) {
 			VectorDenseEncap mu_de(*mu);
-			VectorSlice::const_iterator
+			DVectorSlice::const_iterator
 				mu_itr = mu_de().begin(),
 				mu_end = mu_de().end();
 			index_type i = 1;

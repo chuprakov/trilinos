@@ -24,7 +24,7 @@
 #include "SparseLinAlgPack/src/SortByDescendingAbsValue.hpp"
 #include "SparseLinAlgPack/src/sparse_bounds.hpp"
 #include "SparseLinAlgPack/src/EtaVector.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "Miprofile_hack.h"
 
@@ -124,17 +124,17 @@ void QPSolverRelaxedQPOPTSOL::release_memory()
 QPSolverStats::ESolutionType
 QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 		  std::ostream* out, EOutputLevel olevel, ERunTests test_what
-		, const VectorSlice& g, const MatrixWithOp& G
+		, const DVectorSlice& g, const MatrixWithOp& G
 		, value_type etaL
 		, const SpVectorSlice& dL, const SpVectorSlice& dU
-		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const VectorSlice* b
+		, const MatrixWithOp* E, BLAS_Cpp::Transp trans_E, const DVectorSlice* b
 			, const SpVectorSlice* eL, const SpVectorSlice* eU
-		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const VectorSlice* f
+		, const MatrixWithOp* F, BLAS_Cpp::Transp trans_F, const DVectorSlice* f
 		, value_type* obj_d
-		, value_type* eta, VectorSlice* d
+		, value_type* eta, DVectorSlice* d
 		, SpVector* nu
-		, SpVector* mu, VectorSlice* Ed
-		, VectorSlice* lambda, VectorSlice* Fd
+		, SpVector* mu, DVectorSlice* Ed
+		, DVectorSlice* lambda, DVectorSlice* Fd
 	)
 {
 
@@ -180,7 +180,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 				eLU_itr( eL->begin(), eL->end(), eL->offset()
 						 , eU->begin(), eU->end(), eU->offset(), inf_bnd );
 			// written iterators
-			Vector::iterator
+			DVector::iterator
 				BL_itr		= BL_.begin() + N_,
 				BU_itr		= BU_.begin() + N_;
 			ibnds_t::iterator
@@ -195,7 +195,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 				// Add the corresponding row of [ op(E), -b ] to A
 				// y == A.row(i)
 				// y(1,n) = op(E')*e_k
-				VectorSlice y = A_.row(i);
+				DVectorSlice y = A_.row(i);
 				SparseLinAlgPack::EtaVector e_k(k,eL->size());
 				LinAlgOpPack::V_MtV( &y(1,n), *E, BLAS_Cpp::trans_not(trans_E), e_k() ); // op(E')*e_k
 				// y(n+1) = -b(k)
@@ -210,7 +210,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 			SparseLinAlgPack::sparse_bounds_itr
 				eLU_itr( eL->begin(), eL->end(), eL->offset()
 						 , eU->begin(), eU->end(), eU->offset(), inf_bnd );
-			Vector::iterator
+			DVector::iterator
 				BL_itr		= BL_.begin() + N_,
 				BU_itr		= BU_.begin() + N_;
 			ibnds_t::iterator
@@ -324,7 +324,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 		typedef SpVector::element_type ele_t;
 		ISTATE_t::const_iterator
 			istate_itr = ISTATE_.begin();
-		Vector::const_iterator
+		DVector::const_iterator
 			clamda_itr = CLAMDA_.begin();
 		for( size_type i = 1; i <= n; ++i, ++istate_itr, ++clamda_itr ) {
 			const f_int state = *istate_itr;
@@ -356,7 +356,7 @@ QPSolverRelaxedQPOPTSOL::imp_solve_qp(
 		typedef SpVector::element_type ele_t;
 		ISTATE_t::const_iterator
 			istate_itr = ISTATE_.begin() + N_;
-		Vector::const_iterator
+		DVector::const_iterator
 			clamda_itr = CLAMDA_.begin() + N_;
 		ibnds_t::const_iterator
 			bnd_itr = i_inequ_bnds_.begin();

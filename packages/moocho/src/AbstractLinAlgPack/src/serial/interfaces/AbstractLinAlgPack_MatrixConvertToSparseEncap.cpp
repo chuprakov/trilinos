@@ -18,7 +18,7 @@
 #include "SparseLinAlgPack/src/MatrixConvertToSparseEncap.hpp"
 #include "SparseLinAlgPack/src/MatrixExtractSparseElements.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "LinAlgPack/src/IVector.hpp"
+#include "DenseLinAlgPack/src/IVector.hpp"
 #include "ThrowException.hpp"
 
 namespace SparseLinAlgPack {

@@ -34,8 +34,8 @@ namespace ConstrainedOptimizationPack {
   * names #x_name# and #d_name# and max_term, max_k etc.
   * are replaced with their computed values.
   */
-void print_vector_change_stats( const VectorSlice& x, const char x_name[]
-	, const VectorSlice& d, const char d_name[], std::ostream& out );
+void print_vector_change_stats( const DVectorSlice& x, const char x_name[]
+	, const DVectorSlice& d, const char d_name[], std::ostream& out );
 
 }	// end namespace ConstrainedOptimizationPack
 

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// VectorOutFunc.cpp
+// DVectorOutFunc.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,10 +16,10 @@
 #include <ostream>
 #include <iomanip>
 
-#include "VectorOutFunc.hpp"
-#include "VectorClass.hpp"
+#include "DVectorOutFunc.hpp"
+#include "DVectorClass.hpp"
 
-std::ostream& LinAlgPack::output(std::ostream& os, const VectorSlice& vs
+std::ostream& DenseLinAlgPack::output(std::ostream& os, const DVectorSlice& vs
 	, LinAlgPackIO::fmtflags extra_flags)
 {
 	int w = os.width(0) - 1; // get the set width (minus 1 since a space is inserted)
@@ -27,7 +27,7 @@ std::ostream& LinAlgPack::output(std::ostream& os, const VectorSlice& vs
 	if( !(extra_flags & LinAlgPackIO::ignore_dim_bit) )
 		os << std::setw(0) << std::left << vs.dim() << std::endl << std::right;
 
-	VectorSlice::const_iterator itr = vs.begin();
+	DVectorSlice::const_iterator itr = vs.begin();
 	for( size_type i = 1; itr != vs.end(); ++i, ++itr ) {
 		os << " " << std::setw(w) << (*itr) << ":" << i; // insert a space to be sure there is white space
 		                                                 // inbetween adjacent elements.

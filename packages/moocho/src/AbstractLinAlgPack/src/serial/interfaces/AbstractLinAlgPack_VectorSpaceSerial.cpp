@@ -21,7 +21,7 @@
 #include "SparseLinAlgPack/src/MultiVectorMutableDense.hpp"
 #include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
 #include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "ThrowException.hpp"
 
 #ifdef _DEBUG

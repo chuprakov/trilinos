@@ -20,9 +20,9 @@
 #include "GeneralIterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
 #include "SparseLinAlgPack/src/MatrixWithOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;
@@ -32,7 +32,7 @@ bool ReducedSpaceSQPPack::CrossTermExactStd_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
 	using LinAlgOpPack::V_MtV;
-	using LinAlgPack::norm_inf;
+	using DenseLinAlgPack::norm_inf;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
@@ -47,7 +47,7 @@ bool ReducedSpaceSQPPack::CrossTermExactStd_Step::do_step(Algorithm& _algo
 	}
 
 	// tmp = HL * Ypy
-	Vector tmp;
+	DVector tmp;
 	V_MtV( &tmp, s.HL().get_k(0), BLAS_Cpp::no_trans, s.Ypy().get_k(0)() );
 	// w = Z' * tmp
 	V_MtV( &s.w().set_k(0).v(), s.Z().get_k(0), BLAS_Cpp::trans, tmp() );

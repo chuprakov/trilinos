@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// LinAlgPackIOFormat.hpp
+// DenseLinAlgPackIOFormat.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,9 +18,9 @@
 
 #include <ios>
 
-#include "LinAlgPackIOBasic.hpp"
+#include "DenseLinAlgPackIOBasic.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 namespace LinAlgPackIO {
 
 ///
@@ -102,7 +102,7 @@ template<class T> class const_bound_format;
 
 ///
 /** This class is used to allow some flexiblility in inputing
-  * and outputing of Vector, VectorSlice, GenMatrix and GenMatrixSlice objects.
+  * and outputing of DVector, DVectorSlice, DMatrix and DMatrixSlice objects.
   * It maintains format information for a #std::ios_base# object and adds
   * additional format information.
   *
@@ -233,7 +233,7 @@ public:
 	  *
 	  * These member functions are ment to mirror the type of standard input/output
 	  * manipulator functions accept they are used to set extra flags for 
-	  * #LinAlgPack::ignore_dim_bit# and #LinAlgPack::no_insert_newlines_bit#.
+	  * #DenseLinAlgPack::ignore_dim_bit# and #DenseLinAlgPack::no_insert_newlines_bit#.
 	  * This allows them to be set in the same statement that sets a standard
 	  * option.  For example you can write:
 	  *
@@ -412,7 +412,7 @@ private:
   * for a single output operation using the streams set formating 
   * and addition formating use something like:
   *
-  * #Vector v(1.0,5);#\\
+  * #DVector v(1.0,5);#\\
   * #format f; f.copy_format(cout);#\\
   * #f.width(10).fixed().ignore_dim();#\\
   * #cout << bind(f,v);#\\1
@@ -450,6 +450,6 @@ inline const_bound_format<T> cbind(const format& f, const T& obj) {
 //}
 
 }	// end namespace LinAlgPackIO
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif // LINALGPACK_IO_FORMAT_H

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// VectorOp.hpp
+// DVectorOp.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -14,44 +14,44 @@
 // above mentioned "Artistic License" for more details.
 //
 
-// See GenMatrixOp.hpp for description of naming convensions
+// See DMatrixOp.hpp for description of naming convensions
 
 #ifndef VECTOROP_H
 #define VECTOROP_H
 
-#include "VectorAssign.hpp"
+#include "DVectorAssign.hpp"
 
-/** @name {\bf Basic Vector Operation Functions (Level-1 BLAS)}.
+/** @name {\bf Basic DVector Operation Functions (Level-1 BLAS)}.
   *
   * These are functions that perform basic operations with vectors such as element-wise
   * linear algebra operations (e.g. v1 = v2 + v3, v1 = sin(v2)) and other vector 
   * related functions.  The functions that have vectors as lhs arguments come in
-  * two varieties: those with a Vector object as the lhs argument (v_lhs), those with
-  * a VectorSlice object as a lhs argument (vs_lhs).  Having different functions
-  * for Vector and VectorSlice objects as lhs arguments is important because
-  * Vectors resize to the rhs expression while VectorSlice objects do not.
+  * two varieties: those with a DVector object as the lhs argument (v_lhs), those with
+  * a DVectorSlice object as a lhs argument (vs_lhs).  Having different functions
+  * for DVector and DVectorSlice objects as lhs arguments is important because
+  * Vectors resize to the rhs expression while DVectorSlice objects do not.
   *
-  * Only VectorSlice objects are used as rhs arguments however.  When Vector objects
+  * Only DVectorSlice objects are used as rhs arguments however.  When DVector objects
   * are used to call these fucntions as rhs arguments, the implicit type conversion
-  * to a const temp VectorSlice will be performed to make the call work.
+  * to a const temp DVectorSlice will be performed to make the call work.
   * 
   * The implementations of these functions takes care of the following details:
   *
   * <ul>
-  *	<li> Resizing Vector LHS on assignment
+  *	<li> Resizing DVector LHS on assignment
   *	<li> Test for aliasing of assign(...) but not other functions
   *	<li> Check preconditions (sizes of arguments) if LINALGPACK_CHECK_RHS_SIZES is defined
   * </ul>
   *
   * These functions share common behavior and precondtions which are listed below.
   *
-  * Preconditions for functions with a VectorSlice object (vs_lhs) as a lhs argument
+  * Preconditions for functions with a DVectorSlice object (vs_lhs) as a lhs argument
   * (e.g. vs_lhs = abs(vs_rhs), vs_lhs = vs_rhs1 + vs_rhs2).
   *	<ul>
   * <li> #vs_lhs.size() ==# size of rhs expression  (throw #std::length_error#)
   * </ul>
   *
-  * Preconditions for functions with two VectorSlice objects (vs_rhs1, vs_rhs2) rhs arguments
+  * Preconditions for functions with two DVectorSlice objects (vs_rhs1, vs_rhs2) rhs arguments
   * (e.g. v_lhs = pow(vs_rhs1,vs_rhs2), result = trans(vs_rhs1,vs_rhs2)):
   *	<ul>
   * <li> #vs_rhs1.size() == vs_rhs2.size()#  (throw #std::length_error#)
@@ -64,14 +64,14 @@
   */
 
 //@{
-//		begin Basic Vector Operation Functions
+//		begin Basic DVector Operation Functions
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 /** @name {\bf Algebraic Functions}.
   *
   * The functions assign(...) are used by the implementation of the assignment operators for
-  * Vector and VectorSlice and therefore the user can use the assignment operator to
+  * DVector and DVectorSlice and therefore the user can use the assignment operator to
   * perform the copies.
   */
 
@@ -80,37 +80,37 @@ namespace LinAlgPack {
 
 
 /// vs_lhs += alpha
-void Vp_S(VectorSlice* vs_lhs, value_type alpha);
+void Vp_S(DVectorSlice* vs_lhs, value_type alpha);
 /// vs_lhs *= alpha (BLAS xSCAL) (*** Note that alpha == 0.0 is handeled as vs_lhs = 0.0)
-void Vt_S(VectorSlice* vs_lhs, value_type alpha);
+void Vt_S(DVectorSlice* vs_lhs, value_type alpha);
 /// vs_lhs += alpha * vs_rhs (BLAS xAXPY)
-void Vp_StV(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs);
+void Vp_StV(DVectorSlice* vs_lhs, value_type alpha, const DVectorSlice& vs_rhs);
 
 /// v_lhs = alpha (elementwise)
-//void assign(Vector* v_lhs, value_type alpha);
+//void assign(DVector* v_lhs, value_type alpha);
 /// v_lhs = vs_rhs.
-//void assign(Vector* v_lhs, const VectorSlice& vs_rhs);
+//void assign(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = vs_rhs1 + vs_rhs2
-void V_VpV(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2);
+void V_VpV(DVector* v_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// v_lhs = vs_rhs1 - vs_rhs2
-void V_VmV(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2);
+void V_VmV(DVector* v_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// v_lhs = - vs_rhs
-void V_mV(Vector* v_lhs, const VectorSlice& vs_rhs);
+void V_mV(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = alpha * vs_rhs
-void V_StV(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rhs);
+void V_StV(DVector* v_lhs, value_type alpha, const DVectorSlice& vs_rhs);
 
 /// vs_lhs = alpha (elementwise)
-//void assign(VectorSlice* vs_lhs, value_type alpha);
+//void assign(DVectorSlice* vs_lhs, value_type alpha);
 /// vs_lhs = vs_rhs
-//void assign(VectorSlice* vs_lhs, const VectorSlice& vx_rhs);
+//void assign(DVectorSlice* vs_lhs, const DVectorSlice& vx_rhs);
 /// vs_lhs = vs_rhs1 + vs_rhs2
-void V_VpV(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2);
+void V_VpV(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// vs_lhs = vs_rhs1 - vs_rhs2
-void V_VmV(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2);
+void V_VmV(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// vs_lhs = - vs_rhs
-void V_mV(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void V_mV(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = alpha * vs_rhs
-void V_StV(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs);
+void V_StV(DVectorSlice* vs_lhs, value_type alpha, const DVectorSlice& vs_rhs);
 
 ///
 /* Apply a plane (Givens) rotation.
@@ -120,142 +120,142 @@ void V_StV(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs);
  *
  * See "Handbook for Matrix Computations" section 2.4
  */
-void rot( const value_type c, const value_type s, VectorSlice* x, VectorSlice* y );
+void rot( const value_type c, const value_type s, DVectorSlice* x, DVectorSlice* y );
 
 //		end Algebraic Functions
 //@}
 
-/** @name {\bf Elementwise Math Vector / VectorSlice Functions}. */
+/** @name {\bf Elementwise Math DVector / DVectorSlice Functions}. */
 
 //@{
 //		begin Elementsize Math Functions
 
 /// vs_lhs = abs(vs_rhs)
-void abs(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void abs(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = asin(vs_rhs)
-void asin(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void asin(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = acos(vs_rhs)
-void acos(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void acos(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = atan(vs_rhs)
-void atan(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void atan(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = atan(vs_rhs1/vs_rhs2)
-void atan2(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2);
+void atan2(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// vs_lhs = atan(vs_rhs/alpha)
-void atan2(VectorSlice* vs_lhs, const VectorSlice& vs_rhs, value_type alpha);
+void atan2(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs, value_type alpha);
 /// vs_lhs = atan(alpha/vs_rhs)
-void atan2(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs);
+void atan2(DVectorSlice* vs_lhs, value_type alpha, const DVectorSlice& vs_rhs);
 /// vs_lhs = cos(vs_rhs)
-void cos(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void cos(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = cosh(vs_rhs)
-void cosh(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void cosh(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = exp(vs_rhs)
-void exp(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void exp(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = max(vs_rhs1,vs_rhs2)
-void max(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2);
+void max(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// vs_lhs = max(alpha,vs_rhs)
-void max(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs);
+void max(DVectorSlice* vs_lhs, value_type alpha, const DVectorSlice& vs_rhs);
 /// vs_lhs = min(vs_rhs1,vs_rhs2)
-void min(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2);
+void min(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// vs_lhs = mim(alpha,vs_rhs)
-void min(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs);
+void min(DVectorSlice* vs_lhs, value_type alpha, const DVectorSlice& vs_rhs);
 /// vs_lhs = pow(vs_rhs1,vs_rhs2)
-void pow(VectorSlice* vs_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2);
+void pow(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// vs_lhs = pow(vs_rhs,alpha)
-void pow(VectorSlice* vs_lhs, const VectorSlice& vs_rhs, value_type alpha);
+void pow(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs, value_type alpha);
 /// vs_lhs = pow(vs_rhs,n) 
-void pow(VectorSlice* vs_lhs, const VectorSlice& vs_rhs, int n);
+void pow(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs, int n);
 /// vs_lhs = pow(alpha,vs_rhs)
-void pow(VectorSlice* vs_lhs, value_type alpha, const VectorSlice& vs_rhs);
+void pow(DVectorSlice* vs_lhs, value_type alpha, const DVectorSlice& vs_rhs);
 /// vs_lhs = sqrt(vs_rhs)
-void sqrt(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void sqrt(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = sin(vs_rhs)
-void sin(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void sin(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = sinh(vs_rhs)
-void sinh(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void sinh(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = tan(vs_rhs)
-void tan(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void tan(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = tanh(vs_rhs)
-void tanh(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void tanh(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 
 /// v_lhs = abs(vs_rhs)
-void abs(Vector* v_lhs, const VectorSlice& vs_rhs);
+void abs(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = asin(vs_rhs)
-void asin(Vector* v_lhs, const VectorSlice& vs_rhs);
+void asin(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = acos(vs_rhs)
-void acos(Vector* v_lhs, const VectorSlice& vs_rhs);
+void acos(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = atan(vs_rhs)
-void atan(Vector* v_lhs, const VectorSlice& vs_rhs);
+void atan(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = atan(vs_rhs1/vs_rhs2)
-void atan2(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2);
+void atan2(DVector* v_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// v_lhs = atan(vs_rhs/alpha)
-void atan2(Vector* v_lhs, const VectorSlice& vs_rhs, value_type alpha);
+void atan2(DVector* v_lhs, const DVectorSlice& vs_rhs, value_type alpha);
 /// v_lhs = atan(alpha/vs_rhs)
-void atan2(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rhs);
+void atan2(DVector* v_lhs, value_type alpha, const DVectorSlice& vs_rhs);
 /// v_lhs = cos(vs_rhs)
-void cos(Vector* v_lhs, const VectorSlice& vs_rhs);
+void cos(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = cosh(vs_rhs)
-void cosh(Vector* v_lhs, const VectorSlice& vs_rhs);
+void cosh(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = exp(vs_rhs)
-void exp(Vector* v_lhs, const VectorSlice& vs_rhs);
+void exp(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = max(vs_rhs1,vs_rhs2)
-void max(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2);
+void max(DVector* v_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// v_lhs = max(alpha,vs_rhs)
-void max(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rhs);
+void max(DVector* v_lhs, value_type alpha, const DVectorSlice& vs_rhs);
 /// v_lhs = min(vs_rhs1,vs_rhs2)
-void min(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2);
+void min(DVector* v_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// v_lhs = mim(alpha,vs_rhs)
-void min(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rhs);
+void min(DVector* v_lhs, value_type alpha, const DVectorSlice& vs_rhs);
 /// v_lhs = pow(vs_rhs1,vs_rhs2)
-void pow(Vector* v_lhs, const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2);
+void pow(DVector* v_lhs, const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// v_lhs = pow(vs_rhs,alpha)
-void pow(Vector* v_lhs, const VectorSlice& vs_rhs, value_type alpha);
+void pow(DVector* v_lhs, const DVectorSlice& vs_rhs, value_type alpha);
 /// v_lhs = pow(vs_rhs,n) 
-void pow(Vector* v_lhs, const VectorSlice& vs_rhs, int n);
+void pow(DVector* v_lhs, const DVectorSlice& vs_rhs, int n);
 /// v_lhs = pow(alpha,vs_rhs)
-void pow(Vector* v_lhs, value_type alpha, const VectorSlice& vs_rhs2);
+void pow(DVector* v_lhs, value_type alpha, const DVectorSlice& vs_rhs2);
 /// v_lhs = sqrt(vs_rhs)
-void sqrt(Vector* v_lhs, const VectorSlice& vs_rhs);
+void sqrt(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = sin(vs_rhs)
-void sin(Vector* v_lhs, const VectorSlice& vs_rhs);
+void sin(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = sinh(vs_rhs)
-void sinh(Vector* v_lhs, const VectorSlice& vs_rhs);
+void sinh(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = tan(vs_rhs)
-void tan(Vector* v_lhs, const VectorSlice& vs_rhs);
+void tan(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// v_lhs = tanh(vs_rhs)
-void tanh(Vector* v_lhs, const VectorSlice& vs_rhs);
+void tanh(DVector* v_lhs, const DVectorSlice& vs_rhs);
 
 //		end Elementsize Math Functions
 //@}
 
-/** @name {\bf Scalar Returning and Misc VectorSlice Functions}. */
+/** @name {\bf Scalar Returning and Misc DVectorSlice Functions}. */
 
 //@{
-//		begin Scalar Returning VectorSlice Functions}
+//		begin Scalar Returning DVectorSlice Functions}
 
 /// result = vs_rhs1' * vs_rhs2 (BLAS xDOT)
-value_type dot(const VectorSlice& vs_rhs1, const VectorSlice& vs_rhs2);
+value_type dot(const DVectorSlice& vs_rhs1, const DVectorSlice& vs_rhs2);
 /// result = max(vs_rhs)
-value_type max(const VectorSlice& vs_rhs);
+value_type max(const DVectorSlice& vs_rhs);
 /// result = min(vs_rhs)
-value_type min(const VectorSlice& vs_rhs);
+value_type min(const DVectorSlice& vs_rhs);
 /// result = ||vs_rhs||1 (BLAS xASUM)
-value_type norm_1(const VectorSlice& vs_rhs);
+value_type norm_1(const DVectorSlice& vs_rhs);
 /// result = ||vs_rhs||2 (BLAS xNRM2)
-value_type norm_2(const VectorSlice& vs_rhs);
+value_type norm_2(const DVectorSlice& vs_rhs);
 /// result = ||vs_rhs||infinity (BLAS IxAMAX)
-value_type norm_inf(const VectorSlice& vs_rhs);
+value_type norm_inf(const DVectorSlice& vs_rhs);
 
 // Misc. operations
 
 /// swap(vs1, vs2). Swaps the contents of vs1 and vs2
-void swap(VectorSlice* vs1, VectorSlice* vs2);
+void swap(DVectorSlice* vs1, DVectorSlice* vs2);
 
-//		end Scalar Returning VectorSlice Functions
+//		end Scalar Returning DVectorSlice Functions
 //@}
 
-} // end namespace LinAlgPack
+} // end namespace DenseLinAlgPack
 
-//		end Basic Vector Operation Functions
+//		end Basic DVector Operation Functions
 //@}
 
 #endif // VECTOROP_H

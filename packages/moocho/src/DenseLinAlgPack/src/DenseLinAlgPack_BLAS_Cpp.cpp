@@ -25,7 +25,7 @@
 
 #include <stdexcept>
 
-#include "LinAlgPack/src/BLAS_Cpp.hpp"
+#include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
 
 // /////////////////////////////////////
 // Fortran function declarations.
@@ -61,10 +61,10 @@ FORTRAN_FUNC_DECL_UL(void,DROTM,drotm)(const f_int& N, f_dbl_prec* X, const f_in
 // Interchange vectors
 FORTRAN_FUNC_DECL_UL(void,DSWAP,dswap)(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY);
 
-// Vector scaling
+// DVector scaling
 FORTRAN_FUNC_DECL_UL(void,DSCAL,dscal)(const f_int& N, const f_dbl_prec& ALPHA, f_dbl_prec* X, const f_int& INCX);
 
-// Vector copy 
+// DVector copy 
 FORTRAN_FUNC_DECL_UL(void,DCOPY,dcopy)(const f_int& N, const f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY);
 
 // y = a*x + y
@@ -285,14 +285,14 @@ void BLAS_Cpp::swap(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec
 	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DSWAP,dswap)(N, X, INCX, Y, INCY);
 }		 	
 
-// Vector scaling
+// DVector scaling
 
 void BLAS_Cpp::scal(const f_int& N, const f_dbl_prec& ALPHA, f_dbl_prec* X, const f_int& INCX)
 {
 	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DSCAL,dscal)(N, ALPHA, X, INCX);
 }
 
-// Vector copy
+// DVector copy
 
 void BLAS_Cpp::copy(const f_int& N, const f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY)
 {

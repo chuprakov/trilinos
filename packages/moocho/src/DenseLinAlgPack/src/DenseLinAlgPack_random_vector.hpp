@@ -16,9 +16,9 @@
 #ifndef RANDOM_VECTOR_H
 #define RANDOM_VECTOR_H
 
-#include "LinAlgPackTypes.hpp"
+#include "DenseLinAlgPackTypes.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 ///
 /** Seed the random number generator
@@ -32,8 +32,8 @@ void seed_random_vector_generator( unsigned int );
   * The elements are randomly generated between
   * [l, u].
   */
-void random_vector( value_type l, value_type u, VectorSlice* v );
+void random_vector( value_type l, value_type u, DVectorSlice* v );
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif    // RANDOM_VECTOR_H

@@ -16,12 +16,12 @@
 #ifndef EXTENDED_VALUE_TYPE_H
 #define EXTENDED_VALUE_TYPE_H
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 	typedef long double extended_value_type;
 	// ToDo: Use doubledouble on platformes where long double
 	// is no larger than double
 
-} // end namespace LinAlgPack
+} // end namespace DenseLinAlgPack
 
 #endif // EXTENDED_VALUE_TYPE_H

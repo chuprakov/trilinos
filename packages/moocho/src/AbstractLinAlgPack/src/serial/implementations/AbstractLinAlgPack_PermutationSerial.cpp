@@ -17,9 +17,9 @@
 
 #include "SparseLinAlgPack/src/PermutationSerial.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "LinAlgPack/src/IVector.hpp"
-#include "LinAlgPack/src/PermVecMat.hpp"
-#include "LinAlgPack/src/PermOut.hpp"
+#include "DenseLinAlgPack/src/IVector.hpp"
+#include "DenseLinAlgPack/src/PermVecMat.hpp"
+#include "DenseLinAlgPack/src/PermOut.hpp"
 #include "ThrowException.hpp"
 
 namespace SparseLinAlgPack {
@@ -72,13 +72,13 @@ void PermutationSerial::initialize(
 	if( allocate_missing_perm && perm_.get() == NULL ) {
 		MemMngPack::ref_count_ptr<IVector>
 			_perm(new IVector(inv_perm_->size()));
-		LinAlgPack::inv_perm( *inv_perm_, _perm.get() );
+		DenseLinAlgPack::inv_perm( *inv_perm_, _perm.get() );
 		perm_ = _perm;
 	}
 	if( allocate_missing_perm && inv_perm_.get() == NULL ) {
 		MemMngPack::ref_count_ptr<IVector>
 			_inv_perm(new IVector(perm_->size()));
-		LinAlgPack::inv_perm( *perm_, _inv_perm.get() );
+		DenseLinAlgPack::inv_perm( *perm_, _inv_perm.get() );
 		inv_perm_ = _inv_perm;
 	}
 }
@@ -159,9 +159,9 @@ void PermutationSerial::permute(
 	}
 	if( p ) {
 		if( call_inv_perm )
-			LinAlgPack::inv_perm_ele( x_d(), *p, &y_d() );
+			DenseLinAlgPack::inv_perm_ele( x_d(), *p, &y_d() );
 		else
-			LinAlgPack::perm_ele( x_d(), *p, &y_d() );
+			DenseLinAlgPack::perm_ele( x_d(), *p, &y_d() );
 	}
 	else {
 		// Just the identity permutation, nothing to do!

@@ -19,17 +19,17 @@
 #include "MatrixWithOpSerial.hpp"
 #include "MatrixWithOpGetGMSMutable.hpp"
 #include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "ReleaseResource.hpp"
 
 namespace SparseLinAlgPack {
 
 ///
-/** <tt>MultiVectorMutable</tt> "Adapter" subclass for <tt>LinAlgPack::GenMatrixSlice</tt>
- * or <tt>LinAlgPack::GenMatrix</tt> object.
+/** <tt>MultiVectorMutable</tt> "Adapter" subclass for <tt>DenseLinAlgPack::DMatrixSlice</tt>
+ * or <tt>DenseLinAlgPack::DMatrix</tt> object.
  *
- * This class can be used either as a view of a <tt>LinAlgPack::GenMatrixSlice</tt> object
- * or as a storage type for a <tt>LinAlgPack::GenMatrix</tt> object.
+ * This class can be used either as a view of a <tt>DenseLinAlgPack::DMatrixSlice</tt> object
+ * or as a storage type for a <tt>DenseLinAlgPack::DMatrix</tt> object.
  *
  * To create a storage type with the dimensions of <tt>rows x cols</tt> just call the
  * constructor <tt>MatrixWithOpMutableDense(rows,cols)</tt> or after construction you
@@ -44,12 +44,12 @@ namespace SparseLinAlgPack {
  * perform the deallocation.
  *
  * If \c this has been initialized by <tt>this->initialize(rows,cols)</tt> and
- * if the client really needs to get at the <tt>LinAlgPack::GenMatrix</tt> object
+ * if the client really needs to get at the <tt>DenseLinAlgPack::DMatrix</tt> object
  * itself, then it can be obtained as:
  \code
  void f( MatrixWithOpMutableDense* M )
      namespace rmp = MemMngPack;
-     GenMatrix &_M = *dynamic_cast<rmp::ReleaseResource_ref_count_ptr<GenMatrix&> >(*M.gms_release()).ptr;
+     DMatrix &_M = *dynamic_cast<rmp::ReleaseResource_ref_count_ptr<DMatrix&> >(*M.gms_release()).ptr;
  \endcode
  * This is not pretty but it is not supposed to be.  Of course the above function will throw
  * an exception if the <tt>dynamic_cast<></tt> fails.
@@ -79,12 +79,12 @@ public:
 	/** Calls <tt>this->initialize(gms,gms_trans,gms_release)</tt>.
 	 */
 	MultiVectorMutableDense(
-		GenMatrixSlice                     gms
+		DMatrixSlice                     gms
 		,BLAS_Cpp::Transp                  gms_trans
 		,const release_resource_ptr_t&     gms_release
 		);
 	///
-	/** Call <tt>this->initialize(v,v_release)</tt> with an allocated <tt>LinAlgPack::Vector</tt>
+	/** Call <tt>this->initialize(v,v_release)</tt> with an allocated <tt>DenseLinAlgPack::DVector</tt>
 	 * object.
 	 */
 	void initialize(
@@ -103,7 +103,7 @@ public:
 	 * </ul>
 	 */
 	void initialize(
-		GenMatrixSlice                     gms
+		DMatrixSlice                     gms
 		,BLAS_Cpp::Transp                  gms_trans
 		,const release_resource_ptr_t&     gms_release
 		);
@@ -118,14 +118,14 @@ public:
 	 *
 	 * Note that calling this method may result in the matrix implementation
 	 * being modified.  Therefore, no other methods on \c this object should be
-	 * called until the <tt>GenMatrixSlice</tt> returned from this method is
+	 * called until the <tt>DMatrixSlice</tt> returned from this method is
 	 * discarded.
 	 */
-	GenMatrixSlice set_gms();
+	DMatrixSlice set_gms();
 	///
 	/** Return a const dense matrix.
 	 */
-	const GenMatrixSlice get_gms() const;
+	const DMatrixSlice get_gms() const;
 	///
 	/** Return if underlying matrix is being viewed as the transpose or non-transposed.
 	 */
@@ -142,9 +142,9 @@ public:
 	//@{
 
 	///
-	const GenMatrixSlice get_gms_view() const;
+	const DMatrixSlice get_gms_view() const;
 	///
-	void free_gms_view(const GenMatrixSlice* gms_view) const;
+	void free_gms_view(const DMatrixSlice* gms_view) const;
 
 	//@}
 
@@ -152,9 +152,9 @@ public:
 	//@{
 
 	///
-	GenMatrixSlice get_gms_view();
+	DMatrixSlice get_gms_view();
 	///
-	void commit_gms_view(GenMatrixSlice* gms_view);
+	void commit_gms_view(DMatrixSlice* gms_view);
 
 	//@}
 	
@@ -226,11 +226,11 @@ public:
 
 	///
 	void Vp_StMtV(
-		VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2, value_type beta) const;
+		DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2, value_type beta) const;
 	///
 	void Vp_StMtV(
-		VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
 
 	// ToDo: Add more overrides as they are needed!
@@ -268,7 +268,7 @@ private:
 	// ///////////////////////////////////////
 	// Private data members
 	
-	GenMatrixSlice            gms_;
+	DMatrixSlice            gms_;
 	BLAS_Cpp::Transp          gms_trans_;
 	release_resource_ptr_t    gms_release_;
 
@@ -278,14 +278,14 @@ private:
 // Inline members
 
 inline
-GenMatrixSlice
+DMatrixSlice
 MultiVectorMutableDense::set_gms()
 {
 	return gms_;
 }
 
 inline
-const GenMatrixSlice
+const DMatrixSlice
 MultiVectorMutableDense::get_gms() const
 {
 	return gms_;

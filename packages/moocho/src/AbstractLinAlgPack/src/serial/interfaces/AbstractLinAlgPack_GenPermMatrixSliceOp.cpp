@@ -18,18 +18,18 @@
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
 void SparseLinAlgPack::V_StMtV(
 	  SpVector* y, value_type a, const GenPermMatrixSlice& P
-	, BLAS_Cpp::Transp P_trans, const VectorSlice& x )
+	, BLAS_Cpp::Transp P_trans, const DVectorSlice& x )
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
-	using LinAlgPack::MtV_assert_sizes;
+	using DenseLinAlgPack::MtV_assert_sizes;
 
 	MtV_assert_sizes( P.rows(), P.cols(), P_trans, x.dim() );
 
@@ -79,7 +79,7 @@ void SparseLinAlgPack::V_StMtV(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
-	using LinAlgPack::MtV_assert_sizes;
+	using DenseLinAlgPack::MtV_assert_sizes;
 	MtV_assert_sizes( P.rows(), P.cols(), P_trans, x.dim() );
 
 	y->resize( BLAS_Cpp::rows( P.rows(), P.cols(), P_trans ), P.nz() );
@@ -124,12 +124,12 @@ void SparseLinAlgPack::V_StMtV(
 
 void SparseLinAlgPack::Vp_StMtV(
 	  SpVector* y, value_type a, const GenPermMatrixSlice& P
-	, BLAS_Cpp::Transp P_trans, const VectorSlice& x )
+	, BLAS_Cpp::Transp P_trans, const DVectorSlice& x )
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
-	using LinAlgPack::Vp_MtV_assert_sizes;
+	using DenseLinAlgPack::Vp_MtV_assert_sizes;
 
 	Vp_MtV_assert_sizes( y->dim(), P.rows(), P.cols(), P_trans, x.dim() );
 
@@ -174,11 +174,11 @@ void SparseLinAlgPack::Vp_StMtV(
 }
 
 void SparseLinAlgPack::Vp_StMtV(
-	  VectorSlice* y, value_type a, const GenPermMatrixSlice& P
-	, BLAS_Cpp::Transp P_trans, const VectorSlice& x, value_type b )
+	  DVectorSlice* y, value_type a, const GenPermMatrixSlice& P
+	, BLAS_Cpp::Transp P_trans, const DVectorSlice& x, value_type b )
 {
-	using LinAlgPack::Vt_S;
-	using LinAlgPack::Vp_MtV_assert_sizes;
+	using DenseLinAlgPack::Vt_S;
+	using DenseLinAlgPack::Vp_MtV_assert_sizes;
 	Vp_MtV_assert_sizes( y->dim(), P.rows(), P.cols(), P_trans, x.dim() );
 	// y = b*y
 	if( b == 0.0 )
@@ -190,8 +190,8 @@ void SparseLinAlgPack::Vp_StMtV(
 		if( b == 0.0 )
 			*y = 0.0;
 		else
-			LinAlgPack::Vt_S( y, b );
-		LinAlgPack::Vp_StV( &(*y)(1,P.nz()), a, x(1,P.nz()) );
+			DenseLinAlgPack::Vt_S( y, b );
+		DenseLinAlgPack::Vp_StV( &(*y)(1,P.nz()), a, x(1,P.nz()) );
 	}		
 	else if( P_trans == BLAS_Cpp::no_trans ) {
 		for( GenPermMatrixSlice::const_iterator itr = P.begin(); itr != P.end(); ++itr ) {
@@ -212,7 +212,7 @@ void SparseLinAlgPack::Vp_StMtV(
 }
 
 void SparseLinAlgPack::Vp_StMtV(
-	  VectorSlice* y, value_type a, const GenPermMatrixSlice& P
+	  DVectorSlice* y, value_type a, const GenPermMatrixSlice& P
 	, BLAS_Cpp::Transp P_trans, const SpVectorSlice& x, value_type b )
 {
 	using BLAS_Cpp::no_trans;
@@ -220,8 +220,8 @@ void SparseLinAlgPack::Vp_StMtV(
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
 	namespace GPMSIP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
-	using LinAlgPack::Vt_S;
-	using LinAlgPack::Vp_MtV_assert_sizes;
+	using DenseLinAlgPack::Vt_S;
+	using DenseLinAlgPack::Vp_MtV_assert_sizes;
 	
 	Vp_MtV_assert_sizes( y->dim(), P.rows(), P.cols(), P_trans, x.dim() );
 	// y = b*y
@@ -231,7 +231,7 @@ void SparseLinAlgPack::Vp_StMtV(
 		Vt_S(y,b);
 	// y += a*op(P)*x
 	if( P.is_identity() ) {
-		LinAlgPack::Vt_S( y, b ); // takes care of b == 0.0 and y == NaN
+		DenseLinAlgPack::Vt_S( y, b ); // takes care of b == 0.0 and y == NaN
 		SparseLinAlgPack::Vp_StV( &(*y)(1,P.nz()), a, x(1,P.nz()) );
 	}		
 	else if( x.is_sorted() ) {
@@ -335,7 +335,7 @@ void SparseLinAlgPack::intersection(
 	// There are several different possibilities for how to compute this
 	// intersection.
 	//
-	LinAlgPack::MtM_assert_sizes(
+	DenseLinAlgPack::MtM_assert_sizes(
 		P1.rows(), P1.cols() , P1_trans, P2.rows(), P2.cols() , P2_trans );
 	//
 	const size_type

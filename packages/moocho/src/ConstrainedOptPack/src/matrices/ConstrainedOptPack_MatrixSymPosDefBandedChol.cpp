@@ -18,9 +18,9 @@
 #include <sstream>
 
 #include "ConstrainedOptimizationPack/src/MatrixSymPosDefBandedChol.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/BLAS_Cpp.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
 #include "MiReleaseResource_ref_count_ptr.h"
 #include "MiWorkspacePack.h"
 
@@ -56,10 +56,10 @@ namespace ConstrainedOptimizationPack {
 MatrixSymPosDefBandedChol::MatrixSymPosDefBandedChol(
 	size_type                         n
 	,size_type                        kd
-	,GenMatrixSlice                   *MB
+	,DMatrixSlice                   *MB
 	,const release_resource_ptr_t&    MB_release_resource_ptr
 	,BLAS_Cpp::Uplo                   MB_uplo
-	,GenMatrixSlice                   *UB
+	,DMatrixSlice                   *UB
 	,const release_resource_ptr_t&    UB_release_resource_ptr
 	,BLAS_Cpp::Uplo                   UB_uplo
 	,bool                             update_factor
@@ -73,10 +73,10 @@ MatrixSymPosDefBandedChol::MatrixSymPosDefBandedChol(
 void MatrixSymPosDefBandedChol::initialize(
 	size_type                         n
 	,size_type                        kd
-	,GenMatrixSlice                   *MB
+	,DMatrixSlice                   *MB
 	,const release_resource_ptr_t&    MB_release_resource_ptr
 	,BLAS_Cpp::Uplo                   MB_uplo
-	,GenMatrixSlice                   *UB
+	,DMatrixSlice                   *UB
 	,const release_resource_ptr_t&    UB_release_resource_ptr
 	,BLAS_Cpp::Uplo                   UB_uplo
 	,bool                             update_factor
@@ -131,10 +131,10 @@ void MatrixSymPosDefBandedChol::initialize(
 	if( n == 0 ) {
 		n_                        = 0;
 		kd_                       = 0;
-		MB_.bind(GenMatrixSlice());
+		MB_.bind(DMatrixSlice());
 		MB_release_resource_ptr_  = NULL;
 		MB_uplo_                  = BLAS_Cpp::lower;
-		UB_.bind(GenMatrixSlice());
+		UB_.bind(DMatrixSlice());
 		UB_release_resource_ptr_  = NULL;
 		UB_uplo_                  = BLAS_Cpp::lower;
 		scale_                    = 1.0;
@@ -175,11 +175,11 @@ std::ostream& MatrixSymPosDefBandedChol::output(std::ostream& out) const
 }
 
 void MatrixSymPosDefBandedChol::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
-	, const VectorSlice& x, value_type b) const
+	DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	, const DVectorSlice& x, value_type b) const
 {
 	assert_initialized();
-	LinAlgPack::Vp_MtV_assert_sizes( y->size(), n_, n_, BLAS_Cpp::no_trans, x.size() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes( y->size(), n_, n_, BLAS_Cpp::no_trans, x.size() );
 	if( MB_.rows() ) {
 		BLAS_Cpp::sbmv(MB_uplo_,n_,kd_,a,MB_.col_ptr(1),MB_.max_rows(),x.raw_ptr(),x.stride()
 					   ,b,y->raw_ptr(),y->stride());
@@ -193,7 +193,7 @@ void MatrixSymPosDefBandedChol::Vp_StMtV(
 }
 
 void MatrixSymPosDefBandedChol::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type b) const
 {
 	assert_initialized();
@@ -201,17 +201,17 @@ void MatrixSymPosDefBandedChol::Vp_StMtV(
 }
 
 void MatrixSymPosDefBandedChol::Vp_StPtMtV(
-	VectorSlice* y, value_type a
+	DVectorSlice* y, value_type a
 	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	, BLAS_Cpp::Transp M_trans
-	, const VectorSlice& x, value_type b) const
+	, const DVectorSlice& x, value_type b) const
 {
 	assert_initialized();
 	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b); // ToDo: Implement spacialized operation when needed!
 }
 
 void MatrixSymPosDefBandedChol::Vp_StPtMtV(
-	VectorSlice* y, value_type a
+	DVectorSlice* y, value_type a
 	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type b) const
@@ -223,20 +223,20 @@ void MatrixSymPosDefBandedChol::Vp_StPtMtV(
 // Overridden from MatrixFactorized
 
 void MatrixSymPosDefBandedChol::V_InvMtV(
-	VectorSlice* y, BLAS_Cpp::Transp M_trans
-	, const VectorSlice& x) const
+	DVectorSlice* y, BLAS_Cpp::Transp M_trans
+	, const DVectorSlice& x) const
 {
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
 	assert_initialized();
 
-	LinAlgPack::Vp_MtV_assert_sizes( y->size(), n_, n_, BLAS_Cpp::no_trans, x.size() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes( y->size(), n_, n_, BLAS_Cpp::no_trans, x.size() );
 
 	update_factorization();
 
 	wsp::Workspace<value_type>  t_ws(wss,y->size());
-	VectorSlice                 t(&t_ws[0],t_ws.size());
+	DVectorSlice                 t(&t_ws[0],t_ws.size());
 
 	t = x;
 	
@@ -275,10 +275,10 @@ void MatrixSymPosDefBandedChol::update_factorization() const
 	if( !factor_updated_ ) {
 		if(UB_.rows() == 0) {
 			// Allocate our own storage for the banded cholesky factor!
-			typedef rcp::ref_count_ptr<GenMatrix>                  UB_ptr_t;
-			typedef rmp::ReleaseResource_ref_count_ptr<GenMatrix>  UB_rel_ptr_t;
+			typedef rcp::ref_count_ptr<DMatrix>                  UB_ptr_t;
+			typedef rmp::ReleaseResource_ref_count_ptr<DMatrix>  UB_rel_ptr_t;
 			typedef rcp::ref_count_ptr<UB_rel_ptr_t>               UB_rel_ptr_ptr_t;
-			UB_rel_ptr_ptr_t  UB_rel_ptr_ptr = new UB_rel_ptr_t(new GenMatrix);
+			UB_rel_ptr_ptr_t  UB_rel_ptr_ptr = new UB_rel_ptr_t(new DMatrix);
 			UB_rel_ptr_ptr->ptr->resize(kd_+1,n_);
 			UB_.bind( (*UB_rel_ptr_ptr->ptr)() );
 			UB_release_resource_ptr_ = rcp::rcp_implicit_cast<rmp::ReleaseResource>(UB_rel_ptr_ptr);

@@ -23,16 +23,16 @@
 #include <math.h>
 #endif
 
-#include "LinAlgPackTypes.hpp"
+#include "DenseLinAlgPackTypes.hpp"
 #include "update_success.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 using TestingHelperPack::update_success;
 
-/** @name VectorSlice and GenMatrixSlice comparison functions.
+/** @name DVectorSlice and DMatrixSlice comparison functions.
   *
-  * These functions compare the elements of two VectorSlice or GenMatrixSlice
+  * These functions compare the elements of two DVectorSlice or DMatrixSlice
   * objects.  If any of the corresponding elements does not obey
   * abs(ele1 - ele2) < sqrt(eps) then the functions return false, otherwise
   * they return true.  An exact test (bits) is not performed to allow for some round-off
@@ -51,46 +51,46 @@ const value_type sqrt_eps
 #endif
 
 ///
-bool comp(const VectorSlice& vs1, const VectorSlice& vs2);
+bool comp(const DVectorSlice& vs1, const DVectorSlice& vs2);
 
 ///
-bool comp(const VectorSlice& vs, value_type alpha);
+bool comp(const DVectorSlice& vs, value_type alpha);
 
 ///
-bool comp(const GenMatrixSlice& gms1, BLAS_Cpp::Transp trans1
-	, const GenMatrixSlice& gms2, BLAS_Cpp::Transp trans2);
+bool comp(const DMatrixSlice& gms1, BLAS_Cpp::Transp trans1
+	, const DMatrixSlice& gms2, BLAS_Cpp::Transp trans2);
 
 /////
-//bool comp(const GenMatrixSlice& gms1, const GenMatrixSlice& gms2);
+//bool comp(const DMatrixSlice& gms1, const DMatrixSlice& gms2);
 
 inline
 ///
-bool comp(const GenMatrixSlice& gms1, const GenMatrixSlice& gms2)
+bool comp(const DMatrixSlice& gms1, const DMatrixSlice& gms2)
 {
 	return comp(gms1, BLAS_Cpp::no_trans, gms2, BLAS_Cpp::no_trans);
 }
 
 ///
-bool comp(const GenMatrixSlice& gms1, value_type alpha);
+bool comp(const DMatrixSlice& gms1, value_type alpha);
 
 ///
-bool comp(const tri_ele_gms& tri_gms1, const tri_ele_gms& tri_gms2);
+bool comp(const DMatrixSliceTriEle& tri_gms1, const DMatrixSliceTriEle& tri_gms2);
 
 ///
-bool comp(const tri_ele_gms& tri_gms1, value_type alpha);
+bool comp(const DMatrixSliceTriEle& tri_gms1, value_type alpha);
 
 ///
-bool comp_less(const VectorSlice& vs, value_type alpha);
+bool comp_less(const DVectorSlice& vs, value_type alpha);
 
 //@}
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 // ////////////////////////////////////
 // Inline definitions
 
 //inline
-//bool LinAlgPack::comp(const GenMatrixSlice& gms1, const GenMatrixSlice& gms2)
+//bool DenseLinAlgPack::comp(const DMatrixSlice& gms1, const DMatrixSlice& gms2)
 //{
 //	return comp(gms1, BLAS_Cpp::no_trans, gms2, BLAS_Cpp::no_trans);
 //}

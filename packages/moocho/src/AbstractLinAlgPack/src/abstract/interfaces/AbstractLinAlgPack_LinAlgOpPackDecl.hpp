@@ -42,7 +42,7 @@ using AbstractLinAlgPack::MatrixNonsingular;
 ///
 using AbstractLinAlgPack::MatrixWithOpNonsingular;
 
-// Inject names of base linear algebra functions for LinAlgPack.
+// Inject names of base linear algebra functions for DenseLinAlgPack.
 // Note that this is neccesary in MS VC++ 5.0 because
 // it does not perform name lookups properly but it
 // is not adverse to the standard so it is a portable

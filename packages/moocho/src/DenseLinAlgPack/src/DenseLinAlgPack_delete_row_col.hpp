@@ -16,9 +16,9 @@
 #ifndef DELETE_ROW_COL_H
 #define DELETE_ROW_COL_H
 
-#include "LinAlgPackTypes.hpp"
+#include "DenseLinAlgPackTypes.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 ///
 /** Delete a symmetric row and a column form a triangular matrix.
@@ -76,8 +76,8 @@ namespace LinAlgPack {
  * <li> #1 <= kd <= M->rows()#
  * </ul>
  */
-void delete_row_col( size_type kd, tri_ele_gms* M );
+void delete_row_col( size_type kd, DMatrixSliceTriEle* M );
 
-} // end namespace LinAlgPack
+} // end namespace DenseLinAlgPack
 
 #endif  // DELETE_ROW_COL_H

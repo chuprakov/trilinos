@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// GenMatrixClass.cpp
+// DMatrixClass.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,38 +16,38 @@
 
 #include <iomanip>
 
-#include "GenMatrixClass.hpp"
+#include "DMatrixClass.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 // ////////////////////////////////////////////////////////////////////////////////
-// GenMatrixSlice
+// DMatrixSlice
 
-VectorSlice GenMatrixSlice::p_diag(difference_type k) const {
+DVectorSlice DMatrixSlice::p_diag(difference_type k) const {
 	if(k > 0) {
 		validate_col_subscript(k+1);
 		// upper diagonal (k > 0)
-		return VectorSlice( const_cast<value_type*>(col_ptr(1)) + k*max_rows()
+		return DVectorSlice( const_cast<value_type*>(col_ptr(1)) + k*max_rows()
 			, cols()-k > rows() ? rows() : cols()-k, max_rows()+1 );
 	}
 	// lower diagonal (k < 0) or center diagonal (k = 0)
 	validate_row_subscript(-k+1);
-	return VectorSlice( const_cast<value_type*>(col_ptr(1)) - k
+	return DVectorSlice( const_cast<value_type*>(col_ptr(1)) - k
 		, rows()+k > cols() ? cols() : rows()+k, max_rows()+1 );
 }
 
-EOverLap GenMatrixSlice::overlap(const GenMatrixSlice& gms) const
+EOverLap DMatrixSlice::overlap(const DMatrixSlice& gms) const
 {
-	typedef GenMatrixSlice::size_type size_type;
+	typedef DMatrixSlice::size_type size_type;
 	
-	const VectorSlice::value_type
+	const DVectorSlice::value_type
 		*raw_ptr1 = col_ptr(1),
 		*raw_ptr2 = gms.col_ptr(1);
 
 	if( !raw_ptr1 || !raw_ptr2 )
 		return NO_OVERLAP;		// If one of the views is unbound there can't be any overlap
 
-	VectorSlice::size_type
+	DVectorSlice::size_type
 		max_rows1 = max_rows(),
 		max_rows2 = gms.max_rows(),
 		rows1 = rows(),
@@ -67,7 +67,7 @@ EOverLap GenMatrixSlice::overlap(const GenMatrixSlice& gms) const
 		return NO_OVERLAP; // can't be any overlap
 	}
 
-	VectorSlice::size_type
+	DVectorSlice::size_type
 		start1 = 0,
 		start2 = raw_ptr2 - raw_ptr1;
 
@@ -95,75 +95,75 @@ EOverLap GenMatrixSlice::overlap(const GenMatrixSlice& gms) const
 }
 
 #ifdef LINALGPACK_CHECK_RANGE
-void GenMatrixSlice::validate_row_subscript(size_type i) const
+void DMatrixSlice::validate_row_subscript(size_type i) const
 {
 	if( i > rows() || !i )
-		throw std::out_of_range( "GenMatrixSlice::validate_row_subscript(i) :"
+		throw std::out_of_range( "DMatrixSlice::validate_row_subscript(i) :"
 									"row index i is out of bounds"				);
 }
 #endif
 
 #ifdef LINALGPACK_CHECK_RANGE
-void GenMatrixSlice::validate_col_subscript(size_type j) const
+void DMatrixSlice::validate_col_subscript(size_type j) const
 {
 	if( j > cols() || !j )
-		throw std::out_of_range( "GenMatrixSlice::validate_col_subscript(j) :"
+		throw std::out_of_range( "DMatrixSlice::validate_col_subscript(j) :"
 									"column index j is out of bounds"			);
 }
 #endif
 
 #ifdef LINALGPACK_CHECK_SLICE_SETUP
-void GenMatrixSlice::validate_setup(size_type size) const
+void DMatrixSlice::validate_setup(size_type size) const
 {
 	if( !ptr_ && !rows() && !cols() && !max_rows() )
 			return; // an unsized matrix slice is ok.
 	if( (rows() - 1) + (cols() - 1) * max_rows() + 1 > size )
-		throw std::out_of_range( "GenMatrixSlice::validate_setup() : "
-									" GenMatrixSlice constructed that goes past end of array" );
+		throw std::out_of_range( "DMatrixSlice::validate_setup() : "
+									" DMatrixSlice constructed that goes past end of array" );
 }
 #endif
 
 // /////////////////////////////////////////////////////////////////////////////////
-// GenMatrix
+// DMatrix
 
-VectorSlice GenMatrix::p_diag(difference_type k) const {	
+DVectorSlice DMatrix::p_diag(difference_type k) const {	
 	if(k > 0) {
 		validate_col_subscript(k+1);
 		// upper diagonal (k > 0)
-		return VectorSlice( const_cast<value_type*>(col_ptr(1)) + k * rows()
+		return DVectorSlice( const_cast<value_type*>(col_ptr(1)) + k * rows()
 			, cols()-k > rows() ? rows() : cols()-k, rows()+1 );
 	}
 	// lower diagonal (k < 0) or center diagonal (k = 0)
 	validate_row_subscript(-k+1);
-	return VectorSlice( const_cast<value_type*>(col_ptr(1)) - k
+	return DVectorSlice( const_cast<value_type*>(col_ptr(1)) - k
 		, rows()+k > cols() ? cols() : rows()+k, rows()+1 );
 }
 
-EOverLap GenMatrix::overlap(const GenMatrixSlice& gms) const {
+EOverLap DMatrix::overlap(const DMatrixSlice& gms) const {
 	return (*this)().overlap(gms);
 }
 
 #ifdef LINALGPACK_CHECK_RANGE
-void GenMatrix::validate_row_subscript(size_type i) const {
+void DMatrix::validate_row_subscript(size_type i) const {
 	if( i > rows() || !i )
-		throw std::out_of_range("GenMatrix::validate_row_subscript(i) : row index out of bounds");
+		throw std::out_of_range("DMatrix::validate_row_subscript(i) : row index out of bounds");
 }
 #endif
 
 #ifdef LINALGPACK_CHECK_RANGE
-void GenMatrix::validate_col_subscript(size_type j) const {
+void DMatrix::validate_col_subscript(size_type j) const {
 	if( j > cols() || !j )
-		throw std::out_of_range("GenMatrix::validate_col_subscript(j) : column index out of bounds");
+		throw std::out_of_range("DMatrix::validate_col_subscript(j) : column index out of bounds");
 }
 #endif
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 // ///////////////////////////////////////////////////////////////////////////////
 // Non-member funcitons
 
-void LinAlgPack::assert_gms_sizes(const GenMatrixSlice& gms1, BLAS_Cpp::Transp trans1
-	, const GenMatrixSlice& gms2, BLAS_Cpp::Transp trans2)
+void DenseLinAlgPack::assert_gms_sizes(const DMatrixSlice& gms1, BLAS_Cpp::Transp trans1
+	, const DMatrixSlice& gms2, BLAS_Cpp::Transp trans2)
 {
 	if	(
 			(trans1 == trans2) ? 

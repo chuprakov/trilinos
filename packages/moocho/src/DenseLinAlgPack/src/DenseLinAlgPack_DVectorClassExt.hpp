@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////////
-// VectorClassExt.hpp
+// DVectorClassExt.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,13 +18,13 @@
 
 #include <valarray>
 
-#include "VectorClassTmpl.hpp"
+#include "DVectorClassTmpl.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 	typedef VectorTmpl<extended_value_type>       VectorExt;
 	typedef VectorSliceTmpl<extended_value_type>  VectorSliceExt;
 
-} // end namespace LinAlgPack
+} // end namespace DenseLinAlgPack
 
 #endif	// end VECTOR_CLASS_EXT_H

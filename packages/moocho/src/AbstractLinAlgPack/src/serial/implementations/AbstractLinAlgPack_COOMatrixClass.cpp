@@ -17,8 +17,8 @@
 
 #include "COOMatrixClass.hpp"
 #include "SparseCOOReadMatrix.hpp"
-#include "LinAlgPack/src/IVector.hpp"
-#include "LinAlgPack/src/Range1D.hpp"
+#include "DenseLinAlgPack/src/IVector.hpp"
+#include "DenseLinAlgPack/src/Range1D.hpp"
 
 // Junk, test compilation
 //#include "MemMngPackDef.h"

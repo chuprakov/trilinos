@@ -16,9 +16,9 @@
 #ifndef MATLAB_PACK_H
 #define MATLAB_PACK_H
 
-#include "LinAlgPackTypes.hpp"
+#include "DenseLinAlgPackTypes.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 namespace MatlabPack {
 
 /** @name MatlabPack.
@@ -36,9 +36,9 @@ namespace MatlabPack {
 //@{
 
 ///
-/** Output a VectorSlice.
+/** Output a DVectorSlice.
   *
-  * The VectorSlice is output in the following format:
+  * The DVectorSlice is output in the following format:
   *
   \verbatim
 	name = [ vs(1); vs(2); ... vs(n); ];
@@ -47,13 +47,13 @@ namespace MatlabPack {
   * Above #n = vs.size()# and #'# is appended to the end if #trans != BLAS_Cpp::no_trans#.
   * Also, a newline character #\n# is appended to the end after #']'#.
   */
-std::ostream& out( std::ostream& o, const char* name, const VectorSlice& vs
+std::ostream& out( std::ostream& o, const char* name, const DVectorSlice& vs
 	, BLAS_Cpp::Transp trans = BLAS_Cpp::no_trans );
 
 ///
-/** Output a GenMatrixSlice.
+/** Output a DMatrixSlice.
   *
-  * The GenMatrixSlice is output in the following format:
+  * The DMatrixSlice is output in the following format:
   *
   \verbatim
 	name = [
@@ -68,7 +68,7 @@ std::ostream& out( std::ostream& o, const char* name, const VectorSlice& vs
   * if #trans != BLAS_Cpp::no_trans#.
   * Also, a newline character #\n# is appended to the end
   */
-std::ostream& out( std::ostream& o, const char* name, const GenMatrixSlice& gms
+std::ostream& out( std::ostream& o, const char* name, const DMatrixSlice& gms
 	, BLAS_Cpp::Transp trans = BLAS_Cpp::no_trans );
 
 //@}
@@ -76,6 +76,6 @@ std::ostream& out( std::ostream& o, const char* name, const GenMatrixSlice& gms
 //@}
 
 }	// end namespace MatlabPack
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif	// MATLAB_PACK_H

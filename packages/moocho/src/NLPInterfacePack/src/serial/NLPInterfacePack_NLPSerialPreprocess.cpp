@@ -16,7 +16,7 @@
 #include <assert.h>
 
 #include <iostream> // Debug only
-#include "LinAlgPack/src/PermOut.hpp"
+#include "DenseLinAlgPack/src/PermOut.hpp"
 
 #include <algorithm>
 #include <sstream>
@@ -30,10 +30,10 @@
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/VectorAuxiliaryOps.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/IVector.hpp"
-#include "LinAlgPack/src/PermVecMat.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/IVector.hpp"
+#include "DenseLinAlgPack/src/PermVecMat.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "dynamic_cast_verbose.hpp"
@@ -51,7 +51,7 @@ namespace NLPInterfacePack {
 value_type
 NLPSerialPreprocess::fixed_var_mult()
 {
-	return std::numeric_limits<LinAlgPack::Vector::value_type>::max()-100; // Don't know what to use?
+	return std::numeric_limits<DenseLinAlgPack::DVector::value_type>::max()-100; // Don't know what to use?
 }
 
 // Constructors / nitializers
@@ -156,7 +156,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	if( has_var_bounds ) {
 		// Determine which variables are fixed by bounds and
 		// adjust the bounds if needed.
-		Vector::iterator
+		DVector::iterator
 			xl_full		= xl_full_.begin(),
 			xu_full		= xu_full_.begin();
 		n_ = 0;
@@ -197,7 +197,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 	else {
 		// None of the variables are fixed by bounds because there are no bounds
 		n_ = n_full_;
-		LinAlgPack::identity_perm( &var_full_to_fixed_ );
+		DenseLinAlgPack::identity_perm( &var_full_to_fixed_ );
 	}
 
 //	std::cerr << "n_ =" << n_ << std::endl;
@@ -213,7 +213,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 		<< ", and the NLP is over determined and can not be solved!" );
 
 	// Initialize inverse of var_full_to_fixed_
-	LinAlgPack::inv_perm( var_full_to_fixed_, &inv_var_full_to_fixed_ );
+	DenseLinAlgPack::inv_perm( var_full_to_fixed_, &inv_var_full_to_fixed_ );
 
 //	std::cerr << "inv_var_full_to_fixed_ =\n"  << inv_var_full_to_fixed_;
 
@@ -234,11 +234,11 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 		if( !nlp_selects_basis() ) {
 			// The NLP is not selecting the first basis so set to the initial basis to
 			// the indentity permutations and assume full column rank for Gc.
-			LinAlgPack::identity_perm(&var_perm_);
+			DenseLinAlgPack::identity_perm(&var_perm_);
 //			std::cerr << "var_perm_ =\n" << var_perm_;
-			LinAlgPack::identity_perm(&equ_perm_);
+			DenseLinAlgPack::identity_perm(&equ_perm_);
 //			std::cerr << "equ_perm_ =\n" << equ_perm_;
-			LinAlgPack::identity_perm(&inv_equ_perm_);
+			DenseLinAlgPack::identity_perm(&inv_equ_perm_);
 //			std::cerr << "inv_equ_perm_ =\n" << inv_equ_perm_;
 			r_ = m_full_;
 			var_from_full( xinit_full_().begin(), xinit_.set_vec().begin() );
@@ -283,7 +283,7 @@ void NLPSerialPreprocess::initialize(bool test_setup)
 		}
 	}
 	else {
-		LinAlgPack::identity_perm(&var_perm_);
+		DenseLinAlgPack::identity_perm(&var_perm_);
 		r_ = 0;
 		var_from_full( xinit_full_().begin(), xinit_.set_vec().begin() );
 		if(has_var_bounds) {
@@ -420,26 +420,26 @@ void NLPSerialPreprocess::report_final_solution(
 {
 	// set x_full
 	VectorDenseEncap  x_d(x);
-	Vector x_full(n_full_);
+	DVector x_full(n_full_);
 	x_full = x_full_;	// set any fixed components (as well as the others at first)
 	var_to_full( x_d().begin(), x_full().begin() );	// set the nonfixed components
 	// set lambda_full
-	Vector lambda_full;
+	DVector lambda_full;
 	if( lambda ) {
 		VectorDenseEncap lambda_d(*lambda);
-		VectorSlice      lambda = lambda_d();
+		DVectorSlice      lambda = lambda_d();
 		lambda_full.resize(m_full_);
 		for(size_type j = 1; j <= m_full_; j++)
 			lambda_full(equ_perm_(j)) = lambda(j);
 	}
 	// set lambdaI_full
-	Vector lambdaI_full;
+	DVector lambdaI_full;
 	if(lambdaI) {
 		VectorDenseEncap lambdaI_d(*lambdaI);
 		lambdaI_full = lambdaI_d();
 	}
 	// set nu_full
-	Vector nu_full(n_full_);
+	DVector nu_full(n_full_);
 	if(nu) {
 		nu_full = 0.0; // We don't give lagrange multipliers for fixed varaibles!
 		// ToDo: Define a special constrant for multiplier values for fixed variables 
@@ -447,14 +447,14 @@ void NLPSerialPreprocess::report_final_solution(
 		var_to_full( nu_d().begin(), nu_full().begin() );	// set the nonfixed components
 	}
 	// Report the final solution
-	VectorSlice
-		lambda_orig   = lambda && m_orig_ ? lambda_full(1,m_orig_) : VectorSlice(),
+	DVectorSlice
+		lambda_orig   = lambda && m_orig_ ? lambda_full(1,m_orig_) : DVectorSlice(),
 		lambdaI_orig  = ( lambdaI
 						  ? lambdaI_full()
 						  : ( lambda && m_full_ > m_orig_ 
 							  ? lambda_full(m_orig_+1,m_full_)
-							  : VectorSlice() ) ),
-		nu_orig       = nu ? nu_full(1,n_orig_) : VectorSlice();
+							  : DVectorSlice() ) ),
+		nu_orig       = nu ? nu_full(1,n_orig_) : DVectorSlice();
 	imp_report_orig_final_solution(
 		x_full
 		,lambda_orig.dim()  ? &lambda_orig  : NULL
@@ -629,7 +629,7 @@ void NLPSerialPreprocess::get_basis(
 		(*equ_decomp) = Range1D(1,r_);
 	}
 	if(mI_full_) {
-		LinAlgPack::identity_perm( inequ_perm.get() ); // No decomposed inequalities right now!
+		DenseLinAlgPack::identity_perm( inequ_perm.get() ); // No decomposed inequalities right now!
 		*inequ_decomp = Range1D::Invalid;
 	}
 	// Reinitialize the Permutation arguments.
@@ -670,9 +670,9 @@ void NLPSerialPreprocess::imp_calc_c(
 		imp_calc_h_orig( x_full(), newx, zero_order_orig_info() );
 	VectorDenseMutableEncap  c_d(*zero_order_info.c);
 	equ_from_full(
-		m_orig_                            ? c_orig_()                     : VectorSlice()
-		,mI_orig_ && convert_inequ_to_equ_ ? h_orig_()                     : VectorSlice()
-		,mI_orig_ && convert_inequ_to_equ_ ? x_full()(n_orig_+1,n_full_)   : VectorSlice() // s_orig
+		m_orig_                            ? c_orig_()                     : DVectorSlice()
+		,mI_orig_ && convert_inequ_to_equ_ ? h_orig_()                     : DVectorSlice()
+		,mI_orig_ && convert_inequ_to_equ_ ? x_full()(n_orig_+1,n_full_)   : DVectorSlice() // s_orig
 		,&c_d()
 		);
 }
@@ -701,7 +701,7 @@ void NLPSerialPreprocess::imp_calc_Gf(
 	,const ObjGradInfo      &obj_grad_info
 	) const
 {
-	using LinAlgPack::Vt_S;
+	using DenseLinAlgPack::Vt_S;
 	assert_initialized();
 	VectorDenseEncap          x_d(x);
 	set_x_full( x_d(), newx, &x_full_() );
@@ -732,18 +732,18 @@ void NLPSerialPreprocess::assert_initialized() const
 }
 
 void NLPSerialPreprocess::set_x_full(
-	const VectorSlice& x, bool newx
-	,VectorSlice* x_full
+	const DVectorSlice& x, bool newx
+	,DVectorSlice* x_full
 	) const
 {
-	LinAlgPack::assert_vs_sizes(x.dim(),n_);
+	DenseLinAlgPack::assert_vs_sizes(x.dim(),n_);
 	if(newx)
 		var_to_full(x.begin(), x_full->begin());
 }
 
 void NLPSerialPreprocess::var_from_full(
-	VectorSlice::const_iterator   vec_full
-	,VectorSlice::iterator        vec
+	DVectorSlice::const_iterator   vec_full
+	,DVectorSlice::iterator        vec
 	) const
 {
 //	std::cout << "\nvar_from_full(...) : ";
@@ -758,17 +758,17 @@ void NLPSerialPreprocess::var_from_full(
 	}		
 }
 
-void NLPSerialPreprocess::var_to_full( VectorSlice::const_iterator vec, VectorSlice::iterator vec_full ) const
+void NLPSerialPreprocess::var_to_full( DVectorSlice::const_iterator vec, DVectorSlice::iterator vec_full ) const
 {
 	for(size_type i = 1; i <= n_; i++)
 		vec_full[var_full_to_fixed_(var_perm_(i)) - 1] = *vec++;
 }
 
 void NLPSerialPreprocess::equ_from_full(
-	const VectorSlice   &c_orig
-	,const VectorSlice  &h_orig
-	,const VectorSlice  &s_orig
-	,VectorSlice        *c_full
+	const DVectorSlice   &c_orig
+	,const DVectorSlice  &h_orig
+	,const DVectorSlice  &s_orig
+	,DVectorSlice        *c_full
 	) const
 {
 	size_type i;
@@ -979,7 +979,7 @@ void NLPSerialPreprocess::assert_and_set_basis(
 		var_perm_ = var_perm;
 	if( &equ_perm_ != &equ_perm )
 		equ_perm_ = equ_perm;
-	LinAlgPack::inv_perm( equ_perm_, &inv_equ_perm_ );
+	DenseLinAlgPack::inv_perm( equ_perm_, &inv_equ_perm_ );
 
 	var_from_full( xinit_full_().begin(), xinit_.set_vec().begin() );
 	if(num_bounded_x_) {

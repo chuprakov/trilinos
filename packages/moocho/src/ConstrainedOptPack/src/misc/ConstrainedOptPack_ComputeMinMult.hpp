@@ -28,7 +28,7 @@ namespace ConstrainedOptimizationPack {
 //@{
 
 /// Minimum |mu(i)|
-value_type min_abs( const VectorSlice& mu );
+value_type min_abs( const DVectorSlice& mu );
 
 /// Minimum |mu(i)|
 value_type min_abs( const SpVectorSlice& mu );

@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// GenMatrixOut.hpp
+// DMatrixOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,25 +16,25 @@
 #ifndef GENMATRIX_OUT_H
 #define GENMATRIX_OUT_H
 
-#include "GenMatrixOutFunc.hpp"
+#include "DMatrixOutFunc.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 ///
-/** GenMatrixSlice output stream operator.
+/** DMatrixSlice output stream operator.
   *
   * This operator function calls the function output(os,gms,0).
   */
-inline std::ostream& operator<<(std::ostream& os, const GenMatrixSlice& gms) {
+inline std::ostream& operator<<(std::ostream& os, const DMatrixSlice& gms) {
 	return output(os, gms, (LinAlgPackIO::fmtflags)(0));
 }
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 // ////////////////////////////////////
 // Inline function definitions
 
-//inline std::ostream& LinAlgPack::operator<<(std::ostream& os, const GenMatrixSlice& gms) {
+//inline std::ostream& DenseLinAlgPack::operator<<(std::ostream& os, const DMatrixSlice& gms) {
 //	return output(os, gms, 0);
 //}
 

@@ -216,23 +216,23 @@ bool MultiVectorMutableCols::syrk(
 	if(!symwo_gms_lhs) {
 		return MatrixWithOp::syrk(M_trans,alpha,beta,sym_lhs); // Boot it
 	}
-	MatrixDenseSymMutableEncap  sym_gms(symwo_gms_lhs);
+	MatrixDenseSymMutableEncap  DMatrixSliceSym(symwo_gms_lhs);
 	const int num_vecs = this->col_vecs_.size();
 	THROW_EXCEPTION(
-		num_vecs != sym_gms().rows(), std::logic_error
+		num_vecs != DMatrixSliceSym().rows(), std::logic_error
 		,"MultiVectorMutableCols::syrk(...) : Error, sizes do not match up!" );
 	// Fill the upper or lower triangular region.
-	if( sym_gms().uplo() == BLAS_Cpp::upper ) {
+	if( DMatrixSliceSym().uplo() == BLAS_Cpp::upper ) {
 		for( int i = 1; i <= num_vecs; ++i ) {
 			for( int j = i; j <= num_vecs; ++j ) { // Upper triangle!
-				sym_gms().gms()(i,j) = beta * sym_gms().gms()(i,j) + alpha * dot(*col_vecs_[i-1],*col_vecs_[j-1]);
+				DMatrixSliceSym().gms()(i,j) = beta * DMatrixSliceSym().gms()(i,j) + alpha * dot(*col_vecs_[i-1],*col_vecs_[j-1]);
 			}
 		}
 	}
 	else {
 		for( int i = 1; i <= num_vecs; ++i ) {
 			for( int j = 1; j <= i; ++j ) { // Lower triangle!
-				sym_gms().gms()(i,j) = beta * sym_gms().gms()(i,j) + alpha * dot(*col_vecs_[i-1],*col_vecs_[j-1]);
+				DMatrixSliceSym().gms()(i,j) = beta * DMatrixSliceSym().gms()(i,j) + alpha * dot(*col_vecs_[i-1],*col_vecs_[j-1]);
 			}
 		}
 	}

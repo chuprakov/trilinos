@@ -22,7 +22,7 @@
 
 #include "SparseSolverPack/src/DirectSparseSolverSuperLU.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "LinAlgPack/src/PermVecMat.hpp"
+#include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "ThrowException.hpp"
 #include "WorkspacePack.hpp"
@@ -35,9 +35,9 @@ void convet_to_csr(
 	int                                n
 	,int                               m
 	,int                               nz
-	,const LinAlgPack::value_type      a_val[]
-	,const LinAlgPack::index_type      a_row_i[]
-	,const LinAlgPack::index_type      a_col_j[]
+	,const DenseLinAlgPack::value_type      a_val[]
+	,const DenseLinAlgPack::index_type      a_row_i[]
+	,const DenseLinAlgPack::index_type      a_col_j[]
 	,double                            acsr_val[]
 	,int                               acsr_col_j[]
 	,int                               acsr_row_ptr[]
@@ -187,8 +187,8 @@ void DirectSparseSolverSuperLU::imp_analyze_and_factor(
 	const SparseLinAlgPack::MatrixConvertToSparse   &A
 	,FactorizationStructure                         *fact_struc
 	,FactorizationNonzeros                          *fact_nonzeros
-	,LinAlgPack::IVector                            *row_perm
-	,LinAlgPack::IVector                            *col_perm
+	,DenseLinAlgPack::IVector                            *row_perm
+	,DenseLinAlgPack::IVector                            *col_perm
 	,size_type                                      *rank
 	,std::ostream                                   *out
 	)

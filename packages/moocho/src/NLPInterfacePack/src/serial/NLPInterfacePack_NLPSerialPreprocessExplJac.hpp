@@ -21,7 +21,7 @@
 #include "NLPSerialPreprocess.hpp"
 #include "NLPFirstOrderInfo.hpp"
 #include "SparseSolverPack/src/BasisSystemFactoryStd.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "AbstractFactory.hpp"
 #include "StandardCompositionMacros.hpp"
 
@@ -205,7 +205,7 @@ protected:
 	 *
 	 * Objects of this type are passed on to subclasses and contain
 	 * pointers to quantities to be updated.  Note that %NLP
-	 * subclasses are not to resize the <tt>Vector</tt> or
+	 * subclasses are not to resize the <tt>DVector</tt> or
 	 * <tt>std::valarray</tt> objects <tt>Gc_val</tt>,
 	 * <tt>Gc_ivect</tt>, <tt>Gc_jvect</tt>, <tt>Gh_val</tt>,
 	 * <tt>Gh_ivect</tt>, <tt>Gh_jvect</tt>, <tt>*Gf</tt>, <tt>*c</tt>
@@ -269,13 +269,13 @@ protected:
 		///
 		jvect_t*      Gh_jvect;
 		///
-		Vector*       Gf;
+		DVector*       Gf;
 		///
 		value_type*   f;
 		///
-		Vector*       c;
+		DVector*       c;
 		///
-		Vector*       h;
+		DVector*       h;
 	}; // end struct FirstOrderExplInfo
 
 	//@}
@@ -338,7 +338,7 @@ protected:
 	 * matrix entries are considered to be summed.
 	 */
 	virtual void imp_calc_Gc_orig(
-		const VectorSlice& x_full, bool newx
+		const DVectorSlice& x_full, bool newx
 		, const FirstOrderExplInfo& first_order_expl_info
 		) const = 0;
 
@@ -379,7 +379,7 @@ protected:
 	 * matrix entries are considered to be summed.
 	 */
 	virtual void imp_calc_Gh_orig(
-		const VectorSlice& x_full, bool newx
+		const DVectorSlice& x_full, bool newx
 		, const FirstOrderExplInfo& first_order_expl_info
 		) const = 0;
 

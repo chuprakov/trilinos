@@ -16,8 +16,8 @@
 #include <math.h>
 
 #include "InvCholUpdate.hpp"
-#include "GenMatrixClass.hpp"
-#include "VectorOp.hpp"
+#include "DMatrixClass.hpp"
+#include "DVectorOp.hpp"
 
 namespace {
 // sign function
@@ -32,11 +32,11 @@ inline int sign(double v) {
 
 }
 
-void LinAlgPack::update_chol_factor(GenMatrixSlice* pM, VectorSlice* pu
-	, const VectorSlice& v)
+void DenseLinAlgPack::update_chol_factor(DMatrixSlice* pM, DVectorSlice* pu
+	, const DVectorSlice& v)
 {
-	GenMatrixSlice	&M = *pM;
-	VectorSlice		&u = *pu;
+	DMatrixSlice	&M = *pM;
+	DVectorSlice		&u = *pu;
 
 	assert_gms_square(M);
 	if(M.rows() != u.dim() || u.dim() != v.dim())
@@ -50,13 +50,13 @@ void LinAlgPack::update_chol_factor(GenMatrixSlice* pM, VectorSlice* pu
 	// 1,2 Find the largest k such that u(k) != 0.0
 	size_type n = M.rows(), k = n;
 	{
-		VectorSlice::reverse_iterator r_itr_u = u.rbegin();
+		DVectorSlice::reverse_iterator r_itr_u = u.rbegin();
 		while(*r_itr_u == 0.0 && k > 1) --k;
 	}
 	
 	// 3.
 	{
-		VectorSlice::reverse_iterator
+		DVectorSlice::reverse_iterator
 			r_itr_u_i		= u(1,k-1).rbegin(),	// iterator for u(i), i = k-1,...,1
 			r_itr_u_ip1		= u(2,k).rbegin();		// iterator for u(i), i = k,...,2
 		for(size_type i = k-1; i > 0 ; ++r_itr_u_i, ++r_itr_u_ip1, --i) {
@@ -67,11 +67,11 @@ void LinAlgPack::update_chol_factor(GenMatrixSlice* pM, VectorSlice* pu
 	}
 
 	// 4. M.row(1) += u(1) * v 
-	LinAlgPack::Vp_StV(&M.row(1), u(1), v);
+	DenseLinAlgPack::Vp_StV(&M.row(1), u(1), v);
 
 	// 5.
 	{
-		VectorSlice::const_iterator
+		DVectorSlice::const_iterator
 			itr_M_i_i	= M.diag().begin(),		// iterator for M(i,i), for i = 1,...,k-1
 			itr_M_ip1_i	= M.diag(-1).begin();	// iterator for M(i+1,i), for i = 1,...,k-1
 		for(size_type i = 1; i < k; ++i)
@@ -124,10 +124,10 @@ void LinAlgPack::update_chol_factor(GenMatrixSlice* pM, VectorSlice* pu
 
 }
 
-void LinAlgPack::jacobi_rotate(GenMatrixSlice* pM, size_type row_i, value_type alpha
+void DenseLinAlgPack::jacobi_rotate(DMatrixSlice* pM, size_type row_i, value_type alpha
 	, value_type beta)
 {
-	GenMatrixSlice	&M = *pM;
+	DMatrixSlice	&M = *pM;
 
 	assert_gms_square(M);
 		
@@ -149,7 +149,7 @@ void LinAlgPack::jacobi_rotate(GenMatrixSlice* pM, size_type row_i, value_type a
 	size_type i = row_i, n = M.rows();
 
 	// Use iterators instead of element access
-	VectorSlice::iterator
+	DVectorSlice::iterator
 		itr_M_i		= M.row(i)(i,n).begin(),	// iterator for M(i,j), for j = i,...,n
 		itr_M_i_end	= M.row(i)(i,n).end(),
 		itr_M_ip1	= M.row(i+1)(i,n).begin();	// iterator for M(i+1,j), for j = i,...,n

@@ -15,8 +15,8 @@
 
 #include "SparseLinAlgPack/src/MatrixSymDiagonalSparseStd.hpp"
 #include "AbstractLinAlgPack/src/SpVectorOut.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "ThrowException.hpp"
 
 namespace SparseLinAlgPack {

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// VectorInFunc.hpp
+// DVectorInFunc.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,14 +16,14 @@
 #ifndef VECTOR_IN_FUNC_H
 #define VECTOR_IN_FUNC_H
 
-#include "LinAlgPackIOBasic.hpp"
+#include "DenseLinAlgPackIOBasic.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
-/** @name Vector/VectorSlice input stream functions.
+/** @name DVector/DVectorSlice input stream functions.
   *
-  * These are functions that are used to read a Vector
-  * or VectorSlice object from a formated input stream.
+  * These are functions that are used to read a DVector
+  * or DVectorSlice object from a formated input stream.
   *
   * The input format is diferent depending on the on whether the
   * bit #LinAlgPackIO::ignore_dim_bit# is set.  If #exta_flags & LinAlgPackIO::ignore_dim_bit != 0#
@@ -63,28 +63,28 @@ namespace LinAlgPack {
 //@{
 
 ///
-/** Vector input stream function.
+/** DVector input stream function.
   *
-  * Inputs a Vector object from an input stream.  If #exta_flags & LinAlgPackIO::ignore_dim_bit != 0#
+  * Inputs a DVector object from an input stream.  If #exta_flags & LinAlgPackIO::ignore_dim_bit != 0#
   * then #v# is resized to #n# given in the file.  If #exta_flags & LinAlgPackIO::ignore_dim_bit == 0#
   * then the number of elements read in depends on the current size of #v#.
   *
   */
-std::istream& input(std::istream& is, Vector* v, LinAlgPackIO::fmtflags extra_flags);
+std::istream& input(std::istream& is, DVector* v, LinAlgPackIO::fmtflags extra_flags);
 
 ///
-/** VectorSlice input stream function.
+/** DVectorSlice input stream function.
   *
-  * Inputs a VectorSlice object from an input stream.  If #exta_flags & LinAlgPackIO::ignore_dim_bit != 0#
+  * Inputs a DVectorSlice object from an input stream.  If #exta_flags & LinAlgPackIO::ignore_dim_bit != 0#
   * then the size (!= 0) of #vs# is compared to the #n# given in the file and if they are not equal
   * then a #LinAlgPackIO::InputException# is thrown.  If #vs# is unsized then it is resized to #n#.
   * If #exta_flags & LinAlgPackIO::ignore_dim_bit == 0# then the number of elements read in depends
   * on the current size of #vs#.
   */
-std::istream& input(std::istream& is, VectorSlice* vs, LinAlgPackIO::fmtflags extra_flags);
+std::istream& input(std::istream& is, DVectorSlice* vs, LinAlgPackIO::fmtflags extra_flags);
 
 //@}
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif	// VECTOR_IN_FUNC_H

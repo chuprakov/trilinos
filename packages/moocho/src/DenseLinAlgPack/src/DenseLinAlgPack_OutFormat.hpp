@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////
-// LinAlgPackOutFormat.hpp
+// DenseLinAlgPackOutFormat.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -17,9 +17,9 @@
 #define LINALGPACK_OUT_FORMAT_H
 
 #ifdef DISALLOW_AUTOMATIC_TEMPLATE_INSTANTIATIONS
-#include "LinAlgPackOutFormatDecl.hpp"
+#include "DenseLinAlgPackOutFormatDecl.hpp"
 #else
-#include "LinAlgPackOutFormatDef.hpp"
+#include "DenseLinAlgPackOutFormatDef.hpp"
 #endif
 
 #endif // LINALGPACK_OUT_FORMAT_H

@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasicInitDiagonal.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "Midynamic_cast_verbose.h"
 
 namespace ConstrainedOptimizationPack {
@@ -70,7 +70,7 @@ void MatrixHessianSuperBasicInitDiagonal::init_identity(
 }
 
 void MatrixHessianSuperBasicInitDiagonal::init_diagonal(
-	const VectorSlice& diag )
+	const DVectorSlice& diag )
 {
 	assert_initialized();
 	B_RR_init_->init_diagonal(diag);

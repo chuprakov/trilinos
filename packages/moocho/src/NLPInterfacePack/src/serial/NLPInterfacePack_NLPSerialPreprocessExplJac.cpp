@@ -25,9 +25,9 @@
 #include "AbstractLinAlgPack/src/MatrixPermAggr.hpp"
 #include "AbstractLinAlgPack/src/MatrixCompositeStd.hpp"
 #include "AbstractLinAlgPack/src/BasisSystemFactory.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/IVector.hpp"
-#include "LinAlgPack/src/PermVecMat.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/IVector.hpp"
+#include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "ThrowException.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "AbstractFactoryStd.hpp"
@@ -474,7 +474,7 @@ void NLPSerialPreprocessExplJac::imp_calc_Gc_or_Gh(
 	if( P_col->perm().get() == NULL )  con_perm = rcp::rcp(new IVector(calc_Gc?m_full:mI_full));
 	else                               con_perm = rcp::rcp_const_cast<IVector>(P_col->perm());
 	if( calc_Gc )                      *con_perm = this->equ_perm();
-	else                               LinAlgPack::identity_perm(con_perm.get());
+	else                               DenseLinAlgPack::identity_perm(con_perm.get());
 	P_col->initialize(con_perm,rcp::null);
 	// Setup G_perm
 	int num_row_part, num_col_part;

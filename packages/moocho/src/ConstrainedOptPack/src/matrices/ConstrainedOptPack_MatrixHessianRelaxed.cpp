@@ -20,7 +20,7 @@
 #include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StV;
@@ -56,8 +56,8 @@ size_type MatrixHessianRelaxed::rows() const
 // Overridden from MatrixWithOp
 
 void MatrixHessianRelaxed::Vp_StMtV(
-	  VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
-	, const VectorSlice& x, value_type b ) const
+	  DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	, const DVectorSlice& x, value_type b ) const
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
@@ -76,11 +76,11 @@ void MatrixHessianRelaxed::Vp_StMtV(
 	//
 	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),rows(),cols(),M_trans,x.size());
 
-	VectorSlice
+	DVectorSlice
 		y1 = (*y)(1,n_);
 	value_type
 		&y2 = (*y)(n_+1);
-	const VectorSlice
+	const DVectorSlice
 		x1 = x(1,n_);
 	const value_type
 		x2 = x(n_+1);
@@ -97,7 +97,7 @@ void MatrixHessianRelaxed::Vp_StMtV(
 }
 
 void MatrixHessianRelaxed::Vp_StMtV(
-	  VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	  DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type b ) const
 {
 	using BLAS_Cpp::no_trans;
@@ -117,7 +117,7 @@ void MatrixHessianRelaxed::Vp_StMtV(
 	//
 	LinAlgOpPack::Vp_MtV_assert_sizes(y->size(),rows(),cols(),M_trans,x.size());
 
-	VectorSlice
+	DVectorSlice
 		y1 = (*y)(1,n_);
 	value_type
 		&y2 = (*y)(n_+1);
@@ -140,10 +140,10 @@ void MatrixHessianRelaxed::Vp_StMtV(
 }
 
 void MatrixHessianRelaxed::Vp_StPtMtV(
-	VectorSlice* y, value_type a
+	DVectorSlice* y, value_type a
 	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	, BLAS_Cpp::Transp M_trans
-	, const VectorSlice& x, value_type b ) const
+	, const DVectorSlice& x, value_type b ) const
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
@@ -191,7 +191,7 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
 			   : P.create_submatrix(Range1D(n_+1,n_+1),P_trans==trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
 			);
 	
-	const VectorSlice
+	const DVectorSlice
 		x1 = x(1,n_);
 	const value_type
 		x2 = x(n_+1);
@@ -207,7 +207,7 @@ void MatrixHessianRelaxed::Vp_StPtMtV(
 }
 
 void MatrixHessianRelaxed::Vp_StPtMtV(
-	VectorSlice* y, value_type a
+	DVectorSlice* y, value_type a
 	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type b ) const
@@ -290,7 +290,7 @@ value_type MatrixHessianRelaxed::transVtMtV(
 	//               
 	// a = x11'*H*x21 + x12'*bigM*x22
 	//
-	LinAlgPack::Vp_MtV_assert_sizes(x1.size(),rows(),cols(),M_trans,x2.size());
+	DenseLinAlgPack::Vp_MtV_assert_sizes(x1.size(),rows(),cols(),M_trans,x2.size());
 
 	if( &x1 == &x2 ) {
 		// x1 and x2 are the same sparse vector

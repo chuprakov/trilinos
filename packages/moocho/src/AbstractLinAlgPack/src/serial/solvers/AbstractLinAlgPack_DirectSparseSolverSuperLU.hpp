@@ -24,8 +24,8 @@
 
 #include "DirectSparseSolverImp.hpp"
 #include "SuperLUSolver.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/IVector.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/IVector.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
 namespace SparseSolverPack {
@@ -130,8 +130,8 @@ protected:
 		const SparseLinAlgPack::MatrixConvertToSparse   &A
 		,FactorizationStructure                         *fact_struc
 		,FactorizationNonzeros                          *fact_nonzeros
-		,LinAlgPack::IVector                            *row_perm
-		,LinAlgPack::IVector                            *col_perm
+		,DenseLinAlgPack::IVector                            *row_perm
+		,DenseLinAlgPack::IVector                            *col_perm
 		,size_type                                      *rank
 		,std::ostream                                   *out
 		);

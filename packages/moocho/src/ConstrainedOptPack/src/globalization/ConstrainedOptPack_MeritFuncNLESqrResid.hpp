@@ -42,13 +42,13 @@ public:
 	MeritFuncNLESqrResid();
 
 	///
-	value_type calc_deriv( const VectorSlice& c_k );
+	value_type calc_deriv( const DVectorSlice& c_k );
 
 	// ////////////////////////////////
 	// Overridden from MeritFuncNLE
 
 	///
-	value_type value(const VectorSlice& c) const;
+	value_type value(const DVectorSlice& c) const;
 
 	///
 	value_type deriv() const;

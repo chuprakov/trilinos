@@ -390,11 +390,11 @@ public:
 
 	//@}
 
-	/** @name Vector Space objects. */
+	/** @name DVector Space objects. */
 	//@{
 
 	///
-	/** Vector space object for unknown variables x (dimension n).
+	/** DVector space object for unknown variables x (dimension n).
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -406,7 +406,7 @@ public:
 	 */
 	virtual vec_space_ptr_t space_x() const = 0;
 	///
-	/** Vector space object for general equality constraints c(x) (dimension m).
+	/** DVector space object for general equality constraints c(x) (dimension m).
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
@@ -420,7 +420,7 @@ public:
 	virtual vec_space_ptr_t space_c() const = 0;
 
 	///
-	/** Vector space object for general inequality constraints c(x) (dimension mI).
+	/** DVector space object for general inequality constraints c(x) (dimension mI).
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)

@@ -13,12 +13,12 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "COOMatrixPartitionViewSubclass.hpp"
 #include "SparseVectorSliceOp.hpp"
 #include "SparseElement.hpp"
 #include "COOMPartitionOp.hpp"
-#include "LinAlgPack/src/GenMatrixOp.hpp"
+#include "DenseLinAlgPack/src/DMatrixOp.hpp"
 
 namespace LinAlgOpPack {
 
@@ -56,7 +56,7 @@ MatrixWithOp& COOMatrixPartitionViewSubclass::operator=(const MatrixWithOp& m) {
 
 // Level-1 BLAS
 
-void COOMatrixPartitionViewSubclass::Mp_StM(GenMatrixSlice* gms_lhs, value_type alpha
+void COOMatrixPartitionViewSubclass::Mp_StM(DMatrixSlice* gms_lhs, value_type alpha
 	, BLAS_Cpp::Transp trans_rhs) const
 {
 	SparseLinAlgPack::Mp_StM(gms_lhs,alpha,m(),op(trans_rhs));
@@ -64,48 +64,48 @@ void COOMatrixPartitionViewSubclass::Mp_StM(GenMatrixSlice* gms_lhs, value_type 
 
 // Level-2 BLAS
 
-void COOMatrixPartitionViewSubclass::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha
-	, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_rhs2, value_type beta) const
+void COOMatrixPartitionViewSubclass::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha
+	, BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2, value_type beta) const
 {
 	SparseLinAlgPack::Vp_StMtV(vs_lhs, alpha, m(), op(trans_rhs1), vs_rhs2, beta);
 }
 
-void COOMatrixPartitionViewSubclass::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha
+void COOMatrixPartitionViewSubclass::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha
 	, BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2, value_type beta) const
 {
-	Vector v_rhs2;
+	DVector v_rhs2;
 	LinAlgOpPack::assign(&v_rhs2,sv_rhs2);
 	SparseLinAlgPack::Vp_StMtV(vs_lhs, alpha, m(), op(trans_rhs1), v_rhs2(), beta);
 }
 
-value_type COOMatrixPartitionViewSubclass::transVtMtV(const VectorSlice& vs_rhs1
-	, BLAS_Cpp::Transp trans_rhs2, const VectorSlice& vs_rhs3) const
+value_type COOMatrixPartitionViewSubclass::transVtMtV(const DVectorSlice& vs_rhs1
+	, BLAS_Cpp::Transp trans_rhs2, const DVectorSlice& vs_rhs3) const
 {
-	Vector tmp;
+	DVector tmp;
 	LinAlgOpPack::V_MtV(&tmp,m(),op(trans_rhs2),vs_rhs3);
-	return LinAlgPack::dot(vs_rhs1,tmp());
+	return DenseLinAlgPack::dot(vs_rhs1,tmp());
 }
 
 value_type COOMatrixPartitionViewSubclass::transVtMtV(const SpVectorSlice& sv_rhs1
 	, BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3) const
 {
-	Vector v_rhs3;
+	DVector v_rhs3;
 	LinAlgOpPack::assign(&v_rhs3,sv_rhs3);
-	Vector tmp;
+	DVector tmp;
 	LinAlgOpPack::V_MtV(&tmp,m(),op(trans_rhs2),v_rhs3());
 	return dot(sv_rhs1,tmp());
 }
 
 // Level-3 BLAS
 
-void COOMatrixPartitionViewSubclass::Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha
-	, BLAS_Cpp::Transp trans_rhs1, const GenMatrixSlice& gms_rhs2
+void COOMatrixPartitionViewSubclass::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha
+	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta) const
 {
 	SparseLinAlgPack::Mp_StMtM(gms_lhs, alpha, m(), op(trans_rhs1), gms_rhs2, trans_rhs2, beta);
 }
 
-void COOMatrixPartitionViewSubclass::Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
+void COOMatrixPartitionViewSubclass::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, BLAS_Cpp::Transp trans_rhs2, value_type beta) const
 {
 	SparseLinAlgPack::Mp_StMtM(gms_lhs, alpha, gms_rhs1, trans_rhs1, m(), op(trans_rhs2), beta);

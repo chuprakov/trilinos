@@ -100,7 +100,7 @@ void swap(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const
 
 //@}
 
-/** @name  Vector scaling */
+/** @name  DVector scaling */
 //@{
 
 /// 
@@ -108,7 +108,7 @@ void scal(const f_int& N, const f_dbl_prec& ALPHA, f_dbl_prec* X, const f_int& I
 
 //@}
 
-/** @name Vector copy */
+/** @name DVector copy */
 //@{
 
 /// 

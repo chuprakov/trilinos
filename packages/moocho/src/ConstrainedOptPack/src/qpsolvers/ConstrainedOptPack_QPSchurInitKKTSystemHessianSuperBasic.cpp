@@ -17,7 +17,7 @@
 #include "ConstrainedOptimizationPack/src/MatrixHessianSuperBasic.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 
 namespace LinAlgOpPack {
@@ -27,24 +27,24 @@ namespace LinAlgOpPack {
 namespace ConstrainedOptimizationPack {
 
 void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
-	const VectorSlice&    g
+	const DVectorSlice&    g
 	,const MatrixWithOp&  G
 	,value_type           etaL
 	,const SpVectorSlice& dL
 	,const SpVectorSlice& dU
 	,const MatrixWithOp*  F
 	,BLAS_Cpp::Transp     trans_F
-	,const VectorSlice*   f
-	,const VectorSlice&   d
+	,const DVectorSlice*   f
+	,const DVectorSlice&   d
 	,const SpVectorSlice& nu
 	,size_type*           n_R
 	,i_x_free_t*          i_x_free
 	,i_x_fixed_t*         i_x_fixed
 	,bnd_fixed_t*         bnd_fixed
 	,j_f_decomp_t*        j_f_decomp
-	,Vector*              b_X
+	,DVector*              b_X
 	,Ko_ptr_t*            Ko
-	,Vector*              fo
+	,DVector*              fo
 	) const
 {
 	using BLAS_Cpp::trans;
@@ -138,7 +138,7 @@ void QPSchurInitKKTSystemHessianSuperBasic::initialize_kkt_system(
 			bnd_itr_end = const_cast<const bnd_fixed_t&>(*bnd_fixed).begin() + nd_X;
 		i_x_fixed_t::const_iterator
 			i_x_itr     = const_cast<const i_x_fixed_t&>(*i_x_fixed).begin();
-		Vector::iterator
+		DVector::iterator
 			b_X_itr     = b_X->begin();
 		const SpVectorSlice::element_type
 			*ele = NULL;

@@ -28,8 +28,8 @@ namespace SparseLinAlgPack {
 ///
 /** Check that s'*y is sufficiently positive and print the result if it is not.
  *
- * @param  s           [in] Vector (size n): Secant update vector B*s=y.
- * @param  y           [in] Vector (size n): Secant update vector for B*s=y.
+ * @param  s           [in] DVector (size n): Secant update vector B*s=y.
+ * @param  y           [in] DVector (size n): Secant update vector for B*s=y.
  * @param  sTy         [in] If sTy != NULL then *sTy must contain the value computed
  *                     from dot(s,y).  If sTy == NULL, then this value will be computed
  *                     internally.  This argument is included so that the same computation

@@ -21,10 +21,10 @@
 #include <math.h>
 
 #include "TestLinAlgPack.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
-#include "LinAlgPack/src/MatVecCompare.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
+#include "DenseLinAlgPack/src/MatVecCompare.hpp"
 
 namespace {
 
@@ -36,11 +36,11 @@ bool update_success( bool result, bool *success ) {
 
 }	// end namespace
 
-bool LinAlgPack::TestingPack::TestVectorOp(std::ostream* out)
+bool DenseLinAlgPack::TestingPack::TestVectorOp(std::ostream* out)
 {
 
-	using LinAlgPack::comp;
-	using LinAlgPack::sqrt_eps;
+	using DenseLinAlgPack::comp;
+	using DenseLinAlgPack::sqrt_eps;
 
 	bool success = true;
 	bool result, result1, result2;
@@ -66,12 +66,12 @@ bool LinAlgPack::TestingPack::TestVectorOp(std::ostream* out)
 	const int n = 6;
 
 	if(out) *out << "\nVector v(n), v1(v1val,n), v2(v2val,n);\n";
-	Vector v(n), v1(v1val,n), v2(v2val,n);
+	DVector v(n), v1(v1val,n), v2(v2val,n);
 
 	// /////////////////////////////////
 	// Test Algebraic Functions
 
-	if(out) *out << "\n***\n*** Testing VectorSlice modifying functions \n***\n";
+	if(out) *out << "\n***\n*** Testing DVectorSlice modifying functions \n***\n";
 
 	if(out) *out << "\nv = 1.0; Vp_S(&v()," << alpha1 << ");\n";
 	v = 1.0;
@@ -97,9 +97,9 @@ bool LinAlgPack::TestingPack::TestVectorOp(std::ostream* out)
 		*out	<< "v =\n" << v
 				<< "v == "<<v1val<<" + "<<alpha1<<" : " << result << std::endl;
 
-	// VectorSlice as lhs
+	// DVectorSlice as lhs
 
-	if(out) *out << "\n***\n*** Testing VectorSlice as lhs algebric operations\n***\n";
+	if(out) *out << "\n***\n*** Testing DVectorSlice as lhs algebric operations\n***\n";
 
 	if(out) *out << "\nv = -10.0; V_VpV(&v(),v1(),v2());\n";
 	v = -10;
@@ -133,9 +133,9 @@ bool LinAlgPack::TestingPack::TestVectorOp(std::ostream* out)
 		*out	<< "v =\n" << v
 				<< "v == "<<alpha2<<" * "<<v2val<<" : " << result << std::endl;
 
-	// Vector as lhs
+	// DVector as lhs
 
-	if(out) *out << "\n***\n*** Testing Vector as lhs algebric operations\n***\n";
+	if(out) *out << "\n***\n*** Testing DVector as lhs algebric operations\n***\n";
 
 	if(out) *out << "\nv.free(); V_VpV(&v,v1(),v2());\n";
 	v.free();
@@ -176,9 +176,9 @@ bool LinAlgPack::TestingPack::TestVectorOp(std::ostream* out)
 	// ToDo: implement at some point
 	if(out) *out << "\nWarning! Not Tested!\n";
 
-	// VectorSlice as lhs
+	// DVectorSlice as lhs
 
-	// Vector as lhs
+	// DVector as lhs
 
 	// /////////////////////////////////
 	// Test Scalar Returning Functions

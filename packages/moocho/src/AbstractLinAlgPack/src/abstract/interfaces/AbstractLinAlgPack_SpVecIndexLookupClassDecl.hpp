@@ -26,7 +26,7 @@ namespace SparseVectorUtilityPack {
 
 // ///////////////////////////////////////////////////////////////////////
 ///
-/** Sparse Vector Index Lookup and Caching class.
+/** Sparse DVector Index Lookup and Caching class.
   *
   * This class is used to perform a lookup for elements in a sparse vector
   * stored as an array of nonzero elements of a templated type T_Element.

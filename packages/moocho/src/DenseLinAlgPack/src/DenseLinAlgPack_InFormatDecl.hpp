@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// LinAlgPackInFormatDecl.hpp
+// DenseLinAlgPackInFormatDecl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef LINALGPACK_IN_FORMAT_DECL_H
 #define LINALGPACK_IN_FORMAT_DECL_H
 
-#include "LinAlgPackIOFormat.hpp"
+#include "DenseLinAlgPackIOFormat.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 ///
 /** Input stream operator function for bound_format objects.
@@ -37,6 +37,6 @@ namespace LinAlgPack {
 template<class T>
 std::istream& operator>>(std::istream& is, const LinAlgPackIO::bound_format<T>& bf);
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif // LINALGPACK_IN_FORMAT_DECL_H

@@ -18,7 +18,7 @@
 
 #include "DirectSparseSolver.hpp"
 #include "AbstractLinAlgPack/src/BasisSystemPerm.hpp"
-#include "LinAlgPack/src/IVector.hpp"
+#include "DenseLinAlgPack/src/IVector.hpp"
 
 namespace SparseSolverPack {
 

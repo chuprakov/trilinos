@@ -19,8 +19,8 @@
 #include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
 #include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/GenMatrixOut.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "WorkspacePack.hpp"
 #include "ThrowException.hpp"
@@ -38,7 +38,7 @@ MultiVectorMutableDense::MultiVectorMutableDense(
 }
 
 MultiVectorMutableDense::MultiVectorMutableDense(
-	GenMatrixSlice                     gms
+	DMatrixSlice                     gms
 	,BLAS_Cpp::Transp                  gms_trans
 	,const release_resource_ptr_t&     gms_release
 	)
@@ -53,13 +53,13 @@ void MultiVectorMutableDense::initialize(
 {
 	namespace rcp = MemMngPack;
 	namespace rmp = MemMngPack;
-	typedef rcp::ref_count_ptr<GenMatrix> vec_ptr_t;
-	vec_ptr_t gms_ptr = rcp::rcp(new GenMatrix(rows,cols));
+	typedef rcp::ref_count_ptr<DMatrix> vec_ptr_t;
+	vec_ptr_t gms_ptr = rcp::rcp(new DMatrix(rows,cols));
 	this->initialize(
 		(*gms_ptr)()
 		,BLAS_Cpp::no_trans
 		,rcp::rcp(
-			new rmp::ReleaseResource_ref_count_ptr<GenMatrix>(
+			new rmp::ReleaseResource_ref_count_ptr<DMatrix>(
 				gms_ptr
 				)
 			)
@@ -67,7 +67,7 @@ void MultiVectorMutableDense::initialize(
 }
 
 void MultiVectorMutableDense::initialize(
-	GenMatrixSlice                     gms
+	DMatrixSlice                     gms
 	,BLAS_Cpp::Transp                  gms_trans
 	,const release_resource_ptr_t&     gms_release
 	)
@@ -79,7 +79,7 @@ void MultiVectorMutableDense::initialize(
 
 // Overridden from MatrixWithOpGetGMS
 
-const GenMatrixSlice MultiVectorMutableDense::get_gms_view() const
+const DMatrixSlice MultiVectorMutableDense::get_gms_view() const
 {
 	if(gms_trans_ == BLAS_Cpp::trans) {
 		assert(0); // ToDo: We need to create a copy and transpose it!
@@ -87,7 +87,7 @@ const GenMatrixSlice MultiVectorMutableDense::get_gms_view() const
 	return get_gms(); // No memory to allocate!
 }
 
-void MultiVectorMutableDense::free_gms_view(const GenMatrixSlice* gms_view) const
+void MultiVectorMutableDense::free_gms_view(const DMatrixSlice* gms_view) const
 {
 	if(gms_trans_ == BLAS_Cpp::trans) {
 		assert(0); // ToDo: We need to free the copy that we created in get_gms_view()
@@ -99,7 +99,7 @@ void MultiVectorMutableDense::free_gms_view(const GenMatrixSlice* gms_view) cons
 
 // Overridden from MatrixWithOpGetGMSMutable
 
-GenMatrixSlice MultiVectorMutableDense::get_gms_view()
+DMatrixSlice MultiVectorMutableDense::get_gms_view()
 {
 	if(gms_trans_ == BLAS_Cpp::trans) {
 		assert(0); // ToDo: We need to create a copy and transpose it!
@@ -107,7 +107,7 @@ GenMatrixSlice MultiVectorMutableDense::get_gms_view()
 	return set_gms(); // No memory to allocate!
 }
 
-void MultiVectorMutableDense::commit_gms_view(GenMatrixSlice* gms_view)
+void MultiVectorMutableDense::commit_gms_view(DMatrixSlice* gms_view)
 {
 	if(gms_trans_ == BLAS_Cpp::trans) {
 		assert(0); // ToDo: We need to free the copy that we created in get_gms_view()
@@ -133,7 +133,7 @@ MultiVectorMutableDense::col(index_type j)
 	namespace rcp = MemMngPack;
 	return rcp::rcp(
 		new VectorWithOpMutableDense(
-			LinAlgPack::col( set_gms(), gms_trans(), j )
+			DenseLinAlgPack::col( set_gms(), gms_trans(), j )
 			,rcp::null ) );
 }
 
@@ -143,7 +143,7 @@ MultiVectorMutableDense::row(index_type i)
 	namespace rcp = MemMngPack;
 	return rcp::rcp(
 		new VectorWithOpMutableDense(
-			LinAlgPack::row( set_gms(), gms_trans(), i )
+			DenseLinAlgPack::row( set_gms(), gms_trans(), i )
 			,rcp::null ) );
 }
 
@@ -191,12 +191,12 @@ void MultiVectorMutableDense::zero_out()
 
 void MultiVectorMutableDense::Mt_S( value_type alpha )
 {
-	LinAlgPack::Mt_S(&gms_,alpha);
+	DenseLinAlgPack::Mt_S(&gms_,alpha);
 }
 
 MatrixWithOp& MultiVectorMutableDense::operator=(const MatrixWithOp& mwo_rhs)
 {
-	LinAlgPack::assign( &set_gms(), MatrixDenseEncap(mwo_rhs)(), gms_trans() );
+	DenseLinAlgPack::assign( &set_gms(), MatrixDenseEncap(mwo_rhs)(), gms_trans() );
 	return *this;
 }
 
@@ -223,7 +223,7 @@ bool MultiVectorMutableDense::syrk(
 	if(!sym_get_lhs)
 		return false;
 	MatrixDenseSymMutableEncap  sym_gms_lhs(sym_get_lhs);
-	LinAlgPack::syrk( M_trans, alpha, get_gms(), beta, &sym_gms_lhs() );
+	DenseLinAlgPack::syrk( M_trans, alpha, get_gms(), beta, &sym_gms_lhs() );
 	return true;
 }
 
@@ -252,15 +252,15 @@ bool MultiVectorMutableDense::Mp_StMtM(
 // Overridden from MatrixWithOpSerial
 
 void MultiVectorMutableDense::Vp_StMtV(
-	VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-	, const VectorSlice& vs_rhs2, value_type beta) const
+	DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	, const DVectorSlice& vs_rhs2, value_type beta) const
 {
-	LinAlgPack::Vp_StMtV(
+	DenseLinAlgPack::Vp_StMtV(
 		vs_lhs,alpha,gms_,BLAS_Cpp::trans_trans(gms_trans(),trans_rhs1),vs_rhs2,beta);
 }
 
 void MultiVectorMutableDense::Vp_StMtV(
-	VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2, value_type beta) const
 {
 	SparseLinAlgPack::Vp_StMtV(

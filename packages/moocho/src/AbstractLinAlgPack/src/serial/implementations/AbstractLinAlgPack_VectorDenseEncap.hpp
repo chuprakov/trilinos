@@ -6,12 +6,12 @@
 
 #include "SparseLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/VectorWithOpMutable.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
 
 namespace SparseLinAlgPack {
 
 ///
-/** Extract a constant <tt>LinAlgPack::VectorSlice</tt> view of a <tt>VectorWithOp</tt> object.
+/** Extract a constant <tt>DenseLinAlgPack::DVectorSlice</tt> view of a <tt>VectorWithOp</tt> object.
  *
  * This class is only to be used with <tt>VectotrWithOp</tt> objects that store all of their
  * elements in the local address space or can easily access all of the vector elements in
@@ -19,11 +19,11 @@ namespace SparseLinAlgPack {
  * also find use in parallel appliations where a vector is replicated across processes.
  *
  * This utility class is defined purly in terms of the abstract interfaces.  It is only to
- * be used as an automatic variable on the stack.  For example, to extract a <tt>VectorSlice</tt>
- * view of an abstract vector and use it to copy to another <tt>VectorSlice</tt> object you could
+ * be used as an automatic variable on the stack.  For example, to extract a <tt>DVectorSlice</tt>
+ * view of an abstract vector and use it to copy to another <tt>DVectorSlice</tt> object you could
  * write a function like:
  \code
- void copy(const VectorWithOp& vec_in, VectorSlice* vs_out ) {
+ void copy(const VectorWithOp& vec_in, DVectorSlice* vs_out ) {
      VectorDenseEncap  vs_in(vec_in);
 	 *vs_out = vs_in();
  }
@@ -41,13 +41,13 @@ public:
 	/// Calls <tt>vec.free_sub_vector(&sub_vec)</tt> to release the view.  
 	~VectorDenseEncap();
 	/// Returns a reference to a constant view of the dense vector.
-	const VectorSlice& operator()() const;
+	const DVectorSlice& operator()() const;
 
 private:
 
 	const VectorWithOp &vec_;
 	RTOp_SubVector     sub_vec_;
-	VectorSlice        vs_;
+	DVectorSlice        vs_;
 	VectorDenseEncap();                                     // Not defined and not to be called!
 	VectorDenseEncap(const VectorDenseEncap&);              // ""
 	VectorDenseEncap& operator=(const VectorDenseEncap&);   // ""
@@ -55,7 +55,7 @@ private:
 }; // end class VectorDenseEncap
 
 ///
-/** Extract a non-const <tt>LinAlgPack::VectorSlice</tt> view of a <tt>VectorWithOpMutable</tt> object.
+/** Extract a non-const <tt>DenseLinAlgPack::DVectorSlice</tt> view of a <tt>VectorWithOpMutable</tt> object.
  *
  * This utility class is defined purly in terms of the abstract interfaces.  It is only to
  * be used as an automatic variable on the stack.  Note that the underlying <tt>VectorWithOpMutable</tt>
@@ -69,15 +69,15 @@ public:
 	/// Calls <tt>vec.commit_sub_vector(&sub_vec)</tt> to release the view.  
 	~VectorDenseMutableEncap();
 	/// Returns a reference to a constant view of the dense vector.
-	VectorSlice& operator()();
+	DVectorSlice& operator()();
 	/// Returns a reference to a non-const view of the dense vector.
-	const VectorSlice& operator()() const;
+	const DVectorSlice& operator()() const;
 
 private:
 
 	VectorWithOpMutable       &vec_;
 	RTOp_MutableSubVector     sub_vec_;
-	VectorSlice               vs_;
+	DVectorSlice               vs_;
 	VectorDenseMutableEncap();                                            // Not defined and not to be called!
 	VectorDenseMutableEncap(const VectorDenseMutableEncap&);              // ""
 	VectorDenseMutableEncap& operator=(const VectorDenseMutableEncap&);   // ""
@@ -95,7 +95,7 @@ VectorDenseEncap::VectorDenseEncap( const VectorWithOp&  vec )
 {
 	RTOp_sub_vector_null(&sub_vec_);
 	vec_.get_sub_vector(Range1D(),VectorWithOp::DENSE,&sub_vec_);
-	vs_.bind( VectorSlice(
+	vs_.bind( DVectorSlice(
 				  const_cast<value_type*>(sub_vec_.values)
 				  ,sub_vec_.sub_dim
 				  ,sub_vec_.values_stride
@@ -110,7 +110,7 @@ VectorDenseEncap::~VectorDenseEncap()
 }
 
 inline
-const VectorSlice& VectorDenseEncap::operator()() const
+const DVectorSlice& VectorDenseEncap::operator()() const
 {
 	return vs_;
 }
@@ -123,7 +123,7 @@ VectorDenseMutableEncap::VectorDenseMutableEncap( VectorWithOpMutable&  vec )
 {
 	RTOp_mutable_sub_vector_null(&sub_vec_);
 	vec_.get_sub_vector(Range1D(),&sub_vec_);
-	vs_.bind( VectorSlice(
+	vs_.bind( DVectorSlice(
 				  sub_vec_.values
 				  ,sub_vec_.sub_dim
 				  ,sub_vec_.values_stride
@@ -138,13 +138,13 @@ VectorDenseMutableEncap::~VectorDenseMutableEncap()
 }
 
 inline
-VectorSlice& VectorDenseMutableEncap::operator()()
+DVectorSlice& VectorDenseMutableEncap::operator()()
 {
 	return vs_;
 }
 
 inline
-const VectorSlice& VectorDenseMutableEncap::operator()() const
+const DVectorSlice& VectorDenseMutableEncap::operator()() const
 {
 	return vs_;
 }

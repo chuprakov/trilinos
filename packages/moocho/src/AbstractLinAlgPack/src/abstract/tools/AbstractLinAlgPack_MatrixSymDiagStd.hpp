@@ -64,7 +64,7 @@ public:
 	///
 	/** Initialize given the diagonal vector (or no vector at all).
 	 *
-	 * @param  diag   [in] Vector to be used for the diagonal.  If <tt>diag.get() == NULL</tt>
+	 * @param  diag   [in] DVector to be used for the diagonal.  If <tt>diag.get() == NULL</tt>
 	 *                then \c this will be uninitialized.
 	 * @param  unique [in] Determines if the underlying \c diag vector is guaranteed to be
 	 *                unique and not shared.

@@ -71,8 +71,8 @@ public:
 	//@{
 
 	///
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2, value_type beta) const;
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2, value_type beta) const;
 
 	//@}
 
@@ -100,7 +100,7 @@ public:
 	 * Also note that this default implementation is only for nonnegative
 	 * diagonal entries.
 	 */
-	void Mp_StMtMtM( sym_gms* sym_lhs, value_type alpha
+	void Mp_StMtMtM( DMatrixSliceSym* sym_lhs, value_type alpha
 		, EMatRhsPlaceHolder dummy_place_holder
 		, const MatrixWithOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 		, value_type beta ) const;

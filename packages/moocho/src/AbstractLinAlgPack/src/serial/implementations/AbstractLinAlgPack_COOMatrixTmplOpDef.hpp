@@ -18,21 +18,21 @@
 
 #include "COOMatrixTmplOpDecl.hpp"
 
-#include "LinAlgPack/src/GenMatrixClass.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
 namespace SparseLinAlgPack {
 
 using BLAS_Cpp::trans_not;
 
-using LinAlgPack::Mp_M_assert_sizes;
-using LinAlgPack::Vp_MtV_assert_sizes;
-using LinAlgPack::Mp_MtM_assert_sizes;
+using DenseLinAlgPack::Mp_M_assert_sizes;
+using DenseLinAlgPack::Vp_MtV_assert_sizes;
+using DenseLinAlgPack::Mp_MtM_assert_sizes;
 
 // gms_lhs += alpha * coom_rhs (time = O(coom_rhs.nz()), space = O(1))
 template<class T_COOM>
-void Mp_StCOOM(GenMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs
+void Mp_StCOOM(DMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs
 	, BLAS_Cpp::Transp trans_rhs)
 {
 	Mp_M_assert_sizes(	  gms_lhs->rows(), gms_lhs->cols(), BLAS_Cpp::no_trans
@@ -50,8 +50,8 @@ void Mp_StCOOM(GenMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs
 
 // vs_lhs += alpha * coom_rhs1 * vs_rhs2 (BLAS xGEMV) (time = O(coom_rhs.nz()), space = O(1))
 template<class T_COOM>
-void Vp_StCOOMtV(VectorSlice* vs_lhs, value_type alpha, const T_COOM& coom_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_rhs2)
+void Vp_StCOOMtV(DVectorSlice* vs_lhs, value_type alpha, const T_COOM& coom_rhs1
+	, BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2)
 {
 	Vp_MtV_assert_sizes( vs_lhs->dim(), coom_rhs1.rows(), coom_rhs1.cols(), trans_rhs1, vs_rhs2.dim() );
 	typename T_COOM::difference_type
@@ -69,8 +69,8 @@ namespace UtilityPack {
 
 // op(gms_lhs) += alpha * op(gms_rhs1) * op(coom_rhs2) (BLAS xGEMM)
 template<class T_COOM>
-void imp_Mp_StMtCOOM(GenMatrixSlice& gms_lhs, BLAS_Cpp::Transp trans_lhs, value_type alpha
-	, const GenMatrixSlice& gms_rhs1, BLAS_Cpp::Transp trans_rhs1
+void imp_Mp_StMtCOOM(DMatrixSlice& gms_lhs, BLAS_Cpp::Transp trans_lhs, value_type alpha
+	, const DMatrixSlice& gms_rhs1, BLAS_Cpp::Transp trans_rhs1
 	, const T_COOM& coom_rhs2, BLAS_Cpp::Transp trans_rhs2 );
 
 }	// end namespace UtilityPack
@@ -78,8 +78,8 @@ void imp_Mp_StMtCOOM(GenMatrixSlice& gms_lhs, BLAS_Cpp::Transp trans_lhs, value_
 
 // gms_lhs += alpha * op(coom_rhs1) * op(gms_rhs2) (right) (BLAS xGEMM)
 template<class T_COOM>
-void Mp_StCOOMtM(GenMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const GenMatrixSlice& gms_rhs2, BLAS_Cpp::Transp trans_rhs2)
+void Mp_StCOOMtM(DMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs1
+	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2, BLAS_Cpp::Transp trans_rhs2)
 {
 	Mp_MtM_assert_sizes(  gms_lhs->rows(), gms_lhs->cols(), BLAS_Cpp::no_trans
 						, coom_rhs1.rows(), coom_rhs1.cols(), trans_rhs1
@@ -90,7 +90,7 @@ void Mp_StCOOMtM(GenMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_r
 
 // gms_lhs += alpha * op(gms_rhs1) * op(coom_rhs2) (left) (BLAS xGEMM)
 template<class T_COOM>
-void Mp_StMtCOOM(GenMatrixSlice* gms_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
+void Mp_StMtCOOM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const T_COOM& coom_rhs2, BLAS_Cpp::Transp trans_rhs2)
 {
 	Mp_MtM_assert_sizes(  gms_lhs->rows(), gms_lhs->cols(), BLAS_Cpp::no_trans
@@ -104,22 +104,22 @@ void Mp_StMtCOOM(GenMatrixSlice* gms_lhs, value_type alpha, const GenMatrixSlice
 
 // gms_lhs = alpha * op(coom_rhs1) * op(sym_rhs2) (right) (BLAS xSYMM)
 //template<class T_COOM>
-//void Mp_StCOOMtSM(GenMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs1
-//	, BLAS_Cpp::Transp trans_rhs1, const sym_gms& sym_rhs2, BLAS_Cpp::Transp trans_rhs2);
+//void Mp_StCOOMtSM(DMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs1
+//	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceSym& sym_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 // gms_lhs = alpha * op(sym_rhs1) * op(coom_rhs2) (left) (BLAS xSYMM)
 //template<class T_COOM>
-//void Mp_StSMtCOOM(GenMatrixSlice* gms_lhs, value_type alpha, const sym_gms& sym_rhs1
+//void Mp_StSMtCOOM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceSym& sym_rhs1
 //	, BLAS_Cpp::Transp trans_rhs1, const T_COOM& coom_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 // gms_lhs = alpha * op(coom_rhs1) * op(tri_rhs2) (right) (BLAS xTRMM)
 //template<class T_COOM>
-//void Mp_StCOOMtSM(GenMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs1
-//	, BLAS_Cpp::Transp trans_rhs1, const tri_gms& tri_rhs2, BLAS_Cpp::Transp trans_rhs2);
+//void Mp_StCOOMtSM(DMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs1
+//	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 // gms_lhs = alpha * op(tri_rhs1) * op(coom_rhs2) (left) (BLAS xTRMM)
 //template<class T_COOM>
-//void Mp_StSMtCOOM(GenMatrixSlice* gms_lhs, value_type alpha, const tri_gms& tri_rhs1
+//void Mp_StSMtCOOM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
 //	, BLAS_Cpp::Transp trans_rhs1, const T_COOM& coom_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 namespace UtilityPack {
@@ -161,16 +161,16 @@ namespace UtilityPack {
 // if op(coom_rhs2) is sorted by column.
 //
 // There is opertunity for some vectorization and it is handled by calling
-// LinAlgPack::Vp_StV(...).
+// DenseLinAlgPack::Vp_StV(...).
 //
 template<class T_COOM>
-void imp_Mp_StMtCOOM(GenMatrixSlice* gms_lhs, BLAS_Cpp::Transp trans_lhs, value_type alpha
-	, const GenMatrixSlice& gms_rhs1, BLAS_Cpp::Transp trans_rhs1
+void imp_Mp_StMtCOOM(DMatrixSlice* gms_lhs, BLAS_Cpp::Transp trans_lhs, value_type alpha
+	, const DMatrixSlice& gms_rhs1, BLAS_Cpp::Transp trans_rhs1
 	, const T_COOM& coom_rhs2, BLAS_Cpp::Transp trans_rhs2)
 {
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
-	using LinAlgPack::col;
+	using DenseLinAlgPack::col;
 
 	typename T_COOM::difference_type
 		i_o	= coom_rhs2.row_offset(),
@@ -179,7 +179,7 @@ void imp_Mp_StMtCOOM(GenMatrixSlice* gms_lhs, BLAS_Cpp::Transp trans_lhs, value_
 		size_type	i	= rows( itr->row_i() + i_o , itr->col_j() + j_o , trans_rhs2 ),
 					j	= cols( itr->row_i() + i_o , itr->col_j() + j_o , trans_rhs2 );
 		//	op(gms_lhs).col(j) += (alpha * val) * op(gms_rhs1).col(i)
-		LinAlgPack::Vp_StV(	&col(*gms_lhs,trans_lhs,j), alpha * itr->value()
+		DenseLinAlgPack::Vp_StV(	&col(*gms_lhs,trans_lhs,j), alpha * itr->value()
 			, col(gms_rhs1,trans_rhs1,i) );
 	}
 }

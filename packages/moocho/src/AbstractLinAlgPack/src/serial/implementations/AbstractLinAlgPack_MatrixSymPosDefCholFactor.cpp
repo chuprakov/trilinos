@@ -30,12 +30,12 @@
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymDiagonal.hpp"
 #include "LinAlgLAPack/src/LinAlgLAPack.hpp"
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
-#include "LinAlgPack/src/GenMatrixOp.hpp"
-#include "LinAlgPack/src/GenMatrixOut.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/delete_row_col.hpp"
-#include "LinAlgPack/src/assert_print_nan_inf.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack/src/DMatrixOp.hpp"
+#include "DenseLinAlgPack/src/DMatrixOut.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/delete_row_col.hpp"
+#include "DenseLinAlgPack/src/assert_print_nan_inf.hpp"
 #include "ReleaseResource_ref_count_ptr.hpp"
 #include "profile_hack.hpp"
 #include "ThrowException.hpp"
@@ -74,7 +74,7 @@ MatrixSymPosDefCholFactor::MatrixSymPosDefCholFactor()
 {}
 
 MatrixSymPosDefCholFactor::MatrixSymPosDefCholFactor(
-	GenMatrixSlice                    *MU_store
+	DMatrixSlice                    *MU_store
 	,const release_resource_ptr_t&    release_resource_ptr
 	,size_type                        max_size
 	,bool                             maintain_original
@@ -90,7 +90,7 @@ MatrixSymPosDefCholFactor::MatrixSymPosDefCholFactor(
 }
 
 void MatrixSymPosDefCholFactor::init_setup(
-	GenMatrixSlice                    *MU_store
+	DMatrixSlice                    *MU_store
 	,const release_resource_ptr_t&    release_resource_ptr
 	,size_type                        max_size
 	,bool                             maintain_original
@@ -107,7 +107,7 @@ void MatrixSymPosDefCholFactor::init_setup(
 		factor_is_updated_ = false;
 		allocates_storage_ = true; // We will be able to allocate our own storage!
 		release_resource_ptr_ = MemMngPack::null; // Free any bound resource
-		MU_store_.bind( GenMatrixSlice(NULL,0,0,0,0) ); // Unbind this!
+		MU_store_.bind( DMatrixSlice(NULL,0,0,0,0) ); // Unbind this!
 		max_size_ = max_size;
 		M_size_ = 0;
 		M_l_r_ = M_l_c_ = 1;
@@ -245,11 +245,11 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
 	if(!symwo_gms_lhs)
 		return false;
 	MatrixDenseSymMutableEncap sym_lhs(symwo_gms_lhs);
-	const sym_gms M       = this->M();
-	LinAlgPack::Mp_StM(
-		&tri_ele_gms(sym_lhs().gms(),sym_lhs().uplo())
+	const DMatrixSliceSym M       = this->M();
+	DenseLinAlgPack::Mp_StM(
+		&DMatrixSliceTriEle(sym_lhs().gms(),sym_lhs().uplo())
 		,alpha
-		,tri_ele_gms(M.gms(),M.uplo())
+		,DMatrixSliceTriEle(M.gms(),M.uplo())
 		);
 
 	return true;
@@ -267,18 +267,18 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
 	bool did_op  = false;
 	bool diag_op = false;
 	if(const MatrixSymWithOpGetGMSSym *symwo_gms_rhs = dynamic_cast<const MatrixSymWithOpGetGMSSym*>(&M_rhs)) {
-		sym_gms               M = this->M();
+		DMatrixSliceSym               M = this->M();
 		MatrixDenseSymEncap   sym_rhs(*symwo_gms_rhs);
-		LinAlgPack::Mp_StM(
-			&tri_ele_gms(M.gms(),M.uplo())
+		DenseLinAlgPack::Mp_StM(
+			&DMatrixSliceTriEle(M.gms(),M.uplo())
 			,alpha
-			,tri_ele_gms(sym_rhs().gms(),sym_rhs().uplo())
+			,DMatrixSliceTriEle(sym_rhs().gms(),sym_rhs().uplo())
 			);
 		did_op  = true;
 		diag_op = false;
 	}
 	else if(const MatrixSymDiagonal *symwo_diag_rhs = dynamic_cast<const MatrixSymDiagonal*>(&M_rhs)) {
-		sym_gms            M = this->M();
+		DMatrixSliceSym            M = this->M();
 		VectorDenseEncap   sym_rhs_diag(symwo_diag_rhs->diag());
 		LinAlgOpPack::Vp_StV( &M.gms().diag(), alpha, sym_rhs_diag() );
 		did_op  = true;
@@ -303,18 +303,18 @@ bool MatrixSymPosDefCholFactor::Mp_StM(
 // Overridden from MatrixWithOpSerial
 
 void MatrixSymPosDefCholFactor::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
-	,const VectorSlice& x, value_type b
+	DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	,const DVectorSlice& x, value_type b
 	) const
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 #ifdef PROFILE_HACK_ENABLED
-	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::Vp_StMtV(...VectorSlice...)" );
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::Vp_StMtV(...DVectorSlice...)" );
 #endif
 	assert_initialized();
 
-	LinAlgPack::Vp_MtV_assert_sizes( y->dim(), rows(), cols(), no_trans, x.dim() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes( y->dim(), rows(), cols(), no_trans, x.dim() );
 
 	if( maintain_original_ ) {
 		//
@@ -322,7 +322,7 @@ void MatrixSymPosDefCholFactor::Vp_StMtV(
 		//
 		// y = b*y + a*M*x
 		//
-		LinAlgPack::Vp_StMtV( y, a, M(), no_trans, x, b );
+		DenseLinAlgPack::Vp_StMtV( y, a, M(), no_trans, x, b );
 	}
 	else {
 		//
@@ -331,38 +331,38 @@ void MatrixSymPosDefCholFactor::Vp_StMtV(
 		// y = b*y + a*op(M)*x
 		//   = b*y = scale*a*U'*U*x
 		//
-		const tri_gms
+		const DMatrixSliceTri
 			U = this->U();
 
 		if( b == 0.0 ) {
 			// No temporary needed
 			//
 			// y = U*x
-			LinAlgPack::V_MtV( y, U, no_trans, x ); 
+			DenseLinAlgPack::V_MtV( y, U, no_trans, x ); 
 			// y = U'*y
-			LinAlgPack::V_MtV( y, U, trans, *y ); 
+			DenseLinAlgPack::V_MtV( y, U, trans, *y ); 
 			// y *= scale*a
 			if( a != 1.0 || scale_ != 1.0 )
-				LinAlgPack::Vt_S( y, scale_*a );
+				DenseLinAlgPack::Vt_S( y, scale_*a );
 		}
 		else {
 			// We need a temporary
-			Vector t;
+			DVector t;
 			// t = U*x
-			LinAlgPack::V_MtV( &t, U, no_trans, x );
+			DenseLinAlgPack::V_MtV( &t, U, no_trans, x );
 			// t = U'*t
-			LinAlgPack::V_MtV( &t(), U, trans, t() );
+			DenseLinAlgPack::V_MtV( &t(), U, trans, t() );
 			// y *= b
 			if(b != 1.0)
-				LinAlgPack::Vt_S( y, b );
+				DenseLinAlgPack::Vt_S( y, b );
 			// y += scale*a*t
-			LinAlgPack::Vp_StV( y, scale_*a, t() );
+			DenseLinAlgPack::Vp_StV( y, scale_*a, t() );
 		}
 	}
 }
 
 void MatrixSymPosDefCholFactor::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
 	,const SpVectorSlice& x, value_type b
 	) const
 {
@@ -373,10 +373,10 @@ void MatrixSymPosDefCholFactor::Vp_StMtV(
 #endif
 	assert_initialized();
 	if( maintain_original_ ) {
-		const GenMatrixSlice M = this->M().gms(); // This is lower triangular!
+		const DMatrixSlice M = this->M().gms(); // This is lower triangular!
 		const size_type n = M.rows();
-		LinAlgPack::Vp_MtV_assert_sizes( y->dim(), n, n, no_trans, x.dim() );
-		LinAlgPack::Vt_S(y,b); // y = b*y
+		DenseLinAlgPack::Vp_MtV_assert_sizes( y->dim(), n, n, no_trans, x.dim() );
+		DenseLinAlgPack::Vt_S(y,b); // y = b*y
 		//
 		// Compute product column by column corresponding to x_itr->index() + x.offset()
 		//
@@ -388,8 +388,8 @@ void MatrixSymPosDefCholFactor::Vp_StMtV(
 		for( SpVectorSlice::const_iterator x_itr = x.begin(); x_itr != x.end(); ++x_itr ) {
 			const size_type i = x_itr->index() + x.offset();
 			if( i > 1 )
-				LinAlgPack::Vp_StV( &(*y)(1,i-1), a * x_itr->value(), M.row(i)(1,i-1) );
-			LinAlgPack::Vp_StV( &(*y)(i,n), a * x_itr->value(), M.col(i)(i,n) );
+				DenseLinAlgPack::Vp_StV( &(*y)(1,i-1), a * x_itr->value(), M.row(i)(1,i-1) );
+			DenseLinAlgPack::Vp_StV( &(*y)(i,n), a * x_itr->value(), M.col(i)(i,n) );
 		}
 	}
 	else {
@@ -398,19 +398,19 @@ void MatrixSymPosDefCholFactor::Vp_StMtV(
 }
 
 void MatrixSymPosDefCholFactor::Vp_StPtMtV(
-	VectorSlice* y, value_type a, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
-	, BLAS_Cpp::Transp H_trans, const VectorSlice& x, value_type b
+	DVectorSlice* y, value_type a, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	, BLAS_Cpp::Transp H_trans, const DVectorSlice& x, value_type b
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
-	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::Vp_StPtMtV(...VectorSlice...)" );
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::Vp_StPtMtV(...DVectorSlice...)" );
 #endif
 	assert_initialized();
 	MatrixWithOpSerial::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b); // ToDo: Specialize when needed!
 }
 
 void MatrixSymPosDefCholFactor::Vp_StPtMtV(
-	VectorSlice* y, value_type a, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
+	DVectorSlice* y, value_type a, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	, BLAS_Cpp::Transp H_trans, const SpVectorSlice& x, value_type b
 	) const
 {
@@ -419,8 +419,8 @@ void MatrixSymPosDefCholFactor::Vp_StPtMtV(
 #endif
 	assert_initialized();
 	if( maintain_original_ ) {
-		LinAlgPack::Vt_S(y,b); // y = b*y
-		const GenMatrixSlice M = this->M().gms(); // This is lower triangular!
+		DenseLinAlgPack::Vt_S(y,b); // y = b*y
+		const DMatrixSlice M = this->M().gms(); // This is lower triangular!
 		// Compute product column by corresponding to x_itr->index() + x.offset()
 		if( P.is_identity() ) {
 			assert(0); // ToDo: Implement
@@ -442,7 +442,7 @@ void MatrixSymPosDefCholFactor::Vp_StPtMtV(
 // Overridden from MatrixSymWithOpSerial
 
 void MatrixSymPosDefCholFactor::Mp_StPtMtP(
-	sym_gms* S, value_type a
+	DMatrixSliceSym* S, value_type a
 	, EMatRhsPlaceHolder dummy_place_holder
 	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	, value_type b ) const
@@ -464,13 +464,13 @@ void MatrixSymPosDefCholFactor::Mp_StPtMtP(
 // Overridden from MatrixNonsingularSerial
 
 void MatrixSymPosDefCholFactor::V_InvMtV(
-	VectorSlice* y, BLAS_Cpp::Transp M_trans, const VectorSlice& x
+	DVectorSlice* y, BLAS_Cpp::Transp M_trans, const DVectorSlice& x
 	) const
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 #ifdef PROFILE_HACK_ENABLED
-	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::V_InvMtV(...VectorSlice...)" );
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::V_InvMtV(...DVectorSlice...)" );
 #endif
 	assert_initialized();
 
@@ -486,20 +486,20 @@ void MatrixSymPosDefCholFactor::V_InvMtV(
 	// y = (1/scale)*inv(U)*inv(U')*x
 	//
 	update_factorization();
-	const tri_gms
+	const DMatrixSliceTri
 		U = this->U();
-	LinAlgPack::Vp_MtV_assert_sizes( y->dim(), U.rows(), U.cols(), no_trans, x.dim() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes( y->dim(), U.rows(), U.cols(), no_trans, x.dim() );
 	// y = inv(U')*x
-	LinAlgPack::V_InvMtV( y, U, trans, x );
+	DenseLinAlgPack::V_InvMtV( y, U, trans, x );
 	// y = inv(U)*y
-	LinAlgPack::V_InvMtV( y, U, no_trans, *y );
+	DenseLinAlgPack::V_InvMtV( y, U, no_trans, *y );
 	// y *= (1/scale)
 	if( scale_ != 1.0 )
-		LinAlgPack::Vt_S( y, 1.0/scale_ );
+		DenseLinAlgPack::Vt_S( y, 1.0/scale_ );
 }
 
 void MatrixSymPosDefCholFactor::V_InvMtV(
-	VectorSlice* y, BLAS_Cpp::Transp M_trans, const SpVectorSlice& x
+	DVectorSlice* y, BLAS_Cpp::Transp M_trans, const SpVectorSlice& x
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
@@ -512,7 +512,7 @@ void MatrixSymPosDefCholFactor::V_InvMtV(
 // Overridden from MatrixSymNonsingularSerial
 
 void MatrixSymPosDefCholFactor::M_StMtInvMtM(
-	  sym_gms* S, value_type a, const MatrixWithOpSerial& B
+	  DMatrixSliceSym* S, value_type a, const MatrixWithOpSerial& B
 	, BLAS_Cpp::Transp B_trans, EMatrixDummyArg dummy_arg
 	) const
 {
@@ -528,9 +528,9 @@ void MatrixSymPosDefCholFactor::M_StMtInvMtM(
 	using BLAS_Cpp::trans_not;
 	using BLAS_Cpp::upper;
 	using BLAS_Cpp::nonunit;
-	using LinAlgPack::tri;
-	using LinAlgPack::syrk;
-	using LinAlgPack::M_StInvMtM;
+	using DenseLinAlgPack::tri;
+	using DenseLinAlgPack::syrk;
+	using DenseLinAlgPack::M_StInvMtM;
 	using LinAlgOpPack::assign;
 
 	assert_initialized();
@@ -551,17 +551,17 @@ void MatrixSymPosDefCholFactor::M_StMtInvMtM(
 	// 
 	// S = scale*a * T' * T
 	// 
-	LinAlgPack::MtM_assert_sizes( 
+	DenseLinAlgPack::MtM_assert_sizes( 
 		rows(), cols(), no_trans
 		,B.rows(), B.cols(), trans_not(B_trans)
 		);
-	LinAlgPack::Mp_MtM_assert_sizes(
+	DenseLinAlgPack::Mp_MtM_assert_sizes(
 		S->rows(), S->cols(), no_trans
 		,B.rows(), B.cols(), B_trans
 		,B.rows(), B.cols(), trans_not(B_trans)
 		);
 	// T = op(B)'
-	GenMatrix T;
+	DMatrix T;
 	assign( &T, B, trans_not(B_trans) );
 	// T = inv(U') * T (inplace with BLAS)
 	M_StInvMtM( &T(), 1.0, this->U(), trans, T(), no_trans );
@@ -571,7 +571,7 @@ void MatrixSymPosDefCholFactor::M_StMtInvMtM(
 
 // Overridden from MatrixSymDenseInitialize
 
-void MatrixSymPosDefCholFactor::initialize( const sym_gms& M )
+void MatrixSymPosDefCholFactor::initialize( const DMatrixSliceSym& M )
 {
 	// Initialize without knowing the inertia but is must be p.d.
 	this->initialize(
@@ -583,7 +583,7 @@ void MatrixSymPosDefCholFactor::initialize( const sym_gms& M )
 
 // Overridden from MatrixSymWithOpGetGMSSym
 
-const LinAlgPack::sym_gms MatrixSymPosDefCholFactor::get_sym_gms_view() const
+const DenseLinAlgPack::DMatrixSliceSym MatrixSymPosDefCholFactor::get_sym_gms_view() const
 {
 	THROW_EXCEPTION(
 		!maintain_original_, std::logic_error
@@ -592,7 +592,7 @@ const LinAlgPack::sym_gms MatrixSymPosDefCholFactor::get_sym_gms_view() const
 	return this->M();
 }
 
-void MatrixSymPosDefCholFactor::free_sym_gms_view(const LinAlgPack::sym_gms* sym_gms_view) const
+void MatrixSymPosDefCholFactor::free_sym_gms_view(const DenseLinAlgPack::DMatrixSliceSym* sym_gms_view) const
 {
 	THROW_EXCEPTION(
 		!maintain_original_, std::logic_error
@@ -603,7 +603,7 @@ void MatrixSymPosDefCholFactor::free_sym_gms_view(const LinAlgPack::sym_gms* sym
 
 // Overridden from MatrixSymWithOpGetGMSSymMutable
 
-LinAlgPack::sym_gms MatrixSymPosDefCholFactor::get_sym_gms_view()
+DenseLinAlgPack::DMatrixSliceSym MatrixSymPosDefCholFactor::get_sym_gms_view()
 {
 	THROW_EXCEPTION(
 		!maintain_original_, std::logic_error
@@ -612,7 +612,7 @@ LinAlgPack::sym_gms MatrixSymPosDefCholFactor::get_sym_gms_view()
 	return this->M();
 }
 
-void MatrixSymPosDefCholFactor::commit_sym_gms_view(LinAlgPack::sym_gms* sym_gms_view)
+void MatrixSymPosDefCholFactor::commit_sym_gms_view(DenseLinAlgPack::DMatrixSliceSym* sym_gms_view)
 {
 	THROW_EXCEPTION(
 		!maintain_original_, std::logic_error
@@ -623,7 +623,7 @@ void MatrixSymPosDefCholFactor::commit_sym_gms_view(LinAlgPack::sym_gms* sym_gms
 
 // Overridden from MatrixExtractInvCholFactor
 
-void MatrixSymPosDefCholFactor::extract_inv_chol( tri_ele_gms* InvChol ) const
+void MatrixSymPosDefCholFactor::extract_inv_chol( DMatrixSliceTriEle* InvChol ) const
 {
 	assert_initialized();
 	update_factorization();
@@ -651,9 +651,9 @@ void MatrixSymPosDefCholFactor::extract_inv_chol( tri_ele_gms* InvChol ) const
 		,"MatrixSymPosDefCholFactor::extract_inv_chol(...) : "
 		"Error, we can not compute the inverse cholesky factor "
 		"af a negative definite matrix." );
-	LinAlgPack::assign( &InvChol->gms(), 0.0 );  // Set InvChol to identity first.
+	DenseLinAlgPack::assign( &InvChol->gms(), 0.0 );  // Set InvChol to identity first.
 	InvChol->gms().diag() = 1.0;
-	LinAlgPack::M_StInvMtM(                      // Comput InvChol using Level-3 BLAS
+	DenseLinAlgPack::M_StInvMtM(                      // Comput InvChol using Level-3 BLAS
 		  &InvChol->gms(), 1.0 / ::sqrt(scale_), U()
 		, InvChol->uplo() == BLAS_Cpp::upper ? BLAS_Cpp::no_trans : BLAS_Cpp::trans
 		, InvChol->gms(), BLAS_Cpp::no_trans );
@@ -687,7 +687,7 @@ void MatrixSymPosDefCholFactor::init_identity( const VectorSpace& space_diag, va
 void MatrixSymPosDefCholFactor::init_diagonal( const VectorWithOp& diag_in )
 {
 	VectorDenseEncap diag_encap(diag_in);
-	const VectorSlice diag = diag_encap(); // When diag_encap is destroyed, bye-bye view!
+	const DVectorSlice diag = diag_encap(); // When diag_encap is destroyed, bye-bye view!
 
 	allocate_storage( max_size_ ? max_size_ : diag.dim() );
 	//
@@ -706,12 +706,12 @@ void MatrixSymPosDefCholFactor::init_diagonal( const VectorWithOp& diag_in )
 		// ToDo: validate that scale*diag > 0
 	}
 	if( maintain_factor_ ) {
-		VectorSlice U_diag = U().gms().diag();
+		DVectorSlice U_diag = U().gms().diag();
 		U_diag = diag;
 		if( scale_ != 1.0 )
-			LinAlgPack::Vt_S( &U_diag, 1.0/scale_ );
-		LinAlgPack::sqrt( &U_diag, U_diag );
-		LinAlgPack::assert_print_nan_inf( U_diag, "(1/scale)*diag", true, NULL );
+			DenseLinAlgPack::Vt_S( &U_diag, 1.0/scale_ );
+		DenseLinAlgPack::sqrt( &U_diag, U_diag );
+		DenseLinAlgPack::assert_print_nan_inf( U_diag, "(1/scale)*diag", true, NULL );
 		factor_is_updated_ = true;
 	}
 	is_diagonal_ = true;
@@ -723,22 +723,22 @@ void MatrixSymPosDefCholFactor::secant_update(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	using LinAlgPack::dot;
-	using LinAlgPack::norm_2;
-	using LinAlgPack::norm_inf;
+	using DenseLinAlgPack::dot;
+	using DenseLinAlgPack::norm_2;
+	using DenseLinAlgPack::norm_inf;
 	namespace rcp = MemMngPack;
 
 	assert_initialized();
 
 	// Validate the input
 	assert( s_in && y_in );
-	LinAlgPack::Vp_MtV_assert_sizes( y_in->dim(), M_size_, M_size_, no_trans, s_in->dim() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes( y_in->dim(), M_size_, M_size_, no_trans, s_in->dim() );
 
 	// Get the serial vectors
 	VectorDenseMutableEncap s_encap(*s_in);
 	VectorDenseMutableEncap y_encap(*y_in);
 	VectorDenseMutableEncap Bs_encap( Bs_in ? *Bs_in : *y_in); // Must pass something on
-	VectorSlice
+	DVectorSlice
 		*s  = &s_encap(),   // When s_encap, y_encap and Bs_encap are destroyed
 		*y  = &y_encap(),   // these views go bye-bye!
 		*Bs = ( Bs_in ? &Bs_encap() : NULL );
@@ -758,8 +758,8 @@ void MatrixSymPosDefCholFactor::secant_update(
 		throw UpdateSkippedException( omsg.str() );	
 	}
 	// Compute Bs if it was not passed in
-	Vector Bs_store;
-	VectorSlice Bs_view;
+	DVector Bs_store;
+	DVectorSlice Bs_view;
 	if( !Bs ) {
 		LinAlgOpPack::V_MtV( &Bs_store, *this, no_trans, *s );
 		Bs_view.bind( Bs_store() );
@@ -783,9 +783,9 @@ void MatrixSymPosDefCholFactor::secant_update(
 		//
 		// B = B + (-1/s'*Bs) * Bs*Bs' + (1/s'*y) * y*y'
 		//
-		sym_gms M = this->M();
-		LinAlgPack::syr( -1.0/sTBs, *Bs, &M );
-		LinAlgPack::syr( 1.0/sTy, *y, &M );
+		DMatrixSliceSym M = this->M();
+		DenseLinAlgPack::syr( -1.0/sTBs, *Bs, &M );
+		DenseLinAlgPack::syr( 1.0/sTy, *y, &M );
 	}
 	if( maintain_factor_ ) {
 		//
@@ -809,14 +809,14 @@ void MatrixSymPosDefCholFactor::secant_update(
 		//     u = y - U'*v
 		//     a = 1/(v'*v)
 		//
-		tri_gms U = this->U();
+		DMatrixSliceTri U = this->U();
 		// v = sqrt(y'*s/(s'*B*s))*U*s
-		VectorSlice v = *s; // Reuse s as storage for v
-		LinAlgPack::V_MtV( &v, U, no_trans, v ); // Direct call to xSYMV(...)
-		LinAlgPack::Vt_S( &v, ::sqrt( sTy / sTBs ) );
+		DVectorSlice v = *s; // Reuse s as storage for v
+		DenseLinAlgPack::V_MtV( &v, U, no_trans, v ); // Direct call to xSYMV(...)
+		DenseLinAlgPack::Vt_S( &v, ::sqrt( sTy / sTBs ) );
 		// u = (y - U'*v)
-		VectorSlice u = *y;  // Reuse y as storage for u
-		LinAlgPack::Vp_StMtV( &u, -1.0, U, trans, v );
+		DVectorSlice u = *y;  // Reuse y as storage for u
+		DenseLinAlgPack::Vp_StMtV( &u, -1.0, U, trans, v );
 		// a = 1/(v'*v)
 		const value_type  a = 1.0/dot(v,v);
 		// Perform Givens rotations to make Q*(U' + a*u*v') -> U_new upper triangular:
@@ -824,7 +824,7 @@ void MatrixSymPosDefCholFactor::secant_update(
 		// B_new = scale*(U' + a*u*v')*Q'*Q*(U + a*v*u') = scale*U_new'*U_new
 		rank_2_chol_update(
 			a, &v, u, v.dim() > 1 ? &U.gms().diag(-1) : NULL
-			, &tri_ele_gms(U.gms(),BLAS_Cpp::upper), no_trans );
+			, &DMatrixSliceTriEle(U.gms(),BLAS_Cpp::upper), no_trans );
 	}
 	else {
 		factor_is_updated_ = false;
@@ -873,7 +873,7 @@ void MatrixSymPosDefCholFactor::initialize(
 }
 
 void MatrixSymPosDefCholFactor::initialize(
-	const sym_gms      &A
+	const DMatrixSliceSym      &A
 	,size_type         max_size
 	,bool              force_factorization
 	,Inertia           inertia
@@ -929,17 +929,17 @@ void MatrixSymPosDefCholFactor::initialize(
 	// Now set the matrix and update the factors
 	if( maintain_original_ ) {
 		// Set M = S
-		LinAlgPack::assign( 
-			&tri_ele_gms( M().gms(), BLAS_Cpp::lower )
-			,tri_ele_gms( A.gms(), A.uplo() )
+		DenseLinAlgPack::assign( 
+			&DMatrixSliceTriEle( M().gms(), BLAS_Cpp::lower )
+			,DMatrixSliceTriEle( A.gms(), A.uplo() )
 			);
 	}
 	if( maintain_factor_ || force_factorization ) {
 		// Copy S into U for an inplace factorization.
-		tri_ele_gms U_ele = tri_ele_gms( U().gms(), BLAS_Cpp::upper );
-		LinAlgPack::assign( &U_ele, tri_ele_gms( A.gms(), A.uplo() ) );
+		DMatrixSliceTriEle U_ele = DMatrixSliceTriEle( U().gms(), BLAS_Cpp::upper );
+		DenseLinAlgPack::assign( &U_ele, DMatrixSliceTriEle( A.gms(), A.uplo() ) );
 		if( sign_a_11 < 0 )
-			LinAlgPack::Mt_S( &U_ele, -1.0 );
+			DenseLinAlgPack::Mt_S( &U_ele, -1.0 );
 		try {
 			LinAlgLAPack::potrf( &U_ele );
 			factor_is_updated_ = true;
@@ -958,7 +958,7 @@ void MatrixSymPosDefCholFactor::initialize(
 		value_type
 			min_diag = std::numeric_limits<value_type>::max(),
 			max_diag = 0.0;
-		VectorSlice::iterator
+		DVectorSlice::iterator
 			U_itr = U_ele.gms().diag().begin(),
 			U_end = U_ele.gms().diag().end();
 		while( U_itr != U_end ) {
@@ -1035,7 +1035,7 @@ void MatrixSymPosDefCholFactor::set_uninitialized()
 }
 
 void MatrixSymPosDefCholFactor::augment_update(
-	const VectorSlice  *t
+	const DVectorSlice  *t
 	,value_type        alpha
 	,bool              force_refactorization
 	,EEigenValType     add_eigen_val
@@ -1045,8 +1045,8 @@ void MatrixSymPosDefCholFactor::augment_update(
 #ifdef PROFILE_HACK_ENABLED
 	ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::augment_udpate(...)" );
 #endif
-	using LinAlgPack::dot;
-	using LinAlgPack::norm_inf;
+	using DenseLinAlgPack::dot;
+	using DenseLinAlgPack::norm_inf;
 	typedef MatrixSymAddDelUpdateable  MSADU;
 
 	assert_initialized();
@@ -1122,12 +1122,12 @@ void MatrixSymPosDefCholFactor::augment_update(
 		// so we must square ||U11.diag()||inf.
 
 		// Get references to the storage for the to-be-updated parts for the new factor.
-		VectorSlice u12 = MU_store_.col(U_l_c_+M_size_+1)(U_l_r_,U_l_r_+M_size_-1);
+		DVectorSlice u12 = MU_store_.col(U_l_c_+M_size_+1)(U_l_r_,U_l_r_+M_size_-1);
 		value_type &u22 = MU_store_(U_l_r_+M_size_,U_l_c_+M_size_+1);
 		// u12 = inv(U') * (1/scale) * t
 		if(t) {
-			LinAlgPack::V_InvMtV( &u12, U(), BLAS_Cpp::trans, *t );
-			if( scale_ != 1.0 ) LinAlgPack::Vt_S( &u12, 1.0/scale_ );
+			DenseLinAlgPack::V_InvMtV( &u12, U(), BLAS_Cpp::trans, *t );
+			if( scale_ != 1.0 ) DenseLinAlgPack::Vt_S( &u12, 1.0/scale_ );
 		}
 		else {
 			u12 = 0.0;
@@ -1206,7 +1206,7 @@ void MatrixSymPosDefCholFactor::augment_update(
 		// M_new = [  M    t    ]
 		//         [  t'  alpha ]
 		//
-		VectorSlice M12 = MU_store_.row(M_l_r_+M_size_+1)(M_l_c_,M_l_c_+M_size_-1);
+		DVectorSlice M12 = MU_store_.row(M_l_r_+M_size_+1)(M_l_c_,M_l_c_+M_size_-1);
 		if(t)
 			M12 = *t;
 		else
@@ -1261,7 +1261,7 @@ void MatrixSymPosDefCholFactor::delete_update(
 		//
 		// We want to move M31 up one row and M33 up and to the left.
 		//
-		LinAlgPack::delete_row_col( jd, &LinAlgPack::nonconst_tri_ele( M().gms(), BLAS_Cpp::lower ) );
+		DenseLinAlgPack::delete_row_col( jd, &DenseLinAlgPack::nonconst_tri_ele( M().gms(), BLAS_Cpp::lower ) );
 	}
 	if( maintain_factor_ ) {
 		//
@@ -1300,17 +1300,17 @@ void MatrixSymPosDefCholFactor::delete_update(
 			work_.resize(work_size);
 		// Update the factors
 		{
-			GenMatrixSlice U = this->U().gms();
+			DMatrixSlice U = this->U().gms();
 			// Update U33 where it sits.
 			if(jd < n) {
 				size_type _size = n-jd;	// Set storage for u23, c and s
 				Range1D rng(1,_size);
-				VectorSlice
+				DVectorSlice
 					u23 = work_(rng),
 					c   = work_(rng+_size),
 					s   = work_(rng+2*_size);
 				Range1D U_rng(jd+1,n);  // Set U33 and u23
-				GenMatrixSlice U33 = U(U_rng,U_rng);
+				DMatrixSlice U33 = U(U_rng,U_rng);
 				u23 = U.row(jd)(U_rng);
 				// Update U33
 				value_type dummy;
@@ -1320,7 +1320,7 @@ void MatrixSymPosDefCholFactor::delete_update(
 					,&dummy, c.start_ptr(), s.start_ptr() );
 			}
 			// Move U13 and U33 to delete row and column jd
-			LinAlgPack::delete_row_col( jd, &LinAlgPack::nonconst_tri_ele( U, BLAS_Cpp::upper ) );
+			DenseLinAlgPack::delete_row_col( jd, &DenseLinAlgPack::nonconst_tri_ele( U, BLAS_Cpp::upper ) );
 		}
 	}
 	else {
@@ -1342,9 +1342,9 @@ void MatrixSymPosDefCholFactor::allocate_storage(size_type max_size) const
 	namespace rcp = MemMngPack;
 	if( allocates_storage_ && MU_store_.rows() < max_size + 1 ) {
 		// We have the right to allocate storage so lets just do it.
-		rcp::ref_count_ptr<GenMatrix>
-			MU_store = rcp::rcp(new GenMatrix( max_size + 1, max_size + 1 ));
-		typedef MemMngPack::ReleaseResource_ref_count_ptr<GenMatrix> ptr_t;
+		rcp::ref_count_ptr<DMatrix>
+			MU_store = rcp::rcp(new DMatrix( max_size + 1, max_size + 1 ));
+		typedef MemMngPack::ReleaseResource_ref_count_ptr<DMatrix> ptr_t;
 		const_cast<MatrixSymPosDefCholFactor*>(this)->release_resource_ptr_ = rcp::rcp(new ptr_t(MU_store));
 		const_cast<MatrixSymPosDefCholFactor*>(this)->MU_store_.bind( (*MU_store)() );
 		const_cast<MatrixSymPosDefCholFactor*>(this)->max_size_ = max_size;
@@ -1361,8 +1361,8 @@ void MatrixSymPosDefCholFactor::assert_initialized() const
 
 void MatrixSymPosDefCholFactor::resize_and_zero_off_diagonal(size_type n, value_type scale)
 {
-	using LinAlgPack::nonconst_tri_ele;
-	using LinAlgPack::assign;
+	using DenseLinAlgPack::nonconst_tri_ele;
+	using DenseLinAlgPack::assign;
 
 	assert( n <= my_min( MU_store_.rows(), MU_store_.cols() ) - 1 );
 
@@ -1397,8 +1397,8 @@ void MatrixSymPosDefCholFactor::update_factorization() const
 #endif
 	MatrixSymPosDefCholFactor
 		*nc_this = const_cast<MatrixSymPosDefCholFactor*>(this);
-	tri_ele_gms U = LinAlgPack::nonconst_tri_ele( nc_this->U().gms(), BLAS_Cpp::upper );
-	LinAlgPack::assign( &U, LinAlgPack::tri_ele( M().gms(), BLAS_Cpp::lower ) );  // Copy in the original
+	DMatrixSliceTriEle U = DenseLinAlgPack::nonconst_tri_ele( nc_this->U().gms(), BLAS_Cpp::upper );
+	DenseLinAlgPack::assign( &U, DenseLinAlgPack::tri_ele( M().gms(), BLAS_Cpp::lower ) );  // Copy in the original
 	{
 #ifdef PROFILE_HACK_ENABLED
 		ProfileHackPack::ProfileTiming profile_timing( "MatrixSymPosDefCholFactor::update_factorization(...) ... potrf" );

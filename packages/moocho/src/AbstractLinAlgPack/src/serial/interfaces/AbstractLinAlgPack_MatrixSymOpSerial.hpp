@@ -48,7 +48,7 @@ public:
 	  * is often needed and the sublcass would like to override this.
 	  */
 	virtual void Mp_StPtMtP(
-		sym_gms* sym_lhs, value_type alpha
+		DMatrixSliceSym* sym_lhs, value_type alpha
 		,EMatRhsPlaceHolder dummy_place_holder
 		,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
 		,value_type beta
@@ -62,7 +62,7 @@ public:
 	  * is often needed and the sublcass would like to override this.
 	  */
 	virtual void Mp_StMtMtM(
-		sym_gms* sym_lhs, value_type alpha
+		DMatrixSliceSym* sym_lhs, value_type alpha
 		,EMatRhsPlaceHolder dummy_place_holder
 		,const MatrixWithOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 		,value_type beta
@@ -101,7 +101,7 @@ public:
 inline
 /// sym_lhs = alpha * op(gpms_rhs') * M * op(gpms_rhs) + beta * sym_lhs.
 void Mp_StPtMtP(
-	sym_gms* sym_lhs, value_type alpha
+	DMatrixSliceSym* sym_lhs, value_type alpha
 	,MatrixSymWithOpSerial::EMatRhsPlaceHolder dummy_place_holder
 	,const MatrixSymWithOpSerial& M
 	,const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
@@ -114,7 +114,7 @@ void Mp_StPtMtP(
 inline
 /// sym_lhs = alpha * op(mwo_rhs') * M * op(mwo_rhs) + beta * sym_lhs
 void Mp_StMtMtM(
-	sym_gms* sym_lhs, value_type alpha
+	DMatrixSliceSym* sym_lhs, value_type alpha
 	,MatrixSymWithOpSerial::EMatRhsPlaceHolder dummy_place_holder
 	,const MatrixSymWithOpSerial& M
 	,const MatrixWithOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans

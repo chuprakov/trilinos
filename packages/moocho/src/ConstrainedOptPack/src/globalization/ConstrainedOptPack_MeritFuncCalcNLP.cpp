@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "MeritFuncCalcNLP.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
 
 namespace ConstrainedOptimizationPack {
 

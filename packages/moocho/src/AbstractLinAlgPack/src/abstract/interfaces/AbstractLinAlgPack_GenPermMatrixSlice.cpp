@@ -31,9 +31,9 @@ namespace std {
 inline
 void swap(
 	  AbstractLinAlgPack::GenPermMatrixSliceIteratorPack::row_col_value_type<
-	  	LinAlgPack::size_type>& v1
+	  	DenseLinAlgPack::size_type>& v1
 	, AbstractLinAlgPack::GenPermMatrixSliceIteratorPack::row_col_value_type<
-		LinAlgPack::size_type>& v2
+		DenseLinAlgPack::size_type>& v2
 	)
 {
 	AbstractLinAlgPack::GenPermMatrixSliceIteratorPack::swap(v1,v2);

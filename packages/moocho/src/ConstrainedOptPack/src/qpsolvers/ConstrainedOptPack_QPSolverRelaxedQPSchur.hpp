@@ -149,9 +149,9 @@ public:
 			,i_x_fixed_t          *i_x_fixed
 			,bnd_fixed_t          *bnd_fixed
 			,j_f_decomp_t         *j_f_decomp
-			,Vector               *b_X
+			,DVector               *b_X
 			,Ko_ptr_t             *Ko
-			,Vector               *fo
+			,DVector               *fo
 			) const = 0;
 
 	}; // end class InitKKTSystem
@@ -403,10 +403,10 @@ private:
 	MatrixSymHessianRelaxNonSing     G_relaxed_;
 	VectorWithOpMutableDense         bigM_vec_;
 	MatrixSymAddDelBunchKaufman      schur_comp_;
-	Vector                           g_relaxed_;
-	Vector                           b_X_;
+	DVector                           g_relaxed_;
+	DVector                           b_X_;
 	InitKKTSystem::Ko_ptr_t          Ko_;
-	Vector                           fo_;
+	DVector                           fo_;
 
 }; // end class QPSolverRelaxedQPSchur
 

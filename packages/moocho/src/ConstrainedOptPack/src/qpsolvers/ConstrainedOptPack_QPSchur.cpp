@@ -42,13 +42,13 @@
 #include "AbstractLinAlgPack/src/MatrixWithOpOut.hpp"
 #include "AbstractLinAlgPack/src/VectorStdOps.hpp"
 #include "AbstractLinAlgPack/src/EtaVector.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/VectorClassExt.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
-#include "LinAlgPack/src/GenMatrixOut.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorClassExt.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
+#include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "WorkspacePack.hpp"
 #include "ThrowException.hpp"
 
@@ -114,13 +114,13 @@ std::string error_msg(
 // Deincrement all indices less that k_remove
 //
 void deincrement_indices(
-	LinAlgPack::size_type                k_remove
-	,std::vector<LinAlgPack::size_type>  *indice_vector
+	DenseLinAlgPack::size_type                k_remove
+	,std::vector<DenseLinAlgPack::size_type>  *indice_vector
 	,size_t                              len_vector
 	)
 {
-	typedef LinAlgPack::size_type				size_type;
-	typedef std::vector<LinAlgPack::size_type>	vec_t;
+	typedef DenseLinAlgPack::size_type				size_type;
+	typedef std::vector<DenseLinAlgPack::size_type>	vec_t;
 	assert( len_vector <= indice_vector->size() );
 	for( vec_t::iterator itr = indice_vector->begin(); itr != indice_vector->begin() + len_vector; ++itr ) {
 		if( *itr > k_remove )
@@ -132,19 +132,19 @@ void deincrement_indices(
 // Insert the element (r_v,c_v) into r[] and c[] sorted by r[]
 //
 void insert_pair_sorted(
-	LinAlgPack::size_type                r_v
-	,LinAlgPack::size_type               c_v
+	DenseLinAlgPack::size_type                r_v
+	,DenseLinAlgPack::size_type               c_v
 	,size_t                              len_vector  // length of the new vector
-	,std::vector<LinAlgPack::size_type>  *r
-	,std::vector<LinAlgPack::size_type>  *c
+	,std::vector<DenseLinAlgPack::size_type>  *r
+	,std::vector<DenseLinAlgPack::size_type>  *c
 	)
 {
-	typedef std::vector<LinAlgPack::size_type> rc_t;
+	typedef std::vector<DenseLinAlgPack::size_type> rc_t;
 	assert( r->size() >= len_vector && c->size() >= len_vector );
 	// find the insertion point in r[]
 	rc_t::iterator
 		itr = std::lower_bound( r->begin(), r->begin() + len_vector-1, r_v );
-	const LinAlgPack::size_type p = itr - r->begin();
+	const DenseLinAlgPack::size_type p = itr - r->begin();
 	// Shift all of the stuff out of the way to make room for the insert
 	{for( rc_t::iterator itr_last = r->begin() + len_vector-1;
 			itr_last > r->begin() + p; --itr_last )
@@ -166,10 +166,10 @@ void insert_pair_sorted(
 //
 void calc_z(
 	const AbstractLinAlgPack::MatrixSymWithOpNonsingular   &S_hat
-	,const LinAlgPack::VectorSlice                         &d_hat
+	,const DenseLinAlgPack::DVectorSlice                         &d_hat
 	,const AbstractLinAlgPack::MatrixWithOp                &U_hat
-	,const LinAlgPack::VectorSlice                         *vo       // If NULL then assumed zero
-	,LinAlgPack::VectorSlice                               *z_hat
+	,const DenseLinAlgPack::DVectorSlice                         *vo       // If NULL then assumed zero
+	,DenseLinAlgPack::DVectorSlice                               *z_hat
 	)
 {
 	using LinAlgOpPack::Vp_StMtV;
@@ -177,8 +177,8 @@ void calc_z(
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	wsp::Workspace<LinAlgPack::value_type> t_ws(wss,d_hat.dim());
-	LinAlgPack::VectorSlice                t(&t_ws[0],t_ws.size());
+	wsp::Workspace<DenseLinAlgPack::value_type> t_ws(wss,d_hat.dim());
+	DenseLinAlgPack::DVectorSlice                t(&t_ws[0],t_ws.size());
 	t = d_hat;
 	if(vo)
 		Vp_StMtV( &t, -1.0, U_hat, BLAS_Cpp::trans, *vo );
@@ -190,20 +190,20 @@ void calc_z(
 //
 void calc_v(
 	const AbstractLinAlgPack::MatrixSymWithOpNonsingular   &Ko
-	,const LinAlgPack::VectorSlice                         *fo    // If NULL then assumed to be zero
+	,const DenseLinAlgPack::DVectorSlice                         *fo    // If NULL then assumed to be zero
 	,const AbstractLinAlgPack::MatrixWithOp                &U_hat
-	,const LinAlgPack::VectorSlice                         &z_hat // Only accessed if U_hat.cols() > 0
-	,LinAlgPack::VectorSlice                               *v
+	,const DenseLinAlgPack::DVectorSlice                         &z_hat // Only accessed if U_hat.cols() > 0
+	,DenseLinAlgPack::DVectorSlice                               *v
 	)
 {
-	using LinAlgPack::norm_inf;
+	using DenseLinAlgPack::norm_inf;
 	using LinAlgOpPack::Vp_StMtV;
 	using LinAlgOpPack::V_InvMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	wsp::Workspace<LinAlgPack::value_type> t_ws(wss,v->dim());
-	LinAlgPack::VectorSlice                t(&t_ws[0],t_ws.size());
+	wsp::Workspace<DenseLinAlgPack::value_type> t_ws(wss,v->dim());
+	DenseLinAlgPack::DVectorSlice                t(&t_ws[0],t_ws.size());
 	if(fo) {	
 		t = *fo;
 	}
@@ -227,9 +227,9 @@ void calc_v(
 //
 void calc_mu_D(
 	const ConstrainedOptimizationPack::QPSchur::ActiveSet  &act_set
-	,const LinAlgPack::VectorSlice                         &x
-	,const LinAlgPack::VectorSlice                         &v
-	,LinAlgPack::VectorSlice                               *mu_D
+	,const DenseLinAlgPack::DVectorSlice                         &x
+	,const DenseLinAlgPack::DVectorSlice                         &v
+	,DenseLinAlgPack::DVectorSlice                               *mu_D
 	)
 {
 	using BLAS_Cpp::no_trans;
@@ -244,13 +244,13 @@ void calc_mu_D(
 
 	const ConstrainedOptimizationPack::QPSchurPack::QP
 		&qp = act_set.qp();
-	const LinAlgPack::size_type
+	const DenseLinAlgPack::size_type
 		n = qp.n(),
 		n_R = qp.n_R(),
 		m = qp.m();
 
 	const AbstractLinAlgPack::GenPermMatrixSlice &Q_XD_hat = act_set.Q_XD_hat();
-	const LinAlgPack::VectorSlice			 g = qp.g();
+	const DenseLinAlgPack::DVectorSlice			 g = qp.g();
 	const AbstractLinAlgPack::MatrixSymWithOp &G = qp.G();
 	// mu_D_hat = - Q_XD_hat' * g
 	V_StMtV( mu_D, -1.0, Q_XD_hat, trans, g ); 
@@ -262,7 +262,7 @@ void calc_mu_D(
 	}
 	// p_mu_D_hat += - Q_XD_hat' * A_bar * P_plus_hat * z_hat
 	if( act_set.q_plus_hat() && act_set.q_hat() ) {
-		const LinAlgPack::VectorSlice z_hat = act_set.z_hat();
+		const DenseLinAlgPack::DVectorSlice z_hat = act_set.z_hat();
 		AbstractLinAlgPack::SpVector P_plus_hat_z_hat;
 		V_MtV( &P_plus_hat_z_hat, act_set.P_plus_hat(), no_trans, z_hat ); 
 		Vp_StPtMtV( mu_D, -1.0, Q_XD_hat, trans
@@ -279,10 +279,10 @@ void calc_mu_D(
 //
 void calc_p_mu_D(
 	const ConstrainedOptimizationPack::QPSchur::ActiveSet  &act_set
-	,const LinAlgPack::VectorSlice                         &p_v
-	,const LinAlgPack::VectorSlice                         &p_z_hat
-	,const LinAlgPack::size_type                           *ja       // If != NULL then we will include the term e(ja)
-	,LinAlgPack::VectorSlice                               *p_mu_D
+	,const DenseLinAlgPack::DVectorSlice                         &p_v
+	,const DenseLinAlgPack::DVectorSlice                         &p_z_hat
+	,const DenseLinAlgPack::size_type                           *ja       // If != NULL then we will include the term e(ja)
+	,DenseLinAlgPack::DVectorSlice                               *p_mu_D
 	)
 {
 	using BLAS_Cpp::no_trans;
@@ -297,7 +297,7 @@ void calc_p_mu_D(
 		&qp = act_set.qp();
 	const ConstrainedOptimizationPack::QPSchurPack::Constraints
 		&constraints = qp.constraints();
-	const LinAlgPack::size_type
+	const DenseLinAlgPack::size_type
 		n = qp.n(),
 		n_R = qp.n_R(),
 		m = qp.m();
@@ -399,24 +399,24 @@ void calc_p_mu_D(
 template<class val_type>
 void calc_resid(
 	const ConstrainedOptimizationPack::QPSchur::ActiveSet     &act_set
-	,const LinAlgPack::VectorSlice                            &v
-	,const LinAlgPack::VectorSlice                            &z_hat        // Only accessed if q_hat > 0
-	,const LinAlgPack::value_type                             ao            // Only accessed if bo != NULL
-	,const LinAlgPack::VectorSlice                            *bo           // If NULL then considered 0
-	,LinAlgPack::VectorSliceTmpl<val_type>                    *ro
-	,LinAlgPack::value_type                                   *roR_scaling
-	,LinAlgPack::value_type                                   *rom_scaling  // Only set if m > 0
-	,const LinAlgPack::value_type                             aa            // Only accessed if q_hat > 0
-	,const LinAlgPack::VectorSlice                            *ba           // If NULL then considered 0, Only accessed if q_hat > 0
-	,LinAlgPack::VectorSliceTmpl<val_type>                    *ra           // Only set if q_hat > 0
-	,LinAlgPack::value_type                                   *ra_scaling   // Only set if q_hat > 0
+	,const DenseLinAlgPack::DVectorSlice                            &v
+	,const DenseLinAlgPack::DVectorSlice                            &z_hat        // Only accessed if q_hat > 0
+	,const DenseLinAlgPack::value_type                             ao            // Only accessed if bo != NULL
+	,const DenseLinAlgPack::DVectorSlice                            *bo           // If NULL then considered 0
+	,DenseLinAlgPack::VectorSliceTmpl<val_type>                    *ro
+	,DenseLinAlgPack::value_type                                   *roR_scaling
+	,DenseLinAlgPack::value_type                                   *rom_scaling  // Only set if m > 0
+	,const DenseLinAlgPack::value_type                             aa            // Only accessed if q_hat > 0
+	,const DenseLinAlgPack::DVectorSlice                            *ba           // If NULL then considered 0, Only accessed if q_hat > 0
+	,DenseLinAlgPack::VectorSliceTmpl<val_type>                    *ra           // Only set if q_hat > 0
+	,DenseLinAlgPack::value_type                                   *ra_scaling   // Only set if q_hat > 0
 	)
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	using LinAlgPack::norm_inf;
-	using LinAlgPack::VectorSlice;
-	using LinAlgPack::Vp_StV;
+	using DenseLinAlgPack::norm_inf;
+	using DenseLinAlgPack::DVectorSlice;
+	using DenseLinAlgPack::Vp_StV;
 	using SparseLinAlgPack::V_MtV;
 	using AbstractLinAlgPack::SpVector;
 	using AbstractLinAlgPack::GenPermMatrixSlice;
@@ -438,7 +438,7 @@ void calc_resid(
 		&Q_R        = qp.Q_R(),
 		&P_XF_hat   = act_set.P_XF_hat(),
 		&P_plus_hat = act_set.P_plus_hat();
-	const LinAlgPack::size_type
+	const DenseLinAlgPack::size_type
 		n          = qp.n(),
 		n_R        = qp.n_R(),
 		m          = qp.m(),
@@ -448,19 +448,19 @@ void calc_resid(
 		q_C_hat    = act_set.q_C_hat(),
 		q_plus_hat = act_set.q_plus_hat();
 	
-	const VectorSlice
+	const DVectorSlice
 		x_R = v(1,n_R),
-		lambda = ( m ? v(n_R+1,n_R+m): VectorSlice() ),
-		boR = ( bo ? (*bo)(1,n_R) : VectorSlice() ),
-		bom = ( bo && m ? (*bo)(n_R+1,n_R+m) : VectorSlice() );
+		lambda = ( m ? v(n_R+1,n_R+m): DVectorSlice() ),
+		boR = ( bo ? (*bo)(1,n_R) : DVectorSlice() ),
+		bom = ( bo && m ? (*bo)(n_R+1,n_R+m) : DVectorSlice() );
 
-	LinAlgPack::VectorSliceTmpl<val_type>
+	DenseLinAlgPack::VectorSliceTmpl<val_type>
 		roR = (*ro)(1,n_R),
-		rom = ( m ? (*ro)(n_R+1,n_R+m) : LinAlgPack::VectorSliceTmpl<val_type>() );
+		rom = ( m ? (*ro)(n_R+1,n_R+m) : DenseLinAlgPack::VectorSliceTmpl<val_type>() );
 
-	wsp::Workspace<LinAlgPack::value_type>
+	wsp::Workspace<DenseLinAlgPack::value_type>
 		x_free_ws(wss,n);
-	LinAlgPack::VectorSlice
+	DenseLinAlgPack::DVectorSlice
 		x_free(&x_free_ws[0],x_free_ws.size());
 	wsp::Workspace<val_type>
 		t1_ws(wss,n),
@@ -469,7 +469,7 @@ void calc_resid(
 		tR_ws(wss,n_R),
 		tm_ws(wss,m),
 		ta_ws(wss,q_hat);
-	LinAlgPack::VectorSliceTmpl<val_type>
+	DenseLinAlgPack::VectorSliceTmpl<val_type>
 		t1(&t1_ws[0],t1_ws.size()),
 		t2(&t2_ws[0],t2_ws.size()),
 		t3(&t3_ws[0],t3_ws.size()),
@@ -587,25 +587,25 @@ void calc_resid(
 // is just fine and no corrections were needed (no output).
 //
 int correct_dual_infeas(
-	const LinAlgPack::size_type                                  j                // for output info only
+	const DenseLinAlgPack::size_type                                  j                // for output info only
 	,const ConstrainedOptimizationPack::EBounds                  bnd_j
-	,const LinAlgPack::value_type                                t_P              // (> 0) full step length
-	,const LinAlgPack::value_type                                scale            // (> 0) scaling value
-	,const LinAlgPack::value_type                                dual_infeas_tol
-	,const LinAlgPack::value_type                                degen_mult_val
+	,const DenseLinAlgPack::value_type                                t_P              // (> 0) full step length
+	,const DenseLinAlgPack::value_type                                scale            // (> 0) scaling value
+	,const DenseLinAlgPack::value_type                                dual_infeas_tol
+	,const DenseLinAlgPack::value_type                                degen_mult_val
 	,std::ostream                                                *out             // Can be NULL
 	,const ConstrainedOptimizationPack::QPSchur::EOutputLevel    olevel
 	,const bool                                                  print_dual_infeas
 	,const char                                                  nu_j_n[]         // Name of nu_j
-	,LinAlgPack::value_type                                      *nu_j            // required
-	,LinAlgPack::value_type                                      *scaled_viol     // = scale*nu_j*(bnd_j==UPPER ? 1.0: -1.0 ) (after output)
+	,DenseLinAlgPack::value_type                                      *nu_j            // required
+	,DenseLinAlgPack::value_type                                      *scaled_viol     // = scale*nu_j*(bnd_j==UPPER ? 1.0: -1.0 ) (after output)
 	,const char                                                  p_nu_j_n[]    = NULL // Name of p_nu_j (can be NULL if p_nu_j==NULL)
-	,LinAlgPack::value_type                                      *p_nu_j       = NULL // optional (can be NULL)
+	,DenseLinAlgPack::value_type                                      *p_nu_j       = NULL // optional (can be NULL)
 	,const char                                                  nu_j_plus_n[] = NULL // Name of nu_j_plus (can be NULL if p_nu_j==NULL)
-	,LinAlgPack::value_type                                      *nu_j_plus    = NULL // optional (can be NULL)
+	,DenseLinAlgPack::value_type                                      *nu_j_plus    = NULL // optional (can be NULL)
 	)
 {
-	typedef LinAlgPack::value_type value_type;
+	typedef DenseLinAlgPack::value_type value_type;
 	namespace COP = ConstrainedOptimizationPack;
 
 	value_type nu_j_max = (*scaled_viol) = scale * (*nu_j) * (bnd_j == COP::UPPER ? +1.0 : -1.0);
@@ -678,8 +678,8 @@ int correct_dual_infeas(
 //
 void calc_obj_grad_norm_inf(
 	const ConstrainedOptimizationPack::QPSchurPack::QP     &qp
-	,const LinAlgPack::VectorSlice                         &x
-	,LinAlgPack::value_type                                *qp_grad_norm_inf
+	,const DenseLinAlgPack::DVectorSlice                         &x
+	,DenseLinAlgPack::value_type                                *qp_grad_norm_inf
 	)
 {
 	assert(0); // ToDo: Implement this?
@@ -728,7 +728,7 @@ size_type QPSchur::U_hat_t::cols() const
 }
 
 /* 10/25/00: I don't think we need this function!
-void QPSchur::U_hat_t::Mp_StM(GenMatrixSlice* C, value_type a
+void QPSchur::U_hat_t::Mp_StM(DMatrixSlice* C, value_type a
 	, BLAS_Cpp::Transp M_trans ) const
 {
 	using BLAS_Cpp::no_trans;
@@ -756,9 +756,9 @@ void QPSchur::U_hat_t::Mp_StM(GenMatrixSlice* C, value_type a
 		// 
 		// C2 += a * A' * P_XF_hat
 		//
-		GenMatrixSlice
+		DMatrixSlice
 			C1 = (*C)(1,n_R,1,C->cols()),
-			C2 = m ? (*C)(n_R+1,n_R+m,1,C->cols()) : GenMatrixSlice();
+			C2 = m ? (*C)(n_R+1,n_R+m,1,C->cols()) : DMatrixSlice();
 		// C1 += a * Q_R' * G * P_XF_hat
 		if( P_XF_hat().nz() )
 			Mp_StPtMtP( &C1, a, Q_R(), trans, G(), no_trans, P_XF_hat(), no_trans );
@@ -776,13 +776,13 @@ void QPSchur::U_hat_t::Mp_StM(GenMatrixSlice* C, value_type a
 */
 
 void QPSchur::U_hat_t::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
-	,const VectorSlice& x, value_type b
+	DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	,const DVectorSlice& x, value_type b
 	) const
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	using LinAlgPack::Vt_S;
+	using DenseLinAlgPack::Vt_S;
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_StMtV;
 	using LinAlgOpPack::V_MtV;
@@ -814,9 +814,9 @@ void QPSchur::U_hat_t::Vp_StMtV(
 		// y1 = b * y1 + a * Q_R' * G * P_XF_hat * x + a * Q_R' * A_bar * P_plus_hat * x
 		// y2 = b * y2 + a * A' * P_XF_hat * x
 		// 
-		VectorSlice
+		DVectorSlice
 			y1 = (*y)(1,n_R),
-			y2 = m ? (*y)(n_R+1,n_R+m) : VectorSlice();
+			y2 = m ? (*y)(n_R+1,n_R+m) : DVectorSlice();
 		SpVector
 			P_XF_hat_x,
 			P_plus_hat_x;
@@ -855,9 +855,9 @@ void QPSchur::U_hat_t::Vp_StMtV(
 		// y = b * y + a * P_XF_hat' * G * Q_R * x1 + a * P_plus_hat' * A_bar' * Q_R * x1
 		//     + a * P_XF_hat' * A * x2
 		// 
-		const VectorSlice
+		const DVectorSlice
 			x1 = x(1,n_R),
-			x2 = m ? x(n_R+1,n_R+m) : VectorSlice();
+			x2 = m ? x(n_R+1,n_R+m) : DVectorSlice();
 		SpVector
 			Q_R_x1;
 		// Q_R_x1 = Q_R * x1
@@ -881,7 +881,7 @@ void QPSchur::U_hat_t::Vp_StMtV(
 }
 
 void QPSchur::U_hat_t::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
 	,const SpVectorSlice& x, value_type b
 	) const
 {
@@ -890,7 +890,7 @@ void QPSchur::U_hat_t::Vp_StMtV(
 
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	using LinAlgPack::Vt_S;
+	using DenseLinAlgPack::Vt_S;
 	using LinAlgOpPack::V_MtV;
 	using SparseLinAlgPack::V_MtV;
 	using SparseLinAlgPack::Vp_StMtV;
@@ -923,9 +923,9 @@ void QPSchur::U_hat_t::Vp_StMtV(
 		// y1 = b * y1 + a * Q_R' * G * P_XF_hat * x + a * Q_R' * A_bar * P_plus_hat * x
 		// y2 = b * y2 + a * A' * P_XF_hat * x
 		// 
-		VectorSlice
+		DVectorSlice
 			y1 = (*y)(1,n_R),
-			y2 = m ? (*y)(n_R+1,n_R+m) : VectorSlice();
+			y2 = m ? (*y)(n_R+1,n_R+m) : DVectorSlice();
 		SpVector
 			P_XF_hat_x,
 			P_plus_hat_x;
@@ -1021,7 +1021,7 @@ void QPSchur::ActiveSet::initialize(
 	using SparseLinAlgPack::V_MtV;
 	using AbstractLinAlgPack::Mp_StPtMtP;
 	using AbstractLinAlgPack::M_StMtInvMtM;
-	using LinAlgPack::sym;
+	using DenseLinAlgPack::sym;
 	typedef MatrixSymAddDelUpdateable MSADU;
 	namespace GPMSTP = AbstractLinAlgPack::GenPermMatrixSliceIteratorPack;
 	namespace wsp = WorkspacePack;
@@ -1038,9 +1038,9 @@ void QPSchur::ActiveSet::initialize(
 		&l_x_X_map = qp.l_x_X_map();
 	const QP::i_x_X_map_t
 		&i_x_X_map = qp.i_x_X_map();
-	const VectorSlice
+	const DVectorSlice
 		b_X = qp.b_X();
-	const VectorSlice
+	const DVectorSlice
 		g = qp.g();
 	const MatrixSymWithOp
 		&G = qp.G();
@@ -1343,8 +1343,8 @@ void QPSchur::ActiveSet::initialize(
 	// Initialize and factorize the schur complement
 	if( q_hat ) {
 		// Temporary storage for S (dense)
-		GenMatrix S_store(q_hat+1,q_hat+1);
-		sym_gms S_sym( S_store(2,q_hat+1,1,q_hat), BLAS_Cpp::lower );
+		DMatrix S_store(q_hat+1,q_hat+1);
+		DMatrixSliceSym S_sym( S_store(2,q_hat+1,1,q_hat), BLAS_Cpp::lower );
 		MatrixSymPosDefCholFactor S(&S_store());
 		// S = -1.0 * U_hat' * inv(Ko) * U_hat
 		M_StMtInvMtM( &S, -1.0, U_hat_, BLAS_Cpp::trans, qp.Ko()
@@ -1455,7 +1455,7 @@ bool QPSchur::ActiveSet::add_constraint(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	using LinAlgPack::dot;
+	using DenseLinAlgPack::dot;
 	using SparseLinAlgPack::dot;
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::Vp_StPtMtV;
@@ -1533,7 +1533,7 @@ bool QPSchur::ActiveSet::add_constraint(
 		const size_type		q_hat = this->q_hat();
 		wsp::Workspace<value_type>
 			                t_hat_ws(wss,q_hat);
-		VectorSlice         t_hat(&t_hat_ws[0],q_hat);
+		DVectorSlice         t_hat(&t_hat_ws[0],q_hat);
 		value_type			alpha_hat = 0.0;
 		bool				changed_bounds = false;
 		size_type           sd = 0; // Only used if changed_bounds == true
@@ -1550,7 +1550,7 @@ bool QPSchur::ActiveSet::add_constraint(
 			assert( la );
 			const eta_t u_p = eta_t(la,n_R_+m_);
 			// r = inv(Ko)*u_p
-			Vector r;	// ToDo: Make this sparse!
+			DVector r;	// ToDo: Make this sparse!
 			V_InvMtV( &r, qp_->Ko(), no_trans, u_p() );
 			// t_hat = - U_hat' * r
 			if(q_hat)
@@ -1596,12 +1596,12 @@ bool QPSchur::ActiveSet::add_constraint(
 			//       [        0             ] m
 			const eta_t e_ja = eta_t(ja,n_+m_breve_);
 			const MatrixWithOp &A_bar = constraints.A_bar();
-			Vector u_p( n_R_ + m_ );	// ToDo: make this sparse
+			DVector u_p( n_R_ + m_ );	// ToDo: make this sparse
 			Vp_StPtMtV( &u_p(1,n_R_), 1.0, qp_->Q_R(), trans, A_bar, no_trans, e_ja(), 0.0 );
 			if( m_ )
 				u_p(n_R_+1,n_R_+m_) = 0.0;
 			// r = inv(Ko) * u_p
-			Vector r;	// ToDo: Make this sparse!
+			DVector r;	// ToDo: Make this sparse!
 			V_InvMtV( &r, qp_->Ko(), no_trans, u_p() );
 			if(q_hat) {
 				// t_hat = v_p - U_hat' * r
@@ -1693,7 +1693,7 @@ bool QPSchur::ActiveSet::drop_constraint(
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	using LinAlgPack::dot;
+	using DenseLinAlgPack::dot;
 	using SparseLinAlgPack::dot;
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::V_MtV;
@@ -1733,7 +1733,7 @@ bool QPSchur::ActiveSet::drop_constraint(
 		// Get references
 		const MatrixSymWithOp
 			&G           = qp_->G();
-		const VectorSlice
+		const DVectorSlice
 			g            = qp_->g();
 		const MatrixWithOp
 			&A_bar       = qp_->constraints().A_bar();
@@ -1746,7 +1746,7 @@ bool QPSchur::ActiveSet::drop_constraint(
 			&Q_X         = qp_->Q_X(),
 			&P_XF_hat    = this->P_XF_hat(),
 			&P_plus_hat  = this->P_plus_hat();
-		const VectorSlice
+		const DVectorSlice
 			b_X          = qp_->b_X();
 		//
 		// Compute the update quantities to augmented KKT system
@@ -1754,29 +1754,29 @@ bool QPSchur::ActiveSet::drop_constraint(
 		// e_id
 		eta_t e_id(id,n_);
 		// u_p = [ Q_R'*G*e_id ; A'*e_id ] <: R^(n_R+m)
-		Vector u_p(n_R_+m_);
+		DVector u_p(n_R_+m_);
 		Vp_StPtMtV( &u_p(1,n_R_), 1.0, Q_R, trans, G, no_trans, e_id(), 0.0 );
 		if( m_ )
 			V_MtV( &u_p(n_R_+1,n_R_+m_), qp_->A(), trans, e_id() );
 		const value_type
-			nrm_u_p = LinAlgPack::norm_inf( u_p() );
+			nrm_u_p = DenseLinAlgPack::norm_inf( u_p() );
 		// sigma = e_id'*G*e_id <: R
 		const value_type
 			sigma = transVtMtV( e_id(), G, no_trans, e_id() );
 		// d_p = - g(id) - b_X'*(Q_X'*G*e_id) <: R
-		Vector Q_X_G_e_id(Q_X.cols());
+		DVector Q_X_G_e_id(Q_X.cols());
 		Vp_StPtMtV( &Q_X_G_e_id(), 1.0, Q_X, trans, G, no_trans, e_id(), 0.0 );
 		const value_type
 			d_p = -g(id) - dot( b_X, Q_X_G_e_id() );
 		// r = inv(Ko)*u_p <: R^(n_R+m)
-		Vector r;
+		DVector r;
 		if( nrm_u_p > 0.0 )
 			V_InvMtV( &r, Ko, no_trans, u_p() );
 		// t_hat = v_p - U_hat'*r
 		// where: v_p = P_XF_hat'*G*e_id + P_plus_hat'*A_bar'*e_id <: R^(q_hat)
 		wsp::Workspace<value_type>
 			t_hat_ws(wss,q_hat);
-		VectorSlice
+		DVectorSlice
 			t_hat(&t_hat_ws[0],q_hat);
 		if(q_hat) {
 			t_hat = 0.0;
@@ -2036,55 +2036,55 @@ const GenPermMatrixSlice& QPSchur::ActiveSet::Q_XD_hat() const
 	return Q_XD_hat_;
 }
 
-const VectorSlice QPSchur::ActiveSet::d_hat() const
+const DVectorSlice QPSchur::ActiveSet::d_hat() const
 {
 	assert_initialized();
 	return d_hat_(1,q_hat());
 }
 
-VectorSlice QPSchur::ActiveSet::z_hat()
+DVectorSlice QPSchur::ActiveSet::z_hat()
 {
 	assert_initialized();
 	return z_hat_(1,q_hat());
 }
 
-const VectorSlice QPSchur::ActiveSet::z_hat() const
+const DVectorSlice QPSchur::ActiveSet::z_hat() const
 {
 	assert_initialized();
 	return z_hat_(1,q_hat());
 }
 
-VectorSlice QPSchur::ActiveSet::p_z_hat()
+DVectorSlice QPSchur::ActiveSet::p_z_hat()
 {
 	assert_initialized();
 	return p_z_hat_(1,q_hat());
 }
 
-const VectorSlice QPSchur::ActiveSet::p_z_hat() const
+const DVectorSlice QPSchur::ActiveSet::p_z_hat() const
 {
 	assert_initialized();
 	return p_z_hat_(1,q_hat());
 }
 
-VectorSlice QPSchur::ActiveSet::mu_D_hat()
+DVectorSlice QPSchur::ActiveSet::mu_D_hat()
 {
 	assert_initialized();
 	return mu_D_hat_(1,q_D_hat());
 }
 
-const VectorSlice QPSchur::ActiveSet::mu_D_hat() const
+const DVectorSlice QPSchur::ActiveSet::mu_D_hat() const
 {
 	assert_initialized();
 	return mu_D_hat_(1,q_D_hat());
 }
 
-VectorSlice QPSchur::ActiveSet::p_mu_D_hat()
+DVectorSlice QPSchur::ActiveSet::p_mu_D_hat()
 {
 	assert_initialized();
 	return p_mu_D_hat_(1,q_D_hat());
 }
 
-const VectorSlice QPSchur::ActiveSet::p_mu_D_hat() const
+const DVectorSlice QPSchur::ActiveSet::p_mu_D_hat() const
 {
 	assert_initialized();
 	return p_mu_D_hat_(1,q_D_hat());
@@ -2255,14 +2255,14 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	QP& qp
 	,size_type num_act_change, const int ij_act_change[], const EBounds bnds[]
 	,std::ostream *out, EOutputLevel output_level, ERunTests test_what
-	,VectorSlice* x, SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve
+	,DVectorSlice* x, SpVector* mu, DVectorSlice* lambda, SpVector* lambda_breve
 	,size_type* iter, size_type* num_adds, size_type* num_drops
 	)
 {
 	using std::setw;
 	using std::endl;
 	using std::right;
-	using LinAlgPack::norm_inf;
+	using DenseLinAlgPack::norm_inf;
 	using SparseLinAlgPack::norm_inf;
 	using LinAlgOpPack::V_InvMtV;
 	namespace wsp = WorkspacePack;
@@ -2367,7 +2367,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 
 	// Compute vo =  inv(Ko) * fo
 	wsp::Workspace<value_type> vo_ws(wss,qp.n_R()+qp.m());
-	VectorSlice vo(&vo_ws[0],vo_ws.size());
+	DVectorSlice vo(&vo_ws[0],vo_ws.size());
 	V_InvMtV( &vo, qp.Ko(), BLAS_Cpp::no_trans, qp.fo() );
 
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
@@ -2425,13 +2425,13 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 		if( timeout_return(&timer,out,output_level) )
 			return MAX_RUNTIME_EXEEDED_FAIL;
 		// Compute z_hat (z_hat = inv(S_hat)*(d_hat - U_hat'*vo))
-		VectorSlice z_hat = act_set_.z_hat();
+		DVectorSlice z_hat = act_set_.z_hat();
 		calc_z( act_set_.S_hat(), act_set_.d_hat(), act_set_.U_hat(), &vo
 			, &z_hat );
 		// Determine if we are dual feasible.
 		value_type	max_viol = 0.0;	// max scaled violation of dual feasability.
 		size_type	jd = 0;			// indice of constraint with max scaled violation.
-		VectorSlice::iterator
+		DVectorSlice::iterator
 			z_itr = z_hat.begin();
 		const size_type q_hat = act_set_.q_hat();	// Size of schur complement system.
 		// Print header for s, z_hat(s), bnd(s), viol, max_viol and jd
@@ -2509,7 +2509,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 
 	// Compute v
 	wsp::Workspace<value_type> v_ws(wss,qp.n_R()+qp.m());
-	VectorSlice v(&v_ws[0],v_ws.size());
+	DVectorSlice v(&v_ws[0],v_ws.size());
 	if( act_set_.q_hat() > 0 ) {
 		calc_v( qp.Ko(), &qp.fo(), act_set_.U_hat(), act_set_.z_hat(), &v );
 		if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {
@@ -2565,13 +2565,13 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 			if( timeout_return(&timer,out,output_level) )
 				return MAX_RUNTIME_EXEEDED_FAIL;
 			// mu_D_hat = ???
-			VectorSlice mu_D_hat = act_set_.mu_D_hat();
+			DVectorSlice mu_D_hat = act_set_.mu_D_hat();
 			calc_mu_D( act_set_, *x, v, &mu_D_hat );
 			// Determine if we are dual feasible.
 			value_type	max_viol = 0.0;	// max scaled violation of dual feasability.
 			int			id = 0;			// indice of variable with max scaled violation.
 			size_type   kd = 0;
-			VectorSlice::iterator
+			DVectorSlice::iterator
 				mu_D_itr = mu_D_hat.begin();
 			// Print header for k, mu_D_hat(k), bnd, viol, max_viol and id
 			if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
@@ -2700,7 +2700,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	// Correct the sign of near degenerate multipliers in case it has not been done yet!
 	if( solve_return != SUBOPTIMAL_POINT && act_set_.q_hat() ) {
 		const size_type q_hat = act_set_.q_hat();
-		VectorSlice z_hat = act_set_.z_hat();
+		DVectorSlice z_hat = act_set_.z_hat();
 		for( size_type s = 1; s <= q_hat; ++s ) {
 			const int       j    = act_set_.ij_map(s);
 			value_type      viol = 0.0;
@@ -2719,7 +2719,7 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	}
 	if( solve_return != SUBOPTIMAL_POINT && act_set_.q_D_hat() ) {
 		const GenPermMatrixSlice&          Q_XD_hat = act_set_.Q_XD_hat();
-		VectorSlice                        mu_D_hat = act_set_.mu_D_hat();
+		DVectorSlice                        mu_D_hat = act_set_.mu_D_hat();
 		const QPSchurPack::QP::x_init_t&   x_init   = qp.x_init();
 		for( GenPermMatrixSlice::const_iterator itr = Q_XD_hat.begin(); itr != Q_XD_hat.end(); ++itr ) {
 			const int       i    = itr->row_i();
@@ -2822,8 +2822,8 @@ const QPSchur::ActiveSet& QPSchur::act_set() const
 QPSchur::ESolveReturn QPSchur::qp_algo(
 	EPDSteps next_step
 	, std::ostream *out, EOutputLevel output_level, ERunTests test_what
-	, const VectorSlice& vo, ActiveSet* act_set, VectorSlice* v
-	, VectorSlice* x, size_type* iter, size_type* num_adds, size_type* num_drops
+	, const DVectorSlice& vo, ActiveSet* act_set, DVectorSlice* v
+	, DVectorSlice* x, size_type* iter, size_type* num_adds, size_type* num_drops
 	, size_type* iter_refine_num_resid, size_type* iter_refine_num_solves
 	, StopWatchPack::stopwatch* timer
 	)
@@ -2833,12 +2833,12 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	using std::right;
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	using LinAlgPack::dot;
-	using LinAlgPack::norm_inf;
-	using LinAlgPack::Vt_S;
-	using LinAlgPack::V_mV;
-	using LinAlgPack::Vp_StV;
-	using LinAlgPack::V_VmV;
+	using DenseLinAlgPack::dot;
+	using DenseLinAlgPack::norm_inf;
+	using DenseLinAlgPack::Vt_S;
+	using DenseLinAlgPack::V_mV;
+	using DenseLinAlgPack::Vp_StV;
+	using DenseLinAlgPack::V_VmV;
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_StMtV;
@@ -2876,7 +2876,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 		v_plus_ws(wss,v->dim()),
 		z_hat_plus_ws(wss,(n-m)+(n-n_R)),
 		p_v_ws(wss,v->dim());
-	VectorSlice
+	DVectorSlice
 		v_plus(&v_plus_ws[0],v_plus_ws.size()),
 		z_hat_plus,
 		p_v(&p_v_ws[0],p_v_ws.size());
@@ -2974,7 +2974,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								<< "    - Q_XD_hat'*A*v(n_R+1:n_R+m) - Q_XD_hat'*A_bar*P_plus_hat*z_hat ...\n";
 						}
 						wsp::Workspace<value_type> mu_D_hat_calc_ws( wss, act_set->q_D_hat() );
-						VectorSlice mu_D_hat_calc( &mu_D_hat_calc_ws[0], mu_D_hat_calc_ws.size() );
+						DVectorSlice mu_D_hat_calc( &mu_D_hat_calc_ws[0], mu_D_hat_calc_ws.size() );
 						calc_mu_D( *act_set, *x, *v, &mu_D_hat_calc );
 						if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
 							*out
@@ -2988,7 +2988,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							*out
 								<< "\nChecking mu_D_hat_calc == mu_D_hat\n";
 						}
-						Vector mu_D_hat_diff(mu_D_hat_calc.dim());
+						DVector mu_D_hat_diff(mu_D_hat_calc.dim());
 						LinAlgOpPack::V_VmV( &mu_D_hat_diff(), mu_D_hat_calc(), act_set->mu_D_hat() );
 						const value_type
 							mu_D_hat_err = norm_inf(mu_D_hat_diff()) / (1.0 + norm_inf(mu_D_hat_calc()));
@@ -3469,7 +3469,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 						assert(la);
 						// v_a = e(sa) <: R^q_hat
 						wsp::Workspace<value_type> v_a_ws(wss,act_set->q_hat());
-						VectorSlice v_a(&v_a_ws[0],v_a_ws.size());
+						DVectorSlice v_a(&v_a_ws[0],v_a_ws.size());
 						v_a = 0.0;
 						v_a(sa) = 1.0;
 						// d_a
@@ -3540,12 +3540,12 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							assert( la );
 							const EtaVector u_a = EtaVector(la,n_R+m);
 							const value_type d_a = b_a;
-							Vector t1;
+							DVector t1;
 							// t1 = inv(Ko) * u_a
 							V_InvMtV( &t1, qp.Ko(), no_trans, u_a() );
 							if( act_set->q_hat() ) {
 								// t2 = U_hat'*t1
-								Vector t2;
+								DVector t2;
 								V_MtV( &t2, act_set->U_hat(), trans, t1() );
 								// p_z_hat = inv(S_hat) * t2
 								V_InvMtV( &act_set->p_z_hat(), act_set->S_hat(), no_trans, t2() );
@@ -3573,7 +3573,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								// [   Ko     U_hat ] [   p_v   ] = [ -u_a ]
 								// [ U_hat'   V_hat ] [ p_z_hat ]   [   0  ]
 								wsp::Workspace<value_type> dense_u_a_ws(wss,u_a().dim());
-								VectorSlice dense_u_a(&dense_u_a_ws[0],dense_u_a_ws.size());
+								DVectorSlice dense_u_a(&dense_u_a_ws[0],dense_u_a_ws.size());
 								dense_u_a = 0.0; // Make a dense copy of u_a!
 								dense_u_a(u_a().begin()->index()+u_a().offset()) = 1.0;
 								EIterRefineReturn status = iter_refine(
@@ -3600,9 +3600,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							// d_a = b_a - b_X' * (Q_X' * A_bar * e_ja) <: R
 							//
 							wsp::Workspace<value_type> u_a_ws( wss, n_R + m );
-							VectorSlice u_a( &u_a_ws[0], u_a_ws.size() );
+							DVectorSlice u_a( &u_a_ws[0], u_a_ws.size() );
 							wsp::Workspace<value_type> v_a_ws( wss, act_set->q_hat() );
-							VectorSlice v_a( &v_a_ws[0], v_a_ws.size() );
+							DVectorSlice v_a( &v_a_ws[0], v_a_ws.size() );
 							// u_a(1:n_R) =  Q_R' * A_bar * e(ja)
 							Vp_StPtMtV( &u_a(1,n_R), 1.0, qp.Q_R(), trans
 										, qp.constraints().A_bar(), no_trans, e_ja(), 0.0 );
@@ -3611,7 +3611,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								u_a(n_R+1,n_R+m) = 0.0;
 							// t0 = Q_X' * A_bar * e_ja
 							wsp::Workspace<value_type> t0_ws( wss, n-n_R );
-							VectorSlice t0( &t0_ws[0], t0_ws.size() );
+							DVectorSlice t0( &t0_ws[0], t0_ws.size() );
 							if( n > n_R )
 								Vp_StPtMtV( &t0(), 1.0, qp.Q_X(), trans
 											, qp.constraints().A_bar(), no_trans, e_ja(), 0.0 );
@@ -3620,12 +3620,12 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 								d_a = b_a - ( n > n_R ? dot( qp.b_X(), t0() ) : 0.0 );
 							// t1 = inv(Ko) * u_a
 							wsp::Workspace<value_type> t1_ws( wss, n_R + m );
-							VectorSlice t1( &t1_ws[0], t1_ws.size() );
+							DVectorSlice t1( &t1_ws[0], t1_ws.size() );
 							V_InvMtV( &t1, qp.Ko(), no_trans, u_a );
 							if( act_set->q_hat() ) {
 								// t2 = U_hat'*t1
 								wsp::Workspace<value_type> t2_ws( wss, act_set->q_hat() );
-								VectorSlice t2( &t2_ws[0], t2_ws.size() );
+								DVectorSlice t2( &t2_ws[0], t2_ws.size() );
 								V_MtV( &t2, act_set->U_hat(), trans, t1() );
 								// v_a = P_XF_hat' * A_bar * e_ja
 								Vp_StPtMtV( &v_a(), 1.0, act_set->P_XF_hat(), trans
@@ -3740,7 +3740,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 
 					// z_hat_plus = inv(S_hat) * ( d_hat - U_hat' * vo  )
 					const size_type q_hat = act_set->q_hat();
-					z_hat_plus.bind(VectorSlice(&z_hat_plus_ws[0],q_hat));
+					z_hat_plus.bind(DVectorSlice(&z_hat_plus_ws[0],q_hat));
 					calc_z( act_set->S_hat(), act_set->d_hat(), act_set->U_hat(), &vo
 						, &z_hat_plus );
 					if( (int)output_level >= (int)OUTPUT_ITER_STEPS ) {
@@ -3777,7 +3777,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 							);
 					}
 					// Compute p_z_hat (change in z_hat w.r.t newly added constriant multiplier)
-					VectorSlice p_z_hat = act_set->p_z_hat();
+					DVectorSlice p_z_hat = act_set->p_z_hat();
 					// p_z_hat = z_hat_plus - z_hat
 					V_VmV( &p_z_hat(), z_hat_plus(), act_set->z_hat() );
 					// p_v = v_plus - v
@@ -3912,9 +3912,9 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 
 				// Search through Lagrange multipliers in z_hat
 				if( act_set->q_hat() ) {
-					VectorSlice z_hat = act_set->z_hat();
-					VectorSlice p_z_hat = act_set->p_z_hat();
-					VectorSlice::iterator
+					DVectorSlice z_hat = act_set->z_hat();
+					DVectorSlice p_z_hat = act_set->p_z_hat();
+					DVectorSlice::iterator
 						z_itr		= z_hat.begin(),
 						p_z_itr		= p_z_hat.begin();
 					const size_type
@@ -4019,8 +4019,8 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					const QPSchurPack::QP::x_init_t     &x_init    = qp.x_init();
 					const QPSchurPack::QP::i_x_X_map_t  &i_x_X_map = qp.i_x_X_map();
 					const size_type q_D_hat = act_set->q_D_hat();
-					VectorSlice mu_D_hat = act_set->mu_D_hat();
-					VectorSlice p_mu_D_hat = act_set->p_mu_D_hat();
+					DVectorSlice mu_D_hat = act_set->mu_D_hat();
+					DVectorSlice p_mu_D_hat = act_set->p_mu_D_hat();
 					const size_type
 						qD = assume_lin_dep_ja && return_to_init_fixed ? q_D_hat-1 : q_D_hat;
 					// Print header for k, i, mu_D_hat(k), p_mu_D_hat(k), x_init(k), t, t_D, jd
@@ -4050,7 +4050,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 					for( ; Q_XD_itr != Q_XD_end; ++Q_XD_itr ) {
 						const size_type k = Q_XD_itr->col_j();
 						const size_type i = Q_XD_itr->row_i();
-						VectorSlice::iterator
+						DVectorSlice::iterator
 							mu_D_itr		= mu_D_hat.begin() + (k-1),
 							p_mu_D_itr		= p_mu_D_hat.begin() + (k-1);
 						const size_type l = act_set->l_fxfx(k);
@@ -4485,7 +4485,7 @@ QPSchur::ESolveReturn QPSchur::qp_algo(
 	return MAX_ITER_EXCEEDED;
 }
 
-void QPSchur::set_x( const ActiveSet& act_set, const VectorSlice& v, VectorSlice* x )
+void QPSchur::set_x( const ActiveSet& act_set, const DVectorSlice& v, DVectorSlice* x )
 {
 	using BLAS_Cpp::no_trans;
 	using LinAlgOpPack::V_MtV;
@@ -4500,8 +4500,8 @@ void QPSchur::set_x( const ActiveSet& act_set, const VectorSlice& v, VectorSlice
 }
 
 void QPSchur::set_multipliers(
-	const ActiveSet& act_set, const VectorSlice& v
-	,SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve
+	const ActiveSet& act_set, const DVectorSlice& v
+	,SpVector* mu, DVectorSlice* lambda, SpVector* lambda_breve
 	)
 {
 	using BLAS_Cpp::no_trans;
@@ -4539,7 +4539,7 @@ void QPSchur::set_multipliers(
 		Vp_MtV( mu, act_set.Q_XD_hat(), no_trans, act_set.mu_D_hat() );
 	// Set all the multipliers in z_hat
 	if(q_hat){
-		const VectorSlice
+		const DVectorSlice
 			z_hat = act_set.z_hat();
 		for( size_type s = 1; s <= q_hat; ++s ) {
 			const int ij = act_set.ij_map(s);
@@ -4580,11 +4580,11 @@ QPSchur::iter_refine(
 	,std::ostream        *out
 	,EOutputLevel        output_level
 	,const value_type    ao
-	,const VectorSlice   *bo
+	,const DVectorSlice   *bo
 	,const value_type    aa
-	,const VectorSlice   *ba
-	,VectorSlice         *v
-	,VectorSlice         *z
+	,const DVectorSlice   *ba
+	,DVectorSlice         *v
+	,DVectorSlice         *z
 	,size_type           *iter_refine_num_resid
 	,size_type           *iter_refine_num_solves
 	)
@@ -4595,15 +4595,15 @@ QPSchur::iter_refine(
 	using std::right;
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
-	using LinAlgPack::norm_inf;
-	using LinAlgPack::Vp_StV;
+	using DenseLinAlgPack::norm_inf;
+	using DenseLinAlgPack::Vp_StV;
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::Vp_StMtV;
 	using LinAlgOpPack::V_InvMtV;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	typedef LinAlgPack::value_type           extra_value_type;
+	typedef DenseLinAlgPack::value_type           extra_value_type;
 
 	const value_type small_num = std::numeric_limits<value_type>::min();
 
@@ -4620,19 +4620,19 @@ QPSchur::iter_refine(
 		&S_hat = act_set.S_hat();
 	const MatrixWithOp
 		&U_hat = act_set.U_hat();
-	const LinAlgPack::size_type
+	const DenseLinAlgPack::size_type
 		n          = qp.n(),
 		n_R        = qp.n_R(),
 		m          = qp.m(),
 		q_hat      = act_set.q_hat();
-	const VectorSlice
+	const DVectorSlice
 		fo    = qp.fo(),
-		d_hat = (q_hat ? act_set.d_hat() : VectorSlice());
+		d_hat = (q_hat ? act_set.d_hat() : DVectorSlice());
 
 	wsp::Workspace<extra_value_type>
 		ext_ro_ws(wss,n_R+m),
 		ext_ra_ws(wss,q_hat);
-	LinAlgPack::VectorSliceTmpl<extra_value_type>
+	DenseLinAlgPack::VectorSliceTmpl<extra_value_type>
 		ext_ro(&ext_ro_ws[0],ext_ro_ws.size()),
 		ext_ra(&ext_ra_ws[0],ext_ra_ws.size());
 	wsp::Workspace<value_type>
@@ -4643,7 +4643,7 @@ QPSchur::iter_refine(
 		del_z_ws(wss,q_hat),
 		v_itr_ws(wss,n_R+m),
 		z_itr_ws(wss,q_hat);
-	VectorSlice
+	DVectorSlice
 		ro(&ro_ws[0],ro_ws.size()),
 		ra(&ra_ws[0],ra_ws.size()),
 		t1(&t1_ws[0],t1_ws.size()),
@@ -5027,7 +5027,7 @@ void QPSchurPack::QP::dump_qp( std::ostream& out )
 	}
 	out	<< "\nA_bar =\n" << constraints.A_bar();
 	// Get c_L_bar and c_U_bar
-	Vector c_L_bar(n+m_breve), c_U_bar(n+m_breve);
+	DVector c_L_bar(n+m_breve), c_U_bar(n+m_breve);
 	{for( size_type j = 1; j <= n+m_breve; ++j ){
 		c_L_bar(j) = constraints.get_bnd(j,LOWER);
 		c_U_bar(j) = constraints.get_bnd(j,UPPER);

@@ -23,32 +23,32 @@
 #include <typeinfo>
 
 #include "TestLinAlgPack.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
-#include "LinAlgPack/src/GenMatrixOp.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
-#include "LinAlgPack/src/GenMatrixOut.hpp"
-#include "LinAlgPack/src/MatVecCompare.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixOp.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
+#include "DenseLinAlgPack/src/DMatrixOut.hpp"
+#include "DenseLinAlgPack/src/MatVecCompare.hpp"
 
 namespace {
 
-using LinAlgPack::size_type;
-using LinAlgPack::value_type;
-using LinAlgPack::Vector;
-using LinAlgPack::VectorSlice;
-using LinAlgPack::GenMatrix;
-using LinAlgPack::GenMatrixSlice;
+using DenseLinAlgPack::size_type;
+using DenseLinAlgPack::value_type;
+using DenseLinAlgPack::DVector;
+using DenseLinAlgPack::DVectorSlice;
+using DenseLinAlgPack::DMatrix;
+using DenseLinAlgPack::DMatrixSlice;
 
 // vs_lhs = alpha * op(M_rhs1) * vs_rhs2 + beta * vs_lhs
 template<class M_t>
-void test_MtV( M_t& M_rhs1, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_rhs2
-	, const VectorSlice& expected_MtV, Vector* tmp1, Vector* tmp2
+void test_MtV( M_t& M_rhs1, BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2
+	, const DVectorSlice& expected_MtV, DVector* tmp1, DVector* tmp2
 	, std::ostream* out, bool* success )
 {
 	using BLAS_Cpp::rows;
-	using LinAlgPack::Vt_S;
-	using LinAlgPack::Vp_StV;
-	using LinAlgPack::Vp_StMtV;
-	using LinAlgPack::comp;
+	using DenseLinAlgPack::Vt_S;
+	using DenseLinAlgPack::Vp_StV;
+	using DenseLinAlgPack::Vp_StMtV;
+	using DenseLinAlgPack::comp;
 	using TestingHelperPack::update_success;
 	
 	// Check alpha = 1.0, 0.5.  Check beta = 0.0, 0.5, 1.0
@@ -93,19 +93,19 @@ inline char trans_char(BLAS_Cpp::Transp _trans) {
 	return (_trans == BLAS_Cpp::trans ? '\'' : ' ' );
 }
 
-// Test LinAlgPack compatable Level-3 BLAS (Mp_StMtM(...))
+// Test DenseLinAlgPack compatable Level-3 BLAS (Mp_StMtM(...))
 template <class M_t>
-void test_MtM( M_t& B, BLAS_Cpp::Transp trans_B, const GenMatrixSlice& I
+void test_MtM( M_t& B, BLAS_Cpp::Transp trans_B, const DMatrixSlice& I
 	, BLAS_Cpp::Transp trans_I, std::ostream* out
-	, GenMatrix* C1, GenMatrix* C2, bool* success )
+	, DMatrix* C1, DMatrix* C2, bool* success )
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
-	using LinAlgPack::assign;
-	using LinAlgPack::Mp_StM;
-	using LinAlgPack::Mp_StMtM;
-	using LinAlgPack::comp;
+	using DenseLinAlgPack::assign;
+	using DenseLinAlgPack::Mp_StM;
+	using DenseLinAlgPack::Mp_StMtM;
+	using DenseLinAlgPack::comp;
 	using TestingHelperPack::update_success;
 	
 	value_type alpha = 1.0, beta = 0.0;
@@ -167,7 +167,7 @@ void test_MtM( M_t& B, BLAS_Cpp::Transp trans_B, const GenMatrixSlice& I
 
 }	// end namespace
 
-bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
+bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 {
 
 	using BLAS_Cpp::trans;
@@ -177,8 +177,8 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 	using BLAS_Cpp::unit;
 	using BLAS_Cpp::nonunit;
 	using BLAS_Cpp::trans_to_bool;
-	using LinAlgPack::comp;
-	using LinAlgPack::sqrt_eps;
+	using DenseLinAlgPack::comp;
+	using DenseLinAlgPack::sqrt_eps;
 
 	bool success = true;
 	bool result, result1, result2;
@@ -217,8 +217,8 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 				1.7,	2.7,	3.7,	4.7,	5.7,	6.7,
 				1.8,	2.8,	3.8,	4.8,	5.8,	6.8	};
 
-	GenMatrix gm_lhs(m,n);
-	const GenMatrixSlice gms_rhs(const_cast<value_type*>(ptr),m*n,m,m,n);
+	DMatrix gm_lhs(m,n);
+	const DMatrixSlice gms_rhs(const_cast<value_type*>(ptr),m*n,m,m,n);
 
 	// ////////////////////////////////////////////////////////////////////////////////
 	// Test Element-wise Assignment functions not already tested in TestGenMatrixClass
@@ -305,7 +305,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 					 << "\ngm_lhs = 1.0;\nLet tm1 = tri_ele(gm_lhs(1,m,1,m),BLAS_Cpp::lower), "
 						"tm2 = tri_ele(gm_lhs(1,m-1,2,m),BLAS_Cpp::upper)\n";
 		gm_lhs = 1.0;
-		tri_ele_gms
+		DMatrixSliceTriEle
 			tm1 = nonconst_tri_ele(gm_lhs(1,m,1,m),BLAS_Cpp::lower),
 			tm2 = nonconst_tri_ele(gm_lhs(1,m-1,2,m),BLAS_Cpp::upper);
 		if(out) *out << "Mt_S( &tm1, 2.0 );\n";
@@ -364,7 +364,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 					<< "gms_lhs += alpha * sym(gms_rhs(1,m,1,m),"
 					<< str_uplo[i_uplo] << ")" << (_trans == trans ? '\'' : ' ' ) << " : ";
 			gm_lhs = 0.0;
-			const sym_gms M = sym(gms_rhs(1,m,1,m),_uplo);
+			const DMatrixSliceSym M = sym(gms_rhs(1,m,1,m),_uplo);
 			Mp_StM( &gm_lhs(), 0.5, M, _trans );
 			Mp_StM( &gm_lhs(), 0.5, M, _trans );
 			update_success( result1 = comp( tri_ele(gm_lhs(),lower), tri_ele(M.gms(),_uplo) )
@@ -394,7 +394,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 						<< (_trans == trans ? '\'' : ' ' ) << " : ";
 				// compute
 				gm_lhs = 0.0;
-				const tri_gms M = tri(gms_rhs(1,m,1,m),_uplo,_diag);
+				const DMatrixSliceTri M = tri(gms_rhs(1,m,1,m),_uplo,_diag);
 				Mp_StM( &gm_lhs(), 0.5, M, _trans );
 				Mp_StM( &gm_lhs(), 0.5, M, _trans );
 				// test diagonal
@@ -409,7 +409,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 								||	( _uplo == upper && _trans == trans )
 								?	lower : upper											),
 					oth_as_uplo = ( as_uplo == lower ? upper : lower );
-				const tri_ele_gms
+				const DMatrixSliceTriEle
 					M_ele = tri_ele( ( _uplo==lower ? M.gms()(2,m,1,m-1) : M.gms()(1,m-1,2,m) )
 										, _uplo ),
 					tri_reg_ele = tri_ele( ( as_uplo==lower ? gm_lhs(2,m,1,m-1) : gm_lhs(1,m-1,2,m) )
@@ -430,7 +430,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 
 	if(out) *out << "\n***\n*** Level-2 BLAS \n***\n";
 
-	Vector tmp1, tmp2, vs_rhs(n), expected_MtV;
+	DVector tmp1, tmp2, vs_rhs(n), expected_MtV;
 	{for(int k = 1; k <= n; ++k) vs_rhs(k) = k; }
 
 	// *** Triagnular matrices
@@ -443,7 +443,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 					*out << "\nLet M = tri(gms_rhs(1,m,1,m)," << str_uplo[i_uplo]
 						 << "," << str_diag[i_diag] << ")"
 						 << (a_trans[i_trans] == trans ? '\'' : ' ' ) << std::endl;
-				tri_gms M = tri(gms_rhs(1,m,1,m),a_uplo[i_uplo],a_diag[i_diag]);
+				DMatrixSliceTri M = tri(gms_rhs(1,m,1,m),a_uplo[i_uplo],a_diag[i_diag]);
 				// v_lhs
 				tmp1.resize(1);
 				tmp2.resize(1);
@@ -463,7 +463,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 	}}
 
 	// *** LinAlgOpPack complient
-	if(out) *out << "\n*** Test LinAlgPack complient (Vp_StMtV(...))\n";
+	if(out) *out << "\n*** Test DenseLinAlgPack complient (Vp_StMtV(...))\n";
 
 	// vs_lhs = alpha * op(gms_rhs1) * vs_rhs2 + beta * vs_lhs (xGEMV)
 
@@ -544,7 +544,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 						<< str_uplo[i_uplo] << "," << str_diag[i_diag] 
 						<< ")" << (_trans == trans ? '\'' : ' ' )
 						<< " * vs_rhs2 + beta * vs_lhs\n";
-				tri_gms M = tri(gms_rhs(1,m,1,m),_uplo,_diag);
+				DMatrixSliceTri M = tri(gms_rhs(1,m,1,m),_uplo,_diag);
 				//
 				// Compute expected MtV
 				//
@@ -597,7 +597,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 
 	gm_lhs.resize(m,m);
 	gm_lhs = 0.0;
-	GenMatrix ex_gm_lhs(0.0,m,m);
+	DMatrix ex_gm_lhs(0.0,m,m);
 	value_type alpha = 2.0;
 		
 	{for( int i_uplo = 0; i_uplo < 2; ++i_uplo) {
@@ -632,7 +632,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 	gm_lhs = 0.0;
 	ex_gm_lhs = 0.0;
 	alpha = 2.0;
-	Vector vs_rhs2 = vs_rhs.rev();
+	DVector vs_rhs2 = vs_rhs.rev();
 		
 	{for( int i_uplo = 0; i_uplo < 2; ++i_uplo) {
 		const BLAS_Cpp::Uplo _uplo = a_uplo[i_uplo];
@@ -668,7 +668,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 	// Triangular Matrices
 	if(out) *out << "\n*** BLAS-2 Equivalent Triangular Matrix operations\n";
 
-	GenMatrix Tmp1, Tmp2;
+	DMatrix Tmp1, Tmp2;
 
 	{for(int i_uplo = 0; i_uplo < 2; ++i_uplo) {
 		for(int i_diag = 0; i_diag < 2; ++i_diag) {
@@ -681,7 +681,7 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 						*out << "\nLet M = tri(gms_rhs(1,m,1,m)," << str_uplo[i_uplo]
 							 << "," << str_diag[i_diag] << ")"
 							 << trans_char(_trans1) << std::endl;
-					tri_gms M = tri(gms_rhs(1,m,1,m),a_uplo[i_uplo],a_diag[i_diag]);
+					DMatrixSliceTri M = tri(gms_rhs(1,m,1,m),a_uplo[i_uplo],a_diag[i_diag]);
 					// gm_lhs (left)
 					// gm_lhs = alpha * op(tri_rhs1) * op(gms_rhs2) (left) (BLAS xTRMM).
 					// gm_lhs = alpha * inv(op(tri_rhs1)) * op(gms_rhs2) (left) (BLAS xTRSM).
@@ -746,9 +746,9 @@ bool LinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 	}}
 
 	// *** LinAlgOpPack complient
-	if(out) *out << "\n*** Test LinAlgPack complient (Mp_StMtM(...))\n";
+	if(out) *out << "\n*** Test DenseLinAlgPack complient (Mp_StMtM(...))\n";
 
-	GenMatrix I(0.0,n,n);
+	DMatrix I(0.0,n,n);
 	I.diag() = 1.0;
 
 	// ****** Rectangular Matrices 

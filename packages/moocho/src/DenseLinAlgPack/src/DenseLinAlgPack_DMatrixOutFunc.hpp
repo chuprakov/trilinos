@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// GenMatrixOutFunc.hpp
+// DMatrixOutFunc.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,13 +16,13 @@
 #ifndef GENMATRIX_OUT_FUNC_H
 #define GENMATRIX_OUT_FUNC_H
 
-#include "LinAlgPackIOBasic.hpp"
+#include "DenseLinAlgPackIOBasic.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
-/** @name GenMatrixSlice output stream function.
+/** @name DMatrixSlice output stream function.
   *
-  * This is a function that are used to output a GenMatrixSlice object
+  * This is a function that are used to output a DMatrixSlice object
   * to a char based output stream.  This format is ment to be both
   * human and machine readable.  In fact the \Ref{input} function
   * can be used to read in the output produced by this function.
@@ -55,8 +55,8 @@ namespace LinAlgPack {
   *
   * If any of the output operations fails then a #std::ios_base::failure# exception is thrown. 
   */
-std::ostream& output(std::ostream& os, const GenMatrixSlice& gms, LinAlgPackIO::fmtflags extra_flags);
+std::ostream& output(std::ostream& os, const DMatrixSlice& gms, LinAlgPackIO::fmtflags extra_flags);
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif	// GENMATRIX_OUT_FUNC_H

@@ -18,18 +18,18 @@
 #include <ostream>
 
 #include "MatlabPack.hpp"
-#include "GenMatrixClass.hpp"
+#include "DMatrixClass.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
-std::ostream& MatlabPack::out( std::ostream& o, const char* name, const VectorSlice& vs
+std::ostream& MatlabPack::out( std::ostream& o, const char* name, const DVectorSlice& vs
 	, BLAS_Cpp::Transp trans )
 {
 	int p = o.precision();
 	o.precision( std::numeric_limits<value_type>::digits10 + 3 );
 	try {
 		o << name << " =  [ ";
-		for( VectorSlice::const_iterator itr = vs.begin(); itr != vs.end(); ++itr )
+		for( DVectorSlice::const_iterator itr = vs.begin(); itr != vs.end(); ++itr )
 			o << ' ' << *itr << ";";
 		o << "];" << (trans == BLAS_Cpp::no_trans ? ' ' : '\'' ) << std::endl;
 	}
@@ -41,7 +41,7 @@ std::ostream& MatlabPack::out( std::ostream& o, const char* name, const VectorSl
 	return o;
 }
 
-std::ostream& MatlabPack::out( std::ostream& o, const char* name, const GenMatrixSlice& gms
+std::ostream& MatlabPack::out( std::ostream& o, const char* name, const DMatrixSlice& gms
 	, BLAS_Cpp::Transp trans )
 {
 	int p = o.precision();
@@ -49,8 +49,8 @@ std::ostream& MatlabPack::out( std::ostream& o, const char* name, const GenMatri
 	try {
 		o << name << " =  [\n";
 		for( size_type i = 1; i <= gms.rows(); ++i ) {
-			const VectorSlice vs = gms.row(i);
-			for( VectorSlice::const_iterator itr = vs.begin(); itr != vs.end(); ++itr )
+			const DVectorSlice vs = gms.row(i);
+			for( DVectorSlice::const_iterator itr = vs.begin(); itr != vs.end(); ++itr )
 				o << *itr << ", ";
 			o << ";\n";
 		}
@@ -64,4 +64,4 @@ std::ostream& MatlabPack::out( std::ostream& o, const char* name, const GenMatri
 	return o;
 }
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack

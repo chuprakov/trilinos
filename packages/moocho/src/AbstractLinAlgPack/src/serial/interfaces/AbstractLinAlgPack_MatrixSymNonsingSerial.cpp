@@ -19,11 +19,11 @@
 #include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
 #include "SparseLinAlgPack/src/MatrixWithOpSerial.hpp"
 #include "AbstractLinAlgPack/src/EtaVector.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
-#include "LinAlgPack/src/GenMatrixOp.hpp"
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixOp.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace LinAlgOpPack {
@@ -34,16 +34,16 @@ namespace LinAlgOpPack {
 namespace SparseLinAlgPack {
 
 void MatrixSymNonsingularSerial::M_StMtInvMtM(
-	  sym_gms* S, value_type a, const MatrixWithOpSerial& B
+	  DMatrixSliceSym* S, value_type a, const MatrixWithOpSerial& B
 	, BLAS_Cpp::Transp B_trans, EMatrixDummyArg ) const
 {
 	using BLAS_Cpp::trans;
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans_not;
 	using SparseLinAlgPack::M_StInvMtM;
-	using LinAlgPack::nonconst_tri_ele;
-	using LinAlgPack::tri_ele;
-	using LinAlgPack::assign;
+	using DenseLinAlgPack::nonconst_tri_ele;
+	using DenseLinAlgPack::tri_ele;
+	using DenseLinAlgPack::assign;
 	using LinAlgOpPack::M_StMtM;
 	//
 	// S = a * op(B) * inv(M) * op(B')
@@ -61,13 +61,13 @@ void MatrixSymNonsingularSerial::M_StMtInvMtM(
 	// Above we only need to set the lower (lower triangle stored)
 	// or upper (upper triangle stored) part of S(:,k)
 	//
-	LinAlgPack::MtM_assert_sizes( rows(), cols(), no_trans
+	DenseLinAlgPack::MtM_assert_sizes( rows(), cols(), no_trans
 		, B.rows(), B.cols(), trans_not(B_trans) );
-	LinAlgPack::Mp_MtM_assert_sizes( S->rows(), S->cols(), no_trans
+	DenseLinAlgPack::Mp_MtM_assert_sizes( S->rows(), S->cols(), no_trans
 		, B.rows(), B.cols(), B_trans
 		, B.rows(), B.cols(), trans_not(B_trans) );
 
-	Vector t1, t2, t3; // ToDo: Use temp workspace!
+	DVector t1, t2, t3; // ToDo: Use temp workspace!
 	const size_type
 		opBT_cols = BLAS_Cpp::cols( B.cols(), B.rows(), B_trans ),
 		m         = S->rows();

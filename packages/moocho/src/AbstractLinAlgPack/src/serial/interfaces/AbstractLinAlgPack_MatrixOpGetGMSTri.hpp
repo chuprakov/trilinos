@@ -18,13 +18,13 @@
 
 #include "SparseLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace SparseLinAlgPack {
 
 ///
-/** Mix-in interface that allows the extraction of a const <tt>LinAlgPack::tri_gms</tt>
+/** Mix-in interface that allows the extraction of a const <tt>DenseLinAlgPack::DMatrixSliceTri</tt>
  * view of an non-singular abstract matrix.
  *
  * This interface is ment to be used by <tt>MatrixWithOp</tt> objects
@@ -45,7 +45,7 @@ class MatrixWithOpGetGMSTri
 public:
 
 	///
-	/** Get a const view of the symmetric abstract matrix in the form <tt>LinAlgPack::tri_gms</tt>.
+	/** Get a const view of the symmetric abstract matrix in the form <tt>DenseLinAlgPack::DMatrixSliceTri</tt>.
 	 *
 	 * @return On ouput, \c return will be initialized to point to storage to the symmetric dense
 	 *  matrix elements.
@@ -60,7 +60,7 @@ public:
 	 *
 	 * Warning!  If a subclass overrides this method, it must also override \c free_tri_gms_view().
 	 */
-	virtual const LinAlgPack::tri_gms get_tri_gms_view() const = 0;
+	virtual const DenseLinAlgPack::DMatrixSliceTri get_tri_gms_view() const = 0;
 
 	///
 	/** Free a view of a symmetric dense matrix initialized from <tt>get_tri_gms_view()>/tt>.
@@ -77,7 +77,7 @@ public:
 	 * <li> \c tri_gms_view becomes invalid and must not be used any longer!
 	 * </ul>
 	 */
-	virtual void free_tri_gms_view(const LinAlgPack::tri_gms* tri_gms_view) const = 0;
+	virtual void free_tri_gms_view(const DenseLinAlgPack::DMatrixSliceTri* tri_gms_view) const = 0;
 
 }; // end class MatrixWithOpGetGMSTri
 
@@ -85,10 +85,10 @@ public:
 /** Helper class type that simplifies the usage of the <tt>MatrixWithOpGetGMSTri</tt> interface for clients.
  *
  * This takes care of worrying about if the <tt>MatrixWithOpGetGMSTri</tt> interface is supported or not
- * and remembering to free the <tt>LinAlgPack::tri_gms</tt> view properly.
+ * and remembering to free the <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view properly.
  *
  * This class is only to be used on the stack as an automatic variable.  For example, to extract a
- * <tt>LinAlgPack::tri_gms</tt> view of an abstract vector and use it to call another function
+ * <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view of an abstract vector and use it to call another function
  * one could write a function like:
  \code
  void call_func(const MatrixWithOpGetGMSTri& mat_in ) {
@@ -104,25 +104,25 @@ class MatrixDenseTriEncap {
 public:
 
 	///
-	/** Construct a <tt>LinAlgPack::tri_gms</tt> view from a <tt>MatrixWithOpGetGMSTri</tt> object.
+	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view from a <tt>MatrixWithOpGetGMSTri</tt> object.
 	 */
 	MatrixDenseTriEncap( const MatrixWithOpGetGMSTri&  mat_get );
 	///
-	/** Construct a <tt>LinAlgPack::tri_gms</tt> view from a <tt>MatrixWithOp</tt> object.
+	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view from a <tt>MatrixWithOp</tt> object.
 	 *
 	 * If <tt>dynamic_cast<const MatrixWithOpGetGMSTri*>(&mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
 	MatrixDenseTriEncap( const MatrixWithOp& mat );
-	/// Frees the <tt>LinAlgPack::tri_gms</tt> view.
+	/// Frees the <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view.
 	~MatrixDenseTriEncap();
-	/// Returns a constant view of the <tt>LinAlgPack::tri_gms</tt> view.
-	const LinAlgPack::tri_gms operator()() const;
+	/// Returns a constant view of the <tt>DenseLinAlgPack::DMatrixSliceTri</tt> view.
+	const DenseLinAlgPack::DMatrixSliceTri operator()() const;
 
 private:
 
 	const MatrixWithOpGetGMSTri     &mat_get_;
-	const LinAlgPack::tri_gms       tri_gms_view_;
+	const DenseLinAlgPack::DMatrixSliceTri       tri_gms_view_;
 	MatrixDenseTriEncap();                                      // Not defined and not to be called!
 	MatrixDenseTriEncap(const MatrixDenseTriEncap&);               // ""
 	MatrixDenseTriEncap& operator=(const MatrixDenseTriEncap&);    // ""
@@ -153,7 +153,7 @@ MatrixDenseTriEncap::~MatrixDenseTriEncap()
 }
 
 inline
-const LinAlgPack::tri_gms MatrixDenseTriEncap::operator()() const
+const DenseLinAlgPack::DMatrixSliceTri MatrixDenseTriEncap::operator()() const
 {
 	return tri_gms_view_;
 }

@@ -13,15 +13,15 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#include "LinAlgPack/src/PermVecMat.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
-#include "LinAlgPack/src/IVector.hpp"
+#include "DenseLinAlgPack/src/PermVecMat.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "DenseLinAlgPack/src/IVector.hpp"
 
 #ifdef _DEBUG   // Debug only!
-bool LinAlgPack::PermVecMat_print = false;
+bool DenseLinAlgPack::PermVecMat_print = false;
 #include <iostream>
-#include "LinAlgPack/src/PermOut.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
+#include "DenseLinAlgPack/src/PermOut.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
 #endif
 
 // Local assert function
@@ -36,25 +36,25 @@ inline void i_assert_perm_size(size_t size1, size_t size2)
 
 } // end namespace
 
-void LinAlgPack::identity_perm(IVector* perm) {
+void DenseLinAlgPack::identity_perm(IVector* perm) {
 	if(!perm->size())
-		throw std::length_error("LinAlgPack::identity_perm(): perm must be sized");
+		throw std::length_error("DenseLinAlgPack::identity_perm(): perm must be sized");
 	IVector::iterator	itr_perm		= perm->begin();
 	for(size_type i = 1; i <= perm->size(); ++i)
 		*itr_perm++ = i;
 }
 
-void LinAlgPack::inv_perm(const IVector& perm, IVector* inv_perm) {
+void DenseLinAlgPack::inv_perm(const IVector& perm, IVector* inv_perm) {
 	inv_perm->resize(perm.size());
 	for(size_type i = 1; i <= perm.size(); ++i)
 		(*inv_perm)(perm(i)) = i;
 }
 
-void LinAlgPack::perm_ele(const IVector& perm, VectorSlice* vs)
+void DenseLinAlgPack::perm_ele(const IVector& perm, DVectorSlice* vs)
 {
 	i_assert_perm_size(vs->dim(),perm.size());
-	Vector tmp_v(vs->dim());
-	Vector::iterator		v_itr		= tmp_v.begin(),
+	DVector tmp_v(vs->dim());
+	DVector::iterator		v_itr		= tmp_v.begin(),
 							v_itr_end	= tmp_v.end();
 	IVector::const_iterator perm_itr = perm.begin();
 	// Copy the elements in the permed order into the temp vector
@@ -65,21 +65,21 @@ void LinAlgPack::perm_ele(const IVector& perm, VectorSlice* vs)
 	(*vs) = tmp_v;
 }
 
-void LinAlgPack::perm_ele(const VectorSlice& x, const IVector& perm, VectorSlice* y)
+void DenseLinAlgPack::perm_ele(const DVectorSlice& x, const IVector& perm, DVectorSlice* y)
 {
 	i_assert_perm_size(x.dim(),perm.size());
 	i_assert_perm_size(y->dim(),perm.size());
 
 	IVector::const_iterator
 		perm_itr	= perm.begin();
-	VectorSlice::iterator
+	DVectorSlice::iterator
 		y_itr		= y->begin(),
 		y_end		= y->end();
 	while(y_itr != y_end)
 		*y_itr++ = x(*perm_itr++);
 }
 
-void LinAlgPack::inv_perm_ele(const VectorSlice& y, const IVector& perm, VectorSlice* x)
+void DenseLinAlgPack::inv_perm_ele(const DVectorSlice& y, const IVector& perm, DVectorSlice* x)
 {
 	i_assert_perm_size(y.dim(),perm.size());
 	i_assert_perm_size(x->dim(),perm.size());
@@ -93,7 +93,7 @@ void LinAlgPack::inv_perm_ele(const VectorSlice& y, const IVector& perm, VectorS
 			<< "x =\n" << *x;
 	}
 #endif	
-	VectorSlice::const_iterator
+	DVectorSlice::const_iterator
 		y_itr		= y.begin(),
 		y_end		= y.end();
 	IVector::const_iterator
@@ -111,11 +111,11 @@ void LinAlgPack::inv_perm_ele(const VectorSlice& y, const IVector& perm, VectorS
 #endif	
 }
 
-void LinAlgPack::perm_rows(const IVector& row_perm, GenMatrixSlice* gms)
+void DenseLinAlgPack::perm_rows(const IVector& row_perm, DMatrixSlice* gms)
 {
 	i_assert_perm_size(gms->rows(),row_perm.size());
-	GenMatrix tmp_gm(gms->rows(),gms->cols());
-	GenMatrixSlice::size_type rows = gms->rows(), i;
+	DMatrix tmp_gm(gms->rows(),gms->cols());
+	DMatrixSlice::size_type rows = gms->rows(), i;
 	// Copy the rows in the correct order into the temp matrix.
 	for(i = 1; i <= rows; ++i)
 		tmp_gm.row(i) = gms->row(row_perm(i));
@@ -123,11 +123,11 @@ void LinAlgPack::perm_rows(const IVector& row_perm, GenMatrixSlice* gms)
 	(*gms) = tmp_gm;
 }
 
-void LinAlgPack::perm_cols(const IVector& col_perm, GenMatrixSlice* gms)
+void DenseLinAlgPack::perm_cols(const IVector& col_perm, DMatrixSlice* gms)
 {
 	i_assert_perm_size(gms->cols(),col_perm.size());
-	GenMatrix tmp_gm(gms->rows(),gms->cols());
-	GenMatrixSlice::size_type cols = gms->cols(), i;
+	DMatrix tmp_gm(gms->rows(),gms->cols());
+	DMatrixSlice::size_type cols = gms->cols(), i;
 	// Copy the columns in the correct order into the temp matrix.
 	for(i = 1; i <= cols; ++i)
 		tmp_gm.col(i) = gms->col(col_perm(i));
@@ -135,13 +135,13 @@ void LinAlgPack::perm_cols(const IVector& col_perm, GenMatrixSlice* gms)
 	(*gms) = tmp_gm;
 }
 
-void LinAlgPack::perm_rows_cols(const IVector& row_perm, const IVector& col_perm
-	, GenMatrixSlice* gms)
+void DenseLinAlgPack::perm_rows_cols(const IVector& row_perm, const IVector& col_perm
+	, DMatrixSlice* gms)
 {
 	i_assert_perm_size(gms->rows(),row_perm.size());
 	i_assert_perm_size(gms->cols(),col_perm.size());
-	GenMatrix tmp_gm(gms->rows(),gms->cols());
-	GenMatrixSlice::size_type rows = gms->rows(), cols = gms->cols(), i;
+	DMatrix tmp_gm(gms->rows(),gms->cols());
+	DMatrixSlice::size_type rows = gms->rows(), cols = gms->cols(), i;
 	// Copy the rows in the correct order into the temp matrix.
 	for(i = 1; i <= rows; ++i)
 		tmp_gm.row(i) = gms->row(row_perm(i));

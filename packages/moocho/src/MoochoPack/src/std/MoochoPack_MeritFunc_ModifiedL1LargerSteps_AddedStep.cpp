@@ -22,9 +22,9 @@
 #include "ConstrainedOptimizationPack/src/MeritFuncPenaltyParams.hpp"
 #include "ConstrainedOptimizationPack/src/MeritFuncNLPDirecDeriv.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
 
 namespace {
 
@@ -55,8 +55,8 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type
 	, poss_type assoc_step_poss)
 {
-	using LinAlgPack::norm_inf;
-	using LinAlgPack::dot;
+	using DenseLinAlgPack::norm_inf;
+	using DenseLinAlgPack::dot;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
@@ -99,11 +99,11 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
 		&f_k		= s.f().get_k(0),
 		&f_kp1		= s.f().get_k(+1);
 
-	const Vector
+	const DVector
 		&c_k		= s.c().get_k(0).cv(),
 		&c_kp1		= s.c().get_k(+1).cv();
 
-	const Vector
+	const DVector
 		&Gf_k		= s.Gf().get_k(0).cv(),
 		&d_k		= s.d().get_k(0).cv();
 
@@ -131,7 +131,7 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
 			out << "\nTry to increase the penalty parameters to allow a larger SQP step... .\n";
 		}
 
-		VectorSlice
+		DVectorSlice
 			mu = params->mu();
 
 		// ///////////////////////////////////////////////////////////
@@ -215,9 +215,9 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
 			del_pos( mu.size() );
 
 		{
-			VectorSlice::const_iterator
-				mu_itr		= const_cast<const VectorSlice&>(mu).begin();
-			Vector::const_iterator
+			DVectorSlice::const_iterator
+				mu_itr		= const_cast<const DVectorSlice&>(mu).begin();
+			DVector::const_iterator
 				c_k_itr		= c_k.begin(),
 				c_kp1_itr	= c_kp1.begin();
 
@@ -225,7 +225,7 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
 				del_pos_itr = del_pos.begin();
 
 			for( ; c_k_itr != c_k.end(); ++mu_itr, ++c_k_itr, ++c_kp1_itr, ++del_pos_itr ) {
-				assert( mu_itr < const_cast<const VectorSlice&>(mu).end() );
+				assert( mu_itr < const_cast<const DVectorSlice&>(mu).end() );
 				assert( c_kp1_itr < c_kp1.end() );
 				assert( del_pos_itr < del_pos.end() );
 
@@ -285,7 +285,7 @@ bool MeritFunc_ModifiedL1LargerSteps_AddedStep::do_step(Algorithm& _algo
 				neg_step = pos_step / pos_to_neg_penalty_increase(); 
 			del_pos_t::const_iterator
 				del_pos_itr = const_cast<const del_pos_t&>(del_pos).begin();
-			VectorSlice::iterator
+			DVectorSlice::iterator
 				mu_itr		= mu.begin();
 			for( ; mu_itr != mu.end(); ++del_pos_itr, ++mu_itr ) {
 				assert( del_pos_itr < const_cast<const del_pos_t&>(del_pos).end() );

@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////////////////
-// LinAlgPackOptions.hpp
+// DenseLinAlgPackOptions.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,21 +13,21 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 //
-// Options for LinAlgPack compilation
+// Options for DenseLinAlgPack compilation
 //
 
 #ifndef LINALGPACK_OPTIONS_H
 #define LINALGPACK_OPTIONS_H
 
-#include "LinAlgPackDebugAcronyms.hpp"
+#include "DenseLinAlgPackDebugAcronyms.hpp"
 #include "extended_value_type.hpp"
 #include "fortran_types.hpp"
 
 #if !defined(LINALGPACK_NO_CHECKS)
 
-/** @name {\bf LinAlgPack Options}.
+/** @name {\bf DenseLinAlgPack Options}.
   *
-  * The header file LinAlgPackOptions.hpp contains the defines for several macros that
+  * The header file DenseLinAlgPackOptions.hpp contains the defines for several macros that
   * determine how the library is built.  The user should comment out any
   * macros that her or she does not want to be defined.  The definition of
   * these macros cause the library code to assert the preconditions documented
@@ -58,7 +58,7 @@
 #endif
 
 ///
-/** If defined the library code checks to see if VectorSlice and GenMatrixSlice objects have valid constructions.
+/** If defined the library code checks to see if DVectorSlice and DMatrixSlice objects have valid constructions.
   * If they do not have valid constructions then an exception will be thrown.  The operation of these
   * checks may depend on the definition of the macro \Ref{LINALGPACK_CHECK_RANGE}.
   */
@@ -68,7 +68,7 @@
 
 #endif
 
-namespace LinAlgPack{
+namespace DenseLinAlgPack{
 /// Typedef for the value type of elements that is used for the library.
 typedef FortranTypes::f_dbl_prec		value_type;
 /// Typedef for the index type of elements that are used by the library

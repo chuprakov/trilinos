@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// GenMatrixOutFunc.cpp
+// DMatrixOutFunc.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,11 +16,11 @@
 #include <ostream>
 #include <iomanip>
 
-#include "GenMatrixOutFunc.hpp"
-#include "VectorOutFunc.hpp"
-#include "GenMatrixClass.hpp"
+#include "DMatrixOutFunc.hpp"
+#include "DVectorOutFunc.hpp"
+#include "DMatrixClass.hpp"
 
-std::ostream& LinAlgPack::output(std::ostream& os, const GenMatrixSlice& gms
+std::ostream& DenseLinAlgPack::output(std::ostream& os, const DMatrixSlice& gms
 	, LinAlgPackIO::fmtflags extra_flags )
 {
 	int w = os.width(0) - 1; // get the set width (minus 1 since a space is inserted)
@@ -34,8 +34,8 @@ std::ostream& LinAlgPack::output(std::ostream& os, const GenMatrixSlice& gms
 
 	if( gms.rows() && gms.cols() ) {
 		for(size_type i = 1; i <= gms.rows();++i) {
-			const VectorSlice& vs =gms.row(i); 
-			VectorSlice::const_iterator itr = vs.begin();
+			const DVectorSlice& vs =gms.row(i); 
+			DVectorSlice::const_iterator itr = vs.begin();
 			for( size_type j = 1; itr != vs.end(); ++j, ++itr ) {
 				os << " " << std::setw(w) << (*itr) << ":" << i << ":" << j;
 			}

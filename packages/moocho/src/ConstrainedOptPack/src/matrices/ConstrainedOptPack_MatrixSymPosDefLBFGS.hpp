@@ -23,7 +23,7 @@
 #include "AbstractLinAlgPack/src/MatrixSymWithOpNonsingular.hpp"
 #include "AbstractLinAlgPack/src/MultiVectorMutable.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptimizationPack {
@@ -286,14 +286,14 @@ private:
 		                // S(:,m_bar) is the most recently stored s update vector
 	            Y_;     // (n_max x m) Matrix of stored update vectors = [ y1, ..., ym ]
 						// Y(:,k_bar) is the most recently stored y update vector
-	GenMatrix   STY_,   // (m x m) The matrix S'Y
+	DMatrix   STY_,   // (m x m) The matrix S'Y
 	            STSYTY_;// ((m+1) x (m+1)) The strictly upper triangular part stores the
 	                    // upper triangular part Y'Y and the strictly lower triangular
 	                    // part stores the lower triangular part of S'S.  The diagonal
 	                    // can be used for workspace.
 
 	mutable bool        Q_updated_; // True if Q has been updated for the most current update.
-	mutable GenMatrix   QJ_;        // Used to store factorization of the schur complement of Q.
+	mutable DMatrix   QJ_;        // Used to store factorization of the schur complement of Q.
 
 	// //////////////////////////////////
 	// Private member functions
@@ -301,25 +301,25 @@ private:
 	// Access to important matrices.
 
 	///
-	const tri_gms R() const;
+	const DMatrixSliceTri R() const;
 	/// Strictly lower triangular part of L
-	const tri_gms Lb() const;
+	const DMatrixSliceTri Lb() const;
 	///
-	GenMatrixSlice STY();
+	DMatrixSlice STY();
 	///
-	const GenMatrixSlice STY() const;
+	const DMatrixSlice STY() const;
 	///
-	sym_gms STS();
+	DMatrixSliceSym STS();
 	///
-	const sym_gms STS() const;
+	const DMatrixSliceSym STS() const;
 	///
-	sym_gms YTY();
+	DMatrixSliceSym YTY();
 	///
-	const sym_gms YTY() const;
+	const DMatrixSliceSym YTY() const;
 	/// y = inv(Q) * x
-	void V_invQtV( VectorSlice* y, const VectorSlice& x ) const;
+	void V_invQtV( DVectorSlice* y, const DVectorSlice& x ) const;
 	/// y += D * x
-	void Vp_DtV( VectorSlice* y, const VectorSlice& x ) const;
+	void Vp_DtV( DVectorSlice* y, const DVectorSlice& x ) const;
 
 	// Updates
 

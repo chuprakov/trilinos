@@ -20,20 +20,20 @@
 
 #include <valarray>
 
-#include "LinAlgPackTypes.hpp"
+#include "DenseLinAlgPackTypes.hpp"
 #include "ThrowException.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 ///
 /** Fortran compatable integer vector for holding the  pivot information for
  * the elements of a vector, or the rows or columns of a matrix.
  */
-class IVector : public std::valarray<LinAlgPack::size_type> {
+class IVector : public std::valarray<DenseLinAlgPack::size_type> {
 public:
 
 	// STL typedefs
-	typedef LinAlgPack::index_type		value_type;
-	typedef LinAlgPack::size_type		size_type;
+	typedef DenseLinAlgPack::index_type		value_type;
+	typedef DenseLinAlgPack::size_type		size_type;
 	typedef value_type&					reference;
 	typedef const value_type&			const_reference;
 	typedef value_type*					iterator;
@@ -87,7 +87,7 @@ inline IVector::IVector(const value_type* p, size_type n) : std::valarray<size_t
 inline IVector& IVector::operator=(const IVector& iv)
 {
 	this->resize(iv.size());
-	std::valarray<LinAlgPack::size_type>::operator=(iv);
+	std::valarray<DenseLinAlgPack::size_type>::operator=(iv);
 	return *this;
 }
 
@@ -119,6 +119,6 @@ inline IVector::iterator IVector::end()
 inline IVector::const_iterator IVector::end() const
 {	return begin() + size(); }
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif // IVECTOR_H

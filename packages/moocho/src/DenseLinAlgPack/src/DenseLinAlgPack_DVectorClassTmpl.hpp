@@ -1,5 +1,5 @@
 // ////////////////////////////////////////////////////////////////////////////////////////
-// VectorClassTmpl.hpp
+// DVectorClassTmpl.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,24 +18,24 @@
 
 #include <vector>
 
-#include "LinAlgPack/src/LinAlgPackTypes.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackTypes.hpp"
 #include "Range1D.hpp"
 #include "StrideIter.hpp"
 
-namespace LinAlgPack{
+namespace DenseLinAlgPack{
 
 // ////////////////////////////////////////////////////////////////////////////////
-/** @name {\bf Dense 1-D Vector Abstractions}.
+/** @name {\bf Dense 1-D DVector Abstractions}.
   *
-  * These are classes that abstract 1-D vectors. The class \Ref{Vector} is a storage class
-  * for vectors while the class \Ref{VectorSlice} is used to represent regions of vectors
-  * , for rows, columns or diagonals of matrices (see \Ref{GenMatrix}
-  * and \Ref{GenMatrixSlice}).
+  * These are classes that abstract 1-D vectors. The class \Ref{DVector} is a storage class
+  * for vectors while the class \Ref{DVectorSlice} is used to represent regions of vectors
+  * , for rows, columns or diagonals of matrices (see \Ref{DMatrix}
+  * and \Ref{DMatrixSlice}).
   */
 
 //@{
 
-/** @name {\bf Vector Classes}. */
+/** @name {\bf DVector Classes}. */
 //@{
 	
 ///
@@ -47,10 +47,10 @@ namespace LinAlgPack{
   * It uses the same convention that the BLAS use where a vector is represented as
   * the first element of
   * in an array, the stride between elements in that array and the number of elements.
-  * Changes to elements through a VectorSlice object result in changes to the elements
+  * Changes to elements through a DVectorSlice object result in changes to the elements
   * in the underlying value_type* data.
   *
-  * VectorSlice provides many STL compliant features such as typedef type members
+  * DVectorSlice provides many STL compliant features such as typedef type members
   *, iterator returning functions
   * and the dim() function.  It also provides access to individual elements (lvalue)
   * through 0-based
@@ -85,7 +85,7 @@ public:
 	//@}
 
 	typedef T												value_type;
-	typedef LinAlgPack::size_type							size_type;
+	typedef DenseLinAlgPack::size_type							size_type;
 	typedef ptrdiff_t										difference_type;
 	typedef StrideIterPack::stride_iter<value_type*
 		, value_type, value_type&, value_type*
@@ -112,10 +112,10 @@ public:
 	  * explicitly to create a vector slice.
 	  * These
 	  * constructors are used by the classes in the library to construct VectorSliceTmpl objects.
-	  * Instead, users create VectorSliceTmpl objects by indexing (\Ref{Range1D}) a \Ref{Vector}
+	  * Instead, users create VectorSliceTmpl objects by indexing (\Ref{Range1D}) a \Ref{DVector}
 	  * , or \Ref{VectorSliceTmpl}
-	  * object or calling row(...), col(...) or diag(...) on a \Ref{GenMatrix} or
-	  * \Ref{GenMatrixSlice} object.
+	  * object or calling row(...), col(...) or diag(...) on a \Ref{DMatrix} or
+	  * \Ref{DMatrixSlice} object.
 	  * The default C++ copy constructor is used, and is therefore not show here.
 	  *
 	  * Constructors are also included for creating views of raw C++ arrays.
@@ -265,7 +265,7 @@ public:
 	  * as should be the case.
 	  * 
 	  * Beware!  VC++ is returning non-const VectorSliceTmpl objects for the 
-	  * #VectorSliceTmpl operator()(...) const;# member functions and therefore a const \Ref{Vector} or
+	  * #VectorSliceTmpl operator()(...) const;# member functions and therefore a const \Ref{DVector} or
 	  * \Ref{VectorSliceTmpl} can be modifed my subsetting it.  Hopefully this problem will
 	  * be fixed in future versions of the compiler or I when will get another compiler.
 	  */
@@ -412,15 +412,15 @@ private:
 }; // end class VectorSliceTmpl<T>
 
 // /////////////////////////////////////////////////////////////////////////////////////////
-// Vector
+// DVector
 //
 
 ///
-/** 1-D Vector Abstraction Storage Class.
+/** 1-D DVector Abstraction Storage Class.
   *
   * Holds the storage space for a 1-D vector of element type value_type.  The storage space class
-  * used in a standard vector<> private member.  Vector provides much of the
-  * same functionaliy of a VectorSliceTmpl object accept that Vector object can be resized at any time by
+  * used in a standard vector<> private member.  DVector provides much of the
+  * same functionaliy of a VectorSliceTmpl object accept that DVector object can be resized at any time by
   * either explicitly calling #resize(...)# or to match an assignment to a rhs linear algebra expression.
   */
 template<class T>
@@ -447,7 +447,7 @@ public:
 	//@}
 
 	typedef T										value_type;
-	typedef LinAlgPack::size_type					size_type;
+	typedef DenseLinAlgPack::size_type					size_type;
 	typedef ptrdiff_t								difference_type;
 	typedef value_type*								iterator;
 	typedef const value_type*						const_iterator;
@@ -488,7 +488,7 @@ public:
 	  */  
 	VectorTmpl(const value_type* p, size_type n);
 	///
-	/** Constructs a Vector object fron a VectorSliceTmpl object.
+	/** Constructs a DVector object fron a VectorSliceTmpl object.
 	  *
 	  * Postconditions: <ul>
 	  *		<li> #this->dim() == vs.dim()#
@@ -514,14 +514,14 @@ public:
 	  */  
 	void resize(size_type n, value_type val = value_type());
 	///
-	/** Free memory and resize Vector to this->dim() == 0.
+	/** Free memory and resize DVector to this->dim() == 0.
 	  *
 	  * Postconditions: <ul>
 	  *		<li> #this->dim() == 0#
 	  *		</ul>
 	  */  
 	void free();
-	/// Returns the number of elements of the Vector.
+	/// Returns the number of elements of the DVector.
 	size_type dim() const;
 	/// 
 	/** Returns the degree of memory overlap of this and the VectorSliceTmpl object vs.
@@ -534,9 +534,9 @@ public:
 	  *		\end{description}
 	  */
 	EOverLap overlap(const VectorSliceTmpl<value_type>& vs) const;
-	/// Conversion operator for implicit conversions from Vector to VectorSliceTmpl.
+	/// Conversion operator for implicit conversions from DVector to VectorSliceTmpl.
 	operator VectorSliceTmpl<value_type>();
-	/// Conversion operator for implicit conversions from const Vector to const VectorSliceTmpl.
+	/// Conversion operator for implicit conversions from const DVector to const VectorSliceTmpl.
 	operator const VectorSliceTmpl<value_type>() const;
 
 	//@}
@@ -573,7 +573,7 @@ public:
 	/** @name {\bf Individual Element Access Subscripting (lvalue)}.
 	  *
 	  * These operator functions allow access (lvalue) to the individual elements
-	  * of the Vector object.
+	  * of the DVector object.
 	  * 
 	  * The subscript i must be, 1 <= i <= this->dim(), for the 1-based element access
 	  * operators and, 0 <= i <= this->dim() - 1, for the 0-based element access operators.
@@ -595,13 +595,13 @@ public:
 
 	/** @name {\bf Subvector Access Operators}.
 	  *
-	  * These operator functions are used to create views of continous regions of the Vector.
+	  * These operator functions are used to create views of continous regions of the DVector.
 	  * Each of them returns a VectorSliceTmpl object for the region.  Constant (const) VectorSliceTmpl objects
-	  * are returned for a const Vector.  This means that the elements can not be changed
+	  * are returned for a const DVector.  This means that the elements can not be changed
 	  * as should be the case.
 	  * 
 	  * Beware!  VC++ is returning non-const VectorSliceTmpl objects for the 
-	  * #VectorSliceTmpl operator()(...) const;# member functions and therefore a const \Ref{Vector} or
+	  * #VectorSliceTmpl operator()(...) const;# member functions and therefore a const \Ref{DVector} or
 	  * \Ref{VectorSliceTmpl} can be modifed my subsetting it.  Hopefully this problem will
 	  * be fixed in future versions of the compiler or I when will get another compiler.
 	  */
@@ -609,10 +609,10 @@ public:
 	//@{
 
 	/// 
-	/** Returns a VectorSliceTmpl object representing the entire Vector. 
+	/** Returns a VectorSliceTmpl object representing the entire DVector. 
 	  * 
 	  * Call this member function to force a type conversion to VectorSliceTmpl.  Using the
-	  * VectorSliceTmpl of a Vector for algebraic expressions used with the TCOL allows a for simplier
+	  * VectorSliceTmpl of a DVector for algebraic expressions used with the TCOL allows a for simplier
 	  * implementaion of those operations by cutting down on the number combinations.  This is
 	  * especialy true for longer optimized expression.
 	  */
@@ -620,7 +620,7 @@ public:
 	/// Same as above
 	const VectorSliceTmpl<value_type> operator()() const;
 	/// 
-	/** Returns a continous subregion of the Vector object.
+	/** Returns a continous subregion of the DVector object.
 	  *
 	  * The returned VectorSliceTmpl object represents the range of the rng argument.
 	  *
@@ -648,7 +648,7 @@ public:
 	/// Same as above.
 	const VectorSliceTmpl<value_type> operator()(size_type lbound, size_type ubound) const;
 	/// 
-	/** Return a VectorSliceTmpl object the reverse of this Vector.
+	/** Return a VectorSliceTmpl object the reverse of this DVector.
 	  *
 	  * In the reverse VectorSliceTmpl,
 	  * the first element becomes the last element and visa-versa.  For example, for 
@@ -722,7 +722,7 @@ private:
 
 }; // end class VectorTmpl<T>
 
-//		end Vector Classes scope
+//		end DVector Classes scope
 //@}
 
 // ///////////////////////////////////////////////////////////////////////////////
@@ -773,7 +773,7 @@ const VectorSliceTmpl<T> gen_vs( const VectorSliceTmpl<T>& vs, size_type start, 
 //		end Vectors scope
 //@}
 
-} // end namespace LinAlgPack
+} // end namespace DenseLinAlgPack
 
 // ////////////////////////////////////////////////////////////////////////////////
 // Inline definitions of member function definitions							 //
@@ -784,7 +784,7 @@ const VectorSliceTmpl<T> gen_vs( const VectorSliceTmpl<T>& vs, size_type start, 
 
 #ifndef LINALGPACK_CHECK_SLICE_SETUP
 inline
-LinAlgPack::size_type LinAlgPack::vector_validate_sized(size_type size)
+DenseLinAlgPack::size_type DenseLinAlgPack::vector_validate_sized(size_type size)
 {
 	return size;
 }
@@ -792,23 +792,23 @@ LinAlgPack::size_type LinAlgPack::vector_validate_sized(size_type size)
 
 #ifndef LINALGPACK_CHECK_RANGE
 inline
-void LinAlgPack::vector_validate_range(size_type ubound, size_type max_ubound)
+void DenseLinAlgPack::vector_validate_range(size_type ubound, size_type max_ubound)
 {}
 #endif
 
 #ifndef LINALGPACK_CHECK_RANGE
 inline
-void LinAlgPack::vector_validate_subscript(size_type size, size_type i)
+void DenseLinAlgPack::vector_validate_subscript(size_type size, size_type i)
 {}
 #endif
 
 #ifndef LINALGPACK_CHECK_RHS_SIZES
 inline
-void LinAlgPack::assert_vs_sizes(size_type size1, size_type size2)
+void DenseLinAlgPack::assert_vs_sizes(size_type size1, size_type size2)
 {}
 #endif
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 // /////////////////////////////////////////////////////////////////////////////
 // VectorSliceTmpl inline member function definitions
@@ -1026,7 +1026,7 @@ VectorSliceTmpl<T>::difference_type VectorSliceTmpl<T>::stride() const
 {	return stride_; }
 
 // /////////////////////////////////////////////////////////////////////////////
-// Vector inline member function definitions
+// DVector inline member function definitions
 
 // Constructors
 template<class T>
@@ -1404,6 +1404,6 @@ EOverLap VectorTmpl<T>::overlap(const VectorSliceTmpl<value_type>& vs) const {
 	return NO_OVERLAP;
 }
 
-} // end namespace LinAlgPack
+} // end namespace DenseLinAlgPack
 
 #endif	// end VECTOR_CLASS_TMPL_H

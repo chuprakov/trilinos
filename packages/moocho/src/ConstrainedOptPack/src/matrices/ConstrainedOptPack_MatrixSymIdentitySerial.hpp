@@ -75,8 +75,8 @@ public:
 
 	///
 	void Vp_StMtV(
-		VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		,const VectorSlice& vs_rhs2, value_type beta) const;
+		DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		,const DVectorSlice& vs_rhs2, value_type beta) const;
 
 	//@}
 
@@ -85,7 +85,7 @@ public:
 
 	///
 	void V_InvMtV(
-		VectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1,const VectorSlice& vs_rhs2 ) const;
+		DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1,const DVectorSlice& vs_rhs2 ) const;
 
 	//@}
 
@@ -94,7 +94,7 @@ public:
 
 	///
 	void M_StMtInvMtM(
-		sym_gms* sym_gms_lhs, value_type alpha
+		DMatrixSliceSym* sym_gms_lhs, value_type alpha
 		,const MatrixWithOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
 		,EMatrixDummyArg
 		) const;
@@ -105,7 +105,7 @@ public:
 	//@{
 
 	///
-	void extract_inv_chol( tri_ele_gms* InvChol ) const;
+	void extract_inv_chol( DMatrixSliceTriEle* InvChol ) const;
 
 	//@}
 

@@ -3,6 +3,6 @@
  */
 //@{
   //@Include: BLAS_Cpp.dxx
-  //@Include: LinAlgPack.dxx
+  //@Include: DenseLinAlgPack.dxx
   //@Include: LinAlgOpPack.dxx
 //@}

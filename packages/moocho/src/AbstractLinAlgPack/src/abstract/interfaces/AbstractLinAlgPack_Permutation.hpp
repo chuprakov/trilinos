@@ -31,7 +31,7 @@ namespace AbstractLinAlgPack {
 class Permutation {
 public:
 
-	/** @name Vector space */
+	/** @name DVector space */
 	//@{
 	
 	///
@@ -55,7 +55,7 @@ public:
 
 	//@}
 
-	/** @name Vector permutations */
+	/** @name DVector permutations */
 	//@{
 
 	///
@@ -63,8 +63,8 @@ public:
 	 *
 	 * @param  P_trans  [in] <tt>op(P) = P</tt> for <tt>P_trans == BLAS_Cpp::no_trans</tt> or
 	 *                  <tt>op(P) = P'</tt> for <tt>P_trans == BLAS_Cpp::trans</tt>.
-	 * @param  x        [in] Vector.
-	 * @param  y        [out] Vector.
+	 * @param  x        [in] DVector.
+	 * @param  y        [out] DVector.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>y != NULL</tt> (throw <tt>std::invalid_argument</tt>)
@@ -85,7 +85,7 @@ public:
 	 *
 	 * @param  P_trans  [in] <tt>op(P) = P</tt> for <tt>P_trans == BLAS_Cpp::no_trans</tt> or
 	 *                  <tt>op(P) = P'</tt> for <tt>P_trans == BLAS_Cpp::trans</tt>.
-	 * @param  y        [in/out] Vector.
+	 * @param  y        [in/out] DVector.
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>y != NULL</tt> (throw <tt>std::invalid_argument</tt>)

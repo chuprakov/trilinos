@@ -38,7 +38,7 @@ value_type MeritFuncNLPModL1::value(
 		h || hl || hu, std::logic_error
 		,"MeritFuncNLPModL1::value(...) : Error! general inequalities are not supported!" );
 /*
-	using LinAlgPack::norm_1;
+	using DenseLinAlgPack::norm_1;
 	return f + local_constr_term( mu_, c, "calc_deriv" );
 */
 	assert(0); // ToDo: Write a reduction operator for the above operation
@@ -77,7 +77,7 @@ value_type MeritFuncNLPModL1::calc_deriv(
 		h_k || hl || hu, std::logic_error
 		,"MeritFuncNLPModL1::value(...) : Error! general inequalities are not supported!" );
 /*
-	using LinAlgPack::dot; using LinAlgPack::norm_1;
+	using DenseLinAlgPack::dot; using DenseLinAlgPack::norm_1;
 	return deriv_ = dot( Gf_k, d_k ) - local_constr_term( mu_, c_k, "calc_deriv" );
 */
 	assert(0); // ToDo: Write a reduction operator for the above operation
@@ -108,7 +108,7 @@ const VectorWithOp& MeritFuncNLPModL1::get_mu() const
 
 namespace {
 
-value_type local_constr_term( const Vector& mu, const VectorSlice& c
+value_type local_constr_term( const DVector& mu, const DVectorSlice& c
 	, const char func_name[] )
 {
 	if( mu.size() != c.size() ) {
@@ -120,9 +120,9 @@ value_type local_constr_term( const Vector& mu, const VectorSlice& c
 		throw ConstrainedOptimizationPack::MeritFuncNLP::InvalidInitialization(omsg.str());
 	}
 	value_type r = 0.0;
-	Vector::const_iterator
+	DVector::const_iterator
 		mu_itr = mu.begin();
-	VectorSlice::const_iterator
+	DVectorSlice::const_iterator
 		c_itr = c.begin();
 	while( mu_itr != mu.end() )
 		r += *mu_itr++ * ::fabs( *c_itr++ );

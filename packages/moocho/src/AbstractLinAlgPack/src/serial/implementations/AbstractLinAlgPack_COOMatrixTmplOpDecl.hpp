@@ -82,55 +82,55 @@ namespace SparseLinAlgPack {
  * these tempalte interfaces so the iterators only need to support the constant
  * interface.
  *
- * These functions use the same basic naming sceme as LinAlgPack with a
+ * These functions use the same basic naming sceme as DenseLinAlgPack with a
  * few exceptions.  All of the operations are += instead of = because of the
  * nature of the sparse matrix calculates so instead of #V_# and #M_# starting
  * out the function names they begin with #Vp_# and #Mp_# with #p_# used
  * to signify += instead of just =.  Also #COOM# replaces #M# where a 
- * COO matrrix replaces the dense GenMatrix.  This is because the overload
+ * COO matrrix replaces the dense DMatrix.  This is because the overload
  * resolution rules would mess up the implicit type conversions that
- * go on in LinAlgPack if the exact same names where used.
+ * go on in DenseLinAlgPack if the exact same names where used.
  */
 //@{
 
 /// gms_lhs += alpha * op(coom_rhs) (time = O(coom_rhs.nz(), space = O(1))
 template<class T_COOM>
-void Mp_StCOOM(GenMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs
+void Mp_StCOOM(DMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs
 	, BLAS_Cpp::Transp trans_rhs);
 
 /// vs_lhs += alpha * op(coom_rhs1) * vs_rhs2 (BLAS xGEMV) (time = O(coom_rhs.nz(), space = O(1))
 template<class T_COOM>
-void Vp_StCOOMtV(VectorSlice* vs_lhs, value_type alpha, const T_COOM& coom_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_rhs2);
+void Vp_StCOOMtV(DVectorSlice* vs_lhs, value_type alpha, const T_COOM& coom_rhs1
+	, BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2);
 
 /// gms_lhs += alpha * op(coom_rhs1) * op(gms_rhs2) (right) (BLAS xGEMM)
 template<class T_COOM>
-void Mp_StCOOMtM(GenMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const GenMatrixSlice& gms_rhs2, BLAS_Cpp::Transp trans_rhs2);
+void Mp_StCOOMtM(DMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs1
+	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 /// gms_lhs += alpha * op(gms_rhs1) * op(coom_rhs2) (left) (BLAS xGEMM)
 template<class T_COOM>
-void Mp_StMtCOOM(GenMatrixSlice* gms_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
+void Mp_StMtCOOM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const T_COOM& coom_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 // / gms_lhs = alpha * op(coom_rhs1) * op(sym_rhs2) (right) (BLAS xSYMM)
 //template<class T_COOM>
-//void Mp_StCOOMtSM(GenMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs1
-//	, BLAS_Cpp::Transp trans_rhs1, const sym_gms& sym_rhs2, BLAS_Cpp::Transp trans_rhs2);
+//void Mp_StCOOMtSM(DMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs1
+//	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceSym& sym_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 // / gms_lhs = alpha * op(sym_rhs1) * op(coom_rhs2) (left) (BLAS xSYMM)
 //template<class T_COOM>
-//void Mp_StSMtCOOM(GenMatrixSlice* gms_lhs, value_type alpha, const sym_gms& sym_rhs1
+//void Mp_StSMtCOOM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceSym& sym_rhs1
 //	, BLAS_Cpp::Transp trans_rhs1, const T_COOM& coom_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 // / gms_lhs = alpha * op(coom_rhs1) * op(tri_rhs2) (right) (BLAS xTRMM)
 //template<class T_COOM>
-//void Mp_StCOOMtSM(GenMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs1
-//	, BLAS_Cpp::Transp trans_rhs1, const tri_gms& tri_rhs2, BLAS_Cpp::Transp trans_rhs2);
+//void Mp_StCOOMtSM(DMatrixSlice* gms_lhs, value_type alpha, const T_COOM& coom_rhs1
+//	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 // / gms_lhs = alpha * op(tri_rhs1) * op(coom_rhs2) (left) (BLAS xTRMM)
 //template<class T_COOM>
-//void Mp_StSMtCOOM(GenMatrixSlice* gms_lhs, value_type alpha, const tri_gms& tri_rhs1
+//void Mp_StSMtCOOM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
 //	, BLAS_Cpp::Transp trans_rhs1, const T_COOM& coom_rhs2, BLAS_Cpp::Transp trans_rhs2);
 
 //@}

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// GenMatrixInFunc.hpp
+// DMatrixInFunc.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,13 +16,13 @@
 #ifndef GENMATRIX_IN_FUNC_H
 #define GENMATRIX_IN_FUNC_H
 
-#include "LinAlgPackIOBasic.hpp"
+#include "DenseLinAlgPackIOBasic.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
-/** @name GenMatrix/GenMatrixSlice input stream functions.
+/** @name DMatrix/DMatrixSlice input stream functions.
   *
-  * These are functions that are used to read a GenMatrix or GenMatrixSlice object in from a
+  * These are functions that are used to read a DMatrix or DMatrixSlice object in from a
   * formated input stream.
   *
   * The input format is diferent depending on the on whether the bit
@@ -85,29 +85,29 @@ namespace LinAlgPack {
 //@{
 
 ///
-/** GenMatrix input stream function.
+/** DMatrix input stream function.
   *
-  * Inputs a GenMatrix object from an input stream.
+  * Inputs a DMatrix object from an input stream.
   * If #exta_flags & LinAlgPackIO::ignore_dim_bit != 0# then #gm# is resized to #m# x #n#
   * given in the file.  If #exta_flags & LinAlgPackIO::ignore_dim_bit == 0#
   * then the number of elements read in depends on the current dimension of #gm#.
   */
-std::istream& input(std::istream& is, GenMatrix* gm, LinAlgPackIO::fmtflags extra_flags);
+std::istream& input(std::istream& is, DMatrix* gm, LinAlgPackIO::fmtflags extra_flags);
 
 ///
-/** GenMatrixSlice input stream function.
+/** DMatrixSlice input stream function.
   *
-  * Inputs a GenMatrixSlice object from an input stream.
+  * Inputs a DMatrixSlice object from an input stream.
   * If #exta_flags & LinAlgPackIO::ignore_dim_bit != 0# then the dimension (sized) of #gms#
   * is compared to the #m# and #n# given in the file and if they are not equal
   * then a #LinAlgPackIO::InputException# is thrown.  If #gms# is unsized then it is resized
   * to #m# x #n#.  If #exta_flags & LinAlgPackIO::ignore_dim_bit == 0# then the number of
   * elements read in depends on the current size of #gms#.
   */
-std::istream& input(std::istream& is, GenMatrixSlice* gms, LinAlgPackIO::fmtflags extra_flags);
+std::istream& input(std::istream& is, DMatrixSlice* gms, LinAlgPackIO::fmtflags extra_flags);
 
 //@}
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif	// GENMATRIX_IN_FUNC_H

@@ -17,7 +17,7 @@
 #define CONVERT_TO_SPARSE_COMPRESSED_COLUMN_H
 
 #include "SparseLinAlgPackTypes.hpp"
-#include "LinAlgPack/src/IVector.hpp"
+#include "DenseLinAlgPack/src/IVector.hpp"
 
 /** @name Conversion utilites / interfaces for a Fortran compatable sparse compressed column matrix format.
   *
@@ -147,7 +147,7 @@ inline void scalar_insert_nonzero(
 /** Add the nonzero elements in a dense vector for each column.
   */
 void vector_insert_nonzeros(
-	  const VectorSlice&				vs
+	  const DVectorSlice&				vs
 	, value_type						alpha
 	, size_type							row_offset
 	, size_type							col_j
@@ -171,7 +171,7 @@ size_type dense_num_in_column(
 /** Add the nonzero elements in a dense matrix for each column.
   */
 void dense_insert_nonzeros(
-	  const GenMatrixSlice&				gms
+	  const DMatrixSlice&				gms
 	, BLAS_Cpp::Transp					trans
 	, value_type						alpha
 	, size_type							row_offset
@@ -186,7 +186,7 @@ void dense_insert_nonzeros(
 /** Add the nonzero elements in a dense matrix for each column scaled.
   */
 value_type dense_insert_scaled_nonzeros(
-	  const GenMatrixSlice&				gms
+	  const DMatrixSlice&				gms
 	, BLAS_Cpp::Transp					trans
 	, value_type						scaled_max_ele
 	, size_type							row_offset

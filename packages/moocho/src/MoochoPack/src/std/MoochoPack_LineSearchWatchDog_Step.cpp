@@ -25,10 +25,10 @@
 #include "ConstrainedOptimizationPack/src/print_vector_change_stats.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
 #include "SparseLinAlgPack/src/MatrixWithOp.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace {
 	const int NORMAL_LINE_SEARCH = -1;
@@ -57,10 +57,10 @@ ReducedSpaceSQPPack::LineSearchWatchDog_Step::LineSearchWatchDog_Step(
 bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
-	using LinAlgPack::norm_inf;
-	using LinAlgPack::V_VpV;
-	using LinAlgPack::Vp_StV;
-	using LinAlgPack::Vt_S;
+	using DenseLinAlgPack::norm_inf;
+	using DenseLinAlgPack::V_VpV;
+	using DenseLinAlgPack::Vp_StV;
+	using DenseLinAlgPack::Vt_S;
 
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_MtV;
@@ -87,20 +87,20 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 	// Set k+1 first then go back to get k to ensure
 	// we have backward storage.
 	
-	Vector
+	DVector
 		&x_kp1 = s.x().set_k(+1).v();
 	value_type
 		&f_kp1 = s.f().set_k(+1);
-	Vector
+	DVector
 		&c_kp1 = s.c().set_k(+1).v();
 
 	const value_type
 		&f_k = s.f().get_k(0);
-	const Vector
+	const DVector
 		&c_k = s.c().get_k(0).v();
-	const Vector
+	const DVector
 		&x_k = s.x().get_k(0).v();
-	const Vector
+	const DVector
 		&d_k = s.d().get_k(0).v();
 	value_type
 		&alpha_k = s.alpha().get_k(0);
@@ -210,7 +210,7 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 					<< "\nDo a line search to determine x_kp1 = x_k + alpha_k * d_k ...\n";
 			}
 			// Now do a line search but and we require some type of reduction
-			const VectorSlice xd[2] = { x_k(), d_k() };
+			const DVectorSlice xd[2] = { x_k(), d_k() };
 			MeritFuncCalc1DQuadratic phi_calc_1d( phi_calc, 1, xd, &x_kp1() );
 			ls_success = direct_line_search().do_line_search( phi_calc_1d, phi_k
 				, &alpha_k, &phi_kp1
@@ -286,10 +286,10 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 				// Compute Dphi_k and phi_k
 
 				// x_k
-				const Vector &x_k								= xo_;
+				const DVector &x_k								= xo_;
 
 				// d_k
-				const Vector &d_k = s.d().set_k(0).v()			= do_;
+				const DVector &d_k = s.d().set_k(0).v()			= do_;
 
 				// Dphi_k
 				const value_type &Dphi_k						= Dphio_;
@@ -307,13 +307,13 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 				// Compute x_xp1 and ph_kp1 for full step
 
 				// x_kp1 = x_k + alpha_k * d_k
-				Vector &x_kp1 = s.x().set_k(+1).v();
+				DVector &x_kp1 = s.x().set_k(+1).v();
 				V_VpV( &x_kp1, x_k, d_k );
 
 				// phi_kp1
 				value_type &phi_kp1 = s.phi().set_k(+1)			= phiop1_;
 
-				const VectorSlice xd[2] = { x_k(), d_k() };
+				const DVectorSlice xd[2] = { x_k(), d_k() };
 				MeritFuncCalc1DQuadratic phi_calc_1d( phi_calc, 1, xd, &x_kp1() );
 				ls_success = direct_line_search().do_line_search(
 					  phi_calc_1d, phi_k
@@ -370,7 +370,7 @@ bool ReducedSpaceSQPPack::LineSearchWatchDog_Step::do_step(Algorithm& _algo
 				}
 			}
 
-			const VectorSlice xd[2] = { x_k(), d_k() };
+			const DVectorSlice xd[2] = { x_k(), d_k() };
 			MeritFuncCalc1DQuadratic phi_calc_1d( phi_calc, 1, xd, &x_kp1() );
 			ls_success = direct_line_search().do_line_search( phi_calc_1d, phi_k
 				, &alpha_k, &phi_kp1

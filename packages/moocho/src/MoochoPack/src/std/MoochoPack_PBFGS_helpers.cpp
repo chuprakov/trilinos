@@ -64,8 +64,8 @@ bool PBFGSPack::act_set_calmed_down(
 
 void PBFGSPack::init_i_x_free_sRTsR_sRTyR(
 	const SpVectorSlice        &nu_indep
-	,const VectorSlice         &s
-	,const VectorSlice         &y
+	,const DVectorSlice         &s
+	,const DVectorSlice         &y
 	,size_type                 *n_pz_R
 	,size_type                 i_x_free[]
 	,value_type                *sRTsR
@@ -98,9 +98,9 @@ void PBFGSPack::init_i_x_free_sRTsR_sRTyR(
 
 void PBFGSPack::sort_fixed_max_cond_viol(
 	const SpVectorSlice        &nu_indep
-	,const VectorSlice         &s
-	,const VectorSlice         &y
-	,const VectorSlice         &B_XX
+	,const DVectorSlice         &s
+	,const DVectorSlice         &y
+	,const DVectorSlice         &B_XX
 	,const value_type          sRTBRRsR
 	,const value_type          sRTyR
 	,value_type                *sXTBXXsX
@@ -154,9 +154,9 @@ void PBFGSPack::choose_fixed_free(
 	const value_type                       project_error_tol
 	,const value_type                      super_basic_mult_drop_tol
 	,const SpVectorSlice                   &nu_indep
-	,const VectorSlice                     &s
-	,const VectorSlice                     &y
-	,const VectorSlice                     &B_XX
+	,const DVectorSlice                     &s
+	,const DVectorSlice                     &y
+	,const DVectorSlice                     &B_XX
 	,const size_type                       l_x_fixed_sorted[]
 	,EJournalOutputLevel                   olevel
 	,std::ostream                          &out

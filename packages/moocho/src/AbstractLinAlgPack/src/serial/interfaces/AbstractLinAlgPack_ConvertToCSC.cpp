@@ -19,10 +19,10 @@
 
 #include "ConvertToSparseCompressedColumn.hpp"
 #include "MatrixWithOp.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
-#include "LinAlgPack/src/BLAS_Cpp.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Mp_StM;
@@ -31,7 +31,7 @@ namespace LinAlgOpPack {
 namespace SparseLinAlgPack {
 
 void ConvertToSparseCompressedColumnPack::vector_insert_nonzeros(
-	  const VectorSlice&				vs
+	  const DVectorSlice&				vs
 	, value_type						alpha
 	, size_type							row_offset
 	, size_type							col_j
@@ -69,7 +69,7 @@ size_type ConvertToSparseCompressedColumnPack::dense_num_in_column(
 }
 
 void ConvertToSparseCompressedColumnPack::dense_insert_nonzeros(
-	  const GenMatrixSlice&				gms
+	  const DMatrixSlice&				gms
 	, BLAS_Cpp::Transp					trans
 	, value_type						alpha
 	, size_type							row_offset
@@ -80,7 +80,7 @@ void ConvertToSparseCompressedColumnPack::dense_insert_nonzeros(
 	, FortranTypes::f_dbl_prec*			D_val
 	, FortranTypes::f_int*				D_row_i			)
 {
-	using LinAlgPack::col;
+	using DenseLinAlgPack::col;
 	size_type cols = ( trans == BLAS_Cpp::no_trans ? gms.cols() : gms.rows() );
 	for( size_type j = 1; j <= cols; ++j) {
 		vector_insert_nonzeros( col( gms, trans, j ), alpha, row_offset
@@ -89,7 +89,7 @@ void ConvertToSparseCompressedColumnPack::dense_insert_nonzeros(
 }
 
 value_type ConvertToSparseCompressedColumnPack::dense_insert_scaled_nonzeros(
-	  const GenMatrixSlice&				gms
+	  const DMatrixSlice&				gms
 	, BLAS_Cpp::Transp					trans
 	, value_type						scaled_max_ele
 	, size_type							row_offset
@@ -100,7 +100,7 @@ value_type ConvertToSparseCompressedColumnPack::dense_insert_scaled_nonzeros(
 	, FortranTypes::f_dbl_prec*			D_val
 	, FortranTypes::f_int*				D_row_i			)
 {
-	using LinAlgPack::norm_inf;
+	using DenseLinAlgPack::norm_inf;
 	value_type alpha = 0;
 	for( size_type j = 1; j <= gms.cols(); ++j )
 		alpha = std::_MAX( alpha, norm_inf( gms.col(j) ) );
@@ -146,7 +146,7 @@ void ConvertToSparseCompressedColumnPack::insert_nonzeros(
 			, col_perm, next_nz_in_col, D_val, D_row_i );
 	}
 	else {
-		GenMatrix _m;
+		DMatrix _m;
 		assign( &_m, m, BLAS_Cpp::no_trans );
 		dense_insert_nonzeros( _m, trans, alpha, row_offset, col_offset, row_perm
 			, col_perm, next_nz_in_col, D_val, D_row_i );		 
@@ -173,7 +173,7 @@ value_type ConvertToSparseCompressedColumnPack::insert_scaled_nonzeros(
 			, col_offset, row_perm, col_perm, next_nz_in_col, D_val, D_row_i );
 	}
 	else {
-		GenMatrix _m;
+		DMatrix _m;
 		assign( &_m, m, BLAS_Cpp::no_trans );
 		return dense_insert_scaled_nonzeros( _m, trans, scaled_max_ele, row_offset
 			, col_offset, row_perm, col_perm, next_nz_in_col, D_val, D_row_i );		 

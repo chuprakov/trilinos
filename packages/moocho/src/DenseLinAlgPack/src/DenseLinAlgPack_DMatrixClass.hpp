@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////
-// GenMatrixClass.hpp
+// DMatrixClass.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -18,20 +18,20 @@
 #ifndef GEN_MATRIX_CLASS_H
 #define GEN_MATRIX_CLASS_H
 
-#include "VectorClass.hpp"
-#include "GenMatrixAssign.hpp"
+#include "DVectorClass.hpp"
+#include "DMatrixAssign.hpp"
 
 /** @name {\bf Dense 2-D Rectangular Matrix Absractions}.
   *
-  * The class GenMatrix is a storage class for 2-D matrices while the class GenMatrixSlice
-  * is used to represent rectangular regions of a GenMatrix object.
+  * The class DMatrix is a storage class for 2-D matrices while the class DMatrixSlice
+  * is used to represent rectangular regions of a DMatrix object.
   */
 //@{
 //		begin General Rectangular 2-D Matrices scope
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
-class GenMatrix;
+class DMatrix;
 
 /** @name {\bf General Matrix Classes}. */
 //@{
@@ -47,7 +47,7 @@ class GenMatrix;
   * slice of a raw C++ array.  Objects of this class can represent
   * an entire matrix or any rectangular subregion of a matrix.
   */
-class GenMatrixSlice {
+class DMatrixSlice {
 public:
 	/** @name {\bf Nested Member Types (STL)}.
 	  *
@@ -63,8 +63,8 @@ public:
 	  */
 	//@{
 	//@}
-	typedef LinAlgPack::value_type					value_type;
-	typedef LinAlgPack::size_type					size_type;
+	typedef DenseLinAlgPack::value_type					value_type;
+	typedef DenseLinAlgPack::size_type					size_type;
 	typedef ptrdiff_t								difference_type;
 	typedef value_type&								reference;
 	typedef const value_type&						const_reference;
@@ -72,9 +72,9 @@ public:
 	/** @name {\bf Constructors}.
 	  *
 	  * These constructors are used by the other entities in the library
-	  * to create GenMatrixSlices.  In general user need not use these
+	  * to create DMatrixSlices.  In general user need not use these
 	  * constructors directly.  Instead, the general user should use the 
-	  * subscript operators to create subregions of GenMatrix and GenMatrixSlice
+	  * subscript operators to create subregions of DMatrix and DMatrixSlice
 	  * objects.
 	  * 
 	  * The default copy constructor is used and is therefore not shown here.
@@ -87,22 +87,22 @@ public:
 	  *
 	  * The client can then call bind(...) to bind the view.
 	  */
-	GenMatrixSlice();
+	DMatrixSlice();
 
 	/// 
 	/** Construct a veiw of a matrix from a raw C++ array.
 	  *
-	  * The GenMatrixSlice constructed represents a 2-D matrix whos elements are stored
+	  * The DMatrixSlice constructed represents a 2-D matrix whos elements are stored
 	  * in the array starting at #ptr#.  This is how the BLAS represent general rectangular
 	  * matrices.
-	  * The class can be used to provide a non-constant view the elements (#GenMatrix#)
-	  * or a constant view (#const GenMatrixSlice#).  Here is an example of how to
+	  * The class can be used to provide a non-constant view the elements (#DMatrix#)
+	  * or a constant view (#const DMatrixSlice#).  Here is an example of how to
 	  * create a constant view:
 	  *
 	  \verbatim
-		const GenMatrixSlice::size_type m = 4, n = 4;
-		const GenMatrixSlice::value_type ptr[m*n] = { ... };
-		const GenMatrixslice mat(cosnt_cast<GenMatrixSlice::value_type*>(ptr),m*n,m,m,n);
+		const DMatrixSlice::size_type m = 4, n = 4;
+		const DMatrixSlice::value_type ptr[m*n] = { ... };
+		const GenMatrixslice mat(cosnt_cast<DMatrixSlice::value_type*>(ptr),m*n,m,m,n);
 	  \endverbatim
 	  *
 	  * The #const_cast<...># such as in the example above is perfectly safe to use
@@ -124,11 +124,11 @@ public:
 	  * @param	rows		number of rows this matrix represents
 	  *	@param	cols		number of columns this matrix represents
 	  */
-	GenMatrixSlice( value_type* ptr, size_type size
+	DMatrixSlice( value_type* ptr, size_type size
 		, size_type max_rows, size_type rows, size_type cols );
 
 	/// 
-	/** Construct a submatrix region of another GenMatrixSlice.
+	/** Construct a submatrix region of another DMatrixSlice.
 	  *
 	  * This constructor simplifies the creation of subregions using the subscript
 	  * operators.
@@ -142,17 +142,17 @@ public:
 	  *		<li> #J.ubound() <= gms.cols()# (throw out_of_range)
 	  *		</ul>
 	  */
-	GenMatrixSlice( GenMatrixSlice& gms, const Range1D& I
+	DMatrixSlice( DMatrixSlice& gms, const Range1D& I
 		, const Range1D& J );
 
 	//@}
 
 	///
-	/** Set to the view of the input GenMatrixSlice.
+	/** Set to the view of the input DMatrixSlice.
 	  *
 	  *
 	  */
-	void bind( GenMatrixSlice gms );
+	void bind( DMatrixSlice gms );
 
 	/** @name {\bf Dimensionality, Misc}. */
 	//@{
@@ -163,16 +163,16 @@ public:
 	size_type		cols() const;
 
 	/// 
-	/** Returns the degree of memory overlap of #this# and the GenMatrixSlice object #gms#.
+	/** Returns the degree of memory overlap of #this# and the DMatrixSlice object #gms#.
 	  *
 	  * @return 
 	  *		\begin{description}
 	  *		<li>[NO_OVERLAP]	There is no memory overlap between #this# and #gms#.
 	  *		<li>[SOME_OVERLAP]	There is some memory locations that #this# and #gms# share.
-	  *		<li>[SAME_MEM]		The GenMatrixSlice objects #this# and #gms# share the exact same memory locations.
+	  *		<li>[SAME_MEM]		The DMatrixSlice objects #this# and #gms# share the exact same memory locations.
 	  *		\end{description}
 	  */
-	EOverLap overlap(const GenMatrixSlice& gms) const;
+	EOverLap overlap(const DMatrixSlice& gms) const;
 
 	//@}
 
@@ -188,23 +188,23 @@ public:
 
 	/** @name {\bf Subregion Access (1-based)}.
 	  *
-	  * These member functions allow access to subregions of the GenMatrixSlice object.
-	  * The functions, row(i), col(j), and diag(k) return VectorSlice objects while
-	  * the subscripting operators opeator()(I,J) return GenMatrixSlice objects for
+	  * These member functions allow access to subregions of the DMatrixSlice object.
+	  * The functions, row(i), col(j), and diag(k) return DVectorSlice objects while
+	  * the subscripting operators opeator()(I,J) return DMatrixSlice objects for
 	  * rectangular subregions.
 	  */
 	//@{
 
-	/// Return VectorSlice object representing the ith row (1-based; 1,2,..,#this->rows()#, or throw std::out_of_range)
-	VectorSlice			row(size_type i);
+	/// Return DVectorSlice object representing the ith row (1-based; 1,2,..,#this->rows()#, or throw std::out_of_range)
+	DVectorSlice			row(size_type i);
 	/// Same as above
-	const VectorSlice	row(size_type i) const;
-	/// Return VectorSlice object representing the jth column (1-based; 1,2,..,#this->cols()#, or throw std::out_of_range)
-	VectorSlice			col(size_type j);
+	const DVectorSlice	row(size_type i) const;
+	/// Return DVectorSlice object representing the jth column (1-based; 1,2,..,#this->cols()#, or throw std::out_of_range)
+	DVectorSlice			col(size_type j);
 	/// Same as above
-	const VectorSlice	col(size_type j) const;
+	const DVectorSlice	col(size_type j) const;
 	/// 
-	/** Return VectorSlice object representing a diagonal.
+	/** Return DVectorSlice object representing a diagonal.
 	  *
 	  * Passing k == 0 returns the center diagonal.  Values of k < 0 are the lower diagonals
 	  * (k = -1, -2, ..., -#this->rows()# + 1).  Values of k > 0 are the upper diagonals
@@ -215,14 +215,14 @@ public:
 	  *		<li> #[k > 0] k <= this->cols() + 1# (throw out_of_range)
 	  *		</ul>
 	  */
-	VectorSlice			diag(difference_type k = 0);
+	DVectorSlice			diag(difference_type k = 0);
 	/// Same as above.
-	const VectorSlice	diag(difference_type k = 0) const;
+	const DVectorSlice	diag(difference_type k = 0) const;
 	/// 
 	/** Extract a rectangular subregion containing rows I, and columns J.
 	  *
-	  * This operator function returns a GenMatrixSlice that represents a
-	  * rectangular region of this GenMatrixSlice.  This submatrix region
+	  * This operator function returns a DMatrixSlice that represents a
+	  * rectangular region of this DMatrixSlice.  This submatrix region
 	  * represents the rows I.lbound() to I.ubound() and columns J.lbound()
 	  * to J.lbound().  If I or J is unbounded (full_range() == true, constructed
 	  * with Range1D()), the all of the rows or columns respectively will be
@@ -234,14 +234,14 @@ public:
 	  *		<li> #[J.full_range() == false] J.ubound() <= this->cols()# (throw out_of_range)
 	  *		</ul>
 	  */
-	GenMatrixSlice operator()(const Range1D& I, const Range1D& J);
+	DMatrixSlice operator()(const Range1D& I, const Range1D& J);
 	/// Same as above.
-	const GenMatrixSlice operator()(const Range1D& I, const Range1D& J) const;
+	const DMatrixSlice operator()(const Range1D& I, const Range1D& J) const;
 	/// 
 	/** Extract a rectangular subregion containing rows i1 to i2, and columns j1 to j2.
 	  *
-	  * This operator function returns a GenMatrixSlice that represents a
-	  * rectangular region of this GenMatrixSlice.  This submatrix region
+	  * This operator function returns a DMatrixSlice that represents a
+	  * rectangular region of this DMatrixSlice.  This submatrix region
 	  * represents the rows i1 to 12 and colunms j1 to j2.
 	  * 
 	  * Preconditions: <ul>
@@ -251,23 +251,23 @@ public:
 	  *		<li> #j2 <= this->cols()# (throw out_of_range)
 	  *		</ul>
 	  */
-	GenMatrixSlice operator()(size_type i1, size_type i2, size_type j1
+	DMatrixSlice operator()(size_type i1, size_type i2, size_type j1
 		, size_type j2);
 	/// Same as above.
-	const GenMatrixSlice operator()(size_type i1, size_type i2, size_type j1
+	const DMatrixSlice operator()(size_type i1, size_type i2, size_type j1
 		, size_type j2) const;
 	/// Allow the address to be taken of an rvalue of this object.
-	GenMatrixSlice* operator&() {
+	DMatrixSlice* operator&() {
 	  return this;
 	}
 	///
-	const GenMatrixSlice* operator&() const {
+	const DMatrixSlice* operator&() const {
 	  return this;
 	}
-	/// Return reference of this.  Included for iniformity with GenMatrix
-	GenMatrixSlice& operator()();
+	/// Return reference of this.  Included for iniformity with DMatrix
+	DMatrixSlice& operator()();
 	/// Same as above
-	const GenMatrixSlice& operator()() const;
+	const DMatrixSlice& operator()() const;
 
 	//@}
 
@@ -284,9 +284,9 @@ public:
 	  *		<li> #this->operator()(i,j) == alpha#, i = 1,2,...,#this->rows()#, j = 1,2,...,#this->cols()#
 	  *		</ul>
 	  */
-	GenMatrixSlice& operator=(value_type alpha);
+	DMatrixSlice& operator=(value_type alpha);
 	///
-	/**  Copies all of the elements of the GenMatrixSlice, #rhs#, into the elements of #this#.
+	/**  Copies all of the elements of the DMatrixSlice, #rhs#, into the elements of #this#.
 	  *
 	  * If the underlying valarray is unsized (#this->v().size() == 0#) the matrix is sized to
 	  * the size of the rhs matrix.
@@ -300,7 +300,7 @@ public:
 	  *		<li> #this->operator()(i,j) == gms_rhs(i,j)#, i = 1,2,...,#this->rows()#, j = 1,2,...,#this->cols()#
 	  *		</ul>
 	  */
-	GenMatrixSlice& operator=(const GenMatrixSlice& gms_rhs);
+	DMatrixSlice& operator=(const DMatrixSlice& gms_rhs);
 
 	//@}
 
@@ -330,20 +330,20 @@ private:
 	void validate_row_subscript(size_type i) const;
 	// Assert the column subscript is in bounds (1-based), (throw std::out_of_range)
 	void validate_col_subscript(size_type j) const;
-	// Assert that a constructed GenMatrixSlice has a valid range, (throw std::out_of_range)
+	// Assert that a constructed DMatrixSlice has a valid range, (throw std::out_of_range)
 	void validate_setup(size_type size) const;
 	
 	// Get a diagonal
-	VectorSlice p_diag(difference_type k) const;
+	DVectorSlice p_diag(difference_type k) const;
 
-};	// end class GenMatrixSlice
+};	// end class DMatrixSlice
 
 ///
 /** 2-D General Rectangular Matrix (column major) Storage Class.
   *
   * This class provides the storage for 2-D rectangular matrices.
   */
-class GenMatrix {
+class DMatrix {
 public:
 	/** @name {\bf Nested Member Types (STL)}.
 	  *
@@ -360,8 +360,8 @@ public:
 	//@{
 	//@}
 	
-	typedef LinAlgPack::value_type					value_type;
-	typedef LinAlgPack::size_type					size_type;
+	typedef DenseLinAlgPack::value_type					value_type;
+	typedef DenseLinAlgPack::size_type					size_type;
 	typedef ptrdiff_t								difference_type;
 	typedef value_type&								reference;
 	typedef const value_type&						const_reference;
@@ -376,9 +376,9 @@ public:
 	//@{
 
 	/// Construct a matrix with rows = cols = 0
-	GenMatrix();
+	DMatrix();
 	/// Construct an uninitialied rectangular matrix (rows x cols) 
-	explicit GenMatrix(size_type rows, size_type cols);
+	explicit DMatrix(size_type rows, size_type cols);
 	///
 	/** Construct rectangular matrix (rows x cols) with elements initialized to val.
 	  *
@@ -386,7 +386,7 @@ public:
 	  *		<li> #this->operator()(i,j) == val#, i = 1,2,...,#rows#, j = 1,2,...,#cols#  
 	  *		</ul>
 	  */
-	explicit GenMatrix(value_type val, size_type rows, size_type cols);
+	explicit DMatrix(value_type val, size_type rows, size_type cols);
 	/// 
 	/** Construct rectangular matrix (rows x cols) initialized to elements of p (by column).
 	  *
@@ -394,15 +394,15 @@ public:
 	  *		<li> #this->operator()(i,j) == p[i-1 + rows * (j - 1)]#, i = 1,2,...,#rows#, j = 1,2,...,#cols#  
 	  *		</ul>
 	  */
-	explicit GenMatrix(const value_type* p, size_type rows, size_type cols);
+	explicit DMatrix(const value_type* p, size_type rows, size_type cols);
 	///
-	/** Construct a matrix from the elements in another GenMatrixSlice, #gms#.
+	/** Construct a matrix from the elements in another DMatrixSlice, #gms#.
 	  *
 	  * Postconditions: <ul>
 	  *		<li> #this->operator()(i,j) == gms(i,j)#, i = 1,2,...,#rows#, j = 1,2,...,#cols#  
 	  *		</ul>
 	  */
-	GenMatrix(const GenMatrixSlice& gms);
+	DMatrix(const DMatrixSlice& gms);
 
 	//@}
 
@@ -422,16 +422,16 @@ public:
 	size_type		cols() const;
 
 	/// 
-	/** Returns the degree of memory overlap of #this# and the GenMatrixSlice object #gms#.
+	/** Returns the degree of memory overlap of #this# and the DMatrixSlice object #gms#.
 	  *
 	  * @return 
 	  *		\begin{description}
 	  *		<li>[NO_OVERLAP]	There is no memory overlap between #this# and #gms#.
 	  *		<li>[SOME_OVERLAP]	There is some memory locations that #this# and #gms# share.
-	  *		<li>[SAME_MEM]		The GenMatrixSlice objects #this# and #gms# share the exact same memory locations.
+	  *		<li>[SAME_MEM]		The DMatrixSlice objects #this# and #gms# share the exact same memory locations.
 	  *		\end{description}
 	  */
-	EOverLap overlap(const GenMatrixSlice& gms) const;
+	EOverLap overlap(const DMatrixSlice& gms) const;
 
 	//@}
 
@@ -448,27 +448,27 @@ public:
 
 	/** @name {\bf Subregion Access (1-based)}.
 	  *
-	  * These member functions allow access to subregions of the GenMatrix object.
-	  * The functions, row(i), col(j), and diag(k) return VectorSlice objects while
-	  * the subscripting operators opeator()(I,J) return GenMatrixSlice objects for
+	  * These member functions allow access to subregions of the DMatrix object.
+	  * The functions, row(i), col(j), and diag(k) return DVectorSlice objects while
+	  * the subscripting operators opeator()(I,J) return DMatrixSlice objects for
 	  * rectangular subregions.
 	  */
 	//@{
 
-	/// Return VectorSlice object representing the ith row (1-based; 1,2,..,#this->rows()#)
-	VectorSlice			row(size_type i);
+	/// Return DVectorSlice object representing the ith row (1-based; 1,2,..,#this->rows()#)
+	DVectorSlice			row(size_type i);
 
 	///
-	const VectorSlice	row(size_type i) const;
+	const DVectorSlice	row(size_type i) const;
 
-	/// Return VectorSlice object representing the jth column (1-based; 1,2,..,#this->cols()#)
-	VectorSlice			col(size_type j);
+	/// Return DVectorSlice object representing the jth column (1-based; 1,2,..,#this->cols()#)
+	DVectorSlice			col(size_type j);
 
 	///
-	const VectorSlice	col(size_type j) const;
+	const DVectorSlice	col(size_type j) const;
 
 	/// 
-	/** Return VectorSlice object representing a diagonal.
+	/** Return DVectorSlice object representing a diagonal.
 	  *
 	  * Passing k == 0 returns the center diagonal.  Values of k < 0 are the lower diagonals
 	  * (k = -1, -2, ..., #this->rows()# - 1).  Values of k > 0 are the upper diagonals
@@ -479,16 +479,16 @@ public:
 	  *		<li> #[k > 0] k <= this->cols() + 1# (throw out_of_range)
 	  *		</ul>
 	  */
-	VectorSlice			diag(difference_type k = 0);
+	DVectorSlice			diag(difference_type k = 0);
 
 	///
-	const VectorSlice	diag(difference_type k = 0) const;
+	const DVectorSlice	diag(difference_type k = 0) const;
 
 	/// 
 	/** Extract a rectangular subregion containing rows I, and columns J.
 	  *
-	  * This operator function returns a GenMatrixSlice that represents a
-	  * rectangular region of this GenMatrixSlice.  This submatrix region
+	  * This operator function returns a DMatrixSlice that represents a
+	  * rectangular region of this DMatrixSlice.  This submatrix region
 	  * represents the rows I.lbound() to I.ubound() and columns J.lbound()
 	  * to J.lbound().  If I or J is unbounded (full_range() == true, constructed
 	  * with Range1D()), the all of the rows or columns respectively will be
@@ -500,16 +500,16 @@ public:
 	  *		<li> #[J.full_range() == false] J.ubound() <= this->cols()# (throw out_of_range)
 	  *		</ul>
 	  */
-	GenMatrixSlice operator()(const Range1D& I, const Range1D& J);
+	DMatrixSlice operator()(const Range1D& I, const Range1D& J);
 
 	///
-	const GenMatrixSlice operator()(const Range1D& I, const Range1D& J) const;
+	const DMatrixSlice operator()(const Range1D& I, const Range1D& J) const;
 
 	/// 
 	/** Extract a rectangular subregion containing rows i1 to i2, and columns j1 to j2.
 	  *
-	  * This operator function returns a GenMatrixSlice that represents a
-	  * rectangular region of this GenMatrixSlice.  This submatrix region
+	  * This operator function returns a DMatrixSlice that represents a
+	  * rectangular region of this DMatrixSlice.  This submatrix region
 	  * represents the rows i1 to 12 and colunms j1 to j2.
 	  * 
 	  * Preconditions: <ul>
@@ -519,33 +519,33 @@ public:
 	  *		<li> #j2 <= this->cols()# (throw out_of_range)
 	  *		</ul>
 	  */
-	GenMatrixSlice operator()(size_type i1, size_type i2, size_type j1
+	DMatrixSlice operator()(size_type i1, size_type i2, size_type j1
 		, size_type j2);
 
 	///
-	const GenMatrixSlice operator()(size_type i1, size_type i2, size_type j1
+	const DMatrixSlice operator()(size_type i1, size_type i2, size_type j1
 		, size_type j2) const;
 
-	/// Return a GenMatrixSlice that represents this entire matrix.
-	GenMatrixSlice operator()();
+	/// Return a DMatrixSlice that represents this entire matrix.
+	DMatrixSlice operator()();
 
 	///
-	const GenMatrixSlice operator()() const;
+	const DMatrixSlice operator()() const;
 
 	//@}
 
 	/** @name {\bf Implicit conversion operators}.
 	  *
-	  * These functions allow for the implicit converstion from a GenMatrix to a GenMatrixSlice.
+	  * These functions allow for the implicit converstion from a DMatrix to a DMatrixSlice.
 	  * This implicit converstion is important for the proper usage of much of the
 	  * libraries functionality.
 	  */
 	//@{
 
 	///
-	operator GenMatrixSlice();
+	operator DMatrixSlice();
 	///
-	operator const GenMatrixSlice() const;
+	operator const DMatrixSlice() const;
 
 	//@}
 
@@ -561,18 +561,18 @@ public:
 	  * Postcondtions: <ul>
 	  *		<li> #this->operator()(i,j) == alpha#, i = 1,2,...,#this->rows()#, j = 1,2,...,#this->cols()#
 	  */
-	GenMatrix& operator=(value_type rhs);
+	DMatrix& operator=(value_type rhs);
 	///
-	/** Copies all of the elements of the GenMatrixSlice, #rhs#, into the elements of #this#.
+	/** Copies all of the elements of the DMatrixSlice, #rhs#, into the elements of #this#.
 	  *
 	  * If #this# is not the same size as gms_rhs the #this# is resized.
 	  *
 	  * Postcondtions: <ul>
 	  *		<li> #this->operator()(i,j) == gms_rhs(i,j)#, i = 1,2,...,#this->rows()#, j = 1,2,...,#this->cols()#
 	  */
-	GenMatrix& operator=(const GenMatrixSlice& gms_rhs);
+	DMatrix& operator=(const DMatrixSlice& gms_rhs);
 	/// Same as above.  Needed to override the default assignment operator.
-	GenMatrix& operator=(const GenMatrix& rhs);
+	DMatrix& operator=(const DMatrix& rhs);
 
 	//@}
 
@@ -602,9 +602,9 @@ private:
 	void validate_col_subscript(size_type j) const;
 
 	// Get a diagonal, (throw std::out_of_range)
-	VectorSlice p_diag(difference_type k) const;
+	DVectorSlice p_diag(difference_type k) const;
 
-};	// end class GenMatrix
+};	// end class DMatrix
 
 //		end General Matix Classes scope
 //@}
@@ -613,28 +613,28 @@ private:
 // Non-member function declarations												//
 // ///////////////////////////////////////////////////////////////////////////////
 
-/** @name {\bf GenMatrix / GenMatrixSlice Associated Non-Member Functions}. */
+/** @name {\bf DMatrix / DMatrixSlice Associated Non-Member Functions}. */
 //@{
 //		begin non-member functions scope
 
 inline 
 ///  
-/** Explicit conversion function from GenMatrix to GenMatrixSlice.
+/** Explicit conversion function from DMatrix to DMatrixSlice.
   *
   * This is needed to allow a defered evaluation class (TCOL) to be evaluated using its
-  * implicit conversion operator temp_type() (which returns GenMatrix for GenMatrixSlice
+  * implicit conversion operator temp_type() (which returns DMatrix for DMatrixSlice
   * resulting expressions).
   */
-GenMatrixSlice EvaluateToGenMatrixSlice(const GenMatrix& gm)
-{	return GenMatrixSlice(gm); }
+DMatrixSlice EvaluateToDMatrixSlice(const DMatrix& gm)
+{	return DMatrixSlice(gm); }
 
 /// Assert two matrices are the same size and throws length_error if they are not (LINALGPACK_CHECK_RHS_SIZES).
-void assert_gms_sizes(const GenMatrixSlice& gms1, BLAS_Cpp::Transp trans1, const GenMatrixSlice& gms2
+void assert_gms_sizes(const DMatrixSlice& gms1, BLAS_Cpp::Transp trans1, const DMatrixSlice& gms2
 	, BLAS_Cpp::Transp trans2);
 
 inline 
 /// Assert a matrix is square and throws length_error if it is not (LINALGPACK_CHECK_SLICE_SETUP).
-void assert_gms_square(const GenMatrixSlice& gms) {
+void assert_gms_square(const DMatrixSlice& gms) {
 #ifdef LINALGPACK_CHECK_SLICE_SETUP
 	if(gms.rows() != gms.cols())
 		throw std::length_error("Matrix must be square");
@@ -645,77 +645,77 @@ inline
 ///
 /** Utility to check if a lhs matrix slice is the same size as a rhs matrix slice.
   *
-  * A GenMatrixSlice can not be resized since the rows_ property of the
-  * GenMatrix it came from will not be updated.  Allowing a GenMatrixSlice
-  * to resize from unsized would require that the GenMatrixSlice carry
-  * a reference to the GenMatrix it was created from.  If this is needed
+  * A DMatrixSlice can not be resized since the rows_ property of the
+  * DMatrix it came from will not be updated.  Allowing a DMatrixSlice
+  * to resize from unsized would require that the DMatrixSlice carry
+  * a reference to the DMatrix it was created from.  If this is needed
   * then it will be added.
   */
-void assert_gms_lhs(const GenMatrixSlice& gms_lhs, size_type rows, size_type cols
+void assert_gms_lhs(const DMatrixSlice& gms_lhs, size_type rows, size_type cols
 	, BLAS_Cpp::Transp trans_rhs = BLAS_Cpp::no_trans)
 {
 	if(trans_rhs == BLAS_Cpp::trans) std::swap(rows,cols);
 	if(gms_lhs.rows() == rows && gms_lhs.cols() == cols) return; // same size
 	// not the same size so is an error
-	throw std::length_error("assert_gms_lhs(...):  lhs GenMatrixSlice dim does not match rhs dim");
+	throw std::length_error("assert_gms_lhs(...):  lhs DMatrixSlice dim does not match rhs dim");
 }
 
-/** @name Return rows or columns from a possiblly transposed GenMatrix or GenMatrixSlice. */
+/** @name Return rows or columns from a possiblly transposed DMatrix or DMatrixSlice. */
 //@{
 
 inline 
 ///
-VectorSlice row(GenMatrixSlice& gms, BLAS_Cpp::Transp trans, size_type i) {
+DVectorSlice row(DMatrixSlice& gms, BLAS_Cpp::Transp trans, size_type i) {
 	return (trans ==  BLAS_Cpp::no_trans) ? gms.row(i) : gms.col(i);
 } 
 
 inline 
 ///
-VectorSlice col(GenMatrixSlice& gms, BLAS_Cpp::Transp trans, size_type j) {
+DVectorSlice col(DMatrixSlice& gms, BLAS_Cpp::Transp trans, size_type j) {
 	return (trans ==  BLAS_Cpp::no_trans) ? gms.col(j) : gms.row(j);
 } 
 
 inline 
 ///
-const VectorSlice row(const GenMatrixSlice& gms, BLAS_Cpp::Transp trans, size_type i) {
+const DVectorSlice row(const DMatrixSlice& gms, BLAS_Cpp::Transp trans, size_type i) {
 	return (trans ==  BLAS_Cpp::no_trans) ? gms.row(i) : gms.col(i);
 } 
 
 inline 
 ///
-const VectorSlice col(const GenMatrixSlice& gms, BLAS_Cpp::Transp trans, size_type j) {
+const DVectorSlice col(const DMatrixSlice& gms, BLAS_Cpp::Transp trans, size_type j) {
 	return (trans ==  BLAS_Cpp::no_trans) ? gms.col(j) : gms.row(j);
 } 
 
 inline 
 ///
-VectorSlice row(GenMatrix& gm, BLAS_Cpp::Transp trans, size_type i) {
+DVectorSlice row(DMatrix& gm, BLAS_Cpp::Transp trans, size_type i) {
 	return (trans ==  BLAS_Cpp::no_trans) ? gm.row(i) : gm.col(i);
 } 
 
 inline 
 ///
-VectorSlice col(GenMatrix& gm, BLAS_Cpp::Transp trans, size_type j) {
+DVectorSlice col(DMatrix& gm, BLAS_Cpp::Transp trans, size_type j) {
 	return (trans ==  BLAS_Cpp::no_trans) ? gm.col(j) : gm.row(j);
 } 
 
 inline 
 ///
-const VectorSlice row(const GenMatrix& gm, BLAS_Cpp::Transp trans, size_type i) {
+const DVectorSlice row(const DMatrix& gm, BLAS_Cpp::Transp trans, size_type i) {
 	return (trans ==  BLAS_Cpp::no_trans) ? gm.row(i) : gm.col(i);
 } 
 
 inline 
 ///
-const VectorSlice col(const GenMatrix& gm, BLAS_Cpp::Transp trans, size_type j) {
+const DVectorSlice col(const DMatrix& gm, BLAS_Cpp::Transp trans, size_type j) {
 	return (trans ==  BLAS_Cpp::no_trans) ? gm.col(j) : gm.row(j);
 } 
 
 //@}
 
 inline 
-/// Utility to resize a GenMatrix to the size of a rhs matrix.
-void resize_gm_lhs(GenMatrix* gm_rhs, size_type rows, size_type cols
+/// Utility to resize a DMatrix to the size of a rhs matrix.
+void resize_gm_lhs(DMatrix* gm_rhs, size_type rows, size_type cols
 	, BLAS_Cpp::Transp trans_rhs)
 {
 	if(trans_rhs == BLAS_Cpp::trans) std::swap(rows,cols);
@@ -733,37 +733,37 @@ void resize_gm_lhs(GenMatrix* gm_rhs, size_type rows, size_type cols
 // ////////////////////////////////////////////////////////////////////////////////
 
 // /////////////////////////////////////////////////////////////////////////////
-// GenMatrixSlice inline member function definitions
+// DMatrixSlice inline member function definitions
 
 // Private utilities
 
 #ifndef LINALGPACK_CHECK_RANGE
 inline
-void GenMatrixSlice::validate_row_subscript(size_type i) const
+void DMatrixSlice::validate_row_subscript(size_type i) const
 {}
 #endif
 
 #ifndef LINALGPACK_CHECK_RANGE
 inline
-void GenMatrixSlice::validate_col_subscript(size_type j) const
+void DMatrixSlice::validate_col_subscript(size_type j) const
 {}
 #endif
 
 #ifndef LINALGPACK_CHECK_SLICE_SETUP
 inline
-void GenMatrixSlice::validate_setup(size_type size) const
+void DMatrixSlice::validate_setup(size_type size) const
 {}
 #endif
 
 // Constructors
 
 inline
-GenMatrixSlice::GenMatrixSlice()
+DMatrixSlice::DMatrixSlice()
 	: ptr_(0), max_rows_(0), rows_(0), cols_(0)
 {}
 
 inline
-GenMatrixSlice::GenMatrixSlice( value_type* ptr, size_type size
+DMatrixSlice::DMatrixSlice( value_type* ptr, size_type size
 		, size_type max_rows, size_type rows, size_type cols )
 	: ptr_(ptr), max_rows_(max_rows), rows_(rows), cols_(cols)
 {	
@@ -771,7 +771,7 @@ GenMatrixSlice::GenMatrixSlice( value_type* ptr, size_type size
 }
 
 inline
-GenMatrixSlice::GenMatrixSlice( GenMatrixSlice& gms, const Range1D& I
+DMatrixSlice::DMatrixSlice( DMatrixSlice& gms, const Range1D& I
 		, const Range1D& J)
 	: ptr_( gms.col_ptr(1) + (I.lbound() - 1) + (J.lbound() - 1) * gms.max_rows() )
 	, max_rows_(gms.max_rows())
@@ -783,7 +783,7 @@ GenMatrixSlice::GenMatrixSlice( GenMatrixSlice& gms, const Range1D& I
 }
 
 inline
-void GenMatrixSlice::bind(GenMatrixSlice gms) {
+void DMatrixSlice::bind(DMatrixSlice gms) {
 	ptr_		= gms.ptr_;
 	max_rows_	= gms.max_rows_;
 	rows_		= gms.rows_;
@@ -793,12 +793,12 @@ void GenMatrixSlice::bind(GenMatrixSlice gms) {
 // Size / Dimensionality
 
 inline
-GenMatrixSlice::size_type GenMatrixSlice::rows() const {
+DMatrixSlice::size_type DMatrixSlice::rows() const {
 	return rows_;
 }
 
 inline
-GenMatrixSlice::size_type GenMatrixSlice::cols() const {
+DMatrixSlice::size_type DMatrixSlice::cols() const {
 	return cols_;
 }
 
@@ -807,7 +807,7 @@ GenMatrixSlice::size_type GenMatrixSlice::cols() const {
 // Element access
 
 inline
-GenMatrixSlice::reference GenMatrixSlice::operator()(size_type i, size_type j)
+DMatrixSlice::reference DMatrixSlice::operator()(size_type i, size_type j)
 {	
 	validate_row_subscript(i);
 	validate_col_subscript(j);
@@ -815,95 +815,95 @@ GenMatrixSlice::reference GenMatrixSlice::operator()(size_type i, size_type j)
 }
 
 inline
-GenMatrixSlice::const_reference	GenMatrixSlice::operator()(size_type i, size_type j) const
+DMatrixSlice::const_reference	DMatrixSlice::operator()(size_type i, size_type j) const
 {
 	validate_row_subscript(i);
 	validate_col_subscript(j);
 	return ptr_[(i-1) + (j-1) * max_rows_];
 }
 
-// Subregion access (validated by constructor for GenMatrixSlice)
+// Subregion access (validated by constructor for DMatrixSlice)
 
 inline
-VectorSlice  GenMatrixSlice::row(size_type i) {
+DVectorSlice  DMatrixSlice::row(size_type i) {
 	validate_row_subscript(i);
-	return VectorSlice( ptr_ + (i-1), cols(), max_rows() );
+	return DVectorSlice( ptr_ + (i-1), cols(), max_rows() );
 } 
 
 inline
-const VectorSlice GenMatrixSlice::row(size_type i) const {
+const DVectorSlice DMatrixSlice::row(size_type i) const {
 	validate_row_subscript(i);
-	return VectorSlice( const_cast<value_type*>(ptr_) + (i-1), cols(), max_rows() );
+	return DVectorSlice( const_cast<value_type*>(ptr_) + (i-1), cols(), max_rows() );
 } 
 
 inline
-VectorSlice	GenMatrixSlice::col(size_type j) {
+DVectorSlice	DMatrixSlice::col(size_type j) {
 	validate_col_subscript(j);
-	return VectorSlice( ptr_ + (j-1)*max_rows(), rows(), 1 );
+	return DVectorSlice( ptr_ + (j-1)*max_rows(), rows(), 1 );
 } 
 
 inline
-const VectorSlice GenMatrixSlice::col(size_type j) const {
+const DVectorSlice DMatrixSlice::col(size_type j) const {
 	validate_col_subscript(j);
-	return VectorSlice( const_cast<value_type*>(ptr_) + (j-1)*max_rows(), rows(), 1 );
+	return DVectorSlice( const_cast<value_type*>(ptr_) + (j-1)*max_rows(), rows(), 1 );
 } 
 
 inline
-VectorSlice GenMatrixSlice::diag(difference_type k) {
+DVectorSlice DMatrixSlice::diag(difference_type k) {
 	return p_diag(k);
 }
 
 inline
-const VectorSlice GenMatrixSlice::diag(difference_type k) const {
+const DVectorSlice DMatrixSlice::diag(difference_type k) const {
 	return p_diag(k);
 }
 
 inline
-GenMatrixSlice GenMatrixSlice::operator()(const Range1D& I, const Range1D& J) {
-	return GenMatrixSlice(*this, RangePack::full_range(I, 1, rows()), RangePack::full_range(J,1,cols()));
+DMatrixSlice DMatrixSlice::operator()(const Range1D& I, const Range1D& J) {
+	return DMatrixSlice(*this, RangePack::full_range(I, 1, rows()), RangePack::full_range(J,1,cols()));
 }
 
 inline
-const GenMatrixSlice GenMatrixSlice::operator()(const Range1D& I, const Range1D& J) const {
-	return GenMatrixSlice( const_cast<GenMatrixSlice&>(*this)
+const DMatrixSlice DMatrixSlice::operator()(const Range1D& I, const Range1D& J) const {
+	return DMatrixSlice( const_cast<DMatrixSlice&>(*this)
 		, RangePack::full_range(I, 1, rows()), RangePack::full_range(J,1,cols()) );
 }
 
 inline
-GenMatrixSlice GenMatrixSlice::operator()(size_type i1, size_type i2, size_type j1
+DMatrixSlice DMatrixSlice::operator()(size_type i1, size_type i2, size_type j1
 	, size_type j2)
 {
-	return GenMatrixSlice(*this, Range1D(i1,i2), Range1D(j1,j2));
+	return DMatrixSlice(*this, Range1D(i1,i2), Range1D(j1,j2));
 }
 
 inline
-const GenMatrixSlice GenMatrixSlice::operator()(size_type i1, size_type i2, size_type j1
+const DMatrixSlice DMatrixSlice::operator()(size_type i1, size_type i2, size_type j1
 	, size_type j2) const
 {
-	return GenMatrixSlice( const_cast<GenMatrixSlice&>(*this), Range1D(i1,i2)
+	return DMatrixSlice( const_cast<DMatrixSlice&>(*this), Range1D(i1,i2)
 		, Range1D(j1,j2) );
 }
 
 inline
-GenMatrixSlice& GenMatrixSlice::operator()() {
+DMatrixSlice& DMatrixSlice::operator()() {
 	return *this;
 }
 
 inline
-const GenMatrixSlice& GenMatrixSlice::operator()() const {
+const DMatrixSlice& DMatrixSlice::operator()() const {
 	return *this;
 }
 
 // Assignment operators
 
 inline
-GenMatrixSlice& GenMatrixSlice::operator=(value_type alpha) {
+DMatrixSlice& DMatrixSlice::operator=(value_type alpha) {
 	assign(this, alpha);
 	return *this;
 }
 
 inline
-GenMatrixSlice& GenMatrixSlice::operator=(const GenMatrixSlice& rhs) {
+DMatrixSlice& DMatrixSlice::operator=(const DMatrixSlice& rhs) {
 	assign(this, rhs, BLAS_Cpp::no_trans);
 	return *this;
 }
@@ -911,58 +911,58 @@ GenMatrixSlice& GenMatrixSlice::operator=(const GenMatrixSlice& rhs) {
 // Raw data access
 
 inline
-GenMatrixSlice::size_type GenMatrixSlice::max_rows() const
+DMatrixSlice::size_type DMatrixSlice::max_rows() const
 {	return max_rows_; }
 
 inline
-GenMatrixSlice::value_type* GenMatrixSlice::col_ptr(size_type j) {
+DMatrixSlice::value_type* DMatrixSlice::col_ptr(size_type j) {
 	if( ptr_ )
 		validate_col_subscript(j);
 	return ptr_ + (j-1) * max_rows();	// will be 0 if not bound to a view.
 }
 
 inline
-const GenMatrixSlice::value_type* GenMatrixSlice::col_ptr(size_type j) const {
+const DMatrixSlice::value_type* DMatrixSlice::col_ptr(size_type j) const {
 	if( ptr_ )
 		validate_col_subscript(j);
 	return ptr_ + (j-1) * max_rows();	// will be 0 if not bound to a view.
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////
-// GenMatrix inline member function definitions
+// DMatrix inline member function definitions
 
 // Private utilities
 
 #ifndef LINALGPACK_CHECK_RANGE
 inline
-void GenMatrix::validate_row_subscript(size_type i) const
+void DMatrix::validate_row_subscript(size_type i) const
 {}
 #endif
 
 #ifndef LINALGPACK_CHECK_RANGE
 inline
-void GenMatrix::validate_col_subscript(size_type j) const
+void DMatrix::validate_col_subscript(size_type j) const
 {}
 #endif
 
 // constructors
 
 inline
-GenMatrix::GenMatrix() : v_(), rows_(0)
+DMatrix::DMatrix() : v_(), rows_(0)
 {}
 
 inline
-GenMatrix::GenMatrix(size_type rows, size_type cols)
+DMatrix::DMatrix(size_type rows, size_type cols)
 	: v_(rows*cols), rows_(rows)
 {}
 
 inline
-GenMatrix::GenMatrix(value_type val, size_type rows, size_type cols)
+DMatrix::DMatrix(value_type val, size_type rows, size_type cols)
 	: v_(val,rows*cols), rows_(rows)
 {}
 
 inline
-GenMatrix::GenMatrix(const value_type* p, size_type rows, size_type cols)
+DMatrix::DMatrix(const value_type* p, size_type rows, size_type cols)
 	: v_(rows*cols), rows_(rows)
 {
 // 6/7/00: valarray<> in libstdc++-2.90.7 has a bug in v_(p,size) so we do not
@@ -972,7 +972,7 @@ GenMatrix::GenMatrix(const value_type* p, size_type rows, size_type cols)
 }
 
 inline
-GenMatrix::GenMatrix(const GenMatrixSlice& gms)
+DMatrix::DMatrix(const DMatrixSlice& gms)
 	: v_(gms.rows() * gms.cols()), rows_(gms.rows())
 {	
 	assign(this, gms, BLAS_Cpp::no_trans);
@@ -981,7 +981,7 @@ GenMatrix::GenMatrix(const GenMatrixSlice& gms)
 // Memory management
 
 inline
-void GenMatrix::resize(size_type rows, size_type cols, value_type val)
+void DMatrix::resize(size_type rows, size_type cols, value_type val)
 {
 	v_.resize(rows*cols,val);
 	v_ = val;
@@ -989,7 +989,7 @@ void GenMatrix::resize(size_type rows, size_type cols, value_type val)
 }
 
 inline
-void GenMatrix::free() {
+void DMatrix::free() {
 	v_.resize(0);
 	rows_ = 0;
 }
@@ -997,26 +997,26 @@ void GenMatrix::free() {
 // Size / Dimensionality
 
 inline
-GenMatrix::size_type GenMatrix::rows() const {
+DMatrix::size_type DMatrix::rows() const {
 	return rows_;
 }
 
 inline
-GenMatrix::size_type GenMatrix::cols() const {
+DMatrix::size_type DMatrix::cols() const {
 	return rows_ > 0 ? v_.size() / rows_ : 0;
 }
 
 // Element access
 
 inline
-GenMatrix::reference GenMatrix::operator()(size_type i, size_type j)
+DMatrix::reference DMatrix::operator()(size_type i, size_type j)
 {	 
 	validate_row_subscript(i); validate_col_subscript(j);
 	return v_[(i-1) + (j-1) * rows_];
 }
 
 inline
-GenMatrix::const_reference GenMatrix::operator()(size_type i, size_type j) const
+DMatrix::const_reference DMatrix::operator()(size_type i, size_type j) const
 {
 	validate_row_subscript(i); validate_col_subscript(j);
 	return (const_cast<std::valarray<value_type>&>(v_))[(i-1) + (j-1) * rows_];
@@ -1025,99 +1025,99 @@ GenMatrix::const_reference GenMatrix::operator()(size_type i, size_type j) const
 // subregion access (range checked by constructors)
 
 inline
-VectorSlice GenMatrix::row(size_type i)
+DVectorSlice DMatrix::row(size_type i)
 {
 	validate_row_subscript(i);
-	return VectorSlice( col_ptr(1) + (i-1), cols(), rows() );
+	return DVectorSlice( col_ptr(1) + (i-1), cols(), rows() );
 } 
 
 inline
-const VectorSlice GenMatrix::row(size_type i) const
+const DVectorSlice DMatrix::row(size_type i) const
 {
 	validate_row_subscript(i);
-	return VectorSlice( const_cast<value_type*>(col_ptr(1)) + (i-1), cols(), rows() );
+	return DVectorSlice( const_cast<value_type*>(col_ptr(1)) + (i-1), cols(), rows() );
 } 
 
 inline
-VectorSlice	GenMatrix::col(size_type j)
+DVectorSlice	DMatrix::col(size_type j)
 {
 	validate_col_subscript(j);
-	return VectorSlice( col_ptr(1) + (j-1) * rows(), rows(), 1 );
+	return DVectorSlice( col_ptr(1) + (j-1) * rows(), rows(), 1 );
 } 
 
 inline
-const VectorSlice GenMatrix::col(size_type j) const
+const DVectorSlice DMatrix::col(size_type j) const
 {
 	validate_col_subscript(j);
-	return VectorSlice( const_cast<value_type*>(col_ptr(1)) + (j-1) * rows(), rows(), 1 ) ;
+	return DVectorSlice( const_cast<value_type*>(col_ptr(1)) + (j-1) * rows(), rows(), 1 ) ;
 } 
 
 inline
-VectorSlice GenMatrix::diag(difference_type k)
+DVectorSlice DMatrix::diag(difference_type k)
 {
 	return p_diag(k);
 }	
 
 inline
-const VectorSlice GenMatrix::diag(difference_type k) const
+const DVectorSlice DMatrix::diag(difference_type k) const
 {
 	return p_diag(k);
 }	
 
 inline
-GenMatrixSlice GenMatrix::operator()(const Range1D& I, const Range1D& J)
+DMatrixSlice DMatrix::operator()(const Range1D& I, const Range1D& J)
 {
 	Range1D Ix = RangePack::full_range(I,1,rows()), Jx = RangePack::full_range(J,1,cols());
-	return GenMatrixSlice( col_ptr(1) + (Ix.lbound() - 1) + (Jx.lbound() - 1) * rows()
+	return DMatrixSlice( col_ptr(1) + (Ix.lbound() - 1) + (Jx.lbound() - 1) * rows()
 		, max_rows() * cols(), max_rows(), Ix.size(), Jx.size() );
 }
 
 inline
-const GenMatrixSlice GenMatrix::operator()(const Range1D& I, const Range1D& J) const
+const DMatrixSlice DMatrix::operator()(const Range1D& I, const Range1D& J) const
 {
 	Range1D Ix = RangePack::full_range(I,1,rows()), Jx = RangePack::full_range(J,1,cols());
-	return GenMatrixSlice( const_cast<value_type*>(col_ptr(1)) + (Ix.lbound() - 1) + (Jx.lbound() - 1) * rows()
+	return DMatrixSlice( const_cast<value_type*>(col_ptr(1)) + (Ix.lbound() - 1) + (Jx.lbound() - 1) * rows()
 		, max_rows() * cols(), max_rows(), Ix.size(), Jx.size() );
 }
 
 inline
-GenMatrixSlice GenMatrix::operator()(size_type i1, size_type i2, size_type j1
+DMatrixSlice DMatrix::operator()(size_type i1, size_type i2, size_type j1
 	, size_type j2)
 {
-	return GenMatrixSlice( col_ptr(1) + (i1 - 1) + (j1 - 1) * rows()
+	return DMatrixSlice( col_ptr(1) + (i1 - 1) + (j1 - 1) * rows()
 		, max_rows() * cols(), max_rows(), i2 - i1 + 1, j2 - j1 + 1 );
 }
 
 inline
-const GenMatrixSlice GenMatrix::operator()(size_type i1, size_type i2, size_type j1
+const DMatrixSlice DMatrix::operator()(size_type i1, size_type i2, size_type j1
 	, size_type j2) const
 {
-	return GenMatrixSlice( const_cast<value_type*>(col_ptr(1)) + (i1 - 1) + (j1 - 1) * rows()
+	return DMatrixSlice( const_cast<value_type*>(col_ptr(1)) + (i1 - 1) + (j1 - 1) * rows()
 		, max_rows() * cols(), max_rows(), i2 - i1 + 1, j2 - j1 + 1 );
 }
 
 inline
-GenMatrixSlice GenMatrix::operator()()
+DMatrixSlice DMatrix::operator()()
 {
-	return GenMatrixSlice( col_ptr(1), max_rows() * cols(), max_rows(), rows(), cols() );
+	return DMatrixSlice( col_ptr(1), max_rows() * cols(), max_rows(), rows(), cols() );
 }
 
 inline
-const GenMatrixSlice GenMatrix::operator()() const
+const DMatrixSlice DMatrix::operator()() const
 {
-	return GenMatrixSlice( const_cast<value_type*>(col_ptr(1)), max_rows() * cols(), max_rows()
+	return DMatrixSlice( const_cast<value_type*>(col_ptr(1)), max_rows() * cols(), max_rows()
 		, rows(), cols() );
 }
 
 // Implicit conversion operators
 
 inline
-GenMatrix::operator GenMatrixSlice() {
+DMatrix::operator DMatrixSlice() {
 	return (*this)();
 }
 
 inline
-GenMatrix::operator const GenMatrixSlice() const
+DMatrix::operator const DMatrixSlice() const
 {
 	return (*this)();
 }
@@ -1125,21 +1125,21 @@ GenMatrix::operator const GenMatrixSlice() const
 // Assignment operators
 
 inline
-GenMatrix& GenMatrix::operator=(value_type alpha)
+DMatrix& DMatrix::operator=(value_type alpha)
 {
 	assign(this, alpha);
 	return *this;
 }
 
 inline
-GenMatrix& GenMatrix::operator=(const GenMatrix& rhs)
+DMatrix& DMatrix::operator=(const DMatrix& rhs)
 {
 	assign(this, rhs, BLAS_Cpp::no_trans);
 	return *this;
 }
 
 inline
-GenMatrix& GenMatrix::operator=(const GenMatrixSlice& rhs)
+DMatrix& DMatrix::operator=(const DMatrixSlice& rhs)
 {
 	assign(this, rhs, BLAS_Cpp::no_trans);
 	return *this;
@@ -1148,11 +1148,11 @@ GenMatrix& GenMatrix::operator=(const GenMatrixSlice& rhs)
 // Raw data access
 
 inline
-GenMatrix::size_type GenMatrix::max_rows() const
+DMatrix::size_type DMatrix::max_rows() const
 {	return rows_; }
 
 inline
-GenMatrix::value_type* GenMatrix::col_ptr(size_type j)
+DMatrix::value_type* DMatrix::col_ptr(size_type j)
 {
 	if( v_.size() ) {
 		validate_col_subscript(j);
@@ -1164,7 +1164,7 @@ GenMatrix::value_type* GenMatrix::col_ptr(size_type j)
 }
 
 inline
-const GenMatrix::value_type* GenMatrix::col_ptr(size_type j) const 
+const DMatrix::value_type* DMatrix::col_ptr(size_type j) const 
 {
 	if( v_.size() ) {
 		validate_col_subscript(j);
@@ -1175,6 +1175,6 @@ const GenMatrix::value_type* GenMatrix::col_ptr(size_type j) const
 	}
 }
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif	// GEN_MATRIX_CLASS_H

@@ -33,7 +33,7 @@ namespace SparseLinAlgPack {
  * \item [sv_lhs_before->is_sorted() || sv_lhs_before->nz() == 0] sv_lhs->is_sorted() == true
  * \end{itemize}
  */
-void add_elements( SpVector* sv_lhs, value_type alpha, const VectorSlice& vs_rhs
+void add_elements( SpVector* sv_lhs, value_type alpha, const DVectorSlice& vs_rhs
 				   , size_type offset = 0, bool add_zeros = true );
 
 ///
@@ -56,18 +56,18 @@ inline
 ///
 /** Create a dense representation of a sparse vector.
  *
- * The primary use if the function is to create a VectorSlice
+ * The primary use if the function is to create a DVectorSlice
  * object that only represents the nonzero values of the
  * sparse vector.  This could have several different uses
  * but one of the most significant examples is when you want
  * to discard the indices when sv_rhs->size() == sv_rhs->nz() and
  * sv_rhs->is_sorted() == true.
  */
-VectorSlice dense_view( SpVectorSlice& sv_rhs );
+DVectorSlice dense_view( SpVectorSlice& sv_rhs );
 
 inline
 ///
-const VectorSlice dense_view( const SpVectorSlice& sv_rhs );
+const DVectorSlice dense_view( const SpVectorSlice& sv_rhs );
 
 } // end namespace SparseLinAlgPack
 
@@ -75,21 +75,21 @@ const VectorSlice dense_view( const SpVectorSlice& sv_rhs );
 // Inline function definitions
 
 inline
-LinAlgPack::VectorSlice
+DenseLinAlgPack::DVectorSlice
 SparseLinAlgPack::dense_view( SpVectorSlice& sv_rhs )
 {
 	return sv_rhs.nz()
-		? VectorSlice( &sv_rhs.begin()->value(), sv_rhs.nz(), 2 )
-		: VectorSlice( NULL, 0, 0 );
+		? DVectorSlice( &sv_rhs.begin()->value(), sv_rhs.nz(), 2 )
+		: DVectorSlice( NULL, 0, 0 );
 }
 
 inline
-const LinAlgPack::VectorSlice
+const DenseLinAlgPack::DVectorSlice
 SparseLinAlgPack::dense_view( const SpVectorSlice& sv_rhs )
 {
 	return sv_rhs.nz()
-		? VectorSlice( &const_cast<SpVectorSlice&>(sv_rhs).begin()->value(), sv_rhs.nz(), 2 )
-		: VectorSlice( NULL, 0, 0 );
+		? DVectorSlice( &const_cast<SpVectorSlice&>(sv_rhs).begin()->value(), sv_rhs.nz(), 2 )
+		: DVectorSlice( NULL, 0, 0 );
 }
 
 #endif // SP_VECTOR_CLASS_H

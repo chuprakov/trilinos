@@ -16,7 +16,7 @@
 #include "PermIn.hpp"
 #include "IVector.hpp"
 
-std::istream& LinAlgPack::operator>>(std::istream& istrm, IVector& perm) {
+std::istream& DenseLinAlgPack::operator>>(std::istream& istrm, IVector& perm) {
 	size_type size;
 	istrm >> size;
 	perm.resize(size);

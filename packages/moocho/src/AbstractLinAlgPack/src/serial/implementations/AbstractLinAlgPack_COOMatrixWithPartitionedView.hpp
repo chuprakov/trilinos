@@ -18,7 +18,7 @@
 
 #include "COOMatrixClass.hpp"
 #include "COOMatrixPartitionedViewClass.hpp"
-#include "LinAlgPack/src/Range1D.hpp"
+#include "DenseLinAlgPack/src/Range1D.hpp"
 
 namespace SparseLinAlgPack {
 

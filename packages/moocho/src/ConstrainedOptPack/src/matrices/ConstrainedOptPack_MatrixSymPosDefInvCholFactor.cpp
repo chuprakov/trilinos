@@ -16,10 +16,10 @@
 #include "MatrixSymPosDefInvCholFactor.hpp"
 #include "SymInvCholMatrixOp.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/GenMatrixOp.hpp"
-#include "LinAlgPack/src/GenMatrixOut.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DMatrixOp.hpp"
+#include "DenseLinAlgPack/src/DMatrixOut.hpp"
 
 namespace LinAlgOpPack {
 
@@ -51,23 +51,23 @@ std::ostream& MatrixSymPosDefInvCholFactor::output(std::ostream& out) const
 
 // Level-2 BLAS
 
-void MatrixSymPosDefInvCholFactor::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-	, const VectorSlice& vs_rhs2, value_type beta) const
+void MatrixSymPosDefInvCholFactor::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	, const DVectorSlice& vs_rhs2, value_type beta) const
 {
 	ConstrainedOptimizationPack::Vp_StMtV(vs_lhs,alpha,m(),trans_rhs1,vs_rhs2,beta);
 }
 
-void MatrixSymPosDefInvCholFactor::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+void MatrixSymPosDefInvCholFactor::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2, value_type beta) const
 {
 	using LinAlgOpPack::assign;
-	Vector vs_rhs2;
+	DVector vs_rhs2;
 	assign(&vs_rhs2,sv_rhs2);
 	ConstrainedOptimizationPack::Vp_StMtV(vs_lhs,alpha,m(),trans_rhs1,vs_rhs2,beta);
 }
 
-value_type MatrixSymPosDefInvCholFactor::transVtMtV(const VectorSlice& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
-	, const VectorSlice& vs_rhs3) const
+value_type MatrixSymPosDefInvCholFactor::transVtMtV(const DVectorSlice& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
+	, const DVectorSlice& vs_rhs3) const
 {
 	return ConstrainedOptimizationPack::transVtMtV(vs_rhs1,m(),vs_rhs3);
 }
@@ -76,7 +76,7 @@ value_type MatrixSymPosDefInvCholFactor::transVtMtV(const SpVectorSlice& sv_rhs1
 	, const SpVectorSlice& sv_rhs3) const
 {
 	using LinAlgOpPack::assign;
-	Vector vs_rhs1, vs_rhs3;
+	DVector vs_rhs1, vs_rhs3;
 	assign(&vs_rhs1,sv_rhs1);
 	assign(&vs_rhs3,sv_rhs3);
 	return ConstrainedOptimizationPack::transVtMtV(vs_rhs1,m(),vs_rhs3);
@@ -84,32 +84,32 @@ value_type MatrixSymPosDefInvCholFactor::transVtMtV(const SpVectorSlice& sv_rhs1
 
 // Overridden from MatrixFactorized
 
-void MatrixSymPosDefInvCholFactor::V_InvMtV(Vector* v_lhs, BLAS_Cpp::Transp trans_rhs1
-	, const VectorSlice& vs_rhs2) const
+void MatrixSymPosDefInvCholFactor::V_InvMtV(DVector* v_lhs, BLAS_Cpp::Transp trans_rhs1
+	, const DVectorSlice& vs_rhs2) const
 {
 	ConstrainedOptimizationPack::V_InvMtV(v_lhs,m(),vs_rhs2);
 }
 
-void MatrixSymPosDefInvCholFactor::V_InvMtV(VectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
-	, const VectorSlice& vs_rhs2) const
+void MatrixSymPosDefInvCholFactor::V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+	, const DVectorSlice& vs_rhs2) const
 {
 	ConstrainedOptimizationPack::V_InvMtV(vs_lhs,m(),vs_rhs2);
 }
 
-void MatrixSymPosDefInvCholFactor::V_InvMtV(Vector* v_lhs, BLAS_Cpp::Transp trans_rhs1
+void MatrixSymPosDefInvCholFactor::V_InvMtV(DVector* v_lhs, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2) const
 {
 	ConstrainedOptimizationPack::V_InvMtV(v_lhs,m(),sv_rhs2);
 }
 
-void MatrixSymPosDefInvCholFactor::V_InvMtV(VectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+void MatrixSymPosDefInvCholFactor::V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2) const
 {
 	ConstrainedOptimizationPack::V_InvMtV(vs_lhs,m(),sv_rhs2);
 }
 
-value_type MatrixSymPosDefInvCholFactor::transVtInvMtV(const VectorSlice& vs_rhs1
-	, BLAS_Cpp::Transp trans_rhs2, const VectorSlice& vs_rhs3) const
+value_type MatrixSymPosDefInvCholFactor::transVtInvMtV(const DVectorSlice& vs_rhs1
+	, BLAS_Cpp::Transp trans_rhs2, const DVectorSlice& vs_rhs3) const
 {
 	return ConstrainedOptimizationPack::transVtInvMtV(vs_rhs1,m(),vs_rhs3);
 }
@@ -122,7 +122,7 @@ value_type MatrixSymPosDefInvCholFactor::transVtInvMtV(const SpVectorSlice& sv_r
 // Overridden from MatrixSymFactorized
 
 void MatrixSymPosDefInvCholFactor::M_StMtInvMtM(
-	  sym_gms* S, value_type a, const MatrixWithOp& B
+	  DMatrixSliceSym* S, value_type a, const MatrixWithOp& B
 	, BLAS_Cpp::Transp B_trans, EMatrixDummyArg dummy_arg ) const
 {
 //	// Uncomment to use the defalut implementation (for debugging)
@@ -134,15 +134,15 @@ void MatrixSymPosDefInvCholFactor::M_StMtInvMtM(
 	using BLAS_Cpp::upper;
 	using BLAS_Cpp::nonunit;
 	using SparseLinAlgPack::M_StInvMtM;
-	using LinAlgPack::tri;
-	using LinAlgPack::syrk;
-	using LinAlgPack::M_StInvMtM;
+	using DenseLinAlgPack::tri;
+	using DenseLinAlgPack::syrk;
+	using DenseLinAlgPack::M_StInvMtM;
 	using LinAlgOpPack::M_StMtM;
 	using LinAlgOpPack::assign;
 
-	LinAlgPack::MtM_assert_sizes( rows(), cols(), no_trans
+	DenseLinAlgPack::MtM_assert_sizes( rows(), cols(), no_trans
 		, B.rows(), B.cols(), trans_not(B_trans) );
-	LinAlgPack::Mp_MtM_assert_sizes( S->rows(), S->cols(), no_trans
+	DenseLinAlgPack::Mp_MtM_assert_sizes( S->rows(), S->cols(), no_trans
 		, B.rows(), B.cols(), B_trans
 		, B.rows(), B.cols(), trans_not(B_trans) );
 	//
@@ -161,7 +161,7 @@ void MatrixSymPosDefInvCholFactor::M_StMtInvMtM(
 	// 
 
 	// T = op(B)'
-	GenMatrix T;
+	DMatrix T;
 	assign( &T, B, trans_not(B_trans) );
 	// T = UInv' * T (inplace with BLAS)
 	M_StMtM( &T(), 1.0, tri(m().UInv(),upper,nonunit), trans, T(), no_trans );
@@ -184,9 +184,9 @@ void MatrixSymPosDefInvCholFactor::init_identity(size_type n, value_type alpha)
 	m().UInv().diag() = 1.0 / ::sqrt( alpha );
 }
 
-void MatrixSymPosDefInvCholFactor::init_diagonal( const VectorSlice& diag )
+void MatrixSymPosDefInvCholFactor::init_diagonal( const DVectorSlice& diag )
 {
-	VectorSlice::const_iterator
+	DVectorSlice::const_iterator
 		min_ele_ptr = std::min_element( diag.begin(), diag.end() );
 	if( *min_ele_ptr <= 0.0 ) {
 		std::ostringstream omsg;
@@ -200,21 +200,21 @@ void MatrixSymPosDefInvCholFactor::init_diagonal( const VectorSlice& diag )
 	m().resize(n);
 	m().UInv() = 0.0;
 
-	VectorSlice::const_iterator
+	DVectorSlice::const_iterator
 		diag_itr = diag.begin();
-	VectorSlice::iterator
+	DVectorSlice::iterator
 		inv_fact_diag_itr = m().UInv().diag().begin();
 
 	while( diag_itr != diag.end() )
 		*inv_fact_diag_itr++ = 1.0 / ::sqrt( *diag_itr++ );
 }
 
-void MatrixSymPosDefInvCholFactor::secant_update(VectorSlice* s, VectorSlice* y, VectorSlice* _Bs)
+void MatrixSymPosDefInvCholFactor::secant_update(DVectorSlice* s, DVectorSlice* y, DVectorSlice* _Bs)
 {
 	using LinAlgOpPack::V_MtV;
 	try {
 		if(!_Bs) {
-			Vector Bs;
+			DVector Bs;
 			V_MtV( &Bs, *this, BLAS_Cpp::no_trans, *s );
 			ConstrainedOptimizationPack::BFGS_update(&m(),s,y,&Bs());
 		}
@@ -229,9 +229,9 @@ void MatrixSymPosDefInvCholFactor::secant_update(VectorSlice* s, VectorSlice* y,
 
 // Overridden from MatrixExtractInvCholFactor
 
-void MatrixSymPosDefInvCholFactor::extract_inv_chol( tri_ele_gms* InvChol ) const
+void MatrixSymPosDefInvCholFactor::extract_inv_chol( DMatrixSliceTriEle* InvChol ) const
 {
-	LinAlgPack::assign( InvChol, LinAlgPack::tri_ele( m().UInv(), BLAS_Cpp::upper ) );
+	DenseLinAlgPack::assign( InvChol, DenseLinAlgPack::tri_ele( m().UInv(), BLAS_Cpp::upper ) );
 }
 
 }	// end namespace ConstrainedOptimizationPack

@@ -16,7 +16,7 @@
 #ifndef SPARSE_LIN_ALG_PACK_SPARSE_BOUNDS_H
 #define SPARSE_LIN_ALG_PACK_SPARSE_BOUNDS_H
 
-#include "LinAlgPack/src/VectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
 
 namespace SparseLinAlgPack {
 
@@ -34,10 +34,10 @@ public:
 
 	///
 	sparse_bounds_itr(	
-		const VectorSlice::const_iterator   &bl_begin
-		,const VectorSlice::const_iterator  &bl_end
-		,const VectorSlice::const_iterator  &bu_begin
-		,const VectorSlice::const_iterator  &bu_end
+		const DVectorSlice::const_iterator   &bl_begin
+		,const DVectorSlice::const_iterator  &bl_end
+		,const DVectorSlice::const_iterator  &bu_begin
+		,const DVectorSlice::const_iterator  &bu_end
 		,value_type                         big_bnd
 		)
 		:bl_itr_(bl_begin), bl_end_(bl_end), bu_itr_(bu_begin), bu_end_(bu_end)
@@ -73,7 +73,7 @@ public:
 	{	return ubound_; }
 
 private:
-	VectorSlice::const_iterator
+	DVectorSlice::const_iterator
 		bl_itr_, bl_end_, bu_itr_, bu_end_;
 	value_type
 		big_bnd_, lbound_, ubound_;

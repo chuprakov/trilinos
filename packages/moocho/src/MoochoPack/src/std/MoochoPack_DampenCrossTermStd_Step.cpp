@@ -22,9 +22,9 @@
 #include "GeneralIterationPack/src/print_algorithm_step.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
 #include "SparseLinAlgPack/src/MatrixWithOpFactorized.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
 
 ReducedSpaceSQPPack::DampenCrossTermStd_Step::DampenCrossTermStd_Step(const value_type& frac_descent)
 	: frac_descent_(frac_descent)
@@ -34,8 +34,8 @@ bool ReducedSpaceSQPPack::DampenCrossTermStd_Step::do_step(Algorithm& _algo
 	, poss_type step_poss, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss)
 {
 	using SparseLinAlgPack::V_InvMtV;
-	using LinAlgPack::norm_inf;
-	using LinAlgPack::dot;
+	using DenseLinAlgPack::norm_inf;
+	using DenseLinAlgPack::dot;
 
 	rSQPAlgo	&algo	= rsqp_algo(_algo);
 	rSQPState	&s		= algo.rsqp_state();
@@ -52,8 +52,8 @@ bool ReducedSpaceSQPPack::DampenCrossTermStd_Step::do_step(Algorithm& _algo
 	if( s.w().updated_k(0) ) {
 
 		// inv(rHL_k) * rGf_k
-		const VectorSlice rGf_k = s.rGf().get_k(0)();
-		Vector Inv_rHL_rGf;
+		const DVectorSlice rGf_k = s.rGf().get_k(0)();
+		DVector Inv_rHL_rGf;
 		V_InvMtV( &Inv_rHL_rGf, dynamic_cast<MatrixWithOpFactorized&>(s.rHL().get_k(0))
 			, BLAS_Cpp::no_trans, rGf_k );
 		

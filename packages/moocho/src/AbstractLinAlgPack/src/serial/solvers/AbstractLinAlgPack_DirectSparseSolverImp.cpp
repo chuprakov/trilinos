@@ -119,8 +119,8 @@ DirectSparseSolverImp::BasisMatrixImp::get_fact_struc() const
 
 void DirectSparseSolverImp::analyze_and_factor(
 	const SparseLinAlgPack::MatrixConvertToSparse   &A
-	,LinAlgPack::IVector                            *row_perm
-	,LinAlgPack::IVector                            *col_perm
+	,DenseLinAlgPack::IVector                            *row_perm
+	,DenseLinAlgPack::IVector                            *col_perm
 	,size_type                                      *rank
 	,BasisMatrix                                    *basis_matrix
 	,std::ostream                                   *out

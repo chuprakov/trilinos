@@ -21,7 +21,7 @@
 #include "MatrixSymSecantUpdateable.hpp"
 #include "MatrixSymAddDelUpdateable.hpp"
 #include "SparseLinAlgPack/src/MatrixSymWithOpFactorized.hpp"
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
 namespace ConstrainedOptimizationPack {
@@ -175,9 +175,9 @@ public:
 	///
 	value_type gamma_k() const;
 	///
-	const GenMatrixSlice S() const;
+	const DMatrixSlice S() const;
 	///
-	const GenMatrixSlice Y() const;
+	const DMatrixSlice Y() const;
 	///
 	bool maintain_original() const;
 	///
@@ -200,8 +200,8 @@ public:
 	///
 	MatrixWithOp& operator=(const MatrixWithOp& m);
 	///
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2, value_type beta) const;
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2, value_type beta) const;
 
 	//@}
 
@@ -210,8 +210,8 @@ public:
 	//@{
 
 	///
-	void V_InvMtV( VectorSlice* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2) const;
+	void V_InvMtV( DVectorSlice* v_lhs, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2) const;
 
 	//@}
 
@@ -228,9 +228,9 @@ public:
 	  * Besides, when we are using automatric rescaling (auto_rescaling == true)
 	  * then this will really not matter much anyway.
 	  */
-	void init_diagonal( const VectorSlice& diag );
+	void init_diagonal( const DVectorSlice& diag );
 	///
-	void secant_update(VectorSlice* s, VectorSlice* y, VectorSlice* Bs);
+	void secant_update(DVectorSlice* s, DVectorSlice* y, DVectorSlice* Bs);
 
 	//		end Overridden from MatrixSymSecantUpdateable
 	//@}
@@ -246,7 +246,7 @@ public:
 		);
 	/// Sorry, this will throw an exception!
 	void initialize(
-		const sym_gms      &A
+		const DMatrixSliceSym      &A
 		,size_type         max_size
 		,bool              force_factorization
 		,Inertia           inertia
@@ -268,7 +268,7 @@ public:
 	 * be satisfied if alpha == this->gamma_k().
 	 */
 	void augment_update(
-		const VectorSlice  *t
+		const DVectorSlice  *t
 		,value_type        alpha
 		,bool              force_refactorization
 		,EEigenValType     add_eigen_val
@@ -307,7 +307,7 @@ private:
 		        num_secant_updates_; // Records the number of secant updates performed
 	value_type	gamma_k_;// Scaling factor for Bo = (1/gamma_k) * I.
 
-	GenMatrix	S_,		// (n_max x m) Matrix of stored update vectors = [ s1, ..., sm ]
+	DMatrix	S_,		// (n_max x m) Matrix of stored update vectors = [ s1, ..., sm ]
 						// S(:,k_bar) is the most recently stored s update vector
 				Y_,		// (n_max x m) Matrix of stored update vectors = [ y1, ..., ym ]
 						// Y(:,k_bar) is the most recently stored y update vector
@@ -318,9 +318,9 @@ private:
 						// can be used for workspace.
 
 	mutable bool		Q_updated_;	// True if Q has been updated for the most current update.
-	mutable GenMatrix	QJ_;		// Used to store factorization of the schur complement of Q.
+	mutable DMatrix	QJ_;		// Used to store factorization of the schur complement of Q.
 
-	mutable Vector		work_;	// workspace for performing operations.
+	mutable DVector		work_;	// workspace for performing operations.
 
 	// //////////////////////////////////
 	// Private member functions
@@ -328,25 +328,25 @@ private:
 	// Access to important matrices.
 
 	///
-	const tri_gms R() const;
+	const DMatrixSliceTri R() const;
 	/// Strictly lower triangular part of L
-	const tri_gms Lb() const;
+	const DMatrixSliceTri Lb() const;
 	///
-	GenMatrixSlice STY();
+	DMatrixSlice STY();
 	///
-	const GenMatrixSlice STY() const;
+	const DMatrixSlice STY() const;
 	///
-	sym_gms STS();
+	DMatrixSliceSym STS();
 	///
-	const sym_gms STS() const;
+	const DMatrixSliceSym STS() const;
 	///
-	sym_gms YTY();
+	DMatrixSliceSym YTY();
 	///
-	const sym_gms YTY() const;
+	const DMatrixSliceSym YTY() const;
 	/// y = inv(Q) * x
-	void V_invQtV( VectorSlice* y, const VectorSlice& x ) const;
+	void V_invQtV( DVectorSlice* y, const DVectorSlice& x ) const;
 	/// y += D * x
-	void Vp_DtV( VectorSlice* y, const VectorSlice& x ) const;
+	void Vp_DtV( DVectorSlice* y, const DVectorSlice& x ) const;
 
 	// Updates
 
@@ -386,13 +386,13 @@ value_type MatrixSymPosDefLBFGS::gamma_k() const
 }
 
 inline
-const GenMatrixSlice MatrixSymPosDefLBFGS::S() const
+const DMatrixSlice MatrixSymPosDefLBFGS::S() const
 {
 	return S_(1,n_,1,m_bar_);
 }
 
 inline
-const GenMatrixSlice MatrixSymPosDefLBFGS::Y() const
+const DMatrixSlice MatrixSymPosDefLBFGS::Y() const
 {
 	return Y_(1,n_,1,m_bar_);
 }

@@ -48,7 +48,7 @@ In the future this docuentation will be much more extensive.
 	<li> <A HREF="../AbstractLinAlgPack/html/index.html">AbstractLinAlgPack</A>: C++ interfaces
 		for vectors, matrices and related linear algebra objects based on 
 		<tt>%RTOpPack</tt>.
-	<li> <A HREF="../LinAlgPack/html/index.html">LinAlgPack</A>: Concreate C++ classes
+	<li> <A HREF="../DenseLinAlgPack/html/index.html">DenseLinAlgPack</A>: Concreate C++ classes
 		for dense BLAS compatible linear algebra . *** Not updated yet!
 	<li> <A HREF="../SparseLinAlgPack/html/index.html">SparseLinAlgPack</A>: Concreate C++ classes
 		for sparse linear algebra with implementations of abstract interfaces

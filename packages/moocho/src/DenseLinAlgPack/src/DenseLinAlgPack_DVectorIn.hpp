@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// VectorIn.hpp
+// DVectorIn.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,28 +16,28 @@
 #ifndef VECTORIN_H
 #define VECTORIN_H
 
-#include "VectorInFunc.hpp"
+#include "DVectorInFunc.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 ///
-/** Vector input stream operator.
+/** DVector input stream operator.
   *
   * This operator function calls the function input(is,v,0).
   */
 inline
-std::istream& operator>>(std::istream& is, Vector& v)
+std::istream& operator>>(std::istream& is, DVector& v)
 {	return input(is,&v,(LinAlgPackIO::fmtflags)0); }
 
 ///
-/** VectorSlice input stream operator.
+/** DVectorSlice input stream operator.
   *
   * This operator function calls the function input(is,vs,0).
   */
 inline
-std::istream& operator>>(std::istream& is, VectorSlice& vs)
+std::istream& operator>>(std::istream& is, DVectorSlice& vs)
 {	return input(is,&vs,(LinAlgPackIO::fmtflags)0); }
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif // VECTORIN_H

@@ -18,9 +18,9 @@
 
 #include <stdexcept>
 
-#include "LinAlgPackTypes.hpp"
+#include "DenseLinAlgPackTypes.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 ///
 class NaNInfException : public std::runtime_error
@@ -53,7 +53,7 @@ bool assert_print_nan_inf( const value_type& val, char name[]
 /** This function asserts if a vector has any NaN or inf entries and optionally
   * prints out these entires.
   * 
-  * @param	v 				[I]	Vector slice to check
+  * @param	v 				[I]	DVector slice to check
   * @param	name 			[I]	Name of the vector for output purposes
   * @param	throw_excpt		[I]	If true and an entry is found to be a NaN or Inf
   * 							then a NaNInfException excetion is thrown after
@@ -69,7 +69,7 @@ bool assert_print_nan_inf( const value_type& val, char name[]
   *		entries is NaN or Inf then false will be returned unless an
   *		excetion was thrown (throw_except==true).
   */
-bool assert_print_nan_inf( const VectorSlice& v, char name[]
+bool assert_print_nan_inf( const DVectorSlice& v, char name[]
 	, bool throw_excpt, std::ostream* out );
 
 ///
@@ -92,9 +92,9 @@ bool assert_print_nan_inf( const VectorSlice& v, char name[]
   *		entries is NaN or Inf then false will be returned unless an
   *		excetion was thrown (throw_except==true).
   */
-bool assert_print_nan_inf( const GenMatrixSlice& m, char name[]
+bool assert_print_nan_inf( const DMatrixSlice& m, char name[]
 	, bool throw_excpt, std::ostream* out );
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif // ASSERT_PRINT_NAN_INF_H

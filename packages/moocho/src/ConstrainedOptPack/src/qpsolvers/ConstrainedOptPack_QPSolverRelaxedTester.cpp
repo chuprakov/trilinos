@@ -64,11 +64,11 @@ const char* solution_type_str( ConstrainedOptimizationPack::QPSolverStats::ESolu
 // 
 void set_complementarity(
 	const SparseLinAlgPack::SpVector	&gamma
-	,const LinAlgPack::VectorSlice		&constr_resid
-	,const LinAlgPack::VectorSlice     &constr
-	,const LinAlgPack::value_type      opt_scale
+	,const DenseLinAlgPack::DVectorSlice		&constr_resid
+	,const DenseLinAlgPack::DVectorSlice     &constr
+	,const DenseLinAlgPack::value_type      opt_scale
 	,BLAS_Cpp::Uplo					uplo
-	,LinAlgPack::Vector			 	*comp_err
+	,DenseLinAlgPack::DVector			 	*comp_err
 	)
 {
 	assert( gamma.size() == constr_resid.size() && gamma.size() == constr.size() );
@@ -77,7 +77,7 @@ void set_complementarity(
 	const SparseLinAlgPack::SpVector::difference_type o = gamma.offset();
 	if( gamma.nz() ) {
 		for( SparseLinAlgPack::SpVector::const_iterator itr = gamma.begin(); itr != gamma.end(); ++itr ) {
-			const LinAlgPack::size_type i = itr->indice() + o;
+			const DenseLinAlgPack::size_type i = itr->indice() + o;
 			if( itr->value() > 0 && uplo == BLAS_Cpp::upper )
 				(*comp_err)(i) = itr->value() * constr_resid(i) / ( 1.0 + ::fabs(constr(i)) + opt_scale );
 			else if( itr->value() < 0 && uplo == BLAS_Cpp::lower )

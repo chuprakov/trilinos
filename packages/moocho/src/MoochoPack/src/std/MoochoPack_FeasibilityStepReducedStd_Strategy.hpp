@@ -23,7 +23,7 @@
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxed.hpp"
 #include "ConstrainedOptimizationPack/src/QPSolverRelaxedTester.hpp"
 #include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "AbstractLinAlgPack/src/VectorSpace.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
@@ -106,7 +106,7 @@ private:
 	int                                                      current_k_;
 	MemMngPack::ref_count_ptr<const MatrixWithOp>            Hess_ptr_;
 	VectorSpace::vec_mut_ptr_t                               grad_store_;
-	GenMatrix                                                Hess_store_;
+	DMatrix                                                Hess_store_;
 
 }; // end class FeasibilityStepReducedStd_Strategy
 

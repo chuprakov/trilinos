@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// VectorClassTmpl.cpp
+// DVectorClassTmpl.cpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -15,11 +15,11 @@
 
 #include <iomanip>
 
-#include "LinAlgPack/src/VectorClassTmpl.hpp"
+#include "DenseLinAlgPack/src/DVectorClassTmpl.hpp"
 #include "ThrowException.hpp"
 
 #ifdef LINALGPACK_CHECK_SLICE_SETUP
-LinAlgPack::size_type LinAlgPack::vector_validate_sized(size_type size)
+DenseLinAlgPack::size_type DenseLinAlgPack::vector_validate_sized(size_type size)
 {
 	THROW_EXCEPTION(
 		!size, std::invalid_argument
@@ -30,7 +30,7 @@ LinAlgPack::size_type LinAlgPack::vector_validate_sized(size_type size)
 #endif
 
 #ifdef LINALGPACK_CHECK_RANGE
-void LinAlgPack::vector_validate_range(size_type ubound, size_type max_ubound)
+void DenseLinAlgPack::vector_validate_range(size_type ubound, size_type max_ubound)
 {
 	THROW_EXCEPTION(
 		ubound > max_ubound, std::out_of_range
@@ -39,7 +39,7 @@ void LinAlgPack::vector_validate_range(size_type ubound, size_type max_ubound)
 #endif
 
 #ifdef LINALGPACK_CHECK_RANGE
-void LinAlgPack::vector_validate_subscript(size_type size, size_type i)
+void DenseLinAlgPack::vector_validate_subscript(size_type size, size_type i)
 {
 	THROW_EXCEPTION(
 		i < 1 || i > size, std::out_of_range
@@ -48,7 +48,7 @@ void LinAlgPack::vector_validate_subscript(size_type size, size_type i)
 #endif
 
 #ifdef LINALGPACK_CHECK_RHS_SIZES
-void LinAlgPack::assert_vs_sizes(size_type size1, size_type size2)
+void DenseLinAlgPack::assert_vs_sizes(size_type size1, size_type size2)
 {
 	THROW_EXCEPTION(
 		size1 != size2, std::length_error

@@ -36,7 +36,7 @@ public:
 	 * The implementation can use \c M to initialize itself any way
 	 * it would like.
 	 */
-	virtual void initialize( const sym_gms& M ) = 0;
+	virtual void initialize( const DMatrixSliceSym& M ) = 0;
 
 };	// end class MatrixSymDenseInitialize
 

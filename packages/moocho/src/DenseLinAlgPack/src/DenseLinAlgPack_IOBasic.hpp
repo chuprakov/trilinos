@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////
-// LinAlgPackIOBasic.hpp
+// DenseLinAlgPackIOBasic.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -21,9 +21,9 @@
 #include <ios>
 #include <stdexcept>
 
-#include "LinAlgPackTypes.hpp"
+#include "DenseLinAlgPackTypes.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 namespace LinAlgPackIO {
 
 /// Exception throw on input error
@@ -37,7 +37,7 @@ typedef std::ios_base::fmtflags fmtflags;
 enum { ignore_dim_bit = 0x0001, no_insert_newlines_bit = 0x0002 };
 
 }	// end namespace LinAlgPackIO
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 
 

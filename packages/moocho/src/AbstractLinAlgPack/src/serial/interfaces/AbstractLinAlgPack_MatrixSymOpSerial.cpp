@@ -19,16 +19,16 @@
 #include "SparseLinAlgPack/src/MatrixSymWithOpGetGMSSymMutable.hpp"
 #include "AbstractLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "AbstractLinAlgPack/src/EtaVector.hpp"
-#include "LinAlgPack/src/GenMatrixOp.hpp"
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/DMatrixOp.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace SparseLinAlgPack {
 
 void MatrixSymWithOpSerial::Mp_StPtMtP(
-	sym_gms* S, value_type a
+	DMatrixSliceSym* S, value_type a
 	,EMatRhsPlaceHolder
 	,const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	,value_type b
@@ -61,10 +61,10 @@ void MatrixSymWithOpSerial::Mp_StPtMtP(
 	// Above we only need to set the portion of S(:,j(k)) for the stored part
 	// of the symmetric matrix (i.e. upper part for upper and lower part for lower).
 	//
-	LinAlgPack::MtM_assert_sizes(
+	DenseLinAlgPack::MtM_assert_sizes(
 		this->rows(), this->cols(), no_trans
 		, P.rows(), P.cols(), P_trans );
-	LinAlgPack::Mp_M_assert_sizes(
+	DenseLinAlgPack::Mp_M_assert_sizes(
 		S->rows(), S->cols(), no_trans
 		, cols( P.rows(), P.cols(), P_trans )
 		, cols( P.rows(), P.cols(), P_trans )
@@ -75,10 +75,10 @@ void MatrixSymWithOpSerial::Mp_StPtMtP(
 		m = S->rows();
 	// S = b*S
 	if( b != 1.0 )
-		LinAlgPack::Mt_S( &LinAlgPack::nonconst_tri_ele(S->gms(),S->uplo()), b );
+		DenseLinAlgPack::Mt_S( &DenseLinAlgPack::nonconst_tri_ele(S->gms(),S->uplo()), b );
 	// Set the colums of S
-	Vector y_k_store(m);
-	VectorSlice y_k = y_k_store();
+	DVector y_k_store(m);
+	DVectorSlice y_k = y_k_store();
 	for( GenPermMatrixSlice::const_iterator P_itr = P.begin(); P_itr != P.end(); ++P_itr )
 	{
 		const size_type
@@ -91,14 +91,14 @@ void MatrixSymWithOpSerial::Mp_StPtMtP(
 		SparseLinAlgPack::Vp_StPtMtV( &y_k, 1.0, P, trans_not(P_trans), *this, no_trans, e_i_k(), 0.0 );
 		// S(:,j(k)) += a*y_k
 		if( S->uplo() == BLAS_Cpp::upper )
-			LinAlgPack::Vp_StV( &S->gms().col(j_k)(1,j_k), a, y_k(1,j_k) );
+			DenseLinAlgPack::Vp_StV( &S->gms().col(j_k)(1,j_k), a, y_k(1,j_k) );
 		else
-			LinAlgPack::Vp_StV( &S->gms().col(j_k)(j_k,m), a, y_k(j_k,m) );
+			DenseLinAlgPack::Vp_StV( &S->gms().col(j_k)(j_k,m), a, y_k(j_k,m) );
 	}
 }
 
 void MatrixSymWithOpSerial::Mp_StMtMtM(
-	sym_gms* sym_lhs, value_type alpha
+	DMatrixSliceSym* sym_lhs, value_type alpha
 	,EMatRhsPlaceHolder dummy_place_holder
 	,const MatrixWithOpSerial& mwo_rhs, BLAS_Cpp::Transp mwo_rhs_trans
 	,value_type beta

@@ -231,7 +231,7 @@ public:
 	 *                  See the intro.  Default is no tolerances.
 	 */
 	virtual void initialize(
-		const sym_gms      &A
+		const DMatrixSliceSym      &A
 		,size_type         max_size
 		,bool              force_factorization
 		,Inertia           inertia
@@ -286,7 +286,7 @@ public:
 	 * will increase by one and <tt>this->inertia()</tt> will return the new inertia
 	 * if it is known.
 	 *
-	 * @param  t       [in] VectorSlice (size == <tt>rows()</tt>) where <tt>t</tt> may be <tt>NULL</tt> in which
+	 * @param  t       [in] DVectorSlice (size == <tt>rows()</tt>) where <tt>t</tt> may be <tt>NULL</tt> in which
 	 *                 case t is considered zero.
 	 * @param  alpha   [in] Scalar added.
 	 * @param  force_refactorization
@@ -302,7 +302,7 @@ public:
 	 *                  See the intro.  Default is no tolerances.
 	 */
 	virtual void augment_update(
-		const VectorSlice  *t
+		const DVectorSlice  *t
 		,value_type        alpha
 		,bool              force_refactorization = true
 		,EEigenValType     add_eigen_val         = EIGEN_VAL_UNKNOWN

@@ -23,7 +23,7 @@
 #include "SparseSolverPack/src/DirectSparseSolverMA28.hpp"
 #include "SparseSolverPack/src/MatrixScaling_Strategy.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
-#include "LinAlgPack/src/PermVecMat.hpp"
+#include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "ThrowException.hpp"
 #include "WorkspacePack.hpp"
@@ -128,9 +128,9 @@ void DirectSparseSolverMA28::BasisMatrixMA28::V_InvMtV(
 
 	// Allocate workspace memory
 	wsp::Workspace<value_type>  xfull_s(wss,fs.max_n_,false);
-	VectorSlice                 xfull(&xfull_s[0],xfull_s.size());
+	DVectorSlice                 xfull(&xfull_s[0],xfull_s.size());
 	wsp::Workspace<value_type>  ws(wss,fs.max_n_,false);
-	VectorSlice                 w(&ws[0],ws.size());
+	DVectorSlice                 w(&ws[0],ws.size());
 
 	// Get a context for transpose or no transpose
 	const IVector
@@ -230,8 +230,8 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 	const SparseLinAlgPack::MatrixConvertToSparse   &A
 	,FactorizationStructure                         *fact_struc
 	,FactorizationNonzeros                          *fact_nonzeros
-	,LinAlgPack::IVector                            *row_perm
-	,LinAlgPack::IVector                            *col_perm
+	,DenseLinAlgPack::IVector                            *row_perm
+	,DenseLinAlgPack::IVector                            *col_perm
 	,size_type                                      *rank
 	,std::ostream                                   *out
 	)
@@ -364,7 +364,7 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 		std::sort(&(*row_perm)[0] + (*rank)	, &(*row_perm)[0] + m       );
 	}
 	else {
-		LinAlgPack::identity_perm( row_perm );
+		DenseLinAlgPack::identity_perm( row_perm );
 	}
 
 	col_perm->resize(fs.n_);
@@ -380,7 +380,7 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 		std::sort(&(*col_perm)[0] + (*rank)	, &(*col_perm)[0] + n       );
 	}
 	else {
-		LinAlgPack::identity_perm( col_perm );
+		DenseLinAlgPack::identity_perm( col_perm );
 	}
 
 	// Set internal copy of basis selection

@@ -1,5 +1,5 @@
 // /////////////////////////////////////////////////////////////////////////////////
-// VectorOutFunc.hpp
+// DVectorOutFunc.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,13 +16,13 @@
 #ifndef VECTOR_OUT_FUNC_H
 #define VECTOR_OUT_FUNC_H
 
-#include "LinAlgPackIOBasic.hpp"
+#include "DenseLinAlgPackIOBasic.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
-/** @name VectorSlice output stream function.
+/** @name DVectorSlice output stream function.
   *
-  * This is a functions that are used to output a VectorSlice object
+  * This is a functions that are used to output a DVectorSlice object
   * to a char based output stream.
   *
   * The output format is diferent depending on the on whether the
@@ -54,8 +54,8 @@ namespace LinAlgPack {
   *
   * If any of the output operations fails then a #std::ios_base::failure# exception is thrown. 
   */
-std::ostream& output(std::ostream& os, const VectorSlice& vs, LinAlgPackIO::fmtflags extra_flags);
+std::ostream& output(std::ostream& os, const DVectorSlice& vs, LinAlgPackIO::fmtflags extra_flags);
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif	// VECTOR_OUT_FUNC_H

@@ -73,11 +73,11 @@ public:
 	// Overridden from MatrixWithOp
 
 	/// vs_lhs = alpha * op(M_rhs1) * vs_rhs2 + beta * vs_lhs (BLAS xGEMV)
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2, value_type beta) const;
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2, value_type beta) const;
 
 	/// vs_lhs = alpha * op(M_rhs1) * sv_rhs2 + beta * vs_lhs (BLAS xGEMV)
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
 
 };	// end class MatrixBasisNonbasis

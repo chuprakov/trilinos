@@ -21,9 +21,9 @@
 #include "ConstrainedOptimizationPack/src/DecompositionSystemVarReduct.hpp"
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
 #include "SparseLinAlgPack/src/MatrixWithOp.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
 
@@ -52,7 +52,7 @@ void CheckBasisFromCPy_Step::reset() {
 bool CheckBasisFromCPy_Step::do_step( Algorithm& _algo, poss_type step_poss
 	, GeneralIterationPack::EDoStepType type, poss_type assoc_step_poss )
 {
-	using LinAlgPack::norm_inf;
+	using DenseLinAlgPack::norm_inf;
 	using LinAlgOpPack::V_MtV;
 	using LinAlgOpPack::Vp_V;
 	using DynamicCastHelperPack::dyn_cast;
@@ -75,11 +75,11 @@ bool CheckBasisFromCPy_Step::do_step( Algorithm& _algo, poss_type step_poss
 	bool select_new_basis = false;
 
 	// Compute: resid = (Gc(decomp)'*Y) * py + c(decomp)
-	VectorSlice                  py_k = s.py().get_k(0)();
-	VectorSlice                  c_k  = s.c().get_k(0)();
-	VectorSlice                  c_decomp_k  = c_k(decomp);
+	DVectorSlice                  py_k = s.py().get_k(0)();
+	DVectorSlice                  c_k  = s.c().get_k(0)();
+	DVectorSlice                  c_decomp_k  = c_k(decomp);
 	wsp::Workspace<value_type>   resid_ws(wss,py_k.size());
-	VectorSlice                  resid(&resid_ws[0],resid_ws.size());
+	DVectorSlice                  resid(&resid_ws[0],resid_ws.size());
 	{
 #ifdef _WINDOWS
 		DecompositionSystemVarReduct

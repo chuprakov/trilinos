@@ -23,8 +23,8 @@
 #include "MatrixSymDenseInitialize.hpp"
 #include "MatrixSymWithOpGetGMSSymMutable.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymSecantUpdateable.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "ref_count_ptr.hpp"
 #include "ReleaseResource.hpp"
 
@@ -65,12 +65,12 @@ namespace SparseLinAlgPack {
  *   Note that these operations will change the size of <tt>M</tt> and/or <tt>U</tt>.
  * \end{itemize}
  *
- * The <tt>tri_gms</tt> view <tt>U</tt> is really a subview of another <tt>GenMatrixSlice</tt>
+ * The <tt>DMatrixSliceTri</tt> view <tt>U</tt> is really a subview of another <tt>DMatrixSlice</tt>
  * <tt>MU_store</tt>.  The matrix <tt>U</tt> is defined as:
  *
  * <tt>U = tri(MU_store(U_l_r:U_l_r+M_size-1,U_l_c+1:U_l_c+M_size),upper,nonunit)</tt>.
  *
- * The <tt>sym_gms</tt> view <tt>M</tt> is really another subview of <tt>MU_store</tt>:
+ * The <tt>DMatrixSliceSym</tt> view <tt>M</tt> is really another subview of <tt>MU_store</tt>:
  *
  * <tt>M = sym(MU_store(M_l_r+1:M_l_r+M_size,M_l_c:M_l_c+M_size-1),lower)</tt>.
  *
@@ -156,7 +156,7 @@ public:
 	 * This constructor just calls <tt>this->init_setup(...)</tt>.
 	 */
 	MatrixSymPosDefCholFactor(
-		GenMatrixSlice                    *MU_store
+		DMatrixSlice                    *MU_store
 		,const release_resource_ptr_t&    release_resource_ptr = MemMngPack::null
 		,size_type                        max_size             = 0
 		,bool                             maintain_original    = true
@@ -221,7 +221,7 @@ public:
 	 * </ul>
 	 */
 	void init_setup(
-		GenMatrixSlice                    *MU_store
+		DMatrixSlice                    *MU_store
 		,const release_resource_ptr_t&    release_resource_ptr = MemMngPack::null
 		,size_type                        max_size             = 0
 		,bool                             maintain_original    = true
@@ -317,21 +317,21 @@ public:
 	///
 	/** Get access to MU_store.
 	 */
-	GenMatrixSlice& MU_store();
+	DMatrixSlice& MU_store();
 	///
-	const GenMatrixSlice& MU_store() const;
+	const DMatrixSlice& MU_store() const;
 	///
 	/** Get view of U.
 	 */
-	tri_gms U();
+	DMatrixSliceTri U();
 	///
-	const tri_gms U() const;
+	const DMatrixSliceTri U() const;
 	///
 	/** Get view of lower part of M.
 	 */
-	sym_gms M();
+	DMatrixSliceSym M();
 	///
-	const sym_gms M() const;
+	const DMatrixSliceSym M() const;
 
 	//@}
 
@@ -366,18 +366,18 @@ public:
 	//@{
 
 	///
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2, value_type beta) const;
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2, value_type beta) const;
 	///
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& vs_rhs2, value_type beta) const;
 	///
-	void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
+	void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
-		, const VectorSlice& vs_rhs3, value_type beta) const;
+		, const DVectorSlice& vs_rhs3, value_type beta) const;
 	///
-	void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
+	void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
 		, const SpVectorSlice& sv_rhs3, value_type beta) const;
@@ -387,7 +387,7 @@ public:
 	/** @name Overridden form MatrixSymWithOpSerial */
 	//@{
 
-	void Mp_StPtMtP( sym_gms* sym_lhs, value_type alpha
+	void Mp_StPtMtP( DMatrixSliceSym* sym_lhs, value_type alpha
 		, EMatRhsPlaceHolder dummy_place_holder
 		, const GenPermMatrixSlice& gpms_rhs, BLAS_Cpp::Transp gpms_rhs_trans
 		, value_type beta ) const;
@@ -398,10 +398,10 @@ public:
 	//@{
 
 	/// With throw exception if factorization is not allowed.
-	void V_InvMtV(VectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2) const;
+	void V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2) const;
 	/// With throw exception if factorization is not allowed.
-	void V_InvMtV(VectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+	void V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2) const;
 
 	//@}
@@ -411,7 +411,7 @@ public:
 
 	/// Will throw exception if factorization is not allowed.
 	void M_StMtInvMtM(
-		sym_gms* sym_gms_lhs, value_type alpha
+		DMatrixSliceSym* sym_gms_lhs, value_type alpha
 		, const MatrixWithOpSerial& mwo, BLAS_Cpp::Transp mwo_trans, EMatrixDummyArg
 		) const;
 
@@ -421,7 +421,7 @@ public:
 	//@{
 
 	/// Will resize view of matrices and reset scale
-	void initialize( const sym_gms& M );
+	void initialize( const DMatrixSliceSym& M );
 
 	//@}
 
@@ -429,9 +429,9 @@ public:
 	//@{
 
 	///
-	const LinAlgPack::sym_gms get_sym_gms_view() const;
+	const DenseLinAlgPack::DMatrixSliceSym get_sym_gms_view() const;
 	///
-	void free_sym_gms_view(const LinAlgPack::sym_gms* sym_gms_view) const;
+	void free_sym_gms_view(const DenseLinAlgPack::DMatrixSliceSym* sym_gms_view) const;
 
 	//@}
 
@@ -439,9 +439,9 @@ public:
 	//@{
 
 	///
-	LinAlgPack::sym_gms get_sym_gms_view();
+	DenseLinAlgPack::DMatrixSliceSym get_sym_gms_view();
 	///
-	void commit_sym_gms_view(LinAlgPack::sym_gms* sym_gms_view);
+	void commit_sym_gms_view(DenseLinAlgPack::DMatrixSliceSym* sym_gms_view);
 
 	//@}
 
@@ -449,7 +449,7 @@ public:
 	//@{
 
 	///
-	void extract_inv_chol( tri_ele_gms* InvChol ) const;
+	void extract_inv_chol( DMatrixSliceTriEle* InvChol ) const;
 	
 	//@}
 
@@ -475,7 +475,7 @@ public:
 		);
 	/// Will reset view of U and M and reset scale
 	void initialize(
-		const sym_gms      &A
+		const DMatrixSliceSym      &A
 		,size_type         max_size
 		,bool              force_factorization
 		,Inertia           inertia
@@ -489,7 +489,7 @@ public:
 	void set_uninitialized();
 	/// Will throw exceptions if not p.d. (scale > 0) or n.d. (scale < 0).
 	void augment_update(
-		const VectorSlice  *t
+		const DVectorSlice  *t
 		,value_type        alpha
 		,bool              force_refactorization
 		,EEigenValType     add_eigen_val
@@ -515,7 +515,7 @@ private:
 	bool                    factor_is_updated_;    // only used if maintain_factor_ == false, otherwise assumed true
 	bool                    allocates_storage_;    // If then then this object allocates the storage
 	release_resource_ptr_t  release_resource_ptr_;
-	GenMatrixSlice          MU_store_;
+	DMatrixSlice          MU_store_;
 	size_t                  max_size_;
 	size_t                  M_size_,               // M_size == 0 is flag that we are completely uninitialized
 		                    M_l_r_,
@@ -525,7 +525,7 @@ private:
 	value_type              scale_;
 	bool                    is_diagonal_;
 	PivotTolerances         pivot_tols_;
-	Vector                  work_; // workspace.
+	DVector                  work_; // workspace.
 
 	// /////////////////////////////
 	// Private member functions
@@ -548,13 +548,13 @@ bool MatrixSymPosDefCholFactor::allocates_storage() const
 }
 
 inline
-GenMatrixSlice& MatrixSymPosDefCholFactor::MU_store()
+DMatrixSlice& MatrixSymPosDefCholFactor::MU_store()
 {
 	return MU_store_;
 }
 
 inline
-const GenMatrixSlice& MatrixSymPosDefCholFactor::MU_store() const
+const DMatrixSlice& MatrixSymPosDefCholFactor::MU_store() const
 {
 	return MU_store_;
 }
@@ -582,36 +582,36 @@ void MatrixSymPosDefCholFactor::get_view_setup(
 }
 
 inline
-tri_gms MatrixSymPosDefCholFactor::U()
+DMatrixSliceTri MatrixSymPosDefCholFactor::U()
 {
-	return LinAlgPack::nonconst_tri(
+	return DenseLinAlgPack::nonconst_tri(
 		MU_store_(U_l_r_,U_l_r_+M_size_-1,U_l_c_+1,U_l_c_+M_size_)
 		, BLAS_Cpp::upper, BLAS_Cpp::nonunit
 		);
 }
 
 inline
-const tri_gms MatrixSymPosDefCholFactor::U() const
+const DMatrixSliceTri MatrixSymPosDefCholFactor::U() const
 {
-	return LinAlgPack::tri(
+	return DenseLinAlgPack::tri(
 		MU_store_(U_l_r_,U_l_r_+M_size_-1,U_l_c_+1,U_l_c_+M_size_)
 		, BLAS_Cpp::upper, BLAS_Cpp::nonunit
 		);
 }
 
 inline
-sym_gms MatrixSymPosDefCholFactor::M()
+DMatrixSliceSym MatrixSymPosDefCholFactor::M()
 {
-	return LinAlgPack::nonconst_sym(
+	return DenseLinAlgPack::nonconst_sym(
 		MU_store_(M_l_r_+1,M_l_r_+M_size_,M_l_c_,M_l_c_+M_size_-1)
 		, BLAS_Cpp::lower
 		);
 }
 
 inline
-const sym_gms MatrixSymPosDefCholFactor::M() const
+const DMatrixSliceSym MatrixSymPosDefCholFactor::M() const
 {
-	return LinAlgPack::sym(
+	return DenseLinAlgPack::sym(
 		MU_store_(M_l_r_+1,M_l_r_+M_size_,M_l_c_,M_l_c_+M_size_-1)
 		, BLAS_Cpp::lower
 		);

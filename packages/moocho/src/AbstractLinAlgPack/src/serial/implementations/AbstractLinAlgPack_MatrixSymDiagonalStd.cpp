@@ -15,21 +15,21 @@
 
 #include "SparseLinAlgPack/src/MatrixSymDiagonalStd.hpp"
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/GenMatrixOp.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/DMatrixOp.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
 namespace SparseLinAlgPack {
 
 MatrixSymDiagonalStd::MatrixSymDiagonalStd()
 {}
 
-VectorSlice MatrixSymDiagonalStd::diag()
+DVectorSlice MatrixSymDiagonalStd::diag()
 {
 	return diag_();
 }
 
-const VectorSlice MatrixSymDiagonalStd::diag() const
+const DVectorSlice MatrixSymDiagonalStd::diag() const
 {
 	return diag_();
 }
@@ -43,7 +43,7 @@ void MatrixSymDiagonalStd::init_identity( size_type n, value_type alpha = 1.0 )
 		diag_ = alpha;
 }
 
-void MatrixSymDiagonalStd::init_diagonal( const VectorSlice& diag )
+void MatrixSymDiagonalStd::init_diagonal( const DVectorSlice& diag )
 {
 	diag_ = diag;
 }
@@ -58,27 +58,27 @@ size_type MatrixSymDiagonalStd::rows() const
 // Overridden from MatrixWithOp
 
 void MatrixSymDiagonalStd::Mp_StM(
-	GenMatrixSlice* gms_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs) const
+	DMatrixSlice* gms_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs) const
 {
-	using LinAlgPack::Vp_StV;
+	using DenseLinAlgPack::Vp_StV;
 	// Assert that the dimensions match up.
-	LinAlgPack::Mp_M_assert_sizes( gms_lhs->rows(), gms_lhs->cols(), BLAS_Cpp::no_trans
+	DenseLinAlgPack::Mp_M_assert_sizes( gms_lhs->rows(), gms_lhs->cols(), BLAS_Cpp::no_trans
 		, rows(), cols(), trans_rhs );
 	// Add to the diagonal
 	Vp_StV( &gms_lhs->diag(), alpha, diag_ );
 }
 
 void MatrixSymDiagonalStd::Vp_StMtV(
-	VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-	, const VectorSlice& vs_rhs2, value_type beta) const
+	DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	, const DVectorSlice& vs_rhs2, value_type beta) const
 {
-	const VectorSlice diag = this->diag();
+	const DVectorSlice diag = this->diag();
 	size_type n = diag.size();
 
 	//
 	// y = b*y + a * op(A) * x
 	//
-	LinAlgPack::Vp_MtV_assert_sizes(
+	DenseLinAlgPack::Vp_MtV_assert_sizes(
 		vs_lhs->size(), n, n, trans_rhs1, vs_rhs2.size() );
 	//
 	// A is symmetric and diagonal A = diag(diag) so:
@@ -109,10 +109,10 @@ void MatrixSymDiagonalStd::Vp_StMtV(
 	}
 	else {
 		// Generic implementation
-		VectorSlice::const_iterator
+		DVectorSlice::const_iterator
 			d_itr = diag.begin(),
 			x_itr = vs_rhs2.begin();
-		VectorSlice::iterator
+		DVectorSlice::iterator
 			y_itr = vs_lhs->begin(),
 			y_end = vs_lhs->end();
 		for( ; y_itr != y_end; ++y_itr, ++d_itr, ++x_itr ) {
@@ -127,18 +127,18 @@ void MatrixSymDiagonalStd::Vp_StMtV(
 }
 
 void MatrixSymDiagonalStd::Vp_StMtV(
-	VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2, value_type beta) const
 {
-	const VectorSlice diag = this->diag();
+	const DVectorSlice diag = this->diag();
 	size_type n = diag.size();
 
-	LinAlgPack::Vp_MtV_assert_sizes( vs_lhs->size()
+	DenseLinAlgPack::Vp_MtV_assert_sizes( vs_lhs->size()
 		, n, n, trans_rhs1, sv_rhs2.size() );
 	//
 	// y = b*y + a * op(A) * x
 	//
-	LinAlgPack::Vt_S(vs_lhs,beta); // y = b * y
+	DenseLinAlgPack::Vt_S(vs_lhs,beta); // y = b * y
 	//
 	// A is symmetric and diagonal A = diag(diag) so:
 	//
@@ -160,10 +160,10 @@ void MatrixSymDiagonalStd::Vp_StMtV(
 // Overridden from MatrixWithOpFactorized
 
 void MatrixSymDiagonalStd::V_InvMtV(
-	VectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
-	, const VectorSlice& vs_rhs2) const
+	DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+	, const DVectorSlice& vs_rhs2) const
 {
-	const VectorSlice diag = this->diag();
+	const DVectorSlice diag = this->diag();
 	size_type n = diag.size();
 
 	// y = inv(op(A)) * x
@@ -172,7 +172,7 @@ void MatrixSymDiagonalStd::V_InvMtV(
 	//
 	// y(j) = x(j) / diag(j), for j = 1...n
 
-	LinAlgPack::Vp_MtV_assert_sizes( vs_lhs->size()
+	DenseLinAlgPack::Vp_MtV_assert_sizes( vs_lhs->size()
 		, n, n, trans_rhs1, vs_rhs2.size() );
 	
 	if( vs_rhs2.stride() == 1 && vs_lhs->stride() == 1 ) {
@@ -188,10 +188,10 @@ void MatrixSymDiagonalStd::V_InvMtV(
 	}
 	else {
 		// Generic implementation
-		VectorSlice::const_iterator
+		DVectorSlice::const_iterator
 			d_itr = diag.begin(),
 			x_itr = vs_rhs2.begin();
-		VectorSlice::iterator
+		DVectorSlice::iterator
 			y_itr = vs_lhs->begin(),
 			y_end = vs_lhs->end();
 		for( ; y_itr != y_end; ++y_itr, ++d_itr, ++x_itr ) {
@@ -204,10 +204,10 @@ void MatrixSymDiagonalStd::V_InvMtV(
 }
 
 void MatrixSymDiagonalStd::V_InvMtV(
-	VectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+	DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
 	, const SpVectorSlice& sv_rhs2) const
 {
-	const VectorSlice diag = this->diag();
+	const DVectorSlice diag = this->diag();
 	size_type n = diag.size();
 
 	// y = inv(op(A)) * x
@@ -218,7 +218,7 @@ void MatrixSymDiagonalStd::V_InvMtV(
 	//
 	// x is sparse so take account of this.
 	
-	LinAlgPack::Vp_MtV_assert_sizes( vs_lhs->size()
+	DenseLinAlgPack::Vp_MtV_assert_sizes( vs_lhs->size()
 		, n, n, trans_rhs1, sv_rhs2.size() );
 
 	for(   SpVectorSlice::const_iterator x_itr = sv_rhs2.begin()

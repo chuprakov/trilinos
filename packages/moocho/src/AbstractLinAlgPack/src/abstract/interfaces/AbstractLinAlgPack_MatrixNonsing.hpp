@@ -180,7 +180,7 @@ public:
   * that call virtual functions.
   *
   * These allow nonmember functions to act like virtual functions
-  * and thereby allow the same syntax as in LinAlgPack.
+  * and thereby allow the same syntax as in DenseLinAlgPack.
   */
 //@{
 

@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// GenMatrixAssign.hpp
+// DMatrixAssign.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -20,17 +20,17 @@
 #ifndef GEN_MATRIX_ASSIGN_H
 #define GEN_MATRIX_ASSIGN_H
 
-#include "LinAlgPackTypes.hpp"
+#include "DenseLinAlgPackTypes.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 // ///////////////////////////////////////////////////////////////////////////////////
-/** @name {\bf GenMatrix/GenMatrixSlice Assignment Fucntions}.
+/** @name {\bf DMatrix/DMatrixSlice Assignment Fucntions}.
   *
   * These are functions for assigning one matrix to another.  The rhs matrices
   * can be transposed (op(rhs) = rhs) or non-transposed (op(rhs) = trans(rhs).
   * The assignment operators for
-  * GenMatrix and GenMatrixSlice use these functions to implement their
+  * DMatrix and DMatrixSlice use these functions to implement their
   * assignment operator functions.  The assignmet functions for triangular
   * matrices are ment to be called from the assignment operator functions
   * for wrapper classes for triangular (upper and lower) and sysmetric 
@@ -42,26 +42,26 @@ namespace LinAlgPack {
 //@{
 
 /// gm_lhs = alpha (elementwise)
-void assign(GenMatrix* gm_lhs, value_type alpha);
+void assign(DMatrix* gm_lhs, value_type alpha);
 
 /// gm_lhs = op(gms_rhs)
-void assign(GenMatrix* gm_lhs, const GenMatrixSlice& gms_rhs, BLAS_Cpp::Transp trans_rhs);
+void assign(DMatrix* gm_lhs, const DMatrixSlice& gms_rhs, BLAS_Cpp::Transp trans_rhs);
 
 /// gms_lhs = alpha (elementwise)
-void assign(GenMatrixSlice* gms_lhs, value_type alpha);
+void assign(DMatrixSlice* gms_lhs, value_type alpha);
 
 /// gms_lhs = op(gms_rhs)
-void assign(GenMatrixSlice* gms_lhs, const GenMatrixSlice& gms_rhs, BLAS_Cpp::Transp trans_rhs);
+void assign(DMatrixSlice* gms_lhs, const DMatrixSlice& gms_rhs, BLAS_Cpp::Transp trans_rhs);
 
 /// tri_ele_gms_lhs = alpha (elementwise)
-void assign(tri_ele_gms* tri_gms_lhs, value_type alpha);
+void assign(DMatrixSliceTriEle* tri_gms_lhs, value_type alpha);
 
 /// tri_ele_gms_lhs = tri_ele_gms_rhs
-void assign(tri_ele_gms* tri_ele_gms_lhs, const tri_ele_gms& tri_ele_gms_rhs);
+void assign(DMatrixSliceTriEle* tri_ele_gms_lhs, const DMatrixSliceTriEle& tri_ele_gms_rhs);
 
 //		end Assignment Fucntions
 //@}
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif	// GEN_MATRIX_ASSIGN_H

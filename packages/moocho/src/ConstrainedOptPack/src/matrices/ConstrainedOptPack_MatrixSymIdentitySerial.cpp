@@ -16,11 +16,11 @@
 #include <assert.h>
 
 #include "ConstrainedOptimizationPack/src/MatrixSymIdentitySerial.hpp"
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
-#include "LinAlgPack/src/GenMatrixOp.hpp"
-#include "LinAlgPack/src/GenMatrixOut.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack/src/DMatrixOp.hpp"
+#include "DenseLinAlgPack/src/DMatrixOut.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
 namespace ConstrainedOptimizationPack {
 
@@ -60,29 +60,29 @@ std::ostream& MatrixSymIdentitySerial::output(std::ostream& out) const
 // Overridden from MatrixWithOpSerial
 
 void MatrixSymIdentitySerial::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
-	,const VectorSlice& x, value_type b
+	DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	,const DVectorSlice& x, value_type b
 	) const
 {
-	LinAlgPack::Vp_MtV_assert_sizes( y->dim(), rows(), cols(), BLAS_Cpp::no_trans, x.dim() );
-	LinAlgPack::Vt_S(y,b);
-	LinAlgPack::Vp_StV(y,a*scale_,x);
+	DenseLinAlgPack::Vp_MtV_assert_sizes( y->dim(), rows(), cols(), BLAS_Cpp::no_trans, x.dim() );
+	DenseLinAlgPack::Vt_S(y,b);
+	DenseLinAlgPack::Vp_StV(y,a*scale_,x);
 }
 
 // Overridden from MatrixNonsinguarSerial
 
 void MatrixSymIdentitySerial::V_InvMtV(
-	VectorSlice* y, BLAS_Cpp::Transp M_trans, const VectorSlice& x
+	DVectorSlice* y, BLAS_Cpp::Transp M_trans, const DVectorSlice& x
 	) const
 {
-	LinAlgPack::Vp_MtV_assert_sizes( y->dim(), rows(), cols(), BLAS_Cpp::no_trans, x.dim() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes( y->dim(), rows(), cols(), BLAS_Cpp::no_trans, x.dim() );
 	LinAlgOpPack::V_StV(y,scale_,x);
 }
 
 // Overridden from MatrixSymNonsingular
 
 void MatrixSymIdentitySerial::M_StMtInvMtM(
-	  sym_gms* S, value_type a
+	  DMatrixSliceSym* S, value_type a
 	  ,const MatrixWithOpSerial& B, BLAS_Cpp::Transp B_trans
 	  ,EMatrixDummyArg dummy_arg
 	) const
@@ -93,14 +93,14 @@ void MatrixSymIdentitySerial::M_StMtInvMtM(
 
 // Overridden from MatrixExtractInvCholFactor
 
-void MatrixSymIdentitySerial::extract_inv_chol( tri_ele_gms* InvChol ) const
+void MatrixSymIdentitySerial::extract_inv_chol( DMatrixSliceTriEle* InvChol ) const
 {
 	if( scale_ < 0.0 )
 		throw std::logic_error(
 			"MatrixSymIdentitySerial::extract_inv_chol(...) : "
 			"Error, we can not compute the inverse cholesky factor "
 			"of a negative definite matrix." );
-	LinAlgPack::assign( &InvChol->gms(), 0.0 );
+	DenseLinAlgPack::assign( &InvChol->gms(), 0.0 );
 	InvChol->gms().diag() = 1.0 / ::sqrt(scale_);
 }
 

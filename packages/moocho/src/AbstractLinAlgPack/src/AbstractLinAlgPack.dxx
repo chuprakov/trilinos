@@ -44,19 +44,19 @@ is also included here that will be of great use to any developer.
 //@{
 
 /** \defgroup libAbstractLinAlgPack_grp libAbstractLinAlgPack 
-\brief Fundamental Vector and Matrix Interfaces.
+\brief Fundamental DVector and Matrix Interfaces.
 
 There are several different levels of foundational vector and matrix interfaces
 defined here.
 
 <ul>
 
-<li> Vector interfaces:
+<li> DVector interfaces:
 
 Finite-dimensional coordinate vectors are abstracted by the
 interfaces <tt>\ref AbstractLinAlgPack::VectorWithOp "VectorWithOp"</tt>
 and <tt>\ref AbstractLinAlgPack::VectorWithOpMutable "VectorWithOpMutable"</tt>.
-Every vector is a member of a vector space.  Vector spaces are represented in software
+Every vector is a member of a vector space.  DVector spaces are represented in software
 as objects with their own abstract interface.  For <tt>VectorWithOpMutable</tt>, the
 vector space is represented through the base interface
 <tt>\ref AbstractLinAlgPack::VectorSpace "VectorSpace"</tt>.
@@ -65,7 +65,7 @@ In software terms, a vector space object primarily acts as an
 <tt>\ref MemMngPack::AbstractFactory "AbstractFactory<VectorWithOpMutable>"</tt>.
 In addition to acting as abstact
 factories, vector space objects are responsible for determining the compatibility
-of vector objects which is useful in debugging an application.  Vector spaces
+of vector objects which is useful in debugging an application.  DVector spaces
 also provide the definition of the inner product for a vector space.
 
 These finite dimensional coordinate vectors and vector spaces admit a finite dimension

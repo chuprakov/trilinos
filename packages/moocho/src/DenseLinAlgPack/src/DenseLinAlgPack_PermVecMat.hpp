@@ -20,14 +20,14 @@
 
 #include <stdexcept>
 
-#include "LinAlgPackTypes.hpp"
+#include "DenseLinAlgPackTypes.hpp"
 
-/** @name {\bf Vector / Matrix Permutations}.
+/** @name {\bf DVector / Matrix Permutations}.
   *
   * These are functions for pivoting the elements of a vector and the 
   * rows and/or columns of a rectandular matrix.
   *
-  * For Vector and VectorSlice pivot funcitions the #perm# argument
+  * For DVector and DVectorSlice pivot funcitions the #perm# argument
   * gives the mapping from the new sequence to the old sequence.
   * The statement #i_old = perm(i_new)# gives the index in the
   * old vector.  After the permutation is performed the postcondition:
@@ -38,7 +38,7 @@
   \endverbatim
   * is true.
   *
-  * For the GenMatrix permutation functions the #row_perm# argument
+  * For the DMatrix permutation functions the #row_perm# argument
   * gives the row permutations and the #col_perm# argument gives the column
   * permutations respectively.
   *
@@ -53,7 +53,7 @@
 // /////////////////////////////////////////////////////////////////////////////////////////
 // Public Permutation functions
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 ///
 /** Initialize a permutation to the identiy permutation.
@@ -77,29 +77,29 @@ void identity_perm(IVector* perm);
   */
 void inv_perm(const IVector& perm, IVector* inv_perm);
 
-/// Permute a VectorSlice in place
-void perm_ele(const IVector& perm, VectorSlice* vs);
+/// Permute a DVectorSlice in place
+void perm_ele(const IVector& perm, DVectorSlice* vs);
 
 /// Perform y = P*x
-void perm_ele(const VectorSlice& x, const IVector& perm, VectorSlice* y);
+void perm_ele(const DVectorSlice& x, const IVector& perm, DVectorSlice* y);
 
 /// Perform x = P'*y
-void inv_perm_ele(const VectorSlice& y, const IVector& perm, VectorSlice* x);
+void inv_perm_ele(const DVectorSlice& y, const IVector& perm, DVectorSlice* x);
 
 /// Permute a GenMatrixSlices rows
-void perm_rows(const IVector& row_perm, GenMatrixSlice* gms);
+void perm_rows(const IVector& row_perm, DMatrixSlice* gms);
 
 /// Permute a GenMatrixSlices columns
-void perm_cols(const IVector& col_perm, GenMatrixSlice* gms);
+void perm_cols(const IVector& col_perm, DMatrixSlice* gms);
 
 /// Permute a GenMatrixSlices rows and columns
-void perm_rows_cols(const IVector& row_perm, const IVector& col_perm, GenMatrixSlice* gms);
+void perm_rows_cols(const IVector& row_perm, const IVector& col_perm, DMatrixSlice* gms);
 
 #ifdef _DEBUG
 extern bool PermVecMat_print;
 #endif
 
-} // end namespace LinAlgPack
+} // end namespace DenseLinAlgPack
 
 //@}
 

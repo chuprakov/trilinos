@@ -21,8 +21,8 @@
 #include <string>
 
 #include "DirectSparseSolverImp.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
-#include "LinAlgPack/src/IVector.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "DenseLinAlgPack/src/IVector.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 
 namespace SparseSolverPack {
@@ -105,7 +105,7 @@ protected:
 		friend class DirectSparseSolverDense;
 		friend class BasisMatrixDense;
 	private:
-		GenMatrix                          LU_;
+		DMatrix                          LU_;
 		bool                               rect_analyze_and_factor_; // true for n > m analyze_and_factor()
 		std::valarray<f_int>               ipiv_; // The permutation sent to xGETRS (identity if rect_analyze_and_factor_==true)
 		IVector                            basis_perm_; // Only used if rect_analyze_and_factor_==true
@@ -125,8 +125,8 @@ protected:
 		const SparseLinAlgPack::MatrixConvertToSparse   &A
 		,FactorizationStructure                         *fact_struc
 		,FactorizationNonzeros                          *fact_nonzeros
-		,LinAlgPack::IVector                            *row_perm
-		,LinAlgPack::IVector                            *col_perm
+		,DenseLinAlgPack::IVector                            *row_perm
+		,DenseLinAlgPack::IVector                            *col_perm
 		,size_type                                      *rank
 		,std::ostream                                   *out
 		);

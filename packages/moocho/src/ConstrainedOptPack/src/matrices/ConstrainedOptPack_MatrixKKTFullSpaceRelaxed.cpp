@@ -24,8 +24,8 @@
 #include "SparseSolverPack/src/DirectSparseFortranCompatibleSolver.h"
 #include "SparseLinAlgPack/src/MatrixConvertToSparseFortranCompatible.hpp"
 #include "SparseLinAlgPack/test/TestMatrixConvertToSparseFortranCompatible.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
 namespace ConstrainedOptimizationPack {
 
@@ -67,7 +67,7 @@ void MatrixKKTFullSpaceRelaxed::initialize(
 
 void MatrixKKTFullSpaceRelaxed::initialize_relaxed(
 	  const MatrixWithOp& G, const MatrixWithOp& A
-	, const VectorSlice& c, value_type M
+	, const DVectorSlice& c, value_type M
 	, std::ostream* out, EPrintMoreOrLess print_what, ERunTests test_what )
 {
 	// ToDo: implement the relaxation in the future!
@@ -122,14 +122,14 @@ MatrixWithOp& MatrixKKTFullSpaceRelaxed::operator=(const MatrixWithOp& m)
 }
 
 void MatrixKKTFullSpaceRelaxed::Vp_StMtV(
-	  VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-	, const VectorSlice& vs_rhs2, value_type beta) const
+	  DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	, const DVectorSlice& vs_rhs2, value_type beta) const
 {
 	using SparseLinAlgPack::Vp_StMtV;
 
 	assert_initialized();
 
-	LinAlgPack::Vp_MtV_assert_sizes(vs_lhs->size(),rows(),cols(),BLAS_Cpp::no_trans
+	DenseLinAlgPack::Vp_MtV_assert_sizes(vs_lhs->size(),rows(),cols(),BLAS_Cpp::no_trans
 		,vs_rhs2.size());
 
 	if( use_relaxation_ ) {
@@ -146,10 +146,10 @@ void MatrixKKTFullSpaceRelaxed::Vp_StMtV(
 		//
 		// y2 = b*y2 + a*A'*x1
 
-		VectorSlice
+		DVectorSlice
 			y1 = (*vs_lhs)(1,n_),
 			y2 = (*vs_lhs)(n_+1,n_+m_);
-		const VectorSlice
+		const DVectorSlice
 			x1 = vs_rhs2(1,n_),
 			x2 = vs_rhs2(n_+1,n_+m_);
 
@@ -167,8 +167,8 @@ void MatrixKKTFullSpaceRelaxed::Vp_StMtV(
 
 // Overridden from MatrixFactorized
 
-void MatrixKKTFullSpaceRelaxed::V_InvMtV( VectorSlice* v_lhs, BLAS_Cpp::Transp trans_rhs1
-	, const VectorSlice& vs_rhs2) const
+void MatrixKKTFullSpaceRelaxed::V_InvMtV( DVectorSlice* v_lhs, BLAS_Cpp::Transp trans_rhs1
+	, const DVectorSlice& vs_rhs2) const
 {
 	assert_initialized();
 	// ToDo: Finish me!

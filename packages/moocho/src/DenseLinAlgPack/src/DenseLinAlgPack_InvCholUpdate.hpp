@@ -16,9 +16,9 @@
 #ifndef INV_CHOL_UPDATE_H
 #define INV_CHOL_UPDATE_H
 
-#include "LinAlgPackTypes.hpp"
+#include "DenseLinAlgPackTypes.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 ///
 /** Perform an update of the Cholesky factor of a symetric matrix (SM = L * L^T)
@@ -33,8 +33,8 @@ namespace LinAlgPack {
   * <li> UpTriM.rows() == UpTriM.cols() == u.size() == v.size() (throw std::length_error)
   * </ul>
   */
-void update_chol_factor(GenMatrixSlice* UpTriM, VectorSlice* u
-	, const VectorSlice& v);
+void update_chol_factor(DMatrixSlice* UpTriM, DVectorSlice* u
+	, const DVectorSlice& v);
 
 ///
 /** Perform a jacobi rotation or a matrix about row i.
@@ -43,9 +43,9 @@ void update_chol_factor(GenMatrixSlice* UpTriM, VectorSlice* u
   * <li> UpTriM.rows() == UpTriM.cols() (throw std::length_error)
   * </ul>
   */
-void jacobi_rotate(GenMatrixSlice* UpTriM, size_type row_i, value_type alpha
+void jacobi_rotate(DMatrixSlice* UpTriM, size_type row_i, value_type alpha
 	, value_type beta); 
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif	// INV_CHOL_UPDATE_H

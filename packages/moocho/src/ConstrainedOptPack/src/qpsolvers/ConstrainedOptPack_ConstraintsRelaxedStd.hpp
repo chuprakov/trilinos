@@ -159,7 +159,7 @@ public:
 		MatrixWithOp& operator=(const MatrixWithOp& m);
 //		///
 //		void Mp_StPtMtP(
-//			GenMatrixSlice* gms_lhs, value_type alpha
+//			DMatrixSlice* gms_lhs, value_type alpha
 //			,const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 //			,BLAS_Cpp::Transp M_trans
 //			,const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
@@ -364,7 +364,7 @@ public:
 	 * <tt>Ed</tt> was updated and therefore the client must compute this value on its own.
 	 */
 	void pick_violated(
-		const VectorSlice& x, size_type* j_viol, value_type* constr_val
+		const DVectorSlice& x, size_type* j_viol, value_type* constr_val
 		,value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
 		) const;
 	///

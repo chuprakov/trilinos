@@ -154,9 +154,9 @@ private:
 
 #ifdef DOXYGEN_COMPILE
 	const MatrixExtractSparseElements    *mese;
-	const LinAlgPack::IVector            *inv_row_perm;
+	const DenseLinAlgPack::IVector            *inv_row_perm;
 	Range1D                              row_rng;
-	const LinAlgPack::IVector            *inv_col_perm;
+	const DenseLinAlgPack::IVector            *inv_col_perm;
 	Range1D                              col_rng;
 #else
 	mese_ptr_t          mese_;

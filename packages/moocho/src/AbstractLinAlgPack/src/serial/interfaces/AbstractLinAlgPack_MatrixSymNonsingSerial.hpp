@@ -48,7 +48,7 @@ public:
 	  * (for this = L*L' for instance) the subclass may want to override this function.
 	  */
 	virtual void M_StMtInvMtM(
-		sym_gms* sym_gms_lhs, value_type alpha
+		DMatrixSliceSym* sym_gms_lhs, value_type alpha
 		,const MatrixWithOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
 		,EMatrixDummyArg
 		) const;
@@ -71,14 +71,14 @@ public:
 /** \defgroup MatrixSymNonsingularSerial_funcs MatrixSymNonsingularSerial nonmember inline functions.
  *
  * These nonmember functions allow operations to be called on \c MatrixSymNonsingularSerial objects
- * in similar manner to those in \c LinAlgPack.
+ * in similar manner to those in \c DenseLinAlgPack.
  */
 //@{
 
 inline
 /// sym_gms_lhs = alpha * op(mwo) * inv(mswof) * op(mwo)'
 void M_StMtInvMtM(
-	sym_gms* sym_gms_lhs, value_type alpha
+	DMatrixSliceSym* sym_gms_lhs, value_type alpha
 	,const MatrixWithOpSerial& mwo, BLAS_Cpp::Transp mwo_trans
 	,const MatrixSymNonsingularSerial& mswons
 	,MatrixSymNonsingularSerial::EMatrixDummyArg mwo_rhs

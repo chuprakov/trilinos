@@ -35,13 +35,13 @@ public:
 	/// Virtual destructor
 	virtual ~MatrixBase() {}
 
-	/** @name Vector spaces for the columns and rows of the matrix */
+	/** @name DVector spaces for the columns and rows of the matrix */
 	//@{
 
-	/// Vector space for vectors that are compatible with the columns of the matrix.
+	/// DVector space for vectors that are compatible with the columns of the matrix.
 	virtual const VectorSpace& space_cols() const = 0;
 
-	/// Vector space for vectors that are compatible with the rows of the matrix.
+	/// DVector space for vectors that are compatible with the rows of the matrix.
 	virtual const VectorSpace& space_rows() const = 0;
 
 	//@}

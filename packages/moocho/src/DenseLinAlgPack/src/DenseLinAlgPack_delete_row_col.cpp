@@ -15,18 +15,18 @@
 
 #include <assert.h>
 
-#include "LinAlgPack/src/delete_row_col.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack/src/delete_row_col.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 
-void LinAlgPack::delete_row_col( size_type kd, tri_ele_gms* tri_M )
+void DenseLinAlgPack::delete_row_col( size_type kd, DMatrixSliceTriEle* tri_M )
 {
 	// Validate input
 	assert( tri_M );
 	assert( tri_M->rows() );
 	assert( 1 <= kd && kd <= tri_M->rows() );
 
-	GenMatrixSlice   M = tri_M->gms();
+	DMatrixSlice   M = tri_M->gms();
 	const size_type  n = M.rows();
 
 	if( tri_M->uplo() == BLAS_Cpp::lower ) {

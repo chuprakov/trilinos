@@ -22,9 +22,9 @@
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
 #include "SparseLinAlgPack/src/MatrixWithOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StV;
@@ -38,8 +38,8 @@ bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 
-	using LinAlgPack::Vt_S;
-	using LinAlgPack::norm_inf;
+	using DenseLinAlgPack::Vt_S;
+	using DenseLinAlgPack::norm_inf;
 
 	using SparseLinAlgPack::Vp_StMtV;
 	
@@ -70,13 +70,13 @@ bool ReducedSpaceSQPPack::CalcLambdaIndepStd_AddedStep::do_step(Algorithm& _algo
 	// already but lambda(decomp) will not be initialized yet.
 	if( !s.lambda().updated_k(0) ) s.lambda().set_k(0).v().resize( algo.nlp().m() );
 	
-	VectorSlice lambda_decomp = s.lambda().get_k(0).v()(decomp);
+	DVectorSlice lambda_decomp = s.lambda().get_k(0).v()(decomp);
 	
 	// lambda_decomp_tmp1 = - Y' * (Gf + nu)
 	if( algo.nlp().has_bounds() ) {
 		// _tmp = Gf + nu
-		Vector _tmp = s.Gf().get_k(0)();
-		VectorSlice _vs_tmp = _tmp;	// only create this VectorSlice once
+		DVector _tmp = s.Gf().get_k(0)();
+		DVectorSlice _vs_tmp = _tmp;	// only create this DVectorSlice once
 		Vp_V( &_vs_tmp, s.nu().get_k(0)() );
 		// lambda_decomp_tmp1 = - Y' * _tmp
 		V_StMtV( &lambda_decomp, -1.0, s.Y().get_k(0), trans, _vs_tmp );

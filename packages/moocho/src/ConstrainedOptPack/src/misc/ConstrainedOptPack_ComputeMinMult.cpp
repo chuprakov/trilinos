@@ -15,7 +15,7 @@
 
 #include "ConstrainedOptimizationPack/src/ComputeMinMult.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
 
 namespace {
 template< class T >
@@ -24,12 +24,12 @@ T my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
 } // end namespace
 
 ConstrainedOptimizationPack::value_type
-ConstrainedOptimizationPack ::min_abs( const VectorSlice& mu )
+ConstrainedOptimizationPack ::min_abs( const DVectorSlice& mu )
 {
 	if( !mu.dim() )
 		return 0.0;
 	value_type min = ::fabs(mu(1));
-	for( VectorSlice::const_iterator itr = mu.begin() + 1; itr != mu.end(); )
+	for( DVectorSlice::const_iterator itr = mu.begin() + 1; itr != mu.end(); )
 		min = my_min( min, ::fabs(*itr++) );
 	return min;
 }

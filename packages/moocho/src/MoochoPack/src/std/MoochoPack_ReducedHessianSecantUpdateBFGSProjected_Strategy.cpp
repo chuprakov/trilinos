@@ -26,7 +26,7 @@
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOut.hpp"
 #include "SparseLinAlgPack/src/MatrixSymInitDiagonal.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
 
@@ -49,7 +49,7 @@ ReducedHessianSecantUpdateBFGSProjected_Strategy::ReducedHessianSecantUpdateBFGS
 {}
 
 bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
-	VectorSlice* s_bfgs, VectorSlice* y_bfgs, bool first_update
+	DVectorSlice* s_bfgs, DVectorSlice* y_bfgs, bool first_update
 	,std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
 	,MatrixWithOp *rHL_k
 	)
@@ -58,7 +58,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 	using std::endl;
 	using std::right;
 	using DynamicCastHelperPack::dyn_cast;
-	using LinAlgPack::dot;
+	using DenseLinAlgPack::dot;
 	using LinAlgOpPack::V_MtV;
 	using SparseLinAlgPack::norm_inf;
 	typedef ConstrainedOptimizationPack::MatrixHessianSuperBasic MHSB_t;
@@ -153,11 +153,11 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 					out	<< "\nScaling for diagonal rHL_XX = rHL_XX_scale*I, rHL_XX_scale = " << rHL_XX_scale << std::endl;
 				}
 				wsp::Workspace<value_type> rHL_XX_diag_ws(wss,nu_indep.nz());
-				VectorSlice rHL_XX_diag(&rHL_XX_diag_ws[0],rHL_XX_diag_ws.size());
+				DVectorSlice rHL_XX_diag(&rHL_XX_diag_ws[0],rHL_XX_diag_ws.size());
 				rHL_XX_diag = rHL_XX_scale;
 				// s_R'*B_RR_*s_R
 				wsp::Workspace<value_type> Q_R_Q_RT_s_ws(wss,n_pz);
-				VectorSlice Q_R_Q_RT_s(&Q_R_Q_RT_s_ws[0],Q_R_Q_RT_s_ws.size());
+				DVectorSlice Q_R_Q_RT_s(&Q_R_Q_RT_s_ws[0],Q_R_Q_RT_s_ws.size());
 				Q_R_Q_RT_s = 0.0;
 				{for( size_type k = 0; k < n_pz_R; ++k ) {
 					const size_type i = i_x_free[k];
@@ -267,7 +267,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 			out	<< "\nScaling for diagonal rHL_XX = rHL_XX_scale*I, rHL_XX_scale = " << rHL_XX_scale << std::endl;
 		}
 		wsp::Workspace<value_type> rHL_XX_diag_ws(wss,nu_indep.nz());
-		VectorSlice rHL_XX_diag(&rHL_XX_diag_ws[0],rHL_XX_diag_ws.size());
+		DVectorSlice rHL_XX_diag(&rHL_XX_diag_ws[0],rHL_XX_diag_ws.size());
 		rHL_XX_diag = rHL_XX_scale;
 		// Initialize rHL_XX = rHL_XX_scale * I so that those variables in the current Q_R
 		// not in the estimate i_x_free[] will have their proper value when s_R'*B_RR*s_R computed
@@ -288,7 +288,7 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 		// s_R'*B_RR_*s_R
 		// This will only include those terms for the variable actually free.
 		wsp::Workspace<value_type> Q_R_Q_RT_s_ws(wss,n_pz);
-		VectorSlice Q_R_Q_RT_s(&Q_R_Q_RT_s_ws[0],Q_R_Q_RT_s_ws.size());
+		DVectorSlice Q_R_Q_RT_s(&Q_R_Q_RT_s_ws[0],Q_R_Q_RT_s_ws.size());
 		Q_R_Q_RT_s = 0.0;
 		{for( size_type k = 0; k < n_pz_R; ++k ) {
 			const size_type i = i_x_free[k];
@@ -466,8 +466,8 @@ bool ReducedHessianSecantUpdateBFGSProjected_Strategy::perform_update(
 		wsp::Workspace<value_type>
 			y_bfgs_R_ws(wss,Q_R.cols()),
 			s_bfgs_R_ws(wss,Q_R.cols());
-		VectorSlice y_bfgs_R(&y_bfgs_R_ws[0],y_bfgs_R_ws.size());
-		VectorSlice s_bfgs_R(&s_bfgs_R_ws[0],s_bfgs_R_ws.size());
+		DVectorSlice y_bfgs_R(&y_bfgs_R_ws[0],y_bfgs_R_ws.size());
+		DVectorSlice s_bfgs_R(&s_bfgs_R_ws[0],s_bfgs_R_ws.size());
 		V_MtV( &y_bfgs_R, Q_R, BLAS_Cpp::trans, *y_bfgs );  // y_bfgs_R = Q_R'*y_bfgs
 		V_MtV( &s_bfgs_R, Q_R, BLAS_Cpp::trans, *s_bfgs );  // s_bfgs_R = Q_R'*s_bfgs
 		// Update rHL_RR

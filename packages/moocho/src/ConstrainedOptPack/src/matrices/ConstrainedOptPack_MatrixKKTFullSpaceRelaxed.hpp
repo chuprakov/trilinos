@@ -152,7 +152,7 @@ public:
 	  * value for bigM = M might be 1e+10 however this is problem specific.
 	  */
 	void initialize_relaxed( const MatrixWithOp& G, const MatrixWithOp& A
-		, const VectorSlice& c, value_type bigM = 1e+10
+		, const DVectorSlice& c, value_type bigM = 1e+10
 		, std::ostream* out = 0, EPrintMoreOrLess print_what = PRINT_LESS
 		, ERunTests test_what = NO_TESTS );
 
@@ -199,15 +199,15 @@ public:
 	MatrixWithOp& operator=(const MatrixWithOp& m);
 
 	/// (2) vs_lhs = alpha * op(M_rhs1) * vs_rhs2 + beta * vs_lhs (BLAS xGEMV)
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2, value_type beta) const;
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2, value_type beta) const;
 
 	// ////////////////////////////////////////////////////////////
 	// Overridden from MatrixFactorized
 
 	/// (1) v_lhs	= inv(op(M_rhs1)) * vs_rhs2
-	void V_InvMtV( VectorSlice* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2) const;
+	void V_InvMtV( DVectorSlice* v_lhs, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2) const;
 
 	// ////////////////////////////////////////////////////////////
 	// Overridden from MatrixConvertToSparseFortranCompatible

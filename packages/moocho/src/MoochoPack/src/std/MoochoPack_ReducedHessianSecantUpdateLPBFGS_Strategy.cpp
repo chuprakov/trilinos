@@ -26,7 +26,7 @@
 #include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
 #include "SparseLinAlgPack/src/MatrixSymInitDiagonal.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
 
@@ -51,7 +51,7 @@ ReducedHessianSecantUpdateLPBFGS_Strategy::ReducedHessianSecantUpdateLPBFGS_Stra
 {}
 
 bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
-	VectorSlice* s_bfgs, VectorSlice* y_bfgs, bool first_update
+	DVectorSlice* s_bfgs, DVectorSlice* y_bfgs, bool first_update
 	,std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
 	,MatrixWithOp *rHL_k
 	)
@@ -63,7 +63,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 	namespace rcp = MemMngPack;
 	using rcp::ref_count_ptr;
 	using LinAlgOpPack::V_MtV;
-	using LinAlgPack::dot;
+	using DenseLinAlgPack::dot;
 	using SparseLinAlgPack::norm_inf;
 	using SparseLinAlgPack::transVtMtV;
 	typedef ConstrainedOptimizationPack::MatrixHessianSuperBasic MHSB_t;
@@ -188,7 +188,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 						, &n_pz_R, &i_x_free[0], &sRTBRRsR, &sRTyR );
 					sRTBRRsR *= rHL_scale;
 					wsp::Workspace<value_type> rHL_XX_diag_ws(wss,nu_indep.nz());
-					VectorSlice rHL_XX_diag(&rHL_XX_diag_ws[0],rHL_XX_diag_ws.size());
+					DVectorSlice rHL_XX_diag(&rHL_XX_diag_ws[0],rHL_XX_diag_ws.size());
 					rHL_XX_diag = rHL_scale;
 					// Sort fixed variables according to |s_X(i)^2*B_XX(i,i)|/|sRTBRRsR| + |s_X(i)*y_X(i)|/|sRTyR|
 					// and initialize s_X'*B_XX*s_X and s_X*y_X
@@ -275,10 +275,10 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 							s_bfgs_R_ws(wss,Q_R.cols()),
 							y_bfgs_X_ws(wss,Q_X.cols()),
 							s_bfgs_X_ws(wss,Q_X.cols());
-						VectorSlice y_bfgs_R(&y_bfgs_R_ws[0],y_bfgs_R_ws.size());
-						VectorSlice s_bfgs_R(&s_bfgs_R_ws[0],s_bfgs_R_ws.size());
-						VectorSlice y_bfgs_X(&y_bfgs_X_ws[0],y_bfgs_X_ws.size());
-						VectorSlice s_bfgs_X(&s_bfgs_X_ws[0],s_bfgs_X_ws.size());
+						DVectorSlice y_bfgs_R(&y_bfgs_R_ws[0],y_bfgs_R_ws.size());
+						DVectorSlice s_bfgs_R(&s_bfgs_R_ws[0],s_bfgs_R_ws.size());
+						DVectorSlice y_bfgs_X(&y_bfgs_X_ws[0],y_bfgs_X_ws.size());
+						DVectorSlice s_bfgs_X(&s_bfgs_X_ws[0],s_bfgs_X_ws.size());
 						V_MtV( &y_bfgs_R, Q_R, BLAS_Cpp::trans, *y_bfgs );  // y_bfgs_R = Q_R'*y_bfgs
 						V_MtV( &s_bfgs_R, Q_R, BLAS_Cpp::trans, *s_bfgs );  // s_bfgs_R = Q_R'*s_bfgs
 						V_MtV( &y_bfgs_X, Q_X, BLAS_Cpp::trans, *y_bfgs );  // y_bfgs_X = Q_X'*y_bfgs
@@ -302,7 +302,7 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 							// Now add previous update vectors
 							const value_type
 								project_error_tol = proj_bfgs_updater().project_error_tol();
-							const GenMatrixSlice
+							const DMatrixSlice
 								S = lbfgs_rHL_RR->S(),
 								Y = lbfgs_rHL_RR->Y();
 							size_type k = lbfgs_rHL_RR->k_bar();  // Location in S and Y of most recent update vectors

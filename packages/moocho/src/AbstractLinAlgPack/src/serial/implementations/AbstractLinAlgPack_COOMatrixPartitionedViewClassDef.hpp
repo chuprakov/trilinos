@@ -268,7 +268,7 @@ COOMatrixPartitionedView<T_Indice,T_Value>::create_partition(Range1D rng_overall
 	ele_type
 		&_ele		= const_cast<ref_ele_type&>(ref_ele_).obj(); // This is ok
 	// Get upper and lower overall, row and column partition numbers
-	rng_overall_p = LinAlgPack::full_range(rng_overall_p,1,num_row_part_*num_col_part_);
+	rng_overall_p = DenseLinAlgPack::full_range(rng_overall_p,1,num_row_part_*num_col_part_);
 	size_type	l_p		= rng_overall_p.lbound(),
 				u_p		= rng_overall_p.ubound(),
 				l_r_p	= imp_row_part_num(l_p),

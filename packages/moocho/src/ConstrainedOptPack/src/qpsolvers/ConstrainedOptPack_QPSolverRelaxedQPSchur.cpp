@@ -24,7 +24,7 @@
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
 #include "SparseLinAlgPack/src/VectorSpaceSerial.hpp"
 #include "SparseLinAlgPack/src/sparse_bounds.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "dynamic_cast_verbose.hpp"
 #include "profile_hack.hpp"
 
@@ -268,7 +268,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		typedef SpVector::element_type ele_t;
 		if(nu && nu_nz) {
 			VectorDenseEncap nu_de(*nu);
-			VectorSlice::const_iterator
+			DVectorSlice::const_iterator
 				nu_itr = nu_de().begin(),
 				nu_end = nu_de().end();
 			index_type i = 1;
@@ -280,7 +280,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		}
 		if(mu && mu_nz) {
 			VectorDenseEncap mu_de(*mu);
-			VectorSlice::const_iterator
+			DVectorSlice::const_iterator
 				mu_itr = mu_de().begin(),
 				mu_end = mu_de().end();
 			index_type i = 1;
@@ -316,7 +316,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 		QPSchurPack::QP::x_init_t::const_iterator
 			x_init_itr = qp_.x_init().begin();
 		VectorDenseEncap nu_de(*nu);
-		VectorSlice::const_iterator
+		DVectorSlice::const_iterator
 			nu_itr = nu_de().begin();
 		for( size_type i = 1; i <= nd; ++i, ++x_init_itr, ++nu_itr ) {
 			if( *x_init_itr != FREE && *x_init_itr != EQUALITY ) {
@@ -447,7 +447,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	//
 	// Solve the QP with QPSchur
 	// 
-	Vector _x(nd+1);		// solution vector [ d; eta ]
+	DVector _x(nd+1);		// solution vector [ d; eta ]
 	SpVector _mu;			// lagrange multipliers for variable bounds [ nu; kappa ]
 	SpVector _lambda_breve;	// solution for extra general constraints [ mu; lambda ]
 	size_type qp_iter = 0, num_adds = 0, num_drops = 0;

@@ -212,38 +212,38 @@ protected:
 	///
 	size_type imp_mI_orig() const;
 	///
-	const VectorSlice imp_xinit_orig() const;
+	const DVectorSlice imp_xinit_orig() const;
 	///
 	bool imp_has_var_bounds() const;
 	///
-	const VectorSlice imp_xl_orig() const;
+	const DVectorSlice imp_xl_orig() const;
 	///
-	const VectorSlice imp_xu_orig() const;
+	const DVectorSlice imp_xu_orig() const;
 	///
-	const VectorSlice imp_hl_orig() const;
+	const DVectorSlice imp_hl_orig() const;
 	///
-	const VectorSlice imp_hu_orig() const;
+	const DVectorSlice imp_hu_orig() const;
 	///
 	void imp_calc_f_orig(
-		const VectorSlice            &x_full
+		const DVectorSlice            &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const;
 	///
 	void imp_calc_c_orig(
-		const VectorSlice            &x_full
+		const DVectorSlice            &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const;
 	///
 	void imp_calc_h_orig(
-		const VectorSlice            &x_full
+		const DVectorSlice            &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const;
 	///
 	void imp_calc_Gf_orig(
-		const VectorSlice            &x_full
+		const DVectorSlice            &x_full
 		,bool                        newx
 		,const ObjGradInfoSerial     &obj_grad_info
 		) const;
@@ -256,10 +256,10 @@ protected:
 		);
 	///
 	void imp_report_orig_final_solution(
-		const VectorSlice      &x_orig
-		,const VectorSlice     *lambda_orig
-		,const VectorSlice     *lambdaI_orig
-		,const VectorSlice     *nu_orig
+		const DVectorSlice      &x_orig
+		,const DVectorSlice     *lambda_orig
+		,const DVectorSlice     *lambdaI_orig
+		,const DVectorSlice     *nu_orig
 		,bool                  is_optimal
 		) const;
 
@@ -274,12 +274,12 @@ protected:
 	size_type imp_Gh_nz_orig() const;
 	///
 	void imp_calc_Gc_orig(
-		const VectorSlice& x_full, bool newx
+		const DVectorSlice& x_full, bool newx
 		, const FirstOrderExplInfo& first_order_expl_info
 		) const;
 	///
 	void imp_calc_Gh_orig(
-		const VectorSlice& x_full, bool newx
+		const DVectorSlice& x_full, bool newx
 		, const FirstOrderExplInfo& first_order_expl_info
 		) const;
 
@@ -315,13 +315,13 @@ private:
 	size_type    Gc_orig_nz_;
 	size_type    Gh_orig_nz_;
 
-	Vector       xinit_orig_;
-	Vector       xl_orig_;
-	Vector       xu_orig_;
-	Vector       hl_orig_;
-	Vector       hu_orig_;
+	DVector       xinit_orig_;
+	DVector       xl_orig_;
+	DVector       xu_orig_;
+	DVector       hl_orig_;
+	DVector       hu_orig_;
 
-	Vector       co_orig_;
+	DVector       co_orig_;
 
 	mutable bool  c_orig_updated_;
 

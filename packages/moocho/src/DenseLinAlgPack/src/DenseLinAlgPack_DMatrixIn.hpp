@@ -1,5 +1,5 @@
 // ///////////////////////////////////////////////////////////////////////////////////////
-// GenMatrixIn.hpp
+// DMatrixIn.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,28 +16,28 @@
 #ifndef GENMATRIX_IN_H
 #define GENMATRIX_IN_H
 
-#include "GenMatrixInFunc.hpp"
+#include "DMatrixInFunc.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 ///
-/** GenMatrix input stream operator.
+/** DMatrix input stream operator.
   *
   * This operator function calls the function input(is,gm,0).
   */
 inline
-std::istream& operator>>(std::istream& is, GenMatrix& gm)
+std::istream& operator>>(std::istream& is, DMatrix& gm)
 {	return input(is,&gm,(LinAlgPackIO::fmtflags)0); }
 
 ///
-/** GenMatrixSlice input stream operator.
+/** DMatrixSlice input stream operator.
   *
   * This operator function calls the function input(is,gms,0).
   */
 inline
-std::istream& operator>>(std::istream& is, GenMatrixSlice& gms)
+std::istream& operator>>(std::istream& is, DMatrixSlice& gms)
 {	return input(is,&gms,(LinAlgPackIO::fmtflags)0); }
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif // GENMATRIX_IN_H

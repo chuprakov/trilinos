@@ -637,7 +637,7 @@ size_type MatrixCompositeStd::nz() const
 		{for(vector_list_t::const_iterator itr = vector_list_.begin(); itr != vector_list_.end(); ++itr) {
 			nz += itr->v_->nz();
 		}}
-		// ToDo: Update the above code to consider GenMatrixSlice and Range1D views
+		// ToDo: Update the above code to consider DMatrixSlice and Range1D views
 		return nz;
 	}
 	return 0;
@@ -677,7 +677,7 @@ void MatrixCompositeStd::Vp_StMtV(
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
-	ProfileHackPack::ProfileTiming profile_timing( "MatrixCompositeStd::Vp_StMtV(...VectorSlice...)" );
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixCompositeStd::Vp_StMtV(...DVectorSlice...)" );
 #endif
 	assert_fully_constructed();
 	AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, M_trans, x );
@@ -705,7 +705,7 @@ void MatrixCompositeStd::Vp_StPtMtV(
 	) const
 {
 #ifdef PROFILE_HACK_ENABLED
-	ProfileHackPack::ProfileTiming profile_timing( "MatrixCompositeStd::Vp_StPtMtV(...VectorSlice...)" );
+	ProfileHackPack::ProfileTiming profile_timing( "MatrixCompositeStd::Vp_StPtMtV(...DVectorSlice...)" );
 #endif
 	assert_fully_constructed();
 	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b); // ToDo: Implement when needed!

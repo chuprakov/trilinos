@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////////
-// VectorOut.hpp
+// DVectorOut.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,30 +13,30 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 //
-// Output stream operator for Vector
+// Output stream operator for DVector
 
 #ifndef VECTOROUT_H
 #define VECTOROUT_H
 
-#include "VectorOutFunc.hpp"
+#include "DVectorOutFunc.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 ///
-/** VectorSlice output stream operator.
+/** DVectorSlice output stream operator.
   *
   * This operator function calls the function output(os,vs,0).
   */
-inline std::ostream& operator<<(std::ostream& os, const VectorSlice& vs) {
+inline std::ostream& operator<<(std::ostream& os, const DVectorSlice& vs) {
 	return output(os, vs, (LinAlgPackIO::fmtflags)(0));
 }
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 // ////////////////////////////////////
 // Inline function definitions
 
-//inline std::ostream& LinAlgPack::operator<<(std::ostream& os, const VectorSlice& vs) {
+//inline std::ostream& DenseLinAlgPack::operator<<(std::ostream& os, const DVectorSlice& vs) {
 //	return output(os, vs, 0);
 //}
 

@@ -21,7 +21,7 @@
 namespace SparseLinAlgPack {
 
 ///
-/** Abstract interface that allows the extraction of a non-const <tt>GenMatrixSlice</tt>
+/** Abstract interface that allows the extraction of a non-const <tt>DMatrixSlice</tt>
  * view of an abstract matrix.
  *
  * This interface is ment to be used by <tt>MatrixWithOp</tt> objects
@@ -44,7 +44,7 @@ public:
 	using MatrixWithOpGetGMS::get_gms_view;
 
 	///
-	/** Get a representation of the abstract matrixr in the form <tt>LinAlgPack::GenMatrixSlice</tt>.
+	/** Get a representation of the abstract matrixr in the form <tt>DenseLinAlgPack::DMatrixSlice</tt>.
 	 *
 	 * @return On ouput, \c return will be initialized to point to storage to the dense matrix elements.
 	 * The output from this function <tt>gms_view = this->get_gms_view()</tt> must be passed to
@@ -59,7 +59,7 @@ public:
 	 *
 	 * Warning!  If a subclass overrides this method, it must also override \c commit_gms_view().
 	 */
-	virtual GenMatrixSlice get_gms_view() = 0;
+	virtual DMatrixSlice get_gms_view() = 0;
 
 	///
 	/** Commit changes to a view of a dense matrix initialized from <tt>this->get_gms_view()</tt>.
@@ -77,7 +77,7 @@ public:
 	 * <li> \c gms_view becomes invalid and must not be used any longer!
 	 * </ul>
 	 */
-	virtual void commit_gms_view(GenMatrixSlice* gms_view) = 0;
+	virtual void commit_gms_view(DMatrixSlice* gms_view) = 0;
 
 }; // end class MatrixWithOpGetGMSMutable
 
@@ -85,10 +85,10 @@ public:
 /** Helper class type that simplifies the usage of the <tt>MatrixWithOpGetGMSMutable</tt> interface for clients.
  *
  * This takes care of worrying about if the <tt>MatrixWithOpGetGMSMutable</tt> interface is supported or not
- * and remembering to free the <tt>GenMatrixSlice</tt> view properly.
+ * and remembering to free the <tt>DMatrixSlice</tt> view properly.
  *
  * This class is only to be used on the stack as an automatic variable.  For example, to extract a
- * <tt>GenMatrixSlice</tt> view of an abstract vector and use it to set the matrix to a scalar
+ * <tt>DMatrixSlice</tt> view of an abstract vector and use it to set the matrix to a scalar
  * one could write a function like:
  \code
  void assign( const value_type alpha, MatrixWithOpGetGMSMutable* mat_inout ) {
@@ -105,27 +105,27 @@ class MatrixDenseMutableEncap {
 public:
 
 	///
-	/** Construct a <tt>GenMatrixSlice</tt> view from a <tt>MatrixWithOpGetGMSMutable</tt> object.
+	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixWithOpGetGMSMutable</tt> object.
 	 */
 	MatrixDenseMutableEncap( MatrixWithOpGetGMSMutable*  mat_get );
 	///
-	/** Construct a <tt>GenMatrixSlice</tt> view from a <tt>MatrixWithOp</tt> object.
+	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixWithOp</tt> object.
 	 *
 	 * If <tt>dynamic_cast<MatrixWithOpGetGMSMutable*>(mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
 	MatrixDenseMutableEncap( MatrixWithOp* mat );
-	/// Frees the <tt>GenMatrixSlice</tt> view and commits the changes.
+	/// Frees the <tt>DMatrixSlice</tt> view and commits the changes.
 	~MatrixDenseMutableEncap();
-	/// Returns a non-const view of the <tt>GenMatrixSlice</tt> view.
-	GenMatrixSlice operator()();
-	/// Returns a const view of the <tt>GenMatrixSlice</tt> view.
-	const GenMatrixSlice operator()() const;
+	/// Returns a non-const view of the <tt>DMatrixSlice</tt> view.
+	DMatrixSlice operator()();
+	/// Returns a const view of the <tt>DMatrixSlice</tt> view.
+	const DMatrixSlice operator()() const;
 
 private:
 
 	MatrixWithOpGetGMSMutable     *mat_get_;
-	GenMatrixSlice                gms_view_;
+	DMatrixSlice                gms_view_;
 	MatrixDenseMutableEncap();                                          // Not defined and not to be called!
 	MatrixDenseMutableEncap(const MatrixDenseMutableEncap&);            // ""
 	MatrixDenseMutableEncap& operator=(const MatrixDenseMutableEncap&); // ""
@@ -156,13 +156,13 @@ MatrixDenseMutableEncap::~MatrixDenseMutableEncap()
 }
 
 inline
-GenMatrixSlice MatrixDenseMutableEncap::operator()()
+DMatrixSlice MatrixDenseMutableEncap::operator()()
 {
 	return gms_view_;
 }
 
 inline
-const GenMatrixSlice MatrixDenseMutableEncap::operator()() const
+const DMatrixSlice MatrixDenseMutableEncap::operator()() const
 {
 	return gms_view_;
 }

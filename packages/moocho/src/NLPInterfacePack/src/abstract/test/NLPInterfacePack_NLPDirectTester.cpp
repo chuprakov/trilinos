@@ -302,14 +302,14 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 				//
 /*
 				// FDN
-				GenMatrix FDN(m,n-m);
+				DMatrix FDN(m,n-m);
 				fd_deriv_computer.calc_deriv( xo, xl, xu
 					, Range1D(m+1,n), nlp, NULL
 					, &FDN() ,BLAS_Cpp::trans, out );
 
 				// T = FDA' * [ -D; 0 ] (one column at a time)
-				GenMatrix T(m,n-m);
-				Vector t(n);
+				DMatrix T(m,n-m);
+				DVector t(n);
 				t(m+1,n) = 0.0;
 				for( int s = 1; s <= n-m; ++s ) {
 					// t = [ -D(:,s); 0 ]

@@ -30,10 +30,10 @@ namespace {
 //
 template<class V>
 void Vp_StPtMtV_imp( 
-	LinAlgPack::VectorSlice* y, LinAlgPack::value_type a
+	DenseLinAlgPack::DVectorSlice* y, DenseLinAlgPack::value_type a
 	, const SparseLinAlgPack::GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	, const ConstrainedOptimizationPack::MatrixSymHessianRelaxNonSing& H, BLAS_Cpp::Transp H_trans
-	, const V& x, LinAlgPack::value_type b
+	, const V& x, DenseLinAlgPack::value_type b
 	)
 {
 	using BLAS_Cpp::no_trans;
@@ -45,14 +45,14 @@ void Vp_StPtMtV_imp(
 	using SparseLinAlgPack::MatrixWithOp;
 	namespace GPMSIP = SparseLinAlgPack::GenPermMatrixSliceIteratorPack;
 
-	const LinAlgPack::size_type
+	const DenseLinAlgPack::size_type
 		no = H.G().rows(),  // number of original variables
 		nr = H.M().rows(),  // number of relaxation variables
 		nd = no + nr;       // total number of variables
 
-	LinAlgPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans
+	DenseLinAlgPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans
 		, BLAS_Cpp::rows( nd, nd, H_trans) );
-	LinAlgPack::Vp_MtV_assert_sizes( BLAS_Cpp::cols( P.rows(), P.cols(), P_trans)
+	DenseLinAlgPack::Vp_MtV_assert_sizes( BLAS_Cpp::cols( P.rows(), P.cols(), P_trans)
 		, nd, nd, H_trans, x.size() );
 
 	//
@@ -75,7 +75,7 @@ void Vp_StPtMtV_imp(
 		H.MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,H_trans,x,b);
 		return;
 	}
-	const LinAlgPack::Range1D
+	const DenseLinAlgPack::Range1D
 		o_rng(1,no),
 		r_rng(no+1,no+nr);
 	const SparseLinAlgPack::GenPermMatrixSlice
@@ -97,7 +97,7 @@ void Vp_StPtMtV_imp(
 		x1 = x(o_rng),
 		x2 = x(r_rng);
 	// y = b*y
-	LinAlgPack::Vt_S(y,b);
+	DenseLinAlgPack::Vt_S(y,b);
 	// y += a*op(P1)*G*x1
 	if( P1.nz() )
 		SparseLinAlgPack::Vp_StPtMtV( y, a, P1, P_trans, H.G(), H_trans, x1, b );
@@ -268,15 +268,15 @@ void MatrixSymHessianRelaxNonSing::Mp_StPtMtP(
 	MatrixSymWithOp::Mp_StPtMtP(S,a,dummy_place_holder,P,P_trans,b); // ToDo: Override when needed!
 	return;
 /* ToDo: Update below code!
-	const LinAlgPack::size_type
+	const DenseLinAlgPack::size_type
 		no = G().rows(),     // number of original variables
 		nr = M().rows(),     // number of relaxation variables
 		nd = no + nr;        // total number of variables
 
-	LinAlgPack::Mp_MtM_assert_sizes( S->rows(), S->cols(), no_trans
+	DenseLinAlgPack::Mp_MtM_assert_sizes( S->rows(), S->cols(), no_trans
 									 , P.rows(), P.cols(), trans_not(P_trans)
 									 , P.rows(), P.cols(), P_trans );
-	LinAlgPack::Vp_V_assert_sizes( BLAS_Cpp::rows( P.rows(), P.cols(), P_trans), nd );
+	DenseLinAlgPack::Vp_V_assert_sizes( BLAS_Cpp::rows( P.rows(), P.cols(), P_trans), nd );
 
 	//
 	// S = b*S + a * op(P)' * H * op(P)
@@ -300,7 +300,7 @@ void MatrixSymHessianRelaxNonSing::Mp_StPtMtP(
 		MatrixSymWithOp::Mp_StPtMtP(S,a,dummy_place_holder,P,P_trans,b);
 		return;
 	}
-	const LinAlgPack::Range1D
+	const DenseLinAlgPack::Range1D
 		o_rng(1,no),
 		r_rng(no+1,no+nr);
 	const SparseLinAlgPack::GenPermMatrixSlice
@@ -319,17 +319,17 @@ void MatrixSymHessianRelaxNonSing::Mp_StPtMtP(
 			   : P.create_submatrix(r_rng,P_trans==no_trans?GPMSIP::BY_ROW:GPMSIP::BY_COL)
 			);
 	// S = b*S
-	LinAlgPack::Mt_S( &tri_ele_gms(S->gms(),S->uplo()),b); // Handles b == 0.0 properly!
+	DenseLinAlgPack::Mt_S( &DMatrixSliceTriEle(S->gms(),S->uplo()),b); // Handles b == 0.0 properly!
 
 	// S1 += a*op(P1)'*G*op(P1)
 	if( P1.nz() )
 		SparseLinAlgPack::Mp_StPtMtP(
-			&sym_gms( S->gms()(1,no,1,no), S->uplo() )
+			&DMatrixSliceSym( S->gms()(1,no,1,no), S->uplo() )
 			, a, dummy_place_holder, G(), P1, P_trans );
 	// S2 += a*op(P2)'*M*op(P2)
 	if( P2.nz() )
 		SparseLinAlgPack::Mp_StPtMtP(
-			&sym_gms( S->gms()(no+1,nd,no+1,nd), S->uplo() )
+			&DMatrixSliceSym( S->gms()(no+1,nd,no+1,nd), S->uplo() )
 			, a, dummy_place_holder, M(), P2, P_trans );
 */
 }

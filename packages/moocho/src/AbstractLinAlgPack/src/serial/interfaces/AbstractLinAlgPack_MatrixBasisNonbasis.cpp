@@ -17,22 +17,22 @@
 
 #include "SparseLinAlgPack/src/MatrixBasisNonbasis.hpp"
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/GenMatrixOp.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/DMatrixOp.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
 namespace SparseLinAlgPack {
 
 // Overridden from MatrixWithOp
 
-void MatrixBasisNonbasis::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-    , const VectorSlice& vs_rhs2, value_type beta) const
+void MatrixBasisNonbasis::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+    , const DVectorSlice& vs_rhs2, value_type beta) const
 {
 	using SparseLinAlgPack::Vp_StMtV;
 
 	size_type n = rows(), m = cols();
 
-	LinAlgPack::Vp_MtV_assert_sizes( vs_lhs->size()
+	DenseLinAlgPack::Vp_MtV_assert_sizes( vs_lhs->size()
 		, n, m, trans_rhs1, vs_rhs2.size() );
 
 	switch(trans_rhs1) {
@@ -82,7 +82,7 @@ void MatrixBasisNonbasis::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_C
 	}
 }
 
-void MatrixBasisNonbasis::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+void MatrixBasisNonbasis::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
     , const SpVectorSlice& sv_rhs2, value_type beta) const
 {
 	using SparseLinAlgPack::Vp_StMtV;
@@ -90,7 +90,7 @@ void MatrixBasisNonbasis::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_C
 	size_type n = rows(), m = cols();
 	// Assert that the dimensions of the aruments match up and if not
 	// then throw an excption.
-	LinAlgPack::Vp_MtV_assert_sizes( vs_lhs->size()
+	DenseLinAlgPack::Vp_MtV_assert_sizes( vs_lhs->size()
 		, n, m, trans_rhs1, sv_rhs2.size() );
 
 	switch(trans_rhs1) {

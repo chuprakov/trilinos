@@ -27,7 +27,7 @@
 #ifdef _DEBUG
 #define CLASS_MEMBER_PTRS \
 const VectorWithOpMutableDense   *_this = this; \
-const VectorSlice                *_v; \
+const DVectorSlice                *_v; \
 const release_resource_ptr_t     *_v_release; \
 const VectorSpaceSerial          *_space;
 #else
@@ -46,7 +46,7 @@ VectorWithOpMutableDense::VectorWithOpMutableDense(
 }
 
 VectorWithOpMutableDense::VectorWithOpMutableDense(
-	VectorSlice                        v
+	DVectorSlice                        v
 	,const release_resource_ptr_t&     v_release
 	)
 	:space_(v.dim())
@@ -62,12 +62,12 @@ void VectorWithOpMutableDense::initialize(
 	CLASS_MEMBER_PTRS
 	namespace rcp = MemMngPack;
 	namespace rmp = MemMngPack;
-	typedef rcp::ref_count_ptr<Vector> vec_ptr_t;
-	vec_ptr_t vec_ptr = rcp::rcp(new Vector(dim));
+	typedef rcp::ref_count_ptr<DVector> vec_ptr_t;
+	vec_ptr_t vec_ptr = rcp::rcp(new DVector(dim));
 	this->initialize(
 		(*vec_ptr)()
 		,rcp::rcp(
-			new rmp::ReleaseResource_ref_count_ptr<Vector>(
+			new rmp::ReleaseResource_ref_count_ptr<DVector>(
 				vec_ptr
 				)
 			)
@@ -75,7 +75,7 @@ void VectorWithOpMutableDense::initialize(
 }
 
 void VectorWithOpMutableDense::initialize(
-	VectorSlice                        v
+	DVectorSlice                        v
 	,const release_resource_ptr_t&     v_release
 	)
 {

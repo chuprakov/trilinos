@@ -16,8 +16,8 @@
 #include <math.h>
 
 #include "ExampleNLPBanded.hpp"
-#include "LinAlgPack/src/PermVecMat.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/PermVecMat.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 
 namespace NLPInterfacePack {
@@ -174,7 +174,7 @@ size_type ExampleNLPBanded::imp_mI_orig() const
 	return mI_;
 }
 
-const VectorSlice ExampleNLPBanded::imp_xinit_orig() const
+const DVectorSlice ExampleNLPBanded::imp_xinit_orig() const
 {
 	return xinit_orig_();
 }
@@ -184,39 +184,39 @@ bool ExampleNLPBanded::imp_has_var_bounds() const
 	return has_var_bounds_;
 }
 
-const VectorSlice ExampleNLPBanded::imp_xl_orig() const
+const DVectorSlice ExampleNLPBanded::imp_xl_orig() const
 {
 	return xl_orig_();
 }
 
-const VectorSlice ExampleNLPBanded::imp_xu_orig() const
+const DVectorSlice ExampleNLPBanded::imp_xu_orig() const
 {
 	return xu_orig_();
 }
 
-const VectorSlice ExampleNLPBanded::imp_hl_orig() const
+const DVectorSlice ExampleNLPBanded::imp_hl_orig() const
 {
 	return hl_orig_();
 }
 
-const VectorSlice ExampleNLPBanded::imp_hu_orig() const
+const DVectorSlice ExampleNLPBanded::imp_hu_orig() const
 {
 	return hu_orig_();
 }
 
 void ExampleNLPBanded::imp_calc_f_orig(
-	const VectorSlice            &x_full
+	const DVectorSlice            &x_full
 	,bool                        newx
 	,const ZeroOrderInfoSerial   &zero_order_info
 	) const
 {
 	inform_new_point(newx);
-	const VectorSlice x_orig = x_full(1,imp_n_orig());
-	*zero_order_info.f = f_offset_ + ( 1.0 / 2.0 ) * LinAlgPack::dot( x_orig, x_orig );
+	const DVectorSlice x_orig = x_full(1,imp_n_orig());
+	*zero_order_info.f = f_offset_ + ( 1.0 / 2.0 ) * DenseLinAlgPack::dot( x_orig, x_orig );
 }
 
 void ExampleNLPBanded::imp_calc_c_orig(
-	const VectorSlice            &x_full
+	const DVectorSlice            &x_full
 	,bool                        newx
 	,const ZeroOrderInfoSerial   &zero_order_info
 	) const
@@ -224,7 +224,7 @@ void ExampleNLPBanded::imp_calc_c_orig(
 	inform_new_point(newx);
 	if(c_orig_updated_)
 		return; // c(x) is already computed in *zero_order_info.c
-	Vector
+	DVector
 		&c  = *zero_order_info.c;
 	const size_type
 		num_I_per_D = nD_ / nI_,  // Integer division (rounds down)
@@ -260,13 +260,13 @@ void ExampleNLPBanded::imp_calc_c_orig(
 }
 
 void ExampleNLPBanded::imp_calc_h_orig(
-	const VectorSlice            &x_full
+	const DVectorSlice            &x_full
 	,bool                        newx
 	,const ZeroOrderInfoSerial   &zero_order_info
 	) const
 {
 	inform_new_point(newx);
-	Vector
+	DVector
 		&h  = *zero_order_info.h;
 	const size_type
 		num_I_per_D = nD_ / nI_,  // Integer division (rounds down)
@@ -286,7 +286,7 @@ EXIT_LOOP:
 }
 
 void ExampleNLPBanded::imp_calc_Gf_orig(
-	const VectorSlice            &x_full
+	const DVectorSlice            &x_full
 	,bool                        newx
 	,const ObjGradInfoSerial     &obj_grad_info
 	) const
@@ -333,9 +333,9 @@ bool ExampleNLPBanded::imp_get_next_basis(
 			(*var_perm_full)(i_perm) = nD_ + k;
 	}
 	else {
-		LinAlgPack::identity_perm( var_perm_full );
+		DenseLinAlgPack::identity_perm( var_perm_full );
 	}
-	LinAlgPack::identity_perm( equ_perm_full );
+	DenseLinAlgPack::identity_perm( equ_perm_full );
 	// Count the number of fixed basic variables to reduce
 	// the rank of the basis.
 	index_type num_fixed = 0;
@@ -357,10 +357,10 @@ bool ExampleNLPBanded::imp_get_next_basis(
 }
 
 void ExampleNLPBanded::imp_report_orig_final_solution(
-	const VectorSlice      &x_orig
-	,const VectorSlice     *lambda_orig
-	,const VectorSlice     *lambdaI_orig
-	,const VectorSlice     *nu_orig
+	const DVectorSlice      &x_orig
+	,const DVectorSlice     *lambda_orig
+	,const DVectorSlice     *lambdaI_orig
+	,const DVectorSlice     *nu_orig
 	,bool                  is_optimal
 	) const
 {
@@ -380,14 +380,14 @@ size_type ExampleNLPBanded::imp_Gh_nz_orig() const
 }
 
 void ExampleNLPBanded::imp_calc_Gc_orig(
-	const VectorSlice& x_full, bool newx
+	const DVectorSlice& x_full, bool newx
 	, const FirstOrderExplInfo& first_order_expl_info
 	) const
 {
 	inform_new_point(newx);
 	// Compute c(x) if not already
 	this->imp_calc_c_orig( x_full, newx, zero_order_orig_info() );
-	Vector
+	DVector
 		&c = *first_order_expl_info.c; // This must not be NULL!
 	// Get references/pointers to data for Gc to be computed/updated.
 	index_type
@@ -458,7 +458,7 @@ void ExampleNLPBanded::imp_calc_Gc_orig(
 }
 
 void ExampleNLPBanded::imp_calc_Gh_orig(
-	const VectorSlice& x_full, bool newx
+	const DVectorSlice& x_full, bool newx
 	, const FirstOrderExplInfo& first_order_expl_info
 	) const
 {

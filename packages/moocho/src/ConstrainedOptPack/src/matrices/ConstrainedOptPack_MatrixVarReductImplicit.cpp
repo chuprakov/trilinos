@@ -40,7 +40,7 @@ void imp_Vp_StMtV_implicit(
 	,const AbstractLinAlgPack::MatrixWithOp               &N
 	,BLAS_Cpp::Transp                                     D_trans
 	,const V                                              &x
-	,LinAlgPack::value_type                               b
+	,DenseLinAlgPack::value_type                               b
 	)
 {
 	using BLAS_Cpp::no_trans;
@@ -49,7 +49,7 @@ void imp_Vp_StMtV_implicit(
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
-	const LinAlgPack::size_type
+	const DenseLinAlgPack::size_type
 		r   = C.rows(),
 		dof = N.cols();
 
@@ -90,19 +90,19 @@ void imp_Vp_StMtV_implicit(
 // Generate a row of inv(C)*N if not already computed.
 //
 void imp_compute_InvCtN_row(
-	LinAlgPack::size_type                                                 r
+	DenseLinAlgPack::size_type                                                 r
 	,const ConstrainedOptimizationPack::DecompositionSystemVarReduct      &decomp_sys
-	,LinAlgPack::size_type                                                j
-	,LinAlgPack::VectorSlice                                              *e_j  // Set to all zeros on input and output!
+	,DenseLinAlgPack::size_type                                                j
+	,DenseLinAlgPack::DVectorSlice                                              *e_j  // Set to all zeros on input and output!
 	,ConstrainedOptimizationPack::MatrixVarReductImplicit::InvCtN_rows_t  *InvCtN_rows
 	)
 {
-	typedef  LinAlgPack::value_type  value_type;
-	using LinAlgPack::VectorSlice;
+	typedef  DenseLinAlgPack::value_type  value_type;
+	using DenseLinAlgPack::DVectorSlice;
 	if( (*InvCtN_rows)[j-1] == NULL ) {
 		// Generate row j of inv(C)*N
 		value_type *vec = (*InvCtN_rows)[j-1] = new value_type[r]; // ToDo: We may want to allocate more vectors at once!
-		VectorSlice row_j(vec,r);
+		DVectorSlice row_j(vec,r);
 		// row_j = N'*inv(C')*e_j
 		(*e_j)(j) = 1.0;
 		imp_Vp_StMtV_implicit( &row_j, 1.0, decomp_sys, BLAS_Cpp::trans, *e_j, 0.0 );
@@ -119,13 +119,13 @@ void imp_compute_InvCtN_row(
 //
 template<class V>
 void imp_Vp_StPtMtV_by_row(
-	LinAlgPack::VectorSlice                                               *y
-	,LinAlgPack::value_type                                               a
+	DenseLinAlgPack::DVectorSlice                                               *y
+	,DenseLinAlgPack::value_type                                               a
 	,const ConstrainedOptimizationPack::GenPermMatrixSlice                &P
 	,BLAS_Cpp::Transp                                                     P_trans
 	,const ConstrainedOptimizationPack::DecompositionSystemVarReduct      &decomp_sys
 	,const V                                                              &x
-	,LinAlgPack::value_type                                               b
+	,DenseLinAlgPack::value_type                                               b
 	,ConstrainedOptimizationPack::MatrixVarReductImplicit::InvCtN_rows_t *InvCtN_rows
 	)
 {
@@ -134,31 +134,31 @@ void imp_Vp_StPtMtV_by_row(
 	using BLAS_Cpp::trans_not;
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
-	using LinAlgPack::dot;
-	using LinAlgPack::VectorSlice;
+	using DenseLinAlgPack::dot;
+	using DenseLinAlgPack::DVectorSlice;
 	using SparseLinAlgPack::dot;
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::GenPermMatrixSlice;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 	
-	const LinAlgPack::size_type
+	const DenseLinAlgPack::size_type
 		D_rows = decomp_sys.C().rows(),
 		D_cols = decomp_sys.N().cols();
 	// y = b*y
 	if(b==0.0)       *y = 0.0;
-	else if(b!=1.0)  LinAlgPack::Vt_S(y,b);
+	else if(b!=1.0)  DenseLinAlgPack::Vt_S(y,b);
 	// Compute t = N'*inv(C')*e(j) then y(i) += -a*t'*x where op(P)(i,j) = 1.0
-	wsp::Workspace<LinAlgPack::value_type>   e_j_ws(wss,D_rows);
-	VectorSlice                              e_j(&e_j_ws[0],e_j_ws.size());
+	wsp::Workspace<DenseLinAlgPack::value_type>   e_j_ws(wss,D_rows);
+	DVectorSlice                              e_j(&e_j_ws[0],e_j_ws.size());
 	e_j = 0.0;
 	for( GenPermMatrixSlice::const_iterator itr = P.begin(); itr != P.end(); ++itr ) {
-		const LinAlgPack::size_type
+		const DenseLinAlgPack::size_type
 			i = P_trans == no_trans ? itr->row_i() : itr->col_j(),
 			j = P_trans == no_trans ? itr->col_j() : itr->row_i();
 		// t = op(M') * e(j)
 		imp_compute_InvCtN_row(D_rows,decomp_sys,j,&e_j,InvCtN_rows);
-		VectorSlice t((*InvCtN_rows)[j-1],D_cols);
+		DVectorSlice t((*InvCtN_rows)[j-1],D_cols);
 		// y(i) += -a*t'*x
 		(*y)(i) += (-a) * dot(t,x);
 	}
@@ -281,7 +281,7 @@ void MatrixVarReductImplicit::Vp_StMtV(
 {
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
-	using LinAlgPack::Vt_S;
+	using DenseLinAlgPack::Vt_S;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
 
@@ -292,13 +292,13 @@ void MatrixVarReductImplicit::Vp_StMtV(
 	const size_type
 		D_rows = this->rows(), D_cols = this->cols(),
 		opD_rows = rows(D_rows,D_cols,D_trans), opD_cols = cols(D_rows,D_cols,D_trans);
-	LinAlgPack::Vp_MtV_assert_sizes(y->size(),D_rows,D_cols,D_trans,x.size());
+	DenseLinAlgPack::Vp_MtV_assert_sizes(y->size(),D_rows,D_cols,D_trans,x.size());
 	if( use_dense_mat_vec_ && D_dense_.rows() > 0 ) {
 		LinAlgOpPack::Vp_StMtV( y, a, D_dense_, D_trans, x, b );
 	}
 	else {
 		if( x.nz() == x.size() ) {  // This is B.S.  Should use MatrixWithOpFactorized object for C!
-			VectorSlice dx = SparseLinAlgPack::dense_view(x);
+			DVectorSlice dx = SparseLinAlgPack::dense_view(x);
 			imp_Vp_StMtV_implicit( y, -a, *decomp_sys_, D_trans, dx, b );
 		}
 		else if( D_trans == BLAS_Cpp::trans && x.nz() < D_cols ) {
@@ -308,8 +308,8 @@ void MatrixVarReductImplicit::Vp_StMtV(
 			// We can do something crafty here.  We can generate columns of N'*inv(C')
 			// and then perform y += -a*[N'*inv(C')](:,j)*x(j) for nonzero x(j)
 			//
-			wsp::Workspace<LinAlgPack::value_type>   e_j_ws(wss,D_rows);
-			VectorSlice                              e_j(&e_j_ws[0],e_j_ws.size());
+			wsp::Workspace<DenseLinAlgPack::value_type>   e_j_ws(wss,D_rows);
+			DVectorSlice                              e_j(&e_j_ws[0],e_j_ws.size());
 			e_j = 0.0;
 			// y = b*y
 			if(b==0.0)       *y = 0.0;
@@ -319,11 +319,11 @@ void MatrixVarReductImplicit::Vp_StMtV(
 			for( SpVectorSlice::const_iterator itr = x.begin(); itr != x.end(); ++itr ) {
 				const size_type j = itr->indice() + o;
 				imp_compute_InvCtN_row(D_rows,*decomp_sys_,j,&e_j,&InvCtN_rows_);
-				LinAlgPack::Vp_StV( y, -a * itr->value(), VectorSlice(InvCtN_rows_[j-1],D_cols) );
+				DenseLinAlgPack::Vp_StV( y, -a * itr->value(), DVectorSlice(InvCtN_rows_[j-1],D_cols) );
 			}
 		}
 		else {   // This is B.S.  Should use MatrixWithOpFactorized object for C!
-			Vector dx;
+			DVector dx;
 			LinAlgOpPack::assign( &dx, x );
 			imp_Vp_StMtV_implicit( y, -a, *decomp_sys_, D_trans, dx(), b );
 		}
@@ -346,8 +346,8 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 	const size_type
 		D_rows = this->rows(), D_cols = this->cols(),
 		opD_rows = rows(D_rows,D_cols,D_trans), opD_cols = cols(D_rows,D_cols,D_trans);
-	LinAlgPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans,opD_rows);
-	LinAlgPack::Vp_MtV_assert_sizes(cols(P.rows(),P.cols(),P_trans),D_rows,D_cols,D_trans,x.size());
+	DenseLinAlgPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans,opD_rows);
+	DenseLinAlgPack::Vp_MtV_assert_sizes(cols(P.rows(),P.cols(),P_trans),D_rows,D_cols,D_trans,x.size());
 	if( D_dense_.rows() > 0 ) {
 		SparseLinAlgPack::dense_Vp_StPtMtV(y,a,P,P_trans,D_dense_,D_trans,x,b);
 	}
@@ -376,8 +376,8 @@ void MatrixVarReductImplicit::Vp_StPtMtV(
 	const size_type
 		D_rows = this->rows(), D_cols = this->cols(),
 		opD_rows = rows(D_rows,D_cols,D_trans), opD_cols = cols(D_rows,D_cols,D_trans);
-	LinAlgPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans,opD_rows);
-	LinAlgPack::Vp_MtV_assert_sizes(cols(P.rows(),P.cols(),P_trans),D_rows,D_cols,D_trans,x.size());
+	DenseLinAlgPack::Vp_MtV_assert_sizes(y->size(),P.rows(),P.cols(),P_trans,opD_rows);
+	DenseLinAlgPack::Vp_MtV_assert_sizes(cols(P.rows(),P.cols(),P_trans),D_rows,D_cols,D_trans,x.size());
 	if( D_dense_.rows() > 0 ) {
 		SparseLinAlgPack::dense_Vp_StPtMtV(y,a,P,P_trans,D_dense_,D_trans,x,b);
 	}

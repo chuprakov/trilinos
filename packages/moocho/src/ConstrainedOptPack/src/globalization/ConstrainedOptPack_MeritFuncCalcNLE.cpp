@@ -14,7 +14,7 @@
 // above mentioned "Artistic License" for more details.
 
 #include "MeritFuncCalcNLE.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
 
 namespace ConstrainedOptimizationPack {
 
@@ -22,7 +22,7 @@ MeritFuncCalcNLE::MeritFuncCalcNLE( const MeritFuncNLE* phi, const NLP* nlp )
 	: phi_(phi), nlp_(nlp)
 {}
 
-value_type MeritFuncCalcNLE::operator()(const VectorSlice& x) const {
+value_type MeritFuncCalcNLE::operator()(const DVectorSlice& x) const {
 	nlp().calc_c(x);
 	return phi().value( nlp().c() );
 }

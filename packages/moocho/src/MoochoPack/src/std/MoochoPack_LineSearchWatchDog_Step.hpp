@@ -19,7 +19,7 @@
 #include "../rSQPAlgo_StepBaseClasses.h"
 #include "ConstrainedOptimizationPack/src/MeritFuncNLP.hpp"
 #include "ConstrainedOptimizationPack/src/DirectLineSearch_Strategy.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "MiStandardAggregationMacros.h"
 #include "StandardMemberCompositionMacros.hpp"
@@ -81,10 +81,10 @@ public:
 
 private:
 	int					watch_k_;	// >= 0 means that we are using the watchdog.
-	Vector				xo_;
+	DVector				xo_;
 	value_type			fo_;
 	value_type			nrm_co_;
-	Vector				do_;
+	DVector				do_;
 	value_type			phio_;
 	value_type			Dphio_;
 	value_type			phiop1_;

@@ -17,15 +17,15 @@
 
 #include <stdexcept>
 
-#include "LinAlgPack/src/random_vector.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
+#include "DenseLinAlgPack/src/random_vector.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
 
-void LinAlgPack::seed_random_vector_generator( unsigned int s )
+void DenseLinAlgPack::seed_random_vector_generator( unsigned int s )
 {
 	srand(s);
 }
 
-void LinAlgPack::random_vector( value_type l, value_type u, VectorSlice* v )
+void DenseLinAlgPack::random_vector( value_type l, value_type u, DVectorSlice* v )
 {
 	if(!v)
 		throw std::invalid_argument( "random_vector(...) : Error, "
@@ -33,6 +33,6 @@ void LinAlgPack::random_vector( value_type l, value_type u, VectorSlice* v )
 	if( l > u )
 		throw std::invalid_argument( "random_vector(...) : Error, "
 			"l can not be greater than u" );
-	for( VectorSlice::iterator itr = v->begin(); itr != v->end(); )
+	for( DVectorSlice::iterator itr = v->begin(); itr != v->end(); )
 		*itr++ = l + (double(rand())/RAND_MAX) * (u -l);
 }

@@ -33,10 +33,10 @@ public:
 	///
 	/** Extract the inverse cholesly factor.
 	  *
-	  * Warning, the entire GenMatrixSlice InvChol->gms() can be
+	  * Warning, the entire DMatrixSlice InvChol->gms() can be
 	  * used for workspace!
 	  */
-	virtual void extract_inv_chol( tri_ele_gms* InvChol ) const = 0;	
+	virtual void extract_inv_chol( DMatrixSliceTriEle* InvChol ) const = 0;	
 
 };	// end class MatrixExtractInvCholFactor
 

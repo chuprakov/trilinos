@@ -57,8 +57,8 @@ void mat_vec(
 	,AbstractLinAlgPack::value_type                alpha
 	,const AbstractLinAlgPack::MatrixWithOp        &D
 	,BLAS_Cpp::Transp                              D_trans
-	,const LinAlgPack::Range1D                     &D_rng
-	,const LinAlgPack::Range1D                     &I_rng
+	,const DenseLinAlgPack::Range1D                     &D_rng
+	,const DenseLinAlgPack::Range1D                     &I_rng
 	,BLAS_Cpp::Transp                              M_trans
 	,const V                                       &x
 	,AbstractLinAlgPack::value_type                b

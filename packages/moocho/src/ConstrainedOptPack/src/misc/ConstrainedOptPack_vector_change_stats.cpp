@@ -16,16 +16,16 @@
 #include <limits>
 
 #include "vector_change_stats.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
 void ConstrainedOptimizationPack::vector_change_stats(
-	  const VectorSlice& x, const VectorSlice& d
+	  const DVectorSlice& x, const DVectorSlice& d
 	, value_type* max_term, size_type* max_k
 	, value_type* min_term, size_type* min_k
 	, value_type* av_term )
 {
-	LinAlgPack::VopV_assert_sizes( x.size(), d.size() );
+	DenseLinAlgPack::VopV_assert_sizes( x.size(), d.size() );
 	const value_type
 		min_num		= std::numeric_limits<value_type>::min(),
 		inf			= std::numeric_limits<value_type>::max();
@@ -36,7 +36,7 @@ void ConstrainedOptimizationPack::vector_change_stats(
 	*min_k		= 0;
 	*av_term	= 0.0;
 	// Compute statistics
-	VectorSlice::const_iterator
+	DVectorSlice::const_iterator
 		x_itr	= x.begin(),
 		d_itr	= d.begin();
 	for( size_type i = 1; x_itr != x.end(); ++i, ++d_itr, ++x_itr ) {

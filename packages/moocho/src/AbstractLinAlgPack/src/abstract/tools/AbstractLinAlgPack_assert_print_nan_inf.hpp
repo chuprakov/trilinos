@@ -53,7 +53,7 @@ bool assert_print_nan_inf( const value_type& val, char name[]
 /** This function asserts if a vector has any NaN or inf entries and optionally
  * prints out these entires.
  * 
- * @param  v              [in]	Vector slice to check
+ * @param  v              [in]	DVector slice to check
  * @param  name           [in]	Name of the vector for output purposes
  * @param  throw_excpt    [in]	If true and an entry is found to be a NaN or Inf
  *                        then a NaNInfException excetion is thrown after

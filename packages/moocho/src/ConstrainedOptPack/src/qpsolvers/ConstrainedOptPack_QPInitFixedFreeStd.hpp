@@ -104,16 +104,16 @@ public:
 	 *					violation will be printed (O(1) output).
 	 */
 	void initialize(
-		const VectorSlice						&g
+		const DVectorSlice						&g
 		,const MatrixSymWithOp					&G
 		,const MatrixWithOp						*A
 		,size_type								n_R
 		,const size_type						i_x_free[]
 		,const size_type						i_x_fixed[]
 		,const EBounds							bnd_fixed[]
-		,const VectorSlice						&b_X
+		,const DVectorSlice						&b_X
 		,const MatrixSymWithOpNonsingular		&Ko
-		,const VectorSlice						&fo
+		,const DVectorSlice						&fo
 		,Constraints							*constraints
 		,std::ostream							*out				= NULL
 		,bool									test_setup			= false
@@ -130,7 +130,7 @@ public:
 	///
 	size_type m() const;
 	///
-	const VectorSlice g() const;
+	const DVectorSlice g() const;
 	///
 	const MatrixSymWithOp& G() const;
 	///
@@ -144,7 +144,7 @@ public:
 	///
 	const i_x_X_map_t& i_x_X_map() const;
 	///
-	const VectorSlice b_X() const;
+	const DVectorSlice b_X() const;
 	///
 	const GenPermMatrixSlice& Q_R() const;
 	///
@@ -152,7 +152,7 @@ public:
 	///
 	const MatrixSymWithOpNonsingular& Ko() const;
 	///
-	const VectorSlice fo() const;
+	const DVectorSlice fo() const;
 	///
 	Constraints& constraints();
 	///
@@ -175,13 +175,13 @@ private:
 	size_type				n_;
 	size_type				n_R_;
 	size_type				m_;
-	VectorSlice				g_;	// will not be modified!
+	DVectorSlice				g_;	// will not be modified!
 	const MatrixSymWithOp	*G_;
 	const MatrixWithOp		*A_;	// If NULL not no equalities in Ko
 	x_init_t				x_init_;
 	l_x_X_map_t				l_x_X_map_;
 	i_x_X_map_t				i_x_X_map_;
-	VectorSlice				b_X_;	// will not be modified!
+	DVectorSlice				b_X_;	// will not be modified!
 	GenPermMatrixSlice		Q_R_;
 	row_i_t					Q_R_row_i_;
 	col_j_t					Q_R_col_j_;
@@ -190,7 +190,7 @@ private:
 	col_j_t					Q_X_col_j_;
 	const MatrixSymWithOpNonsingular
 							*Ko_;
-	VectorSlice				fo_;	// will not be modified
+	DVectorSlice				fo_;	// will not be modified
 	Constraints				*constraints_;
 
 	// Private member function

@@ -19,7 +19,7 @@
 #include "SparseLinAlgPack/src/sparse_bounds.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "Midynamic_cast_verbose.h"
 #include "MiWorkspacePack.h"
 #include "Miprofile_hack.h"
@@ -31,24 +31,24 @@ namespace LinAlgOpPack {
 namespace ConstrainedOptimizationPack {
 
 void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
-	const VectorSlice&    g
+	const DVectorSlice&    g
 	,const MatrixWithOp&  G
 	,value_type           etaL
 	,const SpVectorSlice& dL
 	,const SpVectorSlice& dU
 	,const MatrixWithOp*  F
 	,BLAS_Cpp::Transp     trans_F
-	,const VectorSlice*   f
-	,const VectorSlice&   d
+	,const DVectorSlice*   f
+	,const DVectorSlice&   d
 	,const SpVectorSlice& nu
 	,size_type*           n_R
 	,i_x_free_t*          i_x_free
 	,i_x_fixed_t*         i_x_fixed
 	,bnd_fixed_t*         bnd_fixed
 	,j_f_decomp_t*        j_f_decomp
-	,Vector*              b_X
+	,DVector*              b_X
 	,Ko_ptr_t*            Ko
-	,Vector*              fo
+	,DVector*              fo
 	) const
 {
 	using DynamicCastHelperPack::dyn_cast;
@@ -183,8 +183,8 @@ void QPSchurInitKKTSystemHessianFixedFree::initialize_kkt_system(
 	//
 
 	// Compute the dense matrix G_RR
-	GenMatrix G_RR_dense(*n_R,*n_R);
-	sym_gms sym_G_RR_dense(G_RR_dense(),BLAS_Cpp::lower);
+	DMatrix G_RR_dense(*n_R,*n_R);
+	DMatrixSliceSym sym_G_RR_dense(G_RR_dense(),BLAS_Cpp::lower);
 	SparseLinAlgPack::Mp_StPtMtP(
 		&sym_G_RR_dense, 1.0, MatrixSymWithOp::DUMMY_ARG
 		,G_sym, Q_R, BLAS_Cpp::no_trans, 0.0 );

@@ -17,9 +17,9 @@
 #include <sstream>
 
 #include "ConstrainedOptimizationPack/src/MatrixGenBanded.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/BLAS_Cpp.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/BLAS_Cpp.hpp"
 #include "MiWorkspacePack.h"
 
 namespace ConstrainedOptimizationPack {
@@ -29,7 +29,7 @@ MatrixGenBanded::MatrixGenBanded(
 	,size_type                        n
 	,size_type                        kl
 	,size_type                        ku
-	,GenMatrixSlice                   *MB
+	,DMatrixSlice                   *MB
 	,const release_resource_ptr_t&    MB_release_resource_ptr
 	)
 {
@@ -41,7 +41,7 @@ void MatrixGenBanded::initialize(
 	,size_type                        n
 	,size_type                        kl
 	,size_type                        ku
-	,GenMatrixSlice                   *MB
+	,DMatrixSlice                   *MB
 	,const release_resource_ptr_t&    MB_release_resource_ptr
 	)
 {
@@ -91,7 +91,7 @@ void MatrixGenBanded::initialize(
 		n_                        = 0;
 		kl_                       = 0;
 		ku_                       = 0;
-		MB_.bind(GenMatrixSlice());
+		MB_.bind(DMatrixSlice());
 		MB_release_resource_ptr_  = NULL;
 	}
 	else {
@@ -127,17 +127,17 @@ std::ostream& MatrixGenBanded::output(std::ostream& out) const
 }
 
 void MatrixGenBanded::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
-	, const VectorSlice& x, value_type b) const
+	DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	, const DVectorSlice& x, value_type b) const
 {
 	assert_initialized();
-	LinAlgPack::Vp_MtV_assert_sizes( y->size(), n_, n_, BLAS_Cpp::no_trans, x.size() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes( y->size(), n_, n_, BLAS_Cpp::no_trans, x.size() );
 	BLAS_Cpp::gbmv(M_trans,m_,n_,kl_,ku_,a,MB_.col_ptr(1),MB_.max_rows(),x.raw_ptr(),x.stride()
 				   ,b,y->raw_ptr(),y->stride());
 }
 
 void MatrixGenBanded::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
+	DVectorSlice* y, value_type a, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type b) const
 {
 	assert_initialized();
@@ -145,17 +145,17 @@ void MatrixGenBanded::Vp_StMtV(
 }
 
 void MatrixGenBanded::Vp_StPtMtV(
-	VectorSlice* y, value_type a
+	DVectorSlice* y, value_type a
 	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	, BLAS_Cpp::Transp M_trans
-	, const VectorSlice& x, value_type b) const
+	, const DVectorSlice& x, value_type b) const
 {
 	assert_initialized();
 	MatrixWithOp::Vp_StPtMtV(y,a,P,P_trans,M_trans,x,b); // ToDo: Implement spacialized operation when needed!
 }
 
 void MatrixGenBanded::Vp_StPtMtV(
-	VectorSlice* y, value_type a
+	DVectorSlice* y, value_type a
 	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	, BLAS_Cpp::Transp M_trans
 	, const SpVectorSlice& x, value_type b) const

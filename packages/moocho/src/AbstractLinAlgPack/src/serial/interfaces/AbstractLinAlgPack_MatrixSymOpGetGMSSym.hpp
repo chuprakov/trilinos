@@ -18,13 +18,13 @@
 
 #include "SparseLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/MatrixSymWithOp.hpp"
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace SparseLinAlgPack {
 
 ///
-/** Abstract interface that allows the extraction of a const <tt>LinAlgPack::sym_gms</tt>
+/** Abstract interface that allows the extraction of a const <tt>DenseLinAlgPack::DMatrixSliceSym</tt>
  * view of an abstract matrix.
  *
  * This interface is ment to be used by <tt>MatrixSymWithOp</tt> objects
@@ -45,7 +45,7 @@ class MatrixSymWithOpGetGMSSym
 public:
 
 	///
-	/** Get a const view of the symmetric abstract matrix in the form <tt>LinAlgPack::sym_gms</tt>.
+	/** Get a const view of the symmetric abstract matrix in the form <tt>DenseLinAlgPack::DMatrixSliceSym</tt>.
 	 *
 	 * @return On ouput, \c return will be initialized to point to storage to the symmetric dense
 	 *  matrix elements.
@@ -60,7 +60,7 @@ public:
 	 *
 	 * Warning!  If a subclass overrides this method, it must also override \c free_sym_gms_view().
 	 */
-	virtual const LinAlgPack::sym_gms get_sym_gms_view() const = 0;
+	virtual const DenseLinAlgPack::DMatrixSliceSym get_sym_gms_view() const = 0;
 
 	///
 	/** Free a view of a symmetric dense matrix initialized from <tt>get_sym_gms_view()>/tt>.
@@ -77,7 +77,7 @@ public:
 	 * <li> \c sym_gms_view becomes invalid and must not be used any longer!
 	 * </ul>
 	 */
-	virtual void free_sym_gms_view(const LinAlgPack::sym_gms* sym_gms_view) const = 0;
+	virtual void free_sym_gms_view(const DenseLinAlgPack::DMatrixSliceSym* sym_gms_view) const = 0;
 
 }; // end class MatrixSymWithOpGetGMSSym
 
@@ -85,10 +85,10 @@ public:
 /** Helper class type that simplifies the usage of the <tt>MatrixSymWithOpGetGMSSym</tt> interface for clients.
  *
  * This takes care of worrying about if the <tt>MatrixSymWithOpGetGMSSym</tt> interface is supported or not
- * and remembering to free the <tt>LinAlgPack::sym_gms</tt> view properly.
+ * and remembering to free the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view properly.
  *
  * This class is only to be used on the stack as an automatic variable.  For example, to extract a
- * <tt>LinAlgPack::sym_gms</tt> view of an abstract vector and use it to call another function
+ * <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view of an abstract vector and use it to call another function
  * one could write a function like:
  \code
  void call_func(const MatrixSymWithOpGetGMSSym& mat_in ) {
@@ -104,25 +104,25 @@ class MatrixDenseSymEncap {
 public:
 
 	///
-	/** Construct a <tt>LinAlgPack::sym_gms</tt> view from a <tt>MatrixSymWithOpGetGMSSym</tt> object.
+	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymWithOpGetGMSSym</tt> object.
 	 */
 	MatrixDenseSymEncap( const MatrixSymWithOpGetGMSSym&  mat_get );
 	///
-	/** Construct a <tt>LinAlgPack::sym_gms</tt> view from a <tt>MatrixSymWithOp</tt> object.
+	/** Construct a <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view from a <tt>MatrixSymWithOp</tt> object.
 	 *
 	 * If <tt>dynamic_cast<const MatrixSymWithOpGetGMSSym*>(&mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
 	MatrixDenseSymEncap( const MatrixSymWithOp& mat );
-	/// Frees the <tt>LinAlgPack::sym_gms</tt> view.
+	/// Frees the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view.
 	~MatrixDenseSymEncap();
-	/// Returns a constant view of the <tt>LinAlgPack::sym_gms</tt> view.
-	const LinAlgPack::sym_gms operator()() const;
+	/// Returns a constant view of the <tt>DenseLinAlgPack::DMatrixSliceSym</tt> view.
+	const DenseLinAlgPack::DMatrixSliceSym operator()() const;
 
 private:
 
 	const MatrixSymWithOpGetGMSSym     &mat_get_;
-	const LinAlgPack::sym_gms          sym_gms_view_;
+	const DenseLinAlgPack::DMatrixSliceSym          sym_gms_view_;
 	MatrixDenseSymEncap();                                       // Not defined and not to be called!
 	MatrixDenseSymEncap(const MatrixDenseSymEncap&);             // ""
 	MatrixDenseSymEncap& operator=(const MatrixDenseSymEncap&);  // ""
@@ -153,7 +153,7 @@ MatrixDenseSymEncap::~MatrixDenseSymEncap()
 }
 
 inline
-const LinAlgPack::sym_gms MatrixDenseSymEncap::operator()() const
+const DenseLinAlgPack::DMatrixSliceSym MatrixDenseSymEncap::operator()() const
 {
 	return sym_gms_view_;
 }

@@ -61,7 +61,7 @@ public:
 	//@{
 
 	/// (1) gms_lhs += alpha * op(M_rhs) (BLAS xAXPY)
-	void Mp_StM(GenMatrixSlice* gms_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs) const;
+	void Mp_StM(DMatrixSlice* gms_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs) const;
 
 	//		end Level-1 BLAS
 	//@}
@@ -71,16 +71,16 @@ public:
 	//@{
 
 	/// (2) vs_lhs = alpha * op(M_rhs1) * vs_rhs2 + beta * vs_lhs (BLAS xGEMV)
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2, value_type beta) const;
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2, value_type beta) const;
 
 	/// (3) vs_lhs = alpha * op(M_rhs1) * sv_rhs2 + beta * vs_lhs (BLAS xGEMV)
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
 
 	/// (4) result = vs_rhs1' * op(M_rhs2) * vs_rhs3
-	value_type transVtMtV(const VectorSlice& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
-		, const VectorSlice& vs_rhs3) const;
+	value_type transVtMtV(const DVectorSlice& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
+		, const DVectorSlice& vs_rhs3) const;
 
 	/// (5) result = sv_rhs1' * op(M_rhs2) * sv_rhs3
 	value_type transVtMtV(const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
@@ -94,12 +94,12 @@ public:
 	//@{
 
 	/// (6) gms_lhs = alpha * op(M_rhs1) * op(gms_rhs2) + beta * gms_lhs (right) (xGEMM)
-	void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha
-		, BLAS_Cpp::Transp trans_rhs1, const GenMatrixSlice& gms_rhs2
+	void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha
+		, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
 		, BLAS_Cpp::Transp trans_rhs2, value_type beta) const;
 
 	/// (7) gms_lhs = alpha * op(gms_rhs1) * op(M_rhs2) + beta * gms_lhs (left) (xGEMM)
-	void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
+	void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 		, BLAS_Cpp::Transp trans_rhs1, BLAS_Cpp::Transp trans_rhs2, value_type beta) const;
 
 	//		end Level-3 BLAS

@@ -44,7 +44,7 @@ public:
 	  * If the merit function has not been initialized properly
 	  * then a #InvalidInitialization# exception will be thrown.
 	  */
-	virtual value_type value(const VectorSlice& c) const = 0;
+	virtual value_type value(const DVectorSlice& c) const = 0;
 
 	///
 	/** Return the value of the directional derivative of the 

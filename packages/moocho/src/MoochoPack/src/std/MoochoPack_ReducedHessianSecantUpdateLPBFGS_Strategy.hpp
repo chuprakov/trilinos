@@ -77,7 +77,7 @@ public:
 
 	///
 	bool perform_update(
-		VectorSlice* s_bfgs, VectorSlice* y_bfgs, bool first_update
+		DVectorSlice* s_bfgs, DVectorSlice* y_bfgs, bool first_update
 		,std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
 		,MatrixWithOp *rHL_k
 		);

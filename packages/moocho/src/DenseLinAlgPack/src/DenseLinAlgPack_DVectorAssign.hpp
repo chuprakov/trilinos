@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// VectorAssign.hpp
+// DVectorAssign.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,26 +16,26 @@
 #ifndef VECTOR_ASSIGN_H
 #define VECTOR_ASSIGN_H
 
-#include "LinAlgPackTypes.hpp"
+#include "DenseLinAlgPackTypes.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
-/** @name {\bf Vector/VectorSlice assignment functions}.
+/** @name {\bf DVector/DVectorSlice assignment functions}.
   */
 //@{
 
 /// v_lhs = alpha (elementwise)
-void assign(Vector* v_lhs, value_type alpha);
+void assign(DVector* v_lhs, value_type alpha);
 /// v_lhs = vs_rhs.
-void assign(Vector* v_lhs, const VectorSlice& vs_rhs);
+void assign(DVector* v_lhs, const DVectorSlice& vs_rhs);
 /// vs_lhs = alpha (elementwise)
-void assign(VectorSlice* vs_lhs, value_type alpha);
+void assign(DVectorSlice* vs_lhs, value_type alpha);
 /// vs_lhs = vs_rhs
-void assign(VectorSlice* vs_lhs, const VectorSlice& vs_rhs);
+void assign(DVectorSlice* vs_lhs, const DVectorSlice& vs_rhs);
 
 //@}
 
 
-} // end namespace LinAlgPack
+} // end namespace DenseLinAlgPack
 
 #endif	// VECTOR_ASSIGN_H

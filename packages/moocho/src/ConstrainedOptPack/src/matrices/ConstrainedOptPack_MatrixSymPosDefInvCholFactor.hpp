@@ -62,14 +62,14 @@ public:
 	///
 	std::ostream& output(std::ostream& out) const;
 	///
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2, value_type beta) const;
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2, value_type beta) const;
 	///
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
 	///
-	value_type transVtMtV(const VectorSlice& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
-		, const VectorSlice& vs_rhs3) const;
+	value_type transVtMtV(const DVectorSlice& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
+		, const DVectorSlice& vs_rhs3) const;
 	///
 	value_type transVtMtV(const SpVectorSlice& sv_rhs1, BLAS_Cpp::Transp trans_rhs2
 		, const SpVectorSlice& sv_rhs3) const;
@@ -81,20 +81,20 @@ public:
 	//@{
 
 	///
-	void V_InvMtV(Vector* v_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2) const;
+	void V_InvMtV(DVector* v_lhs, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2) const;
 	///
-	void V_InvMtV(VectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2) const;
+	void V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2) const;
 	///
-	void V_InvMtV(Vector* v_lhs, BLAS_Cpp::Transp trans_rhs1
+	void V_InvMtV(DVector* v_lhs, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2) const;
 	///
-	void V_InvMtV(VectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
+	void V_InvMtV(DVectorSlice* vs_lhs, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2) const;
 	///
-	value_type transVtInvMtV(const VectorSlice& vs_rhs1
-		, BLAS_Cpp::Transp trans_rhs2, const VectorSlice& vs_rhs3) const;
+	value_type transVtInvMtV(const DVectorSlice& vs_rhs1
+		, BLAS_Cpp::Transp trans_rhs2, const DVectorSlice& vs_rhs3) const;
 	///
 	value_type transVtInvMtV(const SpVectorSlice& sv_rhs1
 		, BLAS_Cpp::Transp trans_rhs2, const SpVectorSlice& sv_rhs3) const;
@@ -106,7 +106,7 @@ public:
 	//@{
 
 	///
-	void M_StMtInvMtM( sym_gms* sym_gms_lhs, value_type alpha
+	void M_StMtInvMtM( DMatrixSliceSym* sym_gms_lhs, value_type alpha
 		, const MatrixWithOp& mwo, BLAS_Cpp::Transp mwo_trans, EMatrixDummyArg
 		) const;
 
@@ -119,9 +119,9 @@ public:
 	///
 	void init_identity( size_type n, value_type alpha );
 	///
-	void init_diagonal( const VectorSlice& diag );
+	void init_diagonal( const DVectorSlice& diag );
 	///
-	void secant_update(VectorSlice* s, VectorSlice* y, VectorSlice* Bs);
+	void secant_update(DVectorSlice* s, DVectorSlice* y, DVectorSlice* Bs);
 
 	//@}
 
@@ -130,7 +130,7 @@ public:
 	//@{
 
 	///
-	void extract_inv_chol( tri_ele_gms* InvChol ) const;
+	void extract_inv_chol( DMatrixSliceTriEle* InvChol ) const;
 
 	//@}
 

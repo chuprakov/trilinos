@@ -29,7 +29,7 @@
 #include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
 #include "SparseLinAlgPack/src/MatrixSymAddDelUpdateable.hpp"
 #include "SparseLinAlgPack/src/MatrixWithOpSerial.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "StandardCompositionMacros.hpp"
 #include "StandardMemberCompositionMacros.hpp"
 #include "stpwatch.hpp"
@@ -168,7 +168,7 @@ public:
 	///
 	virtual size_type m() const = 0;
 	///
-	virtual const VectorSlice g() const = 0;
+	virtual const DVectorSlice g() const = 0;
 	///
 	virtual const MatrixSymWithOp& G() const = 0;
 	/// If m == 0 then don't call this, it may throw an exception or worse.
@@ -231,7 +231,7 @@ public:
 	 \endverbatim
 	 *
 	 */
-	virtual const VectorSlice b_X() const = 0;
+	virtual const DVectorSlice b_X() const = 0;
 
 	/// (Q_R().ordered_by() == BY_ROW)
 	virtual const GenPermMatrixSlice& Q_R() const = 0;
@@ -243,7 +243,7 @@ public:
 	virtual const MatrixSymWithOpNonsingular& Ko() const = 0;
 
 	///
-	virtual const VectorSlice fo() const = 0;
+	virtual const DVectorSlice fo() const = 0;
 
 	// //////////////////////////////////////////////////////////
 	// Additional constaints for cl_bar <= A_bar'*x <= cu_bar
@@ -341,7 +341,7 @@ public:
 	 *							 dependent.
 	 */
 	virtual void pick_violated(
-		 const VectorSlice& x, size_type* j_viol, value_type* constr_val
+		 const DVectorSlice& x, size_type* j_viol, value_type* constr_val
 		,value_type* viol_bnd_val, value_type* norm_2_constr, EBounds* bnd, bool* can_ignore
 		) const = 0;
 
@@ -609,7 +609,7 @@ public:
 		QP& qp
 		,size_type num_act_change, const int ij_act_change[], const EBounds bnds[]
 		,std::ostream *out, EOutputLevel output_level, ERunTests test_what
-		,VectorSlice* x, SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve
+		,DVectorSlice* x, SpVector* mu, DVectorSlice* lambda, SpVector* lambda_breve
 		,size_type* iter, size_type* num_adds, size_type* num_drops
 		);
 
@@ -670,12 +670,12 @@ public:
 
 		///
 		void Vp_StMtV(
-			VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-			,const VectorSlice& vs_rhs2, value_type beta
+			DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+			,const DVectorSlice& vs_rhs2, value_type beta
 			) const;
 		///
 		void Vp_StMtV(
-			VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+			DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 			,const SpVectorSlice& sv_rhs2, value_type beta
 			) const;
 
@@ -719,8 +719,8 @@ public:
 	 GenPermMatrixSlice                : P_FC_hat     <: R^(q_hat x q_hat)         (q_C_hat nonzeros)
 	 GenPermMatrixSlice                : P_plus_hat   <: R^((n+m_breve) x q_hat)   (q_plus_hat nonzeros)
 	 GenPermMatrixSlice                : Q_XD_hat     <: R^(n x q_D_hat)           (q_D_hat nonzeros)
-	 Vector                            : d_hat        <: R^(q_hat)
-	 Vector                            : z_hat        <: R^(q_hat)
+	 DVector                            : d_hat        <: R^(q_hat)
+	 DVector                            : z_hat        <: R^(q_hat)
 	 \endverbatim
 	 */
 	class ActiveSet {
@@ -938,23 +938,23 @@ public:
 		///
 		const GenPermMatrixSlice& Q_XD_hat() const;
 		///
-		const VectorSlice d_hat() const;
+		const DVectorSlice d_hat() const;
 		///
-		VectorSlice z_hat();
+		DVectorSlice z_hat();
 		///
-		const VectorSlice z_hat() const;
+		const DVectorSlice z_hat() const;
 		///
-		VectorSlice p_z_hat();
+		DVectorSlice p_z_hat();
 		///
-		const VectorSlice p_z_hat() const;
+		const DVectorSlice p_z_hat() const;
 		///
-		VectorSlice mu_D_hat();
+		DVectorSlice mu_D_hat();
 		///
-		const VectorSlice mu_D_hat() const;
+		const DVectorSlice mu_D_hat() const;
 		///
-		VectorSlice p_mu_D_hat();
+		DVectorSlice p_mu_D_hat();
 		///
-		const VectorSlice p_mu_D_hat() const;
+		const DVectorSlice p_mu_D_hat() const;
 
 		///
 		/** Determine if a constriant was an initially fixed variable.
@@ -1007,7 +1007,7 @@ public:
 		size_type			q_C_hat_;
 		ij_map_t			ij_map_;
 //		s_map_t				s_map_;
-		Vector				constr_norm_;
+		DVector				constr_norm_;
 		bnds_t				bnds_;
 		l_fxfx_t            l_fxfx_;
 		U_hat_t				U_hat_;
@@ -1051,11 +1051,11 @@ public:
 		P_row_t				Q_XD_hat_row_;	// i
 		P_row_t				Q_XD_hat_col_;	// k
 		//
-		Vector				d_hat_;			// \hat{d}
-		Vector				z_hat_;			// \hat{z}
-		Vector				p_z_hat_;
-		Vector				mu_D_hat_;		// \hat{\mu}^{D}
-		Vector				p_mu_D_hat_;	// p^{\hat{\mu}^{D}}
+		DVector				d_hat_;			// \hat{d}
+		DVector				z_hat_;			// \hat{z}
+		DVector				p_z_hat_;
+		DVector				mu_D_hat_;		// \hat{\mu}^{D}
+		DVector				p_mu_D_hat_;	// p^{\hat{\mu}^{D}}
 
 		// ///////////////////////////
 		// Private member functions
@@ -1114,8 +1114,8 @@ protected:
 	ESolveReturn qp_algo(
 		EPDSteps first_step
 		,std::ostream *out, EOutputLevel output_level, ERunTests test_what
-		,const VectorSlice& vo, ActiveSet* act_set, VectorSlice* v
-		,VectorSlice* x, size_type* iter, size_type* num_adds, size_type* num_drops
+		,const DVectorSlice& vo, ActiveSet* act_set, DVectorSlice* v
+		,DVectorSlice* x, size_type* iter, size_type* num_adds, size_type* num_drops
 		,size_type* iter_refine_num_resid, size_type* iter_refine_num_solves
 		,StopWatchPack::stopwatch* timer
 		);
@@ -1123,12 +1123,12 @@ protected:
 	///
 	/** Set the values in x for all the variables.
 	 */
-	virtual void set_x( const ActiveSet& act_set, const VectorSlice& v, VectorSlice* x );
+	virtual void set_x( const ActiveSet& act_set, const DVectorSlice& v, DVectorSlice* x );
 
 	/// Map from the active set to the sparse multipliers for the inequality constraints
 	virtual void set_multipliers(
-		const ActiveSet& act_set, const VectorSlice& v
-		,SpVector* mu, VectorSlice* lambda, SpVector* lambda_breve );
+		const ActiveSet& act_set, const DVectorSlice& v
+		,SpVector* mu, DVectorSlice* lambda, SpVector* lambda_breve );
 
 	/// Determine if time has run out and if we should return.
 	bool timeout_return( StopWatchPack::stopwatch*timer, std::ostream *out, EOutputLevel output_level ) const;
@@ -1156,11 +1156,11 @@ protected:
 		,std::ostream        *out
 		,EOutputLevel        output_level
 		,const value_type    ao  // Only used if bo != NULL
-		,const VectorSlice   *bo // If NULL then assumed to be zero!
+		,const DVectorSlice   *bo // If NULL then assumed to be zero!
 		,const value_type    aa  // Only used if q_hat > 0
-		,const VectorSlice   *ba // If NULL then assumed to be zero!  Not accessed if q_hat > 0
-		,VectorSlice         *v
-		,VectorSlice         *z  // Can be NULL if q_hat > 0
+		,const DVectorSlice   *ba // If NULL then assumed to be zero!  Not accessed if q_hat > 0
+		,DVectorSlice         *v
+		,DVectorSlice         *z  // Can be NULL if q_hat > 0
 		,size_type           *iter_refine_num_resid
 		,size_type           *iter_refine_num_solves
 		);

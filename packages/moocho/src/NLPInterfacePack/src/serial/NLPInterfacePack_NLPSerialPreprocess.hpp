@@ -22,8 +22,8 @@
 #include "NLPVarReductPerm.hpp"
 #include "SparseLinAlgPack/src/VectorWithOpMutableDense.hpp"
 #include "AbstractLinAlgPack/src/SpVectorClass.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/IVector.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/IVector.hpp"
 
 namespace NLPInterfacePack {
 
@@ -389,7 +389,7 @@ protected:
 	 *
 	 * Objects of this type are passed on to subclasses and contain pointers to
 	 * quantities to be updated.  Note that %NLP subclasses are not to resize
-	 * the <tt>Vector</tt> objects <tt>*c</tt> or </tt>h</tt> since the
+	 * the <tt>DVector</tt> objects <tt>*c</tt> or </tt>h</tt> since the
 	 * these will already be resized.
 	 */
 	struct ZeroOrderInfoSerial {
@@ -398,15 +398,15 @@ protected:
         ZeroOrderInfoSerial() : f(NULL)
 		{}
 		///
-		ZeroOrderInfoSerial( value_type* f_in, Vector* c_in, Vector* h_in )
+		ZeroOrderInfoSerial( value_type* f_in, DVector* c_in, DVector* h_in )
 			: f(f_in), c(c_in), h(h_in)
 		{}
 		/// Pointer to objective function <tt>f</tt>   (may be NULL if not set)
 		value_type*    f;
 		/// Pointer to constraints residual <tt>c</tt> (may be NULL if not set)
-		Vector*        c;
+		DVector*        c;
 		/// Pointer to constraints residual <tt>h</tt> (may be NULL if not set)
-		Vector*        h;
+		DVector*        h;
 	}; // end struct ZeroOrderInfoSerial
 
 	///
@@ -414,7 +414,7 @@ protected:
 	 *
 	 * Objects of this type are passed on to subclasses and contain
 	 * pointers to quantities to be updated.  Note that %NLP
-	 * subclasses are not to resize the <tt>Vector</tt> objects
+	 * subclasses are not to resize the <tt>DVector</tt> objects
 	 * <tt>*Gf</tt>, <tt>*c</tt> or </tt>h</tt> since the these will
 	 * already be resized.
 	 */
@@ -424,17 +424,17 @@ protected:
 		ObjGradInfoSerial()	: f(NULL)
 		{}
 		///
-		ObjGradInfoSerial( Vector* Gf_in, const ZeroOrderInfoSerial& first_order_info_in )
+		ObjGradInfoSerial( DVector* Gf_in, const ZeroOrderInfoSerial& first_order_info_in )
 			: Gf(Gf_in), f(first_order_info_in.f), c(first_order_info_in.c), h(first_order_info_in.h)
 		{}
 		/// Gradient of objective function <tt>Gf</tt> (may be NULL if not set)
-		Vector*        Gf;
+		DVector*        Gf;
 		/// Pointer to objective function <tt>f</tt>   (may be NULL if not set)
 		value_type*    f;
 		/// Pointer to constraints residual <tt>c</tt> (may be NULL if not set)
-		Vector*        c;
+		DVector*        c;
 		/// Pointer to constraints residual <tt>h</tt> (may be NULL if not set)
-		Vector*        h;
+		DVector*        h;
 	}; // end struct ObjGradInfoSerial
 
 	//@}
@@ -456,7 +456,7 @@ protected:
 	/// Return the number of general inequality constraints in the original problem.
 	virtual size_type imp_mI_orig() const = 0;
 	/// Return the original initial point (size \c imp_n_orig()).
-	virtual const VectorSlice imp_xinit_orig() const = 0;
+	virtual const DVectorSlice imp_xinit_orig() const = 0;
 	/// Return if the %NLP has bounds
 	virtual bool imp_has_var_bounds() const = 0;
 	///
@@ -469,7 +469,7 @@ protected:
 	 <tt>-NLP::infinite_bound()</tt>
 	 \endverbatim
 	 */
-	virtual const VectorSlice imp_xl_orig() const = 0;
+	virtual const DVectorSlice imp_xl_orig() const = 0;
 	///
 	/** Return the original upper variable bounds (size \c imp_n_orig()).
 	 *
@@ -480,7 +480,7 @@ protected:
 	 <tt>+NLP::infinite_bound()</tt>
 	 \endverbatim
 	 */
-	virtual const VectorSlice imp_xu_orig() const = 0;
+	virtual const DVectorSlice imp_xu_orig() const = 0;
 	///
 	/** Return the original lower general inequality bounds (size \c imp_mI_orig()).
 	 *
@@ -489,7 +489,7 @@ protected:
 	 * 
 	 * <tt>-NLP::infinite_bound()</tt>
 	 */
-	virtual const VectorSlice imp_hl_orig() const = 0;
+	virtual const DVectorSlice imp_hl_orig() const = 0;
 	///
 	/** Return the original upper general inequality bounds (size \c imp_mI_orig()).
 	 *
@@ -498,12 +498,12 @@ protected:
 	 * 
 	 * <tt>+NLP::infinite_bound()</tt>
 	 */
-	virtual const VectorSlice imp_hu_orig() const = 0;
+	virtual const DVectorSlice imp_hu_orig() const = 0;
 	///
 	/** Calculate the objective function for the original %NLP.
 	 */
 	virtual void imp_calc_f_orig(
-		const VectorSlice            &x_full
+		const DVectorSlice            &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const = 0;
@@ -511,7 +511,7 @@ protected:
 	/** Calculate the vector for all of the general equality constaints in the original %NLP.
 	 */
 	virtual void imp_calc_c_orig(
-		const VectorSlice            &x_full
+		const DVectorSlice            &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const = 0;
@@ -519,7 +519,7 @@ protected:
 	/** Calculate the vector for all of the general inequality constaints in the original %NLP.
 	 */
 	virtual void imp_calc_h_orig(
-		const VectorSlice            &x_full
+		const DVectorSlice            &x_full
 		,bool                        newx
 		,const ZeroOrderInfoSerial   &zero_order_info
 		) const = 0;
@@ -536,7 +536,7 @@ protected:
 	 * (smooth) contributions for the slacks if desired.
 	 */
 	virtual void imp_calc_Gf_orig(
-		const VectorSlice            &x_full
+		const DVectorSlice            &x_full
 		,bool                        newx
 		,const ObjGradInfoSerial     &obj_grad_info
 		) const = 0;
@@ -620,10 +620,10 @@ protected:
 	 * The default implementation of this function is to do nothing.
 	 */
 	virtual void imp_report_orig_final_solution(
-		const VectorSlice      &x_full
-		,const VectorSlice     *lambda_orig
-		,const VectorSlice     *lambdaI_orig
-		,const VectorSlice     *nu_orig
+		const DVectorSlice      &x_full
+		,const DVectorSlice     *lambda_orig
+		,const DVectorSlice     *lambdaI_orig
+		,const DVectorSlice     *nu_orig
 		,bool                  optimal
 		) const
 	{}
@@ -640,10 +640,10 @@ protected:
 	void assert_initialized() const;
 
 	/// Set the full x vector if <tt>newx == true</tt>
-	void set_x_full(const VectorSlice& x, bool newx, VectorSlice* x_full) const;
+	void set_x_full(const DVectorSlice& x, bool newx, DVectorSlice* x_full) const;
 
 	/// Give reference to current x_full
-	VectorSlice x_full() const;
+	DVectorSlice x_full() const;
 
 	///
 	const ZeroOrderInfoSerial zero_order_orig_info() const;
@@ -716,17 +716,17 @@ protected:
 	const IVector& inv_equ_perm() const;
 
 	// Perform the mapping from a full variable vector to the reduced permuted variable vector
-	void var_from_full( VectorSlice::const_iterator vec_full, VectorSlice::iterator vec ) const;
+	void var_from_full( DVectorSlice::const_iterator vec_full, DVectorSlice::iterator vec ) const;
 
 	// Perform the mapping from a reduced permuted variable vector the full variable vector
-	void var_to_full(VectorSlice::const_iterator vec, VectorSlice::iterator vec_full) const;
+	void var_to_full(DVectorSlice::const_iterator vec, DVectorSlice::iterator vec_full) const;
 
 	// Perform the mapping from c_orig, h_orig, s_orig to the permuted constraint vector c
 	void equ_from_full(
-		const VectorSlice   &c_orig
-		,const VectorSlice  &h_orig
-		,const VectorSlice  &s_orig
-		,VectorSlice        *c_full
+		const DVectorSlice   &c_orig
+		,const DVectorSlice  &h_orig
+		,const DVectorSlice  &s_orig
+		,DVectorSlice        *c_full
 		) const;
 
 	//@}
@@ -739,9 +739,9 @@ private:
 	bool                                convert_inequ_to_equ_;
 
 	mutable value_type					f_orig_;    // Filled by subclasses as needed
-	mutable Vector						c_orig_;    // ...
-	mutable Vector						h_orig_;    // ...
-	mutable Vector						Gf_full_;   // ...
+	mutable DVector						c_orig_;    // ...
+	mutable DVector						h_orig_;    // ...
+	mutable DVector						Gf_full_;   // ...
 
 	bool initialized_;
 	// Flag for if the NLP has has been properly initialized
@@ -785,10 +785,10 @@ private:
 	// Inverse of equ_perm
 	//
 
-	mutable Vector x_full_;
-	Vector         xinit_full_;
-	Vector         xl_full_;
-	Vector         xu_full_;
+	mutable DVector x_full_;
+	DVector         xinit_full_;
+	DVector         xl_full_;
+	DVector         xu_full_;
 	// The full vector (length = n_full_).  This vector may include
 	// slack variables if convert_inequ_to_equ == true and mI_orig > 0:
 	//
@@ -862,7 +862,7 @@ void NLPSerialPreprocess::set_not_initialized()
 }
 
 inline
-VectorSlice NLPSerialPreprocess::x_full() const
+DVectorSlice NLPSerialPreprocess::x_full() const
 {
 	return x_full_();
 }

@@ -47,14 +47,14 @@
 
 #include "ConstrainedOptimizationPack/src/MatrixSymPosDefLBFGS.hpp"
 #include "ConstrainedOptimizationPack/src/BFGS_helpers.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/GenMatrixOut.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DMatrixOut.hpp"
 #include "LinAlgLAPack/src/LinAlgLAPack.hpp"
 
 namespace {
 
-	using LinAlgPack::VectorSlice;
-	using LinAlgPack::GenMatrixSlice;
+	using DenseLinAlgPack::DVectorSlice;
+	using DenseLinAlgPack::DMatrixSlice;
 
 	///
 	/** Compute Cb = Lb * inv(Db) * Lb' (see update_Q()).
@@ -64,8 +64,8 @@ namespace {
 	  *		Cb is upper triangular.
 	  *		Db_diag is the diagonal of Db
 	  */
-	void comp_Cb( const GenMatrixSlice& Lb, const VectorSlice& Db_diag
-		, GenMatrixSlice* Cb );
+	void comp_Cb( const DMatrixSlice& Lb, const DVectorSlice& Db_diag
+		, DMatrixSlice* Cb );
 
 }	// end namespace
 
@@ -75,51 +75,51 @@ namespace ConstrainedOptimizationPack {
 // Inline private member functions
 
 inline
-const tri_gms MatrixSymPosDefLBFGS::R() const
+const DMatrixSliceTri MatrixSymPosDefLBFGS::R() const
 {
-	return LinAlgPack::tri( STY_(1,m_bar_,1,m_bar_), BLAS_Cpp::upper, BLAS_Cpp::nonunit );
+	return DenseLinAlgPack::tri( STY_(1,m_bar_,1,m_bar_), BLAS_Cpp::upper, BLAS_Cpp::nonunit );
 }
 
 inline
-const tri_gms MatrixSymPosDefLBFGS::Lb() const
+const DMatrixSliceTri MatrixSymPosDefLBFGS::Lb() const
 {
-	return LinAlgPack::tri( STY_(2,m_bar_,1,m_bar_-1), BLAS_Cpp::lower, BLAS_Cpp::nonunit );
+	return DenseLinAlgPack::tri( STY_(2,m_bar_,1,m_bar_-1), BLAS_Cpp::lower, BLAS_Cpp::nonunit );
 }
 
 inline
-GenMatrixSlice MatrixSymPosDefLBFGS::STY()
+DMatrixSlice MatrixSymPosDefLBFGS::STY()
 {
 	return STY_(1,m_bar_,1,m_bar_);
 }
 
 inline
-const GenMatrixSlice MatrixSymPosDefLBFGS::STY() const
+const DMatrixSlice MatrixSymPosDefLBFGS::STY() const
 {
 	return STY_(1,m_bar_,1,m_bar_);
 }
 
 inline
-sym_gms MatrixSymPosDefLBFGS::STS()
+DMatrixSliceSym MatrixSymPosDefLBFGS::STS()
 {
-	return LinAlgPack::nonconst_sym( STSYTY_(2,m_bar_+1,1,m_bar_),BLAS_Cpp::lower );
+	return DenseLinAlgPack::nonconst_sym( STSYTY_(2,m_bar_+1,1,m_bar_),BLAS_Cpp::lower );
 }
 
 inline
-const sym_gms MatrixSymPosDefLBFGS::STS() const
+const DMatrixSliceSym MatrixSymPosDefLBFGS::STS() const
 {
-	return LinAlgPack::sym( STSYTY_(2,m_bar_+1,1,m_bar_),BLAS_Cpp::lower );
+	return DenseLinAlgPack::sym( STSYTY_(2,m_bar_+1,1,m_bar_),BLAS_Cpp::lower );
 }
 
 inline
-sym_gms MatrixSymPosDefLBFGS::YTY()
+DMatrixSliceSym MatrixSymPosDefLBFGS::YTY()
 {
-	return LinAlgPack::nonconst_sym( STSYTY_(1,m_bar_,2,m_bar_+1),BLAS_Cpp::upper );
+	return DenseLinAlgPack::nonconst_sym( STSYTY_(1,m_bar_,2,m_bar_+1),BLAS_Cpp::upper );
 }
 
 inline
-const sym_gms MatrixSymPosDefLBFGS::YTY() const
+const DMatrixSliceSym MatrixSymPosDefLBFGS::YTY() const
 {
-	return LinAlgPack::sym( STSYTY_(1,m_bar_,2,m_bar_+1),BLAS_Cpp::upper );
+	return DenseLinAlgPack::sym( STSYTY_(1,m_bar_,2,m_bar_+1),BLAS_Cpp::upper );
 }
 
 // ///////////////////////
@@ -225,15 +225,15 @@ MatrixWithOp& MatrixSymPosDefLBFGS::operator=(const MatrixWithOp& m)
 // Level-2 BLAS
 
 void MatrixSymPosDefLBFGS::Vp_StMtV(
-	  VectorSlice* y, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-	, const VectorSlice& x, value_type beta) const
+	  DVectorSlice* y, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	, const DVectorSlice& x, value_type beta) const
 {
 	using LinAlgOpPack::V_StMtV;
 	using LinAlgOpPack::V_MtV;
 
-	using LinAlgPack::Vt_S;
-	using LinAlgPack::Vp_StV;
-	using LinAlgPack::Vp_StMtV;
+	using DenseLinAlgPack::Vt_S;
+	using DenseLinAlgPack::Vp_StV;
+	using DenseLinAlgPack::Vp_StMtV;
 
 	assert_initialized();
 
@@ -289,11 +289,11 @@ void MatrixSymPosDefLBFGS::Vp_StMtV(
 		t2s = t1s+t1n,
 		t2n = 2*mb;
 
-	VectorSlice
+	DVectorSlice
 		t1 = work_(	t1s,	t1s + t1n - 1	),
 		t2 = work_(	t2s,	t2s + t2n - 1 	);
 
-	const GenMatrixSlice
+	const DMatrixSlice
 		&S = this->S(),
 		&Y = this->Y();
 
@@ -321,12 +321,12 @@ void MatrixSymPosDefLBFGS::Vp_StMtV(
 
 // Level-2 BLAS
 
-void MatrixSymPosDefLBFGS::V_InvMtV( VectorSlice* y, BLAS_Cpp::Transp trans_rhs1
-	, const VectorSlice& x ) const
+void MatrixSymPosDefLBFGS::V_InvMtV( DVectorSlice* y, BLAS_Cpp::Transp trans_rhs1
+	, const DVectorSlice& x ) const
 {
-	using LinAlgPack::V_mV;
-	using LinAlgPack::V_StV;
-	using LinAlgPack::V_InvMtV;
+	using DenseLinAlgPack::V_mV;
+	using DenseLinAlgPack::V_StV;
+	using DenseLinAlgPack::V_InvMtV;
 
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_MtV;
@@ -392,21 +392,21 @@ void MatrixSymPosDefLBFGS::V_InvMtV( VectorSlice* y, BLAS_Cpp::Transp trans_rhs1
 		t5s		= t4s + t4n,
 		t5n		= mb;
 
-	VectorSlice
+	DVectorSlice
 		t1	= work_( t1s, t1s + t1n - 1 ),
 		t2	= work_( t2s, t2s + t2n - 1 ),
 		t3	= work_( t3s, t3s + t3n - 1 ),
 		t4	= work_( t4s, t4s + t4n - 1 ),
 		t5	= work_( t5s, t5s + t5n - 1 );
 
-	const GenMatrixSlice
+	const DMatrixSlice
 		&S = this->S(),
 		&Y = this->Y();
 
-	const tri_gms
+	const DMatrixSliceTri
 		&R = this->R();
 
-	const sym_gms
+	const DMatrixSliceSym
 		&YTY = this->YTY();
 
 	// t1 = [   S'*x  ]
@@ -483,17 +483,17 @@ void MatrixSymPosDefLBFGS::init_identity(size_type n, value_type alpha)
 	num_secant_updates_  = 0;
 }
 
-void MatrixSymPosDefLBFGS::init_diagonal(const VectorSlice& diag)
+void MatrixSymPosDefLBFGS::init_diagonal(const DVectorSlice& diag)
 {
-	using LinAlgPack::norm_inf;
+	using DenseLinAlgPack::norm_inf;
 	init_identity( diag.size(), norm_inf(diag) );
 }
 
 void MatrixSymPosDefLBFGS::secant_update(
-	VectorSlice* s, VectorSlice* y, VectorSlice* Bs)
+	DVectorSlice* s, DVectorSlice* y, DVectorSlice* Bs)
 {
-	using LinAlgPack::dot;
-	using LinAlgPack::norm_2;
+	using DenseLinAlgPack::dot;
+	using DenseLinAlgPack::norm_2;
 
 	using LinAlgOpPack::V_MtV;
 
@@ -555,7 +555,7 @@ void MatrixSymPosDefLBFGS::secant_update(
 	//	(S'Y)(:,k_bar) =  S'*y(k_bar)
 	//	(S'Y)(k_bar,:) =  s(k_bar)'*Y
 
-	const GenMatrixSlice
+	const DMatrixSlice
 		&S = this->S(),
 		&Y = this->Y();
 
@@ -664,7 +664,7 @@ void MatrixSymPosDefLBFGS::initialize(
 }
 
 void MatrixSymPosDefLBFGS::initialize(
-	const sym_gms      &A
+	const DMatrixSliceSym      &A
 	,size_type         max_size
 	,bool              force_factorization
 	,Inertia           inertia
@@ -692,7 +692,7 @@ void MatrixSymPosDefLBFGS::set_uninitialized()
 }
 
 void MatrixSymPosDefLBFGS::augment_update(
-	const VectorSlice  *t
+	const DVectorSlice  *t
 	,value_type        alpha
 	,bool              force_refactorization
 	,EEigenValType     add_eigen_val
@@ -793,17 +793,17 @@ void MatrixSymPosDefLBFGS::delete_update(
 	//
 	// These updates are symmetric rank-1 updates.
 	//
-	GenMatrixSlice S = this->S();
-	GenMatrixSlice Y = this->Y();
-	GenMatrixSlice STY = this->STY();
-	sym_gms        STS = this->STS();
-	sym_gms        YTY = this->YTY();
+	DMatrixSlice S = this->S();
+	DMatrixSlice Y = this->Y();
+	DMatrixSlice STY = this->STY();
+	DMatrixSliceSym        STS = this->STS();
+	DMatrixSliceSym        YTY = this->YTY();
 	// (S'*Y) <- (S'*Y) - S.row(jd)*Y.row(jd)'
-	LinAlgPack::ger( -1.0, S.row(jd), Y.row(jd), &STY );
+	DenseLinAlgPack::ger( -1.0, S.row(jd), Y.row(jd), &STY );
 	// (S'*S) <- (S'*S) - S.row(jd)*S.row(jd)'
-	LinAlgPack::syr( -1.0, S.row(jd), &STS );
+	DenseLinAlgPack::syr( -1.0, S.row(jd), &STS );
 	// (Y'*Y) <- (Y'*Y) - Y.row(jd)*Y.row(jd)'
-	LinAlgPack::syr( -1.0, Y.row(jd), &YTY );
+	DenseLinAlgPack::syr( -1.0, Y.row(jd), &YTY );
 	// Remove row jd from S and Y one column at a time
 	// (one element at a time!)
 	if( jd < n_ ) {
@@ -823,15 +823,15 @@ void MatrixSymPosDefLBFGS::delete_update(
 
 // Private member functions
 
-void MatrixSymPosDefLBFGS::Vp_DtV( VectorSlice* y, const VectorSlice& x ) const
+void MatrixSymPosDefLBFGS::Vp_DtV( DVectorSlice* y, const DVectorSlice& x ) const
 {
-	LinAlgPack::Vp_MtV_assert_sizes( y->size(), m_bar_, m_bar_
+	DenseLinAlgPack::Vp_MtV_assert_sizes( y->size(), m_bar_, m_bar_
 		, BLAS_Cpp::no_trans, x.size() );
 
-	VectorSlice::const_iterator
+	DVectorSlice::const_iterator
 		d_itr	= STY_.diag(0).begin(),
 		x_itr	= x.begin();
-	VectorSlice::iterator
+	DVectorSlice::iterator
 		y_itr	= y->begin();
 
 	while( y_itr != y->end() )
@@ -865,9 +865,9 @@ void MatrixSymPosDefLBFGS::Vp_DtV( VectorSlice* y, const VectorSlice& x ) const
 
 void MatrixSymPosDefLBFGS::update_Q() const
 {
-	using LinAlgPack::tri;
-	using LinAlgPack::tri_ele;
-	using LinAlgPack::Mp_StM;
+	using DenseLinAlgPack::tri;
+	using DenseLinAlgPack::tri_ele;
+	using DenseLinAlgPack::Mp_StM;
 
 	//
 	// We need update the factorizations to solve for:
@@ -902,7 +902,7 @@ void MatrixSymPosDefLBFGS::update_Q() const
 	const size_type
 		mb = m_bar_;
 
-	GenMatrixSlice
+	DMatrixSlice
 		C = QJ_(1,mb,1,mb);
 
 	// C = L * inv(D) * L'
@@ -930,7 +930,7 @@ void MatrixSymPosDefLBFGS::update_Q() const
 
 	// C += (1/gk)*S'S
 
-	const sym_gms &STS = this->STS();
+	const DMatrixSliceSym &STS = this->STS();
 	Mp_StM( &C, (1/gamma_k_), tri( STS.gms(), STS.uplo(), BLAS_Cpp::nonunit )
 		, BLAS_Cpp::trans );
 
@@ -938,18 +938,18 @@ void MatrixSymPosDefLBFGS::update_Q() const
 	// After this factorization the upper triangular part of QJ
 	// (through C) will contain the cholesky factor.
 
-	tri_ele_gms C_upper = tri_ele( C, BLAS_Cpp::upper );
+	DMatrixSliceTriEle C_upper = tri_ele( C, BLAS_Cpp::upper );
 	LinAlgLAPack::potrf( &C_upper );
 
 	Q_updated_ = true;
 }
 
-void MatrixSymPosDefLBFGS::V_invQtV( VectorSlice* x, const VectorSlice& y ) const
+void MatrixSymPosDefLBFGS::V_invQtV( DVectorSlice* x, const DVectorSlice& y ) const
 {
-	using LinAlgPack::sym;
-	using LinAlgPack::tri;
-	using LinAlgPack::Vp_StV;
-	using LinAlgPack::V_InvMtV;
+	using DenseLinAlgPack::sym;
+	using DenseLinAlgPack::tri;
+	using DenseLinAlgPack::Vp_StV;
+	using DenseLinAlgPack::V_InvMtV;
 
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_MtV;
@@ -968,11 +968,11 @@ void MatrixSymPosDefLBFGS::V_invQtV( VectorSlice* x, const VectorSlice& y ) cons
 		update_Q();
 	}
 
-	VectorSlice
+	DVectorSlice
 		x1 = (*x)(1,mb),
 		x2 = (*x)(mb+1,2*mb);
 
-	const VectorSlice
+	const DVectorSlice
 		y1 = y(1,mb),
 		y2 = y(mb+1,2*mb);
 
@@ -982,10 +982,10 @@ void MatrixSymPosDefLBFGS::V_invQtV( VectorSlice* x, const VectorSlice& y ) cons
 	//     = inv(J) * inv(J') * r
 
 	{	// x1 = inv(D) * y2
-		VectorSlice::const_iterator
+		DVectorSlice::const_iterator
 			d_itr = STY_.diag(0).begin(),
 			y2_itr = y2.begin();
-		VectorSlice::iterator
+		DVectorSlice::iterator
 			x1_itr = x1.begin();
 		while( x1_itr != x1.end() )
 			*x1_itr++ = *y2_itr++ / *d_itr++;
@@ -1002,7 +1002,7 @@ void MatrixSymPosDefLBFGS::V_invQtV( VectorSlice* x, const VectorSlice& y ) cons
 	if( mb > 1 ) {
 		// x1(2,mb) = x1(1,mb-1) ( copy from mb-1 to mb then mb-2 to mb-1
 		// etc. so that we don't overwrite the elements we need to copy ).
-		VectorSlice
+		DVectorSlice
 			x1a = x1(1,mb-1),
 			x1b = x1(2,mb);
 		std::copy( x1a.rbegin(), x1a.rend(), x1b.rbegin() );
@@ -1014,7 +1014,7 @@ void MatrixSymPosDefLBFGS::V_invQtV( VectorSlice* x, const VectorSlice& y ) cons
 	Vp_V( &x1, y1 );
 
 	// x1 = inv(J') * r
-	const tri_gms J = tri( QJ_(1,mb,1,mb), BLAS_Cpp::upper, BLAS_Cpp::nonunit );
+	const DMatrixSliceTri J = tri( QJ_(1,mb,1,mb), BLAS_Cpp::upper, BLAS_Cpp::nonunit );
 	V_InvMtV( &x1, J, BLAS_Cpp::trans, x1 );
 
 	// x1 = inv(J) * x1
@@ -1041,9 +1041,9 @@ void MatrixSymPosDefLBFGS::V_invQtV( VectorSlice* x, const VectorSlice& y ) cons
 
 	// x2 = inv(D) * x2
 	{
-		VectorSlice::const_iterator
+		DVectorSlice::const_iterator
 			d_itr = STY_.diag(0).begin();
-		VectorSlice::iterator
+		DVectorSlice::iterator
 			x2_itr = x2.begin();
 		while( x2_itr != x2.end() )
 			*x2_itr++ /= *d_itr++;
@@ -1061,8 +1061,8 @@ void MatrixSymPosDefLBFGS::assert_initialized() const
 
 namespace {
 
-void comp_Cb( const GenMatrixSlice& Lb, const VectorSlice& Db_diag
-	, GenMatrixSlice* Cb )
+void comp_Cb( const DMatrixSlice& Lb, const DVectorSlice& Db_diag
+	, DMatrixSlice* Cb )
 {
 	// Lb * inv(Db) * Lb =
 	//
@@ -1081,8 +1081,8 @@ void comp_Cb( const GenMatrixSlice& Lb, const VectorSlice& Db_diag
 	//
 	// Cb(i,j) = sum( l(i,k)*dd(k)*l(j,k), k = 1,..,i )
 
-	typedef LinAlgPack::size_type size_type;
-	typedef LinAlgPack::value_type value_type;
+	typedef DenseLinAlgPack::size_type size_type;
+	typedef DenseLinAlgPack::value_type value_type;
 
 	assert( Lb.rows() == Cb->rows() && Cb->rows() == Db_diag.size() );
 

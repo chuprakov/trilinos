@@ -42,25 +42,25 @@ assert_compile_time()
 // Validate that there is an integer stride between values
 assert_compile_time<
     ((int)sizeof(SparseLinAlgPack::SpVectorSlice::element_type)
-	 % (int)sizeof(LinAlgPack::value_type))
+	 % (int)sizeof(DenseLinAlgPack::value_type))
 	, double
 	>
     validate_value_stride;
 // Validate that there is an integer stride between indexes
 assert_compile_time<
     ((int)sizeof(SparseLinAlgPack::SpVectorSlice::element_type)
-	 % (int)sizeof(LinAlgPack::index_type))
+	 % (int)sizeof(DenseLinAlgPack::index_type))
 	, double
 	>
     validate_index_stride;
 } // end namespace
 
-void SparseLinAlgPack::add_elements( SpVector* sv_lhs, value_type alpha, const VectorSlice& vs_rhs
+void SparseLinAlgPack::add_elements( SpVector* sv_lhs, value_type alpha, const DVectorSlice& vs_rhs
 									 , size_type offset, bool add_zeros )
 {
 	typedef SpVector::element_type ele_t;
 	const bool assume_sorted = !sv_lhs->nz() || ( sv_lhs->nz() && sv_lhs->is_sorted() );
-	VectorSlice::const_iterator
+	DVectorSlice::const_iterator
 		itr = vs_rhs.begin();
 	if(add_zeros) {
 		for( size_type i = 1; i <= vs_rhs.dim(); ++i )

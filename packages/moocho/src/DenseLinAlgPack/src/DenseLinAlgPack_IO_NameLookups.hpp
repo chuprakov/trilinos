@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// LinAlgPackIO_NameLookups.hpp
+// DenseLinAlgPackIO_NameLookups.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -30,9 +30,9 @@ namespace {
 
 #define OPEATOR_FUNCTION(OPERATOR,STREAM_TYPE,FORMAT_TYPE,OBJECT_TYPE)								\
 	inline STREAM_TYPE & OPERATOR ( STREAM_TYPE & s													\
-		, LinAlgPack::LinAlgPackIO:: ## FORMAT_TYPE ## <LinAlgPack:: ## OBJECT_TYPE ## >& bf)	\
+		, DenseLinAlgPack::LinAlgPackIO:: ## FORMAT_TYPE ## <DenseLinAlgPack:: ## OBJECT_TYPE ## >& bf)	\
 	{																								\
-		return LinAlgPack:: ## OPERATOR ## (s,bf);													\
+		return DenseLinAlgPack:: ## OPERATOR ## (s,bf);													\
 	}
 
 #define INPUT_OPEATOR_FUNCTION(FORMAT_TYPE,OBJECT_TYPE)												\
@@ -42,21 +42,21 @@ namespace {
 	OPEATOR_FUNCTION( operator<< , std::ostream , FORMAT_TYPE , OBJECT_TYPE )						\
 
 
-INPUT_OPEATOR_FUNCTION(		bound_format		,	Vector			)
-OUTPUT_OPEATOR_FUNCTION(	bound_format		,	Vector			)
-OUTPUT_OPEATOR_FUNCTION(	const_bound_format	,	Vector			)
+INPUT_OPEATOR_FUNCTION(		bound_format		,	DVector			)
+OUTPUT_OPEATOR_FUNCTION(	bound_format		,	DVector			)
+OUTPUT_OPEATOR_FUNCTION(	const_bound_format	,	DVector			)
 
-INPUT_OPEATOR_FUNCTION(		bound_format		,	VectorSlice		)
-OUTPUT_OPEATOR_FUNCTION(	bound_format		,	VectorSlice		)
-OUTPUT_OPEATOR_FUNCTION(	const_bound_format	,	VectorSlice		)
+INPUT_OPEATOR_FUNCTION(		bound_format		,	DVectorSlice		)
+OUTPUT_OPEATOR_FUNCTION(	bound_format		,	DVectorSlice		)
+OUTPUT_OPEATOR_FUNCTION(	const_bound_format	,	DVectorSlice		)
 
-INPUT_OPEATOR_FUNCTION(		bound_format		,	GenMatrix		)
-OUTPUT_OPEATOR_FUNCTION(	bound_format		,	GenMatrix		)
-OUTPUT_OPEATOR_FUNCTION(	const_bound_format	,	GenMatrix		)
+INPUT_OPEATOR_FUNCTION(		bound_format		,	DMatrix		)
+OUTPUT_OPEATOR_FUNCTION(	bound_format		,	DMatrix		)
+OUTPUT_OPEATOR_FUNCTION(	const_bound_format	,	DMatrix		)
 
-INPUT_OPEATOR_FUNCTION(		bound_format		,	GenMatrixSlice	)
-OUTPUT_OPEATOR_FUNCTION(	bound_format		,	GenMatrixSlice	)
-OUTPUT_OPEATOR_FUNCTION(	const_bound_format	,	GenMatrixSlice	)
+INPUT_OPEATOR_FUNCTION(		bound_format		,	DMatrixSlice	)
+OUTPUT_OPEATOR_FUNCTION(	bound_format		,	DMatrixSlice	)
+OUTPUT_OPEATOR_FUNCTION(	const_bound_format	,	DMatrixSlice	)
 
 #undef OPEATOR_FUNCTION
 #undef INPUT_OPEATOR_FUNCTION

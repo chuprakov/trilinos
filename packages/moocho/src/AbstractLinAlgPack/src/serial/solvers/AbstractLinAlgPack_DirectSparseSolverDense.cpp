@@ -21,7 +21,7 @@
 #include "SparseSolverPack/src/DirectSparseSolverDense.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
 #include "LinAlgLAPack/src/LinAlgLAPack.hpp"
-#include "LinAlgPack/src/PermVecMat.hpp"
+#include "DenseLinAlgPack/src/PermVecMat.hpp"
 #include "AbstractFactoryStd.hpp"
 #include "ThrowException.hpp"
 #include "WorkspacePack.hpp"
@@ -92,7 +92,7 @@ void DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(
 
 	// Get temp storage for rhs and solution to communicate with xGESTRS
 	wsp::Workspace<value_type>   B_store(wss,xd().dim());
-	GenMatrixSlice  B(&B_store[0],B_store.size(),B_store.size(),B_store.size(),1);
+	DMatrixSlice  B(&B_store[0],B_store.size(),B_store.size(),B_store.size(),1);
 
 	//
 	// Now we must permute the rhs or solution vectors based on our own
@@ -125,9 +125,9 @@ void DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(
 	// Copy rsh
 	if( M_trans == BLAS_Cpp::trans && fn.rect_analyze_and_factor_ ) {
 		// b = P'*x =
-		VectorSlice b = B.col(1);
-//		LinAlgPack::inv_perm_ele(xd(),fn.basis_perm_,&b);
-		LinAlgPack::perm_ele(xd(),fn.basis_perm_,&b);
+		DVectorSlice b = B.col(1);
+//		DenseLinAlgPack::inv_perm_ele(xd(),fn.basis_perm_,&b);
+		DenseLinAlgPack::perm_ele(xd(),fn.basis_perm_,&b);
 	}
 	else {
 		B.col(1) = xd();
@@ -142,9 +142,9 @@ void DirectSparseSolverDense::BasisMatrixDense::V_InvMtV(
 	// Copy solution
 	if( M_trans == BLAS_Cpp::no_trans  && fn.rect_analyze_and_factor_ ) {
 		// y = P*b = P*(P'*y)
-		const VectorSlice b = B.col(1);
-//		LinAlgPack::perm_ele(b,fn.basis_perm_,&yd());
-		LinAlgPack::inv_perm_ele(b,fn.basis_perm_,&yd());
+		const DVectorSlice b = B.col(1);
+//		DenseLinAlgPack::perm_ele(b,fn.basis_perm_,&yd());
+		DenseLinAlgPack::inv_perm_ele(b,fn.basis_perm_,&yd());
 	}
 	else {
 		yd() = B.col(1);
@@ -200,8 +200,8 @@ void DirectSparseSolverDense::imp_analyze_and_factor(
 	const SparseLinAlgPack::MatrixConvertToSparse   &A
 	,FactorizationStructure                         *fact_struc
 	,FactorizationNonzeros                          *fact_nonzeros
-	,LinAlgPack::IVector                            *row_perm
-	,LinAlgPack::IVector                            *col_perm
+	,DenseLinAlgPack::IVector                            *row_perm
+	,DenseLinAlgPack::IVector                            *col_perm
 	,size_type                                      *rank
 	,std::ostream                                   *out
 	)
@@ -289,7 +289,7 @@ void DirectSparseSolverDense::imp_analyze_and_factor(
 
 	// Form fs.col_perm_
 	fs.col_perm_.resize(n);
-	LinAlgPack::identity_perm(&fs.col_perm_);
+	DenseLinAlgPack::identity_perm(&fs.col_perm_);
 	wsp::Workspace<index_type> col_perm_unsorted(wss,fs.rank_);
 	if( m == n && n == fs.rank_ ) {
 		// Leave fs.col_perm_ as identity
@@ -309,7 +309,7 @@ void DirectSparseSolverDense::imp_analyze_and_factor(
 
 	// Form the inverse permutation
 	fs.inv_col_perm_.resize(n);
-	LinAlgPack::inv_perm( fs.col_perm_, &fs.inv_col_perm_ );
+	DenseLinAlgPack::inv_perm( fs.col_perm_, &fs.inv_col_perm_ );
 
 	if( !(m == n && n == fs.rank_) ) {
 		// Form fn.basis_perm_ and set fs.ipiv_ to identity
@@ -324,7 +324,7 @@ void DirectSparseSolverDense::imp_analyze_and_factor(
 	row_perm->resize(m);
 	col_perm->resize(n);
 	*rank = fs.rank_;
-	LinAlgPack::identity_perm(row_perm);
+	DenseLinAlgPack::identity_perm(row_perm);
 	*col_perm = fs.col_perm_;
 
 }

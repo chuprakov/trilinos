@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////
-// LinAlgPackIO.hpp
+// DenseLinAlgPackIO.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -13,24 +13,24 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 //
-// Includes all the headers for the LinAlgPack input/output functions and
-// stream operators for Vector, VectorSlice, GenMatrix, and GenMatrixSlice.
+// Includes all the headers for the DenseLinAlgPack input/output functions and
+// stream operators for DVector, DVectorSlice, DMatrix, and DMatrixSlice.
 // The utility function for "eating" comment lines is also included.
 
 #ifndef LINALGPACK_IO_H
 #define LINALGPACK_IO_H
 
 #include "EatInputComment.hpp"
-#include "VectorIn.hpp"
-#include "VectorOut.hpp"
-#include "GenMatrixIn.hpp"
-#include "GenMatrixOut.hpp"
-#include "LinAlgPackInFormatDef.hpp"
-#include "LinAlgPackOutFormatDef.hpp"
+#include "DVectorIn.hpp"
+#include "DVectorOut.hpp"
+#include "DMatrixIn.hpp"
+#include "DMatrixOut.hpp"
+#include "DenseLinAlgPackInFormatDef.hpp"
+#include "DenseLinAlgPackOutFormatDef.hpp"
 
 // Include namelookups for templated operator functions.  MS VS++ 5.0 standard
 // nonconformance problem.
 
-#include "LinAlgPackIO_NameLookups.hpp"
+#include "DenseLinAlgPackIO_NameLookups.hpp"
 
 #endif // LINALGPACK_IO_H

@@ -39,7 +39,7 @@ namespace ConstrainedOptimizationPack {
   * be lost when added to x(i) so x(i) + d(i) == x(i).
   *
   */
-void vector_change_stats( const VectorSlice& x, const VectorSlice& d
+void vector_change_stats( const DVectorSlice& x, const DVectorSlice& d
 	, value_type* max_term, size_type* max_k
 	, value_type* min_term, size_type* min_k
 	, value_type* av_term );

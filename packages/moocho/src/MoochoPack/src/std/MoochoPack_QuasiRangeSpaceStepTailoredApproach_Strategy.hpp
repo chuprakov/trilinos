@@ -37,7 +37,7 @@ public:
 	 */
  	 bool solve_quasi_range_space_step(
 		std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-		,const VectorSlice& xo, const VectorSlice& c_xo, VectorSlice* v
+		,const DVectorSlice& xo, const DVectorSlice& c_xo, DVectorSlice* v
 	  	);
 
 	///

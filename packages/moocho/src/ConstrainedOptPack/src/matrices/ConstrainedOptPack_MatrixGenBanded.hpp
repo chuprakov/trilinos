@@ -18,7 +18,7 @@
 
 #include "ConstrainedOptimizationPackTypes.hpp"
 #include "SparseLinAlgPack/src/MatrixWithOp.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "Miref_count_ptr.h"
 #include "MiReleaseResource.h"
 
@@ -65,7 +65,7 @@ public:
 		,size_type                        n                       = 0
 		,size_type                        kl                      = 0
 		,size_type                        ku                      = 0
-		,GenMatrixSlice                   *MB                     = NULL
+		,DMatrixSlice                   *MB                     = NULL
 		,const release_resource_ptr_t&    MB_release_resource_ptr = NULL
 		);
 
@@ -96,7 +96,7 @@ public:
 		,size_type                        n                       = 0
 		,size_type                        kl                      = 0
 		,size_type                        ku                      = 0
-		,GenMatrixSlice                   *MB                     = NULL
+		,DMatrixSlice                   *MB                     = NULL
 		,const release_resource_ptr_t&    MB_release_resource_ptr = NULL
 		);
 
@@ -107,9 +107,9 @@ public:
 	///
 	/** Get view of MB.
 	 */
-	GenMatrixSlice& MB();
+	DMatrixSlice& MB();
 	///
-	const GenMatrixSlice& MB() const;
+	const DMatrixSlice& MB() const;
 
 	// /////////////////////////////
 	// Overridden from MatrixWithOp
@@ -123,18 +123,18 @@ public:
 	///
 	std::ostream& output(std::ostream& out) const;
 	///
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2, value_type beta) const;
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2, value_type beta) const;
 	///
-	void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
 	///
-	void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
+	void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
-		, const VectorSlice& vs_rhs3, value_type beta) const;
+		, const DVectorSlice& vs_rhs3, value_type beta) const;
 	///
-	void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
+	void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
 		, const SpVectorSlice& sv_rhs3, value_type beta) const;
@@ -148,7 +148,7 @@ private:
 	size_type                       n_;
 	size_type                       kl_;
 	size_type                       ku_;
-	GenMatrixSlice                  MB_;
+	DMatrixSlice                  MB_;
 	release_resource_ptr_t          MB_release_resource_ptr_;
 
 	// /////////////////////////////
@@ -174,13 +174,13 @@ size_type MatrixGenBanded::ku() const
 }
 
 inline
-GenMatrixSlice& MatrixGenBanded::MB()
+DMatrixSlice& MatrixGenBanded::MB()
 {
 	return MB_;
 }
 
 inline
-const GenMatrixSlice& MatrixGenBanded::MB() const
+const DMatrixSlice& MatrixGenBanded::MB() const
 {
 	return MB_;
 }

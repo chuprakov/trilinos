@@ -20,7 +20,7 @@
 #include "SparseLinAlgPack/src/COOMatrixTmplOp.hpp"
 #include "SparseLinAlgPack/src/VectorDenseEncap.hpp"
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 #include "dynamic_cast_verbose.hpp"
 
@@ -203,7 +203,7 @@ void MatrixSparseCOORSerial::Vp_StMtV(
 	AbstractLinAlgPack::Vp_MtV_assert_compatibility( y, *this, M_trans, x );
 	VectorDenseMutableEncap   y_d(*y);
 	VectorDenseEncap          x_d(x);
-	LinAlgPack::Vt_S(&y_d(),b);
+	DenseLinAlgPack::Vt_S(&y_d(),b);
 	Vp_StCOOMtV(
 		&y_d(),a,MatrixCOORTmplItfc<value_type,index_type>(
 			rows_,cols_,nz_,0,0,val_,row_i_,col_j_ )

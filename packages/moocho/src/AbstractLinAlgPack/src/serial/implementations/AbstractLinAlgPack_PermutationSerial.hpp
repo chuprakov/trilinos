@@ -103,7 +103,7 @@ public:
 	 *      (throw <tt>std::invalid_argument</tt>)
 	 * <li> [<tt>perm.get() != NULL && inv_perm.get() != NULL</tt>] <tt>*inv_perm</tt> is the inverse permutation
 	 *      of <tt>*perm</tt>.  This would be guaranteed if <tt>inv_perm.get()</tt> was initialized as
-	 *      <tt>LinAlgPack::inv_perm(*perm,inv_perm.get()</tt>.  This is checked for if <tt>check_inv_perm == true</tt>
+	 *      <tt>DenseLinAlgPack::inv_perm(*perm,inv_perm.get()</tt>.  This is checked for if <tt>check_inv_perm == true</tt>
 	 *      is passed in.  If this check fails, then a <tt>std::invalid_argument</tt> exception is thrown.
 	 * </ul>
 	 *
@@ -193,8 +193,8 @@ private:
 	
 #ifdef DOXYGEN_COMPILE
 	VectorSpaceSerial     space;
-	LinAlgPack::IVector   *perm;
-	LinAlgPack::IVector   *inv_perm;
+	DenseLinAlgPack::IVector   *perm;
+	DenseLinAlgPack::IVector   *inv_perm;
 #else
 	VectorSpaceSerial     space_;
 	i_vector_ptr_t        perm_;

@@ -26,9 +26,9 @@
 #include "SparseLinAlgPack/src/MatrixWithOp.hpp"
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
 #include "SparseLinAlgPack/src/EtaVector.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/GenMatrixOut.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DMatrixOut.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
 #include "debug.hpp"
 
 
@@ -53,7 +53,7 @@ void qphess_server_relax( const f_int& N, const f_int& LDH
 	, const f_int& JTHCOL, const f_dbl_prec* H, const f_dbl_prec* X, f_dbl_prec* HX
 	, f_int* IW, const f_int& LENIW, f_dbl_prec* W, const f_int& LENW )
 {
-	using LinAlgPack::VectorSlice;
+	using DenseLinAlgPack::DVectorSlice;
 	using SparseLinAlgPack::SpVector;
 	using LinAlgOpPack::V_MtV;
 	using ConstrainedOptimizationPack::QPSolverRelaxedQPOPT;
@@ -62,10 +62,10 @@ void qphess_server_relax( const f_int& N, const f_int& LDH
 	// that called QPSOL.
 	const QPSolverRelaxedQPOPT* qp_solver = reinterpret_cast<const QPSolverRelaxedQPOPT*>(H);
 
-	VectorSlice hx(HX,N);
+	DVectorSlice hx(HX,N);
 
 	if( JTHCOL == 0 ) {
-		const VectorSlice x( const_cast<VectorSlice::value_type*>(X), N );
+		const DVectorSlice x( const_cast<DVectorSlice::value_type*>(X), N );
 		// hx(1,N-1) = G * x(1,N-1)
 		V_MtV( &hx(1,N-1), *qp_solver->G(), BLAS_Cpp::no_trans, x(1,N-1) );
 		// hx(N) = bigM * x(N)

@@ -24,12 +24,12 @@
 #include "ConstrainedOptimizationPack/src/VectorWithNorms.h"
 #include "NLPInterfacePack/src/NLPSecondOrderInfo.hpp"
 #include "SparseLinAlgPack/src/MatrixSymWithOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"
-#include "LinAlgPack/src/GenMatrixOut.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"
+#include "DenseLinAlgPack/src/DMatrixOut.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
 #include "Midynamic_cast_verbose.h"
 
 namespace ReducedSpaceSQPPack {
@@ -39,7 +39,7 @@ bool ReducedHessianExactStd_Step::do_step(
 	, poss_type assoc_step_poss)
 {
 	using DynamicCastHelperPack::dyn_cast;
-	using LinAlgPack::nonconst_sym;
+	using DenseLinAlgPack::nonconst_sym;
 	using SparseLinAlgPack::Mp_StMtMtM;
 	typedef SparseLinAlgPack::MatrixSymDenseInitialize	MatrixSymDenseInitialize;
 	typedef SparseLinAlgPack::MatrixSymWithOp			MatrixSymWithOp;
@@ -118,8 +118,8 @@ bool ReducedHessianExactStd_Step::do_step(
 		}		
 
 		// Compute the dense reduced Hessian
-		GenMatrix rHL_sym_store(nind,nind);
-		sym_gms rHL_sym(rHL_sym_store(),BLAS_Cpp::lower);
+		DMatrix rHL_sym_store(nind,nind);
+		DMatrixSliceSym rHL_sym(rHL_sym_store(),BLAS_Cpp::lower);
 		Mp_StMtMtM( &rHL_sym, 1.0, MatrixSymWithOp::DUMMY_ARG, *HL_sym_op
 					, s.Z().get_k(0), BLAS_Cpp::no_trans, 0.0 );
 

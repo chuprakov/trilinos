@@ -28,10 +28,10 @@
 #include "SparseLinAlgPack/src/MatrixWithOp.hpp"
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
 #include "SparseLinAlgPack/src/max_near_feas_step.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/VectorOut.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/DVectorOut.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;
@@ -79,12 +79,12 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 
 	using std::setw;
 
-	using LinAlgPack::dot;
-	using LinAlgPack::norm_inf;
-	using LinAlgPack::V_VpV;
-	using LinAlgPack::V_VmV;
-	using LinAlgPack::Vp_StV;
-	using LinAlgPack::Vt_S;
+	using DenseLinAlgPack::dot;
+	using DenseLinAlgPack::norm_inf;
+	using DenseLinAlgPack::V_VpV;
+	using DenseLinAlgPack::V_VmV;
+	using DenseLinAlgPack::Vp_StV;
+	using DenseLinAlgPack::Vt_S;
 
 	using LinAlgOpPack::Vp_V;
 	using LinAlgOpPack::V_MtV;
@@ -115,20 +115,20 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 	// Set k+1 first then go back to get k to ensure
 	// we have backward storage.
 	
-	Vector
+	DVector
 		&x_kp1 = s.x().set_k(+1).v();
 	value_type
 		&f_kp1 = s.f().set_k(+1);
-	Vector
+	DVector
 		&c_kp1 = s.c().set_k(+1).v();
 
 	const value_type
 		&f_k = s.f().get_k(0);
-	const Vector
+	const DVector
 		&c_k = s.c().get_k(0).v();
-	const Vector
+	const DVector
 		&x_k = s.x().get_k(0).v();
-	const Vector
+	const DVector
 		&d_k = s.d().get_k(0).v();
 	value_type
 		&alpha_k = s.alpha().get_k(0);
@@ -209,8 +209,8 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 	// This is storage for function and gradient evaluations for
 	// the trial newton points and must be remembered for latter
 	value_type f_xdww;
-	Vector     c_xdww;
-	Vector w(x_kp1.size()),		// Full correction after completed computation.
+	DVector     c_xdww;
+	DVector w(x_kp1.size()),		// Full correction after completed computation.
 		   xdww(x_kp1.size());	// Will be set to xdw + sum( w(newton_i), newton_i = 1... )
 								// where w(itr) is the local corrections for the current
 								// newton iteration.
@@ -237,7 +237,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 		ConstrainedOptimizationPack::MeritFuncNLESqrResid
 			phi_c;
 
-		Vector
+		DVector
 			xdw = x_kp1;	// Will be set to x + d + sum(w(i),i=1..itr-1)
 							//     where w(i) are previous local corrections
 		value_type
@@ -253,7 +253,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 		ConstrainedOptimizationPack::MeritFuncCalcNLE
 			phi_c_calc( &phi_c, &nlp );
 
-		Vector wy(s.con_decomp().size());	// Range space wy (see latter).
+		DVector wy(s.con_decomp().size());	// Range space wy (see latter).
 
 		const bool sufficient_reduction =
 			phi_c_xd < forced_reduct_ratio() * phi_c_x;
@@ -424,7 +424,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 				Vp_StV( &xdww(), a, w() );
 				phi_c.calc_deriv(nlp.c());	// Set the directional derivative at c(xdw)
 				phi_c_xdww = phi_c_calc( xdww() );	// phi_c_xdww = phi(xdww)
-				const VectorSlice xdw_w[2] = { xdw(), w() };
+				const DVectorSlice xdw_w[2] = { xdw(), w() };
 				MeritFuncCalc1DQuadratic
 					phi_c_calc_1d( phi_c_calc, 1 , xdw_w, &xdww() );
 				bool ls_okay = false;
@@ -604,7 +604,7 @@ bool LineSearch2ndOrderCorrect_Step::do_step(
 					<< "x_kp1 = x_k + alpha_k * d_k ...\n";
 			}
 		}
-		const VectorSlice xdw[3] = { x_k(), d_k(), w() };
+		const DVectorSlice xdw[3] = { x_k(), d_k(), w() };
 		MeritFuncCalc1DQuadratic
 			phi_calc_1d( phi_calc, (use_correction?2:1) , xdw, &x_kp1() );
 		if( !direct_ls_sqp().do_line_search( phi_calc_1d, phi_k, &alpha_k, &phi_kp1

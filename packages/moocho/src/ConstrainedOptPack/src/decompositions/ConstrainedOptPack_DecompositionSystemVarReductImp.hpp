@@ -115,11 +115,11 @@ public:
 	/** Initialize.
 	 *
 	 * @param  space_x
-	 *             [in] Vector space for variables \c x.
+	 *             [in] DVector space for variables \c x.
 	 * @param  space_c
-	 *             [in] Vector space for general equalities \c c.
+	 *             [in] DVector space for general equalities \c c.
 	 * @param  space_h
-	 *             [in] Vector space for general inequalities \c h.
+	 *             [in] DVector space for general inequalities \c h.
 	 * @param  basis_sys
 	 *             [in] The <tt>BasisSystem</tt> object that defines the
 	 *             variable reduction that the decomposition is based on.

@@ -18,13 +18,13 @@
 
 #include "SparseLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/MatrixWithOp.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "dynamic_cast_verbose.hpp"
 
 namespace SparseLinAlgPack {
 
 ///
-/** Abstract interface that allows the extraction of a const <tt>GenMatrixSlice</tt>
+/** Abstract interface that allows the extraction of a const <tt>DMatrixSlice</tt>
  * view of an abstract matrix.
  *
  * This interface is ment to be used by <tt>MatrixWithOp</tt> objects
@@ -45,7 +45,7 @@ class MatrixWithOpGetGMS
 public:
 
 	///
-	/** Get a const view of the abstract matrix in the form <tt>LinAlgPack::GenMatrixSlice</tt>.
+	/** Get a const view of the abstract matrix in the form <tt>DenseLinAlgPack::DMatrixSlice</tt>.
 	 *
 	 * @return On ouput, \c return will be initialized to point to storage to the dense matrix elements.
 	 * The output from this function <tt>gms_view = this->get_gms_view()</tt> must be passed to
@@ -59,7 +59,7 @@ public:
 	 *
 	 * Warning!  If a subclass overrides this method, it must also override \c free_gms_view().
 	 */
-	virtual const GenMatrixSlice get_gms_view() const = 0;
+	virtual const DMatrixSlice get_gms_view() const = 0;
 
 	///
 	/** Free a view of a dense matrix initialized from <tt>get_gms_view()>/tt>.
@@ -76,7 +76,7 @@ public:
 	 * <li> \c gms_view becomes invalid and must not be used any longer!
 	 * </ul>
 	 */
-	virtual void free_gms_view(const GenMatrixSlice* gms_view) const = 0;
+	virtual void free_gms_view(const DMatrixSlice* gms_view) const = 0;
 
 }; // end class MatrixWithOpGetGMS
 
@@ -84,10 +84,10 @@ public:
 /** Helper class type that simplifies the usage of the <tt>MatrixWithOpGetGMS</tt> interface for clients.
  *
  * This takes care of worrying about if the <tt>MatrixWithOpGetGMS</tt> interface is supported or not
- * and remembering to free the <tt>GenMatrixSlice</tt> view properly.
+ * and remembering to free the <tt>DMatrixSlice</tt> view properly.
  *
  * This class is only to be used on the stack as an automatic variable.  For example, to extract a
- * <tt>GenMatrixSlice</tt> view of an abstract vector and use it to copy to a <tt>GenMatrix</tt>
+ * <tt>DMatrixSlice</tt> view of an abstract vector and use it to copy to a <tt>DMatrix</tt>
  * object you could write a function like:
  \code
  void copy(const MatrixWithOpGetGMS& mat_in, GenMatrixClass* gms_out ) {
@@ -104,25 +104,25 @@ class MatrixDenseEncap {
 public:
 
 	///
-	/** Construct a <tt>GenMatrixSlice</tt> view from a <tt>MatrixWithOpGetGMS</tt> object.
+	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixWithOpGetGMS</tt> object.
 	 */
 	MatrixDenseEncap( const MatrixWithOpGetGMS&  mat_get );
 	///
-	/** Construct a <tt>GenMatrixSlice</tt> view from a <tt>MatrixWithOp</tt> object.
+	/** Construct a <tt>DMatrixSlice</tt> view from a <tt>MatrixWithOp</tt> object.
 	 *
 	 * If <tt>dynamic_cast<const MatrixWithOpGetGMS*>(&mat) == NULL</tt> then a ???
 	 * exception is thrown.
 	 */
 	MatrixDenseEncap( const MatrixWithOp& mat );
-	/// Frees the <tt>GenMatrixSlice</tt> view.
+	/// Frees the <tt>DMatrixSlice</tt> view.
 	~MatrixDenseEncap();
-	/// Returns a constant view of the <tt>GenMatrixSlice</tt> view.
-	const GenMatrixSlice operator()() const;
+	/// Returns a constant view of the <tt>DMatrixSlice</tt> view.
+	const DMatrixSlice operator()() const;
 
 private:
 
 	const MatrixWithOpGetGMS     &mat_get_;
-	const GenMatrixSlice         gms_view_;
+	const DMatrixSlice         gms_view_;
 	MatrixDenseEncap();                                      // Not defined and not to be called!
 	MatrixDenseEncap(const MatrixDenseEncap&);               // ""
 	MatrixDenseEncap& operator=(const MatrixDenseEncap&);    // ""
@@ -153,7 +153,7 @@ MatrixDenseEncap::~MatrixDenseEncap()
 }
 
 inline
-const GenMatrixSlice MatrixDenseEncap::operator()() const
+const DMatrixSlice MatrixDenseEncap::operator()() const
 {
 	return gms_view_;
 }

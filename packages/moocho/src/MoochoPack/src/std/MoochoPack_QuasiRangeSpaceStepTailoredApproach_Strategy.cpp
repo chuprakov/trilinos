@@ -21,7 +21,7 @@
 #include "ReducedSpaceSQPPack/src/std/EvalNewPointTailoredApproach_Step.hpp"
 #include "ConstrainedOptimizationPack/src/DenseIdentVertConcatMatrixSubclass.h"
 #include "SparseLinAlgPack/src/MatrixWithOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "MiWorkspacePack.h"
 #include "Midynamic_cast_verbose.h"
 
@@ -33,7 +33,7 @@ namespace ReducedSpaceSQPPack {
 
 bool QuasiRangeSpaceStepTailoredApproach_Strategy::solve_quasi_range_space_step(
 	std::ostream& out, EJournalOutputLevel olevel, rSQPAlgo *algo, rSQPState *s
-	,const VectorSlice& xo, const VectorSlice& c_xo, VectorSlice* v
+	,const DVectorSlice& xo, const DVectorSlice& c_xo, DVectorSlice* v
   	)
 {
 	using DynamicCastHelperPack::dyn_cast;
@@ -59,7 +59,7 @@ bool QuasiRangeSpaceStepTailoredApproach_Strategy::solve_quasi_range_space_step(
 	const DenseIdentVertConcatMatrixSubclass
 		&cZ_k = dyn_cast<const DenseIdentVertConcatMatrixSubclass>(Z_k);
 #endif
-	const GenMatrixSlice
+	const DMatrixSlice
 		D = cZ_k.m().D();
 
 	// Get reference to EvalNewPoint step
@@ -74,7 +74,7 @@ bool QuasiRangeSpaceStepTailoredApproach_Strategy::solve_quasi_range_space_step(
 #endif
 
 	// Compute an approximate newton step for constriants wy
-	Vector c_xo_tmp = c_xo, vy_tmp;  // This is hacked.  This sucks!
+	DVector c_xo_tmp = c_xo, vy_tmp;  // This is hacked.  This sucks!
 	nlp.calc_semi_newton_step(xo,&c_xo_tmp,false,&vy_tmp);
 		
 	// Compute wy, Ywy

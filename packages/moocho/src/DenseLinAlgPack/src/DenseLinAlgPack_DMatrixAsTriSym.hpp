@@ -1,5 +1,5 @@
 // //////////////////////////////////////////////////////////////////////////////////
-// GenMatrixAsTriSym.hpp
+// DMatrixAsTriSym.hpp
 //
 // Copyright (C) 2001 Roscoe Ainsworth Bartlett
 //
@@ -16,9 +16,9 @@
 #ifndef GEN_MATRIX_AS_TRI_SYM_H
 #define GEN_MATRIX_AS_TRI_SYM_H
 
-#include "GenMatrixClass.hpp"
+#include "DMatrixClass.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 /** @name	Packaging arguments for GenMatrixSlices treated as triangular
   *			and symmetric matrices in BLAS-like linear algebra operations.
@@ -29,16 +29,16 @@ namespace LinAlgPack {
 
 // /////////////////////////////////////////////////////////////////////////////////////
 ///
-/** Aggregate information for a triangular matrix (element-wise) stored in a GenMatrix.
+/** Aggregate information for a triangular matrix (element-wise) stored in a DMatrix.
   *
   * This is the type to be used as lhs and rhs arguments in element-wise
   * linear algebra operations like assignment and binary arithmetic.
   */
-class tri_ele_gms {
+class DMatrixSliceTriEle {
 public:
 	///
-	tri_ele_gms(const GenMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
-		: gms_(const_cast<GenMatrixSlice&>(gms)), uplo_(uplo)
+	DMatrixSliceTriEle(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
+		: gms_(const_cast<DMatrixSlice&>(gms)), uplo_(uplo)
 	{
 		#ifdef LINALGPACK_CHECK_RHS_SIZES
 			assert_gms_square(gms);
@@ -53,11 +53,11 @@ public:
 		return gms_.cols();
 	}
 	///
-	GenMatrixSlice& gms() {
+	DMatrixSlice& gms() {
 		return gms_;
 	}
 	///
-	const GenMatrixSlice& gms() const {
+	const DMatrixSlice& gms() const {
 		return gms_;
 	}
 	///
@@ -65,48 +65,48 @@ public:
 		return uplo_;
 	}
 	/// Allow address to be taken of rvalue of this object
-	tri_ele_gms* operator&() {
+	DMatrixSliceTriEle* operator&() {
 	  return this;
 	}
 	///
-	const tri_ele_gms* operator&() const {
+	const DMatrixSliceTriEle* operator&() const {
 	  return this;
 	}
 
 private:	
-	GenMatrixSlice	gms_;
+	DMatrixSlice	gms_;
 	BLAS_Cpp::Uplo	uplo_;
 	// Not defined and not to be called
-	tri_ele_gms();
-	tri_ele_gms& operator=(const tri_ele_gms&);
-};	// end class tri_ele_gms
+	DMatrixSliceTriEle();
+	DMatrixSliceTriEle& operator=(const DMatrixSliceTriEle&);
+};	// end class DMatrixSliceTriEle
 
 inline
 /// Return a triangular element-wise matrix
-tri_ele_gms nonconst_tri_ele(GenMatrixSlice gms, BLAS_Cpp::Uplo uplo)
+DMatrixSliceTriEle nonconst_tri_ele(DMatrixSlice gms, BLAS_Cpp::Uplo uplo)
 {
-	return tri_ele_gms(gms, uplo);
+	return DMatrixSliceTriEle(gms, uplo);
 }
 
 inline
 ///
-const tri_ele_gms tri_ele(const GenMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
+const DMatrixSliceTriEle tri_ele(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
 {
-	return tri_ele_gms(gms, uplo);
+	return DMatrixSliceTriEle(gms, uplo);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////
 ///
-/** Aggregate information for a triangular matrix (structure dependent) stored in a GenMatrix.
+/** Aggregate information for a triangular matrix (structure dependent) stored in a DMatrix.
   *
   * This is the type to be used as a rhs argument in linear algebra operations
   * that are structure specific like the BLAS operations.
   */
-class tri_gms {
+class DMatrixSliceTri {
 public:
 	///
-	tri_gms(const GenMatrixSlice& gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
-		: gms_(const_cast<GenMatrixSlice&>(gms)), uplo_(uplo), diag_(diag)
+	DMatrixSliceTri(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
+		: gms_(const_cast<DMatrixSlice&>(gms)), uplo_(uplo), diag_(diag)
 	{
 		#ifdef LINALGPACK_CHECK_RHS_SIZES
 			assert_gms_square(gms);
@@ -121,11 +121,11 @@ public:
 		return gms_.cols();
 	}
 	///
-	GenMatrixSlice& gms() {
+	DMatrixSlice& gms() {
 		return gms_;
 	}
 	///
-	const GenMatrixSlice& gms() const {
+	const DMatrixSlice& gms() const {
 		return gms_;
 	}
 	///
@@ -137,48 +137,48 @@ public:
 		return diag_;
 	}
 	/// Allow address to be taken of rvalue of this object
-	tri_gms* operator&() {
+	DMatrixSliceTri* operator&() {
 	  return this;
 	}
 	///
-	const tri_gms* operator&() const {
+	const DMatrixSliceTri* operator&() const {
 	  return this;
 	}
 
 private:	
-	GenMatrixSlice	gms_;
+	DMatrixSlice	gms_;
 	BLAS_Cpp::Uplo	uplo_;
 	BLAS_Cpp::Diag	diag_;
 	// not defined and not to be called
-	tri_gms();
-	tri_gms& operator=(const tri_gms&);
-};	// end class tri_gms
+	DMatrixSliceTri();
+	DMatrixSliceTri& operator=(const DMatrixSliceTri&);
+};	// end class DMatrixSliceTri
 
 inline
 /// Return a triangular matrix
-tri_gms nonconst_tri(GenMatrixSlice gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
+DMatrixSliceTri nonconst_tri(DMatrixSlice gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
 {
-	return tri_gms(gms, uplo, diag);
+	return DMatrixSliceTri(gms, uplo, diag);
 }
 
 inline
 ///
-const tri_gms tri(const GenMatrixSlice& gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
+const DMatrixSliceTri tri(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo, BLAS_Cpp::Diag diag)
 {
-	return tri_gms(gms, uplo, diag);
+	return DMatrixSliceTri(gms, uplo, diag);
 }
 
 // /////////////////////////////////////////////////////////////////////////////////////////
 ///
-/** Aggregate information for a symmetric matrix stored in a GenMatrix.
+/** Aggregate information for a symmetric matrix stored in a DMatrix.
   *
   * This is the type to be used as both lhs and rhs arguments in linear algebra operations.
   */
-class sym_gms {
+class DMatrixSliceSym {
 public:
 	///
-	sym_gms(const GenMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
-		: gms_(const_cast<GenMatrixSlice&>(gms)), uplo_(uplo)
+	DMatrixSliceSym(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
+		: gms_(const_cast<DMatrixSlice&>(gms)), uplo_(uplo)
 	{
 		#ifdef LINALGPACK_CHECK_RHS_SIZES
 			assert_gms_square(gms);
@@ -193,11 +193,11 @@ public:
 		return gms_.cols();
 	}
 	///
-	GenMatrixSlice& gms() {
+	DMatrixSlice& gms() {
 		return gms_;
 	}
 	///
-	const GenMatrixSlice& gms() const {
+	const DMatrixSlice& gms() const {
 		return gms_;
 	}
 	///
@@ -205,37 +205,37 @@ public:
 		return uplo_;
 	}
 	/// Allow address to be taken of rvalue of this object
-	sym_gms* operator&() {
+	DMatrixSliceSym* operator&() {
 	  return this;
 	}
-	const sym_gms* operator&() const {
+	const DMatrixSliceSym* operator&() const {
 	  return this;
 	}
 
 private:	
-	GenMatrixSlice	gms_;
+	DMatrixSlice	gms_;
 	BLAS_Cpp::Uplo	uplo_;
 	// not defined and not to be called
-	sym_gms();
-	sym_gms& operator=(const tri_gms&);
-};	// end class sym_gms
+	DMatrixSliceSym();
+	DMatrixSliceSym& operator=(const DMatrixSliceTri&);
+};	// end class DMatrixSliceSym
 
 inline
 /// Return a symmetric matrix
-sym_gms nonconst_sym(GenMatrixSlice gms, BLAS_Cpp::Uplo uplo)
+DMatrixSliceSym nonconst_sym(DMatrixSlice gms, BLAS_Cpp::Uplo uplo)
 {
-	return sym_gms(gms, uplo);
+	return DMatrixSliceSym(gms, uplo);
 }
 
 inline
 ///
-const sym_gms sym(const GenMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
+const DMatrixSliceSym sym(const DMatrixSlice& gms, BLAS_Cpp::Uplo uplo)
 {
-	return sym_gms(gms, uplo);
+	return DMatrixSliceSym(gms, uplo);
 }
 
 //@}
 
-} // end namespace LinAlgPack
+} // end namespace DenseLinAlgPack
 
 #endif	// GEN_MATRIX_AS_TRI_SYM_H

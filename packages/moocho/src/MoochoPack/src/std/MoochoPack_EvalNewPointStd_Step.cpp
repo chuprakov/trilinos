@@ -34,7 +34,7 @@
 #include "ThrowException.hpp"
 
 #ifdef _DEBUG
-#include "LinAlgPack/src/PermVecMat.hpp"
+#include "DenseLinAlgPack/src/PermVecMat.hpp"
 #endif
 
 namespace ReducedSpaceSQPPack {

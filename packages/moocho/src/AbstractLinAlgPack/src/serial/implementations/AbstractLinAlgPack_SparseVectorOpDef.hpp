@@ -32,10 +32,10 @@
 
 #include "SparseLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/SparseVectorClass.hpp"
-#include "LinAlgPack/src/VectorOp.hpp"
-#include "LinAlgPack/src/GenMatrixAsTriSym.hpp"	// also included in SparseVectorOpDef.hpp
-#include "LinAlgPack/src/GenMatrixClass.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/DVectorOp.hpp"
+#include "DenseLinAlgPack/src/DMatrixAsTriSym.hpp"	// also included in SparseVectorOpDef.hpp
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
 namespace {
 template< class T >
@@ -48,21 +48,21 @@ T my_my_min( const T& v1, const T& v2 ) { return v1 < v2 ? v1 : v2; }
 
 namespace SparseLinAlgPack {
 
-using LinAlgPack::VopV_assert_sizes;
-using LinAlgPack::Vp_V_assert_sizes;
-using LinAlgPack::Vp_MtV_assert_sizes;
+using DenseLinAlgPack::VopV_assert_sizes;
+using DenseLinAlgPack::Vp_V_assert_sizes;
+using DenseLinAlgPack::Vp_MtV_assert_sizes;
 
-using LinAlgPack::row;
-using LinAlgPack::col;
+using DenseLinAlgPack::row;
+using DenseLinAlgPack::col;
 
 namespace SparseVectorUtilityPack {
 template<class T_SpVec>
-value_type imp_dot2_V_V_SV(const VectorSlice& vs1, const VectorSlice& vs2, const T_SpVec& sv);
+value_type imp_dot2_V_V_SV(const DVectorSlice& vs1, const DVectorSlice& vs2, const T_SpVec& sv);
 }
 
 // result = dot(vs_rhs1,sv_rhs2)
 template<class T_SpVec>
-value_type dot_V_SV(const VectorSlice& vs_rhs1, const T_SpVec& sv_rhs2) {
+value_type dot_V_SV(const DVectorSlice& vs_rhs1, const T_SpVec& sv_rhs2) {
 	VopV_assert_sizes(vs_rhs1.dim(),sv_rhs2.dim());
 	value_type result = 0.0;
 	typename T_SpVec::difference_type offset = sv_rhs2.offset();
@@ -73,7 +73,7 @@ value_type dot_V_SV(const VectorSlice& vs_rhs1, const T_SpVec& sv_rhs2) {
 
 // result = dot(sv_rhs1,vs_rhs2).  Just call the above in reverse order
 template<class T_SpVec>
-value_type dot_SV_V(const T_SpVec& sv_rhs1, const VectorSlice& vs_rhs2) {
+value_type dot_SV_V(const T_SpVec& sv_rhs1, const DVectorSlice& vs_rhs2) {
 	return dot_V_SV(vs_rhs2,sv_rhs1);
 }
 
@@ -133,7 +133,7 @@ void Vt_S( T_SpVec* sv_lhs, value_type alpha )
 
 // vs_lhs += alpha * sv_rhs (BLAS xAXPY)
 template<class T_SpVec>
-void Vp_StSV(VectorSlice* vs_lhs, value_type alpha, const T_SpVec& sv_rhs)
+void Vp_StSV(DVectorSlice* vs_lhs, value_type alpha, const T_SpVec& sv_rhs)
 {
 	Vp_V_assert_sizes(vs_lhs->dim(),sv_rhs.dim());
 	typename T_SpVec::difference_type offset = sv_rhs.offset();
@@ -143,13 +143,13 @@ void Vp_StSV(VectorSlice* vs_lhs, value_type alpha, const T_SpVec& sv_rhs)
 
 // vs_lhs += alpha * op(gms_rhs1) * sv_rhs2 (BLAS xGEMV) (time = O(sv_rhs2.nz() * vs_lhs.dim())
 template<class T_SpVec>
-void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
+void Vp_StMtSV(DVectorSlice* pvs_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2)
 {
 #ifdef _WINDOWS
-	using LinAlgPack::Vp_StV;	// MS VC++ 6.0 needs help with the name lookups
+	using DenseLinAlgPack::Vp_StV;	// MS VC++ 6.0 needs help with the name lookups
 #endif
-	VectorSlice& vs_lhs = *pvs_lhs;
+	DVectorSlice& vs_lhs = *pvs_lhs;
 
 	Vp_MtV_assert_sizes(vs_lhs.dim(),gms_rhs1.rows(),gms_rhs1.cols(),trans_rhs1
 						, sv_rhs2.dim());
@@ -164,16 +164,16 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const GenMatrixSlice& gms
 	typename T_SpVec::difference_type offset = sv_rhs2.offset();
 
 	for(typename T_SpVec::const_iterator sv_rhs2_itr = sv_rhs2.begin(); sv_rhs2_itr != sv_rhs2.end(); ++sv_rhs2_itr)
-		LinAlgPack::Vp_StV( &vs_lhs, alpha * sv_rhs2_itr->value()
+		DenseLinAlgPack::Vp_StV( &vs_lhs, alpha * sv_rhs2_itr->value()
             , col( gms_rhs1, trans_rhs1, sv_rhs2_itr->index() + offset ) );
 }
 
 // vs_lhs += alpha * op(tri_rhs1) * sv_rhs2 (BLAS xTRMV)
 template<class T_SpVec>
-void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const tri_gms& tri_rhs1
+void Vp_StMtSV(DVectorSlice* pvs_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2)
 {
-	VectorSlice &vs_lhs = *pvs_lhs;
+	DVectorSlice &vs_lhs = *pvs_lhs;
 
 	Vp_MtV_assert_sizes(vs_lhs.dim(),tri_rhs1.rows(),tri_rhs1.cols(),trans_rhs1
 						, sv_rhs2.dim());
@@ -233,7 +233,7 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const tri_gms& tri_rhs1
 				// vs_lhs(j,n) = vs_lhs(j,n) + alpha * sv_itr->value() * tri_rhs1.col(j)(j,n)
 				if(j_adjusted <= n)
 				{
-					LinAlgPack::Vp_StV( &vs_lhs(j_adjusted,n), alpha * sv_itr->value()
+					DenseLinAlgPack::Vp_StV( &vs_lhs(j_adjusted,n), alpha * sv_itr->value()
 						,col(tri_rhs1.gms(),trans_rhs1,j)(j_adjusted,n) );
 				}
 				break;
@@ -248,7 +248,7 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const tri_gms& tri_rhs1
 				// vs_lhs(1,j) = vs_lhs(1,j) + alpha * sv_itr->value() * tri_rhs1.col(j)(1,j)
 				if(j_adjusted > 0)
 				{
-					LinAlgPack::Vp_StV( &vs_lhs(1,j_adjusted), alpha * sv_itr->value()
+					DenseLinAlgPack::Vp_StV( &vs_lhs(1,j_adjusted), alpha * sv_itr->value()
 						,col(tri_rhs1.gms(),trans_rhs1,j)(1,j_adjusted) );
 				}
 				break;
@@ -259,10 +259,10 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const tri_gms& tri_rhs1
 
 // vs_lhs += alpha * op(sym_rhs1) * sv_rhs2 (BLAS xSYMV)
 template<class T_SpVec>
-void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const sym_gms& sym_rhs1
+void Vp_StMtSV(DVectorSlice* pvs_lhs, value_type alpha, const DMatrixSliceSym& sym_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const T_SpVec& sv_rhs2)
 {
-	VectorSlice& vs_lhs = *pvs_lhs;
+	DVectorSlice& vs_lhs = *pvs_lhs;
 
 	Vp_MtV_assert_sizes(vs_lhs.dim(),sym_rhs1.rows(),sym_rhs1.cols(),trans_rhs1
 						, sv_rhs2.dim());
@@ -270,7 +270,7 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const sym_gms& sym_rhs1
 	size_type size = sv_rhs2.dim();
 	switch(sym_rhs1.uplo()) {
 		case BLAS_Cpp::lower: {
-			VectorSlice::iterator vs_lhs_itr; size_type i;
+			DVectorSlice::iterator vs_lhs_itr; size_type i;
 			for(vs_lhs_itr = vs_lhs.begin(), i = 1; i <= size; ++i)
 			{
 				if(i < size) {
@@ -288,7 +288,7 @@ void Vp_StMtSV(VectorSlice* pvs_lhs, value_type alpha, const sym_gms& sym_rhs1
 			break;			
 		}
 		case BLAS_Cpp::upper: {
-			VectorSlice::iterator vs_lhs_itr; size_type i;
+			DVectorSlice::iterator vs_lhs_itr; size_type i;
 			for(vs_lhs_itr = vs_lhs.begin(), i = 1; i <= size; ++i)
 			{
 				if(i > 1) {
@@ -317,7 +317,7 @@ namespace SparseVectorUtilityPack {
 // time = O(sv.nz()), space = O(1)
 //
 template<class T_SpVec>
-value_type imp_dot2_V_V_SV(const VectorSlice& vs1, const VectorSlice& vs2, const T_SpVec& sv)
+value_type imp_dot2_V_V_SV(const DVectorSlice& vs1, const DVectorSlice& vs2, const T_SpVec& sv)
 {
 	size_type split = vs1.dim();
 	value_type result = 0;

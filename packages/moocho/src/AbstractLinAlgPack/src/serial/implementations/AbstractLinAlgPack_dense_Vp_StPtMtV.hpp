@@ -21,10 +21,10 @@
 #include "SparseLinAlgPack/src/EtaVector.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSlice.hpp"
 #include "SparseLinAlgPack/src/GenPermMatrixSliceOp.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
-#include "LinAlgPack/src/GenMatrixOut.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixOut.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 #include "MiWorkspacePack.h"
 
 namespace SparseLinAlgPack {
@@ -38,7 +38,7 @@ namespace SparseLinAlgPack {
  */
 template<class M_t, class V_t>
 void dense_Vp_StPtMtV(
-	VectorSlice                 *y
+	DVectorSlice                 *y
 	,value_type                 a
 	,const GenPermMatrixSlice   &P
 	,BLAS_Cpp::Transp           P_trans
@@ -53,9 +53,9 @@ void dense_Vp_StPtMtV(
 	using BLAS_Cpp::trans_not;
 	using BLAS_Cpp::rows;
 	using BLAS_Cpp::cols;
-	using LinAlgPack::dot;
-	using LinAlgPack::Vector;
-	using LinAlgPack::Vt_S;
+	using DenseLinAlgPack::dot;
+	using DenseLinAlgPack::DVector;
+	using DenseLinAlgPack::Vt_S;
 	using SparseLinAlgPack::dot;
 	using SparseLinAlgPack::Vp_StMtV;
 	using SparseLinAlgPack::GenPermMatrixSlice;
@@ -67,7 +67,7 @@ void dense_Vp_StPtMtV(
 	// 
 	// y += op(P)*op(M)*x
 	// 
-	const LinAlgPack::size_type
+	const DenseLinAlgPack::size_type
 		ny = y->size(),
 		nx = x.size(),
 		opM_rows = rows( M.rows(), M.cols(), M_trans ),
@@ -95,7 +95,7 @@ void dense_Vp_StPtMtV(
 	else if( opM_rows > P.nz() || P.is_identity() ) {
 		// t = op(M)*x
 		wsp::Workspace<value_type> t_ws(wss,opM_rows);
-		VectorSlice t(&t_ws[0],t_ws.size());
+		DVectorSlice t(&t_ws[0],t_ws.size());
 		LinAlgOpPack::V_MtV( &t, M, M_trans, x );
 		// y = b*y + a*op(P)*t
 		Vp_StMtV( y, a, P, P_trans, t(), b );
@@ -106,7 +106,7 @@ void dense_Vp_StPtMtV(
 		else if(b!=1.0)  Vt_S(y,b);
 		// Compute t' = e(j)' * op(M) then y(i) += a*t'*x where op(P)(i,j) = 1.0
 		wsp::Workspace<value_type> t_ws(wss,opM_cols);
-		VectorSlice t(&t_ws[0],t_ws.size());
+		DVectorSlice t(&t_ws[0],t_ws.size());
 		if( P.is_identity() ) {
 			for( size_type k = 1; k <= P.nz(); ++k ) {
 				const size_type
@@ -120,7 +120,7 @@ void dense_Vp_StPtMtV(
 		}
 		else {
 			for( GenPermMatrixSlice::const_iterator itr = P.begin(); itr != P.end(); ++itr ) {
-				const LinAlgPack::size_type
+				const DenseLinAlgPack::size_type
 					i = P_trans == no_trans ? itr->row_i() : itr->col_j(),
 					j = P_trans == no_trans ? itr->col_j() : itr->row_i();
 				// t = op(M') * e(j)			

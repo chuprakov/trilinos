@@ -55,13 +55,13 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 
 	// Compute the quasi-range space step Ywy
 	wsp::Workspace<value_type> Ywy_ws(wss,xo.size());
-	VectorSlice                Ywy(&Ywy_ws[0],Ywy_ws.size());
+	DVectorSlice                Ywy(&Ywy_ws[0],Ywy_ws.size());
 	if(!quasi_range_space_step().solve_quasi_range_space_step(
 		out,olevel,algo,s,xo,c_xo,&Ywy ))
 		return false;
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\n||Ywy||2     = " << LinAlgPack::norm_2(Ywy);
+		out	<< "\n||Ywy||2     = " << DenseLinAlgPack::norm_2(Ywy);
 		out << std::endl;
 	}
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
@@ -86,7 +86,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 	const SpVectorSlice
 		&dl = d_bounds.l,
 		&du = d_bounds.u;
-	const Vector
+	const DVector
 		&x_k = s->x().get_k(0).v();
 	const SpVector
 		&nu_k = s->nu().get_k(0);
@@ -140,7 +140,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 		if( qp_objective() == OBJ_MIN_FULL_STEP )
 			Hess_store_.resize(n-r+1,n-r+1);
 	}
-	VectorSlice grad;
+	DVectorSlice grad;
 	switch(qp_objective())
 	{
 	    case OBJ_MIN_FULL_STEP: // grad = (Z'*Ywy), Hess = Z'*Z
@@ -150,7 +150,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 				// grad = (Z'*Ywy)
 				LinAlgOpPack::V_MtV( &grad, Z_k, BLAS_Cpp::trans, Ywy );
 				// Hess = Z'*Z
-				sym_gms S(Hess_store_(2,n-r+1,1,n-r),BLAS_Cpp::lower); // Must be strictly lower triangular here!
+				DMatrixSliceSym S(Hess_store_(2,n-r+1,1,n-r),BLAS_Cpp::lower); // Must be strictly lower triangular here!
 				Z_k.syrk( BLAS_Cpp::trans, 1.0, 0.0, &S ); // S = 1.0*Z'*Z + 0.0*S
 				MatrixSymPosDefCholFactor
 					*H_ptr = NULL;
@@ -201,8 +201,8 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 	//
 
 	wsp::Workspace<value_type>  wz_ws(wss,n-r),Zwz_ws(wss,n);
-	VectorSlice                 wz(&wz_ws[0],wz_ws.size());
-	VectorSlice                 Zwz(&Zwz_ws[0],Zwz_ws.size());
+	DVectorSlice                 wz(&wz_ws[0],wz_ws.size());
+	DVectorSlice                 Zwz(&Zwz_ws[0],Zwz_ws.size());
 	value_type                  qp_eta      = 0;
 
 	bool throw_qp_failure = false;
@@ -218,7 +218,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 		const MatrixFactorized &Hess = dyn_cast<const MatrixFactorized>(*Hess_ptr_);
 #endif
 		SparseLinAlgPack::V_InvMtV( &wz, Hess, BLAS_Cpp::no_trans, grad );
-		LinAlgPack::Vt_S(&wz,-1.0);
+		DenseLinAlgPack::Vt_S(&wz,-1.0);
 		// Zwz = Z*wz
 		LinAlgOpPack::V_MtV( &Zwz, Z_k, BLAS_Cpp::no_trans, wz );
 	}
@@ -228,28 +228,28 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 		// Set the arguments to the QP subproblem
 		//
 
-		VectorSlice 			qp_g		= grad;
+		DVectorSlice 			qp_g		= grad;
 		const MatrixWithOp& 	qp_G 		= *Hess_ptr_;
 		const value_type		qp_etaL 	= 0.0;
 		SpVectorSlice			qp_dL(NULL,0,0,n-r);	// If nz() == 0 then no simple bounds
 		SpVectorSlice			qp_dU(NULL,0,0,n-r);
 		const MatrixWithOp		*qp_E		= NULL;
 		BLAS_Cpp::Transp		qp_trans_E	= BLAS_Cpp::no_trans;
-		VectorSlice             qp_b;
+		DVectorSlice             qp_b;
 		SpVectorSlice			qp_eL(NULL,0,0,n);
 		SpVectorSlice			qp_eU(NULL,0,0,n);
 		const MatrixWithOp		*qp_F		= NULL;
 		BLAS_Cpp::Transp		qp_trans_F	= BLAS_Cpp::no_trans;
-		VectorSlice				qp_f;
-		VectorSlice				qp_d		= wz;
+		DVectorSlice				qp_f;
+		DVectorSlice				qp_d		= wz;
 		SpVector				*qp_nu		= NULL;
 		SpVector				*qp_mu		= NULL;
-		VectorSlice				qp_Ed;
-		VectorSlice				qp_lambda;
+		DVectorSlice				qp_Ed;
+		DVectorSlice				qp_lambda;
 
 		SpVector _nu_wz, _nu_Dwz, 	// Possible storage for multiplers for separate inequality
 			_nu;				// constriants for wz.
-		Vector _Dwz;				// Possible storage for D*wz computed by QP solver?
+		DVector _Dwz;				// Possible storage for D*wz computed by QP solver?
 
 		//
 		// Determine if we can use simple bounds on wz.
@@ -277,7 +277,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 			dep		= Zvr ? Zvr->dep()   : Range1D();
 
 		const bool
-			use_simple_wz_bounds = ( Zvr!=NULL && LinAlgPack::norm_inf(Ywy(indep))==0.0 );
+			use_simple_wz_bounds = ( Zvr!=NULL && DenseLinAlgPack::norm_inf(Ywy(indep))==0.0 );
 
 		if( use_simple_wz_bounds ) {
 
@@ -308,7 +308,7 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 		}
 
 		// Set the general equality constriants (if they exist)
-		Vector q(m-r);
+		DVector q(m-r);
 		Range1D undecomp = s->con_undecomp();
 		if( m > r ) {
 			assert(0); // ToDo: Implement when needed!
@@ -422,14 +422,14 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 				out
 					<< "\n*** Alert! the QP was infeasible (eta = "<<qp_eta<<").  Cutting back Ywy_k = (1.0 - eta)*Ywy  ...\n";
 			}
-			LinAlgPack::Vt_S( &Ywy , 1.0 - qp_eta );
+			DenseLinAlgPack::Vt_S( &Ywy , 1.0 - qp_eta );
 		}
 	}
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\n||wz||inf    = " << LinAlgPack::norm_inf(wz);
-		out	<< "\n||Zwz||2     = " << LinAlgPack::norm_2(Zwz);
-		if(qp_eta > 0.0) out << "\n||Ypy||2 = " << LinAlgPack::norm_2(Ywy);
+		out	<< "\n||wz||inf    = " << DenseLinAlgPack::norm_inf(wz);
+		out	<< "\n||Zwz||2     = " << DenseLinAlgPack::norm_2(Zwz);
+		if(qp_eta > 0.0) out << "\n||Ypy||2 = " << DenseLinAlgPack::norm_2(Ywy);
 		out << std::endl;
 	}
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {
@@ -457,10 +457,10 @@ bool FeasibilityStepReducedStd_Strategy::compute_feasibility_step(
 	//
 	// w = Ywy + Zwz
 	//
-	LinAlgPack::V_VpV( w, Ywy, Zwz );
+	DenseLinAlgPack::V_VpV( w, Ywy, Zwz );
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
-		out	<< "\n||w||inf    = " << LinAlgPack::norm_inf(*w);
+		out	<< "\n||w||inf    = " << DenseLinAlgPack::norm_inf(*w);
 		out << std::endl;
 	}
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_VECTORS) ) {

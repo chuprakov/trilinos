@@ -19,9 +19,9 @@
 #include "SparseLinAlgPack/src/SpVectorClass.hpp"
 #include "SparseLinAlgPack/src/SpVectorOp.hpp"
 #include "SparseLinAlgPack/src/MatrixWithOpOut.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
-#include "LinAlgPack/src/LinAlgPackAssertOp.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DenseLinAlgPackAssertOp.hpp"
 
 namespace LinAlgOpPack {
 	using SparseLinAlgPack::Vp_StMtV;
@@ -45,7 +45,7 @@ void MatrixHessianSuperBasic::initialize(
 	,const B_XX_ptr_t&   B_XX_ptr
 	)
 {
-	using LinAlgPack::Mp_M_assert_sizes;
+	using DenseLinAlgPack::Mp_M_assert_sizes;
 	using BLAS_Cpp::no_trans;
 
 	const size_type
@@ -141,8 +141,8 @@ size_type MatrixHessianSuperBasic::rows() const
 // Overridden from MatrixWithOp
 
 void MatrixHessianSuperBasic::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp B_trans
-	, const VectorSlice& x, value_type b
+	DVectorSlice* y, value_type a, BLAS_Cpp::Transp B_trans
+	, const DVectorSlice& x, value_type b
 	) const
 {
 	using BLAS_Cpp::no_trans;
@@ -151,7 +151,7 @@ void MatrixHessianSuperBasic::Vp_StMtV(
 	using SparseLinAlgPack::V_MtV;
 	using LinAlgOpPack::V_MtV;
 	assert_initialized();
-	LinAlgPack::Vp_MtV_assert_sizes( y->size(), n_, n_, B_trans, x.size() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes( y->size(), n_, n_, B_trans, x.size() );
 	if( n_ == n_R_ ) {
 		//
 		// B = Q_R*B_RR*Q_R'
@@ -162,7 +162,7 @@ void MatrixHessianSuperBasic::Vp_StMtV(
 			SparseLinAlgPack::Vp_StMtV(y,a,*this->B_RR_ptr(),no_trans,x,b);
 		}
 		else {
-			Vector Q_R_x;
+			DVector Q_R_x;
 			V_MtV( &Q_R_x, Q_R(), trans, x );
 			SparseLinAlgPack::Vp_StPtMtV(y,a,Q_R(),no_trans,*this->B_RR_ptr(),no_trans,Q_R_x(),b);
 		}
@@ -213,7 +213,7 @@ void MatrixHessianSuperBasic::Vp_StMtV(
 }
 
 void MatrixHessianSuperBasic::Vp_StMtV(
-	VectorSlice* y, value_type a, BLAS_Cpp::Transp B_trans
+	DVectorSlice* y, value_type a, BLAS_Cpp::Transp B_trans
 	, const SpVectorSlice& x, value_type b
 	) const
 {
@@ -223,7 +223,7 @@ void MatrixHessianSuperBasic::Vp_StMtV(
 	using SparseLinAlgPack::V_MtV;
 	using LinAlgOpPack::V_MtV;
 	assert_initialized();
-	LinAlgPack::Vp_MtV_assert_sizes( y->size(), n_, n_, B_trans, x.size() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes( y->size(), n_, n_, B_trans, x.size() );
 	if( n_ == n_R_ ) {
 		//
 		// B = Q_R*B_RR*Q_R'
@@ -285,16 +285,16 @@ void MatrixHessianSuperBasic::Vp_StMtV(
 }
 
 void MatrixHessianSuperBasic::Vp_StPtMtV(
-	VectorSlice* y, value_type a
+	DVectorSlice* y, value_type a
 	, const GenPermMatrixSlice& P, BLAS_Cpp::Transp P_trans
 	, BLAS_Cpp::Transp M_trans
-	, const VectorSlice& x, value_type b ) const
+	, const DVectorSlice& x, value_type b ) const
 {
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	using BLAS_Cpp::trans_not;
 	using SparseLinAlgPack::V_MtV;
-	using LinAlgPack::Vt_S;
+	using DenseLinAlgPack::Vt_S;
 	using LinAlgOpPack::V_MtV;
 	namespace slap = SparseLinAlgPack;
 
@@ -341,7 +341,7 @@ void MatrixHessianSuperBasic::Vp_StPtMtV(
 	if(b==0.0)      *y = 0.0;
 	else if(b!=1.0) Vt_S(y,b);
 	// 
-	Vector t; // ToDo: use workspace
+	DVector t; // ToDo: use workspace
 	// y += a*op(P)*Q_R*B_RR*Q_R'*x
 	if( P_Q_R_nz && Q_RT_x.nz() ) {
 		t.resize(n_);
@@ -375,7 +375,7 @@ value_type MatrixHessianSuperBasic::transVtMtV(
 	using BLAS_Cpp::no_trans;
 	using BLAS_Cpp::trans;
 	assert_initialized();
-	LinAlgPack::Vp_MtV_assert_sizes( x1.size(), rows(), cols(), B_trans, x1.size() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes( x1.size(), rows(), cols(), B_trans, x1.size() );
 	if( n_ == n_R_ ) {
 		//
 		// B = Q_R*B_RR*Q_R'
@@ -386,7 +386,7 @@ value_type MatrixHessianSuperBasic::transVtMtV(
 			return SparseLinAlgPack::transVtMtV( x1, *B_RR_ptr(), no_trans, x2 );
 		}
 		else {
-			if( x1.overlap(x2) == LinAlgPack::SAME_MEM ) {
+			if( x1.overlap(x2) == DenseLinAlgPack::SAME_MEM ) {
 				SpVector Q_RT_x2;
 				SparseLinAlgPack::V_MtV( &Q_RT_x2, Q_R(), trans, x2 );
 				SpVectorSlice Q_RT_x2_slc = Q_RT_x2();
@@ -422,7 +422,7 @@ value_type MatrixHessianSuperBasic::transVtMtV(
 		//
 		// a = x1'*Q_R*B_RR*Q_R'*x2 + 2*x1'*Q_R*op(B_RX)*Q_X'*x2 + x1'*Q_X*B_XX*Q_X'*x2
 		//
-		if( x1.overlap(x2) == LinAlgPack::SAME_MEM ) {
+		if( x1.overlap(x2) == DenseLinAlgPack::SAME_MEM ) {
 			// a = x1'*Q_R*B_RR*Q_R'*x1 + 2*x1'*Q_R*op(B_RX)*Q_X'*x1 + x1'*Q_X*B_XX*Q_X'*x1
 			SpVector Q_RT_x1;
 			if( Q_R().nz() )

@@ -17,12 +17,12 @@
 #include <sstream>
 #include <iomanip>
 
-#include "LinAlgPack/src/assert_print_nan_inf.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
+#include "DenseLinAlgPack/src/assert_print_nan_inf.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
 #include "RTOpPack/src/check_nan_inf.h"
 
-bool LinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
+bool DenseLinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
 	, bool throw_excpt, std::ostream* out )
 {
 	
@@ -44,14 +44,14 @@ bool LinAlgPack::assert_print_nan_inf( const value_type& val, char name[]
 	return true;
 }
 
-bool LinAlgPack::assert_print_nan_inf( const VectorSlice& v, char name[]
+bool DenseLinAlgPack::assert_print_nan_inf( const DVectorSlice& v, char name[]
 	, bool throw_excpt, std::ostream* out )
 {
 	
 	bool has_nan_or_inf = false;
 	bool printed_header = false;
 
-	for( VectorSlice::const_iterator v_itr = v.begin(); v_itr != v.end(); ++v_itr ) {
+	for( DVectorSlice::const_iterator v_itr = v.begin(); v_itr != v.end(); ++v_itr ) {
 		if( RTOp_is_nan_inf(*v_itr) ) {
 			if(out) {
 				if(!printed_header) {
@@ -80,7 +80,7 @@ bool LinAlgPack::assert_print_nan_inf( const VectorSlice& v, char name[]
 	return !has_nan_or_inf;
 }
 
-bool LinAlgPack::assert_print_nan_inf( const GenMatrixSlice& m, char name[]
+bool DenseLinAlgPack::assert_print_nan_inf( const DMatrixSlice& m, char name[]
 	, bool throw_excpt, std::ostream* out )
 {
 	
@@ -88,8 +88,8 @@ bool LinAlgPack::assert_print_nan_inf( const GenMatrixSlice& m, char name[]
 	bool printed_header = false;
 
 	for( size_type j = 1; j <= m.cols(); ++j ) {
-		const VectorSlice& v = m.col(j);
-		for( VectorSlice::const_iterator v_itr = v.begin(); v_itr != v.end(); ++v_itr ) {
+		const DVectorSlice& v = m.col(j);
+		for( DVectorSlice::const_iterator v_itr = v.begin(); v_itr != v.end(); ++v_itr ) {
 			if( RTOp_is_nan_inf(*v_itr) ) {
 				if(out) {
 					if(!printed_header) {

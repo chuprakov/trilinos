@@ -79,7 +79,7 @@ class SparseVectorSlice;
 
 // ///////////////////////////////////////////////////////////////////////
 ///
-/** Sparse Vector class template.
+/** Sparse DVector class template.
   *
   * This is a class for abstracting a sparse vector of a templated element
   * type.  All of the operations are based on the element type.  Access
@@ -208,7 +208,7 @@ public:
 	  *		\begin{description}
 	  *		<li>[NO_OVERLAP]	There is no memory overlap between this and sv
 	  *		<li>[SOME_OVERLAP]	There is some memory locations that this and sv share
-	  *		<li>[SAME_MEM]		The VectorSlice objects this and sv share the exact same memory locations.
+	  *		<li>[SAME_MEM]		The DVectorSlice objects this and sv share the exact same memory locations.
 	  *		\end{description}
 	  */
 	EOverLap overlap(const SparseVectorSlice<T_Element>& sv) const;
@@ -528,7 +528,7 @@ private:
 
 // ///////////////////////////////////////////////////////////////////////
 ///
-/** Sparse Vector Slice class template.
+/** Sparse DVector Slice class template.
   *
   * This is a class for abstracting a region of a sparse vector stored
   * as an array of elements of a templated type.  The required inteface
@@ -631,12 +631,12 @@ public:
 	  *		\begin{description}
 	  *		<li>[NO_OVERLAP]	There is no memory overlap between this and sv
 	  *		<li>[SOME_OVERLAP]	There is some memory locations that this and sv share
-	  *		<li>[SAME_MEM]		The VectorSlice objects this and sv share the exact same memory locations.
+	  *		<li>[SAME_MEM]		The DVectorSlice objects this and sv share the exact same memory locations.
 	  *		\end{description}
 	  */
 	EOverLap overlap(const SparseVectorSlice<T_Element>& sv) const;
 
-	/** @name Sparse Vector Templated interface for linear algebra operations */
+	/** @name Sparse DVector Templated interface for linear algebra operations */
 	//@{
 
 	/// Return the number of elements in the full vector
@@ -1021,7 +1021,7 @@ inline void SparseVectorSlice<T_Element>::bind(SparseVectorSlice svs)
 	assume_sorted_	= svs.assume_sorted_;
 }
 
-// Sparse Vector Templated interface for linear algebra operations
+// Sparse DVector Templated interface for linear algebra operations
 
 template <class T_Element>
 inline SparseVectorSlice<T_Element>::size_type SparseVectorSlice<T_Element>::dim() const {

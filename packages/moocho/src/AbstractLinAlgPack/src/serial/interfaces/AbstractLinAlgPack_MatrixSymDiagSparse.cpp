@@ -22,12 +22,12 @@
 #include "AbstractLinAlgPack/src/EtaVector.hpp"
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackAssertOp.hpp"
 #include "AbstractLinAlgPack/src/SpVectorOut.hpp"
-#include "LinAlgPack/src/VectorClass.hpp"
-#include "LinAlgPack/src/GenMatrixAssign.hpp"
-#include "LinAlgPack/src/GenMatrixClass.hpp"
-#include "LinAlgPack/src/GenMatrixOp.hpp"
-#include "LinAlgPack/src/assert_print_nan_inf.hpp"
-#include "LinAlgPack/src/LinAlgOpPack.hpp"
+#include "DenseLinAlgPack/src/DVectorClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixAssign.hpp"
+#include "DenseLinAlgPack/src/DMatrixClass.hpp"
+#include "DenseLinAlgPack/src/DMatrixOp.hpp"
+#include "DenseLinAlgPack/src/assert_print_nan_inf.hpp"
+#include "DenseLinAlgPack/src/LinAlgOpPack.hpp"
 #include "ThrowException.hpp"
 
 namespace {
@@ -60,8 +60,8 @@ std::ostream& MatrixSymDiagonalSparse::output(std::ostream& out) const
 
 // Overridden from MatrixWithOpSerial
 
-void MatrixSymDiagonalSparse::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha
-	, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_rhs2, value_type beta) const
+void MatrixSymDiagonalSparse::Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha
+	, BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2, value_type beta) const
 {
 	const SpVectorSlice &diag = this->diag();
 
@@ -69,7 +69,7 @@ void MatrixSymDiagonalSparse::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha
 
 	// Assert that the dimensions of the aruments match up and if not
 	// then throw an excption.
-	LinAlgPack::Vp_MtV_assert_sizes( vs_lhs->dim(), n, n, trans_rhs1, vs_rhs2.dim() );
+	DenseLinAlgPack::Vp_MtV_assert_sizes( vs_lhs->dim(), n, n, trans_rhs1, vs_rhs2.dim() );
 
 	// y = b*y + a * op(A) * x
 	//
@@ -87,7 +87,7 @@ void MatrixSymDiagonalSparse::Vp_StMtV(VectorSlice* vs_lhs, value_type alpha
 // Overridden from MatrixSymWithOpSerial
 
 void MatrixSymDiagonalSparse::Mp_StMtMtM(
-	sym_gms* B, value_type alpha
+	DMatrixSliceSym* B, value_type alpha
 	,EMatRhsPlaceHolder dummy_place_holder
 	,const MatrixWithOpSerial& A, BLAS_Cpp::Transp A_trans
 	,value_type b
@@ -97,22 +97,22 @@ void MatrixSymDiagonalSparse::Mp_StMtMtM(
 	using BLAS_Cpp::cols;
 	using BLAS_Cpp::trans_not;
 
-	using LinAlgPack::nonconst_tri_ele;
-	using LinAlgPack::assign;
-	using LinAlgPack::syrk;
-	using LinAlgPack::assert_print_nan_inf;
+	using DenseLinAlgPack::nonconst_tri_ele;
+	using DenseLinAlgPack::assign;
+	using DenseLinAlgPack::syrk;
+	using DenseLinAlgPack::assert_print_nan_inf;
 
 	using LinAlgOpPack::V_MtV;
 
 	typedef EtaVector eta;
 
 	// Assert the size matching of M * op(A)
-	LinAlgPack::MtV_assert_sizes(
+	DenseLinAlgPack::MtV_assert_sizes(
 		  this->rows(), this->cols(), BLAS_Cpp::no_trans
 		, rows( A.rows(), A.cols(), A_trans ) );
 
 	// Assert size matchin of B = (op(A') * M * op(A))
-	LinAlgPack::Vp_V_assert_sizes(
+	DenseLinAlgPack::Vp_V_assert_sizes(
 		  B->cols(), cols( A.rows(), A.cols(), A_trans ) );
 
 	//
@@ -191,7 +191,7 @@ void MatrixSymDiagonalSparse::Mp_StMtMtM(
 		assign( &nonconst_tri_ele( B->gms(), B->uplo() ), 0.0 );
 
 	// Perform the rank-(num_updates) updates
-	GenMatrix D(m,num_updates);
+	DMatrix D(m,num_updates);
 	for( size_type k = 1; k <= num_blocks; ++k ) {
 		const size_type
 			i1 = (k-1) * num_updates + 1,
@@ -205,7 +205,7 @@ void MatrixSymDiagonalSparse::Mp_StMtMtM(
 			V_MtV( &D.col(l), A, trans_not(A_trans)
 				, eta( m_itr->index(), n, ::sqrt(m_itr->value()) )() );
 		}
-		const GenMatrixSlice
+		const DMatrixSlice
 			D_update = D(1,m,1,i2-i1+1);
 
 

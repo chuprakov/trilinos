@@ -57,9 +57,9 @@ public:
 	///
 	/** Initialize the composite vector space for <tt>x = [ xD; xI ]</tt> as well as \c var_dep and \c var_indep.
 	 *
-	 * @param  space_xD  [in/out] Vector space for the dependent variables.  On output
+	 * @param  space_xD  [in/out] DVector space for the dependent variables.  On output
 	 *                   <tt>space_xD.count()</tt> will be incremented by 1.
-	 * @param  space_xI  [in/out] Vector space for the independent variables.  On output
+	 * @param  space_xI  [in/out] DVector space for the independent variables.  On output
 	 *                   <tt>space_xI.count()</tt> will be incremented by 1.
 	 * @param  var_dep   [out] Range for dependent variables in output \c space_x
 	 * @param  var_indep [out] Range for independent variables in output \c space_x
@@ -106,10 +106,10 @@ public:
 	 Gc = [ C'; N' ]
 	 \endverbatim
 	 *
-	 * @param  space_x   [in] Vector space for the variables (returned from \c initialize_space_x()).
+	 * @param  space_x   [in] DVector space for the variables (returned from \c initialize_space_x()).
 	 * @param  var_dep   [in] Range for dependent variables in \c space_x.
 	 * @param  var_indep [in] Range for independent variables in \c space_x.
-	 * @param  space_c   [in] Vector space for the equality constraints.
+	 * @param  space_c   [in] DVector space for the equality constraints.
 	 * @param  C         [in/out] Nonsingular basis matrix, initialized and ready to go.  On output
 	 *                   <tt>C.count()</tt> will be incremented by 1.
 	 * @param  N         [in/out] Non-basis matrix, initialized and ready to go.  On output

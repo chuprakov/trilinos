@@ -80,10 +80,10 @@ namespace SparseLinAlgPack {
  */
 void rank_2_chol_update(
 	const value_type     a
-	,VectorSlice         *u
-	,const VectorSlice   &v
-	,VectorSlice         *w
-	,tri_ele_gms         *R
+	,DVectorSlice         *u
+	,const DVectorSlice   &v
+	,DVectorSlice         *w
+	,DMatrixSliceTriEle         *R
 	,BLAS_Cpp::Transp    R_trans
 	);
 

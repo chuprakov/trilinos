@@ -53,8 +53,8 @@ bool act_set_calmed_down(
  *
  * @param  nu_indep  [in] Sparse vector (n_pz = nu_indep.size(), n_pz_R = n_pz - nu_indep.nz())
  *                   of Lagrange multipliers for the independent variables.
- * @param  s         [in] Vector (size n_pz) secant update vector for B*s=y
- * @param  y         [in] Vector (size n_pz) secant update vector for B*s=y
+ * @param  s         [in] DVector (size n_pz) secant update vector for B*s=y
+ * @param  y         [in] DVector (size n_pz) secant update vector for B*s=y
  * @param  n_pz_R    [out] Number of free super basic variables (n_pz_R = n_pz - nu_indep.nz())
  * @param  i_x_free  [out] Array (size n_pz_R) of indices the free independent (superbasic) variables.
  *                   These are the indices not in nu_indep. 
@@ -63,8 +63,8 @@ bool act_set_calmed_down(
  */
 void init_i_x_free_sRTsR_sRTyR(
 	const SpVectorSlice        &nu_indep
-	,const VectorSlice         &s
-	,const VectorSlice         &y
+	,const DVectorSlice         &s
+	,const DVectorSlice         &y
 	,size_type                 *n_pz_R
 	,size_type                 i_x_free[]
 	,value_type                *sRTsR
@@ -87,9 +87,9 @@ void init_i_x_free_sRTsR_sRTyR(
  *
  * @param  nu_indep  [in] Sparse vector (n_pz = nu_indep.size(), n_pz_R = n_pz - nu_indep.nz())
  *                   of Lagrange multipliers for the independent variables.
- * @param  s         [in] Vector (size n_pz), secant update vector for B*s=y
- * @param  y         [in] Vector (size n_pz), secant update vector for B*s=y
- * @param  B_XX      [in] Vector (size nu_indep.nz()), Diagonal elements for B_XX
+ * @param  s         [in] DVector (size n_pz), secant update vector for B*s=y
+ * @param  y         [in] DVector (size n_pz), secant update vector for B*s=y
+ * @param  B_XX      [in] DVector (size nu_indep.nz()), Diagonal elements for B_XX
  * @param  sRTBRRsR  [in] s_R' * B_RR * s_R
  * @param  sRTyR     [in] s_R' * y_R
  * @param  sXTBXXsX  [out] s_X' * B_XX * s_X
@@ -103,9 +103,9 @@ void init_i_x_free_sRTsR_sRTyR(
  */
 void sort_fixed_max_cond_viol(
 	const SpVectorSlice        &nu_indep
-	,const VectorSlice         &s
-	,const VectorSlice         &y
-	,const VectorSlice         &B_XX
+	,const DVectorSlice         &s
+	,const DVectorSlice         &y
+	,const DVectorSlice         &B_XX
 	,const value_type          sRTBRRsR
 	,const value_type          sRTyR
 	,value_type                *sXTBXXsX
@@ -139,9 +139,9 @@ void sort_fixed_max_cond_viol(
  *                [in] see above
  * @param  nu_indep  [in] Sparse vector (n_pz = nu_indep.size(), n_pz_R = n_pz - nu_indep.nz())
  *                   of Lagrange multipliers for the independent variables.
- * @param  s         [in] Vector (size n_pz), secant update vector for B*s=y
- * @param  y         [in] Vector (size n_pz), secant update vector for B*s=y
- * @param  B_XX      [in] Vector (size nu_indep.nz()), Diagonal elements for B_XX
+ * @param  s         [in] DVector (size n_pz), secant update vector for B*s=y
+ * @param  y         [in] DVector (size n_pz), secant update vector for B*s=y
+ * @param  B_XX      [in] DVector (size nu_indep.nz()), Diagonal elements for B_XX
  * @param  l_x_fixed_sorted
  *                   [in] Array (size nu_indep.nz()) which gives the indices
  *                   l = l_x_fixed_sorted[k], k = 0...nu_indep.nz()-1, where
@@ -179,9 +179,9 @@ void choose_fixed_free(
 	const value_type                       project_error_tol
 	,const value_type                      super_basic_mult_drop_tol
 	,const SpVectorSlice                   &nu_indep
-	,const VectorSlice                     &s
-	,const VectorSlice                     &y
-	,const VectorSlice                     &B_XX
+	,const DVectorSlice                     &s
+	,const DVectorSlice                     &y
+	,const DVectorSlice                     &B_XX
 	,const size_type                       l_x_fixed_sorted[]
 	,EJournalOutputLevel                   olevel
 	,std::ostream                          &out

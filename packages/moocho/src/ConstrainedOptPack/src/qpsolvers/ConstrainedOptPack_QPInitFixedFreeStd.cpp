@@ -34,16 +34,16 @@ QPInitFixedFreeStd::QPInitFixedFreeStd()
 {}
 
 void QPInitFixedFreeStd::initialize(
-	const VectorSlice                   &g
+	const DVectorSlice                   &g
 	,const MatrixSymWithOp              &G
 	,const MatrixWithOp                 *A
 	,size_type                          n_R
 	,const size_type                    i_x_free[]
 	,const size_type                    i_x_fixed[]
 	,const EBounds                      bnd_fixed[]
-	,const VectorSlice                  &b_X
+	,const DVectorSlice                  &b_X
 	,const MatrixSymWithOpNonsingular    &Ko
-	,const VectorSlice                  &fo
+	,const DVectorSlice                  &fo
 	,Constraints                        *constraints
 	,std::ostream                       *out
 	,bool                               test_setup
@@ -210,12 +210,12 @@ void QPInitFixedFreeStd::initialize(
 	n_				= n;
 	n_R_			= n_R;
 	m_				= m;
-	g_.bind(const_cast<VectorSlice&>(g));
+	g_.bind(const_cast<DVectorSlice&>(g));
 	G_				= &G;
 	A_				= A;
-	b_X_.bind(const_cast<VectorSlice&>(b_X));
+	b_X_.bind(const_cast<DVectorSlice&>(b_X));
 	Ko_				= &Ko;
-	fo_.bind(const_cast<VectorSlice&>(fo));
+	fo_.bind(const_cast<DVectorSlice&>(fo));
 	constraints_ 	= constraints;
 }
 
@@ -233,7 +233,7 @@ size_type QPInitFixedFreeStd::m() const
 	return m_;
 }
 
-const VectorSlice QPInitFixedFreeStd::g() const
+const DVectorSlice QPInitFixedFreeStd::g() const
 {
 	assert_initialized();
 	return g_;
@@ -275,7 +275,7 @@ const QP::i_x_X_map_t& QPInitFixedFreeStd::i_x_X_map() const
 	return i_x_X_map_;
 }
 
-const VectorSlice QPInitFixedFreeStd::b_X() const
+const DVectorSlice QPInitFixedFreeStd::b_X() const
 {
 	assert_initialized();
 	return b_X_;
@@ -299,7 +299,7 @@ const MatrixSymWithOpNonsingular& QPInitFixedFreeStd::Ko() const
 	return *Ko_;
 }
 
-const VectorSlice QPInitFixedFreeStd::fo() const
+const DVectorSlice QPInitFixedFreeStd::fo() const
 {
 	assert_initialized();
 	return fo_;

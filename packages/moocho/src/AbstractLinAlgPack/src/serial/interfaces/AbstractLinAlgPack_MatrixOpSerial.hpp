@@ -71,23 +71,23 @@ public:
 	//@{
 
 	/// gms_lhs += alpha * op(M_rhs) (BLAS xAXPY)
-	virtual void Mp_StM(GenMatrixSlice* gms_lhs, value_type alpha
+	virtual void Mp_StM(DMatrixSlice* gms_lhs, value_type alpha
 		, BLAS_Cpp::Transp trans_rhs) const;
 
 	/// gms_lhs += alpha * op(M_rhs) * op(P_rhs)
-	virtual void Mp_StMtP(GenMatrixSlice* gms_lhs, value_type alpha
+	virtual void Mp_StMtP(DMatrixSlice* gms_lhs, value_type alpha
 		, BLAS_Cpp::Transp M_trans
 		, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 		) const;
 
 	/// gms_lhs += alpha * op(P) * op(M_rhs)
-	virtual void Mp_StPtM(GenMatrixSlice* gms_lhs, value_type alpha
+	virtual void Mp_StPtM(DMatrixSlice* gms_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 		, BLAS_Cpp::Transp M_trans
 		) const;
 
 	/// gms_lhs += alpha * op(P_rhs1) * op(M_rhs) * op(P_rhs2)
-	virtual void Mp_StPtMtP(GenMatrixSlice* gms_lhs, value_type alpha
+	virtual void Mp_StPtMtP(DMatrixSlice* gms_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_trans
 		, const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
@@ -99,28 +99,28 @@ public:
 	//@{
 
 	/// vs_lhs = alpha * op(M_rhs1) * vs_rhs2 + beta * vs_lhs (BLAS xGEMV)
-	virtual void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
-		, const VectorSlice& vs_rhs2, value_type beta) const = 0;
+	virtual void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+		, const DVectorSlice& vs_rhs2, value_type beta) const = 0;
 
 	/// vs_lhs = alpha * op(M_rhs1) * sv_rhs2 + beta * vs_lhs (BLAS xGEMV)
-	virtual void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
+	virtual void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, BLAS_Cpp::Transp trans_rhs1
 		, const SpVectorSlice& sv_rhs2, value_type beta) const;
 
 	/// vs_lhs = alpha * op(P_rhs1) * op(M_rhs2) * vs_rhs3 + beta * vs_rhs
-	virtual void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
+	virtual void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
-		, const VectorSlice& vs_rhs3, value_type beta) const;
+		, const DVectorSlice& vs_rhs3, value_type beta) const;
 
 	/// vs_lhs = alpha * op(P_rhs1) * op(M_rhs2) * sv_rhs3 + beta * vs_rhs
-	virtual void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
+	virtual void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
 		, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 		, BLAS_Cpp::Transp M_rhs2_trans
 		, const SpVectorSlice& sv_rhs3, value_type beta) const;
 
 	/// result = vs_rhs1' * op(M_rhs2) * vs_rhs3
-	virtual value_type transVtMtV(const VectorSlice& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
-		, const VectorSlice& vs_rhs3) const;
+	virtual value_type transVtMtV(const DVectorSlice& vs_rhs1, BLAS_Cpp::Transp trans_rhs2
+		, const DVectorSlice& vs_rhs3) const;
 
 	///
 	/** Perform a specialized rank-2k update of a dense symmetric matrix of the form:
@@ -138,7 +138,7 @@ public:
 		 BLAS_Cpp::Transp M_trans, value_type alpha
 		, const GenPermMatrixSlice& P1, BLAS_Cpp::Transp P1_trans
 		, const GenPermMatrixSlice& P2, BLAS_Cpp::Transp P2_trans
-		, value_type beta, sym_gms* sym_lhs ) const;
+		, value_type beta, DMatrixSliceSym* sym_lhs ) const;
 
 	//@}
 
@@ -146,35 +146,35 @@ public:
 	//@{
 
 	/// gms_lhs = alpha * op(M_rhs1) * op(gms_rhs2) + beta * gms_lhs (right) (xGEMM)
-	virtual void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha
-		, BLAS_Cpp::Transp trans_rhs1, const GenMatrixSlice& gms_rhs2
+	virtual void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha
+		, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
 		, BLAS_Cpp::Transp trans_rhs2, value_type beta) const;
 
 	/// gms_lhs = alpha * op(gms_rhs1) * op(M_rhs2) + beta * gms_lhs (left) (xGEMM)
-	virtual void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
+	virtual void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 		, BLAS_Cpp::Transp trans_rhs1, BLAS_Cpp::Transp trans_rhs2, value_type beta) const;
 
 	/// gms_lhs = alpha * op(M_rhs1) * op(mwo_rhs2) + beta * gms_lhs (right) (xGEMM)
-	virtual void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha
+	virtual void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha
 		, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOpSerial& mwo_rhs2
 		, BLAS_Cpp::Transp trans_rhs2, value_type beta) const;
 
 	/// gms_lhs = alpha * op(M_rhs1) * op(sym_rhs2) + beta * gms_lhs (right) (xSYMM)
-	virtual void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha
-		, BLAS_Cpp::Transp trans_rhs1, const sym_gms& sym_rhs2
+	virtual void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha
+		, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceSym& sym_rhs2
 		, BLAS_Cpp::Transp trans_rhs2, value_type beta) const;
 
 	/// gms_lhs = alpha * op(sym_rhs1) * op(M_rhs2) + beta * gms_lhs (left) (xSYMM)
-	virtual void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const sym_gms& sym_rhs1
+	virtual void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceSym& sym_rhs1
 		, BLAS_Cpp::Transp trans_rhs1, BLAS_Cpp::Transp trans_rhs2, value_type beta) const;
 
 	/// gms_lhs = alpha * op(M_rhs1) * op(tri_rhs2) + beta * gms_lhs (right) (xTRMM)
-	virtual void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha
-		, BLAS_Cpp::Transp trans_rhs1, const tri_gms& tri_rhs2
+	virtual void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha
+		, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2
 		, BLAS_Cpp::Transp trans_rhs2, value_type beta) const;
 
 	/// gms_lhs = alpha * op(tri_rhs1) * op(M_rhs2) + beta * gms_lhs (left) (xTRMM)
-	virtual void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const tri_gms& tri_rhs1
+	virtual void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
 		, BLAS_Cpp::Transp trans_rhs1, BLAS_Cpp::Transp trans_rhs2, value_type beta) const;
 
 
@@ -189,7 +189,7 @@ public:
 	 */
 	virtual void syrk(
 		 BLAS_Cpp::Transp M_trans, value_type alpha
-		, value_type beta, sym_gms* sym_lhs ) const;
+		, value_type beta, DMatrixSliceSym* sym_lhs ) const;
 
 	//@}
 
@@ -289,7 +289,7 @@ private:
 /** \defgroup MatrixWithOpSerial_funcs MatrixWithOpSerial nonmember inline functions.
  *
  * These nonmember functions allow operations to be called on \c MatrixWithOpSerial objects
- * in similar manner to those in \c LinAlgPack.
+ * in similar manner to those in \c DenseLinAlgPack.
  */
 //@{
 
@@ -297,14 +297,14 @@ private:
 //@{
 
 /// gms_lhs += alpha * op(M_rhs) (BLAS xAXPY)
-inline void Mp_StM(GenMatrixSlice* gms_lhs, value_type alpha, const MatrixWithOpSerial& M_rhs
+inline void Mp_StM(DMatrixSlice* gms_lhs, value_type alpha, const MatrixWithOpSerial& M_rhs
 	, BLAS_Cpp::Transp trans_rhs)
 {
 	M_rhs.Mp_StM(gms_lhs,alpha,trans_rhs);
 }
 
 /// gms_lhs += alpha * op(M_rhs) * op(P_rhs)
-inline void Mp_StMtP(GenMatrixSlice* gms_lhs, value_type alpha
+inline void Mp_StMtP(DMatrixSlice* gms_lhs, value_type alpha
 	, const MatrixWithOpSerial& M_rhs, BLAS_Cpp::Transp M_trans
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	)
@@ -313,7 +313,7 @@ inline void Mp_StMtP(GenMatrixSlice* gms_lhs, value_type alpha
 }
 
 /// gms_lhs += alpha * op(P) * op(M_rhs)
-inline void Mp_StPtM(GenMatrixSlice* gms_lhs, value_type alpha
+inline void Mp_StPtM(DMatrixSlice* gms_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs, BLAS_Cpp::Transp P_rhs_trans
 	, const MatrixWithOpSerial& M_rhs, BLAS_Cpp::Transp M_trans
 	)
@@ -322,7 +322,7 @@ inline void Mp_StPtM(GenMatrixSlice* gms_lhs, value_type alpha
 }
 
 /// gms_lhs += alpha * op(P_rhs1) * op(M_rhs) * op(P_rhs2)
-inline void Mp_StPtMtP(GenMatrixSlice* gms_lhs, value_type alpha
+inline void Mp_StPtMtP(DMatrixSlice* gms_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 	, const MatrixWithOpSerial& M_rhs, BLAS_Cpp::Transp trans_rhs
 	, const GenPermMatrixSlice& P_rhs2, BLAS_Cpp::Transp P_rhs2_trans
@@ -337,30 +337,30 @@ inline void Mp_StPtMtP(GenMatrixSlice* gms_lhs, value_type alpha
 //@{
 
 /// vs_lhs = alpha * op(M_rhs1) * vs_rhs2 + beta * vs_lhs (BLAS xGEMV)
-inline void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, const MatrixWithOpSerial& M_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const VectorSlice& vs_rhs2, value_type beta = 1.0)
+inline void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const MatrixWithOpSerial& M_rhs1
+	, BLAS_Cpp::Transp trans_rhs1, const DVectorSlice& vs_rhs2, value_type beta = 1.0)
 {
 	M_rhs1.Vp_StMtV(vs_lhs,alpha,trans_rhs1,vs_rhs2,beta);
 }
 
 /// vs_lhs = alpha * op(M_rhs1) * sv_rhs2 + beta * vs_lhs (BLAS xGEMV)
-inline void Vp_StMtV(VectorSlice* vs_lhs, value_type alpha, const MatrixWithOpSerial& M_rhs1
+inline void Vp_StMtV(DVectorSlice* vs_lhs, value_type alpha, const MatrixWithOpSerial& M_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const SpVectorSlice& sv_rhs2, value_type beta = 1.0)
 {
 	M_rhs1.Vp_StMtV(vs_lhs,alpha,trans_rhs1,sv_rhs2,beta);
 }
 
 /// vs_lhs = alpha * op(P_rhs1) * op(M_rhs2) * vs_rhs3 + beta * vs_rhs
-inline void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
+inline void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 	, const MatrixWithOpSerial& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
-	, const VectorSlice& vs_rhs3, value_type beta = 1.0) 
+	, const DVectorSlice& vs_rhs3, value_type beta = 1.0) 
 {
 	M_rhs2.Vp_StPtMtV(vs_lhs,alpha,P_rhs1,P_rhs1_trans,M_rhs2_trans,vs_rhs3,beta);
 }
 
 /// vs_lhs = alpha * op(P_rhs1) * op(M_rhs2) * sv_rhs3 + beta * vs_rhs
-inline void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
+inline void Vp_StPtMtV(DVectorSlice* vs_lhs, value_type alpha
 	, const GenPermMatrixSlice& P_rhs1, BLAS_Cpp::Transp P_rhs1_trans
 	, const MatrixWithOpSerial& M_rhs2, BLAS_Cpp::Transp M_rhs2_trans
 	, const SpVectorSlice& sv_rhs3, value_type beta = 1.0)
@@ -369,8 +369,8 @@ inline void Vp_StPtMtV(VectorSlice* vs_lhs, value_type alpha
 }
 
 /// result = vs_rhs1' * op(M_rhs2) * vs_rhs3
-inline value_type transVtMtV(const VectorSlice& vs_rhs1, const MatrixWithOpSerial& M_rhs2
-	, BLAS_Cpp::Transp trans_rhs2, const VectorSlice& vs_rhs3)
+inline value_type transVtMtV(const DVectorSlice& vs_rhs1, const MatrixWithOpSerial& M_rhs2
+	, BLAS_Cpp::Transp trans_rhs2, const DVectorSlice& vs_rhs3)
 {
 	return M_rhs2.transVtMtV(vs_rhs1,trans_rhs2,vs_rhs3);
 }
@@ -388,15 +388,15 @@ inline value_type transVtMtV(const SpVectorSlice& sv_rhs1, const MatrixWithOpSer
 //@{
 
 /// gms_lhs = alpha * op(M_rhs1) * op(gms_rhs2) + beta * gms_lhs (right) (xGEMM)
-inline void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const MatrixWithOpSerial& M_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const GenMatrixSlice& gms_rhs2
+inline void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const MatrixWithOpSerial& M_rhs1
+	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSlice& gms_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta = 1.0)
 {
 	M_rhs1.Mp_StMtM(gms_lhs,alpha,trans_rhs1,gms_rhs2,trans_rhs2,beta);
 }
 
 /// gms_lhs = alpha * op(gms_rhs1) * op(M_rhs2) + beta * gms_lhs (left) (xGEMM)
-inline void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const GenMatrixSlice& gms_rhs1
+inline void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSlice& gms_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOpSerial& M_rhs2, BLAS_Cpp::Transp trans_rhs2
 	, value_type beta = 1.0)
 {
@@ -404,7 +404,7 @@ inline void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const GenMatrixS
 }
 
 /// gms_lhs = alpha * op(mwo_rhs1) * op(mwo_rhs2) + beta * gms_lhs (right) (xGEMM)
-inline void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const MatrixWithOpSerial& mwo_rhs1
+inline void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const MatrixWithOpSerial& mwo_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOpSerial& gms_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta = 1.0)
 {
@@ -412,15 +412,15 @@ inline void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const MatrixWith
 }
 
 /// gms_lhs = alpha * op(M_rhs1) * op(sym_rhs2) + beta * gms_lhs (right) (xSYMM)
-inline void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const MatrixWithOpSerial& M_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const sym_gms& sym_rhs2
+inline void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const MatrixWithOpSerial& M_rhs1
+	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceSym& sym_rhs2
 	, BLAS_Cpp::Transp trans_rhs2, value_type beta = 1.0)
 {
 	M_rhs1.Mp_StMtM(gms_lhs,alpha,trans_rhs1,sym_rhs2,trans_rhs2,beta);
 }
 
 /// gms_lhs = alpha * op(sym_rhs1) * op(M_rhs2) + beta * gms_lhs (left) (xSYMM)
-inline void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const sym_gms& sym_rhs1
+inline void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceSym& sym_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOpSerial& M_rhs2, BLAS_Cpp::Transp trans_rhs2
 	, value_type beta = 1.0)
 {
@@ -428,15 +428,15 @@ inline void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const sym_gms& s
 }
 
 /// gms_lhs = alpha * op(M_rhs1) * op(tri_rhs2) + beta * gms_lhs (right) (xTRMM)
-inline void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const MatrixWithOpSerial& M_rhs1
-	, BLAS_Cpp::Transp trans_rhs1, const tri_gms& tri_rhs2, BLAS_Cpp::Transp trans_rhs2
+inline void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const MatrixWithOpSerial& M_rhs1
+	, BLAS_Cpp::Transp trans_rhs1, const DMatrixSliceTri& tri_rhs2, BLAS_Cpp::Transp trans_rhs2
 	, value_type beta = 1.0)
 {
 	M_rhs1.Mp_StMtM(gms_lhs,alpha,trans_rhs1,tri_rhs2,trans_rhs2,beta);
 }
 
 /// gms_lhs = alpha * op(tri_rhs1) * op(M_rhs2) + beta * gms_lhs (left) (xTRMM)
-inline void Mp_StMtM(GenMatrixSlice* gms_lhs, value_type alpha, const tri_gms& tri_rhs1
+inline void Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DMatrixSliceTri& tri_rhs1
 	, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOpSerial& M_rhs2, BLAS_Cpp::Transp trans_rhs2
 	, value_type beta = 1.0)
 {

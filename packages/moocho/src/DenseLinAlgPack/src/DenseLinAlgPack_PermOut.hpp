@@ -18,9 +18,9 @@
 
 #include <ostream>
 
-#include "LinAlgPackTypes.hpp"
+#include "DenseLinAlgPackTypes.hpp"
 
-namespace LinAlgPack {
+namespace DenseLinAlgPack {
 
 ///
 /** Output stream operator for IVector used as a permutation array.
@@ -31,6 +31,6 @@ namespace LinAlgPack {
   */
 std::ostream& operator<<(std::ostream& o, const IVector& perm);
 
-}	// end namespace LinAlgPack
+}	// end namespace DenseLinAlgPack
 
 #endif // PERM_OUT_H
