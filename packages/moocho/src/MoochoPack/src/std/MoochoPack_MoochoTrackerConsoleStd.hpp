@@ -27,49 +27,49 @@ namespace ReducedSpaceSQPPack {
   * an 80 char wide console.
   * 
   * Specifically, these object produces a table with the following fields:
-  * \begin{itemize}
-  * \item k : The SQP iteration counter starting at zero generally.
-  * \item f : (iteration quantity f_k)
+  * <ul>
+  * <li> k : The SQP iteration counter starting at zero generally.
+  * <li> f : (iteration quantity f_k)
   * 			The value of the objective function at the current iteration.
   * 			This value may be scaled and the scaling factor will be
   * 			printed out before the table is produced.
-  * \item ||c||s : (iteration quantity feas_kkt_err_k)
+  * <li> ||c||s : (iteration quantity feas_kkt_err_k)
   * 			The scaled value of the constraints norm (usually the infinity
   * 			norm) at the current iteration.  This is the value compared
   * 			to the convergence criteria feas_tol (see the step
-  * 			\Ref{CheckConvergenceStd_AddedStep}).
-  * \item ||rGL||s : (iteration quantity opt_kkt_err_k)
+  * 			class \c CheckConvergenceStd_AddedStep).
+  * <li> ||rGL||s : (iteration quantity opt_kkt_err_k)
   * 			The scaled value of the norm (usually the infinity
   * 			norm) of the reduced gradient of the Lagrangian
   * 			at the current iteration.  This is the value compared
   * 			to the convergence criteria opt_tol (see the step
-  * 			\Ref{CheckConvergenceStd_AddedStep}).
-  * \item QN : (iteration quantity quasi_newton_stats_k)
+  * 			class \c CheckConvergenceStd_AddedStep).
+  * <li> QN : (iteration quantity quasi_newton_stats_k)
   * 			Information about the quasi-Newton update of the reduced
   * 			Hessian rHL_k.
-  * 			\begin{description}
-  * 			\item[IN] : rHL_k was reinitialized (identity?)
-  * 			\item[UP] : A standard quasi-Newton update was performed on
+  * 			<ul>
+  * 			<li> IN : rHL_k was reinitialized (identity?)
+  * 			<li> UP : A standard quasi-Newton update was performed on
   * 				rHL_km1 -> rHL_k
-  * 			\item[DU] : A dampened quasi-Newton update (BFGS) was performed
+  * 			<li> DU : A dampened quasi-Newton update (BFGS) was performed
   * 				on rHL_km1 -> rHL_k.
-  * 			\item[SK] : The quasi-Newton update was skipped because the
+  * 			<li> SK : The quasi-Newton update was skipped because the
   * 				current iterate was in the wrong region.
-  * 			\item[IS] : The quasi-Newton update (BFGS) was skipped because
+  * 			<li> IS : The quasi-Newton update (BFGS) was skipped because
   * 				it was not positive definite or illdefined.
-  * 			\end{description}	
-  *	\item #act : (iteration quantity nu_k.nz())
+  * 			</ul>
+  *	<li> \#act : (iteration quantity nu_k.nz())
   *				The number of active variable bounds at the current iteration.
-  *	\item ||Ypy||2 : (iteration quantity Ypy_k)
+  *	<li> ||Ypy||2 : (iteration quantity Ypy_k)
   *				The 2 norm of the Range space (feasibility) contribution to the
   *				full step d.
-  *	\item ||Zpz||2 : (iteration quantity Zpz_k)
+  *	<li> ||Zpz||2 : (iteration quantity Zpz_k)
   *				The 2 norm of the Null space (optimality) contribution to the
   *				full step d.
-  *	\item ||d||inf : (iteration quantity d_k)
-  *				The infinity norm of the step vector for the primal unknows
+  *	<li> ||d||inf : (iteration quantity d_k)
+  *				The infinity norm of the step vector for the primal unknowns
   *				x_kp1 = x_k + alpha_k * d_k.
-  * \end{itemize}
+  * </ul>
   * 
   * The above quantities can tell you a lot about the progress of the SQP
   * algorithm.
