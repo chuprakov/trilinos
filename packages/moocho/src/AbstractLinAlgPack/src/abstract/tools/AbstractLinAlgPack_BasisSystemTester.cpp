@@ -137,6 +137,15 @@ bool BasisSystemTester::test_basis_system(
 		if( out && dump_all() )
 			*out << "\nN =\n" << *N;
 	}
+
+	// Create the other auxillary matrix objects
+	if( bs.equ_undecomp().size() ) {
+		assert(0); // ToDo: Create matrix objects for Gc(var_dep,equ_undecomp) and Gc(var_indep,equ_undecomp)
+	}
+	if( bs.inequ_undecomp().size() ) {
+		assert(0); // ToDo: Create matrix objects for Gh(var_dep,inequ_undecomp) and Gh(var_indep,inequ_undecomp)
+	}
+
 	
 	//
 	// Perform the numerical tests

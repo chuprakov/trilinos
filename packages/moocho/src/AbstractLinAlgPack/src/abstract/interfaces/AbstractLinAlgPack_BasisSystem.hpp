@@ -85,11 +85,18 @@ namespace AbstractLinAlgPack {
 
   D = -inv(C)*N
  \endverbatim
+ * Given this matrix \a D, we can define some other projected sensistivity matrices:
+ * <ul>
+ * <li> <tt>V = Gc(var_indep,equ_undecomp)'   + Gc(var_dep,equ_undecomp)*D</tt>
+ * <li> <tt>P = Gh(var_indep,inequ_undecomp)' + Gh(var_dep,inequ_undecomp)*D</tt>
+ * </ul>
+ *
  * This interface allows a client to create the basis matrix <tt>C</tt> and optionally
- * the direct sensitivity matrix <tt>D = -inv(C)*N</tt>.  These matrix objects are
- * independent from <tt>this</tt> <tt>BasisSystem</tt> object or from other <tt>C</tt>
- * and <tt>D</tt> objects.  Therefore, a <tt>BasisSystem</tt> object can be thought of
- * as an "Abstract Factory" for basis matrices.
+ * the direct sensitivity matrix <tt>D = -inv(C)*N</tt> and the axillary projected
+ * sensistivity matrices <tt>V</tt> and <tt>P</tt> (shown above).  These matrix objects are
+ * independent from \c this \c BasisSystem object or from other \a C, \a D, \a V or \a P
+ * objects.  Therefore, a <tt>BasisSystem</tt> object can be thought of
+ * as an "Abstract Factory" for basis matrices and its auxillary matrices.
  *
  * Note that the purpose of this interface is to abstract client code away from the
  * details of how the matrices \c Gc and \c Gh are represented and implemented and how
@@ -130,7 +137,8 @@ namespace AbstractLinAlgPack {
  * given to a client.
  *
  * The method \c update_basis() is used by the client to update the basis matrix \a C and
- * perhaps the direct sensitivity matrix \a D.  Strictly speaking, it would be possible to
+ * perhaps the direct sensitivity matrix \a D and it's auxillary projected sensistivity
+ * matrices \a V and \a P.  Strictly speaking, it would be possible to
  * form the matrix \a D externally through the <tt>MatrixNonsingular</tt> interface using
  * the returned \a C and an \a N matrix object, but this may not take advantage of any
  * special application specific tricks that
@@ -153,14 +161,14 @@ namespace AbstractLinAlgPack {
      rcp::ref_count_ptr<AbstractLinAlgPack::MatrixCompositeStd>
          N = new AbstractLinAlgPack::MatrixCompositeStd(bs.var_dep().size(),bs.var_indep().size());
 	 if( Gc && bs.equ_decomp().size() )
-         N->add_matrix( 0, 0, 1.0, bs.equ_decomp(), Gc, NULL, BLAS_Cpp::trans, bs.var_dep() );
+         N->add_matrix( 0, 0, 1.0, bs.equ_decomp(), Gc, NULL, BLAS_Cpp::trans, bs.var_indep() );
 	 if( Gh && bs.inequ_decomp().size() )
-         N->add_matrix( bs.equ_decomp().size(), 0, 1.0, bs.inequ_decomp(), Gh, NULL, BLAS_Cpp::trans, bs.var_dep() );
+         N->add_matrix( bs.equ_decomp().size(), 0, 1.0, bs.inequ_decomp(), Gh, NULL, BLAS_Cpp::trans, bs.var_indep() );
      N->finish_construction(
          Gc->space_rows().sub_space(bs.var_indep())->clone()
          ,Gc->space_cols().sub_space(bs.equ_decomp())->clone()
          );
-     return rcp::rcp_implicit_cast<const AbstractLinAlgPack::MatrixWithOp>(N);
+     return N;
  }
  \endcode
  * Note that the above nonbasis matrix object \a N returned from the above function depends the matrix objects
