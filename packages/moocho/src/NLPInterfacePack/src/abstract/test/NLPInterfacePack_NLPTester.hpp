@@ -7,7 +7,7 @@
 #include <iosfwd>
 
 #include "NLPInterfacePack/include/NLPInterfacePackTypes.h"
-#include "Misc/include/StandardMemberCompositionMacros.h"
+#include "StandardMemberCompositionMacros.h"
 
 namespace NLPInterfacePack {
 
@@ -25,7 +25,6 @@ public:
 
 	///
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, print_all )
-	
 	///
 	STANDARD_MEMBER_COMPOSITION_MEMBERS( bool, throw_exception )
 

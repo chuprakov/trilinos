@@ -94,6 +94,7 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 	using AbstractLinAlgPack::assert_print_nan_inf;
 	using LinAlgOpPack::V_StV;
 	using LinAlgOpPack::V_StMtV;
+	using LinAlgOpPack::Vp_MtV;
 	using LinAlgOpPack::M_StM;
 	using LinAlgOpPack::M_StMtM;
 
@@ -247,8 +248,8 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 	  	// t1 =  [ -py ; 0 ]
 		VectorSpace::vec_mut_ptr_t
 			t1 = space_x->create_member();
-		V_StV( t1->create_sub_view(var_dep).get(), -1.0, *py );
-		*t1->create_sub_view(var_indep) = 0.0;
+		V_StV( t1->sub_view(var_dep).get(), -1.0, *py );
+		*t1->sub_view(var_indep) = 0.0;
 		// t2 = FDA'*t1
 		VectorSpace::vec_mut_ptr_t
 			t2 = nlp->space_c()->create_member();
@@ -375,14 +376,14 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 				for( int direc_i = 1; direc_i <= num_fd_directions(); ++direc_i ) {
 					random_vector( rand_v_l, rand_v_u, y.get() );
 					// t1 = [ 0; y ] <: R^(n)
-					*t1->create_sub_view(var_dep)   = 0.0;
-					*t1->create_sub_view(var_indep) = *y;
+					*t1->sub_view(var_dep)   = 0.0;
+					*t1->sub_view(var_indep) = *y;
 					// t2 = FDA' * t1  (  FDN * y ) <: R^(m)
 					fd_deriv_prod.calc_deriv_product(
 						xo,xl,xu,max_var_bounds_viol,*t1,nlp,NULL,t2.get(),NULL,out);
 					// t1 = [ -D * y ; 0 ]  <: R^(n)
-					V_StMtV( t1->create_sub_view(var_dep).get(), -1.0, *D, BLAS_Cpp::no_trans, *y );
-					*t1->create_sub_view(var_indep) = 0.0;
+					V_StMtV( t1->sub_view(var_dep).get(), -1.0, *D, BLAS_Cpp::no_trans, *y );
+					*t1->sub_view(var_indep) = 0.0;
 					// t3 = FDA' * t1  ( -FDC * D * y ) <: R^(m)
 					fd_deriv_prod.calc_deriv_product(
 						xo,xl,xu,max_var_bounds_viol,*t1,nlp,NULL,t3.get(),NULL,out);
@@ -425,6 +426,65 @@ bool NLPFirstOrderDirectTester::finite_diff_check(
 			default:
 				assert(0);
 		}
+	}
+
+	// ///////////////////////////////////////////////
+	// (4) Check rGf = Gf(var_indep) + D'*Gf(var_dep)
+
+	if(rGf) {
+		if( Gf && D ) {
+			if(out)
+				*out
+					<< "\nComparing rGf_tmp = Gf(var_indep) - D'*Gf(var_dep) with rGf ...\n";
+			VectorSpace::vec_mut_ptr_t
+				rGf_tmp = space_x->sub_space(var_indep)->create_member();
+			*rGf_tmp = *Gf->sub_view(var_indep);
+			Vp_MtV( rGf_tmp.get(), *D, BLAS_Cpp::trans, *Gf->sub_view(var_dep) );
+			const value_type
+				sum_rGf_tmp  = sum(*rGf_tmp),
+				sum_rGf      = sum(*rGf);
+			const value_type
+				calc_err = ::fabs( ( sum_rGf_tmp - sum_rGf )/( ::fabs(sum_rGf_tmp) + ::fabs(sum_rGf) + small_num ) );
+			if( calc_err >= Gc_error_tol() ) {
+				if(out)
+					*out
+						<< "\nError, rel_err(sum(rGf_tmp),sum(rGf)) = "
+						<< "rel_err(" << sum_rGf_tmp << "," << sum_rGf << ") = "
+						<< calc_err << endl
+						<< "exceeded Gc_error_tol = " << Gc_error_tol() << endl
+						<< "Stoping the tests!\n";
+				if(print_all_warnings)
+					*out << "\nrGf_tmp =\n" << *rGf_tmp
+						 << "\nrGf =\n"   << *rGf;
+				update_success( false, &success );
+				return false;
+			}
+			if( calc_err >= Gc_warning_tol() ) {
+				if(out)
+					*out
+						<< "\nWarning, rel_err(sum(rGf_tmp),sum(rGf)) = "
+						<< "rel_err(" << sum_rGf_tmp << "," << sum_rGf << ") = "
+						<< calc_err << endl
+						<< "exceeded Gc_warning_tol = " << Gc_warning_tol() << endl;
+			}
+		}
+		else {
+			assert(0); //  ToDo: Must validate rGf without Gf and D!
+		}
+	}
+
+	// ///////////////////////////////////////////////////
+	// (5) Check GcU, and/or V (for undecomposed equalities)
+
+	if(GcU || V) {
+		assert(0); // ToDo: Implement!
+	}
+	
+	// ///////////////////////////////////////////////////
+	// (6) Check Gh, and/or P (for general inequalities)
+
+	if(Gh || P) {
+		assert(0); // ToDo: Implement!
 	}
 
 	} // end try
