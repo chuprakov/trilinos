@@ -99,10 +99,10 @@ public:
 	 *      (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>dynamic_cast<const VectorWithOpSubView*>(vecs[k])->full_vec()->space().is_compatible(
 	 *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_vecs</tt>
-	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * <li> <tt>dynamic_cast<VectorWithOpMutableSubView>(targ_vecs[k])->full_vec()->space().is_compatible(
 	 *      this->full_vec()->space() ) == true</tt>, for <tt>k=0..num_targ_vecs</tt>
-	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 */
 	void apply_reduction(

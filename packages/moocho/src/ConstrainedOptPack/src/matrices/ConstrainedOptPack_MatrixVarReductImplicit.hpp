@@ -109,7 +109,7 @@ public:
 	 * <li> [<tt>D_direct != NULL</tt>]
 	 *      <tt>D_direct->space_cols().is_compatible(C->space_cols()) == true
 	 *      && D_direct->space_rows().is_compatible(N->space_rows()) == true</tt>
-	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>

@@ -57,11 +57,11 @@ void MatrixDecompRangeOrthog::initialize(
 #ifdef ABSTRACT_LIN_ALG_PACK_CHECK_VEC_SPCS
 	bool is_compatible = C_ptr->space_rows().is_compatible(D_ptr->space_cols());
 	THROW_EXCEPTION(
-		!is_compatible, VectorSpaceBase::IncompatibleVectorSpaces
+		!is_compatible, VectorSpace::IncompatibleVectorSpaces
 		,func_name << " : Error, C_ptr->space_rows().is_compatible(D_ptr->space_cols()) == false!" );
 	is_compatible = S_ptr->space_cols().is_compatible(D_ptr->space_rows());
 	THROW_EXCEPTION(
-		!is_compatible, VectorSpaceBase::IncompatibleVectorSpaces
+		!is_compatible, VectorSpace::IncompatibleVectorSpaces
 		,func_name << " : Error, S_ptr->space_cols().is_compatible(D_ptr->space_rows()) == false!" );
 #endif	
 	C_ptr_ = C_ptr;

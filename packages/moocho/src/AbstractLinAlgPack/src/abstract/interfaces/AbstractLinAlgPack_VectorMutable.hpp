@@ -16,7 +16,6 @@
 #ifndef VECTOR_WITH_OP_MUTABLE_H
 #define VECTOR_WITH_OP_MUTABLE_H
 
-#include "VectorBaseMutable.h"
 #include "VectorWithOp.h"
 #include "Range1D.h"
 
@@ -55,9 +54,7 @@ namespace AbstractLinAlgPack {
   * The non-mutable (<tt>const</tt>) <tt>sub_view(...)</tt> method from the <tt>VectorWithOp</tt>
   * interface has a default implementation defined here that will be adequate for most subclasses.
   */
-class VectorWithOpMutable
-	: virtual public VectorBaseMutable
-	, virtual public VectorWithOp
+class VectorWithOpMutable : virtual public VectorWithOp
 {
 public:
 
@@ -230,6 +227,21 @@ public:
 	virtual vec_mut_ptr_t clone() const;
 
 	///
+	/** Zeros this vector.
+	 *
+	 * Calls <tt>operator=(0.0)</tt>.
+	 */
+	virtual void zero();
+
+	///
+	/** Adds a linear combination of another vector to this vector object.
+	 *
+	 * Calls <tt>this->apply_transformation()</tt> with an operator class
+	 * (see RTOp_TOp_axpy.h).
+	 */
+	virtual void axpy( value_type alpha, const VectorWithOp& x );
+
+	///
 	/** Get a mutable explicit view of a sub-vector.
 	 *
 	 * This is only a transient view of a sub-vector that is to be immediately used
@@ -328,22 +340,6 @@ public:
 	 * defined in VectorWithOp.
 	 */
 	vec_ptr_t sub_view( const Range1D& rng ) const;
-
-	//@}
-
-	/** @name Overrriden from VectorBaseMutable */
-	//@{
-
-	///
-	/** Calls <tt>operator=(0.0)</tt>.
-	 */
-	void zero();
-
-	///
-	/** Calls <tt>this->apply_transformation()</tt> with an operator class
-	 * (see RTOp_TOp_axpy.h).
-	 */
-	void axpy( value_type alpha, const VectorBase& x );
 
 	//@}
 

@@ -23,7 +23,7 @@ namespace AbstractLinAlgPack {
 /** \defgroup AbstractLinAlgPackAssertOp_funcs Assertion functions for linear algebra operations.
   *
   * These functions check the compatibility of the vector spaces for many different types
-  * of linear algebra operations and throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt> 
+  * of linear algebra operations and throw <tt>VectorSpace::IncompatibleVectorSpaces</tt> 
   * expressions if the vector spaces do not match.  These functions only perform there checks
   * if <tt>ABSTRACTLINALGPACK_ASSERT_COMPATIBILITY</tt> is defined.  These functions will also throw
   * <tt>std::invalid_argument</tt> if a lhs argument is <tt>NULL</tt>.

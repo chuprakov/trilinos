@@ -17,9 +17,34 @@
 #include "AbstractLinAlgPack/include/VectorSpaceSubSpace.h"
 #include "AbstractLinAlgPack/include/VectorWithOpMutable.h"
 #include "AbstractLinAlgPack/include/MultiVectorMutable.h"
+#include "AbstractLinAlgPack/include/InnerProductDot.h"
 #include "ThrowException.h"
 
 namespace AbstractLinAlgPack {
+
+// Constructors / initializers
+
+VectorSpace::VectorSpace( const inner_prod_ptr_t& inner_prod )
+{
+	this->inner_prod(inner_prod);
+}
+
+void VectorSpace::inner_prod( const inner_prod_ptr_t& inner_prod )
+{
+	if(inner_prod.get()) {
+		inner_prod_ = inner_prod;
+	} else {
+		inner_prod_ = MemMngPack::rcp(new InnerProductDot());
+	}
+}
+
+const VectorSpace::inner_prod_ptr_t
+VectorSpace::inner_prod() const
+{
+	return inner_prod_;
+}
+
+// Virtual functions with default implementations
 
 VectorSpace::vec_mut_ptr_t
 VectorSpace::create_member(const value_type& alpha) const
@@ -54,13 +79,6 @@ VectorSpace::sub_space(const Range1D& rng_in) const
 		new VectorSpaceSubSpace(
 			mmp::rcp( this, false )
 			,rng ) );
-}
-
-// Overridden from VectorSpaceBase
-
-VectorSpaceBase::vec_ptr_t  VectorSpace::new_member() const
-{
-	return create_member();
 }
 
 // Overridden from AbstractFactory<>

@@ -159,6 +159,24 @@ VectorWithOpMutable::vec_mut_ptr_t VectorWithOpMutable::clone() const
 	return vec;
 }
 
+void VectorWithOpMutable::zero()
+{
+	this->operator=(0.0);
+}
+
+void VectorWithOpMutable::axpy( value_type alpha, const VectorWithOp& x )
+{
+	if( 0!=RTOp_TOp_axpy_set_alpha( alpha, &axpy_op.op() ) )
+		assert(0);
+	const int num_vecs = 1;
+	const VectorWithOp*
+		vec_args[1] = { dynamic_cast<const VectorWithOp*>(&x) };
+	if( vec_args[0] == NULL )
+		throw VectorSpace::IncompatibleVectorSpaces(
+			"VectorWithOp::axpy(alpha,x): Error, x is not of type VectorWithOp!" );
+	this->apply_transformation(axpy_op,num_vecs,vec_args,0,NULL,RTOp_REDUCT_OBJ_NULL);
+}
+
 void VectorWithOpMutable::get_sub_vector(
 	const Range1D& rng, RTOp_MutableSubVector* sub_vec )
 {
@@ -215,26 +233,6 @@ VectorWithOpMutable::sub_view( const Range1D& rng ) const
 {
 	namespace rcp = MemMngPack;
 	return const_cast<VectorWithOpMutable*>(this)->sub_view(rng);
-}
-
-// Overridden from VectorBaseMutable
-
-void VectorWithOpMutable::zero()
-{
-	this->operator=(0.0);
-}
-
-void VectorWithOpMutable::axpy( value_type alpha, const VectorBase& x )
-{
-	if( 0!=RTOp_TOp_axpy_set_alpha( alpha, &axpy_op.op() ) )
-		assert(0);
-	const int num_vecs = 1;
-	const VectorWithOp*
-		vec_args[1] = { dynamic_cast<const VectorWithOp*>(&x) };
-	if( vec_args[0] == NULL )
-		throw VectorSpaceBase::IncompatibleVectorSpaces(
-			"VectorWithOp::axpy(alpha,x): Error, x is not of type VectorWithOp!" );
-	this->apply_transformation(axpy_op,num_vecs,vec_args,0,NULL,RTOp_REDUCT_OBJ_NULL);
 }
 
 } // end namespace AbstractLinAlgPack

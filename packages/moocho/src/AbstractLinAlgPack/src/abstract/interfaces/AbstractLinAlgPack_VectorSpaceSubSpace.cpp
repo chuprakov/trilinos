@@ -66,7 +66,7 @@ void VectorSpaceSubSpace::validate_range(const Range1D& rng) const
 }
 #endif
 
-// Overridden from VectorSpaceBase
+// Overridden from VectorSpace
 
 
 bool VectorSpaceSubSpace::is_compatible(const VectorSpace& another_space) const

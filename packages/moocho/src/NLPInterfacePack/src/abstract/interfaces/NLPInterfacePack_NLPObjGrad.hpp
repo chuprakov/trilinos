@@ -92,7 +92,7 @@ public:
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * <li> [<tt>Gf != NULL</tt>] <tt>Gf->space().is_compatible(*this->space_x()) == true</tt>
-	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -143,7 +143,7 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * <li> <tt>this->get_Gf() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 *

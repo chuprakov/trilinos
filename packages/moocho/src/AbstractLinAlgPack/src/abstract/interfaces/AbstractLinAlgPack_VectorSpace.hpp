@@ -16,7 +16,7 @@
 #ifndef VECTOR_SPACE_H
 #define VECTOR_SPACE_H
 
-#include "VectorSpaceBase.h"
+#include "InnerProduct.h"
 #include "AbstractFactory.h"
 #include "Range1D.h"
 
@@ -30,32 +30,96 @@ namespace AbstractLinAlgPack {
  * to create \c MultiVectorMutable objects which represent a compact collection of vectors.
  * Every application area should be able to define a <tt>%MultiVectorMutable</tt> subclass if
  * it can define a <tt>%VectorWithOpMutable</tt> subclass.
- * A secondary role for <tt>%VectorSpace</tt> objects is to test for compatibility of vector and matrix
- * objects using the \c is_compatible() method.
+ * A secondary role for <tt>%VectorSpace</tt> objects is to test for compatibility of vector spaces
+ * (and the vectors and matrix using those spaces) objects using the \c is_compatible() method.
  *
- * Given a <tt>%VectorSpace</tt> object is may also be possible to create sub-spaces using the
+ * Given a <tt>%VectorSpace</tt> object it may also be possible to create sub-spaces using the
  * \c sub_space() method.
  *
  * Any <tt>%VectorSpace</tt> object can be copied using the \c clone() method.  Therefore,
  * clients have complete control over the lifetime of <tt>%VectorSpace</tt> object.
  *
  * A <tt>VectorSpace</tt> object can exist independent from any individual <tt>VectorWithOpMutable</tt>
- * (or \c MutiVectorMutable) object.  Or, a <tt>VectorSpace</tt> object can have a lifetime that is
+ * (or \c MutiVectorMutable) object; Or, a <tt>VectorSpace</tt> object can have a lifetime that is
  * dependent on a single <tt>VectorWithOp</tt> ( or \c MultiVector) object.  The same interface can
  * serve both roles.
+ *
+ * A vector space is also where the inner product for the space is
+ * defined.  It is anticipated that the same implementation of vectors
+ * and vector spaces will be reused over and over again with different
+ * definitions of the inner product.  Therefore the inner product is
+ * represented as a seperate strategy object.  For example, the same
+ * parallel vector implementation can be used with several different.
+ *
+ * Note that the default copy constructor will transfer the inner product object correctly
+ * but the subclass must make sure to copy the inner product object in clone operations.
  */
 class VectorSpace
-	: public virtual VectorSpaceBase
-	, public MemMngPack::AbstractFactory<VectorWithOpMutable>
+	: public MemMngPack::AbstractFactory<VectorWithOpMutable>
 {
 public:
 
+	/// Thrown if vector spaces are incompatible
+	class IncompatibleVectorSpaces : public std::logic_error
+	{public: IncompatibleVectorSpaces(const std::string& what_arg) : std::logic_error(what_arg) {}};
+	///
+	typedef MemMngPack::ref_count_ptr<InnerProduct>         inner_prod_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<const VectorSpace>    space_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<VectorWithOpMutable>  vec_mut_ptr_t;
 	///
 	typedef MemMngPack::ref_count_ptr<MultiVectorMutable>   multi_vec_mut_ptr_t;
+
+
+	/** @name Constructors / initializers */
+	//@{
+
+	/// Calls \c inner_prod()
+	VectorSpace( const inner_prod_ptr_t& inner_prod = MemMngPack::null );
+
+	///
+	/** Initialize with an inner product object.
+	 *
+	 * @param  inner_prod  [in] Smart pointer to inner product strategy object.
+	 *                     If <tt>inner_prod.get()==NULL</tt> then an
+	 *                     \c InnerProductDot object will be used instead.
+	 *
+	 * Postconditions:<ul>
+	 * <li> [<tt>inner_prod.get() != NULL</tt>] <tt>this->inner_prod().get() == inner_prod.get()</tt>
+	 * <li> [<tt>inner_prod.get() == NULL</tt>] <tt>dynamic_cast<InnerProductDot*>(this->inner_prod().get()) != NULL</tt>
+	 * </ul>
+	 */
+	virtual void inner_prod( const inner_prod_ptr_t& inner_prod );
+
+	///
+	/** Return the smart pointer to the inner product strategy object.
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>return.get() != NULL</tt>
+	 * </ul>
+	 */
+	virtual const inner_prod_ptr_t inner_prod() const;
+
+	//@}
+
+	/** @name Pure virtual functions that must be overridden */
+	//@{
+
+	///
+	/** Create a clone of \c this vector space object.
+	 *
+	 * The returned vector space object is expected to be independent from \c this
+	 * and have a lifetime that extends beyond \c this.  This makes a vector space
+	 * class a little hander to implement by makes for much better flexibility
+	 * for the client.  A complete implementation of <tt>%VectorSpace</tt> is not
+	 * allowed to return \c NULL from this method.
+	 *
+	 * Postconditions:<ul>
+	 * <li> <tt>return.get() != NULL</tt>
+	 * </ul>
+	 */
+	virtual space_ptr_t clone() const = 0;
 
 	///
 	/** Compare the compatibility of two vector spaces.
@@ -95,6 +159,11 @@ public:
 	 * be equal to <tt>this</tt>.
 	 */
 	virtual vec_mut_ptr_t create_member() const = 0;
+
+	//@}
+
+	/** @name Virtual functions with default implementations */
+	//@{
 
 	///
 	/** Create a vector member from the vector space initialized to a scalar.
@@ -144,20 +213,7 @@ public:
 	 */
 	virtual multi_vec_mut_ptr_t create_members(size_type num_vecs) const;
 
-	///
-	/** Create a clone of \c this vector space object.
-	 *
-	 * The returned vector space object is expected to be independent from \c this
-	 * and have a lifetime that extends beyond \c this.  This makes a vector space
-	 * class a little hander to implement by makes for much better flexibility
-	 * for the client.  A complete implementation of <tt>%VectorSpace</tt> is not
-	 * allowed to return \c NULL from this method.
-	 *
-	 * Postconditions:<ul>
-	 * <li> <tt>return.get() != NULL</tt>
-	 * </ul>
-	 */
-	virtual space_ptr_t clone() const = 0;
+	//@}
 
 	///
 	/** Create a transient sub-space of the current vector space.
@@ -201,22 +257,9 @@ public:
 
 	/// Inlined to call <tt>this->sub_space(Range1D(il,iu))</tt>.
 	space_ptr_t sub_space( const index_type il, const index_type iu ) const;
-	
-	/** @name Overrriden from VectorSpaceBase */
-	//@{
-	
-	///
-	/** This implementation just cals <tt>is_compatible(vec_spc)</tt>.
-	 */
-	bool is_compatible(const VectorSpaceBase& vec_spc ) const;
-	///
-	/** This implementaion just calls <tt>create_member()</tt> and then converts
-	 * the smart pointer.
-	 */
-	vec_ptr_t new_member() const;
 
 	//@}
-
+	
 	/** @name Overridden from AbstractFactory */
 	//@{
 
@@ -224,6 +267,13 @@ public:
 	obj_ptr_t create() const;
 
 	//@}
+
+private:
+#ifdef DOXYGEN_COMPILE
+	InnerProduct       *inner_prod;
+#else
+	inner_prod_ptr_t   inner_prod_;
+#endif
 
 }; // end class VectorSpace
 

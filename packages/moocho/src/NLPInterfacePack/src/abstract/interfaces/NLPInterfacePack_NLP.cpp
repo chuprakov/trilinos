@@ -86,19 +86,19 @@ void NLPInterfacePack::NLP::get_init_lagrange_mult(
 #endif
 	if(lambda) {
 #ifdef _DEBUG
-		THROW_EXCEPTION( !this->space_c()->is_compatible(lambda->space()), VectorSpaceBase::IncompatibleVectorSpaces, "" );
+		THROW_EXCEPTION( !this->space_c()->is_compatible(lambda->space()), VectorSpace::IncompatibleVectorSpaces, "" );
 #endif
 		*lambda = 0.0;
 	}
 	if(lambdaI) {
 #ifdef _DEBUG
-		THROW_EXCEPTION( !this->space_h()->is_compatible(lambdaI->space()), VectorSpaceBase::IncompatibleVectorSpaces, "" );
+		THROW_EXCEPTION( !this->space_h()->is_compatible(lambdaI->space()), VectorSpace::IncompatibleVectorSpaces, "" );
 #endif
 		*lambdaI = 0.0;
 	}
 	if(nu) {
 #ifdef _DEBUG
-		THROW_EXCEPTION( !this->space_x()->is_compatible(nu->space()), VectorSpaceBase::IncompatibleVectorSpaces, "" );
+		THROW_EXCEPTION( !this->space_x()->is_compatible(nu->space()), VectorSpace::IncompatibleVectorSpaces, "" );
 #endif
 		*nu = 0.0;
 	}
@@ -132,7 +132,7 @@ void NLPInterfacePack::NLP::set_c(VectorWithOpMutable* c)
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->m() == 0, std::logic_error, "" );
-	THROW_EXCEPTION( c && !this->space_c()->is_compatible(c->space()), VectorSpaceBase::IncompatibleVectorSpaces, "" );
+	THROW_EXCEPTION( c && !this->space_c()->is_compatible(c->space()), VectorSpace::IncompatibleVectorSpaces, "" );
 #endif
 	first_order_info_.c = c;
 }
@@ -167,7 +167,7 @@ void NLPInterfacePack::NLP::set_h(VectorWithOpMutable* h)
 {
 #ifdef _DEBUG
 	THROW_EXCEPTION( this->mI() == 0, std::logic_error, "" );
-	THROW_EXCEPTION( h && !this->space_h()->is_compatible(h->space()), VectorSpaceBase::IncompatibleVectorSpaces, "" );
+	THROW_EXCEPTION( h && !this->space_h()->is_compatible(h->space()), VectorSpace::IncompatibleVectorSpaces, "" );
 #endif
 	first_order_info_.h = h;
 }

@@ -21,11 +21,8 @@ typedef AbstractLinAlgPack::index_type  index_type;
 
 using RangePack::Range1D;
 
-using AbstractLinAlgPack::VectorSpaceBase;
+using AbstractLinAlgPack::InnerProduct;
 using AbstractLinAlgPack::VectorSpace;
-
-using AbstractLinAlgPack::VectorBase;
-using AbstractLinAlgPack::VectorBaseMutable;
 using AbstractLinAlgPack::VectorWithOp;
 using AbstractLinAlgPack::VectorWithOpMutable;
 

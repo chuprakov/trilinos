@@ -18,7 +18,8 @@
 
 #include <iosfwd>
 
-#include "VectorBase.h"
+#include "AbstractLinAlgPackTypes.h"
+#include "RTOpPack/include/RTOpCpp.h"
 #include "Range1D.h"
 
 namespace AbstractLinAlgPack {
@@ -80,7 +81,7 @@ namespace AbstractLinAlgPack {
   *
   * ToDo: Add example code!
   */
-class VectorWithOp : virtual public VectorBase {
+class VectorWithOp {
 public:
 
 	///
@@ -90,6 +91,8 @@ public:
 
 	///
 	VectorWithOp();
+	///
+	virtual ~VectorWithOp() {}
 
 	/** @name Pure virtual methods (must be overridden by subclass) */
 	//@{
@@ -130,9 +133,9 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> [<tt>num_vecs > 0</tt>] <tt>vecs[k]->space().is_compatible(this->space()) == true</tt>
-	 *          , for <tt>k = 0...num_vecs-1</tt> (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 *          , for <tt>k = 0...num_vecs-1</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * <li> [<tt>num_targ_vecs > 0</tt>] <tt>targ_vecs[k]->space().is_compatible(this->space()) == true</tt>
-	 *          , for <tt>k = 0...num_targ_vecs-1</tt> (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 *          , for <tt>k = 0...num_targ_vecs-1</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * <li> <tt>1 <= first_ele <= this->dim()</tt> (throw <tt>std::out_of_range</tt>)
 	 * <li> <tt>global_offset >= 0</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>sub_dim - (first_ele - 1) <= this->dim()</tt> (throw <tt>std::length_error</tt>).
@@ -311,6 +314,18 @@ public:
 	
 	//@}
 
+	/** @name Inner product */
+	//@{
+
+	///
+	/** Return the inner product of <tt>*this</tt> with <tt>v</tt>.
+	 *
+	 * @return Returns <tt>this->space().inner_prod()->inner_prod(*this,v)</tt>
+	 */
+	virtual value_type inner_product( const VectorWithOp& v ) const;
+
+	//@}
+
 	/** @name Explicit sub-vector access */
 	//@{
 
@@ -381,22 +396,6 @@ public:
 	 *				<tt>RTOp_sub_vector_null(sub_vec)</tt>.
 	 */
 	virtual void free_sub_vector( RTOp_SubVector* sub_vec ) const;
-
-	//@}
-
-	/** @name Overridden from VectorBase */
-	//@{
-	
-	///
-	/** Calls #this-space()#.
-	 */
-	const VectorSpaceBase& get_space() const;
-
-	///
-	/** Calls <tt>apply_reduction(...)</tt> with an operator class object
-	 * of type <tt>RTOp_ROp_dot_prod</tt>.
-	 */
-	value_type inner_product( const VectorBase& ) const;
 
 	//@}
 

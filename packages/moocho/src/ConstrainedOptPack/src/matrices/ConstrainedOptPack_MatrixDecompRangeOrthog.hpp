@@ -85,9 +85,9 @@ public:
 	 * <li> <tt>D_ptr.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>S_ptr.get() != NULL</tt> (throw <tt>std::invalid_argument</tt>)
 	 * <li> <tt>C_ptr->space_rows().is_compatible(D_ptr->space_cols()) == true</tt>
-	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * <li> <tt>S_ptr->space_cols().is_compatible(D_ptr->space_rows()) == true</tt>
-	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>

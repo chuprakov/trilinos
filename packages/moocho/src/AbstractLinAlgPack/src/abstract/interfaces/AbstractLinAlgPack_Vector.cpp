@@ -202,6 +202,11 @@ value_type VectorWithOp::norm_inf() const {
 	return norm_inf_;
 }
 
+value_type VectorWithOp::inner_product(  const VectorWithOp& v ) const
+{
+	return this->space().inner_prod()->inner_prod(*this,v);
+}
+
 VectorWithOp::vec_ptr_t
 VectorWithOp::sub_view( const Range1D& rng_in ) const
 {
@@ -281,27 +286,6 @@ void VectorWithOp::has_changed() const
 {
 	num_nonzeros_= -1;  // uninitalized;
 	norm_1_ = norm_2_ = norm_inf_ = -1.0;
-}
-
-// Overridden from VectorBase
-
-const VectorSpaceBase& VectorWithOp::get_space() const
-{
-	return space();
-}
-
-value_type VectorWithOp::inner_product(  const VectorBase& vec ) const
-{
-	using DynamicCastHelperPack::dyn_cast;
-
-	dot_targ.reinit();
-	const int num_vecs = 1;
-	const VectorWithOp*
-		vec_args[1] = {
-			&dyn_cast<const VectorWithOp>(vec)
-		};
-	this->apply_reduction(dot_op,num_vecs,vec_args,0,NULL,dot_targ.obj());
-	return RTOp_ROp_dot_prod_val(dot_targ.obj());
 }
 
 } // end namespace AbstractLinAlgPack

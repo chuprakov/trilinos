@@ -129,7 +129,7 @@ public:
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * <li> [<tt>Gc != NULL</tt>] <tt>Gc->space().is_compatible(*this->factory_Gc(),no_trans) == true</tt>
-	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -177,7 +177,7 @@ public:
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
 	 * <li> [<tt>Gh != NULL</tt>] <tt>Gh->space().is_compatible(*this->factory_Gh(),no_trans) == true</tt>
-	 *      (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 *      (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
@@ -229,7 +229,7 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * <li> <tt>this->get_Gc() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 *
@@ -254,7 +254,7 @@ public:
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->is_initialized() == true</tt> (throw <tt>NotInitialized</tt>)
-	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpaceBase::IncompatibleVectorSpaces</tt>)
+	 * <li> <tt>x.space().is_compatible(*this->space_x()) == true</tt> (throw <tt>VectorSpace::IncompatibleVectorSpaces</tt>)
 	 * <li> <tt>this->get_Gh() != NULL</tt> (throw <tt>NoRefSet</tt>)
 	 * </ul>
 	 *

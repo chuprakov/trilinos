@@ -87,7 +87,7 @@ public:
 	/// Validate rng
 	void validate_range( const Range1D& rng ) const;
 
-	/** @name Overridden from VectorSpaceBase */
+	/** @name Overridden from VectorSpace */
 	//@{
 
 	///

@@ -189,12 +189,12 @@ void MatrixVarReductImplicit::initialize(
 	if( D_direct.get() ) {
 		const bool is_compatible_cols = D_direct->space_cols().is_compatible(C->space_cols());
 		THROW_EXCEPTION(
-			!is_compatible_cols, VectorSpaceBase::IncompatibleVectorSpaces
+			!is_compatible_cols, VectorSpace::IncompatibleVectorSpaces
 			,"MatrixVarReductImplicit::initialize(...): Error, "
 			"D_direct->space_cols() is not compatible with C->space_cols()" );
 		const bool is_compatible_rows = D_direct->space_rows().is_compatible(N->space_rows());
 		THROW_EXCEPTION(
-			!is_compatible_rows, VectorSpaceBase::IncompatibleVectorSpaces
+			!is_compatible_rows, VectorSpace::IncompatibleVectorSpaces
 			,"MatrixVarReductImplicit::initialize(...): Error, "
 			"D_direct->space_rows() is not compatible with N->space_rows()" );
 	}

@@ -38,11 +38,9 @@ enum EOverLap { NO_OVERLAP = 0, SOME_OVERLAP, SAME_MEM };
 
 // pure abstract classes
 
-class VectorSpaceBase;
-class VectorSpace;
+class InnerProduct;
 
-class VectorBase;
-class VectorBaseMutable;
+class VectorSpace;
 class VectorWithOp;
 class VectorWithOpMutable;
 

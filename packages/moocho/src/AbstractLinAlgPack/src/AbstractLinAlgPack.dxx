@@ -12,9 +12,9 @@ libraries).
 
 <li> Fundamental vector and matrix interfaces
 (<tt>\ref libAbstractLinAlgPack_grp "libAbstractLinAlgPack"</tt>):
-This library contains several different levels of vector and matrix interfaces
-and includes the bare minimum support software needed for the default implementations
-of many of the methods in these default implementations.  The more important vector
+This library contains several different vector and matrix interfaces
+and includes the bare minimum support software needed for 
+default method implementations.  The primary vector
 interfaces are <tt>\ref AbstractLinAlgPack::VectorWithOp "VectorWithOp"</tt> and
 <tt>\ref AbstractLinAlgPack::VectorWithOpMutable "VectorWithOpMutable"</tt> (derived from <tt>VectorWithOp</tt>).
 These vector interfaces represent nonmutable and mutable vectors respectively.
@@ -53,45 +53,20 @@ defined here.
 
 <li> Vector interfaces:
 
-The most basic and general vector interfaces are <tt>\ref AbstractLinAlgPack::VectorBase "VectorBase"</tt>
-and <tt>\ref AbstractLinAlgPack::VectorBaseMutable "VectorBaseMutable"</tt> for nonmutable (<tt>const</tt>) and
-mutable (non-<tt>const</tt>) vectors respectively..  These vector interfaces
-enforce only the essential vector operations that you would find in any elementary book
-on linear algebra.  These vector interfaces allow for the abstraction of infinite
-dimmensional vector spaces and as such do not admit a dimmension.  These types of vector
-spaces are used, for example, in the continous formulation of ODE and PDE mathematical
-problems.  These vector interfaces only contain operations that are invariant to
-under many different types of transformations.  Because, these vectors can represent
-infinite dimensional vectors, there is not concept of an i<sup>th</sup> vector element.
-These vector interfaces take a very high level view of the linear algebra
-(see Scott and Symes, <tt>http://www.trip.caam.rice.edu/txt/svl</tt>).
-
+Finite-dimensional coordinate vectors are abstracted by the
+interfaces <tt>\ref AbstractLinAlgPack::VectorWithOp "VectorWithOp"</tt>
+and <tt>\ref AbstractLinAlgPack::VectorWithOpMutable "VectorWithOpMutable"</tt>.
 Every vector is a member of a vector space.  Vector spaces are represented in software
-as objects with their own abstract interface.  For <tt>VectorBaseMutable</tt>, the
-vector space is represented through the base interface <tt>\ref AbstractLinAlgPack::VectorSpaceBase "VectorSpaceBase"</tt>.
-In software terms, a vector space object primarily acts as an "Abstract Factory" [Design Patterns,
-Gamma, et. al., 1995].  In addition to acting as abstact
-factories, vector space objects are also responsible for determining the compatibility
-of vector objects and are useful in debugging an application.
-
-The vector interfaces <tt>VectorBase</tt> and <tt>VectorBaseMutable</tt>
-provide perhaps the most general abstraction of vectors and make absolutely no assumptions
-about the underlying implementations of these objects.  While many different types of numerical
-algorithms can be represented with the small subset of operations provided by these basic vector
-interfaces, many more advanced mathematical programming algorithms can not.  Most of the more
-powerful and successful numerical programming algorithms take a coordinate view of vectors where
-each vector space has a finite dimension.  This puts a greater restriction on the implementation
-of vectors and does not allow the abstraction of infinite dimensional vector spaces.  However,
-every vector implemented in a computer has a finite dimension.  Therefore, a finite dimensional
-coordinate vector represents a vector abstraction that is closer to the computer environment.
-The vector and vector space interfaces <tt>\ref AbstractLinAlgPack::VectorWithOp "VectorWithOp"</tt>,
-<tt>\ref AbstractLinAlgPack::VectorWithOpMutable "VectorWithOpMutable"</tt> and
-<tt>\ref AbstractLinAlgPack::VectorSpace "VectorSpace"</tt> have been defined
-for finite dimensional coordinate vectors.  These interfaces parallel <tt>VectorBase</tt>,
-<tt>VectorBaseMutable</tt> and <tt>VectorSpaceBase</tt> respectively and are derived from them
-(since they represent a specializations).  For practical reasons, the <tt>VectorSpace</tt>
-interface derives also from the base interface
+as objects with their own abstract interface.  For <tt>VectorWithOpMutable</tt>, the
+vector space is represented through the base interface
+<tt>\ref AbstractLinAlgPack::VectorSpace "VectorSpace"</tt>.
+In software terms, a vector space object primarily acts as an
+"Abstract Factory" [Design Patterns, Gamma, et. al., 1995] and derives also from the base interface
 <tt>\ref MemMngPack::AbstractFactory "AbstractFactory<VectorWithOpMutable>"</tt>.
+In addition to acting as abstact
+factories, vector space objects are responsible for determining the compatibility
+of vector objects which is useful in debugging an application.  Vector spaces
+also provide the definition of the inner product for a vector space.
 
 These finite dimensional coordinate vectors and vector spaces admit a finite dimension
 (i.e. <tt>\ref AbstractLinAlgPack::VectorSpace::dim "VectorSpace::dim()"</tt>) and allow access to
