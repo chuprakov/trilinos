@@ -102,7 +102,7 @@ extern "C" {
 // we are using extern "C".
 
 //
-FORTRAN_FUNC_DECL_UL( void, QPHESS_SERVER_RELAX2, qphess_server_relax2 ) ( const f_int& N, const f_int& LDH
+FORTRAN_FUNC_DECL_UL_( void, QPHESS_SERVER_RELAX2, qphess_server_relax2 ) ( const f_int& N, const f_int& LDH
 	, const f_int& JTHCOL, const f_dbl_prec* H, const f_dbl_prec* X, f_dbl_prec* HX
 	, f_int* IW, const f_int& LENIW, f_dbl_prec* W, const f_int& LENW )
 {
@@ -180,7 +180,7 @@ QPSolverRelaxedQPOPTSOL::EInform QPSolverRelaxedQPOPT::call_qp_solver(bool warm_
 	QPOPT_CppDecl::qpopt(
 		N_, NCLIN_, LDA_, LDH_, NCLIN_ ? &A_(1,1) : NULL, &BL_(1), &BU_(1)
 		, &CVEC_(1), H_
-		, FORTRAN_NAME_UL(QPHESS_SERVER_RELAX2,qphess_server_relax2)
+		, FORTRAN_NAME_UL_(QPHESS_SERVER_RELAX2,qphess_server_relax2)
 		, &ISTATE_[0], &X_(1), INFORM_, ITER_, OBJ_, &AX_(1)
 		, &CLAMDA_(1), &IWORK_[0], LIWORK_, &WORK_[0], LWORK_ );
 

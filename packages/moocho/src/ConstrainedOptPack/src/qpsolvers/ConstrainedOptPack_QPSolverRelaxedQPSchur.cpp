@@ -419,7 +419,7 @@ QPSolverRelaxedQPSchur::imp_solve_qp(
 	//
 	// Set options for QPSchur.
 	// 
-	qp_solver_.max_iter( max_qp_iter_frac() * nd );
+	qp_solver_.max_iter(static_cast<index_type>(max_qp_iter_frac()*nd) );
 	qp_solver_.max_real_runtime( max_real_runtime() );
 	qp_solver_.feas_tol( constraints_->bounds_tol() );	// Let's assume the bound tolerance is the tightest
 	if(loose_feas_tol() > 0.0)

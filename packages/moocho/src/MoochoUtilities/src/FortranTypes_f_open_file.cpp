@@ -21,12 +21,12 @@ typedef FortranTypes::f_int	f_int;
 
 extern "C" {
 
-FORTRAN_FUNC_DECL_UL(f_int,F_OPEN_FILE,f_open_file) ( const f_int& IUNIT
+FORTRAN_FUNC_DECL_UL_(f_int,F_OPEN_FILE,f_open_file) ( const f_int& IUNIT
 	, const f_int I_FILE[], const f_int& I_FILE_LEN, const f_int& ISTATUS
 	, const f_int& IFORM, const f_int& IBLANK, const f_int& IACCESS
 	, const f_int& IRECL );
 
-FORTRAN_FUNC_DECL_UL(void,F_CLOSE_FILE,f_close_file) ( const f_int& IUNIT, const f_int& KEEP );
+FORTRAN_FUNC_DECL_UL_(void,F_CLOSE_FILE,f_close_file) ( const f_int& IUNIT, const f_int& KEEP );
 
 }	// end extern "C"
 
@@ -44,7 +44,7 @@ void FortranTypes::f_open_file( const f_int iunit, const char file[]
 		<< -result << " Character of the file name \""
 		<< file << "\" is not a valid ASCII character." );
 
-	if( result = FORTRAN_FUNC_CALL_UL(F_OPEN_FILE,f_open_file)(iunit, I_FILE, I_FILE_LEN
+	if( result = FORTRAN_FUNC_CALL_UL_(F_OPEN_FILE,f_open_file)(iunit, I_FILE, I_FILE_LEN
 		, status, form, blank, access, recl ) )
 	{
 		TEST_FOR_EXCEPTION(
@@ -62,5 +62,5 @@ void FortranTypes::f_open_file( const f_int iunit, const char file[]
 
 void FortranTypes::f_close_file( const f_int iunit, bool keep )
 {
-	FORTRAN_FUNC_CALL_UL(F_CLOSE_FILE,f_close_file)( iunit, keep ? 1 : 0 ); 
+	FORTRAN_FUNC_CALL_UL_(F_CLOSE_FILE,f_close_file)( iunit, keep ? 1 : 0 ); 
 }

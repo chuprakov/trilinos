@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifndef MATRIX_LOAD_SPARSE_FORTRAN_COMPATIBLE_ELEMENTS_H
-#define MATRIX_LOAD_SPARSE_FORTRAN_COMPATIBLE_ELEMENTS_H
+#ifndef ALAP_MATRIX_LOAD_SPARSE_ELEMENTS_H
+#define ALAP_MATRIX_LOAD_SPARSE_ELEMENTS_H
 
 #include "AbstractLinAlgPack/src/abstract/interfaces/MatrixBase.hpp"
 
@@ -171,4 +171,4 @@ public:
 
 }	// end namespace AbstractLinAlgPack 
 
-#endif	// MATRIX_LOAD_SPARSE_FORTRAN_COMPATIBLE_ELEMENTS_H
+#endif	// ALAP_MATRIX_LOAD_SPARSE_ELEMENTS_H

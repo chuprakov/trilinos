@@ -231,8 +231,8 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 				 << "\ngm_lhs.resize(n,m); assign( &gm_lhs(), gms_rhs, trans );\n";
 	gm_lhs.resize(n,m);
 	assign( &gm_lhs(), gms_rhs, trans );
-	update_success( result = comp( gm_lhs, no_trans, gms_rhs, trans ), &success );
-	if(out && !result) *out << "gm_lhs =\n" << gm_lhs;
+	update_success( result = comp( gm_lhs(), no_trans, gms_rhs, trans ), &success );
+	if(out && !result) *out << "gm_lhs =\n" << gm_lhs();
 	if(out) *out << "gm_lhs == gms_rhs' : " << result << std::endl;
 
 	// gms_lhs = op(gms_rhs)
@@ -240,8 +240,8 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 				 << "\ngm_lhs.resize(1,1); assign( &gm_lhs, gms_rhs, trans );\n";
 	gm_lhs.resize(1,1);
 	assign( &gm_lhs, gms_rhs, trans );
-	update_success( result = comp( gm_lhs, no_trans, gms_rhs, trans ), &success );
-	if(out && !result) *out << "gm_lhs =\n" << gm_lhs;
+	update_success( result = comp( gm_lhs(), no_trans, gms_rhs, trans ), &success );
+	if(out && !result) *out << "gm_lhs =\n" << gm_lhs();
 	if(out) *out << "gm_lhs == gms_rhs' : " << result << std::endl;
 
 	// tri_ele_gms_lhs = alpha (elementwise)
@@ -255,7 +255,7 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 	update_success( result1 = comp(tri_ele(gm_lhs(),lower),2.0), &success );
 	update_success( result2 = comp(tri_ele(gm_lhs(1,m-1,2,m),upper),1.0), &success );
 	if(out && (!result1 || !result2) )
-		*out << "gm_lhs =\n" << gm_lhs;
+		*out << "gm_lhs =\n" << gm_lhs();
 	if(out) *out << "tri_ele(gm_lhs(),lower) == 2.0 : " << result1 << std::endl
 				 << "tri_ele(gm_lhs(1,m-1,2,m),upper) == 1.0 : " << result2 << std::endl;
 
@@ -264,7 +264,7 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 	update_success( result1 = comp(tri_ele(gm_lhs(),lower),2.0), &success );
 	update_success( result2 = comp(tri_ele(gm_lhs(1,m-1,2,m),upper),3.0), &success );
 	if(out && (!result1 || !result2) )
-		*out << "gm_lhs =\n" << gm_lhs;
+		*out << "gm_lhs =\n" << gm_lhs();
 	if(out) *out << "tri_ele(gm_lhs(),lower) == 2.0 : " << result1 << std::endl
 				 << "tri_ele(gm_lhs(1,m-1,2,m),upper) == 3.0 : " << result2 << std::endl;
 
@@ -280,7 +280,7 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 	update_success( result1 = comp( gm_lhs(1,m,1,m), no_trans, gms_rhs(1,m,1,m), trans ), &success );
 	update_success( result2 = comp( tri_ele(gm_lhs(2,m,1,m-1),lower), tri_ele(gms_rhs(1,m-1,2,m),upper) ), &success );
 	if(out && (!result1 || !result2) )
-		*out << "gm_lhs =\n" << gm_lhs;
+		*out << "gm_lhs =\n" << gm_lhs();
 	if(out) *out << "gm_lhs(1,m,1,m) == gms_rhs(1,m,1,m)' : " << result1 << std::endl
 				 << "tri_ele(gm_lhs(2,m,1,m-1),lower) == tri_ele(gms_rhs(1,m-1,2,m),upper) : " << result2 << std::endl;
 
@@ -294,9 +294,9 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 				 << "\ngm_lhs = 1.0; Mt_S( &gm_lhs(), 2.0 );\n";
 	gm_lhs = 1.0;
 	Mt_S( &gm_lhs(), 2.0 );
-	update_success( result = comp( gm_lhs, 2.0 ), &success );
+	update_success( result = comp( gm_lhs(), 2.0 ), &success );
 	if(out && !result)
-		*out << "gm_lhs =\n" << gm_lhs;
+		*out << "gm_lhs =\n" << gm_lhs();
 	if(out) *out << "gm_lhs == 2.0: " << result << std::endl;
 
 	// tri_lhs *= alpha
@@ -315,7 +315,7 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 		update_success( result1 = comp( tm1, 2.0 ), &success );
 		update_success( result2 = comp( tm2, 3.0 ), &success );
 		if(out && (!result1 || !result2) )
-			*out << "gm_lhs =\n" << gm_lhs;
+			*out << "gm_lhs =\n" << gm_lhs();
 		if(out) *out << "tm1 == 2.0 : " << result1 << std::endl
 					 << "tm2 == 3.0 : " << result2 << std::endl;
 	}
@@ -329,7 +329,7 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 	update_success( result1 = comp( tri_ele(gm_lhs(2,m,1,m-1),lower), 3.0 ), &success );
 	update_success( result2 = comp( tri_ele(gm_lhs(1,m,1,m),upper), 1.0 ), &success );
 	if(out && (!result1 || !result2) )
-		*out << "gm_lhs =\n" << gm_lhs;
+		*out << "gm_lhs =\n" << gm_lhs();
 	if(out) *out << "tri_ele(gm_lhs(2,m,1,m-1),lower) == 3.0 : " << result1 << std::endl
 				 << "tri_ele(gm_lhs(1,m,1,m),upper) == 1.0 : " << result2 << std::endl;
 
@@ -346,9 +346,9 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 	gm_lhs = 0.0;
 	Mp_StM( &gm_lhs(), 0.5, gms_rhs, no_trans );
 	Mp_StM( &gm_lhs(), 0.5, gms_rhs, no_trans );
-	update_success( result = comp( gm_lhs, gms_rhs ), &success );
+	update_success( result = comp( gm_lhs(), gms_rhs ), &success );
 	if(out && !result)
-		*out << "gm_lhs =\n" << gm_lhs;
+		*out << "gm_lhs =\n" << gm_lhs();
 	if(out) *out << "gm_lhs == gm_rhs : " << result << std::endl;
 
 	// gms_lhs += alpha * op(sym_rhs)
@@ -373,7 +373,7 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 				, &success );
 			if(out) *out << ( result1 && result2 ) << std::endl;
 			if( out && ( !result1 || !result2 ) )
-				*out << "gm_lhs =\n" << gm_lhs;
+				*out << "gm_lhs =\n" << gm_lhs();
 		}
 	}}
 
@@ -420,7 +420,7 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 				update_success( result2 = comp( oth_tri_reg_ele, 0.0 ), &success );
 				if(out) *out << ( result && result1 && result2 ) << std::endl;
 				if( out && ( !result || !result1 || !result2 ) )
-					*out << "gm_lhs =\n" << gm_lhs;
+					*out << "gm_lhs =\n" << gm_lhs();
 			}
 		}
 	}}
@@ -622,7 +622,7 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 		update_success( result = comp( tri_ele(gm_lhs(),_uplo), tri_ele(ex_gm_lhs(),_uplo) )
 			, &success );
 		if( out && !result )
-			*out << "gm_lhs =\n" << gm_lhs << "ex_gm_lhs =\n" << ex_gm_lhs;
+			*out << "gm_lhs =\n" << gm_lhs << "ex_gm_lhs =\n" << ex_gm_lhs();
 		if(out) *out << "    gm_lhs == expected_gm_lhs : " << result << std::endl;
 	}}
 
@@ -656,7 +656,7 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixOp(std::ostream* out)
 		update_success( result = comp( tri_ele(gm_lhs(),_uplo), tri_ele(ex_gm_lhs(),_uplo) )
 			, &success );
 		if( out && !result )
-			*out << "gm_lhs =\n" << gm_lhs << "ex_gm_lhs =\n" << ex_gm_lhs;
+			*out << "gm_lhs =\n" << gm_lhs() << "ex_gm_lhs =\n" << ex_gm_lhs();
 		if(out) *out << "    gm_lhs == expected_gm_lhs : " << result << std::endl;
 	}}
 

@@ -419,7 +419,7 @@ void NLPSerialPreprocess::report_final_solution(
 							: DVectorSlice() ),
 		nu_orig       = nu ? nu_full(1,n_orig_) : DVectorSlice();
 	imp_report_orig_final_solution(
-		x_full
+		x_full()
 		,lambda_orig.dim()  ? &lambda_orig  : NULL
 		,lambdaI_orig.dim() ? &lambdaI_orig : NULL
 		,nu_orig.dim()      ? &nu_orig      : NULL

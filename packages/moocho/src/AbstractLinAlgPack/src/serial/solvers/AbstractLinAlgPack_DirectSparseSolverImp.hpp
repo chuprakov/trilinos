@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifndef	DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_IMP_H
-#define DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_IMP_H
+#ifndef	ALAP_DIRECT_SPARSE_SOLVER_IMP_H
+#define ALAP_DIRECT_SPARSE_SOLVER_IMP_H
 
 #include "DirectSparseSolver.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/VectorSpaceSerial.hpp"
@@ -286,4 +286,4 @@ private:
 
 }	// end namespace AbstractLinAlgPack 
 
-#endif	// DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_IMP_H
+#endif	// ALAP_DIRECT_SPARSE_SOLVER_IMP_H

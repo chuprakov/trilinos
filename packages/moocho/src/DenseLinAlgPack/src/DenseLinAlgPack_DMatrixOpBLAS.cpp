@@ -68,7 +68,7 @@ inline void i_assign(DMatrixSlice* gms_lhs, const DMatrixSlice& gms_rhs, BLAS_Cp
 			if(trans_rhs == BLAS_Cpp::no_trans) return; // assignment to self, nothing to do.
 		default: // either same memory that needs to be transposed or some overlap so just generate temp.
 			DMatrix temp = gms_rhs;
-			i_assign_basic(gms_lhs,temp,trans_rhs);
+			i_assign_basic(gms_lhs,temp(),trans_rhs);
 			return;
 	}
 }
@@ -106,7 +106,7 @@ void DenseLinAlgPack::assign(DMatrix* gm_lhs, const DMatrixSlice& gms_rhs, BLAS_
 		// some overlap so we must create a copy
 		DMatrix tmp(gms_rhs);
 		resize_gm_lhs(gm_lhs,gms_rhs.rows(),gms_rhs.cols(),trans_rhs);
-		i_assign(&(*gm_lhs)(), tmp, trans_rhs);
+		i_assign(&(*gm_lhs)(), tmp(), trans_rhs);
 	}
 	else {
 		// no overlap so just assign
@@ -173,7 +173,7 @@ void DenseLinAlgPack::assign(DMatrixSliceTriEle* tri_lhs, const DMatrixSliceTriE
 			// Give up and copy the vs_rhs as a temp.
 			{
 				DMatrix temp(tri_rhs.gms());
-				i_assign_basic(tri_lhs, tri_ele(temp,tri_rhs.uplo()));
+				i_assign_basic(tri_lhs, tri_ele(temp(),tri_rhs.uplo()));
 				return;
 			}
 
@@ -672,7 +672,7 @@ void DenseLinAlgPack::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DM
 		if(beta != 1.0) Mt_S(gms_lhs,beta);
 		DMatrix tmp;
 		M_StMtM(&tmp,alpha,tri_rhs1,trans_rhs1,gms_rhs2,trans_rhs2);
-		Mp_StM(gms_lhs,1.0,tmp,BLAS_Cpp::no_trans);
+		Mp_StM(gms_lhs,1.0,tmp(),BLAS_Cpp::no_trans);
 	}
 }
 
@@ -692,7 +692,7 @@ void DenseLinAlgPack::Mp_StMtM(DMatrixSlice* gms_lhs, value_type alpha, const DM
 		if(beta != 1.0) Mt_S(gms_lhs,beta);
 		DMatrix tmp;
 		M_StMtM(&tmp,alpha,gms_rhs1,trans_rhs1,tri_rhs2,trans_rhs2);
-		Mp_StM(gms_lhs,1.0,tmp,BLAS_Cpp::no_trans);
+		Mp_StM(gms_lhs,1.0,tmp(),BLAS_Cpp::no_trans);
 	}
 }
 

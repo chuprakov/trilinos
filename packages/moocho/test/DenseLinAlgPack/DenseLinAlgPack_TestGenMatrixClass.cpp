@@ -146,7 +146,7 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixClass(std::ostream* out)
 
 	if(out) *out << "\nGenMatrix gm1;\n";
 	DMatrix gm1;	
-	if(out) *out << "gm1 =\n" << gm1;
+	if(out) *out << "gm1 =\n" << gm1();
 	update_success( result = (gm1.rows() == 0 && gm1.cols() == 0 ), &success );
 	if(out)
 		*out	<< "((gm1.rows() -> "<<gm1.rows()
@@ -155,21 +155,21 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixClass(std::ostream* out)
 	
 	if(out) *out << "\nGenMatrix gm2(m,n);\n";
 	DMatrix gm2(m,n);
-	if(out) *out << "gm2 =\n" << gm2;
+	if(out) *out << "gm2 =\n" << gm2();
 
 	if(out) *out << "\nGenMatrix gm3(1.0,m,n);\n";
 	DMatrix gm3(1.0,m,n);
-	if(out) *out << "gm3 =\n" << gm3;
+	if(out) *out << "gm3 =\n" << gm3();
 	update_success( result = comp( gm3(), 1.0 ), &success );
 	if(out) *out << "gm3 == 1.0 : " << result << std::endl;
 
 	if(out) *out << "\nGenMatrix gm4(ptr,m,n);\n";
 	DMatrix gm4(ptr,m,n);
-	if(out) *out << "gm4 =\n" << gm4;
+	if(out) *out << "gm4 =\n" << gm4();
 
 	if(out) *out << "\nGenMatrix gm5(gms2);\n";
 	DMatrix gm5(gms2);
-	if(out) *out << "gm5 =\n" << gm5;
+	if(out) *out << "gm5 =\n" << gm5();
 
 	// ////////////////////////////
 	// Test DMatrixSlice binding
@@ -179,7 +179,7 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixClass(std::ostream* out)
 
 	if(out) *out << "\ngms1.bind(gm4());\n";
 	gms1.bind(gm4());
-	if(out) *out << "gms1 =\n" << gms1;
+	if(out) *out << "gms1 =\n" << gms1();
 
 	// ////////////////////////////
 	// Test DMatrix resizing
@@ -189,7 +189,7 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixClass(std::ostream* out)
 
 	if(out) *out << "\ngm1.resize(m,n,1.0);\n";
 	gm1.resize(m,n,1.0);
-	if(out) *out << "gm1 =\n" << gm1;
+	if(out) *out << "gm1 =\n" << gm1();
 	update_success( result = comp( gm1(), 1.0 ), &success );
 	if(out) *out << "gm1 == 1.0 : " << result << std::endl;
 
@@ -301,7 +301,7 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixClass(std::ostream* out)
 	// DMatrix
 
 	if(out) *out << "(gm4.overlap(gm4) -> ";
-	ovlap = gm4.overlap(gm4);
+	ovlap = gm4.overlap(gm4());
 	result = update_success( ovlap == SAME_MEM, &success );
 	if(out)	*out	<< overlap_str(ovlap) << ") == SAME_MEM : " << result << std::endl;
 
@@ -342,22 +342,22 @@ bool DenseLinAlgPack::TestingPack::TestGenMatrixClass(std::ostream* out)
 
 	if(out) *out << "\ngm1 = 3.0;\n";
 	gm1 = 3.0;
-	if(out) *out << "gm1 =\n" << gm1;
-	update_success( result = comp(gm1,3.0), &success );
+	if(out) *out << "gm1 =\n" << gm1();
+	update_success( result = comp(gm1(),3.0), &success );
 	if(out) *out << "gm1 == 3.0 : " << result << std::endl; 
 
 	if(out) *out << "\ngm1.resize(0,0); gm1 = gms2;\n";
 	gm1.resize(0,0);
 	gm1 = gms2;
-	if(out) *out << "gm1 =\n" << gm1;
-	update_success( result = comp(gm1,gms2), &success );
+	if(out) *out << "gm1 =\n" << gm1();
+	update_success( result = comp(gm1(),gms2()), &success );
 	if(out) *out << "gm1 == gms2 : " << result << std::endl; 
 
 	if(out) *out << "\ngm1.resize(0,0); gm1 = gm4;\n";
 	gm1.resize(0,0);
 	gm1 = gm4;
-	if(out) *out << "gm1 =\n" << gm1;
-	update_success( result = comp(gm1,gm4), &success );
+	if(out) *out << "gm1 =\n" << gm1();
+	update_success( result = comp(gm1(),gm4()), &success );
 	if(out) *out << "gm1 == gm4 : " << result << std::endl; 
 
 	} // end try

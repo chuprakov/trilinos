@@ -13,8 +13,8 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // above mentioned "Artistic License" for more details.
 
-#ifndef	DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_H
-#define DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_H
+#ifndef	ALAP_DIRECT_SPARSE_SOLVER_H
+#define ALAP_DIRECT_SPARSE_SOLVER_H
 
 #include "AbstractLinAlgPack/src/AbstractLinAlgPackTypes.hpp"
 #include "AbstractLinAlgPack/src/serial/interfaces/MatrixConvertToSparse.hpp"
@@ -27,18 +27,18 @@ namespace AbstractLinAlgPack {
 ///
 /** Abstract interface to serial direct sparse linear solvers.
  *
- * This interface is designed to accommodate both unsymmetic and symmetric
- * direct solvers.  The motivation for using one common interface is that
- * we would like to be able to easily use an unsymmetic solver on a
- * symmetric system.  Of couse this would also allow a client to attempt
- * to solve an unsymmetric system with a symmetric solver which of course
- * will not work.  A symmetric implementation can of course check that
- * <tt>A.rows() == A.cols()</tt> but it would be much more difficult
- * to determine
- * if the matrix was indeed symmetric.  It is likely that the symmetric
- * solver would only extract the upper or lower triangular region of an
- * unsymmetric matrix and would never check the other triangular region
- * for compatibility.
+ * This interface is designed to accommodate both unsymmetic and
+ * symmetric direct solvers.  The motivation for using one common
+ * interface is that we would like to be able to easily use an
+ * unsymmetic solver on a symmetric system.  Of couse this would also
+ * allow a client to attempt to solve an unsymmetric system with a
+ * symmetric solver which of course will not work.  A symmetric
+ * implementation can of course check that <tt>A.rows()==A.cols()</tt>
+ * but it would be much more difficult to determine if the matrix was
+ * indeed symmetric.  It is likely that the symmetric solver would
+ * only extract the upper or lower triangular region of an unsymmetric
+ * matrix and would never check the other triangular region for
+ * compatibility.
  *
  * The interface is designed to allow for maximum memory sharing
  * and recycling.  For example, we would like for the client to be able
@@ -91,7 +91,7 @@ namespace AbstractLinAlgPack {
 	VectorMutableDense x1(C1_ptr->cols());
 	V_InvMtV( &x1, *C1_ptr, BLAS_Cpp::no_trans, b1 );
 
-	// Factor another matrix with the same structure
+	// Factor another matrix with the same structure.
 	// The current factorization structure in direct_solver.get_fact_struc() is used.
 	C_ptr_t  C2_ptr = direct_solver.basis_matrix_factory()->create();
 	direct_solver.factor( A2, C2_ptr.get() );
@@ -589,4 +589,4 @@ public:
 
 }	// end namespace AbstractLinAlgPack 
 
-#endif	// DIRECT_SPARSE_FORTRAN_COMPATIBLE_SOLVER_H
+#endif	// ALAP_DIRECT_SPARSE_SOLVER_H

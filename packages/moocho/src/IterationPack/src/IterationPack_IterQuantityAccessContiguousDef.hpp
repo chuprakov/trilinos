@@ -260,9 +260,9 @@ void IterQuantityAccessContiguous<T_info>::lazy_initialization() {
 		store_.resize(num_quantities_);
 		quantities_.resize(num_quantities_,NULL);
 		// Set initial points to locations
-		updated_t::iterator       itr_updated         = updated_.begin();
-		store_t::iterator         itr_store           = store_.begin();
-		quantities_t::iterator    itr_quantities      = quantities_.begin();
+		typename updated_t::iterator       itr_updated         = updated_.begin();
+		typename store_t::iterator         itr_store           = store_.begin();
+		typename quantities_t::iterator    itr_quantities      = quantities_.begin();
 		for( ; itr_store != store_.end(); ++itr_updated, ++itr_store, ++itr_quantities )
 		{
 			*itr_updated     = false;

@@ -149,7 +149,7 @@ private:
 
 template<class T_Scalar, class T_Index>
 inline
-MatrixCOORTmplItfc<T_Scalar,T_Index>::const_iterator
+typename MatrixCOORTmplItfc<T_Scalar,T_Index>::const_iterator
 MatrixCOORTmplItfc<T_Scalar,T_Index>::begin() const
 {
 	return MatrixCOORTmplItfcItr<T_Scalar,T_Index>(values_,row_i_,col_j_,nz_);
@@ -157,7 +157,7 @@ MatrixCOORTmplItfc<T_Scalar,T_Index>::begin() const
 
 template<class T_Scalar, class T_Index>
 inline
-MatrixCOORTmplItfc<T_Scalar,T_Index>::const_iterator
+typename MatrixCOORTmplItfc<T_Scalar,T_Index>::const_iterator
 MatrixCOORTmplItfc<T_Scalar,T_Index>::end() const
 {
 	return MatrixCOORTmplItfcItr<T_Scalar,T_Index>(values_+nz_,row_i_+nz_,col_j_+nz_,0);

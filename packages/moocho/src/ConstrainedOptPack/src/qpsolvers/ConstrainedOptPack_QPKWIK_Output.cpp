@@ -71,7 +71,7 @@ using FortranTypes::f_dbl_prec;
 extern "C" {
 
 /// Print input data from QPKWIK
-FORTRAN_FUNC_DECL_UL(void,QPKWIK_PRINT_INPUT,qpkwik_print_input) ( const f_int& N, const f_int& M1
+FORTRAN_FUNC_DECL_UL_(void,QPKWIK_PRINT_INPUT,qpkwik_print_input) ( const f_int& N, const f_int& M1
 	, const f_int& M2, const f_int& M3, const f_int& M1D, const f_int& M2D
 	, const f_int& M3D, const f_dbl_prec GRAD[], const f_dbl_prec Z[]
 	, const f_int& LDZ, const f_int IBND[]
@@ -109,7 +109,7 @@ FORTRAN_FUNC_DECL_UL(void,QPKWIK_PRINT_INPUT,qpkwik_print_input) ( const f_int& 
 }
 
 /// Print sparsity info for
-FORTRAN_FUNC_DECL_UL(void,QPKWIK_PRINT_SPARSITY,qpkwik_print_sparsity) ( const f_int& N, const f_int& M2D
+FORTRAN_FUNC_DECL_UL_(void,QPKWIK_PRINT_SPARSITY,qpkwik_print_sparsity) ( const f_int& N, const f_int& M2D
 	, const f_int& ISPARSE, const f_int ISTART[], const f_int IPOINT[] )
 {
 	using QPKWIK_Output::out;
@@ -122,7 +122,7 @@ FORTRAN_FUNC_DECL_UL(void,QPKWIK_PRINT_SPARSITY,qpkwik_print_sparsity) ( const f
 }
 
 /// Print iteration data from QPKWIK
-FORTRAN_FUNC_DECL_UL(void,QPKWIK_PRINT_ITERATION_INFO,qpkwik_print_iteration_info) (
+FORTRAN_FUNC_DECL_UL_(void,QPKWIK_PRINT_ITERATION_INFO,qpkwik_print_iteration_info) (
 	  const f_int& CALLING_LABLE,  const f_int& N, const f_int& M1
 	, const f_int& M2, const f_int& M3, const f_int& M1D, const f_int& M2D
 	, const f_int& M3D, const f_dbl_prec X[]

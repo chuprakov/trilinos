@@ -274,8 +274,8 @@ void DirectSparseSolverMA28::imp_analyze_and_factor(
 					   << " < 1.0.\nSetting estimated_fillin_ratio = 10.0 ...\n";
 		estimated_fillin_ratio_ = 10.0;
 	}
-	if( fs.licn_ < fs.nz_ ) fs.licn_ = estimated_fillin_ratio_ * fs.nz_;
-	if( fs.lirn_ < fs.nz_ ) fs.lirn_ = estimated_fillin_ratio_ * fs.nz_;
+	if( fs.licn_ < fs.nz_ ) fs.licn_ = static_cast<index_type>(estimated_fillin_ratio_ * fs.nz_);
+	if( fs.lirn_ < fs.nz_ ) fs.lirn_ = static_cast<index_type>(estimated_fillin_ratio_ * fs.nz_);
 
 	// Initialize structure storage
 	fs.ivect_.resize(fs.nz_); // perminatly stores nz row indexes

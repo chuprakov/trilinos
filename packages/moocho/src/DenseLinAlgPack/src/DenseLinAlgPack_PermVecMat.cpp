@@ -62,7 +62,7 @@ void DenseLinAlgPack::perm_ele(const IVector& perm, DVectorSlice* vs)
 		*v_itr = (*vs)(*perm_itr);
 		
 	// Copy the permed vector back
-	(*vs) = tmp_v;
+	(*vs) = tmp_v();
 }
 
 void DenseLinAlgPack::perm_ele(const DVectorSlice& x, const IVector& perm, DVectorSlice* y)
@@ -120,7 +120,7 @@ void DenseLinAlgPack::perm_rows(const IVector& row_perm, DMatrixSlice* gms)
 	for(i = 1; i <= rows; ++i)
 		tmp_gm.row(i) = gms->row(row_perm(i));
 	// Copy the permed matrix back
-	(*gms) = tmp_gm;
+	(*gms) = tmp_gm();
 }
 
 void DenseLinAlgPack::perm_cols(const IVector& col_perm, DMatrixSlice* gms)
@@ -132,7 +132,7 @@ void DenseLinAlgPack::perm_cols(const IVector& col_perm, DMatrixSlice* gms)
 	for(i = 1; i <= cols; ++i)
 		tmp_gm.col(i) = gms->col(col_perm(i));
 	// Copy the permed matrix back
-	(*gms) = tmp_gm;
+	(*gms) = tmp_gm();
 }
 
 void DenseLinAlgPack::perm_rows_cols(const IVector& row_perm, const IVector& col_perm

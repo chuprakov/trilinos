@@ -499,7 +499,7 @@ void calc_resid(
 		Vp_StMtV( &t2, 1.0, qp.A(), no_trans, lambda, 0.0 );
 	// t3 = A_bar*lambda_bar
 	if( q_plus_hat )
-		Vp_StMtV( &t3, 1.0, constraints.A_bar(), no_trans, lambda_bar, 0.0 );
+		Vp_StMtV( &t3, 1.0, constraints.A_bar(), no_trans, lambda_bar(), 0.0 );
 	// roR = Q_R'*t1 + Q_R'*t2 + Q_R'*t3 + ao*boR
 	LinAlgOpPack::V_MtV( &tR, Q_R, trans, t1 );  // roR = Q_R'*t1
 	*roR_scaling += norm_inf(tR);
@@ -1376,7 +1376,7 @@ void QPSchur::ActiveSet::initialize(
 			*out
 				<< "\nIninitial Schur Complement before it is nonsingular:\n"
 				<< "\nS_hat =\nLower triangular part (ignore nonzeros above diagonal)\n"
-				<< S_store;
+				<< S_store();
 		}
 		// Initialize and factorize the schur complement!
 		try {
@@ -2797,12 +2797,12 @@ QPSchur::ESolveReturn QPSchur::solve_qp(
 	}
 	// Print Solution x, lambda and mu
 	if( (int)output_level >= (int)OUTPUT_ITER_QUANTITIES ) {
-		*out	<< "\nx =\n" 				<< *x;
-		*out	<< "\nmu =\n" 				<< *mu;
+		*out	<< "\nx =\n" 				<< (*x)();
+		*out	<< "\nmu =\n" 				<< (*mu)();
 		if(lambda)
-			*out << "\nlambda =\n"			<< *lambda;
+			*out << "\nlambda =\n"			<< (*lambda)();
 		if(lambda_breve)
-			*out << "\nlambda_breve =\n"	<< *lambda_breve;
+			*out << "\nlambda_breve =\n"	<< (*lambda_breve)();
 	}
 	// Print 'goodby' header.
 	if( (int)output_level >= (int)OUTPUT_BASIC_INFO ) {

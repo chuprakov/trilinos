@@ -34,17 +34,10 @@ extern "C" {
 
 // Generate plane rotation
 FORTRAN_FUNC_DECL_UL(void,DROTG,drotg)(f_dbl_prec* A, f_dbl_prec* B, f_dbl_prec* C, f_dbl_prec* S);
-
-// Generate modified plane rotation
-FORTRAN_FUNC_DECL_UL(void,DROTMG,drotmg)(f_dbl_prec* D1, f_dbl_prec* D2, f_dbl_prec* A, const f_dbl_prec& B, f_dbl_prec* PARAM);
  
 // Apply plane rotation
 FORTRAN_FUNC_DECL_UL(void,DROT,drot)(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY,
 		  const f_dbl_prec& C, const f_dbl_prec& S);
-
-// Apply modified plane rotation
-FORTRAN_FUNC_DECL_UL(void,DROTM,drotm)(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY,
-		  const f_dbl_prec* PARAM);
 
 // Interchange vectors
 FORTRAN_FUNC_DECL_UL(void,DSWAP,dswap)(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY);
@@ -242,12 +235,6 @@ FORTRAN_FUNC_DECL_UL(void,DTRSM,dtrsm)(FORTRAN_CONST_CHAR_1_ARG(SIDE)
 void BLAS_Cpp::rotg(f_dbl_prec* a, f_dbl_prec* b, f_dbl_prec* c, f_dbl_prec* s) {
 	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DROTG,drotg)(a,b,c,s);
 }
-
-// Generate modified plane rotation
-
-void BLAS_Cpp::rotmg(f_dbl_prec* d1, f_dbl_prec* d2, f_dbl_prec* a, const f_dbl_prec& b, f_dbl_prec* param) {
-	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DROTMG,drotmg)(d1, d2, a, b, param);
-}
  
 // Apply plane rotation
 
@@ -255,15 +242,6 @@ void BLAS_Cpp::rot(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec*
 	, const f_dbl_prec& C, const f_dbl_prec& S)
 {
 	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DROT,drot)(N, X, INCX, Y, INCY, C, S);
-}
-
-
-// Apply modified plane rotation
-
-void BLAS_Cpp::rot(const f_int& N, f_dbl_prec* X, const f_int& INCX, f_dbl_prec* Y, const f_int& INCY
-	, const f_dbl_prec* PARAM)
-{
-	BLAS_C_Decl::FORTRAN_FUNC_CALL_UL(DROTM,drotm)(N, X, INCX, Y, INCY, PARAM);
 }
 
 // Interchange vectors

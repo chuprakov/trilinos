@@ -60,10 +60,10 @@ FORTRAN_FUNC_DECL_UL(void,QPKWIKNEW,qpkwiknew) (
 	,f_int ISTATE[], const f_int& LRW, f_dbl_prec RW[]
 	);
 
-FORTRAN_FUNC_DECL_UL(f_int,QPKWIKNEW_LISTATE,qpkwiknew_listate) (
+FORTRAN_FUNC_DECL_UL_(f_int,QPKWIKNEW_LISTATE,qpkwiknew_listate) (
 	const f_int& n, const f_int& m1, const f_int& m2, const f_int& m3);
 
-FORTRAN_FUNC_DECL_UL(f_int,QPKWIKNEW_LRW,qpkwiknew_lrw) (
+FORTRAN_FUNC_DECL_UL_(f_int,QPKWIKNEW_LRW,qpkwiknew_lrw) (
 	const f_int& n, const f_int& m1, const f_int& m2, const f_int& m3);
 
 } // end extern "C"
@@ -100,7 +100,7 @@ inline
 f_int qpkwiknew_listate(const f_int& n, const f_int& m1, const f_int& m2
 						, const f_int& m3)
 {
-	return FORTRAN_FUNC_CALL_UL(QPKWIKNEW_LISTATE,qpkwiknew_listate) (n, m1, m2, m3);
+	return FORTRAN_FUNC_CALL_UL_(QPKWIKNEW_LISTATE,qpkwiknew_listate) (n, m1, m2, m3);
 }
 
 // Get the length of the real (double precision) workspace
@@ -108,7 +108,7 @@ inline
 f_int qpkwiknew_lrw(const f_int& n, const f_int& m1, const f_int& m2
 					, const f_int& m3)
 {
-	return FORTRAN_FUNC_CALL_UL(QPKWIKNEW_LRW,qpkwiknew_lrw) (n, m1, m2, m3);
+	return FORTRAN_FUNC_CALL_UL_(QPKWIKNEW_LRW,qpkwiknew_lrw) (n, m1, m2, m3);
 }
 
 } // end namespace QPKWIKNEW_CppDecl
@@ -400,7 +400,7 @@ QPSolverRelaxedQPKWIK::imp_solve_qp(
 	WARM_ = 0; // Cold start by default
 
 	// MAX_ITER
-	MAX_ITER_ = max_qp_iter_frac() * N_;
+	MAX_ITER_ = static_cast<f_int>(max_qp_iter_frac() * N_);
 
 	// INF
 	INF_ = ( same_qp_struct ? 1 : 0 );

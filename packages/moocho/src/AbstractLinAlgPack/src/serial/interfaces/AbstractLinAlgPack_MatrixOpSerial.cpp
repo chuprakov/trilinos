@@ -429,7 +429,7 @@ const VectorSpace& MatrixOpSerial::space_rows() const
 std::ostream& MatrixOpSerial::output(std::ostream& out) const {
 	DMatrix tmp( 0.0, rows(), cols() );
 	this->Mp_StM( &tmp(), 1.0 , BLAS_Cpp::no_trans );
-	return out << tmp;
+	return out << tmp();
 }
 
 bool MatrixOpSerial::Mp_StM(
