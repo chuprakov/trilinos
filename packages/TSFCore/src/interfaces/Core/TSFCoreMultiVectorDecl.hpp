@@ -21,7 +21,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
-// Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
+// Questions? Contact Michael A. Heroux (maherou@sandia.gov)
 // 
 // ***********************************************************************
 // @HEADER
@@ -32,7 +32,8 @@
 #ifndef TSFCORE_MULTI_VECTOR_DECL_HPP
 #define TSFCORE_MULTI_VECTOR_DECL_HPP
 
-#include "TSFCoreLinearOp.hpp"
+#include "TSFCoreLinearOpDecl.hpp"
+//#include "TSFCoreLinearOp.hpp"
 #include "RTOpPack_RTOpT.hpp"
 
 namespace TSFCore {
@@ -165,44 +166,44 @@ public:
 	///
 	/** Returns a const sub-view of a contiguous set of columns of the this multi-vector.
 	 *
-	 * @param  col_rng  [in] Range of columns to create a view of.  Not that it is valid for
-	 *                  <tt>col_rng.full_range()==true</tt> in which case the view of the entire
+	 * @param  colRng  [in] Range of columns to create a view of.  Not that it is valid for
+	 *                  <tt>colRng.full_range()==true</tt> in which case the view of the entire
 	 *                  multi-vector is taken (not very useful).
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->domain().get()!=NULL && this->range().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
-	 * <li> [<tt>!col_rng.full_range()</tt>] <tt>col_rng.ubound() <= this->range()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>!colRng.full_range()</tt>] <tt>colRng.ubound() <= this->range()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>this->range()->isCompatible(*return->range()) == true</tt>
-	 * <li> <tt>return->domain()->dim() == RangePack::full_range(col_rng,1,this->domain()->dim()).size()</tt>
-	 * <li> <tt>*return->col(1+k)</tt> represents the same column vector as <tt>this->col(col_rng.lbound()+k)</tt>,
-	 *      for <tt>k=0...RangePack::full_range(col_rng,1,this->domain()->dim()).ubound()</tt>
+	 * <li> <tt>return->domain()->dim() == RangePack::full_range(colRng,1,this->domain()->dim()).size()</tt>
+	 * <li> <tt>*return->col(1+k)</tt> represents the same column vector as <tt>this->col(colRng.lbound()+k)</tt>,
+	 *      for <tt>k=0...RangePack::full_range(colRng,1,this->domain()->dim()).ubound()</tt>
 	 * </ul>
 	 *
 	 * The default implementation (which is the only implementation needed by subclasses)
 	 * is to return object from the non-const verstion <tt>subView()</tt>.
 	 */
-	virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > subView( const Range1D& col_rng ) const;
+	virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > subView( const Range1D& colRng ) const;
 	
 	///
 	/** Returns a non-const sub-view of a contiguous set of columns of the this multi-vector.
 	 *
-	 * @param  col_rng  [in] Range of columns to create a view of.  Not that it is valid for
-	 *                  <tt>col_rng.full_range()==true</tt> in which case the view of the entire
+	 * @param  colRng  [in] Range of columns to create a view of.  Not that it is valid for
+	 *                  <tt>colRng.full_range()==true</tt> in which case the view of the entire
 	 *                  multi-vector is taken (not very useful).
 	 *
 	 * Preconditions:<ul>
 	 * <li> <tt>this->domain().get()!=NULL && this->range().get()!=NULL</tt> (throw <tt>std::logic_error</tt>)
-	 * <li> [<tt>!col_rng.full_range()</tt>] <tt>col_rng.ubound() <= this->range()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
+	 * <li> [<tt>!colRng.full_range()</tt>] <tt>colRng.ubound() <= this->range()->dim()</tt> (throw <tt>std::invalid_argument</tt>)
 	 * </ul>
 	 *
 	 * Postconditions:<ul>
 	 * <li> <tt>this->range()->isCompatible(*return->range()) == true</tt>
-	 * <li> <tt>return->domain()->dim() == RangePack::full_range(col_rng,1,this->domain()->dim()).size()</tt>
-	 * <li> <tt>*return->col(1+k)</tt> represents the same column vector as <tt>this->col(col_rng.lbound()+k)</tt>,
-	 *      for <tt>k=0...RangePack::full_range(col_rng,1,this->domain()->dim()).ubound()</tt>
+	 * <li> <tt>return->domain()->dim() == RangePack::full_range(colRng,1,this->domain()->dim()).size()</tt>
+	 * <li> <tt>*return->col(1+k)</tt> represents the same column vector as <tt>this->col(colRng.lbound()+k)</tt>,
+	 *      for <tt>k=0...RangePack::full_range(colRng,1,this->domain()->dim()).ubound()</tt>
 	 * </ul>
 	 *
 	 * The default implementation of this function uses <tt>MultiVectorCols</tt> but this is not
@@ -211,7 +212,7 @@ public:
 	 * Note that <tt>*this</tt> is not guaranteed to be modified until
 	 * the smart pointer returned by this function goes out of scope.
 	 */
-	virtual Teuchos::RefCountPtr<MultiVector<Scalar> > subView( const Range1D& col_rng );
+	virtual Teuchos::RefCountPtr<MultiVector<Scalar> > subView( const Range1D& colRng );
 
 	///
 	/** Returns a const sub-view of a non-contiguous set of columns of this multi-vector.
@@ -298,9 +299,9 @@ public:
 	 */
 	virtual void applyOp(
 		const RTOpPack::RTOpT<Scalar>   &primary_op
-		,const int                   num_multi_vecs
+		,const int                      num_multi_vecs
 		,const MultiVector<Scalar>*     multi_vecs[]
-		,const int                   num_targ_multi_vecs
+		,const int                      num_targ_multi_vecs
 		,MultiVector<Scalar>*           targ_multi_vecs[]
 		,RTOpPack::ReductTarget*        reduct_objs[]
 		,const Index                    primary_first_ele
@@ -334,9 +335,9 @@ public:
 	virtual void applyOp(
 		const RTOpPack::RTOpT<Scalar>   &primary_op
 		,const RTOpPack::RTOpT<Scalar>  &secondary_op
-		,const int                   num_multi_vecs
+		,const int                      num_multi_vecs
 		,const MultiVector<Scalar>*     multi_vecs[]
-		,const int                   num_targ_multi_vecs
+		,const int                      num_targ_multi_vecs
 		,MultiVector<Scalar>*           targ_multi_vecs[]
 		,RTOpPack::ReductTarget         *reduct_obj
 		,const Index                    primary_first_ele
@@ -577,7 +578,7 @@ public:
 		,const Scalar            beta
 		) const;
 
-	/// This method is simply overridden to return <tt>this->clone_lons()</tt>.
+	/// This method is simply overridden to return <tt>this->clone_mv()</tt>.
 	Teuchos::RefCountPtr<const LinearOp<Scalar> > clone() const;
 
 	//@}
@@ -600,9 +601,9 @@ template<class Scalar>
 inline
 void applyOp(
 	const RTOpPack::RTOpT<Scalar>   &primary_op
-	,const int                   num_multi_vecs
+	,const int                      num_multi_vecs
 	,const MultiVector<Scalar>*     multi_vecs[]
-	,const int                   num_targ_multi_vecs
+	,const int                      num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
 	,RTOpPack::ReductTarget*        reduct_objs[]
 	,const Index                    primary_first_ele      = 1
@@ -639,9 +640,9 @@ inline
 void applyOp(
 	const RTOpPack::RTOpT<Scalar>   &primary_op
 	,const RTOpPack::RTOpT<Scalar>  &secondary_op
-	,const int                   num_multi_vecs
+	,const int                      num_multi_vecs
 	,const MultiVector<Scalar>*     multi_vecs[]
-	,const int                   num_targ_multi_vecs
+	,const int                      num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
 	,RTOpPack::ReductTarget         *reduct_obj
 	,const Index                    primary_first_ele      = 1

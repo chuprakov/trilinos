@@ -161,10 +161,14 @@ namespace TSFCore {
                              ,const Scalar            beta
                              ) const
   {
+#ifdef TSFCORE_VECTOR_DERIVE_FROM_MULTI_VECTOR
+    this->apply(M_trans,static_cast<const MultiVector<Scalar>&>(x),static_cast<MultiVector<Scalar>*>(y),alpha,beta);
+#else
     MultiVectorCols<Scalar>
       X(Teuchos::rcp(const_cast<Vector<Scalar>*>(&x),false)),
       Y(Teuchos::rcp(y,false));
     this->apply(M_trans,X,&Y,alpha,beta);
+#endif
   }
 
   void EpetraLinearOp::apply(

@@ -29,14 +29,15 @@
 // ////////////////////////////////////////////////////////////////////////////
 // TSFCoreEpetraVectorSpace.cpp
 
-// Define this to use the optimized EpetraMultiVector implementation!
-#define TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR
-
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFCoreEpetraVectorSpaceFactory.hpp"
-#include "TSFCoreEpetraVector.hpp"
 #ifdef TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR
 #  include "TSFCoreEpetraMultiVector.hpp"
+#endif
+#ifdef TSFCORE_EPETRA_USE_TSFCORE_EPETRA_VECTOR
+#  include "TSFCoreEpetraVector.hpp"
+#else
+#  include "TSFCoreVectorMultiVector.hpp"
 #endif
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
@@ -96,11 +97,13 @@ void EpetraVectorSpace::initialize(
 	mpiComm_ = MPI_COMM_NULL;
 #endif // RTOp_USE_MPI
 	localSubDim_ = epetra_map->NumMyElements();
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
 	smallVecSpcFcty_ = Teuchos::rcp(
 		new EpetraVectorSpaceFactory(
 			Teuchos::rcp(&epetra_map->Comm(),false)
 			)
 		);
+#endif
 	updateState();
 }
 
@@ -112,7 +115,9 @@ void EpetraVectorSpace::setUninitialized(
 	epetra_map_ = Teuchos::null;
 	mpiComm_ = MPI_COMM_NULL;
 	localSubDim_ = 0; // Flag that this is uninitialized
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
 	smallVecSpcFcty_ = Teuchos::null;
+#endif
 	updateState();
 }
 
@@ -127,18 +132,24 @@ Teuchos::RefCountPtr<Vector<EpetraVectorSpace::Scalar> >
 EpetraVectorSpace::createMember() const
 {
 	return Teuchos::rcp(
+#if defined(TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR) && !defined(TSFCORE_EPETRA_USE_TSFCORE_EPETRA_VECTOR)
+    new VectorMultiVector<Scalar>(createMembers(1))
+#else
     new EpetraVector(
       Teuchos::rcp(new Epetra_Vector(*epetra_map_,false))
       ,Teuchos::rcp(this,false)
       )
+#endif
     );
 }
 
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
 Teuchos::RefCountPtr< const VectorSpaceFactory<EpetraVectorSpace::Scalar> >
 EpetraVectorSpace::smallVecSpcFcty() const
 {
 	return smallVecSpcFcty_;
 }
+#endif
 
 Teuchos::RefCountPtr<MultiVector<EpetraVectorSpace::Scalar> > 
 EpetraVectorSpace::createMembers(int numMembers) const

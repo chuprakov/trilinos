@@ -32,7 +32,11 @@
 #ifndef TSFCORE_VECTOR_DECL_HPP
 #define TSFCORE_VECTOR_DECL_HPP
 
+// Define to have Vector derive from MultiVector
+#define TSFCORE_VECTOR_DERIVE_FROM_MULTI_VECTOR
+
 #include "TSFCoreTypes.hpp"
+#include "TSFCoreMultiVectorDecl.hpp"
 #include "RTOpPack_RTOpT.hpp"
 #include "RTOp_SparseSubVector.h"
 
@@ -67,8 +71,9 @@ namespace TSFCore {
  * <tt>applyOp()</tt> can be found \ref TSFCore_VectorStdOps_grp "here".
  *
  * This interface also allows a client to extract a sub-set of
- * elements in an explicit form non-mutable <tt>RTOpPack::SubVectorT<Scalar></tt>
- * non-mutable <tt>RTOpPack::MutableSubVectorT<Scalar></tt> objects using the
+ * elements in an explicit form non-mutable
+ * <tt>RTOpPack::SubVectorT<Scalar></tt> non-mutable
+ * <tt>RTOpPack::MutableSubVectorT<Scalar></tt> objects using the
  * operations <tt>getSubVector()</tt>.  In general, this is very bad
  * thing to do and should be avoided at all costs.  However, there are
  * some situations where this is needed and therefore it is supported.
@@ -98,11 +103,8 @@ namespace TSFCore {
  * runtime for a numerical algorithm in any significant way.
  */
 template<class Scalar>
-class Vector {
+class Vector : virtual public MultiVector<Scalar> {
 public:
-
-	///
-	virtual ~Vector() {}
 
 	/** @name Pure virtual operations (must be overridden by subclass) */
 	//@{
@@ -358,9 +360,70 @@ public:
 
 	//@}
 
-#ifdef DOXYGEN_COMPILE
-	VectorSpace<Scalar>*      space; // doxygen only!
-#endif
+  /** @name Overridden from OpBase */
+  //@{
+	/// Returns a <tt>SerialVectorSpace</tt> object with dimension 1.
+	Teuchos::RefCountPtr< const VectorSpace<Scalar> > domain() const;
+	/// Returns <tt>this->space()</tt>
+	Teuchos::RefCountPtr< const VectorSpace<Scalar> > range() const;
+  //@}
+
+  /** @name Overridden from LinearOp */
+  //@{
+  ///
+	void apply(
+		const ETransp            M_trans
+		,const Vector<Scalar>    &x
+		,Vector<Scalar>          *y
+		,const Scalar            alpha
+		,const Scalar            beta
+		) const;
+  //@}
+
+  /** @name Overridden from MultiVector */
+  //@{
+  ///
+	Teuchos::RefCountPtr<Vector<Scalar> > col(Index j);
+  ///
+	Teuchos::RefCountPtr<MultiVector<Scalar> > clone_mv() const;
+  ///
+	Teuchos::RefCountPtr<const MultiVector<Scalar> > subView( const Range1D& col_rng ) const;
+	///
+	Teuchos::RefCountPtr<MultiVector<Scalar> > subView( const Range1D& col_rng );
+	///
+	Teuchos::RefCountPtr<const MultiVector<Scalar> > subView( const int numCols, const int cols[] ) const;
+	///
+	Teuchos::RefCountPtr<MultiVector<Scalar> > subView( const int numCols, const int cols[] );
+  ///
+	void getSubMultiVector(
+		const Range1D                       &rowRng
+		,const Range1D                      &colRng
+		,RTOpPack::SubMultiVectorT<Scalar>  *sub_mv
+		) const;
+	///
+	void freeSubMultiVector( RTOpPack::SubMultiVectorT<Scalar>* sub_mv ) const;
+	///
+	void getSubMultiVector(
+		const Range1D                                &rowRng
+		,const Range1D                               &colRng
+		,RTOpPack::MutableSubMultiVectorT<Scalar>    *sub_mv
+		);
+	///
+	void commitSubMultiVector( RTOpPack::MutableSubMultiVectorT<Scalar>* sub_mv );
+  //@}
+
+private:
+
+  // /////////////////////////////////////
+  // Private data members
+
+  Teuchos::RefCountPtr<VectorSpace<Scalar> >  domain_; // Only initialized if *this is used as a MultiVector
+
+  // /////////////////////////////////////
+  // Private member functions
+
+  void validateColRng( const Range1D &rowRng ) const;
+  void validateColIndexes(  const int numCols, const int cols[] ) const;
 
 }; // end class Vector
 

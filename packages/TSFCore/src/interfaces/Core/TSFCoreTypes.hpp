@@ -37,6 +37,7 @@
 #include "RTOp.h"
 #include "Range1D.hpp"
 #include "Teuchos_RefCountPtr.hpp"
+#include "RTOpPackTypes.hpp"
 
 namespace TSFCore {
 
@@ -57,8 +58,9 @@ using RangePack::Range1D;
 /** Enumeration for determining how an operator is applied.
  */
 enum ETransp {
-	NOTRANS  ///< Use the transposed operator
-	,TRANS   ///< Use the nontransposed operator
+	NOTRANS     ///< Use the transposed operator
+	,TRANS      ///< Use the nontransposed operator
+  ,CONJTRANS  ///< Use transpose-conjugate if complex and otherwise just means <tt>TRANS</tt>
 };
 
 ///

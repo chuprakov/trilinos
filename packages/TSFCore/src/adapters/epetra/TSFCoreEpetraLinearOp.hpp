@@ -32,14 +32,10 @@
 #ifndef TSFCORE_EPETRA_LINEAR_OP_HPP
 #define TSFCORE_EPETRA_LINEAR_OP_HPP
 
-#include "TSFCoreLinearOp.hpp"
 #include "TSFCoreEpetraTypes.hpp"
-
-class Epetra_Operator;
+#include "TSFCoreLinearOp.hpp"
 
 namespace TSFCore {
-
-class EpetraVectorSpace;
 
 ///
 /** Implementation of <tt>LinearOp</tt> using an <tt>Epetra_Operator</tt> object.

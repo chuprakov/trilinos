@@ -208,9 +208,13 @@ void LinearOpWithSolveIter<Scalar>::solve(
 	,Solvers::ConvergenceTester<Scalar>  *convTester
 	) const
 {
+#ifdef TSFCORE_VECTOR_DERIVE_FROM_MULTI_VECTOR
+	solve(M_trans,static_cast<const MultiVector<Scalar>&>(y),static_cast<MultiVector<Scalar>*>(x),1.0,convTester);
+#else
 	const MultiVectorCols<Scalar>  Y(Teuchos::rcp(const_cast<Vector<Scalar>*>(&y),false));
 	MultiVectorCols<Scalar>        X(Teuchos::rcp(x,false));
 	solve(M_trans,Y,&X,1.0,convTester);
+#endif
 }
 
 template<class Scalar>

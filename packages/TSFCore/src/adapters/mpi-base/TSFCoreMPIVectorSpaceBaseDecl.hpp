@@ -42,14 +42,14 @@ namespace TSFCore {
  *
  * This interface collaborates with the classes <tt>MPIVetorBase</tt>
  * and <tt>MPIMultiVetorBase</tt> to implement MPI-based parallel (or
- * serial of course) vectors and multi-vectorsthat allows different
+ * serial of course) vectors and multi-vectors that allows different
  * concrete implementations to mix together.
  *
  * Specifically, these classes are designed to handle three different
  * use case:
  * <ul>
  * <li> Serial vectors on one processor with <tt>localSubDim()==dim()</tt>.
- *      In this case, the MPI_Comm returned from <tt>mpiComm()</tt> can
+ *      In this case, the <tt>MPI_Comm</tt> returned from <tt>mpiComm()</tt> can
  *      be <tt>MPI_COMM_NULL</tt>.
  * <li> Distributed parallel vectors on two or more processors with
  *      <tt>localSubDim() < dim()</tt>.  This implementation assumes
@@ -74,26 +74,31 @@ namespace TSFCore {
  *
  * For the case of a distributed parallel vector, this interface base
  * class assumes that vector data is partitioned to processors in
- * contiguous chunks and dense subvectors.  To spell this out, let
+ * contiguous chunks of dense subvectors.  To spell this out, let
  * <tt>v</tt> be the local vector that is sorted on this processor and
  * let <tt>g</tt> be the global vector.  Then these two vectors are
  * related (using one-based indexing) as:
- *
- * <tt>v(k) == g(k + this->localOffset()), for k = 1...this->localSubDim()</tt>
- *
+
+ \verbatim
+    v(k) == g(k + this->localOffset()), for k = 1...this->localSubDim()
+
+ \endverbatim
+
  * Any type of mapping of vector data to processors that can not be
  * interpreted in this way can not rely on this base class for
  * interoperability.  Note that as long as the elements in a processor
  * are partitioned to unique processors and no ghost elements are
  * present, the actual indexes used by the application with these
- * vectors is immaterial.  These indexes are only meaningful to
- * abstract numerial algorithms and provide an arbitrary label for
- * certain types of coordinate-dependent operations (like in an
- * active-set method).  Therefore, as long a the underlying vector
- * represents a unique partitioning of elements, these classes can be
- * used.  There is a default implementation of <tt>localOffset()</tt>
- * that automatically assumes this contiguous mapping of elements to
- * processors.
+ * vectors is immaterial.  The indexes associated with this set of
+ * interfaces, however, are only meaningful to abstract numerial
+ * algorithms and provide an arbitrary label for certain types of
+ * coordinate-dependent operations (like required in an active-set
+ * method for optimization).  Therefore, as long as the underlying
+ * vector represents a unique partitioning of elements, these classes
+ * can be used.  There is a default implementation of
+ * <tt>localOffset()</tt> that automatically assumes this contiguous
+ * mapping of elements to processors and in general this should not be
+ * changed.
  *
  * <b>Notes to subclass developers:</b>
  *
@@ -102,8 +107,8 @@ namespace TSFCore {
  * pure virtual methods <tt>dim()</tt> and <tt>createMember()</tt> are
  * the only methods that must be overridden.
  *
- * If <tt>this</tt> this is uninitialized then <tt>localSubDim()</tt>
- * should return <tt>0</tt>.
+ * If <tt>this</tt> this is in an uninitialized state then
+ * <tt>localSubDim()</tt> should return <tt>0</tt>.
  *
  * If it is possible that the mapping of vector elements to processors
  * is not as described above, then the subclass should override the
@@ -114,14 +119,24 @@ namespace TSFCore {
  * If optimized implementations of multi-vectors can be supported,
  * then the <tt>createMembers()</tt> method should also be overridden.
  *
+ * This class defines a very general default implementation for
+ * <tt>smallVecSpcFcty()</tt> that returns a
+ * <tt>MPIVectorSpaceFactoryStd</tt> object creates
+ * <tt>MPIVectorSpaceStd</tt> <tt>VectorSpace</tt> objects that create
+ * <tt>MPIMultiVectorStd</tt> <tt>MultiVector</tt> objects (and
+ * <tt>VectorMultiVector</tt>-wrapped <tt>MPIMultiVectorStd</tt>
+ * <tt>Vector</tt> objects).  This implementation should be very
+ * appropriate for many different concrete implementations.
+ *
  * <b>Note:</b> It is very important that subclasses call the
  * <tt>updateState()</tt> function whenever the state of
- * <tt>*this</tt> changes that might affect the behavior of any of the
- * public member functions.  For example, if a different value of
- * <tt>localSubDim()</tt> will be returned the next time it is called
- * by a client, then <tt>%updateState()</tt> needs to be called by the
- * subclass.  Clients should never need to worry about this function
- * and that is why <tt>%updateState()</tt> is declared private.
+ * <tt>*this</tt> changes in a way that might affect the behavior of
+ * any of the public member functions.  For example, if a different
+ * value of <tt>localSubDim()</tt> will be returned the next time it
+ * is called by a client, then <tt>%updateState()</tt> needs to be
+ * called by the subclass.  Clients should never need to worry about
+ * this function and that is why <tt>%updateState()</tt> is declared
+ * protected.
  * 
  */
 template<class Scalar>
@@ -208,11 +223,16 @@ public:
 	/** Returns true if all of the elements are stored on one processor.
 	 *
 	 * Postconditions:<ul>
-	 * <li> <tt>return == (numProc==1)</tt>, where <tt>numProc</tt> is
-	 *      returned from <tt>MPI_Comm_size(this->mpiComm(),&numProc)</tt>.
+	 * <li> <tt>return == (dim()==localSubDim())</tt>.
 	 * </ul>
 	 */
  	bool isInCore() const;
+
+  ///
+  /** Returns a <tt>MPIVectorSpaceFactoryStd</tt> object that has been given <tt>mpiComm()</tt>.
+   */
+	Teuchos::RefCountPtr< const VectorSpaceFactory<Scalar> > smallVecSpcFcty() const;
+
 	///
 	/** Checks the general compatibility of parallel (or serial on one
 	 * processor) MPI-based vector spaces.
@@ -266,6 +286,8 @@ private:
 	Index     mapCode_;    // < 0 is a flag that everything needs initialized
 	bool      isInCore_;
 	Index     defaultLocalOffset_;
+
+  Teuchos::RefCountPtr< const VectorSpaceFactory<Scalar> >  smallVecSpcFcty_;
 	
 }; // end class MPIVectorSpaceBase
 

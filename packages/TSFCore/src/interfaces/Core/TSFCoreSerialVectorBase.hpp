@@ -34,7 +34,7 @@
 
 #include "TSFCoreSerialVectorBaseDecl.hpp"
 #include "TSFCore_apply_op_helper.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace TSFCore {

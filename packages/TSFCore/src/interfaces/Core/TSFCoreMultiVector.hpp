@@ -40,7 +40,7 @@
 #include "TSFCoreAssertOp.hpp"
 #include "TSFCoreMultiVectorCols.hpp"
 #include "RTOp_TOp_assign_vectors.h"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 namespace TSFCore {
@@ -73,31 +73,31 @@ MultiVector<Scalar>::clone_mv() const
 
 template<class Scalar>
 Teuchos::RefCountPtr<const MultiVector<Scalar> >
-MultiVector<Scalar>::subView( const Range1D& col_rng ) const
+MultiVector<Scalar>::subView( const Range1D& colRng ) const
 {
-	return const_cast<MultiVector<Scalar>*>(this)->subView(col_rng);
+	return const_cast<MultiVector<Scalar>*>(this)->subView(colRng);
 }
 
 template<class Scalar>
 Teuchos::RefCountPtr<MultiVector<Scalar> >
-MultiVector<Scalar>::subView( const Range1D& col_rng_in )
+MultiVector<Scalar>::subView( const Range1D& colRng_in )
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore        *wss      = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore        *wss      = Teuchos::get_default_workspace_store().get();
 	const VectorSpace<Scalar>  &domain   = *this->domain();
 	const VectorSpace<Scalar>  &range    = *this->range();
 	const Index                dimDomain = domain.dim();
-	const Range1D              col_rng   = RangePack::full_range(col_rng_in,1,dimDomain);
-	if( col_rng.lbound() == 1 && static_cast<Index>(col_rng.ubound()) == dimDomain )
+	const Range1D              colRng   = RangePack::full_range(colRng_in,1,dimDomain);
+	if( colRng.lbound() == 1 && static_cast<Index>(colRng.ubound()) == dimDomain )
 		return Teuchos::rcp(this,false); // Takes all of the colunns!
-	if( col_rng.size() ) {
+	if( colRng.size() ) {
 		// We have to create a view of a subset of the columns
-		wsp::Workspace< Teuchos::RefCountPtr< Vector<Scalar> > >  col_vecs(wss,col_rng.size());
-		for( Index j = col_rng.lbound(); j <= col_rng.ubound(); ++j )
+		Workspace< Teuchos::RefCountPtr< Vector<Scalar> > >  col_vecs(wss,colRng.size());
+		for( Index j = colRng.lbound(); j <= colRng.ubound(); ++j )
 			col_vecs[j-1] = this->col(j);
-		return Teuchos::rcp(new MultiVectorCols<Scalar>(this->range(),range.smallVecSpcFcty()->createVecSpc(col_rng.size()),&col_vecs[0]));
+		return Teuchos::rcp(new MultiVectorCols<Scalar>(this->range(),range.smallVecSpcFcty()->createVecSpc(colRng.size()),&col_vecs[0]));
 	}
-	return Teuchos::null; // There was an empty set in col_rng_in!
+	return Teuchos::null; // There was an empty set in colRng_in!
 }
 
 template<class Scalar>
@@ -111,8 +111,8 @@ template<class Scalar>
 Teuchos::RefCountPtr<MultiVector<Scalar> >
 MultiVector<Scalar>::subView( const int numCols, const int cols[] )
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore        *wss      = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore        *wss      = Teuchos::get_default_workspace_store().get();
 	const VectorSpace<Scalar>  &domain   = *this->domain();
 	const VectorSpace<Scalar>  &range    = *this->range();
 #ifdef _DEBUG
@@ -121,7 +121,7 @@ MultiVector<Scalar>::subView( const int numCols, const int cols[] )
  	TEST_FOR_EXCEPTION( numCols < 1 || dimDomain < numCols, std::invalid_argument, msg_err );
 #endif
 	// We have to create a view of a subset of the columns
-	wsp::Workspace< Teuchos::RefCountPtr< Vector<Scalar> > > col_vecs(wss,numCols);
+	Workspace< Teuchos::RefCountPtr< Vector<Scalar> > > col_vecs(wss,numCols);
 	for( int k = 0; k < numCols; ++k ) {
 		const int col_k = cols[k];
 #ifdef _DEBUG
@@ -152,8 +152,8 @@ void MultiVector<Scalar>::applyOp(
 	,const Index                    sec_sub_dim_in
 	) const
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	// ToDo: Validate the input!
 
@@ -177,10 +177,10 @@ void MultiVector<Scalar>::applyOp(
 	// target vectors and reduce each of the reduction objects.
 	//
 
-	wsp::Workspace< Teuchos::RefCountPtr<const Vector<Scalar> > >   vecs_s(wss,num_multi_vecs);
-	wsp::Workspace<const Vector<Scalar>*>                         vecs(wss,num_multi_vecs);
-	wsp::Workspace< Teuchos::RefCountPtr<Vector<Scalar> > >         targ_vecs_s(wss,num_targ_multi_vecs);
-	wsp::Workspace<Vector<Scalar>*>                               targ_vecs(wss,num_targ_multi_vecs);
+	Workspace< Teuchos::RefCountPtr<const Vector<Scalar> > >   vecs_s(wss,num_multi_vecs);
+	Workspace<const Vector<Scalar>*>                           vecs(wss,num_multi_vecs,false);
+	Workspace< Teuchos::RefCountPtr<Vector<Scalar> > >         targ_vecs_s(wss,num_targ_multi_vecs);
+	Workspace<Vector<Scalar>*>                                 targ_vecs(wss,num_targ_multi_vecs,false);
 
 	for(Index j = sec_first_ele_in; j <= sec_first_ele_in - 1 + sec_sub_dim; ++j) {
 		// Fill the arrays of vector arguments
@@ -222,8 +222,8 @@ void MultiVector<Scalar>::applyOp(
 	,const Index                    sec_sub_dim_in
 	) const
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	// ToDo: Validate the input!
 
@@ -243,10 +243,10 @@ void MultiVector<Scalar>::applyOp(
 
 	// Create a temporary buffer for the reduction objects of the primary reduction
 	// so that we can call the companion version of this method.
-	wsp::Workspace<Teuchos::RefCountPtr<RTOpPack::ReductTarget> >
+	Workspace<Teuchos::RefCountPtr<RTOpPack::ReductTarget> >
     rcp_reduct_objs(wss,reduct_obj!=NULL?sec_sub_dim:0);
-	wsp::Workspace<RTOpPack::ReductTarget*>
-    reduct_objs(wss,reduct_obj!=NULL?sec_sub_dim:0);
+	Workspace<RTOpPack::ReductTarget*>
+    reduct_objs(wss,reduct_obj!=NULL?sec_sub_dim:0,false);
 	if(reduct_obj) {
 		for(Index k = 0; k < sec_sub_dim; ++k) {
       rcp_reduct_objs[k] = prim_op.reduct_obj_create();

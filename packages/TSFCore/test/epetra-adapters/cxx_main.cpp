@@ -33,6 +33,7 @@
 #include "TSFCoreEpetraLinearOp.hpp"
 #include "TSFCoreEpetraMultiVector.hpp"
 #include "TSFCoreTestingTools.hpp"
+#include "TSFCoreMPIVectorSpaceStd.hpp"
 #include "Epetra_SerialComm.h"
 #include "Epetra_LocalMap.h"
 #include "Epetra_CrsMatrix.h"
@@ -51,6 +52,9 @@
 
 // Define this if you want to exclude opeations with Epetra_Operator
 //#define EPETRA_ADAPTERS_EXCLUDE_EPETRA_OPERATOR
+
+// Define this if you want to use MPIVectorSpaceStd
+#define EPETRA_ADAPTERS_USE_MPI_VECTOR_SPACE_STD
 
 //
 // Some helper functions
@@ -193,10 +197,16 @@ int main_body( int argc, char* argv[] ) {
 			epetra_vs = rcp(new EpetraVectorSpace(epetra_map));
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
 			// Non-Epetra vector space
+#ifdef EPETRA_ADAPTERS_USE_MPI_VECTOR_SPACE_STD
+			if(verbose)
+				out << "\nCreating TSFCore::MPIVectorSpaceStd ...\n";
+			non_epetra_vs = rcp(new MPIVectorSpaceStd<Scalar>(mpiComm,local_dim,-1));
+#else
 			if(verbose)
 				out << "\nCreating TSFCore::SimpleMPIVectorSpace ...\n";
 			non_epetra_vs = rcp(new SimpleMPIVectorSpace<Scalar>(mpiComm,local_dim));
 #endif
+#endif // RTOp_USE_MPI
 		}
 		else {
 #endif
@@ -210,9 +220,15 @@ int main_body( int argc, char* argv[] ) {
 			epetra_map = rcp(new Epetra_LocalMap(local_dim,0,*epetra_comm));
 			epetra_vs = rcp(new EpetraVectorSpace(epetra_map));
 #ifndef EPETRA_ADAPTERS_EPETRA_ONLY
+#  ifdef EPETRA_ADAPTERS_USE_MPI_VECTOR_SPACE_STD
+			if(verbose)
+				out << "\nCreating TSFCore::MPIVectorSpaceStd ...\n";
+			non_epetra_vs = rcp(new MPIVectorSpaceStd<Scalar>(MPI_COMM_NULL,local_dim,-1));
+#  else
 			if(verbose)
 				out << "\nCreating TSFCore::SerialVectorSpace ...\n";
 			non_epetra_vs = rcp(new SerialVectorSpace<Scalar>(local_dim));
+#  endif
 #endif
 #ifdef RTOp_USE_MPI
 		}
@@ -536,6 +552,13 @@ int main_body( int argc, char* argv[] ) {
 		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
 		if(!testRelErr("norm_1(ney)",norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
 
+		if(verbose) out << "\nPerforming ney = 2*Op*nev1 through MultiVector interface ...\n";
+		timer.start(true);
+		Op->apply( NOTRANS, static_cast<const MultiVector<Scalar>&>(*nev1), static_cast<MultiVector<Scalar>*>(&*ney), 2.0 );
+		timer.stop();
+		if(verbose) out << "  time = " << timer.totalElapsedTime() << " sec\n";
+		if(!testRelErr("norm_1(ney)",norm_1(*ney),s3_n,s3,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+
 		if(verbose) out << "\nPerforming neY = 2*Op*neV1 ...\n";
 		timer.start(true);
 		Op->apply( NOTRANS, *neV1, &*neY, 2.0 );
@@ -608,6 +631,47 @@ int main_body( int argc, char* argv[] ) {
 
 #endif
 
+		if(verbose)
+			out
+				<< "\n*** (B.7) View creation functions\n";
+
+    if(1) {
+
+      const std::string s_n = "fabs(scalar)*num_mv_cols";
+      const Scalar s = fabs(scalar)*num_mv_cols;
+
+      std::vector<Scalar>  t_raw_values( num_mv_cols );
+      RTOpPack::MutableSubVector<Scalar> t_raw( 0, num_mv_cols, &t_raw_values[0], 1 );
+
+      assign( &*T->range()->createMemberView(t_raw), scalar );
+      Teuchos::RefCountPtr<const Vector<Scalar> > t_view = T->range()->createMemberView(static_cast<RTOpPack::SubVector<Scalar>&>(t_raw));
+      Scalar t_nrm = norm_1(*t_view);
+      if(!testRelErr("norm_1(t_view)",t_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+      if(verbose && dumpAll) out << "\nt_view =\n" << *t_view;
+
+      assign( &*T->range()->VectorSpace<Scalar>::createMemberView(t_raw), scalar );
+      t_view = T->range()->VectorSpace<Scalar>::createMemberView(static_cast<RTOpPack::SubVector<Scalar>&>(t_raw));
+      t_nrm = norm_1(*t_view);
+      if(!testRelErr("norm_1(t_view)",t_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+      if(verbose && dumpAll) out << "\nt_view =\n" << *t_view;
+
+      std::vector<Scalar>  T_raw_values( num_mv_cols * num_mv_cols );
+      RTOpPack::MutableSubMultiVector<Scalar> T_raw( 0, num_mv_cols, 0, num_mv_cols, &T_raw_values[0], num_mv_cols );
+
+      assign( &*T->range()->createMembersView(T_raw), scalar );
+      Teuchos::RefCountPtr<const MultiVector<Scalar> > T_view = T->range()->createMembersView(static_cast<RTOpPack::SubMultiVector<Scalar>&>(T_raw));
+      Scalar T_nrm = norm_1(*T_view);
+      if(!testRelErr("norm_1(T_view)",T_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+      if(verbose && dumpAll) out << "\nT_view =\n" << *T_view;
+
+      assign( &*T->range()->VectorSpace<Scalar>::createMembersView(T_raw), scalar );
+      T_view = T->range()->VectorSpace<Scalar>::createMembersView(static_cast<RTOpPack::SubMultiVector<Scalar>&>(T_raw));
+      T_nrm = norm_1(*T_view);
+      if(!testRelErr("norm_1(T_view)",T_nrm,s_n,s,"max_rel_err",max_rel_err,verbose?&out:NULL)) success=false;
+      if(verbose && dumpAll) out << "\nT_view =\n" << *T_view;
+
+    }
+
 #endif // EPETRA_ADAPTERS_EXCLUDE_EPETRA_OPERATOR
 
 		if(verbose)
@@ -656,7 +720,12 @@ int main_body( int argc, char* argv[] ) {
 			// Get the Epetra_MultiVector object inside of Y to be modified.  Note that the following is the recommended
 			// way to do this since it gives the greatest flexibility in the implementation of TSFCore::EpetraMultiVector.
 			RefCountPtr<Epetra_MultiVector>  eeV1;
-			RefCountPtr<const EpetraVectorSpace> eV1_range, eV1_domain;
+			RefCountPtr<const EpetraVectorSpace> eV1_range;
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
+      RefCountPtr<const EpetraVectorSpace> eV1_domain;
+#else
+      RefCountPtr<const VectorSpace<Scalar> > eV1_domain;
+#endif
 			dyn_cast<EpetraMultiVector>(*eV1).setUninitialized(&eeV1,&eV1_range,&eV1_domain);
 			
 			if(verbose)
@@ -714,23 +783,18 @@ int main_body( int argc, char* argv[] ) {
 				&eeV2
 				= *dyn_cast<const EpetraMultiVector>(const_cast<const MultiVector<Scalar>&>(*eV2)).epetra_multi_vec();
 			
-			// Get the Epetra_MultiVector object inside of T to be modified.  Note that the following is the recommended
-			// way to do this since it gives the greatest flexibility in the implementation of TSFCore::EpetraMultiVector.
-			RefCountPtr<Epetra_MultiVector>  eT;
-			RefCountPtr<const EpetraVectorSpace> eT_range, eT_domain;
-			dyn_cast<EpetraMultiVector>(*T).setUninitialized(&eT,&eT_range,&eT_domain);
+      Epetra_LocalMap eT_map(T->range()->dim(),0,*epetra_comm);
+			Epetra_MultiVector eT(eT_map,T->domain()->dim());
 			
 			if(verbose)
 				out << "\nPerforming eeV1'*eeV2 (using raw Epetra_MultiVector::Multiply(...)) "	<< num_time_loops_2 << " times ...\n";
 			timer.start(true);
 			for(int k = 0; k < num_time_loops_2; ++k ) {
-				eT->Multiply( 'T', 'N', 1.0, eeV1, eeV2, 0.0 );
+				eT.Multiply( 'T', 'N', 1.0, eeV1, eeV2, 0.0 );
 			}
 			timer.stop();
 			raw_epetra_time = timer.totalElapsedTime();
 			if(verbose) out << "  total time = " << raw_epetra_time << " sec\n";
-			
-			dyn_cast<EpetraMultiVector>(*T).initialize(eT,eT_range,eT_domain);
 			
 		}
 		
@@ -771,7 +835,12 @@ int main_body( int argc, char* argv[] ) {
 			// Get the Epetra_MultiVector object inside of Y to be modified.  Note that the following is the recommended
 			// way to do this since it gives the greatest flexibility in the implementation of TSFCore::EpetraMultiVector.
 			RefCountPtr<Epetra_MultiVector>  eeY;
-			RefCountPtr<const EpetraVectorSpace> eY_range, eY_domain;
+			RefCountPtr<const EpetraVectorSpace> eY_range;
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
+      RefCountPtr<const EpetraVectorSpace> eY_domain;
+#else
+      RefCountPtr<const VectorSpace<Scalar> > eY_domain;
+#endif
 			dyn_cast<EpetraMultiVector>(*eY).setUninitialized(&eeY,&eY_range,&eY_domain);
 			
 			if(verbose)

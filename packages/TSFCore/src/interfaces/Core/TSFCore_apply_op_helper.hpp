@@ -35,7 +35,7 @@
 #include "TSFCore_apply_op_helper_decl.hpp"
 #include "TSFCoreVector.hpp"
 #include "TSFCoreVectorSpace.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 
 template<class Scalar>
@@ -103,8 +103,8 @@ void TSFCore::apply_op_serial(
 	,const Index                   global_offset_in
 	)
 {
- 	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+ 	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	
 	// Dimension of global sub-vector
 	const VectorSpace<Scalar>
@@ -119,8 +119,8 @@ void TSFCore::apply_op_serial(
 	// Get explicit views of the vector elements
 	//
 
-	wsp::Workspace<RTOpPack::SubVectorT<Scalar> >         local_vecs(wss,num_vecs);
-	wsp::Workspace<RTOpPack::MutableSubVectorT<Scalar> >  local_targ_vecs(wss,num_targ_vecs);
+	Workspace<RTOpPack::SubVectorT<Scalar> >         local_vecs(wss,num_vecs);
+	Workspace<RTOpPack::MutableSubVectorT<Scalar> >  local_targ_vecs(wss,num_targ_vecs);
 	int k;
 	for(k = 0; k < num_vecs; ++k) {
 		RTOpPack::SubVectorT<Scalar> &v = local_vecs[k];

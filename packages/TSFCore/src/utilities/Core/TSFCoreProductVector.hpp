@@ -34,7 +34,7 @@
 
 #include "TSFCoreProductVectorDecl.hpp"
 #include "TSFCoreProductVectorSpace.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 
 namespace TSFCore {
 
@@ -134,8 +134,8 @@ void ProductVector<Scalar>::applyOp(
 	,const Index                     global_offset_in
 	) const
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	//
 	const Index	n = productSpace_->dim();
 	// Validate the compatibility of the vectors!
@@ -182,8 +182,8 @@ void ProductVector<Scalar>::applyOp(
 	const bool this_isInCore = productSpace_->isInCore();
 	int incore_vec_k = -1, incore_targ_vec_k = -1;
 	// Dynamic cast the pointers for the vector arguments
-	wsp::Workspace<const ProductVector<Scalar>*>
-		vecs_args(wss,num_vecs);
+	Workspace<const ProductVector<Scalar>*>
+		vecs_args(wss,num_vecs,false);
 	for(int k = 0; k < num_vecs; ++k) {
 		vecs_args[k] = dynamic_cast<const ProductVector<Scalar>*>(vecs[k]);
 		if( vecs_args[k] == NULL ) {
@@ -200,8 +200,8 @@ void ProductVector<Scalar>::applyOp(
 				);
 		}
 	}
-	wsp::Workspace<ProductVector<Scalar>*>
-		targ_vecs_args(wss,num_targ_vecs);
+	Workspace<ProductVector<Scalar>*>
+		targ_vecs_args(wss,num_targ_vecs,false);
 	for(int k = 0; k < num_targ_vecs; ++k) {
 		targ_vecs_args[k] = dynamic_cast<ProductVector<Scalar>*>(targ_vecs[k]);
 		if( targ_vecs_args[k] == NULL ) {
@@ -241,10 +241,10 @@ void ProductVector<Scalar>::applyOp(
 													 : sub_dim_in );
 	Index num_elements_remaining = sub_dim;
 	const int  numBlocks = productSpace_->numBlocks();
-	wsp::Workspace<const Vector<Scalar>*>
-		sub_vecs(wss,num_vecs);
-	wsp::Workspace<Vector<Scalar>*>
-		sub_targ_vecs(wss,num_targ_vecs);
+	Workspace<const Vector<Scalar>*>
+		sub_vecs(wss,num_vecs,false);
+	Workspace<Vector<Scalar>*>
+		sub_targ_vecs(wss,num_targ_vecs,false);
 	Index g_off = -first_ele_in + 1;
 	for(int k = 0; k < numBlocks; ++k) {
 		const Index local_dim = productSpace_->getBlock(k)->dim();

@@ -33,7 +33,7 @@
 #define TSFCORE_SOLVERS_ATTACH_CONVERGENCE_TESTER_BASE_HPP
 
 #include "TSFCoreSolversAttachConvergenceTesterBaseDecl.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 
 namespace TSFCore {
 namespace Solvers {
@@ -65,13 +65,13 @@ void AttachConvergenceTesterBase<Scalar>::convStatus(
 	,bool                         isConverged[]
 	)
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 	protectedConvStatus(solver,currNumSystems,isConverged);
 
 	if( attachedConvTester_.get() && attachmentMode()!=ATTACHED_TEST_EXCLUDE ) {
-		wsp::Workspace<bool> isConverged2(wss,currNumSystems);
+		Workspace<bool> isConverged2(wss,currNumSystems,false);
 		attachedConvTester_->convStatus(solver,currNumSystems,&isConverged2[0]);
 		switch(attachmentMode()) {
 			case ATTACHED_TEST_IGNORE: {

@@ -155,7 +155,7 @@ template<class Scalar>
 void ele_wise_divide( const Scalar& alpha, const Vector<Scalar>& x, const Vector<Scalar>& v, Vector<Scalar>* y );
 
 ///
-/** <tt>y(i) = beta*y(i) + sum( alpha[k]*x[k](i), k=0...num_vecs-1 ), i = 1...y->space()->dim()</tt>.
+/** <tt>y(i) = beta*y(i) + sum( alpha[k]*x[k](i), k=0...m-1 ), i = 1...y->space()->dim()</tt>.
  *
  * @param  m          [in] Number of vectors x[]
  * @param  alpha      [in] Array (length <tt>m</tt>) of input scalars.

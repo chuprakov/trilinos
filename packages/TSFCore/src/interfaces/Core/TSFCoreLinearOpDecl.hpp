@@ -32,7 +32,8 @@
 #ifndef TSFCORE_LINEAR_OP_DECL_HPP
 #define TSFCORE_LINEAR_OP_DECL_HPP
 
-#include "TSFCoreOpBase.hpp"
+#include "TSFCoreOpBaseDecl.hpp"
+//#include "TSFCoreOpBase.hpp"
 
 namespace TSFCore {
 

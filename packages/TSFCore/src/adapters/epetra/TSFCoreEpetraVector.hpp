@@ -32,15 +32,10 @@
 #ifndef TSFCORE_EPETRA_VECTOR_HPP
 #define TSFCORE_EPETRA_VECTOR_HPP
 
+#include "TSFCoreEpetraTypes.hpp"
 #include "TSFCoreMPIVectorBase.hpp"
 
-///
-class Epetra_Vector;
-
 namespace TSFCore {
-
-///
-class EpetraVectorSpace;
 
 ///
 /** Wrapper for Epetra vectors.

@@ -31,9 +31,14 @@
 
 #include "TSFCore_get_Epetra_MultiVector.hpp"
 #include "TSFCoreEpetraVectorSpace.hpp"
+#ifdef TSFCORE_EPETRA_USE_TSFCORE_EPETRA_VECTOR
+#  include "TSFCoreEpetraVector.hpp"
+#endif
 #include "TSFCoreEpetraMultiVector.hpp"
+#include "TSFCoreVectorMultiVector.hpp"
 #include "TSFCoreExplicitMultiVectorView.hpp"
 #include "Epetra_MultiVector.h"
+#include "Epetra_Vector.h"
 #include "Epetra_Map.h"
 
 Teuchos::RefCountPtr<Epetra_MultiVector>
@@ -49,7 +54,7 @@ TSFCore::get_Epetra_MultiVector(
 		);
 #endif
 	//
-	// First try to dynamic_cast to get the Epetra object directly
+	// First, try to dynamic_cast to get the Epetra object directly
 	// since this has proven to be the fastest way.  Note, it is not
 	// trivial to create an Epetra view of an object and a lot of
 	// dynamic memory allocations have to be performed to make this
@@ -60,6 +65,30 @@ TSFCore::get_Epetra_MultiVector(
 		*epetra_mv_adapter = dynamic_cast<EpetraMultiVector*>(&*mv);
 	if(epetra_mv_adapter)
 		return epetra_mv_adapter->epetra_multi_vec(); // Note, this is dangerous!
+#ifdef TSFCORE_EPETRA_USE_TSFCORE_EPETRA_VECTOR
+  //
+  // Second, try to dynamic_cast to EpetraVector (which derives from
+  // MultiVector through Vector).
+  //
+	EpetraVector
+		*epetra_v_adapter = dynamic_cast<EpetraVector*>(&*mv);
+	if(epetra_v_adapter)
+		return epetra_v_adapter->epetra_vec(); // Note, this is dangerous!
+#else
+  //
+  // Second, try to dynamic_cast to VectorMultiVector which is
+  // used to create a Vector implementation from EpetraMultiVector.
+  // Note, other implementations may also use VectorMultiVector
+  // but we don't want to involve these.
+  //
+  VectorMultiVector<double>
+    *v_mv_adapter = dynamic_cast<VectorMultiVector<double>*>(&*mv);
+  if(v_mv_adapter) {
+    epetra_mv_adapter = dynamic_cast<EpetraMultiVector*>(&*mv);
+    if(epetra_mv_adapter)
+      return epetra_mv_adapter->epetra_multi_vec();
+  }
+#endif
 	//
 	// The assumption that we (rightly) make here is that if the
 	// vector spaces are compatible, that either the multi-vectors are
@@ -140,6 +169,30 @@ TSFCore::get_Epetra_MultiVector(
 		*epetra_mv_adapter = dynamic_cast<const EpetraMultiVector*>(&*mv);
 	if(epetra_mv_adapter)
 		return epetra_mv_adapter->epetra_multi_vec();
+#ifdef TSFCORE_EPETRA_USE_TSFCORE_EPETRA_VECTOR
+  //
+  // Second, try to dynamic_cast to EpetraVector (which derives from
+  // MultiVector through Vector).
+  //
+	const EpetraVector
+		*epetra_v_adapter = dynamic_cast<const EpetraVector*>(&*mv);
+	if(epetra_v_adapter)
+		return epetra_v_adapter->epetra_vec(); // Note, this is dangerous!
+#else
+  //
+  // Second, try to dynamic_cast to VectorMultiVector which is
+  // used to create a Vector implementation from EpetraMultiVector.
+  // Note, other implementations may also use VectorMultiVector
+  // but we don't want to involve these.
+  //
+  const VectorMultiVector<double>
+    *v_mv_adapter = dynamic_cast<const VectorMultiVector<double>*>(&*mv);
+  if(v_mv_adapter) {
+    epetra_mv_adapter = dynamic_cast<const EpetraMultiVector*>(&*mv);
+    if(epetra_mv_adapter)
+      return epetra_mv_adapter->epetra_multi_vec();
+  }
+#endif
 	//
 	// Same as above function except as stated below
 	//

@@ -32,6 +32,19 @@
 #ifndef TSFCORE_EPETRA_TYPES_HPP
 #define TSFCORE_EPETRA_TYPES_HPP
 
+// Define this to use the optimized TSFCore::EpetraMultiVector implementation (instead of just MultiVectorCols)!
+#define TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR
+
+// Define this to use TSFCore::EpetraVector implementation (instead of just generic VectorMultiVector)
+// Note that TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR must be defined for this to have any effect!
+#define TSFCORE_EPETRA_USE_TSFCORE_EPETRA_VECTOR
+
+// Define this to use Epetra_MultiVector::Multiply(...) to implement apply(...)
+//#define TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR_MULTIPLY
+
+// Define this to use EpetraVectorSpace for domain spaces for multi-vectors
+//#define TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
+
 #include "TSFCoreTypes.hpp"
 
 class Epetra_Comm;

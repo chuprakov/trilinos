@@ -26,36 +26,29 @@
 // ***********************************************************************
 // @HEADER
 
-// ///////////////////////////////////////////////////////////////
-// TSFCoreScalarProd.hpp
+// //////////////////////////////////////////////////////////////////////
+// TSFCoreMPIVectorSpaceFactoryStd.hpp
 
-#ifndef TSFCORE_SCALAR_PROD_HPP
-#define TSFCORE_SCALAR_PROD_HPP
+#ifndef TSFCORE_MPI_VECTOR_SPACE_FACTORY_STD_HPP
+#define TSFCORE_MPI_VECTOR_SPACE_FACTORY_STD_HPP
 
-#include "TSFCoreScalarProdDecl.hpp"
-#include "TSFCoreMultiVectorCols.hpp"
+#include "TSFCoreMPIVectorSpaceFactoryStdDecl.hpp"
+#include "TSFCoreMPIVectorSpaceStd.hpp"
 
 namespace TSFCore {
 
 template<class Scalar>
-Scalar ScalarProd<Scalar>::scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const
+MPIVectorSpaceFactoryStd<Scalar>::MPIVectorSpaceFactoryStd( MPI_Comm  mpiComm )
+  :mpiComm_(mpiComm)
+{}
+
+template<class Scalar>
+Teuchos::RefCountPtr<const VectorSpace<Scalar> >
+MPIVectorSpaceFactoryStd<Scalar>::createVecSpc(int dim) const
 {
-	Scalar scalar_prods[1];
-#ifdef TSFCORE_VECTOR_DERIVE_FROM_MULTI_VECTOR
-	this->scalarProds(
-    static_cast<const MultiVector<Scalar>&>(x)
-    ,static_cast<const MultiVector<Scalar>&>(y)
-    ,scalar_prods
-    );
-#else
-	const MultiVectorCols<Scalar>
-		X( Teuchos::rcp( const_cast<Vector<Scalar>*>(&x), false ) ),
-		Y( Teuchos::rcp( const_cast<Vector<Scalar>*>(&y), false ) );
-	this->scalarProds(X,Y,scalar_prods);
-#endif
-	return scalar_prods[0];
+	return Teuchos::rcp(new MPIVectorSpaceStd<Scalar>(mpiComm_,dim,-1));
 }
 
 } // end namespace TSFCore
 
-#endif  // TSFCORE_SCALAR_PROD_HPP
+#endif // TSFCORE_MPI_VECTOR_SPACE_FACTORY_STD_HPP

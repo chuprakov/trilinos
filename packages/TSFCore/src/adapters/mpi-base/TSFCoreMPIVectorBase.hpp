@@ -35,7 +35,7 @@
 #include "TSFCoreMPIVectorBaseDecl.hpp"
 #include "RTOp_parallel_helpers.h"
 #include "RTOpPack_MPI_apply_op.hpp"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_TestForException.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
@@ -80,8 +80,8 @@ void MPIVectorBase<Scalar>::applyOp(
 	) const
 {
 	using Teuchos::dyn_cast;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	const MPIVectorSpaceBase<Scalar> &mpiSpc = *mpiSpace();
 #ifdef _DEBUG
 	// ToDo: Validate input!
@@ -112,8 +112,8 @@ void MPIVectorBase<Scalar>::applyOp(
 		: Range1D::Invalid
 		);
 	// Create sub-vector views of all of the *participating* local data
-	wsp::Workspace<RTOpPack::SubVectorT<Scalar> > sub_vecs(wss,num_vecs);
-	wsp::Workspace<RTOpPack::MutableSubVectorT<Scalar> > sub_targ_vecs(wss,num_targ_vecs);
+	Workspace<RTOpPack::SubVectorT<Scalar> > sub_vecs(wss,num_vecs);
+	Workspace<RTOpPack::MutableSubVectorT<Scalar> > sub_targ_vecs(wss,num_targ_vecs);
 	if( overlap_first_local_ele != 0 ) {
 		if(1){for(int k = 0; k < num_vecs; ++k ) {
 			vecs[k]->getSubVector( local_rng, &sub_vecs[k] );

@@ -136,8 +136,10 @@ public:
 	Index dim() const;
 	/// Returns an allocated <tt>EpetraVector</tt> object. 
 	Teuchos::RefCountPtr<Vector<Scalar> > createMember() const;
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
 	/// Returns a <tt>EpetraVectorSpaceFactory</tt> object.
 	Teuchos::RefCountPtr< const VectorSpaceFactory<Scalar> > smallVecSpcFcty() const;
+#endif
 	/// Returns an allocated <tt>EpetraMultiVector</tt> object. 
 	Teuchos::RefCountPtr< MultiVector<Scalar> > createMembers(int numMembers) const;
 	///
@@ -157,13 +159,10 @@ public:
 
 private:
 
-#ifdef DOXYGEN_COMPILE
-	Epetra_Map                                             *epetra_map;
-	EpetraVectorSpaceFactory                               *smallVecSpcFcty;
-#else	
 	Teuchos::RefCountPtr<const Epetra_Map>                 epetra_map_;
 	MPI_Comm                                               mpiComm_;
 	Index                                                  localSubDim_;
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
 	Teuchos::RefCountPtr<const EpetraVectorSpaceFactory>   smallVecSpcFcty_;
 #endif
 

@@ -232,6 +232,128 @@ public:
 	 */
 	virtual Teuchos::RefCountPtr< MultiVector<Scalar> > createMembers(int numMembers) const;
 
+  ///
+  /** Create a vector member that is a non-<tt>const</tt> view of raw data.
+   *
+   * @param  raw_v  [in] On input contains pointer (i.e. <tt>raw_v.values()</tt>)
+   *                to array that the returned <tt>Vector</tt> wil be a view of.
+   *                The data pointed to by <tt>raw_v.values()</tt> must remain
+   *                valid until the returned <tt>Vector</tt> object is destroyed.
+   *
+   * Preconditions:<ul>
+   * <li><tt>raw_v</tt> has been initiaized to memory (i.e.
+   *     <tt>raw_v.subDim()!=0 && raw_v.values()!=NULL</tt>).
+   * <li><tt>raw_v</tt> is *consistent* with the local storage
+   *     of a vector's data.  This precondition is purposefully vaigue since
+   *     this function can be used an variety of specialized use-cases.
+   * </ul>
+   *
+   * Posconditions:<ul>
+   * <li>See <tt>createMember()</tt>
+   * </ul>
+   *
+   * It is stated here that the client can not expect that the values
+   * pointed to by <tt>raw_v.values()</tt> to be changed until
+   * the smart pointer returned goes out of scope.  This is to allow a
+   * default implementation that temporarily copies data into and out
+   * of a <tt>Vector</tt> object using explicit vector access.
+   *
+   * The default implementation of this function simply calls
+   * <tt>createMember()</tt> to create a vector then uses the explicit
+   * element access functions to set the elements and then only when
+   * the vector is destroyed is the data copied out of the vector and
+   * back into the elements pointed to by
+   * <tt>raw_v.values()</tt>.
+   */
+	virtual Teuchos::RefCountPtr<Vector<Scalar> > createMemberView( const RTOpPack::MutableSubVectorT<Scalar> &raw_v ) const;
+
+  ///
+  /** Create a vector member that is a <tt>const</tt> view of raw data.
+   *
+   * @param  raw_v  [in] On input contains pointer (i.e. <tt>raw_v.values()</tt>)
+   *                to array that the returned <tt>Vector</tt> wil be a view of.
+   *                The data pointed to by <tt>raw_v.values()</tt> must remain
+   *                valid until the returned <tt>Vector</tt> object is destroyed.
+   *
+   * This function works exactly the same as the version that takes
+   * a <tt>RTOpPack::MutableSubVectorT</tt> object except that this
+   * version takes a <tt>RTOpPack::SubVectorT</tt> and returns a
+   * smart pointer to a <tt>const</tt> <tt>Vector</tt> object.
+   *
+   * Preconditions:<ul>
+   * <li>See the <tt>RTOpPack::MutableSubVectorT</tt> version of this function.
+   * </ul>
+   *
+   * Posconditions:<ul>
+   * <li>See <tt>createMember()</tt>
+   * </ul>
+   *
+   * The default implementation of this function simply calls
+   * <tt>createMember()</tt> to create a vector then uses the explicit
+   * element access functions to set the elements.
+   */
+	virtual Teuchos::RefCountPtr<const Vector<Scalar> > createMemberView( const RTOpPack::SubVectorT<Scalar> &raw_v ) const;
+
+  ///
+  /** Create a multi-vector member that is a view of raw data.
+   *
+   * @param  raw_mv  [in] On input contains pointer (i.e. <tt>raw_mv.values()</tt>)
+   *                 to array that the returned <tt>MultiVector</tt> wil be a view of.
+   *
+   * Preconditions:<ul>
+   * <li><tt>raw_mv</tt> has been initiaized to memory (i.e.
+   *     <tt>raw_mv.subDim()!=0 && raw_mv.values()!=NULL</tt>).
+   * <li><tt>raw_mv</tt> is *consistent* with the local storage
+   *     of a vector's data.  This precondition is purposefully vaigue since
+   *     this function can be used an variety of specialized use-cases.
+   * </ul>
+   *
+   * Posconditions:<ul>
+   * <li>See <tt>createMembers()</tt> where <tt>numMembers==raw_mv.numSubCols()</tt>
+   * </ul>
+   *
+   * It is stated here that the client can not expect that the values
+   * pointed to by <tt>raw_mv.values()</tt> to be changed until
+   * the smart pointer returned goes out of scope.  This is to allow a
+   * default implementation that temporarily copies data into and out
+   * of a <tt>MultiVector</tt> object using explicit vector access.
+   *
+   * The default implementation of this function simply calls
+   * <tt>createMembers(raw_mv.numSubCols())</tt> to create a
+   * multi-vector then uses the explicit element access functions to
+   * set the elements and then only when the multi-vector is destroyed
+   * is the data copied out of the multi-vector and back into the
+   * elements pointed to by <tt>raw_mv.values()</tt>.
+   */
+	virtual Teuchos::RefCountPtr<MultiVector<Scalar> > createMembersView( const RTOpPack::MutableSubMultiVectorT<Scalar> &raw_mv ) const;
+
+  ///
+  /** Create a multi-vector member that is a <tt>const</tt> view of raw data.
+   *
+   * @param  raw_mv  [in] On input contains pointer (i.e. <tt>raw_mv.values()</tt>)
+   *                 to array that the returned <tt>MultiVector</tt> wil be a view of.
+   *                 The data pointed to by <tt>raw_mv.values()</tt> must remain
+   *                 valid until the returned <tt>MultiVector</tt> object is destroyed.
+   *
+   * This function works exactly the same as the version that takes
+   * a <tt>RTOpPack::MutableSubMultiVectorT</tt> object except that this
+   * version takes a <tt>RTOpPack::SubMultiVectorT</tt> and returns a
+   * smart pointer to a <tt>const</tt> <tt>MultiVector</tt> object.
+   *
+   * Preconditions:<ul>
+   * <li>See the <tt>RTOpPack::MutableSubMultiVectorT</tt> version of this function.
+   * </ul>
+   *
+   * Posconditions:<ul>
+   * <li>See <tt>createMember()</tt>
+   * </ul>
+   *
+   * The default implementation of this function simply calls
+   * <tt>createMembers()</tt> to create a multi-vector then uses the explicit
+   * element access functions to set the elements.
+   */
+	virtual Teuchos::RefCountPtr<const MultiVector<Scalar> > createMembersView( const RTOpPack::SubMultiVectorT<Scalar> &raw_mv ) const;
+
 	///
 	/** Clone this object (if supported).
 	 *

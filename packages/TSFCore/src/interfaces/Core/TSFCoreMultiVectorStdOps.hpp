@@ -53,6 +53,24 @@ void TSFCore::norms( const MultiVector<Scalar>& V, Scalar norms[] )
 		norms[j] = Teuchos::ScalarTraits<Scalar>::squareroot(norms[j]);
 }
 
+template<class Scalar, class NormOp>
+void TSFCore::reductions( const MultiVector<Scalar>& V, const NormOp &op, Scalar norms[] )
+{
+	int kc;
+  const int m = V.domain()->dim();
+  std::vector<Teuchos::RefCountPtr<RTOpPack::ReductTarget> >  rcp_op_targs(m);
+  std::vector<RTOpPack::ReductTarget*>                        op_targs(m);
+  for( kc = 0; kc < m; ++kc ) {
+    rcp_op_targs[kc] = op.reduct_obj_create();
+    op_targs[kc] = &*rcp_op_targs[kc];
+  }
+  const MultiVector<Scalar>* multi_vecs[] = { &V,};
+  applyOp<Scalar>(op,1,multi_vecs,0,NULL,&op_targs[0]);
+  for( kc = 0; kc < m; ++kc ) {
+    norms[kc] = op(*op_targs[kc]);
+  }
+}
+
 template<class Scalar>
 void TSFCore::dots( const MultiVector<Scalar>& V1, const MultiVector<Scalar>& V2, Scalar dots[] )
 {
@@ -214,6 +232,31 @@ void TSFCore::update( const MultiVector<Scalar>& U, Scalar alpha[], Scalar beta,
 		Vt_S( V->col(j).get(), alpha[j-1]*beta );
 		Vp_StV( V->col(j).get(), 1.0, *U.col(j) );
 	}
+}
+
+template<class Scalar>
+void TSFCore::linear_combination(
+	const int                     m
+	,const Scalar                 alpha[]
+	,const MultiVector<Scalar>*   X[]
+	,const Scalar                 &beta
+	,MultiVector<Scalar>          *Y
+	)
+{
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION(Y==NULL,std::logic_error,"linear_combination(...), Error!");
+#endif
+	if( beta == Teuchos::ScalarTraits<Scalar>::one() && m == 1 ) {
+		update( alpha[0], *X[0], Y );
+		return;
+	}
+	else if( m == 0 ) {
+		scale( beta, Y );
+		return;
+	}
+  RTOpPack::TOpLinearCombination<Scalar> lin_comb_op(m,alpha,beta);
+	MultiVector<Scalar>* targ_multi_vecs[] = { Y };
+	TSFCore::applyOp<Scalar>(lin_comb_op,m,X,1,targ_multi_vecs,(RTOpPack::ReductTarget**)NULL);
 }
 
 template<class Scalar>

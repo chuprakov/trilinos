@@ -72,6 +72,8 @@ INTERFACES_CORE_H = \
 	$(srcdir)/interfaces/Core/TSFCoreTypes.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVector.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorDecl.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreVectorMultiVector.hpp\
+	$(srcdir)/interfaces/Core/TSFCoreVectorMultiVectorDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceStdBase.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpaceStdBaseDecl.hpp\
 	$(srcdir)/interfaces/Core/TSFCoreVectorSpace.hpp\
@@ -161,10 +163,16 @@ NONLIN =
 EXTRA_ADAPTERS_MPI_H = \
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorBaseDecl.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorBase.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorStdDecl.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIMultiVectorStd.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBaseDecl.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorBase.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBaseDecl.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceBase.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceStdDecl.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceStd.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceFactoryStdDecl.hpp\
+	$(srcdir)/adapters/mpi-base/TSFCoreMPIVectorSpaceFactoryStd.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMultiVectorSerializationDecl.hpp\
 	$(srcdir)/adapters/mpi-base/TSFCoreMultiVectorSerialization.hpp
 

@@ -33,6 +33,7 @@
 #define TSFCORE_MPI_VECTOR_SPACE_BASE_HPP
 
 #include "TSFCoreMPIVectorSpaceBaseDecl.hpp"
+#include "TSFCoreMPIVectorSpaceFactoryStd.hpp"
 #ifdef RTOp_USE_MPI
 #  include "Teuchos_RawMPITraits.hpp"
 #endif
@@ -68,6 +69,13 @@ bool MPIVectorSpaceBase<Scalar>::isInCore() const
 }
 
 template<class Scalar>
+Teuchos::RefCountPtr< const VectorSpaceFactory<Scalar> >
+MPIVectorSpaceBase<Scalar>::smallVecSpcFcty() const
+{
+  return smallVecSpcFcty_;
+}
+
+template<class Scalar>
 bool MPIVectorSpaceBase<Scalar>::isCompatible( const VectorSpace<Scalar>& vecSpc ) const
 {
 	if( isInCore() && vecSpc.isInCore() )
@@ -85,9 +93,10 @@ template<class Scalar>
 void MPIVectorSpaceBase<Scalar>::updateState()
 {
 	const Index localSubDim = this->localSubDim(); 
+  const MPI_Comm mpiComm  = MPI_COMM_NULL;
 	if( localSubDim > 0 ) {
 #ifdef RTOp_USE_MPI
-		const MPI_Comm mpiComm = this->mpiComm();
+		MPI_Comm mpiComm = this->mpiComm();
 		const Index globalDim = this->dim(); 
 		int numProc = 1;
 		int procRank = 0;
@@ -160,11 +169,12 @@ void MPIVectorSpaceBase<Scalar>::updateState()
 		}
 #endif
 	}
-    else {
+  else {
 		mapCode_  = -1;     // Uninitialized!
 		isInCore_ = false;
 		defaultLocalOffset_ = -1;
 	}
+  smallVecSpcFcty_ = Teuchos::rcp(new MPIVectorSpaceFactoryStd<Scalar>(mpiComm));
 }
 	
 } // end namespace TSFCoreo

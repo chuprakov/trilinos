@@ -21,7 +21,7 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 // USA
-// Questions? Contact Michael A. Heroux (maherou@sandia.gov) 
+// Questions? Contact Michael A. Heroux (maherou@sandia.gov)
 // 
 // ***********************************************************************
 // @HEADER
@@ -37,7 +37,7 @@
 #include "TSFCoreExplicitMultiVectorView.hpp"
 #include "RTOpPack_MPI_apply_op.hpp"
 #include "RTOp_parallel_helpers.h"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 #include "Teuchos_Time.hpp"
 #ifdef RTOp_USE_MPI
@@ -78,10 +78,14 @@ void MPIMultiVectorBase<Scalar>::apply(
 	,const Scalar            beta
 	) const
 {
+#ifdef TSFCORE_VECTOR_DERIVE_FROM_MULTI_VECTOR
+	apply(M_trans,static_cast<const MultiVector<Scalar>&>(x),static_cast<MultiVector<Scalar>*>(y),alpha,beta);
+#else
 	MultiVectorCols<Scalar>
 		X(Teuchos::rcp(const_cast<Vector<Scalar>*>(&x),false)),
 		Y(Teuchos::rcp(y,false));
 	apply(M_trans,X,&Y,alpha,beta);
+#endif
 }
 
 template<class Scalar>
@@ -93,8 +97,8 @@ void MPIMultiVectorBase<Scalar>::apply(
 	,const Scalar                 beta
 	) const
 {
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 
 
 #ifdef TSFCORE_MPI_MULTI_VECTOR_BASE_PRINT_TIMES
@@ -134,7 +138,6 @@ void MPIMultiVectorBase<Scalar>::apply(
 #ifdef _DEBUG
 	const VectorSpace<Scalar>
 		&Y_range = *Y->range(),
-		&M_range = *this->range(),
 		&X_range = *X.range();
 //	std::cout << "MPIMultiVectorBase<Scalar>::apply(...): mpiComm = " << mpiComm << std::endl;
 	TEST_FOR_EXCEPTION(
@@ -226,7 +229,7 @@ void MPIMultiVectorBase<Scalar>::apply(
 	timer.start();
 #endif
 		
-	wsp::Workspace<Scalar> Y_local_tmp_store(wss,Y_local.subDim()*Y_local.numSubCols());
+	Workspace<Scalar> Y_local_tmp_store(wss,Y_local.subDim()*Y_local.numSubCols(),false);
 	RTOpPack::MutableSubMultiVectorT<Scalar> Y_local_tmp;
 	Scalar localBeta;
 	if( M_trans == TRANS && globalDim_ > localSubDim_ ) {
@@ -303,7 +306,7 @@ void MPIMultiVectorBase<Scalar>::apply(
 		// Contiguous buffer for local send
 		const Scalar *Y_local_buff = Y_local_tmp.values();
 		// Contiguous buffer for final reduction
-		wsp::Workspace<Scalar> Y_local_final_buff(wss,Y_local.subDim()*Y_local.numSubCols());
+		Workspace<Scalar> Y_local_final_buff(wss,Y_local.subDim()*Y_local.numSubCols(),false);
 		// Perform the reduction
 		MPI_Allreduce(
 			Y_local_tmp.values()                     // sendbuff
@@ -340,9 +343,9 @@ void MPIMultiVectorBase<Scalar>::apply(
 template<class Scalar>
 void MPIMultiVectorBase<Scalar>::applyOp(
 	const RTOpPack::RTOpT<Scalar>   &pri_op
-	,const int                   num_multi_vecs
+	,const int                      num_multi_vecs
 	,const MultiVector<Scalar>*     multi_vecs[]
-	,const int                   num_targ_multi_vecs
+	,const int                      num_targ_multi_vecs
 	,MultiVector<Scalar>*           targ_multi_vecs[]
 	,RTOpPack::ReductTarget*        reduct_objs[]
 	,const Index                    pri_first_ele_in
@@ -353,8 +356,8 @@ void MPIMultiVectorBase<Scalar>::applyOp(
 	) const
 {
 	using Teuchos::dyn_cast;
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	const Index numCols = this->domain()->dim();
 	const MPIVectorSpaceBase<Scalar> &mpiSpc = *mpiSpace();
 #ifdef _DEBUG
@@ -391,8 +394,8 @@ void MPIMultiVectorBase<Scalar>::applyOp(
 			,sec_sub_dim_in ? sec_first_ele_in + sec_sub_dim_in - 1 : numCols
 			);
 	// Create sub-vector views of all of the *participating* local data
-	wsp::Workspace<RTOpPack::SubMultiVectorT<Scalar> > sub_multi_vecs(wss,num_multi_vecs);
-	wsp::Workspace<RTOpPack::MutableSubMultiVectorT<Scalar> > targ_sub_multi_vecs(wss,num_targ_multi_vecs);
+	Workspace<RTOpPack::SubMultiVectorT<Scalar> > sub_multi_vecs(wss,num_multi_vecs);
+	Workspace<RTOpPack::MutableSubMultiVectorT<Scalar> > targ_sub_multi_vecs(wss,num_targ_multi_vecs);
 	if( overlap_first_local_ele != 0 ) {
 		for(int k = 0; k < num_multi_vecs; ++k ) {
 			multi_vecs[k]->getSubMultiVector( local_rng, col_rng, &sub_multi_vecs[k] );

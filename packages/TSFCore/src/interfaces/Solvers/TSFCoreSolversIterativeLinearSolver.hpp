@@ -51,7 +51,14 @@ SolveReturn IterativeLinearSolver<Scalar>::solve(
 	,const ETransp                       M_tilde_right_inv_trans
 	) const
 {
-	namespace mmp = MemMngPack;
+#ifdef TSFCORE_VECTOR_DERIVE_FROM_MULTI_VECTOR
+	return solve(
+		M,M_trans,static_cast<const MultiVector<Scalar>&>(y),static_cast<MultiVector<Scalar>*>(x)
+    ,1.0,max_iter,convTester
+		,M_tilde_left_inv,M_tilde_left_inv_trans
+		,M_tilde_right_inv,M_tilde_right_inv_trans
+		);
+#else
 	const MultiVectorCols<Scalar>  Y(Teuchos::rcp(const_cast<Vector<Scalar>*>(&y),false));
 	MultiVectorCols<Scalar>        X(Teuchos::rcp(x,false));
 	return solve(
@@ -59,6 +66,7 @@ SolveReturn IterativeLinearSolver<Scalar>::solve(
 		,M_tilde_left_inv,M_tilde_left_inv_trans
 		,M_tilde_right_inv,M_tilde_right_inv_trans
 		);
+#endif
 }
 
 template<class Scalar>

@@ -27,35 +27,42 @@
 // @HEADER
 
 // ///////////////////////////////////////////////////////////////
-// TSFCoreScalarProd.hpp
+// TSFCoreMPIVectorSpaceFactoryStdDecl.hpp
 
-#ifndef TSFCORE_SCALAR_PROD_HPP
-#define TSFCORE_SCALAR_PROD_HPP
+#ifndef TSFCORE_MPI_VECTOR_SPACE_FACTORY_STD_DECL_HPP
+#define TSFCORE_MPI_VECTOR_SPACE_FACTORY_STD_DECL_HPP
 
-#include "TSFCoreScalarProdDecl.hpp"
-#include "TSFCoreMultiVectorCols.hpp"
+#include "TSFCoreVectorSpaceFactory.hpp"
 
 namespace TSFCore {
 
+///
+/** Implementation of a vector-space factory for a <tt>MPIVectorSpaceStd</tt> objects.
+ *
+ * This will create either serial (<tt>mpiComm==MPI_COMM_NULL</tt>) or locally
+ * replicated (<tt>mpiComm!=MPI_COMM_NULL</tt>) vector space objects.
+ */
 template<class Scalar>
-Scalar ScalarProd<Scalar>::scalarProd( const Vector<Scalar>& x, const Vector<Scalar>& y ) const
-{
-	Scalar scalar_prods[1];
-#ifdef TSFCORE_VECTOR_DERIVE_FROM_MULTI_VECTOR
-	this->scalarProds(
-    static_cast<const MultiVector<Scalar>&>(x)
-    ,static_cast<const MultiVector<Scalar>&>(y)
-    ,scalar_prods
-    );
-#else
-	const MultiVectorCols<Scalar>
-		X( Teuchos::rcp( const_cast<Vector<Scalar>*>(&x), false ) ),
-		Y( Teuchos::rcp( const_cast<Vector<Scalar>*>(&y), false ) );
-	this->scalarProds(X,Y,scalar_prods);
-#endif
-	return scalar_prods[0];
-}
+class MPIVectorSpaceFactoryStd : public VectorSpaceFactory<Scalar> {
+public:
+
+	///
+	MPIVectorSpaceFactoryStd( MPI_Comm  mpiComm );
+
+	/** @name Overridden from VectorSpaceFactory */
+	//@{
+	///
+	Teuchos::RefCountPtr<const VectorSpace<Scalar> > createVecSpc(int dim) const;
+	//@}
+
+private:
+
+	MPI_Comm  mpiComm_;
+
+  MPIVectorSpaceFactoryStd(); // Not defined and not to be called!
+  	
+}; // end class MPIVectorSpaceFactoryStd
 
 } // end namespace TSFCore
 
-#endif  // TSFCORE_SCALAR_PROD_HPP
+#endif  // TSFCORE_MPI_VECTOR_SPACE_FACTORY_STD_DECL_HPP

@@ -32,16 +32,17 @@
 #ifndef TSFCORE_VECTOR_HPP
 #define TSFCORE_VECTOR_HPP
 
+// Define to make some verbose output
+//#define TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+
 #include "TSFCoreVectorDecl.hpp"
 #include "TSFCoreVectorSpace.hpp"
+#include "TSFCoreVectorStdOps.hpp"
+#include "TSFCoreMultiVector.hpp"
+#include "TSFCoreAssertOp.hpp"
 #include "RTOpPack_ROpGetSubVector.hpp"
 #include "RTOpPack_TOpSetSubVector.hpp"
-//#include "RTOp_TOp_set_sub_vector.h"
-//#include "RTOpPack_RTOpC.hpp"
 #include "Teuchos_TestForException.hpp"
-
-// RAB: 3/24/2004: Write direct templated RTOpT<> subclasses for get_sub_vector and set_sub_vector
-// operators!
 
 namespace TSFCore {
 
@@ -119,26 +120,244 @@ void Vector<Scalar>::commitSubVector( RTOpPack::MutableSubVectorT<Scalar>* sub_v
 template<class Scalar>
 void Vector<Scalar>::setSubVector( const RTOpPack::SparseSubVectorT<Scalar>& sub_vec )
 {
-/*
-	RTOp_SparseSubVector spc_sub_vec;
-	RTOp_sparse_sub_vector(
-		sub_vec.globalOffset(), sub_vec.subDim(), sub_vec.subNz()
-		,sub_vec.values(), sub_vec.valuesStride(), sub_vec.indices(), sub_vec.indicesStride()
-		,sub_vec.localOffset(), sub_vec.isSorted()
-		,&spc_sub_vec
-		);
-	RTOpPack::RTOpC  set_sub_vector_op;
-  TEST_FOR_EXCEPTION(
-    0!=RTOp_TOp_set_sub_vector_construct( &spc_sub_vec, &set_sub_vector_op.op() )
-    ,std::invalid_argument,"Error!"
-    );
-*/
   RTOpPack::TOpSetSubVector<Scalar> set_sub_vector_op(sub_vec);
 	Vector* targ_vecs[1] = { this };
 	this->applyOp(
 		set_sub_vector_op,0,NULL,1,targ_vecs,NULL
 		,sub_vec.globalOffset()+1,sub_vec.subDim(),sub_vec.globalOffset() // first_ele, sub_dim, global_offset
 		);
+}
+
+// Overridden from OpBase
+
+template<class Scalar>
+Teuchos::RefCountPtr< const VectorSpace<Scalar> >
+Vector<Scalar>::domain() const
+{
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nVector<Scalar>::domain() called!\n";
+#endif
+  if(!domain_.get())
+    const_cast<Vector<Scalar>*>(this)->domain_ = Teuchos::rcp(new SerialVectorSpace<Scalar>(1));
+  return domain_;
+}
+
+template<class Scalar>
+Teuchos::RefCountPtr< const VectorSpace<Scalar> >
+Vector<Scalar>::range() const
+{
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nVector<Scalar>::range() called!\n";
+#endif
+  return this->space();
+}
+
+// Overridden from LinearOp
+
+template<class Scalar>
+void Vector<Scalar>::apply(
+  const ETransp            M_trans
+  ,const Vector<Scalar>    &x
+  ,Vector<Scalar>          *y
+  ,const Scalar            alpha
+  ,const Scalar            beta
+  ) const
+{
+  typedef Teuchos::ScalarTraits<Scalar> ST;
+  // Validate input
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT( y==NULL );
+  if( M_trans == NOTRANS ) {
+    TEST_FOR_EXCEPT( x.space()->dim() != 1 );
+    VopV_assert_compatibility( *y, *this );
+  }
+  else {
+    VopV_assert_compatibility( x, *this );
+    TEST_FOR_EXCEPT( y->space()->dim() != 1 );
+  }
+#endif
+  // Here M = m (where m is a column vector)
+  if( M_trans == NOTRANS ) {
+    // y = beta*y + m*x  (x is a scalar!)
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+    std::cerr << "\nVector<Scalar>::apply(...) : y = beta*y + m*x  (x is a scalar!)\n";
+#endif
+    Vt_S( y, beta );
+    Vp_StV( y, get_ele(x,1), *this );
+  }
+  else {
+    // y = beta*y + m'*x  (y is a scalar!)
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+    std::cerr << "\nVector<Scalar>::apply(...) : y = beta*y + m'*x  (y is a scalar!)\n";
+#endif
+    Scalar y_inout = get_ele(*y,1);
+    if( beta == ST::zero() )
+      y_inout = dot(*this,x);
+    else
+      y_inout = beta*y_inout + dot(*this,x);
+    set_ele(1,y_inout,y);
+  }
+}
+
+// Overridden from MultiVector
+
+template<class Scalar>
+inline
+void Vector<Scalar>::validateColRng( const Range1D &col_rng ) const
+{
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT( !( col_rng.full_range() || ( col_rng.lbound() == 1 && col_rng.ubound() == 1) ) );
+#endif
+}
+
+template<class Scalar>
+inline
+void Vector<Scalar>::validateColIndexes(  const int numCols, const int cols[] ) const
+{
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT( numCols != 1 || cols == NULL || cols[0] != 1 );
+#endif
+}
+
+template<class Scalar>
+Teuchos::RefCountPtr<Vector<Scalar> >
+Vector<Scalar>::col(Index j)
+{
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nVector<Scalar>::col(j) called!\n";
+#endif
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT( j != 1 );
+#endif
+  return Teuchos::rcp(this,false);
+}
+
+template<class Scalar>
+Teuchos::RefCountPtr<MultiVector<Scalar> >
+Vector<Scalar>::clone_mv() const
+{
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nVector<Scalar>::clone_mv() called!\n";
+#endif
+  Teuchos::RefCountPtr<Vector<Scalar> > copy = this->space()->createMember();
+  assign( &*copy, *this );
+  return copy;
+}
+
+template<class Scalar>
+Teuchos::RefCountPtr<const MultiVector<Scalar> >
+Vector<Scalar>::subView( const Range1D& col_rng ) const
+{
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nVector<Scalar>::subView(col_rng) const called!\n";
+#endif
+  validateColRng(col_rng);
+  return Teuchos::rcp(this,false);
+}
+
+template<class Scalar>
+Teuchos::RefCountPtr<MultiVector<Scalar> >
+Vector<Scalar>::subView( const Range1D& col_rng )
+{
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nVector<Scalar>::subView(col_rng) called!\n";
+#endif
+  validateColRng(col_rng);
+  return Teuchos::rcp(this,false);
+}
+
+template<class Scalar>
+Teuchos::RefCountPtr<const MultiVector<Scalar> >
+Vector<Scalar>::subView( const int numCols, const int cols[] ) const
+{
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nVector<Scalar>::subView(numCols,cols) const called!\n";
+#endif
+  validateColIndexes(numCols,cols);
+  return Teuchos::rcp(this,false);
+}
+
+template<class Scalar>
+Teuchos::RefCountPtr<MultiVector<Scalar> >
+Vector<Scalar>::subView( const int numCols, const int cols[] )
+{
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nVector<Scalar>::subView(numCols,cols) called!\n";
+#endif
+  validateColIndexes(numCols,cols);
+  return Teuchos::rcp(this,false);
+}
+
+template<class Scalar>
+void Vector<Scalar>::getSubMultiVector(
+  const Range1D                       &rowRng
+  ,const Range1D                      &colRng
+  ,RTOpPack::SubMultiVectorT<Scalar>  *sub_mv
+  ) const
+{
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nVector<Scalar>::getSubMultiVector() const called!\n";
+#endif
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT(sub_mv==NULL);
+#endif
+  validateColRng(colRng);
+  RTOpPack::SubVectorT<Scalar> sv;
+  getSubVector(rowRng,&sv);
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT( sv.stride() != 1 ); // Can't handle non-unit stride yet but we could
+#endif
+  sub_mv->initialize( sv.globalOffset(), sv.subDim(), 0, 1, sv.values(), sv.subDim() );
+}
+
+template<class Scalar>
+void Vector<Scalar>::freeSubMultiVector( RTOpPack::SubMultiVectorT<Scalar>* sub_mv ) const
+{
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nVector<Scalar>::freeSubMultiVector() const called!\n";
+#endif
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT(sub_mv==NULL);
+#endif
+  RTOpPack::SubVectorT<Scalar> sv(sub_mv->globalOffset(),sub_mv->subDim(),sub_mv->values(),1);
+  freeSubVector(&sv);
+  sub_mv->set_uninitialized();
+}
+
+template<class Scalar>
+void Vector<Scalar>::getSubMultiVector(
+  const Range1D                                &rowRng
+  ,const Range1D                               &colRng
+  ,RTOpPack::MutableSubMultiVectorT<Scalar>    *sub_mv
+  )
+{
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nVector<Scalar>::getSubMultiVector() called!\n";
+#endif
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT(sub_mv==NULL);
+#endif
+  validateColRng(colRng);
+  RTOpPack::MutableSubVectorT<Scalar> sv;
+  getSubVector(rowRng,&sv);
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT( sv.stride() != 1 ); // Can't handle non-unit stride yet but we could
+#endif
+  sub_mv->initialize( sv.globalOffset(), sv.subDim(), 0, 1, sv.values(), sv.subDim() );
+}
+
+template<class Scalar>
+void Vector<Scalar>::commitSubMultiVector( RTOpPack::MutableSubMultiVectorT<Scalar>* sub_mv )
+{
+#ifdef TSFCORE_VECTOR_VERBOSE_TO_ERROR_OUT
+  std::cerr << "\nVector<Scalar>::commitSubMultiVector() called!\n";
+#endif
+#ifdef _DEBUG
+  TEST_FOR_EXCEPT(sub_mv==NULL);
+#endif
+  RTOpPack::MutableSubVectorT<Scalar> sv(sub_mv->globalOffset(),sub_mv->subDim(),sub_mv->values(),1);
+  commitSubVector(&sv);
+  sub_mv->set_uninitialized();
 }
 
 } // end namespace TSFCore

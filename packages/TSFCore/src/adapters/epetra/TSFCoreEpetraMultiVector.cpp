@@ -38,7 +38,7 @@
 #include "Epetra_Vector.h"
 #include "Epetra_SerialComm.h"
 #include "Epetra_LocalMap.h"
-#include "WorkspacePack.hpp"
+#include "Teuchos_Workspace.hpp"
 #include "Teuchos_dyn_cast.hpp"
 
 namespace TSFCore {
@@ -49,18 +49,33 @@ EpetraMultiVector::EpetraMultiVector()
 {}
 
 EpetraMultiVector::EpetraMultiVector(
-	const Teuchos::RefCountPtr<Epetra_MultiVector>         &epetra_multi_vec
-	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_range
-	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_domain
+  const Teuchos::RefCountPtr<Epetra_MultiVector>          &epetra_multi_vec
+  ,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetra_range
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
+  ,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetra_domain
+#else
+  ,const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &domain
+#endif
 	)
 {
-	this->initialize(epetra_multi_vec,epetra_range,epetra_domain);
+	this->initialize(
+    epetra_multi_vec,epetra_range
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
+    ,epetra_domain
+#else
+    ,domain
+#endif
+    );
 }
 
 void EpetraMultiVector::initialize(
-	const Teuchos::RefCountPtr<Epetra_MultiVector>         &epetra_multi_vec
-	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_range
-	,const Teuchos::RefCountPtr<const EpetraVectorSpace>   &epetra_domain
+	const Teuchos::RefCountPtr<Epetra_MultiVector>          &epetra_multi_vec
+	,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetra_range
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
+	,const Teuchos::RefCountPtr<const EpetraVectorSpace>    &epetra_domain
+#else
+	,const Teuchos::RefCountPtr<const VectorSpace<Scalar> > &domain
+#endif
 	)
 {
   using Teuchos::dyn_cast;
@@ -68,14 +83,19 @@ void EpetraMultiVector::initialize(
 	const char err_msg[] = "EpetraMultiVector::initialize(...): Error!";
 	TEST_FOR_EXCEPTION( epetra_multi_vec.get() == NULL, std::invalid_argument, err_msg ); 
 	TEST_FOR_EXCEPTION( !epetra_range.get() || epetra_range->dim() == 0, std::invalid_argument, err_msg ); 
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
 	TEST_FOR_EXCEPTION( epetra_domain.get() && epetra_domain->dim() == 0,std::invalid_argument, err_msg );
-	// ToDo: Check the compatibility of the vectors in col_vecs!
+#else
+	TEST_FOR_EXCEPTION( domain.get() && domain->dim() == 0,std::invalid_argument, err_msg );
 #endif
+	// ToDo: Check the compatibility of the vectors in col_vecs!
+#endif // _DEBUG
 	// Set multi-vector
 	epetra_multi_vec_ = epetra_multi_vec;
 	// set range
   epetra_range_  = epetra_range;
 	// set domain
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
 	if(epetra_domain.get()) {
 		epetra_domain_  = epetra_domain;
 	}
@@ -84,22 +104,42 @@ void EpetraMultiVector::initialize(
 			epetra_range_->smallVecSpcFcty()->createVecSpc(epetra_multi_vec->NumVectors())
 			);
 	}
+#else
+	if(domain.get()) {
+		domain_  = domain;
+	}
+	else {
+		domain_ = epetra_range_->smallVecSpcFcty()->createVecSpc(epetra_multi_vec->NumVectors());
+	}
+#endif
 	// Tell the base class object that the vector space is updated
 	updateMpiSpace();
 }
 
 void EpetraMultiVector::setUninitialized(
-	Teuchos::RefCountPtr<Epetra_MultiVector>        *epetra_multi_vec
-	,Teuchos::RefCountPtr<const EpetraVectorSpace>  *epetra_range
-	,Teuchos::RefCountPtr<const EpetraVectorSpace>  *epetra_domain
+	Teuchos::RefCountPtr<Epetra_MultiVector>           *epetra_multi_vec
+	,Teuchos::RefCountPtr<const EpetraVectorSpace>     *epetra_range
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
+	,Teuchos::RefCountPtr<const EpetraVectorSpace>     *epetra_domain
+#else
+	,Teuchos::RefCountPtr<const VectorSpace<Scalar> >  *domain
+#endif
 	)
 {
 	if(epetra_multi_vec) *epetra_multi_vec = epetra_multi_vec_;;
 	if(epetra_range) *epetra_range = epetra_range_;
-	if(epetra_domain) * epetra_domain = epetra_domain_;
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
+	if(epetra_domain) *epetra_domain = epetra_domain_;
+#else
+	if(domain) *domain = domain_;
+#endif
 	epetra_multi_vec_ = Teuchos::null;
 	epetra_range_ = Teuchos::null;
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
 	epetra_domain_ = Teuchos::null;
+#else
+	domain_ = Teuchos::null;
+#endif
 	updateMpiSpace();
 }
 
@@ -108,12 +148,16 @@ void EpetraMultiVector::setUninitialized(
 Teuchos::RefCountPtr<const VectorSpace<EpetraMultiVector::Scalar> >
 EpetraMultiVector::domain() const
 {
+#ifdef TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE
 	return epetra_domain_;
+#else
+  return domain_;
+#endif
 }
 
 // Overridden from LinearOp
 
-#ifdef TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR_MULTIPLY
+#if defined(TSFCORE_EPETRA_USE_EPETRA_MULTI_VECTOR_MULTIPLY) && defined(TSFCORE_EPETRA_USE_EPETRA_DOMAIN_VECTOR_SPACE)
 
 void EpetraMultiVector::apply(
 	const ETransp                 M_trans
@@ -162,14 +206,17 @@ Teuchos::RefCountPtr<Vector<EpetraMultiVector::Scalar> >
 EpetraMultiVector::col(Index j)
 {
   using Teuchos::dyn_cast;
-	TEST_FOR_EXCEPTION( !(  1 <= j  && j <= epetra_domain_->dim() ), std::logic_error, "EpetraMultiVector::col(j): Error!" );
+#ifdef _DEBUG
+	TEST_FOR_EXCEPTION( !(  1 <= j  && j <= domain()->dim() ), std::logic_error, "EpetraMultiVector::col(j): Error!" );
+#endif
+  const Teuchos::RefCountPtr<Epetra_Vector>
+    epetra_col_vec = Teuchos::rcp( new Epetra_Vector( ::View, *epetra_range_->epetra_map(), (*epetra_multi_vec_)[j-1] ) );
 	return Teuchos::rcp(
-		new EpetraVector(
-			Teuchos::rcp(
-				new Epetra_Vector( ::View, *epetra_range_->epetra_map(), (*epetra_multi_vec_)[j-1] )
-				)
-			,epetra_range_
-			)
+#ifdef TSFCORE_EPETRA_USE_TSFCORE_EPETRA_VECTOR
+    new EpetraVector(epetra_col_vec,epetra_range_)
+#else
+    new VectorMultiVector<Scalar>(Teuchos::rcp(new EpetraMultiVector(epetra_col_vec,epetra_range_)))
+#endif
 		);
 }
 
@@ -197,13 +244,13 @@ Teuchos::RefCountPtr<MultiVector<EpetraMultiVector::Scalar> >
 EpetraMultiVector::subView( const int numCols, const int cols[] )
 {
 //	return MultiVector<Scalar>::subView(numCols,cols); // Uncomment to use the default implementation!
-	namespace wsp = WorkspacePack;
-	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
+	using Teuchos::Workspace;
+	Teuchos::WorkspaceStore* wss = Teuchos::get_default_workspace_store().get();
 	// Translate from 1-based indexes to zero-based column indexes
 #ifdef _DEBUG
 	const int numTotalCols = this->domain()->dim();
 #endif
-	wsp::Workspace<int> zb_cols(wss,numCols);
+	Workspace<int> zb_cols(wss,numCols,false);
 	for( int k = 0; k < numCols; ++k ) {
 #ifdef _DEBUG
 		TEST_FOR_EXCEPTION(
