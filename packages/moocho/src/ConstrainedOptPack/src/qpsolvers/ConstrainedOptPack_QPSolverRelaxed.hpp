@@ -24,7 +24,7 @@ namespace ConstrainedOptimizationPack {
 /** Solves Quadratic Programs (QPs) of several different forms while
  * allowing a relaxation the constraints.
  *
- * The formulation for the QP being solve is:
+ * The formulation for the QP being solved is:
  \verbatim
   
   (1.1)  min          g'*d + 1/2*d'*G*d + M(eta)
