@@ -175,6 +175,9 @@ int main(int argc, char *argv[]) {
       cerr << "This is mono-process example\n"
 	   << "Please run with one processo only\n";
     }
+#ifdef HAVE_MPI
+    MPI_Finalize();
+#endif
     exit(EXIT_SUCCESS);
   }
   
