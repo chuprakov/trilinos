@@ -53,9 +53,11 @@ namespace TSFExtended
    * does solves by factoring and backsolves.
    */
   template <class Scalar> 
-  class InverseOperator : public OpDescribableByTypeID<Scalar>
+  class InverseOperator : public OpDescribableByTypeID<Scalar>,
+			   public Handleable<TSFCore::LinearOp<Scalar> >
   {
   public:
+    GET_RCP(TSFCore::LinearOp<Scalar>);
     /**
      * Ctor with a linear operator and a solver specified.
      */

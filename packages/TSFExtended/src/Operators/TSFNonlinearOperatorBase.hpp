@@ -32,7 +32,7 @@
 #include "TSFConfigDefs.hpp"
 #include "TSFHandleable.hpp"
 #include "TSFObjectWithVerbosity.hpp"
-#include "TSFVector.hpp"
+#include "TSFVectorDecl.hpp"
 
 namespace TSFExtended
 {

@@ -40,6 +40,7 @@
  //#include "TSFVectorSpace.hpp"
  //#include "TSFLinearOperatorDecl.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
+#include "TSFHandleable.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 

@@ -48,13 +48,23 @@ VECTORS_H = \
 	$(srcdir)/Vectors/TSFLinearCombination.hpp\
 	$(srcdir)/Vectors/TSFAccessibleVector.hpp\
 	$(srcdir)/Vectors/TSFProductVectorSpace.hpp\
+	$(srcdir)/Vectors/TSFProductVectorSpaceDecl.hpp\
+	$(srcdir)/Vectors/TSFProductVectorSpaceImpl.hpp\
+	$(srcdir)/Vectors/TSFProductVector.hpp\
+	$(srcdir)/Vectors/TSFProductVectorDecl.hpp\
+	$(srcdir)/Vectors/TSFProductVectorImpl.hpp\
+	$(srcdir)/Vectors/TSFVecDescribableByTypeID.hpp\
+	$(srcdir)/Vectors/TSFVecSpaceDescribableByTypeID.hpp\
 	$(srcdir)/Vectors/TSFVector.hpp \
+	$(srcdir)/Vectors/TSFVectorDecl.hpp \
+	$(srcdir)/Vectors/TSFVectorImpl.hpp \
 	$(srcdir)/Vectors/TSFVectorSpace.hpp \
+	$(srcdir)/Vectors/TSFVectorSpaceDecl.hpp \
+	$(srcdir)/Vectors/TSFVectorSpaceImpl.hpp \
 	$(srcdir)/Vectors/TSFVectorType.hpp \
 	$(srcdir)/Vectors/TSFVectorTypeExtensions.hpp
 
-VECTORS = \
-	$(srcdir)/Vectors/TSFProductVectorSpace.cpp
+VECTORS =
 
 UTILS_H = \
 	$(srcdir)/Utils/TSFConfigDefs.hpp \
@@ -84,6 +94,8 @@ CONCRETE = \
 
 OPERATORS_H = \
 	$(srcdir)/Operators/TSFBlockOperator.hpp \
+	$(srcdir)/Operators/TSFBlockOperatorDecl.hpp \
+	$(srcdir)/Operators/TSFBlockOperatorImpl.hpp \
 	$(srcdir)/Operators/TSFComposedOperator.hpp \
 	$(srcdir)/Operators/TSFDiagonalOperator.hpp\
 	$(srcdir)/Operators/TSFExplicitlyTransposeableOp.hpp\
@@ -103,8 +115,7 @@ OPERATORS_H = \
 	$(srcdir)/Operators/TSFTransposeOperator.hpp\
 	$(srcdir)/Operators/TSFZeroOperator.hpp 
 
-OPERATORS = \
-	$(srcdir)/Operators/TSFBlockOperator.cpp 
+OPERATORS =
 
 LINEARSOLVERS_H = \
 	$(srcdir)/LinearSolvers/TSFAztecSolver.hpp \

@@ -34,8 +34,9 @@
 #include "TSFHandleable.hpp"
 #include "TSFCoreLinearOp.hpp"
 #include "TSFLoadableMatrix.hpp"
-#include "TSFVector.hpp"
- //#include "TSFVectorSpace.hpp"
+#include "TSFOpDescribableByTypeID.hpp"
+ //#include "TSFVectorDecl.hpp"
+ // #include "TSFVectorSpaceDecl.hpp"
 #include "Teuchos_TimeMonitor.hpp"
 
 
@@ -56,6 +57,10 @@ namespace TSFExtended
 
   template <class Scalar>
   class LinearSolver;
+  template <class Scalar>
+  class VectorSpace;
+  template <class Scalar>
+  class Vector;
 
   /** 
    * User-level linear operator class
@@ -76,10 +81,11 @@ namespace TSFExtended
       //@}
 
       /** */
-      virtual VectorSpace<Scalar> domain() const ;
+      virtual const VectorSpace<Scalar> domain() const ;
 
       /** */
-      virtual VectorSpace<Scalar> range() const ;
+      virtual const VectorSpace<Scalar> range() const ;
+
 
       /** 
        * Compute
@@ -104,8 +110,8 @@ namespace TSFExtended
                            const Scalar& beta = 0.0) const ;
 
 
-//       /** */
-//       LinearOperator<Scalar> form() const ;
+//       /** For the moment this does nothing*/
+       LinearOperator<Scalar> form() const {return *this;}
       
       
       /** Get a stopwatch for timing vector operations */
@@ -124,13 +130,59 @@ namespace TSFExtended
       /** Operator composition */
       LinearOperator<Scalar> operator*(const LinearOperator<Scalar>& other) const ;
 
-      /** Access to loadable matrix */
+      /** Return a Loadable Matrix  */
       RefCountPtr<LoadableMatrix<Scalar> > matrix();
 
-      /** */     
+      /** Get a row of the underlying matrix */     
       void getRow(const int& row, 
 		  Teuchos::Array<int>& indices, 
 		  Teuchos::Array<Scalar>& values) const ;
+
+
+      /* Block operations  */
+      
+      /** return number of block rows */
+      int numBlockRows() const;
+      
+
+      /** return number of block cols */
+      int numBlockCols() const;
+      
+
+    /** get the (i,j)-th block */
+    LinearOperator<Scalar> getBlock(const int &i, const int &j) const ;
+
+    /** set the (i,j)-th block 
+	If the domain and/or the range are not set, then we
+	are building the operator
+    */
+    void setBlock(int i, int j, 
+		  const LinearOperator<Scalar>& sub);
+
+      /** Describe function */
+      string describe() const
+      {
+	return describe(0);
+      }
+
+      string describe(int depth) const
+      {
+// 	const OpDescribableByTypeID<Scalar>* p = 
+// 	  dynamic_cast<const OpDescribableByTypeID<Scalar>* >(ptr().get());
+	const DescribableByTypeID* p = 
+	  dynamic_cast<const DescribableByTypeID* >(ptr().get());
+	if (p != 0)
+	  {
+	    return p -> describe(depth);
+	  }
+	return "Operator not describable";
+      }
+      
+
+      /** form the transpose */  
+ 
+
+
     private:
   };
 }

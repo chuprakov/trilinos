@@ -43,7 +43,7 @@
 #include "TSFProductVectorSpace.hpp"
 #include "TSFTransposeOperator.hpp"
 //#include "TSFInverseOperator.hpp"
-#include "TSFLinearOperatorDecl.hpp"
+#include "TSFLinearOperator.hpp"
 #include "TSFEpetraMatrix.hpp"
 #include "TSFCoreLinearOp.hpp"
 #include "TSFIdentityOperator.hpp"
@@ -101,6 +101,7 @@ int main(int argc, void *argv[])
       VectorSpace<double> space = type.createSpace(spaceDimension, 
                                                    nLocalRows, 
                                                    &(localRows[0]));
+      cerr << "Created space" << endl << space.describe() << endl;
       VectorSpace<double> space2 = 
 	type.createSpace(spaceDimension2,nLocalRows2, 
 			 &(localRows2[0]));
@@ -110,43 +111,83 @@ int main(int argc, void *argv[])
 
 
       LinearOperator<double> A = type.createMatrix(space, space2);
+      cerr << "Created Epetra Operator using new\n";
+      cerr << A.describe() << endl;
+      
 
 
-//       RefCountPtr<TSFCore::LinearOp<double> > op = 
-// 	rcp(new ZeroOperator<double>(*(space.ptr()), *(space2.ptr()) ));
-//       LinearOperator<double> AZ = op;
-//       cerr << "Created Zero Oprator\n";
 
       LinearOperator<double> AZZ = new ZeroOperator<double>(space, space2);
       cerr << "Created ZeroOperator using new\n";
+      cerr << AZZ.describe() << endl;
       
       
 
-      //LinearOperator<double> I = rcp(new IdentityOperator<double>(*(space.ptr())));
-      //cerr << "Created IdentityOperator" << endl; 
-      //cerr << "Created ZeroOperator" << endl; 
+      LinearOperator<double> I = new IdentityOperator<double>(space);
+      cerr << "Created IdentityOperator" << endl; 
+      cerr << I.describe() << endl;
+      
       
       LinearOperator<double> AT = A.transpose();
       LinearOperator<double> ATT = new TransposeOperator<double>(AT);
 
       cerr << "Created TransposeOperator both ways" << endl;
+      cerr << AT.describe() << endl;
 
       
 
-//       /* create vectors and initialize */
-//       Vector<double> vec = space.createMember();
-//       Vector<double> vec2 = space2.createMember();
-
-//       /* trivial to debug*/
-//       vec.zero();
-//       vec2.zero();
-
-//       VectorSpace<double> pvs = 
-// 	new ProductVectorSpace<double>(space, space2);
+      /* create vectors and initialize */
+      Vector<double> vec = space.createMember();
+      Vector<double> vec2 = space2.createMember();
+      cerr << "Created two vectors\n";
+      cerr << vec.describe() << endl;
       
-//       Vector<double> pv = pvs.createMember();
-//       pv.setBlock(0, vec);
-//       pv.setBlock(1, vec2);
+
+      /* trivial to debug*/
+      vec.zero();
+      vec2.zero();
+
+      VectorSpace<double> pvs = 
+	new ProductVectorSpace<double>(space, space2);
+      cerr << "Created a product vector space\n";
+      cerr << pvs.describe() << endl;
+
+      cerr << "Creating ProductVector" << endl;
+      Vector<double> pv = pvs.createMember();
+      cerr << pv.describe() << endl;
+      
+      pv.setBlock(0, vec);
+      pv.setBlock(1, vec2);
+      cerr << "Set the blocks of the pv\n";
+      cerr << pv.describe() << endl;
+
+
+      cerr << "Setting up block Operator" << endl;
+      LinearOperator<double> B = new BlockOperator<double>(pvs, pvs);
+      cerr << "B = " << B.describe() << endl;
+
+      cerr << "Getting nBlockRows = " << B.numBlockRows() << endl;
+
+
+      cerr << "Setting up the blocks" << endl;
+      B.setBlock(0, 0, I);
+
+
+
+      /* Try Block operators  */
+
+//       LinearOperator<double> Empty = new BlockOperator<double>();
+//       cerr << "set up empty block Operator" << endl << "Empty = " << 
+// 	Empty.describe() << endl << endl;
+
+
+//       // set some blocks
+//       cerr << "NumBlocks = " << Empty.numBlockRows() << endl;
+//       cerr << "Setting a block \n";
+//       Empty.setBlock(0, 0, I);
+      
+
+      
 
 
 

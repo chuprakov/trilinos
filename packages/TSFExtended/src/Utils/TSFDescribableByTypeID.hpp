@@ -74,7 +74,8 @@ namespace TSFExtended
 	    ret.append("   ");
 	  }
 	string name = typeName();
-	return ret.append(name);
+	ret.append(name);
+	return ret;
       }
     };
 }

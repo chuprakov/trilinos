@@ -58,7 +58,7 @@ namespace TSFExtended
      * at beginning of line
      */
 
-    virtual string describe(int depth)
+    virtual string describe(int depth) const
     {
       string ret = "";
       for (int i = 0; i < depth; i++)

@@ -29,7 +29,7 @@
 
 #include "TSFHandle.hpp"
 #include "TSFVectorTypeExtensions.hpp"
-#include "TSFVectorSpace.hpp"
+#include "TSFVectorSpaceDecl.hpp"
 
 namespace TSFExtended
 {

@@ -35,21 +35,29 @@
  //#include "TSFHandleable.hpp"
  //#include "TSFCoreLinearOp.hpp"
  //#include "TSFLoadableMatrix.hpp"
- //#include "TSFRowAccessibleOp.hpp"
+ #include "TSFRowAccessibleOp.hpp"
  //#include "Teuchos_TimeMonitor.hpp"
 #include "Teuchos_RefCountPtr.hpp"
-//#include "TSFVector.hpp"
-//#include "TSFVectorSpace.hpp"
+ #include "TSFVectorDecl.hpp"
+ #include "TSFVectorSpaceDecl.hpp"
 //#include "TSFTransposeOperator.hpp"
-//#include "TSFInverseOperator.hpp"
-#include "TSFComposedOperator.hpp"
-#include "TSFIdentityOperator.hpp"
+#include "TSFInverseOperator.hpp"
+//#include "TSFIdentityOperator.hpp"
 //#include "TSFLinearSolverBaseDecl.hpp"
 
 // template <class Scalar>
 //  class TransposeOperator;
 #include "TSFTransposeOperator.hpp"
+#include "TSFComposedOperator.hpp"
+ #include "TSFBlockOperatorDecl.hpp"
+ // #include "TSFVectorSpaceDecl.hpp"
 
+
+using namespace TSFExtended;
+
+// namespace TSFExtended
+// {
+  
 template <class Scalar>
  class InverseOperator;
 
@@ -57,20 +65,22 @@ template <class Scalar>
 //  class IdentityOperator;
 
 
-template <class Scalar>
- class RowAccessibleOp;
+// template <class Scalar>
+//  class RowAccessibleOp;
 
-using namespace TSFExtended;
+
+
+
 
 template <class Scalar>
 LinearOperator<Scalar>::LinearOperator() : Handle<TSFCore::LinearOp<Scalar> >() {;}
-
+//
 // template <class Scalar>
 // LinearOperator<Scalar>::LinearOperator(const LinearOperator<Scalar>* ptr)
 // {
 //   RefCountPtr<TSFCore::LinearOp> ptr_ = ptr->ptr();
 // }
-
+//
 
 template <class Scalar>
 LinearOperator<Scalar>::LinearOperator(Handleable<TSFCore::LinearOp<Scalar> >* rawPtr) 
@@ -80,13 +90,8 @@ template <class Scalar>
 LinearOperator<Scalar>::LinearOperator(const RefCountPtr<TSFCore::LinearOp<Scalar> >& smartPtr) 
   : Handle<TSFCore::LinearOp<Scalar> >(smartPtr) {;}
 
-template <class Scalar>
-VectorSpace<Scalar> LinearOperator<Scalar>::domain() const 
-{return ptr()->domain();}
 
-template <class Scalar>
-VectorSpace<Scalar> LinearOperator<Scalar>::range() const 
-{return ptr()->range();}
+
 
 template <class Scalar> inline 
 void LinearOperator<Scalar>::apply(const Vector<Scalar>& in,
@@ -103,6 +108,9 @@ void LinearOperator<Scalar>::apply(const Vector<Scalar>& in,
   ptr()->apply(TSFCore::NOTRANS, *(in.ptr().get()),
 	       out.ptr().get(), alpha, beta);
 }
+
+
+
 
 template <class Scalar> inline 
 void LinearOperator<Scalar>::applyTranspose(const Vector<Scalar>& in,
@@ -167,10 +175,92 @@ void LinearOperator<Scalar>::getRow(const int& row,
 				    Teuchos::Array<int>& indices, 
 				    Teuchos::Array<Scalar>& values) const
 {
-  RowAccessibleOp<Scalar> val = dynamic_cast<RowAccessibleOp<Scalar> >(ptr());
-  TEST_FOR_EXCEPTION(val != 0, runtime_error, 
+  RowAccessibleOp<Scalar>* val = dynamic_cast<RowAccessibleOp<Scalar>* >(ptr());
+  TEST_FOR_EXCEPTION(val == 0, runtime_error, 
 		     "LinearOperator<Scalar>::getRow() not defined for current operator.");
   ptr()->getRow(row, indices, values);
 }
 
+//=============================================================================
+template <class Scalar>
+int LinearOperator<Scalar>::numBlockRows() const
+{
+  cerr << "getting numBlockRows\n";
+  BlockOperator<Scalar>* b = dynamic_cast<BlockOperator<Scalar>* >(ptr().get());
+  TEST_FOR_EXCEPTION(b == 0, runtime_error, 
+		     "LinearOperator<Scalar> not Block Operator.");
+  
+  return b->numBlockRows(); 
+}
+
+
+//=============================================================================
+template <class Scalar>
+const VectorSpace<Scalar> 
+     LinearOperator<Scalar>::range() const
+{return ptr()->range();}
+  
+
+//=============================================================================
+template <class Scalar>
+void LinearOperator<Scalar>::setBlock(int i, int j, 
+				      const LinearOperator<Scalar>& sub) 
+{
+  cerr << "In LinOp::setBlock\n";
+  
+//   BlockOperator<Scalar>* pt = 
+//     dynamic_cast<BlockOperator<Scalar>* > (ptr().get());
+  BlockOperator<Scalar>* b = dynamic_cast<BlockOperator<Scalar>* >(ptr().get());
+  
+  TEST_FOR_EXCEPTION(b == 0, runtime_error, 
+		   "Can't call setBlock since operator not BlockOperator");
+
+  
+  cerr << "     calling numBlockRows\n";
+  int n = numBlockRows();
+  cerr << "     numBlocks = " << n << endl;
+
+  cerr << "     Calling setBlock\n";
+  b->setBlock(i, j, sub);
+} 
+
+
+
+//=============================================================================
+
+//  template <class Scalar>
+// const VectorSpace<Scalar> 
+//      LinearOperator<Scalar>::range() const 
+// {return ptr()->range();}
+
+
+// template <class Scalar>
+// const int
+//      LinearOperator<Scalar>::range() const 
+// {
+//   VectorSpace<Scalar> v;
+  
+//   return 2;}
+
+
+template <class Scalar>
+const  VectorSpace<Scalar> 
+    LinearOperator<Scalar>::domain() const 
+{return ptr()->domain();}
+
+
+// need to put in cast and check for error
+template <class Scalar>
+    LinearOperator<Scalar> LinearOperator<Scalar>::getBlock(const int &i, const int &j) const 
+{
+  return ptr()->getBlock(i, j);
+}
+
+
+
+
+
+
+
+//}
 #endif

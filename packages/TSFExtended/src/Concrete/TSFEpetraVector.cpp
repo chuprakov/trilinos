@@ -25,14 +25,14 @@
 // **********************************************************************/
 
 #include "TSFEpetraVector.hpp"
-#include "TSFVector.hpp"
+#include "TSFVectorImpl.hpp"
 
 using namespace Teuchos;
 using namespace TSFExtended;
 using TSFCore::Index;
 
 
-EpetraVector::EpetraVector(const RefCountPtr<Epetra_Vector>& vec,
+TSFExtended::EpetraVector::EpetraVector(const RefCountPtr<Epetra_Vector>& vec,
                            const RefCountPtr<const TSFCore::EpetraVectorSpace>& vs)
    : TSFCore::EpetraVector(vec, vs) 
 {;}

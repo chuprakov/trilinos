@@ -30,8 +30,8 @@
 #define TSFSOLVERSTATE_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFVector.hpp"
-#include "TSFLinearOperator.hpp"
+#include "TSFVectorDecl.hpp"
+#include "TSFLinearOperatorDecl.hpp"
 #include "Teuchos_ParameterList.hpp"
 
 namespace TSFExtended

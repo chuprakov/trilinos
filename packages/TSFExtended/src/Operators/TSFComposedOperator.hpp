@@ -46,6 +46,7 @@ namespace TSFExtended
                            public Handleable<TSFCore::LinearOp<Scalar> >
   {
   public:
+    GET_RCP(TSFCore::LinearOp<Scalar>);
     /** 
      * Construct a pair of linear operators.
      */
@@ -92,7 +93,7 @@ namespace TSFExtended
     virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const {return left_.range().ptr();}
 
     /* */
-    GET_RCP(TSFCore::LinearOp<Scalar>);
+    //    GET_RCP(TSFCore::LinearOp<Scalar>);
 
   private:
 

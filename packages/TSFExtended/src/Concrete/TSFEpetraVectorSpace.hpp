@@ -27,16 +27,20 @@
 #ifndef TSFEPETRAVECTORSPACE_HPP
 #define TSFEPETRAVECTORSPACE_HPP
 
+#include "TSFConfigDefs.hpp"
 #include "Epetra_Map.h"
 #include "TSFCoreEpetraVectorSpace.hpp"
 #include "TSFHandleable.hpp"
-#include "TSFDescribable.hpp"
-#include "TSFVector.hpp"
+#include "TSFVecDescribableByTypeID.hpp"
+#include "TSFCoreVector.hpp"
+#include "Teuchos_Utils.hpp"
+
 
 
 namespace TSFExtended
 {
   using namespace Teuchos;
+
 
   /**
    * TSF extension of TSFCore::EpetraVectorSpace, allowing use in handles.
@@ -46,9 +50,10 @@ namespace TSFExtended
    */
   class EpetraVectorSpace : public TSFCore::EpetraVectorSpace,
                             public Handleable<const TSFCore::VectorSpace<double> >,
-                            public Describable
+                            public VecDescribableByTypeID<double>
     {
     public:
+      GET_RCP(const TSFCore::VectorSpace<double>);
       /** */
       EpetraVectorSpace();
 
@@ -65,10 +70,29 @@ namespace TSFExtended
       /** \name Describable interface */
       //@{
       /** Return a short description  */
-      string describe() const ;
-      //@}
+//       string describe() const 
+//       {
+// 	return describe(0);
+//       }
+//       //@}
 
-      GET_RCP(const TSFCore::VectorSpace<double>);
+//       GET_RCP(const TSFCore::VectorSpace<double>);
+
+//     virtual string describe(int depth) const
+//     {
+//       string ret = "";
+//       for (int i = 0; i < depth; i++)
+// 	{
+// 	  ret.append("   ");
+// 	}
+//       ret.append(typeName());
+//       //      ret.append(" of dimension " + toString(dim()));
+//       ret.append(" of dimension " + toString(dim()));
+//       return ret;
+//     }
+	
+
+      
     };
   
 }

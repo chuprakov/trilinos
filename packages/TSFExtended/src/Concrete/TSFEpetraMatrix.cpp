@@ -27,6 +27,10 @@
 /* @HEADER@ */
 
 #include "TSFEpetraMatrix.hpp"
+#include "TSFVectorSpace.hpp"  // changed from Impl
+ //#include "TSFVectorImpl.hpp"
+#include "TSFVector.hpp"
+#include "TSFLinearOperator.hpp"  // changed from Impl
 #include "Teuchos_Array.hpp"
 #include "Teuchos_MPIComm.hpp"
 #include "TSFIfpackOperator.hpp"

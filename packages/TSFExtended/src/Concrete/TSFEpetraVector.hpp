@@ -29,11 +29,11 @@
 
 #include "TSFConfigDefs.hpp"
 #include "TSFPrintable.hpp"
-#include "TSFDescribableByTypeID.hpp"
+#include "TSFVecDescribableByTypeID.hpp"
 #include "TSFCoreEpetraVector.hpp"
 #include "TSFAccessibleVector.hpp"
 #include "TSFLoadableVector.hpp"
-#include "TSFVector.hpp"
+#include "TSFVectorDecl.hpp"
 #include "Epetra_FEVector.h"
 #include "Epetra_Vector.h"
 
@@ -48,13 +48,15 @@ namespace TSFExtended
    * from TSFCore::EpetraVector, so it can be used seamlessly in any 
    * TSFCore-based code.
    */
-  class EpetraVector : public TSFCore::EpetraVector,
+  class EpetraVector : public TSFCore::EpetraVector, 
+		       public Handleable<TSFCore::Vector<double> >,
                        public LoadableVector<double>,
                        public AccessibleVector<double>,
-                       public DescribableByTypeID,
+                       public VecDescribableByTypeID<double>,
                        public Printable
     {
     public:
+      GET_RCP(TSFCore::Vector<double>);
       /** Construct with a smart pointer to an Epetra FE vector. */
       EpetraVector(const RefCountPtr<Epetra_Vector>& vec,
                    const RefCountPtr<const TSFCore::EpetraVectorSpace>& map);

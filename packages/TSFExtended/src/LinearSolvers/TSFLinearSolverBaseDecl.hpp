@@ -30,14 +30,17 @@
 #define TSFLINEARSOLVERBASEDECL_HPP
 
 #include "TSFConfigDefs.hpp"
-#include "TSFVector.hpp"
+#include "TSFVectorDecl.hpp" 
 #include "TSFSolverState.hpp"
 #include "Teuchos_ParameterList.hpp"
-#include "TSFLinearOperatorDecl.hpp"
+ //#include "TSFLinearOperatorDecl.hpp"
 
 namespace TSFExtended
 {
   using namespace Teuchos;
+  template <class Scalar>
+  class LinearOperator;
+  
 
   /** */
   template <class Scalar>

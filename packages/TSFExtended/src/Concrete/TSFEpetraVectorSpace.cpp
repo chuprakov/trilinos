@@ -51,17 +51,20 @@ RefCountPtr<TSFCore::Vector<double> > EpetraVectorSpace::createMember() const
   return rcp(new EpetraVector(vec, me));
 }
 
-string EpetraVectorSpace::describe() const 
-{
-	string rtn = "EpetraVectorSpace[";
-  rtn += "nLocal=" 
-    + Teuchos::toString(epetra_map()->NumMyElements())
-    + " nGlobal=" 
-    + Teuchos::toString(epetra_map()->NumGlobalElements()) 
-    + "]";
+// string EpetraVectorSpace::describe() const 
+// {
+//   return describe(0);
+// }
+
+// 	string rtn = "EpetraVectorSpace[";
+//   rtn += "nLocal=" 
+//     + Teuchos::toString(epetra_map()->NumMyElements())
+//     + " nGlobal=" 
+//     + Teuchos::toString(epetra_map()->NumGlobalElements()) 
+//     + "]";
 
 
-  return rtn;
-}
+//   return rtn;
+// }
 
 

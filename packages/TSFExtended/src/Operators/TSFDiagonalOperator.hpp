@@ -34,6 +34,7 @@
 #include "TSFCoreVectorStdOps.hpp"
 #include "TSFCoreVectorSpace.hpp"
 #include "TSFOpDescribableByTypeID.hpp"
+#include "TSFHandleable.hpp"
 #include "Teuchos_RefCountPtr.hpp"
 
 namespace TSFExtended
@@ -42,9 +43,11 @@ namespace TSFExtended
    * A DiagonalOperator is a diagonal operator.
    */
   template <class Scalar> 
-  class DiagonalOperator : public OpDecribableByTypeID<Scalar>
+  class DiagonalOperator : public OpDescribableByTypeID<Scalar>,
+			   public Handleable<TSFCore::LinearOp<Scalar> >
   {
   public:
+    GET_RCP(TSFCore::LinearOp<Scalar>);
     /**
      * Construct a vector containing the entries on the diagonal.
      */
@@ -59,7 +62,7 @@ namespace TSFExtended
      * vector, x, and the diagonal values.
      */
     virtual void apply(
-                       const ETransp            M_trans
+                       const TSFCore::ETransp            M_trans
                        ,const TSFCore::Vector<Scalar>    &x
                        ,TSFCore::Vector<Scalar>          *y
                        ,const Scalar            alpha = 1.0
@@ -73,7 +76,7 @@ namespace TSFExtended
 
     /** Return the domain of the operator */
     virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > domain() const {return diagonalValues_->space();}
-    }
+ 
 
     /** Return the range of the operator */
     virtual RefCountPtr< const TSFCore::VectorSpace<Scalar> > range() const {return diagonalValues_->space();}

@@ -28,6 +28,7 @@
 #define TSFLINEARSOLVER_HPP
 
 #include "TSFHandle.hpp"
+#include "TSFHandleable.hpp"
 #include "TSFLinearSolverBase.hpp"
 #include "Teuchos_TimeMonitor.hpp"
 
@@ -41,6 +42,7 @@ inline static Time& solveTimer()
 namespace TSFExtended
 {
   using namespace Teuchos;
+  
   /**
    *
    */

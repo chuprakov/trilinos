@@ -32,7 +32,7 @@
 #include "TSFCoreEpetraLinearOp.hpp"
 #include "TSFEpetraVectorSpace.hpp"
 #include "TSFLoadableMatrix.hpp"
-#include "TSFLinearOperator.hpp"
+#include "TSFLinearOperatorDecl.hpp"
 //#include "TSFRowAccessibleOp.hpp"
 //#include "TSFExplicitlyTransposeableOp.hpp"
 #include "TSFHandleable.hpp"
@@ -159,6 +159,22 @@ namespace TSFExtended
     virtual void print(ostream& os) const ;
 
     GET_RCP(TSFCore::LinearOp<double>);
+
+
+    string describe(int depth) const
+    {
+      string ret = "";
+      for (int i = 0; i < depth; i++)
+	{
+	  ret.append("   ");
+	}
+      ret.append(typeName());
+      ret.append(" of dimension " + toString(range()->dim()) + " by "
+		 + toString(domain()->dim()));
+      return ret;
+    }
+
+
 
     /** */
     static Epetra_CrsMatrix& getConcrete(const LinearOperator<double>& A);

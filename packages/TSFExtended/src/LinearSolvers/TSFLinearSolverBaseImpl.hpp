@@ -30,17 +30,21 @@
 #define TSFLINEARSOLVERBASEIMPL_HPP
 
 //#include "TSFLinearSolverBaseDecl.hpp"
+#include "Teuchos_ParameterList.hpp"
 
 using namespace TSFExtended;
+using namespace Teuchos;
 
 
-template <class Scalar>
-LinearSolverBase<Scalar>::LinearSolverBase(const ParameterList& params)
-  : params_(params) {;}
+
 
 template <class Scalar>
 const ParameterList& LinearSolverBase<Scalar>::parameters() const 
 {return params_;}
+
+template <class Scalar>
+LinearSolverBase<Scalar>::LinearSolverBase(const ParameterList& params)
+  : params_(params) {;}
 
 template <class Scalar>
 ParameterList& LinearSolverBase<Scalar>::parameters() {return params_;}
