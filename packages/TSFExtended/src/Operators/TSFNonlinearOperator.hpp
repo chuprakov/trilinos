@@ -83,6 +83,12 @@ namespace TSFExtended
         return ptr()->getInitialGuess();
       }
 
+      /** */
+      Vector<double> currentEvalPt() const 
+      {
+        return ptr()->currentEvalPt();
+      }
+
     private:
     };
 }

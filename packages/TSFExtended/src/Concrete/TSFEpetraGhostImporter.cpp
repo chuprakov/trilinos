@@ -39,6 +39,7 @@ EpetraGhostImporter
     ghostMap_(),
     importer_()
 {
+  cerr << "constructing importer " << endl;
   int nGlobal = localMap_->NumGlobalElements();
   int nLocal = localMap_->NumMyElements();
   int nGhostView = nLocal+nGhost;
@@ -48,10 +49,13 @@ EpetraGhostImporter
 
   const Epetra_Comm& comm = localMap_->Comm();
 
-  ghostMap_ = rcp(new Epetra_Map(nGlobal, nGhostView, 
+  cerr << "constructing ghost map " << endl;
+  ghostMap_ = rcp(new Epetra_Map(-1, nGhostView, 
                                  &(globalIndices[0]), 0, comm));
 
+  cerr << "constructing epetra import " << endl;
   importer_ = rcp(new Epetra_Import(*ghostMap_, *localMap_));
+  cerr << "done constructing importer " << endl;
 }
 
 void EpetraGhostImporter
