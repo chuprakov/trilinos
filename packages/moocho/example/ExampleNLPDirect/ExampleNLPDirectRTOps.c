@@ -227,18 +227,18 @@ static int explnlp2_calc_py_D_apply_op(
 		if(task == 0) {
 			// Compute py only
 			for( k = 0; k < sub_dim; ++k )
-				*py_val++ = *c_val++ / ( 1.0 - *xD_val++ );
+				*py_val++ = *c_val++ / ( 1.0 - *xI_val++ );
 		}
 		if(task == 1) {
 			// Compute D only
 			for( k = 0; k < sub_dim; ++k )
-				*d_val++ = ( *xI_val++ - 10.0 ) / ( 1.0 - *xD_val++ );
+				*d_val++ = ( *xD_val++ - 10.0 ) / ( 1.0 - *xI_val++ );
 		}
 		if(task == 2) {
 			// Compute py and D
 			for( k = 0; k < sub_dim; ++k ) {
-				denom = ( 1.0 - *xD_val++ );
-				*d_val++ = ( *xI_val++ - 10.0 ) / denom;
+				denom = ( 1.0 - *xI_val++ );
+				*d_val++ = ( *xD_val++ - 10.0 ) / denom;
 				*py_val++ = *c_val++ / denom;
 			}
 		}

@@ -60,14 +60,14 @@ int RTOp_TOp_explnlp2_c_eval_destroy( struct RTOp_RTOp* op );
  \verbatim
 
  task = 0 (py only, num_vecs = 2, num_targ_vecs = 1):
-     py(i) <- c(i) / ( 1.0 - xD(i) ), i = 1...n
+     py(i) <- c(i) / ( 1.0 - xI(i) ), i = 1...n
      where: xD = vec[0], c = vec[1], py = targ_vec[0]
  task = 1 (D only, num_vecs = 2, num_targ_vecs = 1):
-     d(i) <-(xI(i) - 10.0) / (1.0 - xD(i)), i = 1...n
+     d(i) <-(xD(i) - 10.0) / (1.0 - xI(i)), i = 1...n
      where:  xD = vec[0], xI = vec[1], d = targ_vec[0]
  task = 2 (py and D, num_vecs = 3, num_targ_ves = 2)
-     py(i) = c(i) / ( 1.0 - xD(i) ), i = 1...n
-     d(i) = (xI(i) - 10.0) / (1.0 - xD(i)), i = 1...n
+     py(i) = c(i) / ( 1.0 - xI(i) ), i = 1...n
+     d(i) = (xD(i) - 10.0) / (1.0 - xI(i)), i = 1...n
      where: xD = vec[0], xI = vec[1], c = vec[2], d = targ_vec[0], py = targ_vec[1]
  \endverbatim
  */
