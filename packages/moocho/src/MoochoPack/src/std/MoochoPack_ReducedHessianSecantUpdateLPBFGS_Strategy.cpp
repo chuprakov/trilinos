@@ -56,7 +56,9 @@ bool ReducedHessianSecantUpdateLPBFGS_Strategy::perform_update(
 	namespace rcp = ReferenceCountingPack;
 	using rcp::ref_count_ptr;
 	using LinAlgOpPack::V_MtV;
+	using LinAlgPack::dot;
 	using SparseLinAlgPack::norm_inf;
+	using SparseLinAlgPack::transVtMtV;
 	typedef ConstrainedOptimizationPack::MatrixHessianSuperBasic MHSB_t;
 	namespace wsp = WorkspacePack;
 	wsp::WorkspaceStore* wss = WorkspacePack::default_workspace_store.get();
