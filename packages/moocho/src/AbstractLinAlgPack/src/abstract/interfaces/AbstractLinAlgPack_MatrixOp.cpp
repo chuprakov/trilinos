@@ -330,15 +330,43 @@ void MatrixWithOp::syr2k(
 // Level-3 BLAS
 
 bool MatrixWithOp::Mp_StMtM(
-	MatrixWithOp* m_lhs, value_type alpha
-	, BLAS_Cpp::Transp trans_rhs1, const MatrixWithOp& mwo_rhs2
-	, BLAS_Cpp::Transp trans_rhs2, value_type beta) const
+	MatrixWithOp* C, value_type a
+	, BLAS_Cpp::Transp A_trans, const MatrixWithOp& B
+	, BLAS_Cpp::Transp B_trans, value_type b) const
 {
-	if(mwo_rhs2.Mp_StMtM(m_lhs,alpha,*this,trans_rhs1,trans_rhs2,beta))
+	if(B.Mp_StMtM(C,a,*this,A_trans,B_trans,b))
 		return true;
-	else if(m_lhs->Mp_StMtM(alpha,*this,trans_rhs1,mwo_rhs2,trans_rhs2,beta))
+	else if(C->Mp_StMtM(a,*this,A_trans,B,B_trans,b))
 		return true;
-	assert(0); // ToDo: Implement default!
+	//
+	// C = b*C + a*op(A)*op(B), where A == *this
+	//
+	// We will perform this by column as:
+	//
+	//   C(:,j) = b*C(:,j) + a*op(A)*op(B)*e(j), for j = 1...C.cols()
+	//
+	//   by performing:
+	//
+	//        t = op(B)*e(j)
+	//        C(:,j) = b*C(:,j) + a*op(A)*t
+	//
+	Mp_MtM_assert_compatibility(C,BLAS_Cpp::no_trans,*this,A_trans,B,B_trans);
+	MultiVectorMutable *Cmv = dynamic_cast<MultiVectorMutable*>(C);
+	if(!Cmv)
+		return false; // MultiVectorMutable is not supported!
+	if( !(Cmv->access_by() & MultiVector::COL_ACCESS) )
+		return false; // Column access is not supported!
+	VectorSpace::vec_mut_ptr_t
+		t = ( B_trans == BLAS_Cpp::no_trans ? B.space_cols() : B.space_rows() ).create_member();
+	const index_type
+		C_rows = Cmv->rows(),
+		C_cols = Cmv->cols();
+	for( index_type j = 1; j <= C_cols; ++j ) {
+		// t = op(B)*e(j)
+		LinAlgOpPack::V_MtV( t.get(), B, B_trans, EtaVector(j,C_cols)	);	
+		// C(:,j) = a*op(A)*t + b*C(:,j)
+		this->Vp_StMtV( Cmv->col(j).get(), a, A_trans, *t, b );
+	}
 	return false;
 }
 
@@ -452,5 +480,5 @@ void AbstractLinAlgPack::Mp_StMtM(
 		!success, MatrixWithOp::MethodNotImplemented
 		,"MatrixWithOp::Mp_StMtM(...) : Error, mwo_lhs of type \'"
 		<< typeid(*mwo_lhs).name() << "\' does not support the "
-		"\'MultiVectorMutable\' interface!" );
+		"\'MultiVectorMutable\' interface or does not support column access!" );
 }
