@@ -82,6 +82,11 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(
 		mI = nlp.mI(),
 		r  = nlp.var_dep().size();
 
+	THROW_EXCEPTION(
+		m > r || mI, TestFailed
+		,"EvalNewPointTailoredApproach_Step::do_step(...) : Error, "
+		"Neither undecomposed equalities nor general inequalities are supported yet!" );
+
 	IterQuantityAccess<VectorWithOpMutable>
 		&x_iq = s.x();
 
@@ -141,10 +146,14 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(
 		recalc_c = false;
 	}
 		
-	// Get references to Z and Y
+	// Get references to Z, Y, Uz, Uy, Vz and Vy
 	MatrixWithOp
-		&Z_k = s.Z().set_k(0),
-		&Y_k = s.Y().set_k(0);
+		&Z_k  = s.Z().set_k(0),
+		&Y_k  = s.Y().set_k(0),
+		*Uz_k = (m > r) ? &s.Uz().set_k(0) : NULL,
+		*Uy_k = (m > r) ? &s.Uy().set_k(0) : NULL,
+		*Vz_k = mI      ? &s.Vz().set_k(0) : NULL,
+		*Vy_k = mI      ? &s.Vy().set_k(0) : NULL;
 	MatrixIdentConcatStd
 		&cZ_k = dyn_cast<MatrixIdentConcatStd>(Z_k),
 		&cY_k = dyn_cast<MatrixIdentConcatStd>(Y_k);
@@ -159,22 +168,24 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(
 		D_ptr = cZ_k.D_ptr();
 
 	// Compute all the quantities.
+	rcp::ref_count_ptr<MatrixWithOp>
+		GcU = (m > r) ? nlp.space_GcU()->create_member() : NULL; // ToDo: Reuse GcU somehow? 
 	VectorWithOpMutable
 		&py_k  = s.py().set_k(0);
 	nlp.calc_point(
-		x
-		,!s.f().updated_k(0) ? &s.f().set_k(0) : (value_type*)NULL
-		,&s.c().get_k(0)
-		,recalc_c
-		,(mI && !s.h().updated_k(0)) ? &s.h().set_k(0) : (VectorWithOpMutable*)NULL 
-		,&s.Gf().set_k(0)
-		,&py_k                                   // -inv(C)*c
-		,&s.rGf().set_k(0)
-		,NULL                                    // GcU
-		,mI ? &s.Gh().set_k(0) : NULL
-		,const_cast<MatrixWithOp*>(D_ptr.get())  // -inv(C)*N
-		,NULL                                    // V
-		,NULL                                    // P
+		x                                                     // x
+		,!s.f().updated_k(0) ? &s.f().set_k(0) : NULL         // f
+		,&s.c().get_k(0)                                      // c
+		,recalc_c                                             // recalc_c
+		,(mI && !s.h().updated_k(0)) ? &s.h().set_k(0) : NULL // h 
+		,&s.Gf().set_k(0)                                     // Gf
+		,&py_k                                                // -inv(C)*c
+		,&s.rGf().set_k(0)                                    // rGf
+		,GcU.get()                                            // GcU
+		,mI ? &s.Gh().set_k(0) : NULL                         // Gh
+		,const_cast<MatrixWithOp*>(D_ptr.get())               // -inv(C)*N
+		,Uz_k                                                 // Uz
+		,Vz_k                                                 // Vz
 		);
 
 	if( static_cast<int>(olevel) >= static_cast<int>(PRINT_ALGORITHM_STEPS) ) {
@@ -233,11 +244,11 @@ bool ReducedSpaceSQPPack::EvalNewPointTailoredApproach_Step::do_step(
 			,&s.Gf().get_k(0)
 			,&s.py().get_k(0)
 			,&s.rGf().get_k(0)
-			,NULL                                                // GcU
+			,GcU.get()
 			,mI ? &s.Gh().get_k(0) : (const MatrixWithOp*)NULL
 			,D_ptr.get()
-			,NULL                                                // V
-			,NULL                                                // P
+			,Uz_k
+			,Vz_k
 			,olevel >= PRINT_VECTORS
 			,( olevel >= PRINT_ALGORITHM_STEPS ) ? &out : (std::ostream*)NULL
 			);
