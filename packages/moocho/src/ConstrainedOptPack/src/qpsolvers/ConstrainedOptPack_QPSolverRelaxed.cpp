@@ -12,6 +12,7 @@
 #include "LinAlgPack/include/VectorClass.h"
 #include "LinAlgPack/include/VectorOp.h"
 #include "LinAlgPack/include/VectorOut.h"
+#include "Misc/include/profile_hack.h"
 
 namespace ConstrainedOptimizationPack {
 
@@ -108,6 +109,9 @@ QPSolverRelaxed::solve_qp(
 	, VectorSlice* lambda, VectorSlice* Fd
 	)
 {
+#ifdef PROFILE_HACK_ENABLED
+	ProfileHackPack::ProfileTiming profile_timing( "QPSolverRelaxed::solve_qp(...)" );
+#endif
 
 	validate_input(g,G,etaL,dL,dU
 		,E,trans_E,b,eL,eU,F,trans_F,f
