@@ -87,12 +87,11 @@ static int explnlp2_c_eval_apply_op(
 	return 0; // success?
 }
 
-const char RTOp_TOp_explnlp2_c_eval_name[] = "TOp_explnlp2_c_eval";
-
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_explnlp2_c_eval_vtbl =
 {
 	&RTOp_obj_null_vtbl  // Use a null object for instance data
 	,&RTOp_obj_null_vtbl // use null type for target object
+	,"TOp_explnlp2_c_eval"
 	,NULL
 	,explnlp2_c_eval_apply_op
 	,NULL
@@ -246,12 +245,11 @@ static int explnlp2_calc_py_D_apply_op(
 	return 0; // success?
 }
 
-const char RTOp_TOp_explnlp2_calc_py_D_name[] = "TOp_explnlp2_calc_py_D";
-
 const struct RTOp_RTOp_vtbl_t RTOp_TOp_explnlp2_calc_py_D_vtbl =
 {
 	&RTOp_obj_index_vtbl  // Use an index object (task) for instance data
 	,&RTOp_obj_null_vtbl  // use null type for target object
+	,"TOp_explnlp2_calc_py_D"
 	,NULL
 	,explnlp2_calc_py_D_apply_op
 	,NULL

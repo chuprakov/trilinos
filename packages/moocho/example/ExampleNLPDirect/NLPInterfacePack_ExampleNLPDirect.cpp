@@ -33,20 +33,13 @@
 
 namespace {
 
-// Calculate py and/or D
 static RTOpPack::RTOpC          explnlp2_calc_py_D_op;
 
 // Simple class for an object that will initialize the RTOp_Server.
 class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
-		// Operator calcualte py and/or D
 		if(0!=RTOp_TOp_explnlp2_calc_py_D_construct( 0, &explnlp2_calc_py_D_op.op() ))
-			assert(0);
-		if(0!=RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_explnlp2_calc_py_D_name
-			   ,&RTOp_TOp_explnlp2_calc_py_D_vtbl
-			   ))
 			assert(0);
 	}
 }; 

@@ -40,10 +40,7 @@ extern "C" {
  */
 //@{
 
-/// Name of this transformation operator class
-extern const char RTOp_TOp_explnlp2_c_eval_name[];
-
-/// Virtual function table
+// Virtual function table
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_explnlp2_c_eval_vtbl;
 
 /// Constructor
@@ -72,9 +69,6 @@ int RTOp_TOp_explnlp2_c_eval_destroy( struct RTOp_RTOp* op );
  \endverbatim
  */
 //@{
-
-/// Name of this transformation operator class
-extern const char RTOp_TOp_explnlp2_calc_py_D_name[];
 
 /// Virtual function table
 extern const struct RTOp_RTOp_vtbl_t RTOp_TOp_explnlp2_calc_py_D_vtbl;

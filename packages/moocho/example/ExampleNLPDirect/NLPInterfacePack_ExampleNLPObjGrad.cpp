@@ -33,20 +33,13 @@
 
 namespace {
 
-// Evaluate c(x)
 static RTOpPack::RTOpC          explnlp2_c_eval_op;
 
 // Simple class for an object that will initialize the RTOp_Server.
 class init_rtop_server_t {
 public:
 	init_rtop_server_t() {
-		// Operator evaluate c(x)
 		if(0!=RTOp_TOp_explnlp2_c_eval_construct( &explnlp2_c_eval_op.op() ))
-			assert(0);
-		if(0!=RTOp_Server_add_op_name_vtbl(
-			   RTOp_TOp_explnlp2_c_eval_name
-			   ,&RTOp_TOp_explnlp2_c_eval_vtbl
-			   ))
 			assert(0);
 	}
 }; 
